@@ -779,11 +779,11 @@ public final class DisplayEditor extends GraphicalEditorWithFlyoutPalette implem
 		registry.registerAction(action);
 		getSelectionActions().add(action.getId());
 		
-		action = new ArrangeAction(this, Arrange.HORIZONTAL);
+		action = new ArrangeAction(this, getGraphicalViewer(), getCommandStack(), Arrange.HORIZONTAL);
 		registry.registerAction(action);
 		getSelectionActions().add(action.getId());
 		
-		action = new ArrangeAction(this, Arrange.VERTICAL);
+		action = new ArrangeAction(this, getGraphicalViewer(), getCommandStack(), Arrange.VERTICAL);
 		registry.registerAction(action);
 		getSelectionActions().add(action.getId());
 	}

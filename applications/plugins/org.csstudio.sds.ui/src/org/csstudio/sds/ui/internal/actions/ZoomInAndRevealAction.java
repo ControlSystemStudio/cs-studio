@@ -2,7 +2,7 @@ package org.csstudio.sds.ui.internal.actions;
 
 import java.util.List;
 
-import org.eclipse.gef.EditPart;
+import org.csstudio.sds.ui.editparts.AbstractBaseEditPart;
 import org.eclipse.gef.GraphicalViewer;
 import org.eclipse.gef.commands.Command;
 import org.eclipse.gef.editparts.ZoomManager;
@@ -20,12 +20,12 @@ public class ZoomInAndRevealAction extends AbstractEditPartSelectionAction {
 	}
 	
 	@Override
-	protected boolean doCalculateEnabled(List<EditPart> selectedEditParts) {
+	protected boolean doCalculateEnabled(List<AbstractBaseEditPart> selectedEditParts) {
 		return _zoomInAction.isEnabled();
 	}
 
 	@Override
-	protected Command doCreateCommand(final List<EditPart> selectedEditParts) {
+	protected Command doCreateCommand(final List<AbstractBaseEditPart> selectedEditParts) {
 		return new Command() {
 			@Override
 			public void execute() {
@@ -35,7 +35,7 @@ public class ZoomInAndRevealAction extends AbstractEditPartSelectionAction {
 		};
 	}
 
-	private void revealSelectedEditParts(List<EditPart> selectedEditParts) {
+	private void revealSelectedEditParts(List<AbstractBaseEditPart> selectedEditParts) {
 		if (!selectedEditParts.isEmpty()) {
 			getGraphicalViewer().reveal(selectedEditParts.get(selectedEditParts.size() - 1));
 		}

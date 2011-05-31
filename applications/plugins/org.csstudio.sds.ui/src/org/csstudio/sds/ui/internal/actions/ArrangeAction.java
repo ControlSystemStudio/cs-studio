@@ -6,52 +6,30 @@ import java.util.List;
 import org.csstudio.sds.ui.editparts.AbstractBaseEditPart;
 import org.csstudio.sds.ui.internal.commands.ArrangeCommand;
 import org.csstudio.sds.ui.internal.editor.Arrange;
-import org.csstudio.sds.ui.internal.editor.DisplayEditor;
 import org.eclipse.gef.EditPart;
+import org.eclipse.gef.GraphicalViewer;
+import org.eclipse.gef.commands.Command;
+import org.eclipse.gef.commands.CommandStack;
 import org.eclipse.gef.ui.actions.UpdateAction;
-import org.eclipse.jface.action.Action;
+import org.eclipse.ui.IWorkbenchPart;
 
-public class ArrangeAction extends Action implements UpdateAction {
+public class ArrangeAction extends AbstractEditPartSelectionAction implements UpdateAction {
 
 	public static final String HORIZONTAL = "org.csstudio.sds.ui.internal.editor.ArrangeAction.Horizontal";
 	public static final String VERTICAL = "org.csstudio.sds.ui.internal.editor.ArrangeAction.Vertical";
 
-	private final DisplayEditor _displayEditor;
+	private final CommandStack _commandStack;
 	private final Arrange _direction;
 
-	public ArrangeAction(DisplayEditor displayEditor, Arrange direction) {
-		this._displayEditor = displayEditor;
+	public ArrangeAction(IWorkbenchPart part, GraphicalViewer viewer, CommandStack commandStack, Arrange direction) {
+		super(part, viewer);
+		this._commandStack = commandStack;
 		this._direction = direction;
 		if (direction == Arrange.HORIZONTAL) {
 			setId(HORIZONTAL);
 		} else {
 			setId(VERTICAL);
 		}
-	}
-
-	@Override
-	public void run() {
-		List<AbstractBaseEditPart> selectedEditParts = normalizeGroupingSelections(_displayEditor
-				.getSelectedEditParts());
-		if (isFeasible(selectedEditParts)) {
-			_displayEditor.getCommandStack().execute(new ArrangeCommand(selectedEditParts, _direction));
-		}
-	}
-
-	private List<AbstractBaseEditPart> normalizeGroupingSelections(List<AbstractBaseEditPart> selectedEditParts) {
-		List<AbstractBaseEditPart> normalizedSelection = new LinkedList<AbstractBaseEditPart>(selectedEditParts);
-		for (AbstractBaseEditPart editPart : selectedEditParts) {
-			List<?> children = editPart.getChildren();
-			if (children.size() > 0 && selectedEditParts.containsAll(children)) {
-				normalizedSelection.removeAll(children);
-			}
-		}
-
-		return normalizedSelection;
-	}
-
-	private boolean isFeasible(List<AbstractBaseEditPart> selectedEditParts) {
-		return selectedEditParts.size() > 2 && areSiblings(selectedEditParts);
 	}
 
 	private boolean areSiblings(List<AbstractBaseEditPart> selectedEditParts) {
@@ -75,6 +53,34 @@ public class ArrangeAction extends Action implements UpdateAction {
 
 	@Override
 	public void update() {
-		setEnabled(isFeasible(normalizeGroupingSelections(_displayEditor.getSelectedEditParts())));
+		super.update();
+		setEnabled(calculateEnabled());
+	}
+
+	@Override
+	protected boolean doCalculateEnabled(List<AbstractBaseEditPart> selectedEditParts) {
+		return selectedEditParts.size() > 2 && areSiblings(selectedEditParts);
+	}
+
+	@Override
+	protected Command doCreateCommand(final List<AbstractBaseEditPart> selectedEditParts) {
+		return new Command() {
+			public void execute() {
+				List<AbstractBaseEditPart> normalizedSelection = normalizeGroupingSelections(selectedEditParts);
+				_commandStack.execute(new ArrangeCommand(normalizedSelection, _direction));
+			};
+		};
+	}
+
+	private List<AbstractBaseEditPart> normalizeGroupingSelections(List<AbstractBaseEditPart> selectedEditParts) {
+		List<AbstractBaseEditPart> normalizedSelection = new LinkedList<AbstractBaseEditPart>(selectedEditParts);
+		for (AbstractBaseEditPart editPart : selectedEditParts) {
+			List<?> children = editPart.getChildren();
+			if (children.size() > 0 && selectedEditParts.containsAll(children)) {
+				normalizedSelection.removeAll(children);
+			}
+		}
+	
+		return normalizedSelection;
 	}
 }

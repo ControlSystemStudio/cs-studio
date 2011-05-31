@@ -25,8 +25,7 @@ package org.csstudio.sds.ui.internal.actions;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.eclipse.gef.EditPart;
-import org.eclipse.gef.EditPartViewer;
+import org.csstudio.sds.ui.editparts.AbstractBaseEditPart;
 import org.eclipse.gef.GraphicalViewer;
 import org.eclipse.gef.commands.Command;
 import org.eclipse.gef.ui.actions.SelectionAction;
@@ -47,9 +46,9 @@ public abstract class AbstractEditPartSelectionAction extends SelectionAction {
 		this._viewer = viewer;
 	}
 
-	protected abstract Command doCreateCommand(List<EditPart> selectedEditParts);
+	protected abstract Command doCreateCommand(List<AbstractBaseEditPart> selectedEditParts);
 
-	protected abstract boolean doCalculateEnabled(List<EditPart> selectedEditParts);
+	protected abstract boolean doCalculateEnabled(List<AbstractBaseEditPart> selectedEditParts);
 
 	/**
 	 *{@inheritDoc}
@@ -70,17 +69,17 @@ public abstract class AbstractEditPartSelectionAction extends SelectionAction {
 		return doCalculateEnabled(getSelectedEditParts());
 	}
 
-	protected EditPartViewer getGraphicalViewer() {
+	protected GraphicalViewer getGraphicalViewer() {
 		return _viewer;
 	}
 
-	private final List<EditPart> getSelectedEditParts() {
+	private final List<AbstractBaseEditPart> getSelectedEditParts() {
 		List<?> selection = getSelectedObjects();
 		
-		List<EditPart> selectedEditParts = new ArrayList<EditPart>(selection.size());
+		List<AbstractBaseEditPart> selectedEditParts = new ArrayList<AbstractBaseEditPart>(selection.size());
 		for (Object o : selection) {
-			if (o instanceof EditPart) {
-				selectedEditParts.add(((EditPart) o));
+			if (o instanceof AbstractBaseEditPart) {
+				selectedEditParts.add(((AbstractBaseEditPart) o));
 			}
 		}
 		return selectedEditParts;
