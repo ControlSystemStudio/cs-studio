@@ -1,59 +1,42 @@
 package org.csstudio.sds.ui.internal.actions;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import org.eclipse.gef.EditPart;
-import org.eclipse.gef.GraphicalViewer;
+import org.eclipse.gef.commands.Command;
 import org.eclipse.gef.editparts.ZoomManager;
-import org.eclipse.gef.ui.actions.SelectionAction;
 import org.eclipse.gef.ui.actions.ZoomInAction;
 import org.eclipse.ui.IWorkbenchPart;
 
-public class ZoomInAndRevealAction extends SelectionAction {
+public class ZoomInAndRevealAction extends AbstractEditPartSelectionAction {
 	
 	private final ZoomInAction _zoomInAction;
-	private final GraphicalViewer _viewer;
 
-	public ZoomInAndRevealAction(ZoomManager zoomManager, IWorkbenchPart part, GraphicalViewer viewer) {
+	public ZoomInAndRevealAction(ZoomManager zoomManager, IWorkbenchPart part) {
 		super(part);
-		_viewer = viewer;
 		_zoomInAction = new ZoomInAction(zoomManager);
+		setId(_zoomInAction.getId());
 	}
 	
-	public String getId() {
-		return _zoomInAction.getId();
-	}
-
 	@Override
-	public void run() {
-		_zoomInAction.run();
-		revealSelectedEditParts();
-	}
-	
-	private void revealSelectedEditParts() {
-		List<EditPart> selectedEditParts = getSelectedEditParts();
-		if (!selectedEditParts.isEmpty()) {
-			_viewer.reveal(selectedEditParts.get(selectedEditParts.size() - 1));
-		}
-	}
-
-	private List<EditPart> getSelectedEditParts() {
-		List<?> selection = getSelectedObjects();
-		
-		List<EditPart> selectedEditParts = new ArrayList<EditPart>(selection.size());
-		for (Object o : selection) {
-			if (o instanceof EditPart) {
-				selectedEditParts.add(((EditPart) o));
-			}
-		}
-		return selectedEditParts;
-	}
-
-	@Override
-	protected boolean calculateEnabled() {
+	protected boolean doCalculateEnabled(List<EditPart> selectedEditParts) {
 		return _zoomInAction.isEnabled();
 	}
-	
-	
+
+	@Override
+	protected Command doCreateCommand(final List<EditPart> selectedEditParts) {
+		return new Command() {
+			@Override
+			public void execute() {
+				_zoomInAction.run();
+				revealSelectedEditParts(selectedEditParts);
+			}
+		};
+	}
+
+	private void revealSelectedEditParts(List<EditPart> selectedEditParts) {
+		if (!selectedEditParts.isEmpty()) {
+			getGraphicalViewer().reveal(selectedEditParts.get(selectedEditParts.size() - 1));
+		}
+	}
 }

@@ -43,7 +43,7 @@ import org.eclipse.ui.IWorkbenchPart;
  * @author Kai Meyer & Sven Wende
  * 
  */
-public final class RemoveGroupAction extends AbstractSelectionAction {
+public final class RemoveGroupAction extends AbstractWidgetSelectionAction {
 
 	public static final String ID = "org.csstudio.sds.ui.internal.actions.RemoveGroupAction";
 
