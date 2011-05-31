@@ -259,7 +259,7 @@ public class TextIndicatorEditPart extends AbstractPVWidgetEditPart {
 	/**
 	 * @param figure
 	 */
-	private void performAutoSize(IFigure figure) {
+	protected void performAutoSize(IFigure figure) {
 		getWidgetModel().setSize(((TextFigure)figure).getAutoSizeDimension());
 	}
 
