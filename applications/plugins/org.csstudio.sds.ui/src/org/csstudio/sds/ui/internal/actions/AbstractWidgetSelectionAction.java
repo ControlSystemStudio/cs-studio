@@ -27,6 +27,7 @@ import java.util.List;
 
 import org.csstudio.sds.model.AbstractWidgetModel;
 import org.csstudio.sds.ui.editparts.AbstractBaseEditPart;
+import org.csstudio.sds.ui.internal.editor.DisplayEditor;
 import org.eclipse.gef.EditPartViewer;
 import org.eclipse.gef.GraphicalViewer;
 import org.eclipse.gef.commands.Command;
@@ -72,7 +73,7 @@ public abstract class AbstractWidgetSelectionAction extends SelectionAction {
 	}
 
 	protected EditPartViewer getGraphicalViewer() {
-		return _viewer;
+		return ((DisplayEditor) getWorkbenchPart()).getGraphicalViewer();
 	}
 	
 	private final List<AbstractWidgetModel> getSelectedWidgetModels() {

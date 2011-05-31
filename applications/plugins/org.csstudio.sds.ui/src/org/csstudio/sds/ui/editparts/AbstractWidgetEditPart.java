@@ -102,5 +102,8 @@ public abstract class AbstractWidgetEditPart extends AbstractBaseEditPart implem
 	protected void createEditPoliciesHook() {
 	}
 	
-	
+	@Override
+	public boolean isSelectable() {
+		return ! (getParent() instanceof GroupingContainerEditPart) || getParent().getSelected() != SELECTED_NONE;
+	}
 }
