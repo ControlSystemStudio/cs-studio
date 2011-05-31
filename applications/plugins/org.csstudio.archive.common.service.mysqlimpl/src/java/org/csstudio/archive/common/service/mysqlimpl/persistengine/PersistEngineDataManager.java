@@ -37,6 +37,7 @@ import java.util.concurrent.atomic.AtomicInteger;
 import javax.annotation.Nonnull;
 
 import org.csstudio.archive.common.service.mysqlimpl.MySQLArchiveServicePreference;
+import org.csstudio.archive.common.service.mysqlimpl.dao.ArchiveConnectionHandler;
 import org.csstudio.archive.common.service.mysqlimpl.notification.ArchiveNotifications;
 import org.csstudio.archive.common.service.util.DataRescueException;
 import org.csstudio.archive.common.service.util.DataRescueResult;
@@ -46,14 +47,14 @@ import org.slf4j.LoggerFactory;
 
 import com.google.common.collect.Lists;
 import com.google.common.collect.Sets;
+import com.google.inject.Inject;
 
 /**
  * Manager that handles the persistence worker thread.
  * @author Bastian Knerr
  * @since Feb 26, 2011
  */
-public enum PersistEngineDataManager {
-    INSTANCE;
+public class PersistEngineDataManager {
 
     /**
      * Thread to hold the shutdown worker on stopping the engine.
@@ -76,7 +77,8 @@ public enum PersistEngineDataManager {
         @Override
         public void run() {
             if (!_executor.isTerminating()) {
-                _executor.execute(new PersistDataWorker("SHUTDOWN MySQL Archive Worker",
+                _executor.execute(new PersistDataWorker(PersistEngineDataManager.this,
+                                                        "SHUTDOWN MySQL Archive Worker",
                                                         _sqlStatementBatch,
                                                         Integer.valueOf(0),
                                                         _prefMaxAllowedPacketInBytes));
@@ -137,10 +139,15 @@ public enum PersistEngineDataManager {
     private Integer _prefPeriodInMS;
     private Integer _prefMaxAllowedPacketInBytes;
 
+    private final ArchiveConnectionHandler _connectionHandler;
+
     /**
      * Constructor.
      */
-    private PersistEngineDataManager() {
+    @Inject
+    public PersistEngineDataManager(@Nonnull final ArchiveConnectionHandler connectionHandler) {
+        _connectionHandler = connectionHandler;
+
         loadAndCheckPreferences();
 
         _sqlStatementBatch = SqlStatementBatch.INSTANCE;
@@ -148,13 +155,15 @@ public enum PersistEngineDataManager {
         addGracefullyShutdownHook();
     }
 
+
     private void loadAndCheckPreferences() {
         _prefMaxAllowedPacketInBytes = MAX_ALLOWED_PACKET_IN_KB.getValue() * 1024;
         _prefPeriodInMS = PERIOD_IN_MS.getValue();
     }
 
     private void submitNewPersistDataWorker() {
-        final PersistDataWorker newWorker = new PersistDataWorker("PERIODIC MySQL Archive Worker: " + _workerId.getAndIncrement(),
+        final PersistDataWorker newWorker = new PersistDataWorker(this,
+                                                                  "PERIODIC MySQL Archive Worker: " + _workerId.getAndIncrement(),
                                                                   _sqlStatementBatch,
                                                                   _prefPeriodInMS,
                                                                   _prefMaxAllowedPacketInBytes);
@@ -262,5 +271,10 @@ public enum PersistEngineDataManager {
         } catch (final DataRescueException e) {
             ArchiveNotifications.notify(NotificationType.PERSIST_DATA_FAILED, e.getMessage());
         }
+    }
+
+    @Nonnull
+    public ArchiveConnectionHandler getConnectionHandler() {
+        return _connectionHandler;
     }
 }

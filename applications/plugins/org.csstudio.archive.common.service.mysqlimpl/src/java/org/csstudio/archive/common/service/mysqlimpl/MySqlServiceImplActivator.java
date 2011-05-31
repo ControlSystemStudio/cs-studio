@@ -53,6 +53,8 @@ public class MySqlServiceImplActivator implements BundleActivator {
 
     private static MySqlServiceImplActivator INSTANCE;
 
+    private ArchiveConnectionHandler _connectionHandler;
+
     /**
      * Don't instantiate.
      * Called by framework.
@@ -62,7 +64,6 @@ public class MySqlServiceImplActivator implements BundleActivator {
             throw new IllegalStateException("Activator " + PLUGIN_ID + " does already exist.");
         }
         INSTANCE = this; // Antipattern is required by the framework!
-        LOG.info("WHAT THE FUCK");
     }
 
     /**
@@ -83,10 +84,12 @@ public class MySqlServiceImplActivator implements BundleActivator {
     public void start(@Nonnull final BundleContext context) throws Exception {
 
 	    final Injector injector = Guice.createInjector(new MySQLArchiveServiceImplModule());
+	    _connectionHandler = injector.getInstance(ArchiveConnectionHandler.class);
 	    final MySQLArchiveEngineServiceImpl engineServiceImpl =
 	        injector.getInstance(MySQLArchiveEngineServiceImpl.class);
 	    final MySQLArchiveReaderServiceImpl readerServiceImpl =
 	        injector.getInstance(MySQLArchiveReaderServiceImpl.class);
+
 
 
         final Dictionary<String, Object> propsCfg = new Hashtable<String, Object>();
@@ -115,6 +118,8 @@ public class MySqlServiceImplActivator implements BundleActivator {
 
 	    // Services are automatically unregistered
 
-	    ArchiveConnectionHandler.INSTANCE.disconnect();
+	    if (_connectionHandler != null) {
+	        _connectionHandler.disconnect();
+	    }
 	}
 }
