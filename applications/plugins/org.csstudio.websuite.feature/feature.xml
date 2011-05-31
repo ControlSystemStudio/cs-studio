@@ -35,13 +35,6 @@
          unpack="false"/>
 
    <plugin
-         id="org.csstudio.platform.libs.ant"
-         download-size="0"
-         install-size="0"
-         version="0.0.0"
-         unpack="false"/>
-
-   <plugin
          id="org.csstudio.platform.libs.dal"
          download-size="0"
          install-size="0"
@@ -106,7 +99,7 @@
          unpack="false"/>
 
    <plugin
-         id="org.csstudio.platform.workspace"
+         id="org.csstudio.workspace"
          download-size="0"
          install-size="0"
          version="0.0.0"
@@ -165,14 +158,6 @@
          download-size="0"
          install-size="0"
          version="0.0.0"
-         unpack="false"/>
-
-   <plugin
-         id="org.eclipse.core.resources.compatibility"
-         download-size="0"
-         install-size="0"
-         version="0.0.0"
-         fragment="true"
          unpack="false"/>
 
    <plugin

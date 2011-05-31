@@ -8,8 +8,6 @@ import static org.junit.Assert.assertTrue;
 
 import org.csstudio.config.ioconfig.config.view.helper.ProfibusHelper;
 import org.csstudio.config.ioconfig.model.pbmodel.Ranges.Value;
-import org.csstudio.config.ioconfig.model.pbmodel.gsdParser.GsdModuleModel;
-import org.csstudio.config.ioconfig.model.pbmodel.gsdParser.GsdSlaveModel;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Shell;
@@ -48,16 +46,13 @@ import org.junit.Test;
  * @version $Revision: 1.2 $
  * @since 12.12.2008
  */
+// CHECKSTYLE:OFF
 public class ProfibusHelper_Test {
 
 
     @Test
     public void testGetTextField1(){
         final Composite composite = new Composite(new Shell(),SWT.NULL);
-
-        // Test null Parent
-        assertTrue(ProfibusHelper.getTextField(null, null)==null);
-        assertTrue(ProfibusHelper.getTextField(null, "value")==null);
 
         Text textField = ProfibusHelper.getTextField(composite, null);
 
@@ -79,10 +74,6 @@ public class ProfibusHelper_Test {
     public void testGetTextField2(){
         final Composite composite = new Composite(new Shell(),SWT.NULL);
 
-        // Test null Parent
-        assertNull(ProfibusHelper.getTextField(null,false, null, null, -1));
-        assertNull(ProfibusHelper.getTextField(null,true,"value",new Value(0,100,50),-1));
-
         Text textField = ProfibusHelper.getTextField(composite,false, null, null, -1);
 
         assertNotNull(textField);
@@ -92,7 +83,7 @@ public class ProfibusHelper_Test {
         assertTrue(textField.getListeners(SWT.Verify).length<1);
 
         textField = ProfibusHelper.getTextField(composite,false, "value", new Value(0,100,50), ProfibusHelper.VL_TYP_U08);
-        assertTrue(textField!=null);
+        assertNotNull(textField);
         assertFalse(textField.getEditable());
         assertEquals(textField.getText(), "value");
         assertEquals(textField.getData(), "value");
@@ -100,7 +91,7 @@ public class ProfibusHelper_Test {
         assertTrue(textField.getListeners(SWT.Verify).length<1);
 
         textField = ProfibusHelper.getTextField(composite,true, "value", new Value(0,100,50), ProfibusHelper.VL_TYP_U08);
-        assertTrue(textField!=null);
+        assertNotNull(textField);
         assertTrue(textField.getEditable());
         assertEquals(textField.getText(), "value");
         assertEquals(textField.getData(), "value");
@@ -123,3 +114,4 @@ public class ProfibusHelper_Test {
     }
 
 }
+//CHECKSTYLE:ON

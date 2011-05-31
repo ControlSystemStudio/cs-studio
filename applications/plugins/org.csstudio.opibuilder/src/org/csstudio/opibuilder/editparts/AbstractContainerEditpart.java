@@ -1,3 +1,10 @@
+/*******************************************************************************
+ * Copyright (c) 2010 Oak Ridge National Laboratory.
+ * All rights reserved. This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License v1.0
+ * which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-v10.html
+ ******************************************************************************/
 package org.csstudio.opibuilder.editparts;
 
 import java.beans.PropertyChangeEvent;
@@ -6,15 +13,18 @@ import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.List;
 
-import org.csstudio.opibuilder.commands.OrphanChildCommand;
 import org.csstudio.opibuilder.dnd.DropPVtoContainerEditPolicy;
 import org.csstudio.opibuilder.dnd.DropPVtoPVWidgetEditPolicy;
+import org.csstudio.opibuilder.editpolicies.WidgetContainerEditPolicy;
 import org.csstudio.opibuilder.editpolicies.WidgetXYLayoutEditPolicy;
 import org.csstudio.opibuilder.model.AbstractContainerModel;
 import org.csstudio.opibuilder.model.AbstractWidgetModel;
 import org.csstudio.opibuilder.properties.IWidgetPropertyChangeHandler;
+import org.csstudio.opibuilder.scriptUtil.WidgetUtil;
+import org.csstudio.opibuilder.util.GeometryUtil;
 import org.csstudio.opibuilder.util.MacrosInput;
 import org.eclipse.draw2d.IFigure;
+import org.eclipse.draw2d.geometry.Rectangle;
 import org.eclipse.gef.CompoundSnapToHelper;
 import org.eclipse.gef.EditPart;
 import org.eclipse.gef.EditPolicy;
@@ -22,13 +32,9 @@ import org.eclipse.gef.SnapToGeometry;
 import org.eclipse.gef.SnapToGrid;
 import org.eclipse.gef.SnapToGuides;
 import org.eclipse.gef.SnapToHelper;
-import org.eclipse.gef.commands.Command;
-import org.eclipse.gef.commands.CompoundCommand;
-import org.eclipse.gef.editpolicies.ContainerEditPolicy;
 import org.eclipse.gef.editpolicies.SnapFeedbackPolicy;
-import org.eclipse.gef.requests.CreateRequest;
-import org.eclipse.gef.requests.GroupRequest;
 import org.eclipse.gef.rulers.RulerProvider;
+import org.eclipse.osgi.util.NLS;
 
 /**The editpart for {@link AbstractContainerModel}
  * @author Xihui Chen, Sven Wende (class of same name in SDS)
@@ -43,29 +49,7 @@ public abstract class AbstractContainerEditpart extends AbstractBaseEditPart {
 	protected void createEditPolicies() {
 		super.createEditPolicies();
 		
-		installEditPolicy(EditPolicy.CONTAINER_ROLE, new ContainerEditPolicy(){
-
-			@Override
-			protected Command getCreateCommand(CreateRequest request) {
-				return null;
-			}
-			
-			@SuppressWarnings("unchecked")
-			@Override
-			protected Command getOrphanChildrenCommand(GroupRequest request) {
-				List parts = request.getEditParts();
-				CompoundCommand result = new CompoundCommand("Orphan Children");
-				for(int i=0; i<parts.size(); i++){					
-					OrphanChildCommand orphan = new OrphanChildCommand((AbstractContainerModel)(getModel()),
-							(AbstractWidgetModel)((EditPart)parts.get(i)).getModel());
-					orphan.setLabel("Reparenting widget");
-					result.add(orphan);
-				}
-				
-				return result.unwrap();
-			}
-			
-		});
+		installEditPolicy(EditPolicy.CONTAINER_ROLE, new WidgetContainerEditPolicy());
 		installEditPolicy(EditPolicy.LAYOUT_ROLE, 
 				getExecutionMode() == ExecutionMode.EDIT_MODE ? new WidgetXYLayoutEditPolicy() : null);
 		
@@ -79,9 +63,8 @@ public abstract class AbstractContainerEditpart extends AbstractBaseEditPart {
 	 * @param name the name of the child widget
 	 * @return the widgetController of the child. null if the child doesn't exist.
 	 */
-	@SuppressWarnings("unchecked")
 	public AbstractBaseEditPart getChild(String name){
-		List children = getChildren();
+		List<?> children = getChildren();
 		for(Object o : children){
 			if(o instanceof AbstractBaseEditPart){
 				if(((AbstractBaseEditPart)o).getWidgetModel().getName().equals(name))
@@ -89,6 +72,87 @@ public abstract class AbstractContainerEditpart extends AbstractBaseEditPart {
 			}
 		}
 		return null;
+	}
+	
+	/**Get the widget which is a descendant of the container by name. 
+	 * @param name the name of the widget.
+	 * @return the widget controller.
+	 * @throws Exception If widget with this name doesn't exist
+	 */
+	public AbstractBaseEditPart getWidget(String name) throws Exception{
+		AbstractBaseEditPart widget = searchWidget(name);
+		if(widget == null)
+			throw new Exception("Widget with name \"" + name + "\" does not exist!");
+		else
+			return widget;
+	}
+	
+	/**Recursively search the widget
+	 * @param name
+	 * @return
+	 */
+	private AbstractBaseEditPart searchWidget(String name){
+		AbstractBaseEditPart child = getChild(name);
+		if(child != null)
+			return child;
+		else {			
+			for(Object obj : getChildren()){
+				if(obj instanceof AbstractContainerEditpart){
+					AbstractContainerEditpart containerChild = (AbstractContainerEditpart)obj;
+					AbstractBaseEditPart widget = containerChild.searchWidget(name);
+					if(widget != null)
+						return widget;
+				}
+			}
+		}
+		return null;
+	}	
+	/**Add a child widget to the container.
+	 * @param widgetModel model of the widget to be added. 
+	 * @see WidgetUtil#createWidgetModel(String)
+	 */
+	public void addChild(AbstractWidgetModel widgetModel){
+		getWidgetModel().addChild(widgetModel);
+	}
+	
+	/**Add a child widget to the right of the container.
+	 * @param widgetModel model of the widget to be added. 
+	 * @see WidgetUtil#createWidgetModel(String)
+	 */
+	public void addChildToRight(AbstractWidgetModel widgetModel){
+		Rectangle range = GeometryUtil.getChildrenRange(this);
+		widgetModel.setX(range.x + range.width);
+		addChild(widgetModel);
+	}
+	
+	/**Add a child widget to the bottom of the container.
+	 * @param widgetModel model of the widget to be added. 
+	 * @see WidgetUtil#createWidgetModel(String)
+	 */
+	public void addChildToBottom(AbstractWidgetModel widgetModel){
+		Rectangle range = GeometryUtil.getChildrenRange(this);
+		widgetModel.setY(range.y + range.height);
+		addChild(widgetModel);
+	}
+	
+	/**Remove a child widget by its name.
+	 * @param widgetName name of the widget.
+	 * @throws RuntimeException if the widget name does not exist.
+	 */
+	public void removeChildByName(String widgetName) {
+		AbstractBaseEditPart child = getChild(widgetName);
+		if(child != null)
+			getWidgetModel().removeChild(child.getWidgetModel());
+		else
+			 throw new RuntimeException(NLS.bind(
+					 "Widget with name {0} doesn't exist!", widgetName));
+	}
+	
+	/**
+	 * Remove all children.
+	 */
+	public void removeAllChildren(){
+		getWidgetModel().removeAllChildren();
 	}
 	
 	@Override
@@ -112,7 +176,7 @@ public abstract class AbstractContainerEditpart extends AbstractBaseEditPart {
 		
 		super.activate();
 		
-		
+		layout();
 		
 		childrenPropertyChangeListener = new PropertyChangeListener() {					
 					public void propertyChange(PropertyChangeEvent evt) {
@@ -120,11 +184,14 @@ public abstract class AbstractContainerEditpart extends AbstractBaseEditPart {
 						if(evt.getOldValue() instanceof Integer){
 							addChild(createChild(evt.getNewValue()), ((Integer)evt
 									.getOldValue()).intValue());
+							layout();
 						}else if (evt.getOldValue() instanceof AbstractWidgetModel){
 							EditPart child = (EditPart)getViewer().getEditPartRegistry().get(
 									evt.getOldValue());						
-							if(child != null)
+							if(child != null){
 								removeChild(child);
+								layout();
+							}	
 						}else							
 							refreshChildren();						
 					}
@@ -193,9 +260,8 @@ public abstract class AbstractContainerEditpart extends AbstractBaseEditPart {
 		selectionPropertyChangeListener = null;
 	}
 	
-	@SuppressWarnings("unchecked")
 	@Override
-	protected List getModelChildren() {
+	protected List<AbstractWidgetModel> getModelChildren() {
 		return ((AbstractContainerModel)getModel()).getChildren();
 	}
 
@@ -203,15 +269,43 @@ public abstract class AbstractContainerEditpart extends AbstractBaseEditPart {
 	public AbstractContainerModel getWidgetModel() {
 		return (AbstractContainerModel)getModel();
 	}
+	
+	public AbstractLayoutEditpart getLayoutWidget(){
+		for(Object child : getChildren()){
+			if(child instanceof AbstractLayoutEditpart){
+				return (AbstractLayoutEditpart)child;
+			}
+		}
+		return null;
+	}
+	
+	@Override
+	protected void refreshChildren() {
+		super.refreshChildren();
+		if(isActive())
+			layout();
+	}
+	
+	public void layout(){
+		if(getExecutionMode() != ExecutionMode.RUN_MODE)
+			return;
+		AbstractLayoutEditpart layoutter = getLayoutWidget();
+		if(layoutter != null && layoutter.getWidgetModel().isEnabled()){
+			List<AbstractWidgetModel> modelChildren = new ArrayList<AbstractWidgetModel>();
+			modelChildren.addAll(getModelChildren());
+			modelChildren.remove(layoutter.getWidgetModel());
+			layoutter.layout(modelChildren, getFigure().getClientArea());
+		}
+	}
+	
 
 	/**
 	 * @see org.eclipse.core.runtime.IAdaptable#getAdapter(java.lang.Class)
 	 */
-	@SuppressWarnings("unchecked")
-	public Object getAdapter(Class adapter) {
+	public Object getAdapter(@SuppressWarnings("rawtypes") Class adapter) {
 		//make snap to G work
 		if (adapter == SnapToHelper.class) {
-			List snapStrategies = new ArrayList();
+			List<SnapToHelper> snapStrategies = new ArrayList<SnapToHelper>();
 			Boolean val = (Boolean)getViewer().getProperty(RulerProvider.PROPERTY_RULER_VISIBILITY);
 			if (val != null && val.booleanValue())
 				snapStrategies.add(new SnapToGuides(this));
@@ -229,7 +323,7 @@ public abstract class AbstractContainerEditpart extends AbstractBaseEditPart {
 
 			SnapToHelper ss[] = new SnapToHelper[snapStrategies.size()];
 			for (int i = 0; i < snapStrategies.size(); i++)
-				ss[i] = (SnapToHelper)snapStrategies.get(i);
+				ss[i] = snapStrategies.get(i);
 			return new CompoundSnapToHelper(ss);
 		}
 		return super.getAdapter(adapter);

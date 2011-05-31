@@ -13,3 +13,4 @@ Require-Bundle: org.eclipse.core.runtime,
  org.csstudio.nams.service.preferenceservice
 Eclipse-LazyStart: true
 Export-Package: org.csstudio.nams.service.messaging.impl.jms;x-friends:="org.csstudio.nams.testUtils.testSuites"
+Bundle-Vendor: DESY <css-developer@desy.de>, Markus Moeller

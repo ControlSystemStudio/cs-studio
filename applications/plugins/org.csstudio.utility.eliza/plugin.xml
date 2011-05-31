@@ -12,7 +12,7 @@
             icon="icons/eliza.png"
             category="org.csstudio"
             class="org.csstudio.utility.eliza.ElizaView"
-            id="org.csstudio.utility.eliza.ElizeView">
+            id="org.csstudio.utility.eliza.ElizaView">
       </view>
    </extension>
    <extension
@@ -22,21 +22,22 @@
             primary="true"/>
    </extension>
    <extension
-         point="org.eclipse.ui.actionSets">
-      <actionSet
-            description="Global CSS menu actions"
-            id="org.csstudio.utility.eliza.cssmenu"
-            label="CSS Action Set"
-            visible="true">
-         <action
-               class="org.csstudio.utility.eliza.ShowElizaAction"
+         point="org.eclipse.ui.menus">
+      <menuContribution
+            allPopups="false"
+            locationURI="menu:utility">
+         <command
+               commandId="org.eclipse.ui.views.showView"
                icon="icons/eliza.png"
-               id="org.csstudio.utility.eliza.ShowElizaAction"
                label="%Eliza"
-               menubarPath="css/utility/"
                style="push"
-               tooltip="%ShowEliza"/>
-      </actionSet>
+               tooltip="%ShowEliza">
+            <parameter
+                  name="org.eclipse.ui.views.showView.viewId"
+                  value="org.csstudio.utility.eliza.ElizaView">
+            </parameter>
+         </command>
+      </menuContribution>
    </extension>
 
 </plugin>

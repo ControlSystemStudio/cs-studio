@@ -23,12 +23,12 @@ package org.csstudio.sds.components.ui.internal.editparts;
 
 import java.util.List;
 
-import org.csstudio.platform.data.ISeverity;
-import org.csstudio.platform.data.ITimestamp;
-import org.csstudio.platform.data.IValue;
-import org.csstudio.platform.data.TimestampFactory;
-import org.csstudio.platform.data.ValueFactory;
-import org.csstudio.platform.data.IValue.Quality;
+import org.csstudio.data.values.ISeverity;
+import org.csstudio.data.values.ITimestamp;
+import org.csstudio.data.values.IValue;
+import org.csstudio.data.values.IValue.Quality;
+import org.csstudio.data.values.TimestampFactory;
+import org.csstudio.data.values.ValueFactory;
 import org.csstudio.platform.model.IProcessVariableWithSamples;
 import org.csstudio.sds.components.model.ActionButtonModel;
 import org.csstudio.sds.components.model.MenuButtonModel;
@@ -174,7 +174,7 @@ public final class MenuButtonEditPart extends AbstractWidgetEditPart implements
         setPropertyChangeHandler(ActionButtonModel.PROP_LABEL, labelHandler);
         
         // font
-        setPropertyChangeHandler(LabelModel.PROP_FONT, new FontChangeHander<RefreshableLabelFigure>(){
+        setPropertyChangeHandler(LabelModel.PROP_FONT, new FontChangeHandler<RefreshableLabelFigure>(){
 
 			@Override
 			protected void doHandle(RefreshableLabelFigure figure, Font font) {

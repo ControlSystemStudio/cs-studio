@@ -1,3 +1,10 @@
+/*******************************************************************************
+ * Copyright (c) 2010 Oak Ridge National Laboratory.
+ * All rights reserved. This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License v1.0
+ * which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-v10.html
+ ******************************************************************************/
 package org.csstudio.diag.pvutil.gui;
 
 import org.csstudio.diag.pvutil.model.FEC;
@@ -12,12 +19,14 @@ import org.eclipse.swt.widgets.Display;
 @SuppressWarnings("nls")
 public class FECLabelProvider extends BaseLabelProvider implements ITableLabelProvider, ITableColorProvider
 {
+    @Override
     public Image getColumnImage(Object element, int columnIndex)
     {
         // No image
         return null;
     }
 
+    @Override
     public String getColumnText(Object element, int columnIndex)
     {
         FEC device = (FEC) element;
@@ -30,6 +39,7 @@ public class FECLabelProvider extends BaseLabelProvider implements ITableLabelPr
         }
     }
 
+    @Override
     public Color getBackground(Object element, int columnIndex)
     {
         FEC device = (FEC) element;
@@ -38,6 +48,7 @@ public class FECLabelProvider extends BaseLabelProvider implements ITableLabelPr
         return null;
     }
 
+    @Override
     public Color getForeground(Object element, int columnIndex)
     {
          return null;

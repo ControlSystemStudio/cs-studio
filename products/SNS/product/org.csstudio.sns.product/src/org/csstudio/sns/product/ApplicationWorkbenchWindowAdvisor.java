@@ -1,5 +1,14 @@
+/*******************************************************************************
+ * Copyright (c) 2010 Oak Ridge National Laboratory.
+ * All rights reserved. This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License v1.0
+ * which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-v10.html
+ ******************************************************************************/
 package org.csstudio.sns.product;
 
+import org.csstudio.logging.ui.ConsoleViewHandler;
+import org.csstudio.ui.menu.app.ApplicationActionBarAdvisor;
 import org.eclipse.swt.graphics.Point;
 import org.eclipse.ui.application.ActionBarAdvisor;
 import org.eclipse.ui.application.IActionBarConfigurer;
@@ -11,18 +20,16 @@ import org.eclipse.ui.application.WorkbenchWindowAdvisor;
  */
 public class ApplicationWorkbenchWindowAdvisor extends WorkbenchWindowAdvisor
 {
-
-    public ApplicationWorkbenchWindowAdvisor(
-                    IWorkbenchWindowConfigurer configurer)
+    public ApplicationWorkbenchWindowAdvisor(final IWorkbenchWindowConfigurer configurer)
     {
         super(configurer);
     }
-    
+
     /** Set initial workbench window size and title */
     @Override
     public void preWindowOpen()
     {
-        IWorkbenchWindowConfigurer configurer = getWindowConfigurer();
+        final IWorkbenchWindowConfigurer configurer = getWindowConfigurer();
         configurer.setInitialSize(new Point(1024, 768));
         configurer.setShowMenuBar(true);
         configurer.setShowPerspectiveBar(true);
@@ -34,8 +41,16 @@ public class ApplicationWorkbenchWindowAdvisor extends WorkbenchWindowAdvisor
     }
 
 	@Override
-    public ActionBarAdvisor createActionBarAdvisor(
-                    IActionBarConfigurer configurer)
+    public void postWindowCreate()
+    {
+        super.postWindowCreate();
+
+        // Add console view to the logger
+        ConsoleViewHandler.addToLogger();
+    }
+
+    @Override
+    public ActionBarAdvisor createActionBarAdvisor(final IActionBarConfigurer configurer)
     {
         return new ApplicationActionBarAdvisor(configurer);
     }

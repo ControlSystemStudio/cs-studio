@@ -2,7 +2,7 @@
 <feature
       id="org.csstudio.sns.feature.optional.linux"
       label="Optional SNS Control Room Tools for Linux"
-      version="2.3.0.qualifier"
+      version="3.0.0.qualifier"
       provider-name="SNS, Kay Kasemir">
 
    <description>
@@ -36,9 +36,7 @@ For details, see http://www.eclipse.org/legal/epl-v10.html
       <import plugin="org.eclipse.jface"/>
       <import plugin="org.eclipse.ui"/>
       <import plugin="org.eclipse.ui.views"/>
-      <import plugin="org.csstudio.platform"/>
       <import plugin="org.csstudio.apputil.ui"/>
-      <import plugin="org.csstudio.platform.ui"/>
       <import plugin="org.csstudio.platform.libs.jdbc"/>
    </requires>
 

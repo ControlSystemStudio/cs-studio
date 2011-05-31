@@ -22,6 +22,7 @@
 
 package org.epics.css.dal.impl;
 
+import org.apache.log4j.Logger;
 import org.epics.css.dal.DataAccess;
 import org.epics.css.dal.DataExchangeException;
 import org.epics.css.dal.EnumProperty;
@@ -93,7 +94,7 @@ public class StringDataAccessWrapper extends AbstractDataAccessWrapper<String>
 			}
 			} catch (DataExchangeException ex)
 			{
-				ex.printStackTrace();
+				Logger.getLogger(this.getClass()).error("Conversion error.", ex);
 			}
 			return strVal;
 		}
@@ -113,7 +114,7 @@ public class StringDataAccessWrapper extends AbstractDataAccessWrapper<String>
 
 				return strValue;
 			} catch (DataExchangeException e) {
-				e.printStackTrace();
+				Logger.getLogger(this.getClass()).error("Conversion error.", e);
 			}
 
 			break;
@@ -142,7 +143,7 @@ public class StringDataAccessWrapper extends AbstractDataAccessWrapper<String>
 			try {
 				doubleVal = Double.parseDouble(value);
 			} catch (NumberFormatException e) {
-				e.printStackTrace();
+				Logger.getLogger(this.getClass()).error("Conversion error.", e);
 			}
 
 			return doubleVal;
@@ -154,7 +155,7 @@ public class StringDataAccessWrapper extends AbstractDataAccessWrapper<String>
 			try {
 				longVal = Long.parseLong(value);
 			} catch (NumberFormatException e) {
-				e.printStackTrace();
+				Logger.getLogger(this.getClass()).error("Conversion error.", e);
 			}
 
 			return longVal;

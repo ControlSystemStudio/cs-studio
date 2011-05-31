@@ -123,10 +123,13 @@ public class IntegerProperty extends AbstractWidgetProperty {
 		try {
 			return Integer.parseInt(propElement.getValue());
 		} catch (NumberFormatException e) {
-			return new Integer((int) Double.parseDouble(propElement.getValue()));	
+			return Integer.valueOf((int) Double.parseDouble(propElement.getValue()));	
 		}
 	}
 
-
+	@Override
+	public boolean configurableByRule() {
+		return true;
+	}
 
 }

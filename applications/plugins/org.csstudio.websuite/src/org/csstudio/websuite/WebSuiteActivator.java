@@ -26,6 +26,9 @@ package org.csstudio.websuite;
 import org.csstudio.platform.logging.CentralLogger;
 import org.eclipse.core.runtime.Plugin;
 import org.osgi.framework.BundleContext;
+import org.remotercp.common.tracker.GenericServiceTracker;
+import org.remotercp.common.tracker.IGenericServiceListener;
+import org.remotercp.service.connection.session.ISessionService;
 
 /**
  * The activator class controls the plug-in life cycle
@@ -41,8 +44,12 @@ public class WebSuiteActivator extends Plugin
 	/** The bundle context */
 	private static BundleContext bundleContext;
 	
+	private GenericServiceTracker<ISessionService> _genericServiceTracker;
+	
 	/** The constructor */
-	public WebSuiteActivator() {}
+	public WebSuiteActivator() {
+		// Nothing to do
+	}
 
 	public static BundleContext getBundleContext() {
 	    return bundleContext;
@@ -51,11 +58,15 @@ public class WebSuiteActivator extends Plugin
 	/** 
      * @see org.eclipse.core.runtime.Plugins#start(org.osgi.framework.BundleContext)
      */
-    public void start(BundleContext context) throws Exception {
+    @Override
+	public void start(BundleContext context) throws Exception {
         
         super.start(context);
         bundleContext = context;
         plugin = this;
+		_genericServiceTracker = new GenericServiceTracker<ISessionService>(
+				context, ISessionService.class);
+		_genericServiceTracker.open();
         
         CentralLogger.getInstance().info(this, PLUGIN_ID + " started.");
     }
@@ -63,7 +74,8 @@ public class WebSuiteActivator extends Plugin
     /** 
      * @see org.eclipse.core.runtime.Plugin#stop(org.osgi.framework.BundleContext)
      */
-    public void stop(BundleContext context) throws Exception {
+    @Override
+	public void stop(BundleContext context) throws Exception {
         
         plugin = null;
         super.stop(context);
@@ -77,5 +89,10 @@ public class WebSuiteActivator extends Plugin
 	 */
 	public static WebSuiteActivator getDefault() {
 		return plugin;
+	}
+	
+	public void addSessionServiceListener(
+			IGenericServiceListener<ISessionService> sessionServiceListener) {
+		_genericServiceTracker.addServiceListener(sessionServiceListener);
 	}
 }

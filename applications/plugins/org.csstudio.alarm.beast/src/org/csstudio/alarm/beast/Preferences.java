@@ -7,20 +7,19 @@
  ******************************************************************************/
 package org.csstudio.alarm.beast;
 
-
+import java.util.logging.Level;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import org.csstudio.platform.logging.CentralLogger;
-import org.csstudio.platform.security.SecureStorage;
+import org.csstudio.auth.security.SecureStorage;
 import org.eclipse.core.runtime.Platform;
 import org.eclipse.core.runtime.preferences.IPreferencesService;
 
 /** Read preference settings.
- *  
+ *
  *  Defaults for the application are provided in preferences.ini, see there
  *  for more detailed explanations.
- *  
+ *
  *  Final product can override in plugin_preferences.ini.
  *  @author Kay Kasemir
  *  @author Xihui Chen
@@ -29,12 +28,13 @@ import org.eclipse.core.runtime.preferences.IPreferencesService;
 public class Preferences
 {
     final public static String READONLY = "readonly";
-    final public static String ALLOW_CONFIG_CHANGE = "allow_config_change";
+    final public static String ALLOW_CONFIG_SELECTION = "allow_config_selection";
     final public static String AnonyACK = "allow_anonymous_acknowledge";
     final public static String RDB_URL = "rdb_url";
     final public static String RDB_USER = "rdb_user";
     final public static String RDB_PASSWORD = "rdb_password";
     final public static String ROOT_COMPONENT = "root_component";
+    final public static String GLOBAL_PREFIX = "global_prefix";
     final public static String JMS_URL = "jms_url";
     final public static String JMS_USER = "jms_user";
     final public static String JMS_PASSWORD = "jms_password";
@@ -51,14 +51,29 @@ public class Preferences
     final public static String COLOR_MAJOR = "color_major";
     final public static String COLOR_INVALID = "color_invalid";
     final public static String MAX_CONTEXT_MENU_ENTRIES = "max_context_menu_entries";
-    
+
+    final private static String SERVER_SUFFIX = "_SERVER";
+    final private static String CLIENT_SUFFIX = "_CLIENT";
+    final private static String TALK_SUFFIX = "_TALK";
+
     /** @param setting Preference identifier
      *  @return String from preference system, or <code>null</code>
      */
     private static String getString(final String setting)
     {
+        return getString(setting, null);
+    }
+
+    /** @param setting Preference identifier
+     *  @param default_value Default value when preferences unavailable
+     *  @return String from preference system, or <code>null</code>
+     */
+    private static String getString(final String setting, final String default_value)
+    {
         final IPreferencesService service = Platform.getPreferencesService();
-        return service.getString(Activator.ID, setting, null, null);
+        if (service == null)
+            return default_value;
+        return service.getString(Activator.ID, setting, default_value, null);
     }
 
     /** @return <code>true</code> for read-only operation */
@@ -68,13 +83,13 @@ public class Preferences
         return service.getBoolean(Activator.ID, READONLY, true, null);
     }
 
-    /** @return <code>true</code> for read-only operation */
-    public static boolean isConfigChangeAllowed()
+    /** @return <code>true</code> if selection of a different alarm configuration is allowed */
+    public static boolean isConfigSelectionAllowed()
     {
         final IPreferencesService service = Platform.getPreferencesService();
-        return service.getBoolean(Activator.ID, ALLOW_CONFIG_CHANGE, true, null);
+        return service.getBoolean(Activator.ID, ALLOW_CONFIG_SELECTION, true, null);
     }
-    
+
     /** @return <code>true</code> for allow_anonymous_acknowledge operation */
     public static boolean getAllowAnonyACK()
     {
@@ -93,13 +108,13 @@ public class Preferences
     {
         return getString(ROOT_COMPONENT);
     }
-        
+
     /** @return JMS URL */
     public static String getJMS_URL()
     {
         return getString(JMS_URL);
     }
-   
+
     /** @return JMS User name */
     public static String getJMS_User()
     {
@@ -111,7 +126,7 @@ public class Preferences
     {
     	return getSecureString(JMS_PASSWORD);
     }
-    
+
     /** @return RDB User name */
     public static String getRDB_User()
     {
@@ -129,7 +144,7 @@ public class Preferences
      */
     public static String getJMS_AlarmServerTopic(final String config)
     {
-        return config + "_SERVER";
+        return config + SERVER_SUFFIX;
     }
 
     /** @param config Alarm configuration name (root)
@@ -137,15 +152,21 @@ public class Preferences
      */
     public static String getJMS_AlarmClientTopic(final String config)
     {
-        return config + "_CLIENT";
+        return config + CLIENT_SUFFIX;
     }
-    
+
     /** @param config Alarm configuration name (root)
      *  @return JMS topic used to annunciate alarm messages
      */
     public static String getJMS_TalkTopic(final String config)
     {
-        return config + "_TALK";
+        return config + TALK_SUFFIX;
+    }
+
+    /**  @return JMS topic used for 'global' alarm messages from servers */
+    public static String getJMS_GlobalServerTopic()
+    {
+        return getString(GLOBAL_PREFIX, "GLOBAL") + SERVER_SUFFIX;
     }
 
     /** @return Delay in seconds between expected idle messages */
@@ -154,7 +175,7 @@ public class Preferences
         final IPreferencesService service = Platform.getPreferencesService();
         return service.getLong(Activator.ID, JMS_IDLE_TIMEOUT, 10, null);
     }
-    
+
     /** @return Delay in ms between PV startups */
     public static long getPVStartDelay()
     {
@@ -228,9 +249,8 @@ public class Preferences
         final String[] rgbvals = color.split(", *");
         if (rgbvals.length != 3)
         {
-            CentralLogger.getInstance().getLogger(Preferences.class)
-                .error("Cannot decode RGB settings for " +
-                       color_pref_name + " from '" + color + "'");
+            Activator.getLogger().log(Level.WARNING, "Cannot decode RGB settings for {0} from {1}",
+                    new Object[] { color_pref_name, color });
             return rgb;
         }
         try
@@ -240,13 +260,12 @@ public class Preferences
         }
         catch (Throwable ex)
         {
-            CentralLogger.getInstance().getLogger(Preferences.class)
-                .error("Error parsing RGB settings for " +
-                       color_pref_name + " from '" + color + "'");
+            Activator.getLogger().log(Level.WARNING, "Error parsing RGB settings for {0} from {1}",
+                    new Object[] { color_pref_name, color });
         }
         return rgb;
     }
-    
+
     /** @return Maximum number of context menu entries before summarizing them */
     public static int getMaxContextMenuEntries()
     {
@@ -255,7 +274,7 @@ public class Preferences
     }
 
     private static String getSecureString(final String setting) {
-    	String value = SecureStorage.retrieveSecureStorage(Activator.ID, setting);        
+    	String value = SecureStorage.retrieveSecureStorage(Activator.ID, setting);
         return value;
     }
 }

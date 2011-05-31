@@ -8,9 +8,10 @@ import org.csstudio.config.ioconfig.model.pbmodel.ChannelDBO;
 import org.csstudio.config.ioconfig.model.pbmodel.GSDFileDBO;
 import org.csstudio.config.ioconfig.model.pbmodel.GSDModuleDBO;
 
+//CHECKSTYLE:OFF
 public class DummyRepository implements IRepository {
 
-    private int id = 1;
+    private int _id = 1;
 
     @Override
     public String getEpicsAddressString(final String ioName) {
@@ -39,12 +40,12 @@ public class DummyRepository implements IRepository {
 
     @Override
     public void removeGSDFiles(final GSDFileDBO gsdFile) {
-
+        // Dummy
     }
 
     @Override
     public <T extends DBClass> void removeNode(final T dbClass) {
-
+        // Dummy
     }
 
     @Override
@@ -54,7 +55,7 @@ public class DummyRepository implements IRepository {
 
     @Override
     public <T extends DBClass> T saveOrUpdate(final T dbClass) throws PersistenceException {
-        dbClass.setId(id++);
+        dbClass.setId(_id++);
         return null;
     }
 
@@ -87,44 +88,46 @@ public class DummyRepository implements IRepository {
         return null;
     }
 
-    @SuppressWarnings("unchecked")
-    public boolean search(final Class class1, final int id) {
+    public boolean search(final Class<?> class1, final int id) {
         return false;
     }
 
     public List<Integer> getRootPath(final int id) {
-        // TODO Auto-generated method stub
         return null;
     }
 
     @Override
     public DocumentDBO save(final DocumentDBO document) {
-        // TODO Auto-generated method stub
         return null;
     }
 
     @Override
     public String getShortChannelDesc(final String ioName) {
-        // TODO Auto-generated method stub
         return null;
     }
 
     @Override
     public ChannelDBO loadChannel(final String ioName) {
-        // TODO Auto-generated method stub
         return null;
     }
 
     @Override
     public void close() {
-        // TODO Auto-generated method stub
-
+        // Dummy
     }
 
     @Override
     public List<PV2IONameMatcherModelDBO> loadPV2IONameMatcher(final Collection<String> pvName) {
-        // TODO Auto-generated method stub
         return null;
     }
 
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public boolean isConnected() {
+        return true;
+    }
+
 }
+//CHECKSTYLE:ON

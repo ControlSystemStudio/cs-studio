@@ -40,6 +40,7 @@ import java.io.IOException;
 import java.sql.SQLException;
 
 import org.csstudio.config.ioconfig.model.IDocument;
+import org.csstudio.config.ioconfig.model.PersistenceException;
 import org.csstudio.config.ioconfig.model.tools.Helper;
 import org.eclipse.jface.viewers.StructuredSelection;
 import org.eclipse.jface.viewers.TableViewer;
@@ -86,7 +87,7 @@ public class ShowDocumentSelectionListener implements SelectionListener {
                 Helper.writeDocumentFile(createTempFile, firstElement);
             } catch (final IOException e) {
                 e.printStackTrace();
-            } catch (final SQLException e) {
+            } catch (final PersistenceException e) {
                 e.printStackTrace();
             }
         }

@@ -9,9 +9,9 @@ package org.csstudio.alarm.beast.msghist;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.logging.Level;
 
-import org.csstudio.platform.ui.swt.stringtable.StringTableEditor;
-import org.csstudio.platform.logging.CentralLogger;
+import org.csstudio.ui.util.swt.stringtable.StringTableEditor;
 import org.eclipse.jface.preference.FieldEditor;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.layout.GridData;
@@ -32,7 +32,7 @@ public class TableColumnsFieldEditor extends FieldEditor
 	 */
 	public TableColumnsFieldEditor(Composite parent)
 	{
-		super(Preferences.COLUMNS, "Columns:", parent);
+		super(Preferences.COLUMNS, Messages.TableColumnsEditor_Title, parent);
 	}
 
 	/** Indicate that we need at least one column */
@@ -57,14 +57,14 @@ public class TableColumnsFieldEditor extends FieldEditor
 	protected void doFillIntoGrid(Composite parent, int numColumns)
 	{
 		label = new Label(parent, 0);
-		label.setText("Message Property Columns");
+		label.setText(Messages.TableColumnsEditor_Columns);
 		GridData gd = new GridData();
 		gd.horizontalSpan = numColumns;
 		label.setLayoutData(gd);
-		
+
 		columns = new ArrayList<String>();
 		editor = new StringTableEditor(parent, columns);
-		editor.setToolTipText("Configure property name, minimum column widths, weight");
+		editor.setToolTipText(Messages.TableColumnsEditor_TT);
 		gd = new GridData();
 		gd.horizontalSpan = numColumns;
 		gd.grabExcessHorizontalSpace = true;
@@ -75,7 +75,8 @@ public class TableColumnsFieldEditor extends FieldEditor
 	}
 
 	/** {@inheritDoc} */
-	@Override
+	@SuppressWarnings("nls")
+    @Override
 	protected void doLoad()
 	{
 		try
@@ -86,7 +87,7 @@ public class TableColumnsFieldEditor extends FieldEditor
 		}
 		catch (Exception ex)
 		{
-			CentralLogger.getInstance().getLogger(this).error(ex);
+		    Activator.getLogger().log(Level.WARNING, "Preference Load error", ex);
 		}
 	}
 

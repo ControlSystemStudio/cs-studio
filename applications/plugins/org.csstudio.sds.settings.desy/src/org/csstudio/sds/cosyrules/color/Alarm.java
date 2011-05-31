@@ -128,13 +128,13 @@ public final class Alarm implements IRule {
 	 */
 	private DynamicValueState getDynamicValueCondition(
 			final DynamicValueCondition dynamicValueCondition) {
-		if (dynamicValueCondition.containsStates(DynamicValueState.ALARM)) {
+		if (dynamicValueCondition.containsAllStates(DynamicValueState.ALARM)) {
 			return DynamicValueState.ALARM;
 		} else if (dynamicValueCondition
-				.containsStates(DynamicValueState.WARNING)) {
+				.containsAllStates(DynamicValueState.WARNING)) {
 			return DynamicValueState.WARNING;
 		} else if (dynamicValueCondition
-				.containsStates(DynamicValueState.NORMAL)) {
+				.containsAllStates(DynamicValueState.NORMAL)) {
 			return DynamicValueState.NORMAL;
 		}
 		return DynamicValueState.ERROR;
@@ -186,7 +186,7 @@ public final class Alarm implements IRule {
 	 */
 	@Override
 	public String getDescription() {
-		// TODO Auto-generated method stub
-		return null;
+		String msg = "Kann f�r ein oder mehrere Channels die Severity als Farbe zur�ckgeben. Ist mehr als ein Channel angeben wird die h�ste Severity zur�ckgben.";
+		return msg;
 	}
 }

@@ -7,14 +7,14 @@ package org.csstudio.diag.postanalyser.math;
  *  <p>
  *  If the x_[] values differ, we perform staircase interpolation,
  *  using the same y_[i] for x=x_[i]...x_[i+1].
- *  
+ *
  *  @author Kay Kasemir
  */
 public class Correlator
 {
     private double[] corr_y1;
     private double[] corr_y2;
-    
+
     /** Helper for holding a (y1, y2) tuple.
      *  Sorts by y1.
      */
@@ -26,7 +26,8 @@ public class Correlator
             this.y1 = y1;
             this.y2 = y2;
         }
-        
+
+        @Override
         public int compareTo(final CorrY1Y2 o)
         {
             return Double.compare(y1, o.y1);
@@ -54,7 +55,7 @@ public class Correlator
             throw new IllegalArgumentException("First data series is empty");
         if (x2.length < 1)
             throw new IllegalArgumentException("Second data series is empty");
-        
+
         int i1 = 0, i2 = 0;                // Index into x1/y1 resp. x2/y2 arrays
         double val1 = Double.NaN;          // Value of x1/y1 series for the common x
         double val2 = Double.NaN;          // Value of x2/y2 series for the common x

@@ -1,8 +1,9 @@
 package org.csstudio.nsls2.startuphelper;
 
-import org.csstudio.platform.security.Credentials;
-import org.csstudio.platform.security.SecurityFacade;
-import org.csstudio.platform.ui.security.UiLoginCallbackHandler;
+import org.csstudio.auth.security.Credentials;
+import org.csstudio.auth.security.SecurityFacade;
+import org.csstudio.auth.ui.security.UiLoginCallbackHandler;
+
 
 /**Help to authenticate in the startup code <code>Application.java</code>. 
  * The codes in this class will cause the loading process of org.csstudui.platfrom, 
@@ -15,6 +16,7 @@ import org.csstudio.platform.ui.security.UiLoginCallbackHandler;
 public class StartupAuthenticationHelper {
 
 	public static void authenticate(final String username, final String password){
+		// FIXME 3.0.0 AuthZ
 		Credentials defaultCredentials;
 		if(username == null)
 			defaultCredentials = Credentials.ANONYMOUS;

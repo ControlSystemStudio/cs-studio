@@ -95,7 +95,7 @@ public void layout(IFigure parent) {
 	double min = scrollBar.getMinimum();
 	double totalRange =  max - min;
 	double valueRange = totalRange - extent;
-	if ((valueRange < 1) || (!scrollBar.isEnabled())) {
+	if (!scrollBar.isEnabled()) {
 		Rectangle boundsUpper = new Rectangle(trackBounds),
 		          boundsLower = new Rectangle(trackBounds);
 		boundsUpper.height /= 2;

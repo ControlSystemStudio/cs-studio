@@ -1,13 +1,13 @@
 
 /*
  * Copyright 1999-2005 The Apache Software Foundation.
- * 
+ *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
+ *
  *      http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -24,6 +24,7 @@ import org.apache.log4j.helpers.LogLog;
 import org.apache.log4j.spi.LocationInfo;
 import org.apache.log4j.spi.LoggingEvent;
 import org.csstudio.platform.CSSPlatformInfo;
+import org.csstudio.platform.internal.PlatformPreferencesInitializer;
 
 /** Log4j appender that publishes events to a JMS Topic as described
  *  in <code>JMSLogMessage</code>.
@@ -44,11 +45,11 @@ import org.csstudio.platform.CSSPlatformInfo;
  *    log4j.appender.css_jms.userName
  *    log4j.appender.css_jms.password
  *  </pre>
- *  
+ *
  *  @author Ceki G&uuml;lc&uuml;: Original version
  *  @author Markus Moeller: Changes for CSS
  *  @author Kay Kasemir: Using JMSLogThread
- *  
+ *
  *  @see PlatformPreferencesInitializer for defaults
  *  @see JMSLogMessage for message format
  */
@@ -56,16 +57,16 @@ public class CSSJmsAppender extends AppenderSkeleton
 {
     /** JMS server URL */
     private String url;
-    
+
     /** JMS queue topic */
     private String topic;
-    
+
     /** Unused user name */
     private String user_name;
-    
+
     /** Unused password */
     private String password;
-    
+
     /** Thread that performs the actual logging.
      *  When parameters change, a new/different thread will be created.
      *  <p>
@@ -76,7 +77,7 @@ public class CSSJmsAppender extends AppenderSkeleton
     /** @return JMS server URL */
     public String getProviderURL()
     {
-        return url;    
+        return url;
     }
 
     /** @param providerURL JMS server URL */
@@ -96,11 +97,11 @@ public class CSSJmsAppender extends AppenderSkeleton
     {
         this.topic = topic.trim();
     }
-    
+
     /** @returns JMS user name */
     public String getUserName()
     {
-        return user_name;    
+        return user_name;
     }
 
     /** @param user JMS user name */
@@ -112,7 +113,7 @@ public class CSSJmsAppender extends AppenderSkeleton
     /** @returns JMS password */
     public String getPassword()
     {
-        return password;    
+        return password;
     }
 
     /** @param password JMS user name */
@@ -120,7 +121,7 @@ public class CSSJmsAppender extends AppenderSkeleton
     {
         this.password = password.trim();
     }
-    
+
     /** Options are activated and become effective only after calling
      *  this method.
      */
@@ -156,7 +157,6 @@ public class CSSJmsAppender extends AppenderSkeleton
      * Close this JMSAppender. Closing releases all resources used by the
      * appender. A closed appender cannot be re-opened.
      */
-    @Override
     @SuppressWarnings("nls")
     public void close()
     {
@@ -179,14 +179,14 @@ public class CSSJmsAppender extends AppenderSkeleton
     public void append(final LoggingEvent event)
     {
         final String text = layout.format(event).trim();
-        
+
         final String severity = event.getLevel().toString();
 
         final Calendar event_time = Calendar.getInstance();
         event_time.setTimeInMillis(event.timeStamp);
 
         final Calendar create_time = Calendar.getInstance();
-        
+
         String clazz = null;
         String method = null;
         String file = null;
@@ -208,21 +208,21 @@ public class CSSJmsAppender extends AppenderSkeleton
             host = pinfo.getHostId();
             user = pinfo.getUserId();
         }
-        
+
         final JMSLogMessage log_msg = new JMSLogMessage(text, severity,
                 create_time, event_time,
                 clazz, method, file, app, host, user);
         synchronized (this)
         {
-            if (log_thread == null)
+            if (log_thread == null) {
                 errorHandler.error(name + " not configured."); //$NON-NLS-1$
-            else
+            } else {
                 log_thread.addMessage(log_msg);
+            }
         }
     }
-  
+
     /** The JMSAppender for CSS sends requires a layout. */
-    @Override
     public boolean requiresLayout()
     {
         return true;
@@ -235,5 +235,5 @@ public class CSSJmsAppender extends AppenderSkeleton
     {
         return String.format("Log4j appender '%s': '%s' @ '%s'\n",
                 name, topic, url);
-    }   
+    }
 }

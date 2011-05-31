@@ -1,0 +1,46 @@
+# > MyDCT > Instances > Sawtooth 10-75 Step 1 > SawCalc
+record(calc, "SawCalc0") {
+   field(DESC, "$")
+   field(SCAN, "1 second")
+   field(PHAS, "1")
+   field(CALC, "A<D?A+B:C")
+   field(INPA, "SawCalc0.VAL NPP MS")
+   field(INPB, "1")
+   field(INPC, "10")
+   field(INPD, "75")
+   field(EGU, "Counts")
+   field(HOPR, "100")
+   field(LOPR, "0")
+   field(HIHI, "70")
+   field(LOLO, "15")
+   field(HIGH, "65")
+   field(LOW, "20")
+   field(HHSV, "MAJOR")
+   field(LLSV, "MAJOR")
+   field(HSV, "MINOR")
+   field(LSV, "MINOR")
+}
+
+# > MyDCT > Instances > Sawtooth 10-75 Step 10 > SawCalc
+record(calc, "SawCalc1") {
+   field(DESC, "$")
+   field(SCAN, "1 second")
+   field(PHAS, "1")
+   field(CALC, "A<D?A+B:C")
+   field(INPA, "SawCalc1.VAL NPP MS")
+   field(INPB, "10")
+   field(INPC, "10")
+   field(INPD, "75")
+   field(EGU, "Counts")
+   field(HOPR, "100")
+   field(LOPR, "0")
+   field(HIHI, "70")
+   field(LOLO, "15")
+   field(HIGH, "65")
+   field(LOW, "20")
+   field(HHSV, "MAJOR")
+   field(LLSV, "MAJOR")
+   field(HSV, "MINOR")
+   field(LSV, "MINOR")
+}
+

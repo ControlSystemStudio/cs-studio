@@ -1,3 +1,10 @@
+/*******************************************************************************
+ * Copyright (c) 2010 Oak Ridge National Laboratory.
+ * All rights reserved. This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License v1.0
+ * which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-v10.html
+ ******************************************************************************/
 package org.csstudio.swt.chart;
 
 import java.util.ArrayList;
@@ -10,7 +17,7 @@ public class ChartSampleSequenceContainer implements ChartSampleSequence
 {
     private ArrayList<ChartSampleContainer> samples
         = new ArrayList<ChartSampleContainer>();
-    
+
     /** Add a new sample with x/y coords. */
     public void add(double x, double y)
     {
@@ -35,16 +42,19 @@ public class ChartSampleSequenceContainer implements ChartSampleSequence
     {
         samples.add(new ChartSampleContainer(type, x, y, y_min, y_max, info));
     }
-    
+
     /** {@inheritDoc} */
+    @Override
     public int size()
     {   return samples.size();    }
 
     /** {@inheritDoc} */
+    @Override
     public ChartSample get(int i)
     {   return samples.get(i);    }
-    
+
     /** {@inheritDoc} */
+    @Override
     public Range getDefaultRange()
     {   return null;  }
 }

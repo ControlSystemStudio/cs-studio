@@ -1,7 +1,15 @@
+/*******************************************************************************
+ * Copyright (c) 2010 Oak Ridge National Laboratory.
+ * All rights reserved. This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License v1.0
+ * which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-v10.html
+ ******************************************************************************/
 package org.csstudio.diag.pvfields.model;
 import java.util.concurrent.CopyOnWriteArrayList;
+import java.util.logging.Level;
 
-import org.csstudio.platform.logging.CentralLogger;
+import org.csstudio.diag.pvfields.Activator;
 import org.eclipse.core.runtime.IConfigurationElement;
 import org.eclipse.core.runtime.Platform;
 
@@ -11,7 +19,7 @@ import org.eclipse.core.runtime.Platform;
  *  in the Eclipse extension point registry and then uses
  *  that to perform queries for PV Fields and their values
  *  in a background thread.
- *  
+ *
  *  @author Dave Purcell
  */
 @SuppressWarnings("nls")
@@ -19,22 +27,22 @@ public class PVFieldsModel
 {
     /** PVUtilDataAPI that provides actual data, obtained via extension point */
     private final PVFieldsAPI api;
-    
+
     /** Most recent PV info.
      *  Updated in background thread, synchronize on 'this' for access.
      */
     private PVInfo pvs [] = null;
-    
+
     /** boolean to dictate column population within Label Provider.
      *  1PV = One PV many Fields
      *  NPVs = many PVs on field
      */
-    private static boolean fullList  = true;
-    
+    private boolean fullList  = true;
+
     /** Listeners */
     final private static CopyOnWriteArrayList<PVFieldsListener> listeners
         = new CopyOnWriteArrayList<PVFieldsListener>();
-    
+
     public PVFieldsModel() throws Exception
     {
         disconnectCurrentFields();
@@ -46,7 +54,7 @@ public class PVFieldsModel
                     ", got " + configs.length);
         api = (PVFieldsAPI) configs[0].createExecutableExtension("class");
     }
- 
+
     /** Add model listener */
 	public void addListener(final PVFieldsListener new_listener)
     {
@@ -78,7 +86,7 @@ public class PVFieldsModel
         {
         	if (pvs != null) {
             	for (PVInfo pv: pvs) pv.stop();
-            	pvs = new PVInfo []  
+            	pvs = new PVInfo []
             	{
             	  new PVInfo("", "", "", "", "","","","")
             	};
@@ -93,11 +101,11 @@ public class PVFieldsModel
     private void startFieldsLookup(final String pv_name, final String field)
     {
     	if (pv_name == null)return;
-    	
+
     	// adds the "Waiting" text indicating it's working.
         synchronized (this)
         {
-        	pvs = new PVInfo []  
+        	pvs = new PVInfo []
         	{
         			new PVInfo("Waiting....", "Waiting....", "Waiting....", "Waiting....", "Waiting....","","","")
         	};
@@ -119,7 +127,7 @@ public class PVFieldsModel
                         {
                             pvs = result;
                         }
-                    	
+
 
                         // Start updates
                         for (PVInfo pv: pvs){
@@ -128,8 +136,7 @@ public class PVFieldsModel
                     }
                     catch (Exception e)
                     {
-                        CentralLogger.getInstance().getLogger(this)
-                            .error("PV Lookup Exception " + e.getMessage(), e);
+                        Activator.getLogger().log(Level.SEVERE, "PV Lookup Exception ", e);
                     }
                     fireFieldChanged(null);
                 }
@@ -139,7 +146,7 @@ public class PVFieldsModel
         lookup.start();
     }
 
-    
+
     /** Notify listeners
      *  @param field Field that changed or <code>null</code> for overall change
      */
@@ -150,11 +157,11 @@ public class PVFieldsModel
             try
             {
                 listener.fieldChanged(pvs);
-                
+
             }
             catch (Throwable ex)
             {
-            	CentralLogger.getInstance().getLogger(this).error("Exception", ex);
+                Activator.getLogger().log(Level.SEVERE, "Field change exception", ex);
             }
         }
     }
@@ -163,7 +170,7 @@ public class PVFieldsModel
     {
         return pvs[i];
     }
-    
+
     public synchronized int getPVInfoListCount()
     {
         return pvs.length;
@@ -174,10 +181,11 @@ public class PVFieldsModel
         return pvs;
     }
 
-    public synchronized static boolean alterColumnData(){
+    public synchronized boolean alterColumnData()
+    {
     	return fullList;
     }
-    
+
     /** @return String representation for debugging */
     @Override
     public synchronized String toString()

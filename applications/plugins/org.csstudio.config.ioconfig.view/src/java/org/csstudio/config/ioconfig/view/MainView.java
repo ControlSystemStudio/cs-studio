@@ -24,6 +24,7 @@
  */
 package org.csstudio.config.ioconfig.view;
 
+import org.csstudio.config.ioconfig.model.HibernateManager;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
@@ -55,7 +56,9 @@ public class MainView extends ViewPart {
         parent.setLayout(layout);
         parent.setLayoutData(new GridData(SWT.FILL, SWT.FILL,true,true,1,1));
         parent.setBackground(Display.getCurrent().getSystemColor(SWT.COLOR_MAGENTA));
-        setProfiBusTreeView(new ProfiBusTreeView(parent,SWT.NONE,getViewSite()));
+        ProfiBusTreeView profiBusTreeView = new ProfiBusTreeView(parent,SWT.NONE,getViewSite());
+        setProfiBusTreeView(profiBusTreeView);
+//        HibernateManager.getInstance().addObserver(profiBusTreeView);
     }
 
     /**

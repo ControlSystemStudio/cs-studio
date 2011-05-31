@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<engineconfig>
+    <name>Example</name>
+	<buffer_reserve>3</buffer_reserve>
+	<file_size>30</file_size>
+	<get_threshold>20</get_threshold>
+	<ignored_future>1</ignored_future>
+	<max_repeat_count>120</max_repeat_count>
+	<write_period>20</write_period>
+	<group>
+		<name>Test</name>
+		<channel><name>freddy</name><period>10</period><monitor/><enable/></channel>
+	</group>
+	<!-- 
+	<group>
+		<name>Waveforms</name>
+        <channel><name>SCL_Diag:BPM11:beamIA</name><period>30</period><monitor/></channel>
+        <channel><name>SCL_Diag:BPM12:beamIA</name><period>30</period><monitor/></channel>
+        <channel><name>SCL_Diag:BPM13:beamIA</name><period>30</period><monitor/></channel>
+        <channel><name>SCL_Diag:BPM14:beamIA</name><period>30</period><monitor/></channel>
+        <channel><name>SCL_Diag:BPM15:beamIA</name><period>30</period><monitor/></channel>
+        <channel><name>SCL_Diag:BPM16:beamIA</name><period>30</period><monitor/></channel>
+        <channel><name>SCL_Diag:BPM31:beamIA</name><period>30</period><monitor/></channel>
+        <channel><name>SCL_Diag:BPM32:beamIA</name><period>30</period><monitor/></channel>
+	</group>
+	 -->
+</engineconfig>

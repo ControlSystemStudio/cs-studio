@@ -2,12 +2,12 @@ Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: Glazedlists
 Bundle-SymbolicName: org.csstudio.platform.libs.glazedlists
-Bundle-Version: 1.0.0.qualifier
+Bundle-Version: 1.8.0.qualifier
 Bundle-Activator: org.csstudio.platform.libs.glazedlists.Activator
 Require-Bundle: org.eclipse.core.runtime
 Bundle-ActivationPolicy: lazy
 Bundle-RequiredExecutionEnvironment: JavaSE-1.6
-Bundle-Vendor: Kunal Shroff <kshroff@bnl.gov>, Gabriele Carcassi <carcassi@bnl.gov> - Brookhaven National Lab
+Bundle-Vendor: Kunal Shroff <kshroff@bnl.gov>, Gabriele Carcassi <carcassi@bnl.gov> - BNL
 Bundle-ClassPath: lib/glazedlists-1.8.0_java15.jar,
  .
 Export-Package: ca.odell.glazedlists,

@@ -13,7 +13,6 @@ import org.epics.css.dal.context.PropertyFamily;
 import org.epics.css.dal.impl.DefaultApplicationContext;
 import org.epics.css.dal.proxy.AbstractPlug;
 import org.epics.css.dal.simple.RemoteInfo;
-import org.epics.css.dal.simulation.SimulatorPlug;
 
 public class DefaultPropertyFactoryBroker implements PropertyFactoryBroker {
 
@@ -21,9 +20,10 @@ public class DefaultPropertyFactoryBroker implements PropertyFactoryBroker {
 
 	private final HashMap<String, PropertyFactory> factories = new HashMap<String, PropertyFactory>();
 	private String[] supportedTypes = null;
-	private String defaultPlugType=SimulatorPlug.PLUG_TYPE;
+	private String defaultPlugType=Plugs.SIMULATOR_PLUG_TYPE;
 	private AbstractApplicationContext ctx;
 	private LinkPolicy linkPolicy;
+	private PropertyFactoryService propertyFactoryService=null;
 
 	public static final synchronized DefaultPropertyFactoryBroker getInstance() {
 		if (manager == null) {
@@ -75,7 +75,7 @@ public class DefaultPropertyFactoryBroker implements PropertyFactoryBroker {
 		defaultPlugType = plugType;
 	}
 
-	private PropertyFactory getPropertyFactory(String type) {
+	private PropertyFactory getPropertyFactory(String type) throws InstantiationException {
 		if (type==null) {
 			type=defaultPlugType;
 		}
@@ -84,13 +84,14 @@ public class DefaultPropertyFactoryBroker implements PropertyFactoryBroker {
 			if (f != null) {
 	            return f;
 	        }
+			
 			try {
-				f = (PropertyFactory) Plugs.getInstance(ctx.getConfiguration()).getPropertyFactoryClassForPlug(type).newInstance();
-				f.initialize(ctx, linkPolicy);
+				f= getPropertyFactoryService().getPropertyFactory(ctx, linkPolicy, type);
 				factories.put(type, f);
-			} catch (final InstantiationException e) {
-			} catch (final IllegalAccessException e) {
+			} catch (Throwable t) {
+				throw new InstantiationException(t.toString());
 			}
+
 			return f;
 		}
 	}
@@ -175,7 +176,8 @@ public class DefaultPropertyFactoryBroker implements PropertyFactoryBroker {
 	}
 
 	public String getPlugType() {
-		return getPlug().getPlugType();
+		// has no sense
+		return null;
 	}
 
 	public void initialize(final AbstractApplicationContext ctx, final LinkPolicy policy) {
@@ -195,6 +197,17 @@ public class DefaultPropertyFactoryBroker implements PropertyFactoryBroker {
 				it.next().getPropertyFamily().destroyAll();
 			}
 		}
+	}
+
+	public void setPropertyFactoryService(PropertyFactoryService propertyFactoryService) {
+		this.propertyFactoryService = propertyFactoryService;
+	}
+
+	public PropertyFactoryService getPropertyFactoryService() {
+		if (propertyFactoryService==null) {
+			propertyFactoryService= DefaultPropertyFactoryService.getPropertyFactoryService();
+		}
+		return propertyFactoryService;
 	}
 
 }

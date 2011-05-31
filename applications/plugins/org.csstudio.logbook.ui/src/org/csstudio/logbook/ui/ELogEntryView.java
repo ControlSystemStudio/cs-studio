@@ -1,5 +1,14 @@
+/*******************************************************************************
+ * Copyright (c) 2010 Oak Ridge National Laboratory.
+ * All rights reserved. This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License v1.0
+ * which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-v10.html
+ ******************************************************************************/
 package org.csstudio.logbook.ui;
 
+import org.csstudio.apputil.ui.dialog.ErrorDialog;
+import org.csstudio.apputil.ui.swt.ImageTabFolder;
 import org.csstudio.logbook.ILogbook;
 import org.csstudio.logbook.ILogbookFactory;
 import org.csstudio.logbook.LogbookFactory;
@@ -12,7 +21,6 @@ import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Combo;
 import org.eclipse.swt.widgets.Composite;
-import org.eclipse.swt.widgets.FileDialog;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Text;
 import org.eclipse.ui.part.ViewPart;
@@ -31,14 +39,9 @@ public class ELogEntryView extends ViewPart
     private Combo logbook;
     private Text title;
     private Text text;
-
-    private Button add_image;
-
-    private Label status;
+    private ImageTabFolder image_tabfolder;
 
     private ILogbookFactory logbook_factory;
-
-    private ImagePreview image;
 
     /** Create elog entry form */
     @Override
@@ -57,21 +60,21 @@ public class ELogEntryView extends ViewPart
             l.setText(Messages.LogEntry_ErrorNoLog + ex.getMessage());
             return;
         }
-        
+
         // Create GUI elements
-        final GridLayout layout = new GridLayout(2, false);
+        final GridLayout layout = new GridLayout(6, false);
         parent.setLayout(layout);
 
         // User: ____
         Label l = new Label(parent, 0);
         l.setText(Messages.LogEntry_User);
         l.setLayoutData(new GridData());
-        
+
         user_name = new Text(parent, SWT.BORDER);
         user_name.setToolTipText(Messages.LogEntry_User_TT);
         user_name.setLayoutData(new GridData(SWT.FILL, 0, true, false));
 
-        // Password: ____
+        // ...    Password: ____
         l = new Label(parent, 0);
         l.setText(Messages.LogEntry_Password);
         l.setLayoutData(new GridData());
@@ -82,11 +85,11 @@ public class ELogEntryView extends ViewPart
 
         if (logbooks.length > 0)
         {
-            // Logbook: ____
+            // .... ....   Logbook: ____
             l = new Label(parent, 0);
             l.setText(Messages.LogEntry_Logbook);
             l.setLayoutData(new GridData());
-    
+
             logbook = new Combo(parent, SWT.DROP_DOWN | SWT.READ_ONLY);
             logbook.setToolTipText(Messages.LogEntry_Logbook_TT);
             logbook.setItems(logbooks);
@@ -94,7 +97,12 @@ public class ELogEntryView extends ViewPart
             logbook.setLayoutData(new GridData(SWT.FILL, 0, true, false));
         }
         else
+        {
             logbook = null;
+            // Dummy label
+            l = new Label(parent, 0);
+            l.setLayoutData(new GridData(0, 0, false, false, 2, 1));
+        }
 
         // Title: ____
         l = new Label(parent, 0);
@@ -103,7 +111,7 @@ public class ELogEntryView extends ViewPart
 
         title = new Text(parent, SWT.BORDER);
         title.setToolTipText(Messages.LogEntry_Title_TT);
-        title.setLayoutData(new GridData(SWT.FILL, 0, true, false));
+        title.setLayoutData(new GridData(SWT.FILL, 0, true, false, layout.numColumns-1, 1));
 
         // Text:
         // __ text __
@@ -114,41 +122,23 @@ public class ELogEntryView extends ViewPart
 
         text = new Text(parent, SWT.BORDER | SWT.MULTI | SWT.WRAP);
         text.setToolTipText(Messages.LogEntry_Text_TT);
-        text.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true, layout.numColumns, 1));
-        
-        // Box with...
-        final Composite box = new Composite(parent, 0);
-        box.setLayoutData(new GridData(SWT.FILL, 0, true, false, layout.numColumns, 1));
-        final GridLayout box_layout = new GridLayout(2, false);
-        box_layout.marginLeft = 0;
-        box_layout.marginRight = 0;
-        box_layout.marginBottom = 0;
-        box.setLayout(box_layout);
-        
-        image = new ImagePreview(box);
-        image.setLayoutData(new GridData());
-        
-        add_image = new Button(box, SWT.PUSH);
-        add_image.setText(Messages.ELogEntryView_AddImage);
-        add_image.setToolTipText(Messages.ELogEntryView_AddImageTT);
-        add_image.setLayoutData(new GridData());
-        add_image.addSelectionListener(new SelectionAdapter()
-        {
-            @Override
-            public void widgetSelected(SelectionEvent e)
-            {
-                addImage();
-            }
-        });
-        
-        // __status__ Submit
-        status = new Label(box, 0);
-        status.setLayoutData(new GridData(SWT.FILL, 0, true, false));
-        
-        final Button submit = new Button(box, SWT.PUSH);
+        final GridData gd = new GridData(SWT.FILL, SWT.FILL, true, true, layout.numColumns, 1);
+        gd.minimumHeight = 50;
+        text.setLayoutData(gd);
+
+        // Images
+        image_tabfolder = new ImageTabFolder(parent, SWT.TOP);
+        image_tabfolder.getControl().setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true, layout.numColumns, 1));
+
+        // Add Image
+        final Button add_image = image_tabfolder.createAddButton(parent);
+        add_image.setLayoutData(new GridData(SWT.LEFT, 0, true, false, layout.numColumns-1, 1));
+
+        //  Submit
+        final Button submit = new Button(parent, SWT.PUSH);
         submit.setText(Messages.LogEntry_Submit);
         submit.setToolTipText(Messages.LogEntry_Submit_TT);
-        submit.setLayoutData(new GridData(0, 0, false, false));
+        submit.setLayoutData(new GridData(SWT.RIGHT, 0, true, false));
         submit.addSelectionListener(new SelectionAdapter()
         {
             @Override
@@ -157,8 +147,6 @@ public class ELogEntryView extends ViewPart
                 makeLogEntry();
             }
         });
-
-        updateStatus(Messages.LogEntry_InitialMessage, false);
     }
 
     /** {@inheritDoc} */
@@ -167,25 +155,6 @@ public class ELogEntryView extends ViewPart
     {
         if (text != null)
             text.setFocus();
-    }
-    
-    private void updateStatus(final String text, final boolean error)
-    {
-        status.setText(text);
-        if (error)
-            status.setForeground(status.getDisplay().getSystemColor(SWT.COLOR_RED));
-        else
-            status.setForeground(null);
-    }
-
-    /** Prompt for image file to add */
-    protected void addImage()
-    {
-        final FileDialog dlg = new FileDialog(add_image.getShell(), SWT.OPEN);
-        dlg.setFilterExtensions(new String [] { "*.png" }); //$NON-NLS-1$
-        dlg.setFilterNames(new String [] { "PNG Image" }); //$NON-NLS-1$
-        final String filename = dlg.open();
-        image.setImage(filename);
     }
 
     /** Create Logbook entry with current GUI values */
@@ -201,20 +170,21 @@ public class ELogEntryView extends ViewPart
         }
         catch (Exception ex)
         {
-            updateStatus(NLS.bind(Messages.LogEntry_ErrorCannotConnectFMT, ex.getMessage()), true);
+            ErrorDialog.open(getSite().getShell(), Messages.Error,
+                    NLS.bind(Messages.LogEntry_ErrorCannotConnectFMT, ex.getMessage()));
             return;
         }
         try
         {
-            log.createEntry(title.getText().trim(), text.getText().trim(), image.getImage());
+            log.createEntry(title.getText().trim(), text.getText().trim(), image_tabfolder.getFilenames());
         }
         catch (Exception ex)
         {
-            updateStatus(NLS.bind(Messages.LogEntry_ErrorFMT, ex.getMessage()), true);
+            ErrorDialog.open(getSite().getShell(), Messages.Error,
+                    NLS.bind(Messages.LogEntry_ErrorFMT, ex.getMessage()));
             return;
         }
         password.setText(""); //$NON-NLS-1$
         text.setFocus();
-        updateStatus(Messages.LogEntry_OKMessage, false);
     }
 }

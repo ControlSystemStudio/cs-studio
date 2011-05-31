@@ -33,6 +33,7 @@ public class ChunkableCollection<E> implements Iterable<Collection<E>> {
         _chunkCount = calcChunkCount(collection.size(), chunkSize);
     }
 
+    @SuppressWarnings("synthetic-access")
     @Override
     @Nonnull
     public final Iterator<Collection<E>> iterator() {

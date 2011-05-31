@@ -2,12 +2,18 @@ Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: Postanalyser
 Bundle-SymbolicName: org.csstudio.diag.postanalyser;singleton:=true
-Bundle-Version: 1.0.7.qualifier
+Bundle-Version: 3.0.0.qualifier
 Bundle-Activator: org.csstudio.diag.postanalyser.Activator
+Bundle-Description: Fitting and correlation for Data Browser
 Bundle-Localization: plugin
-Require-Bundle: org.eclipse.ui,
+Require-Bundle: org.junit4,
  org.eclipse.core.runtime,
- org.csstudio.platform.ui,
+ org.eclipse.ui,
+ org.csstudio.data;bundle-version="3.0.0",
+ org.csstudio.csdata;bundle-version="3.0.0",
+ org.csstudio.ui.util;bundle-version="3.0.0",
  org.csstudio.swt.chart,
- org.junit4;bundle-version="4.3.1"
-Eclipse-LazyStart: true
+ org.csstudio.trends.databrowser2;bundle-version="3.0.0"
+Bundle-ActivationPolicy: lazy
+Bundle-Vendor: Kay Kasemir <kasemirk@ornl.gov> - SNS
+Bundle-RequiredExecutionEnvironment: JavaSE-1.6

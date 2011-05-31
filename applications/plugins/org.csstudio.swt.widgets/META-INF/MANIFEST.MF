@@ -1,17 +1,20 @@
 Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
-Bundle-Name: Widgets
+Bundle-Name: CSS Widgets
+Bundle-Description: Widgets figure for draw2d and SWT applications.
 Bundle-SymbolicName: org.csstudio.swt.widgets
-Bundle-Version: 1.0.0.qualifier
+Bundle-Version: 1.0.2.qualifier
 Bundle-Activator: org.csstudio.swt.widgets.Activator
-Bundle-Vendor: SNS & DESY
+Bundle-Vendor: Xihui Chen<chenx1@ornl.gov> - SNS
 Require-Bundle: org.eclipse.ui,
  org.eclipse.core.runtime,
  org.csstudio.swt.xygraph;bundle-version="1.0.5";visibility:=reexport,
- org.csstudio.platform.ui;bundle-version="1.1.1";visibility:=reexport,
  org.junit4,
  org.eclipse.gef;bundle-version="3.4.0";visibility:=reexport,
- com.ibm.icu;bundle-version="4.0.1"
+ com.ibm.icu;bundle-version="4.0.1",
+ org.csstudio.apputil.ui;bundle-version="1.1.7",
+ org.csstudio.ui.util;bundle-version="3.0.0",
+ org.csstudio.java;bundle-version="3.0.0"
 Bundle-RequiredExecutionEnvironment: J2SE-1.5
 Bundle-ActivationPolicy: lazy
 Export-Package: org.csstudio.swt.widgets.datadefinition,

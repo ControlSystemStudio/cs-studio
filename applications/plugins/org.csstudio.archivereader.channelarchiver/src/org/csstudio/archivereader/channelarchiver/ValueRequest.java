@@ -1,3 +1,10 @@
+/*******************************************************************************
+ * Copyright (c) 2010 Oak Ridge National Laboratory.
+ * All rights reserved. This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License v1.0
+ * which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-v10.html
+ ******************************************************************************/
 package org.csstudio.archivereader.channelarchiver;
 
 import java.net.URL;
@@ -6,13 +13,13 @@ import java.util.Vector;
 
 import org.apache.xmlrpc.AsyncCallback;
 import org.apache.xmlrpc.XmlRpcClient;
-import org.csstudio.platform.data.IEnumeratedMetaData;
-import org.csstudio.platform.data.IMetaData;
-import org.csstudio.platform.data.INumericMetaData;
-import org.csstudio.platform.data.ITimestamp;
-import org.csstudio.platform.data.IValue;
-import org.csstudio.platform.data.TimestampFactory;
-import org.csstudio.platform.data.ValueFactory;
+import org.csstudio.data.values.IEnumeratedMetaData;
+import org.csstudio.data.values.IMetaData;
+import org.csstudio.data.values.INumericMetaData;
+import org.csstudio.data.values.ITimestamp;
+import org.csstudio.data.values.IValue;
+import org.csstudio.data.values.TimestampFactory;
+import org.csstudio.data.values.ValueFactory;
 
 /** Handles the "archiver.values" request and its results.
  *  @author Kay Kasemir
@@ -28,17 +35,17 @@ public class ValueRequest implements AsyncCallback
 		boolean isSet = false;
 	    Vector<Object> xml_rpc_result = null;
 	    Exception xml_rpc_exception = null;
-	    
+
 		synchronized void clear()
         {
 			notify(null, null);
         }
-		
+
 		synchronized void setError(final Exception error)
         {
 			notify(null, error);
         }
-		
+
 		synchronized void setData(Vector<Object> data)
         {
 			notify(data, null);
@@ -52,7 +59,7 @@ public class ValueRequest implements AsyncCallback
 			notifyAll();
         }
 	};
-	
+
 	final private ChannelArchiverReader reader;
 	final private int key;
 	final private String channels[];
@@ -64,10 +71,10 @@ public class ValueRequest implements AsyncCallback
     final private IValue.Quality quality;
 
 	/** Determine quality automatically based on received sample?
-     *  With min/max: interpolated? 
+     *  With min/max: interpolated?
      */
     private boolean automatic_quality = false;
-    
+
     // Possible 'type' IDs for the received values.
 	final private static int TYPE_STRING = 0;
     final private static int TYPE_ENUM = 1;
@@ -75,7 +82,7 @@ public class ValueRequest implements AsyncCallback
     final private static int TYPE_DOUBLE = 3;
 
     final private Result result = new Result();
-    
+
     /** The result of the query */
     private IValue samples[];
 
@@ -128,7 +135,7 @@ public class ValueRequest implements AsyncCallback
 	}
 
 	/** @see org.csstudio.archive.channelarchiver.ClientRequest#read() */
-    @SuppressWarnings("unchecked")
+    @SuppressWarnings({ "unchecked", "rawtypes" })
     public void read(XmlRpcClient xmlrpc) throws Exception
 	{
         final Vector<Object> params = new Vector<Object>(8);
@@ -142,7 +149,7 @@ public class ValueRequest implements AsyncCallback
 		params.add(Integer.valueOf(how));
 		// xmlrpc.execute("archiver.values", params);
         xmlrpc.executeAsync("archiver.values", params, this);
-        
+
 		// Wait for AsynCallback to set the result
 	    final Vector<Object> xml_rpc_result;
 		synchronized (result)
@@ -160,13 +167,13 @@ public class ValueRequest implements AsyncCallback
 			}
 			xml_rpc_result = result.xml_rpc_result;
         }
-		
+
 		// result := { string name,  meta, int32 type,
         //              int32 count,  values }[]
 		final int num_returned_channels = xml_rpc_result.size();
 		if (num_returned_channels != 1)
             throw new Exception("archiver.values returned data for " + num_returned_channels + " channels?");
-		    
+
 		final Hashtable<String, Object> channel_data =
 		    (Hashtable<String, Object>) xml_rpc_result.get(0);
         final String name = (String)channel_data.get("name");
@@ -185,7 +192,7 @@ public class ValueRequest implements AsyncCallback
 					+ name + "': " + e.getMessage(), e);
 		}
 	}
-    
+
     /** Cancel an ongoing read.
      *  <p>
      *  Somewhat fake, because there is no way to stop the underlying
@@ -198,26 +205,28 @@ public class ValueRequest implements AsyncCallback
     }
 
 	/** @see AsyncCallback */
+    @Override
     public void handleError(Exception error, URL arg1, String arg2)
     {
         result.setError(error);
     }
 
     /** @see AsyncCallback */
+    @Override
     @SuppressWarnings("unchecked")
     public void handleResult(Object data, URL arg1, String arg2)
     {
     	result.setData((Vector<Object>) data);
     }
 
-    /** Parse the MetaData from the received XML-RPC response. 
+    /** Parse the MetaData from the received XML-RPC response.
 	 * @param name */
-	@SuppressWarnings("unchecked")
+	@SuppressWarnings({ "rawtypes" })
     private IMetaData decodeMetaData(final String name, int value_type, Hashtable meta_hash)
 		throws Exception
 	{
-		// meta := { int32 type;  
-		//		     type==0: string states[], 
+		// meta := { int32 type;
+		//		     type==0: string states[],
 		//		     type==1: double disp_high,
 		//		              double disp_low,
 		//		              double alarm_high,
@@ -259,7 +268,7 @@ public class ValueRequest implements AsyncCallback
 	}
 
 	/** Parse the values from the received XML-RPC response. */
-	@SuppressWarnings("unchecked")
+	@SuppressWarnings({ "rawtypes" })
     private IValue [] decodeValues(int type, int count, IMetaData meta,
 			                      Vector value_vec) throws Exception
 	{
@@ -281,7 +290,7 @@ public class ValueRequest implements AsyncCallback
             final SeverityImpl sevr = reader.getSeverity(sevr_code);
             final String stat = reader.getStatus(sevr, stat_code);
 			final Vector vv = (Vector)sample_hash.get("value");
-            
+
 			if (type == TYPE_DOUBLE)
 			{
 				final double values[] = new double[count];
@@ -347,7 +356,7 @@ public class ValueRequest implements AsyncCallback
                 samples[si] = ValueFactory.createLongValue(time, sevr, stat,
                                 (INumericMetaData)meta, quality, values);
 			}
-			else 
+			else
 				throw new Exception("Unknown value type " + type);
 		}
 		return samples;
@@ -357,5 +366,5 @@ public class ValueRequest implements AsyncCallback
 	public IValue[] getSamples()
 	{
 		return samples;
-	}	
+	}
 }

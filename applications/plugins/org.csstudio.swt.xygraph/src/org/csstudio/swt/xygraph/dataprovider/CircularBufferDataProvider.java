@@ -124,7 +124,7 @@ public class CircularBufferDataProvider extends AbstractDataProvider{
 	/**
 	 * @param currentXData the currentXData to set
 	 */
-	public void setCurrentXData(double newValue) {
+	public synchronized void setCurrentXData(double newValue) {
 		this.currentXData = newValue;
 		currentXDataChanged = true;
 		tryToAddDataPoint();
@@ -134,14 +134,14 @@ public class CircularBufferDataProvider extends AbstractDataProvider{
 	/**Set current YData.
 	 * @param currentYData the currentYData to set
 	 */
-	public void setCurrentYData(double newValue) {
+	public synchronized void setCurrentYData(double newValue) {
 		this.currentYData = newValue;
 		currentYDataChanged = true;
 		if(!xAxisDateEnabled|| (xAxisDateEnabled && currentYDataTimestampChanged))
 			tryToAddDataPoint();
 	}
 	
-	public void addSample(ISample sample){
+	public synchronized void addSample(ISample sample){
 		if(traceData.size() == traceData.getBufferSize() && plotMode == PlotMode.N_STOP)
 			return;
 		traceData.add(sample);
@@ -151,7 +151,7 @@ public class CircularBufferDataProvider extends AbstractDataProvider{
 	/**Set the time stamp of currrent YData
 	 * @param timestamp timestamp of Y data in milliseconds.
 	 */
-	public void setCurrentYDataTimestamp(long timestamp){
+	public synchronized void setCurrentYDataTimestamp(long timestamp){
 		if(!xAxisDateEnabled){
 			clearTrace();
 			xAxisDateEnabled = true;
@@ -166,7 +166,7 @@ public class CircularBufferDataProvider extends AbstractDataProvider{
 	 * @param currentYData the currentYData to set
 	 * @param timestamp timestamp of Y data in milliseconds.
 	 */
-	public void setCurrentYData(double newValue, long timestamp) {
+	public synchronized void setCurrentYData(double newValue, long timestamp) {
 		xAxisDateEnabled = true;
 		this.currentYData = newValue;
 		currentYDataChanged = true;
@@ -244,7 +244,7 @@ public class CircularBufferDataProvider extends AbstractDataProvider{
 	/**
 	 * @param currentXData the currentXData to set
 	 */
-	public void setCurrentXDataArray(double[] newValue) {
+	public synchronized void setCurrentXDataArray(double[] newValue) {
 		this.currentXDataArray = newValue;
 		currentXDataArrayChanged = true;
 		tryToAddDataArray();
@@ -253,7 +253,7 @@ public class CircularBufferDataProvider extends AbstractDataProvider{
 	/**
 	 * @param currentXData the currentXData to set
 	 */
-	public void setCurrentYDataArray(double[] newValue) {
+	public synchronized void setCurrentYDataArray(double[] newValue) {
 		this.currentYDataArray = newValue;
 		currentYDataArrayChanged = true;
 		tryToAddDataArray();
@@ -333,7 +333,7 @@ public class CircularBufferDataProvider extends AbstractDataProvider{
 	}
 	
 
-	public void clearTrace(){
+	public synchronized void clearTrace(){
 		traceData.clear();
 		fireDataChange();
 	}
@@ -345,7 +345,7 @@ public class CircularBufferDataProvider extends AbstractDataProvider{
 	/**
 	 * @param bufferSize the bufferSize to set
 	 */
-	public void setBufferSize(int bufferSize) {
+	public synchronized void setBufferSize(int bufferSize) {
 		traceData.setBufferSize(bufferSize, false);
 	}
 
@@ -449,7 +449,7 @@ public class CircularBufferDataProvider extends AbstractDataProvider{
 	 * @param updateDelay Delay in milliseconds between plot updates. This may help to reduce CPU
 	 * usage. The default value is 0ms.
 	 */
-	public void setUpdateDelay(int updateDelay) {
+	public synchronized void setUpdateDelay(int updateDelay) {
 		this.updateDelay = updateDelay;
 	}
 	

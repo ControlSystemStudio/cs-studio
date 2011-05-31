@@ -1,7 +1,15 @@
+/*******************************************************************************
+ * Copyright (c) 2010 Oak Ridge National Laboratory.
+ * All rights reserved. This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License v1.0
+ * which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-v10.html
+ ******************************************************************************/
 package org.csstudio.opibuilder.properties;
 
 import org.csstudio.opibuilder.editparts.ExecutionMode;
 import org.csstudio.opibuilder.properties.support.MultiLineTextPropertyDescriptor;
+import org.csstudio.opibuilder.script.RuleData;
 import org.csstudio.opibuilder.util.OPIBuilderMacroUtil;
 import org.eclipse.ui.views.properties.PropertyDescriptor;
 import org.eclipse.ui.views.properties.TextPropertyDescriptor;
@@ -81,10 +89,14 @@ public class StringProperty extends AbstractWidgetProperty {
 			return super.getPropertyValue();
 	}
 	
+	@Override
+	public boolean configurableByRule() {
+		return true;
+	}
 	
-	
-	
-	
-	
+	@Override
+	public String toStringInRuleScript(Object propValue) {
+		return RuleData.QUOTE + super.toStringInRuleScript(propValue) + RuleData.QUOTE;
+	}	
 
 }

@@ -1,3 +1,10 @@
+/*******************************************************************************
+ * Copyright (c) 2010 Oak Ridge National Laboratory.
+ * All rights reserved. This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License v1.0
+ * which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-v10.html
+ ******************************************************************************/
 package org.csstudio.swt.widgets.figureparts;
 
 import org.eclipse.draw2d.geometry.Point;
@@ -31,15 +38,52 @@ public class PolarPoint {
 		this.theta = theta;
 	}
 	
+	
+	
+	
+//	@Override
+//	public boolean equals(Object obj) {
+//		if(obj instanceof PolarPoint) {
+//			PolarPoint p = (PolarPoint)obj;
+//			return p.r == r && p.theta == theta;
+//		}
+//		return false;
+//	}
+	
+	@Override
+	public int hashCode() {
+		final int prime = 31;
+		int result = 1;
+		result = prime * result + r;
+		long temp;
+		temp = Double.doubleToLongBits(theta);
+		result = prime * result + (int) (temp ^ (temp >>> 32));
+		return result;
+	}
+
+
+
+
 	@Override
 	public boolean equals(Object obj) {
-		if(obj instanceof PolarPoint) {
-			PolarPoint p = (PolarPoint)obj;
-			return p.r == r && p.theta == theta;
-		}
-		return false;
+		if (this == obj)
+			return true;
+		if (obj == null)
+			return false;
+		if (getClass() != obj.getClass())
+			return false;
+		PolarPoint other = (PolarPoint) obj;
+		if (r != other.r)
+			return false;
+		if (Double.doubleToLongBits(theta) != Double
+				.doubleToLongBits(other.theta))
+			return false;
+		return true;
 	}
-	
+
+
+
+
 	/**
 	 * Transform the polar point to the {@link Point} in rectangular coordinates. 
 	 * The rectangular coordinates has the same origin as the polar coordinates.

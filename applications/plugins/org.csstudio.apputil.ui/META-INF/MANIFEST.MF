@@ -2,19 +2,17 @@ Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: Apputil UI
 Bundle-SymbolicName: org.csstudio.apputil.ui;singleton:=true
-Bundle-Version: 1.1.5.qualifier
+Bundle-Version: 3.0.0.qualifier
 Bundle-Vendor: Kay Kasemir <kasemirk@ornl.gov>, Xihui Chen <chenx1@ornl.gov> - SNS
-Bundle-Localization: plugin
+Bundle-Description: Application User Interface utilities for Dialogs, ... 
 Require-Bundle: org.junit4,
  org.eclipse.core.runtime,
  org.eclipse.jface,
  org.eclipse.help;bundle-version="3.4.1",
  org.eclipse.ui,
  org.eclipse.equinox.security;bundle-version="1.0.0",
- org.csstudio.apputil;bundle-version="1.0.11";visibility:=reexport,
- org.csstudio.logbook,
- org.csstudio.platform;bundle-version="1.1.0",
- org.csstudio.platform.ui;bundle-version="1.1.1"
+ org.csstudio.apputil;bundle-version="3.0.0";visibility:=reexport,
+ org.csstudio.logbook
 Export-Package: org.csstudio.apputil.ui.dialog,
  org.csstudio.apputil.ui.elog,
  org.csstudio.apputil.ui.formula,
@@ -22,3 +20,4 @@ Export-Package: org.csstudio.apputil.ui.dialog,
  org.csstudio.apputil.ui.time,
  org.csstudio.apputil.ui.workbench
 Bundle-ActivationPolicy: lazy
+Bundle-RequiredExecutionEnvironment: JavaSE-1.6

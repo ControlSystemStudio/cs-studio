@@ -1,11 +1,18 @@
+/*******************************************************************************
+ * Copyright (c) 2010 Oak Ridge National Laboratory.
+ * All rights reserved. This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License v1.0
+ * which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-v10.html
+ ******************************************************************************/
 package org.csstudio.opibuilder.util;
 
 import java.util.Arrays;
 import java.util.LinkedHashMap;
 import java.util.List;
 
+import org.csstudio.java.string.StringSplitter;
 import org.csstudio.opibuilder.properties.MacrosProperty;
-import org.csstudio.platform.util.StringUtil;
 
 /**The value type definition for {@link MacrosProperty}, which describes the input
  * for a Macros Property.
@@ -77,6 +84,17 @@ public class MacrosInput {
 	}
 	
 	@Override
+	public int hashCode(){
+		 int result = HashCodeUtil.SEED;
+		 //collect the contributions of various fields
+		 result = HashCodeUtil.hash(result, include_parent_macros);
+		 result = HashCodeUtil.hash(result, macrosMap);
+		 result = HashCodeUtil.hash(result, macrosMap.keySet().toArray());
+		 return result;
+	}
+
+	
+	@Override
 	public boolean equals(Object obj) {
 		if(obj != null && obj instanceof MacrosInput){
 			MacrosInput input = (MacrosInput)obj;
@@ -116,13 +134,13 @@ public class MacrosInput {
 	 * @throws Exception
 	 */
 	public static MacrosInput recoverFromString(String s) throws Exception{
-		String[] items = StringUtil.splitIgnoreInQuotes(s, ITEM_SEPARATOR, true);	
+		String[] items = StringSplitter.splitIgnoreInQuotes(s, ITEM_SEPARATOR, true);	
 		MacrosInput macrosInput = new MacrosInput(new LinkedHashMap<String, String>(), true);
 		for(int i= 0; i<items.length; i++){
 			if(i == 0)
 				macrosInput.setInclude_parent_macros(Boolean.valueOf(items[i]));
 			else{
-				String[] macro = StringUtil.splitIgnoreInQuotes(items[i], MACRO_SEPARATOR, true);
+				String[] macro = StringSplitter.splitIgnoreInQuotes(items[i], MACRO_SEPARATOR, true);
 				if(macro.length == 2)
 					macrosInput.getMacrosMap().put(macro[0], macro[1]);
 			}				

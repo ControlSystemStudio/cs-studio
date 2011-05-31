@@ -20,34 +20,127 @@
     <b>CSS->Preferences...->CSS Applications->Display->BOY</b>.
     </p>
     <p>
-         <img src="./img/PreferencePage.png"/>      
+         <img src="./img/Preference.gif"/>      
     </p>
-    <ul>
-    <li>
-    <b>Macros: </b>The global sysmbol macros.
+    <h3>Common Preferences</h3>
+    <ul>    
+    <li><b>color file: </b><p>The path of the color definition file for <a href="Color_Font_Macro.html">Color Macro
+    </a>. The path can be a workspace path, for example, <code>/BOY Examples/color.def</code>, a local
+    file system path, for example, <code>C:\Users\xihui\color.def</code>, or a URL path, for example,
+    <code>http://www.xxx.com/main.opi</code>.</p>
+    
+    <p><b>Tip: </b>In BOY, without particular declaration, 
+    you can use these three type of paths at everywhere if a path is needed. 
+    For example, if you set a URL path <code>http://www.xxx.com/main.opi</code> for the top OPIs
+    preference, you will be able to run this OPI directly from Top OPIs button. 
+    If you set a URL Path for the image wigdget, you will be able to display image from web directly.</p>
+    
+    <p>Preference key: <code>color_file</code></p>
+    
     </li>
-    <li><b>color file: </b>The color definition file.</li>
-    <li><b>font file: </b>The font definition file.</li>
-    <li><b>OPI GUI Refresh Cycle (ms): </b> The refresh cycle of OPI GUI. Specify this to a longer will help to
-    reduce CPU usage, but it may affect user's experience and may lose some swift changs if refresh cycle is
-    longer than PV updating cycle. .
+    
+    <li><b>font file: </b><p>The font definition file for <a href="Color_Font_Macro.html">Font Macro</a>.</p>
+     <p>Preference key: <code>font_file</code></p>
     </li>
-    <li><b>Automatically save file before running: </b>The file in editing will be automatically saved before you run it.</li>
-    <li><b>No-Editing mode: </b>OPI files are not allowed to be opened in OPI editor. 
-    They will always be opened from runtime engine.</li>
-    <li><b>Top OPIs: </b>The OPIs which will be listed in the "Top OPIs" drop down button. If you
-    want to add initial macros to the OPI, the format is like this: 
-    <pre>
-    "/BOY Examples/main.opi", "macro1 = hello", "macro2 = hello2" | "BOY Examples/1_2_WidgetExamples.opi"
-    </pre>    
-    </li>
+    
+    <li><b>Top OPIs: </b><p>The OPIs which will be listed in the "Top OPIs" drop down button. If you
+    want to add initial macros to the OPI, the format is like this:
+    </p> 
+    <pre class = "example_code">"/BOY Examples/main.opi", "macro1 = hello", "macro2 = hello2" | "BOY Examples/1_2_WidgetExamples.opi"</pre>    
+    
     <p><img src="./img/top_opis.png"></p>
+     <p>Preference key: <code>top_opis</code></p>
+    </li>
+    
+    <li><a href="OPI Probe.html"><b>Probe OPI</b> </a>
+    <p>Preference key: <code>probe_opi</code></p>
+    </li>
+    
+    <li><b>No-Editing mode: </b><p>OPI files are not allowed to be opened from OPI editor. 
+    They will always be opened from OPI runtime.</p>
+    <p>Preference key: <code>no_edit</code></p></li>
+    
+    <li><b>Disable Advanced Graphics</b><p>Disable the advanced graphics capability such as Pattern
+    and transparency. If this is checked, some 3D widgets will be displayed in 2D effect.</p>
+    <p>Preference key: <code>disable_advanced_graphics</code></p></li>
+    
+    <li><b>Display system output to BOY Console</b>
+    <p>If this is checked,system outputs will be redirected to BOY Console. 
+    For example, the following codes will print "Hello, World!" to BOY Console.</p>
+    <pre class = "example_code">//JavaScript Code
+importPackage(Packages.java.lang)
+System.out.println("Hello, World!")</pre>
+	<pre class = "example_code">#Python code
+print "Hello, World"</pre>  
+<p>Preference key: <code>display_system_output</code></p>  
+    </li>
+    
+    
+    
     </ul>
 
-<p><b>Tip: </b>In BOY, you can use URL path at everywhere if a path is needed. For example, if you set
-a URL path <code>http://www.xxx.com/main.opi</code> for the top OPIs in preference page, you will be able
-to run this OPI directly from Top OPIs button. If you set URL Path for the image wigdget, you will
-be able to display image from Internet directly.</p>
+
+	
+	<h3>OPI Editor Preferences</h3>
+	<ul>
+	<li><a href="Schema.html"><b>Schema OPI</b> </a>
+<p>Preference key: <code>schema_opi</code></p>  
+	</li>
+	<li><b>Automatically save file before running: </b>
+    <p>The file in editing will be automatically saved before running it after you
+    hit the run button or pressed <code>Ctrl+G</code>.</p>
+    <p>Preference key: <code>auto_save</code></p>
+     </li>	
+	</ul>
+	
+	<h3>OPI Runtime Preferences</h3>
+	<ul>
+	<li>
+    <b>Macros: </b><p>Global macros which are available for all OPIs in this CSS instance.</p>
+    <p>Preference key: <code>macros</code></p>
+    </li>
+    
+    <li><b>OPI GUI Refresh Cycle (ms): </b><p>The shortest refresh cycle of OPI GUI in millisecond.
+    If a PV is updated faster than this cycle, it will be throttled.
+    Specify this to longer will help to reduce CPU usage, 
+    but it may affect user's experience and may lose some swift changs if refresh cycle is
+    longer than PV updating cycle.</p>
+    <p>Preference key: <code>opi_gui_refresh_cycle</code></p>
+    </li>
+    <li><b>Console Popup Level</b><p>In which condition should the console popup. 
+	<ul>
+    <li><code>Don't Popup</code>, BOY console will never automatically popup.</li>
+    <li><code>Only Info</code>, BOY Console will only popup if there is regular information coming to console.</li>
+    <li><code>Error, Warning and Info</code>, BOY Console will popup whenever there is error, warning or 
+    regular information coming to console.</li>
+     </ul>
+       <p>Preference key: <code>popup_console</code></p>   
+    </li>
+    <li><b>PYTHONPATH</b><p>The path for searching Python module files. It only accept workspace path and
+    local file system path. Paths are separated by <code>|</code>. For example:</p>
+    <pre class="example_code">/MyPyLib/MyModule1|C:\Python27\Lib</pre>
+    <p>Preference key: <code>python_path</code></p> 
+    </li>
+    
+	</ul>
+
+	<h3>Product default preferences</h3>
+	<p>The default preferences can be set in <code>plugin_customization.ini</code> file
+	which is located in the root of the "Product" plugin directory or jar file.
+	It is ideally used to provide site-specific default preferences. For example, you can change
+	the default BOY preferences in this file with corresponding preference keys:</p>
+<pre class="example_code">org.csstudio.opibuilder/color_file=http://your_site.gov/color.def
+org.csstudio.opibuilder/font_file=http://your_site.gov/font.def
+org.csstudio.opibuilder/opi_gui_refresh_cycle=100
+org.csstudio.opibuilder/no_edit=true
+org.csstudio.opibuilder/macros="N","North"|"W","West"|"SYS","LLRF"|"SubSys","HPM"
+#popup console level, it can be NO_POP, INFO, or ALL
+org.csstudio.opibuilder/popup_console=NO_POP 
+</pre>
+	<p>You can also give a different customization file with the command line option
+	<code>-pluginCustomization</code> when starting CSS.</p>
+
+<br>
 
   </body>
 </html>

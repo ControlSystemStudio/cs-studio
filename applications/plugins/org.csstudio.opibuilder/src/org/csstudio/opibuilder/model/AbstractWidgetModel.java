@@ -36,6 +36,7 @@ import org.csstudio.opibuilder.properties.ActionsProperty;
 import org.csstudio.opibuilder.properties.BooleanProperty;
 import org.csstudio.opibuilder.properties.ColorProperty;
 import org.csstudio.opibuilder.properties.ComboProperty;
+import org.csstudio.opibuilder.properties.FontProperty;
 import org.csstudio.opibuilder.properties.IntegerProperty;
 import org.csstudio.opibuilder.properties.PVValueProperty;
 import org.csstudio.opibuilder.properties.RulesProperty;
@@ -45,7 +46,9 @@ import org.csstudio.opibuilder.properties.UnchangableStringProperty;
 import org.csstudio.opibuilder.properties.WidgetPropertyCategory;
 import org.csstudio.opibuilder.script.RulesInput;
 import org.csstudio.opibuilder.script.ScriptsInput;
+import org.csstudio.opibuilder.util.MediaService;
 import org.csstudio.opibuilder.util.OPIColor;
+import org.csstudio.opibuilder.util.OPIFont;
 import org.csstudio.opibuilder.util.WidgetDescriptor;
 import org.csstudio.opibuilder.util.WidgetsService;
 import org.csstudio.opibuilder.visualparts.BorderStyle;
@@ -54,6 +57,7 @@ import org.eclipse.core.runtime.Assert;
 import org.eclipse.core.runtime.IAdaptable;
 import org.eclipse.draw2d.geometry.Dimension;
 import org.eclipse.draw2d.geometry.Point;
+import org.eclipse.draw2d.geometry.Rectangle;
 import org.eclipse.swt.graphics.Color;
 import org.eclipse.swt.graphics.RGB;
 import org.eclipse.ui.views.properties.IPropertyDescriptor;
@@ -116,6 +120,11 @@ public abstract class AbstractWidgetModel implements IAdaptable,
 	 * Foreground color.
 	 */
 	public static final String PROP_COLOR_FOREGROUND = "foreground_color";//$NON-NLS-1$
+	
+	/**
+	 * Foreground color.
+	 */
+	public static final String PROP_FONT = "font";//$NON-NLS-1$
 	
 	/**
 	 * Visibility of the widget.
@@ -225,19 +234,26 @@ public abstract class AbstractWidgetModel implements IAdaptable,
 		pvMap.put(pvNameProperty, pvValueProperty);
 	}
 	
+	private void checkPropertyExist(Object propID) {
+		if(!propertyMap.containsKey(propID))
+			throw new NonExistPropertyException(getName(), propID.toString());
+	}
+	
 	protected void configureBaseProperties() {
 		addProperty(new IntegerProperty(PROP_WIDTH, "Width", 
 				WidgetPropertyCategory.Position, 100, 1, 10000));
 		addProperty(new IntegerProperty(PROP_HEIGHT, "Height", 
 				WidgetPropertyCategory.Position, 100, 1, 10000));		
 		addProperty(new IntegerProperty(PROP_XPOS, "X", 
-				WidgetPropertyCategory.Position, 100));
+				WidgetPropertyCategory.Position, 0));
 		addProperty(new IntegerProperty(PROP_YPOS, "Y", 
-				WidgetPropertyCategory.Position, 100));			
+				WidgetPropertyCategory.Position, 0));			
 		addProperty(new ColorProperty(PROP_COLOR_BACKGROUND, "Background Color",
 				WidgetPropertyCategory.Display, new RGB(240, 240, 240)));
 		addProperty(new ColorProperty(PROP_COLOR_FOREGROUND, "Foreground Color",
 				WidgetPropertyCategory.Display, new RGB(192, 192, 192)));
+		addProperty(new FontProperty(PROP_FONT, "Font", 
+				WidgetPropertyCategory.Display, MediaService.DEFAULT_FONT));
 		addProperty(new ColorProperty(PROP_BORDER_COLOR, "Border Color",
 				WidgetPropertyCategory.Border, new RGB(0, 128, 255)));
 		addProperty(new ComboProperty(PROP_BORDER_STYLE,"Border Style", 
@@ -272,7 +288,7 @@ public abstract class AbstractWidgetModel implements IAdaptable,
 	 */
 	protected abstract void configureProperties();
 	
-	@SuppressWarnings("unchecked")
+	@SuppressWarnings("rawtypes")
 	public Object getAdapter(Class adapter) {
 		return null;
 	}
@@ -318,6 +334,7 @@ public abstract class AbstractWidgetModel implements IAdaptable,
 	 */
 	@SuppressWarnings("unchecked")
 	protected <TYPE> TYPE getCastedPropertyValue(final String propertyName) {
+		checkPropertyExist(propertyName);
 		return (TYPE) getProperty(propertyName).getPropertyValue();
 	}
 	
@@ -332,6 +349,14 @@ public abstract class AbstractWidgetModel implements IAdaptable,
 	
 	public ActionsInput getActionsInput(){
 		return (ActionsInput)getCastedPropertyValue(PROP_ACTIONS);
+	}
+	
+	public Rectangle getBounds(){
+		return new Rectangle(getLocation(), getSize());
+	}
+	
+	public OPIFont getFont(){
+		return (OPIFont)getPropertyValue(PROP_FONT);
 	}
 	
 	public RGB getForegroundColor(){
@@ -371,8 +396,13 @@ public abstract class AbstractWidgetModel implements IAdaptable,
 	}
 	
 	public Object getPropertyValue(Object id) {
-		Assert.isTrue(propertyMap.containsKey(id));
+		checkPropertyExist(id);
 		return propertyMap.get(id).getPropertyValue();
+	}
+	
+	public Object getRawPropertyValue(Object id) {
+		checkPropertyExist(id);
+		return propertyMap.get(id).getRawPropertyValue();
 	}
 	
 	public LinkedHashMap<StringProperty, PVValueProperty> getPVMap(){
@@ -402,6 +432,10 @@ public abstract class AbstractWidgetModel implements IAdaptable,
 	
 	public String getTooltip(){
 		return (String)getCastedPropertyValue(PROP_TOOLTIP);
+	}
+	
+	public String getRawTooltip(){
+		return (String)getRawPropertyValue(PROP_TOOLTIP);
 	}
 	
 	public String getType(){
@@ -490,6 +524,16 @@ public abstract class AbstractWidgetModel implements IAdaptable,
 		setPropertyValue(PROP_BORDER_WIDTH, width);
 	}
 	
+	public void setBounds(Rectangle bounds){
+		setLocation(bounds.getLocation());
+		setSize(bounds.getSize());
+	}
+	
+	public void setBounds(int x, int y, int width, int height){
+		setLocation(x, y);
+		setSize(width, height);
+	}
+	
 	public void setForegroundColor(RGB color){
 		setPropertyValue(PROP_COLOR_FOREGROUND, color);
 	}
@@ -518,17 +562,18 @@ public abstract class AbstractWidgetModel implements IAdaptable,
 	}
 	
 	public void setPropertyValue(Object id, Object value) {
-		Assert.isTrue(propertyMap.containsKey(id));
+		checkPropertyExist(id);		
 		propertyMap.get(id).setPropertyValue(value);
+		
 	}
 	
 	public void setPropertyValue(Object id, Object value, boolean forceFire) {
-		Assert.isTrue(propertyMap.containsKey(id));
+		checkPropertyExist(id);
 		propertyMap.get(id).setPropertyValue(value, forceFire);
 	}
 	
 	public void setPropertyVisible(final String prop_id, final boolean visible){
-		Assert.isTrue(propertyMap.containsKey(prop_id));
+		checkPropertyExist(prop_id);
 		AbstractWidgetProperty property = propertyMap.get(prop_id);
 		if(property.setVisibleInPropSheet(visible)){
 			if(visible)
@@ -616,6 +661,15 @@ public abstract class AbstractWidgetModel implements IAdaptable,
 	}
 
 	/**
+	 * @return the index of the widget in its parent's children list
+	 */
+	public int getIndex(){
+		if(getParent() == null)
+			return 0;
+		return getParent().getChildren().indexOf(this);
+	}
+	
+	/**
 	 * @param executionMode the executionMode to set
 	 */
 	public void setExecutionMode(ExecutionMode executionMode) {
@@ -628,4 +682,84 @@ public abstract class AbstractWidgetModel implements IAdaptable,
 	public ExecutionMode getExecutionMode() {
 		return executionMode;
 	}	
+	
+	/**
+	 * Flip the widget figure horizontally.
+	 */
+	public void flipHorizontally(){
+	}
+	
+	/**
+	 * Flip the widget figure horizontally.
+	 * @param centerX the center X coordinate
+	 */
+	public void flipHorizontally(int centerX){
+		setX(2*centerX-getX()-getWidth());
+	}
+	
+	/**
+	 * Flip the widget figure vertically.
+	 */
+	public void flipVertically(){
+	}
+	
+	/**
+	 * Flip the widget figure horizontally.
+	 * @param centerY the center Y coordinate
+	 */
+	public void flipVertically(int centerY){
+		setY(2*centerY - getY() - getHeight());
+	}
+	
+	/**
+	 * Rotate the widget figure 90 degree.
+	 * @param clockwise true if rotate clockwise. false if counterclockwise.
+	 */
+	public void rotate90(boolean clockwise){
+		int x = getX();
+		int y = getY();
+		int h = getHeight();
+		int w = getWidth();
+		
+		int newX, newY, newH, newW;		
+
+		newX = x+w/2-h/2;
+		newY = y+h/2-w/2;
+		newH = w;
+		newW = h;
+		
+		setLocation(newX, newY);
+		setSize(newW, newH);
+		
+	}	
+	
+	/**
+	 * Rotate the widget figure 90 degree.
+	 * @param clockwise true if rotate clockwise. false if counterclockwise.
+	 */
+	public void rotate90(boolean clockwise, Point center){
+		//Point shiftedPoint = moveCoordinateToCenter(getLocation(), center);
+		int x = getX() - center.x;
+		int y = center.y - getY();
+		int h = getHeight();
+		int w = getWidth();
+		
+		int newX, newY, newH, newW;		
+		if(clockwise){
+			newX = y-h;
+			newY = -x;
+		}else{
+			newX = -y ;
+			newY = x+w;
+		}
+	//	Point rotatedPoint = recoverFromCenterCoordinate(new Point(newX, newY), center);
+		newX = newX + center.x;
+		newY = center.y - newY;
+		newH = w;
+		newW = h;
+		
+		setLocation(newX, newY);
+		setSize(newW, newH);		
+	}		
+
 }

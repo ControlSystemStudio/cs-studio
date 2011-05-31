@@ -25,7 +25,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 import org.csstudio.platform.model.pvs.IProcessVariableAddress;
-import org.csstudio.platform.simpledal.ValueType;
+import org.csstudio.platform.model.pvs.ValueType;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.draw2d.geometry.PointList;
 import org.eclipse.swt.graphics.FontData;

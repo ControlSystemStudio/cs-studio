@@ -30,6 +30,7 @@ import java.util.Collection;
 import java.util.List;
 
 import javax.annotation.CheckForNull;
+import javax.annotation.Nonnull;
 
 import org.csstudio.config.ioconfig.model.pbmodel.ChannelDBO;
 import org.csstudio.config.ioconfig.model.pbmodel.GSDFileDBO;
@@ -48,7 +49,9 @@ public final class Repository {
     /**
      * Default Constructor.
      */
-    private Repository() {}
+    private Repository() {
+        //Default Constructor.
+    }
 
     /**
      * For use different Repositories can inject the {@link IRepository}.<br>
@@ -56,7 +59,7 @@ public final class Repository {
      * The Default {@link IReposetory} is the {@link HibernateReposetory}.
      * @param repository the repository to inject.
      */
-    public static void injectIRepository(final IRepository repository) {
+    public static void injectIRepository(@Nonnull final IRepository repository) {
         _REPOSITORY = repository;
     }
 
@@ -65,7 +68,8 @@ public final class Repository {
      * @param ioName the IO Name.
      * @return the Epics Address String.
      */
-    public static String getEpicsAddressString(final String ioName) {
+    @Nonnull 
+    public static String getEpicsAddressString(@Nonnull final String ioName) throws PersistenceException {
         return _REPOSITORY.getEpicsAddressString(ioName);
     }
 
@@ -73,7 +77,8 @@ public final class Repository {
      *
      * @return a List of all IoNames at the DB.
      */
-    public static List<String> getIoNames() {
+    @Nonnull
+    public static List<String> getIoNames() throws PersistenceException {
         return _REPOSITORY.getIoNames();
     }
 
@@ -81,7 +86,8 @@ public final class Repository {
      * @param iocName the name of the Ioc.
      * @return a List of all IoNames from the Ioc with the given name.
      */
-    public static List<String> getIoNames(final String iocName) {
+    @Nonnull 
+    public static List<String> getIoNames(@Nonnull final String iocName) throws PersistenceException {
         return _REPOSITORY.getIoNames(iocName);
     }
 
@@ -92,7 +98,8 @@ public final class Repository {
      *            The Class Typ.
      * @return All Object of the Table clazz.getName.
      */
-    public static <T> List<T> load(final Class<T> clazz) {
+    @Nonnull 
+    public static <T> List<T> load(@Nonnull final Class<T> clazz) throws PersistenceException {
         return _REPOSITORY.load(clazz);
     }
 
@@ -106,7 +113,8 @@ public final class Repository {
      *            The DB Id of the object.
      * @return The Object of the Table clazz.getName with the given id.
      */
-    public static <T> T load(final Class<T> clazz, final Serializable id){
+    @CheckForNull
+    public static <T> T load(@Nonnull final Class<T> clazz, @Nonnull final Serializable id) throws PersistenceException{
         return _REPOSITORY.load(clazz, id);
     }
 
@@ -115,7 +123,8 @@ public final class Repository {
      * @param ioName the Key IO-Name for the search Sensors.
      * @return a {@link List} of {@link SensorsDBO}
      */
-    public static List<SensorsDBO> loadSensors(final String ioName){
+    @Nonnull 
+    public static List<SensorsDBO> loadSensors(@Nonnull final String ioName) throws PersistenceException {
         return _REPOSITORY.loadSensors(ioName);
     }
 
@@ -125,7 +134,8 @@ public final class Repository {
      * @param selection the selection of the Sensor.
      * @return a {@link List} of {@link SensorsDBO}
      */
-    public static SensorsDBO loadSensor(final String ioName, final String selection){
+    @CheckForNull
+    public static SensorsDBO loadSensor(@Nonnull final String ioName, @Nonnull final String selection) throws PersistenceException {
         return _REPOSITORY.loadSensor(ioName, selection);
     }
 
@@ -134,7 +144,8 @@ public final class Repository {
      * @param forceRefresh if true load new from the DB, otherwise get the cache.
      * @return All loaded Document's from the DB.
      */
-    public static List<DocumentDBO> loadDocument(final boolean forceRefresh) {
+    @Nonnull 
+    public static List<DocumentDBO> loadDocument(final boolean forceRefresh) throws PersistenceException {
         if(forceRefresh || _DOCUMENTS == null) {
             _DOCUMENTS = _REPOSITORY.loadDocument();
         }
@@ -146,7 +157,7 @@ public final class Repository {
      * @param gsdFile
      *            The GSD File to remove.
      */
-    public static void removeGSDFiles(final GSDFileDBO gsdFile) {
+    public static void removeGSDFiles(@Nonnull final GSDFileDBO gsdFile) throws PersistenceException {
         _REPOSITORY.removeGSDFiles(gsdFile);
     }
 
@@ -156,7 +167,8 @@ public final class Repository {
      * @param dbClass
      *            The Class Typ.
      */
-    public static <T extends DBClass> void removeNode(final T dbClass) {
+    @CheckForNull
+    public static <T extends DBClass> void removeNode(@Nonnull final T dbClass) throws PersistenceException {
         _REPOSITORY.removeNode(dbClass);
     }
 
@@ -165,7 +177,8 @@ public final class Repository {
      *            the GSD File that save to DB
      * @return the Saved GSD File.
      */
-    public static GSDFileDBO save(final GSDFileDBO gsdFile) {
+    @Nonnull 
+    public static GSDFileDBO save(@Nonnull final GSDFileDBO gsdFile) throws PersistenceException {
         return _REPOSITORY.save(gsdFile);
     }
 
@@ -174,7 +187,8 @@ public final class Repository {
      *            the document that save to DB
      * @return the Saved document.
      */
-    public static DocumentDBO save(final DocumentDBO document) {
+    @Nonnull 
+    public static DocumentDBO save(@Nonnull final DocumentDBO document) throws PersistenceException {
         return _REPOSITORY.save(document);
     }
 
@@ -186,7 +200,8 @@ public final class Repository {
      * @return the Saved Data class.
      * @throws PersistenceException
      */
-    public static <T extends DBClass> T saveOrUpdate(final T dbClass) throws PersistenceException {
+    @Nonnull 
+    public static <T extends DBClass> T saveOrUpdate(@Nonnull final T dbClass) throws PersistenceException {
         return _REPOSITORY.saveOrUpdate(dbClass);
     }
 
@@ -197,7 +212,8 @@ public final class Repository {
      *            the Data class that update to DB
      * @return the Saved Data class.
      */
-    public static <T extends DBClass> T update(final T dbClass) {
+    @Nonnull 
+    public static <T extends DBClass> T update(@Nonnull final T dbClass) throws PersistenceException {
         return _REPOSITORY.update(dbClass);
     }
 
@@ -206,7 +222,8 @@ public final class Repository {
      *            the document that update to DB.
      * @return the update document.
      */
-    public static DocumentDBO update(final DocumentDBO document) {
+    @Nonnull 
+    public static DocumentDBO update(@Nonnull final DocumentDBO document) throws PersistenceException {
         return _REPOSITORY.update(document);
     }
 
@@ -216,7 +233,7 @@ public final class Repository {
      * @return The the selected Channel or null when not found!
      */
     @CheckForNull
-    public static ChannelDBO loadChannel(final String ioName) {
+    public static ChannelDBO loadChannel(@Nonnull final String ioName) throws PersistenceException {
         final ChannelDBO loadChannel = _REPOSITORY.loadChannel(ioName);
         return loadChannel;
     }
@@ -226,12 +243,13 @@ public final class Repository {
      * @param ioName the selection IO-Name.
      * @return The the short Description or null when not found!
      */
-    public static String getShortChannelDesc(final String ioName) {
+    @Nonnull 
+    public static String getShortChannelDesc(@Nonnull final String ioName) throws PersistenceException {
         return _REPOSITORY.getShortChannelDesc(ioName);
     }
 
     @CheckForNull
-    public static List<PV2IONameMatcherModelDBO> loadPV2IONameMatcher(final Collection<String> pvName) {
+    public static List<PV2IONameMatcherModelDBO> loadPV2IONameMatcher(@Nonnull final Collection<String> pvName) throws PersistenceException {
         return _REPOSITORY.loadPV2IONameMatcher(pvName);
     }
 
@@ -242,6 +260,13 @@ public final class Repository {
      */
     public static void close() {
         _REPOSITORY.close();
+    }
+
+    /**
+     * @return
+     */
+    public static boolean isConnected() {
+        return _REPOSITORY==null ? false : _REPOSITORY.isConnected();
     }
 
 }

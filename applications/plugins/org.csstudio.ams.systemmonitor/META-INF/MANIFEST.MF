@@ -8,9 +8,11 @@ Require-Bundle: org.eclipse.core.runtime,
  org.csstudio.platform;bundle-version="1.1.0",
  org.csstudio.platform.libs.jms;bundle-version="1.1.1",
  org.csstudio.platform.utility.jms;bundle-version="1.1.3",
- org.csstudio.ams;bundle-version="1.0.4"
+ org.csstudio.ams;bundle-version="1.0.4",
+ org.csstudio.platform.libs.log4j;bundle-version="1.2.16"
 Bundle-ActivationPolicy: lazy
 Bundle-RequiredExecutionEnvironment: JavaSE-1.6
 Bundle-ClassPath: lib/activation.jar,
  lib/mail.jar,
  .
+Bundle-Vendor: DESY <css-developer@desy.de>, Markus Moeller

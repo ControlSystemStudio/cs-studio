@@ -45,6 +45,7 @@ import org.csstudio.config.ioconfig.editorparts.SubnetEditor;
 import org.csstudio.config.ioconfig.model.AbstractNodeDBO;
 import org.csstudio.config.ioconfig.model.FacilityDBO;
 import org.csstudio.config.ioconfig.model.IocDBO;
+import org.csstudio.config.ioconfig.model.PersistenceException;
 import org.csstudio.config.ioconfig.model.pbmodel.MasterDBO;
 import org.csstudio.config.ioconfig.model.pbmodel.ModuleDBO;
 import org.csstudio.config.ioconfig.model.pbmodel.ProfibusSubnetDBO;
@@ -55,8 +56,6 @@ import org.eclipse.ui.IWorkbenchPage;
 import org.eclipse.ui.PartInitException;
 
 /**
- * TODO (hrickens) :
- *
  * @author hrickens
  * @author $Author: hrickens $
  * @version $Revision: 1.2 $
@@ -77,37 +76,33 @@ public class CallNewChildrenNodeEditor extends AbstractCallNodeEditor {
     /**
      * {@inheritDoc}
      * @throws PartInitException
+     * @throws PersistenceException 
      */
     // CHECKSTYLE OFF: CyclomaticComplexity
     @Override
-    protected void openNodeEditor(@Nonnull final AbstractNodeDBO parentNode,@Nonnull final IWorkbenchPage page) throws PartInitException {
+    protected void openNodeEditor(@Nonnull final AbstractNodeDBO parentNode,@Nonnull final IWorkbenchPage page) throws PartInitException, PersistenceException {
         AbstractNodeDBO node = null;
         String id = null;
-        String nodeType = "";
+
         if (parentNode instanceof FacilityDBO) {
             id = IocEditor.ID;
             node = new IocDBO((FacilityDBO)parentNode);
-            nodeType = "Ioc";
         }else if (parentNode instanceof IocDBO) {
             id = SubnetEditor.ID;
             node = new ProfibusSubnetDBO((IocDBO) parentNode);
-            nodeType = "Subnet";
         } else if (parentNode instanceof ProfibusSubnetDBO) {
             id = MasterEditor.ID;
             node = new MasterDBO((ProfibusSubnetDBO) parentNode);
-            nodeType = "Master";
         } else if (parentNode instanceof MasterDBO) {
             id = SlaveEditor.ID;
             node = new SlaveDBO((MasterDBO) parentNode);
-            nodeType = "Slave";
         } else if (parentNode instanceof SlaveDBO) {
             id = ModuleEditor.ID;
             node = new ModuleDBO((SlaveDBO) parentNode);
-            nodeType = "Module";
         }
-
         	
         if((node != null) && (id != null)) {
+            String nodeType = node.getNodeType().getName();
         	if(id.equals(ModuleEditor.ID)){
         		node.setName("");
         		node.setSortIndexNonHibernate(parentNode.getfirstFreeStationAddress(128));

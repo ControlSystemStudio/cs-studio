@@ -8,15 +8,15 @@
 package org.csstudio.archive.engine.model;
 
 import java.util.Arrays;
+import java.util.logging.Level;
 
-import org.apache.log4j.Logger;
 import org.csstudio.apputil.time.PeriodFormat;
-import org.csstudio.platform.data.IDoubleValue;
-import org.csstudio.platform.data.IEnumeratedValue;
-import org.csstudio.platform.data.ILongValue;
-import org.csstudio.platform.data.IStringValue;
-import org.csstudio.platform.data.IValue;
-import org.csstudio.platform.logging.CentralLogger;
+import org.csstudio.archive.engine.Activator;
+import org.csstudio.data.values.IDoubleValue;
+import org.csstudio.data.values.IEnumeratedValue;
+import org.csstudio.data.values.ILongValue;
+import org.csstudio.data.values.IStringValue;
+import org.csstudio.data.values.IValue;
 
 /** An ArchiveChannel that stores value in a periodic scan.
  *  @author Kay Kasemir
@@ -28,8 +28,7 @@ public class ScannedArchiveChannel extends ArchiveChannel implements Runnable
     final private double scan_period;
     final private int max_repeats;
     private int repeats = 0;
-    private Logger log;
-    
+
     /** @see ArchiveChannel#ArchiveChannel(String, int, IValue) */
     public ScannedArchiveChannel(final String name,
                                  Enablement enablement, final int buffer_capacity,
@@ -40,11 +39,8 @@ public class ScannedArchiveChannel extends ArchiveChannel implements Runnable
         super(name, enablement, buffer_capacity, last_archived_value);
         this.scan_period = scan_period;
         this.max_repeats = max_repeats;
-        log = CentralLogger.getInstance().getLogger(this);
-        if (! log.isDebugEnabled())
-            log = null;
     }
-    
+
     /** @return Scan period in seconds */
     final public double getPeriod()
     {
@@ -63,8 +59,8 @@ public class ScannedArchiveChannel extends ArchiveChannel implements Runnable
     protected boolean handleNewValue(final IValue value)
     {
         final boolean written = super.handleNewValue(value);
-        if (! written  &&   log != null)
-            log.debug(getName() + ": cached " + value);
+        if (! written)
+            Activator.getLogger().log(Level.FINE, "{0} cached {1}", new Object[] { getName(), value });
         return written;
     }
 
@@ -72,6 +68,7 @@ public class ScannedArchiveChannel extends ArchiveChannel implements Runnable
      *  Try to add the most recent value to the archive.
      *  Skip repeated values, unless we exceed the max. repeat count.
      */
+    @Override
     final public void run()
     {
         if (! isEnabled())
@@ -81,8 +78,7 @@ public class ScannedArchiveChannel extends ArchiveChannel implements Runnable
         {   // Have anything?
             if (most_recent_value == null)
             {
-                if (log != null)
-                    log.debug(getName() + " scan: No data");
+                Activator.getLogger().log(Level.FINE, "scan {0}: No data", getName());
                 return;
             }
             // Is it a new value?
@@ -91,28 +87,24 @@ public class ScannedArchiveChannel extends ArchiveChannel implements Runnable
                 ++repeats ;
                 if (repeats < max_repeats)
                 {
-                    if (log != null)
-                        log.debug(getName() + " skips  " + most_recent_value + ": repeat " + repeats);
+                    Activator.getLogger().log(Level.FINE, "{0} skips {1}: repeat {2}", new Object[] { getName(), most_recent_value, repeats });
                     return;
                 }
                 // No new value, but we'd like to write a sample every once in a while
                 value = ValueButcher.transformTimestampToNow(most_recent_value);
-                if (log != null)
-                    log.debug(getName() + " writes " + most_recent_value + " as " + value.getTime());
                 if (value == null)
                 {
-                    CentralLogger.getInstance().getLogger(this).error("Channel " + getName()
-                                    + ": Cannot handle value type "
-                                    + most_recent_value.getClass().getName());
+                    Activator.getLogger().log(Level.WARNING, "{0} cannot handle value type {1}",
+                            new Object[] { getName(), most_recent_value.getClass().getName() });
                     return;
                 }
+                Activator.getLogger().log(Level.FINE, "{0} writes {1} as {2}", new Object[] { getName(), most_recent_value, value.getTime() });
             }
             else
             {   // It's a new value, so we should be able to write it
                 // "as is"
                 value = most_recent_value;
-                if (log != null)
-                    log.debug(getName() + " writes " + value);
+                Activator.getLogger().log(Level.FINE, "Wrote sample for {0}: {1}", new Object[] { getName(), value });
             }
             // New value, or exceeded repeats
             repeats = 0;
@@ -145,7 +137,7 @@ public class ScannedArchiveChannel extends ArchiveChannel implements Runnable
             final int[] v1 = ((IEnumeratedValue) val1).getValues();
             final int[] v2 = ((IEnumeratedValue) val2).getValues();
             if (!Arrays.equals(v1, v2))
-                return false;            
+                return false;
         }
         else if (val1 instanceof ILongValue)
         {

@@ -21,6 +21,7 @@
  */
 package org.csstudio.utility.nameSpaceSearch.ui;
 
+import static org.csstudio.utility.ldap.service.util.LdapUtils.createLdapName;
 import static org.csstudio.utility.ldap.treeconfiguration.LdapEpicsControlsConfiguration.COMPONENT;
 import static org.csstudio.utility.ldap.treeconfiguration.LdapEpicsControlsConfiguration.FACILITY;
 import static org.csstudio.utility.ldap.treeconfiguration.LdapEpicsControlsConfiguration.IOC;
@@ -28,7 +29,6 @@ import static org.csstudio.utility.ldap.treeconfiguration.LdapEpicsControlsConfi
 import static org.csstudio.utility.ldap.treeconfiguration.LdapEpicsControlsConfiguration.UNIT;
 import static org.csstudio.utility.ldap.treeconfiguration.LdapFieldsAndAttributes.FIELD_ASSIGNMENT;
 import static org.csstudio.utility.ldap.treeconfiguration.LdapFieldsAndAttributes.FIELD_WILDCARD;
-import static org.csstudio.utility.ldap.utils.LdapUtils.createLdapName;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -41,10 +41,10 @@ import org.csstudio.platform.model.IControlSystemItem;
 import org.csstudio.platform.model.IProcessVariable;
 import org.csstudio.platform.ui.internal.dataexchange.ProcessVariableDragSource;
 import org.csstudio.utility.ldap.service.ILdapReadCompletedCallback;
+import org.csstudio.utility.ldap.service.ILdapReaderJob;
 import org.csstudio.utility.ldap.service.ILdapSearchParams;
 import org.csstudio.utility.ldap.service.ILdapSearchResult;
 import org.csstudio.utility.ldap.service.ILdapService;
-import org.csstudio.utility.ldap.utils.LdapSearchResult;
 import org.csstudio.utility.nameSpaceSearch.Activator;
 import org.csstudio.utility.nameSpaceSearch.Messages;
 import org.eclipse.core.runtime.jobs.Job;
@@ -110,9 +110,9 @@ public class MainView extends ViewPart {
 	private final HashMap<String, String> _headline = new HashMap<String, String>();
 	private Image _workDisable;
 	private Label _workIcon;
-	private Job _ldapr;
+	ILdapReaderJob _readerJob;
 	private Display _disp;
-	private final ILdapSearchResult _ldapSearchResult;
+	private ILdapSearchResult _ldapSearchResult;
 	/**
 	 * The search Button.
 	 */
@@ -206,7 +206,7 @@ public class MainView extends ViewPart {
 	}
 
 	public MainView() {
-		_ldapSearchResult = new LdapSearchResult();
+	    // EMPTY
 	}
 
 	/**
@@ -346,9 +346,10 @@ public class MainView extends ViewPart {
 		String filter = RECORD.getNodeTypeName() + FIELD_ASSIGNMENT
 				+ searchTemp; //$NON-NLS-1$
 
-		if (searchTemp.compareTo(FIELD_WILDCARD) != 0) {
-			filter = filter.concat(FIELD_WILDCARD); //$NON-NLS-1$
-		}
+		//(hrickens) [09.05.2011]: It will not automatically search with wildcard at the end 
+//		if (searchTemp.compareTo(FIELD_WILDCARD) != 0) {
+//			filter = filter.concat(FIELD_WILDCARD); //$NON-NLS-1$
+//		}
 
 		if (_headline.isEmpty()) {
 			_headline.put(FACILITY.getNodeTypeName(),
@@ -378,20 +379,21 @@ public class MainView extends ViewPart {
 
 		final ILdapService service = Activator.getDefault().getLdapService();
 		if (service != null) {
-			_ldapr = service.createLdapReaderJob(params, _ldapSearchResult,
-					new ILdapReadCompletedCallback() {
-						@Override
-						public void onLdapReadComplete() {
-							getDisp().syncExec(new Runnable() {
-								@Override
-								public void run() {
-									getText();
-								}
-							});
-						}
-					});
+			_readerJob = 
+			    service.createLdapReaderJob(params,
+                        					new ILdapReadCompletedCallback() {
+                        						@Override
+                        						public void onLdapReadComplete() {
+                        							getDisp().syncExec(new Runnable() {
+                        								@Override
+                        								public void run() {
+                        									getText(_readerJob.getSearchResult());
+                        								}
+                        							});
+                        						}
+                        					});
 
-			_ldapr.schedule();
+			_readerJob.schedule();
 		} else {
 			MessageDialog.openError(getSite().getShell(), "LDAP Access",
 					"LDAP service unavailable. Retry later.");
@@ -399,12 +401,12 @@ public class MainView extends ViewPart {
 		getResultTableView().getTable().layout();
 	}
 
-	protected void getText() {
+	protected void getText(ILdapSearchResult searchResult) {
 		getResultTableView().refresh(false);
 		final ArrayList<IControlSystemItem> tableElements = new ArrayList<IControlSystemItem>();
 
 		int i = 0;
-		for (final SearchResult result : _ldapSearchResult.getAnswerSet()) {
+		for (final SearchResult result : searchResult.getAnswerSet()) {
 			final String row = result.getName();
 			final String[] elements = row.split(","); //$NON-NLS-1$
 			String path = ""; //$NON-NLS-1$

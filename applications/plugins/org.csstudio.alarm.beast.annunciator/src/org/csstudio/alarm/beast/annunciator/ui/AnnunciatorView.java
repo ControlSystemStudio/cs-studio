@@ -14,19 +14,19 @@ import org.csstudio.alarm.beast.annunciator.model.JMSAnnunciator;
 import org.csstudio.alarm.beast.annunciator.model.JMSAnnunciatorListener;
 import org.csstudio.alarm.beast.annunciator.model.Severity;
 import org.csstudio.apputil.ringbuffer.RingBuffer;
-import org.csstudio.platform.ui.swt.AutoSizeColumn;
-import org.csstudio.platform.ui.swt.AutoSizeControlListener;
+import org.eclipse.jface.layout.TableColumnLayout;
 import org.eclipse.jface.viewers.CellLabelProvider;
+import org.eclipse.jface.viewers.ColumnWeightData;
 import org.eclipse.jface.viewers.TableViewer;
 import org.eclipse.jface.viewers.TableViewerColumn;
 import org.eclipse.jface.viewers.ViewerCell;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.DisposeEvent;
 import org.eclipse.swt.events.DisposeListener;
-import org.eclipse.swt.layout.FillLayout;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Table;
+import org.eclipse.swt.widgets.TableColumn;
 import org.eclipse.ui.part.ViewPart;
 
 /** Eclipse view for the Annunciator
@@ -39,16 +39,16 @@ public class AnnunciatorView extends ViewPart implements JMSAnnunciatorListener
 
     /** Annunciator that performs the actual annunciations. */
     private volatile JMSAnnunciator annunciator = null;
-    
+
     /** Table of recent annunciations */
     private TableViewer message_table;
-    
+
     /** List of recent annunciations, shown in message_table.
      *  Synchronize on access
      */
     final private RingBuffer<AnnunciationMessage> messages =
         new RingBuffer<AnnunciationMessage>(Preferences.getRingBufferSize());
-    
+
     @Override
     public void createPartControl(final Composite parent)
     {
@@ -61,31 +61,32 @@ public class AnnunciatorView extends ViewPart implements JMSAnnunciatorListener
         // the view.
         // On Linux, the view seems to really close when the visible view
         // is closed.
-        // Tried IPartListener2, but no good solution at this point. 
+        // Tried IPartListener2, but no good solution at this point.
 //        final IPartService service =
 //            (IPartService) getSite().getService(IPartService.class);
 //        service.addPartListener(new IPartListener2()
 //        {
 // ...
 //        });
-        
+
         createGUI(parent);
-        
+
         // Fake initial message that shows up in table
         messages.add(new AnnunciationMessage(Severity.forInfo(), Messages.ConnectMsg));
-        
+
         // Connect table to message list
         message_table.setContentProvider(new MessageRingBufferContentProvider());
         message_table.setInput(messages);
-        
+
         // Start connection in background job because it hangs when
         // there's no JMS
         final ConnectJob connect_job = new ConnectJob(this);
         connect_job.schedule();
-        
+
         // ConnectJob would set annunciator. Cleanup when view is disposed.
         parent.addDisposeListener(new DisposeListener()
         {
+            @Override
             public void widgetDisposed(DisposeEvent e)
             {
                 if (annunciator != null)
@@ -102,8 +103,10 @@ public class AnnunciatorView extends ViewPart implements JMSAnnunciatorListener
      */
     private void createGUI(final Composite parent)
     {
-        parent.setLayout(new FillLayout());
-        
+        // Note: TableColumnLayout requires that Table is only one child widget
+        final TableColumnLayout table_layout = new TableColumnLayout();
+        parent.setLayout(table_layout);
+
         // List of annunciations
         message_table = new TableViewer(parent ,
                 SWT.H_SCROLL | SWT.V_SCROLL | SWT.MULTI | SWT.FULL_SELECTION
@@ -111,11 +114,11 @@ public class AnnunciatorView extends ViewPart implements JMSAnnunciatorListener
         final Table table = message_table.getTable();
         table.setHeaderVisible(true);
         table.setLinesVisible(true);
-        
+
         TableViewerColumn col;
 
         // Time
-        col = AutoSizeColumn.make(message_table, Messages.Time, 150, 10);
+        col = createColumn(message_table, table_layout, Messages.Time, 150, 10);
         col.setLabelProvider(new CellLabelProvider()
         {
             @Override
@@ -127,7 +130,7 @@ public class AnnunciatorView extends ViewPart implements JMSAnnunciatorListener
         });
 
         // Severity
-        col = AutoSizeColumn.make(message_table, Messages.Severity, 80, 1);
+        col = createColumn(message_table, table_layout, Messages.Severity, 80, 1);
         col.setLabelProvider(new CellLabelProvider()
         {
             @Override
@@ -139,7 +142,7 @@ public class AnnunciatorView extends ViewPart implements JMSAnnunciatorListener
         });
 
         // Message
-        col = AutoSizeColumn.make(message_table, Messages.Message, 100, 100);
+        col = createColumn(message_table, table_layout, Messages.Message, 100, 100);
         col.setLabelProvider(new CellLabelProvider()
         {
             @Override
@@ -149,8 +152,27 @@ public class AnnunciatorView extends ViewPart implements JMSAnnunciatorListener
                 cell.setText(message.getMessage());
             }
         });
+    }
 
-        new AutoSizeControlListener(table);
+    /** Create column with layout info
+     *  @param message_table
+     *  @param table_layout
+     *  @param title
+     *  @param width
+     *  @param weight
+     *  @return TableViewerColumn
+     */
+    private TableViewerColumn createColumn(final TableViewer message_table,
+            final TableColumnLayout table_layout, final String title,
+            final int width, final int weight)
+    {
+        final TableViewerColumn view_col = new TableViewerColumn(message_table, 0);
+        final TableColumn col = view_col.getColumn();
+        col.setText(title);
+        table_layout.setColumnData(col, new ColumnWeightData(weight, width));
+        col.setMoveable(true);
+
+        return view_col;
     }
 
     @Override
@@ -167,6 +189,7 @@ public class AnnunciatorView extends ViewPart implements JMSAnnunciatorListener
             return;
         control.getDisplay().asyncExec(new Runnable()
         {
+            @Override
             public void run()
             {
                 synchronized (messages)
@@ -180,6 +203,7 @@ public class AnnunciatorView extends ViewPart implements JMSAnnunciatorListener
     }
 
     /** {@inheritDoc} */
+    @Override
     public void performedAnnunciation(final AnnunciationMessage annunciation)
     {
         logAnnunciation(annunciation);
@@ -188,6 +212,7 @@ public class AnnunciatorView extends ViewPart implements JMSAnnunciatorListener
     /** Called by ConnectJob or later Annunciator on error
      *  {@inheritDoc}
      */
+    @Override
     public void annunciatorError(final Exception ex)
     {
         logAnnunciation(new AnnunciationMessage(Severity.forError(), ex.getMessage()));
@@ -200,19 +225,24 @@ public class AnnunciatorView extends ViewPart implements JMSAnnunciatorListener
         final Control control = message_table.getControl();
         if (control.isDisposed())
             return;
+        // Messages 'scroll', so every line in the table changes.
+        // Overall table refresh is accomplished by setting the item count.
+        // Sync & fetch count in this thread
+        final int count;
+        synchronized (messages)
+        {
+            messages.add(annunciation);
+            count = messages.size();
+        }
+        // Update table in UI thread
         control.getDisplay().asyncExec(new Runnable()
         {
+            @Override
             public void run()
             {
                 if (control.isDisposed())
                     return;
-                final int size;
-                synchronized (messages)
-                {
-                    messages.add(annunciation);
-                    size = messages.size();
-                }
-                message_table.setItemCount(size);
+                message_table.setItemCount(count);
                 message_table.refresh();
             }
         });

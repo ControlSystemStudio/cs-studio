@@ -13,3 +13,4 @@ Export-Package: org.csstudio.nams.service.messaging;x-friends:="org.csstudio.nam
  org.csstudio.nams.service.messaging.declaration,
  org.csstudio.nams.service.messaging.exceptions,
  org.csstudio.nams.service.messaging.extensionPoint
+Bundle-Vendor: DESY <css-developer@desy.de>, Markus Moeller

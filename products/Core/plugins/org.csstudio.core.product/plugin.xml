@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?eclipse version="3.4"?>
+<plugin>
+
+   <extension
+         id="org.csstudio.core.product.application"
+         point="org.eclipse.core.runtime.applications">
+      <application>
+         <run
+               class="org.csstudio.core.product.Application">
+         </run>
+      </application>
+   </extension>
+   <extension
+         point="org.eclipse.ui.perspectives">
+      <perspective
+            name="RCP Perspective"
+            class="org.csstudio.core.product.Perspective"
+            id="org.csstudio.core.product.perspective">
+      </perspective>
+   </extension>
+   <extension
+         id="product"
+         point="org.eclipse.core.runtime.products">
+      <product
+            application="org.csstudio.core.product.application"
+            name="CSS Core Product">
+         <property
+               name="appName"
+               value="CSS Core Product">
+         </property>
+      </product>
+   </extension>
+
+</plugin>

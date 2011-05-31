@@ -246,64 +246,19 @@ public class PreferenceTableEditor extends FieldEditor {
 	 */
 	protected void doLoad() {
 		if (tableViewer != null) {
+		    PreferenceValidator prefernecValidator = new PreferenceValidator();
 			String s = getPreferenceStore().getString(getPreferenceName());
 			String[] array = parseString(s);
 			TableItem item;
 			for (int i = 0; i < array.length; i++) {
 				item = new TableItem(tableViewer.getTable(), SWT.NONE);
 				String[] tableRowFromPreferences = array[i].split("\\?");
-				item.setText(checkPreferenceValidity(tableRowFromPreferences));
+				item.setText(prefernecValidator.checkPreferenceValidity(tableRowFromPreferences));
 			}
 		}
 	}
 
-	/**
-	 * Check if there are all preference entries present and valid.
-	 * 
-	 * @param tableRowFromPreferences
-	 * @return
-	 */
-	private String[] checkPreferenceValidity(String[] tableRowFromPreferences) {
-		String[] newPreferencePart = new String[3];
-		newPreferencePart[0] = "invalid";
-		newPreferencePart[1] = "";
-		newPreferencePart[2] = "false";
-		try {
-		if (tableRowFromPreferences == null || tableRowFromPreferences.length == 0) {
-			return newPreferencePart;
-		}
-		if (tableRowFromPreferences.length == 1 && tableRowFromPreferences[0] != null) {
-			newPreferencePart[0] = tableRowFromPreferences[0];
-			return newPreferencePart;
-		}
-		if (tableRowFromPreferences.length == 2 && tableRowFromPreferences[0] != null) {
-			newPreferencePart[0] = tableRowFromPreferences[0];
-			if (tableRowFromPreferences[1] != null) {
-				if (tableRowFromPreferences[1].equals("true") || tableRowFromPreferences[1].equals("false")) {
-					newPreferencePart[2] = tableRowFromPreferences[1];
-				} else {
-					newPreferencePart[1] = tableRowFromPreferences[1];
-				}
-			}
-			return newPreferencePart;
-		}
-		if (tableRowFromPreferences.length == 3 && tableRowFromPreferences[0] != null) {
-			newPreferencePart[0] = tableRowFromPreferences[0];
-			if (tableRowFromPreferences[1] != null) {
-				newPreferencePart[1] = tableRowFromPreferences[1];
-			}
-			if (tableRowFromPreferences[2] != null) {
-				if (tableRowFromPreferences[2].equals("true") || tableRowFromPreferences[2].equals("false")) {
-					newPreferencePart[2] = tableRowFromPreferences[2];
-				}
-			}
-			return newPreferencePart;
-		}
-		} catch (Exception e) {
-			CentralLogger.getInstance().error(this, "Error in quickstart preferences format.");
-		}
-		return newPreferencePart;
-	}
+	
 
 	/*
 	 * (non-Javadoc) Method declared on FieldEditor.

@@ -23,9 +23,9 @@ package org.csstudio.sds.internal.connection;
 
 import java.util.Map;
 
+import org.csstudio.auth.security.ActivationService;
 import org.csstudio.platform.model.pvs.IProcessVariableAddress;
-import org.csstudio.platform.security.ActivationService;
-import org.csstudio.platform.simpledal.ValueType;
+import org.csstudio.platform.model.pvs.ValueType;
 import org.csstudio.platform.util.StringUtil;
 import org.csstudio.sds.SdsPlugin;
 import org.csstudio.sds.eventhandling.AbstractBehavior;
@@ -161,7 +161,7 @@ public final class ConnectionUtilNew {
 		}
 	}
 
-	@SuppressWarnings("unchecked")
+	@SuppressWarnings({ "unchecked", "rawtypes" })
 	public static void connectToBehavior(final AbstractWidgetModel widget,
 			final IListenerRegistry registry) {
 		final String behaviorId = widget
@@ -228,7 +228,20 @@ public final class ConnectionUtilNew {
 		// the pv ?
 		ValueType type = processVariable.getValueTypeHint();
 
-		// 2nd choice
+//		TODO (jhatje): remove if patch in jca lib works
+//		// 2 nd choise from rule
+//		/*
+//		 * XXX hrickens 2010.11.10: ad as workarround for the DAL crash with
+//		 * JNI. DAL crashed in case of wrong pv request. E.g.: get a String Pv
+//		 * as Double.
+//		 */
+//		if (type == null) {
+//			if (isStringRecord(processVariable)) {
+//				type = ValueType.STRING;
+//			}
+//		}
+		
+		// 3nd choice
 		if (type == null) {
 			// take the type hint, provided
 			// by the widget
@@ -236,13 +249,31 @@ public final class ConnectionUtilNew {
 			type = property.getPropertyType().getTypeHint();
 		}
 
-		// 3rd choice, take double
+		// 4rd choice, take double
 		if (type == null) {
 			type = ValueType.DOUBLE;
 		}
 		return type;
 	}
 
+//	TODO (jhatje): remove if patch in jca lib works
+//	private static boolean isStringRecord(IProcessVariableAddress processVariable) {
+//		ArrayList<String> recordTails = SdsPlugin.getDefault().getRecordTails();
+//		for (String recTail : recordTails) {
+//			if (processVariable.getProperty().endsWith(recTail)) {
+//				return true;
+//			}
+//		}
+//		ArrayList<String> recordTailsRegExp = SdsPlugin.getDefault().getRecordTailsRegExp();
+//		for (String recTailRegExp : recordTailsRegExp) {
+//			if (processVariable.getProperty().matches(recTailRegExp)) {
+//				return true;
+//			}
+//		}
+//		return false;
+//	}
+
+	
 	static final RemoteInfo translate(final IProcessVariableAddress pv) {
 	    String cs = "";
 	    final String responsibleDalPlugId = pv.getControlSystem().getResponsibleDalPlugId();
@@ -251,6 +282,10 @@ public final class ConnectionUtilNew {
 				+ responsibleDalPlugId;
 	    }
 		final String property = pv.getProperty();
+//		The characteristic has to be hardcoded null, otherwise there are no dynamic actions.
+//		(e.g. Action Button in Display Rufbereitschaft has no actions)
+//		String characteristic = pv.getCharacteristic();
+//		return new RemoteInfo(cs, property, characteristic, null);
 		return new RemoteInfo(cs, property, null, null);
 	}
 

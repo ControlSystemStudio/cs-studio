@@ -1,10 +1,17 @@
+/*******************************************************************************
+ * Copyright (c) 2010 Oak Ridge National Laboratory.
+ * All rights reserved. This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License v1.0
+ * which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-v10.html
+ ******************************************************************************/
 package org.csstudio.opibuilder.script;
 
 import java.util.ArrayList;
 import java.util.List;
 
 import org.csstudio.opibuilder.OPIBuilderPlugin;
-import org.csstudio.platform.ui.util.CustomMediaFactory;
+import org.csstudio.ui.util.CustomMediaFactory;
 import org.eclipse.core.runtime.IAdaptable;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.Path;
@@ -30,6 +37,21 @@ public class ScriptData implements IAdaptable {
 	 */
 	protected List<PVTuple> pvList;
 	
+	/**
+	 * Check PVs connectivity before executing the script. 
+	 */
+	private boolean checkConnectivity = true;
+	
+	/**
+	 * Skip the executions triggered by PVs first connection.
+	 */
+	private boolean skipPVsFirstConnection = false;
+	
+	/**
+	 * Stop to execute the script if error is detected in script.
+	 */
+	private boolean stopExecuteOnError = false;
+	
 	
 	public ScriptData() {
 		path = new Path("");
@@ -46,8 +68,7 @@ public class ScriptData implements IAdaptable {
 	 * @return true if successful. false if the input is not a javascript file.
 	 */
 	public boolean setPath(IPath path){
-		if(path.getFileExtension() != null && 
-				path.getFileExtension().equals(SCRIPT_EXTENSION)){
+		if(path.getFileExtension() != null){
 			this.path = path; 
 			return true;
 		}
@@ -74,13 +95,24 @@ public class ScriptData implements IAdaptable {
 		}			
 	}
 	
-	public void removePV(String pv){
-		pvList.remove(pv);
+	public void removePV(PVTuple pvTuple){
+		pvList.remove(pvTuple);
 	}	
+	
+	public void setCheckConnectivity(boolean checkConnectivity) {
+		this.checkConnectivity = checkConnectivity;
+	}
+
+	public boolean isCheckConnectivity() {
+		return checkConnectivity;
+	}
 	
 	public ScriptData getCopy(){
 		ScriptData copy = new ScriptData();
 		copy.setPath(path);
+		copy.setCheckConnectivity(checkConnectivity);
+		copy.setSkipPVsFirstConnection(skipPVsFirstConnection);
+		copy.setStopExecuteOnError(stopExecuteOnError);
 		for(PVTuple pv : pvList){
 			copy.addPV(new PVTuple(pv.pvName, pv.trigger));
 		}
@@ -102,8 +134,14 @@ public class ScriptData implements IAdaptable {
 				}
 				
 				public ImageDescriptor getImageDescriptor(Object object) {
+					String icon;
+					if(path != null && !path.isEmpty() 
+							&& path.getFileExtension().equals(ScriptService.PY)){
+						icon = "icons/python_file.gif";
+					}else
+						icon = "icons/js.gif";
 					return CustomMediaFactory.getInstance().getImageDescriptorFromPlugin(
-							OPIBuilderPlugin.PLUGIN_ID, "icons/js.gif");
+							OPIBuilderPlugin.PLUGIN_ID, icon);
 				}
 				
 				public Object[] getChildren(Object o) {
@@ -113,4 +151,36 @@ public class ScriptData implements IAdaptable {
 		
 		return null;
 	}
+
+	/**
+	 * @param skipPVsFirstConnection Skip the executions triggered by PVs first connection.
+	 */
+	public void setSkipPVsFirstConnection(boolean skipPVsFirstConnection) {
+		this.skipPVsFirstConnection = skipPVsFirstConnection;
+	}
+
+	/**
+	 * @return Skip the executions triggered by PVs first connection if it is true.
+	 */
+	public boolean isSkipPVsFirstConnection() {
+		return skipPVsFirstConnection;
+	}
+	
+	/**
+	 * @param stopExecuteOnError
+	 *  If true, stop to execute the script if error is detected in script.
+	 */
+	public void setStopExecuteOnError(
+			boolean stopExecuteOnError) {
+		this.stopExecuteOnError = stopExecuteOnError;
+	}
+	
+	/**
+	 * @return true if stop to execute the script if error is detected in script..
+	 */
+	public boolean isStopExecuteOnError() {
+		return stopExecuteOnError;
+	}
+
+	
 }

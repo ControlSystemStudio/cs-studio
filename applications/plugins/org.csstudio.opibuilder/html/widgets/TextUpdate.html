@@ -1,0 +1,59 @@
+<html>
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=Cp1252"/>
+    <link rel="stylesheet" href="default.css" type="text/css" />
+    <title>
+     Text Update
+    </title>
+  </head>
+  <body>
+
+    <h2>
+      Text Update
+    </h2>
+    <p>
+    Text Update is used to display PV value. It supports multi-line text.
+    </p>
+    <img src="img/TextUpdate.gif"alt="">
+    
+    
+    <h3>Operations</h3>
+     In OPI editing mode, double click (or click twice) or press F2 while it is selected will make its text editable.
+    Press <code>Ctrl+Enter</code> or click other place of the display to finish editing. Press Esc to abort editing.
+    
+    <a name="TextUpdateProperties"></a>
+    <h3>Special Properties</h3>
+    <ul>   
+	<li>Text (text). <dl><dd>The default text of the widget. It will be replaced with PV value in Runtime.</dd></dl></li>
+	<li>Format Type (format_type). <dl><dd>The type of format for displaying PV value. The type of <code>Default</code>
+	format will automatically format the PV according to its value type. Inapplicable format for
+	some PV types will be ignored. For example, <code>Decimal</code> format for a String PV will be ignored.</dd></dl></li>
+	<li>Precision (precision). <dl><dd>Precision of the format. This is meaningful to Default and Decimal format and 
+	only if the property <code>Precision From PV</code> is not enabled.</dd></dl></li>
+	<li>Precision From PV (precision_from_pv). <dl><dd>Get the precision from PV.</dd></dl></li>
+	<li>Show Units (show_units). <dl><dd>Show the units from PV.</dd></dl></li>
+			
+	<li>Transparent (transparent). <dl><dd>Transparent backgournd.</dd></dl></li>
+	<li>Auto Size (auto_size). <dl><dd>Automatically adjust the size of the label according to its text. 
+	<br><b><font color="Red">Attention: </font></b>If this is enabled, the size of the widget may subject to change when it startup in Runtime
+	on different platforms.	This is because the fonts size on different platforms are different. To guarantee 
+	a same or similar looking accross different platforms, it would be better to set this option off and 
+	leave enough extra space in the label to allow potential font size change.</dd></dl></li>	
+    <li>Horizontal Alignment(horizontal_alignment). <dl><dd>The horizontal alignment option for the place of the text 
+    in label.</dd></dl></li>
+    <li>Vertical Alignment(vertical_alignment). <dl><dd>The vertical alignment option for the place of the text 
+    in label.</dd></dl></li>
+    <li>Wrap Words (wrap_words). <dl><dd>Automatically wrap words. <b>Note:</b> This property is only
+    used once during widget creation, which means it should no be changed in script or rule.</dd></dl></li>
+    </ul>
+        
+   <h3>See Also</h3>
+   <ul>
+   <li><a href="PVWidgets.html">Properties Common to PV Widgets</a></li>
+   <li><a href="../Widget Properties.html">Properties Common to All Widgets</a></li>
+   </ul>
+    
+<br>
+
+</body>
+</html>

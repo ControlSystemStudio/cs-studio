@@ -7,9 +7,9 @@
  ******************************************************************************/
 package org.csstudio.alarm.beast.ui.alarmtree;
 
-import org.csstudio.alarm.beast.AlarmTree;
-import org.csstudio.alarm.beast.AlarmTreePV;
 import org.csstudio.alarm.beast.SeverityLevel;
+import org.csstudio.alarm.beast.client.AlarmTreeItem;
+import org.csstudio.alarm.beast.client.AlarmTreePV;
 import org.csstudio.alarm.beast.ui.Messages;
 import org.csstudio.alarm.beast.ui.SeverityColorProvider;
 import org.csstudio.alarm.beast.ui.SeverityIconProvider;
@@ -34,19 +34,22 @@ public class AlarmTreeLabelProvider extends CellLabelProvider
         color_provider = new SeverityColorProvider(parent);
         icon_provider = new SeverityIconProvider(parent);
     }
-    
+
     @Override
-    public String getToolTipText(Object element)
+    public String getToolTipText(final Object element)
     {
-        final AlarmTree item = (AlarmTree) element;
+        // Saw null here when tree content changes while (slow) tool tip decides to show
+        final AlarmTreeItem item = (AlarmTreeItem) element;
+        if (item == null)
+            return ""; //$NON-NLS-1$
         return item.getToolTipText();
     }
 
     /** Set a cell's text and color from alarm tree item */
     @Override
-    public void update(ViewerCell cell)
+    public void update(final ViewerCell cell)
     {
-        final AlarmTree item = (AlarmTree) cell.getElement();
+        final AlarmTreeItem item = (AlarmTreeItem) cell.getElement();
         // Text
         cell.setText(getText(item));
 
@@ -60,7 +63,7 @@ public class AlarmTreeLabelProvider extends CellLabelProvider
         else
             cell.setImage(icon_provider.getIcon(item.getCurrentSeverity(),
                           item.getSeverity()));
-        
+
         // Color-code AlarmTreePV based on severity.
         final SeverityLevel severity = item.getSeverity();
         //  'OK' severity isn't color-coded.
@@ -80,14 +83,18 @@ public class AlarmTreeLabelProvider extends CellLabelProvider
      *  @param item AlarmTreeItem
      */
     @SuppressWarnings("nls")
-    public String getText(final AlarmTree item)
+    public String getText(final AlarmTreeItem item)
     {
         final StringBuilder buf = new StringBuilder(20);
         AlarmTreePV pv = null;
         switch (item.getPosition())
         {
         case PV:
-            pv = (AlarmTreePV) item;
+            // getPosition indicates that it's a PV, but check to please FindBugs
+            if (item instanceof AlarmTreePV)
+                pv = (AlarmTreePV) item;
+            else
+                throw new RuntimeException("Not a PV?");
             buf.append(Messages.AlarmPV);
             break;
         case Area:

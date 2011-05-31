@@ -1,13 +1,17 @@
+/*******************************************************************************
+ * Copyright (c) 2010 Oak Ridge National Laboratory.
+ * All rights reserved. This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License v1.0
+ * which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-v10.html
+ ******************************************************************************/
 package org.csstudio.opibuilder.widgets.model;
 
 import org.csstudio.opibuilder.model.AbstractPVWidgetModel;
 import org.csstudio.opibuilder.properties.BooleanProperty;
-import org.csstudio.opibuilder.properties.FontProperty;
 import org.csstudio.opibuilder.properties.IntegerProperty;
 import org.csstudio.opibuilder.properties.StringProperty;
 import org.csstudio.opibuilder.properties.WidgetPropertyCategory;
-import org.csstudio.opibuilder.util.MediaService;
-import org.csstudio.opibuilder.util.OPIFont;
 import org.eclipse.swt.graphics.RGB;
 
 /**
@@ -24,11 +28,6 @@ public class CheckBoxModel extends AbstractPVWidgetModel {
 	/** Text of the label. */
 	public static final String PROP_LABEL = "label"; //$NON-NLS-1$
 	
-	/**
-	 * Font of the label.
-	 */
-	public static final String PROP_FONT = "font"; //$NON-NLS-1$
-
 	/** True if the widget size can be automatically adjusted along with the text size. */
 	public static final String PROP_AUTOSIZE = "auto_size";	//$NON-NLS-1$
 	
@@ -48,8 +47,6 @@ public class CheckBoxModel extends AbstractPVWidgetModel {
 				WidgetPropertyCategory.Behavior, 0, -1, 63));		
 		addProperty(new StringProperty(PROP_LABEL, "Label",
 				WidgetPropertyCategory.Display, ""));	//$NON-NLS-1$	
-		addProperty(new FontProperty(PROP_FONT, "Font",
-				WidgetPropertyCategory.Display, MediaService.DEFAULT_FONT)); //$NON-NLS-1$
 		addProperty(new BooleanProperty(PROP_AUTOSIZE, "Auto Size", 
 				WidgetPropertyCategory.Display, false));
 	}
@@ -75,17 +72,6 @@ public class CheckBoxModel extends AbstractPVWidgetModel {
 	 */
 	public String getLabel() {
 		return (String) getProperty(PROP_LABEL).getPropertyValue();
-	}
-
-	
-	
-	/**
-	 * Return the label font.
-	 * 
-	 * @return The label font.
-	 */
-	public OPIFont getFont() {
-		return (OPIFont) getProperty(PROP_FONT).getPropertyValue();
 	}
 	
 	public boolean isAutoSize(){

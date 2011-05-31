@@ -24,10 +24,8 @@ package org.csstudio.opibuilder.widgets.model;
 import org.csstudio.opibuilder.model.AbstractPVWidgetModel;
 import org.csstudio.opibuilder.properties.ColorProperty;
 import org.csstudio.opibuilder.properties.DoubleProperty;
-import org.csstudio.opibuilder.properties.FontProperty;
 import org.csstudio.opibuilder.properties.IntegerProperty;
 import org.csstudio.opibuilder.properties.WidgetPropertyCategory;
-import org.csstudio.opibuilder.util.MediaService;
 import org.csstudio.opibuilder.util.OPIFont;
 import org.eclipse.draw2d.ColorConstants;
 import org.eclipse.swt.graphics.Color;
@@ -41,8 +39,6 @@ import org.eclipse.swt.graphics.RGB;
  * 
  */
 public class ThumbWheelModel extends AbstractPVWidgetModel {
-
-	public static final String PROP_FONT = "font"; //$NON-NLS-1$
 
 	public static final String PROP_MIN = "minimum"; //$NON-NLS-1$
 
@@ -58,7 +54,7 @@ public class ThumbWheelModel extends AbstractPVWidgetModel {
 
 	public static final String ID = "org.csstudio.opibuilder.widgets.ThumbWheel"; //$NON-NLS-1$
 
-	public static final String PROP_VALUE = "value"; //$NON-NLS-1$
+//	public static final String PROP_VALUE = "value"; //$NON-NLS-1$
 
 	private static final int DEFAULT_HEIGHT = 60;
 
@@ -99,32 +95,25 @@ public class ThumbWheelModel extends AbstractPVWidgetModel {
 	 */
 	@Override
 	protected void configureProperties() {
-		addProperty(new DoubleProperty(PROP_VALUE, "Value",
-				WidgetPropertyCategory.Behavior, 0));
+//		addProperty(new DoubleProperty(PROP_VALUE, "Value",
+//				WidgetPropertyCategory.Behavior, 0));
 		addProperty(new DoubleProperty(PROP_MIN, "Minimum",
 				WidgetPropertyCategory.Behavior, DEFAULT_MIN));
 		addProperty(new DoubleProperty(PROP_MAX, "Maximum",
 				WidgetPropertyCategory.Behavior, DEFAULT_MAX));
 		addProperty(new IntegerProperty(PROP_INTEGER_DIGITS_PART, 
-				"Integer digits", WidgetPropertyCategory.Behavior, DEFAULT_INTEGER_DIGITS));
+				"Integer Digits", WidgetPropertyCategory.Behavior, DEFAULT_INTEGER_DIGITS));
 		addProperty(new IntegerProperty(PROP_DECIMAL_DIGITS_PART, 
-				"Decimal digits", WidgetPropertyCategory.Behavior, DEFAULT_DECIMAL_DIGITS));
-
-		addProperty(new FontProperty(PROP_FONT, "Font", 
-				WidgetPropertyCategory.Display, MediaService.DEFAULT_FONT));
-
+				"Decimal Digits", WidgetPropertyCategory.Behavior, DEFAULT_DECIMAL_DIGITS));
 		addProperty(new ColorProperty(PROP_INTERNAL_FRAME_COLOR, 
-				"Internal frame color", WidgetPropertyCategory.Display,
+				"Internal Frame Color", WidgetPropertyCategory.Display,
 				ColorConstants.black.getRGB()));
 
 		addProperty(new IntegerProperty(PROP_INTERNAL_FRAME_THICKNESS, 
-				"Internal frame thickness", WidgetPropertyCategory.Display, 1));
+				"Internal Frame Thickness", WidgetPropertyCategory.Display, 1));
 
 	}
 
-	public OPIFont getFont(){
-		return (OPIFont)getCastedPropertyValue(PROP_FONT);
-	}
 
 	public void setFont(OPIFont font){
 		setPropertyValue(PROP_FONT, font);
@@ -146,9 +135,9 @@ public class ThumbWheelModel extends AbstractPVWidgetModel {
 		setPropertyValue(PROP_DECIMAL_DIGITS_PART, val);
 	}
 
-	public double getValue() {
-		return (Double)getProperty(PROP_VALUE).getPropertyValue();
-	}
+//	public double getValue() {
+//		return (Double)getProperty(PROP_VALUE).getPropertyValue();
+//	}
 
 	public int getInternalFrameThickness() {
 		return (Integer)getProperty(PROP_INTERNAL_FRAME_THICKNESS).getPropertyValue();

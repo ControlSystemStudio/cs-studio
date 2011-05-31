@@ -40,7 +40,7 @@ public final class XMeterEditPart extends AbstractMarkedWidgetEditPart {
 		registerCommonPropertyChangeHandlers();
 		
 		//needle Color
-		setPropertyChangeHandler(XMeterModel.PROP_NEEDLE_COLOR, new ColorChangeHander<RefreshableXMeterFigure>(){
+		setPropertyChangeHandler(XMeterModel.PROP_NEEDLE_COLOR, new ColorChangeHandler<RefreshableXMeterFigure>(){
 			@Override
 			protected void doHandle(RefreshableXMeterFigure figure, Color color) {
 				figure.setNeedleColor(color);

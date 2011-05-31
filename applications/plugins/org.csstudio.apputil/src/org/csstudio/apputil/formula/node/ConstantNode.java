@@ -15,29 +15,32 @@ import org.csstudio.apputil.formula.Node;
 public class ConstantNode implements Node
 {
     final double value;
-    
+
     public ConstantNode(final double value)
     {
         this.value = value;
     }
-    
+
+    @Override
     public double eval()
     {
         return value;
     }
-    
+
     /** {@inheritDoc} */
+    @Override
     public boolean hasSubnode(final Node node)
     {
         return false;
     }
 
     /** {@inheritDoc} */
+    @Override
     public boolean hasSubnode(final String node)
     {
         return false;
     }
-    
+
     @Override
     public String toString()
     {

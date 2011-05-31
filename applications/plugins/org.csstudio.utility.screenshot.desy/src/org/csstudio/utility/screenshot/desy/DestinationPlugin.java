@@ -67,16 +67,14 @@ public class DestinationPlugin  extends AbstractCssUiPlugin
 	}
 
     @Override
-    protected void doStart(BundleContext context) throws Exception
-    {
+    protected void doStart(BundleContext context) throws Exception {
         IWorkbench workbench = PlatformUI.getWorkbench();
-        
         window = workbench.getWorkbenchWindows()[0];
     }
 
     @Override
-    protected void doStop(BundleContext context) throws Exception
-    {
+    protected void doStop(BundleContext context) throws Exception {
+    	//Can be empty
     }
 
     @Override

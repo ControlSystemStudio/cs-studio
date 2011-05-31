@@ -1,56 +1,50 @@
+/*******************************************************************************
+ * Copyright (c) 2010 Oak Ridge National Laboratory.
+ * All rights reserved. This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License v1.0
+ * which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-v10.html
+ ******************************************************************************/
 package org.csstudio.opibuilder.widgets.actions;
 
-import org.csstudio.opibuilder.persistence.XMLUtil;
+import java.util.logging.Level;
+
 import org.csstudio.opibuilder.util.ConsoleService;
+import org.csstudio.opibuilder.widgets.Activator;
 import org.csstudio.opibuilder.widgets.editparts.TabEditPart;
-import org.csstudio.opibuilder.widgets.model.GroupingContainerModel;
-import org.csstudio.platform.logging.CentralLogger;
-import org.eclipse.draw2d.Label;
+import org.csstudio.opibuilder.widgets.editparts.TabItem;
+import org.csstudio.opibuilder.widgets.model.TabModel;
 import org.eclipse.gef.commands.Command;
-import org.eclipse.osgi.util.NLS;
 
 /**Duplicate a tab
  * @author Xihui Chen
  *
  */
 public class DuplicateTabCommand extends Command {
-	private int tabIndex;
-	private TabEditPart tabEditPart;
-	private GroupingContainerModel groupingContainer;
-	private Label label;
-	
-	public DuplicateTabCommand(TabEditPart tabEditPart) {
-		this.tabEditPart = tabEditPart;
+    final private int tabIndex;
+	final private TabModel tabModel;
+	private TabItem tabItem;
+
+	public DuplicateTabCommand(final TabEditPart tabEditPart) {
+		this.tabModel = tabEditPart.getWidgetModel();
 		this.tabIndex = tabEditPart.getActiveTabIndex()+1;
-		String xmlString = XMLUtil.WidgetToXMLString(tabEditPart.getGroupingContainer(tabIndex-1), false);
 		try {
-			this.groupingContainer = (GroupingContainerModel) XMLUtil.XMLStringToWidget(xmlString);
+			this.tabItem = tabEditPart.getTabItem(tabIndex -1).getCopy();
 		} catch (Exception e) {
-			String message = NLS.bind("Failed to duplicate this tab. \n {0}", e);
-			CentralLogger.getInstance().error(this, message, e);
+		    final String message = "Failed to duplicate tab";
+			Activator.getLogger().log(Level.WARNING, message , e);
 			ConsoleService.getInstance().writeError(message);
 		}
-		this.label = new Label();
-		Label oldLabel = tabEditPart.getTabLabel(tabIndex-1);
-		label.setText(oldLabel.getText());
-		label.setBackgroundColor(oldLabel.getBackgroundColor());
-		label.setForegroundColor(oldLabel.getForegroundColor());
-		label.setFont(oldLabel.getFont());
 		setLabel("Duplicate Tab");
 	}
-	
+
 	@Override
 	public void execute() {
-		tabEditPart.addTab(tabIndex, groupingContainer, label);
+		tabModel.addTab(tabIndex, tabItem);
 	}
-	
+
 	@Override
 	public void undo() {
-		tabEditPart.removeTab(tabIndex);
+		tabModel.removeTab(tabIndex);
 	}
-	
-	
-	
-	
-	
 }

@@ -22,11 +22,10 @@
 
 package org.epics.css.dal.spi;
 
+import java.util.ArrayList;
+
 import org.epics.css.dal.context.AbstractApplicationContext;
 import org.epics.css.dal.context.LifecycleState;
-import org.epics.css.dal.simulation.PropertyFactoryImpl;
-
-import java.util.ArrayList;
 
 
 /**
@@ -105,12 +104,14 @@ public class DefaultPropertyFactoryService implements PropertyFactoryService
 					    "Could not instantiate '" + cl.getName()
 					    + "' factory implementation: " + t);
 				}
+			} else {
+				throw new IllegalArgumentException(
+			    "Could not find factory implementation information in configuration.");
 			}
 
-			PropertyFactoryImpl simulator = new PropertyFactoryImpl();
-			simulator.initialize(ctx, linkPolicy);
-
-			return simulator;
+			//PropertyFactoryImpl simulator = new PropertyFactoryImpl();
+			//simulator.initialize(ctx, linkPolicy);
+			//return simulator;
 		}
 
 		Class cl;

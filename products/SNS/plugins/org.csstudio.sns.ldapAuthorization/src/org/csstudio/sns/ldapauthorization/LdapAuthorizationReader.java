@@ -1,28 +1,30 @@
-/* 
- * Copyright (c) 2008 Stiftung Deutsches Elektronen-Synchrotron, 
+/*
+ * Copyright (c) 2008 Stiftung Deutsches Elektronen-Synchrotron,
  * Member of the Helmholtz Association, (DESY), HAMBURG, GERMANY.
  *
- * THIS SOFTWARE IS PROVIDED UNDER THIS LICENSE ON AN "../AS IS" BASIS. 
- * WITHOUT WARRANTY OF ANY KIND, EXPRESSED OR IMPLIED, INCLUDING BUT NOT LIMITED 
- * TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR PARTICULAR PURPOSE AND 
- * NON-INFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE 
- * FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, 
- * TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR 
- * THE USE OR OTHER DEALINGS IN THE SOFTWARE. SHOULD THE SOFTWARE PROVE DEFECTIVE 
- * IN ANY RESPECT, THE USER ASSUMES THE COST OF ANY NECESSARY SERVICING, REPAIR OR 
- * CORRECTION. THIS DISCLAIMER OF WARRANTY CONSTITUTES AN ESSENTIAL PART OF THIS LICENSE. 
+ * THIS SOFTWARE IS PROVIDED UNDER THIS LICENSE ON AN "../AS IS" BASIS.
+ * WITHOUT WARRANTY OF ANY KIND, EXPRESSED OR IMPLIED, INCLUDING BUT NOT LIMITED
+ * TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR PARTICULAR PURPOSE AND
+ * NON-INFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE
+ * FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT,
+ * TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR
+ * THE USE OR OTHER DEALINGS IN THE SOFTWARE. SHOULD THE SOFTWARE PROVE DEFECTIVE
+ * IN ANY RESPECT, THE USER ASSUMES THE COST OF ANY NECESSARY SERVICING, REPAIR OR
+ * CORRECTION. THIS DISCLAIMER OF WARRANTY CONSTITUTES AN ESSENTIAL PART OF THIS LICENSE.
  * NO USE OF ANY SOFTWARE IS AUTHORIZED HEREUNDER EXCEPT UNDER THIS DISCLAIMER.
- * DESY HAS NO OBLIGATION TO PROVIDE MAINTENANCE, SUPPORT, UPDATES, ENHANCEMENTS, 
+ * DESY HAS NO OBLIGATION TO PROVIDE MAINTENANCE, SUPPORT, UPDATES, ENHANCEMENTS,
  * OR MODIFICATIONS.
- * THE FULL LICENSE SPECIFYING FOR THE SOFTWARE THE REDISTRIBUTION, MODIFICATION, 
- * USAGE AND OTHER RIGHTS AND OBLIGATIONS IS INCLUDED WITH THE DISTRIBUTION OF THIS 
- * PROJECT IN THE FILE LICENSE.HTML. IF THE LICENSE IS NOT INCLUDED YOU MAY FIND A COPY 
+ * THE FULL LICENSE SPECIFYING FOR THE SOFTWARE THE REDISTRIBUTION, MODIFICATION,
+ * USAGE AND OTHER RIGHTS AND OBLIGATIONS IS INCLUDED WITH THE DISTRIBUTION OF THIS
+ * PROJECT IN THE FILE LICENSE.HTML. IF THE LICENSE IS NOT INCLUDED YOU MAY FIND A COPY
  * AT HTTP://WWW.DESY.DE/LEGAL/LICENSE.HTM
  */
  package org.csstudio.sns.ldapauthorization;
 import java.util.HashMap;
 import java.util.Hashtable;
 import java.util.Map;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 import javax.naming.Context;
 import javax.naming.NamingEnumeration;
@@ -34,12 +36,11 @@ import javax.naming.directory.InitialDirContext;
 import javax.naming.directory.SearchControls;
 import javax.naming.directory.SearchResult;
 
-import org.csstudio.platform.logging.CentralLogger;
-import org.csstudio.platform.security.IAuthorizationProvider;
-import org.csstudio.platform.security.Right;
-import org.csstudio.platform.security.RightSet;
-import org.csstudio.platform.security.SecureStorage;
-import org.csstudio.platform.security.User;
+import org.csstudio.auth.security.IAuthorizationProvider;
+import org.csstudio.auth.security.Right;
+import org.csstudio.auth.security.RightSet;
+import org.csstudio.auth.security.SecureStorage;
+import org.csstudio.auth.security.User;
 import org.eclipse.core.runtime.Platform;
 import org.eclipse.core.runtime.preferences.IPreferencesService;
 import org.eclipse.osgi.util.NLS;
@@ -47,7 +48,7 @@ import org.eclipse.osgi.util.NLS;
 /**
  * Reads a user's roles and groups from an LDAP directory, and the rights
  * associated with actions from a configuration file.
- * 
+ *
  * @author Joerg Rathlev
  * @author Xihui Chen
  * @author Kay Kasemir
@@ -55,12 +56,12 @@ import org.eclipse.osgi.util.NLS;
 @SuppressWarnings("nls")
 public class LdapAuthorizationReader implements IAuthorizationProvider
 {
-    /** LDAP search context for users' rights */ 
+    /** LDAP search context for users' rights */
     private static final String USER_RIGHTS_CONTEXT = "ou=CSSGroupRole";
 
     /** LDAP Attribute that has the user name */
     private static final String USER_ATTRIB = "memberUid";
-    
+
     /** Tag in DN that's used as the 'Group' part of a Right */
     final static String RIGHT_GROUP_TAG = "ou=";
 
@@ -73,8 +74,9 @@ public class LdapAuthorizationReader implements IAuthorizationProvider
 	/** Given a user name, determine the user's rights,
 	 *  i.e. which roles the user has in which groups.
 	 *  @param user authenticated user name
-	 *  @see org.csstudio.platform.internal.ldapauthorization.IAuthorizationProvider#getRights(org.csstudio.platform.security.User)
+	 *  @see org.csstudio.auth.security.ldapauthorization.IAuthorizationProvider#getRights(org.csstudio.auth.security.User)
 	 */
+    @Override
     public RightSet getRights(final User user)
 	{
 		String username = user.getUsername();
@@ -83,19 +85,19 @@ public class LdapAuthorizationReader implements IAuthorizationProvider
 		// part of the name.
 		if (username.contains("@"))
 			username = username.substring(0, username.indexOf('@'));
-		
+
 		final RightSet rights = new RightSet("LDAP Rights");
 		try
 		{
 		    final DirContext ctx = new InitialDirContext(createEnvironment());
-			
+
 			final SearchControls ctrls = new SearchControls();
 			ctrls.setReturningAttributes(new String[] { USER_ATTRIB });
 			ctrls.setReturningObjFlag(true);
 			ctrls.setSearchScope(SearchControls.SUBTREE_SCOPE);
-			
-			final String filter = NLS.bind("({0}={1})", USER_ATTRIB, username);  
-			
+
+			final String filter = NLS.bind("({0}={1})", USER_ATTRIB, username);
+
 			final NamingEnumeration<SearchResult> results =
 				ctx.search(USER_RIGHTS_CONTEXT, filter, ctrls);
 			while (results.hasMore())
@@ -106,7 +108,7 @@ public class LdapAuthorizationReader implements IAuthorizationProvider
 		}
 		catch (NamingException e)
 		{
-			CentralLogger.getInstance().getLogger(this).error(
+		    Logger.getLogger(Activator.PLUGIN_ID).log(Level.WARNING,
 					"Error reading authorization for user: " + username, e);
 		}
 		return rights;
@@ -115,9 +117,10 @@ public class LdapAuthorizationReader implements IAuthorizationProvider
 
 	/** Determine the rights that are required to perform a given action
 	 *  @param actionId Action ID
-	 *  @see org.csstudio.platform.security.IAuthorizationProvider#getRights(java.lang.String)
+	 *  @see org.csstudio.auth.security.IAuthorizationProvider#getRights(java.lang.String)
 	 */
-	public RightSet getRights(final String actionId)
+	@Override
+    public RightSet getRights(final String actionId)
 	{
 		synchronized (this)
 		{
@@ -126,22 +129,22 @@ public class LdapAuthorizationReader implements IAuthorizationProvider
 		}
 		return actionsrights.get(actionId);
 	}
-	
+
 	/**
 	 * Loads the actions' rights from LDAP.
 	 */
 	private void loadActionRightsFromLdap()
 	{
 		actionsrights = new HashMap<String, RightSet>();
-		
+
 		try
 		{
 		    final DirContext ctx = new InitialDirContext(createEnvironment());
-			
+
 			final SearchControls ctrls = new SearchControls();
 			ctrls.setReturningObjFlag(false);
 			ctrls.setSearchScope(SearchControls.SUBTREE_SCOPE);
-			
+
 			final String filter = "(objectClass=cssAuthorizeID)";
 			final NamingEnumeration<SearchResult> results =
 				ctx.search("ou=CSSAuthorizeID", filter, ctrls);
@@ -156,36 +159,36 @@ public class LdapAuthorizationReader implements IAuthorizationProvider
 				if(groupRoleAttr !=null)
 					parseGroupRoleAttr(groupRoleAttr, rights);
 				actionsrights.put(authId, rights);
-		
+
 			}
-			CentralLogger.getInstance().debug(this, "Authorization " +
-					"information successfully loaded from LDAP directory.");
-			
+            Logger.getLogger(Activator.PLUGIN_ID).fine(
+                    "Authorization information successfully loaded from LDAP directory.");
+
 		}
 		catch (NamingException e)
 		{
-			CentralLogger.getInstance().error(this,
+            Logger.getLogger(Activator.PLUGIN_ID).log(Level.SEVERE,
 					"Error loading authorization information from LDAP directory.", e);
 		}
 	}
-	
+
 	/**
 	 * Parses cssGroupRole attribute into rights
 	 * @param groupRoleAttr
 	 * @param rights
 	 * @throws NamingException
 	 */
-	@SuppressWarnings("unchecked")
-	private void parseGroupRoleAttr(Attribute groupRoleAttr, RightSet rights)
-		throws NamingException 
-	{	
-		for(NamingEnumeration ae = groupRoleAttr.getAll(); ae.hasMore(); ) {
+	@SuppressWarnings("rawtypes")
+    private void parseGroupRoleAttr(Attribute groupRoleAttr, RightSet rights)
+		throws NamingException
+	{
+		for (NamingEnumeration ae = groupRoleAttr.getAll(); ae.hasMore(); ) {
 			String grp = (String) ae.next();
 			//each cssGroupRole attribute has a format of (group, role);
 			String group = grp.substring(1, grp.indexOf(",")).trim();
 			String role = grp.substring(grp.indexOf(",")+1, grp.indexOf(")")).trim();
-			rights.addRight(new Right(role, group));			
-		}		
+			rights.addRight(new Right(role, group));
+		}
 	}
 
 	/**
@@ -221,7 +224,7 @@ public class LdapAuthorizationReader implements IAuthorizationProvider
 		    env.put(Context.SECURITY_PRINCIPAL, user);
 	        env.put(Context.SECURITY_CREDENTIALS, password);
 	    }
-		
+
 		return env;
 	}
 }

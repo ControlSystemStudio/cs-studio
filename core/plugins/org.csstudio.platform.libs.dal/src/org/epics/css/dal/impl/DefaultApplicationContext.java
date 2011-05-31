@@ -26,7 +26,9 @@ import org.apache.log4j.Logger;
 import org.epics.css.dal.context.AbstractApplicationContext;
 import org.epics.css.dal.context.Identifier;
 import org.epics.css.dal.context.LifecycleReporterSupport;
+import org.epics.css.dal.spi.Plugs;
 
+import java.util.Hashtable;
 import java.util.Properties;
 
 
@@ -40,6 +42,7 @@ public class DefaultApplicationContext extends LifecycleReporterSupport
 	protected Properties configuration;
 	protected Identifier identificator;
 	private Logger logger;
+	private Hashtable<String, Object> properties; 
 
 	/**
 	 * Creates a new DefaultApplicationContext object.
@@ -62,6 +65,7 @@ public class DefaultApplicationContext extends LifecycleReporterSupport
 	{
 		if (configuration == null) {
 			configuration = new Properties(System.getProperties());
+			Plugs.configureSimulatorPlug(configuration);
 		}
 
 		return configuration;
@@ -121,6 +125,25 @@ public class DefaultApplicationContext extends LifecycleReporterSupport
 			return Logger.getLogger(getClass());
 		}
 		return logger;
+	}
+	
+	@Override
+	public Object getApplicationProperty(String keyName) {
+		if (properties==null || keyName==null) {
+			return null;
+		}
+		return properties.get(keyName);
+	}
+	
+	@Override
+	public synchronized void putApplicationProperty(String keyName, Object value) {
+		if (keyName==null) {
+			return;
+		}
+		if (properties==null) {
+			properties= new Hashtable<String, Object>();
+		}
+		properties.put(keyName, value);
 	}
 }
 

@@ -91,6 +91,7 @@ public class AddRemoveListFieldEditor extends FieldEditor
 	/**
 	 * @see org.eclipse.jface.preference.FieldEditor#adjustForNumColumns(int)
 	 */
+	@Override
 	protected void adjustForNumColumns(int numColumns)
     {
 	    ((GridData)top.getLayoutData()).horizontalSpan = numColumns;
@@ -100,6 +101,7 @@ public class AddRemoveListFieldEditor extends FieldEditor
 	 * @see org.eclipse.jface.preference.FieldEditor#doFillIntoGrid
 	 * (Composite, int)
 	 */
+	@Override
 	protected void doFillIntoGrid(Composite parent, int numColumns)
     {
 		top = parent;
@@ -125,6 +127,7 @@ public class AddRemoveListFieldEditor extends FieldEditor
 		list.setLayoutData(listData);
 		list.addSelectionListener(new SelectionAdapter()
         {
+			@Override
 			public void widgetSelected(SelectionEvent e)
             {
 				selectionChanged();
@@ -159,8 +162,8 @@ public class AddRemoveListFieldEditor extends FieldEditor
 		add.setText(DEFAULT_ADD_LABEL);
 		add.addSelectionListener(new SelectionAdapter()
         {
-			public void widgetSelected(SelectionEvent e)
-            {	
+			@Override
+			public void widgetSelected(SelectionEvent e) {	
 				add();
 			}	
 		});
@@ -175,6 +178,8 @@ public class AddRemoveListFieldEditor extends FieldEditor
 		remove.setEnabled(false);
 		remove.setText(DEFAULT_REMOVE_LABEL);
 		remove.addSelectionListener(new SelectionAdapter() {
+			
+			@Override
 			public void widgetSelected(SelectionEvent e) {	
 				list.remove(list.getSelectionIndex());
 				selectionChanged();
@@ -197,6 +202,7 @@ public class AddRemoveListFieldEditor extends FieldEditor
 	/**
 	 * @see org.eclipse.jface.preference.FieldEditor#doLoad()
 	 */
+	@Override
 	protected void doLoad()
     {
 		String items = getPreferenceStore().getString(getPreferenceName());
@@ -206,6 +212,7 @@ public class AddRemoveListFieldEditor extends FieldEditor
 	/**
 	 * @see org.eclipse.jface.preference.FieldEditor#doLoadDefault()
 	 */
+	@Override
 	protected void doLoadDefault()
     {
 		String items = getPreferenceStore().getDefaultString(getPreferenceName());
@@ -222,6 +229,7 @@ public class AddRemoveListFieldEditor extends FieldEditor
 	/**
 	 * @see org.eclipse.jface.preference.FieldEditor#doStore()
 	 */
+	@Override
 	protected void doStore()
     {
 		String s = createListString(list.getItems());
@@ -232,6 +240,7 @@ public class AddRemoveListFieldEditor extends FieldEditor
 	/**
 	 * @see org.eclipse.jface.preference.FieldEditor#getNumberOfControls()
 	 */
+	@Override
 	public int getNumberOfControls()
     {
 		// The button composite and the text field.
@@ -239,7 +248,7 @@ public class AddRemoveListFieldEditor extends FieldEditor
 	}
 
 	// Adds the string in the text field to the list.
-	private void add()
+	void add()
     {
 		String tag = textField.getText();
 		if (tag != null && tag.length() > 0)
@@ -310,7 +319,7 @@ public class AddRemoveListFieldEditor extends FieldEditor
 	
 	// Sets the enablement of the remove button depending
 	// on the selection in the list.
-	private void selectionChanged()
+	void selectionChanged()
     {
 		int index = list.getSelectionIndex();
 		remove.setEnabled(index >= 0);		

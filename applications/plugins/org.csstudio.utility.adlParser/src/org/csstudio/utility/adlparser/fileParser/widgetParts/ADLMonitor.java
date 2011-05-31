@@ -24,12 +24,9 @@
  */
 package org.csstudio.utility.adlparser.fileParser.widgetParts;
 
-//**import org.csstudio.sds.model.AbstractWidgetModel;
-import org.csstudio.utility.adlparser.internationalization.Messages;
-import org.csstudio.utility.adlparser.fileParser.ADLResource;
 import org.csstudio.utility.adlparser.fileParser.ADLWidget;
-import org.csstudio.utility.adlparser.fileParser.FileLine;
 import org.csstudio.utility.adlparser.fileParser.WrongADLFormatException;
+import org.csstudio.utility.adlparser.internationalization.Messages;
 
 /**
  * @author hrickens
@@ -37,176 +34,44 @@ import org.csstudio.utility.adlparser.fileParser.WrongADLFormatException;
  * @version $Revision$
  * @since 12.09.2007
  */
-public class ADLMonitor extends WidgetPart{
-	//TODO Strip out old code lines that refer to SDS implementations
+public class ADLMonitor extends ADLConnected {
 
-    /**
-     * The foreground Color (also Font color).
-     */
-    private int _clr;
-    /**
-     * The background Color.
-     */
-    private int _bclr;
-    /**
-     * The Channel.
-     */
-    private String _chan;
-  //**    /**
-  //**     * The Record property/Feldname.
-  //**     */
-  //**    private String _postfix="";
-    private boolean _isBackColorDefined;
-    private boolean _isForeColorDefined;
+	/**
+	 * The default constructor.
+	 * 
+	 * @param adlWidget
+	 *            An ADLWidget that correspond a ADL Monitor.
+	 * @param parentWidgetModel
+	 *            The Widget that set the parameter from ADLWidget.
+	 * @throws WrongADLFormatException
+	 *             Wrong ADL format or untreated parameter found.
+	 */
+	public ADLMonitor(final ADLWidget adlWidget) throws WrongADLFormatException {
+		super(adlWidget);
+	}
 
-    /**
-     * The default constructor.
-     * 
-     * @param monitor An ADLWidget that correspond a ADL Monitor. 
-     * @param parentWidgetModel The Widget that set the parameter from ADLWidget.
-     * @throws WrongADLFormatException Wrong ADL format or untreated parameter found.
-     */
-    public ADLMonitor(final ADLWidget monitor) throws WrongADLFormatException {
-        super(monitor);
-    }
+	/**
+	 * Default constructor
+	 */
+	public ADLMonitor() {
+		super();
+	}
 
-    /**
-     * {@inheritDoc}
-     */
-    @Override
-    void init() {
-        name = new String("monitor");
-        set_isBackColorDefined(false);
-        set_isForeColorDefined(false);
-    }
-    
-    /**
-     * {@inheritDoc}
-     */
-    @Override
-    final void parseWidgetPart(final ADLWidget monitor) throws WrongADLFormatException {
-        assert monitor.isType("monitor") : Messages.ADLMonitor_assertError_Begin+monitor.getType()+Messages.ADLMonitor_assertError_End; //$NON-NLS-1$
-
-        for (FileLine fileLine : monitor.getBody()) {
-            String parameter = fileLine.getLine();
-            if(parameter.trim().startsWith("//")){ //$NON-NLS-1$
-                continue;
-            }
-            String[] row = parameter.split("="); //$NON-NLS-1$
-            if(row.length!=2){
-                throw new WrongADLFormatException(Messages.ADLMonitor_WrongADLFormatException_Begin+parameter+Messages.ADLMonitor_WrongADLFormatException_End);
-            }
-            if(FileLine.argEquals(row[0], "clr")){ //$NON-NLS-1$
-                _clr=FileLine.getIntValue(row[1]);
-                set_isForeColorDefined(true);
-            }else if(FileLine.argEquals(row[0], "bclr")){ //$NON-NLS-1$
-                _bclr=FileLine.getIntValue(row[1]);
-                set_isBackColorDefined(true);
-            }else if(FileLine.argEquals(row[0], "chan")){   // chan and rdbk means both the same. Readback channel. //$NON-NLS-1$
-//**                _chan=ADLHelper.cleanString(row[1]);
-            	_chan = FileLine.getTrimmedValue(row[1]);
-
-            	//**                if(_chan[0].contains("[")) {
-//**                    uninit();
-//**                }
-            }else if(FileLine.argEquals(row[0], "rdbk")){ //$NON-NLS-1$
-            	_chan = FileLine.getTrimmedValue(row[1]);
-            	//**                _chan=ADLHelper.cleanString(row[1]);
-            }else {
-                throw new WrongADLFormatException(Messages.ADLMonitor_WrongADLFormatException_Parameter_Begin+row[0]+Messages.ADLMonitor_WrongADLFormatException_Parameter_End+parameter);
-            }
-        }
-    }
-
-    
-//**    /**
-  //**     * Generate all Elements from ADL Monitor Attributes.
-  //**     */
-  //**    @Override
-  //**    final void generateElements() {
-  //**        if(_clr!=null){
-  //**            _widgetModel.setColor(AbstractWidgetModel.PROP_COLOR_FOREGROUND, ADLHelper.getRGB(_clr));
-  //**        }
-  //**        if(_bclr!=null){
-  //**            _widgetModel.setColor(AbstractWidgetModel.PROP_COLOR_BACKGROUND, ADLHelper.getRGB(_bclr));
-  //**        }
-  //**        if(_chan!=null){
-  //**            /*
-  //**             * EDIT: Helge Rickens 21.11.08
-  //**             * Im alias ist der Postfix enthalten und wurde hier noch mal weiter gegeben.
-  //**             * Dadurch kam es das der Postfix doppelt gesetzt wurde. 
-  //**             */
-  //**//            _postfix = ADLHelper.setChan(_widgetModel,_chan);
-  //**            ADLHelper.setChan(_widgetModel,_chan);
-  //**        }
-  //**    }
-
-  //**    /**
-  //**     * 
-  //**     * @return the postfix (property/Feldname) of the record.
-  //**     */
-  //**    public final String getPostfix() {
-  //**       return _postfix;
-  //**    }
-
-    /**
-     * 
-     * @return get the Channel.
-     */
-    public final String getChan() {
-        return _chan;
-    }
-
+	/**
+	 * {@inheritDoc}
+	 */
 	@Override
-	public Object[] getChildren() {
-		Object[] ret = new Object[3];
-		ret[0] = new ADLResource(ADLResource.FOREGROUND_COLOR, _clr);
-		ret[1] = new ADLResource(ADLResource.BACKGROUND_COLOR, _bclr);
-		ret[2] = new ADLResource(ADLResource.CHANNEL, _chan);
-		return ret;
+	void init() {
+		name = new String("monitor");
+		_chan = String.valueOf("");
+		set_isForeColorDefined(false);
+		set_isBackColorDefined(false);
+		assertBeginMsg = Messages.ADLMonitor_AssertError_Begin;
+		assertEndMsg = Messages.ADLMonitor_AssertError_End;
+		exceptionBeginMsg = Messages.ADLMonitor_WrongADLFormatException_Begin;
+		exceptionEndMsg = Messages.ADLMonitor_WrongADLFormatException_End;
+		exceptionBeginParameterMsg = Messages.ADLMonitor_WrongADLFormatException_Parameter_Begin;
+		exceptionEndParameterMsg = Messages.ADLMonitor_WrongADLFormatException_Parameter_End;
+		oldChannelName = "rdbk";
 	}
-
-    /** 
-     * @return background Color
-     */
-    public int getBackgroundColor(){
-    	return _bclr;
-    }
-
-    /** 
-     * @return background Color
-     */
-    public int getForegroundColor(){
-    	return _clr;
-    }
-
-	/**
-	 * @param _isBackColorDefined the _isBackColorDefined to set
-	 */
-	private void set_isBackColorDefined(boolean _isBackColorDefined) {
-		this._isBackColorDefined = _isBackColorDefined;
-	}
-
-	/**
-	 * @return the _isBackColorDefined
-	 */
-	public boolean isBackColorDefined() {
-		return _isBackColorDefined;
-	}
-
-	/**
-	 * @param _isForeColorDefined the _isForeColorDefined to set
-	 */
-	private void set_isForeColorDefined(boolean _isForeColorDefined) {
-		this._isForeColorDefined = _isForeColorDefined;
-	}
-
-	/**
-	 * @return the _isForeColorDefined
-	 */
-	public boolean isForeColorDefined() {
-		return _isForeColorDefined;
-	}
-
 }
-

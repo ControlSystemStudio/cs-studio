@@ -10,7 +10,6 @@ package org.csstudio.alarm.beast.msghist.model;
 import java.util.Calendar;
 
 import org.csstudio.alarm.beast.msghist.rdb.MessageRDB;
-import org.csstudio.platform.logging.CentralLogger;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
@@ -48,7 +47,7 @@ abstract public class GetMessagesJob extends Job
      */
     public GetMessagesJob(
             final String url, final String user,
-            final String password, final String schema, 
+            final String password, final String schema,
             final Calendar start, final Calendar end,
             final MessagePropertyFilter filters[],
             final int max_properties)
@@ -68,7 +67,7 @@ abstract public class GetMessagesJob extends Job
     @Override
     protected IStatus run(final IProgressMonitor monitor)
     {
-        MessageRDB rdb = null; 
+        MessageRDB rdb = null;
         try
         {
             rdb = new MessageRDB(url, user, password, schema);
@@ -79,10 +78,10 @@ abstract public class GetMessagesJob extends Job
         }
         catch (final Throwable ex)
         {
-            CentralLogger.getInstance().getLogger(this).error(ex);
             // Switch to GUI thread for error message box
             Display.getDefault().asyncExec(new Runnable()
             {
+                @Override
                 public void run()
                 {
                     MessageDialog.openError(null, "Message Database Error", //$NON-NLS-1$
@@ -94,7 +93,7 @@ abstract public class GetMessagesJob extends Job
             rdb.close();
         return Status.OK_STATUS;
     }
-    
+
     /** Derived class must implement to handle received messages */
     abstract void gotMessages(final Message[] messages);
 }

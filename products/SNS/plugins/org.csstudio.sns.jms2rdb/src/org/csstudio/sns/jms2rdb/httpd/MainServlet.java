@@ -1,12 +1,17 @@
+/*******************************************************************************
+ * Copyright (c) 2010 Oak Ridge National Laboratory.
+ * All rights reserved. This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License v1.0
+ * which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-v10.html
+ ******************************************************************************/
 package org.csstudio.sns.jms2rdb.httpd;
 
 import java.util.Dictionary;
 import java.util.Enumeration;
-
 import javax.jms.JMSException;
 import javax.jms.MapMessage;
 
-import org.csstudio.platform.logging.CentralLogger;
 import org.csstudio.sns.jms2rdb.Activator;
 import org.csstudio.sns.jms2rdb.LogClientThread;
 import org.osgi.framework.Constants;
@@ -20,8 +25,8 @@ public class MainServlet extends AbstractServlet
 {
     /** Required by Serialize interface */
     private static final long serialVersionUID = 1L;
-    
-    final private LogClientThread log_client_thread;
+
+    final private transient LogClientThread log_client_thread;
 
     private final String app_name;
 
@@ -29,22 +34,22 @@ public class MainServlet extends AbstractServlet
     public MainServlet(final LogClientThread log_client_thread)
     {
         this.log_client_thread = log_client_thread;
-        
+
         final Dictionary<String, String> headers =
             Activator.getInstance().getBundle().getHeaders();
         app_name = headers.get(Constants.BUNDLE_NAME) + " " +
                    headers.get(Constants.BUNDLE_VERSION);
     }
-    
+
     /** Create status page */
     @SuppressWarnings("unchecked")
 	@Override
     protected void fillBody(final HTMLWriter html)
     {
         html.h1(app_name);
-        
+
         html.h2("Message Count: " + log_client_thread.getMessageCount());
-        
+
         html.openTable(1, new String [] { "Last Error" });
         html.tableLine(new String[] { log_client_thread.getLastError() });
         html.closeTable();
@@ -52,7 +57,7 @@ public class MainServlet extends AbstractServlet
         final MapMessage map = log_client_thread.getLastMessage();
         if (map == null)
             return;
-        
+
         html.openTable(2, new String [] { "Last JMS Message" });
 		try
 		{	// Dump all properties of last message
@@ -69,7 +74,6 @@ public class MainServlet extends AbstractServlet
 		}
 		catch (JMSException e)
 		{
-			CentralLogger.getInstance().getLogger(this).warn(e);
 	        html.tableLine(new String []
 	        {
         		"Error", e.getMessage()

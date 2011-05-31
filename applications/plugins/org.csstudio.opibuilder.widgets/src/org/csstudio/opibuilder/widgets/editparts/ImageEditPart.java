@@ -30,6 +30,7 @@ import org.csstudio.swt.widgets.figures.ImageFigure;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.draw2d.IFigure;
 import org.eclipse.draw2d.geometry.Dimension;
+import org.eclipse.swt.widgets.Display;
 
 /**
  * EditPart controller for the image widget.
@@ -40,6 +41,8 @@ import org.eclipse.draw2d.geometry.Dimension;
 public final class ImageEditPart extends AbstractWidgetEditPart {
 
 	
+
+	private int maxAttempts;
 
 	/**
 	 * Returns the casted model. This is just for convenience.
@@ -223,17 +226,28 @@ public final class ImageEditPart extends AbstractWidgetEditPart {
 	
 	@Override
 	public void deactivate() {
-		super.deactivate();
-		((ImageFigure) getFigure()).stopAnimation();
+		super.deactivate();		
 		((ImageFigure) getFigure()).dispose();
 	}
 	
-	private void autoSizeWidget(ImageFigure imageFigure) {
-		ImageModel model = (ImageModel)getModel();
-		imageFigure.setAutoSize(model.isAutoSize());
-		Dimension d = imageFigure.getAutoSizedDimension();
-		if(model.isAutoSize() && !model.getStretch() && d != null) 
-			model.setSize(d.width, d.height);
+	private void autoSizeWidget(final ImageFigure imageFigure) {
+		maxAttempts = 10;
+		Runnable task = new Runnable() {			
+			public void run() {
+				if(maxAttempts-- > 0 && imageFigure.isLoadingImage()){
+					Display.getDefault().timerExec(100, this);
+					return;
+				}
+				ImageModel model = (ImageModel)getModel();
+				imageFigure.setAutoSize(model.isAutoSize());
+				Dimension d = imageFigure.getAutoSizedDimension();
+				if(model.isAutoSize() && !model.getStretch() && d != null) 
+					model.setSize(d.width, d.height);
+				
+			}
+		};
+		Display.getDefault().timerExec(100, task);
+		
 	}
 	
 }

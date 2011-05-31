@@ -7,15 +7,19 @@
  ******************************************************************************/
 package org.csstudio.alarm.beast.annunciator;
 
-import org.eclipse.core.runtime.Plugin;
+import java.util.logging.Logger;
 
-/** The activator class controls the plug-in life cycle
+/** Not really an activator, just holds ID
  *  @author Kay Kasemir
- *  
- *    reviewed by Delphy 1/29/09
  */
-public class Activator extends Plugin {
-
+public class Activator
+{
 	/** The plug-in ID defined in MANIFEST.MF */
 	public static final String PLUGIN_ID = "org.csstudio.alarm.beast.annunciator"; //$NON-NLS-1$
+
+	/** @return Logger for plugin ID */
+	public static Logger getLogger()
+	{
+	    return Logger.getLogger(PLUGIN_ID);
+	}
 }

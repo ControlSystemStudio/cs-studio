@@ -35,11 +35,11 @@ import javax.naming.NamingException;
 import javax.naming.directory.DirContext;
 import javax.naming.ldap.InitialLdapContext;
 
-import org.apache.log4j.Logger;
-import org.csstudio.platform.AbstractPreference;
-import org.csstudio.platform.logging.CentralLogger;
-import org.csstudio.utility.ldap.LdapActivator;
+import org.csstudio.domain.desy.preferences.AbstractPreference;
+import org.csstudio.utility.ldap.LdapServiceImplActivator;
 import org.csstudio.utility.ldap.preference.LdapPreference;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * The LDAP Connector.
@@ -50,8 +50,9 @@ import org.csstudio.utility.ldap.preference.LdapPreference;
  * @since 12.04.2007
  */
 public class LDAPConnector {
-    private static final Logger LOG = CentralLogger.getInstance().getLogger(LDAPConnector.class);
 
+    private static final Logger LOG = LoggerFactory.getLogger(LDAPConnector.class);
+    
     private InitialLdapContext _ctx = null;
 
     private Map<String, String> _contextPrefs = Collections.emptyMap();
@@ -73,12 +74,7 @@ public class LDAPConnector {
     }
 
     private void logError(@Nonnull final NamingException e) {
-        LOG.error(e);
-        LOG.error("The follow setting(s) are invalid: \r\n"
-                  +"RemainingName: " + e.getRemainingName()+"\r\n"
-                  +"ResolvedObj: " + e.getResolvedObj()+"\r\n"
-                  +"Explanation: " + e.getExplanation()
-        );
+        LOG.error("The LDAP settings are invalid.", e);
     }
 
     /**
@@ -118,14 +114,14 @@ public class LDAPConnector {
     private Map<String, String> createContextPrefsFromLdapPrefs() {
 
         LOG.debug("++++++++++++++++++++++++++++++++++++++++++++++");
-        LOG.debug("+ PLUGIN_ID: " + LdapActivator.PLUGIN_ID);
+        LOG.debug("+ PLUGIN_ID: {}", LdapServiceImplActivator.PLUGIN_ID);
 
         _contextPrefs = new HashMap<String, String>();
 
         for (final AbstractPreference<?> pref : LdapPreference.URL.getAllPreferences()) {
             final String key = pref.getKeyAsString();
             final String value = (String) pref.getValue();
-            LOG.debug("+ " + key + ": " + value);
+            LOG.debug("+ {}: {}", key,  value);
 
             if (!"".equals(pref.getValue())) { // put only non empty strings in the map
                 _contextPrefs.put( ((LdapPreference<?>) pref).getContextId(), value);

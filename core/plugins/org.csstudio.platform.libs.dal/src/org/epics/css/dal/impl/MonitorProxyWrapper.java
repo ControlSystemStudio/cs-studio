@@ -55,7 +55,7 @@ public class MonitorProxyWrapper<T, P extends SimpleProperty<T>> implements Resp
 	private DynamicValueListener<T, P> dvl;
 	private ListenerList dvls;
 	private MonitorProxy proxy;
-	private ListenerList plistners = new ListenerList(PropertyChangeListener.class);
+	private ListenerList plistners;
 	private P property;
 	private Object lastValue = null;
 	private DynamicValueCondition lastCondition;
@@ -365,6 +365,9 @@ public class MonitorProxyWrapper<T, P extends SimpleProperty<T>> implements Resp
 	 */
 	public void addPropertyChangeListener(PropertyChangeListener l)
 	{
+		if (plistners==null) {
+			plistners = new ListenerList(PropertyChangeListener.class);
+		}
 		plistners.add(l);
 	}
 
@@ -417,8 +420,9 @@ public class MonitorProxyWrapper<T, P extends SimpleProperty<T>> implements Resp
 	 */
 	public PropertyChangeListener[] getPropertyChangeListeners()
 	{
-		return (PropertyChangeListener[])plistners.toArray(new PropertyChangeListener[plistners
-		    .size()]);
+		return plistners == null 
+			? new PropertyChangeListener[0] 
+			: (PropertyChangeListener[])plistners.toArray(new PropertyChangeListener[plistners.size()]);
 	}
 
 	/* (non-Javadoc)
@@ -426,7 +430,9 @@ public class MonitorProxyWrapper<T, P extends SimpleProperty<T>> implements Resp
 	 */
 	public void removePropertyChangeListener(PropertyChangeListener l)
 	{
-		plistners.remove(l);
+		if (plistners!=null) {
+			plistners.remove(l);
+		}
 	}
 
 	/* (non-Javadoc)
@@ -477,7 +483,9 @@ public class MonitorProxyWrapper<T, P extends SimpleProperty<T>> implements Resp
 			destroy();
 			dvls=null;
 			dvl=null;
-			plistners.clear();
+			if (plistners!=null) {
+				plistners.clear();
+			}
 		}
 		MonitorProxy p= proxy;
 		if (proxy != null) {

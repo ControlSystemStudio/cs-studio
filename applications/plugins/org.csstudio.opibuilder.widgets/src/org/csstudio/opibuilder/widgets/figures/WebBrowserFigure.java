@@ -1,10 +1,18 @@
+/*******************************************************************************
+ * Copyright (c) 2010 Oak Ridge National Laboratory.
+ * All rights reserved. This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License v1.0
+ * which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-v10.html
+ ******************************************************************************/
 package org.csstudio.opibuilder.widgets.figures;
 
 
 import org.csstudio.opibuilder.model.AbstractContainerModel;
-import org.csstudio.platform.ui.util.CustomMediaFactory;
-import org.csstudio.platform.ui.util.UIBundlingThread;
+import org.csstudio.ui.util.CustomMediaFactory;
+import org.csstudio.ui.util.thread.UIBundlingThread;
 import org.eclipse.draw2d.Graphics;
+import org.eclipse.swt.SWT;
 import org.eclipse.swt.browser.Browser;
 import org.eclipse.swt.graphics.Color;
 import org.eclipse.swt.widgets.Composite;
@@ -26,11 +34,16 @@ public class WebBrowserFigure extends AbstractSWTWidgetFigure {
 	
 	
 	public WebBrowserFigure(Composite composite, AbstractContainerModel parentModel, boolean runmode) {
+		this(composite, parentModel, runmode, true);
+	}
+	
+	public WebBrowserFigure(Composite composite, AbstractContainerModel parentModel, 
+			boolean runmode, boolean showToolbar) {
 		super(composite, parentModel);
 		this.runmode = runmode;
 		if(runmode){
 			browserViewer = new BrowserViewer(
-					composite, BrowserViewer.BUTTON_BAR | BrowserViewer.LOCATION_BAR){
+					composite, showToolbar? BrowserViewer.BUTTON_BAR | BrowserViewer.LOCATION_BAR :SWT.None){
 				@Override
 				public void setBounds(int x, int y, int width,
 						int height) {

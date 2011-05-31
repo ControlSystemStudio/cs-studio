@@ -48,15 +48,17 @@ import org.csstudio.utility.ldap.LdapTestHelper;
 import org.csstudio.utility.ldap.LdapTestTreeBuilder;
 import org.csstudio.utility.ldap.service.ILdapContentModelBuilder;
 import org.csstudio.utility.ldap.service.ILdapReadCompletedCallback;
+import org.csstudio.utility.ldap.service.ILdapReaderJob;
 import org.csstudio.utility.ldap.service.ILdapSearchResult;
 import org.csstudio.utility.ldap.service.ILdapService;
+import org.csstudio.utility.ldap.service.LdapServiceException;
+import org.csstudio.utility.ldap.service.util.LdapUtils;
 import org.csstudio.utility.ldap.treeconfiguration.LdapEpicsControlsConfiguration;
 import org.csstudio.utility.ldap.utils.LdapSearchParams;
 import org.csstudio.utility.ldap.utils.LdapSearchResult;
-import org.csstudio.utility.ldap.utils.LdapUtils;
 import org.csstudio.utility.treemodel.ContentModel;
 import org.csstudio.utility.treemodel.CreateContentModelException;
-import org.csstudio.utility.treemodel.ISubtreeNodeComponent;
+import org.csstudio.utility.treemodel.INodeComponent;
 import org.eclipse.core.runtime.jobs.Job;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
@@ -123,20 +125,23 @@ public class LdapServiceImplHeadlessTest {
                                                            SearchControls.SUBTREE_SCOPE);
         Assert.assertNotNull(result);
 
-        final ILdapContentModelBuilder builder = LDAP_SERVICE.getLdapContentModelBuilder(VIRTUAL_ROOT, result);
-        Assert.assertNotNull(builder);
 
         try {
+            final ILdapContentModelBuilder<LdapEpicsControlsConfiguration> builder 
+                = LDAP_SERVICE.getLdapContentModelBuilder(VIRTUAL_ROOT, result);
+            Assert.assertNotNull(builder);
             builder.build();
+            final ContentModel<LdapEpicsControlsConfiguration> model = builder.getModel();
+            final Map<String, INodeComponent<LdapEpicsControlsConfiguration>> records =
+                model.getByType(RECORD);
+            Assert.assertEquals(4, records.size());
         } catch (final CreateContentModelException e) {
             Assert.fail("Content model could not be created.");
+        } catch (LdapServiceException e) {
+            Assert.fail("Content model could not be created.");
         }
-        final ContentModel<LdapEpicsControlsConfiguration> model = builder.getModel();
 
-        final Map<String, ISubtreeNodeComponent<LdapEpicsControlsConfiguration>> records =
-            model.getByType(RECORD);
 
-        Assert.assertEquals(4, records.size());
     }
 
     @Test
@@ -145,16 +150,15 @@ public class LdapServiceImplHeadlessTest {
             LdapUtils.createLdapName(FACILITY.getNodeTypeName(), EFAN_NAME,
                                      UNIT.getNodeTypeName(), UNIT.getUnitTypeValue());
 
-        final ILdapSearchResult result = new LdapSearchResult();
         final Holder<Boolean> read = new Holder<Boolean>(Boolean.FALSE);
-        final Job job = LDAP_SERVICE.createLdapReaderJob(new LdapSearchParams(name, LdapUtils.any(RECORD.getNodeTypeName())),
-                                                         result,
-                                                         new ILdapReadCompletedCallback() {
-                                                            @Override
-                                                            public void onLdapReadComplete() {
-                                                                read.setValue(Boolean.TRUE);
-                                                            }
-                                                        });
+        final ILdapReaderJob job = 
+            LDAP_SERVICE.createLdapReaderJob(new LdapSearchParams(name, LdapUtils.any(RECORD.getNodeTypeName())),
+                                             new ILdapReadCompletedCallback() {
+                                                @Override
+                                                public void onLdapReadComplete() {
+                                                    read.setValue(Boolean.TRUE);
+                                                }
+                                             });
         job.schedule();
         try {
             job.join();
@@ -162,7 +166,7 @@ public class LdapServiceImplHeadlessTest {
             Assert.fail("Not supposed to be interrupted.");
         }
         Assert.assertTrue(read.getValue());
-        Assert.assertEquals(4, result.getAnswerSet().size());
+        Assert.assertEquals(4, job.getSearchResult().getAnswerSet().size());
     }
 
     @Test
@@ -245,6 +249,8 @@ public class LdapServiceImplHeadlessTest {
         } catch (final InvalidNameException e) {
             Assert.fail("Unexpected exception:\n" + e.getMessage());
         } catch (final CreateContentModelException e) {
+            Assert.fail("Content model could not be created:\n" + e.getMessage());
+        } catch (LdapServiceException e) {
             Assert.fail("Content model could not be created:\n" + e.getMessage());
         }
     }

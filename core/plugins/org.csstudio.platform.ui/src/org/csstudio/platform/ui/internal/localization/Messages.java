@@ -42,53 +42,22 @@ public final class Messages extends NLS {
 	public static String CssWorkbenchAdvisor_NotLoggedIn;
 
 	public static String ExportPreferencesAction_DialogTitle;
-
 	public static String ExportPreferencesAction_ErrorMessage;
-
 	public static String ExportPreferencesAction_FileTypeDescription;
-
 	public static String ExportPreferencesAction_IncludeDefaultsQuestion;
 
-	public static String SystemPropertiesPreferencePage_ABOUT_TEXT;
-
-	public static String SystemPropertiesPreferencePage_ADD_BUTTON;
-
-	public static String SystemPropertiesPreferencePage_KEY_COLUMN_LABEL;
-
-	public static String SystemPropertiesPreferencePage_REMOVE_BUTTON;
-
-	public static String SystemPropertiesPreferencePage_VALUE_COLUMN_LABEL;
-
-	public static String SystemPropertyDialog_KEY_LABEL;
-
-	public static String SystemPropertyDialog_TITLE;
-
-	public static String SystemPropertyDialog_VALUE_LABEL;
-
 	public static String WorkbenchActionBuilder_CSS_ALARM_MENU;
-
 	public static String WorkbenchActionBuilder_CSS_CONFIGURATION_MENU;
-
 	public static String WorkbenchActionBuilder_CSS_DEBUGGING_MENU;
-
 	public static String WorkbenchActionBuilder_CSS_DIAGNOSTICS_MENU;
-
 	public static String WorkbenchActionBuilder_CSS_DISPLAY_MENU;
-
 	public static String WorkbenchActionBuilder_CSS_EDITORS_MENU;
-
 	public static String WorkbenchActionBuilder_CSS_MANAGEMENT_MENU;
-
 	public static String WorkbenchActionBuilder_CSS_MENU;
-
 	public static String WorkbenchActionBuilder_CSS_OTHER_MENU;
-
 	public static String WorkbenchActionBuilder_CSS_TEST_MENU;
-
 	public static String WorkbenchActionBuilder_CSS_TRENDS_MENU;
-
 	public static String WorkbenchActionBuilder_CSS_UTILITIES_MENU;
-
     public static String WorkbenchActionBuilder_SHOW_VIEW;
     public static String WorkbenchActionBuilder_MENU_FILE;
     public static String WorkbenchActionBuilder_MENU_FILE_NEW;
@@ -96,24 +65,6 @@ public final class Messages extends NLS {
     public static String WorkbenchActionBuilder_MENU_HELP;
     public static String WorkbenchActionBuilder_OPEN_PERSPECTIVE;
     public static String WorkbenchActionBuilder_MENU_WINDOW;
-
-    public static String LoginDialog_WINDOW_TITLE;
-    public static String LoginDialog_DIALOG_TITLE;
-    public static String LoginDialog_DIALOG_DESCRIPTION;
-    public static String LoginDialog_USER_NAME;
-    public static String LoginDialog_PASSWORD;
-
-    public static String LoginInformationToolbar_ButtonText;
-
-	public static String LoginInformationToolbar_CSS;
-
-	public static String LoginInformationToolbar_System;
-
-	public static String LoginInformationToolbar_Teaser;
-
-	public static String LoginInformationToolbar_Title;
-
-	public static String LoginInformationToolbar_Xmpp;
 
 	public static String Console_CONSOLE_TITLE;
 
@@ -175,15 +126,10 @@ public final class Messages extends NLS {
     public static String SaveAsDialog_QUESTION;
 
 	public static String StringTableEditor_AddRowText;
-
 	public static String StringTableEditor_DefaultColumnHeader;
-
 	public static String StringTableEditor_DeleteToolTip;
-
 	public static String StringTableEditor_EditToolTip;
-
     public static String StringTableEditor_MoveDownToolTip;
-
 	public static String StringTableEditor_MoveUpToolTip;
 
 	public static String ContainerSelectionGroup_TITLE;

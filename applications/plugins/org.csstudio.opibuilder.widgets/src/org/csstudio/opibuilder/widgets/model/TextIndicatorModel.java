@@ -1,10 +1,17 @@
+/*******************************************************************************
+ * Copyright (c) 2010 Oak Ridge National Laboratory.
+ * All rights reserved. This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License v1.0
+ * which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-v10.html
+ ******************************************************************************/
 package org.csstudio.opibuilder.widgets.model;
 
 import org.csstudio.opibuilder.properties.BooleanProperty;
 import org.csstudio.opibuilder.properties.ComboProperty;
 import org.csstudio.opibuilder.properties.IntegerProperty;
 import org.csstudio.opibuilder.properties.WidgetPropertyCategory;
-import org.csstudio.platform.ui.util.CustomMediaFactory;
+import org.csstudio.ui.util.CustomMediaFactory;
 
 /**The model for text indicator.
  * @author Xihui Chen
@@ -16,8 +23,9 @@ public class TextIndicatorModel extends LabelModel {
 		DEFAULT("Default"),
 		DECIAML("Decimal"),
 		EXP("Exponential"),
-		HEX("Hex"),
-		STRING("String");
+		HEX("Hex 32"),		
+		STRING("String"),
+		HEX64("Hex 64");
 		
 		private String description;
 		private FormatEnum(String description) {
@@ -42,7 +50,8 @@ public class TextIndicatorModel extends LabelModel {
 	public static final String PROP_FORMAT_TYPE = "format_type";	//$NON-NLS-1$
 	public static final String PROP_PRECISION = "precision";	//$NON-NLS-1$
 	public static final String PROP_PRECISION_FROM_DB = "precision_from_pv";	//$NON-NLS-1$
-	public static final String PROP_SHOW_UNITS = "show_units";	
+	public static final String PROP_SHOW_UNITS = "show_units"; //$NON-NLS-1$		
+	public static final String PROP_WRAP_WORDS = "wrap_words"; //$NON-NLS-1$	
 	
 	
 	public TextIndicatorModel() {
@@ -72,9 +81,11 @@ public class TextIndicatorModel extends LabelModel {
 		addProperty(new IntegerProperty(PROP_PRECISION, "Precision", category, 0, 0, 100));
 		addProperty(new BooleanProperty(PROP_PRECISION_FROM_DB, "Precision from PV", category, true));
 		addProperty(new BooleanProperty(PROP_SHOW_UNITS, "Show Units", category, true));
+		addProperty(new BooleanProperty(PROP_WRAP_WORDS, "Wrap Words", 
+				WidgetPropertyCategory.Display, false));
 		
 		setPropertyValue(PROP_TEXT, "######");
-		setPropertyValue(PROP_ALIGN_H, 1);
+		setPropertyValue(PROP_ALIGN_H, 0);
 		setPropertyValue(PROP_ALIGN_V, 1);
 	}
 	
@@ -92,5 +103,8 @@ public class TextIndicatorModel extends LabelModel {
 	
 	public boolean isShowUnits(){
 		return (Boolean)getCastedPropertyValue(PROP_SHOW_UNITS);
+	}
+	public boolean isWrapWords(){
+		return (Boolean)getPropertyValue(PROP_WRAP_WORDS);
 	}
 }

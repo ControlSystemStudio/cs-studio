@@ -1,18 +1,23 @@
+/*******************************************************************************
+ * Copyright (c) 2010 Oak Ridge National Laboratory.
+ * All rights reserved. This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License v1.0
+ * which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-v10.html
+ ******************************************************************************/
 package org.csstudio.diag.pvfields.sns;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.util.ArrayList;
-
 import org.csstudio.diag.pvfields.model.PVFieldsAPI;
 import org.csstudio.diag.pvfields.model.PVInfo;
-import org.csstudio.platform.logging.CentralLogger;
 import org.csstudio.platform.utility.rdb.RDBUtil;
 
 /**
  * Implementation of PVFieldsAPI for SNS RDB and EPICS PVs
- * 
+ *
  * @author Dave Purcell
  * @author Kay Kasemir
  */
@@ -20,46 +25,33 @@ import org.csstudio.platform.utility.rdb.RDBUtil;
 public class SNSPVFieldsData implements PVFieldsAPI
 {
     final private RDBUtil rdbutil;
-    final private static String URL = "jdbc:oracle:thin:@(DESCRIPTION=(ADDRESS_LIST=(LOAD_BALANCE=OFF)(ADDRESS=(PROTOCOL=TCP)(HOST=172.31.75.138)(PORT=1521))(ADDRESS=(PROTOCOL=TCP)(HOST=172.31.75.141)(PORT=1521)))(CONNECT_DATA=(SERVICE_NAME=ics_prod_lba)))";
-    final private static String USER = "sns_reports";
-    final private static String PASSWORD = "sns";
-    private ArrayList<String> extraFields = new ArrayList<String>(); 
-    
-    // private static final String URL =
-    // "jdbc:oracle:thin:sns_reports/sns@//snsdev3.sns.ornl.gov:1521/devl";
+    private ArrayList<String> extraFields = new ArrayList<String>();
 
     public SNSPVFieldsData() throws Exception
     {
-    	try
-    	{
-    		rdbutil = RDBUtil.connect(URL, USER, PASSWORD, true);
-    	}
-    	catch (Exception ex)
-    	{
-    		CentralLogger.getInstance().getLogger(this).error("Cannot connect to RDB " + URL);
-    		throw ex;
-    	}
+		rdbutil = RDBUtil.connect(Preferences.getURL(), Preferences.getUser(), Preferences.getPassword(), true);
     }
 
-	public PVInfo [] getPVInfo(String pv_name, String field) throws Exception {
+	@Override
+    public PVInfo [] getPVInfo(String pv_name, String field) throws Exception {
 
 		final Connection connection = rdbutil.getConnection();
         final ArrayList<PVInfo> pvList = new ArrayList<PVInfo>();
-    	
-        /** Setup first portion of select statement */ 
+
+        /** Setup first portion of select statement */
         String pvSelect = "select distinct sgnl_id,rec_type_id, fld_id, dbd_type_id, fld_val, ioc_nm," +
         		" to_char(boot_dte,'Month DD, YYYY \"at\" HH:MI am') as boot_dte, file_nm ";
         String pvFrom	= "from epics.sgnl_fld_v ";
-        
-        /** Determine type of where clause for PV */ 
+
+        /** Determine type of where clause for PV */
         String pvPVWhere = "where sgnl_id = ? ";
         if (pv_name.contains("%")) pvPVWhere = "where sgnl_id like ? ";
-        
-        /** Determine type of where clause for the Field(s) */        
+
+        /** Determine type of where clause for the Field(s) */
         String pvFieldWhere = "";
         String unionClause = "";
         String orderByClause = " order by fld_id,sgnl_id";
-        
+
         // Useful field selector?
         if (field != null)
         {
@@ -77,13 +69,13 @@ public class SNSPVFieldsData implements PVFieldsAPI
                 final String fields[] = field.split("\\s*,\\s*");
                 if (fields.length >= 1)
                 {
-                    
+
                 	if (fields[0].contains("%")) pvFieldWhere = "and (fld_id like '" + fields[0] + "' ";
                 	else {
                 		pvFieldWhere = "and (fld_id = '" + fields[0] + "' ";
                 		extraFields.add(fields[0]);
                 	}
-                    
+
                 	for (int i=1; i<fields.length; ++i) {
                 		if (fields[i].contains("%")) pvFieldWhere += "or fld_id like '" + fields[i] + "' ";
                 		else {
@@ -91,32 +83,32 @@ public class SNSPVFieldsData implements PVFieldsAPI
                 			extraFields.add(fields[i]);
                 		}
                 	}
-                    
+
                 	pvFieldWhere += ") ";
                 }
             }
-        	
+
             if (field.contains("VAL"))
             {
             	unionClause = " union select distinct sgnl_id,rec_type_id, 'VAL', '', '', ioc_nm, " +
     			"to_char(boot_dte,'Month DD, YYYY \"at\" HH:MI am') as boot_dte, file_nm " +
     			"from epics.sgnl_fld_v ";
-            	if (pv_name.contains("%")) unionClause += "where sgnl_id like '"+ pv_name +"' "; 
-            	else unionClause += "where sgnl_id = '"+ pv_name +"' ";	
+            	if (pv_name.contains("%")) unionClause += "where sgnl_id like '"+ pv_name +"' ";
+            	else unionClause += "where sgnl_id = '"+ pv_name +"' ";
             }
         }
-        
+
         /** Query selected is dependent on the process variable passed */
         String pvStatement = pvSelect + pvFrom + pvPVWhere + pvFieldWhere + unionClause + orderByClause;
         final PreparedStatement select = connection.prepareStatement(pvStatement);
         select.setString(1, pv_name);
-        
+
         PVInfo pv = null;
         try
         {
 
             final ResultSet rset = select.executeQuery();
-            
+
             while (rset.next())
             {
                 if (pvList.size()==0 && !pv_name.contains("%") && field==null) {
@@ -130,7 +122,7 @@ public class SNSPVFieldsData implements PVFieldsAPI
     	                    "");
             				pvList.add(pv);
                 }
-                
+
             		pv =  new SNSPVField(rset.getString(1),
                             rset.getString(2),
                             rset.getString(6),
@@ -139,20 +131,20 @@ public class SNSPVFieldsData implements PVFieldsAPI
 		                    rset.getString(3),
 		                    rset.getString(4),
 		                    rset.getString(5));
-                  	
+
             		pvList.add(pv);
 
              	  if (extraFields.contains(rset.getString(3))) {
-             		 extraFields.remove(rset.getString(3)); 
+             		 extraFields.remove(rset.getString(3));
              	  }
- 
+
             }
             if (extraFields.size() > 0 || (pv_name.contains("%") && field==null ) )
             {
             	if (pv_name.contains("%")) {
             		String pvListSelect = "select distinct sgnl_id from epics.sgnl_fld_v where sgnl_id like ? ";
             		final PreparedStatement listSelect = connection.prepareStatement(pvListSelect,ResultSet.TYPE_SCROLL_SENSITIVE, ResultSet.CONCUR_READ_ONLY);
-            		listSelect.setString(1, pv_name);           
+            		listSelect.setString(1, pv_name);
             		final ResultSet pvListSet = listSelect.executeQuery();
 
             		if (field==null)
@@ -186,7 +178,7 @@ public class SNSPVFieldsData implements PVFieldsAPI
 	            }
             }
             rset.close();
-            
+
         }
         finally
         {

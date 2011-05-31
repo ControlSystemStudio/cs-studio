@@ -14,6 +14,7 @@ Require-Bundle: org.eclipse.ui,
  org.csstudio.platform.libs.dal,
  org.csstudio.platform.libs.epics,
  org.csstudio.platform.libs.epics.ui,
+ org.csstudio.platform.simpledal;bundle-version="1.0.0",
  org.csstudio.platform.utility.jms,
  org.junit4;bundle-version="4.3.1"
 Bundle-ClassPath: libs/derbyclient.jar,
@@ -30,3 +31,4 @@ Export-Package: org.csstudio.ams,
  org.csstudio.ams.gui,
  org.csstudio.ams.internal,
  org.csstudio.ams.internal.pages
+Bundle-Vendor: DESY <css-developer@desy.de>, Markus Moeller

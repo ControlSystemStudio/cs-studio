@@ -7,9 +7,11 @@
  ******************************************************************************/
 package org.csstudio.alarm.beast.msghist.gui;
 
+import org.csstudio.alarm.beast.msghist.Messages;
 import org.csstudio.alarm.beast.msghist.model.Message;
 import org.eclipse.jface.viewers.CellLabelProvider;
 import org.eclipse.jface.viewers.ViewerCell;
+import org.eclipse.osgi.util.NLS;
 
 /** CellLabelProvider that fills cells with ID of Message.
  *  @author Kay Kasemir
@@ -21,11 +23,11 @@ public class IDProvider extends CellLabelProvider
 	public String getToolTipText(final Object element)
     {
         final Message message = (Message) element;
-        return String.format("ID: %s", message.getId());
+        return NLS.bind(Messages.CellID_TTFmt, message.getId());
 	}
 
     @Override
-    public void update(ViewerCell cell)
+    public void update(final ViewerCell cell)
     {
         final Message message = (Message) cell.getElement();
         cell.setText(Integer.toString(message.getId()));

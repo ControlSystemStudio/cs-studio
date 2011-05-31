@@ -62,13 +62,25 @@
       </behavior>
       <behavior
             class="org.csstudio.sds.behavior.desy.LabelAlarmBehavior"
-            description="DESY Alarm+Con Default"
+            description="DESY Alarm+Con+without Units"
+            id="behavior.desy.label.alarmwithoutunit"
+            widgetTypeId="org.csstudio.sds.components.Label">
+      </behavior>
+      <behavior
+            class="org.csstudio.sds.behavior.desy.LabelAlarmBehaviorWithUnits"
+            description="DESY Alarm+Con+Units"
             id="behavior.desy.label.alarmdefault"
             widgetTypeId="org.csstudio.sds.components.Label">
       </behavior>
       <behavior
             class="org.csstudio.sds.behavior.desy.LabeConnectionBehavior"
-            description="DESY Connection Default"
+            description="DESY Connection without Units"
+            id="behavior.desy.label.connectionwithoutunits"
+            widgetTypeId="org.csstudio.sds.components.Label">
+      </behavior>
+      <behavior
+            class="org.csstudio.sds.behavior.desy.LabeConnectionBehaviorWithUnits"
+            description="DESY Connection Units"
             id="behavior.desy.label.connectiondefault"
             widgetTypeId="org.csstudio.sds.components.Label">
       </behavior>

@@ -84,7 +84,7 @@ LOGDIR=/usr/local/css/log/`hostname`
 LOG=$LOGDIR/css.$$
 
 # Limit PATH to minimum
-export PATH="/usr/local/java/jdk1.5.0_17/bin:/usr/local/css/alarm_scripts:/bin:/usr/bin:/usr/local/bin"
+export PATH="/usr/local/java/jdk1.6.0_21/bin:/usr/local/css/alarm_scripts:/bin:/usr/bin:/usr/local/bin"
 # Don't 'inherid' any Java or LD_..PATH
 export CLASSPATH=""
 export LD_LIBRARY_PATH=""
@@ -107,17 +107,4 @@ ulimit -c unlimited
 cd $LOGDIR ;
 $CSS/css -debug $OPTIONS -workspace_prompt $HOME/CSS-Workspaces/`hostname` -consoleLog -share_link /ade/css/Share -pluginCustomization $INI "$@" 2>&1
 ) >$LOG &
-
-
-  
-* Site log
-
-HOST         UPDATE      Java         CSS    Comment
-srv02        2010/05/13  jdk1.6       2.x.x  at 2.0.0 
-testf1       2010/04/26  jdk1.6.0_17  1.2.0  Locally built jca.so from 1.0.21 source (g++ version issue). Oracle connection fails intermittently
-accl1/2      2010/05/13  jdk1.5.0_17  2.x.x  at 2.0.0 (not used)
-cf-ics-srv1  2010/04/26  jdk1.5.0_17  1.2.0
-tgt-ics-srv1 2009/07/16  jdk1.5.0_07  1.0.19
-Cryo         2009/07/?   jdk1.5.?     1.0.19 Steve
-
 

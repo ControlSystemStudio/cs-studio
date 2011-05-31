@@ -23,19 +23,25 @@
 package org.csstudio.opibuilder.actions;
 
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
 
 import org.csstudio.opibuilder.commands.WidgetCreateCommand;
 import org.csstudio.opibuilder.editor.OPIEditor;
+import org.csstudio.opibuilder.model.AbstractContainerModel;
 import org.csstudio.opibuilder.model.AbstractWidgetModel;
 import org.csstudio.opibuilder.model.DisplayModel;
-import org.eclipse.draw2d.geometry.Dimension;
 import org.eclipse.draw2d.geometry.Point;
+import org.eclipse.draw2d.geometry.PointList;
 import org.eclipse.draw2d.geometry.Rectangle;
+import org.eclipse.gef.EditPart;
+import org.eclipse.gef.GraphicalViewer;
 import org.eclipse.gef.commands.Command;
 import org.eclipse.gef.commands.CompoundCommand;
 import org.eclipse.gef.ui.actions.WorkbenchPartAction;
+import org.eclipse.jface.viewers.ISelection;
+import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.ui.ISharedImages;
@@ -88,7 +94,7 @@ public final class PasteWidgetsAction extends WorkbenchPartAction {
 	 */
 	public Command createPasteCommand() {
 		
-			DisplayModel targetModel = getOPIEditor().getDisplayModel();
+			AbstractContainerModel targetModel = getTargetContainerModel();
 
 			List<AbstractWidgetModel> widgets = getWidgetsFromClipboard();
 
@@ -98,9 +104,21 @@ public final class PasteWidgetsAction extends WorkbenchPartAction {
 				}
 				Control cursorControl = Display.getCurrent().getCursorControl();
 				
-				Dimension diff = calculatePositionDifference(cursorControl,
-						widgets);
-
+				Point pastePoint;
+				if(isCursorAboveTargetContainer(cursorControl, targetModel)){
+					pastePoint = getCursorRelativePositionToTargetContainer(
+							getCursorLocationOnDisplay(cursorControl), targetModel);
+					//move the cursor location so that the user could know he has pasted how many widgets.
+					Display.getCurrent().setCursorLocation(
+							_cursorLocation.x + 10, 
+							_cursorLocation.y + 10);
+				}else {
+					Random rand = new Random();
+					pastePoint = new Point(rand.nextInt(20), rand.nextInt(20));
+				}
+				
+				List<Point> intrinsicLocations = getWidgetsIntrinsicRelativePositions(widgets);
+				
 				CompoundCommand cmd = new CompoundCommand("Paste "
 						+ widgets.size() + " Widget"
 						+ (widgets.size() > 0 ? "s" : ""));
@@ -109,11 +127,14 @@ public final class PasteWidgetsAction extends WorkbenchPartAction {
 				
 					// create command
 					cmd.add(new WidgetCreateCommand(widgetModel, targetModel,
-							new Rectangle(widgetModel.getLocation().getTranslated(diff), 
-									widgetModel.getSize()), (i++ == 0? false : true)));
+							new Rectangle(
+									intrinsicLocations.get(i).translate(pastePoint), 
+									widgetModel.getSize()), 
+							(i== 0? false : true)));
+					i++;
 				
 				}
-
+				_cursorLocation = null;
 				return cmd;
 			}
 		
@@ -131,11 +152,18 @@ public final class PasteWidgetsAction extends WorkbenchPartAction {
 	 * @return true if the control is from the {@link DisplayEditor}, false
 	 *         otherwise
 	 */
-	private boolean isCursorAboveDisplayEditor(final Control cursorControl) {
+	private boolean isCursorAboveTargetContainer(final Control cursorControl, 
+			final AbstractContainerModel targetContainer) {
 		Control parent = cursorControl;
 		while (parent != null) {
-			if (parent.equals(getOPIEditor().getParentComposite())) {
-				return true;
+			if (parent.equals(getOPIEditor().getParentComposite())) {	
+				if(targetContainer instanceof DisplayModel)
+					 return true;
+				Rectangle targetAbsoluteBound = new Rectangle(
+						getAbsolutePosition(targetContainer), targetContainer.getSize());
+				return 
+					targetAbsoluteBound.contains(getCursorLocationOnDisplay(cursorControl));
+					
 			}
 			parent = parent.getParent();
 		}
@@ -159,70 +187,6 @@ public final class PasteWidgetsAction extends WorkbenchPartAction {
 		return null;
 	}
 
-	/**
-	 * Calculates the position offset for all widgets that will be added to the
-	 * current editor´s display model.
-	 * 
-	 * The position is calculated in a way that all new widgets are horizontally
-	 * and vertically centered in the currently open editor.
-	 * 
-	 * @param cursorControl
-	 *            the control where the mouse cursor is above
-	 * 
-	 * @param widgets
-	 *            all widgets that should be added
-	 * 
-	 * @return a position offset that has to be applied to all widgets before
-	 *         they are added to the current editor´s display model
-	 */
-	private Dimension calculatePositionDifference(final Control cursorControl,
-			final List<AbstractWidgetModel> widgets) {
-
-			// calculate the bounds that are used by all widgets
-			int upperLeftX = Integer.MAX_VALUE;
-			int upperLeftY = Integer.MAX_VALUE;
-			int lowerRightX = 0;
-			int lowerRightY = 0;
-
-			for (AbstractWidgetModel widgetModel : widgets) {
-				int x = widgetModel.getLocation().x;
-				int y = widgetModel.getLocation().y;
-				int w = widgetModel.getSize().width;
-				int h = widgetModel.getSize().height;
-				upperLeftX = (upperLeftX > x ? x : upperLeftX);
-				upperLeftY = (upperLeftY > y ? y : upperLeftY);
-				lowerRightX = (lowerRightX < (x + w) ? (x + w) : lowerRightX);
-				lowerRightY = (lowerRightY < (y + h) ? (y + h) : lowerRightY);
-			}
-
-			Point point = new Point(upperLeftX, upperLeftY);
-			Rectangle bounds = new Rectangle(point, new Point(lowerRightX,
-					lowerRightY));
-
-			Dimension diff;
-
-			if (isCursorAboveDisplayEditor(cursorControl)) {
-				org.eclipse.swt.graphics.Point cursorLocation = cursorControl
-						.toControl(_cursorLocation);
-				Point tmp = new Point(cursorLocation.x, cursorLocation.y);
-				diff = tmp.getDifference(point);
-				//move the cursor location so that the user could know he has pasted how many widgets.
-				Display.getCurrent().setCursorLocation(Display.getCurrent().getCursorLocation().x + 10, 
-						Display.getCurrent().getCursorLocation().y + 10);
-			} else {
-				Random rand = new Random();
-				
-				// calculate the shifting difference for center positioning
-				//add a random number so that the user could know he has pasted how many widgets.
-				Point tmp = getOPIEditor().getDisplayCenterPosition()
-						.getTranslated(-bounds.width / 2 + rand.nextInt(20),
-								-bounds.height / 2 + rand.nextInt(20));
-
-				diff = tmp.getDifference(point);
-			}
-			_cursorLocation = null;
-			return diff;
-	}
 
 	/**
 	 * Returns the currently open OPI editor.
@@ -254,4 +218,73 @@ public final class PasteWidgetsAction extends WorkbenchPartAction {
 	public void run() {
 		execute(createPasteCommand());		
 	}
+	
+	public AbstractContainerModel getTargetContainerModel(){
+		ISelection selection = ((GraphicalViewer)getOPIEditor().getAdapter(GraphicalViewer.class)).getSelection();
+		if(selection != null && selection instanceof IStructuredSelection
+				&& ((IStructuredSelection)selection).size() == 1){
+			Object obj = ((IStructuredSelection)selection).getFirstElement();
+			if(obj != null && obj instanceof EditPart){
+				if(((EditPart)obj).getModel() instanceof AbstractContainerModel
+						&& ((AbstractContainerModel) ((EditPart)obj).getModel()).isChildrenOperationAllowable()){
+					return (AbstractContainerModel) ((EditPart)obj).getModel();
+				}
+			}
+		}
+		return getOPIEditor().getDisplayModel();
+	}
+	
+	/**
+	 * @param widgetModel
+	 * @return the absolute position of a widget relative to display.
+	 */
+	private Point getAbsolutePosition(AbstractWidgetModel widgetModel){
+		if(widgetModel instanceof DisplayModel)
+			return widgetModel.getLocation();
+		
+		Point result = widgetModel.getLocation();
+		AbstractContainerModel parent = widgetModel.getParent();
+		while(!(parent instanceof DisplayModel)){
+			result.translate(parent.getLocation());
+			parent = parent.getParent();
+		}
+		return result;
+		
+	}
+	
+	private Point getCursorLocationOnDisplay(Control cursorControl){
+		org.eclipse.swt.graphics.Point swtPoint = cursorControl.toControl(_cursorLocation);
+		return new Point(swtPoint.x, swtPoint.y);
+	}
+	
+	private Point getCursorRelativePositionToTargetContainer(
+			Point cursorLocationOnDisplay, AbstractContainerModel targetContainer){
+		Point targetAbsolutePosition = getAbsolutePosition(targetContainer);
+		return cursorLocationOnDisplay.translate(-targetAbsolutePosition.x, -targetAbsolutePosition.y);
+	}
+	
+	private List<Point> getWidgetsIntrinsicRelativePositions(List<AbstractWidgetModel> widgets){
+
+		PointList pointList = new PointList(widgets.size());
+		for (AbstractWidgetModel widgetModel : widgets) {			
+			pointList.addPoint(widgetModel.getLocation());
+		}
+		
+		Point upperLeftCorner = pointList.getBounds().getLocation();
+		
+		List<Point> result = new ArrayList<Point>(widgets.size());
+		for(int i=0; i<widgets.size(); i++){
+			result.add(pointList.getPoint(i).translate(-upperLeftCorner.x, -upperLeftCorner.y));
+		}
+		
+		return result;
+	}
+
+	/**
+	 * Refresh the action's enable state hence the action bars.
+	 */
+	public void refreshEnable() {
+		refresh();
+	}	
+
 }

@@ -50,13 +50,13 @@ import org.eclipse.ui.part.ViewPart;
 public class DocumentViewer extends ViewPart {
 
     public static final String ID = "org.cssstudio.utility.documentViewer.DocumentViewer";
-    private final DocumentContend _documentContendFactory;
+    private final DocumentContent _documentContendFactory;
 
     /**
      * Constructor.
      */
     public DocumentViewer() {
-        _documentContendFactory = new DocumentContend();
+        _documentContendFactory = new DocumentContent();
     }
 
     /**
@@ -65,6 +65,7 @@ public class DocumentViewer extends ViewPart {
     @Override
     public void createPartControl(final Composite parent) {
         parent.setLayout(new GridLayout(3,false));
+        _documentContendFactory.createMessageArea(parent);
         _documentContendFactory.createPVList(parent);
         _documentContendFactory.createDocumentView(parent);
     }
@@ -77,6 +78,9 @@ public class DocumentViewer extends ViewPart {
         // TODO Auto-generated method stub
 
     }
+    
+
+
 
     /**
      * @param processVariables the processVariables to set
@@ -84,4 +88,5 @@ public class DocumentViewer extends ViewPart {
     public void setProcessVariables(final IProcessVariable[] processVariables) {
         _documentContendFactory.setProcessVariables(processVariables);
     }
+    
 }

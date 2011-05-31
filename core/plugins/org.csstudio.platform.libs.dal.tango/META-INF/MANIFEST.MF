@@ -17,3 +17,4 @@ Export-Package: org.csstudio.platform.libs.dal.tango,
  org.epics.css.dal.tango
 Bundle-ClassPath: .
 Import-Package: org.eclipse.ui.plugin
+Bundle-Vendor: Desy <css-developer@desy.de>, Helge Rickens

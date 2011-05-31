@@ -28,7 +28,8 @@ public class Messages extends NLS
     public static String SeverityLevel_OK;
     public static String Unknown;
     public static String VerboseAlarmDescriptionFmt;
-    
+    public static String VerboseAlarmPVDescriptionFmt;
+
     static
     {
         // initialize resource bundle

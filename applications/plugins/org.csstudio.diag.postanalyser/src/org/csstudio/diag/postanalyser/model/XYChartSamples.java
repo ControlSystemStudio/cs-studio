@@ -7,7 +7,7 @@ import org.csstudio.swt.chart.ChartSampleContainer;
 import org.csstudio.swt.chart.ChartSampleSequence;
 import org.csstudio.swt.chart.Range;
 
-/** Represents <code>x</code> and <code>y</code> arrays as 
+/** Represents <code>x</code> and <code>y</code> arrays as
  *  <code>ChartSampleSequence</code>.
  *  @author Kay Kasemir
  */
@@ -30,23 +30,26 @@ public class XYChartSamples implements ChartSampleSequence
     }
 
     /* @see org.csstudio.swt.chart.ChartSampleSequence#get(int) */
+    @Override
     public ChartSample get(int i)
     {
         return new ChartSampleContainer(x[i], y[i]);
     }
 
     /* @see org.csstudio.swt.chart.ChartSampleSequence#getDefaultRange() */
+    @Override
     public Range getDefaultRange()
     {
         return null;
     }
 
     /* @see org.csstudio.swt.chart.ChartSampleSequence#size() */
+    @Override
     public int size()
     {
         return y.length;
-    }   
-    
+    }
+
     /** @return the x */
     public double[] getX()
     {
@@ -58,7 +61,7 @@ public class XYChartSamples implements ChartSampleSequence
     {
         return y;
     }
-    
+
     /** Reduce the samples to start ... end on the 'x' axis */
     public void crop(final double start, final double end)
     {
@@ -76,7 +79,7 @@ public class XYChartSamples implements ChartSampleSequence
         x = new_x;
         y = new_y;
     }
-    
+
     /** Adjust all Y values to given base line */
     public void baseline(double baseline)
     {

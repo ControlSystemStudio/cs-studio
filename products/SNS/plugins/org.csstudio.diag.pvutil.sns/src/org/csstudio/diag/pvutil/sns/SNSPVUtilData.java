@@ -1,3 +1,10 @@
+/*******************************************************************************
+ * Copyright (c) 2010 Oak Ridge National Laboratory.
+ * All rights reserved. This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License v1.0
+ * which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-v10.html
+ ******************************************************************************/
 package org.csstudio.diag.pvutil.sns;
 
 import java.sql.Connection;
@@ -5,11 +12,9 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.util.ArrayList;
 
-import org.apache.log4j.Logger;
 import org.csstudio.diag.pvutil.model.FEC;
 import org.csstudio.diag.pvutil.model.PV;
 import org.csstudio.diag.pvutil.model.PVUtilDataAPI;
-import org.csstudio.platform.logging.CentralLogger;
 import org.csstudio.platform.utility.rdb.RDBUtil;
 
 /** Implementation of the PVUtilDataAPI for the SNS RDB
@@ -19,31 +24,29 @@ import org.csstudio.platform.utility.rdb.RDBUtil;
 public class SNSPVUtilData implements PVUtilDataAPI
 {
    final private RDBUtil rdbutil;
-   final private static String URL = "jdbc:oracle:thin:@(DESCRIPTION=(ADDRESS_LIST=(LOAD_BALANCE=OFF)(ADDRESS=(PROTOCOL=TCP)(HOST=172.31.75.138)(PORT=1521))(ADDRESS=(PROTOCOL=TCP)(HOST=172.31.75.141)(PORT=1521)))(CONNECT_DATA=(SERVICE_NAME=ics_prod_lba)))";
-   final private static String USER = "sns_reports";
-   final private static String PASSWORD = "sns";
-   
-  /** Connection to the SNS RDB. 
+
+  /** Connection to the SNS RDB.
    * Dictated by the string variable URL
-   * 
+   *
    * @throws Exception
    */
    public SNSPVUtilData() throws Exception
    {
-       rdbutil = RDBUtil.connect(URL, USER, PASSWORD, true);
+       rdbutil = RDBUtil.connect(Preferences.getURL(), Preferences.getUser(), Preferences.getPassword(), true);
     }
-	
+
 	/* (non-Javadoc)
 	 * @see org.csstudio.pvutil.model.PVUtilDataAPI#getFECs(java.lang.String)
 	 */
-	public FEC[] getFECs(String filter) throws Exception {		
+	@Override
+    public FEC[] getFECs(String filter) throws Exception {
 
 		filter = filter.trim();
-		
+
 		//filter = "%" + filter + "%";
 		final ArrayList<FEC> fecs = new ArrayList<FEC>();
 		final Connection connection = rdbutil.getConnection();
-		// This looks for beam line devices and FECs.  
+		// This looks for beam line devices and FECs.
 		// Other device types will have to be added if appropriate.
         String deviceSelect = " select 'bad sql happening' as dvc from dual";
         if (filter.length() <= 0) {
@@ -63,11 +66,8 @@ public class SNSPVUtilData implements PVUtilDataAPI
         			"                                where a.dvc_id = b.dvc_id) )" +
         			"        order by dvc_id";
         }
-        
-        System.out.println("Filter is: " + filter);
-        System.out.println(deviceSelect);
-		         
-        final PreparedStatement select = 
+
+        final PreparedStatement select =
             connection.prepareStatement
             (deviceSelect,ResultSet.TYPE_SCROLL_INSENSITIVE, ResultSet.CONCUR_READ_ONLY);
         try
@@ -91,7 +91,8 @@ public class SNSPVUtilData implements PVUtilDataAPI
 	/* (non-Javadoc)
 	 * @see org.csstudio.pvutil.model.PVUtilDataAPI#getPVs(java.lang.String, java.lang.String)
 	 */
-	public PV[] getPVs(String deviceID, String filterPV)throws Exception {
+	@Override
+    public PV[] getPVs(String deviceID, String filterPV)throws Exception {
 
 		final ArrayList<PV> pvs = new ArrayList<PV>();
 
@@ -103,16 +104,15 @@ public class SNSPVUtilData implements PVUtilDataAPI
 
         if (deviceID == "") deviceID = iocNetNm = WILDCARD;
         else iocNetNm = deviceID.replaceAll("([_:])", "-").toLowerCase();
-        
+
         if (filterPV.length() <= 0)  filterPV = WILDCARD;
 
-        
+
         String likeClause;
         if (filterPV.contains("%")) likeClause = "like upper(?)";
         else likeClause = "= upper(?)";
-        
 
-		Logger logger = CentralLogger.getInstance().getLogger(this);
+
 		/** Query selected is dependent on the filter values passed */
 		if (deviceID == WILDCARD  && filterPV != WILDCARD)
         {
@@ -122,7 +122,8 @@ public class SNSPVUtilData implements PVUtilDataAPI
             pvSelect += " union ";
             pvSelect += "select distinct sgnl_id,rec_type_id ||' record associated with: ' || dvc_id as info from epics.sgnl_rec where upper(sgnl_id) ";
             pvSelect += likeClause;
-            logger.debug("1: PV Filter - No Device");
+
+            Activator.getLogger().fine("1: PV Filter - No Device");
             select = connection.prepareStatement(pvSelect);
             select.setString(1, filterPV);
             select.setString(2, filterPV);
@@ -134,7 +135,7 @@ public class SNSPVUtilData implements PVUtilDataAPI
             		"union " +
             		"select distinct sgnl_id,rec_type_id ||' record associated with: ' || dvc_id as info  " +
             		"from epics.sgnl_rec where dvc_id = ?";
-            logger.debug("2: Device Filter - No PV");
+            Activator.getLogger().fine("2: Device Filter - No PV");
             select = connection.prepareStatement(pvSelect);
             select.setString(1, iocNetNm);
             select.setString(2, deviceID);
@@ -147,7 +148,7 @@ public class SNSPVUtilData implements PVUtilDataAPI
             pvSelect += " union ";
             pvSelect += "select distinct sgnl_id,rec_type_id ||' record associated with: ' || dvc_id as info from epics.sgnl_rec where dvc_id = ? and upper(sgnl_id) ";
             pvSelect += likeClause;
-            logger.debug("3: PV Filter and Device Filter ioc " + iocNetNm + "dvc " + deviceID + "rec " + filterPV);
+            Activator.getLogger().fine("3: PV Filter and Device Filter ioc " + iocNetNm + "dvc " + deviceID + "rec " + filterPV);
             select = connection.prepareStatement(pvSelect);
             select.setString(1, iocNetNm);
             select.setString(2, filterPV);
@@ -158,7 +159,7 @@ public class SNSPVUtilData implements PVUtilDataAPI
         {
         	/** Dummy query for default set up.  */
         	String pvSelect = "select distinct rec_nm,'info' as info from irmisbase.ioc_record_v where 1=2";
-            logger.debug("4: Setting up.");
+        	Activator.getLogger().fine("4: Setting up.");
             select = connection.prepareStatement(pvSelect);
         }
         try
@@ -181,14 +182,14 @@ public class SNSPVUtilData implements PVUtilDataAPI
                 	message = "No PVs found like '" + filterPV +"'";
                 }
                 else if (deviceID != "%S" && filterPV == "%") {
-                	message = "No PVs associated with '" + deviceID +"'";	
+                	message = "No PVs associated with '" + deviceID +"'";
                 }
                 else{
                 	message = "When combining '" + deviceID + "' and '" + filterPV +"'";
                 }
 
                 PV device = new PV("No PVs Found", message);
-                		
+
                 synchronized (pvs)
                 {
                     pvs.add(device);
@@ -199,7 +200,7 @@ public class SNSPVUtilData implements PVUtilDataAPI
         {
             select.close();
         }
-        
+
         // Convert to plain java array
         final PV[] pvArray = new PV[pvs.size()];
 		return pvs.toArray(pvArray);
@@ -207,13 +208,14 @@ public class SNSPVUtilData implements PVUtilDataAPI
 
 	/* (non-Javadoc)
 	 * @see org.csstudio.pvutil.model.PVUtilDataAPI#getStartDeviceID()
-	 * 
+	 *
 	 * This returns the filter to get the FEC list reduced upon initialization
-	 * of the plugin.  Wildcards should be included as 
+	 * of the plugin.  Wildcards should be included as
 	 * approriate for implementation.
 	 * Null can not be returned.
 	 */
-	public String getStartDeviceID()
+	@Override
+    public String getStartDeviceID()
 	{
 		return ":IOC";
 		//return "LLRF";

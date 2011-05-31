@@ -1,3 +1,10 @@
+/*******************************************************************************
+ * Copyright (c) 2010 Oak Ridge National Laboratory.
+ * All rights reserved. This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License v1.0
+ * which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-v10.html
+ ******************************************************************************/
 package org.csstudio.archive.rdb;
 
 import java.sql.PreparedStatement;
@@ -6,6 +13,7 @@ import java.sql.Statement;
 import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.logging.Level;
 
 import org.csstudio.archive.rdb.engineconfig.ChannelGroupConfig;
 import org.csstudio.archive.rdb.engineconfig.ChannelGroupHelper;
@@ -19,29 +27,28 @@ import org.csstudio.archive.rdb.internal.SQL;
 import org.csstudio.archive.rdb.internal.SampleModeHelper;
 import org.csstudio.archive.rdb.internal.SeverityCache;
 import org.csstudio.archive.rdb.internal.StatusCache;
-import org.csstudio.platform.data.IDoubleValue;
-import org.csstudio.platform.data.IEnumeratedMetaData;
-import org.csstudio.platform.data.IEnumeratedValue;
-import org.csstudio.platform.data.ILongValue;
-import org.csstudio.platform.data.INumericMetaData;
-import org.csstudio.platform.data.IStringValue;
-import org.csstudio.platform.data.IValue;
-import org.csstudio.platform.logging.CentralLogger;
+import org.csstudio.data.values.IDoubleValue;
+import org.csstudio.data.values.IEnumeratedMetaData;
+import org.csstudio.data.values.IEnumeratedValue;
+import org.csstudio.data.values.ILongValue;
+import org.csstudio.data.values.INumericMetaData;
+import org.csstudio.data.values.IStringValue;
+import org.csstudio.data.values.IValue;
 import org.csstudio.platform.utility.rdb.RDBUtil;
 import org.csstudio.platform.utility.rdb.RDBUtil.Dialect;
-import org.csstudio.platform.utility.rdb.TimeWarp;
 
 /**
  *  RDB Archive access
- *  
+ *
  *  This was the initial attempt to have one RDB archive library for the
  *  sample engine, the engine config tool and the Data Browser.
- *  
+ *
  *  The Data Browser now uses a separate 'archivereader' lib.
- *  
+ *
  *  TODO Split this into 3 pieces: Archive configuration, data readout, data writer.
- * 
+ *
  * @author Kay Kasemir
+ * @author Lana Abadie (PostgreSQL)
  */
 public class RDBArchive
 {
@@ -55,19 +62,19 @@ public class RDBArchive
 
     /** Database URL/user/password */
     final private String url, user, password;
-    
+
     /** Use the 'main' tables or the 'staging' tables? */
     final private boolean use_staging;
-    
+
     /** RDB connection */
     private RDBUtil rdb;
-    
+
     /** SQL statements */
     private SQL sql;
-    
+
     /** Channel (ID, name) cache */
     private ChannelCache channels;
-    
+
     /** Severity (ID, name) cache */
     private SeverityCache severities;
 
@@ -76,43 +83,43 @@ public class RDBArchive
 
     /** Prepared statement for inserting 'double' samples */
     private PreparedStatement insert_double_sample = null;
-    
+
     /** Prepared statement for inserting 'double' array samples */
     private PreparedStatement insert_double_array_sample = null;
 
     /** Prepared statement for inserting 'long' samples */
     private PreparedStatement insert_long_sample = null;
-    
+
     /** Prepared statement for inserting 'String' samples */
     private PreparedStatement insert_txt_sample = null;
-    
+
     /** Counter for accumulated samples in 'double' batch */
     private int batched_double_inserts = 0;
-    
+
     /** Counter for accumulated samples in 'double array' batch */
     private int batched_double_array_inserts = 0;
 
     /** Counter for accumulated samples in 'long' batch */
     private int batched_long_inserts = 0;
-    
+
     /** Counter for accumulated samples in 'String' batch */
     private int batched_txt_inserts = 0;
 
     private RetentionHelper retentions = null;
 
     private SampleMode sample_modes[] = null;
-    
+
     /** Enable debugging of batch submission */
     final public boolean debug_batch = true;
-    
+
     /** Local copy of batched samples, used to display batch errors */
-    private ArrayList<ChannelConfig> batched_channel = 
+    private final ArrayList<ChannelConfig> batched_channel =
         debug_batch ? new ArrayList<ChannelConfig>() : null;
-    private ArrayList<IValue> batched_samples = 
+    private final ArrayList<IValue> batched_samples =
         debug_batch ? new ArrayList<IValue>() : null;
-        
+
     /** Initialize, connect to RDB.
-     * 
+     *
      *  @param url URL, where "jdbc:oracle_stage:" handled like
      *             "jdbc:oracle:" except that it switches to the "staging"
      *             tables.
@@ -134,9 +141,9 @@ public class RDBArchive
         this.password = password;
         connect();
     }
-    
+
     /** Initialize, connect to RDB.
-     * 
+     *
      *  @param url URL, where "jdbc:oracle_stage:" handled like
      *             "jdbc:oracle:" except that it switches to the "staging"
      *             tables.
@@ -150,9 +157,9 @@ public class RDBArchive
     {
         return new RDBArchive(url, user, password);
     }
-    
+
     /** Initialize, connect to RDB.
-     * 
+     *
      *  @param url URL which must contain user/password info
      *  @throws Exception on error
      *  @see #connect(String, String, String)
@@ -177,27 +184,26 @@ public class RDBArchive
     {
         return sql;
     }
-    
+
     /** Connect to RDB */
     @SuppressWarnings("nls")
     private void connect() throws Exception
     {
         // Create new connection
-        CentralLogger.getInstance().getLogger(this).
-            debug("Connecting to '" + url + "' " +
+        Activator.getLogger().fine("Connecting to '" + url + "' " +
                   (use_staging ? "(stage)" : "(main)"));
         rdb = RDBUtil.connect(url, user, password, false);
         sql = new SQL(rdb.getDialect(), use_staging);
         channels = new ChannelCache(this);
         severities = new SeverityCache(rdb, sql);
         stati = new StatusCache(rdb, sql);
-        
+
         // TODO Remove Oracle test code
         if (false)
         {
             System.out.println("Enabling Oracle trace");
             final Statement stmt = rdb.getConnection().createStatement();
-            stmt.execute("alter session set tracefile_identifier='KayTest_max'"); 
+            stmt.execute("alter session set tracefile_identifier='KayTest_max'");
             stmt.execute("ALTER SESSION SET events " +
                          "'10046 trace name context forever, level 12'");
         }
@@ -221,9 +227,9 @@ public class RDBArchive
     }
 
     /** List of statements to cancel in cancel() */
-    private ArrayList<Statement> cancellable_statements =
+    private final ArrayList<Statement> cancellable_statements =
         new ArrayList<Statement>();
-    
+
     /** Cancel an ongoing RDB query.
      *  Not supported by all queries, but should work for basic
      *  sample readout via RawSampleIterator
@@ -232,7 +238,7 @@ public class RDBArchive
     {
         synchronized (cancellable_statements)
         {
-            for (Statement statement : cancellable_statements)
+            for (final Statement statement : cancellable_statements)
             {
                 try
                 {
@@ -242,18 +248,18 @@ public class RDBArchive
                     // Only this seems to do it:
                     statement.cancel();
                 }
-                catch (Exception ex)
+                catch (final Exception ex)
                 {
-                    CentralLogger.getInstance().getLogger(this).
-                        info("Attempt to cancel statment", ex); //$NON-NLS-1$
+                    Activator.getLogger().log(Level.INFO,
+                            "Attempt to cancel statment", ex); //$NON-NLS-1$
                 }
             }
         }
     }
-    
+
     /** Meant to be called only from within the RDBArchive code:
      *  Add a statement to the list of statements-to-cancel in cancel()
-     *  
+     *
      *  @param statement Statement to cancel
      *  @see #cancel()
      */
@@ -267,7 +273,7 @@ public class RDBArchive
 
     /** Meant to be called only from within the RDBArchive code:
      *  Remove a statement to the list of statements-to-cancel in cancel()
-     *  
+     *
      *  @param statement Statement that should no longer be cancelled
      *  @see #cancel()
      */
@@ -278,14 +284,14 @@ public class RDBArchive
             cancellable_statements.remove(statement);
         }
     }
-    
+
     /** Close the RDB connection.
      *  Clears all caches, deletes prepared statements etc.
      */
     @SuppressWarnings("nls")
     public void close()
     {
-        CentralLogger.getInstance().getLogger(this).debug("Disconnecting from '" + url + "'");
+        Activator.getLogger().fine("Disconnecting from '" + url + "'");
         if (sample_modes != null)
             sample_modes = null;
         if (retentions != null)
@@ -316,9 +322,9 @@ public class RDBArchive
             {
                 insert_double_sample.close();
             }
-            catch (Exception ex)
+            catch (final Exception ex)
             {
-                CentralLogger.getInstance().getLogger(this).warn(ex);
+                Activator.getLogger().log(Level.FINE, "'close' error", ex);
             }
             insert_double_sample = null;
         }
@@ -328,9 +334,9 @@ public class RDBArchive
             {
                 insert_double_array_sample.close();
             }
-            catch (Exception ex)
+            catch (final Exception ex)
             {
-                CentralLogger.getInstance().getLogger(this).warn(ex);
+                Activator.getLogger().log(Level.FINE, "'close' error", ex);
             }
             insert_double_array_sample = null;
         }
@@ -340,9 +346,9 @@ public class RDBArchive
             {
                 insert_long_sample.close();
             }
-            catch (Exception ex)
+            catch (final Exception ex)
             {
-                CentralLogger.getInstance().getLogger(this).warn(ex);
+                Activator.getLogger().log(Level.FINE, "'close' error", ex);
             }
             insert_long_sample = null;
         }
@@ -352,9 +358,9 @@ public class RDBArchive
             {
                 insert_txt_sample.close();
             }
-            catch (Exception ex)
+            catch (final Exception ex)
             {
-                CentralLogger.getInstance().getLogger(this).warn(ex);
+                Activator.getLogger().log(Level.FINE, "'close' error", ex);
             }
             insert_txt_sample = null;
         }
@@ -370,8 +376,8 @@ public class RDBArchive
             rdb = null;
         }
     }
-        
-    /** @return Array of supported sample modes 
+
+    /** @return Array of supported sample modes
      *  @throws Exception on error
      */
     public SampleMode [] getSampleModes() throws Exception
@@ -380,18 +386,18 @@ public class RDBArchive
             sample_modes = SampleModeHelper.getSampleModes(rdb, sql);
         return sample_modes;
     }
-    
+
     /** @return Sample mode for ID */
     public SampleMode getSampleMode(final int id) throws Exception
     {
         getSampleModes();
-        for (SampleMode mode : sample_modes)
+        for (final SampleMode mode : sample_modes)
             if (mode.getId() == id)
                 return mode;
         // Default to the first one
         return sample_modes[0];
     }
-    
+
     /** Get channel by name.
      *  @param name
      *  @return Channel or <code>null</code> if not found.
@@ -415,7 +421,7 @@ public class RDBArchive
      *  @return Array of Channels. May be empty, but not <code>null</code>
      *  @exception Exception on error
      */
-    public ChannelConfig[] findChannels(String pattern) throws Exception
+    public ChannelConfig[] findChannels(final String pattern) throws Exception
     {
         // Does the pattern need patching of '\' into '\\' for MySQL
         // because its string parser handles the pattern before the MySQL regex?
@@ -427,7 +433,7 @@ public class RDBArchive
         while (res.next())
         {   // channel_id, name, grp_id, smpl_mode_id, smpl_val, smpl_per
             final int group_id = res.getInt(3);
-            
+
             final ChannelConfig channel =
                 new ChannelConfig(this,
                         res.getInt(1), res.getString(2), group_id,
@@ -443,7 +449,7 @@ public class RDBArchive
         final ChannelConfig result[] = new ChannelConfig[tmp_res.size()];
         return tmp_res.toArray(result);
     }
-    
+
     /** Locate a severity via its ID.
      *  @param id Severity ID as used in RDB
      *  @return Severity or <code>null</code>
@@ -466,57 +472,57 @@ public class RDBArchive
             return status.getName();
         return ""; //$NON-NLS-1$
     }
-    
+
     /** Add a sample to the archive.
      *  <p>
      *  For performance reasons, this call actually only adds
      *  the sample to a 'batch'.
      *  Need to follow up with 'commitBatch()' when done.
-     *  @param channelConfig Channel to which this sample belongs
+     *  @param channelId Channel id to which this sample belongs
      *  @param sample
      *  @throws Exception on error
      *  @see #commitBatch()
      */
-    public void batchSample(final ChannelConfig channelConfig,
+    public void batchSample(final int channelId,
                             final IValue sample) throws Exception
     {
-        // Need to write meta data?
-        if (channelConfig.getMetaData() == null)
-            writeMetaData(channelConfig, sample);
-        final Timestamp stamp = TimeWarp.getSQLTimestamp(sample.getTime());
+        final Timestamp stamp = sample.getTime().toSQLTimestamp();
         final Severity severity =
                     severities.findOrCreate(sample.getSeverity().toString());
         final Status status = stati.findOrCreate(sample.getStatus());
         if (sample instanceof IDoubleValue)
         {
             final double dbl[] = ((IDoubleValue)sample).getValues();
-            batchDoubleSamples(channelConfig, stamp, severity, status, dbl);
+            batchDoubleSamples(channelId, stamp, severity, status, dbl);
         }
         else if (sample instanceof ILongValue)
         {
             final long num = ((ILongValue)sample).getValue();
-            batchLongSamples(channelConfig, stamp, severity, status, num);
+            batchLongSamples(channelId, stamp, severity, status, num);
         }
         else if (sample instanceof IEnumeratedValue)
         {   // Enum handled just like (long) integer
             final long num = ((IEnumeratedValue)sample).getValue();
-            batchLongSamples(channelConfig, stamp, severity, status, num);
+            batchLongSamples(channelId, stamp, severity, status, num);
         }
         else
         {   // Handle string and possible other types as strings
             final String txt = sample.format();
-            batchTextSamples(channelConfig, stamp, severity, status, txt);
+            batchTextSamples(channelId, stamp, severity, status, txt);
         }
-        if (debug_batch)
-        {
+    }
+
+    public void debugBatch(final ChannelConfig channelConfig, final IValue sample)
+    {
+        if (debug_batch) {
             batched_channel.add(channelConfig);
             batched_samples.add(sample);
         }
     }
 
     /** Write the meta data of the sample, and update the channel's info. */
-    private void writeMetaData(final ChannelConfig channel, final IValue sample)
-        throws Exception
+    public void writeMetaData(final ChannelConfig channel, final IValue sample)
+	    throws Exception
     {
         if (sample instanceof IEnumeratedValue)
         {
@@ -547,7 +553,7 @@ public class RDBArchive
     }
 
     /** Helper for batchSample: Add double sample(s) to batch. */
-    private void batchDoubleSamples(final ChannelConfig channel,
+    private void batchDoubleSamples(final int channelId,
             final Timestamp stamp, final Severity severity,
             final Status status, final double dbl[]) throws Exception
     {
@@ -562,14 +568,14 @@ public class RDBArchive
         {
             insert_double_sample.setDouble(5, 0.0);
             completeAndBatchInsert(insert_double_sample,
-                    channel, stamp,
+                    channelId, stamp,
                     severities.findOrCreate(NOT_A_NUMBER_SEVERITY),
                     stati.findOrCreate(NOT_A_NUMBER_STATUS));
         }
         else
         {
             insert_double_sample.setDouble(5, dbl[0]);
-            completeAndBatchInsert(insert_double_sample, channel, stamp, severity, status);
+            completeAndBatchInsert(insert_double_sample, channelId, stamp, severity, status);
         }
         ++batched_double_inserts;
         // More array elements?
@@ -581,7 +587,7 @@ public class RDBArchive
                             sql.sample_insert_double_array_element);
             for (int i = 1; i < dbl.length; i++)
             {
-                insert_double_array_sample.setInt(1, channel.getId());
+                insert_double_array_sample.setInt(1, channelId);
                 insert_double_array_sample.setTimestamp(2, stamp);
                 insert_double_array_sample.setInt(3, i);
                 // Patch NaN.
@@ -596,8 +602,8 @@ public class RDBArchive
                 else
                     insert_double_array_sample.setDouble(4, dbl[i]);
                 // MySQL nanosecs
-                if (rdb.getDialect() == Dialect.MySQL)
-                    insert_double_array_sample.setInt(5, stamp.getNanos());  
+                if (rdb.getDialect() == Dialect.MySQL || rdb.getDialect() == Dialect.PostgreSQL)
+                    insert_double_array_sample.setInt(5, stamp.getNanos());
 
                 // Batch
                 insert_double_array_sample.addBatch();
@@ -605,11 +611,11 @@ public class RDBArchive
             }
         }
     }
-    
+
     /** Helper for batchSample: Add long sample to batch.
      *  TODO support arrays of long?
      */
-    private void batchLongSamples(final ChannelConfig channel,
+    private void batchLongSamples(final int channelId,
             final Timestamp stamp, final Severity severity,
             final Status status, final long num) throws Exception
     {
@@ -620,12 +626,12 @@ public class RDBArchive
            insert_long_sample.setQueryTimeout(RDBArchivePreferences.getSQLTimeout());
        }
        insert_long_sample.setLong(5, num);
-       completeAndBatchInsert(insert_long_sample, channel, stamp, severity, status);
+       completeAndBatchInsert(insert_long_sample, channelId, stamp, severity, status);
        ++batched_long_inserts;
     }
 
     /** Helper for batchSample: Add text sample to batch. */
-    private void batchTextSamples(final ChannelConfig channel,
+    private void batchTextSamples(final int channelId,
             final Timestamp stamp, final Severity severity,
             final Status status, final String txt) throws Exception
     {
@@ -639,7 +645,7 @@ public class RDBArchive
             insert_txt_sample.setString(5, txt.substring(0, MAX_TEXT_SAMPLE_LENGTH));
         else
             insert_txt_sample.setString(5, txt);
-        completeAndBatchInsert(insert_txt_sample, channel, stamp, severity, status);
+        completeAndBatchInsert(insert_txt_sample, channelId, stamp, severity, status);
         ++batched_txt_inserts;
     }
 
@@ -647,24 +653,24 @@ public class RDBArchive
      *  Set the parameters common to all insert statements, add to batch.
      */
     private void completeAndBatchInsert(
-            final PreparedStatement insert_xx, final ChannelConfig channel,
+            final PreparedStatement insert_xx, final int channelId,
             final Timestamp stamp, final Severity severity,
             final Status status) throws Exception
     {
         // Set the stuff that's common to each type
-        insert_xx.setInt(1, channel.getId());
+        insert_xx.setInt(1, channelId);
         insert_xx.setTimestamp(2, stamp);
         insert_xx.setInt(3, severity.getId());
         insert_xx.setInt(4, status.getId());
         // MySQL nanosecs
-        if (rdb.getDialect() == Dialect.MySQL)
-            insert_xx.setInt(6, stamp.getNanos());  
+        if (rdb.getDialect() == Dialect.MySQL || rdb.getDialect() == Dialect.PostgreSQL)
+            insert_xx.setInt(6, stamp.getNanos());
         // Batch
         insert_xx.addBatch();
     }
-    
 
-    
+
+
     /** Commit samples that might have been added to a batch.
      *  @see ChannelConfig#batchSample()
      */
@@ -717,7 +723,7 @@ public class RDBArchive
                 }
             }
         }
-        catch (Exception ex)
+        catch (final Exception ex)
         {
             if (debug_batch)
             {
@@ -778,7 +784,7 @@ public class RDBArchive
             throw ex;
         }
     }
-    
+
     /** The batched insert failed, so try to insert this channel's sample
      *  individually, mostly to debug errors
      *  @param channel
@@ -791,7 +797,7 @@ public class RDBArchive
         System.out.println("Individual insert of " + channel.getName() + " = " + sample.toString());
         try
         {
-            final Timestamp stamp = TimeWarp.getSQLTimestamp(sample.getTime());
+            final Timestamp stamp = sample.getTime().toSQLTimestamp();
             final Severity severity =
                         severities.findOrCreate(sample.getSeverity().toString());
             final Status status = stati.findOrCreate(sample.getStatus());
@@ -808,7 +814,7 @@ public class RDBArchive
                 insert_double_sample.setInt(4, status.getId());
                 insert_double_sample.setDouble(5, dbl.getValue());
                 // MySQL nanosecs
-                if (rdb.getDialect() == Dialect.MySQL)
+                if (rdb.getDialect() == Dialect.MySQL || rdb.getDialect() == Dialect.PostgreSQL)
                     insert_double_sample.setInt(6, stamp.getNanos());
                 insert_double_sample.executeUpdate();
             }
@@ -823,7 +829,7 @@ public class RDBArchive
                 insert_long_sample.setInt(4, status.getId());
                 insert_long_sample.setLong(5, num.getValue());
                 // MySQL nanosecs
-                if (rdb.getDialect() == Dialect.MySQL)
+                if (rdb.getDialect() == Dialect.MySQL || rdb.getDialect() == Dialect.PostgreSQL)
                     insert_long_sample.setInt(6, stamp.getNanos());
                 insert_long_sample.executeUpdate();
             }
@@ -838,7 +844,7 @@ public class RDBArchive
                 insert_long_sample.setInt(4, status.getId());
                 insert_long_sample.setLong(5, num.getValue());
                 // MySQL nanosecs
-                if (rdb.getDialect() == Dialect.MySQL)
+                if (rdb.getDialect() == Dialect.MySQL || rdb.getDialect() == Dialect.PostgreSQL)
                     insert_long_sample.setInt(6, stamp.getNanos());
                 insert_long_sample.executeUpdate();
             }
@@ -851,7 +857,7 @@ public class RDBArchive
                 insert_txt_sample.setInt(4, status.getId());
                 insert_txt_sample.setString(5, txt);
                 // MySQL nanosecs
-                if (rdb.getDialect() == Dialect.MySQL)
+                if (rdb.getDialect() == Dialect.MySQL || rdb.getDialect() == Dialect.PostgreSQL)
                     insert_txt_sample.setInt(6, stamp.getNanos());
                 insert_txt_sample.executeUpdate();
             }
@@ -911,7 +917,7 @@ public class RDBArchive
             retentions = new RetentionHelper(rdb, sql);
         return retentions.getRetention(description);
     }
-    
+
     /** Find group by ID
      *  @param group_id Group ID
      *  @return ChannelGroup or <code>null</code>
@@ -934,5 +940,5 @@ public class RDBArchive
     {
         final ChannelGroupHelper groups = new ChannelGroupHelper(this);
         return groups.add(group_name, engine.getId(), 0);
-    }    
+    }
 }

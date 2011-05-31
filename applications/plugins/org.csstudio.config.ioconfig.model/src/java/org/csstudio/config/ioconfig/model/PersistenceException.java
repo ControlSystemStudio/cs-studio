@@ -24,6 +24,8 @@
  */
 package org.csstudio.config.ioconfig.model;
 
+import javax.annotation.Nonnull;
+
 /**
  * @author hrickens
  * @author $Author: hrickens $
@@ -37,4 +39,26 @@ public class PersistenceException extends Exception {
      */
     private static final long serialVersionUID = -7788496152990006052L;
 
+    /**
+     * Constructor.
+     */
+    public PersistenceException() {
+        super();
+    }
+    
+    public PersistenceException(@Nonnull String msg) {
+        super(msg);
+    }
+    
+    public PersistenceException(@Nonnull Throwable t) {
+        super(t);
+    }
+    
+    public PersistenceException(@Nonnull String msg, @Nonnull Throwable t) {
+        super(msg, t);
+    }
+    
+    
+    
+    
 }

@@ -1,15 +1,21 @@
+/*******************************************************************************
+ * Copyright (c) 2010 Oak Ridge National Laboratory.
+ * All rights reserved. This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License v1.0
+ * which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-v10.html
+ ******************************************************************************/
 package org.csstudio.opibuilder.widgets.model;
 
 import org.csstudio.opibuilder.model.AbstractPVWidgetModel;
 import org.csstudio.opibuilder.properties.BooleanProperty;
 import org.csstudio.opibuilder.properties.ComboProperty;
-import org.csstudio.opibuilder.properties.FontProperty;
 import org.csstudio.opibuilder.properties.StringProperty;
 import org.csstudio.opibuilder.properties.WidgetPropertyCategory;
 import org.csstudio.opibuilder.util.OPIFont;
-import org.csstudio.platform.ui.util.CustomMediaFactory;
-import org.csstudio.swt.widgets.figures.LabelFigure.H_ALIGN;
-import org.csstudio.swt.widgets.figures.LabelFigure.V_ALIGN;
+import org.csstudio.swt.widgets.figures.TextFigure.H_ALIGN;
+import org.csstudio.swt.widgets.figures.TextFigure.V_ALIGN;
+import org.csstudio.ui.util.CustomMediaFactory;
 
 /**The model for label widget.
  * @author Xihui Chen
@@ -32,10 +38,6 @@ public class LabelModel extends AbstractPVWidgetModel {
 	public static final String PROP_ALIGN_H = "horizontal_alignment";	//$NON-NLS-1$
 	public static final String PROP_ALIGN_V = "vertical_alignment";	//$NON-NLS-1$
 	
-	
-	public static final String PROP_FONT= "font"; //$NON-NLS-1$
-
-	
 	protected boolean pvModel = false;
 	
 	public LabelModel() {
@@ -46,9 +48,6 @@ public class LabelModel extends AbstractPVWidgetModel {
 
 	@Override
 	protected void configureProperties() {
-		
-		addProperty(new FontProperty(PROP_FONT, "Font", 
-				WidgetPropertyCategory.Display, "Default")); //$NON-NLS-1$
 		addProperty(new StringProperty(PROP_TEXT, "Text", 
 				WidgetPropertyCategory.Display, "double click to enter text", true));
 		addProperty(new BooleanProperty(PROP_TRANSPARENT, "Transparent",
@@ -62,11 +61,11 @@ public class LabelModel extends AbstractPVWidgetModel {
 
 		if(!pvModel){
 			setTooltip("");
-			removeProperty(PROP_PVNAME);
-			removeProperty(PROP_PVVALUE);
-			removeProperty(PROP_BACKCOLOR_ALARMSENSITIVE);
-			removeProperty(PROP_BORDER_ALARMSENSITIVE);
-			removeProperty(PROP_FORECOLOR_ALARMSENSITIVE);
+			setPropertyVisible(PROP_PVNAME, false);
+			setPropertyVisible(PROP_PVVALUE, false);
+			setPropertyVisible(PROP_BACKCOLOR_ALARMSENSITIVE, false);
+			setPropertyVisible(PROP_BORDER_ALARMSENSITIVE, false);
+			setPropertyVisible(PROP_FORECOLOR_ALARMSENSITIVE, false);
 		}		
 	}
 
@@ -103,11 +102,6 @@ public class LabelModel extends AbstractPVWidgetModel {
 	
 	public boolean isAutoSize(){
 		return (Boolean)getCastedPropertyValue(PROP_AUTOSIZE);
-	}
-	
-	
-	public OPIFont getFont(){
-		return (OPIFont)getCastedPropertyValue(PROP_FONT);
 	}
 	
 	public void setFont(OPIFont font){

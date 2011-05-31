@@ -23,6 +23,8 @@ package org.csstudio.config.ioconfig.model;
 
 import java.util.Set;
 
+import javax.annotation.Nonnull;
+
 /**
  * For Objects that can have a {@link DocumentDBO}
  *
@@ -32,6 +34,7 @@ import java.util.Set;
  * @since 11.06.2010
  */
 public interface IDocumentable {
+    @Nonnull
     Set<DocumentDBO> getDocuments();
-    void setDocuments(Set<DocumentDBO> documents);
+    void setDocuments(@Nonnull Set<DocumentDBO> documents);
 }

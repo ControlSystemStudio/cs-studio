@@ -5,9 +5,13 @@ import java.io.FileInputStream;
 import java.io.IOException;
 import java.util.GregorianCalendar;
 
-import org.csstudio.config.ioconfig.model.IOConifgActivator;
+import javax.annotation.CheckForNull;
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
+
 import org.csstudio.config.ioconfig.model.DocumentDBO;
 import org.csstudio.config.ioconfig.model.IDocument;
+import org.csstudio.config.ioconfig.model.IOConifgActivator;
 import org.csstudio.config.ioconfig.model.preference.PreferenceConstants;
 import org.csstudio.platform.logging.CentralLogger;
 import org.eclipse.core.runtime.preferences.IEclipsePreferences;
@@ -36,12 +40,17 @@ import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.swt.widgets.Text;
 
+/**
+ * @author Rickens Helge
+ * @author $Author: $
+ * @since 14.12.2010
+ */
 public class AddDocDialog extends Dialog {
 
     private DocumentDBO _document;
     private GregorianCalendar _date;
 
-    protected AddDocDialog(final Shell parentShell, final IDocument document) {
+    protected AddDocDialog(@Nullable final Shell parentShell,@CheckForNull final IDocument document) {
         super(parentShell);
         if(document==null) {
             _document = new DocumentDBO();
@@ -55,20 +64,20 @@ public class AddDocDialog extends Dialog {
      *
      * @see org.eclipse.jface.dialogs.Dialog#createDialogArea(org.eclipse.swt.widgets.Composite)
      */
-    @Override
-    protected Control createDialogArea(final Composite parent) {
+    @Override @Nonnull
+    protected Control createDialogArea(@Nonnull final Composite parent) {
         InstanceScope instanceScope = new InstanceScope();
         IEclipsePreferences node = instanceScope.getNode(IOConifgActivator.PLUGIN_ID);
         _date = new GregorianCalendar();
         GridData gridData = (GridData) parent.getLayoutData();
         gridData.minimumWidth = 400;
         getShell().setText("Add new Document");
-        Composite dialogArea = (Composite) super.createDialogArea(parent);
+        Composite dialogComposite = (Composite) super.createDialogArea(parent);
         GridLayout gridLayout = new GridLayout(4, false);
-        dialogArea.setLayout(gridLayout);
+        dialogComposite.setLayout(gridLayout);
         String[] logbooks = node.get(PreferenceConstants.DDB_LOGBOOK, "MKS-2-DOC").split(",");
 
-        final ComboViewer logbooksViewer = new ComboViewer(dialogArea);
+        final ComboViewer logbooksViewer = new ComboViewer(dialogComposite);
         logbooksViewer.setContentProvider(new ArrayContentProvider());
         logbooksViewer.setInput(logbooks);
         if((_document!=null)&&(_document.getId()!=null)&&!_document.getId().isEmpty()) {
@@ -78,19 +87,19 @@ public class AddDocDialog extends Dialog {
         }else {
             logbooksViewer.getCombo().select(0);
         }
-        final Text eLogbookIdLabel = new Text(dialogArea, SWT.BORDER);
+        final Text eLogbookIdLabel = new Text(dialogComposite, SWT.BORDER);
         eLogbookIdLabel.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false, 3, 1));
         eLogbookIdLabel.setEditable(false);
         String generateId = generateId(logbooksViewer);
         eLogbookIdLabel.setText(generateId);
 
         // IMAGE
-        Label file = new Label(dialogArea, SWT.NONE);
+        Label file = new Label(dialogComposite, SWT.NONE);
         file.setText("File: ");
-        final Text filePathText = new Text(dialogArea, SWT.MULTI | SWT.BORDER);
+        final Text filePathText = new Text(dialogComposite, SWT.MULTI | SWT.BORDER);
         filePathText.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false, 2, 1));
         // MIME_TYPE
-        Composite composite = new Composite(dialogArea, SWT.NONE);
+        Composite composite = new Composite(dialogComposite, SWT.NONE);
         composite.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true, 1, 1));
         composite.setLayout(new GridLayout(2, false));
 
@@ -106,11 +115,11 @@ public class AddDocDialog extends Dialog {
         Button fileButton = new Button(composite, SWT.PUSH);
         fileButton.setText("File");
         // Bedeutung
-        Label label = new Label(dialogArea, SWT.NONE);
+        Label label = new Label(dialogComposite, SWT.NONE);
         label.setLayoutData(new GridData(SWT.BEGINNING, SWT.CENTER, false, false));
         label.setText("Bedeutung: ");
         String[] meaning = node.get(PreferenceConstants.DDB_LOGBOOK_MEANING, "DOCU").split(",");
-        final Combo meaningCombo = new Combo(dialogArea, SWT.DROP_DOWN);
+        final Combo meaningCombo = new Combo(dialogComposite, SWT.DROP_DOWN);
         meaningCombo.setLayoutData(new GridData(SWT.BEGINNING, SWT.CENTER, true, false, 3, 1));
         meaningCombo.setItems(meaning);
         if((_document!=null)&&(_document.getLogseverity()!=null)&&!_document.getLogseverity().isEmpty()) {
@@ -121,9 +130,9 @@ public class AddDocDialog extends Dialog {
         String item = meaningCombo.getItem(meaningCombo.getSelectionIndex());
 
         // SUBJECT
-        Label shortDesc = new Label(dialogArea, SWT.NONE);
+        Label shortDesc = new Label(dialogComposite, SWT.NONE);
         shortDesc.setText("Titel: ");
-        final Text shortDescText = new Text(dialogArea, SWT.SINGLE | SWT.BORDER);
+        final Text shortDescText = new Text(dialogComposite, SWT.SINGLE | SWT.BORDER);
         shortDescText.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false, 3, 1));
         if((_document!=null)&&(_document.getSubject()!=null)&&!_document.getSubject().isEmpty()) {
             shortDescText.setText(_document.getSubject());
@@ -132,22 +141,22 @@ public class AddDocDialog extends Dialog {
         }
 
         // DESCLONG
-        Label longDesc = new Label(dialogArea, SWT.NONE);
+        Label longDesc = new Label(dialogComposite, SWT.NONE);
         longDesc.setText("Description: ");
-        final Text longDescText = new Text(dialogArea, SWT.MULTI | SWT.BORDER);
+        final Text longDescText = new Text(dialogComposite, SWT.MULTI | SWT.BORDER);
         longDescText.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, false, 3, 4));
         if((_document!=null)&&(_document.getDesclong()!=null)&&!_document.getDesclong().isEmpty()) {
             longDescText.setText(_document.getDesclong());
         }else {
             longDescText.setText("");
         }
-        new Label(dialogArea, SWT.NONE);
-        new Label(dialogArea, SWT.NONE);
-        new Label(dialogArea, SWT.NONE);
+        setEmptyLabel(dialogComposite);
+        setEmptyLabel(dialogComposite);
+        setEmptyLabel(dialogComposite);
         // LOCATION
-        Label location = new Label(dialogArea, SWT.NONE);
+        Label location = new Label(dialogComposite, SWT.NONE);
         location.setText("Location: ");
-        final Text locationText = new Text(dialogArea, SWT.SINGLE | SWT.BORDER);
+        final Text locationText = new Text(dialogComposite, SWT.SINGLE | SWT.BORDER);
         locationText.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false, 3, 1));
         if((_document!=null)&&(_document.getLocation()!=null)&&!_document.getLocation().isEmpty()) {
             locationText.setText(_document.getLocation());
@@ -155,9 +164,9 @@ public class AddDocDialog extends Dialog {
             locationText.setText("");
         }
         // KEYWORDS
-        Label keywords = new Label(dialogArea, SWT.NONE);
+        Label keywords = new Label(dialogComposite, SWT.NONE);
         keywords.setText("Keywords: ");
-        final Text keywordsText = new Text(dialogArea, SWT.SINGLE | SWT.BORDER);
+        final Text keywordsText = new Text(dialogComposite, SWT.SINGLE | SWT.BORDER);
         keywordsText.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false, 3, 1));
         if((_document!=null)&&(_document.getKeywords()!=null)&&!_document.getKeywords().isEmpty()) {
             keywordsText.setText(_document.getKeywords());
@@ -165,10 +174,10 @@ public class AddDocDialog extends Dialog {
             keywordsText.setText("");
         }
         // ACCOUNTNAME
-        Label creater = new Label(dialogArea, SWT.NONE);
+        Label creater = new Label(dialogComposite, SWT.NONE);
         creater.setText("Author: ");
 
-        Text createrValue = new Text(dialogArea, SWT.BORDER);
+        Text createrValue = new Text(dialogComposite, SWT.BORDER);
         createrValue.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false));
         createrValue.setEditable(false);
         String userName;
@@ -179,9 +188,9 @@ public class AddDocDialog extends Dialog {
         }
         createrValue.setText(userName);
         // ENTRYDATE
-        Label createdOn = new Label(dialogArea, SWT.NONE);
+        Label createdOn = new Label(dialogComposite, SWT.NONE);
         createdOn.setText("Eintrag: ");
-        Text createdOnValue = new Text(dialogArea, SWT.BORDER);
+        Text createdOnValue = new Text(dialogComposite, SWT.BORDER);
         createdOnValue.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false));
         createdOnValue.setEditable(false);
         String format = String.format("%1$tF %1$tT", _date);
@@ -193,30 +202,31 @@ public class AddDocDialog extends Dialog {
         // DELETE_DATE
         // UPDATE_DATE
 
-        if ((_document.getId() == null) || _document.getId().isEmpty()) {
-            _document.setId(generateId);
-            _document.setLogseverity(item);
-            _document.setAccountname(userName);
-            if(_document.getCreatedDate()==null) {
-                _document.setCreatedDate(_date.getTime());
+        if (_document != null) {
+            if ( (_document.getId() == null) || _document.getId().isEmpty()) {
+                _document.setId(generateId);
+                _document.setLogseverity(item);
+                _document.setAccountname(userName);
+                if (_document.getCreatedDate() == null) {
+                    _document.setCreatedDate(_date.getTime());
+                }
             }
+            _document.setEntrydate(_date.getTime());
         }
-        _document.setEntrydate(_date.getTime());
-
         meaningCombo.addSelectionListener(new SelectionListener() {
 
             @Override
-            public void widgetSelected(final SelectionEvent e) {
+            public void widgetSelected(@Nonnull final SelectionEvent e) {
                 select();
             }
 
             private void select() {
-                String item = meaningCombo.getItem(meaningCombo.getSelectionIndex());
-                _document.setLogseverity(item);
+                String meaningComboItem = meaningCombo.getItem(meaningCombo.getSelectionIndex());
+                getDocument().setLogseverity(meaningComboItem);
             }
 
             @Override
-            public void widgetDefaultSelected(final SelectionEvent e) {
+            public void widgetDefaultSelected(@Nonnull final SelectionEvent e) {
                 select();
             }
         });
@@ -224,21 +234,23 @@ public class AddDocDialog extends Dialog {
         logbooksViewer.addSelectionChangedListener(new ISelectionChangedListener() {
 
             @Override
-            public void selectionChanged(final SelectionChangedEvent event) {
-                String generateId = generateId(logbooksViewer);
-                _document.setId(generateId);
-                eLogbookIdLabel.setText(generateId);
+            public void selectionChanged(@Nonnull final SelectionChangedEvent event) {
+                String changedGenerateId = generateId(logbooksViewer);
+                getDocument().setId(changedGenerateId);
+                eLogbookIdLabel.setText(changedGenerateId);
             }
 
         });
 
         fileButton.addSelectionListener(new SelectionListener() {
 
-            public void widgetDefaultSelected(final SelectionEvent e) {
+            @Override
+            public void widgetDefaultSelected(@Nonnull final SelectionEvent e) {
                 action();
             }
 
-            public void widgetSelected(final SelectionEvent e) {
+            @Override
+            public void widgetSelected(@Nonnull final SelectionEvent e) {
                 action();
             }
 
@@ -246,21 +258,22 @@ public class AddDocDialog extends Dialog {
                 FileDialog fileDialog = new FileDialog(parent.getShell());
                 String fileName = fileDialog.open();
                 if (fileName != null) {
-                    File file = new File(fileName);
+                    File file2add = new File(fileName);
                     filePathText.setText(fileName);
                     String[] split = fileName.split("\\.");
                     String mimeType = split[split.length - 1];
                     mimeTypeValue.setText(mimeType);
-                    _document.setMimeType(mimeType);
-                    byte[] data = new byte[(int) file.length()];
+                    getDocument().setMimeType(mimeType);
+                    byte[] data = new byte[(int) file2add.length()];
                     try {
-                        FileInputStream fileInputStream = new FileInputStream(file);
+                        FileInputStream fileInputStream = new FileInputStream(file2add);
                         fileInputStream.read(data);
                         fileInputStream.close();
-                        _document.setImage(data);
+                        getDocument().setImage(data);
                     } catch (IOException e) {
-                        MessageDialog.openError(getParentShell(), "File open Error",
-                                "Can't read file!");
+                        MessageDialog.openError(getParentShell(),
+                                                "File open Error",
+                                                "Can't read file!");
                         CentralLogger.getInstance().error(this, e);
                     }
                 }
@@ -270,43 +283,53 @@ public class AddDocDialog extends Dialog {
         shortDescText.addModifyListener(new ModifyListener() {
 
             @Override
-            public void modifyText(final ModifyEvent e) {
-                _document.setSubject(shortDescText.getText());
+            public void modifyText(@Nullable final ModifyEvent e) {
+                getDocument().setSubject(shortDescText.getText());
             }
         });
 
         longDescText.addModifyListener(new ModifyListener() {
 
             @Override
-            public void modifyText(final ModifyEvent e) {
-                _document.setDesclong(longDescText.getText());
+            public void modifyText(@Nullable final ModifyEvent e) {
+                getDocument().setDesclong(longDescText.getText());
             }
         });
 
         locationText.addModifyListener(new ModifyListener() {
 
             @Override
-            public void modifyText(final ModifyEvent e) {
-                _document.setLocation(locationText.getText());
+            public void modifyText(@Nullable final ModifyEvent e) {
+                getDocument().setLocation(locationText.getText());
             }
         });
 
         keywordsText.addModifyListener(new ModifyListener() {
 
             @Override
-            public void modifyText(final ModifyEvent e) {
-                _document.setKeywords(keywordsText.getText());
+            public void modifyText(@Nullable final ModifyEvent e) {
+                getDocument().setKeywords(keywordsText.getText());
             }
         });
-        return dialogArea;
+        return dialogComposite;
     }
 
-    private String generateId(final Viewer logbooksViewer) {
+    /**
+     * @param dialogComposite
+     */
+    @Nonnull
+    private Label setEmptyLabel(@Nonnull Composite dialogComposite) {
+        return new Label(dialogComposite, SWT.NONE);
+    }
+
+    @Nonnull
+    protected String generateId(@Nonnull final Viewer logbooksViewer) {
         String eLogbookId = (String) ((StructuredSelection) logbooksViewer.getSelection())
                 .getFirstElement();
         return String.format("%1$s:%2$ty%2$tm%2$td-%2$tT", eLogbookId, _date);
     }
 
+    @Nonnull
     public DocumentDBO getDocument() {
         return _document;
     }

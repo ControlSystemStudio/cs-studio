@@ -1,22 +1,22 @@
-/* 
- * Copyright (c) 2008 Stiftung Deutsches Elektronen-Synchrotron, 
+/*
+ * Copyright (c) 2008 Stiftung Deutsches Elektronen-Synchrotron,
  * Member of the Helmholtz Association, (DESY), HAMBURG, GERMANY.
  *
- * THIS SOFTWARE IS PROVIDED UNDER THIS LICENSE ON AN "../AS IS" BASIS. 
- * WITHOUT WARRANTY OF ANY KIND, EXPRESSED OR IMPLIED, INCLUDING BUT NOT LIMITED 
- * TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR PARTICULAR PURPOSE AND 
- * NON-INFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE 
- * FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, 
- * TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR 
- * THE USE OR OTHER DEALINGS IN THE SOFTWARE. SHOULD THE SOFTWARE PROVE DEFECTIVE 
- * IN ANY RESPECT, THE USER ASSUMES THE COST OF ANY NECESSARY SERVICING, REPAIR OR 
- * CORRECTION. THIS DISCLAIMER OF WARRANTY CONSTITUTES AN ESSENTIAL PART OF THIS LICENSE. 
+ * THIS SOFTWARE IS PROVIDED UNDER THIS LICENSE ON AN "../AS IS" BASIS.
+ * WITHOUT WARRANTY OF ANY KIND, EXPRESSED OR IMPLIED, INCLUDING BUT NOT LIMITED
+ * TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR PARTICULAR PURPOSE AND
+ * NON-INFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE
+ * FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT,
+ * TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR
+ * THE USE OR OTHER DEALINGS IN THE SOFTWARE. SHOULD THE SOFTWARE PROVE DEFECTIVE
+ * IN ANY RESPECT, THE USER ASSUMES THE COST OF ANY NECESSARY SERVICING, REPAIR OR
+ * CORRECTION. THIS DISCLAIMER OF WARRANTY CONSTITUTES AN ESSENTIAL PART OF THIS LICENSE.
  * NO USE OF ANY SOFTWARE IS AUTHORIZED HEREUNDER EXCEPT UNDER THIS DISCLAIMER.
- * DESY HAS NO OBLIGATION TO PROVIDE MAINTENANCE, SUPPORT, UPDATES, ENHANCEMENTS, 
+ * DESY HAS NO OBLIGATION TO PROVIDE MAINTENANCE, SUPPORT, UPDATES, ENHANCEMENTS,
  * OR MODIFICATIONS.
- * THE FULL LICENSE SPECIFYING FOR THE SOFTWARE THE REDISTRIBUTION, MODIFICATION, 
- * USAGE AND OTHER RIGHTS AND OBLIGATIONS IS INCLUDED WITH THE DISTRIBUTION OF THIS 
- * PROJECT IN THE FILE LICENSE.HTML. IF THE LICENSE IS NOT INCLUDED YOU MAY FIND A COPY 
+ * THE FULL LICENSE SPECIFYING FOR THE SOFTWARE THE REDISTRIBUTION, MODIFICATION,
+ * USAGE AND OTHER RIGHTS AND OBLIGATIONS IS INCLUDED WITH THE DISTRIBUTION OF THIS
+ * PROJECT IN THE FILE LICENSE.HTML. IF THE LICENSE IS NOT INCLUDED YOU MAY FIND A COPY
  * AT HTTP://WWW.DESY.DE/LEGAL/LICENSE.HTM
  */
 package org.csstudio.opibuilder.examples;
@@ -53,25 +53,22 @@ import org.eclipse.ui.IWorkbenchWindowActionDelegate;
  *
  */
 public class InstallExamplesAction extends Action implements IWorkbenchWindowActionDelegate {
-
-	
-
-	private static final String PROJECT_NAME = "BOY Examples";
+	public static final String PROJECT_NAME = "BOY Examples";
 
 	public void dispose() {
-
+	    // NOP
 	}
 
 	public void init(IWorkbenchWindow window) {
-
+        // NOP
 	}
 
 	public void run(IAction action) {
 		final IWorkspaceRoot root = ResourcesPlugin.getWorkspace().getRoot();
 		if(root.getProject(PROJECT_NAME).exists()){
-			MessageDialog.openError(null, "Failed", 
-					NLS.bind("There is already a project named {0}." +
-							"Please make sure there is no project named {0} in the workspace.", 
+			MessageDialog.openError(null, "Failed",
+					NLS.bind("There is already a project named \"{0}\"." +
+							"Please make sure there is no project named {0} in the workspace.",
 							PROJECT_NAME));
 			return;
 		}
@@ -110,7 +107,7 @@ public class InstallExamplesAction extends Action implements IWorkbenchWindowAct
 		};
 
 			job.schedule();
-		
+
 	}
 
 	private int count(File[] files) {
@@ -122,7 +119,7 @@ public class InstallExamplesAction extends Action implements IWorkbenchWindowAct
 				result++;
 			}
 		}
-		
+
 		return result;
 	}
 
@@ -131,15 +128,15 @@ public class InstallExamplesAction extends Action implements IWorkbenchWindowAct
 		try {
 			for (File file : files) {
 				monitor.subTask("Copying " + file.getName());
-				if (file.isDirectory()) { 
+				if (file.isDirectory()) {
 					if(!file.getName().equals("CVS")){//$NON-NLS-1$
 						IFolder folder = container.getFolder(new Path(file
-								.getName()));	
+								.getName()));
 						if (!folder.exists()) {
 							folder.create(true, true, null);
 							copy(file.listFiles(), folder, monitor);
 						}
-					}					
+					}
 				} else {
 					IFile pFile = container.getFile(new Path(file.getName()));
 					if (!pFile.exists()) {
@@ -149,15 +146,15 @@ public class InstallExamplesAction extends Action implements IWorkbenchWindowAct
 					monitor.internalWorked(1);
 				}
 
-				
+
 			}
 		} catch (Exception e) {
-			MessageDialog.openError(null, "Error", 
-					NLS.bind("Error happened during copy: \n{0}.", e));	
+			MessageDialog.openError(null, "Error",
+					NLS.bind("Error happened during copy: \n{0}.", e));
 		}
 	}
 
 	public void selectionChanged(IAction action, ISelection selection) {
-
+        // NOP
 	}
 }

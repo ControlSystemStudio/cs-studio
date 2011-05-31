@@ -1,7 +1,14 @@
+/*******************************************************************************
+ * Copyright (c) 2010 Oak Ridge National Laboratory.
+ * All rights reserved. This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License v1.0
+ * which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-v10.html
+ ******************************************************************************/
 package org.csstudio.display.pvtable.ui;
 
-import org.csstudio.platform.data.IValue;
-import org.csstudio.platform.data.ValueUtil;
+import org.csstudio.data.values.IValue;
+import org.csstudio.data.values.ValueUtil;
 import org.csstudio.utility.pv.PV;
 import org.eclipse.jface.viewers.Viewer;
 import org.eclipse.jface.viewers.ViewerSorter;
@@ -29,7 +36,7 @@ public class PVTableSorter extends ViewerSorter
 	{
 		this.sort_column = sort_column;
 	}
-	
+
 	/** All PVs are in the same category... */
 	@Override
 	public int category(Object element)
@@ -86,7 +93,7 @@ public class PVTableSorter extends ViewerSorter
 			return (v2 == null) ? 0 : -1;
 		if (v2 == null)
 			return 1;
-        
+
         double d1 = ValueUtil.getDouble(v1);
         double d2 = ValueUtil.getDouble(v2);
         if (d1 < d2)
@@ -94,7 +101,7 @@ public class PVTableSorter extends ViewerSorter
         if (d1 > d2)
             return +1;
         return 0;
-	}	
+	}
 
 	private int compareConnection(PV pv1, PV pv2)
 	{

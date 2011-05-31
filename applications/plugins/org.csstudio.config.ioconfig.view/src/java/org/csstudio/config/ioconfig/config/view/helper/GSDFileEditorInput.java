@@ -40,8 +40,6 @@ import org.eclipse.ui.IEditorInput;
 import org.eclipse.ui.IPersistableElement;
 
 /**
- * TODO (hrickens) :
- *
  * @author hrickens
  * @author $Author: hrickens $
  * @version $Revision: 1.2 $
@@ -74,7 +72,6 @@ public class GSDFileEditorInput implements IEditorInput {
      */
     @Override
     public ImageDescriptor getImageDescriptor() {
-        // TODO Auto-generated method stub
         return null;
     }
 

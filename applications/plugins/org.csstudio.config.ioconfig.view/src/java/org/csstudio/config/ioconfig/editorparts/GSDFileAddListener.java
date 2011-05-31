@@ -24,13 +24,17 @@
 package org.csstudio.config.ioconfig.editorparts;
 
 import java.io.File;
+import java.io.IOException;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
 import org.csstudio.config.ioconfig.config.view.helper.ConfigHelper;
+import org.csstudio.config.ioconfig.model.PersistenceException;
 import org.csstudio.config.ioconfig.model.Repository;
 import org.csstudio.config.ioconfig.model.pbmodel.GSDFileDBO;
+import org.csstudio.config.ioconfig.view.DeviceDatabaseErrorDialog;
+import org.csstudio.platform.logging.CentralLogger;
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.viewers.TableViewer;
 import org.eclipse.swt.SWT;
@@ -41,8 +45,6 @@ import org.eclipse.swt.widgets.FileDialog;
 import org.eclipse.swt.widgets.TabFolder;
 
 /**
- * TODO (hrickens) :
- *
  * @author hrickens
  * @author $Author: hrickens $
  * @version $Revision: 1.2 $
@@ -79,12 +81,20 @@ public class GSDFileAddListener implements SelectionListener {
 			final File path = new File(fd.getFilterPath());
 			for (final String fileName : fd.getFileNames()) {
 				if (fileNotContain(fileName)) {
+				    try {
 					final String text = ConfigHelper.file2String(new File(path, fileName));
 					final File file = new File(path, fileName);
 					final GSDFileDBO gsdFile = new GSDFileDBO(file.getName(), text.toString());
 					_abstractNodeEditor.getGsdFiles().add(gsdFile);
 					_tableViewer.setInput(_abstractNodeEditor.getGsdFiles());
-					Repository.save(gsdFile);
+                        Repository.save(gsdFile);
+                    } catch (PersistenceException e) {
+                        DeviceDatabaseErrorDialog.open(null, "Can't safe GSD File! Database error", e);
+                        CentralLogger.getInstance().error(this, e);
+                    } catch (IOException e) {
+                        DeviceDatabaseErrorDialog.open(null, "Can't safe GSD File! File read error", e);
+                        CentralLogger.getInstance().error(this, e);
+                    }
 				} else {
 					MessageDialog.openInformation(_tabFolder.getShell(),
 							"Double GSD File",

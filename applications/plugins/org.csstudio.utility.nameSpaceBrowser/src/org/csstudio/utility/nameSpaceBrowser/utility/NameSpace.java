@@ -24,9 +24,6 @@
  */
 package org.csstudio.utility.nameSpaceBrowser.utility;
 
-import java.util.List;
-
-import org.csstudio.utility.namespace.utility.ControlSystemItem;
 import org.csstudio.utility.namespace.utility.NameSpaceSearchResult;
 
 /**
@@ -39,49 +36,34 @@ public abstract class NameSpace {
 
 	private String _name;
 	private String _filter;
-	private NameSpaceSearchResult _resultList;
 	private String _selection;
 
-	abstract public void start();
+	abstract public void start() throws Exception;
+	abstract public void stop();
 
 
 	/**
 	 * @param name
 	 */
 	public void setName(final String name) {
-		this._name = name;
+		_name = name;
 	}
 
 	/**
 	 * @param filter
 	 */
 	public void setFilter(final String filter) {
-		this._filter = filter;
+		_filter = filter;
 	}
 
-	/**
-	 * @param ergebnisListe
-	 */
-	public void setResult(final NameSpaceSearchResult ergebnisListe) {
-		this._resultList = ergebnisListe;
-	}
-
+	public abstract NameSpaceSearchResult getSearchResult();
+	
 	/**
 	 * @param selection
 	 */
 	public void setSelection(final String selection) {
-		 this._selection=selection;
+		 _selection=selection;
 	}
-
-	public NameSpaceSearchResult getNameSpaceResultList() {
-		return _resultList;
-	}
-
-    public void updateResultList(final List<ControlSystemItem> list) {
-        // FIXME (bknerr) : deprecated structure for css view
-        _resultList.setCSIResultList(list);
-    }
-
 
 	protected String getFilter() {
 		return _filter;
@@ -95,7 +77,6 @@ public abstract class NameSpace {
 		return _selection;
 	}
 
-
-
+    public abstract NameSpace createNew();
 
 }

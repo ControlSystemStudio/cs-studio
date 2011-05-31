@@ -1,10 +1,17 @@
+/*******************************************************************************
+ * Copyright (c) 2010 Oak Ridge National Laboratory.
+ * All rights reserved. This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License v1.0
+ * which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-v10.html
+ ******************************************************************************/
 package org.csstudio.archivereader;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
 
-import org.csstudio.platform.data.IValue;
-import org.csstudio.platform.data.TimestampFactory;
-import org.csstudio.platform.data.ValueFactory;
+import org.csstudio.data.values.IValue;
+import org.csstudio.data.values.TimestampFactory;
+import org.csstudio.data.values.ValueFactory;
 import org.junit.Test;
 
 /** JUnit test of the value iterators
@@ -20,7 +27,7 @@ public class ValueIteratorTest
         final private int start_time;
         private int i = 0;
         private boolean open = true;
-        
+
         public DemoDataIterator(final String name, final int start_time)
         {
             this.name = name;
@@ -32,12 +39,14 @@ public class ValueIteratorTest
             this(name, 0);
         }
 
-        
+
+        @Override
         public boolean hasNext()
         {
             return i < 10;
         }
 
+        @Override
         public IValue next() throws Exception
         {
             ++i;
@@ -45,20 +54,21 @@ public class ValueIteratorTest
                     ValueFactory.createOKSeverity(), "Test",
                     IValue.Quality.Original, new String[] { name + " " + i });
         }
-        
+
+        @Override
         public void close()
         {
             if (!open)
                 throw new IllegalStateException("Closed twice");
             open = false;
         }
-        
+
         public boolean isOpen()
         {
             return open;
         }
     }
-    
+
     /** Demo the DemoDataIterator */
     @Test
     public void testDemoDataIterator() throws Exception
@@ -115,7 +125,7 @@ public class ValueIteratorTest
     {
         runSheetTest(5);
     }
-    
+
     private void runSheetTest(final int time_lag) throws Exception
     {
         System.out.println("SpreadsheetIterator");

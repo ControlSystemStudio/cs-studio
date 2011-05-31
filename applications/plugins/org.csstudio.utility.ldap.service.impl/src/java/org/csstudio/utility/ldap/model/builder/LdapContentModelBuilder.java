@@ -29,6 +29,7 @@ import javax.annotation.CheckForNull;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import javax.naming.InvalidNameException;
+import javax.naming.NameParser;
 import javax.naming.NamingException;
 import javax.naming.directory.Attributes;
 import javax.naming.directory.BasicAttributes;
@@ -36,18 +37,19 @@ import javax.naming.directory.SearchResult;
 import javax.naming.ldap.LdapName;
 import javax.naming.ldap.Rdn;
 
-import org.apache.log4j.Logger;
-import org.csstudio.platform.logging.CentralLogger;
 import org.csstudio.utility.ldap.service.ILdapContentModelBuilder;
 import org.csstudio.utility.ldap.service.ILdapSearchResult;
+import org.csstudio.utility.ldap.service.util.LdapNameUtils;
 import org.csstudio.utility.ldap.treeconfiguration.LdapFieldsAndAttributes;
-import org.csstudio.utility.ldap.utils.LdapNameUtils;
 import org.csstudio.utility.treemodel.ContentModel;
 import org.csstudio.utility.treemodel.CreateContentModelException;
+import org.csstudio.utility.treemodel.INodeComponent;
 import org.csstudio.utility.treemodel.ISubtreeNodeComponent;
 import org.csstudio.utility.treemodel.ITreeNodeConfiguration;
 import org.csstudio.utility.treemodel.TreeNodeComponent;
 import org.csstudio.utility.treemodel.builder.AbstractContentModelBuilder;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * Builds a content model from LDAP.
@@ -59,31 +61,38 @@ import org.csstudio.utility.treemodel.builder.AbstractContentModelBuilder;
  * @param <T> the object class type for which a tree shall be created
  */
 public final class LdapContentModelBuilder<T extends Enum<T> & ITreeNodeConfiguration<T>> extends AbstractContentModelBuilder<T>
-        implements ILdapContentModelBuilder {
+        implements ILdapContentModelBuilder<T> {
 
-    private static final Logger LOG = CentralLogger.getInstance().getLogger(LdapContentModelBuilder.class);
-
+    private static final Logger LOG = LoggerFactory.getLogger(LdapContentModelBuilder.class);
+    
     private ILdapSearchResult _searchResult;
     private final T _objectClassRoot;
+    private final NameParser _parser;
 
     /**
      * Constructor.
      * @param searchResult the search result to build the model from
      * @param objectClassRoot the model type
+     * @param nameParser 
      */
     public LdapContentModelBuilder(@Nonnull final T objectClassRoot,
-                                   @Nonnull final ILdapSearchResult searchResult) {
+                                   @Nonnull final ILdapSearchResult searchResult, 
+                                   @Nonnull final NameParser parser) {
         _searchResult = searchResult;
         _objectClassRoot = objectClassRoot;
+        _parser = parser;
     }
 
     /**
      * Constructor for builder that enriches an already existing model.
      * @param model the already filled model
+     * @param nameParser 
      */
-    public LdapContentModelBuilder(@Nonnull final ContentModel<T> model) {
+    public LdapContentModelBuilder(@Nonnull final ContentModel<T> model, 
+                                   @Nonnull final NameParser parser) {
         _objectClassRoot = model.getVirtualRoot().getType();
         setModel(model);
+        _parser = parser;
     }
 
     @Override
@@ -104,7 +113,8 @@ public final class LdapContentModelBuilder<T extends Enum<T> & ITreeNodeConfigur
         try {
             return addSearchResult(model == null ? new ContentModel<T>(_objectClassRoot)
                                                  : model,
-                                   _searchResult);
+                                   _searchResult,
+                                   _parser);
         } catch (final InvalidNameException e) {
             throw new CreateContentModelException("Error creating content model from LDAP.", e);
         }
@@ -115,11 +125,13 @@ public final class LdapContentModelBuilder<T extends Enum<T> & ITreeNodeConfigur
      * Adds a given search result to the current LDAP content model.
      *
      * @param searchResult the search result .
+     * @param parser 
      * @return the enriched model
      */
     @Nonnull
     private ContentModel<T> addSearchResult(@Nonnull final ContentModel<T> model,
-                                            @Nullable final ILdapSearchResult searchResult) {
+                                            @Nullable final ILdapSearchResult searchResult, 
+                                            @Nonnull final NameParser parser) {
 
         if (searchResult != null) {
             final ISubtreeNodeComponent<T> root = model.getVirtualRoot();
@@ -128,7 +140,7 @@ public final class LdapContentModelBuilder<T extends Enum<T> & ITreeNodeConfigur
             try {
                 for (final SearchResult row : answerSet) {
                     final Attributes attributes = row.getAttributes();
-                    final LdapName parsedName = LdapNameUtils.parseSearchResult(row);
+                    final LdapName parsedName = (LdapName) parser.parse(row.getNameInNamespace());
                     final LdapName nameWithoutRoot = LdapNameUtils.removeRdns(parsedName,
                                                                               LdapFieldsAndAttributes.LDAP_ROOT.getRdns());
                     createLdapComponent(model,
@@ -163,10 +175,10 @@ public final class LdapContentModelBuilder<T extends Enum<T> & ITreeNodeConfigur
             currentPartialName.add(rdn);
 
             // Check whether this component exists already
-            final ISubtreeNodeComponent<T> childByLdapName = model.getChildByLdapName(currentPartialName.toString());
+            final INodeComponent<T> childByLdapName = model.getChildByLdapName(currentPartialName.toString());
             if (childByLdapName != null) {
                 if (i < fullName.size() - 1) { // another name component follows => has children
-                    parent = childByLdapName;
+                    parent = (ISubtreeNodeComponent<T>) childByLdapName;
                 }
                 continue; // YES
             }

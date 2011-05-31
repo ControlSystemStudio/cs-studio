@@ -25,11 +25,11 @@ package org.csstudio.utility.ldap;
 
 import static org.csstudio.utility.ldap.LdapNameUtilsUnitTest.ECON_FIELD_VALUE;
 import static org.csstudio.utility.ldap.LdapNameUtilsUnitTest.EFAN_FIELD_VALUE;
+import static org.csstudio.utility.ldap.service.util.LdapUtils.createLdapName;
 import static org.csstudio.utility.ldap.treeconfiguration.LdapEpicsControlsConfiguration.COMPONENT;
 import static org.csstudio.utility.ldap.treeconfiguration.LdapEpicsControlsConfiguration.FACILITY;
 import static org.csstudio.utility.ldap.treeconfiguration.LdapEpicsControlsConfiguration.IOC;
 import static org.csstudio.utility.ldap.treeconfiguration.LdapEpicsControlsConfiguration.UNIT;
-import static org.csstudio.utility.ldap.utils.LdapUtils.createLdapName;
 
 import javax.naming.NamingException;
 import javax.naming.directory.SearchResult;
@@ -38,9 +38,10 @@ import javax.naming.ldap.LdapName;
 import junit.framework.Assert;
 
 import org.csstudio.utility.ldap.service.ILdapService;
+import org.csstudio.utility.ldap.service.LdapServiceException;
+import org.csstudio.utility.ldap.service.util.LdapNameUtils;
 import org.csstudio.utility.ldap.treeconfiguration.LdapEpicsControlsFieldsAndAttributes;
 import org.csstudio.utility.ldap.treeconfiguration.LdapFieldsAndAttributes;
-import org.csstudio.utility.ldap.utils.LdapNameUtils;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
@@ -86,8 +87,8 @@ public class LdapNameUtilsHeadlessTest {
     @Test
     public void testLdapNameParsing() {
         try {
-            LdapNameUtils.parseSearchResult(RESULT);
-        } catch (final NamingException e) {
+            LdapTestHelper.LDAP_SERVICE.parseSearchResult(RESULT);
+        } catch (LdapServiceException e) {
             Assert.fail();
         }
     }

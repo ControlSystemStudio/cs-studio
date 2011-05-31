@@ -24,16 +24,16 @@ public class SeverityIconProvider
 {
     /** Pixel widths/height of icon */
     final private static int ICON_SIZE = 12;
-    
+
     /** Arc for rounded corner. ARC_SIZE==ICON_SIZE results in circle */
     final private static int ARC_SIZE = 10;
 
     /** Icon to use for disabled items */
     final private Image disabled;
-    
+
     /** Icons to use for the various severity levels */
     final private Image icons[][];
-    
+
     /** Initialize
      *  @param parent Parent widget
      */
@@ -45,10 +45,11 @@ public class SeverityIconProvider
         gc.setBackground(display.getSystemColor(SWT.COLOR_GRAY));
         gc.fillRoundRectangle(0, 0, ICON_SIZE, ICON_SIZE, ARC_SIZE, ARC_SIZE);
         gc.dispose();
-        
+
         icons = createIcons(display);
         parent.addDisposeListener(new DisposeListener()
         {
+            @Override
             public void widgetDisposed(final DisposeEvent e)
             {
                 final int N = icons.length;
@@ -59,7 +60,7 @@ public class SeverityIconProvider
             }
         });
     }
-    
+
     /** @return Array of icons */
     private Image[][] createIcons(final Display display)
     {
@@ -79,7 +80,7 @@ public class SeverityIconProvider
                         severities[s].getGreen(),
                         severities[s].getBlue());
                 final GC gc = new GC(icons[c][s]);
-                
+
                 // Left rectangle for 'latched', right for 'current' indicator
                 gc.setBackground(s_col);
                 gc.setClipping(0, 0, ICON_SIZE/2, ICON_SIZE);
@@ -87,7 +88,7 @@ public class SeverityIconProvider
                 gc.setBackground(c_col);
                 gc.setClipping(ICON_SIZE/2, 0, ICON_SIZE/2, ICON_SIZE);
                 gc.fillRoundRectangle(0, 0, ICON_SIZE, ICON_SIZE, ARC_SIZE, ARC_SIZE);
-                
+
                 gc.dispose();
                 s_col.dispose();
             }

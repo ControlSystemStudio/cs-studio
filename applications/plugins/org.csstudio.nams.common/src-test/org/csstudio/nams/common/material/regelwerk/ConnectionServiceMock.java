@@ -6,6 +6,7 @@ package org.csstudio.nams.common.material.regelwerk;
 import java.util.List;
 
 import org.csstudio.platform.model.pvs.IProcessVariableAddress;
+import org.csstudio.platform.model.pvs.ValueType;
 import org.csstudio.platform.simpledal.ConnectionException;
 import org.csstudio.platform.simpledal.ConnectionState;
 import org.csstudio.platform.simpledal.IConnector;
@@ -13,7 +14,6 @@ import org.csstudio.platform.simpledal.IProcessVariableConnectionService;
 import org.csstudio.platform.simpledal.IProcessVariableValueListener;
 import org.csstudio.platform.simpledal.IProcessVariableWriteListener;
 import org.csstudio.platform.simpledal.SettableState;
-import org.csstudio.platform.simpledal.ValueType;
 import org.epics.css.dal.Timestamp;
 import org.junit.Assert;
 

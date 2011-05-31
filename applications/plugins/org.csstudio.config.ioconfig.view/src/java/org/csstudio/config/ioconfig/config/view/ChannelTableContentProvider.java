@@ -27,6 +27,8 @@ package org.csstudio.config.ioconfig.config.view;
 import java.util.List;
 import java.util.Set;
 
+import javax.annotation.Nullable;
+
 import org.csstudio.config.ioconfig.model.pbmodel.ModuleChannelPrototypeDBO;
 import org.eclipse.jface.viewers.IStructuredContentProvider;
 import org.eclipse.jface.viewers.Viewer;
@@ -39,13 +41,13 @@ import org.eclipse.jface.viewers.Viewer;
  */
 public class ChannelTableContentProvider implements IStructuredContentProvider {
 
-    @SuppressWarnings("unchecked")
-    public Object[] getElements(Object inputElement) {
+    @Override
+    public Object[] getElements(@Nullable Object inputElement) {
         if (inputElement instanceof List) {
-            List list =(List) inputElement; 
+            List<?> list =(List<?>) inputElement; 
             return list.toArray();
         }else if (inputElement instanceof Set) {
-            Set set = (Set)inputElement;
+            Set<?> set = (Set<?>)inputElement;
             return set.toArray();
         }else if (inputElement instanceof ModuleChannelPrototypeDBO[]) {
             return (ModuleChannelPrototypeDBO[])inputElement;
@@ -53,10 +55,14 @@ public class ChannelTableContentProvider implements IStructuredContentProvider {
         return null;
     }
 
+    @Override
     public void dispose() {
+        // nothing to dispose
     }
 
-    public void inputChanged(Viewer viewer, Object oldInput, Object newInput) {
+    @Override
+    public void inputChanged(@Nullable Viewer viewer,@Nullable  Object oldInput,@Nullable Object newInput) {
+        // Nothing to do.
     }
 
 }

@@ -1,23 +1,40 @@
+/*******************************************************************************
+ * Copyright (c) 2010 Oak Ridge National Laboratory.
+ * All rights reserved. This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License v1.0
+ * which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-v10.html
+ ******************************************************************************/
 package org.csstudio.display.pvtable;
 
+import org.csstudio.csdata.ProcessVariable;
 import org.csstudio.display.pvtable.model.PVListModel;
 import org.csstudio.display.pvtable.ui.editor.PVTableEditor;
-import org.csstudio.platform.model.IProcessVariable;
-import org.csstudio.platform.ui.internal.dataexchange.ProcessVariablePopupAction;
+import org.csstudio.ui.util.AdapterUtil;
+import org.eclipse.core.commands.AbstractHandler;
+import org.eclipse.core.commands.ExecutionEvent;
+import org.eclipse.core.commands.ExecutionException;
+import org.eclipse.jface.viewers.ISelection;
+import org.eclipse.ui.handlers.HandlerUtil;
 
 /** Another application sent us a PV name via its popup menu.
  *  @author Kay Kasemir
  */
-public class PVpopupAction extends ProcessVariablePopupAction
-{    
+public class PVpopupAction extends AbstractHandler
+{
     @Override
-    public void handlePVs(IProcessVariable pv_names[])
-    {   
-    	PVTableEditor editor = PVTableEditor.createPVTableEditor();
-    	if (editor == null)
-    		return;
-        PVListModel model = editor.getModel();
-        for (IProcessVariable pv : pv_names)
-            model.addPV(pv.getName());
+    public Object execute(ExecutionEvent event) throws ExecutionException
+    {
+        final PVTableEditor editor = PVTableEditor.createPVTableEditor();
+        if (editor != null)
+        {
+            final PVListModel model = editor.getModel();
+
+            final ISelection selection = HandlerUtil.getActiveMenuSelection(event);
+            final ProcessVariable[] pvs = AdapterUtil.convert(selection, ProcessVariable.class);
+            for (ProcessVariable pv : pvs)
+                model.addPV(pv.getName());
+        }
+        return null;
     }
 }

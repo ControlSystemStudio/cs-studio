@@ -18,6 +18,7 @@ public class TreemodelExporterActivator extends Plugin {
 	 * The constructor
 	 */
 	public TreemodelExporterActivator() {
+	    // EMPTY
 	}
 
 	/*

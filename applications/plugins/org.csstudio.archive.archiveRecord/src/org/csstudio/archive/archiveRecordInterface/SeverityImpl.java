@@ -21,7 +21,7 @@
  */
  package org.csstudio.archive.archiveRecordInterface;
 
-import org.csstudio.platform.data.ISeverity;
+import org.csstudio.data.values.ISeverity;
 
 
 /** Implementation of the Severity interface for EPICS samples.

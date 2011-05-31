@@ -1,3 +1,10 @@
+/*******************************************************************************
+ * Copyright (c) 2010 Oak Ridge National Laboratory.
+ * All rights reserved. This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License v1.0
+ * which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-v10.html
+ ******************************************************************************/
 package org.csstudio.archivereader.rdb;
 
 import org.csstudio.archivereader.ArchiveReader;
@@ -11,6 +18,7 @@ import org.csstudio.archivereader.ArchiveReaderFactory;
 public class RDBArchiveReaderFactory implements ArchiveReaderFactory
 {
     /** {@inheritDoc} */
+    @Override
     public ArchiveReader getArchiveReader(final String url) throws Exception
     {
         // There used to be problems with empty user and password preference

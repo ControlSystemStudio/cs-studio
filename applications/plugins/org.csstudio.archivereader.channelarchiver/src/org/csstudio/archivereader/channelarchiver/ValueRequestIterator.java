@@ -1,8 +1,15 @@
+/*******************************************************************************
+ * Copyright (c) 2010 Oak Ridge National Laboratory.
+ * All rights reserved. This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License v1.0
+ * which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-v10.html
+ ******************************************************************************/
 package org.csstudio.archivereader.channelarchiver;
 
 import org.csstudio.archivereader.ValueIterator;
-import org.csstudio.platform.data.ITimestamp;
-import org.csstudio.platform.data.IValue;
+import org.csstudio.data.values.ITimestamp;
+import org.csstudio.data.values.IValue;
 
 /** ValueIterator that runs subsequent ValuesRequests until
  *  reaching the end time.
@@ -19,10 +26,10 @@ public class ValueRequestIterator implements ValueIterator
     final private ITimestamp end;
     final private boolean optimized;
     final private int count;
-    
+
     private int index;
     private IValue samples[];
-    
+
     /** Constructor for new value request.
      *  @param reader ChannelArchiverReader
      *  @param key Archive key
@@ -43,12 +50,12 @@ public class ValueRequestIterator implements ValueIterator
         this.end = end;
         this.optimized = optimized;
         this.count = count;
-        
-        fetch(start); 
+
+        fetch(start);
     }
 
     /** Fetch another batch of samples
-     * 
+     *
      *  @param fetch_start Start time for this batch
      *         (greater or equal to overall start time)
      *  @throws Exception on error
@@ -63,24 +70,26 @@ public class ValueRequestIterator implements ValueIterator
     }
 
     /** {@inheritDoc} */
+    @Override
     public boolean hasNext()
     {
         return samples != null;
     }
 
     /** {@inheritDoc} */
+    @Override
     public IValue next() throws Exception
     {
         final IValue result = samples[index];
         ++index;
         if (index < samples.length)
             return result;
-        
+
         // Prepare next batch of samples
         fetch(result.getTime());
         if (samples == null)
             return result;
-        
+
         // Inspect next batch of samples
         // In most cases, this fetch should return the 'result' again:
         //   some_timestamp value A
@@ -110,14 +119,14 @@ public class ValueRequestIterator implements ValueIterator
         // i.e. from last_timestamp on, we could get any of the values B to E,
         // since they're all stamped at-or-before last_timestamp.
         // Which one exactly depends on optimization inside the data server.
-        
+
         // From the end of the new samples, go backward:
         for (index=samples.length-1;  index>=0;  --index)
         {   // If we find the previous batch's last sample...
             if (samples[index].equals(result))
                 // Skip all the samples up to and including it
                 break;
-        }        
+        }
         // Nothing to skip? Return as is.
         if (index < 0)
             index = 0;
@@ -128,6 +137,7 @@ public class ValueRequestIterator implements ValueIterator
     }
 
     /** {@inheritDoc} */
+    @Override
     public void close()
     {
         samples = null;

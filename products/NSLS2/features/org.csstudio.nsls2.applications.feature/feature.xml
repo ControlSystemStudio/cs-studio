@@ -3,7 +3,7 @@
       id="org.csstudio.nsls2.applications.feature"
       label="nsls2-applications"
       version="1.0.0.qualifier"
-      provider-name="Kunal Shroff &lt;kshroff@bnl.gov&gt;, Gabriele Carcassi &lt;carcassi@bnl.gov&gt; - Brookhaven National Lab">
+      provider-name="Kunal Shroff &lt;kshroff@bnl.gov&gt;, Gabriele Carcassi &lt;carcassi@bnl.gov&gt; - BNL">
 
    <description url="http://www.example.com/description">
       [Enter Feature Description here.]
@@ -27,15 +27,19 @@
          optional="true"/>
 
    <includes
-         id="org.csstudio.nsls2.databrowser.feature"
-         version="0.0.0"/>
-
-   <includes
-         id="org.csstudio.nsls2.opibuilder.feature"
-         version="0.0.0"/>
-
-   <includes
          id="org.csstudio.display.channelfinderviewer.feature"
+         version="0.0.0"/>
+
+   <includes
+         id="org.csstudio.display.multichannelviewer.feature"
+         version="0.0.0"/>
+
+   <includes
+         id="org.csstudio.opibuilder.feature"
+         version="0.0.0"/>
+
+   <includes
+         id="org.csstudio.trends.databrowser2.feature"
          version="0.0.0"/>
 
 </feature>

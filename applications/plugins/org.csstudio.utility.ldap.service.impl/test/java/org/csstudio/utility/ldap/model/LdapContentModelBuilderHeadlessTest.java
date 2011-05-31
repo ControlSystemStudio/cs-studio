@@ -21,14 +21,14 @@
  */
 package org.csstudio.utility.ldap.model;
 
+import static org.csstudio.utility.ldap.service.util.LdapUtils.any;
+import static org.csstudio.utility.ldap.service.util.LdapUtils.createLdapName;
 import static org.csstudio.utility.ldap.treeconfiguration.LdapEpicsControlsConfiguration.COMPONENT;
 import static org.csstudio.utility.ldap.treeconfiguration.LdapEpicsControlsConfiguration.FACILITY;
 import static org.csstudio.utility.ldap.treeconfiguration.LdapEpicsControlsConfiguration.IOC;
 import static org.csstudio.utility.ldap.treeconfiguration.LdapEpicsControlsConfiguration.RECORD;
 import static org.csstudio.utility.ldap.treeconfiguration.LdapEpicsControlsConfiguration.UNIT;
 import static org.csstudio.utility.ldap.treeconfiguration.LdapEpicsControlsConfiguration.VIRTUAL_ROOT;
-import static org.csstudio.utility.ldap.utils.LdapUtils.any;
-import static org.csstudio.utility.ldap.utils.LdapUtils.createLdapName;
 
 import java.util.EnumMap;
 import java.util.Map;
@@ -38,13 +38,14 @@ import javax.naming.directory.SearchControls;
 import junit.framework.Assert;
 
 import org.csstudio.utility.ldap.LdapTestHelper;
-import org.csstudio.utility.ldap.model.builder.LdapContentModelBuilder;
+import org.csstudio.utility.ldap.service.ILdapContentModelBuilder;
 import org.csstudio.utility.ldap.service.ILdapSearchResult;
 import org.csstudio.utility.ldap.service.ILdapService;
+import org.csstudio.utility.ldap.service.LdapServiceException;
 import org.csstudio.utility.ldap.treeconfiguration.LdapEpicsControlsConfiguration;
 import org.csstudio.utility.treemodel.ContentModel;
 import org.csstudio.utility.treemodel.CreateContentModelException;
-import org.csstudio.utility.treemodel.ISubtreeNodeComponent;
+import org.csstudio.utility.treemodel.INodeComponent;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
@@ -85,8 +86,8 @@ public class LdapContentModelBuilderHeadlessTest {
                                                                                    SearchControls.SUBTREE_SCOPE);
         try {
             if (searchResult != null) {
-                final LdapContentModelBuilder<LdapEpicsControlsConfiguration> builder =
-                    new LdapContentModelBuilder<LdapEpicsControlsConfiguration>(VIRTUAL_ROOT, searchResult);
+                final ILdapContentModelBuilder<LdapEpicsControlsConfiguration> builder =
+                        service.getLdapContentModelBuilder(VIRTUAL_ROOT, searchResult);
 
                 builder.build();
                 MODEL_ONE = builder.getModel();
@@ -102,8 +103,8 @@ public class LdapContentModelBuilderHeadlessTest {
                                                                      any(RECORD.getNodeTypeName()),
                                                                      SearchControls.SUBTREE_SCOPE);
             if (searchResult != null) {
-                final LdapContentModelBuilder<LdapEpicsControlsConfiguration> builder =
-                    new LdapContentModelBuilder<LdapEpicsControlsConfiguration>(VIRTUAL_ROOT, searchResult);
+                final ILdapContentModelBuilder<LdapEpicsControlsConfiguration> builder =
+                    service.getLdapContentModelBuilder(VIRTUAL_ROOT, searchResult);
 
                 builder.build();
                 MODEL_TWO = builder.getModel();
@@ -112,13 +113,15 @@ public class LdapContentModelBuilderHeadlessTest {
             }
         } catch (final CreateContentModelException e) {
             Assert.fail("Exception when reading model from search result.");
+        } catch (LdapServiceException e) {
+            Assert.fail("Exception when reading model from search result.");
         }
     }
 
     @Test
     public void testGetChildrenByLdapNameCache() {
 
-        Map<String, ISubtreeNodeComponent<LdapEpicsControlsConfiguration>> childrenByType =
+        Map<String, INodeComponent<LdapEpicsControlsConfiguration>> childrenByType =
             MODEL_ONE.getChildrenByTypeAndLdapName(FACILITY);
         Assert.assertEquals(childrenByType.size(), RESULT_CHILDREN_BY_TYPE.get(FACILITY).intValue());
 
@@ -144,7 +147,7 @@ public class LdapContentModelBuilderHeadlessTest {
     @Test
     public void testBothNameCaches() {
 
-        ISubtreeNodeComponent<LdapEpicsControlsConfiguration> comp = MODEL_TWO.getByTypeAndSimpleName(IOC, "StaticTestEcon1");
+        INodeComponent<LdapEpicsControlsConfiguration> comp = MODEL_TWO.getByTypeAndSimpleName(IOC, "StaticTestEcon1");
 
         Assert.assertEquals(createLdapName(IOC.getNodeTypeName(), "StaticTestEcon1",
                                            COMPONENT.getNodeTypeName(), "StaticTestEcom1",

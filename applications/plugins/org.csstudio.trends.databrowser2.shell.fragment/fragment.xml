@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?eclipse version="3.4"?>
+<fragment>
+     <extension
+        point="org.eclipse.ui.popupMenus">
+     <objectContribution
+           adaptable="false"
+           id="org.csstudio.trends.databrowser2.shell.fragment.run"
+           nameFilter="*plt"
+           objectClass="org.eclipse.core.resources.IResource">
+        <action
+              class="org.csstudio.trends.databrowser.OpenAsShell"
+              id="org.csstudio.utility.quickstart.addtoquickstartaction"
+              label="Open in shell"/>
+     </objectContribution>
+  </extension>
+  
+  <extension
+         point="org.eclipse.ui.popupMenus">
+      <objectContribution
+            adaptable="true"
+            id="org.csstudio.trends.databrwoser2.shell.popupactions"
+            objectClass="org.csstudio.platform.model.IProcessVariable">
+         <menu
+               id="org.csstudio.popmenu"
+               label="CSS"
+               path="additions">
+            <groupMarker
+                  name="content">
+            </groupMarker>
+            <separator
+                  name="additions">
+            </separator>
+         </menu>
+         <action
+               class="org.csstudio.trends.databrowser.OpenDataBrowserShellPopupAction"
+               icon="icons/databrowser.png"
+               id="org.csstudio.trends.databrowser.OpenDataBrowserShellPopupAction"
+               label="Databrowser Shell"
+               menubarPath="org.csstudio.popmenu/content"
+               tooltip="Open Databrowser in shell">
+         </action>
+      </objectContribution>
+   </extension>
+         <extension
+            point="org.csstudio.platform.ui.striptool">
+         <striptool
+               class="org.csstudio.trends.databrowser.StripToolService">
+         </striptool>
+      </extension>
+
+</fragment>

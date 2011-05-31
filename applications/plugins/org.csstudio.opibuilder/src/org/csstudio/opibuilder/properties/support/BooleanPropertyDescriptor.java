@@ -22,7 +22,7 @@
 package org.csstudio.opibuilder.properties.support;
 
 import org.csstudio.opibuilder.OPIBuilderPlugin;
-import org.csstudio.platform.ui.util.CustomMediaFactory;
+import org.csstudio.ui.util.CustomMediaFactory;
 import org.eclipse.jface.viewers.CellEditor;
 import org.eclipse.jface.viewers.CheckboxCellEditor;
 import org.eclipse.jface.viewers.LabelProvider;
@@ -81,7 +81,7 @@ public final class BooleanPropertyDescriptor extends PropertyDescriptor {
 	 * @author Xihui Chen
 	 * 
 	 */
-	private final class BooleanLabelProvider extends LabelProvider {
+	private final static class BooleanLabelProvider extends LabelProvider {
 		/**
 		 * {@inheritDoc}
 		 */

@@ -37,11 +37,13 @@ package org.csstudio.config.ioconfig.model.service;
 import java.util.Collection;
 import java.util.Map;
 
+import javax.annotation.CheckForNull;
+import javax.annotation.Nonnull;
+
 import org.csstudio.config.ioconfig.model.INode;
+import org.csstudio.config.ioconfig.model.PersistenceException;
 
 /**
- * TODO (hrickens) :
- *
  * @author hrickens
  * @author $Author: hrickens $
  * @version $Revision: 1.2 $
@@ -49,9 +51,12 @@ import org.csstudio.config.ioconfig.model.INode;
  */
 public interface ProcessVariable2IONameService {
 
-    String getIOName(final String pvName);
+    @CheckForNull
+    String getIOName(@Nonnull final String pvName);
 
-    INode getNode(final String pvName);
+    @CheckForNull
+    INode getNode(@Nonnull final String pvName) throws PersistenceException;
 
-    Map<String, INode> getNodes(final Collection<String> pvName);
+    @Nonnull
+    Map<String, INode> getNodes(@Nonnull final Collection<String> pvName) throws PersistenceException, NodeNotFoundException;
 }

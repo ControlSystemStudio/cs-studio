@@ -28,8 +28,9 @@ import java.io.InputStream;
 import java.sql.Blob;
 import java.sql.SQLException;
 import java.util.Date;
-import java.util.Set;
 
+import javax.annotation.CheckForNull;
+import javax.annotation.Nonnull;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Id;
@@ -116,13 +117,12 @@ public class DocumentDBO implements Comparable<DocumentDBO>, IDocument {
      * Keywords for this Document.
      */
     private String _keywords;
-    private Set<AbstractNodeDBO> _nodes;
-    
 
     /**
      * Default Constructor needed by Hibernate.
      */
     public DocumentDBO() {
+        // Constructor
     }
 
     /**
@@ -131,17 +131,16 @@ public class DocumentDBO implements Comparable<DocumentDBO>, IDocument {
      * @param desc set the long description.
      * @param keywords set the keywords.
      */
-    public DocumentDBO(final String subject, final String desc, final String keywords) {
+    public DocumentDBO(@Nonnull final String subject,@Nonnull final String desc,@Nonnull final String keywords) {
         setSubject(subject);
         setDesclong(desc);
         setKeywords(keywords);
     }
 
-    /* (non-Javadoc)
-     * @see org.csstudio.config.ioconfig.model.IDocument#getId()
-     */
+    @Override
     @Id
     @Column(length = 100)
+    @CheckForNull
     public String getId() {
         return _id;
     }
@@ -150,13 +149,15 @@ public class DocumentDBO implements Comparable<DocumentDBO>, IDocument {
      * 
      * @param id set the Document Id key.
      */
-    public void setId(final String id) {
+    public void setId(@Nonnull final String id) {
         _id = id;
     }
 
     /**
      * @return the File mime type
      */
+    @Override
+    @CheckForNull
     @Column(name = "MIME_TYPE", length = 10)
     public String getMimeType() {
         return _mimeType;
@@ -167,7 +168,7 @@ public class DocumentDBO implements Comparable<DocumentDBO>, IDocument {
      * @param mimeType
      *            set the MIME type of this Document.
      */
-    public void setMimeType(final String mimeType) {
+    public void setMimeType(@Nonnull final String mimeType) {
         _mimeType = mimeType;
     }
 
@@ -177,13 +178,22 @@ public class DocumentDBO implements Comparable<DocumentDBO>, IDocument {
      */
     @Lob
     //@Basic(fetch = FetchType.LAZY)
+    @CheckForNull
     public Blob getImage() {
         return _image;
     }
 
+    @Override
     @Transient
-    public InputStream getImageData() throws SQLException {
-        return _image.getBinaryStream();
+    @Nonnull
+    public InputStream getImageData() throws PersistenceException {
+        try {
+            return _image.getBinaryStream();
+        } catch (SQLException e) {
+            PersistenceException persistenceException = new PersistenceException(e);
+            persistenceException.setStackTrace(e.getStackTrace());
+            throw persistenceException;
+        }
     }
     
     
@@ -191,21 +201,18 @@ public class DocumentDBO implements Comparable<DocumentDBO>, IDocument {
      * The Documentation File. The Name is historic conditional on Data Base.
      * @param image Set the Documentation File.
      */
-    public void setImage(final Blob image) {
+    public void setImage(@Nonnull final Blob image) {
         _image = image;
     }
 
     @Transient
-    public void setImage(byte[] imageAsByteArray) {
+    public void setImage(@Nonnull byte[] imageAsByteArray) {
         _image = Hibernate.createBlob(imageAsByteArray);
     }
     
-    
-
-    /* (non-Javadoc)
-     * @see org.csstudio.config.ioconfig.model.IDocument#getCreatedDate()
-     */
+    @Override
     @Column(name = "CREATED_DATE")
+    @CheckForNull
     public Date getCreatedDate() {
         return _createdDate;
     }
@@ -214,187 +221,207 @@ public class DocumentDBO implements Comparable<DocumentDBO>, IDocument {
      * 
      * @param createdDate set the create date of the document.
      */
-    public void setCreatedDate(final Date createdDate) {
+    public void setCreatedDate(@Nonnull final Date createdDate) {
         _createdDate = createdDate;
     }
 
-    /* (non-Javadoc)
-     * @see org.csstudio.config.ioconfig.model.IDocument#getAccountname()
-     */
+    @Override
+    @CheckForNull
     @Column(length = 30)
     public String getAccountname() {
         return _accountname;
     }
 
-    public void setAccountname(final String accountname) {
+    public void setAccountname(@Nonnull final String accountname) {
         _accountname = accountname;
     }
 
-    /* (non-Javadoc)
-     * @see org.csstudio.config.ioconfig.model.IDocument#getEntrydate()
-     */
+    @Override
+    @CheckForNull
     public Date getEntrydate() {
         return _entrydate;
     }
 
-    public void setEntrydate(final Date entrydate) {
+    public void setEntrydate(@Nonnull final Date entrydate) {
         _entrydate = entrydate;
     }
 
-    /* (non-Javadoc)
-     * @see org.csstudio.config.ioconfig.model.IDocument#getLogseverity()
-     */
+    @Override
+    @CheckForNull
     @Column(length = 16)
     public String getLogseverity() {
         return _logseverity;
     }
 
-    public void setLogseverity(final String logseverity) {
+    public void setLogseverity(@Nonnull final String logseverity) {
         _logseverity = logseverity;
     }
 
-    /* (non-Javadoc)
-     * @see org.csstudio.config.ioconfig.model.IDocument#getLinkId()
-     */
+    @Override
     @Column(name = "LINK_ID", length = 100)
+    @CheckForNull
     public String getLinkId() {
         return _linkId;
     }
 
-    public void setLinkId(final String linkId) {
+    public void setLinkId(@Nonnull final String linkId) {
         _linkId = linkId;
     }
 
-    /* (non-Javadoc)
-     * @see org.csstudio.config.ioconfig.model.IDocument#getSubject()
-     */
+    @Override
     @Column(length = 200)
+    @CheckForNull
     public String getSubject() {
         return _subject;
     }
 
-    public void setSubject(String subject) {
+    public void setSubject(@Nonnull String subject) {
         _subject = subject;
         Diagnose.addNewLine(_subject+"\t"+this.getClass().getSimpleName());
     }
 
-    /* (non-Javadoc)
-     * @see org.csstudio.config.ioconfig.model.IDocument#getDesclong()
-     */
+    @Override
     @Column(length = 4000)
+    @Nonnull
     public String getDesclong() {
         return _desclong;
     }
 
-    public void setDesclong(String desclong) {
+    public void setDesclong(@Nonnull String desclong) {
         _desclong = desclong;
     }
 
-    /* (non-Javadoc)
-     * @see org.csstudio.config.ioconfig.model.IDocument#getLinkForward()
-     */
+    @Override
     @Column(name = "Link_Forward", length = 200)
+    @Nonnull
     public String getLinkForward() {
         return _linkForward;
     }
 
-    public void setLinkForward(String linkForward) {
+    public void setLinkForward(@Nonnull String linkForward) {
         _linkForward = linkForward;
     }
 
-    /* (non-Javadoc)
-     * @see org.csstudio.config.ioconfig.model.IDocument#getErroridentifyer()
-     */
+    @Override
+    @CheckForNull
     @Column(length = 30)
     public String getErroridentifyer() {
         return _erroridentifyer;
     }
 
-    public void setErroridentifyer(String erroridentifyer) {
+    public void setErroridentifyer(@Nonnull String erroridentifyer) {
         _erroridentifyer = erroridentifyer;
     }
 
-    /* (non-Javadoc)
-     * @see org.csstudio.config.ioconfig.model.IDocument#getDeleteDate()
-     */
+    @Override
     @Column(name = "DELETE_DATE")
+    @CheckForNull
     public Date getDeleteDate() {
         return _deleteDate;
     }
 
-    public void setDeleteDate(Date deleteDate) {
+    public void setDeleteDate(@Nonnull Date deleteDate) {
         _deleteDate = deleteDate;
     }
 
-    /* (non-Javadoc)
-     * @see org.csstudio.config.ioconfig.model.IDocument#getUpdateDate()
-     */
+    @Override
     @Column(name = "UPDATE_DATE")
+    @Nonnull
     public Date getUpdateDate() {
         return _updateDate;
     }
 
-    public void setUpdateDate(Date updateDate) {
+    public void setUpdateDate(@Nonnull Date updateDate) {
         _updateDate = updateDate;
     }
 
-    /* (non-Javadoc)
-     * @see org.csstudio.config.ioconfig.model.IDocument#getLocation()
-     */
+    @Override
     @Column(length = 30)
+    @Nonnull
     public String getLocation() {
         return _location;
     }
 
-    public void setLocation(String location) {
+    public void setLocation(@Nonnull String location) {
         _location = location;
     }
 
-    /* (non-Javadoc)
-     * @see org.csstudio.config.ioconfig.model.IDocument#getKeywords()
-     */
+    @Override
     @Column(length = 200)
+    @Nonnull
     public String getKeywords() {
         return _keywords;
     }
 
-    public void setKeywords(String keywords) {
+    public void setKeywords(@Nonnull String keywords) {
         _keywords = keywords;
-    }
-
-    //@ManyToMany(mappedBy = "documents", targetEntity=Node.class, fetch = FetchType.EAGER)
-    @Transient
-    public Set<AbstractNodeDBO> getNodes() {
-      return _nodes;
-    }
-
-    public void setNodes(Set<AbstractNodeDBO> nodes) {
-        _nodes = nodes;
-    }
-
-    public void addNode(AbstractNodeDBO n) {
-        n.addDocument(this);
-        _nodes.add(n);        
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    public int compareTo(DocumentDBO other) {
-        return getId().compareTo(other.getId());
     }
 
     /**
      * {@inheritDoc}
      */
     @Override
-    public boolean equals(Object arg0) {
-        if (arg0 instanceof DocumentDBO) {
-            DocumentDBO doc = (DocumentDBO) arg0;
-            return doc.getId().equals(getId());
+    public int compareTo(@CheckForNull DocumentDBO other) {
+        String id = getId();
+        if(id==null) {
+            return 1;
         }
-        return super.equals(arg0);
+        if(other==null) {
+            return -1;
+        }
+        String otherID = other.getId();
+        if(otherID==null) {
+            return -1;
+        }
+        return id.compareTo(otherID);
     }
+
     
     
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public int hashCode() {
+        final int prime = 31;
+        int result = 1;
+        result = prime * result + ( (_id == null) ? 0 : _id.hashCode());
+        return result;
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public boolean equals(@CheckForNull Object obj) {
+        if (this == obj) {
+            return true;
+        }
+        if (obj == null) {
+            return false;
+        }
+        if (getClass() != obj.getClass()) {
+            return false;
+        }
+        DocumentDBO other = (DocumentDBO) obj;
+        if (_id == null) {
+            if (other._id != null) {
+                return false;
+            }
+        } else if (!_id.equals(other._id)) {
+            return false;
+        }
+        return true;
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    @Nonnull
+    public String toString() {
+        StringBuilder sb = new StringBuilder();
+        sb.append(getSubject()).append(".").append(getMimeType()).append(" : ").append(getDesclong());
+        return sb.toString();
+    }
 }

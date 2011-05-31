@@ -18,7 +18,7 @@ import org.csstudio.utility.adlparser.internationalization.Messages;
  * @author hammonds
  *
  */
-public class TextWidget extends ADLAbstractWidget {
+public class TextWidget extends ADLAbstractWidget implements ITextWidget{
 	private String textix = new String();
 	private String alignment = new String();
 	private String color_mode = new String();
@@ -52,7 +52,7 @@ public class TextWidget extends ADLAbstractWidget {
 	        }
 			for (FileLine fileLine : adlWidget.getBody()){
 				String bodyPart = fileLine.getLine();
-				String[] row = bodyPart.trim().split("=");
+				String[] row = bodyPart.trim().split("=", 2);
 				if (row.length < 2){
 					throw new WrongADLFormatException(Messages.Label_WrongADLFormatException_Parameter_Begin + bodyPart + Messages.Label_WrongADLFormatException_Parameter_End);
 				}
@@ -88,7 +88,7 @@ public class TextWidget extends ADLAbstractWidget {
 	/**
 	 * @param alignment the alignment to set
 	 */
-	private void setAlignment(String alignment) {
+	public void setAlignment(String alignment) {
 		this.alignment = alignment;
 	}
 

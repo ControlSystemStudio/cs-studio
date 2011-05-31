@@ -1,0 +1,46 @@
+<html>
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=Cp1252"/>
+    <link rel="stylesheet" href="default.css" type="text/css" />
+    <title>
+     Choice Widgets
+    </title>
+  </head>
+  <body>
+
+    <h2>
+      Choice Widgets
+    </h2>
+    
+    <p>
+    Choice widgets are those widgets that are able to display/write PV value
+    as a particular state among multiple states, such as <a href="Combo.html">Combo Box</a>, 
+    <a href="RadioBox.html">Radio Box</a> and <a href="ChoiceButton.html">Choice Button</a>.
+    It will use PV's string value to match the state. If no matched state was found, 
+    no state will be chosen. If the PV is not a String PV, it will convert its value to a string for matching.
+    So, it uses the string value of an EPICS enum PV.
+    </p>
+    
+    <h3>Operations Common to Choice Widgets</h3>
+   <p>Simply click the widget to make the choice. It will write the correponding string
+   value to PV.
+    </p>
+    
+    
+    <h3>Properties Common to Choice Widgets</h3>
+    <ul>   
+     <li>Items (items)<dl><dd>The string items of the widget. This property is not meaningful 
+     if <code>Items From PV</code> is yes.</dd></dl></li>
+    <li>Items From PV (items_from_pv) <dl><dd>Load the items from PV. The PV must be an enum PV.</dd></dl></li>
+     
+    </ul>
+
+<h3>See Also</h3>
+   <ul>
+   <li><a href="PVWidgets.html">Properties Common to PV Widgets</a></li>
+   <li><a href="../Widget Properties.html">Properties Common to All Widgets</a></li>
+   </ul>
+<br>
+
+</body>
+</html>

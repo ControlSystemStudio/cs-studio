@@ -35,11 +35,6 @@
             class="org.csstudio.platform.ui.internal.logging.JmsAppenderPreferencePage"
             id="org.csstudio.platform.log.logPreferences.jms"
             name="%logJmsAppenderPageName"/>
-      <page
-            category="org.csstudio.platform.ui.css.platform"
-            class="org.csstudio.platform.ui.internal.logging.ControlSystemPreferencePage"
-            id="org.csstudio.platform.log.controlsystemPreferences"
-            name="Control System"/>
    </extension>
    <extension
          point="org.eclipse.help.toc">
@@ -68,24 +63,10 @@
          <adapter type="org.eclipse.ui.model.IWorkbenchAdapter"/>
       </factory>
       <factory
-            adaptableType="org.csstudio.platform.model.pvs.ControlSystemEnum"
-            class="org.csstudio.platform.ui.internal.workbench.ControlSystemEnumAdapterFactory">
+            adaptableType="org.eclipse.core.resources.IWorkspace"
+            class="org.csstudio.platform.ui.internal.workbench.UndoContextAdapterFactory">
          <adapter
-               type="org.eclipse.ui.model.IWorkbenchAdapter">
-         </adapter>
-      </factory>
-      <factory
-            adaptableType="org.csstudio.platform.model.pvs.IProcessVariableAddress"
-            class="org.csstudio.platform.ui.internal.workbench.ProcessVariableAdressAdapterFactory">
-         <adapter
-               type="org.eclipse.ui.model.IWorkbenchAdapter">
-         </adapter>
-      </factory>
-      <factory
-            adaptableType="org.csstudio.platform.model.pvs.IProcessVariableAdressProvider"
-            class="org.csstudio.platform.ui.internal.workbench.ProcessVariableAdressProviderAdapterFactory">
-         <adapter
-               type="org.eclipse.ui.IActionFilter">
+               type="org.eclipse.core.commands.operations.IUndoContext">
          </adapter>
       </factory>
    </extension>
@@ -95,20 +76,6 @@
             id="org.eclipse.csstudio.ui.systemActions"
             label="System Actions"
             visible="true">         
-         <action
-               class="org.csstudio.platform.ui.internal.actions.LoginAction"
-               icon="icons/switch_user.png"
-               id="org.csstudio.platform.ui.LoginAction"
-               label="%menuLogin"
-               menubarPath="file/css_login"
-               style="push"
-               toolbarPath="user/css_login">
-            <enablement>
-               <systemProperty
-                     name="org.csstudio.platform.loginAvailable"
-                     value="true"/>
-            </enablement>
-         </action>
          <action
                class="org.csstudio.platform.ui.internal.actions.OpenPreferencesAction"
                id="org.csstudio.platform.ui.internal.actions.PreferencesAction"
@@ -160,25 +127,9 @@
          point="org.eclipse.ui.preferencePages">
       <page
             category="org.csstudio.platform.ui.css.platform"
-            class="org.csstudio.platform.ui.internal.preferences.AuthenticationPreferencePage"
-            id="org.csstudio.platform.ui.internal.security.AuthenticationPreferencePage"
-            name="%authenticationPageName"/>
-      <page
-            category="org.csstudio.platform.ui.css.platform"
             class="org.csstudio.platform.ui.internal.localization.LocalePreferencePage"
             id="org.csstudio.platform.ui.internal.localization.LocalePreferencePage"
             name="%localePageName"/>
-      <page
-            category="org.csstudio.platform.ui.css.platform"
-            class="org.csstudio.platform.ui.internal.preferences.SystemPropertiesPreferencePage"
-            id="org.csstudio.platform.ui.internal.preferences.SystemPropertiesPreferencePage"
-            name="%systemPropertyPreferencesPageName"/>
-   <page
-         category="org.csstudio.platform.ui.css.platform"
-         class="org.csstudio.platform.ui.internal.preferences.OnsiteSubnetPreferencePage"
-         id="org.csstudio.platform.ui.page1"
-         name="Onsite Subnets">
-   </page>
    <page
          category="org.csstudio.platform.ui.css.applications.configuration"
          class="org.csstudio.platform.ui.internal.statisticview.PreferencePage"
@@ -198,23 +149,10 @@
             id="org.csstudio"
             name="CSS"/>
       <view
-            allowMultiple="false"
-            class="org.csstudio.platform.ui.internal.developmentsupport.util.ContainerView"
-            icon="icons/containerView.gif"
-            id="org.csstudio.platform.ui.internal.developmentsupport.util.ContainerView"
-            name="Container View"/>
-      <view
             class="org.eclipse.ui.ExtensionFactory:progressView"
             icon="icons/pview.gif"
             id="org.csstudio.platform.ui.views.progress"
             name="%progressView"/>
-      <view
-            category="org.csstudio"
-            class="org.csstudio.platform.ui.internal.connectionview.ConnectionStateView"
-            icon="icons/connections.png"
-            id="org.csstudio.platform.ui.ConnectionStateView"
-            name="%connectorView">
-      </view>
       <view
             allowMultiple="true"
             category="org.csstudio"
@@ -225,6 +163,7 @@
             restorable="false">
       </view>
    </extension>
+   <!-- Moved to org.csstudio.ui.preferences
    <extension
          id="cssPreferenceCategories"
          name="cssPreferencesCategories"
@@ -293,19 +232,9 @@
             id="org.csstudio.platform.ui.css.applications.others"
             name="%othersPreferencesName"/>                         
    </extension>
-
+   -->
   <extension
         point="org.eclipse.ui.popupMenus">
-     <objectContribution
-           id="IProcessVariableAdressProviderContributions"
-           objectClass="org.csstudio.platform.model.pvs.IProcessVariableAdressProvider">
-        <action
-              class="org.csstudio.platform.ui.internal.developmentsupport.util.PrintPvsAction"
-              icon="icons/listpvs.png"
-              id="PrintPvsAction"
-              label="Print selected Pvs">
-        </action>
-     </objectContribution>
      <objectContribution
            adaptable="true"
            id="org.csstudio.platform.ui.copyPvToClipboard"
@@ -345,11 +274,6 @@
               optional="true">
         </commandParameter>
      </command>
-     <command
-           description="Shows the registered authorization IDs"
-           id="org.csstudio.platform.ui.commands.showAuthorizationIds"
-           name="Show authorization IDs">
-     </command>
   </extension>
   <extension
         point="org.eclipse.ui.menus">
@@ -372,14 +296,6 @@
                  style="push">
            </command>
         </menu>
-     </menuContribution>
-     <menuContribution
-           locationURI="menu:management">
-        <command
-              commandId="org.csstudio.platform.ui.commands.showAuthorizationIds"
-              label="Show authorization IDs"
-              style="push">
-        </command>
      </menuContribution>
      <menuContribution
            locationURI="menu:window?after=additions">
@@ -406,25 +322,6 @@
            </visibleWhen>
         </command>
      </menuContribution>
-  </extension>
-  <extension
-        point="org.eclipse.ui.menus">
-     <menuContribution
-           locationURI="toolbar:org.eclipse.ui.trim.status">
-        <toolbar
-              id="org.csstudio.platform.ui.loginInformationToolbar">
-           <control
-                 class="org.csstudio.platform.ui.internal.workbench.LoginInformationToolbar">
-           </control>
-        </toolbar>
-     </menuContribution>
-  </extension>
-  <extension
-        point="org.eclipse.ui.handlers">
-     <handler
-           class="org.csstudio.platform.ui.internal.actions.ShowAuthorizationIds"
-           commandId="org.csstudio.platform.ui.commands.showAuthorizationIds">
-     </handler>
   </extension>
   <extension
         point="org.csstudio.platform.managementCommandResultReceivers">

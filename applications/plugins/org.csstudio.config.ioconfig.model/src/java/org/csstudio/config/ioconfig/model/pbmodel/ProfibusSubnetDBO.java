@@ -2,37 +2,33 @@ package org.csstudio.config.ioconfig.model.pbmodel;
 
 import java.util.Set;
 
+import javax.annotation.CheckForNull;
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import javax.persistence.Entity;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 import javax.persistence.Transient;
 
-import org.csstudio.config.ioconfig.model.IocDBO;
-import org.csstudio.config.ioconfig.model.NamedDBClass;
 import org.csstudio.config.ioconfig.model.AbstractNodeDBO;
+import org.csstudio.config.ioconfig.model.IocDBO;
 import org.csstudio.config.ioconfig.model.NodeType;
+import org.csstudio.config.ioconfig.model.PersistenceException;
 
-/***********************************************************
- * Data model for Profibus-DP Subnet *
- ***********************************************************
- * Created by: Torsten Boeckmann * Date: 07. Dezember 2005 *
- ***********************************************************
- * last changed: @author $Author: hrickens $ * Grounds of changed: ................... *
- * ................... * Revision: @version $Revision: 1.2 $ * Status: untested * Precondition: *
- * Postcondition: * *
- ***********************************************************/
-
+/**
+  * Data model for Profibus-DP Subnet
+  * 
+  * Created by: Torsten Boeckmann 
+  * Date: 07. Dezember 2005
+  *  
+  * last changed: @author $Author: hrickens $ 
+  * Revision: @version $Revision: 1.2 $
+  **/ 
 @Entity
-//@Table(name = "ddb_ProfibusSubnet")
 @Table(name = "ddb_Profibus_Subnet")
-public class ProfibusSubnetDBO extends AbstractNodeDBO {
+public class ProfibusSubnetDBO extends AbstractNodeDBO<IocDBO, MasterDBO> {
 
-    /**
-     * The highest accept station address.
-     */
-    @Transient
-    public static final int MAX_STATION_ADDRESS = 128;
-
+    private static final long serialVersionUID = 1L;
     /**
      * Subnet baud rate.
      */
@@ -90,18 +86,15 @@ public class ProfibusSubnetDBO extends AbstractNodeDBO {
      * {@link #ProfibusSubnet(IocDBO)}
      */
     public ProfibusSubnetDBO() {
+        // Constructor for Hibernate
     }
 
     /**
      * The default Constructor.
+     * @throws PersistenceException 
      */
-    public ProfibusSubnetDBO(final IocDBO ioc) {
-        this(ioc, DEFAULT_MAX_STATION_ADDRESS);
-    }
-
-    public ProfibusSubnetDBO(final IocDBO ioc, final int maxStationAddress) {
+    public ProfibusSubnetDBO(@Nonnull final IocDBO ioc) throws PersistenceException {
         setParent(ioc);
-        // setSortIndex(ioc.getfirstFreeStationAddress(maxStationAddress));
         ioc.addChild(this);
     }
 
@@ -109,6 +102,7 @@ public class ProfibusSubnetDBO extends AbstractNodeDBO {
      *
      * @return get the Baudrate
      */
+    @CheckForNull
     public String getBaudRate() {
         return _baudRate;
     }
@@ -118,7 +112,7 @@ public class ProfibusSubnetDBO extends AbstractNodeDBO {
      * @param baudRate
      *            Set the Baudrate for the PBNet
      */
-    public void setBaudRate(final String baudRate) {
+    public void setBaudRate(@Nullable final String baudRate) {
         _baudRate = baudRate;
     }
 
@@ -139,23 +133,6 @@ public class ProfibusSubnetDBO extends AbstractNodeDBO {
         this._cuLineLength = cuLineLength;
     }
 
-//    /**
-//     *
-//     * @return the Description of Profibus Subnet.
-//     */
-//    public String getDescription() {
-//        return _description;
-//    }
-//
-//    /**
-//     *
-//     * @param description
-//     *            set the description for the Profibus Subnet.
-//     */
-//    public void setDescription(final String description) {
-//        this._description = description;
-//    }
-
     /**
      *
      * @return the Gap.
@@ -169,8 +146,8 @@ public class ProfibusSubnetDBO extends AbstractNodeDBO {
      * @param gap
      *            set the Gap.
      */
-    public void setGap(final short gap) {
-        this._gap = gap;
+    public void setGap(final int gap) {
+        this._gap = (short)gap;
     }
 
     /**
@@ -186,8 +163,8 @@ public class ProfibusSubnetDBO extends AbstractNodeDBO {
      * @param hsa
      *            set the HSA (Highest Server Adress).
      */
-    public void setHsa(final short hsa) {
-        this._hsa = hsa;
+    public void setHsa(final int hsa) {
+        this._hsa = (short)hsa;
     }
 
     /**
@@ -296,6 +273,7 @@ public class ProfibusSubnetDBO extends AbstractNodeDBO {
      *
      * @return the Profile.
      */
+    @CheckForNull
     public String getProfil() {
         return _profil;
     }
@@ -305,14 +283,15 @@ public class ProfibusSubnetDBO extends AbstractNodeDBO {
      * @param profil
      *            set the Profile
      */
-    public void setProfil(final String profil) {
-        this._profil = profil;
+    public void setProfil(@Nullable final String profil) {
+        _profil = profil;
     }
 
     /**
      *
      * @return the quota Fdl Fms S7 com.
      */
+    @CheckForNull
     public String getQuotaFdlFmsS7com() {
         return _quotaFdlFmsS7com;
     }
@@ -322,7 +301,7 @@ public class ProfibusSubnetDBO extends AbstractNodeDBO {
      * @param quotaFdlFmsS7Com
      *            set the quota Fdl Fms S7 com.
      */
-    public void setQuotaFdlFmsS7com(final String quotaFdlFmsS7Com) {
+    public void setQuotaFdlFmsS7com(@Nullable final String quotaFdlFmsS7Com) {
         _quotaFdlFmsS7com = quotaFdlFmsS7Com;
     }
 
@@ -339,8 +318,8 @@ public class ProfibusSubnetDBO extends AbstractNodeDBO {
      * @param repeaterNumber
      *            set the Repeater number.
      */
-    public void setRepeaterNumber(final short repeaterNumber) {
-        _repeaterNumber = repeaterNumber;
+    public void setRepeaterNumber(final int repeaterNumber) {
+        _repeaterNumber = (short) repeaterNumber;
     }
 
     public short getSlaveNumber() {
@@ -371,16 +350,16 @@ public class ProfibusSubnetDBO extends AbstractNodeDBO {
         return _tqui;
     }
 
-    public void setTqui(final short tqui) {
-        this._tqui = tqui;
+    public void setTqui(final int tqui) {
+        this._tqui = (short)tqui;
     }
 
     public short getTset() {
         return _tset;
     }
 
-    public void setTset(final short tset) {
-        this._tset = tset;
+    public void setTset(final int tset) {
+        this._tset = (short)tset;
     }
 
     public long getTtr() {
@@ -400,16 +379,17 @@ public class ProfibusSubnetDBO extends AbstractNodeDBO {
     }
 
     @Transient
-    @SuppressWarnings("unchecked")
+    @Nonnull
     public Set<MasterDBO> getProfibusDPMaster() {
-        return (Set<MasterDBO>) getChildren();
+        return getChildren();
     }
 
     /**
      *
      * @return the parent Ioc of this subnet.
      */
-    @ManyToOne
+    @ManyToOne // TODO (hrickens) [11.05.2011]: Wieso ist hier eine ManyToOne Beziehung? Die ist doch inder der getParent Methode.
+    @Nonnull
     public IocDBO getIoc() {
         return (IocDBO) getParent();
     }
@@ -419,7 +399,7 @@ public class ProfibusSubnetDBO extends AbstractNodeDBO {
      * @param ioc
      *            set the parent Ioc of this subnet.
      */
-    public void setIoc(final IocDBO ioc) {
+    public void setIoc(@Nonnull final IocDBO ioc) {
         this.setParent(ioc);
     }
 
@@ -429,27 +409,27 @@ public class ProfibusSubnetDBO extends AbstractNodeDBO {
      * @return the Epics Address String
      */
     @Transient
+    @Nonnull
     public String getEpicsAddressString() {
         return "@"+getName();
     }
 
 
     @Transient
-    public void updateName(final String name) {
+    public void updateName(@Nonnull final String name) {
         setName(name);
-//        localUpdate();
     }
 
     /**
      * {@inheritDoc}
+     * @throws PersistenceException 
      */
     @Override
-    public AbstractNodeDBO copyParameter(final NamedDBClass parent) {
-        if (parent instanceof IocDBO) {
-            IocDBO ioc = (IocDBO) parent;
+    @Nonnull 
+    public ProfibusSubnetDBO copyParameter(@Nonnull final IocDBO parent) throws PersistenceException {
+            IocDBO ioc = parent;
             ProfibusSubnetDBO copy = new ProfibusSubnetDBO(ioc);
             copy.setDescription(getDescription());
-            copy.setDocuments(getDocuments());
             copy.setBaudRate(getBaudRate());
             copy.setCuLineLength(getCuLineLength());
             copy.setGap(getGap());
@@ -471,15 +451,15 @@ public class ProfibusSubnetDBO extends AbstractNodeDBO {
             copy.setTtr(getTtr());
             copy.setWatchdog(getWatchdog());
             return copy;
-        }
-        return null;
     }
 
     @Override
-    public AbstractNodeDBO copyThisTo(final AbstractNodeDBO parentNode) {
-        AbstractNodeDBO copy = super.copyThisTo(parentNode);
-        for (AbstractNodeDBO node : getChildren()) {
-            node.copyThisTo(copy);
+    @Nonnull
+    public ProfibusSubnetDBO copyThisTo(@Nonnull final IocDBO parentNode) throws PersistenceException {
+        ProfibusSubnetDBO copy = (ProfibusSubnetDBO) super.copyThisTo(parentNode);
+        for (MasterDBO node : getChildren()) {
+            MasterDBO childrenCopy = node.copyThisTo(copy);
+            childrenCopy.setSortIndexNonHibernate(node.getSortIndex());
         }
         return copy;
     }
@@ -488,6 +468,7 @@ public class ProfibusSubnetDBO extends AbstractNodeDBO {
      */
     @Override
     @Transient
+    @Nonnull
     public NodeType getNodeType() {
         return NodeType.SUBNET;
     }

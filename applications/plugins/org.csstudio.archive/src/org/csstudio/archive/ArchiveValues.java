@@ -1,6 +1,6 @@
 package org.csstudio.archive;
 
-import org.csstudio.platform.data.IValue;
+import org.csstudio.data.values.IValue;
 
 /** The samples returned by the archive for one channel.
  *  @author Kay Kasemir
@@ -10,9 +10,9 @@ public class ArchiveValues
 	private final ArchiveServer server;
 	private final String channel_name;
 	private final IValue samples[];
-	
+
 	/** Constructor
-	 * 
+	 *
 	 *  @param channel_name The name of the channel
 	 *  @param samples The samples we retrieved for this channel.
 	 */

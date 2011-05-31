@@ -1,3 +1,10 @@
+/*******************************************************************************
+ * Copyright (c) 2010 Oak Ridge National Laboratory.
+ * All rights reserved. This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License v1.0
+ * which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-v10.html
+ ******************************************************************************/
 package org.csstudio.opibuilder.model;
 
 import org.csstudio.opibuilder.properties.ActionsProperty;
@@ -5,6 +12,7 @@ import org.csstudio.opibuilder.properties.BooleanProperty;
 import org.csstudio.opibuilder.properties.IntegerProperty;
 import org.csstudio.opibuilder.properties.WidgetPropertyCategory;
 import org.eclipse.core.runtime.IPath;
+import org.eclipse.gef.GraphicalViewer;
 
 /**
  * The root model for an OPI Display.
@@ -40,6 +48,19 @@ public class DisplayModel extends AbstractContainerModel {
 	 */
 	public static final String PROP_SHOW_EDIT_RANGE = "show_edit_range"; //$NON-NLS-1$
 	
+	/**
+	 * If the tab close button should be hidden. 
+	 */
+	public static final String PROP_SHOW_CLOSE_BUTTON = "show_close_button"; //$NON-NLS-1$
+		
+	/**
+	 * Auto scale all the widgets as the window resizes. If this is set to true,
+	 * zoom operation will not work.
+	 */
+	public static final String PROP_AUTO_ZOOM_TO_FIT_ALL = "auto_zoom_to_fit_all"; //$NON-NLS-1$
+	
+	private GraphicalViewer viewer;
+	
 	private IPath opiFilePath;
 	
 	public DisplayModel() {
@@ -60,17 +81,23 @@ public class DisplayModel extends AbstractContainerModel {
 				WidgetPropertyCategory.Display, true));
 		addProperty(new BooleanProperty(PROP_SHOW_EDIT_RANGE, "Show Edit Range",
 				WidgetPropertyCategory.Display, true));
+		addProperty(new BooleanProperty(PROP_AUTO_ZOOM_TO_FIT_ALL, "Auto Zoom to Fit All", 
+				WidgetPropertyCategory.Behavior, false));
+		addProperty(new BooleanProperty(PROP_SHOW_CLOSE_BUTTON, "Show Close Button", 
+				WidgetPropertyCategory.Display, true));		
 		
-		removeProperty(PROP_BORDER_COLOR);
-		removeProperty(PROP_BORDER_STYLE);
-		removeProperty(PROP_BORDER_WIDTH);
-		removeProperty(PROP_VISIBLE);
-		removeProperty(PROP_ENABLED);
-		removeProperty(PROP_TOOLTIP);
-		removeProperty(PROP_ACTIONS);
+		setPropertyVisible(PROP_BORDER_COLOR, false);
+		setPropertyVisible(PROP_BORDER_STYLE, false);
+		setPropertyVisible(PROP_BORDER_WIDTH, false);
+		setPropertyVisible(PROP_VISIBLE, false);
+		setPropertyVisible(PROP_ENABLED, false);
+		setPropertyVisible(PROP_TOOLTIP, false);
+		setPropertyVisible(PROP_ACTIONS, false);
+		setPropertyVisible(PROP_FONT, false);
 		addProperty(new ActionsProperty(PROP_ACTIONS, "Actions", 
 				WidgetPropertyCategory.Behavior, false));
 		setPropertyDescription(PROP_COLOR_FOREGROUND, "Grid Color");
+		setPropertyValue(PROP_NAME, ""); //$NON-NLS-1$
 				
 	}
 
@@ -90,6 +117,15 @@ public class DisplayModel extends AbstractContainerModel {
 		return (Boolean)getCastedPropertyValue(PROP_SHOW_EDIT_RANGE);
 	}
 	
+	public boolean isShowCloseButton(){
+		return (Boolean)getPropertyValue(PROP_SHOW_CLOSE_BUTTON);
+	}
+	
+	public boolean isAutoZoomToFitAll(){
+		return (Boolean)getPropertyValue(PROP_AUTO_ZOOM_TO_FIT_ALL);
+	}
+	
+	
 	@Override
 	public String getTypeID() {
 		return ID;
@@ -108,6 +144,21 @@ public class DisplayModel extends AbstractContainerModel {
 	public IPath getOpiFilePath() {
 		return opiFilePath;
 	}
+
+	/**Set the viewer of the display model if this model belongs to a viewer.
+	 * @param viewer the viewer to set
+	 */
+	public void setViewer(GraphicalViewer viewer) {
+		this.viewer = viewer;
+	}
+
+	/**
+	 * @return the viewer, null if it has no viewer.
+	 */
+	public GraphicalViewer getViewer() {
+		return viewer;
+	}
+	
 	
 	
 

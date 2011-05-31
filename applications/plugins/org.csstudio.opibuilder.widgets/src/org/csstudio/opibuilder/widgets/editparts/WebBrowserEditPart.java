@@ -1,3 +1,10 @@
+/*******************************************************************************
+ * Copyright (c) 2010 Oak Ridge National Laboratory.
+ * All rights reserved. This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License v1.0
+ * which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-v10.html
+ ******************************************************************************/
 package org.csstudio.opibuilder.widgets.editparts;
 
 import org.csstudio.opibuilder.editparts.AbstractBaseEditPart;
@@ -23,7 +30,7 @@ public final class WebBrowserEditPart extends AbstractBaseEditPart {
 		final WebBrowserModel model = getWidgetModel();
 		WebBrowserFigure figure = new WebBrowserFigure(
 				(Composite) getViewer().getControl(), model.getParent(),
-				getExecutionMode() == ExecutionMode.RUN_MODE);
+				getExecutionMode() == ExecutionMode.RUN_MODE, model.isShowToolBar());
 		figure.setUrl(model.getURL());
 		figure.setRunMode(getExecutionMode() == ExecutionMode.RUN_MODE);
 		return figure;

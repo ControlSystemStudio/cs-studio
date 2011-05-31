@@ -21,13 +21,13 @@
  */
 package org.csstudio.sds.components.ui.internal.editparts;
 
-import org.csstudio.platform.data.INumericMetaData;
-import org.csstudio.platform.data.ISeverity;
-import org.csstudio.platform.data.ITimestamp;
-import org.csstudio.platform.data.IValue;
-import org.csstudio.platform.data.TimestampFactory;
-import org.csstudio.platform.data.ValueFactory;
-import org.csstudio.platform.data.IValue.Quality;
+import org.csstudio.data.values.INumericMetaData;
+import org.csstudio.data.values.ISeverity;
+import org.csstudio.data.values.ITimestamp;
+import org.csstudio.data.values.IValue;
+import org.csstudio.data.values.IValue.Quality;
+import org.csstudio.data.values.TimestampFactory;
+import org.csstudio.data.values.ValueFactory;
 import org.csstudio.platform.logging.CentralLogger;
 import org.csstudio.platform.model.IProcessVariableWithSamples;
 import org.csstudio.platform.ui.util.CustomMediaFactory;
@@ -444,7 +444,7 @@ public final class TextInputEditPart extends AbstractTextTypeWidgetEditPart impl
 		setPropertyChangeHandler(TextInputModel.PROP_INPUT_TEXT, textHandler);
 
 		// font
-		setPropertyChangeHandler(TextInputModel.PROP_FONT, new FontChangeHander<RefreshableLabelFigure>() {
+		setPropertyChangeHandler(TextInputModel.PROP_FONT, new FontChangeHandler<RefreshableLabelFigure>() {
 			@Override
 			protected void doHandle(final RefreshableLabelFigure refreshLableFigure, final Font font) {
 				refreshLableFigure.setFont(font);

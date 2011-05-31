@@ -1,3 +1,10 @@
+/*******************************************************************************
+ * Copyright (c) 2010 Oak Ridge National Laboratory.
+ * All rights reserved. This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License v1.0
+ * which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-v10.html
+ ******************************************************************************/
 package org.csstudio.debugging.rdbshell;
 
 import java.sql.ResultSet;
@@ -23,7 +30,7 @@ public class SQLExecutor
      */
     public SQLExecutor(final String url, final String user, final String password) throws Exception
     {
-        rdb = RDBUtil.connect(url, user, password);
+        rdb = RDBUtil.connect(url, user, password, true);
     }
 
     /** Execute query
@@ -69,7 +76,7 @@ public class SQLExecutor
                     row[c-1] = result.getString(c);
                     if (row[c-1] == null)
                         row[c-1] = "";
-                }     
+                }
                 rows.add(row);
             }
         }

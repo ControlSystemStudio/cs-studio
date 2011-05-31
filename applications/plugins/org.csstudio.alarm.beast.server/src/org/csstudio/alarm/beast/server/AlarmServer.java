@@ -16,24 +16,25 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.logging.Level;
 
 import org.csstudio.alarm.beast.AlarmTreePath;
 import org.csstudio.alarm.beast.Preferences;
 import org.csstudio.alarm.beast.SeverityLevel;
+import org.csstudio.alarm.beast.TreeItem;
 import org.csstudio.alarm.beast.WorkQueue;
 import org.csstudio.apputil.time.BenchmarkTimer;
-import org.csstudio.platform.data.ITimestamp;
-import org.csstudio.platform.logging.CentralLogger;
-import org.csstudio.platform.logging.JMSLogMessage;
+import org.csstudio.data.values.ITimestamp;
+import org.csstudio.logging.JMSLogMessage;
 
 /** Alarm Server
- *  
+ *
  *  Obtains configuration for all PVs from storage, then updates the PVs'
  *  status/severity from the control system.
  *  <p>
  *  Ignores the hierarchy which (some) of the clients may use to
  *  display the alarm state of PVs.
- *  
+ *
  *  @author Kay Kasemir, Xihui Chen
  */
 @SuppressWarnings("nls")
@@ -47,9 +48,6 @@ public class AlarmServer
 
     /** RDB for configuration/state */
     final private AlarmRDB rdb;
-    
-    /** Talker which can annunciate messages */
-    final private Talker talker;
 
     /** Messenger to communicate with clients */
     final private ServerCommunicator messenger;
@@ -57,13 +55,13 @@ public class AlarmServer
     /** Hierarchical alarm configuration
      *  <B>NOTE: Access to tree, PV list and map must synchronize on 'this'</B>
      */
-	private AlarmHierarchy alarm_tree;
-    
+	private TreeItem alarm_tree;
+
     /** All the PVs in the alarm_tree, sorted by name
      *  <B>NOTE: Access to tree, PV list and map must synchronize on 'this'</B>
      */
     private AlarmPV pv_list[] = new AlarmPV[0];
-    
+
     /** All the PVs in the model, mapping PV name (not path name!) to AlarmPV
      *  <B>NOTE: Access to tree, PV list and map must synchronize on 'this'</B>
      */
@@ -78,24 +76,22 @@ public class AlarmServer
      *  @param work_queue Work queue of the 'main' thread
      *  @throws Exception on error
      */
-    public AlarmServer(final Talker talker, final WorkQueue work_queue) throws Exception
+    public AlarmServer(final WorkQueue work_queue) throws Exception
     {
         this.work_queue = work_queue;
         rdb = new AlarmRDB(this, Preferences.getRDB_Url(),
         		Preferences.getRDB_User(), Preferences.getRDB_Password(),
         		Preferences.getAlarmTreeRoot());
-        this.talker = talker;
-        this.messenger = new ServerCommunicator(this, work_queue);
-        this.messenger.start();
+        messenger = new ServerCommunicator(this, work_queue);
         readConfiguration();
     }
-    
+
     /** @return Name of configuration root element */
     public String getRootName()
     {
         return root_name;
     }
-    
+
     /** Set maintenance mode.
      *  @param maintenance_mode
      *  @see AlarmLogic#getMaintenanceMode()
@@ -137,7 +133,7 @@ public class AlarmServer
         final double free = Runtime.getRuntime().freeMemory() / (1024.0*1024.0);
         final double total = Runtime.getRuntime().totalMemory() / (1024.0*1024.0);
         final double max = Runtime.getRuntime().maxMemory() / (1024.0*1024.0);
-        
+
         final DateFormat format = new SimpleDateFormat(JMSLogMessage.DATE_FORMAT);
         System.out.format("%s == Alarm Server Memory: Max %.2f MB, Free %.2f MB (%.1f %%), total %.2f MB (%.1f %%)\n",
                 format.format(new Date()), max, free, 100.0*free/max, total, 100.0*total/max);
@@ -146,13 +142,20 @@ public class AlarmServer
     /** Release all resources */
     public void close()
     {
-        talker.close();
-        messenger.close();
+        messenger.stop();
         rdb.close();
     }
-    
-    /** Start all the PVs, connect to control system. */
+
+    /** Start all the PVs, connect to JMS */
     public void start()
+    {
+        messenger.start();
+        messenger.sendAnnunciation(Messages.StartupMessage);
+        startPVs();
+    }
+
+    /** Start PVs */
+    private void startPVs()
     {
         final long delay = Preferences.getPVStartDelay();
         // Must not sync while calling PV, because Channel Access updates
@@ -178,14 +181,22 @@ public class AlarmServer
             }
             catch (Exception ex)
             {
-                CentralLogger.getInstance().getLogger(this)
-                    .error("Error starting PV " + pv.getName(), ex);
+                Activator.getLogger().log(Level.SEVERE,
+                    "Error starting PV " + pv.getName(), ex);
             }
         }
     }
 
-    /** Stop all the PVs, disconnect from control system. */
+    /** Stop all the PVs, disconnect from JMS */
     public void stop()
+    {
+        messenger.sendAnnunciation("Alarm server exiting");
+        stopPVs();
+        messenger.stop();
+    }
+
+    /** Stop PVs */
+    private void stopPVs()
     {
         // See deadlock comment in start()
         final AlarmPV pvs[];
@@ -195,12 +206,6 @@ public class AlarmServer
         }
         for (AlarmPV pv : pvs)
             pv.stop();
-    }
-    
-    /** @return Talker */
-    public Talker getTalker()
-    {
-        return talker;
     }
 
     /** Read the initial alarm configuration
@@ -214,7 +219,7 @@ public class AlarmServer
         synchronized (this)
         {
         	alarm_tree = rdb.readConfiguration();
-        	
+
         	// Determine PVs
             final ArrayList<AlarmPV> tmp_pv_array = new ArrayList<AlarmPV>();
             findPVs(alarm_tree, tmp_pv_array);
@@ -224,6 +229,7 @@ public class AlarmServer
             // Sort PVs by name
             Arrays.sort(pv_list, new Comparator<AlarmPV>()
             {
+                @Override
                 public int compare(final AlarmPV pv1, final AlarmPV pv2)
                 {
                     return pv1.getName().compareTo(pv2.getName());
@@ -245,7 +251,7 @@ public class AlarmServer
      *  @param node Start node
      *  @param pvs Array to which located AlarmPVs are added
      */
-    private void findPVs(final AlarmHierarchy node, final List<AlarmPV> pvs)
+    private void findPVs(final TreeItem node, final List<AlarmPV> pvs)
     {
     	if (node instanceof AlarmPV)
     	{
@@ -273,9 +279,9 @@ public class AlarmServer
         }
         if (pv == null)
         {   // Unknown PV, so this must be a new PV. Read whole config again
-            stop();
+            stopPVs();
             readConfiguration();
-            start();
+            startPVs();
             return;
         }
         // Known PV
@@ -327,8 +333,9 @@ public class AlarmServer
     	        severity, message, value, timestamp);
         // Move the persistence of states into separate queue & thread
         // so that it won't delay the alarm server from updating
-        work_queue.add(new Runnable()
+        work_queue.execute(new Runnable()
         {
+            @Override
             public void run()
             {
                 try
@@ -341,7 +348,43 @@ public class AlarmServer
                 {
                     // Remember that there was an error
                     had_RDB_error = true;
-                    CentralLogger.getInstance().getLogger(this).error("Exception during alarm state update", ex);
+                    Activator.getLogger().log(Level.SEVERE, "Exception during alarm state update", ex);
+                }
+            }
+        });
+    }
+
+    /** Update 'global' JMS clients and RDB
+     *  @param pv Alarm PV
+     *  @param severity Alarm severity (highest, latched)
+     *  @param message Alarm message
+     *  @param value Value that triggered
+     *  @param timestamp Time of last alarm update
+     */
+    public void sendGlobalUpdate(final AlarmPV pv,
+            final SeverityLevel severity,
+            final String message,
+            final String value, final ITimestamp timestamp)
+    {
+        // Send to JMS
+        messenger.sendGlobalUpdate(pv, severity, message, value, timestamp);
+        // Persist global alarm state change in separate queue & thread
+        // so that it won't delay the alarm server from updating
+        work_queue.execute(new Runnable()
+        {
+            @Override
+            public void run()
+            {
+                try
+                {
+                    rdb.writeGlobalUpdate(pv, severity.isActive());
+                    recoverFromRDBErrors();
+                }
+                catch (Exception ex)
+                {
+                    // Remember that there was an error
+                    had_RDB_error = true;
+                    Activator.getLogger().log(Level.SEVERE, "Exception during global alarm update", ex);
                 }
             }
         });
@@ -355,8 +398,9 @@ public class AlarmServer
 	{
 		messenger.sendEnablementUpdate(pv, enabled);
         // Handle in separate queue & thread
-        work_queue.add(new Runnable()
+        work_queue.execute(new Runnable()
         {
+            @Override
             public void run()
             {
                 try
@@ -368,11 +412,20 @@ public class AlarmServer
                 {
                     // Remember that there was an error
                     had_RDB_error = true;
-                    CentralLogger.getInstance().getLogger(this).error("Exception during enablement update", ex);
+                    Activator.getLogger().log(Level.SEVERE, "Exception during enablement update", ex);
                 }
             }
         });
 	}
+
+    /** Perform annunciation
+     *  @param level Alarm severity
+     *  @param message Text message to send to annunciator
+     */
+    public void sendAnnunciation(final SeverityLevel level, final String message)
+    {
+        messenger.sendAnnunciation(level, message);
+    }
 
     /** If this is the first successful RDB update after errors,
      *  tell everybody to re-load the configuration because otherwise
@@ -383,12 +436,10 @@ public class AlarmServer
     {
         if (! had_RDB_error)
             return;
-        
+
         // We should be on the work queue thread
         work_queue.assertOnThread();
-        
-        CentralLogger.getInstance().getLogger(this).
-            warn("RDB connection recovered, re-loading configuration");
+        Activator.getLogger().info("RDB connection recovered, re-loading configuration");
         updateConfig(null);
 
         // If that worked out, reset error and inform clients

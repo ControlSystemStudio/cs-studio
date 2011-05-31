@@ -1,3 +1,10 @@
+/*******************************************************************************
+ * Copyright (c) 2010 Oak Ridge National Laboratory.
+ * All rights reserved. This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License v1.0
+ * which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-v10.html
+ ******************************************************************************/
 package org.csstudio.swt.chart.axes;
 
 import java.text.NumberFormat;
@@ -15,33 +22,33 @@ public class Ticks implements ITicks
 {
     /** How many percent of the available space should be used for labels? */
     protected static final int FILL_PERCENTAGE = 90;
-    
+
     /** First tick mark value. */
     protected double start;
-    
+
     /** Distance between tick mark value. */
     protected double distance;
-    
+
     /** Precision used for printing tick labels .*/
     protected int precision;
 
     /** Format helper for the number. */
     protected NumberFormat num_fmt = NumberFormat.getNumberInstance();
-    
+
     public Ticks()
     {
         num_fmt.setGroupingUsed(false);
     }
-    
+
     @Override
     public String toString()
     {
         return String.format("Ticks start=%g, distance=%g, precision=%d",
                              start, distance, precision);
     }
-    
+
     /** Compute tick information, trying to auto-fit the screen region.
-     * 
+     *
      *  @param low Low limit of the axis range.
      *  @param high High limit of the axis range.
      *  @param gc The graphic context.
@@ -71,7 +78,7 @@ public class Ticks implements ITicks
         else
             precision = 1 - rounded_log;
         double prec_delta = Math.pow(10.0, rounded_log-1);
-  
+
         // Determine minimum label distance on the screen, using some
         // percentage of the available screen space.
         // Guess the label width, using the two extrema.
@@ -94,26 +101,30 @@ public class Ticks implements ITicks
         if (distance <= 0.0)
             throw new Error("Broken tickmark computation");
     }
-    
+
     /** @return Returns the value of the start tick. */
+    @Override
     public final double getStart()
     {
         return start;
     }
 
     /** @return Returns the next tick, following a given tick mark. */
+    @Override
     public double getNext(double tick)
     {
         return tick + distance;
     }
 
     /** @return Returns the number formatted according to the tick precision. */
+    @Override
     public final String format(double num)
     {
         return format(num, 0);
     }
-    
+
     /** @return Returns the number formatted with some extra precision. */
+    @Override
     public String format(double num, int extra_precision)
     {
         int p = precision + extra_precision;

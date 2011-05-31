@@ -28,11 +28,10 @@ import org.eclipse.core.runtime.preferences.AbstractPreferenceInitializer;
 import org.eclipse.core.runtime.preferences.DefaultScope;
 import org.eclipse.core.runtime.preferences.IEclipsePreferences;
 
-public class DestinationPreferenceInitializer extends AbstractPreferenceInitializer
-{
-    @Override
-    public void initializeDefaultPreferences()
-    {
+public class DestinationPreferenceInitializer extends AbstractPreferenceInitializer {
+    
+	@Override
+    public void initializeDefaultPreferences() {
         IEclipsePreferences node = new DefaultScope().getNode(DestinationPlugin.PLUGIN_ID);
         node.put(DestinationPreferenceConstants.MAIL_ADDRESS_SENDER, "css_user@desy.de");
         node.put(DestinationPreferenceConstants.MAIL_SERVER, "smtp.desy.de");

@@ -1,8 +1,17 @@
+/*******************************************************************************
+ * Copyright (c) 2010 Oak Ridge National Laboratory.
+ * All rights reserved. This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License v1.0
+ * which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-v10.html
+ ******************************************************************************/
 package org.csstudio.opibuilder.widgets.model;
 
 import org.csstudio.opibuilder.model.AbstractContainerModel;
+import org.csstudio.opibuilder.model.AbstractWidgetModel;
 import org.csstudio.opibuilder.properties.BooleanProperty;
 import org.csstudio.opibuilder.properties.WidgetPropertyCategory;
+import org.eclipse.draw2d.geometry.Point;
 
 /**The model for grouping container widget.
  * @author Xihui Chen
@@ -70,6 +79,45 @@ public class GroupingContainerModel extends AbstractContainerModel {
 	*/
 	public boolean isShowScrollbar() {
 		return (Boolean) getProperty(PROP_SHOW_SCROLLBAR).getPropertyValue();
+	}
+	
+
+	@Override
+	public void flipVertically() {
+		int centerY = getHeight()/2;
+		for(AbstractWidgetModel abstractWidgetModel : getChildren()){
+			abstractWidgetModel.flipVertically(centerY);
+		}
+	}
+	
+	@Override
+	public void flipHorizontally() {
+		int centerX = getWidth()/2;
+		for(AbstractWidgetModel abstractWidgetModel : getChildren()){
+			abstractWidgetModel.flipHorizontally(centerX);
+		}
+	}
+	
+	@Override
+	public void rotate90(boolean clockwise) {
+		boolean oldLock = isLocked();
+		setPropertyValue(PROP_LOCK_CHILDREN, false);
+		Point center = new Point(getWidth()/2, getHeight()/2);
+		for(AbstractWidgetModel abstractWidgetModel : getChildren()){
+			abstractWidgetModel.rotate90(clockwise, center);
+		}
+		Point oldLoc = getLocation();
+		super.rotate90(clockwise);
+		Point newLoc = getLocation();
+		
+		int dx = newLoc.x - oldLoc.x;
+		int dy = newLoc.y - oldLoc.y;
+		//move back
+		for(AbstractWidgetModel abstractWidgetModel : getChildren()){
+			abstractWidgetModel.setLocation(
+					abstractWidgetModel.getLocation().translate(-dx, -dy));
+		}
+		setPropertyValue(PROP_LOCK_CHILDREN, oldLock);
 	}
 	
 }

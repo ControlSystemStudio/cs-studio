@@ -5,7 +5,7 @@
          point="org.csstudio.opibuilder.widget">
       <widget
             category="Graphics"
-            description="Create an arc widget"
+            description="An arc or a fan if filled. "
             editpart_class="org.csstudio.opibuilder.widgets.editparts.ArcEditpart"
             icon="icons/arc.png"
             model_class="org.csstudio.opibuilder.widgets.model.ArcModel"
@@ -14,7 +14,7 @@
       </widget>
       <widget
             category="Graphics"
-            description="Create a polyline widget"
+            description="A line or polyline that supports arrows. "
             editpart_class="org.csstudio.opibuilder.widgets.editparts.PolylineEditPart"
             icon="icons/polyline.gif"
             model_class="org.csstudio.opibuilder.widgets.model.PolyLineModel"
@@ -23,7 +23,7 @@
       </widget>
       <widget
             category="Graphics"
-            description="Create a polygon widget"
+            description="A polygon graphics shape. "
             editpart_class="org.csstudio.opibuilder.widgets.editparts.PolygonEditPart"
             icon="icons/polygon.png"
             model_class="org.csstudio.opibuilder.widgets.model.PolygonModel"
@@ -32,7 +32,7 @@
       </widget>
       <widget
             category="Graphics"
-            description="Create a rectangle widget"
+            description="A rectangle shape. "
             editpart_class="org.csstudio.opibuilder.widgets.editparts.RectangleEditpart"
             icon="icons/rectangle2.png"
             model_class="org.csstudio.opibuilder.widgets.model.RectangleModel"
@@ -41,7 +41,7 @@
       </widget>
       <widget
             category="Graphics"
-            description="Create a rounded rectangle widget"
+            description="Rectangle shape with round corner. "
             editpart_class="org.csstudio.opibuilder.widgets.editparts.RoundedRectangleEditpart"
             icon="icons/roundedRectangle.png"
             model_class="org.csstudio.opibuilder.widgets.model.RoundedRectangleModel"
@@ -50,7 +50,7 @@
       </widget>
       <widget
             category="Graphics"
-            description="Create a ellipse widget"
+            description="An ellipse shape."
             editpart_class="org.csstudio.opibuilder.widgets.editparts.EllipseEditpart"
             icon="icons/ellipse2.png"
             model_class="org.csstudio.opibuilder.widgets.model.EllipseModel"
@@ -59,7 +59,7 @@
       </widget>
       <widget
             category="Graphics"
-            description="A label for displaying static text or string from PV."
+            description="Label is used to display text. Supports multi-line text."
             editpart_class="org.csstudio.opibuilder.widgets.editparts.LabelEditPart"
             icon="icons/label.png"
             model_class="org.csstudio.opibuilder.widgets.model.LabelModel"
@@ -68,7 +68,7 @@
       </widget>
       <widget
             category="Graphics"
-            description="A image widget which can load picture from image file, including gif, png, jpg, jpeg and bmp."
+            description="A image widget which can load picture from image file in format of GIF, PNG, JPG, JPEG or BMP."
             editpart_class="org.csstudio.opibuilder.widgets.editparts.ImageEditPart"
             icon="icons/image.gif"
             model_class="org.csstudio.opibuilder.widgets.model.ImageModel"
@@ -77,7 +77,7 @@
       </widget>
       <widget
             category="Monitors"
-            description="A LED which can display one bit of  a value or if the value is non-zero or not when bit property is -1."
+            description="A boolean widget that displays 0/1 value as an On/Off LED. "
             editpart_class="org.csstudio.opibuilder.widgets.editparts.LEDEditPart"
             icon="icons/LED.png"
             model_class="org.csstudio.opibuilder.widgets.model.LEDModel"
@@ -86,7 +86,7 @@
       </widget>
       <widget
             category="Monitors"
-            description="A text indicator for displaying PV value."
+            description="A widget that display PV value in text. "
             editpart_class="org.csstudio.opibuilder.widgets.editparts.TextIndicatorEditPart"
             icon="icons/textUpdate.png"
             model_class="org.csstudio.opibuilder.widgets.model.TextIndicatorModel"
@@ -95,7 +95,7 @@
       </widget>
       <widget
             category="Monitors"
-            description="A meterwhich could display numeric value."
+            description="A widget that displays numeric value as a meter"
             editpart_class="org.csstudio.opibuilder.widgets.editparts.XMeterEditPart"
             icon="icons/XMeter.png"
             model_class="org.csstudio.opibuilder.widgets.model.XMeterModel"
@@ -104,7 +104,7 @@
       </widget>
       <widget
             category="Monitors"
-            description="A progress bar widget."
+            description="A bar graph widget that indicates numeric value as a bar or indicator."
             editpart_class="org.csstudio.opibuilder.widgets.editparts.ProgressBarEditPart"
             icon="icons/ProgressBar.gif"
             model_class="org.csstudio.opibuilder.widgets.model.ProgressBarModel"
@@ -113,7 +113,7 @@
       </widget>
       <widget
             category="Monitors"
-            description="A gauge which could display numeric value."
+            description="A widget that displays numeric value as a gauge."
             editpart_class="org.csstudio.opibuilder.widgets.editparts.GaugeEditPart"
             icon="icons/gauge2.png"
             model_class="org.csstudio.opibuilder.widgets.model.GaugeModel"
@@ -122,7 +122,7 @@
       </widget>
       <widget
             category="Monitors"
-            description="A thermeter which could display numeric value."
+            description="A widget that displays numeric value as a thermometer. "
             editpart_class="org.csstudio.opibuilder.widgets.editparts.ThermometerEditPart"
             icon="icons/Thermo.gif"
             model_class="org.csstudio.opibuilder.widgets.model.ThermometerModel"
@@ -131,7 +131,7 @@
       </widget>
       <widget
             category="Monitors"
-            description="A tank which could display numeric value."
+            description="A widget that displays numeric value as tank level"
             editpart_class="org.csstudio.opibuilder.widgets.editparts.TankEditPart"
             icon="icons/Tank.gif"
             model_class="org.csstudio.opibuilder.widgets.model.TankModel"
@@ -140,7 +140,7 @@
       </widget>
       <widget
             category="Monitors"
-            description="An XY graph which can display the trends of multiple PVs."
+            description="A widget that is able to plot 1D or 2D data from PVs."
             editpart_class="org.csstudio.opibuilder.widgets.editparts.XYGraphEditPart"
             icon="icons/XYGraph.gif"
             model_class="org.csstudio.opibuilder.widgets.model.XYGraphModel"
@@ -149,12 +149,21 @@
       </widget>
       <widget
             category="Monitors"
-            description="Display the intensity of a flattened 1D array."
+            description="A widget that displays a 2D numeric array  (must be flattened to a 1D array as the input PV value) in colors based on its color map."
             editpart_class="org.csstudio.opibuilder.widgets.editparts.IntensityGraphEditPart"
             icon="icons/intensityGraph.png"
             model_class="org.csstudio.opibuilder.widgets.model.IntensityGraphModel"
             name="Intensity Graph"
             typeId="org.csstudio.opibuilder.widgets.intensityGraph">
+      </widget>
+      <widget
+            category="Monitors"
+            description="Display the bits in an Integer or Long Integer value as a set of LEDs"
+            editpart_class="org.csstudio.opibuilder.widgets.editparts.ByteMonitorEditPart"
+            icon="icons/ByteMonitor.png"
+            model_class="org.csstudio.opibuilder.widgets.model.ByteMonitorModel"
+            name="Byte Monitor"
+            typeId="org.csstudio.opibuilder.widgets.bytemonitor">
       </widget>
       <widget
             category="Controls"
@@ -167,7 +176,7 @@
       </widget>
       <widget
             category="Controls"
-            description="A button which pops up the actions menu when clicked."
+            description="A button which pops up the actions menu after clicked."
             editpart_class="org.csstudio.opibuilder.widgets.editparts.MenuButtonEditPart"
             icon="icons/menubutton.gif"
             model_class="org.csstudio.opibuilder.widgets.model.MenuButtonModel"
@@ -176,7 +185,7 @@
       </widget>
       <widget
             category="Controls"
-            description="Write value to a pv by inputing text in this widget."
+            description="Write value to a pv by inputing text in the widget."
             editpart_class="org.csstudio.opibuilder.widgets.editparts.TextInputEditpart"
             icon="icons/textInput.png"
             model_class="org.csstudio.opibuilder.widgets.model.TextInputModel"
@@ -185,7 +194,7 @@
       </widget>
       <widget
             category="Controls"
-            description="Write value to a pv by inputing text or clicking arrow button."
+            description="Write value to a pv by inputing text or clicking arrow buttons."
             editpart_class="org.csstudio.opibuilder.widgets.editparts.SpinnerEditpart"
             icon="icons/Spinner.gif"
             model_class="org.csstudio.opibuilder.widgets.model.SpinnerModel"
@@ -194,7 +203,7 @@
       </widget>
       <widget
             category="Controls"
-            description="A scaled slider widget which can read/write a PV"
+            description="A slider with scale and marker that can be used to write and read a numeric PV"
             editpart_class="org.csstudio.opibuilder.widgets.editparts.ScaledSliderEditPart"
             icon="icons/scaled_slider.gif"
             model_class="org.csstudio.opibuilder.widgets.model.ScaledSliderModel"
@@ -203,7 +212,7 @@
       </widget>
       <widget
             category="Controls"
-            description="A knob widget which could be used to read/write a PV"
+            description="A widget that can be used to write or read a numeric PV by dragging the knob."
             editpart_class="org.csstudio.opibuilder.widgets.editparts.KnobEditPart"
             icon="icons/knob.gif"
             model_class="org.csstudio.opibuilder.widgets.model.KnobModel"
@@ -212,7 +221,7 @@
       </widget>
       <widget
             category="Controls"
-            description="A scrollbar widget which could be used to read/write a PV"
+            description="A scrollbar widget that can be used to write or read a numeric PV."
             editpart_class="org.csstudio.opibuilder.widgets.editparts.ScrollbarEditPart"
             icon="icons/scrollbar.png"
             model_class="org.csstudio.opibuilder.widgets.model.ScrollBarModel"
@@ -221,7 +230,7 @@
       </widget>
       <widget
             category="Controls"
-            description="Write value to a pv by clicking the arrow buttons."
+            description="A widget that can be used to read or write a numeric PV on every carry bit."
             editpart_class="org.csstudio.opibuilder.widgets.editparts.ThumbWheelEditPart"
             icon="icons/thumbwheel.gif"
             model_class="org.csstudio.opibuilder.widgets.model.ThumbWheelModel"
@@ -230,7 +239,7 @@
       </widget>
       <widget
             category="Controls"
-            description="A boolean switch which can write a single bit of a PV or write 0/1 to a PV when bit property is -1."
+            description="A boolean switch which is able to write 0/1 to a single bit or the whole PV if Bit property is -1."
             editpart_class="org.csstudio.opibuilder.widgets.editparts.BoolSwitchEditPart"
             icon="icons/BoolSwitch.gif"
             model_class="org.csstudio.opibuilder.widgets.model.BoolSwitchModel"
@@ -239,7 +248,7 @@
       </widget>
       <widget
             category="Controls"
-            description="A boolean button which can write a single bit of a PV or write 0/1 to a PV when bit property is -1."
+            description="A boolean button which is able to write 0/1 to a single bit or the whole PV if Bit property is -1."
             editpart_class="org.csstudio.opibuilder.widgets.editparts.BoolButtonEditPart"
             icon="icons/BoolButton.gif"
             model_class="org.csstudio.opibuilder.widgets.model.BoolButtonModel"
@@ -248,7 +257,7 @@
       </widget>
       <widget
             category="Controls"
-            description="A boolean button which can load different image based on the boolean value."
+            description="A boolean button widget which uses two images to represent its On/Off states. It supports GIF, PNG, JPG, JPEG, BMP images. It is able to write 0/1 to a single bit or the whole PV if Bit property is -1. "
             editpart_class="org.csstudio.opibuilder.widgets.editparts.ImageBoolButtonEditPart"
             icon="icons/imageButton.gif"
             model_class="org.csstudio.opibuilder.widgets.model.ImageBoolButtonModel"
@@ -257,7 +266,7 @@
       </widget>
       <widget
             category="Controls"
-            description="A checkbox which can write a single bit of a PV or write 0/1 to a PV when bit property is -1."
+            description="A check box widget which is able to read/write 0/1 to a single bit or the whole PV if Bit property is -1. "
             editpart_class="org.csstudio.opibuilder.widgets.editparts.CheckBoxEditPart"
             icon="icons/checkboxenabledon.gif"
             model_class="org.csstudio.opibuilder.widgets.model.CheckBoxModel"
@@ -293,7 +302,7 @@
       </widget>
       <widget
             category="Others"
-            description="A container widget which can group other widgets."
+            description="A container widget which can make a bunch of widgets as a group."
             editpart_class="org.csstudio.opibuilder.widgets.editparts.GroupingContainerEditPart"
             icon="icons/groupContainer.png"
             model_class="org.csstudio.opibuilder.widgets.model.GroupingContainerModel"
@@ -302,7 +311,7 @@
       </widget>
       <widget
             category="Others"
-            description="A container widget which can load another OPI file."
+            description="A container widget which can embed another OPI file or a group in another OPI file."
             editpart_class="org.csstudio.opibuilder.widgets.editparts.LinkingContainerEditpart"
             icon="icons/linkingcontainer.png"
             model_class="org.csstudio.opibuilder.widgets.model.LinkingContainerModel"
@@ -320,7 +329,7 @@
       </widget>
       <widget
             category="Others"
-            description="A web browser widget which allows you browsing web pages from OPI."
+            description="A widget that allows embedding webpage in OPI. "
             editpart_class="org.csstudio.opibuilder.widgets.editparts.WebBrowserEditPart"
             icon="icons/web_browser.png"
             model_class="org.csstudio.opibuilder.widgets.model.WebBrowserModel"
@@ -328,13 +337,13 @@
             typeId="org.csstudio.opibuilder.widgets.webbrowser">
       </widget>
       <widget
-            category="Monitors"
-            description="Display the bits in an integer value as a set of LEDs"
-            editpart_class="org.csstudio.opibuilder.widgets.editparts.ByteMonitorEditPart"
-            icon="icons/ByteMonitor.png"
-            model_class="org.csstudio.opibuilder.widgets.model.ByteMonitorModel"
-            name="Byte Monitor"
-            typeId="org.csstudio.opibuilder.widgets.bytemonitor">
+            category="Layout"
+            description="A virtual widget for automatically layoutting widgets in a container in grids."
+            editpart_class="org.csstudio.opibuilder.widgets.editparts.GridLayoutEditpart"
+            icon="icons/grid.gif"
+            model_class="org.csstudio.opibuilder.widgets.model.GridLayoutModel"
+            name="Grid Layout"
+            typeId="org.csstudio.opibuilder.widgets.gridLayout">
       </widget>
    </extension>
    <extension
@@ -364,6 +373,15 @@
             id="org.csstudio.opibuilder.widgets.removeGroup"
             objectClass="org.csstudio.opibuilder.widgets.editparts.GroupingContainerEditPart">
          <action
+               class="org.csstudio.opibuilder.widgets.actions.LockUnlockChildrenAction"
+               enablesFor="1"
+               icon="icons/unlock.png"
+               id="org.csstudio.opibuilder.widgets.lockUnlockChildrenAction"
+               label="Lock/Unlock Children"
+               menubarPath="group"
+               tooltip="Lock/Unlock children in the grouping container.">
+         </action>
+         <action
                class="org.csstudio.opibuilder.widgets.actions.RemoveGroupAction"
                enablesFor="1"
                icon="icons/removeGroup.png"
@@ -373,17 +391,9 @@
                tooltip="Remove the group container.">
          </action>
          <action
-               class="org.csstudio.opibuilder.widgets.actions.PerformAutoSizeOnGroupAction"
-               enablesFor="1"
-               icon="icons/autoSizeGroup.png"
-               id="org.csstudio.opibuilder.widgets.performAutoSize"
-               label="Perform AutoSize"
-               menubarPath="group"
-               tooltip="Perform AutoSize on the selected Group Container.">
-         </action>
-         <action
                class="org.csstudio.opibuilder.widgets.actions.SelectAllInGroupAction"
                enablesFor="1"
+               icon="icons/select_all.png"
                id="org.csstudio.opibuilder.widgets.selectall"
                label="Select All Widgets in Group"
                menubarPath="group"
@@ -415,6 +425,14 @@
                label="Add Tab After"
                menubarPath="tab"
                tooltip="add tab after this tab.">
+         </action>
+         <action
+               class="org.csstudio.opibuilder.widgets.actions.ChangeTabIndexAction"
+               enablesFor="1"
+               id="org.csstudio.opibuilder.widgets.changeTabIndex"
+               label="Change Tab Index"
+               menubarPath="tab"
+               tooltip="Change Tab Index.">
          </action>
          <action
                class="org.csstudio.opibuilder.widgets.actions.DuplicateTabAction"
@@ -473,6 +491,26 @@
                menubarPath="group"
                tooltip="Reload OPI into this container.">
          </action>
+      </objectContribution>
+      <objectContribution
+            adaptable="false"
+            id="org.csstudio.opibuilder.widgets.performAutoSize"
+            objectClass="org.csstudio.opibuilder.editparts.AbstractContainerEditpart">
+         <action
+               class="org.csstudio.opibuilder.widgets.actions.PerformAutoSizeAction"
+               enablesFor="1"
+               icon="icons/autoSizeGroup.png"
+               id="org.csstudio.opibuilder.widgets.performAutoSize"
+               label="Perform Auto Size"
+               menubarPath="group"
+               tooltip="Perform Auto Size on the selected Container.">
+         </action>
+         <visibility>
+            <objectState
+                  name="executionMode"
+                  value="EDIT_MODE">
+            </objectState>
+         </visibility>
       </objectContribution>
    </extension>
    <extension

@@ -1,13 +1,15 @@
 package org.csstudio.config.ioconfig.config.view;
 
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
+
 import org.csstudio.config.ioconfig.model.pbmodel.GSDFileDBO;
 import org.csstudio.config.ioconfig.model.pbmodel.GSDModuleDBO;
 import org.csstudio.config.ioconfig.model.pbmodel.SlaveCfgData;
-import org.csstudio.config.ioconfig.model.pbmodel.gsdParser.GsdModuleModel;
+import org.csstudio.config.ioconfig.model.pbmodel.gsdParser.GsdModuleModel2;
 import org.csstudio.platform.ui.util.CustomMediaFactory;
 import org.eclipse.jface.viewers.IColorProvider;
 import org.eclipse.jface.viewers.IFontProvider;
-import org.eclipse.jface.viewers.ILabelProvider;
 import org.eclipse.jface.viewers.LabelProvider;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.graphics.Color;
@@ -22,24 +24,24 @@ import org.eclipse.swt.widgets.Table;
  * @version $Revision: 1.2 $
  * @since 07.01.2009
  */
-public class ModuleListLabelProvider extends LabelProvider implements ILabelProvider, IFontProvider,
+public class ModuleListLabelProvider extends LabelProvider implements IFontProvider,
     IColorProvider {
     /**
      * Font for Module that have an Input or Output. (Style is Normal)
      */
-    private static Font _normal;
+    private static Font _NORMAL;
     /**
      * Font for Module that have an Input and Output. (Style is Bold)
      */
-    private static Font _bold;
+    private static Font _BOLD;
     /**
      * Font for Module without an Input or Output. (Style is Italic)
      */
-    private static Font _italic;
+    private static Font _ITALIC;
     /**
      * The color for Modules without an Input or Output.
      */
-    private static Color _gray;
+    private static Color _GRAY;
     /**
      * The default font color.
      */
@@ -47,16 +49,16 @@ public class ModuleListLabelProvider extends LabelProvider implements ILabelProv
     /**
      * The color for a existing Module Prototype.
      */
-    private static final Color YELLOW = CustomMediaFactory.getInstance().getColor(CustomMediaFactory.COLOR_YELLOW);;
+    private static final Color YELLOW = CustomMediaFactory.getInstance().getColor(CustomMediaFactory.COLOR_YELLOW);
     
     /**
      * The Table font height.
      */
-    private static int _height;
+    private static int _HEIGHT;
     /**
      * The Table Font name.
      */
-    private static String _name;
+    private static String _NAME;
     private final GSDFileDBO _file;
 
     /**
@@ -66,27 +68,26 @@ public class ModuleListLabelProvider extends LabelProvider implements ILabelProv
      *            the Table how use this LabelProvider.
      * @param file 
      */
-    public ModuleListLabelProvider(final Table table, GSDFileDBO file) {
+    public ModuleListLabelProvider(@Nonnull final Table table, @Nonnull GSDFileDBO file) {
         _file = file;
-        if(_bold==null) {
-            FontData fontData = table.getFont().getFontData()[0];
-            _height = fontData.getHeight();
-            _name = fontData.getName();
-    
-            _bold = CustomMediaFactory.getInstance().getFont(_name, _height, SWT.BOLD);
-            _normal = CustomMediaFactory.getInstance().getFont(_name, _height, SWT.NORMAL);
-            _italic = CustomMediaFactory.getInstance().getFont(_name, _height, SWT.ITALIC);
-            
-            _gray = CustomMediaFactory.getInstance().getColor(CustomMediaFactory.COLOR_BLACK);
+        FontData fontData = table.getFont().getFontData()[0];
+        if(_GRAY==null) {
+            _HEIGHT = fontData.getHeight();
+            _NAME = fontData.getName();
+            _GRAY = CustomMediaFactory.getInstance().getColor(CustomMediaFactory.COLOR_BLACK);
+            _BOLD = CustomMediaFactory.getInstance().getFont(_NAME, _HEIGHT, SWT.BOLD);
+            _NORMAL = CustomMediaFactory.getInstance().getFont(_NAME, _HEIGHT, SWT.NORMAL);
+            _ITALIC = CustomMediaFactory.getInstance().getFont(_NAME, _HEIGHT, SWT.ITALIC);
         }
     }
 
     /**
      * {@inheritDoc}
      */
-    public final String getText(final Object element) {
-        if (element instanceof GsdModuleModel) {
-            return ((GsdModuleModel) element).getModuleNumber() + " : " + element.toString();
+    @Override
+    public final String getText(@Nonnull final Object element) {
+        if (element instanceof GsdModuleModel2) {
+            return ((GsdModuleModel2) element).getModuleNumber() + " : " + element.toString();
         }
         return element.toString();
     }
@@ -94,30 +95,32 @@ public class ModuleListLabelProvider extends LabelProvider implements ILabelProv
     /**
      * {@inheritDoc}
      */
-    public final Font getFont(final Object element) {
-        if (element instanceof GsdModuleModel) {
-            GsdModuleModel gmm = (GsdModuleModel) element;
+    @Override
+    public final Font getFont(@Nullable final Object element) {
+        if (element instanceof GsdModuleModel2) {
+            GsdModuleModel2 gmm = (GsdModuleModel2) element;
             SlaveCfgData slaveCfgData = new SlaveCfgData(gmm.getValue());
             boolean input = slaveCfgData.isInput();
             boolean output = slaveCfgData.isOutput();
             if (input && output) {
-                return _bold;
+                return _BOLD;
             } else if (input || output) {
-                return _normal;
+                return _NORMAL;
             } else {
-                return _italic;
+                return _ITALIC;
             }
         } else {
-            return _normal;
+            return _NORMAL;
         }
     }
 
     /**
      * {@inheritDoc}
      */
-    public final Color getBackground(final Object element) {
-        if (element instanceof GsdModuleModel) {
-            GsdModuleModel gmm = (GsdModuleModel) element;
+    @Override
+    public final Color getBackground(@Nullable final Object element) {
+        if (element instanceof GsdModuleModel2) {
+            GsdModuleModel2 gmm = (GsdModuleModel2) element;
             int selectedModuleNo = gmm.getModuleNumber();
             GSDModuleDBO module = _file.getGSDModule(selectedModuleNo);
             if (module != null) {
@@ -130,20 +133,15 @@ public class ModuleListLabelProvider extends LabelProvider implements ILabelProv
     /**
      * {@inheritDoc}
      */
-    public final Color getForeground(final Object element) {
-        if (element instanceof GsdModuleModel) {
-            GsdModuleModel gmm = (GsdModuleModel) element;
+    @Override
+    public final Color getForeground(@Nullable final Object element) {
+        if (element instanceof GsdModuleModel2) {
+            GsdModuleModel2 gmm = (GsdModuleModel2) element;
             SlaveCfgData slaveCfgData = new SlaveCfgData(gmm.getValue());
-            // int selectedModuleNo = gmm.getModuleNumber();
-            // GSDModule module =
-            // getGSDFile().getGSDModule(selectedModuleNo);
-            // if(module!=null) {
-            // return _blue;
-            // }
             boolean input = slaveCfgData.isInput();
             boolean output = slaveCfgData.isOutput();
             if (!input && !output) {
-                return _gray;
+                return _GRAY;
             } else {
                 return BLACK;
             }

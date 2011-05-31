@@ -41,7 +41,6 @@ import org.epics.css.dal.RemoteException;
 import org.epics.css.dal.Request;
 import org.epics.css.dal.ResponseListener;
 import org.epics.css.dal.Timestamp;
-import org.epics.css.dal.context.ConnectionState;
 import org.epics.css.dal.impl.RequestImpl;
 import org.epics.css.dal.impl.ResponseImpl;
 import org.epics.css.dal.proxy.MonitorProxy;
@@ -53,6 +52,10 @@ import org.epics.css.dal.proxy.MonitorProxy;
  */
 public class MonitorProxyImpl<T> extends RequestImpl<T> implements MonitorProxy,
 		Runnable, MonitorListener, ExpertMonitor {
+
+	public static final String INVALID_VALUE = "Invalid value.";
+
+	public static final String VALUE = "value";
 
 	/**
 	 * Default timer trigger (in ms).
@@ -84,10 +87,6 @@ public class MonitorProxyImpl<T> extends RequestImpl<T> implements MonitorProxy,
 	 */
 	protected volatile boolean destroyed = false;
 
-	/**
-	 * Last received value add timestamp.
-	 */
-	protected ResponseImpl<T> response;
 
 	/**
 	 * CA monitor implementation.
@@ -103,6 +102,8 @@ public class MonitorProxyImpl<T> extends RequestImpl<T> implements MonitorProxy,
 	 * Special parameters for expert monitor
 	 */
 	protected Map<String,Object> parameters;
+
+	private ResponseImpl<T> lastResponse;
 
 	/**
 	 * Creates new instance.
@@ -204,11 +205,11 @@ public class MonitorProxyImpl<T> extends RequestImpl<T> implements MonitorProxy,
 	/**
 	 * Fire value event.
 	 */
-	private void fireValueEvent() {
+	private void fireValueEvent(ResponseImpl<T> response) {
 		
 		// noop check
 		if (destroyed || proxy == null || response == null || response.getValue() == null
-				|| proxy.getConnectionState() != ConnectionState.CONNECTED) {
+				|| !proxy.getConnectionState().isConnected()) {
 			return;
 		}
 		
@@ -216,6 +217,7 @@ public class MonitorProxyImpl<T> extends RequestImpl<T> implements MonitorProxy,
 		proxy.getExecutor().execute(new Runnable() {
 			public void run() {
 				addResponse(r);
+				proxy.updateValueReponse(r);
 			}
 		});
 	}
@@ -223,9 +225,10 @@ public class MonitorProxyImpl<T> extends RequestImpl<T> implements MonitorProxy,
 	/**
 	 * Fires value change event if monitor is not in heartbeat mode.
 	 */
-	public void fireValueChange() {
+	public void fireValueChange(ResponseImpl<T> response) {
+		lastResponse= response;
 		if (!heartbeat) {
-			fireValueEvent();
+			fireValueEvent(response);
 		}
 	}
 
@@ -233,7 +236,7 @@ public class MonitorProxyImpl<T> extends RequestImpl<T> implements MonitorProxy,
 	 * Run method executed at schedulet time intervals.
 	 */
 	public void run() {
-		fireValueEvent();
+		fireValueEvent(lastResponse);
 	}
 
 	/**
@@ -298,33 +301,38 @@ public class MonitorProxyImpl<T> extends RequestImpl<T> implements MonitorProxy,
 
 		DBR dbr = ev.getDBR();
 		
-		if(dbr==null || dbr.getValue()==null) {
+		//System.err.println("M "+dbr);
+		
+		if(dbr==null 
+				|| dbr.getValue()==null 
+				|| !ev.getStatus().isSuccessful()) {
 			
-			proxy.updateWithDBR(dbr);
+			proxy.updateConditionWithDBR(dbr);
 			
-			final ResponseImpl<T> r= response= new ResponseImpl<T>(proxy, this, null,
-				        "value", false, new NullPointerException("Invalid value."), proxy.getCondition(), new Timestamp(), false);
+			final ResponseImpl<T> r= new ResponseImpl<T>(proxy, this, null,
+				        VALUE, false, new NullPointerException(INVALID_VALUE), proxy.getCondition(), new Timestamp(), false);
 
 			proxy.getExecutor().execute(new Runnable() {
 				public void run() {
 					addResponse(r);
+					proxy.updateValueReponse(r);
 				}
 			});
 			
 			return;
 		}
 		
-		proxy.updateWithDBR(dbr);
+		proxy.updateConditionWithDBR(dbr);
 		// this has been moved to PropertyProxyImpl.updateWithDBR(DBR)
 //		if (dbr.isSTS()) {
 //			proxy.updateConditionWithDBRStatus((STS) dbr);
 //		}
 
-		response= new ResponseImpl<T> (
+		ResponseImpl<T> response= new ResponseImpl<T> (
 				proxy, 
 				this, 
 				proxy.toJavaValue(dbr), 
-				"value", 
+				VALUE, 
 				true, 
 				null, 
 				proxy.getCondition(), 
@@ -334,7 +342,7 @@ public class MonitorProxyImpl<T> extends RequestImpl<T> implements MonitorProxy,
 				false);
 		
 		// notify 
-		fireValueChange();
+		fireValueChange(response);
 	}
 
 	/*
@@ -354,8 +362,8 @@ public class MonitorProxyImpl<T> extends RequestImpl<T> implements MonitorProxy,
 
 	protected void addFallbackResponse(T defaultValue) {
 		
-		final ResponseImpl<T> r= response= new ResponseImpl<T>(proxy, this, defaultValue,
-				"value", true, null, proxy.getCondition(), new Timestamp(), false);
+		final ResponseImpl<T> r= new ResponseImpl<T>(proxy, this, defaultValue,
+				VALUE, true, null, proxy.getCondition(), new Timestamp(), false);
 
 		proxy.getExecutor().execute(new Runnable() {
 			public void run() {

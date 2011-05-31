@@ -1,3 +1,10 @@
+/*******************************************************************************
+ * Copyright (c) 2010 Oak Ridge National Laboratory.
+ * All rights reserved. This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License v1.0
+ * which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-v10.html
+ ******************************************************************************/
 package org.csstudio.swt.widgets.figures;
 
 import java.beans.BeanInfo;
@@ -23,10 +30,10 @@ public class ByteMonitorFigure extends Figure implements Introspectable{
 	/** The number of bits to display */
 	private int numBits;
 	/** Display direction.  Horizontal if true, Vertical if false */
-	private boolean isHorizontal;
+	private boolean isHorizontal = true;
 	/** Reverse the direction to display bits.  If true start bit is displayed left or top, if false start bit
 	 * is right or top.*/
-	private boolean reverseBits;
+	private boolean reverseBits = false;
 
 	/** The value to be displayed */
 	private long value = 0;
@@ -36,8 +43,8 @@ public class ByteMonitorFigure extends Figure implements Introspectable{
 	private Color offColor = ColorConstants.darkGreen;
 	
 	/** Give the objects representing the bits a 3dEffect */
-	private boolean effect3D;
-	private boolean squareLED;
+	private boolean effect3D = true;
+	private boolean squareLED = false;
 	
 	
 	public ByteMonitorFigure() {

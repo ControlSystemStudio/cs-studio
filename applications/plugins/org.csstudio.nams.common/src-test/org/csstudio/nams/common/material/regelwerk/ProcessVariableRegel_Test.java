@@ -7,12 +7,11 @@ import org.csstudio.nams.common.material.Regelwerkskennung;
 import org.csstudio.nams.common.testutils.AbstractTestObject;
 import org.csstudio.nams.service.logging.declaration.Logger;
 import org.csstudio.platform.model.pvs.ControlSystemEnum;
-import org.csstudio.platform.model.pvs.DalPropertyTypes;
 import org.csstudio.platform.model.pvs.IProcessVariableAddress;
+import org.csstudio.platform.model.pvs.ValueType;
 import org.csstudio.platform.simpledal.ConnectionState;
 import org.csstudio.platform.simpledal.IProcessVariableConnectionService;
-import org.csstudio.platform.simpledal.ValueType;
-import org.epics.css.dal.context.RemoteInfo;
+import org.epics.css.dal.simple.RemoteInfo;
 import org.junit.Test;
 
 public class ProcessVariableRegel_Test extends
@@ -716,43 +715,63 @@ public class ProcessVariableRegel_Test extends
 		this._connectionServiceMock = this.createPVServiceMock();
 		ProcessVariableRegel.staticInject(new Logger() {
 
-			public void logDebugMessage(final Object caller,
+			@Override
+            public void logDebugMessage(final Object caller,
 					final String message) {
+			    //
 			}
 
-			public void logDebugMessage(final Object caller,
+			@Override
+            public void logDebugMessage(final Object caller,
 					final String message, final Throwable throwable) {
+			    //
 			}
 
-			public void logErrorMessage(final Object caller,
+			@Override
+            public void logErrorMessage(final Object caller,
 					final String message) {
+			    //
 			}
 
-			public void logErrorMessage(final Object caller,
+			@Override
+            public void logErrorMessage(final Object caller,
 					final String message, final Throwable throwable) {
+			    //
 			}
 
-			public void logFatalMessage(final Object caller,
+			@Override
+            public void logFatalMessage(final Object caller,
 					final String message) {
+			    //
 			}
 
-			public void logFatalMessage(final Object caller,
+			@Override
+            public void logFatalMessage(final Object caller,
 					final String message, final Throwable throwable) {
+			    //
 			}
 
-			public void logInfoMessage(final Object caller, final String message) {
+			@Override
+            public void logInfoMessage(final Object caller, final String message) {
+			    //
 			}
 
-			public void logInfoMessage(final Object caller,
+			@Override
+            public void logInfoMessage(final Object caller,
 					final String message, final Throwable throwable) {
+			    //
 			}
 
-			public void logWarningMessage(final Object caller,
+			@Override
+            public void logWarningMessage(final Object caller,
 					final String message) {
+			    //
 			}
 
-			public void logWarningMessage(final Object caller,
+			@Override
+            public void logWarningMessage(final Object caller,
 					final String message, final Throwable throwable) {
+			    //
 			}
 		});
 	}
@@ -760,62 +779,68 @@ public class ProcessVariableRegel_Test extends
 	private IProcessVariableAddress createDefaultPVAdress() {
 		return new IProcessVariableAddress() {
 
-			public String getCharacteristic() {
+			@Override
+            public String getCharacteristic() {
 				Assert.fail();
 				return null;
 			}
 
-			public ControlSystemEnum getControlSystem() {
+			@Override
+            public ControlSystemEnum getControlSystem() {
 				Assert.fail();
 				return null;
 			}
 
-			public String getDevice() {
+			@Override
+            public String getDevice() {
 				Assert.fail();
 				return null;
 			}
 
-			public String getFullName() {
+			@Override
+            public String getFullName() {
 				Assert.fail();
 				return null;
 			}
 
-			public String getProperty() {
+			@Override
+            public String getProperty() {
 				Assert.fail();
 				return null;
 			}
 
-			public String getRawName() {
+			@Override
+            public String getRawName() {
 				Assert.fail();
 				return null;
 			}
 
-			public DalPropertyTypes getTypeHint() {
+			@Override
+            public ValueType getValueTypeHint() {
 				Assert.fail();
 				return null;
 			}
 
-			public ValueType getValueTypeHint() {
-				Assert.fail();
-				return null;
-			}
-
-			public boolean isCharacteristic() {
+			@Override
+            public boolean isCharacteristic() {
 				Assert.fail();
 				return false;
 			}
 
-			public RemoteInfo toDalRemoteInfo() {
+			@Override
+            public RemoteInfo toDalRemoteInfo() {
 				Assert.fail();
 				return null;
 			}
 
-			public IProcessVariableAddress deriveNoCharacteristicPart() {
+			@Override
+            public IProcessVariableAddress deriveNoCharacteristicPart() {
 				Assert.fail();
 				return null;
 			}
 
-			public IProcessVariableAddress deriveCharacteristic(
+			@Override
+            public IProcessVariableAddress deriveCharacteristic(
 					String characteristic) {
 				Assert.fail();
 				return null;

@@ -2,18 +2,21 @@ Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: Alarm Table UI
 Bundle-SymbolicName: org.csstudio.alarm.beast.ui.alarmtable;singleton:=true
-Bundle-Version: 2.1.2.qualifier
+Bundle-Version: 3.0.0.qualifier
 Bundle-Localization: plugin
 Bundle-Vendor: Kay Kasemir <kasemirk@ornl.gov>, Xihui Chen <chenx1@ornl.gov> - SNS
-Require-Bundle: org.eclipse.core.runtime,
+Bundle-Description: BEAST Alarm Table
+Require-Bundle: org.junit4,
+ org.eclipse.core.runtime,
  org.eclipse.ui,
  org.eclipse.ui.workbench,
  org.eclipse.ui.views.properties.tabbed;bundle-version="3.4.0",
- org.csstudio.platform.ui,
- org.csstudio.apputil.ui,
- org.csstudio.alarm.beast;bundle-version="1.0.3",
- org.csstudio.alarm.beast.ui;bundle-version="1.0.4",
  org.eclipse.help,
- org.junit4
+ org.csstudio.ui.util;bundle-version="3.0.0",
+ org.csstudio.apputil.ui,
+ org.csstudio.alarm.beast;bundle-version="2.5.0",
+ org.csstudio.alarm.beast.ui;bundle-version="2.5.0",
+ org.csstudio.auth;bundle-version="1.0.0",
+ org.csstudio.auth.ui;bundle-version="1.0.0"
 Bundle-ActivationPolicy: lazy
-Bundle-RequiredExecutionEnvironment: J2SE-1.5
+Bundle-RequiredExecutionEnvironment: JavaSE-1.6

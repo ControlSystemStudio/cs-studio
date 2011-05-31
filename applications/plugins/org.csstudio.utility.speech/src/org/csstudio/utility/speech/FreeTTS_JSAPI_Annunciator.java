@@ -28,16 +28,16 @@ class FreeTTS_JSAPI_Annunciator extends BaseAnnunciator
 {
     final private static boolean debug = false;
     final private Synthesizer synthesizer;
-        
+
     public FreeTTS_JSAPI_Annunciator() throws Exception
     {
         FreeTTSHacks.perform();
-        
+
         // Start the synthesizer
         synthesizer = createSynthesizer();
         synthesizer.allocate();
         synthesizer.resume();
-        
+
         // List/set voice
         if (debug)
             listTTSVoices();
@@ -124,46 +124,42 @@ class FreeTTS_JSAPI_Annunciator extends BaseAnnunciator
         // for annunciating time?
         final SynthesizerModeDesc desc = new SynthesizerModeDesc(
                 null, "general", Locale.US, null, null);
-        
+
         // JSAPI way, requires the "speech.properties" file
         // synthesizer = Central.createSynthesizer(modeDesc);
-        
+
         // FreeTTS way that avoids "speech.properties" file
         final FreeTTSEngineCentral central = new FreeTTSEngineCentral();
-        final EngineList list = central.createEngineList(desc); 
+        final EngineList list = central.createEngineList(desc);
         if (list.size() <= 0)
             throw new Exception("No speech engine available");
-        
-        final EngineCreate creator = (EngineCreate) list.get(0); 
-        final Synthesizer synthesizer = (Synthesizer) creator.createEngine(); 
+
+        final EngineCreate creator = (EngineCreate) list.get(0);
+        final Synthesizer synthesizer = (Synthesizer) creator.createEngine();
         if (synthesizer == null)
             throw new Exception("Cannot create Synthesizer. Need \"speech.properties\"?");
-        
+
         if (debug)
         {   // Dump description of actual Synthesizer
             EngineModeDesc description = synthesizer.getEngineModeDesc();
             System.out.println("Synthesizer: " + description.getEngineName() + ", " +
                                description.getModeName() + ", " + description.getLocale());
-        }    
+        }
         return synthesizer;
     }
 
-    /** {@inheritDoc} */
-    public void say(final String text)
+    /** {@inheritDoc}
+     *  @throws Exception on error
+     */
+    @Override
+    public void say(final String text) throws Exception
     {
-        try
-        {
-            synthesizer.speakPlainText(applyTranslations(text), null);
-            synthesizer.waitEngineState(Synthesizer.QUEUE_EMPTY);
-        }
-        catch (Throwable ex)
-        {
-            System.out.println("Annunciation error:");
-            ex.printStackTrace();
-        }
+        synthesizer.speakPlainText(applyTranslations(text), null);
+        synthesizer.waitEngineState(Synthesizer.QUEUE_EMPTY);
     }
 
     /** {@inheritDoc} */
+    @Override
     public void close()
     {
         try

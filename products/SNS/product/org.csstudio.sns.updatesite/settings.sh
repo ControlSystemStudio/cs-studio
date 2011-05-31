@@ -2,7 +2,11 @@
 #
 # Kay Kasemir
 
-export VERSION=2.3.1
+export VERSION=3.0.0
+
+# Mac OS X window system
+OSWIN=cocoa
+# OSWIN=carbon
 
 # Use only the date as qualifier?
 # With default, the time is included and then the same plugin for

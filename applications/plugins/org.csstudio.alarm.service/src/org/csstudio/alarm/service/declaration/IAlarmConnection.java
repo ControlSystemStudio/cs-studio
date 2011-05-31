@@ -20,7 +20,13 @@ import javax.annotation.Nonnull;
 
 /**
  * Is used by the AlarmService to represent a connection into JMS or DAL resp.. It abstracts the
- * process of connecting and disconnecting.
+ * process of connecting and disconnecting to the underlying system and the listeners for the individual pvs.
+ * 
+ * General operation:
+ * 1. You have to specify a resource and connect to the underlying system.
+ *    This registers a listener for each pv.
+ * 2. If you add / delete pvs later on, you have to register / deregister them.
+ * 3. At the end you have to disconnect.
  *
  * @author jpenning
  * @author $Author$
@@ -45,15 +51,38 @@ public interface IAlarmConnection {
      * @param resource
      * @throws AlarmConnectionException
      */
-    void connectWithListenerForResource(@Nonnull final IAlarmConnectionMonitor connectionMonitor,
-                                        @Nonnull final IAlarmListener listener,
-                                        @Nonnull final IAlarmResource resource) throws AlarmConnectionException;
+    void connect(@Nonnull final IAlarmConnectionMonitor connectionMonitor,
+                 @Nonnull final IAlarmListener listener,
+                 @Nonnull final IAlarmResource resource) throws AlarmConnectionException;
+    
+    /**
+     * Register another pv. The listener which was given at connect is used for this pv also.
+     * 
+     * @param pvName
+     */
+    void registerPV(@Nonnull final String pvName);
 
     /**
-     * Disconnect from the underlying system, freeing resources. The connection monitor will be
+     * The pv will no longer be tracked.
+     * 
+     * @param pvName
+     */
+    void deregisterPV(@Nonnull final String pvName);
+    
+    /**
+     * If the resource has been changed after start, you may reload it.
+     * The currently registered pvs are deregistered at first, then the resource is read
+     * and the newly read pvs are registered.
+     */
+    void reloadPVsFromResource() throws AlarmConnectionException;
+    
+    
+    /**
+     * Disconnect from the underlying system, freeing resources by deregistering all pvs. The connection monitor will be
      * removed before disconnection, so disconnect DOES NOT result in a call to the connection
-     * monitor.
+     * monitor. All registrations are removed.
      */
     void disconnect();
+
 
 }

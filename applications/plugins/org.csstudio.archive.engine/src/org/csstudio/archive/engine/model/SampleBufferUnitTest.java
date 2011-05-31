@@ -9,8 +9,8 @@ package org.csstudio.archive.engine.model;
 
 import static org.junit.Assert.assertEquals;
 
-import org.csstudio.platform.data.IValue;
-import org.csstudio.platform.data.ValueUtil;
+import org.csstudio.data.values.IValue;
+import org.csstudio.data.values.ValueUtil;
 import org.junit.Test;
 
 /** JUnit test of the {@link SampleBuffer}
@@ -31,7 +31,7 @@ public class SampleBufferUnitTest
 		assertEquals(1.0, ValueUtil.getDouble(buffer.remove()), 0.01);
 		assertEquals(0, buffer.getQueueSize());
 	}
-	
+
 	/** Check Overrun */
 	@Test
 	public void testOverrun()
@@ -47,14 +47,14 @@ public class SampleBufferUnitTest
 		buffer.add(TestValueFactory.getDouble(-1.0));
 		assertEquals(buffer.getQueueSize(), buffer.getQueueSize());
 		assertEquals(1, buffer.getBufferStats().getOverruns());
-		
+
 		// Value 0 was dropped by overrun, oldest sample now 1
 		final IValue value = buffer.remove();
 		assertEquals(1.0, ValueUtil.getDouble(value), 0.01);
 	}
-	
+
 	final private static long TEST_RUNS = 10000;
-	
+
 	class FillThread extends Thread
 	{
 		@Override
@@ -74,8 +74,8 @@ public class SampleBufferUnitTest
 			}
         }
 	}
-	
-	/** Check tread access 
+
+	/** Check tread access
 	 * @throws Exception on thread error
 	 */
 	@Test
@@ -84,7 +84,7 @@ public class SampleBufferUnitTest
 		// Fill buffer in background thread
 		final FillThread fill = new FillThread();
 		fill.start();
-		
+
 		// Empty it in this thread
 		long expected = 1;
 		while (expected <= TEST_RUNS)

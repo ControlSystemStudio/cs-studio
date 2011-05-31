@@ -27,7 +27,6 @@ import java.util.List;
 import org.csstudio.opibuilder.feedback.IGraphicalFeedbackFactory;
 import org.csstudio.opibuilder.model.AbstractWidgetModel;
 import org.csstudio.opibuilder.widgets.model.AbstractPolyModel;
-import org.csstudio.opibuilder.widgets.model.PolyLineModel;
 import org.eclipse.draw2d.IFigure;
 import org.eclipse.draw2d.Polyline;
 import org.eclipse.draw2d.Shape;
@@ -210,12 +209,12 @@ abstract class AbstractPolyFeedbackFactory implements
 		assert model instanceof AbstractPolyModel : "model instanceof AbstractPolyModel"; //$NON-NLS-1$
 	
 		Rectangle correctedBounds = targetBounds;
-		if (model instanceof PolyLineModel) {
-			PolyLineModel polyline = (PolyLineModel) model;
-			int correctedX = targetBounds.x + (polyline.getLineWidth() / 2);
-			int correctedY = targetBounds.y + (polyline.getLineWidth() / 2);
-			correctedBounds = new Rectangle(correctedX, correctedY, targetBounds.width, targetBounds.height);
-		}
+//		if (model instanceof PolyLineModel) {
+//			PolyLineModel polyline = (PolyLineModel) model;
+//			int correctedX = targetBounds.x + (polyline.getLineWidth() / 2);
+//			int correctedY = targetBounds.y + (polyline.getLineWidth() / 2);
+//			correctedBounds = new Rectangle(correctedX, correctedY, targetBounds.width, targetBounds.height);
+//		}
 
 		AbstractPolyModel abstractPolyElement = (AbstractPolyModel) model;
 

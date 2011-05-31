@@ -2,15 +2,14 @@ Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: EPICS Plug-in
 Bundle-SymbolicName: org.csstudio.platform.libs.epics;singleton:=true
-Bundle-Version: 1.1.2
+Bundle-Version: 1.1.5.qualifier
 Bundle-Activator: org.csstudio.platform.libs.epics.EpicsPlugin
 Bundle-Localization: plugin
-Require-Bundle: org.eclipse.core.runtime,
- org.csstudio.platform;bundle-version="1.0.0"
-Eclipse-LazyStart: true
+Require-Bundle: org.eclipse.core.runtime
+Bundle-ActivationPolicy: lazy
 Bundle-ClassPath: .,
- lib/caj-1.1.6.jar,
- lib/jca-2.3.3.jar
+ lib/caj-1.1.7.jar,
+ lib/jca-2.3.5.jar
 Export-Package: 
  com.cosylab.epics.caj,
  com.cosylab.epics.caj.cas,
@@ -43,4 +42,6 @@ Comment2: lib/linux/x86_64/libjca.so; osname=linux; processor=x86_64
 Comment3: lib/macosx/ppc/libjca.jnilib; osname="mac os x"; processor=ppc,
 Comment4: lib/win32 has not been updated to match jca-2.3.3
 Bundle-Vendor: DESY/ORNL/SLAC
+Bundle-Description: EPICS Channel Access V3 Library
+Bundle-RequiredExecutionEnvironment: JavaSE-1.6
 

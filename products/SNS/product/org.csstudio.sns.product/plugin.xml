@@ -32,10 +32,10 @@
          point="org.eclipse.core.runtime.products">
       <product
             application="org.csstudio.sns.product.application"
-            name="SNS CSS">
+            name="Css">
          <property
                name="windowImages"
-               value="platform:/plugin/org.csstudio.startuphelper/resources/icons/css16x16.gif,platform:/plugin/org.csstudio.startuphelper/resources/icons/css32x32.gif,platform:/plugin/org.csstudio.startuphelper/resources/icons/css48x48.gif,platform:/plugin/org.csstudio.startuphelper/resources/icons/css64x64.gif,platform:/plugin/org.csstudio.startuphelper/resources/icons/css128x128.gif"/>
+               value="icons/css16.gif,icons/css32.gif,icons/css48.gif,icons/css64.gif,icons/css128.gif"/>
          <property
                name="aboutImage"
                value="icons/about.gif"/>
@@ -44,7 +44,7 @@
                value="Control System Studio (CSS) is a combined&#x0A;effort of several parties, including&#x0A;- DESY (Hamburg, Germany)&#x0A;- SNS (Oak Ridge, TN).&#x0A;&#x0A;It provides a collection of control system&#x0A;tools in a common environment, based&#x0A;on Eclipse.&#x0A;&#x0A;See http://ics-web.sns.ornl.gov/css"/>
          <property
                name="appName"
-               value="SNS CSS">
+               value="Css">
          </property>
          <property
                name="startupForegroundColor"
@@ -98,6 +98,8 @@
       <startupParameters class="org.csstudio.sns.product.startupmodule.StartupParameters"/>
       <workspace class="org.csstudio.sns.product.startupmodule.WorkspacePrompt"/>
       <workbench class="org.csstudio.sns.product.startupmodule.Workbench"/>
-      <project class="org.csstudio.startuphelper.module.DefaultProject"/>
+      <project class="org.csstudio.startup.module.defaults.DefaultProject"/>
    </extension>
+   
+
 </plugin>

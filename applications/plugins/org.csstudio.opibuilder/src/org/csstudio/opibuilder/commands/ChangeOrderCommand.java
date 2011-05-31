@@ -1,3 +1,10 @@
+/*******************************************************************************
+ * Copyright (c) 2010 Oak Ridge National Laboratory.
+ * All rights reserved. This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License v1.0
+ * which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-v10.html
+ ******************************************************************************/
 package org.csstudio.opibuilder.commands;
 
 import org.csstudio.opibuilder.model.AbstractContainerModel;
@@ -29,6 +36,11 @@ public class ChangeOrderCommand extends Command {
 		this.widget = widget;		
 	}
 	
+	
+	@Override
+	public boolean canExecute() {
+		return newIndex != container.getIndexOf(widget);
+	}
 	
 	@Override
 	public void execute() {

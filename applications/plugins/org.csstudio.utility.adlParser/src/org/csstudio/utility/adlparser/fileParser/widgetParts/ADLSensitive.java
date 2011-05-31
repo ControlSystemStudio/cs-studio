@@ -65,6 +65,10 @@ public class ADLSensitive extends WidgetPart {
         super(sensitive);
     }
 
+    public ADLSensitive(){
+    	super();
+    }
+    
 //**    /**
   //**     * {@inheritDoc}
   //**     */

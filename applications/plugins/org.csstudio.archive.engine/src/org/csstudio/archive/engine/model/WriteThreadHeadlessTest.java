@@ -7,15 +7,14 @@
  ******************************************************************************/
 package org.csstudio.archive.engine.model;
 
-
 import org.csstudio.apputil.test.TestProperties;
 import org.csstudio.archive.rdb.RDBArchive;
-import org.csstudio.platform.data.INumericMetaData;
-import org.csstudio.platform.data.ISeverity;
-import org.csstudio.platform.data.ITimestamp;
-import org.csstudio.platform.data.IValue;
-import org.csstudio.platform.data.TimestampFactory;
-import org.csstudio.platform.data.ValueFactory;
+import org.csstudio.data.values.INumericMetaData;
+import org.csstudio.data.values.ISeverity;
+import org.csstudio.data.values.ITimestamp;
+import org.csstudio.data.values.IValue;
+import org.csstudio.data.values.TimestampFactory;
+import org.csstudio.data.values.ValueFactory;
 import org.junit.Test;
 
 /** [Headless] JUnit write thread tests, writing from a queue with fake samples.
@@ -55,12 +54,12 @@ public class WriteThreadHeadlessTest
 
         // Trigger thread to write
         writer.start(5.0, 500);
-        
+
         // Add some samples
         final long seconds = TimestampFactory.now().seconds();
         final ISeverity severity = ValueFactory.createOKSeverity();
         final String status = "Test";
-        final INumericMetaData meta_data = 
+        final INumericMetaData meta_data =
             ValueFactory.createNumericMetaData(0, 10, 2, 8, 1, 9, 2, "Eggs");
         for (int i=0; i<10; ++i)
         {
@@ -71,14 +70,14 @@ public class WriteThreadHeadlessTest
                             new double[] { i } ));
             Thread.sleep(1);
         }
-        
+
         // Wait for the thread to write all the samples
         while (buffer.getQueueSize() > 0)
             Thread.sleep(500);
         writer.shutdown();
-        
+
         archive.close();
-        
+
         // Show stats
         System.out.println(buffer);
     }

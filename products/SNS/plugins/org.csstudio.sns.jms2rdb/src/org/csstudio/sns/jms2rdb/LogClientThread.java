@@ -1,7 +1,13 @@
+/*******************************************************************************
+ * Copyright (c) 2010 Oak Ridge National Laboratory.
+ * All rights reserved. This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License v1.0
+ * which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-v10.html
+ ******************************************************************************/
 package org.csstudio.sns.jms2rdb;
 
-import java.net.InetAddress;
-import java.util.Calendar;
+import java.util.logging.Level;
 
 import javax.jms.Connection;
 import javax.jms.ExceptionListener;
@@ -13,11 +19,7 @@ import javax.jms.MessageListener;
 import javax.jms.Session;
 import javax.jms.Topic;
 
-import org.apache.log4j.Level;
-import org.apache.log4j.Logger;
 import org.csstudio.platform.utility.jms.JMSConnectionFactory;
-import org.csstudio.platform.logging.CentralLogger;
-import org.csstudio.platform.logging.JMSLogMessage;
 import org.csstudio.sns.jms2rdb.rdb.RDBWriter;
 
 /** Thread that receives log messages and sends them to the RDB.
@@ -45,10 +47,10 @@ public class LogClientThread extends Thread
 
     /** JMS Server URL */
     final private String jms_url;
-    
+
     /** JMS topic */
     final private String jms_topic;
-    
+
     /** RDB Server URL */
     final private String rdb_url;
 
@@ -57,19 +59,19 @@ public class LogClientThread extends Thread
 
     /** Message filters */
     final private Filter filters[];
-    
-    /** Log4j Logger */
-    final private Logger logger;
 
     /** Flag that tells thread to run or stop. */
     private volatile boolean run = true;
+
+    /** Flag that tells thread main loop to wait. */
+    private boolean do_wait;
 
     /** RDB Writer for log messages */
     private RDBWriter rdb_writer;
 
     /** Counter for received JMS messages */
     private int message_count = 0;
-    
+
     /** Last JMS Message */
     private MapMessage last_message = null;
 
@@ -92,18 +94,17 @@ public class LogClientThread extends Thread
         this.rdb_url = rdb_url;
         this.rdb_schema = rdb_schema;
         this.filters = filters;
-        logger = CentralLogger.getInstance().getLogger(this);
-        
+
         for (Filter filter : filters)
-            logger.info(filter);
+            Activator.getLogger().config(filter.toString());
     }
-    
+
     /** @return Number of messages received */
     public synchronized int getMessageCount()
     {
         return message_count;
     }
-    
+
     /** @return Last messages received or <code>null</code> */
     public synchronized MapMessage getLastMessage()
     {
@@ -128,16 +129,20 @@ public class LogClientThread extends Thread
             {
                 // First open RDB, then the JMS client that writes to RDB
                 rdb_writer = new RDBWriter(rdb_url, rdb_schema);
-                logger.info("Connected to RDB " + rdb_url);
+                Activator.getLogger().log(Level.INFO, "Connected to RDB {0}", rdb_url);
                 jms_connection = connectJMS();
-                
-                addStartMessage();
-                
+
+                // Add start message
+                rdb_writer.write("JMS Log Tool started");
+
                 // Incoming JMS messages are handled in onMessage,
                 // so nothing to do here but wait...
                 synchronized (this)
                 {
-                    wait();
+                    do_wait = true;
+                    // Check some condition to please FindBugs
+                    while (do_wait)
+                        wait();
                 }
             }
             catch (Exception ex)
@@ -146,7 +151,7 @@ public class LogClientThread extends Thread
                 {
                     last_error = ex.getMessage();
                 }
-                logger.error(ex);
+                Activator.getLogger().log(Level.WARNING, "Log thread error", ex);
             }
             finally
             {
@@ -159,7 +164,7 @@ public class LogClientThread extends Thread
                     }
                     catch (JMSException e)
                     {
-                        logger.error(e);
+                        Activator.getLogger().log(Level.WARNING, "JMS disconnect error", e);
                     }
                 }
                 // .. then the RDB used by the JMS client.
@@ -175,27 +180,18 @@ public class LogClientThread extends Thread
             {   // Error. Wait a little before trying again
                 try
                 {
-                    Thread.sleep(RETRY_DELAY_MS);
+                    synchronized (this)
+                    {
+                        wait(RETRY_DELAY_MS);
+                    }
                 }
                 catch (InterruptedException ex)
                 {
-                    logger.warn(ex);
+                    // Ignore
+                    ex = null;
                 }
             }
         }
-    }
-
-    /** Add a startup message. */
-    private void addStartMessage() throws Exception
-    {
-        final Calendar now = Calendar.getInstance();
-        final String host = InetAddress.getLocalHost().getHostName();
-        final String user = System.getProperty("user.name");
-        final JMSLogMessage initial_msg = new JMSLogMessage(
-                "INFO: JMS Log Tool started",
-                Level.INFO.toString(), now, now,
-                "LogClientThread", "run", "", "JMSLogTool", host, user);
-        rdb_writer.write(initial_msg);
     }
 
     /** Connect to JMS server
@@ -216,8 +212,10 @@ public class LogClientThread extends Thread
             final Topic topic = session.createTopic(topic_name);
             final MessageConsumer consumer = session.createConsumer(topic);
             consumer.setMessageListener(this);
-            logger.info("Accepting messages for '" + topic_name
-                    + "' at " + jms_url);
+
+            Activator.getLogger().log(Level.CONFIG,
+                    "Accepting messages for {0} at {1}",
+                    new Object[] { topic_name, jms_url });
         }
         return connection;
     }
@@ -225,20 +223,23 @@ public class LogClientThread extends Thread
     /** Ask thread to stop. Does not block for thread to actually exit */
     public void cancel()
     {
-        run  = false;
+        run = false;
         synchronized (this)
         {
+            do_wait = false;
             notifyAll();
         }
     }
-    
+
     /** @see JMS ExceptionListener */
+    @Override
     public void onException(final JMSException ex)
     {
-        logger.error("JMS Exception", ex);
+        Activator.getLogger().log(Level.WARNING, "JMS Exception", ex);
     }
 
     /** @see JMS MessageListener */
+    @Override
     public void onMessage(final Message message)
     {
         try
@@ -257,7 +258,7 @@ public class LogClientThread extends Thread
                 rdb_writer.write(map);
             }
             else
-                logger.debug("Received " + message.getClass().getName());                
+                Activator.getLogger().log(Level.WARNING, "Received unhandled message type {0}", message.getClass().getName());
         }
         catch (Exception ex)
         {
@@ -265,11 +266,12 @@ public class LogClientThread extends Thread
             {
                 last_error = ex.getMessage();
             }
-            logger.error("Message handling error", ex);
-            ex.printStackTrace();
+            Activator.getLogger().log(Level.WARNING, "Message handling error", ex);
+            // Leave run == true, toggle a restart
+            run = true;
             synchronized (this)
             {
-                // Leave run == true, toggle a restart
+                do_wait = false;
                 notifyAll();
             }
         }

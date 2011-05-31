@@ -37,7 +37,7 @@ import org.eclipse.ecf.presence.roster.IRosterEntry;
 import org.eclipse.ecf.presence.roster.IRosterGroup;
 import org.eclipse.ecf.presence.roster.IRosterItem;
 import org.eclipse.ecf.presence.roster.IRosterManager;
-import org.remotercp.ecf.session.ISessionService;
+import org.remotercp.service.connection.session.ISessionService;
 
 /**
  * Tracks the available interconnection servers via XMPP, retrieves their

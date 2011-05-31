@@ -10,6 +10,7 @@ import org.hibernate.cfg.Configuration;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
+//CHECKSTYLE:OFF
 public class DocumentDBOTest {
 
     @BeforeClass
@@ -42,7 +43,7 @@ public class DocumentDBOTest {
                         //.setProperty("hibernate.hbm2ddl.auto", "update")
                         .setProperty("hibernate.show_sql", "true");
 
-        HibernateManager.setSessionFactory(cfg.buildSessionFactory());
+        HibernateManager.getInstance().setSessionFactory(cfg.buildSessionFactory());
     }
 
     @Test
@@ -53,3 +54,4 @@ public class DocumentDBOTest {
     }
 
 }
+//CHECKSTYLE:ON

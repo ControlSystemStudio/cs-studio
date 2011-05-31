@@ -2,7 +2,7 @@
 <feature
       id="org.csstudio.sns.feature.optional.win32"
       label="Optional SNS Control Room Tools for Win32"
-      version="2.3.0.qualifier"
+      version="3.0.0.qualifier"
       provider-name="SNS, Kay Kasemir">
 
    <description>
@@ -32,13 +32,11 @@ For details, see http://www.eclipse.org/legal/epl-v10.html
 
    <requires>
       <import plugin="org.junit4"/>
-      <import plugin="org.csstudio.platform"/>
-      <import plugin="org.csstudio.apputil.ui"/>
       <import plugin="org.eclipse.core.runtime"/>
       <import plugin="org.eclipse.jface"/>
       <import plugin="org.eclipse.ui"/>
       <import plugin="org.eclipse.ui.views"/>
-      <import plugin="org.csstudio.platform.ui"/>
+      <import plugin="org.csstudio.apputil.ui"/>
       <import plugin="org.csstudio.platform.libs.jdbc"/>
    </requires>
 

@@ -35,6 +35,7 @@ public class PreferencePage extends FieldEditorPreferencePage
         setMessage(Messages.Annunciator);
     }
 
+    @Override
     public void init(IWorkbench workbench)
     { /* NOP */ }
 
@@ -43,7 +44,7 @@ public class PreferencePage extends FieldEditorPreferencePage
     protected void createFieldEditors()
     {
         final Composite parent = getFieldEditorParent();
-        
+
         addField(new StringFieldEditor(Preferences.URL, Messages.Prefs_URL, parent));
         addField(new StringFieldEditor(Preferences.TOPICS, Messages.Prefs_Topics, parent));
         addField(new StringFieldEditor(Preferences.TRANSLATIONS_FILE, Messages.Prefs_Translations, parent));

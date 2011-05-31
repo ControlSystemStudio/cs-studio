@@ -1,20 +1,28 @@
+/*******************************************************************************
+ * Copyright (c) 2010 Oak Ridge National Laboratory.
+ * All rights reserved. This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License v1.0
+ * which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-v10.html
+ ******************************************************************************/
 package org.csstudio.opibuilder.widgets.properties;
 
 import java.util.Arrays;
 import java.util.LinkedHashMap;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Map.Entry;
 
 import org.csstudio.opibuilder.OPIBuilderPlugin;
 import org.csstudio.opibuilder.util.OPIColor;
+import org.csstudio.opibuilder.visualparts.HelpTrayDialog;
 import org.csstudio.opibuilder.visualparts.RGBColorCellEditor;
-import org.csstudio.platform.ui.util.CustomMediaFactory;
 import org.csstudio.swt.widgets.datadefinition.ColorMap;
-import org.csstudio.swt.widgets.datadefinition.ColorTuple;
 import org.csstudio.swt.widgets.datadefinition.ColorMap.PredefinedColorMap;
+import org.csstudio.swt.widgets.datadefinition.ColorTuple;
+import org.csstudio.ui.util.CustomMediaFactory;
 import org.eclipse.jface.action.Action;
 import org.eclipse.jface.action.ToolBarManager;
-import org.eclipse.jface.dialogs.Dialog;
 import org.eclipse.jface.viewers.ArrayContentProvider;
 import org.eclipse.jface.viewers.CellEditor;
 import org.eclipse.jface.viewers.ColumnViewer;
@@ -53,7 +61,7 @@ import org.eclipse.swt.widgets.ToolBar;
  * @author Xihui Chen
  *
  */
-public class ColorMapEditDialog extends Dialog {	
+public class ColorMapEditDialog extends HelpTrayDialog {	
 	
 	private Action addAction;
 	private Action copyAction;
@@ -130,6 +138,11 @@ public class ColorMapEditDialog extends Dialog {
 		label.setText(text);
 		label.setLayoutData(new GridData(SWT.FILL, SWT.BOTTOM, false,
 				false, 2, 1));
+	}
+	
+	@Override
+	protected String getHelpResourcePath() {
+		return "/" + OPIBuilderPlugin.PLUGIN_ID + "/html/Widgets/IntensityGraph.html#colorMap"; //$NON-NLS-1$; //$NON-NLS-2$
 	}
 	
 	@Override
@@ -232,8 +245,8 @@ public class ColorMapEditDialog extends Dialog {
 					LinkedHashMap<Double, RGB> map = 
 						PredefinedColorMap.values()[preDefinedMapCombo.getSelectionIndex()].getMap();
 					colorList.clear();
-					for(Double value : map.keySet())
-						colorList.add(new ColorTuple(value, map.get(value)));
+					for(Entry<Double, RGB> entry : map.entrySet())
+						colorList.add(new ColorTuple(entry.getKey(), entry.getValue()));
 					colorListViewer.refresh();
 				}
 				refreshGUI();
@@ -511,7 +524,7 @@ public class ColorMapEditDialog extends Dialog {
 	}
 	
 	
-	private final class ColorListLabelProvider extends LabelProvider implements ITableLabelProvider{
+	private final static class ColorListLabelProvider extends LabelProvider implements ITableLabelProvider{
 
 		public Image getColumnImage(Object element, int columnIndex) {
 			if(columnIndex == 1 && element instanceof ColorTuple){

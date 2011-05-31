@@ -92,7 +92,7 @@ public class FilePathPropertyDescriptor extends TextPropertyDescriptor {
 	 * 
 	 * @author Kai Meyer
 	 */
-	private final class PathLabelProvider extends LabelProvider {
+	private final static class PathLabelProvider extends LabelProvider {
 		/**
 		 * {@inheritDoc}
 		 */

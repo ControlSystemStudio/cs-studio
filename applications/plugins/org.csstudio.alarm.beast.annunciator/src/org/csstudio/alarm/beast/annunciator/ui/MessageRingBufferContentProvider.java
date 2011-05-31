@@ -20,12 +20,13 @@ import org.eclipse.jface.viewers.Viewer;
 public class MessageRingBufferContentProvider implements ILazyContentProvider
 {
     private TableViewer viewer;
-    
+
     /** List of recent Messages.
      *  Synchronize on access.
      */
     private RingBuffer<AnnunciationMessage> messages;
-    
+
+    @Override
     @SuppressWarnings("unchecked")
     public void inputChanged(final Viewer viewer, final Object old, final Object input)
     {
@@ -46,6 +47,7 @@ public class MessageRingBufferContentProvider implements ILazyContentProvider
         }
     }
 
+    @Override
     public void updateElement(final int index)
     {
         // Show elements in reverse order; index 0 is last message
@@ -53,11 +55,15 @@ public class MessageRingBufferContentProvider implements ILazyContentProvider
         synchronized (messages)
         {
             final int N = messages.size();
+            // Ignore update in case message count changed
+            if (index >= N)
+            	return;
             message = messages.get(N-1-index);
         }
         viewer.replace(message, index);
     }
 
+    @Override
     public void dispose()
     {
         // NOP

@@ -37,8 +37,8 @@ public class DoublePropertyProxyImpl extends PropertyProxyImpl<Double>{
 	 * Constructs a new DoublePropertyProxy.
 	 * @param name
 	 */
-	public DoublePropertyProxyImpl(String name) {
-		super(name);
+	public DoublePropertyProxyImpl(String name, TINEPlug plug) {
+		super(name, plug);
 //		value = new double[(Integer)getCharacteristic("sequenceLength")];
 		this.value = new double[1];
 	}

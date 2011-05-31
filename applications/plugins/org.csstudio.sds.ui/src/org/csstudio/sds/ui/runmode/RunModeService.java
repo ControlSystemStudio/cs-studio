@@ -21,12 +21,15 @@
  */
 package org.csstudio.sds.ui.runmode;
 
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import org.csstudio.platform.logging.CentralLogger;
 import org.csstudio.sds.internal.runmode.RunModeBoxInput;
 import org.csstudio.sds.internal.runmode.RunModeType;
+import org.csstudio.sds.model.DisplayModel;
 import org.csstudio.sds.ui.internal.runmode.AbstractRunModeBox;
 import org.csstudio.sds.ui.internal.runmode.DisplayViewPart;
 import org.csstudio.sds.ui.internal.runmode.IRunModeDisposeListener;
@@ -34,6 +37,7 @@ import org.csstudio.sds.ui.internal.runmode.ShellRunModeBox;
 import org.csstudio.sds.ui.internal.runmode.ViewRunModeBox;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.Path;
+import org.eclipse.swt.graphics.Point;
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.ui.IMemento;
 
@@ -57,11 +61,14 @@ public final class RunModeService {
 	 */
 	private HashMap<RunModeBoxInput, AbstractRunModeBox> _activeBoxes;
 
+	private ArrayList<IOpenDisplayListener> _openDisplayListener;
+
 	/**
 	 * Constructor.
 	 */
 	private RunModeService() {
 		_activeBoxes = new HashMap<RunModeBoxInput, AbstractRunModeBox>();
+		_openDisplayListener = new ArrayList<IOpenDisplayListener>();
 	}
 
 	/**
@@ -98,6 +105,12 @@ public final class RunModeService {
 				aliases, RunModeType.SHELL);
 
 		runModeBoxInput.setPredecessorBox(predecessor);
+		
+		Point location = null;
+		if (_activeBoxes.containsKey(predecessor)) {
+			AbstractRunModeBox runModeBox = _activeBoxes.get(predecessor);
+			location = runModeBox.getCurrentLocation();
+		}
 
 		if (_activeBoxes.containsKey(runModeBoxInput)) {
 			AbstractRunModeBox box = _activeBoxes.get(runModeBoxInput);
@@ -105,7 +118,7 @@ public final class RunModeService {
 		} else {
 			try {
 				final AbstractRunModeBox runModeBox = new ShellRunModeBox(
-						runModeBoxInput);
+						runModeBoxInput, location);
 
 				// memorize box
 				_activeBoxes.put(runModeBoxInput, runModeBox);
@@ -119,7 +132,17 @@ public final class RunModeService {
 				});
 
 				// open the box
-				runModeBox.openRunMode(null);
+				runModeBox.openRunMode(null, new IDisplayLoadedCallback() {
+					@Override
+					public void displayLoaded() {
+						notifyOpenDisplayListener();
+					}
+
+					@Override
+					public void displayClosed() {
+						notifyOpenDisplayListener();						
+					}
+				});
 			} catch (IllegalArgumentException e) {
 				CentralLogger.getInstance().info(
 						null,
@@ -141,6 +164,7 @@ public final class RunModeService {
 		CentralLogger.getInstance().debug(this, "Close RunModeBox: " + modeBoxInput.getFilePath());
 		AbstractRunModeBox runModeBox = _activeBoxes.get(modeBoxInput);
 		runModeBox.dispose();
+		notifyOpenDisplayListener();
 	}
 
 	/**
@@ -201,7 +225,6 @@ public final class RunModeService {
 			}
 			openBoxForWorkbenchView(new Path(storedPath), aliases,
 					displayViewPart);
-
 		}
 	}
 
@@ -255,7 +278,17 @@ public final class RunModeService {
 				};
 
 				// open the box
-				runModeBox.openRunMode(runnable);
+				runModeBox.openRunMode(runnable, new IDisplayLoadedCallback() {
+					@Override
+					public void displayLoaded() {
+						notifyOpenDisplayListener();
+					}
+
+					@Override
+					public void displayClosed() {
+						notifyOpenDisplayListener();
+					}
+				});
 			} catch (IllegalArgumentException e) {
 				CentralLogger.getInstance().info(
 						null,
@@ -288,7 +321,32 @@ public final class RunModeService {
 		for (RunModeBoxInput in : _activeBoxes.keySet()) {
 			if (path.equals(in.getFilePath())) {
 				_activeBoxes.get(in).dispose();
+				notifyOpenDisplayListener();
 			}
+		}
+	}
+	
+	public DisplayModel[] getAllActivDisplayModels() {
+		List<DisplayModel> displays = new ArrayList<DisplayModel>();
+		for (AbstractRunModeBox box : _activeBoxes.values()) {
+			displays.add(box.getDisplayModel());
+		}
+		return displays.toArray(new DisplayModel[displays.size()]);
+	}
+
+	public void addOpenDisplayListener(
+			IOpenDisplayListener openDisplayListener) {
+		_openDisplayListener.add(openDisplayListener);
+	}
+	
+	public void removeOpenDisplayListener(
+			IOpenDisplayListener openDisplayListener) {
+		_openDisplayListener.remove(openDisplayListener);
+	}
+	
+	private void notifyOpenDisplayListener() {
+		for (IOpenDisplayListener listener : _openDisplayListener) {
+			listener.openDisplayChanged();
 		}
 	}
 

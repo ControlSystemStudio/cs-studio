@@ -1,14 +1,21 @@
-
+/*******************************************************************************
+ * Copyright (c) 2010 Oak Ridge National Laboratory.
+ * All rights reserved. This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License v1.0
+ * which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-v10.html
+ ******************************************************************************/
 package org.csstudio.opibuilder.actions;
 
 import java.io.ByteArrayInputStream;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.logging.Level;
 
+import org.csstudio.opibuilder.OPIBuilderPlugin;
 import org.csstudio.opibuilder.datadefinition.PropertiesCopyData;
 import org.csstudio.opibuilder.model.AbstractWidgetModel;
 import org.csstudio.opibuilder.persistence.XMLUtil;
-import org.csstudio.platform.logging.CentralLogger;
 import org.eclipse.swt.dnd.ByteArrayTransfer;
 import org.eclipse.swt.dnd.DND;
 import org.eclipse.swt.dnd.TransferData;
@@ -20,17 +27,17 @@ import org.jdom.input.SAXBuilder;
  * @author Xihui Chen
  */
 public class PropertiesCopyDataTransfer extends ByteArrayTransfer {
-	
+
 
 
 	private static PropertiesCopyDataTransfer instance;
-	
+
 	private static final String TYPE_NAME = "PropertiesCopyDataTransfer:"  //$NON-NLS-1$
 			+ System.currentTimeMillis();
-	
+
 	private static final int TYPEID = registerType(TYPE_NAME);
-	
-	
+
+
 	public synchronized static PropertiesCopyDataTransfer getInstance() {
 		if(instance == null)
 			instance = new PropertiesCopyDataTransfer();
@@ -46,16 +53,16 @@ public class PropertiesCopyDataTransfer extends ByteArrayTransfer {
 	protected String[] getTypeNames() {
 		return new String[] {TYPE_NAME};
 	}
-	
+
 	@Override
 	protected void javaToNative(Object object, TransferData transferData) {
 		if (!isSupportedType(transferData) || !(checkInput(object))) {
 			DND.error(DND.ERROR_INVALID_DATA);
 		}
-		
+
 		super.javaToNative(((String)object).getBytes(), transferData);
 	}
-	
+
 	@Override
 	protected Object nativeToJava(TransferData transferData) {
 		if(!isSupportedType(transferData))
@@ -68,7 +75,7 @@ public class PropertiesCopyDataTransfer extends ByteArrayTransfer {
 			SAXBuilder saxBuilder = new SAXBuilder();
 			Document doc = saxBuilder.build(new ByteArrayInputStream(xmlString.getBytes()));
 			Element root = doc.getRootElement();
-			
+
 			List<String> propIDList = new ArrayList<String>();
 			AbstractWidgetModel widgetModel = null;
 			for(Object o : root.getChildren()){
@@ -80,20 +87,20 @@ public class PropertiesCopyDataTransfer extends ByteArrayTransfer {
 							propIDList.add(pe.getName());
 						}
 					else
-						widgetModel = XMLUtil.XMLElementToWidget(e);						
+						widgetModel = XMLUtil.XMLElementToWidget(e);
 				}
-			}			
+			}
 			return new PropertiesCopyData(widgetModel, propIDList);
 		} catch (Exception e) {
-			CentralLogger.getInstance().error(this, "Failed to transfer XML to widget", e);
+	         OPIBuilderPlugin.getLogger().log(Level.WARNING, "Failed to transfer XML to widget", e); //$NON-NLS-1$
 		}
 		return null;
-		
+
 	}
-	
+
 	/**
 	 * Checks the provided input, which must be {@link PropertiesCopyData}
-	 * 
+	 *
 	 * @param input
 	 *            the input to check
 	 * @return true, if the input object is valid, false otherwise

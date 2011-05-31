@@ -1,6 +1,13 @@
+/*******************************************************************************
+ * Copyright (c) 2010 Oak Ridge National Laboratory.
+ * All rights reserved. This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License v1.0
+ * which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-v10.html
+ ******************************************************************************/
 package org.csstudio.archivereader;
 
-import org.csstudio.platform.data.ITimestamp;
+import org.csstudio.data.values.ITimestamp;
 
 /** Interface to archive data retrieval.
  *  <p>
@@ -33,9 +40,9 @@ import org.csstudio.platform.data.ITimestamp;
  *  <li>Channel search via 'glob' pattern, which can be a lot faster than
  *      regular expression search, is directly supported.
  *  </ul>
- *  
+ *
  *  @see ArchiveRepository
- *  
+ *
  *  @author Kay Kasemir
  *  @author Jan Hatje, Albert Kagarmanov, Blaz Lipuscek:
  *          Contributed to org.csstudio.archive
@@ -55,29 +62,29 @@ public interface ArchiveReader
      *  @return Name of the server.
      */
     public String getServerName();
-    
+
     /** URL for this ArchiveServer.
      *  @return URL as a string.
      */
     public String getURL();
-    
+
     /** Arbitrary description string, may span multiple lines,
      *  with details left to the implementation.
      *  @return Description string.
      */
     public String getDescription();
-    
+
     /** Version information.
      *  <p>
      *  The meaning of this version number is up to the implementation.
      *  @return A version number.
      */
     public int getVersion();
-    
+
     /** Obtain a list of archives handled by this server.
      *  <p>
      *  A server might support access to more than one sub-archive.
-     *  
+     *
      *  @return The available archives, at least one.
      */
     public ArchiveInfo[] getArchiveInfos();
@@ -91,7 +98,7 @@ public interface ArchiveReader
      *  <p>
      *  The search should be case-insensitive, but details can depend
      *  on the implementation.
-     *  
+     *
      *  @param key Key of archive to search.
      *  @param glob_pattern Pattern for channel name with '*' or '?'.
      *  @return List of matching channel names. Might be empty.
@@ -99,12 +106,12 @@ public interface ArchiveReader
      */
     public String[] getNamesByPattern(int key, String glob_pattern)
         throws Exception;
-    
+
     /** Find channel in given sub-archive via regular expression search.
      *  <p>
      *  The search should be case-insensitive, but details can depend
      *  on the implementation.
-     *  
+     *
      *  @param key Key of archive to search.
      *  @param reg_exp Regular Expression for channel name.
      *  @return List of matching channel names. Might be empty.
@@ -112,7 +119,7 @@ public interface ArchiveReader
      */
     public String[] getNamesByRegExp(int key, String reg_exp)
         throws Exception;
-    
+
     /** Read original, raw samples from the archive
      *  @param key Key of the archive to use for retrieval.
      *  @param name Channel name
@@ -137,7 +144,7 @@ public interface ArchiveReader
      *  If the raw data contains less than the requested 'count',
      *  or the raw data is not numeric and thus cannot be reduced,
      *  the method can fall back to returning the original samples.
-     *  
+     *
      *  @param key Key of the archive to use for retrieval.
      *  @param name Channel name
      *  @param start Start time
@@ -149,13 +156,13 @@ public interface ArchiveReader
      */
     public ValueIterator getOptimizedValues(int key, String name,
         ITimestamp start, ITimestamp end, int count) throws UnknownChannelException, Exception;
-    
+
     /** Cancel an ongoing archive query.
      *  It's up to the implementation to support this for all queries,
      *  or only 'getSamples', or not at all.
      */
     public void cancel();
-    
+
     /** Must be called when archive is no longer used to release resources */
     public void close();
 }

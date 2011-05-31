@@ -1,3 +1,9 @@
+/*************************************************************************\
+* Copyright (c) 2010  UChicago Argonne, LLC
+* This file is distributed subject to a Software License Agreement found
+* in the file LICENSE that is included with this distribution.
+/*************************************************************************/
+
 package org.csstudio.opibuilder.adl2boy.translator;
 
 import org.csstudio.opibuilder.model.AbstractContainerModel;

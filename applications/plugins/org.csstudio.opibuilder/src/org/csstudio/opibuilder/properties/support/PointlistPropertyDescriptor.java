@@ -68,7 +68,7 @@ public class PointlistPropertyDescriptor extends TextPropertyDescriptor {
 	 * 
 	 * @author Kai Meyer
 	 */
-	private final class PointlistLabelProvider extends LabelProvider {
+	private final static class PointlistLabelProvider extends LabelProvider {
 		/**
 		 * {@inheritDoc}
 		 */

@@ -111,10 +111,10 @@ public class ArchiveDBAccess implements ILogMessageArchiveAccess {
             ArrayList<ArrayList<FilterItem>> separatedFilterSettings = filter
                     .getSeparatedFilterSettings();
             ResultSet resultSet = null;
-            _sqlBuilder = new SQLBuilder();
+            _sqlBuilder = new SQLBuilder(new DBConnectionHandler());
             for (ArrayList<FilterItem> currentFilterSettingList : separatedFilterSettings) {
                 String statement = _sqlBuilder
-                        .generateSQLCount(currentFilterSettingList);
+                        .composeSQLStmtForCount(currentFilterSettingList);
                 getMessages = _databaseConnection.prepareStatement(statement);
                 getMessages = setVariables(getMessages,
                         currentFilterSettingList, filter.getFrom(), filter
@@ -298,14 +298,14 @@ public class ArchiveDBAccess implements ILogMessageArchiveAccess {
             ArrayList<ArrayList<FilterItem>> separatedFilterSettings = filter
                     .getSeparatedFilterSettings();
             ResultSet result = null;
-            String maxRownum = Integer.toString(_maxAnswerSize * 15);
-            _sqlBuilder = new SQLBuilder();
-            _sqlBuilder.setRownum(maxRownum);
+            Integer maxRowNum = Integer.valueOf(_maxAnswerSize * 15);
+            _sqlBuilder = new SQLBuilder(new DBConnectionHandler());
+            _sqlBuilder.setMaxRowNum(maxRowNum);
             CentralLogger.getInstance().debug(this,
-                    "set maxRowNum to " + maxRownum);
+                    "set maxRowNum to " + maxRowNum);
             for (ArrayList<FilterItem> currentFilterSettingList : separatedFilterSettings) {
                 String statement = _sqlBuilder
-                        .generateSQL(currentFilterSettingList);
+                        .composeSQLStmtForFilter(currentFilterSettingList);
                 getMessages = _databaseConnection.prepareStatement(statement);
 
                 getMessages = setVariables(getMessages,

@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <?NLS TYPE="org.eclipse.help.toc"?>
 
-<toc link_to="../org.csstudio.platform.ui/tocApps.xml#trends" label="Data Browser">
+<toc link_to="../org.csstudio.ui.help/tocApps.xml#trends" label="Data Browser">
 	<topic label="Data Browser"  href="doc/databrowser.html">
 		<topic label="Overview" href="doc/databrowser.html#overview"/>
         <topic label="Getting Started" href="doc/databrowser.html#101"/>

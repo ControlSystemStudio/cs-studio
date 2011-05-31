@@ -1,4 +1,10 @@
-
+/*******************************************************************************
+ * Copyright (c) 2010 Oak Ridge National Laboratory.
+ * All rights reserved. This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License v1.0
+ * which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-v10.html
+ ******************************************************************************/
 package org.csstudio.opibuilder.properties;
 
 import org.csstudio.opibuilder.properties.support.OPIColorPropertyDescriptor;
@@ -39,6 +45,8 @@ public class ColorProperty extends AbstractWidgetProperty {
 	 * XML attribute name <code>blue</code>.
 	 */
 	public static final String XML_ATTRIBUTE_BLUE = "blue"; //$NON-NLS-1$	
+
+	private static final String QUOTE = "\""; //$NON-NLS-1$
 	
 	/**Color Property Constructor. The property value type is {@link OPIColor}.
 	 * @param prop_id the property id which should be unique in a widget model.
@@ -134,4 +142,20 @@ public class ColorProperty extends AbstractWidgetProperty {
 	
 	}
 
+	@Override
+	public boolean configurableByRule() {
+		return true;
+	}
+	
+	@Override
+	public String toStringInRuleScript(Object propValue) {
+		OPIColor opiColor = (OPIColor)propValue;
+		if(opiColor.isPreDefined())
+			return QUOTE + opiColor.getColorName()+QUOTE;
+		else{
+			RGB rgb = opiColor.getRGBValue();
+			return "ColorFontUtil.getColorFromRGB("+ //$NON-NLS-1$
+				rgb.red + "," + rgb.green + "," + rgb.blue + ")"; //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
+		}
+	}	
 }

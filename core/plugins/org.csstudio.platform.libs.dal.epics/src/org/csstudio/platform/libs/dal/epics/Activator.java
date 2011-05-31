@@ -21,12 +21,8 @@
  */
  package org.csstudio.platform.libs.dal.epics;
 
-import org.csstudio.dal.DalPlugin;
 import org.csstudio.platform.libs.epics.EpicsPlugin;
-import org.csstudio.platform.model.pvs.DALPropertyFactoriesProvider;
-import org.eclipse.core.runtime.Platform;
 import org.eclipse.core.runtime.Plugin;
-import org.eclipse.core.runtime.preferences.IPreferencesService;
 import org.osgi.framework.BundleContext;
 
 /**
@@ -57,13 +53,13 @@ public class Activator extends Plugin {
 		//Read preference 'use_pure_java' from plug-in 'org.csstudio.libs.epics' and
 		//set it to the DAL configuration.
         if (EpicsPlugin.getDefault().usePureJava()) {
-            DALPropertyFactoriesProvider.getInstance().getApplicationContext().getConfiguration().setProperty("EPICSPlug.use_jni", "false");
+        	System.getProperties().put("EPICSPlug.use_jni", "false");
         } else {
-            DALPropertyFactoriesProvider.getInstance().getApplicationContext().getConfiguration().setProperty("EPICSPlug.use_jni", "true");
+        	System.getProperties().put("EPICSPlug.use_jni", "true");
         }
         
         String defaultValue = (new Integer(EpicsPlugin.getDefault().getMonitorMask().getMask())).toString();
-        DALPropertyFactoriesProvider.getInstance().getApplicationContext().getConfiguration().setProperty("EPICSPlug.default_monitor_mask", defaultValue);
+        System.getProperties().put("EPICSPlug.default_monitor_mask", defaultValue);
 	}
 
 	/*

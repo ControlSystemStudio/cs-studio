@@ -1,9 +1,16 @@
+/*******************************************************************************
+ * Copyright (c) 2010 Oak Ridge National Laboratory.
+ * All rights reserved. This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License v1.0
+ * which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-v10.html
+ ******************************************************************************/
 package org.csstudio.diag.pvutil.gui;
 
-import org.csstudio.platform.ui.swt.AutoSizeColumn;
-import org.csstudio.platform.ui.swt.AutoSizeControlListener;
 import org.csstudio.diag.pvutil.model.PVUtilModel;
 import org.csstudio.diag.pvutil.model.PVUtilListener;
+import org.eclipse.jface.layout.TableColumnLayout;
+import org.eclipse.jface.viewers.ColumnWeightData;
 import org.eclipse.jface.viewers.ListViewer;
 import org.eclipse.jface.viewers.TableViewer;
 import org.eclipse.swt.SWT;
@@ -23,11 +30,12 @@ import org.eclipse.swt.widgets.Group;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.List;
 import org.eclipse.swt.widgets.Table;
+import org.eclipse.swt.widgets.TableColumn;
 import org.eclipse.swt.widgets.Text;
 
 @SuppressWarnings("nls")
 public class GUI implements PVUtilListener
-        
+
 
 {
     private Display display = Display.getDefault();
@@ -35,7 +43,7 @@ public class GUI implements PVUtilListener
     /** Sash for the two GUI sub-sections divided by the moving bar */
     private SashForm form;
     private int form_weights[] = new int[] { 50, 50 };
-    
+
     /** GUI Elements */
     private Text fecEntry, recPVFilterEntry;
     private Button clearDeviceButton, clearPVButton, clearAllButton;
@@ -43,7 +51,7 @@ public class GUI implements PVUtilListener
     public ListViewer deviceListViewer;
     private TableViewer pv_table;
     private Label curDVCFilter, curPVFilter;
-    
+
     /** Enumerator that dictates what text elements to manipulate when a button is pressed */
     public enum ItemIndex {
         /** The front end controller name */
@@ -75,10 +83,10 @@ public class GUI implements PVUtilListener
         Composite topOfFormComposite = new Composite(form, SWT.NULL);
         GridLayout layout = new GridLayout();
         topOfFormComposite.setLayout(layout);
-        
+
         //Tab folder start.
         GridData gd = new GridData(GridData.FILL_BOTH);
-        
+
         layout = new GridLayout();
         layout.numColumns = 3;
         topOfFormComposite.setLayout(layout);
@@ -110,19 +118,19 @@ public class GUI implements PVUtilListener
         gd.heightHint = trim.height;
         gd.widthHint = 200;
         deviceList.setLayoutData(gd);
- 
+
         // TableViewer interface the plain device_table_widget to our "model":
         deviceListViewer = new ListViewer(deviceList);
- 
+
     }
-    
+
 
     /** Create the lower sash: PV Name filter, PV list */
     private void createLowerSash(final SashForm form)
     {
-        Composite container = new Composite(form, SWT.NULL);
+        final Composite container = new Composite(form, SWT.NULL);
 
-        GridLayout layout = new GridLayout();
+        final GridLayout layout = new GridLayout();
         layout.numColumns = 3;
         container.setLayout(layout);
 
@@ -144,7 +152,7 @@ public class GUI implements PVUtilListener
         clearPVButton = new Button(container, SWT.PUSH | SWT.CENTER);
         clearPVButton.setText("Clear PV");
         clearPVButton.setLayoutData(new GridData());
-        
+
         Group readoutContainer = new Group(container, SWT.NULL);
 		GridLayout readoutLayout = new GridLayout();
         readoutLayout.numColumns = 4;
@@ -152,23 +160,23 @@ public class GUI implements PVUtilListener
 		gd = new GridData(GridData.FILL, GridData.CENTER, true, false);
 		gd.horizontalSpan = 2;
 		readoutContainer.setLayoutData(gd);
-        
+
         l = new Label(readoutContainer, 0);
         l.setText("Current Device: ");
         gd = new GridData();
         l.setLayoutData(gd);
-        
+
         curDVCFilter = new Label(readoutContainer, 0);
         gd = new GridData();
         gd.horizontalAlignment = SWT.FILL;
         gd.grabExcessHorizontalSpace = true;
         curDVCFilter.setLayoutData(gd);
-        
+
         l = new Label(readoutContainer, 0);
         l.setText("PV Filter: ");
         gd = new GridData();
         l.setLayoutData(gd);
-        
+
         curPVFilter = new Label(readoutContainer, 0);
         gd = new GridData();
         gd.horizontalAlignment = SWT.FILL;
@@ -182,23 +190,25 @@ public class GUI implements PVUtilListener
         clearAllButton.setLayoutData(gd);
 
         // Rest: PV Table
-        Table device_table_widget = new Table(container, SWT.VIRTUAL
-                | SWT.MULTI);
+        // TableColumnLayout requires table in its own Composite
+        final Composite table_parent = new Composite(container, 0);
+        table_parent.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true, layout.numColumns, 1));
+        final TableColumnLayout table_layout = new TableColumnLayout();
+        table_parent.setLayout(table_layout);
 
-        gd = new GridData();
-        gd.horizontalSpan = layout.numColumns;
-        gd.grabExcessHorizontalSpace = true;
-        gd.grabExcessVerticalSpace = true;
-        gd.horizontalAlignment = SWT.FILL;
-        gd.verticalAlignment = SWT.FILL;
-        device_table_widget.setLayoutData(gd);
+        final Table device_table_widget = new Table(table_parent, SWT.VIRTUAL | SWT.MULTI);
         device_table_widget.setHeaderVisible(true);
         device_table_widget.setLinesVisible(true);
 
-        AutoSizeColumn.make(device_table_widget, "Process Variable", 200, 100);
-        AutoSizeColumn.make(device_table_widget, "Info", 210, 50);
-        // Configure table to auto-size the columns
-        new AutoSizeControlListener(device_table_widget);
+        TableColumn col = new TableColumn(device_table_widget, SWT.LEFT);
+        col.setText("Process Variable");
+        col.setMoveable(true);
+        table_layout.setColumnData(col, new ColumnWeightData(100, 200));
+
+        col = new TableColumn(device_table_widget, SWT.LEFT);
+        col.setText("Info");
+        col.setMoveable(true);
+        table_layout.setColumnData(col, new ColumnWeightData(50, 210));
 
         // TableViewer interface the plain device_table_widget
         // to our "model":
@@ -208,18 +218,19 @@ public class GUI implements PVUtilListener
         // Turns request for column 0, 1, 2, ... into Device's name, parent, ...
         pv_table.setLabelProvider(new PVLabelProvider());
     }
-    
-    void hookListeners()
+
+    private void hookListeners()
     {
          /**
          * Listens for the return key in the List Filter Text Box.
          * Then passes the entered value to the FEC model
-         * so that the FEC list can be filtered by the selection.  
-         * 
+         * so that the FEC list can be filtered by the selection.
+         *
          * Selecting this eliminates previous selections.
          */
         fecEntry.addTraverseListener(new TraverseListener()
         {
+            @Override
             public void keyTraversed(TraverseEvent e)
             {
                 if (e.detail == SWT.TRAVERSE_RETURN)
@@ -232,7 +243,7 @@ public class GUI implements PVUtilListener
 
         /**
          * Listens for a selection of an FEC from the FEC List.
-         * The value is then passed to the Control 
+         * The value is then passed to the Control
          * and is used to query for associated process variables.
          */
          deviceList.addSelectionListener(new SelectionAdapter()
@@ -248,12 +259,13 @@ public class GUI implements PVUtilListener
 
         /**
          * Listens for the enter key to be pressed.
-         * The value is then passed to the Control and 
+         * The value is then passed to the Control and
          * used to query for associated
          * process variables that are like the value entered.
          */
         recPVFilterEntry.addTraverseListener(new TraverseListener()
         {
+            @Override
             public void keyTraversed(TraverseEvent e)
             {
                 if (e.detail == SWT.TRAVERSE_RETURN)
@@ -312,8 +324,8 @@ public class GUI implements PVUtilListener
                 reInitialize();
             }
         });
-        
-        
+
+
         //Initialize these in the fec_model.
         model.setFECFilter(model.getStartDeviceID());
         fecEntry.setText(model.getStartDeviceID());
@@ -330,7 +342,7 @@ public class GUI implements PVUtilListener
     {
         return pv_table;
     }
-    
+
     /** Provide access to the PV Filter text to allow drag/drop connections */
     public Text getPVFilterText()
     {
@@ -351,16 +363,18 @@ public class GUI implements PVUtilListener
     {
         return fecEntry;
     }
-    
+
     /** Clears the FEC list and then re-populates it based on the new criteria
      *  @see PVUtilListener
      */
+    @Override
     public void pvUtilChanged(final ChangeEvent what)
     {
         // This could be called from a non-GUI thread, for example the model's
         // database reader.
         display.asyncExec(new Runnable()
         {
+            @Override
             public void run()
             {
             	switch (what)
@@ -385,7 +399,7 @@ public class GUI implements PVUtilListener
     }
 
     /**
-     * Resets the Filters used by the control so that the 
+     * Resets the Filters used by the control so that the
      * plug-in acts as it did when started.
      */
     public void reInitialize()
@@ -396,7 +410,7 @@ public class GUI implements PVUtilListener
     }
 
     /**
-     * Resets the Filters used by the control 
+     * Resets the Filters used by the control
      */
     public void setCurrentDeviceFilter(final String dvcString)
     {
@@ -404,14 +418,14 @@ public class GUI implements PVUtilListener
     }
 
     /**
-     * Resets the Filters used by the control 
+     * Resets the Filters used by the control
      */
     public void setCurrentPVFilter(final String pvString)
     {
     	curPVFilter.setText(pvString);
     }
 
-    
+
     public void setFocus()
     {
         // Set focus FEC Filter

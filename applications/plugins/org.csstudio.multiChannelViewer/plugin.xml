@@ -1,0 +1,97 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?eclipse version="3.4"?>
+<plugin>
+   <extension
+         point="org.eclipse.ui.views">
+      <view
+            allowMultiple="true"
+            category="org.csstudio.channelfinder"
+            class="org.csstudio.multichannelviewer.ChannelsListView"
+            id="org.csstudio.multichannelviewer.ChannelListView"
+            name="Channels List"
+            restorable="true">
+      </view>
+      <view
+            allowMultiple="true"
+            category="org.csstudio.channelfinder"
+            class="org.csstudio.multichannelviewer.ChannelsPlot"
+            id="org.csstudio.multiChannelViewer.ChannelsPlot"
+            name="Channels Plot"
+            restorable="true">
+      </view>
+   </extension>
+   <extension
+         point="org.eclipse.ui.viewActions">
+      <viewContribution
+            id="org.csstudio.multiChannelViewer.plotViewToolbar"
+            targetID="org.csstudio.multichannelviewer.ChannelListView">
+         <menu
+               id="org.csstudio.multiChannelViewer.pullDownMenu"
+               label="channels plot pull down menu"
+               path="additions">
+            <groupMarker
+                  name="content">
+            </groupMarker>
+            <separator
+                  name="additions">
+            </separator>
+         </menu>
+         <action
+               class="org.csstudio.multichannelviewer.actions.AddTestChannels"
+               id="org.csstudio.multiChannelViewer.AddTestChannels"
+               label="Add Test Channels"
+               style="push"
+               toolbarPath="additions">
+         </action>
+      </viewContribution>
+   </extension>
+   <extension
+         point="org.eclipse.ui.editors">
+      <editor
+            class="org.csstudio.multichannelviewer.MultiChannelPlot"
+            default="true"
+            extensions=".mcp"
+            id="org.csstudio.multiChannelViewer.plot"
+            name="MultiChannel Plot">
+      </editor>
+   </extension>
+   <extension
+         point="org.eclipse.ui.perspectives">
+      <perspective
+            class="org.csstudio.multichannelviewer.PerspectiveFactory"
+            id="org.csstudio.multiChannelViewer.perspective"
+            name="MultiChannel Plot Perspective">
+      </perspective>
+   </extension>
+   <extension
+         point="org.eclipse.ui.menus">
+      <menuContribution
+            allPopups="false"
+            locationURI="menu:display">
+         <command
+               commandId="org.csstudio.multichannelviewer.openPerspective"
+               icon="icons/multi_channel.png"
+               label="Open MultiChannel Plot"
+               style="push">
+         </command>
+      </menuContribution>
+      <menuContribution
+            locationURI="popup:org.csstudio.ui.menu.popup.channel">
+         <command
+               commandId="org.csstudio.multichannelviewer.openPerspective"
+               icon="icons/multi_channel.png"
+               label="MultiChannel Viewer"
+               style="push">
+         </command>
+      </menuContribution>
+   </extension>
+   <extension
+         point="org.eclipse.ui.commands">
+      <command
+            defaultHandler="org.csstudio.multichannelviewer.actions.OpenNewMultiChannelPerspective"
+            id="org.csstudio.multichannelviewer.openPerspective"
+            name="Open MultiChannel Plot">
+      </command>
+   </extension>
+
+</plugin>

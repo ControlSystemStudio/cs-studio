@@ -1,6 +1,15 @@
+/*******************************************************************************
+ * Copyright (c) 2010 Oak Ridge National Laboratory.
+ * All rights reserved. This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License v1.0
+ * which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-v10.html
+ ******************************************************************************/
 package org.csstudio.display.pace.gui;
 
-import org.csstudio.platform.logging.CentralLogger;
+import java.util.logging.Level;
+
+import org.csstudio.display.pace.Activator;
 
 /** GUI Update throttle
  *  <p>
@@ -30,16 +39,16 @@ abstract public class GUIUpdateThrottle<T> implements Runnable
 
     /** Delay in millisecs for the suppression of a burst of events */
     final private long suppression_millis;
-    
+
     /** Timer for scheduling the update test */
     final private Thread throttle;
 
     /** Item used in the last trigger */
     private T item = null;
-    
+
     /** Counter for trigger events that arrived */
     private int triggers = 0;
-    
+
     /** Initialize
      *  @param initial_millis Delay [ms] for the initial update after trigger
      *  @param suppression_millis Delay [ms] for the suppression of a burst of events
@@ -72,6 +81,7 @@ abstract public class GUIUpdateThrottle<T> implements Runnable
     }
 
     /** Thread Runnable that handles received triggers */
+    @Override
     public void run()
     {
         try
@@ -105,8 +115,7 @@ abstract public class GUIUpdateThrottle<T> implements Runnable
         }
         catch (InterruptedException ex)
         {
-            CentralLogger.getInstance().getLogger(this)
-                .error("GUIUpdateThrottle " + ex.getMessage()); //$NON-NLS-1$
+            Activator.getLogger().log(Level.WARNING, "GUIUpdateThrottle error", ex); //$NON-NLS-1$
         }
     }
 

@@ -1,3 +1,10 @@
+/*******************************************************************************
+ * Copyright (c) 2010 Oak Ridge National Laboratory.
+ * All rights reserved. This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License v1.0
+ * which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-v10.html
+ ******************************************************************************/
 package org.csstudio.archivereader.channelarchiver;
 
 import java.text.DateFormat;
@@ -5,10 +12,10 @@ import java.text.SimpleDateFormat;
 
 import org.csstudio.archivereader.ArchiveInfo;
 import org.csstudio.archivereader.ValueIterator;
-import org.csstudio.platform.data.IMetaData;
-import org.csstudio.platform.data.ITimestamp;
-import org.csstudio.platform.data.IValue;
-import org.csstudio.platform.data.TimestampFactory;
+import org.csstudio.data.values.IMetaData;
+import org.csstudio.data.values.ITimestamp;
+import org.csstudio.data.values.IValue;
+import org.csstudio.data.values.TimestampFactory;
 import org.junit.Test;
 
 /** JUnit test of the ChannelArchiverReader
@@ -17,7 +24,6 @@ import org.junit.Test;
 @SuppressWarnings("nls")
 public class ChannelArchiverReaderTest
 {
-
     // FIXME (kasemir) : remove syso, use assertions, parameterize URL and Channel
     final private static String URL =
         "xnds://ics-srv-web2.sns.ornl.gov/archive/cgi/ArchiveDataServer.cgi";

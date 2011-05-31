@@ -7,12 +7,8 @@
  ******************************************************************************/
 package org.csstudio.alarm.beast.server;
 
-import java.util.Timer;
-import java.util.TimerTask;
-
 import org.csstudio.alarm.beast.SeverityLevel;
-import org.csstudio.platform.data.TimestampFactory;
-import org.csstudio.platform.logging.CentralLogger;
+import org.csstudio.data.values.TimestampFactory;
 
 /** Alarm handling logic.
  *  <p>
@@ -33,128 +29,70 @@ import org.csstudio.platform.logging.CentralLogger;
  *  control system connection.
  *
  *  @see AlarmPV
- *  @see AlarmLogicTest
+ *  @see AlarmLogicHeadlessTest
  *  @author Kay Kasemir
  */
-public class AlarmLogic
+public class AlarmLogic implements DelayedAlarmListener, GlobalAlarmListener
 {
-    /** Timer for handling delayed alarms */
-    private static Timer delay_timer = new Timer("Alarm Delay Timer", true); //$NON-NLS-1$
-    
-    /** Helper for checking alarms after a delay.
-     *  Started with a new state, it will trigger a transition to that
-     *  state only after a delay.
-     *  While the timer is running, the state might be updated,
-     *  for example to a higher latched state.
-     *  Or the check gets canceled because the control system sent an 'OK'
-     *  value in time.
-     */
-    class DelayedAlarmCheck extends TimerTask
-    {
-        private AlarmState state;
-        
-        /** Initialize
-         *  @param new_state State to which we would go if there was no delay
-         *  @param seconds Delay after which to re-evaluate
-         */
-        public DelayedAlarmCheck(final AlarmState new_state,
-                                 final int seconds)
-        {
-            this.state = new_state;
-            delay_timer.schedule(this, seconds * 1000L);
-            //System.out.println("Update to " + new_state + " delayed for " + delay + " secs");
-        }
-
-        /** @return Alarm state to which we'll go after the delay expires */
-        synchronized public AlarmState getState()
-        {
-            return state;
-        }
-
-        /** Update the alarm state handled by the delayed check because
-         *  another value arrived from the control system
-         *  @param new_state State to which we would go if there was no delay
-         */
-        synchronized public void update(final AlarmState new_state)
-        {
-            this.state = new_state;
-            // System.out.println("DelayedAlarmCheck update to " + new_state);
-        }
-
-        /** Cancel the delayed alarm check because control system PV cleared
-         *  @see java.util.TimerTask#cancel()
-         */
-        @Override
-        public boolean cancel()
-        {
-            //System.out.println("Delayed alarm check canceled: " + state);
-            // delayed_check is volatile, no need to synchronize?
-            // Besides, this is called from computeNewState where we
-            // already sync. on AlarmLogic.this
-            delayed_check = null;
-            return super.cancel();
-        }
-
-        /** Invoked by timer after delay. */
-        @Override
-        synchronized public void run()
-        {
-            //System.out.println("Delayed alarm check becomes active: " + state);
-            delayed_check = null;
-            //  Re-evaluate alarm logic with the delayed state,
-            //  not allowing any further delays.
-            updateState(state, false);
-        }
-    }
-    
     /** @see #getMaintenanceMode() */
     private static volatile boolean maintenance_mode = false;
 
     /** Listener to notify on alarm state changes */
     final private AlarmLogicListener listener;
-    
+
     /** Is logic enabled, or only following the 'current' PV state
      *  without actually alarming?
      */
     private volatile boolean enabled = true;
 
-    /** Pending delayed alarm state update or <code>null</code> */
-    private volatile DelayedAlarmCheck delayed_check = null;
-    
+    /** 'Current' state that was received while disabled.
+     *  Is cached in case we get re-enabled, whereupon it is used
+     */
+    private volatile AlarmState disabled_state = null;
+
     /** Latch the highest received alarm severity/status?
      *  When <code>false</code>, the latched alarm state actually
      *  follows the current value of the PV without requiring
      *  acknowledgment.
      */
     private boolean latching;
-    
+
     /** Annunciate alarms? */
     private boolean annunciating;
-    
+
     /** Does this alarm have priority in maintenance mode, i.e.
      *  INVALID should still be annunciated in maintenance mode,
      *  and the annunciator will not suppress it within a flurry of
      *  alarms that are usually throttled/summarized
      */
     private boolean has_priority = false;
-    
+
     /** Require minimum time [seconds] in alarm before indicating alarm */
     private int delay;
-    
+
+    /** Pending delayed alarm state update or <code>null</code> */
+    final private DelayedAlarmUpdate delayed_check = new DelayedAlarmUpdate(this);
+
     /** Alarm when PV != OK more often than this count within delay */
     private AlarmStateHistory alarm_history = null;
-    
+
     /** Current state of the control system channel */
     private AlarmState current_state;
 
     /** Alarm logic state, with might be latched or delayed from current_state */
     private AlarmState alarm_state;
 
-    /** 'Current' state that was received while disabled.
-     *  Is cached in case we get re-enabled, whereupon it is used
+    /** Delay [seconds] after which a 'global' alarm state update is sent */
+    final private int global_delay;
+
+    /** Pending global alarm state update or <code>null</code> */
+    final private GlobalAlarmUpdate global_check = new GlobalAlarmUpdate(this);
+
+    /** Is there an active 'global' alarm, i.e. a global alarm notification
+     *  has been sent?
      */
-    private volatile AlarmState disabled_state = null;
-    
+    private boolean in_global_alarm = false;
+
     /** Initialize
      *  @param listener {@link AlarmLogicListener}
      *  @param latching Latch the highest received alarm severity?
@@ -163,15 +101,17 @@ public class AlarmLogic
      *  @param count Alarm when PV != OK more often than this count within delay
      *  @param current_state Current alarm state of PV
      *  @param alarm_state Alarm logic state
+     *  @param global_delay Delay [seconds] after which a 'global' notification is sent. 0 to disable
      */
     public AlarmLogic(final AlarmLogicListener listener,
-    		final boolean latching, final boolean annunciating,
+            final boolean latching, final boolean annunciating,
             final int delay,
             final int count,
             final AlarmState current_state,
-            final AlarmState alarm_state)
+            final AlarmState alarm_state,
+            final int global_delay)
     {
-    	this.listener = listener;
+        this.listener = listener;
         this.latching = latching;
         this.annunciating = annunciating;
         this.delay = delay;
@@ -179,8 +119,9 @@ public class AlarmLogic
             alarm_history = new AlarmStateHistory(count);
         this.current_state = current_state;
         this.alarm_state = alarm_state;
+        this.global_delay = global_delay;
     }
-    
+
     /** Set maintenance mode.
      *  @param maintenance_mode
      *  @see #getMaintenanceMode()
@@ -189,7 +130,7 @@ public class AlarmLogic
     public static void setMaintenanceMode(final boolean maintenance_mode)
     {
         AlarmLogic.maintenance_mode = maintenance_mode;
-        CentralLogger.getInstance().getLogger(AlarmLogic.class).info("Maintenance Mode: " + maintenance_mode);
+        Activator.getLogger().config("Maintenance Mode: " + maintenance_mode);
     }
 
     /** In maintenance mode, 'INVALID' alarms are suppressed by
@@ -203,7 +144,7 @@ public class AlarmLogic
     {
         return maintenance_mode;
     }
-    
+
     /** @param enable Enable or disable the logic? */
     public void setEnabled(final boolean enable)
     {
@@ -214,7 +155,7 @@ public class AlarmLogic
         listener.alarmEnablementChanged(this.enabled);
         if (!enabled)
         {   // Disabled
-        	final AlarmState current, alarm;
+            final AlarmState current, alarm;
             synchronized (this)
             {   // Remember current PV state in case we're re-enabled
                 disabled_state = current_state;
@@ -243,7 +184,7 @@ public class AlarmLogic
     {
         return enabled;
     }
-    
+
     /** @param annunciating <code>true</code> to annunciate */
     synchronized public void setAnnunciate(final boolean annunciating)
     {
@@ -259,10 +200,10 @@ public class AlarmLogic
     /** @param has_priority Does this alarm have priority in maintenance mode? */
     synchronized public void setPriority(final boolean has_priority)
     {
-    	this.has_priority = has_priority;
+        this.has_priority = has_priority;
     }
 
-	/** @param latching <code>true</code> for latching behavior */
+    /** @param latching <code>true</code> for latching behavior */
     synchronized public void setLatching(boolean latching)
     {
         this.latching = latching;
@@ -279,13 +220,13 @@ public class AlarmLogic
     {
         delay = seconds;
     }
-    
+
     /** @return Alarm delay in seconds */
     synchronized public int getDelay()
     {
         return delay;
     }
-    
+
     /** @return count Alarm when PV != OK more often than this count within delay */
     synchronized protected int getCount()
     {
@@ -318,13 +259,13 @@ public class AlarmLogic
     {
         return alarm_state;
     }
-    
+
     /** Compute the new alarm state based on new data from control system.
      *  @param received_state Severity/Status received from control system
      */
-    @SuppressWarnings("nls")
     public void computeNewState(final AlarmState received_state)
     {
+        final boolean return_to_ok;
         synchronized (this)
         {
             // When disabled, ignore...
@@ -340,33 +281,39 @@ public class AlarmLogic
             // If there's no change to the current severity, we're done.
             if (received_state.getSeverity() == previous_severity)
                 return;
-            
-            // Does this 'clear' an acknowledged severity?
-            // - or -
-            // are we in maintenance mode, and this is a new
+
+            // Does this 'clear' an acknowledged severity? -> OK
+            final boolean alarm_cleared =
+                   (current_state.getSeverity() == SeverityLevel.OK  &&
+                    !alarm_state.getSeverity().isActive());
+            // Are we in maintenance mode, and this is a new
             // alarm after an INVALID one that was suppressed?
-            if ((current_state.getSeverity() == SeverityLevel.OK  &&
-                 !alarm_state.getSeverity().isActive())
-                 ||
+            // -> At least briefly return to OK so that 'new' alarm
+            //    will take effect
+            final boolean maint_leaving_invalid =
                 (maintenance_mode &&
-                 (alarm_state.getSeverity() == SeverityLevel.INVALID_ACK  ||
-                  alarm_state.getSeverity() == SeverityLevel.INVALID)  &&
-                 current_state.getSeverity() != SeverityLevel.INVALID))
-            {
-                alarm_state = new AlarmState(SeverityLevel.OK,
-                        SeverityLevel.OK.getDisplayName(), "",
-                        received_state.getTime());
-                // If a timer was started, cancel it
-                if (delayed_check != null)
-                    delayed_check.cancel();
-            }
+                        (alarm_state.getSeverity() == SeverityLevel.INVALID_ACK  ||
+                         alarm_state.getSeverity() == SeverityLevel.INVALID)  &&
+                        current_state.getSeverity() != SeverityLevel.INVALID);
+            return_to_ok = alarm_cleared  ||  maint_leaving_invalid;
+            if (return_to_ok)
+                alarm_state = AlarmState.createClearState(received_state.getTime());
+        }
+        // Out of sync'ed section
+        if (return_to_ok)
+        {
+            // If a delayed alarm timer was started, cancel it
+            delayed_check.cancel();
+            // Also cancel 'global' timers
+            global_check.cancel();
+            clearGlobalAlarm();
         }
         updateState(received_state, getDelay() > 0);
     }
-    
+
     /** Compute the new alarm state based on current state and new data from
      *  control system.
-     *  
+     *
      *  @param received_state Severity/Status received from control system,
      *                                         or
      *                        the delayed new state from DelayedAlarmCheck
@@ -375,15 +322,15 @@ public class AlarmLogic
     private void updateState(final AlarmState received_state,
                              final boolean with_delay)
     {
-        SeverityLevel annunc_level = null;
+        SeverityLevel raised_level = null;
         final AlarmState current, alarm;
         synchronized (this)
         {
             // Update alarm state. If there is already an update pending,
             // update that delayed state check.
-            final AlarmState state_to_update = delayed_check != null
-                ? delayed_check.getState()
-                : alarm_state;
+            AlarmState state_to_update = delayed_check.getState();
+            if (state_to_update == null)
+                state_to_update = alarm_state;
             final AlarmState new_state = latchAlarmState(state_to_update, received_state);
             // Computed a new alarm state? Else: Only current_severity update
             if (new_state != null)
@@ -391,46 +338,58 @@ public class AlarmLogic
                 // Delay if requested and this is indeed triggered by alarm, not OK
                 if (with_delay && received_state.getSeverity() != SeverityLevel.OK)
                 {   // Start or update delayed alarm check
-                    if (delayed_check == null)
-                        delayed_check = new DelayedAlarmCheck(new_state, delay);
-                    else
-                        delayed_check.update(new_state);
+                    delayed_check.schedule_update(new_state, delay);
                     // Somewhat in parallel, check for alarm counts
                     if (checkCount(received_state))
-                    {   // Exceeded alarm count threshold; reset delayed alarms
+                    {   // Exceeded alarm count threshold.
+                        // Reset delayed alarms
                         delayed_check.cancel();
                         // Annunciate if going to higher alarm severity
-                        if (annunciating &&
-                            new_state.hasHigherUpdatePriority(alarm_state))
-                            annunc_level = new_state.getSeverity();
+                        if (new_state.hasHigherUpdatePriority(alarm_state))
+                            raised_level = new_state.getSeverity();
                         alarm_state = new_state;
                     }
                 }
                 else
                 {   // Annunciate if going to higher alarm severity
-                    if (annunciating &&
-                        new_state.hasHigherUpdatePriority(alarm_state))
-                        annunc_level = new_state.getSeverity();
+                    if (new_state.hasHigherUpdatePriority(alarm_state))
+                        raised_level = new_state.getSeverity();
                     alarm_state = new_state;
                 }
             }
             // In maint. mode, INVALID is automatically ack'ed and not annunciated,
             // except for 'priority' alarms
-            if (maintenance_mode && 
+            if (maintenance_mode &&
                 !has_priority &&
                 alarm_state.getSeverity() == SeverityLevel.INVALID)
             {
                 alarm_state = alarm_state.createAcknowledged(alarm_state);
-                annunc_level = null;
+                raised_level = null;
             }
             current = current_state;
             alarm = alarm_state;
         }
+        // Update state
         listener.alarmStateChanged(current, alarm);
-        if (annunc_level != null)
-            listener.annunciateAlarm(annunc_level);
+        // New, higher alarm level?
+        if (raised_level != null)
+        {
+            if (isAnnunciating())
+                listener.annunciateAlarm(raised_level);
+            if (global_delay > 0)
+                global_check.schedule_update(global_delay);
+        }
     }
-    
+
+    /** {@inheritDoc}
+     *  @see DelayedAlarmListener
+     */
+    @Override
+    public void delayedStateUpdate(final AlarmState delayed_state)
+    {
+        updateState(delayed_state, false);
+    }
+
     /** Check if the new state adds up to 'count' alarms within 'delay'
      *  @param received_state
      *  @return <code>true</code> if alarm count reached/exceeded
@@ -475,18 +434,54 @@ public class AlarmLogic
         return null;
     }
 
+    /** Send 'global' alarm update.
+     *  {@inheritDoc}
+     *  @see GlobalAlarmListener
+     */
+    @Override
+    public void updateGlobalState()
+    {
+        final AlarmState state;
+        synchronized (this)
+        {
+            in_global_alarm = true;
+            state = alarm_state;
+        }
+        listener.globalStateChanged(state);
+    }
+
+    /** If there was a 'global' alarm, clear it and notify listener */
+    private void clearGlobalAlarm()
+    {
+        final AlarmState state;
+        synchronized (this)
+        {
+            if (!in_global_alarm)
+                return;
+            in_global_alarm = false;
+            state = alarm_state;
+        }
+        listener.globalStateChanged(state);
+    }
+
     /** Acknowledge current alarm severity
      *  @param acknowledge Acknowledge or un-acknowledge?
      */
     public void acknowledge(boolean acknowledge)
     {
-    	final AlarmState current, alarm;
+        final AlarmState current, alarm;
+        // Cancel any scheduled 'global' update
+        global_check.cancel();
+        boolean clear_global_alarm = false;
         synchronized (this)
         {
             if (acknowledge)
             {   // Does this actually 'clear' an acknowledged severity?
                 if (current_state.getSeverity() == SeverityLevel.OK)
+                {
                     alarm_state = AlarmState.createClearState();
+                    clear_global_alarm = true;
+                }
                 else
                     alarm_state = alarm_state.createAcknowledged(current_state);
             }
@@ -495,6 +490,9 @@ public class AlarmLogic
             current = current_state;
             alarm = alarm_state;
         }
+        // Notify listeners of latest state
+        if (clear_global_alarm)
+            clearGlobalAlarm();
         listener.alarmStateChanged(current, alarm);
     }
 

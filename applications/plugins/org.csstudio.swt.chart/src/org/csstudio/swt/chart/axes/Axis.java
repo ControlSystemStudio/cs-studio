@@ -1,4 +1,13 @@
+/*******************************************************************************
+ * Copyright (c) 2010 Oak Ridge National Laboratory.
+ * All rights reserved. This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License v1.0
+ * which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-v10.html
+ ******************************************************************************/
 package org.csstudio.swt.chart.axes;
+
+import java.util.logging.Level;
 
 import org.csstudio.swt.chart.Activator;
 import org.csstudio.swt.chart.Chart;
@@ -17,40 +26,40 @@ public class Axis
 
     /** Is this a horizontal axis? Otherwise: Vertical. */
     private boolean horizontal;
-    
+
     /** The screen region of this axis. */
     protected Rectangle region = new Rectangle(0, 0, 1, 1);
-    
+
     /** Transformation from value into screen coordinates. */
     protected ITransform transform;
-    
+
     /** Low end of value range. */
     protected double low_value;
-    
+
     /** High end of value range. */
     protected double high_value;
-    
+
     /** Helper for computing the tick marks. */
     protected Ticks ticks;
-    
+
     /** Do we need to re-compute the ticks? */
     private boolean dirty_ticks;
-    
+
     /** Low end of screen range. */
     private int low_screen;
-    
+
     /** High end of screen range. */
     private int high_screen;
-    
+
     /** Axis label. */
     protected String label;
-    
+
     /** Constructor. */
     Axis(final boolean horizontal, final String label, final Ticks ticks)
     {
         this(horizontal, label, ticks, new LinearTransform());
     }
-    
+
     /** Constructor. */
     Axis(final boolean horizontal, final String label, final Ticks ticks,
          final ITransform transform)
@@ -65,7 +74,7 @@ public class Axis
         high_value = 10;
         this.label = label;
     }
-    
+
     /** @return Returns the label. */
     final public String getLabel()
     {
@@ -77,7 +86,7 @@ public class Axis
      *  Values are mapped from value to screen coordinates via
      *  'transform', except for infinite values, which get mapped
      *  to the edge of the screen range.
-     *  
+     *
      *  @return Returns the value transformed in screen coordinates.
      */
     final public int getScreenCoord(final double value)
@@ -89,7 +98,7 @@ public class Axis
         // doesn't work when we are way beyond the screen range.
         // In principle, we should use the (x,y) coordinates of the line ends
         // inside and outside the screen range and determine the intersection
-        // with the screen. 
+        // with the screen.
         // As long as we only perform staircase plots, this simple
         // mapping of a single x or y coordinate onto the screen border works.
         if (value <= low_value)
@@ -98,7 +107,7 @@ public class Axis
             return high_screen;
         return (int)(transform.transform(value)+0.5);
     }
-    
+
     /** @return Returns screen coordinate transformed into a value. */
     final public double getValue(final int coord)
     {
@@ -110,7 +119,7 @@ public class Axis
     {
         return low_value;
     }
-    
+
     /** @return Returns high end of axis value range. */
     final public double getHighValue()
     {
@@ -128,8 +137,9 @@ public class Axis
             return false;
         if (low >= high)
         {
-            Activator.getLogger().error("Axis " + getLabel() 
-                      + ": Cannot set value range to " + low + " ... " + high);
+            Activator.getLogger().log(Level.WARNING,
+                "Axis {0}: Cannot set value range to {1} ... {2}",
+                  new Object[] { getLabel(), low, high });
             return false;
         }
         dirty_ticks = true;
@@ -165,19 +175,19 @@ public class Axis
         high_screen = high;
         transform.config(low_value, high_value, low_screen, high_screen);
     }
-        
+
     /** @return Returns the region used by this axis on the screen. */
     final public Rectangle getRegion()
     {
         return region;
     }
-    
+
     /** @return Tick mark information. */
     public ITicks getTicks()
     {
         return ticks;
     }
-    
+
     @SuppressWarnings("nls")
     protected void computeTicks(GC gc)
     {

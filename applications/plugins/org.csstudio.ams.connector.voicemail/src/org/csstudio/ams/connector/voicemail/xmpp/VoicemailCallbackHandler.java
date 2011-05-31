@@ -24,9 +24,9 @@
 
 package org.csstudio.ams.connector.voicemail.xmpp;
 
+import org.csstudio.auth.security.Credentials;
+import org.csstudio.auth.security.ILoginCallbackHandler;
 import org.csstudio.platform.logging.CentralLogger;
-import org.csstudio.platform.security.Credentials;
-import org.csstudio.platform.security.ILoginCallbackHandler;
 
 /**
  *  @author Markus Moeller

@@ -57,6 +57,13 @@ public class ADLPoints extends WidgetPart{
     }
 
     /**
+     * Default constructor
+     */
+    public ADLPoints(){
+    	super();
+    }
+    
+    /**
      * {@inheritDoc}
      */
     @Override

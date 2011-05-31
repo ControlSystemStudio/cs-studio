@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<contexts>
+   <context id="opi_editor" title="OPI Editor">
+      <description>A graphical editor for OPI editing.</description>
+      <topic href="html/OPI Editor.html" label="OPI Editor"/>
+   </context>
+   <context id="rule" title="Rule">
+      <description>Attaching rules to a widget can make its properties dynamic with PV value changes.</description>
+      <topic href="html/Rules.html" label="Rule"/>
+   </context>
+	<context id="script" title="Script">
+      <description>For complex dynamic behaviors which cannot be achieved by rules,
+you can attach one or more scripts to widget or display to get desired behaviors. The script can be either JavaScript or Python script.</description>
+      <topic href="html/Script.html" label="Script"/>
+   </context>		     
+	<context id="action" title="Action">
+      <description>Actions can be attached to any widget so that actions can be executed from that widget.</description>
+      <topic href="html/Actions.html" label="Action"/>
+   </context>			     
+			     
+			    
+     
+</contexts>

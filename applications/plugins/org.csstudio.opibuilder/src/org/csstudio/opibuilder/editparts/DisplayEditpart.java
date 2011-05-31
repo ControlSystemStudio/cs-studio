@@ -1,10 +1,17 @@
+/*******************************************************************************
+ * Copyright (c) 2010 Oak Ridge National Laboratory.
+ * All rights reserved. This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License v1.0
+ * which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-v10.html
+ ******************************************************************************/
 package org.csstudio.opibuilder.editparts;
 
 import org.csstudio.opibuilder.model.AbstractWidgetModel;
 import org.csstudio.opibuilder.model.DisplayModel;
 import org.csstudio.opibuilder.properties.IWidgetPropertyChangeHandler;
 import org.csstudio.opibuilder.util.OPIColor;
-import org.csstudio.platform.ui.util.CustomMediaFactory;
+import org.csstudio.ui.util.CustomMediaFactory;
 import org.eclipse.draw2d.ColorConstants;
 import org.eclipse.draw2d.Figure;
 import org.eclipse.draw2d.FreeformLayer;
@@ -120,6 +127,7 @@ public class DisplayEditpart extends AbstractContainerEditpart {
 			IWidgetPropertyChangeHandler showEditRangeHandler = new IWidgetPropertyChangeHandler(){
 				public boolean handleChange(Object oldValue, Object newValue,
 						IFigure figure) {
+					figure.repaint();
 					return true;
 				}
 			};		
@@ -171,9 +179,5 @@ public class DisplayEditpart extends AbstractContainerEditpart {
 		};
 		return super.getAdapter(key);
 	}
-
-	
-	
-	
 	
 }

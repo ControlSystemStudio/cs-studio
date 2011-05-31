@@ -18,14 +18,15 @@ public class PwrNode extends AbstractBinaryNode
     {
         super(left, right);
     }
-    
+
+    @Override
     public double eval()
     {
         final double a = left.eval();
         final double b = right.eval();
         return Math.pow(a, b);
     }
-    
+
     @SuppressWarnings("nls")
     @Override
     public String toString()

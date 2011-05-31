@@ -1,12 +1,22 @@
+/*******************************************************************************
+ * Copyright (c) 2010 Oak Ridge National Laboratory.
+ * All rights reserved. This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License v1.0
+ * which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-v10.html
+ ******************************************************************************/
 package org.csstudio.util.editor;
 
+import java.util.logging.Level;
+
 import org.csstudio.display.pvtable.Plugin;
-import org.csstudio.platform.ui.dialogs.SaveAsDialog;
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IWorkspaceRoot;
 import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.IPath;
+import org.eclipse.jface.window.Window;
 import org.eclipse.swt.widgets.Shell;
+import org.eclipse.ui.dialogs.SaveAsDialog;
 
 /** Helper for running 'SaveAs' dialog for new XML file.
  *  @author Kay Kasemir
@@ -14,7 +24,7 @@ import org.eclipse.swt.widgets.Shell;
 public class PromptForNewXMLFileDialog
 {
     /** Run the dialog, and return the new IFile.
-     * 
+     *
      * @param shell The shell to use
      * @param old_file The original file or <code>null</code>.
      * @return Returns the new <code>IFile</code> or <code>null</code>.
@@ -30,13 +40,14 @@ public class PromptForNewXMLFileDialog
             dlg.setBlockOnOpen(true);
             if (old_file != null)
                 dlg.setOriginalFile(old_file);
-            dlg.open();
+            if (dlg.open() != Window.OK)
+                return null;
             // The path to the new resource relative to the workspace
             new_resource_path = dlg.getResult();
         }
         catch (Exception ex)
         {
-            Plugin.getLogger().error("SaveAsDialog error", ex); //$NON-NLS-1$
+            Plugin.getLogger().log(Level.SEVERE, "SaveAsDialog error", ex); //$NON-NLS-1$
             return null;
         }
         if (new_resource_path == null)

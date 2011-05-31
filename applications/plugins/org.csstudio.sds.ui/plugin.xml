@@ -46,6 +46,7 @@
               style="push"
               toolbarPath="run">
         </action>
+        <!--
         <action
               class="org.csstudio.sds.ui.internal.runmode.OpenAsViewMenuAction"
               definitionId="org.csstudio.sds.ui.displayRunAsView"
@@ -53,6 +54,7 @@
               id="org.csstudio.sds.ui.internal.runmode.OpenAsViewlMenuAction"
               label="Display run as View">
         </action>
+        -->
         <action
               class="org.csstudio.sds.ui.internal.editor.newproperties.colorservice.InstallDefaultSettingsAction"
               icon="icons/sds.gif"
@@ -93,6 +95,12 @@
            icon="icons/layer_view.gif"
            id="org.csstudio.sds.ui.internal.layers.LayerManagementView"
            name="Layer Management"/>
+     <view
+           class="org.csstudio.sds.ui.internal.connectionview.ConnectionView"
+           id="org.csstudio.sds.ui.ConnectionView"
+           name="Connections"
+           restorable="true">
+     </view>
   </extension>
   <extension
         point="org.eclipse.ui.perspectives">
@@ -241,7 +249,7 @@
      <factory
            adaptableType="org.csstudio.sds.model.AbstractWidgetModel"
            class="org.csstudio.sds.ui.internal.adapters.SdsActivationAdapterFactory">
-        <adapter type="org.csstudio.platform.security.IActivationAdapter"/>
+        <adapter type="org.csstudio.auth.security.IActivationAdapter"/>
      </factory>
      <factory
            adaptableType="org.csstudio.sds.internal.model.Layer"
@@ -299,6 +307,12 @@
            id="org.csstudio.sds.ui.internal.preferences.RuleFoldersPreferencePage"
            name="Rule Folders">
      </page>
+     <page
+           category="org.csstudio.sds.ui.internal.preferences.RuleFoldersPreferencePage"
+           class="org.csstudio.sds.ui.internal.preferences.MaintenanceRulePreferencePage"
+           id="org.csstudio.sds.ui.internal.preferences.MaintenanceRulePreference"
+           name="Maintenance Rule ">
+     </page>
   </extension>
   <extension
         point="org.eclipse.ui.popupMenus">
@@ -307,11 +321,13 @@
            id="RunModeActions"
            nameFilter="*.css-sds"
            objectClass="org.eclipse.core.resources.IResource">
+           <!--
         <action
               class="org.csstudio.sds.ui.internal.runmode.OpenAsViewAction"
               icon="icons/run.gif"
               id="org.csstudio.sds.ui.internal.parts.OpenRunModeAsViewAction"
               label="Run As View"/>
+              -->
         <action
               class="org.csstudio.sds.ui.internal.runmode.OpenAsShellAction"
               icon="icons/run.gif"
@@ -637,5 +653,27 @@
              name="SDS Editor Context"
              parentId="org.eclipse.ui.contexts.window">
        </context>
+    </extension>
+    <extension
+          point="org.eclipse.ltk.core.refactoring.renameParticipants">
+       <renameParticipant
+             class="org.csstudio.sds.ui.internal.refactoringparticipants.SdsFileRenameParticipant"
+             id="org.csstudio.sds.ui.SdsFileRenameParticipant"
+             name="SDS File Rename">
+          <enablement>
+             <instanceof
+                   value="org.eclipse.core.resources.IFile">
+             </instanceof>
+          </enablement>
+       </renameParticipant>
+    </extension>
+    <extension
+          point="org.eclipse.ltk.core.refactoring.deleteParticipants">
+       <deleteParticipant
+             class="org.csstudio.sds.ui.internal.refactoringparticipants.SdsFileDeleteParticipant"
+             id="org.csstudio.sds.ui.SDSFileDeleteParticipant"
+             name="SDS FIle Delete">
+          <enablement></enablement>
+       </deleteParticipant>
     </extension>
 </plugin>

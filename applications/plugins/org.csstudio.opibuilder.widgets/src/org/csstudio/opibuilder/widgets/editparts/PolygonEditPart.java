@@ -130,4 +130,17 @@ public final class PolygonEditPart extends AbstractPolyEditPart {
 		
 		
 	}
+	
+	@Override
+	public void setValue(Object value) {
+		if(value instanceof Number){
+			((PolygonFigure)getFigure()).setFill(((Number)value).doubleValue());
+		}else
+			super.setValue(value);
+	}
+	
+	@Override
+	public Object getValue() {
+		return ((PolygonFigure)getFigure()).getFill();
+	}
 }

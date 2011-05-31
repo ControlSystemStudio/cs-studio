@@ -7,13 +7,19 @@
  ******************************************************************************/
 package org.csstudio.alarm.beast;
 
-import org.eclipse.core.runtime.Plugin;
+import java.util.logging.Logger;
 
 /** Plug-in activator
  *  @author Kay Kasemir
  */
-public class Activator extends Plugin
+public class Activator
 {
 	/** Plug-in ID, defined in MANUIFEST.MF */
 	public static final String ID = "org.csstudio.alarm.beast"; //$NON-NLS-1$
+
+	/** @return Logger for the plugin ID */
+	public static Logger getLogger()
+	{
+	    return Logger.getLogger(ID);
+	}
 }

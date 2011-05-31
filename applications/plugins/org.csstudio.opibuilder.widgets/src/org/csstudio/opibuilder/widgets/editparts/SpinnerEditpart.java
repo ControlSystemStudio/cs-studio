@@ -1,7 +1,17 @@
+/*******************************************************************************
+ * Copyright (c) 2010 Oak Ridge National Laboratory.
+ * All rights reserved. This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License v1.0
+ * which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-v10.html
+ ******************************************************************************/
 package org.csstudio.opibuilder.widgets.editparts;
 
 import java.text.DecimalFormat;
 
+import org.csstudio.data.values.INumericMetaData;
+import org.csstudio.data.values.IValue;
+import org.csstudio.data.values.ValueUtil;
 import org.csstudio.opibuilder.editparts.AbstractPVWidgetEditPart;
 import org.csstudio.opibuilder.editparts.ExecutionMode;
 import org.csstudio.opibuilder.model.AbstractPVWidgetModel;
@@ -9,16 +19,13 @@ import org.csstudio.opibuilder.properties.IWidgetPropertyChangeHandler;
 import org.csstudio.opibuilder.util.OPIFont;
 import org.csstudio.opibuilder.widgets.model.LabelModel;
 import org.csstudio.opibuilder.widgets.model.SpinnerModel;
-import org.csstudio.platform.data.INumericMetaData;
-import org.csstudio.platform.data.IValue;
-import org.csstudio.platform.data.ValueUtil;
-import org.csstudio.platform.ui.util.CustomMediaFactory;
 import org.csstudio.swt.widgets.datadefinition.IManualValueChangeListener;
-import org.csstudio.swt.widgets.figures.LabelFigure;
 import org.csstudio.swt.widgets.figures.SpinnerFigure;
-import org.csstudio.swt.widgets.figures.LabelFigure.H_ALIGN;
-import org.csstudio.swt.widgets.figures.LabelFigure.V_ALIGN;
 import org.csstudio.swt.widgets.figures.SpinnerFigure.NumericFormatType;
+import org.csstudio.swt.widgets.figures.TextFigure;
+import org.csstudio.swt.widgets.figures.TextFigure.H_ALIGN;
+import org.csstudio.swt.widgets.figures.TextFigure.V_ALIGN;
+import org.csstudio.ui.util.CustomMediaFactory;
 import org.csstudio.utility.pv.PV;
 import org.csstudio.utility.pv.PVListener;
 import org.eclipse.draw2d.IFigure;
@@ -31,13 +38,13 @@ import org.eclipse.gef.RequestConstants;
  *
  */
 public class SpinnerEditpart extends AbstractPVWidgetEditPart {
-	
+
 	private PVListener pvLoadLimitsListener;
 	private INumericMetaData meta = null;
 	@Override
 	protected IFigure doCreateFigure() {
 		SpinnerFigure spinner = new SpinnerFigure();
-		LabelFigure labelFigure = spinner.getLabelFigure();
+		TextFigure labelFigure = spinner.getLabelFigure();
 		labelFigure.setFont(CustomMediaFactory.getInstance().getFont(
 				getWidgetModel().getFont().getFontData()));
 		labelFigure.setOpaque(!getWidgetModel().isTransparent());
@@ -51,36 +58,36 @@ public class SpinnerEditpart extends AbstractPVWidgetEditPart {
 		spinner.setPrecision((Integer) getPropertyValue(SpinnerModel.PROP_PRECISION));
 		if(getExecutionMode() == ExecutionMode.RUN_MODE){
 			spinner.addManualValueChangeListener(new IManualValueChangeListener() {
-				
+
 				public void manualValueChanged(double newValue) {
 					setPVValue(SpinnerModel.PROP_PVNAME, newValue);
 					getWidgetModel().setText(((SpinnerFigure)getFigure()).getLabelFigure().getText(), false);
 				}
 			});
 		}
-		
+
 		return spinner;
 	}
-	
-	
+
+
 	@Override
 	public SpinnerModel getWidgetModel() {
 		return (SpinnerModel)getModel();
 	}
-	
-	
+
+
 	@Override
 	protected void createEditPolicies() {
 		super.createEditPolicies();
-		installEditPolicy(EditPolicy.DIRECT_EDIT_ROLE, new SpinnerDirectEditPolicy());		
+		installEditPolicy(EditPolicy.DIRECT_EDIT_ROLE, new SpinnerDirectEditPolicy());
 	}
-	
+
 	@Override
 	public void activate() {
 		markAsControlPV(AbstractPVWidgetModel.PROP_PVNAME, AbstractPVWidgetModel.PROP_PVVALUE);
 		super.activate();
 	}
-	
+
 	@Override
 	protected void doActivate() {
 		super.doActivate();
@@ -89,16 +96,16 @@ public class SpinnerEditpart extends AbstractPVWidgetEditPart {
 
 
 	/**
-	 * 
+	 *
 	 */
 	private void registerLoadLimitsListener() {
 		if(getExecutionMode() == ExecutionMode.RUN_MODE){
 			final SpinnerModel model = getWidgetModel();
 			if(model.isLimitsFromPV()){
 				PV pv = getPV(AbstractPVWidgetModel.PROP_PVNAME);
-				if(pv != null){	
+				if(pv != null){
 					if(pvLoadLimitsListener == null)
-						pvLoadLimitsListener = new PVListener() {				
+						pvLoadLimitsListener = new PVListener() {
 							public void pvValueUpdate(PV pv) {
 								IValue value = pv.getValue();
 								if (value != null && value.getMetaData() instanceof INumericMetaData){
@@ -106,55 +113,55 @@ public class SpinnerEditpart extends AbstractPVWidgetEditPart {
 									if(meta == null || !meta.equals(new_meta)){
 										meta = new_meta;
 										model.setPropertyValue(SpinnerModel.PROP_MAX,	meta.getDisplayHigh());
-										model.setPropertyValue(SpinnerModel.PROP_MIN,	meta.getDisplayLow());								
+										model.setPropertyValue(SpinnerModel.PROP_MIN,	meta.getDisplayLow());
 									}
 								}
-							}					
+							}
 							public void pvDisconnected(PV pv) {}
 						};
-					pv.addListener(pvLoadLimitsListener);				
+					pv.addListener(pvLoadLimitsListener);
 				}
 			}
 		}
 	}
-	
+
 	@Override
 	protected void registerPropertyChangeHandlers() {
 			//text
 			IWidgetPropertyChangeHandler handler = new IWidgetPropertyChangeHandler(){
 				public boolean handleChange(Object oldValue, Object newValue,
 						IFigure figure) {
-					String text = (String)newValue;						
-					try {						
+					String text = (String)newValue;
+					try {
 						double value = new DecimalFormat().parse(text).doubleValue();
 						//coerce value in range
-						value = Math.max(((SpinnerFigure)figure).getMin(), 
+						value = Math.max(((SpinnerFigure)figure).getMin(),
 								Math.min(((SpinnerFigure)figure).getMax(), value));
 						((SpinnerFigure)figure).setValue(value);
-						if(getExecutionMode() == ExecutionMode.RUN_MODE)							
-							setPVValue(AbstractPVWidgetModel.PROP_PVNAME, value);						
+						if(getExecutionMode() == ExecutionMode.RUN_MODE)
+							setPVValue(AbstractPVWidgetModel.PROP_PVNAME, value);
 						getWidgetModel().setText(
 								((SpinnerFigure)figure).getLabelFigure().getText(), false);
 						return false;
 					} catch (Exception e) {
 						return false;
-					}					
+					}
 				}
-			};			
+			};
 			setPropertyChangeHandler(SpinnerModel.PROP_TEXT, handler);
-			
+
 			IWidgetPropertyChangeHandler pvNameHandler = new IWidgetPropertyChangeHandler() {
-				
+
 				public boolean handleChange(Object oldValue, Object newValue, IFigure figure) {
 					registerLoadLimitsListener();
 					return false;
 				}
-			};		
+			};
 			setPropertyChangeHandler(AbstractPVWidgetModel.PROP_PVNAME, pvNameHandler);
-		
-			
+
+
 			//pv value
-			handler = new IWidgetPropertyChangeHandler() {				
+			handler = new IWidgetPropertyChangeHandler() {
 				public boolean handleChange(Object oldValue, Object newValue, IFigure figure) {
 					if(newValue == null || !(newValue instanceof IValue))
 						return false;
@@ -165,43 +172,43 @@ public class SpinnerEditpart extends AbstractPVWidgetEditPart {
 				}
 			};
 			setPropertyChangeHandler(SpinnerModel.PROP_PVVALUE, handler);
-			
-			//min			
+
+			//min
 			handler = new IWidgetPropertyChangeHandler() {
 				public boolean handleChange(Object oldValue, Object newValue, IFigure figure) {
-					((SpinnerFigure)figure).setMin((Double)newValue);					
+					((SpinnerFigure)figure).setMin((Double)newValue);
 					return false;
 				}
 			};
 			setPropertyChangeHandler(SpinnerModel.PROP_MIN, handler);
-			
-			//max			
+
+			//max
 			handler = new IWidgetPropertyChangeHandler() {
 				public boolean handleChange(Object oldValue, Object newValue, IFigure figure) {
-					((SpinnerFigure)figure).setMax((Double)newValue);					
+					((SpinnerFigure)figure).setMax((Double)newValue);
 					return false;
 				}
 			};
 			setPropertyChangeHandler(SpinnerModel.PROP_MAX, handler);
-			
-			//step increment			
+
+			//step increment
 			handler = new IWidgetPropertyChangeHandler() {
 				public boolean handleChange(Object oldValue, Object newValue, IFigure figure) {
-					((SpinnerFigure)figure).setStepIncrement((Double)newValue);					
+					((SpinnerFigure)figure).setStepIncrement((Double)newValue);
 					return false;
 				}
 			};
 			setPropertyChangeHandler(SpinnerModel.PROP_STEP_INCREMENT, handler);
-			
-			//page increment			
+
+			//page increment
 			handler = new IWidgetPropertyChangeHandler() {
 				public boolean handleChange(Object oldValue, Object newValue, IFigure figure) {
-					((SpinnerFigure)figure).setPageIncrement((Double)newValue);					
+					((SpinnerFigure)figure).setPageIncrement((Double)newValue);
 					return false;
 				}
 			};
 			setPropertyChangeHandler(SpinnerModel.PROP_PAGE_INCREMENT, handler);
-			
+
 			//font
 			IWidgetPropertyChangeHandler fontHandler = new IWidgetPropertyChangeHandler(){
 				public boolean handleChange(Object oldValue, Object newValue,
@@ -211,9 +218,9 @@ public class SpinnerEditpart extends AbstractPVWidgetEditPart {
 							((OPIFont)newValue).getFontData()));
 					return true;
 				}
-			};		
+			};
 			setPropertyChangeHandler(LabelModel.PROP_FONT, fontHandler);
-			
+
 
 			handler = new IWidgetPropertyChangeHandler(){
 				public boolean handleChange(Object oldValue, Object newValue,
@@ -223,7 +230,7 @@ public class SpinnerEditpart extends AbstractPVWidgetEditPart {
 				}
 			};
 			setPropertyChangeHandler(LabelModel.PROP_ALIGN_H, handler);
-			
+
 			handler = new IWidgetPropertyChangeHandler(){
 				public boolean handleChange(Object oldValue, Object newValue,
 						IFigure figure) {
@@ -232,7 +239,7 @@ public class SpinnerEditpart extends AbstractPVWidgetEditPart {
 				}
 			};
 			setPropertyChangeHandler(LabelModel.PROP_ALIGN_V, handler);
-			
+
 
 			handler = new IWidgetPropertyChangeHandler(){
 				public boolean handleChange(Object oldValue, Object newValue,
@@ -242,37 +249,37 @@ public class SpinnerEditpart extends AbstractPVWidgetEditPart {
 				}
 			};
 			setPropertyChangeHandler(LabelModel.PROP_TRANSPARENT, handler);
-			
+
 			handler = new IWidgetPropertyChangeHandler() {
-				
+
 				public boolean handleChange(Object oldValue, Object newValue, IFigure figure) {
 					((SpinnerFigure)figure).setFormatType(NumericFormatType.values()[(Integer)newValue]);
 					return false;
 				}
 			};
 			setPropertyChangeHandler(SpinnerModel.PROP_FORMAT, handler);
-			
+
 			handler = new IWidgetPropertyChangeHandler() {
-				
+
 				public boolean handleChange(Object oldValue, Object newValue, IFigure figure) {
 					((SpinnerFigure)figure).setPrecision((Integer)newValue);
 					return false;
 				}
 			};
 			setPropertyChangeHandler(SpinnerModel.PROP_PRECISION, handler);
-			
+
 	}
-	
-	
+
+
 	@Override
 	public void performRequest(Request request){
-		if (getFigure().isEnabled() && (request.getType() == RequestConstants.REQ_DIRECT_EDIT || 
+		if (getFigure().isEnabled() && (request.getType() == RequestConstants.REQ_DIRECT_EDIT ||
 				request.getType() == RequestConstants.REQ_OPEN))
 			performDirectEdit();
 	}
-	
+
 	protected void performDirectEdit(){
-		new LabelEditManager(this, 
+		new LabelEditManager(this,
 				new LabelCellEditorLocator(
 						((SpinnerFigure)getFigure()).getLabelFigure()), false).show();
 	}
@@ -282,13 +289,13 @@ public class SpinnerEditpart extends AbstractPVWidgetEditPart {
 		super.doDeActivate();
 		if(getWidgetModel().isLimitsFromPV()){
 			PV pv = getPV(AbstractPVWidgetModel.PROP_PVNAME);
-			if(pv != null && pvLoadLimitsListener != null){	
+			if(pv != null && pvLoadLimitsListener != null){
 				pv.removeListener(pvLoadLimitsListener);
 			}
 		}
-		
+
 	}
-	
+
 	@Override
 	public Object getValue() {
 		return ((SpinnerFigure)getFigure()).getValue();
@@ -297,19 +304,22 @@ public class SpinnerEditpart extends AbstractPVWidgetEditPart {
 
 	@Override
 	public void setValue(Object value) {
-		if(value instanceof Double || value instanceof Integer)
-			((SpinnerFigure)getFigure()).setValue((Double) value);
+		if(value instanceof Number)
+			((SpinnerFigure)getFigure()).setValue(((Number) value).doubleValue());
+		else
+			super.setValue(value);
 	}
 
-	
-	@SuppressWarnings("unchecked")
+
+
+	@SuppressWarnings("rawtypes")
 	@Override
 	public Object getAdapter(Class key) {
-		if(key == LabelFigure.class)
+		if(key == TextFigure.class)
 			return ((SpinnerFigure)getFigure()).getLabelFigure();
 
 		return super.getAdapter(key);
 	}
 
-	
+
 }

@@ -43,7 +43,6 @@ import org.csstudio.config.ioconfig.config.view.helper.ConfigHelper;
 import org.csstudio.config.ioconfig.config.view.helper.DocumentationManageView;
 import org.csstudio.config.ioconfig.model.DocumentDBO;
 import org.csstudio.config.ioconfig.model.IocDBO;
-import org.csstudio.config.ioconfig.model.pbmodel.GSDFileDBO;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.layout.GridData;
@@ -89,13 +88,10 @@ public class IocEditor extends AbstractNodeEditor {
             getNode();
             newNode();
         }
-        setSavebuttonEnabled(null, getNode().isPersistent());
         main("IOC");
-        TabFolder tabFolder = getTabFolder();
-		if(tabFolder!=null) {
-        	tabFolder.setSelection(0);
-        }
+        selecttTabFolder(0);    
     }
+    
 
     /**
      * Generate the Main IOC configuration Tab.
@@ -130,28 +126,6 @@ public class IocEditor extends AbstractNodeEditor {
 
 			makeDescGroup(comp, 3);
 		}
-    }
-
-    /*
-     * (non-Javadoc)
-     *
-     * @see
-     * org.csstudio.config.ioconfig.config.view.NodeConfig#fill(org.csstudio
-     * .config.ioconfig.model .pbmodel.GSDFile)
-     */
-    @Override
-    public boolean fill(@Nullable final GSDFileDBO gsdFile) {
-        return false;
-    }
-
-    /*
-     * (non-Javadoc)
-     *
-     * @see org.csstudio.config.ioconfig.config.view.NodeConfig#getGSDFile()
-     */
-    @Override
-    public GSDFileDBO getGsdFile() {
-        return null;
     }
 
     @Override
@@ -205,14 +179,4 @@ public class IocEditor extends AbstractNodeEditor {
 
         save();
     }
-
-    /**
-     * {@inheritDoc}
-     */
-    @Override
-    public void setFocus() {
-        // TODO Auto-generated method stub
-
-    }
-
 }

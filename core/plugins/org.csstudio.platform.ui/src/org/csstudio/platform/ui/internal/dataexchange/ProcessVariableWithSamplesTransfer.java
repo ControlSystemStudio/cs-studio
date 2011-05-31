@@ -32,19 +32,19 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Vector;
 
-import org.csstudio.platform.data.IDoubleValue;
-import org.csstudio.platform.data.IEnumeratedMetaData;
-import org.csstudio.platform.data.IEnumeratedValue;
-import org.csstudio.platform.data.ILongValue;
-import org.csstudio.platform.data.IMetaData;
-import org.csstudio.platform.data.INumericMetaData;
-import org.csstudio.platform.data.ISeverity;
-import org.csstudio.platform.data.IStringValue;
-import org.csstudio.platform.data.ITimestamp;
-import org.csstudio.platform.data.IValue;
-import org.csstudio.platform.data.TimestampFactory;
-import org.csstudio.platform.data.ValueFactory;
-import org.csstudio.platform.data.IValue.Quality;
+import org.csstudio.data.values.IDoubleValue;
+import org.csstudio.data.values.IEnumeratedMetaData;
+import org.csstudio.data.values.IEnumeratedValue;
+import org.csstudio.data.values.ILongValue;
+import org.csstudio.data.values.IMetaData;
+import org.csstudio.data.values.INumericMetaData;
+import org.csstudio.data.values.ISeverity;
+import org.csstudio.data.values.IStringValue;
+import org.csstudio.data.values.ITimestamp;
+import org.csstudio.data.values.IValue;
+import org.csstudio.data.values.IValue.Quality;
+import org.csstudio.data.values.TimestampFactory;
+import org.csstudio.data.values.ValueFactory;
 import org.csstudio.platform.model.CentralItemFactory;
 import org.csstudio.platform.model.IProcessVariableWithSamples;
 import org.eclipse.swt.dnd.ByteArrayTransfer;
@@ -110,7 +110,7 @@ import org.eclipse.swt.dnd.TransferData;
  * 25- value [int]
  * --- String
  * 24. value [String]
- * 
+ *
  *  ----------------------------------------------------
  * @author hrickens
  * @author $Author$
@@ -120,7 +120,7 @@ import org.eclipse.swt.dnd.TransferData;
  */
 public final class ProcessVariableWithSamplesTransfer extends ByteArrayTransfer {
     /**
-     * 
+     *
      */
     private static final String TYPE_NAME = "pv_with_samples_data"; //$NON-NLS-1$
     /**
@@ -128,12 +128,12 @@ public final class ProcessVariableWithSamplesTransfer extends ByteArrayTransfer 
      */
     private static final int TYPE_ID = registerType(TYPE_NAME);
     /**
-     * 
+     *
      */
     private static ProcessVariableWithSamplesTransfer _singletonInstance = new ProcessVariableWithSamplesTransfer();
 
     /**
-     * 
+     *
      * @author hrickens
      * @author $Author$
      * @version $Revision$
@@ -162,7 +162,7 @@ public final class ProcessVariableWithSamplesTransfer extends ByteArrayTransfer 
          Enumerated
      }
     /**
-     * 
+     *
      * @author hrickens
      * @author $Author$
      * @version $Revision$
@@ -170,15 +170,15 @@ public final class ProcessVariableWithSamplesTransfer extends ByteArrayTransfer 
      */
     private static enum MetaData {
         /**
-         * Enumerate MetaData Typ. 
+         * Enumerate MetaData Typ.
          */
         Enumerate,
         /**
-         * Numeric MetaData Typ. 
+         * Numeric MetaData Typ.
          */
         Numeric
     }
-             
+
     /**
      * The Byte Outputstream.
      */
@@ -188,7 +188,7 @@ public final class ProcessVariableWithSamplesTransfer extends ByteArrayTransfer 
      */
     private DataOutputStream _writeOut;
     /**
-     * 
+     *
      */
     private ProcessVariableWithSamplesTransfer()
     {
@@ -204,7 +204,7 @@ public final class ProcessVariableWithSamplesTransfer extends ByteArrayTransfer 
      * @see org.eclipse.swt.dnd.Transfer#getTypeIds()
      */
     /**
-     * @return TypeID 
+     * @return TypeID
      */
     @Override
     protected int[] getTypeIds() {
@@ -224,8 +224,8 @@ public final class ProcessVariableWithSamplesTransfer extends ByteArrayTransfer 
 
     /**
      * @param object Transfer Object
-     * @param transferData Transfer Data Typ 
-     * 
+     * @param transferData Transfer Data Typ
+     *
      */
     @Override
     public void javaToNative(final Object object, final TransferData transferData) {
@@ -271,7 +271,7 @@ public final class ProcessVariableWithSamplesTransfer extends ByteArrayTransfer 
                     for (double d : dValues) {
                         send(d);
                     }
-                    
+
                 }else if (value instanceof IStringValue) {
                     valueTyp = ValueTyp.String;
                     fillValue(value, valueTyp);
@@ -309,7 +309,7 @@ public final class ProcessVariableWithSamplesTransfer extends ByteArrayTransfer 
             super.javaToNative(buffer, transferData);
         }
     }
-    
+
     /**
      * @param value the IValue
      * @param valueTyp Value Typ
@@ -339,7 +339,7 @@ public final class ProcessVariableWithSamplesTransfer extends ByteArrayTransfer 
                 send(string);
             }
         }
-        // Quality 
+        // Quality
         Quality quality = value.getQuality();
         send(quality.name());
         // Severity
@@ -357,7 +357,7 @@ public final class ProcessVariableWithSamplesTransfer extends ByteArrayTransfer 
 
 
     /**
-     * @param samples Samples 
+     * @param samples Samples
      */
     private void fillHeader(final IProcessVariableWithSamples samples){
         send(samples.getName());
@@ -366,7 +366,7 @@ public final class ProcessVariableWithSamplesTransfer extends ByteArrayTransfer 
         send(samples.getTypeId());
         send(samples.size());
     }
-    
+
     /**
      * @param transferData recived Data
      * @return an Array of IProcessVariableWithSamples
@@ -384,14 +384,14 @@ public final class ProcessVariableWithSamplesTransfer extends ByteArrayTransfer 
         }
 
         Vector<IProcessVariableWithSamples> received = new Vector<IProcessVariableWithSamples>();
-        
+
         try {
             ByteArrayInputStream in = new ByteArrayInputStream(buffer);
             DataInputStream readIn = new DataInputStream(in);
 //            System.out.println("testread1: '"+ readIn.readUTF()+"'");
 //            System.out.println("testread2: '"+ readIn.readUTF()+"'");
 //            readIn = new DataInputStream(in);
-            
+
             // URL length, key, name length = 12?
             while (readIn.available() > 1) {
 //                String pvName = getString(readIn);
@@ -403,7 +403,7 @@ public final class ProcessVariableWithSamplesTransfer extends ByteArrayTransfer 
                 int size = readIn.readInt();
                 System.out.println("size: "+size);
                 IValue[] values = new IValue[size];
-                for(int i = 0; i<size;i++){ 
+                for(int i = 0; i<size;i++){
                     String temp = getString(readIn);
                     ValueTyp valueType = ValueTyp.valueOf(temp);
                     String format = getString(readIn);
@@ -448,7 +448,7 @@ public final class ProcessVariableWithSamplesTransfer extends ByteArrayTransfer 
                         severity = ValueFactory.createOKSeverity();
                     }
                     String status = getString(readIn);
-                    
+
                     ITimestamp time = TimestampFactory.createTimestamp(readIn.readLong(), readIn.readLong());
                     switch(valueType){
                         case Double:
@@ -493,7 +493,7 @@ public final class ProcessVariableWithSamplesTransfer extends ByteArrayTransfer 
         }
         return received.toArray(new IProcessVariableWithSamples[received.size()]);
     }
-    
+
     /**
      * @param readIn Inputstream
      * @return String
@@ -508,7 +508,7 @@ public final class ProcessVariableWithSamplesTransfer extends ByteArrayTransfer 
     }
 
     /**
-     * @param string write to sendStream 
+     * @param string write to sendStream
      */
     private void send(final String string) {
 //        send(string.getBytes());
@@ -520,7 +520,7 @@ public final class ProcessVariableWithSamplesTransfer extends ByteArrayTransfer 
         }
     }
     /**
-     * @param integer write to sendStream 
+     * @param integer write to sendStream
      */
     private void send(final int integer) {
         try {
@@ -531,13 +531,13 @@ public final class ProcessVariableWithSamplesTransfer extends ByteArrayTransfer 
     }
 
     /**
-     * @param lonk write to sendStream 
+     * @param lonk write to sendStream
      */
     private void send(final long lonk) {
         try {
             _writeOut.writeLong(lonk);
         } catch (IOException e) {
-            // TODO Generate a Log Message        
+            // TODO Generate a Log Message
         }
     }
 
@@ -559,7 +559,7 @@ public final class ProcessVariableWithSamplesTransfer extends ByteArrayTransfer 
         try {
             _writeOut.writeBoolean(bool);
         } catch (IOException e) {
-            // TODO Generate a Log Message        
+            // TODO Generate a Log Message
         }
     }
 }

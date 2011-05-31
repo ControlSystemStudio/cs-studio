@@ -2,6 +2,32 @@
 <?eclipse version="3.4"?>
 <plugin>
    <extension
+         point="org.eclipse.core.runtime.adapters">
+      <factory
+            adaptableType="org.csstudio.trends.databrowser2.model.PVItem"
+            class="org.csstudio.trends.databrowser2.AdapterFactory">
+         <adapter
+               type="java.lang.String">
+         </adapter>
+         <adapter
+               type="org.csstudio.csdata.ProcessVariable">
+         </adapter>
+         <adapter
+               type="org.csstudio.trends.databrowser2.ProcessVariableWithSamples">
+         </adapter>
+      </factory>
+      <factory
+            adaptableType="org.csstudio.trends.databrowser2.model.ChannelInfo"
+            class="org.csstudio.trends.databrowser2.AdapterFactory">
+         <adapter
+               type="java.lang.String">
+         </adapter>
+         <adapter
+               type="org.csstudio.csdata.ProcessVariable">
+         </adapter>
+      </factory>
+   </extension>
+   <extension
          point="org.eclipse.help.toc">
       <toc
             file="toc.xml"
@@ -11,7 +37,7 @@
    <extension
          point="org.eclipse.ui.editors">
       <editor
-            class="org.csstudio.trends.databrowser.editor.DataBrowserEditor"
+            class="org.csstudio.trends.databrowser2.editor.DataBrowserEditor"
             default="true"
             extensions="plt,css-plt"
             icon="icons/databrowser.png"
@@ -27,7 +53,7 @@
       </category>
       <view
             category="org.csstudio"
-            class="org.csstudio.trends.databrowser.search.SearchView"
+            class="org.csstudio.trends.databrowser2.search.SearchView"
             icon="icons/search.gif"
             id="org.csstudio.trends.databrowser.archiveview.ArchiveView"
             name="%SearchView"
@@ -35,7 +61,7 @@
       </view>
       <view
             category="org.csstudio"
-            class="org.csstudio.trends.databrowser.sampleview.SampleView"
+            class="org.csstudio.trends.databrowser2.sampleview.SampleView"
             icon="icons/inspect.gif"
             id="org.csstudio.trends.databrowser.sample_view"
             name="%SampleView"
@@ -43,7 +69,7 @@
       </view>
       <view
             category="org.csstudio"
-            class="org.csstudio.trends.databrowser.exportview.ExportView"
+            class="org.csstudio.trends.databrowser2.exportview.ExportView"
             icon="icons/export.png"
             id="org.csstudio.trends.databrowser.exportview.ExportView"
             name="%ExportView"
@@ -51,7 +77,7 @@
       </view>
       <view
             category="org.csstudio"
-            class="org.csstudio.trends.databrowser.waveformview.WaveformView"
+            class="org.csstudio.trends.databrowser2.waveformview.WaveformView"
             icon="icons/wavesample.gif"
             id="org.csstudio.trends.databrowser.waveformview.WaveformView"
             name="%WaveformView"
@@ -59,65 +85,19 @@
       </view>
    </extension>
    <extension
-         point="org.eclipse.ui.actionSets">
-      <actionSet
-            description="Global menu actions"
-            id="org.csstudio.trends.databrowser.actionSet"
-            label="%Databrowser"
-            visible="true">
-         <action
-               class="org.csstudio.trends.databrowser.NewDataBrowserAction"
-               icon="icons/new_databrowser.png"
-               id="org.csstudio.trends.databrowser.NewDataBrowserAction"
-               label="%Databrowser"
-               menubarPath="css/trends/"
-               style="push"
-               toolbarPath="Normal/additions"
-               tooltip="%NewDatabrowserTT">
-         </action>
-      </actionSet>
-   </extension>
-   <extension
          point="org.eclipse.ui.perspectives">
       <perspective
-            class="org.csstudio.trends.databrowser.Perspective"
+            class="org.csstudio.trends.databrowser2.Perspective"
             icon="icons/databrowser.png"
             id="org.csstudio.trends.databrowser.Perspective"
             name="%Databrowser">
       </perspective>
    </extension>
    <extension
-         point="org.eclipse.ui.popupMenus">
-      <objectContribution
-            adaptable="true"
-            id="org.csstudio.trends.popupactions"
-            objectClass="org.csstudio.platform.model.IProcessVariable">
-         <menu
-               id="org.csstudio.popmenu"
-               label="%CSS"
-               path="additions">
-            <groupMarker
-                  name="content">
-            </groupMarker>
-            <separator
-                  name="additions">
-            </separator>
-         </menu>
-         <action
-               class="org.csstudio.trends.databrowser.OpenDataBrowserPopupAction"
-               icon="icons/databrowser.png"
-               id="org.csstudio.trends.databrowser.OpenDataBrowserPopupAction"
-               label="%Databrowser"
-               menubarPath="org.csstudio.popmenu/content"
-               tooltip="%PopmenuTooltip">
-         </action>
-      </objectContribution>
-   </extension>
-   <extension
          point="org.eclipse.ui.preferencePages">
       <page
             category="org.csstudio.platform.ui.css.applications.trends"
-            class="org.csstudio.trends.databrowser.preferences.PreferencePage"
+            class="org.csstudio.trends.databrowser2.preferences.PreferencePage"
             id="org.csstudio.trends.databrowser.preferences"
             name="%Databrowser">
       </page>
@@ -156,5 +136,74 @@
             content="intro/firststeps.xml"
             configId="org.eclipse.ui.intro.universalConfig">
       </configExtension>
+   </extension>
+   <extension
+         point="org.eclipse.ui.commands">
+      <command
+            defaultHandler="org.csstudio.trends.databrowser2.OpenDataBrowserPopup"
+            id="org.csstudio.trends.databrowser.OpenDataBrowserPopup"
+            name="%Databrowser">
+      </command>
+      <command
+            defaultHandler="org.csstudio.trends.databrowser2.NewDataBrowserHandler"
+            id="org.csstudio.trends.databrowser.NewDataBrowserHandler"
+            name="%Databrowser">
+      </command>
+   </extension>
+   <extension
+         point="org.eclipse.ui.menus">
+      <menuContribution
+            allPopups="false"
+            locationURI="popup:org.eclipse.ui.popup.any?after=additions">
+         <menu
+               id="org.csstudio.trends.databrowser2.popup.processvariablewithsamples"
+               label="%PVSampleMenu">
+            <visibleWhen>
+               <with
+                     variable="activeMenuSelection">
+                                       <iterate>
+                     <adapt type="org.csstudio.trends.databrowser2.ProcessVariableWithSamples"/>
+                  </iterate>
+                     
+               </with>
+            </visibleWhen>
+         </menu>
+      </menuContribution>
+      <menuContribution
+            allPopups="false"
+            locationURI="popup:org.csstudio.ui.menu.popup.processvariable">
+         <command
+               commandId="org.csstudio.trends.databrowser.OpenDataBrowserPopup"
+               icon="icons/new_databrowser.png"
+               label="%Databrowser"
+               style="push"
+               tooltip="%PopmenuTooltip">
+         </command>
+      </menuContribution>
+      <menuContribution
+            allPopups="false"
+            locationURI="menu:trends">
+         <command
+               commandId="org.csstudio.trends.databrowser.NewDataBrowserHandler"
+               icon="icons/new_databrowser.png"
+               label="%Databrowser"
+               style="push"
+               tooltip="%NewDatabrowserTT">
+         </command>
+      </menuContribution>
+      <menuContribution
+            allPopups="false"
+            locationURI="toolbar:org.eclipse.ui.main.toolbar">
+         <toolbar
+               id="org.csstudio.trends.databrowser.toolbar">
+             <command
+                   commandId="org.csstudio.trends.databrowser.NewDataBrowserHandler"
+                   icon="icons/new_databrowser.png"
+                   label="%Databrowser"
+                   style="push"
+                   tooltip="%NewDatabrowserTT">
+             </command>
+         </toolbar>
+      </menuContribution>
    </extension>
 </plugin>

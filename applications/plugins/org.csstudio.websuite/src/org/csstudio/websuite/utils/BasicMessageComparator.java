@@ -41,7 +41,8 @@ public class BasicMessageComparator implements Comparator<BasicMessage>, Seriali
 	/** Generated serial version id */
     private static final long serialVersionUID = 2309005084573802194L;
 
-    public int compare(BasicMessage msg1, BasicMessage msg2){
+    @Override
+	public int compare(BasicMessage msg1, BasicMessage msg2){
 		try{
 			if(msg1.getSeverityNumber()<msg2.getSeverityNumber()){
 				return -1;

@@ -297,7 +297,7 @@ abstract class AbstractChartEditPart extends AbstractWidgetEditPart {
      * 
      */
     private void setGridLinesColorHandler() {
-        setPropertyChangeHandler(WaveformModel.PROP_GRID_LINE_COLOR, new ColorChangeHander<AbstractChartFigure>() {
+        setPropertyChangeHandler(WaveformModel.PROP_GRID_LINE_COLOR, new ColorChangeHandler<AbstractChartFigure>() {
 			@Override
 			protected void doHandle(AbstractChartFigure figure, Color color) {
 				figure.setGridLinesColor(color);
@@ -375,7 +375,7 @@ abstract class AbstractChartEditPart extends AbstractWidgetEditPart {
 		AbstractChartModel model = ((AbstractChartModel) getModel());
 		for (int i = 0; i < model.numberOfDataSeries(); i++) {
 			final int nr = i;
-			setPropertyChangeHandler(WaveformModel.plotColorPropertyId(i),new ColorChangeHander<AbstractChartFigure>() {
+			setPropertyChangeHandler(WaveformModel.plotColorPropertyId(i),new ColorChangeHandler<AbstractChartFigure>() {
 				@Override
 				protected void doHandle(AbstractChartFigure figure, Color color) {
 					figure.setPlotColor(nr, color);

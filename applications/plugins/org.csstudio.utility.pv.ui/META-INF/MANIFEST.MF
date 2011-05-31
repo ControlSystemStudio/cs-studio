@@ -2,11 +2,13 @@ Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: UI for Utility PV
 Bundle-SymbolicName: org.csstudio.utility.pv.ui; singleton:=true
-Bundle-Version: 1.0.2.qualifier
+Bundle-Version: 1.0.3.qualifier
 Bundle-RequiredExecutionEnvironment: J2SE-1.5
 Bundle-Localization: plugin
 Bundle-Vendor: Kay Kasemir <kasemirk@ornl.gov>, Xihui Chen <chenx1@ornl.gov> - SNS
-Require-Bundle: org.eclipse.equinox.preferences,
+Require-Bundle: org.eclipse.osgi;bundle-version="3.6.0",
+ org.eclipse.osgi.util;bundle-version="3.2.100",
+ org.eclipse.equinox.preferences,
  org.eclipse.jface,
  org.eclipse.ui.workbench,
  org.csstudio.utility.pv;bundle-version="1.1.1"

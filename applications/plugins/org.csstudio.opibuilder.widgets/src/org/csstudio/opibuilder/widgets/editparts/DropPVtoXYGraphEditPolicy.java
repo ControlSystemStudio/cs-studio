@@ -1,3 +1,10 @@
+/*******************************************************************************
+ * Copyright (c) 2010 Oak Ridge National Laboratory.
+ * All rights reserved. This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License v1.0
+ * which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-v10.html
+ ******************************************************************************/
 package org.csstudio.opibuilder.widgets.editparts;
 
 import org.csstudio.opibuilder.commands.SetWidgetPropertyCommand;
@@ -19,7 +26,8 @@ public class DropPVtoXYGraphEditPolicy extends AbstractEditPolicy {
 	
 	@Override
 	public Command getCommand(Request request) {
-		if(request.getType() == DropPVRequest.REQ_DROP_PV){
+		if(request.getType() == DropPVRequest.REQ_DROP_PV && 
+				request instanceof DropPVRequest){
 			DropPVRequest dropPVRequest =(DropPVRequest)request; 
 			if(dropPVRequest.getTargetWidget() != null && 
 					dropPVRequest.getTargetWidget() instanceof XYGraphEditPart){

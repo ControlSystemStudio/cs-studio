@@ -1,0 +1,14 @@
+Manifest-Version: 1.0
+Bundle-ManifestVersion: 2
+Bundle-Name: Tests
+Bundle-SymbolicName: org.csstudio.platform.libs.dal.tests
+Bundle-Version: 1.0.0.qualifier
+Bundle-Activator: org.csstudio.platform.libs.dal.tests.Activator
+Require-Bundle: org.eclipse.core.runtime,
+ org.csstudio.platform.libs.dal,
+ org.csstudio.platform.libs.dal.epics,
+ org.csstudio.platform.libs.dal.simulator,
+ org.csstudio.platform.libs.dal.tine,
+ org.junit;bundle-version="4.8.1"
+Bundle-ActivationPolicy: lazy
+Bundle-RequiredExecutionEnvironment: J2SE-1.5

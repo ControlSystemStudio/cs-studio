@@ -1,5 +1,6 @@
 package org.epics.css.dal.simple.impl;
 
+import org.apache.log4j.Logger;
 import org.epics.css.dal.CharacteristicInfo;
 import org.epics.css.dal.DataExchangeException;
 import org.epics.css.dal.DynamicValueProperty;
@@ -20,16 +21,13 @@ public abstract class AbstractAnyDataImpl<T> implements AnyData {
 	
 	public AbstractAnyDataImpl(DynamicValueProperty<T> property, long beamID) {
 		this.property = property;
-		Response<T> r= property.getLatestValueResponse();
-		if (r==null || r.getValue()==null) {
-			response= new ResponseImpl<T>(property, null, confirmValue(this.property.getLatestReceivedValue()), "value", false, null, property.getCondition(), null, true);
-		} else {
-			this.response = r; 
-		}
+		//Response<T> r= property.getLatestValueResponse();
+		response= new ResponseImpl<T>(property, null, confirmValue(this.property.getLatestReceivedValue()), "value", false, null, property.getCondition(), null, true);
+		
 		if (property.isMetaDataInitialized()) {
 			metaData = extractMetaData();
 		} else {
-			metaData = MetaDataImpl.createUninitializedMetaData();
+			 metaData = MetaDataImpl.createUninitializedMetaData();
 		}
 		
 		this.beamID=beamID;
@@ -82,7 +80,7 @@ public abstract class AbstractAnyDataImpl<T> implements AnyData {
 		try {
 			return (MetaData) property.getCharacteristic(CharacteristicInfo.C_META_DATA.getName());
 		} catch (DataExchangeException e) {
-			e.printStackTrace();
+			Logger.getLogger(this.getClass()).error("Metadata extraction failed.", e);
 			return null;
 		}
 	}

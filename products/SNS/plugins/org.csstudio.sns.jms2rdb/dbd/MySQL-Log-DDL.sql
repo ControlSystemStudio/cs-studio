@@ -43,7 +43,7 @@ USE log;
 DROP TABLE IF EXISTS msg_property_type;
 CREATE TABLE IF NOT EXISTS msg_property_type
 (
-  id  INT UNSIGNED NOT NULL PRIMARY KEY,
+  id  INT UNSIGNED NOT NULL AUTO_INCREMENT PRIMARY KEY,
   name VARCHAR(20) NOT NULL
 );
 INSERT INTO msg_property_type VALUES (1, 'TYPE');
@@ -55,14 +55,14 @@ INSERT INTO msg_property_type VALUES (6, 'HOST');
 INSERT INTO msg_property_type VALUES (7, 'NAME');
 INSERT INTO msg_property_type VALUES (8, 'APPLICATION-ID');
 INSERT INTO msg_property_type VALUES (9, 'CLASS');
-INSERT INTO msg_property_type VALUES (10,'FILENAME');
+INSERT INTO msg_property_type(name) VALUES ('FILENAME');
 SELECT * FROM msg_property_type;
 
 -- Message
 DROP TABLE IF EXISTS message;
 CREATE TABLE IF NOT EXISTS message
 (
-   id INT UNSIGNED NOT NULL PRIMARY KEY,
+   id INT UNSIGNED NOT NULL AUTO_INCREMENT PRIMARY KEY,
    datum TIMESTAMP NOT NULL,
    type VARCHAR(10) NOT NULL,
    name VARCHAR(80) NULL,
@@ -73,11 +73,27 @@ CREATE TABLE IF NOT EXISTS message
 DROP TABLE IF EXISTS message_content;
 CREATE TABLE IF NOT EXISTS message_content
 (
-  id INT UNSIGNED NOT NULL PRIMARY KEY,
+  id INT UNSIGNED NOT NULL AUTO_INCREMENT PRIMARY KEY,
   message_id INT UNSIGNED NOT NULL,
   msg_property_type_id INT UNSIGNED NOT NULL,
   value VARCHAR(100)
 );
+
+
+# NOTE:
+# MyISAM ignores forgeign keys, and the software will work fine
+# without them, but for the sake of completeness there should
+# be these foreign keys:
+#
+# Message content must point to a valid message entry:
+# message_content.message_id -> message.id
+#
+# Property ID must point to a defined message property
+# message_content.msg_property_type_id -> msg_property_type.id
+#
+# For performance reasons, you also want indices on
+# message.ID, message.datum, maybe more
+
 
 # Example Message with some elements
 INSERT INTO message VALUES(1, NOW(), 'log', '', 'INFO');

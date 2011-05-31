@@ -1,3 +1,10 @@
+/*******************************************************************************
+ * Copyright (c) 2010 Oak Ridge National Laboratory.
+ * All rights reserved. This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License v1.0
+ * which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-v10.html
+ ******************************************************************************/
 package org.csstudio.archivereader.channelarchiver;
 
 import java.net.UnknownHostException;
@@ -7,8 +14,8 @@ import org.csstudio.apputil.text.RegExHelper;
 import org.csstudio.archivereader.ArchiveInfo;
 import org.csstudio.archivereader.ArchiveReader;
 import org.csstudio.archivereader.ValueIterator;
-import org.csstudio.platform.data.ITimestamp;
-import org.csstudio.platform.data.IValue;
+import org.csstudio.data.values.ITimestamp;
+import org.csstudio.data.values.IValue;
 
 /** Main access point to the ChannelArchiver network data server.
  *  @author Kay Kasemir
@@ -23,7 +30,7 @@ public class ChannelArchiverReader implements ArchiveReader
     final private ArchivesRequest archives_request;
 
     /** Connect to a ChannelArchiver's network data server.
-     *  
+     *
      * @param url_text For example
      *        "xnds://my_server.org/archive/cgi/ArchiveDataServer.cgi"
      * @throws Exception
@@ -42,11 +49,11 @@ public class ChannelArchiverReader implements ArchiveReader
                 real_url = url;
             // Create client
             xmlrpc = new XmlRpcClient(real_url);
-            
+
             // Get server info
             server_info_request = new ServerInfoRequest();
             server_info_request.read(xmlrpc);
-            
+
             // .. and archive keys
             archives_request = new ArchivesRequest();
             archives_request.read(xmlrpc);
@@ -56,20 +63,23 @@ public class ChannelArchiverReader implements ArchiveReader
             throw new Exception("Unknown host in URL " + url);
         }
     }
-    
+
     /** {@inheritDoc}*/
+    @Override
     public String getServerName()
     {
         return "Channel Archiver";
     }
 
     /** {@inheritDoc}*/
+    @Override
     public String getURL()
     {
         return url;
     }
 
     /** {@inheritDoc}*/
+    @Override
     public String getDescription()
     {
         final StringBuilder buf = new StringBuilder();
@@ -83,18 +93,21 @@ public class ChannelArchiverReader implements ArchiveReader
     }
 
     /** {@inheritDoc}*/
+    @Override
     public int getVersion()
     {
         return server_info_request.getVersion();
     }
 
     /** {@inheritDoc}*/
+    @Override
     public ArchiveInfo[] getArchiveInfos()
     {
         return archives_request.getArchiveInfos();
     }
 
     /** {@inheritDoc}*/
+    @Override
     public String[] getNamesByPattern(final int key, final String glob_pattern)
             throws Exception
     {
@@ -102,6 +115,7 @@ public class ChannelArchiverReader implements ArchiveReader
     }
 
     /** {@inheritDoc}*/
+    @Override
     public String[] getNamesByRegExp(final int key, final String reg_exp) throws Exception
     {
         final NamesRequest infos = new NamesRequest(key, reg_exp);
@@ -110,7 +124,7 @@ public class ChannelArchiverReader implements ArchiveReader
     }
 
     /** Helper for locating a request code by name.
-     *  <p> 
+     *  <p>
      * @param request_name For example: GET_RAW.
      * @return The 'request_type' ID for a given request type string.
      * @throws Exception when asking for unsupported request type.
@@ -124,7 +138,7 @@ public class ChannelArchiverReader implements ArchiveReader
                 return i;
         throw new Exception("Unsupported request type '" + request_name + "'");
     }
-    
+
     /** @return Severity for an EPICS severity code. */
     SeverityImpl getSeverity(final int severity)
     {
@@ -142,12 +156,12 @@ public class ChannelArchiverReader implements ArchiveReader
             // else: Fall through...
         }
         // return the number as a string
-        return Integer.toString(status);            
+        return Integer.toString(status);
     }
 
     /** Active request. Synchronize on this for access */
     private ValueRequest current_request = null;
-    
+
     /** Issue request for values for one channel to the data server.
      *  @return Samples
      *  @throws Exception
@@ -171,8 +185,9 @@ public class ChannelArchiverReader implements ArchiveReader
         }
         return result;
     }
-    
+
     /** {@inheritDoc}*/
+    @Override
     public ValueIterator getRawValues(final int key, final String name,
             final ITimestamp start, final  ITimestamp end) throws Exception
     {
@@ -180,6 +195,7 @@ public class ChannelArchiverReader implements ArchiveReader
     }
 
     /** {@inheritDoc}*/
+    @Override
     public ValueIterator getOptimizedValues(final int key, final String name,
          final ITimestamp start, final ITimestamp end, final int count) throws Exception
     {
@@ -187,6 +203,7 @@ public class ChannelArchiverReader implements ArchiveReader
     }
 
     /** {@inheritDoc}*/
+    @Override
     public void cancel()
     {
         synchronized (this)
@@ -197,6 +214,7 @@ public class ChannelArchiverReader implements ArchiveReader
     }
 
     /** {@inheritDoc}*/
+    @Override
     public void close()
     {
         cancel();

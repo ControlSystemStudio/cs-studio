@@ -36,12 +36,13 @@ import org.csstudio.alarm.table.preferences.JmsLogPreferenceConstants;
 import org.csstudio.alarm.table.preferences.alarm.AlarmViewPreference;
 import org.csstudio.alarm.table.service.IAlarmSoundService;
 import org.csstudio.alarm.table.ui.messagetable.AlarmMessageTable;
+import org.csstudio.auth.security.SecurityFacade;
 import org.csstudio.platform.logging.CentralLogger;
-import org.csstudio.platform.security.SecurityFacade;
 import org.eclipse.core.runtime.jobs.Job;
 import org.eclipse.jface.preference.IPreferenceStore;
 import org.eclipse.jface.viewers.TableViewer;
 import org.eclipse.swt.SWT;
+import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.events.SelectionListener;
 import org.eclipse.swt.graphics.Font;
@@ -73,11 +74,9 @@ public class AlarmView extends LogView {
 
     private static final String SECURITY_ID = "operating"; //$NON-NLS-1$
 
-    private Button _soundEnableButton;
 
     private Button _ackButton;
 
-    private final SoundHandler _soundHandler = new SoundHandler();
 
     /**
      * Creates the view for the alarm log table.
@@ -112,38 +111,8 @@ public class AlarmView extends LogView {
         addRunningSinceGroup(logTableManagementComposite);
 
         initializeMessageTable();
-        _pauseButton.addSelectionListener(newSelectionListenerForPauseButton());
-
     }
-    @Nonnull
-    private SelectionListener newSelectionListenerForPauseButton() {
-        return new SelectionListener() {
-
-            @SuppressWarnings("synthetic-access")
-			@Override
-            public void widgetSelected(@Nonnull final SelectionEvent e) {
-                if (_pauseButton.getSelection()) {
-                    disableAckButton();
-                } else {
-                    enableAckButtonIfPermitted();
-                }
-            }
-
-            @Override
-            public void widgetDefaultSelected(@Nonnull final SelectionEvent e) {
-                // Nothing to do
-            }
-        };
-    }
-
-    private void enableAckButtonIfPermitted() {
-        _ackButton.setEnabled(SecurityFacade.getInstance().canExecute(SECURITY_ID, true));
-    }
-
-    private void disableAckButton() {
-        _ackButton.setEnabled(false);
-    }
-
+    
     /**
      * {@inheritDoc}
      */
@@ -151,7 +120,6 @@ public class AlarmView extends LogView {
     public void dispose() {
         super.dispose();
         _messageTable = null;
-        _soundHandler.enableSound(false);
     }
 
     /**
@@ -212,12 +180,11 @@ public class AlarmView extends LogView {
         addControlListenerToColumns(AlarmViewPreference.ALARMVIEW_P_STRING_ALARM.getKeyAsString(),
                                     AlarmViewPreference.ALARMVIEW_TOPIC_SET.getKeyAsString());
         getSite().setSelectionProvider(_tableViewer);
-        makeActions();
+        createAndRegisterActions();
 
         _parent.layout();
-
-        // Set initial state for playing sounds based on the state of the sound enable button
-        _soundHandler.enableSound(_soundEnableButton.getSelection());
+        
+        setInitialStateOfSoundHandler();
     }
 
     @Override
@@ -237,6 +204,20 @@ public class AlarmView extends LogView {
         // There is no maximum number of messages. The message list will not overflow, because
         // eventually all messages are contained within and will simply be exchanged.
         return new AlarmMessageList();
+    }
+
+    @Override
+    protected void doStartPause() {
+        _ackButton.setEnabled(false);
+    }
+
+    @Override
+    protected void doEndPause() {
+        enableAckButtonIfPermitted();
+    }
+
+    private void enableAckButtonIfPermitted() {
+        _ackButton.setEnabled(SecurityFacade.getInstance().canExecute(SECURITY_ID, true));
     }
 
     // CHECKSTYLE:OFF
@@ -300,6 +281,8 @@ public class AlarmView extends LogView {
              * Acknowledge button is pressed for all (selection 0) messages or messages with a
              * special severity (selection 1-3).
              */
+            @SuppressWarnings("synthetic-access")
+            @Override
             public void widgetSelected(@Nonnull final SelectionEvent e) {
                 final List<AlarmMessage> msgList = new ArrayList<AlarmMessage>();
                 for (final TableItem ti : _tableViewer.getTable().getItems()) {
@@ -332,105 +315,10 @@ public class AlarmView extends LogView {
                 sendAck.schedule();
             }
 
+            @Override
             public void widgetDefaultSelected(@Nonnull final SelectionEvent e) {
                 // Nothing to do
             }
         };
     }
-
-    private void addSoundButton(@Nonnull final Composite logTableManagementComposite) {
-        final Group soundButtonGroup = new Group(logTableManagementComposite, SWT.NONE);
-
-        soundButtonGroup.setText(Messages.AlarmView_soundButtonTitle);
-
-        final RowLayout layout = new RowLayout();
-        soundButtonGroup.setLayout(layout);
-
-        _soundEnableButton = new Button(soundButtonGroup, SWT.TOGGLE);
-        _soundEnableButton.setLayoutData(new RowData(60, 21));
-        _soundEnableButton.setText(Messages.AlarmView_soundButtonEnable);
-
-        // Initial state for playing sounds is always activated on startup, operator must manually turn it off.
-        _soundEnableButton.setSelection(true);
-
-        _soundEnableButton.addSelectionListener(new SelectionListener() {
-            public void widgetSelected(@Nonnull final SelectionEvent e) {
-                _soundHandler.enableSound(_soundEnableButton.getSelection());
-            }
-
-            public void widgetDefaultSelected(@Nonnull final SelectionEvent e) {
-                // Nothing to do
-            }
-        });
-    }
-
-    /**
-     * Sound is played dependent of the state of the sound enable button. If it is enabled, the
-     * so-called sound playing listener (encapsulated here) is registered at the alarm table
-     * listener for the current topic set. If it gets disabled, the sound playing listener is
-     * deregistered. If the current topic set is changed, the sound playing listener gets
-     * deregistered and then registered at the now-current alarm table listener.<br>
-     * Because we have to know where we are currently registered, the current alarm table listener
-     * is recorded in here.
-     */
-    private final class SoundHandler {
-
-        /**
-         * Service for playing sounds
-         */
-        private final IAlarmSoundService _alarmSoundService = JmsLogsPlugin.getDefault()
-                .getAlarmSoundService();
-
-        /**
-         * This listener listens to incoming messages for playing sounds. Each sound handler uses
-         * only one sound playing listener and registers it at the appropriate alarm table listener.
-         */
-        private IAlarmListener _soundPlayingListener = null;
-
-        /**
-         * Keep track where the sound playing listener is registered
-         */
-        private IAlarmTableListener _currentAlarmTableListener = null;
-
-        public SoundHandler() {
-            // Nothing to do
-        }
-
-        @Nonnull
-        private IAlarmListener getSoundPlayingListener() {
-            if (_soundPlayingListener == null) {
-                _soundPlayingListener = new IAlarmListener() {
-
-                    @Override
-                    public void stop() {
-                        // Nothing to do
-                    }
-
-                    @Override
-                    public void onMessage(@Nonnull final IAlarmMessage message) {
-                        _alarmSoundService.playAlarmSound(message.getString(AlarmMessageKey.SEVERITY));
-                    }
-                };
-            }
-            return _soundPlayingListener;
-        }
-
-        public void enableSound(final boolean yes) {
-            // Built in a robust way: Deregister always, register at the current alarm table
-            // listener.
-            if (_currentAlarmTableListener != null) {
-                _currentAlarmTableListener.deRegisterAlarmListener(getSoundPlayingListener());
-                _currentAlarmTableListener = null;
-                LOG.debug("Sound deregistered");
-            }
-
-            if (yes) {
-                _currentAlarmTableListener = getAlarmTableListener();
-                _currentAlarmTableListener.registerAlarmListener(getSoundPlayingListener());
-                LOG.debug("Sound registered");
-            }
-        }
-
-    }
-
 }

@@ -21,9 +21,9 @@ package org.csstudio.utility.casnooper;
  * AT HTTP://WWW.DESY.DE/LEGAL/LICENSE.HTM
  */ 
 
+import org.csstudio.auth.security.Credentials;
+import org.csstudio.auth.security.ILoginCallbackHandler;
 import org.csstudio.platform.logging.CentralLogger;
-import org.csstudio.platform.security.Credentials;
-import org.csstudio.platform.security.ILoginCallbackHandler;
 import org.csstudio.utility.casnooper.preferences.PreferenceConstants;
 import org.eclipse.core.runtime.Platform;
 import org.eclipse.core.runtime.preferences.IPreferencesService;

@@ -2,7 +2,7 @@
 <?eclipse version="3.2"?>
 <plugin>
    <extension
-         point="org.csstudio.platform.loginModule">
+         point="org.csstudio.auth.loginModule">
       <loginModule
             class="org.csstudio.platform.internal.jaasauthentication.JaasLoginModule"
             id="org.csstudio.security.jaasAuthentication.jaasLoginModule"

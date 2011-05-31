@@ -93,7 +93,6 @@ public class ModuleChannelPrototypeDBO extends DBClass implements Comparable<Mod
      * The Byte ordering.
      */
     private Integer _byteOrdering;
-    
 
     /**
      * Default Constructor. Need by Hibernate.
@@ -204,7 +203,6 @@ public class ModuleChannelPrototypeDBO extends DBClass implements Comparable<Mod
         _byteOrdering = byteOrdering;
     }
 
-
     // Transients
 
     @Transient
@@ -212,10 +210,12 @@ public class ModuleChannelPrototypeDBO extends DBClass implements Comparable<Mod
         return getType().getByteSize();
     }
 
+    @Override
     public void save() throws PersistenceException {
         Repository.saveOrUpdate(this);
     }
 
+    @Override
     public int compareTo(ModuleChannelPrototypeDBO other) {
         if(getId() == other.getId()) {
             return 0;

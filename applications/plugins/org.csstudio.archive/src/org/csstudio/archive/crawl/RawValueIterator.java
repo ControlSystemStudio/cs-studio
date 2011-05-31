@@ -1,8 +1,8 @@
 package org.csstudio.archive.crawl;
 
 import org.csstudio.archive.ArchiveServer;
-import org.csstudio.platform.data.ITimestamp;
-import org.csstudio.platform.data.IValue;
+import org.csstudio.data.values.ITimestamp;
+import org.csstudio.data.values.IValue;
 
 /** An archive sample crawler.
  *  <p>
@@ -37,10 +37,10 @@ public class RawValueIterator implements ValueIterator
 
     /** Batch iterators for the archive sources. */
     final private BatchIterator batch[];
-    
+
     /** Current indices within each batch, or -1 if batch is excausted. */
     final private int sample_idx[];
-    
+
     /** Index of the batch with the current value, or -1 if nothing. */
     private int batch_idx;
 
@@ -51,8 +51,8 @@ public class RawValueIterator implements ValueIterator
     {
         this(new ArchiveServer[] { server }, new int[] { key },
              channel, start, end);
-    }    
-    
+    }
+
     /** Constructor for 'raw' data.
      *  @see #RawSampleIterator(ArchiveServer[], int[], String,
      *                          ITimestamp, ITimestamp, String, int) */
@@ -68,7 +68,7 @@ public class RawValueIterator implements ValueIterator
      *  <p>
      *  The crawler will iterate over all samples from start to end
      *  in { servers[0], keys[0] }, then continue with the next servers/keys
-     *  entry and so on, until either reaching the end time or the end of the 
+     *  entry and so on, until either reaching the end time or the end of the
      *  servers/keys lists.
      *  <p>
      *  Consequently, the <code>servers</code> and <code>keys</code> arrays
@@ -80,7 +80,7 @@ public class RawValueIterator implements ValueIterator
      *  Meaning: The archive data sources should be listed in time order,
      *  i.e. the oldest sub-archive first, followed by the next one,
      *  ending in the most recent one.
-     * 
+     *
      *  @param servers The Archive Servers to use.
      *  @param keys Archive keys. They have to be in time-order,
      *          i.e. oldest sub-archive first.
@@ -147,7 +147,7 @@ public class RawValueIterator implements ValueIterator
             {
                 time = sample_time;
                 batch_idx = i;
-            }            
+            }
         }
         // Found anything?
         if (time == null)
@@ -173,7 +173,7 @@ public class RawValueIterator implements ValueIterator
             return null;
         final IValue[] curr_batch = batch[batch_idx].getBatch();
         // Obtain current sample, the one to return
-        final IValue sample = curr_batch[sample_idx[batch_idx]];        
+        final IValue sample = curr_batch[sample_idx[batch_idx]];
         // Prepare what to return next
         ++sample_idx[batch_idx];
         determineNextSample();

@@ -46,6 +46,7 @@ import org.csstudio.config.ioconfig.editorparts.SubnetEditor;
 import org.csstudio.config.ioconfig.model.AbstractNodeDBO;
 import org.csstudio.config.ioconfig.model.FacilityDBO;
 import org.csstudio.config.ioconfig.model.IocDBO;
+import org.csstudio.config.ioconfig.model.PersistenceException;
 import org.csstudio.config.ioconfig.model.pbmodel.MasterDBO;
 import org.csstudio.config.ioconfig.model.pbmodel.ModuleDBO;
 import org.csstudio.config.ioconfig.model.pbmodel.ProfibusSubnetDBO;
@@ -56,16 +57,15 @@ import org.eclipse.ui.IWorkbenchPage;
 import org.eclipse.ui.PartInitException;
 
 /**
- * TODO (hrickens) :
- *
  * @author hrickens
  * @author $Author: hrickens $
  * @version $Revision: 1.2 $
  * @since 10.06.2010
  */
 public class CallNewSiblingNodeEditor extends AbstractCallNodeEditor {
-
+    
     private static final String ID = "org.csstudio.config.ioconfig.commands.callNewSiblingEditor";
+    
     /**
      * @return
      */
@@ -73,64 +73,86 @@ public class CallNewSiblingNodeEditor extends AbstractCallNodeEditor {
     public static String getEditorID() {
         return ID;
     }
-
+    
     /**
      * {@inheritDoc}
      * @throws PartInitException
+     * @throws PersistenceException 
      */
     // CHECKSTYLE OFF: CyclomaticComplexity
     @Override
-    protected void openNodeEditor(@Nonnull final AbstractNodeDBO siblingNode,@Nonnull final IWorkbenchPage page) throws PartInitException {
-        AbstractNodeDBO node = null;
+    protected void openNodeEditor(@Nonnull final AbstractNodeDBO siblingNode,
+                                  @Nonnull final IWorkbenchPage page) throws PartInitException,
+                                                                     PersistenceException {
+        AbstractNodeDBO<?,?> node = null;
         String id = null;
-        String nodeType = "";
-        if (siblingNode instanceof FacilityDBO) {
-//			FacilityDBO new_name = (FacilityDBO) siblingNode;
-			
-			id = FacilityEditor.ID;
-			node = new FacilityDBO();
-			nodeType = "Facility";
-		}
-        if (siblingNode instanceof IocDBO) {
-        	id = IocEditor.ID;
-        	node = new IocDBO(((IocDBO)siblingNode).getFacility());
-        	nodeType = "Ioc";
-        } else if (siblingNode instanceof ProfibusSubnetDBO) {
+        
+        if(siblingNode instanceof FacilityDBO) {
+            id = FacilityEditor.ID;
+            node = new FacilityDBO();
+        } else if(siblingNode instanceof IocDBO) {
+            id = IocEditor.ID;
+            node = new IocDBO( ((IocDBO) siblingNode).getParent());
+        } else if(siblingNode instanceof ProfibusSubnetDBO) {
             id = SubnetEditor.ID;
-            node = new ProfibusSubnetDBO(((ProfibusSubnetDBO)siblingNode).getIoc());
-            nodeType = "Subnet";
-        } else if (siblingNode instanceof MasterDBO) {
+            node = new ProfibusSubnetDBO( ((ProfibusSubnetDBO) siblingNode).getIoc());
+        } else if(siblingNode instanceof MasterDBO) {
             id = MasterEditor.ID;
-            node = new MasterDBO(((MasterDBO)siblingNode).getProfibusSubnet());
-            nodeType = "Master";
-        } else if (siblingNode instanceof SlaveDBO) {
+            node = new MasterDBO( ((MasterDBO) siblingNode).getProfibusSubnet());
+        } else if(siblingNode instanceof SlaveDBO) {
             id = SlaveEditor.ID;
-            node = new SlaveDBO(((SlaveDBO)siblingNode).getProfibusDPMaster());
-            nodeType = "Slave";
-        } else if (siblingNode instanceof ModuleDBO) {
+            node = new SlaveDBO( ((SlaveDBO) siblingNode).getProfibusDPMaster());
+        } else if(siblingNode instanceof ModuleDBO) {
             id = ModuleEditor.ID;
-            node = new ModuleDBO(((ModuleDBO)siblingNode).getSlave());
-            nodeType = "Module";
+            node = new ModuleDBO( ((ModuleDBO) siblingNode).getSlave());
         }
-        if((node != null) && (id != null)) {
-            InputDialog idialog = new InputDialog(null, "Create new " + nodeType,
-                                                  "Enter the name of the " + nodeType, siblingNode.getName(), null);
-            idialog.setBlockOnOpen(true);
-            if (idialog.open() == Window.OK) {
-                node.setSortIndexNonHibernate(siblingNode.getSortIndex()+1);
-                if((idialog.getValue()!=null)&&!idialog.getValue().isEmpty()) {
-                    node.setName(idialog.getValue());
-                } else {
-                    node.setName(nodeType);
-                }
-                NodeEditorInput input = new NodeEditorInput(node,true);
-                page.openEditor(input, id);
+        if( (node != null) && (id != null)) {
+            if(id.equals(ModuleEditor.ID)) {
+                performOpen(siblingNode, page, node, id, "");
             } else {
-                siblingNode.removeChild(node);
+                String nodeType = node.getNodeType().getName();
+                InputDialog idialog = new InputDialog(null,
+                                                      "Create new " + nodeType,
+                                                      "Enter the name of the " + nodeType,
+                                                      siblingNode.getName(),
+                                                      null);
+                idialog.setBlockOnOpen(true);
+                if(idialog.open() == Window.OK) {
+                    String name;
+                    if( (idialog.getValue() != null) && !idialog.getValue().isEmpty()) {
+                        name = idialog.getValue();
+                    } else {
+                        name = nodeType;
+                    }
+
+                    performOpen(siblingNode, page, node, id, name);
+                } else {
+                    siblingNode.removeChild(node);
+                }
             }
         }
     }
     // CHECKSTYLE ON: CyclomaticComplexity
 
-
+    /**
+     * @param siblingNode
+     * @param page
+     * @param node
+     * @param id
+     * @param nodeType
+     * @param idialog
+     * @throws PersistenceException
+     * @throws PartInitException
+     */
+    private void performOpen(@Nonnull final AbstractNodeDBO<?,?> siblingNode,
+                             @Nonnull final IWorkbenchPage page,
+                             @Nonnull AbstractNodeDBO<?,?> node,
+                             @Nonnull String id,
+                             @Nonnull String name) throws PersistenceException, PartInitException {
+        node.setSortIndexNonHibernate(siblingNode.getSortIndex() + 1);
+        node.setName(name);
+        NodeEditorInput input = new NodeEditorInput(node, true);
+        page.openEditor(input, id);
+    }
+    
 }

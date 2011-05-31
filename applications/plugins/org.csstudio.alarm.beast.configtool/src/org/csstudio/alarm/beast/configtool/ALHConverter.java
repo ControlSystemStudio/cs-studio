@@ -12,10 +12,9 @@ import java.io.FileReader;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import org.csstudio.alarm.beast.AlarmTree;
-import org.csstudio.alarm.beast.AlarmTreeComponent;
-import org.csstudio.alarm.beast.AlarmTreePV;
-import org.csstudio.alarm.beast.AlarmTreeRoot;
+import org.csstudio.alarm.beast.client.AlarmTreeItem;
+import org.csstudio.alarm.beast.client.AlarmTreePV;
+import org.csstudio.alarm.beast.client.AlarmTreeRoot;
 
 /** Convert ALH config files to Alarm Handler config file
  *  @author Kay Kasemir
@@ -28,19 +27,19 @@ public class ALHConverter
     {
         /** Waiting for 'root' element */
         ROOT,
-        
+
         /** Waiting for group elements */
         GROUP
     }
-    
+
     private State state = State.ROOT;
-    
+
     private AlarmTreeRoot root;
 
-    private AlarmTree current_group;
+    private AlarmTreeItem current_group;
 
     private AlarmTreePV current_pv;
-    
+
     /** Initialize converter
      *  @param filename Name of ALH file to convert
      *  @throws Exception on error
@@ -58,8 +57,8 @@ public class ALHConverter
         }
         check(root);
     }
-    
-    /** @return Root of Alarm Tree generated from ALH config */ 
+
+    /** @return Root of Alarm Tree generated from ALH config */
     public AlarmTreeRoot getAlarmTree()
     {
         return root;
@@ -73,11 +72,11 @@ public class ALHConverter
     {
         // Pattern for comment "... # ..."
         final Pattern comment_pattern = Pattern.compile("^\\s*#.*");
-        
+
         // Pattern for "GROUP <parent> <group name>"
         // Any non-space is allowed in the group names
         final Pattern group_pattern = Pattern.compile("\\s*GROUP\\s+(\\S+)\\s+(\\S+)\\s*");
-        
+
         // Pattern for "CHANNEL <group name> <pv name> <flags>"
         // Any non-space is allowed in the names.
         // ALH input with flags is allowed, but flags are actually ignored.
@@ -85,7 +84,7 @@ public class ALHConverter
 
         // Pattern for "$ALARMCOUNTFILTER 5 2"
         final Pattern filter_count_pattern = Pattern.compile("\\s*\\$ALARMCOUNTFILTER\\s+([0-9]+)\\s+([0-9]+)\\s*");
-        
+
         // Pattern for web link "http://..."
         final Pattern http_pattern = Pattern.compile(".*\\s(https?://[a-zA-Z0-9-./]+)\\s*");
 
@@ -95,7 +94,7 @@ public class ALHConverter
             // Skip comments
             if (comment_pattern.matcher(line).matches())
                 continue;
-            
+
             final Matcher group_match = group_pattern.matcher(line);
             if (group_match.matches())
             {
@@ -139,7 +138,7 @@ public class ALHConverter
                 }
                 continue;
             }
-            
+
             final Matcher filter_match = filter_count_pattern.matcher(line);
             if (filter_match.matches())
             {
@@ -147,7 +146,7 @@ public class ALHConverter
                 final int delay = Integer.parseInt(filter_match.group(2));
                 handleFilter(delay, count);
             }
-            
+
             final Matcher http_match = http_pattern.matcher(line);
             if (http_match.matches())
             {
@@ -172,15 +171,15 @@ public class ALHConverter
         System.out.println("Group '" + parent_group + "' / '" + name + "'");
         if (state == State.ROOT)
         {
-            root = new AlarmTreeRoot(0, name);
+            root = new AlarmTreeRoot(name, 0);
             state = State.GROUP;
             return;
         }
-        final AlarmTree parent = findGroup(root, parent_group);
+        final AlarmTreeItem parent = findGroup(root, parent_group);
         if (parent == null)
             throw new Exception("Cannot find parent group '" + parent_group +
                     "' for group '" + name + "'");
-        current_group = new AlarmTreeComponent(0, name, parent);
+        current_group = new AlarmTreeItem(parent, name, 0);
         current_pv = null;
     }
 
@@ -191,7 +190,7 @@ public class ALHConverter
         if (current_group == null)
             throw new Exception("Cannot find parent group '" + group_name +
                     "' for channel '" + name + "'");
-        current_pv = new AlarmTreePV(0, name, current_group);
+        current_pv = new AlarmTreePV(current_group, name, 0);
         current_pv.setLatching(true);
     }
 
@@ -205,7 +204,7 @@ public class ALHConverter
 
     private void handleDisplay(final String title, final String detail) throws Exception
     {
-        final AlarmTree element =
+        final AlarmTreeItem element =
             (current_pv != null) ? current_pv : current_group;
         if (element == null)
             throw new Exception("Got display outside of channel or group: '" +  title + "', " + detail);
@@ -224,20 +223,20 @@ public class ALHConverter
     }
 
     /** Find a group in the tree
-     *  @param tree Root element from where to check
+     *  @param item Root element from where to check
      *  @param name Name of group to locate
      *  @return That group or <code>null</code>
      */
-    private AlarmTree findGroup(final AlarmTree tree, final String name)
-    {
-        if (tree == null)
+    private AlarmTreeItem findGroup(final AlarmTreeItem item, final String name)
+    {   // Nothing?  Or PV, which isn't a 'group' and has no sub-tree?
+        if (item == null  ||  (item instanceof AlarmTreePV))
             return null;
-        
-        if (tree.getName().equals(name))
-            return tree;
-        for (int i=0; i<tree.getChildCount(); ++i)
+        // Is it this item?
+        if (item.getName().equals(name))
+            return item;
+        for (int i=0; i<item.getChildCount(); ++i)
         {
-            final AlarmTree found = findGroup(tree.getChild(i), name);
+            final AlarmTreeItem found = findGroup(item.getClientChild(i), name);
             if (found != null)
                 return found;
         }
@@ -246,10 +245,10 @@ public class ALHConverter
 
     /** Basic consistency check, prints warnings for
      *  empty description or groups without PVs.
-     *  
+     *
      *  @param item Root element from where to check
      */
-    private void check(final AlarmTree item)
+    private void check(final AlarmTreeItem item)
     {
         if (item instanceof AlarmTreePV)
         {
@@ -263,6 +262,6 @@ public class ALHConverter
                 System.err.println("Warning: No sub-entries for '" +
                         item.getName() + "'");
         for (int i=0; i<item.getChildCount(); ++i)
-            check(item.getChild(i));
+            check(item.getClientChild(i));
     }
 }

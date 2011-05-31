@@ -10,3 +10,4 @@ Require-Bundle: org.eclipse.ui,
  org.csstudio.platform.ui,
  org.csstudio.sds.ui
 Eclipse-LazyStart: true
+Bundle-RequiredExecutionEnvironment: JavaSE-1.6

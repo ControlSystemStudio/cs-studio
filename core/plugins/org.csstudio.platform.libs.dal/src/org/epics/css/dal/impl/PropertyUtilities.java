@@ -22,6 +22,7 @@
 
 package org.epics.css.dal.impl;
 
+import org.apache.log4j.Logger;
 import org.epics.css.dal.CharacteristicInfo;
 import org.epics.css.dal.DataExchangeException;
 import org.epics.css.dal.DoubleProperty;
@@ -29,6 +30,7 @@ import org.epics.css.dal.DynamicValueProperty;
 import org.epics.css.dal.PatternProperty;
 import org.epics.css.dal.SimpleProperty;
 import org.epics.css.dal.proxy.DirectoryProxy;
+import org.epics.css.dal.simple.impl.DataUtil;
 
 
 /**
@@ -88,7 +90,7 @@ public class PropertyUtilities
 
 				return c;
 			} catch (Throwable e) {
-				e.printStackTrace();
+				Logger.getLogger(PropertyUtilities.class).debug("Heuristic lookup failed.", e);
 			}
 		}
 
@@ -105,7 +107,7 @@ public class PropertyUtilities
 
 				return c;
 			} catch (Throwable e) {
-				e.printStackTrace();
+				Logger.getLogger(PropertyUtilities.class).debug("Heuristic lookup failed.", e);
 			}
 		}
 
@@ -142,6 +144,9 @@ public class PropertyUtilities
 			}
 			if (characteristicName.equals(CharacteristicInfo.C_WARNING_MIN.getName())) {
 				return proxy.getCharacteristic(CharacteristicInfo.C_MINIMUM.getName());
+			}
+			if (characteristicName.equals(CharacteristicInfo.C_META_DATA.getName())) {
+				return DataUtil.createMetaData(proxy);
 			}
 		}
 		

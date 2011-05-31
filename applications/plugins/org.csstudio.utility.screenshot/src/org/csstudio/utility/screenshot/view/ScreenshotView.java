@@ -58,10 +58,13 @@ public class ScreenshotView extends ViewPart implements FlavorListener
     private Action toolBarPasteAction;
     
     /**  */
-    public ScreenshotView() {}
+    public ScreenshotView() {
+    	// Can be empty
+    }
         
     /**  */
-    public void createPartControl(Composite parent)
+    @Override
+	public void createPartControl(Composite parent)
     {
         Action tempAction = null;
         IExtensionRegistry extReg = Platform.getExtensionRegistry();
@@ -228,9 +231,10 @@ public class ScreenshotView extends ViewPart implements FlavorListener
     /**
      * Called when the View is to be disposed
      */ 
-    public void dispose()
-    {
-        worker.dispose();
+    @Override
+	public void dispose() {
+        
+    	worker.dispose();
         worker = null;
         
         for(int i = 0;i < imageWorker.length;i++)
@@ -248,8 +252,7 @@ public class ScreenshotView extends ViewPart implements FlavorListener
      * 
      * @return the display we're using
      */
-    public Display getDisplay()
-    {
+    public Display getDisplay() {
         return worker.getDisplay();
     }
     
@@ -258,19 +261,16 @@ public class ScreenshotView extends ViewPart implements FlavorListener
      * 
      * @see org.eclipse.ui.part.ViewPart#setFocus
      */
-    public void setFocus()
-    {
+    @Override
+	public void setFocus() {
         worker.setFocus();
     }
 
-    public void flavorsChanged(FlavorEvent flavorEvent)
-    {
-        if(ClipboardHandler.getInstance().isImageAvailable())
-        {
+    public void flavorsChanged(FlavorEvent flavorEvent) {
+        
+    	if(ClipboardHandler.getInstance().isImageAvailable()) {
             toolBarPasteAction.setEnabled(true);
-        }
-        else
-        {
+        } else {
             toolBarPasteAction.setEnabled(false);
         }
     }

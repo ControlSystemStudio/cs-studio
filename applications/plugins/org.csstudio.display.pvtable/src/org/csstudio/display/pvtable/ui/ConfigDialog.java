@@ -1,7 +1,13 @@
+/*******************************************************************************
+ * Copyright (c) 2010 Oak Ridge National Laboratory.
+ * All rights reserved. This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License v1.0
+ * which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-v10.html
+ ******************************************************************************/
 package org.csstudio.display.pvtable.ui;
 
 import org.csstudio.display.pvtable.Messages;
-import org.csstudio.display.pvtable.Plugin;
 import org.eclipse.jface.dialogs.Dialog;
 import org.eclipse.jface.dialogs.IDialogConstants;
 import org.eclipse.swt.SWT;
@@ -20,7 +26,7 @@ import org.eclipse.swt.widgets.Text;
  *  Unclear if this has to be that hard:
  *  Is there a better way to bind a 'double' value to a text input?
  *  Is there a better way to handle the verification?
- *  
+ *
  *  @author Kay Kasemir
  */
 public class ConfigDialog extends Dialog
@@ -41,7 +47,7 @@ public class ConfigDialog extends Dialog
         this.tolerance = tolerance;
         this.period = period;
     }
-    
+
     /** @see org.eclipse.jface.window.Window#configureShell(org.eclipse.swt.widgets.Shell) */
     @Override
     protected void configureShell(Shell newShell)
@@ -64,7 +70,7 @@ public class ConfigDialog extends Dialog
         l.setText(Messages.ConfigDlg_Description);
         gd = new GridData();
         l.setLayoutData(gd);
-        
+
         description_text = new Text(composite, SWT.LEFT);
         description_text.setText(description);
         gd = new GridData();
@@ -72,13 +78,13 @@ public class ConfigDialog extends Dialog
         gd.horizontalAlignment = SWT.FILL;
         gd.grabExcessHorizontalSpace = true;
         description_text.setLayoutData(gd);
-        
+
         // Row 2
         l = new Label(composite, 0);
         l.setText(Messages.ConfigDlg_Tolerance);
         gd = new GridData();
         l.setLayoutData(gd);
-        
+
         tolerance_text = new Text(composite, SWT.LEFT);
         tolerance_text.setText(Double.toString(tolerance));
         gd = new GridData();
@@ -99,10 +105,10 @@ public class ConfigDialog extends Dialog
         l.setText(Messages.ConfigDlg_UpdatePeriod);
         gd = new GridData();
         l.setLayoutData(gd);
-        
+
         update_period_text = new Text(composite, SWT.LEFT);
         update_period_text.setText(Double.toString(period));
-        
+
         gd = new GridData();
         gd.horizontalAlignment = SWT.FILL;
         gd.grabExcessHorizontalSpace = true;
@@ -115,15 +121,16 @@ public class ConfigDialog extends Dialog
         gd.horizontalAlignment = SWT.FILL;
         gd.grabExcessHorizontalSpace = true;
         update_period_help.setLayoutData(gd);
-        
+
         ModifyListener validator = new ModifyListener()
         {
+            @Override
             public void modifyText(ModifyEvent event)
             {
                 description = description_text.getText();
                 // Nothing to check for description
-                
-                String txt = update_period_text.getText();                
+
+                String txt = update_period_text.getText();
                 String help = Messages.ConfigDlg_UpdatePeriod_TT;
                 try
                 {
@@ -135,15 +142,15 @@ public class ConfigDialog extends Dialog
                 }
                 catch (Exception e)
                 {
-                    Plugin.getLogger().error("Parse " + txt, e); //$NON-NLS-1$
+                    help = Messages.ConfigDlg_UpdatePeriodError;
                 }
-                
+
                 boolean ok = (help == null);
                 if (ok)
                     update_period_help.setText(""); //$NON-NLS-1$
                 else
                     update_period_help.setText(help);
-                
+
                 txt = tolerance_text.getText();
                 help = Messages.ConfigDlg_Tolerance_TT;
                 try
@@ -156,9 +163,9 @@ public class ConfigDialog extends Dialog
                 }
                 catch (Exception e)
                 {
-                    Plugin.getLogger().error("Parse " + txt, e); //$NON-NLS-1$
+                    help = Messages.ConfigDlg_ToleranceError;
                 }
-                
+
                 if (help != null)
                 {
                     ok = false;
@@ -166,7 +173,7 @@ public class ConfigDialog extends Dialog
                 }
                 else
                     tolerance_help.setText(""); //$NON-NLS-1$
-                
+
                 getButton(IDialogConstants.OK_ID).setEnabled(ok);
             }
         };
@@ -174,20 +181,20 @@ public class ConfigDialog extends Dialog
         description_text.addModifyListener(validator);
         tolerance_text.addModifyListener(validator);
         update_period_text.addModifyListener(validator);
-        
+
         return composite;
     }
-    
+
     public String getDescription()
     {
         return description;
     }
-    
+
     public double getTolerance()
     {
         return tolerance;
     }
-    
+
     public double getUpdatePeriod()
     {
         return period;

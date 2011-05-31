@@ -1,10 +1,17 @@
+/*******************************************************************************
+ * Copyright (c) 2010 Oak Ridge National Laboratory.
+ * All rights reserved. This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License v1.0
+ * which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-v10.html
+ ******************************************************************************/
 package org.csstudio.opibuilder.visualparts;
 
 import java.util.List;
 
 import org.csstudio.opibuilder.OPIBuilderPlugin;
 import org.csstudio.opibuilder.script.PVTuple;
-import org.csstudio.platform.ui.util.CustomMediaFactory;
+import org.csstudio.ui.util.CustomMediaFactory;
 import org.eclipse.jface.action.Action;
 import org.eclipse.jface.action.ToolBarManager;
 import org.eclipse.jface.viewers.ArrayContentProvider;
@@ -44,8 +51,8 @@ public class PVTupleTableEditor extends Composite {
 	
 	private List<PVTuple> pvTupleList;
 
-	public PVTupleTableEditor(Composite parent, List<PVTuple> pvTupleList) {
-		super(parent, SWT.BORDER);
+	public PVTupleTableEditor(Composite parent, List<PVTuple> pvTupleList, int style) {
+		super(parent,style);
 		this.pvTupleList = pvTupleList;
 		GridLayout gridLayout = new GridLayout(1, false);
 		gridLayout.marginLeft = 0;
@@ -107,7 +114,7 @@ public class PVTupleTableEditor extends Composite {
 		final TableViewerColumn pvColumn = new TableViewerColumn(viewer, SWT.NONE);		
 		pvColumn.getColumn().setText("PV Name");
 		pvColumn.getColumn().setMoveable(false);
-		pvColumn.getColumn().setWidth(200);
+		pvColumn.getColumn().setWidth(220);
 		pvColumn.setEditingSupport(new PVColumnEditingSupport(viewer, viewer.getTable()));	
 		
 		
@@ -191,7 +198,7 @@ public class PVTupleTableEditor extends Composite {
 						&& selection.getFirstElement() instanceof PVTuple) {
 					pvTupleList.remove(selection.getFirstElement());
 					refreshTableViewerFromAction(null);
-					this.setEnabled(false);
+					super.setEnabled(false);
 				}
 			}
 		};
@@ -256,7 +263,7 @@ public class PVTupleTableEditor extends Composite {
 	}
 	
 	
-	private final class PVTupleLabelProvider extends LabelProvider implements ITableLabelProvider{
+	private final static class PVTupleLabelProvider extends LabelProvider implements ITableLabelProvider{
 
 		public Image getColumnImage(Object element, int columnIndex) {			
 			if (columnIndex == 1 && element instanceof PVTuple) {
@@ -280,7 +287,7 @@ public class PVTupleTableEditor extends Composite {
 		
 	}
 	
-	private final class PVColumnEditingSupport extends EditingSupport{
+	private final static class PVColumnEditingSupport extends EditingSupport{
 
 		private Table table;
 		public PVColumnEditingSupport(ColumnViewer viewer, Table table) {
@@ -318,7 +325,7 @@ public class PVTupleTableEditor extends Composite {
 	}
 	
 	
-	private final class TriggerColumnEditingSupport extends EditingSupport{
+	private final static class TriggerColumnEditingSupport extends EditingSupport{
 
 		private Table table;
 		public TriggerColumnEditingSupport(ColumnViewer viewer, Table table) {

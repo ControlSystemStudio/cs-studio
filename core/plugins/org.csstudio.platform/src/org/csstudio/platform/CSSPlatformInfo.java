@@ -24,9 +24,6 @@ package org.csstudio.platform;
 
 import java.net.InetAddress;
 import java.net.UnknownHostException;
-import java.util.Collection;
-
-import org.csstudio.platform.logging.CentralLogger;
 
 /**
  * 
@@ -50,16 +47,6 @@ public final class CSSPlatformInfo {
 	/** Holds the only one instance of this class. */
 	private static CSSPlatformInfo _instance = null;
 	
-	/**
-	 * Stores whether CSS is running onsite.
-	 */
-	private boolean onsite = false;
-	
-	/**
-	 * Logger for this class. 
-	 */
-	private static final CentralLogger log = CentralLogger.getInstance();
-	
 	private CSSPlatformInfo() {
 		init();
 	}
@@ -72,33 +59,14 @@ public final class CSSPlatformInfo {
 
 			hostID = localhost.getHostName();
 			qualifiedHostName = localhost.getCanonicalHostName();
-			onsite = isOnsite(localhost);
 		} catch (UnknownHostException uhe) {
 			hostID = "NA";
 			qualifiedHostName = "";
-			onsite = false;
 		}
 
 		applicationID = "CSS";
 	}
 	
-	/**
-	 * Detects whether the given address is an onsite address.
-	 * @param address the address to check.
-	 * @return <code>true</code> if the address is onsite, <code>false</code>
-	 * otherwise.
-	 */
-	private boolean isOnsite(InetAddress address) {
-		Collection<Subnet> onsiteSubnets =
-			OnsiteSubnetPreferences.getOnsiteSubnets();
-		for (Subnet subnet : onsiteSubnets) {
-			if (subnet.contains(address)) {
-				return true;
-			}
-		}
-		return false;
-	}
-
 	/**
 	 * Return the only one instance of this class.
 	 * 
@@ -110,15 +78,6 @@ public final class CSSPlatformInfo {
 		}
 
 		return _instance;
-	}
-	
-	/**
-	 * Returns whether CSS is running onsite.
-	 * @return <code>true</code> if CSS is running onsite, <code>false</code>
-	 *         otherwise.
-	 */
-	public boolean isOnsite() {
-		return onsite;
 	}
 	
 	/**

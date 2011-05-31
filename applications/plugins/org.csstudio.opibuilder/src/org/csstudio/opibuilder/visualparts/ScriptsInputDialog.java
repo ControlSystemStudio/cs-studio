@@ -1,3 +1,10 @@
+/*******************************************************************************
+ * Copyright (c) 2010 Oak Ridge National Laboratory.
+ * All rights reserved. This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License v1.0
+ * which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-v10.html
+ ******************************************************************************/
 package org.csstudio.opibuilder.visualparts;
 
 import java.util.ArrayList;
@@ -6,12 +13,12 @@ import java.util.List;
 import org.csstudio.opibuilder.OPIBuilderPlugin;
 import org.csstudio.opibuilder.script.PVTuple;
 import org.csstudio.opibuilder.script.ScriptData;
+import org.csstudio.opibuilder.script.ScriptService;
 import org.csstudio.opibuilder.script.ScriptsInput;
-import org.csstudio.platform.ui.util.CustomMediaFactory;
+import org.csstudio.ui.util.CustomMediaFactory;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.jface.action.Action;
 import org.eclipse.jface.action.ToolBarManager;
-import org.eclipse.jface.dialogs.Dialog;
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.viewers.ISelectionChangedListener;
 import org.eclipse.jface.viewers.IStructuredSelection;
@@ -21,13 +28,18 @@ import org.eclipse.jface.viewers.TableViewer;
 import org.eclipse.jface.window.Window;
 import org.eclipse.osgi.util.NLS;
 import org.eclipse.swt.SWT;
+import org.eclipse.swt.events.SelectionAdapter;
+import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
+import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Shell;
+import org.eclipse.swt.widgets.TabFolder;
+import org.eclipse.swt.widgets.TabItem;
 import org.eclipse.swt.widgets.ToolBar;
 import org.eclipse.ui.model.BaseWorkbenchContentProvider;
 import org.eclipse.ui.model.WorkbenchLabelProvider;
@@ -36,7 +48,7 @@ import org.eclipse.ui.model.WorkbenchLabelProvider;
  * @author Xihui Chen
  *
  */
-public class ScriptsInputDialog extends Dialog {
+public class ScriptsInputDialog extends HelpTrayDialog {
 	
 	private Action addAction;
 	private Action editAction;
@@ -46,7 +58,9 @@ public class ScriptsInputDialog extends Dialog {
 	
 	private TableViewer scriptsViewer;
 	private PVTupleTableEditor pvsEditor;
-	
+	private Button skipFirstExecutionButton;
+	private Button checkConnectivityButton;
+	private Button stopExecuteOnErrorButton;
 	
 	private List<ScriptData> scriptDataList;
 	private String title;	
@@ -78,6 +92,11 @@ public class ScriptsInputDialog extends Dialog {
 			}
 		}
 		super.okPressed();
+	}
+	
+	@Override
+	protected String getHelpResourcePath() {
+		return "/" + OPIBuilderPlugin.PLUGIN_ID + "/html/Script.html"; //$NON-NLS-1$; //$NON-NLS-2$
 	}
 	
 	/**
@@ -121,7 +140,7 @@ public class ScriptsInputDialog extends Dialog {
 		final Composite mainComposite = new Composite(parent_Composite, SWT.None);			
 		mainComposite.setLayout(new GridLayout(2, false));
 		GridData gridData = new GridData(SWT.FILL, SWT.FILL, true, true);
-		gridData.heightHint = 200;
+		gridData.heightHint = 250;
 		mainComposite.setLayoutData(gridData);
 		
 		// Left Panel: List of scripts
@@ -169,14 +188,107 @@ public class ScriptsInputDialog extends Dialog {
 		gd = new GridData(SWT.FILL, SWT.FILL, true, true);
 		gd.minimumWidth = 250; // Account for the StringTableEditor's minimum size
 		rightComposite.setLayoutData(gd);
-		this.createLabel(rightComposite, "Input PVs for the selected script");
+		this.createLabel(rightComposite, "");
 		
-		pvsEditor = new PVTupleTableEditor(rightComposite, new ArrayList<PVTuple>());
+		TabFolder tabFolder = new TabFolder(rightComposite, SWT.None);
+		tabFolder.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true));
+		
+		TabItem pvTab = new TabItem(tabFolder, SWT.NONE);
+		pvTab.setText("Input PVs");		
+		TabItem optionTab = new TabItem(tabFolder, SWT.NONE);
+		optionTab.setText("Options");
+		
+		
+		pvsEditor = new PVTupleTableEditor(tabFolder, new ArrayList<PVTuple>(), SWT.NONE);
 		pvsEditor.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true));
 		pvsEditor.setEnabled(false);
 		
-		if(scriptDataList.size() > 0)
+		pvTab.setControl(pvsEditor);
+		
+		final Composite optionTabComposite = new Composite(tabFolder, SWT.None);
+		optionTabComposite.setLayout(new GridLayout(1, false));
+		optionTab.setControl(optionTabComposite);
+		skipFirstExecutionButton = new Button(optionTabComposite, SWT.CHECK|SWT.WRAP);
+		gd = new GridData(SWT.FILL, SWT.FILL, true, false);
+		gd.minimumWidth = 300;
+		skipFirstExecutionButton.setLayoutData(gd);
+		skipFirstExecutionButton.setText("Skip executions triggered by PVs' first connections.");
+		skipFirstExecutionButton.setToolTipText(
+			"Skip the script executions triggered by PVs' first connections during OPI startup.\n" +
+			"This is useful if you want to trigger a script from user inputs only.");
+		skipFirstExecutionButton.setSelection(false);
+		skipFirstExecutionButton.setEnabled(false);
+		skipFirstExecutionButton.addSelectionListener(new SelectionAdapter() {
+			@Override
+			public void widgetSelected(SelectionEvent e) {
+				IStructuredSelection selection = 
+					(IStructuredSelection) scriptsViewer.getSelection();
+				if(!selection.isEmpty()){
+					((ScriptData)selection.getFirstElement()).setSkipPVsFirstConnection(
+							skipFirstExecutionButton.getSelection());
+				}				
+			}
+		});	
+		
+		checkConnectivityButton = new Button(optionTabComposite, SWT.CHECK|SWT.WRAP);
+		checkConnectivityButton.setLayoutData(gd);
+		checkConnectivityButton.setSelection(false);
+		checkConnectivityButton.setText(
+				"Execute anyway even if some PVs are disconnected.");
+		checkConnectivityButton.setToolTipText(
+				"This is only useful if you want to handle PVs' disconnection in script.\nOtherwise, please keep it unchecked.");
+		checkConnectivityButton.setEnabled(false);
+		checkConnectivityButton.addSelectionListener(new SelectionAdapter() {
+			@Override
+			public void widgetSelected(SelectionEvent e) {
+				IStructuredSelection selection = 
+					(IStructuredSelection) scriptsViewer.getSelection();
+				if(!selection.isEmpty()){
+					((ScriptData)selection.getFirstElement()).setCheckConnectivity(
+							!checkConnectivityButton.getSelection());
+				}
+				if(checkConnectivityButton.getSelection()){
+					MessageDialog.openWarning(getShell(), "Warning", 
+							"If this option is checked, " +
+							"the script itself is responsible for checking PV's connectivity before using that PV in the script.\n" +
+							"Otherwise, you will probably get an error message with java.lang.NullPointerException. \n" +
+							"PV's connectivity can be checked via this method: pvArray[#].isConnected()");
+				}
+			}
+		});
+		
+		stopExecuteOnErrorButton = new Button(optionTabComposite, SWT.CHECK|SWT.WRAP);
+		stopExecuteOnErrorButton.setLayoutData(gd);
+		stopExecuteOnErrorButton.setSelection(false);
+		stopExecuteOnErrorButton.setText(
+				"Do not execute the script if error was detected.");
+		stopExecuteOnErrorButton.setToolTipText(
+				"If this option is selected, the script will not be executed \n" +
+				"on next trigger if error was detected in the script.");
+		stopExecuteOnErrorButton.setEnabled(false);
+		stopExecuteOnErrorButton.addSelectionListener(new SelectionAdapter() {
+			@Override
+			public void widgetSelected(SelectionEvent e) {
+				IStructuredSelection selection = 
+					(IStructuredSelection) scriptsViewer.getSelection();
+				if(!selection.isEmpty()){
+					((ScriptData)selection.getFirstElement()).setStopExecuteOnError(
+							stopExecuteOnErrorButton.getSelection());
+				}				
+			}
+		});
+		
+		
+		if(scriptDataList.size() > 0){
 			setScriptsViewerSelection(scriptDataList.get(0));
+			checkConnectivityButton.setSelection(
+					!scriptDataList.get(0).isCheckConnectivity());
+			skipFirstExecutionButton.setSelection(
+					scriptDataList.get(0).isSkipPVsFirstConnection());
+			stopExecuteOnErrorButton.setSelection(
+					scriptDataList.get(0).isStopExecuteOnError());
+			
+		}
 		return parent_Composite;
 	}
 	
@@ -196,12 +308,25 @@ public class ScriptsInputDialog extends Dialog {
 			pvsEditor.updateInput(((ScriptData) selection
 					.getFirstElement()).getPVList());
 			pvsEditor.setEnabled(true);
+			checkConnectivityButton.setSelection(!((ScriptData) selection
+					.getFirstElement()).isCheckConnectivity());
+			checkConnectivityButton.setEnabled(true);
+			skipFirstExecutionButton.setSelection(((ScriptData) selection
+					.getFirstElement()).isSkipPVsFirstConnection());
+			skipFirstExecutionButton.setEnabled(true);
+			stopExecuteOnErrorButton.setSelection(((ScriptData) selection
+					.getFirstElement()).isStopExecuteOnError());
+			stopExecuteOnErrorButton.setEnabled(true);
+			
 		} else {
 			removeAction.setEnabled(false);
 			moveUpAction.setEnabled(false);
 			moveDownAction.setEnabled(false);
 			pvsEditor.setEnabled(false);
 			editAction.setEnabled(false);
+			checkConnectivityButton.setEnabled(false);
+			skipFirstExecutionButton.setEnabled(false);
+			stopExecuteOnErrorButton.setEnabled(false);
 		}
 	}
 	
@@ -256,7 +381,8 @@ public class ScriptsInputDialog extends Dialog {
 			public void run() {
 				IPath path;				
 				RelativePathSelectionDialog rsd = new RelativePathSelectionDialog(
-						Display.getCurrent().getActiveShell(), startPath, "Select a java script file", new String[]{"js"});
+						Display.getCurrent().getActiveShell(), startPath, "Select a script file",
+						new String[]{ScriptService.JS, ScriptService.PY});
 				if (rsd.open() == Window.OK) {
 					if (rsd.getSelectedResource() != null) {
 						path = rsd.getSelectedResource();
@@ -280,7 +406,8 @@ public class ScriptsInputDialog extends Dialog {
 				if (!selection.isEmpty()
 						&& selection.getFirstElement() instanceof ScriptData) {
 					RelativePathSelectionDialog rsd = new RelativePathSelectionDialog(
-					Display.getCurrent().getActiveShell(), startPath, "Select a java script file", new String[]{"js"});
+					Display.getCurrent().getActiveShell(), startPath, "Select a script file",
+					new String[]{ScriptService.JS, ScriptService.PY});
 					rsd.setSelectedResource(((ScriptData)selection.getFirstElement()).getPath());
 					if (rsd.open() == Window.OK) {
 						if (rsd.getSelectedResource() != null) {
@@ -370,4 +497,5 @@ public class ScriptsInputDialog extends Dialog {
 						"icons/search_next.gif")); //$NON-NLS-1$
 		moveDownAction.setEnabled(false);
 	}
+	
 }

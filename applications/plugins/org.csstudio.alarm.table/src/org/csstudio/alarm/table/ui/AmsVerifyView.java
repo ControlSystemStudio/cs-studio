@@ -29,10 +29,10 @@ import org.csstudio.alarm.table.internal.localization.Messages;
 import org.csstudio.alarm.table.jms.ISendMapMessage;
 import org.csstudio.alarm.table.preferences.verifier.AmsVerifyViewPreferenceConstants;
 import org.csstudio.alarm.table.ui.messagetable.MessageTable;
+import org.csstudio.auth.security.SecurityFacade;
+import org.csstudio.auth.security.User;
 import org.csstudio.platform.CSSPlatformInfo;
 import org.csstudio.platform.logging.CentralLogger;
-import org.csstudio.platform.security.SecurityFacade;
-import org.csstudio.platform.security.User;
 import org.eclipse.jface.viewers.TableViewer;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.SelectionEvent;
@@ -148,7 +148,7 @@ public class AmsVerifyView extends LogView {
                                                                       getCurrentTopicSetName());
         setCurrentTimeToRunningSince(messageList.getStartTime());
         getSite().setSelectionProvider(_tableViewer);
-        makeActions();
+        createAndRegisterActions();
         _parent.layout();
 
     }

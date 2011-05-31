@@ -1,15 +1,19 @@
+/*******************************************************************************
+ * Copyright (c) 2010 Oak Ridge National Laboratory.
+ * All rights reserved. This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License v1.0
+ * which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-v10.html
+ ******************************************************************************/
 package org.csstudio.opibuilder.widgets.model;
 
 import org.csstudio.opibuilder.model.AbstractPVWidgetModel;
 import org.csstudio.opibuilder.properties.BooleanProperty;
 import org.csstudio.opibuilder.properties.ColorProperty;
 import org.csstudio.opibuilder.properties.ComboProperty;
-import org.csstudio.opibuilder.properties.FontProperty;
 import org.csstudio.opibuilder.properties.IntegerProperty;
 import org.csstudio.opibuilder.properties.StringProperty;
 import org.csstudio.opibuilder.properties.WidgetPropertyCategory;
-import org.csstudio.opibuilder.util.MediaService;
-import org.csstudio.opibuilder.util.OPIFont;
 import org.eclipse.swt.graphics.Color;
 import org.eclipse.swt.graphics.RGB;
 
@@ -52,12 +56,6 @@ public abstract class AbstractBoolWidgetModel extends AbstractPVWidgetModel {
 	 * to the PV when widget is off. */
 	public static final String PROP_OFF_STATE = "off_state"; //$NON-NLS-1$
 	
-	
-	/**
-	 * Font of the widget.
-	 */
-	public static final String PROP_FONT = "font"; //$NON-NLS-1$
-	
 	/** The default color of the on color property. */
 	private static final RGB DEFAULT_ON_COLOR = new RGB(0,255,0);
 	/** The default color of the off color property. */
@@ -84,8 +82,6 @@ public abstract class AbstractBoolWidgetModel extends AbstractPVWidgetModel {
 				WidgetPropertyCategory.Display, DEFAULT_ON_COLOR));
 		addProperty(new ColorProperty(PROP_OFF_COLOR, "Off Color",
 				WidgetPropertyCategory.Display, DEFAULT_OFF_COLOR));		
-		addProperty(new FontProperty(PROP_FONT, "Font",
-				WidgetPropertyCategory.Display, MediaService.DEFAULT_FONT)); //$NON-NLS-1$
 		addProperty(new ComboProperty(PROP_DATA_TYPE, "Data Type",
 				WidgetPropertyCategory.Behavior, new String[]{"Bit", "Enum"}, 0));
 		addProperty(new StringProperty(PROP_ON_STATE, "On State", 
@@ -137,15 +133,6 @@ public abstract class AbstractBoolWidgetModel extends AbstractPVWidgetModel {
 	 */
 	public boolean isShowBoolLabel() {
 		return (Boolean) getProperty(PROP_SHOW_BOOL_LABEL).getPropertyValue();
-	}
-	
-	/**
-	 * Return the label font.
-	 * 
-	 * @return The label font.
-	 */
-	public OPIFont getFont() {
-		return (OPIFont) getProperty(PROP_FONT).getPropertyValue();
 	}
 	
 	public int getDataType(){

@@ -55,6 +55,11 @@ import com.cosylab.util.ListenerList;
  */
 public abstract class AbstractPlug implements PlugContext
 {
+	/**
+	 * By default caching of proxy references is enabled.
+	 */
+	private static final boolean DEFAULT_CACHING_ENABLED=true;
+	
 	static class AbstractProxyHolder {
 		int count;
 		protected String id;
@@ -63,7 +68,7 @@ public abstract class AbstractPlug implements PlugContext
 			this.id=id;
 		}
 		
-		static String toID(Proxy p) {
+		static String toID(Proxy<?> p) {
 			return toID(p.getUniqueName(),p.getClass());
 		}
 		static String toID(String name, Class<?> type) {
@@ -73,54 +78,55 @@ public abstract class AbstractPlug implements PlugContext
 	
 	class PropertyProxyHolder extends AbstractProxyHolder
 	{
-		PropertyProxyHolder(PropertyProxy<?> p)
+		PropertyProxyHolder(PropertyProxy<?,?> p)
 		{
 			super(toID(p));
 			proxy = p;
 		}
 
-		PropertyProxy<?> proxy;
+		PropertyProxy<?,?> proxy;
 	}
 
 	class DirectoryProxyHolder extends AbstractProxyHolder
 	{
-		DirectoryProxyHolder(DirectoryProxy p)
+		DirectoryProxyHolder(DirectoryProxy<?> p)
 		{
 			super(toID(p));
 			proxy = p;
 		}
 
-		DirectoryProxy proxy;
+		DirectoryProxy<?> proxy;
 	}
 
 	class DeviceProxyHolder extends AbstractProxyHolder
 	{
-		DeviceProxyHolder(DeviceProxy p)
+		DeviceProxyHolder(DeviceProxy<?> p)
 		{
 			super(toID(p));
 			proxy = p;
 		}
 
-		DeviceProxy proxy;
+		DeviceProxy<?> proxy;
 	}
 
 	private Map<String, PropertyProxyHolder> propertyCache;
 	private Map<String, DirectoryProxyHolder> directoryCache;
 	private Map<String, DeviceProxyHolder> deviceCache;
-	private boolean cachingEnabled = true;
+	private boolean cachingEnabled = DEFAULT_CACHING_ENABLED;
 	private Properties configuration;
 	private Map<Class<?extends AbstractDevice>, Class<?extends AbstractDevice>> deviceImplementationClasses =
 		new HashMap<Class<?extends AbstractDevice>, Class<?extends AbstractDevice>>();
 	private Map<Class<?extends SimpleProperty<?>>, Class<?extends SimpleProperty<?>>> propertyImplementationClasses =
 		new HashMap<Class<?extends SimpleProperty<?>>, Class<?extends SimpleProperty<?>>>();
-	private Map<Class<?extends AbstractDevice>, Class<?extends DeviceProxy>> deviceProxiesImplementationClasses =
-		new HashMap<Class<?extends AbstractDevice>, Class<?extends DeviceProxy>>();
-	private Map<Class<?extends SimpleProperty<?>>, Class<?extends PropertyProxy<?>>> propertyProxiesImplementationClasses =
-		new HashMap<Class<?extends SimpleProperty<?>>, Class<?extends PropertyProxy<?>>>();
+	private Map<Class<?extends AbstractDevice>, Class<?extends DeviceProxy<?>>> deviceProxiesImplementationClasses =
+		new HashMap<Class<?extends AbstractDevice>, Class<?extends DeviceProxy<?>>>();
+	private Map<Class<?extends SimpleProperty<?>>, Class<?extends PropertyProxy<?,?>>> propertyProxiesImplementationClasses =
+		new HashMap<Class<?extends SimpleProperty<?>>, Class<?extends PropertyProxy<?,?>>>();
 	protected ListenerList plugListeners;
 	private Identifier identifier;
 	private Logger logger;
 	protected boolean debug = false;
+	// TODO (jpenning) no longer in use?
 	protected AbstractApplicationContext applicationContext;
 
 	/**
@@ -139,19 +145,7 @@ public abstract class AbstractPlug implements PlugContext
 	 */
 	protected AbstractPlug(Properties configuration)
 	{
-		super();
-		// at the moment we do not use weak reference
-		propertyCache = new HashMap<String, PropertyProxyHolder>(100);
-		directoryCache = new HashMap<String, DirectoryProxyHolder>(100);
-		deviceCache = new HashMap<String, DeviceProxyHolder>(100);
-
-		if (configuration == null) {
-			this.configuration = new Properties();
-		} else {
-			this.configuration = (Properties)configuration.clone();
-		}
-		
-		getLogger().info("'"+getPlugType()+"' started.");
+		this(configuration,DEFAULT_CACHING_ENABLED);
 	}
 
 	/**
@@ -160,8 +154,20 @@ public abstract class AbstractPlug implements PlugContext
 	     */
 	protected AbstractPlug(Properties configuration, boolean cachingEnabled)
 	{
-		this(configuration);
+		super();
+		// at the moment we do not use weak reference
+		propertyCache = new HashMap<String, PropertyProxyHolder>(100);
+		directoryCache = new HashMap<String, DirectoryProxyHolder>(100);
+		deviceCache = new HashMap<String, DeviceProxyHolder>(100);
 		this.cachingEnabled = cachingEnabled;
+
+		if (configuration == null) {
+			this.configuration = new Properties();
+		} else {
+			this.configuration = (Properties)configuration.clone();
+		}
+		
+		getLogger().info("'"+getPlugType()+"' started.");
 	}
 
 	/**
@@ -183,7 +189,7 @@ public abstract class AbstractPlug implements PlugContext
 	 * @return proxy for remote property
 	 *
 	 */
-	protected abstract <T extends PropertyProxy<?>> T createNewPropertyProxy(
+	protected abstract <T extends PropertyProxy<?,?>> T createNewPropertyProxy(
 	    String uniqueName, Class<T> type) throws ConnectionException;
 
 	/**
@@ -200,7 +206,7 @@ public abstract class AbstractPlug implements PlugContext
 	 *
 	 * @return directory for proxy
 	 */
-	protected abstract DirectoryProxy createNewDirectoryProxy(String uniqueName)
+	protected abstract DirectoryProxy<?> createNewDirectoryProxy(String uniqueName)
 		throws ConnectionException;
 
 	/**
@@ -223,7 +229,7 @@ public abstract class AbstractPlug implements PlugContext
 	 * @return proxy for remote property
 	 *
 	 */
-	protected abstract <T extends DeviceProxy> T createNewDeviceProxy(
+	protected abstract <T extends DeviceProxy<?>> T createNewDeviceProxy(
 	    String uniqueName, Class<T> type) throws ConnectionException;
 
 	/**
@@ -252,7 +258,7 @@ public abstract class AbstractPlug implements PlugContext
 	 * @return property proxy  implementation class
 	 * @throws RemoteException if remote request was issued and was not successfull
 	 */
-	protected abstract Class<?extends PropertyProxy<?>> getPropertyProxyImplementationClass(String uniquePropertyName) throws RemoteException;
+	protected abstract Class<?extends PropertyProxy<?,?>> getPropertyProxyImplementationClass(String uniquePropertyName) throws RemoteException;
 	
 	
 	/**
@@ -277,7 +283,7 @@ public abstract class AbstractPlug implements PlugContext
 	 * @throws RemoteException if instantiation of object fails
 	 * @throws NullPointerException if unique name parameter is null
 	 */
-	public <TT extends PropertyProxy<?>> TT getPropertyProxy(String uniqueName,
+	public <TT extends PropertyProxy<?,?>> TT getPropertyProxy(String uniqueName,
 	    Class<TT> type) throws ConnectionException
 	{
 		if (uniqueName == null) {
@@ -285,7 +291,7 @@ public abstract class AbstractPlug implements PlugContext
 		}
 		try {
 	
-			PropertyProxy<?> p;
+			PropertyProxy<?,?> p;
 			if (PropertyProxy.class.equals(type)) {
 				p= getPropertyProxyFromCache(uniqueName);
 			} else {
@@ -300,22 +306,22 @@ public abstract class AbstractPlug implements PlugContext
 					    + "' and not of expected type '" + type.getName() + "'.");
 				}
 	
-				getLogger().debug("'"+uniqueName+"' taken from connection cache (t:"+type.getName()+").");
+				getLogger().debug("'"+uniqueName+"' reused    (c:"+p.getConnectionInfo()+" t:"+type.getName()+").");
 				return type.cast(p);
 			}
 		
 			TT pp = createNewPropertyProxy(uniqueName, type);
 			
-			getLogger().info("'"+uniqueName+"' created (t:"+type.getName()+").");
+			getLogger().debug("'"+uniqueName+"' created   (c:"+pp.getConnectionInfo()+" t:"+type.getName()+").");
 
 			putPropertyProxyToCache(pp);
 
 			return pp;
 		} catch (ConnectionException e) {
-			getLogger().warn("'"+uniqueName+"' failed to connect (t:"+type.getName()+").", e);
+			getLogger().warn("'"+uniqueName+"' failed (t:"+type.getName()+").", e);
 			throw e;
 		} catch (Exception e) {
-			getLogger().error("'"+uniqueName+"' failed to connect, internal error possible (t:"+type.getName()+").", e);
+			getLogger().error("'"+uniqueName+"' connect failed, internal error possible (t:"+type.getName()+").", e);
 			throw new ConnectionException(this, "Internal error while connecting to '"+uniqueName+"'.", e);
 		}
 
@@ -340,7 +346,7 @@ public abstract class AbstractPlug implements PlugContext
 	 *
 	 * @throws ConnectionException if instantiation of object fails
 	 */
-	public PropertyProxy<?> getPropertyProxy(String uniqueName)
+	public PropertyProxy<?,?> getPropertyProxy(String uniqueName)
 		throws ConnectionException
 	{
 		return getPropertyProxy(uniqueName, PropertyProxy.class);
@@ -366,14 +372,14 @@ public abstract class AbstractPlug implements PlugContext
 	 * @throws ConnectionException if instantiation of object fails
 	 * @throws NullPointerException  if unique name parameter is null
 	 */
-	public DirectoryProxy getDirectoryProxy(String uniqueName)
+	public DirectoryProxy<?> getDirectoryProxy(String uniqueName)
 		throws ConnectionException
 	{
 		if (uniqueName == null) {
 			throw new NullPointerException("uniqueName");
 		}
 
-		DirectoryProxy d = getDirectoryProxyFromCache(uniqueName);
+		DirectoryProxy<?> d = getDirectoryProxyFromCache(uniqueName);
 
 		if (d != null) {
 			return d;
@@ -391,7 +397,7 @@ public abstract class AbstractPlug implements PlugContext
 	 *
 	 * @param proxy Proxy to release
 	 */
-	public void releaseProxy(Proxy proxy)
+	public void releaseProxy(Proxy<?> proxy)
 	{
 		if (proxy == null) {
 			throw new NullPointerException("proxy");
@@ -401,27 +407,27 @@ public abstract class AbstractPlug implements PlugContext
 
 		synchronized (this) {
 			if (proxy instanceof DirectoryProxy) {
-				canDestroy = releaseDirectoryProxyFromCache((DirectoryProxy)proxy);
+				canDestroy = releaseDirectoryProxyFromCache((DirectoryProxy<?>)proxy);
 			}
 
 			if (proxy instanceof PropertyProxy) {
-				canDestroy &= releasePropertyProxyFromCache((PropertyProxy<?>)proxy);
+				canDestroy &= releasePropertyProxyFromCache((PropertyProxy<?,?>)proxy);
 			}
 			
 			if (proxy instanceof DeviceProxy) {
-				canDestroy &=releaseDeviceProxyFromCache((DeviceProxy)proxy);
+				canDestroy &=releaseDeviceProxyFromCache((DeviceProxy<?>)proxy);
 			}
 		}
 
 		if (canDestroy) {
 			try {
 				proxy.destroy();
-				getLogger().info("'"+proxy.getUniqueName()+"' destroyed (t:"+proxy.getClass().getName()+").");
+				getLogger().debug("'"+proxy.getUniqueName()+"' destroyed (c:"+proxy.getConnectionInfo()+" t:"+proxy.getClass().getName()+").");
 			} catch (Exception e) {
-				getLogger().warn("'"+proxy.getUniqueName()+"' destroyed with error (t:"+proxy.getClass().getName()+").",e);
+				getLogger().warn("'"+proxy.getUniqueName()+"' destroyed with error (c:"+proxy.getConnectionInfo()+" t:"+proxy.getClass().getName()+").",e);
 			}
 		} else {
-			getLogger().debug("'"+proxy.getUniqueName()+"' release indicated (t:"+proxy.getClass().getName()+").");
+			getLogger().debug("'"+proxy.getUniqueName()+"' release indicated (c:"+proxy.getConnectionInfo()+" t:"+proxy.getClass().getName()+").");
 		}
 	}
 
@@ -441,7 +447,7 @@ public abstract class AbstractPlug implements PlugContext
 	 *
 	 * @return property proxy from cache or <code>null</code> is not cached
 	 */
-	protected synchronized PropertyProxy<?> getPropertyProxyFromCache(
+	protected synchronized PropertyProxy<?,?> getPropertyProxyFromCache(
 	    String uniqueName)
 	{
 		PropertyProxyHolder h = propertyCache.get(uniqueName);
@@ -464,7 +470,7 @@ public abstract class AbstractPlug implements PlugContext
 	 *
 	 * @return property proxy from cache or <code>null</code> is not cached
 	 */
-	protected synchronized PropertyProxy<?> getPropertyProxyFromCache(
+	protected synchronized PropertyProxy<?,?> getPropertyProxyFromCache(
 	    String uniqueName, Class<?> type)
 	{
 		PropertyProxyHolder h = propertyCache.get(AbstractProxyHolder.toID(uniqueName,type));
@@ -486,7 +492,7 @@ public abstract class AbstractPlug implements PlugContext
 	 *
 	 * @return property proxy from cache or <code>null</code> is not cached
 	 */
-	protected synchronized DirectoryProxy getDirectoryProxyFromCache(
+	protected synchronized DirectoryProxy<?> getDirectoryProxyFromCache(
 	    String uniqueName)
 	{
 		DirectoryProxyHolder h = directoryCache.get(uniqueName);
@@ -509,7 +515,7 @@ public abstract class AbstractPlug implements PlugContext
 	 *
 	 * @return property proxy from cache or <code>null</code> is not cached
 	 */
-	protected synchronized DirectoryProxy getDirectoryProxyFromCache(
+	protected synchronized DirectoryProxy<?> getDirectoryProxyFromCache(
 	    String uniqueName, Class<?> type)
 	{
 		DirectoryProxyHolder h = directoryCache.get(AbstractProxyHolder.toID(uniqueName,type));
@@ -528,7 +534,7 @@ public abstract class AbstractPlug implements PlugContext
 	 *
 	 * @param proxy
 	 */
-	protected synchronized void putPropertyProxyToCache(PropertyProxy<?> proxy)
+	protected synchronized void putPropertyProxyToCache(PropertyProxy<?,?> proxy)
 	{
 		PropertyProxyHolder h = new PropertyProxyHolder(proxy);
 		propertyCache.put(h.id, h);
@@ -542,7 +548,7 @@ public abstract class AbstractPlug implements PlugContext
 	 *
 	 * @param proxy
 	 */
-	protected synchronized void putDirectoryProxyToCache(DirectoryProxy proxy)
+	protected synchronized void putDirectoryProxyToCache(DirectoryProxy<?> proxy)
 	{
 		DirectoryProxyHolder h = new DirectoryProxyHolder(proxy);
 		directoryCache.put(h.id, h);
@@ -562,7 +568,7 @@ public abstract class AbstractPlug implements PlugContext
 	 *         use count was reduced to 0.
 	 */
 	protected synchronized boolean releaseDirectoryProxyFromCache(
-	    DirectoryProxy proxy)
+	    DirectoryProxy<?> proxy)
 	{
 		DirectoryProxyHolder h = directoryCache.get(AbstractProxyHolder.toID(proxy));
 
@@ -595,7 +601,7 @@ public abstract class AbstractPlug implements PlugContext
 	 *         use count was reduced to 0.
 	 */
 	protected synchronized boolean releasePropertyProxyFromCache(
-	    PropertyProxy<?> proxy)
+	    PropertyProxy<?,?> proxy)
 	{
 		PropertyProxyHolder h = propertyCache.get(AbstractProxyHolder.toID(proxy));
 
@@ -636,7 +642,7 @@ public abstract class AbstractPlug implements PlugContext
 	 *
 	 * @throws ConnectionException if instantiation of object fails
 	 */
-	public DeviceProxy getDeviceProxy(String uniqueName)
+	public DeviceProxy<?> getDeviceProxy(String uniqueName)
 		throws ConnectionException
 	{
 		return getDeviceProxy(uniqueName, DeviceProxy.class);
@@ -665,7 +671,7 @@ public abstract class AbstractPlug implements PlugContext
 	 * @throws ConnectionException if instantiation of object fails
 	 * @throws NullPointerException if unique name parameter is null
 	 */
-	public <TT extends DeviceProxy> TT getDeviceProxy(String uniqueName,
+	public <TT extends DeviceProxy<?>> TT getDeviceProxy(String uniqueName,
 	    Class<TT> type) throws ConnectionException
 	{
 		if (uniqueName == null) {
@@ -673,7 +679,7 @@ public abstract class AbstractPlug implements PlugContext
 		}
 
 		
-		DeviceProxy p;
+		DeviceProxy<?> p;
 		
 		if (DeviceProxy.class.equals(type)) {
 			p= getDeviceProxyFromCache(uniqueName);
@@ -707,7 +713,7 @@ public abstract class AbstractPlug implements PlugContext
 	 *
 	 * @return Device proxy from cache or <code>null</code> is not cached
 	 */
-	protected synchronized DeviceProxy getDeviceProxyFromCache(
+	protected synchronized DeviceProxy<?> getDeviceProxyFromCache(
 	    String uniqueName)
 	{
 		DeviceProxyHolder h = deviceCache.get(uniqueName);
@@ -729,7 +735,7 @@ public abstract class AbstractPlug implements PlugContext
 	 *
 	 * @return Device proxy from cache or <code>null</code> is not cached
 	 */
-	protected synchronized DeviceProxy getDeviceProxyFromCache(
+	protected synchronized DeviceProxy<?> getDeviceProxyFromCache(
 	    String uniqueName, Class<?> type)
 	{
 		DeviceProxyHolder h = deviceCache.get(AbstractProxyHolder.toID(uniqueName,type));
@@ -748,7 +754,7 @@ public abstract class AbstractPlug implements PlugContext
 	 *
 	 * @param proxy
 	 */
-	protected synchronized void putDeviceProxyToCache(DeviceProxy proxy)
+	protected synchronized void putDeviceProxyToCache(DeviceProxy<?> proxy)
 	{
 		DeviceProxyHolder h = new DeviceProxyHolder(proxy);
 		deviceCache.put(h.id, h);
@@ -768,7 +774,7 @@ public abstract class AbstractPlug implements PlugContext
 	 *         use count was reduced to 0.
 	 */
 	protected synchronized boolean releaseDeviceProxyFromCache(
-	    DeviceProxy proxy)
+	    DeviceProxy<?> proxy)
 	{
 		DeviceProxyHolder h = deviceCache.get(AbstractProxyHolder.toID(proxy));
 
@@ -900,10 +906,10 @@ public abstract class AbstractPlug implements PlugContext
 	 * @return property proxy for the given property 
 	 * @throws RemoteException if remote request was issued and was not successfull
 	 */
-	public Class<?extends PropertyProxy<?>> getPropertyProxyImplementationClass(
+	public Class<?extends PropertyProxy<?,?>> getPropertyProxyImplementationClass(
 	    Class<?extends SimpleProperty<?>> type, Class<?extends SimpleProperty<?>> implementationType, String uniquePropertyName) throws RemoteException
 	{
-		Class<? extends PropertyProxy<?>> proxyImplType = null;
+		Class<? extends PropertyProxy<?,?>> proxyImplType = null;
 		
 		if (type !=null) {
 			proxyImplType = propertyProxiesImplementationClasses.get(type);
@@ -929,10 +935,10 @@ public abstract class AbstractPlug implements PlugContext
 
 	 * @return implementor of given interface
 	 */
-	public Class<?extends DeviceProxy> getDeviceProxyImplementationClass(
+	public Class<?extends DeviceProxy<?>> getDeviceProxyImplementationClass(
 	    Class<?extends AbstractDevice> type, Class<?extends AbstractDevice> implementationType, String uniqueDeviceName) throws RemoteException
 	{
-		Class<? extends DeviceProxy> proxyImplType = null;
+		Class<? extends DeviceProxy<?>> proxyImplType = null;
 		
 		if (type !=null) {
 			proxyImplType = deviceProxiesImplementationClasses.get(type);
@@ -954,7 +960,7 @@ public abstract class AbstractPlug implements PlugContext
 	 * @return device proxy  implementation class
 	 * @throws RemoteException if remote request was issued and was not successfull
 	 */
-	protected abstract Class<?extends DeviceProxy> getDeviceProxyImplementationClass(String uniqueDeviceName) throws RemoteException;
+	protected abstract Class<?extends DeviceProxy<?>> getDeviceProxyImplementationClass(String uniqueDeviceName) throws RemoteException;
 
 	/**
 	 * Puts a device implementation class to a map. When calling getDeviceImplementationClass(Class T)
@@ -994,7 +1000,7 @@ public abstract class AbstractPlug implements PlugContext
 	 * @param impl device proxy implementor associated with an abstract device class
 	 */
 	public void registerDeviceProxyImplementationClass(
-	    Class<?extends AbstractDevice> type, Class<?extends DeviceProxy> impl)
+	    Class<?extends AbstractDevice> type, Class<?extends DeviceProxy<?>> impl)
 	{
 		deviceProxiesImplementationClasses.put(type, impl);
 	}
@@ -1009,7 +1015,7 @@ public abstract class AbstractPlug implements PlugContext
 	 * @param impl property proxy implementor associated with a simple property class
 	 */
 	public <T> void registerPropertyProxyImplementationClass(
-	    Class<? extends SimpleProperty<T>> type, Class<? extends PropertyProxy<T>> impl)
+	    Class<? extends SimpleProperty<T>> type, Class<? extends PropertyProxy<T,?>> impl)
 	{
 		propertyProxiesImplementationClasses.put(type, impl);
 	}
@@ -1021,7 +1027,7 @@ public abstract class AbstractPlug implements PlugContext
 	 *
 	 * @return Device proxy from cache or <code>null</code> is not cached
 	 */
-	protected synchronized DeviceProxy _getDeviceProxyFromCache(
+	protected synchronized DeviceProxy<?> _getDeviceProxyFromCache(
 	    String uniqueName)
 	{
 		DeviceProxyHolder h = deviceCache.get(uniqueName);
@@ -1041,7 +1047,7 @@ public abstract class AbstractPlug implements PlugContext
 	 *
 	 * @return Device proxy from cache or <code>null</code> is not cached
 	 */
-	protected synchronized DeviceProxy _getDeviceProxyFromCache(
+	protected synchronized DeviceProxy<?> _getDeviceProxyFromCache(
 	    String uniqueName, Class<?> type)
 	{
 		DeviceProxyHolder h = deviceCache.get(AbstractProxyHolder.toID(uniqueName, type));
@@ -1060,7 +1066,7 @@ public abstract class AbstractPlug implements PlugContext
 	 *
 	 * @return Property proxy from cache or <code>null</code> is not cached
 	 */
-	protected synchronized PropertyProxy<?> _getPropertyProxyFromCache(
+	protected synchronized PropertyProxy<?,?> _getPropertyProxyFromCache(
 	    String uniqueName)
 	{
 		PropertyProxyHolder h = propertyCache.get(uniqueName);
@@ -1080,7 +1086,7 @@ public abstract class AbstractPlug implements PlugContext
 	 *
 	 * @return Property proxy from cache or <code>null</code> is not cached
 	 */
-	protected synchronized PropertyProxy<?> _getPropertyProxyFromCache(
+	protected synchronized PropertyProxy<?,?> _getPropertyProxyFromCache(
 	    String uniqueName, Class<?> type)
 	{
 		PropertyProxyHolder h = propertyCache.get(AbstractProxyHolder.toID(uniqueName,type));
@@ -1099,7 +1105,7 @@ public abstract class AbstractPlug implements PlugContext
 	 *
 	 * @return Directory proxy from cache or <code>null</code> is not cached
 	 */
-	protected synchronized DirectoryProxy _getDirectoryProxyFromCache(
+	protected synchronized DirectoryProxy<?> _getDirectoryProxyFromCache(
 	    String uniqueName)
 	{
 		DirectoryProxyHolder h = directoryCache.get(uniqueName);
@@ -1118,7 +1124,7 @@ public abstract class AbstractPlug implements PlugContext
 	 *
 	 * @return Directory proxy from cache or <code>null</code> is not cached
 	 */
-	protected synchronized DirectoryProxy _getDirectoryProxyFromCache(
+	protected synchronized DirectoryProxy<?> _getDirectoryProxyFromCache(
 	    String uniqueName, Class<?> type)
 	{
 		DirectoryProxyHolder h = directoryCache.get(AbstractProxyHolder.toID(uniqueName,type));
@@ -1256,6 +1262,7 @@ public abstract class AbstractPlug implements PlugContext
 	/* (non-Javadoc)
 	 * @see org.epics.css.dal.EventSystemContext#getEventSystemListeners()
 	 */
+	@SuppressWarnings("unchecked")
 	public EventSystemListener<PlugEvent<?>>[] getEventSystemListeners()
 	{
 		return (EventSystemListener<PlugEvent<?>>[])plugListeners.toArray();
@@ -1327,9 +1334,9 @@ public abstract class AbstractPlug implements PlugContext
 	 * this plug.
 	 * @return
 	 */
-	public synchronized PropertyProxy<?>[] getCachedPropertyProxies() {
+	public synchronized PropertyProxy<?,?>[] getCachedPropertyProxies() {
 		PropertyProxyHolder[] holders = propertyCache.values().toArray(new PropertyProxyHolder[propertyCache.size()]);
-		PropertyProxy<?>[] proxies = new PropertyProxy[propertyCache.size()];
+		PropertyProxy<?,?>[] proxies = new PropertyProxy[propertyCache.size()];
 		for (int i = 0; i < holders.length; i++) {
 			proxies[i] = holders[i].proxy;
 		}
@@ -1341,9 +1348,9 @@ public abstract class AbstractPlug implements PlugContext
 	 * this plug.
 	 * @return
 	 */
-	public synchronized DeviceProxy[] getCachedDeviceProxies() {
+	public synchronized DeviceProxy<?>[] getCachedDeviceProxies() {
 		DeviceProxyHolder[] holders = deviceCache.values().toArray(new DeviceProxyHolder[deviceCache.size()]);
-		DeviceProxy[] proxies = new DeviceProxy[deviceCache.size()];
+		DeviceProxy<?>[] proxies = new DeviceProxy[deviceCache.size()];
 		for (int i = 0; i < holders.length; i++) {
 			proxies[i] = holders[i].proxy;
 		}
@@ -1355,9 +1362,9 @@ public abstract class AbstractPlug implements PlugContext
 	 * this plug.
 	 * @return
 	 */
-	public synchronized DirectoryProxy[] getCachedDirectoryProxies() {
+	public synchronized DirectoryProxy<?>[] getCachedDirectoryProxies() {
 		DirectoryProxyHolder[] holders = directoryCache.values().toArray(new DirectoryProxyHolder[directoryCache.size()]);
-		DirectoryProxy[] proxies = new DirectoryProxy[directoryCache.size()];
+		DirectoryProxy<?>[] proxies = new DirectoryProxy[directoryCache.size()];
 		for (int i = 0; i < holders.length; i++) {
 			proxies[i] = holders[i].proxy;
 		}
@@ -1369,13 +1376,13 @@ public abstract class AbstractPlug implements PlugContext
 	 * not support remove of elements.
 	 * @return
 	 */
-	public synchronized Iterator<PropertyProxy<?>> cachedPropertyProxiesIterator() {
+	public synchronized Iterator<PropertyProxy<?,?>> cachedPropertyProxiesIterator() {
 		final Iterator<PropertyProxyHolder> holder = propertyCache.values().iterator();
-		return new Iterator<PropertyProxy<?>>(){
+		return new Iterator<PropertyProxy<?,?>>(){
 			public boolean hasNext() {
 				return holder.hasNext();
 			}
-			public PropertyProxy<?> next() {
+			public PropertyProxy<?,?> next() {
 				return holder.next().proxy;
 			}
 			public void remove() {
@@ -1389,13 +1396,13 @@ public abstract class AbstractPlug implements PlugContext
 	 * not support remove of elements.
 	 * @return
 	 */
-	public synchronized Iterator<DeviceProxy> cachedDeviceProxiesIterator() {
+	public synchronized Iterator<DeviceProxy<?>> cachedDeviceProxiesIterator() {
 		final Iterator<DeviceProxyHolder> holder = deviceCache.values().iterator();
-		return new Iterator<DeviceProxy>(){
+		return new Iterator<DeviceProxy<?>>(){
 			public boolean hasNext() {
 				return holder.hasNext();
 			}
-			public DeviceProxy next() {
+			public DeviceProxy<?> next() {
 				return holder.next().proxy;
 			}
 			public void remove() {
@@ -1409,13 +1416,13 @@ public abstract class AbstractPlug implements PlugContext
 	 * not support remove of elements.
 	 * @return
 	 */
-	public synchronized Iterator<DirectoryProxy> cachedDirectoryProxiesIterator() {
+	public synchronized Iterator<DirectoryProxy<?>> cachedDirectoryProxiesIterator() {
 		final Iterator<DirectoryProxyHolder> holder = directoryCache.values().iterator();
-		return new Iterator<DirectoryProxy>(){
+		return new Iterator<DirectoryProxy<?>>(){
 			public boolean hasNext() {
 				return holder.hasNext();
 			}
-			public DirectoryProxy next() {
+			public DirectoryProxy<?> next() {
 				return holder.next().proxy;
 			}
 			public void remove() {

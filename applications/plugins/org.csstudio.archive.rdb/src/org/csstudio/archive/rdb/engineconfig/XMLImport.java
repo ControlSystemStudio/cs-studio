@@ -1,15 +1,23 @@
+/*******************************************************************************
+ * Copyright (c) 2010 Oak Ridge National Laboratory.
+ * All rights reserved. This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License v1.0
+ * which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-v10.html
+ ******************************************************************************/
 package org.csstudio.archive.rdb.engineconfig;
 
 import java.io.InputStream;
+import java.util.logging.Level;
 
 import javax.xml.parsers.SAXParser;
 import javax.xml.parsers.SAXParserFactory;
 
 import org.csstudio.apputil.time.PeriodFormat;
+import org.csstudio.archive.rdb.Activator;
 import org.csstudio.archive.rdb.ChannelConfig;
 import org.csstudio.archive.rdb.RDBArchive;
 import org.csstudio.archive.rdb.SampleMode;
-import org.csstudio.platform.logging.CentralLogger;
 import org.xml.sax.Attributes;
 import org.xml.sax.SAXException;
 import org.xml.sax.SAXParseException;
@@ -37,7 +45,7 @@ public class XMLImport extends DefaultHandler
 
     /** XML tag */
     final private static String TAG_MONITOR = "monitor";
-    
+
     /** XML tag */
     final private static String TAG_SCAN = "scan";
 
@@ -46,18 +54,18 @@ public class XMLImport extends DefaultHandler
 
     /** XML tag */
     final private static String TAG_ENABLE = "enable";
-    
+
     final boolean steal_channels;
 
     /** Connection to RDB archive */
     final private RDBArchive archive;
-    
+
     /** Engine info entry */
     final private SampleEngineConfig engine;
-    
+
     /** Sample modes */
     final private SampleMode monitor_mode, scan_mode;
-    
+
     /** Accumulator for characters within a tag */
     final private StringBuffer accumulator = new StringBuffer();
 
@@ -66,17 +74,17 @@ public class XMLImport extends DefaultHandler
     {
         /** Reading all the initial parameters */
         PREAMBLE,
-        
+
         /** Got start of a group, waiting for group name */
         GROUP,
-        
+
         /** Got start of a channel, waiting for details */
         CHANNEL
     }
-    
+
     /** Current parser state */
     private State state = State.PREAMBLE;
-    
+
     /** Most recent 'name' tag */
     private String name;
 
@@ -85,7 +93,7 @@ public class XMLImport extends DefaultHandler
 
     /** Most recent 'monitor' tag */
     private boolean monitor;
-    
+
     /** Most recent sample mode value, for example the optional monitor delta */
     private double sample_value;
 
@@ -99,9 +107,9 @@ public class XMLImport extends DefaultHandler
      *  @param RDB_URL URL of RDB
      *  @param user User name
      *  @param password password
-     *  @param engine_name 
-     *  @param engine_description 
-     *  @param engine_url 
+     *  @param engine_name
+     *  @param engine_description
+     *  @param engine_url
      *  @param replace_existing_engineconfig Replace existing engine config or stop?
      *  @param steal_channels
       * @throws Exception on error
@@ -116,25 +124,24 @@ public class XMLImport extends DefaultHandler
     {
         this.steal_channels = steal_channels;
         archive = RDBArchive.connect(RDB_URL, user, password);
-        
+
         final SampleEngineConfig found = archive.findEngine(engine_name);
         if (found != null)
         {
             if (replace_existing_engineconfig)
-                CentralLogger.getInstance().getLogger(this).warn("Replacing existing engine config "
-                        + found.toString());
+                Activator.getLogger().log(Level.WARNING, "Replacing existing engine config {0}", found);
             else
                 throw new Exception("Engine config '" + engine_name +
                                     "' already exists");
         }
-        
+
         engine = archive.addEngine(engine_name, engine_description, engine_url);
         // retention = archive.getRetention(DEFAULT_RETENTION);
         final SampleMode[] modes = archive.getSampleModes();
         monitor_mode = findSampleMode(modes, SampleMode.MONITOR);
         scan_mode = findSampleMode(modes, SampleMode.SCAN);
     }
-    
+
 
     private SampleMode findSampleMode(final SampleMode[] modes,
             final String desired_mode) throws Exception
@@ -150,7 +157,7 @@ public class XMLImport extends DefaultHandler
     {
         archive.close();
     }
-    
+
     /** Configure model by parsing given input stream */
     public void parse(final InputStream stream) throws Exception
     {
@@ -163,7 +170,7 @@ public class XMLImport extends DefaultHandler
     public void startElement(final String uri, final String localName,
                     final String element, final Attributes attributes)
                     throws SAXException
-    {        
+    {
         accumulator.setLength(0);
         if (element.equals(TAG_GROUP))
         {
@@ -207,13 +214,13 @@ public class XMLImport extends DefaultHandler
             // Chop the ".arReq" off old archive request file names
             final int arReq = name.lastIndexOf(".arReq");
             if (arReq > 0)
-                name = name.substring(0, arReq); 
+                name = name.substring(0, arReq);
             if (state == State.GROUP)
             {   // Fetch the group for the following channels
                 try
                 {
                     group = engine.addGroup(name);
-                    CentralLogger.getInstance().getLogger(this).info("Import '" + engine.getName()
+                    Activator.getLogger().info("Import '" + engine.getName()
                             + "', Group '" + name + "'");
                 }
                 catch (Exception e)
@@ -260,7 +267,7 @@ public class XMLImport extends DefaultHandler
         {
             checkStateForTag(State.CHANNEL, element);
             if (group.getEnablingChannelId() > 0)
-                throw new SAXException("More than one 'enable' channel");                
+                throw new SAXException("More than one 'enable' channel");
             is_enabling = true;
         }
         else if (element.equals(TAG_DISABLE))
@@ -286,15 +293,14 @@ public class XMLImport extends DefaultHandler
                         "Channel '%s/%s/%s' already in '%s/%s'",
                         engine.getName(), group.getName(), name,
                         other_engine.getName(), other_group.getName());
-                    if (steal_channels)
-                        CentralLogger.getInstance().getLogger(this).warn(warning);
-                    else
+                    Activator.getLogger().warning(warning);
+                    if (!steal_channels)
                     {
-                        // Print error, don't proceed with this channel,
+                        // Don't proceed with this channel,
                         // but run on with the next channel so that we
                         // get all the errors once instead of having
                         // to run the tool error by error
-                        CentralLogger.getInstance().getLogger(this).error(warning);
+                        Activator.getLogger().warning(warning);
                         return;
                     }
                 }
@@ -338,17 +344,15 @@ public class XMLImport extends DefaultHandler
 
     /** Show warning in log (default would have been to ignore it) */
     @Override
-    public void warning(final SAXParseException e)
+    public void warning(final SAXParseException ex)
     {
-        CentralLogger.getInstance().getLogger(this).warn("Warning: line " + e.getLineNumber() + " : "
-                        + e.getMessage());
+        Activator.getLogger().log(Level.WARNING, "Configuration file line " + ex.getLineNumber() + ":", ex);
     }
 
     /** Show error in log (default would have been to ignore it) */
     @Override
-    public void error(final SAXParseException e)
+    public void error(final SAXParseException ex)
     {
-        CentralLogger.getInstance().getLogger(this).error("Error: line " + e.getLineNumber() + " : "
-                        + e.getMessage());
+        Activator.getLogger().log(Level.SEVERE, "Configuration file line " + ex.getLineNumber() + ":", ex);
     }
 }

@@ -1,14 +1,27 @@
+/*******************************************************************************
+ * Copyright (c) 2010 Oak Ridge National Laboratory.
+ * All rights reserved. This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License v1.0
+ * which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-v10.html
+ ******************************************************************************/
 package org.csstudio.swt.widgets.figures;
 
 import java.beans.BeanInfo;
 import java.beans.IntrospectionException;
+import java.io.IOException;
+import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.EventListener;
 import java.util.List;
 
-import org.csstudio.platform.ui.util.CustomMediaFactory;
 import org.csstudio.swt.widgets.introspection.DefaultWidgetIntrospector;
 import org.csstudio.swt.widgets.introspection.Introspectable;
+import org.csstudio.swt.widgets.util.AbstractInputStreamRunnable;
+import org.csstudio.swt.widgets.util.IJobErrorHandler;
+import org.csstudio.swt.widgets.util.ResourceUtil;
+import org.csstudio.ui.util.CustomMediaFactory;
+import org.eclipse.core.runtime.IPath;
 import org.eclipse.draw2d.Figure;
 import org.eclipse.draw2d.FreeformLayer;
 import org.eclipse.draw2d.FreeformLayout;
@@ -24,6 +37,7 @@ import org.eclipse.draw2d.ScrollPane;
 import org.eclipse.draw2d.geometry.Dimension;
 import org.eclipse.draw2d.geometry.Rectangle;
 import org.eclipse.swt.graphics.Color;
+import org.eclipse.swt.graphics.Image;
 
 /**The tab figure.
  * @author Xihui Chen
@@ -31,6 +45,8 @@ import org.eclipse.swt.graphics.Color;
  */
 public class TabFigure extends Figure implements Introspectable{
 	
+	private static final int GAP = 2;
+
 	/**
 	 * Definition of listeners that react on active tab index changed.
 	 * 
@@ -47,6 +63,8 @@ public class TabFigure extends Figure implements Introspectable{
 	private int activeTabIndex; 
 	private final static Color BORDER_COLOR = CustomMediaFactory.getInstance().getColor(
 			CustomMediaFactory.COLOR_DARK_GRAY); 
+	private final static Color TAB_3D_COLOR = CustomMediaFactory.getInstance().getColor(
+			255,255,255); 
 	
 //	private final static Font DEFAULT_TITLE_FONT = CustomMediaFactory.getInstance().getFont(
 //			new FontData("Arial", 12, SWT.BOLD));
@@ -82,7 +100,7 @@ public class TabFigure extends Figure implements Introspectable{
 		
 	}
 	
-	public void addTab(String title){
+	public synchronized void addTab(String title){
 		Label tabLabel = createTabLabel(title, tabLabelList.size());
 		tabLabelList.add(tabLabel);
 		tabColorList.add(DEFAULT_TABCOLOR);
@@ -92,7 +110,7 @@ public class TabFigure extends Figure implements Introspectable{
 		revalidate();
 	}
 	
-	public void addTab(String title, int index){
+	public synchronized void addTab(String title, int index){
 		Label tabLabel = createTabLabel(title, index);
 		tabLabelList.add(index, tabLabel);
 		tabColorList.add(index, DEFAULT_TABCOLOR);
@@ -106,10 +124,20 @@ public class TabFigure extends Figure implements Introspectable{
 		tabListeners.add(listener);
 	}
 	
+	
 	private Label createTabLabel(String title, final int index) {
-		final Label tabLabel = new Label(title);
+		final Label tabLabel = new Label(title){
+			@Override
+			protected void paintFigure(Graphics graphics) {
+				graphics.pushState();
+				graphics.setForegroundColor(TAB_3D_COLOR);				
+				graphics.fillGradient(getClientArea(), true);
+				graphics.popState();
+				super.paintFigure(graphics);
+			}
+		};
 		tabLabel.setLabelAlignment(PositionConstants.CENTER);
-		tabLabel.setOpaque(true);
+		tabLabel.setOpaque(false);
 		tabLabel.setBorder(new LineBorder(BORDER_COLOR));		
 		tabLabel.setBackgroundColor(getDarkColor(DEFAULT_TABCOLOR));
 	//	tabLabel.setCursor(Cursors.HAND);
@@ -182,10 +210,15 @@ public class TabFigure extends Figure implements Introspectable{
 		int left = clientArea.x;
 		int top = clientArea.y;
 		int height = getTabLabelHeight();
+		int i = 0;
 		for(Label label : tabLabelList){
 			Dimension labelSize = label.getPreferredSize();
-			label.setBounds(new Rectangle(left, top, labelSize.width + MARGIN, height));
+			if(getActiveTabIndex() == i)
+				label.setBounds(new Rectangle(left, top, labelSize.width + MARGIN+GAP, height));
+			else
+				label.setBounds(new Rectangle(left + GAP, top+2, labelSize.width + MARGIN-GAP, height-2));
 			left += (labelSize.width + MARGIN -1);
+			i++;
 		}	
 		tabArea.setBounds(new Rectangle(clientArea.x, clientArea.y + height-1, 
 				clientArea.width-1, clientArea.height - height));		
@@ -213,19 +246,19 @@ public class TabFigure extends Figure implements Introspectable{
 	
 	
 	public void removeTab(){
-		remove(tabLabelList.get(tabLabelList.size()-1));
-		tabLabelList.remove(tabLabelList.size()-1);
-		tabColorList.remove(tabColorList.size()-1);
-		revalidate();
+		removeTab(tabLabelList.size()-1);		
 	}
 	
-	public void removeTab(int index){
+	public synchronized void removeTab(int index){
 		if(index <0 || index >=getTabAmount())
 			throw new IndexOutOfBoundsException();
 		remove(tabLabelList.get(index));
+		dispose(index);
 		tabLabelList.remove(index);
 		tabColorList.remove(index);
+		
 		revalidate();
+		repaint();
 	}
 	
 	public void setActiveTabIndex(int activeTabIndex) {
@@ -241,7 +274,50 @@ public class TabFigure extends Figure implements Introspectable{
 		tabArea.setBackgroundColor(tabColorList.get(activeTabIndex));
 		fireActiveTabIndexChanged(this.activeTabIndex, activeTabIndex);
 		this.activeTabIndex = activeTabIndex;
+		revalidate();
 		repaint();
+		
+	}
+	
+	public void setIconPath(final int index, final IPath path, final IJobErrorHandler errorHandler){		
+		dispose(index);	
+		
+		if(path != null && !path.isEmpty()){			
+				
+				AbstractInputStreamRunnable uiTask = new AbstractInputStreamRunnable() {
+					
+					@Override
+					public void runWithInputStream(InputStream stream) {
+						Image image = new Image(null, stream);
+						try {
+							stream.close();
+						} catch (IOException e) {							
+						}
+						getTabLabel(index).setIcon(image);
+					}
+				};				
+				ResourceUtil.pathToInputStreamInJob(path, uiTask, "Loading Tab Icon...", errorHandler);
+				
+		}	
+	}
+	
+
+	/**
+	 * Dispose image resources.
+	 */
+	public void dispose() {
+		for(int i=0; i<tabLabelList.size(); i++)
+			dispose(i);
+	}
+	
+	private void dispose(int index){
+		Label label = tabLabelList.get(index);
+		Image image = label.getIcon();
+		if(image != null){
+			image.dispose();
+			image = null;
+			label.setIcon(null);
+		}
 		
 	}
 

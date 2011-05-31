@@ -26,8 +26,8 @@ import org.csstudio.archive.ArchiveAccessException;
 import org.csstudio.archive.ArchiveInfo;
 import org.csstudio.archive.ArchiveValues;
 import org.csstudio.archive.NameInfo;
-import org.csstudio.platform.data.ISeverity;
-import org.csstudio.platform.data.ITimestamp;
+import org.csstudio.data.values.ISeverity;
+import org.csstudio.data.values.ITimestamp;
 
 import AAPI.AAPI;
 

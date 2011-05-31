@@ -12,10 +12,10 @@ import java.util.Map;
 
 /** Severity consists of a Severity name and a severity level.
  *  The level of severity is used for prioritizing SpeechPriorityQueue entries.
- *  
+ *
  *  @author Delphy Armstrong
  *  @author Kay Kasemir
- *  
+ *
  *     reviewed by Delphy 1/29/09
  */
 public class Severity implements Comparable<Severity>
@@ -23,7 +23,7 @@ public class Severity implements Comparable<Severity>
     /** Map name of Severity to Severity */
     final private static Map<String, Severity> severityMap =
         new HashMap<String, Severity>();
-    
+
     /** Name of severity */
     final private String name;
 
@@ -41,7 +41,7 @@ public class Severity implements Comparable<Severity>
     {
         return Severity.fromString("ERROR"); //$NON-NLS-1$
     }
-    
+
     /** Initialize understood severities.
      *  @param severities List of comma-separated severities. Most severe first.
      */
@@ -49,7 +49,7 @@ public class Severity implements Comparable<Severity>
     {
         // Split on comma, maybe followed by space
         final String names[] = severities.split(",\\s*"); //$NON-NLS-1$
-      
+
         // First severity has the highest priority, last has numeric level 1.
         // Store the severities by name in a HashMap.
         for (int i=0;  i<names.length;  i++)
@@ -59,7 +59,7 @@ public class Severity implements Comparable<Severity>
             severityMap.put(severity.getName(), severity);
         }
     }
-    
+
     /** Return a Severity for the given name.
      *  For unknown severity names, a low-priority severity (level 0) is created.
      *  @param name Severity name to find
@@ -95,10 +95,11 @@ public class Severity implements Comparable<Severity>
     {
         return name;
     }
-   
+
     /** Compare Severities by level
      *  @see Comparable<Severity>
      */
+    @Override
     public int compareTo(final Severity other)
     {
         return level - other.level;

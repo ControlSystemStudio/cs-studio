@@ -50,7 +50,6 @@ public class ADLBasicAttribute extends WidgetPart{
      * @param parentWidgetModel The Widget that set the parameter from ADLWidget.
      * @throws WrongADLFormatException Wrong ADL format or untreated parameter found.    
      */
-	//TODO Strip out old code lines that refer to SDS implementations
 	public ADLBasicAttribute(final ADLWidget adlBasicAttribute) throws WrongADLFormatException {
         super(adlBasicAttribute);
 	}
@@ -75,11 +74,11 @@ public class ADLBasicAttribute extends WidgetPart{
      */
     @Override
     void init() {
-        name = new String("basic attribute");
+        name = String.valueOf("basic attribute");
         _clr = 0;
     	_width = 0;
-    	_style =  new String("solid");
-    	_fill = new String("solid");
+    	_style =  String.valueOf("solid");
+    	_fill = String.valueOf("solid");
     	set_isColorDefined(false);
     }
     
@@ -93,7 +92,8 @@ public class ADLBasicAttribute extends WidgetPart{
         for (ADLWidget adlWidget : adlBasicAttribute.getObjects()) {
             if(adlWidget.getType().equals("attr")){
                 for (FileLine fileLine : adlWidget.getBody()) {
-                    adlBasicAttribute.addBody(fileLine);    
+                	//TODO Refactor this so that it is not necessary to copy the lines to from the attr object to the atrribute object
+                	adlBasicAttribute.addBody(fileLine);    
                 }
             }
         }
@@ -120,103 +120,29 @@ public class ADLBasicAttribute extends WidgetPart{
         }
     }
     
-//**    /**
-//**     * Generate all Elements from ADL Basic Attributes.
-//**     */
-  //**    @Override
-  //**    final void generateElements() {
-  //**        if(_clr!=null){
-  //**            _widgetModel.setColor(AbstractWidgetModel.PROP_COLOR_FOREGROUND,ADLHelper.getRGB(_clr));
-  //**        }
-  //**        boolean transperncy=false;
-  //**        if(_fill!=null){
-  //**            if(_fill.equals("\"outline\"")){ //$NON-NLS-1$
-  //**                transperncy =true;
-  //**                _fill="0.0"; //$NON-NLS-1$
-  //**            }
-  //**            if(_width==null){
-  //**                _width="1"; //$NON-NLS-1$
-  //**            }
-  //**        }else if(_fill==null){
-  //**            _fill="100.0"; //$NON-NLS-1$
-  //**        }
-  //**        _widgetModel.setPropertyValue(RectangleModel.PROP_TRANSPARENT, transperncy);
-  //**        _widgetModel.setPropertyValue(ArcModel.PROP_TRANSPARENT, transperncy);
-  //**        
-  //**        String style = "1"; // Line //$NON-NLS-1$
-  //**        if (_style==null){
-  //**            style = "1";  // Line //$NON-NLS-1$
-  //**        }else if (_style.equals("none")){ //$NON-NLS-1$
-  //**            style = "0";  // none //$NON-NLS-1$
-  //**        }else if (_style.equals("shape")){ //$NON-NLS-1$
-  //**            style = "6";  // none //$NON-NLS-1$
-  //**        }else if(_style.equals("\"dash\"")){ //$NON-NLS-1$
-  //**            style = "5";  // Striated //$NON-NLS-1$
-  //**//            if(_width!=null&&_width.equals("1")){ //$NON-NLS-1$
-  //**//                _width="2"; //$NON-NLS-1$
-  //**//            }
-  //**        }
-  //**        if(_width!=null){
-  //**            // <property type="sds.integer" id="border.width" value="0" />
-  //**            setWidth(_width);
-  //**            _widgetModel.setPropertyValue(AbstractWidgetModel.PROP_BORDER_COLOR, ADLHelper.getRGB(_clr));
-  //**        }
-  //**
-  //**        setStyle(style);
-  //**    }
-
-  //**    /**
-  //**     * @param adlDynamicAttributes set a dynamic attribute for the Color element.
-  //**     */
-  //**    public final void setDynamicColor(final DynamicsDescriptor adlDynamicAttributes) {
-  //**        _widgetModel.setDynamicsDescriptor(AbstractWidgetModel.PROP_COLOR_FOREGROUND,adlDynamicAttributes);
-  //**    }
 
     /** @return the Color */
     public final int getClr() {
         return _clr;
     }
 
-   //**    /** @param clr set the Color */
-  //**    public final void setClr(final String clr) {
-  //**        _clr = clr;
-  //**    }
 
     /** @return the width */
     public final int getWidth() {
         return _width;
     }
 
-  //**    /** @param width set the width */
-  //**    public final void setWidth(final String width) {
-  //**        _width = width;
-  //**        _widgetModel.setPropertyValue(AbstractWidgetModel.PROP_BORDER_WIDTH, _width);
-  //**    }
 
     /** @return the style */
     public final String getStyle() {
         return _style;
     }
-  //**    /** @param style set the style */
-  //**    public final void setStyle(final String style) {
-  //**        _style = style;
-  //**//      <property type="sds.option" id="border.style">
-  //**//          <option id="3" />
-  //**//      </property>
-  //**        if(_style!=null){
-  //**            _widgetModel.setPropertyValue(AbstractWidgetModel.PROP_BORDER_STYLE, _style);
-  //**        }
-  //**    }
     
     /** @return the fill */
     public final String getFill() {
     	return _fill;
     }
     
-//**    /** @param fill set the fill */
-    //**    public final void setFill(final String fill) {
-  //**        _fill = fill;
-  //**    }
 
     /**
      * @return child objects

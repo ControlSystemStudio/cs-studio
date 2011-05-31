@@ -1,3 +1,10 @@
+/*******************************************************************************
+ * Copyright (c) 2010 Oak Ridge National Laboratory.
+ * All rights reserved. This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License v1.0
+ * which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-v10.html
+ ******************************************************************************/
 package org.csstudio.opibuilder.widgets.model;
 
 
@@ -13,12 +20,12 @@ import org.csstudio.opibuilder.properties.PVValueProperty;
 import org.csstudio.opibuilder.properties.StringProperty;
 import org.csstudio.opibuilder.properties.WidgetPropertyCategory;
 import org.csstudio.opibuilder.util.OPIFont;
-import org.csstudio.platform.ui.util.CustomMediaFactory;
 import org.csstudio.swt.xygraph.dataprovider.CircularBufferDataProvider.PlotMode;
 import org.csstudio.swt.xygraph.dataprovider.CircularBufferDataProvider.UpdateMode;
 import org.csstudio.swt.xygraph.figures.Trace.PointStyle;
 import org.csstudio.swt.xygraph.figures.Trace.TraceType;
 import org.csstudio.swt.xygraph.figures.XYGraph;
+import org.csstudio.ui.util.CustomMediaFactory;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.graphics.FontData;
 import org.eclipse.swt.graphics.RGB;
@@ -48,7 +55,8 @@ public class XYGraphModel extends AbstractPVWidgetModel {
 		TIME_FORMAT("time_format", "Time Format"),
 		SHOW_GRID("show_grid", "Show Grid"),
 		GRID_COLOR("grid_color", "Grid Color"),
-		DASH_GRID("dash_grid_line", "Dash Grid Line");		
+		DASH_GRID("dash_grid_line", "Dash Grid Line"),
+		SCALE_FORMAT("scale_format", "Scale Format");		
 		
 		public String propIDPre;
 		public String description;
@@ -75,7 +83,7 @@ public class XYGraphModel extends AbstractPVWidgetModel {
 		YPV("y_pv", "Y PV"),
 		XPV_VALUE("x_pv_value", "X PV Value"),
 		YPV_VALUE("y_pv_value", "Y PV Value"),
-		CHRONOLOGICAL("chronological", "Chronological"),		
+		//CHRONOLOGICAL("chronological", "Chronological"),		
 		TRACE_COLOR("trace_color","Trace Color"),
 		XAXIS_INDEX("x_axis_index", "X Axis Index"),
 		YAXIS_INDEX("y_axis_index", "Y Axis Index"),
@@ -211,8 +219,7 @@ public class XYGraphModel extends AbstractPVWidgetModel {
 				WidgetPropertyCategory.Behavior, 1, 0, MAX_TRACES_AMOUNT));	
 		addAxisProperties();
 		addTraceProperties();
-		//setPropertyVisible(PROP_PVNAME, false);
-		
+		setPropertyVisible(PROP_FONT, false);		
 	}
 	
 	
@@ -284,6 +291,9 @@ public class XYGraphModel extends AbstractPVWidgetModel {
 		case VISIBLE:
 			addProperty(new BooleanProperty(propID, axisProperty.toString(), category, true));
 			break;
+		case SCALE_FORMAT:
+			addProperty(new StringProperty(propID, axisProperty.toString(), category, "")); //$NON-NLS-1$
+			break;
 		default:
 			break;
 		}
@@ -309,7 +319,7 @@ public class XYGraphModel extends AbstractPVWidgetModel {
 					"$(" + makeTracePropID(TraceProperty.YPV.propIDPre, traceIndex) + ")"));
 			break;
 		case ANTI_ALIAS:
-		case CHRONOLOGICAL:
+//		case CHRONOLOGICAL:
 			addProperty(new BooleanProperty(propID, traceProperty.toString(), category, true));
 			break;
 		case BUFFER_SIZE:

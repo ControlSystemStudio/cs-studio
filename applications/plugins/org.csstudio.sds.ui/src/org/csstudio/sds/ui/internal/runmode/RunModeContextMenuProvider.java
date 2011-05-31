@@ -41,6 +41,7 @@ import org.eclipse.jface.action.IMenuManager;
 import org.eclipse.jface.action.MenuManager;
 import org.eclipse.jface.action.Separator;
 import org.eclipse.jface.resource.ImageDescriptor;
+import org.eclipse.jface.viewers.StructuredSelection;
 import org.eclipse.ui.model.IWorkbenchAdapter;
 
 /**
@@ -93,12 +94,8 @@ public final class RunModeContextMenuProvider extends ContextMenuProvider {
 	@Override
 	public void buildContextMenu(final IMenuManager menu) {
 		menu.add(new Separator("actions"));
-//		cssMenu.add(new Separator("additions"));
 		this.addWidgetActionToMenu(menu);
-//		MenuManager cssMenu = new MenuManager("CSS", "css");
-//		menu.add(cssMenu);
 		
-//		menu.add(new Separator("css"));
 		IAction closeAction = _actionRegistry.getAction(CLOSE_ACTION_ID);
 		GEFActionConstants.addStandardActionGroups(menu);
 		if (closeAction!=null) {
@@ -112,7 +109,7 @@ public final class RunModeContextMenuProvider extends ContextMenuProvider {
 	 * Adds the defined {@link AbstractWidgetActionModel}s to the given {@link IMenuManager}.
 	 * @param menu The {@link IMenuManager}
 	 */
-	@SuppressWarnings("unchecked")
+	@SuppressWarnings("rawtypes")
 	private void addWidgetActionToMenu(final IMenuManager menu) {
 		List selectedEditParts = getViewer().getSelectedEditParts();
 		if (selectedEditParts.size()==1) {
@@ -131,6 +128,7 @@ public final class RunModeContextMenuProvider extends ContextMenuProvider {
 					}
 				}
 			}
+			getViewer().setSelection(StructuredSelection.EMPTY);
 		}
 	}
 
@@ -142,7 +140,6 @@ public final class RunModeContextMenuProvider extends ContextMenuProvider {
 	private void fillMenu(final IMenuManager menu, AbstractWidgetModel widget,
 			List<AbstractWidgetActionModel> widgetActions) {
 		for (AbstractWidgetActionModel action : widgetActions) {
-//						actionMenu.add(new MenuAction(widget, action));
 			menu.add(new MenuAction(widget, action));
 		}
 	}

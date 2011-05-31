@@ -1,12 +1,17 @@
+/*******************************************************************************
+ * Copyright (c) 2011 Oak Ridge National Laboratory.
+ * All rights reserved. This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License v1.0
+ * which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-v10.html
+ ******************************************************************************/
 package org.csstudio.display.rdbtable.ui;
 
+import org.csstudio.auth.ui.dialogs.LoginDialog;
 import org.csstudio.display.rdbtable.Messages;
 import org.csstudio.display.rdbtable.model.RDBTableModel;
 import org.csstudio.display.rdbtable.model.RDBTableModelListener;
 import org.csstudio.display.rdbtable.model.RDBTableRow;
-import org.csstudio.platform.ui.dialogs.LoginDialog;
-import org.csstudio.platform.ui.swt.AutoSizeColumn;
-import org.csstudio.platform.ui.swt.AutoSizeControlListener;
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.NullProgressMonitor;
@@ -15,16 +20,19 @@ import org.eclipse.jface.action.IMenuManager;
 import org.eclipse.jface.action.MenuManager;
 import org.eclipse.jface.action.Separator;
 import org.eclipse.jface.dialogs.MessageDialog;
+import org.eclipse.jface.layout.TableColumnLayout;
 import org.eclipse.jface.viewers.ColumnViewerToolTipSupport;
+import org.eclipse.jface.viewers.ColumnWeightData;
 import org.eclipse.jface.viewers.TableViewer;
 import org.eclipse.jface.viewers.TableViewerColumn;
 import org.eclipse.jface.window.ToolTip;
+import org.eclipse.jface.window.Window;
 import org.eclipse.osgi.util.NLS;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.layout.GridData;
-import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Table;
+import org.eclipse.swt.widgets.TableColumn;
 import org.eclipse.ui.IEditorInput;
 import org.eclipse.ui.IEditorSite;
 import org.eclipse.ui.IWorkbenchActionConstants;
@@ -40,7 +48,7 @@ public class Editor extends EditorPart
 
     /** RDB table data */
     private RDBTableModel model;
-    
+
     /** Table Viewer for Model */
     private TableViewer table_viewer;
 
@@ -66,7 +74,7 @@ public class Editor extends EditorPart
         }
         catch (Exception ex)
         {
-            throw new PartInitException(NLS.bind("Error opening configuration file {0}", input.getName()), ex);
+            throw new PartInitException(NLS.bind("Error opening configuration file {0}", input.getName()), ex); //$NON-NLS-1$
         }
         // Read initial data from RDB
         try
@@ -79,7 +87,7 @@ public class Editor extends EditorPart
                         NLS.bind(Messages.LoginMsg,
                                  model.getTitle()),
                         model.getUser());
-                if (login.open() == LoginDialog.CANCEL)
+                if (login.open() == Window.CANCEL)
                     throw new Exception(Messages.LoginCancelled);
                 // Read with user/pw from dialog
                 model.read(login.getLoginCredentials().getUsername(),
@@ -90,7 +98,7 @@ public class Editor extends EditorPart
         }
         catch (Exception ex)
         {
-            throw new PartInitException("Error reading from database", ex);
+            throw new PartInitException("Error reading from database", ex); //$NON-NLS-1$
         }
         // Set window title and message
         setPartName(file.getName());
@@ -103,10 +111,11 @@ public class Editor extends EditorPart
     {
         createGUI(parent);
         createContextMenu();
-        
+
         // Whenever the model changes, we update the GUI
         model.addListener(new RDBTableModelListener()
         {
+            @Override
             public void rowChanged(final RDBTableRow row)
             {
                 // Update the affected row in the table viewer
@@ -115,6 +124,7 @@ public class Editor extends EditorPart
                 firePropertyChange(PROP_DIRTY);
             }
 
+            @Override
             public void newRow(final RDBTableRow new_row)
             {
                 // Inform table viewer about added row
@@ -130,35 +140,39 @@ public class Editor extends EditorPart
      */
     private void createGUI(final Composite parent)
     {
-        parent.setLayout(new GridLayout(1, false));
+        // Note: TableColumnLayout requires table to be the only child widget
+        final TableColumnLayout table_layout = new TableColumnLayout();
+        parent.setLayout(table_layout);
 
         // Create TableViewer that displays Model in Table
         table_viewer = new TableViewer(parent,
                 SWT.H_SCROLL | SWT.V_SCROLL | SWT.MULTI | SWT.VIRTUAL |
                 SWT.FULL_SELECTION);
-        
+
         // Some tweaks to the underlying table widget
         final Table table = table_viewer.getTable();
         table.setHeaderVisible(true);
         table.setLinesVisible(true);
         table.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true));
-        // Enable tool tips 
+        // Enable tool tips
         ColumnViewerToolTipSupport.enableFor(table_viewer, ToolTip.NO_RECREATE);
-        
+
         // Connect TableViewer to the Model: Provide content from model...
         table_viewer.setContentProvider(new RDBTableModelContentProvider());
-        
+
         // Create table columns
         for (int c=0;  c<model.getColumnCount();  ++c)
         {
-            final TableViewerColumn col = AutoSizeColumn.make(table_viewer,
-                                model.getHeader(c), MIN_SIZE,
-                                model.getWidth(c));
+            final TableViewerColumn view_col = new TableViewerColumn(table_viewer, 0);
+            TableColumn col = view_col.getColumn();
+            col.setText(model.getHeader(c));
+            col.setMoveable(true);
+            col.setResizable(true);
+            table_layout.setColumnData(col, new ColumnWeightData(model.getWidth(c), MIN_SIZE));
             // Tell column how to display the model elements
-            col.setLabelProvider(new RDBTableRowLabelProvider());
-            col.setEditingSupport(new RDBTableCellEditor(table_viewer, c));
+            view_col.setLabelProvider(new RDBTableRowLabelProvider());
+            view_col.setEditingSupport(new RDBTableCellEditor(table_viewer, c));
         }
-        new AutoSizeControlListener(table);
         // table viewer is set up to handle data of Model.
         // Connect to specific model
         table_viewer.setInput(model);
@@ -171,6 +185,7 @@ public class Editor extends EditorPart
         menu.setRemoveAllWhenShown(true);
         menu.addMenuListener(new IMenuListener()
         {
+            @Override
             public void menuAboutToShow(final IMenuManager menu)
             {
                 menu.add(new AddRowAction(model));
@@ -216,7 +231,7 @@ public class Editor extends EditorPart
         }
         catch (Exception ex)
         {
-            MessageDialog.openError(getSite().getShell(), 
+            MessageDialog.openError(getSite().getShell(),
                 Messages.ErrorTitle,
                 NLS.bind(Messages.WriteError, ex.getMessage()));
         }

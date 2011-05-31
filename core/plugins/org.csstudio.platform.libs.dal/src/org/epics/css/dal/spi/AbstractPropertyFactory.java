@@ -30,6 +30,7 @@ import java.util.Set;
 
 import javax.naming.NamingException;
 
+import org.apache.log4j.Logger;
 import org.epics.css.dal.DynamicValueProperty;
 import org.epics.css.dal.RemoteException;
 import org.epics.css.dal.SimpleProperty;
@@ -120,7 +121,7 @@ public abstract class AbstractPropertyFactory extends AbstractFactorySupport
 					try {
 						wait(60000);
 					} catch (InterruptedException e) {
-						e.printStackTrace();
+						Logger.getLogger(this.getClass()).debug("Wait interrupted.", e);
 					}
 				}
 				
@@ -137,7 +138,7 @@ public abstract class AbstractPropertyFactory extends AbstractFactorySupport
 			// Creates device implementation
 			Class<?extends SimpleProperty<?>> impClass = getPlugInstance()
 				.getPropertyImplementationClass(type, uniqueName);
-			DynamicValuePropertyImpl<?> property = (DynamicValuePropertyImpl)impClass.getConstructor(String.class,
+			DynamicValuePropertyImpl<?> property = (DynamicValuePropertyImpl<?>)impClass.getConstructor(String.class,
 				    PropertyContext.class).newInstance(uniqueName, family);
 
 			if (l != null) {
@@ -231,7 +232,7 @@ public abstract class AbstractPropertyFactory extends AbstractFactorySupport
 						try {
 							wait(60000);
 						} catch (InterruptedException e) {
-							e.printStackTrace();
+							Logger.getLogger(this.getClass()).debug("Wait interrupted.", e);
 						}
 					}
 					
@@ -254,7 +255,7 @@ public abstract class AbstractPropertyFactory extends AbstractFactorySupport
 				// Creates device implementation
 				
 				try {
-					property = (DynamicValuePropertyImpl)impClass.getConstructor(String.class,
+					property = (DynamicValuePropertyImpl<?>)impClass.getConstructor(String.class,
 						    PropertyContext.class)
 						.newInstance(name.getRemoteName(), family);
 					family.add(property);
@@ -269,13 +270,13 @@ public abstract class AbstractPropertyFactory extends AbstractFactorySupport
 				property.addLinkListener(l);
 			}
 			
-			if (!newProp && property.isConnected()) {
+			/*if (!newProp && property.isConnected()) {
 				l.connected(new ConnectionEvent(property, ConnectionState.CONNECTED));
 			} else if (!newProp && property.isConnectionFailed()) {
 				l.connectionFailed(new ConnectionEvent(property,
 				        ConnectionState.CONNECTION_FAILED));
-			} else 
-			{
+			} else*/
+			if (newProp) {
 				try {
 					connect(name.getRemoteName(),type, impClass, property);
 				} catch (ConnectionException e) {
@@ -330,15 +331,15 @@ public abstract class AbstractPropertyFactory extends AbstractFactorySupport
 	{
 		// creates proxy implementation
 		PropertyProxy proxy = null;
-		DirectoryProxy dir = null;
+		DirectoryProxy<?> dir = null;
 
 		try {
-			Class<?extends PropertyProxy<?>> proxyImplType = getPlugInstance()
+			Class<?extends PropertyProxy<?,?>> proxyImplType = getPlugInstance()
 				.getPropertyProxyImplementationClass(type, implementationType, uniqueName);
 			proxy = getPlugInstance().getPropertyProxy(uniqueName, proxyImplType);
 
 			if (proxy instanceof DirectoryProxy) {
-				dir = (DirectoryProxy)proxy;
+				dir = (DirectoryProxy<?>)proxy;
 			} else {
 				dir = getPlugInstance().getDirectoryProxy(uniqueName);
 			}

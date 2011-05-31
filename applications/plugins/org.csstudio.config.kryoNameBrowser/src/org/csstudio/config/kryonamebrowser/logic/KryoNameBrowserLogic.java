@@ -489,20 +489,21 @@ public class KryoNameBrowserLogic {
         }
         
         String plantStringPart = plantPart.replaceAll("\\d", "");
-        
         while (plantEntry != null) {
             if (!plantStringPart.endsWith(plantEntry.getLabel())) {
                 return false;
             }
             
-            if (plantEntry.getNumberOfPlants() > 0) {
-                int index = plantPart.lastIndexOf(plantEntry.getLabel())
-                        + plantEntry.getLabel().length();
-                if (index >= plantPart.length() || !Character.isDigit(plantPart.charAt(index))) {
-                    return false;
-                }
-                
-            }
+            //Remove number check, because it should be possible to add parts also without a number.
+//            if (plantEntry.getNumberOfPlants() > 0) {
+//                int index = plantPart.lastIndexOf(plantEntry.getLabel())
+//                        + plantEntry.getLabel().length();
+//                if (index >= plantPart.length() || !Character.isDigit(plantPart.charAt(index))) {
+//                	if (index >= plantPart.length()) {
+//                    return false;
+//                }
+//                
+//            }
             
             plantStringPart = plantStringPart.substring(0, plantStringPart.length()
                     - plantEntry.getLabel().length());

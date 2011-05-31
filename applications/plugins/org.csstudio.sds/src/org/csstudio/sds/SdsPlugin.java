@@ -21,6 +21,13 @@
  */
 package org.csstudio.sds;
 
+import java.io.BufferedReader;
+import java.io.File;
+import java.io.FileReader;
+import java.io.IOException;
+import java.net.URL;
+import java.util.ArrayList;
+
 import org.csstudio.platform.AbstractCssPlugin;
 import org.csstudio.platform.ResourceService;
 import org.csstudio.platform.logging.CentralLogger;
@@ -33,6 +40,7 @@ import org.csstudio.sds.internal.eventhandling.WidgetPropertyPostProcessingServi
 import org.csstudio.sds.internal.rules.RuleService;
 import org.csstudio.sds.util.StringUtil;
 import org.eclipse.core.resources.IProject;
+import org.eclipse.core.runtime.FileLocator;
 import org.osgi.framework.BundleContext;
 
 /**
@@ -118,6 +126,17 @@ public final class SdsPlugin extends AbstractCssPlugin {
 	 */
 	private SdsResourceChangeListener _resourceChangeListener;
 
+//	TODO (jhatje): remove if patch in jca lib works
+//	/**
+//	 * List of Strings to match records that should be asked for Strings.
+//	 * (For workaround in ConnectionUtilNew)
+//	 */
+//	private ArrayList<String> _recordTails = new ArrayList<String>();
+//	private ArrayList<String> _recordTailsRegExp = new ArrayList<String>();
+
+	
+
+
 	/**
 	 * Standard constructor.
 	 */
@@ -172,7 +191,10 @@ public final class SdsPlugin extends AbstractCssPlugin {
 		
 		_behaviourService = new BehaviorService();
 		_widgetPropertyPostProcessingService = new WidgetPropertyPostProcessingService();
+//		TODO (jhatje): remove if patch in jca lib works
+//		readWorkaroundStrings();
 	}
+
 
 	/**
 	 * {@inheritDoc}.
@@ -199,4 +221,35 @@ public final class SdsPlugin extends AbstractCssPlugin {
 	public String getPluginId() {
 		return PLUGIN_ID;
 	}
+
+//	TODO (jhatje): remove if patch in jca lib works
+//	public ArrayList<String> getRecordTails() {
+//		return _recordTails;
+//	}
+//	
+//	public ArrayList<String> getRecordTailsRegExp() {
+//		return _recordTailsRegExp;
+//	}
+//
+//	private void readWorkaroundStrings() {
+//		try {
+//			URL urlRecTails = FileLocator.toFileURL( SdsPlugin.getDefault().getBundle().getEntry("/RecordTails"));
+//			File f = new File(urlRecTails.getPath());
+//			FileReader fr = new FileReader(f);
+//			BufferedReader br = new BufferedReader(fr);
+//			String s;
+//			while(null!= (s = br.readLine())){
+//				_recordTails.add(s);
+//			}
+//			URL urlRecTailsRegExp = FileLocator.toFileURL( SdsPlugin.getDefault().getBundle().getEntry("/RecordTailsRegExp"));
+//			f = new File(urlRecTailsRegExp.getPath());
+//			fr = new FileReader(f);
+//			br = new BufferedReader(fr);
+//			while(null!= (s = br.readLine())){
+//				_recordTailsRegExp.add(s);
+//			}
+//		} catch (IOException e) {
+//			CentralLogger.getInstance().error(this, "Error reading file");
+//		}
+//	}
 }

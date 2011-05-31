@@ -1,14 +1,22 @@
+/*******************************************************************************
+ * Copyright (c) 2010 Oak Ridge National Laboratory.
+ * All rights reserved. This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License v1.0
+ * which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-v10.html
+ ******************************************************************************/
 package org.csstudio.sns.product.startupmodule;
 
-import java.util.Dictionary;
 import java.util.Map;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
-import org.csstudio.platform.logging.CentralLogger;
+import org.csstudio.logging.LogConfigurator;
 import org.csstudio.platform.workspace.RelaunchConstants;
-import org.csstudio.sns.product.Activator;
 import org.csstudio.sns.product.ApplicationWorkbenchAdvisor;
 import org.csstudio.sns.product.Messages;
 import org.csstudio.sns.startuphelper.StartupAuthenticationHelper;
+import org.csstudio.startup.application.OpenDocumentEventProcessor;
 import org.csstudio.startup.module.LoginExtPoint;
 import org.csstudio.startup.module.ProjectExtPoint;
 import org.csstudio.startup.module.WorkbenchExtPoint;
@@ -18,7 +26,6 @@ import org.eclipse.core.resources.IResource;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.NullProgressMonitor;
 import org.eclipse.core.runtime.Path;
-import org.eclipse.core.runtime.Platform;
 import org.eclipse.equinox.app.IApplication;
 import org.eclipse.equinox.app.IApplicationContext;
 import org.eclipse.jface.dialogs.MessageDialog;
@@ -27,14 +34,14 @@ import org.eclipse.swt.widgets.Display;
 import org.eclipse.ui.PlatformUI;
 
 /**
- * 
- * <code>WorkbenchExtPointImpl</code> runs the workbench using the 
- * {@link ApplicationWorkbenchAdvisor}. This class also implements 
+ *
+ * <code>WorkbenchExtPointImpl</code> runs the workbench using the
+ * {@link ApplicationWorkbenchAdvisor}. This class also implements
  * the option to link shared folder to the project folder. In this
  * case the implementation expects {@value StartupParameters#SHARE_LINK_PARAM}
- * and {@value ProjectExtPoint#PROJECTS} parameters. During the 
- * {@link #runWorkbench(Display, IApplicationContext, Map)} execution 
- * {@value LoginExtPoint#USERNAME} and {@value LoginExtPoint#PASSWORD} 
+ * and {@value ProjectExtPoint#PROJECTS} parameters. During the
+ * {@link #runWorkbench(Display, IApplicationContext, Map)} execution
+ * {@value LoginExtPoint#USERNAME} and {@value LoginExtPoint#PASSWORD}
  * are expected.
  *
  * @author <a href="mailto:jaka.bobnar@cosylab.com">Jaka Bobnar</a>
@@ -46,7 +53,8 @@ public class Workbench implements WorkbenchExtPoint {
 	 * (non-Javadoc)
 	 * @see org.csstudio.startup.extensions.RunWorkbenchExtPoint#afterWorkbenchCreation(org.eclipse.swt.widgets.Display, org.eclipse.equinox.app.IApplicationContext, java.util.Map)
 	 */
-	public Object afterWorkbenchCreation(Display display,IApplicationContext context, Map<String, Object> parameters) {
+	@Override
+    public Object afterWorkbenchCreation(Display display,IApplicationContext context, Map<String, Object> parameters) {
 		return null;
 	}
 
@@ -54,7 +62,8 @@ public class Workbench implements WorkbenchExtPoint {
 	 * (non-Javadoc)
 	 * @see org.csstudio.startup.extensions.RunWorkbenchExtPoint#beforeWorkbenchCreation(org.eclipse.swt.widgets.Display, org.eclipse.equinox.app.IApplicationContext, java.util.Map)
 	 */
-	public Object beforeWorkbenchCreation(Display display, IApplicationContext context, Map<String, Object> parameters) {
+	@Override
+    public Object beforeWorkbenchCreation(Display display, IApplicationContext context, Map<String, Object> parameters) {
 		Object share_link = parameters.get(StartupParameters.SHARE_LINK_PARAM);
 		Object o = parameters.get(ProjectExtPoint.PROJECTS);
 		if (share_link != null && o != null) {
@@ -70,39 +79,57 @@ public class Workbench implements WorkbenchExtPoint {
 	 * (non-Javadoc)
 	 * @see org.csstudio.startup.extensions.RunWorkbenchExtPoint#runWorkbench(org.eclipse.swt.widgets.Display, org.eclipse.equinox.app.IApplicationContext, java.util.Map)
 	 */
-	public Object runWorkbench(Display display, IApplicationContext context,
+	@Override
+    public Object runWorkbench(Display display, IApplicationContext context,
 			Map<String, Object> parameters)
 	{
+	    // Configure Logging
+	    try
+	    {
+	        LogConfigurator.configureFromPreferences();
+	    }
+	    catch (Exception ex)
+	    {
+	        ex.printStackTrace();
+	        // Continue without customized log configuration
+	    }
+	    final Logger logger = Logger.getLogger(getClass().getName());
+
         Object o = parameters.get(LoginExtPoint.USERNAME);
 		String username = o != null ? (String)o : null;
 		o = parameters.get(LoginExtPoint.PASSWORD);
 		String password = o != null ? (String)o : null;
-        
+
         //authenticate user
         StartupAuthenticationHelper.authenticate(username, password);
-        
+
+        OpenDocumentEventProcessor openDocProcessor =
+    	  (OpenDocumentEventProcessor) parameters.get(
+    			  OpenDocumentEventProcessor.OPEN_DOC_PROCESSOR);
+
         // Run the workbench
         final int returnCode = PlatformUI.createAndRunWorkbench(display,
-                        new ApplicationWorkbenchAdvisor());
+                        new ApplicationWorkbenchAdvisor(openDocProcessor));
 
         // Plain exit from IWorkbench.close()
         if (returnCode != PlatformUI.RETURN_RESTART)
             return IApplication.EXIT_OK;
-        
+
         // Something called IWorkbench.restart().
         // Is this supposed to be a RESTART or RELAUNCH?
         final Integer exit_code =
             Integer.getInteger(RelaunchConstants.PROP_EXIT_CODE);
         if (IApplication.EXIT_RELAUNCH.equals(exit_code))
         {   // RELAUCH with new command line
-            CentralLogger.getInstance().getLogger(this).debug("RELAUNCH, command line:\n" //$NON-NLS-1$
-                    + System.getProperty(RelaunchConstants.PROP_EXIT_DATA));
+            logger.log(Level.FINE,
+                    "RELAUNCH, command line: {0}", //$NON-NLS-1$
+                    System.getProperty(RelaunchConstants.PROP_EXIT_DATA));
             return IApplication.EXIT_RELAUNCH;
         }
         // RESTART without changes
         return IApplication.EXIT_RESTART;
 	}
-	
+
     /** Assert/update link to common folder.
      *  @param project Project
      *  @param share_link Folder to which the 'Share' entry should link

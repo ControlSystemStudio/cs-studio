@@ -1,19 +1,30 @@
+/*******************************************************************************
+ * Copyright (c) 2010 Oak Ridge National Laboratory.
+ * All rights reserved. This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License v1.0
+ * which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-v10.html
+ ******************************************************************************/
 package org.csstudio.sns.jms2rdb;
 
-import org.apache.log4j.Logger;
+import java.util.logging.Level;
+
+import org.csstudio.logging.LogConfigurator;
 import org.csstudio.platform.httpd.HttpServiceHelper;
-import org.csstudio.platform.logging.CentralLogger;
-import org.csstudio.platform.logging.JMSLogMessage;
+import org.csstudio.logging.JMSLogMessage;
 import org.csstudio.sns.jms2rdb.httpd.MainServlet;
 import org.csstudio.sns.jms2rdb.httpd.StopServlet;
 import org.eclipse.core.runtime.Platform;
 import org.eclipse.core.runtime.preferences.IPreferencesService;
 import org.eclipse.equinox.app.IApplication;
 import org.eclipse.equinox.app.IApplicationContext;
+import org.osgi.framework.Constants;
 import org.osgi.service.http.HttpContext;
 import org.osgi.service.http.HttpService;
 
 /** Application's 'Main' class.
+ *
+ *  TODO Remove dependency on JMSLogMessage in platform
  *  @author Kay Kasemir
  *  reviewed by Katia Danilova 08/20/08
  */
@@ -22,10 +33,10 @@ public class Application implements IApplication
 {
     /** HTTP Server port */
     private int httpd_port = 9500;
-    
+
     /** JMS Server URL */
     private String jms_url = "tcp://localhost:61616";
-    
+
     /** JMS Server topic */
     private String jms_topic = JMSLogMessage.DEFAULT_TOPIC;
 
@@ -33,20 +44,18 @@ public class Application implements IApplication
      *  @see Filter
      */
     private String jms_filters = "ALARM;TEXT=IDLE";
-    
+
     /** RDB Server URL */
     private String rdb_url = "jdbc:mysql://[host]/[database]?user=[user]&password=[password]";
 
     /** RDB Schema */
     private String rdb_schema = "";
 
-    /** Log4j Logger */
-    private Logger logger;
-    
     /** Thread that handles the JMS messages */
     private LogClientThread log_client_thread;
-    
+
     /** {@inheritDoc} */
+    @Override
     public Object start(IApplicationContext context) throws Exception
     {
         // Read settings from preferences.
@@ -77,10 +86,11 @@ public class Application implements IApplication
             service.getString(Activator.ID, "rdb_url", rdb_url, null);
         rdb_schema =
             service.getString(Activator.ID, "rdb_schema", rdb_schema, null);
-        
-        // Log4j and logging setup
-        logger = CentralLogger.getInstance().getLogger(this);
-        logger.info("JMS Log Tool started");
+
+        LogConfigurator.configureFromPreferences();
+
+        final String version = (String) context.getBrandingBundle().getHeaders().get(Constants.BUNDLE_VERSION);
+        Activator.getLogger().log(Level.CONFIG, "Started JMS Log Tool {0}", version);
 
         // Start log handler and web interface
         log_client_thread =
@@ -90,7 +100,7 @@ public class Application implements IApplication
         log_client_thread.start();
         // .. Wait while thread is running ..
         log_client_thread.join();
-        
+
         // Shutdown
         stopHttpd();
 
@@ -106,7 +116,10 @@ public class Application implements IApplication
         httpd.registerResources("/", "/webroot", context);
         httpd.registerServlet("/main", new MainServlet(log_client_thread), null, context);
         httpd.registerServlet("/stop", new StopServlet(this), null, context);
-        logger.info("Web server at http://localhost:" + httpd_port);
+
+        // Format port as string because otherwise it'll show up as "4,913" in US locale
+        // when using the log formatter for an integer
+        Activator.getLogger().log(Level.CONFIG, "Web server at http://localhost:" + httpd_port + "/main");
     }
 
     /** Stop the web server */
@@ -116,9 +129,10 @@ public class Application implements IApplication
     }
 
     /** {@inheritDoc} */
+    @Override
     public void stop()
     {
-        logger.info("Stop requested");
+        Activator.getLogger().info("Stop requested");
         log_client_thread.cancel();
     }
 }

@@ -24,6 +24,9 @@
  */
 package org.csstudio.config.ioconfig.model;
 
+import javax.annotation.CheckForNull;
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import javax.persistence.MappedSuperclass;
 import javax.persistence.Transient;
 
@@ -54,7 +57,7 @@ public class NamedDBClass extends DBClass {
      * @param name
      *            set the Name of this Node.
      */
-    public void setName(final String name) {
+    public void setName(@Nullable final String name) {
         this._name = name;
         Diagnose.addNewLine(_name+"\t"+this.getClass().getSimpleName());
         Diagnose.countNamedDBClass();
@@ -64,6 +67,7 @@ public class NamedDBClass extends DBClass {
      *
      * @return the Name of this Node.
      */
+    @CheckForNull
     public String getName() {
         return _name;
     }
@@ -72,6 +76,7 @@ public class NamedDBClass extends DBClass {
      *
      * @return the Index to sort the node inside his parent.
      */
+    @Nonnull
     public Short getSortIndex() {
         return _sortIndex;
     }
@@ -81,17 +86,19 @@ public class NamedDBClass extends DBClass {
      * @param sortIndex
      *            set the Index to sort the node inside his parent.
      */
-    public void setSortIndex(final Short sortIndex) {
+    public void setSortIndex(@Nonnull final Short sortIndex) {
         _sortIndex = sortIndex;
     }
     @Transient
-    public void setSortIndex(final Integer sortIndex) {
+    public void setSortIndex(@Nonnull final Integer sortIndex) {
         _sortIndex = sortIndex.shortValue();
     }
 
     /**
      * @return The Name of this Node.
      */
+    @Override
+    @Nonnull
     public String toString() {
         StringBuffer sb = new StringBuffer();
         if (getSortIndex() != null) {
@@ -103,4 +110,46 @@ public class NamedDBClass extends DBClass {
         }
         return sb.toString();
     }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public int hashCode() {
+        final int prime = 31;
+        int result = 1;
+        result = prime * result + getId();
+        result = prime * result + ( (_sortIndex == null) ? 0 : _sortIndex.hashCode());
+        return result;
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public boolean equals(@CheckForNull Object obj) {
+        if(this == obj) {
+            return true;
+        }
+        if(obj == null) {
+            return false;
+        }
+        if(getClass() != obj.getClass()) {
+            return false;
+        }
+        NamedDBClass other = (NamedDBClass) obj;
+        if(getId() != other.getId()) {
+            return false;
+        }
+        if(_sortIndex == null) {
+            if(other._sortIndex != null) {
+                return false;
+            }
+        } else if(!_sortIndex.equals(other._sortIndex)) {
+            return false;
+        }
+        return true;
+    }
+    
+    
 }

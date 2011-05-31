@@ -1,0 +1,111 @@
+<?xml version='1.0' encoding='iso-8859-1'?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="de" lang="de" dir="ltr">
+
+<head>
+	<meta content="text/html; charset=ISO-8859-1" http-equiv="content-type" />
+	<!-- meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1" -->
+	<title>Process Variables</title>
+</head>
+
+<body>
+<h1>Process Variables</h1>
+Viele CSS-Tools unterst&uuml;tzen verschiedene Typen von Prozessvariablen (PVs).
+Wenn man einen PV-Name wie
+<pre>
+   some_pv_name
+</pre>
+benutzt, gibt es einen Verweis auf einen voreingestellten PV-Typ,
+der in den PV-Voreinstellungen konfiguriert werden kann.
+<p>
+Um einen speziellen PV-Typ auszuw&auml;hlen, benutzt man das Format
+</p>
+<pre>
+   type://some_pv_name
+</pre>
+
+<h2>Preferences</h2>
+Der voreingestellte PV-Typ kann &uuml;ber das Men&uuml; 
+
+CSS/Preferences/Applications/Configuration/Process Variables
+ausgew&auml;hlt werden.
+
+<h2>Type-Specific PV Name Formats</h2>
+
+<h3>sys://</h3>
+
+System-PVs werden benutzt, um interne Informationen von CSS oder 
+dem lokalen Computer darzustellen:
+
+<table border="1">
+<tr><th>Name</th><th>Detail</th></tr>
+<tr><td><pre>sys://time</pre></td><td>Local date and time</td></tr>
+<tr><td><pre>sys://free_mb</pre></td><td>Free Java VM memory in MB</td></tr>
+<tr><td><pre>sys://used_mb</pre></td><td>Used Java VM memory in MB</td></tr>
+<tr><td><pre>sys://max_mb</pre></td><td>Maximum available Java VM memory in MB</td></tr>
+<tr><td><pre>sys://user</pre></td><td>User Name</td></tr>
+<tr><td><pre>sys://host_name</pre></td><td>Host name</td></tr>
+<tr><td><pre>sys://qualified_host_name</pre></td><td>Full Host Name</td></tr>
+<tr><td><pre>sys://system.*</pre></td><td>Any system property, e.g. "sys://system.user.name"</td></tr>
+<tr><td><pre>sys://pv_count</pre></td><td>Number of "loc:", "sys:" and "sim:" values.</td></tr>
+</table>
+
+<h3>ca://</h3>
+
+EPICS Channel Access PVs k&ouml;nnen  beliebige Recordnamen oder Recordnamen-mit-Feld haben:
+<pre>
+  ca://some:record:name
+  ca://some_record_name
+  ca://some_record_name.SCAN
+</pre>
+Das Pr&auml;fix "ca://"  kann vermieden werden, wenn man es als default-Wert setzt.
+
+<h3>loc://</h3>
+
+'Local' PVs 
+k&ouml;nnen benutzt werden, um zwischen CSS-Tools &uuml;ber nur eine CSS-Instanz zu kommunizieren.
+Beispielsweise k&ouml;nnen Probe und Data-Browser beide eine PV 
+<pre>
+  loc://demo
+</pre>
+benutzen.
+Wenn man den Wert in Probe verstellt, bemerkt der Data-Browser die &Auml;nderung.
+<p>
+Bitte beachten: Lokale PVs haben keine Initialisierungswerte.
+Wenn man sie auf einen Zahlenwert setzt, wird ein numerischer (Doppelwort-) PV
+erzeugt. Sonst wird es ein String-PV.	
+</p>
+<h3>sim://</h3>
+Simulierte PVs k&ouml;nnen folgende Formate haben:
+
+<pre>
+sim://noise
+  </pre>
+erzeugt simuliertes Rauschen von -5 bis 5, welches jede Sekunde aktualisiert wird.
+
+<pre>
+  sim://noise(-10, 10, 0.2)
+</pre>
+erzeugt simuliertes Rauschen von -10 bis 10, welches jede 0.2 Sekunden aktualisiert wird.
+
+<pre>
+  sim://sine(0, 10, 20, 0.5)
+</pre>
+erzeugt ein simuliertes Sinussignal mit Werten zwischen 0 und 10,
+welches alle 0.5 Sekunden aktualisiert wird.
+
+Eine ganze Periode besteht aus 20 Updates, d.h., sie wird in diesem Beispiel in 10 Sekunden erzeugt.
+
+<pre>
+  sim://ramp(0, 10, 0.1, 0.5)
+</pre>
+erzeugt einen Rampenwert (S&auml;gezahn), von 0 bis 10, mit Schritten von 0.1, alle 0.5 Sekunden.
+
+
+<pre>
+  sim://ramp(0, 100, -1, 2)
+</pre>
+erzeugt eine negative Rampe, d.h. count-down, von 100 bis 0, mit Schritten von 1, alle 2 Sekunden.
+
+</body>
+</html>

@@ -11,49 +11,56 @@
       <view
             category="org.csstudio"
             class="org.csstudio.diag.pvfields.view.PVFieldsView"
-            icon="icons/Fields.JPG"
+            icon="icons/fields.jpg"
             id="org.csstudio.diag.pvfields.view.PVFieldsView"
             name="PV Fields Viewer"
             restorable="true">
       </view>
    </extension>
    <extension
-         point="org.eclipse.ui.actionSets">
-      <actionSet
-            description="Global CSS menu actions"
-            id="org.csstudio.diag.pvfields"
-            label="CSS Action Set"
-            visible="true">
-         <action
-               class="org.csstudio.diag.pvfields.view.NewPVFieldsAction"
-               icon="icons/Fields.JPG"
-               id="org.csstudio.diag.pvfields.view.NewPVFieldsAction"
-               label="PV Fields Viewer"
-               menubarPath="css/diag/"
-               style="push">
-         </action>
-      </actionSet>
+         point="org.eclipse.ui.commands">
+      <command
+            defaultHandler="org.csstudio.diag.pvfields.PVFieldPopup"
+            id="org.csstudio.diag.pvfields.PVFieldPopup"
+            name="PV Fields">
+      </command>
    </extension>
    <extension
-         point="org.eclipse.ui.popupMenus">
-      <objectContribution
-            id="org.csstudio.diag.pvfields.OpenViewWithPopupAction"
-            objectClass="org.csstudio.platform.model.IProcessVariable">
-         <menu
-               id="org.csstudio.diag.pvfields.popupmenu"
-               label="CSS"
-               path="additions">
-         </menu>
-         <action
-               class="org.csstudio.diag.pvfields.view.PVFieldpopupAction"
-               enablesFor="1"
-               icon="icons/Fields.JPG"
-               id="org.csstudio.diag.pvfields.view.PVFieldpopupAction"
+         point="org.eclipse.ui.menus">
+      <menuContribution
+            allPopups="false"
+            locationURI="menu:diag">
+         <command
+               commandId="org.eclipse.ui.views.showView"
+               icon="icons/fields.jpg"
                label="PV Fields Viewer"
-               menubarPath="org.csstudio.popmenu/content"
-               tooltip="%PopupMenuTooltip">
-         </action>
-      </objectContribution>
+               style="push">
+            <parameter
+                  name="org.eclipse.ui.views.showView.viewId"
+                  value="org.csstudio.diag.pvfields.view.PVFieldsView">
+            </parameter>
+         </command>
+      </menuContribution>
+      <menuContribution
+            allPopups="false"
+            locationURI="popup:org.csstudio.ui.menu.popup.processvariable">
+         <command
+               commandId="org.csstudio.diag.pvfields.PVFieldPopup"
+               icon="icons/fields.jpg"
+               label="PV Fields Viewer"
+               style="push">
+         </command>
+      </menuContribution>
+   </extension>
+   <extension
+         point="org.eclipse.core.runtime.adapters">
+      <factory
+            adaptableType="org.csstudio.diag.pvfields.model.PVInfo"
+            class="org.csstudio.diag.pvfields.AdapterFactory">
+         <adapter
+               type="org.csstudio.csdata.ProcessVariable">
+         </adapter>
+      </factory>
    </extension>
 
 </plugin>

@@ -30,12 +30,10 @@ import javax.annotation.Nonnull;
 
 import org.apache.log4j.Logger;
 import org.csstudio.alarm.service.AlarmServiceActivator;
-import org.csstudio.platform.AbstractPreference;
+import org.csstudio.domain.desy.preferences.AbstractPreference;
 import org.csstudio.platform.logging.CentralLogger;
 import org.eclipse.core.runtime.FileLocator;
 import org.eclipse.core.runtime.Path;
-import org.eclipse.core.runtime.Platform;
-import org.osgi.framework.Bundle;
 
 /**
  * Constant definitions for alarm service preferences (mimicked enum with inheritance).
@@ -63,7 +61,8 @@ public final class AlarmPreference<T> extends AbstractPreference<T> {
         new AlarmPreference<String>("configFileName", "res/alarmServiceConfig.xml");
 
     public static final AlarmPreference<String> ALARMSERVICE_TOPICS =
-        new AlarmPreference<String>("topics", "ALARM;ACK;");
+//        new AlarmPreference<String>("topics", "ALARM;ACK;");
+    new AlarmPreference<String>("topics", "SMOKETEST;ACK;");
 
     public static final AlarmPreference<String> ALARMSERVICE_FACILITIES =
         new AlarmPreference<String>("facilities", "Test;");
@@ -72,7 +71,7 @@ public final class AlarmPreference<T> extends AbstractPreference<T> {
         new AlarmPreference<Integer>("pvChunkSize", 100);
 
     public static final AlarmPreference<Integer> ALARMSERVICE_PV_CHUNK_WAIT_MSEC =
-        new AlarmPreference<Integer>("pvChunkWaitMsec", 100);	// 200 -> 100
+        new AlarmPreference<Integer>("pvChunkWaitMsec", 500);
 
     public static final AlarmPreference<Integer> ALARMSERVICE_PV_REGISTER_WAIT_MSEC =
         new AlarmPreference<Integer>("pvRegisterWaitMsec", 2000);
@@ -91,7 +90,7 @@ public final class AlarmPreference<T> extends AbstractPreference<T> {
      * {@inheritDoc}
      */
     @Override
-    protected String getPluginID() {
+    public String getPluginID() {
         return AlarmServiceActivator.PLUGIN_ID;
     }
 
@@ -143,31 +142,34 @@ public final class AlarmPreference<T> extends AbstractPreference<T> {
     }
 
     /**
-     * It is assumed that the file is located in the plugin. The file name is thus given relative
-     * to the plugin, e.g. "resource/SomeFile.xml".
-     *
-     * Here the prefix for the plugin is added, so the caller needn't worry.
-     *
-     * If the filename is misspelled an IOException will occur. It is catched right here, because it is not known
-     * if the filename will be used at all. If it is used eventually, an io-error will occur and must be handled anyway.
+     * The default file is located in the plugin.
+     * Via preference page a file from the local file system may be set.
+     * The result is not null, but may not point to a valid file.  
      *
      * @return the full pathname
      */
     @Nonnull
     public static String getConfigFilename() {
-        final Bundle bundle = Platform.getBundle(AlarmServiceActivator.PLUGIN_ID);
-        final Path path = new Path(ALARMSERVICE_CONFIG_FILENAME.getValue());
-        final URL url = FileLocator.find(bundle, path, null);
-        String result = null;
-        try {
-            result = FileLocator.toFileURL(url).getPath();
-        } catch (final IOException e) {
-            result = ALARMSERVICE_CONFIG_FILENAME.getValue(); // visible in log file
-            LOG.error("Error determining filename from value " + ALARMSERVICE_CONFIG_FILENAME.getValue() + ".");
-        }
-        assert result != null : "result must not be null";
-        return result;
+        return getStringFromPath(ALARMSERVICE_CONFIG_FILENAME.getValue());
     }
 
+    @Nonnull
+    private static String getStringFromPath(@Nonnull final String pathAsString) {
+        String result = null;
+        Path path = new Path(pathAsString);
+        if (path.isAbsolute()) {
+            result = path.toOSString();
+        } else {
+            URL url = FileLocator.find(AlarmServiceActivator.getDefault()
+                    .getBundle(), path, null);
+            try {
+                result = FileLocator.toFileURL(url).getPath();
+            } catch (final IOException e) {
+                result = ALARMSERVICE_CONFIG_FILENAME.getValue(); // visible in log file
+                LOG.error("Error determining filename from value " + ALARMSERVICE_CONFIG_FILENAME.getValue() + ".");
+            }
+        }
+        return result;
+    }
 
 }

@@ -18,7 +18,8 @@ public class AndNode extends AbstractBinaryNode
     {
         super(left, right);
     }
-    
+
+    @Override
     public double eval()
     {
         return (left.eval() != 0.0   &&   right.eval() != 0.0) ? 1.0 : 0.0;

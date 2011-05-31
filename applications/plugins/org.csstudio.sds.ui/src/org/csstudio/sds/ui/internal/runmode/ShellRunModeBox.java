@@ -44,8 +44,6 @@ import org.eclipse.gef.ui.actions.ZoomInAction;
 import org.eclipse.gef.ui.actions.ZoomOutAction;
 import org.eclipse.jface.action.Action;
 import org.eclipse.jface.action.IAction;
-import org.eclipse.jface.action.IMenuListener;
-import org.eclipse.jface.action.IMenuManager;
 import org.eclipse.jface.action.MenuManager;
 import org.eclipse.jface.layout.GridDataFactory;
 import org.eclipse.swt.SWT;
@@ -55,8 +53,10 @@ import org.eclipse.swt.events.DisposeListener;
 import org.eclipse.swt.events.MouseAdapter;
 import org.eclipse.swt.events.MouseEvent;
 import org.eclipse.swt.events.MouseTrackListener;
+import org.eclipse.swt.graphics.Point;
 import org.eclipse.swt.layout.FillLayout;
 import org.eclipse.swt.layout.GridLayout;
+import org.eclipse.swt.layout.RowLayout;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Label;
@@ -69,24 +69,25 @@ import org.eclipse.ui.PlatformUI;
  * A box that manages a shell, which uses a GEF graphical viewer to display SDS
  * displays.
  * 
- * @author Sven Wende
+ * @author Sven Wende, Kai Meyer, Christian Zoller
  * @version $Revision: 1.26 $
  */
 public final class ShellRunModeBox extends AbstractRunModeBox {
+
+	private static final int SHELL_BORDER = 40;
+	
+	private static final int SCROLLBAR_MARGIN = 25;
 
 	private EditPartViewerProxy _editPartViewerProxy;
 
 	private RunModeContextMenuProvider _contextMenuProvider;
 
 	/**
-	 * The width of the ScrollBars.
-	 */
-	private static final int SCROLLBAR_WIDTH = 17;
-
-	/**
 	 * The shell.
 	 */
 	private Shell _shell;
+
+	private Point parentLocation;
 
 	
 	/**
@@ -95,52 +96,68 @@ public final class ShellRunModeBox extends AbstractRunModeBox {
 	 * @param input
 	 *            the input
 	 */
-	public ShellRunModeBox(RunModeBoxInput input) {
+	public ShellRunModeBox(RunModeBoxInput input, Point parentLocation) {
 		super(input);
+		
+		if (parentLocation != null) {
+			this.parentLocation = parentLocation;
+		}
+		else {
+			this.parentLocation = new Point(0, 0);
+		}
 	}
-
+	
 	/**
 	 * {@inheritDoc}
 	 */
-	protected GraphicalViewer doOpen(final int x, final int y, final int width, final int height, final String title) {
+	protected GraphicalViewer doOpen(final int x, final int y, final boolean openRelative, final int width, final int height, final String title) {
+		List<RunModeBoxInput> predecessors = getPredecessors(getInput());
+		
 		// create a shell
 		_shell = new Shell();
-
 		_shell.setText(title);
-		_shell.setLocation(x, y);
-		_shell.setLayout(new FillLayout());
+		if (openRelative) {
+			_shell.setLocation(parentLocation.x + x, parentLocation.y + y);
+		} else {
+			_shell.setLocation(x, y);
+		}
+		_shell.setLayout(getFillLayout());
 		_shell.setImage(CustomMediaFactory.getInstance().getImageFromPlugin(SdsUiPlugin.PLUGIN_ID, "icons/sds.gif"));
-		_shell.setSize(width + SCROLLBAR_WIDTH + 20, height + SCROLLBAR_WIDTH + 60);
-
+		_shell.setBackground(Display.getDefault().getSystemColor(SWT.COLOR_RED));
+		
+		
 		final ScrolledComposite scrollComposite = new ScrolledComposite(_shell, SWT.V_SCROLL | SWT.H_SCROLL);
 		scrollComposite.setExpandHorizontal(true);
 		scrollComposite.setExpandVertical(true);
-		scrollComposite.setSize(width + SCROLLBAR_WIDTH, height + SCROLLBAR_WIDTH + 20);
-		
-		// create a parent composite that fills the whole shell
-		final Composite parent = new Composite(scrollComposite, SWT.NONE);
-		GridLayout layout = new GridLayout(1, false);
-		layout.marginBottom = 0;
-		layout.marginTop = 0;
-		layout.marginLeft = 0;
-		layout.marginRight = 0;
-		layout.horizontalSpacing = 0;
-		layout.verticalSpacing = 0;
-		parent.setLayout(layout);
-		parent.setSize(width, height + 20);
+		scrollComposite.setLayoutData(GridDataFactory.fillDefaults().grab(true, true).indent(0, 0).create());
+		scrollComposite.setLayout(getFillLayout());
+		scrollComposite.setBackground(Display.getDefault().getSystemColor(SWT.COLOR_BLUE));
 
+		// create a parent composite that fills the whole shell
+		GridLayout parentLayout = new GridLayout(1, false);
+		parentLayout.horizontalSpacing = 0;
+		parentLayout.marginWidth = 0;
+		parentLayout.marginHeight = 0;
+		parentLayout.verticalSpacing = 0;
+		final Composite parent = new Composite(scrollComposite, SWT.NONE);
+		parent.setLayout(parentLayout);
+		parent.setBackground(Display.getCurrent().getSystemColor(SWT.COLOR_YELLOW));
+		
 		// create a composite for the graphical viewer
 		Composite c = new Composite(parent, SWT.NONE);
-		c.setLayout(new FillLayout());
-		c.setLayoutData(GridDataFactory.fillDefaults().grab(true, true).create());
-
+		c.setLayout(getFillLayout());
+		c.setLayoutData(GridDataFactory.fillDefaults().grab(true, true).indent(0,0).create());
+		
 		// create a composite for path and navigation information
-		List<RunModeBoxInput> predecessors = getPredecessors(getInput());
 
+		int fullHeight = height;
+		int fullWidth = width;
+		
 		if (predecessors.size() > 0) {
 			Composite navigation = new Composite(parent, SWT.NONE);
-			navigation.setLayout(new GridLayout(1, false));
-			navigation.setLayoutData(GridDataFactory.fillDefaults().grab(true, false).create());
+			RowLayout rowLayout = new RowLayout();
+			navigation.setLayout(rowLayout);
+			navigation.setLayoutData(GridDataFactory.fillDefaults().align(SWT.FILL,	SWT.BOTTOM).grab(true, false).create());	
 
 			for (int i = 0; i < predecessors.size(); i++) {
 				new LinkLabel(navigation, predecessors.get(i));
@@ -149,10 +166,11 @@ public final class ShellRunModeBox extends AbstractRunModeBox {
 					new SeparatorLabel(navigation);
 				}
 			}
-
-			Composite filler = new Composite(navigation, SWT.NONE);
-			filler.setLayoutData(GridDataFactory.fillDefaults().grab(true, true).create());
+			//navigation.pack();
+			Point size = navigation.computeSize(width, SWT.DEFAULT);
+			fullHeight = fullHeight + size.y ;
 		}
+		_shell.setSize(fullWidth + SCROLLBAR_MARGIN, fullHeight + SHELL_BORDER + SCROLLBAR_MARGIN);
 
 		// configure a graphical viewer
 		final GraphicalViewer graphicalViewer = createGraphicalViewer(c);
@@ -164,12 +182,7 @@ public final class ShellRunModeBox extends AbstractRunModeBox {
 		// to ensure that the real EditPartViewer can get garbage collected
 		_editPartViewerProxy = new EditPartViewerProxy(graphicalViewer);
 		_contextMenuProvider = new RunModeContextMenuProvider(_editPartViewerProxy, actionRegistry);
-
-		_contextMenuProvider.addMenuListener(new IMenuListener() {
-			public void menuAboutToShow(final IMenuManager manager) {
-				manager.setRemoveAllWhenShown(true);
-			}
-		});
+		_contextMenuProvider.setRemoveAllWhenShown(true);
 		graphicalViewer.setContextMenu(_contextMenuProvider);
 
 		IWorkbenchPartSite site = PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage().getActivePart().getSite();
@@ -191,9 +204,20 @@ public final class ShellRunModeBox extends AbstractRunModeBox {
 		});
 
 		// open the shell
-		_shell.open();
+		_shell.open();		
 
 		return graphicalViewer;
+	}
+
+	/**
+	 * @return
+	 */
+	private FillLayout getFillLayout() {
+		FillLayout fillLayout = new FillLayout();
+		fillLayout.marginHeight= 0;
+		fillLayout.marginWidth = 0;
+		fillLayout.spacing = 0;
+		return fillLayout;
 	}
 
 	/**
@@ -379,8 +403,7 @@ public final class ShellRunModeBox extends AbstractRunModeBox {
 			_label.setForeground(CustomMediaFactory.getInstance().getColor(0, 0, 255));
 			_label.addMouseListener(this);
 			_label.addMouseTrackListener(this);
-			_label
-					.setToolTipText(_input.calculateFullPath() + " [" + new SimpleDateFormat("hh:mm").format(new Date(input.getTimestamp()))
+			_label.setToolTipText(_input.calculateFullPath() + " [" + new SimpleDateFormat("hh:mm").format(new Date(input.getTimestamp()))
 							+ "]");
 		}
 
@@ -399,6 +422,11 @@ public final class ShellRunModeBox extends AbstractRunModeBox {
 
 		public void mouseHover(MouseEvent e) {
 		}
+	}
+
+	@Override
+	public Point getCurrentLocation() {
+		return _shell.getLocation();
 	}
 
 }

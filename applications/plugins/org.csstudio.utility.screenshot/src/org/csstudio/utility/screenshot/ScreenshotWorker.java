@@ -40,7 +40,7 @@ import org.eclipse.ui.PlatformUI;
 public class ScreenshotWorker
 {
     private Hashtable<String, String> messageContent = null;
-    private Display display = null;
+    private Display display;
     private Composite mainComposite;
     private Color paintColorBlack, paintColorWhite; // alias for paintColors[0] and [1]
     private Color[] paintColors;
@@ -76,6 +76,7 @@ public class ScreenshotWorker
      * Sets the default tool item states.
      */
     public void setDefaults() {
+    	// ?
     }
 
     /**
@@ -142,8 +143,8 @@ public class ScreenshotWorker
     /**
      * Frees the resource bundle resources.
      */
-    public void freeResources()
-    {
+    public void freeResources() {
+    	//TODO:
     }
     
     /**
@@ -160,33 +161,34 @@ public class ScreenshotWorker
      * Initialize colors, fonts, and tool settings.
      */
     private void init() {
-        Display display = mainComposite.getDisplay();
         
-        paintColorWhite = new Color(display, 255, 255, 255);
-        paintColorBlack = new Color(display, 0, 0, 0);
+    	Display disp = mainComposite.getDisplay();
+        
+        paintColorWhite = new Color(disp, 255, 255, 255);
+        paintColorBlack = new Color(disp, 0, 0, 0);
         
         paintColors = new Color[numPaletteCols * numPaletteRows];
         paintColors[0] = paintColorBlack;
         paintColors[1] = paintColorWhite;
         for (int i = 2; i < paintColors.length; i++) {
-            paintColors[i] = new Color(display,
-                ((i*7)%255),((i*23)%255), ((i*51)%255));
+            paintColors[i] = new Color(disp,
+                ((i * 7) % 255), ((i * 23) % 255), ((i * 51) % 255));
         }
     }
 
     /**
      * Sets the action field of the tools
      */
-    private void initActions()
-    {
+    private void initActions() {
+    	//TODO:
     }
 
     /**
      * Loads the image resources.
      */
     
-    public void initResources()
-    {        
+    public void initResources() {
+    	//TODO:
     }
     
     /**

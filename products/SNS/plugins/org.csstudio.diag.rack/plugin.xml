@@ -11,48 +11,27 @@
       <view
             category="org.csstudio"
             class="org.csstudio.diag.rack.view.RackView"
-            icon="icons/rack.JPG"
+            icon="icons/rack.jpg"
             id="org.csstudio.diag.rack.view.RackView"
             name="Rack View">
       </view>
    </extension>
    <extension
-         point="org.eclipse.ui.actionSets">
-      <actionSet
-            description="Global CSS menu actions"
-            id="org.csstudio.rack"
-            label="CSS Action Set"
-            visible="true">
-         <action
-               class="org.csstudio.diag.rack.view.NewRackAction"
-               icon="icons/rack.JPG"
-               id="org.csstudio.rack.view.NewRackAction"
+         point="org.eclipse.ui.menus">
+      <menuContribution
+            allPopups="false"
+            locationURI="menu:diag">
+         <command
+               commandId="org.eclipse.ui.views.showView"
+               icon="icons/rack.jpg"
                label="Rack View"
-               menubarPath="css/diag/"
                style="push">
-         </action>
-      </actionSet>
-   </extension>
-   <extension
-         point="org.eclipse.ui.popupMenus">
-      <objectContribution
-            id="org.csstudio.rack.OpenViewWithPVPopupAction"
-            objectClass="org.csstudio.platform.model.IProcessVariable">
-         <menu
-               id="org.csstudio.rack.popmenu"
-               label="CSS"
-               path="additions">
-         </menu>
-         <action
-               class="org.csstudio.diag.rack.view.PVpopupAction"
-               enablesFor="1"
-               icon="icons/rack.JPG"
-               id="org.csstudio.rack.view.PVpopupAction"
-               label="Rack View"
-               menubarPath="org.csstudio.popmenu/content"
-               tooltip="%PopupMenuTooltip">
-         </action>
-      </objectContribution>
+            <parameter
+                  name="org.eclipse.ui.views.showView.viewId"
+                  value="org.csstudio.diag.rack.view.RackView">
+            </parameter>
+         </command>
+      </menuContribution>
    </extension>
 
 </plugin>

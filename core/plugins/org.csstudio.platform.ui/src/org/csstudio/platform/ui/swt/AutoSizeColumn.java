@@ -10,7 +10,9 @@ import org.eclipse.swt.widgets.TableColumn;
 /** Helper for auto-sizing columns.
  *  @see AutoSizeControlListener
  *  @author Kay Kasemir
+ *  @deprecated Use org.eclipse.jface.layout.TableColumnLayout, see http://javafact.com/2010/07/26/working-with-jface-tableviewer/
  */
+@Deprecated
 public class AutoSizeColumn
 {
     /** Create a new auto-size table column.
@@ -18,7 +20,7 @@ public class AutoSizeColumn
      *  The 'data' of the column will be set to the auto-size info,
      *  so applications can no longer use the 'data' for other
      *  custom purposes!
-     *  
+     *
      *  @param table_viewer The table viewer to which this column belongs.
      *  @param header The column header.
      *  @param min_size The minimum column width in pixels.

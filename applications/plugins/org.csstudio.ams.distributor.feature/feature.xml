@@ -2,7 +2,8 @@
 <feature
       id="org.csstudio.ams.distributor.feature"
       label="Feature"
-      version="1.0.0.qualifier">
+      version="1.0.0.qualifier"
+      provider-name="DESY &lt;css-developer@desy.de&gt;, Markus Moeller">
 
    <description url="http://www.example.com/description">
       [Enter Feature Description here.]
@@ -148,7 +149,7 @@
          unpack="false"/>
 
    <plugin
-         id="org.csstudio.platform.workspace"
+         id="org.csstudio.workspace"
          download-size="0"
          install-size="0"
          version="0.0.0"

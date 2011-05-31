@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?eclipse version="3.4"?>
+<plugin>
+
+   <extension
+         point="org.eclipse.ui.views">
+      <category
+            name="CSS"
+            id="org.csstudio">
+      </category>
+      <view
+            name="Waterfall View"
+            icon="icons/water.png"
+            category="org.csstudio"
+            class="org.csstudio.display.waterfall.WaterfallView"
+            id="org.csstudio.display.waterfall.WaterfallView">
+      </view>
+   </extension>
+   <extension
+         point="org.eclipse.help.contexts">
+      <contexts
+            file="contexts.xml">
+      </contexts>
+   </extension>
+   <extension
+         point="org.eclipse.ui.commands">
+      <command
+            defaultHandler="org.csstudio.display.waterfall.OpenWaterfall"
+            id="org.csstudio.display.waterfall.OpenView"
+            name="Waterfall">
+      </command>
+   </extension>
+   <extension
+         point="org.eclipse.ui.menus">
+      <menuContribution
+            allPopups="false"
+            locationURI="menu:display">
+         <command
+               commandId="org.eclipse.ui.views.showView"
+               icon="icons/water.png"
+               label="Waterfall"
+               style="push">
+            <parameter
+                  name="org.eclipse.ui.views.showView.viewId"
+                  value="org.csstudio.display.waterfall.WaterfallView">
+            </parameter>
+         </command>
+      </menuContribution>
+      <menuContribution
+            allPopups="false"
+            locationURI="popup:org.csstudio.ui.menu.popup.processvariable">
+         <command
+               commandId="org.csstudio.display.waterfall.OpenView"
+               icon="icons/water.png"
+               style="push">
+         </command>
+      </menuContribution>
+   </extension>
+
+</plugin>

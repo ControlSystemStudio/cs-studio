@@ -4,7 +4,7 @@
    <extension
          id="dummyLogin"
          name="Dummy Login"
-         point="org.csstudio.platform.loginModule">
+         point="org.csstudio.auth.loginModule">
       <loginModule
             class="org.csstudio.platform.login.dummy.DummyLoginModule"
             id="org.csstudio.platform.login.dummy.loginModule"

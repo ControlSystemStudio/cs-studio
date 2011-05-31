@@ -9,7 +9,7 @@ package org.csstudio.alarm.beast.msghist;
 
 import org.csstudio.alarm.beast.msghist.gui.GUI;
 import org.csstudio.alarm.beast.msghist.model.Model;
-import org.csstudio.platform.security.SecureStorage;
+import org.csstudio.auth.security.SecureStorage;
 import org.eclipse.core.runtime.Platform;
 import org.eclipse.core.runtime.preferences.IPreferencesService;
 import org.eclipse.jface.dialogs.MessageDialog;

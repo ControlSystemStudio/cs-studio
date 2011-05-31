@@ -1,0 +1,17 @@
+Manifest-Version: 1.0
+Bundle-ManifestVersion: 2
+Bundle-Name: Widgets based on PVManager data and connection
+Bundle-SymbolicName: org.csstudio.utility.pvmanager.widgets
+Bundle-Version: 3.0.0.qualifier
+Bundle-Activator: org.csstudio.utility.pvmanager.widgets.Activator
+Bundle-Description: Set of widgets implemented on top of PVManager
+Require-Bundle: org.eclipse.ui,
+ org.eclipse.core.runtime,
+ org.csstudio.utility.pvmanager;bundle-version="[0.3.0,1.0.0)",
+ org.csstudio.utility.pvmanager.ui;bundle-version="3.0.0",
+ org.csstudio.ui.util;bundle-version="3.0.0"
+Bundle-ActivationPolicy: lazy
+Bundle-RequiredExecutionEnvironment: JavaSE-1.6
+Export-Package: com.swtdesigner,
+ org.csstudio.utility.pvmanager.widgets
+Bundle-Vendor: Gabriele Carcassi <carcassi@bnl.gov>, Kunal Shroff <kshroff@bnl.gov> - BNL

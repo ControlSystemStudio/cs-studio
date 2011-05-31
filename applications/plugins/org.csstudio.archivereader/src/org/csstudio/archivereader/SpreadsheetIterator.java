@@ -1,7 +1,14 @@
+/*******************************************************************************
+ * Copyright (c) 2010 Oak Ridge National Laboratory.
+ * All rights reserved. This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License v1.0
+ * which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-v10.html
+ ******************************************************************************/
 package org.csstudio.archivereader;
 
-import org.csstudio.platform.data.ITimestamp;
-import org.csstudio.platform.data.IValue;
+import org.csstudio.data.values.ITimestamp;
+import org.csstudio.data.values.IValue;
 
 /** Iterates several <code>ValueIterator</code> instances 'in lockstep'
  *  as required to generate spreadsheet-type output.
@@ -12,25 +19,25 @@ import org.csstudio.platform.data.IValue;
  *  While it uses the common Java <code>Iterator</code> idea with
  *  <code>hasNext()/next()</code> for the values, pay attention to
  *  the comments for <code>getTime()</code>!
- *  
+ *
  *  @author Kay Kasemir
- */ 
+ */
 public class SpreadsheetIterator
 {
     final private static boolean debug = false;
-    
+
     /** The iterators for the individual channels. */
     final private ValueIterator iters[];
-    
+
     /** The 'current' values of each <code>iter</code>.
      *  This is usually the 'next' value, stamped after <code>time</code>.
      *  @see #values
      */
     private IValue raw_data[];
-    
+
     /** The timestamp for the current spreadsheet 'line'. */
     private ITimestamp time;
-    
+
     /** The values of the current spreadsheet 'line', or <code>null</code>. */
     private IValue values[];
 
@@ -42,7 +49,7 @@ public class SpreadsheetIterator
     public SpreadsheetIterator(ValueIterator iters[]) throws Exception
     {
         this.iters = iters;
-        
+
         // Get first sample from each base iterator
         raw_data = new IValue[iters.length];
         values = new IValue[iters.length];
@@ -55,14 +62,14 @@ public class SpreadsheetIterator
         }
         getNextSpreadsheetLine();
     }
-    
+
     /** @return <code>true</code> if there is more data.
      *  @see #getTime()
      *  @see #next()
      */
     public boolean hasNext()
     {   return values != null;  }
-    
+
     /** Get the time of the spreadsheet line.
      *  <p>
      *  While <code>next()</code> returns that line, it also
@@ -81,7 +88,7 @@ public class SpreadsheetIterator
      *  @return The time stamp of the current spreadsheet 'line'. */
     public ITimestamp getTime()
     {   return time;  }
-    
+
     /** Get the next set of values, and move iterator to the following line.
      *  <p>
      *  Note that one should neglect the time stamps of those values,
@@ -91,7 +98,7 @@ public class SpreadsheetIterator
      *  <p>
      *  It is an error to invoke <code>next</code> unless <code>hasNext</code>
      *  returned <code>true</code>.
-     *  
+     *
      *  @return The next spreadsheed 'line', one sample per channel.
      *          For some channels that might be <code>null</code>.
      *  @throws Exception on error
@@ -133,7 +140,7 @@ public class SpreadsheetIterator
 
         if (debug)
             System.out.println("Next time stamp: " + time.toString()); //$NON-NLS-1$
-        
+
         // 'time' now defines the current spreadsheet line.
         for (int i=0; i<raw_data.length; ++i)
         {
@@ -153,9 +160,9 @@ public class SpreadsheetIterator
             // so leave values[i] as is until 'time' catches up
             // with raw_data.time.
             // This also covers the initial values[i] == null case.
-        }        
+        }
     }
-    
+
     /** Must be called to release resources */
     public void close()
     {

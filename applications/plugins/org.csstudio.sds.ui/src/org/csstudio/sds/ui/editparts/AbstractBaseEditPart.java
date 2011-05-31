@@ -89,8 +89,6 @@ public abstract class AbstractBaseEditPart extends AbstractGraphicalEditPart
 		implements NodeEditPart, PropertyChangeListener,
 		IProcessVariableAdressProvider, IProcessVariable, IListenerRegistry {
 
-	private boolean activated = false;
-
 	enum ConnectionStatus {
 		DISCONNECTED, CONNECTED, CONNECTING, DISCONNECTING
 	}
@@ -306,7 +304,9 @@ public abstract class AbstractBaseEditPart extends AbstractGraphicalEditPart
 
 		GraphicalEditPart parent = (GraphicalEditPart) getParent();
 
-		parent.setLayoutConstraint(this, refreshableFigure, bounds);
+		if (parent != null) {
+		    parent.setLayoutConstraint(this, refreshableFigure, bounds);
+        }
 	}
 
 	/**
@@ -335,8 +335,6 @@ public abstract class AbstractBaseEditPart extends AbstractGraphicalEditPart
 	@Override
 	public void activate() {
 		super.activate();
-
-		activated = true;
 
 		final AbstractWidgetModel model = getWidgetModel();
 
@@ -455,7 +453,7 @@ public abstract class AbstractBaseEditPart extends AbstractGraphicalEditPart
 				fullRefreshHandler);
 
 		setPropertyChangeHandler(AbstractWidgetModel.PROP_COLOR_BACKGROUND,
-				new ColorChangeHander<IFigure>() {
+				new ColorChangeHandler<IFigure>() {
 					@Override
 					protected void doHandle(final IFigure figure,
 							final Color color) {
@@ -464,7 +462,7 @@ public abstract class AbstractBaseEditPart extends AbstractGraphicalEditPart
 				});
 
 		setPropertyChangeHandler(AbstractWidgetModel.PROP_COLOR_FOREGROUND,
-				new ColorChangeHander<IFigure>() {
+				new ColorChangeHandler<IFigure>() {
 					@Override
 					protected void doHandle(final IFigure figure,
 							final Color color) {
@@ -493,7 +491,7 @@ public abstract class AbstractBaseEditPart extends AbstractGraphicalEditPart
 				borderWidthHandler);
 
 		setPropertyChangeHandler(AbstractWidgetModel.PROP_BORDER_COLOR,
-				new ColorChangeHander<IFigure>() {
+				new ColorChangeHandler<IFigure>() {
 					@Override
 					protected void doHandle(final IFigure figure,
 							final Color color) {
@@ -691,8 +689,6 @@ public abstract class AbstractBaseEditPart extends AbstractGraphicalEditPart
 	 */
 	@Override
 	public void deactivate() {
-		activated = false;
-
 		// stop listening to the preferences
 		SdsUiPlugin.getCorePreferenceStore().removePropertyChangeListener(
 				_preferencesListener);
@@ -772,7 +768,7 @@ public abstract class AbstractBaseEditPart extends AbstractGraphicalEditPart
 	/**
 	 * {@inheritDoc}
 	 */
-	@SuppressWarnings("unchecked")
+	@SuppressWarnings("rawtypes")
 	@Override
 	public Object getAdapter(final Class adapter) {
 		if (adapter == IPropertySource.class) {
@@ -785,7 +781,6 @@ public abstract class AbstractBaseEditPart extends AbstractGraphicalEditPart
 	/**
 	 * {@inheritDoc}
 	 */
-	@SuppressWarnings("unchecked")
 	public synchronized void propertyChange(final PropertyChangeEvent evt) {
 		String prop = evt.getPropertyName();
 
@@ -1091,9 +1086,10 @@ public abstract class AbstractBaseEditPart extends AbstractGraphicalEditPart
 	 * @param <F>
 	 *            the figure type
 	 */
-	public abstract class ColorChangeHander<F extends IFigure> implements
+	public abstract class ColorChangeHandler<F extends IFigure> implements
 			IWidgetPropertyChangeHandler {
 
+		@SuppressWarnings("unchecked")
 		public boolean handleChange(final Object oldValue,
 				final Object newValue, final IFigure refreshableFigure) {
 			assert newValue != null;
@@ -1119,9 +1115,10 @@ public abstract class AbstractBaseEditPart extends AbstractGraphicalEditPart
 	 * @param <F>
 	 *            the figure type
 	 */
-	public abstract class FontChangeHander<F extends IFigure> implements
+	public abstract class FontChangeHandler<F extends IFigure> implements
 			IWidgetPropertyChangeHandler {
 
+		@SuppressWarnings("unchecked")
 		public boolean handleChange(final Object oldValue,
 				final Object newValue, final IFigure refreshableFigure) {
 			assert newValue instanceof String;

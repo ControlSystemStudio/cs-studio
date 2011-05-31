@@ -7,7 +7,9 @@
  ******************************************************************************/
 package org.csstudio.archive.engine;
 
-import org.apache.log4j.Logger;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+
 import org.csstudio.apputil.args.ArgParser;
 import org.csstudio.apputil.args.BooleanOption;
 import org.csstudio.apputil.args.IntegerOption;
@@ -17,7 +19,7 @@ import org.csstudio.archive.engine.model.EngineModel;
 import org.csstudio.archive.engine.server.EngineServer;
 import org.csstudio.archive.rdb.RDBArchive;
 import org.csstudio.archive.rdb.RDBArchivePreferences;
-import org.csstudio.platform.logging.CentralLogger;
+import org.csstudio.logging.LogConfigurator;
 import org.eclipse.equinox.app.IApplication;
 import org.eclipse.equinox.app.IApplicationContext;
 
@@ -30,13 +32,13 @@ public class Application implements IApplication
     private String url = RDBArchivePreferences.getURL(),
                    user = RDBArchivePreferences.getUser(),
                    password = RDBArchivePreferences.getPassword();
-    
+
     /** HTTP Server port */
     private int port;
-    
+
     /** Request file */
     private String engine_name;
-    
+
     /** Application model */
     private EngineModel model;
 
@@ -81,7 +83,7 @@ public class Application implements IApplication
             System.out.println(parser.getHelp());
             return false;
         }
-        
+
         // Check arguments
         if (engine_name_opt.get() == null)
         {
@@ -100,6 +102,7 @@ public class Application implements IApplication
     }
 
     /** {@inheritDoc} */
+    @Override
     @SuppressWarnings("nls")
     public Object start(final IApplicationContext context) throws Exception
     {
@@ -107,7 +110,7 @@ public class Application implements IApplication
             (String []) context.getArguments().get("application.args");
         if (!getSettings(args))
             return EXIT_OK;
-        
+
         if (url == null)
         {
             System.out.println(
@@ -115,9 +118,12 @@ public class Application implements IApplication
             return EXIT_OK;
         }
 
+        // Initialize logging
+        LogConfigurator.configureFromPreferences();
+
         // Setup groups, channels, writer
         // This is all single-threaded!
-        final Logger logger = CentralLogger.getInstance().getLogger(this);
+        final Logger logger = Activator.getLogger();
         logger.info("Archive Engine " + EngineModel.VERSION);
         try
         {
@@ -128,7 +134,7 @@ public class Application implements IApplication
             }
             catch (final Exception ex)
             {
-                logger.fatal("Cannot connect to " + url, ex);
+                logger.log(Level.SEVERE, "Cannot connect to " + url, ex);
                 return EXIT_OK;
             }
             model = new EngineModel(archive);
@@ -140,11 +146,10 @@ public class Application implements IApplication
             }
             catch (final Exception ex)
             {
-                logger.fatal("Cannot start server on port "
-                                + port + ": " + ex.getMessage(), ex);
+                logger.log(Level.SEVERE, "Cannot start server on port " + port, ex);
                 return EXIT_OK;
             }
-            
+
             boolean run = true;
             while (run)
             {
@@ -156,13 +161,13 @@ public class Application implements IApplication
                 }
                 catch (final Exception ex)
                 {
-                    logger.fatal(ex.getMessage());
+                    logger.log(Level.SEVERE, "Cannot read configuration", ex);
                     return EXIT_OK;
                 }
                 timer.stop();
                 logger.info("Read configuration: " + model.getChannelCount() +
                             " channels in " + timer.toString());
-        
+
                 // Run until model gets stopped via HTTPD or #stop()
                 logger.info("Running, CA addr list: "
                     + System.getProperty("com.cosylab.epics.caj.CAJContext.addr_list"));
@@ -183,21 +188,21 @@ public class Application implements IApplication
                 model.stop();
                 model.clearConfig();
             }
-            
+
             archive.close();
             logger.info("ArchiveEngine stopped");
             server.stop();
         }
         catch (Exception ex)
         {
-            logger.fatal("Unhandled Main Loop Error", ex);
-            ex.printStackTrace();
+            logger.log(Level.SEVERE, "Unhandled Main Loop Error", ex);
         }
-        
+
         return EXIT_OK;
     }
 
     /** {@inheritDoc} */
+    @Override
     public void stop()
     {
         if (model != null)

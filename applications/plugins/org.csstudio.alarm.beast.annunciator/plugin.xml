@@ -41,20 +41,24 @@
       </view>
    </extension>
    <extension
-         point="org.eclipse.ui.actionSets">
-      <actionSet
-            description="Global CSS menu actions"
-            id="org.csstudio.alarm.beast.annunciator.cssmenu"
-            label="CSS Action Set"
-            visible="true">
-         <action
-               class="org.csstudio.alarm.beast.annunciator.ui.ShowAnnunciatorAction"
+         point="org.eclipse.ui.menus">
+      <menuContribution
+            allPopups="false"
+            locationURI="menu:alarm?after=org.csstudio.alarm.beast.alarmtree">
+         <command
+               commandId="org.eclipse.ui.views.showView"
                icon="icons/annunciator.png"
-               id="org.csstudio.alarm.beast.annunciator.show_annunciator"
+               id="org.csstudio.alarm.beast.annunciator"
                label="%Annunciator"
-               menubarPath="css/alarm/"
-               style="push"/>
-      </actionSet>
+               mnemonic="%AnnunciatorMnemonic"
+               style="push"
+               tooltip="%AnnunciatorTT">
+            <parameter
+                  name="org.eclipse.ui.views.showView.viewId"
+                  value="org.csstudio.alarm.beast.annunciator.view">
+            </parameter> 
+         </command>
+      </menuContribution>
    </extension>
    <extension
          point="org.eclipse.ui.preferencePages">

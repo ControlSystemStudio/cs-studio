@@ -823,7 +823,7 @@ public final class RefreshableBargraphFigure extends RectangleFigure implements
 	/**
 	 * {@inheritDoc}
 	 */
-	@SuppressWarnings("unchecked")
+	@SuppressWarnings("rawtypes")
 	public Object getAdapter(final Class adapter) {
 		if (adapter == IBorderEquippedWidget.class) {
 			if (_borderAdapter == null) {

@@ -95,7 +95,7 @@ public final class MeterEditPart extends AbstractWidgetEditPart {
 	 */
 	protected void registerColorPropertyHandlers() {
 		// needle
-		setPropertyChangeHandler(MeterModel.PROP_NEEDLECOLOR, new ColorChangeHander<RefreshableMeterFigure>(){
+		setPropertyChangeHandler(MeterModel.PROP_NEEDLECOLOR, new ColorChangeHandler<RefreshableMeterFigure>(){
 			@Override
 			protected void doHandle(RefreshableMeterFigure figure, Color color) {
 				figure.setNeedleColor(color);
@@ -103,7 +103,7 @@ public final class MeterEditPart extends AbstractWidgetEditPart {
 		});
 		
 		// scale
-		setPropertyChangeHandler(MeterModel.PROP_SCALECOLOR, new ColorChangeHander<RefreshableMeterFigure>(){
+		setPropertyChangeHandler(MeterModel.PROP_SCALECOLOR, new ColorChangeHandler<RefreshableMeterFigure>(){
 			@Override
 			protected void doHandle(RefreshableMeterFigure figure, Color color) {
 				figure.setScaleColor(color);
@@ -111,7 +111,7 @@ public final class MeterEditPart extends AbstractWidgetEditPart {
 		});
 		
 		//M area
-		setPropertyChangeHandler(MeterModel.PROP_MCOLOR,  new ColorChangeHander<RefreshableMeterFigure>(){
+		setPropertyChangeHandler(MeterModel.PROP_MCOLOR,  new ColorChangeHandler<RefreshableMeterFigure>(){
 			@Override
 			protected void doHandle(RefreshableMeterFigure figure, Color color) {
 				figure.setMColor(color);
@@ -119,7 +119,7 @@ public final class MeterEditPart extends AbstractWidgetEditPart {
 		});
 		
 		//LOLO area
-		setPropertyChangeHandler(MeterModel.PROP_LOLOCOLOR,  new ColorChangeHander<RefreshableMeterFigure>(){
+		setPropertyChangeHandler(MeterModel.PROP_LOLOCOLOR,  new ColorChangeHandler<RefreshableMeterFigure>(){
 			@Override
 			protected void doHandle(RefreshableMeterFigure figure, Color color) {
 				figure.setLOLOColor(color);
@@ -127,7 +127,7 @@ public final class MeterEditPart extends AbstractWidgetEditPart {
 		});
 		
 		//LO area
-		setPropertyChangeHandler(MeterModel.PROP_LOCOLOR,  new ColorChangeHander<RefreshableMeterFigure>(){
+		setPropertyChangeHandler(MeterModel.PROP_LOCOLOR,  new ColorChangeHandler<RefreshableMeterFigure>(){
 			@Override
 			protected void doHandle(RefreshableMeterFigure figure, Color color) {
 				figure.setLOColor(color);
@@ -135,7 +135,7 @@ public final class MeterEditPart extends AbstractWidgetEditPart {
 		});
 		
 		//HI area
-		setPropertyChangeHandler(MeterModel.PROP_HICOLOR,  new ColorChangeHander<RefreshableMeterFigure>(){
+		setPropertyChangeHandler(MeterModel.PROP_HICOLOR,  new ColorChangeHandler<RefreshableMeterFigure>(){
 			@Override
 			protected void doHandle(RefreshableMeterFigure figure, Color color) {
 				figure.setHIColor(color);
@@ -143,7 +143,7 @@ public final class MeterEditPart extends AbstractWidgetEditPart {
 		});
 		
 		//HIHI area
-		setPropertyChangeHandler(MeterModel.PROP_HIHICOLOR,  new ColorChangeHander<RefreshableMeterFigure>(){
+		setPropertyChangeHandler(MeterModel.PROP_HIHICOLOR,  new ColorChangeHandler<RefreshableMeterFigure>(){
 			@Override
 			protected void doHandle(RefreshableMeterFigure figure, Color color) {
 				figure.setHIHIColor(color);
@@ -361,7 +361,7 @@ public final class MeterEditPart extends AbstractWidgetEditPart {
 		setPropertyChangeHandler(MeterModel.PROP_TRANSPARENT, handle);
 
 		//values font change handler
-		setPropertyChangeHandler(MeterModel.PROP_VALFONT, new FontChangeHander<RefreshableMeterFigure>(){
+		setPropertyChangeHandler(MeterModel.PROP_VALFONT, new FontChangeHandler<RefreshableMeterFigure>(){
 			@Override
 			protected void doHandle(RefreshableMeterFigure figure, Font font) {
 				figure.setValuesFont(font);
@@ -370,7 +370,7 @@ public final class MeterEditPart extends AbstractWidgetEditPart {
 		
 		
 		//channel font change handler
-		setPropertyChangeHandler(MeterModel.PROP_CHANFONT, new FontChangeHander<RefreshableMeterFigure>(){
+		setPropertyChangeHandler(MeterModel.PROP_CHANFONT, new FontChangeHandler<RefreshableMeterFigure>(){
 			@Override
 			protected void doHandle(RefreshableMeterFigure figure, Font font) {
 				figure.setChannelFont(font);

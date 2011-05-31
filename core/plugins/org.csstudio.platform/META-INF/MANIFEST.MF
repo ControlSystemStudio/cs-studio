@@ -2,58 +2,31 @@ Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: Core Plug-in
 Bundle-SymbolicName: org.csstudio.platform;singleton:=true
-Bundle-Version: 1.1.1.qualifier
+Bundle-Version: 1.2.0.qualifier
 Bundle-Localization: plugin
 Require-Bundle: org.eclipse.core.runtime;visibility:=reexport,
  org.junit4,
  org.eclipse.core.resources,
  org.csstudio.platform.libs.jmock,
  org.csstudio.platform.utility.jms,
- org.csstudio.platform.libs.dal,
- org.csstudio.platform.workspace,
+ org.csstudio.data;bundle-version="1.0.0";visibility:=reexport,
+ org.csstudio.workspace,
  org.eclipse.equinox.security,
- org.csstudio.platform.libs.annotations
+ org.csstudio.platform.libs.log4j;bundle-version="1.2.16",
+ org.csstudio.remote;bundle-version="1.0.0"
 Bundle-Activator: org.csstudio.platform.CSSPlatformPlugin
 Bundle-Vendor: Desy
-Export-Package: org.apache.log4j,
- org.apache.log4j.chainsaw,
- org.apache.log4j.config,
- org.apache.log4j.helpers,
- org.apache.log4j.jdbc,
- org.apache.log4j.jmx,
- org.apache.log4j.lf5,
- org.apache.log4j.lf5.config,
- org.apache.log4j.lf5.util,
- org.apache.log4j.lf5.viewer,
- org.apache.log4j.lf5.viewer.categoryexplorer,
- org.apache.log4j.lf5.viewer.configure,
- org.apache.log4j.lf5.viewer.images,
- org.apache.log4j.net,
- org.apache.log4j.nt,
- org.apache.log4j.or,
- org.apache.log4j.or.jms,
- org.apache.log4j.or.sax,
- org.apache.log4j.spi,
- org.apache.log4j.varia,
- org.apache.log4j.xml,
- org.csstudio.platform,
- org.csstudio.platform.data,
+Export-Package: org.csstudio.platform,
  org.csstudio.platform.epicsdbfile,
- org.csstudio.platform.internal.data;x-friends:="org.csstudio.utility.pv.dal",
  org.csstudio.platform.internal.developmentsupport.util,
  org.csstudio.platform.internal.logging;x-friends:="org.csstudio.platform.ui",
- org.csstudio.platform.internal.rightsmanagement,
- org.csstudio.platform.internal.usermanagement,
  org.csstudio.platform.logging,
  org.csstudio.platform.management;version="1.0.0",
  org.csstudio.platform.model,
- org.csstudio.platform.model.pvs,
  org.csstudio.platform.securestore,
  org.csstudio.platform.security,
- org.csstudio.platform.simpledal,
  org.csstudio.platform.startupservice,
  org.csstudio.platform.statistic,
- org.csstudio.platform.test,
  org.csstudio.platform.util,
  org.jdom,
  org.jdom.adapters,
@@ -63,7 +36,7 @@ Export-Package: org.apache.log4j,
  org.jdom.transform,
  org.jdom.xpath
 Bundle-ClassPath: .,
- lib/log4j/log4j-1.2.14.jar,
  lib/jdom.jar
-Eclipse-LazyStart: true
+Bundle-ActivationPolicy: lazy
 Import-Package: javax.jms
+Eclipse-RegisterBuddy: org.csstudio.platform.libs.log4j

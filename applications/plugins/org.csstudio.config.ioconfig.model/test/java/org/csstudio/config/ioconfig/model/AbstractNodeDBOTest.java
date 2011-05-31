@@ -13,8 +13,8 @@ import org.csstudio.config.ioconfig.model.pbmodel.ChannelStructureDBO;
 import org.csstudio.config.ioconfig.model.pbmodel.GSDFileDBO;
 import org.csstudio.config.ioconfig.model.pbmodel.GSDModuleDBO;
 import org.csstudio.config.ioconfig.model.pbmodel.MasterDBO;
-import org.csstudio.config.ioconfig.model.pbmodel.ModuleDBO;
 import org.csstudio.config.ioconfig.model.pbmodel.ModuleChannelPrototypeDBO;
+import org.csstudio.config.ioconfig.model.pbmodel.ModuleDBO;
 import org.csstudio.config.ioconfig.model.pbmodel.ProfibusSubnetDBO;
 import org.csstudio.config.ioconfig.model.pbmodel.SlaveDBO;
 import org.hibernate.cfg.AnnotationConfiguration;
@@ -23,11 +23,12 @@ import org.junit.BeforeClass;
 import org.junit.Ignore;
 import org.junit.Test;
 
+//CHECKSTYLE:OFF
 public class AbstractNodeDBOTest {
 
     @Test
     @Ignore("Need a correct TEST DB")
-    public void loadNode() {
+    public void loadNode() throws PersistenceException {
 
         final Collection<FacilityDBO> result = Repository.load(FacilityDBO.class);
 
@@ -46,7 +47,7 @@ public class AbstractNodeDBOTest {
 
     @Test
     @Ignore("Need a correct TEST DB")
-    public void loadIoc() {
+    public void loadIoc() throws PersistenceException {
 
         final Collection<IocDBO> result = Repository.load(IocDBO.class);
 
@@ -148,9 +149,10 @@ public class AbstractNodeDBOTest {
                         //.setProperty("hibernate.hbm2ddl.auto", "update")
                 .setProperty("hibernate.show_sql", "false");
 
-        HibernateManager.setSessionFactory(cfg.buildSessionFactory());
+        HibernateManager.getInstance().setSessionFactory(cfg.buildSessionFactory());
         // set Timeout to 1 min
-        HibernateManager.setTimeout(60);
+        HibernateManager.getInstance().setTimeout(60);
     }
 
 }
+//CHECKSTYLE:ON

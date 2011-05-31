@@ -2,20 +2,23 @@ Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: Chart Plug-in
 Bundle-SymbolicName: org.csstudio.swt.chart
-Bundle-Version: 1.0.19.qualifier
-Bundle-Vendor: Kay Kasemir
+Bundle-Version: 3.0.0.qualifier
+Bundle-Vendor: Kay Kasemir <kasemirk@ornl.gov> - SNS
 Bundle-Localization: plugin
+Bundle-Description: SWT plotting library
 Require-Bundle: org.junit4,
  org.eclipse.jface,
  org.eclipse.core.runtime,
  org.eclipse.ui,
- org.csstudio.platform,
- org.csstudio.platform.ui,
+ org.csstudio.data;bundle-version="3.0.0",
+ org.csstudio.csdata;bundle-version="3.0.0",
+ org.csstudio.ui.util;bundle-version="3.0.0",
  org.csstudio.logbook,
  org.csstudio.apputil.ui
 Export-Package: org.csstudio.swt.chart,
  org.csstudio.swt.chart.actions,
  org.csstudio.swt.chart.axes,
  org.csstudio.swt.chart.test
-Eclipse-LazyStart: true
+Bundle-ActivationPolicy: lazy
 Bundle-Activator: org.csstudio.swt.chart.Activator
+Bundle-RequiredExecutionEnvironment: JavaSE-1.6

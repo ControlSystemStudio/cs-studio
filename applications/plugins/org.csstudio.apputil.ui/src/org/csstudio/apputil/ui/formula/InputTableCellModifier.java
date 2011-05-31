@@ -1,6 +1,16 @@
+/*******************************************************************************
+ * Copyright (c) 2010 Oak Ridge National Laboratory.
+ * All rights reserved. This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License v1.0
+ * which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-v10.html
+ ******************************************************************************/
 package org.csstudio.apputil.ui.formula;
 
-import org.csstudio.platform.logging.CentralLogger;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+
+import org.csstudio.apputil.ui.Activator;
 import org.eclipse.jface.viewers.ICellModifier;
 import org.eclipse.jface.viewers.TableViewer;
 import org.eclipse.swt.widgets.Item;
@@ -9,23 +19,25 @@ import org.eclipse.swt.widgets.Item;
  *  @author Kay Kasemir
  */
 public class InputTableCellModifier implements ICellModifier
-{   
+{
     final private FormulaDialog dialog;
     final private TableViewer viewer;
-    
+
     InputTableCellModifier(final FormulaDialog dialog, final TableViewer viewer)
     {
         this.dialog = dialog;
         this.viewer = viewer;
     }
-    
+
 	/** Variable name can change. */
-	public boolean canModify(final Object element, final String col_title)
+	@Override
+    public boolean canModify(final Object element, final String col_title)
 	{
         return col_title.equals(InputTableHelper.Column.VARIABLE.getTitle());
     }
 
 	/** @return Returns the original cell value. */
+    @Override
     public Object getValue(final Object element, final String col_title)
     {
         InputItem entry = (InputItem) element;
@@ -36,13 +48,14 @@ public class InputTableCellModifier implements ICellModifier
         }
         catch (Exception ex)
         {
-            CentralLogger.getInstance().error("Error", ex); //$NON-NLS-1$
+            Logger.getLogger(Activator.ID).log(Level.WARNING, "Formula Input Error", ex); //$NON-NLS-1$
         }
         return null;
     }
 
 	/** Editor finished and tries to update element's property. */
-	public void modify(Object element, final String property,
+	@Override
+    public void modify(Object element, final String property,
 	        final Object value)
     {
         if (value == null)
@@ -54,7 +67,7 @@ public class InputTableCellModifier implements ICellModifier
             // instead of the model element.
             if (element instanceof Item)
                 element = ((Item) element).getData();
-            
+
             // Edit existing item
             final String new_var_name = (String) value;
             final InputItem entry = (InputItem) element;
@@ -65,7 +78,7 @@ public class InputTableCellModifier implements ICellModifier
         }
         catch (Exception ex)
         {
-            CentralLogger.getInstance().error("Error", ex); //$NON-NLS-1$
+            Logger.getLogger(Activator.ID).log(Level.WARNING, "Formula Input Error", ex); //$NON-NLS-1$
         }
     }
 }

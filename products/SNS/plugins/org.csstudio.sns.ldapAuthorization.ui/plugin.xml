@@ -7,7 +7,7 @@
             category="org.csstudio.platform.ui.css.platform"
             class="org.csstudio.sns.ldapauthorization.ui.PreferencePage"
             id="org.csstudio.platform.ldapauthorization.ui.page"
-            name="LDAP Authorization Provider"/>
+            name="LDAP Authorization"/>
    </extension>
 
 </plugin>

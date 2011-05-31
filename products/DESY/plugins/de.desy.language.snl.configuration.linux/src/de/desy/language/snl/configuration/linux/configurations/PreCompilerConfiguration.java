@@ -21,6 +21,7 @@ public class PreCompilerConfiguration extends AbstractCompilerConfiguration {
 	@Override
 	public List<String> getCompilerParameters(String sourceFile,
 			String targetFile) {
+		boolean arch64 = "amd64".equals(System.getProperty("os.arch"));
 		List<String> result = new ArrayList<String>();
 		result.add(getCompilerPath());
 		result.add("-x");
@@ -31,7 +32,7 @@ public class PreCompilerConfiguration extends AbstractCompilerConfiguration {
 		result.add("-D_POSTFIX_C_SOURCE=199506L");
 		result.add("-D_POSTFIX_THREADS");
 		result.add("-D_XOPEN_SOURCE=500");
-		result.add("-D_X86_");
+		result.add(arch64 ? "-D_X86_64_" : "-D_X86_");
 		result.add("-DUNIX");
 		result.add("-D_BSD_SOURCE");
 		result.add("-Dlinux");

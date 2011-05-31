@@ -1,3 +1,10 @@
+/*******************************************************************************
+ * Copyright (c) 2010 Oak Ridge National Laboratory.
+ * All rights reserved. This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License v1.0
+ * which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-v10.html
+ ******************************************************************************/
 package org.csstudio.opibuilder.widgets.editparts;
 
 
@@ -13,6 +20,7 @@ import org.csstudio.swt.widgets.figures.ImageBoolButtonFigure;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.draw2d.IFigure;
 import org.eclipse.draw2d.geometry.Dimension;
+import org.eclipse.swt.widgets.Display;
 
 /**
  * EditPart controller for the image widget.
@@ -22,6 +30,8 @@ import org.eclipse.draw2d.geometry.Dimension;
  */
 public final class ImageBoolButtonEditPart extends AbstractBoolControlEditPart {
 	
+
+	private int maxAttempts;
 
 	/**
 	 * Returns the casted model. This is just for convenience.
@@ -176,11 +186,22 @@ public final class ImageBoolButtonEditPart extends AbstractBoolControlEditPart {
 		((ImageBoolButtonFigure) getFigure()).dispose();
 	}
 	
-	private void autoSizeWidget(ImageBoolButtonFigure imageFigure) {
-		ImageBoolButtonModel model = getWidgetModel();
-		Dimension d = imageFigure.getAutoSizedDimension();
-		if(model.isAutoSize() && !model.isStretch() && d != null) 
-			model.setSize(d.width, d.height);
+	private void autoSizeWidget(final ImageBoolButtonFigure imageFigure) {		
+		maxAttempts = 10;
+		Runnable task = new Runnable() {			
+			public void run() {
+				if(maxAttempts-- > 0 && imageFigure.isLoadingImage()){
+					Display.getDefault().timerExec(100, this);
+					return;
+				}
+				ImageBoolButtonModel model = getWidgetModel();
+				Dimension d = imageFigure.getAutoSizedDimension();
+				if(model.isAutoSize() && !model.isStretch() && d != null) 
+					model.setSize(d.width, d.height);
+				
+			}
+		};
+		Display.getDefault().timerExec(100, task);
 	}
 	
 }

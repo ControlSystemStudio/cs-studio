@@ -1,8 +1,8 @@
 package org.csstudio.diag.postanalyser.math;
 
+import org.csstudio.data.values.ITimestamp;
+import org.csstudio.data.values.TimestampFactory;
 import org.csstudio.diag.postanalyser.Messages;
-import org.csstudio.platform.data.ITimestamp;
-import org.csstudio.platform.data.TimestampFactory;
 import org.teneighty.lm.CostFunction;
 import org.teneighty.lm.LevenbergMarquardt;
 
@@ -15,7 +15,7 @@ public class GaussFit extends Fit
     private double amp;
     private double center;
     private double sigma;
-    
+
     /** Implement gaussian.
      *  <p>
      *  <code>B + A * exp(-(x-x0)/(2*s^2))</code>
@@ -25,16 +25,18 @@ public class GaussFit extends Fit
      *  <li>Parameter 1 = Center <code>x0</code>
      *  <li>Parameter 2 = Sigma <code>s</code>
      *  </ul>
-     */ 
+     */
     class Gaussian implements CostFunction
     {
         /** {@inheritDoc} */
+        @Override
         public int getParameterCount()
         {
             return 3;
         }
 
         /** {@inheritDoc} */
+        @Override
         public double evaluate(final double values[], final double params[])
         {
             final double x = values[0];
@@ -47,6 +49,7 @@ public class GaussFit extends Fit
         }
 
         /** {@inheritDoc} */
+        @Override
         public double derive(final double values[], final double params[], int ith)
         {
             final double x = values[0];
@@ -55,11 +58,11 @@ public class GaussFit extends Fit
             final double sigma = params[2];
             final double dx = x - center;
             final double exp = Math.exp(-(dx*dx)/(2*sigma*sigma));
-            
+
             // dy/A ( ... )
             if (ith == 0)
                 return exp;
-            
+
             // dy/x0  ( ... )
             if (ith == 1)
                 return amp*exp * dx/(sigma*sigma);
@@ -68,7 +71,7 @@ public class GaussFit extends Fit
             return amp*exp * dx*dx/(sigma*sigma*sigma);
         }
     }
-    
+
     /** Perform fit of data to gaussian
      *  <code>B + A * exp(-(x-x0)/(2*s^2))</code>
      *  with
@@ -87,14 +90,14 @@ public class GaussFit extends Fit
     public GaussFit(final double x[], final double y[])
     {
         final int N = checkArguments(x, y);
-        
+
         // Perform the fit
         final CostFunction func = new Gaussian();
         final LevenbergMarquardt lm = new LevenbergMarquardt(N, 1);
         lm.setPoints(x, 0);
         lm.setCostFunction(func);
         lm.setValues(y);
-        
+
         // LevenbergMarquardt needs some reasonable estimates for the
         // amplitude and center, which we get from the maximum of
         // the function
@@ -104,7 +107,7 @@ public class GaussFit extends Fit
         center = max.getMaxPosition();
         // Assume the Gaussian uses about half of the x range
         sigma = (x[x.length-1] - x[0]) / 2.0;
-        
+
         lm.setGuess(new double[] { amp, center, sigma });
 
         // solve it.

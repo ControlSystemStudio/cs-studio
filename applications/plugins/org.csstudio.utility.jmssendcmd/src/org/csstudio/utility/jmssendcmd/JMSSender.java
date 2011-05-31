@@ -1,6 +1,7 @@
 package org.csstudio.utility.jmssendcmd;
 
 import java.net.InetAddress;
+import java.util.logging.Level;
 
 import javax.jms.Connection;
 import javax.jms.DeliveryMode;
@@ -11,8 +12,7 @@ import javax.jms.MessageProducer;
 import javax.jms.Session;
 import javax.jms.Topic;
 
-import org.csstudio.platform.logging.CentralLogger;
-import org.csstudio.platform.logging.JMSLogMessage;
+import org.csstudio.logging.JMSLogMessage;
 import org.csstudio.platform.utility.jms.JMSConnectionFactory;
 
 /** Send messages (MapMessage) to JMS
@@ -29,7 +29,7 @@ public class JMSSender implements ExceptionListener
     private Session session;
     private Topic topic;
     private MessageProducer producer;
-    
+
     /** Initialize
      *  @param url JMS Server URL
      *  @param jms_user ... user name
@@ -73,12 +73,12 @@ public class JMSSender implements ExceptionListener
         producer = session.createProducer(topic);
         producer.setDeliveryMode(DeliveryMode.NON_PERSISTENT);
     }
-    
-    /** Send Message to JMS 
+
+    /** Send Message to JMS
      *  @param type Message TYPE
      *  @param application Message APPLICATION
      *  @param text Message TEXT
-     *  @param edm_mode 
+     *  @param edm_mode
      *  @throws Exception on error
      */
     public void send(final String type, final String application,
@@ -86,7 +86,7 @@ public class JMSSender implements ExceptionListener
     {
        final MapMessage map = session.createMapMessage();
        /**
-        * If an EDM option is requested with the '-edm_mode' the type is "write".  
+        * If an EDM option is requested with the '-edm_mode' the type is "write".
         * Different options are added to  the map to reflect the input EDM string.
         */
         if (edm_mode)
@@ -106,8 +106,8 @@ public class JMSSender implements ExceptionListener
             }
             catch (Throwable ex)
             {
-                CentralLogger.getInstance().getLogger(this).error(
-                        "EDM message '" + text + "' error: " + ex.getMessage());
+                Application.getLogger().log(Level.WARNING,
+                    "EDM message '" + text + "' error", ex);
             }
         }
         else
@@ -135,13 +135,14 @@ public class JMSSender implements ExceptionListener
         }
         catch (Exception ex)
         {
-           CentralLogger.getInstance().getLogger(this).error(ex.getMessage());
+            Application.getLogger().log(Level.INFO, "JMS shutdown error", ex);
         }
     }
-    
+
     /** @see ExceptionListener */
+    @Override
     public void onException(final JMSException ex)
     {
-        CentralLogger.getInstance().getLogger(this).error(ex.getMessage());
+        Application.getLogger().log(Level.WARNING, "JMS exception", ex);
     }
 }

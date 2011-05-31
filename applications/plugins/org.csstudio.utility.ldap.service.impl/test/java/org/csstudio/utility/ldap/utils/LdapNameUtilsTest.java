@@ -21,10 +21,10 @@
  */
 package org.csstudio.utility.ldap.utils;
 
+import static org.csstudio.utility.ldap.service.util.LdapUtils.createLdapName;
 import static org.csstudio.utility.ldap.treeconfiguration.LdapEpicsAlarmcfgConfiguration.FACILITY;
 import static org.csstudio.utility.ldap.treeconfiguration.LdapEpicsAlarmcfgConfiguration.RECORD;
 import static org.csstudio.utility.ldap.treeconfiguration.LdapEpicsAlarmcfgConfiguration.UNIT;
-import static org.csstudio.utility.ldap.utils.LdapUtils.createLdapName;
 import static org.junit.Assert.assertEquals;
 
 import java.util.Collections;
@@ -33,6 +33,7 @@ import javax.naming.InvalidNameException;
 import javax.naming.ldap.LdapName;
 import javax.naming.ldap.Rdn;
 
+import org.csstudio.utility.ldap.service.util.LdapNameUtils;
 import org.junit.Test;
 
 import com.google.common.collect.ImmutableList;

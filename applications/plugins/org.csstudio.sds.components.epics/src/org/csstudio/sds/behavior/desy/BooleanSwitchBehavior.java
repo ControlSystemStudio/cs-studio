@@ -19,8 +19,10 @@
 package org.csstudio.sds.behavior.desy;
 
 import org.csstudio.sds.components.model.BooleanSwitchModel;
-import org.epics.css.dal.context.ConnectionState;
+import org.csstudio.sds.cursorservice.CursorService;
+import org.csstudio.sds.model.AbstractWidgetModel;
 import org.epics.css.dal.simple.AnyData;
+import org.epics.css.dal.simple.AnyDataChannel;
 import org.epics.css.dal.simple.MetaData;
 
 public class BooleanSwitchBehavior extends
@@ -37,12 +39,35 @@ public class BooleanSwitchBehavior extends
 
 	@Override
 	protected void doProcessConnectionStateChange(final BooleanSwitchModel widget,
-			final ConnectionState connectionState) {
+			final AnyDataChannel anyDataChannel) {
 	}
 
 	@Override
 	protected void doProcessMetaDataChange(final BooleanSwitchModel widget,
 			final MetaData metaData) {
+	    if (metaData != null) {
+            switch (metaData.getAccessType()) {
+                case NONE:
+                    widget.setPropertyValue(AbstractWidgetModel.PROP_CURSOR, CursorService
+                            .getInstance().availableCursors().get(7));
+                    break;
+                case READ:
+                    widget.setPropertyValue(AbstractWidgetModel.PROP_CURSOR, CursorService
+                            .getInstance().availableCursors().get(7));
+                    break;
+                case READ_WRITE:
+                    widget.setPropertyValue(AbstractWidgetModel.PROP_CURSOR, CursorService
+                            .getInstance().availableCursors().get(0));
+                    break;
+                case WRITE:
+                    widget.setPropertyValue(AbstractWidgetModel.PROP_CURSOR, CursorService
+                            .getInstance().availableCursors().get(0));
+                    break;
+                default:
+                    widget.setPropertyValue(AbstractWidgetModel.PROP_CURSOR, CursorService
+                            .getInstance().availableCursors().get(0));
+            }
+        }
 	}
 
 	@Override

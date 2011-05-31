@@ -42,7 +42,7 @@ import org.eclipse.gef.requests.CreateRequest;
  * Contributors can implement their own factory to provide suitable graphical
  * feedback for their widget models.
  * 
- * @author Sven Wende
+ * @author Sven Wende, Xihui Chen
  * 
  */
 public interface IGraphicalFeedbackFactory {
@@ -54,7 +54,7 @@ public interface IGraphicalFeedbackFactory {
 	 *            the widget model
 	 * @param initalBounds
 	 *            the initial bounds
-	 * @return a suitable figure
+	 * @return a customized feedback figure during draging, null if not necessary.
 	 */
 	IFigure createDragSourceFeedbackFigure(AbstractWidgetModel model,
 			Rectangle initalBounds);
@@ -88,7 +88,7 @@ public interface IGraphicalFeedbackFactory {
 	 * @param createRequest
 	 *            the create request
 	 * 
-	 * @return a suitable figure
+	 * @return a customized droop feedback figure, null if it is not necessary.
 	 */
 	Shape createSizeOnDropFeedback(CreateRequest createRequest);
 
@@ -133,7 +133,8 @@ public interface IGraphicalFeedbackFactory {
 	 *            are used.
 	 * @param targetBounds
 	 *            the new bounds
-	 * @return a undoable command, which handles the size and location changes
+	 * @return a undoable command, which handles the size and location changes, 
+	 * null if default change bounds command should be used. 
 	 */
 	Command createChangeBoundsCommand(AbstractWidgetModel widgetModel,
 			ChangeBoundsRequest request, Rectangle targetBounds);

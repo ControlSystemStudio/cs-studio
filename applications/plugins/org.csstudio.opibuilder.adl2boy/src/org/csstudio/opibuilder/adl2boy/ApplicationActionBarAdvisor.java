@@ -1,10 +1,12 @@
 package org.csstudio.opibuilder.adl2boy;
 
+import org.eclipse.jface.action.IContributionItem;
 import org.eclipse.jface.action.IMenuManager;
 import org.eclipse.jface.action.MenuManager;
 import org.eclipse.ui.IWorkbenchActionConstants;
 import org.eclipse.ui.IWorkbenchWindow;
 import org.eclipse.ui.actions.ActionFactory;
+import org.eclipse.ui.actions.ContributionItemFactory;
 import org.eclipse.ui.actions.ActionFactory.IWorkbenchAction;
 import org.eclipse.ui.application.ActionBarAdvisor;
 import org.eclipse.ui.application.IActionBarConfigurer;
@@ -22,6 +24,11 @@ public class ApplicationActionBarAdvisor extends ActionBarAdvisor {
 	// when fillActionBars is called with FILL_PROXY.
 	private IWorkbenchAction exitAction;
     private IWorkbenchAction helpAction;
+	private IWorkbenchAction perspectiveAction;
+	private IWorkbenchAction saveAction;
+	private IWorkbenchAction saveAsAction;
+	private IWorkbenchAction preferencesAction;
+	private IContributionItem showViewAction;
 
 	public ApplicationActionBarAdvisor(IActionBarConfigurer configurer) {
 		super(configurer);
@@ -36,18 +43,35 @@ public class ApplicationActionBarAdvisor extends ActionBarAdvisor {
 		// the window is closed.
 
 		exitAction = ActionFactory.QUIT.create(window);
+		perspectiveAction = ActionFactory.OPEN_PERSPECTIVE_DIALOG.create(window);
+		showViewAction = ContributionItemFactory.VIEWS_SHORTLIST.create(window);
+		saveAction = ActionFactory.SAVE.create(window);
+		saveAsAction = ActionFactory.SAVE_AS.create(window);
+		preferencesAction = ActionFactory.PREFERENCES.create(window);
         helpAction = ActionFactory.HELP_CONTENTS.create(window);
         register(helpAction);
+		register(perspectiveAction);
+		register(saveAction);
+		register(saveAsAction);
+		register(preferencesAction);
 		register(exitAction);
 	}
 
 	protected void fillMenuBar(IMenuManager menuBar) {
 		MenuManager fileMenu = new MenuManager("&File",
 				IWorkbenchActionConstants.M_FILE);
+		MenuManager windowMenu = new MenuManager("&Window",
+				IWorkbenchActionConstants.M_WINDOW);
 		MenuManager helpMenu = new MenuManager("&Help",
 				IWorkbenchActionConstants.M_HELP);
 		menuBar.add(fileMenu);
+		menuBar.add(windowMenu);
 		menuBar.add(helpMenu);
+		fileMenu.add(saveAction);
+		fileMenu.add(saveAsAction);
+		windowMenu.add(perspectiveAction);
+		windowMenu.add(showViewAction);
+		windowMenu.add(preferencesAction);
 		fileMenu.add(exitAction);
 		helpMenu.add(helpAction);
 	}

@@ -18,8 +18,8 @@ import org.csstudio.utility.adlparser.internationalization.Messages;
  *
  */
 public class RelatedDisplay extends ADLAbstractWidget {
-	private String label;
-	private String visual;
+	private String label = new String();
+	private String visual = new String("menu");
 	private int bclr;
 	private int clr;
 	private ArrayList<RelatedDisplayItem> rdItems = new ArrayList<RelatedDisplayItem>();

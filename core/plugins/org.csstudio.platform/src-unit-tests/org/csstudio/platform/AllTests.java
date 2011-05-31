@@ -24,51 +24,23 @@
 package org.csstudio.platform;
 
 
-import org.csstudio.platform.data.ValueTest;
 import org.csstudio.platform.epicsdbfile.FieldTest;
 import org.csstudio.platform.epicsdbfile.RecordInstanceDatabaseLexerTest;
 import org.csstudio.platform.epicsdbfile.RecordInstanceDatabaseParserTest;
 import org.csstudio.platform.epicsdbfile.RecordInstanceTest;
 import org.csstudio.platform.epicsdbfile.TokenTest;
-import org.csstudio.platform.internal.dal.DataAccessLayerTest1;
-import org.csstudio.platform.internal.dal.DataAccessLayerTest2;
-import org.csstudio.platform.internal.dal.DataAccessLayerTest3;
-import org.csstudio.platform.internal.data.DoubleValueUnitTest;
-import org.csstudio.platform.internal.data.MetaDataUnitTest;
-import org.csstudio.platform.internal.data.MinMaxDoubleValueUnitTest;
-import org.csstudio.platform.internal.data.TimestampUnitTest;
-import org.csstudio.platform.internal.management.CommandContributionTest;
 import org.csstudio.platform.internal.model.ArchiveDataSourceFactoryTest;
 import org.csstudio.platform.internal.model.ArchiveDataSourceTest;
 import org.csstudio.platform.internal.model.ControlSystemItemFactoriesRegistryTest;
 import org.csstudio.platform.internal.model.ProcessVariableFactoryTest;
 import org.csstudio.platform.internal.model.ProcessVariableTest;
-import org.csstudio.platform.internal.model.pvs.AbstractProcessVariableNameParserTest;
-import org.csstudio.platform.internal.model.pvs.ControlSystemEnumTest;
-import org.csstudio.platform.internal.model.pvs.DALPropertyFactoriesProviderTest;
-import org.csstudio.platform.internal.model.pvs.DalNameParserTest;
-import org.csstudio.platform.internal.model.pvs.ProcessVariableAdressTest;
-import org.csstudio.platform.internal.model.pvs.SimpleNameParserTest;
-import org.csstudio.platform.internal.simpledal.AnyDataTest;
-import org.csstudio.platform.internal.simpledal.ConnectorIdentificationTest;
-import org.csstudio.platform.internal.simpledal.DALPrecisionTest;
-import org.csstudio.platform.internal.simpledal.DalCacheBugTest;
-import org.csstudio.platform.internal.simpledal.ProcessVariableConnectionServiceTest;
-import org.csstudio.platform.internal.simpledal.SimpleDALTest;
-import org.csstudio.platform.internal.simpledal.SimpleDAL_EPICSTest;
-import org.csstudio.platform.internal.simpledal.converters.ConverterTest;
-import org.csstudio.platform.internal.simpledal.dal.DalConnectorTest;
-import org.csstudio.platform.internal.simpledal.local.DataGeneratorInfosTest;
 import org.csstudio.platform.logging.CentralLoggerTest;
-import org.csstudio.platform.logging.JMSLogThreadHeadlessTest;
+import org.csstudio.platform.logging.JMSLogThreadUnitTest;
 import org.csstudio.platform.management.CommandDescriptionTest;
 import org.csstudio.platform.management.CommandParameterDefinitionTest;
 import org.csstudio.platform.management.CommandParameterEnumValueTest;
 import org.csstudio.platform.management.CommandParametersTest;
 import org.csstudio.platform.management.CommandResultTest;
-import org.csstudio.platform.model.pvs.ProcessVariableAdressFactoryTest;
-import org.csstudio.platform.simpledal.ConnectionStateTest;
-import org.csstudio.platform.simpledal.RecordCombinationTest;
 import org.csstudio.platform.util.StringUtilTest;
 import org.junit.runner.RunWith;
 import org.junit.runners.Suite;
@@ -76,31 +48,11 @@ import org.junit.runners.Suite.SuiteClasses;
 
 @RunWith(Suite.class)
 @SuiteClasses({
-        ValueTest.class,
-
         FieldTest.class,
         RecordInstanceDatabaseLexerTest.class,
         RecordInstanceDatabaseParserTest.class,
         RecordInstanceTest.class,
         TokenTest.class,
-
-        DataAccessLayerTest1.class,
-        DataAccessLayerTest2.class,
-        DataAccessLayerTest3.class,
-
-        DoubleValueUnitTest.class,
-        MetaDataUnitTest.class,
-        MinMaxDoubleValueUnitTest.class,
-        TimestampUnitTest.class,
-
-        CommandContributionTest.class,
-
-        AbstractProcessVariableNameParserTest.class,
-        ControlSystemEnumTest.class,
-        DalNameParserTest.class,
-        DALPropertyFactoriesProviderTest.class,
-        ProcessVariableAdressTest.class,
-        SimpleNameParserTest.class,
 
         ArchiveDataSourceFactoryTest.class,
         ArchiveDataSourceTest.class,
@@ -108,22 +60,8 @@ import org.junit.runners.Suite.SuiteClasses;
         ProcessVariableFactoryTest.class,
         ProcessVariableTest.class,
 
-        ConverterTest.class,
-
-        DalConnectorTest.class,
-
-        DataGeneratorInfosTest.class,
-
-        AnyDataTest.class,
-        ConnectorIdentificationTest.class,
-        DalCacheBugTest.class,
-        DALPrecisionTest.class,
-        ProcessVariableConnectionServiceTest.class,
-        SimpleDAL_EPICSTest.class,
-        SimpleDALTest.class,
-
         CentralLoggerTest.class,
-        JMSLogThreadHeadlessTest.class,
+        JMSLogThreadUnitTest.class,
 
         CommandDescriptionTest.class,
         CommandParameterDefinitionTest.class,
@@ -131,14 +69,8 @@ import org.junit.runners.Suite.SuiteClasses;
         CommandParametersTest.class,
         CommandResultTest.class,
 
-        ProcessVariableAdressFactoryTest.class,
+        StringUtilTest.class
 
-        ConnectionStateTest.class,
-        RecordCombinationTest.class,
-
-        StringUtilTest.class,
-
-        AbstractPreferenceTest.class
 })
 public class AllTests {
     // EMPTY

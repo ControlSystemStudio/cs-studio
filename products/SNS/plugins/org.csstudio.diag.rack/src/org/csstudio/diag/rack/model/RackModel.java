@@ -1,37 +1,45 @@
+/*******************************************************************************
+ * Copyright (c) 2010 Oak Ridge National Laboratory.
+ * All rights reserved. This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License v1.0
+ * which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-v10.html
+ ******************************************************************************/
 package org.csstudio.diag.rack.model;
 
 import java.util.concurrent.CopyOnWriteArrayList;
+import java.util.logging.Level;
 
+import org.csstudio.diag.rack.Activator;
 import org.csstudio.diag.rack.model.RackList;
 import org.csstudio.diag.rack.model.RackModelListener.ChangeEvent;
-import org.csstudio.platform.logging.CentralLogger;
 import org.eclipse.core.runtime.IConfigurationElement;
 import org.eclipse.core.runtime.Platform;
 
 /** Model of Rack Data
  *  <p>
  *  Uses RackDataAPI to obtain info in background threads
- *  
+ *
  *  @author Dave Purcell
  *  @author Kay Kasemir
  */
+@SuppressWarnings("nls")
 public class RackModel
 {
     /** RackDataAPI implementation obtained from registry */
     final private RackDataAPI api;
-    
+
     /** Rack information. Synchronize on 'this' for access */
     private String slotPosInd = "F";
     private String rackId;
-    private int rackHeight;
-    
+
     public String racks[] = new String[0];
     private RackList rackDvcList[] = new RackList[0];
-    
+
     /** RackUtilListeners */
     final private static CopyOnWriteArrayList<RackModelListener> listeners =
             new CopyOnWriteArrayList<RackModelListener>();
-   
+
     /** Initialize via registry lookup for implementation of RackDataAPI.
      *  @throws Exception when not found
      */
@@ -42,7 +50,7 @@ public class RackModel
     	if (configs.length != 1)
     		throw new Exception("Expected 1 implementation of " + RackDataAPI.DATA_EXT_ID
     				+ ", got " + configs.length);
-    	
+
     	api = (RackDataAPI)	configs[0].createExecutableExtension("class");
     }
 
@@ -50,12 +58,12 @@ public class RackModel
     {
     	listeners.add(new_listener);
     }
- 
+
     public void removeListener(final RackModelListener listener)
     {
     	listeners.remove(listener);
     }
-    
+
     public int getRackHeight()
     {
         return api.getRackHeight();
@@ -69,7 +77,7 @@ public class RackModel
         }
         updateRackList();
     }
-    
+
     public void setSelectedRack(String rackDvcId)
     {
         synchronized (this)
@@ -90,7 +98,7 @@ public class RackModel
         updateDeviceList();
     }
 
-   
+
     public synchronized String getRack(int i)
     {
          return racks[i];
@@ -100,7 +108,7 @@ public class RackModel
     {
         return racks.length;
     }
-   
+
     public synchronized RackList getRackListDVC(int i)
     {
         return rackDvcList[i];
@@ -115,7 +123,7 @@ public class RackModel
     {
         return slotPosInd;
     }
-    
+
     public synchronized int getRackDvcListCount()
     {
         return rackDvcList.length;
@@ -136,7 +144,7 @@ public class RackModel
                         racks = result;
                     }
                 }catch (Exception e) {
-                    CentralLogger.getInstance().getLogger(this).error("Call to Rack List Exception", e);
+                    Activator.getLogger().log(Level.SEVERE, "Rack update error", e); //$NON-NLS-1$
                 }
                 fireRackUtilChanged(ChangeEvent.RACKLIST);
             }
@@ -144,7 +152,7 @@ public class RackModel
         lookup.setDaemon(true);
         lookup.start();
     }
-    
+
     private void updateDeviceList()
     {
         final Thread lookup = new Thread("DeviceList")
@@ -161,16 +169,16 @@ public class RackModel
                         rackId = api.getRackName();
                     }
                 }catch (Exception e) {
-                    CentralLogger.getInstance().getLogger(this).error("Call to Rack List Exception", e);
-                }   
+                    Activator.getLogger().log(Level.SEVERE, "Device update error", e); //$NON-NLS-1$
+                }
                 fireRackUtilChanged(ChangeEvent.DVCLIST);
             }
         };
         lookup.setDaemon(true);
         lookup.start();
     }
-    
-    /** 
+
+    /**
      * @param what  enumerated ChangeEvent (either RACKLIST, DVCLIST, or PARENT)
      */
     private void fireRackUtilChanged(final ChangeEvent what)
@@ -183,7 +191,7 @@ public class RackModel
             }
             catch (Throwable ex)
             {
-            	CentralLogger.getInstance().getLogger(this).error("Exception", ex);
+                Activator.getLogger().log(Level.SEVERE, "Rack listener error", ex); //$NON-NLS-1$
             }
         }
     }

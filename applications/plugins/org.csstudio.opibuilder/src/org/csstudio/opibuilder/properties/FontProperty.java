@@ -1,4 +1,10 @@
-
+/*******************************************************************************
+ * Copyright (c) 2010 Oak Ridge National Laboratory.
+ * All rights reserved. This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License v1.0
+ * which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-v10.html
+ ******************************************************************************/
 package org.csstudio.opibuilder.properties;
 
 import org.csstudio.opibuilder.properties.support.OPIFontPropertyDescriptor;
@@ -41,6 +47,9 @@ public class FontProperty extends AbstractWidgetProperty {
 	 * XML attribute name <code>fontName</code>.
 	 */
 	public static final String XML_ATTRIBUTE_FONT_STYLE = "style"; //$NON-NLS-1$
+
+
+	private static final String QUOTE = "\""; //$NON-NLS-1$
 	
 	
 	/**Font Property Constructor. The property value type is {@link OPIFont}.
@@ -138,4 +147,23 @@ public class FontProperty extends AbstractWidgetProperty {
 		}
 	}
 
+	@Override
+	public boolean configurableByRule() {
+		return true;
+	}
+	
+	@Override
+	public String toStringInRuleScript(Object propValue) {
+		OPIFont opiFont = (OPIFont)propValue;
+		if(opiFont.isPreDefined())
+			return QUOTE + opiFont.getFontMacroName() + QUOTE;
+		else{
+			FontData fontData = opiFont.getFontData();
+			return "ColorFontUtil.getFont(\"" +
+				fontData.getName() + QUOTE + "," + fontData.getHeight() + "," + fontData.getStyle() + ")";
+		}
+	}
+	
+	
+	
 }

@@ -25,21 +25,20 @@ package org.csstudio.utility.screenshot.preference;
 
 import org.csstudio.utility.screenshot.ScreenshotPlugin;
 import org.csstudio.utility.screenshot.internal.localization.ScreenshotMessages;
+import org.eclipse.jface.preference.BooleanFieldEditor;
 import org.eclipse.jface.preference.FieldEditorPreferencePage;
 import org.eclipse.jface.preference.StringFieldEditor;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Composite;
-import org.eclipse.swt.widgets.Group;
 import org.eclipse.ui.IWorkbench;
 import org.eclipse.ui.IWorkbenchPreferencePage;
 
-public class ScreenshotPreferencePage extends FieldEditorPreferencePage implements IWorkbenchPreferencePage
-{
-    public ScreenshotPreferencePage()
-    {
-        super(GRID);
-        
+public class ScreenshotPreferencePage extends FieldEditorPreferencePage
+									  implements IWorkbenchPreferencePage {
+    
+	public ScreenshotPreferencePage() {
+		super(GRID);
         setPreferenceStore(ScreenshotPlugin.getDefault().getPreferenceStore());
     }
 
@@ -49,29 +48,34 @@ public class ScreenshotPreferencePage extends FieldEditorPreferencePage implemen
     }*/
 
     @Override
-    public void createFieldEditors()
-    {
-        Composite parent = getFieldEditorParent();
-        // parent.setLayout(new GridLayout());
-        // parent.setLayoutData(new GridData(GridData.HORIZONTAL_ALIGN_FILL | GridData.GRAB_HORIZONTAL));
+    public void createFieldEditors() {
         
-        Composite mailAddress = createGroup(parent, "ScreenshotPreferencePage.GROUP_MAIL_ADDRESS");
-        addField(new StringFieldEditor(ScreenshotPreferenceConstants.MAIL_ADDRESS_SENDER, ScreenshotMessages.getString("ScreenshotPreferencePage.MAIL_ADDRESS_SENDER"), mailAddress));
+    	Composite parent = getFieldEditorParent();
+        parent.setLayout(new GridLayout(2, true));
+        parent.setLayoutData(new GridData(GridData.FILL, GridData.FILL, true, false));
+    	
+        // Composite mailServer = createGroup(parent, "ScreenshotPreferencePage.GROUP_MAIL_SERVER");
+        addField(new StringFieldEditor(ScreenshotPreferenceConstants.MAIL_SERVER, ScreenshotMessages.getString("ScreenshotPreferencePage.MAIL_SERVER_NAME"), parent));
+
+        // Composite mailAddress = createGroup(parent, "ScreenshotPreferencePage.GROUP_MAIL_ADDRESS");
+        addField(new StringFieldEditor(ScreenshotPreferenceConstants.MAIL_ADDRESS_SENDER, ScreenshotMessages.getString("ScreenshotPreferencePage.MAIL_ADDRESS_SENDER"), parent));
         
-        Composite mailServer = createGroup(parent, "ScreenshotPreferencePage.GROUP_MAIL_SERVER");
-        addField(new StringFieldEditor(ScreenshotPreferenceConstants.MAIL_SERVER, ScreenshotMessages.getString("ScreenshotPreferencePage.MAIL_SERVER_NAME"), mailServer));
+        // Composite copyMail = createGroup(parent, "ScreenshotPreferencePage.GROUP_COPY_MAIL");
+        addField(new BooleanFieldEditor(ScreenshotPreferenceConstants.COPY_TO_SENDER, ScreenshotMessages.getString("ScreenshotPreferencePage.COPY_TO_SENDER"), parent));
     }
 
-    private Composite createGroup(Composite composite, String label)
-    {
-        Group group = new Group(composite, 0);
-        group.setText(ScreenshotMessages.getString(label));
-        group.setLayout(new GridLayout());
-        group.setLayoutData(new GridData(GridData.HORIZONTAL_ALIGN_FILL | GridData.GRAB_HORIZONTAL));
-        
-        return new Composite(group, 0);
-    }
-
+//    private Composite createGroup(Composite composite, String label) {
+//        
+//    	Group group = new Group(composite, 0);
+//        group.setText(ScreenshotMessages.getString(label));
+//
+//        group.setLayout(new GridLayout(2, true));
+//        group.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, false));
+//
+//        return new Composite(group, 0);
+//    }
     
-    public void init(IWorkbench workbench) { }
+    public void init(IWorkbench workbench) {
+    	// Can be empty
+    }
 }

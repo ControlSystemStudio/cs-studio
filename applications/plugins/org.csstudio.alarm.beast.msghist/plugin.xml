@@ -16,21 +16,29 @@
       </view>
    </extension>
    <extension
-         point="org.eclipse.ui.actionSets">
-      <actionSet
-            description="Global CSS menu actions"
-            id="org.csstudio.sns.msghist.cssmenu"
-            label="CSS Action Set"
-            visible="true">
-         <action
-               class="org.csstudio.alarm.beast.msghist.ShowMessageHistoryAction"
+         point="org.eclipse.ui.menus">
+      <!-- MsgHist could be the _only_ entry in the alarm menu.
+           To support that case, it cannot use ?after=... modifiers,
+           because those fail if the modifier cannot be resolved,
+           and then this menu entry does not show.
+       -->
+      <menuContribution
+            allPopups="false"
+            locationURI="menu:alarm">
+         <command
+               commandId="org.eclipse.ui.views.showView"
                icon="icons/msg_hist.gif"
-               id="org.csstudio.alarm.beast.msghist.ShowMessageHistoryAction"
+               id="org.csstudio.alarm.beast.msghist"
                label="%MsgHist"
-               menubarPath="css/alarm/"
+               mnemonic="%MsgHistMnemonic"
                style="push"
-               tooltip="%MsgHist"/>
-      </actionSet>
+               tooltip="%MsgHistTT">
+            <parameter
+                  name="org.eclipse.ui.views.showView.viewId"
+                  value="org.csstudio.alarm.beast.msghist.MessageHistoryView">
+            </parameter> 
+         </command>
+      </menuContribution>
    </extension>
    <extension
          point="org.eclipse.ui.preferencePages">
@@ -46,5 +54,15 @@
       <toc
             file="toc.xml">
       </toc>
+   </extension>
+   <extension
+         point="org.eclipse.core.runtime.adapters">
+      <factory
+            adaptableType="org.csstudio.alarm.beast.msghist.model.PVMessage"
+            class="org.csstudio.alarm.beast.msghist.AdapterFactory">
+         <adapter
+               type="org.csstudio.csdata.ProcessVariable">
+         </adapter>
+      </factory>
    </extension>
 </plugin>

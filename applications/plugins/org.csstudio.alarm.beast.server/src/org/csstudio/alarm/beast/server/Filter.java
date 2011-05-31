@@ -7,11 +7,11 @@
  ******************************************************************************/
 package org.csstudio.alarm.beast.server;
 
-import org.apache.log4j.Logger;
+import java.util.logging.Level;
+
 import org.csstudio.apputil.formula.Formula;
 import org.csstudio.apputil.formula.VariableNode;
-import org.csstudio.platform.data.ValueUtil;
-import org.csstudio.platform.logging.CentralLogger;
+import org.csstudio.data.values.ValueUtil;
 import org.csstudio.utility.pv.PV;
 import org.csstudio.utility.pv.PVFactory;
 import org.csstudio.utility.pv.PVListener;
@@ -37,13 +37,13 @@ public class Filter implements PVListener
 {
     /** Listener to notify when the filter computes a new value */
 	final private FilterListener listener;
-	
+
 	/** Formula to evaluate */
 	final private Formula formula;
-	
+
 	/** Variables used in the formula. May be [0], but never null */
 	final private VariableNode[] variables;
-	
+
 	/** This array is linked to <code>variables</code>:
 	 *  Same size, and there's a PV for each VariableNode.
 	 */
@@ -63,7 +63,7 @@ public class Filter implements PVListener
 			variables = new VariableNode[0];
 		else
 		    variables = vars;
-		pvs = new PV[variables.length]; 
+		pvs = new PV[variables.length];
 		for (int i=0; i<pvs.length; ++i)
 			pvs[i] = PVFactory.createPV(variables[i].getName());
 	}
@@ -114,6 +114,7 @@ public class Filter implements PVListener
 	}
 
 	/** @see PVListener */
+    @Override
     public void pvDisconnected(final PV pv)
 	{
 	    // Ignore events from 'stop()' call
@@ -122,8 +123,7 @@ public class Filter implements PVListener
 		final VariableNode var = findVariable(pv);
 		if (var == null)
 		{
-			CentralLogger.getInstance().getLogger(this)
-				.warn("Unknown Variable " + pv.getName());
+            Activator.getLogger().log(Level.WARNING, "Unknown Variable {0}", pv.getName());
 			return;
 		}
 		var.setValue(Double.NaN);
@@ -131,20 +131,19 @@ public class Filter implements PVListener
 	}
 
 	/** @see PVListener */
-	public void pvValueUpdate(final PV pv)
+	@Override
+    public void pvValueUpdate(final PV pv)
 	{
 		final VariableNode var = findVariable(pv);
-        final Logger log = CentralLogger.getInstance().getLogger(this);
 		if (var == null)
 		{
-            log.warn("Unknown Variable " + pv.getName());
+            Activator.getLogger().log(Level.WARNING, "Unknown Variable {0}", pv.getName());
 			return;
 		}
-		
+
         final double value = ValueUtil.getDouble(pv.getValue());
-        if (log.isDebugEnabled())
-            log.debug("Filter '" + formula.getFormula() + "': " +
-                      pv.getName() + " = " + value);
+        Activator.getLogger().log(Level.FINER, "Filter {0}: {1} = {2}",
+                new Object[] { formula.getFormula(), pv.getName(), value });
         var.setValue(value);
 		evaluate();
 	}

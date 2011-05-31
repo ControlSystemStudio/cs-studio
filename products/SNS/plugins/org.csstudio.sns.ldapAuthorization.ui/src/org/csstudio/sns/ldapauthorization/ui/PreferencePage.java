@@ -21,7 +21,7 @@
  */
  package org.csstudio.sns.ldapauthorization.ui;
 
-import org.csstudio.platform.ui.security.PasswordFieldEditor;
+import org.csstudio.auth.ui.security.PasswordFieldEditor;
 import org.csstudio.sns.ldapauthorization.PreferenceConstants;
 import org.eclipse.core.runtime.preferences.InstanceScope;
 import org.eclipse.jface.preference.FieldEditorPreferencePage;

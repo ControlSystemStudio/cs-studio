@@ -1,3 +1,10 @@
+/*******************************************************************************
+ * Copyright (c) 2010 Oak Ridge National Laboratory.
+ * All rights reserved. This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License v1.0
+ * which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-v10.html
+ ******************************************************************************/
 package org.csstudio.swt.widgets.figures;
 
 import java.beans.BeanInfo;
@@ -79,7 +86,7 @@ public abstract class AbstractChoiceFigure extends Figure implements Introspecta
 		return selectedColor;
 	}
 
-	public String getState(){
+	public synchronized String getState(){
 		return states.get(models.indexOf(buttonGroup.getSelected()));
 	}
 		
@@ -156,12 +163,13 @@ public abstract class AbstractChoiceFigure extends Figure implements Introspecta
 	}
 	
 	public synchronized void setState(String state){
-		if(states.contains(state)){
-			fromSetState = true;
+		fromSetState = true;
+		if(states.contains(state)){			
 			buttonGroup.setSelected(models.get(
-				states.indexOf(state)));
-			fromSetState = false;
-		}
+				states.indexOf(state)));			
+		}else
+			buttonGroup.setSelected(null);
+		fromSetState = false;
 	}
 
 	/**Set all the state string values.

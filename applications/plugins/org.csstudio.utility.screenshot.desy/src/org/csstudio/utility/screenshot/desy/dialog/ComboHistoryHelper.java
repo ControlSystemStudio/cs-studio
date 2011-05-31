@@ -19,19 +19,18 @@ import org.eclipse.swt.widgets.Combo;
  *  @author Kay Kasemir
  *  @author Helge Rickens
  */
-public abstract class ComboHistoryHelper
-{
-    private static final boolean debug = false;
+public abstract class ComboHistoryHelper {
+    
+	private static final boolean debug = false;
     private static final String TAG = "values"; //$NON-NLS-1$
     private static final int DEFAULT_MAX = 20;
     private final IDialogSettings settings;
     private final String tag;
-    private final ComboViewer combo;
+    final ComboViewer combo;
     private final int max;
 
     /** Attach helper to given combo box, using default list length. */
-    public ComboHistoryHelper(IDialogSettings settings, String tag, ComboViewer combo)
-    {
+    public ComboHistoryHelper(IDialogSettings settings, String tag, ComboViewer combo) {
         this(settings, tag, combo, DEFAULT_MAX);
     }
 
@@ -42,9 +41,9 @@ public abstract class ComboHistoryHelper
      *  @param max      Max list length
      */
     public ComboHistoryHelper(IDialogSettings settings, String tag,
-                              ComboViewer combo, int max)
-    {
-        this.settings = settings;
+                              ComboViewer combo, int max) {
+        
+    	this.settings = settings;
         this.tag = tag;
         this.combo = combo;
         this.max = max;
@@ -52,28 +51,28 @@ public abstract class ComboHistoryHelper
         // React whenever an existing entry is selected,
         // or a new name is entered.
         // New names are also added to the list.
-        combo.getCombo().addSelectionListener(new SelectionListener()
-        {
-            // Called after <Return> was pressed
-            public void widgetDefaultSelected(SelectionEvent e)
-            {
+        combo.getCombo().addSelectionListener(new SelectionListener() {
+            
+        	// Called after <Return> was pressed
+            public void widgetDefaultSelected(SelectionEvent e) {
                 String new_entry = ComboHistoryHelper.this.combo.getCombo().getText();
                 addEntry(new_entry);
                 newSelection(new_entry);
             }
 
             // Called after existing entry was picked from list
-            public void widgetSelected(SelectionEvent e)
-            {   handleNewSelection();    }
+            public void widgetSelected(SelectionEvent e) {
+            	handleNewSelection();
+            }
         });
 
     }
 
     /** Add entry to the list. */
     @SuppressWarnings("nls")
-    public void addEntry(String new_entry)
-    {
-        if (debug)
+    public void addEntry(String new_entry) {
+        
+    	if (debug)
             System.out.println("ComboHelper: Add "+new_entry);
     	IProcessVariable pv = CentralItemFactory.createProcessVariable(new_entry);
 
@@ -81,12 +80,11 @@ public abstract class ComboHistoryHelper
         // A simple remove() would throw exception in case the elem isn't found.
         final Combo ctrl = combo.getCombo();
         boolean only_a_reorg = false;
-        for (int i=0; i<ctrl.getItemCount(); ++i)
-        {
-            final Object obj = combo.getElementAt(i);
+        for (int i=0; i<ctrl.getItemCount(); ++i) {
+            
+        	final Object obj = combo.getElementAt(i);
             IProcessVariable elem = (IProcessVariable) obj;
-            if (elem.getName().equals(new_entry))
-            {
+            if (elem.getName().equals(new_entry)) {
                 combo.remove(obj);
                 only_a_reorg = true;
             }
@@ -108,8 +106,7 @@ public abstract class ComboHistoryHelper
     }
 
     /** Notify about new selection. */
-    private void handleNewSelection()
-    {
+    void handleNewSelection() {
         String name = combo.getCombo().getText();
         newSelection(name);
     }
@@ -118,8 +115,7 @@ public abstract class ComboHistoryHelper
     public abstract void newSelection(String entry);
 
     /** Load persisted list values. */
-    public void loadSettings()
-    {
+    public void loadSettings() {
         IDialogSettings pvs = settings.getSection(tag);
         if (pvs == null)
             return;
@@ -130,8 +126,7 @@ public abstract class ComboHistoryHelper
     }
 
     /** Save list values to persistent storage. */
-    public void saveSettings()
-    {
+    public void saveSettings() {
         IDialogSettings values = settings.addNewSection(tag);
         values.put(TAG, combo.getCombo().getItems());
     }

@@ -1,6 +1,13 @@
+/*******************************************************************************
+ * Copyright (c) 2010 Oak Ridge National Laboratory.
+ * All rights reserved. This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License v1.0
+ * which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-v10.html
+ ******************************************************************************/
 package org.csstudio.archivereader;
 
-import org.csstudio.platform.data.IValue;
+import org.csstudio.data.values.IValue;
 
 /** In principle this is like
  *  <code>Iterator&lt;Value&gt;</code>, but allows next() to
@@ -25,7 +32,7 @@ public interface ValueIterator
      *  @exception on Error in archive access
      */
     public IValue next() throws Exception;
-    
+
     /** Must be called to release resources */
     public void close();
 }

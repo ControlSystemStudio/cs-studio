@@ -23,10 +23,11 @@ package org.csstudio.config.ioconfig.model;
 
 import java.util.Set;
 
+import javax.annotation.CheckForNull;
+import javax.annotation.Nonnull;
+
 
 /**
- * TODO (hrickens) :
- *
  * @author hrickens
  * @author $Author: hrickens $
  * @version $Revision: 1.2 $
@@ -34,11 +35,15 @@ import java.util.Set;
  */
 public interface INode {
 
+    @CheckForNull
     INode getParent();
 
+    @Nonnull
 	Set<DocumentDBO> getDocuments();
 
+    @Nonnull
     NodeType getNodeType();
 
+    @CheckForNull
     String getName();
 }

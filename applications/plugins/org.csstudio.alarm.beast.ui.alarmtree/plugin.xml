@@ -16,21 +16,25 @@
             name="%AlarmTree">
       </view>
    </extension>
+   
    <extension
-         point="org.eclipse.ui.actionSets">
-      <actionSet
-            description="Global CSS menu actions"
-            id="org.csstudio.alarm.beast.ui.alarmtree.cssmenu"
-            label="CSS Action Set"
-            visible="true">
-         <action
-               class="org.csstudio.alarm.beast.ui.alarmtree.ShowAlarmTreeAction"
+         point="org.eclipse.ui.menus">
+      <menuContribution
+            allPopups="false"
+            locationURI="menu:alarm?after=org.csstudio.alarm.beast.alarmtable">
+         <command
+               commandId="org.eclipse.ui.views.showView"
                icon="icons/alarmtree.gif"
-               id="org.csstudio.alarm.beast.ui.alarmtree.ShowAlarmTreeAction"
+               id="org.csstudio.alarm.beast.alarmtree"
                label="%AlarmTree"
-               menubarPath="css/alarm/"
+               mnemonic="%AlarmTreeMnemonic"
                style="push"
-               tooltip="%AlarmTree"/>
-      </actionSet>
+               tooltip="%AlarmTreeTT">
+            <parameter
+                  name="org.eclipse.ui.views.showView.viewId"
+                  value="org.csstudio.alarm.beast.ui.alarmtree.View">
+            </parameter> 
+         </command>
+      </menuContribution>
    </extension>
 </plugin>

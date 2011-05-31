@@ -1,0 +1,19 @@
+Manifest-Version: 1.0
+Bundle-ManifestVersion: 2
+Bundle-Name: MySQL Connector
+Bundle-SymbolicName: org.csstudio.platform.libs.jdbc.mysql
+Bundle-Version: 5.1.14
+Export-Package: com.mysql.jdbc,
+ com.mysql.jdbc.exceptions,
+ com.mysql.jdbc.exceptions.jdbc4,
+ com.mysql.jdbc.integration.c3p0,
+ com.mysql.jdbc.integration.jboss,
+ com.mysql.jdbc.interceptors,
+ com.mysql.jdbc.jdbc2.optional,
+ com.mysql.jdbc.jmx,
+ com.mysql.jdbc.log,
+ com.mysql.jdbc.profiler,
+ com.mysql.jdbc.util,
+ org.gjt.mm.mysql
+Bundle-RequiredExecutionEnvironment: JavaSE-1.6
+Bundle-Vendor: Desy <css-developer@desy.de>, Bastian Knerr

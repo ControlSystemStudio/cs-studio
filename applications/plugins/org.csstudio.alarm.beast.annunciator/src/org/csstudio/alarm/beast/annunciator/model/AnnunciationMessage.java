@@ -7,14 +7,14 @@
  ******************************************************************************/
 package org.csstudio.alarm.beast.annunciator.model;
 
-import org.csstudio.platform.data.ITimestamp;
-import org.csstudio.platform.data.TimestampFactory;
+import org.csstudio.data.values.ITimestamp;
+import org.csstudio.data.values.TimestampFactory;
 
 /** Combination of message and Severity, used by SpeechPriorityQueue.
- * 
+ *
  *  @author Delphy Armstrong
  *  @author Kay Kasemir
- * 
+ *
  *         reviewed by Delphy 1/29/09
  */
 public class AnnunciationMessage implements Comparable<AnnunciationMessage>
@@ -50,7 +50,7 @@ public class AnnunciationMessage implements Comparable<AnnunciationMessage>
     {
         return time;
     }
-    
+
     /** @return Severity */
     public Severity getSeverity()
     {
@@ -66,11 +66,12 @@ public class AnnunciationMessage implements Comparable<AnnunciationMessage>
     /** Compare by severity, but invert the order so that highest severity is
      *  queued first, not last
      */
+    @Override
     public int compareTo(final AnnunciationMessage other)
     {
         return other.getSeverity().compareTo(severity);
     }
-    
+
     /** Compare by Severity
      *  {@inheritDoc}
      */

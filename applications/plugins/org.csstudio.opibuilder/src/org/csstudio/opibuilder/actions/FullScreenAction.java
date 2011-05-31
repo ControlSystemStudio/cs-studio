@@ -1,14 +1,25 @@
+/*******************************************************************************
+ * Copyright (c) 2010 Oak Ridge National Laboratory.
+ * All rights reserved. This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License v1.0
+ * which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-v10.html
+ ******************************************************************************/
 package org.csstudio.opibuilder.actions;
 
 import org.csstudio.opibuilder.OPIBuilderPlugin;
-import org.csstudio.platform.ui.util.CustomMediaFactory;
-import org.eclipse.gef.ui.actions.WorkbenchPartAction;
+import org.csstudio.opibuilder.preferences.PreferencesHelper;
+import org.csstudio.opibuilder.util.WorkbenchWindowService;
+import org.csstudio.opibuilder.visualparts.TipDialog;
+import org.csstudio.ui.util.CustomMediaFactory;
+import org.eclipse.jface.action.Action;
+import org.eclipse.jface.action.IAction;
 import org.eclipse.jface.resource.ImageDescriptor;
+import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.swt.widgets.Menu;
 import org.eclipse.swt.widgets.Shell;
-import org.eclipse.ui.IWorkbenchPart;
 import org.eclipse.ui.IWorkbenchWindow;
-import org.eclipse.ui.actions.ActionFactory;
+import org.eclipse.ui.IWorkbenchWindowActionDelegate;
 import org.eclipse.ui.internal.WorkbenchWindow;
 
 
@@ -17,13 +28,16 @@ import org.eclipse.ui.internal.WorkbenchWindow;
  *
  */
 @SuppressWarnings("restriction")
-public class FullScreenAction extends WorkbenchPartAction {
+public class FullScreenAction extends Action implements
+	IWorkbenchWindowActionDelegate {
 	
 	public static final String ID = "org.csstudio.opibuilder.actions.fullscreen";
+	private static final String FULLSCREEN = "Full Screen";
+
+	private static final String EXIT_FULL_SCREEN = "Exit Full Screen";
 	
-	private ActionFactory.IWorkbenchAction toggleToolbarAction;
 	private Menu menuBar;
-	private boolean inFullScreenMode = false;
+	private boolean inFullScreen = false;
 	private Shell shell;
 	private ImageDescriptor fullScreenImage = 
 		CustomMediaFactory.getInstance().getImageDescriptorFromPlugin(
@@ -33,61 +47,100 @@ public class FullScreenAction extends WorkbenchPartAction {
 			OPIBuilderPlugin.PLUGIN_ID, "icons/exitfullscreen.png");
 	private IWorkbenchWindow window;
 	private boolean toolbarWasInvisible;
+	private boolean menuBarWasInvisible;
 	/**
 	 * Constructor.
 	 * @param part The workbench part associated with this PrintAction
 	 */
-	public FullScreenAction(IWorkbenchPart part) {
-		super(part);
-		window = part.getSite().getWorkbenchWindow();
-		 toggleToolbarAction = ActionFactory.TOGGLE_COOLBAR.create(window); 
-		 shell = part.getSite().getWorkbenchWindow().getShell();
-		 menuBar = shell.getMenuBar();
-		 setImageDescriptor(fullScreenImage);
-		 
+	public FullScreenAction() {
+		setActionDefinitionId(ID);		 
 	}
 	
-	/**
-	 * @see org.eclipse.gef.ui.actions.WorkbenchPartAction#calculateEnabled()
-	 */
-	protected boolean calculateEnabled() {
-		return true;
-	}
-	
-	/**
-	 * @see org.eclipse.gef.ui.actions.EditorPartAction#init()
-	 */
-	protected void init() {
-		super.init();
-		setText("Full Screen");
-		setId(ID);
-		}
-	
+
 	/**
 	 * @see org.eclipse.jface.action.Action#run()
 	 */
 	public void run() {
-		if(inFullScreenMode){
+		if (inFullScreen) {
 			shell.setFullScreen(false);
-			if(!toolbarWasInvisible)
-				toggleToolbarAction.run();
-			shell.setMenuBar(menuBar);		
-			inFullScreenMode = false;
-			setText("Full Screen");
-			setImageDescriptor(fullScreenImage);
-		}else {
-			shell.setFullScreen(true);
-			if(window instanceof WorkbenchWindow && !((WorkbenchWindow) window).getCoolBarVisible()){
-				toolbarWasInvisible = true;
-			}else{
-				toolbarWasInvisible = false;
-				toggleToolbarAction.run();
+			if (!toolbarWasInvisible){
+				WorkbenchWindowService.setToolbarVisibility((WorkbenchWindow) window, true);
 			}
-			shell.setMenuBar(null);		
-			inFullScreenMode = true;
-			setText("Exit Full Screen");
+			if(!menuBarWasInvisible)
+				shell.setMenuBar(menuBar);
+			inFullScreen = false;
+			setText(FULLSCREEN);
+			setImageDescriptor(fullScreenImage);
+		} else {
+			
+			if(PreferencesHelper.isShowFullScreenDialog()){
+				TipDialog dialog = new TipDialog(shell, "Tip", 
+						"Press F11 to exit full screen.");
+				dialog.open();
+				if(!dialog.isShowThisDialogAgain())
+					PreferencesHelper.setShowFullScreenDialog(false);
+			}
+			shell.setFullScreen(true);
+			if (window instanceof WorkbenchWindow
+					&& !((WorkbenchWindow) window).getCoolBarVisible()) {
+				toolbarWasInvisible = true;
+			} else {
+				toolbarWasInvisible = false;
+				WorkbenchWindowService.setToolbarVisibility((WorkbenchWindow) window, false);
+			}
+			if(shell.getMenuBar() == null)
+				menuBarWasInvisible = true;
+			else{
+				menuBar = shell.getMenuBar();
+				menuBarWasInvisible = false;
+			}
+			shell.setMenuBar(null);
+			inFullScreen = true;
+
+			setText(EXIT_FULL_SCREEN);
 			setImageDescriptor(exitFullScreenImage);
 		}
 	}
 
+	public void run(IAction action) {
+		run();
+	}
+
+	public void selectionChanged(IAction action, ISelection selection) {
+
+	}
+
+	public void init(IWorkbenchWindow window) {
+		setId(ID);
+		this.window = window;
+		shell = window.getShell();		
+		menuBar = shell.getMenuBar();	
+		FullScreenAction registeredAction =
+			WorkbenchWindowService.getInstance().getFullScreenAction(window);
+		//copy states
+		if(registeredAction != null){
+			inFullScreen = registeredAction.inFullScreen;
+			menuBarWasInvisible = registeredAction.menuBarWasInvisible;
+			toolbarWasInvisible = registeredAction.toolbarWasInvisible;
+			menuBar = registeredAction.menuBar;
+		}
+		WorkbenchWindowService.getInstance().registerFullScreenAction(this, window);
+
+		setText(FULLSCREEN);
+		setImageDescriptor(fullScreenImage);		
+	}
+
+	public boolean isInFullScreen() {
+		return inFullScreen;
+	}
+	
+		
+	public void dispose() {
+		WorkbenchWindowService.getInstance().unregisterFullScreenAction(window);
+
+	}
+
+	
 }
+
+	

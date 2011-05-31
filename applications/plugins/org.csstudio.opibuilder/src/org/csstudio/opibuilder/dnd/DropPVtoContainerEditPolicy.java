@@ -1,3 +1,10 @@
+/*******************************************************************************
+ * Copyright (c) 2010 Oak Ridge National Laboratory.
+ * All rights reserved. This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License v1.0
+ * which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-v10.html
+ ******************************************************************************/
 package org.csstudio.opibuilder.dnd;
 
 import org.csstudio.opibuilder.commands.SetWidgetPropertyCommand;
@@ -27,7 +34,7 @@ public class DropPVtoContainerEditPolicy extends DropPVtoPVWidgetEditPolicy {
 
 	@Override
 	public Command getCommand(Request request) {
-		if(request.getType() == DropPVRequest.REQ_DROP_PV){
+		if(request.getType() == DropPVRequest.REQ_DROP_PV && request instanceof DropPVRequest){
 			DropPVRequest dropPVRequest =(DropPVRequest)request; 
 			if(dropPVRequest.getTargetWidget() != null && 
 					dropPVRequest.getTargetWidget() instanceof AbstractContainerEditpart){
@@ -56,7 +63,7 @@ public class DropPVtoContainerEditPolicy extends DropPVtoPVWidgetEditPolicy {
 								getWidgetDescriptor(typeID).getWidgetModel();												
 							command.add(new WidgetCreateCommand(widgetModel, container,
 									new Rectangle(location.getCopy().translate(lastWidth, lastHeight),
-											new Dimension(-1, -1)), i!=1));
+											new Dimension(-1, -1)), i!=1, true));
 							command.add(new SetWidgetPropertyCommand(widgetModel, 
 									AbstractPVWidgetModel.PROP_PVNAME, pvName.trim()));
 							if(i%WIDGETS_ACCOUNT_ON_A_ROW == 0){

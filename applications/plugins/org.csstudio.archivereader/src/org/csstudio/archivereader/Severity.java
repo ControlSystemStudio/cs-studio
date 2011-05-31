@@ -1,6 +1,13 @@
+/*******************************************************************************
+ * Copyright (c) 2010 Oak Ridge National Laboratory.
+ * All rights reserved. This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License v1.0
+ * which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-v10.html
+ ******************************************************************************/
 package org.csstudio.archivereader;
 
-import org.csstudio.platform.data.ISeverity;
+import org.csstudio.data.values.ISeverity;
 
 /** Severity with name and ISeverity interface.
  *  <p>
@@ -21,10 +28,10 @@ public class Severity implements ISeverity
 
 	/** Name of this severity */
 	final private String name;
-	
+
 	/** Level of this severity */
 	final private Level level;
-	
+
 	/** Constructor
 	 *  @param id
 	 *  @param name
@@ -43,32 +50,37 @@ public class Severity implements ISeverity
 		else
 			level = Level.INVALID;
 	}
-	
+
 	/** {@inheritDoc} */
-	public boolean isOK()
+	@Override
+    public boolean isOK()
 	{
 		return level == Level.OK;
 	}
 
 	/** {@inheritDoc} */
-	public boolean isMinor()
+	@Override
+    public boolean isMinor()
 	{
 		return level == Level.MINOR;
 	}
 
 	/** {@inheritDoc} */
-	public boolean isMajor()
+	@Override
+    public boolean isMajor()
 	{
 		return level == Level.MAJOR;
 	}
 
 	/** {@inheritDoc} */
-	public boolean isInvalid()
+	@Override
+    public boolean isInvalid()
 	{
 		return level == Level.INVALID;
 	}
 
 	/** {@inheritDoc} */
+    @Override
     public boolean hasValue()
 	{
 		return true;

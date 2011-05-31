@@ -347,7 +347,7 @@ public class LinearScaledMarker extends Figure {
 		
 		if(scale.isHorizontal()) {
 			size.width = scale.getSize().width;
-			size.height = (int)Math.ceil(FigureUtilities.getTextExtents("dummy", getFont()).height) 
+			size.height = FigureUtilities.getTextExtents("dummy", getFont()).height
 							+ GAP_BTW_MARK_LABEL + TICK_LENGTH;
 		} else {
 			updateTickLabelMaxLength();
@@ -358,7 +358,7 @@ public class LinearScaledMarker extends Figure {
 		
 	}
 	
-	class MarkerProperties {		
+	private static class MarkerProperties {		
 
 		private double value;
 

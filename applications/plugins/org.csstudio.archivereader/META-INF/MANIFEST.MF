@@ -2,11 +2,11 @@ Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: Archive API2
 Bundle-SymbolicName: org.csstudio.archivereader;singleton:=true
-Bundle-Version: 2.0.2.qualifier
+Bundle-Version: 3.0.0.qualifier
 Bundle-Vendor: Kay Kasemir <kasemirk@ornl.gov> - SNS
 Require-Bundle: org.junit4,
  org.eclipse.core.runtime,
- org.csstudio.platform;bundle-version="1.1.0";visibility:=reexport
-Bundle-RequiredExecutionEnvironment: J2SE-1.5
+ org.csstudio.data;bundle-version="3.0.0";visibility:=reexport
+Bundle-RequiredExecutionEnvironment: JavaSE-1.6
 Bundle-ActivationPolicy: lazy
 Export-Package: org.csstudio.archivereader

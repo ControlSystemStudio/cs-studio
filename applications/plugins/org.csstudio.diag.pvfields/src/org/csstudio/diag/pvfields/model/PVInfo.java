@@ -1,21 +1,25 @@
+/*******************************************************************************
+ * Copyright (c) 2010 Oak Ridge National Laboratory.
+ * All rights reserved. This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License v1.0
+ * which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-v10.html
+ ******************************************************************************/
 package org.csstudio.diag.pvfields.model;
-
-import org.csstudio.platform.model.IProcessVariable;
-import org.eclipse.core.runtime.PlatformObject;
 
 /** Information about a PV.
  *  <p>
  *  Meant to be derived, and derived class must implement start(), stop(), getCurrentValue()
- *  
+ *
  *  @author Dave Purcell
  *  @author Kay Kasemir
  */
-public class PVInfo extends PlatformObject  implements IProcessVariable
+public class PVInfo
 {
     final private String pv_name, pv_type, field_name, field_type, orig_value;
     final private String fec, date, file_name;
     private PVFieldsModel model = null;
-    
+
     /** Initialize
      *  @param pv_name PV Name
      *  @param pv_type PV Type
@@ -24,7 +28,7 @@ public class PVInfo extends PlatformObject  implements IProcessVariable
      *  @param file_name
      */
     public PVInfo(final String pv_name, final String pv_type, final String fec,
-            final String date, final String file_name, final String field_name, 
+            final String date, final String file_name, final String field_name,
             final String field_type, final String orig_value
             )
     {
@@ -40,16 +44,15 @@ public class PVInfo extends PlatformObject  implements IProcessVariable
 
     /** At least for EPICS, the value of a field can include the name of another
      *  PV. In other cases, it's just a numeric or string value.
-     *  
+     *
      *  So that we can use these values in eclipse as selection providers
      *  we may need to manipulate them.
-     *  Depending on the live value we may want the selection providers to return 
+     *  Depending on the live value we may want the selection providers to return
      *  a new PV name (a link) or just the PV or the PV.field as a PV itself.
      *  Depends on your needs.
      *  Obviously, it can also just return the name of the control system item.
-     *  
+     *
      *  @return Possibly a PV name that we extracted from the value
-     *  @see IProcessVariable
 	*/
     public String getName()
     {
@@ -114,7 +117,7 @@ public class PVInfo extends PlatformObject  implements IProcessVariable
             throw new Error("Model already set"); //$NON-NLS-1$
         this.model = model;
     }
-    
+
     /** @return Model or <code>null</code> if not set */
     PVFieldsModel getModel()
     {
@@ -133,34 +136,31 @@ public class PVInfo extends PlatformObject  implements IProcessVariable
     	// NOP
     }
 
-    // @see IProcessVariable
-    public String getTypeId()
-    {
-        return IProcessVariable.TYPE_ID;
-    }
-
     /** @return String for first Column in table */
     public String getFirstColumn()
     {
-    	if (PVFieldsModel.alterColumnData()) {
-    		return field_name;}
+        final PVFieldsModel model = getModel();
+        if (model != null  && model.alterColumnData())
+    		return field_name;
         else return pv_name;
     }
 
     /** @return Type of this field */
     public String getSecondColumn()
     {
-    	if (PVFieldsModel.alterColumnData()) return field_type ;
+        final PVFieldsModel model = getModel();
+        if (model != null  && model.alterColumnData())
+        	return field_type;
         return field_name;
     }
 
     /** @return Current value of the field     */
     public String getCurrentValue()
     {
-    	return "";
+    	return ""; //$NON-NLS-1$
     }
 
-    
+
     /** Called by derived implementation to notify model
      *  about a new 'live' (current) value
      */
@@ -170,16 +170,15 @@ public class PVInfo extends PlatformObject  implements IProcessVariable
         if (model != null)
             model.fireFieldChanged(this);
     }
-    
+
     /**
      * @return String representation of field, used for example when printing
      *         fields in JUnit test or when viewing field in debugger
      */
+    @SuppressWarnings("nls")
     @Override
     public String toString()
     {
         return "PV " + pv_name + " field " + field_name + " = " + orig_value;
     }
-
-   
 }

@@ -1,19 +1,23 @@
+/*******************************************************************************
+ * Copyright (c) 2010 Oak Ridge National Laboratory.
+ * All rights reserved. This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License v1.0
+ * which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-v10.html
+ ******************************************************************************/
 package org.csstudio.opibuilder.widgets.editparts;
 
+import org.csstudio.data.values.IValue;
+import org.csstudio.data.values.ValueUtil;
 import org.csstudio.opibuilder.editparts.AbstractPVWidgetEditPart;
 import org.csstudio.opibuilder.editparts.ExecutionMode;
 import org.csstudio.opibuilder.model.AbstractPVWidgetModel;
 import org.csstudio.opibuilder.model.AbstractWidgetModel;
 import org.csstudio.opibuilder.properties.IWidgetPropertyChangeHandler;
-import org.csstudio.opibuilder.util.OPIFont;
 import org.csstudio.opibuilder.widgets.model.CheckBoxModel;
-import org.csstudio.platform.data.IValue;
-import org.csstudio.platform.data.ValueUtil;
-import org.csstudio.platform.ui.util.CustomMediaFactory;
 import org.csstudio.swt.widgets.datadefinition.IManualValueChangeListener;
 import org.csstudio.swt.widgets.figures.CheckBoxFigure;
 import org.eclipse.draw2d.IFigure;
-import org.eclipse.swt.graphics.FontData;
 import org.eclipse.swt.widgets.Display;
 
 /**The editpart of a checkbox.
@@ -26,23 +30,21 @@ public class CheckBoxEditPart extends AbstractPVWidgetEditPart {
 	protected IFigure doCreateFigure() {
 		CheckBoxFigure figure = new CheckBoxFigure();
 		figure.setBit(getWidgetModel().getBit());
-		figure.setFont(CustomMediaFactory.getInstance().getFont(
-				getWidgetModel().getFont().getFontData()));
 		figure.setText(getWidgetModel().getLabel());
 		figure.addManualValueChangeListener(new IManualValueChangeListener() {
-			
+
 			public void manualValueChanged(double newValue) {
 				if (getExecutionMode() == ExecutionMode.RUN_MODE)
-					setPVValue(AbstractPVWidgetModel.PROP_PVNAME, newValue);				
+					setPVValue(AbstractPVWidgetModel.PROP_PVNAME, newValue);
 			}
 		});
 		markAsControlPV(AbstractPVWidgetModel.PROP_PVNAME, AbstractPVWidgetModel.PROP_PVVALUE);
 		figure.setRunMode(getExecutionMode().equals(
 				ExecutionMode.RUN_MODE));
-		
+
 		return figure;
 	}
-	
+
 	@Override
 	public CheckBoxModel getWidgetModel() {
 		return  (CheckBoxModel)getModel();
@@ -64,7 +66,7 @@ public class CheckBoxEditPart extends AbstractPVWidgetEditPart {
 			}
 		};
 		setPropertyChangeHandler(AbstractPVWidgetModel.PROP_PVVALUE, handler);
-		
+
 		// bit
 		handler = new IWidgetPropertyChangeHandler() {
 			public boolean handleChange(final Object oldValue,
@@ -76,7 +78,7 @@ public class CheckBoxEditPart extends AbstractPVWidgetEditPart {
 			}
 		};
 		setPropertyChangeHandler(CheckBoxModel.PROP_BIT, handler);
-		
+
 		//label
 		handler = new IWidgetPropertyChangeHandler() {
 			public boolean handleChange(final Object oldValue,
@@ -84,7 +86,7 @@ public class CheckBoxEditPart extends AbstractPVWidgetEditPart {
 					final IFigure refreshableFigure) {
 				CheckBoxFigure figure = (CheckBoxFigure) refreshableFigure;
 				figure.setText((String) newValue);
-				Display.getCurrent().timerExec(10, new Runnable() {					
+				Display.getCurrent().timerExec(10, new Runnable() {
 					public void run() {
 						if(getWidgetModel().isAutoSize())
 							performAutoSize(refreshableFigure);
@@ -94,22 +96,10 @@ public class CheckBoxEditPart extends AbstractPVWidgetEditPart {
 			}
 		};
 		setPropertyChangeHandler(CheckBoxModel.PROP_LABEL, handler);
-		
-		// font
-		IWidgetPropertyChangeHandler fontHandler = new IWidgetPropertyChangeHandler() {
-			public boolean handleChange(final Object oldValue,
-					final Object newValue, final IFigure refreshableFigure) {
-				CheckBoxFigure figure = (CheckBoxFigure) refreshableFigure;
-				FontData fontData = ((OPIFont) newValue).getFontData();
-				figure.setFont(CustomMediaFactory.getInstance().getFont(fontData));
-				return true;
-			}
-		};
-		setPropertyChangeHandler(CheckBoxModel.PROP_FONT, fontHandler);
-		
+
 		handler = new IWidgetPropertyChangeHandler(){
 			public boolean handleChange(Object oldValue, Object newValue,
-					IFigure figure) {				
+					IFigure figure) {
 				if((Boolean)newValue){
 					performAutoSize(figure);
 					figure.revalidate();
@@ -118,11 +108,11 @@ public class CheckBoxEditPart extends AbstractPVWidgetEditPart {
 			}
 		};
 		setPropertyChangeHandler(CheckBoxModel.PROP_AUTOSIZE, handler);
-		
+
 		handler = new IWidgetPropertyChangeHandler(){
 			public boolean handleChange(Object oldValue, Object newValue,
 					final IFigure figure) {
-				Display.getCurrent().timerExec(10, new Runnable() {					
+				Display.getCurrent().timerExec(10, new Runnable() {
 					public void run() {
 						if(getWidgetModel().isAutoSize()){
 							performAutoSize(figure);
@@ -130,15 +120,15 @@ public class CheckBoxEditPart extends AbstractPVWidgetEditPart {
 						}
 					}
 				});
-				
+
 				return true;
 			}
 		};
-		setPropertyChangeHandler(CheckBoxModel.PROP_FONT, handler);		
+		setPropertyChangeHandler(CheckBoxModel.PROP_FONT, handler);
 		setPropertyChangeHandler(AbstractWidgetModel.PROP_BORDER_STYLE, handler);
 		setPropertyChangeHandler(AbstractWidgetModel.PROP_BORDER_WIDTH, handler);
 	}
-	
+
 	/**
 	 * @param figure
 	 */
@@ -146,18 +136,20 @@ public class CheckBoxEditPart extends AbstractPVWidgetEditPart {
 		getWidgetModel().setSize(((CheckBoxFigure)figure).getPreferredSize());
 	}
 
-	
+
 	@Override
 	public void setValue(Object value) {
-		if(value instanceof Double)
-			((CheckBoxFigure)getFigure()).setValue((Double)value);
+		if(value instanceof Number)
+			((CheckBoxFigure)getFigure()).setValue(((Number)value).longValue());
 		else if (value instanceof Boolean)
 			((CheckBoxFigure)getFigure()).setBoolValue((Boolean)value);
+		else
+			super.setValue(value);
 	}
 
 	@Override
 	public Boolean getValue() {
 		return ((CheckBoxFigure)getFigure()).getBoolValue();
 	}
-	
+
 }

@@ -33,7 +33,7 @@ import org.apache.log4j.Logger;
 import org.csstudio.alarm.service.declaration.AlarmMessageKey;
 import org.csstudio.alarm.service.declaration.EventtimeUtil;
 import org.csstudio.alarm.service.declaration.IAlarmMessage;
-import org.csstudio.alarm.service.declaration.Severity;
+import org.csstudio.domain.desy.epics.alarm.EpicsAlarmSeverity;
 import org.csstudio.platform.logging.CentralLogger;
 
 /**
@@ -121,9 +121,10 @@ public final class AlarmMessageJMSImpl implements IAlarmMessage {
                 + getString(AlarmMessageKey.STATUS);
     }
 
+    @Override
     @Nonnull
-    public Severity getSeverity() {
-        return Severity.parseSeverity(getString(AlarmMessageKey.SEVERITY));
+    public EpicsAlarmSeverity getSeverity() {
+        return EpicsAlarmSeverity.parseSeverity(getString(AlarmMessageKey.SEVERITY));
     }
 
     @Override
@@ -132,6 +133,8 @@ public final class AlarmMessageJMSImpl implements IAlarmMessage {
         return EventtimeUtil.parseTimestamp(getString(AlarmMessageKey.EVENTTIME));
     }
 
+    // CHECKSTYLE:OFF
+    @Override
     @Nonnull
     public Date getEventtimeOrCurrentTime() {
         Date result = getEventtime();
@@ -144,7 +147,7 @@ public final class AlarmMessageJMSImpl implements IAlarmMessage {
     @Override
     public boolean isAcknowledgement() {
         final String ack = getString(AlarmMessageKey.ACK);
-        return (ack != null) && Boolean.valueOf(ack);
+        return ack != null && Boolean.valueOf(ack);
     }
 
 }

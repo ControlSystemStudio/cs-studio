@@ -452,7 +452,7 @@ public final class ResourceSelectionGroup extends Composite {
 	 * 					The TreeViewer, which selection should be set
 	 */
 	private void setDefaultSelection(final TreeViewer viewer) {
-		TreeItem item = viewer.getTree().getItem(0);
+		final TreeItem item = viewer.getTree().getItemCount() > 0 ? viewer.getTree().getItem(0) : null;
 		if (item!=null) {
 			viewer.getTree().setSelection(item);
 		}

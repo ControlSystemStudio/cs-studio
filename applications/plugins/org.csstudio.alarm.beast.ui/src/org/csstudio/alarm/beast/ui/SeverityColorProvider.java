@@ -21,7 +21,7 @@ public class SeverityColorProvider implements DisposeListener
 {
     /** Colors to use for the various severity levels */
     final private Color colors[];
-    
+
     /** Initialize
      *  @param parent Parent widget; dispose listener is added to allow cleanup
      */
@@ -39,12 +39,13 @@ public class SeverityColorProvider implements DisposeListener
     }
 
     /** @see DisposeListener */
+    @Override
     public void widgetDisposed(final DisposeEvent e)
     {
         for (Color color : colors)
             color.dispose();
     }
-    
+
     /** Obtain color suitable for displaying a severity level
      *  @param severity SeverityLevel
      *  @return Color for that level

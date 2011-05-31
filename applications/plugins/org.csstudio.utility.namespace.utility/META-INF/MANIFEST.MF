@@ -8,3 +8,4 @@ Require-Bundle: org.csstudio.platform
 Bundle-ActivationPolicy: lazy
 Export-Package: org.csstudio.utility.namespace.utility
 Bundle-RequiredExecutionEnvironment: JavaSE-1.6
+Bundle-Vendor: Desy <css-developer@desy.de>, Bastian Knerr

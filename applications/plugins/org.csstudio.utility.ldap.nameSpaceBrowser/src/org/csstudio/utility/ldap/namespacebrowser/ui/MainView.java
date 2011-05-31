@@ -24,20 +24,23 @@ package org.csstudio.utility.ldap.namespacebrowser.ui;
 import static org.csstudio.utility.ldap.treeconfiguration.LdapEpicsControlsConfiguration.UNIT;
 import static org.csstudio.utility.ldap.treeconfiguration.LdapFieldsAndAttributes.FIELD_ASSIGNMENT;
 
+import javax.annotation.Nonnull;
+
+import org.csstudio.apputil.ui.dialog.ErrorDetailDialog;
 import org.csstudio.utility.ldap.namespacebrowser.Activator;
 import org.csstudio.utility.ldap.namespacebrowser.utility.LDAP2Automat;
-import org.csstudio.utility.ldap.namespacebrowser.utility.NameSpaceLDAP;
-import org.csstudio.utility.ldap.utils.LdapSearchResult;
+import org.csstudio.utility.ldap.namespacebrowser.utility.LdapNameSpace;
 import org.csstudio.utility.nameSpaceBrowser.ui.CSSView;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.custom.ScrolledComposite;
+import org.eclipse.swt.events.KeyAdapter;
 import org.eclipse.swt.events.KeyEvent;
-import org.eclipse.swt.events.KeyListener;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.part.ViewPart;
+
 /**********************************************************************************
  *
  * @author Helge Rickens
@@ -51,82 +54,66 @@ import org.eclipse.ui.part.ViewPart;
  **********************************************************************************/
 
 public class MainView extends ViewPart {
-	public static final String ID = MainView.class.getName();
-	private static String defaultPVFilter =""; //$NON-NLS-1$
-	CSSView cssview;
-	private LDAP2Automat _automat;
-
-	@Override
-	public void createPartControl(final Composite parent) {
-		_automat = new LDAP2Automat();
-		final ScrolledComposite sc = new ScrolledComposite(parent,SWT.H_SCROLL);
-		final Composite c = new Composite(sc,SWT.NONE);
-		sc.setContent(c);
-	    sc.setExpandVertical(true);
-		c.setLayoutData(new GridData(SWT.LEFT, SWT.FILL, true, false, 1,1));
-		c.setLayout(new GridLayout(1,false));
-		PlatformUI.getWorkbench().getHelpSystem().setHelp(
-				parent.getShell(),
-				Activator.PLUGIN_ID + ".nsB");
-
-
-		c.getShell().addKeyListener(new KeyListener() {
-			public void keyReleased(final KeyEvent e) {
-				if(e.keyCode==SWT.F1){
-					PlatformUI.getWorkbench().getHelpSystem().displayDynamicHelp();
-				}
-			}
-
-			public void keyPressed(final KeyEvent e) {
-			    // EMPTY
-			}
-		});
-		final String[] headlines = {	Messages.getString("CSSView_Facility"),
-//								Messages.getString("CSSView_ecom"),
-								Messages.getString("CSSView_Controller"),
-								Messages.getString("CSSView_Record")
-		};
-
-
-		final NameSpaceLDAP nameSpaceLDAP = new NameSpaceLDAP();
-		final LdapSearchResult searchResult = new LdapSearchResult();
-		nameSpaceLDAP.setResult(searchResult);
-
-		cssview =
-		    new CSSView(c,
-		                _automat,
-		                nameSpaceLDAP,
-		                getSite(),
-		                defaultPVFilter,
-		                UNIT.getNodeTypeName() + FIELD_ASSIGNMENT + UNIT.getUnitTypeValue(),
-		                headlines,
-		                0,
-		                searchResult);
-
-
-	}
-
-	@Override
-	public void setFocus() {
-	    // EMPTY
-	}
-
-	public void setDefaultPVFilter(final String defaultFilter) {
-		defaultPVFilter = defaultFilter;
-		cssview.setDefaultFilter(defaultPVFilter);
-	}
-
-	@Override
-	public void dispose(){
-		_automat = null;
-	}
+    public static final String ID = MainView.class.getName();
+    private static String _DEFAULT_PV_FILTER = ""; //$NON-NLS-1$
+    private CSSView cssview;
+    private LDAP2Automat _automat;
+    
+    @Override
+    public void createPartControl(@Nonnull final Composite parent) {
+        _automat = new LDAP2Automat();
+        final ScrolledComposite sc = new ScrolledComposite(parent, SWT.H_SCROLL);
+        final Composite c = new Composite(sc, SWT.NONE);
+        sc.setContent(c);
+        sc.setExpandVertical(true);
+        c.setLayoutData(new GridData(SWT.LEFT, SWT.FILL, true, false, 1, 1));
+        c.setLayout(new GridLayout(1, false));
+        PlatformUI.getWorkbench().getHelpSystem()
+                .setHelp(parent.getShell(), Activator.PLUGIN_ID + ".nsB");
+        
+        c.getShell().addKeyListener(new KeyAdapter() {
+            @Override
+            public void keyReleased(@Nonnull final KeyEvent e) {
+                if(e.keyCode == SWT.F1) {
+                    PlatformUI.getWorkbench().getHelpSystem().displayDynamicHelp();
+                }
+            }
+        });
+        final String[] headlines = {Messages.getString("CSSView_Facility"),
+                Messages.getString("CSSView_Controller"), Messages.getString("CSSView_Record")};
+        
+        try {
+            cssview = new CSSView(c,
+                                  _automat,
+                                  new LdapNameSpace(),
+                                  getSite(),
+                                  _DEFAULT_PV_FILTER,
+                                  UNIT.getNodeTypeName() + FIELD_ASSIGNMENT
+                                          + UNIT.getUnitTypeValue(),
+                                  headlines,
+                                  0);
+        } catch (Exception e) {
+            ErrorDetailDialog errorDetailDialog = new ErrorDetailDialog(null,
+                                                                        "Titel",
+                                                                        e.getLocalizedMessage(),
+                                                                        e.toString());
+            errorDetailDialog.open();
+        }
+        
+    }
+    
+    @Override
+    public void setFocus() {
+        // EMPTY
+    }
+    
+    public void setDefaultPVFilter(@Nonnull final String defaultFilter) {
+        _DEFAULT_PV_FILTER = defaultFilter;
+        cssview.setDefaultFilter(_DEFAULT_PV_FILTER);
+    }
+    
+    @Override
+    public void dispose() {
+        _automat = null;
+    }
 }
-
-
-
-
-
-
-
-
-

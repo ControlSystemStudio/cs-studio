@@ -20,18 +20,19 @@ public class Perspective implements IPerspectiveFactory
 {
     /** ID of this perspective, registered in plugin.xml */
     final public static String ID = "org.csstudio.alarm.beast.ui.perspective";
-    
+
     // Ideally, these constants would come from e.g.
     // org.csstudio.alarm.beast.ui.alarmtree.AlarmTreeView.ID,
     // but that would add a (circular) dependency to that plugin.
     // This way, one could replace the table or tree view plugins.
-    final private static String ID_SNS_PV_UTIL = 
+    final private static String ID_SNS_PV_UTIL =
         "org.csstudio.diag.pvfields.view.PVFieldsView";
     final private static String ID_ALARM_TREE =
         "org.csstudio.alarm.beast.ui.alarmtree.View";
     final private static String ID_ALARM_TABLE =
         "org.csstudio.alarm.beast.ui.alarmtable.view";
 
+    @Override
     @SuppressWarnings("deprecation")
     public void createInitialLayout(IPageLayout layout)
     {
@@ -54,7 +55,7 @@ public class Perspective implements IPerspectiveFactory
         // Stuff for 'bottom'
         bottom.addPlaceholder(IConsoleConstants.ID_CONSOLE_VIEW);
         bottom.addView(ID_ALARM_TABLE);
-        
+
         // Populate the "Window/Views..." menu with suggested views
         layout.addShowViewShortcut(IPageLayout.ID_RES_NAV);
         layout.addShowViewShortcut(IConsoleConstants.ID_CONSOLE_VIEW);

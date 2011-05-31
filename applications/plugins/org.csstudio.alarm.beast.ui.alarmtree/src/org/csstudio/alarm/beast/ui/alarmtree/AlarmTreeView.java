@@ -7,13 +7,15 @@
  ******************************************************************************/
 package org.csstudio.alarm.beast.ui.alarmtree;
 
+import java.util.logging.Level;
+import java.util.logging.Logger;
+
 import org.csstudio.alarm.beast.Preferences;
-import org.csstudio.alarm.beast.ui.AcknowledgeAction;
-import org.csstudio.alarm.beast.ui.ConfigureItemAction;
-import org.csstudio.alarm.beast.ui.MaintenanceModeAction;
-import org.csstudio.alarm.beast.ui.UnAcknowledgeAction;
+import org.csstudio.alarm.beast.ui.actions.AcknowledgeAction;
+import org.csstudio.alarm.beast.ui.actions.ConfigureItemAction;
+import org.csstudio.alarm.beast.ui.actions.MaintenanceModeAction;
+import org.csstudio.alarm.beast.ui.actions.UnAcknowledgeAction;
 import org.csstudio.alarm.beast.ui.clientmodel.AlarmClientModel;
-import org.csstudio.platform.logging.CentralLogger;
 import org.eclipse.jface.action.IToolBarManager;
 import org.eclipse.jface.action.Separator;
 import org.eclipse.osgi.util.NLS;
@@ -32,7 +34,7 @@ public class AlarmTreeView extends ViewPart
 {
     /** ID of the view a defined in plugin.xml */
     final public static String ID = "org.csstudio.alarm.beast.ui.alarmtree.View"; //$NON-NLS-1$
-    
+
     private AlarmClientModel model;
 
     private GUI gui = null;
@@ -54,32 +56,38 @@ public class AlarmTreeView extends ViewPart
                         : ex.getMessage());
 
             // Add to log, also display in text
-            CentralLogger.getInstance().getLogger(this).error(message, ex);
+            Logger.getLogger(Activator.ID).log(Level.SEVERE, "Cannot load alarm model", ex); //$NON-NLS-1$
             parent.setLayout(new FillLayout());
             new Text(parent, SWT.READ_ONLY | SWT.BORDER | SWT.MULTI)
                 .setText(message);
             return;
         }
-        
+
         // Arrange for model to be released
         parent.addDisposeListener(new DisposeListener()
         {
+            @Override
             public void widgetDisposed(DisposeEvent e)
             {
                 model.release();
                 model = null;
             }
         });
-        
+
         // Have model, create GUI
         gui = new GUI(parent, model, getViewSite());
-        
+
         final IToolBarManager toolbar = getViewSite().getActionBars().getToolBarManager();
         if (model.isWriteAllowed())
         {
-        	if (Preferences.isConfigChangeAllowed())
+            // TODO Toolbar layout problems on some OS/WS.
+            // On OS X/cocoa, Toolbar buttons 'wrap' around to the next
+            // line when the view is too small.
+            // On Linux/GTK, however, buttons vanish at the right edge of the view.
+            // Tried SWT.Resize listener with toolbar.update(true), no improvement.
+            if (Preferences.isConfigSelectionAllowed())
         	{
-        		toolbar.add(new ChangeConfigurationAction(model));
+        		toolbar.add(new SelectConfigurationAction(model));
         		toolbar.add(new Separator());
         	}
             toolbar.add(new MaintenanceModeAction(model));
@@ -93,7 +101,7 @@ public class AlarmTreeView extends ViewPart
         }
         toolbar.add(new CollapseAlarmTreeAction(gui));
         toolbar.add(new ExpandCurrentAlarmsAction(gui));
-        
+
         // Inform workbench about currently selected alarm in tree viewer
         getSite().setSelectionProvider(gui.getTreeViewer());
     }

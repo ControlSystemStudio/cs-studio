@@ -20,24 +20,25 @@
          point="org.eclipse.help.toc">
       <toc
             file="toc.xml"
-            primary="true"/>
+            primary="false"/>
    </extension>
    <extension
-         point="org.eclipse.ui.actionSets">
-      <actionSet
-            description="Global CSS menu actions"
-            id="org.csstudio.utility.clock.cssmenu"
-            label="CSS Action Set"
-            visible="true">
-         <action
-               class="org.csstudio.utility.clock.ShowClockAction"
+         point="org.eclipse.ui.menus">
+      <menuContribution
+            allPopups="false"
+            locationURI="menu:utility">
+         <command
+               commandId="org.eclipse.ui.views.showView"
                icon="icons/clock.png"
-               id="org.csstudio.utility.clock.ShowClockAction"
                label="%Clock"
-               menubarPath="css/utility/"
                style="push"
-               tooltip="%ShowClock"/>
-      </actionSet>
+               tooltip="%ShowClock">
+            <parameter
+                  name="org.eclipse.ui.views.showView.viewId"
+                  value="org.csstudio.utility.clock.ClockView">
+            </parameter>
+         </command>
+      </menuContribution>
    </extension>
    <extension
          point="org.eclipse.ui.preferencePages">
@@ -46,6 +47,4 @@
             id="org.csstudio.utility.clock.preferences.PreferencePage"
             name="Clock"/>
    </extension>
-      
-      
 </plugin>

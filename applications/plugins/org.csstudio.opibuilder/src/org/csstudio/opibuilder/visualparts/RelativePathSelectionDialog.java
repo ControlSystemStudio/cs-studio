@@ -24,7 +24,7 @@ package org.csstudio.opibuilder.visualparts;
 
 import org.csstudio.opibuilder.persistence.URLPath;
 import org.csstudio.opibuilder.util.ResourceUtil;
-import org.csstudio.platform.ui.composites.ResourceSelectionGroup;
+import org.csstudio.ui.util.composites.ResourceSelectionGroup;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.Path;
 import org.eclipse.jface.dialogs.Dialog;

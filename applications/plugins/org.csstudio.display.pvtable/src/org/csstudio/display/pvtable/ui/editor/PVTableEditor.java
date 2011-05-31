@@ -1,7 +1,15 @@
+/*******************************************************************************
+ * Copyright (c) 2010 Oak Ridge National Laboratory.
+ * All rights reserved. This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License v1.0
+ * which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-v10.html
+ ******************************************************************************/
 package org.csstudio.display.pvtable.ui.editor;
 
 import java.io.ByteArrayInputStream;
 import java.io.InputStream;
+import java.util.logging.Level;
 
 import org.csstudio.display.pvtable.Messages;
 import org.csstudio.display.pvtable.Plugin;
@@ -38,7 +46,7 @@ public class PVTableEditor extends EditorPart
     private PVListModelListener listener;
     private PVTableViewerHelper helper;
     private boolean is_dirty;
-    
+
     /** Create a new, empty editor, not attached to a file.
      *  @return Returns the new editor or <code>null</code>.
      */
@@ -49,7 +57,7 @@ public class PVTableEditor extends EditorPart
 	        IWorkbench workbench = PlatformUI.getWorkbench();
 	        IWorkbenchWindow window = workbench.getActiveWorkbenchWindow();
 	        IWorkbenchPage page = window.getActivePage();
-	
+
 	        EmptyEditorInput input = new EmptyEditorInput();
 	        return (PVTableEditor) page.openEditor(input, PVTableEditor.ID);
 	    }
@@ -59,7 +67,7 @@ public class PVTableEditor extends EditorPart
 	    }
 	    return null;
     }
-    
+
     public PVTableEditor()
     {
         super();
@@ -71,7 +79,7 @@ public class PVTableEditor extends EditorPart
     {
         return model;
     }
-    
+
     @Override
     public void init(IEditorSite site, IEditorInput input)
             throws PartInitException
@@ -126,22 +134,22 @@ public class PVTableEditor extends EditorPart
      *  file that physically resides outside of the workspace tree.
      */
     private IFile getEditorInputFile()
-    {  
+    {
         IEditorInput input = getEditorInput();
         if (input instanceof EmptyEditorInput)
             return null;
         // Side Note:
         // After some back and forth, trying to avoid the resource/workspace/
-        // project/container/file stuff and instead sticking with the 
+        // project/container/file stuff and instead sticking with the
         // java.io.file, I found it best to give up and use the Eclipse
         // resource API, since otherwise one keeps converting between those
         // two APIs anyway, plus runs into errors with 'resources' being
-        // out of sync....        
+        // out of sync....
         IFile file = (IFile) input.getAdapter(IFile.class);
         if (file != null)
             return file;
-        Plugin.getLogger().error("getEditorInputFile got " //$NON-NLS-1$
-                        + input.getClass().getName());
+        Plugin.getLogger().log(Level.SEVERE, "getEditorInputFile got {0}",  //$NON-NLS-1$
+                        input.getClass().getName());
         return null;
     }
 
@@ -156,7 +164,7 @@ public class PVTableEditor extends EditorPart
     }
 
     /** Save current model content to given file, mark editor as clean.
-     * 
+     *
      *  @param monitor <code>IProgressMonitor</code>, may be null.
      *  @param file The file to use. May not exist, but I think its container has to.
      *  @return Returns <code>true</code> when successful.
@@ -185,7 +193,7 @@ public class PVTableEditor extends EditorPart
             ok = false;
             if (monitor != null)
                 monitor.setCanceled(true);
-            Plugin.getLogger().error("Save error", e); //$NON-NLS-1$
+            Plugin.getLogger().log(Level.SEVERE, "Save error", e); //$NON-NLS-1$
         }
         finally
         {
@@ -199,7 +207,7 @@ public class PVTableEditor extends EditorPart
 
     @Override
     public void doSaveAs()
-    {   
+    {
         IFile file = PromptForNewXMLFileDialog.run(
                 getSite().getShell(), getEditorInputFile());
         if (file == null  ||  !saveToFile(null, file))
@@ -233,7 +241,7 @@ public class PVTableEditor extends EditorPart
         model.dispose();
         super.dispose();
     }
-    
+
     /** Set the editor part's title and tool-tip. */
     private void updateTitle()
     {   // See plugin book p.332.

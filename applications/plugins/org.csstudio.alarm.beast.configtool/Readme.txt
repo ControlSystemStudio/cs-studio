@@ -19,12 +19,17 @@ Basic Incantations
 Note that alarm configurations are identified by their "Root"
 element.
 
-The following examples assume that the RDB URL is built into
+The following examples assume that the RDB URL/user/password are built into
 the tool via plugin_customization.ini or the underlying
 org.csstudio.alarm/preferences.ini.
 To specify another URL, add the option
  
   -rdb_url jdbc:....
+
+= List Available Configurations =
+List all configurations, i.e. the names of all alarm tree 'root' elements currently found in the RDB:
+
+  AlarmConfigTool -list
 
 
 = Import Configuration =
@@ -45,6 +50,11 @@ Note that the name of the root element in the configuration file must
 match the name specified in the -root .... command-line argument.
 This is a basic consistency check to avoid importing the wrong configuration.
 
+It is best to always specify the full path to the XML configuration file.
+When not using the full path, the tool will read or create files relative
+to its current working directory, which in turn will be the 'workspace'
+directory that depends on the operating system and can thus be somewhat unpredictable.
+Using the full, absolute path, there will be no surprises.
   
 = Export Configuration =
 To take an XML snapshot of the current configuration with
@@ -52,7 +62,8 @@ root element "Test", run
 
   AlarmConfigTool -export -file /some/path/Test.xml -root Test
 
-
+Again provide the full path to the XML file to assert that it is
+indeed created in the desired location. 
 
 = Edit Configuration =
 Export, edit the file, import again.

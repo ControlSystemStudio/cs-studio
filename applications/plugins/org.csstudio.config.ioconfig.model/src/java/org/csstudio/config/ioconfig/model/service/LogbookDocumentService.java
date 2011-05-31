@@ -27,13 +27,17 @@ package org.csstudio.config.ioconfig.model.service;
 import java.awt.Desktop;
 import java.io.File;
 import java.io.IOException;
-import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Set;
 
+import javax.annotation.CheckForNull;
+import javax.annotation.Nonnull;
+
+import org.csstudio.config.ioconfig.model.AbstractNodeDBO;
 import org.csstudio.config.ioconfig.model.DocumentDBO;
 import org.csstudio.config.ioconfig.model.IDocument;
-import org.csstudio.config.ioconfig.model.AbstractNodeDBO;
+import org.csstudio.config.ioconfig.model.PersistenceException;
 import org.csstudio.config.ioconfig.model.Repository;
 import org.csstudio.config.ioconfig.model.tools.Helper;
 import org.csstudio.platform.logging.CentralLogger;
@@ -45,77 +49,58 @@ import org.csstudio.platform.logging.CentralLogger;
  * @since 27.08.2009
  */
 public class LogbookDocumentService implements DocumentService {
-
+    
     /**
      * {@inheritDoc}
+     * @throws PersistenceException 
      */
     @Override
-    public void openDocument(final String id) {
+    public void openDocument(@Nonnull final String id) throws PersistenceException {
         DocumentDBO firstElement = Repository.load(DocumentDBO.class, id);
-        File createTempFile = null;
-        try {
-            createTempFile = File.createTempFile("ddbDoc", "."
-                    + firstElement.getMimeType());
-            Helper.writeDocumentFile(createTempFile, firstElement);
-            if((createTempFile!=null)&&createTempFile.isFile()) {
-                if(Desktop.isDesktopSupported()) {
-                    if(Desktop.getDesktop().isSupported(Desktop.Action.OPEN)) {
-                        CentralLogger.getInstance().debug(this,"Desktop unterstützt Open!");
-                        Desktop.getDesktop().open(createTempFile);
-                    }
+        if(firstElement != null) {
+            File createTempFile = null;
+            try {
+                String mimeType = firstElement.getMimeType();
+                if(mimeType == null) {
+                    mimeType = "tmp";
                 }
+                createTempFile = File.createTempFile("ddbDoc", "." + mimeType);
+                Helper.writeDocumentFile(createTempFile, firstElement);
+                if( canOpenDocument(createTempFile)) {
+                        CentralLogger.getInstance().debug(this, "Desktop unterstützt Open!");
+                        Desktop.getDesktop().open(createTempFile);
+                }
+            } catch (IOException e) {
+                throw new PersistenceException(e);
             }
-        } catch (SQLException e) {
-            // TODO Auto-generated catch block
-            e.printStackTrace();
-        } catch (IOException e) {
-            // TODO Auto-generated catch block
-            e.printStackTrace();
         }
-
     }
 
-    /**
-     * {@inheritDoc}
-     */
+    private boolean canOpenDocument(@CheckForNull File createTempFile) {
+        return (createTempFile != null) && createTempFile.isFile()
+                && Desktop.isDesktopSupported() && Desktop.getDesktop().isSupported(Desktop.Action.OPEN);
+    }
+    
     @Override
-    public void saveDocumentAs(final String id, final File file) {
-        // TODO Auto-generated method stub
-
+    public void saveDocumentAs(@Nonnull final String id, @Nonnull final File file) {
+        // TODO Implement save Document as File!
     }
-
-
+    
     /**
      * Get all Document from a Node.
+     * @throws PersistenceException 
      */
-    List<IDocument> getAllDocumentsFromNode(final int nodeId){
+    @Nonnull
+    List<IDocument> getAllDocumentsFromNode(final int nodeId) throws PersistenceException {
         List<IDocument> docList = new ArrayList<IDocument>();
-        AbstractNodeDBO load = Repository.load(AbstractNodeDBO.class, nodeId);
-        while(load!=null) {
-            if(load.getDocuments()!=null) {
-                docList.addAll(load.getDocuments());
+        AbstractNodeDBO<?, ?> load = Repository.load(AbstractNodeDBO.class, nodeId);
+        while (load != null) {
+            Set<DocumentDBO> documents = load.getDocuments();
+            if(documents != null) {
+                docList.addAll(documents);
             }
             load = load.getParent();
         }
         return docList;
     }
-
-//    @Override
-//    public IDocument getDocumentFromNode(int id) {
-//        // TODO Auto-generated method stub
-//        return null;
-//    }
-//
-//    @Override
-//    public IDocument getDocumentFromNode(String EpicsAddressString) {
-//        // TODO Auto-generated method stub
-//        return null;
-//    }
-//
-//    @Override
-//    public IDocument getDocumentFromPV(String pv) {
-//        // TODO Auto-generated method stub
-//        return null;
-//    }
-
 }

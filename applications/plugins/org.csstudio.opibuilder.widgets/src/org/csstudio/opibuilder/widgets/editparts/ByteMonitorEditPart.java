@@ -1,34 +1,41 @@
+/*******************************************************************************
+ * Copyright (c) 2010 Oak Ridge National Laboratory.
+ * All rights reserved. This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License v1.0
+ * which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-v10.html
+ ******************************************************************************/
 package org.csstudio.opibuilder.widgets.editparts;
 
+import org.csstudio.data.values.IDoubleValue;
+import org.csstudio.data.values.IEnumeratedValue;
+import org.csstudio.data.values.ILongValue;
+import org.csstudio.data.values.IValue;
 import org.csstudio.opibuilder.editparts.AbstractPVWidgetEditPart;
 import org.csstudio.opibuilder.editparts.ExecutionMode;
 import org.csstudio.opibuilder.model.AbstractWidgetModel;
 import org.csstudio.opibuilder.properties.IWidgetPropertyChangeHandler;
 import org.csstudio.opibuilder.util.OPIColor;
+import org.csstudio.opibuilder.widgets.Activator;
 import org.csstudio.opibuilder.widgets.model.ByteMonitorModel;
-import org.csstudio.platform.data.IDoubleValue;
-import org.csstudio.platform.data.IEnumeratedValue;
-import org.csstudio.platform.data.ILongValue;
-import org.csstudio.platform.data.IValue;
-import org.csstudio.platform.logging.CentralLogger;
 import org.csstudio.swt.widgets.figures.ByteMonitorFigure;
 import org.eclipse.draw2d.IFigure;
 
 /**
  * This class implements the widget edit part for the Byte Monitor widget.  This
- * displays the bits in a value as s series of LEDs 
+ * displays the bits in a value as s series of LEDs
  * @author hammonds
  *
  */
 public class ByteMonitorEditPart extends AbstractPVWidgetEditPart {
-	
+
 
 	/* (non-Javadoc)
 	 * @see org.csstudio.opibuilder.editparts.AbstractPVWidgetEditPart#getValue()
 	 */
 	@Override
 	public Object getValue() {
-		return null;
+		return ((ByteMonitorFigure)getFigure()).getValue();
 	}
 
 	/* (non-Javadoc)
@@ -42,6 +49,10 @@ public class ByteMonitorEditPart extends AbstractPVWidgetEditPart {
 			((ByteMonitorFigure)getFigure()).setValue((Long)value);
 		else if (value instanceof Double)
 			((ByteMonitorFigure)getFigure()).setValue((Double)value);
+		else if (value instanceof Number)
+			((ByteMonitorFigure)getFigure()).setValue(((Number)value).longValue());
+		else
+			super.setValue(value);
 	}
 
 	/* (non-Javadoc)
@@ -50,7 +61,7 @@ public class ByteMonitorEditPart extends AbstractPVWidgetEditPart {
 	@Override
 	protected IFigure doCreateFigure() {
 		ByteMonitorModel model = (ByteMonitorModel) getWidgetModel();
-		
+
 		ByteMonitorFigure fig = new ByteMonitorFigure();
 		setModel(model);
 		setFigure(fig);
@@ -63,12 +74,12 @@ public class ByteMonitorEditPart extends AbstractPVWidgetEditPart {
 		fig.setOnColor(((OPIColor)model.getPropertyValue(ByteMonitorModel.PROP_ON_COLOR)).getSWTColor() );
 		fig.setOffColor(((OPIColor)model.getPropertyValue(ByteMonitorModel.PROP_OFF_COLOR)).getSWTColor() );
 		fig.setEffect3D((Boolean)getPropertyValue(ByteMonitorModel.PROP_EFFECT3D));
-		fig.setValue(new Integer(0x1111));
+		fig.setValue(0x1111);
 		fig.drawValue();
 
 		return fig;
 	}
-	
+
 	@Override
 	public ByteMonitorModel getWidgetModel() {
 		return (ByteMonitorModel) super.getWidgetModel();
@@ -80,11 +91,11 @@ public class ByteMonitorEditPart extends AbstractPVWidgetEditPart {
 	@Override
 	protected void registerPropertyChangeHandlers() {
 		super.registerBasePropertyChangeHandlers();
-		getFigure().setEnabled(getWidgetModel().isEnabled() && 
-				(getExecutionMode() == ExecutionMode.RUN_MODE));		
-		
+		getFigure().setEnabled(getWidgetModel().isEnabled() &&
+				(getExecutionMode() == ExecutionMode.RUN_MODE));
+
 		removeAllPropertyChangeHandlers(AbstractWidgetModel.PROP_ENABLED);
-		
+
 		//enable
 		IWidgetPropertyChangeHandler enableHandler = new IWidgetPropertyChangeHandler(){
 			public boolean handleChange(Object oldValue, Object newValue,
@@ -93,29 +104,29 @@ public class ByteMonitorEditPart extends AbstractPVWidgetEditPart {
 					figure.setEnabled((Boolean)newValue);
 				return false;
 			}
-		};		
+		};
 		setPropertyChangeHandler(AbstractWidgetModel.PROP_ENABLED, enableHandler);
-		
+
 		// PV_Value
 		IWidgetPropertyChangeHandler pvhandler = new IWidgetPropertyChangeHandler() {
 			public boolean handleChange(final Object oldValue,
 					final Object newValue, final IFigure refreshableFigure) {
-				if((newValue != null) && (newValue instanceof IValue) ){					
+				if((newValue != null) && (newValue instanceof IValue) ){
 					if(newValue instanceof IDoubleValue)
 						setValue(((IDoubleValue)newValue).getValue());
 					else if(newValue instanceof ILongValue)
 						setValue(((ILongValue)newValue).getValue());
 					else if(newValue instanceof IEnumeratedValue)
-						setValue(((IEnumeratedValue)newValue).getValue());					
+						setValue(((IEnumeratedValue)newValue).getValue());
 				}
 				else {
-					CentralLogger.getInstance().error(this,"Not an IValue or null");
+		            Activator.getLogger().warning("Not an IValue or null");
 				}
 				return false;
 			}
 		};
 		setPropertyChangeHandler(ByteMonitorModel.PROP_PVVALUE, pvhandler);
-		
+
 		// on color
 		IWidgetPropertyChangeHandler colorHandler = new IWidgetPropertyChangeHandler() {
 			public boolean handleChange(final Object oldValue,
@@ -128,7 +139,7 @@ public class ByteMonitorEditPart extends AbstractPVWidgetEditPart {
 			}
 		};
 		setPropertyChangeHandler(ByteMonitorModel.PROP_ON_COLOR, colorHandler);
-		
+
 		// off color
 		colorHandler = new IWidgetPropertyChangeHandler() {
 			public boolean handleChange(final Object oldValue,
@@ -141,8 +152,8 @@ public class ByteMonitorEditPart extends AbstractPVWidgetEditPart {
 			}
 		};
 		setPropertyChangeHandler(ByteMonitorModel.PROP_OFF_COLOR, colorHandler);
-		
-		
+
+
 		//change orientation of the bit display
 		IWidgetPropertyChangeHandler horizontalHandler = new IWidgetPropertyChangeHandler() {
 
@@ -156,17 +167,17 @@ public class ByteMonitorEditPart extends AbstractPVWidgetEditPart {
 						model.getLocation().y + model.getSize().height/2 - model.getSize().width/2);
 				else  //from horizontal to vertical
 					model.setLocation(model.getLocation().x + model.getSize().width/2 - model.getSize().height/2,
-						model.getLocation().y - model.getSize().width/2 + model.getSize().height/2);					
-				
+						model.getLocation().y - model.getSize().width/2 + model.getSize().height/2);
+
 				model.setSize(model.getSize().height, model.getSize().width);
-		
+
 				figure.drawValue();
 				return true;
 			}
 		};
-		
+
 		setPropertyChangeHandler(ByteMonitorModel.PROP_HORIZONTAL, horizontalHandler);
-		
+
 		//change the display order of the bits
 		IWidgetPropertyChangeHandler reverseBitsHandler = new IWidgetPropertyChangeHandler() {
 
@@ -178,9 +189,9 @@ public class ByteMonitorEditPart extends AbstractPVWidgetEditPart {
 				return true;
 			}
 		};
-		
+
 		setPropertyChangeHandler(ByteMonitorModel.PROP_BIT_REVERSE, reverseBitsHandler);
-		
+
 		//Set the bit to use as a starting point
 		IWidgetPropertyChangeHandler startBitHandler = new IWidgetPropertyChangeHandler() {
 
@@ -202,9 +213,9 @@ public class ByteMonitorEditPart extends AbstractPVWidgetEditPart {
 					return true;
 			}
 		};
-		
+
 		setPropertyChangeHandler(ByteMonitorModel.PROP_START_BIT, startBitHandler);
-		
+
 		//Set the number of bits to display
 		IWidgetPropertyChangeHandler numBitsHandler = new IWidgetPropertyChangeHandler() {
 
@@ -216,9 +227,9 @@ public class ByteMonitorEditPart extends AbstractPVWidgetEditPart {
 				return true;
 			}
 		};
-		
+
 		setPropertyChangeHandler(ByteMonitorModel.PROP_NUM_BITS, numBitsHandler);
-		
+
 		//Sqaure LED
 		IWidgetPropertyChangeHandler squareLEDHandler = new IWidgetPropertyChangeHandler() {
 			public boolean handleChange(final Object oldValue,
@@ -229,9 +240,9 @@ public class ByteMonitorEditPart extends AbstractPVWidgetEditPart {
 				return true;
 			}
 		};
-		setPropertyChangeHandler(ByteMonitorModel.PROP_SQUARE_LED, squareLEDHandler);	
-		
-		
+		setPropertyChangeHandler(ByteMonitorModel.PROP_SQUARE_LED, squareLEDHandler);
+
+
 		//effect 3D
 		IWidgetPropertyChangeHandler effect3DHandler = new IWidgetPropertyChangeHandler() {
 			public boolean handleChange(final Object oldValue,
@@ -242,8 +253,8 @@ public class ByteMonitorEditPart extends AbstractPVWidgetEditPart {
 				return true;
 			}
 		};
-		setPropertyChangeHandler(ByteMonitorModel.PROP_EFFECT3D, effect3DHandler);	
-		
+		setPropertyChangeHandler(ByteMonitorModel.PROP_EFFECT3D, effect3DHandler);
+
 
 	}
 

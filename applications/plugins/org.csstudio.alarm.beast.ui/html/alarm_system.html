@@ -22,9 +22,9 @@
 -
 </span>
 
-<!-- ----------------------------------------------------------------------- -->
+<!-- ++++++++++++++++++++++++++++++++++++++++++++++++++++ -->
 <h2><a name=overview>Overview</a></h2> 
-<!-- ----------------------------------------------------------------------- -->
+<!-- ++++++++++++++++++++++++++++++++++++++++++++++++++++ -->
 <p>
 The Alarm System allow users to view and handle the alarms triggered by
 Process Variables (PVs) on front-end computers (IOCs).
@@ -70,9 +70,9 @@ Before acknowledging an alarm, operators can use the alarm GUI to
 </p>
 
 
-<!-- ----------------------------------------------------------------------- -->
+<!-- ++++++++++++++++++++++++++++++++++++++++++++++++++++ -->
 <h2><a name=principles>General Alarm Principles</a></h2> 
-<!-- ----------------------------------------------------------------------- -->
+<!-- ++++++++++++++++++++++++++++++++++++++++++++++++++++ -->
 
 <h3>Where are alarms generated?</h3>
 <p>
@@ -339,9 +339,9 @@ alarm tree and table GUI, which also indicates the current mode:
 <div class="clear"/>
 
 
-<!-- ----------------------------------------------------------------------- -->
+<!-- ++++++++++++++++++++++++++++++++++++++++++++++++++++ -->
 <h2><a name=architecture>Architecture</a></h2> 
-<!-- ----------------------------------------------------------------------- -->
+<!-- ++++++++++++++++++++++++++++++++++++++++++++++++++++ -->
 
 <img class="float" alt="Alarm System" src="AlarmSystem.png" />  
 <p>
@@ -401,9 +401,9 @@ the alarm server.
 <div class="clear"/>
 
 
-<!-- ----------------------------------------------------------------------- -->
+<!-- ++++++++++++++++++++++++++++++++++++++++++++++++++++ -->
 <h2><a name=perspective>Alarm Perspective</a></h2> 
-<!-- ----------------------------------------------------------------------- -->
+<!-- ++++++++++++++++++++++++++++++++++++++++++++++++++++ -->
 <img class="float" src=AlarmPerspective.png alt="Alarm Perspective">
 <p>
 Especially for first-time users it might be advisable to switch to the designated Alarm
@@ -429,9 +429,9 @@ bar. You can also adjust the size of each window.
 <div class="clear"/>
 
 
-<!-- ----------------------------------------------------------------------- -->
+<!-- ++++++++++++++++++++++++++++++++++++++++++++++++++++ -->
 <h2><a name=tree>Alarm Tree</a></h2> 
-<!-- ----------------------------------------------------------------------- -->
+<!-- ++++++++++++++++++++++++++++++++++++++++++++++++++++ -->
 <img class="float" src="AlarmTree.png" alt="Alarm Tree" width="598" height="793"/>
 <p>
 The Alarm Tree provides an approach to browse the alarm configuration components
@@ -619,9 +619,9 @@ the alarm PV, description, and its current state.
 
 
 
-<!-- ----------------------------------------------------------------------- -->
+<!-- ++++++++++++++++++++++++++++++++++++++++++++++++++++ -->
 <h2><a name=table>Alarm Table</a></h2> 
-<!-- ----------------------------------------------------------------------- -->
+<!-- ++++++++++++++++++++++++++++++++++++++++++++++++++++ -->
 <p>
 The Alarm Table provides a tabular view of currently active alarms.
 It only shows alarms that actually triggered.
@@ -728,9 +728,9 @@ the alarm PV, description, and its current state.
 </p>
 
 
-<!-- ----------------------------------------------------------------------- -->
+<!-- ++++++++++++++++++++++++++++++++++++++++++++++++++++ -->
 <h2><a name=preferences>Preference Settings</a></h2> 
-<!-- ----------------------------------------------------------------------- -->
+<!-- ++++++++++++++++++++++++++++++++++++++++++++++++++++ -->
 <img class="float" src=AlarmPreferences.png alt="Alarm Preferences Configuration">
 <p>
 The Alarm System has numerous preferences which can be set for the GUI
@@ -791,128 +791,40 @@ workspace directory under
 
 <div class="clear"/>
 
-<!-- ----------------------------------------------------------------------- -->
+<!-- ++++++++++++++++++++++++++++++++++++++++++++++++++++ -->
 <h2><a name=edit>Editing the Alarm Configuration</a></h2> 
-<!-- ----------------------------------------------------------------------- -->
+<!-- ++++++++++++++++++++++++++++++++++++++++++++++++++++ -->
 <p>
 To edit the overall alarm configuration, that is to add components to the
 hierarchical alarm tree, including Alarm Trigger PVs, or to rearrange
 the alarm tree layout, use the context menu of the <a href="#tree">Alarm Tree</a>.
 </p>
 
-
-<!-- ----------------------------------------------------------------------- -->
-<h2><a name=pv_config>Alarm Trigger PV Configuration</a></h2> 
-<!-- ----------------------------------------------------------------------- -->
-<p>
-The context menu of alarm trigger PVs contains a "Configure item" entry
-that opens a dialog box similar to the one shown on the right.
-The following explains its components.
-</p>
-
 <img class="float" src="pv_config.png" width="639" height="722"/>
+
+<p>
+The context menu entry "Configure item" opens a dialog box similar to the one
+shown on the right.
+The following explains configuration elements common to all alarm tree items.
+The next section will elaborate on specifics of Alarm Trigger PVs.
+</p>
+
 <h3>Item</h3>
-The item name displayed at the top of the dialog is the hierarchical path to the
-alarm trigger PV.
-This must be a PV name understood by the control system.
-The PV name is set when adding the PV to the alarm configuration.
-The PV name cannot be modified within this dialog, but there are
+<p>
+The item name displayed at the top of the dialog is the hierarchical path to item.
+The item name is set when adding the item to the alarm configuration.
+It cannot be modified within this dialog, but there are
 are options in the context menu of the alarm tree to rename
-the PV or to move it to another location in the alarm tree.
-
-
-<h3>Description</h3>
-The PV's description should be more human-readable than
-the raw PV name. It is displayed with the alarm
-and also used for <a href="#annunciation">annunciation.</a>
-
-<h3>Enabling Alarms</h3>
-Per default all alarms are enabled. By de-selecting the "enabled"
-check-box the alarm server can be configured to ignore alarms
-from this PV.
-<p>
-<em>
-This is meant as a temporary fix, for example to handle a broken
-sensor that causes erroneous alarms.
-Disabled alarms should be reviewed periodically and then either
-removed from the alarm configuration or fixed so that they
-can be re-enabled. 
-</em>
-
- 
-<h3>Latching Alarm Behavior</h3>
-The latching behavior defines how the alarm server handles
-a PV that goes into an alarm state, and then recovers.
-When configured to "latch", the alarm server remembers the
-highest alarm severity of the PV until it is manually
-acknowledged.
-
-
-<h3>Alarm Annunciation</h3>
-When a PV is configured to "annunciate", the alarm server
-will send the PV's description to the
-<a href="#annunciation">annunciation system</a>
-whenever the PV reaches a non-OK severity. 
-
-
-<h3>Alarm Delay and Count Filter</h3>
-Per default, the alarm server will react as soon as it
-notices a non-OK alarm severity.
-When adding a delay greater than zero, specified in seconds,
-it will only react when the alarm severity remains for at
-least this time.
-When an additional alarm count greater than zero is specified,
-it will react to alarms that either outlast the delay,
-or happen at least "count" times within the delay.
-<p>    
-Both these options can reduce the amount of "nuisance" alarms
-from noisy PVs, but in practice it is always best to cure the
-problem at the source through adequate dead-bands or smoothing.
-
-
-
-<h3>Filter</h3>
-<p>
-A filter expression can be used to enable or disable alarms
-automatically. When entering a filter expression, the previously
-described "enable" field is ignored.
-</p>
-<p>
-The filter expression can be something like
-</p>
-<p>
-<code>some_other_pv > 5</code>
-</p>
-<p>
-to only enable the alarm when the other PV has a value above 5.
-</p>
-<p>
-This feature was added to ease the transition from other alarm handling
-systems.
-Ideally, state-based alarms are <em>handled on the front-end computer
-by adding logic that prevents the alarm from being generated,</em>
-instead of generating an alarm but then disabling it in the
-alarm server.
-</p>
-<p>
-Also note a shortcoming of the current implementation:
-The Alarm Server only subscribes to PV value updates for alarm
-changes, and this includes the PVs used to compute the filter
-expression.
-An alarm expression like <code>some_other_pv &gt; 5</code> will <u>not</u>
-be evaluated for each change in the value of <code>some_other_pv</code>;
-it <em>will only be evaluated for changes in the alarm state</em>
-of <code>some_other_pv</code>, so the value changes used in the filter
-expression must also be alarm state changes of <code>some_other_pv</code>!
+an item or to move it to another location in the alarm tree.
 </p>
 
 
 <h3>Guidance</h3>
 <p>
-A list of guidance messages for this PV. Note
-that the PV also "inherits" all guidance messages
-of the components (System, Subsystem, ...) under which
-it is listed, i.e. it's "parent" components from
+A list of guidance messages for this item. Note
+that items also "inherit" all guidance messages
+of the higher-level components (System, Subsystem, ...) under which
+they are listed, i.e. their "parent" components from
 the alarm configuration hierarchy.
 </p>
 <p>
@@ -938,24 +850,45 @@ this implies that the respective other part is the same as the part you configur
 A list of related displays. Supported formats:
 </p>
 <ol>
+<li>Operator Interface Display Files<br>
+    If your CSS setup contains support for an operator interface panel tool,
+    its screens can be opened by simply providing the screen file name within the workspace.
+    <br>
+    <code>/CSS/Share/DisplayFiles/Section/TheFile.opi</code><br>
+    If the path name contains spaces, it has to be enclosed in quotes:<br>
+    <code>"/CSS/Share/My Display Files/TheFile.opi"</code><br>
+    <br>
+    Additional parameters can be provided after the file name.
+    For BOY *.opi screens this is a list of macros and their values,
+    separated by comma, enclosed in quotes:<br> 
+    <code>/CSS/Share/DisplayFiles/Section/TheFile.opi  "macro1=Value 1, macro2=Another Value"</code><br>
+    <br>
+    To use a web link as the display file name, it has to be prefixed by "opi:"
+    to prevent it from being opened in a web browser:<br>
+    <code>opi:http://my_display_file_server/get_display.cgi?name=TheFile.opi</code><br>
 <li>Web Pages<br>
-    A related display can be entered as a web URL<br>
-    <code>http://some.web.page/foo.html</code><br>
-    Any related display strings starting in "http" and "https"
-    are recognized as web pages, and a web browser will be
-    launched when the user selects this related display.
+    Related displays starting in "http:" or "https:"
+    are recognized as web page links. A web browser will be
+    launched when the user selects this related display:<br>
+    <code>http://some.web.server/page/foo.html</code>
 <li>Workspace Files<br>
-    Other files in the workspace, for example a Data Browser configuration file,
-    can be opened via a URL
-    <code>file: /Path/to/the_file.extension</code>.
+    Arbitrary workspace files, for example a Data Browser configuration file,
+    can be opened via a URL starting in "file:":<br>
+    <code>file:/Path/to/the_file.extension</code>
 <li>External Programs<br>
-    To start EDM or MEDM or any other program that is available
-    on your computer, enter a suitable command-line like<br>
+    To start external display tools like EDM or MEDM, enter a command-line like<br>
     <code>startedm -m macro=value some_screen</code><br>
-    Related displays are executed exactly as described under "Commands",
-    see below.
+    Related displays are executed as described under "Commands",
+    see below, so this requires a script like "startedm" to be available
+    on your computer that can launch EDM with the appropriate settings.
+    Note that the command to be executed must be on the path
+    or in the "Command Directory". It is not possible to provide
+    a full path to the external display command because a path starting with "/"
+    would be treated as a display file name, not an external command.
+    <br>
     The main reason for listing EDM etc. as related displays and
     not commands is the different way they appear to the end user.
+    <br>
 </ol>
 <p>
 As with guidance, each display item is separated into "Title"
@@ -1006,9 +939,125 @@ command to invoke.
 
 
 
-<!-- ----------------------------------------------------------------------- -->
+<!-- ++++++++++++++++++++++++++++++++++++++++++++++++++++ -->
+<h2><a name=pv_config>Alarm Trigger PV Configuration</a></h2> 
+<!-- ++++++++++++++++++++++++++++++++++++++++++++++++++++ -->
+<p>
+For alarm trigger PVs, the configuration explained in the previous section contains
+additional elements that are specific to PVs.
+</p>
+
+<h3>Item</h3>
+<p>
+The last section of the item name displayed at the top of the dialog
+must be a PV name understood by the control system.
+The PV name is set when adding the PV to the alarm configuration.
+The PV name cannot be modified within this dialog, but there are
+are options in the context menu of the alarm tree to rename
+the PV or to move it to another location in the alarm tree.
+</p>
+
+<h3>Description</h3>
+<p>
+The PV's description should be more human-readable than
+the raw PV name. It is displayed with the alarm
+and also used for <a href="#annunciation">annunciation.</a>
+</p>
+
+<h3>Enabling Alarms</h3>
+<p>
+Per default all alarms are enabled. By de-selecting the "enabled"
+check-box the alarm server can be configured to ignore alarms
+from this PV.
+</p>
+<p>
+<em>
+This is meant as a temporary fix, for example to handle a broken
+sensor that causes erroneous alarms.
+Disabled alarms should be reviewed periodically and then either
+removed from the alarm configuration or fixed so that they
+can be re-enabled. 
+</em>
+</p>
+
+ 
+<h3>Latching Alarm Behavior</h3>
+<p>
+The latching behavior defines how the alarm server handles
+a PV that goes into an alarm state, and then recovers.
+When configured to "latch", the alarm server remembers the
+highest alarm severity of the PV until it is manually
+acknowledged.
+</p>
+
+
+<h3>Alarm Annunciation</h3>
+<p>
+When a PV is configured to "annunciate", the alarm server
+will send the PV's description to the
+<a href="#annunciation">annunciation system</a>
+whenever the PV reaches a non-OK severity. 
+</p>
+
+
+<h3>Alarm Delay and Count Filter</h3>
+<p>
+Per default, the alarm server will react as soon as it
+notices a non-OK alarm severity.
+When adding a delay greater than zero, specified in seconds,
+it will only react when the alarm severity remains for at
+least this time.
+When an additional alarm count greater than zero is specified,
+it will react to alarms that either outlast the delay,
+or happen at least "count" times within the delay.
+</p>
+<p>    
+Both these options can reduce the amount of "nuisance" alarms
+from noisy PVs, but in practice it is always best to cure the
+problem at the source through adequate dead-bands or smoothing.
+</p>
+
+
+<h3>Filter</h3>
+<p>
+A filter expression can be used to enable or disable alarms
+automatically. When entering a filter expression, the previously
+described "enable" field is ignored.
+</p>
+<p>
+The filter expression can be something like
+</p>
+<p>
+<code>some_other_pv > 5</code>
+</p>
+<p>
+to only enable the alarm when the other PV has a value above 5.
+</p>
+<p>
+This feature was added to ease the transition from other alarm handling
+systems.
+Ideally, state-based alarms are <em>handled on the front-end computer
+by adding logic that prevents the alarm from being generated,</em>
+instead of generating an alarm but then disabling it in the
+alarm server.
+</p>
+<p>
+Also note a shortcoming of the current implementation:
+The Alarm Server only subscribes to PV value updates for alarm
+changes, and this includes the PVs used to compute the filter
+expression.
+An alarm expression like <code>some_other_pv &gt; 5</code> will <u>not</u>
+be evaluated for each change in the value of <code>some_other_pv</code>;
+it <em>will only be evaluated for changes in the alarm state</em>
+of <code>some_other_pv</code>, so the value changes used in the filter
+expression must also be alarm state changes of <code>some_other_pv</code>!
+</p>
+
+
+
+<!-- ++++++++++++++++++++++++++++++++++++++++++++++++++++ -->
 <h2><a name=annunciation>Voice Annunciation</a></h2> 
-<!-- ----------------------------------------------------------------------- -->
+<!-- ++++++++++++++++++++++++++++++++++++++++++++++++++++ -->
 <p>
 For alarms that are <a href="#pv_config">configured to be annunciated</a>,
 the alarm server sends an annunciation request to the annunciator.

@@ -27,6 +27,7 @@ import org.epics.css.dal.DataExchangeException;
 import org.epics.css.dal.DynamicValueListener;
 import org.epics.css.dal.SimpleProperty;
 import org.epics.css.dal.context.ConnectionState;
+import org.epics.css.dal.proxy.AbstractPlug;
 import org.epics.css.dal.proxy.PropertyProxy;
 import org.epics.css.dal.proxy.PropertyProxyWrapper;
 import org.epics.css.dal.proxy.Proxy;
@@ -43,8 +44,8 @@ import com.cosylab.util.ListenerList;
  */
 public abstract class DataAccessImpl<T> implements DataAccess<T>
 {
-	protected PropertyProxy<T> proxy=null;
-	protected SyncPropertyProxy<T> sproxy=null;
+	protected PropertyProxy<T,?> proxy=null;
+	protected SyncPropertyProxy<T,?> sproxy=null;
 	protected Class<T> valClass=null;
 	private ListenerList dvListeners=null;
 	protected T lastValue=null;
@@ -66,7 +67,7 @@ public abstract class DataAccessImpl<T> implements DataAccess<T>
 	 *
 	 * @throws NullPointerException is thrown if supplied proxy is null
 	 */
-	protected void initialize(PropertyProxy<T> proxy)
+	protected void initialize(PropertyProxy<T,?> proxy)
 	{
 		if (proxy == null) {
 			throw new NullPointerException("proxy");
@@ -75,9 +76,9 @@ public abstract class DataAccessImpl<T> implements DataAccess<T>
 		this.proxy = proxy;
 
 		if (proxy instanceof SyncPropertyProxy) {
-			sproxy = (SyncPropertyProxy<T>)proxy;
+			sproxy = (SyncPropertyProxy<T,?>)proxy;
 		} else {
-			sproxy = new PropertyProxyWrapper<T>(proxy);
+			sproxy = new PropertyProxyWrapper<T, AbstractPlug>((PropertyProxy<T, AbstractPlug>) proxy);
 		}
 	}
 
@@ -133,7 +134,7 @@ public abstract class DataAccessImpl<T> implements DataAccess<T>
 	 */
 	public void setValue(T value) throws DataExchangeException
 	{
-		if (sproxy == null || sproxy.getConnectionState() != ConnectionState.CONNECTED) {
+		if (sproxy == null || !sproxy.getConnectionState().isConnected()) {
 			throw new DataExchangeException(this, "Proxy not connected");
 		}
 		sproxy.setValueSync(value);
@@ -144,7 +145,7 @@ public abstract class DataAccessImpl<T> implements DataAccess<T>
 	 */
 	public T getValue() throws DataExchangeException
 	{
-		if (sproxy == null || sproxy.getConnectionState() != ConnectionState.CONNECTED) {
+		if (sproxy == null || !sproxy.getConnectionState().isConnected()) {
 			throw new DataExchangeException(this, "Proxy not connected");
 		}
 
@@ -165,7 +166,7 @@ public abstract class DataAccessImpl<T> implements DataAccess<T>
 	 * 
 	 * @return the property proxy
 	 */
-	public PropertyProxy<T> getProxy()
+	public PropertyProxy<T,?> getProxy()
 	{
 		return proxy;
 	}
@@ -180,8 +181,8 @@ public abstract class DataAccessImpl<T> implements DataAccess<T>
 	 * 
 	 * @return the property proxy
 	 */
-	public Proxy[] releaseProxy(boolean destroy) {
-		Proxy[] temp = new Proxy[]{proxy};
+	public Proxy<?>[] releaseProxy(boolean destroy) {
+		Proxy<?>[] temp = new Proxy<?>[]{proxy};
 		proxy = null;
 		sproxy = null;
 		if (destroy && hasDynamicValueListeners()) {

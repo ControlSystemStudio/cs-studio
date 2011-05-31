@@ -34,31 +34,35 @@
 		*/
 package org.csstudio.platform.internal.ldapauthorization.ui;
 
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
+import java.util.TimeZone;
 
+import org.csstudio.auth.internal.usermanagement.IUserManagementListener;
+import org.csstudio.auth.internal.usermanagement.UserManagementEvent;
+import org.csstudio.auth.security.IRight;
+import org.csstudio.auth.security.Right;
+import org.csstudio.auth.security.RightSet;
+import org.csstudio.auth.security.SecurityFacade;
+import org.csstudio.auth.security.User;
 import org.csstudio.platform.internal.ldapauthorization.LdapAuthorizationReader;
 import org.csstudio.platform.internal.ldapauthorization.ui.localization.Messages;
-import org.csstudio.platform.internal.usermanagement.IUserManagementListener;
-import org.csstudio.platform.internal.usermanagement.UserManagementEvent;
-import org.csstudio.platform.security.IRight;
-import org.csstudio.platform.security.Right;
-import org.csstudio.platform.security.RightSet;
-import org.csstudio.platform.security.SecurityFacade;
-import org.csstudio.platform.security.User;
 import org.eclipse.jface.action.IContributionManager;
 import org.eclipse.jface.dialogs.MessageDialog;
+import org.eclipse.jface.layout.GridDataFactory;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.events.SelectionListener;
+import org.eclipse.swt.graphics.Cursor;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Button;
-import org.eclipse.swt.widgets.Combo;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Display;
-import org.eclipse.swt.widgets.Label;
 import org.eclipse.ui.menus.WorkbenchWindowControlContribution;
 
 /**
@@ -70,18 +74,20 @@ import org.eclipse.ui.menus.WorkbenchWindowControlContribution;
  * @since 16.06.2010
  */
 public class RoleInformationToolbar extends WorkbenchWindowControlContribution {
-
+    
     /**
      * Listens for user management events and processes them by updating the
      * text in the status bar.
      */
     private class UserManagementListener implements IUserManagementListener {
-
+        
         /**
          * {@inheritDoc}
          */
+        @Override
         public void handleUserManagementEvent(final UserManagementEvent event) {
             Display.getDefault().asyncExec(new Runnable() {
+                @Override
                 public void run() {
                     // Force an update of the contribution manager. This will
                     // cause the contribution manager to ask the contribution
@@ -89,26 +95,30 @@ public class RoleInformationToolbar extends WorkbenchWindowControlContribution {
                     // control with the updated information.
                     final IContributionManager parent = RoleInformationToolbar.this.getParent();
                     // Parent can be null for SNS CSS
-                    if (parent != null) {
+                    if(parent != null) {
                         parent.update(true);
                     }
                 }
             });
         }
     }
-
+    
     /**
      * Listens for the user management events.
      */
     private IUserManagementListener _listener;
-
+    private final long _currentTimeMillis;
+    private final DateFormat _df;
+    
     /**
      * Creates a new toolbar.
      */
     public RoleInformationToolbar() {
-        // do nothing
+        _currentTimeMillis = System.currentTimeMillis();
+        _df = new SimpleDateFormat("HH:mm:ss");
+        _df.setTimeZone(TimeZone.getTimeZone("GMT+0"));
     }
-
+    
     /**
      * Creates a new toolbar with an id.
      *
@@ -117,8 +127,12 @@ public class RoleInformationToolbar extends WorkbenchWindowControlContribution {
      */
     public RoleInformationToolbar(final String id) {
         super(id);
-    }
+        _currentTimeMillis = System.currentTimeMillis();
+        _df = new SimpleDateFormat("HH:mm:ss");
+        _df.setTimeZone(TimeZone.getTimeZone("GMT+0"));
 
+    }
+    
     /**
      * {@inheritDoc}
      */
@@ -126,38 +140,63 @@ public class RoleInformationToolbar extends WorkbenchWindowControlContribution {
     protected Control createControl(final Composite parent) {
         Composite composite = new Composite(parent, SWT.NONE);
         composite.setLayout(new GridLayout(3, false));
-		User user = SecurityFacade.getInstance().getCurrentUser();
-		if (user != null) {
-			List<String> roles = getRoles(user);
-			final StringBuilder sb = new StringBuilder();
-			sb.append(Messages.RoleInformationToolbar_Teaser);
-			for (String users : roles) {
-				sb.append(users);
-				sb.append("\r\n"); //$NON-NLS-1$
-			}
-
-			Button button = new Button(composite, SWT.PUSH);
-			button.setLayoutData(new GridData(SWT.BEGINNING, SWT.CENTER, false,
-					false));
-			button.setText(Messages.RoleInformationToolbar_ButtonText);
-			button.setToolTipText(sb.toString());
-			button.addSelectionListener(new SelectionListener() {
-
-				public void widgetSelected(SelectionEvent e) {
-					MessageDialog.openInformation(null, Messages.RoleInformationToolbar_Head, sb.toString());
-				}
-
-				public void widgetDefaultSelected(SelectionEvent e) {
-					MessageDialog.openInformation(null, Messages.RoleInformationToolbar_Head, sb.toString());
-				}
-			});
-        	
+        User user = SecurityFacade.getInstance().getCurrentUser();
+        if(user != null) {
+            final List<String> roles = getRoles(user);
+            String text = stringBuilder(roles);
+            
+            Button button = new Button(composite, SWT.PUSH);
+            GridData layoutData = GridDataFactory.swtDefaults().hint(SWT.DEFAULT, 22)
+                    .align(SWT.FILL, SWT.TOP).indent(0, -2).create();
+            button.setLayoutData(layoutData);
+            button.setText(Messages.RoleInformationToolbar_ButtonText);
+            button.setToolTipText(text);
+            button.setCursor(new Cursor(null, SWT.CURSOR_HELP));
+            button.addSelectionListener(new SelectionListener() {
+                
+                @Override
+                public void widgetSelected(SelectionEvent e) {
+                    MessageDialog.openInformation(null,
+                                                  Messages.RoleInformationToolbar_Head,
+                                                  stringBuilder(roles));
+                }
+                
+                @Override
+                public void widgetDefaultSelected(SelectionEvent e) {
+                    MessageDialog.openInformation(null,
+                                                  Messages.RoleInformationToolbar_Head,
+                                                  stringBuilder(roles));
+                }
+            });
+            
         }
         createListener();
-
+        
         return composite;
     }
-
+    
+    /**
+     * @param roles
+     * @return
+     */
+    protected String stringBuilder(List<String> roles) {
+        long runTime = System.currentTimeMillis() - _currentTimeMillis;
+        final StringBuilder sb = new StringBuilder();
+        sb.append(Messages.RoleInformationToolbar_Teaser);
+        sb.append("\r\n"); //$NON-NLS-1$
+        for (String users : roles) {
+            sb.append(users);
+            sb.append("\r\n"); //$NON-NLS-1$
+        }
+        sb.append("\r\n\r\n"); //$NON-NLS-1$
+        sb.append(String
+                .format("CSS wurde gestarted am %1$td %1$tb %1$tY um %1$tH:%1$tM:%1$tS und läuft ",
+                        _currentTimeMillis));
+        sb.append(_df.format(new Date(runTime)));
+        sb.append("\r\n"); //$NON-NLS-1$
+        return sb.toString();
+    }
+    
     /**
      * Returns the name of the currently logged in user.
      *
@@ -167,19 +206,19 @@ public class RoleInformationToolbar extends WorkbenchWindowControlContribution {
         LdapAuthorizationReader reader = new LdapAuthorizationReader();
         ArrayList<String> rigthNames = new ArrayList<String>();
         RightSet rights = reader.getRights(user);
-        if (rights != null) {
+        if(rights != null) {
             List<IRight> rights2 = rights.getRights();
             for (IRight iRight : rights2) {
-                if (iRight instanceof Right) {
+                if(iRight instanceof Right) {
                     Right right = (Right) iRight;
                     rigthNames.add(right.getGroup() + ":" + right.getRole()); //$NON-NLS-1$
                 }
-
+                
             }
         }
         return rigthNames;
     }
-
+    
     /**
      * Returns <code>true</code>.
      *
@@ -192,20 +231,20 @@ public class RoleInformationToolbar extends WorkbenchWindowControlContribution {
         // createControl method) whenever it updates.
         return true;
     }
-
+    
     /**
      * Creates the user management listener.
      */
     private void createListener() {
         // if there is still an old listener, close the old one first
-        if (_listener != null) {
+        if(_listener != null) {
             closeListener();
         }
-
+        
         _listener = new UserManagementListener();
         SecurityFacade.getInstance().addUserManagementListener(_listener);
     }
-
+    
     /**
      * {@inheritDoc}
      */
@@ -213,12 +252,12 @@ public class RoleInformationToolbar extends WorkbenchWindowControlContribution {
     public void dispose() {
         closeListener();
     }
-
+    
     /**
      * Removes the user management listener from the security system.
      */
     private void closeListener() {
         SecurityFacade.getInstance().removeUserManagementListener(_listener);
     }
-
+    
 }

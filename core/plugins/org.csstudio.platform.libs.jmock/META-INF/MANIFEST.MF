@@ -42,3 +42,4 @@ Export-Package: org.easymock,
  org.jmock.lib.action,
  org.jmock.lib.legacy,
  org.jmock.syntax
+Bundle-Vendor: Desy <css-developer@desy.de>, Bastian Knerr

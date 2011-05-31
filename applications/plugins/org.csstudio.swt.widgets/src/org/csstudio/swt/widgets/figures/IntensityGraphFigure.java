@@ -1,3 +1,10 @@
+/*******************************************************************************
+ * Copyright (c) 2010 Oak Ridge National Laboratory.
+ * All rights reserved. This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License v1.0
+ * which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-v10.html
+ ******************************************************************************/
 package org.csstudio.swt.widgets.figures;
 
 import java.beans.BeanInfo;
@@ -6,7 +13,6 @@ import java.util.ArrayList;
 import java.util.EventListener;
 import java.util.List;
 
-import org.csstudio.platform.ui.util.CustomMediaFactory;
 import org.csstudio.swt.widgets.datadefinition.ColorMap;
 import org.csstudio.swt.widgets.datadefinition.ColorMap.PredefinedColorMap;
 import org.csstudio.swt.widgets.figureparts.ColorMapRamp;
@@ -14,6 +20,7 @@ import org.csstudio.swt.widgets.introspection.DefaultWidgetIntrospector;
 import org.csstudio.swt.widgets.introspection.Introspectable;
 import org.csstudio.swt.xygraph.figures.Axis;
 import org.csstudio.swt.xygraph.linearscale.Range;
+import org.csstudio.ui.util.CustomMediaFactory;
 import org.eclipse.draw2d.Figure;
 import org.eclipse.draw2d.FigureUtilities;
 import org.eclipse.draw2d.Graphics;
@@ -25,6 +32,7 @@ import org.eclipse.draw2d.geometry.Rectangle;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.graphics.Color;
 import org.eclipse.swt.graphics.Cursor;
+import org.eclipse.swt.graphics.Font;
 import org.eclipse.swt.graphics.GC;
 import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.graphics.ImageData;
@@ -667,6 +675,12 @@ public class IntensityGraphFigure extends Figure implements Introspectable {
 		this.max = max;
 		colorMapRamp.setMax(max);
 		repaint();
+	}
+	
+	@Override
+	public void setFont(Font f) {
+		super.setFont(f);
+		colorMapRamp.setFont(f);
 	}
 	
 	/**

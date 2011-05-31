@@ -1,3 +1,10 @@
+/*******************************************************************************
+ * Copyright (c) 2010 Oak Ridge National Laboratory.
+ * All rights reserved. This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License v1.0
+ * which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-v10.html
+ ******************************************************************************/
 package org.csstudio.opibuilder.widgets.model;
 
 import org.csstudio.opibuilder.model.AbstractPVWidgetModel;
@@ -5,6 +12,7 @@ import org.csstudio.opibuilder.properties.BooleanProperty;
 import org.csstudio.opibuilder.properties.DoubleProperty;
 import org.csstudio.opibuilder.properties.FontProperty;
 import org.csstudio.opibuilder.properties.IntegerProperty;
+import org.csstudio.opibuilder.properties.StringProperty;
 import org.csstudio.opibuilder.properties.WidgetPropertyCategory;
 import org.csstudio.opibuilder.util.MediaService;
 import org.csstudio.opibuilder.util.OPIFont;
@@ -40,7 +48,17 @@ public abstract class AbstractScaledWidgetModel extends AbstractPVWidgetModel {
 
 	/** True if the scale is log scale. */
 	public static final String PROP_SCALE_FONT = "scale_font"; //$NON-NLS-1$	
+	
+	/**
+	 * The numeric format pattern for the scale.
+	 */
+	public static final String PROP_SCALE_FORMAT = "scale_format";
 
+	/**
+	 * The numeric format pattern for the value label.
+	 */
+	public static final String PROP_VALUE_LABEL_FORMAT = "value_label_format";
+	
 	/** The default value of the minimum property. */
 	private static final double DEFAULT_MIN = 0;
 	
@@ -75,9 +93,14 @@ public abstract class AbstractScaledWidgetModel extends AbstractPVWidgetModel {
 		addProperty(new BooleanProperty(PROP_LOG_SCALE, "Log Scale", 
 				WidgetPropertyCategory.Display, false));
 		
-		addProperty(new FontProperty(PROP_SCALE_FONT, "Scale Font", WidgetPropertyCategory.Display,
-				MediaService.DEFAULT_FONT));
+		addProperty(new FontProperty(PROP_SCALE_FONT, "Scale Font", 
+				WidgetPropertyCategory.Display,	MediaService.DEFAULT_FONT));
 		
+		addProperty(new StringProperty(PROP_SCALE_FORMAT, "Scale Format", 
+				WidgetPropertyCategory.Display, "")); //$NON-NLS-1$
+		
+		addProperty(new StringProperty(PROP_VALUE_LABEL_FORMAT, "Value Label Format", 
+				WidgetPropertyCategory.Display, "")); //$NON-NLS-1$
 	}
 	
 
@@ -137,8 +160,16 @@ public abstract class AbstractScaledWidgetModel extends AbstractPVWidgetModel {
 		return (Boolean) getProperty(PROP_TRANSPARENT).getPropertyValue();
 	}
 	
-	public OPIFont getFont(){
+	public OPIFont getScaleFont(){
 		return (OPIFont)getCastedPropertyValue(PROP_SCALE_FONT);
+	}
+	
+	public String getScaleFormat(){
+		return (String)getPropertyValue(PROP_SCALE_FORMAT);
+	}
+	
+	public String getValueLabelFormat(){
+		return (String)getPropertyValue(PROP_VALUE_LABEL_FORMAT);
 	}
 	
 }

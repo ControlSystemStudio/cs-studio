@@ -1,6 +1,13 @@
+/*******************************************************************************
+ * Copyright (c) 2010 Oak Ridge National Laboratory.
+ * All rights reserved. This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License v1.0
+ * which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-v10.html
+ ******************************************************************************/
 package org.csstudio.archive.rdb;
 
-import org.csstudio.platform.data.ISeverity;
+import org.csstudio.data.values.ISeverity;
 import org.csstudio.platform.utility.rdb.StringID;
 
 /** Severity with name, ID and ISeverity interface.
@@ -19,10 +26,10 @@ public class Severity extends StringID implements ISeverity
 		MAJOR,
 		INVALID
 	}
-	
+
 	/** Level of this severity */
 	final private Level level;
-	
+
 	/** Constructor */
 	public Severity(final int id, final String name)
 	{
@@ -36,32 +43,37 @@ public class Severity extends StringID implements ISeverity
 		else
 			level = Level.INVALID;
 	}
-	
+
 	/** {@inheritDoc} */
-	public boolean isOK()
+	@Override
+    public boolean isOK()
 	{
 		return level == Level.OK;
 	}
 
 	/** {@inheritDoc} */
+    @Override
 	public boolean isMinor()
 	{
 		return level == Level.MINOR;
 	}
 
 	/** {@inheritDoc} */
+    @Override
 	public boolean isMajor()
 	{
 		return level == Level.MAJOR;
 	}
 
 	/** {@inheritDoc} */
+    @Override
 	public boolean isInvalid()
 	{
 		return level == Level.INVALID;
 	}
 
 	/** {@inheritDoc} */
+    @Override
     public boolean hasValue()
 	{
 		return true;

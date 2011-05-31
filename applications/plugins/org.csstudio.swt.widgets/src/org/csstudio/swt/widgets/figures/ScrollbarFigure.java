@@ -17,11 +17,11 @@ import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.csstudio.platform.ui.util.CustomMediaFactory;
 import org.csstudio.swt.widgets.datadefinition.IManualValueChangeListener;
 import org.csstudio.swt.widgets.introspection.DefaultWidgetIntrospector;
 import org.csstudio.swt.widgets.introspection.Introspectable;
 import org.csstudio.swt.widgets.util.OPITimer;
+import org.csstudio.ui.util.CustomMediaFactory;
 import org.eclipse.draw2d.ActionEvent;
 import org.eclipse.draw2d.ActionListener;
 import org.eclipse.draw2d.ArrowButton;
@@ -110,7 +110,16 @@ public class ScrollbarFigure extends Figure implements Orientable, Introspectabl
 	}
 }
 	
-	private static final DecimalFormat DECIMAL_FORMAT = new DecimalFormat("############.##"); //$NON-NLS-1$  
+	private static final String DEFAULT_ENGINEERING_FORMAT = "0.##E0"; //$NON-NLS-1$
+    
+    /** the default label format */
+    private static final String DEFAULT_DECIMAL_FORMAT = "############.##";  //$NON-NLS-1$
+
+	/**
+	 * the digits limit to be displayed in engineering format
+	 */
+	private static final int ENGINEERING_LIMIT = 2;
+	
 	
 	private final static Color GRAY_COLOR = CustomMediaFactory.getInstance().getColor(
 			CustomMediaFactory.COLOR_GRAY);
@@ -158,13 +167,16 @@ public class ScrollbarFigure extends Figure implements Orientable, Introspectabl
 			ColorConstants.white,
 			ColorConstants.button);
 	
+	private DecimalFormat decimalFormat;
+	
 	public ScrollbarFigure() {
-		
+		decimalFormat = new DecimalFormat(DEFAULT_DECIMAL_FORMAT);
 		listeners = new ArrayList<IManualValueChangeListener>();
 		
 		
 		initializeListeners();
 		initializeParts();
+		
 		
 	}
 	
@@ -443,9 +455,8 @@ public class ScrollbarFigure extends Figure implements Orientable, Introspectabl
 		if (this.value == value)
 			return;
 		if(showValueTip){
-			valueIncreased = value > this.value;
-				
-			label.setText("" + DECIMAL_FORMAT.format(value));
+			valueIncreased = value > this.value;			
+			label.setText("" + decimalFormat.format(value));
 			label.setVisible(true);
 			initLabelTimer();
 			if(!labelTimer.isDue())
@@ -568,6 +579,7 @@ public class ScrollbarFigure extends Figure implements Orientable, Introspectabl
 		if(this.maximum == maximum)
 			return;
 		this.maximum = maximum;
+		updateFormat();
 		revalidate();
 	}
 
@@ -578,6 +590,7 @@ public class ScrollbarFigure extends Figure implements Orientable, Introspectabl
 		if(this.minimum == minimum)
 			return;
 		this.minimum = minimum;
+		updateFormat();
 		revalidate();
 
 	}
@@ -671,13 +684,14 @@ public class ScrollbarFigure extends Figure implements Orientable, Introspectabl
 	 * @since 2.0
 	 */
 	public void setThumb(IFigure figure) {
-		figure.addMouseListener(new MouseListener.Stub(){
-			@Override
-			public void mousePressed(MouseEvent me) {
-				if(!hasFocus())
-					requestFocus();
-			}
-		});
+		if(figure != null)
+			figure.addMouseListener(new MouseListener.Stub(){
+				@Override
+				public void mousePressed(MouseEvent me) {
+					if(!hasFocus())
+						requestFocus();
+				}
+			});
 		if (thumb != null) {
 			thumb.removeMouseListener(thumbDragger);
 			thumb.removeMouseMotionListener(thumbDragger);
@@ -739,5 +753,14 @@ public class ScrollbarFigure extends Figure implements Orientable, Introspectabl
 		manualSetValue(getValue() - stepIncrement);
 	}
 	
+	private void updateFormat(){
+		String formatPattern;
+		if((maximum != 0 && Math.abs(Math.log10(Math.abs(maximum))) >= ENGINEERING_LIMIT)
+        		|| (minimum !=0 && Math.abs(Math.log10(Math.abs(minimum))) >= ENGINEERING_LIMIT))
+                formatPattern = DEFAULT_ENGINEERING_FORMAT;
+        	else
+        		formatPattern = DEFAULT_DECIMAL_FORMAT;	
+		decimalFormat = new DecimalFormat(formatPattern);
+	}
 	
 }

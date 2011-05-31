@@ -24,7 +24,9 @@
  */
 package org.csstudio.config.ioconfig.model.pbmodel;
 
-import org.csstudio.platform.logging.CentralLogger;
+import java.util.List;
+
+import javax.annotation.Nonnull;
 
 /**
  * @author hrickens
@@ -62,42 +64,23 @@ public class SlaveCfgData {
      *            As Hex Value with the prefix 0x or<br>
      *            as Dec Value without prefix.
      */
-    public SlaveCfgData(final String slaveCfgData) {
+    public SlaveCfgData(@Nonnull final List<Integer> slaveCfgData) {
         /*
          * Bit 0-3: is size + 1 Bit 4: input Bit 5: output Bit 6: 0:byte, 1: word Bit 7: Consistenz
          * 0:byte, 1: Module
          */
-        int parameter;
-        String[] para = slaveCfgData.trim().split("[,;]");
-        if (para.length > 0) {
-            try {
-                if (para[0].startsWith("0x")) {
-                    parameter = Integer.parseInt(para[0].replaceAll("0x", "").trim(), 16);
-                } else {
-                    parameter = Integer.parseInt(para[0], 10);
-                }
-            } catch (NumberFormatException e) {
-                CentralLogger.getInstance().debug(this, slaveCfgData + " is not a Number");
-                throw e;
-            }
+        int parameter0;
+        if (slaveCfgData.size() > 0) {
+            parameter0 = slaveCfgData.get(0);
             // Test Simple oder Special Header
-            if ((parameter & 0x30) == 0) {
-                int parameter2;
-                if (para.length > 1) {
-                    try {
-                        if (para[1].startsWith("0x")) {
-                            parameter2 = Integer.parseInt(para[1].replaceAll("0x", ""), 16);
-                        } else {
-                            parameter2 = Integer.parseInt(para[1], 10);
-                        }
-                        setParameter(parameter, parameter2);
-                    } catch (NumberFormatException e) {
-                        CentralLogger.getInstance().debug(this, slaveCfgData + " is not a Number");
-                        throw e;
-                    }
+            if ((parameter0 & 0x30) == 0) {
+                int parameter1;
+                if (slaveCfgData.size() > 1) {
+                    parameter1 = slaveCfgData.get(1);
+                    setParameter(parameter0, parameter1);
                 }
             } else {
-                setParameter(parameter);
+                setParameter(parameter0);
             }
         }
     }

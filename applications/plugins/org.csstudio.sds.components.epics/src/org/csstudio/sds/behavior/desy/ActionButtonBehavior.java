@@ -20,6 +20,8 @@ package org.csstudio.sds.behavior.desy;
 
 
 import org.csstudio.sds.components.model.ActionButtonModel;
+import org.csstudio.sds.cursorservice.CursorService;
+import org.csstudio.sds.model.AbstractWidgetModel;
 import org.csstudio.sds.model.TextTypeEnum;
 import org.epics.css.dal.simple.AnyData;
 import org.epics.css.dal.simple.MetaData;
@@ -68,7 +70,29 @@ public class ActionButtonBehavior extends AbstractDesyConnectionBehavior<ActionB
      */
     @Override
     protected void doProcessMetaDataChange( final ActionButtonModel widget,final MetaData metaData) {
-        // do nothing
+        if (metaData != null) {
+            switch (metaData.getAccessType()) {
+                case NONE:
+                    widget.setPropertyValue(AbstractWidgetModel.PROP_CURSOR, CursorService
+                            .getInstance().availableCursors().get(7));
+                    break;
+                case READ:
+                    widget.setPropertyValue(AbstractWidgetModel.PROP_CURSOR, CursorService
+                            .getInstance().availableCursors().get(7));
+                    break;
+                case READ_WRITE:
+                    widget.setPropertyValue(AbstractWidgetModel.PROP_CURSOR, CursorService
+                            .getInstance().availableCursors().get(0));
+                    break;
+                case WRITE:
+                    widget.setPropertyValue(AbstractWidgetModel.PROP_CURSOR, CursorService
+                            .getInstance().availableCursors().get(0));
+                    break;
+                default:
+                    widget.setPropertyValue(AbstractWidgetModel.PROP_CURSOR, CursorService
+                            .getInstance().availableCursors().get(0));
+            }
+        }
     }
 
 }

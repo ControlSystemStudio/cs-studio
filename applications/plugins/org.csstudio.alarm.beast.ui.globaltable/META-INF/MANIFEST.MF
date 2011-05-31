@@ -1,0 +1,14 @@
+Manifest-Version: 1.0
+Bundle-ManifestVersion: 2
+Bundle-Name: Global Alarm Table
+Bundle-SymbolicName: org.csstudio.alarm.beast.ui.globaltable;singleton:=true
+Bundle-Version: 3.0.0.qualifier
+Bundle-Localization: plugin
+Require-Bundle: org.eclipse.core.runtime,
+ org.eclipse.ui;bundle-version="3.6.1",
+ org.csstudio.apputil.ui;bundle-version="1.1.5",
+ org.csstudio.alarm.beast;bundle-version="3.0.0",
+ org.csstudio.alarm.beast.ui;bundle-version="3.0.0"
+Bundle-ActivationPolicy: lazy
+Bundle-RequiredExecutionEnvironment: JavaSE-1.6
+Bundle-Vendor: Kay Kasemir <kasemirk@ornl.gov> - SNS

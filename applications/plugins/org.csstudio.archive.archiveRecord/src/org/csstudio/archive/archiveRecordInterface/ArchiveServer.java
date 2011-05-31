@@ -24,7 +24,7 @@ import org.csstudio.archive.ArchiveAccessException;
 import org.csstudio.archive.ArchiveInfo;
 import org.csstudio.archive.ArchiveValues;
 import org.csstudio.archive.NameInfo;
-import org.csstudio.platform.data.ITimestamp;
+import org.csstudio.data.values.ITimestamp;
 
 
 /** Main access point to the EPICS CA local history cash

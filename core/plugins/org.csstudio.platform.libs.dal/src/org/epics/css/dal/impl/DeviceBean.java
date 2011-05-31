@@ -98,14 +98,13 @@ public class DeviceBean extends AbstractDeviceImpl implements Connectable
 	{
 		checkInitialized();
 
-		if (connectionState != ConnectionState.DISCONNECTED
-		    && connectionState != ConnectionState.READY) {
+		if (!connectionStateMachine.isTransitionAllowed(ConnectionState.CONNECTING)) {
 			throw new IllegalStateException("Connectable '" + getUniqueName()
 			    + "' is not in DISCONNECTED or READY state but in "
-			    + connectionState + ".");
+			    + getConnectionState() + ".");
 		}
 
-		//setConnectionState(ConnectionState.CONNECTING);
+		setConnectionState(ConnectionState.CONNECTING);
 		deviceFactory.reconnectDevice(this);
 		
 		reinitializePropertyProxies();
@@ -126,7 +125,7 @@ public class DeviceBean extends AbstractDeviceImpl implements Connectable
 	 */
 	public void destroy()
 	{
-		if (connectionState == ConnectionState.DESTROYED) return; // TODO throw an exception?
+		if (getConnectionState() == ConnectionState.DESTROYED) return; // TODO throw an exception?
 		
 		if (deviceFactory != null && deviceFactory.getDeviceFamily() != null)
 			deviceFactory.getDeviceFamily().destroy(this);
@@ -137,11 +136,10 @@ public class DeviceBean extends AbstractDeviceImpl implements Connectable
 	 */
 	public void disconnect()
 	{
-		if (connectionState != ConnectionState.CONNECTED
-			    && connectionState != ConnectionState.CONNECTING) {
+		if (!connectionStateMachine.isTransitionAllowed(ConnectionState.DISCONNECTING)) {
 				throw new IllegalStateException("Connectable '" + getUniqueName()
 				    + "' is not in CONNECTED or CONNECTING state but in "
-				    + connectionState + ".");
+				    + getConnectionState() + ".");
 			}
 		
 		setConnectionState(ConnectionState.DISCONNECTING);
@@ -159,14 +157,6 @@ public class DeviceBean extends AbstractDeviceImpl implements Connectable
 	}
 	
 	//TODO override refresh method to also call refresh on all properties? like Abean.refresh?
-
-	/* (non-Javadoc)
-	 * @see org.epics.css.dal.context.Connectable#getConnectionState()
-	 */
-	public ConnectionState getConnectionState()
-	{
-		return connectionState;
-	}
 
 	/* (non-Javadoc)
 	 * @see org.epics.css.dal.context.Connectable#getRemoteInfo()
@@ -189,12 +179,12 @@ public class DeviceBean extends AbstractDeviceImpl implements Connectable
 	 */
 	public void setRemoteInfo(org.epics.css.dal.simple.RemoteInfo rinfo) throws IllegalArgumentException
 	{
-		if (connectionState != ConnectionState.DISCONNECTED
-		    && connectionState != ConnectionState.READY
-		    && connectionState != ConnectionState.INITIAL) {
+		if (getConnectionState() != ConnectionState.DISCONNECTED
+		    && getConnectionState() != ConnectionState.READY
+		    && getConnectionState() != ConnectionState.INITIAL) {
 			throw new IllegalStateException("Connectable '" + getUniqueName()
 			    + "' is not in DISCONNECTED, INITIAL or READY state but in "
-			    + connectionState + ".");
+			    + getConnectionState() + ".");
 		}
 
 		if (rinfo == null) {
@@ -292,9 +282,7 @@ public class DeviceBean extends AbstractDeviceImpl implements Connectable
 					prop.initialize(pp, dp);
 					prop.refresh();
 				} catch (Exception e) {
-					//TODO log exception!!
-					System.out.println("Problem on re-inizializing property " + pns[i]+":");
-					e.printStackTrace();
+					Logger.getLogger(DeviceBean.class).warn("Problem on re-inizializing property " + pns[i]+".",e);
 				}
 			}
 		}
@@ -363,7 +351,7 @@ public class DeviceBean extends AbstractDeviceImpl implements Connectable
 	}
 	
 	protected void tryConnect(){
-		if (autoConnect && (connectionState == ConnectionState.READY  || connectionState == ConnectionState.DISCONNECTED ) && deviceFactory != null)
+		if (autoConnect && (getConnectionState() == ConnectionState.READY  || getConnectionState() == ConnectionState.DISCONNECTED ) && deviceFactory != null)
 			try {
 				asyncConnect();
 			} catch (Exception e) {

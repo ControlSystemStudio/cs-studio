@@ -33,7 +33,14 @@ public class ColorMap {
 				String[] row = bodyPart.split(",");
 				if (row.length == 1){
 					String color = row[0].trim();
-					colors[colorCounter] = getRGBColor(color);
+					try {
+					colors[colorCounter] = ColorMap.getRGBColor(color);
+					}
+					catch (NumberFormatException ex){
+						ex.printStackTrace();
+						throw new WrongADLFormatException("One of the colors in the color map cannot be decoded " 
+								+ color);
+					}
 					colorCounter++;
 				}
 			}
@@ -51,16 +58,31 @@ public class ColorMap {
 						if (row.length < 2){
 							throw new WrongADLFormatException(Messages.Label_WrongADLFormatException_Parameter_Begin + bodyPart + Messages.Label_WrongADLFormatException_Parameter_End);
 						}
-						if (row[0].trim().equals("r")){
-							red = Integer.parseInt(row[1].replaceAll("\"", "").trim());
+						try {
+							if (row[0].trim().equals("r")) {
+								red = Integer.parseInt(row[1].replaceAll("\"",
+										"").trim());
+							}
+							if (row[0].trim().equals("g")) {
+								green = Integer.parseInt(row[1].replaceAll(
+										"\"", "").trim());
+							}
+							if (row[0].trim().equals("b")) {
+								blue = Integer.parseInt(row[1].replaceAll("\"",
+										"").trim());
+							}
+						} catch (NumberFormatException ex) {
+							ex.printStackTrace();
+							throw new WrongADLFormatException("One of the RGB values contains a" +
+									"value that cannot be transformed into an integer: " + bodyPart);
 						}
-						if (row[0].trim().equals("g")){
-							green = Integer.parseInt(row[1].replaceAll("\"", "").trim());
+						try {
+							colors[ii] = new RGB(red,green,blue);
 						}
-						if (row[0].trim().equals("b")){
-							blue = Integer.parseInt(row[1].replaceAll("\"", "").trim());							
+						catch (IllegalArgumentException ex){
+							throw new WrongADLFormatException("Bad Arguments for creating RGB " +
+									red + ", " + green + ", " + blue);
 						}
-						colors[ii] = new RGB(red,green,blue);
 					}
 				}
 			}
@@ -77,7 +99,20 @@ public class ColorMap {
 	public int getNumColors() {
 		return numColors;
 	}
-	public RGB getRGBColor(String inColor){
+
+	/**
+	 * 
+	 * throws IlleagalArgumentException if the string is not 6 characters long
+	 * throws NumberFormatException if the each pair cannot be transformed as a 
+	 *        hexdecimal to integer 
+	 * @param inColor
+	 * @return
+	 */
+	public static RGB getRGBColor(String inColor) throws NumberFormatException, IllegalArgumentException {
+		if ( inColor.length() < 6 || inColor.length() >6 ) {
+			throw new IllegalArgumentException("RGB string is Hex reptesentation of the color triad.  In should "
+					+ "have 6 characters");
+		}	
 		String redStr = "#".concat(inColor.substring(0, 2));
 		String greenStr = "#".concat(inColor.substring(2, 4));
 		String blueStr = "#".concat(inColor.substring(4, 6));

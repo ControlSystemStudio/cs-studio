@@ -33,7 +33,8 @@ import org.eclipse.osgi.util.NLS;
  * @since 15.11.2007
  */
 public class Messages extends NLS {
-    private static final String BUNDLE_NAME = "org.csstudio.jmsSender.internationalization.messages"; //$NON-NLS-1$
+//    private static final String BUNDLE_NAME = "org.csstudio.jmsSender.internationalization.messages"; //$NON-NLS-1$
+    private static final String BUNDLE_NAME = "org.csstudio.diag.jmsSender.internationalization.messages"; //$NON-NLS-1$
     public static String JMSView_Error;
     public static String JMSView_Labels;
     public static String JMSView_Numbers;

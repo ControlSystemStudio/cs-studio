@@ -22,6 +22,7 @@
 
 package org.epics.css.dal.proxy;
 
+import org.apache.log4j.Logger;
 import org.epics.css.dal.DataExchangeException;
 import org.epics.css.dal.ResponseEvent;
 import org.epics.css.dal.ResponseListener;
@@ -77,7 +78,7 @@ public class SetValueInterceptor<T> implements ResponseListener<T>
 	 *
 	 * @throws DataExchangeException is thrown if the asynchronus setValue method times out
 	 */
-	public synchronized void executeAndWait(PropertyProxy<T> proxy, T value)
+	public synchronized void executeAndWait(PropertyProxy<T,?> proxy, T value)
 		throws DataExchangeException
 	{
 		proxy.setValueAsync(value, this);
@@ -87,7 +88,7 @@ public class SetValueInterceptor<T> implements ResponseListener<T>
 				wait(GlobalPlugConfiguration.getGlobalPlugConfiguration()
 				    .getDefaultTimeout());
 			} catch (Exception e) {
-				e.printStackTrace();
+				Logger.getLogger(this.getClass()).error("Unhandled exception.", e);
 			}
 		}
 

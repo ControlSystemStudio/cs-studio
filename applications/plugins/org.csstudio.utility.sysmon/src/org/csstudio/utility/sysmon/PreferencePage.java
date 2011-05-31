@@ -1,3 +1,10 @@
+/*******************************************************************************
+ * Copyright (c) 2010 Oak Ridge National Laboratory.
+ * All rights reserved. This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License v1.0
+ * which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-v10.html
+ ******************************************************************************/
 package org.csstudio.utility.sysmon;
 
 import org.eclipse.jface.dialogs.IMessageProvider;
@@ -21,10 +28,10 @@ public class PreferencePage extends FieldEditorPreferencePage
     final private static int MAX_HOURS = 24;
     final private static int MIN_DELAY = 1;
     final private static int MAX_DELAY = 120;
-    
+
     /** Preference ID (also used in preferences.ini) */
     final private static String P_HISTORY_HOURS = "history_hours"; //$NON-NLS-1$
-    
+
     /** Preference ID (also used in preferences.ini) */
     final private static String P_SCAN_DELAY_SECS = "scan_delay_secs"; //$NON-NLS-1$
 
@@ -38,6 +45,7 @@ public class PreferencePage extends FieldEditorPreferencePage
     /* (non-Javadoc)
      * @see org.eclipse.ui.IWorkbenchPreferencePage#init(org.eclipse.ui.IWorkbench)
      */
+    @Override
     public void init(IWorkbench workbench)
     { /* NOP */ }
 
@@ -48,14 +56,14 @@ public class PreferencePage extends FieldEditorPreferencePage
     public void createFieldEditors()
     {
         final Composite parent = getFieldEditorParent();
-                
+
         final IntegerFieldEditor size_editor =
             new IntegerFieldEditor(P_HISTORY_HOURS, Messages.PreferencePage_HistSize, parent);
         size_editor.setValidRange(MIN_HOURS, MAX_HOURS);
         size_editor.setErrorMessage(NLS.bind(Messages.PreferencePage_ValidHistSize,
                 MIN_HOURS, MAX_HOURS));
         addField(size_editor);
-        
+
         final IntegerFieldEditor delay_editor =
             new IntegerFieldEditor(P_SCAN_DELAY_SECS, Messages.PreferencePage_ScanDelay, parent);
         delay_editor.setValidRange(MIN_DELAY, MAX_DELAY);
@@ -63,7 +71,7 @@ public class PreferencePage extends FieldEditorPreferencePage
                                               MIN_DELAY, MAX_DELAY));
         addField(delay_editor);
     }
-    
+
     /** @return History size [number of samples]. */
     static public int getHistorySize()
     {
@@ -90,7 +98,7 @@ public class PreferencePage extends FieldEditorPreferencePage
             secs = MAX_DELAY;
         return secs;
     }
-    
+
     /** {@inheritDoc} */
     @Override
     public final void propertyChange(final PropertyChangeEvent event)

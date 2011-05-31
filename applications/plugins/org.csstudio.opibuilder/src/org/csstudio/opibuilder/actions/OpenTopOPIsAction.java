@@ -1,14 +1,21 @@
+/*******************************************************************************
+ * Copyright (c) 2010 Oak Ridge National Laboratory.
+ * All rights reserved. This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License v1.0
+ * which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-v10.html
+ ******************************************************************************/
 package org.csstudio.opibuilder.actions;
 
 import java.util.Map;
+import java.util.logging.Level;
 
 import org.csstudio.opibuilder.OPIBuilderPlugin;
 import org.csstudio.opibuilder.preferences.PreferencesHelper;
 import org.csstudio.opibuilder.runmode.RunModeService;
 import org.csstudio.opibuilder.runmode.RunModeService.TargetWindow;
 import org.csstudio.opibuilder.util.MacrosInput;
-import org.csstudio.platform.logging.CentralLogger;
-import org.csstudio.platform.ui.util.CustomMediaFactory;
+import org.csstudio.ui.util.CustomMediaFactory;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.jface.action.IAction;
 import org.eclipse.jface.dialogs.MessageDialog;
@@ -26,27 +33,26 @@ import org.eclipse.ui.IWorkbenchWindowPulldownDelegate;
 
 /**Open top OPIs in run mode.
  * @author Xihui Chen
- *
  */
 public class OpenTopOPIsAction implements IWorkbenchWindowPulldownDelegate {
 
-	private Menu opiListMenu; 
+	private Menu opiListMenu;
 	private static Image OPI_RUNTIME_IMAGE = CustomMediaFactory.getInstance().getImageFromPlugin(
 			OPIBuilderPlugin.PLUGIN_ID, "icons/OPIRunner.png"); //$NON-NLS-1$
-	public Menu getMenu(Control parent) {	
-		dispose();			
+	public Menu getMenu(Control parent) {
+		dispose();
 		final Map<IPath, MacrosInput> topOPIs = loadTopOPIs();
 		if(topOPIs == null)
 			return null;
-		opiListMenu = new Menu(parent);	
-			for(final IPath path : topOPIs.keySet()){				
+		opiListMenu = new Menu(parent);
+			for(final IPath path : topOPIs.keySet()){
 				if(path != null){
 					MenuItem item = new MenuItem(opiListMenu, SWT.PUSH);
 					item.setText(path.lastSegment());
 					item.setImage(OPI_RUNTIME_IMAGE);
 					item.addSelectionListener(new SelectionAdapter() {
 						@Override
-						public void widgetSelected(SelectionEvent e) {						
+						public void widgetSelected(SelectionEvent e) {
 							RunModeService.getInstance().runOPI(
 									path, TargetWindow.SAME_WINDOW, null, topOPIs.get(path));
 						}
@@ -67,11 +73,11 @@ public class OpenTopOPIsAction implements IWorkbenchWindowPulldownDelegate {
 				MessageDialog.openWarning(null, "Warning", "No top OPIs were set in preference settings.");
 				return null;
 			}
-			
+
 		} catch (Exception e) {
 			String message = NLS.bind("Failed to load top OPIs from preference settings. \n {0}", e);
-			CentralLogger.getInstance().error(this, message);
 			MessageDialog.openError(null, "Error in loading top OPIs", message);
+            OPIBuilderPlugin.getLogger().log(Level.WARNING, message, e);
 			return null;
 		}
 		return topOPIs;
@@ -84,17 +90,17 @@ public class OpenTopOPIsAction implements IWorkbenchWindowPulldownDelegate {
 			opiListMenu.dispose();
 			opiListMenu = null;
 		}
-		
-		
+
+
 	}
 
-	public void init(IWorkbenchWindow window) {		
-		
+	public void init(IWorkbenchWindow window) {
+        // NOP
 	}
 
 	public void run(IAction action) {
 		Map<IPath, MacrosInput> topOPIs = loadTopOPIs();
-		if(topOPIs.keySet().size() >= 1){
+		if(topOPIs != null && topOPIs.keySet().size() >= 1){
 			IPath path = (IPath) topOPIs.keySet().toArray()[0];
 			if(path != null){
 				RunModeService.getInstance().runOPI(
@@ -104,9 +110,6 @@ public class OpenTopOPIsAction implements IWorkbenchWindowPulldownDelegate {
 	}
 
 	public void selectionChanged(IAction action, ISelection selection) {
-		
+	    // NOP
 	}
-	
-	
-	
 }

@@ -1,9 +1,0 @@
-Manifest-Version: 1.0
-Bundle-ManifestVersion: 2
-Bundle-Name: Simulated PVs
-Bundle-SymbolicName: org.csstudio.utility.pv.simu;singleton:=true
-Bundle-Version: 1.0.1.qualifier
-Bundle-Vendor: Kay Kasemir <kasemirk@ornl.gov>, Xihui Chen <chenx1@ornl.gov> - SNS
-Require-Bundle: org.csstudio.utility.pv;bundle-version="1.0.8",
- org.junit4
-Export-Package: org.csstudio.utility.pv.simu

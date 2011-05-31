@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<feature
+      id="org.csstudio.display.multichannelviewer.feature"
+      label="MultiChannelViewer Feature"
+      version="0.0.1.qualifier"
+      provider-name="Kunal Shroff &lt;kshroff@bnl.gov&gt;, Gabriele Carcassi &lt;carcassi@bnl.gov&gt; - BNL">
+
+   <description url="http://www.example.com/description">
+      [Enter Feature Description here.]
+   </description>
+
+   <copyright url="http://www.example.com/copyright">
+      [Enter Copyright Description here.]
+   </copyright>
+
+   <license url="http://www.example.com/license">
+      [Enter License Description here.]
+   </license>
+
+   <url>
+      <update label="CSS dev update site" url="http://cs-studio.sourceforge.net/nsls2/dev-updates"/>
+   </url>
+
+   <requires>
+      <import plugin="org.eclipse.ui"/>
+      <import plugin="org.eclipse.core.runtime"/>
+      <import plugin="org.junit4"/>
+      <import plugin="org.csstudio.utility.pvmanager"/>
+      <import plugin="org.csstudio.platform.libs.glazedlists"/>
+      <import plugin="org.csstudio.utility.channel" version="1.0.0" match="greaterOrEqual"/>
+      <import plugin="org.csstudio.platform.libs.jmock" version="1.1.0" match="greaterOrEqual"/>
+      <import plugin="org.csstudio.platform.libs.jfreechart" version="1.0.0" match="greaterOrEqual"/>
+      <import plugin="org.csstudio.utility.channelfinder" version="1.0.0" match="greaterOrEqual"/>
+      <import plugin="org.csstudio.utility.pvmanager.ui" version="1.0.0" match="greaterOrEqual"/>
+      <import plugin="org.csstudio.utility.pvmanager.jfreechart.widgets" version="1.0.0" match="greaterOrEqual"/>
+      <import plugin="org.csstudio.ui.menu" version="3.0.0" match="greaterOrEqual"/>
+      <import plugin="com.google.common"/>
+   </requires>
+
+   <plugin
+         id="org.csstudio.multiChannelViewer"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"
+         unpack="false"/>
+
+</feature>

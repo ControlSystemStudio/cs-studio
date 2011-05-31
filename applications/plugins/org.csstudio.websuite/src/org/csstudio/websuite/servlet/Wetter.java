@@ -68,7 +68,8 @@ public class Wetter extends HttpServlet {
     /**
      * 
      */
-    public void init(ServletConfig config) throws ServletException {
+    @Override
+	public void init(ServletConfig config) throws ServletException {
         
         super.init(config);
         
@@ -80,7 +81,8 @@ public class Wetter extends HttpServlet {
         aapiWebApp = ps.getString(WebSuiteActivator.PLUGIN_ID, PreferenceConstants.AAPI_WEB_APP, "", null);
     }
 
-    public void doGet(HttpServletRequest request, HttpServletResponse  response)
+    @Override
+	public void doGet(HttpServletRequest request, HttpServletResponse  response)
     throws ServletException, IOException {
         
         // set content type and other response header fields first
@@ -272,7 +274,7 @@ public class Wetter extends HttpServlet {
         // Internal Archiver
         out.println("                <td align=\"right\">" + 
                 "<a href=\"javascript:openWindowTop(\'"  +
-                aapiWebApp + "&NAMES=" + record + "');\">" +
+                aapiWebApp + "&METHOD=GET&NAMES=" + record + "');\">" +
                 Utility.precision(valueReader.getValueAsString(record), precision) + "</a></td>");
 
         /* 
@@ -292,7 +294,8 @@ public class Wetter extends HttpServlet {
         out.println("            </tr>");    
     }
 
-    public void doPost(HttpServletRequest request, HttpServletResponse response)
+    @Override
+	public void doPost(HttpServletRequest request, HttpServletResponse response)
     throws ServletException, IOException {
         
         doGet(request, response);

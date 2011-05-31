@@ -1,6 +1,13 @@
+/*******************************************************************************
+ * Copyright (c) 2010 Oak Ridge National Laboratory.
+ * All rights reserved. This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License v1.0
+ * which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-v10.html
+ ******************************************************************************/
 package org.csstudio.archivereader.channelarchiver;
 
-import org.csstudio.platform.data.ISeverity;
+import org.csstudio.data.values.ISeverity;
 
 /** Implementation of the Severity interface for EPICS samples.
  *  @author Kay Kasemir
@@ -11,7 +18,7 @@ public class SeverityImpl implements ISeverity
 	final private String text;
 	final private boolean has_value;
 	final private boolean txt_stat;
-	
+
 	public SeverityImpl(final String text, final boolean has_value,
 	        final boolean txt_stat)
 	{
@@ -25,7 +32,8 @@ public class SeverityImpl implements ISeverity
 	{
 		return text;
 	}
-    
+
+    @Override
     public boolean isOK()
     {
         return text.length() == 0
@@ -33,22 +41,26 @@ public class SeverityImpl implements ISeverity
                 || text.equals("NO_ALARM");
     }
 
+    @Override
     public boolean isMinor()
     {
         return text.equals("MINOR");
     }
 
+    @Override
     public boolean isMajor()
     {
         return text.equals("MAJOR");
     }
 
+    @Override
     public boolean isInvalid()
     {
         return !hasValue() || text.equals("INVALID");
     }
 
-	public boolean hasValue()
+	@Override
+    public boolean hasValue()
 	{
 		return has_value;
 	}

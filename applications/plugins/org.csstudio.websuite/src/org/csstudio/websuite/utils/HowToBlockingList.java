@@ -52,7 +52,9 @@ public class HowToBlockingList
                     value = Long.parseLong(s.trim());
                     howToList.add(value);
                 }
-                catch(NumberFormatException nfe) {}
+                catch(NumberFormatException nfe) {
+                	// Can be ignored???
+                }
             }
         }
     }

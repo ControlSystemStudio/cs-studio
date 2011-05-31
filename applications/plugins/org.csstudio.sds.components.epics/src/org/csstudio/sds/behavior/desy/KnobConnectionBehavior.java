@@ -24,6 +24,7 @@ package org.csstudio.sds.behavior.desy;
 import org.csstudio.sds.components.model.AbstractMarkedWidgetModel;
 import org.csstudio.sds.components.model.KnobModel;
 import org.epics.css.dal.context.ConnectionState;
+import org.epics.css.dal.simple.AnyDataChannel;
 
 /**
  *
@@ -52,7 +53,8 @@ public class KnobConnectionBehavior extends MarkedWidgetDesyConnectionBehavior<K
      * {@inheritDoc}
      */
     @Override
-    protected void doProcessConnectionStateChange( final KnobModel widget, final ConnectionState connectionState) {
+    protected void doProcessConnectionStateChange( final KnobModel widget, final AnyDataChannel anyDataChannel) {
+        ConnectionState connectionState = anyDataChannel.getProperty().getConnectionState();
         String fillColor = (connectionState==ConnectionState.CONNECTED)?_defFillColor  : determineBackgroundColor(connectionState);
         widget.setPropertyValue(KnobModel.PROP_KNOB_COLOR, fillColor);
 

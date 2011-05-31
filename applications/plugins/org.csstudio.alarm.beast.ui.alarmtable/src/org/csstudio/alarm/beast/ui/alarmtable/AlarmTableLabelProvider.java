@@ -7,7 +7,7 @@
  ******************************************************************************/
 package org.csstudio.alarm.beast.ui.alarmtable;
 
-import org.csstudio.alarm.beast.AlarmTreePV;
+import org.csstudio.alarm.beast.client.AlarmTreePV;
 import org.csstudio.alarm.beast.ui.Messages;
 import org.csstudio.alarm.beast.ui.SeverityColorProvider;
 import org.eclipse.jface.viewers.CellLabelProvider;
@@ -22,15 +22,15 @@ public class AlarmTableLabelProvider extends CellLabelProvider
     /** Description of one column in the alarm table */
     enum ColumnInfo
     {
-        PV(Messages.AlarmPV, 80, 100),
-        DESCRIPTION(Messages.AlarmDescription, 80, 150),
-        TIME(Messages.AlarmTime, 80, 100),
+        PV(Messages.AlarmPV, 80, 50),
+        DESCRIPTION(Messages.AlarmDescription, 80, 100),
+        TIME(Messages.AlarmTime, 80, 70),
+        CURRENT_SEVERITY(Messages.AlarmCurrentSeverity, 50, 30),
+        CURRENT_STATUS(Messages.AlarmCurrentMessage, 45, 30),
         SEVERITY(Messages.AlarmSeverity, 50, 30),
         STATUS(Messages.AlarmMessage, 45, 30),
-        VALUE(Messages.AlarmValue, 45, 30),
-        CURRENT_SEVERITY(Messages.AlarmCurrentSeverity, 50, 30),
-        CURRENT_STATUS(Messages.AlarmCurrentMessage, 45, 30);
-        
+        VALUE(Messages.AlarmValue, 45, 30);
+
         final private String title;
 
         final private int width, weight;
@@ -81,7 +81,7 @@ public class AlarmTableLabelProvider extends CellLabelProvider
         this.color_provider = color_provider;
         this.column = column;
     }
-    
+
     /** @return Tooltip text for an alarm */
     @Override
     public String getToolTipText(final Object element)
@@ -96,7 +96,7 @@ public class AlarmTableLabelProvider extends CellLabelProvider
     {
         // AlarmTableProvider should always provide "AlarmTreePV" elements
         final AlarmTreePV alarm = (AlarmTreePV) cell.getElement();
-        
+
         switch (column)
         {
         case PV:

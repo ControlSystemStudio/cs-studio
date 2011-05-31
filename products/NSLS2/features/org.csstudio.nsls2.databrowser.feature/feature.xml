@@ -3,7 +3,7 @@
       id="org.csstudio.nsls2.databrowser.feature"
       label="Packaged Databrowser"
       version="1.0.0.qualifier"
-      provider-name="NSLS2">
+      provider-name="Kunal Shroff &lt;kshroff@bnl.gov&gt;, Gabriele Carcassi &lt;carcassi@bnl.gov&gt; - BNL">
 
    <description url="http://www.example.com/description">
       [Enter Feature Description here.]

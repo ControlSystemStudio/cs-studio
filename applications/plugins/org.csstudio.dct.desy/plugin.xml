@@ -14,5 +14,15 @@
          </attribute>
       </recordfunction>
    </extension>
+      <extension
+         point="org.csstudio.dct.exporters">
+      <exporter
+            class="org.csstudio.dct.export.internal.DbStatistics"
+            default="false"
+            description="Db Statistics"
+            icon="icons/exporter.png"
+            id="DbStatisticExporter">
+      </exporter>
+   </extension>
 
 </plugin>

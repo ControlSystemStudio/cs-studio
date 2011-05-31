@@ -25,16 +25,17 @@ package org.csstudio.ams.connector.email;
 
 import java.net.InetAddress;
 import java.util.Hashtable;
+
 import javax.jms.Connection;
 import javax.jms.ConnectionFactory;
 import javax.jms.JMSException;
 import javax.jms.MapMessage;
 import javax.jms.MessageProducer;
 import javax.jms.Session;
-// import javax.jms.Topic;
 import javax.naming.Context;
 import javax.naming.InitialContext;
 import javax.naming.NamingException;
+
 import org.csstudio.ams.AmsActivator;
 import org.csstudio.ams.AmsConstants;
 import org.csstudio.ams.Log;
@@ -48,11 +49,10 @@ import org.eclipse.core.runtime.preferences.IPreferencesService;
 import org.eclipse.equinox.app.IApplication;
 import org.eclipse.equinox.app.IApplicationContext;
 import org.eclipse.jface.preference.IPreferenceStore;
-import org.remotercp.common.servicelauncher.ServiceLauncher;
-import org.remotercp.ecf.ECFConstants;
-import org.remotercp.login.connection.HeadlessConnection;
+import org.remotercp.common.tracker.IGenericServiceListener;
+import org.remotercp.service.connection.session.ISessionService;
 
-public class EMailConnectorStart implements IApplication
+public class EMailConnectorStart implements IApplication, IGenericServiceListener<ISessionService>
 {
     public final static int STAT_INIT = 0;
     public final static int STAT_OK = 1;
@@ -144,8 +144,6 @@ public class EMailConnectorStart implements IApplication
 
         bStop = false;
         restart = false;
-        
-        connectToXMPPServer();
         
         while(bStop == false)
         {
@@ -243,27 +241,6 @@ public class EMailConnectorStart implements IApplication
             return EXIT_RESTART;
         else
             return EXIT_OK;
-    }
-
-    /**
-     * 
-     */
-    public void connectToXMPPServer()
-    {
-    	IPreferencesService pref = Platform.getPreferencesService();
-        String xmppUser = pref.getString(EMailConnectorPlugin.PLUGIN_ID, EMailConnectorPreferenceKey.P_XMPP_USER, "anonymous", null);
-        String xmppPassword = pref.getString(EMailConnectorPlugin.PLUGIN_ID, EMailConnectorPreferenceKey.P_XMPP_PASSWORD, "anonymous", null);
-        String xmppServer = pref.getString(EMailConnectorPlugin.PLUGIN_ID, EMailConnectorPreferenceKey.P_XMPP_SERVER, "krynfs.desy.de", null);
-
-        try
-        {
-            HeadlessConnection.connect(xmppUser, xmppPassword, xmppServer, ECFConstants.XMPP);
-            ServiceLauncher.startRemoteServices();     
-        }
-        catch(Exception e)
-        {
-            CentralLogger.getInstance().warn(this, "Could not connect to XMPP server: " + e.getMessage());
-        }
     }
 
     public int getStatus()
@@ -378,4 +355,23 @@ public class EMailConnectorStart implements IApplication
 
         return true;
     }
+    
+    public void bindService(ISessionService sessionService) {
+    	IPreferencesService pref = Platform.getPreferencesService();
+        String xmppUser = pref.getString(EMailConnectorPlugin.PLUGIN_ID, EMailConnectorPreferenceKey.P_XMPP_USER, "anonymous", null);
+        String xmppPassword = pref.getString(EMailConnectorPlugin.PLUGIN_ID, EMailConnectorPreferenceKey.P_XMPP_PASSWORD, "anonymous", null);
+        String xmppServer = pref.getString(EMailConnectorPlugin.PLUGIN_ID, EMailConnectorPreferenceKey.P_XMPP_SERVER, "krynfs.desy.de", null);
+   	
+    	try {
+			sessionService.connect(xmppUser, xmppPassword, xmppServer);
+		} catch (Exception e) {
+			CentralLogger.getInstance().warn(this,
+					"XMPP connection is not available, " + e.toString());
+		}
+    }
+    
+    public void unbindService(ISessionService service) {
+    	service.disconnect();
+    }
+    
 }

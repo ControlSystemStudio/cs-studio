@@ -45,13 +45,13 @@ import javax.annotation.Nonnull;
 
 import org.csstudio.config.ioconfig.model.INode;
 import org.csstudio.config.ioconfig.model.PV2IONameMatcherModelDBO;
+import org.csstudio.config.ioconfig.model.PersistenceException;
 import org.csstudio.config.ioconfig.model.Repository;
 import org.csstudio.config.ioconfig.model.pbmodel.ChannelDBO;
+import org.csstudio.platform.logging.CentralLogger;
 
 
 /**
- * TODO (hrickens) :
- *
  * @author hrickens
  * @author $Author: hrickens $
  * @version $Revision: 1.2 $
@@ -63,22 +63,30 @@ public class ProcessVariable2IONameImplemation implements ProcessVariable2IOName
      * {@inheritDoc}
      */
     @Override
-    public String getIOName(final String pvName) {
+    @CheckForNull
+    public String getIOName(@Nonnull final String pvName) {
         return null;
     }
 
     /**
      * {@inheritDoc}
+     * @throws PersistenceException 
      */
     @Override
-    public INode getNode(final String pvName) {
+    @CheckForNull
+    public INode getNode(@Nonnull final String pvName) throws PersistenceException {
         final ArrayList<String> list = new ArrayList<String>();
         list.add(pvName);
         final List<PV2IONameMatcherModelDBO> pv2ioNameMatchers = getPV2IONameMatchers(list);
         if(pv2ioNameMatchers!=null) {
             for (final PV2IONameMatcherModelDBO pv2ioNameMatcher : pv2ioNameMatchers) {
-                final ChannelDBO value = Repository.loadChannel(pv2ioNameMatcher.getIoName());
-                return value;
+                ChannelDBO value;
+                try {
+                    value = Repository.loadChannel(pv2ioNameMatcher.getIoName());
+                    return value;
+                } catch (PersistenceException e) {
+                    CentralLogger.getInstance().error(this, e);
+                }
             }
         }
         return null;
@@ -86,37 +94,35 @@ public class ProcessVariable2IONameImplemation implements ProcessVariable2IOName
 
     /**
      * {@inheritDoc}
+     * @throws PersistenceException 
+     * @throws NodeNotFoundException 
      */
     @Override
     @Nonnull
-    public Map<String, INode> getNodes(final Collection<String> pvName) {
+    public Map<String, INode> getNodes(@Nonnull final Collection<String> pvName) throws PersistenceException, NodeNotFoundException {
         final Map<String, INode> nodes = new HashMap<String, INode>();
         final List<PV2IONameMatcherModelDBO> pv2ioNameMatchers = getPV2IONameMatchers(pvName);
-        if(pv2ioNameMatchers!=null) {
+        if (pv2ioNameMatchers != null && !pv2ioNameMatchers.isEmpty()) {
             for (final PV2IONameMatcherModelDBO pv2ioNameMatcher : pv2ioNameMatchers) {
-                final ChannelDBO value = Repository.loadChannel(pv2ioNameMatcher.getIoName());
-                nodes.put(pv2ioNameMatcher.getEpicsName(), value);
+                ChannelDBO value;
+                value = Repository.loadChannel(pv2ioNameMatcher.getIoName());
+                if(value != null) {
+                    nodes.put(pv2ioNameMatcher.getEpicsName(), value);
+                } else {
+                    throw new NodeNotFoundException(NodeNotFoundException.State.DeviceDB);
+                }
             }
+        } else {
+            throw new NodeNotFoundException(NodeNotFoundException.State.DCT);
         }
         return nodes;
     }
 
     @CheckForNull
-    private PV2IONameMatcherModelDBO getPV2IONameMatcher(final String pvName){
-        final ArrayList<String > l = new ArrayList<String>();
-        l.add(pvName);
-        final List<PV2IONameMatcherModelDBO> matchers = Repository.loadPV2IONameMatcher(l);
-        if(matchers.size()>1) {
-            throw new IllegalStateException("Found more then one IOName for the pvName: "+pvName);
-        }
-        if(!matchers.isEmpty()) {
-            return matchers.get(0);
-        }
-         return null;
-    }
-    @CheckForNull
-    private List<PV2IONameMatcherModelDBO> getPV2IONameMatchers(final Collection<String> pvName){
-        final List<PV2IONameMatcherModelDBO> matchers = Repository.loadPV2IONameMatcher(pvName);
+    private List<PV2IONameMatcherModelDBO>
+            getPV2IONameMatchers(@Nonnull final Collection<String> pvName) throws PersistenceException {
+        List<PV2IONameMatcherModelDBO> matchers;
+        matchers = Repository.loadPV2IONameMatcher(pvName);
         return matchers;
     }
 

@@ -1,10 +1,13 @@
 package org.csstudio.diag.postanalyser;
 
+import java.util.logging.Level;
+
+import org.csstudio.data.values.IValue;
+import org.csstudio.data.values.ValueUtil;
 import org.csstudio.diag.postanalyser.model.Channel;
 import org.csstudio.diag.postanalyser.model.Model;
-import org.csstudio.platform.data.IValue;
-import org.csstudio.platform.data.ValueUtil;
-import org.csstudio.platform.model.IProcessVariableWithSamples;
+import org.csstudio.trends.databrowser2.ProcessVariableWithSamples;
+import org.csstudio.ui.util.dnd.ControlSystemDropTarget;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.ui.IWorkbench;
 import org.eclipse.ui.IWorkbenchPage;
@@ -22,9 +25,9 @@ public final class View extends ViewPart
 
     final private Model model = new Model();
     private GUI gui;
-    
+
     /** Called by <code>ObjectContribPopupAction</code> with received data. */
-    public static void activateWithPVs(final IProcessVariableWithSamples[] pvs)
+    public static void activateWithPVs(final ProcessVariableWithSamples[] pvs)
     {
         try
         {
@@ -34,15 +37,15 @@ public final class View extends ViewPart
             final View view = (View) page.showView(View.ID);
             if (view == null)
             {
-                Activator.getLogger().error("Cannot activate view"); //$NON-NLS-1$
+                Activator.getLogger().severe("Cannot activate view"); //$NON-NLS-1$
                 return;
             }
-            for (IProcessVariableWithSamples pv : pvs)
+            for (ProcessVariableWithSamples pv : pvs)
                 view.addPVSamples(pv);
         }
         catch (Exception ex)
         {
-            Activator.getLogger().error(ex);
+            Activator.getLogger().log(Level.SEVERE, "View activation error", ex); //$NON-NLS-1$
         }
     }
 
@@ -51,19 +54,25 @@ public final class View extends ViewPart
     public void createPartControl(final Composite parent)
     {
         gui = new GUI(model, parent);
-        
+
         // TODO Accept 'dropped' PVs?
-        // Does not work from Data Browser Config View;
-        // never see PV-with-samples
-//        new ProcessVariableWithSamplesDropTarget(gui.getMainControl())
-//        {
-//            @Override
-//            public void handleDrop(IProcessVariableWithSamples pv,
-//                    DropTargetEvent event)
-//            {
-//                addPVSamples(pv);
-//            }
-//        };
+        // As with the ProcessVariableDropTarget, this does not work.
+        // For an unknown reason, the dragEnter() event of the drop target
+        // never fires for 'parent' or gui.getMainControl().
+        // Maybe another type of receiving widget is needed,
+        // not Canvas?
+        new ControlSystemDropTarget(parent, ProcessVariableWithSamples.class)
+        {
+            @Override
+            public void handleDrop(final Object item)
+            {
+                if (item instanceof ProcessVariableWithSamples)
+                {
+                    final ProcessVariableWithSamples pv = (ProcessVariableWithSamples) item;
+                    addPVSamples(pv);
+                }
+            }
+        };
     }
 
     /** {@inheritDoc} */
@@ -72,12 +81,15 @@ public final class View extends ViewPart
     {
         gui.setFocus();
     }
-    
+
     /** Add samples of PV to model. */
-    private void addPVSamples(final IProcessVariableWithSamples pv)
+    private void addPVSamples(final ProcessVariableWithSamples pv)
     {
+        final String name = pv.getProcessVariable().getName();
+
         // Convert the sequence of IValue into simple doubles
-        final int N = pv.size();
+        final IValue[] samples = pv.getSamples();
+        final int N = samples.length;
         double time[] = new double[N];
         double value[] = new double[N];
         // This skips all samples that won't map to a number,
@@ -85,7 +97,7 @@ public final class View extends ViewPart
         int j = 0;
         for (int i = 0; i < N; ++i)
         {
-            final IValue v = pv.getSample(i);
+            final IValue v = samples[i];
             final double dbl = ValueUtil.getDouble(v);
             if (Double.isNaN(dbl) || Double.isInfinite(dbl))
                 continue;
@@ -96,7 +108,7 @@ public final class View extends ViewPart
         // Add as new channel to the model
         if (j == N)
         {
-            model.addChannel(new Channel(pv.getName(), time, value));
+            model.addChannel(new Channel(name, time, value));
             return;
         }
         // We skipped some values, so create "shorter" arrays
@@ -106,6 +118,6 @@ public final class View extends ViewPart
         System.arraycopy(value, 0, fixed_value, 0, j);
         time = null;
         value = null;
-        model.addChannel(new Channel(pv.getName(), fixed_time, fixed_value));
+        model.addChannel(new Channel(name, fixed_time, fixed_value));
     }
 }

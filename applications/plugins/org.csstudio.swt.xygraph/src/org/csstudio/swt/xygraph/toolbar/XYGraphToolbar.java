@@ -267,7 +267,7 @@ public class XYGraphToolbar extends Figure {
 		add(separator);
 	}
 	
-	class ToolbarSeparator extends Figure{
+	private static class ToolbarSeparator extends Figure{
 		
 		private final Color GRAY_COLOR = XYGraphMediaFactory.getInstance().getColor(
 				new RGB(130, 130, 130));

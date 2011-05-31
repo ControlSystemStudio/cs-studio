@@ -30,11 +30,13 @@ import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
 import org.apache.log4j.Logger;
-import org.csstudio.config.ioconfig.model.IOConifgActivator;
 import org.csstudio.config.ioconfig.model.FacilityDBO;
+import org.csstudio.config.ioconfig.model.IOConifgActivator;
 import org.csstudio.config.ioconfig.model.IocDBO;
+import org.csstudio.config.ioconfig.model.PersistenceException;
 import org.csstudio.config.ioconfig.model.pbmodel.ProfibusSubnetDBO;
 import org.csstudio.config.ioconfig.model.xml.ProfibusConfigXMLGenerator;
+import org.csstudio.config.ioconfig.view.DeviceDatabaseErrorDialog;
 import org.csstudio.config.ioconfig.view.ProfiBusTreeView;
 import org.csstudio.platform.logging.CentralLogger;
 import org.eclipse.core.runtime.preferences.DefaultScope;
@@ -46,8 +48,6 @@ import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.MessageBox;
 
 /**
- * TODO (hrickens) :
- * 
  * @author hrickens
  * @author $Author: $
  * @since 08.10.2010
@@ -65,40 +65,44 @@ public class CreateXMLConfigAction extends Action {
 
 	private void makeXMLFile(@Nullable final File path,
 			@Nullable final ProfibusSubnetDBO subnet) {
-		final ProfibusConfigXMLGenerator xml = new ProfibusConfigXMLGenerator(
-				subnet.getName());
-		xml.setSubnet(subnet);
-		final File xmlFile = new File(path, subnet.getName() + ".xml");
-		if (xmlFile.exists()) {
-			final MessageBox box = new MessageBox(Display.getDefault()
-					.getActiveShell(), SWT.ICON_WARNING | SWT.YES | SWT.NO);
-			box.setMessage("The file " + xmlFile.getName()
-					+ " exist! Overwrite?");
-			final int erg = box.open();
-			if (erg == SWT.YES) {
-				try {
-					xml.getXmlFile(xmlFile);
-				} catch (final IOException e) {
-					final MessageBox abortBox = new MessageBox(Display
-							.getDefault().getActiveShell(), SWT.ICON_WARNING
-							| SWT.ABORT);
-					abortBox.setMessage("The file " + xmlFile.getName()
-							+ " can not created!");
-					abortBox.open();
-				}
-			}
-		} else {
-			try {
-				xmlFile.createNewFile();
-				xml.getXmlFile(xmlFile);
-			} catch (final IOException e) {
-				final MessageBox abortBox = new MessageBox(Display.getDefault()
-						.getActiveShell(), SWT.ICON_WARNING | SWT.ABORT);
-				abortBox.setMessage("The file " + xmlFile.getName()
-						+ " can not created!");
-				abortBox.open();
-			}
-		}
+		final ProfibusConfigXMLGenerator xml = new ProfibusConfigXMLGenerator();
+		try {
+            xml.setSubnet(subnet);
+            final File xmlFile = new File(path, subnet.getName() + ".xml");
+            if (xmlFile.exists()) {
+                final MessageBox box = new MessageBox(Display.getDefault()
+                                                      .getActiveShell(), SWT.ICON_WARNING | SWT.YES | SWT.NO);
+                box.setMessage("The file " + xmlFile.getName()
+                               + " exist! Overwrite?");
+                final int erg = box.open();
+                if (erg == SWT.YES) {
+                    try {
+                        xml.getXmlFile(xmlFile);
+                    } catch (final IOException e) {
+                        final MessageBox abortBox = new MessageBox(Display
+                                                                   .getDefault().getActiveShell(), SWT.ICON_WARNING
+                                                                   | SWT.ABORT);
+                        abortBox.setMessage("The file " + xmlFile.getName()
+                                            + " can not created!");
+                        abortBox.open();
+                    }
+                }
+            } else {
+                try {
+                    xmlFile.createNewFile();
+                    xml.getXmlFile(xmlFile);
+                } catch (final IOException e) {
+                    final MessageBox abortBox = new MessageBox(Display.getDefault()
+                                                               .getActiveShell(), SWT.ICON_WARNING | SWT.ABORT);
+                    abortBox.setMessage("The file " + xmlFile.getName()
+                                        + " can not created!");
+                    abortBox.open();
+                }
+            }
+        } catch (PersistenceException e1) {
+            LOG.error("Database Error! Files not created.", e1);
+            DeviceDatabaseErrorDialog.open(null, "Can't remove node", e1);
+        }
 	}
 
 	@Override
@@ -113,7 +117,7 @@ public class CreateXMLConfigAction extends Action {
 		filterPath = dDialog.open();
 		final File path = new File(filterPath);
 		pref.put(filterPathKey, filterPath);
-		final Object selectedNode = _pbtv.getSelectedNode().getFirstElement();
+		final Object selectedNode = _pbtv.getSelectedNodes().getFirstElement();
 		if (selectedNode instanceof ProfibusSubnetDBO) {
 			final ProfibusSubnetDBO subnet = (ProfibusSubnetDBO) selectedNode;
 			LOG.info("Create XML for Subnet: " + subnet);
@@ -122,14 +126,14 @@ public class CreateXMLConfigAction extends Action {
 		} else if (selectedNode instanceof IocDBO) {
 			final IocDBO ioc = (IocDBO) selectedNode;
 			LOG.info("Create XML for Ioc: " + ioc);
-			for (final ProfibusSubnetDBO subnet : ioc.getProfibusSubnets()) {
+			for (final ProfibusSubnetDBO subnet : ioc.getChildren()) {
 				makeXMLFile(path, subnet);
 			}
 		} else if (selectedNode instanceof FacilityDBO) {
 			final FacilityDBO facility = (FacilityDBO) selectedNode;
 			LOG.info("Create XML for Facility: " + facility);
-			for (final IocDBO ioc : facility.getIoc()) {
-				for (final ProfibusSubnetDBO subnet : ioc.getProfibusSubnets()) {
+			for (final IocDBO ioc : facility.getChildren()) {
+				for (final ProfibusSubnetDBO subnet : ioc.getChildren()) {
 					makeXMLFile(path, subnet);
 				}
 			}

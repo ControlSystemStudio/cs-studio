@@ -1,5 +1,6 @@
 package org.csstudio.sds.components.ui.internal.figures;
 
+import org.csstudio.platform.ui.util.CustomMediaFactory;
 import org.csstudio.sds.ui.figures.BorderAdapter;
 import org.csstudio.sds.ui.figures.CrossedOutAdapter;
 import org.csstudio.sds.ui.figures.IBorderEquippedWidget;
@@ -7,405 +8,396 @@ import org.csstudio.sds.ui.figures.ICrossedFigure;
 import org.csstudio.sds.ui.figures.IRhombusEquippedWidget;
 import org.csstudio.sds.ui.figures.RhombusAdapter;
 import org.eclipse.core.runtime.IAdaptable;
-import org.eclipse.draw2d.BorderLayout;
-import org.eclipse.draw2d.Figure;
 import org.eclipse.draw2d.Graphics;
 import org.eclipse.draw2d.GridData;
 import org.eclipse.draw2d.GridLayout;
 import org.eclipse.draw2d.Label;
 import org.eclipse.draw2d.LineBorder;
 import org.eclipse.draw2d.RectangleFigure;
-import org.eclipse.draw2d.geometry.Rectangle;
 import org.eclipse.swt.graphics.Color;
 import org.eclipse.swt.graphics.Font;
 
 /**
  * Sixteen Bit Binary Bar widget figure.
- *
+ * 
  * @author Alen Vrecko, Joerg Rathlev
  */
-public class RefreshableSixteenBinaryBarFigure extends RectangleFigure implements IAdaptable {
+public class RefreshableSixteenBinaryBarFigure extends RectangleFigure
+		implements IAdaptable {
 
-    /**
-     * The orientation (horizontal==true | vertical==false).
-     */
-    private boolean _orientationHorizontal = true;
+	/**
+	 * The orientation (horizontal==true | vertical==false).
+	 */
+	private boolean _orientationHorizontal = true;
 
-    /**
-     * A border adapter, which covers all border handlings.
-     */
-    private IBorderEquippedWidget _borderAdapter;
+	/**
+	 * A border adapter, which covers all border handlings.
+	 */
+	private IBorderEquippedWidget _borderAdapter;
 
-    private int _value;
+	private int _value;
 
-    private Color _onColor;
+	private int _internalFrameThickness;
 
-    private Color _offColor;
+	private Color _internalFrameColor;
 
-    private int _internalFrameThickness;
+	private OnOffBox[] _boxes;
 
-    private Color _internalFrameColor;
+	private GridLayout _layout;
 
-    private OnOffBox[] _boxes;
+	private int _bitRangeFrom = 0;
 
-    private GridLayout _layout;
+	private int _bitRangeTo = 15;
 
-    private int _bitRangeFrom = 0;
+	private boolean _showLabels;
 
-    private int _bitRangeTo = 15;
+	private Font _labelFont;
 
-    private boolean _showLabels;
+	private Color _labelColor;
 
-    private Font _labelFont;
+	private ICrossedFigure _crossedOutAdapter;
 
-    private Color _labelColor;
+	private IRhombusEquippedWidget _rhombusAdapter;
 
-    private ICrossedFigure _crossedOutAdapter;
+	private Color _onColor;
 
-    private IRhombusEquippedWidget _rhombusAdapter;
+	private Color _offColor;
 
-    /**
-     *
-     * Constructor.
-     */
-    public RefreshableSixteenBinaryBarFigure() {
-        createLayoutAndBoxes();
-    }
+	/**
+	 * 
+	 * Constructor.
+	 */
+	public RefreshableSixteenBinaryBarFigure() {
+		createLayoutAndBoxes();
+	}
 
-    @Override
-    public void paint(final Graphics graphics) {
-        super.paint(graphics);
-        Rectangle bound = getBounds().getCopy();
-        _crossedOutAdapter.paint(graphics);
-        _rhombusAdapter.paint(graphics);
+	@Override
+	public void paint(final Graphics graphics) {
+		super.paint(graphics);
+		_crossedOutAdapter.paint(graphics);
+		_rhombusAdapter.paint(graphics);
+	}
 
+	/**
+	 * Creates the layout and the boxes for this figure.
+	 */
+	private void createLayoutAndBoxes() {
+		int column = 1;
+		if (_orientationHorizontal) {
+			column = numberOfBits();
+		}
+		_layout = new GridLayout(column, false);
+		_layout.horizontalSpacing = 0;
+		_layout.verticalSpacing = 0;
+		_layout.marginHeight = 0;
+		_layout.marginWidth = 0;
 
-    }
+		setLayoutManager(_layout);
 
-    /**
-     * Creates the layout and the boxes for this figure.
-     */
-    private void createLayoutAndBoxes() {
-        int column = 1;
-        if (_orientationHorizontal) {
-            column = numberOfBits();
-        }
-        _layout = new GridLayout(column, false);
-        _layout.horizontalSpacing = 0;
-        _layout.verticalSpacing = 0;
-        _layout.marginHeight = 0;
-        _layout.marginWidth = 0;
+		_boxes = new OnOffBox[numberOfBits()];
+		for (int i = 0; i < numberOfBits(); i++) {
+			OnOffBox box = new OnOffBox(_bitRangeFrom + i);
+			box.setShowLabel(_showLabels);
+			box.setFont(_labelFont);
+			box.setForegroundColor(_labelColor);
+			box.setOnColor(_onColor);
+			box.setOffColor(_offColor);
+			applyInternalBorderSettings(box);
+			add(box);
 
-        setLayoutManager(_layout);
+			GridData gridData = new GridData();
+			gridData.horizontalAlignment = GridData.FILL;
+			gridData.verticalAlignment = GridData.FILL;
+			gridData.grabExcessVerticalSpace = true;
+			gridData.grabExcessHorizontalSpace = true;
 
-        _boxes = new OnOffBox[numberOfBits()];
-        for (int i = 0; i < numberOfBits(); i++) {
-            OnOffBox box = new OnOffBox(_bitRangeFrom + i);
-            box.setShowLabel(_showLabels);
-            box.setLabelFont(_labelFont);
-            box.setLabelColor(_labelColor);
-            applyInternalBorderSettings(box);
-            add(box);
+			setConstraint(box, gridData);
+			_boxes[i] = box;
+		}
+	}
 
-            GridData gridData = new GridData();
-            gridData.horizontalAlignment = GridData.FILL;
-            gridData.verticalAlignment = GridData.FILL;
-            gridData.grabExcessVerticalSpace = true;
-            gridData.grabExcessHorizontalSpace = true;
+	/**
+	 * Removes the boxes from this figure, then recreates them and refreshes the
+	 * layout.
+	 */
+	private void recreateLayoutAndBoxes() {
+		removeBoxes();
+		createLayoutAndBoxes();
+		updateBoxes();
+	}
 
-            setConstraint(box, gridData);
-            _boxes[i] = box;
-        }
-    }
+	/**
+	 * Removes the boxes from this figure.
+	 */
+	private void removeBoxes() {
+		removeAll();
+	}
 
-    /**
-     * Removes the boxes from this figure, then recreates them and refreshes the layout.
-     */
-    private void recreateLayoutAndBoxes() {
-        removeBoxes();
-        createLayoutAndBoxes();
-        updateBoxes();
-    }
+	/**
+	 * Updates the on/off state of the boxes based on the current value.
+	 */
+	private void updateBoxes() {
+		int multi = 1;
+		if (_bitRangeFrom > _bitRangeTo) {
+			multi = -1;
+		}
+		for (int i = 0; i < numberOfBits(); i++) {
+			_boxes[i]
+					.setOn(((1 << (_bitRangeFrom + (multi * i))) & _value) != 0);
+		}
+	}
 
-    /**
-     * Removes the boxes from this figure.
-     */
-    private void removeBoxes() {
-        removeAll();
-    }
+	/**
+	 * Sets the orientation (horizontal==true | vertical==false).
+	 * 
+	 * @param horizontal
+	 *            The orientation.
+	 */
+	public void setHorizontal(final boolean horizontal) {
+		_orientationHorizontal = horizontal;
 
-    /**
-     * Updates the on/off state of the boxes based on the current value.
-     */
-    private void updateBoxes() {
-        int multi = 1;
-        if (_bitRangeFrom > _bitRangeTo) {
-            multi = -1;
-        }
-        for (int i = 0; i < numberOfBits(); i++) {
-            _boxes[i].setOn( ( (1 << (_bitRangeFrom + (multi * i))) & _value) != 0);
-        }
-    }
+		if (_orientationHorizontal) {
+			_layout.numColumns = numberOfBits();
+		} else {
+			_layout.numColumns = 1;
+		}
 
-    /**
-     * Sets the orientation (horizontal==true | vertical==false).
-     *
-     * @param horizontal The orientation.
-     */
-    public void setHorizontal(final boolean horizontal) {
-        _orientationHorizontal = horizontal;
+		revalidate();
 
-        if (_orientationHorizontal) {
-            _layout.numColumns = numberOfBits();
-        } else {
-            _layout.numColumns = 1;
-        }
+	}
 
-        revalidate();
+	/**
+	 * 
+	 * {@inheritDoc}
+	 */
+	@SuppressWarnings("rawtypes")
+	public final Object getAdapter(final Class adapter) {
+		if (adapter == IBorderEquippedWidget.class) {
+			if (_borderAdapter == null) {
+				_borderAdapter = new BorderAdapter(this);
+			}
+			return _borderAdapter;
+		} else if (adapter == ICrossedFigure.class) {
+			if (_crossedOutAdapter == null) {
+				_crossedOutAdapter = new CrossedOutAdapter(this);
+			}
+			return _crossedOutAdapter;
+		} else if (adapter == IRhombusEquippedWidget.class) {
+			if (_rhombusAdapter == null) {
+				_rhombusAdapter = new RhombusAdapter(this);
+			}
+			return _rhombusAdapter;
+		}
 
-    }
+		return null;
+	}
 
-    /**
-     *
-     * {@inheritDoc}
-     */
-    @SuppressWarnings("unchecked")
-    public final Object getAdapter(final Class adapter) {
-        if (adapter == IBorderEquippedWidget.class) {
-            if (_borderAdapter == null) {
-                _borderAdapter = new BorderAdapter(this);
-            }
-            return _borderAdapter;
-        } else if(adapter == ICrossedFigure.class) {
-            if(_crossedOutAdapter==null) {
-                _crossedOutAdapter = new CrossedOutAdapter(this);
-            }
-            return _crossedOutAdapter;
-        } else if(adapter == IRhombusEquippedWidget.class) {
-            if(_rhombusAdapter==null) {
-                _rhombusAdapter = new RhombusAdapter(this);
-            }
-            return _rhombusAdapter;
-        }
+	/**
+	 * 
+	 * @param showLabels
+	 *            .
+	 */
+	public void setShowLabels(final Boolean showLabels) {
+		_showLabels = showLabels;
+		for (OnOffBox box : _boxes) {
+			box.setShowLabel(showLabels);
+		}
+	}
 
-        return null;
-    }
+	/**
+	 * 
+	 * @param newValue
+	 *            the new Binary value
+	 */
+	public void setValue(final Integer newValue) {
+		_value = newValue;
+		updateBoxes();
+	}
 
-    /**
-     *
-     * @param showLabels .
-     */
-    public void setShowLabels(final Boolean showLabels) {
-        _showLabels = showLabels;
-        for (OnOffBox box : _boxes) {
-            box.setShowLabel(showLabels);
-        }
-    }
+	/**
+	 * 
+	 * @param font
+	 *            .
+	 */
+	public void setLabelFont(final Font font) {
+		_labelFont = font;
+		for (OnOffBox box : _boxes) {
+			box.setFont(font);
+		}
+	}
 
-    /**
-     *
-     * @param newValue the new Binary value
-     */
-    public void setValue(final Integer newValue) {
-        _value = newValue;
-        updateBoxes();
-    }
+	/**
+	 * 
+	 * @param onColor
+	 *            .
+	 */
+	public void setOnColor(final Color onColor) {
+		this._onColor = onColor;
+		if (onColor != null) {
+			for (OnOffBox box : _boxes) {
+				box.setOnColor(onColor);
+			}
+		}
+	}
 
-    /**
-     *
-     * @param font .
-     */
-    public void setLabelFont(final Font font) {
-        _labelFont = font;
-        for (OnOffBox box : _boxes) {
-            box.setLabelFont(font);
-        }
-    }
+	/**
+	 * 
+	 * @param offColor
+	 *            .
+	 */
+	public void setOffColor(final Color offColor) {
+		this._offColor = offColor;
+		if (offColor != null) {
+			for (OnOffBox box : _boxes) {
+				box.setOffColor(offColor);
+			}
+		}
+	}
 
-    /**
-     *
-     * @param onColor .
-     */
-    public void setOnColor(final Color onColor) {
-        if (onColor == null) {
-            return;
-        }
-        _onColor = onColor;
-    }
+	/**
+	 * 
+	 * @param internalFrameThickness
+	 *            .
+	 */
+	public void setInternalBorderThickness(final int internalFrameThickness) {
+		_internalFrameThickness = internalFrameThickness;
+		for (OnOffBox box : _boxes) {
+			applyInternalBorderSettings(box);
+		}
+	}
 
-    /**
-     *
-     * @param offColor .
-     */
-    public void setOffColor(final Color offColor) {
-        if (offColor == null) {
-            return;
-        }
-        _offColor = offColor;
-    }
+	/**
+	 * 
+	 * @param internalFrameColor
+	 *            .
+	 */
+	public void setInternalBorderColor(final Color internalFrameColor) {
+		_internalFrameColor = internalFrameColor;
+		for (OnOffBox box : _boxes) {
+			applyInternalBorderSettings(box);
+		}
+	}
 
-    /**
-     *
-     * @param internalFrameThickness .
-     */
-    public void setInternalBorderThickness(final int internalFrameThickness) {
-        _internalFrameThickness = internalFrameThickness;
-        for (OnOffBox box : _boxes) {
-            applyInternalBorderSettings(box);
-        }
-    }
+	/**
+	 * Applies the current settings for the internal frame thickness and color
+	 * to the given box.
+	 * 
+	 * @param box
+	 *            the box.
+	 */
+	private void applyInternalBorderSettings(final OnOffBox box) {
+		if (_internalFrameColor != null) {
+			box.setInternalFrame(_internalFrameThickness, _internalFrameColor);
+		} else {
+			box.setInternalFrame(_internalFrameThickness, null);
+		}
+	}
 
-    /**
-     *
-     * @param internalFrameColor .
-     */
-    public void setInternalBorderColor(final Color internalFrameColor) {
-        _internalFrameColor = internalFrameColor;
-        for (OnOffBox box : _boxes) {
-            applyInternalBorderSettings(box);
-        }
-    }
+	/**
+	 * @param labelColor
+	 *            .
+	 */
+	public final void setLabelColor(final Color labelColor) {
+		if (labelColor == null) {
+			return;
+		}
+		_labelColor = labelColor;
 
-    /**
-     * Applies the current settings for the internal frame thickness and color to the given box.
-     *
-     * @param box the box.
-     */
-    private void applyInternalBorderSettings(final OnOffBox box) {
-        if (_internalFrameColor != null) {
-            box.setInternalFrame(_internalFrameThickness, _internalFrameColor);
-        } else {
-            box.setInternalFrame(_internalFrameThickness, null);
-        }
-    }
+		for (OnOffBox box : _boxes) {
+			box.setForegroundColor(_labelColor);
+		}
+	}
 
-    /**
-     * @param labelColor .
-     */
-    public final void setLabelColor(final Color labelColor) {
-        if (labelColor == null) {
-            return;
-        }
-        _labelColor = labelColor;
+	/**
+	 * Sets the range of bits that are displayed by this figure.
+	 * 
+	 * @param from
+	 *            the index of the lowest bit to display.
+	 * @see #setBitRangeTo(int)
+	 */
+	public void setBitRangeFrom(final int from) {
+		this._bitRangeFrom = from;
+		recreateLayoutAndBoxes();
+	}
 
-        for (OnOffBox box : _boxes) {
-            box.setLabelColor(_labelColor);
-        }
-    }
+	/**
+	 * Sets the range of bits that are displayed by this figure.
+	 * 
+	 * @param to
+	 *            the index of the highest bit to display.
+	 * @see #setBitRangeFrom(int)
+	 */
+	public void setBitRangeTo(final int to) {
+		this._bitRangeTo = to;
+		recreateLayoutAndBoxes();
+	}
 
-    /**
-     * Sets the range of bits that are displayed by this figure.
-     *
-     * @param from the index of the lowest bit to display.
-     * @see #setBitRangeTo(int)
-     */
-    public void setBitRangeFrom(final int from) {
-        this._bitRangeFrom = from;
-        recreateLayoutAndBoxes();
-    }
+	/**
+	 * Returns the number of bits displayed in this figure.
+	 * 
+	 * @return the number of bits displayed in this figure.
+	 */
+	private int numberOfBits() {
+		if (_bitRangeTo > _bitRangeFrom) {
+			return _bitRangeTo - _bitRangeFrom + 1;
+		}
+		return _bitRangeFrom - _bitRangeTo + 1;
+	}
 
-    /**
-     * Sets the range of bits that are displayed by this figure.
-     *
-     * @param to the index of the highest bit to display.
-     * @see #setBitRangeFrom(int)
-     */
-    public void setBitRangeTo(final int to) {
-        this._bitRangeTo = to;
-        recreateLayoutAndBoxes();
-    }
+	private class OnOffBox extends Label {
 
-    /**
-     * Returns the number of bits displayed in this figure.
-     *
-     * @return the number of bits displayed in this figure.
-     */
-    private int numberOfBits() {
-        if (_bitRangeTo > _bitRangeFrom) {
-            return _bitRangeTo - _bitRangeFrom + 1;
-        }
-        return _bitRangeFrom - _bitRangeTo + 1;
-    }
+		private final int _bitIndex;
 
-    /**
-     * A box used to display the state of a single bit. A box is in either on or off state, and
-     * displays in a different color depending on that state. It can also optionally display a label
-     * with the index of the bit it displays.
-     */
-    private class OnOffBox extends Figure {
+		private Color _onColor;
 
-        private final Label _label;
-        private final int _bitIndex;
-        private boolean _isOn;
+		private Color _offColor;
 
-        public OnOffBox(final int bitIndex) {
-            this._bitIndex = bitIndex;
+		private boolean _isOn;
 
-            BorderLayout layout = new BorderLayout();
-            layout.setVerticalSpacing(0);
+		public OnOffBox(int bitIndex) {
+			this._bitIndex = bitIndex;
+			_onColor = CustomMediaFactory.getInstance().getColor(0, 150, 150);
+			_offColor = CustomMediaFactory.getInstance().getColor(200, 200, 200);
+			this.setOpaque(true);
+		}
 
-            setBorder(new LineBorder(0));
-            setLayoutManager(layout);
+		public void setOnColor(final Color onColor) {
+			if (onColor != null && !onColor.equals(_onColor)) {
+				_onColor = onColor;
+				setOn(_isOn);
+			}
+		}
 
-            _label = new Label("");
+		public void setOffColor(final Color offColor) {
+			if (offColor != null && !offColor.equals(_offColor)) {
+				_offColor = offColor;
+				setOn(_isOn);
+			}
+		}
 
-            add(_label);
-            setConstraint(_label, BorderLayout.CENTER);
-        }
+		public void setInternalFrame(int thickness, Color color) {
+			if (color != null) {
+				if (thickness > 0) {
+					setBorder(new LineBorder(color, thickness));
+				} else {
+					setBorder(null);
+				}
+			}
+		}
 
-        public void setLabelFont(final Font font) {
-            _label.setFont(font);
-        }
+		public void setOn(boolean isOn) {
+			this._isOn = isOn;
+			setBackgroundColor(_isOn ? _onColor : _offColor);
+		}
 
-        @Override
-        protected void paintFigure(final Graphics graphics) {
-            super.paintFigure(graphics);
-            setBackgroundColor(_isOn ? _onColor : _offColor);
-            graphics.fillRectangle(getClientArea());
-        }
+		public void setShowLabel(boolean show) {
+			if (show) {
+				setText(String.format("%02d", _bitIndex));
+			} else {
+				setText("");
+			}
+		}
 
-        public void setLabelColor(final Color color) {
-            _label.setBackgroundColor(color);
-            _label.setForegroundColor(color);
-        }
-
-        public void setInternalFrame(final int thickness, final Color color) {
-            if (color != null) {
-                if (thickness > 0) {
-                    if (color != null) {
-                        setBorder(new LineBorder(color, thickness));
-                    } else {
-                        setBorder(new LineBorder(thickness));
-                    }
-                } else {
-                    setBorder(null);
-                }
-                revalidate();
-            }
-        }
-
-        /**
-         * Sets whether this box is on.
-         *
-         * @param isOn whether this box is on.
-         */
-        public void setOn(final boolean isOn) {
-            this._isOn = isOn;
-        }
-
-        /**
-         * Sets whether this box displays a label.
-         *
-         * @param show whether this box displays a label.
-         */
-        public void setShowLabel(final boolean show) {
-            if (show) {
-                _label.setText(String.format("%02d", _bitIndex));
-            } else {
-                _label.setText("");
-            }
-        }
-
-    }
+	}
 
 }

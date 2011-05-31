@@ -5,12 +5,13 @@ package org.csstudio.utility.channel.actions;
 
 import static org.csstudio.utility.channel.CSSChannelUtils.getCSSChannelTagNames;
 
+import gov.bnl.channelfinder.api.Channel;
+
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.TreeSet;
 
-import org.csstudio.utility.channel.ICSSChannel;
 import org.eclipse.core.runtime.jobs.Job;
 import org.eclipse.jface.action.IAction;
 import org.eclipse.jface.viewers.ISelection;
@@ -27,14 +28,14 @@ import org.eclipse.ui.dialogs.ListSelectionDialog;
 public class RemoveTagAction implements IObjectActionDelegate {
 
 	private Shell shell;
-	private Collection<ICSSChannel> channels;
+	private Collection<Channel> channels;
 
 	/**
 	 * 
 	 */
 	public RemoveTagAction() {
 		super();
-		this.channels = new HashSet<ICSSChannel>();
+		this.channels = new HashSet<Channel>();
 	}
 
 	/*
@@ -88,7 +89,7 @@ public class RemoveTagAction implements IObjectActionDelegate {
 		if (selection != null & selection instanceof IStructuredSelection) {
 			IStructuredSelection strucSelection = (IStructuredSelection) selection;
 			channels.clear();
-			for (Iterator<ICSSChannel> iterator = strucSelection.iterator(); iterator
+			for (Iterator<Channel> iterator = strucSelection.iterator(); iterator
 					.hasNext();) {
 				channels.add(iterator.next());
 			}

@@ -8,7 +8,7 @@ import org.csstudio.alarm.table.SendAcknowledge;
 import org.csstudio.alarm.table.dataModel.AbstractMessageList;
 import org.csstudio.alarm.table.dataModel.AlarmMessage;
 import org.csstudio.alarm.table.dataModel.BasicMessage;
-import org.csstudio.platform.security.SecurityFacade;
+import org.csstudio.auth.security.SecurityFacade;
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.viewers.TableViewer;
 import org.eclipse.swt.SWT;

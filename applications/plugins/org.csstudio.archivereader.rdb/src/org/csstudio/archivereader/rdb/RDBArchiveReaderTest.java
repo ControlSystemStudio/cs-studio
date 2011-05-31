@@ -1,3 +1,10 @@
+/*******************************************************************************
+ * Copyright (c) 2010 Oak Ridge National Laboratory.
+ * All rights reserved. This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License v1.0
+ * which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-v10.html
+ ******************************************************************************/
 package org.csstudio.archivereader.rdb;
 
 import static org.junit.Assert.assertEquals;
@@ -18,12 +25,11 @@ import oracle.jdbc.OracleTypes;
 import org.csstudio.archivereader.ArchiveInfo;
 import org.csstudio.archivereader.ArchiveReader;
 import org.csstudio.archivereader.ValueIterator;
-import org.csstudio.platform.data.IMetaData;
-import org.csstudio.platform.data.ITimestamp;
-import org.csstudio.platform.data.IValue;
-import org.csstudio.platform.data.TimestampFactory;
+import org.csstudio.data.values.IMetaData;
+import org.csstudio.data.values.ITimestamp;
+import org.csstudio.data.values.IValue;
+import org.csstudio.data.values.TimestampFactory;
 import org.csstudio.platform.utility.rdb.RDBUtil;
-import org.csstudio.platform.utility.rdb.TimeWarp;
 import org.junit.Ignore;
 import org.junit.Test;
 
@@ -43,14 +49,14 @@ public class RDBArchiveReaderTest
         "RFQ_Vac:IG_2:P";
     final private static String WAVEFORM_NAME = "PPS_SM:SF:Emi_PM";
     final private static String STORED_PROCEDURE = "chan_arch_sns.archive_reader_pkg";
-    
+
     final private static double TIMERANGE_SECONDS = 60*60*24*14;
     final private static int BUCKETS = 50;
-    
+
     final private static boolean dump = false;
 
     final private static SimpleDateFormat parser = new SimpleDateFormat("yyyy/MM/dd");
-    
+
     /** Basic connection */
     @Ignore
     @Test
@@ -113,7 +119,7 @@ public class RDBArchiveReaderTest
         }
     }
 
-    
+
     /** Locate channels by pattern */
     @Ignore
     @Test
@@ -127,10 +133,10 @@ public class RDBArchiveReaderTest
             scheduleCancellation(archive, 1.0);
             String names[] = archive.getNamesByRegExp(1, "CCL_LLRF:IOC.:Load");
             assertEquals(0, names.length);
-            
+
             System.out.println("Channels matching a regular expression:");
             names = archive.getNamesByRegExp(1, "CCL_LLRF:IOC.:Load");
-            
+
             for (String name : names)
                 System.out.println(name);
             assertEquals(4, names.length);
@@ -140,7 +146,7 @@ public class RDBArchiveReaderTest
             archive.close();
         }
     }
-    
+
     /** Get raw data for scalar */
     @Test
     @Ignore
@@ -154,7 +160,7 @@ public class RDBArchiveReaderTest
             final ITimestamp end = TimestampFactory.now();
             final ITimestamp start = TimestampFactory.fromDouble(end.toDouble() - TIMERANGE_SECONDS);
             final ValueIterator values = archive.getRawValues(0, SCALAR_NAME, start, end);
-            
+
             if (dump)
             {
                 IMetaData meta = null;
@@ -197,7 +203,7 @@ public class RDBArchiveReaderTest
             System.out.println("Raw samples for " + WAVEFORM_NAME + ":");
             final ITimestamp end = TimestampFactory.now();
             final ITimestamp start = TimestampFactory.fromDouble(end.toDouble() - 60*60*0.5); // 0.5 hours
-            
+
             // Waveform readout seems to take about 30 seconds, cancel in the middle
             scheduleCancellation(archive, 10.0);
             final ValueIterator values = archive.getRawValues(0, WAVEFORM_NAME, start, end);
@@ -217,7 +223,7 @@ public class RDBArchiveReaderTest
             archive.close();
         }
     }
-    
+
     /** Get optimized data for scalar */
     @Test
     @Ignore
@@ -268,7 +274,7 @@ public class RDBArchiveReaderTest
             // Start time before, end after start of SNS Oracle data
             final ITimestamp start = TimestampFactory.fromMillisecs(parser.parse("2009/04/01").getTime());
             final ITimestamp end = TimestampFactory.fromMillisecs(parser.parse("2009/04/16").getTime());
-                        
+
             final ValueIterator values = archive.getOptimizedValues(0, SCALAR_NAME, start, end, BUCKETS);
             IMetaData meta = null;
             while (values.hasNext())
@@ -303,7 +309,7 @@ public class RDBArchiveReaderTest
             }
         }, 2000);
     }
-    
+
     /** Directly call the stored procedure */
     @Test
     @Ignore
@@ -311,9 +317,9 @@ public class RDBArchiveReaderTest
     {
         final ITimestamp end = TimestampFactory.now();
         final ITimestamp start = TimestampFactory.fromDouble(end.toDouble() - TIMERANGE_SECONDS);
-        
+
         RDBUtil rdb = RDBUtil.connect(URL, USER, PASSWORD, false);
-        
+
         // Get channel id
         final PreparedStatement stmt = rdb.getConnection().prepareStatement("SELECT channel_id FROM chan_arch.channel WHERE name=?");
         stmt.setString(1, SCALAR_NAME);
@@ -322,7 +328,7 @@ public class RDBArchiveReaderTest
         final int channel_id = result.getInt(1);
         System.out.println(SCALAR_NAME + " ID = " + channel_id);
         stmt.close();
-        
+
         // Call stored procedure
         // Jeff's
 //        CallableStatement statement = rdb.getConnection().prepareCall(
@@ -336,10 +342,10 @@ public class RDBArchiveReaderTest
             "{ ? = call chan_arch_sns.archive_reader_pkg.get_browser_data(?, ?, ?, ?) }");
         statement.registerOutParameter(1, OracleTypes.CURSOR);
         statement.setInt(2, channel_id);
-        statement.setTimestamp(3, TimeWarp.getSQLTimestamp(start));
-        statement.setTimestamp(4, TimeWarp.getSQLTimestamp(end));
+        statement.setTimestamp(3, start.toSQLTimestamp());
+        statement.setTimestamp(4, end.toSQLTimestamp());
         statement.setInt(5, BUCKETS);
-        
+
         statement.setFetchSize(10000);
         final long bench_start = System.currentTimeMillis();
         statement.execute();
@@ -356,7 +362,7 @@ public class RDBArchiveReaderTest
                     if (i > 1)
                         System.out.print(", ");
                     if (meta.getColumnName(i).equals("SMPL_TIME"))
-                        System.out.print(meta.getColumnName(i) + ": " + TimeWarp.getCSSTimestamp(result.getTimestamp(i)));
+                        System.out.print(meta.getColumnName(i) + ": " + TimestampFactory.fromSQLTimestamp(result.getTimestamp(i)));
                     else
                         System.out.print(meta.getColumnName(i) + ": " + result.getString(i));
                 }
@@ -379,7 +385,7 @@ public class RDBArchiveReaderTest
         final double secs_total = (bench_lap2 - bench_start) / 1000.0;
         System.out.println("Query: " + secs_query);
         System.out.println("Total: " + secs_total);
-        
+
         statement.close();
         rdb.close();
     }
@@ -405,7 +411,7 @@ public class RDBArchiveReaderTest
         final ResultSet result = statement.executeQuery();
         // - Network sniffer:
         // Client -> Oracle: SELECT ....
-        // Oracle -> Client: Result contains columns time SMPL_TIME, int SEVERITY_ID, ... 
+        // Oracle -> Client: Result contains columns time SMPL_TIME, int SEVERITY_ID, ...
         // Client -> Oracle: OK, send me the data
         // - then a long pause, like 180 seconds.
         // - No network traffic, client waits in executeQuery(), until suddenly

@@ -1,17 +1,28 @@
+/*******************************************************************************
+ * Copyright (c) 2010 Oak Ridge National Laboratory.
+ * All rights reserved. This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License v1.0
+ * which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-v10.html
+ ******************************************************************************/
 package org.csstudio.swt.widgets.figures;
 
 import java.beans.BeanInfo;
 import java.beans.IntrospectionException;
+import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.EventListener;
 import java.util.List;
+import java.util.logging.Level;
 
-import org.csstudio.platform.logging.CentralLogger;
-import org.csstudio.platform.ui.util.CustomMediaFactory;
+import org.csstudio.swt.widgets.Activator;
 import org.csstudio.swt.widgets.introspection.ActionButtonIntrospector;
 import org.csstudio.swt.widgets.introspection.Introspectable;
+import org.csstudio.swt.widgets.util.AbstractInputStreamRunnable;
+import org.csstudio.swt.widgets.util.IJobErrorHandler;
 import org.csstudio.swt.widgets.util.ResourceUtil;
+import org.csstudio.ui.util.CustomMediaFactory;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.draw2d.ColorConstants;
 import org.eclipse.draw2d.Cursors;
@@ -47,68 +58,68 @@ public class ActionButtonFigure extends Figure implements Introspectable{
 	/**
 	 * When it was set as armed, action will be fired when mouse released.
 	 */
-	private boolean armed;
-	
+	private boolean armed = false;
+
 	/**
 	 * The status of mouse button.
 	 */
-	private boolean mousePressed;
-	
-	
+	private boolean mousePressed = false;
+
+
 	/**
 	 * Default label font.
 	 */
 	public static final Font FONT = CustomMediaFactory.getInstance().getFont(
-			CustomMediaFactory.FONT_ARIAL); //$NON-NLS-1$
-	
+			CustomMediaFactory.FONT_ARIAL);
+
 	/**
 	 * The Label for the Button.
 	 */
 	private Label label;
 
-	private boolean toggleStyle;
+	private boolean toggleStyle = false;
 
-	private boolean selected;
-	
-	private boolean toggled;
+	private boolean selected = false;
+
+	private boolean toggled =false;
 
 	/**
 	 * An Array, which contains the PositionConstants for Center, Top, Bottom, Left, Right.
 	 */
 	private final int[] alignments = new int[] {PositionConstants.CENTER, PositionConstants.TOP, PositionConstants.BOTTOM, PositionConstants.LEFT, PositionConstants.RIGHT};
-	
+
 	private boolean runMode = false;
 
 	private List<ButtonActionListener> listeners;
-	
+
 	private Image image, grayImage;
-	
-	
+
+
 	private IPath imagePath;
-	
+
 	private int textAlignment;
 	public ActionButtonFigure(boolean runMode) {
 		setEnabled(false);
 		this.runMode = runMode;
 		armed = false;
-		mousePressed = false;		
+		mousePressed = false;
 		listeners = new ArrayList<ButtonActionListener>();
-		
+
 		setRequestFocusEnabled(true);
 		setFocusTraversable(true);
-		
+
 		setLayoutManager(new StackLayout());
-		
-		
+
+
 		label = new Label(){
 			@Override
 			public boolean isOpaque() {
 				return true;
 			}
-			
+
 			/**
 			 * If this button has focus, this method paints a focus rectangle.
-			 * 
+			 *
 			 * @param graphics Graphics handle for painting
 			 */
 			protected void paintBorder(Graphics graphics) {
@@ -117,30 +128,30 @@ public class ActionButtonFigure extends Figure implements Introspectable{
 					graphics.setForegroundColor(ColorConstants.black);
 					graphics.setBackgroundColor(ColorConstants.white);
 
-					Rectangle area = getClientArea();					
+					Rectangle area = getClientArea();
 					graphics.drawFocus(area.x, area.y, area.width, area.height);
-					
+
 				}
 			}
 
-			
+
 		};
 		label.setBorder(new ButtonBorder());
 		add(label);
-		
+
 		if(runMode){
 			hookEventHandler(new ButtonEventHandler());
 			label.setCursor(Cursors.HAND);
 		}
 	}
-	
+
 	public ActionButtonFigure() {
 		this(true);
 	}
 
 	/**
 	 * Registers the given listener as an {@link ButtonActionListener}.
-	 * 
+	 *
 	 * @param listener The {@link ButtonActionListener} to add
 	 */
 	public void addActionListener(ButtonActionListener listener) {
@@ -148,12 +159,12 @@ public class ActionButtonFigure extends Figure implements Introspectable{
 			throw new IllegalArgumentException();
 		listeners.add(listener);
 	}
-	
+
 	/**
 	 * Dispose the resources on this figure.
 	 */
 	public void dispose() {
-	
+
 		if(image != null){
 			image.dispose();
 			image = null;
@@ -167,27 +178,27 @@ public class ActionButtonFigure extends Figure implements Introspectable{
 	/**
 	 * Notifies any {@link ButtonActionListener} on this button
 	 * that an action has been performed.
-	 * 
+	 *
 	 */
 	protected void fireActionPerformed(int i) {
 		for(ButtonActionListener listener : listeners)
 			listener.actionPerformed(i);
 	}
-	
+
 	/**
 	 * @return the imagePath
 	 */
 	public IPath getImagePath() {
 		return imagePath;
 	}
-	
+
 	/**
 	 * @return the textAlignment
 	 */
 	public int getTextAlignment() {
 		return textAlignment;
 	}
-	
+
 	/**
 	 * Adds the given {@link ButtonEventHandler} to this button. A {@link ButtonEventHandler}
 	 * should be a MouseListener, MouseMotionListener, KeyListener,  and
@@ -197,27 +208,27 @@ public class ActionButtonFigure extends Figure implements Introspectable{
 	 * @since 2.0
 	 */
 	protected void hookEventHandler(ButtonEventHandler handler) {
-		if (handler == null) 
+		if (handler == null)
 			return;
 		addMouseListener(handler);
 		addMouseMotionListener(handler);
 		addKeyListener(handler);
 		addFocusListener(handler);
 	}
-	
+
 	protected boolean isArmed() {
 		return armed;
 	}
-	
+
 	protected boolean isMousePressed() {
 		return mousePressed;
 	}
-	
+
 	@Override
 	public boolean isOpaque() {
 		return false;
 	}
-	
+
 
 
 	/**
@@ -247,7 +258,7 @@ public class ActionButtonFigure extends Figure implements Introspectable{
 
 	/**
 	 * Paints the area of this figure excluded by the borders. Induces a (1,1) pixel shift in
-	 * the painting if the  mouse is armed, giving it the pressed appearance. 
+	 * the painting if the  mouse is armed, giving it the pressed appearance.
 	 *
 	 * @param graphics  Graphics handle for painting
 	 * @since 2.0
@@ -259,7 +270,7 @@ public class ActionButtonFigure extends Figure implements Introspectable{
 			super.paintClientArea(graphics);
 			graphics.popState();
 			graphics.translate(-1, -1);
-		} else 
+		} else
 			super.paintClientArea(graphics);
 	}
 
@@ -267,7 +278,7 @@ public class ActionButtonFigure extends Figure implements Introspectable{
 		if(listener != null && listeners.contains(listener))
 			listeners.remove(listener);
 	}
-	
+
 	/**Set the armed status of the button.
 	 * @param armed
 	 */
@@ -281,9 +292,9 @@ public class ActionButtonFigure extends Figure implements Introspectable{
 		label.setCursor(cursor);
 		super.setCursor(cursor);
 	}
-	
+
 	@Override
-	public void setEnabled(boolean value) {	
+	public void setEnabled(boolean value) {
 		if(label != null){
 			label.setEnabled(value);
 			//update the icon
@@ -295,33 +306,51 @@ public class ActionButtonFigure extends Figure implements Introspectable{
 						grayImage = new Image(null, image, SWT.IMAGE_GRAY);
 					label.setIcon(grayImage);
 				}
-			}	
-		}			
-		if(runMode)			
+			}
+		}
+		if(runMode)
 			super.setEnabled(value);
 	}
-	
+
 	@Override
 	public void setFont(Font f) {
 		super.setFont(f);
 		label.revalidate();
 	}
-	
-	public void setImagePath(final IPath path){		
-		dispose();	
+
+	@SuppressWarnings("nls")
+    public void setImagePath(final IPath path){
+		dispose();
+		AbstractInputStreamRunnable uiTask = new AbstractInputStreamRunnable() {
+			
+			@Override
+			public void runWithInputStream(InputStream stream) {
+				image = new Image(null, stream);
+				try {
+					stream.close();
+				} catch (IOException e) {
+				}
+				if(label.isEnabled())
+					label.setIcon(image);
+				else{
+					if(grayImage == null && image != null)
+						grayImage = new Image(null, image, SWT.IMAGE_GRAY);
+					label.setIcon(grayImage);
+				}
+			}
+		};
 		if(path != null && !path.isEmpty()){
 			this.imagePath = path;
-			try {
-				InputStream stream = ResourceUtil.pathToInputStream(path);
-				image = new Image(null, stream);
-				stream.close();
-			} catch (Exception e) {
-				image = null;
-				String message = "Failed to load image from path" + path + "\n" + e;
-				CentralLogger.getInstance().error(this, message, e);
-			} 
+			ResourceUtil.pathToInputStreamInJob(path, uiTask, "Load Action Button Icon...", new IJobErrorHandler() {
+				
+				public void handleError(Exception exception) {
+					image = null;
+					Activator.getLogger().log(Level.WARNING,
+			            "Failed to load image from path" + path, exception);
+				}
+			});			
 		}
-		
+
 		if(label.isEnabled())
 			label.setIcon(image);
 		else{
@@ -330,12 +359,12 @@ public class ActionButtonFigure extends Figure implements Introspectable{
 			label.setIcon(grayImage);
 		}
 	}
-	
+
 	protected void setMousePressed(boolean mousePressed) {
 			this.mousePressed = mousePressed;
 	}
-	
-	
+
+
 	/**
 	 * @param runMode the runMode to set
 	 */
@@ -350,9 +379,9 @@ public class ActionButtonFigure extends Figure implements Introspectable{
 		this.selected = selected;
 		repaint();
 	}
-	
-	
-	
+
+
+
 
 	/**
 	 * Sets the text for the Button.
@@ -376,7 +405,7 @@ public class ActionButtonFigure extends Figure implements Introspectable{
 	 * Sets the alignment of the buttons text.
 	 * The parameter is a {@link PositionConstants} (LEFT, RIGHT, TOP, CENTER, BOTTOM)
 	 * @param alignment
-	 * 			The alignment for the text 
+	 * 			The alignment for the text
 	 */
 	public void setTextAlignment(final int alignment) {
 		this.textAlignment = alignment;
@@ -401,7 +430,7 @@ public class ActionButtonFigure extends Figure implements Introspectable{
 	 */
 	public void setToggleStyle(final boolean style){
 		  toggleStyle = style;
-	        
+
 	}
 
 	public BeanInfo getBeanInfo() throws IntrospectionException {
@@ -418,12 +447,12 @@ public class ActionButtonFigure extends Figure implements Introspectable{
 	class ButtonBorder
 		extends SchemeBorder
 	{
-	
-	
+
+
 	/**
 	 * Provides for a scheme to represent the borders of clickable figures like buttons.
 	 * Though similar to the {@link SchemeBorder.Scheme Scheme} it supports an extra set of
-	 * borders for the pressed states. 
+	 * borders for the pressed states.
 	 */
 	 class ButtonScheme
 		extends Scheme
@@ -431,7 +460,7 @@ public class ActionButtonFigure extends Figure implements Introspectable{
 		private Color
 			highlightPressed[] = null,
 			shadowPressed[] = null;
-	
+
 		/**
 		 * Constructs a new button scheme where the input colors are the colors for the
 		 * top-left and bottom-right sides of the  border. These colors serve as the colors
@@ -447,11 +476,11 @@ public class ActionButtonFigure extends Figure implements Introspectable{
 			shadowPressed = this.shadow = shadow;
 			init();
 		}
-	
+
 		/**
 		 * Constructs a new button scheme where the input colors are the colors for the
-		 * top-left and bottom-right sides of the  border, for the normal and pressed states. 
-		 * The width of  each side is determined by the number of colors passed in  as input. 
+		 * top-left and bottom-right sides of the  border, for the normal and pressed states.
+		 * The width of  each side is determined by the number of colors passed in  as input.
 		 *
 		 * @param hl   Colors for the top-left sides of the border
 		 * @param sh   Colors for the bottom-right sides of the border
@@ -466,7 +495,7 @@ public class ActionButtonFigure extends Figure implements Introspectable{
 			shadowPressed = shp;
 			init();
 		}
-	
+
 		/**
 		 * Calculates and returns the Insets for this border. The calculations are based on
 		 * the number of normal and pressed, highlight and shadow colors.
@@ -479,7 +508,7 @@ public class ActionButtonFigure extends Figure implements Introspectable{
 			int tl = Math.max(getHighlight().length, getShadowPressed().length);
 			return new Insets(tl, tl, br, br);
 		}
-		
+
 		/**
 		 * Calculates and returns the opaque state of this border.
 		 * <p>
@@ -491,7 +520,7 @@ public class ActionButtonFigure extends Figure implements Introspectable{
 		 * 		pressed shadow colors.
 		 * 		<li> Any of the highlight and shadow colors are set to <code>null</code>
 		 * 		<li> Any of the pressed highlight and shadow colors are set to
-		 * 		<code>null</code> 
+		 * 		<code>null</code>
 		 * </ul>
 		 * This is done so that the entire region under the figure is properly covered.
 		 *
@@ -515,7 +544,7 @@ public class ActionButtonFigure extends Figure implements Introspectable{
 					return false;
 			return true;
 		}
-		
+
 		/**
 		 * Returns the pressed highlight colors of this border.
 		 *
@@ -525,7 +554,7 @@ public class ActionButtonFigure extends Figure implements Introspectable{
 		protected Color[] getHighlightPressed() {
 			return highlightPressed;
 		}
-	
+
 		/**
 		 * Returns the pressed highlight colors of this border.
 		 *
@@ -535,7 +564,7 @@ public class ActionButtonFigure extends Figure implements Introspectable{
 		protected Color[] getHighlightReleased() {
 			return getHighlight();
 		}
-		
+
 		/**
 		 * Returns the pressed shadow colors of this border.
 		 *
@@ -545,7 +574,7 @@ public class ActionButtonFigure extends Figure implements Introspectable{
 		protected Color[] getShadowPressed() {
 			return shadowPressed;
 		}
-	
+
 		/**
 		 * Returns the pressed shadow colors of this border.
 		 *
@@ -556,7 +585,7 @@ public class ActionButtonFigure extends Figure implements Introspectable{
 			return getShadow();
 		}
 	}
-	
+
 	 /**
 		 * Regular button scheme
 	 */
@@ -566,27 +595,27 @@ public class ActionButtonFigure extends Figure implements Introspectable{
 	);
 	/**
 	 * Constructs a ButtonBorder with a predefined button scheme set as its default.
-	 * 
+	 *
 	 * @since 2.0
 	 */
 	public ButtonBorder() {
 		setScheme(BUTTON);
 	}
-	
-	
+
+
 	/**
 	 * Paints this border with the help of the set scheme, the model of the clickable figure,
-	 * and other inputs. The scheme is used in conjunction with the state of the model to get 
+	 * and other inputs. The scheme is used in conjunction with the state of the model to get
 	 * the appropriate colors for the border.
-	 * 
+	 *
 	 * @param figure The Clickable that this border belongs to
 	 * @param graphics The graphics used for painting
 	 * @param insets The insets
 	 */
 	public void paint(IFigure figure, Graphics graphics, Insets insets) {
-	
+
 		ButtonScheme colorScheme = (ButtonScheme)getScheme();
-	
+
 		Color tl[], br[];
 		if (isSelected()) {
 			tl = colorScheme.getShadowPressed();
@@ -595,10 +624,10 @@ public class ActionButtonFigure extends Figure implements Introspectable{
 			tl = colorScheme.getHighlightReleased();
 			br = colorScheme.getShadowReleased();
 		}
-	
+
 		paint(graphics, figure, insets, tl, br);
 	}
-	
+
 	}
 
 	class ButtonEventHandler extends MouseMotionListener.Stub
@@ -607,12 +636,12 @@ public class ActionButtonFigure extends Figure implements Introspectable{
 			KeyListener,
 			FocusListener
 	{
-	
+
 		private int mouseState;
 		public void focusGained(FocusEvent fe) {
 			repaint();
 		}
-	
+
 		public void focusLost(FocusEvent fe) {
 			repaint();
 			setArmed(false);
@@ -622,14 +651,14 @@ public class ActionButtonFigure extends Figure implements Introspectable{
 			else
 				setSelected(false);
 		}
-	
+
 		public void keyPressed(KeyEvent ke) {
 			if (ke.character == ' ' || ke.character == '\r') {
 				setArmed(true);
 				setSelected(true);
 			}
 		}
-		
+
 		public void keyReleased(KeyEvent ke) {
 			if (ke.character == ' ' || ke.character == '\r') {
 				if(isArmed()){
@@ -641,12 +670,12 @@ public class ActionButtonFigure extends Figure implements Introspectable{
 				}
 				setArmed(false);
 			}
-			
+
 		}
-	
+
 		public void mouseDoubleClicked(MouseEvent me) {}
-	
-		public void mouseDragged(MouseEvent me) {		
+
+		public void mouseDragged(MouseEvent me) {
 			if (isArmed()) {
 				if(!containsPoint(me.getLocation())){
 					setArmed(false);
@@ -654,11 +683,11 @@ public class ActionButtonFigure extends Figure implements Introspectable{
 						setSelected(false);
 				}
 			}else if(containsPoint(me.getLocation())){
-				setArmed(true);				
+				setArmed(true);
 				setSelected(true);
 			}
 		}
-	
+
 		public void mousePressed(MouseEvent me) {
 			if (me.button != 1)
 				return;
@@ -669,7 +698,7 @@ public class ActionButtonFigure extends Figure implements Introspectable{
 			setSelected(true);
 			me.consume();
 		}
-	
+
 		public void mouseReleased(MouseEvent me) {
 			if (me.button != 1)
 				return;
@@ -683,16 +712,16 @@ public class ActionButtonFigure extends Figure implements Introspectable{
 			}
 			setArmed(false);
 			setMousePressed(false);
-			
+
 			me.consume();
 		}
-		
+
 	}
 
 
 
 
-	
 
-	
+
+
 }

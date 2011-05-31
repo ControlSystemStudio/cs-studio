@@ -11,9 +11,9 @@ import org.csstudio.alarm.beast.msghist.model.Model;
 import org.eclipse.jface.viewers.IStructuredContentProvider;
 import org.eclipse.jface.viewers.Viewer;
 
-/** Content provider for TableViewer that uses Model as input and 
+/** Content provider for TableViewer that uses Model as input and
  *  hands out messages.
- *  
+ *
  *  @author Kay Kasemir
  */
 public class MessageContentProvider implements IStructuredContentProvider
@@ -23,17 +23,20 @@ public class MessageContentProvider implements IStructuredContentProvider
     /** Remember the new input.
      *  Should be the result of call to TableViewer.setInput(Model) in GUI.
      */
-    public void inputChanged(Viewer viewer, Object oldInput, Object newInput)
+    @Override
+    public void inputChanged(final Viewer viewer, final Object oldInput, final Object newInput)
     {
         model = (Model) newInput;
     }
 
-    public Object[] getElements(Object inputElement)
+    @Override
+    public Object[] getElements(final Object inputElement)
     {
         return model.getMessages();
     }
 
     /** {@inheritDoc} */
+    @Override
     public void dispose()
     {
         // Nothing to dispose

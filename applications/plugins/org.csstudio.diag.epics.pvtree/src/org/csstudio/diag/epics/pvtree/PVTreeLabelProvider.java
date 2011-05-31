@@ -1,6 +1,13 @@
+/*******************************************************************************
+ * Copyright (c) 2010 Oak Ridge National Laboratory.
+ * All rights reserved. This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License v1.0
+ * which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-v10.html
+ ******************************************************************************/
 package org.csstudio.diag.epics.pvtree;
 
-import org.csstudio.platform.data.ISeverity;
+import org.csstudio.data.values.ISeverity;
 import org.eclipse.jface.viewers.IColorProvider;
 import org.eclipse.jface.viewers.LabelProvider;
 import org.eclipse.swt.SWT;
@@ -14,13 +21,13 @@ import org.eclipse.swt.widgets.Display;
 class PVTreeLabelProvider extends LabelProvider implements IColorProvider
 {
     @Override
-    public String getText(Object obj)
+    public String getText(final Object obj)
     {
         return obj.toString();
     }
 
     @Override
-    public Image getImage(Object obj)
+    public Image getImage(final Object obj)
     {
         // Indicate if this is a 'record' of known type...
         //if (obj instanceof PVTreeItem && ((PVTreeItem)obj).getType() != null)
@@ -30,17 +37,19 @@ class PVTreeLabelProvider extends LabelProvider implements IColorProvider
         return null;
     }
 
-    public Color getBackground(Object element)
+    @Override
+    public Color getBackground(final Object element)
     {
         return null;
     }
 
-    public Color getForeground(Object element)
+    @Override
+    public Color getForeground(final Object element)
     {
         if (! (element instanceof PVTreeItem))
             return null;
-        
-        ISeverity severity = ((PVTreeItem)element).getSeverity();
+
+        final ISeverity severity = ((PVTreeItem)element).getSeverity();
         if (severity == null)
             return null;
         if (severity.isInvalid())

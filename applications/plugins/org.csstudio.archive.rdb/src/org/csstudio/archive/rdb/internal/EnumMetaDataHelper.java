@@ -1,22 +1,30 @@
+/*******************************************************************************
+ * Copyright (c) 2010 Oak Ridge National Laboratory.
+ * All rights reserved. This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License v1.0
+ * which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-v10.html
+ ******************************************************************************/
 package org.csstudio.archive.rdb.internal;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.util.ArrayList;
+import java.util.logging.Level;
 
+import org.csstudio.archive.rdb.Activator;
 import org.csstudio.archive.rdb.ChannelConfig;
 import org.csstudio.archive.rdb.RDBArchive;
-import org.csstudio.platform.data.IEnumeratedMetaData;
-import org.csstudio.platform.data.ValueFactory;
-import org.csstudio.platform.logging.CentralLogger;
+import org.csstudio.data.values.IEnumeratedMetaData;
+import org.csstudio.data.values.ValueFactory;
 
 /** Enumeration Strings for a channel.
  *  <p>
  *  Presented as an array of strings for the enumerated values 0, 1, 2, ...
  *  The case where no enum strings are defined is represented by
  *  <code>null</code> EnumStrings.
- *  
+ *
  *  @author Kay Kasemir
  */
 public class EnumMetaDataHelper
@@ -25,7 +33,7 @@ public class EnumMetaDataHelper
     {
         // prevent instantiation
     }
-    
+
     /** Set the enum strings for a channel.
      *  This either sets new strings or modifies the existing ones.
      *  @param archive Archive connection
@@ -96,9 +104,9 @@ public class EnumMetaDataHelper
                 if (state == null  ||  state.length() < 1)
                 {   // Patch as "<#>"
                     state = "<" + i + ">";
-                    CentralLogger.getInstance().getLogger(EnumMetaDataHelper.class)
-                        .warn("Channel '" + channel.getName() +
-                        "' has undefined state " + state);
+                    Activator.getLogger().log(Level.WARNING,
+                        "Channel {0} has undefined state {1}",
+                        new Object[] { channel.getName(), state });
                 }
                 insert.setString(3, state);
                 insert.addBatch();

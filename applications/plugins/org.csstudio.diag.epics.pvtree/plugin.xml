@@ -2,6 +2,19 @@
 <?eclipse version="3.0"?>
 <plugin>
    <extension
+         point="org.eclipse.core.runtime.adapters">
+      <factory
+            adaptableType="org.csstudio.diag.epics.pvtree.PVTreeItem"
+            class="org.csstudio.diag.epics.pvtree.PVTreeItemAdapter">
+         <adapter
+               type="java.lang.String">
+         </adapter>
+         <adapter
+               type="org.csstudio.csdata.ProcessVariable">
+         </adapter>
+      </factory>
+   </extension>
+   <extension
          point="org.eclipse.ui.views">
       <category
             name="CSS"
@@ -16,70 +29,39 @@
       </view>
    </extension>
    <extension
-         point="org.eclipse.ui.popupMenus">
-      <objectContribution
-            adaptable="true"
-            id="org.csstudio.diag.epics.pvtree.popupMenu"
-            objectClass="org.csstudio.platform.model.IProcessVariable">
-         <menu
-               id="org.csstudio.popmenu"
-               label="CSS"
-               path="additions">
-            <groupMarker name="content"/>
-            <separator name="additions"/>
-         </menu>
-         <action
-               class="org.csstudio.diag.epics.pvtree.PVpopupAction"
-               enablesFor="1"
-               icon="icons/pvtree.gif"
-               id="org.csstudio.diag.epics.pvtree.PVpopupAction"
-               label="%PVTree"
-               menubarPath="org.csstudio.popmenu/content"
-               tooltip="%ObjectMenu_TT"/>
-      </objectContribution>
+         point="org.eclipse.ui.commands">
+      <command
+            defaultHandler="org.csstudio.diag.epics.pvtree.OpenPVTree"
+            id="org.csstudio.diag.epics.pvtree.OpenPVTree"
+            name="%PVTree">
+      </command>
    </extension>
-   <!-- extension point="org.eclipse.ui.actionSets">
-      <actionSet id="org.csstudio.diag.epics.pvtree"
-            description="Global CSS menu actions"
-            label="CSS Action Set"
-            visible="true">
-         <menu id="org.csstudio"
-               label="CSS"
-               path="additions">
-            <groupMarker name="content"/>
-            <separator name="additions"/>
-         </menu>
-         <menu id="org.csstudio.diag"
-               label="Diagnostics"
-               path="org.csstudio/additions">
-            <groupMarker name="content"/>
-            <separator name="additions"/>
-         </menu>
-         <action id="org.csstudio.diag.epics.pvtree.showpvtreeaction"
-               class="org.csstudio.diag.epics.pvtree.ShowPVTreeAction"
-               icon="icons/pvtree.gif"
-               label="EPICS PV Tree"
-               menubarPath="org.csstudio/org.csstudio.diag/content"
-               style="push"
-               tooltip="Show EPICS PV Tree"/>
-      </actionSet>
-   </extension -->
    <extension
-         point="org.eclipse.ui.actionSets">
-      <actionSet
-            description="Global CSS menu actions"
-            id="org.csstudio.diag.epics.pvtree"
-            label="CSS Action Set"
-            visible="true">
-         <action
-               class="org.csstudio.diag.epics.pvtree.ShowPVTreeAction"
+         point="org.eclipse.ui.menus">
+      <menuContribution
+            allPopups="false"
+            locationURI="menu:diag">
+         <command
+               commandId="org.eclipse.ui.views.showView"
                icon="icons/pvtree.gif"
-               id="org.csstudio.diag.epics.pvtree.showpvtreeaction"
                label="%PVTree"
-               menubarPath="css/diag/"
                style="push"
-               tooltip="%PVTree_TT"/>
-      </actionSet>
+               tooltip="%PVTree_TT">
+            <parameter
+                  name="org.eclipse.ui.views.showView.viewId"
+                  value="org.csstudio.diag.epics.pvtree.PVTreeView">
+            </parameter>
+         </command>
+      </menuContribution>
+      <menuContribution
+            allPopups="false"
+            locationURI="popup:org.csstudio.ui.menu.popup.processvariable">
+         <command
+               commandId="org.csstudio.diag.epics.pvtree.OpenPVTree"
+               icon="icons/pvtree.gif"
+               style="push">
+         </command>
+      </menuContribution>
    </extension>
    <extension
          point="org.eclipse.help.toc">

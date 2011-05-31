@@ -23,10 +23,21 @@
 
 package org.csstudio.utility.screenshot.preference;
 
-public final class ScreenshotPreferenceConstants
-{
-    public static final String MAIL_ADDRESS_SENDER = "senderMailAddress";
-    public static final String MAIL_SERVER = "mailServer";
+public final class ScreenshotPreferenceConstants {
+	
+	/** Identifyer for the mail server */
+	public static final String MAIL_SERVER = "mailServer";
 
-    private ScreenshotPreferenceConstants() { }
+	/** Identifyer for the e-mail address of the sender */
+    public static final String MAIL_ADDRESS_SENDER = "senderMailAddress";
+
+    /** Identifyer for the mail server */
+    public static final String COPY_TO_SENDER = "copyToSender";
+
+    /**
+     * Avoid instantiation of this class
+     */
+    private ScreenshotPreferenceConstants() {
+    	// Can be emtpy
+    }
 }

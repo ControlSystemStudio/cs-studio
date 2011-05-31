@@ -8,14 +8,15 @@
 package org.csstudio.archive.engine.model;
 
 import java.util.ArrayList;
+import java.util.logging.Level;
 
 import org.csstudio.apputil.time.BenchmarkTimer;
+import org.csstudio.archive.engine.Activator;
 import org.csstudio.archive.rdb.ChannelConfig;
 import org.csstudio.archive.rdb.RDBArchive;
-import org.csstudio.platform.data.ITimestamp;
-import org.csstudio.platform.data.IValue;
-import org.csstudio.platform.data.TimestampFactory;
-import org.csstudio.platform.logging.CentralLogger;
+import org.csstudio.data.values.ITimestamp;
+import org.csstudio.data.values.IValue;
+import org.csstudio.data.values.TimestampFactory;
 import org.csstudio.util.stats.Average;
 
 /** Thread that writes values from multiple <code>SampleBuffer</code>s
@@ -28,7 +29,7 @@ import org.csstudio.util.stats.Average;
  *  be lost.
  *  The channels that add samples to the sample buffer supposedly notice
  *  the error condition and add a special indicator once we recover.
- *  
+ *
  *  @author Kay Kasemir
  */
 public class WriteThread implements Runnable
@@ -38,22 +39,22 @@ public class WriteThread implements Runnable
 
     /** Server to which this thread writes. */
     final private RDBArchive archive;
-    
+
     /** All the sample buffers this thread writes. */
     final private ArrayList<SampleBuffer> buffers =
         new ArrayList<SampleBuffer>();
-    
+
     /** Flag that tells the write thread to run or quit. */
     private boolean do_run;
-    
+
     /** Synchronization block for waiting.
      *  Signaled in stop().
      */
     private Object wait_block = new Object();
-    
+
     /** Delay between write runs. */
     private long millisec_delay = 5000;
-    
+
     /** Number of values to place into one batch */
     private int batch_size = 500;
 
@@ -62,7 +63,7 @@ public class WriteThread implements Runnable
 
     /** Average number of values per write run */
     private Average write_count = new Average();
-    
+
     /** Average duration of write run */
     private Average write_time = new Average();
 
@@ -88,7 +89,7 @@ public class WriteThread implements Runnable
     {
         buffers.add(buffer);
     }
-    
+
     /** Start the write thread.
      *  @param write_period Period between writes in seconds
      *  @param batch_size Number of values to batch
@@ -98,8 +99,8 @@ public class WriteThread implements Runnable
     {
         if (write_period < MIN_WRITE_PERIOD)
         {
-            CentralLogger.getInstance().getLogger(this).warn("Adjusting write period from "
-                    + write_period + " to " + MIN_WRITE_PERIOD);
+            Activator.getLogger().log(Level.INFO, "Adjusting write period from {0} to {1}",
+                new Object[] { write_period, MIN_WRITE_PERIOD });
             write_period = MIN_WRITE_PERIOD;
         }
         millisec_delay = (int)(1000.0 * write_period);
@@ -124,7 +125,7 @@ public class WriteThread implements Runnable
             wait_block.notify();
         }
     }
-    
+
     /** @return Timestamp of end of last write run */
     public ITimestamp getLastWriteTime()
     {
@@ -136,13 +137,13 @@ public class WriteThread implements Runnable
     {
         return write_count.get();
     }
-    
+
     /** @return  Average duration of write run in seconds */
     public double getWriteDuration()
     {
         return write_time.get();
     }
-    
+
     /** 'Main loop' of the write thread.
      *  <p>
      *  Writes all values out, then waits.
@@ -156,10 +157,11 @@ public class WriteThread implements Runnable
      *  we wait on a semaphore (wait_block), which
      *  can be notified in stop() to cause an ASAP exit.
      */
+    @Override
     @SuppressWarnings("nls")
     public void run()
     {
-        CentralLogger.getInstance().getLogger(this).info("WriteThread starts");
+        Activator.getLogger().info("WriteThread starts");
         final BenchmarkTimer timer = new BenchmarkTimer();
         boolean write_error = false;
         do_run = true;
@@ -189,7 +191,7 @@ public class WriteThread implements Runnable
             }
             catch (Exception ex)
             {   // Error in write() or the preceding reconnect()...
-                CentralLogger.getInstance().getLogger(this).error("Error, will try to reconnect", ex);
+                Activator.getLogger().log(Level.WARNING, "Error, will try to reconnect", ex);
                 // Use max. delay
                 delay = millisec_delay;
                 write_error = true;
@@ -207,12 +209,12 @@ public class WriteThread implements Runnable
                     }
                     catch (InterruptedException ex)
                     {
-                        CentralLogger.getInstance().getLogger(this).error("Interrupted wait", ex);
+                        Activator.getLogger().log(Level.WARNING, "Interrupted wait", ex);
                     }
                 }
             }
         }
-        CentralLogger.getInstance().getLogger(this).info("WriteThread exists");
+        Activator.getLogger().info("WriteThread exists");
     }
 
     /** Stop the write thread, performing a final write. */
@@ -226,7 +228,7 @@ public class WriteThread implements Runnable
         // Errors in this last write are passed up.
         write();
     }
-    
+
     /** Write right now until all sample buffers are empty
      *  @return number of samples written
      */

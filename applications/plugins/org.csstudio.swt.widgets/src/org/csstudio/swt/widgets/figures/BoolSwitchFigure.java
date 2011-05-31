@@ -1,8 +1,15 @@
+/*******************************************************************************
+ * Copyright (c) 2010 Oak Ridge National Laboratory.
+ * All rights reserved. This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License v1.0
+ * which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-v10.html
+ ******************************************************************************/
 package org.csstudio.swt.widgets.figures;
 
 
-import org.csstudio.platform.ui.util.CustomMediaFactory;
 import org.csstudio.swt.widgets.util.GraphicsUtil;
+import org.csstudio.ui.util.CustomMediaFactory;
 import org.eclipse.draw2d.AbstractLayout;
 import org.eclipse.draw2d.Cursors;
 import org.eclipse.draw2d.Ellipse;
@@ -92,7 +99,7 @@ public class BoolSwitchFigure extends AbstractBoolControlFigure {
 				if(effect3D && support3D){
 					pattern = new Pattern(Display.getCurrent(), bigEndBounds.x, bigEndBounds.y,
 						bigEndBounds.x+bigEndBounds.width, bigEndBounds.y, 
-						BLACK_COLOR, booleanValue ? 10 : 10,
+						BLACK_COLOR, 10,
 						BLACK_COLOR, booleanValue ? 210 : 160);
 					graphics.setBackgroundPattern(pattern);
 					graphics.fillOval(smallEndBounds);
@@ -125,7 +132,7 @@ public class BoolSwitchFigure extends AbstractBoolControlFigure {
 					
 					pattern = new Pattern(Display.getCurrent(), ul.x, ul.y,
 						br.x, br.y, 
-						BLACK_COLOR, booleanValue ? 10 : 10, BLACK_COLOR, booleanValue ? 180 : 160);
+						BLACK_COLOR, 10, BLACK_COLOR, booleanValue ? 180 : 160);
 					
 					graphics.setBackgroundPattern(pattern);
 					graphics.fillOval(bigEndBounds);				

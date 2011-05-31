@@ -1,5 +1,10 @@
 package org.csstudio.config.ioconfig.config.view;
 
+import javax.annotation.CheckForNull;
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
+
+import org.csstudio.config.ioconfig.model.PersistenceException;
 import org.csstudio.config.ioconfig.model.pbmodel.ChannelDBO;
 import org.csstudio.config.ioconfig.model.pbmodel.ModuleDBO;
 import org.eclipse.jface.viewers.IColorProvider;
@@ -10,82 +15,114 @@ import org.eclipse.swt.graphics.Color;
 import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.widgets.Display;
 
+/**
+ * @author Rickens Helge
+ * @author $Author: $
+ * @since 14.12.2010
+ */
 public class OverviewLabelProvider implements ITableLabelProvider, IColorProvider {
 
-    public Image getColumnImage(Object element, int columnIndex) {
-        // TODO Auto-generated method stub
+    @Override
+    public Image getColumnImage(@Nullable Object element, int columnIndex) {
         return null;
     }
 
-    public String getColumnText(Object element, int columnIndex) {
+    @Override
+    public String getColumnText(@Nullable Object element, int columnIndex) {
         if (element instanceof ChannelDBO) {
             ChannelDBO channel = (ChannelDBO) element;
-            switch (columnIndex) {
-                case 0:
-                    return "  ";
-                case 1:
-                    return channel.getFullChannelNumber()+"";
-                case 2:
-                    return channel.getName();
-                case 3:
-                    return channel.getIoName();
-                case 4:
-                    return channel.getEpicsAddressStringNH();
-                case 5:
-                    return channel.getDescription();
-                case 6:
-                    return channel.getChannelType().name();
-                case 7:
-                    return Integer.toString(channel.getId());
-                default:
-                    break;
-            }
-            
+            getChannelColumnText(channel, columnIndex);
         }
         if (element instanceof ModuleDBO) {
             ModuleDBO module = (ModuleDBO) element;
-            switch (columnIndex) {
-                case 0:
-                    return module.getSortIndex()+"";
-                case 2:
-                    return module.getName();
-                default:
-                    break;
-            }
+            return getModuleColumnText(module, columnIndex);
 
         }
         return null;
     }
 
-    public void addListener(ILabelProviderListener listener) {
-        // TODO Auto-generated method stub
-        
+    /**
+     * @param element
+     * @param columnIndex
+     * @return
+     */
+    @CheckForNull
+    private String getModuleColumnText(@Nonnull ModuleDBO module, int columnIndex) {
+        switch (columnIndex) {
+            case 0:
+                return module.getSortIndex()+"";
+            case 2:
+                return module.getName();
+            default:
+                return null;
+        }
     }
 
+    /**
+     * @param element
+     * @param columnIndex
+     */
+ // CHECKSTYLE OFF: CyclomaticComplexity
+    @CheckForNull
+    private String getChannelColumnText(@Nonnull ChannelDBO channel, int columnIndex) {
+        switch (columnIndex) {
+            case 0:
+                return "  ";
+            case 1:
+                try {
+                    return channel.getFullChannelNumber()+"";
+                } catch (PersistenceException e) {
+                    return "DB Error!"; 
+                }
+            case 2:
+                return channel.getName();
+            case 3:
+                return channel.getIoName();
+            case 4:
+                return channel.getEpicsAddressStringNH();
+            case 5:
+                return channel.getDescription();
+            case 6:
+                return channel.getChannelType().name();
+            case 7:
+                return Integer.toString(channel.getId());
+            default:
+                return null;
+        }
+    }
+ // CHECKSTYLE On: CyclomaticComplexity
+    
+    @Override
+    public void addListener(@Nullable ILabelProviderListener listener) {
+        // Don't use Listener
+    }
+
+    @Override
     public void dispose() {
-        // TODO Auto-generated method stub
-        
+        // Nothing to dispose
     }
 
-    public boolean isLabelProperty(Object element, String property) {
-        // TODO Auto-generated method stub
+    @Override
+    public final boolean isLabelProperty(@Nullable Object element,@Nullable String property) {
         return false;
     }
 
-    public void removeListener(ILabelProviderListener listener) {
-        // TODO Auto-generated method stub
+    @Override
+    public void removeListener(@Nullable ILabelProviderListener listener) {
+        // Don't use Listener
         
     }
 
-    public Color getBackground(Object element) {
+    @Override
+    public Color getBackground(@Nullable Object element) {
         if (element instanceof ModuleDBO) {
             return Display.getCurrent().getSystemColor(SWT.COLOR_YELLOW);
         }
         return null;
     }
 
-    public Color getForeground(Object element) {
-        // TODO Auto-generated method stub
+    @Override
+    public Color getForeground(@Nullable Object element) {
         return null;
     }
 

@@ -1,9 +1,17 @@
+/*******************************************************************************
+ * Copyright (c) 2010 Oak Ridge National Laboratory.
+ * All rights reserved. This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License v1.0
+ * which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-v10.html
+ ******************************************************************************/
 package org.csstudio.sns.product.startupmodule;
 
 import java.net.URL;
 import java.util.HashMap;
 import java.util.Map;
 
+import org.csstudio.auth.security.SecureStorage;
 import org.csstudio.sns.product.Messages;
 import org.csstudio.sns.startuphelper.PasswordInput;
 import org.csstudio.startup.module.LoginExtPoint;
@@ -11,6 +19,7 @@ import org.csstudio.startup.module.StartupParametersExtPoint;
 import org.csstudio.startup.module.WorkspaceExtPoint;
 import org.eclipse.equinox.app.IApplication;
 import org.eclipse.equinox.app.IApplicationContext;
+import org.eclipse.equinox.security.storage.ISecurePreferences;
 import org.eclipse.swt.widgets.Display;
 
 /** Implementation of {@link StartupParametersExtPoint} which provides the following parameters:
@@ -19,59 +28,60 @@ import org.eclipse.swt.widgets.Display;
  * {@link LoginExtPoint#PASSWORD}.
  *
  * @author <a href="mailto:jaka.bobnar@cosylab.com">Jaka Bobnar</a>
- *
  */
-public class StartupParameters implements StartupParametersExtPoint {
-
+public class StartupParameters implements StartupParametersExtPoint
+{
 	 /** Command-line switch for help */
     private static final String HELP = "-help"; //$NON-NLS-1$
-    
+
     /** Command-line switch to show login dialog */
     private static final String LOGIN_PROMPT = "-login"; //$NON-NLS-1$
-    
+
     /** Command-line switch to force workspace dialog */
     private static final String WORKSPACE_PROMPT = "-workspace_prompt"; //$NON-NLS-1$
 
     /** Command-line switch to provide link behind <code>SHARE_NAME</code> */
     private static final String SHARE_LINK = "-share_link"; //$NON-NLS-1$
-    
+
     /** Command-line switch to provide the default user in login dialog */
     private static final String USER = "-u"; //$NON-NLS-1$
-   
+
     /** Command-line switch to provide the password of default user in login dialog */
     private static final String PASSWORD = "-p"; //$NON-NLS-1$
 
     /** Parameter tag which defines if login dialog should be displayed
-     *  The value is stored in the returned map. */ 
+     *  The value is stored in the returned map. */
     public static final String LOGIN_PROMPT_PARAM = "css.showLogin"; //$NON-NLS-1$
-    
-    /** Parameter tag which defines if prompt for workspace is forced. 
-     * The value is stored in the returned map. */ 
+
+    /** Parameter tag which defines if prompt for workspace is forced.
+     * The value is stored in the returned map. */
     public static final String FORCE_WORKSPACE_PROMPT_PARAM = "css.forceWorkspacePrompt"; //$NON-NLS-1$
-   
+
     /** Parameter tag defines the shared link. The value is stored in the returned map. */
     public static final String SHARE_LINK_PARAM = "css.shareLink"; //$NON-NLS-1$
-    
+
 	/** {@inheritDoc} */
-	public Map<String, Object> readStartupParameters(Display display,
-			IApplicationContext context) throws Exception {
-		
+	@SuppressWarnings("nls")
+    @Override
+    public Map<String, Object> readStartupParameters(Display display,
+			IApplicationContext context) throws Exception
+	{
 		Map<String, Object> parameters = new HashMap<String, Object>();
 		 // Check command-line arguments
 		final String args[] =
             (String []) context.getArguments().get("application.args"); //$NON-NLS-1$
-        
+
         boolean force_workspace_prompt = false;
         boolean login = false;
         URL default_workspace = null;
         String share_link = null;
         String username = null;
         String password = null;
-        
+
         for (int i=0; i<args.length; ++i)
         {
             final String arg = args[i];
-         
+
             if (arg.equalsIgnoreCase(HELP) ||
                 arg.equalsIgnoreCase("-?")) //$NON-NLS-1$
             {
@@ -152,9 +162,36 @@ public class StartupParameters implements StartupParametersExtPoint {
                     }
                 }
                 if (password == null)
-                {      
-                    password = PasswordInput.readPassword("Enter password: ");  //$NON-NLS-1$          
+                    password = PasswordInput.readPassword("Enter password: ");
+            }
+            else if (arg.equalsIgnoreCase("-set_password"))
+            {
+                String preference_name = null;
+                if ((i + 1) < args.length)
+                {
+                    preference_name = args[i+1];
+                    if (preference_name.startsWith("-"))
+                        preference_name = null;
                 }
+                if (preference_name == null)
+                {
+                    System.out.println("Missing preference name");
+                    System.exit(0);
+                }
+                if (password == null)
+                    password = PasswordInput.readPassword("Enter password: ");
+
+                final String[] path_key = preference_name.split("/");
+                if (path_key.length != 2)
+                {
+                    System.out.println("preference name must be plugin_id/key");
+                    System.exit(0);
+                }
+                System.out.println("Setting plugin " + path_key[0] + " setting " + path_key[1]);
+                final ISecurePreferences secure = SecureStorage.getNode(path_key[0]);
+                secure.put(path_key[1], password, true);
+                secure.flush();
+                System.exit(0);
             }
         }
 
@@ -164,12 +201,11 @@ public class StartupParameters implements StartupParametersExtPoint {
         parameters.put(FORCE_WORKSPACE_PROMPT_PARAM, force_workspace_prompt);
         parameters.put(WorkspaceExtPoint.WORKSPACE, default_workspace);
         parameters.put(SHARE_LINK_PARAM, share_link);
-        
+
         return parameters;
-        
 	}
-	
-    /** 
+
+    /**
      * Prints the help to system output.
      */
     @SuppressWarnings("nls")
@@ -194,5 +230,7 @@ public class StartupParameters implements StartupParametersExtPoint {
                 USER + " username");
         System.out.format("  %-35s : provide the password of default user in login dialog\n",
                 PASSWORD + " username");
+        System.out.format("  %-35s : set a password preferences (need to follow with -p)\n",
+                "-set_password preference_name");
     }
 }

@@ -22,6 +22,9 @@
 
 package de.desy.css.dal.tine;
 
+import org.apache.log4j.Logger;
+import org.epics.css.dal.DataExchangeException;
+
 import de.desy.tine.dataUtils.TDataType;
 
 /**
@@ -38,9 +41,13 @@ public class LongSeqPropertyProxyImpl extends PropertyProxyImpl<long[]>{
 	 * Constructs a new LongSeqPropertyProxy.
 	 * @param name
 	 */
-	public LongSeqPropertyProxyImpl(String name) {
-		super(name);
-		this.length = (Integer)getCharacteristic("sequenceLength");
+	public LongSeqPropertyProxyImpl(String name, TINEPlug plug) {
+		super(name, plug);
+		try {
+			this.length = (Integer)getCharacteristic("sequenceLength");
+		} catch (DataExchangeException e) {
+			Logger.getLogger(this.getClass()).error("Getting characteristic failed.", e);
+		}
 		this.value = new long[this.length];
 	}
 

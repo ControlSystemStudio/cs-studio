@@ -51,6 +51,7 @@ import java.util.concurrent.TimeUnit;
 import javax.naming.NamingException;
 import javax.naming.directory.DirContext;
 
+import org.apache.log4j.Logger;
 import org.epics.css.dal.EventSystemListener;
 import org.epics.css.dal.RemoteException;
 import org.epics.css.dal.SimpleProperty;
@@ -92,7 +93,7 @@ public class EPICSPlug extends AbstractPlug
 			try {
 				r.run();
 			} catch (Throwable th) {
-				th.printStackTrace();
+				Logger.getLogger(this.getClass()).warn("Sheduled task had unhandled error.", th);
 			}
 		}
 	}
@@ -121,6 +122,12 @@ public class EPICSPlug extends AbstractPlug
 	 */
 	public static final String USE_JNI = "EPICSPlug.use_jni";
 		
+	/**
+	 * When DBR update comes characteristics with connected with condition change are updated.
+	 * Default is true.
+	 */
+	public static final String DBR_UPDATES_CHARACTERISTICS = "EPICSPlug.property.dbr_updates_characteristics";
+
 	/**
 	 * Property name for use common executor flag: {@link #useCommonExecutor}
 	 */
@@ -278,6 +285,8 @@ public class EPICSPlug extends AbstractPlug
 	 * is used.
 	 */
 	private long jniFlushTimerDelay = 100;
+
+	private boolean dbrUpdatesCharacteristics=true;
 	
 	/**
 	 * Create EPICS plug instance.
@@ -340,6 +349,7 @@ public class EPICSPlug extends AbstractPlug
 	 * Initialize EPICS plug.
 	 * @throws RemoteException 
 	 */
+	@SuppressWarnings("unchecked")
 	private void initialize() throws RemoteException {
 		initializeCharacteristicsOnConnect = true;
 		if (System.getProperties().containsKey(INITIALIZE_CHARACTERISTICS_ON_CONNECT)) {
@@ -355,6 +365,13 @@ public class EPICSPlug extends AbstractPlug
 			useCommonExecutor = new Boolean(getConfiguration().getProperty(PROPERTY_USE_COMMON_EXECUTOR, "false"));
 		}
 		
+		dbrUpdatesCharacteristics = true;
+		if (System.getProperties().containsKey(DBR_UPDATES_CHARACTERISTICS)) {
+			dbrUpdatesCharacteristics = new Boolean(System.getProperty(DBR_UPDATES_CHARACTERISTICS, "true"));
+		} else {
+			dbrUpdatesCharacteristics = new Boolean(getConfiguration().getProperty(DBR_UPDATES_CHARACTERISTICS, "true"));
+		}
+
 		coreThreads = 2;
 		if (System.getProperties().containsKey(PROPERTY_CORE_THREADS)) {
 			coreThreads = new Integer(System.getProperty(PROPERTY_CORE_THREADS, "2"));
@@ -372,21 +389,27 @@ public class EPICSPlug extends AbstractPlug
 		// checks for coreThreads and maxThreads values
 		if (maxThreads == 0) { 
 			if (coreThreads != 0) {
-				System.out.print("> EPICSPlug number of core threads can not be "+coreThreads+". It was changed to ");
+				StringBuilder sb= new StringBuilder(128);
+				sb.append("> EPICSPlug number of core threads can not be "+coreThreads+". It was changed to ");
 				coreThreads = 0;
-				System.out.println(coreThreads+".");
+				sb.append(coreThreads+".");
+				getLogger().warn(sb.toString());
 			}
 		}
 		else {
 			if (coreThreads < 1) {
-				System.out.print("> EPICSPlug number of core threads can not be "+coreThreads+". It was changed to ");
+				StringBuilder sb= new StringBuilder(128);
+				sb.append("> EPICSPlug number of core threads can not be "+coreThreads+". It was changed to ");
 				coreThreads = 1;
-				System.out.println(coreThreads+".");
+				sb.append(coreThreads+".");
+				getLogger().warn(sb.toString());
 			}
 			if (maxThreads < 0 || maxThreads < coreThreads) {
-				System.out.print("> EPICSPlug maximum number of threads can not be "+maxThreads+". It was changed to ");
+				StringBuilder sb= new StringBuilder(128);
+				sb.append("> EPICSPlug maximum number of threads can not be "+maxThreads+". It was changed to ");
 				maxThreads = coreThreads;
-				System.out.println(maxThreads+".");
+				sb.append(maxThreads+".");
+				getLogger().warn(sb.toString());
 			}
 		}
 		
@@ -421,7 +444,6 @@ public class EPICSPlug extends AbstractPlug
 		if (!use_jni) {
 			context = createJCAContext();
 		} else {
-			System.out.println("> EPICSPlug using JNI");
 			context = createThreadSafeContext();
 			
 			if (System.getProperties().containsKey(JNI_FLUSH_TIMER_DELAY)) {
@@ -439,7 +461,7 @@ public class EPICSPlug extends AbstractPlug
 						try {
 							getContext().flushIO();
 						} catch (Throwable th) {
-							th.printStackTrace();
+							Logger.getLogger(this.getClass()).warn("Flush IO error.", th);
 						}
 					}
 					
@@ -457,6 +479,8 @@ public class EPICSPlug extends AbstractPlug
 		}
 		
 		timeout = Plugs.getConnectionTimeout(getConfiguration(), 10000)/1000.0;
+		
+		getLogger().info("config {jni: '"+use_jni+"', addr_list: {"+System.getProperty("com.cosylab.epics.caj.CAJContext.addr_list")+"}}");
 		
 	}
 
@@ -503,7 +527,7 @@ public class EPICSPlug extends AbstractPlug
 	 * @see org.epics.css.dal.proxy.AbstractPlug#getDeviceProxyImplementationClass(java.lang.String)
 	 */
 	@Override
-	protected Class<? extends DeviceProxy> getDeviceProxyImplementationClass(String uniqueDeviceName) {
+	protected Class<? extends DeviceProxy<?>> getDeviceProxyImplementationClass(String uniqueDeviceName) {
 		throw new UnsupportedOperationException("Devices not supported");
 	}
 
@@ -565,20 +589,20 @@ public class EPICSPlug extends AbstractPlug
 	 * @see org.epics.css.dal.proxy.AbstractPlug#getPropertyProxyImplementationClass(java.lang.String)
 	 */
 	@Override
-	public Class<? extends PropertyProxy<?>> getPropertyProxyImplementationClass(String propertyName) {
+	public Class<? extends PropertyProxy<?,?>> getPropertyProxyImplementationClass(String propertyName) {
 		throw new RuntimeException("Unsupported property type.");
 	}
 	
 	/*
 	 * @see org.epics.css.dal.proxy.AbstractPlug#createNewPropertyProxy(java.lang.String, java.lang.Class)
 	 */
-	protected <TT extends PropertyProxy<?>> TT createNewPropertyProxy(
+	protected <TT extends PropertyProxy<?,?>> TT createNewPropertyProxy(
 			String uniqueName, Class<TT> type) throws ConnectionException {
 		try {
-			PropertyProxy p = type.getConstructor(EPICSPlug.class, String.class).newInstance(this, uniqueName);
+			PropertyProxy<?,?> p = type.getConstructor(EPICSPlug.class, String.class).newInstance(this, uniqueName);
 			// add to directory cache
 			if (p instanceof DirectoryProxy)
-				putDirectoryProxyToCache((DirectoryProxy) p);
+				putDirectoryProxyToCache((DirectoryProxy<?>) p);
 			return type.cast(p);
 		} catch (Exception e) {
 			throw new ConnectionException(this,
@@ -597,7 +621,7 @@ public class EPICSPlug extends AbstractPlug
 	/*
 	 * @see org.epics.css.dal.proxy.AbstractPlug#createNewDirectoryProxy(java.lang.String)
 	 */
-	protected DirectoryProxy createNewDirectoryProxy(String uniqueName)
+	protected DirectoryProxy<?> createNewDirectoryProxy(String uniqueName)
 		throws ConnectionException {
 		// directory is already added to cache in createNewPropertyProxy method
 		throw new RuntimeException("Error in factory implementation, PropertyProxy must be created first.");
@@ -606,7 +630,7 @@ public class EPICSPlug extends AbstractPlug
 	/*
 	 * @see org.epics.css.dal.proxy.AbstractPlug#createNewDeviceProxy(java.lang.String, java.lang.Class)
 	 */
-	protected <T extends DeviceProxy> T createNewDeviceProxy(String uniqueName,
+	protected <T extends DeviceProxy<?>> T createNewDeviceProxy(String uniqueName,
 			Class<T> type) throws ConnectionException {
 		throw new UnsupportedOperationException("Devices not supported");
 	}
@@ -637,7 +661,7 @@ public class EPICSPlug extends AbstractPlug
 				// CAJ will take care of optimization
 				getContext().flushIO();
 			} catch (Throwable th) {
-				th.printStackTrace();
+				Logger.getLogger(this.getClass()).warn("Flush IO error: "+PlugUtilities.toShortErrorReport(th), th);
 			}
 		}
 	}
@@ -653,6 +677,9 @@ public class EPICSPlug extends AbstractPlug
 	 * @see Context
 	 */
 	public synchronized Context getContext() {
+		if (context==null) {
+			throw new IllegalStateException("Connection to EPICS has beeen already destroyed.");
+		}
 		return context;
 	}
 	
@@ -679,9 +706,8 @@ public class EPICSPlug extends AbstractPlug
 			return c;
 
 		} catch (Throwable th) {
-			th.printStackTrace();
 			// rethrow to abort EPICS plug instance creation
-			throw new RemoteException(this,"Failed to initilze EPICS plug", th);
+			throw new RemoteException(this,"Failed to initilze EPICS plug: "+PlugUtilities.toShortErrorReport(th), th);
 		}
 	}
 	
@@ -708,9 +734,8 @@ public class EPICSPlug extends AbstractPlug
 			return c;
 
 		} catch (Throwable th) {
-			th.printStackTrace();
 			// rethrow to abort EPICS plug instance creation
-			throw new RemoteException(this,"Failed to initilze EPICS plug", th);
+			throw new RemoteException(this,"Failed to initilze EPICS plug: "+PlugUtilities.toShortErrorReport(th), th);
 		}
 	}
 
@@ -737,6 +762,10 @@ public class EPICSPlug extends AbstractPlug
 	 */
 	public boolean isInitializeCharacteristicsOnConnect() {
 		return initializeCharacteristicsOnConnect;
+	}
+	
+	public boolean isDbrUpdatesCharacteristics() {
+		return dbrUpdatesCharacteristics;
 	}
 	
 	/**
@@ -803,7 +832,7 @@ public class EPICSPlug extends AbstractPlug
 			PlugEvent<ContextExceptionEvent> event =
 				new PlugEvent<ContextExceptionEvent>(this, ev, new Timestamp(), "Context exception", null, ContextExceptionEvent.class);
 			
-			Iterator<EventSystemListener<PlugEvent>> iter = plugListeners.iterator();
+			Iterator<EventSystemListener<PlugEvent<?>>> iter = plugListeners.iterator();
 			while (iter.hasNext()) {
 				iter.next().errorArrived(event);
 			}
@@ -826,7 +855,7 @@ public class EPICSPlug extends AbstractPlug
 			PlugEvent<ContextVirtualCircuitExceptionEvent> event =
 				new PlugEvent<ContextVirtualCircuitExceptionEvent>(this, ev, new Timestamp(), "Context virtual circuit exception", null, ContextVirtualCircuitExceptionEvent.class);
 			
-			Iterator<EventSystemListener<PlugEvent>> iter = plugListeners.iterator();
+			Iterator<EventSystemListener<PlugEvent<?>>> iter = plugListeners.iterator();
 			while (iter.hasNext()) {
 				iter.next().eventArrived(event);
 			}
@@ -849,7 +878,7 @@ public class EPICSPlug extends AbstractPlug
 			PlugEvent<ContextMessageEvent> event =
 				new PlugEvent<ContextMessageEvent>(this, ev, new Timestamp(), "Context message", null, ContextMessageEvent.class);
 			
-			Iterator<EventSystemListener<PlugEvent>> iter = plugListeners.iterator();
+			Iterator<EventSystemListener<PlugEvent<?>>> iter = plugListeners.iterator();
 			while (iter.hasNext()) {
 				iter.next().eventArrived(event);
 			}

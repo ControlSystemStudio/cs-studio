@@ -18,36 +18,39 @@ import org.junit.Test;
 public class WorkQueueUnitTest
 {
     private String result = "";
-    
+
     @Test
     public void testExecute() throws Exception
     {
         final WorkQueue queue = new WorkQueue();
-        queue.add(new Runnable()
+        queue.execute(new Runnable()
         {
+            @Override
             public void run()
             {
                 System.out.println("Hello");
                 result += "Hello";
             }
         });
-        queue.add(new Runnable()
+        queue.execute(new Runnable()
         {
+            @Override
             public void run()
             {
-                System.out.println("Goodbye");    
+                System.out.println("Goodbye");
                 result += "Goodbye";
             }
         });
-        queue.execute(1000);
+        queue.perform_queued_commands(1000);
         assertEquals("HelloGoodbye", result);
-        
+
         // Should be on the same thread
         queue.assertOnThread();
-        
+
         // Detect error when called from wrong thread
         final Thread thread = new Thread(new Runnable()
         {
+            @Override
             public void run()
             {
                 try
@@ -64,5 +67,33 @@ public class WorkQueueUnitTest
         }, "WrongThread");
         thread.start();
         thread.join();
+    }
+
+    @Test
+    public void testExecuteWithoutDelay() throws Exception
+    {
+        final WorkQueue queue = new WorkQueue();
+        queue.execute(new Runnable()
+        {
+            @Override
+            public void run()
+            {
+                System.out.println("Hello");
+                result += "Hello";
+            }
+        });
+        // Execute queued commands
+        queue.perform_queued_commands();
+        assertEquals("Hello", result);
+
+        // Should be on the same thread
+        queue.assertOnThread();
+
+        // Empty queue means almost no delay
+        final long start = System.currentTimeMillis();
+        queue.perform_queued_commands();
+        final long end = System.currentTimeMillis();
+        final double seconds = (end-start)/1000.0;
+        assertEquals(0.0, seconds, 0.01);
     }
 }

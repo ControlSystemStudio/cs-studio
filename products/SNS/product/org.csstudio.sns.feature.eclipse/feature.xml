@@ -2,7 +2,7 @@
 <feature
       id="org.csstudio.sns.feature.eclipse"
       label="Eclipse Components"
-      version="2.4.0.qualifier"
+      version="3.0.0.qualifier"
       provider-name="Kay Kasemir &lt;kasemirk@ornl.gov&gt; - SNS">
 
    <description>
@@ -94,7 +94,7 @@ For details, see http://www.eclipse.org/legal/epl-v10.html
       <import plugin="org.eclipse.equinox.preferences" version="3.2.200" match="greaterOrEqual"/>
       <import plugin="org.eclipse.osgi" version="3.4.0" match="greaterOrEqual"/>
       <import plugin="org.eclipse.equinox.registry" version="3.4.0" match="greaterOrEqual"/>
-      <import plugin="org.eclipse.core.variables" version="3.1.0" match="compatible"/>
+      <import plugin="org.apache.ant"/>
       <import plugin="org.eclipse.core.filesystem" version="1.0.0" match="compatible"/>
       <import plugin="org.eclipse.jface.text" version="3.2.0" match="compatible"/>
       <import plugin="org.eclipse.equinox.p2.engine" version="2.0.0" match="compatible"/>
@@ -378,13 +378,6 @@ For details, see http://www.eclipse.org/legal/epl-v10.html
          unpack="false"/>
 
    <plugin
-         id="org.eclipse.ant.core"
-         download-size="0"
-         install-size="0"
-         version="0.0.0"
-         unpack="false"/>
-
-   <plugin
          id="org.eclipse.equinox.http.jetty"
          download-size="0"
          install-size="0"
@@ -439,12 +432,6 @@ For details, see http://www.eclipse.org/legal/epl-v10.html
          install-size="0"
          version="0.0.0"
          unpack="false"/>
-
-   <plugin
-         id="org.apache.ant"
-         download-size="0"
-         install-size="0"
-         version="0.0.0"/>
 
    <plugin
          id="org.apache.commons.el"

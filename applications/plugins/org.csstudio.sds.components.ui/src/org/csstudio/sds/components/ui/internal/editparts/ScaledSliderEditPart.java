@@ -53,7 +53,7 @@ public final class ScaledSliderEditPart extends AbstractMarkedWidgetEditPart {
 		registerCommonPropertyChangeHandlers();
 
 		// fillColor
-		setPropertyChangeHandler(ScaledSliderModel.PROP_FILL_COLOR, new ColorChangeHander<ScaledSliderFigure>() {
+		setPropertyChangeHandler(ScaledSliderModel.PROP_FILL_COLOR, new ColorChangeHandler<ScaledSliderFigure>() {
 			@Override
 			protected void doHandle(ScaledSliderFigure figure, Color color) {
 				figure.setFillColor(color);
@@ -61,7 +61,7 @@ public final class ScaledSliderEditPart extends AbstractMarkedWidgetEditPart {
 		});
 
 		// fillBackgroundColor
-		setPropertyChangeHandler(ScaledSliderModel.PROP_FILLBACKGROUND_COLOR, new ColorChangeHander<ScaledSliderFigure>() {
+		setPropertyChangeHandler(ScaledSliderModel.PROP_FILLBACKGROUND_COLOR, new ColorChangeHandler<ScaledSliderFigure>() {
 			@Override
 			protected void doHandle(ScaledSliderFigure figure, Color color) {
 				figure.setFillBackgroundColor(color);
@@ -69,7 +69,7 @@ public final class ScaledSliderEditPart extends AbstractMarkedWidgetEditPart {
 		});
 
 		// thumbColor
-		setPropertyChangeHandler(ScaledSliderModel.PROP_THUMB_COLOR, new ColorChangeHander<ScaledSliderFigure>() {
+		setPropertyChangeHandler(ScaledSliderModel.PROP_THUMB_COLOR, new ColorChangeHandler<ScaledSliderFigure>() {
 			@Override
 			protected void doHandle(ScaledSliderFigure figure, Color color) {
 				figure.setThumbColor(color);

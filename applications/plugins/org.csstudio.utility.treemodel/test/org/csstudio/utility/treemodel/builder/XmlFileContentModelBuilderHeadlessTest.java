@@ -29,14 +29,13 @@ import java.util.Set;
 
 import junit.framework.Assert;
 
-import org.apache.log4j.Logger;
-import org.csstudio.platform.logging.CentralLogger;
 import org.csstudio.utility.treemodel.ContentModel;
 import org.csstudio.utility.treemodel.CreateContentModelException;
 import org.csstudio.utility.treemodel.TreeModelTestUtils;
 import org.jdom.input.JDOMParseException;
 import org.junit.BeforeClass;
 import org.junit.Test;
+
 /**
  * Test content model class and builder from XML.
  *
@@ -46,10 +45,6 @@ import org.junit.Test;
  * @since 21.05.2010
  */
 public class XmlFileContentModelBuilderHeadlessTest {
-
-    @SuppressWarnings("unused")
-    private static final Logger LOG = CentralLogger.getInstance()
-            .getLogger(XmlFileContentModelBuilderHeadlessTest.class);
 
     private static URL RESOURCE_VALID;
     private static URL RESOURCE_INVALID;
@@ -73,7 +68,8 @@ public class XmlFileContentModelBuilderHeadlessTest {
     @Test
     public void testValid() {
         try {
-            _model = TreeModelTestUtils.buildContentModel(RESOURCE_VALID, TestTreeConfiguration.VIRTUAL_ROOT);
+            _model = TreeModelTestUtils.buildContentModel(RESOURCE_VALID, 
+                                                          TestTreeConfiguration.VIRTUAL_ROOT);
         } catch (final CreateContentModelException e) {
             Assert.fail("Content model could not be created. " + e.getLocalizedMessage());
         } catch (final IOException e) {

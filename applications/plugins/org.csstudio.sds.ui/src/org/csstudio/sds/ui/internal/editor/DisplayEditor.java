@@ -56,6 +56,7 @@ import org.csstudio.sds.ui.CheckedUiRunnable;
 import org.csstudio.sds.ui.SdsUiPlugin;
 import org.csstudio.sds.ui.editparts.AbstractBaseEditPart;
 import org.csstudio.sds.ui.editparts.ExecutionMode;
+import org.csstudio.sds.ui.internal.actions.ArrangeAction;
 import org.csstudio.sds.ui.internal.actions.CopyWidgetsAction;
 import org.csstudio.sds.ui.internal.actions.CreateGroupAction;
 import org.csstudio.sds.ui.internal.actions.CutWidgetsAction;
@@ -66,6 +67,7 @@ import org.csstudio.sds.ui.internal.actions.PasteWidgetsAction;
 import org.csstudio.sds.ui.internal.actions.RemoveGroupAction;
 import org.csstudio.sds.ui.internal.actions.StepBackAction;
 import org.csstudio.sds.ui.internal.actions.StepFrontAction;
+import org.csstudio.sds.ui.internal.actions.ZoomInAndRevealAction;
 import org.csstudio.sds.ui.internal.editparts.WidgetEditPartFactory;
 import org.csstudio.sds.ui.internal.layers.ILayerManager;
 import org.csstudio.sds.ui.internal.properties.view.IPropertySheetPage;
@@ -111,7 +113,6 @@ import org.eclipse.gef.ui.actions.MatchWidthAction;
 import org.eclipse.gef.ui.actions.ToggleGridAction;
 import org.eclipse.gef.ui.actions.ToggleRulerVisibilityAction;
 import org.eclipse.gef.ui.actions.ToggleSnapToGeometryAction;
-import org.eclipse.gef.ui.actions.ZoomInAction;
 import org.eclipse.gef.ui.actions.ZoomOutAction;
 import org.eclipse.gef.ui.parts.GraphicalEditorWithFlyoutPalette;
 import org.eclipse.gef.ui.parts.GraphicalViewerKeyHandler;
@@ -123,7 +124,6 @@ import org.eclipse.jface.util.PropertyChangeEvent;
 import org.eclipse.jface.viewers.StructuredSelection;
 import org.eclipse.jface.window.Window;
 import org.eclipse.swt.SWT;
-import org.eclipse.swt.graphics.RGB;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
 import org.eclipse.ui.IActionBars;
@@ -578,25 +578,7 @@ public final class DisplayEditor extends GraphicalEditorWithFlyoutPalette implem
 		this.configureRuler();
 
 		// configure zoom actions
-		ZoomManager zm = root.getZoomManager();
-
-		List<String> zoomLevels = new ArrayList<String>(3);
-		zoomLevels.add(ZoomManager.FIT_ALL);
-		zoomLevels.add(ZoomManager.FIT_WIDTH);
-		zoomLevels.add(ZoomManager.FIT_HEIGHT);
-		zm.setZoomLevelContributions(zoomLevels);
-
-		zm.setZoomLevels(createZoomLevels());
-
-		if (zm != null) {
-			IAction zoomIn = new ZoomInAction(zm);
-			IAction zoomOut = new ZoomOutAction(zm);
-			getActionRegistry().registerAction(zoomIn);
-			getActionRegistry().registerAction(zoomOut);
-		}
-
-		/* scroll-wheel zoom */
-		getGraphicalViewer().setProperty(MouseWheelHandler.KeyGenerator.getKey(SWT.MOD1), MouseWheelZoomHandler.SINGLETON);
+		configureZoomManager(root);
 
 		// FIXME: 2008-07-24: Sven Wende: Entfernen, sobald Grid-Einstellungen
 		// mit Model persistiert werden
@@ -639,10 +621,35 @@ public final class DisplayEditor extends GraphicalEditorWithFlyoutPalette implem
 			}
 		};
 		getActionRegistry().registerAction(a);
-
+		
 		hookGraphicalViewer();
 
 		viewer.setKeyHandler(new GraphicalViewerKeyHandler(viewer));
+		
+	}
+
+	@SuppressWarnings("unchecked")
+	private void configureZoomManager(final ScalableFreeformRootEditPart rootEditPart) {
+		ZoomManager zm = rootEditPart.getZoomManager();
+
+		List<String> zoomLevels = new ArrayList<String>(3);
+		zoomLevels.add(ZoomManager.FIT_ALL);
+		zoomLevels.add(ZoomManager.FIT_WIDTH);
+		zoomLevels.add(ZoomManager.FIT_HEIGHT);
+		zm.setZoomLevelContributions(zoomLevels);
+
+		zm.setZoomLevels(createZoomLevels());
+
+		if (zm != null) {
+			IAction zoomIn = new ZoomInAndRevealAction(zm, this, getGraphicalViewer());
+			getSelectionActions().add(zoomIn.getId());
+			getActionRegistry().registerAction(zoomIn);
+			IAction zoomOut = new ZoomOutAction(zm);
+			getActionRegistry().registerAction(zoomOut);
+		}
+
+		/* scroll-wheel zoom */
+		getGraphicalViewer().setProperty(MouseWheelHandler.KeyGenerator.getKey(SWT.MOD1), MouseWheelZoomHandler.SINGLETON);
 	}
 
 	/**
@@ -668,11 +675,11 @@ public final class DisplayEditor extends GraphicalEditorWithFlyoutPalette implem
 		ActionRegistry registry = getActionRegistry();
 		IAction action;
 
-		action = new CreateGroupAction((IWorkbenchPart) this);
+		action = new CreateGroupAction(this, getGraphicalViewer());
 		registry.registerAction(action);
 		getSelectionActions().add(action.getId());
 
-		action = new RemoveGroupAction((IWorkbenchPart) this);
+		action = new RemoveGroupAction(this, getGraphicalViewer());
 		registry.registerAction(action);
 		getSelectionActions().add(action.getId());
 
@@ -769,6 +776,14 @@ public final class DisplayEditor extends GraphicalEditorWithFlyoutPalette implem
 		getSelectionActions().add(action.getId());
 
 		action = new AlignmentAction((IWorkbenchPart) this, PositionConstants.MIDDLE);
+		registry.registerAction(action);
+		getSelectionActions().add(action.getId());
+		
+		action = new ArrangeAction(this, getGraphicalViewer(), getCommandStack(), Arrange.HORIZONTAL);
+		registry.registerAction(action);
+		getSelectionActions().add(action.getId());
+		
+		action = new ArrangeAction(this, getGraphicalViewer(), getCommandStack(), Arrange.VERTICAL);
 		registry.registerAction(action);
 		getSelectionActions().add(action.getId());
 	}

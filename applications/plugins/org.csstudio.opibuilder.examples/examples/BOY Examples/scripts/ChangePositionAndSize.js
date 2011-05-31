@@ -3,15 +3,15 @@ importPackage(Packages.org.csstudio.opibuilder.scriptUtil);
 var RED = ColorFontUtil.RED;
 var GREEN = ColorFontUtil.GREEN;
 
-var value = PVUtil.getDouble(pvArray[0]);
+var value = PVUtil.getDouble(pvs[0]);
 
 
 var width = 5*value;
-var oldY = widgetController.getPropertyValue("y");
-var oldHeight = widgetController.getPropertyValue("height");
+var oldY = widget.getPropertyValue("y");
+var oldHeight = widget.getPropertyValue("height");
 
-widgetController.setPropertyValue("x", value*20);
-widgetController.setPropertyValue("y",  500 - width/2);
-widgetController.setPropertyValue("width",width);
-widgetController.setPropertyValue("height",width);	
+widget.setPropertyValue("x", value*20);
+widget.setPropertyValue("y",  500 - width/2);
+widget.setPropertyValue("width",width);
+widget.setPropertyValue("height",width);	
 		

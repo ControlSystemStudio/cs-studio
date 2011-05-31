@@ -1,6 +1,6 @@
 package org.csstudio.archive.crawl;
 
-import org.csstudio.platform.data.IValue;
+import org.csstudio.data.values.IValue;
 
 /** In principle this is like
  *  <code>Iterator&lt;Value&gt;[N]</code>, but allows next() to

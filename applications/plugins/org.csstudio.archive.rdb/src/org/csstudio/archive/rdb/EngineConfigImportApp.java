@@ -1,9 +1,16 @@
+/*******************************************************************************
+ * Copyright (c) 2010 Oak Ridge National Laboratory.
+ * All rights reserved. This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License v1.0
+ * which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-v10.html
+ ******************************************************************************/
 package org.csstudio.archive.rdb;
 
 import java.io.FileInputStream;
 import java.io.InputStream;
+import java.util.logging.Level;
 
-import org.apache.log4j.Logger;
 import org.csstudio.apputil.args.ArgParser;
 import org.csstudio.apputil.args.BooleanOption;
 import org.csstudio.apputil.args.IntegerOption;
@@ -12,7 +19,7 @@ import org.csstudio.archive.rdb.engineconfig.SampleEngineConfig;
 import org.csstudio.archive.rdb.engineconfig.SampleEngineHelper;
 import org.csstudio.archive.rdb.engineconfig.XMLExport;
 import org.csstudio.archive.rdb.engineconfig.XMLImport;
-import org.csstudio.platform.logging.CentralLogger;
+import org.csstudio.logging.LogConfigurator;
 import org.eclipse.equinox.app.IApplication;
 import org.eclipse.equinox.app.IApplicationContext;
 
@@ -21,12 +28,10 @@ import org.eclipse.equinox.app.IApplicationContext;
  */
 public class EngineConfigImportApp implements IApplication
 {
-    private static final Logger LOG =
-        CentralLogger.getInstance().getLogger(EngineConfigImportApp.class);
-
     /** "Main" Routine
      *  @see IApplication#start(IApplicationContext)
      */
+    @Override
     @SuppressWarnings("nls")
     public Object start(final IApplicationContext context) throws Exception
     {
@@ -94,6 +99,7 @@ public class EngineConfigImportApp implements IApplication
             return IApplication.EXIT_OK;
         }
 
+        LogConfigurator.configureFromPreferences();
 
         try
         {
@@ -115,12 +121,12 @@ public class EngineConfigImportApp implements IApplication
             final String engine_url = "http://" + engine_host.get() + ":" + engine_port.get() + "/main";
 
             // Dump options
-            LOG.info("Importing     : " + filename.get());
-            LOG.info("Engine        : " + engine_name.get());
-            LOG.info("Description   : " + engine_description.get());
-            LOG.info("URL           : " + engine_url);
-            LOG.info("Replace engine: " + replace_engine.get());
-            LOG.info("Steal channels: " + steal_channels.get());
+            Activator.getLogger().info("Importing     : " + filename.get());
+            Activator.getLogger().info("Engine        : " + engine_name.get());
+            Activator.getLogger().info("Description   : " + engine_description.get());
+            Activator.getLogger().info("URL           : " + engine_url);
+            Activator.getLogger().info("Replace engine: " + replace_engine.get());
+            Activator.getLogger().info("Steal channels: " + steal_channels.get());
 
             // Perform XML Import
             if (filename.get().length() <= 0)
@@ -149,12 +155,7 @@ public class EngineConfigImportApp implements IApplication
         }
         catch (final Throwable ex)
         {
-            final String error = ex.getMessage();
-            if ((error != null)  &&  (error.length() > 0)) {
-                LOG.fatal(error, ex);
-            } else {
-                LOG.fatal(ex);
-            }
+            Activator.getLogger().log(Level.SEVERE, "Exception", ex);
         }
         return IApplication.EXIT_OK;
     }
@@ -175,12 +176,12 @@ public class EngineConfigImportApp implements IApplication
             final SampleEngineHelper engines =
                 new SampleEngineHelper(archive);
             final SampleEngineConfig engine = engines.find(engine_name);
-            if (engine == null) {
-                LOG.warn(engine_name + " not found");
-            } else
+            if (engine == null)
+                Activator.getLogger().log(Level.WARNING, "Engine {0} not found", engine_name);
+            else
             {
-                LOG.info("Deleting " + engine);
-                engines.deleteEngineInfo(engine);
+                Activator.getLogger().log(Level.INFO, "Deleting Engine {0}", engine_name);
+                engines.deleteEngineInfo(engine, true);
             }
         }
         finally
@@ -190,6 +191,7 @@ public class EngineConfigImportApp implements IApplication
     }
 
     /** {@inheritDoc} */
+    @Override
     public void stop()
     {
         // NOP

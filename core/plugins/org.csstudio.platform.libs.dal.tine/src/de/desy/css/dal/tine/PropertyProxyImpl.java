@@ -23,11 +23,10 @@
 package de.desy.css.dal.tine;
 
 import java.util.EnumSet;
-import java.util.HashMap;
-import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 
+import org.apache.log4j.Logger;
 import org.epics.css.dal.DataExchangeException;
 import org.epics.css.dal.DynamicValueCondition;
 import org.epics.css.dal.DynamicValueState;
@@ -39,13 +38,10 @@ import org.epics.css.dal.Timestamp;
 import org.epics.css.dal.context.ConnectionState;
 import org.epics.css.dal.impl.RequestImpl;
 import org.epics.css.dal.impl.ResponseImpl;
-import org.epics.css.dal.proxy.AbstractProxyImpl;
+import org.epics.css.dal.proxy.AbstractPropertyProxyImpl;
 import org.epics.css.dal.proxy.DirectoryProxy;
 import org.epics.css.dal.proxy.MonitorProxy;
 import org.epics.css.dal.proxy.PropertyProxy;
-import org.epics.css.dal.proxy.Proxy;
-import org.epics.css.dal.proxy.ProxyEvent;
-import org.epics.css.dal.proxy.ProxyListener;
 import org.epics.css.dal.proxy.SyncPropertyProxy;
 
 import de.desy.tine.client.TLink;
@@ -61,23 +57,27 @@ import de.desy.tine.definitions.TMode;
  *
  * @param <T>
  */
-public abstract class PropertyProxyImpl<T> extends AbstractProxyImpl implements PropertyProxy<T>, SyncPropertyProxy<T>, DirectoryProxy {
+public abstract class PropertyProxyImpl<T> 
+	extends AbstractPropertyProxyImpl<T,TINEPlug,MonitorProxyImpl<T>> 
+	implements PropertyProxy<T,TINEPlug>, SyncPropertyProxy<T,TINEPlug>, DirectoryProxy<TINEPlug> 
+{
 	
-	private Map<String, Object> characteristics;
-	protected DynamicValueCondition condition= new DynamicValueCondition(EnumSet.of(DynamicValueState.NORMAL),System.currentTimeMillis(),null);
 	private PropertyNameDissector dissector;
 	private String deviceName; 
 	private int timeOut = 1000;
-	private Set<MonitorProxyImpl> monitors= new HashSet<MonitorProxyImpl>(3);
 	protected TFormat dataFormat;
 	
-	public PropertyProxyImpl(String name) {
-		super(name);
+	public PropertyProxyImpl(String name, TINEPlug plug) {
+		super(name, plug);
 		this.dissector = new PropertyNameDissector(name);
 		this.deviceName = PropertyProxyUtilities.makeDeviceName(this.dissector);
 		setConnectionState(ConnectionState.CONNECTED);
-		getCharacteristics();
-		this.dataFormat= (TFormat)getCharacteristic("dataFormat");
+		initializeCharacteristics();
+		try {
+			this.dataFormat= (TFormat)getCharacteristic("dataFormat");
+		} catch (DataExchangeException e) {
+			Logger.getLogger(this.getClass()).error("Initializing data format failed.", e);
+		}
 	}
 
 	/*
@@ -86,60 +86,11 @@ public abstract class PropertyProxyImpl<T> extends AbstractProxyImpl implements 
 	 */
 	public synchronized MonitorProxy createMonitor(ResponseListener<T> callback, Map<String,Object> param) throws RemoteException {
 		MonitorProxyImpl<T> m = new MonitorProxyImpl<T>(this,callback);
-		this.monitors.add(m);
 		m.initialize(getDataObject());
 		return m;
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * @see org.epics.css.dal.proxy.PropertyProxy#getCondition()
-	 */
-	public DynamicValueCondition getCondition() {
-		return this.condition;
-	}
 	
-	/**
-	 * Intended for only within plug.
-	 * @param s new condition state.
-	 */
-	protected synchronized void setCondition(DynamicValueCondition s) {
-		if (this.condition.areStatesEqual(s)) {
-			return;
-		}
-		this.condition=s;
-		fireCondition();
-	}
-	
-	/**
-	 * Fires new condition event.
-	 */
-	protected void fireCondition() {
-		if (this.proxyListeners == null) {
-			return;
-		}
-		
-		ProxyListener<T>[] l= (ProxyListener<T>[])this.proxyListeners.toArray();
-
-		ProxyEvent<PropertyProxy<T>> pe= new ProxyEvent<PropertyProxy<T>>(this,this.condition,this.connectionState,null);
-		for (int i = 0; i < l.length; i++) {
-			try {
-				l[i].dynamicValueConditionChange(pe);
-			} catch (Exception e) {
-				e.printStackTrace();
-			}
-		}
-	}
-	
-	/* (non-Javadoc)
-	 * @see org.epics.css.dal.proxy.AbstractProxyImpl#addProxyListener(org.epics.css.dal.proxy.ProxyListener)
-	 */
-	@Override
-	public void addProxyListener(ProxyListener<?> l) {
-		super.addProxyListener(l);
-		l.connectionStateChange(new ProxyEvent<Proxy>(this,this.condition,this.connectionState,null));
-	}
-
 	/*
 	 * (non-Javadoc)
 	 * @see org.epics.css.dal.proxy.PropertyProxy#getValueAsync(org.epics.css.dal.ResponseListener)
@@ -164,7 +115,7 @@ public abstract class PropertyProxyImpl<T> extends AbstractProxyImpl implements 
         	}
         	return request;
         } catch (Exception e) {
-        	DynamicValueCondition condition = new DynamicValueCondition(EnumSet.of(DynamicValueState.ERROR),System.currentTimeMillis(),"Error initializing proxy");
+        	DynamicValueCondition condition = new DynamicValueCondition(EnumSet.of(DynamicValueState.ERROR),null,"Error initializing proxy");
 			setCondition(condition);
 			throw new DataExchangeException(this,"Exception on async getting value '"+this.name+"'.",e);
         }
@@ -196,7 +147,7 @@ public abstract class PropertyProxyImpl<T> extends AbstractProxyImpl implements 
         	}
         	return request;
         } catch (Exception e) {
-        	DynamicValueCondition condition = new DynamicValueCondition(EnumSet.of(DynamicValueState.ERROR),System.currentTimeMillis(),"Error initializing proxy");
+        	DynamicValueCondition condition = new DynamicValueCondition(EnumSet.of(DynamicValueState.ERROR),null,"Error initializing proxy");
 			setCondition(condition);
 			throw new DataExchangeException(this,"Exception on async setting value '"+this.name+"'.",e);
         }
@@ -214,14 +165,14 @@ public abstract class PropertyProxyImpl<T> extends AbstractProxyImpl implements 
         {
 		    int statusCode = tl.execute(this.timeOut);
 			if (statusCode > 0) {
-				setCondition(new DynamicValueCondition(EnumSet.of(DynamicValueState.ERROR),System.currentTimeMillis(),tl.getLastError()));
+				setCondition(new DynamicValueCondition(EnumSet.of(DynamicValueState.ERROR),null,tl.getLastError()));
 			} else {
-				setCondition(new DynamicValueCondition(EnumSet.of(DynamicValueState.NORMAL),System.currentTimeMillis(),null));
+				setCondition(new DynamicValueCondition(EnumSet.of(DynamicValueState.NORMAL)));
 			}
 		    dout = tl.getOutputDataObject();
 		    tl.cancel();
         } catch (Exception e) {
-        	setCondition(new DynamicValueCondition(EnumSet.of(DynamicValueState.ERROR),System.currentTimeMillis(), tl.getLastError()));
+        	setCondition(new DynamicValueCondition(EnumSet.of(DynamicValueState.ERROR),null, tl.getLastError()));
         }
 	    return extractData(dout);
 	}
@@ -267,15 +218,15 @@ public abstract class PropertyProxyImpl<T> extends AbstractProxyImpl implements 
         {
         	int statusCode = tl.execute(this.timeOut);
         	if (statusCode > 0) {
-				setCondition(new DynamicValueCondition(EnumSet.of(DynamicValueState.ERROR),System.currentTimeMillis(),tl.getLastError()));
+				setCondition(new DynamicValueCondition(EnumSet.of(DynamicValueState.ERROR),null,tl.getLastError()));
 			} else {
-				setCondition(new DynamicValueCondition(EnumSet.of(DynamicValueState.NORMAL),System.currentTimeMillis(),null));
+				setCondition(new DynamicValueCondition(EnumSet.of(DynamicValueState.NORMAL)));
 			}
         	tl.cancel();
         }
         catch (Exception e)
         {
-        	setCondition(new DynamicValueCondition(EnumSet.of(DynamicValueState.ERROR),System.currentTimeMillis(), tl.getLastError()));
+        	setCondition(new DynamicValueCondition(EnumSet.of(DynamicValueState.ERROR),null, tl.getLastError()));
         }
 	}
 	
@@ -284,31 +235,25 @@ public abstract class PropertyProxyImpl<T> extends AbstractProxyImpl implements 
 	 * @see org.epics.css.dal.proxy.PropertyProxy#isSettable()
 	 */
 	public boolean isSettable() {
-		return (Boolean) getCharacteristic("editable");
+		try {
+			return (Boolean) getCharacteristic("editable");
+		} catch (DataExchangeException e) {
+			Logger.getLogger(this.getClass()).error("Characteristics failed.", e);
+			return false;
+		}
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * @see org.epics.css.dal.proxy.DirectoryProxy#getCharacteristic(java.lang.String)
-	 */
-	public Object getCharacteristic(String characteristicName) {
-		
-		return getCharacteristics().get(characteristicName);
-		
-	}
-	
-	private synchronized Map<String, Object> getCharacteristics() {
-		if (this.characteristics == null) {
-			try {
-				this.characteristics = TINEPlug.getInstance().getCharacteristics(this.dissector.getRemoteName(),getNumericType());
+	private void initializeCharacteristics() {
+		try {
+			getCharacteristics().putAll(TINEPlug.getInstance().getCharacteristics(this.dissector.getRemoteName(),getNumericType()));
+			
+			// notify DAL that metadata has been initialized
+			updateConditionWith(null, DynamicValueState.HAS_METADATA);
 //				characteristics = PropertyProxyUtilities.getCharacteristics(dissector,getNumericType());
-			} catch (ConnectionFailed e) {
-				setCondition(new DynamicValueCondition(EnumSet.of(DynamicValueState.ERROR),System.currentTimeMillis(),null));
-				e.printStackTrace();
-				return new HashMap<String, Object>();
-			}
+		} catch (ConnectionFailed e) {
+			setCondition(new DynamicValueCondition(EnumSet.of(DynamicValueState.ERROR)));
+			Logger.getLogger(this.getClass()).error("Characteristics failed.", e);
 		}
-		return this.characteristics;
 	}
 
 	/**
@@ -329,76 +274,12 @@ public abstract class PropertyProxyImpl<T> extends AbstractProxyImpl implements 
 
 	/*
 	 * (non-Javadoc)
-	 * @see org.epics.css.dal.proxy.DirectoryProxy#getCharacteristics(java.lang.String[], org.epics.css.dal.ResponseListener)
-	 */
-	public Request<? extends Object> getCharacteristics(String[] characteristics, ResponseListener<? extends Object> callback) {
-		RequestImpl<Object> r = new RequestImpl<Object>(this,(ResponseListener<Object>) callback);
-		for (int i = 0; i < characteristics.length; i++) {
-			r.addResponse(new ResponseImpl<Object>(this,r,getCharacteristics().get(characteristics[i]),characteristics[i],true,null,this.condition,new Timestamp(),true));
-		}
-		return r;
-	}
-
-	/*
-	 * (non-Javadoc)
-	 * @see org.epics.css.dal.proxy.DirectoryProxy#getCommandNames()
-	 */
-	public String[] getCommandNames() {
-		// property does not support commands
-		throw new UnsupportedOperationException();
-	}
-
-	/*
-	 * (non-Javadoc)
-	 * @see org.epics.css.dal.proxy.DirectoryProxy#getPropertyNames()
-	 */
-	public String[] getPropertyNames() {
-		throw new UnsupportedOperationException("This is not device proxy.");
-	}
-
-	/*
-	 * (non-Javadoc)
-	 * @see org.epics.css.dal.proxy.DirectoryProxy#getPropertyType(java.lang.String)
-	 */
-	public Class<? extends SimpleProperty<?>> getPropertyType(String propertyName) {
-		throw new UnsupportedOperationException("This is not device proxy.");
-	}
-
-	/*
-	 * (non-Javadoc)
 	 * @see org.epics.css.dal.proxy.DirectoryProxy#refresh()
 	 */
 	public synchronized void refresh() {
-		this.characteristics = null;		
+		initializeCharacteristics();
 	}
 	
-	/*
-	 *  (non-Javadoc)
-	 * @see org.epics.css.dal.proxy.AbstractProxyImpl#setConnectionState(org.epics.css.dal.context.ConnectionState)
-	 */
-	@Override
-	protected synchronized void setConnectionState(ConnectionState s) {
-		if (getConnectionState().equals(s)) {
-			return;
-		}
-		super.setConnectionState(s);
-		EnumSet<DynamicValueState> set = null;
-		if (s==ConnectionState.CONNECTED) {
-			set = EnumSet.of(DynamicValueState.NORMAL);
-		} else if (s==ConnectionState.DISCONNECTED) {
-			set = EnumSet.of(DynamicValueState.LINK_NOT_AVAILABLE);
-		} else if (s==ConnectionState.DESTROYED) {
-			set = EnumSet.of(DynamicValueState.LINK_NOT_AVAILABLE);
-		} else if (s==ConnectionState.CONNECTION_FAILED) {
-			set = EnumSet.of(DynamicValueState.ERROR);
-		} else if (s==ConnectionState.CONNECTION_LOST) {
-			set = EnumSet.of(DynamicValueState.ERROR);
-		} else {
-			set = EnumSet.of(DynamicValueState.NORMAL);
-		}
-		setCondition(new DynamicValueCondition(set,0,"Connection state changed"));
-	}	
-
 	String getDeviceName() {
 		return this.deviceName;
 	}
@@ -407,23 +288,16 @@ public abstract class PropertyProxyImpl<T> extends AbstractProxyImpl implements 
 		return this.dissector;
 	}
 	
-	synchronized void removeMonitor(MonitorProxyImpl m) {
-		this.monitors.remove(m);
+	@Override
+	protected Object processCharacteristicAfterCache(Object value,
+			String characteristicName) {
+		return value;
 	}
 	
 	@Override
-	public void destroy() {
-		super.destroy();
-		
-		destroyMonitors();
+	protected Object processCharacteristicBeforeCache(Object value,
+			String characteristicName) {
+		return value;
 	}
 	
-	protected synchronized void destroyMonitors() {
-		MonitorProxyImpl[] array = this.monitors.toArray(new MonitorProxyImpl[this.monitors.size()]);
-
-		// destroy all
-		for (MonitorProxyImpl monitor : array) {
-			monitor.destroy();
-		}
-	}
 }

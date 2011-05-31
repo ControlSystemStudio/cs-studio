@@ -24,9 +24,9 @@ package org.csstudio.swt.widgets.figures;
 import java.beans.BeanInfo;
 import java.beans.IntrospectionException;
 
-import org.csstudio.platform.ui.util.CustomMediaFactory;
 import org.csstudio.swt.widgets.introspection.Introspectable;
 import org.csstudio.swt.widgets.introspection.ShapeWidgetIntrospector;
+import org.csstudio.ui.util.CustomMediaFactory;
 import org.eclipse.draw2d.Graphics;
 import org.eclipse.draw2d.RectangleFigure;
 import org.eclipse.draw2d.Shape;
@@ -142,7 +142,7 @@ public final class OPIRectangleFigure extends RectangleFigure implements Introsp
 	/**
 	 * @see Shape#outlineShape(Graphics)
 	 */
-	protected void outlineShape(Graphics graphics) {
+	protected void outlineShape(Graphics graphics) {	
 	    float lineInset = Math.max(1.0f, getLineWidth()) / 2.0f;
 	    int inset1 = (int)Math.floor(lineInset);
 	    int inset2 = (int)Math.ceil(lineInset);
@@ -152,10 +152,8 @@ public final class OPIRectangleFigure extends RectangleFigure implements Introsp
 	    r.y += inset1; 
 	    r.width -= inset1 + inset2;
 	    r.height -= inset1 + inset2;
-	    graphics.pushState();
 	    graphics.setForegroundColor(lineColor);
 	    graphics.drawRectangle(r);
-	    graphics.popState();
 	}
 	
 	public void setAntiAlias(boolean antiAlias) {

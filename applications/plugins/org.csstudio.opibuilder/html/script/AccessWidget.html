@@ -12,11 +12,20 @@
       Access Widget in Script
     </h2>
     
-    <h3>    widgetController    </h3>
-    <p>The widget to which a script is attached can be accessed in the script via <b>widgetController</b> object. 
-     <b>widgetController</b> object provided the methods to get or set any of its properties, host external objects or special methods to a speific widget.  
+    <h3>    widget  object  </h3>
+    <p>The widget to which a script is attached can be accessed in the script via <b>widget</b> object. 
+    It is the controller(or EditPart in GEF) of the widget. 
+     <b>widget</b> object provided the methods to get or set any of its properties, store external objects 
+     or provide special methods for a particular widget.  
     </p>
- 
+    
+    <h3>display object</h3>
+    <p>The widget controller of the display is accessible in all scripts as <b>display</b> object.
+     To get the controller of any widget in the display, you can call its method <a href = "#getWidget(java.lang.String)">getWidget(name)</a>.
+     For example: </p>
+     	<pre class="example_code">display.getWidget("myLabel").setPropertyValue("x", 20); //set x position of the widget myLabel to 20.</pre>
+    
+    
  <h3>Common methods to all widgets</h3>
    <ul>
     <li><a href = "#getPropertyValue(java.lang.String)">getPropertyValue(prop_id) </a></li>
@@ -26,11 +35,27 @@
     <li><a href = "#getExternalObject(java.lang.String)">getExternalObject(name)</a></li>
     <li><a href = "#executeAction(int)">executeAction(index)</a></li>
     </ul>
+ <a name="ContainerWidgets"></a>
  <h3>Common methods to all container widgets</h3>
- Container widgets includes Display, Grouping Container, Linking Container and Tabbed Container.
+ <p>Container widgets includes Display, Grouping Container, Linking Container and Tabbed Container.</p>
    <ul>
-    <li><a href = "#getChild(java.lang.String)">getChild(name)</a></li>    
+    <li><a href = "#getChild(java.lang.String)">getChild(name)</a></li>
+    <li><a href = "#getWidget(java.lang.String)">getWidget(name)</a></li>        
    </ul>
+  <a name = "PVWidgets"></a>
+  <h3>Common methods to all PV widgets</h3>
+  <p>Any widget that has <code>PV Name</code> property is PV widget. 
+  For example, Text Update, Combo Box, XY Graph and so on.</p>
+   <ul>
+    <li><a href = "#getPV()">getPV()</a></li>
+    <li><a href = "#getPV(java.lang.String)">getPV(pvPropId)</a></li>     
+    <li><a href = "#getValue()">getValue()</a></li>
+    <li><a href = "#setValue(java.lang.Object)">setValue(value)</a></li>    
+   </ul>
+   
+   <h3>Special methods to each widget</h3>
+   <p>Some widget may have special methods. See the document for each widget.</p>
+   
 <HR>
    <A NAME="getPropertyValue(java.lang.String)"><!-- --></A><H3>getPropertyValue</H3>
 <PRE>
@@ -44,7 +69,7 @@ public java.lang.Object <B>getPropertyValue</B>(java.lang.String&nbsp;prop_id)</
 
 
 <b>Example:</b><br>
-	<pre class="example_code">var x = widgetController.getPropertyValue("x"); //get x position of the widget</pre>
+	<pre class="example_code">var x = widget.getPropertyValue("x"); //get x position of the widget</pre>
 </DD>
 </DL>
  <HR>
@@ -62,7 +87,7 @@ public void <B>setPropertyValue</B>(java.lang.String&nbsp;prop_id,
 <DD><CODE>value</CODE> - the value. It must be the allowed input type corresponding to the property type. 
 <b>See</b> <a href = "PropertyType.html">Property Type</a></DL>
 <b>Example:</b><br>
-	<pre class="example_code">widgetController.setPropertyValue("x", 20); //set x position of the widget to 20.</pre>
+	<pre class="example_code">widget.setPropertyValue("x", 20); //set x position of the widget to 20.</pre>
 </DD>
 </DL>
 <HR>
@@ -82,8 +107,8 @@ public void <B>setPropertyValue</B>(java.lang.String&nbsp;prop_id,
  set again even if the new value is same as old value. If false and the new value is same as 
  the old value, it will be ignored.</DL>
  <b>Example:</b><br>
-	<pre class="example_code">widgetController.setPropertyValue(
-	"opi_file", widgetController.getPropertyValue("opi_file"), true); //reload OPI in linking container.</pre>
+	<pre class="example_code">widget.setPropertyValue(
+	"opi_file", widget.getPropertyValue("opi_file"), true); //reload OPI in linking container.</pre>
  
 </DD>
 </DL>
@@ -123,21 +148,21 @@ importPackage(Packages.java.lang);
 
 var flagName = "popped";
 
-if(widgetController.getExternalObject(flagName) == null){
-	widgetController.setExternalObject(flagName, false);	
+if(widget.getExternalObject(flagName) == null){
+	widget.setExternalObject(flagName, false);	
 }
 
-var b = widgetController.getExternalObject(flagName);
+var b = widget.getExternalObject(flagName);
 
-if(ValueUtil.getDouble(pvArray[0].getValue()) > 80){		
+if(ValueUtil.getDouble(pvs[0].getValue()) > 80){		
 		if( b == false){
-			widgetController.setExternalObject(flagName, true);
+			widget.setExternalObject(flagName, true);
 			MessageDialog.openWarning(
 				null, "Warning", "The temperature you set is too high!");
 		}
 		
 }else if (b == true){
-	widgetController.setExternalObject(flagName, false);
+	widget.setExternalObject(flagName, false);
 }
 </pre>
 </DD>
@@ -159,24 +184,127 @@ public void <B>executeAction</B>(int&nbsp;index)</PRE>
  
  
  <h2>Common methods to all container widgets</h2>
- <HR>
-   <A NAME="getChild(java.lang.String)"><!-- --></A><H3>getChild</H3>
+<HR>
+<A NAME="getChild(java.lang.String)"><!-- --></A><H3>getChild</H3>
 <PRE>
 public AbstractBaseEditPart <B>getChild</B>(java.lang.String&nbsp;name)</PRE>
 <DL>
-<DD>Get a child of this container by name.
+<DD>Get the direct child of this container by name. <b>Depreciated: </b> Use getWidget(name) instead.
 <P>
 <DD><DL>
 <DT><B>Parameters:</B><DD><CODE>name</CODE> - the name of the child widget
-<DT><B>Returns:</B><DD>the widgetController of the child. Or null if the widget doesn't exist.</DL>
-
-
+<DT><B>Returns:</B><DD>the widget contrller of the child. Or null if the widget doesn't exist.</DL>
 <b>Example:</b><br>
-	<pre class="example_code">var child = widgetController.getChild("gauge_2"); //get the gauge widget whose name is gauge_2
-child.setPropertyValue("enable", false); //child is a widgetController</pre>
+	<pre class="example_code">var child = widget.getChild("gauge_2"); //get the gauge widget whose name is gauge_2
+child.setPropertyValue("enable", false); //child is a widget</pre>
 </DD>
 </DL>
  <HR>
  
-  </body>
+ <A NAME="getWidget(java.lang.String)"><!-- --></A><H3>getWidget</H3>
+<PRE>
+public AbstractBaseEditPart <B>getWidget</B>(java.lang.String&nbsp;name)</PRE>
+<DL>
+<DD>Get a widget which is a descendant of this container by name.
+<P>
+<DD><DL>
+<DT><B>Parameters:</B><DD><CODE>name</CODE> - the name of the widget which is a descendant of the container
+<DT><B>Returns:</B><DD>the widget controller of the widget. Throws exception if the widget doesn't exist.</DL>
+<b>Example:</b><br>
+	<pre class="example_code">var gauge2 = widget.getWidget("gauge_2"); //get the gauge widget whose name is gauge_2
+gauge2.setPropertyValue("enable", false); //child is a widget</pre>
+</DD>
+</DL>
+<HR>
+
+<h2>Common methods to all PV widgets</h2>
+
+<HR>
+<A NAME="getPV()"><!-- --></A><H3>
+getPV</H3>
+<PRE>
+public PV <B>getPV</B>()</PRE>
+<DL>
+<DD>Get the PV corresponding to the <code>PV Name</code> property. 
+ It is same as calling <code>getPV("pv_name")</code>.
+<P>
+<DD><DL>
+</DL>
+</DD>
+<DD><DL>
+<DT><B>Returns:</B><DD>the PV corresponding to the <code>PV Name</code> property. 
+ null if PV Name is not configured for this widget.</DL>
+ <b>Example:</b><br>
+	<pre class="example_code">importPackage(Packages.org.csstudio.opibuilder.scriptUtil);
+var pv = widget.getPV(); 
+var value = PVUtil.getDouble(pv); //Get its double value</pre> 
+</DD>
+</DL>
+<HR>
+
+<A NAME="getPV(java.lang.String)"><!-- --></A><H3>
+getPV</H3>
+<PRE>
+public PV <B>getPV</B>(java.lang.String&nbsp;pvPropId)</PRE>
+<DL>
+<DD>Some widgets may have more than one PV attached to it.
+This method can help to get the pv by its property id. 
+<P>
+<DD><DL>
+</DL>
+</DD>
+<DD><DL>
+<DT><B>Parameters:</B><DD><CODE>pvPropId</CODE> - the PV property id. 
+For example, <code>pv_name</code>, <code>trace_0_y_pv</code> for XY Graph.
+<DT><B>Returns:</B><DD>the corresponding pv for the pvPropId. null if the pv doesn't exist.</DL>
+</DD>
+</DL>
+<HR>
+
+<A NAME="getValue()"><!-- --></A><H3>
+getValue</H3>
+<PRE>
+public Object <B>getValue</B>()</PRE>
+<DL>
+<DD>The value that is being displayed on the widget.
+ It is not the value of the attached PV even though they are equals in most cases 
+ if there is PV configured for the widget.
+ The value type is specified by the widget, for example, boolean for boolean widget,
+ double for meter and gauge, String for combo.
+<P>
+<DD><DL>
+</DL>
+</DD>
+<DD><DL>
+<DT><B>Returns:</B><DD>The value of the widget.</DL>
+</DD>
+</DL>
+<HR>
+
+<A NAME="setValue(java.lang.Object)"><!-- --></A><H3>
+setValue</H3>
+<PRE>
+public void <B>setValue</B>(Object&nbsp;value)</PRE>
+<DL>
+<DD>Set the value of the widget. 
+This only takes effect on the visual presentation of the widget and
+will not write the value to the PV attached to the widget.
+<P>
+<DD><DL>
+</DL>
+</DD>
+<DD><DL>
+<DT><B>Parameters:</B><DD><CODE>value</CODE> - the value to be set. 
+It must be compatible with the widget.
+  For example, a boolean widget only accept boolean or number.
+<DT><B>Throws:</B>
+<DD><CODE>java.lang.RuntimeException</CODE> - if the type of the value is not an acceptable type.</DL>
+</DD>
+</DL>
+<HR>
+
+
+
+
+ </body>
 </html>

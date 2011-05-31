@@ -1,3 +1,10 @@
+/*******************************************************************************
+ * Copyright (c) 2010 Oak Ridge National Laboratory.
+ * All rights reserved. This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License v1.0
+ * which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-v10.html
+ ******************************************************************************/
 package org.csstudio.opibuilder.properties.support;
 
 import org.csstudio.opibuilder.visualparts.MultiLineTextCellEditor;
@@ -31,7 +38,7 @@ public class MultiLineTextPropertyDescriptor extends TextPropertyDescriptor {
 		return editor;
 	}
 	
-	class MultiLineLabelProvider extends LabelProvider{
+	static class MultiLineLabelProvider extends LabelProvider{
 		@Override
 		public String getText(Object element) {
 			return element == null ? "" : element.toString().replaceAll("\n", " / ");//$NON-NLS-1$

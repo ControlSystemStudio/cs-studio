@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <?pde version="3.5"?>
 
-<product name="SNS CSS" id="org.csstudio.sns.product.product" application="org.csstudio.sns.product.application" version="2.4.0.qualifier" useFeatures="true" includeLaunchers="true">
+<product name="Css" id="org.csstudio.sns.product.product" application="org.csstudio.sns.product.application" version="3.0.0.qualifier" useFeatures="true" includeLaunchers="true">
 
    <aboutInfo>
       <image path="/org.csstudio.sns.product/icons/about.gif"/>
@@ -28,7 +28,7 @@ See http://ics-web.sns.ornl.gov/css
 -Dorg.apache.commons.logging.simplelog.defaultlog=fatal</vmArgs>
    </launcherArgs>
 
-   <windowImages i16="/org.csstudio.startuphelper/resources/icons/css16x16.gif" i32="/org.csstudio.startuphelper/resources/icons/css32x32.gif" i48="/org.csstudio.startuphelper/resources/icons/css48x48.gif" i64="/org.csstudio.startuphelper/resources/icons/css64x64.gif" i128="/org.csstudio.startuphelper/resources/icons/css128x128.gif"/>
+   <windowImages i16="/org.csstudio.sns.product/icons/css16.gif" i32="/org.csstudio.sns.product/icons/css32.gif" i48="/org.csstudio.sns.product/icons/css48.gif" i64="/org.csstudio.sns.product/icons/css64.gif" i128="/org.csstudio.sns.product/icons/css128.gif"/>
 
    <splash
       location="org.csstudio.sns.product"
@@ -69,14 +69,13 @@ For details, see http://www.eclipse.org/legal/epl-v10.html
    </plugins>
 
    <features>
-      <feature id="org.csstudio.sns.feature.eclipse" version="2.4.0.qualifier"/>
-      <feature id="org.csstudio.sns.feature.core" version="2.4.0.qualifier"/>
-      <feature id="org.csstudio.sns.feature.snscore" version="2.4.0.qualifier"/>
-      <feature id="org.csstudio.sns.feature.applications" version="2.4.0.qualifier"/>
-      <feature id="org.csstudio.sns.feature.repository" version="2.3.0.qualifier"/>
-      <feature id="org.csstudio.sns.feature.snsapps" version="2.3.0.qualifier"/>
-      <feature id="org.csstudio.opibuilder.feature" version="2.3.0.qualifier"/>
-      <feature id="org.csstudio.trends.databrowser2.feature" version="2.3.0.qualifier"/>
+      <feature id="org.csstudio.sns.feature.eclipse" version="3.0.0.qualifier"/>
+      <feature id="org.csstudio.sns.feature.core" version="3.0.0.qualifier"/>
+      <feature id="org.csstudio.sns.feature.snscore" version="3.0.0.qualifier"/>
+      <feature id="org.csstudio.sns.feature.applications" version="3.0.0.qualifier"/>
+      <feature id="org.csstudio.sns.feature.repository" version="3.0.0.qualifier"/>
+      <feature id="org.csstudio.sns.feature.snsapps" version="3.0.0.qualifier"/>
+      <feature id="org.csstudio.opibuilder.feature" version="3.0.0.qualifier"/>
    </features>
 
 

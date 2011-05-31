@@ -1,3 +1,10 @@
+/*******************************************************************************
+ * Copyright (c) 2010 Oak Ridge National Laboratory.
+ * All rights reserved. This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License v1.0
+ * which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-v10.html
+ ******************************************************************************/
 package org.csstudio.opibuilder.actions;
 
 import java.util.Collections;
@@ -8,12 +15,11 @@ import java.util.Map;
 
 import org.csstudio.opibuilder.OPIBuilderPlugin;
 import org.csstudio.opibuilder.commands.ChangeOrderCommand;
-import org.csstudio.opibuilder.editparts.AbstractBaseEditPart;
-import org.csstudio.opibuilder.editparts.AbstractContainerEditpart;
-import org.csstudio.opibuilder.editparts.DisplayEditpart;
 import org.csstudio.opibuilder.model.AbstractContainerModel;
 import org.csstudio.opibuilder.model.AbstractWidgetModel;
-import org.csstudio.platform.ui.util.CustomMediaFactory;
+import org.csstudio.opibuilder.model.DisplayModel;
+import org.csstudio.ui.util.CustomMediaFactory;
+import org.eclipse.gef.EditPart;
 import org.eclipse.gef.commands.CompoundCommand;
 import org.eclipse.gef.ui.actions.SelectionAction;
 import org.eclipse.jface.resource.ImageDescriptor;
@@ -26,10 +32,11 @@ import org.eclipse.ui.IWorkbenchPart;
 public class ChangeOrderAction extends SelectionAction {
 	
 	public enum OrderType{		
-		TO_FRONT("To Front", "icons/order_tofront.png"), //$NON-NLS-2$
-		STEP_FRONT("Step Front", "icons/order_stepfront.png"), //$NON-NLS-2$
-		STEP_BACK("Step Back", "icons/order_stepback.png"),//$NON-NLS-2$
-		TO_BACK("To Back", "icons/order_toback.png");	//$NON-NLS-2$
+		TO_FRONT("Bring to Front", "icons/shape_move_front.png"), //$NON-NLS-2$
+		TO_BACK("Send to Back", "icons/shape_move_back.png"),	//$NON-NLS-2$
+		STEP_FRONT("Bring Forward", "icons/shape_move_forwards.png"), //$NON-NLS-2$
+		STEP_BACK("Send Backward", "icons/shape_move_backwards.png");//$NON-NLS-2$
+		
 		private String label;
 		private String iconPath;
 		private OrderType(String label, String iconPath) {
@@ -53,7 +60,7 @@ public class ChangeOrderAction extends SelectionAction {
 	}
 	
 	
-	class IndexedWidget implements Comparable<IndexedWidget>{
+	private static class IndexedWidget implements Comparable<IndexedWidget>{
 		
 		private Integer index;
 		
@@ -80,8 +87,35 @@ public class ChangeOrderAction extends SelectionAction {
 		
 		public int compareTo(IndexedWidget o) {
 			
-			return index.compareTo(o.getIndex());
+			return index.compareTo(Integer.valueOf(o.getIndex()));
 		}
+
+		@Override
+		public int hashCode() {
+			final int prime = 31;
+			int result = 1;
+			result = prime * result + ((index == null) ? 0 : index.hashCode());
+			return result;
+		}
+
+		@Override
+		public boolean equals(Object obj) {
+			if (this == obj)
+				return true;
+			if (obj == null)
+				return false;
+			if (getClass() != obj.getClass())
+				return false;
+			IndexedWidget other = (IndexedWidget) obj;
+			if (index == null) {
+				if (other.index != null)
+					return false;
+			} else if (!index.equals(other.index))
+				return false;
+			return true;
+		}
+		
+		
 		
 	}
 	
@@ -98,16 +132,20 @@ public class ChangeOrderAction extends SelectionAction {
 
 	@Override
 	protected boolean calculateEnabled() {		
-		if(getSelectedObjects().size() == 0 || getSelectedObjects().size() == 1 && getSelectedObjects().get(0) instanceof DisplayEditpart)
+		if(getSelectedObjects().size() == 0 || 
+				getSelectedObjects().size() == 1 && getSelectedObjects().get(0) instanceof EditPart
+				&& ((EditPart)getSelectedObjects().get(0)).getModel() instanceof DisplayModel)
 			return false;
 		Map<AbstractContainerModel, List<IndexedWidget>> widgetMap = 
 			new HashMap<AbstractContainerModel, List<IndexedWidget>>();
 		fillWidgetMap(widgetMap);
 		
 		//create compound command
-		for(AbstractContainerModel container : widgetMap.keySet()){
+		for(final Map.Entry<AbstractContainerModel, List<IndexedWidget>> entry 
+				: widgetMap.entrySet()){
 			//sort the list in map by the widget's original order in its container
-			List<IndexedWidget> widgetList = widgetMap.get(container);
+			AbstractContainerModel container = entry.getKey();
+			List<IndexedWidget> widgetList = entry.getValue();
 			Collections.sort(widgetList);		
 			
 			int newIndex;			
@@ -145,9 +183,10 @@ public class ChangeOrderAction extends SelectionAction {
 		CompoundCommand compoundCommand = new CompoundCommand(orderType.getLabel());
 		
 		//create compound command
-		for(AbstractContainerModel container : widgetMap.keySet()){
+		for(final Map.Entry<AbstractContainerModel, List<IndexedWidget>> entry : widgetMap.entrySet()){
 			//sort the list in map by the widget's original order in its container
-			List<IndexedWidget> widgetList = widgetMap.get(container);
+			AbstractContainerModel container = entry.getKey();
+			List<IndexedWidget> widgetList = entry.getValue();
 			Collections.sort(widgetList);		
 			
 			int newIndex;			
@@ -197,12 +236,12 @@ public class ChangeOrderAction extends SelectionAction {
 			Map<AbstractContainerModel, List<IndexedWidget>> widgetMap) {
 		
 		for(Object selection : getSelectedObjects()){
-			if(selection instanceof AbstractBaseEditPart){
-				AbstractBaseEditPart widgetEditpart = (AbstractBaseEditPart)selection;
-				AbstractWidgetModel widgetModel = widgetEditpart.getWidgetModel();
-				if(widgetEditpart.getParent() instanceof AbstractContainerEditpart){
+			if(selection instanceof EditPart){
+				EditPart widgetEditpart = (EditPart)selection;
+				AbstractWidgetModel widgetModel = (AbstractWidgetModel) widgetEditpart.getModel();
+				if(widgetEditpart.getParent() != null){
 					AbstractContainerModel containerModel = 
-						((AbstractContainerEditpart)widgetEditpart.getParent()).getWidgetModel();
+						(AbstractContainerModel) widgetEditpart.getParent().getModel();
 					
 					if(!widgetMap.containsKey(containerModel)){
 						widgetMap.put(containerModel, new LinkedList<IndexedWidget>());

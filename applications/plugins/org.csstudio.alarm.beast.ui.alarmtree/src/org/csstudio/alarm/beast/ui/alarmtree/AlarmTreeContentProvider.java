@@ -7,7 +7,7 @@
  ******************************************************************************/
 package org.csstudio.alarm.beast.ui.alarmtree;
 
-import org.csstudio.alarm.beast.AlarmTree;
+import org.csstudio.alarm.beast.client.AlarmTreeItem;
 import org.eclipse.jface.viewers.ILazyTreeContentProvider;
 import org.eclipse.jface.viewers.TreeViewer;
 import org.eclipse.jface.viewers.Viewer;
@@ -30,12 +30,14 @@ public class AlarmTreeContentProvider implements ILazyTreeContentProvider
     }
 
     /** @see ILazyTreeContentProvider */
+    @Override
     public void dispose()
     {
         // NOP
     }
 
     /** @see ILazyTreeContentProvider */
+    @Override
     public void inputChanged(Viewer viewer, Object oldInput, Object newInput)
     {
         tree_viewer = (TreeViewer) viewer;
@@ -46,22 +48,23 @@ public class AlarmTreeContentProvider implements ILazyTreeContentProvider
      *  @param index Index into the parent's child array
      *  @see ILazyTreeContentProvider
      */
+    @Override
     public void updateElement(final Object parent, final int index)
     {
-        final AlarmTree item = (AlarmTree) parent;
-        AlarmTree child;
+        final AlarmTreeItem item = (AlarmTreeItem) parent;
+        AlarmTreeItem child;
         int count;
 
         if (gui.getAlarmDisplayMode())
         {
             child = item.getAlarmChild(index);
             count = child.getAlarmChildCount();
-        }   
+        }
         else
         {
-            child = item.getChild(index);
+            child = item.getClientChild(index);
             count = child.getChildCount();
-        }   
+        }
         //System.out.println("Tree update: " + child.getName());
         tree_viewer.replace(parent, index, child);
         // Must be called to trigger tree viewer to descend further
@@ -73,20 +76,22 @@ public class AlarmTreeContentProvider implements ILazyTreeContentProvider
      *  @param TreeViewer's current idea of the item's child count
      *  @see ILazyTreeContentProvider
      */
+    @Override
     public void updateChildCount(Object element, int currentChildCount)
     {
-        final AlarmTree item = (AlarmTree) element;
+        final AlarmTreeItem item = (AlarmTreeItem) element;
         final int count = gui.getAlarmDisplayMode()
            ? item.getAlarmChildCount()
            : item.getChildCount();
            if (count != currentChildCount)
-            tree_viewer.setChildCount(element, count);        
+            tree_viewer.setChildCount(element, count);
     }
 
     /** @see ILazyTreeContentProvider */
+    @Override
     public Object getParent(Object element)
     {
-        final AlarmTree item = (AlarmTree) element;
+        final AlarmTreeItem item = (AlarmTreeItem) element;
         //System.out.println("getParent of " + item.toString());
         return item.getParent();
     }

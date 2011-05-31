@@ -46,10 +46,7 @@ import org.eclipse.ecf.presence.roster.IRosterItem;
 import org.osgi.framework.BundleContext;
 import org.osgi.framework.InvalidSyntaxException;
 import org.osgi.util.tracker.ServiceTracker;
-import org.remotercp.common.servicelauncher.ServiceLauncher;
-import org.remotercp.ecf.ECFConstants;
-import org.remotercp.ecf.session.ISessionService;
-import org.remotercp.login.connection.HeadlessConnection;
+import org.remotercp.service.connection.session.ISessionService;
 
 /**
  * @author Markus Moeller

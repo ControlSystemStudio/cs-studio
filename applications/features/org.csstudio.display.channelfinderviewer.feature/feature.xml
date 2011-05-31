@@ -3,7 +3,7 @@
       id="org.csstudio.display.channelfinderviewer.feature"
       label="Channelfinder Viewer Feature"
       version="0.2.0.qualifier"
-      provider-name="Kunal Shroff &lt;kshroff@bnl.gov&gt;, Gabriele Carcassi &lt;carcassi@bnl.gov&gt; - Brookhaven National Lab">
+      provider-name="Kunal Shroff &lt;kshroff@bnl.gov&gt;, Gabriele Carcassi &lt;carcassi@bnl.gov&gt; - BNL">
 
    <description url="http://www.example.com/description">
       [Enter Feature Description here.]
@@ -22,12 +22,14 @@
    </url>
 
    <requires>
-      <import plugin="org.eclipse.ui"/>
-      <import plugin="org.eclipse.core.runtime"/>
-      <import plugin="org.csstudio.platform.ui" version="1.1.1" match="greaterOrEqual"/>
-      <import plugin="org.eclipse.core.expressions" version="3.4.101" match="greaterOrEqual"/>
-      <import plugin="org.csstudio.platform.libs.channelfinderAPI" version="1.0.0" match="greaterOrEqual"/>
-      <import plugin="org.csstudio.platform.libs.jersey" version="1.0.0" match="greaterOrEqual"/>
+      <import plugin="org.csstudio.utility.channelfinder" version="1.0.0" match="greaterOrEqual"/>
+      <import plugin="org.csstudio.utility.channel" version="1.0.0" match="greaterOrEqual"/>
+      <import plugin="org.eclipse.core.runtime" version="3.6.0" match="greaterOrEqual"/>
+      <import plugin="org.eclipse.ui" version="3.6.1" match="greaterOrEqual"/>
+      <import plugin="com.google.common"/>
+      <import plugin="org.csstudio.ui.menu" version="3.0.0" match="greaterOrEqual"/>
+      <import plugin="org.csstudio.platform.libs.jersey" version="1.1.5" match="greaterOrEqual"/>
+      <import plugin="org.junit"/>
    </requires>
 
    <plugin

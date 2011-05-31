@@ -3,7 +3,7 @@
       id="org.csstudio.nsls2.basic.applications.feature"
       label="Basic NSLS2 CSS Applications Feature"
       version="1.0.0.qualifier"
-      provider-name="Kunal Shroff &lt;kshroff@bnl.gov&gt;, Gabriele Carcassi &lt;carcassi@bnl.gov&gt; - Brookhaven National Lab">
+      provider-name="Kunal Shroff &lt;kshroff@bnl.gov&gt;, Gabriele Carcassi &lt;carcassi@bnl.gov&gt; - BNL">
 
    <description url="http://www.example.com/description">
       [Enter Feature Description here.]
@@ -29,13 +29,6 @@
          unpack="false"/>
 
    <plugin
-         id="org.csstudio.diag.probe"
-         download-size="0"
-         install-size="0"
-         version="0.0.0"
-         unpack="false"/>
-
-   <plugin
          id="org.csstudio.display.pvtable"
          download-size="0"
          install-size="0"
@@ -51,6 +44,13 @@
 
    <plugin
          id="org.csstudio.diag.pvmanager.probe"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"
+         unpack="false"/>
+
+   <plugin
+         id="org.csstudio.display.waterfall"
          download-size="0"
          install-size="0"
          version="0.0.0"

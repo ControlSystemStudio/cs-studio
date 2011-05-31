@@ -1,8 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <?pde version="3.5"?>
 
-<product name="WebSuiteProduct" id="org.csstudio.websuite.WebSuiteProduct" application="org.csstudio.websuite.WebSuite" version="1.2.0" useFeatures="true" includeLaunchers="true">
-
+<product name="WebSuiteProduct" id="org.csstudio.websuite.WebSuiteProduct" application="org.csstudio.websuite.WebSuite" version="1.3.3" useFeatures="true" includeLaunchers="true">
 
    <configIni use="default">
    </configIni>
@@ -15,7 +14,6 @@
 
    <windowImages/>
 
-
    <launcher name="css-websuite">
       <solaris/>
       <win useIco="false">
@@ -23,15 +21,13 @@
       </win>
    </launcher>
 
-
    <vm>
    </vm>
-
 
    <plugins>
       <plugin id="javax.servlet"/>
       <plugin id="org.csstudio.platform"/>
-      <plugin id="org.csstudio.platform.libs.ant"/>
+      <plugin id="org.csstudio.platform.libs.ant" fragment=""/>
       <plugin id="org.csstudio.platform.libs.dal"/>
       <plugin id="org.csstudio.platform.libs.dal.epics"/>
       <plugin id="org.csstudio.platform.libs.epics"/>
@@ -125,7 +121,7 @@
       <plugin id="org.mortbay.jetty.util"/>
       <plugin id="org.remotercp.common"/>
       <plugin id="org.remotercp.ecf"/>
-      <plugin id="org.remotercp.libs"/>
+      <plugin id="org.remotercp.libs" fragment=""/>
       <plugin id="org.remotercp.util"/>
    </plugins>
 

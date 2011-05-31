@@ -22,11 +22,10 @@
 package org.csstudio.dct.ui.workbenchintegration;
 
 import java.io.InputStream;
-import java.util.UUID;
 
 import org.csstudio.dct.DctActivator;
 import org.csstudio.dct.model.internal.Project;
-import org.csstudio.dct.ui.editor.DctEditor;
+import org.csstudio.dct.model.internal.ProjectFactory;
 import org.csstudio.platform.ui.wizards.WizardNewFileCreationPage;
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IProject;
@@ -118,7 +117,7 @@ public final class NewDctFileWizard extends Wizard implements INewWizard {
 		 */
 		@Override
 		protected InputStream getInitialContents() {
-			Project project = new Project("Neu", UUID.randomUUID());
+			Project project = ProjectFactory.createNewDCTProjectFile(getFileName());
 			try {
 				return DctActivator.getDefault().getPersistenceService().getAsStream(project);
 			} catch (Exception e) {
@@ -139,7 +138,7 @@ public final class NewDctFileWizard extends Wizard implements INewWizard {
 		 */
 		@Override
 		public String getFileExtension() {
-			return DctEditor.FILE_EXTENSION;//$NON-NLS-1$
+			return ProjectFactory.getDctFileExtension();
 		}
 	}
 

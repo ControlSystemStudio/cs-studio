@@ -1,19 +1,18 @@
 /**
- * 
+ *
  */
 package org.csstudio.diag.epics.pvtree;
 
 import java.util.ArrayList;
+import java.util.List;
+import java.util.logging.Level;
 
-import org.csstudio.platform.data.ISeverity;
-import org.csstudio.platform.data.IValue;
-import org.csstudio.platform.data.ValueUtil;
-import org.csstudio.platform.logging.CentralLogger;
-import org.csstudio.platform.model.IProcessVariable;
+import org.csstudio.data.values.ISeverity;
+import org.csstudio.data.values.IValue;
+import org.csstudio.data.values.ValueUtil;
 import org.csstudio.utility.pv.PV;
 import org.csstudio.utility.pv.PVFactory;
 import org.csstudio.utility.pv.PVListener;
-import org.eclipse.core.runtime.PlatformObject;
 import org.eclipse.swt.widgets.Display;
 
 /** One item in the PV tree model.
@@ -22,10 +21,10 @@ import org.eclipse.swt.widgets.Display;
  *  which has inputs, and those inputs is what we
  *  want to drill down, this class currently includes
  *  almost all the logic behind the tree creation.
- *  
+ *
  *  @author Kay Kasemir
  */
-class PVTreeItem extends PlatformObject implements IProcessVariable
+class PVTreeItem
 {
    /** The model to which this whole tree belongs. */
     private final PVTreeModel model;
@@ -45,25 +44,26 @@ class PVTreeItem extends PlatformObject implements IProcessVariable
      *  would be the record name.
      */
     private final String record_name;
-    
+
     /** The PV used for getting the current value. */
     private PV pv;
-    
+
     /** Most recent value. */
     private volatile String value = null;
-   
+
     /** Most recent severity. */
     private volatile ISeverity severity = null;
-    
+
     private PVListener pv_listener = new PVListener()
     {
+        @Override
         public void pvDisconnected(PV pv)
         {
             value = "<disconnected>"; //$NON-NLS-1$
             severity = null;
             updateValue();
         }
-        @SuppressWarnings("nls")
+        @Override
         public void pvValueUpdate(PV pv)
         {
             try
@@ -75,36 +75,44 @@ class PVTreeItem extends PlatformObject implements IProcessVariable
             }
             catch (Exception e)
             {
-                CentralLogger.getInstance().getLogger(this)
-                    .error("pvValueUpdate", e);
+                Plugin.getLogger().log(Level.SEVERE, "PV Listener error" , e); //$NON-NLS-1$
             }
         }
     };
-    
+
     /** The PV used for getting the record type. */
     private PV type_pv;
     private String type;
     private PVListener type_pv_listener = new PVListener()
     {
+        @Override
         public void pvDisconnected(PV pv)
         {
             // NOP
         }
+        @Override
         public void pvValueUpdate(PV pv)
         {
             try
             {
-                type = pv.getValue().format();
+                final String type_txt = pv.getValue().format();
+                // type should be a text.
+                // If it starts with a number, it's probably not an
+                // EPICS record type but a simulated PV
+                final char first_char = type_txt.charAt(0);
+                if (first_char >= 'a' && first_char <= 'z')
+                    type = type_txt;
+                else
+                    type = Messages.UnkownPVType;
                 updateType();
             }
             catch (Exception e)
             {
-                CentralLogger.getInstance().getLogger(this)
-                    .error("pvValueUpdate", e); //$NON-NLS-1$
+                Plugin.getLogger().log(Level.SEVERE, "PV Type Listener error" , e); //$NON-NLS-1$
             }
         }
     };
-    
+
     /** Array of fields to read for this record type.
      *  Fields are removed as they are read, so in the end this
      *  array will be empty
@@ -116,10 +124,12 @@ class PVTreeItem extends PlatformObject implements IProcessVariable
     private String link_value;
     private PVListener link_pv_listener = new PVListener()
     {
+        @Override
         public void pvDisconnected(PV pv)
         {
             // NOP
         }
+        @Override
         public void pvValueUpdate(PV pv)
         {
             try
@@ -140,12 +150,11 @@ class PVTreeItem extends PlatformObject implements IProcessVariable
             }
             catch (Exception e)
             {
-                CentralLogger.getInstance().getLogger(this)
-                    .error("pvValueUpdate", e); //$NON-NLS-1$
+                Plugin.getLogger().log(Level.SEVERE, "PV Link Listener error" , e); //$NON-NLS-1$
             }
         }
     };
-    
+
     /** Tree item children, populated with info from the input links. */
     private ArrayList<PVTreeItem> links = new ArrayList<PVTreeItem>();
 
@@ -165,7 +174,7 @@ class PVTreeItem extends PlatformObject implements IProcessVariable
         this.info = info;
         this.pv_name = pv_name;
         this.type = null;
-        
+
         // In case this is "record.field", get the record name.
         final int sep = pv_name.lastIndexOf('.');
         if (sep > 0)
@@ -173,15 +182,16 @@ class PVTreeItem extends PlatformObject implements IProcessVariable
         else
             record_name = pv_name;
 
-        CentralLogger.getInstance().getLogger(this).debug(
-                "New Tree item '" + pv_name //$NON-NLS-1$
-                + "', record name '" + record_name + "'"); //$NON-NLS-1$ //$NON-NLS-2$
+        Plugin.getLogger().log(Level.FINE,
+                "New Tree item {0}, record name {1}", //$NON-NLS-1$
+                new Object[] { pv_name, record_name});
+
         // Avoid loops.
         // If the model already contains an entry with this name,
         // we simply display this new item, but we won't
         // follow its input links.
         final PVTreeItem other = model.findPV(pv_name);
-        
+
         // Now add this one, otherwise the previous call would have found 'this'.
         if (parent != null)
             parent.links.add(this);
@@ -198,21 +208,19 @@ class PVTreeItem extends PlatformObject implements IProcessVariable
         // Try to read the pv
         try
         {
-            pv = createPV(pv_name);        
+            pv = createPV(pv_name);
             pv.addListener(pv_listener);
             pv.start();
         }
         catch (Exception e)
         {
-            CentralLogger.getInstance().getLogger(this)
-                .error("PV creation error", e); //$NON-NLS-1$
+            Plugin.getLogger().log(Level.SEVERE, "PV creation error" , e); //$NON-NLS-1$
         }
         // Get type from 'other', previously used PV or via CA
         if (other != null)
         {
             type = other.type;
-            CentralLogger.getInstance().getLogger(this)
-                .debug("Known item, not traversing inputs (again)"); //$NON-NLS-1$
+            Plugin.getLogger().fine("Known item, not traversing inputs (again)"); //$NON-NLS-1$
         }
         else
         {
@@ -224,12 +232,11 @@ class PVTreeItem extends PlatformObject implements IProcessVariable
             }
             catch (Exception e)
             {
-                CentralLogger.getInstance().getLogger(this)
-                    .error("PV creation error", e); //$NON-NLS-1$
+                Plugin.getLogger().log(Level.SEVERE, "PV.RTYP creation error" , e); //$NON-NLS-1$
             }
         }
     }
-    
+
     /** Dispose this and all child entries. */
     public void dispose()
     {
@@ -244,7 +251,7 @@ class PVTreeItem extends PlatformObject implements IProcessVariable
         disposeLinkPV();
         disposeTypePV();
     }
-    
+
     /** @return PV for the given name */
     @SuppressWarnings("nls")
     private PV createPV(final String name)
@@ -255,13 +262,11 @@ class PVTreeItem extends PlatformObject implements IProcessVariable
         }
         catch (Exception ex)
         {
-            ex.printStackTrace();
-            CentralLogger.getInstance().getLogger(this)
-                .error("Cannot create PV '" + name + "'", ex);
+            Plugin.getLogger().log(Level.SEVERE, "Cannot create PV '" + name + "'", ex);
         }
         return null;
     }
-    
+
     /** Delete the type_pv */
     private void disposeTypePV()
     {
@@ -283,23 +288,19 @@ class PVTreeItem extends PlatformObject implements IProcessVariable
             link_pv = null;
         }
     }
-    
+
     /** @return Returns the name of this PV. */
-    public String getName()
+    public String getPVName()
     {   return pv_name; }
-    
+
     /** @return Severity of current value. May be <code>null</code>. */
     public ISeverity getSeverity()
     {   return severity; }
-    
-    // @see IProcessVariable
-    public String getTypeId()
-    {   return IProcessVariable.TYPE_ID;    }
 
     /** @return Returns the record type of this item or <code>null</code>. */
     public String getType()
     {   return type;    }
-    
+
     /** @return Returns the parent or <code>null</code>. */
     public PVTreeItem getParent()
     {   return parent;    }
@@ -311,7 +312,7 @@ class PVTreeItem extends PlatformObject implements IProcessVariable
             return links.get(0);
         return null;
     }
-    
+
     /** @return Returns the all links. */
     public PVTreeItem[] getLinks()
     {
@@ -353,6 +354,7 @@ class PVTreeItem extends PlatformObject implements IProcessVariable
     {
         Display.getDefault().asyncExec(new Runnable()
         {
+            @Override
             public void run()
             {   // Display the received type of this record.
                 model.itemUpdated(PVTreeItem.this);
@@ -364,10 +366,11 @@ class PVTreeItem extends PlatformObject implements IProcessVariable
     @SuppressWarnings("nls")
     private void updateType()
     {
-        CentralLogger.getInstance().getLogger(this)
-            .debug(pv_name + " received type '" + type + "'");
+        Plugin.getLogger().log(Level.FINE,
+                "{0} received type {1}", new Object[] { pv_name, type });
         Display.getDefault().asyncExec(new Runnable()
         {
+            @Override
             public void run()
             {
                 // Already disposed?
@@ -377,21 +380,22 @@ class PVTreeItem extends PlatformObject implements IProcessVariable
                 disposeTypePV();
                 // Display the received type of this record.
                 model.itemChanged(PVTreeItem.this);
-                
-                links_to_read.clear();
-                links_to_read.addAll(model.getFieldInfo().get(type));
 
+                links_to_read.clear();
+                final List<String> fields = model.getFieldInfo().get(type);
+                if (fields != null)
+                    links_to_read.addAll(fields);
                 if (links_to_read.size() <= 0)
                 {
-                    CentralLogger.getInstance().getLogger(this)
-                        .error("Unknown record type '" + type + "'");
+                    Plugin.getLogger().log(Level.FINE,
+                            "{0} has unknown record type {1}", new Object[] { pv_name, type });
                     return;
                 }
                 getNextLink();
             }
         });
     }
-    
+
     /** Helper for reading next link from links_to_read. */
     @SuppressWarnings("nls")
     private void getNextLink()
@@ -411,8 +415,7 @@ class PVTreeItem extends PlatformObject implements IProcessVariable
         }
         catch (Exception e)
         {
-            CentralLogger.getInstance().getLogger(this)
-                .error("PV creation error", e);
+            Plugin.getLogger().log(Level.SEVERE, "PV." + field + " creation error" , e); //$NON-NLS-1$
         }
     }
 
@@ -420,16 +423,18 @@ class PVTreeItem extends PlatformObject implements IProcessVariable
     @SuppressWarnings("nls")
     private void updateLink()
     {
-        CentralLogger.getInstance().getLogger(this)
-            .debug(link_pv.getName() + " received '" + link_value + "'");
+        Plugin.getLogger().log(Level.FINE,
+                "{0} received {1}", new Object[] { link_pv.getName(), link_value });
+
         Display.getDefault().asyncExec(new Runnable()
         {
+            @Override
             public void run()
             {
                 if (link_pv == null)
                 {
-                    CentralLogger.getInstance().getLogger(this)
-                        .debug(pv_name + " already disposed");
+                    Plugin.getLogger().log(Level.FINE,
+                            "{0} already disposed", pv_name);
                     return;
                 }
                 disposeLinkPV();
@@ -438,8 +443,8 @@ class PVTreeItem extends PlatformObject implements IProcessVariable
                 // list of links to read
                 if (links_to_read.size() <= 0)
                 {
-                    CentralLogger.getInstance().getLogger(this)
-                        .debug(link_pv.getName() + " update without active link?");
+                    Plugin.getLogger().log(Level.FINE,
+                            "{0} update without active link?",link_pv.getName());
                     return;
                 }
                 final String field = links_to_read.remove(0);

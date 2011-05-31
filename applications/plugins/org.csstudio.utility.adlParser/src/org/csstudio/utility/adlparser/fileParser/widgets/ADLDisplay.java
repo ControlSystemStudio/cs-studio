@@ -8,7 +8,6 @@ import org.csstudio.utility.adlparser.fileParser.FileLine;
 import org.csstudio.utility.adlparser.fileParser.WrongADLFormatException;
 import org.csstudio.utility.adlparser.fileParser.widgetParts.ADLObject;
 import org.csstudio.utility.adlparser.internationalization.Messages;
-import org.eclipse.jface.resource.ImageDescriptor;
 
 /**
  * 
@@ -28,7 +27,7 @@ public class ADLDisplay extends ADLAbstractWidget {
 		super(adlWidget);
 		set_isBackColorDefined(false);
 		set_isForeColorDefined(false);
-		name = new String("display");
+		name = String.valueOf("display");
 		descriptor = null;
 		try {
 			for (ADLWidget childWidget : adlWidget.getObjects()) {
@@ -187,11 +186,11 @@ public class ADLDisplay extends ADLAbstractWidget {
 	public Object[] getChildren() {
 		ArrayList<Object> ret = new ArrayList<Object>();
 		if (_hasObject) ret.add( _adlObject);
-		if (_isBackColorDefined) ret.add(new ADLResource(ADLResource.BACKGROUND_COLOR,new Integer(_bclr)) );
-		if (_isForeColorDefined) ret.add(new ADLResource(ADLResource.FOREGROUND_COLOR,new Integer(_bclr)) );
-		ret.add(new ADLResource(ADLResource.SNAP_TO_GRID, new Boolean(_snapToGrid)) );
-		ret.add(new ADLResource(ADLResource.GRID_ON, new Boolean(_gridOn)));
-		ret.add(new ADLResource(ADLResource.GRID_SPACING, new Integer(_gridSpacing)));
+		if (_isBackColorDefined) ret.add(new ADLResource(ADLResource.BACKGROUND_COLOR, Integer.valueOf(_bclr)) );
+		if (_isForeColorDefined) ret.add(new ADLResource(ADLResource.FOREGROUND_COLOR, Integer.valueOf(_bclr)) );
+		ret.add(new ADLResource(ADLResource.SNAP_TO_GRID, Boolean.valueOf(_snapToGrid)) );
+		ret.add(new ADLResource(ADLResource.GRID_ON, Boolean.valueOf(_gridOn)));
+		ret.add(new ADLResource(ADLResource.GRID_SPACING, Integer.valueOf(_gridSpacing)));
 		return ret.toArray();
 	}
 

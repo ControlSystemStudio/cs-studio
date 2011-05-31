@@ -1,12 +1,19 @@
+/*******************************************************************************
+ * Copyright (c) 2010 Oak Ridge National Laboratory.
+ * All rights reserved. This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License v1.0
+ * which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-v10.html
+ ******************************************************************************/
 package org.csstudio.swt.widgets.figures;
 
-import org.csstudio.platform.ui.util.CustomMediaFactory;
 import org.csstudio.swt.widgets.figureparts.RoundScale;
 import org.csstudio.swt.widgets.figureparts.RoundScaleTickMarks;
 import org.csstudio.swt.widgets.figureparts.RoundScaledRamp;
 import org.csstudio.swt.widgets.util.GraphicsUtil;
 import org.csstudio.swt.widgets.util.RotationUtil;
 import org.csstudio.swt.xygraph.linearscale.AbstractScale.LabelSide;
+import org.csstudio.ui.util.CustomMediaFactory;
 import org.eclipse.draw2d.AbstractLayout;
 import org.eclipse.draw2d.Ellipse;
 import org.eclipse.draw2d.FigureListener;
@@ -95,7 +102,7 @@ public class GaugeFigure extends AbstractRoundRampedFigure {
 	@Override
 	public void setValue(double value) {
 		super.setValue(value);
-		valueLabel.setText(scale.format(value));			
+		valueLabel.setText(getValueText());			
 	}
 	
 	@Override
@@ -133,7 +140,7 @@ public class GaugeFigure extends AbstractRoundRampedFigure {
 		if(effect3D && support3D) {
 			graphics.pushState();
 			graphics.setAntialias(SWT.ON);
-			final double R = area.width/2;
+			final double R = area.width/2.0d;
 			final double UD_FILL_PART = 9.5d/10d;
 			final double UP_DOWN_RATIO = 1d/2d;
 			final double LR_FILL_PART = 8.5d/10d;
@@ -201,7 +208,7 @@ public class GaugeFigure extends AbstractRoundRampedFigure {
 		return effect3D;
 	}
 	
-	class Needle extends Polygon {
+	static class Needle extends Polygon {
 		public Needle() {
 			setBackgroundColor(DEFAULT_NEEDLE_COLOR);
 		}

@@ -1,8 +1,8 @@
 package org.csstudio.diag.postanalyser;
 
+import org.csstudio.data.values.TimestampFactory;
 import org.csstudio.diag.postanalyser.model.Channel;
 import org.csstudio.diag.postanalyser.model.Model;
-import org.csstudio.platform.data.TimestampFactory;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Shell;
 
@@ -59,13 +59,13 @@ public class TestMain
         model.addChannel(new Channel("Fast", x, createExp(x, 0.0, 2000.0, 0.5)));
         model.addChannel(new Channel("Slow Offset", x, createExp(x, 500.0, 2000.0, 5.0)));
         model.addChannel(new Channel("Fast Offset", x, createExp(x, 500.0, 2000.0, 0.5)));
-        
+
         model.addChannel(new Channel("0.1 Hz", x, createPeriod(x, 1.0)));
         model.addChannel(new Channel("1.0 Hz", x, createPeriod(x, 10.0)));
         model.addChannel(new Channel("2.0 Hz", x, createPeriod(x, 20.0)));
         model.addChannel(new Channel("4.5 Hz", x, createPeriod(x, 45.0)));
         model.addChannel(new Channel("6.0 Hz", x, createPeriod(x, 60.0)));
-        
+
         new GUI(model, shell);
 
         shell.pack();
@@ -90,7 +90,7 @@ public class TestMain
         return x;
     }
 
-    /** Create line 
+    /** Create line
      *  @param x X axis locations
      *  @param slope Line slope
      *  @param intersect Intersection with Y axis
@@ -102,7 +102,7 @@ public class TestMain
         return createLine(x, slope, intersect, 1.0);
     }
 
-    /** Create line 
+    /** Create line
      *  @param x X axis locations
      *  @param slope Line slope
      *  @param intersect Intersection with Y axis
@@ -149,7 +149,7 @@ public class TestMain
         }
         return data;
     }
-    
+
     /** @return periodic signal over x */
     private static double[] createPeriod(double[] x, double periods)
     {

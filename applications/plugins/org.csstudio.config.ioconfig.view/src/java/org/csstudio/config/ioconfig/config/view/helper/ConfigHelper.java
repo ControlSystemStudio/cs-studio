@@ -31,27 +31,29 @@ import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
 import java.text.SimpleDateFormat;
-import java.util.List;
 
+import javax.annotation.CheckForNull;
 import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 
+import org.csstudio.config.ioconfig.model.AbstractNodeDBO;
 import org.csstudio.config.ioconfig.model.FacilityDBO;
 import org.csstudio.config.ioconfig.model.IocDBO;
-import org.csstudio.config.ioconfig.model.AbstractNodeDBO;
 import org.csstudio.config.ioconfig.model.NodeImageDBO;
+import org.csstudio.config.ioconfig.model.PersistenceException;
 import org.csstudio.config.ioconfig.model.pbmodel.ChannelDBO;
-import org.csstudio.config.ioconfig.model.pbmodel.GSDFileDBO;
 import org.csstudio.config.ioconfig.model.pbmodel.MasterDBO;
 import org.csstudio.config.ioconfig.model.pbmodel.ModuleDBO;
 import org.csstudio.config.ioconfig.model.pbmodel.ProfibusSubnetDBO;
 import org.csstudio.config.ioconfig.model.pbmodel.SlaveDBO;
+import org.csstudio.config.ioconfig.view.DeviceDatabaseErrorDialog;
 import org.csstudio.config.ioconfig.view.IOConfigActivatorUI;
 import org.csstudio.config.ioconfig.view.ProfiBusTreeView;
-import org.csstudio.platform.security.SecurityFacade;
-import org.csstudio.platform.security.User;
+import org.csstudio.platform.logging.CentralLogger;
+import org.csstudio.auth.security.SecurityFacade;
+import org.csstudio.auth.security.User;
 import org.csstudio.platform.ui.util.CustomMediaFactory;
 import org.eclipse.jface.layout.GridLayoutFactory;
-import org.eclipse.jface.viewers.TableViewer;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.custom.ScrolledComposite;
 import org.eclipse.swt.events.KeyEvent;
@@ -67,13 +69,9 @@ import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Label;
-import org.eclipse.swt.widgets.Menu;
-import org.eclipse.swt.widgets.MenuItem;
 import org.eclipse.swt.widgets.Spinner;
 import org.eclipse.swt.widgets.TabFolder;
 import org.eclipse.swt.widgets.TabItem;
-import org.eclipse.ui.ISharedImages;
-import org.eclipse.ui.PlatformUI;
 
 /**
  * @author hrickens
@@ -92,11 +90,12 @@ public final class ConfigHelper {
     private static final class SpinnerKeyListener implements KeyListener {
         private final SpinnerModifyListener _modifyListener;
 
-        public SpinnerKeyListener(final SpinnerModifyListener modifyListener) {
+        public SpinnerKeyListener(@Nonnull final SpinnerModifyListener modifyListener) {
             _modifyListener = modifyListener;
         }
 
-        public void keyPressed(final KeyEvent e) {
+        @Override
+        public void keyPressed(@Nonnull final KeyEvent e) {
             Spinner spinner = (Spinner) e.widget;
             if ((e.keyCode == SWT.CR) || (e.keyCode == SWT.KEYPAD_CR)) {
                 _modifyListener.doIt();
@@ -111,7 +110,9 @@ public final class ConfigHelper {
 
         }
 
-        public void keyReleased(final KeyEvent e) {
+        @Override
+        public void keyReleased(@Nullable final KeyEvent e) {
+            // Not used.
         }
 
     }
@@ -129,9 +130,9 @@ public final class ConfigHelper {
         private boolean _doIt = true;
         private int _lastValue;
 
-        private SpinnerModifyListener(final ProfiBusTreeView profiBusTreeView,
-                                      final AbstractNodeDBO node,
-                                      final Spinner indexSpinner) {
+        protected SpinnerModifyListener(@Nonnull final ProfiBusTreeView profiBusTreeView,
+                                      @Nonnull final AbstractNodeDBO node,
+                                      @Nonnull final Spinner indexSpinner) {
             _profiBusTreeView = profiBusTreeView;
             _node = node;
             _indexSpinner = indexSpinner;
@@ -142,17 +143,24 @@ public final class ConfigHelper {
             return _lastValue;
         }
 
-        public void modifyText(final ModifyEvent e) {
+        @Override
+        public void modifyText(@Nullable final ModifyEvent e) {
             if (_doIt) {
                 // TODO: Hier gibt es noch ein GDI Object leak.
                 short index = (short) _indexSpinner.getSelection();
-                _node.moveSortIndex(index);
-                if (_node.getParent() != null) {
-                    _profiBusTreeView.refresh(_node.getParent());
-                } else {
-                    _profiBusTreeView.refresh();
+                
+                try {
+                    _node.moveSortIndex(index);
+                    if (_node.getParent() != null) {
+                        _profiBusTreeView.refresh(_node.getParent());
+                    } else {
+                        _profiBusTreeView.refresh();
+                    }
+                    _lastValue = index;
+                } catch (PersistenceException e1) {
+                    DeviceDatabaseErrorDialog.open(null, "Can't move node!", e1);
+                    CentralLogger.getInstance().error(this, e1);
                 }
-                _lastValue = index;
             }
         }
 
@@ -166,21 +174,15 @@ public final class ConfigHelper {
     }
 
     /**
-     *
-     */
-    private static GSDFileDBO _gsdFile;
-
-    /**
      * The standard Date format.
      */
-    private static SimpleDateFormat _simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss.S");
-
-    private static List<GSDFileDBO> _gsdFiles;
+    private static SimpleDateFormat _SIMPLE_DATE_FORMAT = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss.S");
 
     /**
      * The Private Constructor.
      */
     private ConfigHelper() {
+        // Default Constructor
     }
 
     /**
@@ -205,7 +207,7 @@ public final class ConfigHelper {
     public static Composite getNewTabItem(@Nonnull final String head,
                                           @Nonnull final TabFolder tabFolder,
                                           final int size,
-                                          final Composite viewer,
+                                          @Nullable final Composite viewer,
                                           final int minWidthSize,
                                           final int minHeight) {
         final TabItem item = new TabItem(tabFolder, SWT.NONE,0);
@@ -236,15 +238,17 @@ public final class ConfigHelper {
 
             tabFolder.addSelectionListener(new SelectionListener() {
 
-                public void widgetDefaultSelected(final SelectionEvent e) {
+                @Override
+                public void widgetDefaultSelected(@Nonnull final SelectionEvent e) {
                     docTabSelectionAction(e);
                 }
 
-                public void widgetSelected(final SelectionEvent e) {
+                @Override
+                public void widgetSelected(@Nonnull final SelectionEvent e) {
                     docTabSelectionAction(e);
                 }
 
-                private void docTabSelectionAction(final SelectionEvent e) {
+                private void docTabSelectionAction(@Nonnull final SelectionEvent e) {
                     if (e.item.equals(item)) {
                         docView.onActivate();
                     }
@@ -257,58 +261,54 @@ public final class ConfigHelper {
     }
 
     /**
-     *
-     */
-    private static void makeGSDFileActions(final TableViewer viewer) {
-        Menu menu = new Menu(viewer.getControl());
-        MenuItem showItem = new MenuItem(menu, SWT.PUSH);
-        showItem.addSelectionListener(new ShowFileSelectionListener(viewer));
-        showItem.setText("&Show");
-        showItem.setImage(PlatformUI.getWorkbench().getSharedImages()
-                .getImage(ISharedImages.IMG_OBJ_FOLDER));
-//        MenuItem saveAsItem = new MenuItem(menu, SWT.PUSH);
-//        saveAsItem.addSelectionListener(new SaveAsSelectionListener(viewer));
-//        saveAsItem.setText("&Show");
-//        saveAsItem.setImage(PlatformUI.getWorkbench().getSharedImages()
-//                          .getImage(ISharedImages.IMG_ETOOL_SAVEAS_EDIT));
-        viewer.getTable().setMenu(menu);
-    }
-
-    /**
      * Put a Text file into a String.
      *
      * @param file
      *            the Text file.
      * @return the Text of the File.
+     * @throws IOException 
      */
-    public static String file2String(final File file) {
+    @Nonnull
+    public static String file2String(@Nonnull final File file) throws IOException {
         StringBuilder text = new StringBuilder();
+        BufferedReader br = null;
+        FileReader fileReader = null;
         try {
-            BufferedReader br = new BufferedReader(new FileReader(file));
+            fileReader = new FileReader(file);
+            br = new BufferedReader(fileReader);
             String tmp;
             while ( (tmp = br.readLine()) != null) {
                 text = text.append(tmp + "\r\n");
             }
         } catch (FileNotFoundException e1) {
-            // TODO Fehler händling!
-            e1.printStackTrace();
+            throw e1;
         } catch (IOException e2) {
-            // TODO Fehler händling!
-            e2.printStackTrace();
+            throw e2;
+        } finally {
+            if(br!=null) {
+                br.close();
+            }
+            if(fileReader!=null) {
+                fileReader.close();
+            }
         }
+        
+        
         return text.toString();
     }
 
     /**
      * @return the Default CSS SimpleDateFormat.
      */
+    @Nonnull
     public static SimpleDateFormat getSimpleDateFormat() {
-        return _simpleDateFormat;
+        return _SIMPLE_DATE_FORMAT;
     }
 
     /**
      * @return The CSS User-Name.
      */
+    @Nonnull
     public static String getUserName() {
         User user = SecurityFacade.getInstance().getCurrentUser();
         if (user != null) {
@@ -361,42 +361,46 @@ public final class ConfigHelper {
         return indexSpinner;
     }
 
-    public static Image getImageFromNode(final AbstractNodeDBO node) {
+    @CheckForNull 
+    public static Image getImageFromNode(@CheckForNull final AbstractNodeDBO node) {
         return getImageFromNode(node, -1, -1);
     }
 
-    public static Image getImageFromNode(final AbstractNodeDBO node, final int width, final int height) {
+    // CHECKSTYLE OFF: CyclomaticComplexity
+    @CheckForNull
+    public static Image getImageFromNode(@CheckForNull final AbstractNodeDBO node, final int width, final int height) {
+        Image image = null;
         if (node != null) {
             NodeImageDBO icon = node.getIcon();
             if (icon != null) {
                 ByteArrayInputStream bais = new ByteArrayInputStream(icon.getImageBytes());
-                Image image = new Image(null, bais);
-                return image;
-            }
+                image = new Image(null, bais);
             // Get Default Image
-            if (node instanceof FacilityDBO) {
-                return getImageMaxSize("icons/css.gif", width, height);
             } else if (node instanceof FacilityDBO) {
-                return getImageMaxSize("icons/3055555W.bmp", width, height);
+                image =  getImageMaxSize("icons/css.gif", width, height);
+            } else if (node instanceof FacilityDBO) {
+                image =  getImageMaxSize("icons/3055555W.bmp", width, height);
             } else if (node instanceof IocDBO) {
-                return getImageMaxSize("icons/Buskopan.bmp", width, height);
+                image =  getImageMaxSize("icons/Buskopan.bmp", width, height);
             } else if (node instanceof ProfibusSubnetDBO) {
-                return getImageMaxSize("icons/Profibus2020.bmp", width, height);
+                image =  getImageMaxSize("icons/Profibus2020.bmp", width, height);
             } else if (node instanceof MasterDBO) {
-                return getImageMaxSize("icons/ProfibusMaster2020.bmp", width, height);
+                image =  getImageMaxSize("icons/ProfibusMaster2020.bmp", width, height);
             } else if (node instanceof SlaveDBO) {
-                return getImageMaxSize("icons/sie80a6n.bmp", width, height);
+                image =  getImageMaxSize("icons/sie80a6n.bmp", width, height);
             } else if (node instanceof ModuleDBO) {
-                return getImageMaxSize("icons/3055555W.bmp", width, height);
+                image =  getImageMaxSize("icons/3055555W.bmp", width, height);
             } else if (node instanceof ChannelDBO) {
                 ChannelDBO channel = (ChannelDBO) node;
-                return getChannelImage(channel.isInput(), channel.isDigital(), width, height);
+                image =  getChannelImage(channel.isInput(), channel.isDigital(), width, height);
             }
         }
-        return null;
+        return image;
     }
+ // CHECKSTYLE ON: CyclomaticComplexity
 
-    public static Image getImageMaxSize(final String imagePath, final int width, final int height) {
+    @Nonnull
+    public static Image getImageMaxSize(@Nonnull final String imagePath, final int width, final int height) {
         ImageData imageData = CustomMediaFactory.getInstance()
                 .getImageDescriptorFromPlugin(IOConfigActivatorUI.PLUGIN_ID, imagePath).getImageData();
         if ((width > 0) && (height > 0)) {
@@ -413,21 +417,25 @@ public final class ConfigHelper {
         return new Image(null, imageData);
     }
 
+    // CHECKSTYLE OFF: CyclomaticComplexity
+    @Nonnull 
     private static Image getChannelImage(final boolean isInput, final boolean isDigital, final int width, final int height) {
+        Image image = null;
         // DI
         if (isInput && !isDigital) {
-            return getImageMaxSize("icons/Input_red16.png", width, height);
+            image = getImageMaxSize("icons/Input_red16.png", width, height);
             // DO
         } else if (isInput && isDigital) {
-            return getImageMaxSize("icons/Input_green16.png", width, height);
+            image = getImageMaxSize("icons/Input_green16.png", width, height);
             // AI
         } else if (!isInput && !isDigital) {
-            return getImageMaxSize("icons/Output_red16.png", width, height);
+            image = getImageMaxSize("icons/Output_red16.png", width, height);
             // AO
         } else if (!isInput && isDigital) {
-            return getImageMaxSize("icons/Output_green16.png", width, height);
+            image = getImageMaxSize("icons/Output_green16.png", width, height);
         }
 
-        return null;
+        return image;
     }
+   // CHECKSTYLE ON: CyclomaticComplexity
 }

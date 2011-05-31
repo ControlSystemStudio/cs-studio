@@ -21,8 +21,6 @@
  */
 package org.csstudio.platform.ui.workbench;
 
-import org.csstudio.platform.internal.usermanagement.IUserManagementListener;
-import org.csstudio.platform.security.SecurityFacade;
 import org.csstudio.platform.ui.internal.console.Console;
 import org.csstudio.platform.ui.internal.localization.Messages;
 import org.csstudio.platform.ui.internal.perspectives.CssDefaultPerspective;
@@ -38,8 +36,9 @@ import org.eclipse.ui.application.WorkbenchAdvisor;
  * 
  * @see WorkbenchAdvisor
  * 
- * @author Alexander Will
- * 
+ * @author Alexander Will, Xihui Chen
+ * @deprecated Use org.csstudio.startuphelper.module.DefaultWorkbenchAdvisor instead, 
+ * which supports opening file from command line. 
  */
 public class CssWorkbenchAdvisor extends WorkbenchAdvisor {
 	/**
@@ -67,11 +66,6 @@ public class CssWorkbenchAdvisor extends WorkbenchAdvisor {
 	 */
 	private IWorkbenchWindowConfigurer _workbenchWindowconfigurer;
 	
-	/**
-	 * Monitors user logins and updates the status bar accordingly.
-	 */
-	private IUserManagementListener _userListener;
-
 	/**
 	 * {@inheritDoc}
 	 */
@@ -120,7 +114,6 @@ public class CssWorkbenchAdvisor extends WorkbenchAdvisor {
 	 */
 	@Override
 	public void postWindowClose(final IWorkbenchWindowConfigurer configurer) {
-		SecurityFacade.getInstance().removeUserManagementListener(_userListener);
 	}
 
 	/**

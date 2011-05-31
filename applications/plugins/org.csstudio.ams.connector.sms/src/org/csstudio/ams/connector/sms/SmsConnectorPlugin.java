@@ -26,6 +26,9 @@ package org.csstudio.ams.connector.sms;
 import org.csstudio.platform.logging.CentralLogger;
 import org.csstudio.platform.ui.AbstractCssUiPlugin;
 import org.osgi.framework.BundleContext;
+import org.remotercp.common.tracker.GenericServiceTracker;
+import org.remotercp.common.tracker.IGenericServiceListener;
+import org.remotercp.service.connection.session.ISessionService;
 
 /**
  * The activator class controls the plug-in life cycle
@@ -40,6 +43,8 @@ public class SmsConnectorPlugin extends AbstractCssUiPlugin
 	
 	// The shared instance
 	private static SmsConnectorPlugin _plugin;
+	
+	private GenericServiceTracker<ISessionService> _genericServiceTracker;
 
 	/**
 	 * The constructor
@@ -53,6 +58,9 @@ public class SmsConnectorPlugin extends AbstractCssUiPlugin
 	 */
 	public final void doStart(final BundleContext context) throws Exception
 	{
+		_genericServiceTracker = new GenericServiceTracker<ISessionService>(
+				context, ISessionService.class);
+		_genericServiceTracker.open();
 		CentralLogger.getInstance().info(this, "SmsConnector started...");
 	}
 
@@ -86,5 +94,10 @@ public class SmsConnectorPlugin extends AbstractCssUiPlugin
     public String getConnectorId()
     {
         return CONNECTOR_ID;
+	}
+    
+	public void addSessionServiceListener(
+			IGenericServiceListener<ISessionService> sessionServiceListener) {
+		_genericServiceTracker.addServiceListener(sessionServiceListener);
 	}
 }

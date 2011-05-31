@@ -7,6 +7,8 @@
  ******************************************************************************/
 package org.csstudio.alarm.beast.msghist;
 
+import java.util.logging.Logger;
+
 import org.eclipse.ui.plugin.AbstractUIPlugin;
 
 /** Plugin Activator
@@ -16,4 +18,10 @@ import org.eclipse.ui.plugin.AbstractUIPlugin;
 public class Activator extends AbstractUIPlugin
 {
     final public static String ID = "org.csstudio.alarm.beast.msghist";
+
+    /** @return Logger for plugin ID */
+    public static Logger getLogger()
+    {
+        return Logger.getLogger(ID);
+    }
 }

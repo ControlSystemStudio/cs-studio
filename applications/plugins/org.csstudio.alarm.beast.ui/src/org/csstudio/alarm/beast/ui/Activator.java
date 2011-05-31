@@ -7,6 +7,8 @@
  ******************************************************************************/
 package org.csstudio.alarm.beast.ui;
 
+import java.util.logging.Logger;
+
 import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.ui.plugin.AbstractUIPlugin;
 
@@ -25,5 +27,11 @@ public class Activator
     public static ImageDescriptor getImageDescriptor(final String path)
     {
         return AbstractUIPlugin.imageDescriptorFromPlugin(ID, path);
+    }
+
+    /** @return Logger for plugin ID */
+    public static Logger getLogger()
+    {
+        return Logger.getLogger(ID);
     }
 }

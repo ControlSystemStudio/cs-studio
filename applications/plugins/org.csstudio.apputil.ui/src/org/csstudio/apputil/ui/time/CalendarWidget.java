@@ -1,3 +1,10 @@
+/*******************************************************************************
+ * Copyright (c) 2010 Oak Ridge National Laboratory.
+ * All rights reserved. This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License v1.0
+ * which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-v10.html
+ ******************************************************************************/
 package org.csstudio.apputil.ui.time;
 
 import java.util.ArrayList;
@@ -81,8 +88,8 @@ public class CalendarWidget extends Composite
         
         Label l = new Label(box, SWT.NONE);
         l.setText(Messages.Time_Time);
-
-        time = new DateTime(box, SWT.TIME | SWT.SHORT);
+        // SWT.MEDIUM to include seconds as needed by BOY
+        time = new DateTime(box, SWT.TIME | SWT.MEDIUM);
         gd = new GridData();
         
         // New row

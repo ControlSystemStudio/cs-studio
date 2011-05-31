@@ -1,13 +1,21 @@
+/*******************************************************************************
+ * Copyright (c) 2010 Oak Ridge National Laboratory.
+ * All rights reserved. This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License v1.0
+ * which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-v10.html
+ ******************************************************************************/
 package org.csstudio.sns.jms2rdb.httpd;
 
 import java.io.IOException;
+import java.util.logging.Level;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import org.csstudio.platform.logging.CentralLogger;
+import org.csstudio.sns.jms2rdb.Activator;
 
 /** Base class for servlets.
  *  @author Kay Kasemir
@@ -35,8 +43,7 @@ abstract public class AbstractServlet extends HttpServlet
         {
             if (resp.isCommitted())
             {
-                CentralLogger.getInstance().getLogger(this).warn(
-                        "HTTP Server exception", ex);
+                Activator.getLogger().log(Level.WARNING, "HTTP Server exception", ex);
                 return;
             }
             resp.sendError(400, "HTTP Server exception" + ex.getMessage());

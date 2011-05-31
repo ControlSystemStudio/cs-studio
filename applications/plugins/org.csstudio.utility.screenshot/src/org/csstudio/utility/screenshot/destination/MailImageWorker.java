@@ -52,8 +52,8 @@ import org.csstudio.utility.screenshot.internal.localization.ScreenshotMessages;
 import org.csstudio.utility.screenshot.preference.ScreenshotPreferenceConstants;
 import org.eclipse.core.runtime.Platform;
 import org.eclipse.core.runtime.preferences.IPreferencesService;
-import org.eclipse.jface.dialogs.Dialog;
 import org.eclipse.jface.dialogs.MessageDialog;
+import org.eclipse.jface.window.Window;
 import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.graphics.ImageData;
 import org.eclipse.swt.graphics.PaletteData;
@@ -65,14 +65,21 @@ import org.eclipse.swt.widgets.Shell;
  *
  */
 
-public class MailImageWorker implements IImageWorker
-{
-    private final String MENU_ITEM_ENTRY = "eMail";
+public class MailImageWorker implements IImageWorker {
+    
+	/** The string that is used to build the screenshot plugin menu */
+	private final String MENU_ITEM_ENTRY = "eMail";
 
+	/**
+	 * {@inheritDoc}
+	 */
     public String getMenuItemEntry() {
         return MENU_ITEM_ENTRY;
     }
     
+    /**
+     * {@inheritDoc}
+     */
     public void processImage(Shell parentShell, Image image) {
         
         InternetAddress addressFrom = null;
@@ -85,7 +92,6 @@ public class MailImageWorker implements IImageWorker
         if(image == null) {
             
             MessageDialog.openInformation(parentShell, ScreenshotPlugin.getDefault().getNameAndVersion(), ScreenshotMessages.getString("MailImageWorker.NO_IMAGE"));
-        
             return;
         }
         
@@ -105,7 +111,7 @@ public class MailImageWorker implements IImageWorker
         MailSenderDialog dialog = new MailSenderDialog(parentShell);
         
         int value = dialog.open();
-        if((value == Dialog.OK) && (dialog.getMailEntry() != null)) {
+        if((value == Window.OK) && (dialog.getMailEntry() != null)) {
             
             try {
                 // ImageIO.write(bufferedImage, "jpg", new File(ScreenshotPlugin.getInstalledFilePath("/") + imageFilename));
@@ -176,6 +182,12 @@ public class MailImageWorker implements IImageWorker
         dialog = null;
     }
     
+    /**
+     * Converts a SWT image to a AWT buffered image.
+     * 
+     * @param data
+     * @return
+     */
     public BufferedImage convertToBufferedImage(ImageData data) {
         
         ColorModel colorModel = null;

@@ -22,3 +22,4 @@ Export-Package: com.thoughtworks.xstream,
  org.apache.commons.httpclient,
  org.csstudio.platform.libs.jms,
  org.csstudio.platform.libs.jms.preferences
+Bundle-Vendor: Desy <css-developer@desy.de>, Markus Moeller

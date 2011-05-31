@@ -7,10 +7,11 @@
  ******************************************************************************/
 package org.csstudio.archive.engine.model;
 
-import org.apache.log4j.Logger;
+import java.util.logging.Level;
+
 import org.csstudio.apputil.time.PeriodFormat;
-import org.csstudio.platform.data.IValue;
-import org.csstudio.platform.logging.CentralLogger;
+import org.csstudio.archive.engine.Activator;
+import org.csstudio.data.values.IValue;
 
 /** An ArchiveChannel that stores each incoming value.
  *  @author Kay Kasemir
@@ -20,7 +21,6 @@ public class MonitoredArchiveChannel extends ArchiveChannel
 {
     /** Estimated period of change in seconds */
     final private double period_estimate;
-    private Logger log;
 
     /** @see ArchiveChannel#ArchiveChannel(String, int, IValue) */
     public MonitoredArchiveChannel(final String name,
@@ -31,9 +31,6 @@ public class MonitoredArchiveChannel extends ArchiveChannel
     {
         super(name, enablement, buffer_capacity, last_archived_value);
         this.period_estimate = period_estimate;
-        log = CentralLogger.getInstance().getLogger(this);
-        if (! log.isDebugEnabled())
-            log = null;
     }
 
     @Override
@@ -48,14 +45,12 @@ public class MonitoredArchiveChannel extends ArchiveChannel
     {
         if (super.handleNewValue(value))
         {
-            if (log != null)
-                log.debug(getName() + " wrote first sample " + value);
+            Activator.getLogger().log(Level.FINE, "Wrote first sample for {0}: {1}", new Object[] { getName(), value });
             return true;
         }
         if (isEnabled())
         {
-            if (log != null)
-                log.debug(getName() + " writes " + value);
+            Activator.getLogger().log(Level.FINE, "Wrote sample for {0}: {1}", new Object[] { getName(), value });
             addValueToBuffer(value);
             return true;
         }

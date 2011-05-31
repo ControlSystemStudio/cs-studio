@@ -1,0 +1,19 @@
+Manifest-Version: 1.0
+Bundle-ManifestVersion: 2
+Bundle-Name: Joda
+Bundle-SymbolicName: org.joda.time
+Bundle-Version: 1.6.2.qualifier
+Export-Package: org.joda.time;
+  uses:="org.joda.time.field,
+   org.joda.time.base,
+   org.joda.time.chrono,
+   org.joda.time.tz,
+   org.joda.time.format",
+ org.joda.time.base;uses:="org.joda.time,org.joda.time.format",
+ org.joda.time.chrono;uses:="org.joda.time.field,org.joda.time",
+ org.joda.time.convert;uses:="org.joda.time,org.joda.time.format",
+ org.joda.time.field;uses:="org.joda.time",
+ org.joda.time.format;uses:="org.joda.time",
+ org.joda.time.tz;uses:="org.joda.time"
+Bundle-Vendor: Desy <css-developer@desy.de>, Bastian Knerr
+Bundle-RequiredExecutionEnvironment: JavaSE-1.6

@@ -91,21 +91,113 @@ public final class RotationUtil {
 	public static final PointList rotatePoints(final PointList points, final double angle) {		
 		Rectangle pointBounds = points.getBounds();
 		Point rotationPoint = pointBounds.getCenter();
-		PointList newPoints = new PointList();
-
-		for (int i = 0; i < points.size(); i++) {
-			newPoints.addPoint(RotationUtil.rotate(points.getPoint(i), angle,
-					rotationPoint));
-		}
-
+		PointList newPoints =  rotatePoints(points, angle, rotationPoint);
 		Rectangle newPointBounds = newPoints.getBounds();
 		if (!rotationPoint.equals(newPointBounds.getCenter())) {
 			Dimension difference = rotationPoint.getCopy().getDifference(
 					newPointBounds.getCenter());
 			newPoints.translate(difference.width, difference.height);
 		}
-
 		return newPoints;
+	}
+	
+	/**
+	 * Rotates all points.
+	 * 
+	 * @param points The PoinList, which points should be rotated
+	 * @param angle
+	 *            The angle to rotate
+	 * @return The rotated PointList
+	 */
+	public static final PointList rotatePoints(final PointList points, final double angle, final Point center) {		
+		PointList newPoints = new PointList();
+
+		for (int i = 0; i < points.size(); i++) {
+			newPoints.addPoint(RotationUtil.rotate(points.getPoint(i), angle,
+					center));
+		}
+		
+		return newPoints;
+	}
+	
+	
+	/**Flip point horizontally from center point.
+	 * @param point the point to be flipped.
+	 * @param center the center point.
+	 * @return the point after flipping.
+	 */
+	public static final Point flipPointHorizontally(final Point point, final int center){	
+		int newX = 2*center-point.x;
+		return new Point(newX, point.y);
+	}
+	
+	/**Flip point vertically from center point.
+	 * @param point the point to be flipped.
+	 * @param center the center point.
+	 * @return the point after flipping.
+	 */
+	public static final Point flipPointVertically(final Point point, final int center){
+		int newY = 2*center-point.y;
+		return new Point(point.x, newY);
+	}
+	
+	/**Flip points horizontally.
+	 * @param points the points to be flipped.
+	 * @return the flipped points.
+	 */
+	public static final PointList flipPointsHorizontally(PointList points){
+		
+		int centerX = points.getBounds().x + points.getBounds().width/2;
+		
+		return flipPointsHorizontally(points, centerX);
+		
+	}
+	
+	/**Flip points horizontally.
+	 * @param points the points to be flipped.
+	 * @param centerX the center X position
+	 * @return the flipped points.
+	 */
+	public static final PointList flipPointsHorizontally(PointList points, int centerX){	
+		
+		PointList newPointList = new PointList();
+		
+		for (int i = 0; i < points.size(); i++) {
+			newPointList.addPoint(flipPointHorizontally(points.getPoint(i), centerX));
+		}
+		
+		return newPointList;
+		
+	}
+	
+	/**Flip points vertically.
+	 * @param points the points to be flipped.
+	 * @return the flipped points.
+	 */
+	public static final PointList flipPointsVertically(PointList points){
+		
+		int centerY = points.getBounds().y + points.getBounds().height/2;
+		
+		return flipPointsVertically(points, centerY);
+		
+	}
+	
+	
+	/**Flip points vertically.
+	 * @param points the points to be flipped.
+	 * @param centerY the center Y position.
+	 * @return the flipped points.
+	 */
+	public static final PointList flipPointsVertically(PointList points, int centerY){
+				
+		PointList newPointList = new PointList();
+		
+		for (int i = 0; i < points.size(); i++) {
+			newPointList.addPoint(flipPointVertically(points.getPoint(i), centerY));
+		}
+		
+		return newPointList;
+		
 	}
 
 }

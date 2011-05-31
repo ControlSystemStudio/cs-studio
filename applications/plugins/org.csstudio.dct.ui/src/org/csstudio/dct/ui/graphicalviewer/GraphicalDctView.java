@@ -31,6 +31,7 @@ import org.csstudio.dct.model.IProject;
 import org.csstudio.dct.model.IPrototype;
 import org.csstudio.dct.model.IRecord;
 import org.csstudio.dct.model.internal.Project;
+import org.csstudio.dct.model.internal.ProjectFactory;
 import org.csstudio.dct.model.visitors.SearchConnectionsVisitor;
 import org.csstudio.dct.model.visitors.SearchConnectionsVisitor.ConnectionDescriptor;
 import org.csstudio.dct.ui.graphicalviewer.model.AbstractNode;
@@ -75,7 +76,7 @@ public final class GraphicalDctView extends ViewPart {
 	private DctGraphicalModel model;
 
 	public GraphicalDctView() {
-		model = new DctGraphicalModel(new Project("Test", UUID.randomUUID()));
+		model = new DctGraphicalModel(ProjectFactory.createNewDCTProject());
 	}
 
 	public void setInstance(IProject project,IInstance instance) {

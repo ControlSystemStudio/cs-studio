@@ -14,10 +14,10 @@ public class VariableNode implements Node
 {
     /** Name of the variable. */
     final private String name;
-    
+
     /** Current value of the variable. */
     private double value;
-    
+
     /** Create Variable with given name. */
     public VariableNode(final String name)
     {
@@ -50,23 +50,26 @@ public class VariableNode implements Node
         return value;
     }
 
+    @Override
     public double eval()
     {
         return value;
     }
-    
+
     /** {@inheritDoc} */
+    @Override
     public boolean hasSubnode(final Node node)
     {
         return false;
     }
 
     /** {@inheritDoc} */
+    @Override
     public boolean hasSubnode(final String name)
     {
         return this.name.equals(name);
     }
-    
+
     @Override
     public String toString()
     {

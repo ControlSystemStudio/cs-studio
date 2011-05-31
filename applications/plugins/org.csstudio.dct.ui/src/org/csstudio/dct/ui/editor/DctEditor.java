@@ -21,9 +21,10 @@ import org.csstudio.dct.model.IPrototype;
 import org.csstudio.dct.model.IRecord;
 import org.csstudio.dct.model.internal.Folder;
 import org.csstudio.dct.model.internal.Project;
+import org.csstudio.dct.model.internal.ProjectFactory;
 import org.csstudio.dct.model.visitors.ProblemVisitor;
-import org.csstudio.dct.model.visitors.SearchVisitor;
 import org.csstudio.dct.model.visitors.ProblemVisitor.MarkableError;
+import org.csstudio.dct.model.visitors.SearchVisitor;
 import org.csstudio.dct.ui.editor.outline.internal.OutlinePage;
 import org.csstudio.platform.logging.CentralLogger;
 import org.csstudio.platform.ui.util.CustomMediaFactory;
@@ -37,7 +38,6 @@ import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.NullProgressMonitor;
 import org.eclipse.gef.commands.CommandStack;
 import org.eclipse.gef.commands.CommandStackListener;
-import org.eclipse.jface.dialogs.InputDialog;
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.viewers.ArrayContentProvider;
 import org.eclipse.jface.viewers.ComboViewer;
@@ -48,7 +48,6 @@ import org.eclipse.jface.viewers.SelectionChangedEvent;
 import org.eclipse.jface.viewers.StructuredSelection;
 import org.eclipse.jface.viewers.TreePath;
 import org.eclipse.jface.viewers.TreeSelection;
-import org.eclipse.jface.window.Window;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.custom.CCombo;
 import org.eclipse.swt.custom.StackLayout;
@@ -62,20 +61,16 @@ import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.FileDialog;
-import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Text;
 import org.eclipse.ui.IEditorInput;
 import org.eclipse.ui.IEditorPart;
 import org.eclipse.ui.IEditorSite;
 import org.eclipse.ui.IFileEditorInput;
 import org.eclipse.ui.PartInitException;
-import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.ide.IGotoMarker;
 import org.eclipse.ui.part.FileEditorInput;
 import org.eclipse.ui.part.MultiPageEditorPart;
 import org.eclipse.ui.views.contentoutline.IContentOutlinePage;
-
-import com.cosylab.naming.Criterion;
 
 /**
  * The DCT Editor implementation.
@@ -84,10 +79,9 @@ import com.cosylab.naming.Criterion;
  * 
  */
 public final class DctEditor extends MultiPageEditorPart implements CommandStackListener {
-	public static final String FILE_EXTENSION = "css-dct";
 	private Project project;
-	private CommandStack commandStack;
-	private ISelectionChangedListener outlineSelectionListener;
+	private final CommandStack commandStack;
+	private final ISelectionChangedListener outlineSelectionListener;
 	private ProjectForm projectForm;
 	private FolderForm folderForm;
 	private PrototypeForm prototypeForm;
@@ -142,7 +136,7 @@ public final class DctEditor extends MultiPageEditorPart implements CommandStack
 
 	public Project getProject() {
 		if (project == null) {
-			project = new Project("Project", UUID.randomUUID());
+			project = ProjectFactory.createNewDCTProject();
 			project.addMember(new Folder("Test"));
 		}
 
@@ -233,7 +227,7 @@ public final class DctEditor extends MultiPageEditorPart implements CommandStack
 			@Override
 			public void mouseUp(MouseEvent event) {
 				if (exporterDescriptor != null) {
-					FileDialog dialog = new FileDialog(Display.getCurrent().getActiveShell());
+					FileDialog dialog = new FileDialog(Display.getCurrent().getActiveShell(), SWT.SAVE);
 					String path = dialog.open();
 
 					if (path != null) {
@@ -301,7 +295,8 @@ public final class DctEditor extends MultiPageEditorPart implements CommandStack
 	/**
 	 * Creates the pages of the multi-page editor.
 	 */
-	protected void createPages() {
+	@Override
+    protected void createPages() {
 		createPage0();
 		createPage1();
 	}
@@ -309,7 +304,8 @@ public final class DctEditor extends MultiPageEditorPart implements CommandStack
 	/**
 	 *{@inheritDoc}
 	 */
-	public void doSave(IProgressMonitor monitor) {
+	@Override
+    public void doSave(IProgressMonitor monitor) {
 		FileEditorInput in = (FileEditorInput) getEditorInput();
 		try {
 			DctActivator.getDefault().getPersistenceService().saveProject(in.getFile(), getProject());
@@ -324,7 +320,8 @@ public final class DctEditor extends MultiPageEditorPart implements CommandStack
 	/**
 	 *{@inheritDoc}
 	 */
-	public void doSaveAs() {
+	@Override
+    public void doSaveAs() {
 		IEditorPart editor = getEditor(0);
 		editor.doSaveAs();
 		setPageText(0, editor.getTitle());
@@ -341,7 +338,8 @@ public final class DctEditor extends MultiPageEditorPart implements CommandStack
 	/**
 	 *{@inheritDoc}
 	 */
-	public void init(IEditorSite site, IEditorInput editorInput) throws PartInitException {
+	@Override
+    public void init(IEditorSite site, IEditorInput editorInput) throws PartInitException {
 		if (!(editorInput instanceof IFileEditorInput)) {
 			throw new PartInitException("Invalid Input: Must be IFileEditorInput");
 		}
@@ -362,7 +360,7 @@ public final class DctEditor extends MultiPageEditorPart implements CommandStack
 
 		// .. fallback
 		if (project == null) {
-			project = new Project("New Project", UUID.randomUUID());
+			project = ProjectFactory.createNewDCTProject();
 		}
 
 		// .. refresh markers
@@ -380,7 +378,8 @@ public final class DctEditor extends MultiPageEditorPart implements CommandStack
 	/**
 	 *{@inheritDoc}
 	 */
-	public boolean isSaveAsAllowed() {
+	@Override
+    public boolean isSaveAsAllowed() {
 		return true;
 	}
 
@@ -396,7 +395,8 @@ public final class DctEditor extends MultiPageEditorPart implements CommandStack
 	/**
 	 *{@inheritDoc}
 	 */
-	@SuppressWarnings("unchecked")
+	@Override
+    @SuppressWarnings("unchecked")
 	public Object getAdapter(Class adapter) {
 		Object result = null;
 

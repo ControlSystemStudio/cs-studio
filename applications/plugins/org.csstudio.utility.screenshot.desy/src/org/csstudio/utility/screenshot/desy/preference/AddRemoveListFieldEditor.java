@@ -43,8 +43,8 @@ import org.eclipse.swt.widgets.Text;
  * Buttons are provided for adding items to the list and removing 
  * items from the list.
  */
-public class AddRemoveListFieldEditor extends FieldEditor
-{
+public class AddRemoveListFieldEditor extends FieldEditor {
+	
 	private static final String DEFAULT_ADD_LABEL = "Add";
 	private static final String DEFAULT_REMOVE_LABEL = "Remove";
 	private static final String DEFAULT_SEPERATOR = ";";
@@ -91,6 +91,7 @@ public class AddRemoveListFieldEditor extends FieldEditor
 	/**
 	 * @see org.eclipse.jface.preference.FieldEditor#adjustForNumColumns(int)
 	 */
+	@Override
 	protected void adjustForNumColumns(int numColumns)
     {
 	    ((GridData)top.getLayoutData()).horizontalSpan = numColumns;
@@ -100,6 +101,7 @@ public class AddRemoveListFieldEditor extends FieldEditor
 	 * @see org.eclipse.jface.preference.FieldEditor#doFillIntoGrid
 	 * (Composite, int)
 	 */
+	@Override
 	protected void doFillIntoGrid(Composite parent, int numColumns)
     {
 		top = parent;
@@ -123,10 +125,10 @@ public class AddRemoveListFieldEditor extends FieldEditor
 		listData.horizontalSpan = numColumns;
 		
 		list.setLayoutData(listData);
-		list.addSelectionListener(new SelectionAdapter()
-        {
-			public void widgetSelected(SelectionEvent e)
-            {
+		list.addSelectionListener(new SelectionAdapter() {
+			
+			@Override
+			public void widgetSelected(SelectionEvent e) {
 				selectionChanged();
 			}
 		});
@@ -157,10 +159,10 @@ public class AddRemoveListFieldEditor extends FieldEditor
 		// Create the add button.
 		add = new Button(buttonGroup, SWT.NONE);
 		add.setText(DEFAULT_ADD_LABEL);
-		add.addSelectionListener(new SelectionAdapter()
-        {
-			public void widgetSelected(SelectionEvent e)
-            {	
+		add.addSelectionListener(new SelectionAdapter() {
+			
+			@Override
+			public void widgetSelected(SelectionEvent e) {	
 				add();
 			}	
 		});
@@ -175,11 +177,14 @@ public class AddRemoveListFieldEditor extends FieldEditor
 		remove.setEnabled(false);
 		remove.setText(DEFAULT_REMOVE_LABEL);
 		remove.addSelectionListener(new SelectionAdapter() {
+			
+			@Override
 			public void widgetSelected(SelectionEvent e) {	
 				list.remove(list.getSelectionIndex());
 				selectionChanged();
 			}
 		});
+		
 		GridData removeData = new GridData(GridData.FILL_HORIZONTAL);
 		// removeData.heightHint = convertVerticalDLUsToPixels(remove, IDialogConstants.BUTTON_HEIGHT);
 		removeData.widthHint = convertHorizontalDLUsToPixels(remove, IDialogConstants.BUTTON_WIDTH);
@@ -197,8 +202,8 @@ public class AddRemoveListFieldEditor extends FieldEditor
 	/**
 	 * @see org.eclipse.jface.preference.FieldEditor#doLoad()
 	 */
-	protected void doLoad()
-    {
+	@Override
+	protected void doLoad() {
 		String items = getPreferenceStore().getString(getPreferenceName());
 		setList(items);
 	}
@@ -206,8 +211,8 @@ public class AddRemoveListFieldEditor extends FieldEditor
 	/**
 	 * @see org.eclipse.jface.preference.FieldEditor#doLoadDefault()
 	 */
-	protected void doLoadDefault()
-    {
+	@Override
+	protected void doLoadDefault() {
 		String items = getPreferenceStore().getDefaultString(getPreferenceName());
 		setList(items);
 	}
@@ -222,8 +227,8 @@ public class AddRemoveListFieldEditor extends FieldEditor
 	/**
 	 * @see org.eclipse.jface.preference.FieldEditor#doStore()
 	 */
-	protected void doStore()
-    {
+	@Override
+	protected void doStore() {
 		String s = createListString(list.getItems());
 		if (s != null)
 			getPreferenceStore().setValue(getPreferenceName(), s);
@@ -232,15 +237,14 @@ public class AddRemoveListFieldEditor extends FieldEditor
 	/**
 	 * @see org.eclipse.jface.preference.FieldEditor#getNumberOfControls()
 	 */
-	public int getNumberOfControls()
-    {
+	@Override
+	public int getNumberOfControls() {
 		// The button composite and the text field.
 		return 2;
 	}
 
 	// Adds the string in the text field to the list.
-	private void add()
-    {
+	void add() {
 		String tag = textField.getText();
 		if (tag != null && tag.length() > 0)
 			list.add(tag);
@@ -251,8 +255,7 @@ public class AddRemoveListFieldEditor extends FieldEditor
 	 *  Sets the label for the button that adds
 	 * the contents of the text field to the list.
 	 */
-	public void setAddButtonText(String text)
-    {
+	public void setAddButtonText(String text) {
 		add.setText(text);
 	}
 	
@@ -260,8 +263,7 @@ public class AddRemoveListFieldEditor extends FieldEditor
 	 *  Sets the label for the button that removes
 	 * the selected item from the list.
 	 */
-	public void setRemoveButtonText(String text)
-    {
+	public void setRemoveButtonText(String text) {
 		remove.setText(text);
 	}
 	 
@@ -269,8 +271,7 @@ public class AddRemoveListFieldEditor extends FieldEditor
 	 * Sets the string that seperates items in the list when the
 	 * list is stored as a single String in the preference store.
 	 */
-	public void setSeperator(String seperator)
-    {
+	public void setSeperator(String seperator) {
 		this.seperator = seperator;	
 	}
 	
@@ -278,12 +279,10 @@ public class AddRemoveListFieldEditor extends FieldEditor
 	 *  Creates the single String representation of the list
 	 * that is stored in the preference store.
 	 */
-	private String createListString(String[] items)
-    {
+	private String createListString(String[] items) {
 		StringBuffer path = new StringBuffer("");//$NON-NLS-1$
 	
-		for (int i = 0; i < items.length; i++)
-        {
+		for (int i = 0; i < items.length; i++) {
 			path.append(items[i]);
 			path.append(seperator);
 		}
@@ -295,23 +294,23 @@ public class AddRemoveListFieldEditor extends FieldEditor
 	 *  Parses the single String representation of the list
 	 * into an array of list items.
 	 */
-	private String[] parseString(String stringList)
-    {
+	private String[] parseString(String stringList) {
+		
 		StringTokenizer st = new StringTokenizer(stringList, seperator); //$NON-NLS-1$
 		ArrayList<String> v = new ArrayList<String>();
 		
-        while(st.hasMoreElements())
-        {
+        while(st.hasMoreElements()) {
 			v.add((String)st.nextElement());
 		}
 		
         return (String[])v.toArray(new String[v.size()]);
 	}
 	
-	// Sets the enablement of the remove button depending
-	// on the selection in the list.
-	private void selectionChanged()
-    {
+	/**
+	 *  Sets the enablement of the remove button depending
+	 *  on the selection in the list.
+	 */
+	void selectionChanged() {
 		int index = list.getSelectionIndex();
 		remove.setEnabled(index >= 0);		
 	}

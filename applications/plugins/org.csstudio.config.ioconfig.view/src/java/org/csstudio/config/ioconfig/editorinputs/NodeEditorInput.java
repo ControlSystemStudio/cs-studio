@@ -21,6 +21,7 @@
  */
 package org.csstudio.config.ioconfig.editorinputs;
 
+import javax.annotation.CheckForNull;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
@@ -30,8 +31,6 @@ import org.eclipse.ui.IEditorInput;
 import org.eclipse.ui.IPersistableElement;
 
 /**
- * TODO (hrickens) :
- *
  * @author hrickens
  * @author $Author: hrickens $
  * @version $Revision: 1.2 $
@@ -43,7 +42,7 @@ public class NodeEditorInput implements IEditorInput {
     private final boolean _nevv;
 
 
-    public NodeEditorInput(final AbstractNodeDBO node) {
+    public NodeEditorInput(@Nonnull final AbstractNodeDBO node) {
         _node = node;
         _nevv = false;
     }
@@ -105,12 +104,12 @@ public class NodeEditorInput implements IEditorInput {
      * (@inheritDoc)
      */
     @Override
-    public Object getAdapter(@Nullable final Class adapter) {
+    public Object getAdapter(@SuppressWarnings("rawtypes") @Nullable final Class adapter) {
         return null;
     }
 
     @Override
-    public boolean equals(final Object obj) {
+    public boolean equals(@CheckForNull final Object obj) {
         // TODO: Prüfen ob der Vergeleich so ausreichend ist.
         /* Idee es wäre schön wenn generell nur ein Editor pro Facility geöffnet sein könnte und der
          * Editor gewechslet wird innerhalb einer Faclilty!

@@ -20,15 +20,15 @@ public class MathFuncNode implements Node
 	final private String function;
     final private Node args[];
 	final private Method method;
-    
+
 	/** Construct node for math function.
-	 * 
+	 *
 	 *  @param function One of the java.lang.Math.* method names
 	 *  @param n Argument node
 	 *  @throws Exception On error
 	 */
-    @SuppressWarnings("unchecked")
-	public MathFuncNode(final String function, final Node args[]) throws Exception
+	@SuppressWarnings("rawtypes")
+    public MathFuncNode(final String function, final Node args[]) throws Exception
     {
     	this.function = function;
         this.args = args;
@@ -37,7 +37,8 @@ public class MathFuncNode implements Node
             argcls[i] = double.class;
         method = Math.class.getDeclaredMethod(function, argcls);
     }
-    
+
+    @Override
     public double eval()
     {
         final Object arglist[] = new Object[args.length];
@@ -45,7 +46,7 @@ public class MathFuncNode implements Node
         {
             arglist[i] = new Double(args[i].eval());
         }
-        
+
         try
         {
         	Object result = method.invoke(null, arglist );
@@ -58,8 +59,9 @@ public class MathFuncNode implements Node
 		}
         return 0.0;
     }
-    
+
     /** {@inheritDoc} */
+    @Override
     public boolean hasSubnode(final Node node)
     {
         for (Node arg : args)
@@ -69,6 +71,7 @@ public class MathFuncNode implements Node
     }
 
     /** {@inheritDoc} */
+    @Override
     public boolean hasSubnode(final String name)
     {
         for (Node arg : args)
@@ -76,7 +79,7 @@ public class MathFuncNode implements Node
                 return true;
         return false;
     }
-    
+
     @Override
 	@SuppressWarnings("nls")
 	public String toString()

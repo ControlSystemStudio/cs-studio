@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?eclipse version="3.4"?>
+<plugin>
+   <extension
+         point="org.csstudio.platform.libs.dal.plugs">
+      <plug
+            id="Simulator"
+            name="Simulator Plug"
+            propertyFactoryClass="org.epics.css.dal.simulation.PropertyFactoryImpl"
+            propertyFactoryService="org.csstudio.platform.libs.dal.simulator.Activator"
+            propertyFactoryServiceClass="org.csstudio.platform.libs.dal.simulator.Activator">
+      </plug>
+   </extension>
+
+</plugin>

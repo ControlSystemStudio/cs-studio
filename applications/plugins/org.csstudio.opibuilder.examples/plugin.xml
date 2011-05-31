@@ -17,5 +17,19 @@
          </action>
       </actionSet>
    </extension>
+   <extension
+         point="org.eclipse.ui.importWizards">
+      <category
+            id="org.csstudio.opibuilder.examples.BOYcategory"
+            name="BOY">
+      </category>
+      <wizard
+            category="org.csstudio.opibuilder.examples.BOYcategory"
+            class="org.csstudio.opibuilder.examples.ImportWizard"
+            icon="icons/OPIBuilder.png"
+            id="org.csstudio.opibuilder.examples.importwizard"
+            name="BOY Examples">
+      </wizard>
+   </extension>
 
 </plugin>

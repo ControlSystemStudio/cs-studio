@@ -33,17 +33,23 @@ import org.epics.css.dal.simple.impl.DynamicValueConditionConverterUtil;
  *
  * @author ikriznar
  */
-public class DynamicValueCondition implements Severity
+public final class DynamicValueCondition implements Severity
 {
+	
+	public static final String NA_MESSAGE="N/A";
+	public static final String CONNECTION_STATE_UPDATE_MESSAGE = "Connection state update.";
+	public static final String METADATA_AVAILABLE_MESSAGE = "Metadata available.";
+	
 	private final EnumSet<DynamicValueState> states;
 	private final Timestamp timestamp;
 	private final String description;
 
+
 	/**
 	 * Creates new condition.
 	 * @param states a set of stated defining the condition
-	 * @param timestamp the tiemstammp of condition
-	 * @param description a short description of condition
+	 * @param timestamp the tiemstamp of condition, if <code>null</code> a timestamp will be created with current time
+	 * @param description a short description of condition, can be <code>null</code>
 	 */
 	public DynamicValueCondition(final EnumSet<DynamicValueState> states,
 	    Timestamp timestamp, final String description)
@@ -60,14 +66,21 @@ public class DynamicValueCondition implements Severity
 	}
 
 	/**
-	 * Creates new condition.
-	 * @deprecated use the other constructor: {@link DynamicValueCondition#DynamicValueCondition(EnumSet, Timestamp, String)}
+	 * Creates new condition, with current time for timestamp and null message.
+	 * @param state a state defining the condition
 	 */
-	@Deprecated
-    public DynamicValueCondition(final EnumSet<DynamicValueState> states,
-	    final long timestamp, final String description)
+	public DynamicValueCondition(final DynamicValueState state)
 	{
-		this(states, new Timestamp(timestamp,0),description);
+		this(EnumSet.of(state));
+	}
+
+	/**
+	 * Creates new condition, with current time for timestamp and null message.
+	 * @param states a set of stated defining the condition
+	 */
+	public DynamicValueCondition(final EnumSet<DynamicValueState> states)
+	{
+		this(states,null,null);
 	}
 
 	/**
@@ -170,67 +183,80 @@ public class DynamicValueCondition implements Severity
 		return states.contains(DynamicValueState.NORMAL);
 	}
 
+	/**
+	 * Creates new condition with no description and with set, which is copy of provided state only with included requested states. 
+	 * @param states the states to be included in copy
+	 * @return new condition
+	 */
 	public DynamicValueCondition deriveConditionWithStates(
 	    final DynamicValueState... states)
 	{
-		EnumSet<DynamicValueState> s = EnumSet.copyOf(this.states);
-
-		for (DynamicValueState state : states) {
-			s.add(state);
-		}
-
-		return new DynamicValueCondition(s, null, description);
+		return new DynamicValueCondition(DynamicValueState.deriveSetWithStates(getStates(), states));
 	}
 
+	/**
+	 * Creates new condition with no description and with set, which is copy of provided state only with excluded requested states. 
+	 * @param states the states to be excluded from copy
+	 * @return new condition
+	 */
 	public DynamicValueCondition deriveConditionWithoutStates(
 	    final DynamicValueState... states)
 	{
-		EnumSet<DynamicValueState> s = EnumSet.copyOf(this.states);
-
-		for (DynamicValueState state : states) {
-			s.remove(state);
-		}
-
-		return new DynamicValueCondition(s, null, description);
+		return new DynamicValueCondition(DynamicValueState.deriveSetWithoutStates(getStates(), states));
 	}
 
-	public boolean containsStates(final DynamicValueState... states)
+	/**
+	 * Returns <code>true</code> only of all states are inside this condition.
+	 * @param states the states to be checked for inclusion
+	 * @return <code>true</code> only of all states are inside this condition
+	 */
+	public boolean containsAllStates(final DynamicValueState... states)
 	{
-		for (int i = 0; i < states.length; i++) {
-			if (!this.states.contains(states[i])) {
-				return false;
-			}
-		}
-
-		return true;
+		return DynamicValueState.containsAllStates(getStates(), states);
 	}
 
+	/**
+	 * Returns <code>true</code> only of all states are inside this condition.
+	 * @param states the states to be checked for inclusion
+	 * @return <code>true</code> only of all states are inside this condition
+	 */
+	public boolean containsAllStates(final EnumSet<DynamicValueState> states)
+	{
+		return DynamicValueState.containsAllStates(getStates(), states);
+	}
+
+	/**
+	 * Returns <code>true</code> if at least one of provided states is inside this condition.
+	 * @param states the states to be checked for inclusion
+	 * @return <code>true</code> if at least one of provided states is inside this condition
+	 */
 	public boolean containsAnyOfStates(final DynamicValueState... states)
 	{
-		for (DynamicValueState state : states) {
-			if (this.states.contains(state)) {
-				return true;
-			}
-		}
-
-		return false;
+		return DynamicValueState.containsAnyOfStates(getStates(), states);
 	}
 
+	/**
+	 * Returns <code>true</code> if at least one of provided states is inside this condition.
+	 * @param states the states to be checked for inclusion
+	 * @return <code>true</code> if at least one of provided states is inside this condition
+	 */
+	public boolean containsAnyOfStates(final EnumSet<DynamicValueState> states)
+	{
+		return DynamicValueState.containsAnyOfStates(getStates(), states);
+	}
+
+	/**
+	 * Return <code>true</code> if provided condition has same states.
+	 * @param condition the condition with set to be tested
+	 * @return <code>true</code> if provided condition has same states
+	 */
 	public boolean areStatesEqual(final DynamicValueCondition condition)
 	{
 		if (condition == null) {
 			return false;
-		} else if (condition.isAlarm() == isAlarm()
-		    && condition.isError() == isError()
-		    && condition.isLinkNotAvailable() == isLinkNotAvailable()
-		    && condition.isNormal() == isNormal()
-		    && condition.isTimelag() == isTimelag()
-		    && condition.isTimeout() == isTimeout()
-		    && condition.isWarning() == isWarning()) {
-			return true;
-		} else {
-			return false;
-		}
+		} 
+		
+		return DynamicValueState.areSetsEqual(states, condition.states);
 	}
 	
 	public String getSeverityInfo() {
@@ -275,15 +301,15 @@ public class DynamicValueCondition implements Severity
 
 	public boolean isInvalid() {
 		// TODO is this OK?
-		return containsStates(DynamicValueState.ERROR);
+		return containsAllStates(DynamicValueState.ERROR);
 	}
 
 	public boolean isMajor() {
-		return containsStates(DynamicValueState.ALARM);
+		return containsAllStates(DynamicValueState.ALARM);
 	}
 
 	public boolean isMinor() {
-		return containsStates(DynamicValueState.WARNING);
+		return containsAllStates(DynamicValueState.WARNING);
 	}
 
 	public boolean isOK() {

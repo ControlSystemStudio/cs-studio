@@ -1,5 +1,7 @@
 package org.csstudio.platform.util;
 
+import static org.junit.Assert.*;
+
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -11,16 +13,15 @@ import javax.naming.directory.BasicAttribute;
 import javax.naming.directory.BasicAttributes;
 
 import junit.framework.Assert;
-import junit.framework.TestCase;
-
 import org.junit.Test;
 
 /**
  *
  * @author Tests of <code>splitIgnoreInQuotes</code> by Xihui Chen
  */
-public class StringUtilTest extends TestCase {
-
+@SuppressWarnings("nls")
+public class StringUtilTest
+{
     /** No quotes at all */
     @Test
     public void testSplit1() throws Exception {
@@ -75,6 +76,16 @@ public class StringUtilTest extends TestCase {
         assertEquals("ldap://localhost:389/ou=People,dc=test,dc=ics", result[1]);
     }
 
+    /** Escaped quotes */
+    @Test
+    public void testSplitEscaped() throws Exception {
+        final String result[] = StringUtil.splitIgnoreInQuotes(
+                                                               " First  \"The Second with escaped quote --> \\\" <--\" \"The Third\"   ", ' ', true);
+        assertEquals(3, result.length);
+        assertEquals("First", result[0]);
+        assertEquals("The Second with escaped quote --> \\\" <--", result[1]);
+        assertEquals("The Third", result[2]);
+    }
 
     @Test
     public final void testPrintArrays() {
@@ -191,22 +202,5 @@ public class StringUtilTest extends TestCase {
             Assert.fail("Naming exception for: " + e.getMessage() + "\n");
             e.printStackTrace();
         }
-    }
-
-    @Test
-    public final void testCreateListFromString() {
-        Assert.assertNotNull(StringUtil.createListFrom(null));
-        Assert.assertNotNull(StringUtil.createListFrom(""));
-        Assert.assertNotNull(StringUtil.createListFrom("hallo"));
-
-        Assert.assertEquals(0, StringUtil.createListFrom(null).size());
-        Assert.assertEquals(0, StringUtil.createListFrom("").size());
-        Assert.assertEquals(0, StringUtil.createListFrom("  ").size());
-        Assert.assertEquals(0, StringUtil.createListFrom(" ,  ").size());
-        Assert.assertEquals(1, StringUtil.createListFrom("hallo").size());
-        Assert.assertEquals(1, StringUtil.createListFrom("hallo ,").size());
-
-        Assert.assertEquals("hallo", StringUtil.createListFrom("hallo ,").get(0));
-        Assert.assertEquals("tut", StringUtil.createListFrom(" , hallo , tut,").get(1));
     }
 }

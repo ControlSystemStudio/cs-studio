@@ -1,0 +1,95 @@
+# Test database
+#
+#   softIoc -s -d test.db
+
+record(mbbi, "enum")
+{
+   field(NOBT, "2")
+   field(ZRVL, "0")
+   field(ONVL, "1")
+   field(TWVL, "2")
+   field(THVL, "3")
+   field(ZRST, "zero")
+   field(ONST, "one")
+   field(TWST, "two")
+   field(THST, "three")
+   field(VAL, "1")
+   field(PINI, "YES")
+}
+
+record(calc, "fred")
+{
+   field(SCAN, "1 second")
+   field(CALC, "RNDM")
+   field(EGU,  "furlong")
+   field(PREC, "4")
+}
+record(calc, "Ufred")
+{
+   field(SCAN, "Passive")
+   field(CALC, "RNDM")
+   field(EGU,  "furlong")
+   field(PREC, "4")
+}
+record(calc, "Dfred")
+{
+   field(SCAN, "1 second")
+   field(CALC, "RNDM")
+   field(EGU,  "furlong")
+   field(PREC, "4")
+   field(DISV, "42")
+   field(DISA, "42")
+}
+record(calc, "freddy")
+{
+   field(SCAN, "1 second")
+   field(CALC, "RNDM")
+   field(EGU,  "furlong")
+   field(PREC, "4")
+}
+
+
+record(longin, "long_fred")
+{
+   field(INP, "fred CP")
+   field(EGU,  "furlonger")
+}
+
+record(calc, "janet")
+{
+   field(SCAN, ".1 second")
+   field(CALC, "10+5*RNDM")
+   field(EGU,  "furlong")
+   field(PREC, "4")
+   field(FLNK, "hist")
+}
+record(calc, "jane")
+{
+   field(SCAN, ".1 second")
+   field(CALC, "10+5*RNDM")
+   field(EGU,  "furlong")
+   field(PREC, "4")
+   field(FLNK, "hist")
+}
+
+record(compress, "hist")
+{
+   field(INP,  "janet")
+   field(NSAM, "50")
+   field(ALG,  "Circular Buffer")
+}
+
+record(waveform, "longs")
+{
+   field(INP,  "hist")
+   field(SCAN, "1 second")
+   field(NELM, "50")
+   field(FTVL, "LONG")
+}
+
+record(waveform, "strings")
+{
+   field(NELM, "5")
+   field(FTVL, "STRING")
+}
+

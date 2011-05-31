@@ -1,10 +1,18 @@
+/*******************************************************************************
+ * Copyright (c) 2010 Oak Ridge National Laboratory.
+ * All rights reserved. This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License v1.0
+ * which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-v10.html
+ ******************************************************************************/
 package org.csstudio.diag.pvutil.model;
 
 import java.util.concurrent.CopyOnWriteArrayList;
+import java.util.logging.Level;
 
+import org.csstudio.diag.pvutil.Activator;
 import org.csstudio.diag.pvutil.gui.GUI.ItemIndex;
 import org.csstudio.diag.pvutil.model.PVUtilListener.ChangeEvent;
-import org.csstudio.platform.logging.CentralLogger;
 import org.eclipse.core.runtime.IConfigurationElement;
 import org.eclipse.core.runtime.Platform;
 
@@ -14,7 +22,7 @@ import org.eclipse.core.runtime.Platform;
  *  in the Eclipse extension point registry and then uses
  *  that to perform queries for PVs and their FECs
  *  in a background thread.
- *  
+ *
  *  @author Dave Purcell
  *  @author Kay Kasemir
  */
@@ -25,7 +33,7 @@ public class PVUtilModel
 
 	/** PVUtilDataAPI that provides actual data, obtained via extension point */
     private final PVUtilDataAPI api;
-    
+
     /** Current FEC name */
     private String fec_name = "";
 
@@ -59,7 +67,7 @@ public class PVUtilModel
                     ", got " + configs.length);
         api = (PVUtilDataAPI) configs[0].createExecutableExtension("class");
     }
-    
+
     /** Add model listener */
 	public void addListener(final PVUtilListener new_listener)
     {
@@ -97,10 +105,10 @@ public class PVUtilModel
         this.pv_filter = pv_filter;
         startPVLookup(fec_name, pv_filter);
     }
-    
+
 	/** When one of the clear buttons is pressed then that enum value
 	 * is passed through here to clear the contents specific to that button.
-	 * 
+	 *
 	 * @param what
 	 */
 	public void setObjectClear(final ItemIndex what)
@@ -123,10 +131,10 @@ public class PVUtilModel
     {
         return pvs.length;
     }
-    
+
     public synchronized PV getPV(final int row)
 	{
-		return pvs[row];			
+		return pvs[row];
 	}
 
 	public synchronized int getFECCount()
@@ -142,7 +150,7 @@ public class PVUtilModel
     /** looks to get the default start device filter.
      *  SNS starts out filtering the list to ":IOC"
      *  This value is returned with the Reset All button too
-     * 
+     *
      * @return the default start filter.
      */
     public String getStartDeviceID()
@@ -153,12 +161,11 @@ public class PVUtilModel
     	}
     	catch (Exception e)
     	{
-    		CentralLogger.getInstance().getLogger(this).
-    		    error("Get Start Device ID Exception", e);
+    	    Activator.getLogger().log(Level.WARNING, "No device ID", e);
     	}
-		return "";	
+		return "";
     }
-    
+
     /** Start background thread for FEC Lookup
      *  @param deviceID Device pattern
      */
@@ -179,10 +186,9 @@ public class PVUtilModel
                         fecs = result;
                     }
                 }
-                catch (Exception e)
+                catch (Exception ex)
                 {
-                    CentralLogger.getInstance().getLogger(this)
-                        .error("FEC Lookup Exception " + e.getMessage(), e);
+                    Activator.getLogger().log(Level.WARNING, "FEC Lookup error", ex);
                 }
                 firePVUtilChanged(ChangeEvent.FEC_CHANGE);
             }
@@ -190,7 +196,7 @@ public class PVUtilModel
         lookup.setDaemon(true);
         lookup.start();
     }
-    
+
     /** Start background thread for PV lookup
      *  @param deviceID Device pattern
      *  @param pvFilter PV pattern
@@ -202,7 +208,7 @@ public class PVUtilModel
         {
             pvs = new PV[]
             {
-                new PV("Waiting....", "") 
+                new PV("Waiting....", "")
             };
         }
         firePVUtilChanged(ChangeEvent.PV_CHANGE);
@@ -223,10 +229,9 @@ public class PVUtilModel
                             pvs = result;
                         }
                     }
-                    catch (Exception e)
+                    catch (Exception ex)
                     {
-                        CentralLogger.getInstance().getLogger(this)
-                            .error("PV Lookup Exception " + e.getMessage(), e);
+                        Activator.getLogger().log(Level.WARNING, "PV Lookup error", ex);
                     }
                     firePVUtilChanged(ChangeEvent.PV_CHANGE);
                 }
@@ -235,8 +240,8 @@ public class PVUtilModel
         lookup.setDaemon(true);
         lookup.start();
     }
-    
-    /** 
+
+    /**
      * @param what  enumerated ChangeEvent (either PV_EVENT or FEC_EVENT)
      */
     private void firePVUtilChanged(final ChangeEvent what)
@@ -249,7 +254,7 @@ public class PVUtilModel
             }
             catch (Throwable ex)
             {
-            	CentralLogger.getInstance().getLogger(this).error("Exception", ex);
+                Activator.getLogger().log(Level.WARNING, "Notification error", ex);
             }
         }
     }

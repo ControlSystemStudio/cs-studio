@@ -1,6 +1,6 @@
 package org.csstudio.archive;
 
-import org.csstudio.platform.data.ITimestamp;
+import org.csstudio.data.values.ITimestamp;
 
 /** Information for one Channel in archive.
  *  @see ArchiveServer#getNames(int, String)
@@ -30,7 +30,7 @@ public class NameInfo
 	/** @return The time stamp of the last sample found in the archive. */
 	public ITimestamp getEnd()
 	{	return end;	}
-	
+
 	@SuppressWarnings("nls")
     @Override public String toString()
 	{

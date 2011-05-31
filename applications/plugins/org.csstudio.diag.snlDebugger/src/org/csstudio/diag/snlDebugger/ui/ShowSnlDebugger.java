@@ -21,9 +21,9 @@
  */
 package org.csstudio.diag.snlDebugger.ui;
 
+import org.csstudio.auth.security.SecurityFacade;
 import org.csstudio.diag.snlDebugger.Activator;
 import org.csstudio.diag.snlDebugger.Messages;
-import org.csstudio.platform.security.SecurityFacade;
 import org.eclipse.jface.action.IAction;
 import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.ui.IWorkbench;

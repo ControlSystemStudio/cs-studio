@@ -1,14 +1,17 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <?NLS TYPE="org.eclipse.help.toc"?>
 
-<toc link_to="../org.csstudio.platform.ui/tocApps.xml#alarm" label="Alarm System">
+<toc link_to="../org.csstudio.ui.help/tocApps.xml#alarm" label="Alarm System">
   <topic label="Alarm System"  href="html/alarm_system.html">
-    <topic href="html/alarm_principle.html" label="General Alarm Principles"></topic>
-    <topic href="html/alarm_perspective.html" label="Open Alarm Perspective"></topic>
-    <topic href="html/preferences.html" label="Preferences Configuration"></topic>
-    <anchor id="alarmtree"/>
-    <anchor id="alarmtable"/>
-    <topic href="html/pv_config.html" label="Alarm PV Configuration"></topic>
-    <topic href="html/annunciation.html" label="Voice Annunciation"></topic>
-  </topic>
+    <topic href="html/alarm_system.html#overview" label="Overview"></topic>
+    <topic href="html/alarm_system.html#principles" label="Principles"></topic>
+    <topic href="html/alarm_system.html#architecture" label="Architecture"></topic>
+    <topic href="html/alarm_system.html#perspective" label="Perspective"></topic>
+    <topic href="html/alarm_system.html#tree" label="Alarm Tree"></topic>
+    <topic href="html/alarm_system.html#table" label="Alarm Table"></topic>
+    <topic href="html/alarm_system.html#preferences" label="Preferences"></topic>
+    <topic href="html/alarm_system.html#edit" label="Editing Configuration"></topic>
+    <topic href="html/alarm_system.html#pv_config" label="Alarm PV Configuration"></topic>
+    <topic href="html/alarm_system.html#annunciation" label="Annunciation"></topic>
+   </topic>
 </toc>

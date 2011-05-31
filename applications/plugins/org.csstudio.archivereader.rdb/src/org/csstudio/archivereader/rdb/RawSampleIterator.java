@@ -1,30 +1,37 @@
+/*******************************************************************************
+ * Copyright (c) 2010 Oak Ridge National Laboratory.
+ * All rights reserved. This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License v1.0
+ * which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-v10.html
+ ******************************************************************************/
 package org.csstudio.archivereader.rdb;
 
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.Timestamp;
 
-import org.csstudio.platform.data.ITimestamp;
-import org.csstudio.platform.data.IValue;
-import org.csstudio.platform.utility.rdb.TimeWarp;
+import org.csstudio.data.values.ITimestamp;
+import org.csstudio.data.values.IValue;
 import org.csstudio.platform.utility.rdb.RDBUtil.Dialect;
 
 /** Value Iterator that reads from the SAMPLE table.
  *  @author Kay Kasemir
+ *  @author Lana Abadie (PostgreSQL)
  */
 public class RawSampleIterator extends AbstractRDBValueIterator
 {
     /** SELECT ... for the start .. end samples. */
     private PreparedStatement sel_samples = null;
-    
+
     /** Result of <code>sel_samples</code> */
     private ResultSet result_set = null;
-    
+
     /** 'Current' value that <code>next()</code> will return,
      *  or <code>null</code>
      */
     private IValue value = null;
-    
+
     /** Initialize
      *  @param reader RDBArchiveReader
      *  @param channel_id ID of channel
@@ -58,8 +65,8 @@ public class RawSampleIterator extends AbstractRDBValueIterator
      */
     private void determineInitialSample(final ITimestamp start, final ITimestamp end) throws Exception
     {
-        Timestamp start_stamp = TimeWarp.getSQLTimestamp(start);
-        final Timestamp end_stamp = TimeWarp.getSQLTimestamp(end);
+        Timestamp start_stamp = start.toSQLTimestamp();
+        final Timestamp end_stamp = end.toSQLTimestamp();
 
         // Get time of initial sample
         final PreparedStatement statement =
@@ -74,8 +81,8 @@ public class RawSampleIterator extends AbstractRDBValueIterator
             {
                 // System.out.print("Start time corrected from " + start_stamp);
                 start_stamp = result.getTimestamp(1);
-                // Oracle has nanoseconds in TIMESTAMP, MySQL in separate column 
-                if (reader.getRDB().getDialect() == Dialect.MySQL)
+                // Oracle has nanoseconds in TIMESTAMP, MySQL in separate column
+                if (reader.getRDB().getDialect() == Dialect.MySQL || reader.getRDB().getDialect() == Dialect.PostgreSQL)
                     start_stamp.setNanos(result.getInt(2));
                 // System.out.println(" to " + start_stamp);
             }
@@ -90,7 +97,7 @@ public class RawSampleIterator extends AbstractRDBValueIterator
         sel_samples = reader.getRDB().getConnection().prepareStatement(
                 reader.getSQL().sample_sel_by_id_start_end);
         sel_samples.setFetchDirection(ResultSet.FETCH_FORWARD);
-        
+
         // Test w/ ~170000 raw samples:
         //     10  17   seconds
         //    100   6   seconds
@@ -114,12 +121,14 @@ public class RawSampleIterator extends AbstractRDBValueIterator
     }
 
     /** {@inheritDoc} */
+    @Override
     public boolean hasNext()
     {
         return value != null;
     }
 
     /** {@inheritDoc} */
+    @Override
     @SuppressWarnings("nls")
     public IValue next() throws Exception
     {

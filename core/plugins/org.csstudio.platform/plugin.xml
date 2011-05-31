@@ -2,10 +2,7 @@
 <?eclipse version="3.2"?>
 <plugin>
    <extension-point id="controlSystemItemFactories" name="controlSystemItemFactories" schema="schema/controlSystemItemFactories.exsd"/>
-   <extension-point id="loginModule" name="Login Module" schema="schema/loginModule.exsd"/>
-   <extension-point id="authorizationProvider" name="Authorization Provider" schema="schema/authorizationProvider.exsd"/>
    <extension-point id="startupListener" name="Startup Listener" schema="schema/startupListener.exsd"/>
-   <extension-point id="authorizationId" name="Authorization Id" schema="schema/authorizationId.exsd"/>
    <extension-point id="managementCommands" name="Management Commands" schema="schema/managementCommands.exsd"/>
    <extension-point id="managementCommandResultReceivers" name="Receivers for Management Command Results" schema="schema/managementCommandResultReceivers.exsd"/>
 <!--
@@ -39,41 +36,6 @@
       <controlSystemItemFactory
             class="org.csstudio.platform.internal.model.ProcessVariableWithSamples"
             typeId="css:processVariableWithSamples"/>
-   </extension>
-   <extension
-         point="org.csstudio.platform.authorizationId">
-      <id
-            description="This ID should be used in examples and documentation."
-            id="example">
-      </id>
-   </extension>
-   <extension
-         name="Legacy authorization IDs"
-         point="org.csstudio.platform.authorizationId">
-      <id
-            description="Permission for the IOC tools."
-            id="iocAccesses">
-      </id>
-      <id
-            description="Permission to open and use the AMS Configurator."
-            id="amsconfigurator">
-      </id>
-      <id
-            description="Permission to configure the Authorization Id."
-            id="AuthorizeId">
-      </id>
-      <id
-            description="Permission for operating/ alarm acknowledge."
-            id="operating">
-      </id>
-      <id
-            description="Permission for testing tools."
-            id="testing">
-      </id>
-      <id
-            description="Administration of alarm configuration and database."
-            id="alarmAdministration">
-      </id>
    </extension>
    <extension
          point="org.csstudio.platform.managementCommands">

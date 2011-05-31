@@ -33,14 +33,15 @@ import javax.annotation.Nullable;
 
 import org.csstudio.config.ioconfig.model.AbstractNodeDBO;
 import org.csstudio.config.ioconfig.model.FacilityDBO;
+import org.csstudio.config.ioconfig.model.PersistenceException;
 import org.csstudio.config.ioconfig.model.Repository;
 import org.csstudio.config.ioconfig.model.SearchNodeDBO;
 import org.csstudio.config.ioconfig.model.tools.NodeMap;
+import org.csstudio.platform.logging.CentralLogger;
 import org.eclipse.jface.dialogs.Dialog;
 import org.eclipse.jface.layout.GridDataFactory;
 import org.eclipse.jface.layout.GridLayoutFactory;
 import org.eclipse.jface.layout.TableColumnLayout;
-import org.eclipse.jface.viewers.AbstractTreeViewer;
 import org.eclipse.jface.viewers.CellLabelProvider;
 import org.eclipse.jface.viewers.ColumnWeightData;
 import org.eclipse.jface.viewers.ISelectionChangedListener;
@@ -263,13 +264,14 @@ public class SearchDialog extends Dialog {
 		 */
 		protected boolean compareStrings(@Nonnull String text) {
 			String string1;
-			String string2;
-			if (isCaseSensetive()) {
+			String string2 = getSearchText();
+            if (isCaseSensetive()) {
 				string1 = text;
-				string2 = getSearchText();
 			} else {
 				string1 = text.toLowerCase();
-				string2 = getSearchText().toLowerCase();
+				if(string2!=null) {
+				    string2 = string2.toLowerCase();
+				}
 			}
 			return string1.contains(string2);
 		}
@@ -410,8 +412,7 @@ public class SearchDialog extends Dialog {
 		@Override
 		public void inputChanged(@Nullable Viewer viewer,
 				@Nullable Object oldInput, @Nullable Object newInput) {
-			// TODO Auto-generated method stub
-
+		    // Empty
 		}
 
 	}
@@ -427,7 +428,13 @@ public class SearchDialog extends Dialog {
 		// SWT.PRIMARY_MODAL);
 		setShellStyle(SWT.CLOSE | SWT.TITLE | SWT.MAX | SWT.RESIZE
 				| SWT.PRIMARY_MODAL);
-		_load = Repository.load(SearchNodeDBO.class);
+		try {
+            _load = Repository.load(SearchNodeDBO.class);
+        } catch (PersistenceException e) {
+            _load = null;
+            DeviceDatabaseErrorDialog.open(null, "Can't read from Datebase!", e);
+            CentralLogger.getInstance().error(this, e);
+        }
 	}
 
 	/**
@@ -506,7 +513,7 @@ public class SearchDialog extends Dialog {
 		columnName.getColumn().setText("Name");
 		columnName.setLabelProvider(new CellLabelProvider() {
 			@Override
-			public void update(@Nullable ViewerCell cell) {
+			public void update(@Nonnull ViewerCell cell) {
 				if (cell.getElement() instanceof SearchNodeDBO) {
 					cell.setText(((SearchNodeDBO) cell.getElement()).getName());
 				}
@@ -522,7 +529,7 @@ public class SearchDialog extends Dialog {
 				new SortSelectionListener(sorter, state++));
 		columnIOName.setLabelProvider(new CellLabelProvider() {
 			@Override
-			public void update(@Nullable ViewerCell cell) {
+			public void update(@Nonnull ViewerCell cell) {
 				if (cell.getElement() instanceof SearchNodeDBO) {
 					SearchNodeDBO channel = (SearchNodeDBO) cell.getElement();
 					cell.setText(channel.getIoName());
@@ -539,7 +546,7 @@ public class SearchDialog extends Dialog {
 		columnEpicsAddress.getColumn().setText("Epics Address");
 		columnEpicsAddress.setLabelProvider(new CellLabelProvider() {
 			@Override
-			public void update(@Nullable ViewerCell cell) {
+			public void update(@Nonnull ViewerCell cell) {
 				if (cell.getElement() instanceof SearchNodeDBO) {
 					SearchNodeDBO channel = (SearchNodeDBO) cell.getElement();
 					cell.setText(channel.getEpicsAddressString());
@@ -556,7 +563,7 @@ public class SearchDialog extends Dialog {
 		columnCreateBy.getColumn().setText("Create By");
 		columnCreateBy.setLabelProvider(new CellLabelProvider() {
 			@Override
-			public void update(@Nullable ViewerCell cell) {
+			public void update(@Nonnull ViewerCell cell) {
 				if (cell.getElement() instanceof SearchNodeDBO) {
 					String createdBy = ((SearchNodeDBO) cell.getElement())
 							.getCreatedBy();
@@ -581,7 +588,7 @@ public class SearchDialog extends Dialog {
 		columnCreateOn.getColumn().setText("Create On");
 		columnCreateOn.setLabelProvider(new CellLabelProvider() {
 			@Override
-			public void update(@Nullable ViewerCell cell) {
+			public void update(@Nonnull ViewerCell cell) {
 				if (cell.getElement() instanceof SearchNodeDBO) {
 					Date createdOn = ((SearchNodeDBO) cell.getElement())
 							.getCreatedOn();
@@ -601,7 +608,7 @@ public class SearchDialog extends Dialog {
 		columnUpdatedBy.getColumn().setText("Updated By");
 		columnUpdatedBy.setLabelProvider(new CellLabelProvider() {
 			@Override
-			public void update(@Nullable ViewerCell cell) {
+			public void update(@Nonnull ViewerCell cell) {
 				if (cell.getElement() instanceof SearchNodeDBO) {
 					String updatedBy = ((SearchNodeDBO) cell.getElement())
 							.getUpdatedBy();
@@ -625,7 +632,7 @@ public class SearchDialog extends Dialog {
 		columnUpdatedOn.getColumn().setText("Updated On");
 		columnUpdatedOn.setLabelProvider(new CellLabelProvider() {
 			@Override
-			public void update(@Nullable ViewerCell cell) {
+			public void update(@Nonnull ViewerCell cell) {
 				if (cell.getElement() instanceof SearchNodeDBO) {
 					Date updatedOn = ((SearchNodeDBO) cell.getElement())
 							.getUpdatedOn();
@@ -645,7 +652,7 @@ public class SearchDialog extends Dialog {
 		columnId.getColumn().setText("DB Id");
 		columnId.setLabelProvider(new CellLabelProvider() {
 			@Override
-			public void update(@Nullable ViewerCell cell) {
+			public void update(@Nonnull ViewerCell cell) {
 				if (cell.getElement() instanceof SearchNodeDBO) {
 					Integer id = ((SearchNodeDBO) cell.getElement()).getId();
 					cell.setText(id.toString());
@@ -662,7 +669,7 @@ public class SearchDialog extends Dialog {
 		columnParentId.getColumn().setText("ParentId");
 		columnParentId.setLabelProvider(new CellLabelProvider() {
 			@Override
-			public void update(@Nullable ViewerCell cell) {
+			public void update(@Nonnull ViewerCell cell) {
 				if (cell.getElement() instanceof SearchNodeDBO) {
 					Integer id = ((SearchNodeDBO) cell.getElement())
 							.getParentId();
@@ -779,10 +786,12 @@ public class SearchDialog extends Dialog {
 								.getSelection();
 						setSearchNode((SearchNodeDBO) selection
 								.getFirstElement());
-						if (getSearchNode() != null) {
-							setSelectedId(getSearchNode().getId());
-							if (getSelectedId() > 0) {
-								setSelectedNode(NodeMap.get(getSelectedId()));
+						SearchNodeDBO searchNode = getSearchNode();
+                        if (searchNode != null) {
+							setSelectedId(searchNode.getId());
+							Integer selectedId = getSelectedId();
+                            if (selectedId!=null && selectedId > 0) {
+								setSelectedNode(NodeMap.get(selectedId));
 							}
 						} else {
 							setSelectedId(null);
@@ -803,8 +812,15 @@ public class SearchDialog extends Dialog {
 			// "Nicht geladen",
 			// "Ihre Auswahl wurde noch nicht geladen. Soll sie jetzt geladen werden?");
 			// if (openQuestion) {
-			setSelectedNode(Repository.load(AbstractNodeDBO.class,
-					getSelectedId()));
+			try {
+                AbstractNodeDBO load = Repository.load(AbstractNodeDBO.class,
+                		getSelectedId());
+                setSelectedNode(load);
+            } catch (PersistenceException e) {
+                _searchNode=null;
+                DeviceDatabaseErrorDialog.open(null, "Can't load seleceted node! Database Error.", e);
+                CentralLogger.getInstance().error(this, e);
+            }
 			if (_searchNode != null) {
 				AbstractNodeDBO parentNode = _selectedNode;
 				while (!parentNode.isRootNode()) {
@@ -833,16 +849,7 @@ public class SearchDialog extends Dialog {
 	 * 
 	 */
 	private void showNode() {
-		_profiBusTreeView.getTreeViewer().expandToLevel(_selectedNode, AbstractTreeViewer.ALL_LEVELS);
-		
-		_profiBusTreeView.layout();
-		_profiBusTreeView.refresh();
-		_profiBusTreeView.getTreeViewer().setSelection(
-				new StructuredSelection(_selectedNode),true);
-//		_profiBusTreeView.getTreeViewer().getTree().showSelection();
-//		_profiBusTreeView.getTreeViewer().getTree().
-//		_profiBusTreeView.layout();
-//		_profiBusTreeView.refresh();
+	    _profiBusTreeView.getViewer().setSelection(new StructuredSelection(_selectedNode));
 	}
 
 	public final void setSearchNode(@Nullable SearchNodeDBO searchNode) {

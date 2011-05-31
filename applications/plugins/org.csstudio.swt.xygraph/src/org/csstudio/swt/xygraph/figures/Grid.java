@@ -19,16 +19,16 @@ import org.eclipse.swt.SWT;
 public class Grid extends Figure implements IAxisListener{
 
 	private Axis axis;
-	
+
 	public Grid(Axis axis) {
 		axis.addListener(this);
 		this.axis = axis;
 		axis.setGrid(this);
-		
+
 	}
-	
+
 	@Override
-	protected void paintFigure(Graphics graphics) {		
+	protected void paintFigure(Graphics graphics) {
 		super.paintFigure(graphics);
 		graphics.pushState();
 		if(axis.isShowMajorGrid()){
@@ -47,12 +47,14 @@ public class Grid extends Figure implements IAxisListener{
 		graphics.popState();
 	}
 
-	public void axisRevalidated(Axis axis) {
+	@Override
+    public void axisRevalidated(Axis axis) {
 		if(axis.isShowMajorGrid())
-			repaint();	
+			repaint();
 	}
-	
-	public void axisRangeChanged(Axis axis, Range old_range, Range new_range) {
+
+	@Override
+    public void axisRangeChanged(Axis axis, Range old_range, Range new_range) {
 		//do nothing
 	}
 }

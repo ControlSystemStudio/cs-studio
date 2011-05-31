@@ -21,22 +21,29 @@
  */
 package org.csstudio.alarm.service.preferences;
 
+import java.io.File;
+
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
 import org.csstudio.alarm.service.AlarmServiceActivator;
 import org.csstudio.alarm.service.declaration.AlarmPreference;
 import org.csstudio.platform.util.StringUtil;
+import org.eclipse.core.runtime.Path;
+import org.eclipse.jface.preference.FieldEditor;
 import org.eclipse.jface.preference.FieldEditorPreferencePage;
+import org.eclipse.jface.preference.FileFieldEditor;
 import org.eclipse.jface.preference.ListEditor;
 import org.eclipse.jface.preference.RadioGroupFieldEditor;
 import org.eclipse.jface.window.Window;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
+import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Group;
 import org.eclipse.ui.IWorkbench;
 import org.eclipse.ui.IWorkbenchPreferencePage;
+import org.osgi.framework.Bundle;
 
 /**
  * This class represents a preference page that is contributed to the
@@ -51,71 +58,162 @@ import org.eclipse.ui.IWorkbenchPreferencePage;
 
 public class AlarmServicePreferencePage extends FieldEditorPreferencePage implements
         IWorkbenchPreferencePage {
-
+    
     public AlarmServicePreferencePage() {
         super(GRID);
         setPreferenceStore(AlarmServiceActivator.getDefault().getPreferenceStore());
+        setDescription("Alarm Service Preferences");
     }
-
+    
     @Override
     public void createFieldEditors() {
-        addField(newImplSelectionEditor());
-        addField(newListEditor());
+        makeImplSelectionEditor();
+        makePvSourceSelectionEditor();
+        makeListEditor();
     }
-
+    
     @Override
     public void init(@Nullable final IWorkbench workbench) {
         // Nothing to do
     }
-
-    @Nonnull
-    private RadioGroupFieldEditor newImplSelectionEditor() {
+    
+    private void makeImplSelectionEditor() {
         final Group group = new Group(getFieldEditorParent(), SWT.SHADOW_ETCHED_IN);
         group.setText("Alarm Service");
         group.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, false, 2, 1));
         group.setLayout(new GridLayout(2, false));
-
+        
         final String[][] contextTypes = {
                 {"DAL", Boolean.TRUE.toString()},
                 {"JMS", Boolean.FALSE.toString()}
-              };
-        return new RadioGroupFieldEditor(AlarmPreference.ALARMSERVICE_IS_DAL_IMPL.getKeyAsString(),
-                                           "Select the implementation for the Alarm Service.\nYou must restart CSS after a change to take effect.",
-                                           contextTypes.length,
-                                           contextTypes,
-                                           group);
+                };
+        FieldEditor fieldEditor = new RadioGroupFieldEditor(AlarmPreference.ALARMSERVICE_IS_DAL_IMPL
+                                                                    .getKeyAsString(),
+                                                            "Select the implementation for the Alarm Service.\n" +
+                                                            "You must restart CSS after a change to take effect.",
+                                                            contextTypes.length,
+                                                            contextTypes,
+                                                            group);
+        addField(fieldEditor);
     }
-    @Nonnull
-    private ListEditor newListEditor() {
+    
+    private void makePvSourceSelectionEditor() {
+        final Group group = new Group(getFieldEditorParent(), SWT.SHADOW_ETCHED_IN);
+        group.setText("Source for PVs");
+        group.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, false, 2, 1));
+        group.setLayout(new GridLayout(2, false));
+        
+        final String[][] contextTypes = {
+                {"LDAP", Boolean.TRUE.toString()},
+                {"XML", Boolean.FALSE.toString()}
+                };
+        FieldEditor fieldEditor = new RadioGroupFieldEditor(AlarmPreference.ALARMSERVICE_CONFIG_VIA_LDAP.getKeyAsString(),
+                                         "Select the source for the set of PVs you are watching in the Alarm Table and the Alarm Tree.\n"
+                                                 + "\n"
+                                                 + "There is no need to have an LDAP server, you may work with an XML file.\n"
+                                                 + "You create an XML file using Export in the Alarm Tree.\n"
+                                                 + "Then you should set the preference to your own XML file, so the Reload button in\n"
+                                                 + "the Alarm Tree and the Alarm Table will use your file instead of the default.\n"
+                                                 + "\n"
+                                                 + "You must restart CSS after a change to take effect.",
+                                         contextTypes.length,
+                                         contextTypes,
+                                         group);
+        addField(fieldEditor);
+        
+        final FileFieldEditor fileEditor = new MyFileFieldEditor(AlarmPreference.ALARMSERVICE_CONFIG_FILENAME
+                                                                       .getKeyAsString(),
+                                                               "XML file",
+                                                               group);
+        fileEditor.setFileExtensions(new String[] {"*.xml"});
+        addField(fileEditor);
+    }
+    
+    private void makeListEditor() {
         final Group group = new Group(getFieldEditorParent(), SWT.SHADOW_ETCHED_IN);
         group.setText("Facility Names");
         group.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, false, 2, 1));
         group.setLayout(new GridLayout(2, false));
-
-        return new ListEditor(AlarmPreference.ALARMSERVICE_FACILITIES.getKeyAsString(), "Select Facility Names for use in Alarm Tree and Alarm Table\n" +
-        		"The selected facilities will show up in the Alarm Tree. They will also be used to retrieve\n" +
-        		"the initial state of the contained PVs.", group){
-
+        
+        ListEditor listEditor = new ListEditor(
+                AlarmPreference.ALARMSERVICE_FACILITIES.getKeyAsString(),
+                "Select Facility Names for use in Alarm Tree and Alarm Table\n"
+                        + "The selected facilities will show up in the Alarm Tree. They will also be used to retrieve\n"
+                        + "the initial state of the contained PVs.", group) {
+            
             @Override
             @Nonnull
-            public String[] parseString(@Nonnull final String stringList){
+            public String[] parseString(@Nonnull final String stringList) {
                 return stringList.split(AlarmPreference.STRING_LIST_SEPARATOR);
             }
-
+            
             @Override
-            public String getNewInputObject(){
-                final AddMountPointDlg inputDialog = new AddMountPointDlg(getFieldEditorParent().getShell());
+            public String getNewInputObject() {
+                @SuppressWarnings("synthetic-access")
+                final AddMountPointDlg inputDialog = new AddMountPointDlg(getFieldEditorParent()
+                        .getShell());
                 if (inputDialog.open() == Window.OK) {
                     return (inputDialog).getResult();
                 }
                 return null;
             }
-
+            
             @Override
             @Nonnull
-            public String createList(@Nonnull final String[] items){
+            public String createList(@Nonnull final String[] items) {
                 return StringUtil.join(items, AlarmPreference.STRING_LIST_SEPARATOR);
             }
         };
+        addField(listEditor);
     }
+    
+    /**
+     * Overrides file field editor to handle check for existing resource
+     * relative in bundle or absolute in file system
+     */
+    private static class MyFileFieldEditor extends FileFieldEditor {
+
+        public MyFileFieldEditor(@Nonnull final String name,
+                @Nonnull final String labelText, @Nonnull final Composite parent) {
+            super(name, labelText, false,
+                    VALIDATE_ON_KEY_STROKE, parent);
+        }
+
+        @Override
+        protected boolean checkState() {
+            boolean result = false;
+
+            final String text = getTextControl().getText();
+            result = text.isEmpty() || existsResource(text); 
+
+            handleErrorMessage(result);
+            return result;
+        }
+
+        private void handleErrorMessage(final boolean isOk) {
+            if (isOk) {
+                clearErrorMessage();
+            } else {
+                showErrorMessage(getErrorMessage());
+            }
+        }
+        
+        private boolean existsResource(@Nonnull final String text) {
+            boolean result = !text.isEmpty();
+            if (result) {
+                final Path path = new Path(text);
+                if (path.isAbsolute()) {
+                    File file = new File(text);
+                    result = file.exists();
+                } else {
+                    Bundle bundle = AlarmServiceActivator.getDefault().getBundle();
+                    result = bundle.getResource(text) != null;
+                }
+            }
+            return result;
+        }
+
+
+    }
+
 }

@@ -18,10 +18,10 @@
  * USAGE AND OTHER RIGHTS AND OBLIGATIONS IS INCLUDED WITH THE DISTRIBUTION OF THIS
  * PROJECT IN THE FILE LICENSE.HTML. IF THE LICENSE IS NOT INCLUDED YOU MAY FIND A COPY
  * AT HTTP://WWW.DESY.DE/LEGAL/LICENSE.HTM
- * 
+ *
  * Parts of this code are taken from the Apache Log4J code:
  * Copyright 1999,2006 The Apache Software Foundation.
- * 
+ *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
@@ -52,7 +52,7 @@ import org.apache.log4j.spi.LoggingEvent;
  * Asnychronous appender for Log4J which logs to system out from a separate
  * thread.
  * </p>
- * 
+ *
  * <p>
  * This is required to prevent a deadlock between the Log4J logger and the
  * Eclipse console view, because we want to view the system output in the
@@ -62,23 +62,23 @@ import org.apache.log4j.spi.LoggingEvent;
  * contents to the screen, the console waits for the UI thread to do that, and
  * the UI thread also wants to log something and waits for the logger.
  * </p>
- * 
+ *
  * <p>
  * We implemented our own asynchronous appender because of the following bug in
  * the Log4J AsyncAppender class:
  * <a href="https://issues.apache.org/bugzilla/show_bug.cgi?id=46878">
  * https://issues.apache.org/bugzilla/show_bug.cgi?id=46878</a>
  * </p>
- * 
+ *
  * @author Joerg Rathlev
  */
 public class AsyncConsoleAppender extends AppenderSkeleton {
-	
+
 	private final ConsoleAppender _consoleAppender;
 	private final BlockingQueue<LoggingEvent> _eventQueue;
 	private final Dispatcher _dispatcher;
 	private Thread _dispatcherThread;
-	
+
 	/**
 	 * Creates an AsyncConsoleAppender.
 	 */
@@ -88,7 +88,7 @@ public class AsyncConsoleAppender extends AppenderSkeleton {
 		_dispatcher = new Dispatcher();
 		startDispatcherThread();
 	}
-	
+
 	/**
 	 * Starts the dispatcher thread.
 	 */
@@ -97,7 +97,7 @@ public class AsyncConsoleAppender extends AppenderSkeleton {
 		_dispatcherThread.setName("AsyncConsoleAppender Dispatcher");
 		_dispatcherThread.setDaemon(true);
 		_dispatcherThread.setUncaughtExceptionHandler(new UncaughtExceptionHandler() {
-			public void uncaughtException(Thread t, Throwable e) {
+			public void uncaughtException(final Thread t, final Throwable e) {
 				LogLog.warn("AsyncConsoleAppender: dispatcher thread died, " +
 						"restarting thread.", e);
 				// Restart the thread
@@ -111,37 +111,35 @@ public class AsyncConsoleAppender extends AppenderSkeleton {
 	 * {@inheritDoc}
 	 */
 	@Override
-	protected void append(LoggingEvent event) {
+	protected void append(final LoggingEvent event) {
 		/*
 		 * Calling getThreadName() makes sure that the thread name stored in the
 		 * event is the current thread (which logged the event). Without this,
 		 * the dispatcher thread could appear in the log output.
 		 */
 		event.getThreadName();
-		
+
 		if (!_eventQueue.offer(event)) {
 			LogLog.error("Could not enqueue log message in AsyncConsoleAppender.");
 		}
 	}
-
 	/**
 	 * {@inheritDoc}
 	 */
-	@Override
 	public void close() {
 		closed = true;
 		_dispatcher.stop();
 		_dispatcherThread.interrupt();
 		try {
 			_dispatcherThread.join();
-		} catch (InterruptedException e) {
+		} catch (final InterruptedException e) {
 			Thread.currentThread().interrupt();
 			LogLog.error("Got an InterruptedException while waiting for the "
 					+ "dispatcher to finish.", e);
 		}
 		_consoleAppender.close();
 	}
-	
+
 	/**
 	 * {@inheritDoc}
 	 */
@@ -150,43 +148,42 @@ public class AsyncConsoleAppender extends AppenderSkeleton {
 		super.activateOptions();
 		_consoleAppender.activateOptions();
 	}
-	
+
 	/**
 	 * {@inheritDoc}
 	 */
 	@Override
-	public void setName(String name) {
+	public void setName(final String name) {
 		super.setName(name);
 		_consoleAppender.setName(name + ".ConsoleAppender");
 	}
-	
+
 	/**
 	 * {@inheritDoc}
 	 */
 	@Override
-	public void setLayout(Layout layout) {
+	public void setLayout(final Layout layout) {
 		super.setLayout(layout);
 		_consoleAppender.setLayout(layout);
 	}
-	
+
 	/**
 	 * @see ConsoleAppender#setTarget(String)
 	 */
-	public void setTarget(String target) {
+	public void setTarget(final String target) {
 		_consoleAppender.setTarget(target);
 	}
-	
+
 	/**
 	 * @see ConsoleAppender#setFollow(boolean)
 	 */
-	public void setFollow(boolean follow) {
+	public void setFollow(final boolean follow) {
 		_consoleAppender.setFollow(follow);
 	}
 
 	/**
 	 * Returns <code>true</code>. This appender requires a layout.
 	 */
-	@Override
 	public boolean requiresLayout() {
 		return true;
 	}
@@ -196,9 +193,9 @@ public class AsyncConsoleAppender extends AppenderSkeleton {
 	 * console appender.
 	 */
 	private class Dispatcher implements Runnable {
-		
+
 		private volatile boolean _stopped = false;
-		
+
 		/**
 		 * Stops this dispatcher.
 		 */
@@ -212,14 +209,14 @@ public class AsyncConsoleAppender extends AppenderSkeleton {
 		public void run() {
 			while (!_stopped) {
 				try {
-					LoggingEvent event = _eventQueue.take();
+					final LoggingEvent event = _eventQueue.take();
 					try {
 						_consoleAppender.doAppend(event);
-					} catch (Exception e) {
+					} catch (final Exception e) {
 						LogLog.warn("Exception occurred in appender [" +
 								_consoleAppender.getName() + "].", e);
 					}
-				} catch (InterruptedException e) {
+				} catch (final InterruptedException e) {
 					Thread.currentThread().interrupt();
 				}
 			}

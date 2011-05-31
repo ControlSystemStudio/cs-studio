@@ -1,3 +1,10 @@
+/*******************************************************************************
+ * Copyright (c) 2010 Oak Ridge National Laboratory.
+ * All rights reserved. This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License v1.0
+ * which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-v10.html
+ ******************************************************************************/
 package org.csstudio.opibuilder.runmode;
 
 
@@ -47,23 +54,55 @@ public class RunnerInput implements IRunnerInput{
 	}
 	
 	@Override
-	public boolean equals(Object obj) {
-		if (this == obj) {
-			return true;
-		}
-		if (!(obj instanceof RunnerInput)) {
-			return false;
-		}
-		RunnerInput other = (RunnerInput) obj;
-		boolean macroSame = false;
-		if(macrosInput != null && other.getMacrosInput() !=null){
-			macroSame = macrosInput.equals(other.getMacrosInput());
-		}else if(macrosInput == null && other.getMacrosInput() == null)
-			macroSame = true;
-		return getPath().equals(other.getPath()) && macroSame;
-	//		displayOpenManager == other.getDisplayOpenManager()  && 
-			
+	public int hashCode() {
+		final int prime = 31;
+		int result = 1;
+		result = prime * result
+				+ ((macrosInput == null) ? 0 : macrosInput.hashCode());
+		result = prime * result + ((path == null) ? 0 : path.hashCode());
+		return result;
 	}
+
+	@Override
+	public boolean equals(Object obj) {
+		if (this == obj)
+			return true;
+		if (obj == null)
+			return false;
+		if (getClass() != obj.getClass())
+			return false;
+		RunnerInput other = (RunnerInput) obj;
+		if (macrosInput == null) {
+			if (other.macrosInput != null)
+				return false;
+		} else if (!macrosInput.equals(other.macrosInput))
+			return false;
+		if (path == null) {
+			if (other.path != null)
+				return false;
+		} else if (!path.equals(other.path))
+			return false;
+		return true;
+	}
+	
+//	@Override
+//	public boolean equals(Object obj) {
+//		if (this == obj) {
+//			return true;
+//		}
+//		if (!(obj instanceof RunnerInput)) {
+//			return false;
+//		}
+//		RunnerInput other = (RunnerInput) obj;
+//		boolean macroSame = false;
+//		if(macrosInput != null && other.getMacrosInput() !=null){
+//			macroSame = macrosInput.equals(other.getMacrosInput());
+//		}else if(macrosInput == null && other.getMacrosInput() == null)
+//			macroSame = true;
+//		return getPath().equals(other.getPath()) && macroSame;
+//	//		displayOpenManager == other.getDisplayOpenManager()  && 
+//			
+//	}
 
 
 	/* (non-Javadoc)
@@ -114,11 +153,10 @@ public class RunnerInput implements IRunnerInput{
 	
 
 	public InputStream getInputStream() throws Exception {
-		return ResourceUtil.pathToInputStream(getPath());
+		return ResourceUtil.pathToInputStream(getPath(), false);
 	}
 
-	@SuppressWarnings("unchecked")
-	public Object getAdapter(Class adapter) {
+	public Object getAdapter(@SuppressWarnings("rawtypes") Class adapter) {
 		return null;
 	}
 	

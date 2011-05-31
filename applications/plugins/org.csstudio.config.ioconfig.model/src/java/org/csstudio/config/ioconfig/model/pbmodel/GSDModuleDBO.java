@@ -29,9 +29,14 @@ import java.util.Comparator;
 import java.util.Set;
 import java.util.TreeSet;
 
+import javax.annotation.Nonnull;
 import javax.persistence.CascadeType;
+import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
+import javax.persistence.JoinColumn;
+import javax.persistence.JoinTable;
+import javax.persistence.ManyToMany;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
@@ -57,8 +62,15 @@ import org.csstudio.platform.logging.CentralLogger;
         "gSDFile_Id", "moduleId" }) })
 public class GSDModuleDBO extends DBClass implements Comparable<GSDModuleDBO>, IDocumentable {
 
-    private final class ComparatorImplementation implements Comparator<ModuleChannelPrototypeDBO> {
-        public int compare(final ModuleChannelPrototypeDBO o1, final ModuleChannelPrototypeDBO o2) {
+    /**
+     * @author hrickens
+     * @author $Author: hrickens $
+     * @version $Revision: 1.7 $
+     * @since 16.05.2011
+     */
+    private static final class ComparatorImplementation implements Comparator<ModuleChannelPrototypeDBO> {
+        @Override
+        public int compare(@Nonnull final ModuleChannelPrototypeDBO o1, @Nonnull final ModuleChannelPrototypeDBO o2) {
             if(o1.isInput()&&!o2.isInput()) {
                 return -1;
             }
@@ -131,6 +143,7 @@ public class GSDModuleDBO extends DBClass implements Comparable<GSDModuleDBO>, I
     /**
      * @return is only true has this Module unsaved values.
      */
+    @Override
     @Transient
     public boolean isDirty() {
         return _isDirty;
@@ -139,6 +152,7 @@ public class GSDModuleDBO extends DBClass implements Comparable<GSDModuleDBO>, I
     /**
      * @param dirty set true when the Module have unsaved values.
      */
+    @Override
     public void setDirty(final boolean dirty) {
         _isDirty = dirty;
     }
@@ -165,6 +179,7 @@ public class GSDModuleDBO extends DBClass implements Comparable<GSDModuleDBO>, I
      * @param name
      *            set the Name of this GSD Module.
      */
+    @Column(nullable=false)
     public void setName(final String name) {
         this._name = name;
     }
@@ -180,6 +195,7 @@ public class GSDModuleDBO extends DBClass implements Comparable<GSDModuleDBO>, I
     /**
      * @return The Name of this GSD Module.
      */
+    @Override
     public String toString() {
         return getName();
     }
@@ -214,6 +230,7 @@ public class GSDModuleDBO extends DBClass implements Comparable<GSDModuleDBO>, I
      *            the other GSDModule to compare whit this one.
      * @return {@inheritDoc}
      */
+    @Override
     public int compareTo(final GSDModuleDBO other) {
         return getId() - other.getId();
     }
@@ -316,18 +333,17 @@ public class GSDModuleDBO extends DBClass implements Comparable<GSDModuleDBO>, I
     }
 
     /**
-     *  Die Tabellen MIME_FILES und MIME_FILES_DDB_NODE liegen auf einer anderen DB.
+     *  Die Tabellen MIME_FILES und MIME_FILES_DDB_MCPROTOTYPE liegen auf einer anderen DB.
      *  Daher wird hier mit einem Link gearbeitet der folgenden Rechte benötigt.
-     *  -  Für MIME_FILES ist das Grand: select.
-     *  -  Für MIME_FILES_DDB_NODE ist das Grand: select, insert, update, delete.
+     *  -  Für MIME_FILES ist das Grant: select.
+     *  -  Für MIME_FILES_DDB_MCPROTOTYPE ist das Grant: select, insert, update, delete.
      *
      * @return Documents for the Node.
      */
     @Override
-    @Transient
-//    @ManyToMany(fetch = FetchType.LAZY, cascade = { CascadeType.PERSIST, CascadeType.REFRESH })
-//    @JoinTable(name = "MIME_FILES_DDB_NODES_LINK", joinColumns = @JoinColumn(name = "docs_id", referencedColumnName = "id", unique = true), inverseJoinColumns = @JoinColumn(name = "nodes_id", referencedColumnName = "id"))
-//    @JoinTable(name = "MIME_FILES_DDB_NODES_LINK_TEST", joinColumns = @JoinColumn(name = "docs_id", referencedColumnName = "id", unique = true), inverseJoinColumns = @JoinColumn(name = "nodes_id", referencedColumnName = "id"))
+    @ManyToMany(fetch = FetchType.LAZY, cascade = { CascadeType.PERSIST, CascadeType.REFRESH })
+    @JoinTable(name = "MIME_FILES_DDB_MCPROTOTYPE_LNK", joinColumns = @JoinColumn(name = "prototype_id", referencedColumnName = "id", unique = true), inverseJoinColumns = @JoinColumn(name = "docs_id", referencedColumnName = "id"))
+    @Nonnull
     public Set<DocumentDBO> getDocuments() {
         return _documents;
     }
@@ -337,7 +353,7 @@ public class GSDModuleDBO extends DBClass implements Comparable<GSDModuleDBO>, I
      */
     @Override
     @Transient
-    public void setDocuments(final Set<DocumentDBO> documents) {
+    public void setDocuments(@Nonnull final Set<DocumentDBO> documents) {
         _documents = documents;
 
     }

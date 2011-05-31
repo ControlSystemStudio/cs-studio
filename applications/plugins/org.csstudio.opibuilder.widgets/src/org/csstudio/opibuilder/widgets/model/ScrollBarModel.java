@@ -1,10 +1,18 @@
+/*******************************************************************************
+ * Copyright (c) 2010 Oak Ridge National Laboratory.
+ * All rights reserved. This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License v1.0
+ * which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-v10.html
+ ******************************************************************************/
 package org.csstudio.opibuilder.widgets.model;
 
 import org.csstudio.opibuilder.model.AbstractPVWidgetModel;
 import org.csstudio.opibuilder.properties.BooleanProperty;
 import org.csstudio.opibuilder.properties.DoubleProperty;
 import org.csstudio.opibuilder.properties.WidgetPropertyCategory;
-import org.csstudio.platform.ui.util.CustomMediaFactory;
+import org.csstudio.ui.util.CustomMediaFactory;
+import org.eclipse.draw2d.geometry.Point;
 
 /**
  *The model of scroll bar widget.
@@ -143,6 +151,18 @@ public class ScrollBarModel extends AbstractPVWidgetModel {
 	@Override
 	public String getTypeID() {
 		return ID;
+	}
+	
+	@Override
+	public void rotate90(boolean clockwise) {
+		setPropertyValue(PROP_HORIZONTAL, !isHorizontal());
+	}
+	
+	@Override
+	public void rotate90(boolean clockwise, Point center) {
+		super.rotate90(clockwise, center);
+		setPropertyValue(PROP_HORIZONTAL, !isHorizontal());
+		super.rotate90(true);
 	}
 
 	

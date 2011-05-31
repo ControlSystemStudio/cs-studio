@@ -35,8 +35,6 @@
 package org.csstudio.config.ioconfig.config.view.helper;
 
 /**
- * TODO (hrickens) :
- *
  * @author hrickens
  * @author $Author: hrickens $
  * @version $Revision: 1.1 $

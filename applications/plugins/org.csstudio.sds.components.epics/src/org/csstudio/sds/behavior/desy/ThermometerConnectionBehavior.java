@@ -39,6 +39,7 @@ package org.csstudio.sds.behavior.desy;
 
 import org.csstudio.sds.components.model.ThermometerModel;
 import org.epics.css.dal.context.ConnectionState;
+import org.epics.css.dal.simple.AnyDataChannel;
 
 /**
  * Default DESY-Behavior for the {@link ThermometerModel} widget with Connection state.
@@ -77,7 +78,8 @@ public class ThermometerConnectionBehavior extends MarkedWidgetDesyConnectionBeh
      * {@inheritDoc}
      */
     @Override
-    protected void doProcessConnectionStateChange( final ThermometerModel widget,final ConnectionState connectionState) {
+    protected void doProcessConnectionStateChange( final ThermometerModel widget,final AnyDataChannel anyDataChannel) {
+        ConnectionState connectionState = anyDataChannel.getProperty().getConnectionState();
         String fillBackColor = (connectionState==ConnectionState.CONNECTED)?_defFillBackColor  : determineBackgroundColor(connectionState);
         widget.setPropertyValue(ThermometerModel.PROP_FILLBACKGROUND_COLOR, fillBackColor);
         String fillColor = (connectionState==ConnectionState.CONNECTED)?_defFillColor  : determineBackgroundColor(connectionState);

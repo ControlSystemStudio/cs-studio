@@ -15,6 +15,13 @@ public class ADLPen extends WidgetPart {
 	public ADLPen(ADLWidget widgetPart) throws WrongADLFormatException {
 		super(widgetPart);
 	}
+	
+	/**
+	 * Default constructor
+	 */
+	public ADLPen(){
+		super();
+	}
 
 	@Override
 	public Object[] getChildren() {

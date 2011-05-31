@@ -9,7 +9,7 @@ package org.csstudio.alarm.beast.server;
 
 import org.csstudio.alarm.beast.Preferences;
 import org.csstudio.alarm.beast.WorkQueue;
-import org.csstudio.platform.logging.CentralLogger;
+import org.csstudio.logging.LogConfigurator;
 import org.eclipse.equinox.app.IApplication;
 import org.eclipse.equinox.app.IApplicationContext;
 
@@ -23,7 +23,7 @@ import org.eclipse.equinox.app.IApplicationContext;
  *  <p>
  *  When started with command-line argument "-console 4812", you can telnet
  *  to localhost 4812 and influence the application like this:
- *  
+ *
  *  help - list commands
  *  activeApps - show running apps (should be one)
  *  stopApp org.csstudio.alarm.server.application.0 - Stop that one app
@@ -37,41 +37,38 @@ public class Application implements IApplication
     private boolean run = true;
 
     /** {@inheritDoc} */
+    @Override
     public Object start(final IApplicationContext context) throws Exception
     {
+        // Initialize logging
+        LogConfigurator.configureFromPreferences();
+
+        // Display config info
         final String version = (String)
             context.getBrandingBundle().getHeaders().get("Bundle-Version");
         final String app_info = context.getBrandingName() + " " + version;
         final String config_name = Preferences.getAlarmTreeRoot();
-		CentralLogger.getInstance().getLogger(this).info(app_info +
+        Activator.getLogger().info(app_info +
             " started for '" + config_name + "' configuration");
         System.out.println(app_info);
         System.out.println("Configuration Root: " + config_name);
         System.out.println("JMS Server Topic:   " + Preferences.getJMS_AlarmServerTopic(config_name));
         System.out.println("JMS Client Topic:   " + Preferences.getJMS_AlarmClientTopic(config_name));
         System.out.println("JMS Talk Topic:     " + Preferences.getJMS_TalkTopic(config_name));
-        
-        final Talker talker = new Talker();
-        talker.start();
+        System.out.println("JMS Global Topic:   " + Preferences.getJMS_GlobalServerTopic());
+
         final WorkQueue work_queue = new WorkQueue();
         try
         {
-            final AlarmServer alarm_server = new AlarmServer(talker, work_queue);
-            // At this point we read the initial alarm configuration
-            talker.say(Messages.StartupMessage);
+            final AlarmServer alarm_server = new AlarmServer(work_queue);
             alarm_server.start();
             while (run)
-                work_queue.execute(500);
+                work_queue.perform_queued_commands(500);
             alarm_server.stop();
         }
         catch (Throwable ex)
         {
             ex.printStackTrace();
-        }
-        finally
-        {
-            talker.say("Alarm server exiting");
-            talker.close();
         }
         return IApplication.EXIT_OK;
     }
@@ -79,6 +76,7 @@ public class Application implements IApplication
     /** From the Equinox console, calling 'stopApp' will invoke this method
      *  {@inheritDoc}
      */
+    @Override
     public void stop()
     {
         run = false;

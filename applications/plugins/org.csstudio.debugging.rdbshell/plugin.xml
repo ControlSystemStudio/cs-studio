@@ -26,20 +26,21 @@
       </view>
    </extension>
    <extension
-         point="org.eclipse.ui.actionSets">
-      <actionSet
-            description="Global CSS menu actions"
-            id="org.csstudio.debugging.rdbshell.cssmenu"
-            label="CSS Action Set"
-            visible="true">
-         <action
-               class="org.csstudio.debugging.rdbshell.ShowRDBShellAction"
+         point="org.eclipse.ui.menus">
+      <menuContribution
+            allPopups="false"
+            locationURI="menu:debugging">
+         <command
+               commandId="org.eclipse.ui.views.showView"
                icon="icons/rdbshell.gif"
-               id="org.csstudio.debugging.rdbshell.ShowRDBShellAction"
+               id="org.csstudio.alarm.beast.alarmtable"
                label="RDB Shell"
-               menubarPath="css/debugging/"
-               style="push"/>
-      </actionSet>
+               style="push">
+            <parameter
+                  name="org.eclipse.ui.views.showView.viewId"
+                  value="org.csstudio.debugging.rdbshell.view">
+            </parameter>
+         </command>
+      </menuContribution>
    </extension>
-
 </plugin>

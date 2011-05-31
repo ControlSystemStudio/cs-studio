@@ -7,11 +7,12 @@
  ******************************************************************************/
 package org.csstudio.archive.engine.model;
 
-import org.apache.log4j.Logger;
+import java.util.logging.Level;
+
 import org.csstudio.apputil.time.PeriodFormat;
-import org.csstudio.platform.data.IValue;
-import org.csstudio.platform.data.ValueUtil;
-import org.csstudio.platform.logging.CentralLogger;
+import org.csstudio.archive.engine.Activator;
+import org.csstudio.data.values.IValue;
+import org.csstudio.data.values.ValueUtil;
 
 /** An ArchiveChannel that stores each incoming value that differs from
  *  the previous sample by some 'delta'.
@@ -22,10 +23,9 @@ public class DeltaArchiveChannel extends ArchiveChannel
 {
     /** 'Delta' for value change */
     final private double delta;
-    
+
     /** Estimated period of change in seconds */
     final private double period_estimate;
-    private Logger log;
 
     /** @param name Name of the channel (PV)
      *  @param enablement How channel affects its groups
@@ -45,9 +45,6 @@ public class DeltaArchiveChannel extends ArchiveChannel
         super(name, enablement, buffer_capacity, last_archived_value);
         this.delta = delta;
         this.period_estimate = period_estimate;
-        log = CentralLogger.getInstance().getLogger(this);
-        if (! log.isDebugEnabled())
-            log = null;
     }
 
     @Override
@@ -63,14 +60,12 @@ public class DeltaArchiveChannel extends ArchiveChannel
     {
         if (super.handleNewValue(value))
         {
-            if (log != null)
-                log.debug(getName() + " wrote first sample " + value);
+            Activator.getLogger().log(Level.FINE, "Wrote first sample for {0}: {1}", new Object[] { getName(), value });
             return true;
         }
         if (isEnabled()  &&  isBeyondDelta(value))
         {
-            if (log != null)
-                log.debug(getName() + " writes " + value);
+            Activator.getLogger().log(Level.FINE, "Wrote sample for {0}: {1}", new Object[] { getName(), value });
             addValueToBuffer(value);
             return true;
         }
@@ -78,7 +73,7 @@ public class DeltaArchiveChannel extends ArchiveChannel
     }
 
     /** @param value Value to test
-     *  @return <code>true</code> if this value is beyond 'delta' from the last value 
+     *  @return <code>true</code> if this value is beyond 'delta' from the last value
      */
     private boolean isBeyondDelta(final IValue value)
     {

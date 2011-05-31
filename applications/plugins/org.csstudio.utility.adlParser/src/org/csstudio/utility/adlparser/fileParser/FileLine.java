@@ -85,7 +85,7 @@ public class FileLine {
      * @return
      */
     public static String getTrimmedValue(String input){
-    	return input.trim().replaceAll( "\"", "" );
+    	return input.replaceAll( "\"", "" ).trim();
     }
     
     /**
@@ -93,7 +93,7 @@ public class FileLine {
      * @param input
      * @return
      */
-    public static int getIntValue(String input) {
+    public static int getIntValue(String input) throws NumberFormatException{
     	return Integer.parseInt(FileLine.getTrimmedValue(input));
     }
     
@@ -102,7 +102,7 @@ public class FileLine {
      * @param input
      * @return
      */
-    public static float getFloatValue(String input) {
+    public static float getFloatValue(String input) throws NumberFormatException {
     	return Float.parseFloat(FileLine.getTrimmedValue(input));
     }
     

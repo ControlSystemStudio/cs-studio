@@ -1,3 +1,10 @@
+/*******************************************************************************
+ * Copyright (c) 2010 Oak Ridge National Laboratory.
+ * All rights reserved. This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License v1.0
+ * which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-v10.html
+ ******************************************************************************/
 package org.csstudio.opibuilder.widgets.model;
 
 import java.util.ArrayList;
@@ -5,11 +12,8 @@ import java.util.List;
 
 import org.csstudio.opibuilder.model.AbstractPVWidgetModel;
 import org.csstudio.opibuilder.properties.BooleanProperty;
-import org.csstudio.opibuilder.properties.FontProperty;
 import org.csstudio.opibuilder.properties.StringListProperty;
 import org.csstudio.opibuilder.properties.WidgetPropertyCategory;
-import org.csstudio.opibuilder.util.MediaService;
-import org.csstudio.opibuilder.util.OPIFont;
 import org.eclipse.swt.graphics.RGB;
 
 /**The model for combo widget.
@@ -24,10 +28,7 @@ public class ComboModel extends AbstractPVWidgetModel {
 	 * Items of the combo.
 	 */
 	public static final String PROP_ITEMS = "items";//$NON-NLS-1$
-	/**
-	 * Font of the widget.
-	 */
-	public static final String PROP_FONT = "font";//$NON-NLS-1$
+
 	/**
 	 * True if items are read from the input PV which must be an Enum PV.
 	 */
@@ -42,8 +43,7 @@ public class ComboModel extends AbstractPVWidgetModel {
 	protected void configureProperties() {		
 		addProperty(new StringListProperty(
 				PROP_ITEMS, "Items", WidgetPropertyCategory.Behavior, new ArrayList<String>()));
-		addProperty(new FontProperty(
-				PROP_FONT, "Font", WidgetPropertyCategory.Display, MediaService.DEFAULT_FONT));
+
 		addProperty(new BooleanProperty(
 				PROP_ITEMS_FROM_PV, "Items From PV", WidgetPropertyCategory.Behavior, false));
 	}
@@ -55,10 +55,6 @@ public class ComboModel extends AbstractPVWidgetModel {
 	
 	public boolean isItemsFromPV(){
 		return (Boolean)getPropertyValue(PROP_ITEMS_FROM_PV);
-	}
-	
-	public OPIFont getFont(){
-		return (OPIFont)getCastedPropertyValue(PROP_FONT);
 	}
 	
 	

@@ -9,8 +9,10 @@ Require-Bundle: org.eclipse.ui,
  org.csstudio.platform,
  org.csstudio.platform.ui,
  org.eclipse.help,
- org.csstudio.utility.namespace.utility
+ org.csstudio.utility.namespace.utility,
+ org.csstudio.apputil.ui;bundle-version="3.0.0"
 Bundle-ActivationPolicy: lazy
 Export-Package: org.csstudio.utility.nameSpaceBrowser.ui,
  org.csstudio.utility.nameSpaceBrowser.utility
 Bundle-RequiredExecutionEnvironment: JavaSE-1.6
+Bundle-Vendor: Desy <css-developer@desy.de>, Bastian Knerr

@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?eclipse version="3.4"?>
+<plugin>
+   <extension point="org.csstudio.archivereader.ArchiveReader">
+      <ArchiveReader
+            class="org.csstudio.archive.common.reader.DesyArchiveReaderFactory"
+            name="org.csstudio.archive.common.reader.ArchiveReader"
+            prefix="desy">
+      </ArchiveReader>
+   </extension>
+</plugin>

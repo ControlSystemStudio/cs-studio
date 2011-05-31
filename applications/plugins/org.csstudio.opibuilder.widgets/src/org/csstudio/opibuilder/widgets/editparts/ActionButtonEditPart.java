@@ -1,3 +1,10 @@
+/*******************************************************************************
+ * Copyright (c) 2010 Oak Ridge National Laboratory.
+ * All rights reserved. This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License v1.0
+ * which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-v10.html
+ ******************************************************************************/
 package org.csstudio.opibuilder.widgets.editparts;
 
 import java.beans.PropertyChangeEvent;
@@ -7,18 +14,15 @@ import org.csstudio.opibuilder.editparts.AbstractPVWidgetEditPart;
 import org.csstudio.opibuilder.editparts.ExecutionMode;
 import org.csstudio.opibuilder.model.AbstractPVWidgetModel;
 import org.csstudio.opibuilder.properties.IWidgetPropertyChangeHandler;
-import org.csstudio.opibuilder.util.OPIFont;
 import org.csstudio.opibuilder.util.ResourceUtil;
+import org.csstudio.opibuilder.widgetActions.AbstractOpenOPIAction;
 import org.csstudio.opibuilder.widgetActions.AbstractWidgetAction;
-import org.csstudio.opibuilder.widgetActions.OpenDisplayAction;
 import org.csstudio.opibuilder.widgets.model.ActionButtonModel;
-import org.csstudio.platform.ui.util.CustomMediaFactory;
 import org.csstudio.swt.widgets.figures.ActionButtonFigure;
 import org.csstudio.swt.widgets.figures.ActionButtonFigure.ButtonActionListener;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.draw2d.IFigure;
 import org.eclipse.draw2d.InputEvent;
-import org.eclipse.swt.graphics.FontData;
 
 /**
  * EditPart controller for the ActioButton widget. The controller mediates
@@ -38,46 +42,56 @@ public final class ActionButtonEditPart extends AbstractPVWidgetEditPart {
 
 		final ActionButtonFigure buttonFigure = new ActionButtonFigure(getExecutionMode() == ExecutionMode.RUN_MODE);
 		buttonFigure.setText(model.getText());
-		buttonFigure.setFont(CustomMediaFactory.getInstance().getFont(
-				model.getFont().getFontData()));
 		buttonFigure.setToggleStyle(model.isToggleButton());
 		buttonFigure.setImagePath(model.getImagePath());
-		updatePropSheet(model.isToggleButton());
-		if(getExecutionMode() == ExecutionMode.RUN_MODE){
-			buttonFigure.addActionListener(new ButtonActionListener(){
-				public void actionPerformed(int mouseEventState) {
-					
-					int actionIndex;
-					
-					if(getWidgetModel().isToggleButton()){
-						if(buttonFigure.isSelected()){
-							actionIndex = getWidgetModel().getActionIndex();
-						}else
-							actionIndex = getWidgetModel().getReleasedActionIndex();
-					}else
-						actionIndex = getWidgetModel().getActionIndex();
-					
-					if(actionIndex >= 0 && getWidgetModel().getActionsInput().getActionsList().size() > 
-						actionIndex){
-						AbstractWidgetAction action = 
-							getWidgetModel().getActionsInput().getActionsList().get(actionIndex);	
-						if(action instanceof OpenDisplayAction){
-							((OpenDisplayAction)action).setCtrlPressed(false);
-							((OpenDisplayAction)action).setShiftPressed(false);
-							if(mouseEventState == InputEvent.CONTROL){
-								((OpenDisplayAction)action).setCtrlPressed(true);
-							}else if (mouseEventState == InputEvent.SHIFT){
-								((OpenDisplayAction)action).setShiftPressed(true);
-							}
-						}
-						action.run();
-					}
-								
-				}
-			});
-		}
+		updatePropSheet(model.isToggleButton());	
 		markAsControlPV(AbstractPVWidgetModel.PROP_PVNAME, AbstractPVWidgetModel.PROP_PVVALUE);
 		return buttonFigure;
+	}
+	
+	@Override
+	protected void hookMouseClickAction() {
+
+		((ActionButtonFigure)getFigure()).addActionListener(new ButtonActionListener(){
+			public void actionPerformed(int mouseEventState) {					
+				AbstractWidgetAction action = getHookedAction();
+				if(action!= null){
+					if(action instanceof AbstractOpenOPIAction){
+						((AbstractOpenOPIAction) action).setCtrlPressed(false);
+						((AbstractOpenOPIAction) action).setShiftPressed(false);
+						if(mouseEventState == InputEvent.CONTROL){
+							((AbstractOpenOPIAction) action).setCtrlPressed(true);
+						}else if (mouseEventState == InputEvent.SHIFT){
+							((AbstractOpenOPIAction) action).setShiftPressed(true);
+						}	
+					}
+					action.run();
+				}
+							
+			}
+		});
+	}
+	
+	@Override
+	public AbstractWidgetAction getHookedAction() {
+		int actionIndex;
+		
+		if(getWidgetModel().isToggleButton()){
+			if(((ActionButtonFigure)getFigure()).isSelected()){
+				actionIndex = getWidgetModel().getActionIndex();
+			}else
+				actionIndex = getWidgetModel().getReleasedActionIndex();
+		}else
+			actionIndex = getWidgetModel().getActionIndex();
+		
+		if(actionIndex >= 0 && getWidgetModel().getActionsInput().
+				getActionsList().size() > actionIndex){
+			return getWidgetModel().getActionsInput().
+						getActionsList().get(actionIndex);			
+		}
+		
+		return null;
+			
 	}
 
 	@Override
@@ -98,23 +112,6 @@ public final class ActionButtonEditPart extends AbstractPVWidgetEditPart {
 	 */
 	@Override
 	protected void registerPropertyChangeHandlers() {
-		// the button should be disabled in edit mode to make select work.
-//		((ActionButtonFigure)getFigure()).setEnabled(
-//				getExecutionMode() == ExecutionMode.RUN_MODE);
-//		
-//		removeAllPropertyChangeHandlers(ActionButtonModel.PROP_ENABLED);
-//		
-//		IWidgetPropertyChangeHandler enableHandler = new IWidgetPropertyChangeHandler(){
-//			public boolean handleChange(Object oldValue, Object newValue,
-//					IFigure figure) {
-//				//enablement only takes effect in run mode
-//				//if(getExecutionMode() == ExecutionMode.RUN_MODE)
-//					figure.setEnabled((Boolean)newValue);
-//				return false;
-//			}
-//		};		
-//		setPropertyChangeHandler(AbstractWidgetModel.PROP_ENABLED, enableHandler);
-//		
 
 		// text
 		IWidgetPropertyChangeHandler textHandler = new IWidgetPropertyChangeHandler() {
@@ -126,19 +123,9 @@ public final class ActionButtonEditPart extends AbstractPVWidgetEditPart {
 			}
 		};
 		setPropertyChangeHandler(ActionButtonModel.PROP_TEXT, textHandler);
-		// font
-		IWidgetPropertyChangeHandler fontHandler = new IWidgetPropertyChangeHandler() {
-			public boolean handleChange(final Object oldValue,
-					final Object newValue, final IFigure refreshableFigure) {
-				ActionButtonFigure figure = (ActionButtonFigure) refreshableFigure;
-				FontData fontData = ((OPIFont) newValue).getFontData();
-				figure.setFont(CustomMediaFactory.getInstance().getFont(fontData));
-				return true;
-			}
-		};
-		setPropertyChangeHandler(ActionButtonModel.PROP_FONT, fontHandler);
 
-		// font
+
+		//image
 		IWidgetPropertyChangeHandler imageHandler = new IWidgetPropertyChangeHandler() {
 			public boolean handleChange(final Object oldValue,
 					final Object newValue, final IFigure refreshableFigure) {
@@ -151,21 +138,8 @@ public final class ActionButtonEditPart extends AbstractPVWidgetEditPart {
 				return true;
 			}
 		};
-		setPropertyChangeHandler(ActionButtonModel.PROP_IMAGE, imageHandler);
-
-		
-		/*// text alignment
-		IWidgetPropertyChangeHandler alignmentHandler = new IWidgetPropertyChangeHandler() {
-			public boolean handleChange(final Object oldValue,
-					final Object newValue, final IFigure refreshableFigure) {
-				ActionButtonFigure figure = (ActionButtonFigure) refreshableFigure;
-				figure.setTextAlignment((Integer) newValue);
-				return true;
-			}
-		};
-		//setPropertyChangeHandler(ActionButtonModel.PROP_TEXT_ALIGNMENT,
-		//		alignmentHandler);
-		*/
+		setPropertyChangeHandler(ActionButtonModel.PROP_IMAGE, imageHandler);		
+	
 		// button style
 		final IWidgetPropertyChangeHandler buttonStyleHandler = new IWidgetPropertyChangeHandler() {
 			public boolean handleChange(final Object oldValue,
@@ -183,10 +157,7 @@ public final class ActionButtonEditPart extends AbstractPVWidgetEditPart {
 				public void propertyChange(PropertyChangeEvent evt) {
 					buttonStyleHandler.handleChange(evt.getOldValue(), evt.getNewValue(), getFigure());
 				}
-			});
-		//cannot use handler because it will delay the propsheet update.
-		//setPropertyChangeHandler(ActionButtonModel.PROP_TOGGLE_BUTTON,
-		//		buttonStyleHandler);
+			});		
 	}
 	
 	/**
@@ -200,14 +171,14 @@ public final class ActionButtonEditPart extends AbstractPVWidgetEditPart {
 	}
 	
 	
-
 	@Override
-	public void setValue(Object value) {		
+	public void setValue(Object value) {
+		((ActionButtonFigure)getFigure()).setText(value.toString());
 	}
 	
 	@Override
 	public Object getValue() {
-		return getPVValue(AbstractPVWidgetModel.PROP_PVNAME);
+		return ((ActionButtonFigure)getFigure()).getText();
 	}
 
 }

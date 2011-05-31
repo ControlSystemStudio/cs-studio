@@ -25,6 +25,9 @@ package org.csstudio.ams.connector.email;
 
 import org.csstudio.platform.ui.AbstractCssUiPlugin;
 import org.osgi.framework.BundleContext;
+import org.remotercp.common.tracker.GenericServiceTracker;
+import org.remotercp.common.tracker.IGenericServiceListener;
+import org.remotercp.service.connection.session.ISessionService;
 
 /**
  * The activator class controls the plug-in life cycle
@@ -36,6 +39,8 @@ public class EMailConnectorPlugin extends AbstractCssUiPlugin
 
 	// The shared instance
 	private static EMailConnectorPlugin _plugin;
+
+	private GenericServiceTracker<ISessionService> _genericServiceTracker;
 
 	/**
 	 * The constructor
@@ -50,6 +55,9 @@ public class EMailConnectorPlugin extends AbstractCssUiPlugin
 	 */
 	public final void doStart(final BundleContext context) throws Exception
 	{
+		_genericServiceTracker = new GenericServiceTracker<ISessionService>(
+				context, ISessionService.class);
+		_genericServiceTracker.open();
 	}
 
 	/**
@@ -76,5 +84,11 @@ public class EMailConnectorPlugin extends AbstractCssUiPlugin
 	public String getPluginId()
 	{
 		return PLUGIN_ID;
+	}
+	
+
+	public void addSessionServiceListener(
+			IGenericServiceListener<ISessionService> sessionServiceListener) {
+		_genericServiceTracker.addServiceListener(sessionServiceListener);
 	}
 }

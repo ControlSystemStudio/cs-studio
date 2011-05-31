@@ -29,24 +29,26 @@
                ratio="0.5"
                relative="org.eclipse.ui.views.TaskList"
                relationship="right"
-               id="org.csstudio.utility.sysmon.views.SysMon">
+               id="org.csstudio.utility.sysmon.SysMonView">
          </view>
       </perspectiveExtension>
    </extension>
    <extension
-         point="org.eclipse.ui.actionSets">
-      <actionSet
-            id="org.csstudio.utility.sysmon.menuactions"
-            label="Menu Actions"
-            visible="true">
-         <action
-               class="org.csstudio.utility.sysmon.ShowSysmon"
+         point="org.eclipse.ui.menus">
+      <menuContribution
+            allPopups="false"
+            locationURI="menu:utility">
+         <command
+               commandId="org.eclipse.ui.views.showView"
                icon="icons/sysmon.gif"
-               id="org.csstudio.utility.sysmon.show_sysmon"
                label="%SystemMonitor"
-               menubarPath="css/utility/"
-               style="push"/>
-      </actionSet>
+               style="push">
+            <parameter
+                  name="org.eclipse.ui.views.showView.viewId"
+                  value="org.csstudio.utility.sysmon.SysMonView">
+            </parameter>
+         </command>
+      </menuContribution>
    </extension>
    <extension
          point="org.eclipse.ui.preferencePages">

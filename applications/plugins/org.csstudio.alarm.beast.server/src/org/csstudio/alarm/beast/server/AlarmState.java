@@ -8,8 +8,8 @@
 package org.csstudio.alarm.beast.server;
 
 import org.csstudio.alarm.beast.SeverityLevel;
-import org.csstudio.platform.data.ITimestamp;
-import org.csstudio.platform.data.TimestampFactory;
+import org.csstudio.data.values.ITimestamp;
+import org.csstudio.data.values.TimestampFactory;
 import org.eclipse.osgi.util.NLS;
 
 /** Alarm state combines an alarm severity with its message info,
@@ -26,7 +26,7 @@ public class AlarmState
     final private String message;
     final private String value;
     final private ITimestamp time;
-    
+
     /** Initialize
      *  @param severity Initial alarm severity
      *  @param message   .. and message
@@ -43,17 +43,26 @@ public class AlarmState
         this.time = time;
     }
 
+    /** Create alarm state that's all OK
+     *  @param time Time to use for the 'OK' state
+     *  @return AlarmState
+     */
+    public static AlarmState createClearState(final ITimestamp time)
+    {
+        return new AlarmState(SeverityLevel.OK,
+                SeverityLevel.OK.getDisplayName(),
+                "", //$NON-NLS-1$
+                time);
+    }
+
     /** Create alarm state that's all OK with the current time stamp
      *  @return AlarmState
      */
     public static AlarmState createClearState()
     {
-        return new AlarmState(SeverityLevel.OK,
-                SeverityLevel.OK.getDisplayName(),
-                "", //$NON-NLS-1$
-                TimestampFactory.now());
+        return createClearState(TimestampFactory.now());
     }
-    
+
     /** Create an alarm state similar to current one but with updated severity
      *  @param new_severity Severity to use for created alarm state
      *  @return AlarmState
@@ -65,7 +74,7 @@ public class AlarmState
 
     /** Change 'active' alarm severity into 'acknowledged' type, relaxing
      *  to the severity of the current state in case that's already lower
-     *  than the original alarm state. 
+     *  than the original alarm state.
      *  @param current_state
      */
     public AlarmState createAcknowledged(final AlarmState current_state)
@@ -103,7 +112,7 @@ public class AlarmState
 
     /** Change acknowledged alarm severity into active type */
     public AlarmState createUnacknowledged()
-    {   
+    {
         switch (severity)
         {
         case INVALID_ACK:
@@ -146,7 +155,7 @@ public class AlarmState
     {
         return value;
     }
-    
+
     /** @return Time stamp */
     public ITimestamp getTime()
     {
@@ -177,7 +186,7 @@ public class AlarmState
 	    result = prime * result + value.hashCode();
 	    return result;
     }
-    
+
     @SuppressWarnings("nls")
     @Override
     public String toString()

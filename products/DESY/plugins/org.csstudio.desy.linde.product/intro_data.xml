@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<extensions>
+   <page id="firststeps">
+      <group path="page-content/bottom-left" default="true">
+      </group>
+      <group path="page-content/bottom-right" default="true">
+      </group>
+      <group path="page-content/top-left">
+         <extension id="orgcsstudioalarmintro-introExtension" importance="low"/>
+         <extension id="orgcsstudiodiagprobeintro-introExtension" importance="low"/>
+         <extension id="orgcsstudiosdsintro-introExtension" importance="low"/>
+      </group>
+      <group path="page-content/top-right">
+         <extension id="orgcsstudiosnlintro-introExtension" importance="low"/>
+         <extension id="orgcsstudiodctintro-introExtension" importance="low"/>
+         <extension id="orgcsstudiodiagepicspvtreeintro-introExtension" importance="low"/>
+      </group>
+   </page>
+   <page id="overview">
+      <group path="page-content/bottom-left" default="true">
+         <extension id="org.csstudio.desy.linde.product.overview" importance="low"/>
+      </group>
+      <group path="page-content/bottom-right" default="true">
+      </group>
+   </page>
+</extensions>

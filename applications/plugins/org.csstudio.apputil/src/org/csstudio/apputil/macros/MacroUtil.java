@@ -25,6 +25,17 @@ public class MacroUtil {
 	private static final String MACRO_RIGHT_PART = "[)}]";
 
 	private static final String MACRO_LEFT_PART = "\\$[{(]";
+
+	/**Replace macros in String.
+	 * @param input the input string to be parsed
+	 * @param macroTableProvider the macro table provider
+	 * @return
+	 * @throws InfiniteLoopException when infinite loop is detected. For example, for a macro table
+	 * "a=$(b), b=$(a)", this string "$(a)" will result in infinite loop.
+	 */
+	public static String replaceMacros(String input, IMacroTableProvider macroTableProvider) throws InfiniteLoopException {
+		return replaceMacros(input, macroTableProvider, new HashSet<String>(), false);
+	}
 	
 	
 	/**Replace macros in String.
@@ -34,10 +45,13 @@ public class MacroUtil {
 	 * @throws InfiniteLoopException when infinite loop is detected. For example, for a macro table
 	 * "a=$(b), b=$(a)", this string "$(a)" will result in infinite loop.
 	 */
-	public static String replaceMacros(String input, IMacroTableProvider macroTableProvider) throws InfiniteLoopException {
+	private static String replaceMacros(
+			String input, IMacroTableProvider macroTableProvider,
+			Set<String> parsedMacros, final boolean insideParse) throws InfiniteLoopException {
 		//if there is no macro in the input, return
-		if(!input.contains("$"))
+		if(!input.contains("$")){
 			return input;
+		}
 		StringBuilder stringBuilder = new StringBuilder();
 		Stack<Integer> stack = new Stack<Integer>();
 		boolean lockStack = false; //lock the stack to prevent pushing new element
@@ -55,8 +69,10 @@ public class MacroUtil {
 					lockStack = true; //lock the stack until it is popped out.
 					int start = stack.pop();
 					if(stack.size() == 0){  //arrived the most out, we got a macro
-						String macro = input.substring(start, i+1);						
-						String macroValue = parseMacro(macro, macroTableProvider);
+						String macro = input.substring(start, i+1);		
+						if(!insideParse)
+							parsedMacros.clear();
+						String macroValue = parseMacro(macro, macroTableProvider, parsedMacros, insideParse);
 						stringBuilder.append(input.substring(scanPosition, start) + macroValue);
 						scanPosition = i+1;
 						lockStack = false;
@@ -69,13 +85,8 @@ public class MacroUtil {
 		}
 		//if there is more chars behind the last macro
 		if(scanPosition < input.length())
-			stringBuilder.append(input.substring(scanPosition));		
-		 
+			stringBuilder.append(input.substring(scanPosition));	
 		return stringBuilder.toString();
-	}
-	
-	private static String parseMacro(String input, IMacroTableProvider macroTableProvider) throws InfiniteLoopException{
-		return parseMacro(input, macroTableProvider, new HashSet<String>());
 	}
 	
 	/**Parse a macro unit(${...}) and replace the macro with value from provider. 
@@ -87,10 +98,11 @@ public class MacroUtil {
 	 * @throws InfiniteLoopException 
 	 */
 	private static String parseMacro(String input, IMacroTableProvider macroTableProvider, 
-			Set<String> parsedMacros) throws InfiniteLoopException{
+			Set<String> parsedMacros, boolean insideParse) throws InfiniteLoopException{
 		//if there is no macro in the input, return
-		if(!input.matches(MACRO_LEFT_PART + ".+" + MACRO_RIGHT_PART))
+		if(!input.matches(MACRO_LEFT_PART + ".+" + MACRO_RIGHT_PART)){
 			return input;
+		}
 		String result = input;
 		
 		int innerStart = -1;
@@ -103,8 +115,9 @@ public class MacroUtil {
 				}
 			
 			if(input.charAt(i) == ')' || input.charAt(i)=='}'){
-					if(innerStart == -1)
-						return result;									
+					if(innerStart == -1){
+						return result;	
+					}
 					String macroName = input.substring(innerStart+2, i);
 					//if it has been parsed before, stop parse to prevent infinite loop
 					if(!parsedMacros.add(macroName)){
@@ -112,15 +125,15 @@ public class MacroUtil {
 								"Infinite loop was detected when parsing the macro: " + macroName);
 					}	
 					String macroValue = macroTableProvider.getMacroValue(macroName);
-					if(macroValue == null)
+					if(macroValue == null){
 						return result;
+					}
 					else
 						result = input.substring(0, innerStart) + macroValue + input.substring(i+1);
-						return parseMacro(result, macroTableProvider, parsedMacros);				
+						return replaceMacros(result, macroTableProvider, parsedMacros, true);				
 				
 			}
 		}
-		
 		return result;
 	}
 	

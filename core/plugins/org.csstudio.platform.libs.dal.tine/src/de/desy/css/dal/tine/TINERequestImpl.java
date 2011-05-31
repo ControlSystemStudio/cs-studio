@@ -66,8 +66,8 @@ public class TINERequestImpl<T> extends RequestImpl<T> implements TCallback {
 		int statusCode = this.tLink.getLinkStatus();  
 		Exception e = null;
         if (statusCode > 0 || linkStatus > 0) {
-        	this.proxy.setConnectionState(ConnectionState.CONNECTION_LOST);
         	e = new RemoteException(this.proxy,this.tLink.getLastError());
+        	this.proxy.setConnectionState(ConnectionState.CONNECTION_LOST,e);
         } else {
         	this.proxy.setConnectionState(ConnectionState.CONNECTED);
         }
@@ -80,7 +80,7 @@ public class TINERequestImpl<T> extends RequestImpl<T> implements TCallback {
         
         addResponse(response);
         if (e == null) {
-        	this.proxy.setCondition(new DynamicValueCondition(EnumSet.of(DynamicValueState.NORMAL),timestamp.getMilliseconds(),"Value updated."));
+        	this.proxy.setCondition(new DynamicValueCondition(EnumSet.of(DynamicValueState.NORMAL),null,"Value updated."));
         }
 		this.tLink.close();
 	}	

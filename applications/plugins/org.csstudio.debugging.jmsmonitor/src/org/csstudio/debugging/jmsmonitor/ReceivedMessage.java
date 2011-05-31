@@ -1,10 +1,17 @@
+/*******************************************************************************
+ * Copyright (c) 2010 Oak Ridge National Laboratory.
+ * All rights reserved. This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License v1.0
+ * which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-v10.html
+ ******************************************************************************/
 package org.csstudio.debugging.jmsmonitor;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 
-import org.csstudio.platform.logging.JMSLogMessage;
+import org.csstudio.logging.JMSLogMessage;
 import org.eclipse.ui.views.properties.IPropertyDescriptor;
 import org.eclipse.ui.views.properties.IPropertySource;
 import org.eclipse.ui.views.properties.PropertyDescriptor;
@@ -37,7 +44,7 @@ public class ReceivedMessage implements IPropertySource
         this.type = type;
         this.content = content;
     }
-    
+
     /** Create pseudo-message to indicate error condition
      *  @param error Error description
      *  @return ReceivedMessage
@@ -55,7 +62,7 @@ public class ReceivedMessage implements IPropertySource
     {
         return date;
     }
-    
+
     /** @return Time when message was received as string */
     public String getDateString()
     {
@@ -73,7 +80,7 @@ public class ReceivedMessage implements IPropertySource
     {
         return content.size();
     }
-    
+
     /** Get one message property.
      *  @param index 0 .. <code>getPropertyCount()-1</code>
      *  @return MessageProperty
@@ -82,7 +89,7 @@ public class ReceivedMessage implements IPropertySource
     {
         return content.get(index);
     }
-    
+
     /** @return Message content */
     public String getContent()
     {
@@ -102,13 +109,15 @@ public class ReceivedMessage implements IPropertySource
     }
 
     /** IPropertySource */
+    @Override
     public Object getEditableValue()
     {
 		return this;
 	}
 
     /** IPropertySource */
-	public IPropertyDescriptor[] getPropertyDescriptors()
+	@Override
+    public IPropertyDescriptor[] getPropertyDescriptors()
 	{
 		final int msg_props = content.size();
         // Create read-only properties in the property view.
@@ -126,7 +135,8 @@ public class ReceivedMessage implements IPropertySource
 	}
 
     /** IPropertySource */
-	public Object getPropertyValue(final Object id)
+	@Override
+    public Object getPropertyValue(final Object id)
 	{
 	    if (Messages.DateColumn.equals(id))
 	        return getDateString();
@@ -139,19 +149,22 @@ public class ReceivedMessage implements IPropertySource
 	}
 
     /** IPropertySource */
-	public boolean isPropertySet(final Object id)
+	@Override
+    public boolean isPropertySet(final Object id)
 	{
 		return getPropertyValue(id) != null;
 	}
 
     /** IPropertySource */
-	public void resetPropertyValue(final Object id)
+	@Override
+    public void resetPropertyValue(final Object id)
 	{
 		// NOP; read-only
 	}
 
     /** IPropertySource */
-	public void setPropertyValue(final Object id, final Object value)
+	@Override
+    public void setPropertyValue(final Object id, final Object value)
 	{
 		// NOP; read-only
 	}

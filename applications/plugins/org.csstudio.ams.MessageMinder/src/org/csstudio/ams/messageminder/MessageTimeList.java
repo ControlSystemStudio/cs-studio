@@ -26,7 +26,7 @@ package org.csstudio.ams.messageminder;
 
 import java.util.LinkedList;
 
-import org.csstudio.platform.data.ITimestamp;
+import org.csstudio.data.values.ITimestamp;
 
 /**
  * @author hrickens

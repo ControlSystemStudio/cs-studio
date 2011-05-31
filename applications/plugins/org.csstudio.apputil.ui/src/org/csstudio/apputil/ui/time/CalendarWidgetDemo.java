@@ -1,3 +1,10 @@
+/*******************************************************************************
+ * Copyright (c) 2010 Oak Ridge National Laboratory.
+ * All rights reserved. This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License v1.0
+ * which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-v10.html
+ ******************************************************************************/
 package org.csstudio.apputil.ui.time;
 
 import java.text.DateFormat;
@@ -17,6 +24,7 @@ public class CalendarWidgetDemo implements CalendarWidgetListener
     final private DateFormat format =
         new SimpleDateFormat("yyyy/MM/dd HH:mm:ss");
 
+    @Override
     public void updatedCalendar(CalendarWidget source, Calendar calendar)
     {
         System.out.println("Time: " + format.format(calendar.getTime()));
@@ -27,7 +35,7 @@ public class CalendarWidgetDemo implements CalendarWidgetListener
         Display display = new Display();
         Shell shell = new Shell(display);
         shell.setLayout(new FillLayout());
-        
+
         CalendarWidget w = new CalendarWidget(shell, 0);
         w.addListener(this);
 
@@ -41,7 +49,7 @@ public class CalendarWidgetDemo implements CalendarWidgetListener
         w.removeListener(this);
         display.dispose();
     }
-    
+
     public static void main(String[] args)
     {
         new CalendarWidgetDemo().run();

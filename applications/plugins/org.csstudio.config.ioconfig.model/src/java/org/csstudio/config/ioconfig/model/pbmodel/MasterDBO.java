@@ -28,17 +28,17 @@ import java.util.Set;
 import java.util.SortedSet;
 import java.util.TreeSet;
 
+import javax.annotation.Nonnull;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 import javax.persistence.Transient;
 
-import org.csstudio.config.ioconfig.model.GSDFileTypes;
-import org.csstudio.config.ioconfig.model.NamedDBClass;
 import org.csstudio.config.ioconfig.model.AbstractNodeDBO;
+import org.csstudio.config.ioconfig.model.GSDFileTypes;
 import org.csstudio.config.ioconfig.model.NodeType;
-import org.csstudio.config.ioconfig.model.pbmodel.gsdParser.GsdMasterModel;
+import org.csstudio.config.ioconfig.model.PersistenceException;
 
 /*******************************************************************************
  * Data model for Profibus-DP Master<br>
@@ -51,13 +51,15 @@ import org.csstudio.config.ioconfig.model.pbmodel.gsdParser.GsdMasterModel;
 
 @Entity
 @Table(name = "ddb_Profibus_Master")
-public class MasterDBO extends AbstractNodeDBO {
+public class MasterDBO extends AbstractNodeDBO<ProfibusSubnetDBO, SlaveDBO> {
+
+    private static final long serialVersionUID = 1L;
 
     /**
      * The highest accept station address.
      */
     @Transient
-    static final public int MAX_STATION_ADDRESS = 126;
+    public static final int MAX_STATION_ADDRESS = 126;
 
     // ********************
     // * Database Fields. *
@@ -114,11 +116,6 @@ public class MasterDBO extends AbstractNodeDBO {
     // *******************
     // * Transient data. *
     // *******************
-    /**
-     * The master GSD File Keywords for this Master from selected GSD file.
-     */
-    private GsdMasterModel _gsdMasterModel;
-
     private int _maxNrSlave;
 
     private int _maxSlaveOutputLen;
@@ -138,16 +135,14 @@ public class MasterDBO extends AbstractNodeDBO {
      * {@link #Master(ProfibusSubnetDBO)}
      */
     public MasterDBO() {
+        // Constructor only for Hibernate
     }
 
     /**
      * The default Constructor.
+     * @throws PersistenceException 
      */
-    public MasterDBO(final ProfibusSubnetDBO profibusSubnet) {
-        this(profibusSubnet, DEFAULT_MAX_STATION_ADDRESS);
-    }
-
-    public MasterDBO(final ProfibusSubnetDBO profibusSubnet, final int maxStationAddress) {
+    public MasterDBO(@Nonnull final ProfibusSubnetDBO profibusSubnet) throws PersistenceException {
         setParent(profibusSubnet);
         profibusSubnet.addChild(this);
     }
@@ -188,8 +183,8 @@ public class MasterDBO extends AbstractNodeDBO {
      * >= is redundant.
      * @param fdlAddress
      */
-    public void setRedundant(final short fdlAddress) {
-        this._fdlAddress = fdlAddress;
+    public void setRedundant(final int fdlAddress) {
+        this._fdlAddress = (short)fdlAddress;
     }
 
     public String getMasterUserData() {
@@ -265,12 +260,6 @@ public class MasterDBO extends AbstractNodeDBO {
         this.setParent(profibusSubnet);
     }
 
-    @SuppressWarnings("unchecked")
-    @Transient
-    public Set<SlaveDBO> getSlaves() {
-        return (Set<SlaveDBO>) getChildren();
-    }
-
     /**
      * @return the GSDFile.
      */
@@ -301,20 +290,7 @@ public class MasterDBO extends AbstractNodeDBO {
     }
 
     @Transient
-    public GsdMasterModel getGSDMasterData() {
-        return _gsdMasterModel;
-    }
-
-    /**
-     * @param masterModel
-     */
-    @Transient
-    public void setGSDMasterData(final GsdMasterModel masterModel) {
-        _gsdMasterModel = masterModel;
-    }
-
-    @Transient
-    public SortedSet<Short> getFreeStationAddress(){
+    public SortedSet<Short> getFreeStationAddress() throws PersistenceException{
         TreeSet<Short> freeAddressList = new TreeSet<Short>();
         for (short i = 0; i < MAX_STATION_ADDRESS; i++) {
             freeAddressList.add(i);
@@ -329,7 +305,7 @@ public class MasterDBO extends AbstractNodeDBO {
     }
 
     @Transient
-    public SortedSet<Short> getFreeMStationAddress(final boolean redunant){
+    public SortedSet<Short> getFreeMStationAddress(final boolean redunant) throws PersistenceException{
         TreeSet<Short> freeAddressList = new TreeSet<Short>();
         for (short i = 0; i < MAX_STATION_ADDRESS; i++) {
             freeAddressList.add(i);
@@ -347,21 +323,21 @@ public class MasterDBO extends AbstractNodeDBO {
     }
 
 
+    @Override
     @Transient
-    public short getfirstFreeStationAddress(final int maxStationAddress) {
+    public short getfirstFreeStationAddress(final int maxStationAddress) throws PersistenceException {
         return getFreeStationAddress().first();
     }
 
     /**
      * {@inheritDoc}
+     * @throws PersistenceException 
      */
     @Override
-    public AbstractNodeDBO copyParameter(final NamedDBClass parentNode) {
-        if (parentNode instanceof ProfibusSubnetDBO) {
-            ProfibusSubnetDBO subnet = (ProfibusSubnetDBO) parentNode;
+    public MasterDBO copyParameter(final ProfibusSubnetDBO parentNode) throws PersistenceException {
+            ProfibusSubnetDBO subnet = parentNode;
 
             MasterDBO copy = new MasterDBO(subnet);
-            copy.setDocuments(getDocuments());
             copy.setAutoclear(isAutoclear());
             copy.setDataControlTime(getDataControlTime());
             copy.setRedundant(getRedundant());
@@ -375,17 +351,18 @@ public class MasterDBO extends AbstractNodeDBO {
             copy.setProfibusPnoId(getProfibusPnoId());
             copy.setVendorName(getVendorName());
             return copy;
-        }
-        return null;
     }
 
     @Override
-    public AbstractNodeDBO copyThisTo(final AbstractNodeDBO parentNode) {
-        AbstractNodeDBO copy = super.copyThisTo(parentNode);
-        for (AbstractNodeDBO node : getChildren()) {
-            node.copyThisTo(copy);
+    @Nonnull
+    public MasterDBO copyThisTo(@Nonnull final ProfibusSubnetDBO parentNode) throws PersistenceException {
+        MasterDBO copy = (MasterDBO) super.copyThisTo(parentNode);
+        for (SlaveDBO node : getChildren()) {
+            AbstractNodeDBO<MasterDBO, ModuleDBO> childrenCopy = node.copyThisTo(copy);
+            childrenCopy.setSortIndexNonHibernate(node.getSortIndex());
         }
-        return copy;    }
+        return copy;
+    }
 
     public void setMaxNrSlave(final int maxNrSlave) {
         _maxNrSlave = maxNrSlave;

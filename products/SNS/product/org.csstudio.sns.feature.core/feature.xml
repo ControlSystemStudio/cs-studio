@@ -2,7 +2,7 @@
 <feature
       id="org.csstudio.sns.feature.core"
       label="Core CSS Components"
-      version="2.4.0.qualifier"
+      version="3.0.0.qualifier"
       provider-name="Kay Kasemir &lt;kasemirk@ornl.gov&gt; - SNS"
       plugin="org.csstudio.sns.product">
 
@@ -32,59 +32,51 @@ For details, see http://www.eclipse.org/legal/epl-v10.html
    </url>
 
    <requires>
-      <import plugin="org.eclipse.core.runtime"/>
+      <import plugin="org.eclipse.core.runtime" version="3.6.0" match="greaterOrEqual"/>
+      <import plugin="org.csstudio.data" version="1.0.0" match="greaterOrEqual"/>
       <import plugin="org.junit4"/>
-      <import plugin="org.eclipse.core.resources"/>
-      <import plugin="org.eclipse.equinox.security"/>
+      <import plugin="org.csstudio.utility.pv" version="3.0.0" match="greaterOrEqual"/>
+      <import plugin="org.csstudio.platform.libs.epics" version="1.1.2" match="greaterOrEqual"/>
       <import plugin="org.eclipse.ui"/>
-      <import plugin="org.eclipse.ui.console"/>
       <import plugin="org.eclipse.help"/>
-      <import plugin="org.eclipse.update.ui"/>
-      <import plugin="org.eclipse.help.ui"/>
-      <import plugin="org.eclipse.help.webapp"/>
-      <import plugin="org.eclipse.core.filesystem"/>
-      <import plugin="org.eclipse.ui.navigator"/>
-      <import plugin="org.eclipse.ui.navigator.resources"/>
-      <import plugin="org.eclipse.ui.ide"/>
-      <import plugin="org.csstudio.platform.libs.jdom" version="1.1.0" match="greaterOrEqual"/>
-      <import plugin="org.junit"/>
-      <import plugin="org.csstudio.platform" version="1.0.0" match="greaterOrEqual"/>
       <import plugin="org.eclipse.help.appserver"/>
       <import plugin="org.eclipse.help.base"/>
-      <import plugin="org.csstudio.apputil" version="1.0.11" match="compatible"/>
-      <import plugin="org.csstudio.startup" version="1.1.2" match="greaterOrEqual"/>
-      <import plugin="org.csstudio.platform" version="1.1.0" match="greaterOrEqual"/>
-      <import plugin="org.csstudio.platform.ui" version="1.1.1" match="greaterOrEqual"/>
-      <import plugin="org.csstudio.utility.pv" version="1.0.8" match="greaterOrEqual"/>
-      <import plugin="org.eclipse.equinox.preferences"/>
-      <import plugin="org.eclipse.jface"/>
-      <import plugin="org.eclipse.ui.workbench"/>
-      <import plugin="org.csstudio.logbook" version="1.0.2" match="greaterOrEqual"/>
-      <import plugin="org.junit4" version="4.5.0" match="greaterOrEqual"/>
+      <import plugin="org.eclipse.help.ui"/>
+      <import plugin="org.eclipse.help.webapp"/>
+      <import plugin="org.csstudio.platform.libs.jdbc" version="1.2.0" match="greaterOrEqual"/>
+      <import plugin="org.eclipse.equinox.security"/>
+      <import plugin="org.eclipse.ui.ide" version="3.6.0" match="greaterOrEqual"/>
+      <import plugin="org.eclipse.core.filesystem" version="1.3.0" match="greaterOrEqual"/>
+      <import plugin="org.eclipse.core.resources"/>
+      <import plugin="org.csstudio.openfile" version="3.0.0" match="greaterOrEqual"/>
+      <import plugin="org.csstudio.logbook" version="1.1.0" match="greaterOrEqual"/>
+      <import plugin="org.csstudio.apputil.ui" version="1.1.7" match="greaterOrEqual"/>
       <import plugin="org.eclipse.core.runtime" version="3.5.0" match="greaterOrEqual"/>
       <import plugin="org.eclipse.jface" version="3.5.0" match="greaterOrEqual"/>
       <import plugin="org.eclipse.help" version="3.4.1" match="greaterOrEqual"/>
       <import plugin="org.eclipse.ui.workbench" version="3.5.0" match="greaterOrEqual"/>
       <import plugin="org.csstudio.email" version="1.0.0" match="greaterOrEqual"/>
       <import plugin="org.eclipse.equinox.security" version="1.0.0" match="greaterOrEqual"/>
-      <import plugin="org.csstudio.apputil" version="1.0.11" match="greaterOrEqual"/>
-      <import plugin="org.csstudio.utility.pv" version="1.1.0" match="greaterOrEqual"/>
-      <import plugin="org.csstudio.platform.libs.epics" version="1.1.2" match="greaterOrEqual"/>
+      <import plugin="org.csstudio.java" version="3.0.0" match="greaterOrEqual"/>
+      <import plugin="org.csstudio.apputil" version="3.0.0" match="greaterOrEqual"/>
+      <import plugin="org.junit4" version="4.8.1" match="greaterOrEqual"/>
+      <import plugin="org.eclipse.osgi" version="3.6.0" match="greaterOrEqual"/>
+      <import plugin="org.csstudio.platform.libs.jms" version="1.1.1" match="greaterOrEqual"/>
+      <import plugin="org.eclipse.equinox.preferences" version="3.3.0" match="greaterOrEqual"/>
+      <import plugin="org.eclipse.jface" version="3.6.0" match="greaterOrEqual"/>
+      <import plugin="org.eclipse.ui.workbench" version="3.6.0" match="greaterOrEqual"/>
+      <import plugin="org.eclipse.ui.console" version="3.5.0" match="greaterOrEqual"/>
+      <import plugin="org.csstudio.logging" version="0.0.1" match="greaterOrEqual"/>
+      <import plugin="org.eclipse.equinox.security" version="1.0.200" match="greaterOrEqual"/>
+      <import plugin="org.csstudio.workspace" version="1.1.0" match="greaterOrEqual"/>
+      <import plugin="org.junit"/>
+      <import plugin="org.eclipse.core.resources" version="3.6.0" match="greaterOrEqual"/>
+      <import plugin="org.eclipse.ui" version="3.6.0" match="greaterOrEqual"/>
+      <import plugin="org.csstudio.csdata" version="3.0.0" match="greaterOrEqual"/>
+      <import plugin="org.csstudio.ui.util" version="3.0.0" match="greaterOrEqual"/>
+      <import plugin="org.csstudio.ui.menu" version="3.0.0" match="greaterOrEqual"/>
+      <import plugin="org.csstudio.auth" version="1.0.0" match="greaterOrEqual"/>
    </requires>
-
-   <plugin
-         id="org.csstudio.platform"
-         download-size="0"
-         install-size="0"
-         version="0.0.0"
-         unpack="false"/>
-
-   <plugin
-         id="org.csstudio.platform.ui"
-         download-size="0"
-         install-size="0"
-         version="0.0.0"
-         unpack="false"/>
 
    <plugin
          id="org.csstudio.utility.pv"
@@ -95,20 +87,6 @@ For details, see http://www.eclipse.org/legal/epl-v10.html
 
    <plugin
          id="org.csstudio.utility.pv.epics"
-         download-size="0"
-         install-size="0"
-         version="0.0.0"
-         unpack="false"/>
-
-   <plugin
-         id="org.csstudio.platform.libs.dal.epics"
-         download-size="0"
-         install-size="0"
-         version="0.0.0"
-         unpack="false"/>
-
-   <plugin
-         id="org.csstudio.platform.libs.dal"
          download-size="0"
          install-size="0"
          version="0.0.0"
@@ -142,14 +120,7 @@ For details, see http://www.eclipse.org/legal/epl-v10.html
          unpack="false"/>
 
    <plugin
-         id="org.csstudio.platform.libs.jmock"
-         download-size="0"
-         install-size="0"
-         version="0.0.0"
-         unpack="false"/>
-
-   <plugin
-         id="org.csstudio.platform.workspace"
+         id="org.csstudio.workspace"
          download-size="0"
          install-size="0"
          version="0.0.0"
@@ -191,13 +162,6 @@ For details, see http://www.eclipse.org/legal/epl-v10.html
          unpack="false"/>
 
    <plugin
-         id="org.csstudio.startuphelper"
-         download-size="0"
-         install-size="0"
-         version="0.0.0"
-         unpack="false"/>
-
-   <plugin
          id="org.csstudio.startup"
          download-size="0"
          install-size="0"
@@ -206,13 +170,6 @@ For details, see http://www.eclipse.org/legal/epl-v10.html
 
    <plugin
          id="org.csstudio.utility.pv.simu"
-         download-size="0"
-         install-size="0"
-         version="0.0.0"
-         unpack="false"/>
-
-   <plugin
-         id="org.csstudio.utility.pv.ui"
          download-size="0"
          install-size="0"
          version="0.0.0"
@@ -254,6 +211,90 @@ For details, see http://www.eclipse.org/legal/epl-v10.html
          unpack="false"/>
 
    <plugin
+         id="org.csstudio.logging"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"
+         unpack="false"/>
+
+   <plugin
+         id="org.csstudio.logging.ui"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"
+         unpack="false"/>
+
+   <plugin
+         id="org.csstudio.utility.pvmanager.ui"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"
+         unpack="false"/>
+
+   <plugin
+         id="org.csstudio.data"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"
+         unpack="false"/>
+
+   <plugin
+         id="org.csstudio.auth"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"
+         unpack="false"/>
+
+   <plugin
+         id="org.csstudio.openfile"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"
+         unpack="false"/>
+
+   <plugin
+         id="org.csstudio.csdata"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"
+         unpack="false"/>
+
+   <plugin
+         id="org.csstudio.ui.util"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"
+         unpack="false"/>
+
+   <plugin
+         id="org.csstudio.csdata.clipboard"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"
+         unpack="false"/>
+
+   <plugin
+         id="org.csstudio.utility.pvmanager"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"
+         unpack="false"/>
+
+   <plugin
+         id="org.csstudio.java"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"
+         unpack="false"/>
+
+   <plugin
+         id="org.csstudio.ui.preferences"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"
+         unpack="false"/>
+
+   <plugin
          id="org.csstudio.platform.libs.jdom"
          download-size="0"
          install-size="0"
@@ -261,7 +302,35 @@ For details, see http://www.eclipse.org/legal/epl-v10.html
          unpack="false"/>
 
    <plugin
-         id="org.csstudio.platform.libs.annotations"
+         id="org.csstudio.ui.menu.web"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"
+         unpack="false"/>
+
+   <plugin
+         id="org.csstudio.ui.menu"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"
+         unpack="false"/>
+
+   <plugin
+         id="org.csstudio.ui.menu.app"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"
+         unpack="false"/>
+
+   <plugin
+         id="org.csstudio.auth.ui"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"
+         unpack="false"/>
+
+   <plugin
+         id="org.csstudio.ui.help"
          download-size="0"
          install-size="0"
          version="0.0.0"

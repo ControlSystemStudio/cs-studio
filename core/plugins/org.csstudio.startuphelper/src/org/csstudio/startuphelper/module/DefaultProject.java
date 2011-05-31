@@ -1,9 +1,14 @@
+/*******************************************************************************
+ * Copyright (c) 2010 Oak Ridge National Laboratory.
+ * All rights reserved. This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License v1.0
+ * which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-v10.html
+ ******************************************************************************/
 package org.csstudio.startuphelper.module;
 
 import java.util.Map;
 
-import org.csstudio.platform.logging.CentralLogger;
-import org.csstudio.platform.ui.CSSPlatformUiPlugin;
 import org.csstudio.startup.module.ProjectExtPoint;
 import org.csstudio.startuphelper.Messages;
 import org.eclipse.core.resources.IProject;
@@ -17,22 +22,23 @@ import org.eclipse.swt.widgets.Display;
 
 /** DefaultProject opens and closes the application's default
  *  project. The name of the project is localized.
- * 
+ *
  *  @author <a href="mailto:jaka.bobnar@cosylab.com">Jaka Bobnar</a>
  *  @author Kay Kasemir
  */
 public class DefaultProject implements ProjectExtPoint
 {
     /** {@inheritDoc} */
+    @Override
     public Object openProjects(Display display, IApplicationContext context,
             Map<String, Object> parameters)
     {
-        // Must call something from the CSS UI plugin.
+        // TODO Must call something from the CSS UI plugin?
         // Exact mechanism unclear, but when NOT doing this,
-        // the initial Navigator instance won't show
+        // the initial ResourceNavigator instance won't show
         // the 'CSS' project that we're about to create/open?!
-        CentralLogger.getInstance().getLogger(this).debug("CSS UI plugin: " + //$NON-NLS-1$
-                CSSPlatformUiPlugin.getDefault().getPluginId());
+        //        System.out.println("CSS UI plugin: " +
+        //                CSSPlatformUiPlugin.getDefault().getPluginId());
 
         // Assert that there is an open "CSS" project.
         // Without that, an existing 'CSS' might show up,
@@ -75,6 +81,7 @@ public class DefaultProject implements ProjectExtPoint
     }
 
     /** {@inheritDoc} */
+    @Override
     public Object closeProjects(Display display, IApplicationContext context,
             Map<String, Object> parameters) throws Exception
     {

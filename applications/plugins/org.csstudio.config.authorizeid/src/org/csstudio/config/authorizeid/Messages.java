@@ -6,6 +6,10 @@ public class Messages extends NLS {
 
 	private static final String BUNDLE_NAME = "org.csstudio.config.authorizeid.messages"; //$NON-NLS-1$
 	
+	
+	public static String AuthorizeIdView_AUTH_IDS_FROM_LDAP;
+	public static String AuthorizeIdView_AUTH_IDS_REGISTERED;
+
 	public static String AuthorizeIdView_DelEntry;
 
     public static String AuthorizeIdView_DelWarn;
@@ -36,8 +40,12 @@ public class Messages extends NLS {
 	public static String AuthorizeIdView_EDIT; 
 	public static String AuthorizeIdView_DELETE; 
 	public static String AuthorizeIdView_EAIN; 
+	public static String AuthorizeIdView_IS_REGISTERED;
+	public static String AuthorizeIdView_DESCRIPTION;
+	public static String AuthorizeIdView_ORIGINATING_PLUGIN;
 	public static String AuthorizeIdView_EAIG; 
 	public static String AuthorizeIdView_EAIR;
+	public static String AuthorizeIdView_USERS;
 
     public static String AuthorizeIdView_SelGroup;
 

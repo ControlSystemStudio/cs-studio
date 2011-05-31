@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2007 Stiftung Deutsches Elektronen-Synchrotron,
+ * Copyright (c) 2011 Stiftung Deutsches Elektronen-Synchrotron,
  * Member of the Helmholtz Association, (DESY), HAMBURG, GERMANY.
  *
  * THIS SOFTWARE IS PROVIDED UNDER THIS LICENSE ON AN "../AS IS" BASIS.
@@ -18,47 +18,68 @@
  * USAGE AND OTHER RIGHTS AND OBLIGATIONS IS INCLUDED WITH THE DISTRIBUTION OF THIS
  * PROJECT IN THE FILE LICENSE.HTML. IF THE LICENSE IS NOT INCLUDED YOU MAY FIND A COPY
  * AT HTTP://WWW.DESY.DE/LEGAL/LICENSE.HTM
- */
-/*
- * $Id: PrmText.java,v 1.1 2009/08/26 07:08:42 hrickens Exp $
+ *
+ * $Id: DesyKrykCodeTemplates.xml,v 1.7 2010/04/20 11:43:22 bknerr Exp $
  */
 package org.csstudio.config.ioconfig.model.pbmodel.gsdParser;
 
+import java.util.Collection;
+import java.util.SortedMap;
+import java.util.TreeMap;
+
+import javax.annotation.CheckForNull;
+import javax.annotation.Nonnull;
+
 /**
+ * The class represents one PrmText of a GSD file.  
+ * 
  * @author hrickens
- * @author $Author: hrickens $
- * @version $Revision: 1.1 $
- * @since 18.07.2008
+ * @author $Author: bknerr $
+ * @version $Revision: 1.7 $
+ * @since 28.03.2011
  */
 public class PrmText {
-    /**
-     * The text description of the Value.
-     */
-    private String _text;
-    /**
-     * The Value.
-     */
-    private Integer _value;
     
-    public PrmText(String text, Integer value){
-        setText(text);
-        setValue(value);
+    private final int _index;
+    private final SortedMap<Integer, PrmTextItem> _prmTextItemMap = new TreeMap<Integer, PrmTextItem>();
+    
+    /**
+     * Constructor.
+     */
+    public PrmText(int index) {
+        _index = index;
     }
-    public final String getText() {
-        return _text;
+
+    /**
+     * @param prmItemKeyValue
+     */
+    public void setPrmTextItem(@Nonnull KeyValuePair prmItemKeyValue) {
+        Integer index = prmItemKeyValue.getIndex();
+        if(index!=null) {
+            _prmTextItemMap.put(index, new PrmTextItem(prmItemKeyValue.getValue(), index));
+        }
+        
     }
-    public final void setText(String text) {
-        _text = text;
+    
+    @CheckForNull
+    public PrmTextItem getPrmTextItem(@Nonnull Integer index) {
+        return _prmTextItemMap.get(index);
     }
-    public final Integer getValue() {
-        return _value;
+
+    public int getIndex() {
+        return _index;
     }
-    public final void setValue(Integer value) {
-        _value = value;
+    
+    @Nonnull
+    public Collection<PrmTextItem> getPrmTextItems(){
+        return _prmTextItemMap.values();
     }
-    @Override
-    public String toString() {
-        return getValue()+" : "+getText();
+
+    /**
+     * @return
+     */
+    public boolean isEmpty() {
+        return _prmTextItemMap.isEmpty();
     }
 
     

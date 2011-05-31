@@ -29,7 +29,9 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
 
+import org.apache.log4j.Logger;
 import org.epics.css.dal.DynamicValueProperty;
+import org.epics.css.dal.device.DeviceCollectionMap;
 
 import com.cosylab.util.ListenerList;
 
@@ -115,6 +117,9 @@ public class PropertyCollectionMap<T extends DynamicValueProperty<?>>
 	 */
 	public boolean contains(Object property)
 	{
+		if (property==null) {
+			return false;
+		}
 		if (type.isAssignableFrom(property.getClass())) {
 			T[] t= get(((T)property).getName());
 			if (t!=null) { 
@@ -314,7 +319,7 @@ public class PropertyCollectionMap<T extends DynamicValueProperty<?>>
 				try {
 					l[i].membersAdded(event);
 				} catch (Exception e) {
-					e.printStackTrace();
+					Logger.getLogger(PropertyCollectionMap.class).warn("Error in event handler, continuing.", e);
 				}
 			}
 		} else {
@@ -322,7 +327,7 @@ public class PropertyCollectionMap<T extends DynamicValueProperty<?>>
 				try {
 					l[i].membersRemoved(event);
 				} catch (Exception e) {
-					e.printStackTrace();
+					Logger.getLogger(PropertyCollectionMap.class).warn("Error in event handler, continuing.", e);
 				}
 			}
 		}

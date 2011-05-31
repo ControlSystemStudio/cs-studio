@@ -30,18 +30,15 @@ import org.csstudio.sds.ui.editparts.AbstractWidgetEditPart;
 import org.eclipse.core.commands.AbstractHandler;
 import org.eclipse.core.commands.ExecutionEvent;
 import org.eclipse.core.commands.ExecutionException;
-import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.jface.viewers.StructuredSelection;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.widgets.Event;
-import org.eclipse.ui.IEditorPart;
-import org.eclipse.ui.IWorkbenchPart;
 import org.eclipse.ui.handlers.HandlerUtil;
 
 /**
- * TODO (hrickens) :
+ * Moves a widget, over shortcuts, in edit mode on the Display.
  * 
- * @author hrickens
+ * @author Helge Rickens <css-desy@desy.de>
  * @author $Author: $
  * @since 20.10.2010
  */
@@ -52,8 +49,6 @@ public class MoveWidegtlHandler extends AbstractHandler {
 	 */
 	@Override
 	public Object execute(ExecutionEvent event) throws ExecutionException {
-		// IEditorPart activeEditor = HandlerUtil.getActiveEditor(event);
-		// IWorkbenchPart activePart = HandlerUtil.getActivePart(event);
 		StructuredSelection currentSelection = (StructuredSelection) HandlerUtil
 				.getCurrentSelection(event);
 		Iterator<?> iterator = currentSelection.iterator();
@@ -81,11 +76,6 @@ public class MoveWidegtlHandler extends AbstractHandler {
 				}
 			}
 		}
-
-		// ISelection showInSelection = HandlerUtil.getShowInSelection(event);
-		// Object showInInput = HandlerUtil.getShowInInput(event);
-
 		return null;
 	}
-
 }

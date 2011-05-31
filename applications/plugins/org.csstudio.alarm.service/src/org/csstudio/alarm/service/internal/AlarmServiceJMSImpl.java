@@ -20,8 +20,13 @@
  */
 package org.csstudio.alarm.service.internal;
 
-import java.util.ArrayList;
+import java.util.Collection;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
+import java.util.concurrent.ArrayBlockingQueue;
+import java.util.concurrent.BlockingQueue;
+import java.util.concurrent.TimeUnit;
 
 import javax.annotation.CheckForNull;
 import javax.annotation.Nonnull;
@@ -32,15 +37,14 @@ import org.csstudio.alarm.service.declaration.IAlarmConnection;
 import org.csstudio.alarm.service.declaration.IAlarmInitItem;
 import org.csstudio.alarm.service.declaration.IAlarmResource;
 import org.csstudio.alarm.service.declaration.IAlarmService;
-import org.csstudio.dal.DalPlugin;
+import org.csstudio.dal.CssApplicationContext;
 import org.csstudio.platform.logging.CentralLogger;
-import org.epics.css.dal.DynamicValueAdapter;
-import org.epics.css.dal.DynamicValueEvent;
-import org.epics.css.dal.DynamicValueListener;
-import org.epics.css.dal.SimpleProperty;
-import org.epics.css.dal.StringProperty;
+import org.epics.css.dal.context.ConnectionState;
+import org.epics.css.dal.simple.AnyDataChannel;
+import org.epics.css.dal.simple.ChannelListener;
 import org.epics.css.dal.simple.ConnectionParameters;
 import org.epics.css.dal.simple.RemoteInfo;
+import org.epics.css.dal.simple.SimpleDALBroker;
 
 import com.cosylab.util.CommonException;
 
@@ -53,17 +57,17 @@ import com.cosylab.util.CommonException;
  * @since 21.04.2010
  */
 public class AlarmServiceJMSImpl implements IAlarmService {
-
-    private static final Logger LOG =
-        CentralLogger.getInstance().getLogger(AlarmServiceJMSImpl.class);
-
+    
+    private static final Logger LOG = CentralLogger.getInstance()
+            .getLogger(AlarmServiceJMSImpl.class);
+    
     /**
      * Constructor.
      */
     public AlarmServiceJMSImpl() {
         // Nothing to do
     }
-
+    
     /**
      * {@inheritDoc}
      */
@@ -71,67 +75,122 @@ public class AlarmServiceJMSImpl implements IAlarmService {
     public final IAlarmConnection newAlarmConnection() {
         return new AlarmConnectionJMSImpl();
     }
-
+    
     @Override
     public final void retrieveInitialState(@Nonnull final List<IAlarmInitItem> initItems) {
         LOG.debug("retrieveInitialState for " + initItems.size() + " items");
-
-        // There may be more than a thousand pv for which the initial state is requested at once.
-        // Therefore the process of registering is performed in chunks with a delay
-
-        int pvChunkSize = AlarmPreference.ALARMSERVICE_PV_CHUNK_SIZE.getValue();
-        int pvChunkWaitMsec = AlarmPreference.ALARMSERVICE_PV_CHUNK_WAIT_MSEC.getValue();
-        int pvRegisterWaitMsec = AlarmPreference.ALARMSERVICE_PV_REGISTER_WAIT_MSEC.getValue();
-
-        final List<Element> pvsUnderWay = new ArrayList<Element>();
-
-        for (int i = 0; i < initItems.size(); i++) {
-            registerPV(pvsUnderWay, initItems.get(i));
-            if ( (i % pvChunkSize) == 0) {
-                waitFixedTime(pvChunkWaitMsec);
+        long start = System.currentTimeMillis();
+        
+        // There may be several thousand pvs for which the initial state is requested at once.
+        // Therefore the process of registering is performed in chunks and resources are freed after each chunk.
+        
+        int pvChunkSize = getPvChunkSize();
+        int pvChunkWaitMsec = getPvChunkWaitMsec();
+        
+        // Queue is filled with announced pvs
+        final BlockingQueue<String> announcedPVsQ = new ArrayBlockingQueue<String>(2 * pvChunkSize);
+        
+        // initItems are processed in chunks
+        final ChunkableCollection<IAlarmInitItem> chunkableCollection = new ChunkableCollection<IAlarmInitItem>(initItems,
+                                                                                                                pvChunkSize);
+        for (Collection<IAlarmInitItem> currentChunkOfPVs : chunkableCollection) {
+            announcedPVsQ.clear();
+            SimpleDALBroker broker = newSimpleDALBroker();
+            LOG.debug("retrieveInitialState about to register " + currentChunkOfPVs.size() + " pvs");
+            registerChunkOfPVs(broker, currentChunkOfPVs, announcedPVsQ);
+            LOG.debug("retrieveInitialState about to process " + currentChunkOfPVs.size() + " pvs");
+            waitForProcessingOrTimeout(pvChunkWaitMsec, announcedPVsQ, currentChunkOfPVs);
+            LOG.debug("retrieveInitialState about to free resources");
+            freeResources(broker);
+        }
+        LOG.debug("retrieveInitialState finished after " + (System.currentTimeMillis() - start) + " msec");
+    }
+    
+    // May be overridden in a test
+    protected int getPvRegisterWaitMsec() {
+        return AlarmPreference.ALARMSERVICE_PV_REGISTER_WAIT_MSEC.getValue();
+    }
+    
+    // May be overridden in a test
+    protected int getPvChunkWaitMsec() {
+        return AlarmPreference.ALARMSERVICE_PV_CHUNK_WAIT_MSEC.getValue();
+    }
+    
+    // May be overridden in a test
+    protected int getPvChunkSize() {
+        return AlarmPreference.ALARMSERVICE_PV_CHUNK_SIZE.getValue();
+    }
+    
+    // May be overridden in a test
+    @Nonnull
+    protected SimpleDALBroker newSimpleDALBroker() {
+        return SimpleDALBroker.newInstance(new CssApplicationContext("CSS"));
+    }
+    
+    private void waitForProcessingOrTimeout(int pvChunkWaitMsec,
+                                            @Nonnull final BlockingQueue<String> announcedPVsQ,
+                                            @Nonnull final Collection<IAlarmInitItem> currentChunkOfPVs) {
+        final long startTime = System.currentTimeMillis();
+        final Set<String> remainingPVs = new HashSet<String>(currentChunkOfPVs.size());
+        for (IAlarmInitItem initItem : currentChunkOfPVs) {
+            remainingPVs.add(initItem.getPVName());
+        }
+        
+        boolean proceed = true;
+        while (proceed) {
+            String announcedPV;
+            try {
+                announcedPV = announcedPVsQ.poll(pvChunkWaitMsec, TimeUnit.MILLISECONDS);
+                if (announcedPV != null) {
+                    remainingPVs.remove(announcedPV);
+                } else {
+                    LOG.debug("announcedPV was null");
+                }
+                proceed = (announcedPV != null) && !remainingPVs.isEmpty();
+            } catch (InterruptedException e) {
+                LOG.debug("retrieveInitialState ended because of InterruptedException");
+                proceed = false;
             }
         }
-
-        LOG.debug("retrieveInitialState about to wait");
-        waitFixedTime(pvRegisterWaitMsec);
-
-        // The process of deregistering is also performed in chunks with a delay
-        LOG.debug("retrieveInitialState about to deregister " + pvsUnderWay.size() + " pvs");
-        for (int i = 0; i < pvsUnderWay.size(); i++) {
-            deregisterPV(pvsUnderWay.get(i));
-            if ( (i % pvChunkSize) == 0) {
-                waitFixedTime(pvChunkWaitMsec);
-            }
-        }
-
-        LOG.debug("retrieveInitialState finished");
+        logResult(startTime, currentChunkOfPVs.size(), remainingPVs.size());
     }
 
+    private void logResult(final long startTime,
+                           final int currentChunkOfPVsSize,
+                           final int remainingPVsSize) {
+        if (LOG.isDebugEnabled()) {
+            LOG.debug("processing time was "
+                    + (System.currentTimeMillis() - startTime)
+                    + ". "
+                    + currentChunkOfPVsSize
+                    + " PVs processed."
+                    + (remainingPVsSize == 0 ? " All finished." : " Failure: " + remainingPVsSize
+                            + " PVs unfinished."));
+        }
+    }
+    
     @Override
     @Nonnull
     public final IAlarmResource createAlarmResource(@CheckForNull final List<String> topics,
-                                                 @CheckForNull final String filepath) {
+                                                    @CheckForNull final String filepath) {
         return new AlarmResource(topics, filepath);
     }
-
-    private void registerPV(@Nonnull final List<Element> pvsUnderWay,
-                            @Nonnull final IAlarmInitItem initItem) {
-        try {
-            final Element pvUnderWay = new Element();
-            pvUnderWay._connectionParameters = newConnectionParameters(initItem.getPVName());
-            // REVIEW (jpenning): hard coded type in connection parameter
-            pvUnderWay._listener = new DynamicValueListenerForInit<String, StringProperty>(initItem);
-            DalPlugin.getDefault().getSimpleDALBroker()
-                    .registerListener(pvUnderWay._connectionParameters,
-                                      pvUnderWay._listener);
-            pvsUnderWay.add(pvUnderWay);
-        } catch (final InstantiationException e) {
-            LOG.error("Error in registerPVs", e);
-        } catch (final CommonException e) {
-            LOG.error("Error in registerPVs", e);
+    
+    private void registerChunkOfPVs(@Nonnull final SimpleDALBroker broker,
+                                    @Nonnull final Collection<IAlarmInitItem> initItems,
+                                    @Nonnull final BlockingQueue<String> queue) {
+        for (final IAlarmInitItem initItem : initItems) {
+            try {
+                broker.registerListener(newConnectionParameters(initItem.getPVName()),
+                                        new ChannelListenerImpl(queue, initItem));
+            } catch (InstantiationException e) {
+                LOG.error("Error registering pv '" + initItem.getPVName() + "'", e);
+            } catch (CommonException e) {
+                LOG.error("Error registering pv '" + initItem.getPVName() + "'", e);
+            }
         }
     }
-
+    
     private void waitFixedTime(final int delayInMsec) {
         try {
             Thread.sleep(delayInMsec);
@@ -139,75 +198,72 @@ public class AlarmServiceJMSImpl implements IAlarmService {
             LOG.warn("retrieveInitialState was interrupted ", e);
         }
     }
-
-    private void deregisterPV(@Nonnull final Element pvUnderWay) {
-        try {
-            DalPlugin.getDefault().getSimpleDALBroker()
-                    .deregisterListener(pvUnderWay._connectionParameters,
-                                        pvUnderWay._listener);
-        } catch (final InstantiationException e) {
-            LOG.error("Error in deregisterPVs", e);
-        } catch (final CommonException e) {
-            LOG.error("Error in deregisterPVs", e);
-        }
+    
+    private void freeResources(@Nonnull final SimpleDALBroker broker) {
+        waitFixedTime(10);
+        broker.releaseAll();
     }
-
+    
     @Nonnull
     private ConnectionParameters newConnectionParameters(@Nonnull final String pvName) {
         // REVIEW (jpenning): hard coded type in connection parameter
         return new ConnectionParameters(newRemoteInfo(pvName), String.class);
     }
-
+    
     @Nonnull
     private RemoteInfo newRemoteInfo(@Nonnull final String pvName) {
         return new RemoteInfo(RemoteInfo.DAL_TYPE_PREFIX + "EPICS", pvName, null, null);
     }
-
+    
     /**
-     * Listener for retrieval of initial state
+     * Listen to incoming events delivering channels. Map channels to alarm messages and in turn deliver alarm init items.
      */
-    private static class DynamicValueListenerForInit<T, P extends SimpleProperty<T>> extends
-            DynamicValueAdapter<T, P> {
-        private static final Logger LOG_INNER =
-            CentralLogger.getInstance().getLogger(AlarmServiceJMSImpl.DynamicValueListenerForInit.class);
-
+    private static final class ChannelListenerImpl implements ChannelListener {
+        private static final Logger LOG_INNER = CentralLogger.getInstance()
+                .getLogger(AlarmServiceJMSImpl.ChannelListenerImpl.class);
+        
+        private final BlockingQueue<String> _queue;
         private final IAlarmInitItem _initItem;
-
-        public DynamicValueListenerForInit(@Nonnull final IAlarmInitItem initItem) {
+        
+        public ChannelListenerImpl(@Nonnull final BlockingQueue<String> queue,
+                                   @Nonnull final IAlarmInitItem initItem) {
+            _queue = queue;
             _initItem = initItem;
         }
-
+        
         @Override
-        public void conditionChange(@CheckForNull final DynamicValueEvent<T, P> event) {
-            // Currently we are not interested in conditionChange-Events
-            //            LOG_INNER.debug("conditionChange received " + event.getCondition() + " for "
-            //                    + event.getProperty().getUniqueName());
+        public void channelDataUpdate(@Nonnull final AnyDataChannel channel) {
+            // Nothing to do
         }
-
+        
         @Override
-        public void valueChanged(@CheckForNull final DynamicValueEvent<T, P> event) {
-            if (event != null) {
-//                LOG_INNER.debug("valueChanged received " + event.getCondition() + " for "
-//                        + event.getProperty().getUniqueName());
-                if (AlarmMessageDALImpl.canCreateAlarmMessageFrom(event.getProperty(),
-                                                                  event.getData())) {
-
-                    _initItem.init(AlarmMessageDALImpl.newAlarmMessage(event.getProperty(),
-                                                                       event.getData()));
-                } else {
-                    LOG_INNER.warn("Could not create alarm message for "
-                            + event.getProperty().getUniqueName());
-                }
-            } // else ignore
+        public void channelStateUpdate(@Nonnull final AnyDataChannel channel) {
+            ConnectionState state = channel.getProperty().getConnectionState();
+            if (state == ConnectionState.CONNECTION_FAILED) {
+                processErroneousMessage(channel);
+                _queue.offer(channel.getUniqueName());
+            } else if (state == ConnectionState.OPERATIONAL) {
+                processAlarmMessage(channel);
+                _queue.offer(channel.getUniqueName());
+            }
         }
-
+        
+        private void processErroneousMessage(@Nonnull final AnyDataChannel channel) {
+            _initItem.notFound(channel.getUniqueName());
+        }
+        
+        private void processAlarmMessage(@Nonnull final AnyDataChannel channel) {
+            if (AlarmMessageDALImpl.canCreateAlarmMessageFrom(channel.getProperty(),
+                                                              channel.getData())) {
+                _initItem.init(AlarmMessageDALImpl.newAlarmMessage(channel.getProperty(),
+                                                                   channel.getData()));
+            } else {
+                LOG_INNER.warn("Could not create alarm message for "
+                        + channel.getProperty().getUniqueName());
+                processErroneousMessage(channel);
+            }
+        }
+        
     }
-
-    // CHECKSTYLE:OFF
-    private static class Element {
-        ConnectionParameters _connectionParameters;
-        DynamicValueListener<?, ?> _listener;
-    }
-    // CHECKSTYLE:ON
-
+    
 }

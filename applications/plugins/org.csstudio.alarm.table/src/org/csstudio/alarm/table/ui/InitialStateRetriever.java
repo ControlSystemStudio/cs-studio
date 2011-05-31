@@ -37,6 +37,7 @@ import org.csstudio.alarm.table.JmsLogsPlugin;
 import org.csstudio.alarm.table.dataModel.BasicMessage;
 import org.csstudio.alarm.table.dataModel.AbstractMessageList;
 import org.csstudio.platform.logging.CentralLogger;
+import org.csstudio.utility.ldap.service.LdapServiceException;
 import org.csstudio.utility.ldap.treeconfiguration.LdapEpicsAlarmcfgConfiguration;
 import org.csstudio.utility.treemodel.ContentModel;
 import org.csstudio.utility.treemodel.CreateContentModelException;
@@ -72,35 +73,29 @@ public class InitialStateRetriever {
      * The pvs for which the initial state shall be retrieved are fetched according to preferences
      * either from ldap (based on selected facilities) or from an xml configuration file.
      */
-    public void retrieveInitialState() throws CreateContentModelException {
-        final IAlarmConfigurationService configService = JmsLogsPlugin.getDefault()
-                .getAlarmConfigurationService();
-        try {
-            ContentModel<LdapEpicsAlarmcfgConfiguration> model = null;
-            if (AlarmPreference.ALARMSERVICE_CONFIG_VIA_LDAP.getValue()) {
-                model = configService.retrieveInitialContentModel(AlarmPreference
-                        .getFacilityNames());
-            } else {
-                model = configService.retrieveInitialContentModelFromFile(AlarmPreference
-                        .getConfigFilename());
-            }
-
-            final Set<String> pvNames = model.getSimpleNames(LdapEpicsAlarmcfgConfiguration.RECORD);
-            final List<IAlarmInitItem> initItems = new ArrayList<IAlarmInitItem>();
-
-            for (final String pvName : pvNames) {
-                initItems.add(new PVItem(pvName, _messageList));
-            }
-
-            JmsLogsPlugin.getDefault().getAlarmService().retrieveInitialState(initItems);
-        } catch (final CreateContentModelException e) {
-            LOG.error("Could not retrieve content model from ConfigService", e);
-            throw e;
-        }catch (final FileNotFoundException e) {
-            final String message = "Resource " + AlarmPreference.getConfigFilename() + " could not be found.";
-            LOG.error(message, e);
-            throw new CreateContentModelException(message, e);
+    public void retrieveInitialState() throws Exception {
+        final IAlarmConfigurationService configService = 
+            JmsLogsPlugin.getDefault().getAlarmConfigurationService();
+        
+        ContentModel<LdapEpicsAlarmcfgConfiguration> model = null;
+        
+        if (AlarmPreference.ALARMSERVICE_CONFIG_VIA_LDAP.getValue()) {
+            model = 
+                configService.retrieveInitialContentModel(AlarmPreference.getFacilityNames());
+        } else {
+            model = 
+                configService.retrieveInitialContentModelFromFile(AlarmPreference.getConfigFilename());
         }
+        
+        final Set<String> pvNames = model.getSimpleNames(LdapEpicsAlarmcfgConfiguration.RECORD);
+        final List<IAlarmInitItem> initItems = new ArrayList<IAlarmInitItem>();
+        
+        for (final String pvName : pvNames) {
+            initItems.add(new PVItem(pvName, _messageList));
+        }
+        
+        JmsLogsPlugin.getDefault().getAlarmService().retrieveInitialState(initItems);
+
     }
 
     @Nonnull
@@ -115,7 +110,7 @@ public class InitialStateRetriever {
                 IStatus result = Status.OK_STATUS;
                 try {
                     retrieveInitialState();
-                } catch (final CreateContentModelException e) {
+                } catch (final Exception e) {
                     result = new Status(IStatus.ERROR, JmsLogsPlugin.PLUGIN_ID,
                                         "Could not fetch PVs to initialize.\nCause: "
                                         + e.getMessage(), e);
@@ -154,6 +149,10 @@ public class InitialStateRetriever {
             _messageList.addMessage(new BasicMessage(message.getMap()));
         }
 
+        @Override
+        public void notFound(@Nonnull final String pvName) {
+            // TODO (jpenning) NYI notFound
+        }
     }
 
 }

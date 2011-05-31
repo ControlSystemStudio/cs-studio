@@ -31,7 +31,7 @@ import org.epics.css.dal.RemoteException;
  * @author Igor Kriznar (igor.kriznarATcosylab.com)
  *
  */
-public interface DeviceProxy extends Proxy
+public interface DeviceProxy<P extends AbstractPlug> extends Proxy<P>
 {
 	/**
 	 * Retus command if exists, othervise <code>null</code>.
@@ -66,7 +66,7 @@ public interface DeviceProxy extends Proxy
 	 *
 	 * @throws RemoteException if remote operation fails
 	 */
-	public PropertyProxy<?> getPropertyProxy(String name)
+	public PropertyProxy<?,P> getPropertyProxy(String name)
 		throws RemoteException;
 
 	/**
@@ -82,7 +82,7 @@ public interface DeviceProxy extends Proxy
 	 *
 	 * @throws RemoteException if remote operation fails
 	 */
-	public DirectoryProxy getDirectoryProxy(String name)
+	public DirectoryProxy<P> getDirectoryProxy(String name)
 		throws RemoteException;
 
 	public void refresh();

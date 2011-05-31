@@ -1,3 +1,10 @@
+/*******************************************************************************
+ * Copyright (c) 2010 Oak Ridge National Laboratory.
+ * All rights reserved. This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License v1.0
+ * which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-v10.html
+ ******************************************************************************/
 package org.csstudio.opibuilder.visualparts;
 
 import org.eclipse.jface.dialogs.Dialog;
@@ -34,9 +41,11 @@ public class MultilineTextEditDialog extends Dialog {
 		// Making the Dialog bigger is fine, vertical scrollbars also work.
 		// But when making the Dialog smaller, no horiz. scrollbars appear.
 		final GridData gridData = new GridData(SWT.FILL, SWT.FILL, true, true);
+		gridData.widthHint = 220;
+		gridData.heightHint = 100;
 		text = new Text(container, SWT.MULTI | SWT.BORDER | SWT.H_SCROLL | SWT.V_SCROLL);
-		text.setLayoutData(gridData);
 		text.setText(contents);
+		text.setLayoutData(gridData);
 		return container;
 	}
 	

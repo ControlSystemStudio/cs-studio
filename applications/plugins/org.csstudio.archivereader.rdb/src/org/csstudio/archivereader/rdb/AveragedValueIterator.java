@@ -1,38 +1,45 @@
+/*******************************************************************************
+ * Copyright (c) 2010 Oak Ridge National Laboratory.
+ * All rights reserved. This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License v1.0
+ * which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-v10.html
+ ******************************************************************************/
 package org.csstudio.archivereader.rdb;
 
 import org.csstudio.archivereader.ValueIterator;
-import org.csstudio.platform.data.IDoubleValue;
-import org.csstudio.platform.data.IEnumeratedMetaData;
-import org.csstudio.platform.data.ILongValue;
-import org.csstudio.platform.data.INumericMetaData;
-import org.csstudio.platform.data.ISeverity;
-import org.csstudio.platform.data.ITimestamp;
-import org.csstudio.platform.data.IValue;
-import org.csstudio.platform.data.ValueFactory;
+import org.csstudio.data.values.IDoubleValue;
+import org.csstudio.data.values.IEnumeratedMetaData;
+import org.csstudio.data.values.ILongValue;
+import org.csstudio.data.values.INumericMetaData;
+import org.csstudio.data.values.ISeverity;
+import org.csstudio.data.values.ITimestamp;
+import org.csstudio.data.values.IValue;
+import org.csstudio.data.values.ValueFactory;
 
 /** Averaging sample iterator.
- *  
+ *
  *  This iterator reads samples from a given 'base' iterator
  *  and returns averaged samples.
- *  
+ *
  *  @author Kay Kasemir
  */
 public class AveragedValueIterator implements ValueIterator
 {
     final private static boolean debug = false;
-    
+
     /** Iterator for the underlying raw samples over which we average */
     final private ValueIterator base;
 
     /** Averaging period in seconds */
     final private long seconds;
-    
+
     /** The most recent value from <code>base</code>, may be <code>null</code> */
     private IValue base_value = null;
 
     /** Meta data */
     private INumericMetaData meta = null;
-    
+
     /** The average value that <code>next()</code> will return
      *  or <code>null</code> if there is none
      */
@@ -68,7 +75,7 @@ public class AveragedValueIterator implements ValueIterator
      *  <li>or the last sample we got in the previous
      *      call to <code>determineNextAverage</code>,
      *      i.e. the sample that turned out to be just past
-     *      the last average window. 
+     *      the last average window.
      *  </ol>
      *  @return The next average value
      *  @throws Exception on error
@@ -195,21 +202,24 @@ public class AveragedValueIterator implements ValueIterator
         // Cannot decode that sample type as a number.
         return null;
     }
-    
+
     /** {@inheritDoc} */
+    @Override
     public boolean hasNext()
     {
         return avg_value != null;
     }
 
     /** {@inheritDoc} */
+    @Override
     public IValue next() throws Exception
     {   // Save the value we're about to return, prepare the following avg.
         final IValue ret_value = avg_value;
         avg_value = determineNextAverage();
         return ret_value;
     }
-    
+
+    @Override
     public void close()
     {
         base.close();

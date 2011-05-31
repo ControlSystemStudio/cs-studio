@@ -52,7 +52,7 @@ public final class KnobEditPart extends AbstractMarkedWidgetEditPart {
 		registerCommonPropertyChangeHandlers();
 		
 		//knob color
-		setPropertyChangeHandler(KnobModel.PROP_KNOB_COLOR, new ColorChangeHander<KnobFigure>(){
+		setPropertyChangeHandler(KnobModel.PROP_KNOB_COLOR, new ColorChangeHandler<KnobFigure>(){
 			@Override
 			protected void doHandle(KnobFigure figure, Color color) {
 				figure.setBulbColor(color);
@@ -61,7 +61,7 @@ public final class KnobEditPart extends AbstractMarkedWidgetEditPart {
 		
 	
 		//thumbColor
-		setPropertyChangeHandler(KnobModel.PROP_THUMB_COLOR, new ColorChangeHander<KnobFigure>(){
+		setPropertyChangeHandler(KnobModel.PROP_THUMB_COLOR, new ColorChangeHandler<KnobFigure>(){
 			@Override
 			protected void doHandle(KnobFigure figure, Color color) {
 				figure.setThumbColor(color);

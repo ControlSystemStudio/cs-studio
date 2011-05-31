@@ -23,20 +23,22 @@
       </view>
    </extension>
    <extension
-         point="org.eclipse.ui.actionSets">
-      <actionSet
-            description="Global CSS menu actions"
-            id="org.csstudio.debugging.jmsmonitor.cssmenu"
-            label="CSS Action Set"
-            visible="true">
-         <action
-               class="org.csstudio.debugging.jmsmonitor.ShowJMSMonitorAction"
+         point="org.eclipse.ui.menus">
+      <menuContribution
+            allPopups="false"
+            locationURI="menu:debugging">
+         <command
+               commandId="org.eclipse.ui.views.showView"
                icon="icons/jmsmonitor.gif"
-               id="org.csstudio.debugging.jmsmonitor.ShowJMSMonitorAction"
+               id="org.csstudio.alarm.beast.alarmtable"
                label="%JMSMonitor"
-               menubarPath="css/debugging/"
-               style="push"/>
-      </actionSet>
+               style="push">
+            <parameter
+                  name="org.eclipse.ui.views.showView.viewId"
+                  value="org.csstudio.debugging.jmsmonitor.view">
+            </parameter>
+         </command>
+      </menuContribution>
    </extension>
    <extension
          point="org.eclipse.ui.preferencePages">
@@ -47,6 +49,4 @@
             name="%JMSMonitor">
       </page>
    </extension>
-   
-
 </plugin>

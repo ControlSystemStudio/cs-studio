@@ -65,6 +65,14 @@ public class LinkAdapter<C extends Linkable> implements LinkListener<C>
 	}
 
 	/**
+	 * @see LinkListener#operational(ConnectionEvent)
+	 */
+	public void operational(ConnectionEvent<C> e)
+	{
+		// override if needed
+	}
+
+	/**
 	 * @see LinkListener#disconnected(ConnectionEvent)
 	 */
 	public void disconnected(ConnectionEvent<C> e)

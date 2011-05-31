@@ -121,5 +121,17 @@ public class EllipseEditpart extends AbstractShapeEditPart {
 		
 	}
 
+	@Override
+	public void setValue(Object value) {
+		if(value instanceof Number){
+			((EllipseFigure)getFigure()).setFill(((Number)value).doubleValue());
+		}else
+			super.setValue(value);
+	}
+	
+	@Override
+	public Object getValue() {
+		return ((EllipseFigure)getFigure()).getFill();
+	}
 
 }

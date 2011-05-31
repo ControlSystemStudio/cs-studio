@@ -22,6 +22,9 @@
 
 package de.desy.css.dal.tine;
 
+import org.apache.log4j.Logger;
+import org.epics.css.dal.DataExchangeException;
+
 import de.desy.tine.dataUtils.TDataType;
 import de.desy.tine.definitions.TFormat;
 import de.desy.tine.types.SPECTRUM;
@@ -41,8 +44,8 @@ public class DoubleSeqPropertyProxyImpl extends PropertyProxyImpl<double[]>{
 	 * Constructs a new DoubleSeqPropertyProxy.
 	 * @param name
 	 */
-	public DoubleSeqPropertyProxyImpl(String name) {
-		super(name);
+	public DoubleSeqPropertyProxyImpl(String name, TINEPlug plug) {
+		super(name, plug);
 //		value = new double[length];
 		switch (TINEPlug.getInstance().getTFormat(getUniqueName()).getValue()) {
 			case TFormat.CF_SPECTRUM: {
@@ -50,7 +53,11 @@ public class DoubleSeqPropertyProxyImpl extends PropertyProxyImpl<double[]>{
 				break;
 			}
 			default: {
-				this.length = (Integer)getCharacteristic("sequenceLength");
+				try {
+					this.length = (Integer)getCharacteristic("sequenceLength");
+				} catch (DataExchangeException e) {
+					Logger.getLogger(this.getClass()).error("Getting characteristic failed.", e);
+				}
 				this.value = new double[this.length];
 			}
 		}

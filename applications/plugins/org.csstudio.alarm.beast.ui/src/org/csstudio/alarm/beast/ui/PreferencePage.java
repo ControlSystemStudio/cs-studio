@@ -9,7 +9,7 @@ package org.csstudio.alarm.beast.ui;
 
 import org.csstudio.alarm.beast.Preferences;
 import org.csstudio.alarm.beast.SeverityLevel;
-import org.csstudio.platform.ui.security.PasswordFieldEditor;
+import org.csstudio.auth.ui.security.PasswordFieldEditor;
 import org.eclipse.core.runtime.preferences.InstanceScope;
 import org.eclipse.jface.preference.BooleanFieldEditor;
 import org.eclipse.jface.preference.ColorFieldEditor;
@@ -47,6 +47,7 @@ public class PreferencePage extends FieldEditorPreferencePage
     }
 
     /** {@inheritDoc */
+    @Override
     public void init(IWorkbench workbench)
     { /* NOP */ }
 
@@ -58,12 +59,12 @@ public class PreferencePage extends FieldEditorPreferencePage
 
         // Overall configuration name
         addField(new StringFieldEditor(Preferences.ROOT_COMPONENT, Messages.Preferences_RootComponent, parent));
-        
+
         // RDB Server
         addField(new StringFieldEditor(Preferences.RDB_URL, Messages.Preferences_RDB_URL, parent));
         addField(new PasswordFieldEditor(Preferences.RDB_USER, Messages.Preferences_RDB_User, parent,PREF_QUALIFIER_ID, false));
         addField(new PasswordFieldEditor(Preferences.RDB_PASSWORD, Messages.Preferences_RDB_Password, parent, PREF_QUALIFIER_ID));
-        
+
         // JMS Connection
         addField(new StringFieldEditor(Preferences.JMS_URL, Messages.Preferences_JMS_URL, parent));
         addField(new PasswordFieldEditor(Preferences.JMS_USER, Messages.Preferences_JMS_User, parent, PREF_QUALIFIER_ID, false));
@@ -72,13 +73,13 @@ public class PreferencePage extends FieldEditorPreferencePage
             Preferences.JMS_IDLE_TIMEOUT,Messages.Preferences_JMS_IdleTimeout, parent);
         timeout.setValidRange(0, 60*60);
         addField(timeout);
-        
+
         // Commands, related displays
         addField(new StringFieldEditor(Preferences.COMMAND_DIRECTORY, Messages.Preferences_CommandDirectory, parent));
         final IntegerFieldEditor max_entries = new IntegerFieldEditor(Preferences.MAX_CONTEXT_MENU_ENTRIES, Messages.Preferences_MaxContextEntries, parent);
         max_entries.setValidRange(5, 100);
         addField(max_entries);
-        
+
         // Colors
         addField(new ColorFieldEditor(Preferences.COLOR_OK, SeverityLevel.OK.getDisplayName(), parent));
         addField(new ColorFieldEditor(Preferences.COLOR_MINOR_ACK, SeverityLevel.MINOR_ACK.getDisplayName(), parent));
@@ -87,11 +88,11 @@ public class PreferencePage extends FieldEditorPreferencePage
         addField(new ColorFieldEditor(Preferences.COLOR_MINOR, SeverityLevel.MINOR.getDisplayName(), parent));
         addField(new ColorFieldEditor(Preferences.COLOR_MAJOR, SeverityLevel.MAJOR.getDisplayName(), parent));
         addField(new ColorFieldEditor(Preferences.COLOR_INVALID, SeverityLevel.INVALID.getDisplayName(), parent));
-        
+
         // Must use SEPARATE_LABEL, otherwise GUI layout is broken
         // (bug in BooleanFieldEditor?)
         addField(new BooleanFieldEditor(Preferences.READONLY, Messages.Preferences_Readonly, BooleanFieldEditor.SEPARATE_LABEL, parent));
-        addField(new BooleanFieldEditor(Preferences.ALLOW_CONFIG_CHANGE, Messages.Preferences_ConfigChange, BooleanFieldEditor.SEPARATE_LABEL, parent));
+        addField(new BooleanFieldEditor(Preferences.ALLOW_CONFIG_SELECTION, Messages.Preferences_ConfigSelection, BooleanFieldEditor.SEPARATE_LABEL, parent));
     }
 
     /** Show restart message for any change */

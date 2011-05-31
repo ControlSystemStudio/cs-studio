@@ -1,3 +1,10 @@
+/*******************************************************************************
+ * Copyright (c) 2010 Oak Ridge National Laboratory.
+ * All rights reserved. This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License v1.0
+ * which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-v10.html
+ ******************************************************************************/
 package org.csstudio.opibuilder.widgets.model;
 
 import org.csstudio.opibuilder.model.AbstractPVWidgetModel;
@@ -5,6 +12,7 @@ import org.csstudio.opibuilder.properties.BooleanProperty;
 import org.csstudio.opibuilder.properties.ColorProperty;
 import org.csstudio.opibuilder.properties.IntegerProperty;
 import org.csstudio.opibuilder.properties.WidgetPropertyCategory;
+import org.eclipse.draw2d.geometry.Point;
 import org.eclipse.swt.graphics.RGB;
 
 /**
@@ -57,7 +65,7 @@ public class ByteMonitorModel extends AbstractPVWidgetModel {
 	 */
 	@Override
 	protected void configureProperties() {
-		addProperty(new IntegerProperty(PROP_NUM_BITS, "Number of bits", 
+		addProperty(new IntegerProperty(PROP_NUM_BITS, "Number of Bits", 
 				WidgetPropertyCategory.Display, 16, 0, 64));
 		addProperty(new IntegerProperty(PROP_START_BIT, "Start Bit", 
 				WidgetPropertyCategory.Display, 0, 0, 64));
@@ -82,6 +90,56 @@ public class ByteMonitorModel extends AbstractPVWidgetModel {
 	@Override
 	public String getTypeID() {
 		return ID;
+	}
+	
+	public boolean isHorizontal() {
+		return (Boolean)getPropertyValue(PROP_HORIZONTAL);
+	}
+	
+	public boolean isReverseBits(){
+		return (Boolean)getPropertyValue(PROP_BIT_REVERSE);
+	}
+	
+	@Override
+	public void flipHorizontally() {
+		super.flipHorizontally();
+		if(isHorizontal())
+			setPropertyValue(PROP_BIT_REVERSE, !isReverseBits());
+	}
+	
+	@Override
+	public void flipHorizontally(int centerX) {
+		super.flipHorizontally(centerX);
+		if(isHorizontal())
+			setPropertyValue(PROP_BIT_REVERSE, !isReverseBits());
+	}
+	
+	@Override
+	public void flipVertically() {
+		super.flipVertically();
+		if(!isHorizontal())
+			setPropertyValue(PROP_BIT_REVERSE, !isReverseBits());
+	}
+	
+	@Override
+	public void flipVertically(int centerY) {
+		super.flipVertically(centerY);
+		if(!isHorizontal())
+			setPropertyValue(PROP_BIT_REVERSE, !isReverseBits());
+	}
+	
+	@Override
+	public void rotate90(boolean clockwise) {
+		setPropertyValue(PROP_HORIZONTAL, !isHorizontal());
+	}
+	
+	
+
+	@Override
+	public void rotate90(boolean clockwise, Point center) {
+		super.rotate90(clockwise, center);
+		setPropertyValue(PROP_HORIZONTAL, !isHorizontal());
+		super.rotate90(true);
 	}
 
 }

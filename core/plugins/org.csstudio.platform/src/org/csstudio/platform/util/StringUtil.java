@@ -9,7 +9,6 @@ import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import javax.annotation.CheckForNull;
 import javax.naming.NamingEnumeration;
 import javax.naming.NamingException;
 
@@ -19,6 +18,7 @@ import javax.naming.NamingException;
  *
  * @author <code>splitIgnoreInQuotes</code> by Xihui Chen
  */
+@SuppressWarnings("nls")
 public final class StringUtil {
 
     /**
@@ -28,7 +28,7 @@ public final class StringUtil {
         // Don't instantiate
     }
 
-	public static String printArrays(final Object value) {
+    public static String printArrays(final Object value) {
 		String result = null;
 
 		if (value == null) {
@@ -159,7 +159,10 @@ public final class StringUtil {
 			while(pos < trimmedSource.length() && trimmedSource.charAt(pos) !=splitChar) {
 				//in case of quote, go to the end of next quote
 				if(trimmedSource.charAt(pos) == QUOTE) {
-					final int end = trimmedSource.indexOf(QUOTE, pos+1);
+				    // When locating the ending quote, ignore escaped quotes
+					int end = trimmedSource.indexOf(QUOTE, pos+1);
+					while (end > 0  &&  trimmedSource.charAt(end-1) == '\\')
+					    end = trimmedSource.indexOf(QUOTE, end+1);
 					if(end < 0) {
                         throw new Exception("Missing end of quoted text in '" +
 								trimmedSource + "'");
@@ -218,9 +221,8 @@ public final class StringUtil {
      * @param separator the separator character to use, null treated as ""
      * @return the joined String, <code>null</code> if null array input
      */
-	@CheckForNull
-    public static String join(@CheckForNull final Object[] array,
-                              @CheckForNull final String sep) {
+    public static String join(final Object[] array,
+                              final String sep) {
         if (array == null) {
             return null;
         }
@@ -252,9 +254,8 @@ public final class StringUtil {
      * @return the joined string with separated entries
      * @throws NamingException
      */
-    @CheckForNull
-    public static String join(@CheckForNull final NamingEnumeration<String> values,
-                              @CheckForNull final String separator) throws NamingException {
+    public static String join(final NamingEnumeration<String> values,
+                              final String separator) throws NamingException {
 
         final String sep = separator != null ? separator : "";
 
@@ -281,27 +282,5 @@ public final class StringUtil {
         resultString = builder.toString();
         return resultString;
     }
-
-    /**
-     * Creates a list of string from the comma separated entries in the input string
-     * Each list entry is trimmed of whitespaces, so <code>"", "  "</code> entries are not
-     * added!
-     *
-     * @param commaSeparatedString a string of comma separated entries
-     * @return a list of strings, and an empty list if the string is blank
-     */
-    public static List<String> createListFrom(final String commaSeparatedString) {
-        if (StringUtil.isBlank(commaSeparatedString)) {
-            return Collections.emptyList();
-        }
-        final List<String> list = new ArrayList<String>();
-        for (final String entry : commaSeparatedString.split(",")) {
-            if (!isBlank(entry)) {
-                list.add(entry.trim());
-            }
-        }
-        return list;
-    }
-
 
 }

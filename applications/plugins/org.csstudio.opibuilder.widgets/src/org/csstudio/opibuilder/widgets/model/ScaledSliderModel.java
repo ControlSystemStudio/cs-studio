@@ -1,3 +1,10 @@
+/*******************************************************************************
+ * Copyright (c) 2010 Oak Ridge National Laboratory.
+ * All rights reserved. This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License v1.0
+ * which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-v10.html
+ ******************************************************************************/
 package org.csstudio.opibuilder.widgets.model;
 
 
@@ -6,6 +13,7 @@ import org.csstudio.opibuilder.properties.ColorProperty;
 import org.csstudio.opibuilder.properties.DoubleProperty;
 import org.csstudio.opibuilder.properties.WidgetPropertyCategory;
 import org.csstudio.opibuilder.util.OPIColor;
+import org.eclipse.draw2d.geometry.Point;
 import org.eclipse.swt.graphics.Color;
 import org.eclipse.swt.graphics.RGB;
 
@@ -87,11 +95,11 @@ public class ScaledSliderModel extends AbstractMarkedWidgetModel{
 				WidgetPropertyCategory.Display,DEFAULT_THUMB_COLOR));	
 		
 		addProperty(new DoubleProperty(PROP_STEP_INCREMENT, "Step_Increment",
-				WidgetPropertyCategory.Behavior, DEFAULT_STEP_INCREMENT), true);
+				WidgetPropertyCategory.Behavior, DEFAULT_STEP_INCREMENT, 0, Double.MAX_VALUE), true);
 		
 
 		addProperty(new DoubleProperty(PROP_PAGE_INCREMENT, "Page_Increment",
-				WidgetPropertyCategory.Behavior, DEFAULT_PAGE_INCREMENT), true);
+				WidgetPropertyCategory.Behavior, DEFAULT_PAGE_INCREMENT, 0, Double.MAX_VALUE), true);
 		
 		setPropertyValue(PROP_LO_COLOR, new OPIColor(255, 128, 0));
 		setPropertyValue(PROP_HI_COLOR, new OPIColor(255, 128, 0));
@@ -151,5 +159,17 @@ public class ScaledSliderModel extends AbstractMarkedWidgetModel{
 	
 	public double getPageIncrement() {
 		return (Double) getProperty(PROP_PAGE_INCREMENT).getPropertyValue();
+	}
+	
+	@Override
+	public void rotate90(boolean clockwise) {
+		setPropertyValue(PROP_HORIZONTAL, !isHorizontal());
+	}
+	
+	@Override
+	public void rotate90(boolean clockwise, Point center) {
+		super.rotate90(clockwise, center);
+		setPropertyValue(PROP_HORIZONTAL, !isHorizontal());
+		super.rotate90(true);
 	}
 }

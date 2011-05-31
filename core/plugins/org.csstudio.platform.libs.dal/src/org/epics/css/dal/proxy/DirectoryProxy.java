@@ -35,7 +35,7 @@ import org.epics.css.dal.SimpleProperty;
  *
  * @author Blaz Hostnik
  */
-public interface DirectoryProxy extends Proxy
+public interface DirectoryProxy<P extends AbstractPlug> extends Proxy<P>
 {
 	/**
 	 * Returns the unique name. This name is used to initiate

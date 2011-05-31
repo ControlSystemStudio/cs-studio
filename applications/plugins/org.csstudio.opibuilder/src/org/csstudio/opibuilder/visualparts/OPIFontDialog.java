@@ -1,12 +1,18 @@
+/*******************************************************************************
+ * Copyright (c) 2010 Oak Ridge National Laboratory.
+ * All rights reserved. This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License v1.0
+ * which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-v10.html
+ ******************************************************************************/
 package org.csstudio.opibuilder.visualparts;
 
 import org.csstudio.opibuilder.OPIBuilderPlugin;
 import org.csstudio.opibuilder.util.MediaService;
 import org.csstudio.opibuilder.util.OPIFont;
-import org.csstudio.platform.ui.util.CustomMediaFactory;
+import org.csstudio.ui.util.CustomMediaFactory;
 import org.eclipse.jface.action.Action;
 import org.eclipse.jface.action.MenuManager;
-import org.eclipse.jface.dialogs.Dialog;
 import org.eclipse.jface.dialogs.IDialogConstants;
 import org.eclipse.jface.viewers.ISelectionChangedListener;
 import org.eclipse.jface.viewers.IStructuredSelection;
@@ -34,7 +40,7 @@ import org.eclipse.ui.model.BaseWorkbenchContentProvider;
  * @author chenxh
  *
  */
-public class OPIFontDialog extends Dialog {
+public class OPIFontDialog extends HelpTrayDialog {
 	
 	private OPIFont opiFont;
 	private TableViewer preDefinedFontsViewer;
@@ -61,6 +67,12 @@ public class OPIFontDialog extends Dialog {
 			shell.setText(title);
 		}
 	}
+	
+	@Override
+	protected String getHelpResourcePath() {
+		return "/" + OPIBuilderPlugin.PLUGIN_ID + "/html/ColorFont.html"; //$NON-NLS-1$; //$NON-NLS-2$
+	}
+	
 	@Override
 	protected Control createDialogArea(Composite parent) {
 		final Composite parent_Composite = (Composite) super.createDialogArea(parent);
@@ -73,7 +85,7 @@ public class OPIFontDialog extends Dialog {
 		final Composite leftComposite = new Composite(mainComposite, SWT.None);
 		leftComposite.setLayout(new GridLayout(1, false));
 		GridData gd = new GridData(SWT.FILL, SWT.FILL, true, true);
-		gd.widthHint = 300;
+		gd.widthHint = 200;
 		leftComposite.setLayoutData(gd);	
 		createLabel(leftComposite, "Choose from Predefined Fonts:");
 		
@@ -84,13 +96,14 @@ public class OPIFontDialog extends Dialog {
 		Composite rightComposite = new Composite(mainComposite, SWT.None);
 		rightComposite.setLayout(new GridLayout(1, false));
 		gd = new GridData(SWT.FILL, SWT.FILL, true, true);
+		gd.widthHint = 200;
 		rightComposite.setLayoutData(gd);
 		
 		
 		createLabel(rightComposite, "");
 		
 		Button colorDialogButton = new Button(rightComposite, SWT.PUSH);
-		colorDialogButton.setLayoutData(new GridData(SWT.LEFT, SWT.TOP, false, false));
+		colorDialogButton.setLayoutData(new GridData(SWT.FILL, SWT.TOP, true, false));
 		colorDialogButton.setText("Choose from Font Dialog");
 		colorDialogButton.addSelectionListener(new SelectionAdapter(){
 			@SuppressWarnings("deprecation")
@@ -212,7 +225,7 @@ public class OPIFontDialog extends Dialog {
 		
 		@Override
 		public void run() {
-			MediaService.getInstance().reload();
+			MediaService.getInstance().reloadFontFile();
 			preDefinedFontsViewer.setInput(
 					MediaService.getInstance().getAllPredefinedFonts());
 		}

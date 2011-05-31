@@ -1,3 +1,10 @@
+/*******************************************************************************
+ * Copyright (c) 2010 Oak Ridge National Laboratory.
+ * All rights reserved. This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License v1.0
+ * which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-v10.html
+ ******************************************************************************/
 package org.csstudio.diag.pvfields.gui;
 
 import org.csstudio.diag.pvfields.model.PVInfo;
@@ -18,13 +25,14 @@ import org.eclipse.swt.widgets.Display;
 public class FieldLabelProvider extends BaseLabelProvider implements
         ITableLabelProvider, ITableColorProvider
 {
-
+    @Override
     public Image getColumnImage(Object element, int columnIndex)
     {
         // No image
         return null;
     }
 
+    @Override
     public String getColumnText(Object element, int columnIndex)
     {
         final PVInfo field = (PVInfo) element;
@@ -34,7 +42,7 @@ public class FieldLabelProvider extends BaseLabelProvider implements
         // sometimes it does this protects against null pointer errors.
         if (field == null)
             return "<null>";
-        
+
         switch (columnIndex)
         {
         case 0:
@@ -50,6 +58,7 @@ public class FieldLabelProvider extends BaseLabelProvider implements
         }
     }
 
+    @Override
     public Color getBackground(Object element, int columnIndex)
     {
         Color grey = Display.getCurrent().getSystemColor(SWT.COLOR_GRAY);
@@ -104,6 +113,7 @@ public class FieldLabelProvider extends BaseLabelProvider implements
             return null;
     }
 
+    @Override
     public Color getForeground(Object element, int columnIndex)
     {
         return null;

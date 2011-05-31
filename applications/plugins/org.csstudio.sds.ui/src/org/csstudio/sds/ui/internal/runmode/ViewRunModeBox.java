@@ -29,6 +29,7 @@ import org.csstudio.platform.logging.CentralLogger;
 import org.csstudio.sds.internal.runmode.RunModeBoxInput;
 import org.eclipse.gef.GraphicalViewer;
 import org.eclipse.jface.dialogs.MessageDialog;
+import org.eclipse.swt.graphics.Point;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.ui.IPartListener2;
 import org.eclipse.ui.IPerspectiveDescriptor;
@@ -152,7 +153,7 @@ public final class ViewRunModeBox extends AbstractRunModeBox implements
 	 * is used. Otherwise a new view will be created.
 	 */
 	@Override
-	protected GraphicalViewer doOpen(int x, int y, int width, int height,
+	protected GraphicalViewer doOpen(int x, int y, boolean openRelative, int width, int height,
 			String title) {
 		if (_viewPart != null) {
 			// the view was already instantiated by the workbench (this usually
@@ -357,38 +358,11 @@ public final class ViewRunModeBox extends AbstractRunModeBox implements
 			p.setPerspective(perspective);
 			p.activate(viewReference.getPart(false));
 		}
-		// private void closeAllViews(final IWorkbenchPart viewPart) {
-		// final IWorkbenchWindow[] windows = PlatformUI.getWorkbench()
-		// .getWorkbenchWindows();
-		//
-		// // for all workbench windows
-		// for (int w = 0; w < windows.length; w++) {
-		// final IWorkbenchPage[] pages = windows[w].getPages();
-		//
-		// // for all workbench pages
-		// // of a given workbench window
-		// for (int p = 0; p < pages.length; p++) {
-		// final IWorkbenchPage page = pages[p];
-		//
-		// for (IPerspectiveDescriptor pd : page.getOpenPerspectives()) {
-		// page.setPerspective(pd);
-		//
-		// final IViewReference[] viewRefs = page.getViewReferences();
-		//
-		// // for all view references
-		// // of a given workbench page
-		// // of a given workbench window
-		// for (int v = 0; v < viewRefs.length; v++) {
-		// final IViewReference viewRef = viewRefs[v];
-		// if (secId.equals(viewRef.getSecondaryId())) {
-		// page.hideView(viewRef);
-		// }
-		// }
-		// }
-		// }
-		// }
-		// }
-		//
+	}
+
+	@Override
+	public Point getCurrentLocation() {
+		return _viewPart.getSite().getShell().getLocation();
 	}
 
 }

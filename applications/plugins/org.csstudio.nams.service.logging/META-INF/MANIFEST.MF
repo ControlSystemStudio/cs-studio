@@ -12,3 +12,4 @@ Eclipse-LazyStart: true
 Export-Package: org.csstudio.nams.service.logging;x-friends:="org.csstudio.nams.testUtils.testSuites",
  org.csstudio.nams.service.logging.declaration,
  org.csstudio.nams.service.logging.impl;x-friends:="org.csstudio.nams.testUtils.testSuites"
+Bundle-Vendor: DESY <css-developer@desy.de>, Markus Moeller

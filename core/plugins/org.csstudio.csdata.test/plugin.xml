@@ -1,0 +1,67 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?eclipse version="3.4"?>
+<plugin>
+
+   <extension
+         point="org.eclipse.ui.views">
+      <category
+            name="Test"
+            id="org.csstudio.test">
+      </category>
+      <view
+            name="Drag&apos;n&apos;Drop Test"
+            icon="icons/test.png"
+            category="org.csstudio.test"
+            class="org.csstudio.csdata.test.DnDTestView"
+            id="org.csstudio.model.test.DnDTestView">
+      </view>
+   </extension>
+   <extension
+         point="org.eclipse.ui.menus">
+      <menuContribution
+            allPopups="false"
+            locationURI="menu:test">
+            <command
+                  commandId="org.csstudio.model.test.TestAdapterUtil"
+                  icon="icons/test.png"
+                  label="Test adapter"
+                  style="push">
+            </command>
+         <command
+               commandId="org.eclipse.ui.views.showView"
+               icon="icons/test.png"
+               label="Drag&apos;n&apos;Drop Test"
+               style="push">
+            <parameter
+                  name="org.eclipse.ui.views.showView.viewId"
+                  value="org.csstudio.model.test.DnDTestView">
+            </parameter>
+         </command>
+      </menuContribution>
+   </extension>
+   <extension
+         point="org.eclipse.ui.commands">
+      <command
+            defaultHandler="org.csstudio.csdata.test.TestAdapterUtil"
+            id="org.csstudio.model.test.TestAdapterUtil"
+            name="Test adapter">
+      </command>
+   </extension>
+   <extension
+         point="org.eclipse.core.runtime.adapters">
+      <factory
+            adaptableType="org.csstudio.csdata.test.DeviceAndAPV"
+            class="org.csstudio.csdata.test.DeviceAndAPVFactory">
+         <adapter
+               type="org.csstudio.csdata.ProcessVariable">
+         </adapter>
+         <adapter
+               type="org.csstudio.csdata.Device">
+         </adapter>
+         <adapter
+               type="org.csstudio.csdata.test.DeviceAndPVs">
+         </adapter>
+      </factory>
+   </extension>
+
+</plugin>

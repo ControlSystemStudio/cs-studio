@@ -2,12 +2,12 @@ package org.csstudio.archive.crawl;
 
 import java.util.Iterator;
 
-import org.csstudio.platform.data.IDoubleValue;
-import org.csstudio.platform.data.IMetaData;
-import org.csstudio.platform.data.INumericMetaData;
-import org.csstudio.platform.data.IValue;
-import org.csstudio.platform.data.ValueFactory;
-import org.csstudio.platform.data.ValueUtil;
+import org.csstudio.data.values.IDoubleValue;
+import org.csstudio.data.values.IMetaData;
+import org.csstudio.data.values.INumericMetaData;
+import org.csstudio.data.values.IValue;
+import org.csstudio.data.values.ValueFactory;
+import org.csstudio.data.values.ValueUtil;
 
 /** Turns an Iterator over raw <code>Value</code>s into one over
  *  <code>DoubleValue</code>s.
@@ -19,7 +19,7 @@ import org.csstudio.platform.data.ValueUtil;
  *  Samples with no numeric value, for example because of a
  *  status/severity that indicates a disconnected state,
  *  are returned with Double.NaN to be easier to spot.
- *  
+ *
  *  @see org.csstudio.archive.crawl.RawValueIterator
  *  @author Kay Kasemir
  */
@@ -27,12 +27,12 @@ public class DoubleValueIterator implements Iterator<IDoubleValue>
 {
     final private Iterator<IValue> raw_samples;
     static private INumericMetaData numeric_meta = null;
-    
+
     public DoubleValueIterator(Iterator<IValue> raw_samples)
     {
         this.raw_samples = raw_samples;
     }
-    
+
     public boolean hasNext()
     {
         return raw_samples.hasNext();
@@ -58,7 +58,7 @@ public class DoubleValueIterator implements Iterator<IDoubleValue>
                         IValue.Quality.Interpolated,
                         new double[] { value });
     }
-    
+
     public void remove()
     {
         raw_samples.remove();

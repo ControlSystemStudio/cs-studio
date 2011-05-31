@@ -7,13 +7,15 @@
  ******************************************************************************/
 package org.csstudio.alarm.beast.ui.clientmodel;
 
-import org.csstudio.alarm.beast.AlarmTreePV;
-import org.csstudio.alarm.beast.AlarmTreeRoot;
+import org.csstudio.alarm.beast.client.AlarmTreeLeaf;
+import org.csstudio.alarm.beast.client.AlarmTreePV;
+import org.csstudio.alarm.beast.client.AlarmTreeRoot;
 
 /** Root of the alarm configuration tree that the client model uses.
  *  Severity changes that percolate up to the root send signal to model.
  *  @author Kay Kasemir
  */
+@SuppressWarnings("nls")
 public class AlarmClientModelRoot extends AlarmTreeRoot
 {
     final private AlarmClientModel model;
@@ -26,7 +28,7 @@ public class AlarmClientModelRoot extends AlarmTreeRoot
     protected AlarmClientModelRoot(final int id, final String name,
             final AlarmClientModel model)
     {
-        super(id, name);
+        super(name, id);
         this.model = model;
     }
 
@@ -42,10 +44,14 @@ public class AlarmClientModelRoot extends AlarmTreeRoot
      *  @see org.csstudio.alarm.beast.AlarmTree#maximizeSeverity()
      */
     @Override
-    public void maximizeSeverity(final AlarmTreePV pv)
+    public void maximizeSeverity(final AlarmTreeLeaf pv)
     {
         super.maximizeSeverity(pv);
         if (model != null)
-            model.fireNewAlarmState(pv);
+            // In the client model, the leaf items are PVs
+            if (pv instanceof AlarmTreePV)
+                model.fireNewAlarmState((AlarmTreePV) pv);
+            else
+                throw new IllegalArgumentException("Expected PV");
     }
 }

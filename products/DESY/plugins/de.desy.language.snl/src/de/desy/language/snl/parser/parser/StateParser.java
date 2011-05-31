@@ -21,7 +21,7 @@ public class StateParser extends AbstractOptimizedStatementParser<StateNode> {
 		while (preMatcher.find(localStart)) {
 			localStart = preMatcher.start();
 			
-			while (postMatcher.find(localStart)) {
+			while (postMatcher.find(localStart + 1)) {
 				final int end = postMatcher.end();
 				matcher.region(startIndex, end);
 				if (matcher.find()) {

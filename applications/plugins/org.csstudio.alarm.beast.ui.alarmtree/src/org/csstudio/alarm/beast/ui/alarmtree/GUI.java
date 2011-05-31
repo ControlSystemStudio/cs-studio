@@ -9,21 +9,23 @@ package org.csstudio.alarm.beast.ui.alarmtree;
 
 import java.util.List;
 
-import org.csstudio.alarm.beast.AlarmTree;
-import org.csstudio.alarm.beast.AlarmTreePV;
-import org.csstudio.alarm.beast.AlarmTreePosition;
-import org.csstudio.alarm.beast.ui.AddComponentAction;
-import org.csstudio.alarm.beast.ui.AlarmPVDragSource;
-import org.csstudio.alarm.beast.ui.AlarmPerspectiveAction;
-import org.csstudio.alarm.beast.ui.ConfigureItemAction;
+import org.csstudio.alarm.beast.client.AlarmTreeItem;
+import org.csstudio.alarm.beast.client.AlarmTreePV;
+import org.csstudio.alarm.beast.client.AlarmTreePosition;
+import org.csstudio.alarm.beast.client.AlarmTreeRoot;
 import org.csstudio.alarm.beast.ui.ContextMenuHelper;
-import org.csstudio.alarm.beast.ui.DuplicatePVAction;
 import org.csstudio.alarm.beast.ui.Messages;
-import org.csstudio.alarm.beast.ui.MoveItemAction;
-import org.csstudio.alarm.beast.ui.RemoveComponentAction;
-import org.csstudio.alarm.beast.ui.RenameItemAction;
+import org.csstudio.alarm.beast.ui.SelectionHelper;
+import org.csstudio.alarm.beast.ui.actions.AddComponentAction;
+import org.csstudio.alarm.beast.ui.actions.AlarmPerspectiveAction;
+import org.csstudio.alarm.beast.ui.actions.ConfigureItemAction;
+import org.csstudio.alarm.beast.ui.actions.DuplicatePVAction;
+import org.csstudio.alarm.beast.ui.actions.MoveItemAction;
+import org.csstudio.alarm.beast.ui.actions.RemoveComponentAction;
+import org.csstudio.alarm.beast.ui.actions.RenameItemAction;
 import org.csstudio.alarm.beast.ui.clientmodel.AlarmClientModel;
 import org.csstudio.alarm.beast.ui.clientmodel.AlarmClientModelListener;
+import org.csstudio.ui.util.dnd.ControlSystemDragSource;
 import org.eclipse.jface.action.GroupMarker;
 import org.eclipse.jface.action.IMenuListener;
 import org.eclipse.jface.action.IMenuManager;
@@ -32,7 +34,6 @@ import org.eclipse.jface.action.Separator;
 import org.eclipse.jface.viewers.ColumnViewerToolTipSupport;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.viewers.TreeViewer;
-import org.eclipse.jface.window.ToolTip;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.DisposeEvent;
 import org.eclipse.swt.events.DisposeListener;
@@ -44,6 +45,7 @@ import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.swt.widgets.Tree;
+import org.eclipse.ui.IWorkbenchActionConstants;
 import org.eclipse.ui.IWorkbenchPartSite;
 
 /** GUI for the alarm tree viewer
@@ -53,15 +55,15 @@ public class GUI implements AlarmClientModelListener
 {
     /** Model for this GUI */
     final private AlarmClientModel model;
-    
+
     /** Error message.
      *  @see #setErrorMessage(String)
      */
     private Label error_message;
-    
+
     /** Tree */
     private TreeViewer tree_viewer;
-    
+
     /** Show only alarms, or all items? */
     private boolean show_only_alarms;
 
@@ -80,11 +82,12 @@ public class GUI implements AlarmClientModelListener
             setErrorMessage(null);
         else
             setErrorMessage(Messages.WaitingForServer);
-        
+
         // Subscribe to model updates, arrange to un-subscribe
         model.addListener(this);
         parent.addDisposeListener(new DisposeListener()
         {
+            @Override
             public void widgetDisposed(DisposeEvent e)
             {
                 model.removeListener(GUI.this);
@@ -92,15 +95,23 @@ public class GUI implements AlarmClientModelListener
         });
 
         connectContextMenu(site);
+
         // Allow 'drag' of alarm info as text
-        new AlarmPVDragSource(tree_viewer.getTree(), tree_viewer);
+        new ControlSystemDragSource(tree_viewer.getTree())
+        {
+            @Override
+            public Object getSelection()
+            {
+                return SelectionHelper.getAlarmTreePVsForDragging((IStructuredSelection)tree_viewer.getSelection());
+            }
+        };
     }
 
     /** Create the GUI elements */
     private void createGUI(final Composite parent)
     {
         parent.setLayout(new FormLayout());
-        
+
         // Error label in top-right
         error_message = new Label(parent, 0);
         error_message.setBackground(parent.getDisplay().getSystemColor(SWT.COLOR_MAGENTA));
@@ -108,7 +119,7 @@ public class GUI implements AlarmClientModelListener
         fd.top = new FormAttachment(0, 0);
         fd.right = new FormAttachment(100, 0);
         error_message.setLayoutData(fd);
-                
+
         // Tree below the error label, filling the rest
         tree_viewer = new TreeViewer(parent,
                 SWT.VIRTUAL | SWT.MULTI | SWT.H_SCROLL | SWT.V_SCROLL |
@@ -120,16 +131,16 @@ public class GUI implements AlarmClientModelListener
         fd.right = new FormAttachment(100, 0);
         fd.bottom = new FormAttachment(100, 0);
         tree.setLayoutData(fd);
-        
+
         // Connect tree viewer to data model
         tree_viewer.setUseHashlookup(true);
         tree_viewer.setContentProvider(new AlarmTreeContentProvider(this));
         tree_viewer.setLabelProvider(new AlarmTreeLabelProvider(tree));
         tree_viewer.setInput(model.getConfigTree());
-        
-        ColumnViewerToolTipSupport.enableFor(tree_viewer, ToolTip.NO_RECREATE);
+
+        ColumnViewerToolTipSupport.enableFor(tree_viewer);
     }
-    
+
     /** Set or clear error message.
      *  Setting an error message also disables the GUI.
      *  <p>
@@ -174,13 +185,14 @@ public class GUI implements AlarmClientModelListener
         manager.setRemoveAllWhenShown(true);
         manager.addMenuListener(new IMenuListener()
         {
+            @Override
             public void menuAboutToShow(IMenuManager manager)
             {
                 fillContextMenu(manager);
             }
         });
         tree.setMenu(manager.createContextMenu(tree));
-        
+
         // Allow extensions to add to the context menu
         if (site != null)
         {
@@ -199,11 +211,11 @@ public class GUI implements AlarmClientModelListener
     private void fillContextMenu(final IMenuManager manager)
     {
         final Shell shell = tree_viewer.getTree().getShell();
-        final List<AlarmTree> items =
+        final List<AlarmTreeItem> items =
             ((IStructuredSelection)tree_viewer.getSelection()).toList();
-        
+
         new ContextMenuHelper(manager, shell, items, model.isWriteAllowed());
-        manager.add(new Separator());        
+        manager.add(new Separator());
 		if(model.isWriteAllowed())
 		{
 	        // Add edit items
@@ -214,9 +226,9 @@ public class GUI implements AlarmClientModelListener
 		    }
 		    else if (items.size() == 1)
 	        {
-	            final AlarmTree item = items.get(0);
+	            final AlarmTreeItem item = items.get(0);
 	            // Allow configuration of single item
-	             
+
 		        manager.add(new ConfigureItemAction(shell, model, item));
 		        manager.add(new Separator());
 		        // Allow addition of items to all but PVs (leafs of tree)
@@ -232,11 +244,12 @@ public class GUI implements AlarmClientModelListener
 	        {   // Allow removal of one or more selected items
 	            manager.add(new MoveItemAction(shell, model, items));
 	            manager.add(new RemoveComponentAction(shell, model, items));
-	            manager.add(new Separator());
 	        }
 		}
+        manager.add(new Separator());
         manager.add(new AlarmPerspectiveAction());
-        manager.add(new GroupMarker("additions")); //$NON-NLS-1$
+        manager.add(new Separator());
+        manager.add(new GroupMarker(IWorkbenchActionConstants.MB_ADDITIONS));
     }
 
     /** Set focus to desired element in GUI */
@@ -251,7 +264,7 @@ public class GUI implements AlarmClientModelListener
         tree_viewer.collapseAll();
         tree_viewer.refresh(false);
     }
-    
+
     /** @return <code>true</code> if we only show alarms,
      *          <code>false</code> if we show the whole configuration
      * @return
@@ -271,6 +284,7 @@ public class GUI implements AlarmClientModelListener
     }
 
     // @see AlarmClientModelListener
+    @Override
     public void serverModeUpdate(AlarmClientModel model, boolean maintenanceMode)
     {
         // Ignored
@@ -279,10 +293,12 @@ public class GUI implements AlarmClientModelListener
     /** Server connection timeout
      *  @see AlarmClientModelListener
      */
+    @Override
     public void serverTimeout(final AlarmClientModel model)
     {
         Display.getDefault().asyncExec(new Runnable()
         {
+            @Override
             public void run()
             {
                 setErrorMessage(Messages.ServerTimeout);
@@ -293,19 +309,28 @@ public class GUI implements AlarmClientModelListener
     /** Model changed, redo the whole tree
      *  @see AlarmClientModelListener
      */
-    public void newAlarmTree(final AlarmClientModel model)
+    @Override
+    public void newAlarmConfiguration(final AlarmClientModel model)
     {
+        final AlarmTreeRoot config = model.getConfigTree();
         Display.getDefault().asyncExec(new Runnable()
         {
+            @Override
             public void run()
             {
                 final Tree tree = tree_viewer.getTree();
                 if (tree.isDisposed())
                     return;
-                // Try to keep the expanded items
-                final Object[] state = tree_viewer.getExpandedElements();
-                tree_viewer.setInput(model.getConfigTree());
-                tree_viewer.setExpandedElements(state);
+                // Puzzling. After switching to ws=cocoa for OS X,
+                // the tree would stay blank until either waiting a long time,
+                // or switching to another window, opening a dialog etc.
+                // triggers a refresh.
+                // What seems to work is the combination of manual setRedraw(false, true)
+                // and a tree_viewer.refresh().
+                tree.setRedraw(false);
+                tree_viewer.setInput(config);
+                tree_viewer.refresh();
+                tree.setRedraw(true);
             }
         });
     }
@@ -313,11 +338,13 @@ public class GUI implements AlarmClientModelListener
     /** Alarm state changed, refresh the display
      *  @see AlarmClientModelListener
      */
+    @Override
     public void newAlarmState(final AlarmClientModel model,
             final AlarmTreePV pv)
     {
         Display.getDefault().asyncExec(new Runnable()
         {
+            @Override
             public void run()
             {
                 final Tree tree = tree_viewer.getTree();
@@ -336,9 +363,9 @@ public class GUI implements AlarmClientModelListener
     @SuppressWarnings("unchecked")
     public void acknowledgeSelectedAlarms()
     {
-        final List<AlarmTree> items =
+        final List<AlarmTreeItem> items =
             ((IStructuredSelection)tree_viewer.getSelection()).toList();
-        for (AlarmTree item : items)
+        for (AlarmTreeItem item : items)
             if (item instanceof AlarmTreePV)
                 ((AlarmTreePV)item).acknowledge(true);
     }
@@ -347,9 +374,9 @@ public class GUI implements AlarmClientModelListener
     @SuppressWarnings("unchecked")
     public void unacknowledgeSelectedAlarms()
     {
-        final List<AlarmTree> items =
+        final List<AlarmTreeItem> items =
             ((IStructuredSelection)tree_viewer.getSelection()).toList();
-        for (AlarmTree item : items)
+        for (AlarmTreeItem item : items)
             if (item instanceof AlarmTreePV)
                 ((AlarmTreePV)item).acknowledge(false);
     }

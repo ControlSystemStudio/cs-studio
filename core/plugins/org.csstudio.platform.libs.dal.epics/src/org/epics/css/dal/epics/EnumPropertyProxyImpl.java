@@ -24,9 +24,11 @@ package org.epics.css.dal.epics;
 
 import gov.aps.jca.dbr.DBR;
 import gov.aps.jca.dbr.DBRType;
+import gov.aps.jca.dbr.LABELS;
 
 import org.epics.css.dal.EnumPropertyCharacteristics;
 import org.epics.css.dal.NumericPropertyCharacteristics;
+import org.epics.css.dal.PatternPropertyCharacteristics;
 import org.epics.css.dal.RemoteException;
 
 /**
@@ -50,19 +52,24 @@ public class EnumPropertyProxyImpl extends PropertyProxyImpl<Long> {
 	protected void createSpecificCharacteristics(DBR dbr) {
 		
 		
-		String[] names= (String[])characteristics.get(EnumPropertyCharacteristics.C_ENUM_DESCRIPTIONS);
+		String[] names= (String[])getCharacteristics().get(EnumPropertyCharacteristics.C_ENUM_DESCRIPTIONS);
 		
-		if (names==null) {
-			names= new String[0];
-			characteristics.put(EnumPropertyCharacteristics.C_ENUM_DESCRIPTIONS, names);
-			characteristics.put(EnumPropertyCharacteristics.C_ENUM_VALUES, new Object[0]);
+		if (names==null || names.length==0) {
+			names= new String[16];
+			Object[] vals= new Object[16];
+			for (int i = 0; i < names.length; i++) {
+				names[i]="Value "+i;
+				vals[i]= new Long(i);
+			}
+			getCharacteristics().put(EnumPropertyCharacteristics.C_ENUM_DESCRIPTIONS, names);
+			getCharacteristics().put(EnumPropertyCharacteristics.C_ENUM_VALUES, vals);
 		}
 
-		characteristics.put(NumericPropertyCharacteristics.C_MINIMUM, new Long(0));
-		characteristics.put(NumericPropertyCharacteristics.C_MAXIMUM, new Long(names.length));
+		getCharacteristics().put(NumericPropertyCharacteristics.C_MINIMUM, new Long(0));
+		getCharacteristics().put(NumericPropertyCharacteristics.C_MAXIMUM, new Long(names.length));
 
-		characteristics.put(NumericPropertyCharacteristics.C_GRAPH_MIN, new Long(0));
-		characteristics.put(NumericPropertyCharacteristics.C_GRAPH_MAX, new Long(names.length));
+		getCharacteristics().put(NumericPropertyCharacteristics.C_GRAPH_MIN, new Long(0));
+		getCharacteristics().put(NumericPropertyCharacteristics.C_GRAPH_MAX, new Long(names.length));
 		
 	}
 }

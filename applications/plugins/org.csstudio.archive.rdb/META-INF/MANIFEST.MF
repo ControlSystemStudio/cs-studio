@@ -2,15 +2,19 @@ Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: RDB Archive library
 Bundle-SymbolicName: org.csstudio.archive.rdb;singleton:=true
-Bundle-Version: 1.2.4.qualifier
+Bundle-Version: 3.0.0.qualifier
 Bundle-Vendor: Kay Kasemir <kasemirk@ornl.gov> - SNS
-Require-Bundle: org.eclipse.core.runtime,
- org.csstudio.platform,
- org.csstudio.platform.utility.rdb;visibility:=reexport,
+Bundle-Description: Archive RDB support library
+Require-Bundle: org.junit4,
+ org.eclipse.core.runtime,
+ org.csstudio.logging;bundle-version="3.0.0",
+ org.csstudio.data;bundle-version="3.0.0",
  org.csstudio.apputil,
- org.junit4
-Eclipse-LazyStart: true
+ org.csstudio.platform.utility.rdb;visibility:=reexport,
+ org.csstudio.auth;bundle-version="3.0.0"
+Bundle-ActivationPolicy: lazy
 Bundle-ClassPath: .
 Export-Package: org.csstudio.archive.rdb,
- org.csstudio.archive.rdb.engineconfig
-Bundle-Activator: org.csstudio.archive.rdb.Activator
+ org.csstudio.archive.rdb.engineconfig,
+ org.csstudio.archive.rdb.internal
+Bundle-RequiredExecutionEnvironment: JavaSE-1.6

@@ -1,0 +1,11 @@
+Manifest-Version: 1.0
+Bundle-ManifestVersion: 2
+Bundle-Name: Java Utilities
+Bundle-SymbolicName: org.csstudio.java
+Bundle-Version: 3.0.0.qualifier
+Bundle-RequiredExecutionEnvironment: JavaSE-1.6
+Bundle-Vendor: Kay Kasemir <kasemirk@ornl.gov>, Xihui Chen <chenx1@ornl.gov> - SNS
+Bundle-Description: Java Utilities, no dependencies to Eclipse
+Require-Bundle: org.junit4
+Export-Package: org.csstudio.java.string,
+ org.csstudio.java.thread

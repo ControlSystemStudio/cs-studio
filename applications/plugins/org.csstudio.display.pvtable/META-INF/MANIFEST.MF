@@ -2,18 +2,21 @@ Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: PVTable Plug-in
 Bundle-SymbolicName: org.csstudio.display.pvtable;singleton:=true
-Bundle-Version: 1.0.4.qualifier
+Bundle-Version: 3.0.0.qualifier
 Bundle-Activator: org.csstudio.display.pvtable.Plugin
-Bundle-Vendor: Kay Kasemir
+Bundle-Vendor: Kay Kasemir <kasemirk@ornl.gov> - SNS
 Bundle-Localization: plugin
-Require-Bundle: org.eclipse.ui,
+Require-Bundle: org.junit4,
+ org.eclipse.ui,
  org.eclipse.core.runtime,
  org.eclipse.ui.views,
  org.eclipse.core.resources,
- org.csstudio.utility.pv,
- org.csstudio.platform.ui,
- org.csstudio.platform,
+ org.eclipse.ui.ide,
+ org.csstudio.csdata;bundle-version="3.0.0",
+ org.csstudio.utility.pv;bundle-version="1.2.0",
+ org.csstudio.ui.util;bundle-version="3.0.0",
  org.csstudio.apputil,
- org.csstudio.apputil.ui,
- org.junit4
+ org.csstudio.apputil.ui
 Bundle-ActivationPolicy: lazy
+Bundle-RequiredExecutionEnvironment: JavaSE-1.6
+Bundle-Description: Basic PV snapshot/compare table

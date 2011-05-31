@@ -38,6 +38,7 @@ public class Messages extends NLS
     public static String AlarmCurrentMessage;
     public static String AlarmCurrentSeverity;
     public static String AlarmDescription;
+    public static String AlarmDescriptionUnknown;
     public static String AlarmArea;
     public static String AlarmMessage;
     public static String AlarmPerspectiveAction;
@@ -90,6 +91,7 @@ public class Messages extends NLS
     public static String ErrorInFilter;
 	public static String Filter;
     public static String FilterTT;
+    public static String GlobalAlarm_ToolTipFmt;
     public static String MaintenanceMode;
     public static String MaintenanceModeDisableMsg;
     public static String MaintenanceModeEnableMsg;
@@ -103,7 +105,7 @@ public class Messages extends NLS
     public static String MoveItemMsg;
     public static String NormalModeTT;
     public static String Preferences_CommandDirectory;
-    public static String Preferences_ConfigChange;
+    public static String Preferences_ConfigSelection;
 	public static String Preferences_JMS_IdleTimeout;
     public static String Preferences_JMS_URL;
     public static String Preferences_JMS_User;

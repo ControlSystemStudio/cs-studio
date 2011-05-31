@@ -1,3 +1,10 @@
+/*******************************************************************************
+ * Copyright (c) 2010 Oak Ridge National Laboratory.
+ * All rights reserved. This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License v1.0
+ * which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-v10.html
+ ******************************************************************************/
 package org.csstudio.opibuilder.actions;
 
 import java.util.ArrayList;
@@ -9,7 +16,7 @@ import org.csstudio.opibuilder.OPIBuilderPlugin;
 import org.csstudio.opibuilder.commands.SetWidgetPropertyCommand;
 import org.csstudio.opibuilder.editparts.AbstractBaseEditPart;
 import org.csstudio.opibuilder.model.AbstractWidgetModel;
-import org.csstudio.platform.ui.util.CustomMediaFactory;
+import org.csstudio.ui.util.CustomMediaFactory;
 import org.eclipse.gef.commands.Command;
 import org.eclipse.gef.commands.CompoundCommand;
 import org.eclipse.gef.ui.actions.SelectionAction;
@@ -23,12 +30,12 @@ import org.eclipse.ui.IWorkbenchPart;
 public class DistributeWidgetsAction extends SelectionAction {
 
 	public enum DistributeType{		
-		HORIZONTAL_GAP("Distribute by Horizontal GAP", "icons/distribute_hg.gif"), //$NON-NLS-2$
-		HORIZONTAL_CENTERS("Distribute by Horizontal Centers", "icons/distribute_hc.gif"), //$NON-NLS-2$
-		HORIZONTAL_COMPRESS("Distribute by Horizontal Compress", "icons/distribute_hcompress.gif"), //$NON-NLS-2$
-		VERTICAL_GAP("Distribute by Vertical GAP", "icons/distribute_vg.gif"), //$NON-NLS-2$
-		VERTICAL_CENTERS("Distribute by Vertical Centers", "icons/distribute_vc.gif"), //$NON-NLS-2$
-		VERTICAL_COMPRESS("Distribute by Vertical Compress", "icons/distribute_vcompress.gif"); //$NON-NLS-2$
+		HORIZONTAL_GAP("Distribute by Horizontal GAP", "icons/distribute_hg.png"), //$NON-NLS-2$
+		HORIZONTAL_CENTERS("Distribute by Horizontal Centers", "icons/distribute_hc.png"), //$NON-NLS-2$
+		HORIZONTAL_COMPRESS("Distribute by Horizontal Compress", "icons/distribute_hcompress.png"), //$NON-NLS-2$
+		VERTICAL_GAP("Distribute by Vertical GAP", "icons/distribute_vg.png"), //$NON-NLS-2$
+		VERTICAL_CENTERS("Distribute by Vertical Centers", "icons/distribute_vc.png"), //$NON-NLS-2$
+		VERTICAL_COMPRESS("Distribute by Vertical Compress", "icons/distribute_vcompress.png"); //$NON-NLS-2$
 
 		private String label;
 		private String iconPath;

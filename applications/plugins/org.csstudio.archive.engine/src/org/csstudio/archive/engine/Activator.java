@@ -7,6 +7,8 @@
  ******************************************************************************/
 package org.csstudio.archive.engine;
 
+import java.util.logging.Logger;
+
 import org.eclipse.core.runtime.Plugin;
 import org.osgi.framework.BundleContext;
 
@@ -20,12 +22,14 @@ public class Activator extends Plugin
 
 	/** The shared instance */
 	private static Activator plugin;
-	
+
+    private static Logger logger = Logger.getLogger(ID);
+
 	/** {@inheritDoc} */
 	@Override
     public void start(BundleContext context) throws Exception
 	{
-		super.start(context);		
+		super.start(context);
 		plugin = this;
 	}
 
@@ -33,5 +37,11 @@ public class Activator extends Plugin
 	public static Activator getDefault()
 	{
 		return plugin;
+	}
+
+	/** @return Logger for plugin ID */
+	public static Logger getLogger()
+	{
+	    return logger;
 	}
 }

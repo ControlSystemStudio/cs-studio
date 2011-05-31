@@ -41,143 +41,177 @@ import org.csstudio.dct.model.IRecord;
 import org.csstudio.dct.util.AliasResolutionException;
 import org.csstudio.dct.util.AliasResolutionUtil;
 import org.csstudio.dct.util.ResolutionUtil;
+import org.csstudio.utility.ldap.service.util.LdapUtils;
 import org.csstudio.utility.ldap.treeconfiguration.LdapEpicsAlarmcfgConfiguration;
-import org.csstudio.utility.ldap.utils.LdapUtils;
 import org.csstudio.utility.treemodel.ContentModel;
 import org.csstudio.utility.treemodel.CreateContentModelException;
+import org.csstudio.utility.treemodel.INodeComponent;
 import org.csstudio.utility.treemodel.ISubtreeNodeComponent;
 import org.csstudio.utility.treemodel.TreeNodeComponent;
 import org.csstudio.utility.treemodel.builder.AbstractContentModelBuilder;
 
 /**
  * Build content model from dct export.
- *
+ * 
  * @author jhatje
  * @author $Author$
  * @version $Revision$
  * @since 22.06.2010
  */
-public class DctContentModelBuilder extends AbstractContentModelBuilder<LdapEpicsAlarmcfgConfiguration> {
+public class DctContentModelBuilder extends
+		AbstractContentModelBuilder<LdapEpicsAlarmcfgConfiguration> {
 
-    private final IProject _dctPoject;
+	private final IProject _dctPoject;
 
-    /**
-     * Constructor.
-     */
-    public DctContentModelBuilder(@Nonnull final IProject dctPoject) {
-        _dctPoject = dctPoject;
-    }
+	/**
+	 * Constructor.
+	 */
+	public DctContentModelBuilder(@Nonnull final IProject dctPoject) {
+		_dctPoject = dctPoject;
+	}
 
-    /**
-     * {@inheritDoc}
-     */
-    @Override
-    protected ContentModel<LdapEpicsAlarmcfgConfiguration> createContentModel() throws CreateContentModelException {
-        ContentModel<LdapEpicsAlarmcfgConfiguration> contentModel = null;
-        try {
-            contentModel = new ContentModel<LdapEpicsAlarmcfgConfiguration>(VIRTUAL_ROOT);
-        } catch (final InvalidNameException e) {
-            throw new CreateContentModelException(e.getMessage(), e);
-        }
+	/**
+	 * {@inheritDoc}
+	 */
+	@Override
+	protected ContentModel<LdapEpicsAlarmcfgConfiguration> createContentModel()
+			throws CreateContentModelException {
+		ContentModel<LdapEpicsAlarmcfgConfiguration> contentModel = null;
+		try {
+			contentModel = new ContentModel<LdapEpicsAlarmcfgConfiguration>(
+					VIRTUAL_ROOT);
+		} catch (final InvalidNameException e) {
+			throw new CreateContentModelException(e.getMessage(), e);
+		}
 
-        try {
-            addFacility(contentModel, _dctPoject.getName());
-        } catch (final InvalidNameException e) {
-            throw new CreateContentModelException(e.getMessage(), e);
-        }
+		try {
+			ISubtreeNodeComponent<LdapEpicsAlarmcfgConfiguration> unit = addUnit(
+					contentModel, "EpicsAlarmcfg");
+			addFacility(contentModel, _dctPoject.getName(), unit);
+		} catch (final InvalidNameException e) {
+			throw new CreateContentModelException(e.getMessage(), e);
+		}
 
-        for (final IRecord record : _dctPoject.getFinalRecords()) {
-            final List<String> prototypeInstances = new ArrayList<String>();
-            getParentPrototypeInstances(record.getContainer(), prototypeInstances);
-            try {
-                addToContentModel(contentModel, prototypeInstances, record);
-            } catch (final InvalidNameException e) {
-                throw new CreateContentModelException(e.getMessage(), e);
-            } catch (final AliasResolutionException e) {
-                throw new CreateContentModelException(e.getMessage(), e);
-            }
-        }
-        return contentModel;
-    }
+		for (final IRecord record : _dctPoject.getFinalRecords()) {
+			final List<String> prototypeInstances = new ArrayList<String>();
+			getParentPrototypeInstances(record.getContainer(),
+					prototypeInstances);
+			try {
+				addToContentModel(contentModel, prototypeInstances, record);
+			} catch (final InvalidNameException e) {
+				throw new CreateContentModelException(e.getMessage(), e);
+			} catch (final AliasResolutionException e) {
+				throw new CreateContentModelException(e.getMessage(), e);
+			}
+		}
+		return contentModel;
+	}
 
-    /**
-     * Add record with its parent prototype instances (components in LDAP) to content model.
-     *
-     * @param contentModel
-     * @param prototypeInstances
-     * @param record
-     * @throws InvalidNameException
-     * @throws AliasResolutionException
-     */
-    private void addToContentModel(@Nonnull final ContentModel<LdapEpicsAlarmcfgConfiguration> contentModel,
-                                   @Nonnull final List<String> prototypeInstances,
-                                   @Nonnull final IRecord record) throws InvalidNameException, AliasResolutionException {
+	/**
+	 * Add record with its parent prototype instances (components in LDAP) to
+	 * content model.
+	 * 
+	 * @param contentModel
+	 * @param prototypeInstances
+	 * @param record
+	 * @throws InvalidNameException
+	 * @throws AliasResolutionException
+	 */
+	private void addToContentModel(
+			@Nonnull final ContentModel<LdapEpicsAlarmcfgConfiguration> contentModel,
+			@Nonnull final List<String> prototypeInstances,
+			@Nonnull final IRecord record) throws InvalidNameException,
+			AliasResolutionException {
 
-        final String ldapName = LdapUtils.createLdapName(FACILITY.getNodeTypeName(), _dctPoject.getName(),
-                                                         UNIT.getNodeTypeName(), UNIT.getUnitTypeValue()).toString();
-        ISubtreeNodeComponent<LdapEpicsAlarmcfgConfiguration> parent = contentModel.getChildByLdapName(ldapName);
+		final String ldapName = LdapUtils.createLdapName(
+				FACILITY.getNodeTypeName(), _dctPoject.getName(),
+				UNIT.getNodeTypeName(), _dctPoject.getName()).toString();
+		ISubtreeNodeComponent<LdapEpicsAlarmcfgConfiguration> parent = 
+		    (ISubtreeNodeComponent<LdapEpicsAlarmcfgConfiguration>) contentModel.getChildByLdapName(ldapName);
 
+		INodeComponent<LdapEpicsAlarmcfgConfiguration> newChild;
+		for (final String instance : prototypeInstances) {
+			newChild = null;
+			final LdapName parentName = new LdapName(parent.getLdapName()
+					.getRdns());
+			parentName.add(new Rdn(COMPONENT.getNodeTypeName(), instance));
+			newChild = contentModel.getChildByLdapName(parentName.toString());
+			if (newChild == null) {
+				newChild = new TreeNodeComponent<LdapEpicsAlarmcfgConfiguration>(
+						instance, COMPONENT, parent, null, parentName);
+				contentModel.addChild(parent, newChild);
+			}
+			parent = (ISubtreeNodeComponent<LdapEpicsAlarmcfgConfiguration>) newChild;
+		}
+		final String epicsName = ResolutionUtil.resolve(
+				AliasResolutionUtil.getEpicsNameFromHierarchy(record), record);
+		final LdapName parentName = new LdapName(parent.getLdapName().getRdns());
+		parentName.add(new Rdn(RECORD.getNodeTypeName(), epicsName));
+		newChild = new TreeNodeComponent<LdapEpicsAlarmcfgConfiguration>(
+				epicsName, RECORD, parent, null, parentName);
+		contentModel.addChild(parent, newChild);
+	}
 
-        ISubtreeNodeComponent<LdapEpicsAlarmcfgConfiguration> newChild;
-        for (final String instance : prototypeInstances) {
-            newChild = null;
-            final LdapName parentName = new LdapName(parent.getLdapName().getRdns());
-            parentName.add(new Rdn(COMPONENT.getNodeTypeName(),instance));
-            newChild = contentModel.getChildByLdapName(parentName.toString());
-            if (newChild ==null) {
-                newChild = new TreeNodeComponent<LdapEpicsAlarmcfgConfiguration>(instance,
-                                                                                 COMPONENT,
-                                                                                 parent, null, parentName);
-                contentModel.addChild(parent, newChild);
-            }
-            parent = newChild;
-        }
-        final String epicsName = ResolutionUtil.resolve(AliasResolutionUtil.getEpicsNameFromHierarchy(record), record);
-        final LdapName parentName = new LdapName(parent.getLdapName().getRdns());
-        parentName.add(new Rdn(RECORD.getNodeTypeName(), epicsName));
-        newChild = new TreeNodeComponent<LdapEpicsAlarmcfgConfiguration>(epicsName,
-                                                                         RECORD,
-                                                                         parent,
-                                                                         null,
-                                                                         parentName);
-        contentModel.addChild(parent, newChild);
-    }
+	/**
+	 * Add unit to content model
+	 * 
+	 * @param contentModel
+	 * @param projectName
+	 * @return
+	 * @throws InvalidNameException
+	 */
+	private ISubtreeNodeComponent<LdapEpicsAlarmcfgConfiguration> addUnit(
+			@Nonnull final ContentModel<LdapEpicsAlarmcfgConfiguration> contentModel,
+			@Nonnull final String projectName) throws InvalidNameException {
+		// LdapNameUtils.
+		final LdapName ldapName = new LdapName(new Rdn(UNIT.getNodeTypeName(),
+				_dctPoject.getName()).toString());
+		ldapName.add(new Rdn(UNIT.getNodeTypeName(), _dctPoject.getName()));
 
-    /**
-     * Add dct project name as facility to content model
-     *
-     * @param contentModel
-     * @param projectName
-     * @throws InvalidNameException
-     */
-    private void addFacility(@Nonnull final ContentModel<LdapEpicsAlarmcfgConfiguration> contentModel, @Nonnull final String projectName) throws InvalidNameException {
-        final LdapName ldapName = new LdapName(contentModel.getVirtualRoot().getLdapName().getRdns());
-        ldapName.add(new Rdn(FACILITY.getNodeTypeName(),_dctPoject.getName()));
+		final ISubtreeNodeComponent<LdapEpicsAlarmcfgConfiguration> parent = contentModel
+				.getVirtualRoot();
+		ISubtreeNodeComponent<LdapEpicsAlarmcfgConfiguration> newChild;
+		newChild = new TreeNodeComponent<LdapEpicsAlarmcfgConfiguration>(
+				projectName, UNIT, parent, null, ldapName);
+		contentModel.addChild(parent, newChild);
+		return newChild;
+	}
 
-        final ISubtreeNodeComponent<LdapEpicsAlarmcfgConfiguration> parent = contentModel.getVirtualRoot();
-        ISubtreeNodeComponent<LdapEpicsAlarmcfgConfiguration> newChild;
-        newChild = new TreeNodeComponent<LdapEpicsAlarmcfgConfiguration>(projectName,
-                                                                         FACILITY,
-                                                                         parent,
-                                                                         null,
-                                                                         ldapName);
-        contentModel.addChild(parent, newChild);
-    }
+	/**
+	 * Add dct project name as facility to content model
+	 * 
+	 * @param contentModel
+	 * @param projectName
+	 * @param unit
+	 * @throws InvalidNameException
+	 */
+	private void addFacility(
+			@Nonnull final ContentModel<LdapEpicsAlarmcfgConfiguration> contentModel,
+			@Nonnull final String projectName,
+			ISubtreeNodeComponent<LdapEpicsAlarmcfgConfiguration> parent)
+			throws InvalidNameException {
+		final LdapName ldapName = LdapUtils.createLdapName(
+				UNIT.getNodeTypeName(), _dctPoject.getName());
+		ldapName.add(new Rdn(FACILITY.getNodeTypeName(), _dctPoject.getName()));
 
+		ISubtreeNodeComponent<LdapEpicsAlarmcfgConfiguration> newChild;
+		newChild = new TreeNodeComponent<LdapEpicsAlarmcfgConfiguration>(
+				projectName, FACILITY, parent, null, ldapName);
+		contentModel.addChild(parent, newChild);
+	}
 
-
-
-
-    /**
-     * @param container Container of record
-     * @return List of nested prototype instances starting with root
-     */
-    private void getParentPrototypeInstances(@Nonnull final IContainer container, @Nonnull final List<String> instances) {
-        final String name = AliasResolutionUtil.getNameFromHierarchy(container);
-        instances.add(0, name);
-        if (container.getContainer() != null) {
-            getParentPrototypeInstances(container.getContainer(), instances);
-        }
-    }
-
+	/**
+	 * @param container
+	 *            Container of record
+	 * @return List of nested prototype instances starting with root
+	 */
+	private void getParentPrototypeInstances(
+			@Nonnull final IContainer container,
+			@Nonnull final List<String> instances) {
+		final String name = AliasResolutionUtil.getNameFromHierarchy(container);
+		instances.add(0, name);
+		if (container.getContainer() != null) {
+			getParentPrototypeInstances(container.getContainer(), instances);
+		}
+	}
 }

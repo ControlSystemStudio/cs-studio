@@ -1,16 +1,21 @@
+/*******************************************************************************
+ * Copyright (c) 2010 Oak Ridge National Laboratory.
+ * All rights reserved. This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License v1.0
+ * which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-v10.html
+ ******************************************************************************/
 package org.csstudio.opibuilder.widgets.editparts;
 
 import org.csstudio.opibuilder.editparts.AbstractWidgetEditPart;
 import org.csstudio.opibuilder.editparts.ExecutionMode;
 import org.csstudio.opibuilder.model.AbstractWidgetModel;
 import org.csstudio.opibuilder.properties.IWidgetPropertyChangeHandler;
-import org.csstudio.opibuilder.util.OPIFont;
-import org.csstudio.opibuilder.widgetActions.ActionsInput;
 import org.csstudio.opibuilder.widgets.model.LabelModel;
-import org.csstudio.platform.ui.util.CustomMediaFactory;
-import org.csstudio.swt.widgets.figures.LabelFigure;
-import org.csstudio.swt.widgets.figures.LabelFigure.H_ALIGN;
-import org.csstudio.swt.widgets.figures.LabelFigure.V_ALIGN;
+import org.csstudio.swt.widgets.figures.TextFigure;
+import org.csstudio.swt.widgets.figures.TextFigure.H_ALIGN;
+import org.csstudio.swt.widgets.figures.TextFigure.V_ALIGN;
+import org.csstudio.swt.widgets.figures.WrappableTextFigure;
 import org.eclipse.draw2d.IFigure;
 import org.eclipse.gef.EditPolicy;
 import org.eclipse.gef.Request;
@@ -27,9 +32,7 @@ public class LabelEditPart extends AbstractWidgetEditPart {
 	
 	@Override
 	protected IFigure doCreateFigure() {
-		LabelFigure labelFigure = new LabelFigure(getExecutionMode() == ExecutionMode.RUN_MODE);
-		labelFigure.setFont(CustomMediaFactory.getInstance().getFont(
-				getWidgetModel().getFont().getFontData()));
+		WrappableTextFigure labelFigure = new WrappableTextFigure(getExecutionMode() == ExecutionMode.RUN_MODE);
 		labelFigure.setOpaque(!getWidgetModel().isTransparent());
 		labelFigure.setHorizontalAlignment(getWidgetModel().getHorizontalAlignment());
 		labelFigure.setVerticalAlignment(getWidgetModel().getVerticalAlignment());
@@ -44,7 +47,7 @@ public class LabelEditPart extends AbstractWidgetEditPart {
 	public void activate() {
 		super.activate();
 		if(getWidgetModel().isAutoSize()){
-			getWidgetModel().setSize(((LabelFigure)figure).getAutoSizeDimension());
+			getWidgetModel().setSize(((WrappableTextFigure)figure).getAutoSizeDimension());
 			figure.revalidate();
 		}
 	}
@@ -62,11 +65,11 @@ public class LabelEditPart extends AbstractWidgetEditPart {
 		IWidgetPropertyChangeHandler handler = new IWidgetPropertyChangeHandler(){
 			public boolean handleChange(Object oldValue, Object newValue,
 					final IFigure figure) {
-				((LabelFigure)figure).setText((String)newValue);
+				((WrappableTextFigure)figure).setText((String)newValue);
 				Display.getCurrent().timerExec(10, new Runnable() {					
 					public void run() {
 						if(getWidgetModel().isAutoSize())
-							getWidgetModel().setSize(((LabelFigure)figure).getAutoSizeDimension());
+							getWidgetModel().setSize(((WrappableTextFigure)figure).getAutoSizeDimension());
 					}
 				});
 				
@@ -74,23 +77,12 @@ public class LabelEditPart extends AbstractWidgetEditPart {
 			}
 		};
 		setPropertyChangeHandler(LabelModel.PROP_TEXT, handler);
-		
-		
-		IWidgetPropertyChangeHandler fontHandler = new IWidgetPropertyChangeHandler(){
-			public boolean handleChange(Object oldValue, Object newValue,
-					IFigure figure) {
-				figure.setFont(CustomMediaFactory.getInstance().getFont(
-						((OPIFont)newValue).getFontData()));
-				return true;
-			}
-		};		
-		setPropertyChangeHandler(LabelModel.PROP_FONT, fontHandler);
 	
 		IWidgetPropertyChangeHandler clickableHandler = new IWidgetPropertyChangeHandler() {
 			
 			public boolean handleChange(Object oldValue, Object newValue, IFigure figure) {
-				((LabelFigure)figure).setSelectable(
-						!((ActionsInput)newValue).getActionsList().isEmpty() || 
+				((WrappableTextFigure)figure).setSelectable(
+						!getWidgetModel().getActionsInput().getActionsList().isEmpty() || 
 						getWidgetModel().getTooltip().trim().length() > 0);
 				return false;
 			}
@@ -105,7 +97,7 @@ public class LabelEditPart extends AbstractWidgetEditPart {
 				Display.getCurrent().timerExec(10, new Runnable() {					
 					public void run() {
 						if(getWidgetModel().isAutoSize()){
-							getWidgetModel().setSize(((LabelFigure)figure).getAutoSizeDimension());
+							getWidgetModel().setSize(((WrappableTextFigure)figure).getAutoSizeDimension());
 							figure.revalidate();
 						}
 					}
@@ -121,7 +113,7 @@ public class LabelEditPart extends AbstractWidgetEditPart {
 		handler = new IWidgetPropertyChangeHandler(){
 			public boolean handleChange(Object oldValue, Object newValue,
 					IFigure figure) {
-				((LabelFigure)figure).setOpaque(!(Boolean)newValue);
+				((WrappableTextFigure)figure).setOpaque(!(Boolean)newValue);
 				return true;
 			}
 		};
@@ -131,7 +123,7 @@ public class LabelEditPart extends AbstractWidgetEditPart {
 			public boolean handleChange(Object oldValue, Object newValue,
 					IFigure figure) {				
 				if((Boolean)newValue){
-					getWidgetModel().setSize(((LabelFigure)figure).getAutoSizeDimension());
+					getWidgetModel().setSize(((WrappableTextFigure)figure).getAutoSizeDimension());
 					figure.revalidate();
 				}
 				return true;
@@ -142,7 +134,7 @@ public class LabelEditPart extends AbstractWidgetEditPart {
 		handler = new IWidgetPropertyChangeHandler(){
 			public boolean handleChange(Object oldValue, Object newValue,
 					IFigure figure) {
-				((LabelFigure)figure).setHorizontalAlignment(H_ALIGN.values()[(Integer)newValue]);
+				((WrappableTextFigure)figure).setHorizontalAlignment(H_ALIGN.values()[(Integer)newValue]);
 				return true;
 			}
 		};
@@ -151,7 +143,7 @@ public class LabelEditPart extends AbstractWidgetEditPart {
 		handler = new IWidgetPropertyChangeHandler(){
 			public boolean handleChange(Object oldValue, Object newValue,
 					IFigure figure) {
-				((LabelFigure)figure).setVerticalAlignment(V_ALIGN.values()[(Integer)newValue]);
+				((WrappableTextFigure)figure).setVerticalAlignment(V_ALIGN.values()[(Integer)newValue]);
 				return true;
 			}
 		};
@@ -163,7 +155,7 @@ public class LabelEditPart extends AbstractWidgetEditPart {
 	}
 
 	private void performDirectEdit(){
-		new LabelEditManager(this, new LabelCellEditorLocator((LabelFigure)getFigure())).show();
+		new LabelEditManager(this, new LabelCellEditorLocator((WrappableTextFigure)getFigure())).show();
 	}
 	
 	@Override
@@ -180,11 +172,11 @@ public class LabelEditPart extends AbstractWidgetEditPart {
 		return (LabelModel)getModel();
 	}
 
-	@SuppressWarnings("unchecked")
+	@SuppressWarnings("rawtypes")
 	@Override
 	public Object getAdapter(Class key) {
-		if(key == LabelFigure.class)
-			return ((LabelFigure)getFigure());
+		if(key == TextFigure.class)
+			return ((TextFigure)getFigure());
 
 		return super.getAdapter(key);
 	}

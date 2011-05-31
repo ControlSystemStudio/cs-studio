@@ -48,6 +48,13 @@
             file="toc.xml"
             primary="true"/>
    </extension>
+   <extension
+         point="org.csstudio.auth.authorizationId">
+      <id
+            description="Permission for the IOC tools."
+            id="iocAccesses">
+      </id>
+   </extension>
    <!--extension
          point="org.eclipse.ui.preferencePages">
       <page

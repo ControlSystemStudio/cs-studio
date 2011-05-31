@@ -1,3 +1,10 @@
+/*******************************************************************************
+ * Copyright (c) 2010 Oak Ridge National Laboratory.
+ * All rights reserved. This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License v1.0
+ * which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-v10.html
+ ******************************************************************************/
 package org.csstudio.swt.widgets.figures;
 
 
@@ -5,15 +12,15 @@ package org.csstudio.swt.widgets.figures;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.csstudio.platform.ui.util.CustomMediaFactory;
 import org.csstudio.swt.widgets.datadefinition.IManualValueChangeListener;
 import org.csstudio.swt.widgets.figureparts.AlphaLabel;
 import org.csstudio.swt.widgets.util.GraphicsUtil;
 import org.csstudio.swt.widgets.util.RepeatFiringBehavior;
-import org.csstudio.swt.xygraph.linearscale.LinearScale;
-import org.csstudio.swt.xygraph.linearscale.LinearScaledMarker;
 import org.csstudio.swt.xygraph.linearscale.AbstractScale.LabelSide;
+import org.csstudio.swt.xygraph.linearscale.LinearScale;
 import org.csstudio.swt.xygraph.linearscale.LinearScale.Orientation;
+import org.csstudio.swt.xygraph.linearscale.LinearScaledMarker;
+import org.csstudio.ui.util.CustomMediaFactory;
 import org.eclipse.draw2d.AbstractLayout;
 import org.eclipse.draw2d.ColorConstants;
 import org.eclipse.draw2d.Cursors;
@@ -55,7 +62,7 @@ public class ScaledSliderFigure extends AbstractLinearMarkedFigure {
 	private Color thumbColor = CustomMediaFactory.getInstance().getColor(
 			new RGB(172,172, 172)); 
 	private boolean effect3D = true; 
-	private boolean horizontal;
+	private boolean horizontal = false;
 	private final static Color WHITE_COLOR = CustomMediaFactory.getInstance().getColor(
 			CustomMediaFactory.COLOR_WHITE); 
 	
@@ -734,8 +741,8 @@ public class ScaledSliderFigure extends AbstractLinearMarkedFigure {
 			Rectangle area = container.getClientArea().getCopy();		
 			area.x += ADDITIONAL_MARGIN;
 			area.width -= 2*ADDITIONAL_MARGIN;
-			Dimension scaleSize = new Dimension(0, 0);
-			Dimension markerSize = new Dimension(0, 0);
+			Dimension scaleSize;
+			Dimension markerSize;
 			
 			if(scale != null) {
 				scaleSize = scale.getPreferredSize(area.width, -1);
@@ -793,7 +800,7 @@ public class ScaledSliderFigure extends AbstractLinearMarkedFigure {
 		}
 	
 		private void setLabel() {
-			String text = scale.format(value);
+			String text = getValueText();
 			Dimension textSize = FigureUtilities.getStringExtents(text, label.getFont());
 			label.setText(text);
 			if(horizontal)
@@ -813,8 +820,8 @@ public class ScaledSliderFigure extends AbstractLinearMarkedFigure {
 		private void verticalLayout(IFigure container) {
 			Rectangle area = container.getClientArea();		
 			
-			Dimension scaleSize = new Dimension(0, 0);
-			Dimension markerSize = new Dimension(0, 0);
+			Dimension scaleSize;
+			Dimension markerSize;
 			
 			if(scale != null) {
 				scaleSize = scale.getPreferredSize(-1, area.height);

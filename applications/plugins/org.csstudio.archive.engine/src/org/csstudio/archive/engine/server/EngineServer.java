@@ -7,10 +7,11 @@
  ******************************************************************************/
 package org.csstudio.archive.engine.server;
 
+import java.util.logging.Level;
+
 import org.csstudio.archive.engine.Activator;
 import org.csstudio.archive.engine.model.EngineModel;
 import org.csstudio.platform.httpd.HttpServiceHelper;
-import org.csstudio.platform.logging.CentralLogger;
 import org.osgi.framework.BundleContext;
 import org.osgi.service.http.HttpContext;
 import org.osgi.service.http.HttpService;
@@ -23,7 +24,7 @@ public class EngineServer
 {
     /** TCP port used by the web server */
     final private int port;
-    
+
     /** Construct and start the server
      *  @param model Model to serve
      *  @param port TCP port
@@ -36,10 +37,10 @@ public class EngineServer
         final BundleContext context =
             Activator.getDefault().getBundle().getBundleContext();
         final HttpService http = HttpServiceHelper.createHttpService(context, port);
-        
+
         final HttpContext http_context = http.createDefaultHttpContext();
         http.registerResources("/", "/webroot", http_context);
-        
+
         http.registerServlet("/main", new MainResponse(model), null, http_context);
         http.registerServlet("/groups", new GroupsResponse(model), null, http_context);
         http.registerServlet("/disconnected", new DisconnectedResponse(model), null, http_context);
@@ -51,8 +52,8 @@ public class EngineServer
         http.registerServlet("/reset", new ResetResponse(model), null, http_context);
         http.registerServlet("/stop", new StopResponse(model), null, http_context);
         http.registerServlet("/debug", new DebugResponse(model), null, http_context);
-        
-        CentralLogger.getInstance().getLogger(this).info("Engine HTTP Server port " + port);
+
+        Activator.getLogger().log(Level.INFO, "Engine HTTP Server port {0}", port);
     }
 
     /** Stop the server */
@@ -64,7 +65,7 @@ public class EngineServer
         }
         catch (Exception ex)
         {
-            CentralLogger.getInstance().getLogger(this).warn(ex);
+            Activator.getLogger().log(Level.WARNING, "Engine HTTP Server shutdown error", ex);
         }
     }
 }

@@ -37,4 +37,11 @@
             primary="true">
       </toc>
    </extension>
+      <extension
+            point="org.csstudio.auth.authorizationId">
+         <id
+               description="Permission for testing tools."
+               id="testing">
+         </id>
+      </extension>
 </plugin>

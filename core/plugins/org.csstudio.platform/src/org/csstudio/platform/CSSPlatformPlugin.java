@@ -24,16 +24,9 @@ package org.csstudio.platform;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.OutputStream;
-import java.util.Collection;
-import java.util.Dictionary;
-import java.util.Hashtable;
-import java.util.Properties;
 
 import org.csstudio.platform.internal.PluginCustomizationExporter;
-import org.csstudio.platform.internal.management.ManagementServiceImpl;
 import org.csstudio.platform.logging.CentralLogger;
-import org.csstudio.platform.management.IManagementCommandService;
-import org.csstudio.platform.simpledal.ProcessVariableConnectionServiceFactory;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
@@ -74,47 +67,11 @@ public class CSSPlatformPlugin extends AbstractCssPlugin {
 	 */
 	@Override
 	protected final void doStart(final BundleContext context) throws Exception {
-		applySystemPropertyDefaults();
-		offerProcessVariableConnectionServiceFactoryAsOSGiService(context);
 		
-		Dictionary<String, Object> dict = new Hashtable<String, Object>();
-		dict.put("org.csstudio.management.remoteservice", Boolean.TRUE);
-		context.registerService(IManagementCommandService.class.getName(),
-				new ManagementServiceImpl(), dict);
-	}
-
-	/**
-	 * Offers an instance of {@link ProcessVariableConnectionServiceFactory} to
-	 * the OSGi-Service registry.
-	 * 
-	 * Required by New-AMS-Application.
-	 * 
-	 * @param context
-	 *            The current bundle context.
-	 */
-	private void offerProcessVariableConnectionServiceFactoryAsOSGiService(
-			BundleContext context) {
-		context.registerService(ProcessVariableConnectionServiceFactory.class
-				.getName(), ProcessVariableConnectionServiceFactory
-				.getDefault(), null);
-	}
-
-	/**
-	 * Applies the default values for system properties set up in the CSS
-	 * preferences.
-	 */
-	private void applySystemPropertyDefaults() {
-		Collection<SystemPropertyPreferenceEntry> properties = SystemPropertyPreferenceEntry
-				.loadFromPreferences();
-		for (SystemPropertyPreferenceEntry entry : properties) {
-			// the preferences are for defaults, so they are applied only if
-			// the system property is not already set to some other value
-			if (System.getProperty(entry.getKey()) == null) {
-				System.setProperty(entry.getKey(), entry.getValue());
-				CentralLogger.getInstance().getLogger(this).debug(
-						"Setting system property: " + entry); //$NON-NLS-1$
-			}
-		}
+//		Dictionary<String, Object> dict = new Hashtable<String, Object>();
+//		dict.put("org.csstudio.management.remoteservice", Boolean.TRUE);
+//		context.registerService(IManagementCommandService.class.getName(),
+//				new ManagementServiceImpl(), dict);
 	}
 
 	/**

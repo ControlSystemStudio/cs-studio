@@ -44,16 +44,7 @@ public class CssApplicationContext extends DefaultApplicationContext {
 		super(name);
 		PlugRegistry.getInstance().configurePlugs(getConfiguration());
 		getConfiguration().setProperty(Plugs.CONNECTION_TIMEOUT, "5000");
+		putApplicationProperty(Plugs.PROPERTY_FACTORY_SERVICE_IMPLEMENTATION, DalPlugin.getDefault());
 	}
 
-	/**
-	 * Check whether the given plug name is registered.
-	 * 
-	 * @param plugName
-	 *            The plug name.
-	 * @return True, if the given plug name is registered.
-	 */
-	public boolean isRegistered(final String plugName) {
-		return PlugRegistry.getInstance().isRegistered(plugName);
-	}
 }

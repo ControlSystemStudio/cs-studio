@@ -36,7 +36,7 @@ public class PreferenceInitializer extends AbstractPreferenceInitializer {
 					+ PreferenceConstants.STRIKETHROUGH_POST_FIX, (constant
 					.getSwtFontStyleCode() & TextAttribute.STRIKETHROUGH) > 0);
 		}
-		node.putBoolean(SNLUiActivator.PLUGIN_ID + PreferenceConstants.SAVE_AND_COMPILE_POST_FIX, true);
+		node.putBoolean(SNLUiActivator.PLUGIN_ID + PreferenceConstants.SAVE_AND_COMPILE_POST_FIX, false);
 		node.put(SNLUiActivator.PLUGIN_ID + PreferenceConstants.TARGET_PLATFORM, "none");
 	}
 

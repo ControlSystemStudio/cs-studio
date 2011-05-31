@@ -1,3 +1,10 @@
+/*******************************************************************************
+ * Copyright (c) 2010 Oak Ridge National Laboratory.
+ * All rights reserved. This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License v1.0
+ * which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-v10.html
+ ******************************************************************************/
 package org.csstudio.apputil.ui.time;
 
 import java.util.ArrayList;
@@ -30,15 +37,15 @@ public class RelativeTimeWidget extends Composite
     private Spinner hour, minute, second;
     /** Widget to select 'before' or 'after' */
     private Button before;
-    
+
     /** The relative time pieces for year, month, day, hour, minute, second. */
     private RelativeTime relative_time;
-    
+
     /** Used to prevent recursion when the widget updates the GUI,
      *  which in turn fires listener notifications...
      */
     private boolean in_GUI_update = false;
-    
+
     final private ArrayList<RelativeTimeWidgetListener> listeners
        = new ArrayList<RelativeTimeWidgetListener>();
 
@@ -50,7 +57,7 @@ public class RelativeTimeWidget extends Composite
     {
         this(parent, flags, new RelativeTime());
     }
-        
+
     /** Construct widget, initialized to given time.
      *  @param parent Widget parent.
      *  @param flags SWT widget flags.
@@ -61,14 +68,14 @@ public class RelativeTimeWidget extends Composite
         final GridLayout layout = new GridLayout(4,true);
         setLayout(layout);
         GridData gd;
-        
-        // Years: (year)+-  Hours: (hour)+-    
-        // Month: (month)+- Minutes: (minute)+- 
+
+        // Years: (year)+-  Hours: (hour)+-
+        // Month: (month)+- Minutes: (minute)+-
         // Days: (day)+-    Secs: (second)+-
-        // 
-        // [12h] [1 Day] [3 Days] [7 Days]  
+        //
+        // [12h] [1 Day] [3 Days] [7 Days]
         // [ ] before?              [now]
-        
+
         // New row (Years / Hours)
         Label l = new Label(this, SWT.NONE);
         l.setText(Messages.Time_Years);
@@ -85,7 +92,7 @@ public class RelativeTimeWidget extends Composite
         year.setMaximum(+10);
         year.setIncrement(1);
         year.setPageIncrement(5);
-        
+
         l = new Label(this, SWT.NONE);
         l.setText(Messages.Time_Hours);
         gd = new GridData();
@@ -100,7 +107,7 @@ public class RelativeTimeWidget extends Composite
         hour.setMaximum(+23);
         hour.setIncrement(1);
         hour.setPageIncrement(6);
-        
+
         // New row (Month / Minutes)
         l = new Label(this, SWT.NONE);
         l.setText(Messages.Time_Months);
@@ -116,7 +123,7 @@ public class RelativeTimeWidget extends Composite
         month.setMaximum(+12);
         month.setIncrement(1);
         month.setPageIncrement(3);
-        
+
         l = new Label(this, SWT.NONE);
         l.setText(Messages.Time_Minutes);
         gd = new GridData();
@@ -138,7 +145,7 @@ public class RelativeTimeWidget extends Composite
         l.setText(Messages.Time_Days);
         gd = new GridData();
         l.setLayoutData(gd);
-        
+
         day = new Spinner(this, SWT.BORDER | SWT.WRAP);
         day.setToolTipText(Messages.Time_SelectDay);
         gd = new GridData();
@@ -149,7 +156,7 @@ public class RelativeTimeWidget extends Composite
         day.setMaximum(+31);
         day.setIncrement(1);
         day.setPageIncrement(10);
-        
+
         l = new Label(this, SWT.NONE);
         l.setText(Messages.Time_Seconds);
         gd = new GridData();
@@ -168,19 +175,19 @@ public class RelativeTimeWidget extends Composite
         // Next Row
         final Label emtpyRow = new Label(this,SWT.NONE);
         emtpyRow.setLayoutData(new GridData(SWT.FILL, SWT.FILL,false, false, layout.numColumns,1));
-        emtpyRow.setText("");
-                
+        emtpyRow.setText(""); //$NON-NLS-1$
+
         // Next Row
         final Button halfday = new Button(this, SWT.PUSH);
         halfday.setLayoutData(new GridData(SWT.FILL,SWT.FILL,false,false,1,1));
         halfday.setText(Messages.half_day);
         halfday.setToolTipText(Messages.half_day_TT);
-        
+
         final Button oneday = new Button(this, SWT.PUSH);
         oneday.setLayoutData(new GridData(SWT.FILL,SWT.FILL,false,false,1,1));
         oneday.setText(Messages.one_day);
         oneday.setToolTipText(Messages.one_day_TT);
-        
+
         final Button threeday = new Button(this, SWT.PUSH);
         threeday.setLayoutData(new GridData(SWT.FILL,SWT.FILL,false,false,1,1));
         threeday.setText(Messages.three_days);
@@ -190,7 +197,7 @@ public class RelativeTimeWidget extends Composite
         sevenday.setLayoutData(new GridData(SWT.FILL,SWT.FILL,false,false,1,1));
         sevenday.setText(Messages.seven_days);
         sevenday.setToolTipText(Messages.seven_days_TT);
-        
+
         // Next Row for before and now
         before = new Button(this, SWT.CHECK);
         before.setText(Messages.Time_Before);
@@ -200,13 +207,13 @@ public class RelativeTimeWidget extends Composite
         gd.horizontalSpan = layout.numColumns-1;
         gd.horizontalAlignment = SWT.FILL;
         before.setLayoutData(gd);
-        
+
         Button now = new Button(this, SWT.PUSH);
         now.setText(Messages.Time_Now);
         now.setToolTipText(Messages.Time_Now_TT);
         gd = new GridData(SWT.FILL, SWT.FILL, false, false, 1,1);
         now.setLayoutData(gd);
-        
+
         // Initialize to given relative time pieces
         setRelativeTime(relative_time);
 
@@ -227,7 +234,7 @@ public class RelativeTimeWidget extends Composite
                 }
             }
         });
-        
+
         oneday.addSelectionListener(new SelectionAdapter()
         {
             @Override
@@ -245,7 +252,7 @@ public class RelativeTimeWidget extends Composite
                 }
             }
         });
-        
+
         threeday.addSelectionListener(new SelectionAdapter()
         {
             @Override
@@ -263,7 +270,7 @@ public class RelativeTimeWidget extends Composite
                 }
             }
         });
-        
+
         sevenday.addSelectionListener(new SelectionAdapter()
         {
             @Override
@@ -299,8 +306,8 @@ public class RelativeTimeWidget extends Composite
                 }
             }
         });
-        
-        final SelectionAdapter update = new SelectionAdapter() 
+
+        final SelectionAdapter update = new SelectionAdapter()
         {
             @Override
             public void widgetSelected(SelectionEvent e)
@@ -317,20 +324,20 @@ public class RelativeTimeWidget extends Composite
         minute.addSelectionListener(update);
         second.addSelectionListener(update);
     }
-    
+
     /** Add given listener. */
     public void addListener(RelativeTimeWidgetListener listener)
     {
         if (!listeners.contains(listener))
             listeners.add(listener);
     }
-    
+
     /** Remove given listener. */
     public void removeListener(RelativeTimeWidgetListener listener)
     {
         listeners.remove(listener);
     }
-    
+
     /** Set the widget to display the given time.
      *  @see #setNow()
      */
@@ -345,7 +352,7 @@ public class RelativeTimeWidget extends Composite
     {
         return (RelativeTime) relative_time.clone();
     }
-    
+
     /** Update the data from the interactive GUI elements. */
     private void updateDataFromGUI()
     {

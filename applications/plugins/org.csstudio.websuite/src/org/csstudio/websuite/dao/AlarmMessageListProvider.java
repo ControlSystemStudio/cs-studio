@@ -51,8 +51,8 @@ import org.jdom.output.XMLOutputter;
  *
  * @author ababic, Markus Moeller
  */
-public class AlarmMessageListProvider
-{
+public class AlarmMessageListProvider {
+    
     /** This instance */
 	private static AlarmMessageListProvider instance = null;
 	
@@ -77,8 +77,7 @@ public class AlarmMessageListProvider
 	 * 
 	 * @param displayParameters
 	 */
-	public void setDisplayParameters(LinkedList<String> displayParameters)
-	{
+	public void setDisplayParameters(LinkedList<String> displayParameters) {
 		this.displayParameters = displayParameters;
 	}
 
@@ -89,8 +88,8 @@ public class AlarmMessageListProvider
 	 * @param defaultTopicSet
 	 * @param displayParameters
 	 */
-	private AlarmMessageListProvider(String defaultTopicSet, LinkedList<String> displayParameters)
-	{
+	private AlarmMessageListProvider(String defaultTopicSet, LinkedList<String> displayParameters) {
+	    
 	    IPreferencesService preferences = Platform.getPreferencesService();
         
 		messageList = new AlarmMessageList();
@@ -111,10 +110,8 @@ public class AlarmMessageListProvider
 		}
 	}
 	
-	public void closeJms()
-	{
-	    if(jmsMessageReceiver != null)
-	    {
+	public void closeJms() {
+	    if(jmsMessageReceiver != null) {
 	        jmsMessageReceiver.stopJMSConnection();
 	    }
 	}
@@ -124,8 +121,8 @@ public class AlarmMessageListProvider
 	 * 
 	 * @return
 	 */
-	private LinkedList<String> getDefaultDisplayParameters()
-	{
+	private LinkedList<String> getDefaultDisplayParameters() {
+	    
 	    IPreferencesService preferences = Platform.getPreferencesService();
 	    LinkedList<String> output = new LinkedList<String>();
 		
@@ -195,8 +192,7 @@ public class AlarmMessageListProvider
 	 * 
 	 * @return
 	 */
-	public String getAlarmTopicList()
-	{
+	public String getAlarmTopicList() {
 	    return alarmTopicList;
 	}
 	
@@ -205,8 +201,7 @@ public class AlarmMessageListProvider
 	 * 
 	 * @return
 	 */
-	public int countMessages()
-	{
+	public int countMessages() {
 	    return messageList.getSize();
 	}
 	
@@ -214,14 +209,14 @@ public class AlarmMessageListProvider
 	 * Deletes messages.
 	 */
 	public void deleteMessages(long timestamp) {
-	    
+	    //TODO: Implement method
 	}
 	
     /**
      * Deletes messages.
      */
     public void deleteMessages(String timestamp) {
-        
+	    //TODO: Implement method
     }
 
     /**
@@ -237,9 +232,9 @@ public class AlarmMessageListProvider
 	 * @param propertyList List of all parameters you want to display. If null default display parameters will be used.
 	 * @return HTML file
 	 */
-	public String getAlarmMessageListAsHtml(List<String> propertyList, List<String> topicList, String command)
-	{
-		StringBuffer output = new StringBuffer();
+	public String getAlarmMessageListAsHtml(List<String> propertyList, List<String> topicList, String command) {
+		
+	    StringBuffer output = new StringBuffer();
 		BasicMessage basicMessage = null;
 		String[] temp = null;
 		String color = null;
@@ -249,25 +244,22 @@ public class AlarmMessageListProvider
 		boolean listTopics = false;
 		boolean showEntry = false;
 		
-		if(command != null)
-		{
-		    if(command.toLowerCase().compareTo("list") == 0)
-		    {
+		if(command != null) {
+		    if(command.toLowerCase().compareTo("list") == 0) {
 		        listTopics = true;
 		    }
 		}
 		
-		if(propertyList == null)
-		{
+		if(propertyList == null) {
 			propertyList = displayParameters;
 		}
 		
 		output.append("<html>\n");
 		output.append(" <body>\n");
-		output.append(" <table border='1'>\n");
+		output.append(" <table border=\"1\">\n");
 		
-		if(listTopics)
-		{
+		if(listTopics) {
+		    
 		    output.append("  <tr>\n");
 		    output.append("   <th>Alarm-Topics</th>\n");
             output.append("   <td>" + alarmTopicList + "</td>\n");
@@ -280,13 +272,11 @@ public class AlarmMessageListProvider
 		    return output.toString();
 		}
 		
-		try
-		{
+		try {
+		    
 		    Vector<? extends BasicMessage> ml = messageList.getJMSMessageList();
 		    Collections.sort(ml, new BasicMessageComparator());
-		}
-		catch(Exception e)
-		{
+		} catch(Exception e) {
 		    // output.append("<tr>\n");
             // output.append("<td>FEHLER</td>");
             // output.append("</tr>");
@@ -294,104 +284,75 @@ public class AlarmMessageListProvider
 		
 		Iterator<? extends BasicMessage> iter = messageList.getJMSMessageList().iterator();
 		
-		while(iter.hasNext())
-		{
-		    try
-		    {
-    		    basicMessage = iter.next();
+		while(iter.hasNext()) {
+		   
+		    try {
     		    
-    		    if(topicList != null)
-    		    {
+		        basicMessage = iter.next();
+    		    
+    		    if(topicList != null) {
+    		        
     		        topicName = basicMessage.getHashMap().get("TOPICNAME");
     		        temp = topicName.split("://");
-    		        if(temp.length == 2)
-    		        {
+    		        if(temp.length == 2) {
     		            showEntry = topicList.contains(temp[1]);
-    		        }
-    		        else
-    		        {
+    		        } else {
     		            showEntry = false;
     		        }
-    		    }
-    		    else
-    		    {
+    		    } else {
     		        showEntry = true;
     		    }
     		    
-    		    if(showEntry == false)
-    		    {
+    		    if(showEntry == false) {
     		        continue;
     		    }
     		    
     			color = basicMessage.getHashMap().get("SEVERITY");
-    			if("MAJOR".equals(color))
-    			{
-    				if(!((AlarmMessage)basicMessage).isOutdated())
-    				{
+    			if("MAJOR".equals(color)) {
+    				if(!((AlarmMessage)basicMessage).isOutdated()) {
     					output.append("  <tr BGCOLOR='red'>\n");
-    				}
-    				else
-    				{
+    				} else {
     					output.append("  <tr BGCOLOR='Maroon'>\n");
     				}
-    			}
-    			else if("MINOR".equals(color))
-    			{
-    			    if(!((AlarmMessage)basicMessage).isOutdated())
-    			    {
+    			} else if("MINOR".equals(color)) {
+    			    if(!((AlarmMessage)basicMessage).isOutdated()) {
     					output.append("  <tr BGCOLOR='yellow'>\n");
-    				}
-    			    else
-    			    {
+    				} else {
     					output.append("  <tr BGCOLOR='olive'>\n");
     				}
-    			}
-    			else if("NO_ALARM".equals(color))
-    			{
-    				if(!((AlarmMessage)basicMessage).isOutdated())
-    				{
+    			} else if("NO_ALARM".equals(color)) {
+    				if(!((AlarmMessage)basicMessage).isOutdated()) {
     					output.append("  <tr BGCOLOR='lime'>\n");
-    				}
-    				else
-    				{
+    				} else {
     					output.append("  <tr BGCOLOR='green'>\n");
     				}
-    			}
-    			else
-    			{
-    				if(!((AlarmMessage)basicMessage).isOutdated())
-    				{
+    			} else {
+    				if(!((AlarmMessage)basicMessage).isOutdated()) {
     					output.append("  <tr BGCOLOR='magenta'>\n");
-    				}
-    				else
-    				{
+    				} else {
     					output.append("  <tr BGCOLOR='DarkMagenta'>\n");
     				}
     			}
     			
     			Iterator<String> iterList = propertyList.iterator();
     			
-    			while(iterList.hasNext())
-    			{
-    				output.append("   <td>");
+    			while(iterList.hasNext()) {
+    				
+    			    output.append("   <td>");
     				nextAttr = iterList.next();
+    				
     				value = basicMessage.getHashMap().get(nextAttr);
-    				if(value !=null)
-    				{
+    				if(value !=null) {
     					output.append(value);
-    				}
-    				else
-    				{
-    					output.append("");
+    				} else {
+    					output.append("N/A");
     				}
     				
     				output.append("</td>\n");
     			}
     			
     			output.append("  </tr>\n");
-		    }
-		    catch(Exception e)
-		    {
+		    } catch(Exception e) {
 		        output.append("  <tr>\n");
 		        output.append("   <td>FEHLER</td>");
 		        output.append("  </tr>");
@@ -411,9 +372,10 @@ public class AlarmMessageListProvider
 	 * @param out Writer to write in
 	 * @param parameterList List of all parameters you want to display. If null default display parameters will be used.
 	 */
-	public void getAlarmMessageListAsXml(Writer out, List<String> propertyList, List<String> topicList, String command)
-	{
-		XMLOutputter outputter = new XMLOutputter();
+	public void getAlarmMessageListAsXml(Writer out, List<String> propertyList, List<String> topicList,
+	                                     String command) {
+		
+	    XMLOutputter outputter = new XMLOutputter();
 		BasicMessage basicMessage = null;
 		Element alarmList = null;
 		Document output = null;
@@ -423,16 +385,14 @@ public class AlarmMessageListProvider
 		boolean listTopics = false;
 		boolean showEntry = false;
 
-        if(command != null)
-        {
-            if(command.toLowerCase().compareTo("list") == 0)
-            {
+        if(command != null) {
+            if(command.toLowerCase().compareTo("list") == 0) {
                 listTopics = true;
             }
         }
         
-        if(listTopics)
-        {
+        if(listTopics) {
+            
             alarmList = new Element("topiclist");
             output = new Document(alarmList);
             
@@ -443,104 +403,99 @@ public class AlarmMessageListProvider
             topics.addContent(parameter);
             alarmList.addContent(topics);
             
-            try
-            {
+            try {
                 outputter.output(output, out);
-            }
-            catch(IOException e)
-            {
+            } catch(IOException e) {
                 CentralLogger.getInstance().error(this, "Cannot write to buffer", e);
             }
 
             return;
         }
         
-		if(propertyList == null)
-		{
+		if(propertyList == null) {
 		    propertyList = displayParameters;
 		}
 
 		alarmList = new Element("alarmlist");
 	    output = new Document(alarmList);
 
-		try
-		{
+		try {
 		    
 		    Vector<? extends BasicMessage> ml = messageList.getJMSMessageList();
 		    Collections.sort(ml, new BasicMessageComparator());
-		}
-		catch(Exception e) {}
+		} catch(Exception e) {}
 
         Iterator<? extends BasicMessage> iter = messageList.getJMSMessageList().iterator();
 
-		while(iter.hasNext())
-		{
+		while(iter.hasNext()) {
+		    
 		    try
 		    {
     			Element alarmMessage = new Element("alarm");
     			basicMessage = iter.next();
     			
-                if(topicList != null)
-                {
+    			// Only messages with severity MAJOR or MINOR should be returned
+    			String severity = basicMessage.getHashMap().get("SEVERITY");
+    			if(severity != null) {
+    			    
+    			    if((severity.compareToIgnoreCase("MAJOR") != 0)
+    			            && (severity.compareToIgnoreCase("MINOR") != 0)) {
+    			        break;
+    			    }
+    			} else {
+    			    break;
+    			}
+    			
+                if(topicList != null) {
+                    
                     topicName = basicMessage.getHashMap().get("TOPICNAME");
                     temp = topicName.split("://");
-                    if(temp.length == 2)
-                    {
+                    if(temp.length == 2) {
                         showEntry = topicList.contains(temp[1]);
-                    }
-                    else
-                    {
+                    } else {
                         showEntry = false;
                     }
-                }
-                else
-                {
+                } else {
                     showEntry = true;
                 }
                 
-                if(showEntry == false)
-                {
+                if(showEntry == false) {
                     continue;
                 }
 
     			Element parameter = new Element("tag");
     			parameter.setAttribute("key", "OUTDATED");
-    			if(((AlarmMessage)basicMessage).isOutdated())
-    			{
+    			if(((AlarmMessage)basicMessage).isOutdated()) {
     				parameter.setAttribute("value", "TRUE");
-    			}
-    			else
-    			{
+    			} else {
     				parameter.setAttribute("value","FALSE");
     			}
     			
     			alarmMessage.addContent(parameter);
     			
     			Iterator<String> iterList = propertyList.iterator();
-    			while (iterList.hasNext())
-    			{
-    				nextAttr = iterList.next();
+    			while(iterList.hasNext()) {
+    				
+    			    nextAttr = iterList.next();
     				String value = basicMessage.getHashMap().get(nextAttr);
-    				if(value != null)
-    				{
+    				if(value != null) {
     					parameter= new Element("tag");
-    					parameter.setAttribute("key",nextAttr);
-    					parameter.setAttribute("value",value);
+    					parameter.setAttribute("key", nextAttr);
+    					parameter.setAttribute("value", value);
     					alarmMessage.addContent(parameter);
     				}
     			}
+    			
     			alarmList.addContent(alarmMessage);
+		    } catch(Exception e) {
+		    	// Can be ignored
 		    }
-		    catch(Exception e) {}
 		}
 		
-		try
-		{
+		try {
 			outputter.output(output, out);
-		}
-		catch(IOException e)
-		{
-			CentralLogger.getInstance().error(this, "Cannot write to buffer", e);
+		} catch(IOException e) {
+			CentralLogger.getInstance().error(this, "Cannot write to buffer: " + e.getMessage());
 		}
 	}
 }

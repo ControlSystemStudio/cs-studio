@@ -1,3 +1,10 @@
+/*******************************************************************************
+ * Copyright (c) 2010 Oak Ridge National Laboratory.
+ * All rights reserved. This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License v1.0
+ * which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-v10.html
+ ******************************************************************************/
 package org.csstudio.diag.pvfields.gui;
 
 import org.csstudio.diag.pvfields.model.PVFieldsModel;
@@ -18,6 +25,8 @@ public class FieldProvider implements ILazyContentProvider
         this.model = control;
     }
 
+    @SuppressWarnings("nls")
+    @Override
     public void updateElement(int row)
     {
     	try
@@ -39,11 +48,13 @@ public class FieldProvider implements ILazyContentProvider
         }
     }
 
+    @Override
     public void dispose()
     {
         // NOP
     }
 
+    @Override
     public void inputChanged(Viewer viewer, Object oldInput, Object newInput)
     {
         // NOP

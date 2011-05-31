@@ -7,12 +7,15 @@ import javax.naming.directory.Attribute;
 import javax.naming.directory.Attributes;
 
 import org.epics.css.dal.AccessType;
+import org.epics.css.dal.DataExchangeException;
 import org.epics.css.dal.DynamicValueProperty;
 import org.epics.css.dal.EnumPropertyCharacteristics;
 import org.epics.css.dal.NumericPropertyCharacteristics;
 import org.epics.css.dal.PatternPropertyCharacteristics;
 import org.epics.css.dal.PropertyCharacteristics;
+import org.epics.css.dal.RemoteException;
 import org.epics.css.dal.SequencePropertyCharacteristics;
+import org.epics.css.dal.proxy.DirectoryProxy;
 import org.epics.css.dal.simple.AnyData;
 import org.epics.css.dal.simple.MetaData;
 
@@ -112,6 +115,39 @@ public class DataUtil {
 				sequenceLength,resolution,dataType,accessType,hostname);
 	}
     
+    /**
+     * Method gathers known types from the given proxy and constructs
+     * a {@link MetaData} that carries all that information. If the characteristics
+     * do not contain certain data, the metadata will return null for all those
+     * objects.
+     * 
+     * @param proxy the proxy with charactoristics
+     * @return the metadata
+     * @throws DataExchangeException 
+     */
+    public static MetaData createMetaData(DirectoryProxy<?> proxy) throws DataExchangeException {
+    	String description = (String)proxy.getCharacteristic(PropertyCharacteristics.C_DESCRIPTION);
+		String name = (String) proxy.getCharacteristic(PropertyCharacteristics.C_DISPLAY_NAME);
+		Integer sequenceLength = (Integer) proxy.getCharacteristic(SequencePropertyCharacteristics.C_SEQUENCE_LENGTH);
+		Integer resolution = (Integer) proxy.getCharacteristic(NumericPropertyCharacteristics.C_RESOLUTION);
+		AccessType accessType = (AccessType) proxy.getCharacteristic(PropertyCharacteristics.C_ACCESS_TYPE);
+		String hostname = (String) proxy.getCharacteristic(PropertyCharacteristics.C_HOSTNAME);
+		String dataType = (String) proxy.getCharacteristic(PropertyCharacteristics.C_DATATYPE);
+		String units = (String) proxy.getCharacteristic(NumericPropertyCharacteristics.C_UNITS);
+		Number dispMin = (Number) proxy.getCharacteristic(NumericPropertyCharacteristics.C_GRAPH_MIN);
+		Number dispMax = (Number) proxy.getCharacteristic(NumericPropertyCharacteristics.C_GRAPH_MAX);
+		Number warningMin = (Number) proxy.getCharacteristic(NumericPropertyCharacteristics.C_WARNING_MIN);
+		Number warningMax = (Number) proxy.getCharacteristic(NumericPropertyCharacteristics.C_WARNING_MAX);
+		Number alarmMin = (Number) proxy.getCharacteristic(NumericPropertyCharacteristics.C_ALARM_MIN);
+		Number alarmMax = (Number) proxy.getCharacteristic(NumericPropertyCharacteristics.C_ALARM_MAX);
+		String format = (String) proxy.getCharacteristic(NumericPropertyCharacteristics.C_FORMAT);
+		String[] enumDescriptions = (String[]) proxy.getCharacteristic(PatternPropertyCharacteristics.C_BIT_DESCRIPTIONS);
+		Object[] enumValues = (Object[]) proxy.getCharacteristic(EnumPropertyCharacteristics.C_ENUM_VALUES);
+		return new MetaDataImpl(name,description,dispMin,dispMax,warningMin,warningMax,
+				alarmMin,alarmMax,enumDescriptions,enumValues,format,units,
+				sequenceLength,resolution,dataType,accessType,hostname);
+	}
+
     /**
      * Method gathers known types from the given characteristics and constructs
      * a {@link MetaData} that carries all that information. If the characteristics

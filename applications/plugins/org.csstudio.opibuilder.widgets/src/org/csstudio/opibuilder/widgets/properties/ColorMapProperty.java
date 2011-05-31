@@ -1,3 +1,10 @@
+/*******************************************************************************
+ * Copyright (c) 2010 Oak Ridge National Laboratory.
+ * All rights reserved. This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License v1.0
+ * which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-v10.html
+ ******************************************************************************/
 package org.csstudio.opibuilder.widgets.properties;
 
 import java.util.LinkedHashMap;
@@ -65,6 +72,14 @@ public class ColorMapProperty extends AbstractWidgetProperty {
 		if(value instanceof ColorMap){
 			if(((ColorMap)value).getMap().size() >=2)
 				acceptableValue = (ColorMap)value;			
+		}else if (value instanceof String){
+			for(PredefinedColorMap map : ColorMap.PredefinedColorMap.values()){
+				if(map.toString().equals(value)){
+					acceptableValue = new ColorMap(map, true, true);
+				break;
+				}
+			}
+
 		}
 		
 		return acceptableValue;
@@ -132,4 +147,15 @@ public class ColorMapProperty extends AbstractWidgetProperty {
 		propElement.addContent(preDefinedElement);
 	}
 
+	
+	@Override
+	public boolean configurableByRule() {
+		return true;
+	}
+	
+	@Override
+	public boolean onlyAcceptExpressionInRule() {
+		return true;
+	}
+	
 }

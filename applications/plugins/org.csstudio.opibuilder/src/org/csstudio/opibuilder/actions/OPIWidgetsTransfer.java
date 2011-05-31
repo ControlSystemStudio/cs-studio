@@ -23,11 +23,12 @@
 package org.csstudio.opibuilder.actions;
 
 import java.util.List;
+import java.util.logging.Level;
 
+import org.csstudio.opibuilder.OPIBuilderPlugin;
 import org.csstudio.opibuilder.model.AbstractWidgetModel;
 import org.csstudio.opibuilder.model.DisplayModel;
 import org.csstudio.opibuilder.persistence.XMLUtil;
-import org.csstudio.platform.logging.CentralLogger;
 import org.eclipse.swt.dnd.ByteArrayTransfer;
 import org.eclipse.swt.dnd.DND;
 import org.eclipse.swt.dnd.TransferData;
@@ -37,15 +38,15 @@ import org.eclipse.swt.dnd.TransferData;
  *
  */
 public class OPIWidgetsTransfer extends ByteArrayTransfer {
-	
+
 	private static OPIWidgetsTransfer instance;
-	
+
 	private static final String TYPE_NAME = "OPIWidgetsTransfer:"
 			+ System.currentTimeMillis();
-	
+
 	private static final int TYPEID = registerType(TYPE_NAME);
-	
-	
+
+
 	public synchronized static OPIWidgetsTransfer getInstance() {
 		if(instance == null)
 			instance = new OPIWidgetsTransfer();
@@ -61,7 +62,7 @@ public class OPIWidgetsTransfer extends ByteArrayTransfer {
 	protected String[] getTypeNames() {
 		return new String[] {TYPE_NAME};
 	}
-	
+
 	@Override
 	protected void javaToNative(Object object, TransferData transferData) {
 		if (!isSupportedType(transferData) || !(checkInput(object))) {
@@ -69,7 +70,7 @@ public class OPIWidgetsTransfer extends ByteArrayTransfer {
 		}
 		super.javaToNative(((String)object).getBytes(), transferData);
 	}
-	
+
 	@Override
 	protected Object nativeToJava(TransferData transferData) {
 		if(!isSupportedType(transferData))
@@ -82,26 +83,26 @@ public class OPIWidgetsTransfer extends ByteArrayTransfer {
 			List<AbstractWidgetModel> widgets = displayModel.getChildren();
 			return widgets;
 		} catch (Exception e) {
-			CentralLogger.getInstance().error(this, "Failed to transfer XML to widget", e);
+			OPIBuilderPlugin.getLogger().log(Level.WARNING, "Failed to transfer XML to widget", e); //$NON-NLS-1$
 		}
 		return null;
-		
+
 	}
-	
+
 	/**
 	 * Checks the provided input, which must be a non-empty list that contains
 	 * only objects of type {@link AbstractWidgetModel}.
-	 * 
+	 *
 	 * @param input
 	 *            the input to check
 	 * @return true, if the input object is valid, false otherwise
 	 */
 	private boolean checkInput(final Object input) {
-		
+
 		if(input == null)
 			return false;
 		return input instanceof String;
-		
+
 	}
 
 }

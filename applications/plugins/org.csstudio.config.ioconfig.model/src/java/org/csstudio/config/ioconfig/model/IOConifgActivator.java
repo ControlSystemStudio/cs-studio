@@ -3,6 +3,8 @@ package org.csstudio.config.ioconfig.model;
 import java.util.ArrayList;
 import java.util.List;
 
+import javax.annotation.Nonnull;
+
 import org.csstudio.config.ioconfig.model.pbmodel.ChannelDBO;
 import org.csstudio.config.ioconfig.model.pbmodel.ChannelStructureDBO;
 import org.csstudio.config.ioconfig.model.pbmodel.GSDFileDBO;
@@ -48,6 +50,7 @@ public class IOConifgActivator extends AbstractCssPlugin{
      *
      * @return the shared instance
      */
+    @Nonnull
     public static IOConifgActivator getDefault() {
 		return INSTANCE;
     }
@@ -56,7 +59,7 @@ public class IOConifgActivator extends AbstractCssPlugin{
      * {@inheritDoc}
      */
     @Override
-    protected void doStart(final BundleContext context) throws Exception {
+    protected void doStart(@Nonnull final BundleContext context) throws Exception {
         _classes = new ArrayList<Class<?>>();
         _classes.add(NodeImageDBO.class);
         _classes.add(ChannelDBO.class);
@@ -75,21 +78,22 @@ public class IOConifgActivator extends AbstractCssPlugin{
         _classes.add(SearchNodeDBO.class);
         _classes.add(SensorsDBO.class);
         _classes.add(PV2IONameMatcherModelDBO.class);
-        HibernateManager.addClasses(_classes);
+        HibernateManager.getInstance().addClasses(_classes);
     }
 
     /**
      * {@inheritDoc}
      */
     @Override
-    protected void doStop(final BundleContext context) throws Exception {
-        HibernateManager.removeClasses(_classes);
+    protected void doStop(@Nonnull final BundleContext context) throws Exception {
+        HibernateManager.getInstance().removeClasses(_classes);
     }
 
     /**
      * {@inheritDoc}
      */
     @Override
+    @Nonnull
     public String getPluginId() {
         return PLUGIN_ID;
     }

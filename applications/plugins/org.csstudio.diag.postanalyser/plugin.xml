@@ -16,48 +16,30 @@
       </view>
    </extension>
    <extension
-         point="org.eclipse.ui.popupMenus">
-      <objectContribution
-            adaptable="true"
-            id="org.csstudio.diag.postanalyser.object_contrib"
-            objectClass="org.csstudio.platform.model.IProcessVariableWithSamples">
-         <menu
-               id="org.csstudio.popmenu"
-               label="CSS"
-               path="additions">
-            <groupMarker name="content"/>
-            <separator name="additions"/>
-         </menu>
-         <action
-               class="org.csstudio.diag.postanalyser.ObjectContribPopupAction"
-               icon="icons/mainLabel.png"
-               id="org.csstudio.diag.postanalyser.action1"
-               label="%PostAnalyzer"
-               menubarPath="org.csstudio.popmenu/content"/>
-      </objectContribution>
-   </extension>
-   <!-- No need to start standalone, since you only get data via object contrib startup
-   <extension
-         point="org.eclipse.ui.actionSets">
-      <actionSet
-            id="org.csstudio.diag.postanalyser.ShowAnalyserAction"
-            label="CSS Action Set"
-            visible="true">
-         <action
-               class="org.csstudio.diag.postanalyser.ShowAnalyserAction"
-               id="org.csstudio.diag.postanalyser.showAnalyser"
-               icon="icons/mainLabel.png"
-               label="%PostAnalyzer"
-               menubarPath="css/diag/"
-               style="push"/>
-      </actionSet>
-   </extension>
-   -->
-   <extension
          point="org.eclipse.help.toc">
       <toc
             file="toc.xml"
             primary="true"/>
    </extension>
-
+   <extension
+         point="org.eclipse.ui.commands">
+      <command
+            defaultHandler="org.csstudio.diag.postanalyser.OpenPostAnalyzer"
+            id="org.csstudio.diag.postanalyser.open"
+            name="%PostAnalyzer">
+      </command>
+   </extension>
+   <extension
+         point="org.eclipse.ui.menus">
+      <menuContribution
+            allPopups="false"
+            locationURI="popup:org.csstudio.trends.databrowser2.popup.processvariablewithsamples">
+         <command
+               commandId="org.csstudio.diag.postanalyser.open"
+               icon="icons/mainLabel.png"
+               label="%PostAnalyzer"
+               style="push">
+         </command>
+      </menuContribution>
+   </extension>
 </plugin>

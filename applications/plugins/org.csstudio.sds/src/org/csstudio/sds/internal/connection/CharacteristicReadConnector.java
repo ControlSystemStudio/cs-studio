@@ -4,7 +4,7 @@ import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 
 import org.csstudio.platform.logging.CentralLogger;
-import org.csstudio.platform.simpledal.ValueType;
+import org.csstudio.platform.model.pvs.ValueType;
 import org.epics.css.dal.DataExchangeException;
 import org.epics.css.dal.simple.AnyData;
 import org.epics.css.dal.simple.AnyDataChannel;

@@ -9,6 +9,7 @@ Require-Bundle: org.eclipse.core.runtime,
  org.csstudio.nams.service.logging,
  org.csstudio.nams.common.activatorUtils,
  org.csstudio.platform.libs.dal,
+ org.csstudio.platform.simpledal;bundle-version="1.0.0",
  org.junit4;bundle-version="4.5.0",
  org.csstudio.platform.libs.easymock;bundle-version="1.0.0"
 Eclipse-LazyStart: true
@@ -46,3 +47,4 @@ Export-Package:
  org.junit.runners;uses:="junit.framework,org.junit.internal.runners"
 Bundle-ClassPath: .,
  lib/junit.jar
+Bundle-Vendor: DESY <css-developer@desy.de>, Markus Moeller

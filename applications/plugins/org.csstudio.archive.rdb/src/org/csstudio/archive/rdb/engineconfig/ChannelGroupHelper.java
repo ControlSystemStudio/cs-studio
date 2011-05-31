@@ -1,3 +1,10 @@
+/*******************************************************************************
+ * Copyright (c) 2010 Oak Ridge National Laboratory.
+ * All rights reserved. This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License v1.0
+ * which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-v10.html
+ ******************************************************************************/
 package org.csstudio.archive.rdb.engineconfig;
 
 import java.sql.Connection;
@@ -21,7 +28,7 @@ public class ChannelGroupHelper
     {
         this.archive = archive;
     }
-    
+
     /** Add a channel group description.
      *  <p>
      *  The group must not previously exist for this engine!
@@ -106,7 +113,8 @@ public class ChannelGroupHelper
             // files that were hard to compare
             Arrays.sort(grp_arr, new Comparator<ChannelGroupConfig>()
             {
-                public int compare(ChannelGroupConfig a, ChannelGroupConfig b)
+                @Override
+                public int compare(final ChannelGroupConfig a, final ChannelGroupConfig b)
                 {
                     return a.getName().compareTo(b.getName());
                 }

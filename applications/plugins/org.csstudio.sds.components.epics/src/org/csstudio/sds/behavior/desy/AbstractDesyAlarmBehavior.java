@@ -19,8 +19,8 @@
 package org.csstudio.sds.behavior.desy;
 
 import org.csstudio.sds.model.AbstractWidgetModel;
-import org.epics.css.dal.context.ConnectionState;
 import org.epics.css.dal.simple.AnyData;
+import org.epics.css.dal.simple.AnyDataChannel;
 import org.epics.css.dal.simple.Severity;
 
 /**
@@ -55,28 +55,22 @@ public abstract class AbstractDesyAlarmBehavior<W extends AbstractWidgetModel> e
 
     @Override
     protected void doProcessConnectionStateChange(final W widget,
-                                                  final ConnectionState connectionState) {
-        super.doProcessConnectionStateChange(widget, connectionState);
-    }
-
-    /**
-     *
-     * {@inheritDoc}
-     */
-    @Override
-    protected void doProcessValueChange(final W model,final AnyData anyData) {
+                                                  final AnyDataChannel anyDataChannel) {
+        super.doProcessConnectionStateChange(widget, anyDataChannel);
+        AnyData anyData = anyDataChannel.getData();
         Severity severity = anyData.getSeverity();
         if (severity != null) {
             if (severity.isInvalid()) {
-                model.setPropertyValue(AbstractWidgetModel.PROP_CROSSED_OUT, true);
+                widget.setPropertyValue(AbstractWidgetModel.PROP_CROSSED_OUT, true);
             } else {
-                model.setPropertyValue(AbstractWidgetModel.PROP_CROSSED_OUT, false);
+                widget.setPropertyValue(AbstractWidgetModel.PROP_CROSSED_OUT, false);
             }
-            model.setPropertyValue(AbstractWidgetModel.PROP_BORDER_COLOR, determineColorBySeverity(severity, _defColor));
-            model.setPropertyValue(AbstractWidgetModel.PROP_BORDER_STYLE, SeverityUtil
+            widget.setPropertyValue(AbstractWidgetModel.PROP_BORDER_COLOR, determineColorBySeverity(severity, _defColor));
+            widget.setPropertyValue(AbstractWidgetModel.PROP_BORDER_STYLE, SeverityUtil
                                    .determineBorderStyleBySeverity(severity).getIndex());
-            model.setPropertyValue(AbstractWidgetModel.PROP_BORDER_WIDTH, SeverityUtil
+            widget.setPropertyValue(AbstractWidgetModel.PROP_BORDER_WIDTH, SeverityUtil
                                    .determineBorderWidthBySeverity(severity));
         }
     }
+
 }

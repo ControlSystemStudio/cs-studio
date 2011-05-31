@@ -1,13 +1,30 @@
+/*************************************************************************\
+* Copyright (c) 2010  UChicago Argonne, LLC
+* This file is distributed subject to a Software License Agreement found
+* in the file LICENSE that is included with this distribution.
+/*************************************************************************/
+
 package org.csstudio.opibuilder.adl2boy.translator;
 
+import java.io.File;
 import java.util.ArrayList;
 
 import org.csstudio.opibuilder.model.AbstractContainerModel;
+import org.csstudio.opibuilder.model.DisplayModel;
 import org.csstudio.utility.adlparser.fileParser.ADLWidget;
+import org.csstudio.utility.adlparser.fileParser.ColorMap;
+import org.csstudio.utility.adlparser.fileParser.ParserADL;
+import org.csstudio.utility.adlparser.fileParser.WrongADLFormatException;
 import org.csstudio.utility.adlparser.fileParser.widgetParts.ADLBasicAttribute;
 import org.csstudio.utility.adlparser.fileParser.widgetParts.ADLDynamicAttribute;
 import org.eclipse.swt.graphics.RGB;
 
+/**
+ * Utilities to aid in translating ADL files to OPI files.
+ * 
+ * @author John Hammonds, Argonne National Laboratory
+ *
+ */
 public class TranslatorUtils {
 	private static ADLBasicAttribute defaultBasicAttribute = new ADLBasicAttribute();
 	private static ADLDynamicAttribute defaultDynamicAttribute = new ADLDynamicAttribute();
@@ -100,17 +117,16 @@ public class TranslatorUtils {
 				else if (widgetType.equals("basic attribute")){
 					ArrayList<ADLWidget> children = adlWidget.getObjects();
 					for (ADLWidget child : children){
-						if (child.getType().equals("attr")){
-							TranslatorUtils.defaultBasicAttribute = new ADLBasicAttribute(child);
-						}
+						setDefaultBasicAttribute(child);
 					}
+				}
+				else if (widgetType.equals("shell command")){
+					printNotHandledMessage(widgetType);
 				}
 				else if (widgetType.equals("dynamic attribute")){
 					ArrayList<ADLWidget> children = adlWidget.getObjects();
 					for (ADLWidget child : children){
-						if (child.getType().equals("attr")){
-							TranslatorUtils.defaultDynamicAttribute = new ADLDynamicAttribute(child);
-						}
+						setDefaultBasicAttribute(child);
 					}
 				}
 
@@ -120,6 +136,18 @@ public class TranslatorUtils {
 			}
 		}
 		
+	}
+
+	/**
+	 * @param child
+	 * @throws WrongADLFormatException
+	 */
+	public static void setDefaultBasicAttribute(ADLWidget child)
+			throws WrongADLFormatException {
+		if (child.getType().equals("attr")){
+			child.setType("basic attribute");
+			TranslatorUtils.defaultBasicAttribute = new ADLBasicAttribute(child);
+		}
 	}
 
 	/** 
@@ -143,51 +171,6 @@ public class TranslatorUtils {
 	public static void printNotHandledWarning(String translator, String message){
 		System.out.println("---Warning - " + translator + ": " + message + " is not handled" );
 	}
-	public static int convertTextHeightToFontSize(int h){
-		if (h < 9) {
-			return 6;
-		}
-		else if (h < 10 ){
-			return 6;
-		}
-		else if (h < 13) {
-			return 8;
-		}
-		else if (h < 14) {
-			return 9;
-		}
-		else if (h < 15) {
-			return 10;
-		}
-		else if (h < 16) {
-			return 12;
-		}
-		else if (h < 20) {
-			return 14;
-		}
-		else if (h < 21) {
-			return 16;
-		}
-		else if (h < 24) {
-			return 18;
-		}
-		else if (h < 26) {
-			return 18;
-		}
-		else if (h < 27) {
-			return 20;
-		}
-		else if (h < 35) {
-			return 24;
-		}
-		else if (h < 36) {
-			return 26;
-		}
-		else {
-			return 30;
-		}
-	}
-
 	public static ADLBasicAttribute getDefaultBasicAttribute(){
 		return TranslatorUtils.defaultBasicAttribute;
 	}
@@ -203,4 +186,68 @@ public class TranslatorUtils {
 	public static void initDefaultDynamicAttribute(){
 		TranslatorUtils.defaultDynamicAttribute = new ADLDynamicAttribute();
 	}
+
+	/**
+	 * @param fullADLFileName
+	 * @return
+	 */
+	public static DisplayModel convertAdlToModel(String fullADLFileName) {
+		File adlFile = new File(fullADLFileName);
+		ADLWidget root = ParserADL.getNextElement(new File(fullADLFileName));
+		// Get the color map
+		RGB[] colorMap = getColorMap(root);
+		// Configure the display
+
+		DisplayModel displayModel = initializeDisplayModel(root, colorMap);
+		//Dynamic and basic attribute are static in Translator utils to allow for defaults to be set (used before vers 020200)
+		initDefaultBasicAttribute();
+		initDefaultDynamicAttribute();
+
+		displayModel.setName(adlFile.getName().substring(0, adlFile.getName().indexOf(".")));
+		ConvertChildren(root.getObjects(), displayModel, colorMap);
+		return displayModel;
+	}
+
+	/**
+	 * Get the colorMap from an ADLroot ADLWidget
+	 * @param root
+	 * @return
+	 */
+	protected static RGB[] getColorMap(ADLWidget root) {
+		RGB colorMap[] = new RGB[0];
+		for (ADLWidget adlWidget : root.getObjects()){
+			String widgetType = adlWidget.getType();
+			try {
+				if (widgetType.equals("color map")){
+					ColorMap tempColorMap = new ColorMap(adlWidget);
+					colorMap = tempColorMap.getColors();
+				}
+			}
+			catch (Exception ex) {
+				System.out.println("Error reading ColorMap");
+				ex.printStackTrace();
+			}
+		}
+		return colorMap;
+	}
+
+	/**
+	 * get an initial DisplayModel from a given ADLWidget using a colorMap
+	 * @param root
+	 * @param colorMap
+	 * @return
+	 */
+	protected static DisplayModel initializeDisplayModel(ADLWidget root,
+			RGB[] colorMap) {
+		DisplayModel displayModel = new DisplayModel();
+		
+		for (ADLWidget adlWidget : root.getObjects()){
+			String widgetType = adlWidget.getType();
+			if (widgetType.equals("display")){
+				displayModel = (DisplayModel)(new Display2Model(adlWidget, colorMap, null)).getWidgetModel();
+			}
+		}
+		return displayModel;
+	}
+
 }

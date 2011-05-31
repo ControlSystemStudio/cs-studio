@@ -1,12 +1,17 @@
+/*******************************************************************************
+ * Copyright (c) 2010 Oak Ridge National Laboratory.
+ * All rights reserved. This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License v1.0
+ * which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-v10.html
+ ******************************************************************************/
 package org.csstudio.debugging.jmsmonitor;
 
-import org.csstudio.platform.ui.swt.AutoSizeColumn;
-import org.csstudio.platform.ui.swt.AutoSizeColumnAction;
-import org.csstudio.platform.ui.swt.AutoSizeControlListener;
-import org.csstudio.platform.ui.workbench.OpenViewAction;
-import org.eclipse.jface.action.Action;
+import org.csstudio.apputil.ui.workbench.OpenViewAction;
 import org.eclipse.jface.action.MenuManager;
+import org.eclipse.jface.layout.TableColumnLayout;
 import org.eclipse.jface.viewers.ColumnViewerToolTipSupport;
+import org.eclipse.jface.viewers.ColumnWeightData;
 import org.eclipse.jface.viewers.ISelectionProvider;
 import org.eclipse.jface.viewers.TableViewer;
 import org.eclipse.jface.viewers.TableViewerColumn;
@@ -25,6 +30,7 @@ import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Table;
+import org.eclipse.swt.widgets.TableColumn;
 import org.eclipse.swt.widgets.Text;
 import org.eclipse.ui.IPageLayout;
 
@@ -58,9 +64,9 @@ public class GUI implements ModelListener
         this.url = url;
         this.user = user;
         this.password = password;
-        
+
         createGUI(parent);
-        
+
         topic.addSelectionListener(new SelectionAdapter()
         {
             @Override
@@ -69,7 +75,7 @@ public class GUI implements ModelListener
                 setTopic(getTopic());
             }
         });
-        
+
         clear.addSelectionListener(new SelectionAdapter()
         {
             @Override
@@ -79,10 +85,11 @@ public class GUI implements ModelListener
                     model.clear();
             }
         });
-        
+
         parent.addDisposeListener(new DisposeListener()
         {
-			public void widgetDisposed(DisposeEvent e)
+			@Override
+            public void widgetDisposed(DisposeEvent e)
 			{
 				if (model != null)
 					model.close();
@@ -98,8 +105,8 @@ public class GUI implements ModelListener
         final GridLayout layout = new GridLayout();
         layout.numColumns = 3;
         parent.setLayout(layout);
-        
-        // URL:   ____url ____ 
+
+        // URL:   ____url ____
         Label l = new Label(parent, 0);
         l.setText(Messages.URLLabel);
         l.setLayoutData(new GridData());
@@ -107,21 +114,21 @@ public class GUI implements ModelListener
         l = new Label(parent, 0);
         l.setText(NLS.bind(Messages.URLLabelFmt, new Object[] { url, user, password }));
         l.setLayoutData(new GridData(SWT.LEFT, 0, true, false, 2, 1));
-        
+
         // Topic: ____topic ____ [Clear]
         l = new Label(parent, 0);
         l.setText(Messages.TopicLabel);
         l.setLayoutData(new GridData());
-        
+
         topic = new Text(parent, SWT.BORDER);
         topic.setToolTipText(Messages.Topic_TT);
         topic.setLayoutData(new GridData(SWT.FILL, 0, true, false));
-        
+
         clear = new Button(parent, SWT.PUSH);
         clear.setText(Messages.Clear);
         clear.setToolTipText(Messages.ClearTT);
         clear.setLayoutData(new GridData());
-        
+
         // Server: ____server_name____
         l = new Label(parent, 0);
         l.setText(Messages.Server);
@@ -130,36 +137,46 @@ public class GUI implements ModelListener
         server_name = new Label(parent, 0);
         server_name.setText(Messages.Disconnected);
         server_name.setLayoutData(new GridData(SWT.FILL, 0, true, false, 2, 1));
-        
+
         // Message table
-        table_viewer = new TableViewer(parent,
+        // TableColumnLayout requires table to be only child of its parent
+        final Composite table_parent = new Composite(parent, 0);
+        table_parent.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true, layout.numColumns, 1));
+        final TableColumnLayout table_layout = new TableColumnLayout();
+        table_parent.setLayout(table_layout);
+
+        table_viewer = new TableViewer(table_parent,
                 SWT.H_SCROLL | SWT.V_SCROLL | SWT.MULTI | SWT.FULL_SELECTION);
         // Some tweaks to the underlying table widget
         final Table table = table_viewer.getTable();
         table.setHeaderVisible(true);
         table.setLinesVisible(true);
-        GridData gd = new GridData();
-        gd.horizontalSpan = layout.numColumns;
-        gd.grabExcessHorizontalSpace = true;
-        gd.grabExcessVerticalSpace = true;
-        gd.horizontalAlignment = SWT.FILL;
-        gd.verticalAlignment = SWT.FILL;
-        table.setLayoutData(gd);
-        
-        ColumnViewerToolTipSupport.enableFor(table_viewer, ToolTip.NO_RECREATE);
 
-        table_viewer.setContentProvider(new ReceivedMessageProvider());
-        TableViewerColumn view_col =
-            AutoSizeColumn.make(table_viewer, Messages.DateColumn, 150, 5);
+        TableViewerColumn view_col = new TableViewerColumn(table_viewer, 0);
+        TableColumn col = view_col.getColumn();
+        col.setText(Messages.DateColumn);
+        col.setMoveable(true);
+        table_layout.setColumnData(col, new ColumnWeightData(5, 150));
         view_col.setLabelProvider(new DateLabelProvider());
-        view_col = AutoSizeColumn.make(table_viewer, Messages.TypeColumn, 50, 5);
+
+        view_col = new TableViewerColumn(table_viewer, 0);
+        col = view_col.getColumn();
+        col.setText(Messages.TypeColumn);
+        col.setMoveable(true);
+        table_layout.setColumnData(col, new ColumnWeightData(5, 50));
         view_col.setLabelProvider(new TypeLabelProvider());
-        view_col = AutoSizeColumn.make(table_viewer, Messages.ContentColumn, 400, 100);
+
+        view_col = new TableViewerColumn(table_viewer, 0);
+        col = view_col.getColumn();
+        col.setText(Messages.ContentColumn);
+        col.setMoveable(true);
+        table_layout.setColumnData(col, new ColumnWeightData(100, 400));
         view_col.setLabelProvider(new ContentLabelProvider());
 
-        final Action autosize =
-            new AutoSizeColumnAction(new AutoSizeControlListener(table, true));
-        
+        table_viewer.setContentProvider(new ReceivedMessageProvider());
+
+        ColumnViewerToolTipSupport.enableFor(table_viewer, ToolTip.NO_RECREATE);
+
         // Double-click on message opens detail
         table_viewer.getTable().addMouseListener(new MouseAdapter()
         {
@@ -169,16 +186,15 @@ public class GUI implements ModelListener
                 new OpenViewAction(IPageLayout.ID_PROP_SHEET).run();
             }
         });
-        
+
         // Context menu
         final MenuManager manager = new MenuManager();
         manager.add(new OpenViewAction(IPageLayout.ID_PROP_SHEET, Messages.ShowProperties));
-        manager.add(autosize);
         table.setMenu(manager.createContextMenu(table));
-        
+
         clear();
     }
-    
+
     /** Set initial focus */
     public void setFocus()
     {
@@ -226,7 +242,7 @@ public class GUI implements ModelListener
     {
         table_viewer.setInput(new ReceivedMessage[0]);
     }
-    
+
     /** Set messages to something that show error message
      *  @param message Error message text
      */
@@ -239,10 +255,12 @@ public class GUI implements ModelListener
     }
 
     /** @see ModelListener */
+    @Override
     public void modelChanged(final Model model)
     {
         table_viewer.getTable().getDisplay().asyncExec(new Runnable()
         {
+            @Override
             public void run()
             {
                 if (server_name.isDisposed())

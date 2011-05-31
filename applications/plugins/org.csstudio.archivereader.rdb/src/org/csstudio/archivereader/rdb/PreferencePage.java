@@ -1,6 +1,13 @@
+/*******************************************************************************
+ * Copyright (c) 2010 Oak Ridge National Laboratory.
+ * All rights reserved. This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License v1.0
+ * which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-v10.html
+ ******************************************************************************/
 package org.csstudio.archivereader.rdb;
 
-import org.csstudio.platform.ui.security.PasswordFieldEditor;
+import org.csstudio.auth.ui.security.PasswordFieldEditor;
 import org.eclipse.core.runtime.preferences.InstanceScope;
 import org.eclipse.jface.preference.FieldEditorPreferencePage;
 import org.eclipse.jface.preference.StringFieldEditor;
@@ -24,7 +31,8 @@ public class PreferencePage extends FieldEditorPreferencePage
         setPreferenceStore(new ScopedPreferenceStore(new InstanceScope(),
                 Activator.ID));
     }
-    
+
+    @Override
     public void init(IWorkbench workbench)
     {
         // NOP

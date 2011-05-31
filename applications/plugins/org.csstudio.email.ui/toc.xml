@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <?NLS TYPE="org.eclipse.help.toc"?>
 
-<toc link_to="../org.csstudio.platform.ui/tocApps.xml#configuration" label="E-Mail">
+<toc link_to="../org.csstudio.ui.help/tocApps.xml#configuration" label="E-Mail">
     <topic label="E-Mail"  href="html/email.html">
     </topic>
 </toc>

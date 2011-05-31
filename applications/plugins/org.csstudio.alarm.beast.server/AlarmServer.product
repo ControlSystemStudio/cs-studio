@@ -1,13 +1,15 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <?pde version="3.5"?>
 
-<product name="Alarm Server" id="org.csstudio.alarm.beast.server.product" application="org.csstudio.alarm.beast.server.application" version="2.1.0" useFeatures="false" includeLaunchers="true">
+<product name="Alarm Server" id="org.csstudio.alarm.beast.server.product" application="org.csstudio.alarm.beast.server.application" version="3.0.0.qualifier" useFeatures="false" includeLaunchers="true">
 
    <configIni use="default">
    </configIni>
 
    <launcherArgs>
-      <vmArgs>-Djava.awt.headless=true -Xms64m -Xmx256m</vmArgs>
+      <vmArgs>-Djava.awt.headless=true -Xms64m -Xmx256m
+-Dorg.apache.commons.logging.Log=org.apache.commons.logging.impl.SimpleLog
+-Dorg.apache.commons.logging.simplelog.defaultlog=fatal</vmArgs>
       <vmArgsMac>-XstartOnFirstThread -Dorg.eclipse.swt.internal.carbon.smallFonts</vmArgsMac>
    </launcherArgs>
 
@@ -27,20 +29,24 @@
       <plugin id="org.csstudio.alarm.beast"/>
       <plugin id="org.csstudio.alarm.beast.server"/>
       <plugin id="org.csstudio.apputil"/>
-      <plugin id="org.csstudio.platform"/>
-      <plugin id="org.csstudio.platform.libs.annotations"/>
+      <plugin id="org.csstudio.auth"/>
+      <plugin id="org.csstudio.csdata"/>
+      <plugin id="org.csstudio.data"/>
+      <plugin id="org.csstudio.java"/>
+      <plugin id="org.csstudio.logging"/>
       <plugin id="org.csstudio.platform.libs.dal"/>
       <plugin id="org.csstudio.platform.libs.epics"/>
       <plugin id="org.csstudio.platform.libs.jdbc"/>
       <plugin id="org.csstudio.platform.libs.jmock"/>
       <plugin id="org.csstudio.platform.libs.jms"/>
+      <plugin id="org.csstudio.platform.libs.log4j"/>
       <plugin id="org.csstudio.platform.utility.jms"/>
       <plugin id="org.csstudio.platform.utility.rdb"/>
-      <plugin id="org.csstudio.platform.workspace"/>
       <plugin id="org.csstudio.sns.passwordprovider"/>
       <plugin id="org.csstudio.utility.pv"/>
       <plugin id="org.csstudio.utility.pv.epics"/>
       <plugin id="org.csstudio.utility.pv.simu"/>
+      <plugin id="org.csstudio.workspace"/>
       <plugin id="org.eclipse.core.contenttype"/>
       <plugin id="org.eclipse.core.expressions"/>
       <plugin id="org.eclipse.core.filesystem"/>
@@ -55,7 +61,6 @@
       <plugin id="org.eclipse.core.filesystem.win32.x86_64" fragment="true"/>
       <plugin id="org.eclipse.core.jobs"/>
       <plugin id="org.eclipse.core.resources"/>
-      <plugin id="org.eclipse.core.resources.compatibility" fragment="true"/>
       <plugin id="org.eclipse.core.resources.win32.x86" fragment="true"/>
       <plugin id="org.eclipse.core.runtime"/>
       <plugin id="org.eclipse.core.runtime.compatibility.registry" fragment="true"/>
@@ -66,7 +71,6 @@
       <plugin id="org.eclipse.equinox.security"/>
       <plugin id="org.eclipse.equinox.security.macosx" fragment="true"/>
       <plugin id="org.eclipse.equinox.security.win32.x86" fragment="true"/>
-      <plugin id="org.eclipse.net4j.jms.api"/>
       <plugin id="org.eclipse.osgi"/>
       <plugin id="org.hamcrest.core"/>
       <plugin id="org.junit"/>

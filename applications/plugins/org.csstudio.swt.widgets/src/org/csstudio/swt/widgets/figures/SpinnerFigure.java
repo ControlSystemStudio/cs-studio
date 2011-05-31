@@ -1,3 +1,10 @@
+/*******************************************************************************
+ * Copyright (c) 2010 Oak Ridge National Laboratory.
+ * All rights reserved. This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License v1.0
+ * which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-v10.html
+ ******************************************************************************/
 package org.csstudio.swt.widgets.figures;
 
 import java.beans.BeanInfo;
@@ -13,6 +20,7 @@ import org.eclipse.draw2d.ActionEvent;
 import org.eclipse.draw2d.ActionListener;
 import org.eclipse.draw2d.ArrowButton;
 import org.eclipse.draw2d.ButtonBorder;
+import org.eclipse.draw2d.ButtonBorder.ButtonScheme;
 import org.eclipse.draw2d.Clickable;
 import org.eclipse.draw2d.ColorConstants;
 import org.eclipse.draw2d.Figure;
@@ -21,8 +29,9 @@ import org.eclipse.draw2d.FocusListener;
 import org.eclipse.draw2d.Graphics;
 import org.eclipse.draw2d.KeyEvent;
 import org.eclipse.draw2d.KeyListener;
+import org.eclipse.draw2d.MouseEvent;
+import org.eclipse.draw2d.MouseListener;
 import org.eclipse.draw2d.Orientable;
-import org.eclipse.draw2d.ButtonBorder.ButtonScheme;
 import org.eclipse.draw2d.geometry.Rectangle;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.graphics.Color;
@@ -65,7 +74,7 @@ public class SpinnerFigure extends Figure implements Introspectable {
 	private double value = 0;
 	
 	private ArrowButton buttonUp, buttonDown;
-	private LabelFigure labelFigure;
+	private TextFigure labelFigure;
 	private List<IManualValueChangeListener> spinnerListeners;
 	
 	private final static int BUTTON_WIDTH = 25;
@@ -108,7 +117,7 @@ public class SpinnerFigure extends Figure implements Introspectable {
 			});
 		
 		
-		labelFigure = new LabelFigure(){
+		labelFigure = new TextFigure(){
 			/**
 			 * If this button has focus, this method paints a focus rectangle.
 			 * 
@@ -127,6 +136,13 @@ public class SpinnerFigure extends Figure implements Introspectable {
 			}
 		};
 		labelFigure.setText(format(value));
+		labelFigure.addMouseListener(new MouseListener.Stub(){
+			@Override
+			public void mousePressed(MouseEvent me) {
+				if(!hasFocus())
+					requestFocus();
+			}
+		});
 		add(labelFigure);
 		
 		ButtonBorder buttonBorder = new ButtonBorder(new ButtonScheme(new Color[]{ColorConstants.buttonLightest},
@@ -211,7 +227,7 @@ public class SpinnerFigure extends Figure implements Introspectable {
 		return formatType;
 	}
 	
-	public LabelFigure getLabelFigure() {
+	public TextFigure getLabelFigure() {
 		return labelFigure;
 	}
 	

@@ -1,13 +1,13 @@
 package org.csstudio.archive.crawl;
 
-import org.csstudio.platform.data.IDoubleValue;
-import org.csstudio.platform.data.IEnumeratedValue;
-import org.csstudio.platform.data.ILongValue;
-import org.csstudio.platform.data.IMetaData;
-import org.csstudio.platform.data.INumericMetaData;
-import org.csstudio.platform.data.ISeverity;
-import org.csstudio.platform.data.IValue;
-import org.csstudio.platform.data.ValueFactory;
+import org.csstudio.data.values.IDoubleValue;
+import org.csstudio.data.values.IEnumeratedValue;
+import org.csstudio.data.values.ILongValue;
+import org.csstudio.data.values.IMetaData;
+import org.csstudio.data.values.INumericMetaData;
+import org.csstudio.data.values.ISeverity;
+import org.csstudio.data.values.IValue;
+import org.csstudio.data.values.ValueFactory;
 
 /** Turns an Iterator over raw <code>Value</code>s into one over
  *  <code>ILongValue</code>s.
@@ -20,7 +20,7 @@ import org.csstudio.platform.data.ValueFactory;
  *  status/severity that indicates a disconnected state,
  *  are returned as IntegerSampleIterator.INVALID, in the hope that this
  *  avoids accidental use of these samples.
- *  
+ *
  *  @see org.csstudio.archive.crawl.RawValueIterator
  *  @see org.csstudio.archive.crawl.DoubleValueIterator
  *  @author Kay Kasemir
@@ -36,18 +36,18 @@ public class LongValueIterator implements ValueIterator
      *  DoubleValueInfo or RawValueInfo.
      */
     public static final int INVALID = Integer.MIN_VALUE;
-    
+
     static ISeverity invalid_type = ValueFactory.createInvalidSeverity();
-    
+
     private final ValueIterator raw_values;
-    
+
     static private INumericMetaData numeric_meta = null;
-    
+
     public LongValueIterator(ValueIterator raw_values)
     {
         this.raw_values = raw_values;
     }
-    
+
     public boolean hasNext()
     {
         return raw_values.hasNext();

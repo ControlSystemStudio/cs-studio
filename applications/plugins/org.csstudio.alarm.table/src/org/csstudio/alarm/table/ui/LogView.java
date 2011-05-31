@@ -21,33 +21,42 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.Timer;
 
+import javax.annotation.CheckForNull;
 import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 
 import org.apache.log4j.Logger;
 import org.csstudio.alarm.service.declaration.AlarmConnectionException;
+import org.csstudio.alarm.service.declaration.AlarmMessageKey;
+import org.csstudio.alarm.service.declaration.AlarmPreference;
+import org.csstudio.alarm.service.declaration.IAlarmConfigurationService;
+import org.csstudio.alarm.service.declaration.IAlarmConnection;
+import org.csstudio.alarm.service.declaration.IAlarmListener;
+import org.csstudio.alarm.service.declaration.IAlarmMessage;
 import org.csstudio.alarm.table.JmsLogsPlugin;
-import org.csstudio.alarm.table.dataModel.LogMessageList;
 import org.csstudio.alarm.table.dataModel.AbstractMessageList;
+import org.csstudio.alarm.table.dataModel.LogMessageList;
 import org.csstudio.alarm.table.internal.localization.Messages;
 import org.csstudio.alarm.table.jms.AlarmListener;
 import org.csstudio.alarm.table.jms.IAlarmTableListener;
 import org.csstudio.alarm.table.preferences.ITopicSetColumnService;
 import org.csstudio.alarm.table.preferences.TopicSet;
+import org.csstudio.alarm.table.preferences.alarm.AlarmViewPreference;
 import org.csstudio.alarm.table.preferences.log.LogViewPreferenceConstants;
+import org.csstudio.alarm.table.service.IAlarmSoundService;
 import org.csstudio.alarm.table.service.ITopicsetService;
 import org.csstudio.alarm.table.ui.messagetable.MessageTable;
 import org.csstudio.platform.logging.CentralLogger;
 import org.eclipse.core.runtime.preferences.InstanceScope;
 import org.eclipse.jface.action.Action;
 import org.eclipse.jface.dialogs.MessageDialog;
-import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.jface.viewers.TableViewer;
 import org.eclipse.swt.SWT;
+import org.eclipse.swt.events.ControlAdapter;
 import org.eclipse.swt.events.ControlEvent;
 import org.eclipse.swt.events.ControlListener;
 import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
-import org.eclipse.swt.events.SelectionListener;
 import org.eclipse.swt.graphics.Font;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
@@ -107,6 +116,11 @@ public class LogView extends ViewPart {
     private String _currentTopicSetName = null;
 
     /**
+     * Service allowing to reload the pvs which are tracked
+     */
+    private final IAlarmConfigurationService _configService = JmsLogsPlugin.getDefault().getAlarmConfigurationService();
+    
+    /**
      * Mapping of column widths from table to preferences.
      */
     ExchangeableColumnWidthPreferenceMapping _columnMapping;
@@ -125,6 +139,9 @@ public class LogView extends ViewPart {
 
     Composite _tableComposite;
 
+    private Button _soundEnableButton;
+    private final SoundHandler _soundHandler = new SoundHandler();
+
     /**
      * Stateful service maintaining the topic set preferences. There are different service
      * implementations available. Each is a singleton, all views belonging together share the state.
@@ -133,8 +150,6 @@ public class LogView extends ViewPart {
     private ITopicSetColumnService _topicSetColumnService;
 
     private Label _runningSinceLabel;
-
-    Button _pauseButton;
 
     private PopUpTimerTask _timerTask;
 
@@ -166,6 +181,7 @@ public class LogView extends ViewPart {
 
         addJmsTopicItems(logTableManagementComposite);
         // addMessageUpdateControl(logTableManagementComposite);
+        addSoundButton(logTableManagementComposite);
         addRunningSinceGroup(logTableManagementComposite);
 
         initializeMessageTable();
@@ -228,10 +244,16 @@ public class LogView extends ViewPart {
         addControlListenerToColumns(LogViewPreferenceConstants.P_STRING,
                                     LogViewPreferenceConstants.TOPIC_SET);
         getSite().setSelectionProvider(_tableViewer);
-        makeActions();
+        createAndRegisterActions();
         _parent.layout();
-
+        
+        setInitialStateOfSoundHandler();
     }
+
+    // Set initial state for playing sounds based on the state of the sound enable button
+    protected void setInitialStateOfSoundHandler() {
+		_soundHandler.enableSound(_soundEnableButton.getSelection());
+	}
 
     /**
      * A view operates on a topic set column service specific to the view. This method must be called to set
@@ -296,9 +318,14 @@ public class LogView extends ViewPart {
      *
      * @return the alarm table listener
      */
+    @CheckForNull
     protected IAlarmTableListener getAlarmTableListener() {
-        return _topicsetService.getAlarmTableListenerForTopicSet(_topicSetColumnService
-                .getJMSTopics(_currentTopicSetName));
+        IAlarmTableListener result = null;
+        TopicSet topicSet = _topicSetColumnService.getJMSTopics(_currentTopicSetName);
+        if (_topicsetService.hasTopicSet(topicSet)) {
+            result = _topicsetService.getAlarmTableListenerForTopicSet(topicSet);
+        }
+        return result;
     }
 
     /**
@@ -317,6 +344,7 @@ public class LogView extends ViewPart {
             final IAlarmTableListener alarmTableListener = new AlarmListener();
             try {
                 final AbstractMessageList messageList = createMessageList();
+                messageList.showOutdatedMessages(AlarmViewPreference.ALARMVIEW_SHOW_OUTDATED_MESSAGES.getValue());
                 _topicsetService.createAndConnectForTopicSet(topicSet,
                                                              messageList,
                                                              alarmTableListener);
@@ -328,9 +356,9 @@ public class LogView extends ViewPart {
                 LOG.error("Connecting for topicSet " + topicSet.getName() + " failed", e);
                 _messageArea
                         .showMessage(SWT.ICON_WARNING,
-                                     "Connection error",
-                                     "Some or all of the information displayed may be outdated. "
-                                             + "The alarm table is currently not connected to all alarm servers.");
+                                     Messages.LogView_connectionErrorTitle,
+                                     Messages.LogView_connectionErrorHint
+                                             + "\n" + e.getMessage());
                 // Returns a dummy message list which will never get any input
                 return createMessageList();
             }
@@ -352,6 +380,25 @@ public class LogView extends ViewPart {
         // LogView does no initialization
     }
 
+    
+    /**
+     * Hook to track state of the pause button (template method).
+     * 
+     * subclasses are told that the pause has just begun, i.e. the pause button has been pressed.
+     */
+    protected void doStartPause() {
+        // LogView has nothing do to
+    }
+
+    /**
+     * Hook to track state of the pause button (template method).
+     * 
+     * subclasses are told that the pause is over. You have to get back to work.
+     */
+    protected void doEndPause() {
+        // LogView has nothing do to
+    }
+    
     @Nonnull
     private Integer getMaximumNumberOfMessages() {
         final ScopedPreferenceStore prefStore = new ScopedPreferenceStore(new InstanceScope(),
@@ -374,14 +421,10 @@ public class LogView extends ViewPart {
     void addControlListenerToColumns(final String colSetPref, final String topicSetPref) {
         final TableColumn[] columns = _tableViewer.getTable().getColumns();
         for (final TableColumn tableColumn : columns) {
-            tableColumn.addControlListener(new ControlListener() {
-
+            tableColumn.addControlListener(new ControlAdapter() {
+                @Override
                 public void controlResized(final ControlEvent e) {
                     _columnMapping.saveColumn(colSetPref, topicSetPref);
-                }
-
-                public void controlMoved(final ControlEvent e) {
-                    // do nothing
                 }
             });
         }
@@ -409,24 +452,33 @@ public class LogView extends ViewPart {
     }
 
     /**
+     * Must be called from createPartControl
+     */
+    protected void addJmsTopicItems(@Nonnull final Composite logTableManagementComposite) {
+        if (!AlarmPreference.ALARMSERVICE_IS_DAL_IMPL.getValue()) {
+            addJmsTopicItemsLocal(logTableManagementComposite);
+        }
+    }
+
+    /**
      * Add combo box to select set of topics to be monitored. The items in the combo box are names
      * that are mapped in the preferences to sets of topics.
      *
      * @param logTableManagementComposite
      */
-    void addJmsTopicItems(final Composite logTableManagementComposite) {
+    private void addJmsTopicItemsLocal(@Nonnull final Composite logTableManagementComposite) {
         final Group jmsTopicItemsGroup = new Group(logTableManagementComposite, SWT.NONE);
-
+    
         jmsTopicItemsGroup.setText(Messages.LogView_monitoredJmsTopics);
-
+    
         final RowLayout layout = new RowLayout();
         layout.type = SWT.HORIZONTAL;
         layout.spacing = 5;
         jmsTopicItemsGroup.setLayout(layout);
-
+    
         final Combo topicSetsCombo = new Combo(jmsTopicItemsGroup, SWT.SINGLE);
         int i = 0;
-
+    
         for (final TopicSet topicSet : _topicSetColumnService.getTopicSets()) {
             topicSetsCombo.add(topicSet.getName());
             if (_currentTopicSetName.equals(topicSet.getName())) {
@@ -434,89 +486,127 @@ public class LogView extends ViewPart {
             }
             i++;
         }
+        final Button pauseButton = new Button(jmsTopicItemsGroup, SWT.TOGGLE);
+        pauseButton.setLayoutData(new RowData(60, 21));
+        pauseButton.setText("Pause");
+
         topicSetsCombo.addSelectionListener(new SelectionAdapter() {
+            @SuppressWarnings("synthetic-access")
             @Override
-            public void widgetSelected(final SelectionEvent e) {
+            public void widgetSelected(@Nullable final SelectionEvent e) {
                 super.widgetSelected(e);
                 final String oldTopicSet = _currentTopicSetName;
                 _currentTopicSetName = _topicSetColumnService.getTopicSets().get(topicSetsCombo
                         .getSelectionIndex()).getName();
                 if (!oldTopicSet.equals(_currentTopicSetName)) {
                     _messageTable.setMessageUpdatePause(false);
-                    _pauseButton.setSelection(false);
+                    pauseButton.setSelection(false);
                     initializeMessageTable();
                 }
             }
         });
-
-        _pauseButton = new Button(jmsTopicItemsGroup, SWT.TOGGLE);
-        _pauseButton.setLayoutData(new RowData(60, 21));
-
-        _pauseButton.setText("Pause");
-
-        _pauseButton.addSelectionListener(new SelectionListener() {
-
-            public void widgetSelected(final SelectionEvent e) {
-                if (_pauseButton.getSelection()) {
+    
+        pauseButton.addSelectionListener(new SelectionAdapter() {
+            @SuppressWarnings("synthetic-access")
+            @Override
+            public void widgetSelected(@Nullable final SelectionEvent e) {
+                if (pauseButton.getSelection()) {
                     _messageTable.setMessageUpdatePause(true);
-                    if (_timer != null) {
-                        if (_timerTask != null) {
-                            _timerTask.cancel();
-                            _timerTask = null;
-                        }
-                        _timer.cancel();
-                        _timer = null;
-                    }
+                    cancelTimerTask();
                     _timer = new Timer();
                     _timerTask = new PopUpTimerTask();
                     _timerTask.addExpirationListener(new IExpirationLisener() {
-
+                        @Override
                         public void expired() {
-                            _pauseButton.setSelection(false);
+                            pauseButton.setSelection(false);
                             _tableViewer.refresh();
                             _messageTable.setMessageUpdatePause(false);
-                            if (_timer != null) {
-                                if (_timerTask != null) {
-                                    _timerTask.cancel();
-                                    _timerTask = null;
-                                }
-                                _timer.cancel();
-                                _timer = null;
-                            }
+                            cancelTimerTask();
                         }
                     });
                     _timer.schedule(_timerTask, 100000, 100000);
+                    doStartPause();
                 } else {
-                    if (_timer != null) {
-                        if (_timerTask != null) {
-                            _timerTask.cancel();
-                            _timerTask = null;
-                        }
-                        _timer.cancel();
-                        _timer = null;
-                    }
+                    cancelTimerTask();
                     _tableViewer.refresh();
                     _messageTable.setMessageUpdatePause(false);
+                    doEndPause();
                 }
             }
-
-            public void widgetDefaultSelected(final SelectionEvent e) {
+    
+            @SuppressWarnings("synthetic-access")
+            private void cancelTimerTask() {
+                if (_timer != null) {
+                    if (_timerTask != null) {
+                        _timerTask.cancel();
+                        _timerTask = null;
+                    }
+                    _timer.cancel();
+                    _timer = null;
+                }
             }
         });
-
     }
 
     /**
-     * Creates action to call property view.
+     * Must be called from createPartControl from this class or the subclasses resp.
      */
-    void makeActions() {
+    protected void createAndRegisterActions() {
+        final IActionBars bars = getViewSite().getActionBars();
+
+        if (AlarmPreference.ALARMSERVICE_IS_DAL_IMPL.getValue()) {
+            createAndRegisterReloadAction(bars);
+        }
+        createAndRegisterPropertyViewAction(bars);
+        createAndRegisterMessageAreaToggleAction(bars);
+    }
+
+    private void createAndRegisterReloadAction(@Nonnull final IActionBars bars) {
+        final Action reloadAction = new Action() {
+            @Override
+            public void run() {
+                try {
+                    IAlarmConnection connection = getConnection();
+                    if (connection != null) {
+                        connection.reloadPVsFromResource();
+                    } else {
+                        MessageDialog.openError(getSite().getShell(),
+                                                Messages.LogView_reloadErrorTitle, //$NON-NLS-1$
+                                                Messages.LogView_reloadErrorHint);
+                    }
+                } catch (AlarmConnectionException e) {
+                    MessageDialog.openError(getSite().getShell(), Messages.LogView_reloadErrorTitle, //$NON-NLS-1$
+                                            e.getMessage() + "\n" + Messages.LogView_reloadErrorHint);
+                }
+            }
+            @SuppressWarnings("synthetic-access")
+            @CheckForNull
+            private IAlarmConnection getConnection() {
+                IAlarmConnection connection = null;
+                final TopicSet topicSet = _topicSetColumnService.getJMSTopics(_currentTopicSetName);
+                if (_topicsetService.hasTopicSet(topicSet)) {
+                    connection = _topicsetService.getAlarmConnectionForTopicSet(topicSet);
+                }
+                return connection;
+            }
+        };
+        
+        final String source = AlarmPreference.ALARMSERVICE_CONFIG_VIA_LDAP.getValue() ? " LDAP" : " XML";
+        reloadAction.setText(Messages.LogView_reloadText + source);
+        reloadAction.setToolTipText(Messages.LogView_reloadToolTip + source);
+        reloadAction.setImageDescriptor(JmsLogsPlugin.getImageDescriptor("icons/refresh.gif"));
+
+        bars.getToolBarManager().add(reloadAction);
+    }
+    
+    private void createAndRegisterPropertyViewAction(@Nonnull final IActionBars bars) {
         final Action showPropertyViewAction = new Action() {
             @Override
             public void run() {
                 try {
                     getSite().getPage().showView(PROPERTY_VIEW_ID);
                 } catch (final PartInitException e) {
-                    MessageDialog.openError(getSite().getShell(), "Alarm Tree", //$NON-NLS-1$
+                    MessageDialog.openError(getSite().getShell(), "Alarm Table", //$NON-NLS-1$
                                             e.getMessage());
                 }
             }
@@ -528,15 +618,13 @@ public class LogView extends ViewPart {
                 .getViewRegistry();
         final IViewDescriptor viewDesc = viewRegistry.find(PROPERTY_VIEW_ID);
         showPropertyViewAction.setImageDescriptor(viewDesc.getImageDescriptor());
-        final IActionBars bars = getViewSite().getActionBars();
 
         bars.getToolBarManager().add(showPropertyViewAction);
-
-        createMessageAreaToggleAction(bars);
     }
 
-    private void createMessageAreaToggleAction(final IActionBars bars) {
+    private void createAndRegisterMessageAreaToggleAction(@Nonnull final IActionBars bars) {
         final Action displayMessageAreaAction = new Action() {
+            @SuppressWarnings("synthetic-access")
             @Override
             public void run() {
                 if (_messageArea.isVisible()) {
@@ -548,9 +636,8 @@ public class LogView extends ViewPart {
         };
         displayMessageAreaAction.setText(Messages.LogView_messageArea);
         displayMessageAreaAction.setToolTipText(Messages.LogView_messageAreaToolTip);
-
-        final ImageDescriptor image = JmsLogsPlugin.getImageDescriptor("icons/details_view.gif");
-        displayMessageAreaAction.setImageDescriptor(image);
+        
+        displayMessageAreaAction.setImageDescriptor(JmsLogsPlugin.getImageDescriptor("icons/details_view.gif"));
         bars.getToolBarManager().add(displayMessageAreaAction);
     }
 
@@ -597,12 +684,13 @@ public class LogView extends ViewPart {
     @Override
     public void dispose() {
         super.dispose();
+        _soundHandler.enableSound(false);
         _messageTable = null;
     }
 
     /**
      * Encapsulation of the message area. It is located below the tree view.<br>
-     * TODO (jpenning) This is a copy of the inner class of the AlarmTreeView.
+     * FIXME (jpenning) This is a copy of the inner class of the AlarmTreeView.
      */
     private static final class MessageArea {
         /**
@@ -692,5 +780,103 @@ public class LogView extends ViewPart {
         public boolean isVisible() {
             return _messageAreaComposite.isVisible();
         }
+    }
+    
+    /**
+     * Sound is played dependent of the state of the sound enable button. If it is enabled, the
+     * so-called sound playing listener (encapsulated here) is registered at the alarm table
+     * listener for the current topic set. If it gets disabled, the sound playing listener is
+     * deregistered. If the current topic set is changed, the sound playing listener gets
+     * deregistered and then registered at the now-current alarm table listener.<br>
+     * Because we have to know where we are currently registered, the current alarm table listener
+     * is recorded in here.
+     */
+    protected final class SoundHandler {
+
+        /**
+         * Service for playing sounds
+         */
+        private final IAlarmSoundService _alarmSoundService = JmsLogsPlugin.getDefault()
+                .getAlarmSoundService();
+
+        /**
+         * This listener listens to incoming messages for playing sounds. Each sound handler uses
+         * only one sound playing listener and registers it at the appropriate alarm table listener.
+         */
+        private IAlarmListener _soundPlayingListener = null;
+
+        /**
+         * Keep track where the sound playing listener is registered
+         */
+        private IAlarmTableListener _currentAlarmTableListener = null;
+
+        public SoundHandler() {
+            // Nothing to do
+        }
+
+        @Nonnull
+        private IAlarmListener getSoundPlayingListener() {
+            if (_soundPlayingListener == null) {
+                _soundPlayingListener = new IAlarmListener() {
+
+                    @Override
+                    public void stop() {
+                        // Nothing to do
+                    }
+
+                    @SuppressWarnings("synthetic-access")
+                    @Override
+                    public void onMessage(@Nonnull final IAlarmMessage message) {
+                        _alarmSoundService.playAlarmSound(message.getString(AlarmMessageKey.SEVERITY));
+                    }
+                };
+            }
+            return _soundPlayingListener;
+        }
+
+        @SuppressWarnings("synthetic-access")
+        public void enableSound(final boolean yes) {
+            // Built in a robust way: Deregister always, register at the current alarm table
+            // listener.
+            if (_currentAlarmTableListener != null) {
+                _currentAlarmTableListener.deRegisterAlarmListener(getSoundPlayingListener());
+                _currentAlarmTableListener = null;
+                LOG.debug("Sound deregistered");
+            }
+
+            if (yes) {
+                _currentAlarmTableListener = getAlarmTableListener();
+                if (_currentAlarmTableListener != null) {
+                    _currentAlarmTableListener.registerAlarmListener(getSoundPlayingListener());
+                    LOG.debug("Sound registered");
+                }
+            }
+        }
+    }
+
+    protected void addSoundButton(@Nonnull final Composite logTableManagementComposite) {
+        final Group soundButtonGroup = new Group(logTableManagementComposite, SWT.NONE);
+
+        soundButtonGroup.setText(Messages.AlarmView_soundButtonTitle);
+
+        final RowLayout layout = new RowLayout();
+        soundButtonGroup.setLayout(layout);
+
+        _soundEnableButton = new Button(soundButtonGroup, SWT.TOGGLE);
+        _soundEnableButton.setLayoutData(new RowData(60, 21));
+        _soundEnableButton.setText(Messages.AlarmView_soundButtonEnable);
+
+        // Initial state for playing sounds is always activated on startup, operator must manually turn it off.
+        _soundEnableButton.setSelection(true);
+
+        _soundEnableButton.addSelectionListener(new SelectionAdapter() {
+            @SuppressWarnings("synthetic-access")
+            @Override
+            public void widgetSelected(@Nonnull final SelectionEvent e) {
+                _soundEnableButton.setText(_soundEnableButton.getSelection() ? Messages.AlarmView_soundButtonEnable
+                        : Messages.AlarmView_soundButtonDisable);
+                _soundHandler.enableSound(_soundEnableButton.getSelection());
+            }
+        });
     }
 }

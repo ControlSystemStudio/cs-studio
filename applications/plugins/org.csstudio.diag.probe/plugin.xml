@@ -21,74 +21,39 @@
             primary="true"/>
    </extension>
    <extension
-         point="org.eclipse.ui.popupMenus">
-      <objectContribution
-            adaptable="true"
-            id="org.csstudio.diag.probe.popupMenu"
-            objectClass="org.csstudio.platform.model.IProcessVariable">
-         <menu
-               id="org.csstudio.popmenu"
-               label="CSS"
-               path="additions">
-            <groupMarker name="content"/>
-            <separator name="additions"/>
-         </menu>
-         <action
-               class="org.csstudio.diag.probe.PVpopupAction"
-               enablesFor="1"
-               icon="icons/probe.gif"
-               id="org.csstudio.diag.probe.PVpopupAction"
-               label="%Probe"
-               menubarPath="org.csstudio.popmenu/content"
-               tooltip="%PopupMenuTooltip"/>
-      </objectContribution>
+         point="org.eclipse.ui.commands">
+      <command
+            defaultHandler="org.csstudio.diag.probe.OpenProbe"
+            id="org.csstudio.diag.probe.OpenProbe"
+            name="%Probe">
+      </command>
    </extension>
-   <!-- <extension
-         point="org.eclipse.ui.actionSets">
-      <actionSet
-            description="Global CSS menu actions"
-            id="org.csstudio.diag.probe"
-            label="CSS Action Set"
-            visible="true">
-         <menu
-               id="org.csstudio"
-               label="%CSS"
-               path="additions">
-            <groupMarker name="content"/>
-            <separator name="additions"/>
-         </menu>
-         <menu
-               id="org.csstudio.diag"
-               label="%Diagnostics"
-               path="org.csstudio/additions">
-            <groupMarker name="content"/>
-            <separator name="additions"/>
-         </menu>
-         <action
-               class="org.csstudio.diag.probe.ShowProbeAction"
+   <extension
+         point="org.eclipse.ui.menus">
+      <menuContribution
+            allPopups="false"
+            locationURI="menu:diag">
+         <command
+               commandId="org.eclipse.ui.views.showView"
                icon="icons/probe.gif"
-               id="org.csstudio.diag.probe.showprobeaction"
                label="%Probe"
-               menubarPath="org.csstudio/org.csstudio.diag/content"
                style="push"
-               tooltip="%MenuTooltip"/>
-      </actionSet>
-   </extension> -->
-    <extension
-         point="org.eclipse.ui.actionSets">
-      <actionSet
-            description="Global CSS menu actions"
-            id="org.csstudio.diag.probe"
-            label="CSS Action Set"
-            visible="true">
-         <action
-               class="org.csstudio.diag.probe.ShowProbeAction"
+               tooltip="%MenuTooltip">
+            <parameter
+                  name="org.eclipse.ui.views.showView.viewId"
+                  value="org.csstudio.diag.probe.Probe">
+            </parameter>
+         </command>
+      </menuContribution>
+      <menuContribution
+            allPopups="false"
+            locationURI="popup:org.csstudio.ui.menu.popup.processvariable">
+         <command
+               commandId="org.csstudio.diag.probe.OpenProbe"
                icon="icons/probe.gif"
-               id="org.csstudio.diag.probe.showprobeaction"
                label="%Probe"
-               menubarPath="css/diag/"
-               style="push"
-               tooltip="%MenuTooltip"/>
-      </actionSet>
+               style="push">
+         </command>
+      </menuContribution>
    </extension>
 </plugin>

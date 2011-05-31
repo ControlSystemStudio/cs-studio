@@ -2,13 +2,17 @@ Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: Default implementations for startup modules
 Bundle-SymbolicName: org.csstudio.startuphelper;singleton:=true
-Bundle-Version: 1.1.3.qualifier
+Bundle-Version: 1.1.5.qualifier
+Bundle-Description: Default implementations for Common CSS Application code
 Require-Bundle: org.eclipse.ui,
  org.eclipse.core.runtime,
  org.eclipse.core.resources,
  org.csstudio.startup;bundle-version="1.1.2",
  org.csstudio.platform;bundle-version="1.1.0",
- org.csstudio.platform.ui;bundle-version="1.1.1"
+ org.csstudio.platform.ui;bundle-version="1.1.1",
+ org.csstudio.auth;bundle-version="1.0.0",
+ org.csstudio.auth.ui;bundle-version="1.0.0"
 Bundle-ActivationPolicy: lazy
 Export-Package: org.csstudio.startuphelper.module
 Bundle-Vendor: DESY/SNS/Cosylab
+Bundle-RequiredExecutionEnvironment: JavaSE-1.6

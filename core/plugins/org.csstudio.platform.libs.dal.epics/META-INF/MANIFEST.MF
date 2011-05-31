@@ -7,11 +7,28 @@ Bundle-Activator: org.csstudio.platform.libs.dal.epics.Activator
 Bundle-Localization: plugin
 Require-Bundle: org.eclipse.core.runtime,
  org.junit,
+ org.csstudio.platform,
  org.csstudio.platform.libs.dal,
  org.csstudio.platform.libs.epics;visibility:=reexport,
- org.csstudio.platform
+ org.csstudio.platform.libs.log4j;bundle-version="1.2.16"
 Eclipse-LazyStart: true
 Eclipse-RegisterBuddy: org.csstudio.platform.libs.dal
 Bundle-ClassPath: .
-Export-Package: org.csstudio.platform.libs.dal.epics,
- org.epics.css.dal.epics
+Export-Package: org.csstudio.platform.libs.dal.epics;uses:="org.osgi.framework,org.eclipse.core.runtime",
+ org.epics.css.dal.epics;
+  uses:="gov.aps.jca.event,
+   org.epics.css.dal,
+   javax.naming.directory,
+   gov.aps.jca.dbr,
+   org.epics.css.dal.context,
+   org.epics.css.dal.proxy,
+   org.epics.css.dal.impl,
+   org.epics.css.dal.spi,
+   org.epics.css.dal.simple,
+   gov.aps.jca",
+ org.epics.css.dal.epics.demo;
+  uses:="org.epics.css.dal.epics,
+   org.epics.css.dal,
+   org.epics.css.dal.spi,
+   org.epics.css.dal.simple"
+Bundle-Vendor: Desy <css-developer@desy.de>, Joerg Penning

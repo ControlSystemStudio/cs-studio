@@ -78,11 +78,11 @@ public class ThumbWheelFigure extends Figure implements Introspectable{
 			if (color == null) {
 				setBorder(null);
 			} else {
-				if (color != null) {
+//				if (color != null) {
 					setBorder(new LineBorder(color, thickness));
-				} else {
-					setBorder(new LineBorder(thickness));
-				}
+//				} else {
+//					setBorder(new LineBorder(thickness));
+//				}
 			}
 		}
 
@@ -174,12 +174,8 @@ public class ThumbWheelFigure extends Figure implements Introspectable{
 			this.color = color;
 			if (color == null) {
 				setBorder(null);
-			} else {
-				if (color != null) {
-					setBorder(new LineBorder(color, thickness));
-				} else {
-					setBorder(new LineBorder(thickness));
-				}
+			} else {				
+				setBorder(new LineBorder(color, thickness));				
 			}
 		}
 
@@ -480,9 +476,7 @@ public class ThumbWheelFigure extends Figure implements Introspectable{
 
 	public void setInternalBorderThickness(int thickness) {
 		if(thickness <0)
-			throw new IllegalArgumentException();
-		if(this.internalBorderThickness == thickness)
-			return;
+			throw new IllegalArgumentException();		
 		this.internalBorderThickness = thickness;
 		for (DigitBox box : wholePart) {
 			box.setBorderThickness(thickness);

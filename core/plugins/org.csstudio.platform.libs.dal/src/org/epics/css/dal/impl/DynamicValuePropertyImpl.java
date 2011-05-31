@@ -26,6 +26,7 @@ import java.beans.PropertyChangeEvent;
 import java.util.Iterator;
 import java.util.Map;
 
+import org.apache.log4j.Logger;
 import org.epics.css.dal.CharacteristicInfo;
 import org.epics.css.dal.DataExchangeException;
 import org.epics.css.dal.DynamicValueCondition;
@@ -47,6 +48,7 @@ import org.epics.css.dal.context.LinkListener;
 import org.epics.css.dal.context.Linkable;
 import org.epics.css.dal.context.PropertyContext;
 import org.epics.css.dal.context.PropertyFamily;
+import org.epics.css.dal.proxy.ConnectionStateMachine;
 import org.epics.css.dal.proxy.DirectoryProxy;
 import org.epics.css.dal.proxy.MonitorProxy;
 import org.epics.css.dal.proxy.PropertyProxy;
@@ -54,9 +56,6 @@ import org.epics.css.dal.proxy.Proxy;
 import org.epics.css.dal.proxy.ProxyEvent;
 import org.epics.css.dal.proxy.ProxyListener;
 import org.epics.css.dal.simple.AnyData;
-import org.epics.css.dal.simple.ChannelListener;
-import org.epics.css.dal.simple.MetaData;
-import org.epics.css.dal.simple.impl.ChannelListenerNotifier;
 import org.epics.css.dal.simple.impl.DataUtil;
 
 import com.cosylab.util.ListenerList;
@@ -82,13 +81,13 @@ public class DynamicValuePropertyImpl<T> extends SimplePropertyImpl<T>
 
 	protected PropertyContext propertyContext;
 	protected ListenerList responseListeners = new ListenerList(ResponseListener.class);
-	protected ResponseListener defaultResponseListener = new ResponseListener() {
-			public void responseReceived(ResponseEvent event)
+	protected ResponseListener<?> defaultResponseListener = new ResponseListener<Object>() {
+			public void responseReceived(ResponseEvent<Object> event)
 			{
 				fireResponseReceived(event);
 			}
 
-			public void responseError(ResponseEvent event)
+			public void responseError(ResponseEvent<Object> event)
 			{
 				fireResponseError(event);
 			}
@@ -109,34 +108,29 @@ public class DynamicValuePropertyImpl<T> extends SimplePropertyImpl<T>
 
 	protected ListenerList linkListeners = new ListenerList(LinkListener.class);
 	protected ProxyListener<T> proxyListener = new ProxyListener<T>() {
-		public void connectionStateChange(ProxyEvent<Proxy> e) {
-			ConnectionState cs = e.getConnectionState();
-			if (cs == ConnectionState.DISCONNECTED || cs == ConnectionState.DESTROYED) {
-				metaDataInitialized = false;
+		public void connectionStateChange(ProxyEvent<Proxy<?>> e) {
+			//ConnectionState cs = e.getConnectionState();
+			if (e.getConnectionState()==ConnectionState.OPERATIONAL 
+					&& getConnectionState()==ConnectionState.CONNECTING) {
+				setConnectionState(ConnectionState.CONNECTED, null);
 			}
-			setConnectionState(e.getConnectionState());
+			setConnectionState(e.getConnectionState(),e.getError());
 		}
-		public void dynamicValueConditionChange(ProxyEvent<PropertyProxy<T>> e) {
+		public void dynamicValueConditionChange(ProxyEvent<PropertyProxy<T,?>> e) {
 			DynamicValueCondition oldCond = condition;
 			condition = e.getCondition();
 			checkAndFireConditionEvents(oldCond, condition);
 		}
 		public void characteristicsChange(PropertyChangeEvent e) {
 			if (e.getPropertyName().equals(CharacteristicInfo.C_META_DATA.getName())) {
-				if (e.getNewValue() != null && e.getNewValue() instanceof MetaData) {
-					metaDataInitialized = true;
-				}
-				else {
-					metaDataInitialized = false;
-				}
 			}
 			firePropertyChangeEvent(e);
 		}
 	};
-	private boolean metaDataInitialized = false;
-	
 	public boolean isMetaDataInitialized() {
-		return metaDataInitialized;
+		return condition!=null && isConnected() 
+		? condition.containsAnyOfStates(DynamicValueState.HAS_METADATA) 
+				: false;
 	}
 	
 	protected Request<?> lastRequest = null;
@@ -144,7 +138,8 @@ public class DynamicValuePropertyImpl<T> extends SimplePropertyImpl<T>
 	protected Response<?> lastResponse = null;
 	protected Response<T> lastValueResponse = null;
 	private int suspended = 0;
-	protected ConnectionState connectionState = ConnectionState.INITIAL;
+	protected ConnectionStateMachine connectionStateMachine = new ConnectionStateMachine();
+	private ConnectionEvent<Linkable> lastConnectionEvent;
 
 	private class ResponseForwarder<F extends Object> implements ResponseListener<F>
 	{
@@ -161,9 +156,9 @@ public class DynamicValuePropertyImpl<T> extends SimplePropertyImpl<T>
 			this.listener = listener;
 		}
 
-		public ResponseForwarder(ResponseListener<F> listener, boolean value)
+		public ResponseForwarder(ResponseListener<T> listener, boolean value)
 		{
-			this.listener = listener;
+			this.listener = (ResponseListener<F>) listener;
 			this.isValue=value;
 		}
 
@@ -214,6 +209,7 @@ public class DynamicValuePropertyImpl<T> extends SimplePropertyImpl<T>
 	{
 		super(valClass, name);
 		this.propertyContext = propertyContext;
+		setConnectionState(ConnectionState.READY, null);
 	}
 
 	/* (non-Javadoc)
@@ -238,12 +234,12 @@ public class DynamicValuePropertyImpl<T> extends SimplePropertyImpl<T>
 	public Request<T> getAsynchronous(ResponseListener<T> listener)
 		throws DataExchangeException
 	{
-		if (proxy == null || proxy.getConnectionState() != ConnectionState.CONNECTED) {
+		if (proxy == null || !proxy.getConnectionState().isConnected()) {
 			throw new DataExchangeException(this, "Proxy not connected");
 		}
 		
 		    lastValueRequest = proxy.getValueAsync(listener == null
-		            ? defaultValueResponseListener : new ResponseForwarder(listener,true));
+		            ? defaultValueResponseListener : new ResponseForwarder<T>(listener,true));
 		
 		//lastValueRequest = proxy.getValueAsync(new ResponseForwarder(listener));
 		lastRequest = lastValueRequest;
@@ -265,13 +261,13 @@ public class DynamicValuePropertyImpl<T> extends SimplePropertyImpl<T>
 	public Request<T> setAsynchronous(T value, ResponseListener<T> listener)
 		throws DataExchangeException
 	{
-		if (proxy == null || proxy.getConnectionState() != ConnectionState.CONNECTED) {
+		if (proxy == null || !proxy.getConnectionState().isConnected()) {
 			throw new DataExchangeException(this, "Proxy not connected");
 		}
 		
 		lastValueRequest = proxy.setValueAsync(value,
-			    listener == null ? defaultResponseListener
-			    : new ResponseForwarder(listener));
+			    (listener == null ? (ResponseListener<T>)defaultResponseListener
+			    : new ResponseForwarder<T>(listener)));
 		lastRequest = lastValueRequest;
 
 		return lastValueRequest;
@@ -415,6 +411,9 @@ public class DynamicValuePropertyImpl<T> extends SimplePropertyImpl<T>
 	 */
 	public Response<T> getLatestValueResponse()
 	{
+		if (lastResponse==null && proxy!=null && proxy.getLatestValueResponse()!=null ){
+			updateLastValueCache(proxy.getLatestValueResponse(), true, true);
+		}
 		return lastValueResponse;
 	}
 
@@ -424,6 +423,48 @@ public class DynamicValuePropertyImpl<T> extends SimplePropertyImpl<T>
 	public void addLinkListener(LinkListener<? extends Linkable> l)
 	{
 		linkListeners.add(l);
+		if (lastConnectionEvent!=null && l!=null) {
+			ConnectionEvent e= lastConnectionEvent;
+			ConnectionState connectionState= e.getState();
+
+			if (connectionState == ConnectionState.CONNECTED) {
+				try {
+					l.connected(e);
+				} catch (Exception ex) {
+					Logger.getLogger(DynamicValuePropertyImpl.class).warn("Exception in event handler, continuing.", ex);
+				}
+			} else if (connectionState == ConnectionState.CONNECTION_FAILED) {
+				try {
+					l.connectionFailed(e);
+				} catch (Exception ex) {
+					Logger.getLogger(DynamicValuePropertyImpl.class).warn("Exception in event handler, continuing.", ex);
+				}
+			} else if (connectionState == ConnectionState.CONNECTION_LOST) {
+				try {
+					l.connectionLost(e);
+				} catch (Exception ex) {
+					Logger.getLogger(DynamicValuePropertyImpl.class).warn("Exception in event handler, continuing.", ex);
+				}
+			} else if (connectionState == ConnectionState.DISCONNECTED) {
+				try {
+					l.disconnected(e);
+				} catch (Exception ex) {
+					Logger.getLogger(DynamicValuePropertyImpl.class).warn("Exception in event handler, continuing.", ex);
+				}
+			} else if (connectionState == ConnectionState.DESTROYED) {
+				try {
+					l.destroyed(e);
+				} catch (Exception ex) {
+					Logger.getLogger(DynamicValuePropertyImpl.class).warn("Exception in event handler, continuing.", ex);
+				}
+			} else if (connectionState == ConnectionState.OPERATIONAL) {
+				try {
+					l.operational(e);
+				} catch (Exception ex) {
+					Logger.getLogger(DynamicValuePropertyImpl.class).warn("Exception in event handler, continuing.", ex);
+				}
+			}
+		}
 	}
 
 	/* (non-Javadoc)
@@ -431,12 +472,14 @@ public class DynamicValuePropertyImpl<T> extends SimplePropertyImpl<T>
 	 */
 	public boolean isConnected()
 	{
-		if (connectionState == ConnectionState.CONNECTED
-		    || connectionState == ConnectionState.CONNECTION_LOST) {
-			return true;
-		}
-
-		return false;
+		return connectionStateMachine.isConnected();
+	}
+	
+	/**
+	 * @see Linkable#isOperational();
+	 */
+	public boolean isOperational() {
+		return connectionStateMachine.isOperational();
 	}
 
 	/* (non-Javadoc)
@@ -444,7 +487,7 @@ public class DynamicValuePropertyImpl<T> extends SimplePropertyImpl<T>
 	 */
 	public boolean isDestroyed()
 	{
-		return connectionState == ConnectionState.DESTROYED;
+		return connectionStateMachine.isDestroyed();
 	}
 
 	/* (non-Javadoc)
@@ -460,7 +503,7 @@ public class DynamicValuePropertyImpl<T> extends SimplePropertyImpl<T>
 	 */
 	public boolean isConnectionAlive()
 	{
-		return connectionState == ConnectionState.CONNECTED;
+		return connectionStateMachine.isConnectionAlive();
 	}
 
 	/* (non-Javadoc)
@@ -468,7 +511,7 @@ public class DynamicValuePropertyImpl<T> extends SimplePropertyImpl<T>
 	 */
 	public boolean isConnectionFailed()
 	{
-		return connectionState == ConnectionState.CONNECTION_FAILED;
+		return connectionStateMachine.isConnectionFailed();
 	}
 
 	/* (non-Javadoc)
@@ -477,7 +520,7 @@ public class DynamicValuePropertyImpl<T> extends SimplePropertyImpl<T>
 	public void refresh() throws RemoteException
 	{
 		directoryProxy.refresh();
-		if ((proxy != directoryProxy) && (proxy instanceof DirectoryProxy)) ((DirectoryProxy)proxy).refresh();
+		if ((proxy != directoryProxy) && (proxy instanceof DirectoryProxy)) ((DirectoryProxy<?>)proxy).refresh();
 	}
 
 	/* (non-Javadoc)
@@ -519,23 +562,31 @@ public class DynamicValuePropertyImpl<T> extends SimplePropertyImpl<T>
 	 */
 	public ConnectionState getConnectionState()
 	{
-		return connectionState;
+		return connectionStateMachine.getConnectionState();
 	}
 
 	/**
 	 * @param connectionState The connectionState to set.
 	 */
-	protected void setConnectionState(ConnectionState connectionState)
+	protected void setConnectionState(ConnectionState connectionState, Throwable error)
 	{
-		if (this.connectionState == connectionState) {
+		boolean change= false;
+	
+		try {
+			change= connectionStateMachine.requestNextConnectionState(connectionState);
+		} catch (IllegalStateException e) {
+			Logger.getLogger(this.getClass()).error("Internal error.", e);
+			throw e;
+		}
+		
+		if (!change) {
 			return;
 		}
-
-		this.connectionState = connectionState;
-
+		
 		LinkListener<Linkable>[] l = (LinkListener<Linkable>[])linkListeners.toArray();
 
-		ConnectionEvent<Linkable> e = new ConnectionEvent<Linkable>(this, connectionState);
+		ConnectionEvent<Linkable> e = new ConnectionEvent<Linkable>(this, connectionState, error);
+		lastConnectionEvent= e;
 
 		if (connectionState == ConnectionState.CONNECTED) {
 			
@@ -543,7 +594,7 @@ public class DynamicValuePropertyImpl<T> extends SimplePropertyImpl<T>
 				getDefaultMonitor();
 			}
 			
-			for(MonitorProxyWrapper<T, SimpleProperty<T>> mpw : monitors) {
+			for(MonitorProxyWrapper<T, ? extends SimpleProperty<T>> mpw : monitors) {
 				if (!mpw.isInitialized()) {
 					try {
 						MonitorProxy mp = proxy.createMonitor(mpw,mpw.getInitialParameters());
@@ -559,7 +610,7 @@ public class DynamicValuePropertyImpl<T> extends SimplePropertyImpl<T>
 				try {
 					l[i].connected(e);
 				} catch (Exception ex) {
-					ex.printStackTrace();
+					Logger.getLogger(DynamicValuePropertyImpl.class).warn("Exception in event handler, continuing.", ex);
 				}
 			}
 		}else if (connectionState == ConnectionState.CONNECTION_FAILED) {
@@ -567,7 +618,7 @@ public class DynamicValuePropertyImpl<T> extends SimplePropertyImpl<T>
 				try {
 					l[i].connectionFailed(e);
 				} catch (Exception ex) {
-					ex.printStackTrace();
+					Logger.getLogger(DynamicValuePropertyImpl.class).warn("Exception in event handler, continuing.", ex);
 				}
 			}
 		}	else if (connectionState == ConnectionState.CONNECTION_LOST) {
@@ -575,7 +626,7 @@ public class DynamicValuePropertyImpl<T> extends SimplePropertyImpl<T>
 				try {
 					l[i].connectionLost(e);
 				} catch (Exception ex) {
-					ex.printStackTrace();
+					Logger.getLogger(DynamicValuePropertyImpl.class).warn("Exception in event handler, continuing.", ex);
 				}
 			}
 		} else if (connectionState == ConnectionState.DISCONNECTED) {
@@ -583,7 +634,7 @@ public class DynamicValuePropertyImpl<T> extends SimplePropertyImpl<T>
 				try {
 					l[i].disconnected(e);
 				} catch (Exception ex) {
-					ex.printStackTrace();
+					Logger.getLogger(DynamicValuePropertyImpl.class).warn("Exception in event handler, continuing.", ex);
 				}
 			}
 		} else if (connectionState == ConnectionState.DESTROYED) {
@@ -591,7 +642,15 @@ public class DynamicValuePropertyImpl<T> extends SimplePropertyImpl<T>
 				try {
 					l[i].destroyed(e);
 				} catch (Exception ex) {
-					ex.printStackTrace();
+					Logger.getLogger(DynamicValuePropertyImpl.class).warn("Exception in event handler, continuing.", ex);
+				}
+			}
+		} else if (connectionState == ConnectionState.OPERATIONAL) {
+			for (int i = 0; i < l.length; i++) {
+				try {
+					l[i].operational(e);
+				} catch (Exception ex) {
+					Logger.getLogger(DynamicValuePropertyImpl.class).warn("Exception in event handler, continuing.", ex);
 				}
 			}
 		}
@@ -601,17 +660,25 @@ public class DynamicValuePropertyImpl<T> extends SimplePropertyImpl<T>
 	 * @see org.epics.css.dal.impl.SimplePropertyImpl#initialize(org.epics.css.dal.proxy.PropertyProxy, org.epics.css.dal.proxy.DirectoryProxy)
 	 */
 	@Override
-	public void initialize(PropertyProxy<T> proxy, DirectoryProxy dirProxy)
+	public void initialize(PropertyProxy<T,?> proxy, DirectoryProxy<?> dirProxy)
 	{
 		if (this.proxy != null) {
 			this.proxy.removeProxyListener(proxyListener);
 			if (this.directoryProxy != null && this.directoryProxy != this.proxy) {
 				this.directoryProxy.removeProxyListener(proxyListener);
 			}
-		} 
+		} else {
+			setConnectionState(ConnectionState.CONNECTING, null);
+		}
 
 		super.initialize(proxy, dirProxy);
-
+		
+		// if proxy already has some value, it shoudl share
+		Response<T> res= proxy.getLatestValueResponse();
+		if (res!=null) {
+			updateLastValueCache(res, res.success(), true);
+		}
+		
 		if (proxy != null) {
 			proxy.addProxyListener(proxyListener);
 			if (dirProxy != null && dirProxy != proxy) {
@@ -619,6 +686,7 @@ public class DynamicValuePropertyImpl<T> extends SimplePropertyImpl<T>
 			}
 		}
 	}
+	
 
 	protected void fireDynamicValueEvent(byte type)
 	{
@@ -704,28 +772,28 @@ public class DynamicValuePropertyImpl<T> extends SimplePropertyImpl<T>
 		
 		if (newCond == null) return;
 		if (oldCond == null){
-			if (newCond.containsStates(DynamicValueState.TIMELAG))	
+			if (newCond.containsAllStates(DynamicValueState.TIMELAG))	
 				fireDynamicValueEvent(DVE_TIMELAGSTARTS);
-			if (newCond.containsStates(DynamicValueState.TIMEOUT))	
+			if (newCond.containsAllStates(DynamicValueState.TIMEOUT))	
 				fireDynamicValueEvent(DVE_TIMEOUTSTARTS);
-			if (newCond.containsStates(DynamicValueState.ERROR))	
+			if (newCond.containsAllStates(DynamicValueState.ERROR))	
 				fireDynamicValueEvent(DVE_ERRORRESPONSE);			
 		} else {
 			
 			//timelag checks
-			if (newCond.containsStates(DynamicValueState.TIMELAG) && !oldCond.containsStates(DynamicValueState.TIMELAG))	
+			if (newCond.containsAllStates(DynamicValueState.TIMELAG) && !oldCond.containsAllStates(DynamicValueState.TIMELAG))	
 				fireDynamicValueEvent(DVE_TIMELAGSTARTS);
-			else if (oldCond.containsStates(DynamicValueState.TIMELAG) && !condition.containsStates(DynamicValueState.TIMELAG))	
+			else if (oldCond.containsAllStates(DynamicValueState.TIMELAG) && !newCond.containsAllStates(DynamicValueState.TIMELAG))	
 				fireDynamicValueEvent(DVE_TIMELAGSTOPS);
 			
 			//timeout checks
-			if (newCond.containsStates(DynamicValueState.TIMEOUT) && !oldCond.containsStates(DynamicValueState.TIMEOUT))	
+			if (newCond.containsAllStates(DynamicValueState.TIMEOUT) && !oldCond.containsAllStates(DynamicValueState.TIMEOUT))	
 				fireDynamicValueEvent(DVE_TIMEOUTSTARTS);
-			else if (oldCond.containsStates(DynamicValueState.TIMEOUT) && !condition.containsStates(DynamicValueState.TIMEOUT))	
+			else if (oldCond.containsAllStates(DynamicValueState.TIMEOUT) && !newCond.containsAllStates(DynamicValueState.TIMEOUT))	
 				fireDynamicValueEvent(DVE_TIMEOUTSTOPS);
 			
 			//error checks
-			if (newCond.containsStates(DynamicValueState.ERROR) && !oldCond.containsStates(DynamicValueState.ERROR))	
+			if (newCond.containsAllStates(DynamicValueState.ERROR) && !oldCond.containsAllStates(DynamicValueState.ERROR))	
 				fireDynamicValueEvent(DVE_ERRORRESPONSE);
 			
 		}
@@ -866,32 +934,33 @@ public class DynamicValuePropertyImpl<T> extends SimplePropertyImpl<T>
 	}
 
 	public void stop() {
-		setConnectionState(ConnectionState.DISCONNECTING);
 		((PropertyFamily)propertyContext).destroy(this);
 		releaseProxy(true);
-		setConnectionState(ConnectionState.DISCONNECTED);
-		setConnectionState(ConnectionState.DESTROYED);
 	}
 	
 	@Override
-	public Proxy[] releaseProxy(boolean destroy) {
-		if (destroy) {
-			setConnectionState(ConnectionState.DESTROYED);
-			linkListeners.clear();
-			responseListeners.clear();
-		} else {
-			setConnectionState(ConnectionState.DISCONNECTING);
+	public Proxy<?>[] releaseProxy(boolean destroy) {
+		if (connectionStateMachine.isConnected()) {
+			setConnectionState(ConnectionState.DISCONNECTING, null);
 		}
+
 		if (this.proxy != null) {
 			this.proxy.removeProxyListener(proxyListener);
 			if (this.directoryProxy != null && this.directoryProxy != this.proxy) {
 				this.directoryProxy.removeProxyListener(proxyListener);
 			}
 		}
-		Proxy[] p= super.releaseProxy(destroy);
-		if (!destroy) {
-			setConnectionState(ConnectionState.DISCONNECTED);
+		Proxy<?>[] p= super.releaseProxy(destroy);
+		if (connectionStateMachine.getConnectionState()==ConnectionState.DISCONNECTING) {
+			setConnectionState(ConnectionState.DISCONNECTED, null);
 		}
+
+		if (destroy) {
+			setConnectionState(ConnectionState.DESTROYED, null);
+			linkListeners.clear();
+			responseListeners.clear();
+		}
+		
 		return p;
 	}
 

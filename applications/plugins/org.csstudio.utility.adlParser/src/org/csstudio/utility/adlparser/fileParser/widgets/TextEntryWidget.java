@@ -18,7 +18,7 @@ import org.csstudio.utility.adlparser.internationalization.Messages;
  * @author hammonds
  *
  */
-public class TextEntryWidget extends ADLAbstractWidget {
+public class TextEntryWidget extends ADLAbstractWidget implements ITextWidget {
 	private String color_mode = new String("static");
 	private String format = new String("decimal");
 	private String alignment = new String("horiz. left");

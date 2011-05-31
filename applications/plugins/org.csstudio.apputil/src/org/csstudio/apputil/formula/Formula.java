@@ -9,6 +9,8 @@ package org.csstudio.apputil.formula;
 
 import java.util.ArrayList;
 import java.util.Vector;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 import org.csstudio.apputil.formula.node.AddNode;
 import org.csstudio.apputil.formula.node.AndNode;
@@ -30,7 +32,6 @@ import org.csstudio.apputil.formula.node.OrNode;
 import org.csstudio.apputil.formula.node.PwrNode;
 import org.csstudio.apputil.formula.node.RndNode;
 import org.csstudio.apputil.formula.node.SubNode;
-import org.csstudio.platform.logging.CentralLogger;
 
 /** A formula interpreter.
  *  <p>
@@ -56,7 +57,7 @@ import org.csstudio.platform.logging.CentralLogger;
  *  <p>
  *  See FormulaDialog in org.csstudio.apputil.ui plugin.
  *  That plugin also contains a class diagram.
- *  
+ *
  *  @author Kay Kasemir
  *  @author Xiaosong Geng
  */
@@ -65,9 +66,9 @@ public class Formula implements Node
 {
     /** The original formula that we parsed */
     final private String formula;
-    
+
     final private Node tree;
-    
+
     final private static VariableNode constants[] = new VariableNode[]
     {
         new VariableNode("E", Math.E),
@@ -90,8 +91,8 @@ public class Formula implements Node
         "log",
         "log10",
         "round",
-        "sin", 
-        "sinh", 
+        "sin",
+        "sinh",
         "sqrt",
         "tan",
         "tanh",
@@ -106,13 +107,13 @@ public class Formula implements Node
         "hypot",
         "pow"
     };
-    
+
     /** Determine variables from formula? */
     final private boolean determine_variables;
-    
+
     /** Variables that can be used in the formula */
     final private ArrayList<VariableNode> variables;
-    
+
     /** Create formula from string.
      *  @param formula The formula to parse
      *  @throws Exception on parse error
@@ -142,7 +143,7 @@ public class Formula implements Node
     	this.determine_variables = false;
         tree = parse();
     }
-    
+
     /** Create formula from string.
      *  @param formula The formula to parse
      *  @param determine_variables Determine variables from formula?
@@ -167,27 +168,31 @@ public class Formula implements Node
     	if (variables == null)
     		return null;
     	final VariableNode result[] = new VariableNode[variables.size()];
-    	return variables.toArray(result); 
+    	return variables.toArray(result);
     }
-    
+
     /** {@inheritDoc} */
+    @Override
     public double eval()
     {
         final double result = tree.eval();
         if (Double.isInfinite(result) ||
             Double.isNaN(result))
-            CentralLogger.getInstance().getLogger(this)
-            	.debug("Formula '" + formula + "' resulted in " + result);
+            Logger.getLogger(getClass().getName()).log(Level.FINE,
+                   "Formula {0} resulted in {1}",
+                   new Object[] { formula, result });
         return result;
-    }    
-    
+    }
+
     /** {@inheritDoc} */
+    @Override
     public boolean hasSubnode(final Node node)
     {
         return tree == node  ||  tree.hasSubnode(node);
     }
-    
+
     /** {@inheritDoc} */
+    @Override
     public boolean hasSubnode(final String name)
     {
         return tree.hasSubnode(name);
@@ -197,9 +202,9 @@ public class Formula implements Node
     private Node parseConstant(final Scanner s) throws Exception
     {
         final String digits = "0123456789.";
-        StringBuffer buf = new StringBuffer();     
+        StringBuffer buf = new StringBuffer();
         boolean negative = false;
-        
+
         if (s.isDone())
             throw new Exception("Unexpected end of formula.");
         // Possible leading '-'
@@ -237,7 +242,7 @@ public class Formula implements Node
                 do
                 {
                     buf.append(s.get());
-                    last_was_e = s.get()=='e' || s.get()=='E'; 
+                    last_was_e = s.get()=='e' || s.get()=='E';
                     s.next();
                 }
                 while (!s.isDone()
@@ -250,7 +255,7 @@ public class Formula implements Node
                            || (s.get()=='+' && last_was_e)
                            || (s.get()=='-' && last_was_e)));
                 // Details of number format left to parseDouble()
-                double value = Double.parseDouble(buf.toString());        
+                double value = Double.parseDouble(buf.toString());
                 return new ConstantNode(negative ? -value : value);
             }
             // Else: assume variable or function.
@@ -269,7 +274,7 @@ public class Formula implements Node
             return new SubNode(new ConstantNode(0), result);
         return result;
     }
-    
+
     /** @return <code>true</code> if given char is allowed inside a
      *          function or variable name.
      */
@@ -368,7 +373,7 @@ public class Formula implements Node
         for (VariableNode var : constants)
             if (var.getName().equals(name))
                 return var;
-        
+
         if (!determine_variables)
            throw new Exception("Unknown variable '" + name + "'");
         // else: Automatically generate the unknown variable
@@ -420,7 +425,7 @@ public class Formula implements Node
         }
         return n;
     }
-  
+
     /** Parse addition, subtraction, ... */
     private Node parseAddSub(final Scanner s) throws Exception
     {
@@ -540,7 +545,7 @@ public class Formula implements Node
         return n;
     }
 
-    /** Parse formula. 
+    /** Parse formula.
      */
     private Node parse() throws Exception
     {
@@ -550,7 +555,7 @@ public class Formula implements Node
             throw new Exception("Parse error at '" + scanner.rest() + "'");
         return tree;
     }
-    
+
     @Override
     public String toString()
     {

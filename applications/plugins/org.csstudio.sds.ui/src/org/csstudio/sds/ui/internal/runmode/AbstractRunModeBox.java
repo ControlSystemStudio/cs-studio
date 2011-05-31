@@ -32,7 +32,6 @@ import java.util.Map;
 
 import org.csstudio.dal.CssApplicationContext;
 import org.csstudio.platform.logging.CentralLogger;
-import org.csstudio.sds.SdsPlugin;
 import org.csstudio.sds.internal.persistence.DisplayModelLoadAdapter;
 import org.csstudio.sds.internal.persistence.PersistenceUtil;
 import org.csstudio.sds.internal.runmode.RunModeBoxInput;
@@ -46,6 +45,7 @@ import org.csstudio.sds.ui.editparts.ExecutionMode;
 import org.csstudio.sds.ui.internal.editor.ProcessVariableDragSourceListener;
 import org.csstudio.sds.ui.internal.editparts.WidgetEditPartFactory;
 import org.csstudio.sds.ui.internal.viewer.PatchedGraphicalViewer;
+import org.csstudio.sds.ui.runmode.IDisplayLoadedCallback;
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IResource;
 import org.eclipse.core.resources.ResourcesPlugin;
@@ -55,6 +55,7 @@ import org.eclipse.gef.EditDomain;
 import org.eclipse.gef.GraphicalViewer;
 import org.eclipse.gef.editparts.ScalableFreeformRootEditPart;
 import org.eclipse.gef.tools.SelectionTool;
+import org.eclipse.swt.graphics.Point;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.ui.PlatformUI;
 import org.epics.css.dal.simple.SimpleDALBroker;
@@ -100,6 +101,8 @@ public abstract class AbstractRunModeBox {
 	 */
 	private HashMap<WidgetProperty, IPropertyChangeListener> _propertyListeners;
 
+	private IDisplayLoadedCallback callback;
+
 	/**
 	 * Constructor.
 	 *
@@ -126,9 +129,10 @@ public abstract class AbstractRunModeBox {
 	/**
 	 * Open!
 	 */
-	public void openRunMode(final Runnable runAfterOpen) {
+	public void openRunMode(final Runnable runAfterOpen, final IDisplayLoadedCallback callback) {
 		// Open the run mode representation
 
+		this.callback = callback;
 		// initialize model
 		_displayModel = new DisplayModel();
 		_displayModel.setLive(true);
@@ -155,6 +159,7 @@ public abstract class AbstractRunModeBox {
 
 						final int x = _displayModel.getX();
 						final int y = _displayModel.getY();
+						final boolean openRelative = _displayModel.getOpenRelative();
 						final int width = _displayModel.getWidth();
 						final int height = _displayModel.getHeight();
 
@@ -190,7 +195,7 @@ public abstract class AbstractRunModeBox {
 											}
 										}
 
-										_graphicalViewer = doOpen(x, y, width,
+										_graphicalViewer = doOpen(x, y, openRelative, width,
 												height, title.toString());
 
 										// configure the viewer
@@ -208,6 +213,7 @@ public abstract class AbstractRunModeBox {
 										if (runAfterOpen != null) {
 											runAfterOpen.run();
 										}
+										callback.displayLoaded();
 									}
 								});
 					}
@@ -227,6 +233,8 @@ public abstract class AbstractRunModeBox {
 	 *            x position hint
 	 * @param y
 	 *            y position hin
+	 * @param openRelative 
+	 * 			  To be opened relative to predecessor displays          
 	 * @param width
 	 *            width hint
 	 * @param height
@@ -235,7 +243,7 @@ public abstract class AbstractRunModeBox {
 	 *            a title
 	 * @return the {@link GraphicalViewer} which is used to display the model
 	 */
-	protected abstract GraphicalViewer doOpen(int x, int y, int width,
+	protected abstract GraphicalViewer doOpen(int x, int y, boolean openRelative, int width,
 			int height, String title);
 
 	/**
@@ -302,6 +310,7 @@ public abstract class AbstractRunModeBox {
 				broker.releaseAll();
 				context.setBroker(null);
 				CentralLogger.getInstance().info(this, "SimpleDALBroker instance released.");
+				callback.displayClosed();
 			}
 
 			// forget all referenced objects
@@ -394,5 +403,11 @@ public abstract class AbstractRunModeBox {
 		}
 
 		return result;
+	}
+
+	public abstract Point getCurrentLocation();
+	
+	public DisplayModel getDisplayModel() {
+		return _displayModel;
 	}
 }

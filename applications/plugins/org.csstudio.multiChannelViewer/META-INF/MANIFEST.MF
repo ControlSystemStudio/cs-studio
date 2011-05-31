@@ -1,0 +1,22 @@
+Manifest-Version: 1.0
+Bundle-ManifestVersion: 2
+Bundle-Name: MultiChannel Viewer
+Bundle-SymbolicName: org.csstudio.multiChannelViewer;singleton:=true
+Bundle-Version: 0.0.1.qualifier
+Bundle-Activator: org.csstudio.multichannelviewer.Activator
+Require-Bundle: org.eclipse.ui,
+ org.eclipse.core.runtime,
+ org.junit4,
+ org.csstudio.utility.pvmanager,
+ org.csstudio.platform.libs.glazedlists,
+ org.csstudio.utility.channel;bundle-version="1.0.0",
+ org.csstudio.platform.libs.jmock;bundle-version="1.1.0",
+ org.csstudio.platform.libs.jfreechart;bundle-version="1.0.0",
+ org.csstudio.utility.channelfinder;bundle-version="1.0.0",
+ org.csstudio.utility.pvmanager.ui;bundle-version="1.0.0",
+ org.csstudio.utility.pvmanager.jfreechart.widgets;bundle-version="1.0.0",
+ org.csstudio.ui.menu;bundle-version="3.0.0",
+ com.google.common
+Bundle-ActivationPolicy: lazy
+Bundle-RequiredExecutionEnvironment: JavaSE-1.6
+Bundle-Vendor: Kunal Shroff <kshroff@bnl.gov>, Gabriele Carcassi <carcassi@bnl.gov> - Brookhaven National Lab

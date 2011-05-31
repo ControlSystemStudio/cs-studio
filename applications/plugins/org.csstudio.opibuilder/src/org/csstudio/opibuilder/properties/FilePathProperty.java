@@ -23,7 +23,9 @@
 package org.csstudio.opibuilder.properties;
 
 import org.csstudio.opibuilder.editparts.ExecutionMode;
+import org.csstudio.opibuilder.persistence.URLPath;
 import org.csstudio.opibuilder.properties.support.FilePathPropertyDescriptor;
+import org.csstudio.opibuilder.script.RuleData;
 import org.csstudio.opibuilder.util.ResourceUtil;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.Path;
@@ -55,8 +57,9 @@ public class FilePathProperty extends AbstractWidgetProperty {
 	 */
 	public FilePathProperty(String prop_id, String description,
 			WidgetPropertyCategory category, IPath defaultValue,
-			String[] fileExtensions) {
-		super(prop_id, description, category, defaultValue);
+			String[] fileExtensions) {		
+		super(prop_id, description, category,
+				defaultValue == null? new Path("") : defaultValue); //$NON-NLS-1$
 		this.fileExtensions = fileExtensions;
 	}
 
@@ -112,6 +115,8 @@ public class FilePathProperty extends AbstractWidgetProperty {
 
 	@Override
 	public Object readValueFromXML(Element propElement) {
+		if(ResourceUtil.isURL(propElement.getText()))
+			return new URLPath(propElement.getText());
 		return Path.fromPortableString(propElement.getText());
 	}
 
@@ -120,4 +125,14 @@ public class FilePathProperty extends AbstractWidgetProperty {
 		propElement.setText(((IPath)getPropertyValue()).toPortableString());
 	}
 
+	@Override
+	public boolean configurableByRule() {
+		return true;
+	}
+	
+	@Override
+	public String toStringInRuleScript(Object propValue) {
+		return RuleData.QUOTE + super.toStringInRuleScript(propValue) + RuleData.QUOTE;
+	}
+	
 }

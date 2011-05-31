@@ -1,3 +1,10 @@
+/*******************************************************************************
+ * Copyright (c) 2010 Oak Ridge National Laboratory.
+ * All rights reserved. This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License v1.0
+ * which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-v10.html
+ ******************************************************************************/
 package org.csstudio.opibuilder.actions;
 
 import java.util.ArrayList;
@@ -6,14 +13,17 @@ import java.util.Comparator;
 import java.util.List;
 
 import org.csstudio.opibuilder.editor.OPIEditor;
-import org.csstudio.opibuilder.editparts.AbstractBaseEditPart;
 import org.csstudio.opibuilder.editparts.DisplayEditpart;
 import org.csstudio.opibuilder.model.AbstractContainerModel;
 import org.csstudio.opibuilder.model.AbstractWidgetModel;
 import org.csstudio.opibuilder.model.DisplayModel;
 import org.csstudio.opibuilder.persistence.XMLUtil;
+import org.eclipse.gef.EditPart;
+import org.eclipse.gef.ui.actions.ActionRegistry;
 import org.eclipse.gef.ui.actions.SelectionAction;
+import org.eclipse.jface.action.IAction;
 import org.eclipse.swt.dnd.Transfer;
+import org.eclipse.swt.widgets.Display;
 import org.eclipse.ui.ISharedImages;
 import org.eclipse.ui.actions.ActionFactory;
 
@@ -45,9 +55,9 @@ public class CopyWidgetsAction extends SelectionAction {
 
 	@Override
 	protected boolean calculateEnabled() {
-		if(getSelectedObjects().size() <=0 || 
-				((getSelectedObjects().size() == 1)&& 
-						getSelectedObjects().get(0) instanceof DisplayEditpart))
+		if(getSelectedObjects().size() == 0 || 
+				getSelectedObjects().size() == 1 && getSelectedObjects().get(0) instanceof EditPart
+				&& ((EditPart)getSelectedObjects().get(0)).getModel() instanceof DisplayModel)
 			return false;
 		return true;
 	}
@@ -62,11 +72,22 @@ public class CopyWidgetsAction extends SelectionAction {
 			tempModel.addChild(widget, false);
 		}
 		
-		String xml = XMLUtil.WidgetToXMLString(tempModel, false);
+		String xml = XMLUtil.widgetToXMLString(tempModel, false);
 		
 		((OPIEditor)getWorkbenchPart()).getClipboard()
 			.setContents(new Object[]{xml}, 
 				new Transfer[]{OPIWidgetsTransfer.getInstance()});
+		Display.getCurrent().asyncExec(new Runnable() {
+			
+			public void run() {
+				IAction pasteAction = ((ActionRegistry)((OPIEditor)getWorkbenchPart()).getAdapter(ActionRegistry.class)).
+				getAction(ActionFactory.PASTE.getId());
+				if(pasteAction != null){
+					((PasteWidgetsAction)pasteAction).refreshEnable();
+				}
+				
+			}
+		});
 	}
 	
 	/**
@@ -84,9 +105,9 @@ public class CopyWidgetsAction extends SelectionAction {
 		List<AbstractWidgetModel> result = new ArrayList<AbstractWidgetModel>();
 		AbstractContainerModel parent = null;
 		for (Object o : selection) {
-			if (o instanceof AbstractBaseEditPart && !(o instanceof DisplayEditpart)) {
+			if (o instanceof EditPart && !(o instanceof DisplayEditpart)) {
 				AbstractWidgetModel widgetModel = 
-					((AbstractBaseEditPart) o).getWidgetModel();
+					(AbstractWidgetModel) ((EditPart) o).getModel();
 				if(parent == null)
 					parent = widgetModel.getParent();
 				if(widgetModel.getParent() == parent)

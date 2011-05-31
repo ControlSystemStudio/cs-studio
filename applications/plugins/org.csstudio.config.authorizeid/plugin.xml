@@ -10,7 +10,7 @@
             visible="true">
          <action
                class="org.csstudio.config.authorizeid.AuthorizeIdAction"
-               icon="icons/ai1.gif"
+               icon="res/icons/ai1.gif"
                id="org.csstudio.config.authorizeid"
                label="AuthorizeId"
                menubarPath="css/configuration/"
@@ -23,7 +23,7 @@
          point="org.eclipse.ui.views">
       <view
             class="org.csstudio.config.authorizeid.AuthorizeIdView"
-            icon="icons/ai1.gif"
+            icon="res/icons/ai1.gif"
             id="org.csstudio.config.authorizeid"
             name="Authorize Id">
       </view>
@@ -34,6 +34,13 @@
             file="toc.xml"
             primary="true">
       </toc>
+   </extension>
+   <extension
+         point="org.csstudio.auth.authorizationId">
+      <id
+            description="Permission to configure the Authorization Id."
+            id="AuthorizeId">
+      </id>
    </extension>
 
 </plugin>

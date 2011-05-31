@@ -1,7 +1,16 @@
+/*******************************************************************************
+ * Copyright (c) 2010 Oak Ridge National Laboratory.
+ * All rights reserved. This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License v1.0
+ * which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-v10.html
+ ******************************************************************************/
 package org.csstudio.debugging.rdbshell;
 
 import java.util.ArrayList;
 
+import org.eclipse.core.runtime.Platform;
+import org.eclipse.core.runtime.preferences.IPreferencesService;
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.osgi.util.NLS;
 import org.eclipse.swt.SWT;
@@ -31,7 +40,7 @@ public class RDBShellView extends ViewPart
 {
     /** View ID registered in plugin.xml */
     public static final String ID = "org.csstudio.debugging.rdbshell.view";
-
+    
     // Memento tags
     final private static String MEMENTO_QUERY = "QUERY";
     final private static String MEMENTO_USER = "USER";
@@ -70,10 +79,14 @@ public class RDBShellView extends ViewPart
     public void createPartControl(final Composite parent)
     {
         createGUI(parent);
+
+        // Initialize from preferences (Thanks to Lana.Abadie@iter.org)
+        final IPreferencesService prefs = Platform.getPreferencesService();
+        url.setText(prefs.getString(Activator.ID, MEMENTO_URL, "jdbc:oracle:thin:@//HOST:1521/DB", null));
+        user.setText(prefs.getString(Activator.ID, MEMENTO_USER, "user", null));
+        query.setText(prefs.getString(Activator.ID, MEMENTO_QUERY, "select * from dual", null));
         
-        url.setText("jdbc:oracle:thin:@//172.31.73.122:1521/prod");
-        user.setText("chan_arch");
-        query.setText("select * from chan_arch.smpl_eng");
+        // Override with values from last invocation
         if (memento != null)
         {
             String saved = memento.getString(MEMENTO_URL);

@@ -69,7 +69,7 @@ public class TextInputValueTypePostProcessor extends AbstractWidgetPropertyPostP
                     chain.add(new HidePropertyCommand(widget, PROP_PRECISION, PROP_TEXT_TYPE));
                 } else {
                     chain.add(new ShowPropertyCommand(widget, PROP_INPUT_TEXT, PROP_TEXT_TYPE));
-                    chain.add(new ShowPropertyCommand(widget, PROP_PRECISION, PROP_TEXT_TYPE));
+                    chain.add(new HidePropertyCommand(widget, PROP_PRECISION, PROP_TEXT_TYPE));
                 }
             }
 

@@ -19,6 +19,7 @@ package org.csstudio.sds.components.model.eventing;
 import static org.csstudio.sds.model.AbstractTextTypeWidgetModel.PROP_PRECISION;
 import static org.csstudio.sds.model.AbstractTextTypeWidgetModel.PROP_TEXT_TYPE;
 import static org.csstudio.sds.model.LabelModel.PROP_TEXTVALUE;
+import static org.csstudio.sds.model.LabelModel.PROP_TEXT_UNIT;
 
 import org.csstudio.sds.eventhandling.AbstractWidgetPropertyPostProcessor;
 import org.csstudio.sds.model.LabelModel;
@@ -63,16 +64,17 @@ public class LabelValueTypePostProcessor extends AbstractWidgetPropertyPostProce
 
                 if (TextTypeEnum.DOUBLE.getIndex() == optionIndex ) {
                     chain.add(new ShowPropertyCommand(widget, PROP_TEXTVALUE, PROP_TEXT_TYPE));
+                    chain.add(new ShowPropertyCommand(widget, PROP_TEXT_UNIT, PROP_TEXT_TYPE));
                     chain.add(new ShowPropertyCommand(widget, PROP_PRECISION, PROP_TEXT_TYPE));
                 } else if (TextTypeEnum.ALIAS.getIndex() == optionIndex ) {
                     chain.add(new HidePropertyCommand(widget, PROP_TEXTVALUE, PROP_TEXT_TYPE));
+                    chain.add(new HidePropertyCommand(widget, PROP_TEXT_UNIT, PROP_TEXT_TYPE));
                     chain.add(new HidePropertyCommand(widget, PROP_PRECISION, PROP_TEXT_TYPE));
                 } else {
                     chain.add(new ShowPropertyCommand(widget, PROP_TEXTVALUE, PROP_TEXT_TYPE));
-//                    chain.add(new HidePropertyCommand(widget, PROP_PRECISION, PROP_TEXT_TYPE));
-                    chain.add(new ShowPropertyCommand(widget, PROP_PRECISION, PROP_TEXT_TYPE));
-                }
-            }
+                    chain.add(new ShowPropertyCommand(widget, PROP_TEXT_UNIT, PROP_TEXT_TYPE));
+                    chain.add(new HidePropertyCommand(widget, PROP_PRECISION, PROP_TEXT_TYPE));
+                }            }
 
             chain.execute();
         }

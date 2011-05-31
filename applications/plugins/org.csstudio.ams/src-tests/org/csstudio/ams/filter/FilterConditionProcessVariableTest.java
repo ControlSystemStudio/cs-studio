@@ -33,8 +33,8 @@ import org.csstudio.ams.dbAccess.configdb.FilterConditionProcessVariableTObject;
 import org.csstudio.ams.filter.FilterConditionProcessVariable.Operator;
 import org.csstudio.ams.filter.FilterConditionProcessVariable.SuggestedProcessVariableType;
 import org.csstudio.platform.model.pvs.ControlSystemEnum;
-import org.csstudio.platform.model.pvs.DalPropertyTypes;
 import org.csstudio.platform.model.pvs.IProcessVariableAddress;
+import org.csstudio.platform.model.pvs.ValueType;
 import org.csstudio.platform.simpledal.ConnectionException;
 import org.csstudio.platform.simpledal.ConnectionState;
 import org.csstudio.platform.simpledal.IConnector;
@@ -42,8 +42,7 @@ import org.csstudio.platform.simpledal.IProcessVariableConnectionService;
 import org.csstudio.platform.simpledal.IProcessVariableValueListener;
 import org.csstudio.platform.simpledal.IProcessVariableWriteListener;
 import org.csstudio.platform.simpledal.SettableState;
-import org.csstudio.platform.simpledal.ValueType;
-import org.epics.css.dal.context.RemoteInfo;
+import org.epics.css.dal.simple.RemoteInfo;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
@@ -64,69 +63,76 @@ public class FilterConditionProcessVariableTest {
 	private IProcessVariableAddress createDefaultPVAdress() {
 		return new IProcessVariableAddress() {
 
+		    @Override
 			public String getCharacteristic() {
 				fail();
 				return null;
 			}
 
+			@Override
 			public ControlSystemEnum getControlSystem() {
 				fail();
 				return null;
 			}
 
+			@Override
 			public String getDevice() {
 				fail();
 				return null;
 			}
 
+			@Override
 			public String getFullName() {
 				fail();
 				return null;
 			}
 
+			@Override
 			public String getProperty() {
 				fail();
 				return null;
 			}
 
+			@Override
 			public String getRawName() {
 				fail();
 				return null;
 			}
 
-			public DalPropertyTypes getTypeHint() {
-				fail();
-				return null;
-			}
-
+			@Override
 			public boolean isCharacteristic() {
 				fail();
 				return false;
 			}
 
-			public RemoteInfo toDalRemoteInfo() {
+			@Override
+            public RemoteInfo toDalRemoteInfo() {
 				fail();
 				return null;
 			}
 
-			public ValueType getValueTypeHint() {
+			@Override
+            public ValueType getValueTypeHint() {
 				fail();
 				return null;
 			}
 
-			public IProcessVariableAddress deriveNoCharacteristicPart() {
+			@Override
+            public IProcessVariableAddress deriveNoCharacteristicPart() {
 				fail();
 				return null;
 			}
 
-			public IProcessVariableAddress deriveCharacteristic(String characteristic) {
+			@Override
+            public IProcessVariableAddress deriveCharacteristic(String characteristic) {
 				fail();
 				return null;
 			}
 		};
 	}
 
-	private IProcessVariableConnectionService createMockPVConnectionService() {
+	@SuppressWarnings("synthetic-access")
+    private IProcessVariableConnectionService createMockPVConnectionService() {
 		_connectionServiceMock = new ConnectionServiceMock();
 		return _connectionServiceMock;
 	}
@@ -146,49 +152,49 @@ public class FilterConditionProcessVariableTest {
 			_listener.connectionStateChanged(state);
 		}
 
-		public List<IConnector> getConnectors() {
-			// TODO Auto-generated method stub
+		@Override
+        public List<IConnector> getConnectors() {
 			return null;
 		}
 
-		public SettableState checkWriteAccessSynchronously(IProcessVariableAddress pv) {
-			// TODO Auto-generated method stub
+		@Override
+        public SettableState checkWriteAccessSynchronously(IProcessVariableAddress pv) {
 			return null;
 		}
 
-		public void readValueAsynchronously(IProcessVariableAddress processVariableAddress, ValueType valueType,
+		@Override
+        public void readValueAsynchronously(IProcessVariableAddress processVariableAddress, ValueType valueType,
 				IProcessVariableValueListener listener) {
-			// TODO Auto-generated method stub
-			
 		}
 
-		public <E> E readValueSynchronously(IProcessVariableAddress processVariableAddress, ValueType valueType) throws ConnectionException {
-			// TODO Auto-generated method stub
+		@Override
+        public <E> E readValueSynchronously(IProcessVariableAddress processVariableAddress, ValueType valueType) throws ConnectionException {
 			return null;
 		}
 
-		public void register(IProcessVariableValueListener listener, IProcessVariableAddress pv, ValueType valueType) {
+		@Override
+        public void register(IProcessVariableValueListener listener, IProcessVariableAddress pv, ValueType valueType) {
 			_listener = listener;
 		}
 
-		public void unregister(IProcessVariableValueListener listener) {
-			// TODO Auto-generated method stub
-			
+		@Override
+        public void unregister(IProcessVariableValueListener listener) {
+			// 
 		}
 
-		public void writeValueAsynchronously(IProcessVariableAddress processVariableAddress, Object value, ValueType expectedValueType, IProcessVariableWriteListener listener) {
-			// TODO Auto-generated method stub
-			
+		@Override
+        public void writeValueAsynchronously(IProcessVariableAddress processVariableAddress, Object value, ValueType expectedValueType, IProcessVariableWriteListener listener) {
+		    // 
 		}
 
-		public boolean writeValueSynchronously(IProcessVariableAddress processVariableAddress, Object value, ValueType expectedValueType) {
-			// TODO Auto-generated method stub
+		@Override
+        public boolean writeValueSynchronously(IProcessVariableAddress processVariableAddress, Object value, ValueType expectedValueType) {
 			return false;
 		}
 
+        @Override
         public int getNumberOfActiveConnectors()
         {
-            // TODO Auto-generated method stub
             return 0;
         }
 		

@@ -1,0 +1,92 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?eclipse version="3.0"?>
+<plugin>
+   <extension
+         id="product"
+         point="org.eclipse.core.runtime.products">
+      <product
+            application="org.csstudio.desy.linde.product.application"
+            name="CSS Linde">
+         <property
+               name="aboutText"
+               value="Control System Studio Island&#x0A;&#x0A;Copyright (c) 2007 -2010 Stiftung Deutsches Elektronen-Synchrotron,&#x0A;Member of the Helmholtz Association, (DESY), HAMBURG, GERMANY.&#x0A;&#x0A;THIS SOFTWARE IS PROVIDED UNDER THIS LICENSE ON AN &quot;../AS IS&quot; BASIS. &#x0A;WITHOUT WARRANTY OF ANY KIND, EXPRESSED OR IMPLIED, INCLUDING BUT NOT LIMITED&#x0A;TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR PARTICULAR PURPOSE AND&#x0A;NON-INFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE&#x0A;FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT,&#x0A;TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR&#x0A;THE USE OR OTHER DEALINGS IN THE SOFTWARE. SHOULD THE SOFTWARE PROVE DEFECTIVE&#x0A;IN ANY RESPECT, THE USER ASSUMES THE COST OF ANY NECESSARY SERVICING, REPAIR OR&#x0A;CORRECTION. THIS DISCLAIMER OF WARRANTY CONSTITUTES AN ESSENTIAL PART OF THIS LICENSE.&#x0A;NO USE OF ANY SOFTWARE IS AUTHORIZED HEREUNDER EXCEPT UNDER THIS DISCLAIMER.&#x0A;DESY HAS NO OBLIGATION TO PROVIDE MAINTENANCE, SUPPORT, UPDATES, ENHANCEMENTS,&#x0A;OR MODIFICATIONS. &#x0A;THE FULL LICENSE SPECIFYING FOR THE SOFTWARE THE REDISTRIBUTION, MODIFICATION,&#x0A;USAGE AND OTHER RIGHTS AND OBLIGATIONS IS INCLUDED WITH THE DISTRIBUTION OF THIS&#x0A;PROJECT IN THE FILE LICENSE.HTML. IF THE LICENSE IS NOT INCLUDED YOU MAY FIND A COPY AT &#x0A;HTTP://WWW.DESY.DE/LEGAL/LICENSE.HTM">
+         </property>
+         <property
+               name="appName"
+               value="CSS Linde">
+         </property>
+         <property
+               name="aboutImage"
+               value="resources/css64x64.gif">
+         </property>
+         <property
+               name="windowImages"
+               value="resources/css16x16.gif,resources/css32x32.gif,resources/css48x48.gif,resources/css64x64.gif,resources/css128x128.gif">
+         </property>
+         <property
+               name="startupForegroundColor"
+               value="000000">
+         </property>
+         <property
+               name="startupMessageRect"
+               value="7,180,445,20">
+         </property>
+         <property
+               name="startupProgressRect"
+               value="5,200,445,15">
+         </property>
+         <property
+               name="preferenceCustomization"
+               value="plugin_customization.ini">
+         </property>
+         <property
+               name="introTitle"
+               value="Welcome to CSS Linde">
+         </property>
+	     <property
+               name="introBrandingImage"
+               value="product:icons/css64.gif">
+         </property>
+         <property
+               name="introBrandingImageText"
+               value="CSS Linde">
+         </property>
+      </product>
+   </extension>
+   <extension
+   		 id="application"
+         name="CSS Linde"
+         point="org.eclipse.core.runtime.applications">
+      <application
+            cardinality="singleton-global"
+            thread="main"
+            visible="true">
+         <run class="org.csstudio.startup.application.Application"/>
+      </application>
+   </extension>
+      <extension
+         point="org.eclipse.ui.intro">
+         <introProductBinding
+         	introId="org.eclipse.ui.intro.universal"
+         	productId="org.csstudio.desy.linde.product.product" />
+   </extension>
+   <extension
+         point="org.eclipse.ui.intro.configExtension">
+      <configExtension
+            configId="org.eclipse.ui.intro.universalConfig"
+            content="intro/overview.xml">
+      </configExtension>
+   </extension>
+   <extension
+         point="org.csstudio.startup.module">
+      <locale
+            class="org.csstudio.startuphelper.module.DefaultLocaleSettings">
+      </locale>
+      <services
+            class="org.csstudio.startuphelper.module.DefaultServicesStartup">
+      </services>
+      <workbench
+            class="org.csstudio.startuphelper.module.DefaultWorkbench">
+      </workbench>
+   </extension>
+</plugin>

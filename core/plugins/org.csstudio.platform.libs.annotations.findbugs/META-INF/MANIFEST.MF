@@ -1,8 +1,0 @@
-Manifest-Version: 1.0
-Bundle-ManifestVersion: 2
-Bundle-Name: Findbugs Annotations
-Bundle-SymbolicName: org.csstudio.platform.libs.annotations.findbugs
-Bundle-Version: 1.3.9
-Export-Package: edu.umd.cs.findbugs.annotations,
- net.jcip.annotations
-Bundle-RequiredExecutionEnvironment: J2SE-1.5

@@ -220,6 +220,13 @@
          </action>
       </actionSet>
    </extension>
+   <extension
+         point="org.csstudio.auth.authorizationId">
+      <id
+            description="Permission to open and use the AMS Configurator."
+            id="amsconfigurator">
+      </id>
+   </extension>
 w
 
 </plugin>

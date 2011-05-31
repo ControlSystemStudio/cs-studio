@@ -1,23 +1,17 @@
-#
-# chenx1@ornl.gov
-# March. 19, 2009
+# Original version, 2009-03-19: chenx1@ornl.gov
+# Updates: Kay Kasemir
 
 # Before using this file to create config tables, you must change hostname, 
 # username, password to the real name.
 # Under the directory containing this file, use this command to create the database:
 # mysql -h hostname -u username -p alarm<ALARM_MySQL.sql
 
-
 # Take snapshot, restore from snapshot:
 #
 #  mysqldump -u username -p -l alarm >alarm_snapshot.sql
 #  mysql -u username -p alarm <alarm_snapshot.sql
 
--- Date Created : Tuesday, March 10, 2009 11:31:04
--- Target DBMS : MySQL 5.x
 --
-
--- 
 -- TABLE: ALARM.ALARM_TREE 
 --
 
@@ -27,7 +21,7 @@ CREATE TABLE ALARM.ALARM_TREE(
     NAME               VARCHAR(80)    NOT NULL COMMENT 'Name: Component name.',
     CONFIG_TIME        TIMESTAMP               COMMENT 'Configuration Time: Time of last configuration update.',
     PRIMARY KEY (COMPONENT_ID)
-)ENGINE=MYISAM
+)ENGINE=INNODB
 COMMENT=''
 ;
 
@@ -41,7 +35,7 @@ CREATE TABLE ALARM.COMMAND(
     COMMAND_ORDER    INT              NOT NULL COMMENT 'Order: The order by which the commands are arranged.',
     DETAIL           VARCHAR(4000)    NOT NULL COMMENT 'Detail: The related command which will be executed when you click on its title.',
     PRIMARY KEY (COMPONENT_ID, TITLE)
-)ENGINE=MYISAM
+)ENGINE=INNODB
 COMMENT='commands for the component.'
 ;
 
@@ -55,7 +49,7 @@ CREATE TABLE ALARM.DISPLAY(
     DISPLAY_ORDER    INT              NOT NULL COMMENT 'Order: The order by which the displays are arranged.',
     DETAIL           VARCHAR(4000)    NOT NULL COMMENT 'Detail: The related display which will be launched when you click on its title.',
     PRIMARY KEY (COMPONENT_ID, TITLE)
-)ENGINE=MYISAM
+)ENGINE=INNODB
 COMMENT='Displays for the component.'
 ;
 
@@ -69,7 +63,7 @@ CREATE TABLE ALARM.GUIDANCE(
     GUIDANCE_ORDER    INT              NOT NULL COMMENT 'Order: The order by which the guidance are arranged.',
     DETAIL            VARCHAR(4000)    NOT NULL COMMENT 'Detail: Guidance information which is displayed in the guidance dialog.',
     PRIMARY KEY (COMPONENT_ID, TITLE)
-)ENGINE=MYISAM
+)ENGINE=INNODB
 COMMENT='Guidance information for the component.'
 ;
 
@@ -80,9 +74,9 @@ COMMENT='Guidance information for the component.'
 CREATE TABLE ALARM.PV(
     COMPONENT_ID       INT              NOT NULL           COMMENT 'Component Identifier: The id for identification of each component.',
     DESCR              VARCHAR(100)                        COMMENT 'Description: Description that might be more meaningful than PV name.',
-    ENABLED_IND        DECIMAL(1, 0)    DEFAULT 0 NOT NULL COMMENT 'Enabled Indicator: Indicates if alarms are enabled for a given PV.',
-    ANNUNCIATE_IND     DECIMAL(1, 0)    DEFAULT 0 NOT NULL COMMENT 'Annunciate Indicator:  Indicates if alarm should be annunciated.',
-    LATCH_IND          DECIMAL(1, 0)    DEFAULT 0 NOT NULL COMMENT 'Latch Indicator: Indicates that alarm should be latched for acknowledgement, even if PV recovers.',
+    ENABLED_IND        BOOL         DEFAULT FALSE NOT NULL COMMENT 'Enabled Indicator: Indicates if alarms are enabled for a given PV.',
+    ANNUNCIATE_IND     BOOL         DEFAULT FALSE NOT NULL COMMENT 'Annunciate Indicator:  Indicates if alarm should be annunciated.',
+    LATCH_IND          BOOL         DEFAULT FALSE NOT NULL COMMENT 'Latch Indicator: Indicates that alarm should be latched for acknowledgement, even if PV recovers.',
     DELAY              INT                                 COMMENT 'Delay: Minimum time in seconds before raising the alarm.',
     FILTER             VARCHAR(4000)                       COMMENT 'Filter: Filter expression, may be used to compute \'enabled\' from expression.',
     DELAY_COUNT        INT                                 COMMENT 'Delay Count: Alarm when PV != OK more often than this count within delay.',
@@ -92,12 +86,14 @@ CREATE TABLE ALARM.PV(
     CUR_SEVERITY_ID    INT                                 COMMENT 'Current Severity Identifier: Current severity of PV.',
     PV_VALUE           VARCHAR(100)                        COMMENT 'Process Variable Value: PV value that caused severity/status.',
     ALARM_TIME         TIMESTAMP                           COMMENT 'Alarm Time: The time of the most recent alarm.',
+    ACT_GLOBAL_ALARM_IND BOOL DEFAULT FALSE NOT NULL COMMENT 'Indicates if PV has an active global alarm.',
     PRIMARY KEY (COMPONENT_ID)
-)ENGINE=MYISAM
+)ENGINE=INNODB
 COMMENT='Process Variable: '
 ;
--- When adding CUR_STATUS_ID to older setup:
+-- Add CUR_STATUS_ID, ACT_GLOBAL_ALARM_IND to older setups:
 -- ALTER TABLE ALARM.PV  ADD  CUR_STATUS_ID INT  AFTER  SEVERITY_ID;  
+-- ALTER TABLE ALARM.PV  ADD  ACT_GLOBAL_ALARM_IND BOOL DEFAULT FALSE NOT NULL AFTER  ALARM_TIME;  
 
 -- 
 -- TABLE: ALARM.SEVERITY 
@@ -107,7 +103,7 @@ CREATE TABLE ALARM.SEVERITY(
     SEVERITY_ID    INT             NOT NULL COMMENT 'Severity Identifier: Unique identifier for the alarm severity.',
     NAME           VARCHAR(100)    NOT NULL COMMENT 'Severity Name: ',
     PRIMARY KEY (SEVERITY_ID)
-)ENGINE=MYISAM
+)ENGINE=INNODB
 COMMENT='Severity of an alarm like "invalid", "major alarm" etc.'
 ;
 
@@ -119,7 +115,7 @@ CREATE TABLE ALARM.STATUS(
     STATUS_ID    INT             NOT NULL COMMENT 'Status Identifier: Unique identifier for the alarm status.',
     NAME         VARCHAR(100)    NOT NULL COMMENT 'Status Name: such as "read error", "disconnected", ...',
     PRIMARY KEY (STATUS_ID)
-)ENGINE=MYISAM
+)ENGINE=INNODB
 COMMENT='status of an alarm to provide more detail'
 ;
 
@@ -209,14 +205,14 @@ ALTER TABLE ALARM.GUIDANCE ADD CONSTRAINT FK_GUIDANCE_TO_ALARM_TREE
 -- TABLE: ALARM.PV 
 --
 
-ALTER TABLE ALARM.PV ADD CONSTRAINT FK_CUR_SVRTY_TO_SEVERITY 
-    FOREIGN KEY (CUR_SEVERITY_ID)
-    REFERENCES ALARM.SEVERITY(SEVERITY_ID)
-;
-
 ALTER TABLE ALARM.PV ADD CONSTRAINT FK_PV_TO_ALARM_TREE 
     FOREIGN KEY (COMPONENT_ID)
     REFERENCES ALARM.ALARM_TREE(COMPONENT_ID)
+;
+
+ALTER TABLE ALARM.PV ADD CONSTRAINT FK_CUR_SVRTY_TO_SEVERITY 
+    FOREIGN KEY (CUR_SEVERITY_ID)
+    REFERENCES ALARM.SEVERITY(SEVERITY_ID)
 ;
 
 ALTER TABLE ALARM.PV ADD CONSTRAINT FK_PV_TO_SEVERITY 
@@ -224,7 +220,32 @@ ALTER TABLE ALARM.PV ADD CONSTRAINT FK_PV_TO_SEVERITY
     REFERENCES ALARM.SEVERITY(SEVERITY_ID)
 ;
 
+ALTER TABLE ALARM.PV ADD CONSTRAINT FK_CUR_STS_TO_STATUS 
+    FOREIGN KEY (CUR_STATUS_ID)
+    REFERENCES ALARM.STATUS(STATUS_ID)
+;
+
 ALTER TABLE ALARM.PV ADD CONSTRAINT FK_PV_TO_STATUS 
     FOREIGN KEY (STATUS_ID)
     REFERENCES ALARM.STATUS(STATUS_ID)
 ;
+
+
+--
+-- Example data.
+-- Skip if there is no need for an example
+--
+INSERT INTO ALARM.ALARM_TREE VALUES (1, NULL, 'Test', now());
+INSERT INTO ALARM.ALARM_TREE VALUES (2, 1, 'Area', now());
+INSERT INTO ALARM.ALARM_TREE VALUES (3, 2, 'System', now());
+INSERT INTO ALARM.ALARM_TREE VALUES (4, 3, 'PV1', now());
+INSERT INTO ALARM.ALARM_TREE VALUES (5, 3, 'PV2', now());
+
+INSERT INTO ALARM.PV(COMPONENT_ID, DESCR, ENABLED_IND, ANNUNCIATE_IND, LATCH_IND, ACT_GLOBAL_ALARM_IND) VALUES (4, 'Demo 1', true, true, true, false);
+INSERT INTO ALARM.PV(COMPONENT_ID, DESCR, ENABLED_IND, ANNUNCIATE_IND, LATCH_IND, ACT_GLOBAL_ALARM_IND) VALUES (5, 'Demo 2', true, true, true, false);
+    
+INSERT INTO ALARM.GUIDANCE(COMPONENT_ID, GUIDANCE_ORDER, TITLE, DETAIL) VALUES (4, 1, 'Info 1', 'Do something'); 
+INSERT INTO ALARM.GUIDANCE(COMPONENT_ID, GUIDANCE_ORDER, TITLE, DETAIL) VALUES (4, 2, 'Info 2', 'Do something else'); 
+
+INSERT INTO ALARM.GUIDANCE(COMPONENT_ID, GUIDANCE_ORDER, TITLE, DETAIL) VALUES (5, 1, 'Info 1', 'Do something'); 
+INSERT INTO ALARM.GUIDANCE(COMPONENT_ID, GUIDANCE_ORDER, TITLE, DETAIL) VALUES (5, 2, 'Info 2', 'Do something else'); 

@@ -1,3 +1,10 @@
+/*******************************************************************************
+ * Copyright (c) 2010 Oak Ridge National Laboratory.
+ * All rights reserved. This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License v1.0
+ * which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-v10.html
+ ******************************************************************************/
 package org.csstudio.archive.rdb.internal;
 
 import org.csstudio.archive.rdb.RDBArchivePreferences;
@@ -6,6 +13,7 @@ import org.csstudio.platform.utility.rdb.RDBUtil.Dialect;
 
 /** All the SQL strings in one place.
  *  @author Kay Kasemir
+ *  @author Lana Abadie (PostgreSQL)
  */
 @SuppressWarnings("nls")
 public class SQL
@@ -129,6 +137,8 @@ public class SQL
 		
 		if (dialect == RDBUtil.Dialect.Oracle)
 			channel_sel_by_pattern = "SELECT channel_id, name, grp_id, smpl_mode_id, smpl_val, smpl_per FROM " + prefix + "channel WHERE REGEXP_LIKE(name, ?, 'i') ORDER BY name";
+		else if (dialect == RDBUtil.Dialect.PostgreSQL)
+			channel_sel_by_pattern = "SELECT channel_id, name, grp_id, smpl_mode_id, smpl_val, smpl_per FROM " + prefix + "channel WHERE name ~* ORDER BY name";
 		else
 			channel_sel_by_pattern = "SELECT channel_id, name, grp_id, smpl_mode_id, smpl_val, smpl_per FROM " + prefix + "channel WHERE name REGEXP ? ORDER BY name";
 		channel_sel_last_time_by_id = "SELECT MAX(smpl_time) FROM " + prefix + sample + " WHERE channel_id=?";
@@ -205,21 +215,51 @@ public class SQL
                 " (channel_id, smpl_time, severity_id, status_id, str_val)" +
                 " VALUES (?,?,?,?,?)";
 		}
-		else
+        else if (dialect == RDBUtil.Dialect.PostgreSQL)
+        {
+        	// Nanosecs are listed last to preserve the order of common columns
+        	sample_sel_initial_by_id_time =
+	        	"SELECT smpl_time, severity_id, status_id, num_val, float_val, str_val, nanosecs" +
+	        	"   FROM " + prefix + "sample WHERE channel_id=? AND smpl_time<=?" +
+	        	"   ORDER BY smpl_time DESC, nanosecs DESC LIMIT 1";
+        	sample_sel_by_id_start_end =
+        		"SELECT smpl_time, severity_id, status_id, num_val, float_val, str_val, nanosecs FROM " + prefix + "sample" +
+	            "   WHERE channel_id=?" +
+	            "     AND smpl_time>? AND smpl_time<=?" +
+	            "   ORDER BY smpl_time, nanosecs";
+            sample_sel_array_vals = "SELECT float_val FROM " + prefix + "array_val" +
+            	" WHERE channel_id=? AND smpl_time=? AND nanosecs=? ORDER BY seq_nbr";
+            sample_insert_double =
+                "INSERT INTO " + prefix + "sample " +
+                "(channel_id, smpl_time, severity_id, status_id, float_val, nanosecs)" +
+                "VALUES (?,?,?,?,?,?)";
+            sample_insert_double_array_element =
+                "INSERT INTO " + prefix + "array_val " +
+                "(channel_id, smpl_time, seq_nbr, float_val, nanosecs)" +
+                "VALUES (?,?,?,?,?)";
+            sample_insert_int =
+                "INSERT INTO " + prefix + "sample " +
+                "(channel_id, smpl_time, severity_id, status_id, num_val, nanosecs)" +
+                "VALUES (?,?,?,?,?,?)";
+            sample_insert_string =
+                "INSERT INTO " + prefix + "sample " +
+                "(channel_id, smpl_time, severity_id, status_id, str_val, nanosecs)" +
+                "VALUES (?,?,?,?,?,?)";
+        }
+        else
 		{
-		    // The MySQL-only nanosecs are listed last to preserve the order
-		    // of common columns
+		    // Nanosecs are listed last to preserve the order of common columns
 			sample_sel_initial_by_id_time =
-			"SELECT smpl_time, severity_id, status_id, num_val, float_val, str_val, nanosecs" +
-			"   FROM " + prefix + "sample WHERE channel_id=? AND smpl_time<=?" +
-			"   ORDER BY smpl_time DESC, nanosecs DESC LIMIT 1";
+				"SELECT smpl_time, severity_id, status_id, num_val, float_val, str_val, nanosecs" +
+				"   FROM " + prefix + "sample WHERE channel_id=? AND smpl_time<=?" +
+				"   ORDER BY smpl_time DESC, nanosecs DESC LIMIT 1";
             sample_sel_by_id_start_end =
                 "SELECT smpl_time, severity_id, status_id, num_val, float_val, str_val, nanosecs FROM " + prefix + "sample" +
                 "   WHERE channel_id=?" +
                 "     AND smpl_time>? AND smpl_time<=?" +
                 "   ORDER BY smpl_time, nanosecs";
             sample_sel_array_vals = "SELECT float_val FROM " + prefix + "array_val" +
-            " WHERE channel_id=? AND smpl_time=? AND nanosecs=? ORDER BY seq_nbr";
+            	" WHERE channel_id=? AND smpl_time=? AND nanosecs=? ORDER BY seq_nbr";
             sample_insert_double =
                 "INSERT INTO " + prefix + "sample " +
                 "(channel_id, smpl_time, severity_id, status_id, float_val, nanosecs)" +

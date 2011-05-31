@@ -17,6 +17,8 @@ public class Messages extends NLS
     public static String CollapseTT;
     public static String ExpandAlarms;
     public static String ExpandAlarmsTT;
+    public static String SelectAlarmConfiguration;
+
     static
     {
         // initialize resource bundle

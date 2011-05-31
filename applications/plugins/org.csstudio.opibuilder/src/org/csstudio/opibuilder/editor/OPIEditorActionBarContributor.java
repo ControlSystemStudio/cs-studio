@@ -1,8 +1,15 @@
+/*******************************************************************************
+ * Copyright (c) 2010 Oak Ridge National Laboratory.
+ * All rights reserved. This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License v1.0
+ * which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-v10.html
+ ******************************************************************************/
 package org.csstudio.opibuilder.editor;
 import org.csstudio.opibuilder.OPIBuilderPlugin;
-import org.csstudio.opibuilder.actions.RunOPIAction;
 import org.csstudio.opibuilder.actions.ChangeOrderAction.OrderType;
 import org.csstudio.opibuilder.actions.DistributeWidgetsAction.DistributeType;
+import org.csstudio.opibuilder.actions.RunOPIAction;
 import org.eclipse.draw2d.PositionConstants;
 import org.eclipse.gef.ui.actions.ActionBarContributor;
 import org.eclipse.gef.ui.actions.AlignmentRetargetAction;
@@ -122,8 +129,8 @@ public class OPIEditorActionBarContributor extends ActionBarContributor {
 					if(dt != DistributeType.HORIZONTAL_GAP)
 						manager.add(getAction(dt.getActionID()));
 				}
-				
-				return manager.createContextMenu(parent);
+				menu = manager.createContextMenu(parent);
+				return menu;
 			}
 		
 			public void dispose() {

@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <?pde version="3.5"?>
 
-<product name="ArchiveEngine" id="org.csstudio.archive.engine.engine" application="org.csstudio.archive.engine.application" useFeatures="false" includeLaunchers="true">
+<product name="ArchiveEngine" id="org.csstudio.archive.engine.engine" application="org.csstudio.archive.engine.application" version="3.0.0.qualifier" useFeatures="false" includeLaunchers="true">
 
    <configIni use="default">
    </configIni>
@@ -25,41 +25,23 @@
 
    <plugins>
       <plugin id="javax.servlet"/>
-      <plugin id="org.apache.commons.logging"/>
       <plugin id="org.csstudio.apputil"/>
       <plugin id="org.csstudio.archive.engine"/>
       <plugin id="org.csstudio.archive.rdb"/>
-      <plugin id="org.csstudio.platform"/>
-      <plugin id="org.csstudio.platform.libs.annotations"/>
-      <plugin id="org.csstudio.platform.libs.dal"/>
-      <plugin id="org.csstudio.platform.libs.epics"/>
+      <plugin id="org.csstudio.auth"/>
+      <plugin id="org.csstudio.data"/>
+      <plugin id="org.csstudio.java"/>
+      <plugin id="org.csstudio.logging"/>
       <plugin id="org.csstudio.platform.libs.jdbc"/>
-      <plugin id="org.csstudio.platform.libs.jmock"/>
       <plugin id="org.csstudio.platform.libs.jms"/>
-      <plugin id="org.csstudio.platform.utility.jms"/>
       <plugin id="org.csstudio.platform.utility.rdb"/>
-      <plugin id="org.csstudio.platform.workspace"/>
       <plugin id="org.csstudio.utility.httpd"/>
       <plugin id="org.csstudio.utility.pv"/>
       <plugin id="org.csstudio.utility.pv.epics"/>
       <plugin id="org.csstudio.utility.pv.simu"/>
+      <plugin id="org.csstudio.workspace"/>
       <plugin id="org.eclipse.core.contenttype"/>
-      <plugin id="org.eclipse.core.expressions"/>
-      <plugin id="org.eclipse.core.filesystem"/>
-      <plugin id="org.eclipse.core.filesystem.aix.ppc" fragment="true"/>
-      <plugin id="org.eclipse.core.filesystem.hpux.ia64_32" fragment="true"/>
-      <plugin id="org.eclipse.core.filesystem.linux.ppc" fragment="true"/>
-      <plugin id="org.eclipse.core.filesystem.linux.x86" fragment="true"/>
-      <plugin id="org.eclipse.core.filesystem.linux.x86_64" fragment="true"/>
-      <plugin id="org.eclipse.core.filesystem.macosx" fragment="true"/>
-      <plugin id="org.eclipse.core.filesystem.qnx.x86" fragment="true"/>
-      <plugin id="org.eclipse.core.filesystem.solaris.sparc" fragment="true"/>
-      <plugin id="org.eclipse.core.filesystem.win32.x86" fragment="true"/>
-      <plugin id="org.eclipse.core.filesystem.win32.x86_64" fragment="true"/>
       <plugin id="org.eclipse.core.jobs"/>
-      <plugin id="org.eclipse.core.resources"/>
-      <plugin id="org.eclipse.core.resources.compatibility" fragment="true"/>
-      <plugin id="org.eclipse.core.resources.win32.x86" fragment="true"/>
       <plugin id="org.eclipse.core.runtime"/>
       <plugin id="org.eclipse.core.runtime.compatibility.registry" fragment="true"/>
       <plugin id="org.eclipse.equinox.app"/>

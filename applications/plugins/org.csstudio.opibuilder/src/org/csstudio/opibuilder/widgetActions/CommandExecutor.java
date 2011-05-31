@@ -27,8 +27,8 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 
+import org.csstudio.java.string.StringSplitter;
 import org.csstudio.opibuilder.util.ConsoleService;
-import org.csstudio.platform.util.StringUtil;
 import org.eclipse.osgi.util.NLS;
 
 /** Helper for executing a (system) command.
@@ -48,7 +48,7 @@ import org.eclipse.osgi.util.NLS;
  * @author Kay Kasemir, Xihui Chen
  */
 @SuppressWarnings("nls")
-public class CommandExecutor
+public final class CommandExecutor
 {
     final private String dir_name;
     final private String command;
@@ -65,13 +65,14 @@ public class CommandExecutor
         this.command = command;
         this.dir_name = dir_name;
         this.wait = wait;
-        new Thread(new Runnable()
+        Thread t = new Thread(new Runnable()
         {
             public void run()
             {
                 runAndCheckCommand();
             }
-        }, "CommandExecutor").start();
+        }, "CommandExecutor");
+        t.start();
     }
     
     /** Derived class must implement this callback that's invoked
@@ -93,7 +94,7 @@ public class CommandExecutor
         final Process process;
         try
         {
-   	     	final String[] cmd = StringUtil.splitIgnoreInQuotes(command, ' ', true);
+   	     	final String[] cmd = StringSplitter.splitIgnoreInQuotes(command, ' ', true);
             process = Runtime.getRuntime().exec(cmd, null, dir);
         }
         catch (Throwable ex)
@@ -141,7 +142,7 @@ public class CommandExecutor
         
         ConsoleService.getInstance().writeInfo(NLS.bind(
     			"Command \"{0}\" executing finished with exit code: ", command) 
-        		+ (exit_code ==0 ? "OK" : "FAILED") );
+        		+ (exit_code == null ? "NULL" : (exit_code ==0 ? "OK" : "FAILED")));
         // Process runs so long that we no longer care
         if (exit_code == null)
             return;
@@ -152,11 +153,12 @@ public class CommandExecutor
         
         // .. with error; check error output
         final StringBuilder stderr = new StringBuilder();
+        BufferedReader br = null;
         try
         {
             final InputStream is = process.getErrorStream();
             final InputStreamReader isr = new InputStreamReader(is);
-            final BufferedReader br = new BufferedReader(isr);
+            br = new BufferedReader(isr);
             String line;
             while ((line = br.readLine()) != null)
                 stderr.append(line + "\n");
@@ -165,6 +167,13 @@ public class CommandExecutor
         {
             error(-1, e.getMessage());
             return;
+        }finally{
+        	if(br != null)
+				try {
+					br.close();
+				} catch (IOException e) {
+					error(-1, e.getMessage());					
+				}
         }
         error(exit_code, stderr.toString());
       

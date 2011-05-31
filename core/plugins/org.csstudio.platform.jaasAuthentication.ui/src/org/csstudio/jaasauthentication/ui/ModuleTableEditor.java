@@ -1,13 +1,20 @@
+/*******************************************************************************
+ * Copyright (c) 2011 Oak Ridge National Laboratory.
+ * All rights reserved. This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License v1.0
+ * which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-v10.html
+ ******************************************************************************/
 package org.csstudio.jaasauthentication.ui;
 
 import java.util.ArrayList;
 import java.util.List;
 
 import org.csstudio.platform.internal.jassauthentication.preference.JAASPreferenceModel;
-import org.csstudio.platform.ui.swt.AutoSizeColumn;
-import org.csstudio.platform.ui.swt.AutoSizeControlListener;
-import org.csstudio.platform.ui.swt.stringtable.StringTableEditor;
+import org.csstudio.ui.util.swt.stringtable.StringTableEditor;
+import org.eclipse.jface.layout.TableColumnLayout;
 import org.eclipse.jface.resource.ImageRegistry;
+import org.eclipse.jface.viewers.ColumnWeightData;
 import org.eclipse.jface.viewers.ISelectionChangedListener;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.viewers.SelectionChangedEvent;
@@ -23,15 +30,16 @@ import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Table;
+import org.eclipse.swt.widgets.TableColumn;
 
 public class ModuleTableEditor extends Composite {
-	
+
 	private static final String DELETE = "delete"; //$NON-NLS-1$
 	private static final String DOWN = "down"; //$NON-NLS-1$
 	private static final String UP = "up"; //$NON-NLS-1$
 	private final TableViewer tableViewer;
 	private final static ImageRegistry images = new ImageRegistry();
-	
+
 	/**
 	 * options to be edited in options table
 	 */
@@ -40,83 +48,99 @@ public class ModuleTableEditor extends Composite {
 	private Button upButton;
 	private Button downButton;
 	private Button deleteButton;
-	
+
 	static {
-		// Buttons: up/down/delete		
+		// Buttons: up/down/delete
 		images.put(UP, Activator.getImageDescriptor("icons/up.gif")); //$NON-NLS-1$
 		images.put(DOWN, Activator.getImageDescriptor("icons/down.gif")); //$NON-NLS-1$
 		images.put(DELETE, Activator.getImageDescriptor("icons/delete.gif")); //$NON-NLS-1$
 	}
-	
+
 	public ModuleTableEditor(final Composite parent) {
 		super(parent, 0);
-		setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true, 1, 1));
-		setLayout(new GridLayout(2, false));	       
-        
-     	//Edit-able table
-		tableViewer = new TableViewer(this, SWT.BORDER | SWT.FULL_SELECTION |
+		setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true));
+		setLayout(new GridLayout(2, false));
+
+		// "Login Modules:"
+		Label label = new Label(this, 0);
+		label.setText(Messages.JAASPreferencePage_modules);
+		label.setLayoutData(new GridData(SWT.FILL, 0, true, false, 2, 1));
+
+     	// Edit-able table in its own parent because of TableColumnLayout
+		final Composite table_parent = new Composite(this, 0);
+        final GridData gd = new GridData(SWT.FILL, SWT.FILL, true, true, 1, 3);
+        gd.heightHint = 100;
+        table_parent.setLayoutData(gd);
+
+		final TableColumnLayout table_layout = new TableColumnLayout();
+		table_parent.setLayout(table_layout);
+
+		tableViewer = new TableViewer(table_parent, SWT.BORDER | SWT.FULL_SELECTION |
 				SWT.SINGLE | SWT.V_SCROLL | SWT.H_SCROLL);
 		final Table table = tableViewer.getTable();
-		GridData gd = new GridData(SWT.FILL, SWT.FILL, true, true, 1, 3);
-		gd.heightHint = 100;
-		table.setLayoutData(gd);
 		table.setLinesVisible(true);
 		table.setHeaderVisible(true);
-		
+
 		//Create edit-able columns
-		final TableViewerColumn moduleNameCol = 
-				AutoSizeColumn.make(tableViewer, Messages.ModuleTableEditor_moduleName , 240, 100, false);
-		moduleNameCol.setLabelProvider(new ModuleColumnLabelProvider());
-		moduleNameCol.setEditingSupport(new ModuleColumnEditor(tableViewer, this));
-		
-		final TableViewerColumn flagCol = 
-				AutoSizeColumn.make(tableViewer, Messages.ModuleTableEditor_moduleFlag , 60, 20, false);
-		flagCol.setLabelProvider(new FlagColumnLabelProvider());
-		flagCol.setEditingSupport(new FlagColumnEditor(tableViewer));
-		
+		TableViewerColumn view_col = new TableViewerColumn(tableViewer, 0);
+		TableColumn col = view_col.getColumn();
+		col.setText(Messages.ModuleTableEditor_moduleName);
+		col.setResizable(true);
+		table_layout.setColumnData(col, new ColumnWeightData(100, 240));
+		view_col.setLabelProvider(new ModuleColumnLabelProvider());
+		view_col.setEditingSupport(new ModuleColumnEditor(tableViewer, this));
+
+		view_col = new TableViewerColumn(tableViewer, 0);
+        col = view_col.getColumn();
+        col.setText(Messages.ModuleTableEditor_moduleFlag);
+        col.setResizable(true);
+        table_layout.setColumnData(col, new ColumnWeightData(20, 60));
+        view_col.setLabelProvider(new FlagColumnLabelProvider());
+        view_col.setEditingSupport(new FlagColumnEditor(tableViewer));
+
 		tableViewer.setContentProvider(new ModuleTableContentProvider());
 		tableViewer.setInput(JAASPreferenceModel.configurationEntryList);
-		new AutoSizeControlListener(table);
 
 		upButton = createUpButton(JAASPreferenceModel.configurationEntryList);
 		downButton = createDownButton(JAASPreferenceModel.configurationEntryList);
-		deleteButton = createDeleteButton(JAASPreferenceModel.configurationEntryList);		
-			
+		deleteButton = createDeleteButton(JAASPreferenceModel.configurationEntryList);
+
 		//Label for options
-		Label label = new Label(parent, SWT.LEFT);
+		label = new Label(parent, SWT.LEFT);
         label.setText(Messages.ModuleTableEditor_options);
         label.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false, 1, 1));
-		
-        //get selection		
+
+        //get selection
 		final Object selection = ((IStructuredSelection)tableViewer.getSelection()).getFirstElement();
 		if(selection != null) {
 			final Integer index = (Integer)selection;
 			if(index != ModuleTableContentProvider.ADD_ELEMENT)
 				options = JAASPreferenceModel.configurationEntryList.get(index).getModuleOptionsList();
 		}
-		
+
 		//create options table editor
-		optionsTableEditor = new StringTableEditor(parent, 
+		optionsTableEditor = new StringTableEditor(this,
 				new String[]{Messages.ModuleTableEditor_option, Messages.ModuleTableEditor_value},
 				new boolean[] {true, true},
 				options,
 				new EditModuleOptionDialog(this.getShell()),
 				new int[] {110, 360});
-		optionsTableEditor.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true, 1, 1));
-		
+		optionsTableEditor.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true, 2, 1));
+
 		// Enable buttons when items are selected
 		tableViewer.addSelectionChangedListener(new ISelectionChangedListener()
 		{
-			public void selectionChanged(SelectionChangedEvent event)
+			@Override
+            public void selectionChanged(SelectionChangedEvent event)
 			{
 				setButtonsEnable();
-				
+
 				updateOptionsTable();
-			}			
-		});		
+			}
+		});
 	}
-	
-	@SuppressWarnings("unchecked")
+
+	@SuppressWarnings({ "unchecked", "rawtypes" })
 	private Button createUpButton(final List items) {
 		final Button up = new Button(this, SWT.PUSH);
 		up.setImage(images.get(UP));
@@ -142,9 +166,9 @@ public class ModuleTableEditor extends Composite {
 		});
 		return up;
 	}
-	
-	@SuppressWarnings("unchecked")
-	private Button createDownButton(final List items) {
+
+	@SuppressWarnings("rawtypes")
+    private Button createDownButton(final List items) {
 		final Button down = new Button(this, SWT.PUSH);
 		down.setImage(images.get(DOWN));
 		down.setToolTipText(Messages.ModuleTableEditor_moveDown);
@@ -152,7 +176,8 @@ public class ModuleTableEditor extends Composite {
 		down.setEnabled(false);
 		down.addSelectionListener(new SelectionAdapter()
 		{
-			@Override
+			@SuppressWarnings("unchecked")
+            @Override
 			public void widgetSelected(SelectionEvent e)
 			{
 				final Integer index = (Integer)
@@ -169,9 +194,9 @@ public class ModuleTableEditor extends Composite {
 		});
 		return down;
 	}
-	
-	@SuppressWarnings("unchecked")
-	private Button createDeleteButton(final List items) {
+
+	@SuppressWarnings("rawtypes")
+    private Button createDeleteButton(final List items) {
 		final Button delete = new Button(this, SWT.PUSH);
 		delete.setImage(images.get(DELETE));
 		delete.setToolTipText(Messages.ModuleTableEditor_deleteItems);
@@ -200,7 +225,7 @@ public class ModuleTableEditor extends Composite {
 		});
 		return delete;
 	}
-	
+
 
 	public void updateOptionsTable() {
 		final IStructuredSelection sel = (IStructuredSelection)tableViewer.getSelection();
@@ -212,17 +237,17 @@ public class ModuleTableEditor extends Composite {
 			setButtonsEnable();
 			index = 0;
 		}
-		
-		if(index == ModuleTableContentProvider.ADD_ELEMENT || 
+
+		if(index == ModuleTableContentProvider.ADD_ELEMENT ||
 				index > JAASPreferenceModel.configurationEntryList.size()-1)
 			options = new ArrayList<String[]>();
 		else
 			options = JAASPreferenceModel.configurationEntryList.get(index).getModuleOptionsList();
 		optionsTableEditor.updateInput(options);
 	}
-	
+
 	/**
-	 * Refreshes this viewer completely with information 
+	 * Refreshes this viewer completely with information
 	 * freshly obtained from this viewer's model.
 	 */
 	public void refresh() {
@@ -230,7 +255,7 @@ public class ModuleTableEditor extends Composite {
 		tableViewer.getTable().deselectAll();
 		updateOptionsTable();
 	}
-	
+
 	@Override
 	public void setEnabled(boolean enabled) {
 		super.setEnabled(enabled);
@@ -238,7 +263,8 @@ public class ModuleTableEditor extends Composite {
 			for(Control control: this.getChildren())
 				control.setEnabled(enabled);
 		else {
-			tableViewer.getTable().setEnabled(enabled);
+			tableViewer.getTable().getParent().setEnabled(enabled);
+            tableViewer.getTable().setEnabled(enabled);
 			setButtonsEnable();
 		}
 		optionsTableEditor.setEnabled(enabled);

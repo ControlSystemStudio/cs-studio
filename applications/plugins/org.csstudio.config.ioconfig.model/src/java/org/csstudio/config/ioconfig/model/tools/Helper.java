@@ -28,9 +28,11 @@ import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
-import java.sql.SQLException;
+
+import javax.annotation.Nonnull;
 
 import org.csstudio.config.ioconfig.model.IDocument;
+import org.csstudio.config.ioconfig.model.PersistenceException;
 
 /**
  * @author hrickens
@@ -38,8 +40,16 @@ import org.csstudio.config.ioconfig.model.IDocument;
  * @version $Revision: 1.2 $
  * @since 27.08.2009
  */
-public class Helper {
-    public static void writeDocumentFile(final File outFile, final IDocument document) throws SQLException,
+public final class Helper {
+    
+    /**
+     * Constructor.
+     */
+    private Helper() {
+        // Constructor
+    }
+    
+    public static void writeDocumentFile(@Nonnull final File outFile, @Nonnull final IDocument document) throws PersistenceException,
             IOException {
         InputStream inputStream = document.getImageData();
         byte[] buffer = new byte[8192];

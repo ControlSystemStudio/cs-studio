@@ -29,21 +29,22 @@ import java.util.Map;
 import java.util.Properties;
 import java.util.Set;
 
+import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IConfigurationElement;
 import org.eclipse.core.runtime.IExtensionRegistry;
 import org.eclipse.core.runtime.Platform;
-import org.epics.css.dal.simulation.SimulatorUtilities;
 import org.epics.css.dal.spi.Plugs;
+import org.epics.css.dal.spi.PropertyFactoryService;
 
 /**
  * This registry provides access to the DAL plugs that are registered using the
  * <code>plugs</code> extension point.
  * 
- * @author Alexander Will
+ * @author Alexander Will, Igor Kriznar
  * @version $Revision: 1.1 $
  * 
  */
-final class PlugRegistry {
+public final class PlugRegistry {
 	/**
 	 * The shared instance of this class.
 	 */
@@ -83,7 +84,7 @@ final class PlugRegistry {
 	 */
 	public void configurePlugs(final Properties p) {
 		// the simulator plug should be always there!
-		SimulatorUtilities.configureSimulatorPlug(p);
+		Plugs.configureSimulatorPlug(p);
 
 		String[] s = Plugs.getPlugNames(p);
 		Set<String> set = new HashSet<String>(Arrays.asList(s));
@@ -94,7 +95,7 @@ final class PlugRegistry {
 
 				StringBuffer sb = new StringBuffer();
 
-				for (Iterator iter = set.iterator(); iter.hasNext();) {
+				for (Iterator<String> iter = set.iterator(); iter.hasNext();) {
 					if (sb.length() > 0) {
 						sb.append(',');
 					}
@@ -108,6 +109,22 @@ final class PlugRegistry {
 			p.put(Plugs.PLUG_PROPERTY_FACTORY_CLASS + d.getPlugId(), d
 					.getPropertyFactoryClass());
 		}
+	}
+	
+	public PropertyFactoryService getPropertyFactoryService(String plugId) {
+		
+		PlugDescriptor pd=null;
+		
+		if (plugId!=null) {
+			pd= _plugs.get(plugId);
+		}
+		
+		if (pd!=null) {
+			return pd.propertyFactoryService;
+		}
+		
+		return null;
+		
 	}
 
 	/**
@@ -138,32 +155,51 @@ final class PlugRegistry {
 			String propertyFactoryClass = element
 					.getAttribute("propertyFactoryClass"); //$NON-NLS-1$
 
-			if (plugId != null) {
-				descriptors.put(plugId, new PlugDescriptor(plugId,
-						propertyFactoryClass));
+			Object o=null;
+			try {
+				o = element.createExecutableExtension("propertyFactoryService");
+			} catch (CoreException e) {
+				e.printStackTrace();
 			}
+			
+			if (!(o instanceof PropertyFactoryService)) {
+				o=null;
+			}
+			
+			if (plugId != null) {
+				descriptors.put(plugId, 
+						new PlugDescriptor(
+								plugId,
+								propertyFactoryClass,
+								(PropertyFactoryService)o));
+			}
+			
 		}
-
+		
 		return descriptors;
 	}
 
 	/**
 	 * Descriptor for extensions of the <code>plug</code> extension points.
 	 * 
-	 * @author Alexander Will
-	 * @version $Revision: 1.1 $
+	 * @author Alexander Will, Igor Kriznar
 	 * 
 	 */
 	private class PlugDescriptor {
 		/**
 		 * The ID of the extension.
 		 */
-		private String _plugId;
+		private String plugId;
 
 		/**
 		 * The full qualified name of the property factory class of the plug.
 		 */
-		private String _propertyFactoryClass;
+		private String propertyFactoryClass;
+
+		/**
+		 * Class instance which plug defined trough plug-in estension point to be it's service.
+		 */
+		private PropertyFactoryService propertyFactoryService;
 
 		/**
 		 * Standard constructor.
@@ -174,12 +210,10 @@ final class PlugRegistry {
 		 *            The full qualified name of the property factory class of
 		 *            the plug.
 		 */
-		public PlugDescriptor(String plugId, String propertyFactoryClass) {
-			assert plugId != null : "plugId != null"; //$NON-NLS-1$
-			assert propertyFactoryClass != null : "propertyFactoryClass != null"; //$NON-NLS-1$
-
-			_plugId = plugId;
-			_propertyFactoryClass = propertyFactoryClass;
+		public PlugDescriptor(String plugId, String propertyFactoryClass, PropertyFactoryService propertyFactoryService) {
+			this.plugId = plugId;
+			this.propertyFactoryClass = propertyFactoryClass;
+			this.propertyFactoryService = propertyFactoryService;
 		}
 
 		/**
@@ -188,7 +222,7 @@ final class PlugRegistry {
 		 * @return The ID of the extension.
 		 */
 		public String getPlugId() {
-			return _plugId;
+			return plugId;
 		}
 
 		/**
@@ -199,7 +233,15 @@ final class PlugRegistry {
 		 *         plug.
 		 */
 		public String getPropertyFactoryClass() {
-			return _propertyFactoryClass;
+			return propertyFactoryClass;
+		}
+
+		/**
+		 * Returns property factory service implementation for plug-in.
+		 * @return property factory service implementation for plug-in
+		 */
+		public PropertyFactoryService getPropertyFactoryService() {
+			return propertyFactoryService;
 		}
 	}
 }

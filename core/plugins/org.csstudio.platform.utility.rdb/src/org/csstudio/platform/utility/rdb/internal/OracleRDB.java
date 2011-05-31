@@ -11,9 +11,10 @@ import java.sql.Connection;
 import java.sql.DatabaseMetaData;
 import java.sql.DriverManager;
 import java.util.Properties;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
-import org.apache.log4j.Logger;
-import org.csstudio.platform.logging.CentralLogger;
+import org.csstudio.platform.utility.rdb.Activator;
 import org.csstudio.platform.utility.rdb.RDBUtil;
 
 /** Connect to an Oracle-based RDB
@@ -52,15 +53,15 @@ public class OracleRDB extends RDBUtil
             info.put("password", password);
         final Connection connection = DriverManager.getConnection(url, info);
         // Basic database info
-        final Logger logger = CentralLogger.getInstance().getLogger(this);
-        if (logger.isDebugEnabled())
+        final Logger logger = Activator.getLogger();
+        if (logger.isLoggable(Level.FINER))
         {
             final DatabaseMetaData meta = connection.getMetaData();
-            logger.debug(meta.getDatabaseProductVersion());
+            logger.finer(meta.getDatabaseProductVersion());
         }
         return connection;
     }
-    
+
     /** {@inheritDoc} */
     @Override
     protected String getConnectionTestQuery()

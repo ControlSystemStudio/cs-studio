@@ -71,7 +71,7 @@ public class BooleanSwitchEditPart extends AbstractWidgetEditPart {
 		setPropertyChangeHandler(BooleanSwitchModel.PROP_3D_EFFECT, effectHandler);
 		
 		// on color
-		setPropertyChangeHandler(BooleanSwitchModel.PROP_ON_COLOR, new ColorChangeHander<BoolSwitchFigure>(){
+		setPropertyChangeHandler(BooleanSwitchModel.PROP_ON_COLOR, new ColorChangeHandler<BoolSwitchFigure>(){
 			@Override
 			protected void doHandle(BoolSwitchFigure figure, Color color) {
 				figure.setOnColor(color);
@@ -79,7 +79,7 @@ public class BooleanSwitchEditPart extends AbstractWidgetEditPart {
 		});
 		
 		// off color
-		setPropertyChangeHandler(BooleanSwitchModel.PROP_OFF_COLOR, new ColorChangeHander<BoolSwitchFigure>(){
+		setPropertyChangeHandler(BooleanSwitchModel.PROP_OFF_COLOR, new ColorChangeHandler<BoolSwitchFigure>(){
 			@Override
 			protected void doHandle(BoolSwitchFigure figure, Color color) {
 				figure.setOffColor(color);

@@ -1,22 +1,29 @@
+/*******************************************************************************
+ * Copyright (c) 2010 Oak Ridge National Laboratory.
+ * All rights reserved. This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License v1.0
+ * which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-v10.html
+ ******************************************************************************/
 package org.csstudio.archivereader;
 
-import org.csstudio.platform.data.ITimestamp;
-import org.csstudio.platform.data.IValue;
+import org.csstudio.data.values.ITimestamp;
+import org.csstudio.data.values.IValue;
 
 /** Iterates several <code>ValueIterator</code> instances, merging
  *  the samples from them in time.
  *  @author Kay Kasemir
- */ 
+ */
 public class MergingValueIterator implements ValueIterator
 {
     /** The iterators for the individual channels. */
     final private ValueIterator iters[];
-    
+
     /** The 'current' values of each <code>iter</code>. */
     private IValue raw_data[];
-    
+
     private IValue value;
-    
+
     /** Constructor.
      *  @param iters The 'base' iterators.
      *  @throws Exception on error in archive access
@@ -24,7 +31,7 @@ public class MergingValueIterator implements ValueIterator
     public MergingValueIterator(ValueIterator iters[]) throws Exception
     {
         this.iters = iters;
-        
+
         // Get first sample from each base iterator
         raw_data = new IValue[iters.length];
         for (int i=0; i<iters.length; ++i)
@@ -64,12 +71,14 @@ public class MergingValueIterator implements ValueIterator
     }
 
     /** {@inheritDoc} */
+    @Override
     public boolean hasNext()
     {
         return raw_data != null;
     }
-    
+
     /** {@inheritDoc} */
+    @Override
     public IValue next() throws Exception
     {
         if (! hasNext())
@@ -80,6 +89,7 @@ public class MergingValueIterator implements ValueIterator
     }
 
     /** {@inheritDoc} */
+    @Override
     public void close()
     {
         for (ValueIterator iter : iters)

@@ -31,6 +31,7 @@ import javax.annotation.Nullable;
 
 import org.csstudio.config.ioconfig.config.view.helper.ConfigHelper;
 import org.csstudio.config.ioconfig.model.DocumentDBO;
+import org.csstudio.config.ioconfig.model.PersistenceException;
 import org.csstudio.config.ioconfig.model.Repository;
 import org.csstudio.config.ioconfig.model.SensorsDBO;
 import org.csstudio.config.ioconfig.model.pbmodel.ChannelDBO;
@@ -38,7 +39,9 @@ import org.csstudio.config.ioconfig.model.pbmodel.GSDFileDBO;
 import org.csstudio.config.ioconfig.model.pbmodel.GSDModuleDBO;
 import org.csstudio.config.ioconfig.model.pbmodel.ModuleChannelPrototypeDBO;
 import org.csstudio.config.ioconfig.model.tools.NodeMap;
+import org.csstudio.config.ioconfig.view.DeviceDatabaseErrorDialog;
 import org.csstudio.config.ioconfig.view.IOConfigActivatorUI;
+import org.csstudio.platform.logging.CentralLogger;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.jface.layout.GridDataFactory;
 import org.eclipse.jface.layout.GridLayoutFactory;
@@ -72,17 +75,14 @@ import org.eclipse.ui.plugin.AbstractUIPlugin;
 public class ChannelEditor extends AbstractNodeEditor {
 
 	/**
-	 * 
-	 * TODO (hrickens) : 
-	 * 
 	 * @author hrickens
 	 * @author $Author: $
 	 * @since 30.09.2010
 	 */
-    private final class SelectionListenerImplementation implements
+    private final class AssembleEpicsAddSelectionListener implements
 			SelectionListener {
     	
-    	public SelectionListenerImplementation() {
+    	public AssembleEpicsAddSelectionListener() {
 			// Default Constructor.
 		}
     	
@@ -117,16 +117,19 @@ public class ChannelEditor extends AbstractNodeEditor {
 		            channel.setChannelType(moduleChannelPrototype.getType());
 		        }
 		    }
-		    if (!channel.getName().equals(moduleChannelPrototype.getName())) {
-		        channel.setName(moduleChannelPrototype.getName());
-		    }
+	        channel.setName(moduleChannelPrototype.getName());
 		    String oldAdr = channel.getEpicsAddressStringNH();
-		    channel.assembleEpicsAddressString();
-		    String newAdr = channel.getEpicsAddressStringNH();
-		    Text addressText = getAddressText();
-		    if (addressText!=null&&!newAdr.equals(oldAdr)) {
-				addressText.setText(newAdr);
-		    }
+		    try {
+                channel.assembleEpicsAddressString();
+                String newAdr = channel.getEpicsAddressStringNH();
+                Text addressText = getAddressText();
+                if (addressText!=null&&!newAdr.equals(oldAdr)) {
+                    addressText.setText(newAdr);
+                }
+            } catch (PersistenceException e) {
+                DeviceDatabaseErrorDialog.open(null, "Can't calulate Epics Address. Database error!", e);
+                CentralLogger.getInstance().error(this, e);
+            }
 		}
 
 		@Override
@@ -172,17 +175,6 @@ public class ChannelEditor extends AbstractNodeEditor {
 			setName((String) nameWidget.getData());
 		}
         ChannelDBO channel = getChannel();
-		if (channel != null) {
-            _gsdFile = channel.getGSDFile();
-            if (_gsdFile != null) {
-                fill(_gsdFile);
-            } else {
-                getHeaderField(HeaderFields.VERSION).setText("");
-            }
-        } else {
-            _gsdFile = null;
-            fill(_gsdFile);
-        }
     }
 
     /**
@@ -220,7 +212,7 @@ public class ChannelEditor extends AbstractNodeEditor {
         assembleButton.setImage(AbstractUIPlugin.imageDescriptorFromPlugin(IOConfigActivatorUI.PLUGIN_ID,
                 "icons/refresh.gif").createImage());
         assembleButton.setToolTipText("Refresh the EPICS Address String\n and save it into the DB");
-        assembleButton.addSelectionListener(new SelectionListenerImplementation());
+        assembleButton.addSelectionListener(new AssembleEpicsAddSelectionListener());
 	}
 
 	/**
@@ -277,14 +269,11 @@ public class ChannelEditor extends AbstractNodeEditor {
         setSavebuttonEnabled(null, getNode().isPersistent());
         String[] heads = {"Channel settings", "Documents", "GSD File List" };
         general(heads[0]);
-        if (_gsdFile != null) {
-            fill(_gsdFile);
-        }
         if (getChannel().isDirty()) {
             perfromSave();
         }
         _ioNameText.setFocus();
-        getTabFolder().setSelection(0);
+        selecttTabFolder(0);
     }
 
 	/**
@@ -292,7 +281,13 @@ public class ChannelEditor extends AbstractNodeEditor {
 	 */
 	private void createSensorField(@Nonnull final Composite comp) {
 		if ((getChannel().getIoName() != null) && !getChannel().getIoName().isEmpty()) {
-            List<SensorsDBO> loadSensors = Repository.loadSensors(getChannel().getIoName());
+            List<SensorsDBO> loadSensors = null;
+            try {
+                loadSensors = Repository.loadSensors(getChannel().getIoName());
+            } catch (PersistenceException e) {
+                DeviceDatabaseErrorDialog.open(null, "Can't read sensor ID's from Database", e);
+                CentralLogger.getInstance().error(this, e);
+            }
             if (((loadSensors != null) && (loadSensors.size() > 0))) {
                 makeSensorField(comp, loadSensors);
             }
@@ -309,7 +304,10 @@ public class ChannelEditor extends AbstractNodeEditor {
         sizeGroup.setText("Size: ");
         Text sizeText = new Text(sizeGroup, SWT.SINGLE | SWT.RIGHT);
         sizeText.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, false, 1, 1));
-        setText(sizeText, getChannel().getChSize(), 255);
+        ChannelDBO channel = getChannel();
+        if (channel != null) {
+            setText(sizeText, channel.getChSize(), 255);
+        }
         sizeText.setEditable(false);
 	}
 
@@ -320,29 +318,23 @@ public class ChannelEditor extends AbstractNodeEditor {
     public void doSave(@Nullable final IProgressMonitor monitor) {
         super.doSave(monitor);
         // Channel Settings
-        getChannel().setIoName(_ioNameText.getText());
-        getChannel().setName(getNameWidget().getText());
-        _ioNameText.setData(_ioNameText.getText());
-        if (_sensorsViewer != null) {
-            SensorsDBO firstElement = (SensorsDBO) ((StructuredSelection) _sensorsViewer.getSelection())
-                    .getFirstElement();
-            getChannel().setCurrentValue(Integer.toString(firstElement.getId()));
-            Combo combo = _sensorsViewer.getCombo();
-            combo.setData(combo.getSelectionIndex());
+        ChannelDBO channel = getChannel();
+        if (channel != null) {
+            channel.setIoName(_ioNameText.getText());
+            channel.setName(getNameWidget().getText());
+            _ioNameText.setData(_ioNameText.getText());
+            if (_sensorsViewer != null) {
+                SensorsDBO firstElement = (SensorsDBO) ((StructuredSelection) _sensorsViewer
+                        .getSelection()).getFirstElement();
+                channel.setCurrentValue(Integer.toString(firstElement.getId()));
+                Combo combo = _sensorsViewer.getCombo();
+                combo.setData(combo.getSelectionIndex());
+            }
+            // Document
+            Set<DocumentDBO> docs = getDocumentationManageView().getDocuments();
+            channel.setDocuments(docs);
         }
-        // Document
-        Set<DocumentDBO> docs = getDocumentationManageView().getDocuments();
-        getChannel().setDocuments(docs);
-
         save();
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    @Override
-    public final boolean fill(@Nullable final GSDFileDBO gsdFile) {
-        return false;
     }
 
     /**
@@ -378,14 +370,6 @@ public class ChannelEditor extends AbstractNodeEditor {
 	}
 
     /**
-     * {@inheritDoc}
-     */
-    @Override
-    public final GSDFileDBO getGsdFile() {
-        return null;
-    }
-
-    /**
 	 * @param comp
 	 * @param loadSensors
 	 */
@@ -400,12 +384,15 @@ public class ChannelEditor extends AbstractNodeEditor {
 		_sensorsViewer.setContentProvider(new ArrayContentProvider());
 		_sensorsViewer.setInput(loadSensors.toArray());
 		int id = 0;
-		if ((getChannel().getCurrentValue() != null) && (getChannel().getCurrentValue().length() > 0)) {
-		    id = Integer.parseInt(getChannel().getCurrentValue());
-		} else {
-		    id = loadSensors.get(0).getId();
-		    getChannel().setCurrentValue(Integer.toString(id));
-		    getChannel().setDirty(true);
+		ChannelDBO channel = getChannel();
+		if(channel!=null) {
+            if ( (channel.getCurrentValue() != null) && (channel.getCurrentValue().length() > 0)) {
+                id = Integer.parseInt(channel.getCurrentValue());
+            } else {
+                id = loadSensors.get(0).getId();
+                channel.setCurrentValue(Integer.toString(id));
+                channel.setDirty(true);
+            }
 		}
 		_sensorsViewer.getCombo().select(0);
 		for (SensorsDBO sensors : loadSensors) {
@@ -424,16 +411,7 @@ public class ChannelEditor extends AbstractNodeEditor {
 	protected void setChannel(@Nullable ChannelDBO channel) {
 		_channel = channel;
 	}
-
 	
-	/**
-     * {@inheritDoc}
-     */
-    @Override
-    public void setFocus() {
-    	// nothing to do.
-    }
-
 	/**
      *
      * @param ioNameText

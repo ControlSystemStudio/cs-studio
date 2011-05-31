@@ -1,3 +1,10 @@
+/*******************************************************************************
+ * Copyright (c) 2010 Oak Ridge National Laboratory.
+ * All rights reserved. This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License v1.0
+ * which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-v10.html
+ ******************************************************************************/
 package org.csstudio.opibuilder.properties;
 
 import org.csstudio.opibuilder.editparts.ExecutionMode;
@@ -25,6 +32,11 @@ public class ScriptProperty extends AbstractWidgetProperty {
 	 * XML ATTRIBUTE name <code>PATHSTRING</code>.
 	 */
 	public static final String XML_ATTRIBUTE_PATHSTRING = "pathString"; //$NON-NLS-1$
+	
+	public static final String XML_ATTRIBUTE_CHECKCONNECT = "checkConnect"; //$NON-NLS-1$
+	
+	public static final String XML_ATTRIBUTE_SKIP_FIRST_EXECUTION = "sfe"; //$NON-NLS-1$
+	public static final String XML_ATTRIBUTE_STOP_EXECUTE_ON_ERROR = "seoe"; //$NON-NLS-1$
 	
 	/**
 	 * XML Element name <code>PV</code>.
@@ -90,6 +102,15 @@ public class ScriptProperty extends AbstractWidgetProperty {
 		for(Object oe : propElement.getChildren(XML_ELEMENT_PATH)){
 			Element se = (Element)oe;
 			ScriptData  sd = new ScriptData(new Path(se.getAttributeValue(XML_ATTRIBUTE_PATHSTRING)));
+			if(se.getAttributeValue(XML_ATTRIBUTE_CHECKCONNECT) != null)
+				sd.setCheckConnectivity(
+						Boolean.parseBoolean(se.getAttributeValue(XML_ATTRIBUTE_CHECKCONNECT)));
+			if(se.getAttributeValue(XML_ATTRIBUTE_SKIP_FIRST_EXECUTION) != null)
+				sd.setSkipPVsFirstConnection(
+						Boolean.parseBoolean(se.getAttributeValue(XML_ATTRIBUTE_SKIP_FIRST_EXECUTION)));
+			if(se.getAttributeValue(XML_ATTRIBUTE_STOP_EXECUTE_ON_ERROR) != null)
+				sd.setStopExecuteOnError(
+						Boolean.parseBoolean(se.getAttributeValue(XML_ATTRIBUTE_STOP_EXECUTE_ON_ERROR)));
 			for(Object o : se.getChildren(XML_ELEMENT_PV)){
 				Element pve = (Element)o;
 				boolean trig = true;
@@ -107,7 +128,13 @@ public class ScriptProperty extends AbstractWidgetProperty {
 		for(ScriptData scriptData : ((ScriptsInput)getPropertyValue()).getScriptList()){
 				Element pathElement = new Element(XML_ELEMENT_PATH);
 				pathElement.setAttribute(XML_ATTRIBUTE_PATHSTRING, 
-						scriptData.getPath().toPortableString());				
+						scriptData.getPath().toPortableString());
+				pathElement.setAttribute(XML_ATTRIBUTE_CHECKCONNECT,
+						Boolean.toString(scriptData.isCheckConnectivity()));
+				pathElement.setAttribute(XML_ATTRIBUTE_SKIP_FIRST_EXECUTION,
+						Boolean.toString(scriptData.isSkipPVsFirstConnection()));
+				pathElement.setAttribute(XML_ATTRIBUTE_STOP_EXECUTE_ON_ERROR,
+						Boolean.toString(scriptData.isStopExecuteOnError()));
 				for(PVTuple pv : scriptData.getPVList()){
 					Element pvElement = new Element(XML_ELEMENT_PV);
 					pvElement.setText(pv.pvName);

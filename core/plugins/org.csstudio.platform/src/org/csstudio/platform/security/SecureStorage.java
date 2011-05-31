@@ -12,7 +12,10 @@ import org.eclipse.equinox.security.storage.SecurePreferencesFactory;
 
 /**Secure Storage is used to save sensitive data such as user name and password in 
  * encrypted style. The secure storage file with a name of <code>secure_storage</code>
- * is under the directory where the program is installed.
+ * is under the program's "configuration" area.
+ * At runtime, this location can be checked via the "osgi.configuration.area" property,
+ * which defaults to the "configuration" subdirectory of the "installation" area
+ * (see Help/About ..., Installation Details, Configuration).
  * <p> 
  * To encrypt the sensitive data, a master password provider must be provided which could be
  * configured under <code>General->Security->Secure Storage</code>. For more information, 
@@ -28,6 +31,7 @@ import org.eclipse.equinox.security.storage.SecurePreferencesFactory;
  * @author Xihui Chen
  * @author Helge Rickens
  * @author Kay Kasemir
+ * @author Lana Abadie (config. instead of install area)
  */
 @SuppressWarnings("nls")
 public class SecureStorage
@@ -35,7 +39,7 @@ public class SecureStorage
     /** @return URL of the file that stores the secure settings */
 	private static URL getStorageURL() throws MalformedURLException
     {
-        return new URL(Platform.getInstallLocation().getURL()+"secure_storage");
+        return new URL(Platform.getConfigurationLocation().getURL()+"secure_storage");
     }
 
     /**Retrieve value of the key specified from the secure storage file  

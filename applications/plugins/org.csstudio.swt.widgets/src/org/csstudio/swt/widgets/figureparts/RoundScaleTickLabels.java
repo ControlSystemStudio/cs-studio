@@ -1,3 +1,10 @@
+/*******************************************************************************
+ * Copyright (c) 2010 Oak Ridge National Laboratory.
+ * All rights reserved. This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License v1.0
+ * which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-v10.html
+ ******************************************************************************/
 package org.csstudio.swt.widgets.figureparts;
 
 import java.math.BigDecimal;
@@ -261,13 +268,13 @@ public class RoundScaleTickLabels extends Figure {
     		if(scale.getTickLablesSide() == LabelSide.Primary)	
     			lableRadius = (int) (scale.getRadius() + 
     					RoundScaleTickMarks.MAJOR_TICK_LENGTH + RoundScale.SPACE_BTW_MARK_LABEL +
-    						ls.width/2 * Math.abs(Math.cos(tickLabelPositions.get(i))) + 
-    						ls.height/2 * Math.abs(Math.sin(tickLabelPositions.get(i))));
+    						ls.width/2.0 * Math.abs(Math.cos(tickLabelPositions.get(i))) + 
+    						ls.height/2.0 * Math.abs(Math.sin(tickLabelPositions.get(i))));
     		else 		
     			lableRadius = (int) (scale.getRadius() - 
     					RoundScaleTickMarks.MAJOR_TICK_LENGTH - RoundScale.SPACE_BTW_MARK_LABEL -
-    						ls.width/2 * Math.abs(Math.cos(tickLabelPositions.get(i))) - 
-    						ls.height/2 * Math.abs(Math.sin(tickLabelPositions.get(i))));
+    						ls.width/2.0 * Math.abs(Math.cos(tickLabelPositions.get(i))) - 
+    						ls.height/2.0 * Math.abs(Math.sin(tickLabelPositions.get(i))));
     	
     		Point lp = new PolarPoint(lableRadius, tickLabelPositions.get(i)).toRelativePoint(
     				scale.getBounds());

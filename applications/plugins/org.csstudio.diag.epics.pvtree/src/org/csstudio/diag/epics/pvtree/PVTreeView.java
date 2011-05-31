@@ -1,10 +1,13 @@
+/*******************************************************************************
+ * Copyright (c) 2010 Oak Ridge National Laboratory.
+ * All rights reserved. This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License v1.0
+ * which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-v10.html
+ ******************************************************************************/
 package org.csstudio.diag.epics.pvtree;
 
-
 import org.csstudio.apputil.ui.swt.ComboHistoryHelper;
-import org.csstudio.platform.model.IProcessVariable;
-import org.csstudio.platform.ui.internal.dataexchange.ProcessVariableDragSource;
-import org.csstudio.platform.ui.internal.dataexchange.ProcessVariableDropTarget;
 import org.eclipse.jface.action.IMenuListener;
 import org.eclipse.jface.action.IMenuManager;
 import org.eclipse.jface.action.MenuManager;
@@ -13,7 +16,6 @@ import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.viewers.TreeViewer;
 import org.eclipse.osgi.util.NLS;
 import org.eclipse.swt.SWT;
-import org.eclipse.swt.dnd.DropTargetEvent;
 import org.eclipse.swt.events.DisposeEvent;
 import org.eclipse.swt.events.DisposeListener;
 import org.eclipse.swt.layout.GridData;
@@ -39,21 +41,21 @@ public class PVTreeView extends ViewPart
     // Memento tags
     private static final String PV_TAG = "pv"; //$NON-NLS-1$
     private static final String PV_LIST_TAG = "pv_list"; //$NON-NLS-1$
-    
+
     private IMemento memento;
-    
+
     /** The root PV name. */
     private Combo pv_name;
-    
+
     private PVTreeModel model;
 
     private TreeViewer viewer;
-    
+
     /** Allows 'zoom in' and then going back up via context menu. */
     private DrillDownAdapter drillDownAdapter;
 
     private ComboHistoryHelper pv_name_helper;
-    
+
     /** ViewPart interface, keep the memento. */
     @Override
     public void init(IViewSite site, IMemento memento) throws PartInitException
@@ -61,7 +63,7 @@ public class PVTreeView extends ViewPart
         super.init(site, memento);
         this.memento = memento;
     }
-    
+
     /** ViewPart interface, persist state */
     @Override
     public void saveState(IMemento memento)
@@ -78,12 +80,12 @@ public class PVTreeView extends ViewPart
         gl.numColumns = 2;
         parent.setLayout(gl);
         GridData gd;
-        
+
         Label l = new Label(parent, SWT.LEFT);
         l.setText(Messages.PV_Label);
         gd = new GridData();
         l.setLayoutData(gd);
-        
+
         pv_name = new Combo(parent, SWT.LEFT);
         pv_name.setToolTipText(Messages.PV_TT);
         gd = new GridData();
@@ -98,7 +100,7 @@ public class PVTreeView extends ViewPart
             public void newSelection(String new_pv_name)
             {   setPVName(new_pv_name); }
         };
-        
+
         Tree tree = new Tree(parent, SWT.MULTI | SWT.H_SCROLL | SWT.V_SCROLL);
         gd = new GridData();
         gd.horizontalSpan = gl.numColumns;
@@ -124,22 +126,24 @@ public class PVTreeView extends ViewPart
         viewer.setLabelProvider(new PVTreeLabelProvider());
         viewer.setInput(getViewSite());
 
-        new ProcessVariableDragSource(viewer.getTree(), viewer);
-        new ProcessVariableDropTarget(viewer.getTree())
-        {
-            /** @see org.csstudio.data.exchange.ProcessVariableDropTarget#handleDrop(java.lang.String) */
-            @Override
-            public void handleDrop(IProcessVariable name,
-                                   DropTargetEvent event)
-            {
-                setPVName(name.getName());
-            }
-        };
-        
-        
+        // TODO Support drag/drop?
+//        new ProcessVariableDragSource(viewer.getTree(), viewer);
+//        new ProcessVariableDropTarget(viewer.getTree())
+//        {
+//            /** @see org.csstudio.data.exchange.ProcessVariableDropTarget#handleDrop(java.lang.String) */
+//            @Override
+//            public void handleDrop(IProcessVariable name,
+//                                   DropTargetEvent event)
+//            {
+//                setPVName(name.getName());
+//            }
+//        };
+
+
         // Stop the press when we're no more
         pv_name.addDisposeListener(new DisposeListener()
         {
+            @Override
             public void widgetDisposed(DisposeEvent e)
             {
                 model.dispose();
@@ -147,10 +151,10 @@ public class PVTreeView extends ViewPart
             }
         });
         hookContextMenu();
-        
+
         // Populate PV list
         pv_name_helper.loadSettings();
-        
+
         if (memento != null)
         {
             String pv_name = memento.getString(PV_TAG);
@@ -165,7 +169,7 @@ public class PVTreeView extends ViewPart
     {
         pv_name.setFocus();
     }
-    
+
     /** Final cleanup. */
     @Override
     public void dispose()
@@ -188,23 +192,23 @@ public class PVTreeView extends ViewPart
 
     private void hookContextMenu()
     {
-        MenuManager menuMgr = new MenuManager("#PopupMenu"); //$NON-NLS-1$
+        final MenuManager menuMgr = new MenuManager();
         menuMgr.setRemoveAllWhenShown(true);
         menuMgr.addMenuListener(new IMenuListener()
         {
+            @Override
             public void menuAboutToShow(IMenuManager manager)
             {
                 PVTreeView.this.fillContextMenu(manager);
             }
         });
-        Menu menu = menuMgr.createContextMenu(viewer.getControl());
+        final Menu menu = menuMgr.createContextMenu(viewer.getControl());
         viewer.getControl().setMenu(menu);
         getSite().registerContextMenu(menuMgr, viewer);
     }
 
-    private void fillContextMenu(IMenuManager manager)
+    private void fillContextMenu(final IMenuManager manager)
     {
-        //manager.add(new Separator());        
         drillDownAdapter.addNavigationActions(manager);
         // Other plug-ins can contribute their actions here
         manager.add(new Separator(IWorkbenchActionConstants.MB_ADDITIONS));

@@ -14,14 +14,23 @@
       </application>
    </extension>
    <extension
+         point="org.eclipse.ui.perspectives">
+      <perspective
+            class="org.csstudio.basic.epics.BasicPerspective"
+            icon="icons/css16.gif"
+            id="org.csstudio.basic.epics.BasicPerspective"
+            name="Control System Studio">
+      </perspective>
+   </extension>
+   <extension
          id="product"
          point="org.eclipse.core.runtime.products">
       <product
             application="org.csstudio.basic.epics.application"
-            name="CSS (EPICS)">
+            name="Css">
          <property
                name="appName"
-               value="CSS (EPICS)">
+               value="Css">
          </property>
          <property
                name="startupForegroundColor"
@@ -49,7 +58,7 @@
          </property>
          <property
                name="windowImages"
-               value="platform:/plugin/org.csstudio.startuphelper/resources/icons/css16x16.gif,platform:/plugin/org.csstudio.startuphelper/resources/icons/css32x32.gif,platform:/plugin/org.csstudio.startuphelper/resources/icons/css48x48.gif,platform:/plugin/org.csstudio.startuphelper/resources/icons/css64x64.gif,platform:/plugin/org.csstudio.startuphelper/resources/icons/css128x128.gif">
+               value="icons/css16.gif,icons/css32.gif,icons/css48.gif,icons/css64.gif,icons/css1128.gif">
          </property>
          <property
             name="introTitle"
@@ -83,6 +92,7 @@
       </configExtension>
    </extension>
    
+   
    <extension
          point="org.eclipse.help.toc">
       <toc
@@ -94,7 +104,11 @@
    <extension
          point="org.csstudio.startup.module">
       <workbench
-            class="org.csstudio.startuphelper.module.DefaultWorkbench">
+            class="org.csstudio.basic.epics.BasicWorkbenchExt">
       </workbench>
+      <project
+            class="org.csstudio.startup.module.defaults.DefaultProject">
+      </project>
    </extension>
+   
 </plugin>

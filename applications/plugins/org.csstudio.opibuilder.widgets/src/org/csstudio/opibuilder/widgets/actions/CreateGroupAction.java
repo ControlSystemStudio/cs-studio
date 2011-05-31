@@ -1,3 +1,10 @@
+/*******************************************************************************
+ * Copyright (c) 2010 Oak Ridge National Laboratory.
+ * All rights reserved. This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License v1.0
+ * which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-v10.html
+ ******************************************************************************/
 package org.csstudio.opibuilder.widgets.actions;
 
 import java.util.ArrayList;
@@ -8,9 +15,7 @@ import java.util.List;
 import org.csstudio.opibuilder.actions.AbstractWidgetTargetAction;
 import org.csstudio.opibuilder.commands.AddWidgetCommand;
 import org.csstudio.opibuilder.commands.OrphanChildCommand;
-import org.csstudio.opibuilder.commands.SetBoundsCommand;
 import org.csstudio.opibuilder.commands.WidgetCreateCommand;
-import org.csstudio.opibuilder.editor.OPIEditor;
 import org.csstudio.opibuilder.editparts.AbstractBaseEditPart;
 import org.csstudio.opibuilder.editparts.DisplayEditpart;
 import org.csstudio.opibuilder.model.AbstractContainerModel;
@@ -30,13 +35,15 @@ public class CreateGroupAction extends AbstractWidgetTargetAction {
 
 	
 	public void run(IAction action) {
-		if(!(targetPart instanceof OPIEditor))
-			return;
+		
+		List<AbstractWidgetModel> originalSelectedWidgets = getSelectedWidgetModels();
+		
+
 		CompoundCommand compoundCommand = new CompoundCommand("Create Group");
 		
 		
 		
-		List<AbstractWidgetModel> originalSelectedWidgets = getSelectedWidgetModels();
+		
 		List<AbstractWidgetModel> selectedWidgets = new ArrayList<AbstractWidgetModel>();
 		selectedWidgets.addAll(originalSelectedWidgets);		
 		
@@ -93,20 +100,20 @@ public class CreateGroupAction extends AbstractWidgetTargetAction {
 		// the parent should be the widget with minimum nested depth
 		AbstractContainerModel parent = minDepthWidget.getParent();		
 		
-		int borderWidth = 1;
+		int borderWidth = 0;
 		
 		if(groupingContainerModel.getBorderStyle()== BorderStyle.GROUP_BOX)
 			borderWidth = 30;
 		
 		groupingContainerModel.setPropertyValue(GroupingContainerModel.PROP_LOCK_CHILDREN, true);
+		groupingContainerModel.setPropertyValue(GroupingContainerModel.PROP_SHOW_SCROLLBAR, false);
 		
 		compoundCommand.add(new WidgetCreateCommand(groupingContainerModel,
 				parent, new Rectangle(minX, minY, maxX-minX + borderWidth, maxY-minY + borderWidth), false));
 		
 		
 		for(AbstractWidgetModel widget : selectedWidgets){
-			compoundCommand.add(new AddWidgetCommand(groupingContainerModel, widget));
-			compoundCommand.add(new SetBoundsCommand(widget, 
+			compoundCommand.add(new AddWidgetCommand(groupingContainerModel, widget, 
 					new Rectangle(widget.getLocation().translate(-minX, -minY), widget.getSize())));
 		}
 		

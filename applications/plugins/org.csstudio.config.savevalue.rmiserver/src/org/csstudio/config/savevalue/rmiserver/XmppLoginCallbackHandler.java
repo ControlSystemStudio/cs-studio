@@ -22,9 +22,9 @@
 
 package org.csstudio.config.savevalue.rmiserver;
 
+import org.csstudio.auth.security.Credentials;
+import org.csstudio.auth.security.ILoginCallbackHandler;
 import org.csstudio.platform.logging.CentralLogger;
-import org.csstudio.platform.security.Credentials;
-import org.csstudio.platform.security.ILoginCallbackHandler;
 import org.eclipse.core.runtime.Platform;
 import org.eclipse.core.runtime.preferences.IPreferencesService;
 

@@ -1,3 +1,10 @@
+/*******************************************************************************
+ * Copyright (c) 2010 Oak Ridge National Laboratory.
+ * All rights reserved. This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License v1.0
+ * which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-v10.html
+ ******************************************************************************/
 package org.csstudio.opibuilder.widgets.model;
 
 import java.util.LinkedList;
@@ -43,6 +50,9 @@ public class LinkingContainerModel extends AbstractContainerModel {
 	 */
 	public static final String PROP_ZOOMTOFITALL = "zoom_to_fit"; //$NON-NLS-1$
 	
+	public static final String PROP_AUTO_SIZE = "auto_size"; //$NON-NLS-1$
+	
+	
 	/**
 	 * The default value of the height property.
 	 */
@@ -71,7 +81,7 @@ public class LinkingContainerModel extends AbstractContainerModel {
 				WidgetPropertyCategory.Behavior, "")); //$NON-NLS-1$
 		
 		addProperty(new BooleanProperty(PROP_ZOOMTOFITALL, "Zoom to Fit", WidgetPropertyCategory.Display, true));
-	
+		addProperty(new BooleanProperty(PROP_AUTO_SIZE, "Auto Size", WidgetPropertyCategory.Display, false));
 	}
 
 	@Override
@@ -103,6 +113,10 @@ public class LinkingContainerModel extends AbstractContainerModel {
 		return (Boolean) getProperty(PROP_ZOOMTOFITALL).getPropertyValue();
 	}
 	
+	public boolean isAutoSize() {
+		return (Boolean) getProperty(PROP_AUTO_SIZE).getPropertyValue();
+	}
+	
 	public String getGroupName(){
 		return (String)getPropertyValue(PROP_GROUP_NAME);
 	}
@@ -113,5 +127,10 @@ public class LinkingContainerModel extends AbstractContainerModel {
 		//Linking container should have "no" children. 
 		//Its children should be dynamically loaded from opi file.
 		return new LinkedList<AbstractWidgetModel>();
+	}
+	
+	@Override
+	public boolean isChildrenOperationAllowable() {
+		return false;
 	}
 }

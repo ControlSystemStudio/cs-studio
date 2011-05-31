@@ -3,7 +3,7 @@
       id="org.csstudio.desy.platform.eclipse.feature"
       label="Platform Eclipse Feature"
       version="1.0.0.qualifier"
-      provider-name="Desy">
+      provider-name="DESY, Jan Hatje &lt;css-developer@desy.de&gt;">
 
    <description url="http://css.desy.de">
       The Control System Studio defines a platform for control system
@@ -32,7 +32,7 @@ THE FULL LICENSE SPECIFYING FOR THE SOFTWARE THE REDISTRIBUTION, MODIFICATION, U
    </license>
 
    <url>
-      <update url="http://eclipse.desy.de/update/"/>
+      <update label="Desy Update Site" url="http://eclipse.desy.de/css/update/"/>
    </url>
 
    <includes
@@ -862,6 +862,26 @@ THE FULL LICENSE SPECIFYING FOR THE SOFTWARE THE REDISTRIBUTION, MODIFICATION, U
 
    <plugin
          id="org.eclipse.team.ui"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"
+         unpack="false"/>
+
+   <plugin
+         id="org.eclipse.ui.intro.universal"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"/>
+
+   <plugin
+         id="org.eclipse.equinox.ds"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"
+         unpack="false"/>
+
+   <plugin
+         id="org.eclipse.osgi.util"
          download-size="0"
          install-size="0"
          version="0.0.0"

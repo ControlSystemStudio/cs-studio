@@ -24,14 +24,13 @@
  */
 package org.csstudio.config.ioconfig.model;
 
+import javax.annotation.Nonnull;
 import javax.persistence.Basic;
 import javax.persistence.Column;
-import javax.persistence.Entity;
 import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.Lob;
-import javax.persistence.Table;
 
 /**
  * @author hrickens
@@ -40,8 +39,8 @@ import javax.persistence.Table;
  * @since 16.10.2008
  */
 
-@Entity
-@Table( name="ddb_NodeImage")
+//@Entity
+//@Table( name="ddb_NodeImage")
 public class NodeImageDBO implements Comparable<NodeImageDBO> {
 
     /**
@@ -71,6 +70,7 @@ public class NodeImageDBO implements Comparable<NodeImageDBO> {
      * Default Constructor needed by Hibernate.
      */
     public NodeImageDBO() {
+        // Constructor for Hibernate
     }
 
     /** @return the ID. */
@@ -84,21 +84,23 @@ public class NodeImageDBO implements Comparable<NodeImageDBO> {
      * @param id Set the Image node key ID.
      */
     public void setId(int id) {
-        this._id = id;
+        _id = id;
     }
 
     /**
      * 
      * @param name set the Name of this Node.
      */
-    public void setName(String name) {
-        this._name = name;
+    public void setName(@Nonnull String name) {
+        _name = name;
     }
 
     /**
      * 
      * @return the Name of this Node.
      */
+    @Nonnull
+    @Column(nullable=false)
     public String getName() {
         return _name;
     }
@@ -107,29 +109,33 @@ public class NodeImageDBO implements Comparable<NodeImageDBO> {
      * 
      * @return the Image File name. 
      */
+    @Nonnull
+    @Column(nullable=false)
     public String getFile() {
         return _file;
     }
 
-    public void setFile(String file) {
+    public void setFile(@Nonnull String file) {
         _file = file;
     }
 
     @Lob
     @Basic(fetch=FetchType.EAGER)
     @Column(nullable=false)
+    @Nonnull
     public byte[] getImageBytes() {
         return _imageBytes;
     }
 
-    public void setImageBytes(byte[] imageBytes) {
+    public void setImageBytes(@Nonnull byte[] imageBytes) {
         _imageBytes = imageBytes;
     }
     
     /**
      * {@inheritDoc}
      */
-    public int compareTo(NodeImageDBO arg0) {
+    @Override
+    public int compareTo(@Nonnull NodeImageDBO arg0) {
         return (getId()-arg0.getId());
     }
 

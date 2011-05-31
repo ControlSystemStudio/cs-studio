@@ -1,6 +1,13 @@
+/*******************************************************************************
+ * Copyright (c) 2010 Oak Ridge National Laboratory.
+ * All rights reserved. This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License v1.0
+ * which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-v10.html
+ ******************************************************************************/
 package org.csstudio.opibuilder.preferences;
 
-import org.csstudio.platform.ui.dialogs.ResourceSelectionDialog;
+import org.csstudio.ui.util.dialogs.ResourceSelectionDialog;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.Path;
 import org.eclipse.jface.preference.StringButtonFieldEditor;
@@ -57,9 +64,12 @@ public class WorkspaceFileFieldEditor extends StringButtonFieldEditor {
     
 	@Override
 	protected String changePressed() {
-		IPath path = new Path(getTextControl().getText());
-
-		return getPath(path).toPortableString();
+		IPath startPath = new Path(getTextControl().getText());
+		IPath path = getPath(startPath);
+		if(path != null)
+			return path.toPortableString();
+		else
+			return ""; //$NON-NLS-1$
 
 	}
 	

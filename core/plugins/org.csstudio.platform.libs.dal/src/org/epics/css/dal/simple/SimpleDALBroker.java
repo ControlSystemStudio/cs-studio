@@ -29,6 +29,7 @@ import org.epics.css.dal.impl.ResponseImpl;
 import org.epics.css.dal.spi.DefaultPropertyFactoryBroker;
 import org.epics.css.dal.spi.LinkPolicy;
 import org.epics.css.dal.spi.Plugs;
+import org.epics.css.dal.spi.PropertyFactoryService;
 
 import com.cosylab.util.CommonException;
 
@@ -130,15 +131,34 @@ public class SimpleDALBroker {
 	 * @return if ctx is provided new instance, otherwise singelton
 	 */
 	public static SimpleDALBroker newInstance(final AbstractApplicationContext ctx) {
+		
+		Object o= ctx.getApplicationProperty(Plugs.PROPERTY_FACTORY_SERVICE_IMPLEMENTATION);
+		
+		if (o instanceof PropertyFactoryService) {
+			return newInstance(ctx, (PropertyFactoryService)o);
+		}
+		return newInstance(ctx, null);
+	}
+
+	/**
+	 * Creates new instance of SimpleDALBroker or singelton instance of parameter is <code>null</code>.
+	 * @param ctx application context or null
+	 * @param service implementation of PropertyFactoryService which will be used to instantiate factories.
+	 * @return if ctx is provided new instance, otherwise singelton
+	 */
+	public static SimpleDALBroker newInstance(final AbstractApplicationContext ctx, PropertyFactoryService service) {
 		if (ctx==null) {
 			if (broker == null) {
 				broker = new SimpleDALBroker(new DefaultApplicationContext("SimpleDALContext"));
 			}
 			return broker;
 		}
-		return new SimpleDALBroker(ctx);
+		SimpleDALBroker sdb= new SimpleDALBroker(ctx);
+		if (service!=null) {
+			sdb.getFactory().setPropertyFactoryService(service);
+		}
+		return sdb;
 	}
-
 
 	private final AbstractApplicationContext ctx;
 	private final HashMap<String, PropertyHolder> properties;
@@ -397,6 +417,7 @@ public class SimpleDALBroker {
 	 */
 	public <T> Request<T> getValueAsync(final ConnectionParameters cparam, final ResponseListener<T> callback) throws InstantiationException, CommonException {
 		final PropertyHolder ph= getPropertyHolder(cparam);
+		blockUntillConnected(ph.property);
 		if (cparam.getRemoteInfo().getCharacteristic()!=null) {
 			return (Request<T>)ph.property.getCharacteristicAsynchronously(
 					cparam.getRemoteInfo().getCharacteristic(),
@@ -430,6 +451,7 @@ public class SimpleDALBroker {
 
 	public <T> Request<T> setValueAsync(final ConnectionParameters cparam, final Object value, final ResponseListener<T> callback) throws Exception {
 		final PropertyHolder ph = getPropertyHolder(cparam);
+		blockUntillConnected(ph.property);
 		return ((DynamicValueProperty<T>) ph.property).setAsynchronous((T)value, callback);
 	}
 

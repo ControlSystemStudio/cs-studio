@@ -1,3 +1,10 @@
+/*******************************************************************************
+ * Copyright (c) 2010 Oak Ridge National Laboratory.
+ * All rights reserved. This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License v1.0
+ * which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-v10.html
+ ******************************************************************************/
 package org.csstudio.opibuilder.visualparts;
 
 import java.util.ArrayList;
@@ -6,7 +13,7 @@ import java.util.List;
 
 import org.csstudio.opibuilder.preferences.MacroEditDialog;
 import org.csstudio.opibuilder.util.MacrosInput;
-import org.csstudio.platform.ui.swt.stringtable.StringTableEditor;
+import org.csstudio.ui.util.swt.stringtable.StringTableEditor;
 import org.eclipse.jface.dialogs.Dialog;
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.osgi.util.NLS;

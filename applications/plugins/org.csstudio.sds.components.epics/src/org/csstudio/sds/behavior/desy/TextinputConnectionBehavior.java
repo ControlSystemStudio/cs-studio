@@ -19,6 +19,8 @@
 package org.csstudio.sds.behavior.desy;
 
 import org.csstudio.sds.components.model.TextInputModel;
+import org.csstudio.sds.cursorservice.CursorService;
+import org.csstudio.sds.model.AbstractWidgetModel;
 import org.csstudio.sds.model.BorderStyleEnum;
 import org.csstudio.sds.model.TextTypeEnum;
 import org.epics.css.dal.simple.AnyData;
@@ -34,7 +36,7 @@ import org.epics.css.dal.simple.MetaData;
  * @since 20.04.2010
  */
 public class TextinputConnectionBehavior extends AbstractDesyConnectionBehavior<TextInputModel> {
-
+    
     /**
      * Constructor.
      */
@@ -46,21 +48,21 @@ public class TextinputConnectionBehavior extends AbstractDesyConnectionBehavior<
         addInvisiblePropertyId(TextInputModel.PROP_BORDER_STYLE);
         addInvisiblePropertyId(TextInputModel.PROP_BORDER_COLOR);
     }
-
+    
     /**
      * {@inheritDoc}
      */
     @Override
     protected void doInitialize(final TextInputModel widget) {
         super.doInitialize(widget);
-        widget.setPropertyValue(TextInputModel.PROP_BORDER_STYLE, BorderStyleEnum.LOWERED
-                .getIndex());
+        widget.setPropertyValue(TextInputModel.PROP_BORDER_STYLE,
+                                BorderStyleEnum.LOWERED.getIndex());
         if (widget.getValueType().equals(TextTypeEnum.TEXT)) {
             widget.setJavaType(String.class);
         }
-
+        
     }
-
+    
     /**
      * {@inheritDoc}
      */
@@ -69,14 +71,36 @@ public class TextinputConnectionBehavior extends AbstractDesyConnectionBehavior<
         super.doProcessValueChange(model, anyData);
         // .. fill level (influenced by current value)
         model.setPropertyValue(TextInputModel.PROP_INPUT_TEXT, anyData.stringValue());
+        System.out.println("getPrecision2: " + anyData.getMetaData().getPrecision());
     }
-
-
+    
     @Override
     protected void doProcessMetaDataChange(final TextInputModel widget, final MetaData metaData) {
-        // do noting
+        if (metaData != null) {
+            switch (metaData.getAccessType()) {
+                case NONE:
+                    widget.setPropertyValue(AbstractWidgetModel.PROP_CURSOR, CursorService
+                            .getInstance().availableCursors().get(7));
+                    break;
+                case READ:
+                    widget.setPropertyValue(AbstractWidgetModel.PROP_CURSOR, CursorService
+                            .getInstance().availableCursors().get(7));
+                    break;
+                case READ_WRITE:
+                    widget.setPropertyValue(AbstractWidgetModel.PROP_CURSOR, CursorService
+                            .getInstance().availableCursors().get(0));
+                    break;
+                case WRITE:
+                    widget.setPropertyValue(AbstractWidgetModel.PROP_CURSOR, CursorService
+                            .getInstance().availableCursors().get(0));
+                    break;
+                default:
+                    widget.setPropertyValue(AbstractWidgetModel.PROP_CURSOR, CursorService
+                            .getInstance().availableCursors().get(0));
+            }
+        }
     }
-
+    
     /**
      * {@inheritDoc}
      */

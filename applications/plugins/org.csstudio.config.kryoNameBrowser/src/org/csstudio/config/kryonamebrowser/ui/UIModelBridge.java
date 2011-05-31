@@ -527,7 +527,8 @@ public class UIModelBridge {
 		}
 		builder.append(seqKryoNumber);
 
-		return builder.toString();
+		String string = builder.toString();
+		return string;
 
 	}
 
@@ -557,7 +558,7 @@ public class UIModelBridge {
 				subplant3No };
 
 		if (number.isEnabled() && getNo(number) < 0) {
-			return false;
+				return false;
 		}
 
 		int i = 0;
@@ -567,7 +568,9 @@ public class UIModelBridge {
 			KryoPlantEntry entry = (KryoPlantEntry) getEntry(combo);
 			if (combo.isEnabled() && entry != null
 					&& entry.getNumberOfPlants() > 0 && getNo(text[i]) < 0) {
-				return false;
+				if (text[i].getText().length() != 0) {
+					return false;
+				}
 			}
 			i++;
 		}
