@@ -46,7 +46,7 @@ import org.junit.runner.RunWith;
  * @since 27.05.2011
  */
 @RunWith(ConditionalClassRunner.class)
-@RunIf(conditionClass = OsCondition.class, arguments = {OsCondition.LINUX})
+@RunIf(conditionClass = OsCondition.class, arguments = {OsCondition.WIN})
 public class SoftIocHeadlessTest {
 
     private SoftIoc _softIoc;
@@ -56,8 +56,8 @@ public class SoftIocHeadlessTest {
         
         URL dbBundleResourceUrl = SoftIocHeadlessTest.class.getClassLoader().getResource("db/myTestDbFile.db");
         URL dbFileUrl = FileLocator.toFileURL(dbBundleResourceUrl);
+
         ISoftIocConfigurator cfg = new BasicSoftIocConfigurator().with(new File(dbFileUrl.getFile()));
-        
         _softIoc = new SoftIoc(cfg);
         _softIoc.start();
     }
