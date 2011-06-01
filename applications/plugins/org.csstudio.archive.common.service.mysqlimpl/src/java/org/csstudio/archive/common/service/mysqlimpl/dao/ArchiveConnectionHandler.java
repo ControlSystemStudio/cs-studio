@@ -34,6 +34,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.google.common.base.Strings;
+import com.google.inject.Inject;
 import com.mysql.jdbc.jdbc2.optional.MysqlDataSource;
 
 /**
@@ -67,6 +68,7 @@ public class ArchiveConnectionHandler {
     /**
      * Constructor.
      */
+    @Inject
     public ArchiveConnectionHandler(@Nonnull final MysqlDataSource dataSource) {
         _dataSource = dataSource;
     }
