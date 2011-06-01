@@ -27,7 +27,6 @@ package org.csstudio.utility.adlconverter.utility.widgetparts;
 import java.util.HashMap;
 import java.util.Map;
 
-import org.csstudio.platform.logging.CentralLogger;
 import org.csstudio.sds.model.AbstractWidgetModel;
 import org.csstudio.sds.model.ActionData;
 import org.csstudio.sds.model.properties.actions.CommitValueActionModel;
@@ -46,6 +45,8 @@ import org.csstudio.utility.adlconverter.utility.FileLine;
 import org.csstudio.utility.adlconverter.utility.WrongADLFormatException;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.Path;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * @author hrickens
@@ -55,6 +56,8 @@ import org.eclipse.core.runtime.Path;
  */
 public class ADLMenuItem extends WidgetPart {
 
+    private static final Logger LOG = LoggerFactory.getLogger(ADLMenuItem.class);
+    
     /**
      * The displayed text and description of the Action.
      */
@@ -98,6 +101,7 @@ public class ADLMenuItem extends WidgetPart {
     /**
      * {@inheritDoc}
      */
+    @Override
     final void init() {
         _path = Activator.getDefault().getPreferenceStore().getString(
                 ADLConverterPreferenceConstants.P_STRING_Path_Target);
@@ -182,8 +186,7 @@ public class ADLMenuItem extends WidgetPart {
                         map.put(param[0].trim(), param[1].trim());
                     } else {
                         if (params[i].trim().length() > 0) {
-                            CentralLogger.getInstance().info(this,
-                                    Messages.RelatedDisplayItem_Parameter_Error + params[i]);
+                            LOG.info(Messages.RelatedDisplayItem_Parameter_Error, params[i]);
                         }
                     }
                 }

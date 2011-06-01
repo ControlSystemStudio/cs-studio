@@ -27,13 +27,11 @@ import javax.annotation.CheckForNull;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
-import org.apache.log4j.Logger;
 import org.csstudio.auth.security.SecurityFacade;
 import org.csstudio.auth.security.User;
 import org.csstudio.config.ioconfig.editorinputs.NodeEditorInput;
 import org.csstudio.config.ioconfig.editorparts.FacilityEditor;
 import org.csstudio.config.ioconfig.model.FacilityDBO;
-import org.csstudio.platform.logging.CentralLogger;
 import org.eclipse.core.commands.AbstractHandler;
 import org.eclipse.core.commands.ExecutionEvent;
 import org.eclipse.core.commands.ExecutionException;
@@ -44,6 +42,8 @@ import org.eclipse.ui.IWorkbenchPage;
 import org.eclipse.ui.IWorkbenchWindow;
 import org.eclipse.ui.PartInitException;
 import org.eclipse.ui.handlers.HandlerUtil;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * TODO Wird diese Klasse noch gebraucht!?:
@@ -55,9 +55,8 @@ import org.eclipse.ui.handlers.HandlerUtil;
  */
 public class CallNewNodeEditor extends AbstractHandler {
 
-	private static final Logger LOG = CentralLogger.getInstance().getLogger(
-			CallNewNodeEditor.class);
-	
+    private static final Logger LOG = LoggerFactory.getLogger(CallNewNodeEditor.class);
+    
     private FacilityDBO _fac;
 
     /**

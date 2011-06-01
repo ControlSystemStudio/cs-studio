@@ -25,6 +25,7 @@ package org.csstudio.config.ioconfig.editorparts;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.List;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -34,7 +35,6 @@ import org.csstudio.config.ioconfig.model.PersistenceException;
 import org.csstudio.config.ioconfig.model.Repository;
 import org.csstudio.config.ioconfig.model.pbmodel.GSDFileDBO;
 import org.csstudio.config.ioconfig.view.DeviceDatabaseErrorDialog;
-import org.csstudio.platform.logging.CentralLogger;
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.viewers.TableViewer;
 import org.eclipse.swt.SWT;
@@ -43,6 +43,8 @@ import org.eclipse.swt.events.SelectionListener;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.FileDialog;
 import org.eclipse.swt.widgets.TabFolder;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * @author hrickens
@@ -51,6 +53,9 @@ import org.eclipse.swt.widgets.TabFolder;
  * @since 14.06.2010
  */
 public class GSDFileAddListener implements SelectionListener {
+    
+    private static final Logger LOG = LoggerFactory.getLogger(GSDFileAddListener.class);
+    
 	private final TabFolder _tabFolder;
 	private final TableViewer _tableViewer;
 	private final Composite _comp;
@@ -76,7 +81,7 @@ public class GSDFileAddListener implements SelectionListener {
 		final FileDialog fd = new FileDialog(_comp.getShell(), SWT.MULTI);
 		fd.setFilterExtensions(new String[] {"*.gsd;*.gsg", "*.gs?" });
 		fd.setFilterNames(new String[] {"GS(GER)", "GS(ALL)" });
-		fd.setFilterPath("Z:\\Boeckmann\\GSD_Dateien\\");
+		fd.setFilterPath(".");
 		if (fd.open() != null) {
 			final File path = new File(fd.getFilterPath());
 			for (final String fileName : fd.getFileNames()) {
@@ -90,10 +95,10 @@ public class GSDFileAddListener implements SelectionListener {
                         Repository.save(gsdFile);
                     } catch (PersistenceException e) {
                         DeviceDatabaseErrorDialog.open(null, "Can't safe GSD File! Database error", e);
-                        CentralLogger.getInstance().error(this, e);
+                        LOG.error("Can't safe GSD File! Database error", e);
                     } catch (IOException e) {
                         DeviceDatabaseErrorDialog.open(null, "Can't safe GSD File! File read error", e);
-                        CentralLogger.getInstance().error(this, e);
+                        LOG.error("Can't safe GSD File! File read error", e);
                     }
 				} else {
 					MessageDialog.openInformation(_tabFolder.getShell(),
@@ -106,8 +111,9 @@ public class GSDFileAddListener implements SelectionListener {
 
 	private boolean fileNotContain(@Nullable final String fileName) {
 		boolean add = true;
-		if ( _abstractNodeEditor.getGsdFiles() != null && !_abstractNodeEditor.getGsdFiles().isEmpty()) {
-			for (final GSDFileDBO file : _abstractNodeEditor.getGsdFiles()) {
+		List<GSDFileDBO> gsdFiles = _abstractNodeEditor.getGsdFiles();
+        if ( gsdFiles != null && !gsdFiles.isEmpty()) {
+			for (final GSDFileDBO file : gsdFiles) {
 				add = !file.getName().equals(fileName);
 				if (!add) {
 					break;

@@ -27,8 +27,6 @@ package org.csstudio.utility.adlconverter.utility.faceplate;
 import java.util.HashMap;
 import java.util.Map;
 
-import org.csstudio.platform.logging.CentralLogger;
-import org.csstudio.platform.ui.util.CustomMediaFactory;
 import org.csstudio.sds.model.AbstractWidgetModel;
 import org.csstudio.sds.model.DisplayModel;
 import org.csstudio.sds.model.LabelModel;
@@ -42,6 +40,8 @@ import org.eclipse.core.runtime.Path;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.graphics.FontData;
 import org.eclipse.swt.graphics.Point;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * @author hrickens
@@ -50,7 +50,9 @@ import org.eclipse.swt.graphics.Point;
  * @since 06.05.2009
  */
 public class FaceplateParser {
-
+    
+    private static final Logger LOG = LoggerFactory.getLogger(FaceplateParser.class);
+    
     private static final int WIDTH = 151;
     private static final int HIGHT = 455;
     private static final int X_OFFSET = WIDTH + 5;
@@ -59,15 +61,15 @@ public class FaceplateParser {
     // private static final int HIGHT = 145;
     // private static final int X_OFFSET = WIDTH + 5;
     // private static final int Y_OFFSET = HIGHT;
-
-    private static Map<Point, LinkingContainerModel> _facePlateMap = new HashMap<Point, LinkingContainerModel>(
-            20);
+    
+    private static Map<Point, LinkingContainerModel> _facePlateMap = new HashMap<Point, LinkingContainerModel>(20);
     private static int _maxX;
     private static int _maxY;
-
+    
     private FaceplateParser() {
+        // Private Constructor
     }
-
+    
     public static void parse(ADLWidget root, DisplayModel displayModel) {
         int groupX = 0;
         _maxX = 0;
@@ -77,136 +79,136 @@ public class FaceplateParser {
         LabelModel header = null;
         for (FileLine fileLine : root.getBody()) {
             String line = fileLine.getLine().trim();
-            if (line == null || line.length() < 1 || line.startsWith(";")) {
+            if(line == null || line.length() < 1 || line.startsWith(";")) {
                 continue;
             }
             String[] lineParts = line.split("[=,]");
-            if (lineParts.length < 2) {
+            if(lineParts.length < 2) {
                 continue;
             }
             String attribute = lineParts[0].trim();
-            if (attribute.equals("faceplateAdl")) {
+            if(attribute.equals("faceplateAdl")) {
                 // e.g. faceplateAdl=/applic/graphic/common/FP_xctl.adl
-                String source = Activator.getDefault().getPreferenceStore().getString(
-                        ADLConverterPreferenceConstants.P_STRING_Path_Remove_Absolut_Part);
-                String target = Activator.getDefault().getPreferenceStore().getString(
-                        ADLConverterPreferenceConstants.P_STRING_Path_Target);
+                String source = Activator
+                        .getDefault()
+                        .getPreferenceStore()
+                        .getString(ADLConverterPreferenceConstants.P_STRING_Path_Remove_Absolut_Part);
+                String target = Activator.getDefault().getPreferenceStore()
+                        .getString(ADLConverterPreferenceConstants.P_STRING_Path_Target);
                 String path = lineParts[1].replace(source + "/", target + "/").replace(".adl",
-                        ".css-sds");
-                facePlate.setPropertyValue(LinkingContainerModel.PROP_RESOURCE, new Path(path));
-
-            } else if (attribute.equals("faceplateHeight")) {
+                                                                                       ".css-sds");
+                if(facePlate!=null) {
+                    facePlate.setPropertyValue(LinkingContainerModel.PROP_RESOURCE, new Path(path));
+                }
+                
+            } else if(attribute.equals("faceplateHeight")) {
                 // e.g. faceplateHeight=800
-
+                
                 // Use the default Value
                 // Größe der einzelnen Elemente 125,350
-                if (facePlate == null) {
-                    CentralLogger.getInstance().error(FaceplateParser.class,
-                            "Wrong FacePlate Format!");
+                if(facePlate == null) {
+                    LOG.error("Wrong FacePlate Format!");
                     continue;
                 }
                 // int w = Integer.parseInt(lineParts[1]);
                 int w = 350;
                 facePlate.setWidth(w);
-            } else if (attribute.equals("faceplateMacro")) {
+            } else if(attribute.equals("faceplateMacro")) {
                 // e.g.
                 // faceplateMacro=PSC_chan=TTF:MAG:STEE:V9UND3_ps,MAX_chan=V9UND3:Imax_calc,MIN_chan=V9UND3:Imin_calc
-                if (lineParts.length > 2) {
+                if(facePlate!=null && lineParts.length > 2) {
                     for (int i = 1; i < lineParts.length; i += 2) {
                         facePlate.addAlias(lineParts[i], lineParts[i + 1]);
                     }
                 }
-            } else if (attribute.equals("faceplatePosition")) {
+            } else if(attribute.equals("faceplatePosition")) {
                 // e.g. faceplatePosition=7,1
-                if (facePlate != null) {
+                if(facePlate != null) {
                     try {
                         displayModel.addWidget(facePlate);
                     } catch (RuntimeException rte) {
-                        CentralLogger.getInstance().warn(FaceplateParser.class,
-                                "Can not added:\nLine: " + line + "\nFacePlate: " + facePlate, rte);
+                        LOG.warn("Can not added:\nLine: {}\nFacePlate: {}", new Object[] {line, facePlate, rte});
                     }
                 }
                 int x = 0;
                 int y = 0;
-                if (lineParts.length > 1) {
+                if(lineParts.length > 1) {
                     x = Integer.parseInt(lineParts[1]);
                     y = Integer.parseInt(lineParts[2]);
                 }
                 facePlate = getFacePlate(x, y);
-            } else if (attribute.equals("faceplateWidth")) {
+            } else if(attribute.equals("faceplateWidth")) {
                 // e.g. faceplateWidth=433
                 // Use the default Value
                 // Größe der einzelnen Elemente 125,350
-                if (facePlate == null) {
-                    CentralLogger.getInstance().error(FaceplateParser.class,
-                            "Wrong FacePlate Format!");
+                if(facePlate == null) {
+                    LOG.error("Wrong FacePlate Format!");
                     continue;
                 }
                 // int w = Integer.parseInt(lineParts[1]);
                 // facePlate.setWidth(w);
-            } else if (attribute.equals("faceplateX")) {
+            } else if(attribute.equals("faceplateX")) {
                 // e.g. faceplateX=720
-            } else if (attribute.equals("faceplateY")) {
+            } else if(attribute.equals("faceplateY")) {
                 // e.g. faceplateY=40
-            } else if (attribute.equals("groupComments")) {
+            } else if(attribute.equals("groupComments")) {
                 // e.g. groupComments=Control panels for TTF PS of Undulator 3.
-            } else if (attribute.equals("groupHeight")) {
+            } else if(attribute.equals("groupHeight")) {
                 // e.g. groupHeight=860
                 // Use the default Value
                 // height= Integer.parseInt(lineParts[1]);
                 // Größe der einzelnen Elemente 125,350
-
+                
                 int value = 2 * Y_OFFSET + 60;
                 System.out.println("H: " + value);
-                displayModel.setPropertyValue(DisplayModel.PROP_HEIGHT, value);
-            } else if (attribute.equals("groupNotes")) {
+                displayModel.setPropertyValue(AbstractWidgetModel.PROP_HEIGHT, value);
+            } else if(attribute.equals("groupNotes")) {
                 // e.g. groupNotes=Druecke FEL-BOX
                 // what is the equivalent in SDS.
-            } else if (attribute.equals("groupTitle")) {
+            } else if(attribute.equals("groupTitle")) {
                 // e.g. groupTitle= "VAKUUM KOMPRESSO"
-                displayModel.setPropertyValue(DisplayModel.PROP_NAME, lineParts[1]);
+                displayModel.setPropertyValue(AbstractWidgetModel.PROP_NAME, lineParts[1]);
                 try {
                     header = getHeader(lineParts[1]);
                 } catch (RuntimeException rte) {
-                    CentralLogger.getInstance().warn(FaceplateParser.class,
-                            "Can not added:\nLine: " + line + "\nFacePlate: " + facePlate, rte);
+                    LOG.warn("Can not added:\nLine: {}\nFacePlate: {}", new Object[] {line, facePlate,
+                                                     rte});
                 }
-            } else if (attribute.equals("groupWidth")) {
+            } else if(attribute.equals("groupWidth")) {
                 // e.g. groupWidth=900
                 // Use the default Value
                 // width = Integer.parseInt(lineParts[1]);
                 // Größe der einzelnen Elemente 125,350
-
-                displayModel.setPropertyValue(DisplayModel.PROP_WIDTH, groupX * (5 + 125) + 5);
-            } else if (attribute.equals("groupX")) {
+                
+                displayModel.setPropertyValue(AbstractWidgetModel.PROP_WIDTH, groupX * (5 + 125) + 5);
+            } else if(attribute.equals("groupX")) {
                 // e.g. groupX=0
                 groupX = Integer.parseInt(lineParts[1]);
-            } else if (attribute.equals("groupY")) {
+            } else if(attribute.equals("groupY")) {
                 // e.g. groupY=10
                 // groupY = Integer.parseInt(lineParts[1]);
                 Integer.parseInt(lineParts[1]);
             } else {
-                CentralLogger.getInstance().debug(FaceplateParser.class,
-                        "found unhandle Line: " + line);
+                LOG.debug("found unhandle Line: {}", line);
             }
-
+            
         }
-        if (facePlate != null) {
+        if(facePlate != null) {
             try {
                 displayModel.addWidget(facePlate);
             } catch (RuntimeException rte) {
-                CentralLogger.getInstance().warn(FaceplateParser.class,
-                        "Can not added:\nFacePlate: " + facePlate, rte);
+                LOG.warn("Can not added:\nFacePlate: {}",facePlate,
+                                                 rte);
             }
         }
-        if (header != null) {
+        if(header != null) {
             header.setWidth(X_OFFSET * (_maxX + 1));
             displayModel.addWidget(header);
         }
         // displayModel.setSize(width, height);
         displayModel.setSize(X_OFFSET * (_maxX + 1), Y_OFFSET * (_maxY + 1) + 60);
     }
-
+    
     private static LabelModel getHeader(String header) {
         try {
             int h = 40;
@@ -225,12 +227,12 @@ public class FaceplateParser {
         }
         return null;
     }
-
+    
     private static LinkingContainerModel getFacePlate(int x, int y) {
         Point key = new Point(x, y);
         LinkingContainerModel linkingContainerModel = _facePlateMap.get(key);
         while (linkingContainerModel != null) {
-            if (key.x < 9) {
+            if(key.x < 9) {
                 key.x++;
             } else {
                 key.x = 0;
@@ -238,13 +240,13 @@ public class FaceplateParser {
             }
             linkingContainerModel = _facePlateMap.get(key);
         }
-        if (key.x > _maxX) {
+        if(key.x > _maxX) {
             _maxX = key.x;
         }
-        if (key.y > _maxY) {
+        if(key.y > _maxY) {
             _maxY = key.y;
         }
-        if (linkingContainerModel == null) {
+        if(linkingContainerModel == null) {
             linkingContainerModel = new LinkingContainerModel();
             linkingContainerModel.setLocation(key.x * X_OFFSET, key.y * Y_OFFSET + 60);
             linkingContainerModel.setSize(WIDTH, HIGHT);
@@ -252,5 +254,5 @@ public class FaceplateParser {
         }
         return linkingContainerModel;
     }
-
+    
 }

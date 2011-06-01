@@ -32,7 +32,6 @@ import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.regex.Pattern;
 
-import org.csstudio.platform.logging.CentralLogger;
 import org.csstudio.platform.ui.dialogs.ResourceSelectionDialog;
 import org.csstudio.utility.adlconverter.Activator;
 import org.csstudio.utility.adlconverter.internationalization.Messages;
@@ -56,8 +55,9 @@ import org.eclipse.jface.viewers.ListViewer;
 import org.eclipse.jface.viewers.StructuredSelection;
 import org.eclipse.jface.window.Window;
 import org.eclipse.swt.SWT;
+import org.eclipse.swt.events.KeyAdapter;
 import org.eclipse.swt.events.KeyEvent;
-import org.eclipse.swt.events.KeyListener;
+import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.events.SelectionListener;
 import org.eclipse.swt.layout.GridData;
@@ -78,6 +78,8 @@ import org.eclipse.swt.widgets.Text;
 import org.eclipse.ui.ISharedImages;
 import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.part.ViewPart;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * @author hrickens
@@ -87,10 +89,13 @@ import org.eclipse.ui.part.ViewPart;
  */
 public class ADLConverterMainView extends ViewPart {
 
+    private static final Logger LOG = LoggerFactory.getLogger(ADLConverterMainView.class);
+    
 	/**
 	 * Default Constructor.
 	 */
 	public ADLConverterMainView() {
+	    // Default Constructor.
 	}
 
 	/**
@@ -123,7 +128,7 @@ public class ADLConverterMainView extends ViewPart {
 	 */
 	private ListViewer _avaibleFiles;
 
-	private LinkedList<File> _avaibleFilesList = new LinkedList<File>();
+	private final LinkedList<File> _avaibleFilesList = new LinkedList<File>();
 
 	/**
 	 * The ADL Converter Preferences. Contain the different default path.
@@ -217,12 +222,10 @@ public class ADLConverterMainView extends ViewPart {
 		convertButton.setLayoutData(rowData);
 
 		// Listener
-		openSourceButton.addSelectionListener(new SelectionListener() {
+		openSourceButton.addSelectionListener(new SelectionAdapter() {
 
-			public void widgetDefaultSelected(final SelectionEvent e) {
-			}
-
-			public void widgetSelected(final SelectionEvent e) {
+			@Override
+            public void widgetSelected(final SelectionEvent e) {
 				FileDialog dialog = new FileDialog(_shell, SWT.MULTI);
 				String[] names = new String[] {
 						Messages.ADLConverterMainView_BothFileSourceDialogFileDes,
@@ -243,7 +246,8 @@ public class ADLConverterMainView extends ViewPart {
 				for (String name : files) {
 					_avaibleFilesList.add(new File(path, name));
 				}
-				_avaibleFiles.setInput(_avaibleFilesList);
+				
+				setAvaibleFilesInput();
 				_avaibleFiles.getList().selectAll();
 				refreshexamplePathLabel();
 				checkRelativPath();
@@ -253,12 +257,14 @@ public class ADLConverterMainView extends ViewPart {
 
 		subFolderButton.addSelectionListener(new SelectionListener() {
 
-			public void widgetDefaultSelected(SelectionEvent e) {
+			@Override
+            public void widgetDefaultSelected(SelectionEvent e) {
 				// TODO Auto-generated method stub
 
 			}
 
-			public void widgetSelected(SelectionEvent e) {
+			@Override
+            public void widgetSelected(SelectionEvent e) {
 				final DirectoryDialog dialog = new DirectoryDialog(_shell,
 						SWT.MULTI);
 				String path = _preferences
@@ -282,7 +288,8 @@ public class ADLConverterMainView extends ViewPart {
 							PlatformUI.getWorkbench().getDisplay()
 									.syncExec(new Runnable() {
 
-										public void run() {
+										@Override
+                                        public void run() {
 											_avaibleFiles
 													.setInput(_avaibleFilesList);
 											_avaibleFiles.getList().selectAll();
@@ -295,8 +302,8 @@ public class ADLConverterMainView extends ViewPart {
 										}
 									});
 							monitor.done();
-						} catch (Exception e) {
-							e.printStackTrace();
+						} catch (Exception e1) {
+							LOG.error("Error: ", e1);
 							monitor.setCanceled(true);
 							return Status.CANCEL_STATUS;
 						}
@@ -307,10 +314,11 @@ public class ADLConverterMainView extends ViewPart {
 				job.schedule();
 			}
 
-			private void fillFiles(File file) {
+			protected void fillFiles(File file) {
 				String[] list = file.list(new FilenameFilter() {
 
-					public boolean accept(File dir, String name) {
+					@Override
+                    public boolean accept(File dir, String name) {
 
 						if (name.endsWith(".adl") || name.endsWith(".mfp") || name.endsWith(".stc")) { //$NON-NLS-1$
 							return true;
@@ -334,25 +342,21 @@ public class ADLConverterMainView extends ViewPart {
 
 		});
 
-		clearSourceButton.addSelectionListener(new SelectionListener() {
+		clearSourceButton.addSelectionListener(new SelectionAdapter() {
 
-			public void widgetDefaultSelected(final SelectionEvent e) {
-			}
-
-			public void widgetSelected(final SelectionEvent e) {
+			@Override
+            public void widgetSelected(final SelectionEvent e) {
 				_avaibleFilesList.clear();
-				_avaibleFiles.setInput(_avaibleFilesList);
-				_pathPos = 0;
+				setAvaibleFilesInput();
+				setPathPos(0);
 			}
 
 		});
 
-		convertButton.addSelectionListener(new SelectionListener() {
+		convertButton.addSelectionListener(new SelectionAdapter() {
 
-			public void widgetDefaultSelected(final SelectionEvent e) {
-			}
-
-			@SuppressWarnings("unchecked")//$NON-NLS-1$
+			@Override
+            @SuppressWarnings("unchecked")//$NON-NLS-1$
 			public void widgetSelected(final SelectionEvent e) {
 				StructuredSelection sel = (StructuredSelection) _avaibleFiles
 						.getSelection();
@@ -383,7 +387,8 @@ public class ADLConverterMainView extends ViewPart {
 							PlatformUI.getWorkbench().getDisplay()
 									.syncExec(new Runnable() {
 
-										public void run() {
+										@Override
+                                        public void run() {
 											selection.setBool(_isRelativePath
 													.getSelection());
 										}
@@ -401,7 +406,8 @@ public class ADLConverterMainView extends ViewPart {
 									adlCount++;
 									PlatformUI.getWorkbench().getDisplay()
 											.syncExec(new Runnable() {
-												public void run() {
+												@Override
+                                                public void run() {
 													try {
 														if (!di.importDisplay(
 																file.getAbsolutePath(),
@@ -411,10 +417,10 @@ public class ADLConverterMainView extends ViewPart {
 																		.replace(
 																				".adl", ".css-sds"))) { //$NON-NLS-1$ //$NON-NLS-2$
 														}
-													} catch (CoreException e) {
+													} catch (CoreException e1) {
 														// TODO Auto-generated
 														// catch block
-														e.printStackTrace();
+													    LOG.error("Error: ", e1);
 													}
 												}
 											});
@@ -426,7 +432,8 @@ public class ADLConverterMainView extends ViewPart {
 									mpfCout++;
 									PlatformUI.getWorkbench().getDisplay()
 											.syncExec(new Runnable() {
-												public void run() {
+												@Override
+                                                public void run() {
 													try {
 														if (!di.importFaceplate(
 																file.getAbsolutePath(),
@@ -435,10 +442,10 @@ public class ADLConverterMainView extends ViewPart {
 																file.getName()
 																		.concat(".css-sds"))) { //$NON-NLS-1$ //$NON-NLS-2$
 														}
-													} catch (CoreException e) {
+													} catch (CoreException ce) {
 														// TODO Auto-generated
 														// catch block
-														e.printStackTrace();
+													    LOG.error("Error: ", ce);
 													}
 												}
 											});
@@ -450,7 +457,8 @@ public class ADLConverterMainView extends ViewPart {
 									stcCount++;
 									PlatformUI.getWorkbench().getDisplay()
 											.syncExec(new Runnable() {
-												public void run() {
+												@Override
+                                                public void run() {
 
 													// parse Strip Tool Files
 													try {
@@ -462,14 +470,14 @@ public class ADLConverterMainView extends ViewPart {
 																		.replace(
 																				".stc", ".css-plt"))) { //$NON-NLS-1$ //$NON-NLS-2$
 														}
-													} catch (CoreException e) {
+													} catch (CoreException ce) {
 														// TODO Auto-generated
 														// catch block
-														e.printStackTrace();
-													} catch (IOException e) {
+													    LOG.error("Error: ", ce);
+													} catch (IOException ioE) {
 														// TODO Auto-generated
 														// catch block
-														e.printStackTrace();
+													    LOG.error("Error: ", ioE);
 													}
 												}
 											});
@@ -479,14 +487,15 @@ public class ADLConverterMainView extends ViewPart {
 									}
 								}
 							} catch (Exception e1) {
-								CentralLogger.getInstance().error(this, e1);
+								LOG.error("Error: ", e1);
 							}
 							// file = null;
 
 							PlatformUI.getWorkbench().getDisplay()
 									.syncExec(new Runnable() {
 
-										public void run() {
+										@Override
+                                        public void run() {
 											_avaibleFiles.setSelection(
 													new StructuredSelection(
 															list), true);
@@ -508,7 +517,8 @@ public class ADLConverterMainView extends ViewPart {
 						final int stcCount2 = stcCount;
 						PlatformUI.getWorkbench().getDisplay()
 								.syncExec(new Runnable() {
-									public void run() {
+									@Override
+                                    public void run() {
 
 										MessageDialog.openInformation(
 												convertButton.getShell(),
@@ -550,11 +560,13 @@ public class ADLConverterMainView extends ViewPart {
 		MenuItem showItem = new MenuItem(menu, SWT.PUSH);
 		showItem.addSelectionListener(new SelectionListener() {
 
-			public void widgetSelected(SelectionEvent e) {
+			@Override
+            public void widgetSelected(SelectionEvent e) {
 				removeSTC();
 			}
 
-			public void widgetDefaultSelected(SelectionEvent e) {
+			@Override
+            public void widgetDefaultSelected(SelectionEvent e) {
 				removeSTC();
 			}
 
@@ -569,7 +581,7 @@ public class ADLConverterMainView extends ViewPart {
 						}
 					}
 				}
-				_avaibleFiles.setInput(_avaibleFilesList);
+				setAvaibleFilesInput();
 			}
 		});
 		showItem.setText(Messages.ADLConverterMainView_RemoveSTCFiles);
@@ -582,11 +594,13 @@ public class ADLConverterMainView extends ViewPart {
 		MenuItem showItem = new MenuItem(menu, SWT.PUSH);
 		showItem.addSelectionListener(new SelectionListener() {
 
-			public void widgetSelected(SelectionEvent e) {
+			@Override
+            public void widgetSelected(SelectionEvent e) {
 				removeMFP();
 			}
 
-			public void widgetDefaultSelected(SelectionEvent e) {
+			@Override
+            public void widgetDefaultSelected(SelectionEvent e) {
 				removeMFP();
 			}
 
@@ -601,7 +615,7 @@ public class ADLConverterMainView extends ViewPart {
 						}
 					}
 				}
-				_avaibleFiles.setInput(_avaibleFilesList);
+				setAvaibleFilesInput();
 			}
 		});
 		showItem.setText(Messages.ADLConverterMainView_RemoveMFPFiles);
@@ -613,11 +627,13 @@ public class ADLConverterMainView extends ViewPart {
 		MenuItem showItem = new MenuItem(menu, SWT.PUSH);
 		showItem.addSelectionListener(new SelectionListener() {
 
-			public void widgetSelected(SelectionEvent e) {
+			@Override
+            public void widgetSelected(SelectionEvent e) {
 				removeADL();
 			}
 
-			public void widgetDefaultSelected(SelectionEvent e) {
+			@Override
+            public void widgetDefaultSelected(SelectionEvent e) {
 				removeADL();
 			}
 
@@ -632,7 +648,7 @@ public class ADLConverterMainView extends ViewPart {
 						}
 					}
 				}
-				_avaibleFiles.setInput(_avaibleFilesList);
+				setAvaibleFilesInput();
 			}
 		});
 		showItem.setText(Messages.ADLConverterMainView_RemoveADLFiles);
@@ -644,11 +660,13 @@ public class ADLConverterMainView extends ViewPart {
 		MenuItem showItem = new MenuItem(menu, SWT.PUSH);
 		showItem.addSelectionListener(new SelectionListener() {
 
-			public void widgetSelected(SelectionEvent e) {
+			@Override
+            public void widgetSelected(SelectionEvent e) {
 				removeBak();
 			}
 
-			public void widgetDefaultSelected(SelectionEvent e) {
+			@Override
+            public void widgetDefaultSelected(SelectionEvent e) {
 				removeBak();
 			}
 
@@ -667,8 +685,9 @@ public class ADLConverterMainView extends ViewPart {
 						}
 					}
 				}
-				_avaibleFiles.setInput(_avaibleFilesList);
+				setAvaibleFilesInput();
 			}
+
 		});
 		showItem.setText(Messages.ADLConverterMainView_RemoveBakFiles);
 		showItem.setImage(PlatformUI.getWorkbench().getSharedImages()
@@ -680,13 +699,15 @@ public class ADLConverterMainView extends ViewPart {
 		MenuItem showItem = new MenuItem(menu, SWT.PUSH);
 		showItem.addSelectionListener(new SelectionListener() {
 
-			public void widgetSelected(SelectionEvent e) {
+			@Override
+            public void widgetSelected(SelectionEvent e) {
 				StructuredSelection selection = (StructuredSelection) _avaibleFiles
 						.getSelection();
 				_avaibleFiles.remove(selection.toArray());
 			}
 
-			public void widgetDefaultSelected(SelectionEvent e) {
+			@Override
+            public void widgetDefaultSelected(SelectionEvent e) {
 				StructuredSelection selection = (StructuredSelection) _avaibleFiles
 						.getSelection();
 				_avaibleFiles.remove(selection.toArray());
@@ -753,12 +774,10 @@ public class ADLConverterMainView extends ViewPart {
 
 		// Listener
 
-		openTargetButton.addSelectionListener(new SelectionListener() {
+		openTargetButton.addSelectionListener(new SelectionAdapter() {
 
-			public void widgetDefaultSelected(final SelectionEvent e) {
-			}
-
-			public void widgetSelected(final SelectionEvent e) {
+			@Override
+            public void widgetSelected(final SelectionEvent e) {
 				ResourceSelectionDialog dialog = new ResourceSelectionDialog(
 						_shell,
 						Messages.ADLConverterMainView_TargetFolderSelectionMessage,
@@ -778,11 +797,13 @@ public class ADLConverterMainView extends ViewPart {
 
 		_isRelativePath.addSelectionListener(new SelectionListener() {
 
-			public void widgetDefaultSelected(final SelectionEvent e) {
+			@Override
+            public void widgetDefaultSelected(final SelectionEvent e) {
 				setBackground();
 			}
 
-			public void widgetSelected(final SelectionEvent e) {
+			@Override
+            public void widgetSelected(final SelectionEvent e) {
 				setBackground();
 			}
 
@@ -798,31 +819,29 @@ public class ADLConverterMainView extends ViewPart {
 
 		});
 
-		_relativePathText.addKeyListener(new KeyListener() {
-			public void keyPressed(final KeyEvent e) {
-			}
-
-			public void keyReleased(final KeyEvent e) {
+		_relativePathText.addKeyListener(new KeyAdapter() {
+			@Override
+            public void keyReleased(final KeyEvent e) {
 				String[] pathPart;
 				if (_isRelativePath.getSelection()) {
 					if (e.keyCode == SWT.ARROW_LEFT) {
-						if (_pathPos > 0) {
-							_pathPos--;
+						if (getPathPos() > 0) {
+							setPathPos(getPathPos() - 1);
 							File file = _avaibleFilesList.getFirst();
 							pathPart = file.getAbsolutePath().split(
 									Pattern.quote(File.separator));
-							if (pathPart.length > _pathPos) {
-								if (_pathPos == 0) {
+							if (pathPart.length > getPathPos()) {
+								if (getPathPos() == 0) {
 									_relativePathText.setText(_relativePathText
 											.getText().replace(
-													pathPart[_pathPos], "")); //$NON-NLS-1$
+													pathPart[getPathPos()], "")); //$NON-NLS-1$
 								} else {
 									_relativePathText
 											.setText(_relativePathText
 													.getText()
 													.replace(
 															File.separator
-																	+ pathPart[_pathPos],
+																	+ pathPart[getPathPos()],
 															"")); //$NON-NLS-1$
 								}
 								refreshexamplePathLabel();
@@ -833,16 +852,16 @@ public class ADLConverterMainView extends ViewPart {
 						if (file != null) {
 							pathPart = file.getAbsolutePath().split(
 									Pattern.quote(File.separator));
-							if (_pathPos < pathPart.length - 1) {
-								if (_pathPos == 0) {
+							if (getPathPos() < pathPart.length - 1) {
+								if (getPathPos() == 0) {
 									_relativePathText
-											.append(pathPart[_pathPos]);
+											.append(pathPart[getPathPos()]);
 								} else {
 									_relativePathText.append(File.separator
-											+ pathPart[_pathPos]);
+											+ pathPart[getPathPos()]);
 								}
 								refreshexamplePathLabel();
-								_pathPos++;
+								setPathPos(getPathPos() + 1);
 							}
 						}
 					}
@@ -863,7 +882,8 @@ public class ADLConverterMainView extends ViewPart {
 		final SelectContainer container = new SelectContainer();
 		PlatformUI.getWorkbench().getDisplay().syncExec(new Runnable() {
 
-			public void run() {
+			@Override
+            public void run() {
 				String apsolutPath = Pattern.quote(_relativePathText.getText());
 				container.setiPath(_targetPath.append(file.getAbsolutePath()
 						.replaceFirst(apsolutPath, ""))); //$NON-NLS-1$
@@ -887,11 +907,24 @@ public class ADLConverterMainView extends ViewPart {
 		}
 	}
 
+	protected void setAvaibleFilesInput() {
+        _avaibleFiles.setInput(_avaibleFilesList);                
+    }
+	
 	/**
 	 * {@inheritDoc}
 	 */
 	@Override
 	public void setFocus() {
+	    // nothing to do.
 	}
+
+    public void setPathPos(int pathPos) {
+        _pathPos = pathPos;
+    }
+
+    public int getPathPos() {
+        return _pathPos;
+    }
 
 }
