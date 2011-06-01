@@ -9,7 +9,6 @@ import static org.epics.pvmanager.extra.ExpressionLanguage.group;
 
 import java.io.ByteArrayInputStream;
 import java.io.InputStream;
-import java.lang.reflect.Field;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
@@ -37,9 +36,7 @@ import org.eclipse.jface.viewers.CellNavigationStrategy;
 import org.eclipse.jface.viewers.ColumnViewer;
 import org.eclipse.jface.viewers.ColumnViewerEditor;
 import org.eclipse.jface.viewers.ColumnViewerEditorActivationEvent;
-import org.eclipse.jface.viewers.ColumnViewerEditorActivationListener;
 import org.eclipse.jface.viewers.ColumnViewerEditorActivationStrategy;
-import org.eclipse.jface.viewers.ColumnViewerEditorDeactivationEvent;
 import org.eclipse.jface.viewers.EditingSupport;
 import org.eclipse.jface.viewers.FocusCellOwnerDrawHighlighter;
 import org.eclipse.jface.viewers.ISelection;
@@ -58,8 +55,6 @@ import org.eclipse.jface.viewers.ViewerCell;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.ControlAdapter;
 import org.eclipse.swt.events.ControlEvent;
-import org.eclipse.swt.events.KeyEvent;
-import org.eclipse.swt.events.KeyListener;
 import org.eclipse.swt.events.MouseEvent;
 import org.eclipse.swt.events.MouseMoveListener;
 import org.eclipse.swt.graphics.Image;
@@ -410,6 +405,7 @@ public class PVTableEditor extends EditorPart implements ISelectionProvider {
 			}
 
 			protected CellEditor getCellEditor(Object element) {
+				System.out.println("Call to cell Editor");
 				return new TextCellEditor(table);
 			}
 
@@ -528,12 +524,36 @@ public class PVTableEditor extends EditorPart implements ISelectionProvider {
 		TableColumn tblclmnTime = tableViewerColumn_3.getColumn();
 		tblclmnTime.setText("Time");
 
+		// Navigation and Focus support
+		CellNavigationStrategy naviStrat = new CellNavigationStrategy() {
+
+			public ViewerCell findSelectedCell(ColumnViewer viewer,
+					ViewerCell currentSelectedCell, Event event) {
+				ViewerCell cell = super.findSelectedCell(viewer,
+						currentSelectedCell, event);
+
+				if (cell != null) {
+					tableViewer.getTable().showColumn(
+							tableViewer.getTable().getColumn(
+									cell.getColumnIndex()));
+				}
+
+				return cell;
+			}
+
+		};
+
+		TableViewerFocusCellManager focusCellManager = new TableViewerFocusCellManager(
+				tableViewer, new FocusCellOwnerDrawHighlighter(tableViewer),
+				naviStrat);
+
 		// Editing support
-		tableViewerColumn.getViewer();
 		ColumnViewerEditorActivationStrategy actSupport = new ColumnViewerEditorActivationStrategy(
 				tableViewer) {
 			protected boolean isEditorActivationEvent(
 					ColumnViewerEditorActivationEvent event) {
+				System.out.println(getViewer().getColumnViewerEditor()
+						.getFocusCell());
 				return event.eventType == ColumnViewerEditorActivationEvent.TRAVERSAL
 						|| event.eventType == ColumnViewerEditorActivationEvent.MOUSE_DOUBLE_CLICK_SELECTION
 						|| (event.eventType == ColumnViewerEditorActivationEvent.KEY_PRESSED && event.keyCode == SWT.CR)
@@ -541,14 +561,17 @@ public class PVTableEditor extends EditorPart implements ISelectionProvider {
 			}
 
 		};
-		TableViewerEditor.create(tableViewer, actSupport,
-				ColumnViewerEditor.TABBING_VERTICAL
-						| ColumnViewerEditor.TABBING_HORIZONTAL
+
+		TableViewerEditor.create(tableViewer, focusCellManager, actSupport,
+				ColumnViewerEditor.TABBING_HORIZONTAL
+						| ColumnViewerEditor.TABBING_MOVE_TO_ROW_NEIGHBOR
+						| ColumnViewerEditor.TABBING_VERTICAL
 						| ColumnViewerEditor.KEYBOARD_ACTIVATION);
 
 		tableViewer.setContentProvider(new ContentProvider());
 		tableViewer.setInput(pvTableModel);
 		registerSelectionListener();
+
 		// This is new code
 		// First we create a menu Manager
 		MenuManager menuManager = new MenuManager();
