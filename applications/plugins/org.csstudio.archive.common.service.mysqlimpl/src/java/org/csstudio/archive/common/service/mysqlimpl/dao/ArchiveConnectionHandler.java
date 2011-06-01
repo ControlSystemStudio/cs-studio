@@ -81,7 +81,7 @@ public class ArchiveConnectionHandler {
      * @throws ArchiveConnectionException
      */
     @Nonnull
-    public Connection connect(@Nonnull final MysqlDataSource ds) throws ArchiveConnectionException {
+    private Connection connect(@Nonnull final MysqlDataSource ds) throws ArchiveConnectionException {
 
         Connection connection = _archiveConnection.get();
         try {
