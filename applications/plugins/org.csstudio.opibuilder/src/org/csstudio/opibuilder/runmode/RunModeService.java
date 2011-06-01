@@ -18,6 +18,7 @@ import org.eclipse.core.runtime.IPath;
 import org.eclipse.draw2d.geometry.Rectangle;
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.osgi.util.NLS;
+import org.eclipse.swt.widgets.Shell;
 import org.eclipse.ui.IEditorInput;
 import org.eclipse.ui.IEditorReference;
 import org.eclipse.ui.IPageListener;
@@ -149,8 +150,11 @@ public class RunModeService {
 
 				if(targetWindow != null){
 					try {
+						Shell shell = targetWindow.getShell();
+						if(shell.getMinimized())
+							shell.setMinimized(false);
 						targetWindow.getShell().forceActive();
-						targetWindow.getShell().forceFocus();
+						targetWindow.getShell().forceFocus();						
 						targetWindow.getActivePage().openEditor(
 								runnerInput, OPIRunner.ID); //$NON-NLS-1$
 						targetWindow.getShell().moveAbove(null);
