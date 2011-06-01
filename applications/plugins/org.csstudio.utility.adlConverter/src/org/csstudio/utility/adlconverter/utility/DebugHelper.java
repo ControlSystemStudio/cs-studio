@@ -74,7 +74,7 @@ public final class DebugHelper {
 						fw.append(item);
 						fw.append("\r\n");
 					}
-					// CentralLogger.getInstance().error(key,
+					// LOG.error(key,
 					// key+"\t"+Arrays.toString(all.get(key).toArray()));
 					fw.flush();
 				}
@@ -105,7 +105,7 @@ public final class DebugHelper {
 				e.printStackTrace();
 			}
 
-			// CentralLogger.getInstance().error(key,
+			// LOG.error(key,
 			// key+"\t"+Arrays.toString(path
 			// .get(key).toArray()));
 		}
@@ -130,7 +130,7 @@ public final class DebugHelper {
 				e.printStackTrace();
 			}
 
-			// CentralLogger.getInstance().error(key,
+			// LOG.error(key,
 			// key+"\t"+Arrays.toString(path
 			// .get(key).toArray()));
 		}

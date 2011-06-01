@@ -29,7 +29,6 @@ import java.io.IOException;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
-import org.apache.log4j.Logger;
 import org.csstudio.config.ioconfig.model.FacilityDBO;
 import org.csstudio.config.ioconfig.model.IOConifgActivator;
 import org.csstudio.config.ioconfig.model.IocDBO;
@@ -38,14 +37,16 @@ import org.csstudio.config.ioconfig.model.pbmodel.ProfibusSubnetDBO;
 import org.csstudio.config.ioconfig.model.siemens.ProfibusConfigWinModGenerator;
 import org.csstudio.config.ioconfig.view.DeviceDatabaseErrorDialog;
 import org.csstudio.config.ioconfig.view.ProfiBusTreeView;
-import org.csstudio.platform.logging.CentralLogger;
 import org.eclipse.core.runtime.preferences.DefaultScope;
 import org.eclipse.core.runtime.preferences.IEclipsePreferences;
 import org.eclipse.jface.action.Action;
+import org.eclipse.jface.viewers.StructuredSelection;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.widgets.DirectoryDialog;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.MessageBox;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * @author hrickens
@@ -55,8 +56,8 @@ import org.eclipse.swt.widgets.MessageBox;
  */
 public class CreateWinModAction extends Action {
     
-    private static final Logger LOG = CentralLogger.getInstance()
-            .getLogger(CreateWinModAction.class);
+    private static final Logger LOG = LoggerFactory.getLogger(CreateWinModAction.class);
+
     private final ProfiBusTreeView _pbtv;
     
     public CreateWinModAction(@Nullable String text, @Nonnull ProfiBusTreeView pbtv) {
@@ -65,11 +66,13 @@ public class CreateWinModAction extends Action {
     }
     
     private void makeFiles(@Nonnull final File path, @Nonnull final ProfibusSubnetDBO subnet) {
-        ProfibusConfigWinModGenerator cfg = new ProfibusConfigWinModGenerator(subnet.getName());
+        String name = subnet.getName();
+        name = name==null?"":name;
+        ProfibusConfigWinModGenerator cfg = new ProfibusConfigWinModGenerator(name);
         try {
             cfg.setSubnet(subnet);
-            File xmlFile = new File(path, subnet.getName() + ".cfg");
-            File txtFile = new File(path, subnet.getName() + ".txt");
+            File xmlFile = new File(path, name + ".cfg");
+            File txtFile = new File(path, name + ".txt");
             makeXMLFile(cfg, xmlFile);
             makeTxtFile(cfg, txtFile);
         } catch (PersistenceException e) {
@@ -144,7 +147,6 @@ public class CreateWinModAction extends Action {
     
     @Override
     public void run() {
-        // TODO: Multi Selection Siemens Create.
         final String filterPathKey = "FilterPath";
         IEclipsePreferences pref = new DefaultScope().getNode(IOConifgActivator.PLUGIN_ID);
         String filterPath = pref.get(filterPathKey, "");
@@ -153,27 +155,41 @@ public class CreateWinModAction extends Action {
         filterPath = dDialog.open();
         File path = new File(filterPath);
         pref.put(filterPathKey, filterPath);
-        Object selectedNode = _pbtv.getSelectedNodes().getFirstElement();
-        if (selectedNode instanceof ProfibusSubnetDBO) {
-            ProfibusSubnetDBO subnet = (ProfibusSubnetDBO) selectedNode;
-            LOG.info("Create XML for Subnet: " + subnet);
-            makeFiles(path, subnet);
-            
-        } else if (selectedNode instanceof IocDBO) {
-            IocDBO ioc = (IocDBO) selectedNode;
-            LOG.info("Create XML for Ioc: " + ioc);
+        StructuredSelection selectedNodes = _pbtv.getSelectedNodes();
+        if(selectedNodes != null && !selectedNodes.isEmpty()) {
+            Object selectedNode = selectedNodes.getFirstElement();
+            if(selectedNode instanceof ProfibusSubnetDBO) {
+                runProfibusSubnet(path, selectedNode);
+            } else if(selectedNode instanceof IocDBO) {
+                runIoc(path, selectedNode);
+            } else if(selectedNode instanceof FacilityDBO) {
+                runFacility(path, selectedNode);
+            }
+        }
+    }
+
+    private void runFacility(@Nonnull File path, @Nonnull Object selectedNode) {
+        FacilityDBO facility = (FacilityDBO) selectedNode;
+        LOG.info("Create XML for Facility: {}", facility);
+        for (IocDBO ioc : facility.getChildren()) {
             for (ProfibusSubnetDBO subnet : ioc.getChildren()) {
                 makeFiles(path, subnet);
             }
-        } else if (selectedNode instanceof FacilityDBO) {
-            FacilityDBO facility = (FacilityDBO) selectedNode;
-            LOG.info("Create XML for Facility: " + facility);
-            for (IocDBO ioc : facility.getChildren()) {
-                for (ProfibusSubnetDBO subnet : ioc.getChildren()) {
-                    makeFiles(path, subnet);
-                }
-            }
         }
+    }
+
+    private void runIoc(@Nonnull File path, @Nonnull Object selectedNode) {
+        IocDBO ioc = (IocDBO) selectedNode;
+        LOG.info("Create XML for Ioc: {}", ioc);
+        for (ProfibusSubnetDBO subnet : ioc.getChildren()) {
+            makeFiles(path, subnet);
+        }
+    }
+
+    private void runProfibusSubnet(@Nonnull File path, @Nonnull Object selectedNode) {
+        ProfibusSubnetDBO subnet = (ProfibusSubnetDBO) selectedNode;
+        LOG.info("Create XML for Subnet: {}", subnet);
+        makeFiles(path, subnet);
     }
     
 }

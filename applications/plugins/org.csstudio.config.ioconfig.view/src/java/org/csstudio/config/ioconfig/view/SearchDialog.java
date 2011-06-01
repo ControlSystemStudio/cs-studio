@@ -37,7 +37,6 @@ import org.csstudio.config.ioconfig.model.PersistenceException;
 import org.csstudio.config.ioconfig.model.Repository;
 import org.csstudio.config.ioconfig.model.SearchNodeDBO;
 import org.csstudio.config.ioconfig.model.tools.NodeMap;
-import org.csstudio.platform.logging.CentralLogger;
 import org.eclipse.jface.dialogs.Dialog;
 import org.eclipse.jface.layout.GridDataFactory;
 import org.eclipse.jface.layout.GridLayoutFactory;
@@ -66,6 +65,8 @@ import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.swt.widgets.Text;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * 
@@ -76,6 +77,8 @@ import org.eclipse.swt.widgets.Text;
  */
 public class SearchDialog extends Dialog {
 
+    private static final Logger LOG = LoggerFactory.getLogger(SearchDialog.class);
+    
 	private SearchNodeDBO _searchNode;
 	private AbstractNodeDBO _selectedNode;
 	private Integer _selectedId;
@@ -424,8 +427,6 @@ public class SearchDialog extends Dialog {
 			@Nonnull ProfiBusTreeView profiBusTreeView) {
 		super(parentShell);
 		_profiBusTreeView = profiBusTreeView;
-		// setShellStyle(SWT.RESIZE | parentShell.getStyle() |
-		// SWT.PRIMARY_MODAL);
 		setShellStyle(SWT.CLOSE | SWT.TITLE | SWT.MAX | SWT.RESIZE
 				| SWT.PRIMARY_MODAL);
 		try {
@@ -433,7 +434,7 @@ public class SearchDialog extends Dialog {
         } catch (PersistenceException e) {
             _load = null;
             DeviceDatabaseErrorDialog.open(null, "Can't read from Datebase!", e);
-            CentralLogger.getInstance().error(this, e);
+            LOG.error("Can't read from Datebase!", e);
         }
 	}
 
@@ -819,7 +820,7 @@ public class SearchDialog extends Dialog {
             } catch (PersistenceException e) {
                 _searchNode=null;
                 DeviceDatabaseErrorDialog.open(null, "Can't load seleceted node! Database Error.", e);
-                CentralLogger.getInstance().error(this, e);
+                LOG.error("Can't load seleceted node! Database Error.", e);
             }
 			if (_searchNode != null) {
 				AbstractNodeDBO parentNode = _selectedNode;

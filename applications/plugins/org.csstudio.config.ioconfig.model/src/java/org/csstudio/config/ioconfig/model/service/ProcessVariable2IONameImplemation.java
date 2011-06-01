@@ -48,7 +48,8 @@ import org.csstudio.config.ioconfig.model.PV2IONameMatcherModelDBO;
 import org.csstudio.config.ioconfig.model.PersistenceException;
 import org.csstudio.config.ioconfig.model.Repository;
 import org.csstudio.config.ioconfig.model.pbmodel.ChannelDBO;
-import org.csstudio.platform.logging.CentralLogger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 
 /**
@@ -59,6 +60,9 @@ import org.csstudio.platform.logging.CentralLogger;
  */
 public class ProcessVariable2IONameImplemation implements ProcessVariable2IONameService {
 
+    private static final Logger LOG = LoggerFactory
+            .getLogger(ProcessVariable2IONameImplemation.class);
+    
     /**
      * {@inheritDoc}
      */
@@ -85,7 +89,7 @@ public class ProcessVariable2IONameImplemation implements ProcessVariable2IOName
                     value = Repository.loadChannel(pv2ioNameMatcher.getIoName());
                     return value;
                 } catch (PersistenceException e) {
-                    CentralLogger.getInstance().error(this, e);
+                    LOG.error("Can't load Channel", e);
                 }
             }
         }

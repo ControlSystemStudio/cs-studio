@@ -24,9 +24,6 @@
  */
 package org.csstudio.utility.adlconverter.utility.widgets;
 
-import java.util.Formatter;
-
-import org.csstudio.platform.logging.CentralLogger;
 import org.csstudio.sds.components.model.AbstractChartModel;
 import org.csstudio.sds.components.model.WaveformModel;
 import org.csstudio.sds.internal.rules.ParameterDescriptor;
@@ -38,6 +35,8 @@ import org.csstudio.utility.adlconverter.utility.ADLHelper;
 import org.csstudio.utility.adlconverter.utility.ADLWidget;
 import org.csstudio.utility.adlconverter.utility.FileLine;
 import org.csstudio.utility.adlconverter.utility.WrongADLFormatException;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * @author hrickens
@@ -47,6 +46,8 @@ import org.csstudio.utility.adlconverter.utility.WrongADLFormatException;
  */
 public class Waveform extends Widget {
 
+    private static final Logger LOG = LoggerFactory.getLogger(Waveform.class);
+    
     /**
      * @param widget ADLWidget that describe the Waveform.
      * @param storedDynamicAttribute 
@@ -57,7 +58,7 @@ public class Waveform extends Widget {
         super(widget, storedBasicAttribute, storedDynamicAttribute);
         
         _widget.setPropertyValue(AbstractChartModel.PROP_SHOW_AXES, 3);
-        _widget.setPropertyValue(WaveformModel.PROP_BORDER_STYLE, BorderStyleEnum.RAISED.getIndex());
+        _widget.setPropertyValue(AbstractWidgetModel.PROP_BORDER_STYLE, BorderStyleEnum.RAISED.getIndex());
         
         for (ADLWidget waveformPart : widget.getObjects()) {
             if(waveformPart.getType().equalsIgnoreCase("plotcom")){
@@ -78,16 +79,16 @@ public class Waveform extends Widget {
             }
             if(row[0].equals("count")){ //$NON-NLS-1$
                 // TODO: Waveform-->count
-                CentralLogger.getInstance().info(this, "Unhandled Property: "+fileLine);
+                LOG.info("Unhandled Property: {}", fileLine);
             }else if(row[0].equals("erase")){ //$NON-NLS-1$
                 // TODO: Waveform-->erase
-                CentralLogger.getInstance().info(this, "Unhandled Property: "+fileLine);
+                LOG.info("Unhandled Property: {}", fileLine);
             }else if(row[0].equals("eraseMode")){ //$NON-NLS-1$
                 // TODO: Waveform-->eraseMode
-                CentralLogger.getInstance().info(this, "Unhandled Property: "+fileLine);
+                LOG.info("Unhandled Property: {}", fileLine);
             }else if(row[0].equals("erase_oldest")){ //$NON-NLS-1$
                 // TODO: Waveform-->erase_oldest
-                CentralLogger.getInstance().info(this, "Unhandled Property: "+fileLine);
+                LOG.info("Unhandled Property: {}", fileLine);
             }else if(row[0].equals("style")){ //$NON-NLS-1$
                 String value = row[1].toLowerCase();
                 boolean line = value.contains("line");
@@ -95,8 +96,8 @@ public class Waveform extends Widget {
                 if(value.contains("only")){
                     dot=0;
                 }
-                _widget.setPropertyValue(WaveformModel.PROP_LINE_CHART, line);
-                _widget.setPropertyValue(WaveformModel.PROP_DATA_POINT_DRAWING_STYLE, dot);
+                _widget.setPropertyValue(AbstractChartModel.PROP_LINE_CHART, line);
+                _widget.setPropertyValue(AbstractChartModel.PROP_DATA_POINT_DRAWING_STYLE, dot);
             }else if(row[0].equals("trigger")){ //$NON-NLS-1$
             }
             
@@ -137,25 +138,25 @@ public class Waveform extends Widget {
              */
             if(parameter.equals("axisStyle")){
                 if(row[1].replaceAll("\"", "").trim().equalsIgnoreCase("log10")){
-                    _widget.setPropertyValue(WaveformModel.PROP_Y_AXIS_SCALING+id, 1);
+                    _widget.setPropertyValue(AbstractChartModel.PROP_Y_AXIS_SCALING+id, 1);
                 }else{
-                    _widget.setPropertyValue(WaveformModel.PROP_Y_AXIS_SCALING+id, 0);
+                    _widget.setPropertyValue(AbstractChartModel.PROP_Y_AXIS_SCALING+id, 0);
                 }
             }else if(parameter.equals("rangeStyle")){
                 String rangeStyle = row[1].replaceAll("\"", "").trim();
                 if(rangeStyle.equalsIgnoreCase("auto-scale")){
-                    _widget.setPropertyValue(WaveformModel.PROP_AUTOSCALE+id, true);
+                    _widget.setPropertyValue(AbstractChartModel.PROP_AUTOSCALE+id, true);
                 }else{
-                    _widget.setPropertyValue(WaveformModel.PROP_AUTOSCALE+id, false);
+                    _widget.setPropertyValue(AbstractChartModel.PROP_AUTOSCALE+id, false);
                 }
             }else if(parameter.equals("minRange")){
                 double min = Double.parseDouble(row[1].trim());
-                _widget.setPropertyValue(WaveformModel.PROP_MIN+id, min);
+                _widget.setPropertyValue(AbstractChartModel.PROP_MIN+id, min);
             }else if(parameter.equals("maxRange")){
                 double max = Double.parseDouble(row[1].trim());
-                _widget.setPropertyValue(WaveformModel.PROP_MAX+id, max);
+                _widget.setPropertyValue(AbstractChartModel.PROP_MAX+id, max);
             }else{
-                CentralLogger.getInstance().info(this, "Unknown Waveform "+waveformPart.getType()+" paramerter: "+fileLine);
+                LOG.info("Unknown Waveform {} paramerter: {}",waveformPart.getType(),fileLine);
             }
         }
     }
@@ -201,10 +202,10 @@ public class Waveform extends Widget {
             }else if(parameter.equals("timeFormat")){
                 //TODO: Waveform --> timeFormat
                 String xLabel = row[1].replaceAll("\"", "").trim();
-                _widget.setPropertyValue(WaveformModel.PROP_X_AXIS_LABEL, xLabel);
-                _widget.setPropertyValue(WaveformModel.PROP_SHOW_AXES, 3);
+                _widget.setPropertyValue(AbstractChartModel.PROP_X_AXIS_LABEL, xLabel);
+                _widget.setPropertyValue(AbstractChartModel.PROP_SHOW_AXES, 3);
             }else{
-                CentralLogger.getInstance().info(this, "Unknown Waveform "+waveformPart.getType()+" paramerter: "+fileLine);
+                LOG.info("Unknown Waveform {} paramerter: {}",waveformPart.getType(),fileLine);
             }
         }
     }
@@ -213,6 +214,7 @@ public class Waveform extends Widget {
      * @param waveformPart
      * @throws WrongADLFormatException 
      */
+    @SuppressWarnings("restriction")
     private void trace(ADLWidget waveformPart) throws WrongADLFormatException {
         int idInt =0;
         int start = waveformPart.getType().indexOf('[');
@@ -251,20 +253,16 @@ public class Waveform extends Widget {
                         _widget.setDynamicsDescriptor(WaveformModel.dataPropertyId(idInt), dynamicsDescriptor);
                     }
                 }else{
-                    Formatter f = new Formatter();
-                    f.format("Can not convert correct the Waveform. The Source have to many Wave's. They are only %s possible", WaveformModel.NUMBER_OF_ARRAYS);
-                    CentralLogger.getInstance().info(this, f.toString());
+                    LOG.info("Can not convert correct the Waveform. The Source have to many Wave's. They are only %s possible", WaveformModel.NUMBER_OF_ARRAYS);
                 }
             }else if(parameter.equals("data_clr")){
                 if(idInt<WaveformModel.NUMBER_OF_ARRAYS){
-                    _widget.setPropertyValue(WaveformModel.plotColorPropertyId(idInt), ADLHelper.getRGB(row[1].trim()));
+                    _widget.setPropertyValue(AbstractChartModel.plotColorPropertyId(idInt), ADLHelper.getRGB(row[1].trim()));
                 }else{
-                    Formatter f = new Formatter();
-                    f.format("Can not convert correct the Waveform. The Source have to many Wave's colors. They are only %s possible", WaveformModel.NUMBER_OF_ARRAYS);
-                    CentralLogger.getInstance().info(this, f.toString());
+                    LOG.info("Can not convert correct the Waveform. The Source have to many Wave's colors. They are only %s possible", WaveformModel.NUMBER_OF_ARRAYS);
                 }
             }else{
-                CentralLogger.getInstance().info(this, "Unknown Waveform "+waveformPart.getType()+" paramerter: "+fileLine);
+                LOG.info("Unknown Waveform {} paramerter: {}",waveformPart.getType(),fileLine);
             }
         }
     }
@@ -290,19 +288,19 @@ public class Waveform extends Widget {
              */
             if(parameter.equals("title")){
                 String name = row[1].replaceAll("\"", "").trim();
-                _widget.setPropertyValue(WaveformModel.PROP_LABEL, name);
+                _widget.setPropertyValue(AbstractChartModel.PROP_LABEL, name);
             }else if(parameter.equals("clr")){
                 _widget.setColor(AbstractWidgetModel.PROP_COLOR_FOREGROUND,ADLHelper.getRGB(row[1]));
             }else if(parameter.equals("bclr")){
                 _widget.setColor(AbstractWidgetModel.PROP_COLOR_FOREGROUND, ADLHelper.getRGB(row[1]));
             }else if(parameter.equals("xlabel")){
                 String xLabel = row[1].replaceAll("\"", "").trim();
-                _widget.setPropertyValue(WaveformModel.PROP_X_AXIS_LABEL,xLabel);
+                _widget.setPropertyValue(AbstractChartModel.PROP_X_AXIS_LABEL,xLabel);
             }else if(parameter.equals("ylabel")){
                 String yLabel = row[1].replaceAll("\"", "").trim();
-                _widget.setPropertyValue(WaveformModel.PROP_Y_AXIS_LABEL,yLabel);
+                _widget.setPropertyValue(AbstractChartModel.PROP_Y_AXIS_LABEL,yLabel);
             }else{
-                CentralLogger.getInstance().info(this, "Unknown Waveform "+waveformPart.getType()+" paramerter: "+fileLine);
+                LOG.info("Unknown Waveform {} paramerter: {}",waveformPart.getType(),fileLine);
             }
         }
     }
