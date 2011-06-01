@@ -18,7 +18,6 @@ import org.csstudio.dct.metamodel.internal.RecordDefinition;
 import org.csstudio.dct.model.internal.Project;
 import org.csstudio.dct.model.persistence.IPersistenceService;
 import org.csstudio.dct.model.visitors.RecordFunctionPropertiesVisitor;
-import org.csstudio.platform.logging.CentralLogger;
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.NullProgressMonitor;
@@ -27,6 +26,8 @@ import org.jdom.Document;
 import org.jdom.input.SAXBuilder;
 import org.jdom.output.Format;
 import org.jdom.output.XMLOutputter;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import com.cosylab.vdct.Console;
 import com.cosylab.vdct.ConsoleInterface;
@@ -43,6 +44,9 @@ import com.cosylab.vdct.dbd.DBDResolver;
  * 
  */
 public final class PersistenceService implements IPersistenceService {
+    
+    private static final Logger LOG = LoggerFactory.getLogger(PersistenceService.class);
+    
 	/**
 	 *{@inheritDoc}
 	 */
@@ -135,23 +139,23 @@ public final class PersistenceService implements IPersistenceService {
 			}
 
 			public void print(String text) {
-				CentralLogger.getInstance().info(null, text);
+				LOG.info(text);
 			}
 
 			public void println() {
-				CentralLogger.getInstance().info(null, "\r\n");
+				LOG.info("\r\n");
 			}
 
 			public void println(String text) {
-				CentralLogger.getInstance().info(null, text);
+				LOG.info(text);
 			}
-
+			
 			public void println(Throwable thr) {
-				CentralLogger.getInstance().error(null, thr);
+				LOG.error("",thr);
 			}
 
 			public void silent(String text) {
-				CentralLogger.getInstance().debug(null, text);
+				LOG.debug(text);
 			}
 
 		});
@@ -179,7 +183,7 @@ public final class PersistenceService implements IPersistenceService {
 			while (it2.hasNext()) {
 				DBDFieldData fieldData = it2.next();
 				String fieldName = fieldData.getName();
-				CentralLogger.getInstance().info(null, fieldName);
+				LOG.info(fieldName);
 
 				FieldDefinition fieldDefinition = new FieldDefinition(fieldName, DBDResolver.getFieldType(fieldData.getField_type()));
 

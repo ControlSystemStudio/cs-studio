@@ -30,14 +30,17 @@ import java.io.ObjectOutputStream;
 import java.util.List;
 
 import org.csstudio.dct.model.IElement;
-import org.csstudio.platform.logging.CentralLogger;
 import org.eclipse.swt.dnd.ByteArrayTransfer;
 import org.eclipse.swt.dnd.DND;
 import org.eclipse.swt.dnd.TransferData;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public abstract class AbstractElementTransfer extends ByteArrayTransfer {
 
-	private ICopyAndPasteStrategy copyAndPasteStrategy;
+    private static final Logger LOG = LoggerFactory.getLogger(AbstractElementTransfer.class);
+    
+	private final ICopyAndPasteStrategy copyAndPasteStrategy;
 
 	/**
 	 * Type name for this transfer type.
@@ -83,7 +86,7 @@ public abstract class AbstractElementTransfer extends ByteArrayTransfer {
 
 			bos.close();
 		} catch (IOException e) {
-			CentralLogger.getInstance().debug(this, e);
+			LOG.debug("IO Error", e);
 		}
 
 	}
@@ -103,7 +106,7 @@ public abstract class AbstractElementTransfer extends ByteArrayTransfer {
 
 				return result;
 			} catch (Exception e) {
-				CentralLogger.getInstance().debug(this, e);
+				LOG.debug("Input Error", e);
 				return null;
 			}
 		}
