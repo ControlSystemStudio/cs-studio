@@ -53,7 +53,7 @@
          copy the pde build files into the build directory 
         -->
         <copy todir="${desyBuildDirectory}">
-          <fileset dir="${csStudioLocation}/applications/plugins/${projectDir}/build" casesensitive="yes">
+          <fileset dir="${basedir}" casesensitive="yes">
             <include name="build.properties"/>
             <include name="productBuild.xml"/>
           </fileset>          
