@@ -35,16 +35,16 @@ import java.util.Set;
 
 import javax.annotation.Nonnull;
 
-import org.apache.log4j.Logger;
 import org.csstudio.config.ioconfig.model.PersistenceException;
 import org.csstudio.config.ioconfig.model.pbmodel.MasterDBO;
 import org.csstudio.config.ioconfig.model.pbmodel.ProfibusSubnetDBO;
 import org.csstudio.config.ioconfig.model.pbmodel.SlaveDBO;
-import org.csstudio.platform.logging.CentralLogger;
 import org.jdom.Document;
 import org.jdom.Element;
 import org.jdom.output.Format;
 import org.jdom.output.XMLOutputter;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * @author hrickens
@@ -54,8 +54,7 @@ import org.jdom.output.XMLOutputter;
  */
 public class ProfibusConfigXMLGenerator {
 
-    private static final Logger LOG = CentralLogger.getInstance()
-            .getLogger(ProfibusConfigXMLGenerator.class);
+    private static final Logger LOG = LoggerFactory.getLogger(ProfibusConfigXMLGenerator.class);
     
     /**
      * The Profibus Config XML {@link Document}.
@@ -226,7 +225,7 @@ public class ProfibusConfigXMLGenerator {
      */
     public final void getXmlFile(@Nonnull final File path) throws IOException {
         Writer writer = new FileWriter(path);
-        LOG.info("Write File:" + path.getAbsolutePath());
+        LOG.info("Write File: {}", path.getAbsolutePath());
         getXmlFile(writer);
     }
     

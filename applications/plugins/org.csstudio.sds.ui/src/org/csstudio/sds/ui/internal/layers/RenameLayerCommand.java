@@ -30,27 +30,20 @@ import org.eclipse.gef.commands.Command;
  * 
  * @author Kai Meyer
  */
-public final class MoveLayerCommand extends Command {
+public final class RenameLayerCommand extends Command {
 	
 	/**
 	 * Access object to the layer model.
 	 */
-	private LayerSupport _layerSupport;
+//	private LayerSupport _layerSupport;
 
 	/**
 	 * The layer that is removed.
 	 */
 	private Layer _layer;
-
-	/**
-	 * The former index position of the removed layer.
-	 */
-	private int _oldIndex;
 	
-	/**
-	 * The new index position of the removed layer.
-	 */
-	private int _newIndex;
+	private String _newName;
+	private String _oldName;
 	
 	/**
 	 * Constructor.
@@ -62,13 +55,13 @@ public final class MoveLayerCommand extends Command {
 	 * @param newIndex
 	 * 			  the new index for the layer
 	 */
-	public MoveLayerCommand(final LayerSupport layerSupport, final Layer layer, final int newIndex) {
+	public RenameLayerCommand(final LayerSupport layerSupport, final Layer layer, final String newName) {
 		assert layerSupport != null;
 		assert layer != null;
-		setLabel("Move Layer '"+layer.getDescription()+"'");
-		_layerSupport = layerSupport;
+		setLabel("Rename Layer '"+layer.getDescription()+"'");
+//		_layerSupport = layerSupport;
 		_layer = layer;
-		_newIndex = newIndex;
+		_newName = newName;
 	}
 	
 	/**
@@ -76,8 +69,8 @@ public final class MoveLayerCommand extends Command {
 	 */
 	@Override
 	public void execute() {
-		_oldIndex = _layerSupport.getLayerIndex(_layer);
-		_layerSupport.changeLayerPosition(_layer, _newIndex);
+		_oldName = _layer.getDescription();
+		_layer.setDescription(_newName);
 	}
 	
 	/**
@@ -85,7 +78,7 @@ public final class MoveLayerCommand extends Command {
 	 */
 	@Override
 	public void undo() {
-		_layerSupport.changeLayerPosition(_layer, _oldIndex);
+	    _layer.setDescription(_oldName);
 	}
 
 }

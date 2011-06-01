@@ -26,7 +26,6 @@ package org.csstudio.utility.adlconverter.utility.widgetparts;
 
 import java.util.ArrayList;
 
-import org.csstudio.platform.logging.CentralLogger;
 import org.csstudio.sds.model.AbstractWidgetModel;
 import org.csstudio.utility.adlconverter.internationalization.Messages;
 import org.csstudio.utility.adlconverter.utility.ADLWidget;
@@ -51,6 +50,8 @@ import org.csstudio.utility.adlconverter.utility.widgets.Valuator;
 import org.csstudio.utility.adlconverter.utility.widgets.Waveform;
 import org.csstudio.utility.adlconverter.utility.widgets.Widget;
 import org.eclipse.core.runtime.IPath;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * @author hrickens
@@ -59,11 +60,13 @@ import org.eclipse.core.runtime.IPath;
  * @since 21.09.2007
  */
 public class ADLChildren {
+    
+    private static final Logger LOG = LoggerFactory.getLogger(ADLChildren.class);
 
     /**
      * ADL Grouping Container Children's.
      */
-    private ArrayList<Widget> _childrens = new ArrayList<Widget>();
+    private final ArrayList<Widget> _childrens = new ArrayList<Widget>();
 
     /**
      * @param adlChildren 
@@ -173,8 +176,8 @@ public class ADLChildren {
                 } else if (adlWidget.getType().equals("dynamic attribute")) { //$NON-NLS-1$
                     storedDynamicAttribute = adlWidget;
                 } else {
-                    CentralLogger.getInstance().info(this,
-                            Messages.ADLDisplayImporter_WARN_UNHANDLED_TYPE + adlWidget.getType()+ "(ObjectNo:"+adlWidget.getObjectNr()+" Widget: "+adlWidget);
+                    Object[] args = new Object[] {adlWidget.getType() ,adlWidget.getObjectNr(),adlWidget};
+                    LOG.info(Messages.ADLDisplayImporter_WARN_UNHANDLED_TYPE + "{}(ObjectNo: {} Widget: {}",args);
                 }
             } catch (Exception e) {
                 e.printStackTrace();

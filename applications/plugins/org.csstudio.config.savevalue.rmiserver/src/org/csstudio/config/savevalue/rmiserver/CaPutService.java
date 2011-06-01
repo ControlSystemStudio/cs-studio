@@ -39,14 +39,14 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 
-import org.apache.log4j.Logger;
 import org.csstudio.config.savevalue.internal.changelog.ChangelogAppender;
 import org.csstudio.config.savevalue.service.ChangelogEntry;
 import org.csstudio.config.savevalue.service.SaveValueRequest;
 import org.csstudio.config.savevalue.service.SaveValueResult;
 import org.csstudio.config.savevalue.service.SaveValueService;
 import org.csstudio.config.savevalue.service.SaveValueServiceException;
-import org.csstudio.platform.logging.CentralLogger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * Save value service that saves to a ca file.
@@ -58,8 +58,8 @@ public class CaPutService implements SaveValueService {
 	/**
 	 * The logger.
 	 */
-	private static final Logger LOG = CentralLogger.getInstance().getLogger(CaPutService.class);
-
+    private static final Logger LOG = LoggerFactory.getLogger(CaPutService.class);
+    
 	/**
 	 * The character used to separate channel and value in ca file entries.
 	 */
@@ -74,10 +74,11 @@ public class CaPutService implements SaveValueService {
 	/**
 	 * {@inheritDoc}
 	 */
-	public final synchronized SaveValueResult saveValue(
+	@Override
+    public final synchronized SaveValueResult saveValue(
 			final SaveValueRequest request) throws SaveValueServiceException,
 			RemoteException {
-		LOG.info("saveValue called with: " + request);
+		LOG.info("saveValue called with: {}", request);
 		if (request.isValid()) {
 			final IocFiles files = new IocFiles(request.getIocName());
 			makeBackupCopy(files);
@@ -170,10 +171,9 @@ public class CaPutService implements SaveValueService {
 		try {
 			final File directory = file.getAbsoluteFile().getParentFile();
 			// create a temporary file to write into
-			LOG.info("Trying to create temporary file with prefix \""
-					+ file.getName() + "\" in directory: " + directory);
+			LOG.info("Trying to create temporary file with prefix \"{}\" in directory: {}", file.getName(), directory);
 			final File temp = File.createTempFile(file.getName(), null, directory);
-			LOG.debug("Writing to temporary file: " + temp);
+			LOG.debug("Writing to temporary file: {}", temp);
 			PrintWriter writer = null;
 			try {
 				// write the file
@@ -188,7 +188,7 @@ public class CaPutService implements SaveValueService {
 				}
 			}
 
-			LOG.debug("Renaming temporary file to " + file);
+			LOG.debug("Renaming temporary file to {}", file);
 			final File target = file.getAbsoluteFile();
 			if (!temp.renameTo(target)) {
 				// On Windows, the rename fails if the target file exists. Try
@@ -232,7 +232,7 @@ public class CaPutService implements SaveValueService {
 				while (position < size) {
 					position += in.transferTo(position, maxCount, out);
 				}
-				LOG.debug("Created backup copy of " + files.getCafile());
+				LOG.debug("Created backup copy of {}", files.getCafile());
 			} catch (final FileNotFoundException e) {
 				LOG.warn("Backup failed with FileNotFoundException", e);
 			} catch (final IOException e) {
@@ -249,7 +249,7 @@ public class CaPutService implements SaveValueService {
             try {
                 fileChannel.close();
             } catch (final IOException e) {
-                LOG.warn("Error closing " + channelName + ", backup may have failed", e);
+                LOG.warn("Error closing {}, backup may have failed",channelName , e);
             }
         }
     }
@@ -277,11 +277,11 @@ public class CaPutService implements SaveValueService {
 					parseLine(line, entries);
 				}
 			} catch (final FileNotFoundException e) {
-				LOG.error("File exists but could not be opened: " + file, e);
+				LOG.error("File exists but could not be opened: {}", file, e);
 				throw new SaveValueServiceException(
 						"Could not open existing ca file: " + file, e);
 			} catch (final IOException e) {
-				LOG.error("Error reading from file: " + file, e);
+				LOG.error("Error reading from file: {}", file, e);
 				throw new SaveValueServiceException(
 						"Error reading from existing ca file: " + file, e);
 			} finally {

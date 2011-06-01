@@ -40,7 +40,8 @@ import org.csstudio.config.ioconfig.model.IDocument;
 import org.csstudio.config.ioconfig.model.PersistenceException;
 import org.csstudio.config.ioconfig.model.Repository;
 import org.csstudio.config.ioconfig.model.tools.Helper;
-import org.csstudio.platform.logging.CentralLogger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * @author hrickens
@@ -49,6 +50,8 @@ import org.csstudio.platform.logging.CentralLogger;
  * @since 27.08.2009
  */
 public class LogbookDocumentService implements DocumentService {
+    
+    private static final Logger LOG = LoggerFactory.getLogger(LogbookDocumentService.class);
     
     /**
      * {@inheritDoc}
@@ -67,7 +70,7 @@ public class LogbookDocumentService implements DocumentService {
                 createTempFile = File.createTempFile("ddbDoc", "." + mimeType);
                 Helper.writeDocumentFile(createTempFile, firstElement);
                 if( canOpenDocument(createTempFile)) {
-                        CentralLogger.getInstance().debug(this, "Desktop unterstützt Open!");
+                        LOG.debug("Desktop unterstützt Open!");
                         Desktop.getDesktop().open(createTempFile);
                 }
             } catch (IOException e) {

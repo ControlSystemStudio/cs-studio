@@ -24,7 +24,6 @@
  */
 package org.csstudio.utility.adlconverter.utility.widgets;
 
-import org.csstudio.platform.logging.CentralLogger;
 import org.csstudio.sds.components.model.AbstractChartModel;
 import org.csstudio.sds.components.model.StripChartModel;
 import org.csstudio.sds.internal.rules.ParameterDescriptor;
@@ -37,6 +36,8 @@ import org.csstudio.utility.adlconverter.utility.ADLWidget;
 import org.csstudio.utility.adlconverter.utility.DebugHelper;
 import org.csstudio.utility.adlconverter.utility.FileLine;
 import org.csstudio.utility.adlconverter.utility.WrongADLFormatException;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * @author hrickens
@@ -46,6 +47,8 @@ import org.csstudio.utility.adlconverter.utility.WrongADLFormatException;
  */
 public class StripChart extends Widget {
 
+    private static final Logger LOG = LoggerFactory.getLogger(StripChart.class);
+    
     /**
      * @param widget ADLWidget that describe the StripChart.
      * @param storedDynamicAttribute 
@@ -56,8 +59,8 @@ public class StripChart extends Widget {
         super(widget, storedBasicAttribute, storedDynamicAttribute);
         
         _widget.setPropertyValue(AbstractChartModel.PROP_SHOW_AXES, 3);
-        _widget.setPropertyValue(StripChartModel.PROP_BORDER_STYLE, BorderStyleEnum.RAISED.getIndex());
-        _widget.setPropertyValue(StripChartModel.PROP_AUTOSCALE, true);
+        _widget.setPropertyValue(AbstractWidgetModel.PROP_BORDER_STYLE, BorderStyleEnum.RAISED.getIndex());
+        _widget.setPropertyValue(AbstractChartModel.PROP_AUTOSCALE, true);
         
         for (ADLWidget srtipChartPart : widget.getObjects()) {
             if(srtipChartPart.getType().equalsIgnoreCase("plotcom")){
@@ -77,7 +80,7 @@ public class StripChart extends Widget {
 //                _widget.setPropertyValue(StripChartModel.PROP_X_AXIS_TIMESPAN, period);
                 _widget.setPropertyValue(StripChartModel.PROP_UPDATE_INTERVAL, period);
             }else if(row[0].equals("units")){ //$NON-NLS-1$
-                _widget.setPropertyValue(StripChartModel.PROP_X_AXIS_LABEL, row[1]);
+                _widget.setPropertyValue(AbstractChartModel.PROP_X_AXIS_LABEL, row[1]);
             }
             
         }
@@ -115,6 +118,7 @@ public class StripChart extends Widget {
                 _widget.setPropertyValue(StripChartModel.enablePlotPropertyId(index),true);
                 DynamicsDescriptor dynamicsDescriptor = new DynamicsDescriptor();
 //                FIXME: Parameter was String[].class
+                @SuppressWarnings("restriction")
                 ParameterDescriptor parameterDescriptor = new ParameterDescriptor(row[1], "");
                 dynamicsDescriptor.addInputChannel(parameterDescriptor);
                 _widget.setPropertyValue(StripChartModel.valuePropertyId(index),index);
@@ -122,9 +126,9 @@ public class StripChart extends Widget {
             }else if(parameter.equals("utilChan")){
                 // not used in SDS
             }else if(parameter.equals("clr")){
-                _widget.setPropertyValue(StripChartModel.plotColorPropertyId(index), ADLHelper.getRGB(row[1]));
+                _widget.setPropertyValue(AbstractChartModel.plotColorPropertyId(index), ADLHelper.getRGB(row[1]));
             }else{
-                CentralLogger.getInstance().info(this, "Unknown StripChart "+stripChartPart.getType()+" paramerter: "+fileLine);
+                LOG.info("Unknown StripChart {} paramerter: {}",stripChartPart.getType(),fileLine);
             }
         }
     }
@@ -148,19 +152,19 @@ public class StripChart extends Widget {
              */
             if(parameter.equals("title")){
                 String name = row[1].replaceAll("\"", "").trim();
-                _widget.setPropertyValue(StripChartModel.PROP_LABEL, name);
+                _widget.setPropertyValue(AbstractChartModel.PROP_LABEL, name);
             }else if(parameter.equals("clr")){
                 _widget.setColor(AbstractWidgetModel.PROP_COLOR_FOREGROUND, ADLHelper.getRGB(row[1]));
             }else if(parameter.equals("bclr")){
                 _widget.setColor(AbstractWidgetModel.PROP_COLOR_BACKGROUND, ADLHelper.getRGB(row[1]));
             }else if(parameter.equals("xlabel")){
                 String xLabel = row[1].replaceAll("\"", "").trim();
-                _widget.setPropertyValue(StripChartModel.PROP_X_AXIS_LABEL,xLabel);
+                _widget.setPropertyValue(AbstractChartModel.PROP_X_AXIS_LABEL,xLabel);
             }else if(parameter.equals("ylabel")){
                 String yLabel = row[1].replaceAll("\"", "").trim();
-                _widget.setPropertyValue(StripChartModel.PROP_Y_AXIS_LABEL,yLabel);
+                _widget.setPropertyValue(AbstractChartModel.PROP_Y_AXIS_LABEL,yLabel);
             }else{
-                CentralLogger.getInstance().info(this, "Unknown StripChart "+stripChartPart.getType()+" paramerter: "+fileLine);
+                LOG.info("Unknown StripChart {} paramerter: {}",stripChartPart.getType(),fileLine);
             }
         }
     }
