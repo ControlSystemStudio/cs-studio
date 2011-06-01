@@ -22,11 +22,11 @@
 package org.csstudio.domain.desy.junit;
 
 /**
- * TODO (bknerr) : 
- * 
+ * Run condition evaluator.
+ *
  * @author bknerr
  * @since 30.05.2011
  */
 public interface RunCondition {
-    boolean isTrue();
+    boolean shallBeRun();
 }
