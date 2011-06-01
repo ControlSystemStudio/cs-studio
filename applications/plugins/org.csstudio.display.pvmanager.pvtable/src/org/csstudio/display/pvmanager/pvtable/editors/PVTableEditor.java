@@ -9,6 +9,7 @@ import static org.epics.pvmanager.extra.ExpressionLanguage.group;
 
 import java.io.ByteArrayInputStream;
 import java.io.InputStream;
+import java.lang.reflect.Field;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
@@ -32,7 +33,15 @@ import org.eclipse.jface.action.IMenuManager;
 import org.eclipse.jface.action.MenuManager;
 import org.eclipse.jface.action.Separator;
 import org.eclipse.jface.viewers.CellEditor;
+import org.eclipse.jface.viewers.CellNavigationStrategy;
+import org.eclipse.jface.viewers.ColumnViewer;
+import org.eclipse.jface.viewers.ColumnViewerEditor;
+import org.eclipse.jface.viewers.ColumnViewerEditorActivationEvent;
+import org.eclipse.jface.viewers.ColumnViewerEditorActivationListener;
+import org.eclipse.jface.viewers.ColumnViewerEditorActivationStrategy;
+import org.eclipse.jface.viewers.ColumnViewerEditorDeactivationEvent;
 import org.eclipse.jface.viewers.EditingSupport;
+import org.eclipse.jface.viewers.FocusCellOwnerDrawHighlighter;
 import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.jface.viewers.ISelectionChangedListener;
 import org.eclipse.jface.viewers.ISelectionProvider;
@@ -41,12 +50,16 @@ import org.eclipse.jface.viewers.SelectionChangedEvent;
 import org.eclipse.jface.viewers.StructuredSelection;
 import org.eclipse.jface.viewers.TableViewer;
 import org.eclipse.jface.viewers.TableViewerColumn;
+import org.eclipse.jface.viewers.TableViewerEditor;
+import org.eclipse.jface.viewers.TableViewerFocusCellManager;
 import org.eclipse.jface.viewers.TextCellEditor;
 import org.eclipse.jface.viewers.Viewer;
 import org.eclipse.jface.viewers.ViewerCell;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.ControlAdapter;
 import org.eclipse.swt.events.ControlEvent;
+import org.eclipse.swt.events.KeyEvent;
+import org.eclipse.swt.events.KeyListener;
 import org.eclipse.swt.events.MouseEvent;
 import org.eclipse.swt.events.MouseMoveListener;
 import org.eclipse.swt.graphics.Image;
@@ -55,6 +68,7 @@ import org.eclipse.swt.graphics.Rectangle;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Composite;
+import org.eclipse.swt.widgets.Event;
 import org.eclipse.swt.widgets.Menu;
 import org.eclipse.swt.widgets.ScrollBar;
 import org.eclipse.swt.widgets.Table;
@@ -117,7 +131,8 @@ public class PVTableEditor extends EditorPart implements ISelectionProvider {
 	}
 
 	public static final String ID = PVTableEditor.class.getName();
-	private static Logger logger = Logger.getLogger(PVTableEditor.class.getName());
+	private static Logger logger = Logger.getLogger(PVTableEditor.class
+			.getName());
 
 	private Table table;
 	private TableViewer tableViewer;
@@ -164,17 +179,18 @@ public class PVTableEditor extends EditorPart implements ISelectionProvider {
 	 * 
 	 * @param processVariables
 	 */
-	public void addProcessVariables(Collection<ProcessVariable> processVariables){
-		if(processVariables != null){
+	public void addProcessVariables(Collection<ProcessVariable> processVariables) {
+		if (processVariables != null) {
 			PVTableModel model = (PVTableModel) tableViewer.getInput();
 			if (model != null) {
 				for (ProcessVariable processVariable : processVariables) {
 					model.addPVName(processVariable);
-					group.add(latestValueOf(channel(processVariable.getName())));					
+					group.add(latestValueOf(channel(processVariable.getName())));
 				}
 			}
 		}
 	}
+
 	/*
 	 * (non-Javadoc)
 	 * 
@@ -204,22 +220,22 @@ public class PVTableEditor extends EditorPart implements ISelectionProvider {
 			saveAsDialog.setOriginalFile(currentFile);
 		saveAsDialog.open();
 		// The path to the new resource relative to the workspace
-        IPath newResourcePath = saveAsDialog.getResult();
-        if (newResourcePath == null)
-            return;
-        String ext = newResourcePath.getFileExtension();
-        if (newResourcePath.getFileExtension() == null  ||  !ext.equals("css-pvtable"))
-        {
-        	newResourcePath = newResourcePath.removeFileExtension();
-        	newResourcePath.addFileExtension("css-pvtable");
-        }
-        IWorkspaceRoot root = ResourcesPlugin.getWorkspace().getRoot();
-        IFile newFile = root.getFile(newResourcePath);
-        if (newFile == null  ||  !saveToFile(null, newFile))
-            return;
-        // Update input and title
-        setInput(new FileEditorInput(newFile));
-        this.setPartName(newFile.getName());
+		IPath newResourcePath = saveAsDialog.getResult();
+		if (newResourcePath == null)
+			return;
+		String ext = newResourcePath.getFileExtension();
+		if (newResourcePath.getFileExtension() == null
+				|| !ext.equals("css-pvtable")) {
+			newResourcePath = newResourcePath.removeFileExtension();
+			newResourcePath.addFileExtension("css-pvtable");
+		}
+		IWorkspaceRoot root = ResourcesPlugin.getWorkspace().getRoot();
+		IFile newFile = root.getFile(newResourcePath);
+		if (newFile == null || !saveToFile(null, newFile))
+			return;
+		// Update input and title
+		setInput(new FileEditorInput(newFile));
+		this.setPartName(newFile.getName());
 	}
 
 	/**
@@ -277,12 +293,11 @@ public class PVTableEditor extends EditorPart implements ISelectionProvider {
 		pvTableModel = new PVTableModel();
 		IFile file = getEditorInputFile(input);
 		if (file != null) {
-			List<ProcessVariable> pvs = PVTableStaXParser
-					.readPVTableFile(file.getLocationURI().getPath());
+			List<ProcessVariable> pvs = PVTableStaXParser.readPVTableFile(file
+					.getLocationURI().getPath());
 			for (ProcessVariable processVariable : pvs) {
 				pvTableModel.addPVName(processVariable);
-				group.add(latestValueOf(channel(processVariable
-						.getName())));
+				group.add(latestValueOf(channel(processVariable.getName())));
 			}
 		}
 	}
@@ -343,6 +358,50 @@ public class PVTableEditor extends EditorPart implements ISelectionProvider {
 		table.setLinesVisible(true);
 		table.setHeaderVisible(true);
 
+		// Make the Columns stretch with the table
+		table.addControlListener(new ControlAdapter() {
+
+			@Override
+			public void controlResized(ControlEvent e) {
+				Rectangle area = table.getClientArea();
+				Point size = table.computeSize(SWT.DEFAULT, SWT.DEFAULT);
+				ScrollBar vBar = table.getVerticalBar();
+				int width = area.width - table.computeTrim(0, 0, 0, 0).width
+						- vBar.getSize().x;
+				if (size.y > area.height + table.getHeaderHeight()) {
+					// Subtract the scrollbar width from the total column width
+					// if a vertical scrollbar will be required
+					Point vBarSize = vBar.getSize();
+					width -= vBarSize.x;
+				}
+				Point oldSize = table.getSize();
+				TableColumn[] columns;
+				if (oldSize.x > area.width) {
+					// table is getting smaller so make the columns
+					// smaller first and then resize the table to
+					// match the client area width
+					columns = table.getColumns();
+					int newWidth = area.width / columns.length >= 100 ? area.width
+							/ columns.length
+							: 100;
+					for (TableColumn tableColumn : columns) {
+						tableColumn.setWidth(newWidth);
+					}
+				} else {
+					// table is getting bigger so make the table
+					// bigger first and then make the columns wider
+					// to match the client area width
+					columns = table.getColumns();
+					int newWidth = area.width / columns.length >= 100 ? area.width
+							/ columns.length
+							: 100;
+					for (TableColumn tableColumn : columns) {
+						tableColumn.setWidth(newWidth);
+					}
+				}
+			}
+		});
+
 		TableViewerColumn tableViewerColumn = new TableViewerColumn(
 				tableViewer, SWT.NONE);
 		tableViewerColumn.setEditingSupport(new EditingSupport(tableViewer) {
@@ -379,8 +438,8 @@ public class PVTableEditor extends EditorPart implements ISelectionProvider {
 							model.updateValues(group.lastExceptions());
 						} else {
 							// We are updating the row
-							model.updatePVName(item, new ProcessVariable(
-									value.toString()));
+							model.updatePVName(item,
+									new ProcessVariable(value.toString()));
 							if (item.getRow() == oldSize) {
 								group.add(latestValueOf(channel(value
 										.toString())));
@@ -468,13 +527,24 @@ public class PVTableEditor extends EditorPart implements ISelectionProvider {
 		});
 		TableColumn tblclmnTime = tableViewerColumn_3.getColumn();
 		tblclmnTime.setText("Time");
-		// Set the Column width
-		TableColumn[] columns = table.getColumns();
-		int initialWidth = table.getSize().x / columns.length >= 100 ? table
-				.getSize().x / columns.length : 100;
-		for (TableColumn tableColumn : columns) {
-			tableColumn.setWidth(initialWidth);
-		}
+
+		// Editing support
+		tableViewerColumn.getViewer();
+		ColumnViewerEditorActivationStrategy actSupport = new ColumnViewerEditorActivationStrategy(
+				tableViewer) {
+			protected boolean isEditorActivationEvent(
+					ColumnViewerEditorActivationEvent event) {
+				return event.eventType == ColumnViewerEditorActivationEvent.TRAVERSAL
+						|| event.eventType == ColumnViewerEditorActivationEvent.MOUSE_DOUBLE_CLICK_SELECTION
+						|| (event.eventType == ColumnViewerEditorActivationEvent.KEY_PRESSED && event.keyCode == SWT.CR)
+						|| event.eventType == ColumnViewerEditorActivationEvent.PROGRAMMATIC;
+			}
+
+		};
+		TableViewerEditor.create(tableViewer, actSupport,
+				ColumnViewerEditor.TABBING_VERTICAL
+						| ColumnViewerEditor.TABBING_HORIZONTAL
+						| ColumnViewerEditor.KEYBOARD_ACTIVATION);
 
 		tableViewer.setContentProvider(new ContentProvider());
 		tableViewer.setInput(pvTableModel);
@@ -484,10 +554,11 @@ public class PVTableEditor extends EditorPart implements ISelectionProvider {
 		MenuManager menuManager = new MenuManager();
 		menuManager.setRemoveAllWhenShown(true);
 		menuManager.addMenuListener(new IMenuListener() {
-			
+
 			@Override
 			public void menuAboutToShow(IMenuManager manager) {
-				manager.add(new Separator(IWorkbenchActionConstants.MB_ADDITIONS));
+				manager.add(new Separator(
+						IWorkbenchActionConstants.MB_ADDITIONS));
 			}
 		});
 		Menu menu = menuManager.createContextMenu(table);
@@ -512,51 +583,6 @@ public class PVTableEditor extends EditorPart implements ISelectionProvider {
 
 		pv.addPVValueChangeListener(pvListener);
 
-		// Make the Columns stretch with the table
-		parent.addControlListener(new ControlAdapter() {
-
-			@Override
-			public void controlResized(ControlEvent e) {
-				Rectangle area = table.getClientArea();
-				Point size = table.computeSize(SWT.DEFAULT, SWT.DEFAULT);
-				ScrollBar vBar = table.getVerticalBar();
-				int width = area.width - table.computeTrim(0, 0, 0, 0).width
-						- vBar.getSize().x;
-				if (size.y > area.height + table.getHeaderHeight()) {
-					// Subtract the scrollbar width from the total column width
-					// if a vertical scrollbar will be required
-					Point vBarSize = vBar.getSize();
-					width -= vBarSize.x;
-				}
-				Point oldSize = table.getSize();
-				TableColumn[] columns;
-				if (oldSize.x > area.width) {
-					// table is getting smaller so make the columns
-					// smaller first and then resize the table to
-					// match the client area width
-					columns = table.getColumns();
-					int newWidth = area.width / columns.length >= 100 ? area.width
-							/ columns.length
-							: 100;
-					for (TableColumn tableColumn : columns) {
-						tableColumn.setWidth(newWidth);
-					}
-					table.setSize(columns.length * newWidth, area.height);
-				} else {
-					// table is getting bigger so make the table
-					// bigger first and then make the columns wider
-					// to match the client area width
-					columns = table.getColumns();
-					int newWidth = area.width / columns.length >= 100 ? area.width
-							/ columns.length
-							: 100;
-					table.setSize(columns.length * newWidth, area.height);
-					for (TableColumn tableColumn : columns) {
-						tableColumn.setWidth(newWidth);
-					}
-				}
-			}
-		});
 	}
 
 	/*
@@ -568,29 +594,30 @@ public class PVTableEditor extends EditorPart implements ISelectionProvider {
 	public void setFocus() {
 		this.table.setFocus();
 	}
-	
+
 	private List<ISelectionChangedListener> selectionListeners = new ArrayList<ISelectionChangedListener>();
 
 	@Override
 	public void addSelectionChangedListener(ISelectionChangedListener listener) {
 		selectionListeners.add(listener);
 	}
-	
+
 	private ISelectionChangedListener changeNotification = new ISelectionChangedListener() {
-		
+
 		@Override
 		public void selectionChanged(SelectionChangedEvent event) {
-			SelectionChangedEvent newEvent = new SelectionChangedEvent(PVTableEditor.this, getSelection());
+			SelectionChangedEvent newEvent = new SelectionChangedEvent(
+					PVTableEditor.this, getSelection());
 			for (ISelectionChangedListener listener : selectionListeners) {
 				listener.selectionChanged(newEvent);
 			}
 		}
 	};
-	
+
 	private void registerSelectionListener() {
 		tableViewer.addSelectionChangedListener(changeNotification);
 	}
-	
+
 	private void unregisterSelectionListener() {
 		tableViewer.removeSelectionChangedListener(changeNotification);
 	}
@@ -600,8 +627,10 @@ public class PVTableEditor extends EditorPart implements ISelectionProvider {
 		ISelection tableSelection = tableViewer.getSelection();
 		if (tableSelection instanceof StructuredSelection) {
 			List<ProcessVariable> variables = new ArrayList<ProcessVariable>();
-			for (Object element : ((StructuredSelection) tableSelection).toArray()) {
-				variables.add(((PVTableModel.Item) element).getProcessVariableName());
+			for (Object element : ((StructuredSelection) tableSelection)
+					.toArray()) {
+				variables.add(((PVTableModel.Item) element)
+						.getProcessVariableName());
 			}
 			variables.remove(null);
 			return new StructuredSelection(variables);
