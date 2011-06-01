@@ -2,11 +2,9 @@ package org.csstudio.config.ioconfig.commands;
 
 import javax.annotation.Nonnull;
 
-import org.apache.log4j.Logger;
 import org.csstudio.config.ioconfig.editorinputs.NodeEditorInput;
 import org.csstudio.config.ioconfig.editorparts.FacilityEditor;
 import org.csstudio.config.ioconfig.model.FacilityDBO;
-import org.csstudio.platform.logging.CentralLogger;
 import org.eclipse.core.commands.AbstractHandler;
 import org.eclipse.core.commands.ExecutionEvent;
 import org.eclipse.core.commands.ExecutionException;
@@ -14,6 +12,8 @@ import org.eclipse.ui.IWorkbenchPage;
 import org.eclipse.ui.IWorkbenchWindow;
 import org.eclipse.ui.PartInitException;
 import org.eclipse.ui.handlers.HandlerUtil;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * 
@@ -24,8 +24,8 @@ import org.eclipse.ui.handlers.HandlerUtil;
  * @since 01.10.2010
  */
 public class CallNewFacilityEditor extends AbstractHandler {
-	private static final Logger LOG = CentralLogger.getInstance().getLogger(
-			CallNewFacilityEditor.class);
+
+    private static final Logger LOG = LoggerFactory.getLogger(CallNewFacilityEditor.class);
 	public static final String ID = "org.csstudio.config.ioconfig.commands.callNewFacilityEditor";
 
 	@Override
