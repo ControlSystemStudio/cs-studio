@@ -26,6 +26,7 @@ See http://ics-web.sns.ornl.gov/css
       <vmArgs>-Xmx256m
 -Dorg.apache.commons.logging.Log=org.apache.commons.logging.impl.SimpleLog
 -Dorg.apache.commons.logging.simplelog.defaultlog=fatal</vmArgs>
+      <vmArgsMac>-d32</vmArgsMac>
    </launcherArgs>
 
    <windowImages i16="/org.csstudio.sns.product/icons/css16.gif" i32="/org.csstudio.sns.product/icons/css32.gif" i48="/org.csstudio.sns.product/icons/css48.gif" i64="/org.csstudio.sns.product/icons/css64.gif" i128="/org.csstudio.sns.product/icons/css128.gif"/>
