@@ -10,6 +10,7 @@ import static org.epics.pvmanager.extra.ExpressionLanguage.group;
 import java.io.ByteArrayInputStream;
 import java.io.InputStream;
 import java.util.Arrays;
+import java.util.Collection;
 import java.util.List;
 import java.util.logging.Logger;
 
@@ -146,6 +147,22 @@ public class PVTableEditor extends EditorPart {
 	public PVTableEditor() {
 	}
 
+	/**
+	 * Add a List of ProcessVariable to the pv Table Editor
+	 * 
+	 * @param processVariables
+	 */
+	public void addProcessVariables(Collection<ProcessVariable> processVariables){
+		if(processVariables != null){
+			PVTableModel model = (PVTableModel) tableViewer.getInput();
+			if (model != null) {
+				for (ProcessVariable processVariable : processVariables) {
+					model.addPVName(processVariable);
+					group.add(latestValueOf(channel(processVariable.getName())));					
+				}
+			}
+		}
+	}
 	/*
 	 * (non-Javadoc)
 	 * 

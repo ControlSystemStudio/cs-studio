@@ -53,7 +53,7 @@ public class OpenNewPVTable extends AbstractHandler {
 				PVNames.add((ProcessVariable) Platform.getAdapterManager()
 						.getAdapter(iterator.next(), ProcessVariable.class));
 			}
-			
+			newEditor.addProcessVariables(PVNames);
 			return newEditor;
 		}
 		return null;
