@@ -15,11 +15,12 @@
     <tstamp>
         <format timezone="GMT" property="timestamp" pattern="yyyy-MM-dd_hh:mm:ss"/>
     </tstamp>
+    <echo message="Jenkins base: ${jenkinsbase}"/>
     <echo message="Workspace location: ${workspaceLocation}"/>
     <echo message="Eclipse instance: ${eclipseInstance}"/>
     <echo message="Eclipse target platform: ${targetPlatformLocation}"/>
-    <echo message="Build directory: ${desyBuildDirectory}"/>
-    <echo message="Jenkins base: ${jenkinsbase}"/>
+    <echo message="Desy Build directory: ${desyBuildDirectory}"/>
+    <echo message="PDE Build directory: ${buildDirectory}"/>
     <echo message="Base dir: ${basedir}"/>
     <echo message="Timestamp: ${timestamp}"/>
     <echo message="Job name: ${jenkinsjob}"/>
@@ -41,9 +42,11 @@
         -->
         <sync todir="${desyBuildDirectory}">
           <fileset dir="${csStudioLocation}/core"/>
-          <fileset dir="${csStudioLocation}/applications">
-            <exclude name="plugins/${projectDir}/build/build.xml"/>
-          </fileset>          
+          <fileset dir="${csStudioLocation}/applications"/>
+          <fileset dir="${csStudioLocation}/products/DESY">
+              <include name="plugins/${projectDir}/**/*"/>
+              <exclude name="plugins/${projectDir}/build/build.xml"/>
+          </fileset>
           <fileset dir="${targetPlatformLocation}">
             <include name="plugins/**/*"/>
           </fileset>
@@ -69,7 +72,6 @@
         Headless Eclipse Build.
     -->
     <target name="cleanup"> 
-        <delete dir="${buildDirectory}"/>   
         <delete dir="${iniTmpDir}"/>    
     </target>
 
