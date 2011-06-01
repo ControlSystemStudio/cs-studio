@@ -33,9 +33,9 @@ import java.util.List;
 import javax.annotation.CheckForNull;
 import javax.annotation.Nonnull;
 
-import org.apache.log4j.Logger;
 import org.csstudio.config.ioconfig.model.pbmodel.GSDFileDBO;
-import org.csstudio.platform.logging.CentralLogger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * @author hrickens
@@ -45,7 +45,7 @@ import org.csstudio.platform.logging.CentralLogger;
  */
 public final class GsdFileParser {
     
-    private static final Logger LOG = CentralLogger.getInstance().getLogger(GsdFileParser.class);
+    private static final Logger LOG = LoggerFactory.getLogger(GsdFileParser.class);
     
     private static List<String> _WARNING_LIST = new ArrayList<String>();
     
@@ -80,7 +80,7 @@ public final class GsdFileParser {
             String warning = String.format("Can't corret handle, at line %s, the Property: %s",
                                            lineCounter,
                                            line);
-            LOG.warn(warning);
+            LOG.warn("Can't corret handle, at line {}, the Property: {}", lineCounter, line);
             _WARNING_LIST.add(warning);
             throw e;
         }

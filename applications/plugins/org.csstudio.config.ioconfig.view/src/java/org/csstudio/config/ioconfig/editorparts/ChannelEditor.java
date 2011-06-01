@@ -41,7 +41,6 @@ import org.csstudio.config.ioconfig.model.pbmodel.ModuleChannelPrototypeDBO;
 import org.csstudio.config.ioconfig.model.tools.NodeMap;
 import org.csstudio.config.ioconfig.view.DeviceDatabaseErrorDialog;
 import org.csstudio.config.ioconfig.view.IOConfigActivatorUI;
-import org.csstudio.platform.logging.CentralLogger;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.jface.layout.GridDataFactory;
 import org.eclipse.jface.layout.GridLayoutFactory;
@@ -64,6 +63,8 @@ import org.eclipse.swt.widgets.Group;
 import org.eclipse.swt.widgets.Spinner;
 import org.eclipse.swt.widgets.Text;
 import org.eclipse.ui.plugin.AbstractUIPlugin;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * Editor for {@link ChannelDBO} node's
@@ -74,6 +75,8 @@ import org.eclipse.ui.plugin.AbstractUIPlugin;
  */
 public class ChannelEditor extends AbstractNodeEditor {
 
+    private static final Logger LOG = LoggerFactory.getLogger(ChannelEditor.class);
+    
 	/**
 	 * @author hrickens
 	 * @author $Author: $
@@ -128,7 +131,7 @@ public class ChannelEditor extends AbstractNodeEditor {
                 }
             } catch (PersistenceException e) {
                 DeviceDatabaseErrorDialog.open(null, "Can't calulate Epics Address. Database error!", e);
-                CentralLogger.getInstance().error(this, e);
+                LOG.error("Can't calulate Epics Address. Database error!", e);
             }
 		}
 
@@ -286,7 +289,7 @@ public class ChannelEditor extends AbstractNodeEditor {
                 loadSensors = Repository.loadSensors(getChannel().getIoName());
             } catch (PersistenceException e) {
                 DeviceDatabaseErrorDialog.open(null, "Can't read sensor ID's from Database", e);
-                CentralLogger.getInstance().error(this, e);
+                LOG.error("Can't read sensor ID's from Database", e);
             }
             if (((loadSensors != null) && (loadSensors.size() > 0))) {
                 makeSensorField(comp, loadSensors);
