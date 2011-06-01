@@ -322,6 +322,12 @@
             skipOnLoad="false"
             widgetId="org.csstudio.sds.components.StripChart">
       </widgetPropertyPostProcessor>
+      <widgetPropertyPostProcessor
+            class="org.csstudio.sds.components.ActionButtonToggleStatePostProcessor"
+            propertyId="toggleButton"
+            skipOnLoad="false"
+            widgetId="org.csstudio.sds.components.ActionButton">
+      </widgetPropertyPostProcessor>
    </extension>
    <extension
          point="org.csstudio.sds.widgetPropertyPostProcessors">
