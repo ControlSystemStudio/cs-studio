@@ -40,7 +40,13 @@
  <p>Container widgets includes Display, Grouping Container, Linking Container and Tabbed Container.</p>
    <ul>
     <li><a href = "#getChild(java.lang.String)">getChild(name)</a></li>
-    <li><a href = "#getWidget(java.lang.String)">getWidget(name)</a></li>        
+    <li><a href = "#getWidget(java.lang.String)">getWidget(name)</a></li>
+    <li><a href = "#addChild(org.csstudio.opibuilder.model.AbstractWidgetModel)">addChild(model)</a></li>
+   <li><a href = "#addChildToRight(org.csstudio.opibuilder.model.AbstractWidgetModel)">addChildToRight(model)</a></li>
+   <li><a href = "#addChildToBottom(org.csstudio.opibuilder.model.AbstractWidgetModel)">addChildToBottom(model)</a></li>
+   <li><a href = "#removeChildByName(java.lang.String)">removeChildByName(name)</a></li>
+  <li><a href = "#removeAllChildren()">removeAllChildren()</a></li>
+                
    </ul>
   <a name = "PVWidgets"></a>
   <h3>Common methods to all PV widgets</h3>
@@ -213,6 +219,77 @@ public AbstractBaseEditPart <B>getWidget</B>(java.lang.String&nbsp;name)</PRE>
 <b>Example:</b><br>
 	<pre class="example_code">var gauge2 = widget.getWidget("gauge_2"); //get the gauge widget whose name is gauge_2
 gauge2.setPropertyValue("enable", false); //child is a widget</pre>
+</DD>
+</DL>
+<HR>
+
+
+<A NAME="addChild(org.csstudio.opibuilder.model.AbstractWidgetModel)"><!-- --></A><H3>
+addChild</H3>
+<PRE>
+public void <B>addChild</B>(org.csstudio.opibuilder.model.AbstractWidgetModel&nbsp;widgetModel)</PRE>
+<DL>
+<DD>Add a child widget to the container.
+<P>
+<DD><DL>
+<DT><B>Parameters:</B><DD><CODE>widgetModel</CODE> - model of the widget to be added.<DT>
+<B>See Also:</B><DD><A HREF="ScriptUtil/WidgetUtil.html#createWidgetModel(java.lang.String)"><CODE>WidgetUtil.createWidgetModel(String)</CODE></A></DL>
+</DD>
+</DL>
+<HR>
+
+<A NAME="addChildToRight(org.csstudio.opibuilder.model.AbstractWidgetModel)"><!-- --></A><H3>
+addChildToRight</H3>
+<PRE>
+public void <B>addChildToRight</B>(org.csstudio.opibuilder.model.AbstractWidgetModel&nbsp;widgetModel)</PRE>
+<DL>
+<DD>Add a child widget to the right of the container.
+<P>
+<DD><DL>
+<DT><B>Parameters:</B><DD><CODE>widgetModel</CODE> - model of the widget to be added.<DT>
+<B>See Also:</B><DD><A HREF="ScriptUtil/WidgetUtil.html#createWidgetModel(java.lang.String)"><CODE>WidgetUtil.createWidgetModel(String)</CODE></A></DL>
+</DD>
+</DL>
+<HR>
+
+<A NAME="addChildToBottom(org.csstudio.opibuilder.model.AbstractWidgetModel)"><!-- --></A><H3>
+addChildToBottom</H3>
+<PRE>
+public void <B>addChildToBottom</B>(org.csstudio.opibuilder.model.AbstractWidgetModel&nbsp;widgetModel)</PRE>
+<DL>
+<DD>Add a child widget to the bottom of the container.
+<P>
+<DD><DL>
+<DT><B>Parameters:</B><DD><CODE>widgetModel</CODE> - model of the widget to be added.<DT>
+<B>See Also:</B><DD><A HREF="ScriptUtil/WidgetUtil.html#createWidgetModel(java.lang.String)"><CODE>WidgetUtil.createWidgetModel(String)</CODE></A></DL>
+</DD>
+</DL>
+<HR>
+
+<A NAME="removeChildByName(java.lang.String)"><!-- --></A><H3>
+removeChildByName</H3>
+<PRE>
+public void <B>removeChildByName</B>(java.lang.String&nbsp;widgetName)</PRE>
+<DL>
+<DD>Remove a child widget by its name.
+<P>
+<DD><DL>
+<DT><B>Parameters:</B><DD><CODE>widgetName</CODE> - name of the widget.
+<DT><B>Throws:</B>
+<DD><CODE>java.lang.RuntimeException</CODE> - if the widget name does not exist.</DL>
+</DD>
+</DL>
+<HR>
+
+<A NAME="removeAllChildren()"><!-- --></A><H3>
+removeAllChildren</H3>
+<PRE>
+public void <B>removeAllChildren</B>()</PRE>
+<DL>
+<DD>Remove all children.
+<P>
+<DD><DL>
+</DL>
 </DD>
 </DL>
 <HR>

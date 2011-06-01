@@ -40,6 +40,7 @@ import org.eclipse.gef.EditPolicy;
 import org.eclipse.gef.Request;
 import org.eclipse.gef.RequestConstants;
 import org.eclipse.osgi.util.NLS;
+import org.eclipse.swt.widgets.Display;
 
 /**
  * The editpart for text input widget.)
@@ -160,9 +161,19 @@ public class TextInputEditpart extends TextIndicatorEditPart {
 			removeAllPropertyChangeHandlers(LabelModel.PROP_TEXT);
 			IWidgetPropertyChangeHandler handler = new IWidgetPropertyChangeHandler() {
 				public boolean handleChange(Object oldValue, Object newValue,
-						IFigure figure) {
+						final IFigure figure) {
 					String text = (String) newValue;
-					// ((TextFigure)figure).setText(text);
+					
+					if(getPV() == null){
+					 ((TextFigure)figure).setText(text);
+					 if(getWidgetModel().isAutoSize()){
+							Display.getCurrent().timerExec(10, new Runnable() {
+								public void run() {
+										performAutoSize(figure);
+								}
+							});
+						}
+					}
 
 					try {
 						setPVValue(AbstractPVWidgetModel.PROP_PVNAME,

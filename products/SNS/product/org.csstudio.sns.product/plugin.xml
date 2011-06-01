@@ -35,13 +35,13 @@
             name="Css">
          <property
                name="windowImages"
-               value="icons/css16.gif,icons/css32.gif,icons/css48.gif,icons/css64.gif,icons/css128.gif"/>
+               value="icons/css16.png,icons/css32.png,icons/css48.png,icons/css64.png,icons/css128.png"/>
          <property
                name="aboutImage"
-               value="icons/about.gif"/>
+               value="icons/aboutSide.png"/>
          <property
                name="aboutText"
-               value="Control System Studio (CSS) is a combined&#x0A;effort of several parties, including&#x0A;- DESY (Hamburg, Germany)&#x0A;- SNS (Oak Ridge, TN).&#x0A;&#x0A;It provides a collection of control system&#x0A;tools in a common environment, based&#x0A;on Eclipse.&#x0A;&#x0A;See http://ics-web.sns.ornl.gov/css"/>
+               value="Control System Studio (CSS) is a combined&#x0A;effort of several parties, including&#x0A;- SNS (Oak Ridge, TN).&#x0A;- BNL (Brookhaven, NY)&#x0A;- DESY (Hamburg, Germany)&#x0A;&#x0A;&#x0A;It provides a collection of control system&#x0A;tools in a common environment, based&#x0A;on Eclipse.&#x0A;&#x0A;See http://ics-web.sns.ornl.gov/css"/>
          <property
                name="appName"
                value="Css">
@@ -68,7 +68,7 @@
          </property>
          <property
             name="introBrandingImage"
-            value="product:icons/css64.gif"/>
+            value="product:icons/css64.png"/>
          <property
             name="introBrandingImageText"
             value="SNS CSS"/>
