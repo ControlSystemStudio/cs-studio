@@ -4,12 +4,14 @@
 <product name="Css" id="org.csstudio.sns.product.product" application="org.csstudio.sns.product.application" version="3.0.0.qualifier" useFeatures="true" includeLaunchers="true">
 
    <aboutInfo>
-      <image path="/org.csstudio.sns.product/icons/about.gif"/>
+      <image path="/org.csstudio.sns.product/icons/aboutSide.png"/>
       <text>
          Control System Studio (CSS) is a combined
 effort of several parties, including
-- DESY (Hamburg, Germany)
 - SNS (Oak Ridge, TN).
+- BNL (Brookhaven, NY)
+- DESY (Hamburg, Germany)
+
 
 It provides a collection of control system
 tools in a common environment, based
@@ -29,7 +31,7 @@ See http://ics-web.sns.ornl.gov/css
       <vmArgsMac>-d32</vmArgsMac>
    </launcherArgs>
 
-   <windowImages i16="/org.csstudio.sns.product/icons/css16.gif" i32="/org.csstudio.sns.product/icons/css32.gif" i48="/org.csstudio.sns.product/icons/css48.gif" i64="/org.csstudio.sns.product/icons/css64.gif" i128="/org.csstudio.sns.product/icons/css128.gif"/>
+   <windowImages i16="/org.csstudio.sns.product/icons/css16.png" i32="/org.csstudio.sns.product/icons/css32.png" i48="/org.csstudio.sns.product/icons/css48.png" i64="/org.csstudio.sns.product/icons/css64.png" i128="/org.csstudio.sns.product/icons/css128.png"/>
 
    <splash
       location="org.csstudio.sns.product"
