@@ -19,13 +19,7 @@
          <command
                commandId="org.csstudio.display.pvmanager.open.empty.pvtable"
                icon="icons/pvtable.png"
-               label="Open Empty PVTable"
-               style="push">
-         </command>
-         <command
-               commandId="org.csstudio.display.pvmanager.open.new.pvtable"
-               icon="icons/pvtable.png"
-               label="Open New PVTable"
+               label="Open PVTable"
                style="push">
          </command>
       </menuContribution>

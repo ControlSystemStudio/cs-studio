@@ -9,7 +9,9 @@ import static org.epics.pvmanager.extra.ExpressionLanguage.group;
 
 import java.io.ByteArrayInputStream;
 import java.io.InputStream;
+import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collection;
 import java.util.List;
 import java.util.logging.Logger;
 
@@ -25,9 +27,18 @@ import org.eclipse.core.resources.IWorkspaceRoot;
 import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.IProgressMonitor;
+import org.eclipse.jface.action.IMenuListener;
+import org.eclipse.jface.action.IMenuManager;
+import org.eclipse.jface.action.MenuManager;
+import org.eclipse.jface.action.Separator;
 import org.eclipse.jface.viewers.CellEditor;
 import org.eclipse.jface.viewers.EditingSupport;
+import org.eclipse.jface.viewers.ISelection;
+import org.eclipse.jface.viewers.ISelectionChangedListener;
+import org.eclipse.jface.viewers.ISelectionProvider;
 import org.eclipse.jface.viewers.IStructuredContentProvider;
+import org.eclipse.jface.viewers.SelectionChangedEvent;
+import org.eclipse.jface.viewers.StructuredSelection;
 import org.eclipse.jface.viewers.TableViewer;
 import org.eclipse.jface.viewers.TableViewerColumn;
 import org.eclipse.jface.viewers.TextCellEditor;
@@ -44,6 +55,7 @@ import org.eclipse.swt.graphics.Rectangle;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Composite;
+import org.eclipse.swt.widgets.Menu;
 import org.eclipse.swt.widgets.ScrollBar;
 import org.eclipse.swt.widgets.Table;
 import org.eclipse.swt.widgets.TableColumn;
@@ -51,6 +63,7 @@ import org.eclipse.ui.IEditorInput;
 import org.eclipse.ui.IEditorPart;
 import org.eclipse.ui.IEditorSite;
 import org.eclipse.ui.IWorkbench;
+import org.eclipse.ui.IWorkbenchActionConstants;
 import org.eclipse.ui.IWorkbenchPage;
 import org.eclipse.ui.IWorkbenchWindow;
 import org.eclipse.ui.PartInitException;
@@ -70,7 +83,7 @@ import org.epics.pvmanager.extra.DynamicGroup;
  * @author shroffk
  * 
  */
-public class PVTableEditor extends EditorPart {
+public class PVTableEditor extends EditorPart implements ISelectionProvider {
 
 	private boolean editingDone = false;
 
@@ -104,7 +117,7 @@ public class PVTableEditor extends EditorPart {
 	}
 
 	public static final String ID = PVTableEditor.class.getName();
-	private static Logger logger = Logger.getLogger(ID);
+	private static Logger logger = Logger.getLogger(PVTableEditor.class.getName());
 
 	private Table table;
 	private TableViewer tableViewer;
@@ -146,6 +159,22 @@ public class PVTableEditor extends EditorPart {
 	public PVTableEditor() {
 	}
 
+	/**
+	 * Add a List of ProcessVariable to the pv Table Editor
+	 * 
+	 * @param processVariables
+	 */
+	public void addProcessVariables(Collection<ProcessVariable> processVariables){
+		if(processVariables != null){
+			PVTableModel model = (PVTableModel) tableViewer.getInput();
+			if (model != null) {
+				for (ProcessVariable processVariable : processVariables) {
+					model.addPVName(processVariable);
+					group.add(latestValueOf(channel(processVariable.getName())));					
+				}
+			}
+		}
+	}
 	/*
 	 * (non-Javadoc)
 	 * 
@@ -293,7 +322,7 @@ public class PVTableEditor extends EditorPart {
 	public void dispose() {
 		super.dispose();
 		pv.removePVValueChangeListener(pvListener);
-		// TODO Clear the group
+		unregisterSelectionListener();
 	}
 
 	/*
@@ -449,6 +478,22 @@ public class PVTableEditor extends EditorPart {
 
 		tableViewer.setContentProvider(new ContentProvider());
 		tableViewer.setInput(pvTableModel);
+		registerSelectionListener();
+		// This is new code
+		// First we create a menu Manager
+		MenuManager menuManager = new MenuManager();
+		menuManager.setRemoveAllWhenShown(true);
+		menuManager.addMenuListener(new IMenuListener() {
+			
+			@Override
+			public void menuAboutToShow(IMenuManager manager) {
+				manager.add(new Separator(IWorkbenchActionConstants.MB_ADDITIONS));
+			}
+		});
+		Menu menu = menuManager.createContextMenu(table);
+		// Set the MenuManager
+		table.setMenu(menu);
+		getSite().registerContextMenu(menuManager, this);
 
 		table.addMouseMoveListener(new MouseMoveListener() {
 
@@ -522,6 +567,58 @@ public class PVTableEditor extends EditorPart {
 	@Override
 	public void setFocus() {
 		this.table.setFocus();
+	}
+	
+	private List<ISelectionChangedListener> selectionListeners = new ArrayList<ISelectionChangedListener>();
+
+	@Override
+	public void addSelectionChangedListener(ISelectionChangedListener listener) {
+		selectionListeners.add(listener);
+	}
+	
+	private ISelectionChangedListener changeNotification = new ISelectionChangedListener() {
+		
+		@Override
+		public void selectionChanged(SelectionChangedEvent event) {
+			SelectionChangedEvent newEvent = new SelectionChangedEvent(PVTableEditor.this, getSelection());
+			for (ISelectionChangedListener listener : selectionListeners) {
+				listener.selectionChanged(newEvent);
+			}
+		}
+	};
+	
+	private void registerSelectionListener() {
+		tableViewer.addSelectionChangedListener(changeNotification);
+	}
+	
+	private void unregisterSelectionListener() {
+		tableViewer.removeSelectionChangedListener(changeNotification);
+	}
+
+	@Override
+	public ISelection getSelection() {
+		ISelection tableSelection = tableViewer.getSelection();
+		if (tableSelection instanceof StructuredSelection) {
+			List<ProcessVariable> variables = new ArrayList<ProcessVariable>();
+			for (Object element : ((StructuredSelection) tableSelection).toArray()) {
+				variables.add(((PVTableModel.Item) element).getProcessVariableName());
+			}
+			variables.remove(null);
+			return new StructuredSelection(variables);
+		} else {
+			return null;
+		}
+	}
+
+	@Override
+	public void removeSelectionChangedListener(
+			ISelectionChangedListener listener) {
+		selectionListeners.remove(listener);
+	}
+
+	@Override
+	public void setSelection(ISelection selection) {
+		throw new UnsupportedOperationException("Not implemented yet");
 	}
 
 }

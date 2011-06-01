@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <feature
       id="org.csstudio.nsls2.intro.feature"
-      label="nsls2 intro Feature"
-      version="1.0.0.qualifier"
+      label="CSS-NSLS-II Intro"
+      version="3.0.0.qualifier"
       provider-name="Kunal Shroff &lt;kshroff@bnl.gov&gt;, Gabriele Carcassi &lt;carcassi@bnl.gov&gt; - BNL">
 
    <description url="http://www.example.com/description">
