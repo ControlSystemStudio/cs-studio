@@ -9,32 +9,32 @@
             id="org.csstudio.utility.channel.contribution1"
             objectClass="gov.bnl.channelfinder.api.Channel">
          <action
-               class="org.csstudio.utility.channel.actions.AddTagAction"
-               icon="icons/add_tag.png"
-               id="org.csstudio.utility.channel.addTag"
-               label="Add Tag"
-               menubarPath="org.csstudio.ui.menu.popup.channel">
-         </action>
-         <action
                class="org.csstudio.utility.channel.actions.RemoveTagAction"
                icon="icons/remove_tag.png"
                id="org.csstudio.utility.channel.removeTag"
                label="Remove Tag"
-               menubarPath="org.csstudio.ui.menu.popup.channel">
+               menubarPath="org.csstudio.ui.menu.popup.channel/main">
+         </action>
+         <action
+               class="org.csstudio.utility.channel.actions.AddTagAction"
+               icon="icons/add_tag.png"
+               id="org.csstudio.utility.channel.addTag"
+               label="Add Tag"
+               menubarPath="org.csstudio.ui.menu.popup.channel/main">
          </action>
          <action
                class="org.csstudio.utility.channel.actions.InfoAction"
                icon="icons/channel_info.png"
                id="org.csstudio.utility.channel.info"
                label="Show Channel Info"
-               menubarPath="org.csstudio.ui.menu.popup.channel">
+               menubarPath="org.csstudio.ui.menu.popup.channel/main">
          </action>
       </objectContribution>
    </extension>
    <extension
          point="org.eclipse.ui.menus">
       <menuContribution
-            locationURI="popup:org.eclipse.ui.popup.any?after=additions">
+            locationURI="popup:org.eclipse.ui.popup.any?after=css">
          <menu
                id="org.csstudio.ui.menu.popup.channel"
                label="Channels">
@@ -48,6 +48,9 @@
                   </iterate>
                </with>
             </visibleWhen>
+            <separator
+                  name="main">
+            </separator>
          </menu>
       </menuContribution>
    </extension>
