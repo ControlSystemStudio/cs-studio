@@ -4,13 +4,6 @@
 <toc label="CSS Core" topic="html/core/index.html">
 	<topic label="User Interface" href="html/core/userinterface.html"/>
 	<topic label="Configuration" href="html/core/config/index.html">
-		<topic label="Help" href="html/core/config/confighelp.html"/>
-		<topic label="Help Server" href="html/core/config/confighelpserver.html"/>
-		<topic label="Install/Update" href="html/core/config/configinstallupdate.html"/>
-		<topic label="Locale" href="html/core/config/configlocale.html"/>
-		<topic label="Logging" href="html/core/config/configlogging.html"/>
-		<topic label="Console Appender" href="html/core/config/configconsoleappender.html"/>
-		<topic label="File Appender" href="html/core/config/configfileappender.html"/>
-		<topic label="JMS Appender" href="html/core/config/configjmsappender.html"/>
+  <anchor id="configuration"/>
 	</topic>
 </toc>
