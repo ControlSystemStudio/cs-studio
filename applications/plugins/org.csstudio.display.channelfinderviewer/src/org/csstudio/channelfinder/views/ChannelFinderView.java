@@ -9,7 +9,10 @@ import java.util.logging.Logger;
 
 import org.csstudio.channelfinder.util.FindChannels;
 import org.eclipse.core.runtime.jobs.Job;
+import org.eclipse.jface.action.IMenuListener;
+import org.eclipse.jface.action.IMenuManager;
 import org.eclipse.jface.action.MenuManager;
+import org.eclipse.jface.action.Separator;
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.viewers.CellLabelProvider;
 import org.eclipse.jface.viewers.TableViewer;
@@ -30,6 +33,7 @@ import org.eclipse.swt.widgets.Menu;
 import org.eclipse.swt.widgets.Table;
 import org.eclipse.swt.widgets.TableColumn;
 import org.eclipse.swt.widgets.Text;
+import org.eclipse.ui.IWorkbenchActionConstants;
 import org.eclipse.ui.part.ViewPart;
 
 import com.swtdesigner.TableViewerColumnSorter;
@@ -131,6 +135,14 @@ public class ChannelFinderView extends ViewPart {
 		getSite().setSelectionProvider(tableViewer);
 		// Add Context menu
 		MenuManager menuManager = new MenuManager();
+		menuManager.addMenuListener(new IMenuListener() {
+
+			@Override
+			public void menuAboutToShow(IMenuManager manager) {
+				manager.add(new Separator(
+						IWorkbenchActionConstants.MB_ADDITIONS));
+			}
+		});
 		Menu menu = menuManager.createContextMenu(table);
 		table.setMenu(menu);
 		getSite().registerContextMenu(menuManager, tableViewer);
