@@ -47,51 +47,24 @@ zu inbstallieren ist.
 <p>
 Beachten, dass &Auml;nderungen einen Neustart der Anwendung erfordern;
 zur Laufzeit haben sie keine Wirkung!
-
 </p>
-<h2>Default Settings</h2>
+<h2>Voreinstellungen</h2>
 <p>
-Jeder Benutzer kann f&uuml;r jeden Workspace Voreistellungen ver&auml;ndern;
-an einer Stelle werden spezielle Voreinstellungs-Auswahlen angeboten.
-Es ist die "preferences.ini"-Datei auf dem Unterverzeichnis
-org.csstudio.platform.libs.epics plugin .
-System-Administratoren k&ouml;nnen hier die Voreinstellungen ver&auml;ndern.
+Jeder Benutzer kann die EPICS Einstellungen f&uuml;r seinen Workspace w&auml;hlen.
+System-Administratoren k&ouml;nnen in der Datei "preferences.ini" im
+plugin org.csstudio.platform.libs.epics sehen, welche Voreinstellungen
+m&ouml;glich sind, und dann eine entsprechende "plugin_customization.ini" Datei
+vorbereiten, welche die Voreinstellungen f&uuml;r eine lokale,
+Institut-spezifische CSS Version bereitstellt.
 </p>
 <h2>Installation</h2>
 <p>
-Wenn man die 'pure java'-Version (auch CAJ genannt) benutzt,
-sind keine weiteren Einstellungen zu ver&auml;ndern.
+Die  'pure java'-Version (auch CAJ genannt) ist jederzeit verwendbar.
 </p>
 <p>
-F&uuml;r die JNI-Version mu&szlig; man OS-spezifische Bin&auml;rdateien installieren.	
-Das Plugin enth&auml;lt z.Zt. Bin&auml;rdateien f&uuml;r:
-</p>
-<ul>
-<li>RedHat Linux (x86, g++ 3.4.6, kernel 2.6.9-55.0.2.EL)<br />
-    Build 2007, Aug 20 with EPICS base R3.14.8.2 from the jca-2.3.1 sources.
-    Kompiliert als eine Bibliothek ohne weitere Abh&auml;ngigkeiten zu mitgenutzten EPICS libs.
-</li>
-<li>Linux (x86_64)<br />
-    Von ernesto@slac.stanford.edu,
-    Auf Basis der Quellprogramme R3.14.9 und jca-2.3.1 
-</li>
-<li>Mac OS X (10.4.8 on PPC)<br />
-    Build 2007, Aug 14 with EPICS base R3.14.8.2 from the jca-2.3.1 sources.
-    Kompiliert als eine Bibliothek ohne weitere Abh&auml;ngigkeiten zu mitgenutzten EPICS libs.
-
-</li>
-</ul>
-
-<h2>Internal Issues</h2>
-<p>
-Wir m&ouml;chten vermeiden, den ((DY)LD_LIBRARY_)Pfad zu setzten.
-Deswegen ist die JCA-Bibliothek vorzugsweise ohne weitere Verweise 
-auf andere mitgenutzte Biobliotheken &uuml;bersetzt, insbesondere ohne 
-Verweise zu EPICS ca und Com Bibliotheken.
-</p>
-<p>
-Die Quelltexte dieses Plugins enthalten Kopien der JCA und CAJ-Quellen
-und ein README.txt zur Kompilation.	
+F&uuml;r die JNI-Version mu&szlig; man OS-spezifische Bin&auml;rdateien installieren.
+N&auml;heres hierzu ist in der Datei README.txt im 	org.csstudio.platform.libs.epics
+plugin zu finden.
 </p>
 </body>
 </html>
