@@ -267,7 +267,7 @@
                 </parameter>
             </command>
             <separator
-                  name="helpEnd"
+                  name="group.assist"
                   visible="true">
             </separator>
             <separator
