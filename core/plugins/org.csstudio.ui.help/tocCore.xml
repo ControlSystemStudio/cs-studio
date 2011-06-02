@@ -3,7 +3,8 @@
 
 <toc label="CSS Core" topic="html/core/index.html">
 	<topic label="User Interface" href="html/core/userinterface.html"/>
-	<topic label="Configuration" href="html/core/config/index.html">
-  <anchor id="configuration"/>
+	<topic label="Preferences" href="html/core/preference.html">
+    <anchor id="preference"/>
 	</topic>
+ <anchor id="core"/>
 </toc>
