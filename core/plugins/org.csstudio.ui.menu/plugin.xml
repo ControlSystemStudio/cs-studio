@@ -60,6 +60,14 @@
       <menuContribution
             allPopups="false"
             locationURI="popup:org.eclipse.ui.popup.any?after=additions">
+         <separator
+               name="css"
+               visible="true">
+         </separator>
+      </menuContribution>
+      <menuContribution
+            allPopups="false"
+            locationURI="popup:org.eclipse.ui.popup.any?after=css">
          <menu
                id="org.csstudio.ui.menu.popup.processvariable"
                label="%PVName">
