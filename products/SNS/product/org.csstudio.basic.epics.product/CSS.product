@@ -4,7 +4,7 @@
 <product name="Css" id="org.csstudio.basic.epics.product.product" application="org.csstudio.basic.epics.application" version="3.0.0.qualifier" useFeatures="true" includeLaunchers="true">
 
    <aboutInfo>
-      <image path="/org.csstudio.basic.epics.product/icons/about.gif"/>
+      <image path="/org.csstudio.basic.epics.product/icons/aboutSide.png"/>
       <text>
          Control System Studio (CSS) is a combined
 effort of several parties, including
@@ -29,13 +29,13 @@ See http://ics-web.sns.ornl.gov/css
       <vmArgsMac>-d32</vmArgsMac>
    </launcherArgs>
 
-   <windowImages i16="/org.csstudio.basic.epics.product/icons/css16.gif" i32="/org.csstudio.basic.epics.product/icons/css32.gif" i48="/org.csstudio.basic.epics.product/icons/css48.gif" i64="/org.csstudio.basic.epics.product/icons/css64.gif" i128="/org.csstudio.basic.epics.product/icons/css1128.gif"/>
+   <windowImages i16="/org.csstudio.basic.epics.product/icons/css16.png" i32="/org.csstudio.basic.epics.product/icons/css32.png" i48="/org.csstudio.basic.epics.product/icons/css48.png" i64="/org.csstudio.basic.epics.product/icons/css64.png" i128="/org.csstudio.basic.epics.product/icons/css128.png"/>
 
    <splash
       location="org.csstudio.basic.epics.product"
-      startupProgressRect="5,200,445,15"
-      startupMessageRect="7,180,445,20"
-      startupForegroundColor="0000FF" />
+      startupProgressRect="20,220,340,15"
+      startupMessageRect="20,200,340,20"
+      startupForegroundColor="FFFFFF" />
    <launcher name="css">
       <linux icon="/org.csstudio.basic.epics.product/icons/css48.xpm"/>
       <macosx icon="/org.csstudio.basic.epics.product/icons/css.icns"/>

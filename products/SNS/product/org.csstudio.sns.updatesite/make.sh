@@ -9,8 +9,6 @@
 #
 # Kay Kasemir
 
-cd /Kram/MerurialRepos/cs-studio/products/SNS/product/org.csstudio.sns.updatesite
-
 source settings.sh
 
 # Fetch new copy of sources

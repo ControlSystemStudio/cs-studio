@@ -37,7 +37,7 @@
             locationURI="popup:org.eclipse.ui.popup.any?after=css">
          <menu
                id="org.csstudio.ui.menu.popup.channel"
-               label="Channels">
+               label="Channel">
             <visibleWhen>
                <with
                      variable="activeMenuSelection">
@@ -46,11 +46,12 @@
                            type="gov.bnl.channelfinder.api.Channel">
                      </adapt>
                   </iterate>
+                  <and>
+                     <count value="+"/>
+                  </and>
                </with>
             </visibleWhen>
-            <separator
-                  name="main">
-            </separator>
+            <separator name="main"/>
          </menu>
       </menuContribution>
    </extension>

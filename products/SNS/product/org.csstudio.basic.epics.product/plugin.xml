@@ -17,7 +17,7 @@
          point="org.eclipse.ui.perspectives">
       <perspective
             class="org.csstudio.basic.epics.BasicPerspective"
-            icon="icons/css16.gif"
+            icon="icons/css16.png"
             id="org.csstudio.basic.epics.BasicPerspective"
             name="Control System Studio">
       </perspective>
@@ -34,15 +34,15 @@
          </property>
          <property
                name="startupForegroundColor"
-               value="0000FF">
+               value="FFFFFF">
          </property>
          <property
                name="startupMessageRect"
-               value="7,180,445,20">
+               value="20,200,340,20">
          </property>
          <property
                name="startupProgressRect"
-               value="5,200,445,15">
+               value="20,220,340,15">
          </property>
          <property
                name="preferenceCustomization"
@@ -50,7 +50,7 @@
          </property>
          <property
                name="aboutImage"
-               value="icons/about.gif">
+               value="icons/aboutSide.png">
          </property>
          <property
                name="aboutText"
@@ -58,7 +58,7 @@
          </property>
          <property
                name="windowImages"
-               value="icons/css16.gif,icons/css32.gif,icons/css48.gif,icons/css64.gif,icons/css1128.gif">
+               value="icons/css16.png,icons/css32.png,icons/css48.png,icons/css64.png,icons/css128.png">
          </property>
          <property
             name="introTitle"
