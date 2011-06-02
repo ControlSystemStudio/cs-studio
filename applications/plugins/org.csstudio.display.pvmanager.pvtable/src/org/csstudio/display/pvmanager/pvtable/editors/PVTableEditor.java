@@ -57,6 +57,7 @@ import org.eclipse.swt.events.ControlAdapter;
 import org.eclipse.swt.events.ControlEvent;
 import org.eclipse.swt.events.MouseEvent;
 import org.eclipse.swt.events.MouseMoveListener;
+import org.eclipse.swt.graphics.GC;
 import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.graphics.Point;
 import org.eclipse.swt.graphics.Rectangle;
@@ -68,6 +69,7 @@ import org.eclipse.swt.widgets.Menu;
 import org.eclipse.swt.widgets.ScrollBar;
 import org.eclipse.swt.widgets.Table;
 import org.eclipse.swt.widgets.TableColumn;
+import org.eclipse.swt.widgets.TableItem;
 import org.eclipse.ui.IEditorInput;
 import org.eclipse.ui.IEditorPart;
 import org.eclipse.ui.IEditorSite;
@@ -405,7 +407,6 @@ public class PVTableEditor extends EditorPart implements ISelectionProvider {
 			}
 
 			protected CellEditor getCellEditor(Object element) {
-				System.out.println("Call to cell Editor");
 				return new TextCellEditor(table);
 			}
 
@@ -525,38 +526,114 @@ public class PVTableEditor extends EditorPart implements ISelectionProvider {
 		tblclmnTime.setText("Time");
 
 		// Navigation and Focus support
-		CellNavigationStrategy naviStrat = new CellNavigationStrategy() {
+		final CellNavigationStrategy naviStrat = new CellNavigationStrategy() {
 
-			public ViewerCell findSelectedCell(ColumnViewer viewer,
-					ViewerCell currentSelectedCell, Event event) {
-				ViewerCell cell = super.findSelectedCell(viewer,
-						currentSelectedCell, event);
-
-				if (cell != null) {
-					tableViewer.getTable().showColumn(
-							tableViewer.getTable().getColumn(
-									cell.getColumnIndex()));
+			/**
+			 * is the given event an event which moves the selection to another
+			 * cell
+			 * 
+			 * @param viewer
+			 *            the viewer we are working for
+			 * @param event
+			 *            the key event
+			 * @return <code>true</code> if a new cell is searched
+			 */
+			public boolean isNavigationEvent(ColumnViewer viewer, Event event) {
+				switch (event.keyCode) {
+				case SWT.ARROW_UP:
+				case SWT.ARROW_DOWN:
+				case SWT.ARROW_LEFT:
+				case SWT.ARROW_RIGHT:
+				case SWT.CR:
+				case SWT.HOME:
+				case SWT.PAGE_DOWN:
+				case SWT.PAGE_UP:
+				case SWT.END:
+					return true;
+				default:
+					return false;
 				}
-
-				return cell;
 			}
 
+			/**
+			 * @param viewer
+			 *            the viewer we are working for
+			 * @param currentSelectedCell
+			 *            the cell currently selected
+			 * @param event
+			 *            the key event
+			 * @return the cell which is highlighted next or <code>null</code>
+			 *         if the default implementation is taken. E.g. it's fairly
+			 *         impossible to react on PAGE_DOWN requests
+			 */
+			public ViewerCell findSelectedCell(ColumnViewer viewer,
+					ViewerCell currentSelectedCell, Event event) {
+
+				ViewerCell cell = null;
+				switch (event.keyCode) {
+//				case SWT.ARROW_LEFT:
+//					if (currentSelectedCell != null) {
+//						cell = currentSelectedCell.getNeighbor(
+//								ViewerCell.ABOVE, false);
+//					}
+//					if (cell != null) {
+//						tableViewer.getTable().setSelection(
+//								(TableItem) cell.getItem());
+//					}
+//					break;
+//				case SWT.ARROW_RIGHT:
+//					if (currentSelectedCell != null) {
+//						cell = currentSelectedCell.getNeighbor(
+//								ViewerCell.BELOW, false);
+//					}
+//					if (cell != null) {
+//						tableViewer.getTable().setSelection(
+//								(TableItem) cell.getItem());
+//					}
+//					break;
+				case SWT.CR:
+					if (currentSelectedCell != null) {
+						cell = currentSelectedCell.getNeighbor(
+								ViewerCell.BELOW, false);
+					}
+					if (cell != null) {
+						tableViewer.getTable().setSelection(
+								(TableItem) cell.getItem());
+					}
+					break;
+				case SWT.ARROW_UP:
+					if (currentSelectedCell != null) {
+						cell = currentSelectedCell.getNeighbor(
+								ViewerCell.ABOVE, false);
+					}
+					break;
+				case SWT.ARROW_DOWN:
+					if (currentSelectedCell != null) {
+						cell = currentSelectedCell.getNeighbor(
+								ViewerCell.BELOW, false);
+					}
+					break;
+				default:
+					cell = super.findSelectedCell(viewer, currentSelectedCell,
+							event);
+				}
+				return cell;
+			}
 		};
 
 		TableViewerFocusCellManager focusCellManager = new TableViewerFocusCellManager(
-				tableViewer, new FocusCellOwnerDrawHighlighter(tableViewer),
-				naviStrat);
+				tableViewer, new FocusCellOwnerDrawHighlighter(tableViewer) {
+
+				}, naviStrat);
 
 		// Editing support
 		ColumnViewerEditorActivationStrategy actSupport = new ColumnViewerEditorActivationStrategy(
 				tableViewer) {
 			protected boolean isEditorActivationEvent(
 					ColumnViewerEditorActivationEvent event) {
-				System.out.println(getViewer().getColumnViewerEditor()
-						.getFocusCell());
 				return event.eventType == ColumnViewerEditorActivationEvent.TRAVERSAL
 						|| event.eventType == ColumnViewerEditorActivationEvent.MOUSE_DOUBLE_CLICK_SELECTION
-						|| (event.eventType == ColumnViewerEditorActivationEvent.KEY_PRESSED && event.keyCode == SWT.CR)
+						|| (event.eventType == ColumnViewerEditorActivationEvent.KEY_PRESSED && event.keyCode > 31 && event.keyCode < 127)
 						|| event.eventType == ColumnViewerEditorActivationEvent.PROGRAMMATIC;
 			}
 
