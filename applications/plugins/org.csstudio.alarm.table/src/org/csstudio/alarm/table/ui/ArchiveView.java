@@ -74,6 +74,8 @@ import org.eclipse.ui.PartInitException;
 import org.eclipse.ui.part.ViewPart;
 import org.eclipse.ui.views.IViewDescriptor;
 import org.eclipse.ui.views.IViewRegistry;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * View for messages read from oracel DB.
@@ -84,6 +86,8 @@ import org.eclipse.ui.views.IViewRegistry;
  * @since 19.07.2007
  */
 public class ArchiveView extends ViewPart {
+    
+    private static final Logger LOG = LoggerFactory.getLogger(ArchiveView.class);
 
     /** The Id of this Object. */
     public static final String ID = ArchiveView.class.getName();
@@ -238,7 +242,7 @@ public class ArchiveView extends ViewPart {
             @Override
             public void widgetSelected(final SelectionEvent e) {
                 super.widgetSelected(e);
-                CentralLogger.getInstance().debug(this, "Get next subset of messages");
+                LOG.debug("Get next subset of messages");
                 _filter.setFrom(_jmsMessageList.getLatestMessageDate());
                 readDatabase();
             }
@@ -551,8 +555,7 @@ public class ArchiveView extends ViewPart {
         } catch (final NumberFormatException e) {
             CentralLogger
                     .getInstance()
-                    .warn(this,
-                            "Invalid value format in preference for maximum message number");
+                    .warn("Invalid value format in preference for maximum message number");
             maximumMessageNumber = 5000;
         }
         _filter.setMaximumMessageNumber(maximumMessageNumber);
@@ -561,6 +564,7 @@ public class ArchiveView extends ViewPart {
             @Override
             public void onReadFinished(final Result result) {
                 Display.getDefault().syncExec(new Runnable() {
+                    @Override
                     public void run() {
                         final MessageBox messageBox = new MessageBox(Display
                                 .getDefault().getActiveShell(), SWT.OK
@@ -585,6 +589,7 @@ public class ArchiveView extends ViewPart {
             @Override
             public void onMessageCountFinished(final Result result) {
                 Display.getDefault().syncExec(new Runnable() {
+                    @Override
                     public void run() {
                         final MessageBox messageBox = new MessageBox(Display
                                 .getDefault().getActiveShell(), SWT.OK
@@ -601,8 +606,7 @@ public class ArchiveView extends ViewPart {
                             deleteMessagesFromDatabase();
                             break;
                         case SWT.CANCEL:
-                            CentralLogger.getInstance().debug(this,
-                                    Messages.ViewArchive_23);
+                            LOG.debug(Messages.ViewArchive_23);
                             break;
                         }
 
@@ -619,6 +623,7 @@ public class ArchiveView extends ViewPart {
             @Override
             public void onDeletionFinished(final Result result) {
                 Display.getDefault().syncExec(new Runnable() {
+                    @Override
                     public void run() {
                         final MessageBox messageBox = new MessageBox(Display
                                 .getDefault().getActiveShell(), SWT.OK
@@ -642,8 +647,7 @@ public class ArchiveView extends ViewPart {
         } catch (final NumberFormatException e) {
             CentralLogger
                     .getInstance()
-                    .warn(this,
-                            "Invalid value format in preference for maximum message number");
+                    .warn("Invalid value format in preference for maximum message number");
             maximumMessageNumber = 500;
         }
         _filter.setMaximumMessageNumber(maximumMessageNumber);
@@ -652,6 +656,7 @@ public class ArchiveView extends ViewPart {
             public void onReadFinished(final Result result) {
                 Display.getDefault().syncExec(new Runnable() {
 
+                    @Override
                     public void run() {
                         _jmsMessageList.deleteAllMessages();
                         _tableViewer.refresh();
@@ -710,11 +715,9 @@ public class ArchiveView extends ViewPart {
         }
         final String patternChain = memento.getString("filterPatterns");
         if (patternChain == null) {
-            CentralLogger.getInstance().debug(this,
-                    "No filter patterns from previous session"); //$NON-NLS-1$
+            LOG.debug("No filter patterns from previous session"); //$NON-NLS-1$
         } else {
-            CentralLogger.getInstance().debug(this,
-                    "Get filter patterns from previous session"); //$NON-NLS-1$
+            LOG.debug("Get filter patterns from previous session"); //$NON-NLS-1$
             final String[] patterns = patternChain.split(";");
             for (final String pattern : patterns) {
                 _filterSettingHistory.add(pattern);
@@ -729,8 +732,7 @@ public class ArchiveView extends ViewPart {
     public void saveState(final IMemento memento) {
         super.saveState(memento);
         if ((memento != null) && (_filterSettingHistory != null)) {
-            CentralLogger.getInstance().debug(this,
-                    "Save latest filter setting history in IMemento: ");
+            LOG.debug("Save latest filter setting history in IMemento: ");
             final StringBuffer patternChain = new StringBuffer();
             for (final String pattern : _filterSettingHistory) {
                 patternChain.append(pattern);

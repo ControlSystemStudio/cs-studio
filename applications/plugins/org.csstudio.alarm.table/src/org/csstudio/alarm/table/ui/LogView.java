@@ -25,7 +25,6 @@ import javax.annotation.CheckForNull;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
-import org.apache.log4j.Logger;
 import org.csstudio.alarm.service.declaration.AlarmConnectionException;
 import org.csstudio.alarm.service.declaration.AlarmMessageKey;
 import org.csstudio.alarm.service.declaration.AlarmPreference;
@@ -46,7 +45,6 @@ import org.csstudio.alarm.table.preferences.log.LogViewPreferenceConstants;
 import org.csstudio.alarm.table.service.IAlarmSoundService;
 import org.csstudio.alarm.table.service.ITopicsetService;
 import org.csstudio.alarm.table.ui.messagetable.MessageTable;
-import org.csstudio.platform.logging.CentralLogger;
 import org.eclipse.core.runtime.preferences.InstanceScope;
 import org.eclipse.jface.action.Action;
 import org.eclipse.jface.dialogs.MessageDialog;
@@ -54,7 +52,6 @@ import org.eclipse.jface.viewers.TableViewer;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.ControlAdapter;
 import org.eclipse.swt.events.ControlEvent;
-import org.eclipse.swt.events.ControlListener;
 import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.graphics.Font;
@@ -77,6 +74,8 @@ import org.eclipse.ui.part.ViewPart;
 import org.eclipse.ui.preferences.ScopedPreferenceStore;
 import org.eclipse.ui.views.IViewDescriptor;
 import org.eclipse.ui.views.IViewRegistry;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * View with table for all log messages from JMS.
@@ -84,8 +83,9 @@ import org.eclipse.ui.views.IViewRegistry;
  * @author jhatje
  */
 public class LogView extends ViewPart {
-    private static final Logger LOG = CentralLogger.getInstance().getLogger(LogView.class);
 
+    private static final Logger LOG = LoggerFactory.getLogger(LogView.class);
+    
     /**
      * The ID of this view.
      */
@@ -353,7 +353,7 @@ public class LogView extends ViewPart {
                 }
                 _messageArea.hide();
             } catch (final AlarmConnectionException e) {
-                LOG.error("Connecting for topicSet " + topicSet.getName() + " failed", e);
+                LOG.error("Connecting for topicSet {} failed", topicSet.getName() , e);
                 _messageArea
                         .showMessage(SWT.ICON_WARNING,
                                      Messages.LogView_connectionErrorTitle,
@@ -410,7 +410,7 @@ public class LogView extends ViewPart {
         try {
             result = Integer.parseInt(maximumNumberOfMessagesPref);
         } catch (final NumberFormatException e) {
-            LOG.warn("Invalid value format for maximum number" + " of messages in preferences");
+            LOG.warn("Invalid value format for maximum number of messages in preferences");
         }
         return result;
     }
@@ -662,7 +662,7 @@ public class LogView extends ViewPart {
         if (_currentTopicSetName == null) {
             LOG.debug("No topic set from previous session"); //$NON-NLS-1$
         } else {
-            LOG.debug("Get topic set from previous session: " + _currentTopicSetName); //$NON-NLS-1$
+            LOG.debug("Get topic set from previous session: {}", _currentTopicSetName); //$NON-NLS-1$
         }
     }
 
@@ -673,7 +673,7 @@ public class LogView extends ViewPart {
     public void saveState(final IMemento memento) {
         super.saveState(memento);
         if ( (memento != null) && (_currentTopicSetName != null)) {
-            LOG.debug("Save latest topic set in IMemento: " + _currentTopicSetName);
+            LOG.debug("Save latest topic set in IMemento: {}", _currentTopicSetName);
             memento.putString("previousTopicSet", _currentTopicSetName); //$NON-NLS-1$
         }
     }
