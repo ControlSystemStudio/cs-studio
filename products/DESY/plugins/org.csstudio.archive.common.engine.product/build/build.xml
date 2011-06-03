@@ -47,6 +47,9 @@
               <include name="plugins/${projectDir}/**/*"/>
               <exclude name="plugins/${projectDir}/build/build.xml"/>
           </fileset>
+          <fileset dir="${csStudioLocation}/products/DESY/plugins/${projectDir}">
+              <filename name="log4j.properties"/>
+          </fileset>
           <fileset dir="${targetPlatformLocation}">
             <include name="plugins/**/*"/>
           </fileset>
