@@ -36,8 +36,11 @@ import org.eclipse.jface.viewers.CellNavigationStrategy;
 import org.eclipse.jface.viewers.ColumnViewer;
 import org.eclipse.jface.viewers.ColumnViewerEditor;
 import org.eclipse.jface.viewers.ColumnViewerEditorActivationEvent;
+import org.eclipse.jface.viewers.ColumnViewerEditorActivationListener;
 import org.eclipse.jface.viewers.ColumnViewerEditorActivationStrategy;
+import org.eclipse.jface.viewers.ColumnViewerEditorDeactivationEvent;
 import org.eclipse.jface.viewers.EditingSupport;
+import org.eclipse.jface.viewers.FocusCellHighlighter;
 import org.eclipse.jface.viewers.FocusCellOwnerDrawHighlighter;
 import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.jface.viewers.ISelectionChangedListener;
@@ -53,6 +56,7 @@ import org.eclipse.jface.viewers.TextCellEditor;
 import org.eclipse.jface.viewers.Viewer;
 import org.eclipse.jface.viewers.ViewerCell;
 import org.eclipse.swt.SWT;
+import org.eclipse.swt.custom.TableCursor;
 import org.eclipse.swt.events.ControlAdapter;
 import org.eclipse.swt.events.ControlEvent;
 import org.eclipse.swt.events.MouseEvent;
@@ -622,8 +626,7 @@ public class PVTableEditor extends EditorPart implements ISelectionProvider {
 		};
 
 		TableViewerFocusCellManager focusCellManager = new TableViewerFocusCellManager(
-				tableViewer, new FocusCellOwnerDrawHighlighter(tableViewer) {
-
+				tableViewer, new FocusCellHighlighter(tableViewer) {
 				}, naviStrat);
 
 		// Editing support
@@ -645,6 +648,30 @@ public class PVTableEditor extends EditorPart implements ISelectionProvider {
 						| ColumnViewerEditor.TABBING_VERTICAL
 						| ColumnViewerEditor.KEYBOARD_ACTIVATION);
 
+		tableViewer.getColumnViewerEditor().addEditorActivationListener(new ColumnViewerEditorActivationListener() {
+
+			public void afterEditorActivated(
+					ColumnViewerEditorActivationEvent event) {
+
+			}
+
+			public void afterEditorDeactivated(
+					ColumnViewerEditorDeactivationEvent event) {
+				
+			}
+
+			public void beforeEditorActivated(
+					ColumnViewerEditorActivationEvent event) {
+	
+			}
+
+			public void beforeEditorDeactivated(
+					ColumnViewerEditorDeactivationEvent event) {
+				
+			}
+			
+		});
+		
 		tableViewer.setContentProvider(new ContentProvider());
 		tableViewer.setInput(pvTableModel);
 		registerSelectionListener();
