@@ -33,6 +33,7 @@
     <height>86</height>
     <name>Label_8</name>
     <transparent>false</transparent>
+    <show_scrollbar>false</show_scrollbar>
     <background_color>
       <color red="135" green="181" blue="255" />
     </background_color>
@@ -55,6 +56,7 @@
     <horizontal_alignment>1</horizontal_alignment>
     <actions hook="false" />
     <y>6</y>
+    <wrap_words>true</wrap_words>
     <tooltip />
     <x>17</x>
   </widget>
@@ -111,6 +113,7 @@
     <height>43</height>
     <name>Label_6</name>
     <transparent>false</transparent>
+    <show_scrollbar>false</show_scrollbar>
     <background_color>
       <color red="135" green="181" blue="255" />
     </background_color>
@@ -133,6 +136,7 @@
     <horizontal_alignment>1</horizontal_alignment>
     <actions hook="false" />
     <y>49</y>
+    <wrap_words>true</wrap_words>
     <tooltip />
     <x>311</x>
   </widget>
@@ -144,6 +148,7 @@
     <height>44</height>
     <name>Label_5</name>
     <transparent>false</transparent>
+    <show_scrollbar>false</show_scrollbar>
     <background_color>
       <color red="135" green="181" blue="255" />
     </background_color>
@@ -166,6 +171,7 @@
     <horizontal_alignment>1</horizontal_alignment>
     <actions hook="false" />
     <y>6</y>
+    <wrap_words>true</wrap_words>
     <tooltip />
     <x>311</x>
   </widget>
@@ -177,6 +183,7 @@
     <height>18</height>
     <name>Label_9</name>
     <transparent>true</transparent>
+    <show_scrollbar>false</show_scrollbar>
     <background_color>
       <color red="255" green="255" blue="255" />
     </background_color>
@@ -199,6 +206,7 @@
     <horizontal_alignment>1</horizontal_alignment>
     <actions hook="false" />
     <y>62</y>
+    <wrap_words>true</wrap_words>
     <tooltip />
     <x>65</x>
   </widget>
@@ -352,6 +360,7 @@ $(pv_value)</tooltip>
     <transparent>false</transparent>
     <selector_type>1</selector_type>
     <pv_name />
+    <show_scrollbar>false</show_scrollbar>
     <background_color>
       <color red="255" green="255" blue="255" />
     </background_color>
@@ -424,7 +433,7 @@ $(pv_value)</tooltip>
     <border_color>
       <color red="0" green="128" blue="255" />
     </border_color>
-    <y>256</y>
+    <y>348</y>
     <actions hook="false">
       <action type="EXECUTE_JAVASCRIPT">
         <path>scripts/WriteFileExample.js</path>
@@ -469,7 +478,7 @@ $(pv_value)</tooltip>
     <y>143</y>
     <tooltip>$(pv_name)
 $(pv_value)</tooltip>
-    <x>50</x>
+    <x>51</x>
   </widget>
   <widget typeId="org.csstudio.opibuilder.widgets.checkbox" version="1.0">
     <border_alarm_sensitive>false</border_alarm_sensitive>
@@ -515,6 +524,7 @@ $(pv_value)</tooltip>
     <height>16</height>
     <name>Label_2</name>
     <transparent>false</transparent>
+    <show_scrollbar>false</show_scrollbar>
     <background_color>
       <color red="0" green="255" blue="128" />
     </background_color>
@@ -537,6 +547,7 @@ $(pv_value)</tooltip>
     <horizontal_alignment>1</horizontal_alignment>
     <actions hook="false" />
     <y>113</y>
+    <wrap_words>true</wrap_words>
     <tooltip>$(pv_name)
 $(pv_value)</tooltip>
     <x>231</x>
@@ -549,6 +560,7 @@ $(pv_value)</tooltip>
     <height>16</height>
     <name>Label_5</name>
     <transparent>false</transparent>
+    <show_scrollbar>false</show_scrollbar>
     <background_color>
       <color red="0" green="255" blue="128" />
     </background_color>
@@ -571,6 +583,7 @@ $(pv_value)</tooltip>
     <horizontal_alignment>1</horizontal_alignment>
     <actions hook="false" />
     <y>459</y>
+    <wrap_words>true</wrap_words>
     <tooltip>$(pv_name)
 $(pv_value)</tooltip>
     <x>215</x>
@@ -583,6 +596,7 @@ $(pv_value)</tooltip>
     <height>20</height>
     <name>dialogFilePath</name>
     <transparent>false</transparent>
+    <show_scrollbar>false</show_scrollbar>
     <background_color>
       <color red="255" green="255" blue="255" />
     </background_color>
@@ -605,6 +619,7 @@ $(pv_value)</tooltip>
     <horizontal_alignment>0</horizontal_alignment>
     <actions hook="false" />
     <y>519</y>
+    <wrap_words>true</wrap_words>
     <tooltip />
     <x>50</x>
   </widget>
@@ -695,7 +710,7 @@ $(pv_value)</tooltip>
     <multiline_input>true</multiline_input>
     <auto_size>false</auto_size>
     <scripts />
-    <height>240</height>
+    <height>95</height>
     <forecolor_alarm_sensitive>false</forecolor_alarm_sensitive>
     <name>textInput</name>
     <format_type>0</format_type>
@@ -703,6 +718,7 @@ $(pv_value)</tooltip>
     <transparent>false</transparent>
     <selector_type>0</selector_type>
     <pv_name />
+    <show_scrollbar>false</show_scrollbar>
     <background_color>
       <color red="255" green="255" blue="255" />
     </background_color>
@@ -711,7 +727,7 @@ $(pv_value)</tooltip>
     </foreground_color>
     <widget_type>Text Input</widget_type>
     <enabled>true</enabled>
-    <text />
+    <text>Double click to type text</text>
     <backcolor_alarm_sensitive>false</backcolor_alarm_sensitive>
     <precision>0</precision>
     <font>
@@ -728,9 +744,44 @@ $(pv_value)</tooltip>
     </border_color>
     <horizontal_alignment>0</horizontal_alignment>
     <actions hook="false" />
-    <y>203</y>
+    <y>348</y>
     <tooltip>$(pv_name)
 $(pv_value)</tooltip>
+    <x>51</x>
+  </widget>
+  <widget typeId="org.csstudio.opibuilder.widgets.Label" version="1.0">
+    <visible>true</visible>
+    <vertical_alignment>0</vertical_alignment>
+    <auto_size>false</auto_size>
+    <scripts />
+    <height>125</height>
+    <name>readLabel</name>
+    <transparent>false</transparent>
+    <show_scrollbar>true</show_scrollbar>
+    <background_color>
+      <color red="255" green="255" blue="255" />
+    </background_color>
+    <foreground_color>
+      <color red="0" green="0" blue="0" />
+    </foreground_color>
+    <widget_type>Label</widget_type>
+    <enabled>true</enabled>
+    <text />
+    <font>
+      <opifont.name>Default</opifont.name>
+    </font>
+    <width>581</width>
+    <border_style>1</border_style>
+    <rules />
+    <border_width>1</border_width>
+    <border_color>
+      <color red="0" green="128" blue="255" />
+    </border_color>
+    <horizontal_alignment>0</horizontal_alignment>
+    <actions hook="false" />
+    <y>203</y>
+    <wrap_words>true</wrap_words>
+    <tooltip />
     <x>51</x>
   </widget>
 </display>

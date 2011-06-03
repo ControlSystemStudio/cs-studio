@@ -36,10 +36,10 @@ public class LabelEditPart extends AbstractWidgetEditPart {
 		labelFigure.setOpaque(!getWidgetModel().isTransparent());
 		labelFigure.setHorizontalAlignment(getWidgetModel().getHorizontalAlignment());
 		labelFigure.setVerticalAlignment(getWidgetModel().getVerticalAlignment());
-		labelFigure.setSelectable(
-				!getWidgetModel().getActionsInput().getActionsList().isEmpty() ||
-				getWidgetModel().getTooltip().trim().length() > 0);
+		labelFigure.setSelectable(determinSelectable());
 		labelFigure.setText(getWidgetModel().getText());		
+		labelFigure.setWrapWords(getWidgetModel().isWrapWords());
+		labelFigure.setShowScrollbar(getWidgetModel().isShowScrollbar());
 		return labelFigure;
 	}
 	
@@ -81,9 +81,7 @@ public class LabelEditPart extends AbstractWidgetEditPart {
 		IWidgetPropertyChangeHandler clickableHandler = new IWidgetPropertyChangeHandler() {
 			
 			public boolean handleChange(Object oldValue, Object newValue, IFigure figure) {
-				((WrappableTextFigure)figure).setSelectable(
-						!getWidgetModel().getActionsInput().getActionsList().isEmpty() || 
-						getWidgetModel().getTooltip().trim().length() > 0);
+				((WrappableTextFigure)figure).setSelectable(determinSelectable());
 				return false;
 			}
 		};
@@ -149,8 +147,23 @@ public class LabelEditPart extends AbstractWidgetEditPart {
 		};
 		setPropertyChangeHandler(LabelModel.PROP_ALIGN_V, handler);
 		
-		
-
+		handler = new IWidgetPropertyChangeHandler() {
+			
+			public boolean handleChange(Object oldValue, Object newValue, IFigure figure) {
+				((WrappableTextFigure)figure).setWrapWords((Boolean)newValue);
+				return false;
+			}
+		};
+		setPropertyChangeHandler(LabelModel.PROP_WRAP_WORDS, handler);
+	
+		handler = new IWidgetPropertyChangeHandler() {
+			
+			public boolean handleChange(Object oldValue, Object newValue, IFigure figure) {
+				((WrappableTextFigure)figure).setShowScrollbar((Boolean)newValue);
+				return false;
+			}
+		};
+		setPropertyChangeHandler(LabelModel.PROP_SHOW_SCROLLBAR, handler);
 		
 	}
 
@@ -179,6 +192,11 @@ public class LabelEditPart extends AbstractWidgetEditPart {
 			return ((TextFigure)getFigure());
 
 		return super.getAdapter(key);
+	}
+	
+	private boolean determinSelectable(){
+		return !getWidgetModel().getActionsInput().getActionsList().isEmpty() ||
+		getWidgetModel().getTooltip().trim().length() > 0;
 	}
 
 }
