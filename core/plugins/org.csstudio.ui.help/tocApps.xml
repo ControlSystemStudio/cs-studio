@@ -22,9 +22,6 @@
 		<anchor id="debugging"/>
 	</topic>			
 	
-	<topic label="Configuration" href="html/applications/configuration.html">
-		<anchor id="configuration"/>
-	</topic>	
 	
 	<topic label="Management" href="html/applications/management.html">
 		<anchor id="management"/>
