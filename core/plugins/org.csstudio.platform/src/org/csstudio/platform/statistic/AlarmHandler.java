@@ -81,7 +81,6 @@ public class AlarmHandler {
 				 * set absolute limit on
 				 */
 				CentralLogger.getInstance().warn(
-						this,
 						getApplication() + " : " + getDescriptor()
 								+ "above absolute High limit! Value: " + value
 								+ "Info: " + collector.getInfo());
@@ -99,7 +98,6 @@ public class AlarmHandler {
 				 * set absolute limit on
 				 */
 				CentralLogger.getInstance().warn(
-						this,
 						getApplication() + " : " + getDescriptor() + " : >"
 								+ getHighRelativeLimit() + "% "
 								+ "above floating mean value ("
