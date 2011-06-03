@@ -47,6 +47,8 @@ import org.eclipse.core.runtime.PlatformObject;
 public class MyEpicsV3PV extends PlatformObject
             implements PV, ConnectionListener, MonitorListener
 {
+    // CHECKSTYLE:OFF
+    
     /** Use plain mode?
      *  @see #EPICS_V3_PV(String, boolean)
      */
@@ -697,4 +699,5 @@ public class MyEpicsV3PV extends PlatformObject
     {
         return "EPICS_V3_PV '" + name + "'";
     }
+    // CHECKSTYLE:ON
 }

@@ -25,6 +25,7 @@ import java.io.File;
 import java.io.IOException;
 import java.net.URISyntaxException;
 import java.net.URL;
+import java.util.Iterator;
 import java.util.List;
 
 import javax.annotation.Nonnull;
@@ -49,7 +50,23 @@ import com.google.common.collect.Lists;
 
 /**
  * Tests for a numeric channel with different .ADEL, .MDEL settings whether the update events
- * of {@link PV} are correctly triggered.   
+ * of {@link PV} are correctly triggered.  
+ * 
+ * Attention! <br/>
+ * Epics does not guarantee that a connection to an EPICS PV with ADEL/MDEL == x yields a 
+ * value stream of i(0)..i(n), in which <br/>
+ * <code>abs(i(j)-i(j+1)) >= x, 0 < j < n-1</code> <br/>
+ * is always true. The very first value abs(i(0)-i(1)) may not be larger than the specified deadband.
+ * 
+ * That is due to the internals of Epics. On connection the very first update event is always the 
+ * most recent value - NOT the most recent value according to the 'ARCHIVE' or 'MONITOR' connection. 
+ * Only from the second value update on, those values are delivered that correspond to the ARCHIVE 
+ * or MONITOR fields in the IOC.
+ * 
+ * Hence, two identically configured connections that observe the very same PV may yield 
+ * different value streams for identical time intervals depending on when precisely they have been
+ * started (and stopped and restarted and so on), AND they do not ensure that consecutive values present
+ * in the delivered stream feature the configured deadband either!
  * 
  * @author bknerr
  * @since 31.05.2011
@@ -59,11 +76,11 @@ public class PvMdelVsAdelHeadlessTest {
     private static Double ADEL = 1.1;
     private static Double MDEL = 0.9;
     
-    final List<Double> _values = Lists.newLinkedList();
-    
     private SoftIoc _softIoc;
 
     private final class TestListener implements PVListener {
+        public final List<Double> _values = Lists.newLinkedList();
+
         /**
          * Constructor.
          */
@@ -74,7 +91,9 @@ public class PvMdelVsAdelHeadlessTest {
         public void pvValueUpdate(@Nonnull final PV pv) {
             IDoubleValue value = (IDoubleValue) pv.getValue();
             synchronized (_values) {
-                _values.add(Double.valueOf(value.getValue()));
+                Double v = Double.valueOf(value.getValue());
+                _values.add(v);
+                System.out.println(v);
             }
         }
         @Override
@@ -92,61 +111,74 @@ public class PvMdelVsAdelHeadlessTest {
         _softIoc = new SoftIoc(cfg);
         _softIoc.start();
         
-        // ATTENTION: dont use EpicsPlugin.ID, since then the bundle is activated and the default prefs
-        // are read immediately
+        // ATTENTION: dont use EpicsPlugin.ID, since then that bundle is activated and the default prefs
+        // are read immediately into the EpicsPlugin singleton. 
         IEclipsePreferences prefs = new DefaultScope().getNode("org.csstudio.platform.libs.epics");
+        // Then this 
         prefs.put("use_pure_java", "false");
     }
     
     
     @Test
-    public void testMdelForAiRecord() throws Exception {
-        testPVMdel("SoftIocTest:adelVsMdel_ai", "VALUE", MDEL);
-    }
-    @Test
     public void testMdelForCalcRecord() throws Exception {
-        testPVMdel("SoftIocTest:adelVsMdel", "VALUE", MDEL);
-    }
-    @Test
-    public void testAdelForAiRecord() throws Exception {
-        testPVMdel("SoftIocTest:adelVsMdel_ai", "ARCHIVE", ADEL);
+        testPV("SoftIocTest:adelVsMdel", "VALUE", MDEL);
     }
     @Test
     public void testAdelForCalcRecord() throws Exception {
-        testPVMdel("SoftIocTest:adelVsMdel", "ARCHIVE", ADEL);
+        testPV("SoftIocTest:adelVsMdel", "ARCHIVE", ADEL);
+    }
+    @Test
+    public void testMdelForAiRecord() throws Exception {
+        testPV("SoftIocTest:adelVsMdel_ai", "VALUE", MDEL);
+    }
+    @Test
+    public void testAdelForAiRecord() throws Exception {
+        testPV("SoftIocTest:adelVsMdel_ai", "ARCHIVE", ADEL);
     }
 
-    private void testPVMdel(@Nonnull final String pvName, 
-                            @Nonnull final String monitorMode,
-                            @Nonnull final Double expDeadband) throws Exception {
+    
+    private void testPV(@Nonnull final String pvName, 
+                        @Nonnull final String monitorMode,
+                        @Nonnull final Double expDeadband) throws Exception {
         PV pv = new MyEpicsPVFactory().createPV(pvName, monitorMode);
-        addListenerAndRunPV(pv);
-        checkForUpdateSensitivity(expDeadband);
+        TestListener listener = addListenerAndRunPV(pv);
+        checkForUpdateSensitivity(listener._values, expDeadband);
     }
 
-    private void addListenerAndRunPV(@Nonnull final PV pv) throws Exception, InterruptedException {
-        pv.addListener(new TestListener());
+    private TestListener addListenerAndRunPV(@Nonnull final PV pv) throws Exception, InterruptedException {
+        final TestListener listener = new TestListener();
+        pv.addListener(listener);
         pv.start();
         while(true) {
-            synchronized (_values) {
-                if (_values.size() >= 2) {
+            synchronized (listener._values) {
+                if (listener._values.size() >= 4) { // at least 4 values
                     break;
                 }
             }
             Thread.sleep(100l);
         }
         pv.stop();
+        
+        return listener;
     }
 
-    private void checkForUpdateSensitivity(final double deadband) {
-        synchronized (_values) {
-            Assert.assertTrue(_values.size() > 1);
-            Double lastValue = _values.get(0) - (deadband + 0.1);
-            for (Double value : _values) {
-                Assert.assertTrue(Math.abs(value - lastValue) > deadband);
-                lastValue = value;
+    private void checkForUpdateSensitivity(final List<Double> values, final double deadband) {
+        synchronized (values) {
+            try {
+                Assert.assertTrue(values.size() > 2); 
+                Iterator<Double> iterator = values.iterator();
+                // forget the first value, which may or may not adhere to the specified deadband 
+                iterator.next();
+                // get the second value as first value, and init last value 
+                Double lastValue = iterator.next() - (deadband + 0.1);
+                for (;iterator.hasNext();) {
+                    Double value = (Double) iterator.next();
+                    Assert.assertTrue(Math.abs(value - lastValue) > deadband);
+                    
+                }
+            } finally {
+                values.clear();
             }
-            _values.clear();
         }
     }
     
