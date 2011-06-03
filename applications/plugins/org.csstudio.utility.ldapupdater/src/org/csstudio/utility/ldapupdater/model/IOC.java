@@ -19,7 +19,7 @@
  * PROJECT IN THE FILE LICENSE.HTML. IF THE LICENSE IS NOT INCLUDED YOU MAY FIND A COPY
  * AT HTTP://WWW.DESY.DE/LEGAL/LICENSE.HTM
  */
-package org.csstudio.utility.ldapUpdater.model;
+package org.csstudio.utility.ldapupdater.model;
 
 import java.io.Serializable;
 import java.util.HashMap;

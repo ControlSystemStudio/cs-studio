@@ -19,13 +19,13 @@
  * PROJECT IN THE FILE LICENSE.HTML. IF THE LICENSE IS NOT INCLUDED YOU MAY FIND A COPY
  * AT HTTP://WWW.DESY.DE/LEGAL/LICENSE.HTM
  */
-package org.csstudio.utility.ldapUpdater;
+package org.csstudio.utility.ldapupdater;
 
-import static org.csstudio.utility.ldapUpdater.preferences.LdapUpdaterPreference.LDAP_AUTO_INTERVAL;
-import static org.csstudio.utility.ldapUpdater.preferences.LdapUpdaterPreference.LDAP_AUTO_START;
-import static org.csstudio.utility.ldapUpdater.preferences.LdapUpdaterPreference.XMPP_PASSWORD;
-import static org.csstudio.utility.ldapUpdater.preferences.LdapUpdaterPreference.XMPP_SERVER;
-import static org.csstudio.utility.ldapUpdater.preferences.LdapUpdaterPreference.XMPP_USER;
+import static org.csstudio.utility.ldapupdater.preferences.LdapUpdaterPreference.LDAP_AUTO_INTERVAL;
+import static org.csstudio.utility.ldapupdater.preferences.LdapUpdaterPreference.LDAP_AUTO_START;
+import static org.csstudio.utility.ldapupdater.preferences.LdapUpdaterPreference.XMPP_PASSWORD;
+import static org.csstudio.utility.ldapupdater.preferences.LdapUpdaterPreference.XMPP_SERVER;
+import static org.csstudio.utility.ldapupdater.preferences.LdapUpdaterPreference.XMPP_USER;
 
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;

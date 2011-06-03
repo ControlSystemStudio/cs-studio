@@ -12,7 +12,7 @@
  * DISTRIBUTION OF THIS PROJECT IN THE FILE LICENSE.HTML. IF THE LICENSE IS NOT INCLUDED YOU MAY FIND A COPY AT
  * HTTP://WWW.DESY.DE/LEGAL/LICENSE.HTM
  */
-package org.csstudio.utility.ldapUpdater.service;
+package org.csstudio.utility.ldapupdater.service;
 
 import java.util.Map;
 import java.util.Set;
@@ -20,9 +20,9 @@ import java.util.Set;
 import javax.annotation.Nonnull;
 
 import org.csstudio.utility.ldap.treeconfiguration.LdapEpicsControlsConfiguration;
-import org.csstudio.utility.ldapUpdater.files.HistoryFileContentModel;
-import org.csstudio.utility.ldapUpdater.model.IOC;
-import org.csstudio.utility.ldapUpdater.model.Record;
+import org.csstudio.utility.ldapupdater.files.HistoryFileContentModel;
+import org.csstudio.utility.ldapupdater.model.IOC;
+import org.csstudio.utility.ldapupdater.model.Record;
 import org.csstudio.utility.treemodel.ContentModel;
 import org.csstudio.utility.treemodel.INodeComponent;
 

@@ -19,7 +19,7 @@
  * PROJECT IN THE FILE LICENSE.HTML. IF THE LICENSE IS NOT INCLUDED YOU MAY FIND A COPY
  * AT HTTP://WWW.DESY.DE/LEGAL/LICENSE.HTM
  */
-package org.csstudio.utility.ldapUpdater.preferences;
+package org.csstudio.utility.ldapupdater.preferences;
 
 import java.io.File;
 
@@ -27,7 +27,7 @@ import javax.annotation.Nonnull;
 
 import org.csstudio.domain.desy.net.HostAddress;
 import org.csstudio.domain.desy.preferences.AbstractPreference;
-import org.csstudio.utility.ldapUpdater.LdapUpdaterActivator;
+import org.csstudio.utility.ldapupdater.LdapUpdaterActivator;
 
 /**
  * LDAP updater preferences. 

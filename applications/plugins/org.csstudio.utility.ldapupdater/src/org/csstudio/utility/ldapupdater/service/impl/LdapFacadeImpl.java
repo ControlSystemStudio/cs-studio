@@ -21,7 +21,7 @@
  *
  * $Id$
  */
-package org.csstudio.utility.ldapUpdater.service.impl;
+package org.csstudio.utility.ldapupdater.service.impl;
 
 import static org.csstudio.utility.ldap.service.util.LdapUtils.any;
 import static org.csstudio.utility.ldap.service.util.LdapUtils.attributesForLdapEntry;
@@ -64,11 +64,11 @@ import org.csstudio.utility.ldap.service.util.LdapUtils;
 import org.csstudio.utility.ldap.treeconfiguration.LdapEpicsControlsConfiguration;
 import org.csstudio.utility.ldap.treeconfiguration.LdapEpicsControlsFieldsAndAttributes;
 import org.csstudio.utility.ldap.treeconfiguration.LdapFieldsAndAttributes;
-import org.csstudio.utility.ldapUpdater.model.IOC;
-import org.csstudio.utility.ldapUpdater.model.Record;
-import org.csstudio.utility.ldapUpdater.service.ILdapFacade;
-import org.csstudio.utility.ldapUpdater.service.ILdapServiceProvider;
-import org.csstudio.utility.ldapUpdater.service.LdapFacadeException;
+import org.csstudio.utility.ldapupdater.model.IOC;
+import org.csstudio.utility.ldapupdater.model.Record;
+import org.csstudio.utility.ldapupdater.service.ILdapFacade;
+import org.csstudio.utility.ldapupdater.service.ILdapServiceProvider;
+import org.csstudio.utility.ldapupdater.service.LdapFacadeException;
 import org.csstudio.utility.treemodel.ContentModel;
 import org.csstudio.utility.treemodel.CreateContentModelException;
 import org.csstudio.utility.treemodel.INodeComponent;

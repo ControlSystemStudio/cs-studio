@@ -19,7 +19,7 @@
  * PROJECT IN THE FILE LICENSE.HTML. IF THE LICENSE IS NOT INCLUDED YOU MAY FIND A COPY
  * AT HTTP://WWW.DESY.DE/LEGAL/LICENSE.HTM
  */
-package org.csstudio.utility.ldapUpdater.contextMenu;
+package org.csstudio.utility.ldapupdater.contextMenu;
 
 import java.util.Map;
 import java.util.Set;
@@ -31,12 +31,12 @@ import org.csstudio.platform.management.CommandParameters;
 import org.csstudio.platform.management.CommandResult;
 import org.csstudio.platform.management.IManagementCommand;
 import org.csstudio.utility.ldap.treeconfiguration.LdapEpicsControlsConfiguration;
-import org.csstudio.utility.ldapUpdater.LdapUpdaterActivator;
-import org.csstudio.utility.ldapUpdater.contextMenu.CommandEnumeration.IocModificationCommand;
-import org.csstudio.utility.ldapUpdater.model.Record;
-import org.csstudio.utility.ldapUpdater.service.ILdapUpdaterFileService;
-import org.csstudio.utility.ldapUpdater.service.ILdapUpdaterService;
-import org.csstudio.utility.ldapUpdater.service.LdapUpdaterServiceException;
+import org.csstudio.utility.ldapupdater.LdapUpdaterActivator;
+import org.csstudio.utility.ldapupdater.contextMenu.CommandEnumeration.IocModificationCommand;
+import org.csstudio.utility.ldapupdater.model.Record;
+import org.csstudio.utility.ldapupdater.service.ILdapUpdaterFileService;
+import org.csstudio.utility.ldapupdater.service.ILdapUpdaterService;
+import org.csstudio.utility.ldapupdater.service.LdapUpdaterServiceException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

@@ -20,14 +20,14 @@
  * AT HTTP://WWW.DESY.DE/LEGAL/LICENSE.HTM
  */
 
-package org.csstudio.utility.ldapUpdater.action;
+package org.csstudio.utility.ldapupdater.action;
 
 import javax.annotation.Nonnull;
 
 import org.csstudio.platform.management.CommandParameters;
 import org.csstudio.platform.management.CommandResult;
 import org.csstudio.platform.management.IManagementCommand;
-import org.csstudio.utility.ldapUpdater.LdapUpdaterServer;
+import org.csstudio.utility.ldapupdater.LdapUpdaterServer;
 
 /**
  * Shuts down the LdapUpdater service.

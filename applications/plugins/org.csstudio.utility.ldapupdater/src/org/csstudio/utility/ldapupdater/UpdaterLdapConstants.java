@@ -21,7 +21,7 @@
  *
  * $Id$
  */
-package org.csstudio.utility.ldapUpdater;
+package org.csstudio.utility.ldapupdater;
 
 /**
  * Constants for LDAP field names, popular values, and forbidden symbols in LDAP entry names.

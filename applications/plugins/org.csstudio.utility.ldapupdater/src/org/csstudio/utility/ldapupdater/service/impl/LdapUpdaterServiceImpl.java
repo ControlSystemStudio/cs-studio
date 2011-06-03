@@ -19,7 +19,7 @@
  * PROJECT IN THE FILE LICENSE.HTML. IF THE LICENSE IS NOT INCLUDED YOU MAY FIND A COPY
  * AT HTTP://WWW.DESY.DE/LEGAL/LICENSE.HTM
  */
-package org.csstudio.utility.ldapUpdater.service.impl;
+package org.csstudio.utility.ldapupdater.service.impl;
 
 import static org.csstudio.utility.ldap.service.util.LdapUtils.createLdapName;
 import static org.csstudio.utility.ldap.treeconfiguration.LdapEpicsControlsConfiguration.COMPONENT;
@@ -46,17 +46,17 @@ import org.csstudio.utility.ldap.service.util.LdapNameUtils;
 import org.csstudio.utility.ldap.treeconfiguration.LdapEpicsControlsConfiguration;
 import org.csstudio.utility.ldap.treeconfiguration.LdapEpicsControlsFieldsAndAttributes;
 import org.csstudio.utility.ldap.treeconfiguration.LdapFieldsAndAttributes;
-import org.csstudio.utility.ldapUpdater.UpdaterLdapConstants;
-import org.csstudio.utility.ldapUpdater.files.HistoryFileAccess;
-import org.csstudio.utility.ldapUpdater.files.HistoryFileContentModel;
-import org.csstudio.utility.ldapUpdater.mail.NotificationMailer;
-import org.csstudio.utility.ldapUpdater.model.IOC;
-import org.csstudio.utility.ldapUpdater.model.Record;
-import org.csstudio.utility.ldapUpdater.service.ILdapFacade;
-import org.csstudio.utility.ldapUpdater.service.ILdapUpdaterFileService;
-import org.csstudio.utility.ldapUpdater.service.ILdapUpdaterService;
-import org.csstudio.utility.ldapUpdater.service.LdapFacadeException;
-import org.csstudio.utility.ldapUpdater.service.LdapUpdaterServiceException;
+import org.csstudio.utility.ldapupdater.UpdaterLdapConstants;
+import org.csstudio.utility.ldapupdater.files.HistoryFileAccess;
+import org.csstudio.utility.ldapupdater.files.HistoryFileContentModel;
+import org.csstudio.utility.ldapupdater.mail.NotificationMailer;
+import org.csstudio.utility.ldapupdater.model.IOC;
+import org.csstudio.utility.ldapupdater.model.Record;
+import org.csstudio.utility.ldapupdater.service.ILdapFacade;
+import org.csstudio.utility.ldapupdater.service.ILdapUpdaterFileService;
+import org.csstudio.utility.ldapupdater.service.ILdapUpdaterService;
+import org.csstudio.utility.ldapupdater.service.LdapFacadeException;
+import org.csstudio.utility.ldapupdater.service.LdapUpdaterServiceException;
 import org.csstudio.utility.treemodel.ContentModel;
 import org.csstudio.utility.treemodel.INodeComponent;
 import org.slf4j.Logger;

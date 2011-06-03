@@ -20,9 +20,9 @@
  * AT HTTP://WWW.DESY.DE/LEGAL/LICENSE.HTM
  */
 
-package org.csstudio.utility.ldapUpdater.files;
+package org.csstudio.utility.ldapupdater.files;
 
-import static org.csstudio.utility.ldapUpdater.preferences.LdapUpdaterPreference.HISTORY_DAT_FILEPATH;
+import static org.csstudio.utility.ldapupdater.preferences.LdapUpdaterPreference.HISTORY_DAT_FILEPATH;
 
 import java.io.BufferedReader;
 import java.io.File;

@@ -19,7 +19,7 @@
  * PROJECT IN THE FILE LICENSE.HTML. IF THE LICENSE IS NOT INCLUDED YOU MAY FIND A COPY
  * AT HTTP://WWW.DESY.DE/LEGAL/LICENSE.HTM
  */
-package org.csstudio.utility.ldapUpdater.service.impl;
+package org.csstudio.utility.ldapupdater.service.impl;
 
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -31,15 +31,15 @@ import java.util.Set;
 
 import javax.annotation.Nonnull;
 
-import org.csstudio.utility.ldapUpdater.UpdaterLdapConstants;
-import org.csstudio.utility.ldapUpdater.files.BootFileContentParser;
-import org.csstudio.utility.ldapUpdater.files.FileBySuffixCollector;
-import org.csstudio.utility.ldapUpdater.mail.NotificationMailer;
-import org.csstudio.utility.ldapUpdater.model.IOC;
-import org.csstudio.utility.ldapUpdater.model.Record;
-import org.csstudio.utility.ldapUpdater.preferences.LdapUpdaterPreference;
-import org.csstudio.utility.ldapUpdater.service.ILdapUpdaterFileService;
-import org.csstudio.utility.ldapUpdater.service.LdapUpdaterServiceException;
+import org.csstudio.utility.ldapupdater.UpdaterLdapConstants;
+import org.csstudio.utility.ldapupdater.files.BootFileContentParser;
+import org.csstudio.utility.ldapupdater.files.FileBySuffixCollector;
+import org.csstudio.utility.ldapupdater.mail.NotificationMailer;
+import org.csstudio.utility.ldapupdater.model.IOC;
+import org.csstudio.utility.ldapupdater.model.Record;
+import org.csstudio.utility.ldapupdater.preferences.LdapUpdaterPreference;
+import org.csstudio.utility.ldapupdater.service.ILdapUpdaterFileService;
+import org.csstudio.utility.ldapupdater.service.LdapUpdaterServiceException;
 
 import com.google.common.base.Joiner;
 import com.google.common.base.Strings;

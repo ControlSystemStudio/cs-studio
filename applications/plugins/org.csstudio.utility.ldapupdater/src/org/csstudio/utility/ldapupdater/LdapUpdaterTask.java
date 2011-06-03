@@ -19,9 +19,9 @@
  * PROJECT IN THE FILE LICENSE.HTML. IF THE LICENSE IS NOT INCLUDED YOU MAY FIND A COPY
  * AT HTTP://WWW.DESY.DE/LEGAL/LICENSE.HTM
  */
-package org.csstudio.utility.ldapUpdater;
+package org.csstudio.utility.ldapupdater;
 
-import org.csstudio.utility.ldapUpdater.action.UpdateLdapAction;
+import org.csstudio.utility.ldapupdater.action.UpdateLdapAction;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

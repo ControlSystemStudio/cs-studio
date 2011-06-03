@@ -19,10 +19,10 @@
  * PROJECT IN THE FILE LICENSE.HTML. IF THE LICENSE IS NOT INCLUDED YOU MAY FIND A COPY
  * AT HTTP://WWW.DESY.DE/LEGAL/LICENSE.HTM
  */
-package org.csstudio.utility.ldapUpdater.action;
+package org.csstudio.utility.ldapupdater.action;
 
 import static org.csstudio.utility.ldap.treeconfiguration.LdapEpicsControlsConfiguration.IOC;
-import static org.csstudio.utility.ldapUpdater.preferences.LdapUpdaterPreference.IOC_DBL_DUMP_PATH;
+import static org.csstudio.utility.ldapupdater.preferences.LdapUpdaterPreference.IOC_DBL_DUMP_PATH;
 
 import java.io.File;
 import java.util.Map;
@@ -35,12 +35,12 @@ import org.csstudio.platform.management.CommandParameters;
 import org.csstudio.platform.management.CommandResult;
 import org.csstudio.platform.management.IManagementCommand;
 import org.csstudio.utility.ldap.treeconfiguration.LdapEpicsControlsConfiguration;
-import org.csstudio.utility.ldapUpdater.LdapUpdaterActivator;
-import org.csstudio.utility.ldapUpdater.LdapUpdaterUtil;
-import org.csstudio.utility.ldapUpdater.model.IOC;
-import org.csstudio.utility.ldapUpdater.service.ILdapUpdaterFileService;
-import org.csstudio.utility.ldapUpdater.service.ILdapUpdaterService;
-import org.csstudio.utility.ldapUpdater.service.LdapUpdaterServiceException;
+import org.csstudio.utility.ldapupdater.LdapUpdaterActivator;
+import org.csstudio.utility.ldapupdater.LdapUpdaterUtil;
+import org.csstudio.utility.ldapupdater.model.IOC;
+import org.csstudio.utility.ldapupdater.service.ILdapUpdaterFileService;
+import org.csstudio.utility.ldapupdater.service.ILdapUpdaterService;
+import org.csstudio.utility.ldapupdater.service.LdapUpdaterServiceException;
 import org.csstudio.utility.treemodel.ContentModel;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

@@ -19,7 +19,7 @@
  * PROJECT IN THE FILE LICENSE.HTML. IF THE LICENSE IS NOT INCLUDED YOU MAY FIND A COPY
  * AT HTTP://WWW.DESY.DE/LEGAL/LICENSE.HTM
  */
-package org.csstudio.utility.ldapUpdater;
+package org.csstudio.utility.ldapupdater;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -27,11 +27,11 @@ import javax.annotation.Nullable;
 import org.csstudio.domain.desy.service.osgi.OsgiServiceUnavailableException;
 import org.csstudio.utility.ldap.service.ILdapService;
 import org.csstudio.utility.ldap.service.LdapServiceTracker;
-import org.csstudio.utility.ldapUpdater.service.ILdapServiceProvider;
-import org.csstudio.utility.ldapUpdater.service.ILdapUpdaterFileService;
-import org.csstudio.utility.ldapUpdater.service.ILdapUpdaterService;
-import org.csstudio.utility.ldapUpdater.service.impl.LdapUpdaterFileServiceImpl;
-import org.csstudio.utility.ldapUpdater.service.impl.LdapUpdaterServiceImpl;
+import org.csstudio.utility.ldapupdater.service.ILdapServiceProvider;
+import org.csstudio.utility.ldapupdater.service.ILdapUpdaterFileService;
+import org.csstudio.utility.ldapupdater.service.ILdapUpdaterService;
+import org.csstudio.utility.ldapupdater.service.impl.LdapUpdaterFileServiceImpl;
+import org.csstudio.utility.ldapupdater.service.impl.LdapUpdaterServiceImpl;
 import org.osgi.framework.BundleActivator;
 import org.osgi.framework.BundleContext;
 import org.osgi.util.tracker.ServiceTracker;
@@ -50,7 +50,7 @@ public class LdapUpdaterActivator implements BundleActivator {
     /**
      * The id of this Java plug-in (value <code>{@value}</code> as defined in MANIFEST.MF.
      */
-    public static final String PLUGIN_ID = "org.csstudio.utility.ldapUpdater";
+    public static final String PLUGIN_ID = "org.csstudio.utility.ldapupdater";
 
     /**
      *  The shared instance

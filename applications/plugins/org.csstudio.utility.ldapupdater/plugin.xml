@@ -10,7 +10,7 @@
             thread="any"
             visible="false">
          <run 
-            class="org.csstudio.utility.ldapUpdater.LdapUpdaterServer">
+            class="org.csstudio.utility.ldapupdater.LdapUpdaterServer">
          </run>
       </application>
    </extension>
@@ -18,44 +18,44 @@
          id="product"
          point="org.eclipse.core.runtime.products">
       <product
-            application="org.csstudio.utility.ldapUpdater.LdapUpdaterApplication"
-            name="ldapUpdater">
+            application="org.csstudio.utility.ldapupdater.LdapUpdaterApplication"
+            name="ldapupdater">
          <property
                name="appName"
-               value="ldapUpdater">
+               value="ldapupdater">
          </property>
       </product>
    </extension>
    <extension
          point="org.csstudio.platform.managementCommands">
       <command
-            class="org.csstudio.utility.ldapUpdater.action.ShutdownLdapUpdaterAction"
-            id="org.csstudio.utility.ldapUpdater.action.ShutdownLdapUpdaterAction"
+            class="org.csstudio.utility.ldapupdater.action.ShutdownLdapUpdaterAction"
+            id="org.csstudio.utility.ldapupdater.action.ShutdownLdapUpdaterAction"
             label="Stop LDAP Updater Service">
       </command>
       <command
-            class="org.csstudio.utility.ldapUpdater.action.UpdateLdapAction"
-            id="org.csstudio.utility.ldapUpdater.action.UpdateLdapAction"
+            class="org.csstudio.utility.ldapupdater.action.UpdateLdapAction"
+            id="org.csstudio.utility.ldapupdater.action.UpdateLdapAction"
             label="Start LDAP Update">
       </command>
       <command
-      		class="org.csstudio.utility.ldapUpdater.contextMenu.IocManagement"
-      		id="org.csstudio.utility.ldapUpdater.action.IocManagement"
+      		class="org.csstudio.utility.ldapupdater.contextMenu.IocManagement"
+      		id="org.csstudio.utility.ldapupdater.action.IocManagement"
       		label="Modify IOC">
         <dynamicEnumerationParameter
-               class="org.csstudio.utility.ldapUpdater.contextMenu.IocEnumeration"
+               class="org.csstudio.utility.ldapupdater.contextMenu.IocEnumeration"
                id="ioc"
                label="IOC">
         </dynamicEnumerationParameter>
         <dynamicEnumerationParameter
-               class="org.csstudio.utility.ldapUpdater.contextMenu.CommandEnumeration"
+               class="org.csstudio.utility.ldapupdater.contextMenu.CommandEnumeration"
                id="command"
                label="Command">
         </dynamicEnumerationParameter>
       </command>
       <!--command
-            class="org.csstudio.utility.ldapUpdater.action.TidyUpLdapAction"
-            id="org.csstudio.utility.ldapUpdater.action.TidyUpLdapAction"
+            class="org.csstudio.utility.ldapupdater.action.TidyUpLdapAction"
+            id="org.csstudio.utility.ldapupdater.action.TidyUpLdapAction"
             label="Tidy up LDAP">
       </command-->      
     </extension>

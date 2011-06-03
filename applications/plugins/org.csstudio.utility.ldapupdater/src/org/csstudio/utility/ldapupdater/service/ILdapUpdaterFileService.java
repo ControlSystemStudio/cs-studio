@@ -19,7 +19,7 @@
  * PROJECT IN THE FILE LICENSE.HTML. IF THE LICENSE IS NOT INCLUDED YOU MAY FIND A COPY
  * AT HTTP://WWW.DESY.DE/LEGAL/LICENSE.HTM
  */
-package org.csstudio.utility.ldapUpdater.service;
+package org.csstudio.utility.ldapupdater.service;
 
 import java.io.File;
 import java.util.Map;
@@ -27,8 +27,8 @@ import java.util.Set;
 
 import javax.annotation.Nonnull;
 
-import org.csstudio.utility.ldapUpdater.model.IOC;
-import org.csstudio.utility.ldapUpdater.model.Record;
+import org.csstudio.utility.ldapupdater.model.IOC;
+import org.csstudio.utility.ldapupdater.model.Record;
 
 /**
  * TODO (bknerr) :

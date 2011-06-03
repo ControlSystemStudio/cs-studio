@@ -21,7 +21,7 @@
  *
  * $Id$
  */
-package org.csstudio.utility.ldapUpdater.service;
+package org.csstudio.utility.ldapupdater.service;
 
 import java.util.Map;
 import java.util.Set;
@@ -35,8 +35,8 @@ import org.csstudio.domain.desy.net.IpAddress;
 import org.csstudio.utility.ldap.service.ILdapContentModelBuilder;
 import org.csstudio.utility.ldap.service.ILdapSearchResult;
 import org.csstudio.utility.ldap.treeconfiguration.LdapEpicsControlsConfiguration;
-import org.csstudio.utility.ldapUpdater.model.IOC;
-import org.csstudio.utility.ldapUpdater.model.Record;
+import org.csstudio.utility.ldapupdater.model.IOC;
+import org.csstudio.utility.ldapupdater.model.Record;
 import org.csstudio.utility.treemodel.ContentModel;
 import org.csstudio.utility.treemodel.INodeComponent;
 import org.csstudio.utility.treemodel.ITreeNodeConfiguration;

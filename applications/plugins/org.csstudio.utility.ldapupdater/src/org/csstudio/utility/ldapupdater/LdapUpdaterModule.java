@@ -19,17 +19,17 @@
  * PROJECT IN THE FILE LICENSE.HTML. IF THE LICENSE IS NOT INCLUDED YOU MAY FIND A COPY
  * AT HTTP://WWW.DESY.DE/LEGAL/LICENSE.HTM
  */
-package org.csstudio.utility.ldapUpdater;
+package org.csstudio.utility.ldapupdater;
 
 import javax.annotation.Nonnull;
 
-import org.csstudio.utility.ldapUpdater.service.ILdapFacade;
-import org.csstudio.utility.ldapUpdater.service.ILdapServiceProvider;
-import org.csstudio.utility.ldapUpdater.service.ILdapUpdaterFileService;
-import org.csstudio.utility.ldapUpdater.service.ILdapUpdaterService;
-import org.csstudio.utility.ldapUpdater.service.impl.LdapFacadeImpl;
-import org.csstudio.utility.ldapUpdater.service.impl.LdapUpdaterFileServiceImpl;
-import org.csstudio.utility.ldapUpdater.service.impl.LdapUpdaterServiceImpl;
+import org.csstudio.utility.ldapupdater.service.ILdapFacade;
+import org.csstudio.utility.ldapupdater.service.ILdapServiceProvider;
+import org.csstudio.utility.ldapupdater.service.ILdapUpdaterFileService;
+import org.csstudio.utility.ldapupdater.service.ILdapUpdaterService;
+import org.csstudio.utility.ldapupdater.service.impl.LdapFacadeImpl;
+import org.csstudio.utility.ldapupdater.service.impl.LdapUpdaterFileServiceImpl;
+import org.csstudio.utility.ldapupdater.service.impl.LdapUpdaterServiceImpl;
 
 import com.google.inject.AbstractModule;
 

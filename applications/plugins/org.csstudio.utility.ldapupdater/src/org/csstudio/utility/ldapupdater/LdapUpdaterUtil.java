@@ -27,7 +27,7 @@
  * todo : functionallity to delete one IOC's ldap data, but NOT the header info
  * should be startable via xmpp, prompt asking for IOCname.
  */
-package org.csstudio.utility.ldapUpdater;
+package org.csstudio.utility.ldapupdater;
 
 import javax.annotation.Nonnull;
 import javax.annotation.concurrent.GuardedBy;

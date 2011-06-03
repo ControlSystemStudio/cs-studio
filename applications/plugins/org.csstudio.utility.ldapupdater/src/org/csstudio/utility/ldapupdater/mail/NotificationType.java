@@ -19,12 +19,12 @@
  * PROJECT IN THE FILE LICENSE.HTML. IF THE LICENSE IS NOT INCLUDED YOU MAY FIND A COPY
  * AT HTTP://WWW.DESY.DE/LEGAL/LICENSE.HTM
  */
-package org.csstudio.utility.ldapUpdater.mail;
+package org.csstudio.utility.ldapupdater.mail;
 
 import javax.annotation.Nonnull;
 
 import org.csstudio.utility.ldap.treeconfiguration.LdapFieldsAndAttributes;
-import org.csstudio.utility.ldapUpdater.UpdaterLdapConstants;
+import org.csstudio.utility.ldapupdater.UpdaterLdapConstants;
 
 /**
  * Mail templates for notification purposes of the LDAP update process.

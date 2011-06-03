@@ -19,7 +19,7 @@
  * PROJECT IN THE FILE LICENSE.HTML. IF THE LICENSE IS NOT INCLUDED YOU MAY FIND A COPY
  * AT HTTP://WWW.DESY.DE/LEGAL/LICENSE.HTM
  */
-package org.csstudio.utility.ldapUpdater.files;
+package org.csstudio.utility.ldapupdater.files;
 
 import java.util.Comparator;
 import java.util.SortedSet;
@@ -27,7 +27,7 @@ import java.util.SortedSet;
 import javax.annotation.Nonnull;
 
 import org.csstudio.domain.desy.file.AbstractLineBasedFileContentParser;
-import org.csstudio.utility.ldapUpdater.model.Record;
+import org.csstudio.utility.ldapupdater.model.Record;
 
 import com.google.common.collect.Sets;
 

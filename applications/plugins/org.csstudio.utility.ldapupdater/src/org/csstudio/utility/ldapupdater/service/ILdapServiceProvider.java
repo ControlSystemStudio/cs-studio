@@ -12,7 +12,7 @@
  * DISTRIBUTION OF THIS PROJECT IN THE FILE LICENSE.HTML. IF THE LICENSE IS NOT INCLUDED YOU MAY FIND A COPY AT
  * HTTP://WWW.DESY.DE/LEGAL/LICENSE.HTM
  */
-package org.csstudio.utility.ldapUpdater.service;
+package org.csstudio.utility.ldapupdater.service;
 
 import javax.annotation.Nonnull;
 
