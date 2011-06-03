@@ -54,7 +54,7 @@
          </property>
          <property
                name="aboutText"
-               value="Control System Studio (CSS) is a combined&#x0A;effort of several parties, including&#x0A;- DESY (Hamburg, Germany)&#x0A;- SNS (Oak Ridge, TN).&#x0A;&#x0A;It provides a collection of control system&#x0A;tools in a common environment, based&#x0A;on Eclipse.&#x0A;&#x0A;See http://ics-web.sns.ornl.gov/css">
+               value="Control System Studio (CSS) is a combined&#x0A;effort of several parties, including&#x0A;- DESY (Hamburg, Germany)&#x0A;- SNS (Oak Ridge, TN)&#x0A;- BNL (Brookhaven, NY)&#x0A;&#x0A;It provides a collection of control system&#x0A;tools in a common environment, based&#x0A;on Eclipse.&#x0A;&#x0A;See http://ics-web.sns.ornl.gov/css">
          </property>
          <property
                name="windowImages"
