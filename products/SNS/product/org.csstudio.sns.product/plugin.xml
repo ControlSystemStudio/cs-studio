@@ -48,15 +48,15 @@
          </property>
          <property
                name="startupForegroundColor"
-               value="0000FF">
+               value="FFFDFA">
          </property>
          <property
                name="startupMessageRect"
-               value="7,180,445,20">
+               value="20,195,340,20">
          </property>
          <property
                name="startupProgressRect"
-               value="5,200,445,15">
+               value="20,215,340,15">
          </property>
          <property
                name="preferenceCustomization"

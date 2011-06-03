@@ -22,7 +22,7 @@
       </category>
       <view
             name="%PVTree"
-            icon="icons/pvtree.gif"
+            icon="icons/pvtree.png"
             category="org.csstudio"
             class="org.csstudio.diag.epics.pvtree.PVTreeView"
             id="org.csstudio.diag.epics.pvtree.PVTreeView">
@@ -43,7 +43,7 @@
             locationURI="menu:diag">
          <command
                commandId="org.eclipse.ui.views.showView"
-               icon="icons/pvtree.gif"
+               icon="icons/pvtree.png"
                label="%PVTree"
                style="push"
                tooltip="%PVTree_TT">
@@ -58,7 +58,7 @@
             locationURI="popup:org.csstudio.ui.menu.popup.processvariable">
          <command
                commandId="org.csstudio.diag.epics.pvtree.OpenPVTree"
-               icon="icons/pvtree.gif"
+               icon="icons/pvtree.png"
                style="push">
          </command>
       </menuContribution>

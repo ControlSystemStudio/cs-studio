@@ -2,7 +2,7 @@
 <?NLS TYPE="org.eclipse.help.toc"?>
 
 <toc label="Best OPI Yet" link_to="../org.csstudio.ui.help/tocApps.xml#display">
-<topic label="Best OPI Yet"  href="html/Contents.html">
+<topic label="Best OPI Yet (BOY)"  href="html/Contents.html">
    <topic href="html/BOY_Introduction.html" label="Introduction">
    </topic> 
   <topic label="Install Examples" href="html/Install Examples.html"></topic>
