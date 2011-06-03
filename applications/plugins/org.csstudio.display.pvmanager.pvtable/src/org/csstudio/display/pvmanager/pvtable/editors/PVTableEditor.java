@@ -657,7 +657,12 @@ public class PVTableEditor extends EditorPart implements ISelectionProvider {
 
 			public void afterEditorDeactivated(
 					ColumnViewerEditorDeactivationEvent event) {
-				
+				// move to the next line
+				if (event.eventType == ColumnViewerEditorDeactivationEvent.EDITOR_SAVED ){
+					Event test = new Event();
+					test.keyCode = SWT.CR;
+					ViewerCell newCell = naviStrat.findSelectedCell(tableViewer, tableViewer.getColumnViewerEditor().getFocusCell(), test);
+				}
 			}
 
 			public void beforeEditorActivated(
