@@ -35,6 +35,7 @@ public class TextEntry2Model extends AbstractADL2Model {
 
 		TextUtilities.setAlignment((LabelModel)widgetModel, textEntryWidget);
 		TextUtilities.setFormat((TextIndicatorModel)widgetModel, textEntryWidget);
+		widgetModel.setPropertyValue(TextInputModel.PROP_SHOW_UNITS, false);
 		//set color mode
 		String color_mode = textEntryWidget.getColor_mode();
 		if ( color_mode.equals("static") ){
