@@ -26,13 +26,13 @@ package org.csstudio.websuite.servlet;
 
 import java.io.IOException;
 import java.util.ArrayList;
+
 import javax.servlet.ServletConfig;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import org.apache.log4j.Logger;
-import org.csstudio.platform.logging.CentralLogger;
+
 import org.csstudio.websuite.WebSuiteActivator;
 import org.csstudio.websuite.internal.PreferenceConstants;
 import org.csstudio.websuite.utils.PageContent;
@@ -43,6 +43,8 @@ import org.csstudio.websuite.utils.Severity;
 import org.csstudio.websuite.utils.ValueReader;
 import org.eclipse.core.runtime.Platform;
 import org.eclipse.core.runtime.preferences.IPreferencesService;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * TODO (mmoeller) : 
@@ -72,8 +74,8 @@ public class PersonalPVInfoListServlet extends HttpServlet {
     private final int RELOAD_TIME = 30;
     
     /** Private logger for this class */
-    private Logger logger;
-
+    private static final Logger LOG = LoggerFactory.getLogger(PersonalPVInfoListServlet.class);
+    
     /** The URL of the AAPI web application */
     private String aapiWebApp;
 
@@ -82,7 +84,6 @@ public class PersonalPVInfoListServlet extends HttpServlet {
         
         super.init(config);
         
-        logger = CentralLogger.getInstance().getLogger(this);
         valueReader = new ValueReader();
         pageContentContainer = PageContentContainer.getInstance();
         
@@ -129,11 +130,11 @@ public class PersonalPVInfoListServlet extends HttpServlet {
         if(param.containsParameter("content") && param.hasParameterAnyValue("content")) {
                 pageContent = pageContentContainer.getPageContent(param.getParameter("content"));
         } else {
-            logger.warn("Content page not available.");
+            LOG.warn("Content page not available.");
             response.sendRedirect("/PersonalPVInfo");
         }
         
-        logger.info("User-Agent: " + request.getHeader("User-Agent"));
+        LOG.info("User-Agent: {}", request.getHeader("User-Agent"));
         
         page.append("<html>\n");
         page.append("<head>\n");

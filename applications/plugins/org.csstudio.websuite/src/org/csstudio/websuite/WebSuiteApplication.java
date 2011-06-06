@@ -24,9 +24,8 @@
 package org.csstudio.websuite;
 
 import javax.servlet.ServletException;
-import org.apache.log4j.Logger;
+
 import org.csstudio.platform.httpd.HttpServiceHelper;
-import org.csstudio.platform.logging.CentralLogger;
 import org.csstudio.websuite.dao.AlarmMessageListProvider;
 import org.csstudio.websuite.dao.ChannelMessagesProvider;
 import org.csstudio.websuite.internal.PreferenceConstants;
@@ -40,14 +39,14 @@ import org.csstudio.websuite.servlet.ChannelViewServlet;
 import org.csstudio.websuite.servlet.ChannelViewServletHtml;
 import org.csstudio.websuite.servlet.ChannelViewServletXml;
 import org.csstudio.websuite.servlet.DataExporter;
-import org.csstudio.websuite.servlet.PersonalPVInfoEditServlet;
-import org.csstudio.websuite.servlet.PersonalPVInfoListServlet;
-import org.csstudio.websuite.servlet.PersonalPVInfoServlet;
 import org.csstudio.websuite.servlet.FlashInfoServlet;
 import org.csstudio.websuite.servlet.Halle55;
 import org.csstudio.websuite.servlet.HowToViewServletHtml;
 import org.csstudio.websuite.servlet.InfoServlet;
 import org.csstudio.websuite.servlet.IocViewServlet;
+import org.csstudio.websuite.servlet.PersonalPVInfoEditServlet;
+import org.csstudio.websuite.servlet.PersonalPVInfoListServlet;
+import org.csstudio.websuite.servlet.PersonalPVInfoServlet;
 import org.csstudio.websuite.servlet.RedirectServlet;
 import org.csstudio.websuite.servlet.Wetter;
 import org.eclipse.core.runtime.Platform;
@@ -59,6 +58,8 @@ import org.osgi.service.http.HttpService;
 import org.osgi.service.http.NamespaceException;
 import org.remotercp.common.tracker.IGenericServiceListener;
 import org.remotercp.service.connection.session.ISessionService;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * @author Markus Moeller
@@ -70,10 +71,10 @@ public class WebSuiteApplication implements IApplication, Stoppable, RemotlyAcce
     private AlarmMessageListProvider alarmListProvider;
     
     /** Platform logger */
-    private Logger logger;
+    private static final Logger LOG = LoggerFactory.getLogger(WebSuiteApplication.class);
     
     /** Object for synchronization */
-    private Object lock;
+    private final Object lock;
     
     /** The port that is used by JETTY */
     private int jettyPort;
@@ -86,8 +87,6 @@ public class WebSuiteApplication implements IApplication, Stoppable, RemotlyAcce
 
     /** Simple constructor */
     public WebSuiteApplication() {
-        
-        logger = CentralLogger.getInstance().getLogger(this);
         lock = new Object();
         running = true;
         restart = false;
@@ -102,7 +101,7 @@ public class WebSuiteApplication implements IApplication, Stoppable, RemotlyAcce
         IPreferencesService preferences = Platform.getPreferencesService();
 
         jettyPort = preferences.getInt(WebSuiteActivator.PLUGIN_ID, PreferenceConstants.JETTY_PORT, 8181, null);
-        logger.info("Using port " + jettyPort + " for JETTY.");
+        LOG.info("Using port {} for JETTY.", jettyPort);
         
         // Prepare the action classes
         Stop.staticInject(this);
@@ -114,7 +113,7 @@ public class WebSuiteApplication implements IApplication, Stoppable, RemotlyAcce
             final HttpService http = HttpServiceHelper.createHttpService(WebSuiteActivator.getBundleContext(), jettyPort);
             configureHttpService(http);
         } catch(Exception e) {
-            logger.error("[*** Exception ***]: " + e.getMessage());
+            LOG.error("[*** Exception ***]: ", e);
         }
         
         //creates instances of DAO objects for messages
@@ -132,7 +131,7 @@ public class WebSuiteApplication implements IApplication, Stoppable, RemotlyAcce
                 try {
                     lock.wait();
                 } catch(InterruptedException ie) {
-                    logger.warn("Websuite was interrupted: " + ie.getMessage());
+                    LOG.warn("Websuite was interrupted: ", ie);
                 }
             }
         }
@@ -141,10 +140,10 @@ public class WebSuiteApplication implements IApplication, Stoppable, RemotlyAcce
         AlarmMessageListProvider.getInstance().closeJms();
         
         if(restart) {
-            logger.info("Restarting application.");
+            LOG.info("Restarting application.");
             return IApplication.EXIT_RESTART;
         } else {
-            logger.info("Stopping application.");
+            LOG.info("Stopping application.");
             return IApplication.EXIT_OK;
         }
     }
@@ -167,22 +166,22 @@ public class WebSuiteApplication implements IApplication, Stoppable, RemotlyAcce
         //creates servlet according to the configurations
         if(preferences.getBoolean(WebSuiteActivator.PLUGIN_ID, PreferenceConstants.ACTIVATE_HTML_SERVLET, true, null)){
             http.registerServlet(htmlServletAddress, new AlarmViewServletHtml(), null, httpContext);
-            logger.debug("Html servlet registred on " + htmlServletAddress);
+            LOG.debug("Html servlet registred on {}", htmlServletAddress);
         }
         
         if(preferences.getBoolean(WebSuiteActivator.PLUGIN_ID, PreferenceConstants.ACTIVATE_XML_SERVLET, true, null)){
             http.registerServlet(xmlServletAddress, new AlarmViewServletXml(), null, httpContext);
-            logger.debug("Xml servlet registred on " + xmlServletAddress);
+            LOG.debug("Xml servlet registred on {}", xmlServletAddress);
         }
         
         if(preferences.getBoolean(WebSuiteActivator.PLUGIN_ID, PreferenceConstants.ACTIVATE_CHANNEL_XML_SERVLET, true, null)){
             http.registerServlet(xmlChannelServletAddress, new ChannelViewServletXml(), null, httpContext);
-            logger.debug("Xml Channel registred on " + xmlChannelServletAddress);
+            LOG.debug("Xml Channel registred on {}", xmlChannelServletAddress);
         }
         
         if(preferences.getBoolean(WebSuiteActivator.PLUGIN_ID, PreferenceConstants.ACTIVATE_CHANNEL_HTML_SERVLET, true, null)){
             http.registerServlet(htmlChannelServletAddress, new ChannelViewServletHtml(), null, httpContext);
-            logger.debug("Html Channel registred on " + htmlChannelServletAddress);
+            LOG.debug("Html Channel registred on {}", htmlChannelServletAddress);
         }
 
         http.registerServlet("/", new RedirectServlet(), null, httpContext);
@@ -203,6 +202,7 @@ public class WebSuiteApplication implements IApplication, Stoppable, RemotlyAcce
     
 
 
+    @Override
     public void bindService(ISessionService sessionService) {
         IPreferencesService prefs = Platform.getPreferencesService();
         String xmppUser = prefs.getString(WebSuiteActivator.PLUGIN_ID, PreferenceConstants.XMPP_USER_NAME, "anonymous", null);
@@ -212,11 +212,11 @@ public class WebSuiteApplication implements IApplication, Stoppable, RemotlyAcce
     	try {
 			sessionService.connect(xmppUser, xmppPassword, xmppServer);
 		} catch (Exception e) {
-			CentralLogger.getInstance().warn(this,
-					"XMPP connection is not available, " + e.toString());
+			LOG.warn("XMPP connection is not available, ", e);
 		}
     }
     
+    @Override
     public void unbindService(ISessionService service) {
     	service.disconnect();
     }

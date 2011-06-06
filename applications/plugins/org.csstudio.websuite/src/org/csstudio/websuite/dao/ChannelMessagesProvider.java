@@ -28,7 +28,7 @@ import java.io.IOException;
 import java.io.PrintWriter;
 import java.util.Iterator;
 import java.util.LinkedList;
-import org.csstudio.platform.logging.CentralLogger;
+
 import org.csstudio.websuite.WebSuiteActivator;
 import org.csstudio.websuite.dataModel.BasicMessage;
 import org.csstudio.websuite.internal.PreferenceConstants;
@@ -37,6 +37,8 @@ import org.eclipse.core.runtime.preferences.IPreferencesService;
 import org.jdom.Document;
 import org.jdom.Element;
 import org.jdom.output.XMLOutputter;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * Data access object that provides the ChannelMessage in different formats
@@ -46,6 +48,8 @@ import org.jdom.output.XMLOutputter;
  */
 public class ChannelMessagesProvider
 {
+    private static final Logger LOG = LoggerFactory.getLogger(ChannelMessagesProvider.class);
+    
     /**  */
     private static ChannelMessagesProvider instance = null;
 	
@@ -53,7 +57,7 @@ public class ChannelMessagesProvider
     private LinkedList<String> displayParameters = null;
 	
     /**  */
-    private RecordDataReceiver recordDataReceiver;
+    private final RecordDataReceiver recordDataReceiver;
     
     /** */
 	public static final String PLUGIN_ID = "org.csstudio.websuite";
@@ -260,7 +264,7 @@ public class ChannelMessagesProvider
 		}
 		catch(IOException e)
 		{
-			CentralLogger.getInstance().error(this, "Cannot write to buffer", e);
+			LOG.error("Cannot write to buffer", e);
 		}
 	}
 }

@@ -31,8 +31,9 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Properties;
-import org.apache.log4j.Logger;
-import org.csstudio.platform.logging.CentralLogger;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * TODO (Markus Moeller) : 
@@ -43,8 +44,9 @@ import org.csstudio.platform.logging.CentralLogger;
  */
 public class PageContent {
     
+    private static final Logger LOG = LoggerFactory.getLogger(PageContent.class);
+    
     /** Private logger for this class */
-    private Logger logger;
 
     /** The name of this page content */
     private String pageContentName;
@@ -57,7 +59,6 @@ public class PageContent {
      */
     public PageContent() {
         
-        logger = CentralLogger.getInstance().getLogger(this);
         content = new ArrayList<PageEntry>();
         pageContentName = null;
     }
@@ -169,7 +170,7 @@ public class PageContent {
             } while(moreElements);
 
         } catch (IOException ioe) {
-            logger.error("[*** IOException ***]: " + ioe.getMessage());
+            LOG.error("[*** IOException ***]: ", ioe);
         } finally {
             if(in!=null){try{in.close();}catch(Exception e){/* Can be ignored */}in=null;}
         }
@@ -208,9 +209,9 @@ public class PageContent {
             p.store(out, null);
             success = true;
         } catch(FileNotFoundException fnfe) {
-            logger.error("[*** FileNotFoundException ***]: " + fnfe.getMessage());
+            LOG.error("[*** FileNotFoundException ***]: ", fnfe);
         } catch(IOException ioe) {
-            logger.error("[*** IOException ***]: " + ioe.getMessage());
+            LOG.error("[*** IOException ***]: ", ioe);
         } finally {
             if(out!=null){try{out.close();}catch(Exception e){/* Can be ignored */}out=null;}
         }
