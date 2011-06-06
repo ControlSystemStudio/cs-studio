@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <feature
       id="org.csstudio.nsls2.eclipse.feature"
-      label="css-nsls2 Eclipse plugins"
-      version="1.0.0.qualifier"
+      label="CSS-NSLS-II Eclipse plugins"
+      version="3.0.0.qualifier"
       provider-name="Kunal Shroff &lt;kshroff@bnl.gov&gt;, Gabriele Carcassi &lt;carcassi@bnl.gov&gt; - BNL">
 
    <description url="http://www.example.com/description">

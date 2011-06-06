@@ -33,7 +33,8 @@ import javax.annotation.Nonnull;
 import org.csstudio.config.ioconfig.model.PersistenceException;
 import org.csstudio.config.ioconfig.model.Repository;
 import org.csstudio.dct.IoNameService;
-import org.csstudio.platform.logging.CentralLogger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * @author hrickens
@@ -43,6 +44,8 @@ import org.csstudio.platform.logging.CentralLogger;
  */
 public class ProfiBusIoNameService implements IoNameService {
 
+    private static final Logger LOG = LoggerFactory.getLogger(ProfiBusIoNameService.class);
+    
     /**
      * Get the Epics Address string to an IO Name. It the name not found return the string '$$$
      * IO-Name NOT found! $$$'.
@@ -62,14 +65,14 @@ public class ProfiBusIoNameService implements IoNameService {
             try {
                 return Repository.getShortChannelDesc(ioName);
             } catch (PersistenceException e) {
-                CentralLogger.getInstance().error(this, e);
+                LOG.error("Can't load short channel description", e);
                 return "%%% Database not available %%%";
             }
         }
         try {
             return Repository.getEpicsAddressString(ioName);
         } catch (PersistenceException e) {
-            CentralLogger.getInstance().error(this, e);
+            LOG.error("Can't load EPICS address string", e);
             return "%%% Database not available %%%";
         }
     }
@@ -80,7 +83,7 @@ public class ProfiBusIoNameService implements IoNameService {
         try {
             return Repository.getIoNames();
         } catch (PersistenceException e) {
-            CentralLogger.getInstance().error(this, e);
+            LOG.error("Can't load IO-Names", e);
             return null;
         }
     }
@@ -97,7 +100,7 @@ public class ProfiBusIoNameService implements IoNameService {
         try {
             return Repository.getIoNames(iocName);
         } catch (PersistenceException e) {
-            CentralLogger.getInstance().error(this, e);
+            LOG.error("Can't load IO_Names from IOC", e);
             ArrayList<String> al = new ArrayList<String>();
             al.add("%%% Database not available %%%");
             return al;

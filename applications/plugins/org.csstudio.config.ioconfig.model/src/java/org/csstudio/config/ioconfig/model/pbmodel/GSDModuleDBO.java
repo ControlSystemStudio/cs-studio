@@ -46,7 +46,8 @@ import javax.persistence.UniqueConstraint;
 import org.csstudio.config.ioconfig.model.DBClass;
 import org.csstudio.config.ioconfig.model.DocumentDBO;
 import org.csstudio.config.ioconfig.model.IDocumentable;
-import org.csstudio.platform.logging.CentralLogger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * The Hibernate Persistence DataModel for the Profibus GSD Module.
@@ -62,6 +63,8 @@ import org.csstudio.platform.logging.CentralLogger;
         "gSDFile_Id", "moduleId" }) })
 public class GSDModuleDBO extends DBClass implements Comparable<GSDModuleDBO>, IDocumentable {
 
+    private static final Logger LOG = LoggerFactory.getLogger(GSDModuleDBO.class);
+    
     /**
      * @author hrickens
      * @author $Author: hrickens $
@@ -81,7 +84,7 @@ public class GSDModuleDBO extends DBClass implements Comparable<GSDModuleDBO>, I
                 return o1.getOffset()-o2.getOffset();
             }
             // this is a Error handling
-            CentralLogger.getInstance().warn(this,  "GSDModule sort is invalid");
+            LOG.warn("GSDModule sort is invalid");
             return o1.getId() - o2.getId();
         }
     }

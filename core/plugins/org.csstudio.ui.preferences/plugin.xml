@@ -41,11 +41,6 @@
       <page
             category="org.csstudio.platform.ui.css.applications"
             class="org.csstudio.ui.preferences.CSSApplicationsPreferencePage"
-            id="org.csstudio.platform.ui.css.applications.configuration"
-            name="%configurationPreferencesName"/>
-      <page
-            category="org.csstudio.platform.ui.css.applications"
-            class="org.csstudio.ui.preferences.CSSApplicationsPreferencePage"
             id="org.csstudio.platform.ui.css.applications.management"
             name="%managementPreferencesName"/>
       <page

@@ -100,7 +100,7 @@ H4,H5,H6,P,TD,UL,OL,BLOCKQUOTE {
 }
 
 BODY {
-	font-size: 16px;
+	font-size: 14px;
 }
 
 CODE,CODE.P {
@@ -130,7 +130,7 @@ FORM {
 }
 
 P,PRE {
-	margin: 0px 0px 0px 0px;
+	margin: 10px 10px 10px 10px;
 }
 
 TD {

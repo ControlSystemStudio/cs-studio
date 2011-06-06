@@ -150,7 +150,11 @@ public abstract class AbstractContainerEditPart extends AbstractBaseEditPart imp
 		AbstractWidgetModel widgetModel = (AbstractWidgetModel) childEditPart.getModel();
 
 		if (contentPane instanceof LayeredWidgetPane) {
-			Layer layer = getContainerModel().getLayerSupport().findLayer(widgetModel.getLayer());
+			LayerSupport layerSupport = getContainerModel().getLayerSupport();
+            Layer layer = layerSupport.findLayer(widgetModel.getLayer());
+			if (!layerSupport.isLayerId(widgetModel.getLayer()) && layerSupport.isLayerName(widgetModel.getLayer())) {
+			    widgetModel.setPropertyValue(AbstractWidgetModel.PROP_LAYER, layer.getId());
+			}
 			((LayeredWidgetPane) contentPane).addWidget(layer.getId(), child, index);
 		} else {
 			super.addChildVisual(childEditPart, index);
