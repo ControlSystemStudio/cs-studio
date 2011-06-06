@@ -5,6 +5,13 @@ import org.eclipse.gef.commands.CommandStack;
 import org.eclipse.gef.commands.CommandStackEvent;
 import org.eclipse.gef.commands.CommandStackEventListener;
 
+/**
+ * Has to be registered at the CommandStack to handle AccosiableCommands.
+ * 
+ * @see AssociableCommand
+ * 
+ * @author Christian Zoller
+ */
 public class AssociableCommandListener implements CommandStackEventListener {
     
     private final CommandStack _commandStack;

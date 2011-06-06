@@ -42,13 +42,13 @@ public class TimestampedSetPropertyCommand extends SetPropertyCommand implements
      * @see org.csstudio.sds.ui.internal.commands.AssociableCommand#isAssociated(org.csstudio.sds.ui.internal.commands.TimestampedSetPropertyCommand)
      */
     @Override
-    public boolean isAssociated(AssociableCommand associable) {
-        if (!(associable instanceof TimestampedSetPropertyCommand)) {
+    public boolean isAssociated(AssociableCommand command) {
+        if (!(command instanceof TimestampedSetPropertyCommand)) {
             return false;
         }
         
-        return affectsSameProperty((TimestampedSetPropertyCommand) associable)
-                && hasMatchingTimestamp((TimestampedSetPropertyCommand) associable);
+        return affectsSameProperty((TimestampedSetPropertyCommand) command)
+                && hasMatchingTimestamp((TimestampedSetPropertyCommand) command);
     }
     
     private boolean affectsSameProperty(TimestampedSetPropertyCommand command) {
