@@ -26,6 +26,7 @@
    <plugins>
       <plugin id="com.google.common"/>
       <plugin id="com.google.inject"/>
+      <plugin id="com.jdbc.mysql"/>
       <plugin id="javax.annotation"/>
       <plugin id="javax.servlet"/>
       <plugin id="org.csstudio.apputil"/>
@@ -40,7 +41,6 @@
       <plugin id="org.csstudio.email"/>
       <plugin id="org.csstudio.java"/>
       <plugin id="org.csstudio.platform.libs.epics"/>
-      <plugin id="org.csstudio.platform.libs.jdbc.mysql"/>
       <plugin id="org.csstudio.platform.libs.log4j"/>
       <plugin id="org.csstudio.testsuite"/>
       <plugin id="org.csstudio.utility.pv"/>
