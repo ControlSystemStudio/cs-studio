@@ -32,7 +32,9 @@ import org.eclipse.core.commands.AbstractHandler;
 import org.eclipse.core.commands.ExecutionEvent;
 import org.eclipse.core.commands.ExecutionException;
 import org.eclipse.gef.commands.Command;
-import org.eclipse.jface.viewers.StructuredSelection;
+import org.eclipse.gef.commands.CommandStack;
+import org.eclipse.jface.viewers.ISelection;
+import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.widgets.Event;
 import org.eclipse.ui.handlers.HandlerUtil;
@@ -53,49 +55,56 @@ public class MoveWidgetHandler extends AbstractHandler {
      */
     @Override
     public Object execute(ExecutionEvent event) throws ExecutionException {
-        StructuredSelection currentSelection = (StructuredSelection) HandlerUtil
-                .getCurrentSelection(event);
-        Iterator<?> iterator = currentSelection.iterator();
-        while (iterator.hasNext()) {
-            Object object = (Object) iterator.next();
-            if (object instanceof AbstractBaseEditPart) {
-                AbstractBaseEditPart widget = (AbstractBaseEditPart) object;
-                AbstractWidgetModel model = widget.getWidgetModel();
-                if (!model.isLive()) {
-                    Event trigger = (Event) event.getTrigger();
-                    Command command = null;
-                    switch (trigger.keyCode) {
-                        case SWT.ARROW_UP:
-                            command = new TimestampedSetPropertyCommand(model,
-                                                                        AbstractWidgetModel.PROP_POS_Y,
-                                                                        model.getY() - 1,
-                                                                        COMMAND_ASSOCIATION_TIME);
-                            break;
-                        case SWT.ARROW_DOWN:
-                            command = new TimestampedSetPropertyCommand(model,
-                                                                        AbstractWidgetModel.PROP_POS_Y,
-                                                                        model.getY() + 1,
-                                                                        COMMAND_ASSOCIATION_TIME);
-                            break;
-                        case SWT.ARROW_LEFT:
-                            command = new TimestampedSetPropertyCommand(model,
-                                                                        AbstractWidgetModel.PROP_POS_X,
-                                                                        model.getX() - 1,
-                                                                        COMMAND_ASSOCIATION_TIME);
-                            break;
-                        case SWT.ARROW_RIGHT:
-                            command = new TimestampedSetPropertyCommand(model,
-                                                                        AbstractWidgetModel.PROP_POS_X,
-                                                                        model.getX() + 1,
-                                                                        COMMAND_ASSOCIATION_TIME);
-                            break;
-                    }
-                    if (command != null) {
-                        widget.getViewer().getEditDomain().getCommandStack().execute(command);
+        ISelection currentSelection = HandlerUtil.getCurrentSelection(event);
+        if (currentSelection instanceof IStructuredSelection) {
+            IStructuredSelection structuredSelection = (IStructuredSelection) currentSelection;
+            Iterator<?> iterator = structuredSelection.iterator();
+            while (iterator.hasNext()) {
+                Object object = (Object) iterator.next();
+                if (object instanceof AbstractBaseEditPart) {
+                    AbstractBaseEditPart widget = (AbstractBaseEditPart) object;
+                    AbstractWidgetModel model = widget.getWidgetModel();
+                    CommandStack commandStack = widget.getViewer().getEditDomain()
+                            .getCommandStack();
+                    if (!model.isLive() && commandStack != null) {
+                        Event trigger = (Event) event.getTrigger();
+                        createAndExecuteCommand(model, trigger, commandStack);
                     }
                 }
             }
         }
         return null;
+    }
+    
+    private void createAndExecuteCommand(AbstractWidgetModel model,
+                                         Event trigger,
+                                         CommandStack commandStack) {
+        String propertyName = null;
+        Object value = null;
+        switch (trigger.keyCode) {
+            case SWT.ARROW_UP:
+                propertyName = AbstractWidgetModel.PROP_POS_Y;
+                value = model.getY() - 1;
+                break;
+            case SWT.ARROW_DOWN:
+                propertyName = AbstractWidgetModel.PROP_POS_Y;
+                value = model.getY() + 1;
+                break;
+            case SWT.ARROW_LEFT:
+                propertyName = AbstractWidgetModel.PROP_POS_X;
+                value = model.getX() - 1;
+                break;
+            case SWT.ARROW_RIGHT:
+                propertyName = AbstractWidgetModel.PROP_POS_X;
+                value = model.getX() + 1;
+                break;
+        }
+        if (propertyName != null) {
+            Command command = new TimestampedSetPropertyCommand(model,
+                                                                propertyName,
+                                                                value,
+                                                                COMMAND_ASSOCIATION_TIME);
+            commandStack.execute(command);
+        }
     }
 }

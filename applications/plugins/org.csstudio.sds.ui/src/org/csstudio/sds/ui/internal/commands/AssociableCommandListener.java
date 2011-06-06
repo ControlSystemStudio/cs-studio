@@ -1,6 +1,5 @@
-package org.csstudio.sds.ui.internal.editor;
+package org.csstudio.sds.ui.internal.commands;
 
-import org.csstudio.sds.ui.internal.commands.AssociableCommand;
 import org.eclipse.gef.commands.Command;
 import org.eclipse.gef.commands.CommandStack;
 import org.eclipse.gef.commands.CommandStackEvent;

@@ -393,7 +393,7 @@
            name="RunAsView">
      </command>
      <command
-           defaultHandler="org.csstudio.sds.ui.internal.actions.MoveWidegtlHandler"
+           defaultHandler="org.csstudio.sds.ui.internal.actions.MoveWidgetHandler"
            id="org.csstudio.sds.ui.moveWidgetCommand"
            name="Move Widget">
      </command>

@@ -1,6 +1,5 @@
 package org.csstudio.sds.ui.internal.commands;
 
-import org.csstudio.sds.ui.internal.editor.AssociableCommandListener;
 
 /**
  * This interface can be implemented by Commands.  

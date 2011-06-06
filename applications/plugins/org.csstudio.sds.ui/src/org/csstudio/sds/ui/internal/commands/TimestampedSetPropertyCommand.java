@@ -2,7 +2,6 @@ package org.csstudio.sds.ui.internal.commands;
 
 import org.csstudio.sds.model.AbstractWidgetModel;
 import org.csstudio.sds.model.commands.SetPropertyCommand;
-import org.csstudio.sds.ui.internal.editor.AssociableCommandListener;
 
 /**
  * If an AssociableCommandListener is registered at the appropriate CommandStack, 
