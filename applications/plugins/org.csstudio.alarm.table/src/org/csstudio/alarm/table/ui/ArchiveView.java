@@ -41,7 +41,6 @@ import org.csstudio.alarm.table.ui.messagetable.MessageTable;
 import org.csstudio.apputil.time.StartEndTimeParser;
 import org.csstudio.auth.security.SecurityFacade;
 import org.csstudio.data.values.TimestampFactory;
-import org.csstudio.platform.logging.CentralLogger;
 import org.csstudio.platform.model.IProcessVariable;
 import org.eclipse.jface.action.Action;
 import org.eclipse.jface.dialogs.MessageDialog;
@@ -553,9 +552,7 @@ public class ArchiveView extends ViewPart {
         try {
             maximumMessageNumber = Integer.parseInt(maxAnswerSize);
         } catch (final NumberFormatException e) {
-            CentralLogger
-                    .getInstance()
-                    .warn("Invalid value format in preference for maximum message number");
+            LOG.warn("Invalid value format in preference for maximum message number");
             maximumMessageNumber = 5000;
         }
         _filter.setMaximumMessageNumber(maximumMessageNumber);
@@ -645,9 +642,7 @@ public class ArchiveView extends ViewPart {
         try {
             maximumMessageNumber = Integer.parseInt(maxAnswerSize);
         } catch (final NumberFormatException e) {
-            CentralLogger
-                    .getInstance()
-                    .warn("Invalid value format in preference for maximum message number");
+            LOG.warn("Invalid value format in preference for maximum message number");
             maximumMessageNumber = 500;
         }
         _filter.setMaximumMessageNumber(maximumMessageNumber);
