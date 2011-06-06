@@ -21,13 +21,14 @@
  */
 package org.csstudio.platform.ui.internal.actions;
 
-import org.csstudio.platform.logging.CentralLogger;
 import org.eclipse.jface.action.Action;
 import org.eclipse.jface.action.IAction;
 import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.ui.IWorkbenchWindow;
 import org.eclipse.ui.IWorkbenchWindowActionDelegate;
 import org.eclipse.ui.PartInitException;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * Action that opens up the CSS workspace explorer.
@@ -38,6 +39,8 @@ import org.eclipse.ui.PartInitException;
 public final class OpenWorkspaceExplorerAction extends Action implements
 		IWorkbenchWindowActionDelegate {
 
+    private static final Logger LOG = LoggerFactory.getLogger(OpenWorkspaceExplorerAction.class);
+    
 	/**
 	 * Reference to the associated workbench window.
 	 */
@@ -53,20 +56,21 @@ public final class OpenWorkspaceExplorerAction extends Action implements
 	/**
 	 * {@inheritDoc}
 	 */
-	public void run(final IAction action) {
+	@Override
+    public void run(final IAction action) {
 		try {
 			_window.getActivePage().showView(
 					"org.eclipse.ui.views.ResourceNavigator"); //$NON-NLS-1$
 		} catch (PartInitException e) {
-			CentralLogger.getInstance().error(this,
-					"Error while opening the CSS workspace explorer!"); //$NON-NLS-1$
+			LOG.error("Error while opening the CSS workspace explorer!"); //$NON-NLS-1$
 		}
 	}
 
 	/**
 	 * {@inheritDoc}
 	 */
-	public void selectionChanged(final IAction action,
+	@Override
+    public void selectionChanged(final IAction action,
 			final ISelection selection) {
 		// do nothing
 	}
@@ -74,14 +78,16 @@ public final class OpenWorkspaceExplorerAction extends Action implements
 	/**
 	 * {@inheritDoc}
 	 */
-	public void dispose() {
+	@Override
+    public void dispose() {
 		// do nothing
 	}
 
 	/**
 	 * {@inheritDoc}
 	 */
-	public void init(final IWorkbenchWindow window) {
+	@Override
+    public void init(final IWorkbenchWindow window) {
 		_window = window;
 	}
 }

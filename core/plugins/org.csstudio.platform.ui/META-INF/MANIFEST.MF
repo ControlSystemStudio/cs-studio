@@ -23,7 +23,8 @@ Require-Bundle: org.eclipse.ui,
  org.csstudio.platform.libs.jdom;bundle-version="1.1.0",
  org.csstudio.platform.libs.log4j;bundle-version="1.2.16",
  org.csstudio.remote;bundle-version="1.0.0",
- org.csstudio.ui.preferences;bundle-version="3.0.0"
+ org.csstudio.ui.preferences;bundle-version="3.0.0",
+ org.slf4j;bundle-version="1.6.1"
 Bundle-Vendor: Desy
 Export-Package: org.csstudio.platform.ui,
  org.csstudio.platform.ui.composites,
