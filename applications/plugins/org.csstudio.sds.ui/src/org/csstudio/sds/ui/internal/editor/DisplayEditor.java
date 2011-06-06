@@ -67,6 +67,7 @@ import org.csstudio.sds.ui.internal.actions.PasteWidgetsAction;
 import org.csstudio.sds.ui.internal.actions.RemoveGroupAction;
 import org.csstudio.sds.ui.internal.actions.StepBackAction;
 import org.csstudio.sds.ui.internal.actions.StepFrontAction;
+import org.csstudio.sds.ui.internal.commands.AssociableCommandListener;
 import org.csstudio.sds.ui.internal.editparts.WidgetEditPartFactory;
 import org.csstudio.sds.ui.internal.layers.ILayerManager;
 import org.csstudio.sds.ui.internal.properties.view.IPropertySheetPage;
@@ -193,6 +194,7 @@ public final class DisplayEditor extends GraphicalEditorWithFlyoutPalette implem
         setEditDomain(new DefaultEditDomain(this));
         
         initPropertyChangeListeners();
+        initCommandStackListeners();
     }
     
     /**
@@ -526,6 +528,11 @@ public final class DisplayEditor extends GraphicalEditorWithFlyoutPalette implem
         // this.getGraphicalViewer().getControl().setBackground(
         // CustomMediaFactory.getInstance().getColor(
         // _displayModel.getBackgroundColor()));
+    }
+    
+    private void initCommandStackListeners() {
+        getCommandStack()
+                .addCommandStackEventListener(new AssociableCommandListener(getCommandStack()));
     }
     
     /**
