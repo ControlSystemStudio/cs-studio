@@ -23,6 +23,8 @@ package org.csstudio.archive.common.engine.model;
 
 import java.lang.reflect.Constructor;
 
+import org.csstudio.domain.desy.time.StopWatch;
+import org.csstudio.domain.desy.time.StopWatch.RunningStopWatch;
 import org.junit.Assert;
 import org.junit.Test;
 
@@ -101,14 +103,14 @@ public class CachedConstructorPerformanceUnitTest {
         long cachedConstructorPerf = runCachedConstructorIterations();
 
         long improvedCachedConstructorPerf = runCachedImprovedConstructorIterations();
+        //System.out.println(cachedConstructorPerf*1.0/improvedCachedConstructorPerf + " times longer than cached constructor creation with Integer.valueOf.");
         Assert.assertTrue(cachedConstructorPerf > improvedCachedConstructorPerf);
-        System.out.println(cachedConstructorPerf*1.0/improvedCachedConstructorPerf + " times longer than cached constructor creation with Integer.valueOf.");
 
         long normalPerf = runCompletelyNormalConstructorIterations();
 
+        //System.out.println("And more than " + cachedConstructorPerf/normalPerf + " times longer than simple non cached creation with new .");
         Assert.assertTrue(cachedConstructorPerf > normalPerf);
         Assert.assertTrue(cachedConstructorPerf > 5*normalPerf);
-        System.out.println("And more than " + cachedConstructorPerf/normalPerf + " times longer than simple non cached creation with new .");
     }
     
     
@@ -117,19 +119,17 @@ public class CachedConstructorPerformanceUnitTest {
         long cachedConstructorPerf = 0;
         
         Integer r = 0;
-        long start;
         try {
             MyDBRType type = new MyDBRType(DBRTest.class); // the map lookup in _cached forValue
             int count = 1;
-
-            start = System.nanoTime();                               // measure only creations
+            RunningStopWatch watch = StopWatch.start();
             for (int i = 0; i < ITERATIONS; i++) {
                 DBRTest instance = type.newInstanceImproved(count);
-                r += instance.getCount();                            // avoid compiler optimization for non used/referred to objects
+                r += instance.getCount();                // avoid compiler optimization for non used/referred to objects
             }
-            cachedConstructorPerf = System.nanoTime() - start;
+            cachedConstructorPerf = watch.getElapsedTimeInNS();
         } catch (final Exception e) {
-            //EMPTY
+            Assert.fail("Unexpected exception.");
         }
         return cachedConstructorPerf;
     }
@@ -138,37 +138,31 @@ public class CachedConstructorPerformanceUnitTest {
         long cachedConstructorPerf = 0;
         
         Integer r = 0;
-        long start;
         try {
             MyDBRType type = new MyDBRType(DBRTest.class);
             int count = 1;
 
-            start = System.nanoTime();                              // measure many creations
+            RunningStopWatch watch = StopWatch.start();
             for (int i = 0; i < ITERATIONS; i++) {
                 DBRTest instance = type.newInstance(count);
                 r += instance.getCount();                           // avoid compiler optimization for non used/referred to objects
             }
-            cachedConstructorPerf = System.nanoTime() - start;
+            cachedConstructorPerf = watch.getElapsedTimeInNS();
             
         } catch (final Exception e) {
-            //EMPTY
+            Assert.fail("Unexpected exception.");
         }
         return cachedConstructorPerf;
     }
 
     
     private long runCompletelyNormalConstructorIterations() {
-        Integer r;
-        long start;
-        r=0;
-        
-        start = System.nanoTime();                                  // measure many creations    
+        RunningStopWatch watch = StopWatch.start();
+        Integer r = 0;
         for (int i = 0; i < 100000; i++) {                      
             final DBRTest myDBR = new DBRTest(1);
-            r += myDBR.getCount();                                  // avoid compiler optimization for non used/referred to objects
+            r += myDBR.getCount();               // avoid compiler optimization for non used/referred to objects
         }
-        long normalPerf = System.nanoTime()-start;
-        
-        return normalPerf;
+        return watch.getElapsedTimeInMillis();
     }
 }

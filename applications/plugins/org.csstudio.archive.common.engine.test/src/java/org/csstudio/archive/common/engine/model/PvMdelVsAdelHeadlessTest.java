@@ -93,7 +93,6 @@ public class PvMdelVsAdelHeadlessTest {
             synchronized (_values) {
                 Double v = Double.valueOf(value.getValue());
                 _values.add(v);
-                System.out.println(v);
             }
         }
         @Override
