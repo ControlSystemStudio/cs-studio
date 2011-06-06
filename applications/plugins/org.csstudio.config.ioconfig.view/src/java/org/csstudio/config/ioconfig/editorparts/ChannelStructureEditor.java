@@ -39,12 +39,10 @@ import java.util.ArrayList;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
-import org.csstudio.config.ioconfig.model.AbstractNodeDBO;
 import org.csstudio.config.ioconfig.model.PersistenceException;
 import org.csstudio.config.ioconfig.model.pbmodel.ChannelDBO;
 import org.csstudio.config.ioconfig.model.pbmodel.ChannelStructureDBO;
 import org.csstudio.config.ioconfig.view.DeviceDatabaseErrorDialog;
-import org.csstudio.platform.logging.CentralLogger;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.custom.StyleRange;
@@ -54,6 +52,8 @@ import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Text;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * Editor for {@link ChannelStructureDBO} node's
@@ -65,6 +65,7 @@ import org.eclipse.swt.widgets.Text;
  */
 public class ChannelStructureEditor extends AbstractNodeEditor {
 
+    private static final Logger LOG = LoggerFactory.getLogger(ChannelStructureEditor.class);
     public static final String ID = "org.csstudio.config.ioconfig.view.editor.channelstructure";
 
     /**
@@ -102,7 +103,7 @@ public class ChannelStructureEditor extends AbstractNodeEditor {
             createChildren(text, styleRanges);
         } catch (PersistenceException e) {
             DeviceDatabaseErrorDialog.open(null, "Can't create node! Database error.", e);
-            CentralLogger.getInstance().error(this, e.getLocalizedMessage());
+            LOG.error("Can't create node! Database error.", e);
         }
         
         _ioNameList.addModifyListener(getMLSB());
@@ -120,15 +121,17 @@ public class ChannelStructureEditor extends AbstractNodeEditor {
 		if (_channelStructure.hasChildren()) {
             StringBuilder sbIOName = new StringBuilder();
             StringBuilder sbDesc = new StringBuilder();
-            for (AbstractNodeDBO node : _channelStructure.getChildrenAsMap().values()) {
-                ChannelDBO channel = (ChannelDBO) node;
+            for (ChannelDBO channel : _channelStructure.getChildrenAsMap().values()) {
                 int length = sbDesc.length();
-                sbDesc.append(channel.getName());
-                if ( (channel.getIoName() == null) || channel.getIoName().isEmpty()) {
+                String name = channel.getName();
+                name = name==null?"":name;
+                sbDesc.append(name);
+                String ioName = channel.getIoName();
+                if ( (ioName == null) || ioName.isEmpty()) {
                     sbIOName.append(LS);
                 } else {
-                    sbIOName.append(channel.getIoName());
-                    sbDesc.append(" (" + channel.getIoName() + ") ");
+                    sbIOName.append(ioName);
+                    sbDesc.append(" (" + ioName + ") ");
                     sbIOName.append(LS);
                 }
                 sbDesc.append(": ");
@@ -139,7 +142,7 @@ public class ChannelStructureEditor extends AbstractNodeEditor {
                 }
                 sbDesc.append(LS);
                 StyleRange styleRange = new StyleRange(length,
-                                                       channel.getName().length() + 1,
+                                                       name.length() + 1,
                                                        null, null, SWT.BOLD);
                 styleRanges.add(styleRange);
                 TextStyle textStyle = new TextStyle();
@@ -171,7 +174,7 @@ public class ChannelStructureEditor extends AbstractNodeEditor {
             save();
         } catch (PersistenceException e) {
             DeviceDatabaseErrorDialog.open(null, "Can't node save. Database error.", e);
-            CentralLogger.getInstance().error(this, e.getLocalizedMessage());
+            LOG.error("Can't node save. Database error.", e);
         }
     }
 }

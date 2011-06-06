@@ -4,12 +4,14 @@
 <product name="Css" id="org.csstudio.sns.product.product" application="org.csstudio.sns.product.application" version="3.0.0.qualifier" useFeatures="true" includeLaunchers="true">
 
    <aboutInfo>
-      <image path="/org.csstudio.sns.product/icons/about.gif"/>
+      <image path="/org.csstudio.sns.product/icons/aboutSide.png"/>
       <text>
          Control System Studio (CSS) is a combined
 effort of several parties, including
-- DESY (Hamburg, Germany)
 - SNS (Oak Ridge, TN).
+- BNL (Brookhaven, NY)
+- DESY (Hamburg, Germany)
+
 
 It provides a collection of control system
 tools in a common environment, based
@@ -26,15 +28,16 @@ See http://ics-web.sns.ornl.gov/css
       <vmArgs>-Xmx256m
 -Dorg.apache.commons.logging.Log=org.apache.commons.logging.impl.SimpleLog
 -Dorg.apache.commons.logging.simplelog.defaultlog=fatal</vmArgs>
+      <vmArgsMac>-d32</vmArgsMac>
    </launcherArgs>
 
-   <windowImages i16="/org.csstudio.sns.product/icons/css16.gif" i32="/org.csstudio.sns.product/icons/css32.gif" i48="/org.csstudio.sns.product/icons/css48.gif" i64="/org.csstudio.sns.product/icons/css64.gif" i128="/org.csstudio.sns.product/icons/css128.gif"/>
+   <windowImages i16="/org.csstudio.sns.product/icons/css16.png" i32="/org.csstudio.sns.product/icons/css32.png" i48="/org.csstudio.sns.product/icons/css48.png" i64="/org.csstudio.sns.product/icons/css64.png" i128="/org.csstudio.sns.product/icons/css128.png"/>
 
    <splash
       location="org.csstudio.sns.product"
-      startupProgressRect="5,200,445,15"
-      startupMessageRect="7,180,445,20"
-      startupForegroundColor="0000FF" />
+      startupProgressRect="20,215,340,15"
+      startupMessageRect="20,195,340,20"
+      startupForegroundColor="FFFDFA" />
    <launcher name="css">
       <linux icon="/org.csstudio.sns.product/icons/css48.xpm"/>
       <macosx icon="/org.csstudio.sns.product/icons/css.icns"/>

@@ -42,7 +42,6 @@ import org.csstudio.config.ioconfig.model.PersistenceException;
 import org.csstudio.config.ioconfig.model.Repository;
 import org.csstudio.config.ioconfig.view.DeviceDatabaseErrorDialog;
 import org.csstudio.config.ioconfig.view.IOConfigActivatorUI;
-import org.csstudio.platform.logging.CentralLogger;
 import org.eclipse.jface.layout.GridLayoutFactory;
 import org.eclipse.jface.viewers.ColumnViewerEditor;
 import org.eclipse.jface.viewers.ColumnViewerEditorActivationStrategy;
@@ -64,6 +63,8 @@ import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Group;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Text;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * @author hrickens
@@ -72,6 +73,8 @@ import org.eclipse.swt.widgets.Text;
  * @since 20.02.2008
  */
 public class DocumentationManageView extends Composite {
+    
+    private static final Logger LOG = LoggerFactory.getLogger(DocumentationManageView.class);
     
     /**
      * @author hrickens
@@ -159,7 +162,7 @@ public class DocumentationManageView extends Composite {
                 setDocResorceTableInput();
             } catch (PersistenceException e) {
                 DeviceDatabaseErrorDialog.open(null, "Can't load Documents!", e);
-                CentralLogger.getInstance().error(this, e);
+                LOG.error("Can't load Documents!", e);
             }
         }
         
@@ -570,7 +573,7 @@ public class DocumentationManageView extends Composite {
         } catch (PersistenceException e) {
             _documentResorce = new ArrayList<DocumentDBO>();
             DeviceDatabaseErrorDialog.open(null, "Can't load Documents!", e);
-            CentralLogger.getInstance().error(this, e);
+            LOG.error("Can't load Documents!", e);
         }
         _docResorceTableViewer.addFilter(filter);
         _docResorceTableViewer.setFilters(new ViewerFilter[] {filter});

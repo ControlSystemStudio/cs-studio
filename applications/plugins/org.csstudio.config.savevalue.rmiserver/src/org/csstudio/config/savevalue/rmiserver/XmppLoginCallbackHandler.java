@@ -24,9 +24,10 @@ package org.csstudio.config.savevalue.rmiserver;
 
 import org.csstudio.auth.security.Credentials;
 import org.csstudio.auth.security.ILoginCallbackHandler;
-import org.csstudio.platform.logging.CentralLogger;
 import org.eclipse.core.runtime.Platform;
 import org.eclipse.core.runtime.preferences.IPreferencesService;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * Provides username and password for the XMPP login.
@@ -35,10 +36,13 @@ import org.eclipse.core.runtime.preferences.IPreferencesService;
  */
 public class XmppLoginCallbackHandler implements ILoginCallbackHandler {
 
+    private static final Logger LOG = LoggerFactory.getLogger(XmppLoginCallbackHandler.class);
+    
 	/**
 	 * {@inheritDoc}
 	 */
-	public final Credentials getCredentials() {
+	@Override
+    public final Credentials getCredentials() {
 		IPreferencesService prefs = Platform.getPreferencesService();
 		String username = prefs.getString(Activator.PLUGIN_ID,
 				PreferenceConstants.XMPP_USERNAME, "", null);
@@ -50,8 +54,9 @@ public class XmppLoginCallbackHandler implements ILoginCallbackHandler {
 	/**
 	 * {@inheritDoc}
 	 */
-	public final void signalFailedLoginAttempt() {
-		CentralLogger.getInstance().error(this, "XMPP login failed");
+	@Override
+    public final void signalFailedLoginAttempt() {
+		LOG.error("XMPP login failed");
 	}
 
 }

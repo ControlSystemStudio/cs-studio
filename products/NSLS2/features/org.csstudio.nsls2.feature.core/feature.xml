@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <feature
       id="org.csstudio.nsls2.core.feature"
-      label="css-nsls2 Core plugins"
-      version="1.0.0.qualifier"
+      label="CSS-NSLS-II Core"
+      version="3.0.0.qualifier"
       provider-name="Kunal Shroff &lt;kshroff@bnl.gov&gt;, Gabriele Carcassi &lt;carcassi@bnl.gov&gt; - BNL">
 
    <description url="http://www.example.com/description">
@@ -308,6 +308,13 @@
 
    <plugin
          id="org.csstudio.utility.pvmanager.sim"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"
+         unpack="false"/>
+
+   <plugin
+         id="org.csstudio.ui.help"
          download-size="0"
          install-size="0"
          version="0.0.0"

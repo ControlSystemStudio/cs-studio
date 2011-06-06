@@ -48,7 +48,6 @@ import org.csstudio.config.ioconfig.model.PersistenceException;
 import org.csstudio.config.ioconfig.model.Repository;
 import org.csstudio.config.ioconfig.model.tools.Helper;
 import org.csstudio.config.ioconfig.view.DeviceDatabaseErrorDialog;
-import org.csstudio.platform.logging.CentralLogger;
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.layout.GridDataFactory;
 import org.eclipse.jface.layout.TableColumnLayout;
@@ -75,6 +74,8 @@ import org.eclipse.swt.widgets.MenuItem;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.ui.ISharedImages;
 import org.eclipse.ui.PlatformUI;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * @author hrickens
@@ -83,6 +84,8 @@ import org.eclipse.ui.PlatformUI;
  * @since 30.07.2010
  */
 public class DocumentTableViewerBuilder {
+    
+    private static final Logger LOG = LoggerFactory.getLogger(DocumentTableViewerBuilder.class);
 
     public static TableViewer crateDocumentTable(@Nonnull final Composite group, final boolean showHierarchy) {
         TableColumnLayout tableColumnLayout = new TableColumnLayout();
@@ -495,10 +498,10 @@ public class DocumentTableViewerBuilder {
                     Helper.writeDocumentFile(outFile, firstElement);
                 } catch (PersistenceException e) {
                     DeviceDatabaseErrorDialog.open(null, "Can't open Editor", e);
-                    CentralLogger.getInstance().error(this, e);
+                    LOG.error("Can't open Editor", e);
                 } catch (IOException e) {
                     MessageDialog.openError(null, "Can't File write!", e.getMessage());
-                    CentralLogger.getInstance().error(this, e);
+                    LOG.error("Can't File write!", e);
                 }
             }
         }
@@ -539,7 +542,7 @@ public class DocumentTableViewerBuilder {
                     Repository.save(document);
                 } catch (PersistenceException e) {
                     DeviceDatabaseErrorDialog.open(null, "Can't add File to Node", e);
-                    CentralLogger.getInstance().error(this, e);
+                    LOG.error("Can't add File to Node", e);
                 }
             }
         }

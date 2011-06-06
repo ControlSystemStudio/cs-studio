@@ -179,6 +179,7 @@ public class ChannelTest {
         final ChannelStructureDBO structureM1C1 = ChannelStructureDBO.makeSimpleChannel(module1, OUTPUT);
 
         final ChannelDBO channelM1C1 = structureM1C1.getFirstChannel();
+        assertNotNull(channelM1C1);
         channelM1C1.setDigital(false);
         channelM1C1.setName("channelM1C1");
         channelM1C1.setChannelTypeNonHibernate(DataType.INT16);
@@ -187,6 +188,7 @@ public class ChannelTest {
         final ChannelStructureDBO structureM1C2 = ChannelStructureDBO.makeSimpleChannel(module1, OUTPUT);
 
         final ChannelDBO channelM1C2 = structureM1C2.getFirstChannel();
+        assertNotNull(channelM1C2);
         channelM1C2.setDigital(false);
         channelM1C2.setName("channelM1C2");
         channelM1C2.setChannelTypeNonHibernate(DataType.UINT16);
@@ -195,12 +197,13 @@ public class ChannelTest {
         final ChannelStructureDBO structureM1C3 = ChannelStructureDBO.makeSimpleChannel(module1, OUTPUT);
 
         final ChannelDBO channelM1C3 = structureM1C3.getFirstChannel();
+        assertNotNull(channelM1C3);
         channelM1C3.setDigital(false);
         channelM1C3.setName("channelM1C3");
         channelM1C3.setChannelTypeNonHibernate(DataType.INT8);
         channelM1C3.localSave();
 
-        testModule("@Subnet:815", (short) 21, 0, 0, 0, 5, module1);
+        testModule("@Subnet:815", (short) 21, 0, 0, 0, 2, module1);
 
 //        testSimpleChannel("@Subnet:815/0 'T=INT16'", (short) -1, channelM1C1, structureM1C1);
 //        testSimpleChannel("@Subnet:815/2 'T=UNSIGN16'", (short) 1, channelM1C2, structureM1C2);
@@ -218,13 +221,14 @@ public class ChannelTest {
         module2.moveSortIndex((short) 22);
         module2.localSave();
 
-        testModule("@Subnet:815", (short) 22, 0, 0, 5, 0, module2);
+        testModule("@Subnet:815", (short) 22, 0, 0, 2, 0, module2);
 
         // create Channels for Module 2
 
         final ChannelStructureDBO structureM2C1 = ChannelStructureDBO.makeSimpleChannel(module2, false);
 
         final ChannelDBO channelM2C1 = structureM2C1.getFirstChannel();
+        assertNotNull(channelM2C1);
         channelM2C1.setDigital(false);
         channelM2C1.setName("channelM2C1");
         channelM2C1.setChannelTypeNonHibernate(DataType.UINT8);
@@ -233,6 +237,7 @@ public class ChannelTest {
         final ChannelStructureDBO structureM2C2 = ChannelStructureDBO.makeSimpleChannel(module2, false);
 
         final ChannelDBO channelM2C2 = structureM2C2.getFirstChannel();
+        assertNotNull(channelM2C2);
         channelM2C2.setDigital(false);
         channelM2C2.setName("channelM2C2");
         channelM2C2.setChannelTypeNonHibernate(DataType.INT16);
@@ -241,12 +246,13 @@ public class ChannelTest {
         final ChannelStructureDBO structureM2C3 = ChannelStructureDBO.makeSimpleChannel(module2, false);
 
         final ChannelDBO channelM2C3 = structureM2C3.getFirstChannel();
+        assertNotNull(channelM2C3);
         channelM2C3.setDigital(false);
         channelM2C3.setName("channelM2C3");
         channelM2C3.setChannelTypeNonHibernate(DataType.UINT16);
         channelM2C3.localSave();
 
-        testModule("@Subnet:815", (short) 22, 0, 0, 5, 5, module2);
+        testModule("@Subnet:815", (short) 22, 0, 0, 2, 1, module2);
 
 //        testSimpleChannel("@Subnet:815/5 'T=UNSIGN8,L=0,H=32768'", (short) 0, channelM2C1,
 //                structureM2C1);
@@ -265,7 +271,7 @@ public class ChannelTest {
         module3.moveSortIndex((short) 23);
         module3.localSave();
 
-        testModule("@Subnet:815", (short) 23, 0, 0, 10, 0, module3);
+        testModule("@Subnet:815", (short) 23, 0, 0, 3, 0, module3);
 
         // create Channels for Module 3
         final ChannelStructureDBO structureM3C1 = ChannelStructureDBO.makeSimpleChannel(module3, false);
@@ -292,7 +298,7 @@ public class ChannelTest {
         channelM3C3.setChannelTypeNonHibernate(DataType.UINT16);
         channelM3C3.localSave();
 
-        testModule("@Subnet:815", (short) 23, 0, 0, 10, 5, module3);
+        testModule("@Subnet:815", (short) 23, 0, 0, 3, 1, module3);
 
 //        testSimpleChannel("@Subnet:815/10 'T=UNSIGN8,L=0,H=32768'", (short) 0, channelM3C1,
 //                structureM3C1);
@@ -363,7 +369,7 @@ public class ChannelTest {
         channelM1C3.setChannelTypeNonHibernate(DataType.INT8);
         channelM1C3.localSave();
 
-        testModule("@Subnet:815", (short) 21, 0, 5, 0, 0, module1);
+        testModule("@Subnet:815", (short) 21, 0, 2, 0, 0, module1);
 
 //        testSimpleChannel("@Subnet:815/0 'T=INT16'", (short) 1, channelM1C1, structureM1C1);
 //        testSimpleChannel("@Subnet:815/2 'T=UNSIGN16'", (short) 1, channelM1C2, structureM1C2);
@@ -381,7 +387,7 @@ public class ChannelTest {
         module2.moveSortIndex((short) 22);
         module2.localSave();
 
-        testModule("@Subnet:815", (short) 22, 5, 0, 0, 0, module2);
+        testModule("@Subnet:815", (short) 22, 2, 0, 0, 0, module2);
 
         // create Channels for Module 2
         final ChannelStructureDBO structureM2C1 = ChannelStructureDBO.makeSimpleChannel(module2, INPUT);
@@ -408,7 +414,7 @@ public class ChannelTest {
         channelM2C3.setChannelTypeNonHibernate(DataType.UINT16);
         channelM2C3.localSave();
 
-        testModule("@Subnet:815", (short) 22, 5, 5, 0, 0, module2);
+        testModule("@Subnet:815", (short) 22, 2, 1, 0, 0, module2);
 
 //        testSimpleChannel("@Subnet:815/5 'T=UNSIGN8,L=0,H=32768'", (short) 0, channelM2C1,
 //                structureM2C1);
@@ -427,7 +433,7 @@ public class ChannelTest {
         module3.moveSortIndex((short) 23);
         module3.localSave();
 
-        testModule("@Subnet:815", (short) 23, 10, 0, 0, 0, module3);
+        testModule("@Subnet:815", (short) 23, 3, 0, 0, 0, module3);
 
         // create Channels for Module 3
         final ChannelStructureDBO structureM3C1 = ChannelStructureDBO.makeSimpleChannel(module3, INPUT);
@@ -454,7 +460,7 @@ public class ChannelTest {
         channelM3C3.setChannelTypeNonHibernate(DataType.UINT16);
         channelM3C3.localSave();
 
-        testModule("@Subnet:815", (short) 23, 10, 5, 0, 0, module3);
+        testModule("@Subnet:815", (short) 23, 3, 1, 0, 0, module3);
 
 //        testSimpleChannel("@Subnet:815/10 'T=UNSIGN8,L=0,H=32768'", (short) 0, channelM3C1,
 //                structureM3C1);
@@ -524,7 +530,7 @@ public class ChannelTest {
         channelM1C4.setChannelTypeNonHibernate(DataType.INT16);
         // channelM1C4.localSave();
 
-        testModule("@Subnet:815", (short) 21, 0, 3, 0, 4, module1);
+        testModule("@Subnet:815", (short) 21, 0, 1, 0, 0, module1);
 
 //        assertEquals("@Subnet:815/0 'T=INT8'", channelM1C1.getEpicsAddressStringNH());
 //        assertEquals("@Subnet:815/1 'T=INT16'", channelM1C2.getEpicsAddressStringNH());
@@ -537,7 +543,7 @@ public class ChannelTest {
         module2.moveSortIndex((short) 22);
         module2.localSave();
 
-        testModule("@Subnet:815", (short) 22, 3, 0, 4, 0, module2);
+        testModule("@Subnet:815", (short) 22, 1, 0, 0, 0, module2);
 
         // create Channels for Module 2
         final ChannelStructureDBO structureM2C1 = ChannelStructureDBO.makeSimpleChannel(module2, OUTPUT);
@@ -564,7 +570,7 @@ public class ChannelTest {
         channelM2C4.setChannelTypeNonHibernate(DataType.UINT16);
         // channelM2C4.localSave();
 
-        testModule("@Subnet:815", (short) 22, 3, 4, 4, 3, module2);
+        testModule("@Subnet:815", (short) 22, 1, 0, 0, 1, module2);
 
 //        assertEquals("@Subnet:815/4 'T=INT8'", channelM2C1.getEpicsAddressStringNH());
 //        assertEquals("@Subnet:815/5 'T=INT16'", channelM2C2.getEpicsAddressStringNH());
@@ -577,7 +583,7 @@ public class ChannelTest {
         module3.moveSortIndex((short) 23);
         module3.localSave();
 
-        testModule("@Subnet:815", (short) 23, 7, 0, 7, 0, module3);
+        testModule("@Subnet:815", (short) 23, 1, 0, 1, 0, module3);
 
         // create Channels for Module 3
 
@@ -609,7 +615,7 @@ public class ChannelTest {
         channelM3C4.setChannelTypeNonHibernate(DataType.UINT16);
         // channelM3C4.localSave();
         channelM3C4.getModule().getParent().getParent().update();
-        testModule("@Subnet:815", (short) 23, 7, 3, 7, 2, module3);
+        testModule("@Subnet:815", (short) 23, 1, 1, 1, 0, module3);
 //        testSimpleChannel("@Subnet:815/7 'T=UNSIGN8,L=0,H=32768'", (short) 0, channelM3C1,
 //                structureM3C1);
 //        testSimpleChannel("@Subnet:815/7 'T=INT8'", (short) 1, channelM3C2, structureM3C2);
@@ -623,7 +629,7 @@ public class ChannelTest {
         module4.moveSortIndex((short) 24);
         module4.localSave();
 
-        testModule("@Subnet:815", (short) 24, 10, 0, 9, 0, module4);
+        testModule("@Subnet:815", (short) 24, 2, 0, 1, 0, module4);
 
         // create Channels for Module 4
         final ChannelStructureDBO structureM4C1 = ChannelStructureDBO.makeSimpleChannel(module4, true);
@@ -652,7 +658,7 @@ public class ChannelTest {
         channelM4C4.setChannelTypeNonHibernate(DataType.UINT16);
         // channelM4C4.localSave();
 
-        testModule("@Subnet:815", (short) 24, 10, 3, 9, 3, module4);
+        testModule("@Subnet:815", (short) 24, 2, 0, 1, 0, module4);
 //        assertEquals("@Subnet:815/10 'T=INT16'", channelM4C1.getEpicsAddressStringNH());
 //        assertEquals("@Subnet:815/12 'T=INT8'", channelM4C2.getEpicsAddressStringNH());
 //        assertEquals("@Subnet:815/9 'T=UNSIGN8,L=0,H=32768'", channelM4C3.getEpicsAddressStringNH());
@@ -907,14 +913,14 @@ public class ChannelTest {
         assertEquals(0, module1.getInputOffsetNH());
         assertEquals(0, module1.getInputSize());
         assertEquals(0, module1.getOutputOffsetNH());
-        assertEquals(2, module1.getOutputSize());
+        assertEquals(1, module1.getOutputSize());
         structChannel2.localSave();
         structChannel2.localUpdate();
         assertEquals("@Subnet:815", module1.getEpicsAddressString());
         assertEquals(0, module1.getInputOffsetNH());
         assertEquals(0, module1.getInputSize());
         assertEquals(0, module1.getOutputOffsetNH());
-        assertEquals(2, module1.getOutputSize());
+        assertEquals(1, module1.getOutputSize());
 
         // create Module 2
         final ModuleDBO module2 = new ModuleDBO(_slave);
@@ -925,7 +931,7 @@ public class ChannelTest {
         assertEquals("@Subnet:815", module2.getEpicsAddressString());
         assertEquals(0, module2.getInputOffsetNH());
         assertEquals(0, module2.getInputSize());
-        assertEquals(2, module2.getOutputOffsetNH());
+        assertEquals(1, module2.getOutputOffsetNH());
         assertEquals(0, module2.getOutputSize());
 
         final ChannelStructureDBO channelStructure3 = ChannelStructureDBO.makeChannelStructure(module2, false,
@@ -943,7 +949,7 @@ public class ChannelTest {
         assertEquals((short) 0, (short) structChannel3.getSortIndex());
         assertEquals(1, structChannel3.getChSize());
         assertEquals(0, structChannel3.getChannelNumber());
-        assertEquals(2, structChannel3.getFullChannelNumber());
+        assertEquals(1, structChannel3.getFullChannelNumber());
 //        assertEquals("@Subnet:815/2 'T=INT16,B=0'", structChannel3.getEpicsAddressStringNH());
 
         structChannel3 = structChannels3[1];
@@ -952,7 +958,7 @@ public class ChannelTest {
         assertEquals((short) 1, (short) structChannel3.getSortIndex());
         assertEquals(1, structChannel3.getChSize());
         assertEquals(0, structChannel3.getChannelNumber());
-        assertEquals(2, structChannel3.getFullChannelNumber());
+        assertEquals(1, structChannel3.getFullChannelNumber());
 //        assertEquals("@Subnet:815/2 'T=INT16,B=1'", structChannel3.getEpicsAddressStringNH());
 
         structChannel3 = structChannels3[2];
@@ -961,7 +967,7 @@ public class ChannelTest {
         assertEquals((short) 2, (short) structChannel3.getSortIndex());
         assertEquals(1, structChannel3.getChSize());
         assertEquals(0, structChannel3.getChannelNumber());
-        assertEquals(2, structChannel3.getFullChannelNumber());
+        assertEquals(1, structChannel3.getFullChannelNumber());
 //        assertEquals("@Subnet:815/2 'T=INT16,B=2'", structChannel3.getEpicsAddressStringNH());
 
         structChannel3 = structChannels3[3];
@@ -970,7 +976,7 @@ public class ChannelTest {
         assertEquals((short) 3, (short) structChannel3.getSortIndex());
         assertEquals(1, structChannel3.getChSize());
         assertEquals(0, structChannel3.getChannelNumber());
-        assertEquals(2, structChannel3.getFullChannelNumber());
+        assertEquals(1, structChannel3.getFullChannelNumber());
 //        assertEquals("@Subnet:815/2 'T=INT16,B=3'", structChannel3.getEpicsAddressStringNH());
 
         structChannel3 = structChannels3[4];
@@ -979,7 +985,7 @@ public class ChannelTest {
         assertEquals((short) 4, (short) structChannel3.getSortIndex());
         assertEquals(1, structChannel3.getChSize());
         assertEquals(0, structChannel3.getChannelNumber());
-        assertEquals(2, structChannel3.getFullChannelNumber());
+        assertEquals(1, structChannel3.getFullChannelNumber());
 //        assertEquals("@Subnet:815/2 'T=INT16,B=4'", structChannel3.getEpicsAddressStringNH());
 
         structChannel3 = structChannels3[5];
@@ -988,7 +994,7 @@ public class ChannelTest {
         assertEquals((short) 5, (short) structChannel3.getSortIndex());
         assertEquals(1, structChannel3.getChSize());
         assertEquals(0, structChannel3.getChannelNumber());
-        assertEquals(2, structChannel3.getFullChannelNumber());
+        assertEquals(1, structChannel3.getFullChannelNumber());
 //        assertEquals("@Subnet:815/2 'T=INT16,B=5'", structChannel3.getEpicsAddressStringNH());
 
         structChannel3 = structChannels3[6];
@@ -997,7 +1003,7 @@ public class ChannelTest {
         assertEquals((short) 6, (short) structChannel3.getSortIndex());
         assertEquals(1, structChannel3.getChSize());
         assertEquals(0, structChannel3.getChannelNumber());
-        assertEquals(2, structChannel3.getFullChannelNumber());
+        assertEquals(1, structChannel3.getFullChannelNumber());
 //        assertEquals("@Subnet:815/2 'T=INT16,B=6'", structChannel3.getEpicsAddressStringNH());
 
         structChannel3 = structChannels3[7];
@@ -1006,7 +1012,7 @@ public class ChannelTest {
         assertEquals((short) 7, (short) structChannel3.getSortIndex());
         assertEquals(1, structChannel3.getChSize());
         assertEquals(0, structChannel3.getChannelNumber());
-        assertEquals(2, structChannel3.getFullChannelNumber());
+        assertEquals(1, structChannel3.getFullChannelNumber());
 //        assertEquals("@Subnet:815/2 'T=INT16,B=7'", structChannel3.getEpicsAddressStringNH());
 
         structChannel3 = structChannels3[8];
@@ -1015,7 +1021,7 @@ public class ChannelTest {
         assertEquals((short) 8, (short) structChannel3.getSortIndex());
         assertEquals(1, structChannel3.getChSize());
         assertEquals(0, structChannel3.getChannelNumber());
-        assertEquals(2, structChannel3.getFullChannelNumber());
+        assertEquals(1, structChannel3.getFullChannelNumber());
 //        assertEquals("@Subnet:815/2 'T=INT16,B=8'", structChannel3.getEpicsAddressStringNH());
 
         structChannel3 = structChannels3[9];
@@ -1024,7 +1030,7 @@ public class ChannelTest {
         assertEquals((short) 9, (short) structChannel3.getSortIndex());
         assertEquals(1, structChannel3.getChSize());
         assertEquals(0, structChannel3.getChannelNumber());
-        assertEquals(2, structChannel3.getFullChannelNumber());
+        assertEquals(1, structChannel3.getFullChannelNumber());
 //        assertEquals("@Subnet:815/2 'T=INT16,B=9'", structChannel3.getEpicsAddressStringNH());
 
         structChannel3 = structChannels3[10];
@@ -1033,7 +1039,7 @@ public class ChannelTest {
         assertEquals((short) 10, (short) structChannel3.getSortIndex());
         assertEquals(1, structChannel3.getChSize());
         assertEquals(0, structChannel3.getChannelNumber());
-        assertEquals(2, structChannel3.getFullChannelNumber());
+        assertEquals(1, structChannel3.getFullChannelNumber());
 //        assertEquals("@Subnet:815/2 'T=INT16,B=10'", structChannel3.getEpicsAddressStringNH());
 
         structChannel3 = structChannels3[11];
@@ -1042,7 +1048,7 @@ public class ChannelTest {
         assertEquals((short) 11, (short) structChannel3.getSortIndex());
         assertEquals(1, structChannel3.getChSize());
         assertEquals(0, structChannel3.getChannelNumber());
-        assertEquals(2, structChannel3.getFullChannelNumber());
+        assertEquals(1, structChannel3.getFullChannelNumber());
 //        assertEquals("@Subnet:815/2 'T=INT16,B=11'", structChannel3.getEpicsAddressStringNH());
 
         structChannel3 = structChannels3[12];
@@ -1051,7 +1057,7 @@ public class ChannelTest {
         assertEquals((short) 12, (short) structChannel3.getSortIndex());
         assertEquals(1, structChannel3.getChSize());
         assertEquals(0, structChannel3.getChannelNumber());
-        assertEquals(2, structChannel3.getFullChannelNumber());
+        assertEquals(1, structChannel3.getFullChannelNumber());
 //        assertEquals("@Subnet:815/2 'T=INT16,B=12'", structChannel3.getEpicsAddressStringNH());
 
         structChannel3 = structChannels3[13];
@@ -1060,7 +1066,7 @@ public class ChannelTest {
         assertEquals((short) 13, (short) structChannel3.getSortIndex());
         assertEquals(1, structChannel3.getChSize());
         assertEquals(0, structChannel3.getChannelNumber());
-        assertEquals(2, structChannel3.getFullChannelNumber());
+        assertEquals(1, structChannel3.getFullChannelNumber());
 //        assertEquals("@Subnet:815/2 'T=INT16,B=13'", structChannel3.getEpicsAddressStringNH());
 
         structChannel3 = structChannels3[14];
@@ -1069,7 +1075,7 @@ public class ChannelTest {
         assertEquals((short) 14, (short) structChannel3.getSortIndex());
         assertEquals(1, structChannel3.getChSize());
         assertEquals(0, structChannel3.getChannelNumber());
-        assertEquals(2, structChannel3.getFullChannelNumber());
+        assertEquals(1, structChannel3.getFullChannelNumber());
 //        assertEquals("@Subnet:815/2 'T=INT16,B=14'", structChannel3.getEpicsAddressStringNH());
 
         structChannel3 = structChannels3[15];
@@ -1078,13 +1084,13 @@ public class ChannelTest {
         assertEquals((short) 15, (short) structChannel3.getSortIndex());
         assertEquals(1, structChannel3.getChSize());
         assertEquals(0, structChannel3.getChannelNumber());
-        assertEquals(2, structChannel3.getFullChannelNumber());
+        assertEquals(1, structChannel3.getFullChannelNumber());
 //        assertEquals("@Subnet:815/2 'T=INT16,B=15'", structChannel3.getEpicsAddressStringNH());
 
         assertEquals("@Subnet:815", module2.getEpicsAddressString());
         assertEquals(0, module2.getInputOffsetNH());
         assertEquals(0, module2.getInputSize());
-        assertEquals(2, module2.getOutputOffsetNH());
+        assertEquals(1, module2.getOutputOffsetNH());
         assertEquals(2, module2.getOutputSize());
 
         structChannel3.localSave();
@@ -1093,7 +1099,7 @@ public class ChannelTest {
         assertEquals("@Subnet:815", module2.getEpicsAddressString());
         assertEquals(0, module2.getInputOffsetNH());
         assertEquals(0, module2.getInputSize());
-        assertEquals(2, module2.getOutputOffsetNH());
+        assertEquals(1, module2.getOutputOffsetNH());
         assertEquals(2, module2.getOutputSize());
 
         final ChannelStructureDBO channelStructure4 = ChannelStructureDBO.makeChannelStructure(module2, false,
@@ -1180,8 +1186,8 @@ public class ChannelTest {
         assertEquals("@Subnet:815", module2.getEpicsAddressString());
         assertEquals(0, module2.getInputOffsetNH());
         assertEquals(0, module2.getInputSize());
-        assertEquals(2, module2.getOutputOffsetNH());
-        assertEquals(4, module2.getOutputSize());
+        assertEquals(1, module2.getOutputOffsetNH());
+        assertEquals(2, module2.getOutputSize());
 
         structChannel4.localSave();
         structChannel4.localUpdate();
@@ -1189,8 +1195,8 @@ public class ChannelTest {
         assertEquals("@Subnet:815", module2.getEpicsAddressString());
         assertEquals(0, module2.getInputOffsetNH());
         assertEquals(0, module2.getInputSize());
-        assertEquals(2, module2.getOutputOffsetNH());
-        assertEquals(4, module2.getOutputSize());
+        assertEquals(1, module2.getOutputOffsetNH());
+        assertEquals(2, module2.getOutputSize());
     }
 
     /**
@@ -1244,7 +1250,7 @@ public class ChannelTest {
                 DataType.INT8, "SCO1.1_");
 
         // - Test Module Changes
-        testModule("@Subnet:123", (short) 31, 0, 2, 0, 1, module1);
+        testModule("@Subnet:123", (short) 31, 0, 2, 0, 0, module1);
 
         // - Test Structure Channels.
         final Collection<ChannelDBO> valuesSCO1 = sco11.getChildrenAsMap().values();
@@ -1270,7 +1276,7 @@ public class ChannelTest {
         pco11.localSave();
 
         // - Test Module Changes
-        testModule("@Subnet:123", (short) 31, 0, 2, 0, 3, module1);
+        testModule("@Subnet:123", (short) 31, 0, 2, 0, 0, module1);
 
         // - Test Simple Channel.
 //        testChannelFromStructure("@Subnet:123/1 'T=UNSIGN16'", (short) 2, DataType.UINT16, 16, 1, 1,
@@ -1282,7 +1288,7 @@ public class ChannelTest {
                 DataType.UINT8, "SCI1.1_");
 
         // - Test Module Changes
-        testModule("@Subnet:123", (short) 31, 0, 3, 0, 3, module1);
+        testModule("@Subnet:123", (short) 31, 0, 2, 0, 0, module1);
 
         // - Test Channel.
         final Collection<ChannelDBO> valuesSCI1 = sci1.getChildrenAsMap().values();
@@ -1303,7 +1309,7 @@ public class ChannelTest {
                 DataType.UINT16, "SCO1.2_");
 
         // - Test Module Changes
-        testModule("@Subnet:123", (short) 31, 0, 3, 0, 5, module1);
+        testModule("@Subnet:123", (short) 31, 0, 2, 0, 0, module1);
 
         // - Test Channel.
         assertEquals(16, sco12.getChildren().size());
@@ -1324,7 +1330,7 @@ public class ChannelTest {
         pci12.localSave();
 
         // - Test Module Changes
-        testModule("@Subnet:123", (short) 31, 0, 4, 0, 5, module1);
+        testModule("@Subnet:123", (short) 31, 0, 2, 0, 0, module1);
 
         // - Test Channel.
 //        testChannelFromStructure("@Subnet:123/3 'T=INT8'", (short) 5, DataType.INT8, 8, 3, 3,
@@ -1338,7 +1344,7 @@ public class ChannelTest {
         module2.localSave();
 
         // - Test Module create
-        testModule("@Subnet:123", (short) 32, 4, 0, 5, 0, module2);
+        testModule("@Subnet:123", (short) 32, 2, 0, 0, 0, module2);
 
         // Make structure Channel Input 2.1
         // M2-->SCI21-->
@@ -1346,7 +1352,7 @@ public class ChannelTest {
                 DataType.INT8, "SCI2.2_");
 
         // - Test Module Changes
-        testModule("@Subnet:123", (short) 32, 4, 1, 5, 0, module2);
+        testModule("@Subnet:123", (short) 32, 2, 1, 0, 0, module2);
 
         // - Test structure Channels.
         final Collection<ChannelDBO> valuesSCI21 = sci21.getChildrenAsMap().values();
@@ -1370,7 +1376,7 @@ public class ChannelTest {
         pco21.localSave();
 
         // - Test Module Changes
-        testModule("@Subnet:123", (short) 32, 4, 1, 5, 2, module2);
+        testModule("@Subnet:123", (short) 32, 2, 1, 0, 0, module2);
 
         // - Test simple Channel.
 //        testChannelFromStructure("@Subnet:123/5 'T=INT16'", (short) 1, DataType.INT16, 16, 0, 5,
@@ -1385,7 +1391,7 @@ public class ChannelTest {
         pci21.localSave();
 
         // - Test Module Changes
-        testModule("@Subnet:123", (short) 32, 4, 2, 5, 2, module2);
+        testModule("@Subnet:123", (short) 32, 2, 1, 0, 0, module2);
 
         // - Test Channel.
 //        testChannelFromStructure("@Subnet:123/5 'T=UNSIGN8,L=0,H=32768'", (short) 2, DataType.UINT8,
@@ -1397,7 +1403,7 @@ public class ChannelTest {
                 DataType.UINT16, "SCO2.1_");
 
         // - Test Module Changes
-        testModule("@Subnet:123", (short) 32, 4, 2, 5, 4, module2);
+        testModule("@Subnet:123", (short) 32, 2, 1, 0, 0, module2);
 
         // - Test structure Channels.
         final Collection<ChannelDBO> valuesSCO21 = sco21.getChildrenAsMap().values();
@@ -1405,12 +1411,12 @@ public class ChannelTest {
         assertEquals(16, valuesSCO21.size());
         assertEquals(16, channelsSCO21.size());
 
-//        testChannelFromStructure("@Subnet:123/7 'T=UNSIGN16,B=0'", (short) 0, DataType.BIT, 1, 2, 7,
-//                sco21);
-//        testChannelFromStructure("@Subnet:123/7 'T=UNSIGN16,B=3'", (short) 3, DataType.BIT, 1, 2, 7,
-//                sco21);
-//        testChannelFromStructure("@Subnet:123/7 'T=UNSIGN16,B=7'", (short) 7, DataType.BIT, 1, 2, 7,
-//                sco21);
+        testChannelFromStructure("@Subnet:123/7 'T=UNSIGN16,B=0'", (short) 0, DataType.BIT, 1, 0, 0,
+                sco21);
+        testChannelFromStructure("@Subnet:123/7 'T=UNSIGN16,B=3'", (short) 3, DataType.BIT, 1, 0, 0,
+                sco21);
+        testChannelFromStructure("@Subnet:123/7 'T=UNSIGN16,B=7'", (short) 7, DataType.BIT, 1, 0, 0,
+                sco21);
 
         // Make simple Channel Output 2.2
         // M2-->SCI21-->PCO21-->PCI21-->SCO21-->PCO22
@@ -1421,7 +1427,7 @@ public class ChannelTest {
         pco22.localSave();
 
         // - Test Module Changes
-        testModule("@Subnet:123", (short) 32, 4, 2, 5, 5, module2);
+        testModule("@Subnet:123", (short) 32, 2, 1, 0, 0, module2);
 
         // - Test Channel.
 //        testChannelFromStructure("@Subnet:123/9 'T=INT8'", (short) 4, DataType.INT8, 8, 4, 9,
@@ -1433,7 +1439,7 @@ public class ChannelTest {
                 DataType.UINT16, "SCI2.2_");
 
         // - Test Module Changes
-        testModule("@Subnet:123", (short) 32, 4, 4, 5, 5, module2);
+        testModule("@Subnet:123", (short) 32, 2, 1, 0, 0, module2);
 
         // - Test structure Channels.
         final Collection<ChannelDBO> valuesSCI22 = sci22.getChildrenAsMap().values();
@@ -1441,12 +1447,12 @@ public class ChannelTest {
         assertEquals(16, valuesSCI22.size());
         assertEquals(16, channelsSCI22.size());
 
-//        testChannelFromStructure("@Subnet:123/6 'T=UNSIGN16,B=0'", (short) 0, DataType.BIT, 1, 2, 6,
-//                sci22);
-//        testChannelFromStructure("@Subnet:123/6 'T=UNSIGN16,B=7'", (short) 7, DataType.BIT, 1, 2, 6,
-//                sci22);
-//        testChannelFromStructure("@Subnet:123/6 'T=UNSIGN16,B=15'", (short) 15, DataType.BIT, 1, 2,
-//                6, sci22);
+        testChannelFromStructure("@Subnet:123/6 'T=UNSIGN16,B=0'", (short) 0, DataType.BIT, 1, 0, 2,
+                sci22);
+        testChannelFromStructure("@Subnet:123/6 'T=UNSIGN16,B=7'", (short) 7, DataType.BIT, 1, 0, 2,
+                sci22);
+        testChannelFromStructure("@Subnet:123/6 'T=UNSIGN16,B=15'", (short) 15, DataType.BIT, 1, 0,
+                2, sci22);
 
     }
 
@@ -1467,18 +1473,18 @@ public class ChannelTest {
 //        assertEquals(addressString, channel.getEpicsAddressStringNH());
 //    }
 
-//    private void testChannelFromStructure(final String addressString, final short sortIndex, final DataType dataType,
-//            final int chSize, final int channelNumber, final int fullChannelNumber, final ChannelStructureDBO channelStructure) throws PersistenceException {
-//        final ChannelDBO channel = (ChannelDBO) channelStructure.getChildrenAsMap().get(sortIndex);
-//        assertNotNull("Wrong sortIndex (" + sortIndex + ")! Hint: "
-//                + channelStructure.getFirstChannel().getSortIndex(), channel);
-//        assertEquals("Struct Channel: " + channel, dataType, channel.getChannelType());
-//        assertEquals(sortIndex, (short) channel.getSortIndex());
-//        assertEquals(chSize, channel.getChSize());
-//        assertEquals(channelNumber, channel.getChannelNumber());
-//        assertEquals(fullChannelNumber, channel.getFullChannelNumber());
+    private void testChannelFromStructure(final String addressString, final short sortIndex, final DataType dataType,
+            final int chSize, final int channelNumber, final int fullChannelNumber, final ChannelStructureDBO channelStructure) throws PersistenceException {
+        final ChannelDBO channel = (ChannelDBO) channelStructure.getChildrenAsMap().get(sortIndex);
+        assertNotNull("Wrong sortIndex (" + sortIndex + ")! Hint: "
+                + channelStructure.getFirstChannel().getSortIndex(), channel);
+        assertEquals("Struct Channel: " + channel, dataType, channel.getChannelType());
+        assertEquals(sortIndex, (short) channel.getSortIndex());
+        assertEquals(chSize, channel.getChSize());
+        assertEquals(channelNumber, channel.getChannelNumber());
+        assertEquals(fullChannelNumber, channel.getFullChannelNumber());
 //        assertEquals(addressString, channel.getEpicsAddressStringNH());
-//    }
+    }
 
     @Before
     public void setUp() throws PersistenceException {

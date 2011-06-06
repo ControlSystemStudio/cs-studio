@@ -40,8 +40,9 @@ import org.csstudio.config.ioconfig.model.InvalidLeave;
 import org.csstudio.config.ioconfig.model.NodeType;
 import org.csstudio.config.ioconfig.model.PersistenceException;
 import org.csstudio.config.ioconfig.model.tools.NodeMap;
-import org.csstudio.platform.logging.CentralLogger;
 import org.hibernate.annotations.BatchSize;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  *
@@ -54,6 +55,8 @@ import org.hibernate.annotations.BatchSize;
 @BatchSize(size = 32)
 @Table(name = "ddb_Profibus_Channel")
 public class ChannelDBO extends AbstractNodeDBO<ChannelStructureDBO, InvalidLeave> {
+    
+    private static final Logger LOG = LoggerFactory.getLogger(ChannelDBO.class);
     
     private static final long serialVersionUID = 1L;
     
@@ -653,7 +656,7 @@ public class ChannelDBO extends AbstractNodeDBO<ChannelStructureDBO, InvalidLeav
             }
         } catch (PersistenceException e) {
             sb.append("Device Database ERROR: ").append(e.getMessage());
-            CentralLogger.getInstance().error(this, e);
+            LOG.error("Device Database ERROR: {}", e);
         }
         return sb.toString();
     }

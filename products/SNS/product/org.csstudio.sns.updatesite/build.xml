@@ -12,15 +12,14 @@
     <property environment="env"/>
 
     <!-- Repository dir where sources have been checked out -->
-    <property name="repo_dir" value="/Kram/MerurialRepos/cs-studio" />
+    <property name="repo_dir" value="${env.TOP}" />
 
 	<!-- Workspace from which sources are copied that are not in repo -->
-    <property name="workspace_dir" value="/Kram/Eclipse/Workspace" />
+    <property name="workspace_dir" value="${env.WORKSPACE}" />
     
     <!-- Build directory -->
     <property name="build_dir" value="build" />
 	
-
     <!-- Zip all the source files -->
     <target name="check_vars" unless="env.VERSION">
         <fail message="VERSION is undefined"/>

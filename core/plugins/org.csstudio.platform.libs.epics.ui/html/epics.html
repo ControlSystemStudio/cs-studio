@@ -39,37 +39,18 @@ they do not take effect at runtime!
 <h2>Default Settings</h2>
 While each user can specify custom settings for each workspace,
 a site might have some default choices.
-These are set in the "preferences.ini" file inside the
-org.csstudio.platform.libs.epics plugin directory,
-and can be adjusted by the system administrator.
+Your CSS administrator can refer to the file "preferences.ini"
+inside the org.csstudio.platform.libs.epics plugin
+and provide a suitable "plugin_customization.ini" file
+for your site-specific version of CSS.
 
 <h2>Installation</h2>
 When using the 'pure java' version, aka. CAJ,
 no additional steps should be required.
 <p>
-To use the JNI version, you need to install OS-specific binaries.
-This plugin currently includes binaries for:
-<ul>
-<li>RedHat Linux (x86, g++ 3.4.6, kernel 2.6.9-55.0.2.EL)<br>
-    Build 2007, Aug 20 with EPICS base R3.14.8.2 from the jca-2.3.1 sources.
-    Compiled as one library without further dependencies to shared EPICS libs.
-<li>Linux (x86_64)<br>
-    Provided by ernesto@slac.stanford.edu,
-    from base R3.14.9 and jca-2.3.1 sources.
-<li>Mac OS X (10.4.8 on PPC)<br>
-    Build 2007, Aug 14 with EPICS base R3.14.8.2 from the jca-2.3.1 sources.
-    Compiled as one library without further dependencies to shared EPICS libs.
-</ul>
-<p>
-
-<h2>Internal Issues</h2>
-We would like to avoid having to set ((DY)LD_LIBRARY_)PATH.
-Therefore the JCA library is preferably compiled without further
-references to other shared libraries, especially without references
-to the EPICS ca and Com libraries. 
-<p>
-The plugin sources include a copy of the JCA and CAJ sources as well
-as a README.txt about compilation.
+To use the JNI version, you need the operating system specific binaries for JNI.
+Refer to the README.txt in the org.csstudio.platform.libs.epics plugin
+for details on the currently included binaries.
 
 </body>
 </html>

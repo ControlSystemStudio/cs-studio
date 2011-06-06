@@ -65,7 +65,7 @@ public final class MoveLayerCommand extends Command {
 	public MoveLayerCommand(final LayerSupport layerSupport, final Layer layer, final int newIndex) {
 		assert layerSupport != null;
 		assert layer != null;
-		setLabel("Move Layer '"+layer.getId()+"'");
+		setLabel("Move Layer '"+layer.getDescription()+"'");
 		_layerSupport = layerSupport;
 		_layer = layer;
 		_newIndex = newIndex;

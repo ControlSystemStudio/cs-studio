@@ -221,11 +221,6 @@
                   name="additions"
                   visible="true">
             </separator>
-            <command
-                  commandId="org.eclipse.ui.window.preferences"
-                  label="%WindowPreferences"
-                  style="push">
-            </command>
          </menu>
       </menuContribution>
 
@@ -237,13 +232,13 @@
                label="%Help">
             <command
                   commandId="org.eclipse.ui.help.quickStartAction"
-                  icon="icons/css16.gif"
+                  icon="icons/css16.png"
                   label="%HelpWelcome"
                   style="push">
             </command>
             <command
                   commandId="org.eclipse.ui.help.aboutAction"
-                  icon="icons/css16.gif"
+                  icon="icons/css16.png"
                   label="%HelpAbout"
                   style="push">
             </command>
@@ -267,7 +262,7 @@
                 </parameter>
             </command>
             <separator
-                  name="helpEnd"
+                  name="group.assist"
                   visible="true">
             </separator>
             <separator
