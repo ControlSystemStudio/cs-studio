@@ -121,10 +121,10 @@
     <!--
         Copy plugin customization and zip win product
     -->
-    <target name="updateConfigWin">
-        <mkdir dir="${iniTmpDir}/${archivePrefix}" />
+    <target name="updateConfigWin" depends="cleanup">
+        <mkdir dir="${iniTmpDir}" />
         <copy file="${desyBuildDirectory}/plugin_customization.ini" 
-              tofile="${iniTmpDir}/${archivePrefix}/plugin_customization.ini"/>
+              tofile="${iniTmpDir}/plugin_customization.ini"/>
         <zip destfile="${buildDirectory}/${buildLabel}/${productName}-win32.win32.x86.zip" 
              basedir="${iniTmpDir}" update="true" />
     </target>
@@ -132,10 +132,10 @@
     <!--
         Copy solaris plugin customization and zip solaris product
     -->
-    <target name="updateConfigSolaris">
-        <mkdir dir="${iniTmpDir}/${archivePrefix}" />
+    <target name="updateConfigSolaris" depends="cleanup">
+        <mkdir dir="${iniTmpDir}" />
         <copy file="${desyBuildDirectory}/plugin_customization_solaris.ini" 
-              tofile="${iniTmpDir}/${archivePrefix}/plugin_customization.ini"/>
+              tofile="${iniTmpDir}/plugin_customization.ini"/>
         <zip destfile="${buildDirectory}/${buildLabel}/${buildId}-solaris.gtk.sparc.zip" 
              basedir="${iniTmpDir}" update="true" />
     </target>
