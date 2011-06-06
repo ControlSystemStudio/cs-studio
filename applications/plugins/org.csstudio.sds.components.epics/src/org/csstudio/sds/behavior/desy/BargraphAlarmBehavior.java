@@ -78,22 +78,15 @@ public class BargraphAlarmBehavior extends AbstractDesyAlarmBehavior<BargraphMod
 
     @Override
     protected void doProcessValueChange(final BargraphModel widget, final AnyData anyData) {
-//        super.doProcessValueChange(widget, anyData);
+        super.doProcessValueChange(widget, anyData);
+
         // .. fill level (influenced by current value)
         widget.setPropertyValue(BargraphModel.PROP_FILL, anyData.doubleValue());
 
         // .. fill color (influenced by severity)
         widget.setPropertyValue(BargraphModel.PROP_DEFAULT_FILL_COLOR,
                 determineColorBySeverity(anyData.getSeverity(), null));
-        Severity severity = anyData.getSeverity();
-        if (severity != null) {
-            if (severity.isInvalid()) {
-                widget.setPropertyValue(AbstractWidgetModel.PROP_CROSSED_OUT, true);
-            } else {
-                widget.setPropertyValue(AbstractWidgetModel.PROP_CROSSED_OUT, false);
-            }
-        }
-    }
+   }
 
     @Override
     protected void doProcessConnectionStateChange(final BargraphModel widget,

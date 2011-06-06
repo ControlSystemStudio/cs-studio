@@ -36,6 +36,8 @@ import javax.annotation.CheckForNull;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
+import org.csstudio.auth.security.SecurityFacade;
+import org.csstudio.auth.security.User;
 import org.csstudio.config.ioconfig.model.AbstractNodeDBO;
 import org.csstudio.config.ioconfig.model.FacilityDBO;
 import org.csstudio.config.ioconfig.model.IocDBO;
@@ -49,9 +51,6 @@ import org.csstudio.config.ioconfig.model.pbmodel.SlaveDBO;
 import org.csstudio.config.ioconfig.view.DeviceDatabaseErrorDialog;
 import org.csstudio.config.ioconfig.view.IOConfigActivatorUI;
 import org.csstudio.config.ioconfig.view.ProfiBusTreeView;
-import org.csstudio.platform.logging.CentralLogger;
-import org.csstudio.auth.security.SecurityFacade;
-import org.csstudio.auth.security.User;
 import org.csstudio.platform.ui.util.CustomMediaFactory;
 import org.eclipse.jface.layout.GridLayoutFactory;
 import org.eclipse.swt.SWT;
@@ -72,6 +71,8 @@ import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Spinner;
 import org.eclipse.swt.widgets.TabFolder;
 import org.eclipse.swt.widgets.TabItem;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * @author hrickens
@@ -81,6 +82,8 @@ import org.eclipse.swt.widgets.TabItem;
  */
 public final class ConfigHelper {
 
+    private static final Logger LOG = LoggerFactory.getLogger(ConfigHelper.class);
+    
     /**
      * @author hrickens
      * @author $Author: hrickens $
@@ -159,7 +162,7 @@ public final class ConfigHelper {
                     _lastValue = index;
                 } catch (PersistenceException e1) {
                     DeviceDatabaseErrorDialog.open(null, "Can't move node!", e1);
-                    CentralLogger.getInstance().error(this, e1);
+                    LOG.error("Can't move node!", e1);
                 }
             }
         }

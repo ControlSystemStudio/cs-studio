@@ -35,6 +35,7 @@ import org.epics.css.dal.SimpleProperty;
 import org.epics.css.dal.Timestamp;
 import org.epics.css.dal.simple.AnyData;
 import org.epics.css.dal.simple.MetaData;
+import org.epics.css.dal.simple.Severity;
 
 /**
  * DAL based implementation of the message abstraction of the AlarmService
@@ -225,7 +226,8 @@ public final class AlarmMessageDALImpl implements IAlarmMessage {
 
     @Nonnull
     private String retrieveStatusAsString() {
-        return _anyData.getSeverity().descriptionToString();
+        Severity severity = _anyData.getSeverity();
+        return severity == null ? NOT_AVAILABLE : severity.descriptionToString();
     }
     @Nonnull
     private String retrieveStatusOldAsString() {

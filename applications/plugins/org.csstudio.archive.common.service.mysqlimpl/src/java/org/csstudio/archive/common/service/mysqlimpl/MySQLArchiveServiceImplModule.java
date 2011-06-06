@@ -21,6 +21,16 @@
  */
 package org.csstudio.archive.common.service.mysqlimpl;
 
+import static org.csstudio.archive.common.service.mysqlimpl.MySQLArchiveServicePreference.DATABASE_NAME;
+import static org.csstudio.archive.common.service.mysqlimpl.MySQLArchiveServicePreference.FAILOVER_HOST;
+import static org.csstudio.archive.common.service.mysqlimpl.MySQLArchiveServicePreference.HOST;
+import static org.csstudio.archive.common.service.mysqlimpl.MySQLArchiveServicePreference.MAX_ALLOWED_PACKET_IN_KB;
+import static org.csstudio.archive.common.service.mysqlimpl.MySQLArchiveServicePreference.PASSWORD;
+import static org.csstudio.archive.common.service.mysqlimpl.MySQLArchiveServicePreference.PORT;
+import static org.csstudio.archive.common.service.mysqlimpl.MySQLArchiveServicePreference.USER;
+
+import javax.annotation.Nonnull;
+
 import org.csstudio.archive.common.service.mysqlimpl.channel.ArchiveChannelDaoImpl;
 import org.csstudio.archive.common.service.mysqlimpl.channel.IArchiveChannelDao;
 import org.csstudio.archive.common.service.mysqlimpl.channelgroup.ArchiveChannelGroupDaoImpl;
@@ -38,8 +48,10 @@ import org.csstudio.archive.common.service.mysqlimpl.persistengine.PersistEngine
 import org.csstudio.archive.common.service.mysqlimpl.sample.ArchiveSampleDaoImpl;
 import org.csstudio.archive.common.service.mysqlimpl.sample.IArchiveSampleDao;
 
+import com.google.common.base.Strings;
 import com.google.inject.AbstractModule;
 import com.google.inject.Scopes;
+import com.mysql.jdbc.jdbc2.optional.MysqlDataSource;
 
 /**
  * Context of the MySQL service implementation.
@@ -63,8 +75,9 @@ public class MySQLArchiveServiceImplModule extends AbstractModule {
      */
     @Override
     protected void configure() {
-        bind(ArchiveConnectionHandler.class).toInstance(ArchiveConnectionHandler.INSTANCE);
-        bind(PersistEngineDataManager.class).toInstance(PersistEngineDataManager.INSTANCE);
+        bind(MysqlDataSource.class).toInstance(createDataSource());
+        bind(ArchiveConnectionHandler.class).in(Scopes.SINGLETON);
+        bind(PersistEngineDataManager.class).in(Scopes.SINGLETON);
 
         bind(IArchiveEngineStatusDao.class).to(ArchiveEngineStatusDaoImpl.class).in(Scopes.SINGLETON);
         bind(IArchiveChannelDao.class).to(ArchiveChannelDaoImpl.class).in(Scopes.SINGLETON);
@@ -73,5 +86,27 @@ public class MySQLArchiveServiceImplModule extends AbstractModule {
         bind(IArchiveControlSystemDao.class).to(ArchiveControlSystemDaoImpl.class).in(Scopes.SINGLETON);
         bind(IArchiveEngineDao.class).to(ArchiveEngineDaoImpl.class).in(Scopes.SINGLETON);
         bind(IArchiveSampleDao.class).to(ArchiveSampleDaoImpl.class).in(Scopes.SINGLETON);
+    }
+
+
+    @Nonnull
+    private MysqlDataSource createDataSource() {
+
+        final MysqlDataSource ds = new MysqlDataSource();
+        String hosts = HOST.getValue();
+        final String failoverHost = FAILOVER_HOST.getValue();
+        if (!Strings.isNullOrEmpty(failoverHost)) {
+            hosts += "," + failoverHost;
+        }
+        ds.setServerName(hosts);
+        ds.setPort(PORT.getValue());
+        ds.setDatabaseName(DATABASE_NAME.getValue());
+        ds.setUser(USER.getValue());
+        ds.setPassword(PASSWORD.getValue());
+        ds.setFailOverReadOnly(false);
+        ds.setMaxAllowedPacket(MAX_ALLOWED_PACKET_IN_KB.getValue()*1024);
+        ds.setUseTimezone(true);
+
+        return ds;
     }
 }

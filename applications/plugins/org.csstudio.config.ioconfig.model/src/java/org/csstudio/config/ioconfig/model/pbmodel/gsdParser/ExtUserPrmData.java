@@ -31,8 +31,8 @@ import javax.annotation.CheckForNull;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
-import org.apache.log4j.Logger;
-import org.csstudio.platform.logging.CentralLogger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * @author hrickens
@@ -42,7 +42,7 @@ import org.csstudio.platform.logging.CentralLogger;
  */
 public class ExtUserPrmData {
     
-    private static final Logger LOG = CentralLogger.getInstance().getLogger(ExtUserPrmData.class);
+    private static final Logger LOG = LoggerFactory.getLogger(ExtUserPrmData.class);
     
     /**
      * The Parent GSD Slave Model.
@@ -169,7 +169,7 @@ public class ExtUserPrmData {
             setMinBit("0");
             setMaxBit("15");
         } else {
-            LOG.error("Unkown DataType: " + dataType);
+            LOG.error("Unkown DataType: {}", dataType);
         }
         
         _dataType = dataType;
@@ -189,7 +189,7 @@ public class ExtUserPrmData {
             } else if(dataTypeParameterParts[2].contains(",")){
                 setValues(dataTypeParameterParts[2].split(","));
             } else {
-                LOG.error("Unkown DataType Values: " + dataTypeParameter);
+                LOG.error("Unkown DataType Values: {}", dataTypeParameter);
             }
         } else {
             LOG.error("Unkown DataType!");

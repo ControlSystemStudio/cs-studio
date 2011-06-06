@@ -26,8 +26,8 @@ import java.io.FileNotFoundException;
 import java.io.FileWriter;
 import java.io.IOException;
 
-import org.csstudio.utility.ldapUpdater.files.RecordsFileContentParser;
-import org.csstudio.utility.ldapUpdater.model.Record;
+import org.csstudio.utility.ldapupdater.files.RecordsFileContentParser;
+import org.csstudio.utility.ldapupdater.model.Record;
 import org.junit.Assert;
 import org.junit.Rule;
 import org.junit.Test;

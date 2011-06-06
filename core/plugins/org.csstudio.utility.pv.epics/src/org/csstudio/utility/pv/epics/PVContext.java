@@ -150,7 +150,7 @@ public class PVContext
      *  @throws Exception on error
      *  @see #releaseChannel(RefCountedChannel)
      */
-    synchronized static RefCountedChannel getChannel(final String name,
+    public synchronized static RefCountedChannel getChannel(final String name,
                      final ConnectionListener conn_callback) throws Exception
     {
         initJCA();
@@ -182,7 +182,7 @@ public class PVContext
      *  @param channel_ref Channel to release.
      *  @see #getChannel(String)
      */
-    synchronized static void releaseChannel(final RefCountedChannel channel_ref,
+    public synchronized static void releaseChannel(final RefCountedChannel channel_ref,
                     final ConnectionListener conn_callback)
     {
         final String name = channel_ref.getChannel().getName();
@@ -210,7 +210,7 @@ public class PVContext
      *  @param command Command to schedule.
      *  @throws NullPointerException when JCA not active
      */
-    static void scheduleCommand(final Runnable command)
+    public static void scheduleCommand(final Runnable command)
     {
     	// Debug: Run immediately
     	// command.run();

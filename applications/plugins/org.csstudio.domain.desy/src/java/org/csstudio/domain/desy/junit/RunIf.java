@@ -26,8 +26,11 @@ import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
+import javax.annotation.Nonnull;
+
 /**
- * TODO (bknerr) :
+ * Annotation that can be used on JUnit4 Test classes and methods to steer whether a test class
+ * or method shall be run.
  *
  * @author bknerr
  * @since 30.05.2011
@@ -36,7 +39,9 @@ import java.lang.annotation.Target;
 @Target(value = {ElementType.METHOD, ElementType.TYPE})
 public @interface RunIf {
 
+    @Nonnull
     Class<? extends RunCondition> conditionClass();
 
+    @Nonnull
     String[] arguments() default {};
 }

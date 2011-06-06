@@ -46,7 +46,6 @@ import javax.annotation.CheckForNull;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
-import org.apache.log4j.Logger;
 import org.csstudio.config.ioconfig.config.view.helper.ConfigHelper;
 import org.csstudio.config.ioconfig.config.view.helper.ProfibusHelper;
 import org.csstudio.config.ioconfig.model.AbstractNodeDBO;
@@ -58,7 +57,6 @@ import org.csstudio.config.ioconfig.model.pbmodel.Ranges;
 import org.csstudio.config.ioconfig.model.pbmodel.gsdParser.AbstractGsdPropertyModel;
 import org.csstudio.config.ioconfig.model.pbmodel.gsdParser.ParsedGsdFileModel;
 import org.csstudio.config.ioconfig.view.DeviceDatabaseErrorDialog;
-import org.csstudio.platform.logging.CentralLogger;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.jface.viewers.ArrayContentProvider;
 import org.eclipse.jface.viewers.ComboViewer;
@@ -80,6 +78,8 @@ import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Group;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Text;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * @author hrickens
@@ -89,7 +89,7 @@ import org.eclipse.swt.widgets.Text;
  */
 public class MasterEditor extends AbstractGsdNodeEditor {
     
-    private static final Logger LOG = CentralLogger.getInstance().getLogger(MasterEditor.class);
+    private static final Logger LOG = LoggerFactory.getLogger(MasterEditor.class);
     
     public static final String ID = "org.csstudio.config.ioconfig.view.editor.master";
     
@@ -178,7 +178,7 @@ public class MasterEditor extends AbstractGsdNodeEditor {
             master(heads[0]);
             fill(_gsdFile);
         } catch (PersistenceException e) {
-            LOG.error(e);
+            LOG.error("Can't create Master Editor! Database Error", e);
             DeviceDatabaseErrorDialog.open(null, "Can't create Master Editor! Database Error", e);
         }
         selecttTabFolder(0);
@@ -561,7 +561,7 @@ public class MasterEditor extends AbstractGsdNodeEditor {
                     _indexCombo.setInput(_freeStationAddress);
                     _indexCombo.setSelection(new StructuredSelection(sortIndex));
                 } catch (PersistenceException e) {
-                    LOG.error(e);
+                    LOG.error("Database error!", e);
                     DeviceDatabaseErrorDialog.open(null, "Database error!", e);
                 }
             }
@@ -614,7 +614,7 @@ public class MasterEditor extends AbstractGsdNodeEditor {
                     }
                 } catch (PersistenceException e) {
                     DeviceDatabaseErrorDialog.open(null, "Can't move Master! Database Error", e);
-                    LOG.error(e);
+                    LOG.error("Can't move Master! Database Error", e);
                 }
             }
         });
@@ -701,7 +701,7 @@ public class MasterEditor extends AbstractGsdNodeEditor {
             fillStationAddressCombo();
             save();
         } catch (PersistenceException e) {
-            LOG.error(e);
+            LOG.error("Can't save Master! Database error.", e);
             DeviceDatabaseErrorDialog.open(null, "Can't save Master! Database error.", e);
         }
     }
@@ -769,7 +769,7 @@ public class MasterEditor extends AbstractGsdNodeEditor {
                     _dataControlTimeText.setText(_master.getDataControlTime() + "");
                     _autoclearButton.setSelection(_master.isAutoclear());
                 } catch (PersistenceException e) {
-                    LOG.error(e);
+                    LOG.error("Can't undo. Database error", e);
                     DeviceDatabaseErrorDialog.open(null, "Can't undo. Database error", e);
                 }
             } else {

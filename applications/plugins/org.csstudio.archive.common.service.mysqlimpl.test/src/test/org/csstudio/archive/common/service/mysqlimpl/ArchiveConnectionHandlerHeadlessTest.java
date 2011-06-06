@@ -21,11 +21,20 @@
  */
 package org.csstudio.archive.common.service.mysqlimpl;
 
+import java.sql.Connection;
+
+import javax.annotation.Nonnull;
+
 import junit.framework.Assert;
 
+import org.csstudio.archive.common.service.ArchiveConnectionException;
+import org.csstudio.archive.common.service.mysqlimpl.dao.ArchiveConnectionHandler;
 import org.csstudio.testsuite.util.TestDataProvider;
 import org.junit.BeforeClass;
 import org.junit.Test;
+
+import com.google.common.base.Strings;
+import com.mysql.jdbc.jdbc2.optional.MysqlDataSource;
 
 /**
  * Test for {@link ArchiveConnectionHandler}. 
@@ -45,22 +54,61 @@ public class ArchiveConnectionHandlerHeadlessTest {
     private static String _prefDatabaseName;
     private static Integer _prefMaxAllowedPacketSizeInKB;
     
+    private static ArchiveConnectionHandler HANDLER;
+    
+    private final String getInsertStatementPrefix(@Nonnull final String dbName) {
+        return "INSERT INTO " + dbName + ".sample (channel_id, sample_time, nanosecs, value) VALUES ";
+    }
+
+    
     @BeforeClass
     public static void setup() {
         System.out.println("Before");
         
         try {
-            PROV = TestDataProvider.getInstance("org.csstudio.archive.common.service.mysqlimpl");
+            PROV = TestDataProvider.getInstance("org.csstudio.archive.common.service.mysqlimpl.test");
         } catch (final Exception e) {
-            Assert.fail("Unexpected exception");
+            Assert.fail("Unexpected exception:\n" + e.getMessage());
         }
         _prefHost = (String) PROV.get("host");
         _prefFailoverHost = (String) PROV.get("failoverHost");
+        _prefUser = (String) PROV.get("user");
+        _prefPassword = (String) PROV.get("password");
+        _prefPort = Integer.valueOf((String) PROV.get("port"));
+        _prefDatabaseName = (String) PROV.get("databaseName");
+        _prefMaxAllowedPacketSizeInKB = Integer.valueOf((String) PROV.get("maxAllowedPacketInKB"));
+        
+        MysqlDataSource dataSource = createDataSource();
+        HANDLER = new ArchiveConnectionHandler(dataSource);
         
     }
     
+    @Nonnull
+    private static MysqlDataSource createDataSource() {
+
+        final MysqlDataSource ds = new MysqlDataSource();
+        String hosts = _prefHost;
+        if (!Strings.isNullOrEmpty(_prefFailoverHost)) {
+            hosts += "," + _prefFailoverHost;
+        }
+        ds.setServerName(hosts);
+        ds.setPort(_prefPort);
+        ds.setDatabaseName(_prefDatabaseName);
+        ds.setUser(_prefUser);
+        ds.setPassword(_prefPassword);
+        ds.setFailOverReadOnly(false);
+        ds.setMaxAllowedPacket(_prefMaxAllowedPacketSizeInKB*1024);
+        ds.setUseTimezone(true);
+        
+        return ds;
+    }
+    
+    
+    
     @Test
-    public void getConnectionTest() {
-        System.out.println("Got");
+    public void getConnectionTest() throws ArchiveConnectionException {
+        Connection connection = HANDLER.getConnection();
+        
+        
     }
 }

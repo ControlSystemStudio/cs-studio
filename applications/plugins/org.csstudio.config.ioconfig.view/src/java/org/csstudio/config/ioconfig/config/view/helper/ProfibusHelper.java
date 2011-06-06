@@ -32,7 +32,6 @@ import org.csstudio.config.ioconfig.model.DBClass;
 import org.csstudio.config.ioconfig.model.NamedDBClass;
 import org.csstudio.config.ioconfig.model.pbmodel.Ranges.Value;
 import org.csstudio.config.ioconfig.view.IOConfigActivatorUI;
-import org.csstudio.platform.logging.CentralLogger;
 import org.eclipse.core.commands.operations.OperationStatus;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.jface.dialogs.ErrorDialog;
@@ -47,6 +46,8 @@ import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.swt.widgets.Text;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * This Class help handel the Unsign Datatyp from Profibus.
@@ -58,6 +59,8 @@ import org.eclipse.swt.widgets.Text;
  */
 public final class ProfibusHelper {
 
+    private static final Logger LOG = LoggerFactory.getLogger(ProfibusHelper.class);
+    
 	/**
 	 * @author hrickens
 	 * @author $Author: $
@@ -333,7 +336,7 @@ public final class ProfibusHelper {
 			@Nullable final String title, @Nonnull final String errMsg,
 			@Nonnull final DBClass node, @Nonnull final Exception e) {
 		String format;
-		CentralLogger.getInstance().error(ProfibusHelper.class.getSimpleName(),
+		LOG.error("",
 				e);
 		if (node instanceof NamedDBClass) {
 			NamedDBClass nameNode = (NamedDBClass) node;
