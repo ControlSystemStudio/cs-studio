@@ -12,6 +12,8 @@ import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
 import java.util.logging.Logger;
 
@@ -59,6 +61,8 @@ import org.eclipse.swt.SWT;
 import org.eclipse.swt.custom.TableCursor;
 import org.eclipse.swt.events.ControlAdapter;
 import org.eclipse.swt.events.ControlEvent;
+import org.eclipse.swt.events.KeyEvent;
+import org.eclipse.swt.events.KeyListener;
 import org.eclipse.swt.events.MouseEvent;
 import org.eclipse.swt.events.MouseMoveListener;
 import org.eclipse.swt.graphics.GC;
@@ -575,26 +579,26 @@ public class PVTableEditor extends EditorPart implements ISelectionProvider {
 
 				ViewerCell cell = null;
 				switch (event.keyCode) {
-//				case SWT.ARROW_LEFT:
-//					if (currentSelectedCell != null) {
-//						cell = currentSelectedCell.getNeighbor(
-//								ViewerCell.ABOVE, false);
-//					}
-//					if (cell != null) {
-//						tableViewer.getTable().setSelection(
-//								(TableItem) cell.getItem());
-//					}
-//					break;
-//				case SWT.ARROW_RIGHT:
-//					if (currentSelectedCell != null) {
-//						cell = currentSelectedCell.getNeighbor(
-//								ViewerCell.BELOW, false);
-//					}
-//					if (cell != null) {
-//						tableViewer.getTable().setSelection(
-//								(TableItem) cell.getItem());
-//					}
-//					break;
+				// case SWT.ARROW_LEFT:
+				// if (currentSelectedCell != null) {
+				// cell = currentSelectedCell.getNeighbor(
+				// ViewerCell.ABOVE, false);
+				// }
+				// if (cell != null) {
+				// tableViewer.getTable().setSelection(
+				// (TableItem) cell.getItem());
+				// }
+				// break;
+				// case SWT.ARROW_RIGHT:
+				// if (currentSelectedCell != null) {
+				// cell = currentSelectedCell.getNeighbor(
+				// ViewerCell.BELOW, false);
+				// }
+				// if (cell != null) {
+				// tableViewer.getTable().setSelection(
+				// (TableItem) cell.getItem());
+				// }
+				// break;
 				case SWT.CR:
 					if (currentSelectedCell != null) {
 						cell = currentSelectedCell.getNeighbor(
@@ -636,7 +640,8 @@ public class PVTableEditor extends EditorPart implements ISelectionProvider {
 					ColumnViewerEditorActivationEvent event) {
 				return event.eventType == ColumnViewerEditorActivationEvent.TRAVERSAL
 						|| event.eventType == ColumnViewerEditorActivationEvent.MOUSE_DOUBLE_CLICK_SELECTION
-						|| (event.eventType == ColumnViewerEditorActivationEvent.KEY_PRESSED && event.keyCode > 31 && event.keyCode < 127)
+						|| (event.eventType == ColumnViewerEditorActivationEvent.KEY_PRESSED
+								&& event.keyCode > 31 && event.keyCode < 127)
 						|| event.eventType == ColumnViewerEditorActivationEvent.PROGRAMMATIC;
 			}
 
@@ -648,35 +653,38 @@ public class PVTableEditor extends EditorPart implements ISelectionProvider {
 						| ColumnViewerEditor.TABBING_VERTICAL
 						| ColumnViewerEditor.KEYBOARD_ACTIVATION);
 
-		tableViewer.getColumnViewerEditor().addEditorActivationListener(new ColumnViewerEditorActivationListener() {
+		tableViewer.getColumnViewerEditor().addEditorActivationListener(
+				new ColumnViewerEditorActivationListener() {
 
-			public void afterEditorActivated(
-					ColumnViewerEditorActivationEvent event) {
+					public void afterEditorActivated(
+							ColumnViewerEditorActivationEvent event) {
 
-			}
+					}
 
-			public void afterEditorDeactivated(
-					ColumnViewerEditorDeactivationEvent event) {
-				// move to the next line
-				if (event.eventType == ColumnViewerEditorDeactivationEvent.EDITOR_SAVED ){
-					Event test = new Event();
-					test.keyCode = SWT.CR;
-					ViewerCell newCell = naviStrat.findSelectedCell(tableViewer, tableViewer.getColumnViewerEditor().getFocusCell(), test);
-				}
-			}
+					public void afterEditorDeactivated(
+							ColumnViewerEditorDeactivationEvent event) {
+						// move to the next line
+						if (event.eventType == ColumnViewerEditorDeactivationEvent.EDITOR_SAVED) {
+							Event test = new Event();
+							test.keyCode = SWT.CR;
+							naviStrat.findSelectedCell(tableViewer, tableViewer
+									.getColumnViewerEditor().getFocusCell(),
+									test);
+						}
+					}
 
-			public void beforeEditorActivated(
-					ColumnViewerEditorActivationEvent event) {
-	
-			}
+					public void beforeEditorActivated(
+							ColumnViewerEditorActivationEvent event) {
 
-			public void beforeEditorDeactivated(
-					ColumnViewerEditorDeactivationEvent event) {
-				
-			}
-			
-		});
-		
+					}
+
+					public void beforeEditorDeactivated(
+							ColumnViewerEditorDeactivationEvent event) {
+
+					}
+
+				});
+
 		tableViewer.setContentProvider(new ContentProvider());
 		tableViewer.setInput(pvTableModel);
 		registerSelectionListener();
@@ -697,6 +705,56 @@ public class PVTableEditor extends EditorPart implements ISelectionProvider {
 		// Set the MenuManager
 		table.setMenu(menu);
 		getSite().registerContextMenu(menuManager, this);
+		table.addKeyListener(new KeyListener() {
+
+			@Override
+			public void keyReleased(KeyEvent e) {
+				if (e.keyCode == SWT.DEL) {
+					PVTableModel model = (PVTableModel) tableViewer.getInput();
+					ISelection tableSelection = tableViewer.getSelection();
+					// TODO cleanup (shroffk)
+					if (tableSelection instanceof StructuredSelection) {
+						Object[] selection = ((StructuredSelection) tableSelection)
+								.toArray();
+						Arrays.sort(selection, new Comparator<Object>() {
+
+							@Override
+							public int compare(Object o1, Object o2) {
+								return (new Integer(((Item) o1).getRow())
+										.compareTo(new Integer(((Item) o2)
+												.getRow())))
+										* (-1);
+							}
+
+						});
+
+						Item item = null;
+						for (Object element : selection) {
+							item = (PVTableModel.Item) element;
+							group.remove(item.getRow());
+							model.removeItem(item);
+							model.updateValues(group.lastExceptions());
+						}
+						// Set the selection to the index of the first deleted element
+						if (item != null) {
+							tableViewer.getTable().setSelection(item.getRow());
+						} else {
+							tableViewer.getTable().setSelection(
+									model.getItems().length);
+						}
+
+						isDirty = true;
+						firePropertyChange(PROP_DIRTY);
+					}
+				}
+			}
+
+			@Override
+			public void keyPressed(KeyEvent e) {
+				// TODO Auto-generated method stub
+
+			}
+		});
 
 		table.addMouseMoveListener(new MouseMoveListener() {
 
@@ -712,7 +770,6 @@ public class PVTableEditor extends EditorPart implements ISelectionProvider {
 				}
 			}
 		});
-
 		pv.addPVValueChangeListener(pvListener);
 
 	}
