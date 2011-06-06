@@ -19,6 +19,8 @@ Require-Bundle: org.eclipse.ui,
  org.eclipse.gef,
  org.csstudio.dct;bundle-version="1.0.0",
  org.junit,
- org.csstudio.platform.libs.log4j;bundle-version="1.2.16"
+ org.csstudio.platform.libs.log4j;bundle-version="1.2.16",
+ org.slf4j;bundle-version="1.6.1",
+ org.slf4j-log4j12;bundle-version="1.6.1"
 
 

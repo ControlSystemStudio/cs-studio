@@ -28,15 +28,17 @@ import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.util.Arrays;
+
 import javax.servlet.ServletConfig;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import org.apache.log4j.Logger;
-import org.csstudio.platform.logging.CentralLogger;
+
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.Platform;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * This class is related to the servlet Halle55. It is responsible for exporting the data to a text file.
@@ -51,8 +53,8 @@ public class DataExporter extends HttpServlet {
     private static final long serialVersionUID = 5913929027350370052L;
 
     /** Private logger for this class */
-    private Logger logger;
-
+    private static final Logger LOG = LoggerFactory.getLogger(DataExporter.class);
+    
     /** Path to the workspace folder */
     private String workspacePath;
     
@@ -62,8 +64,6 @@ public class DataExporter extends HttpServlet {
 	public void init(ServletConfig config) throws ServletException {
         
         super.init(config);
-        
-        logger = CentralLogger.getInstance().getLogger(this);
         
         FILE_SEPARATOR = System.getProperty("file.separator");
 
@@ -93,9 +93,9 @@ public class DataExporter extends HttpServlet {
             }
 
         } catch(FileNotFoundException fnfe) {
-            logger.warn("Cannot write to the data file: " + fnfe.getMessage());
+            LOG.warn("Cannot write to the data file: ", fnfe);
         } catch(IOException ioe) {
-            logger.warn("Cannot write to the data file: " + ioe.getMessage());
+            LOG.warn("Cannot write to the data file: ", ioe);
         } finally {
             if(dataFile != null) {
                 try{dataFile.close();}catch(Exception e) {

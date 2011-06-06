@@ -37,12 +37,9 @@ import javax.management.MalformedObjectNameException;
 import javax.management.NotCompliantMBeanException;
 import javax.management.ObjectName;
 
-import org.apache.log4j.Logger;
 import org.csstudio.archive.sdds.server.internal.ServerPreferenceKey;
 import org.csstudio.archive.sdds.server.io.Server;
 import org.csstudio.archive.sdds.server.io.ServerException;
-import org.csstudio.archive.sdds.server.management.Restart;
-import org.csstudio.archive.sdds.server.management.Stop;
 import org.csstudio.platform.logging.CentralLogger;
 import org.eclipse.core.runtime.Platform;
 import org.eclipse.core.runtime.preferences.IPreferencesService;
@@ -50,6 +47,8 @@ import org.eclipse.equinox.app.IApplication;
 import org.eclipse.equinox.app.IApplicationContext;
 import org.remotercp.common.tracker.IGenericServiceListener;
 import org.remotercp.service.connection.session.ISessionService;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * @author Markus Moeller
@@ -61,10 +60,10 @@ public class Application implements IApplication, RemotelyStoppable, Application
     private Server server;
     
     /** The logger of this class */
-    private Logger logger;
+    private static final Logger LOG = LoggerFactory.getLogger(Application.class);
     
     /** Help object for synchronization purposes */
-    private Object lock;
+    private final Object lock;
     
     /** Flag that indicates if the server is running */
     private boolean running;
@@ -76,7 +75,6 @@ public class Application implements IApplication, RemotelyStoppable, Application
      * The standard constructor
      */
     public Application() {
-        logger = CentralLogger.getInstance().getLogger(this);
         lock = new Object();
         running = true;
         restart = false;
@@ -92,11 +90,11 @@ public class Application implements IApplication, RemotelyStoppable, Application
         int serverPort;
         boolean useJmx = false;
         
-        logger.info("Starting " + Activator.PLUGIN_ID);
+        LOG.info("Starting {}", Activator.PLUGIN_ID);
 
         IPreferencesService pref = Platform.getPreferencesService();
         serverPort = pref.getInt(Activator.PLUGIN_ID, ServerPreferenceKey.P_SERVER_PORT, 4056, null);
-        logger.info("The server uses port " + serverPort);
+        LOG.info("The server uses port {}", serverPort);
         
         useJmx = pref.getBoolean(Activator.PLUGIN_ID, ServerPreferenceKey.P_USE_JMX,
         		false, null);
@@ -112,8 +110,8 @@ public class Application implements IApplication, RemotelyStoppable, Application
             	connectMBeanServer();
             }
         } catch(ServerException se) {
-            logger.error("Cannot create an instance of the Server class. " + se.getMessage());
-            logger.error("Stopping application!");
+            LOG.error("Cannot create an instance of the Server class. ", se);
+            LOG.error("Stopping application!");
             running = false;
             restart = false;
         }
@@ -125,7 +123,7 @@ public class Application implements IApplication, RemotelyStoppable, Application
                 try {
                     lock.wait();
                 } catch(InterruptedException ie) {
-                    logger.debug("Interrupted");
+                    LOG.debug("Interrupted");
                 }
             }
         }
@@ -135,10 +133,10 @@ public class Application implements IApplication, RemotelyStoppable, Application
         }
         
         if(restart) {
-            logger.info("Restarting " + Activator.PLUGIN_ID);
+            LOG.info("Restarting {}", Activator.PLUGIN_ID);
             exitType = IApplication.EXIT_RESTART;
         } else {
-            logger.info("Stopping " + Activator.PLUGIN_ID);
+            LOG.info("Stopping {}", Activator.PLUGIN_ID);
             exitType = IApplication.EXIT_OK;
         }
         
@@ -164,21 +162,21 @@ public class Application implements IApplication, RemotelyStoppable, Application
         
         String jmxPort = System.getProperty("com.sun.management.jmxremote.port");
         
-        logger.info("The server uses JMX for remote access. Port: " + jmxPort);
+        LOG.info("The server uses JMX for remote access. Port: " + jmxPort);
         
         try {
             myname = new ObjectName("org.csstudio.archive.sdds.server.SddsServer:name=SddsServer");
             mbeanServer.registerMBean(this, myname);
         } catch (MalformedObjectNameException mone) {
-            logger.error("[*** MalformedObjectNameException ***]: " + mone.getMessage());
+            LOG.error("[*** MalformedObjectNameException ***]: ", mone);
         } catch (NullPointerException npe) {
-            logger.error("[*** NullPointerException ***]: " + npe.getMessage());
+            LOG.error("[*** NullPointerException ***]: ", npe);
         } catch (InstanceAlreadyExistsException iaee) {
-            logger.error("[*** InstanceAlreadyExistsException ***]: " + iaee.getMessage());
+            LOG.error("[*** InstanceAlreadyExistsException ***]: ", iaee);
         } catch (MBeanRegistrationException mbre) {
-            logger.error("[*** MBeanRegistrationException ***]: " + mbre.getMessage());
+            LOG.error("[*** MBeanRegistrationException ***]: ", mbre);
         } catch (NotCompliantMBeanException ncmbe) {
-            logger.error("[*** NotCompliantMBeanException ***]: " + ncmbe.getMessage());
+            LOG.error("[*** NotCompliantMBeanException ***]: ", ncmbe);
         }
     }
 
@@ -227,10 +225,10 @@ public class Application implements IApplication, RemotelyStoppable, Application
 				}
 			}
 		} catch (FileNotFoundException fnfe) {
-			logger.warn("Workspace directory cannot be found: " + workspaceDirectory);
+			LOG.warn("Workspace directory cannot be found: {}", workspaceDirectory);
 			version = null;
 		} catch (IOException ioe) {
-			logger.warn("Cannot read version file.");
+			LOG.warn("Cannot read version file.");
 			version = null;
 		} finally {
 			if (reader!=null) {
@@ -246,6 +244,7 @@ public class Application implements IApplication, RemotelyStoppable, Application
 		return version;
 	}
 
+    @Override
     public void bindService(ISessionService sessionService) {
         IPreferencesService pref = Platform.getPreferencesService();
         String xmppServer = pref.getString(Activator.PLUGIN_ID, ServerPreferenceKey.P_XMPP_SERVER,
@@ -258,11 +257,11 @@ public class Application implements IApplication, RemotelyStoppable, Application
     	try {
 			sessionService.connect(xmppUser, xmppPassword, xmppServer);
 		} catch (Exception e) {
-			CentralLogger.getInstance().warn(this,
-					"XMPP connection is not available, " + e.toString());
+			CentralLogger.getInstance().warn("XMPP connection is not available, ", e);
 		}
     }
     
+    @Override
     public void unbindService(ISessionService service) {
     	service.disconnect();
     }

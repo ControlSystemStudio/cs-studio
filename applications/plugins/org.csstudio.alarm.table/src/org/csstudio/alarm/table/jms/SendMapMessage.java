@@ -30,11 +30,14 @@ import javax.jms.MapMessage;
 import javax.jms.MessageProducer;
 import javax.jms.Session;
 
-import org.csstudio.platform.logging.CentralLogger;
 import org.csstudio.platform.utility.jms.sharedconnection.ISharedConnectionHandle;
 import org.csstudio.platform.utility.jms.sharedconnection.SharedJmsConnections;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class SendMapMessage implements ISendMapMessage {
+    
+    private static final Logger LOG = LoggerFactory.getLogger(SendMapMessage.class);
 
     Hashtable<String, String> properties = null;
     Session session = null;
@@ -42,9 +45,10 @@ public class SendMapMessage implements ISendMapMessage {
     Destination destination = null;
     MapMessage message = null;
     private CloseJMSConnectionTimerTask _timerTask;
-    private Timer _timer = new Timer();
+    private final Timer _timer = new Timer();
     private ISharedConnectionHandle _senderConnection;
 
+    @Override
     public void startSender(String topic) throws Exception {
         _senderConnection = SharedJmsConnections.sharedSenderConnection();
         session = _senderConnection.createSession(false,
@@ -54,6 +58,7 @@ public class SendMapMessage implements ISendMapMessage {
         sender.setDeliveryMode(DeliveryMode.NON_PERSISTENT);
     }
 
+    @Override
     public void stopSender() throws Exception {
         if (sender != null) {
             sender.close();
@@ -70,38 +75,36 @@ public class SendMapMessage implements ISendMapMessage {
         message = null;
     }
 
+    @Override
     public MapMessage getSessionMessageObject(String topic) throws Exception {
         if (session == null) {
-            CentralLogger.getInstance().debug(this,
-                    "Start Sender, start timer task");
+            LOG.debug("Start Sender, start timer task");
             startSender(topic);
             _timerTask = new CloseJMSConnectionTimerTask(this);
             _timer.schedule(_timerTask, 1000, 1000);
         }
         _timerTask.set_lastDBAcccessInMillisec(System.currentTimeMillis());
-        CentralLogger.getInstance().debug(this, "Create mapMessage");
+        LOG.debug("Create mapMessage");
         if (message != null) {
-            CentralLogger.getInstance().debug(this,
-                    "clear body from previous jms message for reuse");
+            LOG.debug("clear body from previous jms message for reuse");
             message.clearBody();
         } else {
-            CentralLogger.getInstance().debug(this,
-                    "Jms message is null, create new map message from session");
+            LOG.debug("Jms message is null, create new map message from session");
             message = session.createMapMessage();
         }
         return message;
     }
 
+    @Override
     public void sendMessage(String topic) throws Exception {
         if (session == null) {
-            CentralLogger.getInstance().debug(this,
-                    "Start Sender, start timer task");
+            LOG.debug("Start Sender, start timer task");
             startSender(topic);
             _timerTask = new CloseJMSConnectionTimerTask(this);
             _timer.schedule(_timerTask, 1000, 1000);
         }
         _timerTask.set_lastDBAcccessInMillisec(System.currentTimeMillis());
-        CentralLogger.getInstance().debug(this, "Send the JMS message");
+        LOG.debug("Send the JMS message");
         sender.send(message);
     }
 }

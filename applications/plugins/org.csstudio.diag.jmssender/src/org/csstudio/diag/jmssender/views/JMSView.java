@@ -31,7 +31,6 @@ import javax.jms.MapMessage;
 import org.csstudio.alarm.table.JmsLogsPlugin;
 import org.csstudio.diag.jmssender.JmsSenderPlugin;
 import org.csstudio.diag.jmssender.internationalization.Messages;
-import org.csstudio.platform.logging.CentralLogger;
 import org.eclipse.core.runtime.Preferences.IPropertyChangeListener;
 import org.eclipse.core.runtime.Preferences.PropertyChangeEvent;
 import org.eclipse.jface.action.IAction;
@@ -79,7 +78,8 @@ public class JMSView extends ViewPart implements IWorkbenchWindowActionDelegate 
 			_countField = alarmCount;
 		}
 
-		public void widgetSelected(SelectionEvent ev) {
+		@Override
+        public void widgetSelected(SelectionEvent ev) {
 			SendMapMessage sender = new SendMapMessage();
 			try {
 				sender.startSender();
@@ -133,10 +133,10 @@ public class JMSView extends ViewPart implements IWorkbenchWindowActionDelegate 
 	public JMSView() {
 	}
 
-	public void createPartControl(Composite parent) {
+	@Override
+    public void createPartControl(Composite parent) {
 //		final boolean canExecute = SecurityFacade.getInstance().canExecute(
 //				SECURITY_ID, false);
-		CentralLogger.getInstance().info(this, "JMSSender View"); //$NON-NLS-1$
 		GridLayout grid = new GridLayout();
 		grid.numColumns = 5;
 		parent.setLayout(grid);
@@ -234,14 +234,16 @@ public class JMSView extends ViewPart implements IWorkbenchWindowActionDelegate 
 	}
 	
 	
-	public void setFocus() {
+	@Override
+    public void setFocus() {
 	}
 
 	public void init(IWorkbenchWindow window) {
 
 	}
 
-	public void dispose() {
+	@Override
+    public void dispose() {
 		JmsLogsPlugin.getDefault().getPluginPreferences()
 				.removePropertyChangeListener(propertyChangeListener);
 		super.dispose();

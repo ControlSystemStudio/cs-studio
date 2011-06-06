@@ -63,7 +63,7 @@ public class MessageTableContentProvider implements IMessageViewer,
 					if (!_tableViewer.getTable().isDisposed()) {
 						_tableViewer.add(jmsm);
 					}
-					// CentralLogger.getInstance().debug(this,
+					// LOG.debug(this,
 					// "Add Message, Number of Msg in Model: " +
 					// _messageList.getSize() + "; Number of Msg in Table: " +
 					// _tableViewer.getTable().getItemCount());
@@ -84,7 +84,7 @@ public class MessageTableContentProvider implements IMessageViewer,
 			public void run() {
 				try {
 					_tableViewer.add(jmsm);
-					// CentralLogger.getInstance().debug(this,
+					// LOG.debug(this,
 					// "Add Messages[], Number of Msg in Model: " +
 					// _messageList.getSize() + "; Number of Msg in Table: " +
 					// _tableViewer.getTable().getItemCount());
@@ -106,7 +106,7 @@ public class MessageTableContentProvider implements IMessageViewer,
 					if (!_tableViewer.getTable().isDisposed()) {
 						_tableViewer.remove(jmsm);
 					}
-					// CentralLogger.getInstance().debug(this,
+					// LOG.debug(this,
 					// "Remove Message, Number of Msg in Model: " +
 					// _messageList.getSize() + "; Number of Msg in Table: " +
 					// _tableViewer.getTable().getItemCount());
@@ -126,7 +126,7 @@ public class MessageTableContentProvider implements IMessageViewer,
 			public void run() {
 				try {
 					_tableViewer.remove(jmsm);
-					// CentralLogger.getInstance().debug(this,
+					// LOG.debug(this,
 					// "Remove Messages[], Number of Msg in Model: " +
 					// _messageList.getSize() + "; Number of Msg in Table: " +
 					// _tableViewer.getTable().getItemCount());
@@ -170,7 +170,7 @@ public class MessageTableContentProvider implements IMessageViewer,
 					e.printStackTrace();
 					JmsLogsPlugin.logException("", e); //$NON-NLS-1$
 				}
-				// CentralLogger.getInstance().debug(this,
+				// LOG.debug(this,
 				// "Update Message, Number of Msg in Model: " +
 				// _messageList.getSize() + "; Number of Msg in Table: " +
 				// _tableViewer.getTable().getItemCount());

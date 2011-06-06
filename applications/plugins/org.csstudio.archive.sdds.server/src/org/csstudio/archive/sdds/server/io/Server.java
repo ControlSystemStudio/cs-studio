@@ -29,10 +29,11 @@ import java.net.ServerSocket;
 import java.net.Socket;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
-import org.apache.log4j.Logger;
+
 import org.csstudio.archive.sdds.server.command.CommandExecutor;
 import org.csstudio.archive.sdds.server.command.ServerCommandException;
-import org.csstudio.platform.logging.CentralLogger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * @author Markus Moeller
@@ -41,22 +42,22 @@ import org.csstudio.platform.logging.CentralLogger;
 public class Server extends Thread
 {
     /** The logger of this class */
-    private Logger logger;
+    private static final Logger LOG = LoggerFactory.getLogger(Server.class);
     
     /** The server socket */
     private ServerSocket serverSocket;
     
     /** Thread pool for client request handling */
-    private ExecutorService threadExecutor;
+    private final ExecutorService threadExecutor;
     
     /** The class that holds all possible server commands */
     private CommandExecutor commandExecutor;
     
     /** The port of the server */
-    private int serverPort;
+    private final int serverPort;
     
     /** The specified timeout for the server socket */
-    private int timeout;
+    private final int timeout;
     
     /** Flag that indicates if the server is running */
     private boolean running;
@@ -67,7 +68,6 @@ public class Server extends Thread
      */
     public Server(int port, int timeout) throws ServerException
     {
-        logger = Logger.getLogger(Server.class);
         serverSocket = null;
         serverPort = port;
         this.timeout = timeout;
@@ -75,7 +75,7 @@ public class Server extends Thread
         int numberofReadThreads = 25;
         
         this.threadExecutor = Executors.newFixedThreadPool(numberofReadThreads);
-        CentralLogger.getInstance().info(this, "Created client request thread pool with " + numberofReadThreads + " threads"); 
+        LOG.info("Created client request thread pool with {} threads", numberofReadThreads); 
         
         try
         {
@@ -83,7 +83,7 @@ public class Server extends Thread
         }
         catch(ServerCommandException sce)
         {
-            logger.error("[*** ServerCommandException ***]: " + sce.getMessage());
+            LOG.error("[*** ServerCommandException ***]: ", sce);
             throw new ServerException("Cannot create instance of CommandExecutor: " + sce.getMessage());
         }
         
@@ -93,7 +93,7 @@ public class Server extends Thread
         }
         catch(IOException ioe)
         {
-            logger.error("[*** IOException ***]: " + ioe.getMessage());
+            LOG.error("[*** IOException ***]: ", ioe);
             throw new ServerException("Cannot create socket: " + ioe.getMessage());
         }
     }
@@ -126,16 +126,16 @@ public class Server extends Thread
         Socket socket = null;
         ClientRequest request = null;
         
-        logger.info("Server is running.");
+        LOG.info("Server is running.");
         
         while(running) {
             
-        	logger.info("Server is waiting for a request.");
+        	LOG.info("Server is waiting for a request.");
             
             try {
                 
             	socket = serverSocket.accept();
-                logger.info("Anfrage empfangen...");
+                LOG.info("Anfrage empfangen...");
                 request = new ClientRequest(socket, commandExecutor);
                 threadExecutor.execute(request);
                 
@@ -143,23 +143,23 @@ public class Server extends Thread
                 socket = null;
             
             } catch (IOException ioe) {
-                logger.info("[*** IOException ***]: " + ioe.getMessage());
+                LOG.info("[*** IOException ***]: ", ioe);
             }
         }
         
         try {
             
-        	logger.info("Closing server socket.");
+        	LOG.info("Closing server socket.");
             if(serverSocket.isClosed() == false) {
                 serverSocket.close();
             } else {
-                logger.info("Server socket was closed already.");
+                LOG.info("Server socket was closed already.");
             }
         } catch(IOException ioe) {
-            logger.error("[*** IOException ***]: " + ioe.getMessage());
+            LOG.error("[*** IOException ***]: ", ioe);
         }
         
-        logger.info("Leaving Server.");
+        LOG.info("Leaving Server.");
     }
     
     /**
@@ -191,10 +191,10 @@ public class Server extends Thread
         	this.notify();
             
         	try {
-                logger.info("Server is forced to be stopped. Closing server socket.");
+                LOG.info("Server is forced to be stopped. Closing server socket.");
                 serverSocket.close();
             } catch (IOException ioe) {
-                logger.warn("stopServer(): [*** IOException ***]: " + ioe.getMessage());
+                LOG.warn("stopServer(): [*** IOException ***]: ", ioe);
             }
         }
     }

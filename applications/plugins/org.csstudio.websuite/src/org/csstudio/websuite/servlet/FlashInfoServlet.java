@@ -25,15 +25,17 @@
 package org.csstudio.websuite.servlet;
 
 import java.io.IOException;
+
 import javax.servlet.ServletConfig;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import org.apache.log4j.Logger;
-import org.csstudio.platform.logging.CentralLogger;
+
 import org.csstudio.websuite.utils.Severity;
 import org.csstudio.websuite.utils.ValueReader;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * TODO (Markus Moeller) : 
@@ -54,8 +56,7 @@ public class FlashInfoServlet extends HttpServlet {
     private final int RELOAD_TIME = 30;
     
     /** Private logger for this class */
-    private Logger logger;
-    
+    private static final Logger LOG = LoggerFactory.getLogger(FlashInfoServlet.class);
     /**
      * 
      */
@@ -63,8 +64,6 @@ public class FlashInfoServlet extends HttpServlet {
 	public void init(ServletConfig config) throws ServletException {
         
         super.init(config);
-        
-        logger = CentralLogger.getInstance().getLogger(this);
         valueReader = new ValueReader();
     }
     
@@ -100,7 +99,7 @@ public class FlashInfoServlet extends HttpServlet {
         
         StringBuilder page = null;
         
-        logger.info("User-Agent: " + request.getHeader("User-Agent"));
+        LOG.info("User-Agent: {}", request.getHeader("User-Agent"));
         
         page = new StringBuilder();
         page.append("<html>\n");

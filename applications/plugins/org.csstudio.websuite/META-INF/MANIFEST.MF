@@ -19,7 +19,8 @@ Require-Bundle: org.eclipse.core.runtime,
  org.remotercp.service.connection;bundle-version="1.0.0",
  org.eclipse.ecf.identity;bundle-version="3.1.100",
  org.csstudio.platform.libs.log4j;bundle-version="1.2.16",
- org.csstudio.remote;bundle-version="1.0.0"
+ org.csstudio.remote;bundle-version="1.0.0",
+ org.slf4j;bundle-version="1.6.1"
 Bundle-ClassPath: .,
  lib/ojdbc14.jar
 Web-ContextPath: /webapp
