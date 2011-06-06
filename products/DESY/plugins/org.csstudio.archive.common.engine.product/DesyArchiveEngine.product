@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <?pde version="3.5"?>
 
-<product name="DesyArchiveEngine" id="org.csstudio.archive.common.engine.engine" application="org.csstudio.archive.engine2.application" useFeatures="false" includeLaunchers="true">
+<product name="DesyArchiveEngine" id="org.csstudio.archive.common.engine.product" application="org.csstudio.archive.common.engine.application" useFeatures="false" includeLaunchers="true">
 
    <configIni use="default">
    </configIni>

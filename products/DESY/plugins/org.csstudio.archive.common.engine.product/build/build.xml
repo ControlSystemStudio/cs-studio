@@ -7,7 +7,7 @@
     <target name="build" depends="synchronizeBuildSources, buildPackageWin32, buildPackageSolaris"/>
 
     <target name="buildPackageWin32" depends="cleanup, pdeBuildWin, updateConfigWin, updateJenkinsArtifactsWin32"/>
-    <target name="buildPackageSolaris" depends="cleanup, pdebuildPackageSolaris, updateConfigSolaris, updateJenkinsArtifactsSolaris"/>
+    <target name="buildPackageSolaris" depends="cleanup, pdeBuildSolaris, updateConfigSolaris, updateJenkinsArtifactsSolaris"/>
 
     <!--
         Debug output
@@ -101,7 +101,7 @@
     <!--
         Headless Eclipse Build for Solaris
     -->
-    <target name="pdebuildPackageSolaris">
+    <target name="pdeBuildSolaris">
         <java classname="org.eclipse.equinox.launcher.Main" 
               dir="${desyBuildDirectory}"
               fork="true" 
