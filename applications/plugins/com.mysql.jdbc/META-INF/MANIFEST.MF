@@ -1,7 +1,7 @@
 Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: MySQL Connector
-Bundle-SymbolicName: org.csstudio.platform.libs.jdbc.mysql
+Bundle-SymbolicName: com.jdbc.mysql
 Bundle-Version: 5.1.14
 Export-Package: com.mysql.jdbc,
  com.mysql.jdbc.exceptions,
