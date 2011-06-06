@@ -67,7 +67,6 @@ import org.csstudio.sds.ui.internal.actions.PasteWidgetsAction;
 import org.csstudio.sds.ui.internal.actions.RemoveGroupAction;
 import org.csstudio.sds.ui.internal.actions.StepBackAction;
 import org.csstudio.sds.ui.internal.actions.StepFrontAction;
-import org.csstudio.sds.ui.internal.actions.ZoomInAndRevealAction;
 import org.csstudio.sds.ui.internal.editparts.WidgetEditPartFactory;
 import org.csstudio.sds.ui.internal.layers.ILayerManager;
 import org.csstudio.sds.ui.internal.properties.view.IPropertySheetPage;
@@ -84,7 +83,6 @@ import org.eclipse.draw2d.ColorConstants;
 import org.eclipse.draw2d.PositionConstants;
 import org.eclipse.draw2d.geometry.Dimension;
 import org.eclipse.draw2d.geometry.Point;
-import org.eclipse.gef.AutoexposeHelper;
 import org.eclipse.gef.ContextMenuProvider;
 import org.eclipse.gef.DefaultEditDomain;
 import org.eclipse.gef.EditPart;
@@ -95,7 +93,7 @@ import org.eclipse.gef.SnapToGeometry;
 import org.eclipse.gef.SnapToGrid;
 import org.eclipse.gef.commands.CommandStack;
 import org.eclipse.gef.editparts.ScalableFreeformRootEditPart;
-import org.eclipse.gef.editparts.ViewportAutoexposeHelper;
+import org.eclipse.gef.editparts.ZoomListener;
 import org.eclipse.gef.editparts.ZoomManager;
 import org.eclipse.gef.palette.PaletteGroup;
 import org.eclipse.gef.palette.PaletteRoot;
@@ -112,6 +110,7 @@ import org.eclipse.gef.ui.actions.MatchWidthAction;
 import org.eclipse.gef.ui.actions.ToggleGridAction;
 import org.eclipse.gef.ui.actions.ToggleRulerVisibilityAction;
 import org.eclipse.gef.ui.actions.ToggleSnapToGeometryAction;
+import org.eclipse.gef.ui.actions.ZoomInAction;
 import org.eclipse.gef.ui.actions.ZoomOutAction;
 import org.eclipse.gef.ui.parts.GraphicalEditorWithFlyoutPalette;
 import org.eclipse.gef.ui.parts.GraphicalViewerKeyHandler;
@@ -592,19 +591,7 @@ public final class DisplayEditor extends GraphicalEditorWithFlyoutPalette implem
         viewer.setEditPartFactory(new WidgetEditPartFactory(ExecutionMode.EDIT_MODE));
         viewer.getControl().setBackground(ColorConstants.listBackground);
         
-        final ScalableFreeformRootEditPart root = new ScalableFreeformRootEditPart() {
-            /**
-             * {@inheritDoc}
-             */
-            @SuppressWarnings("unchecked")
-            @Override
-            public Object getAdapter(final Class key) {
-                if (key == AutoexposeHelper.class) {
-                    return new ViewportAutoexposeHelper(this);
-                }
-                return super.getAdapter(key);
-            }
-        };
+        final SDSRootEditPart root = new SDSRootEditPart();
         viewer.setRootEditPart(root);
         
         this.configureRuler();
@@ -669,8 +656,8 @@ public final class DisplayEditor extends GraphicalEditorWithFlyoutPalette implem
     }
     
     @SuppressWarnings("unchecked")
-    private void configureZoomManager(final ScalableFreeformRootEditPart rootEditPart) {
-        ZoomManager zm = rootEditPart.getZoomManager();
+    private void configureZoomManager(final SDSRootEditPart rootEditPart) {
+        SDSZoomManager zm = rootEditPart.getZoomManager();
         
         List<String> zoomLevels = new ArrayList<String>(3);
         zoomLevels.add(ZoomManager.FIT_ALL);
@@ -681,12 +668,24 @@ public final class DisplayEditor extends GraphicalEditorWithFlyoutPalette implem
         zm.setZoomLevels(createZoomLevels());
         
         if (zm != null) {
-            IAction zoomIn = new ZoomInAndRevealAction(zm, this, getGraphicalViewer());
+            IAction zoomIn = new ZoomInAction(zm);
             getSelectionActions().add(zoomIn.getId());
             getActionRegistry().registerAction(zoomIn);
             IAction zoomOut = new ZoomOutAction(zm);
             getActionRegistry().registerAction(zoomOut);
         }
+        
+        zm.addZoomFinishedListener(new ZoomListener() {
+            
+            @Override
+            public void zoomChanged(double zoom) {
+                List<AbstractBaseEditPart> selectedEditParts = getSelectedEditParts();
+                if (!selectedEditParts.isEmpty()) {
+                    getGraphicalViewer()
+                            .reveal(selectedEditParts.get(selectedEditParts.size() - 1));
+                }
+            }
+        });
         
         /* scroll-wheel zoom */
         getGraphicalViewer().setProperty(MouseWheelHandler.KeyGenerator.getKey(SWT.MOD1),
