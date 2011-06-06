@@ -9,7 +9,8 @@ Require-Bundle: org.eclipse.ui,
  org.csstudio.platform.ui,
  org.csstudio.platform.libs.epics,
  org.eclipse.help,
- org.csstudio.remote;bundle-version="1.0.0"
+ org.csstudio.remote;bundle-version="1.0.0",
+ org.slf4j;bundle-version="1.6.1"
 Eclipse-LazyStart: true
 Bundle-ClassPath: .
 Export-Package: org.csstudio.utility.caSnooperUi.parser,
