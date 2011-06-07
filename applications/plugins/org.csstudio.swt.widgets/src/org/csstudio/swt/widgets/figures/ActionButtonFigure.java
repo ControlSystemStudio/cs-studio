@@ -310,6 +310,7 @@ public class ActionButtonFigure extends Figure implements Introspectable{
 		}
 		if(runMode)
 			super.setEnabled(value);
+		repaint();
 	}
 
 	@Override

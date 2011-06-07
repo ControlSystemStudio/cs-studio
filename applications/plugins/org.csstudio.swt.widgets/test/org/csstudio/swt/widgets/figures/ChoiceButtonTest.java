@@ -13,7 +13,7 @@ public class ChoiceButtonTest extends AbstractChoiceFigureTest{
 
 	@Override
 	public Figure createTestWidget() {
-		return new ChoiceButtonFigure();
+		return new ChoiceButtonFigure(true);
 	}
 	
 	

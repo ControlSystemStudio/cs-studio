@@ -7,6 +7,7 @@
  ******************************************************************************/
 package org.csstudio.opibuilder.widgets.editparts;
 
+import org.csstudio.opibuilder.editparts.ExecutionMode;
 import org.csstudio.swt.widgets.figures.AbstractChoiceFigure;
 import org.csstudio.swt.widgets.figures.RadioBoxFigure;
 
@@ -18,7 +19,8 @@ public class RadioBoxEditpart extends AbstractChoiceEditPart {
 
 	@Override
 	protected AbstractChoiceFigure createChoiceFigure() {
-		return new RadioBoxFigure();
+		return new RadioBoxFigure(
+				getExecutionMode() == ExecutionMode.RUN_MODE);
 	}
 
 }

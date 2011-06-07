@@ -34,6 +34,7 @@ public class TextUpdate2Model extends AbstractADL2Model {
 		TextUtilities.setWidgetFont((LabelModel)widgetModel);
 		TextUtilities.setAlignment((LabelModel)widgetModel, textUpdateWidget);
 		TextUtilities.setFormat((TextIndicatorModel)widgetModel, textUpdateWidget);
+		widgetModel.setPropertyValue(TextIndicatorModel.PROP_SHOW_UNITS, false);
 
 		//TODO Add limits to TextUpdate2Model
 		TranslatorUtils.printNotHandledWarning(className, "limits" );

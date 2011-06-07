@@ -102,6 +102,12 @@ public class ThumbWheelFigure extends Figure implements Introspectable{
 		public void setChar(char c) {
 			label.setText("" + c);
 		}
+		
+		@Override
+		public void setEnabled(boolean value) {
+			super.setEnabled(value);
+			setChildrenEnabled(value);
+		}
 
 	
 	}
@@ -193,7 +199,11 @@ public class ThumbWheelFigure extends Figure implements Introspectable{
 			}
 		}
 
-	
+		@Override
+		public void setEnabled(boolean value) {
+			super.setEnabled(value);
+			setChildrenEnabled(value);
+		}
 
 		public void setValue(String value) {
 			label.setText("" + value);
@@ -436,7 +446,14 @@ public class ThumbWheelFigure extends Figure implements Introspectable{
 		DigitBox box = decimalPart[index];
 		box.setValue("" + value);
 	}
-
+	
+	@Override
+	public void setEnabled(boolean value) {
+		super.setEnabled(value);
+		setChildrenEnabled(value);
+		repaint();
+	}
+	
 	public void setIntegerDigits(int integerDigits) {
 		if(integerDigits < 0 || integerDigits > 64)
 			throw new IllegalArgumentException();
