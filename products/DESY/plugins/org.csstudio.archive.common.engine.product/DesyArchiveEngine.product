@@ -1,39 +1,16 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <?pde version="3.5"?>
 
-<product name="DesyArchiveEngine" uid="engine" id="org.csstudio.archive.common.engine.product" application="org.csstudio.archive.common.engine.application" version="1.0.0.qualifier" useFeatures="false" includeLaunchers="true">
+<product name="DesyArchiveEngine" uid="archiveEngineId" id="org.csstudio.archive.common.engine.product" application="org.csstudio.archive.common.engine.application" version="1.0.0.qualifier" useFeatures="false" includeLaunchers="true">
 
-   <aboutInfo>
-      <text>
-         Desy Kryo Archive Engine
-
-Copyright (c) 2011 Stiftung Deutsches Elektronen-Synchrotron,
-Member of the Helmholtz Association, (DESY), HAMBURG, GERMANY.
-
-THIS SOFTWARE IS PROVIDED UNDER THIS LICENSE ON AN &quot;../AS IS&quot; BASIS. 
-WITHOUT WARRANTY OF ANY KIND, EXPRESSED OR IMPLIED, INCLUDING BUT NOT LIMITED
-TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR PARTICULAR PURPOSE AND
-NON-INFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE
-FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT,
-TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR
-THE USE OR OTHER DEALINGS IN THE SOFTWARE. SHOULD THE SOFTWARE PROVE DEFECTIVE
-IN ANY RESPECT, THE USER ASSUMES THE COST OF ANY NECESSARY SERVICING, REPAIR OR
-CORRECTION. THIS DISCLAIMER OF WARRANTY CONSTITUTES AN ESSENTIAL PART OF THIS LICENSE.
-NO USE OF ANY SOFTWARE IS AUTHORIZED HEREUNDER EXCEPT UNDER THIS DISCLAIMER.
-DESY HAS NO OBLIGATION TO PROVIDE MAINTENANCE, SUPPORT, UPDATES, ENHANCEMENTS,
-OR MODIFICATIONS. 
-THE FULL LICENSE SPECIFYING FOR THE SOFTWARE THE REDISTRIBUTION, MODIFICATION,
-USAGE AND OTHER RIGHTS AND OBLIGATIONS IS INCLUDED WITH THE DISTRIBUTION OF THIS
-PROJECT IN THE FILE LICENSE.HTML. IF THE LICENSE IS NOT INCLUDED YOU MAY FIND A COPY AT 
-HTTP://WWW.DESY.DE/LEGAL/LICENSE.HTM
-      </text>
-   </aboutInfo>
 
    <configIni use="default">
    </configIni>
 
    <launcherArgs>
-      <programArgs>-plugincustomization plugin_customization.ini</programArgs>
+      <programArgs>-consoleLog -engine TestEngine -port 4811</programArgs>
+      <programArgsSol>-pluginCustomization D:/development/repo/config/DESY/css/sensitivedata/org.csstudio.archive.common.engine.product/plugin_customization_solaris.ini</programArgsSol>
+      <programArgsWin>-pluginCustomization D:/development/repo/config/DESY/css/sensitivedata/org.csstudio.archive.common.engine.product/plugin_customization.ini</programArgsWin>
       <vmArgs>-Djava.awt.headless=true -Xms64m -Xmx256m</vmArgs>
       <vmArgsMac>-XstartOnFirstThread -Dorg.eclipse.swt.internal.carbon.smallFonts</vmArgsMac>
    </launcherArgs>
@@ -56,12 +33,18 @@ HTTP://WWW.DESY.DE/LEGAL/LICENSE.HTM
       <windows include="false">org.eclipse.jdt.launching.JRE_CONTAINER/org.eclipse.jdt.internal.debug.ui.launcher.StandardVMType/JavaSE-1.6</windows>
    </vm>
 
+
    <plugins>
       <plugin id="com.google.common"/>
       <plugin id="com.google.inject"/>
+      <plugin id="com.ibm.icu"/>
       <plugin id="com.jdbc.mysql"/>
       <plugin id="javax.annotation"/>
       <plugin id="javax.servlet"/>
+      <plugin id="javax.servlet.jsp"/>
+      <plugin id="org.apache.commons.el"/>
+      <plugin id="org.apache.commons.logging"/>
+      <plugin id="org.apache.jasper"/>
       <plugin id="org.csstudio.apputil"/>
       <plugin id="org.csstudio.archive.common.engine"/>
       <plugin id="org.csstudio.archive.common.engine.product.log4j" fragment="true"/>
@@ -81,29 +64,38 @@ HTTP://WWW.DESY.DE/LEGAL/LICENSE.HTM
       <plugin id="org.csstudio.domain.desy.test" fragment="true"/>
       <plugin id="org.csstudio.email"/>
       <plugin id="org.csstudio.java"/>
+      <plugin id="org.csstudio.platform"/>
+      <plugin id="org.csstudio.platform.libs.dal"/>
       <plugin id="org.csstudio.platform.libs.epics"/>
+      <plugin id="org.csstudio.platform.libs.jmock"/>
+      <plugin id="org.csstudio.platform.libs.jms"/>
       <plugin id="org.csstudio.platform.libs.log4j"/>
+      <plugin id="org.csstudio.platform.test" fragment="true"/>
+      <plugin id="org.csstudio.platform.utility.jms"/>
+      <plugin id="org.csstudio.remote"/>
+      <plugin id="org.csstudio.remote.test" fragment="true"/>
       <plugin id="org.csstudio.testsuite"/>
+      <plugin id="org.csstudio.utility.httpd"/>
       <plugin id="org.csstudio.utility.pv"/>
       <plugin id="org.csstudio.utility.pv.epics"/>
       <plugin id="org.csstudio.utility.pvmanager"/>
+      <plugin id="org.csstudio.workspace"/>
+      <plugin id="org.eclipse.ant.core"/>
+      <plugin id="org.eclipse.core.commands"/>
       <plugin id="org.eclipse.core.contenttype"/>
+      <plugin id="org.eclipse.core.databinding"/>
+      <plugin id="org.eclipse.core.databinding.observable"/>
+      <plugin id="org.eclipse.core.databinding.property"/>
       <plugin id="org.eclipse.core.expressions"/>
       <plugin id="org.eclipse.core.filesystem"/>
-      <plugin id="org.eclipse.core.filesystem.aix.ppc" fragment="true"/>
-      <plugin id="org.eclipse.core.filesystem.hpux.ia64_32" fragment="true"/>
-      <plugin id="org.eclipse.core.filesystem.linux.ppc" fragment="true"/>
-      <plugin id="org.eclipse.core.filesystem.linux.x86" fragment="true"/>
-      <plugin id="org.eclipse.core.filesystem.linux.x86_64" fragment="true"/>
-      <plugin id="org.eclipse.core.filesystem.macosx" fragment="true"/>
-      <plugin id="org.eclipse.core.filesystem.solaris.sparc" fragment="true"/>
       <plugin id="org.eclipse.core.filesystem.win32.x86" fragment="true"/>
-      <plugin id="org.eclipse.core.filesystem.win32.x86_64" fragment="true"/>
       <plugin id="org.eclipse.core.jobs"/>
       <plugin id="org.eclipse.core.resources"/>
       <plugin id="org.eclipse.core.resources.win32.x86" fragment="true"/>
       <plugin id="org.eclipse.core.runtime"/>
+      <plugin id="org.eclipse.core.runtime.compatibility.auth"/>
       <plugin id="org.eclipse.core.runtime.compatibility.registry" fragment="true"/>
+      <plugin id="org.eclipse.core.variables"/>
       <plugin id="org.eclipse.equinox.app"/>
       <plugin id="org.eclipse.equinox.common"/>
       <plugin id="org.eclipse.equinox.ds"/>
@@ -112,11 +104,17 @@ HTTP://WWW.DESY.DE/LEGAL/LICENSE.HTM
       <plugin id="org.eclipse.equinox.preferences"/>
       <plugin id="org.eclipse.equinox.registry"/>
       <plugin id="org.eclipse.equinox.security"/>
-      <plugin id="org.eclipse.equinox.security.macosx" fragment="true"/>
       <plugin id="org.eclipse.equinox.security.win32.x86" fragment="true"/>
       <plugin id="org.eclipse.equinox.util"/>
+      <plugin id="org.eclipse.help"/>
+      <plugin id="org.eclipse.jface"/>
+      <plugin id="org.eclipse.jface.databinding"/>
       <plugin id="org.eclipse.osgi"/>
       <plugin id="org.eclipse.osgi.services"/>
+      <plugin id="org.eclipse.swt"/>
+      <plugin id="org.eclipse.swt.win32.win32.x86" fragment="true"/>
+      <plugin id="org.eclipse.ui"/>
+      <plugin id="org.eclipse.ui.workbench"/>
       <plugin id="org.hamcrest.core"/>
       <plugin id="org.joda.time"/>
       <plugin id="org.junit"/>
@@ -127,5 +125,12 @@ HTTP://WWW.DESY.DE/LEGAL/LICENSE.HTM
       <plugin id="org.slf4j-log4j12"/>
    </plugins>
 
+   <configurations>
+      <plugin id="org.csstudio.archive.common.service.mysqlimpl" autoStart="true" startLevel="0" />
+      <plugin id="org.eclipse.core.runtime" autoStart="true" startLevel="0" />
+      <plugin id="org.eclipse.equinox.common" autoStart="true" startLevel="2" />
+      <plugin id="org.eclipse.equinox.ds" autoStart="true" startLevel="0" />
+      <plugin id="org.eclipse.osgi" autoStart="true" startLevel="-1" />
+   </configurations>
 
 </product>
