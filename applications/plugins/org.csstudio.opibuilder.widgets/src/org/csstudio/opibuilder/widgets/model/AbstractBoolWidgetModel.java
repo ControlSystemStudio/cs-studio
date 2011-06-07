@@ -71,7 +71,7 @@ public abstract class AbstractBoolWidgetModel extends AbstractPVWidgetModel {
 	@Override
 	protected void configureProperties() {				
 		addProperty(new IntegerProperty(PROP_BIT, "Bit",
-				WidgetPropertyCategory.Behavior, 0, -1, 63));		
+				WidgetPropertyCategory.Behavior, -1, -1, 63));		
 		addProperty(new BooleanProperty(PROP_SHOW_BOOL_LABEL, "Show Boolean Label",
 				WidgetPropertyCategory.Display,false));		
 		addProperty(new StringProperty(PROP_ON_LABEL, "On Label",

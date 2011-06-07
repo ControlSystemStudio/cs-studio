@@ -33,6 +33,7 @@ import org.eclipse.ui.actions.ActionFactory;
  * 
  */
 public class OPIEditorContextMenuProvider extends ContextMenuProvider {
+	public static final String GROUP_GROUP = "group";
 	/**
 	 * The action registry.
 	 */
@@ -58,7 +59,18 @@ public class OPIEditorContextMenuProvider extends ContextMenuProvider {
 	 */
 	@Override
 	public void buildContextMenu(final IMenuManager menu) {		
-		GEFActionConstants.addStandardActionGroups(menu);
+		menu.add(new Separator(GEFActionConstants.GROUP_UNDO));
+		menu.add(new Separator(GEFActionConstants.GROUP_COPY));
+		menu.add(new Separator(GEFActionConstants.GROUP_PRINT));
+		menu.add(new Separator(GEFActionConstants.GROUP_EDIT));
+		menu.add(new Separator(GEFActionConstants.GROUP_VIEW));
+		menu.add(new Separator(GEFActionConstants.GROUP_FIND));
+		menu.add(new Separator(GEFActionConstants.GROUP_ADD));
+		menu.add(new Separator(GEFActionConstants.GROUP_REST));
+		menu.add(new Separator(GEFActionConstants.GROUP_SAVE));
+		menu.add(new Separator(GROUP_GROUP)); //$NON-NLS-1$
+		menu.add(new Separator(GEFActionConstants.MB_ADDITIONS));
+		
 		
 		menu.appendToGroup(GEFActionConstants.GROUP_UNDO, 
 				getAction(ActionFactory.UNDO.getId()));
@@ -109,14 +121,11 @@ public class OPIEditorContextMenuProvider extends ContextMenuProvider {
 			orientationMenu.appendToGroup(orientationGroup, getAction(orientationType.getActionID()));
 
 		}
-		menu.appendToGroup(GEFActionConstants.GROUP_COPY, orientationMenu);
-	
-		
-		menu.add(new Separator("group")); //$NON-NLS-1$
-		
-		MenuManager cssMenu = new MenuManager("CSS", "css");//$NON-NLS-1$ //$NON-NLS-2$
-		cssMenu.add(new Separator("additions"));//$NON-NLS-1$
-		menu.add(cssMenu);		
+		menu.appendToGroup(GEFActionConstants.GROUP_COPY, orientationMenu);	
+				
+//		MenuManager cssMenu = new MenuManager("CSS", "css");//$NON-NLS-1$ //$NON-NLS-2$
+//		cssMenu.add(new Separator("additions"));//$NON-NLS-1$
+//		menu.add(cssMenu);		
 	}
 	
 	private IAction getAction(String actionId) {

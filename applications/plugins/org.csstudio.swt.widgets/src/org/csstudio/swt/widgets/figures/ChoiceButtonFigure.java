@@ -19,7 +19,8 @@ import org.eclipse.draw2d.ToggleButton;
 public class ChoiceButtonFigure extends AbstractChoiceFigure {
 
 	
-	public ChoiceButtonFigure() {
+	public ChoiceButtonFigure(boolean runMode) {
+		super(runMode);
 		selectedColor = ColorConstants.buttonLightest;
 	}
 	

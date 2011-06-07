@@ -141,10 +141,10 @@ public abstract class AbstractADL2Model {
 		if (!(dynAttr.get_vis().equals("static"))) {
 			if (dynAttr.get_chan() != null) {
 				if (dynAttr.get_vis().equals("if not zero")) {
-					addSimpleVisibilityRule("pv0==0", dynAttr.get_chan(),
+					addSimpleVisibilityRule("pv0!=0", dynAttr.get_chan(),
 							widgetModel);
 				} else if (dynAttr.get_vis().equals("if zero")) {
-					addSimpleVisibilityRule("!(pv0==0)", dynAttr.get_chan(),
+					addSimpleVisibilityRule("pv0==0", dynAttr.get_chan(),
 							widgetModel);
 				} else if (dynAttr.get_vis().equals("calc")) {
 					RuleData newRule = createNewVisibilityRule(widgetModel);
@@ -154,7 +154,8 @@ public abstract class AbstractADL2Model {
 					addPVToRule(dynAttr.get_chanc(), newRule);
 					addPVToRule(dynAttr.get_chand(), newRule);
 					String newExpr = translateExpression(dynAttr.get_calc());
-					newRule.addExpression(new Expression(newExpr, false));
+					newRule.addExpression(new Expression(newExpr, true));
+					newRule.addExpression(new Expression("!("+newExpr+")", false));
 
 					addVisibilityRuleToWidgetModel(newRule, widgetModel);
 				}
@@ -185,8 +186,10 @@ public abstract class AbstractADL2Model {
 		RuleData newRule = createNewVisibilityRule(widgetModel);
 		PVTuple pvs = new PVTuple(chan, true);
 		newRule.addPV(pvs);
-		newRule.addExpression(new Expression(booleanExpression, false));
+		newRule.addExpression(new Expression(booleanExpression, true));
+		newRule.addExpression(new Expression("!("+ booleanExpression + ")", false));
 		addVisibilityRuleToWidgetModel(newRule, widgetModel);
+
 	}
 
 
@@ -257,18 +260,22 @@ public abstract class AbstractADL2Model {
 			String[] parts = retExpr.split(inName);
 			tempExpr.append(parts[0]);
 			for (int occur = 0; occur<(parts.length-1); occur++){
-				if (!inName.equals("=") ||
-						(inName.equals("=") &&
-						(tempExpr.toString().endsWith(">") 
-								|| tempExpr.toString().endsWith(">")))
-						)
-				{
+				if (!inName.equals("=")) {
+					if (inName.equals("=")
+							&& (tempExpr.toString().endsWith(">") || 
+									tempExpr.toString().endsWith("<") ))
+
+					{
+						tempExpr.append("=");
+						tempExpr.append(parts[occur + 1]);
+					} else {
+						tempExpr.append(outName);
+						tempExpr.append(parts[occur + 1]);
+					}
+				}
+				else {
 					tempExpr.append(outName);
-					tempExpr.append(parts[occur+1]);
-				} else 
-				{
-					tempExpr.append("=");
-					tempExpr.append(parts[occur+1]);					
+					tempExpr.append(parts[occur + 1]);
 				}
 			}
 			retExpr = tempExpr.toString();

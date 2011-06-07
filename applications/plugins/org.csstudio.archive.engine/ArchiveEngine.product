@@ -32,6 +32,7 @@
       <plugin id="org.csstudio.data"/>
       <plugin id="org.csstudio.java"/>
       <plugin id="org.csstudio.logging"/>
+      <plugin id="org.csstudio.platform.libs.epics"/>
       <plugin id="org.csstudio.platform.libs.jdbc"/>
       <plugin id="org.csstudio.platform.libs.jms"/>
       <plugin id="org.csstudio.platform.utility.rdb"/>

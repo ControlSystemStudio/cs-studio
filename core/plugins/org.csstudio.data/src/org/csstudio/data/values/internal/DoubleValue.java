@@ -88,6 +88,16 @@ public class DoubleValue extends Value implements IDoubleValue
 	    // Show array elements as numbers
 
 		NumberFormat fmt;
+		// When requested via <0 prec.,
+        // use the precision from meta data
+        if (precision < 0)
+        {
+            final INumericMetaData num_meta = (INumericMetaData)getMetaData();
+            // Should have numeric meta data, but in case of errors
+            // that might be null.
+            if (num_meta != null)
+                precision = num_meta.getPrecision();
+        }
         if (how == Format.Exponential)
         {
         	// Assert positive precision
@@ -109,17 +119,7 @@ public class DoubleValue extends Value implements IDoubleValue
             }
         }
         else
-        {
-            // For the default format, or when requested via <0 prec.,
-            // use the precision from meta data
-            if (how == Format.Default  ||  precision < 0)
-            {
-                final INumericMetaData num_meta = (INumericMetaData)getMetaData();
-                // Should have numeric meta data, but in case of errors
-                // that might be null.
-                if (num_meta != null)
-                    precision = num_meta.getPrecision();
-            }
+        {            
             // Hack: If default format precision is 0, assume nobody configured
             // it properly, and fall back to Double.toString
             if (how == Format.Default  &&  precision == 0)

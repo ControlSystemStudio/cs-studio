@@ -4,4 +4,4 @@ var filePath = display.getWidget("filePath").getPropertyValue("text");
 
 var text = FileUtil.readTextFile(filePath);
 
-display.getWidget("textInput").setPropertyValue("text", text);
+display.getWidget("readLabel").setPropertyValue("text", text);

@@ -37,7 +37,8 @@ public class LabelModel extends AbstractPVWidgetModel {
 
 	public static final String PROP_ALIGN_H = "horizontal_alignment";	//$NON-NLS-1$
 	public static final String PROP_ALIGN_V = "vertical_alignment";	//$NON-NLS-1$
-	
+	public static final String PROP_WRAP_WORDS = "wrap_words"; //$NON-NLS-1$	
+	public static final String PROP_SHOW_SCROLLBAR = "show_scrollbar"; //$NON-NLS-1$	
 	protected boolean pvModel = false;
 	
 	public LabelModel() {
@@ -58,6 +59,10 @@ public class LabelModel extends AbstractPVWidgetModel {
 				WidgetPropertyCategory.Display, H_ALIGN.stringValues(), 1));
 		addProperty(new ComboProperty(PROP_ALIGN_V, "Vertical Alignment", 
 				WidgetPropertyCategory.Display, V_ALIGN.stringValues(), 1));
+		addProperty(new BooleanProperty(PROP_WRAP_WORDS, "Wrap Words", 
+				WidgetPropertyCategory.Display, true));
+		addProperty(new BooleanProperty(PROP_SHOW_SCROLLBAR, "Show Scrollbar", 
+				WidgetPropertyCategory.Display, false));
 
 		if(!pvModel){
 			setTooltip("");
@@ -104,8 +109,16 @@ public class LabelModel extends AbstractPVWidgetModel {
 		return (Boolean)getCastedPropertyValue(PROP_AUTOSIZE);
 	}
 	
+	public boolean isWrapWords(){
+		return (Boolean)getPropertyValue(PROP_WRAP_WORDS);
+	}
+	
 	public void setFont(OPIFont font){
 		setPropertyValue(PROP_FONT, font);
+	}
+
+	public boolean isShowScrollbar() {
+		return (Boolean)getPropertyValue(PROP_SHOW_SCROLLBAR);
 	}
 
 }

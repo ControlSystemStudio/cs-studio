@@ -28,7 +28,6 @@ import org.eclipse.gef.ui.actions.ActionRegistry;
 import org.eclipse.gef.ui.actions.GEFActionConstants;
 import org.eclipse.jface.action.IMenuManager;
 import org.eclipse.jface.action.MenuManager;
-import org.eclipse.jface.action.Separator;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.ui.IWorkbenchWindow;
 import org.eclipse.ui.PlatformUI;
@@ -80,9 +79,9 @@ public final class OPIRunnerContextMenuProvider extends ContextMenuProvider {
 		menu.appendToGroup(GEFActionConstants.GROUP_EDIT, actionRegistry.getAction(SendEMailAction.ID));
 		menu.appendToGroup(GEFActionConstants.GROUP_EDIT, actionRegistry.getAction(ActionFactory.PRINT.getId()));
 
-		MenuManager cssMenu = new MenuManager("CSS", "css");
-		cssMenu.add(new Separator("additions")); //$NON-NLS-1$
-		menu.add(cssMenu);		
+//		MenuManager cssMenu = new MenuManager("CSS", "css");
+//		cssMenu.add(new Separator("additions")); //$NON-NLS-1$
+//		menu.add(cssMenu);		
 	}
 	
 	/**
