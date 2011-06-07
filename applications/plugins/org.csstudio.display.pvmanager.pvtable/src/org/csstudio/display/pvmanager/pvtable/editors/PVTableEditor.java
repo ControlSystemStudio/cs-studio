@@ -439,7 +439,6 @@ public class PVTableEditor extends EditorPart implements ISelectionProvider {
 							ColumnViewerEditorActivationEvent activationEvent) {
 						if (activationEvent.eventType == ColumnViewerEditorActivationEvent.MOUSE_DOUBLE_CLICK_SELECTION) {
 							super.activate(activationEvent);
-							initialized = true;
 						} else if (activationEvent.eventType == ColumnViewerEditorActivationEvent.KEY_PRESSED) {
 							// this.text =
 							// String.valueOf(activationEvent.character);
@@ -541,6 +540,7 @@ public class PVTableEditor extends EditorPart implements ISelectionProvider {
 		TableColumn tblclmnValue = tableViewerColumn_1.getColumn();
 		tblclmnValue.setText("Value");
 
+		// Alarm Column
 		TableViewerColumn tableViewerColumn_2 = new TableViewerColumn(
 				tableViewer, SWT.NONE);
 		new TableViewerColumnSorter(tableViewerColumn_2) {
@@ -555,7 +555,10 @@ public class PVTableEditor extends EditorPart implements ISelectionProvider {
 			@Override
 			protected Object getValue(Object o) {
 				// TODO remove this method, if your EditingSupport returns value
-				return super.getValue(o);
+				Item item = (Item) o;
+				if (item == null || item.getValue() == null)
+					return null;
+				return Util.alarmOf(item.getValue()).getAlarmSeverity();
 			}
 		};
 		tableViewerColumn_2.setLabelProvider(new PVColumnLabelProvider() {
@@ -716,11 +719,15 @@ public class PVTableEditor extends EditorPart implements ISelectionProvider {
 
 					public void afterEditorActivated(
 							ColumnViewerEditorActivationEvent event) {
-						//TODO replace hack to move cursor to the end of the text(shroffk)
-						((Text) tableViewer.getCellEditors()[0].getControl())
-								.setSelection(((Text) tableViewer
-										.getCellEditors()[0].getControl())
-										.getText().length());
+						// TODO replace hack to move cursor to the end of the
+						// text(shroffk)
+						if (event.eventType == ColumnViewerEditorActivationEvent.KEY_PRESSED) {							
+							((Text) tableViewer.getCellEditors()[0]
+									.getControl())
+									.setSelection(((Text) tableViewer
+											.getCellEditors()[0].getControl())
+											.getText().length());
+						}
 						// ((Text) this.getControl())
 						// .setSelection(((Text) this.getControl())
 						// .getText().length());
