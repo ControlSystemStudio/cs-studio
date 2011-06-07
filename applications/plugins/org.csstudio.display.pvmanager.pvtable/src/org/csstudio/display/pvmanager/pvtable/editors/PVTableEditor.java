@@ -78,6 +78,7 @@ import org.eclipse.swt.widgets.ScrollBar;
 import org.eclipse.swt.widgets.Table;
 import org.eclipse.swt.widgets.TableColumn;
 import org.eclipse.swt.widgets.TableItem;
+import org.eclipse.swt.widgets.Text;
 import org.eclipse.ui.IEditorInput;
 import org.eclipse.ui.IEditorPart;
 import org.eclipse.ui.IEditorSite;
@@ -97,6 +98,7 @@ import org.epics.pvmanager.data.SimpleValueFormat;
 import org.epics.pvmanager.data.Util;
 import org.epics.pvmanager.data.ValueFormat;
 import org.epics.pvmanager.extra.DynamicGroup;
+import com.swtdesigner.TableViewerColumnSorter;
 
 /**
  * @author shroffk
@@ -407,15 +409,49 @@ public class PVTableEditor extends EditorPart implements ISelectionProvider {
 			}
 		});
 
-		TableViewerColumn tableViewerColumn = new TableViewerColumn(
+		final TableViewerColumn tableViewerColumn = new TableViewerColumn(
 				tableViewer, SWT.NONE);
+		new TableViewerColumnSorter(tableViewerColumn) {
+			@Override
+			protected int doCompare(Viewer viewer, Object e1, Object e2) {
+				// Ensure that the empty "" remains in the last position always
+				// irrespective of the direction of sorting
+				String s1 = super.getValue(e1).toString();
+				String s2 = super.getValue(e2).toString();
+				if (s1.equals(s2) || s2.equals(""))
+					return 0;
+				else
+					return s1.compareTo(s2);
+			}
+		};
+
 		tableViewerColumn.setEditingSupport(new EditingSupport(tableViewer) {
+			private boolean initialized = false;
+
 			protected boolean canEdit(Object element) {
 				return true;
 			}
 
 			protected CellEditor getCellEditor(Object element) {
-				return new TextCellEditor(table);
+				TextCellEditor editor = new TextCellEditor(table) {
+					@Override
+					public void activate(
+							ColumnViewerEditorActivationEvent activationEvent) {
+						if (activationEvent.eventType == ColumnViewerEditorActivationEvent.MOUSE_DOUBLE_CLICK_SELECTION) {
+							super.activate(activationEvent);
+							initialized = true;
+						} else if (activationEvent.eventType == ColumnViewerEditorActivationEvent.KEY_PRESSED) {
+							// this.text =
+							// String.valueOf(activationEvent.character);
+							this.setValue(String
+									.valueOf(activationEvent.character));
+						}
+					}
+				};
+				CellEditor[] editors = new CellEditor[1];
+				editors[0] = editor;
+				tableViewer.setCellEditors(editors);
+				return editor;
 			}
 
 			protected Object getValue(Object element) {
@@ -425,6 +461,7 @@ public class PVTableEditor extends EditorPart implements ISelectionProvider {
 				return item.getProcessVariableName().getName();
 			}
 
+			@Override
 			protected void setValue(Object element, Object value) {
 				try {
 					editingDone = true;
@@ -435,7 +472,8 @@ public class PVTableEditor extends EditorPart implements ISelectionProvider {
 						if (value == null || value.toString().trim().isEmpty()) {
 							// We are removing the row
 							if (item.getRow() == oldSize) {
-								// Do nothing: the row was the empty one anyway
+								// Do nothing: the row was the empty one
+								// anyway
 							} else {
 								group.remove(item.getRow());
 							}
@@ -455,6 +493,10 @@ public class PVTableEditor extends EditorPart implements ISelectionProvider {
 							}
 							model.updateValues(group.lastExceptions());
 						}
+						if (!initialized) {
+							((Text) getCellEditor(element).getControl())
+									.setSelection(1);
+						}
 						isDirty = true;
 						firePropertyChange(PROP_DIRTY);
 					}
@@ -462,6 +504,7 @@ public class PVTableEditor extends EditorPart implements ISelectionProvider {
 					editingDone = false;
 				}
 			}
+
 		});
 		tableViewerColumn.setLabelProvider(new PVColumnLabelProvider() {
 
@@ -500,6 +543,21 @@ public class PVTableEditor extends EditorPart implements ISelectionProvider {
 
 		TableViewerColumn tableViewerColumn_2 = new TableViewerColumn(
 				tableViewer, SWT.NONE);
+		new TableViewerColumnSorter(tableViewerColumn_2) {
+			@Override
+			protected int doCompare(Viewer viewer, Object e1, Object e2) {
+				// TODO Remove this method, if your getValue(Object) returns
+				// Comparable.
+				// Typical Comparable are String, Integer, Double, etc.
+				return super.doCompare(viewer, e1, e2);
+			}
+
+			@Override
+			protected Object getValue(Object o) {
+				// TODO remove this method, if your EditingSupport returns value
+				return super.getValue(o);
+			}
+		};
 		tableViewerColumn_2.setLabelProvider(new PVColumnLabelProvider() {
 			public Image getImage(Object element) {
 				return null;
@@ -658,7 +716,15 @@ public class PVTableEditor extends EditorPart implements ISelectionProvider {
 
 					public void afterEditorActivated(
 							ColumnViewerEditorActivationEvent event) {
-
+						//TODO replace hack to move cursor to the end of the text(shroffk)
+						((Text) tableViewer.getCellEditors()[0].getControl())
+								.setSelection(((Text) tableViewer
+										.getCellEditors()[0].getControl())
+										.getText().length());
+						// ((Text) this.getControl())
+						// .setSelection(((Text) this.getControl())
+						// .getText().length());
+						//
 					}
 
 					public void afterEditorDeactivated(
@@ -735,13 +801,15 @@ public class PVTableEditor extends EditorPart implements ISelectionProvider {
 							model.removeItem(item);
 							model.updateValues(group.lastExceptions());
 						}
-						// Set the selection to the index of the first deleted element
+						// Set the selection to the index of the first deleted
+						// element
 						if (item != null) {
 							tableViewer.getTable().setSelection(item.getRow());
 						} else {
 							tableViewer.getTable().setSelection(
 									model.getItems().length);
 						}
+						tableViewer.getTable().setFocus();
 
 						isDirty = true;
 						firePropertyChange(PROP_DIRTY);
@@ -751,7 +819,6 @@ public class PVTableEditor extends EditorPart implements ISelectionProvider {
 
 			@Override
 			public void keyPressed(KeyEvent e) {
-				// TODO Auto-generated method stub
 
 			}
 		});
