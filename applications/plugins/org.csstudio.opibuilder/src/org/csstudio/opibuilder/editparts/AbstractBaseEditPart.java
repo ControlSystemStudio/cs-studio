@@ -424,6 +424,7 @@ public abstract class AbstractBaseEditPart extends AbstractGraphicalEditPart{
 			public boolean handleChange(Object oldValue, Object newValue,
 					IFigure figure) {
 				figure.setEnabled((Boolean)newValue);
+				figure.repaint();
 				return true;
 			}
 		};

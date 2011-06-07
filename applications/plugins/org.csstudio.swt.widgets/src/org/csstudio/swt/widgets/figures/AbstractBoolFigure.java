@@ -137,6 +137,12 @@ public class AbstractBoolFigure extends Figure implements Introspectable{
 	}
 
 	@Override
+	public void setEnabled(boolean value) {
+		super.setEnabled(value);
+		repaint();
+	}
+	
+	@Override
 	public void setFont(Font f) {
 		super.setFont(f);
 		boolLabel.setFont(f);

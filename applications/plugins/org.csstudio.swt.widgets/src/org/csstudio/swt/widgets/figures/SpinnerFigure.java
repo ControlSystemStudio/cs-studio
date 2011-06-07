@@ -329,7 +329,9 @@ public class SpinnerFigure extends Figure implements Introspectable {
 	public void setEnabled(boolean value) {
 		buttonUp.setEnabled(value);
 		buttonDown.setEnabled(value);
+		labelFigure.setEnabled(value);
 		super.setEnabled(value);
+		repaint();
 	}
 	
 	public void setFormatType(NumericFormatType formatType) {

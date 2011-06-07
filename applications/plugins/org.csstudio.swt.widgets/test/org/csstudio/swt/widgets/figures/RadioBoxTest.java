@@ -13,7 +13,7 @@ public class RadioBoxTest extends AbstractChoiceFigureTest{
 
 	@Override
 	public Figure createTestWidget() {
-		return new RadioBoxFigure();
+		return new RadioBoxFigure(true);
 	}
 	
 	

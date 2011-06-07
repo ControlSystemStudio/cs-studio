@@ -26,7 +26,8 @@ import org.eclipse.swt.SWT;
  */
 public class RadioBoxFigure extends AbstractChoiceFigure {
 
-	public RadioBoxFigure() {
+	public RadioBoxFigure(boolean runMode) {
+		super(runMode);
 		selectedColor = ColorConstants.black;
 	}
 	
@@ -123,6 +124,13 @@ class RadioFigure extends Figure{
 						2*DOT_RADIUS+1, 2*DOT_RADIUS+1), 0, 360);
 			}
 			Dimension textSize = FigureUtilities.getTextExtents(text, graphics.getFont());
+			if (!isEnabled()) {
+				graphics.translate(1, 1);
+				graphics.setForegroundColor(ColorConstants.buttonLightest);
+				graphics.drawText(text, circle.getRight().getTranslated(GAP, -textSize.height/2));
+				graphics.translate(-1, -1);
+				graphics.setForegroundColor(ColorConstants.buttonDarker);
+			}
 			graphics.drawText(text, circle.getRight().getTranslated(GAP, -textSize.height/2));
 				
 		}

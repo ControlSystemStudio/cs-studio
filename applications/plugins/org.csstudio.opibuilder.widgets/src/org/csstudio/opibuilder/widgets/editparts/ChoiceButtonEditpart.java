@@ -7,6 +7,7 @@
  ******************************************************************************/
 package org.csstudio.opibuilder.widgets.editparts;
 
+import org.csstudio.opibuilder.editparts.ExecutionMode;
 import org.csstudio.opibuilder.widgets.model.ChoiceButtonModel;
 import org.csstudio.swt.widgets.figures.AbstractChoiceFigure;
 import org.csstudio.swt.widgets.figures.ChoiceButtonFigure;
@@ -19,7 +20,8 @@ public class ChoiceButtonEditpart extends AbstractChoiceEditPart {
 
 	@Override
 	protected AbstractChoiceFigure createChoiceFigure() {
-		ChoiceButtonFigure figure = new ChoiceButtonFigure();
+		ChoiceButtonFigure figure = new ChoiceButtonFigure(
+				getExecutionMode() == ExecutionMode.RUN_MODE);
 		return figure;
 	}
 	

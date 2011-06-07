@@ -171,6 +171,12 @@ public class CheckBoxFigure extends Label implements Introspectable{
 		this.boolValue = boolValue;
 		updateValue();
 	}
+	
+	@Override
+	public void setEnabled(boolean value) {
+		super.setEnabled(value);
+		repaint();
+	}
 
 	/**
 	 * @param runMode the runMode to set
