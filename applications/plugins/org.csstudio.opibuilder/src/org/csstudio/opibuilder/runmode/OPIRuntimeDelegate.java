@@ -4,6 +4,7 @@ import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.csstudio.email.EMailSender;
 import org.csstudio.opibuilder.actions.PrintDisplayAction;
 import org.csstudio.opibuilder.actions.SendEMailAction;
 import org.csstudio.opibuilder.actions.SendToElogAction;
@@ -170,7 +171,8 @@ public class OPIRuntimeDelegate implements IAdaptable{
 
 		if (SendToElogAction.isElogAvailable())
 			getActionRegistry().registerAction(new SendToElogAction(opiRuntime));
-		getActionRegistry().registerAction(new SendEMailAction(opiRuntime));
+		if (EMailSender.isEmailSupported())
+			getActionRegistry().registerAction(new SendEMailAction(opiRuntime));
 
 		// hide close button
 		hideCloseButton(site);
