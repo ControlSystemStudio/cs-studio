@@ -40,9 +40,7 @@
         <sync todir="${buildDirectory}">
             <fileset dir="${csStudioLocation}/core"/>
             <fileset dir="${csStudioLocation}/applications"/>
-            <fileset dir="${csStudioLocation}/products/DESY">
-                <exclude name="plugins/${projectDir}/build/build.xml"/>
-            </fileset>
+            <fileset dir="${csStudioLocation}/products/DESY"/>
             <fileset dir="${targetPlatformLocation}">
               <include name="plugins/**/*"/>
               <include name="features/**/*"/>
@@ -55,7 +53,6 @@
         <copy todir="${buildDirectory}">
           <fileset dir="${basedir}" casesensitive="yes">
             <include name="build.properties"/>
-            <!--include name="productBuild.xml"/-->
           </fileset>          
           <fileset dir="${desyConfigLocation}/DESY/css/sensitivedata/${projectDir}" casesensitive="yes">
             <include name="plugin_customization.ini"/>
@@ -87,8 +84,9 @@
             <arg value="${eclipsePdeBuildPlugin}/scripts/productBuild/productBuild.xml" />
             <arg value="-DbaseLocation=${targetPlatformLocation}" />
             <arg value="-DbuildDirectory=${buildDirectory}"/>
+            <arg value="-DproductName=${productName}" />
+            <arg value="-Dproduct=${product}" />
             <arg value="-Dconfigs=win32, win32, x86" />
-            <arg value="-Dproduct=${projectDir}/${productName}.product" />
             <classpath>
                 <pathelement location="${equinoxLauncher}" />
             </classpath>
@@ -110,6 +108,8 @@
             <arg value="${eclipsePdeBuildPlugin}/scripts/productBuild/productBuild.xml" />
             <arg value="-DbaseLocation=${targetPlatformLocation}" />
             <arg value="-DbuildDirectory=${buildDirectory}"/>
+            <arg value="-DproductName=${productName}" />
+            <arg value="-Dproduct=${product}" />
             <arg value="-Dconfigs=solaris, gtk, sparc" />
             <classpath>
                 <pathelement location="${equinoxLauncher}" />
