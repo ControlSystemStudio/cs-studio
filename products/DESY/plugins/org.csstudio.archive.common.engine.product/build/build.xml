@@ -16,52 +16,51 @@
         <format timezone="GMT" property="timestamp" pattern="yyyy-MM-dd_hh:mm:ss"/>
     </tstamp>
     <echo message="Jenkins base: ${jenkinsbase}"/>
-    <echo message="Workspace location: ${workspaceLocation}"/>
-    <echo message="Eclipse instance: ${eclipseInstance}"/>
-    <echo message="Eclipse target platform: ${targetPlatformLocation}"/>
-    <echo message="Desy Build directory: ${desyBuildDirectory}"/>
-    <echo message="PDE Build directory: ${buildDirectory}"/>
-    <echo message="Base dir: ${basedir}"/>
-    <echo message="Timestamp: ${timestamp}"/>
-    <echo message="Job name: ${jenkinsjob}"/>
     <echo message="CS Studio location:  ${csStudioLocation}"/>
     <echo message="DESY config location:  ${desyConfigLocation}"/>
+    <echo message="Eclipse instance: ${eclipseInstance}"/>
     <echo message="Launcher: ${equinoxLauncher}" />
-    
+    <echo message="Eclipse target platform: ${targetPlatformLocation}"/>
+
+    <echo message="Base dir: ${basedir}"/>
+    <echo message="Job name: ${jenkinsjob}"/>
+    <echo message="Workspace location: ${workspaceLocation}"/>
+    <echo message="Build directory: ${buildDirectory}"/>
+    <echo message="Product file: ${product}"/>
+    <echo message="Timestamp: ${timestamp}"/>    
     
     <!--
      Synchronizes the plugin contents retrieved by the upstream jenkins jobs with the current build 
      directory (avoiding unnecessary copying and deleting as much as possible).
     -->
     <target name="synchronizeBuildSources">
-        <delete dir="${buildDirectory}"/>
-        <mkdir dir="${buildDirectory}"/>
         <!--  
          overwrites all files in ${workspaceLocation}/build with newer files from filesets, 
          deletes files from ${workspaceLocation}/build that are not present in filesets. 
         -->
-        <sync todir="${desyBuildDirectory}">
+        <sync todir="${buildDirectory}">
           <fileset dir="${csStudioLocation}/core"/>
           <fileset dir="${csStudioLocation}/applications"/>
           <fileset dir="${csStudioLocation}/products/DESY">
               <include name="plugins/${projectDir}/**/*"/>
               <exclude name="plugins/${projectDir}/build/build.xml"/>
           </fileset>
-            <fileset dir="${csStudioLocation}/products/DESY">
-                <include name="plugins/${projectDir}.log4j/**/*"/>
-            </fileset>
+          <fileset dir="${csStudioLocation}/products/DESY">
+              <include name="plugins/${projectDir}.log4j/**/*"/>
+          </fileset>
           <fileset dir="${targetPlatformLocation}">
             <include name="plugins/**/*"/>
+            <include name="features/**/*"/>
           </fileset>
         </sync>
         
         <!-- 
          copy the pde build files into the build directory 
         -->
-        <copy todir="${desyBuildDirectory}">
+        <copy todir="${buildDirectory}">
           <fileset dir="${basedir}" casesensitive="yes">
             <include name="build.properties"/>
-            <include name="productBuild.xml"/>
+            <!--include name="productBuild.xml"/-->
           </fileset>          
           <fileset dir="${desyConfigLocation}/DESY/css/sensitivedata/${projectDir}" casesensitive="yes">
             <include name="plugin_customization.ini"/>
@@ -83,15 +82,18 @@
     -->
     <target name="pdeBuildWin">
         <java classname="org.eclipse.equinox.launcher.Main" 
-              dir="${desyBuildDirectory}"
+              dir="${buildDirectory}"
               fork="true" 
-              failonerror="true">           
+              failonerror="true"
+              logerror="true">           
             <arg value="-application" />
             <arg value="org.eclipse.ant.core.antRunner" />
             <arg value="-buildfile" />
-            <arg value="productBuild.xml" />
-            <arg value="-DbaseLocation=." />
+            <arg value="${eclipsePdeBuildPlugin}/scripts/productBuild/productBuild.xml" />
+            <arg value="-DbaseLocation=${targetPlatformLocation}" />
+            <arg value="-DbuildDirectory=${buildDirectory}"/>
             <arg value="-Dconfigs=win32, win32, x86" />
+            <arg value="-Dproduct=${projectDir}/${productName}.product" />
             <classpath>
                 <pathelement location="${equinoxLauncher}" />
             </classpath>
@@ -103,14 +105,16 @@
     -->
     <target name="pdeBuildSolaris">
         <java classname="org.eclipse.equinox.launcher.Main" 
-              dir="${desyBuildDirectory}"
+              dir="${buildDirectory}"
               fork="true" 
-              failonerror="true">           
+              failonerror="true"
+              logerror="true">           
             <arg value="-application" />
             <arg value="org.eclipse.ant.core.antRunner" />
             <arg value="-buildfile" />
-            <arg value="productBuild.xml" />
-            <arg value="-DbaseLocation=." />
+            <arg value="${eclipsePdeBuildPlugin}/scripts/productBuild/productBuild.xml" />
+            <arg value="-DbaseLocation=${targetPlatformLocation}" />
+            <arg value="-DbuildDirectory=${buildDirectory}"/>
             <arg value="-Dconfigs=solaris, gtk, sparc" />
             <classpath>
                 <pathelement location="${equinoxLauncher}" />
@@ -123,7 +127,7 @@
     -->
     <target name="updateConfigWin" depends="cleanup">
         <mkdir dir="${iniTmpDir}/${archivePrefix}" />
-        <copy file="${desyBuildDirectory}/plugin_customization.ini" 
+        <copy file="${buildDirectory}/plugin_customization.ini" 
               tofile="${iniTmpDir}/${archivePrefix}/plugin_customization.ini"/>
         <zip destfile="${buildDirectory}/${buildLabel}/${productName}-win32.win32.x86.zip" 
              basedir="${iniTmpDir}" update="true" />
@@ -134,7 +138,7 @@
     -->
     <target name="updateConfigSolaris" depends="cleanup">
         <mkdir dir="${iniTmpDir}/${archivePrefix}" />
-        <copy file="${desyBuildDirectory}/plugin_customization_solaris.ini" 
+        <copy file="${buildDirectory}/plugin_customization_solaris.ini" 
               tofile="${iniTmpDir}/${archivePrefix}/plugin_customization.ini"/>
         <zip destfile="${buildDirectory}/${buildLabel}/${buildId}-solaris.gtk.sparc.zip" 
              basedir="${iniTmpDir}" update="true" />
