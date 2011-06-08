@@ -13,8 +13,8 @@ includeLaunchers="true">
 
    <launcherArgs>
       <programArgs>-consoleLog -engine TestEngine -port 4811</programArgs>
-      <programArgsSol>-pluginCustomization D:/development/repo/config/DESY/css/sensitivedata/org.csstudio.archive.common.engine.product/plugin_customization_solaris.ini</programArgsSol>
-      <programArgsWin>-pluginCustomization D:/development/repo/config/DESY/css/sensitivedata/org.csstudio.archive.common.engine.product/plugin_customization.ini</programArgsWin>
+      <programArgsSol>-pluginCustomization plugin_customization_solaris.ini</programArgsSol>
+      <programArgsWin>-pluginCustomization plugin_customization.ini</programArgsWin>
       <vmArgs>-Djava.awt.headless=true -Xms64m -Xmx256m</vmArgs>
       <vmArgsMac>-XstartOnFirstThread -Dorg.eclipse.swt.internal.carbon.smallFonts</vmArgsMac>
    </launcherArgs>
