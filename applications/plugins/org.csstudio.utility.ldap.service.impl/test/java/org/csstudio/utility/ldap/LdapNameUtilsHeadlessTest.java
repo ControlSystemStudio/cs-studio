@@ -31,7 +31,6 @@ import static org.csstudio.utility.ldap.treeconfiguration.LdapEpicsControlsConfi
 import static org.csstudio.utility.ldap.treeconfiguration.LdapEpicsControlsConfiguration.IOC;
 import static org.csstudio.utility.ldap.treeconfiguration.LdapEpicsControlsConfiguration.UNIT;
 
-import javax.naming.NamingException;
 import javax.naming.directory.SearchResult;
 import javax.naming.ldap.LdapName;
 
@@ -39,7 +38,6 @@ import junit.framework.Assert;
 
 import org.csstudio.utility.ldap.service.ILdapService;
 import org.csstudio.utility.ldap.service.LdapServiceException;
-import org.csstudio.utility.ldap.service.util.LdapNameUtils;
 import org.csstudio.utility.ldap.treeconfiguration.LdapEpicsControlsFieldsAndAttributes;
 import org.csstudio.utility.ldap.treeconfiguration.LdapFieldsAndAttributes;
 import org.junit.BeforeClass;

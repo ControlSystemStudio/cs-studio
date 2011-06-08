@@ -15,7 +15,7 @@ import gov.aps.jca.Channel;
  *  @author Kay Kasemir
  */
 @SuppressWarnings("nls")
-class RefCountedChannel
+public class RefCountedChannel
 {
     private Channel channel;
 

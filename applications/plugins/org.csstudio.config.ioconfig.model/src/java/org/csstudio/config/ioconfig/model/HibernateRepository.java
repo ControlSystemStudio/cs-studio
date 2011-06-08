@@ -12,16 +12,16 @@ import javax.annotation.CheckForNull;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
-import org.apache.log4j.Logger;
 import org.csstudio.config.ioconfig.model.pbmodel.ChannelDBO;
 import org.csstudio.config.ioconfig.model.pbmodel.GSDFileDBO;
 import org.csstudio.config.ioconfig.model.pbmodel.GSDModuleDBO;
 import org.csstudio.config.ioconfig.model.pbmodel.ModuleChannelPrototypeDBO;
-import org.csstudio.platform.logging.CentralLogger;
 import org.hibernate.HibernateException;
 import org.hibernate.Query;
 import org.hibernate.SQLQuery;
 import org.hibernate.Session;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * Implementation for a Hibernate Repository.
@@ -33,9 +33,7 @@ import org.hibernate.Session;
  */
 public class HibernateRepository implements IRepository {
     
-    protected static final Logger LOG = CentralLogger.getInstance()
-            .getLogger(HibernateRepository.class);
-    
+    private static final Logger LOG = LoggerFactory.getLogger(HibernateRepository.class);
     /**
      * @author hrickens
      * @author $Author: hrickens $
@@ -111,7 +109,7 @@ public class HibernateRepository implements IRepository {
             });
             return gsdModule;
         } catch (HibernateException he) {
-            CentralLogger.getInstance().warn(Repository.class, he);
+            LOG.warn("Can't save", he);
             throw new PersistenceException(he);
         }
     }
@@ -137,7 +135,7 @@ public class HibernateRepository implements IRepository {
             });
             return dbClass;
         } catch (HibernateException he) {
-            CentralLogger.getInstance().warn(Repository.class, he);
+            LOG.warn("Save or update failed", he);
             PersistenceException persistenceException = new PersistenceException(he);
             throw persistenceException;
         }
@@ -558,7 +556,7 @@ public class HibernateRepository implements IRepository {
                 try {
                     return session.createQuery(statement.toString()).list();
                 } catch (HibernateException e) {
-                    LOG.warn("Hibernate Statement: " + statement);
+                    LOG.warn("Hibernate Statement: {}", statement);
                     throw e;
                 }
             }

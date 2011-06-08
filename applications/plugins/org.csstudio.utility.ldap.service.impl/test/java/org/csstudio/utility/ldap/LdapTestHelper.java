@@ -42,11 +42,13 @@ import org.csstudio.utility.ldap.service.ILdapService;
  */
 public final class LdapTestHelper {
 
+    // CHECKSTYLE:OFF (Checkstyle bug - these constant fields shall be public) 
     public static TestDataProvider PROV = createTestDataProvider();
 
     public static Map<String, String> LDAP_TEST_PREFS = createLdapTestServicePrefs();
 
     public static ILdapService LDAP_SERVICE = createLdapTestConnection();
+    // CHECKSTYLE:ON
 
 
     @Nonnull

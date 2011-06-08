@@ -2,7 +2,7 @@
 <feature
       id="org.csstudio.core.feature"
       label="CSS Core feature"
-      version="3.0.0.qualifier"
+      version="3.1.0.qualifier"
       provider-name="CSS collaboration &lt;cs-studio-core@lists.sourceforge.net&gt;">
 
    <description url="http://www.example.com/description">
