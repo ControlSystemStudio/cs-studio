@@ -1,7 +1,6 @@
 <project name="css.hudson.build" default="build">
     <property file="desy.build.properties" />
     <property file="desy.eclipse.properties" />
-    
     <property file="build.properties" /> <!-- used by the pde build internally -->
     
     <target name="build" depends="synchronizeBuildSources, buildPackageWin32, buildPackageSolaris"/>

@@ -1,8 +1,12 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <?pde version="3.5"?>
 
-<product name="DesyArchiveEngine" uid="archiveEngineId" id="org.csstudio.archive.common.engine.product" application="org.csstudio.archive.common.engine.application" version="1.0.0.qualifier" useFeatures="false" includeLaunchers="true">
-
+<product name="DesyArchiveEngine" uid="archiveEngineId" 
+id="org.csstudio.archive.common.engine.product" 
+application="org.csstudio.archive.common.engine.application" 
+version="1.0.0.qualifier" 
+useFeatures="false" 
+includeLaunchers="true">
 
    <configIni use="default">
    </configIni>
@@ -17,7 +21,6 @@
 
    <windowImages/>
 
-
    <launcher name="DesyArchiveEngine">
       <solaris/>
       <win useIco="false">
@@ -25,14 +28,12 @@
       </win>
    </launcher>
 
-
    <vm>
       <linux include="false">org.eclipse.jdt.launching.JRE_CONTAINER/org.eclipse.jdt.internal.debug.ui.launcher.StandardVMType/JavaSE-1.6</linux>
       <macos include="false">org.eclipse.jdt.launching.JRE_CONTAINER/org.eclipse.jdt.internal.debug.ui.launcher.StandardVMType/JavaSE-1.6</macos>
       <solaris include="false">org.eclipse.jdt.launching.JRE_CONTAINER/org.eclipse.jdt.internal.debug.ui.launcher.StandardVMType/JavaSE-1.6</solaris>
       <windows include="false">org.eclipse.jdt.launching.JRE_CONTAINER/org.eclipse.jdt.internal.debug.ui.launcher.StandardVMType/JavaSE-1.6</windows>
    </vm>
-
 
    <plugins>
       <plugin id="com.google.common"/>
@@ -47,7 +48,6 @@
       <plugin id="org.apache.jasper"/>
       <plugin id="org.csstudio.apputil"/>
       <plugin id="org.csstudio.archive.common.engine"/>
-      <plugin id="org.csstudio.archive.common.engine.product.log4j" fragment="true"/>
       <plugin id="org.csstudio.archive.common.engine.test" fragment="true"/>
       <plugin id="org.csstudio.archive.common.requesttype"/>
       <plugin id="org.csstudio.archive.common.requesttype.test" fragment="true"/>
@@ -56,6 +56,7 @@
       <plugin id="org.csstudio.archive.common.service.mysqlimpl.test" fragment="true"/>
       <plugin id="org.csstudio.data"/>
       <plugin id="org.csstudio.data.test" fragment="true"/>
+      <plugin id="org.csstudio.desy.common.product.log4j" fragment="true"/>
       <plugin id="org.csstudio.domain.desy"/>
       <plugin id="org.csstudio.domain.desy.epics"/>
       <plugin id="org.csstudio.domain.desy.epics.test" fragment="true"/>
