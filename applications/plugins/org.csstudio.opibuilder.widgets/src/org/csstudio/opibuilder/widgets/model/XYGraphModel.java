@@ -19,6 +19,7 @@ import org.csstudio.opibuilder.properties.NameDefinedCategory;
 import org.csstudio.opibuilder.properties.PVValueProperty;
 import org.csstudio.opibuilder.properties.StringProperty;
 import org.csstudio.opibuilder.properties.WidgetPropertyCategory;
+import org.csstudio.opibuilder.util.MediaService;
 import org.csstudio.opibuilder.util.OPIFont;
 import org.csstudio.swt.xygraph.dataprovider.CircularBufferDataProvider.PlotMode;
 import org.csstudio.swt.xygraph.dataprovider.CircularBufferDataProvider.UpdateMode;
@@ -29,7 +30,6 @@ import org.csstudio.ui.util.CustomMediaFactory;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.graphics.FontData;
 import org.eclipse.swt.graphics.RGB;
-import org.eclipse.swt.widgets.Display;
 
 /**
  * The model for XYGraph
@@ -255,11 +255,12 @@ public class XYGraphModel extends AbstractPVWidgetModel {
 			addProperty(new StringProperty(propID, axisProperty.toString(), category, category.toString()));
 			break;
 		case TITLE_FONT:
-			addProperty(new FontProperty(propID, axisProperty.toString(), category, new FontData("Arial", 9, SWT.BOLD)));
+			addProperty(new FontProperty(
+					propID, axisProperty.toString(), category, new FontData("Arial", 9, SWT.BOLD))); //$NON-NLS-1$
 			break;
 		case SCALE_FONT:
 			addProperty(new FontProperty(propID, axisProperty.toString(), category,
-					Display.getDefault().getSystemFont().getFontData()[0]));
+					MediaService.DEFAULT_FONT));
 			break;	
 		case AXIS_COLOR:
 			addProperty(new ColorProperty(propID, axisProperty.toString(), category, DEFAULT_AXIS_COLOR));
