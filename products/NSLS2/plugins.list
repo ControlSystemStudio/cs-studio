@@ -58,6 +58,7 @@ org.csstudio.swt.widgets
 org.csstudio.swt.xygraph
 org.csstudio.trends.databrowser2
 org.csstudio.trends.databrowser2.intro
+org.csstudio.trends.databrowser2.opiwidget
 org.csstudio.ui.help
 org.csstudio.ui.menu
 org.csstudio.ui.util
