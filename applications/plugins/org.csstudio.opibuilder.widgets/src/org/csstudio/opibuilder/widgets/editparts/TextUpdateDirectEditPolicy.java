@@ -7,7 +7,7 @@
  ******************************************************************************/
 package org.csstudio.opibuilder.widgets.editparts;
 
-import org.csstudio.opibuilder.widgets.model.TextIndicatorModel;
+import org.csstudio.opibuilder.widgets.model.TextUpdateModel;
 import org.eclipse.gef.commands.Command;
 import org.eclipse.gef.editpolicies.DirectEditPolicy;
 import org.eclipse.gef.requests.DirectEditRequest;
@@ -17,7 +17,7 @@ import org.eclipse.gef.requests.DirectEditRequest;
  * @author Xihui Chen
  *
  */
-public class TextIndicatorDirectEditPolicy 
+public class TextUpdateDirectEditPolicy 
 	extends DirectEditPolicy {
 
 	/**
@@ -25,9 +25,9 @@ public class TextIndicatorDirectEditPolicy
 	 */
 	protected Command getDirectEditCommand(DirectEditRequest edit) {
 		String labelText = (String)edit.getCellEditor().getValue();
-		TextIndicatorEditPart label = (TextIndicatorEditPart)getHost();
+		TextUpdateEditPart label = (TextUpdateEditPart)getHost();
 		TextIndicatorEditCommand command = 
-			new TextIndicatorEditCommand((TextIndicatorModel)label.getModel(),labelText);
+			new TextIndicatorEditCommand((TextUpdateModel)label.getModel(),labelText);
 		return command;
 	}
 	
@@ -47,9 +47,9 @@ public class TextIndicatorDirectEditPolicy
 static class TextIndicatorEditCommand extends Command	{
 	
 	private String newText, oldText;
-	private TextIndicatorModel label;
+	private TextUpdateModel label;
 	
-	public TextIndicatorEditCommand(TextIndicatorModel l, String s) {
+	public TextIndicatorEditCommand(TextUpdateModel l, String s) {
 	label = l;
 	if (s != null)
 		newText = s;
@@ -59,7 +59,7 @@ static class TextIndicatorEditCommand extends Command	{
 	
 	public void execute() {
 		oldText = label.getText();
-		label.setPropertyValue(TextIndicatorModel.PROP_TEXT, newText, true);//setText(newText);
+		label.setPropertyValue(TextUpdateModel.PROP_TEXT, newText, true);//setText(newText);
 	}
 	
 	public void undo() {

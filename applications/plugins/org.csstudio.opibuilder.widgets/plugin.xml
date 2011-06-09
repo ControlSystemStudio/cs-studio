@@ -87,18 +87,18 @@
       <widget
             category="Monitors"
             description="A widget that display PV value in text. "
-            editpart_class="org.csstudio.opibuilder.widgets.editparts.TextIndicatorEditPart"
+            editpart_class="org.csstudio.opibuilder.widgets.editparts.TextUpdateEditPart"
             icon="icons/textUpdate.png"
-            model_class="org.csstudio.opibuilder.widgets.model.TextIndicatorModel"
+            model_class="org.csstudio.opibuilder.widgets.model.TextUpdateModel"
             name="Text Update"
             typeId="org.csstudio.opibuilder.widgets.TextUpdate">
       </widget>
       <widget
             category="Monitors"
             description="A widget that displays numeric value as a meter"
-            editpart_class="org.csstudio.opibuilder.widgets.editparts.XMeterEditPart"
+            editpart_class="org.csstudio.opibuilder.widgets.editparts.MeterEditPart"
             icon="icons/XMeter.png"
-            model_class="org.csstudio.opibuilder.widgets.model.XMeterModel"
+            model_class="org.csstudio.opibuilder.widgets.model.MeterModel"
             name="Meter"
             typeId="org.csstudio.opibuilder.widgets.meter">
       </widget>

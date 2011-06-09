@@ -10,7 +10,7 @@ import org.csstudio.opibuilder.adl2boy.utilities.TextUtilities;
 import org.csstudio.opibuilder.model.AbstractContainerModel;
 import org.csstudio.opibuilder.model.AbstractPVWidgetModel;
 import org.csstudio.opibuilder.widgets.model.LabelModel;
-import org.csstudio.opibuilder.widgets.model.TextIndicatorModel;
+import org.csstudio.opibuilder.widgets.model.TextUpdateModel;
 import org.csstudio.opibuilder.widgets.model.TextInputModel;
 import org.csstudio.utility.adlparser.fileParser.ADLWidget;
 import org.csstudio.utility.adlparser.fileParser.widgets.TextEntryWidget;
@@ -34,7 +34,7 @@ public class TextEntry2Model extends AbstractADL2Model {
 		
 
 		TextUtilities.setAlignment((LabelModel)widgetModel, textEntryWidget);
-		TextUtilities.setFormat((TextIndicatorModel)widgetModel, textEntryWidget);
+		TextUtilities.setFormat((TextUpdateModel)widgetModel, textEntryWidget);
 		widgetModel.setPropertyValue(TextInputModel.PROP_SHOW_UNITS, false);
 		//set color mode
 		String color_mode = textEntryWidget.getColor_mode();

@@ -20,7 +20,7 @@ import org.eclipse.swt.graphics.RGB;
  * This class defines a XMeter widget model.
  * @author Xihui Chen
  */
-public class XMeterModel extends AbstractMarkedWidgetModel{	
+public class MeterModel extends AbstractMarkedWidgetModel{	
 	
 	/** The ID of the fill color property. */
 	public static final String PROP_NEEDLE_COLOR = "needle_color"; //$NON-NLS-1$	
@@ -46,7 +46,7 @@ public class XMeterModel extends AbstractMarkedWidgetModel{
 	 */
 	public static final String ID = "org.csstudio.opibuilder.widgets.meter"; //$NON-NLS-1$	
 	
-	public XMeterModel() {
+	public MeterModel() {
 		setSize(DEFAULT_WIDTH, DEFAULT_HEIGHT);
 		setForegroundColor(new RGB(0,0,0));
 		setBackgroundColor(new RGB(255, 255, 255));

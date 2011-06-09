@@ -8,7 +8,7 @@
 package org.csstudio.opibuilder.widgets.feedback;
 
 import org.csstudio.opibuilder.model.AbstractWidgetModel;
-import org.csstudio.opibuilder.widgets.model.XMeterModel;
+import org.csstudio.opibuilder.widgets.model.MeterModel;
 import org.csstudio.swt.widgets.figures.MeterFigure;
 
 /**Feedback Factory for LED.
@@ -19,7 +19,7 @@ public class MeterFeedbackFactory extends AbstractFixRatioSizeFeedbackFactory {
 
 	@Override
 	public int getMinimumWidth() {
-		return XMeterModel.MINIMUM_WIDTH;
+		return MeterModel.MINIMUM_WIDTH;
 	}
 	
 	@Override

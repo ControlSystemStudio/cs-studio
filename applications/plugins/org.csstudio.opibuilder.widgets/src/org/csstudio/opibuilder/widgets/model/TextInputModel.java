@@ -22,7 +22,7 @@ import org.csstudio.swt.widgets.figures.TextInputFigure.SelectorType;
  * @author Xihui Chen
  *
  */
-public class TextInputModel extends TextIndicatorModel {
+public class TextInputModel extends TextUpdateModel {
 	
 	/** The minimum input value allowed.*/
 	public static final String PROP_MIN = "minimum"; //$NON-NLS-1$		
