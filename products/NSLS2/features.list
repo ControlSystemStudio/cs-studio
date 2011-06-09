@@ -10,7 +10,6 @@ org.csstudio.email.feature
 org.csstudio.trends.databrowser2.feature
 org.csstudio.nsls2.applications.feature
 org.csstudio.nsls2.basic.applications.feature
-org.csstudio.nsls2.databrowser.feature
 org.csstudio.nsls2.feature.core
 org.csstudio.nsls2.nsls2core.feature
 org.csstudio.nsls2.feature.eclipse
