@@ -14,10 +14,6 @@
     <topic href="html/OPI Runtime.html" label="OPI Runtime">
     </topic>
       <topic href="html/PreferencePage.html" label="Setting Preferences">
-         <topic href="html/Schema.html" label="Schema">
-         </topic>
-         <topic href="html/OPI Probe.html" label="OPI Probe">
-         </topic>
       </topic>
   <topic href="html/Widgets_Overview.html" label="Widgets">
      <topic label="Widget Properties" href="html/Widget Properties.html"> </topic>
@@ -101,8 +97,16 @@
         </topic>
         <topic href="html/script/ScriptUtil/ScriptUtil.html" label="ScriptUtil">
         </topic>
+        <topic href="html/script/ScriptUtil/FileUtil.html" label="FileUtil">
+        </topic>
+        <topic href="html/script/ScriptUtil/WidgetUtil.html" label="WidgetUtil">
+        </topic>
      </topic>
   </topic>
+  <topic href="html/Schema.html" label="Schema">
+  </topic>
+    <topic href="html/OPI Probe.html" label="OPI Probe">
+    </topic>
     
     <topic href="html/CreateWidgets.html" label="Creating Customized Widget">
     </topic>
