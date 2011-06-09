@@ -94,7 +94,7 @@
     <y>558</y>
     <actions hook="true">
       <action type="OPEN_DISPLAY">
-        <path>5_3_Rules_Script.opi</path>
+        <path>5_4_Python_Script.opi</path>
         <macros>
           <include_parent_macros>true</include_parent_macros>
         </macros>
@@ -289,7 +289,7 @@
     <y>558</y>
     <actions hook="true">
       <action type="OPEN_DISPLAY">
-        <path>5_5_Python_Script.opi</path>
+        <path>5_6_UseThreadInScript.opi</path>
         <macros>
           <include_parent_macros>true</include_parent_macros>
         </macros>
@@ -360,7 +360,6 @@ $(pv_value)</tooltip>
     <transparent>false</transparent>
     <selector_type>1</selector_type>
     <pv_name />
-    <show_scrollbar>false</show_scrollbar>
     <background_color>
       <color red="255" green="255" blue="255" />
     </background_color>
@@ -718,7 +717,6 @@ $(pv_value)</tooltip>
     <transparent>false</transparent>
     <selector_type>0</selector_type>
     <pv_name />
-    <show_scrollbar>false</show_scrollbar>
     <background_color>
       <color red="255" green="255" blue="255" />
     </background_color>
