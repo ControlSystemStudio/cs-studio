@@ -27,7 +27,6 @@ import org.epics.css.dal.context.ConnectionState;
 import org.epics.css.dal.simple.AnyData;
 import org.epics.css.dal.simple.AnyDataChannel;
 import org.epics.css.dal.simple.MetaData;
-import org.epics.css.dal.simple.Severity;
 
 /**
  *
@@ -41,6 +40,7 @@ import org.epics.css.dal.simple.Severity;
 public class BargraphAlarmBehavior extends AbstractDesyAlarmBehavior<BargraphModel> {
 
     private final Map<ConnectionState, Boolean> _transparencyByConnectionState;
+    private String _defBackgroundColor;
 
     /**
      * Constructor.
@@ -48,6 +48,7 @@ public class BargraphAlarmBehavior extends AbstractDesyAlarmBehavior<BargraphMod
     public BargraphAlarmBehavior() {
         _transparencyByConnectionState = new HashMap<ConnectionState, Boolean>();
         _transparencyByConnectionState.put(ConnectionState.CONNECTED, true);
+        _transparencyByConnectionState.put(ConnectionState.OPERATIONAL, true);
         _transparencyByConnectionState.put(ConnectionState.CONNECTION_LOST, false);
         _transparencyByConnectionState.put(ConnectionState.INITIAL, false);
         // add Invisible Property Id here
@@ -61,12 +62,13 @@ public class BargraphAlarmBehavior extends AbstractDesyAlarmBehavior<BargraphMod
         addInvisiblePropertyId(BargraphModel.PROP_FILLBACKGROUND_COLOR);
         addInvisiblePropertyId(BargraphModel.PROP_FILL);
         addInvisiblePropertyId(BargraphModel.PROP_TRANSPARENT);
-        addInvisiblePropertyId(BargraphModel.PROP_ACTIONDATA);
-        addInvisiblePropertyId(BargraphModel.PROP_BORDER_STYLE);
+        addInvisiblePropertyId(AbstractWidgetModel.PROP_ACTIONDATA);
+        addInvisiblePropertyId(AbstractWidgetModel.PROP_BORDER_STYLE);
     }
 
     @Override
     protected void doInitialize(final BargraphModel widget) {
+        _defBackgroundColor = widget.getColor(BargraphModel.PROP_FILLBACKGROUND_COLOR);
         // .. border
         widget.setPropertyValue(AbstractWidgetModel.PROP_BORDER_STYLE,
                                 determineBorderStyle(ConnectionState.INITIAL));
@@ -101,13 +103,17 @@ public class BargraphAlarmBehavior extends AbstractDesyAlarmBehavior<BargraphMod
                 determineBorderColor(connectionState));
 
         // .. background colors
+        String determineBackgroundColor = isConnected(anyDataChannel)?_defBackgroundColor:determineBackgroundColor(connectionState);
         widget.setPropertyValue(BargraphModel.PROP_FILLBACKGROUND_COLOR,
-                determineBackgroundColor(connectionState));
-        widget.setPropertyValue(BargraphModel.PROP_COLOR_BACKGROUND,
+                determineBackgroundColor);
+
+//        widget.setPropertyValue(BargraphModel.PROP_FILLBACKGROUND_COLOR,
+//                determineBackgroundColor(connectionState));
+        widget.setPropertyValue(AbstractWidgetModel.PROP_COLOR_BACKGROUND,
                 determineBackgroundColor(connectionState));
 
         // .. transparency
-        Boolean transparent = _transparencyByConnectionState.get(anyDataChannel);
+        Boolean transparent = _transparencyByConnectionState.get(connectionState);
 
         if (transparent != null) {
             widget.setPropertyValue(BargraphModel.PROP_TRANSPARENT, transparent);
