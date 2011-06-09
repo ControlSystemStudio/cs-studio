@@ -6,4 +6,4 @@ Bundle-Version: 1.6.1.qualifier
 Bundle-RequiredExecutionEnvironment: JavaSE-1.6
 Eclipse-RegisterBuddy: org.slf4j
 Require-Bundle: org.slf4j;bundle-version="1.6.1";visibility:=reexport,
- org.csstudio.platform.libs.log4j;bundle-version="1.2.16";visibility:=reexport
+ org.apache.log4j;bundle-version="1.2.16";visibility:=reexport
