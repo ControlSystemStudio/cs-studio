@@ -14,6 +14,7 @@ import org.eclipse.ui.application.ActionBarAdvisor;
 import org.eclipse.ui.application.IActionBarConfigurer;
 import org.eclipse.ui.application.IWorkbenchWindowConfigurer;
 import org.eclipse.ui.application.WorkbenchWindowAdvisor;
+import org.eclipse.ui.internal.ide.EditorAreaDropAdapter;
 
 /** Configure the workbench window.
  *  @author Kay Kasemir
@@ -38,6 +39,12 @@ public class ApplicationWorkbenchWindowAdvisor extends WorkbenchWindowAdvisor
         configurer.setShowProgressIndicator(true);
         configurer.setShowStatusLine(true);
         configurer.setTitle(Messages.Window_Title);
+        
+        //workaround to the DND bug in text editor.
+        //see http://www.eclipse.org/forums/index.php/m/333816/
+        configurer.configureEditorAreaDropListener(
+        	new EditorAreaDropAdapter(configurer.getWindow()));
+        		
     }
 
 	@Override
