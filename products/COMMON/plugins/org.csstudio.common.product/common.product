@@ -43,7 +43,6 @@
       <plugin id="org.csstudio.apputil"/>
       <plugin id="org.csstudio.apputil.ui"/>
       <plugin id="org.csstudio.archive"/>
-      <plugin id="org.csstudio.archive.channelarchiver"/>
       <plugin id="org.csstudio.archivereader"/>
       <plugin id="org.csstudio.archivereader.channelarchiver"/>
       <plugin id="org.csstudio.auth"/>
