@@ -21,6 +21,9 @@
  */
 package org.csstudio.platform.ui;
 
+import java.util.logging.Level;
+import java.util.logging.Logger;
+
 import org.csstudio.platform.CSSPlatformPlugin;
 import org.eclipse.core.runtime.preferences.InstanceScope;
 import org.eclipse.jface.preference.IPreferenceStore;
@@ -30,8 +33,6 @@ import org.eclipse.jface.util.PropertyChangeEvent;
 import org.eclipse.ui.plugin.AbstractUIPlugin;
 import org.eclipse.ui.preferences.ScopedPreferenceStore;
 import org.osgi.framework.BundleContext;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 /**
  * The activator for the CSS platform UI plugin.
@@ -40,12 +41,13 @@ import org.slf4j.LoggerFactory;
  */
 public class CSSPlatformUiPlugin extends AbstractCssUiPlugin {
     
-    private static final Logger LOG = LoggerFactory.getLogger(CSSPlatformUiPlugin.class);
     
 	/**
 	 * This _plugin's ID.
 	 */
 	public static final String ID = "org.csstudio.platform.ui"; //$NON-NLS-1$
+
+	private static final Logger LOG = Logger.getLogger(ID);
 
 	/**
 	 * The shared instance of this plugin class.
@@ -91,7 +93,7 @@ public class CSSPlatformUiPlugin extends AbstractCssUiPlugin {
 								final PropertyChangeEvent event) {
 						    
 						    Object[] args = new Object[] {event.getProperty(), event.getOldValue(), event.getNewValue()};
-							LOG.info("Property [{}] changed from [{}] to [{}]", args); //$NON-NLS-1$
+							LOG.log(Level.INFO,"Property [{}] changed from [{}] to [{}]", args); //$NON-NLS-1$
 						}
 					});
 		}

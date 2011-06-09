@@ -23,7 +23,10 @@
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
+import org.csstudio.platform.ui.CSSPlatformUiPlugin;
 import org.eclipse.core.resources.IContainer;
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.IResource;
@@ -31,8 +34,6 @@ import org.eclipse.core.resources.IWorkspace;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.jface.viewers.ITreeContentProvider;
 import org.eclipse.jface.viewers.Viewer;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 /**
  * Provides workspace resources as content for a tree viewer.
@@ -46,8 +47,7 @@ import org.slf4j.LoggerFactory;
 final class WorkspaceResourceContentProvider implements
 		ITreeContentProvider {
     
-    private static final Logger LOG = LoggerFactory
-            .getLogger(WorkspaceResourceContentProvider.class);
+    private static final Logger LOG = Logger.getLogger(CSSPlatformUiPlugin.ID);
 	/**
 	 * Flag that signals if closed projects should be included as well.
 	 */
@@ -119,7 +119,7 @@ final class WorkspaceResourceContentProvider implements
 					}
 					return children.toArray();
 				} catch (CoreException e) {
-					LOG.error("", e);
+					LOG.log(Level.FINE,"", e);
 				}
 			}
 		}

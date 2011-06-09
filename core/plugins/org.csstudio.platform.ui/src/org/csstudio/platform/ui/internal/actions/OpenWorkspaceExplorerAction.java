@@ -21,14 +21,16 @@
  */
 package org.csstudio.platform.ui.internal.actions;
 
+import java.util.logging.Level;
+import java.util.logging.Logger;
+
+import org.csstudio.platform.ui.CSSPlatformUiPlugin;
 import org.eclipse.jface.action.Action;
 import org.eclipse.jface.action.IAction;
 import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.ui.IWorkbenchWindow;
 import org.eclipse.ui.IWorkbenchWindowActionDelegate;
 import org.eclipse.ui.PartInitException;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 /**
  * Action that opens up the CSS workspace explorer.
@@ -39,7 +41,7 @@ import org.slf4j.LoggerFactory;
 public final class OpenWorkspaceExplorerAction extends Action implements
 		IWorkbenchWindowActionDelegate {
 
-    private static final Logger LOG = LoggerFactory.getLogger(OpenWorkspaceExplorerAction.class);
+    private static final Logger LOG = Logger.getLogger(CSSPlatformUiPlugin.ID);
     
 	/**
 	 * Reference to the associated workbench window.
@@ -62,7 +64,7 @@ public final class OpenWorkspaceExplorerAction extends Action implements
 			_window.getActivePage().showView(
 					"org.eclipse.ui.views.ResourceNavigator"); //$NON-NLS-1$
 		} catch (PartInitException e) {
-			LOG.error("Error while opening the CSS workspace explorer!"); //$NON-NLS-1$
+			LOG.log(Level.FINE,"Error while opening the CSS workspace explorer!"); //$NON-NLS-1$
 		}
 	}
 
