@@ -89,7 +89,10 @@ public class LdapAuthorizationReader implements IAuthorizationProvider
 		final RightSet rights = new RightSet("LDAP Rights");
 		try
 		{
-		    final DirContext ctx = new InitialDirContext(createEnvironment());
+		    final Hashtable<String, String> settings = createEnvironment();
+		    if (settings == null)
+		    	return rights;
+			final DirContext ctx = new InitialDirContext(settings);
 
 			final SearchControls ctrls = new SearchControls();
 			ctrls.setReturningAttributes(new String[] { USER_ATTRIB });
@@ -139,7 +142,10 @@ public class LdapAuthorizationReader implements IAuthorizationProvider
 
 		try
 		{
-		    final DirContext ctx = new InitialDirContext(createEnvironment());
+		    final Hashtable<String, String> settings = createEnvironment();
+		    if (settings == null)
+		    	return;
+			final DirContext ctx = new InitialDirContext(settings);
 
 			final SearchControls ctrls = new SearchControls();
 			ctrls.setReturningObjFlag(false);
@@ -204,12 +210,15 @@ public class LdapAuthorizationReader implements IAuthorizationProvider
 	}
 
 	/** @return Environment for the LDAP connection,
-	 *          partially obtained from preferences
+	 *          partially obtained from preferences,
+	 *          or <code>null</code> when no LDAP URL configured
 	 */
 	private Hashtable<String, String> createEnvironment()
 	{
 	    final IPreferencesService prefs = Platform.getPreferencesService();
 	    final String url = prefs.getString(Activator.PLUGIN_ID, PreferenceConstants.LDAP_URL, null, null);
+	    if (url == null  ||  url.isEmpty())
+	    	return null;
 		final String user = SecureStorage.retrieveSecureStorage(
 				Activator.PLUGIN_ID, PreferenceConstants.LDAP_USER);
 		final String password = SecureStorage.retrieveSecureStorage(
