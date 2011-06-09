@@ -29,6 +29,7 @@
       <plugin id="org.apache.commons.el"/>
       <plugin id="org.apache.commons.logging"/>
       <plugin id="org.apache.jasper"/>
+      <plugin id="org.apache.log4j"/>
       <plugin id="org.apache.lucene"/>
       <plugin id="org.apache.lucene.analysis"/>
       <plugin id="org.csstudio.alarm.beast"/>
@@ -79,7 +80,6 @@
       <plugin id="org.csstudio.platform.libs.jfreechart"/>
       <plugin id="org.csstudio.platform.libs.jmock"/>
       <plugin id="org.csstudio.platform.libs.jms"/>
-      <plugin id="org.csstudio.platform.libs.log4j"/>
       <plugin id="org.csstudio.platform.simpledal"/>
       <plugin id="org.csstudio.platform.test" fragment="true"/>
       <plugin id="org.csstudio.platform.ui"/>

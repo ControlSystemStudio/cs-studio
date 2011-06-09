@@ -1,12 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <?pde version="3.5"?>
 
-<product name="DesyArchiveEngine" uid="archiveEngineId" 
-id="org.csstudio.archive.common.engine.product" 
-application="org.csstudio.archive.common.engine.application" 
-version="1.0.0.qualifier" 
-useFeatures="false" 
-includeLaunchers="true">
+<product name="DesyArchiveEngine" uid="archiveEngineId" id="org.csstudio.archive.common.engine.product" application="org.csstudio.archive.common.engine.application" version="1.0.0.qualifier" useFeatures="false" includeLaunchers="true">
 
    <configIni use="default">
    </configIni>
@@ -46,6 +41,7 @@ includeLaunchers="true">
       <plugin id="org.apache.commons.el"/>
       <plugin id="org.apache.commons.logging"/>
       <plugin id="org.apache.jasper"/>
+      <plugin id="org.apache.log4j"/>
       <plugin id="org.csstudio.apputil"/>
       <plugin id="org.csstudio.archive.common.engine"/>
       <plugin id="org.csstudio.archive.common.engine.test" fragment="true"/>
@@ -70,7 +66,6 @@ includeLaunchers="true">
       <plugin id="org.csstudio.platform.libs.epics"/>
       <plugin id="org.csstudio.platform.libs.jmock"/>
       <plugin id="org.csstudio.platform.libs.jms"/>
-      <plugin id="org.csstudio.platform.libs.log4j"/>
       <plugin id="org.csstudio.platform.test" fragment="true"/>
       <plugin id="org.csstudio.platform.utility.jms"/>
       <plugin id="org.csstudio.remote"/>

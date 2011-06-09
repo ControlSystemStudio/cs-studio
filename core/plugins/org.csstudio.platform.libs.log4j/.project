@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <projectDescription>
-	<name>org.csstudio.platform.libs.log4j</name>
+	<name>org.apache.log4j</name>
 	<comment></comment>
 	<projects>
 	</projects>

@@ -106,13 +106,6 @@
          unpack="false"/>
 
    <plugin
-         id="org.csstudio.platform.libs.xmlunit"
-         download-size="0"
-         install-size="0"
-         version="0.0.0"
-         unpack="false"/>
-
-   <plugin
          id="org.csstudio.platform.ui"
          download-size="0"
          install-size="0"
@@ -149,13 +142,6 @@
 
    <plugin
          id="org.csstudio.startuphelper"
-         download-size="0"
-         install-size="0"
-         version="0.0.0"
-         unpack="false"/>
-
-   <plugin
-         id="org.csstudio.platform.libs.log4j"
          download-size="0"
          install-size="0"
          version="0.0.0"
@@ -258,5 +244,26 @@
          install-size="0"
          version="0.0.0"
          unpack="false"/>
+
+   <plugin
+         id="org.custommonkey.xmlunit"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"
+         unpack="false"/>
+
+   <plugin
+         id="org.apache.log4j"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"
+         unpack="false"/>
+
+   <plugin
+         id="org.csstudio.desy.common.product.log4j"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"
+         fragment="true"/>
 
 </feature>
