@@ -21,12 +21,14 @@
  */
 package org.csstudio.platform.statistic;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import java.util.logging.Logger;
+
+import org.csstudio.platform.CSSPlatformPlugin;
+
 
 public class BackgroundCollectorThread extends Thread {
     
-    private static final Logger LOG = LoggerFactory.getLogger(BackgroundCollectorThread.class);
+    private static final Logger LOG = Logger.getLogger(CSSPlatformPlugin.ID);
     private int timeout = 0;
     private final boolean runForever = true;
     static final double MB = 1024.0 * 1024.0;
