@@ -1,9 +1,0 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<classpath>
-	<classpathentry kind="src" path="src"/>
-	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
-	<classpathentry exported="true" kind="lib" path="lib/xmlrpc-2.0.1/xmlrpc-2.0.1.jar" sourcepath="lib/xmlrpc-2.0.1/xmlrpc-2.0.1/src/java"/>
-	<classpathentry exported="true" kind="lib" path="lib/commons-codec/commons-codec-1.3.jar"/>
-	<classpathentry kind="con" path="org.eclipse.pde.core.requiredPlugins"/>
-	<classpathentry kind="output" path="bin"/>
-</classpath>
