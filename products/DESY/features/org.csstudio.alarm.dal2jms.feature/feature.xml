@@ -881,13 +881,6 @@
          unpack="false"/>
 
    <plugin
-         id="org.csstudio.platform.libs.jdom"
-         download-size="0"
-         install-size="0"
-         version="0.0.0"
-         unpack="false"/>
-
-   <plugin
          id="org.eclipse.equinox.p2.operations"
          download-size="0"
          install-size="0"
@@ -1015,6 +1008,13 @@
 
    <plugin
          id="org.csstudio.workspace"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"
+         unpack="false"/>
+
+   <plugin
+         id="org.jdom"
          download-size="0"
          install-size="0"
          version="0.0.0"

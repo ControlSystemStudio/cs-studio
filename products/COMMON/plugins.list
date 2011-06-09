@@ -81,7 +81,6 @@ org.csstudio.platform.libs.epics
 org.csstudio.platform.libs.epics.ui
 org.csstudio.platform.libs.glazedlists
 org.csstudio.platform.libs.jdbc
-org.csstudio.platform.libs.jdom
 org.csstudio.platform.libs.jersey
 org.csstudio.platform.libs.jfreechart
 org.csstudio.platform.libs.jmock
@@ -97,6 +96,7 @@ org.csstudio.nsls2.product
 org.csstudio.nsls2.startuphelper
 org.csstudio.nsls2.startup.intro
 org.csstudio.workspace
+org.jdom
 org.joda.time
 org.slf4j
 

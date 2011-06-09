@@ -45,7 +45,6 @@
       <plugin id="org.csstudio.email"/>
       <plugin id="org.csstudio.platform"/>
       <plugin id="org.csstudio.platform.libs.epics"/>
-      <plugin id="org.csstudio.platform.libs.jdom"/>
       <plugin id="org.csstudio.platform.libs.jmock"/>
       <plugin id="org.csstudio.platform.libs.jms"/>
       <plugin id="org.csstudio.platform.test" fragment="true"/>
@@ -110,6 +109,7 @@
       <plugin id="org.eclipse.ui"/>
       <plugin id="org.eclipse.ui.workbench"/>
       <plugin id="org.hamcrest.core"/>
+      <plugin id="org.jdom"/>
       <plugin id="org.jivesoftware.smack"/>
       <plugin id="org.joda.time"/>
       <plugin id="org.junit"/>

@@ -50,7 +50,6 @@
       <import plugin="org.csstudio.java" version="3.0.0" match="greaterOrEqual"/>
       <import plugin="org.eclipse.ui.ide" version="3.6.0" match="greaterOrEqual"/>
       <import plugin="org.csstudio.csdata" version="3.0.0" match="greaterOrEqual"/>
-      <import plugin="org.csstudio.platform.libs.jdom" version="1.1.0" match="greaterOrEqual"/>
       <import plugin="org.csstudio.opibuilder" version="1.2.0" match="greaterOrEqual"/>
       <import plugin="org.eclipse.ui.browser"/>
       <import plugin="org.csstudio.swt.widgets" version="1.0.0" match="greaterOrEqual"/>
@@ -68,6 +67,7 @@
       <import plugin="org.eclipse.draw2d"/>
       <import plugin="org.eclipse.draw2d" version="3.4.0" match="greaterOrEqual"/>
       <import plugin="org.eclipse.draw2d" version="3.5.1" match="greaterOrEqual"/>
+      <import plugin="org.jdom"/>
    </requires>
 
    <plugin

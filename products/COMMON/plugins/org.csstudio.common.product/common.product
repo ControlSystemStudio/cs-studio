@@ -75,7 +75,6 @@
       <plugin id="org.csstudio.platform.libs.epics.ui"/>
       <plugin id="org.csstudio.platform.libs.glazedlists"/>
       <plugin id="org.csstudio.platform.libs.jdbc"/>
-      <plugin id="org.csstudio.platform.libs.jdom"/>
       <plugin id="org.csstudio.platform.libs.jersey"/>
       <plugin id="org.csstudio.platform.libs.jfreechart"/>
       <plugin id="org.csstudio.platform.libs.jmock"/>
@@ -241,6 +240,7 @@
       <plugin id="org.eclipse.update.core.win32" fragment="true"/>
       <plugin id="org.eclipse.update.ui"/>
       <plugin id="org.hamcrest.core"/>
+      <plugin id="org.jdom"/>
       <plugin id="org.joda.time"/>
       <plugin id="org.junit"/>
       <plugin id="org.junit4"/>
