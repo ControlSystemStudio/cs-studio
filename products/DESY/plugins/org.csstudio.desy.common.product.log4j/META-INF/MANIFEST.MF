@@ -1,7 +1,7 @@
 Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
-Bundle-Name: Log4j
-Bundle-SymbolicName: org.csstudio.archive.common.engine.product.log4j
+Bundle-Name: Common log4j properties for headless DESY products
+Bundle-SymbolicName: org.csstudio.desy.common.product.log4j
 Bundle-Version: 1.0.0.qualifier
 Fragment-Host: org.csstudio.platform.libs.log4j;bundle-version="1.2.16"
 Bundle-RequiredExecutionEnvironment: JavaSE-1.6
