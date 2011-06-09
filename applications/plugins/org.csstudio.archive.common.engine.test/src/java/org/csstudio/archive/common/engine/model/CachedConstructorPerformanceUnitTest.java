@@ -46,10 +46,10 @@ public class CachedConstructorPerformanceUnitTest {
      * @since 05.05.2011
      */
     public static class MyDBRType {
-        Class<DBRTest> _class;
-        Constructor<DBRTest> _ctor;
+        Class<TestDBRType> _class;
+        Constructor<TestDBRType> _ctor;
 
-        MyDBRType(/* final String name, final int value, */final Class<DBRTest> clazz) {
+        MyDBRType(/* final String name, final int value, */final Class<TestDBRType> clazz) {
             _class=clazz;
             try {
                 _ctor = _class.getConstructor( new Class[] {Integer.TYPE} );
@@ -57,18 +57,18 @@ public class CachedConstructorPerformanceUnitTest {
                 // Empty
             }
         }
-        public DBRTest newInstance( int count ) {
+        public TestDBRType newInstance( int count ) {
             try {
-              return (DBRTest)_ctor.newInstance( new Object[] {new Integer( count )} );
+              return (TestDBRType)_ctor.newInstance( new Object[] {new Integer( count )} );
             } catch( Exception ex ) {
                 // Empty
             }
             return null;
         }
-        public DBRTest newInstanceImproved( int count ) {
+        public TestDBRType newInstanceImproved( int count ) {
             try {
                 // better use valueOf when x is expected to be very often one out of 0,-1, 1, 2 (that is 'common' cases) -   
-                return (DBRTest)_ctor.newInstance( new Object[] {Integer.valueOf( count )} ); 
+                return (TestDBRType)_ctor.newInstance( new Object[] {Integer.valueOf( count )} ); 
             } catch( Exception ex ) {
                 // Empty
             }
@@ -83,12 +83,12 @@ public class CachedConstructorPerformanceUnitTest {
      * @author bknerr
      * @since 05.05.2011
      */
-    public static final class DBRTest {
+    public static final class TestDBRType {
         int _count;
         /**
          * Constructor.
          */
-        public DBRTest(final int count) {
+        public TestDBRType(final int count) {
             _count = count;
         }
         public int getCount() {
@@ -120,11 +120,11 @@ public class CachedConstructorPerformanceUnitTest {
         
         Integer r = 0;
         try {
-            MyDBRType type = new MyDBRType(DBRTest.class); // the map lookup in _cached forValue
+            MyDBRType type = new MyDBRType(TestDBRType.class); // the map lookup in _cached forValue
             int count = 1;
             RunningStopWatch watch = StopWatch.start();
             for (int i = 0; i < ITERATIONS; i++) {
-                DBRTest instance = type.newInstanceImproved(count);
+                TestDBRType instance = type.newInstanceImproved(count);
                 r += instance.getCount();                // avoid compiler optimization for non used/referred to objects
             }
             cachedConstructorPerf = watch.getElapsedTimeInNS();
@@ -139,12 +139,12 @@ public class CachedConstructorPerformanceUnitTest {
         
         Integer r = 0;
         try {
-            MyDBRType type = new MyDBRType(DBRTest.class);
+            MyDBRType type = new MyDBRType(TestDBRType.class);
             int count = 1;
 
             RunningStopWatch watch = StopWatch.start();
             for (int i = 0; i < ITERATIONS; i++) {
-                DBRTest instance = type.newInstance(count);
+                TestDBRType instance = type.newInstance(count);
                 r += instance.getCount();                           // avoid compiler optimization for non used/referred to objects
             }
             cachedConstructorPerf = watch.getElapsedTimeInNS();
@@ -160,7 +160,7 @@ public class CachedConstructorPerformanceUnitTest {
         RunningStopWatch watch = StopWatch.start();
         Integer r = 0;
         for (int i = 0; i < 100000; i++) {                      
-            final DBRTest myDBR = new DBRTest(1);
+            final TestDBRType myDBR = new TestDBRType(1);
             r += myDBR.getCount();               // avoid compiler optimization for non used/referred to objects
         }
         return watch.getElapsedTimeInMillis();

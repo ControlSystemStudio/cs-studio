@@ -25,13 +25,13 @@ public class MessageListUnitTest extends AbstractMessageListUnitTest {
 
 	@Override
 	public AbstractMessageList createMessageListForTest() {
-		return new MessageListForTest();
+		return new TestMessageList();
 	}
 	
 	/**
 	 * Implementation of abstract message list for testing.
 	 */
-	private static class MessageListForTest extends AbstractMessageList {
+	private static class TestMessageList extends AbstractMessageList {
 
 		@Override
 		public Vector<? extends BasicMessage> getMessageList() {
