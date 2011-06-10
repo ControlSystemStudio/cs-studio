@@ -144,8 +144,7 @@ public class MasterDBO extends AbstractNodeDBO<ProfibusSubnetDBO, SlaveDBO> {
      * @throws PersistenceException 
      */
     public MasterDBO(@Nonnull final ProfibusSubnetDBO profibusSubnet) throws PersistenceException {
-        setParent(profibusSubnet);
-        profibusSubnet.addChild(this);
+        super(profibusSubnet);
     }
 
     // ****************************************

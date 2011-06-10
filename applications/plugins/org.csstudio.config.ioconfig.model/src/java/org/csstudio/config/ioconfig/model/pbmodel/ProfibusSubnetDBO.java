@@ -95,8 +95,7 @@ public class ProfibusSubnetDBO extends AbstractNodeDBO<IocDBO, MasterDBO> {
      * @throws PersistenceException 
      */
     public ProfibusSubnetDBO(@Nonnull final IocDBO ioc) throws PersistenceException {
-        setParent(ioc);
-        ioc.addChild(this);
+        super(ioc);
     }
 
     /**

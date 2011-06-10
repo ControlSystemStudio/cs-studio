@@ -469,7 +469,7 @@ public class ChannelDBO extends AbstractNodeDBO<ChannelStructureDBO, VirtualLeaf
             while ( (channelStructure == null) && (counter > 0)) {
                 channelStructure = getModule().getChildrenAsMap().get(--counter);
                 ChannelDBO lastChannel = channelStructure.getLastChannel();
-                if(isRigthSimpleChannel(channelStructure, lastChannel)) {
+                if(isRightSimpleChannel(channelStructure, lastChannel)) {
                     // Previous Channel is:
                     cNr = lastChannel.getChannelNumber();
                     if(channelStructure.isSimple()) {
@@ -490,7 +490,7 @@ public class ChannelDBO extends AbstractNodeDBO<ChannelStructureDBO, VirtualLeaf
      * @param lastChannel
      * @return
      */
-    private boolean isRigthSimpleChannel(@CheckForNull ChannelStructureDBO channelStructure,
+    private boolean isRightSimpleChannel(@CheckForNull ChannelStructureDBO channelStructure,
                                          @CheckForNull ChannelDBO lastChannel) {
         return (channelStructure != null) && (lastChannel != null)
                 && (lastChannel.isInput() == isInput());
@@ -705,12 +705,19 @@ public class ChannelDBO extends AbstractNodeDBO<ChannelStructureDBO, VirtualLeaf
      * {@inheritDoc}
      */
     @Override
-    @CheckForNull
+    @Nonnull
     public VirtualLeaf addChild(@Nullable VirtualLeaf child) throws PersistenceException {
-        // do nothing. Channel is the leave node.
-        return null;
+        return VirtualLeaf.INSTANCE;
     }
 
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public void setChildren(@Nonnull final Set<VirtualLeaf> children) {
+        // Don't do anything
+    }
+    
     /**
      * {@inheritDoc}
      */
@@ -727,4 +734,6 @@ public class ChannelDBO extends AbstractNodeDBO<ChannelStructureDBO, VirtualLeaf
     public void accept(@Nonnull final INodeVisitor visitor) {
         visitor.visit(this);
     }
+    
+    
 }

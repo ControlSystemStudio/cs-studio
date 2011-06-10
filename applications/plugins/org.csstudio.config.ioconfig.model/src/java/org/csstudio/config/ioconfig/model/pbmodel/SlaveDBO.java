@@ -149,8 +149,7 @@ public class SlaveDBO extends AbstractNodeDBO<MasterDBO, ModuleDBO> {
     }
     
     private SlaveDBO(@Nonnull final MasterDBO master, final int stationAddress) throws PersistenceException {
-        setParent(master);
-        master.addChild(this);
+        super(master);
         moveSortIndex(stationAddress);
     }
     
