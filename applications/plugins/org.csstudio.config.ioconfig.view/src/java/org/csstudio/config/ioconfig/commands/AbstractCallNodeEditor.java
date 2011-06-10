@@ -92,7 +92,9 @@ public abstract class AbstractCallNodeEditor extends AbstractHandler {
         return null;
     }
 
-    protected abstract void openNodeEditor(@Nonnull AbstractNodeDBO<?,?> parentNode,@Nonnull IWorkbenchPage page) throws PartInitException, PersistenceException;
+    protected abstract void openNodeEditor(@Nonnull final AbstractNodeDBO<?,?> parentNode,
+                                           @Nonnull IWorkbenchPage page) throws PartInitException, PersistenceException;
+
 
     /**
      * @return
@@ -113,5 +115,6 @@ public abstract class AbstractCallNodeEditor extends AbstractHandler {
         }
         return null;
     }
+    
 
 }

@@ -631,7 +631,8 @@ public abstract class AbstractNodeEditor extends EditorPart implements INodeConf
      * (@inheritDoc)
      */
     @Override
-    public void init(@Nonnull final IEditorSite site, @Nonnull final IEditorInput input) throws PartInitException {
+    public void init(@Nonnull final IEditorSite site, 
+                     @Nonnull final IEditorInput input) throws PartInitException {
         setSite(site);
         setInput(input);
         _node = ((NodeEditorInput) input).getNode();

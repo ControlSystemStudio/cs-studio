@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2010 Stiftung Deutsches Elektronen-Synchrotron,
+ * Copyright (c) 2011 Stiftung Deutsches Elektronen-Synchrotron,
  * Member of the Helmholtz Association, (DESY), HAMBURG, GERMANY.
  *
  * THIS SOFTWARE IS PROVIDED UNDER THIS LICENSE ON AN "../AS IS" BASIS.
@@ -21,9 +21,9 @@
  */
 package org.csstudio.config.ioconfig.commands;
 
+import javax.annotation.CheckForNull;
 import javax.annotation.Nonnull;
 
-import org.csstudio.config.ioconfig.editorinputs.NodeEditorInput;
 import org.csstudio.config.ioconfig.editorparts.ChannelEditor;
 import org.csstudio.config.ioconfig.editorparts.ChannelStructureEditor;
 import org.csstudio.config.ioconfig.editorparts.FacilityEditor;
@@ -32,39 +32,120 @@ import org.csstudio.config.ioconfig.editorparts.MasterEditor;
 import org.csstudio.config.ioconfig.editorparts.ModuleEditor;
 import org.csstudio.config.ioconfig.editorparts.SlaveEditor;
 import org.csstudio.config.ioconfig.editorparts.SubnetEditor;
-import org.csstudio.config.ioconfig.model.AbstractNodeDBO;
 import org.csstudio.config.ioconfig.model.FacilityDBO;
+import org.csstudio.config.ioconfig.model.INodeVisitor;
+import org.csstudio.config.ioconfig.model.VirtualLeaf;
 import org.csstudio.config.ioconfig.model.IocDBO;
+import org.csstudio.config.ioconfig.model.VirtualRoot;
 import org.csstudio.config.ioconfig.model.pbmodel.ChannelDBO;
 import org.csstudio.config.ioconfig.model.pbmodel.ChannelStructureDBO;
 import org.csstudio.config.ioconfig.model.pbmodel.MasterDBO;
 import org.csstudio.config.ioconfig.model.pbmodel.ModuleDBO;
 import org.csstudio.config.ioconfig.model.pbmodel.ProfibusSubnetDBO;
 import org.csstudio.config.ioconfig.model.pbmodel.SlaveDBO;
-import org.eclipse.ui.IWorkbenchPage;
-import org.eclipse.ui.PartInitException;
 
 /**
- * @author hrickens
- * @author $Author: hrickens $
- * @version $Revision: 1.2 $
- * @since 01.04.2010
+ * Visitor to provide the node specific editor id. 
+ * 
+ * @author bknerr
+ * @since 10.06.2011
  */
-public class CallEditor extends AbstractCallNodeEditor {
+public enum EditorIdNodeVisitor implements INodeVisitor {
+    INSTANCE;
+    
+    private String _id = null;
+    
+    /**
+     * Constructor.
+     */
+    private EditorIdNodeVisitor() {
+        // Empty
+    }
+    
+    @CheckForNull
+    public String getId() {
+        return _id;
+    }
 
-	public static final String ID = "org.csstudio.config.ioconfig.commands.callEditor";
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public void visit(@Nonnull final VirtualRoot node) {
+        // Don't do anything
+    }
+    
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public void visit(@Nonnull final FacilityDBO node) {
+        _id = FacilityEditor.ID;
+    }
+    
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public void visit(@Nonnull final IocDBO node) {
+        _id = IocEditor.ID;
+    }
 
-	// CHECKSTYLE OFF: CyclomaticComplexity
-	@Override
-	protected final void openNodeEditor(@Nonnull AbstractNodeDBO obj,
-			@Nonnull IWorkbenchPage page) throws PartInitException {
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public void visit(@Nonnull final ProfibusSubnetDBO node) {
+        _id = SubnetEditor.ID;
+    }
 
-		NodeEditorInput input = new NodeEditorInput(obj);
-		
-		String id = NodeEditorHandler.getEditorIdFor(obj);
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public void visit(@Nonnull final MasterDBO node) {
+        _id = MasterEditor.ID;
+    }
 
-		page.openEditor(input, id);
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public void visit(@Nonnull final SlaveDBO node) {
+        _id = SlaveEditor.ID;
+    }
 
-	}
-	// CHECKSTYLE ON: CyclomaticComplexity
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public void visit(@Nonnull final ModuleDBO node) {
+        _id = ModuleEditor.ID;
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public void visit(@Nonnull final ChannelStructureDBO node) {
+        _id = ChannelStructureEditor.ID;
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public void visit(@Nonnull final ChannelDBO node) {
+        _id = ChannelEditor.ID;
+        
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public void visit(@Nonnull final VirtualLeaf node) {
+        // Don't do anything
+    }
+    
 }

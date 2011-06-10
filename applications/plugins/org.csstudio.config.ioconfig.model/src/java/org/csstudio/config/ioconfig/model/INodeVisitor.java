@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2010 Stiftung Deutsches Elektronen-Synchrotron,
+ * Copyright (c) 2011 Stiftung Deutsches Elektronen-Synchrotron,
  * Member of the Helmholtz Association, (DESY), HAMBURG, GERMANY.
  *
  * THIS SOFTWARE IS PROVIDED UNDER THIS LICENSE ON AN "../AS IS" BASIS.
@@ -19,52 +19,33 @@
  * PROJECT IN THE FILE LICENSE.HTML. IF THE LICENSE IS NOT INCLUDED YOU MAY FIND A COPY
  * AT HTTP://WWW.DESY.DE/LEGAL/LICENSE.HTM
  */
-package org.csstudio.config.ioconfig.commands;
+package org.csstudio.config.ioconfig.model;
 
 import javax.annotation.Nonnull;
 
-import org.csstudio.config.ioconfig.editorinputs.NodeEditorInput;
-import org.csstudio.config.ioconfig.editorparts.ChannelEditor;
-import org.csstudio.config.ioconfig.editorparts.ChannelStructureEditor;
-import org.csstudio.config.ioconfig.editorparts.FacilityEditor;
-import org.csstudio.config.ioconfig.editorparts.IocEditor;
-import org.csstudio.config.ioconfig.editorparts.MasterEditor;
-import org.csstudio.config.ioconfig.editorparts.ModuleEditor;
-import org.csstudio.config.ioconfig.editorparts.SlaveEditor;
-import org.csstudio.config.ioconfig.editorparts.SubnetEditor;
-import org.csstudio.config.ioconfig.model.AbstractNodeDBO;
-import org.csstudio.config.ioconfig.model.FacilityDBO;
-import org.csstudio.config.ioconfig.model.IocDBO;
 import org.csstudio.config.ioconfig.model.pbmodel.ChannelDBO;
 import org.csstudio.config.ioconfig.model.pbmodel.ChannelStructureDBO;
 import org.csstudio.config.ioconfig.model.pbmodel.MasterDBO;
 import org.csstudio.config.ioconfig.model.pbmodel.ModuleDBO;
 import org.csstudio.config.ioconfig.model.pbmodel.ProfibusSubnetDBO;
 import org.csstudio.config.ioconfig.model.pbmodel.SlaveDBO;
-import org.eclipse.ui.IWorkbenchPage;
-import org.eclipse.ui.PartInitException;
 
 /**
- * @author hrickens
- * @author $Author: hrickens $
- * @version $Revision: 1.2 $
- * @since 01.04.2010
+ * Node visitor interface.
+ * 
+ * @author bknerr
+ * @since 10.06.2011
  */
-public class CallEditor extends AbstractCallNodeEditor {
-
-	public static final String ID = "org.csstudio.config.ioconfig.commands.callEditor";
-
-	// CHECKSTYLE OFF: CyclomaticComplexity
-	@Override
-	protected final void openNodeEditor(@Nonnull AbstractNodeDBO obj,
-			@Nonnull IWorkbenchPage page) throws PartInitException {
-
-		NodeEditorInput input = new NodeEditorInput(obj);
-		
-		String id = NodeEditorHandler.getEditorIdFor(obj);
-
-		page.openEditor(input, id);
-
-	}
-	// CHECKSTYLE ON: CyclomaticComplexity
+public interface INodeVisitor {
+    
+    void visit(@Nonnull final VirtualRoot node);
+    void visit(@Nonnull final FacilityDBO node);
+    void visit(@Nonnull final IocDBO node);
+    void visit(@Nonnull final ProfibusSubnetDBO node);
+    void visit(@Nonnull final MasterDBO node);
+    void visit(@Nonnull final SlaveDBO node);
+    void visit(@Nonnull final ModuleDBO node);
+    void visit(@Nonnull final ChannelStructureDBO node);
+    void visit(@Nonnull final ChannelDBO node);
+    void visit(@Nonnull final VirtualLeaf node);
 }
