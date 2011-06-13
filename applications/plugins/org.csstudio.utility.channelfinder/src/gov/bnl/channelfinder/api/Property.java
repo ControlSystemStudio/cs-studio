@@ -59,7 +59,7 @@ public class Property {
 			return new XmlProperty(name, owner, value);
 		}
 
-		Property build() {
+		public Property build() {
 			return new Property(this);
 		}
 	}
