@@ -18,14 +18,13 @@ import org.csstudio.archive.config.EngineConfig;
 import org.csstudio.archive.config.GroupConfig;
 import org.csstudio.archive.config.SampleMode;
 import org.csstudio.archive.engine.Activator;
+import org.csstudio.archive.engine.Preferences;
 import org.csstudio.archive.engine.scanner.ScanThread;
 import org.csstudio.archive.engine.scanner.Scanner;
 import org.csstudio.data.values.ITimestamp;
 import org.csstudio.data.values.IValue;
 import org.csstudio.data.values.TimestampFactory;
 import org.csstudio.data.values.ValueFactory;
-import org.eclipse.core.runtime.Platform;
-import org.eclipse.core.runtime.preferences.IPreferencesService;
 
 /** Data model of the archive engine.
  *  @author Kay Kasemir
@@ -87,39 +86,28 @@ public class EngineModel
     private ITimestamp start_time = null;
 
     /** Write period in seconds */
-    private int write_period = 30;
+    final private static int write_period = Preferences.getWritePeriodSecs();
 
     /** Maximum number of repeat counts for scanned channels */
-    private int max_repeats = 60;
+    final private static int max_repeats = Preferences.getMaxRepeats();
 
     /** Write batch size */
-    private int batch_size = 500;
+    final private static int batch_size = Preferences.getBatchSize();
 
     /** Buffer reserve (N times what's ideally needed) */
-    private double buffer_reserve = 2.0;
+    final private static double buffer_reserve = Preferences.getBufferReserve();
+    
+    /** Samples with time stamps this far ahead of the local time are ignored */
+    final private static long ignored_future = Preferences.getIgnoredFutureSecs();
 
     /** Construct model that writes to archive */
     public EngineModel()
     {
-        applyPreferences();
         writer = new WriteThread();
     }
 
-    /** Read preference settings */
-    @SuppressWarnings("nls")
-    private void applyPreferences()
-    {
-        final IPreferencesService prefs = Platform.getPreferencesService();
-        if (prefs == null)
-            return;
-        write_period = prefs.getInt(Activator.ID, "write_period", write_period, null);
-        max_repeats = prefs.getInt(Activator.ID, "max_repeats", max_repeats, null);
-        batch_size = prefs.getInt(Activator.ID, "batch_size", batch_size, null);
-        buffer_reserve = prefs.getDouble(Activator.ID, "buffer_reserve", buffer_reserve, null);
-    }
-
     /** @return Name (description) */
-    final public String getName()
+    public String getName()
     {
         return name;
     }
@@ -127,31 +115,29 @@ public class EngineModel
     /** @return Seconds into the future that should be ignored */
     public static long getIgnoredFutureSeconds()
     {
-        // TODO make configurable
-        // 1 day
-        return 24*60*60;
+        return ignored_future;
     }
 
     /** @return Write period in seconds */
-    final public int getWritePeriod()
+    public int getWritePeriod()
     {
         return write_period;
     }
 
     /** @return Write batch size */
-    final public int getBatchSize()
+    public int getBatchSize()
     {
         return batch_size;
     }
 
     /** @return Current model state */
-    final public State getState()
+    public State getState()
     {
         return state;
     }
 
     /** @return Start time of the engine or <code>null</code> if not running */
-    final public ITimestamp getStartTime()
+    public ITimestamp getStartTime()
     {
         return start_time;
     }
@@ -161,7 +147,7 @@ public class EngineModel
      *  @return ArchiveGroup
      *  @throws Exception on error (wrong state)
      */
-    final public ArchiveGroup addGroup(final String name) throws Exception
+    public ArchiveGroup addGroup(final String name) throws Exception
     {
         if (state != State.IDLE)
             throw new Exception("Cannot add group while " + state); //$NON-NLS-1$
@@ -179,7 +165,7 @@ public class EngineModel
     }
 
     /** @return Number of groups */
-    final synchronized public int getGroupCount()
+    synchronized public int getGroupCount()
     {
         return groups.size();
     }
@@ -189,13 +175,13 @@ public class EngineModel
      *  @return group
      *  @see #getGroupCount()
      */
-    final synchronized public ArchiveGroup getGroup(final int group_index)
+    synchronized public ArchiveGroup getGroup(final int group_index)
     {
         return groups.get(group_index);
     }
 
     /** @return Group by that name or <code>null</code> if not found */
-    final synchronized public ArchiveGroup getGroup(final String name)
+    synchronized public ArchiveGroup getGroup(final String name)
     {
         for (ArchiveGroup group : groups)
             if (group.getName().equals(name))
@@ -204,19 +190,19 @@ public class EngineModel
     }
 
     /** @return Number of channels */
-    final synchronized public int getChannelCount()
+    synchronized public int getChannelCount()
     {
         return channels.size();
     }
 
     /** @param i Channel index, 0 ... <code>getChannelCount()-1</code> */
-    final synchronized public ArchiveChannel getChannel(int i)
+    synchronized public ArchiveChannel getChannel(int i)
     {
         return channels.get(i);
     }
 
     /** @return Channel by that name or <code>null</code> if not found */
-    final synchronized public ArchiveChannel getChannel(final String name)
+    synchronized public ArchiveChannel getChannel(final String name)
     {
         return channel_by_name.get(name);
     }
@@ -231,7 +217,7 @@ public class EngineModel
      *  @throws Exception on error from channel creation
      */
     @SuppressWarnings("nls")
-    final public ArchiveChannel addChannel(final String name,
+    public ArchiveChannel addChannel(final String name,
                          final ArchiveGroup group,
                          final Enablement enablement,
                          final SampleMode sample_mode,
@@ -300,7 +286,7 @@ public class EngineModel
     }
 
     /** Start processing all channels and writing to archive. */
-    final public void start() throws Exception
+    public void start() throws Exception
     {
         start_time = TimestampFactory.now();
         state = State.RUNNING;
@@ -336,7 +322,7 @@ public class EngineModel
     }
 
     /** @see Scanner#getIdlePercentage() */
-    final public double getIdlePercentage()
+    public double getIdlePercentage()
     {
         return scanner.getIdlePercentage();
     }
@@ -345,7 +331,7 @@ public class EngineModel
      *  Merely updates the model state.
      *  @see #getState()
      */
-    final public void requestStop()
+    public void requestStop()
     {
         if (state == State.RUNNING ||
             state == State.RESTART_REQUESTED)
@@ -356,7 +342,7 @@ public class EngineModel
      *  Merely updates the model state.
      *  @see #getState()
      */
-    final public void requestRestart()
+    public void requestRestart()
     {
         if (state == State.RUNNING)
             state = State.RESTART_REQUESTED;
@@ -376,7 +362,7 @@ public class EngineModel
 
     /** Stop monitoring the channels, flush the write buffers. */
     @SuppressWarnings("nls")
-    final public void stop() throws Exception
+    public void stop() throws Exception
     {
         state = State.STOPPING;
         Activator.getLogger().info("Stopping scanner");
@@ -402,7 +388,7 @@ public class EngineModel
      *  @param port Current HTTPD port
      */
     @SuppressWarnings("nls")
-    final public void readConfig(final ArchiveConfig config, final String name, final int port) throws Exception
+    public void readConfig(final ArchiveConfig config, final String name, final int port) throws Exception
     {
         this.name = name;
         final EngineConfig engine = config.findEngine(name);
@@ -436,7 +422,7 @@ public class EngineModel
 
     /** Remove all channels and groups. */
     @SuppressWarnings("nls")
-    final public void clearConfig()
+    public void clearConfig()
     {
         if (state != State.IDLE)
             throw new IllegalStateException("Only allowed in IDLE state");
