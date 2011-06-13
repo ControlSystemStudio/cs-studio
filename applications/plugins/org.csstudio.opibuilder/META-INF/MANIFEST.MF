@@ -30,7 +30,7 @@ Require-Bundle: org.eclipse.ui,
  org.csstudio.java;bundle-version="3.0.0",
  org.eclipse.ui.ide;bundle-version="3.6.0",
  org.csstudio.csdata;bundle-version="3.0.0",
- org.csstudio.platform.libs.jdom;bundle-version="1.1.0"
+ org.jdom;bundle-version="1.1.0"
 Bundle-ActivationPolicy: lazy
 Export-Package: org.csstudio.opibuilder,
  org.csstudio.opibuilder.actions,

@@ -54,7 +54,7 @@ public final class RemoveLayerAction extends AbstractLayerAction {
 		CompoundCommand result = null;
 		if (layerSupport != null && selectedLayer != null) {
 			result = new CompoundCommand();
-			result.setLabel("Remove Layer '"+selectedLayer.getId()+"'");
+			result.setLabel("Remove Layer '"+selectedLayer.getDescription()+"'");
 			for (AbstractWidgetModel model : layerSupport.getParent().getWidgets()) {
 				if (model.getLayer().equals(selectedLayer.getId())) {
 					result.add(new SetPropertyCommand(model, AbstractWidgetModel.PROP_LAYER, LayerSupport.DEFAULT_NAME)); 

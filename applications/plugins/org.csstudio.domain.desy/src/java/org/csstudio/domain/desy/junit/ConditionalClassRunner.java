@@ -32,7 +32,7 @@ import org.junit.runners.model.FrameworkMethod;
 import org.junit.runners.model.InitializationError;
 
 /**
- * TODO (bknerr) :
+ * Junit4 Class Runner that can evaluate a RunIf annotation.
  *
  * @author bknerr
  * @since 30.05.2011
@@ -70,7 +70,7 @@ public class ConditionalClassRunner extends BlockJUnit4ClassRunner {
         final Class<? extends RunCondition> test = resource.conditionClass();
         try {
             final RunCondition checker = createConditionReflectively(resource, test);
-            return checker.isTrue();
+            return checker.shallBeRun();
         } catch (final Exception e) {
             throw new RuntimeException(e);
         }
@@ -84,7 +84,7 @@ public class ConditionalClassRunner extends BlockJUnit4ClassRunner {
         final Class<? extends RunCondition> test = resource.conditionClass();
         try {
             final RunCondition checker = createConditionReflectively(resource, test);
-            return checker.isTrue();
+            return checker.shallBeRun();
         } catch (final Exception e) {
             throw new RuntimeException(e);
         }

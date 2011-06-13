@@ -12,7 +12,7 @@ Require-Bundle: org.eclipse.core.runtime;visibility:=reexport,
  org.csstudio.data;bundle-version="1.0.0";visibility:=reexport,
  org.csstudio.workspace,
  org.eclipse.equinox.security,
- org.csstudio.platform.libs.log4j;bundle-version="1.2.16",
+ org.apache.log4j;bundle-version="1.2.16",
  org.csstudio.remote;bundle-version="1.0.0"
 Bundle-Activator: org.csstudio.platform.CSSPlatformPlugin
 Bundle-Vendor: Desy

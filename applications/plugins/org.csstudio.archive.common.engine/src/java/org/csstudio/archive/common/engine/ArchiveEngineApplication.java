@@ -35,6 +35,7 @@ import org.slf4j.LoggerFactory;
  *  @author Kay Kasemir
  */
 public class ArchiveEngineApplication implements IApplication {
+
     private static final Logger LOG = LoggerFactory.getLogger(ArchiveEngineApplication.class);
 
     /** HTTP Server port */

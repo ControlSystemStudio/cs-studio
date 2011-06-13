@@ -44,8 +44,9 @@ import org.csstudio.config.ioconfig.model.NodeType;
 import org.csstudio.config.ioconfig.model.PersistenceException;
 import org.csstudio.config.ioconfig.model.pbmodel.gsdParser.GsdFileParser;
 import org.csstudio.config.ioconfig.model.pbmodel.gsdParser.ParsedGsdFileModel;
-import org.csstudio.platform.logging.CentralLogger;
 import org.hibernate.annotations.BatchSize;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * @author gerke
@@ -58,6 +59,9 @@ import org.hibernate.annotations.BatchSize;
 @BatchSize(size = 32)
 @Table(name = "ddb_Profibus_Slave")
 public class SlaveDBO extends AbstractNodeDBO<MasterDBO, ModuleDBO> {
+    
+    private static final Logger LOG = LoggerFactory.getLogger(SlaveDBO.class);
+    
     private static final long serialVersionUID = 1L;
     /**
      * Vendor name of slave.
@@ -470,7 +474,7 @@ public class SlaveDBO extends AbstractNodeDBO<MasterDBO, ModuleDBO> {
         if(getParent() == null) {
             // Have no Parent
             setSortIndexNonHibernate(index);
-            CentralLogger.getInstance().warn(this, "Slave has no Parent!");
+            LOG.warn("Slave has no Parent!");
             return;
         }
         if(index < 0) {

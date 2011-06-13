@@ -48,7 +48,6 @@ import org.csstudio.config.ioconfig.model.PersistenceException;
 import org.csstudio.config.ioconfig.model.pbmodel.GSDFileDBO;
 import org.csstudio.config.ioconfig.model.tools.Helper;
 import org.csstudio.config.ioconfig.view.DeviceDatabaseErrorDialog;
-import org.csstudio.platform.logging.CentralLogger;
 import org.eclipse.jface.dialogs.Dialog;
 import org.eclipse.jface.dialogs.IDialogConstants;
 import org.eclipse.jface.dialogs.MessageDialog;
@@ -66,6 +65,8 @@ import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Shell;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * @author hrickens
@@ -74,6 +75,9 @@ import org.eclipse.swt.widgets.Shell;
  * @since 19.05.2010
  */
 public class ShowFileSelectionListener implements SelectionListener {
+    
+    private static final Logger LOG = LoggerFactory.getLogger(ShowFileSelectionListener.class);
+    
     /**
      * @author hrickens
      * @author $Author: hrickens $
@@ -200,10 +204,10 @@ public class ShowFileSelectionListener implements SelectionListener {
             }
         } catch (final IOException e) {
             MessageDialog.openError(null, "Can't File create!", e.getMessage());
-            CentralLogger.getInstance().error(this, e);
+            LOG.error("Can't File create!", e);
         } catch (final PersistenceException e) {
             DeviceDatabaseErrorDialog.open(null, "Can't read document from database!", e);
-            CentralLogger.getInstance().error(this, e);
+            LOG.error("Can't read document from database!", e);
         }
     }
     

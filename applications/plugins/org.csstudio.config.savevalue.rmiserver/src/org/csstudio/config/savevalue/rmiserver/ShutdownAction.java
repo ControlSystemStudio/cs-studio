@@ -23,12 +23,13 @@
 package org.csstudio.config.savevalue.rmiserver;
 
 
-import org.csstudio.platform.logging.CentralLogger;
 import org.csstudio.platform.management.CommandParameters;
 import org.csstudio.platform.management.CommandResult;
 import org.csstudio.platform.management.IManagementCommand;
 import org.eclipse.core.runtime.Platform;
 import org.eclipse.core.runtime.preferences.IPreferencesService;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * Remote action for shutting down the server.
@@ -40,8 +41,8 @@ public class ShutdownAction implements IManagementCommand {
 	/**
 	 * The logger used by this class.
 	 */
-	private CentralLogger _log = CentralLogger.getInstance();
-	
+    private static final Logger LOG = LoggerFactory.getLogger(ShutdownAction.class);
+    
 	/**
 	 * Shuts down the server.
 	 * 
@@ -50,17 +51,18 @@ public class ShutdownAction implements IManagementCommand {
 	 *            <code>CommandParamters</code> containing a password string.
 	 * @return a message.
 	 */
-	public CommandResult execute(CommandParameters parameters) {
+	@Override
+    public CommandResult execute(CommandParameters parameters) {
 		String password = null;
 		password = (String) parameters.get("PASSWORD");
 		
 		
 		if (isCorrectPassword(password)) {
-			_log.info(this, "Received shutdown command, shutting down now.");
+			LOG.info("Received shutdown command, shutting down now.");
 			SaveValueServer.getRunningServer().stop();
 			return CommandResult.createSuccessResult();
 		} else {
-			_log.warn(this, "Received shutdown command with invalid password.");
+			LOG.warn("Received shutdown command with invalid password.");
 			return CommandResult.createFailureResult("Invalid password");
 		}
 	}

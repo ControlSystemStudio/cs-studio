@@ -236,7 +236,7 @@ public final class DisplayModelInputStream extends ByteArrayInputStream {
 		}
 
 		for (Layer layer : displayModel.getLayerSupport().getLayers()) {
-			Element layerTag = createLayerTag(layer.getId(), displayModel
+			Element layerTag = createLayerTag(layer.getId(), layer.getDescription(), displayModel
 					.getLayerSupport().getLayerIndex(layer), layer.isVisible());
 			result.addContent(layerTag);
 		}
@@ -265,7 +265,7 @@ public final class DisplayModelInputStream extends ByteArrayInputStream {
 			ContainerModel container = (ContainerModel) widgetModel;
 
 			for (Layer layer : container.getLayerSupport().getLayers()) {
-				Element layerTag = createLayerTag(layer.getId(), container
+				Element layerTag = createLayerTag(layer.getId(), layer.getDescription(), container
 						.getLayerSupport().getLayerIndex(layer), layer
 						.isVisible());
 				result.addContent(layerTag);
@@ -316,7 +316,9 @@ public final class DisplayModelInputStream extends ByteArrayInputStream {
 	 * <code>layerName</code>. <code>layerName</code>.
 	 * 
 	 * @param layerName
-	 *            The name of the given Layer.
+	 *            The id of the given Layer.
+	 * @param layerName
+     *            The name of the given Layer.
 	 * @param index
 	 *            The index of the Layer
 	 * @param isVisible
@@ -324,12 +326,12 @@ public final class DisplayModelInputStream extends ByteArrayInputStream {
 	 * @return A <code>layer</code> XML tag from the given
 	 *         <code>layerName</code>
 	 */
-	private Element createLayerTag(final String layerName, final int index,
+	private Element createLayerTag(final String layerId, final String layerName, final int index,
 			final boolean isVisible) {
 		Element result = new Element(XmlConstants.XML_LAYER);
+		result.setAttribute(XmlConstants.XML_LAYER_ID, layerId);
 		result.setAttribute(XmlConstants.XML_LAYER_NAME, layerName);
-		result
-				.setAttribute(XmlConstants.XML_LAYER_INDEX, String
+		result.setAttribute(XmlConstants.XML_LAYER_INDEX, String
 						.valueOf(index));
 		result.setAttribute(XmlConstants.XML_LAYER_VISIBILITY, String
 				.valueOf(isVisible));

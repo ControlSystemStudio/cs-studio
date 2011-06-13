@@ -3,7 +3,7 @@ Bundle-ManifestVersion: 2
 Bundle-Name: Help Hierarchy Definition
 Bundle-SymbolicName: org.csstudio.ui.help;singleton:=true
 Bundle-Description: CSS help page hierachy skeleton
-Bundle-Version: 3.0.0.qualifier
+Bundle-Version: 3.1.0.qualifier
 Require-Bundle: org.eclipse.core.runtime,
  org.eclipse.help,
  org.eclipse.help.ui,

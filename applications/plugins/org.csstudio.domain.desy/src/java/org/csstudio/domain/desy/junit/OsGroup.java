@@ -28,7 +28,8 @@ import javax.annotation.Nonnull;
 import com.google.common.collect.ImmutableSet;
 
 /**
- * TODO (bknerr) :
+ * Groups of operating systems grouping the output of {@link System#getProperty("os.name")} by
+ * their os family.
  *
  * @author bknerr
  * @since 30.05.2011
@@ -41,6 +42,10 @@ public enum OsGroup {
     HP_UX("HP-UX"),
     FREE_BSD("FreeBSD");
 
+
+    /**
+     * The accepted prefixes of an os group as returned by {@link System#getProperty("os.name")}.
+     */
     private Set<String> _prefixes;
 
 
