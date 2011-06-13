@@ -71,7 +71,7 @@ public class Channel {
 
 		}
 
-		public Channel build() {
+		Channel build() {
 			return new Channel(this);
 		}
 	}

@@ -23,7 +23,9 @@ import java.util.Set;
 import java.util.prefs.BackingStoreException;
 import java.util.prefs.Preferences;
 
+import javax.net.ssl.HostnameVerifier;
 import javax.net.ssl.SSLContext;
+import javax.net.ssl.SSLSession;
 import javax.net.ssl.TrustManager;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.UriBuilder;
@@ -186,7 +188,7 @@ public class ChannelFinderClient {
 
 		ClientConfig config = new DefaultClientConfig();
 		config.getProperties().put(HTTPSProperties.PROPERTY_HTTPS_PROPERTIES,
-				new HTTPSProperties(null, ctx));
+				new HTTPSProperties(new TestHostnameVerifier(), ctx));
 		Client client = Client.create(config);
 		client.addFilter(new HTTPBasicAuthFilter(getPreferenceValue("username",
 				"username"), getPreferenceValue("password", "password"))); //$NON-NLS-1$ //$NON-NLS-2$
@@ -253,9 +255,9 @@ public class ChannelFinderClient {
 	}
 
 	@Deprecated
-	public void resetPreferences() {
+	public static void resetPreferences() {
 		try {
-			Preferences.userNodeForPackage(this.getClass()).clear();
+			Preferences.userNodeForPackage(ChannelFinderClient.class).clear();
 		} catch (BackingStoreException e) {
 			e.printStackTrace();
 		}
@@ -272,7 +274,7 @@ public class ChannelFinderClient {
 	public Channel getChannel(String channelName) throws ChannelFinderException {
 		try {
 			return new Channel(service
-					.path("channel").path(channelName).accept( //$NON-NLS-1$
+					.path("channels").path(channelName).accept( //$NON-NLS-1$
 							MediaType.APPLICATION_XML).get(XmlChannel.class));
 		} catch (UniformInterfaceException e) {
 			throw new ChannelFinderException(e);
@@ -718,5 +720,13 @@ public class ChannelFinderClient {
 			throw new ChannelFinderException(e);
 		}
 	}
+	
+
+	public class TestHostnameVerifier implements HostnameVerifier {
+		public boolean verify(String arg0, SSLSession arg1) {
+			return true;
+		}
+	}
+
 
 }
