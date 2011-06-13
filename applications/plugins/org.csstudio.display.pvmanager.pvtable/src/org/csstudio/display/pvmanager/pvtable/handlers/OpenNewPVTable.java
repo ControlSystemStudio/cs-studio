@@ -17,10 +17,6 @@ import org.eclipse.ui.IWorkbenchWindow;
 import org.eclipse.ui.handlers.HandlerUtil;
 
 /**
- * 
- */
-
-/**
  * @author shroffk
  * 
  */
@@ -35,10 +31,8 @@ public class OpenNewPVTable extends AbstractHandler {
 	 */
 	@Override
 	public Object execute(ExecutionEvent event) throws ExecutionException {
-		IWorkbenchWindow window = HandlerUtil.getActiveWorkbenchWindow(event);
-		IWorkbenchPage page = window.getActivePage();
-		// Get the selection
-		ISelection selection = page.getSelection();
+		// Get the selection		
+		ISelection selection = HandlerUtil.getActiveMenuSelection(event);
 		PVTableEditor newEditor = PVTableEditor.createPVTableEditor(); 
 		if (selection == null) {
 			// create a new empty pvtable
