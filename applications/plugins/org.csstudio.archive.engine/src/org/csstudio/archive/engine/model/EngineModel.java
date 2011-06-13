@@ -12,13 +12,14 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.csstudio.archive.config.ArchiveConfig;
+import org.csstudio.archive.config.ChannelConfig;
+import org.csstudio.archive.config.EngineConfig;
+import org.csstudio.archive.config.GroupConfig;
+import org.csstudio.archive.config.SampleMode;
 import org.csstudio.archive.engine.Activator;
 import org.csstudio.archive.engine.scanner.ScanThread;
 import org.csstudio.archive.engine.scanner.Scanner;
-import org.csstudio.archive.rdb.ChannelConfig;
-import org.csstudio.archive.rdb.RDBArchive;
-import org.csstudio.archive.rdb.engineconfig.ChannelGroupConfig;
-import org.csstudio.archive.rdb.engineconfig.SampleEngineConfig;
 import org.csstudio.data.values.ITimestamp;
 import org.csstudio.data.values.IValue;
 import org.csstudio.data.values.TimestampFactory;
@@ -36,15 +37,6 @@ public class EngineModel
 
     /** Name of this model */
     private String name = "Archive Engine";  //$NON-NLS-1$
-
-    /** RDB Archive to which samples are written.
-     *  <p>
-     *  <b>NOTE Thread Usage:</b>
-     *  During startup, <code>addChannel</code> might
-     *  access the archive, but later on only the <code>WriteThread</code>
-     *  touches the archive to avoid thread issues.
-     */
-    final private RDBArchive archive;
 
     /** Thread that writes to the <code>archive</code> */
     final private WriteThread writer;
@@ -107,11 +99,10 @@ public class EngineModel
     private double buffer_reserve = 2.0;
 
     /** Construct model that writes to archive */
-    public EngineModel(final RDBArchive archive)
+    public EngineModel()
     {
-        this.archive = archive;
         applyPreferences();
-        writer = new WriteThread(archive);
+        writer = new WriteThread();
     }
 
     /** Read preference settings */
@@ -234,92 +225,73 @@ public class EngineModel
      *  @param name Channel name
      *  @param group Name of the group to which to add
      *  @param enablement How channel acts on the group
-     *  @param monitor Monitor or scan?
-     *  @param sample_val Sample mode configuration value: 'delta' for monitor
-     *  @param period Estimated update period [seconds]
+     *  @param sample_mode Sample mode
+     *  @param last_sample_time Time stamp of last archived sample or <code>null</code>
      *  @return {@link ArchiveChannel}
      *  @throws Exception on error from channel creation
      */
     @SuppressWarnings("nls")
     final public ArchiveChannel addChannel(final String name,
                          final ArchiveGroup group,
-                         final Enablement enablement, final boolean monitor,
-                         final double sample_val,
-                         final double period) throws Exception
+                         final Enablement enablement,
+                         final SampleMode sample_mode,
+                         final ITimestamp last_sample_time) throws Exception
     {
         if (state != State.IDLE)
             throw new Exception("Cannot add channel while " + state); //$NON-NLS-1$
 
         // Is this an existing channel?
         ArchiveChannel channel = getChannel(name);
-
-        // For the engine, channels can be in more than one group
-        // if configuration matches.
         if (channel != null)
-        {
-            final String gripe = String.format(
+        	throw new Exception(String.format(
                     "Group '%s': Channel '%s' already in group '%s'",
-                     group.getName(), name, channel.getGroup(0).getName());
-            if (channel.getEnablement() != enablement)
-                throw new Exception(gripe + " with different enablement");
-            if (// Now monitor, but not before?
-                (monitor && (channel instanceof ScannedArchiveChannel))
-                ||
-                // Or now scanned, but before monitor, or other scan rate?
-                (!monitor
-                 && ((channel instanceof MonitoredArchiveChannel)
-                     || ((ScannedArchiveChannel)channel).getPeriod() != period)
-                ))
-                throw new Exception(gripe + " with different sample mechanism");
+                     group.getName(), name, channel.getGroup(0).getName()));
+        
+        // Channel is new to this engine.
+        // See if there's already a sample in the archive,
+        // because we won't be able to go back-in-time before that sample.
+    	final IValue last_sample;
+    	
+    	if (last_sample_time == null)
+    		last_sample = null;
+    	else // Create fake string sample with that time
+        	last_sample = ValueFactory.createStringValue(last_sample_time,
+                             ValueFactory.createOKSeverity(),
+                             "", IValue.Quality.Original,
+                             new String [] { "Last timestamp in archive" });
+
+    	// Determine buffer capacity
+        int buffer_capacity = (int) (write_period / sample_mode.getPeriod() * buffer_reserve);
+        // When scan or update period exceeds write period,
+        // simply use the reserve for the capacity
+        if (buffer_capacity < buffer_reserve)
+            buffer_capacity = (int)buffer_reserve;
+
+        // Create new channel
+        if (sample_mode.isMonitor())
+        {
+            if (sample_mode.getDelta() > 0)
+                channel = new DeltaArchiveChannel(name, enablement,
+                        buffer_capacity, last_sample, sample_mode.getPeriod(), sample_mode.getDelta());
+            else
+                channel = new MonitoredArchiveChannel(name, enablement,
+                                             buffer_capacity, last_sample,
+                                             sample_mode.getPeriod());
         }
         else
-        {   // Channel is new to this engine.
-            // See if there's already a sample in the archive,
-            // because we won't be able to go back-in-time before that sample.
-        	IValue last_sample = null;
-        	final ChannelConfig channel_id = archive.getChannel(name);
-        	if (channel_id != null)
-        	{
-	            final ITimestamp last_stamp = channel_id.getLastTimestamp();
-	            if (last_stamp != null)
-	            // Create fake string sample with that time
-	            	last_sample = ValueFactory.createStringValue(last_stamp,
-	                             ValueFactory.createOKSeverity(),
-	                             "", IValue.Quality.Original,
-	                             new String [] { "Last timestamp in archive" });
-        	}
-            // Determine buffer capacity
-            int buffer_capacity = (int) (write_period / period * buffer_reserve);
-            // When scan or update period exceeds write period,
-            // simply use the reserve for the capacity
-            if (buffer_capacity < buffer_reserve)
-                buffer_capacity = (int)buffer_reserve;
-
-            // Create new channel
-            if (monitor)
-            {
-                if (sample_val > 0)
-                    channel = new DeltaArchiveChannel(name, enablement,
-                            buffer_capacity, last_sample, period, sample_val);
-                else
-                    channel = new MonitoredArchiveChannel(name, enablement,
-                                                 buffer_capacity, last_sample,
-                                                 period);
-            }
-            else
-            {
-                channel = new ScannedArchiveChannel(name, enablement,
-                                        buffer_capacity, last_sample, period,
-                                        max_repeats);
-                scanner.add((ScannedArchiveChannel)channel, period);
-            }
-            synchronized (this)
-            {
-                channels.add(channel);
-                channel_by_name.put(channel.getName(), channel);
-            }
-            writer.addChannel(channel);
+        {
+            channel = new ScannedArchiveChannel(name, enablement,
+                                    buffer_capacity, last_sample, sample_mode.getPeriod(),
+                                    max_repeats);
+            scanner.add((ScannedArchiveChannel)channel, sample_mode.getPeriod());
         }
+        synchronized (this)
+        {
+            channels.add(channel);
+            channel_by_name.put(channel.getName(), channel);
+        }
+        writer.addChannel(channel);
+
         // Connect new or old channel to group
         channel.addGroup(group);
         group.add(channel);
@@ -425,38 +397,39 @@ public class EngineModel
     }
 
     /** Read configuration of model from RDB.
-     *  @param name Name of engine in RDB
+     *  @param config {@link ArchiveConfig}
+     *  @param name Name of engine in config
      *  @param port Current HTTPD port
      */
     @SuppressWarnings("nls")
-    final public void readConfig(final String name, final int port) throws Exception
+    final public void readConfig(final ArchiveConfig config, final String name, final int port) throws Exception
     {
         this.name = name;
-        final SampleEngineConfig engine = archive.findEngine(name);
+        final EngineConfig engine = config.findEngine(name);
         if (engine == null)
             throw new Exception("Unknown engine '" + name + "'");
 
         // Is the configuration consistent?
-        if (engine.getUrl().getPort() != port)
+        if (engine.getURL().getPort() != port)
             throw new Exception("Engine running on port " + port +
-                " while configuration requires " + engine.getUrl().toString());
+                " while configuration requires " + engine.getURL().toString());
 
         // Get groups
-        final ChannelGroupConfig[] engine_groups = engine.getGroups();
-        for (ChannelGroupConfig group_config : engine_groups)
+        final GroupConfig[] engine_groups = config.getGroups(engine);
+        for (GroupConfig group_config : engine_groups)
         {
             final ArchiveGroup group = addGroup(group_config.getName());
             // Add channels to group
-            final List<ChannelConfig> channel_configs = group_config.getChannels();
+            final ChannelConfig[] channel_configs = config.getChannels(group_config);
             for (ChannelConfig channel_config : channel_configs)
             {
                 Enablement enablement = Enablement.Passive;
-                if (group_config.getEnablingChannelId() == channel_config.getId())
-                    enablement = Enablement.Enabling;
-                addChannel(channel_config.getName(), group, enablement,
-                        channel_config.getSampleMode().isMonitor(),
-                        channel_config.getSampleValue(),
-                        channel_config.getSamplePeriod());
+                if (channel_config.getName().equals(group_config.getEnablingChannel()))
+                	enablement = Enablement.Enabling;
+                final SampleMode mode = channel_config.getSampleMode();
+                
+                addChannel(channel_config.getName(), group, enablement, mode,
+                		channel_config.getLastSampleTime());
             }
         }
     }

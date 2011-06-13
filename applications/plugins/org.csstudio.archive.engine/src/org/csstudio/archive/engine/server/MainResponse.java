@@ -17,7 +17,6 @@ import org.csstudio.archive.engine.Messages;
 import org.csstudio.archive.engine.model.ArchiveGroup;
 import org.csstudio.archive.engine.model.EngineModel;
 import org.csstudio.archive.engine.model.SampleBuffer;
-import org.csstudio.archive.rdb.RDBArchivePreferences;
 import org.csstudio.data.values.ITimestamp;
 import org.csstudio.data.values.TimestampFactory;
 import org.eclipse.core.runtime.Platform;
@@ -157,13 +156,6 @@ class MainResponse extends AbstractResponse
             Messages.HTTP_WriteDuration,
             String.format("%.1f sec", model.getWriteDuration())
         });
-
-        html.tableLine(new String[]
-        {
-            Messages.HTTP_SQLTimeout,
-            PeriodFormat.formatSeconds(RDBArchivePreferences.getSQLTimeout())
-        });
-
         html.tableLine(new String[]
         {
             Messages.HTTP_Idletime,

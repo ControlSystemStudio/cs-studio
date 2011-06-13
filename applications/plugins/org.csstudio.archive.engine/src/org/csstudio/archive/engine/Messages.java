@@ -48,7 +48,6 @@ public class Messages
     final public static String HTTP_StartTime = "Start Time";
     final public static String HTTP_State = "State";
     final public static String HTTP_Status = "Status";
-    final public static String HTTP_SQLTimeout = "SQL Timeout";
     final public static String HTTP_Total = "Total";
     final public static String HTTP_Uptime = "Uptime";
     final public static String HTTP_Version = "Version";

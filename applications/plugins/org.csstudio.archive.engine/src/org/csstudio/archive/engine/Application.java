@@ -15,10 +15,10 @@ import org.csstudio.apputil.args.BooleanOption;
 import org.csstudio.apputil.args.IntegerOption;
 import org.csstudio.apputil.args.StringOption;
 import org.csstudio.apputil.time.BenchmarkTimer;
+import org.csstudio.archive.config.ArchiveConfig;
+import org.csstudio.archive.config.ArchiveConfigFactory;
 import org.csstudio.archive.engine.model.EngineModel;
 import org.csstudio.archive.engine.server.EngineServer;
-import org.csstudio.archive.rdb.RDBArchive;
-import org.csstudio.archive.rdb.RDBArchivePreferences;
 import org.csstudio.logging.LogConfigurator;
 import org.eclipse.equinox.app.IApplication;
 import org.eclipse.equinox.app.IApplicationContext;
@@ -28,11 +28,6 @@ import org.eclipse.equinox.app.IApplicationContext;
  */
 public class Application implements IApplication
 {
-    /** Database URL, user, password */
-    private String url = RDBArchivePreferences.getURL(),
-                   user = RDBArchivePreferences.getUser(),
-                   password = RDBArchivePreferences.getPassword();
-
     /** HTTP Server port */
     private int port;
 
@@ -55,12 +50,6 @@ public class Application implements IApplication
                     "Display Help");
         final IntegerOption port_opt = new IntegerOption(parser, "-port", "4812",
                     "HTTP server port", 4812);
-        final StringOption url_opt = new StringOption(parser, "-rdb_url", "jdbc:...",
-                    "Database URL, overrides preference setting", this.url);
-        final StringOption user_opt = new StringOption(parser, "-rdb_user", "arch_user",
-                "Database user, overrides preference setting", this.user);
-        final StringOption pass_opt = new StringOption(parser, "-rdb_password", "secret",
-                "Database password, overrides preference setting", this.password);
         final StringOption engine_name_opt = new StringOption(parser,
                     "-engine", "demo_engine", "Engine config name", null);
         // Options handled by Eclipse,
@@ -93,9 +82,6 @@ public class Application implements IApplication
         }
 
         // Copy stuff from options into member vars.
-        url = url_opt.get();
-        user = user_opt.get();
-        password = pass_opt.get();
         port = port_opt.get();
         engine_name = engine_name_opt.get();
         return true;
@@ -111,13 +97,6 @@ public class Application implements IApplication
         if (!getSettings(args))
             return EXIT_OK;
 
-        if (url == null)
-        {
-            System.out.println(
-                    "No Database URL. Set via preferences or command-line");
-            return EXIT_OK;
-        }
-
         // Initialize logging
         LogConfigurator.configureFromPreferences();
 
@@ -127,17 +106,7 @@ public class Application implements IApplication
         logger.info("Archive Engine " + EngineModel.VERSION);
         try
         {
-            RDBArchive archive;
-            try
-            {
-                archive = RDBArchive.connect(url, user, password);
-            }
-            catch (final Exception ex)
-            {
-                logger.log(Level.SEVERE, "Cannot connect to " + url, ex);
-                return EXIT_OK;
-            }
-            model = new EngineModel(archive);
+            model = new EngineModel();
             // Setup takes some time, but engine server should already respond.
             EngineServer server;
             try
@@ -155,14 +124,19 @@ public class Application implements IApplication
             {
                 logger.info("Reading configuration '" + engine_name + "'");
                 BenchmarkTimer timer = new BenchmarkTimer();
+                ArchiveConfig config = ArchiveConfigFactory.getArchiveConfig();
                 try
                 {
-                    model.readConfig(engine_name, port);
+                    model.readConfig(config, engine_name, port);
                 }
                 catch (final Exception ex)
                 {
                     logger.log(Level.SEVERE, "Cannot read configuration", ex);
                     return EXIT_OK;
+                }
+                finally
+                {
+                	config.close();
                 }
                 timer.stop();
                 logger.info("Read configuration: " + model.getChannelCount() +
@@ -189,7 +163,6 @@ public class Application implements IApplication
                 model.clearConfig();
             }
 
-            archive.close();
             logger.info("ArchiveEngine stopped");
             server.stop();
         }
