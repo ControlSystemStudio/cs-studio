@@ -106,6 +106,11 @@ public class LogbookDemo
 
             // Short text and image entry
             logbook.createEntry("Test Text w/ multiple Images", "This is a test with images", image1.getAbsolutePath(), image2.getAbsolutePath());
+
+            // Captioned images
+            logbook.createEntry("Test Text w/ multiple Images and captions", "This is a test with images and captions",
+            		new String[] { image1.getAbsolutePath(), image2.getAbsolutePath() },
+            		new String[] { "Image 1 Caption", "... and this is the second image" });
         }
         finally
         {
