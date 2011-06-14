@@ -63,6 +63,8 @@ public class DisplayModel extends AbstractContainerModel {
 	
 	private IPath opiFilePath;
 	
+	private int displayID;
+	
 	public DisplayModel() {
 		super();
 		setLocation(-1, -1);
@@ -157,6 +159,20 @@ public class DisplayModel extends AbstractContainerModel {
 	 */
 	public GraphicalViewer getViewer() {
 		return viewer;
+	}
+
+	/**
+	 * @param displayID the unique displayID to set
+	 */
+	public void setDisplayID(int displayID) {
+		this.displayID = displayID;
+	}
+
+	/**
+	 * @return the displayID
+	 */
+	public int getDisplayID() {
+		return displayID;
 	}
 	
 	

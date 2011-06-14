@@ -78,6 +78,8 @@ public class OPIRuntimeDelegate implements IAdaptable{
 	private ActionRegistry actionRegistry;
 	
 	private IEditorInput editorInput;
+	
+	private static int displayID = 0;
 
 	/**
 	 * The workbench part where the OPI is running on.
@@ -121,12 +123,14 @@ public class OPIRuntimeDelegate implements IAdaptable{
 	}
 	
 	public void init(final IWorkbenchPartSite site, final IEditorInput input) throws PartInitException{
+		displayID++;
 		setEditorInput(input);
 		if (viewer != null) {
 			viewer.getControl().removePaintListener(errorMessagePaintListener);
 			viewer.getControl().removeControlListener(zoomListener);
 		}
 		displayModel = new DisplayModel();
+		displayModel.setDisplayID(displayID);
 		displayModelFilled = false;
 		InputStream inputStream = null;
 		try {
