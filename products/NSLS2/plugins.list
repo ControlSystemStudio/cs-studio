@@ -16,7 +16,7 @@ org.csstudio.diag.postanalyser
 org.csstudio.diag.probe
 org.csstudio.diag.probe.intro
 org.csstudio.diag.pvmanager.probe
-org.csstudio.display.pvtable
+org.csstudio.display.pvmanager.pvtable
 org.csstudio.display.channelfinderviewer
 org.csstudio.display.waterfall
 org.csstudio.email
@@ -56,6 +56,7 @@ org.csstudio.swt.widgets
 org.csstudio.swt.xygraph
 org.csstudio.trends.databrowser2
 org.csstudio.trends.databrowser2.intro
+org.csstudio.trends.databrowser2.opiwidget
 org.csstudio.ui.help
 org.csstudio.ui.menu
 org.csstudio.ui.util

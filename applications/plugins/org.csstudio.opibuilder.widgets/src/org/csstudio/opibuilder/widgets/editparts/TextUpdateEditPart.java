@@ -20,8 +20,8 @@ import org.csstudio.opibuilder.model.AbstractWidgetModel;
 import org.csstudio.opibuilder.properties.IWidgetPropertyChangeHandler;
 import org.csstudio.opibuilder.util.OPIFont;
 import org.csstudio.opibuilder.widgets.model.LabelModel;
-import org.csstudio.opibuilder.widgets.model.TextIndicatorModel;
-import org.csstudio.opibuilder.widgets.model.TextIndicatorModel.FormatEnum;
+import org.csstudio.opibuilder.widgets.model.TextUpdateModel;
+import org.csstudio.opibuilder.widgets.model.TextUpdateModel.FormatEnum;
 import org.csstudio.swt.widgets.figures.TextFigure;
 import org.csstudio.swt.widgets.figures.TextFigure.H_ALIGN;
 import org.csstudio.swt.widgets.figures.TextFigure.V_ALIGN;
@@ -37,11 +37,11 @@ import org.eclipse.swt.widgets.Display;
  * @author Xihui Chen
  *
  */
-public class TextIndicatorEditPart extends AbstractPVWidgetEditPart {
+public class TextUpdateEditPart extends AbstractPVWidgetEditPart {
 
 	public static final String HEX_PREFIX = "0x"; //$NON-NLS-1$
 
-	private TextIndicatorModel widgetModel;
+	private TextUpdateModel widgetModel;
 	private FormatEnum format;
 	private boolean isAutoSize;
 	private boolean isPrecisionFromDB;
@@ -80,7 +80,7 @@ public class TextIndicatorEditPart extends AbstractPVWidgetEditPart {
 	protected void createEditPolicies() {
 		super.createEditPolicies();
 		if(getExecutionMode() == ExecutionMode.EDIT_MODE)
-			installEditPolicy(EditPolicy.DIRECT_EDIT_ROLE, new TextIndicatorDirectEditPolicy());
+			installEditPolicy(EditPolicy.DIRECT_EDIT_ROLE, new TextUpdateDirectEditPolicy());
 	}
 
 	@Override
@@ -111,7 +111,7 @@ public class TextIndicatorEditPart extends AbstractPVWidgetEditPart {
 				return true;
 			}
 		};
-		setPropertyChangeHandler(TextIndicatorModel.PROP_TEXT, handler);
+		setPropertyChangeHandler(TextUpdateModel.PROP_TEXT, handler);
 
 
 
@@ -201,46 +201,46 @@ public class TextIndicatorEditPart extends AbstractPVWidgetEditPart {
 			public boolean handleChange(Object oldValue, Object newValue,
 					final IFigure figure) {
 				format = FormatEnum.values()[(Integer)newValue];
-				formatValue(newValue, TextIndicatorModel.PROP_FORMAT_TYPE, figure);
+				formatValue(newValue, TextUpdateModel.PROP_FORMAT_TYPE, figure);
 				return true;
 			}
 		};
-		setPropertyChangeHandler(TextIndicatorModel.PROP_FORMAT_TYPE, handler);
+		setPropertyChangeHandler(TextUpdateModel.PROP_FORMAT_TYPE, handler);
 
 		handler = new IWidgetPropertyChangeHandler(){
 			public boolean handleChange(Object oldValue, Object newValue,
 					final IFigure figure) {
 				precision = (Integer)newValue;
-				formatValue(newValue, TextIndicatorModel.PROP_PRECISION, figure);
+				formatValue(newValue, TextUpdateModel.PROP_PRECISION, figure);
 				return true;
 			}
 		};
-		setPropertyChangeHandler(TextIndicatorModel.PROP_PRECISION, handler);
+		setPropertyChangeHandler(TextUpdateModel.PROP_PRECISION, handler);
 
 		handler = new IWidgetPropertyChangeHandler(){
 			public boolean handleChange(Object oldValue, Object newValue,
 					final IFigure figure) {
 				isPrecisionFromDB = (Boolean)newValue;
-				formatValue(newValue, TextIndicatorModel.PROP_PRECISION_FROM_DB, figure);
+				formatValue(newValue, TextUpdateModel.PROP_PRECISION_FROM_DB, figure);
 				return true;
 			}
 		};
-		setPropertyChangeHandler(TextIndicatorModel.PROP_PRECISION_FROM_DB, handler);
+		setPropertyChangeHandler(TextUpdateModel.PROP_PRECISION_FROM_DB, handler);
 
 		handler = new IWidgetPropertyChangeHandler(){
 			public boolean handleChange(Object oldValue, Object newValue,
 					final IFigure figure) {
 				isShowUnits = (Boolean)newValue;
-				formatValue(newValue, TextIndicatorModel.PROP_SHOW_UNITS, figure);
+				formatValue(newValue, TextUpdateModel.PROP_SHOW_UNITS, figure);
 				return true;
 			}
 		};
-		setPropertyChangeHandler(TextIndicatorModel.PROP_SHOW_UNITS, handler);
+		setPropertyChangeHandler(TextUpdateModel.PROP_SHOW_UNITS, handler);
 	}
 
 	@Override
-	public TextIndicatorModel getWidgetModel() {
-		return (TextIndicatorModel)getModel();
+	public TextUpdateModel getWidgetModel() {
+		return (TextUpdateModel)getModel();
 	}
 
 	protected void performDirectEdit(){
@@ -326,7 +326,7 @@ public class TextIndicatorEditPart extends AbstractPVWidgetEditPart {
 
 		//synchronize the property value without fire listeners.
 		widgetModel.getProperty(
-				TextIndicatorModel.PROP_TEXT).setPropertyValue(text, false);
+				TextUpdateModel.PROP_TEXT).setPropertyValue(text, false);
 		((TextFigure)figure).setText(text);
 
 		if(isAutoSize)

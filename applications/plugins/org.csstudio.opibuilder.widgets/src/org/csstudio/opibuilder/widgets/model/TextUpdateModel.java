@@ -17,7 +17,7 @@ import org.csstudio.ui.util.CustomMediaFactory;
  * @author Xihui Chen
  *
  */
-public class TextIndicatorModel extends LabelModel {
+public class TextUpdateModel extends LabelModel {
 	
 	public enum FormatEnum {
 		DEFAULT("Default"),
@@ -54,7 +54,7 @@ public class TextIndicatorModel extends LabelModel {
 
 	
 	
-	public TextIndicatorModel() {
+	public TextUpdateModel() {
 		setSize(100, 20);
 		setForegroundColor(CustomMediaFactory.COLOR_BLACK);
 		setTooltip("$(" + PROP_PVNAME + ")\n" + "$(" + PROP_PVVALUE + ")"); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$

@@ -6,7 +6,7 @@ package org.csstudio.opibuilder.adl2boy.utilities;
 import org.csstudio.opibuilder.adl2boy.translator.TranslatorUtils;
 import org.csstudio.opibuilder.util.OPIFont;
 import org.csstudio.opibuilder.widgets.model.LabelModel;
-import org.csstudio.opibuilder.widgets.model.TextIndicatorModel;
+import org.csstudio.opibuilder.widgets.model.TextUpdateModel;
 import org.csstudio.utility.adlparser.fileParser.widgets.ADLAbstractWidget;
 import org.csstudio.utility.adlparser.fileParser.widgets.ITextWidget;
 import org.eclipse.swt.graphics.FontData;
@@ -67,24 +67,24 @@ public class TextUtilities {
 	 *            Model of ADL widget.  Sourve of the data
 	 * 
 	 */
-	public static void setFormat(TextIndicatorModel textModel,
+	public static void setFormat(TextUpdateModel textModel,
 			ADLAbstractWidget adlTextWidget) {
 		if (adlTextWidget.getName().equals("text entry")
 				|| adlTextWidget.getName().equals("text update")) {
 			String format = ((ITextWidget)adlTextWidget).getFormat();
 			if (format.equals("")||
 					format.equals("decimal")){
-				textModel.setPropertyValue(TextIndicatorModel.PROP_FORMAT_TYPE, 1);
+				textModel.setPropertyValue(TextUpdateModel.PROP_FORMAT_TYPE, 1);
 			}
 			else if (format.equals("exponential") ||
 					format.equals("engr. notation")){
-				textModel.setPropertyValue(TextIndicatorModel.PROP_FORMAT_TYPE, 2);
+				textModel.setPropertyValue(TextUpdateModel.PROP_FORMAT_TYPE, 2);
 			}
 			else if (format.equals("hexadecimal")){
-				textModel.setPropertyValue(TextIndicatorModel.PROP_FORMAT_TYPE, 3);
+				textModel.setPropertyValue(TextUpdateModel.PROP_FORMAT_TYPE, 3);
 			}
 			else if (format.equals("string")){
-				textModel.setPropertyValue(TextIndicatorModel.PROP_FORMAT_TYPE, 4);
+				textModel.setPropertyValue(TextUpdateModel.PROP_FORMAT_TYPE, 4);
 			}
 			else if (format.equals("octal")){
 				// TODO Add format to TextUtilities handle octal format

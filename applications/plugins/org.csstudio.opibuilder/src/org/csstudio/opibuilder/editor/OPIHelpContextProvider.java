@@ -92,11 +92,11 @@ public class OPIHelpContextProvider implements IContextProvider{
 		}
 
 		public String getHref() {
-			String typeID = widgetModel.getTypeID();
+			String modelClassName = widgetModel.getClass().getSimpleName();
 			StringBuilder sb = new StringBuilder("/"); //$NON-NLS-1$
 			sb.append(OPIBuilderPlugin.PLUGIN_ID);
 			sb.append("/html/widgets/"); //$NON-NLS-1$
-			sb.append(typeID.substring(typeID.lastIndexOf(".")+1));
+			sb.append(modelClassName.substring(0, modelClassName.length()-5));
 			sb.append(".html");
 			return  sb.toString();
 		}

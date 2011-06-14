@@ -78,6 +78,10 @@
 	        </topic>
 	        <topic href="html/script/ScriptUtil/ScriptUtil.html" label="ScriptUtil">
 	        </topic>   
+	        <topic href="html/script/ScriptUtil/FileUtil.html" label="FileUtil">
+	        </topic>  
+	        <topic href="html/script/ScriptUtil/WidgetUtil.html" label="WidgetUtil">
+	        </topic>  
 	  
 	  </entry>
   </entry>

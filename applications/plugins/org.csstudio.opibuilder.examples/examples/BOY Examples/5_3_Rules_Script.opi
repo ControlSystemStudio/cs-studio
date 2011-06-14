@@ -33,6 +33,7 @@
     <height>66</height>
     <name>Label</name>
     <transparent>false</transparent>
+    <show_scrollbar>false</show_scrollbar>
     <background_color>
       <color red="255" green="255" blue="185" />
     </background_color>
@@ -56,6 +57,7 @@
     <horizontal_alignment>1</horizontal_alignment>
     <actions hook="false" />
     <y>147</y>
+    <wrap_words>true</wrap_words>
     <tooltip />
     <x>37</x>
   </widget>
@@ -67,6 +69,7 @@
     <height>16</height>
     <name>Label_2</name>
     <transparent>false</transparent>
+    <show_scrollbar>false</show_scrollbar>
     <background_color>
       <color red="0" green="255" blue="128" />
     </background_color>
@@ -89,6 +92,7 @@
     <horizontal_alignment>1</horizontal_alignment>
     <actions hook="false" />
     <y>139</y>
+    <wrap_words>true</wrap_words>
     <tooltip>$(pv_name)
 $(pv_value)</tooltip>
     <x>73</x>
@@ -101,6 +105,7 @@ $(pv_value)</tooltip>
     <height>86</height>
     <name>Label_8</name>
     <transparent>false</transparent>
+    <show_scrollbar>false</show_scrollbar>
     <background_color>
       <color red="135" green="181" blue="255" />
     </background_color>
@@ -123,6 +128,7 @@ $(pv_value)</tooltip>
     <horizontal_alignment>1</horizontal_alignment>
     <actions hook="false" />
     <y>6</y>
+    <wrap_words>true</wrap_words>
     <tooltip />
     <x>17</x>
   </widget>
@@ -335,6 +341,7 @@ $(pv_value)</tooltip>
     <height>20</height>
     <name>Label_8</name>
     <transparent>true</transparent>
+    <show_scrollbar>false</show_scrollbar>
     <background_color>
       <color red="255" green="255" blue="255" />
     </background_color>
@@ -390,6 +397,7 @@ $(pv_value)</tooltip>
     <horizontal_alignment>1</horizontal_alignment>
     <actions hook="false" />
     <y>128</y>
+    <wrap_words>true</wrap_words>
     <tooltip />
     <x>512</x>
   </widget>
@@ -401,6 +409,7 @@ $(pv_value)</tooltip>
     <height>28</height>
     <name>Label_8</name>
     <transparent>false</transparent>
+    <show_scrollbar>false</show_scrollbar>
     <background_color>
       <color red="0" green="255" blue="128" />
     </background_color>
@@ -423,6 +432,7 @@ $(pv_value)</tooltip>
     <horizontal_alignment>1</horizontal_alignment>
     <actions hook="false" />
     <y>366</y>
+    <wrap_words>true</wrap_words>
     <tooltip>$(pv_name)
 $(pv_value)</tooltip>
     <x>157</x>
@@ -481,6 +491,7 @@ $(pv_value)</tooltip>
     <height>43</height>
     <name>Label_6</name>
     <transparent>false</transparent>
+    <show_scrollbar>false</show_scrollbar>
     <background_color>
       <color red="135" green="181" blue="255" />
     </background_color>
@@ -503,6 +514,7 @@ $(pv_value)</tooltip>
     <horizontal_alignment>1</horizontal_alignment>
     <actions hook="false" />
     <y>49</y>
+    <wrap_words>true</wrap_words>
     <tooltip />
     <x>311</x>
   </widget>
@@ -514,6 +526,7 @@ $(pv_value)</tooltip>
     <height>44</height>
     <name>Label_5</name>
     <transparent>false</transparent>
+    <show_scrollbar>false</show_scrollbar>
     <background_color>
       <color red="135" green="181" blue="255" />
     </background_color>
@@ -536,6 +549,7 @@ $(pv_value)</tooltip>
     <horizontal_alignment>1</horizontal_alignment>
     <actions hook="false" />
     <y>6</y>
+    <wrap_words>true</wrap_words>
     <tooltip />
     <x>311</x>
   </widget>
@@ -547,6 +561,7 @@ $(pv_value)</tooltip>
     <height>18</height>
     <name>Label_9</name>
     <transparent>true</transparent>
+    <show_scrollbar>false</show_scrollbar>
     <background_color>
       <color red="255" green="255" blue="255" />
     </background_color>
@@ -569,6 +584,7 @@ $(pv_value)</tooltip>
     <horizontal_alignment>1</horizontal_alignment>
     <actions hook="false" />
     <y>62</y>
+    <wrap_words>true</wrap_words>
     <tooltip />
     <x>65</x>
   </widget>
@@ -580,6 +596,7 @@ $(pv_value)</tooltip>
     <height>20</height>
     <name>Label_8</name>
     <transparent>false</transparent>
+    <show_scrollbar>false</show_scrollbar>
     <background_color>
       <color red="0" green="255" blue="128" />
     </background_color>
@@ -602,6 +619,7 @@ $(pv_value)</tooltip>
     <horizontal_alignment>1</horizontal_alignment>
     <actions hook="false" />
     <y>381</y>
+    <wrap_words>true</wrap_words>
     <tooltip>$(pv_name)
 $(pv_value)</tooltip>
     <x>568</x>
@@ -659,6 +677,7 @@ $(pv_value)</tooltip>
     <height>17</height>
     <name>Label_9</name>
     <transparent>false</transparent>
+    <show_scrollbar>false</show_scrollbar>
     <background_color>
       <color red="255" green="255" blue="185" />
     </background_color>
@@ -681,6 +700,7 @@ $(pv_value)</tooltip>
     <horizontal_alignment>1</horizontal_alignment>
     <actions hook="false" />
     <y>101</y>
+    <wrap_words>true</wrap_words>
     <tooltip />
     <x>272</x>
   </widget>
@@ -739,6 +759,7 @@ $(pv_value)</tooltip>
     <height>17</height>
     <name>Label_10</name>
     <transparent>false</transparent>
+    <show_scrollbar>false</show_scrollbar>
     <background_color>
       <color red="255" green="255" blue="185" />
     </background_color>
@@ -761,6 +782,7 @@ $(pv_value)</tooltip>
     <horizontal_alignment>1</horizontal_alignment>
     <actions hook="false" />
     <y>283</y>
+    <wrap_words>true</wrap_words>
     <tooltip />
     <x>203</x>
   </widget>
@@ -819,6 +841,7 @@ $(pv_value)</tooltip>
     <height>49</height>
     <name>Label_11</name>
     <transparent>false</transparent>
+    <show_scrollbar>false</show_scrollbar>
     <background_color>
       <color red="255" green="255" blue="185" />
     </background_color>
@@ -841,6 +864,7 @@ $(pv_value)</tooltip>
     <horizontal_alignment>1</horizontal_alignment>
     <actions hook="false" />
     <y>547</y>
+    <wrap_words>true</wrap_words>
     <tooltip />
     <x>124</x>
   </widget>
@@ -981,7 +1005,7 @@ $(pv_value)</tooltip>
     <y>558</y>
     <actions hook="true">
       <action type="OPEN_DISPLAY">
-        <path>5_4_FileIOWithScript.opi</path>
+        <path>5_4_Python_Script.opi</path>
         <macros>
           <include_parent_macros>true</include_parent_macros>
         </macros>

@@ -9,7 +9,7 @@ package org.csstudio.opibuilder.adl2boy.translator;
 import org.csstudio.opibuilder.model.AbstractContainerModel;
 import org.csstudio.opibuilder.model.AbstractPVWidgetModel;
 import org.csstudio.opibuilder.widgets.model.AbstractMarkedWidgetModel;
-import org.csstudio.opibuilder.widgets.model.XMeterModel;
+import org.csstudio.opibuilder.widgets.model.MeterModel;
 import org.csstudio.utility.adlparser.fileParser.ADLWidget;
 import org.csstudio.utility.adlparser.fileParser.widgets.Meter;
 import org.eclipse.swt.graphics.RGB;
@@ -70,7 +70,7 @@ public class Meter2Model extends AbstractADL2Model {
 	@Override
 	public void makeModel(ADLWidget adlWidget,
 			AbstractContainerModel parentModel) {
-		widgetModel = new XMeterModel();
+		widgetModel = new MeterModel();
 		parentModel.addChild(widgetModel, true);
 	}
 }

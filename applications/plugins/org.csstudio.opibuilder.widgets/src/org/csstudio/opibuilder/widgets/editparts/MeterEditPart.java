@@ -9,25 +9,25 @@ package org.csstudio.opibuilder.widgets.editparts;
 
 import org.csstudio.opibuilder.properties.IWidgetPropertyChangeHandler;
 import org.csstudio.opibuilder.util.OPIColor;
-import org.csstudio.opibuilder.widgets.model.XMeterModel;
+import org.csstudio.opibuilder.widgets.model.MeterModel;
 import org.csstudio.swt.widgets.figures.MeterFigure;
 import org.eclipse.draw2d.IFigure;
 
 /**
  * EditPart controller for the Gauge widget. The controller mediates between
- * {@link XMeterModel} and {@link MeterFigure}.
+ * {@link MeterModel} and {@link MeterFigure}.
  * 
  * @author Xihui Chen
  * 
  */
-public final class XMeterEditPart extends AbstractMarkedWidgetEditPart {
+public final class MeterEditPart extends AbstractMarkedWidgetEditPart {
 
 	/**
 	 * {@inheritDoc}
 	 */
 	@Override
 	protected IFigure doCreateFigure() {
-		final XMeterModel model = getWidgetModel();
+		final MeterModel model = getWidgetModel();
 
 		MeterFigure xMeter = new MeterFigure();
 		
@@ -40,8 +40,8 @@ public final class XMeterEditPart extends AbstractMarkedWidgetEditPart {
 	}
 	
 	@Override
-	public XMeterModel getWidgetModel() {
-		return (XMeterModel)getModel();
+	public MeterModel getWidgetModel() {
+		return (MeterModel)getModel();
 	}
 
 	/**
@@ -61,7 +61,7 @@ public final class XMeterEditPart extends AbstractMarkedWidgetEditPart {
 				return false;
 			}
 		};
-		setPropertyChangeHandler(XMeterModel.PROP_NEEDLE_COLOR, needleColorColorHandler);	
+		setPropertyChangeHandler(MeterModel.PROP_NEEDLE_COLOR, needleColorColorHandler);	
 		
 		
 		
@@ -75,7 +75,7 @@ public final class XMeterEditPart extends AbstractMarkedWidgetEditPart {
 				return false;
 			}
 		};
-		setPropertyChangeHandler(XMeterModel.PROP_RAMP_GRADIENT, gradientHandler);	
+		setPropertyChangeHandler(MeterModel.PROP_RAMP_GRADIENT, gradientHandler);	
 		
 		
 		
