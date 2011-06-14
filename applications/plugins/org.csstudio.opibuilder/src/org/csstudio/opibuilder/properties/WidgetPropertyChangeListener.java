@@ -42,7 +42,7 @@ public class WidgetPropertyChangeListener implements PropertyChangeListener {
 	
 	public void propertyChange(final PropertyChangeEvent evt) {
 		Runnable runnable = new Runnable() {			
-			public void run() {
+			public synchronized void run() {
 				if(editpart == null || !editpart.isActive()){
 					return;
 				}
