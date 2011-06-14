@@ -25,6 +25,8 @@ public class SQL
     // 'chan_grp' table
     final public String chan_grp_sel_by_eng_id;
     final public String chan_grp_delete_by_engine_id;
+	final public String chan_grp_insert;
+	final public String chan_grp_next_id;
 
     // 'channel' table
     final public String channel_sel_by_group_id;
@@ -48,6 +50,8 @@ public class SQL
         // 'chan_grp' table
         chan_grp_sel_by_eng_id = "SELECT grp_id, name, enabling_chan_id FROM " + schema + "chan_grp WHERE eng_id=? ORDER BY name";
         chan_grp_delete_by_engine_id = "DELETE FROM " + schema + "chan_grp WHERE eng_id=?";
+        chan_grp_insert = "INSERT INTO " + schema + "chan_grp (grp_id, name, eng_id, enabling_chan_id) VALUES (?,?,?,null)";
+        chan_grp_next_id = "SELECT MAX(grp_id) FROM " + schema + "chan_grp";
 
         // 'channel' table
         channel_sel_by_group_id = "SELECT channel_id, name, smpl_mode_id, smpl_val, smpl_per FROM " + schema + "channel WHERE grp_id=? ORDER BY name";

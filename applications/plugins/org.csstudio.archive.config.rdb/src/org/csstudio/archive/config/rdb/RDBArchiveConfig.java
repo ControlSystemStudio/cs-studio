@@ -10,6 +10,7 @@ package org.csstudio.archive.config.rdb;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -384,6 +385,49 @@ public class RDBArchiveConfig implements ArchiveConfig
         try
         {
             ResultSet res = statement.executeQuery(sql.smpl_eng_next_id);
+            if (res.next())
+            {
+                final int id = res.getInt(1);
+                if (id > 0)
+                    return id + 1;
+            }
+            return 1;
+        }
+        finally
+        {
+            statement.close();
+        }
+    }
+
+	public RDBGroupConfig addGroup(final EngineConfig engine, final String name) throws Exception
+    {
+        final Connection connection = rdb.getConnection();
+        final int group_id = getNextGroupId();
+        final PreparedStatement statement = connection.prepareStatement(sql.chan_grp_insert);
+        try
+        {
+            statement.setInt(1, group_id);
+            statement.setString(2, name);
+            statement.setInt(3, ((RDBEngineConfig)engine).getId());
+            statement.executeUpdate();
+        }
+        finally
+        {
+            statement.close();
+        }
+        connection.commit();
+        return new RDBGroupConfig(group_id, name, null);
+    }
+
+    /** @return Next available group ID 
+     *  @throws Exception
+     */
+	private int getNextGroupId() throws Exception
+    {
+        final Statement statement = rdb.getConnection().createStatement();
+        try
+        {
+            ResultSet res = statement.executeQuery(sql.chan_grp_next_id);
             if (res.next())
             {
                 final int id = res.getInt(1);
