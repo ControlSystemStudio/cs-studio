@@ -30,7 +30,7 @@ import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
 import org.csstudio.config.ioconfig.model.FacilityDBO;
-import org.csstudio.config.ioconfig.model.IOConifgActivator;
+import org.csstudio.config.ioconfig.model.IOConfigActivator;
 import org.csstudio.config.ioconfig.model.PersistenceException;
 import org.csstudio.config.ioconfig.model.statistic.ProfibusStatisticGenerator;
 import org.csstudio.config.ioconfig.view.DeviceDatabaseErrorDialog;
@@ -73,7 +73,7 @@ public class CreateStatisticAction extends Action {
     @Override
     public void run() {
         final String filterPathKey = "FilterPath";
-        IEclipsePreferences pref = new DefaultScope().getNode(IOConifgActivator.PLUGIN_ID);
+        IEclipsePreferences pref = new DefaultScope().getNode(IOConfigActivator.PLUGIN_ID);
         String filterPath = pref.get(filterPathKey, "");
         DirectoryDialog dDialog = new DirectoryDialog(_pbtv.getShell());
         dDialog.setFilterPath(filterPath);

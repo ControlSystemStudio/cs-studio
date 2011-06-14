@@ -46,7 +46,7 @@ import org.csstudio.config.ioconfig.config.view.helper.ProfibusHelper;
 import org.csstudio.config.ioconfig.editorparts.AbstractNodeEditor;
 import org.csstudio.config.ioconfig.model.AbstractNodeDBO;
 import org.csstudio.config.ioconfig.model.FacilityDBO;
-import org.csstudio.config.ioconfig.model.IOConifgActivator;
+import org.csstudio.config.ioconfig.model.IOConfigActivator;
 import org.csstudio.config.ioconfig.model.IocDBO;
 import org.csstudio.config.ioconfig.model.NamedDBClass;
 import org.csstudio.config.ioconfig.model.PersistenceException;
@@ -244,7 +244,7 @@ public class ProfiBusTreeView extends Composite {
     public ProfiBusTreeView(@Nonnull final Composite parent, final int style,
                             @Nonnull final IViewSite site) {
         super(parent, style);
-        new InstanceScope().getNode(IOConifgActivator.getDefault().getPluginId())
+        new InstanceScope().getNode(IOConfigActivator.getDefault().getPluginId())
                 .addPreferenceChangeListener(new HibernateDBPreferenceChangeListener());
         _site = site;
         

@@ -183,7 +183,7 @@ public final class HibernateManager extends Observable {
     }
     
     private void buildConifg() {
-        new InstanceScope().getNode(IOConifgActivator.getDefault().getPluginId())
+        new InstanceScope().getNode(IOConfigActivator.getDefault().getPluginId())
                 .addPreferenceChangeListener(new IPreferenceChangeListener() {
                     
                     @Override
@@ -194,7 +194,7 @@ public final class HibernateManager extends Observable {
                 });
         
         IPreferencesService prefs = Platform.getPreferencesService();
-        String pluginId = IOConifgActivator.getDefault().getPluginId();
+        String pluginId = IOConfigActivator.getDefault().getPluginId();
         _cfg = new AnnotationConfiguration();
         for (Class<?> clazz : _classes) {
             _cfg.addAnnotatedClass(clazz);
