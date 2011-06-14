@@ -81,6 +81,9 @@
                   </and>
                </with>
             </visibleWhen>
+            <separator
+                  name="main">
+            </separator>
          </menu>
       </menuContribution>
    </extension>

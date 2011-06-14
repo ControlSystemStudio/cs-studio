@@ -54,6 +54,36 @@
             </parameter>
          </command>
       </menuContribution>
+      <menuContribution
+            allPopups="false"
+            locationURI="popup:org.csstudio.ui.menu.popup.processvariable">
+         <command
+               commandId="org.csstudio.ui.menu.test.testpvcommand"
+               style="push">
+         </command>
+      </menuContribution>
+   </extension>
+   <extension
+         point="org.eclipse.ui.commands">
+      <command
+            defaultHandler="org.csstudio.ui.menu.test.TestPVCommandHandler"
+            id="org.csstudio.ui.menu.test.testpvcommand"
+            name="Test Command">
+      </command>
+   </extension>
+   <extension
+         point="org.eclipse.ui.popupMenus">
+      <objectContribution
+            adaptable="false"
+            id="org.csstudio.ui.menu.test.objectContribution1"
+            objectClass="org.csstudio.csdata.ProcessVariable">
+         <action
+               class="org.csstudio.ui.menu.test.TestPVAction"
+               id="org.csstudio.ui.menu.test.testpvaction"
+               label="Test Action"
+               menubarPath="org.csstudio.ui.menu.popup.processvariable/main">
+         </action>
+      </objectContribution>
    </extension>
 
 </plugin>
