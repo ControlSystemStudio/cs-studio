@@ -24,28 +24,41 @@
 package org.csstudio.config.ioconfig.model;
 
 import javax.annotation.CheckForNull;
-import javax.annotation.Nullable;
+import javax.annotation.Nonnull;
 
 
 /**
- * Invalid Leave node 
+ * Virtual leaf node - flyweight pattern + nullobject pattern.
+ * This node is - similar to {@link VirtualRoot} node - not actually part of the tree, but only
+ * present to ensure the consistence of the methods of the 'real' tree nodes.
+ * Tree traversal checks are performed against the singleton instances of {@link VirtualRoot} and 
+ * {@link VirtualLeaf}. 
  * 
  * @author hrickens
  * @author $Author: hrickens $
  * @version $Revision: 1.7 $
  * @since 11.05.2011
  */
-@SuppressWarnings({"unchecked", "rawtypes"})
-public final class InvalidLeave extends AbstractNodeDBO {
+public final class VirtualLeaf extends AbstractNodeDBO<IocDBO, VirtualLeaf> {
 
-    
     private static final long serialVersionUID = 1L;
 
+    public static final VirtualLeaf INSTANCE = new VirtualLeaf();
+    
     /**
      * Constructor.
      */
-    private InvalidLeave() {
-        // Don't create any instance of this object
+    private VirtualLeaf() {
+        // EMPTY
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    @Nonnull
+    public IocDBO getParent() {
+        throw new UnsupportedOperationException(VirtualLeaf.class + " does not permit to ask for its parent node.");
     }
     
     /**
@@ -61,9 +74,25 @@ public final class InvalidLeave extends AbstractNodeDBO {
      * {@inheritDoc}
      */
     @Override
-    @CheckForNull
-    protected AbstractNodeDBO copyParameter(@Nullable AbstractNodeDBO parent) throws PersistenceException {
-        return null;
+    @Nonnull
+    protected VirtualLeaf copyParameter(@Nonnull final IocDBO parent) throws PersistenceException {
+        return INSTANCE;
     }
     
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    @Nonnull
+    public VirtualLeaf createChild() throws PersistenceException {
+        throw new UnsupportedOperationException(VirtualLeaf.class + " does not permit to create child nodes");
+    }
+    
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public void accept(@Nonnull final INodeVisitor visitor) {
+        visitor.visit(this);
+    }
 }

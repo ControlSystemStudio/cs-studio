@@ -20,7 +20,7 @@ import org.osgi.framework.BundleContext;
 /**
  * The activator class controls the plug-in life cycle.
  */
-public class IOConifgActivator extends AbstractCssPlugin{
+public class IOConfigActivator extends AbstractCssPlugin{
 
 	/**
 	 *  The plug-in ID.
@@ -30,14 +30,14 @@ public class IOConifgActivator extends AbstractCssPlugin{
 	/**
 	 *  The shared instance
 	 */
-	private static IOConifgActivator INSTANCE;
+	private static IOConfigActivator INSTANCE;
 
     private List<Class<?>> _classes;
 
     /**
      * The constructor
      */
-    public IOConifgActivator() {
+    public IOConfigActivator() {
 		if (INSTANCE != null) { // ENSURE SINGLETON
 			throw new IllegalStateException("Class " + PLUGIN_ID
 					+ " already exists.");
@@ -51,7 +51,7 @@ public class IOConifgActivator extends AbstractCssPlugin{
      * @return the shared instance
      */
     @Nonnull
-    public static IOConifgActivator getDefault() {
+    public static IOConfigActivator getDefault() {
 		return INSTANCE;
     }
 

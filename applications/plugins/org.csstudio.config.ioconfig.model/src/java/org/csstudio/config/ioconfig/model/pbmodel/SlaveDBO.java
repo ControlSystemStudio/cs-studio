@@ -40,6 +40,7 @@ import javax.persistence.Transient;
 
 import org.csstudio.config.ioconfig.model.AbstractNodeDBO;
 import org.csstudio.config.ioconfig.model.GSDFileTypes;
+import org.csstudio.config.ioconfig.model.INodeVisitor;
 import org.csstudio.config.ioconfig.model.NodeType;
 import org.csstudio.config.ioconfig.model.PersistenceException;
 import org.csstudio.config.ioconfig.model.pbmodel.gsdParser.GsdFileParser;
@@ -148,8 +149,7 @@ public class SlaveDBO extends AbstractNodeDBO<MasterDBO, ModuleDBO> {
     }
     
     private SlaveDBO(@Nonnull final MasterDBO master, final int stationAddress) throws PersistenceException {
-        setParent(master);
-        master.addChild(this);
+        super(master);
         moveSortIndex(stationAddress);
     }
     
@@ -506,5 +506,22 @@ public class SlaveDBO extends AbstractNodeDBO<MasterDBO, ModuleDBO> {
     public NodeType getNodeType() {
         return NodeType.SLAVE;
     }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    @Nonnull
+    public ModuleDBO createChild() throws PersistenceException {
+        return new ModuleDBO(this);
+    }
     
+    
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public void accept(@Nonnull final INodeVisitor visitor) {
+        visitor.visit(this);
+    }    
 }

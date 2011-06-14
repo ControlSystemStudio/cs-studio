@@ -64,8 +64,12 @@ import org.hibernate.annotations.Cascade;
 @Entity
 @Table(name = "ddb_node")
 @Inheritance(strategy = InheritanceType.JOINED)
-public abstract class AbstractNodeDBO<P extends AbstractNodeDBO, C extends AbstractNodeDBO> extends
-        NamedDBClass implements Comparable<AbstractNodeDBO<P,C>>, IDocumentable, INode, Serializable {
+public abstract class AbstractNodeDBO<P extends AbstractNodeDBO, C extends AbstractNodeDBO> 
+                                     extends NamedDBClass 
+                                     implements Comparable<AbstractNodeDBO<P,C>>, 
+                                                IDocumentable, 
+                                                INode,
+                                                Serializable {
     
     private static final long serialVersionUID = 1L;
 
@@ -103,6 +107,11 @@ public abstract class AbstractNodeDBO<P extends AbstractNodeDBO, C extends Abstr
      */
     public AbstractNodeDBO() {
         // Do nothing
+    }
+
+    public AbstractNodeDBO(@Nonnull final P parent) throws PersistenceException {
+        _parent = parent;
+        _parent.addChild(this);
     }
     
     /**
@@ -604,4 +613,9 @@ public abstract class AbstractNodeDBO<P extends AbstractNodeDBO, C extends Abstr
     public GSDFileTypes needGSDFile() {
         return GSDFileTypes.NONE;
     }
+    
+    @Nonnull
+    public abstract C createChild() throws PersistenceException;
+
+    public abstract void accept(@Nonnull final INodeVisitor visitor);
 }

@@ -30,6 +30,7 @@ import java.io.StringReader;
 import java.io.StringWriter;
 
 import org.csstudio.config.ioconfig.model.FacilityDBO;
+import org.csstudio.config.ioconfig.model.IOConfigActivator;
 import org.csstudio.config.ioconfig.model.IocDBO;
 import org.csstudio.config.ioconfig.model.PersistenceException;
 import org.csstudio.config.ioconfig.model.pbmodel.GSDFileDBO;
@@ -38,6 +39,8 @@ import org.csstudio.config.ioconfig.model.pbmodel.ModuleDBO;
 import org.csstudio.config.ioconfig.model.pbmodel.ProfibusSubnetDBO;
 import org.csstudio.config.ioconfig.model.pbmodel.SlaveDBO;
 import org.csstudio.config.ioconfig.model.xml.ProfibusConfigXMLGenerator;
+import org.csstudio.testsuite.util.TestResourceLocator;
+import org.csstudio.testsuite.util.TestResourceLocator.RepoDomain;
 import org.junit.After;
 import org.junit.Assert;
 import org.junit.Before;
@@ -227,7 +230,11 @@ public class XAVCConfigUnitTest {
      */
     @Before
     public void setUp() throws Exception {
-        _expected = new BufferedReader(new FileReader("./res-test/ConfigFiles/XAVC.xml"));
+        final String resFilePath = 
+            TestResourceLocator.composeResourceLocationString(RepoDomain.APPLICATIONS, 
+                                                              IOConfigActivator.PLUGIN_ID, 
+                                                              "res-test/ConfigFiles/XAVC.xml");
+        _expected = new BufferedReader(new FileReader(resFilePath));
         _B756_P33 = GSDTestFiles.B756_P33.getFileAsGSDFileDBO();
         _BIMF5861 = GSDTestFiles.BIMF5861.getFileAsGSDFileDBO();
         _SiPart = GSDTestFiles.SiPart.getFileAsGSDFileDBO();

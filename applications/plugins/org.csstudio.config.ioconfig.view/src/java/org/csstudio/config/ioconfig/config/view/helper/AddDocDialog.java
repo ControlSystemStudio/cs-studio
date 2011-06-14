@@ -11,7 +11,7 @@ import javax.annotation.Nullable;
 
 import org.csstudio.config.ioconfig.model.DocumentDBO;
 import org.csstudio.config.ioconfig.model.IDocument;
-import org.csstudio.config.ioconfig.model.IOConifgActivator;
+import org.csstudio.config.ioconfig.model.IOConfigActivator;
 import org.csstudio.config.ioconfig.model.preference.PreferenceConstants;
 import org.eclipse.core.runtime.preferences.IEclipsePreferences;
 import org.eclipse.core.runtime.preferences.InstanceScope;
@@ -70,7 +70,7 @@ public class AddDocDialog extends Dialog {
     @Override @Nonnull
     protected Control createDialogArea(@Nonnull final Composite parent) {
         InstanceScope instanceScope = new InstanceScope();
-        IEclipsePreferences node = instanceScope.getNode(IOConifgActivator.PLUGIN_ID);
+        IEclipsePreferences node = instanceScope.getNode(IOConfigActivator.PLUGIN_ID);
         _date = new GregorianCalendar();
         GridData gridData = (GridData) parent.getLayoutData();
         gridData.minimumWidth = 400;

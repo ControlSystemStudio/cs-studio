@@ -39,4 +39,3 @@ Bundle-ClassPath: .,
  lib/jdom.jar
 Bundle-ActivationPolicy: lazy
 Import-Package: javax.jms
-Eclipse-RegisterBuddy: org.csstudio.platform.libs.log4j
