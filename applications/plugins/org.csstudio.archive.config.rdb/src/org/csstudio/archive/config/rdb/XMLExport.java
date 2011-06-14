@@ -10,7 +10,6 @@ package org.csstudio.archive.config.rdb;
 import java.io.PrintStream;
 
 import org.csstudio.archive.config.ArchiveConfig;
-import org.csstudio.archive.config.ArchiveConfigFactory;
 import org.csstudio.archive.config.ChannelConfig;
 import org.csstudio.archive.config.EngineConfig;
 import org.csstudio.archive.config.GroupConfig;
@@ -25,12 +24,18 @@ public class XMLExport
 {
 	/** Export configuration
 	 *  @param out {@link PrintStream}
-	 *  @param engine_name Name of engine configuration
-     *  @throws Exception on error
+	 *  @param rdb_url 
+	 *  @param rdb_user 
+	 *  @param rdb_password 
+	 *  @param rdb_schema 
+     *  @param engine_name Name of engine configuration
+	 *  @throws Exception on error
      */
-    public void export(final PrintStream out, final String engine_name) throws Exception
+    public void export(final PrintStream out,
+    		final String rdb_url, final String rdb_user, final String rdb_password, final String rdb_schema,
+    		final String engine_name) throws Exception
     {
-    	final ArchiveConfig config = ArchiveConfigFactory.getArchiveConfig();
+    	final RDBArchiveConfig config = new RDBArchiveConfig(rdb_url, rdb_user, rdb_password, rdb_schema);
     	try
     	{
 	        final EngineConfig engine = config.findEngine(engine_name);

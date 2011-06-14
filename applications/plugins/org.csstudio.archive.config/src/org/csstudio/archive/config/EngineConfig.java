@@ -13,6 +13,7 @@ import java.net.URISyntaxException;
 /** Sample engine description
  *  @author Kay Kasemir
  */
+@SuppressWarnings("nls")
 public class EngineConfig
 {
 	final private String name;
@@ -49,4 +50,11 @@ public class EngineConfig
     {
     	return url;
     }
+	
+	/** @return Debug representation */
+    @Override
+    public String toString()
+	{
+		return "Engine '" + name + "' (" + description + ") at " + url;
+	}
 }

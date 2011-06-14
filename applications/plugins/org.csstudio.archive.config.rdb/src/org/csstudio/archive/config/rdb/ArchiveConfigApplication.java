@@ -7,6 +7,8 @@
  ******************************************************************************/
 package org.csstudio.archive.config.rdb;
 
+import java.io.FileInputStream;
+import java.io.InputStream;
 import java.io.PrintStream;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -18,6 +20,7 @@ import org.csstudio.apputil.args.StringOption;
 import org.csstudio.archive.config.ArchiveConfig;
 import org.csstudio.archive.config.ArchiveConfigFactory;
 import org.csstudio.archive.config.EngineConfig;
+import org.csstudio.archive.rdb.Activator;
 import org.csstudio.logging.LogConfigurator;
 import org.eclipse.equinox.app.IApplication;
 import org.eclipse.equinox.app.IApplicationContext;
@@ -105,6 +108,29 @@ public class ArchiveConfigApplication implements IApplication
                 	out.close();
                 return IApplication.EXIT_OK;
             }
+            else if (do_import.get())
+            {
+            	if (filename.get().isEmpty())
+            	{
+                    System.err.println("Missing option " + filename.getOption());
+                    System.err.println(parser.getHelp());
+                    return IApplication.EXIT_OK;
+            	}
+                final String engine_url = "http://" + engine_host.get() + ":" + engine_port.get() + "/main";
+                System.out.println("Importing     : " + filename.get());
+                System.out.println("Engine        : " + engine_name.get());
+                System.out.println("Description   : " + engine_description.get());
+                System.out.println("URL           : " + engine_url);
+                System.out.println("Replace engine: " + replace_engine.get());
+                System.out.println("Steal channels: " + steal_channels.get());
+                final InputStream stream = new FileInputStream(filename.get());
+//                final XMLImport importer = new XMLImport(engine_name.get(),
+//                    engine_description.get(),
+//                    engine_url,
+//                    replace_engine.get(),
+//                    steal_channels.get());
+//            	importer.parse(stream);
+            }	
         }
         catch (final Throwable ex)
         {

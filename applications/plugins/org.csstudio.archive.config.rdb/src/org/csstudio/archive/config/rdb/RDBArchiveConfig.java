@@ -7,6 +7,7 @@
  ******************************************************************************/
 package org.csstudio.archive.config.rdb;
 
+import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.Statement;
@@ -27,6 +28,10 @@ import org.csstudio.data.values.TimestampFactory;
 import org.csstudio.platform.utility.rdb.RDBUtil;
 
 /** RDB implementation (Oracle, MySQL, PostgreSQL) of {@link ArchiveConfig}
+ *  
+ *  <p>Provides read access via {@link ArchiveConfig} API,
+ *  and also allows write access via additional RDB-only methods.
+ *  
  *  @author Kay Kasemir
  */
 @SuppressWarnings("nls")
@@ -294,5 +299,102 @@ public class RDBArchiveConfig implements ArchiveConfig
 			last_sample_time_statement = null;
 		}
 		rdb.close();
+    }
+
+    /** Delete engine info, all the groups under it, and clear all links
+     *  from channels to those groups.
+     *  @param engine Engine info to remove
+     *  @throws Exception on error
+     */
+	public void deleteEngine(final EngineConfig engine) throws Exception
+    {
+        // Unlink all channels from engine's groups
+		final int engine_id = ((RDBEngineConfig)engine).getId();
+        final Connection connection = rdb.getConnection();
+        PreparedStatement statement = connection.prepareStatement(
+                    sql.channel_clear_grp_for_engine);
+        try
+        {
+            statement.setInt(1, engine_id);
+            statement.executeUpdate();
+        }
+        finally
+        {
+            statement.close();
+        }
+        // Delete all groups under engine...
+        statement = connection.prepareStatement(
+                sql.chan_grp_delete_by_engine_id);
+        try
+        {
+            statement.setInt(1, engine_id);
+            statement.executeUpdate();
+        }
+        finally
+        {
+            statement.close();
+        }
+        // Delete Engine entry
+        statement = connection.prepareStatement(sql.smpl_eng_delete);
+        try
+        {
+            statement.setInt(1, engine_id);
+            statement.executeUpdate();
+        }
+        finally
+        {
+            statement.close();
+        }
+        connection.commit();
+    }
+
+	/** Create new engine config in RDB
+	 *  @param engine_name
+	 *  @param description
+	 *  @param engine_url
+	 *  @return
+	 *  @throws Exception
+	 */
+	public EngineConfig createEngine(final String engine_name, final String description,
+            final String engine_url) throws Exception
+    {
+		final int id = getNextEngineId();
+        final PreparedStatement statement =
+        	rdb.getConnection().prepareStatement(sql.smpl_eng_insert);
+        try
+        {
+            statement.setInt(1, id);
+            statement.setString(2, engine_name);
+            statement.setString(3, description);
+            statement.setString(4, engine_url);
+            statement.executeUpdate();
+        }
+        finally
+        {
+            statement.close();
+        }
+        rdb.getConnection().commit();
+        return new RDBEngineConfig(id, engine_name, description, engine_url);
+    }
+
+    /** @return Next available engine ID */
+	private int getNextEngineId() throws Exception
+    {
+        final Statement statement = rdb.getConnection().createStatement();
+        try
+        {
+            ResultSet res = statement.executeQuery(sql.smpl_eng_next_id);
+            if (res.next())
+            {
+                final int id = res.getInt(1);
+                if (id > 0)
+                    return id + 1;
+            }
+            return 1;
+        }
+        finally
+        {
+            statement.close();
+        }
     }
 }
