@@ -7,6 +7,8 @@
  ******************************************************************************/
 package org.csstudio.archive.config.rdb;
 
+import java.io.PrintStream;
+
 import org.csstudio.archive.config.ArchiveConfig;
 import org.csstudio.archive.config.ArchiveConfigFactory;
 import org.csstudio.archive.config.ChannelConfig;
@@ -21,10 +23,12 @@ import org.csstudio.data.values.TimestampFactory;
 @SuppressWarnings("nls")
 public class XMLExport
 {
-	/** Initialize
+	/** Export configuration
+	 *  @param out {@link PrintStream}
+	 *  @param engine_name Name of engine configuration
      *  @throws Exception on error
      */
-    public void export(final String engine_name) throws Exception
+    public void export(final PrintStream out, final String engine_name) throws Exception
     {
     	final ArchiveConfig config = ArchiveConfigFactory.getArchiveConfig();
     	try
@@ -32,11 +36,11 @@ public class XMLExport
 	        final EngineConfig engine = config.findEngine(engine_name);
 	        if (engine == null)
 	            throw new Exception("Unknown engine '" + engine_name + "'");
-	        System.out.println("<?xml version=\"1.0\" encoding=\"UTF-8\" standalone=\"no\"?>");
-	        System.out.println("<!-- Created by ArchiveConfigTool -engine " + engine_name + " -export");
-	        System.out.println("     " + TimestampFactory.now().toString());
-	        System.out.println(" -->");
-	        dumpEngine(config, engine);
+	        out.println("<?xml version=\"1.0\" encoding=\"UTF-8\" standalone=\"no\"?>");
+	        out.println("<!-- Created by ArchiveConfigTool -engine " + engine_name + " -export");
+	        out.println("     " + TimestampFactory.now().toString());
+	        out.println(" -->");
+	        dumpEngine(out, config, engine);
     	}
     	finally
     	{
@@ -44,40 +48,40 @@ public class XMLExport
     	}
     }
 
-    private void dumpEngine(final ArchiveConfig config, final EngineConfig engine) throws Exception
+    private void dumpEngine(final PrintStream out, final ArchiveConfig config, final EngineConfig engine) throws Exception
     {
-        System.out.println("<engineconfig>");
+        out.println("<engineconfig>");
         final GroupConfig[] groups = config.getGroups(engine);
         for (GroupConfig group : groups)
-            dumpGroup(config, group);
-        System.out.println("</engineconfig>");
+            dumpGroup(out, config, group);
+        out.println("</engineconfig>");
     }
 
-    private void dumpGroup(final ArchiveConfig config, final GroupConfig group) throws Exception
+    private void dumpGroup(final PrintStream out, final ArchiveConfig config, final GroupConfig group) throws Exception
     {
-        System.out.println("  <group>");
-        System.out.println("    <name>" + group.getName() + "</name>");
+        out.println("  <group>");
+        out.println("    <name>" + group.getName() + "</name>");
         final ChannelConfig[] channels = config.getChannels(group);
         for (ChannelConfig channel : channels)
-            dumpChannel(channel);
-        System.out.println("  </group>");
+            dumpChannel(out, channel);
+        out.println("  </group>");
     }
 
-    private void dumpChannel(final ChannelConfig channel)
+    private void dumpChannel(final PrintStream out, final ChannelConfig channel)
     {
-        System.out.print("      <channel>");
-        System.out.print("<name>" + channel.getName() + "</name>");
+        out.print("      <channel>");
+        out.print("<name>" + channel.getName() + "</name>");
         final SampleMode mode = channel.getSampleMode();
-        System.out.print("<period>" + mode.getPeriod() + "</period>");
+        out.print("<period>" + mode.getPeriod() + "</period>");
         if (mode.isMonitor())
         {
             if (mode.getDelta() != 0.0)
-                System.out.print("<monitor>" + mode.getDelta() + "</monitor>");
+                out.print("<monitor>" + mode.getDelta() + "</monitor>");
             else
-                System.out.print("<monitor/>");
+                out.print("<monitor/>");
         }
         else
-            System.out.print("<scan/>");
-        System.out.println("</channel>");
+            out.print("<scan/>");
+        out.println("</channel>");
     }
 }

@@ -7,11 +7,13 @@
  ******************************************************************************/
 package org.csstudio.archive.config.rdb;
 
+import java.io.PrintStream;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import org.csstudio.apputil.args.ArgParser;
 import org.csstudio.apputil.args.BooleanOption;
+import org.csstudio.apputil.args.IntegerOption;
 import org.csstudio.apputil.args.StringOption;
 import org.csstudio.archive.config.ArchiveConfig;
 import org.csstudio.archive.config.ArchiveConfigFactory;
@@ -40,8 +42,20 @@ public class ArchiveConfigApplication implements IApplication
                 "-engine", "my_engine", "Engine Name", "");
         final StringOption filename = new StringOption(parser,
                 "-config", "my_config.xml", "XML Engine config file", "");
-        final BooleanOption export = new BooleanOption(parser,
+        final BooleanOption do_export = new BooleanOption(parser,
                 "-export", "export configuration as XML");
+        final BooleanOption do_import = new BooleanOption(parser,
+                "-import", "import configuration from XML");
+        final StringOption  engine_description = new StringOption(parser,
+                "-description", "'My Engine'", "Engine Description", "Imported");
+        final StringOption  engine_host = new StringOption(parser,
+                "-host", "my.host.org", "Engine Host", "localhost");
+        final IntegerOption engine_port = new IntegerOption(parser,
+                "-port", "4812", "Engine Port", 4812);
+        final BooleanOption replace_engine = new BooleanOption(parser,
+                "-replace_engine", "Replace existing engine config, or stop?");
+        final BooleanOption steal_channels = new BooleanOption(parser,
+                "-steal_channels", "Steal channels that are already in other engine");
 		
         // NOTE:
         // On OS X, the application will have a file
@@ -75,9 +89,20 @@ public class ArchiveConfigApplication implements IApplication
 
         try
         {
-            if (export.get())
+            if (do_export.get())
             {
-                new XMLExport().export(engine_name.get());
+            	final PrintStream out;
+            	if (filename.get().isEmpty())
+            		out = System.out;
+            	else
+            	{
+            		out = new PrintStream(filename.get());
+            		System.out.println("Exporting config for engine " + engine_name.get()
+            				+ " to " + filename.get());
+            	}
+                new XMLExport().export(out, engine_name.get());
+                if (out != System.out)
+                	out.close();
                 return IApplication.EXIT_OK;
             }
         }
