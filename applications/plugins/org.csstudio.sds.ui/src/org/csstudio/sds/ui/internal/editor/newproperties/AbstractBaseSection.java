@@ -61,10 +61,10 @@ public abstract class AbstractBaseSection<E extends WidgetProperty> extends Abst
             .getColor(255, 255, 64);
     protected static final Color COLOR_CONTROL_INACTIVE = CustomMediaFactory.getInstance()
             .getColor(255, 0, 0);
-    protected static final Color COLOR_LABEL = CustomMediaFactory.getInstance()
-            .getColor(CustomMediaFactory.COLOR_BLACK);
-    protected static final Color COLOR_SHARED_VALUE = CustomMediaFactory.getInstance()
+    protected static final Color COLOR_DIFFERENT_LABEL = CustomMediaFactory.getInstance()
             .getColor(109, 34, 124);
+    protected static final Color COLOR_SHARED_VALUE = CustomMediaFactory.getInstance()
+            .getColor(CustomMediaFactory.COLOR_BLACK);
     
     static final int STANDARD_WIDGET_WIDTH = 150;
     // static final int STANDARD_CCOMBO_WIDTH = STANDARD_WIDGET_WIDTH + 10;
@@ -313,10 +313,10 @@ public abstract class AbstractBaseSection<E extends WidgetProperty> extends Abst
             nameLabel.setText(mainWidgetProperty.getDescription());
             
             int fontStyle = dynamic ? SWT.BOLD : SWT.NORMAL;
-            Color color = COLOR_LABEL;
-            if (haveAllSelectedWidgetsTheSameValue()) {
+            Color color = COLOR_SHARED_VALUE;
+            if (!haveAllSelectedWidgetsTheSameValue()) {
                 fontStyle = fontStyle | SWT.ITALIC;
-                color = COLOR_SHARED_VALUE;
+                color = COLOR_DIFFERENT_LABEL;
             }
             nameLabel.setFont(CustomMediaFactory.getInstance().getDefaultFont(fontStyle));
             nameLabel.setForeground(color);
@@ -334,7 +334,7 @@ public abstract class AbstractBaseSection<E extends WidgetProperty> extends Abst
     
     private boolean haveAllSelectedWidgetsTheSameValue() {
         if (mainWidgetProperty == null || selectedWidgets.size() < 2) {
-            return false;
+            return true;
         }
         
         for (AbstractWidgetModel widget : selectedWidgets) {

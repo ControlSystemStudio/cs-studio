@@ -18,7 +18,6 @@ import org.csstudio.data.values.ValueUtil;
 import org.csstudio.opibuilder.editparts.AbstractPVWidgetEditPart;
 import org.csstudio.opibuilder.editparts.ExecutionMode;
 import org.csstudio.opibuilder.model.AbstractPVWidgetModel;
-import org.csstudio.opibuilder.model.AbstractWidgetModel;
 import org.csstudio.opibuilder.properties.IWidgetPropertyChangeHandler;
 import org.csstudio.opibuilder.util.OPIColor;
 import org.csstudio.opibuilder.widgets.model.AbstractChoiceModel;
@@ -149,24 +148,7 @@ public abstract class AbstractChoiceEditPart extends AbstractPVWidgetEditPart {
 			}
 		};
 		setPropertyChangeHandler(AbstractPVWidgetModel.PROP_PVNAME, pvNameHandler);
-
-
-		getFigure().setEnabled(getWidgetModel().isEnabled() &&
-				(getExecutionMode() == ExecutionMode.RUN_MODE));
-
-		removeAllPropertyChangeHandlers(AbstractWidgetModel.PROP_ENABLED);
-
-		//enable
-		IWidgetPropertyChangeHandler enableHandler = new IWidgetPropertyChangeHandler(){
-			public boolean handleChange(Object oldValue, Object newValue,
-					IFigure figure) {
-				if(getExecutionMode() == ExecutionMode.RUN_MODE)
-					figure.setEnabled((Boolean)newValue);
-				return false;
-			}
-		};
-		setPropertyChangeHandler(AbstractWidgetModel.PROP_ENABLED, enableHandler);
-
+		
 		// PV_Value
 		IWidgetPropertyChangeHandler pvhandler = new IWidgetPropertyChangeHandler() {
 			public boolean handleChange(final Object oldValue,

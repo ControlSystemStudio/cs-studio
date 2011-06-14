@@ -2,7 +2,7 @@ Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: MySQL Connector
 Bundle-SymbolicName: com.jdbc.mysql
-Bundle-Version: 5.1.14
+Bundle-Version: 5.1.14.qualifier
 Export-Package: com.mysql.jdbc,
  com.mysql.jdbc.exceptions,
  com.mysql.jdbc.exceptions.jdbc4,

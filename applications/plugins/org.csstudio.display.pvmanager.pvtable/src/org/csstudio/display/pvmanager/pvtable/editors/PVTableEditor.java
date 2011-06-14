@@ -12,6 +12,8 @@ import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
 import java.util.logging.Logger;
 
@@ -36,8 +38,11 @@ import org.eclipse.jface.viewers.CellNavigationStrategy;
 import org.eclipse.jface.viewers.ColumnViewer;
 import org.eclipse.jface.viewers.ColumnViewerEditor;
 import org.eclipse.jface.viewers.ColumnViewerEditorActivationEvent;
+import org.eclipse.jface.viewers.ColumnViewerEditorActivationListener;
 import org.eclipse.jface.viewers.ColumnViewerEditorActivationStrategy;
+import org.eclipse.jface.viewers.ColumnViewerEditorDeactivationEvent;
 import org.eclipse.jface.viewers.EditingSupport;
+import org.eclipse.jface.viewers.FocusCellHighlighter;
 import org.eclipse.jface.viewers.FocusCellOwnerDrawHighlighter;
 import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.jface.viewers.ISelectionChangedListener;
@@ -53,10 +58,14 @@ import org.eclipse.jface.viewers.TextCellEditor;
 import org.eclipse.jface.viewers.Viewer;
 import org.eclipse.jface.viewers.ViewerCell;
 import org.eclipse.swt.SWT;
+import org.eclipse.swt.custom.TableCursor;
 import org.eclipse.swt.events.ControlAdapter;
 import org.eclipse.swt.events.ControlEvent;
+import org.eclipse.swt.events.KeyEvent;
+import org.eclipse.swt.events.KeyListener;
 import org.eclipse.swt.events.MouseEvent;
 import org.eclipse.swt.events.MouseMoveListener;
+import org.eclipse.swt.graphics.GC;
 import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.graphics.Point;
 import org.eclipse.swt.graphics.Rectangle;
@@ -68,6 +77,8 @@ import org.eclipse.swt.widgets.Menu;
 import org.eclipse.swt.widgets.ScrollBar;
 import org.eclipse.swt.widgets.Table;
 import org.eclipse.swt.widgets.TableColumn;
+import org.eclipse.swt.widgets.TableItem;
+import org.eclipse.swt.widgets.Text;
 import org.eclipse.ui.IEditorInput;
 import org.eclipse.ui.IEditorPart;
 import org.eclipse.ui.IEditorSite;
@@ -87,6 +98,7 @@ import org.epics.pvmanager.data.SimpleValueFormat;
 import org.epics.pvmanager.data.Util;
 import org.epics.pvmanager.data.ValueFormat;
 import org.epics.pvmanager.extra.DynamicGroup;
+import com.swtdesigner.TableViewerColumnSorter;
 
 /**
  * @author shroffk
@@ -397,16 +409,48 @@ public class PVTableEditor extends EditorPart implements ISelectionProvider {
 			}
 		});
 
-		TableViewerColumn tableViewerColumn = new TableViewerColumn(
+		final TableViewerColumn tableViewerColumn = new TableViewerColumn(
 				tableViewer, SWT.NONE);
+		new TableViewerColumnSorter(tableViewerColumn) {
+			@Override
+			protected int doCompare(Viewer viewer, Object e1, Object e2) {
+				// Ensure that the empty "" remains in the last position always
+				// irrespective of the direction of sorting
+				String s1 = super.getValue(e1).toString();
+				String s2 = super.getValue(e2).toString();
+				if (s1.equals(s2) || s2.equals(""))
+					return 0;
+				else
+					return s1.compareTo(s2);
+			}
+		};
+
 		tableViewerColumn.setEditingSupport(new EditingSupport(tableViewer) {
+			private boolean initialized = false;
+
 			protected boolean canEdit(Object element) {
 				return true;
 			}
 
 			protected CellEditor getCellEditor(Object element) {
-				System.out.println("Call to cell Editor");
-				return new TextCellEditor(table);
+				TextCellEditor editor = new TextCellEditor(table) {
+					@Override
+					public void activate(
+							ColumnViewerEditorActivationEvent activationEvent) {
+						if (activationEvent.eventType == ColumnViewerEditorActivationEvent.MOUSE_DOUBLE_CLICK_SELECTION) {
+							super.activate(activationEvent);
+						} else if (activationEvent.eventType == ColumnViewerEditorActivationEvent.KEY_PRESSED) {
+							// this.text =
+							// String.valueOf(activationEvent.character);
+							this.setValue(String
+									.valueOf(activationEvent.character));
+						}
+					}
+				};
+				CellEditor[] editors = new CellEditor[1];
+				editors[0] = editor;
+				tableViewer.setCellEditors(editors);
+				return editor;
 			}
 
 			protected Object getValue(Object element) {
@@ -416,6 +460,7 @@ public class PVTableEditor extends EditorPart implements ISelectionProvider {
 				return item.getProcessVariableName().getName();
 			}
 
+			@Override
 			protected void setValue(Object element, Object value) {
 				try {
 					editingDone = true;
@@ -426,7 +471,8 @@ public class PVTableEditor extends EditorPart implements ISelectionProvider {
 						if (value == null || value.toString().trim().isEmpty()) {
 							// We are removing the row
 							if (item.getRow() == oldSize) {
-								// Do nothing: the row was the empty one anyway
+								// Do nothing: the row was the empty one
+								// anyway
 							} else {
 								group.remove(item.getRow());
 							}
@@ -446,6 +492,10 @@ public class PVTableEditor extends EditorPart implements ISelectionProvider {
 							}
 							model.updateValues(group.lastExceptions());
 						}
+						if (!initialized) {
+							((Text) getCellEditor(element).getControl())
+									.setSelection(1);
+						}
 						isDirty = true;
 						firePropertyChange(PROP_DIRTY);
 					}
@@ -453,6 +503,7 @@ public class PVTableEditor extends EditorPart implements ISelectionProvider {
 					editingDone = false;
 				}
 			}
+
 		});
 		tableViewerColumn.setLabelProvider(new PVColumnLabelProvider() {
 
@@ -489,8 +540,27 @@ public class PVTableEditor extends EditorPart implements ISelectionProvider {
 		TableColumn tblclmnValue = tableViewerColumn_1.getColumn();
 		tblclmnValue.setText("Value");
 
+		// Alarm Column
 		TableViewerColumn tableViewerColumn_2 = new TableViewerColumn(
 				tableViewer, SWT.NONE);
+		new TableViewerColumnSorter(tableViewerColumn_2) {
+			@Override
+			protected int doCompare(Viewer viewer, Object e1, Object e2) {
+				// TODO Remove this method, if your getValue(Object) returns
+				// Comparable.
+				// Typical Comparable are String, Integer, Double, etc.
+				return super.doCompare(viewer, e1, e2);
+			}
+
+			@Override
+			protected Object getValue(Object o) {
+				// TODO remove this method, if your EditingSupport returns value
+				Item item = (Item) o;
+				if (item == null || item.getValue() == null)
+					return null;
+				return Util.alarmOf(item.getValue()).getAlarmSeverity();
+			}
+		};
 		tableViewerColumn_2.setLabelProvider(new PVColumnLabelProvider() {
 			public Image getImage(Object element) {
 				return null;
@@ -525,38 +595,114 @@ public class PVTableEditor extends EditorPart implements ISelectionProvider {
 		tblclmnTime.setText("Time");
 
 		// Navigation and Focus support
-		CellNavigationStrategy naviStrat = new CellNavigationStrategy() {
+		final CellNavigationStrategy naviStrat = new CellNavigationStrategy() {
 
-			public ViewerCell findSelectedCell(ColumnViewer viewer,
-					ViewerCell currentSelectedCell, Event event) {
-				ViewerCell cell = super.findSelectedCell(viewer,
-						currentSelectedCell, event);
-
-				if (cell != null) {
-					tableViewer.getTable().showColumn(
-							tableViewer.getTable().getColumn(
-									cell.getColumnIndex()));
+			/**
+			 * is the given event an event which moves the selection to another
+			 * cell
+			 * 
+			 * @param viewer
+			 *            the viewer we are working for
+			 * @param event
+			 *            the key event
+			 * @return <code>true</code> if a new cell is searched
+			 */
+			public boolean isNavigationEvent(ColumnViewer viewer, Event event) {
+				switch (event.keyCode) {
+				case SWT.ARROW_UP:
+				case SWT.ARROW_DOWN:
+				case SWT.ARROW_LEFT:
+				case SWT.ARROW_RIGHT:
+				case SWT.CR:
+				case SWT.HOME:
+				case SWT.PAGE_DOWN:
+				case SWT.PAGE_UP:
+				case SWT.END:
+					return true;
+				default:
+					return false;
 				}
-
-				return cell;
 			}
 
+			/**
+			 * @param viewer
+			 *            the viewer we are working for
+			 * @param currentSelectedCell
+			 *            the cell currently selected
+			 * @param event
+			 *            the key event
+			 * @return the cell which is highlighted next or <code>null</code>
+			 *         if the default implementation is taken. E.g. it's fairly
+			 *         impossible to react on PAGE_DOWN requests
+			 */
+			public ViewerCell findSelectedCell(ColumnViewer viewer,
+					ViewerCell currentSelectedCell, Event event) {
+
+				ViewerCell cell = null;
+				switch (event.keyCode) {
+				// case SWT.ARROW_LEFT:
+				// if (currentSelectedCell != null) {
+				// cell = currentSelectedCell.getNeighbor(
+				// ViewerCell.ABOVE, false);
+				// }
+				// if (cell != null) {
+				// tableViewer.getTable().setSelection(
+				// (TableItem) cell.getItem());
+				// }
+				// break;
+				// case SWT.ARROW_RIGHT:
+				// if (currentSelectedCell != null) {
+				// cell = currentSelectedCell.getNeighbor(
+				// ViewerCell.BELOW, false);
+				// }
+				// if (cell != null) {
+				// tableViewer.getTable().setSelection(
+				// (TableItem) cell.getItem());
+				// }
+				// break;
+				case SWT.CR:
+					if (currentSelectedCell != null) {
+						cell = currentSelectedCell.getNeighbor(
+								ViewerCell.BELOW, false);
+					}
+					if (cell != null) {
+						tableViewer.getTable().setSelection(
+								(TableItem) cell.getItem());
+					}
+					break;
+				case SWT.ARROW_UP:
+					if (currentSelectedCell != null) {
+						cell = currentSelectedCell.getNeighbor(
+								ViewerCell.ABOVE, false);
+					}
+					break;
+				case SWT.ARROW_DOWN:
+					if (currentSelectedCell != null) {
+						cell = currentSelectedCell.getNeighbor(
+								ViewerCell.BELOW, false);
+					}
+					break;
+				default:
+					cell = super.findSelectedCell(viewer, currentSelectedCell,
+							event);
+				}
+				return cell;
+			}
 		};
 
 		TableViewerFocusCellManager focusCellManager = new TableViewerFocusCellManager(
-				tableViewer, new FocusCellOwnerDrawHighlighter(tableViewer),
-				naviStrat);
+				tableViewer, new FocusCellHighlighter(tableViewer) {
+				}, naviStrat);
 
 		// Editing support
 		ColumnViewerEditorActivationStrategy actSupport = new ColumnViewerEditorActivationStrategy(
 				tableViewer) {
 			protected boolean isEditorActivationEvent(
 					ColumnViewerEditorActivationEvent event) {
-				System.out.println(getViewer().getColumnViewerEditor()
-						.getFocusCell());
 				return event.eventType == ColumnViewerEditorActivationEvent.TRAVERSAL
 						|| event.eventType == ColumnViewerEditorActivationEvent.MOUSE_DOUBLE_CLICK_SELECTION
-						|| (event.eventType == ColumnViewerEditorActivationEvent.KEY_PRESSED && event.keyCode == SWT.CR)
+						|| (event.eventType == ColumnViewerEditorActivationEvent.KEY_PRESSED
+								&& event.keyCode > 31 && event.keyCode < 127)
 						|| event.eventType == ColumnViewerEditorActivationEvent.PROGRAMMATIC;
 			}
 
@@ -567,6 +713,50 @@ public class PVTableEditor extends EditorPart implements ISelectionProvider {
 						| ColumnViewerEditor.TABBING_MOVE_TO_ROW_NEIGHBOR
 						| ColumnViewerEditor.TABBING_VERTICAL
 						| ColumnViewerEditor.KEYBOARD_ACTIVATION);
+
+		tableViewer.getColumnViewerEditor().addEditorActivationListener(
+				new ColumnViewerEditorActivationListener() {
+
+					public void afterEditorActivated(
+							ColumnViewerEditorActivationEvent event) {
+						// TODO replace hack to move cursor to the end of the
+						// text(shroffk)
+						if (event.eventType == ColumnViewerEditorActivationEvent.KEY_PRESSED) {							
+							((Text) tableViewer.getCellEditors()[0]
+									.getControl())
+									.setSelection(((Text) tableViewer
+											.getCellEditors()[0].getControl())
+											.getText().length());
+						}
+						// ((Text) this.getControl())
+						// .setSelection(((Text) this.getControl())
+						// .getText().length());
+						//
+					}
+
+					public void afterEditorDeactivated(
+							ColumnViewerEditorDeactivationEvent event) {
+						// move to the next line
+						if (event.eventType == ColumnViewerEditorDeactivationEvent.EDITOR_SAVED) {
+							Event test = new Event();
+							test.keyCode = SWT.CR;
+							naviStrat.findSelectedCell(tableViewer, tableViewer
+									.getColumnViewerEditor().getFocusCell(),
+									test);
+						}
+					}
+
+					public void beforeEditorActivated(
+							ColumnViewerEditorActivationEvent event) {
+
+					}
+
+					public void beforeEditorDeactivated(
+							ColumnViewerEditorDeactivationEvent event) {
+
+					}
+
+				});
 
 		tableViewer.setContentProvider(new ContentProvider());
 		tableViewer.setInput(pvTableModel);
@@ -588,6 +778,57 @@ public class PVTableEditor extends EditorPart implements ISelectionProvider {
 		// Set the MenuManager
 		table.setMenu(menu);
 		getSite().registerContextMenu(menuManager, this);
+		table.addKeyListener(new KeyListener() {
+
+			@Override
+			public void keyReleased(KeyEvent e) {
+				if (e.keyCode == SWT.DEL) {
+					PVTableModel model = (PVTableModel) tableViewer.getInput();
+					ISelection tableSelection = tableViewer.getSelection();
+					// TODO cleanup (shroffk)
+					if (tableSelection instanceof StructuredSelection) {
+						Object[] selection = ((StructuredSelection) tableSelection)
+								.toArray();
+						Arrays.sort(selection, new Comparator<Object>() {
+
+							@Override
+							public int compare(Object o1, Object o2) {
+								return (new Integer(((Item) o1).getRow())
+										.compareTo(new Integer(((Item) o2)
+												.getRow())))
+										* (-1);
+							}
+
+						});
+
+						Item item = null;
+						for (Object element : selection) {
+							item = (PVTableModel.Item) element;
+							group.remove(item.getRow());
+							model.removeItem(item);
+							model.updateValues(group.lastExceptions());
+						}
+						// Set the selection to the index of the first deleted
+						// element
+						if (item != null) {
+							tableViewer.getTable().setSelection(item.getRow());
+						} else {
+							tableViewer.getTable().setSelection(
+									model.getItems().length);
+						}
+						tableViewer.getTable().setFocus();
+
+						isDirty = true;
+						firePropertyChange(PROP_DIRTY);
+					}
+				}
+			}
+
+			@Override
+			public void keyPressed(KeyEvent e) {
+
+			}
+		});
 
 		table.addMouseMoveListener(new MouseMoveListener() {
 
@@ -603,7 +844,6 @@ public class PVTableEditor extends EditorPart implements ISelectionProvider {
 				}
 			}
 		});
-
 		pv.addPVValueChangeListener(pvListener);
 
 	}

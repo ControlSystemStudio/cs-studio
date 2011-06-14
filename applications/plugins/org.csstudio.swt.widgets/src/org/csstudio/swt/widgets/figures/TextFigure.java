@@ -200,6 +200,12 @@ public class TextFigure extends Figure implements Introspectable{
 		graphics.translate(-textArea.x, -textArea.y);		
 	}
 	
+	@Override
+	public void setEnabled(boolean value) {
+		super.setEnabled(value);
+		repaint();
+	}
+	
 	public void setHorizontalAlignment(H_ALIGN hAlignment) {
 		if(this.horizontalAlignment == hAlignment)
 			return;

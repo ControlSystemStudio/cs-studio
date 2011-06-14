@@ -2,13 +2,9 @@
 <?eclipse version="3.2"?>
 <plugin>
    <extension
-         id="LdapUpdaterApplication"
-         name="LDAP Updater"
+         id="application"
          point="org.eclipse.core.runtime.applications">
-      <application
-            cardinality="1"
-            thread="any"
-            visible="false">
+      <application>
          <run 
             class="org.csstudio.utility.ldapupdater.LdapUpdaterServer">
          </run>
@@ -18,11 +14,11 @@
          id="product"
          point="org.eclipse.core.runtime.products">
       <product
-            application="org.csstudio.utility.ldapupdater.LdapUpdaterApplication"
-            name="ldapupdater">
+            application="org.csstudio.utility.ldapupdater.application"
+            name="LdapUpdater">
          <property
                name="appName"
-               value="ldapupdater">
+               value="DesyLdapUpdater">
          </property>
       </product>
    </extension>

@@ -17,13 +17,13 @@ import org.csstudio.opibuilder.properties.NameDefinedCategory;
 import org.csstudio.opibuilder.properties.PVValueProperty;
 import org.csstudio.opibuilder.properties.StringProperty;
 import org.csstudio.opibuilder.properties.WidgetPropertyCategory;
+import org.csstudio.opibuilder.util.MediaService;
 import org.csstudio.opibuilder.widgets.properties.ColorMapProperty;
 import org.csstudio.swt.widgets.datadefinition.ColorMap;
 import org.csstudio.swt.widgets.datadefinition.ColorMap.PredefinedColorMap;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.graphics.FontData;
 import org.eclipse.swt.graphics.RGB;
-import org.eclipse.swt.widgets.Display;
 
 /**The model for intensity graph.
  * @author Xihui Chen
@@ -233,7 +233,7 @@ public class IntensityGraphModel extends AbstractPVWidgetModel {
 			break;
 		case SCALE_FONT:
 			addProperty(new FontProperty(propID, axisProperty.toString(), category,
-					Display.getDefault().getSystemFont().getFontData()[0]));
+					MediaService.DEFAULT_FONT));
 			break;
 		case TITLE_FONT:
 			addProperty(new FontProperty(propID, axisProperty.toString(), category, new FontData("Arial", 9, SWT.BOLD)));

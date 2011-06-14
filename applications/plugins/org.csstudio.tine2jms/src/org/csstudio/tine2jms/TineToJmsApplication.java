@@ -29,7 +29,6 @@ import java.util.Observer;
 import javax.jms.JMSException;
 import javax.jms.MapMessage;
 
-import org.csstudio.platform.logging.CentralLogger;
 import org.csstudio.tine2jms.management.Restart;
 import org.csstudio.tine2jms.management.Stop;
 import org.csstudio.tine2jms.preferences.PreferenceKeys;
@@ -224,7 +223,7 @@ public class TineToJmsApplication implements IApplication, Stoppable, Observer, 
     	try {
 			sessionService.connect(xmppUser, xmppPassword, xmppServer);
 		} catch (Exception e) {
-			CentralLogger.getInstance().warn("XMPP connection is not available, " + e.toString());
+			LOG.warn("XMPP connection is not available, {}", e.toString());
 		}
     }
     

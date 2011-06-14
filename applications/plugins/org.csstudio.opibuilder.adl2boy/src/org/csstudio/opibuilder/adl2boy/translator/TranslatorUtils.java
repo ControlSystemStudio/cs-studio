@@ -8,9 +8,14 @@ package org.csstudio.opibuilder.adl2boy.translator;
 
 import java.io.File;
 import java.util.ArrayList;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.ListIterator;
 
 import org.csstudio.opibuilder.model.AbstractContainerModel;
+import org.csstudio.opibuilder.model.AbstractWidgetModel;
 import org.csstudio.opibuilder.model.DisplayModel;
+import org.csstudio.opibuilder.widgets.model.RectangleModel;
 import org.csstudio.utility.adlparser.fileParser.ADLWidget;
 import org.csstudio.utility.adlparser.fileParser.ColorMap;
 import org.csstudio.utility.adlparser.fileParser.ParserADL;
@@ -135,7 +140,31 @@ public class TranslatorUtils {
 				ex.printStackTrace();
 			}
 		}
+//		Class classToMove = RectangleModel.class;
 		
+		lowerWidgetType(parentModel, AbstractContainerModel.class);
+		lowerWidgetType(parentModel, RectangleModel.class);
+	}
+
+	private static void lowerWidgetType(AbstractContainerModel parentModel,
+			Class classToMove) {
+		List<AbstractWidgetModel> moveToBack = new LinkedList<AbstractWidgetModel>();
+		ListIterator<AbstractWidgetModel> childIter = parentModel.getChildren().listIterator();
+		while (childIter.hasNext()){
+			AbstractWidgetModel widget = childIter.next();
+			if ( classToMove.isInstance(widget) ){
+				moveToBack.add(widget);
+			}
+		}
+		int numMoved = 0;
+		if (moveToBack.size() > 0){
+			ListIterator<AbstractWidgetModel> iter = moveToBack.listIterator();
+			while (iter.hasNext()){
+				parentModel.changeChildOrder(iter.next(), numMoved);
+				numMoved++;
+			}
+			
+		}
 	}
 
 	/**

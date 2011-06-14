@@ -39,7 +39,7 @@ import org.eclipse.swt.widgets.Display;
  */
 public final class MediaService {
 
-	public static final String DEFAULT_FONT = "Default";
+	public static final String DEFAULT_FONT = "Default"; //$NON-NLS-1$
 
 	/**
 	 * The shared instance of this class.

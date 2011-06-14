@@ -1,21 +1,14 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <site>
-   <feature url="features/org.csstudio.opi.feature_1.0.0.qualifier.jar" id="org.csstudio.opi.feature" version="1.0.0.qualifier">
-      <category name="org.csstudio.display.applications"/>
+   <feature url="features/org.csstudio.nsls2.core.feature_3.0.0.qualifier.jar" id="org.csstudio.nsls2.core.feature" version="3.0.0.qualifier">
+      <category name="Core"/>
    </feature>
-   <feature url="features/org.csstudio.databrowser.nsls2.feature_1.0.0.qualifier.jar" id="org.csstudio.databrowser.nsls2.feature" version="1.0.0.qualifier">
-      <category name="org.csstudio.display.applications"/>
+   <feature url="features/org.csstudio.nsls2.nslscore.feature_3.0.0.qualifier.jar" id="org.csstudio.nsls2.nslscore.feature" version="3.0.0.qualifier">
+      <category name="Core"/>
    </feature>
-   <feature url="features/org.csstudio.display.pvtable.feature_1.0.0.qualifier.jar" id="org.csstudio.display.pvtable.feature" version="1.0.0.qualifier">
-      <category name="org.csstudio.display.applications"/>
+   <feature url="features/org.csstudio.nsls2.applications.feature_3.0.0.qualifier.jar" id="org.csstudio.nsls2.applications.feature" version="3.0.0.qualifier">
+      <category name="Applications"/>
    </feature>
-   <feature url="features/org.csstudio.diag.probe.feature_1.0.4.jar" id="org.csstudio.diag.probe.feature" version="1.0.4">
-      <category name="org.csstudio.diag.applications"/>
-   </feature>
-   <feature url="features/org.csstudio.diag.pvtree.feature_1.0.0.qualifier.jar" id="org.csstudio.diag.pvtree.feature" version="1.0.0.qualifier">
-      <category name="org.csstudio.diag.applications"/>
-   </feature>
-   <category-def name="org.csstudio.display.applications" label="Display Applications"/>
-   <category-def name="org.csstudio.diag.applications" label="Daignostics Applications"/>
-   <category-def name="org.csstudio.utility.applications" label="Utility Applications"/>
+   <category-def name="Core" label="Core"/>
+   <category-def name="Applications" label="Applications"/>
 </site>

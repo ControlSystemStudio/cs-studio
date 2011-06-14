@@ -7,9 +7,9 @@
  ******************************************************************************/
 package org.csstudio.opibuilder.runmode;
 
-
 import java.util.List;
 
+import org.csstudio.email.EMailSender;
 import org.csstudio.opibuilder.actions.ConfigureRuntimePropertiesAction;
 import org.csstudio.opibuilder.actions.OpenRelatedDisplayAction;
 import org.csstudio.opibuilder.actions.OpenRelatedDisplayAction.OPEN_DISPLAY_TARGET;
@@ -26,9 +26,9 @@ import org.eclipse.gef.ContextMenuProvider;
 import org.eclipse.gef.EditPartViewer;
 import org.eclipse.gef.ui.actions.ActionRegistry;
 import org.eclipse.gef.ui.actions.GEFActionConstants;
+import org.eclipse.jface.action.IAction;
 import org.eclipse.jface.action.IMenuManager;
 import org.eclipse.jface.action.MenuManager;
-import org.eclipse.jface.action.Separator;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.ui.IWorkbenchWindow;
 import org.eclipse.ui.PlatformUI;
@@ -75,14 +75,19 @@ public final class OPIRunnerContextMenuProvider extends ContextMenuProvider {
 				WorkbenchWindowService.getInstance().getCompactModeAction(activeWindow));
 		//actionRegistry.getAction(CompactModeAction.ID));
 
-		if(SendToElogAction.isElogAvailable())
-			menu.appendToGroup(GEFActionConstants.GROUP_EDIT, actionRegistry.getAction(SendToElogAction.ID));
-		menu.appendToGroup(GEFActionConstants.GROUP_EDIT, actionRegistry.getAction(SendEMailAction.ID));
+		// ELog and EMail actions may not be available
+		IAction action = actionRegistry.getAction(SendToElogAction.ID);
+		if (action != null)
+			menu.appendToGroup(GEFActionConstants.GROUP_EDIT, action);
+		action = actionRegistry.getAction(SendEMailAction.ID);
+		if (action != null)
+			menu.appendToGroup(GEFActionConstants.GROUP_EDIT, action);
+
 		menu.appendToGroup(GEFActionConstants.GROUP_EDIT, actionRegistry.getAction(ActionFactory.PRINT.getId()));
 
-		MenuManager cssMenu = new MenuManager("CSS", "css");
-		cssMenu.add(new Separator("additions")); //$NON-NLS-1$
-		menu.add(cssMenu);		
+//		MenuManager cssMenu = new MenuManager("CSS", "css");
+//		cssMenu.add(new Separator("additions")); //$NON-NLS-1$
+//		menu.add(cssMenu);		
 	}
 	
 	/**
@@ -133,13 +138,6 @@ public final class OPIRunnerContextMenuProvider extends ContextMenuProvider {
 							getViewer().getControl().getShell(), widget));
 				}
 			}
-
-				
 		}
-		
-		
 	}
-	
-	
-
 }

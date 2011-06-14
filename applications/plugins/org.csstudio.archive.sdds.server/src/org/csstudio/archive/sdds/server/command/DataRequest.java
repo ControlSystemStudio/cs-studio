@@ -27,6 +27,7 @@ package org.csstudio.archive.sdds.server.command;
 import java.io.ByteArrayOutputStream;
 import java.io.DataOutputStream;
 import java.io.IOException;
+
 import org.csstudio.archive.sdds.server.command.header.DataRequestHeader;
 import org.csstudio.archive.sdds.server.conversion.SampleParameter;
 import org.csstudio.archive.sdds.server.data.DataCollector;
@@ -35,6 +36,9 @@ import org.csstudio.archive.sdds.server.data.EpicsRecordData;
 import org.csstudio.archive.sdds.server.data.RecordDataCollection;
 import org.csstudio.archive.sdds.server.util.IntegerValue;
 import org.csstudio.archive.sdds.server.util.RawData;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import de.desy.aapi.AapiServerError;
 
 /**
@@ -42,6 +46,8 @@ import de.desy.aapi.AapiServerError;
  *
  */
 public class DataRequest extends ServerCommand {
+    
+    private static final Logger LOG = LoggerFactory.getLogger(DataRequest.class);
     
     /** The data reader */
     private DataCollector dataCollector;
@@ -74,21 +80,21 @@ public class DataRequest extends ServerCommand {
         DataOutputStream dos = new DataOutputStream(baos);
         double f;
         
-        logger.info(header.toString());
+        LOG.info(header.toString());
         
         if(header.isTimeDiffValid() == false) {
             
             receivedValue.setData(createErrorAnswer(AapiServerError.FROM_MORE_THEN_TO.getErrorNumber()));
             receivedValue.setErrorValue(AapiServerError.FROM_MORE_THEN_TO.getErrorNumber());
-            logger.error(AapiServerError.FROM_MORE_THEN_TO.toString());
+            LOG.error(AapiServerError.FROM_MORE_THEN_TO.toString());
             return;
         }
         
         // TODO: Does it make sense to set a default number of samples instead of returning with an error?
         if(header.hasValidNumberofSamples() == false) {
             
-            logger.warn(AapiServerError.BAD_MAX_NUM.toString());
-            logger.warn("Using default: 1000");
+            LOG.warn(AapiServerError.BAD_MAX_NUM.toString());
+            LOG.warn("Using default: 1000");
             
             header.setMaxNumOfSamples(1000);
 //            receivedValue.setData(createErrorAnswer(AAPI.AAPI.BAD_MAX_NUM));
@@ -104,7 +110,7 @@ public class DataRequest extends ServerCommand {
             for(String name : header.getPvName()) {
                 
             	data = dataCollector.readData(name, header);
-                logger.info("Number of samples: " + data.getNumberOfData());
+                LOG.info("Number of samples: " + data.getNumberOfData());
 
                 // TODO: Nicht vorhandene Daten abfangen und saubere Fehlermeldung zurueck liefern
                 // Error
@@ -157,7 +163,7 @@ public class DataRequest extends ServerCommand {
             receivedValue.setData(baos.toByteArray());
             
         } catch(IOException ioe) {
-            logger.error("[*** IOException ***]: " + ioe.getMessage());
+            LOG.error("[*** IOException ***]: " + ioe.getMessage());
         } finally {
             if(dos!=null) {
             	try{dos.close();}catch(Exception e) { /* Can be ignored */ }

@@ -27,12 +27,13 @@ package org.csstudio.archive.sdds.server.conversion.handler;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
-import org.apache.log4j.Logger;
+
 import org.csstudio.archive.sdds.server.command.header.DataRequestHeader;
 import org.csstudio.archive.sdds.server.data.EpicsRecordData;
 import org.csstudio.archive.sdds.server.sdds.SDDSType;
 import org.csstudio.archive.sdds.server.util.DataException;
-import org.csstudio.platform.logging.CentralLogger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * The class returns the raw data from the SDDS files. If it find more than <code>maxSamplesPerRequest</code>
@@ -46,12 +47,11 @@ import org.csstudio.platform.logging.CentralLogger;
 public class TailRawHandler extends AlgorithmHandler {
     
     /** The logger for this class */
-    private Logger logger;
+    private static final Logger LOG = LoggerFactory.getLogger(TailRawHandler.class);
 
     public TailRawHandler(int maxSamples) {
         super(maxSamples);
-        logger = CentralLogger.getInstance().getLogger(this);
-        logger.info("TailRawHandler created. Max. samples per request: " + maxSamples);
+        LOG.info("TailRawHandler created. Max. samples per request: {}", maxSamples);
     }
     
     /**

@@ -24,7 +24,7 @@ import org.csstudio.opibuilder.model.AbstractPVWidgetModel;
 import org.csstudio.opibuilder.properties.IWidgetPropertyChangeHandler;
 import org.csstudio.opibuilder.util.ConsoleService;
 import org.csstudio.opibuilder.widgets.model.LabelModel;
-import org.csstudio.opibuilder.widgets.model.TextIndicatorModel.FormatEnum;
+import org.csstudio.opibuilder.widgets.model.TextUpdateModel.FormatEnum;
 import org.csstudio.opibuilder.widgets.model.TextInputModel;
 import org.csstudio.swt.widgets.datadefinition.IManualStringValueChangeListener;
 import org.csstudio.swt.widgets.figures.TextFigure;
@@ -48,7 +48,7 @@ import org.eclipse.swt.widgets.Display;
  * @author Xihui Chen
  * 
  */
-public class TextInputEditpart extends TextIndicatorEditPart {
+public class TextInputEditpart extends TextUpdateEditPart {
 
 	private PVListener pvLoadLimitsListener;
 	private INumericMetaData meta = null;
@@ -100,7 +100,7 @@ public class TextInputEditpart extends TextIndicatorEditPart {
 	protected void createEditPolicies() {
 		super.createEditPolicies();
 		installEditPolicy(EditPolicy.DIRECT_EDIT_ROLE,
-				new TextIndicatorDirectEditPolicy());
+				new TextUpdateDirectEditPolicy());
 	}
 
 	@Override
@@ -433,7 +433,7 @@ public class TextInputEditpart extends TextIndicatorEditPart {
 
 	private int parseHEX(final String text, final boolean coerce) {
 		String valueText = text.trim();
-		if (text.startsWith(TextIndicatorEditPart.HEX_PREFIX)) {
+		if (text.startsWith(TextUpdateEditPart.HEX_PREFIX)) {
 			valueText = text.substring(2);
 		}
 		if (valueText.contains(" ")) { //$NON-NLS-1$

@@ -53,7 +53,10 @@ public abstract class AbstractChoiceFigure extends Figure implements Introspecta
 	
 	protected Color selectedColor = ColorConstants.black;
 	
-	public AbstractChoiceFigure() {
+	private boolean runMode;
+	
+	public AbstractChoiceFigure(boolean runMode) {
+		this.runMode = runMode;
 		buttonGroup = new ButtonGroup();
 		states = new ArrayList<String>();
 		toggles = new ArrayList<Toggle>();
@@ -78,7 +81,17 @@ public abstract class AbstractChoiceFigure extends Figure implements Introspecta
 			listener.buttonPressed(index, value);
 		}
 	}
-
+	
+	@Override
+	public void setEnabled(boolean value) {		
+		super.setEnabled(value);	
+		
+		for(Toggle toggle : toggles){
+			toggle.setEnabled(value);			
+		}		
+		repaint();
+	}
+	
 	/**
 	 * @return the selectedColor
 	 */
@@ -188,7 +201,8 @@ public abstract class AbstractChoiceFigure extends Figure implements Introspecta
 			final int index = i++;
 			ToggleModel toggleModel = new ToggleModel();
 			final Toggle toggle = createToggle(state);
-			
+			if(!runMode)
+				toggle.setEventHandler(null);
 			toggleModel.addChangeListener(new ChangeListener() {
 				
 				public void handleStateChanged(ChangeEvent event) {
