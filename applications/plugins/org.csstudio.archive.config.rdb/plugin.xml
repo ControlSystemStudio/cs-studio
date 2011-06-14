@@ -7,5 +7,28 @@
             class="org.csstudio.archive.config.rdb.RDBArchiveConfig">
       </ArchiveConfig>
    </extension>
-
+   <extension
+         id="app"
+         point="org.eclipse.core.runtime.applications">
+      <application
+            cardinality="singleton-global"
+            thread="main"
+            visible="true">
+         <run
+               class="org.csstudio.archive.config.rdb.ArchiveConfigApplication">
+         </run>
+      </application>
+   </extension>
+   <extension
+         id="product"
+         point="org.eclipse.core.runtime.products">
+      <product
+            application="org.csstudio.archive.config.rdb.app"
+            name="ArchiveConfigTool">
+         <property
+               name="appName"
+               value="ArchiveConfigTool">
+         </property>
+      </product>
+   </extension>
 </plugin>

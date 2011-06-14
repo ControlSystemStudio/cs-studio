@@ -14,7 +14,7 @@ public interface ArchiveConfig
 {
 	/** Locate archive sample engine configuration
 	 *  @param name Name of the engine, e.g. "Vacuum"
-	 *  @return EngineConfig
+	 *  @return EngineConfig or <code>null</code> when not found
 	 *  @throws Exception on error, e.g. RDB access problem
 	 */
 	public EngineConfig findEngine(String name) throws Exception;
