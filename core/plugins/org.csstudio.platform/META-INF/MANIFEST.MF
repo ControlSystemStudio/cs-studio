@@ -13,7 +13,8 @@ Require-Bundle: org.eclipse.core.runtime;visibility:=reexport,
  org.csstudio.workspace,
  org.eclipse.equinox.security,
  org.apache.log4j;bundle-version="1.2.16",
- org.csstudio.remote;bundle-version="1.0.0"
+ org.csstudio.remote;bundle-version="1.0.0",
+ org.jdom;bundle-version="1.1.0"
 Bundle-Activator: org.csstudio.platform.CSSPlatformPlugin
 Bundle-Vendor: Desy
 Export-Package: org.csstudio.platform,
@@ -27,15 +28,7 @@ Export-Package: org.csstudio.platform,
  org.csstudio.platform.security,
  org.csstudio.platform.startupservice,
  org.csstudio.platform.statistic,
- org.csstudio.platform.util,
- org.jdom,
- org.jdom.adapters,
- org.jdom.filter,
- org.jdom.input,
- org.jdom.output,
- org.jdom.transform,
- org.jdom.xpath
-Bundle-ClassPath: .,
- lib/jdom.jar
+ org.csstudio.platform.util
+Bundle-ClassPath: .
 Bundle-ActivationPolicy: lazy
 Import-Package: javax.jms
