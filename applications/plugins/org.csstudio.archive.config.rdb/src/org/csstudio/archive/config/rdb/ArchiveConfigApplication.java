@@ -20,7 +20,6 @@ import org.csstudio.apputil.args.StringOption;
 import org.csstudio.archive.config.ArchiveConfig;
 import org.csstudio.archive.config.ArchiveConfigFactory;
 import org.csstudio.archive.config.EngineConfig;
-import org.csstudio.archive.rdb.Activator;
 import org.csstudio.logging.LogConfigurator;
 import org.eclipse.equinox.app.IApplication;
 import org.eclipse.equinox.app.IApplicationContext;

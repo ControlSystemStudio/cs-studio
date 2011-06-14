@@ -8,14 +8,12 @@
 package org.csstudio.archive.config.rdb;
 
 import java.io.InputStream;
-import java.util.logging.Level;
 
 import javax.xml.parsers.SAXParser;
 import javax.xml.parsers.SAXParserFactory;
 
 import org.csstudio.apputil.time.PeriodFormat;
 import org.csstudio.archive.config.EngineConfig;
-import org.csstudio.archive.config.GroupConfig;
 import org.xml.sax.Attributes;
 import org.xml.sax.SAXException;
 import org.xml.sax.SAXParseException;
@@ -263,32 +261,26 @@ public class XMLImport extends DefaultHandler
             try
             {
             	System.out.println(group.getName() + " - " + name);
-//                final ChannelConfig channel = archive.createChannel(name);
-//                // Check if channel is already in another group
-//                if (channel.getGroupId() > 0)
-//                {
-//                    final ChannelGroupConfig other_group =
-//                        archive.findGroup(channel.getGroupId());
-//                    final SampleEngineConfig other_engine =
-//                        archive.findEngine(other_group.getEngineId());
-//                    final String warning = String.format(
-//                        "Channel '%s/%s/%s' already in '%s/%s'",
-//                        engine.getName(), group.getName(), name,
-//                        other_engine.getName(), other_group.getName());
-//                    Activator.getLogger().warning(warning);
-//                    if (!steal_channels)
-//                    {
-//                        // Don't proceed with this channel,
-//                        // but run on with the next channel so that we
-//                        // get all the errors once instead of having
-//                        // to run the tool error by error
-//                        Activator.getLogger().warning(warning);
-//                        return;
-//                    }
-//                }
-//                channel.addToGroup(group);
-//                channel.setSampleMode(monitor ? monitor_mode : scan_mode, sample_value, period);
-//                if (is_enabling)
+            	// Check if channel is already in another group
+            	final RDBGroupConfig other_group = config.getChannelGroup(name);
+                if (other_group != null)
+                {
+                	final EngineConfig other_engine = config.getEngine(other_group);
+                	System.out.format(
+                        "Channel '%s/%s/%s' already in '%s/%s'",
+                        engine.getName(), group.getName(), name,
+                        other_engine.getName(), other_group.getName());
+                	// Don't proceed with this channel,
+                	// but run on with the next channel so that we
+                	// get all the errors once instead of having
+                	// to run the tool error by error
+                	if (! steal_channels)
+                		return;
+                }
+
+                final RDBSampleMode mode = config.getSampleMode(monitor, sample_value, period);
+                config.addChannel(group, name, mode);
+//              // TODO  if (is_enabling)
 //                    group.setEnablingChannel(channel);
             }
             catch (Exception ex)

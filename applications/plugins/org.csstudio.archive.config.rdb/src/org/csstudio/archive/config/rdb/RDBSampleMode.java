@@ -7,36 +7,39 @@
  ******************************************************************************/
 package org.csstudio.archive.config.rdb;
 
+import org.csstudio.archive.config.SampleMode;
+
 /** Sample mode as stored in RDB
  *  @author Kay Kasemir
  */
 @SuppressWarnings("nls")
-public class RDBSampleMode
+public class RDBSampleMode extends SampleMode
 {
-	final private String name;
-	final private String description;
-	final private boolean monitor;
+	final private int id;
 
-    public RDBSampleMode(final String name, final String description)
+	/** Initialize
+	 *  @param id RDB ID
+	 *  @param monitor Monitor/subscription or active scan?
+	 *  @param delta Value change threshold
+	 *  @param period (Expected) update period in seconds
+	 */
+    public RDBSampleMode(final int id, final boolean monitor, final double delta, final double period)
     {
-		this.name = name;
-		this.description = description;
-		monitor = "Monitor".equalsIgnoreCase(name);
+    	super(monitor, delta, period);
+    	this.id = id;
     }
 
-    public String getName()
+    /** @param name Scan mode name
+     *  @return <code>true</code> if it's the 'Monitor' mode
+     */
+	public static boolean determineMonitor(final String name)
     {
-    	return name;
+	    return "Monitor".equalsIgnoreCase(name);
     }
 
-	public String getDescription()
+	/** @return RDB ID */
+	public int getId()
     {
-    	return description;
-    }
-
-	/** @return <code>true</code> for monitored mode, otherwise scan */
-	public boolean isMonitor()
-    {
-    	return monitor;
+	    return id;
     }
 }
