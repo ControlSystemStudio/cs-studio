@@ -48,7 +48,7 @@ public final class MySQLArchiveServicePreference<T> extends AbstractPreference<T
         new MySQLArchiveServicePreference<String>("host", "NOT PUBLIC");
 
     public static final MySQLArchiveServicePreference<String> FAILOVER_HOST =
-        new MySQLArchiveServicePreference<String>("failoverHost", "NOT PUBLIC");
+        new MySQLArchiveServicePreference<String>("failoverHost", "");
 
     public static final MySQLArchiveServicePreference<Integer> PERIOD_IN_MS =
         new MySQLArchiveServicePreference<Integer>("periodInMS", 5000)
