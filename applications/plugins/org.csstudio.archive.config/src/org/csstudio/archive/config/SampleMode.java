@@ -20,9 +20,9 @@ public class SampleMode
 	final private double period;
 
 	/** Initialize
-	 *  @param monitor
-	 *  @param delta
-	 *  @param period
+	 *  @param monitor Monitor/subscription or active scan?
+	 *  @param delta Value change threshold
+	 *  @param period (Expected) update period in seconds
 	 */
 	public SampleMode(final boolean monitor, final double delta, final double period)
     {

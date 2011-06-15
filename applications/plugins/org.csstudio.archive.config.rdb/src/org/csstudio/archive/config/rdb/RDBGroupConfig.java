@@ -12,6 +12,7 @@ import org.csstudio.archive.config.GroupConfig;
 /** RDB implementation of {@link GroupConfig}
  *  @author Kay Kasemir
  */
+@SuppressWarnings("nls")
 public class RDBGroupConfig extends GroupConfig
 {
 	final private int id;
@@ -31,5 +32,18 @@ public class RDBGroupConfig extends GroupConfig
 	public int getId()
     {
     	return id;
+    }
+
+    /** @param channel Channel that enables this group */
+	void setEnablingChannel(final RDBChannelConfig channel)
+    {
+		enabling_channel = channel.getName();
+    }
+
+	/** @return Debug representation */
+    @Override
+    public String toString()
+    {
+	    return super.toString() + " (" + id + ")";
     }
 }

@@ -14,6 +14,7 @@ import org.csstudio.archive.config.EngineConfig;
 /** RDB implementation of EngineConfig
  *  @author Kay Kasemir
  */
+@SuppressWarnings("nls")
 public class RDBEngineConfig extends EngineConfig
 {
 	final private int id;
@@ -36,4 +37,11 @@ public class RDBEngineConfig extends EngineConfig
     {
     	return id;
     }
+
+	/** @return Debug representation */
+    @Override
+    public String toString()
+	{
+    	return super.toString() + " [" + id + "]";
+	}
 }
