@@ -29,6 +29,7 @@ public class SQL
 	final public String chan_grp_insert;
 	final public String chan_grp_next_id;
     final public String chan_grp_sel_by_channel;
+	final public String chan_grp_set_enable_channel;
 
     // 'channel' table
     final public String channel_sel_by_group_id;
@@ -64,6 +65,7 @@ public class SQL
         chan_grp_sel_by_channel = "SELECT g.grp_id, g.name FROM " + schema + "chan_grp g " +
 							      "JOIN CHAN_ARCH.channel c ON g.grp_id = c.grp_id " +
 							      "WHERE c.name=?";
+        chan_grp_set_enable_channel = "UPDATE " + schema + "chan_grp SET enabling_chan_id=? WHERE grp_id=?";
 
         // 'channel' table
         channel_sel_by_group_id = "SELECT channel_id, name, smpl_mode_id, smpl_val, smpl_per FROM " + schema + "channel WHERE grp_id=? ORDER BY name";

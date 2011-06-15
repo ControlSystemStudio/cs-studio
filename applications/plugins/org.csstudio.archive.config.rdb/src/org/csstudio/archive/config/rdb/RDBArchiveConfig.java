@@ -11,6 +11,7 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.Statement;
+import java.sql.Types;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Comparator;
@@ -411,6 +412,38 @@ public class RDBArchiveConfig implements ArchiveConfig
         finally
         {
             statement.close();
+        }
+    }
+
+    /** Set a group's enabling channel
+     *  @param group Group that should enable based on a channel
+     *  @param channel Channel or <code>null</code> to 'always' activate the group
+     *  @throws Exception on error
+     */
+	public void setEnablingChannel(final RDBGroupConfig group, final RDBChannelConfig channel) throws Exception
+    {
+        final PreparedStatement statement = rdb.getConnection().prepareStatement(sql.chan_grp_set_enable_channel);
+        try
+        {
+        	if (channel == null)
+        		statement.setNull(1, Types.INTEGER);
+        	else
+        		statement.setInt(1, channel.getId());
+        	statement.setInt(2, group.getId());
+        	final int rows = statement.executeUpdate();
+        	if (rows != 1)
+        		throw new Exception("Setting enabling channel of " + group + " to " + channel +
+        				" changed " + rows + " rows instead of 1");
+        	rdb.getConnection().commit();
+        }
+        catch (Exception ex)
+        {
+        	rdb.getConnection().rollback();
+        	throw ex;
+        }
+        finally
+        {
+        	statement.close();
         }
     }
 

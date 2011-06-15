@@ -144,7 +144,7 @@ public class XMLImport extends DefaultHandler
         parser.parse(stream, this);
     }
 
-    /** Reset the accumulator at the start of each element */
+	/** Reset the accumulator at the start of each element */
     @Override
     public void startElement(final String uri, final String localName,
                     final String element, final Attributes attributes)
@@ -246,8 +246,12 @@ public class XMLImport extends DefaultHandler
         {
             checkStateForTag(State.CHANNEL, element);
             if (group.getEnablingChannel() != null)
-                throw new SAXException("More than one 'enable' channel");
-            is_enabling = true;
+            {
+            	System.out.println("WARNING: Group " + group.getName() + " is already enabled by " + group.getEnablingChannel() +
+            			". Ignoring additional enabling channels for the same group");
+            }
+            else
+            	is_enabling = true;
         }
         else if (element.equals(TAG_DISABLE))
         {
@@ -260,28 +264,36 @@ public class XMLImport extends DefaultHandler
             state = State.GROUP;
             try
             {
-            	System.out.println(group.getName() + " - " + name);
+            	// System.out.println(group.getName() + " - " + name);
             	// Check if channel is already in another group
             	final RDBGroupConfig other_group = config.getChannelGroup(name);
                 if (other_group != null)
                 {
                 	final EngineConfig other_engine = config.getEngine(other_group);
-                	System.out.format(
-                        "Channel '%s/%s/%s' already in '%s/%s'",
-                        engine.getName(), group.getName(), name,
-                        other_engine.getName(), other_group.getName());
                 	// Don't proceed with this channel,
                 	// but run on with the next channel so that we
                 	// get all the errors once instead of having
                 	// to run the tool error by error
-                	if (! steal_channels)
+                	if (steal_channels)
+                    	System.out.format("Channel '%s/%s - %s' already found in '%s/%s', moved to this engine",
+                                engine.getName(), group.getName(), name,
+                                other_engine.getName(), other_group.getName());
+                	else
+                	{
+                    	System.out.format("WARNING: Channel '%s/%s - %s' already found in '%s/%s', not added again to this engine",
+                                engine.getName(), group.getName(), name,
+                                other_engine.getName(), other_group.getName());
                 		return;
+                	}
                 }
 
                 final RDBSampleMode mode = config.getSampleMode(monitor, sample_value, period);
-                config.addChannel(group, name, mode);
-//              // TODO  if (is_enabling)
-//                    group.setEnablingChannel(channel);
+                final RDBChannelConfig channel = config.addChannel(group, name, mode);
+                if (is_enabling)
+                {
+                	config.setEnablingChannel(group, channel);
+                	group.setEnablingChannel(channel);
+                }
             }
             catch (Exception ex)
             {	// Must convert to SAXException

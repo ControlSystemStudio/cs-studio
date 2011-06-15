@@ -14,6 +14,7 @@ import org.csstudio.data.values.ITimestamp;
 /** RDB implementation of {@link ChannelConfig}
  *  @author Kay Kasemir
  */
+@SuppressWarnings("nls")
 public class RDBChannelConfig extends ChannelConfig
 {
 	final private int id;
@@ -36,4 +37,11 @@ public class RDBChannelConfig extends ChannelConfig
 	{
 		return id;
 	}
+	
+	/** @return Debug representation */
+    @Override
+    public String toString()
+    {
+	    return super.toString() + " (" + id + ")";
+    }
 }
