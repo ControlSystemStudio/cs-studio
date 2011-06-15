@@ -12,6 +12,7 @@ import org.csstudio.data.values.ITimestamp;
 /** Configuration of a channel
  *  @author Kay Kasemir
  */
+@SuppressWarnings("nls")
 public class ChannelConfig
 {
 	final private String name;
@@ -47,4 +48,11 @@ public class ChannelConfig
 	{
 		return last_sample_time;
 	}
+
+	/** @return Debug representation */
+    @Override
+    public String toString()
+    {
+	    return "Channel '" + name + "', " + sample_mode;
+    }
 }

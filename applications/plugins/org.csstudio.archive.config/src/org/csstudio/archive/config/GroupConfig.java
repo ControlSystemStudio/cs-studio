@@ -10,10 +10,11 @@ package org.csstudio.archive.config;
 /** Channel Group description
  *  @author Kay Kasemir
  */
+@SuppressWarnings("nls")
 public class GroupConfig
 {
 	final private String name;
-	final private String enabling_channel;
+	protected String enabling_channel;
 
 	/** Initialize
 	 *  @param name Group name
@@ -35,5 +36,12 @@ public class GroupConfig
 	public String getEnablingChannel()
     {
     	return enabling_channel;
+    }
+
+	/** @return Debug representation */
+    @Override
+    public String toString()
+    {
+	    return "Group '" + name + "'";
     }
 }
