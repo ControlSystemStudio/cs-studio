@@ -19,6 +19,7 @@ import org.csstudio.apputil.args.BooleanOption;
 import org.csstudio.apputil.args.IntegerOption;
 import org.csstudio.apputil.args.StringOption;
 import org.csstudio.archive.config.EngineConfig;
+import org.csstudio.archive.rdb.RDBArchivePreferences;
 import org.csstudio.logging.LogConfigurator;
 import org.eclipse.equinox.app.IApplication;
 import org.eclipse.equinox.app.IApplicationContext;
@@ -60,13 +61,13 @@ public class ArchiveConfigApplication implements IApplication
         final BooleanOption steal_channels = new BooleanOption(parser,
                 "-steal_channels", "Steal channels that are already in other engine");
         final StringOption  rdb_url = new StringOption(parser,
-                "-rdb_url", "jdbc:...", "RDB URL", Preferences.getURL());
+                "-rdb_url", "jdbc:...", "RDB URL", RDBArchivePreferences.getURL());
         final StringOption  rdb_user = new StringOption(parser,
-                "-rdb_user", "user", "RDB User", Preferences.getUser());
+                "-rdb_user", "user", "RDB User", RDBArchivePreferences.getUser());
         final StringOption  rdb_password = new StringOption(parser,
-                "-rdb_password", "password", "RDB Password", Preferences.getPassword());
+                "-rdb_password", "password", "RDB Password", RDBArchivePreferences.getPassword());
         final StringOption  rdb_schema = new StringOption(parser,
-                "-rdb_schema", "schema", "RDB schema (table prefix), ending in '.'", Preferences.getSchema());
+                "-rdb_schema", "schema", "RDB schema (table prefix), ending in '.'", RDBArchivePreferences.getSchema());
 		
         // NOTE:
         // On OS X, the application will have a file

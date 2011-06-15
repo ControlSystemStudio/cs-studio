@@ -22,6 +22,7 @@ import org.csstudio.archive.config.ChannelConfig;
 import org.csstudio.archive.config.EngineConfig;
 import org.csstudio.archive.config.GroupConfig;
 import org.csstudio.archive.config.SampleMode;
+import org.csstudio.archive.rdb.RDBArchivePreferences;
 import org.csstudio.data.values.ITimestamp;
 import org.csstudio.data.values.TimestampFactory;
 import org.csstudio.platform.utility.rdb.RDBUtil;
@@ -58,8 +59,8 @@ public class RDBArchiveConfig implements ArchiveConfig
      */
 	public RDBArchiveConfig() throws Exception
     {
-		this(Preferences.getURL(), Preferences.getUser(),
-				Preferences.getPassword(), Preferences.getSchema());
+		this(RDBArchivePreferences.getURL(), RDBArchivePreferences.getUser(),
+				RDBArchivePreferences.getPassword(), RDBArchivePreferences.getSchema());
     }
 	
 	/** Initialize.

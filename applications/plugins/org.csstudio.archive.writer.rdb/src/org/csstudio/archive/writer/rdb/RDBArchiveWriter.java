@@ -17,6 +17,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.logging.Level;
 
+import org.csstudio.archive.rdb.RDBArchivePreferences;
 import org.csstudio.archive.writer.ArchiveWriter;
 import org.csstudio.archive.writer.WriteChannel;
 import org.csstudio.data.values.IDoubleValue;
@@ -96,8 +97,8 @@ public class RDBArchiveWriter implements ArchiveWriter
      */
     public RDBArchiveWriter() throws Exception
     {
-        this(Preferences.getURL(), Preferences.getUser(), Preferences.getPassword(),
-        		Preferences.getSchema());
+        this(RDBArchivePreferences.getURL(), RDBArchivePreferences.getUser(),
+        		RDBArchivePreferences.getPassword(), RDBArchivePreferences.getSchema());
     }
 
     /** Initialize.
@@ -109,7 +110,7 @@ public class RDBArchiveWriter implements ArchiveWriter
      */
     public RDBArchiveWriter(final String url, final String user, final String password) throws Exception
     {
-        this(url, user, password, Preferences.getSchema());
+        this(url, user, password, RDBArchivePreferences.getSchema());
     }
 
     /** Initialize
