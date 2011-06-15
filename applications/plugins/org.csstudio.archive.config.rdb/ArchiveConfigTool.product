@@ -3,7 +3,6 @@
 
 <product name="ArchiveConfigTool" uid="config_tool" id="org.csstudio.archive.config.rdb.product" application="org.csstudio.archive.config.rdb.app" version="1.0.0" useFeatures="false" includeLaunchers="true">
 
-
    <configIni use="default">
    </configIni>
 
@@ -13,7 +12,6 @@
 
    <windowImages/>
 
-
    <launcher>
       <solaris/>
       <win useIco="false">
@@ -21,21 +19,22 @@
       </win>
    </launcher>
 
-
    <vm>
    </vm>
-
 
    <plugins>
       <plugin id="org.csstudio.apputil"/>
       <plugin id="org.csstudio.archive.config"/>
       <plugin id="org.csstudio.archive.config.rdb"/>
+      <plugin id="org.csstudio.archive.rdb"/>
+      <plugin id="org.csstudio.auth"/>
       <plugin id="org.csstudio.data"/>
       <plugin id="org.csstudio.java"/>
       <plugin id="org.csstudio.logging"/>
       <plugin id="org.csstudio.platform.libs.jdbc"/>
       <plugin id="org.csstudio.platform.libs.jms"/>
       <plugin id="org.csstudio.platform.utility.rdb"/>
+      <plugin id="org.csstudio.workspace"/>
       <plugin id="org.eclipse.core.contenttype"/>
       <plugin id="org.eclipse.core.jobs"/>
       <plugin id="org.eclipse.core.runtime"/>

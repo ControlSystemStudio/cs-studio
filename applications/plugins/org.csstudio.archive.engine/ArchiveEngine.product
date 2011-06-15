@@ -29,6 +29,7 @@
       <plugin id="org.csstudio.archive.config"/>
       <plugin id="org.csstudio.archive.config.rdb"/>
       <plugin id="org.csstudio.archive.engine"/>
+      <plugin id="org.csstudio.archive.rdb"/>
       <plugin id="org.csstudio.archive.writer"/>
       <plugin id="org.csstudio.archive.writer.rdb"/>
       <plugin id="org.csstudio.auth"/>
