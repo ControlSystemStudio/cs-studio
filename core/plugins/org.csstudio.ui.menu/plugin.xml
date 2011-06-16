@@ -69,6 +69,7 @@
             allPopups="false"
             locationURI="popup:org.eclipse.ui.popup.any?after=css">
          <menu
+               icon="platform:/plugin/org.csstudio.csdata/icons/processVariable.png"
                id="org.csstudio.ui.menu.popup.processvariable"
                label="%PVName">
             <visibleWhen>
