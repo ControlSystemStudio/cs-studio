@@ -1,7 +1,13 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <?pde version="3.5"?>
 
-<product name="CssCI" uid="cssCiId" id="org.csstudio.common.product.product" application="org.csstudio.common.product.application" version="1.0.0.qualifier" useFeatures="false" includeLaunchers="true">
+<product name="CssCI" 
+         uid="cssCiId" 
+         id="org.csstudio.common.product.product" 
+         application="org.csstudio.common.product.application" 
+         version="1.0.0.qualifier" 
+         useFeatures="false" 
+         includeLaunchers="true">
 
    <aboutInfo>
       <image path="resources/css64x64.gif"/>
@@ -41,7 +47,7 @@ HTTP://WWW.DESY.DE/LEGAL/LICENSE.HTM
 
    <windowImages i16="resources/css16x16.gif" i32="resources/css32x32.gif" i48="resources/css48x48.gif" i64="resources/css64x64.gif" i128="resources/css128x128.gif"/>
 
-   <launcher name="CssCI">
+   <launcher name="css-ci">
       <solaris/>
       <win useIco="false">
          <bmp/>
@@ -177,6 +183,7 @@ HTTP://WWW.DESY.DE/LEGAL/LICENSE.HTM
       <plugin id="org.csstudio.utility.ldap.nameSpaceBrowser"/>
       <plugin id="org.csstudio.utility.ldap.service"/>
       <plugin id="org.csstudio.utility.ldap.service.impl"/>
+      <plugin id="org.csstudio.utility.ldap.service.impl.test" fragment="true"/>
       <plugin id="org.csstudio.utility.ldap.treeconfiguration"/>
       <plugin id="org.csstudio.utility.ldap.ui"/>
       <plugin id="org.csstudio.utility.ldapupdater"/>
@@ -225,6 +232,7 @@ HTTP://WWW.DESY.DE/LEGAL/LICENSE.HTM
       <plugin id="org.eclipse.core.runtime.compatibility.auth"/>
       <plugin id="org.eclipse.core.runtime.compatibility.registry" fragment="true"/>
       <plugin id="org.eclipse.core.variables"/>
+      <plugin id="org.eclipse.debug.core"/>
       <plugin id="org.eclipse.draw2d"/>
       <plugin id="org.eclipse.ecf"/>
       <plugin id="org.eclipse.ecf.datashare"/>
@@ -246,6 +254,8 @@ HTTP://WWW.DESY.DE/LEGAL/LICENSE.HTM
       <plugin id="org.eclipse.equinox.common"/>
       <plugin id="org.eclipse.equinox.concurrent"/>
       <plugin id="org.eclipse.equinox.ds"/>
+      <plugin id="org.eclipse.equinox.frameworkadmin"/>
+      <plugin id="org.eclipse.equinox.frameworkadmin.equinox"/>
       <plugin id="org.eclipse.equinox.http.jetty"/>
       <plugin id="org.eclipse.equinox.http.registry"/>
       <plugin id="org.eclipse.equinox.http.servlet"/>
@@ -261,6 +271,8 @@ HTTP://WWW.DESY.DE/LEGAL/LICENSE.HTM
       <plugin id="org.eclipse.equinox.security"/>
       <plugin id="org.eclipse.equinox.security.macosx" fragment="true"/>
       <plugin id="org.eclipse.equinox.security.win32.x86" fragment="true"/>
+      <plugin id="org.eclipse.equinox.simpleconfigurator"/>
+      <plugin id="org.eclipse.equinox.simpleconfigurator.manipulator"/>
       <plugin id="org.eclipse.equinox.util"/>
       <plugin id="org.eclipse.gef"/>
       <plugin id="org.eclipse.help"/>
@@ -268,7 +280,11 @@ HTTP://WWW.DESY.DE/LEGAL/LICENSE.HTM
       <plugin id="org.eclipse.help.base"/>
       <plugin id="org.eclipse.help.ui"/>
       <plugin id="org.eclipse.help.webapp"/>
+      <plugin id="org.eclipse.jdt.core"/>
+      <plugin id="org.eclipse.jdt.debug"/>
       <plugin id="org.eclipse.jdt.junit.core"/>
+      <plugin id="org.eclipse.jdt.junit.runtime"/>
+      <plugin id="org.eclipse.jdt.launching"/>
       <plugin id="org.eclipse.jface"/>
       <plugin id="org.eclipse.jface.databinding"/>
       <plugin id="org.eclipse.jface.text"/>
@@ -331,7 +347,9 @@ HTTP://WWW.DESY.DE/LEGAL/LICENSE.HTM
       <plugin id="org.mortbay.jetty.server"/>
       <plugin id="org.mortbay.jetty.util"/>
       <plugin id="org.remotercp.common"/>
+      <plugin id="org.remotercp.domain.authorization"/>
       <plugin id="org.remotercp.service.connection"/>
+      <plugin id="org.remotercp.util"/>
       <plugin id="org.slf4j"/>
       <plugin id="org.slf4j-log4j12"/>
    </plugins>
