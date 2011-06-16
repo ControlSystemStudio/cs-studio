@@ -1,5 +1,7 @@
 package org.csstudio.ui.menu.test;
 
+import java.util.Arrays;
+
 import org.csstudio.csdata.ProcessVariable;
 import org.csstudio.ui.util.AdapterUtil;
 import org.eclipse.jface.action.IAction;
@@ -14,6 +16,7 @@ import org.eclipse.ui.handlers.HandlerUtil;
 public class TestPVAction implements IObjectActionDelegate {
 	
 	private Shell shell;
+	private ISelection selection;
 
 	public TestPVAction() {
 		// TODO Auto-generated constructor stub
@@ -23,13 +26,14 @@ public class TestPVAction implements IObjectActionDelegate {
 	public void run(IAction action) {
 		MessageDialog.openInformation(
 				shell,
-				"Action executed", null);
+				"PV Action",
+				"PVs: " + Arrays.toString(AdapterUtil.convert(selection,
+						ProcessVariable.class)));
 	}
 
 	@Override
 	public void selectionChanged(IAction action, ISelection selection) {
-		// TODO Auto-generated method stub
-
+		this.selection = selection;
 	}
 
 	@Override
