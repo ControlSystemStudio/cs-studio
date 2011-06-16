@@ -35,12 +35,13 @@ import java.text.DecimalFormatSymbols;
 import java.text.NumberFormat;
 import java.util.Locale;
 
-import org.csstudio.platform.logging.CentralLogger;
 import org.eclipse.swt.graphics.RGB;
 import org.jdom.Document;
 import org.jdom.Element;
 import org.jdom.output.Format;
 import org.jdom.output.XMLOutputter;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * @author hrickens
@@ -50,11 +51,11 @@ import org.jdom.output.XMLOutputter;
  */
 public class StripTool {
     
-    
-    private Document _document;
-    private Element _root;
+    private static final Logger LOG = LoggerFactory.getLogger(StripTool.class);
+    private final Document _document;
+    private final Element _root;
     private Element _pvList;
-    private NumberFormat _formatter;
+    private final NumberFormat _formatter;
 
     public StripTool() {
         _root = new Element("databrowser");
@@ -77,7 +78,7 @@ public class StripTool {
         format.setEncoding("ISO-8859-1");
         XMLOutputter out = new XMLOutputter(format);
         out.output(_document, writer);
-        CentralLogger.getInstance().info(this, "Write File:" + path.getAbsolutePath());
+        LOG.info("Write File: {}", path.getAbsolutePath());
         writer.close();
     }
 

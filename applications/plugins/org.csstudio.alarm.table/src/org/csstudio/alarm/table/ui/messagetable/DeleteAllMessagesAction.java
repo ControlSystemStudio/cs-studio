@@ -21,20 +21,24 @@
  */
 package org.csstudio.alarm.table.ui.messagetable;
 
-import org.csstudio.alarm.table.dataModel.BasicMessage;
 import org.csstudio.alarm.table.dataModel.AbstractMessageList;
-import org.csstudio.platform.logging.CentralLogger;
+import org.csstudio.alarm.table.dataModel.BasicMessage;
 import org.eclipse.jface.action.Action;
 import org.eclipse.jface.viewers.ISelectionChangedListener;
 import org.eclipse.jface.viewers.SelectionChangedEvent;
 import org.eclipse.swt.widgets.TableItem;
 import org.eclipse.ui.ISharedImages;
 import org.eclipse.ui.PlatformUI;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class DeleteAllMessagesAction extends Action {
-	private MessageTable _messageTable;
+    
+    private static final Logger LOG = LoggerFactory.getLogger(DeleteAllMessagesAction.class);
+    
+	private final MessageTable _messageTable;
 
-	private AbstractMessageList _messageList;
+	private final AbstractMessageList _messageList;
 
 	public DeleteAllMessagesAction(final MessageTable messageTable,
 			final AbstractMessageList msgList) {
@@ -50,7 +54,8 @@ public class DeleteAllMessagesAction extends Action {
 		// Conditionally enable this action
 		_messageTable.getTableViewer().addSelectionChangedListener(
 				new ISelectionChangedListener() {
-					public void selectionChanged(SelectionChangedEvent event) {
+					@Override
+                    public void selectionChanged(SelectionChangedEvent event) {
 						boolean anything = (!event.getSelection().isEmpty() && !_messageTable
 								.getMessageUpdatePause());
 						setEnabled(anything);
@@ -68,8 +73,7 @@ public class DeleteAllMessagesAction extends Action {
 				messages[i] = (BasicMessage) tableItem.getData();
 				i++;
 			} else {
-				CentralLogger.getInstance().warn(this,
-						"Unknown object in selection!");
+				LOG.warn("Unknown object in selection!");
 			}
 		}
 		_messageList.removeMessages(messages);

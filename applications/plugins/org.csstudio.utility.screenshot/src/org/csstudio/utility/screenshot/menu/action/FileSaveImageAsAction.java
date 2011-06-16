@@ -23,8 +23,6 @@
 
 package org.csstudio.utility.screenshot.menu.action;
 
-import org.apache.log4j.Logger;
-import org.csstudio.platform.logging.CentralLogger;
 import org.csstudio.utility.screenshot.ScreenshotWorker;
 import org.csstudio.utility.screenshot.internal.localization.ScreenshotMessages;
 import org.eclipse.jface.action.Action;
@@ -34,23 +32,26 @@ import org.eclipse.swt.SWTException;
 import org.eclipse.swt.graphics.ImageData;
 import org.eclipse.swt.graphics.ImageLoader;
 import org.eclipse.swt.widgets.FileDialog;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class FileSaveImageAsAction extends Action {
     
     /** Logger of this class */ 
-    private Logger logger;
+    private static final Logger LOG = LoggerFactory.getLogger(FileSaveImageAsAction.class);
+    
     
     /** The screenshot main class */
-    private ScreenshotWorker worker;
+    private final ScreenshotWorker worker;
     
     /** Image file extensions */
-    private String[] ext;
+    private final String[] ext;
     
     /** Filter strings for the save dialog */
-    private String[] filter;  
+    private final String[] filter;  
     
     /** Image types */
-    private int[] type;
+    private final int[] type;
     
     /**
      * @author Markus Moeller
@@ -58,7 +59,6 @@ public class FileSaveImageAsAction extends Action {
      */
     
     public FileSaveImageAsAction(ScreenshotWorker w) {
-        logger = CentralLogger.getInstance().getLogger(this);
         worker = w;
         ext = new String[] { "*.bmp", "*.jpg" };
         filter = new String[] { "Windows Bitmap (*.bmp)", "JPEG (*.jpg)" };
@@ -69,6 +69,7 @@ public class FileSaveImageAsAction extends Action {
         this.setEnabled(true);
     }
     
+    @Override
     public void run() {
         int indexOfDot = -1;
         int indexExt = -1;
@@ -97,19 +98,19 @@ public class FileSaveImageAsAction extends Action {
                 
                 if(indexExt != -1) {
                     
-                    logger.debug("Try to save image now...");
+                    LOG.debug("Try to save image now...");
                     
                     ImageLoader loader = new ImageLoader();
                     ImageData[] imageData = new ImageData[1];
                     
                     if(worker.getDisplayedImage() != null) {
-                        logger.debug("Saving Displayed image");
+                        LOG.debug("Saving Displayed image");
                         imageData[0] = worker.getDisplayedImage().getImageData();
                     } else if(worker.getSimpleImage() != null) {
-                        logger.debug("Saving Simple image");
+                        LOG.debug("Saving Simple image");
                         imageData[0] = worker.getSimpleImage().getImageData();
                     } else {
-                        logger.debug("NO IMAGE!!!!");
+                        LOG.debug("NO IMAGE!!!!");
                     }
                     
                     loader.data = imageData;

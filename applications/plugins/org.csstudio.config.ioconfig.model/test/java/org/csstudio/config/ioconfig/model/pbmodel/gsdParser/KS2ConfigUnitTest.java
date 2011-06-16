@@ -64,7 +64,7 @@ public class KS2ConfigUnitTest {
      */
     @Before
     public void setUp() throws Exception {
-        _expected = new BufferedReader(new FileReader("./res-test/ConfigFilesInUse/KS2.xml"));
+        _expected = new BufferedReader(new FileReader("./../../../applications/plugins/org.csstudio.config.ioconfig.model/res-test/ConfigFilesInUse/KS2.xml"));
     }
     
     @Test

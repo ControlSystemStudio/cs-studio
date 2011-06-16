@@ -84,28 +84,32 @@ public class CallNewSiblingNodeEditor extends AbstractCallNodeEditor {
     protected void openNodeEditor(@Nonnull final AbstractNodeDBO siblingNode,
                                   @Nonnull final IWorkbenchPage page) throws PartInitException,
                                                                      PersistenceException {
-        AbstractNodeDBO<?,?> node = null;
-        String id = null;
+//        AbstractNodeDBO<?,?> node = null;
+//        String id = null;
+//        
+//        if(siblingNode instanceof FacilityDBO) {
+//            id = FacilityEditor.ID;
+//            node = new FacilityDBO();
+//        } else if(siblingNode instanceof IocDBO) {
+//            id = IocEditor.ID;
+//            node = new IocDBO( ((IocDBO) siblingNode).getParent());
+//        } else if(siblingNode instanceof ProfibusSubnetDBO) {
+//            id = SubnetEditor.ID;
+//            node = new ProfibusSubnetDBO( ((ProfibusSubnetDBO) siblingNode).getIoc());
+//        } else if(siblingNode instanceof MasterDBO) {
+//            id = MasterEditor.ID;
+//            node = new MasterDBO( ((MasterDBO) siblingNode).getProfibusSubnet());
+//        } else if(siblingNode instanceof SlaveDBO) {
+//            id = SlaveEditor.ID;
+//            node = new SlaveDBO( ((SlaveDBO) siblingNode).getProfibusDPMaster());
+//        } else if(siblingNode instanceof ModuleDBO) {
+//            id = ModuleEditor.ID;
+//            node = new ModuleDBO( ((ModuleDBO) siblingNode).getSlave());
+//        }
         
-        if(siblingNode instanceof FacilityDBO) {
-            id = FacilityEditor.ID;
-            node = new FacilityDBO();
-        } else if(siblingNode instanceof IocDBO) {
-            id = IocEditor.ID;
-            node = new IocDBO( ((IocDBO) siblingNode).getParent());
-        } else if(siblingNode instanceof ProfibusSubnetDBO) {
-            id = SubnetEditor.ID;
-            node = new ProfibusSubnetDBO( ((ProfibusSubnetDBO) siblingNode).getIoc());
-        } else if(siblingNode instanceof MasterDBO) {
-            id = MasterEditor.ID;
-            node = new MasterDBO( ((MasterDBO) siblingNode).getProfibusSubnet());
-        } else if(siblingNode instanceof SlaveDBO) {
-            id = SlaveEditor.ID;
-            node = new SlaveDBO( ((SlaveDBO) siblingNode).getProfibusDPMaster());
-        } else if(siblingNode instanceof ModuleDBO) {
-            id = ModuleEditor.ID;
-            node = new ModuleDBO( ((ModuleDBO) siblingNode).getSlave());
-        }
+        AbstractNodeDBO node = siblingNode.getParent().createChild();
+        String id = NodeEditorHandler.getEditorIdFor(node);
+        
         if( (node != null) && (id != null)) {
             if(id.equals(ModuleEditor.ID)) {
                 performOpen(siblingNode, page, node, id, "");

@@ -43,7 +43,7 @@ public final class AlarmTreePlugin extends AbstractCssUiPlugin {
     /**
      * The plug-in id.
      */
-    public static final String PLUGIN_ID = "import org.csstudio.alarm.treeview.";
+    public static final String PLUGIN_ID = "org.csstudio.alarm.treeview";
 
     /**
      * The service tracker reference for the LDAP service.

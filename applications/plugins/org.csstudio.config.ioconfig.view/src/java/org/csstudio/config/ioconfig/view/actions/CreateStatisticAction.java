@@ -29,15 +29,12 @@ import java.io.IOException;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
-import org.apache.log4j.Logger;
 import org.csstudio.config.ioconfig.model.FacilityDBO;
-import org.csstudio.config.ioconfig.model.IOConifgActivator;
+import org.csstudio.config.ioconfig.model.IOConfigActivator;
 import org.csstudio.config.ioconfig.model.PersistenceException;
-import org.csstudio.config.ioconfig.model.siemens.ProfibusConfigWinModGenerator;
 import org.csstudio.config.ioconfig.model.statistic.ProfibusStatisticGenerator;
 import org.csstudio.config.ioconfig.view.DeviceDatabaseErrorDialog;
 import org.csstudio.config.ioconfig.view.ProfiBusTreeView;
-import org.csstudio.platform.logging.CentralLogger;
 import org.eclipse.core.runtime.preferences.DefaultScope;
 import org.eclipse.core.runtime.preferences.IEclipsePreferences;
 import org.eclipse.jface.action.Action;
@@ -45,6 +42,8 @@ import org.eclipse.swt.SWT;
 import org.eclipse.swt.widgets.DirectoryDialog;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.MessageBox;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * Create a Statistic from the selected Facility and put it on a File. 
@@ -56,10 +55,9 @@ import org.eclipse.swt.widgets.MessageBox;
  */
 public class CreateStatisticAction extends Action {
 
-    private static final Logger LOG = CentralLogger.getInstance()
-            .getLogger(CreateWinModAction.class);
-
-    private ProfiBusTreeView _pbtv;
+    private static final Logger LOG = LoggerFactory.getLogger(CreateStatisticAction.class);
+    
+    private final ProfiBusTreeView _pbtv;
 
     /**
      * Constructor.
@@ -75,7 +73,7 @@ public class CreateStatisticAction extends Action {
     @Override
     public void run() {
         final String filterPathKey = "FilterPath";
-        IEclipsePreferences pref = new DefaultScope().getNode(IOConifgActivator.PLUGIN_ID);
+        IEclipsePreferences pref = new DefaultScope().getNode(IOConfigActivator.PLUGIN_ID);
         String filterPath = pref.get(filterPathKey, "");
         DirectoryDialog dDialog = new DirectoryDialog(_pbtv.getShell());
         dDialog.setFilterPath(filterPath);

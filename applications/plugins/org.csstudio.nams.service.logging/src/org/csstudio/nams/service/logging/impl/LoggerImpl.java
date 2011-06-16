@@ -44,53 +44,63 @@ public class LoggerImpl implements Logger {
 		this.centralLogger = CentralLogger.getInstance();
 	}
 
-	synchronized public void logDebugMessage(final Object caller,
+	@Override
+    synchronized public void logDebugMessage(final Object caller,
 			final String message) {
 		this.centralLogger.debug(caller, message);
 	}
 
-	synchronized public void logDebugMessage(final Object caller,
+	@Override
+    synchronized public void logDebugMessage(final Object caller,
 			final String message, final Throwable throwable) {
 		this.centralLogger.debug(caller, message, throwable);
 	}
 
-	synchronized public void logErrorMessage(final Object caller,
+	@Override
+    synchronized public void logErrorMessage(final Object caller,
 			final String message) {
 		this.centralLogger.error(caller, message);
 	}
 
-	synchronized public void logErrorMessage(final Object caller,
+	@Override
+    synchronized public void logErrorMessage(final Object caller,
 			final String message, final Throwable throwable) {
 		this.centralLogger.error(caller, message, throwable);
 	}
 
-	synchronized public void logFatalMessage(final Object caller,
+	@Override
+    synchronized public void logFatalMessage(final Object caller,
 			final String message) {
 		this.centralLogger.fatal(caller, message);
 	}
 
-	synchronized public void logFatalMessage(final Object caller,
+	@Override
+    synchronized public void logFatalMessage(final Object caller,
 			final String message, final Throwable throwable) {
 		this.centralLogger.fatal(caller, message, throwable);
 	}
 
-	synchronized public void logInfoMessage(final Object caller,
+	@Override
+    synchronized public void logInfoMessage(final Object caller,
 			final String message) {
 		this.centralLogger.info(caller, message);
 		// System.out.println(caller.getClass().getCanonicalName() + message);
 	}
 
-	synchronized public void logInfoMessage(final Object caller,
+	@Override
+    synchronized public void logInfoMessage(final Object caller,
 			final String message, final Throwable throwable) {
 		this.centralLogger.info(caller, message, throwable);
 	}
 
-	synchronized public void logWarningMessage(final Object caller,
+	@Override
+    synchronized public void logWarningMessage(final Object caller,
 			final String message) {
 		this.centralLogger.warn(caller, message);
 	}
 
-	synchronized public void logWarningMessage(final Object caller,
+	@Override
+    synchronized public void logWarningMessage(final Object caller,
 			final String message, final Throwable throwable) {
 		this.centralLogger.warn(caller, message, throwable);
 	}

@@ -30,6 +30,8 @@ import java.io.IOException;
 
 import org.csstudio.archive.sdds.server.util.IntegerValue;
 import org.csstudio.archive.sdds.server.util.RawData;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import de.desy.aapi.AapiServerError;
 
@@ -38,6 +40,8 @@ import de.desy.aapi.AapiServerError;
  *
  */
 public class WaveFormDataRequest extends ServerCommand {
+    
+    private static final Logger LOG = LoggerFactory.getLogger(WaveFormDataRequest.class);
     
     /* (non-Javadoc)
      * @see org.csstudio.archive.jaapi.server.command.ServerCommand#execute(byte[], int, byte[], org.csstudio.archive.jaapi.server.util.IntegerValue)
@@ -58,7 +62,7 @@ public class WaveFormDataRequest extends ServerCommand {
             
         } catch(IOException ioe) {
             
-            logger.error("[*** IOException ***]: " + ioe.getMessage());
+            LOG.error("[*** IOException ***]: ", ioe);
         }
     }
 }

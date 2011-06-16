@@ -28,8 +28,6 @@ import org.csstudio.sds.components.model.MenuButtonModel;
 import org.csstudio.sds.cursorservice.CursorService;
 import org.csstudio.sds.model.AbstractWidgetModel;
 import org.csstudio.sds.model.CursorStyleEnum;
-import org.epics.css.dal.simple.AnyData;
-import org.epics.css.dal.simple.AnyDataChannel;
 import org.epics.css.dal.simple.MetaData;
 
 /**
@@ -38,7 +36,7 @@ import org.epics.css.dal.simple.MetaData;
  * @version $Revision: 1.2 $
  * @since 26.03.2010
  */
-public class MenuButtonBehavior extends AbstractDesyBehavior<MenuButtonModel> {
+public class MenuButtonBehavior extends AbstractDesyConnectionBehavior<MenuButtonModel> {
 
     @Override
     protected String[] doGetInvisiblePropertyIds() {
@@ -49,13 +47,8 @@ public class MenuButtonBehavior extends AbstractDesyBehavior<MenuButtonModel> {
 
     @Override
     protected void doInitialize(MenuButtonModel widget) {
+        super.doInitialize(widget);
         widget.setCursorId(CursorStyleEnum.HAND.name());
-    }
-
-    @Override
-    protected void doProcessConnectionStateChange(MenuButtonModel widget,
-            AnyDataChannel anyDataChannel) {
-
     }
 
     @Override
@@ -85,9 +78,9 @@ public class MenuButtonBehavior extends AbstractDesyBehavior<MenuButtonModel> {
         }
     }
 
-    @Override
-    protected void doProcessValueChange(MenuButtonModel model, AnyData anyData) {
-
-    }
+//    @Override
+//    protected void doProcessValueChange(MenuButtonModel model, AnyData anyData) {
+//
+//    }
 
 }

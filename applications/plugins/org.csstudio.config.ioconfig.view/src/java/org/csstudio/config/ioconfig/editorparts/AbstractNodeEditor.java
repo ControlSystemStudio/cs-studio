@@ -28,7 +28,6 @@ import javax.annotation.CheckForNull;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
-import org.apache.log4j.Logger;
 import org.csstudio.auth.security.SecurityFacade;
 import org.csstudio.auth.security.User;
 import org.csstudio.config.ioconfig.config.view.INodeConfig;
@@ -45,7 +44,6 @@ import org.csstudio.config.ioconfig.model.pbmodel.SlaveDBO;
 import org.csstudio.config.ioconfig.view.DeviceDatabaseErrorDialog;
 import org.csstudio.config.ioconfig.view.MainView;
 import org.csstudio.config.ioconfig.view.ProfiBusTreeView;
-import org.csstudio.platform.logging.CentralLogger;
 import org.csstudio.platform.ui.util.CustomMediaFactory;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.jface.dialogs.InputDialog;
@@ -88,6 +86,8 @@ import org.eclipse.ui.IViewSite;
 import org.eclipse.ui.PartInitException;
 import org.eclipse.ui.handlers.IHandlerService;
 import org.eclipse.ui.part.EditorPart;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * The skeletal structure for an Editor to editing a Node.
@@ -123,7 +123,7 @@ public abstract class AbstractNodeEditor extends EditorPart implements INodeConf
                 }
                 setSaveButtonSaved();
             } else {
-                AbstractNodeDBO node = getNode();
+                AbstractNodeDBO<?,?> node = getNode();
                 final boolean openQuestion = MessageDialog
                         .openQuestion(getShell(), "Cancel", "You dispose this "
                                 + node.getClass().getSimpleName() + "?");
@@ -226,9 +226,8 @@ public abstract class AbstractNodeEditor extends EditorPart implements INodeConf
     
     private static GridDataFactory _TEXT_GRID_DATA = GridDataFactory.fillDefaults().grab(true,
                                                                                          false);
-    
-    private static final Logger LOG = CentralLogger.getInstance()
-            .getLogger(AbstractNodeEditor.class);
+
+    private static final Logger LOG = LoggerFactory.getLogger(AbstractNodeEditor.class);
     
     /**
     /**
@@ -511,11 +510,6 @@ public abstract class AbstractNodeEditor extends EditorPart implements INodeConf
         return _documentationManageView;
     }
     
-//    @CheckForNull
-//    protected GSDFileDBO getGsdFile() {
-//        return _gsdFile;
-//    }
-    
     @CheckForNull
     protected List<GSDFileDBO> getGsdFiles() {
         return _gsdFiles;
@@ -637,7 +631,8 @@ public abstract class AbstractNodeEditor extends EditorPart implements INodeConf
      * (@inheritDoc)
      */
     @Override
-    public void init(@Nonnull final IEditorSite site, @Nonnull final IEditorInput input) throws PartInitException {
+    public void init(@Nonnull final IEditorSite site, 
+                     @Nonnull final IEditorInput input) throws PartInitException {
         setSite(site);
         setInput(input);
         _node = ((NodeEditorInput) input).getNode();
@@ -762,7 +757,7 @@ public abstract class AbstractNodeEditor extends EditorPart implements INodeConf
                 return true;
             }
         } catch (PersistenceException e) {
-            LOG.error(e.getMessage());
+            LOG.error("Can't create node! Database error.",e);
             DeviceDatabaseErrorDialog.open(null, "Can't create node! Database error.", e);
         }
         return false;
@@ -773,7 +768,7 @@ public abstract class AbstractNodeEditor extends EditorPart implements INodeConf
      *            A exception to show in a Dialog,
      */
     protected void openErrorDialog(@Nonnull final Exception exception) {
-        LOG.error(exception);
+        LOG.error("The Settings not saved!\n\nDataBase Failure:", exception);
         DeviceDatabaseErrorDialog.open(null,
                                        "The Settings not saved!\n\nDataBase Failure:",
                                        exception);
@@ -792,7 +787,7 @@ public abstract class AbstractNodeEditor extends EditorPart implements INodeConf
         try {
             handlerService.executeCommand("org.eclipse.ui.file.save", null);
         } catch (final Exception ex) {
-            LOG.error(ex);
+            LOG.error("Can't Save!", ex);
         }
     }
     
@@ -800,7 +795,6 @@ public abstract class AbstractNodeEditor extends EditorPart implements INodeConf
      * Save or Update the Node to the Data Base.
      */
     final void save() {
-        
         ProgressMonitorDialog dia = new ProgressMonitorDialog(getShell());
         dia.open();
         IProgressMonitor progressMonitor = dia.getProgressMonitor();
@@ -831,11 +825,8 @@ public abstract class AbstractNodeEditor extends EditorPart implements INodeConf
                 getProfiBusTreeView().refresh(parent);
                 getProfiBusTreeView().getTreeViewer().expandToLevel(getNode(),
                                                                     AbstractTreeViewer.ALL_LEVELS);
-//                getProfiBusTreeView().getTreeViewer()
-//                        .setSelection(new StructuredSelection(getNode()));
             } else if (isNew() && getNode().isRootNode()) {
                 getProfiBusTreeView().addFacility(getNode());
-                //			getProfiBusTreeView().getTreeViewer().expandToLevel(getNode(), AbstractTreeViewer.ALL_LEVELS);
                 getProfiBusTreeView().refresh(getNode());
                 getProfiBusTreeView().refresh();
                 

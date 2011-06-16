@@ -2,7 +2,7 @@ Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: Google Guice
 Bundle-SymbolicName: com.google.inject
-Bundle-Version: 2.0.0
+Bundle-Version: 2.0.0.qualifier
 Bundle-ClassPath: .
 Bundle-Vendor: DESY <css-developer@desy.de>, Bastian Knerr <bastian.knerr@desy.de>
 Export-Package: com.google.inject,

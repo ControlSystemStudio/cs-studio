@@ -21,15 +21,20 @@
  */
 package org.csstudio.platform.statistic;
 
-import org.csstudio.platform.logging.CentralLogger;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
-/**sdfgsdfgd.
+import org.csstudio.platform.CSSPlatformPlugin;
+
+/**
  * @author claus
  *
  */
 public class AlarmHandler {
+    
+    private static final Logger LOG = Logger.getLogger(CSSPlatformPlugin.ID);
 	
-	/**fghjfd.
+	/**
 	 * 
 	 */
 	private String _logLevel = "info";
@@ -80,11 +85,10 @@ public class AlarmHandler {
 				/*
 				 * set absolute limit on
 				 */
-				CentralLogger.getInstance().warn(
-						this,
-						getApplication() + " : " + getDescriptor()
-								+ "above absolute High limit! Value: " + value
-								+ "Info: " + collector.getInfo());
+			    
+			    Object[] logArgs = new Object[] {getApplication(), getDescriptor(), value, collector.getInfo()};
+
+				LOG.log(Level.WARNING, "{0} : {1} above absolute High limit! Value: {2} Info: {3}", logArgs);
 				setHighAbsoluteLimitIsActive(true);
 			}			
 		} else {
@@ -98,8 +102,7 @@ public class AlarmHandler {
 				/*
 				 * set absolute limit on
 				 */
-				CentralLogger.getInstance().warn(
-						this,
+				LOG.log(Level.WARNING,
 						getApplication() + " : " + getDescriptor() + " : >"
 								+ getHighRelativeLimit() + "% "
 								+ "above floating mean value ("

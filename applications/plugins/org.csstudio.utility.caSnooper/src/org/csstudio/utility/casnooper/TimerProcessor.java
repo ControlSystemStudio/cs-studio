@@ -45,7 +45,7 @@ public class TimerProcessor {
         server.setListnere(channel);
         TimerTask processOnTime = new ProcessOnTime();
         timer.scheduleAtFixedRate(processOnTime, getDelay(), getInterval());
-//	        CentralLogger.getInstance().info(timer, "start TimerProcessor");
+//	        LOG.info(timer, "start TimerProcessor");
     }
 
     public static long getInterval() {

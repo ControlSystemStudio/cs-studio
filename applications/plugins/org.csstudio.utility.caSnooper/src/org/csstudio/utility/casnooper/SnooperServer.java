@@ -23,7 +23,6 @@ import gov.aps.jca.cas.ServerContext;
 
 import java.net.InetSocketAddress;
 
-import org.csstudio.platform.logging.CentralLogger;
 import org.csstudio.platform.statistic.Collector;
 import org.csstudio.utility.casnooper.channel.ChannelCollector;
 import org.csstudio.utility.casnooper.channel.NumberOfBroadcasts;
@@ -31,6 +30,8 @@ import org.csstudio.utility.casnooper.channel.NumberOfBroadcastsPerSecond;
 import org.csstudio.utility.casnooper.preferences.PreferenceConstants;
 import org.eclipse.core.runtime.Platform;
 import org.eclipse.core.runtime.preferences.IPreferencesService;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import com.cosylab.epics.caj.cas.util.DefaultServerImpl;
 import com.cosylab.epics.caj.cas.util.examples.CounterProcessVariable;
@@ -41,7 +42,8 @@ import com.cosylab.epics.caj.cas.util.examples.CounterProcessVariable;
  * @version $id$
  */
 public class SnooperServer {
-	
+
+    private static final Logger LOG = LoggerFactory.getLogger(SnooperServer.class);
 	private static SnooperServer thisSnooperServer = null;
 	private static TimerProcessor timerProcessor = null;
 	private volatile int broadcastCounter = 0; 
@@ -82,7 +84,8 @@ public class SnooperServer {
 		/**
 		 * @see gov.aps.jca.cas.Server#processVariableExistanceTest(java.lang.String, java.net.InetSocketAddress, gov.aps.jca.cas.ProcessVariableExistanceCallback)
 		 */
-		public ProcessVariableExistanceCompletion processVariableExistanceTest(String aliasName, InetSocketAddress clientAddress,
+		@Override
+        public ProcessVariableExistanceCompletion processVariableExistanceTest(String aliasName, InetSocketAddress clientAddress,
 																			   ProcessVariableExistanceCallback asyncCompletionCallback)
 			throws CAException, IllegalArgumentException, IllegalStateException
 		{
@@ -90,14 +93,15 @@ public class SnooperServer {
 			 * do the snooper stuff
 			 */
 			
-			CentralLogger.getInstance().debug(this, "Request for '" + aliasName + "' from client " + clientAddress + " count " + getBroadcastCounter());
+		    Object[] args = new Object[]{aliasName, clientAddress, getBroadcastCounter()};
+			LOG.debug("Request for '{}' from client {} count {}", args);
 //			System.out.println("Request for '" + aliasName + "' from client " + clientAddress + " count " + getBroadcastCounter());
 			try {
 				incrementBroadcastCounter();
 				
 				collector.addBMessage(aliasName, clientAddress);
 			} catch (Exception e) {
-				CentralLogger.getInstance().error(this, "Error in existance test: " + e.toString());
+				LOG.error("Error in existance test: ", e);
 			}
 			
 			synchronized (pvs)
@@ -243,7 +247,7 @@ public class SnooperServer {
 			initialize();
 		    
 			System.out.println("Running server...");
-			CentralLogger.getInstance().info(this, "Start caSnooper on: " + localHostName);
+			LOG.info("Start caSnooper on: {}", localHostName);
 			
 			// start time based processor
 			IPreferencesService prefs = Platform.getPreferencesService();
@@ -256,7 +260,7 @@ public class SnooperServer {
 			context.run(0);
 			
 			System.out.println("Done.");
-			CentralLogger.getInstance().info(this, "Stop caSnooper on: " + localHostName);
+			LOG.info("Stop caSnooper on: {}", localHostName);
 
 		} catch (Throwable th) {
 			th.printStackTrace();

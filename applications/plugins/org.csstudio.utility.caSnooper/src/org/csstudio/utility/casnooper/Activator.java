@@ -1,19 +1,22 @@
 package org.csstudio.utility.casnooper;
 
 import org.csstudio.platform.AbstractCssPlugin;
-import org.csstudio.platform.logging.CentralLogger;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
 import org.osgi.framework.BundleContext;
 import org.remotercp.common.tracker.GenericServiceTracker;
 import org.remotercp.common.tracker.IGenericServiceListener;
 import org.remotercp.service.connection.session.ISessionService;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * The activator class controls the plug-in life cycle
  */
 public class Activator extends AbstractCssPlugin {
 
+    private static final Logger LOG = LoggerFactory.getLogger(Activator.class);
+    
 	// The plug-in ID
 	public static final String PLUGIN_ID = "org.csstudio.utility.caSnooper";
 
@@ -54,8 +57,7 @@ public class Activator extends AbstractCssPlugin {
 
 	@Override
 	protected void doStop(BundleContext context) throws Exception {
-		// TODO Auto-generated method stub
-		CentralLogger.getInstance().info(this, "CaSnooper stopped"); 
+		LOG.info("CaSnooper stopped"); 
 		
 	}
 

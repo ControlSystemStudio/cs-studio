@@ -87,7 +87,6 @@ public class MarkedWidgetDesyAlarmBehavior<W extends AbstractMarkedWidgetModel> 
         model.setPropertyValue(AbstractMarkedWidgetModel.PROP_VALUE, anyData.doubleValue());
     }
 
-
     @Override
     protected void doProcessMetaDataChange( final W widget,final MetaData meta) {
         if (meta != null) {

@@ -21,26 +21,21 @@
  */
 package org.csstudio.alarm.table.ui;
 
-import java.io.FileNotFoundException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
 
 import javax.annotation.Nonnull;
 
-import org.apache.log4j.Logger;
 import org.csstudio.alarm.service.declaration.AlarmPreference;
 import org.csstudio.alarm.service.declaration.IAlarmConfigurationService;
 import org.csstudio.alarm.service.declaration.IAlarmInitItem;
 import org.csstudio.alarm.service.declaration.IAlarmMessage;
 import org.csstudio.alarm.table.JmsLogsPlugin;
-import org.csstudio.alarm.table.dataModel.BasicMessage;
 import org.csstudio.alarm.table.dataModel.AbstractMessageList;
-import org.csstudio.platform.logging.CentralLogger;
-import org.csstudio.utility.ldap.service.LdapServiceException;
+import org.csstudio.alarm.table.dataModel.BasicMessage;
 import org.csstudio.utility.ldap.treeconfiguration.LdapEpicsAlarmcfgConfiguration;
 import org.csstudio.utility.treemodel.ContentModel;
-import org.csstudio.utility.treemodel.CreateContentModelException;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
@@ -59,9 +54,7 @@ import org.eclipse.core.runtime.jobs.Job;
  * @since 22.06.2010
  */
 public class InitialStateRetriever {
-    private static final Logger LOG = CentralLogger.getInstance()
-            .getLogger(InitialStateRetriever.class);
-
+    
     // destination for the initialization
     private final AbstractMessageList _messageList;
 

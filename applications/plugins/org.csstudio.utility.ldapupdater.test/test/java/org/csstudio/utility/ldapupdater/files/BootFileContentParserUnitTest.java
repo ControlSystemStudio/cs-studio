@@ -34,8 +34,8 @@ import junit.framework.Assert;
 
 import org.csstudio.domain.desy.net.IpAddress;
 import org.csstudio.utility.ldap.treeconfiguration.LdapFieldsAndAttributes;
-import org.csstudio.utility.ldapUpdater.files.BootFileContentParser;
-import org.csstudio.utility.ldapUpdater.model.IOC;
+import org.csstudio.utility.ldapupdater.files.BootFileContentParser;
+import org.csstudio.utility.ldapupdater.model.IOC;
 import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;

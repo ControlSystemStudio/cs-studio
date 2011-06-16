@@ -32,8 +32,7 @@ import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import org.apache.log4j.Logger;
-import org.csstudio.platform.logging.CentralLogger;
+
 import org.csstudio.websuite.WebSuiteActivator;
 import org.csstudio.websuite.internal.PreferenceConstants;
 import org.csstudio.websuite.utils.PageContent;
@@ -42,6 +41,8 @@ import org.csstudio.websuite.utils.Severity;
 import org.csstudio.websuite.utils.ValueReader;
 import org.eclipse.core.runtime.Platform;
 import org.eclipse.core.runtime.preferences.IPreferencesService;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * TODO (mmoeller) : 
@@ -71,7 +72,7 @@ public class FlashInfoDynServlet extends HttpServlet {
     private final int RELOAD_TIME = 30;
     
     /** Private logger for this class */
-    private Logger logger;
+    private static final Logger LOG = LoggerFactory.getLogger(FlashInfoDynServlet.class);
 
     /**
      * 
@@ -81,7 +82,6 @@ public class FlashInfoDynServlet extends HttpServlet {
         
         super.init(config);
         
-        logger = CentralLogger.getInstance().getLogger(this);
         valueReader = new ValueReader();
         pageContent = new PageContent();
         
@@ -123,7 +123,7 @@ public class FlashInfoDynServlet extends HttpServlet {
         StringBuilder page = new StringBuilder();
         boolean edit = (request.getParameter("edit") != null);
         
-        logger.info("User-Agent: " + request.getHeader("User-Agent"));
+        LOG.info("User-Agent: {}", request.getHeader("User-Agent"));
         
         page.append("<html>\n");
         page.append("<head>\n");

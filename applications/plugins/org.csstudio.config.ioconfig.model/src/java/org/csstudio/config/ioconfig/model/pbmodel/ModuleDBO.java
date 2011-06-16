@@ -40,6 +40,7 @@ import javax.persistence.Transient;
 
 import org.csstudio.config.ioconfig.model.AbstractNodeDBO;
 import org.csstudio.config.ioconfig.model.DocumentDBO;
+import org.csstudio.config.ioconfig.model.INodeVisitor;
 import org.csstudio.config.ioconfig.model.INodeWithPrototype;
 import org.csstudio.config.ioconfig.model.NodeType;
 import org.csstudio.config.ioconfig.model.PersistenceException;
@@ -439,5 +440,21 @@ public class ModuleDBO extends AbstractNodeDBO<SlaveDBO, ChannelStructureDBO> im
         GSDModuleDBO gsdModule = getGSDModule();
         return gsdModule==null?  new HashSet<DocumentDBO>():gsdModule.getDocuments();
     }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    @Nonnull
+    public ChannelStructureDBO createChild() throws PersistenceException {
+        throw new UnsupportedOperationException("No simple child can be created for node type " + getClass().getName());
+    }
     
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public void accept(@Nonnull final INodeVisitor visitor) {
+        visitor.visit(this);
+    }    
 }

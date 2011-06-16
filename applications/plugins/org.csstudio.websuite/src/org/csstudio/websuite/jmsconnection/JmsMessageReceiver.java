@@ -26,17 +26,20 @@ package org.csstudio.websuite.jmsconnection;
 import java.util.Enumeration;
 import java.util.HashMap;
 import java.util.Map;
+
 import javax.jms.JMSException;
 import javax.jms.MapMessage;
 import javax.jms.Message;
 import javax.jms.MessageListener;
 import javax.jms.Session;
 import javax.jms.TextMessage;
-import org.csstudio.platform.logging.CentralLogger;
+
 import org.csstudio.platform.utility.jms.sharedconnection.IMessageListenerSession;
 import org.csstudio.platform.utility.jms.sharedconnection.SharedJmsConnections;
 import org.csstudio.websuite.dataModel.BasicMessage;
 import org.csstudio.websuite.dataModel.MessageList;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * This class handles the receiver jms connection (via the shared jsm connection
@@ -46,7 +49,9 @@ import org.csstudio.websuite.dataModel.MessageList;
  * 
  */
 public class JmsMessageReceiver implements MessageListener {
-	private CentralLogger logger;
+    
+    private static final Logger LOG = LoggerFactory.getLogger(JmsMessageReceiver.class);
+    
     /**
      * List of messages displayed in the table.
      */
@@ -58,7 +63,6 @@ public class JmsMessageReceiver implements MessageListener {
     IMessageListenerSession listenerSession;
 
     public JmsMessageReceiver(MessageList messageList) {
-    	logger = CentralLogger.getInstance();
     	this.messageList = messageList;
     }
 
@@ -68,25 +72,23 @@ public class JmsMessageReceiver implements MessageListener {
     @Override
 	public void onMessage(final Message message) {
         if (message == null) {
-        	logger.warn(this, "Recived message is null");
+        	LOG.warn("Recived message is null");
         }else{
         	try {
                 if (message instanceof TextMessage) {
-                	logger.warn(this,"Recived message is not MapMessage");
+                	LOG.warn("Recived message is not MapMessage");
                 } else if (message instanceof MapMessage) {
                     final MapMessage mm = (MapMessage) message;
-                    logger.debug(this,"Received map message: EVENTTIME: "
-                                    + mm.getString("EVENTTIME")
-                                    + " NAME: " + mm.getString("NAME")
-                                    + " ACK: " + mm.getString("ACK"));
+                    Object[] logArgs = new Object[] {mm.getString("EVENTTIME"), mm.getString("NAME"), mm.getString("ACK")}; 
+                    LOG.debug("Received map message: EVENTTIME: {} NAME: {} ACK: {}", logArgs );
                     
                     Map<String, String> messageProperties = readMapMessageProperties(mm);
                     messageList.addMessage(new BasicMessage(messageProperties));
                 } else {
-                	logger.warn(this, "Recived message of unknown type");
+                	LOG.warn("Recived message of unknown type");
                 }
             } catch (JMSException e) {
-                logger.error(this, "JMS Problem",e);
+                LOG.error("JMS Problem", e);
             }
         }
     }
@@ -124,7 +126,7 @@ public class JmsMessageReceiver implements MessageListener {
     public void initializeJMSConnection(String defaultTopicSet) {
         String[] topicList = null;
         if ((defaultTopicSet == null) || (defaultTopicSet.length() == 0)) {
-            logger.error(this,"Could not initialize JMS Listener. JMS topics == NULL!");
+            LOG.error("Could not initialize JMS Listener. JMS topics == NULL!");
         } else {
             topicList = defaultTopicSet.split(",");
         }
@@ -135,12 +137,12 @@ public class JmsMessageReceiver implements MessageListener {
             }
             listenerSession = SharedJmsConnections.startMessageListener(this,
                     topicList, Session.AUTO_ACKNOWLEDGE);
-            logger.info(this,"Initialize JMS connection with topics: " + defaultTopicSet);
+            LOG.info("Initialize JMS connection with topics: {}", defaultTopicSet);
 
         } catch (JMSException e) {
-           logger.error(this,"JMS Connection error",e);
+           LOG.error("JMS Connection error",e);
         } catch (IllegalArgumentException e) {
-            logger.error(this,"JMS Connection error, invalid arguments",e);
+            LOG.error("JMS Connection error, invalid arguments",e);
         }
     }
 

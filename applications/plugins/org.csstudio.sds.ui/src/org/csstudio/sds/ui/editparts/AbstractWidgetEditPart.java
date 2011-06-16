@@ -104,6 +104,6 @@ public abstract class AbstractWidgetEditPart extends AbstractBaseEditPart implem
 	
 	@Override
 	public boolean isSelectable() {
-		return ! (getParent() instanceof GroupingContainerEditPart) || getParent().getSelected() != SELECTED_NONE;
+		return getSelected() != SELECTED_NONE || ! (getParent() instanceof GroupingContainerEditPart) || getParent().getSelected() != SELECTED_NONE;
 	}
 }

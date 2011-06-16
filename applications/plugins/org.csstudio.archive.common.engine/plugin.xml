@@ -11,7 +11,7 @@
       </application>
    </extension>
    <extension
-         id="engine"
+         id="product"
          point="org.eclipse.core.runtime.products">
       <product
             application="org.csstudio.archive.common.engine.application"

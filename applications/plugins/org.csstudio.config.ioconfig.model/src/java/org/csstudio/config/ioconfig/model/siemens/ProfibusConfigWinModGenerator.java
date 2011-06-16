@@ -41,7 +41,8 @@ import org.csstudio.config.ioconfig.model.pbmodel.ModuleDBO;
 import org.csstudio.config.ioconfig.model.pbmodel.ProfibusSubnetDBO;
 import org.csstudio.config.ioconfig.model.pbmodel.SlaveDBO;
 import org.csstudio.config.ioconfig.model.xml.ProfibusConfigXMLGenerator;
-import org.csstudio.platform.logging.CentralLogger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * @author hrickens
@@ -51,6 +52,8 @@ import org.csstudio.platform.logging.CentralLogger;
  */
 public class ProfibusConfigWinModGenerator {
 
+    private static final Logger LOG = LoggerFactory.getLogger(ProfibusConfigWinModGenerator.class);
+    
 	private static final String LINE_END = "\r\n";
 	
     private final StringBuilder _winModConfig;
@@ -412,7 +415,7 @@ public class ProfibusConfigWinModGenerator {
     public final void getXmlFile(@Nonnull final File path) throws IOException {
         FileWriter writer = new FileWriter(path);
         writer.append(_winModConfig.toString());
-        CentralLogger.getInstance().info(this, "Write File:" + path.getAbsolutePath());
+        LOG.info("Write File: {}", path.getAbsolutePath());
         writer.close();
     }
 
@@ -425,7 +428,7 @@ public class ProfibusConfigWinModGenerator {
     public final void getTxtFile(@Nonnull final File path) throws IOException {
     	FileWriter writer = new FileWriter(path);
     	writer.append(_winModSlaveAdr.toString());
-    	CentralLogger.getInstance().info(this, "Write File:" + path.getAbsolutePath());
+    	LOG.info("Write File: {}", path.getAbsolutePath());
     	writer.close();
     }
 }

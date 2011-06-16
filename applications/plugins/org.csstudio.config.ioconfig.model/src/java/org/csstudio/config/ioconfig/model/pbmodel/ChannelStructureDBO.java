@@ -36,6 +36,7 @@ import javax.persistence.Table;
 import javax.persistence.Transient;
 
 import org.csstudio.config.ioconfig.model.AbstractNodeDBO;
+import org.csstudio.config.ioconfig.model.INodeVisitor;
 import org.csstudio.config.ioconfig.model.NamedDBClass;
 import org.csstudio.config.ioconfig.model.NodeType;
 import org.csstudio.config.ioconfig.model.PersistenceException;
@@ -72,11 +73,10 @@ public class ChannelStructureDBO extends AbstractNodeDBO<ModuleDBO, ChannelDBO> 
 
     private ChannelStructureDBO(@Nonnull final ModuleDBO module, final boolean simple, final boolean isInput, @Nonnull final DataType type,
                                 @Nonnull final String name, final int defaultMaxStationAddress) throws PersistenceException {
+        super(module);
         setSimple(simple);
-        setParent(module);
         setName("Struct of " + name);
         setStructureType(type);
-        module.addChild(this);
 
         buildChildren(type, isInput, name);
 
@@ -89,8 +89,10 @@ public class ChannelStructureDBO extends AbstractNodeDBO<ModuleDBO, ChannelDBO> 
 
     @SuppressWarnings("unused")
     @Nonnull 
-    public static ChannelStructureDBO makeSimpleChannel(@Nonnull final ModuleDBO module, @Nonnull final String name, final boolean isInput,
-            final boolean isDigit) throws PersistenceException {
+    public static ChannelStructureDBO makeSimpleChannel(@Nonnull final ModuleDBO module, 
+                                                        @Nonnull final String name, 
+                                                        final boolean isInput,
+                                                        final boolean isDigit) throws PersistenceException {
         ChannelStructureDBO channelStructure = new ChannelStructureDBO(module, true, isInput,
                 DataType.SIMPLE, name);
         new ChannelDBO(channelStructure, name, isInput, isDigit, channelStructure.getSortIndex());
@@ -103,17 +105,21 @@ public class ChannelStructureDBO extends AbstractNodeDBO<ModuleDBO, ChannelDBO> 
         return new ChannelStructureDBO(module, false, isInput, type, name, DEFAULT_MAX_STATION_ADDRESS);
     }
 
-    private void buildChildren(@Nonnull final DataType type, final boolean isInput, @Nonnull final String name) throws PersistenceException {
+    private void buildChildren(@Nonnull final DataType type, 
+                               final boolean isInput, 
+                               @Nonnull final String name) throws PersistenceException {
         if (isSimple()) {
             return;
         }
 
         DataType[] structer = type.getStructure();
-        ChannelDBO channel;
 //        Channel channel = new Channel(this, name, isInput, structer[0].getByteSize() < 8, (short)-1);
         for (short sortIndex = 0; sortIndex < structer.length; sortIndex++) {
-            channel = new ChannelDBO(this, name + sortIndex, isInput, structer[sortIndex]
-                    .getByteSize() < 8, sortIndex);
+            ChannelDBO channel = new ChannelDBO(this, 
+                                                name + sortIndex, 
+                                                isInput, 
+                                                structer[sortIndex].getByteSize() < 8, 
+                                                sortIndex);
 
             channel.setName(name + sortIndex);
             // Use setChannelType to reduce the local Updates.
@@ -319,4 +325,20 @@ public class ChannelStructureDBO extends AbstractNodeDBO<ModuleDBO, ChannelDBO> 
         return NodeType.CHANNEL_STRUCTURE;
     }
 
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    @Nonnull
+    public ChannelDBO createChild() throws PersistenceException {
+        throw new UnsupportedOperationException("No simple child can be created for node type " + getClass().getName());
+    }
+    
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public void accept(@Nonnull final INodeVisitor visitor) {
+        visitor.visit(this);
+    }
 }
