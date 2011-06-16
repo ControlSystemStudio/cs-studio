@@ -59,6 +59,7 @@
             locationURI="popup:org.csstudio.ui.menu.popup.processvariable">
          <command
                commandId="org.csstudio.ui.menu.test.testpvcommand"
+               icon="icons/test.png"
                style="push">
          </command>
       </menuContribution>
@@ -74,11 +75,12 @@
    <extension
          point="org.eclipse.ui.popupMenus">
       <objectContribution
-            adaptable="false"
+            adaptable="true"
             id="org.csstudio.ui.menu.test.objectContribution1"
             objectClass="org.csstudio.csdata.ProcessVariable">
          <action
                class="org.csstudio.ui.menu.test.TestPVAction"
+               icon="icons/test.png"
                id="org.csstudio.ui.menu.test.testpvaction"
                label="Test Action"
                menubarPath="org.csstudio.ui.menu.popup.processvariable/main">
