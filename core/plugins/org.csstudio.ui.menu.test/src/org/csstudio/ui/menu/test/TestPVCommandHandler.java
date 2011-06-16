@@ -1,5 +1,7 @@
 package org.csstudio.ui.menu.test;
 
+import java.util.Arrays;
+
 import org.csstudio.csdata.ProcessVariable;
 import org.csstudio.ui.util.AdapterUtil;
 import org.eclipse.core.commands.AbstractHandler;
@@ -19,8 +21,9 @@ public class TestPVCommandHandler extends AbstractHandler implements IHandler {
 		ISelection selection = HandlerUtil.getActiveMenuSelection(event);
 		MessageDialog.openInformation(
 				window.getShell(),
-				"PV: " + AdapterUtil.convert(selection,
-						ProcessVariable.class.getName()), null);
+				"PV Command",
+				"PVs: " + Arrays.toString(AdapterUtil.convert(selection,
+						ProcessVariable.class)));
 		return null;
 	}
 
