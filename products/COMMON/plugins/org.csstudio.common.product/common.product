@@ -32,6 +32,8 @@
       <plugin id="org.apache.log4j"/>
       <plugin id="org.apache.lucene"/>
       <plugin id="org.apache.lucene.analysis"/>
+      <plugin id="org.apache.tools.ant"/>
+      <plugin id="org.apache.tools.ant.junit"/>
       <plugin id="org.csstudio.alarm.beast"/>
       <plugin id="org.csstudio.alarm.beast.annunciator"/>
       <plugin id="org.csstudio.alarm.beast.configtool"/>
@@ -185,6 +187,7 @@
       <plugin id="org.eclipse.help.base"/>
       <plugin id="org.eclipse.help.ui"/>
       <plugin id="org.eclipse.help.webapp"/>
+      <plugin id="org.eclipse.jdt.junit.core"/>
       <plugin id="org.eclipse.jface"/>
       <plugin id="org.eclipse.jface.databinding"/>
       <plugin id="org.eclipse.jface.text"/>

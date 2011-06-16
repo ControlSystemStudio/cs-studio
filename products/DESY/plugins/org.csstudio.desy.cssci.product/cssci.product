@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <?pde version="3.5"?>
 
-<product name="CssCI" uid="cssCiId" id="org.csstudio.desy.product.product" application="org.csstudio.desy.product.application" version="1.0.0.qualifier" useFeatures="false" includeLaunchers="true">
+<product name="CssCI" uid="cssCiId" id="org.csstudio.common.product.product" application="org.csstudio.common.product.application" version="1.0.0.qualifier" useFeatures="false" includeLaunchers="true">
 
    <aboutInfo>
       <image path="resources/css64x64.gif"/>
@@ -41,7 +41,6 @@ HTTP://WWW.DESY.DE/LEGAL/LICENSE.HTM
 
    <windowImages i16="resources/css16x16.gif" i32="resources/css32x32.gif" i48="resources/css48x48.gif" i64="resources/css64x64.gif" i128="resources/css128x128.gif"/>
 
-
    <launcher name="CssCI">
       <solaris/>
       <win useIco="false">
@@ -49,14 +48,12 @@ HTTP://WWW.DESY.DE/LEGAL/LICENSE.HTM
       </win>
    </launcher>
 
-
    <vm>
       <linux include="false">org.eclipse.jdt.launching.JRE_CONTAINER/org.eclipse.jdt.internal.debug.ui.launcher.StandardVMType/JavaSE-1.6</linux>
       <macos include="false">org.eclipse.jdt.launching.JRE_CONTAINER/org.eclipse.jdt.internal.debug.ui.launcher.StandardVMType/JavaSE-1.6</macos>
       <solaris include="false">org.eclipse.jdt.launching.JRE_CONTAINER/org.eclipse.jdt.internal.debug.ui.launcher.StandardVMType/JavaSE-1.6</solaris>
       <windows include="false">org.eclipse.jdt.launching.JRE_CONTAINER/org.eclipse.jdt.internal.debug.ui.launcher.StandardVMType/JavaSE-1.6</windows>
    </vm>
-
 
    <plugins>
       <plugin id="com.google.common"/>
@@ -75,6 +72,8 @@ HTTP://WWW.DESY.DE/LEGAL/LICENSE.HTM
       <plugin id="org.apache.log4j"/>
       <plugin id="org.apache.lucene"/>
       <plugin id="org.apache.lucene.analysis"/>
+      <plugin id="org.apache.tools.ant"/>
+      <plugin id="org.apache.tools.ant.junit"/>
       <plugin id="org.csstudio.alarm.dal2jms"/>
       <plugin id="org.csstudio.alarm.dbaccess"/>
       <plugin id="org.csstudio.alarm.intro"/>
@@ -269,6 +268,7 @@ HTTP://WWW.DESY.DE/LEGAL/LICENSE.HTM
       <plugin id="org.eclipse.help.base"/>
       <plugin id="org.eclipse.help.ui"/>
       <plugin id="org.eclipse.help.webapp"/>
+      <plugin id="org.eclipse.jdt.junit.core"/>
       <plugin id="org.eclipse.jface"/>
       <plugin id="org.eclipse.jface.databinding"/>
       <plugin id="org.eclipse.jface.text"/>
