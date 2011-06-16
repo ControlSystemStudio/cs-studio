@@ -12,11 +12,9 @@ Require-Bundle: org.eclipse.core.runtime,
  org.csstudio.utility.ldap.service;bundle-version="1.0.0",
  org.csstudio.utility.ldap.treeconfiguration;bundle-version="1.0.0",
  org.csstudio.domain.desy;bundle-version="1.0.0",
- org.csstudio.testsuite;bundle-version="1.0.0",
  com.google.common,
  javax.annotation,
- org.slf4j;bundle-version="1.6.1",
- org.junit;bundle-version="4.8.1"
+ org.slf4j;bundle-version="1.6.1"
 Bundle-ActivationPolicy: lazy
 Bundle-ClassPath: .
 Export-Package: org.csstudio.utility.ldap,
