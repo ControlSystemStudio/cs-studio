@@ -11,6 +11,7 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.Statement;
+import java.sql.Timestamp;
 import java.sql.Types;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -620,7 +621,12 @@ public class RDBArchiveConfig implements ArchiveConfig
 		try
 		{
 			if (result.next())
-				return TimestampFactory.fromSQLTimestamp(result.getTimestamp(1));
+			{
+				final Timestamp stamp = result.getTimestamp(1);
+				if (stamp == null)
+					return null;
+				return TimestampFactory.fromSQLTimestamp(stamp);
+			}
 		}
 		finally
 		{

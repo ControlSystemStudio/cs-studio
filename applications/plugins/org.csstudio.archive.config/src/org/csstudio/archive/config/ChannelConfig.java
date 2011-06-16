@@ -43,6 +43,10 @@ public class ChannelConfig
 		return sample_mode;
 	}
 
+	// TODO Maybe the last sample time of a channel should be accessed via
+	// the archive(.)reader API, not the archive.config?
+	// But changing archive(.)reader needs to be coordinated with all its
+	// implementations.
 	/** @return Time stamp of last sample in archive or <code>null</code> */
 	public ITimestamp getLastSampleTime()
 	{
