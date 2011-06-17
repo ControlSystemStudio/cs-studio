@@ -399,10 +399,12 @@ public class SlaveDBO extends AbstractNodeDBO<MasterDBO, ModuleDBO> {
             setPrmUserData(parsedGsdFileModel.getExtUserPrmDataConst());
             setProfibusPNoID(parsedGsdFileModel.getIdentNumber());
             setRevision(parsedGsdFileModel.getRevision());
-            
+            parsedGsdFileModel.isModularStation();
             _maxSize = parsedGsdFileModel.getMaxModule().shortValue();
-            if(_maxSize < 1) {
-                return false;
+            if(parsedGsdFileModel.isModularStation()) {
+                if(_maxSize < 1) {
+                    return false;
+                }
             }
         }
         return true;
