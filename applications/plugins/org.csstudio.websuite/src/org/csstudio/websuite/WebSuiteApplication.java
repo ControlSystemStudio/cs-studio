@@ -103,6 +103,8 @@ public class WebSuiteApplication implements IApplication, Stoppable, RemotlyAcce
         jettyPort = preferences.getInt(WebSuiteActivator.PLUGIN_ID, PreferenceConstants.JETTY_PORT, 8181, null);
         LOG.info("Using port {} for JETTY.", jettyPort);
         
+        WebSuiteActivator.getDefault().addSessionServiceListener(this);
+        
         // Prepare the action classes
         Stop.staticInject(this);
         Restart.staticInject(this);
@@ -139,13 +141,16 @@ public class WebSuiteApplication implements IApplication, Stoppable, RemotlyAcce
         HttpServiceHelper.stopHttpService(jettyPort);
         AlarmMessageListProvider.getInstance().closeJms();
         
+        Integer exitCode;
         if(restart) {
             LOG.info("Restarting application.");
-            return IApplication.EXIT_RESTART;
+            exitCode = IApplication.EXIT_RESTART;
         } else {
             LOG.info("Stopping application.");
-            return IApplication.EXIT_OK;
+            exitCode = IApplication.EXIT_OK;
         }
+        
+        return exitCode;
     }
 
     /** Register resources and servlet */
