@@ -26,7 +26,6 @@ import org.csstudio.dct.model.visitors.ProblemVisitor;
 import org.csstudio.dct.model.visitors.ProblemVisitor.MarkableError;
 import org.csstudio.dct.model.visitors.SearchVisitor;
 import org.csstudio.dct.ui.editor.outline.internal.OutlinePage;
-import org.csstudio.platform.logging.CentralLogger;
 import org.csstudio.platform.ui.util.CustomMediaFactory;
 import org.csstudio.platform.ui.util.LayoutUtil;
 import org.csstudio.platform.util.StringUtil;
@@ -71,6 +70,8 @@ import org.eclipse.ui.ide.IGotoMarker;
 import org.eclipse.ui.part.FileEditorInput;
 import org.eclipse.ui.part.MultiPageEditorPart;
 import org.eclipse.ui.views.contentoutline.IContentOutlinePage;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * The DCT Editor implementation.
@@ -79,6 +80,9 @@ import org.eclipse.ui.views.contentoutline.IContentOutlinePage;
  * 
  */
 public final class DctEditor extends MultiPageEditorPart implements CommandStackListener {
+    
+    private static final Logger LOG = LoggerFactory.getLogger(DctEditor.class);
+    
 	private Project project;
 	private final CommandStack commandStack;
 	private final ISelectionChangedListener outlineSelectionListener;
@@ -354,7 +358,7 @@ public final class DctEditor extends MultiPageEditorPart implements CommandStack
 			// .. load the file contents
 			project = DctActivator.getDefault().getPersistenceService().loadProject(file);
 		} catch (Exception e) {
-			CentralLogger.getInstance().error(this, e);
+			LOG.error("Error: ", e);
 			project = null;
 		}
 
@@ -419,7 +423,7 @@ public final class DctEditor extends MultiPageEditorPart implements CommandStack
 							selectItemInOutline(id);
 						}
 					} catch (CoreException e) {
-						CentralLogger.getInstance().info(this, e);
+						LOG.info("Info: ", e);
 					}
 				}
 			};
@@ -466,7 +470,7 @@ public final class DctEditor extends MultiPageEditorPart implements CommandStack
 			ResourcesPlugin.getWorkspace().save(true, new NullProgressMonitor());
 			
 		} catch (CoreException e) {
-			CentralLogger.getInstance().info(this, e);
+			LOG.info("Info:", e);
 		}
 	}
 

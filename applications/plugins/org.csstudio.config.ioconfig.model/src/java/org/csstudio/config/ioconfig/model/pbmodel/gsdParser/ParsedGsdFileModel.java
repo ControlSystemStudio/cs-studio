@@ -119,4 +119,11 @@ public class ParsedGsdFileModel extends AbstractGsdPropertyModel {
         // Station_Type == 1 => Master
         return intProperty==null?false:intProperty==1;
     }
+
+    /**
+     * 
+     */
+    public boolean isModularStation() {
+        return getIntProperty("Modular_Station")!=0;
+    }
 }

@@ -27,10 +27,11 @@ package org.csstudio.archive.sdds.server.command;
 import java.io.ByteArrayOutputStream;
 import java.io.DataOutputStream;
 import java.io.IOException;
-import org.apache.log4j.Logger;
+
 import org.csstudio.archive.sdds.server.util.IntegerValue;
 import org.csstudio.archive.sdds.server.util.RawData;
-import org.csstudio.platform.logging.CentralLogger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import de.desy.aapi.AapiServerError;
 
@@ -41,13 +42,13 @@ import de.desy.aapi.AapiServerError;
 public abstract class ServerCommand {
     
     /** The logger of this class */
-    protected Logger logger;
+    private static final Logger LOG = LoggerFactory.getLogger(ServerCommand.class);
 
     /**
      * 
      */
     public ServerCommand() {
-        logger = CentralLogger.getInstance().getLogger(this);
+        // Constructor
     }
     
     /**
@@ -81,7 +82,7 @@ public abstract class ServerCommand {
         
         } catch(IOException ioe) {
         
-            logger.error("[*** IOException ***]: " + ioe.getMessage());
+            LOG.error("[*** IOException ***]: ", ioe);
         }
         finally {
             if(dos!=null) {

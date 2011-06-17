@@ -43,7 +43,7 @@ public final class AddLayerAction extends AbstractLayerAction {
 	 */
 	@Override
 	protected void selectedLayerChanged(final Layer layer, final LayerSupport layerSupport, final IAction action) {
-
+	    // nothing to do
 	}
 
 	/**
@@ -75,7 +75,6 @@ public final class AddLayerAction extends AbstractLayerAction {
 							layerSupport.getLayerIndex(selectedLayer) + 1);
 				} else {
 					result = new AddLayerCommand(layerSupport, newLayer);
-
 				}
 			}
 		}

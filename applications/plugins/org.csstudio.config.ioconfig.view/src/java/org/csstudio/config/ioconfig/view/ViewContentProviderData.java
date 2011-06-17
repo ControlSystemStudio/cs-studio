@@ -14,9 +14,10 @@ import org.csstudio.config.ioconfig.model.NamedDBClass;
 import org.csstudio.config.ioconfig.model.PersistenceException;
 import org.csstudio.config.ioconfig.model.pbmodel.ChannelStructureDBO;
 import org.csstudio.config.ioconfig.model.pbmodel.ModuleDBO;
-import org.csstudio.platform.logging.CentralLogger;
 import org.eclipse.jface.viewers.ITreeContentProvider;
 import org.eclipse.jface.viewers.Viewer;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * 
@@ -26,6 +27,8 @@ import org.eclipse.jface.viewers.Viewer;
  */
 class ProfibusTreeContentProvider implements ITreeContentProvider {
 
+    private static final Logger LOG = LoggerFactory.getLogger(ProfibusTreeContentProvider.class);
+    
 	/** The Tree Root Node. */
 	private List<FacilityDBO> _facilities;
 	private String _wait;
@@ -102,7 +105,7 @@ class ProfibusTreeContentProvider implements ITreeContentProvider {
                         .toArray(new AbstractNodeDBO[0]);
             }
         } catch (PersistenceException e) {
-            CentralLogger.getInstance().error(this, e);
+            LOG.error("Can't load children from Database! Database Error.", e);
             DeviceDatabaseErrorDialog.open(null, "Can't load children from Database! Database Error.", e);
         }
         

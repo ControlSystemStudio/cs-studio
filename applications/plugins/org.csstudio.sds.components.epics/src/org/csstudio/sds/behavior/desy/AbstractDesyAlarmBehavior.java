@@ -36,9 +36,9 @@ import org.epics.css.dal.simple.Severity;
  */
 public abstract class AbstractDesyAlarmBehavior<W extends AbstractWidgetModel> extends
         AbstractDesyConnectionBehavior<W> {
-
+    
     private String _defColor;
-
+    
     /**
      * Constructor.
      */
@@ -47,30 +47,31 @@ public abstract class AbstractDesyAlarmBehavior<W extends AbstractWidgetModel> e
         addInvisiblePropertyId(AbstractWidgetModel.PROP_BORDER_STYLE);
         addInvisiblePropertyId(AbstractWidgetModel.PROP_BORDER_WIDTH);
     }
-
+    
     @Override
     protected void doInitialize(final W widget) {
         super.doInitialize(widget);
     }
-
+    
     @Override
     protected void doProcessConnectionStateChange(final W widget,
                                                   final AnyDataChannel anyDataChannel) {
         super.doProcessConnectionStateChange(widget, anyDataChannel);
         AnyData anyData = anyDataChannel.getData();
         Severity severity = anyData.getSeverity();
-        if (severity != null) {
-            if (severity.isInvalid()) {
+        if(severity != null) {
+            if(severity.isInvalid()) {
                 widget.setPropertyValue(AbstractWidgetModel.PROP_CROSSED_OUT, true);
             } else {
                 widget.setPropertyValue(AbstractWidgetModel.PROP_CROSSED_OUT, false);
             }
-            widget.setPropertyValue(AbstractWidgetModel.PROP_BORDER_COLOR, determineColorBySeverity(severity, _defColor));
-            widget.setPropertyValue(AbstractWidgetModel.PROP_BORDER_STYLE, SeverityUtil
-                                   .determineBorderStyleBySeverity(severity).getIndex());
-            widget.setPropertyValue(AbstractWidgetModel.PROP_BORDER_WIDTH, SeverityUtil
-                                   .determineBorderWidthBySeverity(severity));
+            widget.setPropertyValue(AbstractWidgetModel.PROP_BORDER_COLOR,
+                                    determineColorBySeverity(severity, _defColor));
+            widget.setPropertyValue(AbstractWidgetModel.PROP_BORDER_STYLE,
+                                    determineBorderStyleBySeverity(severity).getIndex());
+            widget.setPropertyValue(AbstractWidgetModel.PROP_BORDER_WIDTH,
+                                    determineBorderWidthBySeverity(severity));
         }
     }
-
+    
 }

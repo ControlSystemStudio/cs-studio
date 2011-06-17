@@ -23,7 +23,10 @@
  */
 package org.csstudio.config.ioconfig.model;
 
+import java.rmi.activation.UnknownObjectException;
+
 import javax.annotation.CheckForNull;
+import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
 
@@ -36,10 +39,27 @@ import javax.annotation.Nullable;
  * @since 11.05.2011
  */
 @SuppressWarnings({"rawtypes", "unchecked"})
-public class VirtualRoot extends AbstractNodeDBO {
+public class VirtualRoot extends AbstractNodeDBO<VirtualRoot, FacilityDBO> {
     
     private static final long serialVersionUID = -296484498706601307L;
 
+    private static final VirtualRoot INSTANCE = new VirtualRoot();
+    /**
+     * Constructor.
+     */
+    private VirtualRoot() {
+        // Don't instantiate
+    }
+    
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    @Nonnull
+    public VirtualRoot getParent() {
+        throw new UnsupportedOperationException(VirtualRoot.class + " does not feature a parent node.");
+    }
+    
     /**
      * {@inheritDoc}
      */
@@ -54,8 +74,24 @@ public class VirtualRoot extends AbstractNodeDBO {
      */
     @Override
     @CheckForNull
-    protected AbstractNodeDBO copyParameter(@Nullable AbstractNodeDBO parent) throws PersistenceException {
-        return null;
+    protected VirtualRoot copyParameter(@Nullable VirtualRoot parent) throws PersistenceException {
+        return VirtualRoot.INSTANCE;
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    @Nonnull
+    public FacilityDBO createChild() throws PersistenceException {
+        return new FacilityDBO(INSTANCE);
     }
     
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public void accept(@Nonnull final INodeVisitor visitor) {
+        visitor.visit(this);
+    }    
 }

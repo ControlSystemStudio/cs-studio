@@ -30,11 +30,12 @@ import java.util.Calendar;
 import java.util.GregorianCalendar;
 import java.util.List;
 import java.util.Vector;
-import org.apache.log4j.Logger;
+
 import org.csstudio.archive.sdds.server.conversion.SampleParameter;
 import org.csstudio.archive.sdds.server.data.EpicsRecordData;
 import org.csstudio.archive.sdds.server.data.RecordDataCollection;
-import org.csstudio.platform.logging.CentralLogger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * The class reads a specified SDDS file and offers a method to get the data from the file.
@@ -46,10 +47,10 @@ import org.csstudio.platform.logging.CentralLogger;
 public class SddsFileReader {
     
     /** The path to the data files */
-    private ArchiveLocation dataPath;
+    private final ArchiveLocation dataPath;
     
     /** The logger for this class */
-    private Logger logger;
+    private static final Logger LOG = LoggerFactory.getLogger(SddsFileReader.class);
     
     /**
      * Constructor that gets a string containing the path to the data files.
@@ -58,9 +59,6 @@ public class SddsFileReader {
      * @throws DataPathNotFoundException 
      */
     public SddsFileReader() throws DataPathNotFoundException {
-        
-        logger = CentralLogger.getInstance().getLogger(this);
-        
         dataPath = new ArchiveLocation();
         dataPath.loadLocationList("./archive_data_source.txt");
         
@@ -117,14 +115,14 @@ public class SddsFileReader {
                 try {
                     threadGroup.wait(10);
                 } catch(InterruptedException ie) {
-                    logger.warn("*** Interrupted ***");
+                    LOG.warn("*** Interrupted ***");
                 }
             }
         }
         
         long et = System.currentTimeMillis() - st;
         
-        logger.debug("Finished in " + et + " Millisekunden (" + (et / 1000) + " sec)");
+        LOG.debug("Finished in " + et + " Millisekunden (" + (et / 1000) + " sec)");
         
         dataCollection = new RecordDataCollection();
         Vector<EpicsRecordData> allResults = new Vector<EpicsRecordData>();

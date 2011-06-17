@@ -18,6 +18,9 @@ package org.csstudio.sds.behavior.desy;
 
 import org.csstudio.sds.components.model.AbstractMarkedWidgetModel;
 import org.csstudio.sds.components.model.ScaledSliderModel;
+import org.csstudio.sds.components.model.ThermometerModel;
+import org.epics.css.dal.context.ConnectionState;
+import org.epics.css.dal.simple.AnyDataChannel;
 
 /**
  * Default DESY-Behavior for the {@link ScaledSliderModel} widget with Connection state.
@@ -31,6 +34,19 @@ public class ScaledSliderConnectionBehavior extends
         MarkedWidgetDesyConnectionBehavior<ScaledSliderModel> {
 
 
+    private String _defFillBackColor;
+    private String _defFillColor;
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    protected void doInitialize(ScaledSliderModel widget) {
+        super.doInitialize(widget);
+        _defFillBackColor = widget.getColor(ThermometerModel.PROP_FILLBACKGROUND_COLOR);
+        _defFillColor = widget.getColor(ThermometerModel.PROP_FILL_COLOR);
+    }
+    
     /**
      * {@inheritDoc}
      */
@@ -39,4 +55,12 @@ public class ScaledSliderConnectionBehavior extends
         return new String[] { AbstractMarkedWidgetModel.PROP_VALUE };
     }
 
+    @Override
+    protected void doProcessConnectionStateChange( final ScaledSliderModel widget,final AnyDataChannel anyDataChannel) {
+        ConnectionState connectionState = anyDataChannel.getProperty().getConnectionState();
+        String fillBackColor = isConnected(anyDataChannel)?_defFillBackColor  : determineBackgroundColor(connectionState);
+        widget.setPropertyValue(ThermometerModel.PROP_FILLBACKGROUND_COLOR, fillBackColor);
+        String fillColor = isConnected(anyDataChannel)?_defFillColor  : determineBackgroundColor(connectionState);
+        widget.setPropertyValue(ThermometerModel.PROP_FILL_COLOR, fillColor);
+    }
 }

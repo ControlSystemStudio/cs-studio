@@ -38,7 +38,6 @@ import javax.annotation.CheckForNull;
 import javax.annotation.Nonnull;
 
 import org.csstudio.config.ioconfig.model.preference.PreferenceConstants;
-import org.csstudio.platform.logging.CentralLogger;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Platform;
@@ -53,6 +52,8 @@ import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.hibernate.Transaction;
 import org.hibernate.cfg.AnnotationConfiguration;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  *
@@ -62,6 +63,8 @@ import org.hibernate.cfg.AnnotationConfiguration;
  * @since 03.06.2009
  */
 public final class HibernateManager extends Observable {
+    
+    private static final Logger LOG = LoggerFactory.getLogger(HibernateManager.class);
     
     private static HibernateManager _INSTANCE;
     
@@ -104,7 +107,7 @@ public final class HibernateManager extends Observable {
                 if(_sessionUseCounter == 0) {
                     Date now = new Date();
                     if(now.getTime() - date.getTime() > getTimeToCloseSession()) {
-                        CentralLogger.getInstance().info(this, "DB Session closed by watchdog");
+                        LOG.info("DB Session closed by watchdog");
                         _sessionFactory.close();
                         _sessionFactory = null;
                         break;
@@ -175,12 +178,12 @@ public final class HibernateManager extends Observable {
             setSessionFactory(buildSessionFactory);
             notifyObservers();
         } catch (HibernateException e) {
-            CentralLogger.getInstance().error(HibernateManager.class.getName(), e);
+            LOG.error("Can't build DB Session", e);
         }
     }
     
     private void buildConifg() {
-        new InstanceScope().getNode(IOConifgActivator.getDefault().getPluginId())
+        new InstanceScope().getNode(IOConfigActivator.getDefault().getPluginId())
                 .addPreferenceChangeListener(new IPreferenceChangeListener() {
                     
                     @Override
@@ -191,7 +194,7 @@ public final class HibernateManager extends Observable {
                 });
         
         IPreferencesService prefs = Platform.getPreferencesService();
-        String pluginId = IOConifgActivator.getDefault().getPluginId();
+        String pluginId = IOConfigActivator.getDefault().getPluginId();
         _cfg = new AnnotationConfiguration();
         for (Class<?> clazz : _classes) {
             _cfg.addAnnotatedClass(clazz);
@@ -322,10 +325,10 @@ public final class HibernateManager extends Observable {
             try {
                 _trx.rollback();
             } catch (HibernateException exRb) {
-                CentralLogger.getInstance().error(HibernateManager.class.getSimpleName(), exRb);
+                LOG.error("Can't rollback", exRb);
             }
         }
-        CentralLogger.getInstance().error(HibernateManager.class.getSimpleName(), ex);
+        LOG.error("Rollback! Exception was thrown: {}", ex);
     }
     
     /**
@@ -380,7 +383,7 @@ public final class HibernateManager extends Observable {
             _sessionFactoryDevDB.close();
             _sessionFactoryDevDB = null;
         }
-        CentralLogger.getInstance().info(HibernateManager.class, "DB Session  Factory closed");
+        LOG.info("DB Session  Factory closed");
         
     }
     

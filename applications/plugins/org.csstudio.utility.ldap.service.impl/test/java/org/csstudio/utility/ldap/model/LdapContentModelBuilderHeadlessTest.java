@@ -34,6 +34,7 @@ import java.util.EnumMap;
 import java.util.Map;
 
 import javax.naming.directory.SearchControls;
+import javax.naming.ldap.LdapName;
 
 import junit.framework.Assert;
 
@@ -59,6 +60,14 @@ import org.junit.Test;
  */
 public class LdapContentModelBuilderHeadlessTest {
 
+    private static final String EREN_1111 = "StaticTestEren1111";
+
+    private static final String ECON_1 = "StaticTestEcon1";
+
+    private static final String ECOM_1 = "StaticTestEcom1";
+
+    private static final String EFAN_NAME = "StaticTestEfan";
+
     private static ContentModel<LdapEpicsControlsConfiguration> MODEL_ONE;
 
     private static ContentModel<LdapEpicsControlsConfiguration> MODEL_TWO;
@@ -73,15 +82,14 @@ public class LdapContentModelBuilderHeadlessTest {
     }
 
 
-
-
     @BeforeClass
     public static void modelSetup() {
 
         final ILdapService service = LdapTestHelper.LDAP_SERVICE;
 
-        ILdapSearchResult searchResult = service.retrieveSearchResultSynchronously(createLdapName(FACILITY.getNodeTypeName(), "StaticTestEfan1",
-                                                                                                  UNIT.getNodeTypeName(), UNIT.getUnitTypeValue()),
+        final LdapName ldapName = createLdapName(FACILITY.getNodeTypeName(), EFAN_NAME,
+                                                 UNIT.getNodeTypeName(), UNIT.getUnitTypeValue());
+        ILdapSearchResult searchResult = service.retrieveSearchResultSynchronously(ldapName,
                                                                                    any(IOC.getNodeTypeName()),
                                                                                    SearchControls.SUBTREE_SCOPE);
         try {
@@ -96,9 +104,9 @@ public class LdapContentModelBuilderHeadlessTest {
                 Assert.fail("Model setup failed. Search result is null.");
             }
 
-            searchResult = service.retrieveSearchResultSynchronously(createLdapName(IOC.getNodeTypeName(), "StaticTestEcon1",
-                                                                                    COMPONENT.getNodeTypeName(), "StaticTestEcom1",
-                                                                                    FACILITY.getNodeTypeName(), "StaticTestEfan1",
+            searchResult = service.retrieveSearchResultSynchronously(createLdapName(IOC.getNodeTypeName(), ECON_1,
+                                                                                    COMPONENT.getNodeTypeName(), ECOM_1,
+                                                                                    FACILITY.getNodeTypeName(), EFAN_NAME,
                                                                                     UNIT.getNodeTypeName(), UNIT.getUnitTypeValue()),
                                                                      any(RECORD.getNodeTypeName()),
                                                                      SearchControls.SUBTREE_SCOPE);
@@ -147,29 +155,29 @@ public class LdapContentModelBuilderHeadlessTest {
     @Test
     public void testBothNameCaches() {
 
-        INodeComponent<LdapEpicsControlsConfiguration> comp = MODEL_TWO.getByTypeAndSimpleName(IOC, "StaticTestEcon1");
+        INodeComponent<LdapEpicsControlsConfiguration> comp = MODEL_TWO.getByTypeAndSimpleName(IOC, ECON_1);
 
-        Assert.assertEquals(createLdapName(IOC.getNodeTypeName(), "StaticTestEcon1",
-                                           COMPONENT.getNodeTypeName(), "StaticTestEcom1",
-                                           FACILITY.getNodeTypeName(), "StaticTestEfan1",
+        Assert.assertEquals(createLdapName(IOC.getNodeTypeName(), ECON_1,
+                                           COMPONENT.getNodeTypeName(), ECOM_1,
+                                           FACILITY.getNodeTypeName(), EFAN_NAME,
                                            UNIT.getNodeTypeName(), UNIT.getUnitTypeValue()), comp.getLdapName());
 
-        Assert.assertEquals(createLdapName(COMPONENT.getNodeTypeName(), "StaticTestEcom1",
-                                           FACILITY.getNodeTypeName(), "StaticTestEfan1",
+        Assert.assertEquals(createLdapName(COMPONENT.getNodeTypeName(), ECOM_1,
+                                           FACILITY.getNodeTypeName(), EFAN_NAME,
                                            UNIT.getNodeTypeName(), UNIT.getUnitTypeValue()), comp.getParent().getLdapName());
 
 
-        comp = MODEL_TWO.getByTypeAndSimpleName(LdapEpicsControlsConfiguration.RECORD, "StaticTestEren1111");
+        comp = MODEL_TWO.getByTypeAndSimpleName(LdapEpicsControlsConfiguration.RECORD, EREN_1111);
 
-        Assert.assertEquals(createLdapName(RECORD.getNodeTypeName(), "StaticTestEren1111",
-                                           IOC.getNodeTypeName(), "StaticTestEcon1",
-                                           COMPONENT.getNodeTypeName(), "StaticTestEcom1",
-                                           FACILITY.getNodeTypeName(), "StaticTestEfan1",
+        Assert.assertEquals(createLdapName(RECORD.getNodeTypeName(), EREN_1111,
+                                           IOC.getNodeTypeName(), ECON_1,
+                                           COMPONENT.getNodeTypeName(), ECOM_1,
+                                           FACILITY.getNodeTypeName(), EFAN_NAME,
                                            UNIT.getNodeTypeName(), UNIT.getUnitTypeValue()), comp.getLdapName());
 
-        Assert.assertEquals(createLdapName(IOC.getNodeTypeName(), "StaticTestEcon1",
-                                           COMPONENT.getNodeTypeName(), "StaticTestEcom1",
-                                           FACILITY.getNodeTypeName(), "StaticTestEfan1",
+        Assert.assertEquals(createLdapName(IOC.getNodeTypeName(), ECON_1,
+                                           COMPONENT.getNodeTypeName(), ECOM_1,
+                                           FACILITY.getNodeTypeName(), EFAN_NAME,
                                            UNIT.getNodeTypeName(), UNIT.getUnitTypeValue()), comp.getParent().getLdapName());
 
     }

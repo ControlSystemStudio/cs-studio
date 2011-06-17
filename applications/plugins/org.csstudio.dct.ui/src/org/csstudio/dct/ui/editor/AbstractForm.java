@@ -15,7 +15,6 @@ import org.csstudio.dct.ui.Activator;
 import org.csstudio.dct.ui.editor.tables.ConvenienceTableWrapper;
 import org.csstudio.dct.ui.editor.tables.ITableRow;
 import org.csstudio.dct.util.AliasResolutionUtil;
-import org.csstudio.platform.logging.CentralLogger;
 import org.csstudio.platform.ui.util.CustomMediaFactory;
 import org.csstudio.platform.ui.util.LayoutUtil;
 import org.eclipse.gef.commands.CommandStack;
@@ -29,6 +28,8 @@ import org.eclipse.swt.widgets.ExpandItem;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Link;
 import org.eclipse.swt.widgets.Listener;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * Base class for all editing forms. The class already prepares input element
@@ -40,6 +41,9 @@ import org.eclipse.swt.widgets.Listener;
  *            the type of element that is edited with a form
  */
 public abstract class AbstractForm<E extends IElement> implements CommandStackListener {
+    
+    private static final Logger LOG = LoggerFactory.getLogger(AbstractForm.class);
+    
 	private final class ElementJumpLinkListener implements Listener {
 		public void handleEvent(Event event) {
 			UUID id = null;
@@ -51,7 +55,7 @@ public abstract class AbstractForm<E extends IElement> implements CommandStackLi
 					editor.selectItemInOutline(id);
 				}
 			} catch (Exception e) {
-				CentralLogger.getInstance().warn(this, e);
+				LOG.warn("Warning", e);
 			}
 
 		}
@@ -62,7 +66,7 @@ public abstract class AbstractForm<E extends IElement> implements CommandStackLi
 	private Label headlineLabel;
 	private ConvenienceTableWrapper commonTable;
 	private Link breadcrumbLink;
-	private DctEditor editor;
+	private final DctEditor editor;
 
 	/**
 	 * Constructor.
@@ -206,7 +210,7 @@ public abstract class AbstractForm<E extends IElement> implements CommandStackLi
 	public final void refresh() {
 		if (input != null) {
 			setInput(input);
-			CentralLogger.getInstance().info(null, "refresh +" + input.getId());
+			LOG.info("refresh + {}", input.getId());
 		}
 	}
 

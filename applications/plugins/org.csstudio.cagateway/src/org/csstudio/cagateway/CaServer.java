@@ -11,16 +11,15 @@ import gov.aps.jca.cas.ServerContext;
 import java.net.InetSocketAddress;
 import java.util.HashMap;
 
-import org.apache.log4j.Logger;
-import org.csstudio.platform.logging.CentralLogger;
 import org.csstudio.platform.statistic.Collector;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
-import ttf.doocs.clnt.EqAdr;
-
-//import org.csstudio.utility.casnooper.SnooperServer;
 
 public class CaServer {
 	
+    private static final Logger LOG = LoggerFactory.getLogger(CaServer.class);
+    
     /*
      * Flag indicating the remote stop command
      */
@@ -80,7 +79,8 @@ public class CaServer {
 //				return new PV(aliasName, clientAddress, availableRemoteDevices);
 //			}
 
-			public ProcessVariableExistanceCompletion processVariableExistanceTest(
+			@Override
+            public ProcessVariableExistanceCompletion processVariableExistanceTest(
 					String aliasName, InetSocketAddress clientAddress,
 					ProcessVariableExistanceCallback asyncCompletionCallback) throws CAException,
 					IllegalArgumentException, IllegalStateException {
@@ -101,20 +101,20 @@ public class CaServer {
 		}
 		
 	    public final synchronized void stop() {
-	        CentralLogger.getInstance().debug(this, "caServer: stop() was called, stopping server");
+	        LOG.debug("caServer: stop() was called, stopping server");
 	        try {
                 context.shutdown();
             } catch (IllegalStateException e) {
-                CentralLogger.getInstance().debug(this, "caServer shutdown, Illegal state exception: " + e.getMessage());
+                LOG.debug("caServer shutdown, Illegal state exception: {}", e);
             } catch (CAException e) {
-                CentralLogger.getInstance().debug(this, "caServer shutdown, CA exception: " + e.getMessage());
+                LOG.debug("caServer shutdown, CA exception: ", e);
             }
 	        try {
                 context.destroy();
             } catch (IllegalStateException e) {
-                CentralLogger.getInstance().debug(this, "caServer shutdown, Illegal state exception: " + e.getMessage());
+                LOG.debug("caServer shutdown, Illegal state exception: ", e);
             } catch (CAException e) {
-                CentralLogger.getInstance().debug(this, "caServer shutdown, CA exception: " + e.getMessage());
+                LOG.debug("caServer shutdown, CA exception: ", e);
             }
 	    }
 		
@@ -208,13 +208,13 @@ public class CaServer {
 				initialize();
 			    
 				System.out.println("Running gateway...");
-				CentralLogger.getInstance().info(this, "Start caGateway on: " + localHostName);
+				LOG.info("Start caGateway on: {}", localHostName);
 
 				// run server 
 				context.run(0);
 			
 				System.out.println("Done.");
-				CentralLogger.getInstance().info(this, "Stop caGateway on: " + localHostName);
+				LOG.info("Stop caGateway on: {}", localHostName);
 
 			} catch (Throwable th) {
 				th.printStackTrace();

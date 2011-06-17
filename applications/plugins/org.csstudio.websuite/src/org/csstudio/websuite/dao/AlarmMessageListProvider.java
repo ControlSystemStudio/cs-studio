@@ -31,7 +31,6 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Vector;
 
-import org.csstudio.platform.logging.CentralLogger;
 import org.csstudio.websuite.WebSuiteActivator;
 import org.csstudio.websuite.dataModel.AlarmMessage;
 import org.csstudio.websuite.dataModel.AlarmMessageList;
@@ -44,6 +43,8 @@ import org.eclipse.core.runtime.preferences.IPreferencesService;
 import org.jdom.Document;
 import org.jdom.Element;
 import org.jdom.output.XMLOutputter;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * Data access object that provides the AlarmMessageList in different formats
@@ -52,6 +53,8 @@ import org.jdom.output.XMLOutputter;
  * @author ababic, Markus Moeller
  */
 public class AlarmMessageListProvider {
+   
+    private static final Logger LOG = LoggerFactory.getLogger(AlarmMessageListProvider.class);
     
     /** This instance */
 	private static AlarmMessageListProvider instance = null;
@@ -66,7 +69,7 @@ public class AlarmMessageListProvider {
 	private JmsMessageReceiver jmsMessageReceiver = null;
 	
 	/** Comma separated lsit of all alarm topics */
-	private String alarmTopicList;
+	private final String alarmTopicList;
 	
 	/** Just the id of this plugin */
 	public static final String PLUGIN_ID = "org.csstudio.alertviewer";
@@ -406,7 +409,7 @@ public class AlarmMessageListProvider {
             try {
                 outputter.output(output, out);
             } catch(IOException e) {
-                CentralLogger.getInstance().error(this, "Cannot write to buffer", e);
+                LOG.error("Cannot write to buffer", e);
             }
 
             return;
@@ -495,7 +498,7 @@ public class AlarmMessageListProvider {
 		try {
 			outputter.output(output, out);
 		} catch(IOException e) {
-			CentralLogger.getInstance().error(this, "Cannot write to buffer: " + e.getMessage());
+			LOG.error("Cannot write to buffer: ", e.getMessage());
 		}
 	}
 }

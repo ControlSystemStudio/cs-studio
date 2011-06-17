@@ -36,12 +36,14 @@ import javax.persistence.Table;
 import javax.persistence.Transient;
 
 import org.csstudio.config.ioconfig.model.AbstractNodeDBO;
-import org.csstudio.config.ioconfig.model.InvalidLeave;
+import org.csstudio.config.ioconfig.model.INodeVisitor;
+import org.csstudio.config.ioconfig.model.VirtualLeaf;
 import org.csstudio.config.ioconfig.model.NodeType;
 import org.csstudio.config.ioconfig.model.PersistenceException;
 import org.csstudio.config.ioconfig.model.tools.NodeMap;
-import org.csstudio.platform.logging.CentralLogger;
 import org.hibernate.annotations.BatchSize;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  *
@@ -53,7 +55,9 @@ import org.hibernate.annotations.BatchSize;
 @Entity
 @BatchSize(size = 32)
 @Table(name = "ddb_Profibus_Channel")
-public class ChannelDBO extends AbstractNodeDBO<ChannelStructureDBO, InvalidLeave> {
+public class ChannelDBO extends AbstractNodeDBO<ChannelStructureDBO, VirtualLeaf> {
+    
+    private static final Logger LOG = LoggerFactory.getLogger(ChannelDBO.class);
     
     private static final long serialVersionUID = 1L;
     
@@ -130,12 +134,11 @@ public class ChannelDBO extends AbstractNodeDBO<ChannelStructureDBO, InvalidLeav
                       final boolean input,
                       final boolean digital,
                       final int sortIndex) throws PersistenceException {
+        super(channelStructure);
         setName(name);
         setInput(input);
         setDigital(digital);
-        setParent(channelStructure);
         setSortIndex(sortIndex);
-        channelStructure.addChild(this);
         localUpdate();
     }
     
@@ -259,18 +262,14 @@ public class ChannelDBO extends AbstractNodeDBO<ChannelStructureDBO, InvalidLeav
      */
     @Nonnull
     public DataType getChannelType() {
-        if(_channelType < DataType.values().length) {
-            return DataType.values()[_channelType];
-        }
-        return DataType.BIT;
+        return DataType.forId(_channelType);
     }
     
     /**
-     *
      * @param type set the Type of this {@link ChannelDBO}
      */
     public void setChannelType(@Nonnull final DataType type) {
-        _channelType = type.ordinal();
+        _channelType = type.getId();
     }
     
     public void setChannelTypeNonHibernate(@Nonnull final DataType type) throws PersistenceException {
@@ -470,7 +469,7 @@ public class ChannelDBO extends AbstractNodeDBO<ChannelStructureDBO, InvalidLeav
             while ( (channelStructure == null) && (counter > 0)) {
                 channelStructure = getModule().getChildrenAsMap().get(--counter);
                 ChannelDBO lastChannel = channelStructure.getLastChannel();
-                if(isRigthSimpleChannel(channelStructure, lastChannel)) {
+                if(isRightSimpleChannel(channelStructure, lastChannel)) {
                     // Previous Channel is:
                     cNr = lastChannel.getChannelNumber();
                     if(channelStructure.isSimple()) {
@@ -491,7 +490,7 @@ public class ChannelDBO extends AbstractNodeDBO<ChannelStructureDBO, InvalidLeav
      * @param lastChannel
      * @return
      */
-    private boolean isRigthSimpleChannel(@CheckForNull ChannelStructureDBO channelStructure,
+    private boolean isRightSimpleChannel(@CheckForNull ChannelStructureDBO channelStructure,
                                          @CheckForNull ChannelDBO lastChannel) {
         return (channelStructure != null) && (lastChannel != null)
                 && (lastChannel.isInput() == isInput());
@@ -653,7 +652,7 @@ public class ChannelDBO extends AbstractNodeDBO<ChannelStructureDBO, InvalidLeav
             }
         } catch (PersistenceException e) {
             sb.append("Device Database ERROR: ").append(e.getMessage());
-            CentralLogger.getInstance().error(this, e);
+            LOG.error("Device Database ERROR: {}", e);
         }
         return sb.toString();
     }
@@ -706,10 +705,35 @@ public class ChannelDBO extends AbstractNodeDBO<ChannelStructureDBO, InvalidLeav
      * {@inheritDoc}
      */
     @Override
-    @CheckForNull
-    public InvalidLeave addChild(@Nullable InvalidLeave child) throws PersistenceException {
-        // do nothing. Channel is the leave node.
-        return null;
+    @Nonnull
+    public VirtualLeaf addChild(@Nullable VirtualLeaf child) throws PersistenceException {
+        return VirtualLeaf.INSTANCE;
     }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public void setChildren(@Nonnull final Set<VirtualLeaf> children) {
+        // Don't do anything
+    }
+    
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    @Nonnull
+    public VirtualLeaf createChild() throws PersistenceException {
+        return VirtualLeaf.INSTANCE;
+    }
+    
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public void accept(@Nonnull final INodeVisitor visitor) {
+        visitor.visit(this);
+    }
+    
     
 }

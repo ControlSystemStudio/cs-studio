@@ -24,7 +24,6 @@
  */
 package org.csstudio.utility.adlconverter.utility.widgetparts;
 
-import org.csstudio.platform.logging.CentralLogger;
 import org.csstudio.sds.model.AbstractWidgetModel;
 import org.csstudio.utility.adlconverter.internationalization.Messages;
 import org.csstudio.utility.adlconverter.utility.ADLHelper;
@@ -56,7 +55,7 @@ public class ADLMonitor extends WidgetPart{
     /**
      * The Record property/Feldname.
      */
-    private String _postfix="";
+    private final String _postfix="";
 
     /**
      * The default constructor.

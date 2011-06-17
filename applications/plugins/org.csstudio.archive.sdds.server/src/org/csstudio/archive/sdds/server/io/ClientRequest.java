@@ -32,13 +32,14 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.net.Socket;
-import org.apache.log4j.Logger;
+
 import org.csstudio.archive.sdds.server.command.CommandExecutor;
 import org.csstudio.archive.sdds.server.command.CommandNotImplementedException;
 import org.csstudio.archive.sdds.server.command.ServerCommandException;
 import org.csstudio.archive.sdds.server.util.IntegerValue;
 import org.csstudio.archive.sdds.server.util.RawData;
-import org.csstudio.platform.logging.CentralLogger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import de.desy.aapi.AAPI;
 import de.desy.aapi.AapiServerError;
@@ -52,13 +53,13 @@ import de.desy.aapi.AapiServerError;
 public class ClientRequest implements Runnable
 {
     /** The logger of this class */
-    private Logger logger;
+    private static final Logger LOG = LoggerFactory.getLogger(ClientRequest.class);
     
     /** The socket of this request. */
     private Socket socket;
     
     /** The class that holds and executes the server commands. */
-    private CommandExecutor commandExecutor;
+    private final CommandExecutor commandExecutor;
     
     /**
      * 
@@ -66,7 +67,6 @@ public class ClientRequest implements Runnable
      */
     public ClientRequest(Socket socket, CommandExecutor commandExecutor)
     {
-        this.logger = CentralLogger.getInstance().getLogger(this);
         this.socket = socket;
         this.commandExecutor = commandExecutor;
     }
@@ -82,7 +82,7 @@ public class ClientRequest implements Runnable
         RawData resultData = new RawData();
         RawData requestData = null;
         
-        logger.info("Handle request from socket " + socket.toString());
+        LOG.info("Handle request from socket " + socket.toString());
 
         try
         {
@@ -95,20 +95,20 @@ public class ClientRequest implements Runnable
                                
                 if(header != null) {
                     
-                	logger.info(header.toString());
+                	LOG.info(header.toString());
                     
                     try {
                         commandExecutor.executeCommand(header.getCommandTag(), requestData,
                                                        resultData, resultLength);
                     } catch (ServerCommandException sce) {
-                        logger.error("[*** ServerCommandException ***]: " + sce.getMessage());
+                        LOG.error("[*** ServerCommandException ***]: " + sce.getMessage());
                         header.setError(sce.getErrorNumber());
                         resultData.setData(sce.getMessage().getBytes());
                         resultLength.setIntegerValue(resultData.getData().length + 2);
                     }
                     catch(CommandNotImplementedException cnie)
                     {
-                        logger.error("[*** CommandNotImplementedException ***]: " + cnie.getMessage());
+                        LOG.error("[*** CommandNotImplementedException ***]: " + cnie.getMessage());
                         header.setError(AapiServerError.BAD_CMD.getErrorNumber());
                         resultData.setData(cnie.getMessage().getBytes());
                         resultLength.setIntegerValue(resultData.getData().length + 2);
@@ -120,9 +120,9 @@ public class ClientRequest implements Runnable
             }
         } catch (IOException ioe) {
             if(ioe instanceof EOFException) {
-                logger.info("End of data stream reached.");
+                LOG.info("End of data stream reached.");
             } else {
-                logger.error(ioe.getMessage());
+                LOG.error(ioe.getMessage());
             }
         } finally {
             in = null;
@@ -132,7 +132,7 @@ public class ClientRequest implements Runnable
             }
         }
         
-        logger.info("Request finished.");
+        LOG.info("Request finished.");
     }
     
     /**

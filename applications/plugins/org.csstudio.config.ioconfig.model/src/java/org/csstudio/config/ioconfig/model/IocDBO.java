@@ -57,9 +57,7 @@ public class IocDBO extends AbstractNodeDBO<FacilityDBO, ProfibusSubnetDBO> {
      * @throws PersistenceException 
      */
     public IocDBO(@Nonnull final FacilityDBO facility) throws PersistenceException {
-        setParent(facility);
-        facility.addChild(this);
-
+        super(facility);
     }
 
     /**
@@ -100,4 +98,20 @@ public class IocDBO extends AbstractNodeDBO<FacilityDBO, ProfibusSubnetDBO> {
         return NodeType.IOC;
     }
 
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    @Nonnull
+    public ProfibusSubnetDBO createChild() throws PersistenceException {
+        return new ProfibusSubnetDBO(this);
+    }
+    
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public void accept(@Nonnull final INodeVisitor visitor) {
+        visitor.visit(this);
+    }
 }

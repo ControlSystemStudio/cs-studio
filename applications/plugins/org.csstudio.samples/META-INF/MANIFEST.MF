@@ -8,6 +8,6 @@ Require-Bundle: org.eclipse.ui,
  org.eclipse.core.runtime,
  org.eclipse.core.resources,
  org.csstudio.platform,
- org.csstudio.platform.libs.log4j;bundle-version="1.2.16"
+ org.apache.log4j;bundle-version="1.2.16"
 Bundle-ActivationPolicy: lazy
 Bundle-RequiredExecutionEnvironment: JavaSE-1.6

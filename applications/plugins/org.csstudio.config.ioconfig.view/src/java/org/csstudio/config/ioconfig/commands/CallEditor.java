@@ -60,23 +60,10 @@ public class CallEditor extends AbstractCallNodeEditor {
 			@Nonnull IWorkbenchPage page) throws PartInitException {
 
 		NodeEditorInput input = new NodeEditorInput(obj);
-		if (obj instanceof FacilityDBO) {
-			page.openEditor(input, FacilityEditor.ID);
-		} else if (obj instanceof IocDBO) {
-			page.openEditor(input, IocEditor.ID);
-		} else if (obj instanceof ProfibusSubnetDBO) {
-			page.openEditor(input, SubnetEditor.ID);
-		} else if (obj instanceof MasterDBO) {
-			page.openEditor(input, MasterEditor.ID);
-		} else if (obj instanceof SlaveDBO) {
-			page.openEditor(input, SlaveEditor.ID);
-		} else if (obj instanceof ModuleDBO) {
-			page.openEditor(input, ModuleEditor.ID);
-		} else if (obj instanceof ChannelDBO) {
-			page.openEditor(input, ChannelEditor.ID);
-		} else if (obj instanceof ChannelStructureDBO) {
-			page.openEditor(input, ChannelStructureEditor.ID);
-		}
+		
+		String id = NodeEditorHandler.getEditorIdFor(obj);
+
+		page.openEditor(input, id);
 
 	}
 	// CHECKSTYLE ON: CyclomaticComplexity

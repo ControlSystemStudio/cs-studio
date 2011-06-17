@@ -10,6 +10,6 @@ Require-Bundle: org.eclipse.ui,
  org.csstudio.config.ioconfig.model;bundle-version="1.2.1",
  org.csstudio.config.ioconfig.view;bundle-version="1.2.1",
  javax.annotation;bundle-version="1.3.0",
- org.csstudio.platform.libs.log4j;bundle-version="1.2.16"
+ org.apache.log4j;bundle-version="1.2.16"
 Bundle-ActivationPolicy: lazy
 Bundle-RequiredExecutionEnvironment: JavaSE-1.6

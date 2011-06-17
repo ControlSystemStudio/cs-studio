@@ -28,7 +28,8 @@ import org.csstudio.config.savevalue.service.SaveValueRequest;
 import org.csstudio.config.savevalue.service.SaveValueResult;
 import org.csstudio.config.savevalue.service.SaveValueService;
 import org.csstudio.config.savevalue.service.SaveValueServiceException;
-import org.csstudio.platform.logging.CentralLogger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * Save value service that saves to a database.
@@ -40,14 +41,15 @@ public class DatabaseService implements SaveValueService {
 	/**
 	 * The logger.
 	 */
-	private final CentralLogger _log = CentralLogger.getInstance();
-
+    private static final Logger LOG = LoggerFactory.getLogger(DatabaseService.class);
+    
 	/**
 	 * {@inheritDoc}
 	 */
-	public final SaveValueResult saveValue(final SaveValueRequest request)
+	@Override
+    public final SaveValueResult saveValue(final SaveValueRequest request)
 			throws SaveValueServiceException, RemoteException {
-		_log.info(this, "saveValue called with: " + request);
+		LOG.info("saveValue called with: {}", request);
 		// always simply return (success for testing)
 		return new SaveValueResult("0");
 	}

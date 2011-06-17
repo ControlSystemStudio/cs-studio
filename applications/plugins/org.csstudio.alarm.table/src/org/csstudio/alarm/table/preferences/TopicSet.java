@@ -23,9 +23,10 @@ import java.util.List;
 import javax.annotation.CheckForNull;
 import javax.annotation.Nonnull;
 
-import org.csstudio.platform.logging.CentralLogger;
 import org.csstudio.platform.ui.util.CustomMediaFactory;
 import org.eclipse.swt.graphics.Font;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * A topic set is an immutable object.
@@ -36,6 +37,8 @@ import org.eclipse.swt.graphics.Font;
  *
  */
 public final class TopicSet {
+    
+    private static final Logger LOG = LoggerFactory.getLogger(TopicSet.class);
 
     private boolean _defaultTopic = false;
 
@@ -86,7 +89,7 @@ public final class TopicSet {
                                                              Integer.parseInt(fontItems[2]),
                                                              Integer.parseInt(fontItems[1]));
         } catch (Exception e) {
-            CentralLogger.getInstance().error(this, "error creating font");
+            LOG.error("error creating font");
         }
     }
 

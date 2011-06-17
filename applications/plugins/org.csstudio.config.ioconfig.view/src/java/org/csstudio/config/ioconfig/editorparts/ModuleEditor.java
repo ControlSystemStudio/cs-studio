@@ -46,7 +46,8 @@ import javax.annotation.CheckForNull;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
-import org.apache.log4j.Logger;
+import org.csstudio.auth.security.SecurityFacade;
+import org.csstudio.auth.security.User;
 import org.csstudio.config.ioconfig.config.view.ChannelConfigDialog;
 import org.csstudio.config.ioconfig.config.view.ModuleListLabelProvider;
 import org.csstudio.config.ioconfig.config.view.helper.ConfigHelper;
@@ -64,9 +65,6 @@ import org.csstudio.config.ioconfig.model.pbmodel.gsdParser.ExtUserPrmData;
 import org.csstudio.config.ioconfig.model.pbmodel.gsdParser.GsdModuleModel2;
 import org.csstudio.config.ioconfig.model.pbmodel.gsdParser.PrmTextItem;
 import org.csstudio.config.ioconfig.view.DeviceDatabaseErrorDialog;
-import org.csstudio.platform.logging.CentralLogger;
-import org.csstudio.auth.security.SecurityFacade;
-import org.csstudio.auth.security.User;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.jface.viewers.ComboViewer;
 import org.eclipse.jface.viewers.ISelectionChangedListener;
@@ -95,6 +93,8 @@ import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Group;
 import org.eclipse.swt.widgets.Text;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * @author hrickens
@@ -105,8 +105,8 @@ import org.eclipse.swt.widgets.Text;
 public class ModuleEditor extends AbstractGsdNodeEditor {
     
     public static final String ID = "org.csstudio.config.ioconfig.view.editor.module";
-    
-    private static final Logger LOG = CentralLogger.getInstance().getLogger(ModuleEditor.class);
+
+    private static final Logger LOG = LoggerFactory.getLogger(ModuleEditor.class);
     
     /**
      *
@@ -182,13 +182,13 @@ public class ModuleEditor extends AbstractGsdNodeEditor {
                     module.localUpdate();
                     module.localSave();
                 } catch (PersistenceException e) {
-                    LOG.error(e);
+                    LOG.error("Database error!", e);
                     DeviceDatabaseErrorDialog.open(null, "Database error!", e);
                 }
                 getProfiBusTreeView().refresh(module.getParent());
                 makeCurrentUserParamData(_topGroup);
             } catch (IOException e) {
-                LOG.error(e);
+                LOG.error("File read error!", e);
                 DeviceDatabaseErrorDialog.open(null, "File read error!", e);
             }
         }
@@ -540,7 +540,7 @@ public class ModuleEditor extends AbstractGsdNodeEditor {
             _moduleTypList.getTable().showSelection();
         } catch (IOException e2) {
             DeviceDatabaseErrorDialog.open(null, "Can't save Module. GSD File read error", e2);
-            CentralLogger.getInstance().error(this, e2.getLocalizedMessage());
+            LOG.error("Can't save Module. GSD File read error", e2);
         }
     }
     
@@ -612,11 +612,11 @@ public class ModuleEditor extends AbstractGsdNodeEditor {
             }
             save();
         } catch (PersistenceException e) {
-            LOG.error(e);
+            LOG.error("Can't save Module! Database error.", e);
             DeviceDatabaseErrorDialog.open(null, "Can't save Module! Database error.", e);
         } catch (IOException e2) {
             DeviceDatabaseErrorDialog.open(null, "Can't save Slave.GSD File read error", e2);
-            CentralLogger.getInstance().error(this, e2.getLocalizedMessage());
+            LOG.error("Can't save Slave.GSD File read error", e2);
         }
     }
     
@@ -750,7 +750,7 @@ public class ModuleEditor extends AbstractGsdNodeEditor {
         gsdModule.setCreatedOn(date);
         gsdModule.setUpdatedOn(date);
         ChannelConfigDialog channelConfigDialog = new ChannelConfigDialog(Display.getCurrent()
-                .getActiveShell(), model, gsdModule, _module);
+                .getActiveShell(), model, gsdModule);
         if (channelConfigDialog.open() == ChannelConfigDialog.OK) {
             gsdModule.setConfigurationData(channelConfigDialog.getConfigurationData());
             String parameter = channelConfigDialog.getParameter();
@@ -797,7 +797,7 @@ public class ModuleEditor extends AbstractGsdNodeEditor {
                 nodeParent.addChild(getNode());
             }
         } catch (PersistenceException e) {
-            LOG.error(e);
+            LOG.error("Can't create new Module! Database error.", e);
             DeviceDatabaseErrorDialog.open(null, "Can't create new Module! Database error.", e);
         }
         return true;
