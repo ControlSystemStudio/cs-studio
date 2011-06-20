@@ -36,6 +36,7 @@
       <menuContribution
             locationURI="popup:org.eclipse.ui.popup.any?after=css">
          <menu
+               icon="icons/channel.png"
                id="org.csstudio.ui.menu.popup.channel"
                label="Channel">
             <visibleWhen>

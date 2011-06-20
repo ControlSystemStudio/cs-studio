@@ -22,6 +22,8 @@ import org.csstudio.opibuilder.preferences.PreferencesHelper;
  *
  */
 public class OPIBuilderMacroUtil {
+	public static final String DNAME = "DNAME"; //$NON-NLS-1$
+	public static final String DID = "DID"; //$NON-NLS-1$
 	/**Replace the macros in the input with the real value.  Simply calls the three argument version below
 	 * @param input the raw string which include the macros string $(macro)
 	 * @return the string in which the macros have been replaced with the real value.
@@ -70,14 +72,20 @@ class WidgetMacroTableProvider implements IMacroTableProvider{
 		macroMap = OPIBuilderMacroUtil.getWidgetMacroMap(widgetModel);
 	}
 	
-	public String getMacroValue(String macroName) {
+	public String getMacroValue(String macroName) {	
 		if(macroMap != null && macroMap.containsKey(macroName))
 			return macroMap.get(macroName);
 		else if(widgetModel.getAllPropertyIDs().contains(macroName)){
 			Object propertyValue = widgetModel.getPropertyValue(macroName);
 			if(propertyValue != null)
 				return propertyValue.toString();
-		}
+		}		
+		if(macroName.equals(OPIBuilderMacroUtil.DID))
+			return OPIBuilderMacroUtil.DID +"_" + //$NON-NLS-1$
+				widgetModel.getRootDisplayModel().getDisplayID();
+		else if (macroName.equals(OPIBuilderMacroUtil.DNAME))
+			return widgetModel.getRootDisplayModel().getName();		
+		
 		return null;
 	}
 }

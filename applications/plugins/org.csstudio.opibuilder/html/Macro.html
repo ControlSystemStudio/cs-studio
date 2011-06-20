@@ -36,5 +36,18 @@ Predefined Symbol Macro</h3>
 </p>
 <p><img src="img/tooltip.png"></p>
   
+<h3>System Macro</h3>
+<p>These macros are predefined in code. Here are two macros available: </p>
+<ul>
+	<li><code>$(DID)</code>: The unique ID for each display. Even if there are
+	 multiple displays refering tho the same OPI file,  each display still has an unique ID.
+	 This macro is useful for avoiding 
+	name conflict. For example, if we add a prefix of <code>$(DID)_</code> to a local PV name, we can easily 
+	guarantee the PV name is unique to this display. </li>
+</ul>
+<ul><li><code>$(DNAME)</code>: The name of the display.</li></ul>
+
+</p>  
+  
 </body>
 </html>

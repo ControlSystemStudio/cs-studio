@@ -12,8 +12,9 @@ import java.util.logging.Level;
 
 import org.csstudio.apputil.time.BenchmarkTimer;
 import org.csstudio.archive.engine.Activator;
-import org.csstudio.archive.rdb.ChannelConfig;
-import org.csstudio.archive.rdb.RDBArchive;
+import org.csstudio.archive.writer.ArchiveWriter;
+import org.csstudio.archive.writer.ArchiveWriterFactory;
+import org.csstudio.archive.writer.WriteChannel;
 import org.csstudio.data.values.ITimestamp;
 import org.csstudio.data.values.IValue;
 import org.csstudio.data.values.TimestampFactory;
@@ -38,7 +39,7 @@ public class WriteThread implements Runnable
     private static final double MIN_WRITE_PERIOD = 5.0;
 
     /** Server to which this thread writes. */
-    final private RDBArchive archive;
+    private ArchiveWriter writer;
 
     /** All the sample buffers this thread writes. */
     final private ArrayList<SampleBuffer> buffers =
@@ -69,14 +70,6 @@ public class WriteThread implements Runnable
 
     /** Thread the executes this.run() */
     private Thread thread;
-
-    /** Construct thread for writing to server
-     *  @param archive RDB to write to
-     */
-    public WriteThread(final RDBArchive archive)
-    {
-        this.archive = archive;
-    }
 
     /** Add a channel's buffer that this thread reads */
     public void addChannel(final ArchiveChannel channel)
@@ -173,11 +166,14 @@ public class WriteThread implements Runnable
                 // If there was an error before...
                 if (write_error)
                 {   // .. try to reconnect
-                    archive.reconnect();
+                    writer.close();
+                    writer = null;
                     // If we get here, all is OK so far ...
                     write_error = false;
                     // .. and we continue to write.
                 }
+                if (writer == null)
+                	writer = ArchiveWriterFactory.getArchiveWriter();
                 timer.start();
                 // In case of a network problem, we can hang in here
                 // for a long time...
@@ -226,7 +222,18 @@ public class WriteThread implements Runnable
         thread.join();
         // Then write once more.
         // Errors in this last write are passed up.
-        write();
+        try
+        {
+        	write();
+        }
+        finally
+        {
+        	if (writer != null)
+        	{
+        		writer.close();
+        		writer = null;
+        	}
+        }
     }
 
     /** Write right now until all sample buffers are empty
@@ -242,25 +249,25 @@ public class WriteThread implements Runnable
             buffer.updateStats();
             // Write samples for one channel
             final String name = buffer.getChannelName();
-            final ChannelConfig channel = archive.createChannel(name);
+            final WriteChannel channel = writer.getChannel(name);
             IValue sample = buffer.remove();
             while (sample != null)
             {   // Write one value
-                channel.batchSample(sample);
+                writer.addSample(channel, sample);
                 // Note: count across different sample buffers!
                 ++count;
                 if (count > batch_size)
                 {
                     total_count += count;
                     count = 0;
-                    archive.commitBatch();
+                    writer.flush();
                 }
                 // next
                 sample = buffer.remove();
             }
         }
         // Flush remaining samples (less than batch_size)
-        archive.commitBatch();
+        writer.flush();
         total_count += count;
         return total_count;
     }

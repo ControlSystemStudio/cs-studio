@@ -1,6 +1,8 @@
 com.google.common
 javax.annotation
 org.apache.log4j
+org.apache.tools.ant
+org.apache.tools.ant.junit
 org.csstudio.common.product
 org.csstudio.alarm.beast
 org.csstudio.alarm.beast.annunciator

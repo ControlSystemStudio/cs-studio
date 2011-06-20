@@ -1,0 +1,12 @@
+Manifest-Version: 1.0
+Bundle-ManifestVersion: 2
+Bundle-Name: JUnit tests/demos for the Archive Writer
+Bundle-Description: JUnit tests/demos for the Archive Writer
+Bundle-SymbolicName: org.csstudio.archive.writer.test
+Bundle-Version: 1.0.0.qualifier
+Bundle-Vendor: Kay Kasemir <kasemirk@ornl.gov> - SNS
+Bundle-RequiredExecutionEnvironment: JavaSE-1.6
+Require-Bundle: org.junit4,
+ org.csstudio.apputil;bundle-version="3.0.0",
+ org.csstudio.archive.writer;bundle-version="1.0.0",
+ org.csstudio.archive.writer.rdb;bundle-version="1.0.0"

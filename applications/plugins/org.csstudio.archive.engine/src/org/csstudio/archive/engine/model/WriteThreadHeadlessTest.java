@@ -8,7 +8,6 @@
 package org.csstudio.archive.engine.model;
 
 import org.csstudio.apputil.test.TestProperties;
-import org.csstudio.archive.rdb.RDBArchive;
 import org.csstudio.data.values.INumericMetaData;
 import org.csstudio.data.values.ISeverity;
 import org.csstudio.data.values.ITimestamp;
@@ -28,14 +27,6 @@ public class WriteThreadHeadlessTest
     {
     	// Get test configuration
     	final TestProperties settings = new TestProperties();
-    	final String url = settings.getString("archive_rdb_url");
-    	if (url == null)
-    	{
-    		System.out.println("Skipping, no archive test settings");
-    		return;
-    	}
-    	final String user = settings.getString("archive_rdb_user");
-    	final String password = settings.getString("archive_rdb_password");
     	final String channel = settings.getString("archive_write_channel");
     	if (channel == null)
     	{
@@ -48,8 +39,7 @@ public class WriteThreadHeadlessTest
         final SampleBuffer buffer = new SampleBuffer(channel, 1000);
 
         // Connect writer to it
-        final RDBArchive archive = RDBArchive.connect(url, user, password);
-        final WriteThread writer = new WriteThread(archive);
+        final WriteThread writer = new WriteThread();
         writer.addSampleBuffer(buffer);
 
         // Trigger thread to write
@@ -75,8 +65,6 @@ public class WriteThreadHeadlessTest
         while (buffer.getQueueSize() > 0)
             Thread.sleep(500);
         writer.shutdown();
-
-        archive.close();
 
         // Show stats
         System.out.println(buffer);

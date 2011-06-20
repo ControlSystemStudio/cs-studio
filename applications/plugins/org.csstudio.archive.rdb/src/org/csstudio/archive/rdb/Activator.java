@@ -7,8 +7,6 @@
  ******************************************************************************/
 package org.csstudio.archive.rdb;
 
-import java.util.logging.Logger;
-
 /** (Not really a) Plugin Activator
  *  @author Kay Kasemir
  */
@@ -16,12 +14,4 @@ public class Activator
 {
     /** Plugin ID defined in MANIFEST.MF */
     final public static String ID = "org.csstudio.archive.rdb"; //$NON-NLS-1$
-
-    final private static Logger logger = Logger.getLogger(ID);
-
-    /** @return Logger for plugin ID */
-    public static Logger getLogger()
-    {
-        return logger;
-    }
 }

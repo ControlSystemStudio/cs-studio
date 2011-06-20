@@ -1,0 +1,11 @@
+Manifest-Version: 1.0
+Bundle-ManifestVersion: 2
+Bundle-Name: Archive Write API
+Bundle-Description: Defines API for writing data to an archive. Used by archive engine.
+Bundle-SymbolicName: org.csstudio.archive.writer;singleton:=true
+Bundle-Version: 1.0.0.qualifier
+Bundle-Vendor: Kay Kasemir <kasemirk@ornl.gov> - SNS
+Bundle-RequiredExecutionEnvironment: JavaSE-1.6
+Export-Package: org.csstudio.archive.writer
+Require-Bundle: org.eclipse.core.runtime;bundle-version="3.6.0",
+ org.csstudio.data;bundle-version="3.0.0";visibility:=reexport

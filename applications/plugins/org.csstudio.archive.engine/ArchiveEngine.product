@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <?pde version="3.5"?>
 
-<product name="ArchiveEngine" id="org.csstudio.archive.engine.engine" application="org.csstudio.archive.engine.application" version="3.0.0.qualifier" useFeatures="false" includeLaunchers="true">
+<product name="ArchiveEngine" id="org.csstudio.archive.engine.engine" application="org.csstudio.archive.engine.application" version="3.0.1.qualifier" useFeatures="false" includeLaunchers="true">
 
    <configIni use="default">
    </configIni>
@@ -26,8 +26,12 @@
    <plugins>
       <plugin id="javax.servlet"/>
       <plugin id="org.csstudio.apputil"/>
+      <plugin id="org.csstudio.archive.config"/>
+      <plugin id="org.csstudio.archive.config.rdb"/>
       <plugin id="org.csstudio.archive.engine"/>
       <plugin id="org.csstudio.archive.rdb"/>
+      <plugin id="org.csstudio.archive.writer"/>
+      <plugin id="org.csstudio.archive.writer.rdb"/>
       <plugin id="org.csstudio.auth"/>
       <plugin id="org.csstudio.data"/>
       <plugin id="org.csstudio.java"/>
