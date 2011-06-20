@@ -41,6 +41,7 @@ HTTP://WWW.DESY.DE/LEGAL/LICENSE.HTM
 
    <windowImages i16="resources/css16x16.gif" i32="resources/css32x32.gif" i48="resources/css48x48.gif" i64="resources/css64x64.gif" i128="resources/css128x128.gif"/>
 
+
    <launcher name="css-ci">
       <solaris/>
       <win useIco="false">
@@ -48,12 +49,14 @@ HTTP://WWW.DESY.DE/LEGAL/LICENSE.HTM
       </win>
    </launcher>
 
+
    <vm>
       <linux include="false">org.eclipse.jdt.launching.JRE_CONTAINER/org.eclipse.jdt.internal.debug.ui.launcher.StandardVMType/JavaSE-1.6</linux>
       <macos include="false">org.eclipse.jdt.launching.JRE_CONTAINER/org.eclipse.jdt.internal.debug.ui.launcher.StandardVMType/JavaSE-1.6</macos>
       <solaris include="false">org.eclipse.jdt.launching.JRE_CONTAINER/org.eclipse.jdt.internal.debug.ui.launcher.StandardVMType/JavaSE-1.6</solaris>
       <windows include="false">org.eclipse.jdt.launching.JRE_CONTAINER/org.eclipse.jdt.internal.debug.ui.launcher.StandardVMType/JavaSE-1.6</windows>
    </vm>
+
 
    <plugins>
       <plugin id="com.google.common"/>
@@ -115,6 +118,8 @@ HTTP://WWW.DESY.DE/LEGAL/LICENSE.HTM
       <plugin id="org.csstudio.desy.common.product.log4j" fragment="true"/>
       <plugin id="org.csstudio.desy.config"/>
       <plugin id="org.csstudio.desy.product"/>
+      <plugin id="org.csstudio.diag.icsiocmonitor.service"/>
+      <plugin id="org.csstudio.diag.interconnectionServer"/>
       <plugin id="org.csstudio.domain.desy"/>
       <plugin id="org.csstudio.domain.desy.epics"/>
       <plugin id="org.csstudio.domain.desy.epics.test" fragment="true"/>
