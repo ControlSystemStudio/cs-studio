@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <?pde version="3.5"?>
 
-<product name="SDDS-Server" id="org.csstudio.archive.sdds.server.SDDSServerProduct" application="org.csstudio.archive.sdds.server.SddsServerApplication" version="0.9.10" useFeatures="false" includeLaunchers="true">
+<product name="SDDS-Server" id="org.csstudio.archive.sdds.server.SDDSServerProduct" application="org.csstudio.archive.sdds.server.SddsServerApplication" version="0.9.11" useFeatures="false" includeLaunchers="true">
 
    <configIni use="default">
    </configIni>
@@ -30,10 +30,10 @@
       <plugin id="org.csstudio.platform.libs.dal"/>
       <plugin id="org.csstudio.platform.libs.jmock"/>
       <plugin id="org.csstudio.platform.libs.jms"/>
-      <plugin id="org.csstudio.platform.libs.log4j"/>
-      <plugin id="org.csstudio.platform.libs.mockito"/>
+      <plugin id="org.csstudio.platform.libs.log4j" fragment=""/>
+      <plugin id="org.csstudio.platform.libs.mockito" fragment=""/>
       <plugin id="org.csstudio.platform.utility.jms"/>
-      <plugin id="org.csstudio.platform.workspace"/>
+      <plugin id="org.csstudio.platform.workspace" fragment=""/>
       <plugin id="org.eclipse.core.contenttype"/>
       <plugin id="org.eclipse.core.expressions"/>
       <plugin id="org.eclipse.core.filesystem"/>
@@ -80,8 +80,8 @@
       <plugin id="org.junit"/>
       <plugin id="org.junit4"/>
       <plugin id="org.remotercp.common"/>
-      <plugin id="org.remotercp.ecf"/>
-      <plugin id="org.remotercp.libs.xstream"/>
+      <plugin id="org.remotercp.ecf" fragment=""/>
+      <plugin id="org.remotercp.libs.xstream" fragment=""/>
       <plugin id="org.remotercp.util"/>
    </plugins>
 

@@ -165,10 +165,8 @@ public class DataRequest extends ServerCommand {
         } catch(IOException ioe) {
             LOG.error("[*** IOException ***]: " + ioe.getMessage());
         } finally {
-            if(dos!=null) {
-            	try{dos.close();}catch(Exception e) { /* Can be ignored */ }
-            	dos = null;
-            }
+            try{dos.close();}catch(Exception e) { /* Can be ignored */ }
+            dos = null;
         }
         
         // throw new ServerCommandException(AAPI.AAPI.aapiServerSideErrorString[AAPI.AAPI.BAD_TIME], AAPI.AAPI.BAD_TIME);

@@ -89,12 +89,13 @@ public class ConversionExecutor {
                  */
         };
     }
-    
+
     /**
      * 
-     * @param method
+     * @param name
      * @param data
-     * @return
+     * @param header
+     * @return Iterable containing the read data
      */
     public Iterable<EpicsRecordData> convertData(String name, EpicsRecordData[] data, DataRequestHeader header) {
         

@@ -65,7 +65,7 @@ public abstract class ServerCommand {
     /**
      * 
      * @param errorNumber
-     * @return
+     * @return Byte array containing the error message
      */
     public byte[] createErrorAnswer(int errorNumber) {
         
@@ -85,10 +85,8 @@ public abstract class ServerCommand {
             LOG.error("[*** IOException ***]: ", ioe);
         }
         finally {
-            if(dos!=null) {
-            	try{dos.close();}catch(Exception e){ /* Can be ignored */}
-            	dos=null;
-            }
+            try{dos.close();}catch(Exception e){ /* Can be ignored */}
+            dos=null;
         }
 
         return result;
