@@ -28,7 +28,7 @@ import java.util.Iterator;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
-import org.csstudio.archive.common.reader.facade.ServiceProvider;
+import org.csstudio.archive.common.reader.facade.IServiceProvider;
 import org.csstudio.archive.common.requesttype.IArchiveRequestType;
 import org.csstudio.archive.common.service.ArchiveServiceException;
 import org.csstudio.archive.common.service.IArchiveReaderFacade;
@@ -68,14 +68,14 @@ public class DesyArchiveValueIterator implements ValueIterator {
 
     private Iterator<IArchiveSample<Object, IAlarmSystemVariable<Object>>> _iterator = _samples.iterator();
 
-    private final ServiceProvider _provider;
+    private final IServiceProvider _provider;
     /**
      * Constructor.
      * @param provider
      * @throws ArchiveServiceException
      * @throws OsgiServiceUnavailableException
      */
-    DesyArchiveValueIterator(@Nonnull final ServiceProvider provider,
+    DesyArchiveValueIterator(@Nonnull final IServiceProvider provider,
                              @Nonnull final String channelName,
                              @Nonnull final TimeInstant start,
                              @Nonnull final TimeInstant end,

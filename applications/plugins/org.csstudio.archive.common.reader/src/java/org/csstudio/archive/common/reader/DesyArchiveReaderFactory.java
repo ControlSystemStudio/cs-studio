@@ -27,6 +27,7 @@ import java.util.regex.Pattern;
 import javax.annotation.CheckForNull;
 import javax.annotation.Nonnull;
 
+import org.csstudio.archive.common.reader.facade.IServiceProvider;
 import org.csstudio.archive.common.reader.facade.ServiceProvider;
 import org.csstudio.archive.common.requesttype.IArchiveRequestType;
 import org.csstudio.archive.common.service.IArchiveReaderFacade;
@@ -81,13 +82,13 @@ public final class DesyArchiveReaderFactory implements ArchiveReaderFactory {
      */
     private static final class DesyArchiveReader implements ArchiveReader {
 
-        private final ServiceProvider _provider;
+        private final IServiceProvider _provider;
 
         /**
          * Constructor.
          * @param serviceProvider
          */
-        public DesyArchiveReader(@Nonnull final ServiceProvider serviceProvider) {
+        public DesyArchiveReader(@Nonnull final IServiceProvider serviceProvider) {
             _provider = serviceProvider;
         }
 

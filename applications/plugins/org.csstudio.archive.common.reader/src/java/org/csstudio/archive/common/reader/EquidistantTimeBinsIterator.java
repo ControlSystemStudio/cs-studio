@@ -29,7 +29,7 @@ import javax.annotation.CheckForNull;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
-import org.csstudio.archive.common.reader.facade.ServiceProvider;
+import org.csstudio.archive.common.reader.facade.IServiceProvider;
 import org.csstudio.archive.common.requesttype.IArchiveRequestType;
 import org.csstudio.archive.common.service.ArchiveServiceException;
 import org.csstudio.archive.common.service.IArchiveReaderFacade;
@@ -90,7 +90,6 @@ public class EquidistantTimeBinsIterator<V> implements ValueIterator {
 
     }
 
-    private final String _channelName;
     private final Collection<IArchiveSample<V, ISystemVariable<V>>> _samples;
 
     private final TimeInstant _startTime;
@@ -107,7 +106,7 @@ public class EquidistantTimeBinsIterator<V> implements ValueIterator {
     private final SampleMinMaxAggregator _agg;
     private boolean _noSamples = false;
 
-    private final ServiceProvider _provider;
+    private final IServiceProvider _provider;
 
     /**
      * Constructor.
@@ -115,7 +114,7 @@ public class EquidistantTimeBinsIterator<V> implements ValueIterator {
      * @throws OsgiServiceUnavailableException
      * @throws TypeSupportException
      */
-    public EquidistantTimeBinsIterator(@Nonnull final ServiceProvider provider,
+    public EquidistantTimeBinsIterator(@Nonnull final IServiceProvider provider,
                                        @Nonnull final String channelName,
                                        @Nonnull final TimeInstant start,
                                        @Nonnull final TimeInstant end,
@@ -124,7 +123,6 @@ public class EquidistantTimeBinsIterator<V> implements ValueIterator {
                                                                   ArchiveServiceException,
                                                                   TypeSupportException {
         _provider = provider;
-        _channelName = channelName;
         _startTime = start;
         _endTime = end;
         _numOfWindows = timeBins;
@@ -173,7 +171,7 @@ public class EquidistantTimeBinsIterator<V> implements ValueIterator {
 
 
     @Nonnull
-    private SampleAndWindow<V> findFirstSampleAndItsWindow(@Nonnull final ServiceProvider provider,
+    private SampleAndWindow<V> findFirstSampleAndItsWindow(@Nonnull final IServiceProvider provider,
                                                            @Nonnull final String name,
                                                            @Nonnull final TimeInstant startTime,
                                                            @Nonnull final ReadableDuration windowLength,
@@ -207,7 +205,7 @@ public class EquidistantTimeBinsIterator<V> implements ValueIterator {
     }
 
     @CheckForNull
-    private INumericMetaData retrieveMetaDataForChannel(@Nonnull final ServiceProvider provider,
+    private INumericMetaData retrieveMetaDataForChannel(@Nonnull final IServiceProvider provider,
                                                         @Nonnull final String channelName) throws ArchiveServiceException, OsgiServiceUnavailableException {
         final IArchiveReaderFacade service = provider.getReaderFacade();
         final IArchiveChannel ch = service.getChannelByName(channelName);
