@@ -29,18 +29,15 @@ import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
 import java.lang.management.ManagementFactory;
-
 import javax.management.InstanceAlreadyExistsException;
 import javax.management.MBeanRegistrationException;
 import javax.management.MBeanServer;
 import javax.management.MalformedObjectNameException;
 import javax.management.NotCompliantMBeanException;
 import javax.management.ObjectName;
-
 import org.csstudio.archive.sdds.server.internal.ServerPreferenceKey;
 import org.csstudio.archive.sdds.server.io.Server;
 import org.csstudio.archive.sdds.server.io.ServerException;
-import org.csstudio.platform.logging.CentralLogger;
 import org.eclipse.core.runtime.Platform;
 import org.eclipse.core.runtime.preferences.IPreferencesService;
 import org.eclipse.equinox.app.IApplication;
@@ -54,13 +51,13 @@ import org.slf4j.LoggerFactory;
  * @author Markus Moeller
  *
  */
-public class Application implements IApplication, RemotelyStoppable, ApplicationMBean, IGenericServiceListener<ISessionService> {
+public class SddsServerApplication implements IApplication, RemotelyStoppable, SddsServerApplicationMBean, IGenericServiceListener<ISessionService> {
     
     /** The instance of the server */
     private Server server;
     
     /** The logger of this class */
-    private static final Logger LOG = LoggerFactory.getLogger(Application.class);
+    private static final Logger LOG = LoggerFactory.getLogger(SddsServerApplication.class);
     
     /** Help object for synchronization purposes */
     private final Object lock;
@@ -74,7 +71,7 @@ public class Application implements IApplication, RemotelyStoppable, Application
     /**
      * The standard constructor
      */
-    public Application() {
+    public SddsServerApplication() {
         lock = new Object();
         running = true;
         restart = false;
@@ -90,13 +87,13 @@ public class Application implements IApplication, RemotelyStoppable, Application
         int serverPort;
         boolean useJmx = false;
         
-        LOG.info("Starting {}", Activator.PLUGIN_ID);
+        LOG.info("Starting {}", SddsServerActivator.PLUGIN_ID);
 
         IPreferencesService pref = Platform.getPreferencesService();
-        serverPort = pref.getInt(Activator.PLUGIN_ID, ServerPreferenceKey.P_SERVER_PORT, 4056, null);
+        serverPort = pref.getInt(SddsServerActivator.PLUGIN_ID, ServerPreferenceKey.P_SERVER_PORT, 4056, null);
         LOG.info("The server uses port {}", serverPort);
         
-        useJmx = pref.getBoolean(Activator.PLUGIN_ID, ServerPreferenceKey.P_USE_JMX,
+        useJmx = pref.getBoolean(SddsServerActivator.PLUGIN_ID, ServerPreferenceKey.P_USE_JMX,
         		false, null);
         
         try {
@@ -104,8 +101,7 @@ public class Application implements IApplication, RemotelyStoppable, Application
             server.start();
             
             if (useJmx == false) {
-//            	TODO (jhatje) Markus fragen wie der Connection Service behandelt werden könnte.
-//            	connectToXMPPServer();
+                SddsServerActivator.getDefault().addSessionServiceListener(this);
             } else {
             	connectMBeanServer();
             }
@@ -133,10 +129,10 @@ public class Application implements IApplication, RemotelyStoppable, Application
         }
         
         if(restart) {
-            LOG.info("Restarting {}", Activator.PLUGIN_ID);
+            LOG.info("Restarting {}", SddsServerActivator.PLUGIN_ID);
             exitType = IApplication.EXIT_RESTART;
         } else {
-            LOG.info("Stopping {}", Activator.PLUGIN_ID);
+            LOG.info("Stopping {}", SddsServerActivator.PLUGIN_ID);
             exitType = IApplication.EXIT_OK;
         }
         
@@ -165,7 +161,7 @@ public class Application implements IApplication, RemotelyStoppable, Application
         LOG.info("The server uses JMX for remote access. Port: " + jmxPort);
         
         try {
-            myname = new ObjectName("org.csstudio.archive.sdds.server.SddsServer:name=SddsServer");
+            myname = new ObjectName("org.csstudio.archive.sdds.server:name=SddsServer");
             mbeanServer.registerMBean(this, myname);
         } catch (MalformedObjectNameException mone) {
             LOG.error("[*** MalformedObjectNameException ***]: ", mone);
@@ -220,8 +216,6 @@ public class Application implements IApplication, RemotelyStoppable, Application
 					int indexOfEqual = version.indexOf("=") + 1;
 					version = version.substring(indexOfEqual);
 					break;
-				} else {
-					version = null;
 				}
 			}
 		} catch (FileNotFoundException fnfe) {
@@ -247,17 +241,17 @@ public class Application implements IApplication, RemotelyStoppable, Application
     @Override
     public void bindService(ISessionService sessionService) {
         IPreferencesService pref = Platform.getPreferencesService();
-        String xmppServer = pref.getString(Activator.PLUGIN_ID, ServerPreferenceKey.P_XMPP_SERVER,
+        String xmppServer = pref.getString(SddsServerActivator.PLUGIN_ID, ServerPreferenceKey.P_XMPP_SERVER,
                                            "krynfs.desy.de", null);
-        String xmppUser = pref.getString(Activator.PLUGIN_ID, ServerPreferenceKey.P_XMPP_USER,
+        String xmppUser = pref.getString(SddsServerActivator.PLUGIN_ID, ServerPreferenceKey.P_XMPP_USER,
                                          "sdds-server", null);
-        String xmppPassword = pref.getString(Activator.PLUGIN_ID, ServerPreferenceKey.P_XMPP_PASSWORD,
+        String xmppPassword = pref.getString(SddsServerActivator.PLUGIN_ID, ServerPreferenceKey.P_XMPP_PASSWORD,
                                              "sdds-server", null);
     	
     	try {
 			sessionService.connect(xmppUser, xmppPassword, xmppServer);
 		} catch (Exception e) {
-			CentralLogger.getInstance().warn("XMPP connection is not available, ", e);
+			LOG.warn("XMPP connection is not available, ", e);
 		}
     }
     

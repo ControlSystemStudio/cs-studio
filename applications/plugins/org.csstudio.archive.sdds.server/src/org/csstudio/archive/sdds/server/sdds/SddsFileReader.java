@@ -55,21 +55,18 @@ public class SddsFileReader {
     /**
      * Constructor that gets a string containing the path to the data files.
      * 
-     * @param path Path to the data files
      * @throws DataPathNotFoundException 
      */
     public SddsFileReader() throws DataPathNotFoundException {
         dataPath = new ArchiveLocation();
         dataPath.loadLocationList("./archive_data_source.txt");
-        
-        System.out.println(" OK");
     }
     
     /**
      * 
      * @param startTime
      * @param endTime
-     * @return
+     * @return Returns array of String that contains all paths for the given time interval
      */
     public String[] getAllPaths(long startTime, long endTime) {
         return dataPath.getAllPaths(startTime, endTime);
@@ -176,7 +173,7 @@ public class SddsFileReader {
      * modify others and call 'mktime()' to get new start_time.
      * 
      * @param dwStartTime
-     * @return
+     * @return The last timestamp of the month
      */
     public long getEndTimeOfPreviousMonth(long dwStartTime) { 
         
@@ -201,7 +198,7 @@ public class SddsFileReader {
      *  modify others and call 'mktime()' to get new start_time.
      *  
      * @param dwStartTime
-     * @return
+     * @return The first timestamp of the next month
      */
     public long getStartTimeOfNextMonth(long dwStartTime) { 
         
