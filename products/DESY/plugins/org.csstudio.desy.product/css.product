@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <?pde version="3.5"?>
 
-<product name="CSS" uid="csstudioDESY" id="org.csstudio.desy.product.product" application="org.csstudio.desy.product.application" version="1.3.0.qualifier" useFeatures="true" includeLaunchers="true">
+<product name="CSS" uid="csstudioDESY" id="org.csstudio.desy.product.product" application="org.csstudio.desy.product.application" version="1.4.1.qualifier" useFeatures="true" includeLaunchers="true">
 
    <aboutInfo>
       <image path="/org.csstudio.desy.product/resources/css64x64.gif"/>
@@ -93,7 +93,7 @@ HTTP://WWW.DESY.DE/LEGAL/LICENSE.HTM
       <plugin id="org.csstudio.platform.utility.jms"/>
       <plugin id="org.csstudio.platform.utility.jms.ui"/>
       <plugin id="org.csstudio.platform.utility.rdb"/>
-      <plugin id="org.csstudio.platform.workspace"/>
+      <plugin id="org.csstudio.platform.workspace" fragment=""/>
       <plugin id="org.csstudio.startuphelper"/>
       <plugin id="org.eclipse.core.commands"/>
       <plugin id="org.eclipse.core.contenttype"/>
@@ -172,8 +172,35 @@ HTTP://WWW.DESY.DE/LEGAL/LICENSE.HTM
    </plugins>
 
    <features>
-      <feature id="org.csstudio.desy.product.feature" version="1.0.0.qualifier"/>
+      <feature id="org.csstudio.desy.platform.eclipse.feature" version="1.0.0.qualifier"/>
+      <feature id="org.csstudio.desy.platform.eclipse.team.feature" version="1.0.0.qualifier"/>
+      <feature id="org.csstudio.desy.platform.base.feature" version="1.0.0.qualifier"/>
+      <feature id="org.csstudio.desy.platform.user.feature" version="1.0.0.qualifier"/>
+      <feature id="org.csstudio.desy.platform.remote.feature" version="1.0.0.qualifier"/>
+      <feature id="org.csstudio.desy.library.feature" version="1.0.0.qualifier"/>
+      <feature id="org.csstudio.desy.librarydesy.feature" version="1.0.0.qualifier"/>
+      <feature id="org.csstudio.desy.snl.feature" version="1.0.0.qualifier"/>
+      <feature id="org.csstudio.desy.sds.feature" version="1.0.0.qualifier"/>
+      <feature id="org.csstudio.desy.pv.feature" version="1.0.0.qualifier"/>
+      <feature id="org.csstudio.desy.dct.feature" version="1.0.0.qualifier"/>
+      <feature id="org.csstudio.desy.alarm.feature" version="1.0.0.qualifier"/>
+      <feature id="org.csstudio.desy.ioconfigurator.feature" version="1.0.0.qualifier"/>
+      <feature id="org.csstudio.desy.ams.feature" version="1.0.0.qualifier"/>
+      <feature id="org.csstudio.desy.desytools.feature" version="1.0.0.qualifier"/>
+      <feature id="org.csstudio.desy.development.feature" version="1.0.0.qualifier"/>
    </features>
 
+   <configurations>
+      <plugin id="org.eclipse.core.runtime" autoStart="true" startLevel="0" />
+      <plugin id="org.eclipse.equinox.common" autoStart="true" startLevel="2" />
+      <plugin id="org.eclipse.equinox.ds" autoStart="true" startLevel="0" />
+      <plugin id="org.eclipse.equinox.p2.core" autoStart="true" startLevel="0" />
+      <plugin id="org.eclipse.equinox.simpleconfigurator" autoStart="true" startLevel="1" />
+      <plugin id="org.eclipse.osgi" autoStart="true" startLevel="-1" />
+      <plugin id="org.remotercp.service.authorization" autoStart="true" startLevel="0" />
+      <plugin id="org.remotercp.service.connection" autoStart="true" startLevel="0" />
+      <plugin id="org.remotercp.service.preferences" autoStart="true" startLevel="0" />
+      <plugin id="org.remotercp.service.provisioning" autoStart="true" startLevel="0" />
+   </configurations>
 
 </product>
