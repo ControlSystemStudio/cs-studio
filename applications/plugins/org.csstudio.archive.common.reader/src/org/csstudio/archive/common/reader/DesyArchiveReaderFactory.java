@@ -27,6 +27,7 @@ import java.util.regex.Pattern;
 import javax.annotation.CheckForNull;
 import javax.annotation.Nonnull;
 
+import org.csstudio.archive.common.reader.facade.ServiceProvider;
 import org.csstudio.archive.common.requesttype.IArchiveRequestType;
 import org.csstudio.archive.common.service.IArchiveReaderFacade;
 import org.csstudio.archive.common.service.channel.IArchiveChannel;
@@ -79,11 +80,15 @@ public final class DesyArchiveReaderFactory implements ArchiveReaderFactory {
      * @since 03.02.2011
      */
     private static final class DesyArchiveReader implements ArchiveReader {
+
+        private final ServiceProvider _provider;
+
         /**
          * Constructor.
+         * @param serviceProvider
          */
-        public DesyArchiveReader() {
-            // Empty
+        public DesyArchiveReader(@Nonnull final ServiceProvider serviceProvider) {
+            _provider = serviceProvider;
         }
 
         @Override
@@ -134,7 +139,7 @@ public final class DesyArchiveReaderFactory implements ArchiveReaderFactory {
             // Any other app using this interface should better know this detail, too...
             final Pattern pattern = Pattern.compile(Strings.isNullOrEmpty(regExp) ? ".*" : regExp);
 
-            final IArchiveReaderFacade service = Activator.getDefault().getArchiveReaderService();
+            final IArchiveReaderFacade service = _provider.getReaderFacade();
             final Collection<String> names = service.getChannelsByNamePattern(pattern);
             return names.toArray(new String[]{});
         }
@@ -148,7 +153,7 @@ public final class DesyArchiveReaderFactory implements ArchiveReaderFactory {
 
             final TimeInstant s = BaseTypeConversionSupport.toTimeInstant(start);
             final TimeInstant e = BaseTypeConversionSupport.toTimeInstant(end);
-            return new DesyArchiveValueIterator(name, s, e, getRawType());
+            return new DesyArchiveValueIterator(_provider, name, s, e, getRawType());
         }
 
 
@@ -164,11 +169,11 @@ public final class DesyArchiveReaderFactory implements ArchiveReaderFactory {
             final TimeInstant e = BaseTypeConversionSupport.toTimeInstant(end);
 
             // Check for optimizability (base type convertible to Double)
-            final IArchiveReaderFacade service = Activator.getDefault().getArchiveReaderService();
+            final IArchiveReaderFacade service = _provider.getReaderFacade();
             final IArchiveChannel channel = service.getChannelByName(name);
 
             if (BaseTypeConversionSupport.isDataTypeConvertibleToDouble(channel.getDataType(), "java.lang", "org.csstudio.domain.desy.epics.types")) {
-                return new EquidistantTimeBinsIterator<Object>(name, s, e, null, count);
+                return new EquidistantTimeBinsIterator<Object>(_provider, name, s, e, null, count);
             }
             return EMPTY_ITER;
         }
@@ -190,7 +195,7 @@ public final class DesyArchiveReaderFactory implements ArchiveReaderFactory {
          */
         @CheckForNull
         private IArchiveRequestType getRawType() throws OsgiServiceUnavailableException {
-            final IArchiveReaderFacade s = Activator.getDefault().getArchiveReaderService();
+            final IArchiveReaderFacade s = _provider.getReaderFacade();
             final ImmutableSet<IArchiveRequestType> types = s.getRequestTypes();
             for (final IArchiveRequestType type : types) {
                 // this should have been decided type safe by the client app (typically the user)...
@@ -215,6 +220,6 @@ public final class DesyArchiveReaderFactory implements ArchiveReaderFactory {
     @Override
     @Nonnull
     public ArchiveReader getArchiveReader(@Nonnull final String url) throws Exception {
-        return new DesyArchiveReader();
+        return new DesyArchiveReader(new ServiceProvider());
     }
 }

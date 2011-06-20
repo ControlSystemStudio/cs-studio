@@ -28,6 +28,7 @@ import java.util.Iterator;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
+import org.csstudio.archive.common.reader.facade.ServiceProvider;
 import org.csstudio.archive.common.requesttype.IArchiveRequestType;
 import org.csstudio.archive.common.service.ArchiveServiceException;
 import org.csstudio.archive.common.service.IArchiveReaderFacade;
@@ -67,18 +68,21 @@ public class DesyArchiveValueIterator implements ValueIterator {
 
     private Iterator<IArchiveSample<Object, IAlarmSystemVariable<Object>>> _iterator = _samples.iterator();
 
+    private final ServiceProvider _provider;
     /**
      * Constructor.
+     * @param provider
      * @throws ArchiveServiceException
      * @throws OsgiServiceUnavailableException
      */
-    DesyArchiveValueIterator(@Nonnull final String channelName,
+    DesyArchiveValueIterator(@Nonnull final ServiceProvider provider,
+                             @Nonnull final String channelName,
                              @Nonnull final TimeInstant start,
                              @Nonnull final TimeInstant end,
                              @Nullable final IArchiveRequestType type)
                              throws ArchiveServiceException,
                              OsgiServiceUnavailableException {
-
+        _provider = provider;
         _channelName = channelName;
         _start = start;
         _end = end;
@@ -88,7 +92,7 @@ public class DesyArchiveValueIterator implements ValueIterator {
             throw new IllegalArgumentException("Start time mustn't be after end time");
         }
 
-        final IArchiveReaderFacade service = Activator.getDefault().getArchiveReaderService();
+        final IArchiveReaderFacade service = _provider.getReaderFacade();
 
         _samples = service.readSamples(channelName, start, end, type);
         _iterator = _samples.iterator();

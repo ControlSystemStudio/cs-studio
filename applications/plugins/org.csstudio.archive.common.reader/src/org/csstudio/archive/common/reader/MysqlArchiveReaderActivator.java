@@ -31,19 +31,19 @@ import org.osgi.framework.BundleActivator;
 import org.osgi.framework.BundleContext;
 
 /**
- * Activator for reader bundle.
+ * MysqlArchiveReaderActivator for reader bundle.
  *
  * @author bknerr
  * @since 03.02.2011
  */
-public class Activator implements BundleActivator {
+public class MysqlArchiveReaderActivator implements BundleActivator {
 
     /**
      * The id of this Java plug-in (value <code>{@value}</code>.
      */
     public static final String PLUGIN_ID = "org.csstudio.archive.common.reader";
 
-    private static Activator INSTANCE;
+    private static MysqlArchiveReaderActivator INSTANCE;
     private static BundleContext CONTEXT;
 
 
@@ -55,9 +55,9 @@ public class Activator implements BundleActivator {
      * Don't instantiate.
      * Called by framework.
      */
-    public Activator() {
+    public MysqlArchiveReaderActivator() {
         if (INSTANCE != null) {
-            throw new IllegalStateException("Activator " + PLUGIN_ID + " does already exist.");
+            throw new IllegalStateException("MysqlArchiveReaderActivator " + PLUGIN_ID + " does already exist.");
         }
         INSTANCE = this; // Antipattern is required by the framework!
     }
@@ -68,7 +68,7 @@ public class Activator implements BundleActivator {
      * @return the instance
      */
     @Nonnull
-    public static Activator getDefault() {
+    public static MysqlArchiveReaderActivator getDefault() {
         return INSTANCE;
     }
 
@@ -82,7 +82,7 @@ public class Activator implements BundleActivator {
 	 */
 	@Override
     public void start(@Nonnull final BundleContext context) throws Exception {
-		Activator.CONTEXT = context;
+		MysqlArchiveReaderActivator.CONTEXT = context;
 
         _archiveEngineConfigServiceTracker = new ArchiveEngineServiceTracker(context);
         _archiveEngineConfigServiceTracker.open();
@@ -96,7 +96,7 @@ public class Activator implements BundleActivator {
 	 */
 	@Override
     public void stop(@Nonnull final BundleContext bundleContext) throws Exception {
-	    Activator.CONTEXT = null;
+	    MysqlArchiveReaderActivator.CONTEXT = null;
 
 	    if (_archiveEngineConfigServiceTracker != null) {
             _archiveEngineConfigServiceTracker.close();
@@ -113,8 +113,7 @@ public class Activator implements BundleActivator {
      * @throws OsgiServiceUnavailableException
      */
     @Nonnull
-    public IArchiveReaderFacade getArchiveReaderService() throws OsgiServiceUnavailableException
-    {
+    public IArchiveReaderFacade getArchiveReaderService() throws OsgiServiceUnavailableException {
         final IArchiveReaderFacade service =
             (IArchiveReaderFacade) _archiveReaderServiceTracker.getService();
         if (service == null) {

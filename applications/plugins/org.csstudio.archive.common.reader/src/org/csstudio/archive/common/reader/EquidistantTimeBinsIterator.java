@@ -29,6 +29,7 @@ import javax.annotation.CheckForNull;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
+import org.csstudio.archive.common.reader.facade.ServiceProvider;
 import org.csstudio.archive.common.requesttype.IArchiveRequestType;
 import org.csstudio.archive.common.service.ArchiveServiceException;
 import org.csstudio.archive.common.service.IArchiveReaderFacade;
@@ -106,19 +107,23 @@ public class EquidistantTimeBinsIterator<V> implements ValueIterator {
     private final SampleMinMaxAggregator _agg;
     private boolean _noSamples = false;
 
+    private final ServiceProvider _provider;
+
     /**
      * Constructor.
      * @throws ArchiveServiceException
      * @throws OsgiServiceUnavailableException
      * @throws TypeSupportException
      */
-    public EquidistantTimeBinsIterator(@Nonnull final String channelName,
+    public EquidistantTimeBinsIterator(@Nonnull final ServiceProvider provider,
+                                       @Nonnull final String channelName,
                                        @Nonnull final TimeInstant start,
                                        @Nonnull final TimeInstant end,
                                        @Nullable final IArchiveRequestType type,
                                        final int timeBins) throws OsgiServiceUnavailableException,
                                                                   ArchiveServiceException,
                                                                   TypeSupportException {
+        _provider = provider;
         _channelName = channelName;
         _startTime = start;
         _endTime = end;
@@ -128,14 +133,18 @@ public class EquidistantTimeBinsIterator<V> implements ValueIterator {
             throw new IllegalArgumentException("Start time is after end time or number of time bins less equal zero.");
         }
 
-        _samples = retrieveSamplesInInterval(_channelName, _startTime, _endTime, type);
+        _samples = _provider.getReaderFacade().readSamples(channelName, start, end, type);
         _samplesIter = _samples.iterator();
 
-        _metaData = retrieveMetaDataForChannel(channelName);
+        _metaData = retrieveMetaDataForChannel(_provider, channelName);
 
         _windowLength = calculateWindowLength(_startTime, _endTime, _numOfWindows);
 
-        final SampleAndWindow<V> saw = findFirstSampleAndItsWindow(channelName, _startTime, _windowLength, _samplesIter);
+        final SampleAndWindow<V> saw = findFirstSampleAndItsWindow(_provider,
+                                                                   channelName,
+                                                                   _startTime,
+                                                                   _windowLength,
+                                                                   _samplesIter);
 
         _firstSample = saw.getSample();
         _currentWindow = saw.getWindow();
@@ -164,13 +173,15 @@ public class EquidistantTimeBinsIterator<V> implements ValueIterator {
 
 
     @Nonnull
-    private SampleAndWindow<V> findFirstSampleAndItsWindow(@Nonnull final String name,
+    private SampleAndWindow<V> findFirstSampleAndItsWindow(@Nonnull final ServiceProvider provider,
+                                                           @Nonnull final String name,
                                                            @Nonnull final TimeInstant startTime,
                                                            @Nonnull final ReadableDuration windowLength,
                                                            @CheckForNull final Iterator<IArchiveSample<V, ISystemVariable<V>>> samplesIter)
                                                            throws ArchiveServiceException, OsgiServiceUnavailableException {
 
-        final IArchiveSample<V, ISystemVariable<V>> lastSampleBeforeStartTime = retrieveLastSampleBeforeInterval(name, startTime);
+        final IArchiveSample<V, ISystemVariable<V>> lastSampleBeforeStartTime =
+            provider.getReaderFacade().readLastSampleBefore(name, startTime);
 
         if (lastSampleBeforeStartTime != null) {
             return new SampleAndWindow<V>(lastSampleBeforeStartTime, 1);
@@ -195,23 +206,10 @@ public class EquidistantTimeBinsIterator<V> implements ValueIterator {
         return new Duration((end.getMillis() - start.getMillis()) / bins);
     }
 
-
-
-    @Nonnull
-    private Collection<IArchiveSample<V, ISystemVariable<V>>> retrieveSamplesInInterval(@Nonnull final String channelName,
-                                                                                        @Nonnull final TimeInstant start,
-                                                                                        @Nonnull final TimeInstant end,
-                                                                                        @Nonnull final IArchiveRequestType type) throws OsgiServiceUnavailableException,
-                                                                          ArchiveServiceException {
-        final IArchiveReaderFacade service = Activator.getDefault().getArchiveReaderService();
-        return service.readSamples(channelName, start, end, type);
-    }
-
-
-
     @CheckForNull
-    private INumericMetaData retrieveMetaDataForChannel(@Nonnull final String channelName) throws ArchiveServiceException, OsgiServiceUnavailableException {
-        final IArchiveReaderFacade service = Activator.getDefault().getArchiveReaderService();
+    private INumericMetaData retrieveMetaDataForChannel(@Nonnull final ServiceProvider provider,
+                                                        @Nonnull final String channelName) throws ArchiveServiceException, OsgiServiceUnavailableException {
+        final IArchiveReaderFacade service = provider.getReaderFacade();
         final IArchiveChannel ch = service.getChannelByName(channelName);
         if (ch == null) {
             throw new ArchiveServiceException("Channel retrieval failed for channel '" + channelName + "'!", null);
@@ -236,16 +234,6 @@ public class EquidistantTimeBinsIterator<V> implements ValueIterator {
             i++;
         }
         return i;
-    }
-
-
-    @CheckForNull
-    private IArchiveSample<V, ISystemVariable<V>>
-        retrieveLastSampleBeforeInterval(@Nonnull final String channelName,
-                                         @Nonnull final TimeInstant start) throws ArchiveServiceException,
-                                                                                  OsgiServiceUnavailableException {
-        final IArchiveReaderFacade service = Activator.getDefault().getArchiveReaderService();
-        return service.readLastSampleBefore(channelName, start);
     }
 
 
