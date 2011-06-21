@@ -22,6 +22,8 @@
 package org.csstudio.archive.common.reader;
 
 import java.util.Collection;
+import java.util.Collections;
+import java.util.NoSuchElementException;
 
 import javax.annotation.Nonnull;
 
@@ -91,5 +93,31 @@ public class DesyArchiveValueIteratorUnitTest {
         
         Assert.assertFalse(iter.hasNext());
     }
-    
+
+    @Test(expected=NoSuchElementException.class)
+    public void testEmptyIterator() throws Exception {
+        final TimeInstant instant = TimeInstantBuilder.fromMillis(1L);
+        
+        final IServiceProvider provider = new IServiceProvider() {
+            @SuppressWarnings({ "unchecked", "rawtypes" })
+            @Override
+            @Nonnull
+            public IArchiveReaderFacade getReaderFacade() throws OsgiServiceUnavailableException {
+                IArchiveReaderFacade mock = Mockito.mock(IArchiveReaderFacade.class);
+                try {
+                    Mockito.when(mock.readSamples("", instant, instant, null)).thenReturn((Collection) Collections.emptyList());
+                } catch (final ArchiveServiceException e) {
+                    Assert.fail("Only reachable by intention.");
+                }
+                return mock;
+            }
+        };
+        
+        final DesyArchiveValueIterator iter = 
+            new DesyArchiveValueIterator(provider, "", instant, instant, null);
+        
+        Assert.assertFalse(iter.hasNext());
+        
+        iter.next(); // expect NSEE
+    }
 }
