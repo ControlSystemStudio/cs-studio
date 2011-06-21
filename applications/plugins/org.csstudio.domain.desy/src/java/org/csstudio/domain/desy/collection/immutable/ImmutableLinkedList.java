@@ -35,7 +35,7 @@ import javax.annotation.Nonnull;
 public class ImmutableLinkedList<T> extends LinkedList<T> implements IImmutableList<T> {
 
     private static final long serialVersionUID = 3086966443157856480L;
-
+    public static final IImmutableList<?> EMPTY_LIST = new ImmutableLinkedList<Object>();
 
     public ImmutableLinkedList() {
         super();
