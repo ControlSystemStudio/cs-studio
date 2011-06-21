@@ -7,6 +7,7 @@
  ******************************************************************************/
 package org.csstudio.archive.reader.rdb;
 
+import org.csstudio.archive.rdb.RDBArchivePreferences;
 import org.csstudio.auth.security.SecureStorage;
 import org.eclipse.core.runtime.Platform;
 import org.eclipse.core.runtime.preferences.IPreferencesService;
@@ -19,29 +20,32 @@ import org.eclipse.core.runtime.preferences.IPreferencesService;
 @SuppressWarnings("nls")
 public class Preferences
 {
-    final public static String SCHEMA = "schema";
     final public static String USER = "user";
     final public static String PASSWORD = "password";
+    final public static String SCHEMA = "schema";
     final public static String STORED_PROCEDURE = "use_stored_procedure";
     final public static String TIMEOUT_SECS = "timeout_secs";
 
-    public static String getSchema()
-    {
-        return getString(SCHEMA, "chan_arch");
-    }
-
     public static String getUser()
     {
-        return getString(USER, "");
+        return getString(USER, RDBArchivePreferences.getUser());
     }
     
     public static String getPassword()
     {
         // Must use SecureStorage for password because preference page
         // uses PasswordFieldEditor 
-        return SecureStorage.retrieveSecureStorage(Activator.ID, PASSWORD);
+        String password = SecureStorage.retrieveSecureStorage(Activator.ID, PASSWORD);
+        if (password == null)
+        	password = RDBArchivePreferences.getPassword();
+        return password;
     }
     
+    public static String getSchema()
+    {
+        return getString(SCHEMA, RDBArchivePreferences.getSchema());
+    }
+
     public static String getStoredProcedure()
     {
         return getString(STORED_PROCEDURE, "");
