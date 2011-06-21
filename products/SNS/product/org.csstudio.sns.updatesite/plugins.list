@@ -51,8 +51,6 @@ org.csstudio.opibuilder.widgets/**
 org.csstudio.platform/**
 org.csstudio.platform.jaasAuthentication/**
 org.csstudio.platform.jaasAuthentication.ui/**
-org.csstudio.platform.ldapAuthorization/**
-org.csstudio.platform.ldapAuthorization.ui/**
 org.csstudio.platform.libs.epics/**
 org.csstudio.platform.libs.epics.ui/**
 org.csstudio.platform.libs.jdbc/**
