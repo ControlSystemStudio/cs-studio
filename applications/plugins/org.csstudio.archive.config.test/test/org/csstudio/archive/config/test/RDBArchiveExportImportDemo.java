@@ -27,8 +27,6 @@ import org.junit.Test;
 @SuppressWarnings("nls")
 public class RDBArchiveExportImportDemo
 {
-	final private String FILENAME = "/tmp/export_import.xml";
-	
     @Test
 	public void testExport() throws Exception
 	{
@@ -36,19 +34,21 @@ public class RDBArchiveExportImportDemo
 		final String url = settings.getString("archive_rdb_url");
 		final String user = settings.getString("archive_rdb_user");
 		final String password = settings.getString("archive_rdb_password");
+		final String schema = settings.getString("archive_rdb_schema");
 		final String engine_name = settings.getString("archive_config");
-		final String schema = "CHAN_ARCH.";
-		if (url == null  ||  user == null  ||  password == null  ||  engine_name == null)
+		final String filename = settings.getString("tmp_file");
+		if (url == null  ||  user == null  ||  password == null  ||  engine_name == null  ||
+		    filename == null)
 		{
-			System.out.println("Skipping test, no archive_rdb_url, user, password");
+			System.out.println("Skipping test, no archive_rdb_url, user, password, tmp_file");
 			return;
 		}
 	
-		final File file = new File(FILENAME);
+		final File file = new File(filename);
 		if (file.exists())
 			file.delete();
 		assertFalse(file.exists());
-		final PrintStream out = new PrintStream(FILENAME);
+		final PrintStream out = new PrintStream(filename);
 		try
 		{
 			new XMLExport().export(out, url, user, password, schema, engine_name);
@@ -69,7 +69,7 @@ public class RDBArchiveExportImportDemo
 		final String user = settings.getString("archive_rdb_user");
 		final String password = settings.getString("archive_rdb_password");
 		final String engine_name = settings.getString("archive_config");
-		final String schema = "CHAN_ARCH.";
+		final String schema = settings.getString("archive_rdb_schema");
 		if (url == null  ||  user == null  ||  password == null  ||  engine_name == null)
 		{
 			System.out.println("Skipping test, no archive_rdb_url, user, password");
@@ -99,14 +99,16 @@ public class RDBArchiveExportImportDemo
 		final String user = settings.getString("archive_rdb_user");
 		final String password = settings.getString("archive_rdb_password");
 		final String engine_name = settings.getString("archive_config");
-		final String schema = "CHAN_ARCH.";
-		if (url == null  ||  user == null  ||  password == null  ||  engine_name == null)
+		final String schema = settings.getString("archive_rdb_schema");
+		final String filename = settings.getString("tmp_file");
+		if (url == null  ||  user == null  ||  password == null  ||  engine_name == null ||
+		    filename == null)
 		{
-			System.out.println("Skipping test, no archive_rdb_url, user, password");
+			System.out.println("Skipping test, no archive_rdb_url, user, password, filename");
 			return;
 		}
 	
-		final File file = new File(FILENAME);
+		final File file = new File(filename);
 		assertTrue(file.exists());
 		final XMLImport importer = new XMLImport(url, user, password, schema, true, false);
 		try
