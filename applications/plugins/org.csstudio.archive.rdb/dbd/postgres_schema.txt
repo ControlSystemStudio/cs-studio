@@ -33,9 +33,41 @@
 
 -- Create 'archive' user who can remotely access the 'archive' tables,
 -- but only change the table layout locally
---GRANT ALL ON archive.* TO archive@localhost IDENTIFIED BY '$archive';
---RANT INSERT, SELECT, UPDATE, DELETE ON archive.* TO archive@'%' IDENTIFIED BY '$archive';
---FLUSH PRIVILEGES;
+--
+-- Assume you are connected as the 'postgres' super user
+
+/*
+CREATE USER archive WITH PASSWORD '$archive';
+ALTER USER archive WITH PASSWORD '$archive';
+
+CREATE USER report WITH PASSWORD '$report';
+
+SELECT * FROM pg_user;
+
+GRANT SELECT, INSERT, UPDATE, DELETE ON smpl_eng TO archive;
+GRANT SELECT, INSERT, UPDATE, DELETE ON retent TO archive;
+GRANT SELECT, INSERT, UPDATE, DELETE ON chan_grp TO archive;
+GRANT SELECT, INSERT, UPDATE, DELETE ON smpl_mode TO archive;
+GRANT SELECT, INSERT, UPDATE, DELETE ON channel TO archive;
+GRANT SELECT, INSERT, UPDATE, DELETE ON status TO archive;
+GRANT SELECT, INSERT, UPDATE, DELETE ON severity TO archive;
+GRANT SELECT, INSERT, UPDATE, DELETE ON sample TO archive;
+GRANT SELECT, INSERT, UPDATE, DELETE ON array_val TO archive;
+GRANT SELECT, INSERT, UPDATE, DELETE ON num_metadata TO archive;
+GRANT SELECT, INSERT, UPDATE, DELETE ON enum_metadata TO archive;
+
+GRANT SELECT ON smpl_eng TO report;
+GRANT SELECT ON retent TO report;
+GRANT SELECT ON chan_grp TO report;
+GRANT SELECT ON smpl_mode TO report;
+GRANT SELECT ON channel TO report;
+GRANT SELECT ON status TO report;
+GRANT SELECT ON severity TO report;
+GRANT SELECT ON sample TO report;
+GRANT SELECT ON array_val TO report;
+GRANT SELECT ON num_metadata TO report;
+GRANT SELECT ON enum_metadata TO report;
+*/
 
 ------------------------
 
