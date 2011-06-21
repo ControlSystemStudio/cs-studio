@@ -55,7 +55,7 @@ public final class ArchiveSampleToIValueFunction<V> implements
     @CheckForNull
     public IValue apply(@Nonnull final IArchiveSample<V, IAlarmSystemVariable<V>> from) {
         try {
-            if (from.getClass().isAssignableFrom(IArchiveMinMaxSample.class)) {
+            if (IArchiveMinMaxSample.class.isAssignableFrom(from.getClass())) {
 
                 final V min = ((IArchiveMinMaxSample<V, IAlarmSystemVariable<V>>) from).getMinimum();
                 final V max = ((IArchiveMinMaxSample<V, IAlarmSystemVariable<V>>) from).getMaximum();

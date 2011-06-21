@@ -34,6 +34,7 @@ import org.csstudio.archive.common.service.channel.ArchiveChannelId;
 import org.csstudio.archive.common.service.sample.ArchiveSample;
 import org.csstudio.archive.common.service.sample.IArchiveSample;
 import org.csstudio.data.values.IDoubleValue;
+import org.csstudio.data.values.IMinMaxDoubleValue;
 import org.csstudio.domain.desy.epics.typesupport.EpicsSystemVariableSupport;
 import org.csstudio.domain.desy.service.osgi.OsgiServiceUnavailableException;
 import org.csstudio.domain.desy.system.ISystemVariable;
@@ -59,7 +60,7 @@ public class DesyArchiveValueIteratorUnitTest {
     }
     
     @Test
-    public void test() throws Exception {
+    public void testFilledIterator() throws Exception {
         final TimeInstant start = TimeInstantBuilder.fromMillis(0L);
         final TimeInstant end = TimeInstantBuilder.fromMillis(50L);
         
@@ -83,9 +84,17 @@ public class DesyArchiveValueIteratorUnitTest {
             new DesyArchiveValueIterator(provider, TestSamples.CHANNEL_1, start, end, null);
         
         Assert.assertTrue(iter.hasNext());
-        Assert.assertTrue(((IDoubleValue) iter.next()).getValue() == 10.0);
+        IMinMaxDoubleValue next = (IMinMaxDoubleValue) iter.next();
+        Assert.assertTrue(next.getValue() == 10.0);
+        Assert.assertTrue(next.getMinimum() == 9.0);
+        Assert.assertTrue(next.getMaximum() == 11.0);
+        
         Assert.assertTrue(iter.hasNext());
-        Assert.assertTrue(((IDoubleValue) iter.next()).getValue() == 20.0);
+        next = (IMinMaxDoubleValue) iter.next();
+        Assert.assertTrue(next.getValue() == 20.0);
+        Assert.assertTrue(next.getMinimum() == 19.0);
+        Assert.assertTrue(next.getMaximum() == 21.0);
+        
         Assert.assertFalse(iter.hasNext());
     }
     

@@ -24,19 +24,16 @@ package org.csstudio.archive.common.reader.testdata;
 import java.util.ArrayList;
 import java.util.Collection;
 
-import javax.annotation.Nonnull;
-
+import org.csstudio.archive.common.service.channel.ArchiveChannelId;
+import org.csstudio.archive.common.service.sample.ArchiveMinMaxSample;
+import org.csstudio.archive.common.service.sample.IArchiveMinMaxSample;
 import org.csstudio.domain.desy.epics.alarm.EpicsAlarm;
 import org.csstudio.domain.desy.epics.types.EpicsSystemVariable;
 import org.csstudio.domain.desy.system.ControlSystem;
 import org.csstudio.domain.desy.system.ISystemVariable;
-import org.csstudio.domain.desy.time.TimeInstant;
 import org.csstudio.domain.desy.time.TimeInstant.TimeInstantBuilder;
-import org.csstudio.archive.common.service.channel.ArchiveChannelId;
-import org.csstudio.archive.common.service.sample.ArchiveSample;
-import org.csstudio.archive.common.service.sample.IArchiveSample;
 /**
- * TODO (bknerr) : 
+ * Sample arrays for test purposes. 
  * 
  * @author bknerr
  * @since 20.06.2011
@@ -47,24 +44,26 @@ public final class TestSamples {
     public static final String CHANNEL_1 = "TEST_CHANNEL_1";
  
     @SuppressWarnings("rawtypes")
-    public static final Collection<IArchiveSample> CHANNEL_1_SAMPLES = 
-        new ArrayList<IArchiveSample>();
+    public static final Collection<IArchiveMinMaxSample> CHANNEL_1_SAMPLES = 
+        new ArrayList<IArchiveMinMaxSample>();
     
     static {
         int id = 0;
-        CHANNEL_1_SAMPLES.add(new ArchiveSample<Double, ISystemVariable<Double>>(new ArchiveChannelId(id++),
-                                                                                 new EpicsSystemVariable<Double>(CHANNEL_1,
+        CHANNEL_1_SAMPLES.add(new ArchiveMinMaxSample<Double, ISystemVariable<Double>>(new ArchiveChannelId(id++),
+                                                                                       new EpicsSystemVariable<Double>(CHANNEL_1,
                                                                                                                  10.0,
                                                                                                                  ControlSystem.EPICS_DEFAULT,
                                                                                                                  TimeInstantBuilder.fromMillis(10L),
                                                                                                                  EpicsAlarm.UNKNOWN),
-                                                                                 EpicsAlarm.UNKNOWN));
-        CHANNEL_1_SAMPLES.add(new ArchiveSample<Double, ISystemVariable<Double>>(new ArchiveChannelId(id++),
-                                                                                 new EpicsSystemVariable<Double>(CHANNEL_1,
+                                                                                       EpicsAlarm.UNKNOWN,
+                                                                                       9.0, 11.0));
+        CHANNEL_1_SAMPLES.add(new ArchiveMinMaxSample<Double, ISystemVariable<Double>>(new ArchiveChannelId(id++),
+                                                                                       new EpicsSystemVariable<Double>(CHANNEL_1,
                                                                                                                  20.0,
                                                                                                                  ControlSystem.EPICS_DEFAULT,
                                                                                                                  TimeInstantBuilder.fromMillis(20L),
                                                                                                                  EpicsAlarm.UNKNOWN),
-                                                                                  EpicsAlarm.UNKNOWN));
+                                                                                       EpicsAlarm.UNKNOWN,
+                                                                                       19.0, 21.0));
     }
 }
