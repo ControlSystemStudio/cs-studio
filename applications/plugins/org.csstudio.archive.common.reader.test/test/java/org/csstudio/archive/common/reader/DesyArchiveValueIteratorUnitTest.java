@@ -21,7 +21,6 @@
  */
 package org.csstudio.archive.common.reader;
 
-import java.util.ArrayList;
 import java.util.Collection;
 
 import javax.annotation.Nonnull;
@@ -30,14 +29,9 @@ import org.csstudio.archive.common.reader.facade.IServiceProvider;
 import org.csstudio.archive.common.reader.testdata.TestSamples;
 import org.csstudio.archive.common.service.ArchiveServiceException;
 import org.csstudio.archive.common.service.IArchiveReaderFacade;
-import org.csstudio.archive.common.service.channel.ArchiveChannelId;
-import org.csstudio.archive.common.service.sample.ArchiveSample;
-import org.csstudio.archive.common.service.sample.IArchiveSample;
-import org.csstudio.data.values.IDoubleValue;
 import org.csstudio.data.values.IMinMaxDoubleValue;
 import org.csstudio.domain.desy.epics.typesupport.EpicsSystemVariableSupport;
 import org.csstudio.domain.desy.service.osgi.OsgiServiceUnavailableException;
-import org.csstudio.domain.desy.system.ISystemVariable;
 import org.csstudio.domain.desy.time.TimeInstant;
 import org.csstudio.domain.desy.time.TimeInstant.TimeInstantBuilder;
 import org.junit.Assert;
