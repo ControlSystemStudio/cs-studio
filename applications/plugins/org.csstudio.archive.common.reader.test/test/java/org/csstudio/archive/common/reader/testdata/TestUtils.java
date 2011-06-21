@@ -58,16 +58,27 @@ public final class TestUtils {
     
     
     public static final String CHANNEL_NAME_1 = "TEST_CHANNEL_1";
+    public static final String CHANNEL_NAME_2 = "TEST_CHANNEL_2";
     
-    public static final IArchiveChannel CHANNEL = new ArchiveChannel(new ArchiveChannelId(1L),
-                                                                     CHANNEL_NAME_1,
-                                                                     "Double",
-                                                                     new ArchiveChannelGroupId(1L),
-                                                                     TimeInstantBuilder.fromMillis(0L),
-                                                                     new ArchiveControlSystem("EPICS", ControlSystemType.EPICS_V3));
+    public static final IArchiveChannel CHANNEL_1 = new ArchiveChannel(new ArchiveChannelId(1L),
+                                                                       CHANNEL_NAME_1,
+                                                                       "Double",
+                                                                       new ArchiveChannelGroupId(1L),
+                                                                       TimeInstantBuilder.fromMillis(0L),
+                                                                       new ArchiveControlSystem("EPICS", ControlSystemType.EPICS_V3));
+    public static final IArchiveChannel CHANNEL_2 = new ArchiveChannel(new ArchiveChannelId(1L),
+                                                                       CHANNEL_NAME_2,
+                                                                       "Double",
+                                                                       new ArchiveChannelGroupId(2L),
+                                                                       TimeInstantBuilder.fromMillis(0L),
+                                                                       new ArchiveControlSystem("EPICS", ControlSystemType.EPICS_V3));
  
     @SuppressWarnings("rawtypes")
     public static final Collection<IArchiveMinMaxSample> CHANNEL_1_SAMPLES = 
+        new ArrayList<IArchiveMinMaxSample>();
+
+    @SuppressWarnings("rawtypes")
+    public static final Collection<IArchiveMinMaxSample> CHANNEL_2_SAMPLES = 
         new ArrayList<IArchiveMinMaxSample>();
     
     static {
@@ -88,12 +99,17 @@ public final class TestUtils {
                                                                                                                  EpicsAlarm.UNKNOWN),
                                                                                        EpicsAlarm.UNKNOWN,
                                                                                        19.0, 21.0));
+        
+        CHANNEL_2_SAMPLES.add(createArchiveMinMaxDoubleSample(CHANNEL_NAME_2, TimeInstantBuilder.fromMillis(125L), 5.0));
+        CHANNEL_2_SAMPLES.add(createArchiveMinMaxDoubleSample(CHANNEL_NAME_2, TimeInstantBuilder.fromMillis(135L), 15.0));
+        CHANNEL_2_SAMPLES.add(createArchiveMinMaxDoubleSample(CHANNEL_NAME_2, TimeInstantBuilder.fromMillis(170L), 1.0));
     }
     
+    
     @SuppressWarnings("rawtypes")
-    public static IArchiveSample createArchiveMinMaxDoubleSample(@Nonnull final String channelName,
-                                                                 @Nonnull final TimeInstant ts, 
-                                                                 @Nonnull final Double value) {
+    public static IArchiveMinMaxSample createArchiveMinMaxDoubleSample(@Nonnull final String channelName,
+                                                                       @Nonnull final TimeInstant ts, 
+                                                                       @Nonnull final Double value) {
         return new ArchiveMinMaxSample<Double, ISystemVariable<Double>>(new ArchiveChannelId(0L),
                                                                         new EpicsSystemVariable<Double>(channelName,
                                                                                                         value,
@@ -101,7 +117,7 @@ public final class TestUtils {
                                                                                                         ts,
                                                                                                         EpicsAlarm.UNKNOWN),
                                                                          EpicsAlarm.UNKNOWN,
-                                                                         9.0, 11.0);
+                                                                         value, value);
     }
     
     

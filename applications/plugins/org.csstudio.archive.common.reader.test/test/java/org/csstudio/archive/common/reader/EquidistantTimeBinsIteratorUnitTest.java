@@ -61,7 +61,7 @@ public class EquidistantTimeBinsIteratorUnitTest {
         final String channelName = "";
         final TimeInstant instant = TimeInstantBuilder.fromMillis(1L);
         final Collection expectedResult = (Collection) Collections.emptyList();
-        final IArchiveChannel expectedChannel = TestUtils.CHANNEL;
+        final IArchiveChannel expectedChannel = TestUtils.CHANNEL_1;
         final Limits expLimits = (Limits) Limits.<Double>create(0.0, 10.0);
         final IArchiveSample expLastSampleBefore = null;
         
@@ -84,7 +84,7 @@ public class EquidistantTimeBinsIteratorUnitTest {
         final TimeInstant start = TimeInstantBuilder.fromMillis(100L);
         final TimeInstant end = TimeInstantBuilder.fromMillis(300L);
         final Collection expectedResult = (Collection) Collections.emptyList();
-        final IArchiveChannel expectedChannel = TestUtils.CHANNEL;
+        final IArchiveChannel expectedChannel = TestUtils.CHANNEL_1;
         final Limits expLimits = (Limits) Limits.<Double>create(0.0, 10.0);
         final IArchiveSample expLastSampleBefore = 
             TestUtils.createArchiveMinMaxDoubleSample(channelName, TimeInstantBuilder.fromMillis(start.getMillis() - 1), 5.0);
@@ -116,5 +116,77 @@ public class EquidistantTimeBinsIteratorUnitTest {
         Assert.assertFalse(iter.hasNext());
         iter.next();
     }
+    
+    /**
+     * This test relies on the following situation: <br/>
+     * timebins  5<br/>
+     * <pre>
+     *         start                                                  end
+     *         100 -------------------------------------------------- 200
+     *          |          |          |          |          |          |
+     * samples                 x   x                   x
+     * values                  5   15                  1
+     * 
+     * </pre>
+     * exp: 4 iterables with value@time: (10@140, 10@160, 1@180, 1@200).<br/>
+     * 
+     * @throws Exception
+     */
+    @SuppressWarnings("rawtypes")
+    @Test(expected=NoSuchElementException.class)
+    public void testFilledIteratorWithoutLastSampleBefore() throws Exception {
+        
+        final String channelName = TestUtils.CHANNEL_NAME_2;
+        final TimeInstant start = TimeInstantBuilder.fromMillis(100L);
+        final TimeInstant end = TimeInstantBuilder.fromMillis(200L);
+        final Collection expectedResult = TestUtils.CHANNEL_2_SAMPLES;
+        final IArchiveChannel expectedChannel = TestUtils.CHANNEL_2;
+        final Limits expLimits = (Limits) Limits.<Double>create(0.0, 20.0);
+        final IArchiveSample expLastSampleBefore = null;
+        
+        final IServiceProvider provider = 
+            TestUtils.createCustomizedMockedServiceProvider(channelName, start, end, expectedResult, expectedChannel, expLimits, expLastSampleBefore); 
+
+        EquidistantTimeBinsIterator<Double> iter = 
+            new EquidistantTimeBinsIterator<Double>(provider, channelName, start, end, null, 5);
+
+        Assert.assertTrue(iter.hasNext());
+        IMinMaxDoubleValue iValue = (IMinMaxDoubleValue) iter.next();
+        Assert.assertTrue(iValue.getValue() == 10.0);
+        Assert.assertTrue(iValue.getMaximum() == 15.0);
+        Assert.assertTrue(iValue.getMinimum() == 5.0);
+        TimeInstant ts = BaseTypeConversionSupport.toTimeInstant(iValue.getTime());
+        Assert.assertTrue(ts.getMillis() == 140L);
+        
+        Assert.assertTrue(iter.hasNext());
+        iValue = (IMinMaxDoubleValue) iter.next();
+        Assert.assertTrue(iValue.getValue() == 10.0);
+        Assert.assertTrue(iValue.getMaximum() == 15.0);
+        Assert.assertTrue(iValue.getMinimum() == 5.0);
+        ts = BaseTypeConversionSupport.toTimeInstant(iValue.getTime());
+        Assert.assertTrue(ts.getMillis() == 160L);
+        
+        Assert.assertTrue(iter.hasNext());
+        iValue = (IMinMaxDoubleValue) iter.next();
+        Assert.assertTrue(iValue.getValue() == 1.0);
+        Assert.assertTrue(iValue.getMaximum() == 1.0);
+        Assert.assertTrue(iValue.getMinimum() == 1.0);
+        ts = BaseTypeConversionSupport.toTimeInstant(iValue.getTime());
+        Assert.assertTrue(ts.getMillis() == 180L);
+
+        Assert.assertTrue(iter.hasNext());
+        iValue = (IMinMaxDoubleValue) iter.next();
+        Assert.assertTrue(iValue.getValue() == 1.0);
+        Assert.assertTrue(iValue.getMaximum() == 1.0);
+        Assert.assertTrue(iValue.getMinimum() == 1.0);
+        ts = BaseTypeConversionSupport.toTimeInstant(iValue.getTime());
+        Assert.assertTrue(ts.getMillis() == 200L);
+        
+        Assert.assertFalse(iter.hasNext());
+        iter.next();
+    }
+
+    
+    
     
 }
