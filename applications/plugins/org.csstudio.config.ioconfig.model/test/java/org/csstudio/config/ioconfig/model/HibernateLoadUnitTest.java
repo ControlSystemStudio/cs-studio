@@ -55,6 +55,9 @@ public class HibernateLoadUnitTest {
     public void setUp() throws Exception {
 //        IPreferencesService prefs = Platform.getPreferencesService();
 //        prefs.getString("org.csstudio.platform", "log4j.appender.css_console.Threshold", "", null))
+        HibernateRepository repository = new HibernateRepository();
+        repository.injectHibernateManager(new HibernateTestManager());
+        Repository.injectIRepository(repository);
     }
     
     
