@@ -35,14 +35,14 @@ import oracle.jdbc.OracleDriver;
  * @author Markus Moeller
  *
  */
-public class DatabaseHandler
-{
+public class DatabaseHandler {
+    
     private String dbUrl;
     private String dbUser;
     private String dbPassword;
     
-    public DatabaseHandler(String url, String user, String password) throws SQLException
-    {
+    public DatabaseHandler(String url, String user, String password) throws SQLException {
+        
         this.dbUrl = url;
         this.dbUser = user;
         this.dbPassword = password;
@@ -50,51 +50,42 @@ public class DatabaseHandler
         DriverManager.registerDriver(new OracleDriver());
     }
 
-    public String getHowToEntryText(String strId) throws SQLException
-    {
+    public String getHowToEntryText(String strId) throws SQLException {
+        
         long id;
         
-        try
-        {
+        try {
             id = Long.parseLong(strId);
-        }
-        catch(NumberFormatException nfe)
-        {
+        } catch(NumberFormatException nfe) {
             id = 0;
         }
         
         return this.getHowToEntryText(id);
     }
     
-    public String getHowToEntryText(long id) throws SQLException
-    {
+    public String getHowToEntryText(long id) throws SQLException {
+        
         Connection c = null;
         PreparedStatement query = null;
         ResultSet rs = null;
         String result = null;
         
-        try
-        {
+        try {
             c = DriverManager.getConnection(dbUrl, dbUser, dbPassword);
             query = c.prepareStatement("SELECT desclong FROM howto WHERE howtoid = ?");
             
             query.setLong(1, id);
             rs = query.executeQuery();
             
-            if(rs.next())
-            {
+            if(rs.next()) {
                 result = rs.getString("desclong");
             }
-        }
-        catch(SQLException sqle)
-        {
+        } catch(SQLException sqle) {
             throw sqle;
-        }
-        finally
-        {
-            if(rs!=null){try{rs.close();}catch(Exception e){}rs=null;}
-            if(query!=null){try{query.close();}catch(Exception e){}query=null;}
-            if(c!=null){try{c.close();}catch(Exception e){}c=null;}
+        } finally {
+            if(rs!=null){try{rs.close();}catch(Exception e){/* Can be ignored */}rs=null;}
+            if(query!=null){try{query.close();}catch(Exception e){/* Can be ignored */}query=null;}
+            if(c!=null){try{c.close();}catch(Exception e){/* Can be ignored */}c=null;}
         }
         
         return result;

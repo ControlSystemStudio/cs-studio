@@ -33,11 +33,16 @@ import org.slf4j.LoggerFactory;
 
 /**
  * The activator class controls the plug-in life cycle
+ * 
+ * @author Markus Moeller
+ * @version 1.0
  */
 public class WebSuiteActivator extends Plugin
 {
+    /** the class logger */
     private static final Logger LOG = LoggerFactory.getLogger(WebSuiteActivator.class);
-	/** The plug-in ID */
+	
+    /** The plug-in ID */
 	public static final String PLUGIN_ID = "org.csstudio.websuite";
 
 	/** The shared instance */

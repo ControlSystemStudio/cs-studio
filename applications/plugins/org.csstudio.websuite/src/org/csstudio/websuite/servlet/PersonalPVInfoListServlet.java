@@ -79,6 +79,8 @@ public class PersonalPVInfoListServlet extends HttpServlet {
     /** The URL of the AAPI web application */
     private String aapiWebApp;
 
+    private boolean iPhoneRequest;
+    
     @Override
 	public void init(ServletConfig config) throws ServletException {
         
@@ -91,6 +93,8 @@ public class PersonalPVInfoListServlet extends HttpServlet {
         hostName = pref.getString(WebSuiteActivator.PLUGIN_ID, PreferenceConstants.HOST_NAME, "loalhost", null);
         port = pref.getInt(WebSuiteActivator.PLUGIN_ID, PreferenceConstants.JETTY_PORT, 8080, null);
         aapiWebApp = pref.getString(WebSuiteActivator.PLUGIN_ID, PreferenceConstants.AAPI_WEB_APP, "", null);
+        
+        iPhoneRequest = false;
     }
     
     /**
@@ -134,7 +138,12 @@ public class PersonalPVInfoListServlet extends HttpServlet {
             response.sendRedirect("/PersonalPVInfo");
         }
         
-        LOG.info("User-Agent: {}", request.getHeader("User-Agent"));
+        String userAgent = request.getHeader("User-Agent");
+        LOG.info("User-Agent: " + userAgent);
+        
+        if (userAgent != null) {
+            this.iPhoneRequest = userAgent.contains("iPhone");
+        }
         
         page.append("<html>\n");
         page.append("<head>\n");
@@ -198,7 +207,15 @@ public class PersonalPVInfoListServlet extends HttpServlet {
             
             // PV Name
             page.append("<tr>\n");
-            page.append("<th colspan=\"2\" class=\"main\"><a href=\"" + aapiWebApp + "&METHOD=GET&NAMES=" + pe.getPvName() + "\" target=\"_blank\">" + pe.getPvName() + "</a></th>\n");
+            page.append("<th colspan=\"2\" class=\"main\">\n");
+            page.append("<a href=\"" + aapiWebApp + "&METHOD=GET&NAMES=" + pe.getPvName() + "\" target=\"_blank\">" + pe.getPvName() + "</a>");
+            
+            if(iPhoneRequest) {
+                // page.append("&nbsp;&nbsp;<a href=\"desyarchiver://" + pe.getPvName().replaceAll("\\:", "\\\\:") + "\" target=\"_blank\">iPhone-Plot</a>\n");
+                page.append("&nbsp;&nbsp;<a href=\"desyarchiver://" + pe.getPvName() + "\" target=\"_blank\">iPhone-Plot</a>\n");
+            }
+            
+            page.append("</th>\n");
             page.append("</tr>\n");
             
             appendEmptyRow(page);
