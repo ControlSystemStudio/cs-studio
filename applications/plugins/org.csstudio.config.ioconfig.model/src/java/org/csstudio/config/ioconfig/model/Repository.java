@@ -259,7 +259,9 @@ public final class Repository {
      * e.g. DB Sessions
      */
     public static void close() {
-        _REPOSITORY.close();
+        if(_REPOSITORY!=null) {
+            _REPOSITORY.close();
+        }
     }
 
     /**

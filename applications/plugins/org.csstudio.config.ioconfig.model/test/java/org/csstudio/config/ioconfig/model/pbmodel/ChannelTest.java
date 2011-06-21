@@ -19,6 +19,7 @@ import org.csstudio.config.ioconfig.model.PersistenceException;
 import org.csstudio.config.ioconfig.model.Repository;
 import org.junit.After;
 import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Test;
 
 /**
@@ -90,7 +91,7 @@ public class ChannelTest {
         assertTrue(out.isDigital());
     }
 
-    @Test
+    @Ignore
     public void testChSize() throws PersistenceException {
         final ChannelDBO out = ChannelStructureDBO.makeSimpleChannel(_module, false).getFirstChannel();
         // Channel out = new Channel(_structure);

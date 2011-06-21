@@ -62,7 +62,7 @@ import org.slf4j.LoggerFactory;
  * @version $Revision: 1.14 $
  * @since 03.06.2009
  */
-public final class HibernateManager extends Observable {
+public final class HibernateManager extends Observable implements IHibernateManager {
     
     private static final Logger LOG = LoggerFactory.getLogger(HibernateManager.class);
     
@@ -162,8 +162,11 @@ public final class HibernateManager extends Observable {
         // Default constructor
     }
     
+    /**
+     * {@inheritDoc}
+     */
     public void setSessionFactory(@Nonnull final SessionFactory sf) {
-        synchronized (HibernateManager.class) {
+        synchronized (HibernateTestManager.class) {
             _sessionFactoryDevDB = sf;
         }
     }
@@ -183,7 +186,8 @@ public final class HibernateManager extends Observable {
     }
     
     private void buildConifg() {
-        new InstanceScope().getNode(IOConfigActivator.getDefault().getPluginId())
+        String pluginId = IOConfigActivator.PLUGIN_ID;
+        new InstanceScope().getNode(pluginId)
                 .addPreferenceChangeListener(new IPreferenceChangeListener() {
                     
                     @Override
@@ -194,7 +198,6 @@ public final class HibernateManager extends Observable {
                 });
         
         IPreferencesService prefs = Platform.getPreferencesService();
-        String pluginId = IOConfigActivator.getDefault().getPluginId();
         _cfg = new AnnotationConfiguration();
         for (Class<?> clazz : _classes) {
             _cfg.addAnnotatedClass(clazz);
@@ -287,6 +290,10 @@ public final class HibernateManager extends Observable {
         }
     }
     
+    /**
+     * {@inheritDoc}
+     */
+    @Override
     @CheckForNull
     public <T> T doInDevDBHibernateEager(@Nonnull final HibernateCallback hibernateCallback) throws PersistenceException {
         initSessionFactoryDevDB();
@@ -332,13 +339,9 @@ public final class HibernateManager extends Observable {
     }
     
     /**
-     *
-     * @param <T>
-     *            The result Object type.
-     * @param hibernateCallback
-     *            The Hibernate call back.
-     * @return the Session resulte.
+     * {@inheritDoc}
      */
+    @Override
     @CheckForNull
     public <T> T doInDevDBHibernateLazy(@Nonnull final HibernateCallback hibernateCallback) throws PersistenceException {
         initSessionFactoryDevDB();
@@ -374,6 +377,10 @@ public final class HibernateManager extends Observable {
         return callback.execute(sess);
     }
     
+    /**
+     * {@inheritDoc}
+     */
+    @Override
     public synchronized void closeSession() {
         if( (_sessionLazy != null) && _sessionLazy.isOpen()) {
             _sessionLazy.close();
@@ -401,8 +408,9 @@ public final class HibernateManager extends Observable {
     }
     
     /**
-     * @return
+     * {@inheritDoc}
      */
+    @Override
     public boolean isConnected() {
         return _sessionFactoryDevDB != null ? _sessionFactoryDevDB.isClosed() : false;
     }

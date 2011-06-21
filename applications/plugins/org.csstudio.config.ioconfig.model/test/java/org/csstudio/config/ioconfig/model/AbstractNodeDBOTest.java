@@ -8,17 +8,7 @@ import static org.junit.Assert.assertTrue;
 
 import java.util.Collection;
 
-import org.csstudio.config.ioconfig.model.pbmodel.ChannelDBO;
-import org.csstudio.config.ioconfig.model.pbmodel.ChannelStructureDBO;
-import org.csstudio.config.ioconfig.model.pbmodel.GSDFileDBO;
-import org.csstudio.config.ioconfig.model.pbmodel.GSDModuleDBO;
-import org.csstudio.config.ioconfig.model.pbmodel.MasterDBO;
-import org.csstudio.config.ioconfig.model.pbmodel.ModuleChannelPrototypeDBO;
-import org.csstudio.config.ioconfig.model.pbmodel.ModuleDBO;
 import org.csstudio.config.ioconfig.model.pbmodel.ProfibusSubnetDBO;
-import org.csstudio.config.ioconfig.model.pbmodel.SlaveDBO;
-import org.hibernate.cfg.AnnotationConfiguration;
-import org.hibernate.cfg.Configuration;
 import org.junit.BeforeClass;
 import org.junit.Ignore;
 import org.junit.Test;
@@ -108,50 +98,9 @@ public class AbstractNodeDBOTest {
 
     @BeforeClass
     public static void setUp() {
-        Repository.injectIRepository(new HibernateRepository());
-
-        final Configuration cfg = new AnnotationConfiguration()
-                //.addPackage("org.csstudio.config.ioconfig.model")
-        .addAnnotatedClass(NodeImageDBO.class)
-        .addAnnotatedClass(ChannelDBO.class)
-        .addAnnotatedClass(ChannelStructureDBO.class)
-        .addAnnotatedClass(ModuleDBO.class)
-        .addAnnotatedClass(SlaveDBO.class)
-        .addAnnotatedClass(MasterDBO.class)
-        .addAnnotatedClass(ProfibusSubnetDBO.class)
-        .addAnnotatedClass(GSDModuleDBO.class)
-        .addAnnotatedClass(IocDBO.class)
-        .addAnnotatedClass(FacilityDBO.class)
-        .addAnnotatedClass(AbstractNodeDBO.class)
-        .addAnnotatedClass(GSDFileDBO.class)
-        .addAnnotatedClass(ModuleChannelPrototypeDBO.class)
-        .addAnnotatedClass(DocumentDBO.class)
-                .setProperty("hibernate.dialect", "org.hibernate.dialect.Oracle9Dialect")
-                //.setProperty("hibernate.connection.datasource", "java:comp/env/jdbc/test")
-                .setProperty("hibernate.order_updates", "true")
-                .setProperty(
-                        "hibernate.connection.url",
-                        "jdbc:oracle:thin:@(DESCRIPTION ="
-                                + "(ADDRESS = (PROTOCOL = TCP)(HOST = dbsrv01.desy.de)(PORT = 1521))"
-                                + "(ADDRESS = (PROTOCOL = TCP)(HOST = dbsrv02.desy.de)(PORT = 1521))"
-                                + "(ADDRESS = (PROTOCOL = TCP)(HOST = dbsrv03.desy.de)(PORT = 1521))"
-                                + "(LOAD_BALANCE = yes)" + "(CONNECT_DATA ="
-                                + "(SERVER = DEDICATED)" + "(SERVICE_NAME = desy_db.desy.de)"
-                                + "(FAILOVER_MODE =" + "(TYPE = NONE)" + "(METHOD = BASIC)"
-                                + "(RETRIES = 180)" + "(DELAY = 5)" + ")))")
-                .setProperty("hibernate.connection.driver_class", "oracle.jdbc.driver.OracleDriver")
-                .setProperty("hibernate.connection.username", "krykmant").setProperty(
-                        "hibernate.connection.password", "krykmant").setProperty(
-                        "transaction.factory_class",
-                        "org.hibernate.transaction.JDBCTransactionFactory").setProperty(
-                        "hibernate.cache.provider_class",
-                        "org.hibernate.cache.HashtableCacheProvider")
-                        //.setProperty("hibernate.hbm2ddl.auto", "update")
-                .setProperty("hibernate.show_sql", "false");
-
-        HibernateManager.getInstance().setSessionFactory(cfg.buildSessionFactory());
-        // set Timeout to 1 min
-        HibernateManager.getInstance().setTimeout(60);
+        HibernateRepository repository = new HibernateRepository();
+        repository.injectHibernateManager(new HibernateTestManager());
+        Repository.injectIRepository(repository);
     }
 
 }

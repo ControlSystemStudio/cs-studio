@@ -86,7 +86,7 @@ public class IOConfigActivator extends AbstractCssPlugin{
      */
     @Override
     protected void doStop(@Nonnull final BundleContext context) throws Exception {
-        HibernateManager.getInstance().removeClasses(_classes);
+        HibernateTestManager.getInstance().removeClasses(_classes);
     }
 
     /**
