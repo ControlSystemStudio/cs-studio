@@ -21,8 +21,6 @@
  */
 package org.csstudio.archive.common.service.mysqlimpl;
 
-import java.sql.Connection;
-
 import javax.annotation.Nonnull;
 
 import junit.framework.Assert;
@@ -56,9 +54,9 @@ public class ArchiveConnectionHandlerHeadlessTest {
     
     private static ArchiveConnectionHandler HANDLER;
     
-    private final String getInsertStatementPrefix(@Nonnull final String dbName) {
-        return "INSERT INTO " + dbName + ".sample (channel_id, sample_time, nanosecs, value) VALUES ";
-    }
+//    private final String getInsertStatementPrefix(@Nonnull final String dbName) {
+//        return "INSERT INTO " + dbName + ".sample (channel_id, sample_time, nanosecs, value) VALUES ";
+//    }
 
     
     @BeforeClass
@@ -107,7 +105,7 @@ public class ArchiveConnectionHandlerHeadlessTest {
     
     @Test
     public void getConnectionTest() throws ArchiveConnectionException {
-        Connection connection = HANDLER.getConnection();
+        HANDLER.getConnection();
         
         
     }
