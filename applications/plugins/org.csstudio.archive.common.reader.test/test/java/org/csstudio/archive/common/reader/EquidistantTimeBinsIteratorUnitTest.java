@@ -29,10 +29,12 @@ import org.csstudio.archive.common.reader.facade.IServiceProvider;
 import org.csstudio.archive.common.reader.testdata.TestUtils;
 import org.csstudio.archive.common.service.channel.IArchiveChannel;
 import org.csstudio.archive.common.service.sample.IArchiveSample;
+import org.csstudio.data.values.IMinMaxDoubleValue;
 import org.csstudio.domain.desy.epics.typesupport.EpicsSystemVariableSupport;
 import org.csstudio.domain.desy.time.TimeInstant;
 import org.csstudio.domain.desy.time.TimeInstant.TimeInstantBuilder;
 import org.csstudio.domain.desy.types.Limits;
+import org.csstudio.domain.desy.typesupport.BaseTypeConversionSupport;
 import org.junit.Assert;
 import org.junit.BeforeClass;
 import org.junit.Test;
@@ -49,6 +51,7 @@ public class EquidistantTimeBinsIteratorUnitTest {
     @BeforeClass
     public static void setup() {
         EpicsSystemVariableSupport.install();
+        BaseTypeConversionSupport.install();
     }
     
     @SuppressWarnings("rawtypes")
@@ -72,4 +75,46 @@ public class EquidistantTimeBinsIteratorUnitTest {
         
         iter.next(); // expect NSEE
     }
+
+    @SuppressWarnings("rawtypes")
+    @Test(expected=NoSuchElementException.class)
+    public void testEmptyIteratorWithLastSampleBefore() throws Exception {
+        
+        final String channelName = "";
+        final TimeInstant start = TimeInstantBuilder.fromMillis(100L);
+        final TimeInstant end = TimeInstantBuilder.fromMillis(300L);
+        final Collection expectedResult = (Collection) Collections.emptyList();
+        final IArchiveChannel expectedChannel = TestUtils.CHANNEL;
+        final Limits expLimits = (Limits) Limits.<Double>create(0.0, 10.0);
+        final IArchiveSample expLastSampleBefore = 
+            TestUtils.createArchiveMinMaxDoubleSample(channelName, TimeInstantBuilder.fromMillis(start.getMillis() - 1), 5.0);
+        
+        final IServiceProvider provider = 
+            TestUtils.createCustomizedMockedServiceProvider(channelName, start, end, expectedResult, expectedChannel, expLimits, expLastSampleBefore); 
+        
+        EquidistantTimeBinsIterator<Double> iter = 
+            new EquidistantTimeBinsIterator<Double>(provider, channelName, start, start, null, 1);
+        Assert.assertTrue(iter.hasNext());
+        IMinMaxDoubleValue iValue = (IMinMaxDoubleValue) iter.next();
+        Assert.assertTrue(iValue.getValue() == 5.0);
+        
+        iter = 
+            new EquidistantTimeBinsIterator<Double>(provider, channelName, start, start, null, 3);
+        
+        Assert.assertTrue(iter.hasNext());
+        iValue = (IMinMaxDoubleValue) iter.next();
+        Assert.assertTrue(iValue.getValue() == 5.0);
+        
+        Assert.assertTrue(iter.hasNext());
+        iValue = (IMinMaxDoubleValue) iter.next();
+        Assert.assertTrue(iValue.getValue() == 5.0);
+
+        Assert.assertTrue(iter.hasNext());
+        iValue = (IMinMaxDoubleValue) iter.next();
+        Assert.assertTrue(iValue.getValue() == 5.0);
+        
+        Assert.assertFalse(iter.hasNext());
+        iter.next();
+    }
+    
 }

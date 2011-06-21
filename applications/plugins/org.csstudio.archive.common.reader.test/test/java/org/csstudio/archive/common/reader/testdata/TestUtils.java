@@ -91,6 +91,21 @@ public final class TestUtils {
     }
     
     @SuppressWarnings("rawtypes")
+    public static IArchiveSample createArchiveMinMaxDoubleSample(@Nonnull final String channelName,
+                                                                 @Nonnull final TimeInstant ts, 
+                                                                 @Nonnull final Double value) {
+        return new ArchiveMinMaxSample<Double, ISystemVariable<Double>>(new ArchiveChannelId(0L),
+                                                                        new EpicsSystemVariable<Double>(channelName,
+                                                                                                        value,
+                                                                                                        ControlSystem.EPICS_DEFAULT,
+                                                                                                        ts,
+                                                                                                        EpicsAlarm.UNKNOWN),
+                                                                         EpicsAlarm.UNKNOWN,
+                                                                         9.0, 11.0);
+    }
+    
+    
+    @SuppressWarnings("rawtypes")
     @Nonnull
     public static IServiceProvider createCustomizedMockedServiceProvider(@Nonnull final String channelName, 
                                                                          @Nonnull final TimeInstant start,

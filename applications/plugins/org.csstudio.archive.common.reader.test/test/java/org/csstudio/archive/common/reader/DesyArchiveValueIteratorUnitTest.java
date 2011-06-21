@@ -21,25 +21,18 @@
  */
 package org.csstudio.archive.common.reader;
 
-import java.util.Collection;
 import java.util.Collections;
 import java.util.NoSuchElementException;
 
-import javax.annotation.Nonnull;
-
 import org.csstudio.archive.common.reader.facade.IServiceProvider;
 import org.csstudio.archive.common.reader.testdata.TestUtils;
-import org.csstudio.archive.common.service.ArchiveServiceException;
-import org.csstudio.archive.common.service.IArchiveReaderFacade;
 import org.csstudio.data.values.IMinMaxDoubleValue;
 import org.csstudio.domain.desy.epics.typesupport.EpicsSystemVariableSupport;
-import org.csstudio.domain.desy.service.osgi.OsgiServiceUnavailableException;
 import org.csstudio.domain.desy.time.TimeInstant;
 import org.csstudio.domain.desy.time.TimeInstant.TimeInstantBuilder;
 import org.junit.Assert;
 import org.junit.BeforeClass;
 import org.junit.Test;
-import org.mockito.Mockito;
 
 /**
  * Test for {@link DesyArchiveValueIterator}. 
