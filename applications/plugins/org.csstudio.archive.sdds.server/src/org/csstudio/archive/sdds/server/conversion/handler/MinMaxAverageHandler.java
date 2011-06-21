@@ -30,7 +30,7 @@ import java.util.Calendar;
 import java.util.GregorianCalendar;
 import java.util.List;
 
-import org.csstudio.archive.sdds.server.Activator;
+import org.csstudio.archive.sdds.server.SddsServerActivator;
 import org.csstudio.archive.sdds.server.command.header.DataRequestHeader;
 import org.csstudio.archive.sdds.server.data.EpicsRecordData;
 import org.csstudio.archive.sdds.server.internal.ServerPreferenceKey;
@@ -65,7 +65,7 @@ public class MinMaxAverageHandler extends AlgorithmHandler {
 		super(maxSamples);
 
         IPreferencesService pref = Platform.getPreferencesService();
-        validRecordBeforeTime = pref.getLong(Activator.PLUGIN_ID,
+        validRecordBeforeTime = pref.getLong(SddsServerActivator.PLUGIN_ID,
                                              ServerPreferenceKey.P_VALID_RECORD_BEFORE, 3600, null);
         
         LOG.info("MinMaxAverageHandler created. Max. samples per request: " + maxSamples);

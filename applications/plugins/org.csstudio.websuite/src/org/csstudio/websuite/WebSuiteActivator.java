@@ -58,7 +58,7 @@ public class WebSuiteActivator extends Plugin
 	}
 	
 	/** 
-     * @see org.eclipse.core.runtime.Plugins#start(org.osgi.framework.BundleContext)
+     * @see org.eclipse.core.runtime.Plugin#start(org.osgi.framework.BundleContext)
      */
     @Override
 	public void start(BundleContext context) throws Exception {

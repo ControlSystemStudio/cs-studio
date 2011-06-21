@@ -25,7 +25,7 @@
 package org.csstudio.archive.sdds.server.sdds;
 
 import java.util.TreeSet;
-import org.csstudio.archive.sdds.server.Activator;
+import org.csstudio.archive.sdds.server.SddsServerActivator;
 import org.csstudio.archive.sdds.server.conversion.SampleParameter;
 import org.csstudio.archive.sdds.server.data.EpicsRecordData;
 import org.csstudio.archive.sdds.server.internal.ServerPreferenceKey;
@@ -71,7 +71,7 @@ public class SddsDataReader implements Runnable {
         IPreferencesService pref = Platform.getPreferencesService();
 
         // Indicates if byte order is little endian
-        boolean littleEndian = pref.getBoolean(Activator.PLUGIN_ID, ServerPreferenceKey.P_SDDS_LITTLE_ENDIAN, false, null);
+        boolean littleEndian = pref.getBoolean(SddsServerActivator.PLUGIN_ID, ServerPreferenceKey.P_SDDS_LITTLE_ENDIAN, false, null);
 
         filePath = path;
         this.startTime = startTime;

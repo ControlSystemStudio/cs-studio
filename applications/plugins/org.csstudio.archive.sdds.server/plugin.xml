@@ -9,7 +9,7 @@
             thread="main"
             visible="true">
          <run
-               class="org.csstudio.archive.sdds.server.Application">
+               class="org.csstudio.archive.sdds.server.SddsServerApplication">
          </run>
       </application>
    </extension>

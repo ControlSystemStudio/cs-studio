@@ -24,7 +24,7 @@
 
 package org.csstudio.archive.sdds.server;
 
-public interface ApplicationMBean {
+public interface SddsServerApplicationMBean {
     
     public void stopApplication();
     

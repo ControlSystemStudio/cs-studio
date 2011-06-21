@@ -23,29 +23,34 @@
 
 package org.csstudio.archive.sdds.server;
 
-import org.csstudio.platform.AbstractCssPlugin;
+import org.eclipse.core.runtime.Plugin;
 import org.osgi.framework.BundleContext;
 import org.remotercp.service.connection.session.ISessionService;
 import org.remotercp.common.tracker.GenericServiceTracker;
 import org.remotercp.common.tracker.IGenericServiceListener;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * The activator class controls the plug-in life cycle
  */
-public class Activator extends AbstractCssPlugin {
+public class SddsServerActivator extends Plugin {
 	
+    /** The class logger */
+    private static final Logger LOG = LoggerFactory.getLogger(SddsServerActivator.class);
+    
     /** The plug-in ID */
 	public static final String PLUGIN_ID = "org.csstudio.archive.sdds.server";
 
 	/** The shared instance */
-	private static Activator plugin;
+	private static SddsServerActivator plugin;
 	
 	private GenericServiceTracker<ISessionService> _genericServiceTracker;
 
 	/**
 	 * The constructor
 	 */
-	public Activator() {
+	public SddsServerActivator() {
 	    plugin = this;
 	}
 
@@ -54,23 +59,10 @@ public class Activator extends AbstractCssPlugin {
 	 *
 	 * @return the shared instance
 	 */
-	public static Activator getDefault() {
+	public static SddsServerActivator getDefault() {
 		return plugin;
 	}
 
-    @Override
-    protected void doStart(BundleContext context) throws Exception {
-		_genericServiceTracker = new GenericServiceTracker<ISessionService>(
-				context, ISessionService.class);
-		_genericServiceTracker.open();
-    }
-
-    @Override
-    protected void doStop(BundleContext context) throws Exception {
-        plugin = null;
-    }
-
-    @Override
     public String getPluginId() {
         return PLUGIN_ID;
     }
@@ -79,4 +71,20 @@ public class Activator extends AbstractCssPlugin {
 			IGenericServiceListener<ISessionService> sessionServiceListener) {
 		_genericServiceTracker.addServiceListener(sessionServiceListener);
 	}
+
+    @Override
+    public void start(BundleContext context) throws Exception {
+        super.start(context);
+        LOG.info(PLUGIN_ID + " is starting.");
+        _genericServiceTracker = new GenericServiceTracker<ISessionService>(
+                context, ISessionService.class);
+        _genericServiceTracker.open();
+    }
+
+    @Override
+    public void stop(BundleContext context) throws Exception {
+        super.stop(context);
+        plugin = null;
+        LOG.info(PLUGIN_ID + " is stopping.");
+    }
 }

@@ -25,7 +25,7 @@
 package org.csstudio.archive.sdds.server.conversion;
 
 import java.util.ArrayList;
-import org.csstudio.archive.sdds.server.Activator;
+import org.csstudio.archive.sdds.server.SddsServerActivator;
 import org.csstudio.archive.sdds.server.command.header.DataRequestHeader;
 import org.csstudio.archive.sdds.server.conversion.handler.AlgorithmHandler;
 import org.csstudio.archive.sdds.server.conversion.handler.AlgorithmHandlerException;
@@ -58,7 +58,7 @@ public class ConversionExecutor {
     public ConversionExecutor() {
         
         IPreferencesService pref = Platform.getPreferencesService();
-        int maxSamples = pref.getInt(Activator.PLUGIN_ID,
+        int maxSamples = pref.getInt(SddsServerActivator.PLUGIN_ID,
                                      ServerPreferenceKey.P_MAX_SAMPLES_PER_REQUEST,
                                      10000, null);
         
