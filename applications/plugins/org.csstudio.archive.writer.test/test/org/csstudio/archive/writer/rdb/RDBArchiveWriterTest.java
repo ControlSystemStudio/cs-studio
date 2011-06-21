@@ -37,7 +37,7 @@ public class RDBArchiveWriterTest
 		final String url = settings.getString("archive_rdb_url");
 		final String user = settings.getString("archive_rdb_user");
 		final String password = settings.getString("archive_rdb_password");
-		name = settings.getString("archive_write_channel");
+		name = settings.getString("archive_channel");
 		if (url == null  ||  user == null  ||  password == null  ||  name == null)
 		{
 			System.out.println("Skipping test, no archive_rdb_url, user, password");
