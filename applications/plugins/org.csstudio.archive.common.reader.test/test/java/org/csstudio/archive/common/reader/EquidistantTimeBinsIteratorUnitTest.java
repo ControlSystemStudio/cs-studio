@@ -31,70 +31,55 @@ import org.csstudio.archive.common.reader.facade.IServiceProvider;
 import org.csstudio.archive.common.reader.testdata.TestUtils;
 import org.csstudio.archive.common.service.ArchiveServiceException;
 import org.csstudio.archive.common.service.IArchiveReaderFacade;
-import org.csstudio.data.values.IMinMaxDoubleValue;
+import org.csstudio.archive.common.service.channel.ArchiveChannel;
 import org.csstudio.domain.desy.epics.typesupport.EpicsSystemVariableSupport;
 import org.csstudio.domain.desy.service.osgi.OsgiServiceUnavailableException;
 import org.csstudio.domain.desy.time.TimeInstant;
 import org.csstudio.domain.desy.time.TimeInstant.TimeInstantBuilder;
+import org.csstudio.domain.desy.types.Limits;
 import org.junit.Assert;
 import org.junit.BeforeClass;
 import org.junit.Test;
 import org.mockito.Mockito;
 
 /**
- * Test for {@link DesyArchiveValueIterator}. 
+ * Test for {@link EquidistantTimeBinsIterator}.
  * 
  * @author bknerr
- * @since 20.06.2011
+ * @since 21.06.2011
  */
-public class DesyArchiveValueIteratorUnitTest {
+public class EquidistantTimeBinsIteratorUnitTest {
     
-
+    
     @BeforeClass
     public static void setup() {
         EpicsSystemVariableSupport.install();
     }
     
-    @Test
-    public void testFilledIterator() throws Exception {
-        final TimeInstant start = TimeInstantBuilder.fromMillis(0L);
-        final TimeInstant end = TimeInstantBuilder.fromMillis(50L);
-        
-        final IServiceProvider provider = 
-            TestUtils.createCustomizedMockedServiceProvider(TestUtils.CHANNEL_NAME_1, 
-                                                            start, 
-                                                            end, 
-                                                            TestUtils.CHANNEL_1_SAMPLES);
-        
-        
-        final DesyArchiveValueIterator iter = 
-            new DesyArchiveValueIterator(provider, TestUtils.CHANNEL_NAME_1, start, end, null);
-        
-        Assert.assertTrue(iter.hasNext());
-        IMinMaxDoubleValue next = (IMinMaxDoubleValue) iter.next();
-        Assert.assertTrue(next.getValue() == 10.0);
-        Assert.assertTrue(next.getMinimum() == 9.0);
-        Assert.assertTrue(next.getMaximum() == 11.0);
-        
-        Assert.assertTrue(iter.hasNext());
-        next = (IMinMaxDoubleValue) iter.next();
-        Assert.assertTrue(next.getValue() == 20.0);
-        Assert.assertTrue(next.getMinimum() == 19.0);
-        Assert.assertTrue(next.getMaximum() == 21.0);
-        
-        Assert.assertFalse(iter.hasNext());
-    }
-    
-
     @Test(expected=NoSuchElementException.class)
-    public void testEmptyIterator() throws Exception {
+    public void testEmptyIteratorWithoutLastSampleBefore() throws Exception {
         final TimeInstant instant = TimeInstantBuilder.fromMillis(1L);
-        
         final IServiceProvider provider = 
-            TestUtils.createCustomizedMockedServiceProvider("", instant, instant, Collections.emptyList());
+            new IServiceProvider() {
+                @SuppressWarnings({ "unchecked", "rawtypes" })
+                @Override
+                @Nonnull
+                public IArchiveReaderFacade getReaderFacade() throws OsgiServiceUnavailableException {
+                    IArchiveReaderFacade mock = Mockito.mock(IArchiveReaderFacade.class);
+                    try {
+                        Mockito.when(mock.readSamples("", instant, instant, null)).thenReturn((Collection) Collections.emptyList());
+                        Mockito.when(mock.getChannelByName("")).thenReturn(TestUtils.CHANNEL);
+                        Mockito.when(mock.readDisplayLimits("")).thenReturn((Limits) Limits.<Double>create(0.0, 10.0));
+                        Mockito.when(mock.readLastSampleBefore("", instant)).thenReturn(null);
+                    } catch (final ArchiveServiceException e) {
+                        Assert.fail("Only reachable by intention.");
+                    }
+                    return mock;
+                }
+            };
         
-        final DesyArchiveValueIterator iter = 
-            new DesyArchiveValueIterator(provider, "", instant, instant, null);
+        final EquidistantTimeBinsIterator<Double> iter = 
+            new EquidistantTimeBinsIterator<Double>(provider, "", instant, instant, null, 100);
         
         Assert.assertFalse(iter.hasNext());
         

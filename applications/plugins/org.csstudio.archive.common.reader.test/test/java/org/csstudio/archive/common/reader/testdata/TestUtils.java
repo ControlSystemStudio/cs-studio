@@ -24,24 +24,45 @@ package org.csstudio.archive.common.reader.testdata;
 import java.util.ArrayList;
 import java.util.Collection;
 
+import javax.annotation.Nonnull;
+
+import org.csstudio.archive.common.reader.facade.IServiceProvider;
+import org.csstudio.archive.common.service.ArchiveServiceException;
+import org.csstudio.archive.common.service.IArchiveReaderFacade;
 import org.csstudio.archive.common.service.channel.ArchiveChannelId;
+import org.csstudio.archive.common.service.channel.IArchiveChannel;
+import org.csstudio.archive.common.service.channel.ArchiveChannel;
+import org.csstudio.archive.common.service.channelgroup.ArchiveChannelGroupId;
+import org.csstudio.archive.common.service.controlsystem.ArchiveControlSystem;
 import org.csstudio.archive.common.service.sample.ArchiveMinMaxSample;
 import org.csstudio.archive.common.service.sample.IArchiveMinMaxSample;
 import org.csstudio.domain.desy.epics.alarm.EpicsAlarm;
 import org.csstudio.domain.desy.epics.types.EpicsSystemVariable;
+import org.csstudio.domain.desy.service.osgi.OsgiServiceUnavailableException;
 import org.csstudio.domain.desy.system.ControlSystem;
+import org.csstudio.domain.desy.system.ControlSystemType;
 import org.csstudio.domain.desy.system.ISystemVariable;
+import org.csstudio.domain.desy.time.TimeInstant;
 import org.csstudio.domain.desy.time.TimeInstant.TimeInstantBuilder;
+import org.junit.Assert;
+import org.mockito.Mockito;
 /**
  * Sample arrays for test purposes. 
  * 
  * @author bknerr
  * @since 20.06.2011
  */
-public final class TestSamples {
+public final class TestUtils {
     
     
-    public static final String CHANNEL_1 = "TEST_CHANNEL_1";
+    public static final String CHANNEL_NAME_1 = "TEST_CHANNEL_1";
+    
+    public static final IArchiveChannel CHANNEL = new ArchiveChannel(new ArchiveChannelId(1L),
+                                                                     CHANNEL_NAME_1,
+                                                                     "Double",
+                                                                     new ArchiveChannelGroupId(1L),
+                                                                     TimeInstantBuilder.fromMillis(0L),
+                                                                     new ArchiveControlSystem("EPICS", ControlSystemType.EPICS_V3));
  
     @SuppressWarnings("rawtypes")
     public static final Collection<IArchiveMinMaxSample> CHANNEL_1_SAMPLES = 
@@ -50,7 +71,7 @@ public final class TestSamples {
     static {
         int id = 0;
         CHANNEL_1_SAMPLES.add(new ArchiveMinMaxSample<Double, ISystemVariable<Double>>(new ArchiveChannelId(id++),
-                                                                                       new EpicsSystemVariable<Double>(CHANNEL_1,
+                                                                                       new EpicsSystemVariable<Double>(CHANNEL_NAME_1,
                                                                                                                  10.0,
                                                                                                                  ControlSystem.EPICS_DEFAULT,
                                                                                                                  TimeInstantBuilder.fromMillis(10L),
@@ -58,12 +79,35 @@ public final class TestSamples {
                                                                                        EpicsAlarm.UNKNOWN,
                                                                                        9.0, 11.0));
         CHANNEL_1_SAMPLES.add(new ArchiveMinMaxSample<Double, ISystemVariable<Double>>(new ArchiveChannelId(id++),
-                                                                                       new EpicsSystemVariable<Double>(CHANNEL_1,
+                                                                                       new EpicsSystemVariable<Double>(CHANNEL_NAME_1,
                                                                                                                  20.0,
                                                                                                                  ControlSystem.EPICS_DEFAULT,
                                                                                                                  TimeInstantBuilder.fromMillis(20L),
                                                                                                                  EpicsAlarm.UNKNOWN),
                                                                                        EpicsAlarm.UNKNOWN,
                                                                                        19.0, 21.0));
+    }
+    
+    @Nonnull
+    public static IServiceProvider createCustomizedMockedServiceProvider(@Nonnull final String channelName, 
+                                                                         @Nonnull final TimeInstant start,
+                                                                         @Nonnull final TimeInstant end,
+                                                                         @SuppressWarnings("rawtypes") @Nonnull final Collection expectedResult) {
+        final IServiceProvider provider = 
+            new IServiceProvider() {
+                @SuppressWarnings({ "unchecked" })
+                @Override
+                @Nonnull
+                public IArchiveReaderFacade getReaderFacade() throws OsgiServiceUnavailableException {
+                    IArchiveReaderFacade mock = Mockito.mock(IArchiveReaderFacade.class);
+                    try {
+                        Mockito.when(mock.readSamples(channelName, start, end, null)).thenReturn(expectedResult);
+                    } catch (final ArchiveServiceException e) {
+                        Assert.fail("Only reachable by intention.");
+                    }
+                    return mock;
+                }
+            };
+        return provider;
     }
 }
