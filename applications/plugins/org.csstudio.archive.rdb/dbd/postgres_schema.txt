@@ -44,29 +44,15 @@ CREATE USER report WITH PASSWORD '$report';
 SELECT * FROM pg_user;
 
 -- The following would have to be executed _after_ creating the tables:
-GRANT SELECT, INSERT, UPDATE, DELETE ON smpl_eng TO archive;
-GRANT SELECT, INSERT, UPDATE, DELETE ON retent TO archive;
-GRANT SELECT, INSERT, UPDATE, DELETE ON chan_grp TO archive;
-GRANT SELECT, INSERT, UPDATE, DELETE ON smpl_mode TO archive;
-GRANT SELECT, INSERT, UPDATE, DELETE ON channel TO archive;
-GRANT SELECT, INSERT, UPDATE, DELETE ON status TO archive;
-GRANT SELECT, INSERT, UPDATE, DELETE ON severity TO archive;
-GRANT SELECT, INSERT, UPDATE, DELETE ON sample TO archive;
-GRANT SELECT, INSERT, UPDATE, DELETE ON array_val TO archive;
-GRANT SELECT, INSERT, UPDATE, DELETE ON num_metadata TO archive;
-GRANT SELECT, INSERT, UPDATE, DELETE ON enum_metadata TO archive;
+GRANT SELECT, INSERT, UPDATE, DELETE
+  ON smpl_eng, retent,  chan_grp, channel, status, severity, sample, array_val, num_metadata, enum_metadata 
+  TO archive;
 
-GRANT SELECT ON smpl_eng TO report;
-GRANT SELECT ON retent TO report;
-GRANT SELECT ON chan_grp TO report;
-GRANT SELECT ON smpl_mode TO report;
-GRANT SELECT ON channel TO report;
-GRANT SELECT ON status TO report;
-GRANT SELECT ON severity TO report;
-GRANT SELECT ON sample TO report;
-GRANT SELECT ON array_val TO report;
-GRANT SELECT ON num_metadata TO report;
-GRANT SELECT ON enum_metadata TO report;
+GRANT SELECT
+  ON smpl_eng, retent,  chan_grp, channel, status, severity, sample, array_val, num_metadata, enum_metadata 
+  TO report;
+
+GRANT USAGE ON  ALL SEQUENCES IN SCHEMA public TO archive;
 */
 
 ------------------------
