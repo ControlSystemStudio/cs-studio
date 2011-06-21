@@ -6,7 +6,7 @@ org.csstudio.auth
 org.csstudio.auth.ui
 org.csstudio.archivereader
 org.csstudio.archivereader.channelarchiver
-org.csstudio.archivereader.rdb
+org.csstudio.archive.reader.rdb
 org.csstudio.csdata
 org.csstudio.data
 org.csstudio.diag.epics.pvtree
