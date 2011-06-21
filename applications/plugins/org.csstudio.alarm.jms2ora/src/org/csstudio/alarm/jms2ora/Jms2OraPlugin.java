@@ -24,13 +24,13 @@
 
 package org.csstudio.alarm.jms2ora;
 
-import org.apache.log4j.Logger;
 import org.csstudio.platform.AbstractCssPlugin;
-import org.csstudio.platform.logging.CentralLogger;
 import org.osgi.framework.BundleContext;
 import org.remotercp.common.tracker.GenericServiceTracker;
 import org.remotercp.common.tracker.IGenericServiceListener;
 import org.remotercp.service.connection.session.ISessionService;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * The activator class controls the plug-in life cycle
@@ -40,12 +40,12 @@ public class Jms2OraPlugin extends AbstractCssPlugin
     /** The shared instance */
     private static Jms2OraPlugin plugin;
 
+    /** The class logger */
+    private static final Logger LOG = LoggerFactory.getLogger(Jms2OraPlugin.class);
+
     /** The BundleContext instance */
     private BundleContext bundleContext;
 
-	/** The logger */
-    private Logger logger = null;
-    
     /** The plug-in ID */
     public static final String PLUGIN_ID = "org.csstudio.alarm.jms2ora";
 
@@ -57,14 +57,12 @@ public class Jms2OraPlugin extends AbstractCssPlugin
 	public Jms2OraPlugin()
 	{
 	    plugin = this;
-	    
-	    logger = CentralLogger.getInstance().getLogger(this);
 	}
 
     @Override
     protected void doStart(BundleContext context) throws Exception
     {        
-        logger.info("Jms2Ora started...");
+        LOG.info("Jms2Ora is starting.");
         
         bundleContext = context;
 		_genericServiceTracker = new GenericServiceTracker<ISessionService>(
@@ -74,14 +72,14 @@ public class Jms2OraPlugin extends AbstractCssPlugin
     }
 
     @Override
-    protected void doStop(BundleContext context) throws Exception
-    {
+    protected void doStop(BundleContext context) throws Exception {
+        // Nothing to do here
     }
 
     /**
      * Returns the BundleContext of this application.
      * 
-     * @return
+     * @return The bundle context of this plugin
      */
     public BundleContext getBundleContext()
     {
@@ -108,5 +106,4 @@ public class Jms2OraPlugin extends AbstractCssPlugin
 			IGenericServiceListener<ISessionService> sessionServiceListener) {
 		_genericServiceTracker.addServiceListener(sessionServiceListener);
 	}
-
 }

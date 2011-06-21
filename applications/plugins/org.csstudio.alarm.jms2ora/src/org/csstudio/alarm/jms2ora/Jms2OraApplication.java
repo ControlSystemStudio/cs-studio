@@ -25,19 +25,19 @@
 package org.csstudio.alarm.jms2ora;
 
 import java.io.File;
-import org.apache.log4j.Logger;
 import org.csstudio.alarm.jms2ora.preferences.PreferenceConstants;
 import org.csstudio.alarm.jms2ora.util.ApplicState;
 import org.csstudio.alarm.jms2ora.util.CommandLine;
 import org.csstudio.alarm.jms2ora.util.Hostname;
 import org.csstudio.alarm.jms2ora.util.SynchObject;
-import org.csstudio.platform.logging.CentralLogger;
 import org.eclipse.core.runtime.Platform;
 import org.eclipse.core.runtime.preferences.IPreferencesService;
 import org.eclipse.equinox.app.IApplication;
 import org.eclipse.equinox.app.IApplicationContext;
 import org.remotercp.common.tracker.IGenericServiceListener;
 import org.remotercp.service.connection.session.ISessionService;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * The starting class.
@@ -50,11 +50,11 @@ public class Jms2OraApplication implements IApplication, Stoppable, IGenericServ
     
     private static Jms2OraApplication instance = null;
     
+    /** The class logger */
+    private static final Logger LOG = LoggerFactory.getLogger(Jms2OraApplication.class);
+
     /** The MessageProcessor does all the work on messages */
     private MessageProcessor messageProcessor;
-    
-    /** Log4j logger */
-    private Logger logger;
     
     /**  */
     private SynchObject sync;
@@ -80,7 +80,6 @@ public class Jms2OraApplication implements IApplication, Stoppable, IGenericServ
     public Jms2OraApplication() {
         
         instance = this;
-        logger = CentralLogger.getInstance().getLogger(this);
 
         IPreferencesService prefs = Platform.getPreferencesService();
         objectDir = prefs.getString(Jms2OraPlugin.PLUGIN_ID, PreferenceConstants.STORAGE_DIRECTORY, "./var/", null);
@@ -132,9 +131,9 @@ public class Jms2OraApplication implements IApplication, Stoppable, IGenericServ
             boolean success = stopper.stopExternInstance(Jms2OraPlugin.getDefault().getBundleContext(), "jms2oracle", host, user);
         
             if(success) {
-                logger.info("jms2ora stopped.");
+                LOG.info("jms2ora stopped.");
             } else {
-                logger.error("jms2ora cannot be stopped.");
+                LOG.error("jms2ora cannot be stopped.");
             }
             
             return IApplication.EXIT_OK;
@@ -155,12 +154,12 @@ public class Jms2OraApplication implements IApplication, Stoppable, IGenericServ
             synchronized(this) {
                 try {
                     this.wait(SLEEPING_TIME);
-                } catch(InterruptedException ie) {}
+                } catch(InterruptedException ie) { /* Can be ignored */}
             }
             
             SynchObject actSynch = new SynchObject(ApplicState.INIT, 0);
             if(!sync.hasStatusSet(actSynch, 300, ApplicState.TIMEOUT)) {
-                logger.fatal("TIMEOUT: State has not changed the last 5 minute(s).");
+                LOG.error("TIMEOUT: State has not changed the last 5 minute(s).");
             }
 
             currentState = actSynch.getStatus();
@@ -204,11 +203,11 @@ public class Jms2OraApplication implements IApplication, Stoppable, IGenericServ
                         break;
                 }
                 
-                logger.debug("set state to " + stateText + "(" + currentState + ")");
+                LOG.debug("set state to " + stateText + "(" + currentState + ")");
                 lastState = currentState;               
             }
             
-            logger.debug("Current state: " + stateText + "(" + currentState + ")");
+            LOG.debug("Current state: " + stateText + "(" + currentState + ")");
         }
 
         if(messageProcessor != null) {
@@ -220,27 +219,32 @@ public class Jms2OraApplication implements IApplication, Stoppable, IGenericServ
                 
                 try {
                     messageProcessor.join(WAITFORTHREAD);
-                } catch(InterruptedException ie) { }
+                } catch(InterruptedException ie) { /* Can be ignored */ }
             } while(sync.getSynchStatus() == ApplicState.LEAVING);
             
             if(messageProcessor.stoppedClean()) {
-                logger.info("Restart/Exit: Thread stopped clean.");
+                LOG.info("Restart/Exit: Thread stopped clean.");
                 messageProcessor = null;
             } else {
-                logger.warn("Restart/Exit: Thread did NOT stop clean.");
+                LOG.warn("Restart/Exit: Thread did NOT stop clean.");
                 messageProcessor = null;
             }
         }
         
-        if(shutdown) {
-            return IApplication.EXIT_OK;
+        Integer exitCode;
+        if (shutdown) {
+            exitCode = IApplication.EXIT_OK;
+            LOG.info("Stopping application.");
         } else {
-            logger.info("Restarting application...");
-            return IApplication.EXIT_RESTART;
+            exitCode = IApplication.EXIT_RESTART;
+            LOG.info("Restarting application.");
         }
+        
+        return exitCode;
     }
     
     public void bindService(ISessionService sessionService) {
+        
         IPreferencesService prefs = Platform.getPreferencesService();
         String xmppUser = prefs.getString(Jms2OraPlugin.PLUGIN_ID,
                 PreferenceConstants.XMPP_USER_NAME, "anonymous", null);
@@ -252,8 +256,7 @@ public class Jms2OraApplication implements IApplication, Stoppable, IGenericServ
     	try {
 			sessionService.connect(xmppUser, xmppPassword, xmppServer);
 		} catch (Exception e) {
-			CentralLogger.getInstance().warn(this,
-					"XMPP connection is not available, " + e.toString());
+		    LOG.warn("XMPP connection is not available, " + e.toString());
 		}
     }
     
@@ -274,7 +277,7 @@ public class Jms2OraApplication implements IApplication, Stoppable, IGenericServ
         running = false;
         shutdown = true;
         
-        logger.info("The application will shutdown...");
+        LOG.info("The application will shutdown...");
         
         synchronized(this) {
             notify();
@@ -286,7 +289,7 @@ public class Jms2OraApplication implements IApplication, Stoppable, IGenericServ
         running = false;
         shutdown = false;
         
-        logger.info("The application will restart...");
+        LOG.info("The application will restart...");
         
         synchronized(this) {
             notify();
@@ -298,7 +301,7 @@ public class Jms2OraApplication implements IApplication, Stoppable, IGenericServ
         running = false;
         shutdown = true;
         
-        logger.info("The application will shutdown...");
+        LOG.info("The application will shutdown...");
         
         synchronized(this) {
             notify();
@@ -313,9 +316,9 @@ public class Jms2OraApplication implements IApplication, Stoppable, IGenericServ
             
             boolean result = folder.mkdir();
             if(result) {
-                logger.info("Folder " + objectDir + " was created.");                
+                LOG.info("Folder " + objectDir + " was created.");                
             } else {
-                logger.warn("Folder " + objectDir + " was NOT created.");
+                LOG.warn("Folder " + objectDir + " was NOT created.");
             }
         }
     }
