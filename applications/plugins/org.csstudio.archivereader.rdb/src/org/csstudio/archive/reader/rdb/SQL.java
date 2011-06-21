@@ -5,7 +5,7 @@
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-v10.html
  ******************************************************************************/
-package org.csstudio.archivereader.rdb;
+package org.csstudio.archive.reader.rdb;
 
 import org.csstudio.platform.utility.rdb.RDBUtil;
 import org.csstudio.platform.utility.rdb.RDBUtil.Dialect;
@@ -41,8 +41,11 @@ public class SQL
      *  @param dialect RDB dialect
      *  @param prefix Schema (table) prefix, including "." etc. as needed
      */
-    public SQL(final Dialect dialect, final String prefix)
+    public SQL(final Dialect dialect, String prefix)
     {
+    	if (prefix.length() > 0   &&   !prefix.endsWith("."))
+    		prefix = prefix + ".";
+    			
         // 'status' table
         sel_stati = "SELECT status_id, name FROM " + prefix + "status";
 

@@ -5,7 +5,7 @@
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-v10.html
  ******************************************************************************/
-package org.csstudio.archivereader.rdb;
+package org.csstudio.archive.reader.rdb;
 
 import org.eclipse.core.runtime.Plugin;
 import org.osgi.framework.BundleContext;
@@ -17,7 +17,7 @@ import org.osgi.framework.BundleContext;
 public class Activator extends Plugin
 {
     /** Plugin ID defined in MANIFEST.MF */
-    final public static String ID = "org.csstudio.archivereader.rdb";
+    final public static String ID = "org.csstudio.archive.reader.rdb";
     
     private static Activator instance;
 

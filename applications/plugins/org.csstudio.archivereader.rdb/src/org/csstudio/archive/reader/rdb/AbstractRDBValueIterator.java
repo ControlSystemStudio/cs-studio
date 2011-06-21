@@ -5,7 +5,7 @@
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-v10.html
  ******************************************************************************/
-package org.csstudio.archivereader.rdb;
+package org.csstudio.archive.reader.rdb;
 
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -246,7 +246,8 @@ abstract public class AbstractRDBValueIterator  implements ValueIterator
         if (no_value_severity  == null)
             no_value_severity = new ISeverity()
         {
-            @Override
+			private static final long serialVersionUID = 1L;
+			@Override
             public boolean hasValue()  { return false; }
             @Override
             public boolean isInvalid() { return true;  }

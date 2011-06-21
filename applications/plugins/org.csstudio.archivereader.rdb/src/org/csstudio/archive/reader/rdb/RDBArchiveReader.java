@@ -5,7 +5,7 @@
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-v10.html
  ******************************************************************************/
-package org.csstudio.archivereader.rdb;
+package org.csstudio.archive.reader.rdb;
 
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -63,11 +63,13 @@ public class RDBArchiveReader implements ArchiveReader
      *  @param url Database URL
      *  @param user .. user
      *  @param password .. password
+     *  @param schema .. schema (including ".") or ""
      *  @param stored_procedure Stored procedure or "" for client-side optimization
      *  @throws Exception on error
      */
     public RDBArchiveReader(final String url, final String user,
-            final String password, final String stored_procedure)
+            final String password, final String schema,
+            final String stored_procedure)
         throws Exception
     {
         this.url = url;
@@ -86,9 +88,6 @@ public class RDBArchiveReader implements ArchiveReader
     	default:
             this.stored_procedure = stored_procedure;
         }
-        String schema = Preferences.getSchema();
-        if (schema.length() > 0)
-            schema = schema + ".";
         sql = new SQL(rdb.getDialect(), schema);
         stati = getStatusValues();
         severities = getSeverityValues();

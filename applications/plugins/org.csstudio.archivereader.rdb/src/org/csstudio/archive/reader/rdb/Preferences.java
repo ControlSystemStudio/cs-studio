@@ -5,7 +5,7 @@
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-v10.html
  ******************************************************************************/
-package org.csstudio.archivereader.rdb;
+package org.csstudio.archive.reader.rdb;
 
 import org.csstudio.auth.security.SecureStorage;
 import org.eclipse.core.runtime.Platform;

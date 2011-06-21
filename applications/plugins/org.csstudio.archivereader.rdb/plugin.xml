@@ -4,8 +4,8 @@
    <extension
          point="org.csstudio.archivereader.ArchiveReader">
       <ArchiveReader
-            class="org.csstudio.archivereader.rdb.RDBArchiveReaderFactory"
-            name="org.csstudio.archivereader.rdb.archivereader"
+            class="org.csstudio.archive.reader.rdb.RDBArchiveReaderFactory"
+            name="org.csstudio.archive.reader.rdb.archivereader"
             prefix="jdbc">
       </ArchiveReader>
    </extension>
@@ -13,8 +13,8 @@
          point="org.eclipse.ui.preferencePages">
       <page
             category="org.csstudio.platform.ui.css.applications.trends"
-            class="org.csstudio.archivereader.rdb.PreferencePage"
-            id="org.csstudio.archivereader.rdb.preferences"
+            class="org.csstudio.archive.reader.rdb.PreferencePage"
+            id="org.csstudio.archive.reader.rdb.preferences"
             name="RDB Archive">
       </page>
    </extension>

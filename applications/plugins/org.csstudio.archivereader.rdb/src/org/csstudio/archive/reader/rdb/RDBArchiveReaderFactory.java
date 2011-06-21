@@ -5,7 +5,7 @@
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-v10.html
  ******************************************************************************/
-package org.csstudio.archivereader.rdb;
+package org.csstudio.archive.reader.rdb;
 
 import org.csstudio.archivereader.ArchiveReader;
 import org.csstudio.archivereader.ArchiveReaderFactory;
@@ -42,8 +42,9 @@ public class RDBArchiveReaderFactory implements ArchiveReaderFactory
         {
             final String user = Preferences.getUser();
             final String password = Preferences.getPassword();
+            final String schema = Preferences.getSchema();
             return new RDBArchiveReader(url, user,
-                    password, Preferences.getStoredProcedure());
+                    password, schema, Preferences.getStoredProcedure());
         }
     }
 }
