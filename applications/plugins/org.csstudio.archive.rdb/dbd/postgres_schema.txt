@@ -30,7 +30,6 @@
  * local, all on ics-srv-softioc4: 3500 / sec
  */
 
-
 -- Create 'archive' user who can remotely access the 'archive' tables,
 -- but only change the table layout locally
 --
@@ -44,6 +43,7 @@ CREATE USER report WITH PASSWORD '$report';
 
 SELECT * FROM pg_user;
 
+-- The following would have to be executed _after_ creating the tables:
 GRANT SELECT, INSERT, UPDATE, DELETE ON smpl_eng TO archive;
 GRANT SELECT, INSERT, UPDATE, DELETE ON retent TO archive;
 GRANT SELECT, INSERT, UPDATE, DELETE ON chan_grp TO archive;
@@ -204,6 +204,10 @@ CREATE TABLE sample
    num_val INT NULL,
    float_val REAL NULL,
    str_val VARCHAR(120) NULL,
+   -- Note that these foreign keys are good for data consistency,
+   -- but bad for performance.
+   -- Writing to the table will be almost twice as fast without
+   -- the following constraints
    FOREIGN KEY (channel_id) REFERENCES channel (channel_id) ON DELETE CASCADE,
    FOREIGN KEY (severity_id) REFERENCES severity (severity_id) ON DELETE CASCADE,
    FOREIGN KEY (status_id) REFERENCES status (status_id) ON DELETE CASCADE
