@@ -25,22 +25,17 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.NoSuchElementException;
 
-import javax.annotation.Nonnull;
-
 import org.csstudio.archive.common.reader.facade.IServiceProvider;
 import org.csstudio.archive.common.reader.testdata.TestUtils;
-import org.csstudio.archive.common.service.ArchiveServiceException;
-import org.csstudio.archive.common.service.IArchiveReaderFacade;
-import org.csstudio.archive.common.service.channel.ArchiveChannel;
+import org.csstudio.archive.common.service.channel.IArchiveChannel;
+import org.csstudio.archive.common.service.sample.IArchiveSample;
 import org.csstudio.domain.desy.epics.typesupport.EpicsSystemVariableSupport;
-import org.csstudio.domain.desy.service.osgi.OsgiServiceUnavailableException;
 import org.csstudio.domain.desy.time.TimeInstant;
 import org.csstudio.domain.desy.time.TimeInstant.TimeInstantBuilder;
 import org.csstudio.domain.desy.types.Limits;
 import org.junit.Assert;
 import org.junit.BeforeClass;
 import org.junit.Test;
-import org.mockito.Mockito;
 
 /**
  * Test for {@link EquidistantTimeBinsIterator}.
@@ -56,30 +51,22 @@ public class EquidistantTimeBinsIteratorUnitTest {
         EpicsSystemVariableSupport.install();
     }
     
+    @SuppressWarnings("rawtypes")
     @Test(expected=NoSuchElementException.class)
     public void testEmptyIteratorWithoutLastSampleBefore() throws Exception {
+
+        final String channelName = "";
         final TimeInstant instant = TimeInstantBuilder.fromMillis(1L);
+        final Collection expectedResult = (Collection) Collections.emptyList();
+        final IArchiveChannel expectedChannel = TestUtils.CHANNEL;
+        final Limits expLimits = (Limits) Limits.<Double>create(0.0, 10.0);
+        final IArchiveSample expLastSampleBefore = null;
+        
         final IServiceProvider provider = 
-            new IServiceProvider() {
-                @SuppressWarnings({ "unchecked", "rawtypes" })
-                @Override
-                @Nonnull
-                public IArchiveReaderFacade getReaderFacade() throws OsgiServiceUnavailableException {
-                    IArchiveReaderFacade mock = Mockito.mock(IArchiveReaderFacade.class);
-                    try {
-                        Mockito.when(mock.readSamples("", instant, instant, null)).thenReturn((Collection) Collections.emptyList());
-                        Mockito.when(mock.getChannelByName("")).thenReturn(TestUtils.CHANNEL);
-                        Mockito.when(mock.readDisplayLimits("")).thenReturn((Limits) Limits.<Double>create(0.0, 10.0));
-                        Mockito.when(mock.readLastSampleBefore("", instant)).thenReturn(null);
-                    } catch (final ArchiveServiceException e) {
-                        Assert.fail("Only reachable by intention.");
-                    }
-                    return mock;
-                }
-            };
+            TestUtils.createCustomizedMockedServiceProvider(channelName, instant, instant, expectedResult, expectedChannel, expLimits, expLastSampleBefore); 
         
         final EquidistantTimeBinsIterator<Double> iter = 
-            new EquidistantTimeBinsIterator<Double>(provider, "", instant, instant, null, 100);
+            new EquidistantTimeBinsIterator<Double>(provider, channelName, instant, instant, null, 100);
         
         Assert.assertFalse(iter.hasNext());
         

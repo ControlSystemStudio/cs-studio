@@ -36,6 +36,7 @@ import org.csstudio.archive.common.service.channelgroup.ArchiveChannelGroupId;
 import org.csstudio.archive.common.service.controlsystem.ArchiveControlSystem;
 import org.csstudio.archive.common.service.sample.ArchiveMinMaxSample;
 import org.csstudio.archive.common.service.sample.IArchiveMinMaxSample;
+import org.csstudio.archive.common.service.sample.IArchiveSample;
 import org.csstudio.domain.desy.epics.alarm.EpicsAlarm;
 import org.csstudio.domain.desy.epics.types.EpicsSystemVariable;
 import org.csstudio.domain.desy.service.osgi.OsgiServiceUnavailableException;
@@ -44,6 +45,7 @@ import org.csstudio.domain.desy.system.ControlSystemType;
 import org.csstudio.domain.desy.system.ISystemVariable;
 import org.csstudio.domain.desy.time.TimeInstant;
 import org.csstudio.domain.desy.time.TimeInstant.TimeInstantBuilder;
+import org.csstudio.domain.desy.types.Limits;
 import org.junit.Assert;
 import org.mockito.Mockito;
 /**
@@ -88,11 +90,24 @@ public final class TestUtils {
                                                                                        19.0, 21.0));
     }
     
+    @SuppressWarnings("rawtypes")
     @Nonnull
     public static IServiceProvider createCustomizedMockedServiceProvider(@Nonnull final String channelName, 
                                                                          @Nonnull final TimeInstant start,
                                                                          @Nonnull final TimeInstant end,
-                                                                         @SuppressWarnings("rawtypes") @Nonnull final Collection expectedResult) {
+                                                                         @Nonnull final Collection expectedResult) {
+        return createCustomizedMockedServiceProvider(channelName, start, end, expectedResult, null, null, null);
+    }
+    
+    @SuppressWarnings("rawtypes")
+    @Nonnull
+    public static IServiceProvider createCustomizedMockedServiceProvider(@Nonnull final String channelName, 
+                                                                         @Nonnull final TimeInstant start,
+                                                                         @Nonnull final TimeInstant end,
+                                                                         @Nonnull final Collection expectedResult,
+                                                                         @Nonnull final IArchiveChannel expectedChannel,
+                                                                         @Nonnull final Limits expLimits,
+                                                                         @Nonnull final IArchiveSample expLastSampleBefore) {
         final IServiceProvider provider = 
             new IServiceProvider() {
                 @SuppressWarnings({ "unchecked" })
@@ -102,6 +117,10 @@ public final class TestUtils {
                     IArchiveReaderFacade mock = Mockito.mock(IArchiveReaderFacade.class);
                     try {
                         Mockito.when(mock.readSamples(channelName, start, end, null)).thenReturn(expectedResult);
+                        Mockito.when(mock.getChannelByName(channelName)).thenReturn(expectedChannel);
+                        Mockito.when(mock.readDisplayLimits(channelName)).thenReturn(expLimits);
+                        Mockito.when(mock.readLastSampleBefore(channelName, start)).thenReturn(expLastSampleBefore);
+
                     } catch (final ArchiveServiceException e) {
                         Assert.fail("Only reachable by intention.");
                     }
