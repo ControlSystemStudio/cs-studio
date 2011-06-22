@@ -127,15 +127,21 @@ public class ArchiveFetchJob extends Job
                     {
                         reader = ArchiveRepository.getInstance().getArchiveReader(url);
                     }
+                    
                     final ValueIterator value_iter;
-                    if (item.getRequestType() == RequestType.RAW)
+                    if (item.getRequestType() == RequestType.RAW) {
                         value_iter = reader.getRawValues(archive.getKey(), item.getName(), start, end);
-                    else
+                    }
+                    else {
                         value_iter = reader.getOptimizedValues(archive.getKey(), item.getName(), start, end, bins);
+                    }
                     // Get samples into array
                     final ArrayList<IValue> result = new ArrayList<IValue>();
-                    while (value_iter.hasNext())
+                    
+                    while (value_iter.hasNext()) {
                         result.add(value_iter.next());
+                    }
+                    
                     item.mergeArchivedSamples(reader.getServerName(), result);
                     if (cancelled)
                         break;
