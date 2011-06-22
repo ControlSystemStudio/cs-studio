@@ -37,9 +37,9 @@ import javax.persistence.Transient;
 
 import org.csstudio.config.ioconfig.model.AbstractNodeDBO;
 import org.csstudio.config.ioconfig.model.INodeVisitor;
-import org.csstudio.config.ioconfig.model.VirtualLeaf;
 import org.csstudio.config.ioconfig.model.NodeType;
 import org.csstudio.config.ioconfig.model.PersistenceException;
+import org.csstudio.config.ioconfig.model.VirtualLeaf;
 import org.csstudio.config.ioconfig.model.tools.NodeMap;
 import org.hibernate.annotations.BatchSize;
 import org.slf4j.Logger;
@@ -273,7 +273,13 @@ public class ChannelDBO extends AbstractNodeDBO<ChannelStructureDBO, VirtualLeaf
     }
     
     public void setChannelTypeNonHibernate(@Nonnull final DataType type) throws PersistenceException {
-        if(getChannelType() != type) {
+        DataType channelType;
+        try {
+            channelType = getChannelType();
+        } catch (IllegalArgumentException e) {
+            channelType = null;
+        }
+        if(channelType==null||channelType != type) {
             setChannelType(type);
             setDirty(true);
             if(getModule() != null) {

@@ -355,10 +355,16 @@ public class ModuleDBO extends AbstractNodeDBO<SlaveDBO, ChannelStructureDBO> im
         for (ChannelStructureDBO channelStructure : channelStructs) {
             Set<ChannelDBO> channels = channelStructure.getChildren();
             for (ChannelDBO channel : channels) {
+                int bitSize;
+                try {
+                    bitSize = channel.getChannelType().getBitSize();
+                } catch (IllegalArgumentException e) {
+                    bitSize = 0;
+                }
                 if(channel.isInput()) {
-                    input += channel.getChannelType().getBitSize();
+                    input += bitSize;
                 } else {
-                    output += channel.getChannelType().getBitSize();
+                    output += bitSize;
                 }
             }
         }

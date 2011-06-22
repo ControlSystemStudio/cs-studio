@@ -52,10 +52,10 @@ public class MyEpicsV3PV extends PlatformObject
     /** Use plain mode?
      *  @see #EPICS_V3_PV(String, boolean)
      */
-    final private boolean plain;
+    final boolean plain;
 
     /** Channel name. */
-    final private String name;
+    final String name;
 
     private enum State
     {
@@ -80,7 +80,7 @@ public class MyEpicsV3PV extends PlatformObject
         Disconnected
     }
 
-    private State state = State.Idle;
+    State state = State.Idle;
 
     /** PVListeners of this PV */
     final private CopyOnWriteArrayList<PVListener> listeners
@@ -103,7 +103,7 @@ public class MyEpicsV3PV extends PlatformObject
     private volatile boolean connected = false;
 
     /** Meta data obtained during connection cycle. */
-    private IMetaData meta = null;
+    IMetaData meta = null;
 
     /** Most recent 'live' value. */
     private IValue value = null;
@@ -147,16 +147,23 @@ public class MyEpicsV3PV extends PlatformObject
     private class GetCallbackListener implements GetListener
     {
         /** The received meta data/ */
-        IMetaData meta = null;
+        IMetaData meta1 = null;
 
         /** The received value. */
-        IValue value = null;
+        IValue value1 = null;
 
         /** After updating <code>meta</code> and <code>value</code>,
          *  this flag is set, and then <code>notify</code> is invoked
          *  on <code>this</code>.
          */
         boolean got_response = false;
+
+        /**
+         * Constructor.
+         */
+        public GetCallbackListener() {
+            // TODO Auto-generated constructor stub
+        }
 
         public void reset()
         {
@@ -169,22 +176,22 @@ public class MyEpicsV3PV extends PlatformObject
             if (event.getStatus().isSuccessful())
             {
                 final DBR dbr = event.getDBR();
-                meta = DBR_Helper.decodeMetaData(dbr);
+                meta1 = DBR_Helper.decodeMetaData(dbr);
                 try
                 {
-                    value = DBR_Helper.decodeValue(plain, meta, dbr);
+                    value1 = DBR_Helper.decodeValue(plain, meta1, dbr);
                 }
                 catch (final Exception ex)
                 {
                     Activator.getLogger().log(Level.WARNING, "PV " + name, ex);
-                    value = null;
+                    value1 = null;
                 }
-                Activator.getLogger().log(Level.FINEST, "{0} meta: {1}, value {2}", new Object[] { name, meta, value });
+                Activator.getLogger().log(Level.FINEST, "{0} meta: {1}, value {2}", new Object[] { name, meta1, value1 });
             }
             else
             {
-                meta = null;
-                value = null;
+                meta1 = null;
+                value1 = null;
             }
             synchronized (this)
             {
@@ -296,8 +303,8 @@ public class MyEpicsV3PV extends PlatformObject
                 get_callback.wait(remain);
             }
         }
-        value = get_callback.value;
-        return get_callback.value;
+        value = get_callback.value1;
+        return get_callback.value1;
     }
 
     /** {@inheritDoc} */
@@ -381,7 +388,7 @@ public class MyEpicsV3PV extends PlatformObject
     private final MonitorMask _monitorMask;
     
     /** Subscribe for value updates. */
-    private void subscribe()
+    void subscribe()
     {
         synchronized (this)
         {
@@ -424,7 +431,7 @@ public class MyEpicsV3PV extends PlatformObject
     }
 
     /** Unsubscribe from value updates. */
-    private void unsubscribe()
+    void unsubscribe()
     {
         Monitor sub_copy;
         // Atomic access
@@ -578,7 +585,7 @@ public class MyEpicsV3PV extends PlatformObject
     /** PV is connected.
      *  Get meta info, or subscribe right away.
      */
-    private void handleConnected(final Channel channel)
+    void handleConnected(final Channel channel)
     {
         Activator.getLogger().log(Level.FINEST, "{0} connected ({1})", new Object[] { name, state.name() });
         if (state == State.Connected)
@@ -687,7 +694,7 @@ public class MyEpicsV3PV extends PlatformObject
     }
 
     /** Notify all listeners. */
-    private void fireDisconnected()
+    void fireDisconnected()
     {
         for (final PVListener listener : listeners) {
             listener.pvDisconnected(this);
