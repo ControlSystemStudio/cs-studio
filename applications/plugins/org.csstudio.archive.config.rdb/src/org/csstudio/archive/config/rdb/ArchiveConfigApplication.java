@@ -172,6 +172,11 @@ public class ArchiveConfigApplication implements IApplication
                 {
                 	importer.parse(stream, engine_name.get(), engine_description.get(), engine_url);
                 }
+                catch (XMLImportException ex)
+                {	// Print message
+                	System.out.println(ex.getMessage());
+                	// Other exceptions result in a full stack trace
+                }
                 finally
                 {
                 	importer.close();

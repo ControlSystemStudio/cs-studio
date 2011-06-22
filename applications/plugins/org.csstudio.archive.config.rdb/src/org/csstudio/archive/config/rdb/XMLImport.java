@@ -26,6 +26,9 @@ import org.xml.sax.helpers.DefaultHandler;
 public class XMLImport extends DefaultHandler
 {
     /** XML tag */
+    final static String TAG_ENGINECONFIG = "engineconfig";
+    
+    /** XML tag */
     final private static String TAG_GROUP = "group";
 
     /** XML tag */
@@ -64,7 +67,10 @@ public class XMLImport extends DefaultHandler
     /** States of the parser */
     private enum State
     {
-        /** Reading all the initial parameters */
+        /** Looking for the initial element */
+        NEED_FIRST_ELEMENT,
+    	
+    	/** Reading all the initial parameters */
         PREAMBLE,
 
         /** Got start of a group, waiting for group name */
@@ -75,7 +81,7 @@ public class XMLImport extends DefaultHandler
     }
 
     /** Current parser state */
-    private State state = State.PREAMBLE;
+    private State state = State.NEED_FIRST_ELEMENT;
 
     /** Most recent 'name' tag */
     private String name;
@@ -124,7 +130,7 @@ public class XMLImport extends DefaultHandler
 	 *  @throws Exception 
 	 */
     public void parse(final InputStream stream, final String engine_name, final String description,
-			final String engine_url) throws Exception
+			final String engine_url) throws Exception, XMLImportException
     {
 		engine = config.findEngine(engine_name);
 		if (engine != null)
@@ -135,7 +141,7 @@ public class XMLImport extends DefaultHandler
 				config.deleteEngine(engine);
 			}
 			else
-				throw new Exception("Engine config '" + engine_name +
+				throw new XMLImportException("Error: Engine config '" + engine_name +
                 "' already exists");
 		}
 		engine = config.createEngine(engine_name, description, engine_url);
@@ -150,11 +156,17 @@ public class XMLImport extends DefaultHandler
                     final String element, final Attributes attributes)
                     throws SAXException
     {
+    	if (state == State.NEED_FIRST_ELEMENT)
+    	{	// Check for 'engineconfig'
+    		if (! TAG_ENGINECONFIG.equals(element))
+    			throw new XMLImportException("Expected <" + XMLImport.TAG_ENGINECONFIG + "> but found <" + element + ">");
+    		state = State.PREAMBLE;
+    	}
         accumulator.setLength(0);
         if (element.equals(TAG_GROUP))
         {
             if (state != State.PREAMBLE)
-                throw new SAXException("Unexpected group entry");
+                throw new XMLImportException("Unexpected group entry while in state " + state);
             // Wait for group stuff, reset values
             state = State.GROUP;
             name = null;
@@ -162,7 +174,7 @@ public class XMLImport extends DefaultHandler
         else if (element.equals(TAG_CHANNEL))
         {
             if (state != State.GROUP)
-                throw new SAXException("Unexpected channel entry");
+                throw new XMLImportException("Unexpected channel entry while in state " + state);
             // Wait for channel stuff, reset values/set defaults
             state = State.CHANNEL;
             name = null;
@@ -204,7 +216,7 @@ public class XMLImport extends DefaultHandler
                 }
                 catch (Exception e)
                 {
-                    throw new SAXException("Adding group " + name + " :"
+                    throw new SAXException("Error adding group " + name + " :"
                             + e.getMessage());
                 }
                 name = null;
@@ -256,7 +268,7 @@ public class XMLImport extends DefaultHandler
         else if (element.equals(TAG_DISABLE))
         {
             checkStateForTag(State.CHANNEL, element);
-            throw new SAXException("Disable no longer supported, only 'enable'");
+            throw new XMLImportException("<disable/> no longer supported, only <enable/>");
         }
         else if (element.equals(TAG_CHANNEL))
         {
@@ -325,7 +337,7 @@ public class XMLImport extends DefaultHandler
     {
         if (state == expected)
             return;
-        throw new SAXException("Got " + tag + " in state " + state.name());
+        throw new XMLImportException("Got " + tag + " in state " + state.name());
     }
 
     /** Show warning in log (default would have been to ignore it) */
@@ -333,7 +345,7 @@ public class XMLImport extends DefaultHandler
     public void warning(final SAXParseException ex)
     {
         System.out.println("Configuration file line " + ex.getLineNumber() + ":");
-        ex.printStackTrace();;
+        ex.printStackTrace();
     }
 
     /** Show error in log (default would have been to ignore it) */

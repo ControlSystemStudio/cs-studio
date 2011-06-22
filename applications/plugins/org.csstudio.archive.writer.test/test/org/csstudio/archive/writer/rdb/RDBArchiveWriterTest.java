@@ -10,8 +10,10 @@ package org.csstudio.archive.writer.rdb;
 import static org.junit.Assert.*;
 
 import org.csstudio.apputil.test.TestProperties;
+import org.csstudio.apputil.time.BenchmarkTimer;
 import org.csstudio.archive.writer.WriteChannel;
 import org.csstudio.archive.writer.rdb.RDBArchiveWriter;
+import org.csstudio.data.values.INumericMetaData;
 import org.csstudio.data.values.IValue;
 import org.csstudio.data.values.TimestampFactory;
 import org.csstudio.data.values.ValueFactory;
@@ -35,7 +37,7 @@ public class RDBArchiveWriterTest
 		final String url = settings.getString("archive_rdb_url");
 		final String user = settings.getString("archive_rdb_user");
 		final String password = settings.getString("archive_rdb_password");
-		name = settings.getString("archive_write_channel");
+		name = settings.getString("archive_channel");
 		if (url == null  ||  user == null  ||  password == null  ||  name == null)
 		{
 			System.out.println("Skipping test, no archive_rdb_url, user, password");
@@ -110,5 +112,57 @@ public class RDBArchiveWriterTest
 		writer.addSample(channel, sample);
 		
 		writer.flush();
+	}
+	
+	final private static int TEST_DURATION_SECS = 60;
+	final private static long FLUSH_COUNT = 500;
+	
+	/* PostgreSQL 9 Test Results:
+	 * 
+	 * HP Compact 8000 Elite Small Form Factor,
+	 * Intel Core Duo, 3GHz, Windows 7, 32 bit,
+	 * Hitachi Hds721025cla382 250gb Sata 7200rpm
+	 * 
+	 * Flush Count  100, 500, 1000: ~7000 samples/sec, no big difference
+	 * 
+	 * After deleting the constraints of sample.channel_id to channel,
+	 * severity_id and status_id to sev. and status tables: ~12000 samples/sec,
+	 * i.e. almost twice as much.
+	 * 
+	 * JProfiler shows most time spent in 'flush', some in addSample()'s call to setTimestamp(),
+	 * but overall time is in RDB, not Java.
+	 */
+	@Test
+	public void testWriteSpeedDouble() throws Exception
+	{
+		if (writer == null)
+			return;
+		
+		final WriteChannel channel = writer.getChannel(name);
+		final INumericMetaData meta =
+			ValueFactory.createNumericMetaData(0, 10, 2, 8, 1, 10, 1, "a.u.");
+
+		long count = 0;
+		final BenchmarkTimer timer = new BenchmarkTimer();
+		final long start = System.currentTimeMillis();
+		final long end = start + TEST_DURATION_SECS*1000L;
+		do
+		{
+			++count;
+			final IValue sample = ValueFactory.createDoubleValue(TimestampFactory.now(),
+				ValueFactory.createOKSeverity(), "OK",
+				meta,
+				IValue.Quality.Original,
+				new double[] { count });
+			writer.addSample(channel, sample);
+			if (count % FLUSH_COUNT == 0)
+				writer.flush();
+		}
+		while (System.currentTimeMillis() < end);
+		writer.flush();
+		timer.stop();
+		
+		System.out.println("Wrote " + count + " samples in " + timer);
+		System.out.println(count / timer.getSeconds() + " samples/sec");
 	}
 }

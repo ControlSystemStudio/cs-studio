@@ -34,6 +34,7 @@ public class RDBArchiveConfigTest
 		final TestProperties settings = new TestProperties();
 		final String url = settings.getString("archive_rdb_url");
 		final String user = settings.getString("archive_rdb_user");
+		final String schema = settings.getString("archive_rdb_schema");
 		final String password = settings.getString("archive_rdb_password");
 		engine_name = settings.getString("archive_config");
 		if (url == null  ||  user == null  ||  password == null  ||  engine_name == null)
@@ -42,7 +43,7 @@ public class RDBArchiveConfigTest
 			return;
 		}
 		
-		config = new RDBArchiveConfig(url, user, password, "CHAN_ARCH.");
+		config = new RDBArchiveConfig(url, user, password, schema);
 	}
     
     @After
@@ -57,6 +58,7 @@ public class RDBArchiveConfigTest
     	if (config == null)
     		return;
     	final EngineConfig engine = config.findEngine(engine_name);
+    	assertNotNull("Cannot locate engine " + engine_name, engine);
     	System.out.println(engine.getName() + ": " + engine.getDescription() +
     			" @ " + engine.getURL());
     	assertEquals(engine_name, engine.getName());
