@@ -121,12 +121,13 @@ public class CachedConstructorPerformanceUnitTest {
         Integer r = 0;
         try {
             MyDBRType type = new MyDBRType(TestDBRType.class); // the map lookup in _cached forValue
-            int count = 1;
+
             RunningStopWatch watch = StopWatch.start();
             for (int i = 0; i < ITERATIONS; i++) {
-                TestDBRType instance = type.newInstanceImproved(count);
-                r += instance.getCount();                // avoid compiler optimization for non used/referred to objects
+                TestDBRType instance = type.newInstanceImproved(i);
+                r += instance.getCount();  // avoid compiler optimization for non used/referred to objects
             }
+            System.out.println(r); // avoid compiler optimization for non used/referred to objects
             cachedConstructorPerf = watch.getElapsedTimeInNS();
         } catch (final Exception e) {
             Assert.fail("Unexpected exception.");
@@ -140,13 +141,13 @@ public class CachedConstructorPerformanceUnitTest {
         Integer r = 0;
         try {
             MyDBRType type = new MyDBRType(TestDBRType.class);
-            int count = 1;
 
             RunningStopWatch watch = StopWatch.start();
             for (int i = 0; i < ITERATIONS; i++) {
-                TestDBRType instance = type.newInstance(count);
-                r += instance.getCount();                           // avoid compiler optimization for non used/referred to objects
+                TestDBRType instance = type.newInstance(i);
+                r += instance.getCount();  // avoid compiler optimization for non used/referred to objects
             }
+            System.out.println(r); // avoid compiler optimization for non used/referred to objects
             cachedConstructorPerf = watch.getElapsedTimeInNS();
             
         } catch (final Exception e) {
@@ -160,9 +161,10 @@ public class CachedConstructorPerformanceUnitTest {
         RunningStopWatch watch = StopWatch.start();
         Integer r = 0;
         for (int i = 0; i < 100000; i++) {                      
-            final TestDBRType myDBR = new TestDBRType(1);
-            r += myDBR.getCount();               // avoid compiler optimization for non used/referred to objects
+            final TestDBRType myDBR = new TestDBRType(i);
+            r += myDBR.getCount(); // avoid compiler optimization for non used/referred to objects
         }
+        System.out.println(r); // avoid compiler optimization for non used/referred to objects
         return watch.getElapsedTimeInMillis();
     }
 }
