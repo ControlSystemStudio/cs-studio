@@ -22,5 +22,7 @@ Require-Bundle: org.eclipse.core.runtime,
  org.apache.log4j;bundle-version="1.2.16",
  org.csstudio.remote;bundle-version="1.0.0",
  org.slf4j;bundle-version="1.6.1"
-Bundle-ClassPath: .
+Bundle-ClassPath: .,
+ lib/derby.jar,
+ lib/derbyclient.jar
 Web-ContextPath: /webapp
