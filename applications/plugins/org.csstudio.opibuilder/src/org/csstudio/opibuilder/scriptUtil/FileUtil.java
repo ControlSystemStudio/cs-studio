@@ -8,12 +8,13 @@
 package org.csstudio.opibuilder.scriptUtil;
 
 import java.io.BufferedReader;
+import java.io.BufferedWriter;
 import java.io.ByteArrayInputStream;
 import java.io.File;
-import java.io.FileWriter;
+import java.io.FileOutputStream;
 import java.io.InputStream;
 import java.io.InputStreamReader;
-import java.io.PrintWriter;
+import java.io.OutputStreamWriter;
 
 import org.csstudio.opibuilder.editparts.AbstractBaseEditPart;
 import org.csstudio.opibuilder.util.ResourceUtil;
@@ -117,7 +118,7 @@ public class FileUtil {
 	public static String readTextFile(String filePath, AbstractBaseEditPart widget) throws Exception{
 		InputStream inputStream = getInputStreamFromFile(filePath, widget);
 		BufferedReader reader
-		   = new BufferedReader(new InputStreamReader(inputStream));
+		   = new BufferedReader(new InputStreamReader(inputStream, "UTF-8")); //$NON-NLS-1$
 		StringBuilder sb = new StringBuilder();
 		
 		try {
@@ -198,23 +199,21 @@ public class FileUtil {
 	    		}
 	    		sb.append(text);
 	    		file.setContents(
-	    				new ByteArrayInputStream(sb.toString().getBytes()), true, false, null);	    		
+	    				new ByteArrayInputStream(sb.toString().getBytes("UTF-8")), true, false, null);	  //$NON-NLS-1$
 	    	}else {
 	    		File sysFile = file.getLocation().toFile();
-	    		PrintWriter pw = new PrintWriter(new FileWriter(sysFile, append));
-	    		try {					
-					pw.print(text);
-				} finally {
-					pw.close();
-				}
+	    		BufferedWriter writer = new BufferedWriter(
+						new OutputStreamWriter(new FileOutputStream(sysFile, append), "UTF-8")); //$NON-NLS-1$
+				writer.write(text);
+				writer.flush();
+				writer.close();
 	    	}
 		}else{
-			PrintWriter pw = new PrintWriter(new FileWriter(path.toString(), append));
-			try {					
-				pw.print(text);
-			} finally {
-				pw.close();
-			}
+    		BufferedWriter writer = new BufferedWriter(
+					new OutputStreamWriter(new FileOutputStream(path.toString(), append), "UTF-8")); //$NON-NLS-1$
+			writer.write(text);
+			writer.flush();
+			writer.close();
 		}
 	}
 	

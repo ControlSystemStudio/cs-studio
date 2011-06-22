@@ -26,8 +26,9 @@ import java.io.ByteArrayInputStream;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
-import java.io.FileWriter;
+import java.io.FileOutputStream;
 import java.io.InputStream;
+import java.io.OutputStreamWriter;
 import java.util.ArrayList;
 import java.util.EventObject;
 import java.util.List;
@@ -856,10 +857,10 @@ public class OPIEditor extends GraphicalEditorWithFlyoutPalette {
 		try {
 			String content = XMLUtil.XML_HEADER + XMLUtil.widgetToXMLString(displayModel, true);
 			if (getEditorInput() instanceof FileEditorInput) {
-				InputStream in = new ByteArrayInputStream(content.getBytes());
+				InputStream in = new ByteArrayInputStream(content.getBytes("UTF-8")); //$NON-NLS-1$
 				try {
-					in = new ByteArrayInputStream(content.getBytes());
-					((FileEditorInput) getEditorInput()).getFile().setContents(
+					IFile file = ((FileEditorInput) getEditorInput()).getFile();					
+					file.setContents(
 						in, false, false, null);
 					in.close();
 				} catch (Exception e) {
@@ -874,8 +875,8 @@ public class OPIEditor extends GraphicalEditorWithFlyoutPalette {
 							((FileStoreEditorInput) getEditorInput()).getURI())
 							.toFile();
 
-						FileWriter fileWriter = new FileWriter(file, false);
-						BufferedWriter writer = new BufferedWriter(fileWriter);
+						BufferedWriter writer = new BufferedWriter(
+								new OutputStreamWriter(new FileOutputStream(file), "UTF-8")); //$NON-NLS-1$
 						writer.write(content);
 						writer.flush();
 						writer.close();
