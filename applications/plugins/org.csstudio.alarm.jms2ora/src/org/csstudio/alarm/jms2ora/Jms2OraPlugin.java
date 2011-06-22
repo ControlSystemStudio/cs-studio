@@ -35,8 +35,8 @@ import org.slf4j.LoggerFactory;
 /**
  * The activator class controls the plug-in life cycle
  */
-public class Jms2OraPlugin extends AbstractCssPlugin
-{
+public class Jms2OraPlugin extends AbstractCssPlugin {
+    
     /** The shared instance */
     private static Jms2OraPlugin plugin;
 
@@ -51,29 +51,22 @@ public class Jms2OraPlugin extends AbstractCssPlugin
 
     private GenericServiceTracker<ISessionService> _genericServiceTracker;
     
-    /**
-	 * The constructor
-	 */
-	public Jms2OraPlugin()
-	{
-	    plugin = this;
-	}
-
     @Override
-    protected void doStart(BundleContext context) throws Exception
-    {        
+    protected void doStart(BundleContext context) throws Exception {        
+        
         LOG.info("Jms2Ora is starting.");
+        
+        plugin = this;
         
         bundleContext = context;
 		_genericServiceTracker = new GenericServiceTracker<ISessionService>(
 				context, ISessionService.class);
 		_genericServiceTracker.open();
-
     }
 
     @Override
     protected void doStop(BundleContext context) throws Exception {
-        // Nothing to do here
+        plugin = null;
     }
 
     /**
@@ -81,8 +74,7 @@ public class Jms2OraPlugin extends AbstractCssPlugin
      * 
      * @return The bundle context of this plugin
      */
-    public BundleContext getBundleContext()
-    {
+    public BundleContext getBundleContext() {
         return bundleContext;
     }
     
@@ -91,14 +83,12 @@ public class Jms2OraPlugin extends AbstractCssPlugin
 	 *
 	 * @return the shared instance
 	 */
-	public static Jms2OraPlugin getDefault()
-	{
+	public static Jms2OraPlugin getDefault() {
 		return plugin;
 	}
 
     @Override
-    public String getPluginId()
-    {
+    public String getPluginId() {
         return PLUGIN_ID;
     }
     

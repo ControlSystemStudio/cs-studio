@@ -151,6 +151,7 @@ public class NewMessageProcessor extends Thread
      */    
     private NewMessageProcessor()
     {
+        this.setName("MessageProcessor-Thread");
         messages = new ConcurrentLinkedQueue<MessageContent>();
         
         IPreferencesService prefs = Platform.getPreferencesService();

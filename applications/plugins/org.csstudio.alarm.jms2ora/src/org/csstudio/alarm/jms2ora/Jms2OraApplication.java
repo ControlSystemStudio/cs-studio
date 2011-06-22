@@ -46,7 +46,8 @@ import org.slf4j.LoggerFactory;
  *
  */
 
-public class Jms2OraApplication implements IApplication, Stoppable, IGenericServiceListener<ISessionService> {
+public class Jms2OraApplication implements IApplication, Stoppable,
+                                           IGenericServiceListener<ISessionService> {
     
     private static Jms2OraApplication instance = null;
     
@@ -108,12 +109,17 @@ public class Jms2OraApplication implements IApplication, Stoppable, IGenericServ
         int currentState = 0;
 
         args = (String[])context.getArguments().get(IApplicationContext.APPLICATION_ARGS);
-              
+        
+        /*
+         *  Applikationsoptionen, um den Check zu starten
+         *  -check -host krynfs -username archiver
+         */
         cmd = new CommandLine(args);
         if(cmd.exists("help") || cmd.exists("h") || cmd.exists("?")) {
             
             System.out.println(VersionInfo.getAll());
-            System.out.println("Usage: jms2ora [-stop] [-host <hostname>] [-username <username>] [-help | -h | -?]");
+            System.out.println("Usage: jms2ora [-check] [-stop] [-host <hostname>] [-username <username>] [-help | -h | -?]");
+            System.out.println("       -check               - Checks if the application hangs using the XMPP command.");
             System.out.println("       -stop                - Stopps the application using the XMPP command.");
             System.out.println("       -host <hostname>     - Name of host where the application is running.");
             System.out.println("       -username <username> - Name of the user that is running the application.");
@@ -128,7 +134,8 @@ public class Jms2OraApplication implements IApplication, Stoppable, IGenericServ
             user = cmd.value("username", "");
             
             ApplicationStopper stopper = new ApplicationStopper();
-            boolean success = stopper.stopExternInstance(Jms2OraPlugin.getDefault().getBundleContext(), "jms2oracle", host, user);
+            boolean success = stopper.stopExternInstance(Jms2OraPlugin.getDefault().getBundleContext(),
+                                                         "jms2oracle", host, user);
         
             if(success) {
                 LOG.info("jms2ora stopped.");
@@ -139,6 +146,26 @@ public class Jms2OraApplication implements IApplication, Stoppable, IGenericServ
             return IApplication.EXIT_OK;
         }
         
+        if(cmd.exists("check")) {
+            
+            host = cmd.value("host", Hostname.getInstance().getHostname());
+            user = cmd.value("username", "");
+
+            ApplicationChecker checker = new ApplicationChecker();
+            boolean success = checker.checkExternInstance(Jms2OraPlugin.getDefault().getBundleContext(),
+                                                          "jms2oracle", host, user);
+        
+            if(success) {
+                LOG.info("jms2ora is working.\n");
+            } else {
+                LOG.error("jms2ora does not work.\n");
+            }
+            
+            return IApplication.EXIT_OK;
+        }
+
+        Jms2OraPlugin.getDefault().addSessionServiceListener(this);
+
         context.applicationRunning();
         
         // Create an object from this class

@@ -97,7 +97,7 @@ public class MessageProcessor extends Thread implements MessageListener {
     private Collector receivedMessages;
     
     /** Class that collects statistic informations. Query it via XMPP. */
-    private Collector emptyMessages;
+    private Collector filteredMessages;
 
     /** Class that collects statistic informations. Query it via XMPP. */
     private Collector discardedMessages;
@@ -155,11 +155,11 @@ public class MessageProcessor extends Thread implements MessageListener {
         receivedMessages.setContinuousPrint(false);
         receivedMessages.setContinuousPrintCount(1000.0);
         
-        emptyMessages = new Collector();
-        emptyMessages.setApplication(VersionInfo.NAME);
-        emptyMessages.setDescriptor("Filtered messages");
-        emptyMessages.setContinuousPrint(false);
-        emptyMessages.setContinuousPrintCount(1000.0);
+        filteredMessages = new Collector();
+        filteredMessages.setApplication(VersionInfo.NAME);
+        filteredMessages.setDescriptor("Filtered messages");
+        filteredMessages.setContinuousPrint(false);
+        filteredMessages.setContinuousPrintCount(1000.0);
         
         discardedMessages = new Collector();
         discardedMessages.setApplication(VersionInfo.NAME);
@@ -260,7 +260,7 @@ public class MessageProcessor extends Thread implements MessageListener {
                         if(result == ReturnValue.PM_RETURN_DISCARD) {
                             discardedMessages.incrementValue();
                         } else if(result == ReturnValue.PM_RETURN_EMPTY) {
-                            emptyMessages.incrementValue();
+                            filteredMessages.incrementValue();
                         }
                     } else {
                         storedMessages.incrementValue();
@@ -345,15 +345,20 @@ public class MessageProcessor extends Thread implements MessageListener {
         LOG.debug("onMessage(): " + message.toString());
         
         if(message instanceof MapMessage) {
+
+            MapMessage mapMessage = (MapMessage)message;
+            LOG.debug("onMessage(): ", mapMessage.toString());
             content = contentCreator.convertMapMessage((MapMessage)message);
             messages.add(content);
             receivedMessages.incrementValue();
-
+            mapMessage = null;
+            
             synchronized(this) {
                 notify();
             }
         } else {
-            LOG.info("Received a non MapMessage object. Discarded...");
+            LOG.warn("Received a non MapMessage object: ", message.toString());
+            LOG.warn("Discarding invalid message.");
         }        
     }
 
@@ -452,8 +457,40 @@ public class MessageProcessor extends Thread implements MessageListener {
         result.append("Received Messages:  " + receivedMessages.getActualValue().getValue() + "\n");
         result.append("Stored Messages:    " + storedMessages.getActualValue().getValue() + "\n");
         result.append("Discarded Messages: " + discardedMessages.getActualValue().getValue() + "\n");
-        result.append("Filtered Messages:     " + emptyMessages.getActualValue().getValue() + "\n");
+        result.append("Filtered Messages:     " + filteredMessages.getActualValue().getValue() + "\n");
         
         return result.toString();
+    }
+    
+    /**
+     * 
+     * @return
+     */
+    public Collector getReceivedMessagesCollector() {
+        return receivedMessages;
+    }
+    
+    /**
+     * 
+     * @return
+     */
+    public Collector getFilteredMessagesCollector() {
+        return filteredMessages;
+    }
+
+    /**
+     * 
+     * @return
+     */
+    public Collector getDiscardedMessagesCollector() {
+        return discardedMessages;
+    }
+
+    /**
+     * 
+     * @return
+     */
+    public Collector getStoredMessagesCollector() {
+        return storedMessages;
     }
 }
