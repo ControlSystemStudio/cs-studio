@@ -5,11 +5,11 @@
         point="org.eclipse.ui.popupMenus">
      <objectContribution
            adaptable="false"
-           id="org.csstudio.trends.databrowser2.shell.fragment.run"
+           id="org.csstudio.common.trendplotter.shell.fragment.run"
            nameFilter="*plt"
            objectClass="org.eclipse.core.resources.IResource">
         <action
-              class="org.csstudio.trends.databrowser.OpenAsShell"
+              class="org.csstudio.common.trendplotter.OpenAsShell"
               id="org.csstudio.utility.quickstart.addtoquickstartaction"
               label="Open in shell"/>
      </objectContribution>
@@ -19,7 +19,7 @@
          point="org.eclipse.ui.popupMenus">
       <objectContribution
             adaptable="true"
-            id="org.csstudio.trends.databrwoser2.shell.popupactions"
+            id="org.csstudio.common.trendplotter.shell.popupactions"
             objectClass="org.csstudio.platform.model.IProcessVariable">
          <menu
                id="org.csstudio.popmenu"
@@ -33,19 +33,19 @@
             </separator>
          </menu>
          <action
-               class="org.csstudio.trends.databrowser.OpenDataBrowserShellPopupAction"
-               icon="icons/databrowser.png"
-               id="org.csstudio.trends.databrowser.OpenDataBrowserShellPopupAction"
-               label="Databrowser Shell"
+               class="org.csstudio.common.trendplotter.OpenDataBrowserShellPopupAction"
+               icon="icons/trendplotter.png"
+               id="org.csstudio.common.trendplotter.OpenDataBrowserShellPopupAction"
+               label="TrendPlotter Shell"
                menubarPath="org.csstudio.popmenu/content"
-               tooltip="Open Databrowser in shell">
+               tooltip="Open TrendPlotter in shell">
          </action>
       </objectContribution>
    </extension>
          <extension
             point="org.csstudio.platform.ui.striptool">
          <striptool
-               class="org.csstudio.trends.databrowser.StripToolService">
+               class="org.csstudio.common.trendplotter.StripToolService">
          </striptool>
       </extension>
 
