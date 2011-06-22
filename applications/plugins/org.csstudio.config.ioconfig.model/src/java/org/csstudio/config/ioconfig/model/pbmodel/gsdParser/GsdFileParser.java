@@ -210,7 +210,7 @@ public final class GsdFileParser {
                                      @Nonnull ParsedGsdFileModel parsedGsdFileModel,
                                      @Nonnull BufferedReader br) throws IOException {
         String[] lineParts = line.split("[\"]");
-        assert lineParts.length > 2;
+        assert lineParts.length > 1;
         Integer index = GsdFileParser.gsdValue2Int(lineParts[0].split("=")[1]);
         String text = lineParts[1].split(";")[0].trim();
         
