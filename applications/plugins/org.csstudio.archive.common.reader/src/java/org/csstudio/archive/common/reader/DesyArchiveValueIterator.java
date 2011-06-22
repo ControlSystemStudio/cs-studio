@@ -21,22 +21,14 @@
  */
 package org.csstudio.archive.common.reader;
 
-import java.util.Collection;
-import java.util.Collections;
-import java.util.Iterator;
-
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
 import org.csstudio.archive.common.reader.facade.IServiceProvider;
 import org.csstudio.archive.common.requesttype.IArchiveRequestType;
 import org.csstudio.archive.common.service.ArchiveServiceException;
-import org.csstudio.archive.common.service.IArchiveReaderFacade;
-import org.csstudio.archive.common.service.sample.IArchiveSample;
-import org.csstudio.archivereader.ValueIterator;
 import org.csstudio.data.values.IValue;
 import org.csstudio.domain.desy.service.osgi.OsgiServiceUnavailableException;
-import org.csstudio.domain.desy.system.IAlarmSystemVariable;
 import org.csstudio.domain.desy.time.TimeInstant;
 import org.csstudio.domain.desy.typesupport.TypeSupportException;
 import org.slf4j.Logger;
@@ -48,27 +40,14 @@ import org.slf4j.LoggerFactory;
  *
  * @author bknerr
  * @since 21.12.2010
+ * @param <V> the base type of this channel
  */
-public class DesyArchiveValueIterator implements ValueIterator {
+public class DesyArchiveValueIterator<V> extends AbstractValueIterator<V> {
 
     @SuppressWarnings("unused")
     private static final Logger LOG =
         LoggerFactory.getLogger(DesyArchiveValueIterator.class);
 
-    @SuppressWarnings("rawtypes")
-    private static final ArchiveSampleToIValueFunction ARCH_SAMPLE_2_IVALUE_FUNC =
-        new ArchiveSampleToIValueFunction();
-
-    private final String _channelName;
-    private final TimeInstant _start;
-    private final TimeInstant _end;
-
-    private Collection<IArchiveSample<Object, IAlarmSystemVariable<Object>>> _samples =
-        Collections.emptyList();
-
-    private Iterator<IArchiveSample<Object, IAlarmSystemVariable<Object>>> _iterator = _samples.iterator();
-
-    private final IServiceProvider _provider;
     /**
      * Constructor.
      * @param provider
@@ -82,35 +61,7 @@ public class DesyArchiveValueIterator implements ValueIterator {
                              @Nullable final IArchiveRequestType type)
                              throws ArchiveServiceException,
                              OsgiServiceUnavailableException {
-        _provider = provider;
-        _channelName = channelName;
-        _start = start;
-        _end = end;
-
-
-        if (_start.isAfter(_end)) {
-            throw new IllegalArgumentException("Start time mustn't be after end time");
-        }
-
-        final IArchiveReaderFacade service = _provider.getReaderFacade();
-
-        _samples = service.readSamples(channelName, start, end, type);
-        _iterator = _samples.iterator();
-    }
-
-    @Nonnull
-    public TimeInstant getStart() {
-        return _start;
-    }
-
-    @Nonnull
-    public TimeInstant getEnd() {
-        return _end;
-    }
-
-    @Nonnull
-    public String getChannelName() {
-        return _channelName;
+        super(provider, channelName, start, end, type);
     }
 
     /**
@@ -118,7 +69,7 @@ public class DesyArchiveValueIterator implements ValueIterator {
      */
     @Override
     public boolean hasNext() {
-        return _iterator.hasNext();
+        return getIterator().hasNext();
     }
 
     /**
@@ -128,20 +79,10 @@ public class DesyArchiveValueIterator implements ValueIterator {
     @Override
     @Nonnull
     public IValue next() throws Exception {
-        final IValue value = ARCH_SAMPLE_2_IVALUE_FUNC.apply(_iterator.next());
+        final IValue value = ARCH_SAMPLE_2_IVALUE_FUNC.apply(getIterator().next());
         if (value == null) {
             throw new TypeSupportException("Sample could not be converted to " + IValue.class.getName() + " type.", null);
         }
         return value;
     }
-
-    /**
-     * {@inheritDoc}
-     */
-    @Override
-    public void close() {
-        // Useless here
-    }
-
-
 }

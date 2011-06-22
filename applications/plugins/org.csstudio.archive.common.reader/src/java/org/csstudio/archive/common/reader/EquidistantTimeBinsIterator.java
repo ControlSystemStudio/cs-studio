@@ -21,7 +21,6 @@
  */
 package org.csstudio.archive.common.reader;
 
-import java.util.Collection;
 import java.util.Iterator;
 import java.util.NoSuchElementException;
 
@@ -38,7 +37,6 @@ import org.csstudio.archive.common.service.sample.IArchiveMinMaxSample;
 import org.csstudio.archive.common.service.sample.IArchiveSample;
 import org.csstudio.archive.common.service.sample.SampleMinMaxAggregator;
 import org.csstudio.archivereader.Severity;
-import org.csstudio.archivereader.ValueIterator;
 import org.csstudio.data.values.INumericMetaData;
 import org.csstudio.data.values.IValue;
 import org.csstudio.data.values.ValueFactory;
@@ -59,7 +57,7 @@ import org.joda.time.ReadableDuration;
  * @since Feb 24, 2011
  * @param <V> the base type of this channel
  */
-public class EquidistantTimeBinsIterator<V> implements ValueIterator {
+public class EquidistantTimeBinsIterator<V> extends AbstractValueIterator<V> {
 
     /**
      * Result container for method
@@ -86,27 +84,18 @@ public class EquidistantTimeBinsIterator<V> implements ValueIterator {
         public IArchiveSample<V, ISystemVariable<V>> getSample() {
             return _sample;
         }
-
-
     }
 
-    private final Collection<IArchiveSample<V, ISystemVariable<V>>> _samples;
-
-    private final TimeInstant _startTime;
-    private final TimeInstant _endTime;
     private final ReadableDuration _windowLength;
 
     private final int _numOfWindows;
     private int _currentWindow = 1;
 
-    private final Iterator<IArchiveSample<V, ISystemVariable<V>>> _samplesIter;
     private IArchiveSample<V, ISystemVariable<V>> _firstSample;
     private IArchiveSample<V, ISystemVariable<V>> _lastSampleOfLastWindow;
     private final INumericMetaData _metaData;
     private SampleMinMaxAggregator _agg;
     private boolean _noSamples = false;
-
-    private final IServiceProvider _provider;
 
     /**
      * Constructor.
@@ -122,28 +111,23 @@ public class EquidistantTimeBinsIterator<V> implements ValueIterator {
                                        final int timeBins) throws OsgiServiceUnavailableException,
                                                                   ArchiveServiceException,
                                                                   TypeSupportException {
-        _provider = provider;
-        _startTime = start;
-        _endTime = end;
+        super(provider, channelName, start, end, type);
         _numOfWindows = timeBins;
 
-        if (_startTime.isAfter(_endTime) || _numOfWindows <= 0) {
-            throw new IllegalArgumentException("Start time is after end time or number of time bins less equal zero.");
+        if (_numOfWindows <= 0) {
+            throw new IllegalArgumentException("Number of time bins less equal zero.");
         }
 
-        _samples = _provider.getReaderFacade().readSamples(channelName, start, end, type);
-        _samplesIter = _samples.iterator();
+        _metaData = retrieveMetaDataForChannel(provider, channelName);
 
-        _metaData = retrieveMetaDataForChannel(_provider, channelName);
-
-        _windowLength = calculateWindowLength(_startTime, _endTime, _numOfWindows);
+        _windowLength = calculateWindowLength(start, end, _numOfWindows);
 
         _lastSampleOfLastWindow =
-            _provider.getReaderFacade().readLastSampleBefore(channelName, _startTime);
+            provider.getReaderFacade().readLastSampleBefore(channelName, start);
 
-        final SampleAndWindow<V> saw = findFirstSampleAndItsWindow(_startTime,
+        final SampleAndWindow<V> saw = findFirstSampleAndItsWindow(start,
                                                                    _windowLength,
-                                                                   _samplesIter);
+                                                                   getIterator());
         _firstSample = saw.getSample();
         final int firstSampleWindow = saw.getWindow();
 
@@ -257,10 +241,10 @@ public class EquidistantTimeBinsIterator<V> implements ValueIterator {
 
         initAggregator(_lastSampleOfLastWindow);
 
-        final TimeInstant curWindowEnd = calculateCurrentWindowEndTime(_startTime, _currentWindow, _windowLength);
+        final TimeInstant curWindowEnd = calculateCurrentWindowEndTime(getStart(), _currentWindow, _windowLength);
         if (_firstSample != null && hasTimestampBeforeWindowEnd(_firstSample, curWindowEnd)) {
             _firstSample =
-                aggregateSamplesUntilWindowEnd(_firstSample, curWindowEnd, _samplesIter, _agg);
+                aggregateSamplesUntilWindowEnd(_firstSample, curWindowEnd, getIterator(), _agg);
         }
 
         final IValue iVal = createMinMaxDoubleValue(curWindowEnd, _metaData, _agg);
