@@ -23,3 +23,4 @@ Export-Package: org.csstudio.archive.common.service,
  org.csstudio.archive.common.service.enginestatus,
  org.csstudio.archive.common.service.sample,
  org.csstudio.archive.common.service.util
+Bundle-ClassPath: .

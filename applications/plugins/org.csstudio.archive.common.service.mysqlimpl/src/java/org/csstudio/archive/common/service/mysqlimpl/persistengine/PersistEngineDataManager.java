@@ -45,6 +45,7 @@ import org.csstudio.domain.desy.time.TimeInstant.TimeInstantBuilder;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.google.common.base.Strings;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Sets;
 import com.google.inject.Inject;
@@ -152,7 +153,7 @@ public class PersistEngineDataManager {
 
         _sqlStatementBatch = SqlStatementBatch.INSTANCE;
 
-        addGracefullyShutdownHook();
+        addGracefulShutdownHook();
     }
 
 
@@ -189,11 +190,19 @@ public class PersistEngineDataManager {
         }
     }
 
-    private void addGracefullyShutdownHook() {
-        /**
-         * Add shutdown hook.
-         */
-        Runtime.getRuntime().addShutdownHook(new ShutdownWorkerThread());
+    /**
+     * This shutdown hook is only added when the sys property context is not set to "CI",
+     * meaning continuous integration. This is a flaw as the production code should be unaware
+     * of its run context, but we couldn't think of another option.
+     */
+    private void addGracefulShutdownHook() {
+        final String context = System.getProperty("context");
+        if (Strings.isNullOrEmpty(context) || !"CI".equals(context) ) {
+            /**
+             * Add shutdown hook.
+             */
+            Runtime.getRuntime().addShutdownHook(new ShutdownWorkerThread());
+        }
     }
 
     /**

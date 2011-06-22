@@ -144,6 +144,31 @@ public final class TimeInstantUnitTest {
 
 
     @Test(expected=IllegalArgumentException.class)
+    public void invalidMinusTest1() {
+        final TimeInstant t1 = TimeInstantBuilder.fromNanos(0L);
+        t1.minusMillis(1L);
+    }
+
+    @Test(expected=IllegalArgumentException.class)
+    public void invalidMinusTest2() {
+        final TimeInstant t1 = TimeInstantBuilder.fromNanos(0L);
+        t1.minusMillis(-1L);
+    }
+    
+    @Test
+    public void minusTest() {
+        TimeInstant t = TimeInstantBuilder.fromMillis(222L);
+        TimeInstant result = t.minusMillis(200L);
+        Assert.assertTrue(result.getMillis() == 22L);
+        
+        t = TimeInstantBuilder.fromNanos(123456789L);
+        result = t.minusMillis(123L);
+        Assert.assertTrue(result.getMillis() == 0L);
+        Assert.assertTrue(result.getFractalSecondsInNanos() == 456789L);
+    }
+    
+    
+    @Test(expected=IllegalArgumentException.class)
     public void invalidPlusTest1() {
         final TimeInstant t1 = TimeInstantBuilder.fromNanos(0L);
         t1.plusMillis(-1L);
