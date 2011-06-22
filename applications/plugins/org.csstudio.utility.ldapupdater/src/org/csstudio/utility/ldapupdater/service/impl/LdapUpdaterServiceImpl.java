@@ -29,6 +29,8 @@ import static org.csstudio.utility.ldap.treeconfiguration.LdapEpicsControlsConfi
 import static org.csstudio.utility.ldap.treeconfiguration.LdapEpicsControlsConfiguration.UNIT;
 
 import java.util.Collection;
+import java.util.LinkedList;
+import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
@@ -62,6 +64,7 @@ import org.csstudio.utility.treemodel.INodeComponent;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.google.common.base.Strings;
 import com.google.inject.Inject;
 
 
@@ -200,8 +203,8 @@ public final class LdapUpdaterServiceImpl implements ILdapUpdaterService {
             for (final Record recFromFile : recordsFromFile) {
                 if (!recordMapFromLdap.containsKey(recFromFile.getName())) {
                     numOfRecsWritten += createNewRecordEntry(iocFromLDAP,
-                                                           forbiddenRecords,
-                                                           recFromFile);
+                                                             forbiddenRecords,
+                                                             recFromFile);
                 }
             }
             NotificationMailer.sendUnallowedCharsNotification(iocFromLDAP, iocName, forbiddenRecords);
@@ -342,21 +345,33 @@ public final class LdapUpdaterServiceImpl implements ILdapUpdaterService {
     private void validateAndUpdateIpAddressAttribute(@Nonnull final IpAddress ipAddress,
                                                      @Nonnull final Collection<INodeComponent<LdapEpicsControlsConfiguration>> values)
                                                      throws LdapUpdaterServiceException {
+
+        final List<String> iocsWithoutAttribute = new LinkedList<String>();
+
         for (final INodeComponent<LdapEpicsControlsConfiguration> iocFromLdap : values) {
             final Attribute attribute = iocFromLdap.getAttribute(LdapFieldsAndAttributes.ATTR_VAL_IOC_IP_ADDRESS);
             try {
+                if (attribute == null) {
+                    iocsWithoutAttribute.add(iocFromLdap.toString());
+                    continue;
+                }
                 final String ipAddressFromLdap = (String) attribute.get();
-                if (ipAddressFromLdap != null) {
-                    if (ipAddress.toString().equals(ipAddressFromLdap)) {
-                        NotificationMailer.sendIpAddressNotUniqueNotification(ipAddress, iocFromLdap);
-                        _facade.modifyIpAddressAttribute(iocFromLdap.getLdapName(), null);
-                    }
+                if (Strings.isNullOrEmpty(ipAddressFromLdap)) {
+                    iocsWithoutAttribute.add(iocFromLdap.toString());
+                    continue;
+                }
+                if (ipAddress.toString().equals(ipAddressFromLdap)) {
+                    NotificationMailer.sendIpAddressNotUniqueNotification(ipAddress, iocFromLdap);
+                    _facade.modifyIpAddressAttribute(iocFromLdap.getLdapName(), null);
                 }
             } catch (final NamingException e) {
                 throw new LdapUpdaterServiceException("Attribute creation for IP Address modification in LDAP failed.", e);
             } catch (final LdapFacadeException e) {
                 throw new LdapUpdaterServiceException("IP Address modification in LDAP failed.", e);
             }
+        }
+        if (!iocsWithoutAttribute.isEmpty()) {
+            NotificationMailer.sendIpAddressNotSetInLDAP(iocsWithoutAttribute);
         }
 
     }
