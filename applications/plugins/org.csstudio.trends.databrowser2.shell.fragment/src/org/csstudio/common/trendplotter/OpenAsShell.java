@@ -1,4 +1,4 @@
-package org.csstudio.trends.databrowser;
+package org.csstudio.common.trendplotter;
 
 import org.eclipse.core.resources.IFile;
 import org.eclipse.jface.action.IAction;

@@ -46,7 +46,10 @@ public enum NotificationType {
                           "Older IOCs' IP address attribute is reset to empty string in LDAP."),
 
     UNKNOWN_IOCS_IN_LDAP("IOC file missing!",
-                         "The LDAP contains IOC entries, for which a corresponding IOC file could not be identified:");
+                         "The LDAP contains IOC entries, for which a corresponding IOC file could not be identified:"),
+
+    IP_ADDRESS_NOT_SET_IN_LDAP("LDAP attribute " + LdapFieldsAndAttributes.ATTR_VAL_IOC_IP_ADDRESS + " not correctly set.",
+                               "LDAP contains IOCs for which the attribute is missing.");
 
     private static final String SUBJECT_PREFIX = "[LDAP Updater]";
 

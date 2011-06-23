@@ -60,8 +60,8 @@ public class DesyArchiveValueIteratorUnitTest {
                                                             TestUtils.CHANNEL_1_SAMPLES);
         
         
-        final DesyArchiveValueIterator iter = 
-            new DesyArchiveValueIterator(provider, TestUtils.CHANNEL_NAME_1, start, end, null);
+        final DesyArchiveValueIterator<Double> iter = 
+            new DesyArchiveValueIterator<Double>(provider, TestUtils.CHANNEL_NAME_1, start, end, null);
         
         Assert.assertTrue(iter.hasNext());
         IMinMaxDoubleValue next = (IMinMaxDoubleValue) iter.next();
@@ -86,8 +86,8 @@ public class DesyArchiveValueIteratorUnitTest {
         final IServiceProvider provider = 
             TestUtils.createCustomizedMockedServiceProvider("", instant, instant, Collections.emptyList());
         
-        final DesyArchiveValueIterator iter = 
-            new DesyArchiveValueIterator(provider, "", instant, instant, null);
+        final DesyArchiveValueIterator<Double> iter = 
+            new DesyArchiveValueIterator<Double>(provider, "", instant, instant, null);
         
         Assert.assertFalse(iter.hasNext());
         

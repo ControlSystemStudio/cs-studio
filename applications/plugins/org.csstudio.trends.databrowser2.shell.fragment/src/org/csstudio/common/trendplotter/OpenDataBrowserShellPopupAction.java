@@ -1,14 +1,14 @@
-package org.csstudio.trends.databrowser;
+package org.csstudio.common.trendplotter;
 
 import org.csstudio.platform.model.IProcessVariable;
 import org.csstudio.platform.ui.internal.dataexchange.ProcessVariablePopupAction;
-import org.csstudio.trends.databrowser2.Messages;
-import org.csstudio.trends.databrowser2.model.ArchiveRescale;
-import org.csstudio.trends.databrowser2.model.AxisConfig;
-import org.csstudio.trends.databrowser2.model.Model;
-import org.csstudio.trends.databrowser2.model.PVItem;
-import org.csstudio.trends.databrowser2.ui.Controller;
-import org.csstudio.trends.databrowser2.ui.Plot;
+import org.csstudio.common.trendplotter.Messages;
+import org.csstudio.common.trendplotter.model.ArchiveRescale;
+import org.csstudio.common.trendplotter.model.AxisConfig;
+import org.csstudio.common.trendplotter.model.Model;
+import org.csstudio.common.trendplotter.model.PVItem;
+import org.csstudio.common.trendplotter.ui.Controller;
+import org.csstudio.common.trendplotter.ui.Plot;
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.osgi.util.NLS;
 import org.eclipse.swt.SWT;

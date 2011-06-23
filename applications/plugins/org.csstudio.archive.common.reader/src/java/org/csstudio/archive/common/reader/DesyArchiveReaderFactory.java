@@ -154,7 +154,7 @@ public final class DesyArchiveReaderFactory implements ArchiveReaderFactory {
 
             final TimeInstant s = BaseTypeConversionSupport.toTimeInstant(start);
             final TimeInstant e = BaseTypeConversionSupport.toTimeInstant(end);
-            return new DesyArchiveValueIterator(_provider, name, s, e, getRawType());
+            return new DesyArchiveValueIterator<Object>(_provider, name, s, e, getRawType());
         }
 
 

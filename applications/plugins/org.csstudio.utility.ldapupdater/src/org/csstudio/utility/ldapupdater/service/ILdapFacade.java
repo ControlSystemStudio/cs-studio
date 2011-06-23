@@ -87,7 +87,7 @@ public interface ILdapFacade {
      * @return the map of records for the ioc
      * @throws LdapFacadeException
      */
-    @CheckForNull
+    @Nonnull
     Map<String, INodeComponent<LdapEpicsControlsConfiguration>>
     retrieveRecordsForIOC(@Nonnull final LdapName fullName) throws LdapFacadeException;
 

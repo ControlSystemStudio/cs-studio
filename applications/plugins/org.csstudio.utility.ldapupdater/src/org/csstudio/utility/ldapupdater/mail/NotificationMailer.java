@@ -42,6 +42,8 @@ import org.csstudio.utility.ldap.treeconfiguration.LdapEpicsControlsConfiguratio
 import org.csstudio.utility.ldap.treeconfiguration.LdapEpicsControlsFieldsAndAttributes;
 import org.csstudio.utility.treemodel.INodeComponent;
 
+import com.google.common.base.Joiner;
+
 /**
  * Encapsulates LDAP Updater specific mail functionality.
  *
@@ -137,5 +139,11 @@ public final class NotificationMailer {
                  DEFAULT_RESPONSIBLE_PERSON,
                  "IP Address: " + ipAddress.toString() + "\n" +
                  "Formerly used by (now removed): " + iocFromLdap.getLdapName().toString());
+    }
+
+    public static void sendIpAddressNotSetInLDAP(@Nonnull final List<String> iocsWithoutAttribute) {
+        sendMail(NotificationType.IP_ADDRESS_NOT_SET_IN_LDAP,
+                 DEFAULT_RESPONSIBLE_PERSON,
+                 "IOCs without epicsAddress attribute in LDAP:\n" + Joiner.on("\n").join(iocsWithoutAttribute));
     }
 }

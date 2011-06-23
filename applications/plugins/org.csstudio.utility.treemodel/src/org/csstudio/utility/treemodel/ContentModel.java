@@ -134,7 +134,7 @@ public final class ContentModel<T extends Enum<T> & ITreeNodeConfiguration<T>> {
         cacheNewChild(newChild);
     }
 
-    private void cacheNewChild(final INodeComponent<T> newChild) {
+    private void cacheNewChild(@Nonnull final INodeComponent<T> newChild) {
         // CACHING
         _cacheByLdapName.put(newChild.getLdapName().toString(), newChild);
 
@@ -183,7 +183,8 @@ public final class ContentModel<T extends Enum<T> & ITreeNodeConfiguration<T>> {
 
     @Nonnull
     public Map<String, INodeComponent<T>> getChildrenByTypeAndSimpleName(@Nonnull final T type) {
-        return _cacheByTypeAndSimpleName.get(type);
+        final Map<String, INodeComponent<T>> map = _cacheByTypeAndSimpleName.get(type);
+        return map != null ? map : Collections.<String, INodeComponent<T>>emptyMap();
     }
 
     @CheckForNull
@@ -204,9 +205,10 @@ public final class ContentModel<T extends Enum<T> & ITreeNodeConfiguration<T>> {
         return _cacheByLdapName.get(name);
     }
 
-    @CheckForNull
+    @Nonnull
     public Map<String, INodeComponent<T>> getByType(@Nonnull final T type) {
-        return _cacheByTypeAndLdapName.get(type);
+        final Map<String, INodeComponent<T>> map = _cacheByTypeAndLdapName.get(type);
+        return map != null ? map : Collections.<String, INodeComponent<T>>emptyMap();
     }
 
     /**

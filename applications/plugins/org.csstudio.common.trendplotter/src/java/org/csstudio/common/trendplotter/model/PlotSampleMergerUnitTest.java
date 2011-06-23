@@ -150,4 +150,27 @@ public class PlotSampleMergerUnitTest
         assertTrue(check(result));
         assertArrayEquals(add, result);
     }
+    
+    @Test
+    public void interleavedSamples() {
+        final PlotSample existing[] = new PlotSample[10];
+        final PlotSample add[] = new PlotSample[10];
+        for (int i = 0;  i < 10; i++) {
+            existing[i] = TestSampleBuilder.makePlotSample(i<<1);
+            add[i] = TestSampleBuilder.makePlotSample((i<<1) + 1);
+        }
+
+        final PlotSample result[] = PlotSampleMerger.merge(existing, add);
+        
+        assertEquals(20, result.length);
+
+        assertEquals(0, result[0].getYValue(), 0.1);
+        assertEquals(1, result[1].getYValue(), 0.1);
+        assertEquals(2, result[2].getYValue(), 0.1);
+        assertEquals(3, result[3].getYValue(), 0.1);
+
+        assertEquals(18, result[18].getYValue(), 0.1);
+        assertEquals(19, result[19].getYValue(), 0.1);
+        
+    }
 }

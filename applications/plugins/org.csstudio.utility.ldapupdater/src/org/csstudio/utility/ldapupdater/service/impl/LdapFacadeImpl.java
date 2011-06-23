@@ -155,7 +155,7 @@ public class LdapFacadeImpl implements ILdapFacade {
      * {@inheritDoc}
      */
     @Override
-    @CheckForNull
+    @Nonnull
     public Map<String, INodeComponent<LdapEpicsControlsConfiguration>> retrieveRecordsForIOC(@Nonnull final LdapName fullIocName)
         throws LdapFacadeException {
 
