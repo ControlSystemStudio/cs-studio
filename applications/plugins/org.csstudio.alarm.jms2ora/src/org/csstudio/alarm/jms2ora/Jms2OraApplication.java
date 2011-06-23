@@ -60,6 +60,12 @@ public class Jms2OraApplication implements IApplication, Stoppable,
     /**  */
     private SynchObject sync;
     
+    /** Object that holds the credentials for XMPP login */
+    private XmppInfo xmppInfo;
+    
+    /** The ECF service */
+    private ISessionService xmppService;
+    
     /** Name of the folder that holds the stored message content */
     private String objectDir;
 
@@ -91,6 +97,8 @@ public class Jms2OraApplication implements IApplication, Stoppable,
         createObjectFolder();
     
         sync = new SynchObject(ApplicState.INIT, System.currentTimeMillis());
+        xmppInfo = null;
+        xmppService = null;
         running = true;
         shutdown = false;
     }
@@ -109,6 +117,16 @@ public class Jms2OraApplication implements IApplication, Stoppable,
         int currentState = 0;
 
         args = (String[])context.getArguments().get(IApplicationContext.APPLICATION_ARGS);
+        
+        IPreferencesService prefs = Platform.getPreferencesService();
+        String xmppUser = prefs.getString(Jms2OraPlugin.PLUGIN_ID,
+                PreferenceConstants.XMPP_USER_NAME, "anonymous", null);
+        String xmppPassword = prefs.getString(Jms2OraPlugin.PLUGIN_ID,
+                PreferenceConstants.XMPP_PASSWORD, "anonymous", null);
+        String xmppServer = prefs.getString(Jms2OraPlugin.PLUGIN_ID,
+                PreferenceConstants.XMPP_SERVER, "krynfs.desy.de", null);
+        
+        xmppInfo = new XmppInfo(xmppServer, xmppUser, xmppPassword);
         
         /*
          *  Applikationsoptionen, um den Check zu starten
@@ -258,6 +276,10 @@ public class Jms2OraApplication implements IApplication, Stoppable,
             }
         }
         
+        if (xmppService != null) {
+            xmppService.disconnect();
+        }
+        
         Integer exitCode;
         if (shutdown) {
             exitCode = IApplication.EXIT_OK;
@@ -272,23 +294,20 @@ public class Jms2OraApplication implements IApplication, Stoppable,
     
     public void bindService(ISessionService sessionService) {
         
-        IPreferencesService prefs = Platform.getPreferencesService();
-        String xmppUser = prefs.getString(Jms2OraPlugin.PLUGIN_ID,
-                PreferenceConstants.XMPP_USER_NAME, "anonymous", null);
-        String xmppPassword = prefs.getString(Jms2OraPlugin.PLUGIN_ID,
-                PreferenceConstants.XMPP_PASSWORD, "anonymous", null);
-        String xmppServer = prefs.getString(Jms2OraPlugin.PLUGIN_ID,
-                PreferenceConstants.XMPP_SERVER, "krynfs.desy.de", null);
+    	if (xmppInfo == null) {
+    	    return;
+    	}
     	
     	try {
-			sessionService.connect(xmppUser, xmppPassword, xmppServer);
-		} catch (Exception e) {
+			sessionService.connect(xmppInfo.getXmppUser(), xmppInfo.getXmppPassword(), xmppInfo.getXmppServer());
+			xmppService = sessionService;
+    	} catch (Exception e) {
 		    LOG.warn("XMPP connection is not available, " + e.toString());
 		}
     }
     
     public void unbindService(ISessionService service) {
-    	service.disconnect();
+    	// Nothing to do here
     }
         
     public int getState() {

@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <?pde version="3.5"?>
 
-<product name="Jms2OraProduct" id="org.csstudio.alarm.jms2ora.Jms2OraProduct" application="org.csstudio.alarm.jms2ora.Jms2OraApplicationId" useFeatures="false" includeLaunchers="true">
+<product name="Jms2OraProduct" id="org.csstudio.alarm.jms2ora.Jms2OraProduct" application="org.csstudio.alarm.jms2ora.Jms2OraApplicationId" version="2.3.4" useFeatures="false" includeLaunchers="true">
 
    <configIni use="default">
    </configIni>
