@@ -21,9 +21,8 @@ import org.eclipse.jdt.internal.junit.model.RemoteTestRunnerClient;
  */
 @SuppressWarnings("restriction")
 public final class PDETestResultsCollector {
-    
-    // TODO (bknerr) : static ??? doesnt make sense
-    private static PDETestListener PDE_TEST_LISTENER;
+    //CHECKSTYLE:OFF
+    private PDETestListener _listener;
 
     private String _suiteName;
 
@@ -32,13 +31,18 @@ public final class PDETestResultsCollector {
     }
 
     private void run(int port) throws InterruptedException {
-        PDE_TEST_LISTENER = new PDETestListener(this, _suiteName);
-        new RemoteTestRunnerClient().startListening(new ITestRunListener2[] {PDE_TEST_LISTENER}, port);
+        _listener = new PDETestListener(this, _suiteName);
+        new RemoteTestRunnerClient().startListening(new ITestRunListener2[] {_listener}, port);
         System.out.println("Listening on port " + port + " for test suite " + _suiteName + " results ...");
         synchronized (this) {
             wait();
         }
     }
+
+    private PDETestListener getListener() {
+        return _listener;
+    }
+
 
     public static void main(@Nonnull final String[] args) {
         if (args.length != 2) {
@@ -46,15 +50,21 @@ public final class PDETestResultsCollector {
             System.exit(0);
         }
 
+        PDETestResultsCollector collector = null;
+        PDETestListener listener = null;
         try {
-            new PDETestResultsCollector(args[0]).run(Integer.parseInt(args[1]));
+            collector = new PDETestResultsCollector(args[0]);
+            listener = collector.getListener();
+
+            collector.run(Integer.parseInt(args[1]));
+            
         } catch (Throwable th) {
             th.printStackTrace();
         }
-
-        if (PDE_TEST_LISTENER != null && PDE_TEST_LISTENER.failed()) {
+        
+        if (listener != null && listener.failed()) {
             System.exit(1);
-        }
+        }    
     }
 }
-
+//CHECKSTYLE:ON

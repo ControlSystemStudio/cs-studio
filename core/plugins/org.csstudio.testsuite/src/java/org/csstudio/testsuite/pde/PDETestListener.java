@@ -25,7 +25,7 @@ import junit.framework.TestResult;
 import org.apache.tools.ant.taskdefs.optional.junit.JUnitTest;
 import org.apache.tools.ant.taskdefs.optional.junit.XMLJUnitResultFormatter;
 import org.eclipse.jdt.internal.junit.model.ITestRunListener2;
-
+//CHECKSTYLE:OFF
 @SuppressWarnings("restriction")
 public class PDETestListener implements ITestRunListener2 {
     private Object resultsCollector;
@@ -59,11 +59,11 @@ public class PDETestListener implements ITestRunListener2 {
         return outputFile;
     }
 
-    public boolean failed() {
+    public synchronized boolean failed() {
         return ((numberOfTestsFailed + numberOfTestsWithError) > 0) || (testRunEnded && (testsRunCount == 0));
     }
 
-    public int count() {
+    public synchronized int count() {
         return testsRunCount;
     }
 
@@ -173,7 +173,7 @@ public class PDETestListener implements ITestRunListener2 {
         System.out.println("Test Tree Entry - Description: " + description);
     }
 
-    class WrapperTestCase extends TestCase {
+    private static final class WrapperTestCase extends TestCase {
 
         public WrapperTestCase(String name) {
             super(name);
@@ -186,7 +186,8 @@ public class PDETestListener implements ITestRunListener2 {
 
         @Override
         public void run(TestResult result) {
+            // EMPTY
         }
     }
 }
-
+//CHECKSTYLE:ON

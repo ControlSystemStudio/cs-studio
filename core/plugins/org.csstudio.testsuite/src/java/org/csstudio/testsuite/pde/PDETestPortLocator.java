@@ -20,7 +20,7 @@ import java.net.ServerSocket;
  * @since 16.06.2011
  */
 public class PDETestPortLocator {
-
+  //CHECKSTYLE:OFF
     public static void main(String[] args) {
         new PDETestPortLocator().savePortToFile();
     }
@@ -32,7 +32,7 @@ public class PDETestPortLocator {
         OutputStream os = null;
         try {
             os = new FileOutputStream(propsFile);
-            os.write(new String("pde.test.port=" + port).getBytes());
+            os.write(("pde.test.port=" + String.valueOf(port)).getBytes());
             os.flush();
             System.out.println("PDE Test port saved to file " + propsFile.getAbsolutePath());
         } catch (IOException ioe) {
@@ -68,3 +68,4 @@ public class PDETestPortLocator {
         return -1;
     }
 }
+//CHECKSTYLE:ON
