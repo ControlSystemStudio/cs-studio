@@ -50,6 +50,8 @@
       <plugin id="org.csstudio.auth"/>
       <plugin id="org.csstudio.auth.ui"/>
       <plugin id="org.csstudio.common.product"/>
+      <plugin id="org.csstudio.common.trendplotter"/>
+      <plugin id="org.csstudio.common.trendplotter.shell.fragment" fragment="true"/>
       <plugin id="org.csstudio.csdata"/>
       <plugin id="org.csstudio.data"/>
       <plugin id="org.csstudio.diag.epics.pvtree"/>
@@ -91,8 +93,7 @@
       <plugin id="org.csstudio.swt.widgets"/>
       <plugin id="org.csstudio.swt.xygraph"/>
       <plugin id="org.csstudio.testsuite"/>
-      <plugin id="org.csstudio.trends.databrowser2"/>
-      <plugin id="org.csstudio.trends.databrowser2.shell.fragment" fragment="true"/>
+      <plugin id="org.csstudio.trends.databrowser2" fragment=""/>
       <plugin id="org.csstudio.ui.menu"/>
       <plugin id="org.csstudio.ui.preferences"/>
       <plugin id="org.csstudio.ui.util"/>
