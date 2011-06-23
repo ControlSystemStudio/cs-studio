@@ -18,10 +18,13 @@ import org.csstudio.apputil.xml.XMLWriter;
 import org.csstudio.common.trendplotter.Activator;
 import org.csstudio.common.trendplotter.Messages;
 import org.csstudio.common.trendplotter.preferences.Preferences;
+import org.csstudio.data.values.INumericMetaData;
 import org.csstudio.data.values.IValue;
 import org.csstudio.utility.pv.PV;
 import org.csstudio.utility.pv.PVFactory;
 import org.csstudio.utility.pv.PVListener;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.w3c.dom.Element;
 
 /** Data Browser Model Item for 'live' PV.
@@ -36,6 +39,8 @@ import org.w3c.dom.Element;
  */
 public class PVItem extends ModelItem implements PVListener
 {
+    private static final Logger LOG = LoggerFactory.getLogger(PVItem.class);
+    
     /** Historic and 'live' samples for this PV */
     final private PVSamples samples = new PVSamples();
 
@@ -321,6 +326,9 @@ public class PVItem extends ModelItem implements PVListener
         final IValue value = pv.getValue();
         // Cache most recent for 'scanned' operation
         current_value = value;
+        
+        System.out.println(pv.getName() + " disp high " + ((INumericMetaData)current_value.getMetaData()).getDisplayHigh());
+        
         // In 'monitor' mode, add to live sample buffer
         if (period <= 0)
         {

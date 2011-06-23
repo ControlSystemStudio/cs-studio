@@ -23,7 +23,8 @@ Require-Bundle: org.junit4,
  org.csstudio.archivereader;bundle-version="2.0.1",
  org.csstudio.logbook;bundle-version="1.0.2",
  org.csstudio.email.ui;bundle-version="1.0.0",
- com.google.common;bundle-version="0.9.0"
+ com.google.common;bundle-version="0.9.0",
+ org.slf4j;bundle-version="1.6.1"
 Bundle-ActivationPolicy: lazy
 Bundle-RequiredExecutionEnvironment: JavaSE-1.6
 Bundle-Vendor: Kay Kasemir <kasemirk@ornl.gov> - SNS, Bastian Knerr <bastian.knerr@desy.de> - DESY
