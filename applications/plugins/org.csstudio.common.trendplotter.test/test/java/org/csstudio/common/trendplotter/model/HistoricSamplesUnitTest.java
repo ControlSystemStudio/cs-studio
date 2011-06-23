@@ -22,7 +22,7 @@ import org.junit.Test;
  *  FIXME (kasemir) : remove sysos, use assertions
  */
 @SuppressWarnings("nls")
-public class HistoricSamplesTest
+public class HistoricSamplesUnitTest
 {
     @Test
     public void addArchivedData()

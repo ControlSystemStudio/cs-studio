@@ -9,6 +9,7 @@ package org.csstudio.common.trendplotter.export;
 
 import static org.junit.Assert.assertEquals;
 
+import org.csstudio.common.trendplotter.export.MatlabQualityHelper;
 import org.csstudio.data.values.ValueFactory;
 import org.junit.Test;
 
@@ -17,7 +18,7 @@ import org.junit.Test;
  *  @author Kay Kasemir
  */
 @SuppressWarnings("nls")
-public class MatlabQualityHelperTest
+public class MatlabQualityHelperUnitTest
 {
     @Test
     public void testMatlabQualityHelper()

@@ -37,7 +37,7 @@ import org.junit.Test;
  *  @author Kay Kasemir
  */
 @SuppressWarnings("nls")
-public class ControllerDemo
+public class ControllerUiPluginTest
 {
     private boolean run = true;
 

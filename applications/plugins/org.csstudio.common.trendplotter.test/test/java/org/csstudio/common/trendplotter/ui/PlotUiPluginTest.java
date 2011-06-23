@@ -38,7 +38,7 @@ import org.junit.Test;
  *  @author Kay Kasemir
  */
 @SuppressWarnings("nls")
-public class PlotDemo
+public class PlotUiPluginTest
 {
     private boolean run = true;
 

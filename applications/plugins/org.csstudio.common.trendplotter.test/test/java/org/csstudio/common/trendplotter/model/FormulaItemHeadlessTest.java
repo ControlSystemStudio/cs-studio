@@ -29,7 +29,7 @@ import org.junit.Test;
  *  FIXME (kasemir) : remove sysos, use assertions
  */
 @SuppressWarnings("nls")
-public class FormulaItemTest
+public class FormulaItemHeadlessTest
 {
     /** Time in seconds for each test */
     private static final double RUNTIME_SECS = 10.0;

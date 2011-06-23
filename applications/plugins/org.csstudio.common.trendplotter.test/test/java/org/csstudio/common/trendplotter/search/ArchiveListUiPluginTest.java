@@ -15,7 +15,7 @@ import org.junit.Test;
  *  @author Kay Kasemir
  */
 @SuppressWarnings("nls")
-public class ArchiveListGUIDemo
+public class ArchiveListUiPluginTest
 {
     @Test
     public void testArchiveGUI() throws Exception

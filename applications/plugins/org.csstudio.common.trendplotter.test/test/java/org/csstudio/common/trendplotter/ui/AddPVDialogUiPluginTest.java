@@ -15,7 +15,7 @@ import org.junit.Test;
  *  @author Kay Kasemir
  */
 @SuppressWarnings("nls")
-public class AddPVDialogDemo
+public class AddPVDialogUiPluginTest
 {
     final String names[] = new String[] { "Fred", "Jane" };
     final String axes[] = new String[] { "Value", "Value 2" };
