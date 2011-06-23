@@ -1,0 +1,13 @@
+Manifest-Version: 1.0
+Bundle-ManifestVersion: 2
+Bundle-Name: ChannelArchiver Data Reader
+Bundle-SymbolicName: org.csstudio.archive.reader.channelarchiver;singleton:=true
+Bundle-Version: 3.0.0.qualifier
+Bundle-Vendor: Kay Kasemir <kasemirk@ornl.gov> - SNS
+Bundle-RequiredExecutionEnvironment: JavaSE-1.6
+Require-Bundle: org.junit4,
+ org.csstudio.archive.reader;bundle-version="3.0.0",
+ org.csstudio.apputil;bundle-version="1.0.11"
+Bundle-ClassPath: lib/commons-codec/commons-codec-1.3.jar,
+ lib/xmlrpc-2.0.1/xmlrpc-2.0.1.jar,
+ .

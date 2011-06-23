@@ -2,7 +2,7 @@
 <?eclipse version="3.4"?>
 <plugin>
    <extension
-         point="org.csstudio.archivereader.ArchiveReader">
+         point="org.csstudio.archive.reader.ArchiveReader">
       <ArchiveReader
             class="org.csstudio.archive.reader.rdb.RDBArchiveReaderFactory"
             name="org.csstudio.archive.reader.rdb.archivereader"

@@ -9,8 +9,8 @@ package org.csstudio.trends.databrowser2.export;
 
 import java.io.PrintStream;
 
-import org.csstudio.archivereader.SpreadsheetIterator;
-import org.csstudio.archivereader.ValueIterator;
+import org.csstudio.archive.reader.SpreadsheetIterator;
+import org.csstudio.archive.reader.ValueIterator;
 import org.csstudio.data.values.ITimestamp;
 import org.csstudio.data.values.IValue;
 import org.csstudio.trends.databrowser2.Messages;

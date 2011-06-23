@@ -63,14 +63,14 @@
          unpack="false"/>
 
    <plugin
-         id="org.csstudio.archivereader.aapi"
+         id="org.csstudio.archive.reader.aapi"
          download-size="0"
          install-size="0"
          version="0.0.0"
          unpack="false"/>
 
    <plugin
-         id="org.csstudio.archivereader.archiverecord"
+         id="org.csstudio.archive.reader.archiverecord"
          download-size="0"
          install-size="0"
          version="0.0.0"

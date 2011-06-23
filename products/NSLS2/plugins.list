@@ -4,8 +4,8 @@ org.csstudio.apputil
 org.csstudio.apputil.ui
 org.csstudio.auth
 org.csstudio.auth.ui
-org.csstudio.archivereader
-org.csstudio.archivereader.channelarchiver
+org.csstudio.archive.reader
+org.csstudio.archive.reader.channelarchiver
 org.csstudio.archive.reader.rdb
 org.csstudio.csdata
 org.csstudio.data

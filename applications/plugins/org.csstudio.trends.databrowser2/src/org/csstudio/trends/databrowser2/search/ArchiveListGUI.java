@@ -10,8 +10,8 @@ package org.csstudio.trends.databrowser2.search;
 import java.util.ArrayList;
 import java.util.Arrays;
 
-import org.csstudio.archivereader.ArchiveInfo;
-import org.csstudio.archivereader.ArchiveReader;
+import org.csstudio.archive.reader.ArchiveInfo;
+import org.csstudio.archive.reader.ArchiveReader;
 import org.csstudio.trends.databrowser2.Messages;
 import org.csstudio.trends.databrowser2.archive.ConnectJob;
 import org.csstudio.trends.databrowser2.model.ArchiveDataSource;

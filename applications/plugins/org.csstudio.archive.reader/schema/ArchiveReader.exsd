@@ -1,0 +1,128 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<!-- Schema file written by PDE -->
+<schema targetNamespace="org.csstudio.archive.reader" xmlns="http://www.w3.org/2001/XMLSchema">
+<annotation>
+      <appinfo>
+         <meta.schema plugin="org.csstudio.archive.reader" id="ArchiveReader" name="ArchiveReader"/>
+      </appinfo>
+      <documentation>
+         This extension point allows plugins to provide an implementation of the archive reader API.
+&lt;p&gt;
+Basically, they provide an ArchiveReader and register that with a URL prefix.
+Whenever client code now asks for an archive reader via its URL,
+this plugin will pick one of the registered implementations by matching
+the URL prefix.
+      </documentation>
+   </annotation>
+
+   <element name="extension">
+      <annotation>
+         <appinfo>
+            <meta.element />
+         </appinfo>
+      </annotation>
+      <complexType>
+         <sequence>
+            <element ref="ArchiveReader"/>
+         </sequence>
+         <attribute name="point" type="string" use="required">
+            <annotation>
+               <documentation>
+                  
+               </documentation>
+            </annotation>
+         </attribute>
+         <attribute name="id" type="string">
+            <annotation>
+               <documentation>
+                  
+               </documentation>
+            </annotation>
+         </attribute>
+         <attribute name="name" type="string">
+            <annotation>
+               <documentation>
+                  
+               </documentation>
+               <appinfo>
+                  <meta.attribute translatable="true"/>
+               </appinfo>
+            </annotation>
+         </attribute>
+      </complexType>
+   </element>
+
+   <element name="ArchiveReader">
+      <annotation>
+         <documentation>
+            An ArchiveReader is identified by its &apos;prefix&apos;.
+A prefix of &quot;xyz&quot; means that all URLs of the form
+&quot;xzy://du.dah&quot; are passed on to the implementing &apos;class&apos;.
+         </documentation>
+      </annotation>
+      <complexType>
+         <attribute name="class" type="string">
+            <annotation>
+               <documentation>
+                  The actual implementing class. Must implement the org.csstudio.archive.reader.ArchiveReaderFactory interface.
+               </documentation>
+               <appinfo>
+                  <meta.attribute kind="java" basedOn=":org.csstudio.archive.reader.ArchiveReaderFactory"/>
+               </appinfo>
+            </annotation>
+         </attribute>
+         <attribute name="name" type="string" use="required">
+            <annotation>
+               <documentation>
+                  Name of this ArchiveReader.
+               </documentation>
+            </annotation>
+         </attribute>
+         <attribute name="prefix" type="string" use="required">
+            <annotation>
+               <documentation>
+                  The URL prefix that this ArchiveReader handles.
+               </documentation>
+            </annotation>
+         </attribute>
+      </complexType>
+   </element>
+
+   <annotation>
+      <appinfo>
+         <meta.section type="since"/>
+      </appinfo>
+      <documentation>
+         2
+      </documentation>
+   </annotation>
+
+   <annotation>
+      <appinfo>
+         <meta.section type="examples"/>
+      </appinfo>
+      <documentation>
+         See org.csstudio.archive.reader.rdb for an example implementation
+      </documentation>
+   </annotation>
+
+   <annotation>
+      <appinfo>
+         <meta.section type="apiinfo"/>
+      </appinfo>
+      <documentation>
+         See org.csstudio.archive.ArchiveReader
+      </documentation>
+   </annotation>
+
+   <annotation>
+      <appinfo>
+         <meta.section type="implementation"/>
+      </appinfo>
+      <documentation>
+         This plugin itself does not provide any implementation of the interfaces.
+      </documentation>
+   </annotation>
+
+
+</schema>

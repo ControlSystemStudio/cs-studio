@@ -14,8 +14,8 @@ org.csstudio.archive.config.rdb/**
 org.csstudio.archive.config.rdb.test/**
 org.csstudio.archive.engine/**
 org.csstudio.archive.rdb/**
-org.csstudio.archivereader/**
-org.csstudio.archivereader.channelarchiver/**
+org.csstudio.archive.reader/**
+org.csstudio.archive.reader.channelarchiver/**
 org.csstudio.archive.reader.rdb/**
 org.csstudio.archive.reader.rdb.test/**
 org.csstudio.archive.writer/**

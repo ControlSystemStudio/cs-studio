@@ -15,11 +15,11 @@ import java.util.HashMap;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-import org.csstudio.archivereader.ArchiveInfo;
-import org.csstudio.archivereader.ArchiveReader;
-import org.csstudio.archivereader.Severity;
-import org.csstudio.archivereader.UnknownChannelException;
-import org.csstudio.archivereader.ValueIterator;
+import org.csstudio.archive.reader.ArchiveInfo;
+import org.csstudio.archive.reader.ArchiveReader;
+import org.csstudio.archive.reader.Severity;
+import org.csstudio.archive.reader.UnknownChannelException;
+import org.csstudio.archive.reader.ValueIterator;
 import org.csstudio.data.values.ISeverity;
 import org.csstudio.data.values.ITimestamp;
 import org.csstudio.platform.utility.rdb.RDBUtil;
