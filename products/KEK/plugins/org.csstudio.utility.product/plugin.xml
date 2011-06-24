@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?eclipse version="3.4"?>
+<plugin>
+   <extension
+         point="org.eclipse.ui.perspectives">
+      <perspective
+            class="org.csstudio.utility.product.CSS_Perspective"
+            icon="icons/css16.png"
+            id="org.csstudio.utility.product.CSS_Perspective"
+            name="%Perspective">
+      </perspective>
+   </extension>
+
+</plugin>

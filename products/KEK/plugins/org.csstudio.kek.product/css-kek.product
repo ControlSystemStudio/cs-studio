@@ -1,0 +1,66 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?pde version="3.5"?>
+
+<product name="KEK/J-PARC CSS" uid="kek" id="org.csstudio.kek.product.product" application="org.csstudio.kek.product.application" version="1.0.0" useFeatures="true" includeLaunchers="true">
+
+   <aboutInfo>
+      <image path="/org.csstudio.utility.product/icons/aboutSide.png"/>
+      <text>
+         Control System Studio (CSS) is a combined
+effort of several parties, including
+- DESY (Hamburg, Germany)
+- SNS (Oak Ridge, TN)
+- BNL (Brookhaven, NY)
+- KEK/J-PARC
+
+It provides a collection of control system
+tools in a common environment, based
+on Eclipse.
+
+http://sourceforge.net/apps/trac/cs-studio/wiki
+      </text>
+   </aboutInfo>
+
+   <configIni use="default">
+   </configIni>
+
+   <launcherArgs>
+      <vmArgsMac>-XstartOnFirstThread -Dorg.eclipse.swt.internal.carbon.smallFonts</vmArgsMac>
+   </launcherArgs>
+
+   <windowImages i16="/org.csstudio.utility.product/icons/css16.png" i32="/org.csstudio.utility.product/icons/css32.png" i48="/org.csstudio.utility.product/icons/css48.png" i64="/org.csstudio.utility.product/icons/css64.png" i128="/org.csstudio.utility.product/icons/css128.png"/>
+
+   <splash
+      location="org.csstudio.kek.product"
+      startupProgressRect="20,220,340,15"
+      startupMessageRect="20,200,340,20"
+      startupForegroundColor="FFFFFF" />
+   <launcher name="css">
+      <linux icon="/org.csstudio.utility.product/icons/icons/css48.xpm"/>
+      <macosx icon="/org.csstudio.utility.product/icons/icons/css.icns"/>
+      <solaris/>
+      <win useIco="true">
+         <ico path="/org.csstudio.utility.product/icons/css.ico"/>
+         <bmp/>
+      </win>
+   </launcher>
+
+
+   <vm>
+      <linux include="false">org.eclipse.jdt.launching.JRE_CONTAINER/org.eclipse.jdt.internal.debug.ui.launcher.StandardVMType/JavaSE-1.6</linux>
+      <macos include="false">org.eclipse.jdt.launching.JRE_CONTAINER/org.eclipse.jdt.internal.debug.ui.launcher.StandardVMType/JavaSE-1.6</macos>
+      <solaris include="false">org.eclipse.jdt.launching.JRE_CONTAINER/org.eclipse.jdt.internal.debug.ui.launcher.StandardVMType/JavaSE-1.6</solaris>
+      <windows include="false">org.eclipse.jdt.launching.JRE_CONTAINER/org.eclipse.jdt.internal.debug.ui.launcher.StandardVMType/JavaSE-1.6</windows>
+   </vm>
+
+   <plugins>
+   </plugins>
+
+   <features>
+      <feature id="org.csstudio.kek.eclipse.feature" version="1.0.0.qualifier"/>
+      <feature id="org.csstudio.kek.core.feature" version="1.0.0.qualifier"/>
+      <feature id="org.csstudio.kek.applications.feature" version="1.0.0.qualifier"/>
+   </features>
+
+
+</product>
