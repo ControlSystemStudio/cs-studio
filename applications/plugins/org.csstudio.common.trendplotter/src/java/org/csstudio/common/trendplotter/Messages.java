@@ -33,6 +33,10 @@ public class Messages extends NLS
     public static String AddPV_Period;
     public static String AddPV_PeriodTT;
     public static String AddPVMsg;
+    public static String ADEL;
+    public static String ADELInfo;
+    public static String ADELNotPresentWarning;
+    public static String ADELVisibilityTT;
     public static String AppendSearchResults;
     public static String AppendSearchResultsTT;
     public static String ArchiveAccessDetailFmt;

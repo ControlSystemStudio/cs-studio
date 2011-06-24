@@ -15,6 +15,7 @@ import java.util.logging.Level;
 
 import org.csstudio.apputil.xml.DOMHelper;
 import org.csstudio.apputil.xml.XMLWriter;
+import org.csstudio.archive.common.service.IArchiveReaderFacade;
 import org.csstudio.common.trendplotter.Activator;
 import org.csstudio.common.trendplotter.Messages;
 import org.csstudio.common.trendplotter.preferences.Preferences;
@@ -65,6 +66,8 @@ public class PVItem extends ModelItem implements PVListener
 
     /** Archive data request type */
     private RequestType request_type = RequestType.OPTIMIZED;
+    
+    private Boolean has_adel = Boolean.FALSE;
 
     /** Initialize
      *  @param name PV name
@@ -76,6 +79,15 @@ public class PVItem extends ModelItem implements PVListener
         super(name);
         pv = PVFactory.createPV(name);
         this.period = period;
+        
+        has_adel = retrieveAdelFor(name);
+        
+    }
+
+    private Boolean retrieveAdelFor(final String channelName) {
+        IArchiveReaderFacade service = Activator.getDefault().getArchiveReaderService();
+
+        service.getChannelByName(channelName + ".ADEL");
     }
 
     /** Set new item name, which changes the underlying PV name
@@ -278,7 +290,7 @@ public class PVItem extends ModelItem implements PVListener
             @Override
             public void run()
             {
-                Activator.getLogger().log(Level.FINE, "PV {0} scans {1}", new Object[] { getName(), current_value });
+                LOG.debug("PV {0} scans {1}", new Object[] { getName(), current_value });
                 logCurrentValue();
             }
         };

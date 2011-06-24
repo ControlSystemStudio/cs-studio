@@ -44,7 +44,7 @@ import org.eclipse.swt.widgets.Shell;
 public class TraceTableHandler implements ILazyContentProvider
 {
     /** Prompt for the 'raw request' warning? */
-    static private boolean prompt_for_raw_data_request = true;
+    static boolean prompt_for_raw_data_request = true;
 
     /** Prompt for the 'hide trace' warning'? */
     static private boolean prompt_for_not_visible = true;
@@ -535,8 +535,85 @@ public class TraceTableHandler implements ILazyContentProvider
             }
         });
 
-        // Request Type Column ----------
-        view_col = TableHelper.createColumn(table_layout, table_viewer, Messages.RequestType, 75, 10);
+        
+        createAndAddRequestTypeColumn(table_layout, operations_manager, table_viewer, shell);
+
+        //createAndAddShowADELTrace(table_layout, operations_manager, table_viewer, shell);
+        
+        ColumnViewerToolTipSupport.enableFor(table_viewer);
+    }
+
+    private void createAndAddShowADELTrace(final TableColumnLayout table_layout,
+                                           final OperationsManager operations_manager,
+                                           final TableViewer table_viewer,
+                                           final Shell shell) {
+        final TableViewerColumn view_col = 
+            TableHelper.createColumn(table_layout, table_viewer, Messages.ADEL, 75, 10);
+        
+        view_col.setLabelProvider(new CellLabelProvider()
+        {
+            @Override
+            public void update(final ViewerCell cell)
+            {
+                final ModelItem item = (ModelItem) cell.getElement();
+                cell.setImage(item.isVisible()
+                        ? Activator.getDefault().getImage(Activator.ICON_CHECKED)
+                        : Activator.getDefault().getImage(Activator.ICON_UNCHECKED));
+            }
+
+            @Override
+            public String getToolTipText(Object element)
+            {
+                return Messages.ADELVisibilityTT;
+            }
+        });
+        
+        view_col.setEditingSupport(new EditSupportBase(table_viewer)
+        {
+            @Override
+            protected CellEditor getCellEditor(final Object element)
+            {
+                return new CheckboxCellEditor(((TableViewer)getViewer()).getTable());
+            }
+
+            @Override
+            protected Object getValue(final Object element)
+            {
+                if (element instanceof PVItem) 
+                {
+                    return ((PVItem)element).hasAdel();
+                }
+                return Boolean.FALSE;
+            }
+
+            @Override
+            protected void setValue(final Object element, final Object value)
+            {
+                if (element instanceof PVItem) {
+                    final Boolean showAdel = ((Boolean) value);
+                    if (((PVItem) element).hasAdel())
+                    {
+                        new ChangeAdelTraceCommand(operations_manager, (PVItem) element, showAdel);
+                        return;
+                    }
+                }
+                MessageDialog.openInformation(shell, 
+                                              Messages.ADELInfo, 
+                                              Messages.ADELNotPresentWarning);
+            }
+        });
+        
+    }
+
+    /**
+     * Request Type Column  
+     */
+    private void createAndAddRequestTypeColumn(final TableColumnLayout table_layout,
+                                               final OperationsManager operations_manager,
+                                               final TableViewer table_viewer,
+                                               final Shell shell) {
+        final TableViewerColumn view_col = 
+            TableHelper.createColumn(table_layout, table_viewer, Messages.RequestType, 75, 10);
         view_col.setLabelProvider(new CellLabelProvider()
         {
             @Override
@@ -592,8 +669,6 @@ public class TraceTableHandler implements ILazyContentProvider
                 new ChangeRequestTypeCommand(operations_manager, item, request_type);
             }
         });
-
-        ColumnViewerToolTipSupport.enableFor(table_viewer);
     }
 
     /** Set input to a Model
