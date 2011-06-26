@@ -2,4 +2,4 @@
 <?eclipse version="3.0"?>
 <plugin>
    <extension-point id="module" name="org.csstudio.startup.module" schema="schema/org.csstudio.startup.module.exsd"/>
-+</plugin>
+</plugin>
