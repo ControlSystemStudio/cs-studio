@@ -99,6 +99,7 @@ public class SmsConnectorStart implements IApplication, IGenericServiceListener<
         }
     }
 
+    @Override
     public Object start(IApplicationContext context) throws Exception
     {
         SmsConnectorWork scw = null;
