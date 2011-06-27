@@ -23,7 +23,7 @@
 
 package org.csstudio.websuite;
 
-import org.eclipse.core.runtime.Plugin;
+import org.osgi.framework.BundleActivator;
 import org.osgi.framework.BundleContext;
 import org.remotercp.common.tracker.GenericServiceTracker;
 import org.remotercp.common.tracker.IGenericServiceListener;
@@ -37,8 +37,8 @@ import org.slf4j.LoggerFactory;
  * @author Markus Moeller
  * @version 1.0
  */
-public class WebSuiteActivator extends Plugin
-{
+public class WebSuiteActivator implements BundleActivator {
+    
     /** the class logger */
     private static final Logger LOG = LoggerFactory.getLogger(WebSuiteActivator.class);
 	
@@ -51,13 +51,13 @@ public class WebSuiteActivator extends Plugin
 	/** The bundle context */
 	private static BundleContext bundleContext;
 	
+	/** Service tracker for XMPP login service */
 	private GenericServiceTracker<ISessionService> _genericServiceTracker;
 	
-	/** The constructor */
-	public WebSuiteActivator() {
-		// Nothing to do
-	}
-
+	/**
+	 * 
+	 * @return The BundleContext object of this class
+	 */
 	public static BundleContext getBundleContext() {
 	    return bundleContext;
 	}
@@ -68,8 +68,7 @@ public class WebSuiteActivator extends Plugin
     @Override
 	public void start(BundleContext context) throws Exception {
         
-        super.start(context);
-        bundleContext = context;
+        WebSuiteActivator.bundleContext = context;
         plugin = this;
 		_genericServiceTracker = new GenericServiceTracker<ISessionService>(
 				context, ISessionService.class);
@@ -84,8 +83,8 @@ public class WebSuiteActivator extends Plugin
     @Override
 	public void stop(BundleContext context) throws Exception {
         
+        WebSuiteActivator.bundleContext = null;
         plugin = null;
-        super.stop(context);
         LOG.info("{} stopped.", PLUGIN_ID);
     }
 
