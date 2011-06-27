@@ -28,7 +28,6 @@ import java.util.concurrent.ConcurrentLinkedQueue;
 import javax.jms.MapMessage;
 import javax.jms.Message;
 import javax.jms.MessageListener;
-import org.apache.log4j.Logger;
 import org.csstudio.alarm.jms2ora.database.DatabaseLayer;
 import org.csstudio.alarm.jms2ora.preferences.PreferenceConstants;
 import org.csstudio.alarm.jms2ora.util.ApplicState;
@@ -37,10 +36,11 @@ import org.csstudio.alarm.jms2ora.util.MessageContent;
 import org.csstudio.alarm.jms2ora.util.MessageContentCreator;
 import org.csstudio.alarm.jms2ora.util.JmsMessageReceiver;
 import org.csstudio.alarm.jms2ora.util.MessageFileHandler;
-import org.csstudio.platform.logging.CentralLogger;
 import org.csstudio.platform.statistic.Collector;
 import org.eclipse.core.runtime.Platform;
 import org.eclipse.core.runtime.preferences.IPreferencesService;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * <code>StoreMessages</code> gets all messages from the topics <b>ALARM and LOG</b> and stores them into the
@@ -69,7 +69,7 @@ import org.eclipse.core.runtime.preferences.IPreferencesService;
  */
 
 /*
- * TODO:    Auslagern von bestimmten Funktionen in eigenständige Klassen
+ * TODO:    Auslagern von bestimmten Funktionen in eigenstaendige Klassen
  *          - Die Properties der Datenbanktabellen
  */
 
@@ -78,6 +78,9 @@ public class MessageProcessor extends Thread implements MessageListener {
     /** The object instance of this class */
     private static MessageProcessor instance = null;
     
+    /** The class logger */
+    private static final Logger LOG = LoggerFactory.getLogger(MessageProcessor.class);
+
     /** Queue for received messages */
     private ConcurrentLinkedQueue<MessageContent> messages;
     
@@ -94,7 +97,7 @@ public class MessageProcessor extends Thread implements MessageListener {
     private Collector receivedMessages;
     
     /** Class that collects statistic informations. Query it via XMPP. */
-    private Collector emptyMessages;
+    private Collector filteredMessages;
 
     /** Class that collects statistic informations. Query it via XMPP. */
     private Collector discardedMessages;
@@ -102,9 +105,6 @@ public class MessageProcessor extends Thread implements MessageListener {
     /** Class that collects statistic informations. Query it via XMPP. */
     private Collector storedMessages;
 
-    /** The logger */
-    private Logger logger;
-    
     /** Array with JMS server URLs */
     private String[] urlList;
     
@@ -134,9 +134,6 @@ public class MessageProcessor extends Thread implements MessageListener {
      */    
     private MessageProcessor() {
         
-        // Create the logger
-        logger = CentralLogger.getInstance().getLogger(this);
-        
         this.setName("MessageProcessor-Thread");
         
         messages = new ConcurrentLinkedQueue<MessageContent>();
@@ -158,11 +155,11 @@ public class MessageProcessor extends Thread implements MessageListener {
         receivedMessages.setContinuousPrint(false);
         receivedMessages.setContinuousPrintCount(1000.0);
         
-        emptyMessages = new Collector();
-        emptyMessages.setApplication(VersionInfo.NAME);
-        emptyMessages.setDescriptor("Filtered messages");
-        emptyMessages.setContinuousPrint(false);
-        emptyMessages.setContinuousPrintCount(1000.0);
+        filteredMessages = new Collector();
+        filteredMessages.setApplication(VersionInfo.NAME);
+        filteredMessages.setDescriptor("Filtered messages");
+        filteredMessages.setContinuousPrint(false);
+        filteredMessages.setContinuousPrintCount(1000.0);
         
         discardedMessages = new Collector();
         discardedMessages.setApplication(VersionInfo.NAME);
@@ -188,11 +185,11 @@ public class MessageProcessor extends Thread implements MessageListener {
             topicList = topics.split(",");
             
             for(int i = 0;i < urlList.length;i++) {
-                logger.info("[" + urlList[i] + "]");
+                LOG.info("[" + urlList[i] + "]");
             }
             
             for(int i = 0;i < topicList.length;i++) {
-                logger.info("[" + topicList[i] + "]");
+                LOG.info("[" + topicList[i] + "]");
             }
             
             receivers = new JmsMessageReceiver[urlList.length];
@@ -206,7 +203,7 @@ public class MessageProcessor extends Thread implements MessageListener {
                     receivers[i].startListener(this, VersionInfo.NAME + "@" + hostName + "_" + this.hashCode());
                     initialized = true;
                 } catch(Exception e) {
-                    logger.error("*** Exception *** : " + e.getMessage());
+                    LOG.error("*** Exception *** : " + e.getMessage());
                     initialized = false;
                 }
             }
@@ -231,13 +228,14 @@ public class MessageProcessor extends Thread implements MessageListener {
      *
      */
     
+    @Override
     public void run() {
         
         MessageContent content = null;
         ReturnValue result;
         
-        logger.info("Started " + VersionInfo.getAll());        
-        logger.info("Waiting for messages...");
+        LOG.info("Started " + VersionInfo.getAll());        
+        LOG.info("Waiting for messages...");
         
         while(running) {
             
@@ -253,25 +251,25 @@ public class MessageProcessor extends Thread implements MessageListener {
                     
                     // Store the message in a file, if it was not possible to write it to the DB.
                     MessageFileHandler.getInstance().writeMessageContentToFile(content);
-                    logger.warn(result.getErrorMessage() + ": Could not store the message in the database. Message is written on disk.");
+                    LOG.warn(result.getErrorMessage() + ": Could not store the message in the database. Message is written on disk.");
                 } else {
                     
                     if(result != ReturnValue.PM_RETURN_OK) {
                         
-                        logger.info(result.getErrorMessage());
+                        LOG.info(result.getErrorMessage());
                         if(result == ReturnValue.PM_RETURN_DISCARD) {
                             discardedMessages.incrementValue();
                         } else if(result == ReturnValue.PM_RETURN_EMPTY) {
-                            emptyMessages.incrementValue();
+                            filteredMessages.incrementValue();
                         }
                     } else {
                         storedMessages.incrementValue();
-                        logger.debug(result.getErrorMessage());
+                        LOG.debug(result.getErrorMessage());
                     }
                 }
                 
-                // logger.debug(statistic.toString());
-                logger.debug(createStatisticString());
+                // LOG.debug(statistic.toString());
+                LOG.debug(createStatisticString());
                 
                 // IMPORTANT: Refresh the current state, otherwise Jms2Ora will restart if many messages
                 // are stored in the queue and state switching does not happen while storing all
@@ -287,12 +285,12 @@ public class MessageProcessor extends Thread implements MessageListener {
                     try {
                         wait(SLEEPING_TIME);
                     } catch(InterruptedException ie) {
-                        logger.error("*** InterruptedException *** : executeMe(): wait(): " + ie.getMessage());
+                        LOG.error("*** InterruptedException *** : executeMe(): wait(): " + ie.getMessage());
                         running = false;
                     }               
                 }
                 
-                logger.debug("Waked up...");
+                LOG.debug("Waked up...");
             }
         }
         
@@ -301,7 +299,7 @@ public class MessageProcessor extends Thread implements MessageListener {
         closeAllReceivers();
         
         // Process the remaining messages
-        logger.info("Remaining messages: " + messages.size() + " -> Processing...");
+        LOG.info("Remaining messages: " + messages.size() + " -> Processing...");
         
         int writtenToDb = 0;
         int writtenToHd = 0;
@@ -328,12 +326,12 @@ public class MessageProcessor extends Thread implements MessageListener {
         
         stoppedClean = true;
         
-        logger.info("Remaining messages stored in the database: " + writtenToDb);
-        logger.info("Remaining messages stored on disk:         " + writtenToHd);
+        LOG.info("Remaining messages stored in the database: " + writtenToDb);
+        LOG.info("Remaining messages stored on disk:         " + writtenToHd);
         
         parent.setStatus(ApplicState.STOPPED);
 
-        logger.info("executeMe() : ** DONE **");
+        LOG.info("executeMe() : ** DONE **");
     }
 
     public boolean stoppedClean() {
@@ -344,18 +342,23 @@ public class MessageProcessor extends Thread implements MessageListener {
         
         MessageContent content = null;
         
-        logger.debug("onMessage(): " + message.toString());
+        LOG.debug("onMessage(): " + message.toString());
         
         if(message instanceof MapMessage) {
+
+            MapMessage mapMessage = (MapMessage)message;
+            LOG.debug("onMessage(): ", mapMessage.toString());
             content = contentCreator.convertMapMessage((MapMessage)message);
             messages.add(content);
             receivedMessages.incrementValue();
-
+            mapMessage = null;
+            
             synchronized(this) {
                 notify();
             }
         } else {
-            logger.info("Received a non MapMessage object. Discarded...");
+            LOG.warn("Received a non MapMessage object: ", message.toString());
+            LOG.warn("Discarding invalid message.");
         }        
     }
 
@@ -377,13 +380,13 @@ public class MessageProcessor extends Thread implements MessageListener {
         // TODO: typeId is always 0!!! We do not use it anymore. Delete the column in a future version.
         msgId = dbLayer.createMessageEntry(typeId, content);
         if(msgId == RET_ERROR) {
-            logger.error("createMessageEntry(): No message entry created in database.");
+            LOG.error("createMessageEntry(): No message entry created in database.");
             return ReturnValue.PM_ERROR_DB;
         }
         
         if(dbLayer.createMessageContentEntries(msgId, content) == false) {
             
-            logger.error("createMessageContentEntries(): No entry created in message_content. Delete message from database and store it to disk.");
+            LOG.error("createMessageContentEntries(): No entry created in message_content. Delete message from database and store it to disk.");
             dbLayer.deleteMessage(msgId);
             result = ReturnValue.PM_ERROR_DB;
         } else {
@@ -419,14 +422,14 @@ public class MessageProcessor extends Thread implements MessageListener {
         
         if(messages != null) {
             return messages.size();
-        } else {
-            return 0;
         }
+        
+        return 0;
     }
     
     public void closeAllReceivers() {
         
-        logger.info("closeAllReceivers(): Closing all receivers.");
+        LOG.info("closeAllReceivers(): Closing all receivers.");
         
         if(receivers != null) {
             for(int i = 0;i < receivers.length;i++) {
@@ -454,8 +457,40 @@ public class MessageProcessor extends Thread implements MessageListener {
         result.append("Received Messages:  " + receivedMessages.getActualValue().getValue() + "\n");
         result.append("Stored Messages:    " + storedMessages.getActualValue().getValue() + "\n");
         result.append("Discarded Messages: " + discardedMessages.getActualValue().getValue() + "\n");
-        result.append("Filtered Messages:     " + emptyMessages.getActualValue().getValue() + "\n");
+        result.append("Filtered Messages:     " + filteredMessages.getActualValue().getValue() + "\n");
         
         return result.toString();
+    }
+    
+    /**
+     * 
+     * @return
+     */
+    public Collector getReceivedMessagesCollector() {
+        return receivedMessages;
+    }
+    
+    /**
+     * 
+     * @return
+     */
+    public Collector getFilteredMessagesCollector() {
+        return filteredMessages;
+    }
+
+    /**
+     * 
+     * @return
+     */
+    public Collector getDiscardedMessagesCollector() {
+        return discardedMessages;
+    }
+
+    /**
+     * 
+     * @return
+     */
+    public Collector getStoredMessagesCollector() {
+        return storedMessages;
     }
 }

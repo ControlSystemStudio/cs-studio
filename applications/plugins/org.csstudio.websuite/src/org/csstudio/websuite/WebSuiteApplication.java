@@ -62,8 +62,10 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
+ * The main application class.
+ * 
  * @author Markus Moeller
- *
+ * @version 1.0
  */
 public class WebSuiteApplication implements IApplication, Stoppable, RemotlyAccessible, IGenericServiceListener<ISessionService> {
     
@@ -103,22 +105,16 @@ public class WebSuiteApplication implements IApplication, Stoppable, RemotlyAcce
         jettyPort = preferences.getInt(WebSuiteActivator.PLUGIN_ID, PreferenceConstants.JETTY_PORT, 8181, null);
         LOG.info("Using port {} for JETTY.", jettyPort);
         
-        WebSuiteActivator.getDefault().addSessionServiceListener(this);
+        connectToXMPPServer();
         
-        // Prepare the action classes
-        Stop.staticInject(this);
-        Restart.staticInject(this);
-        MessageCounter.staticInject(this);
-        MessageDeleter.staticInject(this);
-
         try {
             final HttpService http = HttpServiceHelper.createHttpService(WebSuiteActivator.getBundleContext(), jettyPort);
             configureHttpService(http);
         } catch(Exception e) {
-            LOG.error("[*** Exception ***]: ", e);
+            LOG.error("[*** Exception ***]: " + e.getMessage());
         }
         
-        //creates instances of DAO objects for messages
+        // Creates instances of DAO objects for messages
         AlarmMessageListProvider.createInstance();
         alarmListProvider = AlarmMessageListProvider.getInstance();
         
@@ -205,7 +201,19 @@ public class WebSuiteApplication implements IApplication, Stoppable, RemotlyAcce
         http.registerServlet("/data.txt", new DataExporter(), null, httpContext);
     }
     
+    /**
+     * Creates the connection to the XMPP server.
+     */
+    public void connectToXMPPServer() {
 
+        // Prepare the action classes
+        Stop.staticInject(this);
+        Restart.staticInject(this);
+        MessageCounter.staticInject(this);
+        MessageDeleter.staticInject(this);
+
+        WebSuiteActivator.getDefault().addSessionServiceListener(this);
+    }
 
     @Override
     public void bindService(ISessionService sessionService) {
@@ -217,7 +225,7 @@ public class WebSuiteApplication implements IApplication, Stoppable, RemotlyAcce
     	try {
 			sessionService.connect(xmppUser, xmppPassword, xmppServer);
 		} catch (Exception e) {
-			LOG.warn("XMPP connection is not available, ", e);
+			LOG.warn("XMPP connection is not available: " + e.getMessage());
 		}
     }
     
