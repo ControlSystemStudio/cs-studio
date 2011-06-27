@@ -56,10 +56,10 @@
    <extension
          point="org.csstudio.startup.module">
       <startupParameters
-            class="org.csstudio.utility.product/org.csstudio.utility.product.StartupParameters">
+            class="org.csstudio.utility.product.StartupParameters">
       </startupParameters>
       <workbench
-            class="org.csstudio.utility.product/org.csstudio.utility.product.Workbench">
+            class="org.csstudio.utility.product.Workbench">
       </workbench>
    </extension>
 
