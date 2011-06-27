@@ -61,6 +61,9 @@
       <workbench
             class="org.csstudio.utility.product.Workbench">
       </workbench>
+      <project
+            class="org.csstudio.startup.module.defaults.DefaultProject">
+      </project>
    </extension>
 
 </plugin>
