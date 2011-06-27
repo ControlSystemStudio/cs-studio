@@ -53,7 +53,8 @@ public class EMailConnectorPlugin extends AbstractCssUiPlugin
 	/**
 	 * {@inheritDoc}
 	 */
-	public final void doStart(final BundleContext context) throws Exception
+	@Override
+    public final void doStart(final BundleContext context) throws Exception
 	{
 		_genericServiceTracker = new GenericServiceTracker<ISessionService>(
 				context, ISessionService.class);
@@ -63,7 +64,8 @@ public class EMailConnectorPlugin extends AbstractCssUiPlugin
 	/**
 	 * {@inheritDoc}
 	 */
-	public final void doStop(final BundleContext context) throws Exception
+	@Override
+    public final void doStop(final BundleContext context) throws Exception
 	{
 	}
 
