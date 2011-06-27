@@ -104,13 +104,9 @@
       <import plugin="org.eclipse.compare" version="3.5.0" match="compatible"/>
       <import plugin="org.eclipse.ui.forms" version="3.4.0" match="compatible"/>
       <import plugin="org.eclipse.ui.workbench" version="3.5.0" match="compatible"/>
-      <import plugin="javax.servlet.jsp"/>
-      <import plugin="org.apache.commons.el"/>
       <import plugin="org.apache.commons.logging"/>
       <import plugin="org.apache.ant"/>
       <import plugin="org.apache.commons.codec"/>
-      <import plugin="org.mortbay.jetty.util"/>
-      <import plugin="org.mortbay.jetty.server"/>
    </requires>
 
    <plugin
@@ -476,6 +472,41 @@
 
    <plugin
          id="org.eclipse.equinox.http.servlet"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"
+         unpack="false"/>
+
+   <plugin
+         id="org.eclipse.core.filebuffers"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"
+         unpack="false"/>
+
+   <plugin
+         id="javax.servlet.jsp"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"
+         unpack="false"/>
+
+   <plugin
+         id="org.mortbay.jetty.server"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"
+         unpack="false"/>
+
+   <plugin
+         id="org.mortbay.jetty.util"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"
+         unpack="false"/>
+
+   <plugin
+         id="org.apache.commons.el"
          download-size="0"
          install-size="0"
          version="0.0.0"
