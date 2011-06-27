@@ -2,18 +2,6 @@
 <?eclipse version="3.4"?>
 <plugin>
    <extension
-         id="application"
-         point="org.eclipse.core.runtime.applications">
-      <application
-            cardinality="singleton-global"
-            thread="main"
-            visible="true">
-         <run
-               class="org.csstudio.startup.application.Application">
-         </run>
-      </application>
-   </extension>
-   <extension
          id="product"
          point="org.eclipse.core.runtime.products">
       <product
@@ -51,7 +39,29 @@
                name="preferenceCustomization"
                value="plugin_customization.ini">
          </property>
+         <property
+            name="introTitle"
+            value="Welcome to Control System Studio (CSS) for KEK and J-PARC!">
+         </property>
+         <property
+            name="introBrandingImage"
+            value="product:icons/intro_logo.png"/>
+         <property
+            name="introBrandingImageText"
+            value="KEK / J-PARC CSS"/>
       </product>
+   </extension>
+   <extension
+         id="application"
+         point="org.eclipse.core.runtime.applications">
+      <application
+            cardinality="singleton-global"
+            thread="main"
+            visible="true">
+         <run
+               class="org.csstudio.startup.application.Application">
+         </run>
+      </application>
    </extension>
    <extension
          point="org.csstudio.startup.module">
@@ -64,6 +74,20 @@
       <project
             class="org.csstudio.startup.module.defaults.DefaultProject">
       </project>
+   </extension>
+   <extension
+         point="org.eclipse.ui.intro">
+      <introProductBinding
+            introId="org.eclipse.ui.intro.universal"
+            productId="org.csstudio.kek.product.product">
+      </introProductBinding>
+   </extension>
+   <extension
+         point="org.eclipse.ui.intro.configExtension">
+      <configExtension
+            configId="org.eclipse.ui.intro.universalConfig"
+            content="intro/overview.xml">
+      </configExtension>
    </extension>
 
 </plugin>
