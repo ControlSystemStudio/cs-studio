@@ -25,7 +25,6 @@ package org.csstudio.ams.distributor;
 
 import java.net.InetAddress;
 import java.util.Hashtable;
-
 import javax.jms.Connection;
 import javax.jms.ConnectionFactory;
 import javax.jms.JMSException;
@@ -35,7 +34,6 @@ import javax.jms.Session;
 import javax.naming.Context;
 import javax.naming.InitialContext;
 import javax.naming.NamingException;
-
 import org.csstudio.ams.AmsActivator;
 import org.csstudio.ams.AmsConstants;
 import org.csstudio.ams.Log;
@@ -43,7 +41,6 @@ import org.csstudio.ams.SynchObject;
 import org.csstudio.ams.Utils;
 import org.csstudio.ams.distributor.preferences.DistributorPreferenceKey;
 import org.csstudio.ams.internal.AmsPreferenceKey;
-import org.csstudio.platform.logging.CentralLogger;
 import org.eclipse.core.runtime.Platform;
 import org.eclipse.core.runtime.preferences.IPreferencesService;
 import org.eclipse.equinox.app.IApplication;
@@ -52,8 +49,9 @@ import org.eclipse.jface.preference.IPreferenceStore;
 import org.remotercp.common.tracker.IGenericServiceListener;
 import org.remotercp.service.connection.session.ISessionService;
 
-public class DistributorStart implements IApplication, IGenericServiceListener<ISessionService>
-{
+public class DistributorStart implements IApplication,
+                                         IGenericServiceListener<ISessionService> {
+    
     public final static int STAT_INIT = 0;
     public final static int STAT_OK = 1;
     public final static int STAT_GROUP_BLOCKED = 1;
@@ -83,16 +81,18 @@ public class DistributorStart implements IApplication, IGenericServiceListener<I
     
     private MessageProducer extPublisherStatusChange = null;
     
+    private ISessionService xmppService;
+    
     private SynchObject sObj = null;
     private String managementPassword;
     private int lastStatus = 0;
     private boolean bStop;
     private boolean restart;
     
-    public DistributorStart()
-    {
+    public DistributorStart() {
         _instance = this;
         sObj = new SynchObject(STAT_INIT, System.currentTimeMillis());
+        xmppService = null;
         
         IPreferencesService pref = Platform.getPreferencesService();
         managementPassword = pref.getString(AmsActivator.PLUGIN_ID, AmsPreferenceKey.P_AMS_MANAGEMENT_PASSWORD, "", null);
@@ -101,31 +101,27 @@ public class DistributorStart implements IApplication, IGenericServiceListener<I
         }
     }
     
-    public void stop()
-    {
+    public void stop() {
         return;
     }
 
-    public static DistributorStart getInstance()
-    {
+    public static DistributorStart getInstance() {
         return _instance;
     }
 
-    public synchronized void setRestart()
-    {
+    public synchronized void setRestart() {
         restart = true;
         bStop = true;
     }
 
-    public synchronized void setShutdown()
-    {
+    public synchronized void setShutdown() {
         restart = false;
         bStop = true;
     }
 
     /**
      * 
-     * @return
+     * @return The password for management
      */
     public synchronized String getPassword()
     {
@@ -135,11 +131,13 @@ public class DistributorStart implements IApplication, IGenericServiceListener<I
     /**
      * 
      */
-    public Object start(IApplicationContext context) throws Exception
-    {
+    public Object start(IApplicationContext context) throws Exception {
+        
         DistributorWork dw = null;
         boolean bInitedJms = false;
-        lastStatus = getStatus();                                               // use synchronized method
+        
+        // use synchronized method
+        lastStatus = getStatus();
 
         Log.log(this, Log.INFO, "Starting");
         DistributorPreferenceKey.showPreferences();
@@ -237,7 +235,7 @@ public class DistributorStart implements IApplication, IGenericServiceListener<I
             {
                 dw.join(WAITFORTHREAD);
             }
-            catch(InterruptedException ie) { }
+            catch(InterruptedException ie) { /* Can be ignored */ }
     
             if(dw.stoppedClean())
             {
@@ -255,10 +253,16 @@ public class DistributorStart implements IApplication, IGenericServiceListener<I
             }
         }
 
-        if(restart)
+        if (xmppService != null) {
+            xmppService.disconnect();
+        }
+        
+        Integer exitCode = IApplication.EXIT_OK;
+        if(restart) {
             return EXIT_RESTART;
-        else
-            return EXIT_OK;
+        }
+        
+        return exitCode;
     }
 
     public int getStatus()
@@ -379,13 +383,13 @@ public class DistributorStart implements IApplication, IGenericServiceListener<I
    	
     	try {
 			sessionService.connect(xmppUser, xmppPassword, xmppServer);
+			xmppService = sessionService;
 		} catch (Exception e) {
-			CentralLogger.getInstance().warn(this,
-					"XMPP connection is not available, " + e.toString());
+			Log.log(this, Log.WARN, "XMPP connection is not available: " + e.getMessage());
 		}
     }
     
     public void unbindService(ISessionService service) {
-    	service.disconnect();
+    	// Nothing to do here
     }
 }
