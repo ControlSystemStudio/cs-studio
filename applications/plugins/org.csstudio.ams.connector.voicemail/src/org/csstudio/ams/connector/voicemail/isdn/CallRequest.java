@@ -27,6 +27,7 @@ package org.csstudio.ams.connector.voicemail.isdn;
  * @author Markus Moeller
  *
  */
+@SuppressWarnings("hiding")
 public class CallRequest
 {
     private String text;
