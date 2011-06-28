@@ -56,7 +56,8 @@ public class FilterConditionString implements IFilterCondition
 	
 	private FilterConditionStringTObject fcsObj = null;
 	
-	public void init(Connection conDb, int filterConditionID, int filterRef) throws AMSException
+	@Override
+    public void init(Connection conDb, int filterConditionID, int filterRef) throws AMSException
 	{
 		try
 		{
@@ -104,7 +105,8 @@ public class FilterConditionString implements IFilterCondition
 		// return dateValue.compareTo(dateCompValue);
 	}
 	
-	public boolean match(MapMessage map)
+	@Override
+    public boolean match(MapMessage map)
 	{
 		try
 		{

@@ -1,3 +1,4 @@
+
 /* 
  * Copyright (c) 2008 Stiftung Deutsches Elektronen-Synchrotron, 
  * Member of the Helmholtz Association, (DESY), HAMBURG, GERMANY.
@@ -19,13 +20,15 @@
  * PROJECT IN THE FILE LICENSE.HTML. IF THE LICENSE IS NOT INCLUDED YOU MAY FIND A COPY 
  * AT HTTP://WWW.DESY.DE/LEGAL/LICENSE.HTM
  */
- package org.csstudio.ams.dbAccess;
+
+package org.csstudio.ams.dbAccess;
 
 import java.io.Serializable;
 
-public abstract class Key implements ItemInterface,Serializable
-{
-	/** Generated serial version id */
+@SuppressWarnings("hiding")
+public abstract class Key implements ItemInterface,Serializable {
+	
+    /** Generated serial version id */
     private static final long serialVersionUID = -4085423169819630838L;
 
     public static final int USER_KEY = 1;
@@ -39,25 +42,22 @@ public abstract class Key implements ItemInterface,Serializable
 	
 	private int type;
 	
-	protected Key(int type)
-	{
+    protected Key(int type) {
 		this.type = type;
 	}
 	
 	/**
 	 * FIXME Use (typesafe) enum (pattern)!!
 	 */
-	public int getType()
-	{
+	public int getType() {
 		return type;
 	}
 	
-	public int getGroupRef()
-	{
+	public int getGroupRef() {
 		return -1;
 	}
 	
-	public void setGroupRef(int groupRef)
-	{
+	public void setGroupRef(int groupRef) {
+	    // Nothing to do
 	}
 }

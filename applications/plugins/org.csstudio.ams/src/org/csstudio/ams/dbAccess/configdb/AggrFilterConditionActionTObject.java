@@ -27,17 +27,17 @@ import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
-public class AggrFilterConditionActionTObject implements Serializable
-{
-	private static final long serialVersionUID = 5290953631399270451L;
+@SuppressWarnings("hiding")
+public class AggrFilterConditionActionTObject implements Serializable {
+	
+    private static final long serialVersionUID = 5290953631399270451L;
 	
 	private FilterTObject filter = new FilterTObject();
 	private List<FilterConditionKey> filterConditions = new ArrayList<FilterConditionKey>();
 	private List<FilterActionTObject> filterActions = new ArrayList<FilterActionTObject>();
 
 	
-	public FilterKey getKey()
-	{
+	public FilterKey getKey() {
 		return new FilterKey(filter.getFilterID(), filter.getName(), filter.getGroupRef());
 	}
 

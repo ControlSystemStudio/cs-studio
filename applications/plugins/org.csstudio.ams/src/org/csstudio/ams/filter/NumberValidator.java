@@ -40,7 +40,7 @@ public class NumberValidator {
      * The method extracts the first valid long value from the string.
      *  
      * @param s
-     * @return
+     * @return The first valid long value 
      */
     public static Long getCleanLong(String s) {
         
@@ -66,7 +66,7 @@ public class NumberValidator {
      * The method extracts the first valid double value from the string.
      *  
      * @param s
-     * @return
+     * @return The first valid double value 
      */
     public static Double getCleanDouble(String s) {
         
