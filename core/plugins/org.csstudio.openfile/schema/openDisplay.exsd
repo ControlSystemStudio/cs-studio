@@ -54,7 +54,7 @@ Extensions register the file extension that they handle, and will then receive t
          <attribute name="file_extension" type="string" use="required">
             <annotation>
                <documentation>
-                  The file extension that identifies this type of display tool
+                  The file extension that identifies this type of display tool. Plain file extension &quot;ext&quot;, not including the dot as in &quot;.ext&quot;.
                </documentation>
             </annotation>
          </attribute>
@@ -64,7 +64,7 @@ Extensions register the file extension that they handle, and will then receive t
                   Class that can open this type of display
                </documentation>
                <appinfo>
-                  <meta.attribute kind="java" basedOn=":org.csstudio.platform.ui.display.IOpenDisplayAction"/>
+                  <meta.attribute kind="java" basedOn=":org.csstudio.openfile.IOpenDisplayAction"/>
                </appinfo>
             </annotation>
          </attribute>
@@ -102,7 +102,7 @@ Extensions register the file extension that they handle, and will then receive t
          <meta.section type="apiinfo"/>
       </appinfo>
       <documentation>
-         See org.csstudio.platform.ui.display.IOpenDisplayAction
+         See org.csstudio.openfile.IOpenDisplayAction
       </documentation>
    </annotation>
 
