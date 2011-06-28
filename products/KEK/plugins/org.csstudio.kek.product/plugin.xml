@@ -6,10 +6,10 @@
          point="org.eclipse.core.runtime.products">
       <product
             application="org.csstudio.kek.product.application"
-            name="KEK/J-PARC CSS">
+            name="Css">
          <property
                name="appName"
-               value="KEK/J-PARC CSS">
+               value="Css">
          </property>
          <property
                name="aboutImage"

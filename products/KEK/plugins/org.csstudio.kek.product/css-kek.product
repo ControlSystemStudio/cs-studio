@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <?pde version="3.5"?>
 
-<product name="KEK/J-PARC CSS" uid="kek" id="org.csstudio.kek.product.product" application="org.csstudio.kek.product.application" version="1.0.0" useFeatures="true" includeLaunchers="true">
+<product name="Css" uid="kek" id="org.csstudio.kek.product.product" application="org.csstudio.kek.product.application" version="1.0.0" useFeatures="true" includeLaunchers="true">
 
    <aboutInfo>
       <image path="/org.csstudio.utility.product/icons/aboutSide.png"/>
