@@ -11,8 +11,6 @@ import java.util.HashMap;
 import java.util.Map;
 
 import org.eclipse.jface.action.IContributionItem;
-import org.eclipse.jface.action.IMenuManager;
-import org.eclipse.jface.action.MenuManager;
 import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.ui.IWorkbenchWindow;
 import org.eclipse.ui.PlatformUI;
@@ -34,27 +32,28 @@ public class ContextMenuItems extends CompoundContributionItem
     @Override
     protected IContributionItem[] getContributionItems()
     {
-    	// Fetch icons...
-        final ImageDescriptor menu_icon =
-            AbstractUIPlugin.imageDescriptorFromPlugin(Activator.ID, "icons/menu.gif"); //$NON-NLS-1$
         final ImageDescriptor script_icon =
             AbstractUIPlugin.imageDescriptorFromPlugin(Activator.ID, "icons/script.gif"); //$NON-NLS-1$
-
-        // Create a (sub) menu that will list
-        final IMenuManager items = new MenuManager("External Scripts", menu_icon, null);
         final IWorkbenchWindow window = PlatformUI.getWorkbench().getActiveWorkbenchWindow();
-        for (ScriptInfo info : Preferences.getCommandInfos())
+
+        // Create a CommandContributionItem for each script
+        final ScriptInfo[] infos = Preferences.getCommandInfos();
+        final IContributionItem[] items = new IContributionItem[infos.length];
+		for (int i=0; i<items.length; ++i)
         {
+			// The command to invoke is RunScriptHandler.COMMAND_ID
         	final CommandContributionItemParameter params
-        	 = new CommandContributionItemParameter(window, null, RunScriptHandler.COMMAND_ID,
+        		= new CommandContributionItemParameter(window, null, RunScriptHandler.COMMAND_ID,
         			 CommandContributionItem.STYLE_PUSH);
-        	params.label = info.getDescription();
+        	// Label of the command (= displayed menu item) is the script's description
+        	params.label = infos[i].getDescription();
         	params.icon = script_icon;
+        	// Name of the script to invoke is passed as a command parameter
         	final Map<String, String> cmd_parms = new HashMap<String, String>();
-        	cmd_parms.put(RunScriptHandler.PARAM_SCRIPT, info.getScript());
+        	cmd_parms.put(RunScriptHandler.PARAM_SCRIPT, infos[i].getScript());
 			params.parameters = cmd_parms;
-			items.add(new CommandContributionItem(params));
+			items[i] = new CommandContributionItem(params);
         }
-        return new IContributionItem[] { items };
+        return items;
     }
 }
