@@ -87,7 +87,7 @@ Extensions register the file extension that they handle, and will then receive t
       <documentation>
          &lt;pre&gt;
       &lt;extension
-         point=&quot;org.csstudio.platform.ui.openDisplay&quot;&gt;
+         point=&quot;org.csstudio.openfile.openDisplay&quot;&gt;
       &lt;openDisplay
             class=&quot;org.csstudio.myopi.OpenMyDisplayFile&quot;
             file_extension=&quot;mopi&quot;&gt;
@@ -111,7 +111,7 @@ Extensions register the file extension that they handle, and will then receive t
          <meta.section type="implementation"/>
       </appinfo>
       <documentation>
-         org.csstudio.opibuilder implements this for *.opi files
+         org.csstudio.opibuilder implements this for 'opi' files
       </documentation>
    </annotation>
 
