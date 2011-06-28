@@ -128,7 +128,7 @@ public class MonitorStatusHandler
 
     /**
      * 
-     * @return
+     * @return True if a check has to be performed
      */
     public boolean doNextCheck()
     {
