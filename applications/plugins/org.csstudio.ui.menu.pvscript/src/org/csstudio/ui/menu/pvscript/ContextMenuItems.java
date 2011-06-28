@@ -11,7 +11,9 @@ import java.util.HashMap;
 import java.util.Map;
 
 import org.eclipse.jface.action.IContributionItem;
+import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.resource.ImageDescriptor;
+import org.eclipse.osgi.util.NLS;
 import org.eclipse.ui.IWorkbenchWindow;
 import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.actions.CompoundContributionItem;
@@ -32,12 +34,25 @@ public class ContextMenuItems extends CompoundContributionItem
     @Override
     protected IContributionItem[] getContributionItems()
     {
-        final ImageDescriptor script_icon =
-            AbstractUIPlugin.imageDescriptorFromPlugin(Activator.ID, "icons/script.gif"); //$NON-NLS-1$
         final IWorkbenchWindow window = PlatformUI.getWorkbench().getActiveWorkbenchWindow();
 
+        final ScriptInfo[] infos;
+        try
+        {
+        	infos = Preferences.getCommandInfos();
+        }
+        catch (Exception ex)
+        {
+        	MessageDialog.openError(window.getShell(), Messages.Error,
+        			NLS.bind(Messages.PreferenceErrorFmt, ex.getMessage()));
+        	return new IContributionItem[0];
+        }
+    	
+    	
+    	final ImageDescriptor script_icon =
+            AbstractUIPlugin.imageDescriptorFromPlugin(Activator.ID, "icons/script.gif"); //$NON-NLS-1$
+
         // Create a CommandContributionItem for each script
-        final ScriptInfo[] infos = Preferences.getCommandInfos();
         final IContributionItem[] items = new IContributionItem[infos.length];
 		for (int i=0; i<items.length; ++i)
         {

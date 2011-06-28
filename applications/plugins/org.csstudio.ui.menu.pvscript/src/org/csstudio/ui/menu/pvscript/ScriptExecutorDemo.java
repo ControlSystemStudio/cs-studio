@@ -12,6 +12,7 @@ import org.junit.Test;
 /** JUnit demo of the {@link CommandRunner}
  *  @author Kay Kasemir
  */
+@SuppressWarnings("nls")
 public class ScriptExecutorDemo
 {
 	@Test

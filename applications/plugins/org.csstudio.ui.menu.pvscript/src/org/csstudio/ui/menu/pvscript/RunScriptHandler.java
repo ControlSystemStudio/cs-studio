@@ -28,6 +28,7 @@ import org.eclipse.ui.handlers.HandlerUtil;
  *  
  *  @author Kay Kasemir
  */
+@SuppressWarnings("nls")
 public class RunScriptHandler extends AbstractHandler
 {
 	/** ID of the command for which this is the default handler */
@@ -59,8 +60,8 @@ public class RunScriptHandler extends AbstractHandler
         	catch (Throwable ex)
         	{
         		MessageDialog.openError(null,
-        				"Error",
-        				NLS.bind("Execution of the script failed:\n{0}", ex.getMessage()));
+        				Messages.Error,
+        				NLS.bind(Messages.ScriptExecutionErrorFmt, ex.getMessage()));
         		break;
         	}
         }

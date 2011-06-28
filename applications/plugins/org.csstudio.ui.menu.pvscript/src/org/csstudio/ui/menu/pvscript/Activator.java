@@ -10,6 +10,7 @@ package org.csstudio.ui.menu.pvscript;
 /** Not really a plugin activtor...
  *  @author Kay Kasemir
  */
+@SuppressWarnings("nls")
 public class Activator
 {
 	/** Plugin ID defined in MANIFEST.MF */
