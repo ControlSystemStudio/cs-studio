@@ -17,6 +17,9 @@ import org.eclipse.core.runtime.preferences.IPreferencesService;
 @SuppressWarnings("nls")
 public class Preferences
 {
+	/** Name of preference that holds the descriptions and script names */
+	final public static String PREF_SCRIPTS = "scripts";
+	
 	/** Get {@link ScriptInfo} entries from preferences
 	 *  @return ScriptInfo array
 	 *  @throws Exception on error
@@ -24,7 +27,7 @@ public class Preferences
 	public static ScriptInfo[] getCommandInfos() throws Exception
 	{
         final IPreferencesService prefs = Platform.getPreferencesService();
-        final String script_list = prefs.getString(Activator.ID, "scripts", "", null);
+        final String script_list = prefs.getString(Activator.ID, PREF_SCRIPTS, "", null);
         
         // Split  description1|command1,description2|command2  at ","
         final String[] desc_scripts = StringSplitter.splitIgnoreInQuotes(script_list, ',', true);

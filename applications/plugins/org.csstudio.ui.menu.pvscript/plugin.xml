@@ -25,5 +25,14 @@
          </commandParameter>
       </command>
    </extension>
+   <extension
+         point="org.eclipse.ui.preferencePages">
+      <page
+            category="org.csstudio.platform.ui.css.applications.utilities"
+            class="org.csstudio.ui.menu.pvscript.PreferencePage"
+            id="org.csstudio.ui.menu.pvscript.preferences.PreferencePage"
+            name="%Preferences">
+      </page>
+   </extension>
 
 </plugin>
