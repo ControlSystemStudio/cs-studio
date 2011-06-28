@@ -206,4 +206,11 @@
          </toolbar>
       </menuContribution>
    </extension>
+   <extension
+         point="org.csstudio.openfile.openDisplay">
+      <openDisplay
+            class="org.csstudio.trends.databrowser2.OpenDisplayFile"
+            file_extension="plt">
+      </openDisplay>
+   </extension>
 </plugin>

@@ -22,7 +22,8 @@ Require-Bundle: org.junit4,
  org.csstudio.swt.xygraph;bundle-version="1.0.2",
  org.csstudio.archive.reader;bundle-version="2.0.1",
  org.csstudio.logbook;bundle-version="1.0.2",
- org.csstudio.email.ui;bundle-version="1.0.0"
+ org.csstudio.email.ui;bundle-version="1.0.0",
+ org.csstudio.openfile;bundle-version="3.0.0"
 Bundle-ActivationPolicy: lazy
 Bundle-RequiredExecutionEnvironment: JavaSE-1.6
 Bundle-Vendor: Kay Kasemir <kasemirk@ornl.gov> - SNS
