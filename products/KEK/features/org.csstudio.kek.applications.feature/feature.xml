@@ -28,7 +28,7 @@
    <requires>
       <import plugin="org.eclipse.core.runtime" version="3.6.0" match="greaterOrEqual"/>
       <import plugin="org.csstudio.startup" version="3.0.0" match="greaterOrEqual"/>
-      <import plugin="org.eclipse.ui"/>
+      <import plugin="org.csstudio.utility.product" version="1.0.0" match="greaterOrEqual"/>
       <import plugin="org.eclipse.help"/>
       <import plugin="org.eclipse.help.appserver"/>
       <import plugin="org.eclipse.help.base"/>
@@ -43,7 +43,6 @@
       <import plugin="org.csstudio.auth" version="1.0.0" match="greaterOrEqual"/>
       <import plugin="org.junit4"/>
       <import plugin="org.csstudio.apputil"/>
-      <import plugin="org.csstudio.utility.product" version="1.0.0" match="greaterOrEqual"/>
       <import plugin="org.junit4" version="4.3.1" match="greaterOrEqual"/>
       <import plugin="org.eclipse.ui" version="3.4.0" match="greaterOrEqual"/>
       <import plugin="org.csstudio.platform.utility.rdb" version="1.0.0" match="greaterOrEqual"/>
@@ -54,6 +53,9 @@
       <import plugin="org.csstudio.platform.utility.rdb" version="1.2.2" match="greaterOrEqual"/>
       <import plugin="org.csstudio.apputil" version="1.0.11" match="greaterOrEqual"/>
       <import plugin="org.csstudio.auth.ui" version="1.0.0" match="greaterOrEqual"/>
+      <import plugin="org.eclipse.ui" version="3.6.2" match="greaterOrEqual"/>
+      <import plugin="org.eclipse.ui.intro" version="3.4.0" match="greaterOrEqual"/>
+      <import plugin="org.eclipse.ui.intro.universal" version="3.2.0" match="greaterOrEqual"/>
    </requires>
 
    <plugin
