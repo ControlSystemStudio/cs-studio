@@ -57,21 +57,6 @@
          unpack="false"/>
 
    <plugin
-         id="org.csstudio.trends.databrowser2"
-         download-size="0"
-         install-size="0"
-         version="0.0.0"
-         unpack="false"/>
-
-   <plugin
-         id="org.csstudio.trends.databrowser2.shell.fragment"
-         download-size="0"
-         install-size="0"
-         version="0.0.0"
-         fragment="true"
-         unpack="false"/>
-
-   <plugin
          id="org.csstudio.utility.screenshot"
          download-size="0"
          install-size="0"
@@ -87,6 +72,13 @@
 
    <plugin
          id="org.csstudio.utility.sysmon"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"
+         unpack="false"/>
+
+   <plugin
+         id="org.csstudio.common.trendplotter"
          download-size="0"
          install-size="0"
          version="0.0.0"
