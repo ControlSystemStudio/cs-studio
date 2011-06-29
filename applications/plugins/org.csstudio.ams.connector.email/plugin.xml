@@ -41,5 +41,13 @@
          </stringParameter>
       </command>
    </extension>
+   <extension
+         id="AmsEMailConnectorProduct"
+         point="org.eclipse.core.runtime.products">
+      <product
+            application="org.csstudio.ams.connector.email.AmsEMailConnector"
+            name="AmsEMailConnectorProduct">
+      </product>
+   </extension>
 
 </plugin>
