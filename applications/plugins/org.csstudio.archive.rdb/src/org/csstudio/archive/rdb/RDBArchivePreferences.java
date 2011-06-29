@@ -21,6 +21,7 @@ public class RDBArchivePreferences
     public static final String SCHEMA = "schema";
     public static final String USER = "user";
     public static final String PASSWORD = "password";
+    public static final String SQL_TIMEOUT = "sql_timeout";
 
     /** @return URL of RDB archive server */
     public static String getURL()
@@ -49,6 +50,15 @@ public class RDBArchivePreferences
             return password;
         // Fall back to plain prefs
         return getString(PASSWORD);
+    }
+    
+	/** @return SQL Timeout in seconds */
+    public static int getSQLTimeoutSecs()
+    {
+        final IPreferencesService prefs = Platform.getPreferencesService();
+        if (prefs == null)
+            return 0;
+        return prefs.getInt(Activator.ID, SQL_TIMEOUT, 0, null);
     }
 
     /** Get string preference

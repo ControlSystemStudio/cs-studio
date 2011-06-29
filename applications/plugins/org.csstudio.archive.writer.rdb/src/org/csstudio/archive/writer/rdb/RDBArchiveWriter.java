@@ -43,7 +43,7 @@ public class RDBArchiveWriter implements ArchiveWriter
     /** Severity string for <code>Double.NaN</code> samples */
     final private static String NOT_A_NUMBER_SEVERITY = "INVALID";
 
-    final private int SQL_TIMEOUT_SECS = Preferences.getSQLTimeoutSecs();
+    final private int SQL_TIMEOUT_SECS = RDBArchivePreferences.getSQLTimeoutSecs();
     
     final private int MAX_TEXT_SAMPLE_LENGTH = Preferences.getMaxStringSampleLength();
     
@@ -256,7 +256,8 @@ public class RDBArchiveWriter implements ArchiveWriter
         {
             insert_double_sample =
                 rdb.getConnection().prepareStatement(sql.sample_insert_double);
-            insert_double_sample.setQueryTimeout(SQL_TIMEOUT_SECS);
+            if (SQL_TIMEOUT_SECS > 0)
+            	insert_double_sample.setQueryTimeout(SQL_TIMEOUT_SECS);
         }
         // Catch not-a-number, which JDBC (at least Oracle) can't handle.
         if (Double.isNaN(dbl[0]))
@@ -316,7 +317,8 @@ public class RDBArchiveWriter implements ArchiveWriter
         {
             insert_long_sample =
                rdb.getConnection().prepareStatement(sql.sample_insert_int);
-            insert_long_sample.setQueryTimeout(SQL_TIMEOUT_SECS);
+            if (SQL_TIMEOUT_SECS > 0)
+            	insert_long_sample.setQueryTimeout(SQL_TIMEOUT_SECS);
         }
         insert_long_sample.setLong(5, num);
         completeAndBatchInsert(insert_long_sample, channel, stamp, severity, status);
@@ -332,7 +334,8 @@ public class RDBArchiveWriter implements ArchiveWriter
         {
             insert_txt_sample =
                 rdb.getConnection().prepareStatement(sql.sample_insert_string);
-            insert_txt_sample.setQueryTimeout(SQL_TIMEOUT_SECS);
+            if (SQL_TIMEOUT_SECS > 0)
+            	insert_txt_sample.setQueryTimeout(SQL_TIMEOUT_SECS);
         }
         if (txt.length() > MAX_TEXT_SAMPLE_LENGTH)
         {
