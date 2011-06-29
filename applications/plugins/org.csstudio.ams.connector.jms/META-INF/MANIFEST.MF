@@ -5,7 +5,7 @@ Bundle-SymbolicName: org.csstudio.ams.connector.jms;singleton:=true
 Bundle-Version: 1.1.0
 Bundle-Activator: org.csstudio.ams.connector.jms.JMSConnectorPlugin
 Bundle-ActivationPolicy: lazy
-Bundle-RequiredExecutionEnvironment: J2SE-1.5
+Bundle-RequiredExecutionEnvironment: JavaSE-1.6
 Require-Bundle: org.eclipse.core.runtime,
  org.eclipse.ui,
  org.csstudio.platform.ui,

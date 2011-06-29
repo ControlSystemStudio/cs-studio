@@ -37,5 +37,13 @@
             class="org.csstudio.ams.connector.jms.preferences.PreferenceInitializer">
       </initializer>
    </extension>
+   <extension
+         id="JmsConnectorProduct"
+         point="org.eclipse.core.runtime.products">
+      <product
+            application="org.csstudio.ams.connector.jms.AmsJMSConnectorId"
+            name="AmsJmsConnector">
+      </product>
+   </extension>
 
 </plugin>
