@@ -37,21 +37,6 @@ public final class PreferenceConstants {
 	 * The ID for the grid spacing property on the preference page.
 	 */
 	public static final String PROP_GRID_SPACING = "PROP_GRID_SPACING";
-
-	/**
-	 * The id for the default display file setting.
-	 */
-	public static final String PROP_DEFAULT_DISPLAY_FILE = "PROP_DEFAULT_DISPLAY_FILE";
-
-	/**
-	 * The id for the open default display as shell setting.
-	 */
-	public static final String PROP_DEFAULT_DISPLAY_OPEN_AS_SHELL = "PROP_DEFAULT_DISPLAY_OPEN_AS_SHELL";
-
-	/**
-	 * The id for the alias setting for the default display.
-	 */
-	public static final String PROP_DEFAULT_DISPLAY_ALIAS = "PROP_DEFAULT_DISPLAY_ALIAS";
 	/**
 	 * The id for the widgets, which are used in the SDS.
 	 */
