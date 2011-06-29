@@ -88,6 +88,7 @@
       <import plugin="com.ibm.icu" version="4.0.1" match="greaterOrEqual"/>
       <import plugin="org.eclipse.draw2d"/>
       <import plugin="org.eclipse.draw2d" version="3.4.0" match="greaterOrEqual"/>
+      <import plugin="org.eclipse.help" version="3.5.0" match="greaterOrEqual"/>
    </requires>
 
    <plugin
@@ -413,6 +414,13 @@
 
    <plugin
          id="org.csstudio.utility.pvmanager"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"
+         unpack="false"/>
+
+   <plugin
+         id="org.csstudio.ui.menu.pvscript"
          download-size="0"
          install-size="0"
          version="0.0.0"
