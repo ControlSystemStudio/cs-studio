@@ -34,7 +34,7 @@ public class ScriptInfoFieldEditor extends FieldEditor
 	
 	public ScriptInfoFieldEditor(final Composite parent)
 	{
-		init(Preferences.PREF_SCRIPTS, "Scripts");
+		init(Preferences.PREF_SCRIPTS, Messages.PrefEdit_Scripts);
 		createControl(parent);
 	}
 
@@ -49,7 +49,7 @@ public class ScriptInfoFieldEditor extends FieldEditor
 
         final RowEditDialog editor = new ScriptInfoEditor(parent.getShell());
         table_editor = new StringTableEditor(parent,
-        	new String[] { "Description", "Command" },
+        	new String[] { Messages.PrefEdit_Description, Messages.PrefEdit_Command },
         	new boolean[] { true, true },
         	texts,
         	editor,

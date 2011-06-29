@@ -16,8 +16,13 @@ public class Messages extends NLS
 {
 	private static final String BUNDLE_NAME = "org.csstudio.ui.menu.pvscript.messages"; //$NON-NLS-1$
 	public static String Error;
+	public static String PrefEdit_Command;
+	public static String PrefEdit_Description;
+	public static String PrefEdit_Scripts;
 	public static String PreferenceErrorFmt;
+	public static String PreferencePageMessage;
 	public static String ScriptExecutionErrorFmt;
+	public static String ScriptInfoDlgTitle;
 
 	static
 	{

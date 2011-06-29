@@ -37,7 +37,7 @@ public class ScriptInfoEditor extends RowEditDialog
     protected void configureShell(final Shell newShell)
     {
         super.configureShell(newShell);
-        newShell.setText("Configure Script");
+        newShell.setText(Messages.ScriptInfoDlgTitle);
     }
     
     /** {@inheritDoc} */
@@ -51,7 +51,7 @@ public class ScriptInfoEditor extends RowEditDialog
 
         // Description: __description____
         Label l = new Label(composite, 0);
-        l.setText("Description:");
+        l.setText(Messages.PrefEdit_Description);
         l.setLayoutData(new GridData(0, 0, false, false));
         description = new Text(composite, SWT.BORDER);
         description.setText(rowData[0]);
@@ -59,7 +59,7 @@ public class ScriptInfoEditor extends RowEditDialog
 
         // Script: __script____
         l = new Label(composite, 0);
-        l.setText("Script:");
+        l.setText(Messages.PrefEdit_Command);
         l.setLayoutData(new GridData(SWT.TOP, 0, false, true));
         // Script could can be long. Limit the initial width, but allow WRAP
         script = new Text(composite, SWT.BORDER | SWT.WRAP);

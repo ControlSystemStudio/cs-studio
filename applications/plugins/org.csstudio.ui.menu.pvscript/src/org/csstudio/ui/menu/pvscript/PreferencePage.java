@@ -24,7 +24,7 @@ public class PreferencePage	extends FieldEditorPreferencePage
 	{
         super(FieldEditorPreferencePage.GRID);
         setPreferenceStore(new ScopedPreferenceStore(new InstanceScope(), Activator.ID));
-		setDescription("Configure Process Variable context menu scripts");
+		setDescription(Messages.PreferencePageMessage);
 	}
 	
 	/** {@inheritDoc} */
