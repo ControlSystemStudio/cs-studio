@@ -21,38 +21,62 @@
  */
 package org.csstudio.domain.desy.epics.name;
 
+import java.util.regex.Matcher;
+
 import javax.annotation.Nonnull;
 
 /**
- * TODO (bknerr) :
+ * Epics Name Specification.<br/>
+ * According to EPICS Application Developers Guide - EPICS Base Release 3.14.11 25 February 2010.
  *
  * @author bknerr
  * @since 24.06.2011
  */
 public class EpicsChannelName {
 
+    public static final Integer MAX_BASENAME_LENGTH = 60;
+    /**
+     * Regex specifying the permitted structure of an EPICS channel base name.<br/>
+     * Any out of: a-z A-Z 0-9 _ - + : [ ] < > ;
+     */
+    public static final String BASENAME_REGEX = "[a-zA-Z0-9_\\+:;<>\\[\\]-]{1," + MAX_BASENAME_LENGTH + "}";
+    //
+
+    public static final Integer MAX_FIELD_LENGTH = 4;
     public static final String FIELD_SEP = ".";
+    /**
+     * The {@link java.lang.String#split(String)} method does not like the
+     * {@link Matcher#quoteReplacement(String)} output as input... try it and cry.
+     */
+    public static final String FIELD_SEP_FOR_SPLIT = "\\" + FIELD_SEP;
+
+    /**
+     * Regex specifying the permitted structure of an EPICS channel record field name.
+     */
+    public static final String FIELD_REGEX = "[A-Z]{1," + MAX_FIELD_LENGTH + "}";
+    public static final String FIELD_SEP_REGEX = Matcher.quoteReplacement(FIELD_SEP);
+    public static final String FULLNAME_REGEX = BASENAME_REGEX +
+                                                "(" + FIELD_SEP_REGEX +
+                                                FIELD_REGEX + ")?";
 
     private final String _baseName;
-    private final RecordField _field;
+    private final IRecordField _field;
 
     /**
      * Constructor.
      */
     public EpicsChannelName(@Nonnull final String fullName) {
-        _baseName= EpicsNameSupport.parseBaseName(fullName);
-       // _field = EpicsNameSupport.parseField(fullName);
-        _field = null;
+        _baseName = EpicsNameSupport.parseBaseName(fullName);
+       _field = EpicsNameSupport.parseField(fullName);
     }
 
     /**
      * Constructor.
      */
     public EpicsChannelName(@Nonnull final String baseName,
-                            @Nonnull final RecordField field) {
+                            @Nonnull final IRecordField field) {
 
-        _baseName= EpicsNameSupport.parseBaseName(baseName);
-       // _baseName = baseName;
+        _baseName = EpicsNameSupport.parseBaseName(baseName);
         _field = field;
     }
 
@@ -62,7 +86,7 @@ public class EpicsChannelName {
     }
 
     @Nonnull
-    public RecordField getField() {
+    public IRecordField getField() {
         return _field;
     }
 
@@ -72,6 +96,6 @@ public class EpicsChannelName {
     @Override
     @Nonnull
     public String toString() {
-        return _baseName + FIELD_SEP + _field.name();
+        return _baseName + FIELD_SEP + _field.getFieldName();
     }
 }

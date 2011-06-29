@@ -40,11 +40,18 @@ public class UnknownRecordField implements IRecordField {
      */
     public UnknownRecordField(@Nonnull final String fieldName) {
         try {
-            final RecordField field = RecordField.valueOf(fieldName);
+            RecordField.valueOf(fieldName);
+            throw new IllegalArgumentException("The field name belongs to known record: " + RecordField.class.getName());
+            // CHECKSTYLE OFF: EmptyBlock
         } catch (final IllegalArgumentException iae) {
             // Ignore
+            // CHECKSTYLE ON: EmptyBlock
         }
-        _fieldName = fieldName;
+        if (fieldName.matches(EpicsChannelName.FIELD_REGEX)) {
+            _fieldName = fieldName;
+        } else {
+            throw new IllegalArgumentException("The field name belongs to known record: " + RecordField.class.getName());
+        }
     }
 
     @Override

@@ -21,38 +21,20 @@
  */
 package org.csstudio.domain.desy.epics.name;
 
-import java.util.regex.Matcher;
+import static org.csstudio.domain.desy.epics.name.EpicsChannelName.FIELD_REGEX;
+import static org.csstudio.domain.desy.epics.name.EpicsChannelName.FIELD_SEP_FOR_SPLIT;
+import static org.csstudio.domain.desy.epics.name.EpicsChannelName.FIELD_SEP_REGEX;
+import static org.csstudio.domain.desy.epics.name.EpicsChannelName.FULLNAME_REGEX;
 
 import javax.annotation.Nonnull;
 
 /**
  * EPICS specific name service.
  *
- * According to EPICS Application Developers Guide - EPICS Base Release 3.14.11 25 February 2010
- *
  * @author bknerr
  * @since 24.06.2011
  */
-public class EpicsNameSupport {
-
-    public static final Integer MAX_BASENAME_LENGTH = 60;
-    /**
-     * Regex specifying the permitted structure of an EPICS channel base name.
-     */
-    public static final String BASENAME_REGEX = "[a-zA-Z0-9_-+:[]<>;]+";
-
-    public static final Integer MAX_FIELD_LENGTH = 4;
-    /**
-     * Regex specifying the permitted structure of an EPICS channel record field name.
-     */
-    public static final String FIELD_REGEX = "[A-Z]{1," + MAX_FIELD_LENGTH + "}";
-
-    private static final String FIELD_SEP_REGEX = Matcher.quoteReplacement(EpicsChannelName.FIELD_SEP);
-
-    public static final String FULLNAME_REGEX = BASENAME_REGEX +
-                                                "{" + FIELD_SEP_REGEX +
-                                                FIELD_REGEX +
-                                                "}?";
+public final class EpicsNameSupport {
 
     /**
      * Don't instantiate.
@@ -72,18 +54,27 @@ public class EpicsNameSupport {
 
     /**
      * Parses the given string for {@link EpicsChannelName#FIELD_SEP} and returns
-     * the field type (if already known) {@link RecordField}, and <code>null</code>
-     * otherwise.
+     * the field type (if already known) {@link RecordField}, and a new instance of
+     * {@link UnknownRecordField} with the specified fieldName set to the given suffix.
      */
-//    CheckForNull
-//    public static RecordField parseField(@Nonnull final String rawName) {
-//        if (!rawName.contains(EpicsChannelName.FIELD_SEP)) {
-//            return RecordField.VAL;
-//        }
-//        if (rawName.matches("[^\\.]+\\.(.+)$")) {
-//
-//        }
-//    }
+    @Nonnull
+    public static IRecordField parseField(@Nonnull final String rawName) {
+        if (rawName.matches("^" + FULLNAME_REGEX + "$")) {
+
+            final String[] fields = rawName.split(FIELD_SEP_FOR_SPLIT);
+            if (fields.length == 1) {
+                return RecordField.VAL;
+            }
+            if (fields.length == 2) {
+                try {
+                    return RecordField.valueOf(fields[1]);
+                } catch (final IllegalArgumentException e) {
+                    return new UnknownRecordField(fields[1]);
+                }
+            }
+        }
+        throw new IllegalArgumentException(rawName + " does match channel name regex: " + "^" + FULLNAME_REGEX + "$");
+    }
 
 
 }

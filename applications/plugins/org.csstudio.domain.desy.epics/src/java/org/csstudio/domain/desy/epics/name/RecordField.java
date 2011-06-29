@@ -32,8 +32,16 @@ import javax.annotation.Nonnull;
  */
 public enum RecordField implements IRecordField {
     VAL,
-    ADEL,
-    UNKNOWN;
+    ADEL;
+
+    /**
+     * Constructor.
+     */
+    private RecordField() {
+        if (!getFieldName().matches(EpicsChannelName.FIELD_REGEX)) {
+            throw new IllegalArgumentException("Name does not match " + EpicsChannelName.FIELD_REGEX);
+        }
+    }
 
     /**
      * {@inheritDoc}
