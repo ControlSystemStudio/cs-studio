@@ -10,6 +10,7 @@ package org.csstudio.ui.menu.pvscript;
 /** Information about a script
  *  @author Kay Kasemir
  */
+@SuppressWarnings("nls")
 public class ScriptInfo
 {
 	final private String description;
@@ -35,5 +36,11 @@ public class ScriptInfo
 	public String getScript()
 	{
 		return script;
+	}
+	
+	/** @return Debug representation */
+    public String toString()
+	{
+		return description + ": Command '" + script + "'";
 	}
 }

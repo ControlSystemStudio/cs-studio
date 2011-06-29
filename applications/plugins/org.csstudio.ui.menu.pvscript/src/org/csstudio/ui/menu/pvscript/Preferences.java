@@ -42,4 +42,41 @@ public class Preferences
         }
 		return infos;
 	}
+	
+	/** @param infos Array of {@link ScriptInfo}
+	 *  @return Script infos encoded into one string, suitable for storing as preference
+	 */
+	public static String encode(final ScriptInfo[] infos)
+	{
+		final StringBuilder buf = new StringBuilder();
+		for (int i=0; i<infos.length; ++i)
+		{
+			if (i > 0)
+				buf.append(',');
+			buf.append('"').append(infos[i].getDescription()).append('"')
+			   .append('|')
+			   .append('"').append(infos[i].getScript()).append('"');
+		}
+		return buf.toString();
+	}
+	
+	/** @param script_list Encoded script infos, as read from preferences
+	 *  @return ScriptInfo array
+	 *  @throws Exception on error
+	 */
+	public static ScriptInfo[] decode(final String script_list) throws Exception
+	{
+        // Split  description1|command1,description2|command2  at ","
+        final String[] desc_scripts = StringSplitter.splitIgnoreInQuotes(script_list, ',', false);
+        final ScriptInfo[] infos = new ScriptInfo[desc_scripts.length];
+        for (int i=0; i<infos.length; ++i)
+        {
+        	// Split description1|command1 at "|"
+            final String[] desc_script = StringSplitter.splitIgnoreInQuotes(desc_scripts[i], '|', true);
+        	if (desc_script.length != 2)
+        		throw new Exception("Error in preference " + Activator.ID + "/scripts");
+        	infos[i] = new ScriptInfo(desc_script[0], desc_script[1]);
+        }
+		return infos;
+	}
 }

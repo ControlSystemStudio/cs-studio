@@ -36,8 +36,9 @@ public class PreferencePage	extends FieldEditorPreferencePage
 	/** {@inheritDoc} */
 	public void createFieldEditors()
 	{
-		addField(
-			new StringFieldEditor(Preferences.PREF_SCRIPTS,
-					"A &text preference:", getFieldEditorParent()));
+		// Editing a plain string preference would be easy:
+		//		addField(new StringFieldEditor(Preferences.PREF_SCRIPTS,
+		//					"A &text preference:", getFieldEditorParent()));
+		addField(new ScriptInfoFieldEditor(getFieldEditorParent()));
 	}
 }
