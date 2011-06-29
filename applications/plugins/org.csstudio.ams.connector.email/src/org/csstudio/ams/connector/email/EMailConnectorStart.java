@@ -74,7 +74,8 @@ public class EMailConnectorStart implements IApplication, IGenericServiceListene
     
     private MessageProducer extPublisherStatusChange = null;
     
-    private SynchObject sObj = null;
+    private SynchObject sObj;
+    private ISessionService xmppService;
     private String managementPassword; 
     private int lastStatus = 0;
     private boolean bStop;
@@ -84,7 +85,7 @@ public class EMailConnectorStart implements IApplication, IGenericServiceListene
     {
         _instance = this;
         sObj = new SynchObject(STAT_INIT, System.currentTimeMillis());
-        
+        xmppService = null;
         IPreferencesService pref = Platform.getPreferencesService();
         managementPassword = pref.getString(AmsActivator.PLUGIN_ID, AmsPreferenceKey.P_AMS_MANAGEMENT_PASSWORD, "", null);
         if(managementPassword == null) {
@@ -122,7 +123,7 @@ public class EMailConnectorStart implements IApplication, IGenericServiceListene
 
     /**
      * 
-     * @return
+     * @return The mangement password
      */
     public synchronized String getPassword()
     {
@@ -216,11 +217,11 @@ public class EMailConnectorStart implements IApplication, IGenericServiceListene
             // Clean stop of the working thread
             ecw.stopWorking();
             
-            try
-            {
+            try {
                 ecw.join(WAITFORTHREAD);
+            } catch(InterruptedException ie) {
+                // Can be ignored
             }
-            catch(InterruptedException ie) { }
     
             if(ecw.stoppedClean())
             {
@@ -237,10 +238,16 @@ public class EMailConnectorStart implements IApplication, IGenericServiceListene
             }
         }
         
-        if(restart)
-            return EXIT_RESTART;
-        else
-            return EXIT_OK;
+        if (xmppService != null) {
+            xmppService.disconnect();
+        }
+        
+        Integer exitCode = IApplication.EXIT_OK;
+        if(restart) {
+            exitCode = IApplication.EXIT_RESTART;
+        }
+        
+        return exitCode;
     }
 
     public int getStatus()
@@ -357,13 +364,15 @@ public class EMailConnectorStart implements IApplication, IGenericServiceListene
     }
     
     public void bindService(ISessionService sessionService) {
-    	IPreferencesService pref = Platform.getPreferencesService();
+    	
+        IPreferencesService pref = Platform.getPreferencesService();
         String xmppUser = pref.getString(EMailConnectorPlugin.PLUGIN_ID, EMailConnectorPreferenceKey.P_XMPP_USER, "anonymous", null);
         String xmppPassword = pref.getString(EMailConnectorPlugin.PLUGIN_ID, EMailConnectorPreferenceKey.P_XMPP_PASSWORD, "anonymous", null);
         String xmppServer = pref.getString(EMailConnectorPlugin.PLUGIN_ID, EMailConnectorPreferenceKey.P_XMPP_SERVER, "krynfs.desy.de", null);
    	
     	try {
 			sessionService.connect(xmppUser, xmppPassword, xmppServer);
+			xmppService = sessionService;
 		} catch (Exception e) {
 			CentralLogger.getInstance().warn(this,
 					"XMPP connection is not available, " + e.toString());
@@ -371,7 +380,6 @@ public class EMailConnectorStart implements IApplication, IGenericServiceListene
     }
     
     public void unbindService(ISessionService service) {
-    	service.disconnect();
+    	// Nothing to do here
     }
-    
 }

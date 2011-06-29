@@ -24,9 +24,9 @@
 package org.csstudio.alarm.jms2ora.util;
 
 import java.util.concurrent.ConcurrentLinkedQueue;
-import org.apache.log4j.Logger;
 import org.csstudio.alarm.jms2ora.database.DatabaseLayer;
-import org.csstudio.platform.logging.CentralLogger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * @author Markus Moeller
@@ -34,8 +34,8 @@ import org.csstudio.platform.logging.CentralLogger;
  */
 public class MessageStorage implements Runnable
 {
-    /** The logger */
-    private Logger logger;
+    /** the class logger */
+    private static final Logger LOG = LoggerFactory.getLogger(MessageStorage.class);
 
     /** Object for database handling */
     private DatabaseLayer dbLayer;
@@ -53,8 +53,6 @@ public class MessageStorage implements Runnable
     
     public MessageStorage(String url, String user, String password)
     {
-        // Create the logger
-        logger = CentralLogger.getInstance().getLogger(this);
         messages = new ConcurrentLinkedQueue<MessageContent>();
         dbLayer = new DatabaseLayer(url, user, password);
         waitObject = new Object();
@@ -79,13 +77,13 @@ public class MessageStorage implements Runnable
                 }
                 catch(InterruptedException ie)
                 {
-                    logger.info("Interrupted");
+                    LOG.info(" *** INTERRUPTED *** ");
                 }
             }
             
             if(messages.isEmpty() == false)
             {
-                logger.debug("Number of unstored messages: " + messages.size());
+                LOG.debug("Number of unstored messages: ", messages.size());
                 
                 if((messages.size() >= 10) || forceStorage)
                 {

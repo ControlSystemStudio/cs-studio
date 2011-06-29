@@ -51,9 +51,8 @@ public class JMSConnectorWork extends Thread implements AmsConstants
     private boolean bStop = false;
     private boolean bStoppedClean = false;
 
-    public JMSConnectorWork(JMSConnectorStart jcs)
-    {
-		this.jcs = jcs;
+    public JMSConnectorWork(JMSConnectorStart app) {
+		this.jcs = app;
 	}
 
     /**
@@ -156,7 +155,8 @@ public class JMSConnectorWork extends Thread implements AmsConstants
 		return false;
 	}
 
-	public void run() {
+	@Override
+    public void run() {
 		boolean isJMSInitialized = false;
 		int iErr = JMSConnectorStart.STAT_OK;
 		Log.log(this, Log.INFO, "start jms connector work");

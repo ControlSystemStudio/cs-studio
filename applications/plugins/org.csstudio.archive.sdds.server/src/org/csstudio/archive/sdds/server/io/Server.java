@@ -63,14 +63,14 @@ public class Server extends Thread
     private boolean running;
 
     /**
-     * @throws IOException 
+     * @throws ServerException 
      * 
      */
-    public Server(int port, int timeout) throws ServerException
+    public Server(int port, int timeOut) throws ServerException
     {
         serverSocket = null;
-        serverPort = port;
-        this.timeout = timeout;
+        this.serverPort = port;
+        this.timeout = timeOut;
         this.running = true;
         int numberofReadThreads = 25;
         
@@ -101,7 +101,7 @@ public class Server extends Thread
     /**
      * 
      * @param port
-     * @throws IOException
+     * @throws ServerException
      */
     public Server(int port) throws ServerException
     {
@@ -143,7 +143,7 @@ public class Server extends Thread
                 socket = null;
             
             } catch (IOException ioe) {
-                LOG.info("[*** IOException ***]: ", ioe);
+                LOG.info("[*** IOException ***]: " + ioe.getMessage());
             }
         }
         
@@ -164,7 +164,7 @@ public class Server extends Thread
     
     /**
      * 
-     * @return
+     * @return The port that is used by the server
      */
     public int getServerPort() {
         return serverPort;
@@ -172,7 +172,7 @@ public class Server extends Thread
     
     /**
      * 
-     * @return
+     * @return The timeout for the socket
      */
     public int getTimeOut() {
         return this.timeout;

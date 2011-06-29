@@ -29,9 +29,7 @@ import java.util.Collection;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Vector;
-import org.apache.log4j.Logger;
 import org.csstudio.alarm.jms2ora.preferences.PreferenceConstants;
-import org.csstudio.platform.logging.CentralLogger;
 import org.csstudio.platform.management.CommandDescription;
 import org.csstudio.platform.management.CommandParameters;
 import org.csstudio.platform.management.CommandResult;
@@ -46,38 +44,34 @@ import org.eclipse.ecf.presence.roster.IRosterItem;
 import org.osgi.framework.BundleContext;
 import org.osgi.framework.InvalidSyntaxException;
 import org.osgi.util.tracker.ServiceTracker;
+import org.remotercp.common.tracker.IGenericServiceListener;
 import org.remotercp.service.connection.session.ISessionService;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * @author Markus Moeller
  *
  */
-public class ApplicationStopper
+public class ApplicationStopper implements IGenericServiceListener<ISessionService>
 {
+    /** The class logger */
+    private static final Logger LOG = LoggerFactory.getLogger(ApplicationStopper.class);
+
     /** */
     private ISessionService session;
 
-    /** The logger of this class. */
-    private Logger logger;
-    
-    /**
-     * 
-     */
-    public ApplicationStopper()
-    {
-        logger = CentralLogger.getInstance().getLogger(this);
-    }
-    
     /**
      * 
      * @param bundleContext
      * @param applicationName
      * @param host
      * @param user
-     * @param password
      */
-    public boolean stopExternInstance(BundleContext bundleContext, String applicationName, String host, String user)
-    {
+    public boolean stopExternInstance(BundleContext bundleContext,
+                                      String applicationName,
+                                      String host, String user) {
+        
         Vector<IRosterItem> rosterItems = null;
         IRosterGroup jmsApplics = null;
         IRosterEntry currentApplic = null;
@@ -95,7 +89,8 @@ public class ApplicationStopper
         stopPassword = prefs.getString(Jms2OraPlugin.PLUGIN_ID, PreferenceConstants.XMPP_SHUTDOWN_PASSWORD, "", null);
 
         connectToXMPPServer(xmppServer, xmppUser, xmppPassword);
-
+        
+        
         // session = OsgiServiceLocatorUtil.getOSGiService(bundleContext, ISessionService.class);
 
         String serviceFilter = "(&(objectClass=" +
@@ -137,23 +132,20 @@ public class ApplicationStopper
             }
             catch(InterruptedException ie)
             {
-                logger.error("[*** InterruptedException ***]: " + ie.getMessage());
+                LOG.error("[*** InterruptedException ***]: " + ie.getMessage());
             }
         }
         
         if(rosterItems.size() == 0)
         {
-            logger.info("XMPP roster not found. Stopping application.");
+            LOG.info("XMPP roster not found. Stopping application.");
             
             // Allways 'false' here
             return success;
         }
-        else
-        {
-            logger.info("Manager initialized");
-        }
-
-        logger.info("Anzahl Directory-Elemente: " + rosterItems.size());
+        
+        LOG.info("Manager initialized");
+        LOG.info("Anzahl Directory-Elemente: " + rosterItems.size());
         
         jmsApplics = this.getRosterGroup(rosterItems, "jms-applications");
         currentApplic = this.getRosterApplication(jmsApplics, "jms2oracle", host, user);
@@ -169,16 +161,17 @@ public class ApplicationStopper
     private boolean connectToXMPPServer(String xmppServer, String xmppUser, String xmppPassword)
     {
         boolean success = false;
-        
+
+        // TODO:
         try
         {
-            HeadlessConnection.connect(xmppUser, xmppPassword, xmppServer, ECFConstants.XMPP);
-            ServiceLauncher.startRemoteServices();
+//            HeadlessConnection.connect(xmppUser, xmppPassword, xmppServer, ECFConstants.XMPP);
+//            ServiceLauncher.startRemoteServices();
             success = true;
         }
         catch(Exception e)
         {
-            CentralLogger.getInstance().warn(this, "Could not connect to XMPP server: " + e.getMessage());
+            LOG.warn("Could not connect to XMPP server: ", e.getMessage());
             success = false;
         }
         
@@ -207,7 +200,7 @@ public class ApplicationStopper
                 }
                 catch(InterruptedException ie)
                 {
-                    logger.error("[*** InterruptedException ***]: " + ie.getMessage());
+                    LOG.error("[*** InterruptedException ***]: " + ie.getMessage());
                 }
   
                 roster = session.getRoster();
@@ -267,7 +260,9 @@ public class ApplicationStopper
             while(list.hasNext())
             {
                 IRosterEntry ce = list.next();
-                name = ce.getUser().getID().toExternalForm();
+                
+                // TODO:
+                name = ""; //ce.getUser().getID().toExternalForm();
                 if(name.contains(applicName))
                 {
                     if((name.indexOf(host) > -1) && (name.indexOf(user) > -1))
@@ -299,12 +294,17 @@ public class ApplicationStopper
         
         if(currentApplic != null)
         {
-            logger.info("Anwendung gefunden: " + currentApplic.getUser().getID().getName());
-            
-            List<IManagementCommandService> managementServices =
-                session.getRemoteServiceProxies(
-                    IManagementCommandService.class, new ID[] {currentApplic.getUser().getID()});
-            
+            // TODO:
+            LOG.info("Anwendung gefunden: " /* + currentApplic.getUser().getID().getName() */);
+
+            // TODO:
+
+//            List<IManagementCommandService> managementServices =
+//                session.getRemoteServiceProxies(
+//                    IManagementCommandService.class, new ID[] {currentApplic.getUser().getID()});
+
+            List<IManagementCommandService> managementServices = null;
+
             if(managementServices.size() == 1)
             {
                 service = managementServices.get(0);
@@ -331,23 +331,44 @@ public class ApplicationStopper
                     returnValue = (String)retValue.getValue();
                     if((returnValue.trim().startsWith("OK:")) || (returnValue.indexOf("stopping") > -1))
                     {
-                        logger.info("Application stopped: " + result);
+                        LOG.info("Application stopped: " + result);
                         // iResult = ApplicResult.RESULT_OK.ordinal();
                     }
                     else
                     {
-                        logger.error("Something went wrong: " + result);
+                        LOG.error("Something went wrong: " + result);
                         // iResult = ApplicResult.RESULT_ERROR_INVALID_PASSWORD.ordinal();
                     }
                 }
                 else
                 {
-                    logger.info("Return value is null!");
+                    LOG.info("Return value is null!");
                     // iResult = ApplicResult.RESULT_ERROR_UNKNOWN.ordinal();
                 }
             }
         }        
 
         return result;
+    }
+
+    public void bindService(ISessionService sessionService) {
+        
+        IPreferencesService prefs = Platform.getPreferencesService();
+        String xmppUser = prefs.getString(Jms2OraPlugin.PLUGIN_ID,
+                PreferenceConstants.XMPP_USER_NAME, "anonymous", null);
+        String xmppPassword = prefs.getString(Jms2OraPlugin.PLUGIN_ID,
+                PreferenceConstants.XMPP_PASSWORD, "anonymous", null);
+        String xmppServer = prefs.getString(Jms2OraPlugin.PLUGIN_ID,
+                PreferenceConstants.XMPP_SERVER, "krynfs.desy.de", null);
+        
+        try {
+            sessionService.connect(xmppUser, xmppPassword, xmppServer);
+        } catch (Exception e) {
+            LOG.warn("XMPP connection is not available, " + e.toString());
+        }
+    }
+
+    public void unbindService(ISessionService service) {
+        service.disconnect();
     }
 }

@@ -93,6 +93,7 @@ public class CommandLine {
      * Default constructor which simply initialised the class
      */
     public CommandLine() {
+        // Nothing to do here
     }
 
     /**
@@ -136,7 +137,7 @@ public class CommandLine {
         String result = null;
 
         if (_options.containsKey(name)) {
-            result = (String) _options.get(name);
+            result = _options.get(name);
         }
 
         return result;

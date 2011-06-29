@@ -39,8 +39,6 @@ import org.slf4j.LoggerFactory;
  * (C) DESY Hamburg 2003
  *
  * @author Matthias Clausen DESY/MKS-2
- * @param 
- * @return
  * @version 1.5.9
  *
  * The TopWindowStatistic servlet
@@ -53,7 +51,7 @@ public class Wetter extends HttpServlet {
     private static final long serialVersionUID = 1420715721544267590L;
 
     /** Precompiled Pattern object for checking the precision */
-    private final Pattern numberPattern = Pattern.compile("\\d+");
+    private Pattern numberPattern;
     
     /** Class that reads the value from the control system */
     private ValueReader valueReader;
@@ -78,6 +76,7 @@ public class Wetter extends HttpServlet {
         
         super.init(config);
         
+        numberPattern = Pattern.compile("\\d+");
         valueReader = new ValueReader();
         
         IPreferencesService ps = Platform.getPreferencesService();
