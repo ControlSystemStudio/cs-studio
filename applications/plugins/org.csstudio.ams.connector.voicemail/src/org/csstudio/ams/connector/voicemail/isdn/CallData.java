@@ -27,8 +27,9 @@ package org.csstudio.ams.connector.voicemail.isdn;
  * @author Markus Moeller
  *
  */
-public class CallData
-{
+@SuppressWarnings("hiding")
+public class CallData {
+    
     private int messageChainId;
     
     private String receipient;
@@ -37,43 +38,35 @@ public class CallData
     
     private String confirmCode;
 
-    public int getMessageChainId()
-    {
+    public int getMessageChainId() {
         return messageChainId;
     }
 
-    public void setMessageChainId(int messageChainId)
-    {
+    public void setMessageChainId(int messageChainId) {
         this.messageChainId = messageChainId;
     }
 
-    public String getReceipient()
-    {
+    public String getReceipient() {
         return receipient;
     }
 
-    public void setReceipient(String receipient)
-    {
+    public void setReceipient(String receipient) {
         this.receipient = receipient;
     }
 
-    public String getStatusCode()
-    {
+    public String getStatusCode() {
         return statusCode;
     }
 
-    public void setStatusCode(String statusCode)
-    {
+    public void setStatusCode(String statusCode) {
         this.statusCode = statusCode;
     }
 
-    public String getConfirmCode()
-    {
+    public String getConfirmCode() {
         return confirmCode;
     }
 
-    public void setConfirmCode(String confirmCode)
-    {
+    public void setConfirmCode(String confirmCode) {
         this.confirmCode = confirmCode;
     }
 }

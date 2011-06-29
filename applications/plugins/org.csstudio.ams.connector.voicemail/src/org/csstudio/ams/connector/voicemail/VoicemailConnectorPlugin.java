@@ -32,13 +32,12 @@ import org.remotercp.service.connection.session.ISessionService;
 /**
  * The activator class controls the plug-in life cycle
  */
-public class VoicemailConnectorPlugin extends AbstractCssUiPlugin 
-{
+public class VoicemailConnectorPlugin extends AbstractCssUiPlugin  {
 
-	// The plug-in ID
+	/** The plug-in ID */
 	public static final String PLUGIN_ID = "org.csstudio.ams.connector.voicemail";
 
-	// The shared instance
+	/** The shared instance */
 	private static VoicemailConnectorPlugin _plugin;
 	
 	private GenericServiceTracker<ISessionService> _genericServiceTracker;
@@ -46,16 +45,15 @@ public class VoicemailConnectorPlugin extends AbstractCssUiPlugin
 	/**
 	 * The constructor
 	 */
-	public VoicemailConnectorPlugin()
-	{
+	public VoicemailConnectorPlugin() {
 		_plugin = this;
 	}
 
 	/**
 	 * {@inheritDoc}
 	 */
-	public final void doStart(final BundleContext context) throws Exception
-	{
+	@Override
+    public final void doStart(final BundleContext context) throws Exception {
 		_genericServiceTracker = new GenericServiceTracker<ISessionService>(
 				context, ISessionService.class);
 		_genericServiceTracker.open();
@@ -64,8 +62,9 @@ public class VoicemailConnectorPlugin extends AbstractCssUiPlugin
 	/**
 	 * {@inheritDoc}
 	 */
-	public final void doStop(final BundleContext context) throws Exception
-	{
+	@Override
+    public final void doStop(final BundleContext context) throws Exception {
+	    _plugin = null;
 	}
 
 	/**
@@ -73,8 +72,7 @@ public class VoicemailConnectorPlugin extends AbstractCssUiPlugin
 	 * 
 	 * @return the shared instance
 	 */
-	public static VoicemailConnectorPlugin getDefault()
-	{
+	public static VoicemailConnectorPlugin getDefault() {
 		return _plugin;
 	}
 
@@ -82,8 +80,7 @@ public class VoicemailConnectorPlugin extends AbstractCssUiPlugin
 	 * {@inheritDoc}
 	 */
 	@Override
-	public String getPluginId()
-	{
+	public String getPluginId() {
 		return PLUGIN_ID;
 	}
 	

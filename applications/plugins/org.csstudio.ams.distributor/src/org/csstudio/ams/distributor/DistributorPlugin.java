@@ -31,9 +31,9 @@ import org.remotercp.service.connection.session.ISessionService;
 /**
  * The activator class controls the plug-in life cycle
  */
-public class DistributorPlugin extends AbstractCssPlugin
-{
-	// The plug-in ID
+public class DistributorPlugin extends AbstractCssPlugin {
+	
+    // The plug-in ID
 	public static final String PLUGIN_ID = "org.csstudio.ams.distributor";
 
 	// The shared instance
@@ -52,8 +52,8 @@ public class DistributorPlugin extends AbstractCssPlugin
 	 * (non-Javadoc)
 	 * @see org.eclipse.core.runtime.Plugins#start(org.osgi.framework.BundleContext)
 	 */
-	public void doStart(BundleContext context) throws Exception
-	{
+	@Override
+    public void doStart(BundleContext context) throws Exception {
 		_genericServiceTracker = new GenericServiceTracker<ISessionService>(
 				context, ISessionService.class);
 		_genericServiceTracker.open();
@@ -63,8 +63,8 @@ public class DistributorPlugin extends AbstractCssPlugin
 	 * (non-Javadoc)
 	 * @see org.eclipse.core.runtime.Plugin#stop(org.osgi.framework.BundleContext)
 	 */
-	public void doStop(BundleContext context) throws Exception
-	{
+	@Override
+    public void doStop(BundleContext context) throws Exception {
 		plugin = null;
 	}
 
@@ -78,8 +78,7 @@ public class DistributorPlugin extends AbstractCssPlugin
 	}
 
     @Override
-    public String getPluginId()
-    {
+    public String getPluginId() {
         return PLUGIN_ID;
     }
     

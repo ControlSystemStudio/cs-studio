@@ -252,8 +252,8 @@ public class MessageGuardCommander extends Job {
                 .getString(org.csstudio.ams.internal.AmsPreferenceKey.P_JMS_AMS_CREATE_DURABLE));
 
         /**
-         * Nur fÃ¼r debug zwecke wird die P_JMS_AMS_PROVIDER_URL_2 geï¿½ndert. Der Code kann
-         * spï¿½ter wieder entfernt werden. TODO: delete debug code.
+         * Nur fuer debug zwecke wird die P_JMS_AMS_PROVIDER_URL_2 geaendert. Der Code kann
+         * spaeter wieder entfernt werden. TODO: delete debug code.
          *
          * storeAct.put(org.csstudio.ams.internal.SampleService. P_JMS_AMS_PROVIDER_URL_1,
          * "failover:(tcp://kryksrvjmsa.desy.de:50000)"); storeAct.put(org.csstudio
@@ -330,7 +330,7 @@ public class MessageGuardCommander extends Job {
                 // with
                 // acknowledging
                 // in openjms 3
-                // ADDED BY Markus MÃ¶ller, 2008-08-14
+                // ADDED BY Markus Moeller, 2008-08-14
                 this.acknowledge(message);
                 final ITimestamp before = TimestampFactory.now();
                 checkMsg(message, now);
@@ -505,8 +505,8 @@ public class MessageGuardCommander extends Job {
         CentralLogger.getInstance().info(this, key.toString() + "\tlast unsend msg: " + lastDate.toString() + "\t and "
                 + number + " unsent msg.");
         // TODO write the sendCleanUpMessage.
-        // Soll eine Nachricht versenden die enthï¿½lt welche und wieviele
-        // nachrchten zurï¿½ck gehalten wurden.
+        // Soll eine Nachricht versenden die enthaelt welche und wieviele
+        // nachrchten zurueck gehalten wurden.
     }
 
     /**

@@ -1,3 +1,4 @@
+
 /* 
  * Copyright (c) 2008 Stiftung Deutsches Elektronen-Synchrotron, 
  * Member of the Helmholtz Association, (DESY), HAMBURG, GERMANY.
@@ -19,7 +20,8 @@
  * PROJECT IN THE FILE LICENSE.HTML. IF THE LICENSE IS NOT INCLUDED YOU MAY FIND A COPY 
  * AT HTTP://WWW.DESY.DE/LEGAL/LICENSE.HTM
  */
- package org.csstudio.ams.connector.voicemail;
+
+package org.csstudio.ams.connector.voicemail;
 
 import java.nio.ByteBuffer;
 
@@ -33,9 +35,9 @@ public class ChangeReceiverStatus extends Telegram
 	private String reason;		//128
 	
 	public ChangeReceiverStatus(int telegramCnt, 
-					  ByteBuffer bbUserData)
-	{
-		super(Telegram.TELID_CHANGE_RECEIVER_STATUS, telegramCnt);
+					  ByteBuffer bbUserData) {
+		
+	    super(Telegram.TELID_CHANGE_RECEIVER_STATUS, telegramCnt);
 		telegramLen = 12 + 32 + 12 + 32 + 128;
 
 		//bUseData
@@ -56,8 +58,8 @@ public class ChangeReceiverStatus extends Telegram
 		this.reason = new String(baTmp).trim();
 	}
 
-	public byte[] getWriteBytes()
-	{
+	@Override
+    public byte[] getWriteBytes() {
 		return null;
 	}
 
@@ -84,5 +86,4 @@ public class ChangeReceiverStatus extends Telegram
 	public String getOriginator() {
 		return originator;
 	}
-
 }

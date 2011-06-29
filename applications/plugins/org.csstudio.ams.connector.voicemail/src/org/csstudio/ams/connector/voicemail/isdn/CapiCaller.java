@@ -124,7 +124,7 @@ public class CapiCaller implements MetadataListener
         
         if(speech.getInputType().compareToIgnoreCase("text_de") == 0)
         {
-            baos = speech.getAudioStream("Guten Tag. Dies ist eine Nachricht des Alarmsystems. Benutzen Sie die Taste 1, um den Text zu hÃ¶ren.");
+            baos = speech.getAudioStream("Guten Tag. Dies ist eine Nachricht des Alarmsystems. Benutzen Sie die Taste 1, um den Text zu hören.");
         }
         else
         {
@@ -151,7 +151,9 @@ public class CapiCaller implements MetadataListener
                         logger.debug(this, "CapiCallApplication() is waiting...");
                         caller.wait(5000);
                     }
-                    catch(InterruptedException ie) {}
+                    catch(InterruptedException ie) {
+                        // Can be ignored
+                    }
                 }
 
                 return callInfo;
@@ -178,10 +180,17 @@ public class CapiCaller implements MetadataListener
                         logger.debug(this, "CapiCallApplication() is waiting...");
                         caller.wait(5000);
                     }
-                    catch(InterruptedException ie) {}
+                    catch(InterruptedException ie) {
+                        // Can be ignored
+                    }
                 }
                 
-                if(channel!=null){try{channel.close();}catch(IOException ioe){}channel=null;}
+                if(channel!=null) {
+                    try{channel.close();}catch(IOException ioe) {
+                    // Can be ignored
+                    }
+                    channel=null;
+                }
                 
                 return callInfo;
             }
@@ -194,7 +203,7 @@ public class CapiCaller implements MetadataListener
                 // Send info / menu text
                 if(speech.getInputType().compareToIgnoreCase("text_de") == 0)
                 {
-                    writeStream("Benutzen Sie die Taste 1, wenn Sie den Text nochmal hÃ¶ren wollen.");
+                    writeStream("Benutzen Sie die Taste 1, wenn Sie den Text nochmal hören wollen.");
                 }
                 else
                 {
@@ -218,7 +227,7 @@ public class CapiCaller implements MetadataListener
             
             if(speech.getInputType().compareToIgnoreCase("text_de") == 0)
             {
-                writeStream("Danke. Auf WiederhÃ¶ren.");
+                writeStream("Danke. Auf Wiederhören.");
             }
             else
             {
@@ -235,7 +244,9 @@ public class CapiCaller implements MetadataListener
         {
             if(channel != null)
             {
-                try{channel.close();}catch(IOException e) {}
+                try{channel.close();}catch(IOException e) {
+                    // Can be ignored
+                }
                 channel = null;
             }
         }
@@ -247,7 +258,9 @@ public class CapiCaller implements MetadataListener
                 logger.debug(this, "CapiCallApplication() is waiting...");
                 caller.wait(5000);
             }
-            catch(InterruptedException ie) {}
+            catch(InterruptedException ie) {
+                // Can be ignored
+            }
         }
 
         busy = false;
@@ -261,7 +274,7 @@ public class CapiCaller implements MetadataListener
      * @param telephoneNumber
      * @param message
      * @param chainIdAndPos
-     * @return
+     * @return CallInfo object
      * @throws CapiCallerException
      */
     public CallInfo makeCallWithReply(String telephoneNumber, String message, String chainIdAndPos) throws CapiCallerException
@@ -274,7 +287,7 @@ public class CapiCaller implements MetadataListener
         
         if(speech.getInputType().compareToIgnoreCase("text_de") == 0)
         {
-            baos = speech.getAudioStream("Guten Tag. Dies ist eine Nachricht des Alarmsystems. Benutzen Sie die Taste 1, um den Text zu hÃ¶ren.");
+            baos = speech.getAudioStream("Guten Tag. Dies ist eine Nachricht des Alarmsystems. Benutzen Sie die Taste 1, um den Text zu hören.");
         }
         else
         {
@@ -301,7 +314,9 @@ public class CapiCaller implements MetadataListener
                         logger.debug(this, "CapiCallApplication() is waiting...");
                         caller.wait(5000);
                     }
-                    catch(InterruptedException ie) {}
+                    catch(InterruptedException ie) {
+                        // Can be ignored
+                    }
                 }
 
                 return callInfo;
@@ -311,7 +326,7 @@ public class CapiCaller implements MetadataListener
             channel.getInputStream().close();
             
             logger.info(this, "Connected to " + telephoneNumber);
-//TODO
+            //TODO
             // Send first text
             writeStream(baos);
 
@@ -328,10 +343,19 @@ public class CapiCaller implements MetadataListener
                         logger.debug(this, "CapiCallApplication() is waiting...");
                         caller.wait(5000);
                     }
-                    catch(InterruptedException ie) {}
+                    catch(InterruptedException ie) {
+                        // Can be ignored
+                    }
                 }
                 
-                if(channel!=null){try{channel.close();}catch(IOException ioe){}channel=null;}
+                if(channel!=null) {
+                    try {
+                        channel.close();
+                    } catch (IOException ioe) {
+                        // Can be ignored
+                    }
+                    channel=null;
+                }
                 
                 return callInfo;
             }
@@ -343,7 +367,7 @@ public class CapiCaller implements MetadataListener
                 
                 if(speech.getInputType().compareToIgnoreCase("text_de") == 0)
                 {
-                    writeStream("Benutzen Sie die Taste 1, wenn Sie den Text nochmal hÃ¶ren wollen.");
+                    writeStream("Benutzen Sie die Taste 1, wenn Sie den Text nochmal hören wollen.");
                 }
                 else
                 {
@@ -385,7 +409,7 @@ public class CapiCaller implements MetadataListener
             //TODO:
             if(speech.getInputType().compareToIgnoreCase("text_de") == 0)
             {
-                writeStream("Danke. Auf WiederhÃ¶ren.");
+                writeStream("Danke. Auf Wiederhören.");
             }
             else
             {
@@ -400,7 +424,7 @@ public class CapiCaller implements MetadataListener
         }
         finally
         {
-            if(channel!=null){try{channel.close();}catch(IOException ioe){}channel=null;}
+            if(channel!=null){try{channel.close();}catch(IOException ioe){/* Can be ignored */}channel=null;}
         }
         
         synchronized(caller)
@@ -410,7 +434,7 @@ public class CapiCaller implements MetadataListener
                 logger.debug(this, "CapiCallApplication() is waiting...");
                 caller.wait(5000);
             }
-            catch(InterruptedException ie) {}
+            catch(InterruptedException ie) {/* Can be ignored */}
         }
 
         busy = false;
@@ -444,8 +468,8 @@ public class CapiCaller implements MetadataListener
         }
         finally
         {                        
-            if(ais!=null){try{ais.close();}catch(Exception e){}ais = null;}
-            if(data!=null){try{data.close();}catch(Exception e){}data = null;}
+            if(ais!=null){try{ais.close();}catch(Exception e){/* Can be ignored */}ais = null;}
+            if(data!=null){try{data.close();}catch(Exception e){/* Can be ignored */}}
         }
     }
     
@@ -482,8 +506,8 @@ public class CapiCaller implements MetadataListener
         }
         finally
         {                        
-            if(ais!=null){try{ais.close();}catch(Exception e){}ais = null;}
-            if(baos!=null){try{baos.close();}catch(Exception e){}baos = null;}
+            if(ais!=null){try{ais.close();}catch(Exception e){/* Can be ignored */}ais = null;}
+            if(baos!=null){try{baos.close();}catch(Exception e){/* Can be ignored */}baos = null;}
         }
     }
     
@@ -504,7 +528,7 @@ public class CapiCaller implements MetadataListener
                 
                 logger.debug(this, "DTMF " + key);
             }
-            catch(InterruptedException ie) {}
+            catch(InterruptedException ie) {/* Can be ignored */}
 
             if(key != null)
             {
@@ -540,7 +564,7 @@ public class CapiCaller implements MetadataListener
             
             logger.debug(this, "DTMF " + key);
         }
-        catch(InterruptedException ie) {}
+        catch(InterruptedException ie) {/* Can be ignored */}
 
         channel.stopDTMF();
         

@@ -32,9 +32,9 @@ import org.remotercp.service.connection.session.ISessionService;
 /**
  * The activator class controls the plug-in life cycle.
  */
-public class MessageMinderActivator extends AbstractCssUiPlugin
-{
-	/**
+public class MessageMinderActivator extends AbstractCssUiPlugin {
+	
+    /**
 	 *  The plug-in ID.
 	 */
 	public static final String PLUGIN_ID = "org.csstudio.ams.MessageMinder";
@@ -49,16 +49,15 @@ public class MessageMinderActivator extends AbstractCssUiPlugin
 	/**
 	 * The constructor.
 	 */
-	public MessageMinderActivator()
-	{
+	public MessageMinderActivator() {
+	    // Nothing to do here
 	}
 
 	/**
 	 * {@inheritDoc}
 	 */
 	@Override
-	public void doStart(BundleContext context) throws Exception
-	{
+	public void doStart(BundleContext context) throws Exception {
 		_plugin = this; 
 		_genericServiceTracker = new GenericServiceTracker<ISessionService>(
 				context, ISessionService.class);
@@ -68,8 +67,8 @@ public class MessageMinderActivator extends AbstractCssUiPlugin
     /**
      * {@inheritDoc}
      */
-	public void doStop(BundleContext context) throws Exception
-	{
+	@Override
+    public void doStop(BundleContext context) throws Exception {
 		_plugin = null;
 	}
 
@@ -78,8 +77,7 @@ public class MessageMinderActivator extends AbstractCssUiPlugin
 	 *
 	 * @return the shared instance
 	 */
-	public static MessageMinderActivator getDefault()
-	{
+	public static MessageMinderActivator getDefault() {
 		return _plugin;
 	}
 
@@ -87,8 +85,7 @@ public class MessageMinderActivator extends AbstractCssUiPlugin
      * {@inheritDoc}
      */
     @Override
-    public String getPluginId()
-    {
+    public String getPluginId() {
         return PLUGIN_ID;
     }
     

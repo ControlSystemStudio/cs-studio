@@ -45,8 +45,8 @@ import org.csstudio.ams.Log;
  * @author Markus Moeller
  *
  */
-public class SmsContainer implements AmsConstants
-{
+public class SmsContainer implements AmsConstants {
+    
     /** Content of this container */
     private TreeSet<Sms> content;
     
@@ -65,18 +65,16 @@ public class SmsContainer implements AmsConstants
     /**
      * Standard constructor. Just creates a TreeSet object that holds the Sms objects.
      */
-    public SmsContainer()
-    {
+    public SmsContainer() {
+        
         content = null;
         
         this.loadContent();
-        if(content == null)
-        {
+        if(content == null) {
             content = new TreeSet<Sms>(new SmsComperator());
         }
         
-        if(badMessages == null)
-        {
+        if(badMessages == null) {
             badMessages = new Vector<Sms>();
         }
     }
@@ -88,60 +86,45 @@ public class SmsContainer implements AmsConstants
      * @param message
      * @return At the moment a "nice" error number. Will be changed in future versions.
      */
-    public int addSms(Message message)
-    {
+    public int addSms(Message message) {
+        
         Sms sms = null;
         String text = null;
         String recNo = null;
         long timestamp = 0;
         int result = SmsConnectorStart.STAT_ERR_UNDEFINED;
         
-        if(message == null)
-        {
+        if(message == null) {
             return SmsConnectorStart.STAT_OK;
         }
         
-        if(!(message instanceof MapMessage))
-        {
+        if(!(message instanceof MapMessage)) {
             Log.log(this, Log.DEBUG, "Received message is not a MapMessage object.");
-            if(!acknowledge(message))
-            {
+            if(!acknowledge(message)) {
                 result = SmsConnectorStart.STAT_ERR_JMSCON;
-            }
-            else
-            {
+            } else {
                 result = SmsConnectorStart.STAT_OK;
             }
-        }
-        else
-        {
+        } else {
             MapMessage msg = (MapMessage) message;
             
-            try
-            {
+            try {
                 text = msg.getString(MSGPROP_RECEIVERTEXT);
                 recNo = msg.getString(MSGPROP_RECEIVERADDR);
                 timestamp = msg.getJMSTimestamp();
                 String parsedRecNo = null;
                 
-                if(!acknowledge(message))
-                {
+                if(!acknowledge(message)) {
                     result = SmsConnectorStart.STAT_ERR_JMSCON;
-                }
-                else
-                {            
-                    if(parsedRecNo == null)
-                    {
-                        try
-                        {
+                } else {            
+                    if(parsedRecNo == null) {
+                        try {
                             parsedRecNo = parsePhoneNumber(recNo);
                             sms = new Sms(timestamp, parsedRecNo, text, Sms.Type.OUT);
                             content.add(sms);
                             
                             result = SmsConnectorStart.STAT_OK;
-                        }
-                        catch(Exception e)
-                        {
+                        } catch(Exception e) {
                             Log.log(this, Log.FATAL, "Parsing phone number - failed.");
                             
                             // Although parsing failed, we have to return OK.
@@ -150,9 +133,7 @@ public class SmsContainer implements AmsConstants
                         }                   
                     }
                 }
-            }
-            catch(JMSException jmse)
-            {
+            } catch(JMSException jmse) {
                 result = SmsConnectorStart.STAT_ERR_JMSCON;
             }            
         }
@@ -271,7 +252,6 @@ public class SmsContainer implements AmsConstants
      * It also stores the current ID for the next Sms object. It is necessary to avoid conflicts with
      * stored Sms objects.
      * 
-     * @param filename The path
      * @return True if the Sms objects were stored, false otherwise.
      */
     public boolean storeContent()
@@ -313,8 +293,14 @@ public class SmsContainer implements AmsConstants
                     }
                     finally
                     {
-                        if(oos!=null){try{oos.close();}catch(Exception e){}oos=null;}
-                        if(fos!=null){try{fos.close();}catch(Exception e){}fos=null;}
+                        if(oos!=null) {
+                            try{oos.close();}catch(Exception e){/* Can be ignored */}
+                            oos=null;
+                        }
+                        if(fos!=null) {
+                            try{fos.close();}catch(Exception e){/* Can be ignored */}
+                            fos=null;
+                        }
                     }
                 }
             }
@@ -347,8 +333,13 @@ public class SmsContainer implements AmsConstants
                     }
                     finally
                     {
-                        if(oos!=null){try{oos.close();}catch(Exception e){}oos=null;}
-                        if(fos!=null){try{fos.close();}catch(Exception e){}fos=null;}
+                        if(oos!=null) {
+                            try{oos.close();}catch(Exception e){/* Can be ignored */}
+                            oos=null;
+                        }
+                        if(fos!=null) {
+                            try{fos.close();}catch(Exception e){/* Can be ignored */}fos=null;
+                        }
                     }
                 }
             }
@@ -367,7 +358,6 @@ public class SmsContainer implements AmsConstants
      * stored Sms objects.
      * The folder 'var' will be deleted after loading.
      * 
-     * @param path The path
      * @return True if the stored objects were loaded, false if no objects were found OR an error occured.
      */
     @SuppressWarnings("unchecked")
@@ -585,40 +575,32 @@ public class SmsContainer implements AmsConstants
     private void removeFolder(String path)
     {
         File folder = null;
-        File[] content = null;
+        File[] listContent = null;
         boolean success = false;
         
         folder = new File(path);
-        if(folder.exists())
-        {
-            content = folder.listFiles();
+        if(folder.exists()) {
+            listContent = folder.listFiles();
         }
         
-        if(content != null)
-        {
-            if(content.length == 0)
-            {
+        if(listContent != null) {
+            if(listContent.length == 0) {
                 success = true;
             }
             
-            for(File f : content)
-            {
+            for(File f : listContent) {
                 // Do not delete a folder
-                if(f.isDirectory() == false)
-                {
+                if(f.isDirectory() == false) {
                     success = f.delete();
                     if(!success) break;
-                }
-                else
-                {
+                } else {
                     success = false;
                     break;
                 }
             }
         }
         
-        if(success)
-        {
+        if(success) {
             folder.delete();
         }
     }

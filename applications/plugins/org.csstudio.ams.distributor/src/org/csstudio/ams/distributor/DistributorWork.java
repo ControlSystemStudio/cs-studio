@@ -78,7 +78,8 @@ import org.csstudio.ams.internal.AmsPreferenceKey;
 import org.csstudio.platform.utility.jms.JmsRedundantReceiver;
 import org.eclipse.jface.preference.IPreferenceStore;
 
-/*- FIXME Frage klären, warum das T_AMS_JMS immer in user feld steht, auch dieser Connector nicht angesteuert wird??? */
+/*- FIXME Frage klaeren, warum das T_AMS_JMS immer in user feld steht,
+ *  auch dieser Connector nicht angesteuert wird??? */
 public class DistributorWork extends Thread implements AmsConstants {
 	private static final String HISTORY_DEST_TYPE_SMS = "SMS";
 	private static final String HISTORY_DEST_TYPE_VMAIL = "VMail";
@@ -116,7 +117,7 @@ public class DistributorWork extends Thread implements AmsConstants {
 
 	private int iCmd = CMD_INIT;
 
-	private DistributorStart ds = null;
+	private DistributorStart application = null;
 	private java.sql.Connection conDb = null; // Derby database connection
 	// (application db)
 
@@ -141,7 +142,7 @@ public class DistributorWork extends Thread implements AmsConstants {
 	 * ConnectionFactory[CONSUMER_CONNECTIONS]; private Connection[]
 	 * amsReceiverConnection = new Connection[CONSUMER_CONNECTIONS]; private
 	 * Session[] amsReceiverSession = new Session[CONSUMER_CONNECTIONS]; //
-	 * CHANGED BY: Markus Möller, 28.06.2007 // private TopicSubscriber
+	 * CHANGED BY: Moeller Moeller, 28.06.2007 // private TopicSubscriber
 	 * amsSubscriberDist = null; private MessageConsumer[] amsSubscriberDist =
 	 * new MessageConsumer[CONSUMER_CONNECTIONS]; // private TopicSubscriber
 	 * amsSubscriberReply = null; private MessageConsumer[] amsSubscriberReply =
@@ -163,13 +164,14 @@ public class DistributorWork extends Thread implements AmsConstants {
 
 	public DistributorWork(DistributorStart ds)
 	{
-		this.ds = ds;
+		this.application = ds;
 		
 		// Create the container that holds the information about the connector topics.
 		topicContainer = new ConnectorTopicContainer();
 	}
 
-	public void run()
+	@Override
+    public void run()
 	{
 		boolean bInitedConDb = false;
 		boolean bInitedJmsInt = false;
@@ -267,7 +269,7 @@ public class DistributorWork extends Thread implements AmsConstants {
 
 						Iterator<Integer> iter = keyList.iterator();
 						while (iter.hasNext()) {
-							Integer val = (Integer) iter.next();
+							Integer val = iter.next();
 							if (val != null) {
 								iErr = workOnMessageChain(val.intValue());
 								if (iErr != DistributorStart.STAT_OK)
@@ -309,11 +311,11 @@ public class DistributorWork extends Thread implements AmsConstants {
 				}
 
 				// set status in every loop
-				ds.setStatus(iErr); // set error status, can be OK if no error
+				application.setStatus(iErr); // set error status, can be OK if no error
 			}
 			catch(Exception e)
 			{
-				ds.setStatus(DistributorStart.STAT_ERR_UNKNOWN);
+				application.setStatus(DistributorStart.STAT_ERR_UNKNOWN);
 				Log.log(this, Log.FATAL, e);
 
 				closeApplicationDb();
@@ -416,13 +418,13 @@ public class DistributorWork extends Thread implements AmsConstants {
 							.getString(org.csstudio.ams.internal.AmsPreferenceKey.P_JMS_AMS_CONNECTION_FACTORY));
 			amsSenderConnection = amsSenderFactory.createConnection();
 
-			// ADDED BY: Markus Möller, 25.05.2007
+			// ADDED BY: Markus Moeller, 25.05.2007
 			amsSenderConnection.setClientID("DistributorWorkSenderInternal");
 
 			amsSenderSession = amsSenderConnection.createSession(false,
 					Session.CLIENT_ACKNOWLEDGE);
 
-			// CHANGED BY: Markus Möller, 25.05.2007
+			// CHANGED BY: Markus Moeller, 25.05.2007
 			/*
 			 * amsPublisherCommand =
 			 * amsSession.createProducer((Topic)amsContext.lookup(
@@ -440,7 +442,7 @@ public class DistributorWork extends Thread implements AmsConstants {
 				return false;
 			}
 
-			// CHANGED BY: Markus Möller, 25.05.2007
+			// CHANGED BY: Markus Moeller, 25.05.2007
 			/*
 			 * amsPublisherSms =
 			 * amsSession.createProducer((Topic)amsContext.lookup(
@@ -478,7 +480,7 @@ public class DistributorWork extends Thread implements AmsConstants {
 
             topicContainer.addConnectorTopic(new ConnectorTopic(topicName, "JmsConnector", full));
 
-            // CHANGED BY: Markus Möller, 25.05.2007
+            // CHANGED BY: Markus Moeller, 25.05.2007
 			/*
 			 * amsPublisherMail =
 			 * amsSession.createProducer((Topic)amsContext.lookup(
@@ -498,7 +500,7 @@ public class DistributorWork extends Thread implements AmsConstants {
 
             topicContainer.addConnectorTopic(new ConnectorTopic(topicName, "EMailConnector", full));
 
-            // CHANGED BY: Markus Möller, 25.05.2007
+            // CHANGED BY: Markus Moeller, 25.05.2007
 			/*
 			 * amsPublisherVoiceMail =
 			 * amsSession.createProducer((Topic)amsContext.lookup(
@@ -528,7 +530,7 @@ public class DistributorWork extends Thread implements AmsConstants {
 					storeAct
 							.getString(org.csstudio.ams.internal.AmsPreferenceKey.P_JMS_AMS_PROVIDER_URL_2));
 
-            // CHANGED BY Markus Möller, 2007-10-30
+            // CHANGED BY Markus Moeller, 2007-10-30
             // Changed to the topic for the message minder
 			result = amsReceiver.
 			         createRedundantSubscriber(
@@ -681,13 +683,13 @@ public class DistributorWork extends Thread implements AmsConstants {
 							.getString(org.csstudio.ams.internal.AmsPreferenceKey.P_JMS_EXTERN_CONNECTION_FACTORY));
 			extConnection = extFactory.createConnection();
 
-			// ADDED BY: Markus Möller, 25.05.2007
+			// ADDED BY: Markus Moeller, 25.05.2007
 			extConnection.setClientID("DistributorWorkSenderExternal");
 
 			extSession = extConnection.createSession(false,
 					Session.CLIENT_ACKNOWLEDGE);
 
-			// CHANGED BY: Markus Möller, 25.05.2007
+			// CHANGED BY: Markus Moeller, 25.05.2007
 			/*
 			 * extPublisherAlarm =
 			 * extSession.createProducer((Topic)extContext.lookup(
@@ -1089,6 +1091,7 @@ public class DistributorWork extends Thread implements AmsConstants {
 						continue;
 					}
 				} catch (Exception ex) {
+				    // Can be ignored
 				}
 			}
 			idxFirst = idxSecond; // start at next $
@@ -1606,7 +1609,7 @@ public class DistributorWork extends Thread implements AmsConstants {
 		history.setType("Sign on/off");
 
 		String strDesc1 = "Status " + status;
-		;
+
 		if (status == 0)
 			strDesc1 = "Sign off";
 		else if (status == 1)
@@ -1727,7 +1730,7 @@ public class DistributorWork extends Thread implements AmsConstants {
 							.getString(AmsPreferenceKey.P_JMS_FREE_TOPIC_CONNECTION_FACTORY));
 			freeTopicConn = freeTopicFactory.createConnection();
 
-			// ADDED BY: Markus Möller, 25.05.2007
+			// ADDED BY: Markus Moeller, 25.05.2007
 			freeTopicConn.setClientID("DistributorWorkFree");
 
 			freeTopicConn.start();

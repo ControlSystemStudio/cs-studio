@@ -75,7 +75,7 @@ public class MonitorStatusHistoryEntry implements Serializable
 
     /**
      * 
-     * @return
+     * @return The time stamp
      */
     public long getJmsTimeStamp()
     {

@@ -1,3 +1,4 @@
+
 /* 
  * Copyright (c) 2006 Stiftung Deutsches Elektronen-Synchroton, 
  * Member of the Helmholtz Association, (DESY), HAMBURG, GERMANY.
@@ -65,7 +66,8 @@ public class AmsPreferencePage extends FieldEditorPreferencePage implements
 	/**
 	 * {@inheritDoc}
 	 */
-	@Override
+	@SuppressWarnings("unused")
+    @Override
 	protected final void createFieldEditors() 
 	{
 		TabFolder tabs = new TabFolder(getFieldEditorParent(), SWT.NONE);
@@ -108,12 +110,14 @@ public class AmsPreferencePage extends FieldEditorPreferencePage implements
 		addField(new ListEditor(
 				AmsPreferenceKey.P_FILTER_KEYFIELDS, ""/*Messages.Pref_FilterKeyFields*/, c0)
 		{
-			public String[] parseString(String stringList)
+			@Override
+            public String[] parseString(String stringList)
 			{
 				return stringList.split(";");
 			}
 			
-			public String getNewInputObject()
+			@Override
+            public String getNewInputObject()
 			{
 				InputDialog inputDialog = new InputDialog(getFieldEditorParent().getShell(), 
 						Messages.Pref_FilterKeyFieldEnterOne, 
@@ -127,7 +131,8 @@ public class AmsPreferencePage extends FieldEditorPreferencePage implements
 				return null;
 			}
 			
-			public String createList(String[] items)
+			@Override
+            public String createList(String[] items)
 			{
 				String temp = "";
 				for(int i = 0; i < items.length;i++)
@@ -300,7 +305,8 @@ public class AmsPreferencePage extends FieldEditorPreferencePage implements
 	/**
 	 * {@inheritDoc}
 	 */
-	public final void init(final IWorkbench workbench) {
+	@Override
+    public final void init(final IWorkbench workbench) {
 		/*
 		 * This methdos does not necessarily need to do anything. But it must be
 		 * implemented anyway.

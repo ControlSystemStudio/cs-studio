@@ -139,6 +139,9 @@ public class EMailConnectorStart implements IApplication, IGenericServiceListene
         
         EMailConnectorPreferenceKey.showPreferences();
         
+        // XMPP login
+        EMailConnectorPlugin.getDefault().addSessionServiceListener(this);
+        
         EMailConnectorWork ecw = null;
         boolean bInitedJms = false;
         lastStatus = getStatus(); // use synchronized method

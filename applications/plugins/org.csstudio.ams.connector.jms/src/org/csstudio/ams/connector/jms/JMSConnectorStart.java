@@ -57,7 +57,8 @@ public class JMSConnectorStart implements IApplication, IGenericServiceListener<
     public final static int STAT_INIT = 0;
     public final static int STAT_OK = 1;
     public final static int STAT_ERR_JMS_SEND = 3;
-    public final static int STAT_ERR_JMS_CONNECTION_FAILED = 4;                                // jms communication to ams internal jms partners
+    // jms communication to ams internal jms partners
+    public final static int STAT_ERR_JMS_CONNECTION_FAILED = 4;
     public final static int STAT_ERR_UNKNOWN = 5;
 
     public final static long WAITFORTHREAD = 10000;

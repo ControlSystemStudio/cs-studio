@@ -36,7 +36,7 @@ import org.smslib.OutboundMessage;
  * 
  * Status: Not usable yet...
  * 
- * @author Markus Möller
+ * @author Markus Moeller
  *
  */
 

@@ -24,14 +24,18 @@
 package org.csstudio.ams.systemmonitor;
 
 import org.csstudio.platform.AbstractCssPlugin;
-import org.csstudio.platform.logging.CentralLogger;
 import org.osgi.framework.BundleContext;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * The activator class controls the plug-in life cycle
  */
-public class AmsSystemMonitorActivator extends AbstractCssPlugin
-{
+public class AmsSystemMonitorActivator extends AbstractCssPlugin {
+    
+    /** The class logger */
+    private static final Logger LOG = LoggerFactory.getLogger(AmsSystemMonitorActivator.class);
+
 	/** The plug-in ID */
 	public static final String PLUGIN_ID = "org.csstudio.ams.systemmonitor";
 
@@ -41,8 +45,7 @@ public class AmsSystemMonitorActivator extends AbstractCssPlugin
 	/**
 	 * The constructor
 	 */
-	public AmsSystemMonitorActivator()
-	{
+	public AmsSystemMonitorActivator() {
 	    plugin = this;
 	}
 
@@ -51,27 +54,23 @@ public class AmsSystemMonitorActivator extends AbstractCssPlugin
 	 *
 	 * @return the shared instance
 	 */
-	public static AmsSystemMonitorActivator getDefault()
-	{
+	public static AmsSystemMonitorActivator getDefault() {
 		return plugin;
 	}
 
     @Override
-    protected void doStart(BundleContext context) throws Exception
-    {
-        CentralLogger.getInstance().info(this, "AmsSystemMonitor plugin started.");
+    protected void doStart(BundleContext context) throws Exception {
+        LOG.info("AmsSystemMonitor plugin started.");
     }
 
     @Override
-    protected void doStop(BundleContext context) throws Exception
-    {
+    protected void doStop(BundleContext context) throws Exception {
         plugin = null;
-        CentralLogger.getInstance().info(this, "AmsSystemMonitor plugin stopped.");
+        LOG.info("AmsSystemMonitor plugin stopped.");
     }
 
     @Override
-    public String getPluginId()
-    {
+    public String getPluginId() {
         return PLUGIN_ID;
     }
 }

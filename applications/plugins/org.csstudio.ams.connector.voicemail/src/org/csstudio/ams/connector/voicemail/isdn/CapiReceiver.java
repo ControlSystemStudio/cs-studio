@@ -100,6 +100,7 @@ public class CapiReceiver extends Thread implements MetadataListener
         }        
     }
 
+    @Override
     public void run()
     {
         // TODO Auto-generated method stub
@@ -123,7 +124,7 @@ public class CapiReceiver extends Thread implements MetadataListener
         {
             if(channel != null)
             {
-                try{channel.close();}catch(IOException e) {}
+                try{channel.close();}catch(IOException e) {/* Can be ignored */}
                 channel = null;
             }
         }

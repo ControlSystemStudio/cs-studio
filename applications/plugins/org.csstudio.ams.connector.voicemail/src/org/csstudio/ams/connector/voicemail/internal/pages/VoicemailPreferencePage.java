@@ -43,13 +43,13 @@ import org.csstudio.ams.connector.voicemail.internal.VoicemailConnectorPreferenc
  * @author
  * 
  */
-public class VoicemailPreferencePage extends FieldEditorPreferencePage implements IWorkbenchPreferencePage
-{
-	/**
+public class VoicemailPreferencePage extends FieldEditorPreferencePage
+                                     implements IWorkbenchPreferencePage {
+	
+    /**
 	 * Standard constructor.
 	 */
-	public VoicemailPreferencePage()
-	{
+	public VoicemailPreferencePage() {
 		//Set grid layout
 		super(FieldEditorPreferencePage.GRID);
 	}
@@ -57,10 +57,11 @@ public class VoicemailPreferencePage extends FieldEditorPreferencePage implement
 	/**
 	 * {@inheritDoc}
 	 */
-	@Override
-	protected final void createFieldEditors()
-	{
-		addField(new StringFieldEditor(VoicemailConnectorPreferenceKey.P_VM_SERVICE,
+	@SuppressWarnings("unused")
+    @Override
+	protected final void createFieldEditors() {
+		
+	    addField(new StringFieldEditor(VoicemailConnectorPreferenceKey.P_VM_SERVICE,
 				Messages.P_VM_SERVICE, getFieldEditorParent()));
 		addField(new StringFieldEditor(VoicemailConnectorPreferenceKey.P_VM_PORT,
 				Messages.P_VM_PORT, getFieldEditorParent()));
@@ -85,8 +86,7 @@ public class VoicemailPreferencePage extends FieldEditorPreferencePage implement
 	/**
 	 * {@inheritDoc}
 	 */
-	public final void init(final IWorkbench workbench)
-	{
+	public final void init(final IWorkbench workbench) {
 	    //This methdos does not necessarily need to do anything.
 	    // But it must be implemented anyway.
 	}
@@ -95,8 +95,7 @@ public class VoicemailPreferencePage extends FieldEditorPreferencePage implement
 	 * {@inheritDoc}
 	 */
 	@Override
-	protected final IPreferenceStore doGetPreferenceStore()
-	{
+	protected final IPreferenceStore doGetPreferenceStore() {
 		return VoicemailConnectorPlugin.getDefault().getPreferenceStore();
 	}
 }

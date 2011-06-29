@@ -49,10 +49,12 @@ public final class Property
     public final static String DEFAULT_UPDATE_DATE_INSERT = "2000-01-01 00:00:01";
  
     /** Oracle Error number */
-    public final static int     ORA_IO_EXCEPTION        = 17002;
+    public final static int ORA_IO_EXCEPTION = 17002;
     
     /** Oracle Error number */
-    public final static int     ORA_CLOSED_CONNECTION   = 17008;
+    public final static int ORA_CLOSED_CONNECTION = 17008;
     
-    private Property() { }
+    private Property() {
+        // Avoid instantiation
+    }
 }

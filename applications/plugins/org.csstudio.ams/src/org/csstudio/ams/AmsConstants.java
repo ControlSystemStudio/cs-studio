@@ -1,3 +1,4 @@
+
 /* 
  * Copyright (c) 2008 Stiftung Deutsches Elektronen-Synchrotron, 
  * Member of the Helmholtz Association, (DESY), HAMBURG, GERMANY.
@@ -19,7 +20,8 @@
  * PROJECT IN THE FILE LICENSE.HTML. IF THE LICENSE IS NOT INCLUDED YOU MAY FIND A COPY 
  * AT HTTP://WWW.DESY.DE/LEGAL/LICENSE.HTM
  */
- package org.csstudio.ams;
+
+package org.csstudio.ams;
 
 public interface AmsConstants 
 {
@@ -132,7 +134,7 @@ public interface AmsConstants
 //	ORGINAL
 	//StartSync (1. aus Command-Topic gelesen)
 	// 2. FMR-Stop
-	// 3. lösche alle MSG aus Command-Topic
+	// 3. loesche alle MSG aus Command-Topic
 	// 4. ALARM an Dist
 	// ~~~~~~~~~~~~~~~~~
 	// 4.1 Dist leert Dist-Topic, bis CMD von FMR
@@ -140,17 +142,18 @@ public interface AmsConstants
 	// 4.3 DB-Flag setzen
 	// 4.4 Kopieren
 	// 4.5 Dist neu starten
-	// 4.6 Bestätigung an FMR
+	// 4.6 Bestaetigung an FMR
 	// ~~~~~~~~~~~~~~~~~
-	// 5. Auf Bestätigung von Dist warten, alle anderen MSG in Command-Topic löschen, da jetzt auf aktuellen Stand
+	// 5. Auf Bestaetigung von Dist warten, alle anderen MSG in Command-Topic loeschen,
+	//    da jetzt auf aktuellen Stand
 	// 6. FMR-Neu starten
-	// 7. DB-Flag zurücksetzen
+	// 7. DB-Flag zuruecksetzen
 	//EndSync
 //	ORGINAL
 
 	// State 1 = FMR Replicating 
 	// 2. FMR-Stop
-	// 3. lösche alle MSG aus Command-Topic
+	// 3. l�sche alle MSG aus Command-Topic
 	// State 2 = Alarm => Dist gesendet
 	// 4. ALARM an Dist
 	// ~~~~~~~~~~~~~~~~~
@@ -161,10 +164,10 @@ public interface AmsConstants
 	
 	// 4.3 DB-Flag setzen
 	// 4.4 Kopieren
-	// 7. DB-Flag zurücksetzen
+	// 7. DB-Flag zuruecksetzen
 
 	// State = 4 = Dist Replicating End, Notify FMR
-	// 4.6 Bestätigung an FMR
+	// 4.6 Bestaetigung an FMR
 	// 4.5 Dist neu starten
 	// State = 0 = fertig
 

@@ -1,3 +1,4 @@
+
 /* 
  * Copyright (c) 2008 Stiftung Deutsches Elektronen-Synchrotron, 
  * Member of the Helmholtz Association, (DESY), HAMBURG, GERMANY.
@@ -19,14 +20,14 @@
  * PROJECT IN THE FILE LICENSE.HTML. IF THE LICENSE IS NOT INCLUDED YOU MAY FIND A COPY 
  * AT HTTP://WWW.DESY.DE/LEGAL/LICENSE.HTM
  */
- package org.csstudio.ams.filter.ui;
+
+package org.csstudio.ams.filter.ui;
 
 import java.sql.Connection;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
-
 import org.csstudio.ams.AMSException;
 import org.csstudio.ams.Messages;
 import org.csstudio.ams.dbAccess.HoldsAnDatabaseId;
@@ -243,7 +244,8 @@ public class FilterConditionProcessVariableUI extends FilterConditionUI {
 	 */
 	private FilterConditionProcessVariableTObject snapshot = null;
 
-	public boolean check() {
+	@Override
+    public boolean check() {
 		List<String> errors = new LinkedList<String>();
 
 		if (getText(txtChannelValue.getDisplay(), txtChannelValue).length() < MINIMAL_CHANNEL_NAME_LENGTH) {
@@ -288,7 +290,8 @@ public class FilterConditionProcessVariableUI extends FilterConditionUI {
 	 * 
 	 * @require check()
 	 */
-	public void create(Connection conDb, int filterConditionID)
+	@Override
+    public void create(Connection conDb, int filterConditionID)
 			throws AMSException {
 		try {
 			assert check() : "Precondition violated: check()";
@@ -375,7 +378,8 @@ public class FilterConditionProcessVariableUI extends FilterConditionUI {
 	/**
 	 * {@inheritDoc}
 	 */
-	public void createUI(Composite parent) {
+	@Override
+    public void createUI(Composite parent) {
 		if (localParent == null) {
 			localParent = new Composite(parent, SWT.NONE);
 			createControls(localParent);
@@ -383,7 +387,8 @@ public class FilterConditionProcessVariableUI extends FilterConditionUI {
 		}
 	}
 
-	private void createControls(final Composite parent) {
+	@SuppressWarnings("unused")
+    private void createControls(final Composite parent) {
 		GridLayout gridLayout = new GridLayout(2, false);
 		gridLayout.horizontalSpacing = 10;
 		gridLayout.verticalSpacing = 5;
@@ -440,7 +445,8 @@ public class FilterConditionProcessVariableUI extends FilterConditionUI {
 				SWT.CENTER, false, false));
 
 		cboSuggReturnType.addSelectionListener(new SelectionAdapter() {
-			public void widgetSelected(SelectionEvent e) {
+			@Override
+            public void widgetSelected(SelectionEvent e) {
 				handleSuggestedTypeChanged();
 			}
 		});
@@ -499,7 +505,8 @@ public class FilterConditionProcessVariableUI extends FilterConditionUI {
 		return result;
 	}
 
-	public void delete(Connection conDb, int filterConditionID)
+	@Override
+    public void delete(Connection conDb, int filterConditionID)
 			throws AMSException {
 		try {
 			FilterConditionProcessVariableDAO.remove(conDb, filterConditionID);
@@ -514,7 +521,8 @@ public class FilterConditionProcessVariableUI extends FilterConditionUI {
 		}
 	}
 
-	public void dispose() {
+	@Override
+    public void dispose() {
 		if (localParent != null && !localParent.isDisposed()) {
 			localParent.dispose();
 			localParent = null;
@@ -524,17 +532,20 @@ public class FilterConditionProcessVariableUI extends FilterConditionUI {
 	/**
 	 * {@inheritDoc}
 	 */
-	public String getDisplayName() {
+	@Override
+    public String getDisplayName() {
 		return Messages.FilterConditionProcessVaribaleBasedUI_DisplayName;
 	}
 
-	public boolean isChanged() {
+	@Override
+    public boolean isChanged() {
 		FilterConditionProcessVariableTObject newFC = collectDataToBeSaved(snapshot
 				.getFilterConditionRef());
 		return !newFC.equals(snapshot);
 	}
 
-	public void load(Connection conDb, int filterConditionID)
+	@Override
+    public void load(Connection conDb, int filterConditionID)
 			throws AMSException {
 		snapshot = null;
 		try {
@@ -564,7 +575,8 @@ public class FilterConditionProcessVariableUI extends FilterConditionUI {
 	/**
 	 * {@inheritDoc}
 	 */
-	public void reset() {
+	@Override
+    public void reset() {
 		setText(txtChannelValue.getDisplay(), txtChannelValue, "");
 		setComboBoxValueUI(cboSuggReturnType.getDisplay(), cboSuggReturnType,
 				-1);
@@ -572,7 +584,8 @@ public class FilterConditionProcessVariableUI extends FilterConditionUI {
 		setText(txtCompareValue.getDisplay(), txtCompareValue, "");
 	}
 
-	public void save(Connection conDb) throws AMSException {
+	@Override
+    public void save(Connection conDb) throws AMSException {
 		try {
 			assert check() : "Precondition violated: check()";
 

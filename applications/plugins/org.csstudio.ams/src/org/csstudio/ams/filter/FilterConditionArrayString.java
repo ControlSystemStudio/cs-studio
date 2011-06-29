@@ -1,3 +1,4 @@
+
 /* 
  * Copyright (c) 2008 Stiftung Deutsches Elektronen-Synchrotron, 
  * Member of the Helmholtz Association, (DESY), HAMBURG, GERMANY.
@@ -19,7 +20,8 @@
  * PROJECT IN THE FILE LICENSE.HTML. IF THE LICENSE IS NOT INCLUDED YOU MAY FIND A COPY 
  * AT HTTP://WWW.DESY.DE/LEGAL/LICENSE.HTM
  */
- package org.csstudio.ams.filter;
+
+package org.csstudio.ams.filter;
 
 import java.sql.Connection;
 import java.sql.SQLException;
@@ -36,9 +38,9 @@ import org.csstudio.ams.dbAccess.configdb.AggrFilterConditionArrayStringDAO;
 import org.csstudio.ams.dbAccess.configdb.AggrFilterConditionArrayStringTObject;
 import org.csstudio.ams.dbAccess.configdb.FilterConditionArrayStringValuesTObject;
 
-public class FilterConditionArrayString implements IFilterCondition 
-{
-	public static final short OPERATOR_TEXT_EQUAL = 1;
+public class FilterConditionArrayString implements IFilterCondition  {
+	
+    public static final short OPERATOR_TEXT_EQUAL = 1;
 	//public static final short OPERATOR_TEXT_NOT_EQUAL = 2;
 	
 	//public static final short OPERATOR_NUMERIC_LT = 3;
@@ -58,7 +60,8 @@ public class FilterConditionArrayString implements IFilterCondition
 	
 	private AggrFilterConditionArrayStringTObject fcasObj = null;
 	
-	public void init(Connection conDb, int filterConditionID,int filterRef) throws AMSException
+	@Override
+    public void init(Connection conDb, int filterConditionID,int filterRef) throws AMSException
 	{
 		try
 		{
@@ -105,7 +108,8 @@ public class FilterConditionArrayString implements IFilterCondition
 		// return dateValue.compareTo(dateCompValue);
 	}
 	
-	public boolean match(MapMessage map)
+	@Override
+    public boolean match(MapMessage map)
 	{
 		try
 		{
