@@ -18,11 +18,13 @@ build/build
 build/ext
 
 
-# SNS Product: Ignore output of headless build
+# SNS, KEK Products: Ignore output of headless build
 syntax: glob
 products/SNS/product/org.csstudio.sns.updatesite/build/*
 products/SNS/product/org.csstudio.sns.updatesite/apps/*
 products/SNS/product/org.csstudio.sns.updatesite/config_build_*/build.log
+products/KEK/plugins/org.csstudio.kek.build/build/*
+products/KEK/plugins/org.csstudio.kek.build/apps/*
 
 # ignore the .settings folder
 # should it be changed to all */.settings/* ?
