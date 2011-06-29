@@ -32,18 +32,6 @@
       </command>
    </extension>
    <extension
-         id="AmsJmsConnectorProduct"
-         point="org.eclipse.core.runtime.products">
-      <product
-            application="org.csstudio.ams.connector.jms.AmsJMSConnectorId"
-            name="AmsJmsConnector">
-         <property
-               name="appName"
-               value="AmsJmsConnector">
-         </property>
-      </product>
-   </extension>
-   <extension
          point="org.eclipse.core.runtime.preferences">
       <initializer
             class="org.csstudio.ams.connector.jms.preferences.PreferenceInitializer">

@@ -25,7 +25,6 @@ package org.csstudio.ams.connector.jms;
 
 import java.net.InetAddress;
 import java.util.Hashtable;
-
 import javax.jms.Connection;
 import javax.jms.ConnectionFactory;
 import javax.jms.JMSException;
@@ -35,7 +34,6 @@ import javax.jms.Session;
 import javax.naming.Context;
 import javax.naming.InitialContext;
 import javax.naming.NamingException;
-
 import org.csstudio.ams.AmsActivator;
 import org.csstudio.ams.AmsConstants;
 import org.csstudio.ams.Log;
@@ -43,7 +41,6 @@ import org.csstudio.ams.SynchObject;
 import org.csstudio.ams.Utils;
 import org.csstudio.ams.connector.jms.preferences.JmsConnectorPreferenceKey;
 import org.csstudio.ams.internal.AmsPreferenceKey;
-import org.csstudio.platform.logging.CentralLogger;
 import org.eclipse.core.runtime.Platform;
 import org.eclipse.core.runtime.preferences.IPreferencesService;
 import org.eclipse.equinox.app.IApplication;
@@ -95,24 +92,20 @@ public class JMSConnectorStart implements IApplication, IGenericServiceListener<
         }
     }
     
-    public void stop()
-    {
+    public void stop() {
         return;
     }
 
-    public static JMSConnectorStart getInstance()
-    {
+    public static JMSConnectorStart getInstance() {
         return _instance;
     }
     
-    public synchronized void setRestart()
-    {
+    public synchronized void setRestart() {
         restart = true;
         bStop = true;
     }
 
-    public synchronized void setShutdown()
-    {
+    public synchronized void setShutdown() {
         restart = false;
         bStop = true;
     }
@@ -121,8 +114,7 @@ public class JMSConnectorStart implements IApplication, IGenericServiceListener<
      * 
      * @return The management password
      */
-    public synchronized String getPassword()
-    {
+    public synchronized String getPassword() {
         return managementPassword;
     }
 
@@ -134,6 +126,8 @@ public class JMSConnectorStart implements IApplication, IGenericServiceListener<
         Log.log(this, Log.INFO, "start");
         
         JmsConnectorPreferenceKey.showPreferences();
+        
+        JMSConnectorPlugin.getDefault().addSessionServiceListener(this);
         
         JMSConnectorWork ecw = null;
         boolean bInitedJms = false;
@@ -362,9 +356,9 @@ public class JMSConnectorStart implements IApplication, IGenericServiceListener<
     	try {
 			sessionService.connect(xmppUser, xmppPassword, xmppServer);
 			xmppService = sessionService;
+			Log.log(this, Log.INFO, "XMPP connection created.");
 		} catch (Exception e) {
-			CentralLogger.getInstance().warn(this,
-					"XMPP connection is not available, " + e.toString());
+			Log.log(this, Log.WARN, "XMPP connection is not available: " + e.getMessage());
 		}
     }
     
