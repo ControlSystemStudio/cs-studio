@@ -24,7 +24,6 @@
 import javax.annotation.Nonnull;
 
 import org.csstudio.platform.ui.AbstractCssUiPlugin;
-import org.csstudio.utility.ldap.LdapServiceImplActivator;
 import org.csstudio.utility.ldap.service.ILdapService;
 import org.csstudio.utility.ldap.service.LdapServiceTracker;
 import org.osgi.framework.BundleContext;
@@ -60,7 +59,6 @@ public class Activator extends AbstractCssUiPlugin {
 	 */
 	@Override
     public void doStart(@Nonnull final BundleContext context) throws Exception {
-		LdapServiceImplActivator.getDefault();
         _ldapServiceTracker = new LdapServiceTracker(context);
         _ldapServiceTracker.open();
 	}

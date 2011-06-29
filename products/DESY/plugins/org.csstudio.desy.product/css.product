@@ -75,7 +75,7 @@ HTTP://WWW.DESY.DE/LEGAL/LICENSE.HTM
       <plugin id="org.csstudio.platform.ldapauthorization.ui" fragment=""/>
       <plugin id="org.csstudio.platform.libs.dal"/>
       <plugin id="org.csstudio.platform.libs.dal.epics"/>
-      <plugin id="org.csstudio.platform.libs.dal.tango"/>
+      <plugin id="org.csstudio.platform.libs.dal.tango" fragment=""/>
       <plugin id="org.csstudio.platform.libs.dal.tine"/>
       <plugin id="org.csstudio.platform.libs.dcf" fragment=""/>
       <plugin id="org.csstudio.platform.libs.dcf.ui" fragment=""/>
@@ -191,6 +191,7 @@ HTTP://WWW.DESY.DE/LEGAL/LICENSE.HTM
    </features>
 
    <configurations>
+      <plugin id="org.csstudio.utility.ldap.service.impl" autoStart="true" startLevel="0" />
       <plugin id="org.eclipse.core.runtime" autoStart="true" startLevel="0" />
       <plugin id="org.eclipse.equinox.common" autoStart="true" startLevel="2" />
       <plugin id="org.eclipse.equinox.ds" autoStart="true" startLevel="0" />
