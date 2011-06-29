@@ -28,19 +28,7 @@ public class Preferences
 	{
         final IPreferencesService prefs = Platform.getPreferencesService();
         final String script_list = prefs.getString(Activator.ID, PREF_SCRIPTS, "", null);
-        
-        // Split  description1|command1,description2|command2  at ","
-        final String[] desc_scripts = StringSplitter.splitIgnoreInQuotes(script_list, ',', true);
-        final ScriptInfo[] infos = new ScriptInfo[desc_scripts.length];
-        for (int i=0; i<infos.length; ++i)
-        {
-        	// Split description1|command1 at "|"
-            final String[] desc_script = StringSplitter.splitIgnoreInQuotes(desc_scripts[i], '|', true);
-        	if (desc_script.length != 2)
-        		throw new Exception("Error in preference " + Activator.ID + "/scripts");
-        	infos[i] = new ScriptInfo(desc_script[0], desc_script[1]);
-        }
-		return infos;
+        return decode(script_list);
 	}
 	
 	/** @param infos Array of {@link ScriptInfo}
