@@ -33,8 +33,9 @@ import org.csstudio.platform.management.IManagementCommand;
  * @author Markus Moeller
  *
  */
-public class Stop implements IManagementCommand
-{
+@SuppressWarnings("hiding")
+public class Stop implements IManagementCommand {
+    
     private static String ACTION_LOGIN_FAILED = "ERROR: [3] - Possible hacking attempt: XMPP-remote-login: Authorization failed! (no details avail)"
     + " [requested action: \"shutdown\"]";
     
@@ -48,8 +49,8 @@ public class Stop implements IManagementCommand
 
     private static RemotelyStoppable thingToBeStopped;
     
-    public Stop()
-    {
+    public Stop() {
+        
         if (Stop.logger == null) {
             throw new RuntimeException(
                     "Class has not been intialized. Expected call of staticInject(Logger) before instantation.");
@@ -63,23 +64,20 @@ public class Stop implements IManagementCommand
     /* (non-Javadoc)
      * @see org.csstudio.platform.management.IManagementCommand#execute(org.csstudio.platform.management.CommandParameters)
      */
-    public CommandResult execute(CommandParameters parameters)
-    {
+    @Override
+    public CommandResult execute(CommandParameters parameters) {
+        
         String param = (String)parameters.get("Password");
         String password = thingToBeStopped.getPassword();
         
-        if(password.length() > 0)
-        {
-            if(param.equals(password))
-            {
+        if(password.length() > 0) {
+            if(param.equals(password)) {
                 Stop.thingToBeStopped.stopRemotely(Stop.logger);
                 Stop.logger.logInfoMessage(this, Stop.ACTION_LOGIN_SUCCEDED);
                 
                 return CommandResult.createMessageResult(Stop.ACTION_LOGIN_SUCCEDED);
             }
-        }
-        else
-        {
+        } else {
             Stop.thingToBeStopped.stopRemotely(Stop.logger);
             Stop.logger.logInfoMessage(this, Stop.ACTION_LOGIN_SUCCEDED);
             
