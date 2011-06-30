@@ -29,7 +29,7 @@ public class PVSamplesUnitTest
     public void testPVSamples()
     {
         // Start w/ empty PVSamples
-        final PVSamples samples = new PVSamples();
+        final PVSamples samples = new PVSamples(null);
         assertEquals(0, samples.getSize());
         assertNull(samples.getXDataMinMax());
         assertNull(samples.getYDataMinMax());
@@ -77,7 +77,7 @@ public class PVSamplesUnitTest
     public void testUndefinedLiveData()
     {
         // Start w/ empty samples
-        final PVSamples samples = new PVSamples();
+        final PVSamples samples = new PVSamples(null);
         assertEquals(0, samples.getSize());
 
         // Add sample w/ null time stamp, INVALID/UDF

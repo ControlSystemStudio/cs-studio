@@ -37,6 +37,7 @@ public class Messages extends NLS
     public static String ADELInfo;
     public static String ADELNotPresentWarning;
     public static String ADELVisibilityTT;
+    public static String ADELVisibilityCommand;
     public static String AppendSearchResults;
     public static String AppendSearchResultsTT;
     public static String ArchiveAccessDetailFmt;

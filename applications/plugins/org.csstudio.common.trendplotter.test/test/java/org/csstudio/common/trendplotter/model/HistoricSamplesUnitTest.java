@@ -15,6 +15,7 @@ import org.csstudio.data.values.IValue;
 import org.csstudio.data.values.TimestampFactory;
 import org.csstudio.swt.xygraph.linearscale.Range;
 import org.junit.Test;
+import org.mockito.Mockito;
 
 /** JUnit test of HistoricSamples
  *  @author Kay Kasemir
@@ -27,7 +28,10 @@ public class HistoricSamplesUnitTest
     @Test
     public void addArchivedData()
     {
-        final HistoricSamples history = new HistoricSamples();
+        PVItem mockItem = Mockito.mock(PVItem.class);
+        Mockito.when(mockItem.getRequestType()).thenReturn(RequestType.RAW);
+        
+        final HistoricSamples history = new HistoricSamples(mockItem);
         final int N = 10;
         // Initial data, time 10..19
         final ArrayList<IValue> samples = new ArrayList<IValue>();

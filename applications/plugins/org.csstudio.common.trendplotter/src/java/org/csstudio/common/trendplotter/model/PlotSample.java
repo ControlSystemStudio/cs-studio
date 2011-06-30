@@ -38,6 +38,12 @@ public class PlotSample implements ISample
      *  @see #getInfo()
      */
     private String info;
+    
+    private Number _adel = null;
+    
+    boolean showAdel = false;
+
+    boolean hasAdelValue = false;
 
 
     /** Initialize with valid control system value
@@ -143,6 +149,9 @@ public class PlotSample implements ISample
         if (!(value instanceof IMinMaxDoubleValue))
             return 0;
         final IMinMaxDoubleValue minmax = (IMinMaxDoubleValue)value;
+        if (showAdel) {
+            return getAdel().doubleValue();
+        }
         return minmax.getValue() - minmax.getMinimum();
     }
 
@@ -153,6 +162,9 @@ public class PlotSample implements ISample
         if (!(value instanceof IMinMaxDoubleValue))
             return 0;
         final IMinMaxDoubleValue minmax = (IMinMaxDoubleValue)value;
+        if (showAdel) {
+            return getAdel().doubleValue();
+        }
         return minmax.getMaximum() - minmax.getValue();
     }
 
@@ -161,4 +173,22 @@ public class PlotSample implements ISample
     {
         return NLS.bind(Messages.PlotSampleFmt, new Object[] { value, source, value.getQuality().toString() });
     }
+    
+    public void setAdel(Number adel) {
+        _adel = adel;
+        hasAdelValue = adel != null;
+    }
+    public Number getAdel() {
+        return _adel;
+    }
+    public void setShowAdel(boolean b) {
+        showAdel = b;
+    }
+    public boolean getShowAdel() {
+        return showAdel;
+    }
+    public boolean hasAdelValue() {
+        return hasAdelValue;
+    }
+    
 }

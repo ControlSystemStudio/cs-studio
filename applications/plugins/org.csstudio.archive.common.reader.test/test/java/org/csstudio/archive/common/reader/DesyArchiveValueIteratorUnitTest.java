@@ -24,7 +24,7 @@ package org.csstudio.archive.common.reader;
 import java.util.Collections;
 import java.util.NoSuchElementException;
 
-import org.csstudio.archive.common.reader.facade.IServiceProvider;
+import org.csstudio.archive.common.reader.facade.IArchiveServiceProvider;
 import org.csstudio.archive.common.reader.testdata.TestUtils;
 import org.csstudio.data.values.IMinMaxDoubleValue;
 import org.csstudio.domain.desy.epics.typesupport.EpicsSystemVariableSupport;
@@ -53,7 +53,7 @@ public class DesyArchiveValueIteratorUnitTest {
         final TimeInstant start = TimeInstantBuilder.fromMillis(0L);
         final TimeInstant end = TimeInstantBuilder.fromMillis(50L);
         
-        final IServiceProvider provider = 
+        final IArchiveServiceProvider provider = 
             TestUtils.createCustomizedMockedServiceProvider(TestUtils.CHANNEL_NAME_1, 
                                                             start, 
                                                             end, 
@@ -83,7 +83,7 @@ public class DesyArchiveValueIteratorUnitTest {
     public void testEmptyIterator() throws Exception {
         final TimeInstant instant = TimeInstantBuilder.fromMillis(1L);
         
-        final IServiceProvider provider = 
+        final IArchiveServiceProvider provider = 
             TestUtils.createCustomizedMockedServiceProvider("", instant, instant, Collections.emptyList());
         
         final DesyArchiveValueIterator<Double> iter = 

@@ -27,8 +27,8 @@ import java.util.regex.Pattern;
 import javax.annotation.CheckForNull;
 import javax.annotation.Nonnull;
 
-import org.csstudio.archive.common.reader.facade.IServiceProvider;
-import org.csstudio.archive.common.reader.facade.ServiceProvider;
+import org.csstudio.archive.common.reader.facade.ArchiveServiceProvider;
+import org.csstudio.archive.common.reader.facade.IArchiveServiceProvider;
 import org.csstudio.archive.common.requesttype.IArchiveRequestType;
 import org.csstudio.archive.common.service.IArchiveReaderFacade;
 import org.csstudio.archive.common.service.channel.IArchiveChannel;
@@ -82,13 +82,13 @@ public final class DesyArchiveReaderFactory implements ArchiveReaderFactory {
      */
     private static final class DesyArchiveReader implements ArchiveReader {
 
-        private final IServiceProvider _provider;
+        private final IArchiveServiceProvider _provider;
 
         /**
          * Constructor.
          * @param serviceProvider
          */
-        public DesyArchiveReader(@Nonnull final IServiceProvider serviceProvider) {
+        public DesyArchiveReader(@Nonnull final IArchiveServiceProvider serviceProvider) {
             _provider = serviceProvider;
         }
 
@@ -154,7 +154,7 @@ public final class DesyArchiveReaderFactory implements ArchiveReaderFactory {
 
             final TimeInstant s = BaseTypeConversionSupport.toTimeInstant(start);
             final TimeInstant e = BaseTypeConversionSupport.toTimeInstant(end);
-            return new DesyArchiveValueIterator<Object>(_provider, name, s, e, getRawType());
+            return new DesyArchiveValueIterator<Object>(_provider, name, s, e, findRequestType("RAW"));
         }
 
 
@@ -173,8 +173,10 @@ public final class DesyArchiveReaderFactory implements ArchiveReaderFactory {
             final IArchiveReaderFacade service = _provider.getReaderFacade();
             final IArchiveChannel channel = service.getChannelByName(name);
 
-            if (BaseTypeConversionSupport.isDataTypeConvertibleToDouble(channel.getDataType(), "java.lang", "org.csstudio.domain.desy.epics.types")) {
-                return new EquidistantTimeBinsIterator<Object>(_provider, name, s, e, null, count);
+            if (BaseTypeConversionSupport.isDataTypeConvertibleToDouble(channel.getDataType(),
+                                                                        "java.lang",
+                                                                        "org.csstudio.domain.desy.epics.types")) {
+                return new EquidistantTimeBinsIterator<Object>(_provider, name, s, e, findRequestType("AVG_PER_HOUR"), count);
             }
             return EMPTY_ITER;
         }
@@ -195,12 +197,12 @@ public final class DesyArchiveReaderFactory implements ArchiveReaderFactory {
          * @throws OsgiServiceUnavailableException
          */
         @CheckForNull
-        private IArchiveRequestType getRawType() throws OsgiServiceUnavailableException {
+        private IArchiveRequestType findRequestType(@Nonnull final String typeId) throws OsgiServiceUnavailableException {
             final IArchiveReaderFacade s = _provider.getReaderFacade();
             final ImmutableSet<IArchiveRequestType> types = s.getRequestTypes();
             for (final IArchiveRequestType type : types) {
                 // this should have been decided type safe by the client app (typically the user)...
-                if (type.getTypeIdentifier().equals("RAW")) {
+                if (type.getTypeIdentifier().equals(typeId)) {
                     return type;
                 }
             }
@@ -221,6 +223,6 @@ public final class DesyArchiveReaderFactory implements ArchiveReaderFactory {
     @Override
     @Nonnull
     public ArchiveReader getArchiveReader(@Nonnull final String url) throws Exception {
-        return new DesyArchiveReader(new ServiceProvider());
+        return new DesyArchiveReader(new ArchiveServiceProvider());
     }
 }

@@ -35,6 +35,8 @@ abstract public class PlotSamples implements IDataProvider
      *  @see #testAndClearNewSamplesFlag()
      */
     protected boolean have_new_samples = false;
+    
+    protected RequestType request_type;
 
     /** {@inheritDoc} */
     @Override
@@ -140,5 +142,13 @@ abstract public class PlotSamples implements IDataProvider
                 buf.append(String.format("\n%3d: ", i) + getSample(i).getValue());
         }
         return buf.toString();
+    }
+    
+    public void updateRequestType(RequestType type) {
+        request_type = type;
+    }
+    
+    public RequestType getRequestType() {
+        return request_type;
     }
 }

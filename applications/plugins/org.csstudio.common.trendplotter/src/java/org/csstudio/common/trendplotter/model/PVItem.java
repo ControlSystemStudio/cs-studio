@@ -15,12 +15,18 @@ import java.util.logging.Level;
 
 import org.csstudio.apputil.xml.DOMHelper;
 import org.csstudio.apputil.xml.XMLWriter;
+import org.csstudio.archive.common.service.ArchiveServiceException;
 import org.csstudio.archive.common.service.IArchiveReaderFacade;
+import org.csstudio.archive.common.service.channel.IArchiveChannel;
 import org.csstudio.common.trendplotter.Activator;
 import org.csstudio.common.trendplotter.Messages;
 import org.csstudio.common.trendplotter.preferences.Preferences;
 import org.csstudio.data.values.INumericMetaData;
 import org.csstudio.data.values.IValue;
+import org.csstudio.domain.desy.epics.name.EpicsChannelName;
+import org.csstudio.domain.desy.epics.name.EpicsNameSupport;
+import org.csstudio.domain.desy.epics.name.RecordField;
+import org.csstudio.domain.desy.service.osgi.OsgiServiceUnavailableException;
 import org.csstudio.utility.pv.PV;
 import org.csstudio.utility.pv.PVFactory;
 import org.csstudio.utility.pv.PVListener;
@@ -43,7 +49,7 @@ public class PVItem extends ModelItem implements PVListener
     private static final Logger LOG = LoggerFactory.getLogger(PVItem.class);
     
     /** Historic and 'live' samples for this PV */
-    final private PVSamples samples = new PVSamples();
+    final private PVSamples samples;
 
     /** Where to get archived data for this item. */
     final private ArrayList<ArchiveDataSource> archives
@@ -51,6 +57,7 @@ public class PVItem extends ModelItem implements PVListener
 
     /** Control system PV */
     private PV pv;
+    private PV pv_adel = null;
 
     /** Most recently received value */
     private volatile IValue current_value;
@@ -65,8 +72,11 @@ public class PVItem extends ModelItem implements PVListener
     private TimerTask scanner = null;
 
     /** Archive data request type */
-    private RequestType request_type = RequestType.OPTIMIZED;
+    private RequestType request_type = null;
     
+    
+    private Boolean show_adel = Boolean.FALSE;
+
     private Boolean has_adel = Boolean.FALSE;
 
     /** Initialize
@@ -80,14 +90,21 @@ public class PVItem extends ModelItem implements PVListener
         pv = PVFactory.createPV(name);
         this.period = period;
         
-        has_adel = retrieveAdelFor(name);
-        
+        has_adel = retrieveAdelExistenceInfoFor(name);
+        show_adel = false;
+        samples = new PVSamples(this);
     }
 
-    private Boolean retrieveAdelFor(final String channelName) {
+    private Boolean retrieveAdelExistenceInfoFor(final String channelName) throws OsgiServiceUnavailableException, 
+                                                                     ArchiveServiceException {
         IArchiveReaderFacade service = Activator.getDefault().getArchiveReaderService();
 
-        service.getChannelByName(channelName + ".ADEL");
+        String baseName = EpicsNameSupport.parseBaseName(channelName);
+        
+        IArchiveChannel channel = 
+            service.getChannelByName(baseName + EpicsChannelName.FIELD_SEP + RecordField.ADEL.getFieldName());
+        
+        return channel != null;
     }
 
     /** Set new item name, which changes the underlying PV name
@@ -257,9 +274,12 @@ public class PVItem extends ModelItem implements PVListener
     /** @param request_type New request type */
     public void setRequestType(final RequestType request_type)
     {
-        if (this.request_type == request_type)
+        if (this.request_type == request_type )
             return;
         this.request_type = request_type;
+        
+        samples.updateRequestType(request_type);
+        
         fireItemDataConfigChanged();
     }
 
@@ -311,6 +331,10 @@ public class PVItem extends ModelItem implements PVListener
         }
         pv.removeListener(this);
         pv.stop();
+        
+        if (pv_adel != null && pv_adel.isRunning()) {
+            pv_adel.stop();
+        }
     }
 
     /** {@inheritDoc} */
@@ -454,6 +478,7 @@ public class PVItem extends ModelItem implements PVListener
         final String req_txt = DOMHelper.getSubelementString(node, Model.TAG_REQUEST, RequestType.OPTIMIZED.name());
         try
         {
+            
             final RequestType request = RequestType.valueOf(req_txt);
             item.setRequestType(request);
         }
@@ -474,5 +499,22 @@ public class PVItem extends ModelItem implements PVListener
             archive = DOMHelper.findNextElementNode(archive, Model.TAG_ARCHIVE);
         }
         return item;
+    }
+
+    /**
+     * Only returns true if the {@link RecordField#ADEL} channel has been registered AND
+     * the this{@link #show_adel()} is set to true.
+     */
+    public Boolean showAdel() {
+        return has_adel && show_adel;
+    }
+    
+    public Boolean hasAdel() {
+        return has_adel;
+    }
+    
+    public void toggleShowAdel() throws Exception {
+        show_adel = !show_adel;
+        samples.toggleShowAdel(super.toString());
     }
 }
