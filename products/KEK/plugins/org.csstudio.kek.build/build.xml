@@ -5,6 +5,13 @@
      Not really a complete build file, just a start at replacing
      shell scripts with Ant
 
+     Needs Environment Variables:
+     
+     TOP
+     BUILDDIR
+     WORKSPACE
+     VERSION
+     
      Kay Kasemir
   -->
 <project name="sns_css" default="all">
@@ -18,7 +25,7 @@
     <property name="workspace_dir" value="${env.WORKSPACE}" />
     
     <!-- Build directory -->
-    <property name="build_dir" value="build" />
+    <property name="build_dir" value="${env.BUILDDIR}" />
 	
     <!-- Zip all the source files -->
     <target name="check_vars" unless="env.VERSION">

@@ -22,7 +22,7 @@ For details, see http://www.eclipse.org/legal/epl-v10.html
    </license>
 
    <url>
-      <update label="KEK/JPARC Update Site" url="http://www-linac.kek.jp/cont/css/updates"/>
+      <update label="KEK/J-PARC Update Site" url="http://www-linac.kek.jp/cont/css/updates"/>
    </url>
 
    <includes
