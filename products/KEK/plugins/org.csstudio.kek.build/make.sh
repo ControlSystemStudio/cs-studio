@@ -22,10 +22,13 @@ java -jar $ECLIPSE/plugins/org.eclipse.equinox.launcher_*.jar \
   -application org.eclipse.ant.core.antRunner \
   -buildfile $ECLIPSE/plugins/org.eclipse.pde.build_$PDE_VER/scripts/productBuild/productBuild.xml \
   -Dbuilder=$TOP/products/KEK/plugins/org.csstudio.kek.build/css \
+  -DbuildDirectory=$BUILDDIR \
+  -Dbase=$ECLIPSE_BASE \
   -Dversion=$VERSION \
-  -Ddeltapack=$DELTAPACK
-   > build.log 2>&1
-
+  -Dqualifier=$QUALIFIER \
+  -Ddeltapack=$DELTAPACK 2>&1 | tee build.log
+cd ..
+ 
 OK=1
 # Each build log contains 2(!) "BUILD SUCCESSFUL" lines
 for prod in $PRODS
