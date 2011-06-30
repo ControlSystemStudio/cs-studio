@@ -31,11 +31,9 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
-
 import javax.jms.JMSException;
 import javax.jms.MapMessage;
 import javax.jms.Message;
-
 import org.csstudio.ams.AmsActivator;
 import org.csstudio.ams.AmsConstants;
 import org.csstudio.ams.Log;
@@ -46,7 +44,6 @@ import org.csstudio.ams.internal.AmsPreferenceKey;
 import org.csstudio.ams.messageminder.preference.MessageMinderPreferenceKey;
 import org.csstudio.data.values.ITimestamp;
 import org.csstudio.data.values.TimestampFactory;
-import org.csstudio.platform.logging.CentralLogger;
 import org.csstudio.platform.statistic.Collector;
 import org.csstudio.platform.utility.jms.JmsRedundantProducer;
 import org.csstudio.platform.utility.jms.JmsRedundantProducer.ProducerId;
@@ -88,7 +85,7 @@ public class MessageGuardCommander extends Job {
                 }
                 catch(final InterruptedException e)
                 {
-                    CentralLogger.getInstance().warn(this, e);
+                    Log.log(this, Log.WARN, e);
                 }
 
                 Connection conDb = null;
@@ -98,7 +95,7 @@ public class MessageGuardCommander extends Job {
                     conDb = AmsConnectionFactory.getApplicationDB();
                     if (conDb == null)
                     {
-                        CentralLogger.getInstance().warn(this, "Could not init application database");
+                        Log.log(this, Log.WARN, "Could not init application database");
                     }
                     else
                     {
@@ -133,7 +130,7 @@ public class MessageGuardCommander extends Job {
                 }
                 catch(final SQLException e)
                 {
-                    CentralLogger.getInstance().warn(this,e);
+                    Log.log(this, Log.WARN,e);
                 }
                 finally
                 {
@@ -145,7 +142,7 @@ public class MessageGuardCommander extends Job {
                         }
                         catch(final SQLException e)
                         {
-                            CentralLogger.getInstance().warn(this,e);
+                            Log.log(this, Log.WARN,e);
                         }
                     }
                 }
@@ -320,7 +317,7 @@ public class MessageGuardCommander extends Job {
     private void patrol() {
         Message message = null;
         ITimestamp now;
-        CentralLogger.getInstance().info(this, "StartTime: " + TimestampFactory.now());
+        Log.log(this, Log.INFO, "StartTime: " + TimestampFactory.now());
         // int counter =0;
         while (_run) {
             now = TimestampFactory.now();
@@ -367,7 +364,7 @@ public class MessageGuardCommander extends Job {
         if (message instanceof MapMessage) {
             final MapMessage mapMessage = (MapMessage) message;
             try {
-                CentralLogger.getInstance().info(this, "name: " + mapMessage.getString("NAME"));
+                Log.log(this, Log.INFO, "name: " + mapMessage.getString("NAME"));
                 final String command = mapMessage.getString(AMS_COMMAND_KEY_NAME);
                 if ((command != null)
                         && (command.equals(MSGVALUE_TCMD_RELOAD_CFG_START) || command
@@ -455,7 +452,7 @@ public class MessageGuardCommander extends Job {
                     }
                     catch(final SQLException e)
                     {
-                        CentralLogger.getInstance().warn(this, e);
+                        Log.log(this, Log.WARN, e);
                     }
                 }
             }
@@ -502,7 +499,7 @@ public class MessageGuardCommander extends Job {
      */
     private void sendCleanUpMessage(final MessageKey key, final ITimestamp lastDate,
             final int number) {
-        CentralLogger.getInstance().info(this, key.toString() + "\tlast unsend msg: " + lastDate.toString() + "\t and "
+        Log.log(this, Log.INFO, key.toString() + "\tlast unsend msg: " + lastDate.toString() + "\t and "
                 + number + " unsent msg.");
         // TODO write the sendCleanUpMessage.
         // Soll eine Nachricht versenden die enthaelt welche und wieviele
