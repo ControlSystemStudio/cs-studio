@@ -29,6 +29,7 @@ import org.csstudio.opibuilder.OPIBuilderPlugin;
 import org.csstudio.opibuilder.model.AbstractWidgetModel;
 import org.csstudio.opibuilder.model.DisplayModel;
 import org.csstudio.opibuilder.persistence.XMLUtil;
+import org.csstudio.opibuilder.util.ErrorHandlerUtil;
 import org.eclipse.swt.dnd.ByteArrayTransfer;
 import org.eclipse.swt.dnd.DND;
 import org.eclipse.swt.dnd.TransferData;
@@ -67,8 +68,15 @@ public class OPIWidgetsTransfer extends ByteArrayTransfer {
 	protected void javaToNative(Object object, TransferData transferData) {
 		if (!isSupportedType(transferData) || !(checkInput(object))) {
 			DND.error(DND.ERROR_INVALID_DATA);
+		}		
+		try {			
+			super.javaToNative((((String)object).getBytes("UTF-8")), transferData); //$NON-NLS-1$
+		} catch (Exception e) {
+			ErrorHandlerUtil.handleError("Convert to UTF-8 bytes failed", e);
+			
 		}
-		super.javaToNative(((String)object).getBytes(), transferData);
+		
+		
 	}
 
 	@Override
@@ -78,12 +86,13 @@ public class OPIWidgetsTransfer extends ByteArrayTransfer {
 		byte[] bytes = (byte[])super.nativeToJava(transferData);
 		if(bytes == null)
 			return null;
-		try {
-			DisplayModel displayModel = (DisplayModel) XMLUtil.XMLStringToWidget(new String(bytes));
+		try {		
+			DisplayModel displayModel = 
+					(DisplayModel) XMLUtil.XMLStringToWidget(new String(bytes, "UTF-8")); //$NON-NLS-1$
 			List<AbstractWidgetModel> widgets = displayModel.getChildren();
 			return widgets;
 		} catch (Exception e) {
-			OPIBuilderPlugin.getLogger().log(Level.WARNING, "Failed to transfer XML to widget", e); //$NON-NLS-1$
+			OPIBuilderPlugin.getLogger().log(Level.WARNING, "Failed to transfer XML to widget", e); 
 		}
 		return null;
 

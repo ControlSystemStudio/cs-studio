@@ -10,10 +10,10 @@ package org.csstudio.trends.databrowser2.export;
 import java.io.PrintStream;
 import java.util.concurrent.CopyOnWriteArrayList;
 
-import org.csstudio.archivereader.ArchiveReader;
-import org.csstudio.archivereader.ArchiveRepository;
-import org.csstudio.archivereader.MergingValueIterator;
-import org.csstudio.archivereader.ValueIterator;
+import org.csstudio.archive.reader.ArchiveReader;
+import org.csstudio.archive.reader.ArchiveRepository;
+import org.csstudio.archive.reader.MergingValueIterator;
+import org.csstudio.archive.reader.ValueIterator;
 import org.csstudio.data.values.ITimestamp;
 import org.csstudio.trends.databrowser2.Activator;
 import org.csstudio.trends.databrowser2.model.ArchiveDataSource;

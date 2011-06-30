@@ -9,7 +9,7 @@ package org.csstudio.trends.databrowser2.archive;
 
 import java.util.ArrayList;
 
-import org.csstudio.archivereader.ArchiveReader;
+import org.csstudio.archive.reader.ArchiveReader;
 import org.csstudio.trends.databrowser2.Messages;
 import org.csstudio.trends.databrowser2.model.ArchiveDataSource;
 import org.csstudio.trends.databrowser2.model.ChannelInfo;

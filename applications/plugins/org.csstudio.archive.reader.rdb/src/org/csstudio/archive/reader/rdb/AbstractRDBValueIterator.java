@@ -13,8 +13,8 @@ import java.sql.ResultSetMetaData;
 import java.sql.Timestamp;
 import java.util.ArrayList;
 
-import org.csstudio.archivereader.Severity;
-import org.csstudio.archivereader.ValueIterator;
+import org.csstudio.archive.reader.Severity;
+import org.csstudio.archive.reader.ValueIterator;
 import org.csstudio.data.values.IDoubleValue;
 import org.csstudio.data.values.IEnumeratedMetaData;
 import org.csstudio.data.values.IEnumeratedValue;

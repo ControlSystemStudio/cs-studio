@@ -7,7 +7,7 @@
  ******************************************************************************/
 package org.csstudio.archive.reader.rdb;
 
-import org.csstudio.archivereader.ValueIterator;
+import org.csstudio.archive.reader.ValueIterator;
 import org.csstudio.data.values.IDoubleValue;
 import org.csstudio.data.values.IEnumeratedMetaData;
 import org.csstudio.data.values.ILongValue;

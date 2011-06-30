@@ -11,7 +11,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 
 import org.csstudio.apputil.ui.swt.ComboHistoryHelper;
-import org.csstudio.archivereader.ArchiveReader;
+import org.csstudio.archive.reader.ArchiveReader;
 import org.csstudio.trends.databrowser2.Activator;
 import org.csstudio.trends.databrowser2.Messages;
 import org.csstudio.trends.databrowser2.archive.SearchJob;

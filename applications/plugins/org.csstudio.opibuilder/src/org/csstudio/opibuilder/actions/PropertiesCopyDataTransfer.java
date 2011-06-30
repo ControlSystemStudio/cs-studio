@@ -8,6 +8,7 @@
 package org.csstudio.opibuilder.actions;
 
 import java.io.ByteArrayInputStream;
+import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Level;
@@ -16,6 +17,7 @@ import org.csstudio.opibuilder.OPIBuilderPlugin;
 import org.csstudio.opibuilder.datadefinition.PropertiesCopyData;
 import org.csstudio.opibuilder.model.AbstractWidgetModel;
 import org.csstudio.opibuilder.persistence.XMLUtil;
+import org.csstudio.opibuilder.util.ErrorHandlerUtil;
 import org.eclipse.swt.dnd.ByteArrayTransfer;
 import org.eclipse.swt.dnd.DND;
 import org.eclipse.swt.dnd.TransferData;
@@ -60,7 +62,11 @@ public class PropertiesCopyDataTransfer extends ByteArrayTransfer {
 			DND.error(DND.ERROR_INVALID_DATA);
 		}
 
-		super.javaToNative(((String)object).getBytes(), transferData);
+		try {
+			super.javaToNative(((String)object).getBytes("UTF-8"), transferData); //$NON-NLS-1$
+		} catch (UnsupportedEncodingException e) {
+			ErrorHandlerUtil.handleError("Convert to UTF-8 bytes failed", e);
+		}
 	}
 
 	@Override
@@ -71,9 +77,8 @@ public class PropertiesCopyDataTransfer extends ByteArrayTransfer {
 		if(bytes == null)
 			return null;
 		try {
-			String xmlString = new String(bytes);
 			SAXBuilder saxBuilder = new SAXBuilder();
-			Document doc = saxBuilder.build(new ByteArrayInputStream(xmlString.getBytes()));
+			Document doc = saxBuilder.build(new ByteArrayInputStream(bytes)); //$NON-NLS-1$
 			Element root = doc.getRootElement();
 
 			List<String> propIDList = new ArrayList<String>();

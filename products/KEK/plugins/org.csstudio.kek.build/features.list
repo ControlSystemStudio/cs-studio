@@ -1,0 +1,5 @@
+org.csstudio.kek.applications.feature/**
+org.csstudio.kek.core.feature/**
+org.csstudio.kek.eclipse.feature/**
+org.csstudio.opibuilder.feature/**
+org.csstudio.trends.databrowser2.feature/**

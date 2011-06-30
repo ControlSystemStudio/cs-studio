@@ -7,8 +7,8 @@
  ******************************************************************************/
 package org.csstudio.archive.reader.rdb;
 
-import org.csstudio.archivereader.ArchiveReader;
-import org.csstudio.archivereader.ArchiveReaderFactory;
+import org.csstudio.archive.reader.ArchiveReader;
+import org.csstudio.archive.reader.ArchiveReaderFactory;
 
 /** The plugin.xml registers this factory for ArchiveReaders when the
  *  URL prefix indicates an RDB URL

@@ -7,30 +7,30 @@ Bundle-Version: 1.2.0.qualifier
 Bundle-Activator: org.csstudio.opibuilder.OPIBuilderPlugin
 Bundle-Vendor: Xihui Chen<chenx1@ornl.gov> - SNS
 Bundle-Localization: plugin
-Require-Bundle: org.eclipse.ui,
+Require-Bundle: org.eclipse.ui;visibility:=reexport,
  org.eclipse.core.runtime,
  org.eclipse.gef;visibility:=reexport,
  org.csstudio.utility.pv;bundle-version="1.2.0";visibility:=reexport,
- org.eclipse.core.resources;bundle-version="3.4.0",
- org.eclipse.ui.views;bundle-version="3.3.0",
+ org.eclipse.core.resources;bundle-version="3.4.0";visibility:=reexport,
+ org.eclipse.ui.views;bundle-version="3.3.0";visibility:=reexport,
  org.junit,
  org.junit4,
- org.eclipse.core.filesystem;bundle-version="1.2.0",
+ org.eclipse.core.filesystem;bundle-version="1.2.0";visibility:=reexport,
  org.eclipse.ui.editors,
  org.eclipse.jface.text;bundle-version="3.4.0",
  org.eclipse.ui.console;bundle-version="3.3.0",
  org.eclipse.ui.intro.universal;bundle-version="3.2.300",
- org.csstudio.apputil;bundle-version="1.0.11",
+ org.csstudio.apputil;bundle-version="1.0.11";visibility:=reexport,
  org.csstudio.email.ui;bundle-version="1.0.0",
  org.csstudio.apputil.ui;bundle-version="1.1.4",
  org.csstudio.logbook;bundle-version="1.0.2",
  org.eclipse.help,
- org.csstudio.ui.util;bundle-version="3.0.0",
+ org.csstudio.ui.util;bundle-version="3.0.0";visibility:=reexport,
  org.csstudio.openfile;bundle-version="3.0.0",
- org.csstudio.java;bundle-version="3.0.0",
+ org.csstudio.java;bundle-version="3.0.0";visibility:=reexport,
  org.eclipse.ui.ide;bundle-version="3.6.0",
- org.csstudio.csdata;bundle-version="3.0.0",
- org.jdom;bundle-version="1.1.0"
+ org.csstudio.csdata;bundle-version="3.0.0";visibility:=reexport,
+ org.csstudio.platform.libs.jdom;bundle-version="1.1.0";visibility:=reexport
 Bundle-ActivationPolicy: lazy
 Export-Package: org.csstudio.opibuilder,
  org.csstudio.opibuilder.actions,
@@ -49,7 +49,8 @@ Export-Package: org.csstudio.opibuilder,
  org.csstudio.opibuilder.scriptUtil,
  org.csstudio.opibuilder.util,
  org.csstudio.opibuilder.visualparts,
- org.csstudio.opibuilder.widgetActions
+ org.csstudio.opibuilder.widgetActions,
+ org.csstudio.platform.data
 Bundle-ClassPath: lib/rhino/js.jar,
  lib/jython/jython.jar,
  .
