@@ -1,3 +1,4 @@
+
 package org.csstudio.nams.common.material.regelwerk;
 
 public enum RegelErgebnis {
@@ -6,5 +7,4 @@ public enum RegelErgebnis {
 	public boolean istEntschieden() {
 		return ((this == ZUTREFFEND) || (this == NICHT_ZUTREFFEND));
 	}
-
 }

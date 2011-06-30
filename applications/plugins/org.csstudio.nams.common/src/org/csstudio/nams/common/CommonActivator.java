@@ -1,3 +1,4 @@
+
 package org.csstudio.nams.common;
 
 import org.csstudio.nams.common.activatorUtils.AbstractBundleActivator;

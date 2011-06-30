@@ -1,3 +1,4 @@
+
 /* 
  * Copyright (c) 2008 C1 WPS mbH, 
  * HAMBURG, GERMANY.
@@ -22,6 +23,7 @@
  * MAY FIND A COPY AT
  * {@link http://www.eclipse.org/org/documents/epl-v10.html}.
  */
+
 package org.csstudio.nams.common.fachwert;
 
 import org.csstudio.nams.common.contract.Contract;
@@ -46,8 +48,8 @@ public final class Millisekunden {
 
 	private final long value;
 
-	private Millisekunden(final long value) {
-		this.value = value;
+	private Millisekunden(final long v) {
+		this.value = v;
 	}
 
 	public long alsLongVonMillisekunden() {
@@ -101,5 +103,4 @@ public final class Millisekunden {
 	public String toString() {
 		return String.valueOf(this.value);
 	}
-
 }

@@ -1,3 +1,4 @@
+
 package org.csstudio.nams.common.material.regelwerk;
 
 import org.csstudio.nams.common.fachwert.Millisekunden;
@@ -29,7 +30,8 @@ public class TimeBasedRegel extends AbstractTimeBasedVersandRegel implements
 		this.aufhebungsregel = aufhebungsregel;
 	}
 
-	public void pruefeNachrichtAufBestaetigungsUndAufhebungsNachricht(
+	@Override
+    public void pruefeNachrichtAufBestaetigungsUndAufhebungsNachricht(
 			final AlarmNachricht nachricht, final Pruefliste bisherigesErgebnis) {
 		if (!bisherigesErgebnis.gibErgebnisFuerRegel(this).istEntschieden()) {
 			if (this.bestaetigungsregel != null) {
@@ -64,7 +66,8 @@ public class TimeBasedRegel extends AbstractTimeBasedVersandRegel implements
 		}
 	}
 
-	public Millisekunden pruefeNachrichtAufTimeOuts(
+	@Override
+    public Millisekunden pruefeNachrichtAufTimeOuts(
 			final Pruefliste bisherigesErgebnis,
 			final Millisekunden verstricheneZeit) {
 		if (!bisherigesErgebnis.gibErgebnisFuerRegel(this).istEntschieden()) {
