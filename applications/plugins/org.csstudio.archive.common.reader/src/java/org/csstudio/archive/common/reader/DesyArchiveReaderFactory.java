@@ -95,19 +95,19 @@ public final class DesyArchiveReaderFactory implements ArchiveReaderFactory {
         @Override
         @Nonnull
         public String getServerName() {
-            return "The server name is already in the ArchiveInfo field!";
+            return "MySQL Archive Cluster";
         }
 
         @Override
         @Nonnull
         public String getURL() {
-            return "The URL should not be modifiable and rather not be exported at all!";
+            return "Secret URL";
         }
 
         @Override
         @Nonnull
         public String getDescription() {
-            return "The dedicated DESY archive reader is more like a databrowser backend.";
+            return "The MySQL Archive of DESY Kryo";
         }
 
         @Override
@@ -118,8 +118,8 @@ public final class DesyArchiveReaderFactory implements ArchiveReaderFactory {
         @Override
         @Nonnull
         public ArchiveInfo[] getArchiveInfos() {
-            return new ArchiveInfo[] {new ArchiveInfo("Desy Archive",
-                                                      "Optimized MySql",
+            return new ArchiveInfo[] {new ArchiveInfo("Desy Kryo Archive",
+                                                      "MySQL Cluster",
                                                       5)};
         }
 
@@ -174,9 +174,11 @@ public final class DesyArchiveReaderFactory implements ArchiveReaderFactory {
             final IArchiveChannel channel = service.getChannelByName(name);
 
             if (BaseTypeConversionSupport.isDataTypeConvertibleToDouble(channel.getDataType(),
-                                                                        "java.lang",
+                                                                       "java.lang",
                                                                         "org.csstudio.domain.desy.epics.types")) {
-                return new EquidistantTimeBinsIterator<Object>(_provider, name, s, e, findRequestType("AVG_PER_HOUR"), count);
+                final EquidistantTimeBinsIterator<Object> iter =
+                    new EquidistantTimeBinsIterator<Object>(_provider, name, s, e, findRequestType("AVG_PER_HOUR"), count);
+                return iter;
             }
             return EMPTY_ITER;
         }

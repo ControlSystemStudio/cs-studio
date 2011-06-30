@@ -39,11 +39,9 @@ public class PlotSample implements ISample
      */
     private String info;
     
-    private Number _adel = null;
+    private Number deadband = null;
     
-    boolean showAdel = false;
-
-    boolean hasAdelValue = false;
+    boolean show_deadband = false;
 
 
     /** Initialize with valid control system value
@@ -149,8 +147,8 @@ public class PlotSample implements ISample
         if (!(value instanceof IMinMaxDoubleValue))
             return 0;
         final IMinMaxDoubleValue minmax = (IMinMaxDoubleValue)value;
-        if (showAdel) {
-            return getAdel().doubleValue();
+        if (show_deadband) {
+            return getDeadband().doubleValue();
         }
         return minmax.getValue() - minmax.getMinimum();
     }
@@ -162,8 +160,8 @@ public class PlotSample implements ISample
         if (!(value instanceof IMinMaxDoubleValue))
             return 0;
         final IMinMaxDoubleValue minmax = (IMinMaxDoubleValue)value;
-        if (showAdel) {
-            return getAdel().doubleValue();
+        if (show_deadband) {
+            return getDeadband().doubleValue();
         }
         return minmax.getMaximum() - minmax.getValue();
     }
@@ -171,24 +169,26 @@ public class PlotSample implements ISample
     @Override
     public String toString()
     {
+        if (hasDeadband()) {
+            return NLS.bind(Messages.PlotSampleFmtWithDeadband, new Object[] { value, getDeadband(), source, value.getQuality().toString() });
+        }
         return NLS.bind(Messages.PlotSampleFmt, new Object[] { value, source, value.getQuality().toString() });
     }
     
-    public void setAdel(Number adel) {
-        _adel = adel;
-        hasAdelValue = adel != null;
+    public void setDeadband(Number db) {
+        deadband = db;
     }
-    public Number getAdel() {
-        return _adel;
+    public Number getDeadband() {
+        return deadband;
     }
-    public void setShowAdel(boolean b) {
-        showAdel = b;
+    public void setShowDeadband(boolean b) {
+        show_deadband = b;
     }
-    public boolean getShowAdel() {
-        return showAdel;
+    public boolean getShowDeadband() {
+        return show_deadband;
     }
-    public boolean hasAdelValue() {
-        return hasAdelValue;
+    public boolean hasDeadband() {
+        return deadband != null;
     }
     
 }

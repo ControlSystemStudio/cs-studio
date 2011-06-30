@@ -8,30 +8,17 @@
 package org.csstudio.common.trendplotter.model;
 
 import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Iterator;
-import java.util.LinkedList;
+import java.util.List;
 
 import javax.annotation.Nonnull;
 
 import org.csstudio.archive.common.service.ArchiveServiceException;
-import org.csstudio.archive.common.service.IArchiveReaderFacade;
-import org.csstudio.archive.common.service.sample.IArchiveSample;
-import org.csstudio.common.trendplotter.Activator;
 import org.csstudio.common.trendplotter.Messages;
 import org.csstudio.data.values.IValue;
-import org.csstudio.domain.desy.epics.name.EpicsChannelName;
-import org.csstudio.domain.desy.epics.name.EpicsNameSupport;
-import org.csstudio.domain.desy.epics.name.RecordField;
 import org.csstudio.domain.desy.service.osgi.OsgiServiceUnavailableException;
-import org.csstudio.domain.desy.system.IAlarmSystemVariable;
-import org.csstudio.domain.desy.time.TimeInstant;
-import org.csstudio.domain.desy.typesupport.BaseTypeConversionSupport;
 import org.csstudio.swt.xygraph.linearscale.Range;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
-import com.google.common.collect.Lists;
 
 /** Samples of a {@link PVItem}.
  *  <p>
@@ -50,24 +37,22 @@ public class PVSamples extends PlotSamples
     @SuppressWarnings("unused")
     private static final Logger LOG = LoggerFactory.getLogger(PVSamples.class);
     
-    final private PVItem item;
-    
     /** Historic samples */
     final private HistoricSamples history;
 
     /** Live samples. Should start after end of historic samples */
-    final private LiveSamples live = new LiveSamples();
+    final private LiveSamples live;
     
-    boolean show_adel = false;
+    boolean show_deadband = false;
 
     /**
      * Constructor.
      */
-    public PVSamples(@Nonnull final PVItem pvItem) 
+    public PVSamples(@Nonnull final RequestType request_type) 
     {
-        item = pvItem;
-        history = new HistoricSamples(item);
-        updateRequestType(item.getRequestType());
+        updateRequestType(request_type);
+        history = new HistoricSamples(request_type);
+        live = new LiveSamples();
     }
 
     /** @return Maximum number of live samples in ring buffer */
@@ -190,12 +175,18 @@ public class PVSamples extends PlotSamples
 
     /** Add data retrieved from an archive to the 'historic' section
      *  @param source Source of the samples
+     * @param server_name 
      *  @param result Historic data
+     * @throws ArchiveServiceException 
+     * @throws OsgiServiceUnavailableException 
      */
-    synchronized public void mergeArchivedData(final String source,
-            final ArrayList<IValue> result)
+    synchronized public void mergeArchivedData(final String channel_name,
+                                               final String server_name, 
+                                               final List<IValue> result) 
+                                               throws OsgiServiceUnavailableException, 
+                                                      ArchiveServiceException
     {
-        history.mergeArchivedData(source, result);
+        history.mergeArchivedData(channel_name, server_name, result);
     }
 
     /** Add another 'live' sample
@@ -246,88 +237,11 @@ public class PVSamples extends PlotSamples
         }
         return buf.toString();
     }
-
-    public void toggleShowAdel(String channelName) throws OsgiServiceUnavailableException, ArchiveServiceException {
-        show_adel = !show_adel;
-        
-        int size = history.getSize();
-        for (int i = 0; i < size; i++) {
-            history.getSample(i).setShowAdel(show_adel);
-        }
-
-        if (size > 0 && !history.adelInfoComplete()) {
-            Collection<IArchiveSample<Object, IAlarmSystemVariable<Object>>> adels =
-                    retrieveAdelSamples(channelName);
-            
-            if (!adels.isEmpty()) {
-                Iterator<IArchiveSample<Object, IAlarmSystemVariable<Object>>> iter = adels.iterator();
-                IArchiveSample<Object, IAlarmSystemVariable<Object>> curAdel = iter.next();
-                
-                for (int i = 0; i < size; i++) {
-                    PlotSample sample = history.getSample(i);
-                    if (!sample.hasAdelValue()) {
-                        findAndSetAdelValueForPlotSample(sample, iter, curAdel);
-                    }
-                }
-            }
-            history.setAdelInfoComplete(true);
-        }
+    
+    synchronized public void setLiveSamplesDeadband(Number deadband) {
+        live.setDeadband(deadband);
     }
-
-
-    private void findAndSetAdelValueForPlotSample(@Nonnull PlotSample sample,
-                                                  @Nonnull Iterator<IArchiveSample<Object, IAlarmSystemVariable<Object>>> iter, 
-                                                  @Nonnull IArchiveSample<Object, IAlarmSystemVariable<Object>> curAdel) {
-        
-        TimeInstant sampleTs = BaseTypeConversionSupport.toTimeInstant(sample.getTime());
-        TimeInstant curAdelTs = curAdel.getSystemVariable().getTimestamp();
-        if (curAdelTs.isAfter(sampleTs)) {
-            sample.setAdel(null); // no adel info for this sample
-            return;
-        }
-        
-        IArchiveSample<Object, IAlarmSystemVariable<Object>> nextAdel = iter.hasNext() ? 
-                                                                        iter.next() : null;
-        TimeInstant nextAdelTs = nextAdel != null ? 
-                                 nextAdel.getSystemVariable().getTimestamp() :
-                                 null;                                                                        
-
-        // find the adel pair curAdel, nextAdel where 
-        // curAdel.isBefore(ts) && (nextAdel.isAfter() || nextAdel == null)
-        while (! (curAdelTs.isBefore(sampleTs) && (nextAdelTs == null || nextAdelTs.isAfter(sampleTs)))) {
-            
-            if (iter.hasNext()) {
-                curAdelTs = nextAdelTs;
-                nextAdel = iter.next();
-                nextAdelTs = nextAdel.getSystemVariable().getTimestamp();
-            } else { // no valid adel present, return with adel set to null 
-                sample.setAdel(null);
-                return;
-            }
-        }
-        
-        sample.setAdel((Number) curAdel.getValue());
-    }
-
-    private Collection<IArchiveSample<Object, IAlarmSystemVariable<Object>>> retrieveAdelSamples(String channelName) 
-                                                                                                 throws OsgiServiceUnavailableException,
-                                                                                                        ArchiveServiceException {
-        IArchiveReaderFacade service = Activator.getDefault().getArchiveReaderService();
-        TimeInstant start = BaseTypeConversionSupport.toTimeInstant(history.getSample(0).getTime());
-        TimeInstant end = BaseTypeConversionSupport.toTimeInstant(history.getSample(history.getSize() - 1).getTime());
-
-        String adelChannelName = EpicsNameSupport.parseBaseName(channelName) + 
-        EpicsChannelName.FIELD_SEP +
-        RecordField.ADEL.getFieldName();
-        
-        IArchiveSample lastBefore = service.readLastSampleBefore(adelChannelName, start);
-        
-        Collection samples =
-                service.readSamples(adelChannelName, 
-                                    start, 
-                                    end);
-        LinkedList<IArchiveSample<Object, IAlarmSystemVariable<Object>>> allSamples = Lists.newLinkedList(samples);
-        allSamples.addFirst(lastBefore);
-        return allSamples;
+    synchronized public void setHistorySamplesDeadband(Number deadband) {
+        history.setDeadband(deadband);
     }
 }

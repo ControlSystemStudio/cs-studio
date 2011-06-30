@@ -9,9 +9,9 @@ package org.csstudio.common.trendplotter.model;
 
 import java.io.PrintWriter;
 import java.util.ArrayList;
+import java.util.List;
 import java.util.Timer;
 import java.util.TimerTask;
-import java.util.logging.Level;
 
 import org.csstudio.apputil.xml.DOMHelper;
 import org.csstudio.apputil.xml.XMLWriter;
@@ -21,6 +21,8 @@ import org.csstudio.archive.common.service.channel.IArchiveChannel;
 import org.csstudio.common.trendplotter.Activator;
 import org.csstudio.common.trendplotter.Messages;
 import org.csstudio.common.trendplotter.preferences.Preferences;
+import org.csstudio.data.values.IDoubleValue;
+import org.csstudio.data.values.ILongValue;
 import org.csstudio.data.values.INumericMetaData;
 import org.csstudio.data.values.IValue;
 import org.csstudio.domain.desy.epics.name.EpicsChannelName;
@@ -57,7 +59,7 @@ public class PVItem extends ModelItem implements PVListener
 
     /** Control system PV */
     private PV pv;
-    private PV pv_adel = null;
+    private PV pv_deadband = null;
 
     /** Most recently received value */
     private volatile IValue current_value;
@@ -72,12 +74,12 @@ public class PVItem extends ModelItem implements PVListener
     private TimerTask scanner = null;
 
     /** Archive data request type */
-    private RequestType request_type = null;
+    private RequestType request_type = RequestType.OPTIMIZED;
     
     
-    private Boolean show_adel = Boolean.FALSE;
+    //private Boolean show_deadband = Boolean.FALSE;
 
-    private Boolean has_adel = Boolean.FALSE;
+    //private Boolean has_deadband = Boolean.FALSE;
 
     /** Initialize
      *  @param name PV name
@@ -87,16 +89,14 @@ public class PVItem extends ModelItem implements PVListener
     public PVItem(final String name, final double period) throws Exception
     {
         super(name);
+        samples = new PVSamples(request_type);
         pv = PVFactory.createPV(name);
         this.period = period;
-        
-        has_adel = retrieveAdelExistenceInfoFor(name);
-        show_adel = false;
-        samples = new PVSamples(this);
     }
 
-    private Boolean retrieveAdelExistenceInfoFor(final String channelName) throws OsgiServiceUnavailableException, 
-                                                                     ArchiveServiceException {
+    private Boolean retrieveDeadbandExistenceInfoFor(final String channelName) 
+                                                     throws OsgiServiceUnavailableException, 
+                                                            ArchiveServiceException {
         IArchiveReaderFacade service = Activator.getDefault().getArchiveReaderService();
 
         String baseName = EpicsNameSupport.parseBaseName(channelName);
@@ -298,6 +298,10 @@ public class PVItem extends ModelItem implements PVListener
     {
         if (pv.isRunning())
             throw new RuntimeException("Already started " + getName());
+        
+        pv_deadband = createAndStartMdelPV(samples);
+        //has_deadband = retrieveDeadbandExistenceInfoFor(name);
+       
         this.scan_timer = timer;
         pv.addListener(this);
         pv.start();
@@ -332,8 +336,8 @@ public class PVItem extends ModelItem implements PVListener
         pv.removeListener(this);
         pv.stop();
         
-        if (pv_adel != null && pv_adel.isRunning()) {
-            pv_adel.stop();
+        if (pv_deadband != null && pv_deadband.isRunning()) {
+            pv_deadband.stop();
         }
     }
 
@@ -368,7 +372,7 @@ public class PVItem extends ModelItem implements PVListener
         // In 'monitor' mode, add to live sample buffer
         if (period <= 0)
         {
-            Activator.getLogger().log(Level.FINE, "PV {0} update {1}", new Object[] { getName(), value });
+            LOG.debug("PV {0} update {1}", new Object[] { getName(), value });
             samples.addLiveSample(value);
         }
     }
@@ -409,29 +413,15 @@ public class PVItem extends ModelItem implements PVListener
     /** Add data retrieved from an archive to the 'historic' section
      *  @param server_name Archive server that provided these samples
      *  @param result Historic data
+     * @throws ArchiveServiceException 
+     * @throws OsgiServiceUnavailableException 
      */
     synchronized public void mergeArchivedSamples(final String server_name,
-            final ArrayList<IValue> result)
+                                                  final List<IValue> result) 
+                                                  throws OsgiServiceUnavailableException, 
+                                                         ArchiveServiceException
     {
-        samples.mergeArchivedData(server_name, result);
-
-//        // Order check
-//        final int N = samples.getSize();
-//        if (N <= 0)
-//            return;
-//        ITimestamp prev = samples.getSample(0).getTime();
-//        for (int i=1;  i<N;  ++i)
-//        {
-//            final ITimestamp time = samples.getSample(i).getTime();
-//            if (time.isLessThan(prev))
-//            {
-//                System.out.println("Time stamp problem at " + i);
-//                System.out.println(samples.getSample(i));
-//                return;
-//            }
-//            prev = time;
-//        }
-//        System.out.println(N + " Samples in order");
+        samples.mergeArchivedData(getName(), server_name, result);
     }
 
     /** Write XML formatted PV configuration
@@ -503,18 +493,56 @@ public class PVItem extends ModelItem implements PVListener
 
     /**
      * Only returns true if the {@link RecordField#ADEL} channel has been registered AND
-     * the this{@link #show_adel()} is set to true.
+     * the this{@link #show_deadband()} is set to true.
+     * @param samples2 
      */
-    public Boolean showAdel() {
-        return has_adel && show_adel;
-    }
+//    public Boolean getShowDeadband() 
+//    {
+//        return has_deadband && show_deadband;
+//    }
     
-    public Boolean hasAdel() {
-        return has_adel;
-    }
+//    public Boolean hasDeadband() 
+//    {
+//        return has_deadband;
+//    }
     
-    public void toggleShowAdel() throws Exception {
-        show_adel = !show_adel;
-        samples.toggleShowAdel(super.toString());
+//    public void toggleShowDeadband() throws Exception 
+//    {
+//        show_deadband = !show_deadband;
+//        if (show_deadband && pv_deadband == null) {
+//            createAndStartMdelPV();
+//        }
+//        
+//        samples.toggleShowDeadband(super.toString());
+//    }
+
+    private PV createAndStartMdelPV(final PVSamples pv_samples) throws Exception 
+    {
+        String mdelChannelName = EpicsNameSupport.parseBaseName(super.toString()) + 
+                                 EpicsChannelName.FIELD_SEP +
+                                 RecordField.MDEL.getFieldName();
+        PV mdel_pv = PVFactory.createPV(mdelChannelName);
+        mdel_pv.addListener(new PVListener() {
+            
+            @Override
+            public void pvValueUpdate(PV newPV) {
+                IValue mdelValue = newPV.getValue();
+                Number mdel;
+                if (mdelValue instanceof IDoubleValue) {
+                    mdel = Double.valueOf(((IDoubleValue) mdelValue).getValue());
+                } else if (mdelValue instanceof ILongValue) {
+                    mdel = Long.valueOf(((ILongValue) mdelValue).getValue());
+                } else {
+                    return;
+                }
+                pv_samples.setLiveSamplesDeadband(mdel);
+            }
+            @Override
+            public void pvDisconnected(PV newPV) {
+                pv_samples.setLiveSamplesDeadband(null);
+            }
+        });
+        mdel_pv.start();
+        return mdel_pv;
     }
 }

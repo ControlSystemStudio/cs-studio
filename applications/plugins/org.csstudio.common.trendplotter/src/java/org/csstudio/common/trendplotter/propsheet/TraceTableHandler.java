@@ -544,7 +544,7 @@ public class TraceTableHandler implements ILazyContentProvider
         
         createAndAddRequestTypeColumn(table_layout, operations_manager, table_viewer, shell);
 
-        createAndAddShowADELTrace(table_layout, operations_manager, table_viewer, shell);
+        //createAndAddShowDeadbandColumn(table_layout, operations_manager, table_viewer, shell);
         
         ColumnViewerToolTipSupport.enableFor(table_viewer);
     }
@@ -615,85 +615,85 @@ public class TraceTableHandler implements ILazyContentProvider
         });
     }
 
-    private void createAndAddShowADELTrace(final TableColumnLayout table_layout,
-                                           final OperationsManager operations_manager,
-                                           final TableViewer table_viewer,
-                                           final Shell shell) {
-        final TableViewerColumn view_col = 
-            TableHelper.createColumn(table_layout, table_viewer, Messages.ADEL, 75, 10);
-        
-        view_col.setLabelProvider(new CellLabelProvider()
-        {
-            @Override
-            public void update(final ViewerCell cell)
-            {
-                final Object item = cell.getElement();
-                if (item instanceof PVItem) {
-                    cell.setImage(((PVItem) item).showAdel() ? 
-                                   Activator.getDefault().getImage(Activator.ICON_CHECKED) : 
-                                   Activator.getDefault().getImage(Activator.ICON_UNCHECKED));
-                } else {
-                    cell.setText(Messages.NotApplicable);
-                }
-            }
-
-            @Override
-            public String getToolTipText(Object element)
-            {
-                return Messages.ADELVisibilityTT;
-            }
-        });
-        
-        view_col.setEditingSupport(new EditSupportBase(table_viewer)
-        {
-            @Override
-            protected CellEditor getCellEditor(final Object element)
-            {
-                if (element instanceof PVItem) {
-                    return new CheckboxCellEditor(((TableViewer)getViewer()).getTable());
-                }
-                return null;
-            }
-            
-            @Override
-            protected boolean canEdit(final Object element)
-            {
-                if (element instanceof PVItem) {
-                    return ((PVItem) element).hasAdel();
-                }
-                return false;
-            }
-
-            @Override
-            protected Object getValue(final Object element)
-            {
-                if (element instanceof PVItem) 
-                {
-                    PVItem item = (PVItem) element;
-                    return item.showAdel();
-                }
-                return Boolean.FALSE;
-            }
-
-            @Override
-            protected void setValue(final Object element, final Object value)
-            {
-                if (element instanceof PVItem) {
-                    PVItem item = (PVItem) element;
-                    final Boolean showAdel = ((Boolean) value);
-                    if (item.showAdel() != showAdel)
-                    {
-                        new ToggleAdelTraceCommand(shell, operations_manager, (PVItem) element);
-                        return;
-                    }
-                }
-                MessageDialog.openInformation(shell, 
-                                              Messages.ADELInfo, 
-                                              Messages.ADELNotPresentWarning);
-            }
-        });
-        
-    }
+//    private void createAndAddShowDeadbandColumn(final TableColumnLayout table_layout,
+//                                           final OperationsManager operations_manager,
+//                                           final TableViewer table_viewer,
+//                                           final Shell shell) {
+//        final TableViewerColumn view_col = 
+//            TableHelper.createColumn(table_layout, table_viewer, Messages.ADEL, 75, 10);
+//        
+//        view_col.setLabelProvider(new CellLabelProvider()
+//        {
+//            @Override
+//            public void update(final ViewerCell cell)
+//            {
+//                final Object item = cell.getElement();
+//                if (item instanceof PVItem) {
+//                    cell.setImage(((PVItem) item).getShowDeadband() ? 
+//                                   Activator.getDefault().getImage(Activator.ICON_CHECKED) : 
+//                                   Activator.getDefault().getImage(Activator.ICON_UNCHECKED));
+//                } else {
+//                    cell.setText(Messages.NotApplicable);
+//                }
+//            }
+//
+//            @Override
+//            public String getToolTipText(Object element)
+//            {
+//                return Messages.ADELVisibilityTT;
+//            }
+//        });
+//        
+//        view_col.setEditingSupport(new EditSupportBase(table_viewer)
+//        {
+//            @Override
+//            protected CellEditor getCellEditor(final Object element)
+//            {
+//                if (element instanceof PVItem) {
+//                    return new CheckboxCellEditor(((TableViewer)getViewer()).getTable());
+//                }
+//                return null;
+//            }
+//            
+//            @Override
+//            protected boolean canEdit(final Object element)
+//            {
+//                if (element instanceof PVItem) {
+//                    return ((PVItem) element).hasDeadband();
+//                }
+//                return false;
+//            }
+//
+//            @Override
+//            protected Object getValue(final Object element)
+//            {
+//                if (element instanceof PVItem) 
+//                {
+//                    PVItem item = (PVItem) element;
+//                    return item.getShowDeadband();
+//                }
+//                return Boolean.FALSE;
+//            }
+//
+//            @Override
+//            protected void setValue(final Object element, final Object value)
+//            {
+//                if (element instanceof PVItem) {
+//                    PVItem item = (PVItem) element;
+//                    final Boolean showAdel = ((Boolean) value);
+//                    if (item.getShowDeadband() != showAdel)
+//                    {
+//                        new ToggleAdelTraceCommand(shell, operations_manager, (PVItem) element);
+//                        return;
+//                    }
+//                }
+//                MessageDialog.openInformation(shell, 
+//                                              Messages.ADELInfo, 
+//                                              Messages.ADELNotPresentWarning);
+//            }
+//        });
+//        
+//    }
 
     /** Set input to a Model
      *  @see ILazyContentProvider#inputChanged(Viewer, Object, Object)

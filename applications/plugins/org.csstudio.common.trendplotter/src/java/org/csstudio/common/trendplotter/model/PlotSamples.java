@@ -37,6 +37,8 @@ abstract public class PlotSamples implements IDataProvider
     protected boolean have_new_samples = false;
     
     protected RequestType request_type;
+    
+    protected Number deadband = null;
 
     /** {@inheritDoc} */
     @Override
@@ -144,11 +146,21 @@ abstract public class PlotSamples implements IDataProvider
         return buf.toString();
     }
     
-    public void updateRequestType(RequestType type) {
+    synchronized public void updateRequestType(RequestType type) {
         request_type = type;
     }
     
-    public RequestType getRequestType() {
+    synchronized public RequestType getRequestType() {
         return request_type;
     }
+    
+    synchronized public void setDeadband(Number db) {
+
+        deadband = db;
+    }
+    synchronized public Number getDeadband() {
+        return deadband;
+    }
+    
+    
 }

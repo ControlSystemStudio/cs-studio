@@ -35,62 +35,62 @@ import org.eclipse.swt.widgets.Shell;
  * @author bknerr
  * @since 29.06.2011
  */
-public class ToggleAdelTraceCommand implements IUndoableCommand {
-    
-    final private Shell _shell;
-    private final PVItem _item;
-    
-    /**
-     * Constructor.
-     */
-    public ToggleAdelTraceCommand(final Shell shell,
-                                  final OperationsManager operations_manager,
-                                  final PVItem item) {
-        _shell = shell;
-        _item = item;
-        try {
-            _item.toggleShowAdel();
-            operations_manager.addCommand(this);
-        } catch (Exception e) {
-            MessageDialog.openError(_shell,
-                                    Messages.Error,
-                                    NLS.bind(Messages.AddItemErrorFmt, item.getName(), e.getMessage()));
-        }
-
-    }
-    
-    /**
-     * {@inheritDoc}
-     */
-    @Override
-    public void undo() {
-        try {
-            _item.toggleShowAdel();
-        } catch (Exception e) {
-            MessageDialog.openError(_shell,
-                                    Messages.Error,
-                                    NLS.bind(Messages.AddItemErrorFmt, _item.getName(), e.getMessage()));
-        }
-    }
-    
-    /**
-     * {@inheritDoc}
-     */
-    @Override
-    public void redo() {
-        try {
-            _item.toggleShowAdel();
-        } catch (Exception e) {
-            MessageDialog.openError(_shell,
-                                    Messages.Error,
-                                    NLS.bind(Messages.AddItemErrorFmt, _item.getName(), e.getMessage()));
-        }
-    }
-    
-    /** @return Command name that appears in undo/redo menu */
-    @Override
-    public String toString()
-    {
-        return Messages.ADELVisibilityCommand;
-    }
-}
+//public class ToggleAdelTraceCommand implements IUndoableCommand {
+//    
+//    final private Shell _shell;
+//    private final PVItem _item;
+//    
+//    /**
+//     * Constructor.
+//     */
+//    public ToggleAdelTraceCommand(final Shell shell,
+//                                  final OperationsManager operations_manager,
+//                                  final PVItem item) {
+//        _shell = shell;
+//        _item = item;
+//        try {
+//            _item.toggleShowDeadband();
+//            operations_manager.addCommand(this);
+//        } catch (Exception e) {
+//            MessageDialog.openError(_shell,
+//                                    Messages.Error,
+//                                    NLS.bind(Messages.AddItemErrorFmt, item.getName(), e.getMessage()));
+//        }
+//
+//    }
+//    
+//    /**
+//     * {@inheritDoc}
+//     */
+//    @Override
+//    public void undo() {
+//        try {
+//            _item.toggleShowDeadband();
+//        } catch (Exception e) {
+//            MessageDialog.openError(_shell,
+//                                    Messages.Error,
+//                                    NLS.bind(Messages.AddItemErrorFmt, _item.getName(), e.getMessage()));
+//        }
+//    }
+//    
+//    /**
+//     * {@inheritDoc}
+//     */
+//    @Override
+//    public void redo() {
+//        try {
+//            _item.toggleShowDeadband();
+//        } catch (Exception e) {
+//            MessageDialog.openError(_shell,
+//                                    Messages.Error,
+//                                    NLS.bind(Messages.AddItemErrorFmt, _item.getName(), e.getMessage()));
+//        }
+//    }
+//    
+//    /** @return Command name that appears in undo/redo menu */
+//    @Override
+//    public String toString()
+//    {
+//        return Messages.ADELVisibilityCommand;
+//    }
+//}
