@@ -27,8 +27,8 @@ package org.csstudio.ams.systemmonitor;
  * @author Markus Moeller
  *
  */
-public class AmsSystemMonitorException extends Exception
-{
+public class AmsSystemMonitorException extends Exception {
+    
     /** Generated serial version id */
     private static final long serialVersionUID = -7301610647440573057L;
 
@@ -43,52 +43,45 @@ public class AmsSystemMonitorException extends Exception
     public static final int ERROR_CODE_JMS_CONNECTION = 16;
     public static final int ERROR_CODE_TIMEOUT = 32;
     
-    public AmsSystemMonitorException()
-    {
+    public AmsSystemMonitorException() {
         super();
         this.errorCode = ERROR_CODE_UNDEFINED;
     }
     
-    public AmsSystemMonitorException(final String message)
-    {
+    public AmsSystemMonitorException(final String message) {
         super(message);
         this.errorCode = ERROR_CODE_UNDEFINED;
     }
 
-    public AmsSystemMonitorException(final String message, final Throwable cause)
-    {
+    public AmsSystemMonitorException(final String message, final Throwable cause)  {
         super(message, cause);
         this.errorCode = ERROR_CODE_UNDEFINED;
     }
 
-    public AmsSystemMonitorException(final Throwable cause)
-    {
+    public AmsSystemMonitorException(final Throwable cause) {
         super(cause);
         this.errorCode = ERROR_CODE_UNDEFINED;
     }
     
-    public AmsSystemMonitorException(final int errorCode)
-    {
+    public AmsSystemMonitorException(final int error) {
         super();
-        this.errorCode = errorCode;
+        this.errorCode = error;
     }
     
-    public AmsSystemMonitorException(final String message, final int errorCode)
-    {
+    public AmsSystemMonitorException(final String message, final int error) {
         super(message);
-        this.errorCode = errorCode;
+        this.errorCode = error;
     }
 
-    public AmsSystemMonitorException(final String message, final Throwable cause, final int errorCode)
-    {
+    public AmsSystemMonitorException(final String message,
+                                     final Throwable cause, final int error) {
         super(message, cause);
-        this.errorCode = errorCode;
+        this.errorCode = error;
     }
 
-    public AmsSystemMonitorException(final Throwable cause, final int errorCode)
-    {
+    public AmsSystemMonitorException(final Throwable cause, final int error) {
         super(cause);
-        this.errorCode = errorCode;
+        this.errorCode = error;
     }
     
     public int getErrorCode()

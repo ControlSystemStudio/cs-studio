@@ -27,8 +27,9 @@ package org.csstudio.ams.distributor;
  * @author Markus Moeller
  *
  */
-public class ConnectorTopic
-{
+@SuppressWarnings("hiding")
+public class ConnectorTopic {
+    
     /** Name of the topic */
     private String topicName;
     
@@ -38,20 +39,22 @@ public class ConnectorTopic
     /** Indicates if the connector gets the complete alarm message */
     private boolean getsFullMessage;
     
-    public ConnectorTopic(String topicName, String connectorName, boolean getsFullMessage)
-    {
+    public ConnectorTopic(String topicName,
+                          String connectorName,
+                          boolean getsFullMessage) {
+        
         this.topicName = topicName;
         this.connectorName = connectorName;
         this.getsFullMessage = getsFullMessage;
     }
 
-    public ConnectorTopic(String topicName, String connectorName)
-    {
+    public ConnectorTopic(String topicName, String connectorName) {
         this(topicName, connectorName, false);
     }
 
-    public String toString()
-    {
+    @Override
+    public String toString() {
+        
         StringBuilder s = new StringBuilder();
         
         s.append("ConnectorTopic{");
@@ -66,48 +69,42 @@ public class ConnectorTopic
     /**
      * @return the topicName
      */
-    public String getTopicName()
-    {
+    public String getTopicName() {
         return topicName;
     }
 
     /**
      * @param topicName the topicName to set
      */
-    public void setTopicName(String topicName)
-    {
+    public void setTopicName(String topicName) {
         this.topicName = topicName;
     }
 
     /**
      * @return the connectorName
      */
-    public String getConnectorName()
-    {
+    public String getConnectorName() {
         return connectorName;
     }
 
     /**
      * @param connectorName the connectorName to set
      */
-    public void setConnectorName(String connectorName)
-    {
+    public void setConnectorName(String connectorName) {
         this.connectorName = connectorName;
     }
 
     /**
      * @return the getsFullMessage
      */
-    public boolean isFullMessageReceiver()
-    {
+    public boolean isFullMessageReceiver() {
         return getsFullMessage;
     }
 
     /**
-     * @param getsFullMessage the getsFullMessage to set
+     * @param fullMessage the getsFullMessage to set
      */
-    public void setFullMessageReceiver(boolean fullMessage)
-    {
+    public void setFullMessageReceiver(boolean fullMessage) {
         this.getsFullMessage = fullMessage;
     }
 }

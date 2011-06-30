@@ -29,26 +29,29 @@ import java.sql.PreparedStatement;
 import org.csstudio.ams.AMSException;
 import org.csstudio.ams.Log;
 import org.csstudio.ams.dbAccess.DAO;
+import org.csstudio.ams.dbAccess.Key;
 
-public abstract class AggrGroupsDAO extends DAO 
-{
-	public static void deleteGroup(Connection con, int groupID) throws AMSException
-	{
-		try
-		{
-			GroupsTObject group = GroupsDAO.select(con, groupID);
+public abstract class AggrGroupsDAO extends DAO  {
+	
+    public static void deleteGroup(Connection con, int groupID) throws AMSException {
+		
+        try {
+			
+            GroupsTObject group = GroupsDAO.select(con, groupID);
 			
 			if(group == null)
 				return;
 			
 			String table = null;
 			
+			// TODO: Gibt es ein anderes Verhalten?
+			//       Vorher GroupKey.FILTER_KEY
 			switch(group.getType())
 			{
-			case GroupKey.FILTER_KEY:
+			case Key.FILTER_KEY:
 				table = "AMS_Filter";
 				break;
-			case GroupKey.FILTERCONDITION_KEY:
+			case Key.FILTERCONDITION_KEY:
 				table = "AMS_FilterCondition";
 				break;
 			case GroupKey.GROUP_USERGROUP:

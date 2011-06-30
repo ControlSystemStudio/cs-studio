@@ -30,30 +30,24 @@ import java.util.Comparator;
  * @author Markus Moeller
  *
  */
-public class SmsComperator implements Comparator<Sms>, Serializable
-{
+public class SmsComperator implements Comparator<Sms>, Serializable {
+    
     /** Generated serial version id */
     private static final long serialVersionUID = 2782893510854286259L;
 
-    public int compare(Sms sms0, Sms sms1)
-    {
-        int resultTimestamp;
-        int resultPriority;
+    @Override
+    public int compare(Sms sms0, Sms sms1) {
+        
         int result;
         
-        resultTimestamp = Long.signum(sms0.getSmsTimestamp() - sms1.getSmsTimestamp());
-        resultPriority = Integer.signum(sms0.getPriority() - sms1.getPriority());
+        int resultTimestamp = Long.signum(sms0.getSmsTimestamp() - sms1.getSmsTimestamp());
+        int resultPriority = Integer.signum(sms0.getPriority() - sms1.getPriority());
         
-        if(sms0.getPriority() < sms1.getPriority())
-        {
+        if(sms0.getPriority() < sms1.getPriority()) {
             result = resultPriority;
-        }
-        else if(sms0.getPriority() == sms1.getPriority())
-        {
+        } else if(sms0.getPriority() == sms1.getPriority()) {
             result = resultTimestamp;
-        }
-        else
-        {
+        } else {
             result = resultPriority;
         }
         

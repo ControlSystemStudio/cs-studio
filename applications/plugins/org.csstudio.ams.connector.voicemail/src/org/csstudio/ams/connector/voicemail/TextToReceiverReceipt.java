@@ -1,3 +1,4 @@
+
 /* 
  * Copyright (c) 2008 Stiftung Deutsches Elektronen-Synchrotron, 
  * Member of the Helmholtz Association, (DESY), HAMBURG, GERMANY.
@@ -19,29 +20,29 @@
  * PROJECT IN THE FILE LICENSE.HTML. IF THE LICENSE IS NOT INCLUDED YOU MAY FIND A COPY 
  * AT HTTP://WWW.DESY.DE/LEGAL/LICENSE.HTM
  */
- package org.csstudio.ams.connector.voicemail;
+
+package org.csstudio.ams.connector.voicemail;
 
 import java.nio.ByteBuffer;
 
-public class TextToReceiverReceipt extends Telegram
-{
-	public static final int STATUS_OK = 0;
+public class TextToReceiverReceipt extends Telegram {
+	
+    public static final int STATUS_OK = 0;
 	public static final int STATUS_NOK = 1;
 	
 	private int status;	//4
 	
-	public TextToReceiverReceipt(int telegramCnt, 
-								 ByteBuffer bbUserData)
-	{
-		super(Telegram.TELID_TEXTTORECEIVER_RECEIPT, telegramCnt);
+	public TextToReceiverReceipt(int telegramCnt, ByteBuffer bbUserData) {
+		
+	    super(Telegram.TELID_TEXTTORECEIVER_RECEIPT, telegramCnt);
 		telegramLen = 12 + 4;
 
 		//bUseData
 		this.status = bbUserData.getInt();
 	}
 
-	public byte[] getWriteBytes()
-	{
+	@Override
+    public byte[] getWriteBytes() {
 		return null;
 	}
 

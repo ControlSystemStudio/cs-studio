@@ -25,56 +25,55 @@ package org.csstudio.ams.dbAccess.configdb;
 
 import org.csstudio.ams.dbAccess.Key;
 
-public class UserKey  extends Key
-{
-	private static final long serialVersionUID = -3259015761968404121L;
+@SuppressWarnings("hiding")
+public class UserKey extends Key {
+	
+    private static final long serialVersionUID = -3259015761968404121L;
 	
 	public int userID;
 	public String userName;
 	public int groupRef;
 	
-	public UserKey()
-	{
+	public UserKey() {
 		this(-1,"",-1);
 	}
 	
-	public UserKey(int userID, String userName, int groupRef)
-	{
+	public UserKey(int userID, String userName, int groupRef) {
 		super(Key.USER_KEY);
 		this.userID = userID;
 		this.userName = userName;
 		this.groupRef = groupRef;
 	}
 	
-	public String toString()
-	{
+	@Override
+    public String toString() {
 		return userName == null ? "" : userName;
 	}
 	
-	public int hashCode()
-	{
+	@Override
+    public int hashCode() {
 		return (userID + " " + userName).hashCode();
 	}
 	
-	public boolean equals(Object obj)
-	{
+	@Override
+    public boolean equals(Object obj) {
 		if(obj instanceof UserKey)
 			return ((UserKey)obj).userID == userID;
 		return false;
 	}
 	
-	public int getID()
-	{
+	@Override
+    public int getID() {
 		return userID;
 	}
 	
-	public int getGroupRef()
-	{
+	@Override
+    public int getGroupRef() {
 		return groupRef;
 	}
 	
-	public void setGroupRef(int groupRef)
-	{
+	@Override
+    public void setGroupRef(int groupRef) {
 		this.groupRef = groupRef;
 	}
 }

@@ -23,8 +23,6 @@
 
 package org.csstudio.ams.dbAccess.configdb;
 
-import java.io.Serializable;
-
 import org.csstudio.ams.dbAccess.ItemInterface;
 import org.csstudio.ams.dbAccess.TObject;
 
@@ -35,36 +33,34 @@ import org.csstudio.ams.dbAccess.TObject;
 	cDefaultMessage		VARCHAR2(1024),
 	PRIMARY KEY (iFilterID)
 */
-public class FilterTObject extends TObject implements ItemInterface,Serializable
-{
-	private static final long serialVersionUID = -1306344725040262239L;
+@SuppressWarnings("hiding")
+public class FilterTObject extends TObject implements ItemInterface {
+	
+    private static final long serialVersionUID = -1306344725040262239L;
 	
 	private int 	filterID;// PRIMARY KEY
 	private int 	groupRef;
 	private String 	name;
 	private String 	defaultMessage;
 
-	public FilterTObject()
-	{
+	public FilterTObject() {
 		this.filterID = -1;
 		this.groupRef = -1;
 	}
 	
-	public FilterTObject(int filterID, int groupRef, String name, String defaultMessage)
-	{
+	public FilterTObject(int filterID, int groupRef, String name, String defaultMessage) {
 		this.filterID = filterID;
 		this.groupRef = groupRef;
 		this.name = name;
 		this.defaultMessage = defaultMessage;
 	}
 	
-	public FilterKey getKey()
-	{
+	public FilterKey getKey() {
 		return new FilterKey(filterID, name,groupRef);
 	}
 
-	public int getID()
-	{
+	@Override
+    public int getID() {
 		return filterID;
 	}
 
@@ -73,6 +69,7 @@ public class FilterTObject extends TObject implements ItemInterface,Serializable
 	public String getDefaultMessage() {
 		return defaultMessage;
 	}
+	
 	public void setDefaultMessage(String defaultMessage) {
 		this.defaultMessage = defaultMessage;
 	}
@@ -80,6 +77,7 @@ public class FilterTObject extends TObject implements ItemInterface,Serializable
 	public int getFilterID() {
 		return filterID;
 	}
+	
 	public void setFilterID(int filterID) {
 		this.filterID = filterID;
 	}
@@ -99,9 +97,10 @@ public class FilterTObject extends TObject implements ItemInterface,Serializable
 		this.name = name;
 	}
 	
-	public boolean equals(Object obj)
-	{
-		if(!(obj instanceof FilterTObject))
+	@Override
+    public boolean equals(Object obj) {
+		
+	    if(!(obj instanceof FilterTObject))
 			return false;
 		
 		FilterTObject compare = (FilterTObject)obj;

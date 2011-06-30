@@ -39,8 +39,8 @@ public class MonitorStatusEntryComperator implements Comparator<MonitorStatusEnt
     /**
      * 
      */
-    public int compare(MonitorStatusEntry arg0, MonitorStatusEntry arg1)
-    {
+    @Override
+    public int compare(MonitorStatusEntry arg0, MonitorStatusEntry arg1) {
         // Descending order. The youngest entry(highest timestamp) first.
         return Long.signum(arg1.getCheckDate() - arg0.getCheckDate());
     }

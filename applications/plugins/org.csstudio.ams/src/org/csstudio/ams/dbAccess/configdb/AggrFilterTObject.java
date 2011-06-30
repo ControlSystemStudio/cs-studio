@@ -23,23 +23,21 @@
 
 package org.csstudio.ams.dbAccess.configdb;
 
-import java.io.Serializable;
 import java.util.List;
-
 import org.csstudio.ams.dbAccess.TObject;
 
 /**
 	iFilterRef
 */
-public class AggrFilterTObject extends TObject implements Serializable
-{
-	private static final long serialVersionUID = 25343692006173667L;
+@SuppressWarnings("hiding")
+public class AggrFilterTObject extends TObject {
+	
+    private static final long serialVersionUID = 25343692006173667L;
 	
 	private int filterId;
 	private List<AggrFilterConditionTObject> filterConditions;
 	
-	public AggrFilterTObject(int filterId, List<AggrFilterConditionTObject> filterConditions)
-	{
+	public AggrFilterTObject(int filterId, List<AggrFilterConditionTObject> filterConditions) {
 		this.filterId = filterId;
 		this.filterConditions = filterConditions;
 	}

@@ -77,7 +77,8 @@ public abstract class AbstractConjunctionFilterConditionUI extends
 	/**
 	 * {@inheritDoc}
 	 */
-	public boolean check() {
+	@Override
+    public boolean check() {
 		List<String> errors = new LinkedList<String>();
 
 		ComboWidgetIdDataItem firstComboBoxItemUI = (ComboWidgetIdDataItem) getSelectedComboBoxItemUI(
@@ -106,7 +107,8 @@ public abstract class AbstractConjunctionFilterConditionUI extends
 	/**
 	 * {@inheritDoc}
 	 */
-	public void create(Connection conDb, int filterConditionID)
+	@Override
+    public void create(Connection conDb, int filterConditionID)
 			throws AMSException {
 		try {
 			assert check() : "Precondition violated: check()";
@@ -123,7 +125,8 @@ public abstract class AbstractConjunctionFilterConditionUI extends
 	/**
 	 * {@inheritDoc}
 	 */
-	public void createUI(Composite parent) {
+	@Override
+    public void createUI(Composite parent) {
 		if (localParent == null) {
 			localParent = new Composite(parent, SWT.NONE);
 
@@ -205,7 +208,8 @@ public abstract class AbstractConjunctionFilterConditionUI extends
 				if (!onCheck) {
 					if (firstId==secondId) {
 						Display.getDefault().asyncExec(new Runnable() {
-							public void run() {
+							@Override
+                            public void run() {
 								showMessageDialog(cboFirstFC.getShell(),
 										Messages.FilterConditionConjunctionUI_Warn_Conditions_Equal,
 										Messages.FilterConditionConjunctionUI_Warn_Dialog_Title,
@@ -214,7 +218,8 @@ public abstract class AbstractConjunctionFilterConditionUI extends
 						});
 					} else {
 						Display.getDefault().asyncExec(new Runnable() {
-							public void run() {
+							@Override
+                            public void run() {
 								showMessageDialog(cboFirstFC.getShell(),
 										Messages.FilterConditionConjunctionUI_No_Error_Dialog_Message,
 										Messages.FilterConditionConjunctionUI_No_Error_Dialog_Title,
@@ -225,7 +230,8 @@ public abstract class AbstractConjunctionFilterConditionUI extends
 				}
 			} else {
 				Display.getDefault().asyncExec(new Runnable() {
-					public void run() {
+					@Override
+                    public void run() {
 						String messageText = NLS.bind(Messages.FilterConditionConjunctionUI_Error_Cycle_Detected, CycleDetectionUtil.createCycleDetectionMessage(conDb, cycleReferencesToBeShownOnUI));
 						if (onCheck) {
 							messageText = Messages.FilterConditionConjunctionUI_Error_Not_Saved + messageText;
@@ -238,17 +244,6 @@ public abstract class AbstractConjunctionFilterConditionUI extends
 					}
 				});
 			}
-		} catch (final ClassNotFoundException e) {
-			valid = false;
-			Display.getDefault().asyncExec(new Runnable() {
-				public void run() {
-					showMessageDialog(
-							cboFirstFC.getShell(),
-							NLS.bind(Messages.FilterConditionConjunctionUI_Error_No_DB_Connection, e),
-							Messages.FilterConditionConjunctionUI_Error_Dialog_Title,
-							SWT.ICON_WARNING);	
-				}
-			});
 		} catch (final SQLException e) {
 			e.printStackTrace();
 			valid = false;
@@ -307,7 +302,8 @@ public abstract class AbstractConjunctionFilterConditionUI extends
 	/**
 	 * {@inheritDoc}
 	 */
-	public void delete(Connection conDb, int filterConditionID)
+	@Override
+    public void delete(Connection conDb, int filterConditionID)
 			throws AMSException {
 		try {
 			CommonConjunctionFilterConditionDAO
@@ -326,7 +322,8 @@ public abstract class AbstractConjunctionFilterConditionUI extends
 	/**
 	 * {@inheritDoc}
 	 */
-	public void dispose() {
+	@Override
+    public void dispose() {
 		if (localParent != null && !localParent.isDisposed()) {
 			localParent.dispose();
 			localParent = null;
@@ -345,7 +342,8 @@ public abstract class AbstractConjunctionFilterConditionUI extends
 	/**
 	 * {@inheritDoc}
 	 */
-	public void load(Connection conDb, int filterConditionID)
+	@Override
+    public void load(Connection conDb, int filterConditionID)
 			throws AMSException {
 		snapshot = null;
 		try {
@@ -372,7 +370,8 @@ public abstract class AbstractConjunctionFilterConditionUI extends
 	/**
 	 * {@inheritDoc}
 	 */
-	public void reset() {
+	@Override
+    public void reset() {
 		setComboBoxValueUI(cboFirstFC.getDisplay(), cboFirstFC, -1);
 		setComboBoxValueUI(cboSecondFC.getDisplay(), cboSecondFC, -1);
 	}
@@ -403,7 +402,8 @@ public abstract class AbstractConjunctionFilterConditionUI extends
 	/**
 	 * {@inheritDoc}
 	 */
-	public void save(Connection conDb) throws AMSException {
+	@Override
+    public void save(Connection conDb) throws AMSException {
 		try {
 			assert check() : "Precondition violated: check()";
 

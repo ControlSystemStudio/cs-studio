@@ -1,3 +1,4 @@
+
 /* 
  * Copyright (c) 2008 Stiftung Deutsches Elektronen-Synchrotron, 
  * Member of the Helmholtz Association, (DESY), HAMBURG, GERMANY.
@@ -19,17 +20,18 @@
  * PROJECT IN THE FILE LICENSE.HTML. IF THE LICENSE IS NOT INCLUDED YOU MAY FIND A COPY 
  * AT HTTP://WWW.DESY.DE/LEGAL/LICENSE.HTM
  */
- package org.csstudio.ams;
 
-import org.csstudio.platform.logging.CentralLogger;
+package org.csstudio.ams;
+
+import org.slf4j.LoggerFactory;
 
 /**
  * This is a capsulate class if something must be changed or added
  * or central logger has an error.
  */
-public class Log
-{
-	public static final byte DEBUG = 1;
+public class Log {
+	
+    public static final byte DEBUG = 1;
 	public static final byte INFO = 2;
 	public static final byte WARN = 3;
 	public static final byte ERROR = 4;
@@ -41,8 +43,7 @@ public class Log
 	 * @param level		byte
 	 * @param t			Throwable
 	 */
-	public static void log(byte level, Throwable t)
-	{
+	public static void log(byte level, Throwable t) {
 		log(null, level, t);
 	}
 	
@@ -53,33 +54,34 @@ public class Log
 	 * @param level		byte
 	 * @param t			Throwable
 	 */
-	public static void log(Object obj, byte level, Throwable t) 
-	{
-		try
-		{
-			switch (level) 
-		    {
-		      case DEBUG:
-		  		CentralLogger.getInstance().debug(obj, t);
-		        break;
+	public static void log(Object obj, byte level, Throwable t) {
+		
+	    try {
+			
+	        switch (level) {
+		      
+			  case DEBUG:
+			      LoggerFactory.getLogger(obj.getClass()).debug("{}", t);
+			      break;
 		      case INFO:
-		  		CentralLogger.getInstance().info(obj, t);
-		        break;
+		          LoggerFactory.getLogger(obj.getClass()).info("{}", t);
+		          break;
 		      case WARN:
-		  		CentralLogger.getInstance().warn(obj, t);
-		        break;
+		          LoggerFactory.getLogger(obj.getClass()).warn("{}", t);
+		          break;
 		      case ERROR:
-		  		CentralLogger.getInstance().error(obj, t);
-		        break;
+		          LoggerFactory.getLogger(obj.getClass()).error("{}", t);
+		          break;
 		      case FATAL:
-		  		CentralLogger.getInstance().fatal(obj, t);
-		        break;
+		          LoggerFactory.getLogger(obj.getClass()).error("{}", t);
+		          break;
 		      default:
-		  		CentralLogger.getInstance().fatal(obj, t);
-		        break;
+		          LoggerFactory.getLogger(obj.getClass()).error("{}", t);
+		          break;
 			}
+		} catch (Exception e) {
+		    // Can be ignored
 		}
-		catch (Exception e){}
 	}
 	
 	/**
@@ -88,8 +90,7 @@ public class Log
 	 * @param level		byte
 	 * @param msg		String
 	 */
-	public static void log(byte level, String msg) 
-	{
+	public static void log(byte level, String msg) {
 		log(null, level, msg);
 	}
 	
@@ -100,33 +101,34 @@ public class Log
 	 * @param level		byte
 	 * @param msg		String
 	 */
-	public static void log(Object obj, byte level, String msg) 
-	{
-		try
-		{
-		    switch (level) 
-		    {
-		      case DEBUG:
-		  		CentralLogger.getInstance().debug(obj, msg);
-		        break;
-		      case INFO:
-		    	CentralLogger.getInstance().info(obj, msg);
-		        break;
-		      case WARN:
-		  		CentralLogger.getInstance().warn(obj, msg);
-		        break;
-		      case ERROR:
-		  		CentralLogger.getInstance().error(obj, msg);
-		        break;
-		      case FATAL:
-		  		CentralLogger.getInstance().fatal(obj, msg);
-		        break;
-		      default:
-		  		CentralLogger.getInstance().fatal(obj, msg);
-		        break;
-			}
-		}
-		catch (Exception e){}
+	public static void log(Object obj, byte level, String msg) {
+		
+	    try {
+		    
+	        switch (level) {
+	            
+	            case DEBUG:
+	                LoggerFactory.getLogger(obj.getClass()).debug(msg);
+	                break;
+	            case INFO:
+	                LoggerFactory.getLogger(obj.getClass()).info(msg);
+	                break;
+	            case WARN:
+	                LoggerFactory.getLogger(obj.getClass()).warn(msg);
+	                break;
+	            case ERROR:
+	                LoggerFactory.getLogger(obj.getClass()).error(msg);
+	                break;
+	            case FATAL:
+	                LoggerFactory.getLogger(obj.getClass()).error(msg);
+	                break;
+	            default:
+	                LoggerFactory.getLogger(obj.getClass()).error(msg);
+	                break;
+	        }
+        } catch (Exception e) {
+            // Can be ignored
+        }
 	}
 	
 	/**
@@ -136,8 +138,7 @@ public class Log
 	 * @param msg		String
 	 * @param t			Throwable
 	 */
-	public static void log(byte level, String msg, Throwable t)
-	{
+	public static void log(byte level, String msg, Throwable t) {
 		log(null, level, msg, t);
 	}
 	
@@ -149,32 +150,32 @@ public class Log
 	 * @param msg		String
 	 * @param t			Throwable
 	 */
-	public static void log(Object obj, byte level, String msg, Throwable t) 
-	{
-		try
-		{
-		    switch (level) 
-		    {
-		      case DEBUG:
-			  		CentralLogger.getInstance().debug(obj, msg, t);
-		        break;
-		      case INFO:
-		  		CentralLogger.getInstance().info(obj, msg, t);
-		        break;
-		      case WARN:
-		  		CentralLogger.getInstance().warn(obj, msg, t);
-		        break;
-		      case ERROR:
-		  		CentralLogger.getInstance().error(obj, msg, t);
-		        break;
-		      case FATAL:
-		  		CentralLogger.getInstance().fatal(obj, msg, t);
-		        break;
-		      default:
-		  		CentralLogger.getInstance().fatal(obj, msg, t);
-		        break;
+	public static void log(Object obj, byte level, String msg, Throwable t) {
+	    
+	    try {
+	        
+	        switch (level) {
+		        case DEBUG:
+		            LoggerFactory.getLogger(obj.getClass()).debug(msg, t);
+		            break;
+		        case INFO:
+		            LoggerFactory.getLogger(obj.getClass()).info(msg, t);
+		            break;
+		        case WARN:
+		            LoggerFactory.getLogger(obj.getClass()).warn(msg, t);
+		            break;
+		        case ERROR:
+		            LoggerFactory.getLogger(obj.getClass()).error(msg, t);
+		            break;
+		        case FATAL:
+		            LoggerFactory.getLogger(obj.getClass()).error(msg, t);
+		            break;
+		        default:
+		            LoggerFactory.getLogger(obj.getClass()).error(msg, t);
+		            break;
 			}
-		}
-		catch (Exception e){}
+        } catch (Exception e) {
+            // Can be ignored
+        }
 	}
 }
