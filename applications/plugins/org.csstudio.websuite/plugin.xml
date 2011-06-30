@@ -42,14 +42,6 @@
             class="org.csstudio.websuite.internal.PreferenceInitializer">
       </initializer>
    </extension>
-   <extension
-         id="WebsuiteProduct"
-         point="org.eclipse.core.runtime.products">
-      <product
-            application="org.csstudio.websuite.WebSuiteApplicationId"
-            name="WebsuiteProduct">
-      </product>
-   </extension>
 
 
 </plugin>
