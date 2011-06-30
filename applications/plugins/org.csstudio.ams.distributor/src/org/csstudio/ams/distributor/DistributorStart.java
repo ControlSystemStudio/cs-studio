@@ -139,6 +139,8 @@ public class DistributorStart implements IApplication,
         // use synchronized method
         lastStatus = getStatus();
 
+        DistributorPlugin.getDefault().addSessionServiceListener(this);
+        
         Log.log(this, Log.INFO, "Starting");
         DistributorPreferenceKey.showPreferences();
         
