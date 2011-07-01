@@ -1,10 +1,11 @@
+
 package org.csstudio.nams.service.configurationaccess.localstore.declaration;
 
 import org.csstudio.nams.common.contract.Contract;
 import org.hibernate.dialect.DerbyDialect;
 import org.hibernate.dialect.Dialect;
 import org.hibernate.dialect.HSQLDialect;
-import org.hibernate.dialect.MySQLDialect;
+import org.hibernate.dialect.MySQL5Dialect;
 import org.hibernate.dialect.Oracle10gDialect;
 import org.hibernate.dialect.Oracle8iDialect;
 import org.hibernate.dialect.Oracle9iDialect;
@@ -47,7 +48,7 @@ public enum DatabaseType {
      * Treiber und Dialect für MySQL.
      */
     MySQL("MySQL", "com.mysql.jdbc.Driver",
-            MySQLDialect.class),
+            MySQL5Dialect.class),
 	
     /**
 	 * Treiber und Dialect für HSQL. "jdbc:hsqldb:file:namsconfigurator.db"
