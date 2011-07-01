@@ -21,6 +21,8 @@
  */
  package org.csstudio.swt.xygraph.util;
 
+import java.io.IOException;
+import java.io.InputStream;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Set;
@@ -102,9 +104,9 @@ public final class XYGraphMediaFactory {
 	public static Cursor getCursor(CURSOR_TYPE cursorType){
 		switch (cursorType) {
 		case GRABBING:
-			if(CURSOR_GRABBING == null){
-				
-				CURSOR_GRABBING = new Cursor(Display.getDefault(), 
+			if(CURSOR_GRABBING == null){				
+				CURSOR_GRABBING = SingleSourceHelper.createCursor(
+						Display.getDefault(),
 						getInstance().getImage("images/Grabbing.png").getImageData(), 8,8);		
 			}
 			return CURSOR_GRABBING;
@@ -304,14 +306,21 @@ public final class XYGraphMediaFactory {
 							Activator.PLUGIN_ID, relativePath);
 					_imageRegistry.put(relativePath, descr);				
 			}
+			
 			else
 			{
 			    // Must be running as JUnit test or demo w/o plugin environment.
 			    // The following only works for test code inside this plugin,
 			    // not when called from other plugins' test code.
-				final Display display = Display.getCurrent();
-	            final Image img = new Image(display, relativePath);        
-	            _imageRegistry.put(relativePath, img);	            
+//				final Display display = Display.getCurrent();
+//	            final Image img = new Image(display, relativePath);
+				InputStream stream = XYGraphMediaFactory.class.getResourceAsStream(relativePath);
+				Image image = new Image(null, stream);
+				try {
+					stream.close();
+				} catch (IOException ioe) {
+				}
+	            _imageRegistry.put(relativePath, image);	            
 			}
 		}
 		return _imageRegistry.get(relativePath);
