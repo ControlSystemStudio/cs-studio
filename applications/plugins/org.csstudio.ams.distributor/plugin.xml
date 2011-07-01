@@ -35,5 +35,13 @@
             class="org.csstudio.ams.distributor.PreferenceInitializer">
       </initializer>
    </extension>
+   <extension
+         id="AmsDistributorProduct"
+         point="org.eclipse.core.runtime.products">
+      <product
+            application="org.csstudio.ams.distributor.AmsDistributor"
+            name="AmsDistributorProduct">
+      </product>
+   </extension>
 
 </plugin>
