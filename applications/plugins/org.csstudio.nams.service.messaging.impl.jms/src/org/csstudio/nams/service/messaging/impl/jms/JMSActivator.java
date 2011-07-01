@@ -1,3 +1,4 @@
+
 package org.csstudio.nams.service.messaging.impl.jms;
 
 import org.csstudio.nams.common.activatorUtils.AbstractBundleActivator;
