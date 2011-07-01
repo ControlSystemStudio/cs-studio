@@ -8,6 +8,7 @@
 package org.csstudio.common.trendplotter.propsheet;
 
 import org.csstudio.apputil.time.RelativeTime;
+import org.csstudio.archive.common.requesttype.IArchiveRequestType;
 import org.csstudio.common.trendplotter.Activator;
 import org.csstudio.common.trendplotter.Messages;
 import org.csstudio.common.trendplotter.model.AxisConfig;
@@ -18,6 +19,7 @@ import org.csstudio.common.trendplotter.model.PVItem;
 import org.csstudio.common.trendplotter.model.RequestType;
 import org.csstudio.common.trendplotter.model.TraceType;
 import org.csstudio.common.trendplotter.ui.TableHelper;
+import org.csstudio.domain.desy.service.osgi.OsgiServiceUnavailableException;
 import org.csstudio.swt.xygraph.undo.OperationsManager;
 import org.csstudio.swt.xygraph.util.XYGraphMediaFactory;
 import org.eclipse.jface.dialogs.MessageDialog;
@@ -37,6 +39,9 @@ import org.eclipse.swt.SWT;
 import org.eclipse.swt.graphics.RGB;
 import org.eclipse.swt.widgets.Shell;
 
+import com.google.common.collect.Collections2;
+import com.google.common.collect.ImmutableSet;
+
 /** Helper for a 'Trace' TableViewer that handles the Model's items.
  *  Each 'row' in the table is a ModelItem.
  *  @author Kay Kasemir
@@ -44,7 +49,7 @@ import org.eclipse.swt.widgets.Shell;
 public class TraceTableHandler implements ILazyContentProvider
 {
     /** Prompt for the 'raw request' warning? */
-    static private boolean prompt_for_raw_data_request = true;
+    static boolean prompt_for_raw_data_request = true;
 
     /** Prompt for the 'hide trace' warning'? */
     static private boolean prompt_for_not_visible = true;
@@ -114,8 +119,9 @@ public class TraceTableHandler implements ILazyContentProvider
      *  @param operations_manager
      *  @param table_viewer
      */
-    public void createColumns(final TableColumnLayout table_layout, final OperationsManager operations_manager,
-            final TableViewer table_viewer)
+    public void createColumns(final TableColumnLayout table_layout, 
+                              final OperationsManager operations_manager,
+                              final TableViewer table_viewer)
     {
         final Shell shell = table_viewer.getTable().getShell();
 
@@ -535,8 +541,23 @@ public class TraceTableHandler implements ILazyContentProvider
             }
         });
 
-        // Request Type Column ----------
-        view_col = TableHelper.createColumn(table_layout, table_viewer, Messages.RequestType, 75, 10);
+        
+        createAndAddRequestTypeColumn(table_layout, operations_manager, table_viewer, shell);
+
+        //createAndAddShowDeadbandColumn(table_layout, operations_manager, table_viewer, shell);
+        
+        ColumnViewerToolTipSupport.enableFor(table_viewer);
+    }
+    
+    /**
+     * Request Type Column  
+     */
+    private void createAndAddRequestTypeColumn(final TableColumnLayout table_layout,
+                                               final OperationsManager operations_manager,
+                                               final TableViewer table_viewer,
+                                               final Shell shell) {
+        final TableViewerColumn view_col = 
+            TableHelper.createColumn(table_layout, table_viewer, Messages.RequestType, 75, 10);
         view_col.setLabelProvider(new CellLabelProvider()
         {
             @Override
@@ -573,7 +594,7 @@ public class TraceTableHandler implements ILazyContentProvider
             @Override
             protected Object getValue(final Object element)
             {
-                return ((PVItem)element).getRequestType() == RequestType.OPTIMIZED;
+                return ((PVItem)element).getRequestType();
             }
 
             @Override
@@ -592,9 +613,87 @@ public class TraceTableHandler implements ILazyContentProvider
                 new ChangeRequestTypeCommand(operations_manager, item, request_type);
             }
         });
-
-        ColumnViewerToolTipSupport.enableFor(table_viewer);
     }
+
+//    private void createAndAddShowDeadbandColumn(final TableColumnLayout table_layout,
+//                                           final OperationsManager operations_manager,
+//                                           final TableViewer table_viewer,
+//                                           final Shell shell) {
+//        final TableViewerColumn view_col = 
+//            TableHelper.createColumn(table_layout, table_viewer, Messages.ADEL, 75, 10);
+//        
+//        view_col.setLabelProvider(new CellLabelProvider()
+//        {
+//            @Override
+//            public void update(final ViewerCell cell)
+//            {
+//                final Object item = cell.getElement();
+//                if (item instanceof PVItem) {
+//                    cell.setImage(((PVItem) item).getShowDeadband() ? 
+//                                   Activator.getDefault().getImage(Activator.ICON_CHECKED) : 
+//                                   Activator.getDefault().getImage(Activator.ICON_UNCHECKED));
+//                } else {
+//                    cell.setText(Messages.NotApplicable);
+//                }
+//            }
+//
+//            @Override
+//            public String getToolTipText(Object element)
+//            {
+//                return Messages.ADELVisibilityTT;
+//            }
+//        });
+//        
+//        view_col.setEditingSupport(new EditSupportBase(table_viewer)
+//        {
+//            @Override
+//            protected CellEditor getCellEditor(final Object element)
+//            {
+//                if (element instanceof PVItem) {
+//                    return new CheckboxCellEditor(((TableViewer)getViewer()).getTable());
+//                }
+//                return null;
+//            }
+//            
+//            @Override
+//            protected boolean canEdit(final Object element)
+//            {
+//                if (element instanceof PVItem) {
+//                    return ((PVItem) element).hasDeadband();
+//                }
+//                return false;
+//            }
+//
+//            @Override
+//            protected Object getValue(final Object element)
+//            {
+//                if (element instanceof PVItem) 
+//                {
+//                    PVItem item = (PVItem) element;
+//                    return item.getShowDeadband();
+//                }
+//                return Boolean.FALSE;
+//            }
+//
+//            @Override
+//            protected void setValue(final Object element, final Object value)
+//            {
+//                if (element instanceof PVItem) {
+//                    PVItem item = (PVItem) element;
+//                    final Boolean showAdel = ((Boolean) value);
+//                    if (item.getShowDeadband() != showAdel)
+//                    {
+//                        new ToggleAdelTraceCommand(shell, operations_manager, (PVItem) element);
+//                        return;
+//                    }
+//                }
+//                MessageDialog.openInformation(shell, 
+//                                              Messages.ADELInfo, 
+//                                              Messages.ADELNotPresentWarning);
+//            }
+//        });
+//        
+//    }
 
     /** Set input to a Model
      *  @see ILazyContentProvider#inputChanged(Viewer, Object, Object)

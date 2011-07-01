@@ -19,29 +19,18 @@
  * PROJECT IN THE FILE LICENSE.HTML. IF THE LICENSE IS NOT INCLUDED YOU MAY FIND A COPY
  * AT HTTP://WWW.DESY.DE/LEGAL/LICENSE.HTM
  */
-package org.csstudio.archive.common.reader.facade;
+package org.csstudio.domain.desy.epics.name;
 
 import javax.annotation.Nonnull;
-
-import org.csstudio.archive.common.reader.MysqlArchiveReaderActivator;
-import org.csstudio.archive.common.service.IArchiveReaderFacade;
-import org.csstudio.domain.desy.service.osgi.OsgiServiceUnavailableException;
 
 /**
  * TODO (bknerr) :
  *
  * @author bknerr
- * @since 20.06.2011
+ * @since 24.06.2011
  */
-public class ServiceProvider implements IServiceProvider {
+public interface IRecordField {
 
-    /**
-     * {@inheritDoc}
-     */
-    @Override
     @Nonnull
-    public IArchiveReaderFacade getReaderFacade() throws OsgiServiceUnavailableException {
-        return MysqlArchiveReaderActivator.getDefault().getArchiveReaderService();
-    }
-
+    String getFieldName();
 }

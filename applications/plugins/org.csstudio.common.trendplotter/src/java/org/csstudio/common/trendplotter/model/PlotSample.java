@@ -38,6 +38,10 @@ public class PlotSample implements ISample
      *  @see #getInfo()
      */
     private String info;
+    
+    private Number deadband = null;
+    
+    boolean show_deadband = false;
 
 
     /** Initialize with valid control system value
@@ -143,6 +147,9 @@ public class PlotSample implements ISample
         if (!(value instanceof IMinMaxDoubleValue))
             return 0;
         final IMinMaxDoubleValue minmax = (IMinMaxDoubleValue)value;
+        if (show_deadband) {
+            return getDeadband().doubleValue();
+        }
         return minmax.getValue() - minmax.getMinimum();
     }
 
@@ -153,12 +160,35 @@ public class PlotSample implements ISample
         if (!(value instanceof IMinMaxDoubleValue))
             return 0;
         final IMinMaxDoubleValue minmax = (IMinMaxDoubleValue)value;
+        if (show_deadband) {
+            return getDeadband().doubleValue();
+        }
         return minmax.getMaximum() - minmax.getValue();
     }
 
     @Override
     public String toString()
     {
+        if (hasDeadband()) {
+            return NLS.bind(Messages.PlotSampleFmtWithDeadband, new Object[] { value, getDeadband(), source, value.getQuality().toString() });
+        }
         return NLS.bind(Messages.PlotSampleFmt, new Object[] { value, source, value.getQuality().toString() });
     }
+    
+    public void setDeadband(Number db) {
+        deadband = db;
+    }
+    public Number getDeadband() {
+        return deadband;
+    }
+    public void setShowDeadband(boolean b) {
+        show_deadband = b;
+    }
+    public boolean getShowDeadband() {
+        return show_deadband;
+    }
+    public boolean hasDeadband() {
+        return deadband != null;
+    }
+    
 }

@@ -26,7 +26,7 @@ import java.util.Collection;
 
 import javax.annotation.Nonnull;
 
-import org.csstudio.archive.common.reader.facade.IServiceProvider;
+import org.csstudio.archive.common.reader.facade.IArchiveServiceProvider;
 import org.csstudio.archive.common.service.ArchiveServiceException;
 import org.csstudio.archive.common.service.IArchiveReaderFacade;
 import org.csstudio.archive.common.service.channel.ArchiveChannelId;
@@ -123,7 +123,7 @@ public final class TestUtils {
     
     @SuppressWarnings("rawtypes")
     @Nonnull
-    public static IServiceProvider createCustomizedMockedServiceProvider(@Nonnull final String channelName, 
+    public static IArchiveServiceProvider createCustomizedMockedServiceProvider(@Nonnull final String channelName, 
                                                                          @Nonnull final TimeInstant start,
                                                                          @Nonnull final TimeInstant end,
                                                                          @Nonnull final Collection expectedResult) {
@@ -132,15 +132,15 @@ public final class TestUtils {
     
     @SuppressWarnings("rawtypes")
     @Nonnull
-    public static IServiceProvider createCustomizedMockedServiceProvider(@Nonnull final String channelName, 
+    public static IArchiveServiceProvider createCustomizedMockedServiceProvider(@Nonnull final String channelName, 
                                                                          @Nonnull final TimeInstant start,
                                                                          @Nonnull final TimeInstant end,
                                                                          @Nonnull final Collection expectedResult,
                                                                          @Nonnull final IArchiveChannel expectedChannel,
                                                                          @Nonnull final Limits expLimits,
                                                                          @Nonnull final IArchiveSample expLastSampleBefore) {
-        final IServiceProvider provider = 
-            new IServiceProvider() {
+        final IArchiveServiceProvider provider = 
+            new IArchiveServiceProvider() {
                 @SuppressWarnings({ "unchecked" })
                 @Override
                 @Nonnull

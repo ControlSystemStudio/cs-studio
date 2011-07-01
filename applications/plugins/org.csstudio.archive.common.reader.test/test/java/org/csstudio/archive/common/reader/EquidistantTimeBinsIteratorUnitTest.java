@@ -25,7 +25,7 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.NoSuchElementException;
 
-import org.csstudio.archive.common.reader.facade.IServiceProvider;
+import org.csstudio.archive.common.reader.facade.IArchiveServiceProvider;
 import org.csstudio.archive.common.reader.testdata.TestUtils;
 import org.csstudio.archive.common.service.channel.IArchiveChannel;
 import org.csstudio.archive.common.service.sample.IArchiveSample;
@@ -65,7 +65,7 @@ public class EquidistantTimeBinsIteratorUnitTest {
         final Limits expLimits = (Limits) Limits.<Double>create(0.0, 10.0);
         final IArchiveSample expLastSampleBefore = null;
         
-        final IServiceProvider provider = 
+        final IArchiveServiceProvider provider = 
             TestUtils.createCustomizedMockedServiceProvider(channelName, instant, instant, expectedResult, expectedChannel, expLimits, expLastSampleBefore); 
         
         final EquidistantTimeBinsIterator<Double> iter = 
@@ -89,7 +89,7 @@ public class EquidistantTimeBinsIteratorUnitTest {
         final IArchiveSample expLastSampleBefore = 
             TestUtils.createArchiveMinMaxDoubleSample(channelName, TimeInstantBuilder.fromMillis(start.getMillis() - 1), 5.0);
         
-        final IServiceProvider provider = 
+        final IArchiveServiceProvider provider = 
             TestUtils.createCustomizedMockedServiceProvider(channelName, start, end, expectedResult, expectedChannel, expLimits, expLastSampleBefore); 
         
         EquidistantTimeBinsIterator<Double> iter = 
@@ -144,7 +144,7 @@ public class EquidistantTimeBinsIteratorUnitTest {
         final Limits expLimits = (Limits) Limits.<Double>create(0.0, 20.0);
         final IArchiveSample expLastSampleBefore = null;
         
-        final IServiceProvider provider = 
+        final IArchiveServiceProvider provider = 
             TestUtils.createCustomizedMockedServiceProvider(channelName, start, end, expectedResult, expectedChannel, expLimits, expLastSampleBefore); 
 
         EquidistantTimeBinsIterator<Double> iter = 
@@ -204,7 +204,7 @@ public class EquidistantTimeBinsIteratorUnitTest {
         final Limits expLimits = (Limits) Limits.<Double>create(0.0, 20.0);
         final IArchiveSample expLastSampleBefore = null;
         
-        final IServiceProvider provider = 
+        final IArchiveServiceProvider provider = 
             TestUtils.createCustomizedMockedServiceProvider(channelName, start, end, expectedResult, expectedChannel, expLimits, expLastSampleBefore); 
 
         EquidistantTimeBinsIterator<Double> iter = 
@@ -243,7 +243,7 @@ public class EquidistantTimeBinsIteratorUnitTest {
         final IArchiveSample expLastSampleBefore = 
             TestUtils.createArchiveMinMaxDoubleSample(TestUtils.CHANNEL_NAME_2, start.minusMillis(1L), -5.0);
     
-        final IServiceProvider provider = 
+        final IArchiveServiceProvider provider = 
             TestUtils.createCustomizedMockedServiceProvider(channelName, start, end, expectedResult, expectedChannel, expLimits, expLastSampleBefore); 
 
         EquidistantTimeBinsIterator<Double> iter = 
@@ -281,7 +281,7 @@ public class EquidistantTimeBinsIteratorUnitTest {
         final IArchiveSample expLastSampleBefore = 
             TestUtils.createArchiveMinMaxDoubleSample(TestUtils.CHANNEL_NAME_2, start.minusMillis(1L), -5.0);
         
-        final IServiceProvider provider = 
+        final IArchiveServiceProvider provider = 
             TestUtils.createCustomizedMockedServiceProvider(channelName, start, end, expectedResult, expectedChannel, expLimits, expLastSampleBefore); 
         
         EquidistantTimeBinsIterator<Double> iter = 

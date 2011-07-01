@@ -15,7 +15,7 @@ import org.junit.Test;
 /** JUnit Plug-in demo of the AddArchiveDialog
  *  @author Kay Kasemir
  */
-public class AddArchiveDialogDemo
+public class AddArchiveDialogUiPluginTest
 {
     @Test
     public void testArchiveGUI() throws Exception

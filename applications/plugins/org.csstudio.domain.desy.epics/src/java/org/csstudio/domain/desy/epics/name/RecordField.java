@@ -19,20 +19,37 @@
  * PROJECT IN THE FILE LICENSE.HTML. IF THE LICENSE IS NOT INCLUDED YOU MAY FIND A COPY
  * AT HTTP://WWW.DESY.DE/LEGAL/LICENSE.HTM
  */
-package org.csstudio.archive.common.reader.facade;
+package org.csstudio.domain.desy.epics.name;
 
 import javax.annotation.Nonnull;
 
-import org.csstudio.archive.common.service.IArchiveReaderFacade;
-import org.csstudio.domain.desy.service.osgi.OsgiServiceUnavailableException;
-
 /**
- * Interface defining available services for this application.
+ * Enums of the record field identifiers for Epics as of EPICS Record Reference Manual of R3.12.
+ * Not complete!
  *
  * @author bknerr
- * @since 20.06.2011
+ * @since 24.06.2011
  */
-public interface IServiceProvider {
+public enum RecordField implements IRecordField {
+    VAL,
+    ADEL,
+    MDEL;
+
+    /**
+     * Constructor.
+     */
+    private RecordField() {
+        if (!getFieldName().matches(EpicsChannelName.FIELD_REGEX)) {
+            throw new IllegalArgumentException("Name does not match " + EpicsChannelName.FIELD_REGEX);
+        }
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
     @Nonnull
-    IArchiveReaderFacade getReaderFacade() throws OsgiServiceUnavailableException;
+    public String getFieldName() {
+        return name();
+    }
 }
