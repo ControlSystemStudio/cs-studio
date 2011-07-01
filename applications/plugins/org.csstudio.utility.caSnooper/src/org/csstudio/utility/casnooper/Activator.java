@@ -47,18 +47,12 @@ public class Activator extends AbstractCssPlugin {
 		_genericServiceTracker = new GenericServiceTracker<ISessionService>(
 				context, ISessionService.class);
 		_genericServiceTracker.open();
-		//create a defaultscope for the plugin. Otherwise the preference initialzier
-		//will be called AFTER StartupService and the LoginCallbackhandler
-		//has no preference values.
-//		IEclipsePreferences prefs = new DefaultScope().getNode(
-//				Activator.getDefault().getPluginId());
-		
 	}
 
 	@Override
 	protected void doStop(BundleContext context) throws Exception {
 		LOG.info("CaSnooper stopped"); 
-		
+		_genericServiceTracker.close();
 	}
 
 	@Override
@@ -67,34 +61,6 @@ public class Activator extends AbstractCssPlugin {
 		return PLUGIN_ID;
 	}
 
-	/**
-	 * Get the preferences from the XML file.
-	 * TODO: implement a preference in the core that one
-	 * can use the common eclipse preferences
-	 *  
-	 * @return Preferences for this plugin
-	 */
-//	public Preferences getPreferences()
-//	{
-//		//TODO put this in the core preferences!
-//		boolean readPreferencesFromXML = true;
-//		
-//		Preferences prefs = getPluginPreferences();
-//		
-//		if(readPreferencesFromXML) {
-//			CssPreferences result = new CssPreferences(PLUGIN_ID);
-//			
-//			String[] prefNames = prefs.defaultPropertyNames();
-//			
-//			for (int i = 0; i < prefNames.length; i++)
-//				result.setValue(prefNames[i], prefs.getString(prefNames[i]));
-//			
-//			return result;
-//		} else {
-//			return prefs;
-//		}
-//	}
-	
     /** Add informational message to the plugin log. */
     public static void logInfo(String message)
     {
