@@ -11,6 +11,7 @@ import org.eclipse.draw2d.FigureUtilities;
 import org.eclipse.draw2d.Graphics;
 import org.eclipse.draw2d.geometry.Dimension;
 import org.eclipse.draw2d.geometry.Point;
+import org.eclipse.swt.SWT;
 import org.eclipse.swt.graphics.Image;
 
 /**
@@ -36,25 +37,29 @@ public final class GraphicsUtil {
 	public static final void drawVerticalText(Graphics graphics, String text,
 			int x, int y, boolean upToDown) {
 		try {
-			graphics.pushState();
-			graphics.translate(x, y);
-			if (upToDown) {
-				graphics.rotate(90);
-				graphics.drawText(
-						text,
-						0,
-						-FigureUtilities.getTextExtents(text,
-								graphics.getFont()).height);
-			} else {
-				graphics.rotate(270);
-				graphics.drawText(
-						text,
-						-FigureUtilities.getTextWidth(text, graphics.getFont()),
-						0);
+			if(SWT.getPlatform().startsWith("rap")) //$NON-NLS-1$
+				throw new Exception();
+			try {
+				graphics.pushState();
+				graphics.translate(x, y);
+				if (upToDown) {
+					graphics.rotate(90);
+					graphics.drawText(
+							text,
+							0,
+							-FigureUtilities.getTextExtents(text,
+									graphics.getFont()).height);
+				} else {
+					graphics.rotate(270);
+					graphics.drawText(
+							text,
+							-FigureUtilities.getTextWidth(text, graphics.getFont()),
+							0);
+				}
+			}finally{
+				graphics.popState();
 			}
-			graphics.popState();
 		} catch (Exception e) {// If rotate is not supported by the graphics.
-			graphics.popState();
 			final Dimension titleSize = FigureUtilities.getTextExtents(text,
 					graphics.getFont());
 

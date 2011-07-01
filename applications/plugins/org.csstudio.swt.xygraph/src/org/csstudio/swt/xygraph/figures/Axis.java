@@ -189,7 +189,7 @@ public class Axis extends LinearScale{
 
 		super.paintClientArea(graphics);
 
-		graphics.pushState();
+//		graphics.pushState();
 		graphics.setFont(titleFont);
 		final Dimension titleSize = FigureUtilities.getTextExtents(title, titleFont);
 		if(isHorizontal()){
@@ -214,7 +214,7 @@ public class Axis extends LinearScale{
 			}
 		}
 
-		graphics.popState();
+//		graphics.popState();
 
 		// Show the start/end cursor or the 'rubberband' of a zoom operation?
 		if(armed && end != null && start != null){

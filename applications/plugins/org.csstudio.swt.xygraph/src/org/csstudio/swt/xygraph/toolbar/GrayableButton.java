@@ -29,7 +29,10 @@ public class GrayableButton extends Button {
 		this.image = image;
 		grayImage = XYGraphMediaFactory.getInstance().getRegisteredImage(GRAY_IMAGE + image.toString());
 		if( grayImage == null){
-			grayImage = new Image(null, image, SWTConstants.IMAGE_GRAY);
+			if(SWT.getPlatform().startsWith("rap")) //$NON-NLS-1$
+				grayImage = image;
+			else
+				grayImage = new Image(null, image, SWTConstants.IMAGE_GRAY);
 			XYGraphMediaFactory.getInstance().registerImage(GRAY_IMAGE + image.toString(), grayImage);
 		}
 	}

@@ -1,5 +1,6 @@
 package org.csstudio.swt.xygraph.util;
 
+import java.awt.Color;
 import java.awt.Graphics2D;
 import java.awt.geom.AffineTransform;
 import java.awt.image.BufferedImage;
@@ -34,6 +35,10 @@ public class SingleSourceHelperImpl extends SingleSourceHelper {
 		final int h = titleSize.width;
 	    BufferedImage image = new BufferedImage( w, h, BufferedImage.TYPE_INT_ARGB );
 	    Graphics2D gr2d = image.createGraphics();
+	    
+	    gr2d.setColor(new Color(240,240,240));
+	    gr2d.fillRect(0, 0, w, h);
+	    
 	    gr2d.setColor( new java.awt.Color( color.red, color.green, color.blue) );
 	    FontData fd = font.getFontData()[0];
 	    gr2d.setFont(new java.awt.Font(fd.getName(), fd.getStyle(), fd.getHeight()));

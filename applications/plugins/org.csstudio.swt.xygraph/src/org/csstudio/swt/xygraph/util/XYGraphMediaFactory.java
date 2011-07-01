@@ -91,6 +91,8 @@ public final class XYGraphMediaFactory {
 	private volatile static Cursor CURSOR_GRABBING;	
 		
 	public void disposeResources(){
+		if(SWT.getPlatform().startsWith("rap")) //$NON-NLS-1$
+			return;
 		if(CURSOR_GRABBING!=null && !CURSOR_GRABBING.isDisposed())
 			CURSOR_GRABBING.dispose();
 		if(cursorRegistry != null)
