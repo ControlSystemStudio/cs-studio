@@ -13,6 +13,8 @@ import static org.junit.Assert.fail;
 
 import org.csstudio.data.values.IValue;
 import org.csstudio.utility.pv.PV;
+import org.csstudio.utility.pv.epics.EPICS_V3_PV;
+import org.csstudio.utility.pv.epics.PVContext;
 import org.junit.Test;
 
 /** These tests require the soft-IOC database from lib/test.db.

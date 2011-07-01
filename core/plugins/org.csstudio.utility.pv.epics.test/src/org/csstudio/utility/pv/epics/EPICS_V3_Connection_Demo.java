@@ -15,6 +15,8 @@ import java.util.concurrent.atomic.AtomicInteger;
 import org.csstudio.data.values.IValue;
 import org.csstudio.utility.pv.PV;
 import org.csstudio.utility.pv.PVListener;
+import org.csstudio.utility.pv.epics.EPICS_V3_PV;
+import org.csstudio.utility.pv.epics.PVContext;
 import org.junit.Test;
 
 /** JUnit Demo or command-line test of PV connect/disconnect.

@@ -10,6 +10,7 @@ package org.csstudio.utility.pv.epics;
 import junit.framework.TestCase;
 
 import org.csstudio.data.values.ISeverity;
+import org.csstudio.utility.pv.epics.SeverityUtil;
 import org.junit.Test;
 
 /** Test for the SeverityUtil class.
