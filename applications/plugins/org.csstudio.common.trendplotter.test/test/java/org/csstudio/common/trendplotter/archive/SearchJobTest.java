@@ -11,8 +11,8 @@ import static org.junit.Assert.fail;
 
 import java.util.concurrent.Semaphore;
 
-import org.csstudio.archivereader.ArchiveReader;
-import org.csstudio.archivereader.ArchiveRepository;
+import org.csstudio.archive.reader.ArchiveReader;
+import org.csstudio.archive.reader.ArchiveRepository;
 import org.csstudio.common.trendplotter.Messages;
 import org.csstudio.common.trendplotter.model.ArchiveDataSource;
 import org.csstudio.common.trendplotter.model.ChannelInfo;

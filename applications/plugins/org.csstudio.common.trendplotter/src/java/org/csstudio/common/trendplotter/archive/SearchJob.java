@@ -9,7 +9,7 @@ package org.csstudio.common.trendplotter.archive;
 
 import java.util.ArrayList;
 
-import org.csstudio.archivereader.ArchiveReader;
+import org.csstudio.archive.reader.ArchiveReader;
 import org.csstudio.common.trendplotter.Messages;
 import org.csstudio.common.trendplotter.model.ArchiveDataSource;
 import org.csstudio.common.trendplotter.model.ChannelInfo;

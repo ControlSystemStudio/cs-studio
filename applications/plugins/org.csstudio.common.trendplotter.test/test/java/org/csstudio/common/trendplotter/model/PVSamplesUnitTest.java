@@ -13,10 +13,12 @@ import static org.junit.Assert.assertTrue;
 
 import java.util.ArrayList;
 
+import org.csstudio.archive.common.service.ArchiveServiceException;
 import org.csstudio.data.values.ITimestamp;
 import org.csstudio.data.values.IValue;
 import org.csstudio.data.values.TimestampFactory;
 import org.csstudio.data.values.ValueFactory;
+import org.csstudio.domain.desy.service.osgi.OsgiServiceUnavailableException;
 import org.junit.Test;
 
 /** JUnit test for PVSamples
@@ -26,7 +28,7 @@ import org.junit.Test;
 public class PVSamplesUnitTest
 {
     @Test
-    public void testPVSamples()
+    public void testPVSamples() throws OsgiServiceUnavailableException, ArchiveServiceException
     {
         // Start w/ empty PVSamples
         final PVSamples samples = new PVSamples(null);
@@ -38,7 +40,7 @@ public class PVSamplesUnitTest
         final ArrayList<IValue> history = new ArrayList<IValue>();
         for (int i=0; i<10; ++i)
             history.add(TestSampleBuilder.makeValue(i));
-        samples.mergeArchivedData("Test", history);
+        samples.mergeArchivedData("TestChannel", "Test", history);
         // PVSamples include continuation until 'now'
         System.out.println(samples.toString());
         assertEquals(history.size()+1, samples.getSize());
@@ -61,7 +63,7 @@ public class PVSamplesUnitTest
         history.clear();
         for (int i=0; i<21; ++i)
             history.add(TestSampleBuilder.makeValue(i));
-        samples.mergeArchivedData("Test", history);
+        samples.mergeArchivedData("TestChannel", "Test", history);
 
         // Since 'live' data starts at 11, history is only visible up to there,
         // i.e. 0..10 = 11 in history plus 3 'live' samples

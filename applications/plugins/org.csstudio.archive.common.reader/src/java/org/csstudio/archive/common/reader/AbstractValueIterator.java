@@ -32,7 +32,7 @@ import org.csstudio.archive.common.requesttype.IArchiveRequestType;
 import org.csstudio.archive.common.service.ArchiveServiceException;
 import org.csstudio.archive.common.service.IArchiveReaderFacade;
 import org.csstudio.archive.common.service.sample.IArchiveSample;
-import org.csstudio.archivereader.ValueIterator;
+import org.csstudio.archive.reader.ValueIterator;
 import org.csstudio.data.values.IValue;
 import org.csstudio.domain.desy.service.osgi.OsgiServiceUnavailableException;
 import org.csstudio.domain.desy.system.ISystemVariable;

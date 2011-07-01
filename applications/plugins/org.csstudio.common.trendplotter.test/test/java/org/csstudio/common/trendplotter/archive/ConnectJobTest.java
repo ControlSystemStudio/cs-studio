@@ -11,8 +11,8 @@ import static org.junit.Assert.fail;
 
 import java.util.concurrent.Semaphore;
 
-import org.csstudio.archivereader.ArchiveInfo;
-import org.csstudio.archivereader.ArchiveReader;
+import org.csstudio.archive.reader.ArchiveInfo;
+import org.csstudio.archive.reader.ArchiveReader;
 import org.csstudio.common.trendplotter.Messages;
 import org.eclipse.osgi.util.NLS;
 import org.junit.Ignore;

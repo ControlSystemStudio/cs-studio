@@ -36,7 +36,7 @@ import org.csstudio.archive.common.service.channel.IArchiveChannel;
 import org.csstudio.archive.common.service.sample.IArchiveMinMaxSample;
 import org.csstudio.archive.common.service.sample.IArchiveSample;
 import org.csstudio.archive.common.service.sample.SampleMinMaxAggregator;
-import org.csstudio.archivereader.Severity;
+import org.csstudio.archive.reader.Severity;
 import org.csstudio.data.values.INumericMetaData;
 import org.csstudio.data.values.IValue;
 import org.csstudio.data.values.ValueFactory;

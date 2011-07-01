@@ -7,7 +7,7 @@
  ******************************************************************************/
 package org.csstudio.common.trendplotter.export;
 
-import org.csstudio.archivereader.ValueIterator;
+import org.csstudio.archive.reader.ValueIterator;
 import org.csstudio.common.trendplotter.model.ModelItem;
 import org.csstudio.common.trendplotter.model.PlotSamples;
 import org.csstudio.data.values.ITimestamp;

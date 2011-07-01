@@ -7,9 +7,9 @@
  ******************************************************************************/
 package org.csstudio.common.trendplotter.archive;
 
-import org.csstudio.archivereader.ArchiveInfo;
-import org.csstudio.archivereader.ArchiveReader;
-import org.csstudio.archivereader.ArchiveRepository;
+import org.csstudio.archive.reader.ArchiveInfo;
+import org.csstudio.archive.reader.ArchiveReader;
+import org.csstudio.archive.reader.ArchiveRepository;
 import org.csstudio.common.trendplotter.Messages;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;

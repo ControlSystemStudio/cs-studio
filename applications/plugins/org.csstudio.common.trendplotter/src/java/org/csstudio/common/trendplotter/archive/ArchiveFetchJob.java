@@ -11,9 +11,9 @@ import java.util.ArrayList;
 import java.util.logging.Level;
 
 import org.csstudio.apputil.time.BenchmarkTimer;
-import org.csstudio.archivereader.ArchiveReader;
-import org.csstudio.archivereader.ArchiveRepository;
-import org.csstudio.archivereader.ValueIterator;
+import org.csstudio.archive.reader.ArchiveReader;
+import org.csstudio.archive.reader.ArchiveRepository;
+import org.csstudio.archive.reader.ValueIterator;
 import org.csstudio.common.trendplotter.Activator;
 import org.csstudio.common.trendplotter.Messages;
 import org.csstudio.common.trendplotter.model.ArchiveDataSource;
