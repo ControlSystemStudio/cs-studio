@@ -11,6 +11,25 @@
  * kasemirk@ornl.gov, Lana Abadie
  */
 
+/*
+CREATE USER log;
+ALTER USER log WITH PASSWORD '$log';
+
+CREATE USER report WITH PASSWORD '$report';
+
+SELECT * FROM pg_user;
+
+-- The following would have to be executed _after_ creating the tables:
+GRANT SELECT, INSERT, UPDATE, DELETE
+  ON msg_property_type, message, message_content TO log;
+
+GRANT SELECT
+  ON msg_property_type, message, message_content TO report;
+
+GRANT USAGE ON  ALL SEQUENCES IN SCHEMA public TO archive;
+*/
+
+
 set client_min_messages='warning';
 
 -- Create database
