@@ -23,5 +23,13 @@
          </stringParameter>
       </command>
    </extension>
+   <extension
+         id="AmsDepartmentDecisionProduct"
+         point="org.eclipse.core.runtime.products">
+      <product
+            application="org.csstudio.nams.application.department.decision.application"
+            name="AmsDepartmentDecisionProduct">
+      </product>
+   </extension>
 
 </plugin>
