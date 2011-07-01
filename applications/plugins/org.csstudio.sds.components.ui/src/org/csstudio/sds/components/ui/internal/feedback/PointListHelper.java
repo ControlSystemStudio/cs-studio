@@ -24,6 +24,7 @@ package org.csstudio.sds.components.ui.internal.feedback;
 import org.eclipse.draw2d.geometry.Point;
 import org.eclipse.draw2d.geometry.PointList;
 import org.eclipse.draw2d.geometry.Rectangle;
+import org.eclipse.gef.requests.ChangeBoundsRequest;
 
 /**
  * A transformator utility for {@link PointList} objects.
@@ -118,6 +119,20 @@ public final class PointListHelper {
 	public static PointList scaleTo(final PointList points, final Rectangle targetBounds) {
 		PointList result = scaleToLocation(points, targetBounds.x,
 				targetBounds.y);
+		result = scaleToSize(result, targetBounds.width, targetBounds.height);
+
+		return result;
+	}
+	
+	/**
+	 * Scales the point list to the new bounds.
+	 * 
+	 * @param points the point list
+	 * @param targetBounds the target bounds
+	 * @return a point list copy, which has been scaled to the new bounds
+	 */
+	public static PointList scaleTo(final PointList points, final Rectangle targetBounds, final ChangeBoundsRequest request) {
+		PointList result = scaleToLocation(points, targetBounds.x, targetBounds.y);
 		result = scaleToSize(result, targetBounds.width, targetBounds.height);
 
 		return result;

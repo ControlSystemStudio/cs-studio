@@ -171,6 +171,7 @@ abstract class AbstractPolyFeedbackFactory implements
 	/**
 	 * {@inheritDoc}
 	 */
+	@SuppressWarnings("rawtypes")
 	public final Class getCreationTool() {
 		return PointListCreationTool.class;
 	}
@@ -233,7 +234,7 @@ abstract class AbstractPolyFeedbackFactory implements
 
 		// the points are viewer relative and need to be translated to the
 		// specified bounds, to reflect zoom level, scrollbar occurence etc.
-		points = PointListHelper.scaleTo(points, correctedBounds);
+		points = PointListHelper.scaleTo(points, correctedBounds, request);
 
 		return new ChangePolyPointsCommand(abstractPolyElement, points);
 	}
