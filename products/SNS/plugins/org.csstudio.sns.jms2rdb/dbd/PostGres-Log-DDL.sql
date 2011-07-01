@@ -26,7 +26,8 @@ GRANT SELECT, INSERT, UPDATE, DELETE
 GRANT SELECT
   ON msg_property_type, message, message_content TO report;
 
-GRANT USAGE ON  ALL SEQUENCES IN SCHEMA public TO archive;
+GRANT USAGE, UPDATE ON SEQUENCE message_id_seq, message_content_id_seq  TO log;
+
 */
 
 
