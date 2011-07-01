@@ -1,3 +1,4 @@
+
 package org.csstudio.nams.configurator.beans;
 
 import org.csstudio.nams.service.configurationaccess.localstore.declaration.filterActions.AlarmbGruppenFilterActionType;
@@ -25,8 +26,8 @@ public class AlarmbearbeitergruppenFilterAction extends
 		return action;
 	}
 
-	public FilterActionType[] getFilterActionTypeValues() {
+	@Override
+    public FilterActionType[] getFilterActionTypeValues() {
 		return AlarmbGruppenFilterActionType.values();
 	}
-
 }

@@ -1,8 +1,8 @@
+
 package org.csstudio.nams.configurator.beans.filters;
 
 import org.csstudio.nams.common.material.regelwerk.Operator;
 import org.csstudio.nams.common.material.regelwerk.SuggestedProcessVariableType;
-import org.csstudio.nams.configurator.Messages;
 import org.csstudio.nams.configurator.beans.AbstractConfigurationBean;
 
 public class PVFilterConditionBean extends
@@ -70,12 +70,14 @@ public class PVFilterConditionBean extends
 		return this.compareValue;
 	}
 
-	public String getDisplayName() {
+	@Override
+    public String getDisplayName() {
 		return this.channelName + " " + this.operator.toString() + " " //$NON-NLS-1$ //$NON-NLS-2$
 				+ this.compareValue + " " + this.suggestedType; //$NON-NLS-1$
 	}
 
-	public int getID() {
+	@Override
+    public int getID() {
 		return 0;
 	}
 
@@ -121,7 +123,8 @@ public class PVFilterConditionBean extends
 				oldValue, compareValue);
 	}
 
-	public void setID(final int id) {
+	@Override
+    public void setID(final int id) {
 	}
 
 	public void setOperator(final Operator operator) {
@@ -147,8 +150,8 @@ public class PVFilterConditionBean extends
 		this.setSuggestedType(bean.getSuggestedType());
 	}
 
-	public void setDisplayName(String name) {
+	@Override
+    public void setDisplayName(String name) {
 		// nothing to do here
 	}
-
 }

@@ -1,3 +1,4 @@
+
 package org.csstudio.nams.configurator.editor;
 
 import java.beans.IntrospectionException;
@@ -51,7 +52,8 @@ public final class EditorUIUtils {
 			this.viewer = viewer;
 		}
 
-		public void propertyChange(final PropertyChangeEvent event) {
+		@Override
+        public void propertyChange(final PropertyChangeEvent event) {
 			if (this.propertyName.equals(event.getPropertyName())) {
 				final Object newSelection = this.propertyEditor.getValue();
 				if (newSelection != null) {
@@ -150,7 +152,9 @@ public final class EditorUIUtils {
 
 		result.setContentProvider(new ArrayContentProvider());
 		result.setComparator(new ViewerComparator(new Comparator<Object>() {
-			public int compare(final Object o1, final Object o2) {
+			
+		    @Override
+            public int compare(final Object o1, final Object o2) {
 				return o1.toString().compareTo(o2.toString());
 			}
 		}));
@@ -162,7 +166,9 @@ public final class EditorUIUtils {
 		}
 
 		result.addSelectionChangedListener(new ISelectionChangedListener() {
-			public void selectionChanged(final SelectionChangedEvent event) {
+			
+		    @Override
+            public void selectionChanged(final SelectionChangedEvent event) {
 				final IStructuredSelection selection = (IStructuredSelection) event
 						.getSelection();
 				final Object selectedElement = selection.getFirstElement();
@@ -180,7 +186,9 @@ public final class EditorUIUtils {
 		boundBean.addPropertyChangeListener(propertyChangeListenerOnBoundBean);
 
 		result.getCombo().addDisposeListener(new DisposeListener() {
-			public void widgetDisposed(final DisposeEvent e) {
+			
+		    @Override
+            public void widgetDisposed(final DisposeEvent e) {
 				boundBean
 						.removePropertyChangeListener(propertyChangeListenerOnBoundBean);
 			}
@@ -200,8 +208,8 @@ public final class EditorUIUtils {
 		return true;
 	}
 
-	public static void staticInject(final Logger logger) {
-		EditorUIUtils.logger = logger;
+	public static void staticInject(final Logger l) {
+		EditorUIUtils.logger = l;
 	}
 
 	/**
