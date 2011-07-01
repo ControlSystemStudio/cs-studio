@@ -1,3 +1,4 @@
+
 package org.csstudio.nams.configurator.beans;
 
 import org.csstudio.nams.configurator.Messages;
@@ -65,7 +66,8 @@ public class FilterbedingungBean extends
 		return this.description;
 	}
 
-	public String getDisplayName() {
+	@Override
+    public String getDisplayName() {
 		return this.name == null ? Messages.FilterbedingungBean_without_name : this.name;
 	}
 
@@ -77,7 +79,8 @@ public class FilterbedingungBean extends
 		return (AbstractConfigurationBean<?>) this.filterSpecificBean;
 	}
 
-	public int getID() {
+	@Override
+    public int getID() {
 		return this.getFilterbedinungID();
 	}
 
@@ -124,7 +127,8 @@ public class FilterbedingungBean extends
 				oldValue, filterSpecificBean);
 	}
 
-	public void setID(final int id) {
+	@Override
+    public void setID(final int id) {
 		this.setFilterbedinungID(id);
 	}
 
@@ -160,7 +164,8 @@ public class FilterbedingungBean extends
 		}
 	}
 
-	public void setDisplayName(String name) {
+	@Override
+    public void setDisplayName(String name) {
 		this.setName(name);
 	}
 }

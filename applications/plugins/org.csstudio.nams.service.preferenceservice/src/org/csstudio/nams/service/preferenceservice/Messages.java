@@ -1,3 +1,4 @@
+
 package org.csstudio.nams.service.preferenceservice;
 
 import org.eclipse.osgi.util.NLS;
@@ -36,11 +37,13 @@ public class Messages extends NLS {
 	public static String PreferenceServiceJMSKeys_P_JMS_EXTERN_PROVIDER_URL_1_label;
 	public static String PreferenceServiceJMSKeys_P_JMS_EXTERN_PROVIDER_URL_2_label;
 	public static String PreferenceServiceJMSKeys_P_JMS_EXTERN_SENDER_PROVIDER_URL_label;
+	
 	static {
 		// initialize resource bundle
 		NLS.initializeMessages(BUNDLE_NAME, Messages.class);
 	}
 
 	private Messages() {
+	    // Avoid instantiation
 	}
 }

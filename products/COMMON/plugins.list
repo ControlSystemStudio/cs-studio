@@ -22,7 +22,6 @@ org.csstudio.archive.reader
 org.csstudio.archive.reader.channelarchiver
 org.csstudio.archive.reader.rdb
 org.csstudio.csdata
-org.csstudio.common.trendplotter
 org.csstudio.data
 org.csstudio.diag.epics.pvtree
 org.csstudio.diag.epics.pvtree.intro

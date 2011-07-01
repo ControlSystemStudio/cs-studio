@@ -1,3 +1,4 @@
+
 package org.csstudio.nams.service.regelwerkbuilder.impl.confstore;
 
 import java.util.Collection;
@@ -56,7 +57,8 @@ public class RegelwerkBuilderServiceImpl implements RegelwerkBuilderService {
 		RegelwerkBuilderServiceImpl.logger = logger;
 	}
 
-	public List<Regelwerk> gibAlleRegelwerke()
+	@Override
+    public List<Regelwerk> gibAlleRegelwerke()
 			throws RegelwerksBuilderException {
 		final List<Regelwerk> results = new LinkedList<Regelwerk>();
 		try {

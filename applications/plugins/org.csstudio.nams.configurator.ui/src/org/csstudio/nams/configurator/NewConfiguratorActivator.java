@@ -1,3 +1,4 @@
+
 package org.csstudio.nams.configurator;
 
 import org.csstudio.nams.common.activatorUtils.AbstractBundleActivator;
@@ -18,10 +19,8 @@ import org.csstudio.nams.service.messaging.declaration.MessagingService;
 import org.csstudio.nams.service.preferenceservice.declaration.PreferenceService;
 import org.csstudio.platform.simpledal.IProcessVariableConnectionService;
 import org.csstudio.platform.simpledal.ProcessVariableConnectionServiceFactory;
-import org.osgi.framework.BundleActivator;
 
-public class NewConfiguratorActivator extends AbstractBundleActivator implements
-		BundleActivator {
+public class NewConfiguratorActivator extends AbstractBundleActivator {
 
 	/** The plug-in ID */
 	public static final String PLUGIN_ID = "org.csstudio.nams.configurator.ui"; //$NON-NLS-1$

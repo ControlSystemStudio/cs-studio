@@ -1,9 +1,8 @@
+
 package org.csstudio.nams.service.configurationaccess.localstore;
 
 import java.util.Collection;
-import java.util.Collections;
 import java.util.List;
-
 import org.csstudio.nams.service.configurationaccess.localstore.declaration.AlarmbearbeiterDTO;
 import org.csstudio.nams.service.configurationaccess.localstore.declaration.AlarmbearbeiterGruppenDTO;
 import org.csstudio.nams.service.configurationaccess.localstore.declaration.Configuration;
@@ -38,16 +37,16 @@ import org.hibernate.classic.Session;
 class LocalStoreConfigurationServiceImpl implements
 		LocalStoreConfigurationService {
 
-	private final Logger logger;
-	private final SessionFactory sessionFactory;
+	private final Logger _logger;
+	private final SessionFactory _sessionFactory;
 
-	private Session sessionWorkingOn = null;
+	private Session _sessionWorkingOn = null;
 
 	private final TransactionProcessor transactionProcessor;
 
 	/**
 	 * 
-	 * @param session
+	 * @param sessionFactory
 	 *            The session to work on; the session will be treated as
 	 *            exclusive instance and be closed on finalization of this
 	 *            service instance.
@@ -55,19 +54,21 @@ class LocalStoreConfigurationServiceImpl implements
 	 */
 	public LocalStoreConfigurationServiceImpl(
 			final SessionFactory sessionFactory, final Logger logger) {
-		this.sessionFactory = sessionFactory;
-		this.logger = logger;
+		this._sessionFactory = sessionFactory;
+		this._logger = logger;
 
 		this.transactionProcessor = new TransactionProcessor(sessionFactory,
 				logger);
 	}
 
-	public void deleteDTO(final NewAMSConfigurationElementDTO dto)
+	@Override
+    public void deleteDTO(final NewAMSConfigurationElementDTO dto)
 			throws StorageError, StorageException,
 			InconsistentConfigurationException {
 
 		final UnitOfWork<Object> loadEntireConfigurationWork = new UnitOfWork<Object>() {
-			public Object doWork(Mapper mapper) throws Throwable {
+			@Override
+            public Object doWork(Mapper mapper) throws Throwable {
 				mapper.delete(dto);
 				return dto;
 			}
@@ -77,12 +78,13 @@ class LocalStoreConfigurationServiceImpl implements
 			this.transactionProcessor
 					.doInTransaction(loadEntireConfigurationWork);
 		} catch (final InterruptedException e) {
-			this.logger.logWarningMessage(this, "Delete of DTO interrupted", e);
+			this._logger.logWarningMessage(this, "Delete of DTO interrupted", e);
 			throw new StorageException("Delete of DTO interrupted", e);
 		}
 	}
 
-	public ReplicationStateDTO getCurrentReplicationState()
+	@Override
+    public ReplicationStateDTO getCurrentReplicationState()
 			throws StorageError, StorageException,
 			InconsistentConfigurationException {
 		ReplicationStateDTO result = null;
@@ -113,13 +115,15 @@ class LocalStoreConfigurationServiceImpl implements
 		return result;
 	}
 
-	public Configuration getEntireConfiguration() throws StorageError,
+	@Override
+    public Configuration getEntireConfiguration() throws StorageError,
 			StorageException, InconsistentConfigurationException {
 
 		Configuration result = null;
 
 		final UnitOfWork<Configuration> loadEntireConfigurationWork = new UnitOfWork<Configuration>() {
-			public Configuration doWork(Mapper mapper) throws Throwable {
+			@Override
+            public Configuration doWork(Mapper mapper) throws Throwable {
 				Configuration resultOfUnit = null;
 
 				Collection<RubrikDTO> alleRubriken = mapper.loadAll(
@@ -151,7 +155,7 @@ class LocalStoreConfigurationServiceImpl implements
 			result = this.transactionProcessor
 					.doInTransaction(loadEntireConfigurationWork);
 		} catch (final InterruptedException e) {
-			this.logger.logWarningMessage(this,
+			this._logger.logWarningMessage(this,
 					"Load of entire configuration interrupted", e);
 			throw new StorageException(
 					"Load of entire configuration interrupted", e);
@@ -160,7 +164,8 @@ class LocalStoreConfigurationServiceImpl implements
 		return result;
 	}
 
-	public FilterConfiguration getEntireFilterConfiguration()
+	@Override
+    public FilterConfiguration getEntireFilterConfiguration()
 			throws StorageError, StorageException,
 			InconsistentConfigurationException {
 		
@@ -205,7 +210,8 @@ class LocalStoreConfigurationServiceImpl implements
 		
 		FilterConfiguration result = null;
 		final UnitOfWork<FilterConfiguration> loadEntireFilterConfigurationWork = new UnitOfWork<FilterConfiguration>() {
-			public FilterConfiguration doWork(Mapper mapper) throws Throwable {
+			@Override
+            public FilterConfiguration doWork(Mapper mapper) throws Throwable {
 				FilterConfiguration resultOfUnit = null;
 
 				Collection<FilterDTO> allFilters = mapper.loadAll(
@@ -221,7 +227,7 @@ class LocalStoreConfigurationServiceImpl implements
 			result = this.transactionProcessor
 					.doInTransaction(loadEntireFilterConfigurationWork);
 		} catch (final InterruptedException e) {
-			this.logger.logWarningMessage(this,
+			this._logger.logWarningMessage(this,
 					"Load of entire configuration interrupted", e);
 			throw new StorageException(
 					"Load of entire configuration interrupted", e);
@@ -230,7 +236,8 @@ class LocalStoreConfigurationServiceImpl implements
 		return result;
 	}
 	
-	public void prepareSynchonization() throws StorageError, StorageException,
+	@Override
+    public void prepareSynchonization() throws StorageError, StorageException,
 			InconsistentConfigurationException {
 		// Hier die Syn-Tabellen anlegen / Datgen kopieren / GGf. über ein
 		// HSQL-Statement.
@@ -271,12 +278,15 @@ class LocalStoreConfigurationServiceImpl implements
 			}
 			throw new StorageException("unable to save replication state", t);
 		} finally {
-			session.flush();
-			session.close();
+		    if (session != null) {
+		        session.flush();
+		        session.close();
+		    }
 		}
 	}
 
-	public void saveCurrentReplicationState(
+	@Override
+    public void saveCurrentReplicationState(
 			final ReplicationStateDTO currentState) throws StorageError,
 			StorageException, UnknownConfigurationElementError {
 		Transaction newTransaction = null;
@@ -297,12 +307,14 @@ class LocalStoreConfigurationServiceImpl implements
 		}
 	}
 
-	public void saveDTO(final NewAMSConfigurationElementDTO dto)
+	@Override
+    public void saveDTO(final NewAMSConfigurationElementDTO dto)
 			throws StorageError, StorageException,
 			InconsistentConfigurationException {
 
 		final UnitOfWork<NewAMSConfigurationElementDTO> saveWork = new UnitOfWork<NewAMSConfigurationElementDTO>() {
-			public NewAMSConfigurationElementDTO doWork(Mapper mapper)
+			@Override
+            public NewAMSConfigurationElementDTO doWork(Mapper mapper)
 					throws Throwable {
 
 				mapper.save(dto); // performs "deep" save
@@ -314,12 +326,13 @@ class LocalStoreConfigurationServiceImpl implements
 		try {
 			this.transactionProcessor.doInTransaction(saveWork);
 		} catch (final InterruptedException e) {
-			this.logger.logWarningMessage(this, "save has been interrupted", e);
+			this._logger.logWarningMessage(this, "save has been interrupted", e);
 			throw new StorageException("save has been interrupted", e);
 		}
 	}
 
-	public void saveHistoryDTO(final HistoryDTO historyDTO)
+	@Override
+    public void saveHistoryDTO(final HistoryDTO historyDTO)
 			throws StorageError, StorageException,
 			InconsistentConfigurationException {
 		Transaction newTransaction = null;
@@ -344,13 +357,13 @@ class LocalStoreConfigurationServiceImpl implements
 	 * Für Tests.
 	 */
 	SessionFactory getSessionFactory() {
-		return this.sessionFactory;
+		return this._sessionFactory;
 	}
 
 	@Override
 	protected void finalize() throws Throwable {
 		super.finalize();
-		this.sessionFactory.close();
+		this._sessionFactory.close();
 	}
 
 	private void closeSession(final Session session) throws HibernateException {
@@ -359,8 +372,8 @@ class LocalStoreConfigurationServiceImpl implements
 				session.flush();
 				// session.close();
 			} catch (final HibernateException he) {
-				this.sessionWorkingOn.close();
-				this.sessionWorkingOn = null;
+				this._sessionWorkingOn.close();
+				this._sessionWorkingOn = null;
 				throw new StorageError("session could not be closed", he);
 			}
 		}
@@ -368,12 +381,12 @@ class LocalStoreConfigurationServiceImpl implements
 
 	private Session openNewSession() throws HibernateException {
 		Session result = null;
-		if (this.sessionWorkingOn == null) {
-			result = this.sessionFactory.openSession();
+		if (this._sessionWorkingOn == null) {
+			result = this._sessionFactory.openSession();
 			result.setCacheMode(CacheMode.IGNORE);
 			result.setFlushMode(FlushMode.COMMIT);
 		} else {
-			result = this.sessionWorkingOn;
+			result = this._sessionWorkingOn;
 		}
 		return result;
 	}

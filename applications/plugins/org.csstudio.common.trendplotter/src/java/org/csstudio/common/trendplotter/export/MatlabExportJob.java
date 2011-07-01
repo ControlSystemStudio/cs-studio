@@ -11,7 +11,7 @@ import java.io.PrintStream;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 
-import org.csstudio.archivereader.ValueIterator;
+import org.csstudio.archive.reader.ValueIterator;
 import org.csstudio.common.trendplotter.model.Model;
 import org.csstudio.common.trendplotter.model.ModelItem;
 import org.csstudio.data.values.ITimestamp;

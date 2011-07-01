@@ -50,7 +50,6 @@
       <plugin id="org.csstudio.auth"/>
       <plugin id="org.csstudio.auth.ui"/>
       <plugin id="org.csstudio.common.product"/>
-      <plugin id="org.csstudio.common.trendplotter"/>
       <plugin id="org.csstudio.csdata"/>
       <plugin id="org.csstudio.data"/>
       <plugin id="org.csstudio.diag.epics.pvtree"/>

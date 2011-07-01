@@ -1,3 +1,4 @@
+
 package org.csstudio.nams.configurator.beans.filters;
 
 import org.csstudio.nams.configurator.beans.IConfigurationBean;
@@ -7,5 +8,5 @@ import org.csstudio.nams.configurator.beans.IConfigurationBean;
  * contains the filtertypespecific information.
  */
 public interface FilterConditionAddOnBean extends IConfigurationBean {
-
+    // Marker
 }

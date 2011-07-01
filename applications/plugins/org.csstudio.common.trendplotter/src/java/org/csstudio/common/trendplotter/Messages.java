@@ -33,6 +33,11 @@ public class Messages extends NLS
     public static String AddPV_Period;
     public static String AddPV_PeriodTT;
     public static String AddPVMsg;
+    public static String ADEL;
+    public static String ADELInfo;
+    public static String ADELNotPresentWarning;
+    public static String ADELVisibilityTT;
+    public static String ADELVisibilityCommand;
     public static String AppendSearchResults;
     public static String AppendSearchResultsTT;
     public static String ArchiveAccessDetailFmt;
@@ -159,6 +164,7 @@ public class Messages extends NLS
     public static String OpenPropertiesView;
     public static String OpenWaveformView;
     public static String PlotSampleFmt;
+    public static String PlotSampleFmtWithDeadband;
     public static String Plot_TimeAxisName;
     public static String Plot_ValueAxisName;
     public static String Plot_ValueAxisNameFMT;

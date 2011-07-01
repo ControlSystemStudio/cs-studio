@@ -28,7 +28,7 @@ import javax.annotation.CheckForNull;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
-import org.csstudio.archive.common.reader.facade.IServiceProvider;
+import org.csstudio.archive.common.reader.facade.IArchiveServiceProvider;
 import org.csstudio.archive.common.requesttype.IArchiveRequestType;
 import org.csstudio.archive.common.service.ArchiveServiceException;
 import org.csstudio.archive.common.service.IArchiveReaderFacade;
@@ -36,7 +36,7 @@ import org.csstudio.archive.common.service.channel.IArchiveChannel;
 import org.csstudio.archive.common.service.sample.IArchiveMinMaxSample;
 import org.csstudio.archive.common.service.sample.IArchiveSample;
 import org.csstudio.archive.common.service.sample.SampleMinMaxAggregator;
-import org.csstudio.archivereader.Severity;
+import org.csstudio.archive.reader.Severity;
 import org.csstudio.data.values.INumericMetaData;
 import org.csstudio.data.values.IValue;
 import org.csstudio.data.values.ValueFactory;
@@ -103,7 +103,7 @@ public class EquidistantTimeBinsIterator<V> extends AbstractValueIterator<V> {
      * @throws OsgiServiceUnavailableException
      * @throws TypeSupportException
      */
-    public EquidistantTimeBinsIterator(@Nonnull final IServiceProvider provider,
+    public EquidistantTimeBinsIterator(@Nonnull final IArchiveServiceProvider provider,
                                        @Nonnull final String channelName,
                                        @Nonnull final TimeInstant start,
                                        @Nonnull final TimeInstant end,
@@ -188,7 +188,7 @@ public class EquidistantTimeBinsIterator<V> extends AbstractValueIterator<V> {
     }
 
     @CheckForNull
-    private INumericMetaData retrieveMetaDataForChannel(@Nonnull final IServiceProvider provider,
+    private INumericMetaData retrieveMetaDataForChannel(@Nonnull final IArchiveServiceProvider provider,
                                                         @Nonnull final String channelName) throws ArchiveServiceException, OsgiServiceUnavailableException {
         final IArchiveReaderFacade service = provider.getReaderFacade();
         final IArchiveChannel ch = service.getChannelByName(channelName);

@@ -1,3 +1,4 @@
+
 package org.csstudio.nams.service.configurationaccess.localstore;
 
 import java.io.Serializable;
@@ -28,37 +29,39 @@ public class TransactionProcessor {
 	 * A implementation of Mapper working on current session of this processors.
 	 */
 	private class MapperImpl implements Mapper {
-		private final Session session;
+		private final Session _session;
 
 		/**
 		 * Creates a new mapper with given session. No check is be done on
 		 * working if session is open!
 		 */
 		public MapperImpl(final Session session) {
-			this.session = session;
+			this._session = session;
 		}
 
 		/**
 		 * {@inheritDoc}
 		 */
-		public void delete(final NewAMSConfigurationElementDTO element)
+		@Override
+        public void delete(final NewAMSConfigurationElementDTO element)
 				throws Throwable {
 			if (element instanceof HasManuallyJoinedElements) {
 				final HasManuallyJoinedElements elementAsElementWithJoins = (HasManuallyJoinedElements) element;
 				elementAsElementWithJoins.deleteJoinLinkData(this);
 			}
 
-			this.session.delete(element);
+			this._session.delete(element);
 		}
 
 		/**
 		 * {@inheritDoc}
 		 */
-		public <T extends NewAMSConfigurationElementDTO> T findForId(
+		@Override
+        public <T extends NewAMSConfigurationElementDTO> T findForId(
 				final Class<T> clasz, final Serializable id,
 				final boolean loadManuallyJoinedMappingsIfAvailable)
 				throws Throwable {
-			final T result = this.loadForId(this.session, clasz, id);
+			final T result = this.loadForId(this._session, clasz, id);
 
 			if (loadManuallyJoinedMappingsIfAvailable) {
 				if (result instanceof HasManuallyJoinedElements) {
@@ -73,11 +76,12 @@ public class TransactionProcessor {
 		/**
 		 * {@inheritDoc}
 		 */
-		public <T extends NewAMSConfigurationElementDTO> List<T> loadAll(
+		@Override
+        public <T extends NewAMSConfigurationElementDTO> List<T> loadAll(
 				final Class<T> clasz,
 				final boolean loadManuallyJoinedMappingsIfAvailable)
 				throws Throwable {
-			final List<T> result = this.loadAll(this.session, clasz);
+			final List<T> result = this.loadAll(this._session, clasz);
 
 			if (loadManuallyJoinedMappingsIfAvailable) {
 				for (final T element : result) {
@@ -94,9 +98,10 @@ public class TransactionProcessor {
 		/**
 		 * {@inheritDoc}
 		 */
-		public void save(final NewAMSConfigurationElementDTO element)
+		@Override
+        public void save(final NewAMSConfigurationElementDTO element)
 				throws Throwable {
-			this.session.saveOrUpdate(element);
+			this._session.saveOrUpdate(element);
 
 			if (element instanceof HasManuallyJoinedElements) {
 				final HasManuallyJoinedElements elementAsElementWithJoins = (HasManuallyJoinedElements) element;
@@ -129,7 +134,7 @@ public class TransactionProcessor {
 	/**
 	 * The session factory used to open sessions.
 	 */
-	private final SessionFactory sessionFactory;
+	private final SessionFactory _sessionFactory;
 
 	/**
 	 * The lock used to lock the transactive behaviour of unit of works.
@@ -139,16 +144,15 @@ public class TransactionProcessor {
 	/**
 	 * The logger to log to. TODO Produce log output
 	 */
-	@SuppressWarnings("unused")
-	private final Logger logger;
+	private final Logger _logger;
 
 	/**
 	 * Creates an instance for given Hibernate {@link SessionFactory}.
 	 */
 	public TransactionProcessor(final SessionFactory sessionFactory,
 			final Logger logger) {
-		this.sessionFactory = sessionFactory;
-		this.logger = logger;
+		this._sessionFactory = sessionFactory;
+		this._logger = logger;
 		this.lock = new ReentrantLock(true);
 	}
 
@@ -173,14 +177,14 @@ public class TransactionProcessor {
 			tx = session.beginTransaction();
 			tx.begin();
 
-			this.logger.logDebugMessage(this, "Beginning unit of work of type "
+			this._logger.logDebugMessage(this, "Beginning unit of work of type "
 					+ work.getClass().getName() + "...");
 			result = work.doWork(new MapperImpl(session));
-			this.logger.logDebugMessage(this, "... done.");
+			this._logger.logDebugMessage(this, "... done.");
 
 			tx.commit();
 		} catch (final Throwable e) {
-			this.logger.logInfoMessage(this,
+			this._logger.logInfoMessage(this,
 					"Error occurred in work process...", e);
 			try {
 				tx.rollback();
@@ -225,7 +229,7 @@ public class TransactionProcessor {
 	 */
 	private Session openNewSession() throws Throwable {
 		Session result = null;
-		result = this.sessionFactory.openSession();
+		result = this._sessionFactory.openSession();
 		result.setCacheMode(CacheMode.IGNORE);
 		result.setFlushMode(FlushMode.COMMIT);
 		return result;

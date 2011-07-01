@@ -1,3 +1,4 @@
+
 package org.csstudio.nams.configurator.views;
 
 import org.eclipse.jface.action.IAction;
@@ -12,15 +13,17 @@ public class ShowAMS implements IWorkbenchWindowActionDelegate {
     /** A workbench window handle. */
     private IWorkbenchWindow _window;
 
+    @Override
     public void dispose() {
         // TODO Auto-generated method stub
-
     }
 
+    @Override
     public void init(IWorkbenchWindow window) {
         _window = window;
     }
 
+    @Override
     public void run(IAction action) {
         try {
             PlatformUI.getWorkbench().showPerspective(
@@ -31,9 +34,8 @@ public class ShowAMS implements IWorkbenchWindowActionDelegate {
         }
     }
 
+    @Override
     public void selectionChanged(IAction action, ISelection selection) {
         // TODO Auto-generated method stub
-
     }
-
 }

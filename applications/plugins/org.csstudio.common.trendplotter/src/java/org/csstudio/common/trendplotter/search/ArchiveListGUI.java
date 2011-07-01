@@ -10,8 +10,8 @@ package org.csstudio.common.trendplotter.search;
 import java.util.ArrayList;
 import java.util.Arrays;
 
-import org.csstudio.archivereader.ArchiveInfo;
-import org.csstudio.archivereader.ArchiveReader;
+import org.csstudio.archive.reader.ArchiveInfo;
+import org.csstudio.archive.reader.ArchiveReader;
 import org.csstudio.common.trendplotter.Messages;
 import org.csstudio.common.trendplotter.archive.ConnectJob;
 import org.csstudio.common.trendplotter.model.ArchiveDataSource;

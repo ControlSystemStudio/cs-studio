@@ -32,3 +32,4 @@ Export-Package: org.csstudio.platform,
 Bundle-ClassPath: .
 Bundle-ActivationPolicy: lazy
 Import-Package: javax.jms
+Eclipse-RegisterBuddy: org.apache.log4j

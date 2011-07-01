@@ -1,3 +1,4 @@
+
 package org.csstudio.nams.service.regelwerkbuilder;
 
 import org.csstudio.nams.common.activatorUtils.AbstractBundleActivator;

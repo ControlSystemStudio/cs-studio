@@ -43,6 +43,7 @@ public class LiveSamples extends PlotSamples
     /** @param sample Sample to add to ring buffer */
     synchronized void add(final PlotSample sample)
     {
+        sample.setDeadband(deadband);
         samples.add(sample);
         have_new_samples = true;
     }

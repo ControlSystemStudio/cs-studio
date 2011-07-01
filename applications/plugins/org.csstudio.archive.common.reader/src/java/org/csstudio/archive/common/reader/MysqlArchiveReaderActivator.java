@@ -117,7 +117,7 @@ public class MysqlArchiveReaderActivator implements BundleActivator {
         final IArchiveReaderFacade service =
             (IArchiveReaderFacade) _archiveReaderServiceTracker.getService();
         if (service == null) {
-            throw new OsgiServiceUnavailableException("Archive writer service unavailable.");
+            throw new OsgiServiceUnavailableException("Archive reader service unavailable.");
         }
         return service;
     }

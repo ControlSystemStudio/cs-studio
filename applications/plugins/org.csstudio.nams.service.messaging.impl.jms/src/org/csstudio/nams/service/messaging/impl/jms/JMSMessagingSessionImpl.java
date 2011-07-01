@@ -1,3 +1,4 @@
+
 package org.csstudio.nams.service.messaging.impl.jms;
 
 import java.util.Hashtable;
@@ -74,13 +75,15 @@ public class JMSMessagingSessionImpl implements MessagingSession {
 		this.isClosed = false;
 	}
 
-	public void close() {
+	@Override
+    public void close() {
 		Contract.require(!this.isClosed(), "!this.isClosed()");
 		for (final Session session : this.sessions) {
 			if (session != null) {
 				try {
 					session.close();
 				} catch (final JMSException e) {
+				    // Can be ignored
 				}
 			}
 		}
@@ -90,6 +93,7 @@ public class JMSMessagingSessionImpl implements MessagingSession {
 				try {
 					connection.close();
 				} catch (final JMSException e) {
+				    // Can be ignored
 				}
 			}
 		}
@@ -100,6 +104,7 @@ public class JMSMessagingSessionImpl implements MessagingSession {
 				try {
 					context.close();
 				} catch (final NamingException e) {
+				    // Can be ignored
 				}
 			}
 		}
@@ -107,7 +112,8 @@ public class JMSMessagingSessionImpl implements MessagingSession {
 		this.isClosed = true;
 	}
 
-	public Consumer createConsumer(final String messageSourceName,
+	@Override
+    public Consumer createConsumer(final String messageSourceName,
 			final PostfachArt artDesPostfaches) throws MessagingException {
 
 		JMSConsumer consumer;
@@ -122,7 +128,8 @@ public class JMSMessagingSessionImpl implements MessagingSession {
 		return consumer;
 	}
 
-	public Producer createProducer(final String messageDestinationName,
+	@Override
+    public Producer createProducer(final String messageDestinationName,
 			final PostfachArt artDesPostfaches) throws MessagingException {
 
 		JMSProducer producer;
@@ -137,8 +144,8 @@ public class JMSMessagingSessionImpl implements MessagingSession {
 		return producer;
 	}
 
-	public boolean isClosed() {
+	@Override
+    public boolean isClosed() {
 		return this.isClosed;
 	}
-
 }

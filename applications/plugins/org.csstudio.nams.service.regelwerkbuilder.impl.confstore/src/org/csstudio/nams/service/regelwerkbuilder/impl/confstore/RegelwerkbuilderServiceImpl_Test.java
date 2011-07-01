@@ -1,3 +1,4 @@
+
 package org.csstudio.nams.service.regelwerkbuilder.impl.confstore;
 
 import java.util.ArrayList;
@@ -59,42 +60,51 @@ public class RegelwerkbuilderServiceImpl_Test extends TestCase {
 		RegelwerkBuilderServiceImpl
 				.staticInject(new IProcessVariableConnectionService() {
 
-					public List<IConnector> getConnectors() {
+					@Override
+                    public List<IConnector> getConnectors() {
 						return null;
 					}
 
-					public SettableState checkWriteAccessSynchronously(IProcessVariableAddress pv) {
+					@Override
+                    public SettableState checkWriteAccessSynchronously(IProcessVariableAddress pv) {
 						return null;
 					}
 
+					@Override
 					public void readValueAsynchronously(IProcessVariableAddress processVariableAddress, ValueType valueType,
 							IProcessVariableValueListener listener) {
 						
 					}
 
+					@Override
 					public <E> E readValueSynchronously(IProcessVariableAddress processVariableAddress, ValueType valueType)
 							throws ConnectionException {
 						return null;
 					}
 
+					@Override
 					public void register(IProcessVariableValueListener listener, IProcessVariableAddress pv, ValueType valueType) {
 						
 					}
 
+					@Override
 					public void unregister(IProcessVariableValueListener listener) {
 						
 					}
 
+					@Override
 					public void writeValueAsynchronously(IProcessVariableAddress processVariableAddress, Object value,
 							ValueType expectedValueType, IProcessVariableWriteListener listener) {
 						
 					}
 
+					@Override
 					public boolean writeValueSynchronously(IProcessVariableAddress processVariableAddress, Object value, ValueType expectedValueType) {
 						Assert.fail("unexpected call of method.");
 						return false;
 					}
 
+					@Override
 					public int getNumberOfActiveConnectors() {
 						// TODO Auto-generated method stub
 						return 0;
@@ -105,47 +115,55 @@ public class RegelwerkbuilderServiceImpl_Test extends TestCase {
 		RegelwerkBuilderServiceImpl
 				.staticInject(new LocalStoreConfigurationService() {
 
-					public void deleteDTO(NewAMSConfigurationElementDTO dto)
+					@Override
+                    public void deleteDTO(NewAMSConfigurationElementDTO dto)
 							throws StorageError, StorageException,
 							InconsistentConfigurationException {
 
 					}
 
-					public ReplicationStateDTO getCurrentReplicationState()
-							throws StorageError, StorageException,
-							InconsistentConfigurationException {
-						return null;
-					}
-
-					public Configuration getEntireConfiguration()
+					@Override
+                    public ReplicationStateDTO getCurrentReplicationState()
 							throws StorageError, StorageException,
 							InconsistentConfigurationException {
 						return null;
 					}
 
-					public FilterConfiguration getEntireFilterConfiguration()
+					@Override
+                    public Configuration getEntireConfiguration()
 							throws StorageError, StorageException,
 							InconsistentConfigurationException {
 						return null;
 					}
 
-					public void prepareSynchonization() throws StorageError,
+					@Override
+                    public FilterConfiguration getEntireFilterConfiguration()
+							throws StorageError, StorageException,
+							InconsistentConfigurationException {
+						return null;
+					}
+
+					@Override
+                    public void prepareSynchonization() throws StorageError,
 							StorageException,
 							InconsistentConfigurationException {
 					}
 
-					public void saveCurrentReplicationState(
+					@Override
+                    public void saveCurrentReplicationState(
 							ReplicationStateDTO currentState)
 							throws StorageError, StorageException,
 							UnknownConfigurationElementError {
 					}
 
-					public void saveDTO(NewAMSConfigurationElementDTO dto)
+					@Override
+                    public void saveDTO(NewAMSConfigurationElementDTO dto)
 							throws StorageError, StorageException,
 							InconsistentConfigurationException {
 					}
 
-					public void saveHistoryDTO(HistoryDTO historyDTO)
+					@Override
+                    public void saveHistoryDTO(HistoryDTO historyDTO)
 							throws StorageError, StorageException,
 							InconsistentConfigurationException {
 					}

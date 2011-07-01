@@ -1,3 +1,4 @@
+
 package org.csstudio.nams.configurator.composite;
 
 import java.util.Arrays;
@@ -155,7 +156,8 @@ public abstract class FilterableBeanList {
 				this.gruppenCombo
 						.addSelectionChangedListener(new ISelectionChangedListener() {
 
-							public void selectionChanged(
+							@Override
+                            public void selectionChanged(
 									final SelectionChangedEvent event) {
 								final IStructuredSelection selection = (IStructuredSelection) event
 										.getSelection();
@@ -173,7 +175,8 @@ public abstract class FilterableBeanList {
 				GridDataFactory.fillDefaults().grab(true, false)
 						.applyTo(filter);
 				filter.addListener(SWT.Modify, new Listener() {
-					public void handleEvent(final Event event) {
+					@Override
+                    public void handleEvent(final Event event) {
 						FilterableBeanList.this.filterkriterium = filter
 								.getText();
 						FilterableBeanList.this.table.refresh();
@@ -192,7 +195,8 @@ public abstract class FilterableBeanList {
 			this.updateView();
 			this.table.setFilters(new ViewerFilter[] { new TableFilter() });
 			this.table.addDoubleClickListener(new IDoubleClickListener() {
-				public void doubleClick(final DoubleClickEvent event) {
+				@Override
+                public void doubleClick(final DoubleClickEvent event) {
 					FilterableBeanList.this.openEditor(event);
 				}
 			});
