@@ -77,6 +77,14 @@
             </fileset>
         </copy>
 
+    	<echo>SNS plugins</echo>
+        <copy todir="${build_dir}/plugins" overwrite="true">
+             <fileset dir="${repo_dir}/products/SNS/plugins" includesfile="plugins.list">
+                 <exclude name="**/bin/**"/>
+                 <exclude name="**/classes/**"/>
+            </fileset>
+        </copy>
+
     	<echo>KEK plugins</echo>
         <copy todir="${build_dir}/plugins" overwrite="true">
              <fileset dir="${repo_dir}/products/KEK/plugins" includesfile="plugins.list">

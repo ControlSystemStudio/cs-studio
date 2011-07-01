@@ -51,6 +51,7 @@ org.csstudio.platform.libs.jms/**
 org.csstudio.platform.utility.jms/**
 org.csstudio.platform.utility.rdb/**
 org.csstudio.startup/**
+org.csstudio.sns.jms2rdb/**
 org.csstudio.swt.chart/**
 org.csstudio.swt.widgets/**
 org.csstudio.swt.xygraph/**

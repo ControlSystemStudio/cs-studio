@@ -17,7 +17,7 @@ $ANT clean
 echo Fetching sources
 $ANT get_sources
 
-for prod in css archiveengine
+for prod in css archiveengine jms2rdb
 do
 	echo Building $prod Product
 	java -jar $ECLIPSE/plugins/org.eclipse.equinox.launcher_*.jar \
