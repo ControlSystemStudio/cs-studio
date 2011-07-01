@@ -127,7 +127,7 @@ public class CachedConstructorPerformanceUnitTest {
                 TestDBRType instance = type.newInstanceImproved(i);
                 r += instance.getCount();  // avoid compiler optimization for non used/referred to objects
             }
-            System.out.println(r); // avoid compiler optimization for non used/referred to objects
+            System.out.println("syso to avoid compiler opt:" + r); // avoid compiler optimization for non used/referred to objects
             cachedConstructorPerf = watch.getElapsedTimeInNS();
         } catch (final Exception e) {
             Assert.fail("Unexpected exception.");
