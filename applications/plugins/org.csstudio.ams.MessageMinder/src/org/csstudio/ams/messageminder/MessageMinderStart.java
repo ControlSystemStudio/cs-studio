@@ -76,6 +76,8 @@ public final class MessageMinderStart implements IApplication, IGenericServiceLi
         
         CentralLogger.getInstance().info(this, "MessageMinder started...");
 
+        MessageMinderActivator.getDefault().addSessionServiceListener(this);
+        
         _commander = new MessageGuardCommander("MessageMinder");
         _commander.schedule();
         
