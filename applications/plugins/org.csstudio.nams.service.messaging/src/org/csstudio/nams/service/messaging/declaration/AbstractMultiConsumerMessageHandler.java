@@ -1,3 +1,4 @@
+
 package org.csstudio.nams.service.messaging.declaration;
 
 import java.util.LinkedList;
