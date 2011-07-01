@@ -6,16 +6,24 @@
       provider-name="Kay Kasemir &lt;kasemirk@ornl.gov&gt; - SNS">
 
    <description url="http://www.example.com/description">
-      [Enter Feature Description here.]
+      CSS applications for KEK/J-PARC
    </description>
 
-   <copyright url="http://www.example.com/copyright">
-      [Enter Copyright Description here.]
-   </copyright>
-
-   <license url="http://www.example.com/license">
-      [Enter License Description here.]
+   <license url="http://www.eclipse.org/legal/epl-v10.html">
+      You must accept this license agreement in order to install and
+use this
+software.
+THIS SOFTWARE IS PROVIDED UNDER THIS LICENSE ON AN &quot;../AS IS&quot;
+BASIS. 
+WITHOUT WARRANTY OF ANY KIND, EXPRESSED OR IMPLIED, INCLUDING
+BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS
+FOR PARTICULAR PURPOSE AND NON-INFRINGEMENT.
+For details, see http://www.eclipse.org/legal/epl-v10.html
    </license>
+
+   <url>
+      <update label="KEK/J-PARC Update Site" url="http://www-linac.kek.jp/cont/css/updates"/>
+   </url>
 
    <includes
          id="org.csstudio.opibuilder.feature"
