@@ -1,5 +1,6 @@
 package org.csstudio.utility.treemodel;
 
+import javax.annotation.CheckForNull;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
@@ -8,21 +9,21 @@ import org.osgi.framework.BundleActivator;
 import org.osgi.framework.BundleContext;
 
 /**
- * Activator.
+ * TreeModelActivator.
  *
  * @author bknerr
  * @author $Author$
  * @version $Revision$
  * @since 02.06.2010
  */
-public class Activator implements BundleActivator {
+public class TreeModelActivator implements BundleActivator {
 
     /**
      * The id of this Java plug-in (value <code>{@value}</code> as defined in MANIFEST.MF.
      */
     public static final String PLUGIN_ID = "org.csstudio.utility.treemodel";
 
-    private static Activator INSTANCE;
+    private static TreeModelActivator INSTANCE;
 
     private Bundle _bundle;
 
@@ -30,9 +31,9 @@ public class Activator implements BundleActivator {
      * Don't instantiate.
      * Called by framework.
      */
-    public Activator() {
+    public TreeModelActivator() {
         if (INSTANCE != null) {
-            throw new IllegalStateException("Activator " + PLUGIN_ID + " does already exist.");
+            throw new IllegalStateException("TreeModelActivator " + PLUGIN_ID + " does already exist.");
         }
         INSTANCE = this; // Antipattern is required by the framework!
     }
@@ -72,10 +73,11 @@ public class Activator implements BundleActivator {
      * @return the instance
      */
     @Nonnull
-    public static Activator getDefault() {
+    public static TreeModelActivator getDefault() {
         return INSTANCE;
     }
 
+    @CheckForNull
     public Bundle getBundle() {
         return _bundle;
     }

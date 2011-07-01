@@ -124,6 +124,7 @@ public abstract class AbstractTreeNodeComponent<T extends Enum<T> & ITreeNodeCon
      * {@inheritDoc}
      */
     @Override
+    @Nonnull
     public Attributes getAttributes() {
         return (Attributes) _attributes.clone();
     }

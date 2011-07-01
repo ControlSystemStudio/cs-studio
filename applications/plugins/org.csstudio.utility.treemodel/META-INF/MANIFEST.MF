@@ -3,7 +3,7 @@ Bundle-ManifestVersion: 2
 Bundle-Name: Treemodel
 Bundle-SymbolicName: org.csstudio.utility.treemodel
 Bundle-Version: 1.3.0.qualifier
-Bundle-Activator: org.csstudio.utility.treemodel.Activator
+Bundle-Activator: org.csstudio.utility.treemodel.TreeModelActivator
 Bundle-ActivationPolicy: lazy
 Import-Package: org.osgi.framework;version="1.3.0"
 Export-Package: org.csstudio.utility.treemodel,

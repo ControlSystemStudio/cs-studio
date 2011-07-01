@@ -186,6 +186,7 @@ public enum TestTreeConfiguration implements ITreeNodeConfiguration<TestTreeConf
      * {@inheritDoc}
      */
     @Override
+    @Nonnull
     public ImmutableSet<String> getAttributes() {
         return ImmutableSet.<String>builder().build();
     }

@@ -55,7 +55,7 @@ public final class TreeModelTestUtils {
 
     @CheckForNull
     public static URL findResource(@Nonnull final String path) {
-        final Bundle bundle = Platform.getBundle(Activator.PLUGIN_ID);
+        final Bundle bundle = Platform.getBundle(TreeModelActivator.PLUGIN_ID);
         return bundle.getResource(path);
     }
 

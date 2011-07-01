@@ -31,6 +31,8 @@ import java.io.InputStream;
 import java.net.URL;
 import java.util.Enumeration;
 
+import javax.annotation.Nonnull;
+
 import junit.framework.Assert;
 
 import org.csstudio.utility.treemodel.builder.TestTreeConfiguration;
@@ -87,7 +89,8 @@ public class ContentModelExporterHeadlessTest {
         IMPORTED_DOC = getDomTreeOfResource(resource);
     }
 
-    private static Document getDomTreeOfResource(final URL resource) {
+    @Nonnull
+    private static Document getDomTreeOfResource(@Nonnull final URL resource) {
         InputStream stream = null;
         Document doc = null;
         // Get DOM tree of imported test file via JDOM
@@ -119,8 +122,8 @@ public class ContentModelExporterHeadlessTest {
     @Test
     public void testExportContentModelToFile() throws IOException {
 
-        final Bundle bundle = Platform.getBundle(Activator.PLUGIN_ID);
-        Assert.assertNotNull("Bundle " + Activator.PLUGIN_ID + " is null!", bundle);
+        final Bundle bundle = Platform.getBundle(TreeModelActivator.PLUGIN_ID);
+        Assert.assertNotNull("Bundle " + TreeModelActivator.PLUGIN_ID + " is null!", bundle);
         final String fileSeparator = "/";
         final Enumeration<URL> xmlEntries = bundle.findEntries(fileSeparator, "*.xml", true);
         Assert.assertTrue("No xml entries found!", xmlEntries.hasMoreElements());
