@@ -191,9 +191,19 @@ public class MasterEditor extends AbstractGsdNodeEditor {
             
             @Override
             public void modifyText(@Nonnull final ModifyEvent e) {
-                int value = (Integer.parseInt(_maxSlaveInputLenText.getText()) + Integer
-                        .parseInt(_maxSlaveOutputLenText.getText()))
-                        * Integer.parseInt(_maxNrSlaveText.getText());
+                String text = _maxSlaveInputLenText.getText();
+                int value = 0;
+                if(text.trim().length() > 0) {
+                    value = +Integer.parseInt(text);
+                }
+                text = _maxSlaveOutputLenText.getText();
+                if(text.trim().length() > 0) {
+                    value = +Integer.parseInt(text);
+                }
+                text = _maxNrSlaveText.getText();
+                if(text.trim().length() > 0) {
+                    value = +Integer.parseInt(text);
+                }
                 _maxCalcText.setText(String.format("%1$d < %2$d = %3$b",
                                                    value,
                                                    limit,
