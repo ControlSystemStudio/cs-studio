@@ -9,10 +9,15 @@ org.csstudio.alarm.beast.ui.alarmtree/**
 org.csstudio.alarm.beast.ui.globaltable/**
 org.csstudio.apputil.ui/**
 org.csstudio.apputil/**
+org.csstudio.archive.config/**
+org.csstudio.archive.config.rdb/**
+org.csstudio.archive.engine/**
 org.csstudio.archive.rdb/**
 org.csstudio.archive.reader.channelarchiver/**
-org.csstudio.archive.reader.rdb/**
 org.csstudio.archive.reader/**
+org.csstudio.archive.reader.rdb/**
+org.csstudio.archive.writer/**
+org.csstudio.archive.writer.rdb/**
 org.csstudio.auth.ui/**
 org.csstudio.auth/**
 org.csstudio.csdata.clipboard/**
@@ -60,6 +65,7 @@ org.csstudio.ui.util/**
 org.csstudio.utility.adlParser/**
 org.csstudio.utility.clock/**
 org.csstudio.utility.eliza/**
+org.csstudio.utility.httpd/**
 org.csstudio.utility.speech/**
 org.csstudio.utility.product/**
 org.csstudio.utility.pv.epics/**
