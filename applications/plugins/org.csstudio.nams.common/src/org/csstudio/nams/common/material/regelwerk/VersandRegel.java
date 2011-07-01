@@ -1,3 +1,4 @@
+
 /* 
  * Copyright (c) 2008 C1 WPS mbH, 
  * HAMBURG, GERMANY.
@@ -22,6 +23,7 @@
  * MAY FIND A COPY AT
  * {@link http://www.eclipse.org/org/documents/epl-v10.html}.
  */
+
 package org.csstudio.nams.common.material.regelwerk;
 
 import org.csstudio.nams.common.fachwert.Millisekunden;
@@ -41,9 +43,8 @@ public interface VersandRegel {
 	 * Führt eine erneute Evaluation aufgrund einer Benachrichtigung durch die
 	 * Assistenz durch.
 	 * 
-	 * @param nachricht
 	 * @param bisherigesErgebnis
-	 * @param verstricheneZeit
+	 * @param verstricheneZeitSeitErsterPruefung
 	 *            seit der ersten Pruefung verstrichene Millisekunden
 	 * @return Die Anzahl der Millisekunden, bis diese Operation erneut gerufen
 	 *         werden soll, falls der Vorgang nicht vorher abgeschlossen werden

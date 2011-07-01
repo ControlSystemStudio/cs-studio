@@ -1,3 +1,4 @@
+
 package org.csstudio.nams.service.messaging.declaration;
 
 import java.util.LinkedList;
@@ -68,20 +69,22 @@ public class MultiConsumersConsumer implements Consumer {
 		this.isClosed = false;
 	}
 
-	public void close() {
+	@Override
+    public void close() {
 		for (final StepByStepProcessor processor : this.processors) {
 			processor.stopWorking();
 		}
 		this.isClosed = true;
 	}
 
-	public boolean isClosed() {
+	@Override
+    public boolean isClosed() {
 		return this.isClosed;
 	}
 
-	public NAMSMessage receiveMessage() throws MessagingException,
+	@Override
+    public NAMSMessage receiveMessage() throws MessagingException,
 			InterruptedException {
 		return this.queue.take();
 	}
-
 }

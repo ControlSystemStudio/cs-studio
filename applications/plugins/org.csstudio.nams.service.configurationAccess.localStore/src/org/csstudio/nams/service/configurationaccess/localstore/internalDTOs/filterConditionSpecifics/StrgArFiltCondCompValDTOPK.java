@@ -1,3 +1,4 @@
+
 package org.csstudio.nams.service.configurationaccess.localstore.internalDTOs.filterConditionSpecifics;
 
 import java.io.Serializable;
@@ -74,5 +75,4 @@ public class StrgArFiltCondCompValDTOPK implements
 	public void setFilterConditionRef(final int filterConditionRef) {
 		this.filterConditionRef = filterConditionRef;
 	}
-
 }

@@ -1,6 +1,6 @@
+
 package org.csstudio.nams.configurator.beans;
 
-import org.csstudio.nams.configurator.Messages;
 import org.csstudio.nams.service.configurationaccess.localstore.declaration.filterActions.FilterActionType;
 
 public abstract class AbstractFilterAction<Type extends FilterActionType>
@@ -11,8 +11,8 @@ public abstract class AbstractFilterAction<Type extends FilterActionType>
 	protected IReceiverBean receiver;
 	protected final Class<Type> clazz;
 
-	protected AbstractFilterAction(final Class<Type> clazz) {
-		this.clazz = clazz;
+	protected AbstractFilterAction(final Class<Type> c) {
+		this.clazz = c;
 	}
 
 	@Override
@@ -62,19 +62,23 @@ public abstract class AbstractFilterAction<Type extends FilterActionType>
 		return true;
 	}
 
-	public String getEmpfaengerName() {
+	@Override
+    public String getEmpfaengerName() {
 		return this.receiver.getDisplayName();
 	}
 
-	public FilterActionType getFilterActionType() {
+	@Override
+    public FilterActionType getFilterActionType() {
 		return this.type;
 	}
 
-	public String getMessage() {
+	@Override
+    public String getMessage() {
 		return this.message;
 	}
 
-	public IReceiverBean getReceiver() {
+	@Override
+    public IReceiverBean getReceiver() {
 		return this.receiver;
 	}
 
@@ -93,22 +97,25 @@ public abstract class AbstractFilterAction<Type extends FilterActionType>
 		return result;
 	}
 
-	public void setMessage(final String message) {
-		this.message = message;
+	@Override
+    public void setMessage(final String m) {
+		this.message = m;
 	}
 
-	public void setReceiver(final IReceiverBean receiver) {
-		this.receiver = receiver;
+	@Override
+    public void setReceiver(final IReceiverBean r) {
+		this.receiver = r;
 	}
 
-	@SuppressWarnings("unchecked") //$NON-NLS-1$
-	public void setType(final FilterActionType type) {
-		if (this.clazz.isInstance(type)) {
-			this.type = (Type) type;
+	@Override
+    @SuppressWarnings("unchecked") //$NON-NLS-1$
+	public void setType(final FilterActionType t) {
+		if (this.clazz.isInstance(t)) {
+			this.type = (Type) t;
 		} else {
 			throw new IllegalArgumentException(
 					"FilterAction does not support FilterActionType " //$NON-NLS-1$
-							+ type.getClass().getSimpleName());
+							+ t.getClass().getSimpleName());
 		}
 	}
 }

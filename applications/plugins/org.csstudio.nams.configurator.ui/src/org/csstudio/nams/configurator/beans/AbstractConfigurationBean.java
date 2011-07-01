@@ -1,3 +1,4 @@
+
 package org.csstudio.nams.configurator.beans;
 
 import java.beans.PropertyChangeListener;
@@ -31,7 +32,8 @@ public abstract class AbstractConfigurationBean<T extends AbstractConfigurationB
 
 	private String rubrikName = ""; //$NON-NLS-1$
 
-	public void addPropertyChangeListener(final PropertyChangeListener listener) {
+	@Override
+    public void addPropertyChangeListener(final PropertyChangeListener listener) {
 		this.pcs.addPropertyChangeListener(listener);
 	}
 
@@ -47,7 +49,8 @@ public abstract class AbstractConfigurationBean<T extends AbstractConfigurationB
 		this.pcs = new PropertyChangeSupport(this);
 	}
 
-	public int compareTo(final T o) {
+	@Override
+    public int compareTo(final T o) {
 		return this.getDisplayName().compareTo(o.getDisplayName());
 	}
 
@@ -73,7 +76,8 @@ public abstract class AbstractConfigurationBean<T extends AbstractConfigurationB
 		return true;
 	}
 
-	@SuppressWarnings("unchecked") //$NON-NLS-1$
+	@Override
+    @SuppressWarnings("unchecked") //$NON-NLS-1$
 	public T getClone() {
 		T cloneBean = null;
 		try {
@@ -87,11 +91,13 @@ public abstract class AbstractConfigurationBean<T extends AbstractConfigurationB
 		return cloneBean;
 	}
 
-	public PropertyChangeSupport getPropertyChangeSupport() {
+	@Override
+    public PropertyChangeSupport getPropertyChangeSupport() {
 		return this.pcs;
 	}
 
-	public String getRubrikName() {
+	@Override
+    public String getRubrikName() {
 		return this.rubrikName;
 	}
 
@@ -104,7 +110,8 @@ public abstract class AbstractConfigurationBean<T extends AbstractConfigurationB
 		return result;
 	}
 
-	public void removePropertyChangeListener(
+	@Override
+    public void removePropertyChangeListener(
 			final PropertyChangeListener listener) {
 		this.pcs.removePropertyChangeListener(listener);
 	}

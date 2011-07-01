@@ -1,3 +1,4 @@
+
 package org.csstudio.nams.common.material.regelwerk;
 
 import org.csstudio.nams.common.fachwert.Millisekunden;
@@ -30,5 +31,4 @@ public interface Regelwerk {
 
 	void pruefeNachrichtErstmalig(AlarmNachricht alarmNachricht,
 			Pruefliste pruefliste);
-
 }

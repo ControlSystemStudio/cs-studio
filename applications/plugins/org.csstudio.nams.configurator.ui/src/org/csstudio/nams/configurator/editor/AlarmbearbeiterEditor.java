@@ -1,3 +1,4 @@
+
 package org.csstudio.nams.configurator.editor;
 
 import org.csstudio.nams.common.fachwert.RubrikTypeEnum;
@@ -91,7 +92,7 @@ public class AlarmbearbeiterEditor extends AbstractEditor<AlarmbearbeiterBean> {
 
 	@Override
 	protected void doInit(final IEditorSite site, final IEditorInput input) {
-
+	    // Nothing to do
 	}
 
 	@Override
