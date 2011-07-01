@@ -7,10 +7,12 @@ find ../applications -maxdepth 2 | xargs -I {} bash -c "echo {}; ls {} -1a | wc 
 BROKENPLUGINS=`wc -l < $TEMPFILE`
 if [[ $BROKENPLUGINS == "0" ]]
 then
+rm -f $TEMPFILE
 exit 0
 else
 echo Found plug-ins with just one file/directory:
 cat $TEMPFILE
+rm -f $TEMPFILE
 exit -1
 fi
 
