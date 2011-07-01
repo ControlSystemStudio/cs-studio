@@ -63,7 +63,7 @@ public final class GraphicsUtil {
 			Image image = null;
 			try {
 				image = SingleSourceHelper.createVerticalTextImage(text,
-						graphics.getFont(), upToDown);
+						graphics.getFont(), graphics.getForegroundColor().getRGB(), upToDown);
 				graphics.drawImage(image, x, y);
 
 			} finally {

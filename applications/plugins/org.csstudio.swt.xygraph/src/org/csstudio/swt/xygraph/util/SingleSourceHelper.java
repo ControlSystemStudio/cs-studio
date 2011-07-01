@@ -5,6 +5,7 @@ import org.eclipse.swt.graphics.Cursor;
 import org.eclipse.swt.graphics.Font;
 import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.graphics.ImageData;
+import org.eclipse.swt.graphics.RGB;
 import org.eclipse.swt.widgets.Display;
 
 public abstract class SingleSourceHelper {
@@ -21,8 +22,8 @@ public abstract class SingleSourceHelper {
 		return IMPL.createInternalCursor(display, imageData, width, height);
 	}
 	
-	public static Image createVerticalTextImage(String text, Font font, boolean upToDown){
-		return IMPL.createInternalVerticalTextImage(text, font, upToDown);
+	public static Image createVerticalTextImage(String text, Font font, RGB color, boolean upToDown){
+		return IMPL.createInternalVerticalTextImage(text, font, color, upToDown);
 	}
 	
 	public static Image getXYGraphSnapShot(XYGraph xyGraph){
@@ -40,7 +41,7 @@ public abstract class SingleSourceHelper {
 			Display display, ImageData imageData, int width, int height);
 	
 	protected abstract Image createInternalVerticalTextImage(
-			String text, Font font, boolean upToDown);
+			String text, Font font, RGB color, boolean upToDown);
 	
 	protected abstract Image getInternalXYGraphSnapShot(XYGraph xyGraph);
 	
