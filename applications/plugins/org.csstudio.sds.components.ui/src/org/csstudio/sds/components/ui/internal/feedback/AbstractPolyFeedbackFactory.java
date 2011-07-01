@@ -234,7 +234,7 @@ abstract class AbstractPolyFeedbackFactory implements
 
 		// the points are viewer relative and need to be translated to the
 		// specified bounds, to reflect zoom level, scrollbar occurence etc.
-		points = PointListHelper.scaleTo(points, correctedBounds, request);
+		points = PointListHelper.scaleTo(points, correctedBounds);
 
 		return new ChangePolyPointsCommand(abstractPolyElement, points);
 	}
