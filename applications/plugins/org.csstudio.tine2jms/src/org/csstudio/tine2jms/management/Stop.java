@@ -32,23 +32,20 @@ import org.csstudio.tine2jms.Stoppable;
  * @author Markus Moeller
  *
  */
-public class Stop implements IManagementCommand
-{
+public class Stop implements IManagementCommand {
+    
     private static Stoppable objectToBeStopped = null;
 
     /* (non-Javadoc)
      * @see org.csstudio.platform.management.IManagementCommand#execute(org.csstudio.platform.management.CommandParameters)
      */
     @Override
-    public CommandResult execute(CommandParameters parameters)
-    {
+    public CommandResult execute(CommandParameters parameters) {
         objectToBeStopped.stopWorking();
-        
         return CommandResult.createMessageResult("Tine2Jms is stopping.");
     }
 
-    public static void staticInject(Stoppable obj)
-    {
+    public static void staticInject(Stoppable obj) {
         objectToBeStopped = obj;
     }
 }
