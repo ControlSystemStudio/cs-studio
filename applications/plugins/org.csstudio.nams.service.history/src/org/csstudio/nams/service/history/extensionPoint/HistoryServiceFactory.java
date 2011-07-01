@@ -1,3 +1,4 @@
+
 package org.csstudio.nams.service.history.extensionPoint;
 
 import org.csstudio.nams.service.history.declaration.HistoryService;
