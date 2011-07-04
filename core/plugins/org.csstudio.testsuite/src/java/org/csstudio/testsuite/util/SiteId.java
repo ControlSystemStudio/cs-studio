@@ -39,6 +39,8 @@ public enum SiteId {
     ITER("iter"),
     BNL("bnl");
 
+    public static final String JVM_ARG_KEY = "siteId";
+    
     private final String _prefix;
 
     /**

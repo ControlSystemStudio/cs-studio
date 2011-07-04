@@ -92,7 +92,7 @@ public final class TestResourceLocator {
                                                        @Nonnull final String pluginName,
                                                        @Nonnull final String pathUnderPluginWorkspace) {
         
-        File fromPluginToPluginPath = new File("./../../../" + domain.getPath() + "/plugins/" + pluginName);
+        final File fromPluginToPluginPath = new File("./../../../" + domain.getPath() + "/plugins/" + pluginName);
         return new File(fromPluginToPluginPath, pathUnderPluginWorkspace).getAbsolutePath(); 
     }
     
