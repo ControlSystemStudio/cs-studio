@@ -13,6 +13,8 @@ import java.util.List;
 import java.util.Timer;
 import java.util.TimerTask;
 
+import javax.annotation.Nonnull;
+
 import org.csstudio.apputil.xml.DOMHelper;
 import org.csstudio.apputil.xml.XMLWriter;
 import org.csstudio.archive.common.service.ArchiveServiceException;
@@ -32,6 +34,7 @@ import org.csstudio.domain.desy.service.osgi.OsgiServiceUnavailableException;
 import org.csstudio.utility.pv.PV;
 import org.csstudio.utility.pv.PVFactory;
 import org.csstudio.utility.pv.PVListener;
+import org.eclipse.swt.widgets.Display;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.w3c.dom.Element;
@@ -358,16 +361,38 @@ public class PVItem extends ModelItem implements PVListener
             logDisconnected();
     }
 
+    private boolean first_pv_update = true;
+    private void onConnect(@Nonnull final IValue value) {
+        if (first_pv_update) {
+            first_pv_update = false;
+            if (value.getMetaData() instanceof INumericMetaData) {
+
+                INumericMetaData meta = (INumericMetaData) value.getMetaData();
+                final double displayHigh = meta.getDisplayHigh();
+                final double displayLow = meta.getDisplayLow();
+                
+                // TODO (bknerr) : That does not seem too correct 
+                Display.getDefault().asyncExec(new Runnable() {
+                    @Override
+                    public void run() {
+                        getAxis().setRange(displayLow, displayHigh);
+                    }
+                });
+            }
+        }
+    }
+    
     // PVListener
     @Override
     @SuppressWarnings("nls")
     public void pvValueUpdate(final PV pv)
     {
         final IValue value = pv.getValue();
+        
+        onConnect(value);
+
         // Cache most recent for 'scanned' operation
         current_value = value;
-        
-        System.out.println(pv.getName() + " disp high " + ((INumericMetaData)current_value.getMetaData()).getDisplayHigh());
         
         // In 'monitor' mode, add to live sample buffer
         if (period <= 0)
