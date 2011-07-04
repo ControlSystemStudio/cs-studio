@@ -40,6 +40,7 @@ public class Messages extends NLS
     public static String Pref_User;
     public static String Property;
     public static String PropertyValue_TTFmt;
+    public static String ReachedMaxPropertiesFmt;
     public static String SeqProvider_TTFmt;
     public static String ShowDetail;
     public static String TableColumnsEditor_Columns;
