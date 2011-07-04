@@ -27,18 +27,6 @@
       </command>
    </extension>
    <extension
-         id="Tine2JmsProduct"
-         point="org.eclipse.core.runtime.products">
-      <product
-            application="org.csstudio.tine2jms.Tine2Jms"
-            name="Tine2Jms">
-         <property
-               name="appName"
-               value="Tine2Jms">
-         </property>
-      </product>
-   </extension>
-   <extension
          point="org.eclipse.core.runtime.preferences">
       <initializer
             class="org.csstudio.tine2jms.preferences.PreferenceInitializer">

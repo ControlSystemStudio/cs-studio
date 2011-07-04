@@ -105,13 +105,13 @@ public class TineToJmsApplication implements IApplication,
         
         IPreferencesService preference = Platform.getPreferencesService();
 
-        int result = IApplication.EXIT_OK;
-        
-        PreferenceKeys.showPreferences();
-
         // Prepare the stop and restart action objects
         Stop.staticInject(this);
         Restart.staticInject(this);
+        
+        TineToJmsActivator.getDefault().addSessionServiceListener(this);
+        
+        context.applicationRunning();
         
         // Wait until some time for XMPP login
         synchronized(this) {
@@ -153,11 +153,12 @@ public class TineToJmsApplication implements IApplication,
             alarmMonitor[i].close();
         }
         
+        Integer exitCode = IApplication.EXIT_OK;
         if(restart) {
-            result = IApplication.EXIT_RESTART;
+            exitCode = IApplication.EXIT_RESTART;
         }
         
-        return result;
+        return exitCode;
     }
 
 

@@ -30,8 +30,8 @@ package org.csstudio.tine2jms;
 public class VersionInfo {
     
     public static final String NAME = "Tine2Jms";
-    public static final String VERSION = " 1.0.1";
-    public static final String BUILD = " - BUILD 2011-06-01 16:00";
+    public static final String VERSION = " 1.1.0";
+    public static final String BUILD = " - BUILD 2011-07-04 11:00";
     
     public static String getAll() {
         return NAME + VERSION + BUILD;
