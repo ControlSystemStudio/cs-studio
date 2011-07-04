@@ -1,14 +1,32 @@
 /*
  * PostGres SQL DDL for the BEAST Alarm Server Tables.
  *
- * chenx1@ornl.gov
- * March. 19, 2009
+ * Lana Abadie, based on original by chenx1@ornl.gov.
  *
  * Before using this file to create config tables, you must change hostname, 
  * username, password to the real name.
  * Under the directory containing this file, use this command to create the database:
  * su postgres -c "psql -q -f ALARM_POSTGRES.sql"
  */
+
+/*
+-- Alarm user who can write to the tables
+CREATE USER alarm;
+ALTER USER alarm WITH PASSWORD '$alarm';
+
+-- Read-only user for reports
+CREATE USER report WITH PASSWORD '$report';
+
+SELECT * FROM pg_user;
+
+-- The following would have to be executed _after_ creating the tables:
+GRANT SELECT, INSERT, UPDATE, DELETE
+  ON alarm_tree, command, display, guidance, pv, severity, status TO alarm;
+
+GRANT SELECT
+  ON alarm_tree, command, display, guidance, pv, severity, status  TO report;
+
+*/
 
 set client_min_messages='warning';
 
