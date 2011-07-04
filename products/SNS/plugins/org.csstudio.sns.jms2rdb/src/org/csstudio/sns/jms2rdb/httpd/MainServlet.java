@@ -50,10 +50,13 @@ public class MainServlet extends AbstractServlet
 
         html.h2("Message Count: " + log_client_thread.getMessageCount());
 
-        html.openTable(1, new String [] { "Last Error" });
-        html.tableLine(new String[] { log_client_thread.getLastError() });
-        html.closeTable();
-
+        final String last_error = log_client_thread.getLastError();
+        if (last_error.length() > 0)
+        {
+	        html.openTable(1, "Last Error");
+			html.tableLine(last_error);
+	        html.closeTable();
+        }
         final MapMessage map = log_client_thread.getLastMessage();
         if (map == null)
             return;
