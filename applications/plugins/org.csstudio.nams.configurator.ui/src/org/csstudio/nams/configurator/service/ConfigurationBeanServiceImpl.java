@@ -1,3 +1,4 @@
+
 package org.csstudio.nams.configurator.service;
 
 import java.util.ArrayList;
@@ -78,11 +79,11 @@ import org.csstudio.nams.service.logging.declaration.Logger;
 
 public class ConfigurationBeanServiceImpl implements ConfigurationBeanService {
 
-	private static Logger logger;
-	private static ConfigurationBeanService previosInstance;
+	private static Logger _logger;
+	private static ConfigurationBeanService _previosInstance;
 
 	public static void staticInject(final Logger logger) {
-		ConfigurationBeanServiceImpl.logger = logger;
+		ConfigurationBeanServiceImpl._logger = logger;
 	}
 
 	private LocalStoreConfigurationService configurationService;
@@ -102,11 +103,11 @@ public class ConfigurationBeanServiceImpl implements ConfigurationBeanService {
 	private MessageTemplateBean[] messageTemplateBeans;
 
 	public ConfigurationBeanServiceImpl() {
-		if (ConfigurationBeanServiceImpl.previosInstance != null) {
+		if (ConfigurationBeanServiceImpl._previosInstance != null) {
 			throw new RuntimeException(
 					"Could not use more than one bean service at this step of developement."); //$NON-NLS-1$
 		}
-		ConfigurationBeanServiceImpl.previosInstance = this;
+		ConfigurationBeanServiceImpl._previosInstance = this;
 	}
 
 	public void addConfigurationBeanServiceListener(
@@ -136,7 +137,7 @@ public class ConfigurationBeanServiceImpl implements ConfigurationBeanService {
 			this.loadConfiguration();
 			this.notifyDeleteListeners(bean);
 		} catch (final InconsistentConfigurationException e) {
-			ConfigurationBeanServiceImpl.logger.logErrorMessage(this,
+			ConfigurationBeanServiceImpl._logger.logErrorMessage(this,
 					"Could not Delete Entry. Entry-Type not recognized: " //$NON-NLS-1$
 							+ e.getMessage());
 			e.printStackTrace();
@@ -148,7 +149,8 @@ public class ConfigurationBeanServiceImpl implements ConfigurationBeanService {
 	 * 
 	 * @see org.csstudio.nams.configurator.modelmapping.Bubu#getAlarmBearbeiterBeans()
 	 */
-	public AlarmbearbeiterBean[] getAlarmBearbeiterBeans() {
+	@Override
+    public AlarmbearbeiterBean[] getAlarmBearbeiterBeans() {
 		final Collection<AlarmbearbeiterBean> values = this.alarmbearbeiterBeans
 				.values();
 		return values.toArray(new AlarmbearbeiterBean[values.size()]);
@@ -159,7 +161,8 @@ public class ConfigurationBeanServiceImpl implements ConfigurationBeanService {
 	 * 
 	 * @see org.csstudio.nams.configurator.modelmapping.Bubu#getAlarmBearbeiterGruppenBeans()
 	 */
-	public AlarmbearbeiterGruppenBean[] getAlarmBearbeiterGruppenBeans() {
+	@Override
+    public AlarmbearbeiterGruppenBean[] getAlarmBearbeiterGruppenBeans() {
 		final Collection<AlarmbearbeiterGruppenBean> values = this.alarmbearbeitergruppenBeans
 				.values();
 		return values.toArray(new AlarmbearbeiterGruppenBean[values.size()]);
@@ -170,7 +173,8 @@ public class ConfigurationBeanServiceImpl implements ConfigurationBeanService {
 	 * 
 	 * @see org.csstudio.nams.configurator.modelmapping.Bubu#getAlarmTopicBeans()
 	 */
-	public AlarmtopicBean[] getAlarmTopicBeans() {
+	@Override
+    public AlarmtopicBean[] getAlarmTopicBeans() {
 		final Collection<AlarmtopicBean> values = this.alarmtopicBeans.values();
 		return values.toArray(new AlarmtopicBean[values.size()]);
 	}
@@ -180,7 +184,8 @@ public class ConfigurationBeanServiceImpl implements ConfigurationBeanService {
 	 * 
 	 * @see org.csstudio.nams.configurator.modelmapping.Bubu#getFilterBeans()
 	 */
-	public FilterBean[] getFilterBeans() {
+	@Override
+    public FilterBean[] getFilterBeans() {
 		final Collection<FilterBean> values = this.filterBeans.values();
 		return values.toArray(new FilterBean[values.size()]);
 	}
@@ -190,13 +195,15 @@ public class ConfigurationBeanServiceImpl implements ConfigurationBeanService {
 	 * 
 	 * @see org.csstudio.nams.configurator.modelmapping.Bubu#getFilterConditionBeans()
 	 */
-	public FilterbedingungBean[] getFilterConditionBeans() {
+	@Override
+    public FilterbedingungBean[] getFilterConditionBeans() {
 		final Collection<FilterbedingungBean> values = this.filterbedingungBeans
 				.values();
 		return values.toArray(new FilterbedingungBean[values.size()]);
 	}
 
-	public FilterbedingungBean[] getFilterConditionsBeans() {
+	@Override
+    public FilterbedingungBean[] getFilterConditionsBeans() {
 		// TODO may cache results
 		final List<FilterbedingungBean> lists = new LinkedList<FilterbedingungBean>();
 		for (final FilterbedingungBean bean : this.getFilterConditionBeans()) {
@@ -207,7 +214,8 @@ public class ConfigurationBeanServiceImpl implements ConfigurationBeanService {
 		return lists.toArray(new FilterbedingungBean[lists.size()]);
 	}
 
-	public MessageTemplateBean[] getMessageTemplates() {
+	@Override
+    public MessageTemplateBean[] getMessageTemplates() {
 		return this.messageTemplateBeans;
 	}
 
@@ -216,7 +224,8 @@ public class ConfigurationBeanServiceImpl implements ConfigurationBeanService {
 	 * 
 	 * @see org.csstudio.nams.configurator.modelmapping.Bubu#getFilterBeans()
 	 */
-	public String[] getRubrikNamesForType(final RubrikTypeEnum type) {
+	@Override
+    public String[] getRubrikNamesForType(final RubrikTypeEnum type) {
 		final Collection<String> specificRubriks = new ArrayList<String>();
 		for (final RubrikDTO rubrikDTO : this.rubrikDTOs) {
 			if (rubrikDTO.getType().equals(type)) {
@@ -227,7 +236,8 @@ public class ConfigurationBeanServiceImpl implements ConfigurationBeanService {
 		return specificRubriks.toArray(new String[specificRubriks.size()]);
 	}
 
-	public void refreshData() {
+	@Override
+    public void refreshData() {
 		alarmbearbeiterBeans.clear();
 		alarmbearbeitergruppenBeans.clear();
 		alarmtopicBeans.clear();
@@ -240,12 +250,14 @@ public class ConfigurationBeanServiceImpl implements ConfigurationBeanService {
 		}
 	}
 
-	public void removeConfigurationBeanServiceListener(
+	@Override
+    public void removeConfigurationBeanServiceListener(
 			final ConfigurationBeanServiceListener listener) {
 		this.listeners.remove(listener);
 	}
 
-	@SuppressWarnings("unchecked")//$NON-NLS-1$
+	@Override
+    @SuppressWarnings("unchecked")//$NON-NLS-1$
 	public <T extends IConfigurationBean> T save(final T bean)
 			throws InconsistentConfigurationException, StorageError,
 			StorageException {
@@ -313,7 +325,9 @@ public class ConfigurationBeanServiceImpl implements ConfigurationBeanService {
 			beanDTOMap.put(bean2, map);
 		}
 		Collections.sort(list, new Comparator<User2GroupBean>() {
-			public int compare(final User2GroupBean o1, final User2GroupBean o2) {
+			
+		    @Override
+            public int compare(final User2GroupBean o1, final User2GroupBean o2) {
 				return beanDTOMap.get(o1).getPosition()
 						- beanDTOMap.get(o2).getPosition();
 			}
@@ -370,7 +384,7 @@ public class ConfigurationBeanServiceImpl implements ConfigurationBeanService {
 			}
 			filterAction.setType(filterActionDTO.getFilterActionType());
 			filterAction.setMessage(filterActionDTO.getMessage());
-			ConfigurationBeanServiceImpl.logger.logDebugMessage(this,
+			ConfigurationBeanServiceImpl._logger.logDebugMessage(this,
 					"found action: " + filterAction.toString()); //$NON-NLS-1$
 
 			bean.addFilterAction(filterAction);
@@ -466,7 +480,7 @@ public class ConfigurationBeanServiceImpl implements ConfigurationBeanService {
 		if (dto != null) {
 			this.configurationService.deleteDTO(dto);
 			this.alarmbearbeiterBeans.remove(dto.getUserId());
-			ConfigurationBeanServiceImpl.logger.logInfoMessage(this,
+			ConfigurationBeanServiceImpl._logger.logInfoMessage(this,
 					"ConfigurationBeanServiceImpl.delete() " + dto.getUserId() //$NON-NLS-1$
 							+ " " + dto.getUserName()); //$NON-NLS-1$
 		}
@@ -488,7 +502,7 @@ public class ConfigurationBeanServiceImpl implements ConfigurationBeanService {
 		if (dto != null) {
 			this.configurationService.deleteDTO(dto);
 			this.alarmbearbeitergruppenBeans.remove(dto.getUserGroupId());
-			ConfigurationBeanServiceImpl.logger.logInfoMessage(this,
+			ConfigurationBeanServiceImpl._logger.logInfoMessage(this,
 					"ConfigurationBeanServiceImpl.delete() " //$NON-NLS-1$
 							+ dto.getUserGroupId() + " " //$NON-NLS-1$
 							+ dto.getUserGroupName());
@@ -509,7 +523,7 @@ public class ConfigurationBeanServiceImpl implements ConfigurationBeanService {
 		if (dto != null) {
 			this.configurationService.deleteDTO(dto);
 			this.alarmtopicBeans.remove(dto.getId());
-			ConfigurationBeanServiceImpl.logger.logInfoMessage(this,
+			ConfigurationBeanServiceImpl._logger.logInfoMessage(this,
 					"ConfigurationBeanServiceImpl.delete() " + dto.getId() //$NON-NLS-1$
 							+ " " + dto.getTopicName()); //$NON-NLS-1$
 		}
@@ -537,7 +551,7 @@ public class ConfigurationBeanServiceImpl implements ConfigurationBeanService {
 						"failed to deleteFilter()", e); //$NON-NLS-1$
 			}
 			this.filterBeans.remove(dto.getIFilterID());
-			ConfigurationBeanServiceImpl.logger.logInfoMessage(this,
+			ConfigurationBeanServiceImpl._logger.logInfoMessage(this,
 					"ConfigurationBeanServiceImpl.delete() " //$NON-NLS-1$
 							+ dto.getIFilterID() + " " + dto.getName()); //$NON-NLS-1$
 		}
@@ -557,7 +571,7 @@ public class ConfigurationBeanServiceImpl implements ConfigurationBeanService {
 		if (dto != null) {
 			this.configurationService.deleteDTO(dto);
 			this.filterbedingungBeans.remove(dto.getIFilterConditionID());
-			ConfigurationBeanServiceImpl.logger.logInfoMessage(this,
+			ConfigurationBeanServiceImpl._logger.logInfoMessage(this,
 					"ConfigurationBeanServiceImpl.delete() " //$NON-NLS-1$
 							+ dto.getIFilterConditionID() + " " //$NON-NLS-1$
 							+ dto.getCName());
@@ -941,13 +955,13 @@ public class ConfigurationBeanServiceImpl implements ConfigurationBeanService {
 			}
 
 		} catch (final StorageError e) { // TODO mz: Exceptions durchwerfen!
-			ConfigurationBeanServiceImpl.logger.logErrorMessage(this,
+			ConfigurationBeanServiceImpl._logger.logErrorMessage(this,
 					"Could not load Configuration", e); //$NON-NLS-1$
 		} catch (final StorageException e) {
-			ConfigurationBeanServiceImpl.logger.logErrorMessage(this,
+			ConfigurationBeanServiceImpl._logger.logErrorMessage(this,
 					"Could not load Configuration", e); //$NON-NLS-1$
 		} catch (final InconsistentConfigurationException e) {
-			ConfigurationBeanServiceImpl.logger.logErrorMessage(this,
+			ConfigurationBeanServiceImpl._logger.logErrorMessage(this,
 					"Could not load Configuration", e); //$NON-NLS-1$
 		}
 	}
@@ -1043,7 +1057,7 @@ public class ConfigurationBeanServiceImpl implements ConfigurationBeanService {
 		try {
 			this.configurationService.saveDTO(dto);
 		} catch (final Throwable e) {
-			ConfigurationBeanServiceImpl.logger.logFatalMessage(this,
+			ConfigurationBeanServiceImpl._logger.logFatalMessage(this,
 					"failed to save group", e); //$NON-NLS-1$
 			throw new StorageException("failed to save alarmbearbeitergruppe.", //$NON-NLS-1$
 					e);
@@ -1397,7 +1411,8 @@ public class ConfigurationBeanServiceImpl implements ConfigurationBeanService {
 		}
 	}
 
-	public boolean isDeleteable(IConfigurationBean bean) {
+	@Override
+    public boolean isDeleteable(IConfigurationBean bean) {
 		if (bean instanceof AlarmbearbeiterBean) {
 			if (isReferencedByFilterAction(bean,
 					AlarmbFilterActionType.class)

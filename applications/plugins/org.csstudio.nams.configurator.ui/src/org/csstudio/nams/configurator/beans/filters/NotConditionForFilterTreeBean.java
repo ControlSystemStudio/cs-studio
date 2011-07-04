@@ -55,15 +55,15 @@ public class NotConditionForFilterTreeBean extends FilterbedingungBean {
 		return result;
 	}
 
-	public void setFilterbedingungBean(final FilterbedingungBean bean) {
-		this.bean = bean;
+	public void setFilterbedingungBean(final FilterbedingungBean b) {
+		this.bean = b;
 	}
 
 	@Override
-	protected void doUpdateState(final FilterbedingungBean bean) {
-		if (bean instanceof NotConditionForFilterTreeBean) {
-			super.doUpdateState(bean);
-			final NotConditionForFilterTreeBean ncffBean = (NotConditionForFilterTreeBean) bean;
+	protected void doUpdateState(final FilterbedingungBean b) {
+		if (b instanceof NotConditionForFilterTreeBean) {
+			super.doUpdateState(b);
+			final NotConditionForFilterTreeBean ncffBean = (NotConditionForFilterTreeBean) b;
 			this.bean = ncffBean.getFilterbedingungBean();
 		}
 	}

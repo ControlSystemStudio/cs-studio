@@ -1,3 +1,4 @@
+
 package org.csstudio.nams.service.preferenceservice.definition;
 
 import java.util.HashMap;
@@ -17,7 +18,8 @@ public class PreferenceStoreServiceImpl implements PreferenceService {
 		PreferenceStoreServiceImpl.preferenceStore = preferenceStore;
 	}
 
-	public <T extends Enum<?> & HoldsAPreferenceId> void addPreferenceChangeListenerFor(
+	@Override
+    public <T extends Enum<?> & HoldsAPreferenceId> void addPreferenceChangeListenerFor(
 			final T[] preferenceIds,
 			final PreferenceChangeListener changeListener) {
 
@@ -28,7 +30,8 @@ public class PreferenceStoreServiceImpl implements PreferenceService {
 
 		PreferenceStoreServiceImpl.preferenceStore
 				.addPropertyChangeListener(new IPropertyChangeListener() {
-					public void propertyChange(final PropertyChangeEvent event) {
+					@Override
+                    public void propertyChange(final PropertyChangeEvent event) {
 						if (ids.keySet().contains(event.getProperty())) {
 							changeListener.preferenceUpdated(ids.get(event
 									.getProperty()), event.getOldValue(), event
@@ -38,13 +41,15 @@ public class PreferenceStoreServiceImpl implements PreferenceService {
 				});
 	}
 
-	public <T extends Enum<?> & HoldsAPreferenceId> boolean getBoolean(
+	@Override
+    public <T extends Enum<?> & HoldsAPreferenceId> boolean getBoolean(
 			final T key) {
 		return PreferenceStoreServiceImpl.preferenceStore.getBoolean(key
 				.getPreferenceStoreId());
 	}
 
-	public <T extends Enum<?> & HoldsAPreferenceId> int getInt(final T key) {
+	@Override
+    public <T extends Enum<?> & HoldsAPreferenceId> int getInt(final T key) {
 		return PreferenceStoreServiceImpl.preferenceStore.getInt(key
 				.getPreferenceStoreId());
 	}
@@ -54,7 +59,8 @@ public class PreferenceStoreServiceImpl implements PreferenceService {
 	// T id, Object oldValue, Object newValue);
 	// }
 
-	public <T extends Enum<?> & HoldsAPreferenceId> String getString(final T key) {
+	@Override
+    public <T extends Enum<?> & HoldsAPreferenceId> String getString(final T key) {
 		return PreferenceStoreServiceImpl.preferenceStore.getString(key
 				.getPreferenceStoreId());
 	}

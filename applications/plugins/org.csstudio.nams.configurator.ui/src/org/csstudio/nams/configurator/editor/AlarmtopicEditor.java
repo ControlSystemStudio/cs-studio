@@ -1,3 +1,4 @@
+
 package org.csstudio.nams.configurator.editor;
 
 import org.csstudio.nams.common.fachwert.RubrikTypeEnum;
@@ -65,6 +66,7 @@ public class AlarmtopicEditor extends AbstractEditor<FilterBean> {
 
 	@Override
 	protected void doInit(final IEditorSite site, final IEditorInput input) {
+	    // Nothing to do
 	}
 
 	@Override
@@ -107,5 +109,4 @@ public class AlarmtopicEditor extends AbstractEditor<FilterBean> {
 				.observeSelection(this._rubrikComboEntry),
 				rubrikTextObservable, null, null);
 	}
-
 }

@@ -10,20 +10,23 @@ public class SelectionDragSourceListener implements DragSourceListener {
 
 	private final Viewer viewer;
 
-	public SelectionDragSourceListener(final Viewer viewer) {
-		this.viewer = viewer;
+	public SelectionDragSourceListener(final Viewer v) {
+		this.viewer = v;
 	}
 
-	public void dragFinished(final DragSourceEvent event) {
+	@Override
+    public void dragFinished(final DragSourceEvent event) {
 		LocalSelectionTransfer.getTransfer().setSelection(null);
 		LocalSelectionTransfer.getTransfer().setSelectionSetTime(0);
 	}
 
-	public void dragSetData(final DragSourceEvent event) {
+	@Override
+    public void dragSetData(final DragSourceEvent event) {
 		event.data = LocalSelectionTransfer.getTransfer().getSelection();
 	}
 
-	public void dragStart(final DragSourceEvent event) {
+	@Override
+    public void dragStart(final DragSourceEvent event) {
 		final ISelection selection = this.viewer.getSelection();
 		event.doit = !selection.isEmpty();
 		LocalSelectionTransfer.getTransfer().setSelection(selection);

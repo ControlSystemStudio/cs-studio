@@ -1,6 +1,8 @@
+
 /**
  * 
  */
+
 package org.csstudio.nams.common.fachwert;
 
 /* 1 - User, 2 - UserGroup, 3 - FilterCond, 4 - Filter, 5 - Topic */
@@ -22,13 +24,12 @@ public enum RubrikTypeEnum {
 		default:
 			throw new IllegalArgumentException();
 		}
-
 	}
 
 	private final short ordinal;
 
-	private RubrikTypeEnum(final int ordinal) {
-		this.ordinal = (short) ordinal;
+	private RubrikTypeEnum(final int o) {
+		this.ordinal = (short) o;
 	}
 
 	public short getShortFor() {

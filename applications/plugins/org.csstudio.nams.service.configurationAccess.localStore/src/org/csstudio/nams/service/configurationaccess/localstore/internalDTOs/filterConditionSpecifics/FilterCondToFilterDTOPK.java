@@ -16,6 +16,7 @@ public class FilterCondToFilterDTOPK implements Serializable {
 	private int iFilterRef;
 
 	public FilterCondToFilterDTOPK() {
+	    // Not used
 	}
 
 	public FilterCondToFilterDTOPK(final int iFilterRef,
@@ -69,5 +70,4 @@ public class FilterCondToFilterDTOPK implements Serializable {
 	public void setIFilterRef(final int filterRef) {
 		this.iFilterRef = filterRef;
 	}
-
 }
