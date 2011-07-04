@@ -27,9 +27,9 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.Observable;
 import java.util.Observer;
-import org.apache.log4j.Logger;
-import org.csstudio.platform.logging.CentralLogger;
 import org.csstudio.platform.statistic.Collector;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import de.desy.tine.alarmUtils.AlarmMonitor;
 import de.desy.tine.alarmUtils.AlarmMonitorHandler;
 import de.desy.tine.alarmUtils.TAlarmSystem;
@@ -42,12 +42,12 @@ import de.desy.tine.server.alarms.TAlarmMessage;
  */
 public class TineAlarmMonitor extends Observable implements AlarmMonitorHandler {
     
+    /** Class logger */
+    private static final Logger LOG = LoggerFactory.getLogger(TineAlarmMonitor.class);
+
     /** */
     private String _context;
 
-    /** */
-    private Logger _logger;
-    
     /** */
     private TLink _tineLink;
 
@@ -63,7 +63,6 @@ public class TineAlarmMonitor extends Observable implements AlarmMonitorHandler 
     public TineAlarmMonitor(Observer observer, String context) {
         
         this._context = context;
-        _logger = CentralLogger.getInstance().getLogger(TineAlarmMonitor.class);
         this.addObserver(observer);
         dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss.SSS");
         
@@ -96,7 +95,7 @@ public class TineAlarmMonitor extends Observable implements AlarmMonitorHandler 
         if(ams != null) {
             
             date = new Date(alarmMonitor.getLastAcquiredAlarmTime());
-            _logger.debug("Anzahl: " + ams.length + " - Last Acquiried Alarm Time: " + dateFormat.format(date));
+            LOG.debug("Anzahl: " + ams.length + " - Last Acquiried Alarm Time: " + dateFormat.format(date));
             date = null;
     
             if(ams.length > 0) {
@@ -107,7 +106,7 @@ public class TineAlarmMonitor extends Observable implements AlarmMonitorHandler 
                     this.lastTimeStamp = alarm.getTimeStamp();
                     
                     date = new Date(alarm.getTimeStamp());
-                    _logger.debug(_context + ": Neuer Alarm Timestamp: " + dateFormat.format(date));
+                    LOG.debug(_context + ": Neuer Alarm Timestamp: " + dateFormat.format(date));
                     
                     date = null;
                     
@@ -119,7 +118,7 @@ public class TineAlarmMonitor extends Observable implements AlarmMonitorHandler 
                 }
             }
         } else {
-            _logger.debug("No alarms");
+            LOG.debug("No alarms");
         }
     }
 }

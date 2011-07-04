@@ -32,5 +32,13 @@
             class="org.csstudio.tine2jms.preferences.PreferenceInitializer">
       </initializer>
    </extension>
+   <extension
+         id="Tine2JmsProduct"
+         point="org.eclipse.core.runtime.products">
+      <product
+            application="org.csstudio.tine2jms.Tine2Jms"
+            name="Tine2JmsProduct">
+      </product>
+   </extension>
 
 </plugin>

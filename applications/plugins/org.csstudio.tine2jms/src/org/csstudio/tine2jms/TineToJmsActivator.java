@@ -23,13 +23,13 @@
 
 package org.csstudio.tine2jms;
 
-import org.apache.log4j.Logger;
-import org.csstudio.platform.logging.CentralLogger;
 import org.eclipse.core.runtime.Plugin;
 import org.osgi.framework.BundleContext;
 import org.remotercp.common.tracker.GenericServiceTracker;
 import org.remotercp.common.tracker.IGenericServiceListener;
 import org.remotercp.service.connection.session.ISessionService;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * The activator class controls the plug-in life cycle
@@ -42,8 +42,8 @@ public class TineToJmsActivator extends Plugin {
 	/** The shared instance */
 	private static TineToJmsActivator plugin;
 
-    /** Logger */
-    private Logger logger = null;
+    /** Class logger */
+    private static final Logger LOG = LoggerFactory.getLogger(TineToJmsActivator.class);
     
 	private GenericServiceTracker<ISessionService> _genericServiceTracker;
     
@@ -68,8 +68,7 @@ public class TineToJmsActivator extends Plugin {
 				context, ISessionService.class);
 		_genericServiceTracker.open();
 		
-        logger = CentralLogger.getInstance().getLogger(this);
-        logger.info("Tine2Jms started...");
+        LOG.info("Tine2Jms started...");
 	}
 
 	/*

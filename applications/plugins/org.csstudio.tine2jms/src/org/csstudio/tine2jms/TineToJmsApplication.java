@@ -52,7 +52,7 @@ public class TineToJmsApplication implements IApplication,
                                              Observer,
                                              IGenericServiceListener<ISessionService> {
     
-    /** Common logger of CSS */
+    /** Class logger */
     private static final Logger LOG = LoggerFactory.getLogger(TineToJmsApplication.class);
     
     /** Alarm monitor */
