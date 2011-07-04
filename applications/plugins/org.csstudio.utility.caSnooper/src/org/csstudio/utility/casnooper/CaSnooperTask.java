@@ -1,5 +1,6 @@
 package org.csstudio.utility.casnooper;
 
+
 import org.csstudio.platform.startupservice.IStartupServiceListener;
 import org.csstudio.platform.startupservice.StartupServiceEnumerator;
 import org.csstudio.utility.casnooper.preferences.PreferenceConstants;
@@ -21,6 +22,7 @@ public class CaSnooperTask implements IApplication, IGenericServiceListener<ISes
 	@Override
     public Object start(IApplicationContext context) throws Exception {
 		
+		Activator.getDefault().addSessionServiceListener(this);
 		
 		System.out.println("Start caSnooper");
 		snooperServerInstance = SnooperServer.getInstance();
