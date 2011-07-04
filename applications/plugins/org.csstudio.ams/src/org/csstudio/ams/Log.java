@@ -23,6 +23,7 @@
 
 package org.csstudio.ams;
 
+import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
@@ -44,7 +45,33 @@ public class Log {
 	 * @param t			Throwable
 	 */
 	public static void log(byte level, Throwable t) {
-		log(null, level, t);
+        
+	    try {
+            
+            switch (level) {
+              
+              case DEBUG:
+                  LoggerFactory.getLogger(Logger.ROOT_LOGGER_NAME).debug("{}", t);
+                  break;
+              case INFO:
+                  LoggerFactory.getLogger(Logger.ROOT_LOGGER_NAME).info("{}", t);
+                  break;
+              case WARN:
+                  LoggerFactory.getLogger(Logger.ROOT_LOGGER_NAME).warn("{}", t);
+                  break;
+              case ERROR:
+                  LoggerFactory.getLogger(Logger.ROOT_LOGGER_NAME).error("{}", t);
+                  break;
+              case FATAL:
+                  LoggerFactory.getLogger(Logger.ROOT_LOGGER_NAME).error("{}", t);
+                  break;
+              default:
+                  LoggerFactory.getLogger(Logger.ROOT_LOGGER_NAME).error("{}", t);
+                  break;
+            }
+        } catch (Exception e) {
+            // Can be ignored
+        }
 	}
 	
 	/**
@@ -91,7 +118,33 @@ public class Log {
 	 * @param msg		String
 	 */
 	public static void log(byte level, String msg) {
-		log(null, level, msg);
+	    
+	    try {
+	            
+	        switch (level) {
+	                
+	            case DEBUG:
+                    LoggerFactory.getLogger(Logger.ROOT_LOGGER_NAME).debug(msg);
+                    break;
+                case INFO:
+                    LoggerFactory.getLogger(Logger.ROOT_LOGGER_NAME).info(msg);
+                    break;
+                case WARN:
+                    LoggerFactory.getLogger(Logger.ROOT_LOGGER_NAME).warn(msg);
+                    break;
+                case ERROR:
+                    LoggerFactory.getLogger(Logger.ROOT_LOGGER_NAME).error(msg);
+                    break;
+                case FATAL:
+                    LoggerFactory.getLogger(Logger.ROOT_LOGGER_NAME).error(msg);
+                    break;
+                default:
+                    LoggerFactory.getLogger(Logger.ROOT_LOGGER_NAME).error(msg);
+                    break;
+	        }
+	    } catch (Exception e) {
+	        // Can be ignored
+	    }
 	}
 	
 	/**
@@ -139,7 +192,32 @@ public class Log {
 	 * @param t			Throwable
 	 */
 	public static void log(byte level, String msg, Throwable t) {
-		log(null, level, msg, t);
+        
+	    try {
+            
+            switch (level) {
+                case DEBUG:
+                    LoggerFactory.getLogger(Logger.ROOT_LOGGER_NAME).debug(msg, t);
+                    break;
+                case INFO:
+                    LoggerFactory.getLogger(Logger.ROOT_LOGGER_NAME).info(msg, t);
+                    break;
+                case WARN:
+                    LoggerFactory.getLogger(Logger.ROOT_LOGGER_NAME).warn(msg, t);
+                    break;
+                case ERROR:
+                    LoggerFactory.getLogger(Logger.ROOT_LOGGER_NAME).error(msg, t);
+                    break;
+                case FATAL:
+                    LoggerFactory.getLogger(Logger.ROOT_LOGGER_NAME).error(msg, t);
+                    break;
+                default:
+                    LoggerFactory.getLogger(Logger.ROOT_LOGGER_NAME).error(msg, t);
+                    break;
+            }
+        } catch (Exception e) {
+            // Can be ignored
+        }
 	}
 	
 	/**
