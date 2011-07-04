@@ -1,6 +1,8 @@
+
 /**
  * 
  */
+
 package org.csstudio.nams.common.material.regelwerk;
 
 import java.text.DateFormat;
@@ -43,7 +45,8 @@ public class StringRegel implements VersandRegel {
 	 * @see de.c1wps.desy.ams.allgemeines.regelwerk.VersandRegel#pruefeNachrichtAufBestaetigungsUndAufhebungsNachricht(de.c1wps.desy.ams.allgemeines.AlarmNachricht,
 	 *      de.c1wps.desy.ams.allgemeines.regelwerk.Pruefliste)
 	 */
-	public void pruefeNachrichtAufBestaetigungsUndAufhebungsNachricht(
+	@Override
+    public void pruefeNachrichtAufBestaetigungsUndAufhebungsNachricht(
 			final AlarmNachricht nachricht, final Pruefliste bisherigesErgebnis) {
 		// nothing to do here
 	}
@@ -54,7 +57,8 @@ public class StringRegel implements VersandRegel {
 	 * @see de.c1wps.desy.ams.allgemeines.regelwerk.VersandRegel#pruefeNachrichtAufTimeOuts(de.c1wps.desy.ams.allgemeines.regelwerk.Pruefliste,
 	 *      de.c1wps.desy.ams.allgemeines.Millisekunden)
 	 */
-	public Millisekunden pruefeNachrichtAufTimeOuts(
+	@Override
+    public Millisekunden pruefeNachrichtAufTimeOuts(
 			final Pruefliste bisherigesErgebnis,
 			final Millisekunden verstricheneZeitSeitErsterPruefung) {
 		// nothing to do here
@@ -67,7 +71,8 @@ public class StringRegel implements VersandRegel {
 	 * @see de.c1wps.desy.ams.allgemeines.regelwerk.VersandRegel#pruefeNachrichtErstmalig(de.c1wps.desy.ams.allgemeines.AlarmNachricht,
 	 *      de.c1wps.desy.ams.allgemeines.regelwerk.Pruefliste)
 	 */
-	public Millisekunden pruefeNachrichtErstmalig(
+	@Override
+    public Millisekunden pruefeNachrichtErstmalig(
 			final AlarmNachricht nachricht, final Pruefliste ergebnisListe) {
 
 		boolean istGueltig = false;
@@ -128,8 +133,10 @@ public class StringRegel implements VersandRegel {
 				break;
 			}
 		} catch (final Exception e) {
-			StringRegel.logger.logErrorMessage(this,
-					"An error occured during parsing of : " + nachricht);
+            if(StringRegel.logger != null) {
+                StringRegel.logger.logErrorMessage(this,
+                        "An error occured during parsing of : " + nachricht);
+                }
 			istGueltig = true;
 		}
 

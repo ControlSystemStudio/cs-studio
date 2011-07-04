@@ -1,3 +1,4 @@
+
 package org.csstudio.nams.service.configurationaccess.localstore;
 
 import org.csstudio.nams.common.activatorUtils.AbstractBundleActivator;

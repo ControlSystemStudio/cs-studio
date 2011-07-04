@@ -35,8 +35,8 @@ public final class Regelwerkskennung {
 		// this.meinZaehlerWert = zaehler++;
 	}
 
-	private Regelwerkskennung(final String name) {
-		this.name = name;
+	private Regelwerkskennung(final String n) {
+		this.name = n;
 		this.meinZaehlerWert = Regelwerkskennung.zaehler++;
 	}
 

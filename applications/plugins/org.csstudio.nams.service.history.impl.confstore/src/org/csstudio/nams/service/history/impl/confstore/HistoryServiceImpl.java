@@ -1,3 +1,4 @@
+
 package org.csstudio.nams.service.history.impl.confstore;
 
 import java.util.Date;
@@ -22,7 +23,8 @@ public class HistoryServiceImpl implements HistoryService {
 		this.localStoreConfigurationService = localStoreConfigurationService;
 	}
 
-	public void logReceivedStartReplicationMessage() {
+	@Override
+    public void logReceivedStartReplicationMessage() {
 
 		final HistoryDTO historyDTO = this.prepareReplicationHistoryDTO();
 		historyDTO
@@ -41,7 +43,8 @@ public class HistoryServiceImpl implements HistoryService {
 		}
 	}
 
-	public void logReceivedReplicationDoneMessage() {
+	@Override
+    public void logReceivedReplicationDoneMessage() {
 		final HistoryDTO historyDTO = this.prepareReplicationHistoryDTO();
 		historyDTO
 				.setCDescription("Filtermanager got config replication end, goes to normal work.");
@@ -59,7 +62,8 @@ public class HistoryServiceImpl implements HistoryService {
 		}
 	}
 
-	public void logTimeOutForTimeBased(final Vorgangsmappe vorgangsmappe) {
+	@Override
+    public void logTimeOutForTimeBased(final Vorgangsmappe vorgangsmappe) {
 		final Regelwerkskennung regelwerkId = vorgangsmappe.gibPruefliste()
 				.gibRegelwerkskennung();
 		final AlarmNachricht alarmNachricht = vorgangsmappe

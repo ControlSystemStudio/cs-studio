@@ -1,3 +1,4 @@
+
 package org.csstudio.nams.service.configurationaccess.localstore.declaration;
 
 import java.util.Collection;
@@ -17,10 +18,10 @@ import org.csstudio.nams.service.logging.declaration.Logger;
 @Entity
 public class Configuration {
 	@SuppressWarnings("unused")
-	private static Logger logger;
+	private static Logger _logger;
 
 	public static void staticInject(final Logger logger) {
-		Configuration.logger = logger;
+		Configuration._logger = logger;
 	}
 
 	private final Collection<AlarmbearbeiterDTO> alleAlarmbarbeiter;

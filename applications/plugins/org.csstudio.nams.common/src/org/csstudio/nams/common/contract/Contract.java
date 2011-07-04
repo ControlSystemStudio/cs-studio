@@ -1,3 +1,4 @@
+
 package org.csstudio.nams.common.contract;
 
 import org.junit.Assert;

@@ -62,8 +62,7 @@ public class LinearScale extends AbstractScale {
     
     private int margin;
     
-    private final static Font DEFAULT_FONT = XYGraphMediaFactory.getInstance().getFont(
-    		XYGraphMediaFactory.FONT_ARIAL);
+ 
     
     /**
      * Constructor.
@@ -74,7 +73,8 @@ public class LinearScale extends AbstractScale {
         tickMarks = new LinearScaleTickMarks(this);                  
         add(tickMarks);        
         add(tickLabels);    
-        setFont(DEFAULT_FONT);
+        setFont(XYGraphMediaFactory.getInstance().getFont(
+        		XYGraphMediaFactory.FONT_ARIAL));
  
     }
 	

@@ -20,6 +20,7 @@ import org.csstudio.swt.xygraph.undo.OperationsManager;
 import org.csstudio.swt.xygraph.undo.ZoomCommand;
 import org.csstudio.swt.xygraph.undo.ZoomType;
 import org.csstudio.swt.xygraph.util.Log10;
+import org.csstudio.swt.xygraph.util.SingleSourceHelper;
 import org.csstudio.swt.xygraph.util.XYGraphMediaFactory;
 import org.eclipse.draw2d.ColorConstants;
 import org.eclipse.draw2d.Figure;
@@ -476,15 +477,7 @@ public class XYGraph extends Figure{
 
 	/** @return Image of the XYFigure. Receiver must dispose. */
 	public Image getImage(){
-		Image image = new Image(null, bounds.width + 6, bounds.height + 6);
-		GC gc = new GC(image);
-		SWTGraphics graphics = new SWTGraphics(gc);
-		graphics.translate(-bounds.x + 3, -bounds.y + 3);
-		graphics.setForegroundColor(getForegroundColor());
-		graphics.setBackgroundColor(getBackgroundColor());
-		paint(graphics);
-		gc.dispose();
-		return image;
+		return SingleSourceHelper.getXYGraphSnapShot(this);
 	}
 
 
