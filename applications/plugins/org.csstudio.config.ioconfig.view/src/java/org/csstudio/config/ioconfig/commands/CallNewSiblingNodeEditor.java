@@ -37,20 +37,9 @@ package org.csstudio.config.ioconfig.commands;
 import javax.annotation.Nonnull;
 
 import org.csstudio.config.ioconfig.editorinputs.NodeEditorInput;
-import org.csstudio.config.ioconfig.editorparts.FacilityEditor;
-import org.csstudio.config.ioconfig.editorparts.IocEditor;
-import org.csstudio.config.ioconfig.editorparts.MasterEditor;
 import org.csstudio.config.ioconfig.editorparts.ModuleEditor;
-import org.csstudio.config.ioconfig.editorparts.SlaveEditor;
-import org.csstudio.config.ioconfig.editorparts.SubnetEditor;
 import org.csstudio.config.ioconfig.model.AbstractNodeDBO;
-import org.csstudio.config.ioconfig.model.FacilityDBO;
-import org.csstudio.config.ioconfig.model.IocDBO;
 import org.csstudio.config.ioconfig.model.PersistenceException;
-import org.csstudio.config.ioconfig.model.pbmodel.MasterDBO;
-import org.csstudio.config.ioconfig.model.pbmodel.ModuleDBO;
-import org.csstudio.config.ioconfig.model.pbmodel.ProfibusSubnetDBO;
-import org.csstudio.config.ioconfig.model.pbmodel.SlaveDBO;
 import org.eclipse.jface.dialogs.InputDialog;
 import org.eclipse.jface.window.Window;
 import org.eclipse.ui.IWorkbenchPage;
@@ -112,7 +101,7 @@ public class CallNewSiblingNodeEditor extends AbstractCallNodeEditor {
         
         if( (node != null) && (id != null)) {
             if(id.equals(ModuleEditor.ID)) {
-                performOpen(siblingNode, page, node, id, "");
+                performOpen(siblingNode, page, node, id, " ");
             } else {
                 String nodeType = node.getNodeType().getName();
                 InputDialog idialog = new InputDialog(null,

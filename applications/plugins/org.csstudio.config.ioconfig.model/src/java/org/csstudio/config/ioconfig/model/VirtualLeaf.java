@@ -26,6 +26,8 @@ package org.csstudio.config.ioconfig.model;
 import javax.annotation.CheckForNull;
 import javax.annotation.Nonnull;
 
+import org.csstudio.config.ioconfig.model.pbmodel.ChannelDBO;
+
 
 /**
  * Virtual leaf node - flyweight pattern + nullobject pattern.
@@ -39,7 +41,7 @@ import javax.annotation.Nonnull;
  * @version $Revision: 1.7 $
  * @since 11.05.2011
  */
-public final class VirtualLeaf extends AbstractNodeDBO<IocDBO, VirtualLeaf> {
+public final class VirtualLeaf extends AbstractNodeDBO<ChannelDBO, VirtualLeaf> {
 
     private static final long serialVersionUID = 1L;
 
@@ -57,7 +59,7 @@ public final class VirtualLeaf extends AbstractNodeDBO<IocDBO, VirtualLeaf> {
      */
     @Override
     @Nonnull
-    public IocDBO getParent() {
+    public ChannelDBO getParent() {
         throw new UnsupportedOperationException(VirtualLeaf.class + " does not permit to ask for its parent node.");
     }
     
@@ -75,7 +77,7 @@ public final class VirtualLeaf extends AbstractNodeDBO<IocDBO, VirtualLeaf> {
      */
     @Override
     @Nonnull
-    protected VirtualLeaf copyParameter(@Nonnull final IocDBO parent) throws PersistenceException {
+    protected VirtualLeaf copyParameter(@Nonnull final ChannelDBO parent) throws PersistenceException {
         return INSTANCE;
     }
     
