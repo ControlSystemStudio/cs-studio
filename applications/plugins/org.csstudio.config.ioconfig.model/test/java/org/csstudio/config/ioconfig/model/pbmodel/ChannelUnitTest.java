@@ -30,7 +30,7 @@ import org.junit.Test;
  * @version $Revision$
  * @since 12.01.2009
  */
-public class ChannelTest {
+public class ChannelUnitTest {
 
     private static final boolean OUTPUT = false;
     private static final boolean INPUT = true;
