@@ -33,7 +33,7 @@ import org.eclipse.osgi.util.NLS;
  * @since 21.06.2010
  */
 public class Messages extends NLS {
-    private static final String BUNDLE_NAME = "org.csstudio.alarm.treeview"; //$NON-NLS-1$
+    private static final String PACKAGE_NAME = "org.csstudio.alarm.treeview.views"; //$NON-NLS-1$
 
     public static String AlarmTreeView_Menu_Separator_Edit;
     public static String AlarmTreeView_MessageDialog_ContextMenu_Error_Message;
@@ -42,7 +42,7 @@ public class Messages extends NLS {
 
     static {
         // initialize resource bundle
-        NLS.initializeMessages(BUNDLE_NAME, Messages.class);
+        NLS.initializeMessages(PACKAGE_NAME, Messages.class);
     }
 
     private Messages() {
