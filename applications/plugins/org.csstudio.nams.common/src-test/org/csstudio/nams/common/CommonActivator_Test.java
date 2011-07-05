@@ -2,7 +2,6 @@ package org.csstudio.nams.common;
 
 import junit.framework.Assert;
 import junit.framework.TestCase;
-
 import org.csstudio.nams.common.activatorUtils.OSGiServiceOffers;
 import org.csstudio.nams.common.service.ExecutionService;
 import org.csstudio.nams.service.logging.declaration.Logger;
