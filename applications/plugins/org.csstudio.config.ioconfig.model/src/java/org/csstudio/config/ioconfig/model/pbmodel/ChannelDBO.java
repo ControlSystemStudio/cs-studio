@@ -537,6 +537,7 @@ public class ChannelDBO extends AbstractNodeDBO<ChannelStructureDBO, VirtualLeaf
             sb.append("'");
             setEpicsAddressString(sb.toString());
         } catch (NullPointerException e) {
+            LOG.warn("",e);
             setEpicsAddressString("");
         }
         setDirty( (isDirty() || (oldAdr == null) || !oldAdr.equals(getEpicsAddressString())));
