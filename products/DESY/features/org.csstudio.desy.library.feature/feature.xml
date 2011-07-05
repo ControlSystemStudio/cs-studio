@@ -151,13 +151,13 @@
          unpack="false"/>
 
    <plugin
-         id="org.csstudio.archivereader"
+         id="org.csstudio.archive.reader"
          download-size="0"
          install-size="0"
          version="0.0.0"/>
 
    <plugin
-         id="org.csstudio.archivereader.channelarchiver"
+         id="org.csstudio.archive.reader.channelarchiver"
          download-size="0"
          install-size="0"
          version="0.0.0"/>

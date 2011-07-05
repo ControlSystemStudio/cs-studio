@@ -31,7 +31,6 @@ import org.csstudio.ams.Log;
 import org.csstudio.ams.dbAccess.HoldsAnDatabaseId;
 import org.csstudio.ams.dbAccess.configdb.FilterConditionProcessVariableDAO;
 import org.csstudio.ams.dbAccess.configdb.FilterConditionProcessVariableTObject;
-import org.csstudio.platform.logging.CentralLogger;
 import org.csstudio.platform.model.pvs.IProcessVariableAddress;
 import org.csstudio.platform.model.pvs.ProcessVariableAdressFactory;
 import org.csstudio.platform.model.pvs.ValueType;
@@ -220,14 +219,14 @@ public strictfp class FilterConditionProcessVariable implements
                     result = Double.valueOf(dbString);
                 } catch(NumberFormatException nfe) {
                     
-                    CentralLogger.getInstance().warn(this, "[*** NumberFormatException ***]: " + nfe.getMessage());
+                    Log.log(this, Log.WARN, "[*** NumberFormatException ***]: " + nfe.getMessage());
                     result = NumberValidator.getCleanDouble(dbString);
-                    CentralLogger.getInstance().warn(this, "Extract from string '" + dbString + "' the value " + result);
+                    Log.log(this, Log.WARN, "Extract from string '" + dbString + "' the value " + result);
                     if(result == null) {
                         
                         // TODO: Sinnvoller Standardwert?
                         result = new Double(0);
-                        CentralLogger.getInstance().warn(this, "Cannot get a valid number from string '" + dbString + "'. Using default value " + result);
+                        Log.log(this, Log.WARN, "Cannot get a valid number from string '" + dbString + "'. Using default value " + result);
                     }
                 }
                 
@@ -253,14 +252,14 @@ public strictfp class FilterConditionProcessVariable implements
 			        result = Long.valueOf(dbString);
 			    } catch(NumberFormatException nfe) {
 			        
-			        CentralLogger.getInstance().warn(this, "[*** NumberFormatException ***]: " + nfe.getMessage());
+			        Log.log(this, Log.WARN, "[*** NumberFormatException ***]: " + nfe.getMessage());
 			        result = NumberValidator.getCleanLong(dbString);
-                    CentralLogger.getInstance().warn(this, "Extract from string '" + dbString + "' the value " + result);
+			        Log.log(this, Log.WARN, "Extract from string '" + dbString + "' the value " + result);
 			        if(result == null) {
 			            
 			            // TODO: Sinnvoller Standardwert?
 			            result = new Long(0);
-	                    CentralLogger.getInstance().warn(this, "Cannot get a valid number from string '" + dbString + "'. Using default value " + result);
+			            Log.log(this, Log.WARN, "Cannot get a valid number from string '" + dbString + "'. Using default value " + result);
 			        }
 			    }
 			    

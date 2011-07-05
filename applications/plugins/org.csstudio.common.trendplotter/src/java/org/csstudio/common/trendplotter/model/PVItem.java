@@ -9,19 +9,34 @@ package org.csstudio.common.trendplotter.model;
 
 import java.io.PrintWriter;
 import java.util.ArrayList;
+import java.util.List;
 import java.util.Timer;
 import java.util.TimerTask;
-import java.util.logging.Level;
+
+import javax.annotation.Nonnull;
 
 import org.csstudio.apputil.xml.DOMHelper;
 import org.csstudio.apputil.xml.XMLWriter;
+import org.csstudio.archive.common.service.ArchiveServiceException;
+import org.csstudio.archive.common.service.IArchiveReaderFacade;
+import org.csstudio.archive.common.service.channel.IArchiveChannel;
 import org.csstudio.common.trendplotter.Activator;
 import org.csstudio.common.trendplotter.Messages;
 import org.csstudio.common.trendplotter.preferences.Preferences;
+import org.csstudio.data.values.IDoubleValue;
+import org.csstudio.data.values.ILongValue;
+import org.csstudio.data.values.INumericMetaData;
 import org.csstudio.data.values.IValue;
+import org.csstudio.domain.desy.epics.name.EpicsChannelName;
+import org.csstudio.domain.desy.epics.name.EpicsNameSupport;
+import org.csstudio.domain.desy.epics.name.RecordField;
+import org.csstudio.domain.desy.service.osgi.OsgiServiceUnavailableException;
 import org.csstudio.utility.pv.PV;
 import org.csstudio.utility.pv.PVFactory;
 import org.csstudio.utility.pv.PVListener;
+import org.eclipse.swt.widgets.Display;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.w3c.dom.Element;
 
 /** Data Browser Model Item for 'live' PV.
@@ -36,8 +51,10 @@ import org.w3c.dom.Element;
  */
 public class PVItem extends ModelItem implements PVListener
 {
+    private static final Logger LOG = LoggerFactory.getLogger(PVItem.class);
+    
     /** Historic and 'live' samples for this PV */
-    final private PVSamples samples = new PVSamples();
+    final private PVSamples samples;
 
     /** Where to get archived data for this item. */
     final private ArrayList<ArchiveDataSource> archives
@@ -45,6 +62,7 @@ public class PVItem extends ModelItem implements PVListener
 
     /** Control system PV */
     private PV pv;
+    private PV pv_deadband = null;
 
     /** Most recently received value */
     private volatile IValue current_value;
@@ -60,6 +78,11 @@ public class PVItem extends ModelItem implements PVListener
 
     /** Archive data request type */
     private RequestType request_type = RequestType.OPTIMIZED;
+    
+    
+    //private Boolean show_deadband = Boolean.FALSE;
+
+    //private Boolean has_deadband = Boolean.FALSE;
 
     /** Initialize
      *  @param name PV name
@@ -69,8 +92,22 @@ public class PVItem extends ModelItem implements PVListener
     public PVItem(final String name, final double period) throws Exception
     {
         super(name);
+        samples = new PVSamples(request_type);
         pv = PVFactory.createPV(name);
         this.period = period;
+    }
+
+    private Boolean retrieveDeadbandExistenceInfoFor(final String channelName) 
+                                                     throws OsgiServiceUnavailableException, 
+                                                            ArchiveServiceException {
+        IArchiveReaderFacade service = Activator.getDefault().getArchiveReaderService();
+
+        String baseName = EpicsNameSupport.parseBaseName(channelName);
+        
+        IArchiveChannel channel = 
+            service.getChannelByName(baseName + EpicsChannelName.FIELD_SEP + RecordField.ADEL.getFieldName());
+        
+        return channel != null;
     }
 
     /** Set new item name, which changes the underlying PV name
@@ -240,9 +277,12 @@ public class PVItem extends ModelItem implements PVListener
     /** @param request_type New request type */
     public void setRequestType(final RequestType request_type)
     {
-        if (this.request_type == request_type)
+        if (this.request_type == request_type )
             return;
         this.request_type = request_type;
+        
+        samples.updateRequestType(request_type);
+        
         fireItemDataConfigChanged();
     }
 
@@ -261,6 +301,10 @@ public class PVItem extends ModelItem implements PVListener
     {
         if (pv.isRunning())
             throw new RuntimeException("Already started " + getName());
+        
+        pv_deadband = createAndStartMdelPV(samples);
+        //has_deadband = retrieveDeadbandExistenceInfoFor(name);
+       
         this.scan_timer = timer;
         pv.addListener(this);
         pv.start();
@@ -273,7 +317,7 @@ public class PVItem extends ModelItem implements PVListener
             @Override
             public void run()
             {
-                Activator.getLogger().log(Level.FINE, "PV {0} scans {1}", new Object[] { getName(), current_value });
+                LOG.debug("PV {0} scans {1}", new Object[] { getName(), current_value });
                 logCurrentValue();
             }
         };
@@ -294,6 +338,10 @@ public class PVItem extends ModelItem implements PVListener
         }
         pv.removeListener(this);
         pv.stop();
+        
+        if (pv_deadband != null && pv_deadband.isRunning()) {
+            pv_deadband.stop();
+        }
     }
 
     /** {@inheritDoc} */
@@ -313,18 +361,43 @@ public class PVItem extends ModelItem implements PVListener
             logDisconnected();
     }
 
+    private boolean first_pv_update = true;
+    private void onConnect(@Nonnull final IValue value) {
+        if (first_pv_update) {
+            first_pv_update = false;
+            if (value.getMetaData() instanceof INumericMetaData) {
+
+                INumericMetaData meta = (INumericMetaData) value.getMetaData();
+                final double displayHigh = meta.getDisplayHigh();
+                final double displayLow = meta.getDisplayLow();
+                
+                // TODO (bknerr) : That does not seem too correct 
+                Display.getDefault().asyncExec(new Runnable() {
+                    @Override
+                    public void run() {
+                        getAxis().setRange(displayLow, displayHigh);
+                    }
+                });
+            }
+        }
+    }
+    
     // PVListener
     @Override
     @SuppressWarnings("nls")
     public void pvValueUpdate(final PV pv)
     {
         final IValue value = pv.getValue();
+        
+        onConnect(value);
+
         // Cache most recent for 'scanned' operation
         current_value = value;
+        
         // In 'monitor' mode, add to live sample buffer
         if (period <= 0)
         {
-            Activator.getLogger().log(Level.FINE, "PV {0} update {1}", new Object[] { getName(), value });
+            LOG.debug("PV {0} update {1}", new Object[] { getName(), value });
             samples.addLiveSample(value);
         }
     }
@@ -365,29 +438,15 @@ public class PVItem extends ModelItem implements PVListener
     /** Add data retrieved from an archive to the 'historic' section
      *  @param server_name Archive server that provided these samples
      *  @param result Historic data
+     * @throws ArchiveServiceException 
+     * @throws OsgiServiceUnavailableException 
      */
     synchronized public void mergeArchivedSamples(final String server_name,
-            final ArrayList<IValue> result)
+                                                  final List<IValue> result) 
+                                                  throws OsgiServiceUnavailableException, 
+                                                         ArchiveServiceException
     {
-        samples.mergeArchivedData(server_name, result);
-
-//        // Order check
-//        final int N = samples.getSize();
-//        if (N <= 0)
-//            return;
-//        ITimestamp prev = samples.getSample(0).getTime();
-//        for (int i=1;  i<N;  ++i)
-//        {
-//            final ITimestamp time = samples.getSample(i).getTime();
-//            if (time.isLessThan(prev))
-//            {
-//                System.out.println("Time stamp problem at " + i);
-//                System.out.println(samples.getSample(i));
-//                return;
-//            }
-//            prev = time;
-//        }
-//        System.out.println(N + " Samples in order");
+        samples.mergeArchivedData(getName(), server_name, result);
     }
 
     /** Write XML formatted PV configuration
@@ -434,6 +493,7 @@ public class PVItem extends ModelItem implements PVListener
         final String req_txt = DOMHelper.getSubelementString(node, Model.TAG_REQUEST, RequestType.OPTIMIZED.name());
         try
         {
+            
             final RequestType request = RequestType.valueOf(req_txt);
             item.setRequestType(request);
         }
@@ -454,5 +514,60 @@ public class PVItem extends ModelItem implements PVListener
             archive = DOMHelper.findNextElementNode(archive, Model.TAG_ARCHIVE);
         }
         return item;
+    }
+
+    /**
+     * Only returns true if the {@link RecordField#ADEL} channel has been registered AND
+     * the this{@link #show_deadband()} is set to true.
+     * @param samples2 
+     */
+//    public Boolean getShowDeadband() 
+//    {
+//        return has_deadband && show_deadband;
+//    }
+    
+//    public Boolean hasDeadband() 
+//    {
+//        return has_deadband;
+//    }
+    
+//    public void toggleShowDeadband() throws Exception 
+//    {
+//        show_deadband = !show_deadband;
+//        if (show_deadband && pv_deadband == null) {
+//            createAndStartMdelPV();
+//        }
+//        
+//        samples.toggleShowDeadband(super.toString());
+//    }
+
+    private PV createAndStartMdelPV(final PVSamples pv_samples) throws Exception 
+    {
+        String mdelChannelName = EpicsNameSupport.parseBaseName(super.toString()) + 
+                                 EpicsChannelName.FIELD_SEP +
+                                 RecordField.MDEL.getFieldName();
+        PV mdel_pv = PVFactory.createPV(mdelChannelName);
+        mdel_pv.addListener(new PVListener() {
+            
+            @Override
+            public void pvValueUpdate(PV newPV) {
+                IValue mdelValue = newPV.getValue();
+                Number mdel;
+                if (mdelValue instanceof IDoubleValue) {
+                    mdel = Double.valueOf(((IDoubleValue) mdelValue).getValue());
+                } else if (mdelValue instanceof ILongValue) {
+                    mdel = Long.valueOf(((ILongValue) mdelValue).getValue());
+                } else {
+                    return;
+                }
+                pv_samples.setLiveSamplesDeadband(mdel);
+            }
+            @Override
+            public void pvDisconnected(PV newPV) {
+                pv_samples.setLiveSamplesDeadband(null);
+            }
+        });
+        mdel_pv.start();
+        return mdel_pv;
     }
 }

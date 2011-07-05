@@ -18,6 +18,7 @@ import org.csstudio.swt.xygraph.undo.SaveStateCommand;
 import org.csstudio.swt.xygraph.undo.ZoomType;
 import org.csstudio.swt.xygraph.util.GraphicsUtil;
 import org.csstudio.swt.xygraph.util.Log10;
+import org.csstudio.swt.xygraph.util.SWTConstants;
 import org.csstudio.swt.xygraph.util.XYGraphMediaFactory;
 import org.csstudio.swt.xygraph.util.XYGraphMediaFactory.CURSOR_TYPE;
 import org.eclipse.draw2d.FigureUtilities;
@@ -188,7 +189,7 @@ public class Axis extends LinearScale{
 
 		super.paintClientArea(graphics);
 
-		graphics.pushState();
+//		graphics.pushState();
 		graphics.setFont(titleFont);
 		final Dimension titleSize = FigureUtilities.getTextExtents(title, titleFont);
 		if(isHorizontal()){
@@ -213,7 +214,7 @@ public class Axis extends LinearScale{
 			}
 		}
 
-		graphics.popState();
+//		graphics.popState();
 
 		// Show the start/end cursor or the 'rubberband' of a zoom operation?
 		if(armed && end != null && start != null){
@@ -221,7 +222,7 @@ public class Axis extends LinearScale{
 			case RUBBERBAND_ZOOM:
 			case HORIZONTAL_ZOOM:
 			case VERTICAL_ZOOM:
-				graphics.setLineStyle(SWT.LINE_DOT);
+				graphics.setLineStyle(SWTConstants.LINE_DOT);
 				graphics.setLineWidth(1);
 				graphics.setForegroundColor(revertBackColor);
 				graphics.drawRectangle(start.x, start.y, end.x - start.x-1, end.y - start.y-1);

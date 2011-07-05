@@ -1,3 +1,4 @@
+
 package org.csstudio.nams.service.preferenceservice.ui;
 
 import org.csstudio.nams.common.activatorUtils.AbstractBundleActivator;

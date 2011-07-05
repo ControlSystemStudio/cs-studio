@@ -7,44 +7,84 @@
  ******************************************************************************/
 package org.csstudio.common.trendplotter.model;
 
-import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Iterator;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Map;
 
+import javax.annotation.Nonnull;
+
+import org.csstudio.archive.common.service.ArchiveServiceException;
+import org.csstudio.archive.common.service.IArchiveReaderFacade;
+import org.csstudio.archive.common.service.sample.IArchiveSample;
+import org.csstudio.common.trendplotter.Activator;
 import org.csstudio.data.values.ITimestamp;
 import org.csstudio.data.values.IValue;
+import org.csstudio.domain.desy.epics.name.EpicsChannelName;
+import org.csstudio.domain.desy.epics.name.EpicsNameSupport;
+import org.csstudio.domain.desy.epics.name.RecordField;
+import org.csstudio.domain.desy.service.osgi.OsgiServiceUnavailableException;
+import org.csstudio.domain.desy.system.IAlarmSystemVariable;
+import org.csstudio.domain.desy.time.TimeInstant;
+import org.csstudio.domain.desy.typesupport.BaseTypeConversionSupport;
+
+import com.google.common.collect.Lists;
+import com.google.common.collect.Maps;
 
 
-/** Holder for 'historic' samples.
+/** Holder for 'historic' orgSamples.
  *  <p>
- *  In addition to holding 'all' historic samples, this class
- *  allows for a 'border' time beyond which no samples will
+ *  In addition to holding 'all' historic orgSamples, this class
+ *  allows for a 'border' time beyond which no orgSamples will
  *  be provided.
- *  When setting this border to the start of the 'live' samples,
- *  this class will thus assert that the live samples have
+ *  When setting this border to the start of the 'live' orgSamples,
+ *  this class will thus assert that the live orgSamples have
  *  precedence because no 'historic' sample is provided
  *  for the 'live' time range.
  *  When the start of the 'live' time range moves because
  *  the live data ring buffer rolls around, the 'border' time adjustments
- *  might then uncover historic samples that were previously
+ *  might then uncover historic orgSamples that were previously
  *  hidden below the 'live' time range.
  *
  *  @author Kay Kasemir
  */
 public class HistoricSamples extends PlotSamples
 {
-    /** "All" historic samples */
-    private PlotSample samples[] = new PlotSample[0];
+    /** "All" historic orgSamples */
+//    private PlotSample[] orgSamples = new PlotSample[0];
+//    private PlotSample[] intSamples = new PlotSample[0];
 
-    /** If non-null, samples beyond this time are hidden from access */
+    private final Map<RequestType, PlotSample[]> sample_map = 
+        Maps.newEnumMap(RequestType.class);
+    
+    /** If non-null, orgSamples beyond this time are hidden from access */
     private ITimestamp border_time = null;
 
-    /** Subset of samples.length that's below border_time
+    /** 
+     * Subset of orgSamples.length that's below border_time
      *  @see #computeVisibleSize()
      */
     private int visible_size = 0;
+    
+    private boolean adel_info_complete = false;
 
-    /** Define a new 'border' time beyond which no samples
+    
+    /**
+     * Constructor.
+     */
+    public HistoricSamples(RequestType request_type) 
+    {
+        for (RequestType type : RequestType.values()) {
+            sample_map.put(type, new PlotSample[0]);
+        }
+        updateRequestType(request_type);
+    }
+    
+    
+    /** Define a new 'border' time beyond which no orgSamples
      *  are returned from the history
-     *  @param border_time New time or <code>null</code> to access all samples
+     *  @param border_time New time or <code>null</code> to access all orgSamples
      */
     public void setBorderTime(final ITimestamp border_time)
     {   // Anything new?
@@ -57,19 +97,19 @@ public class HistoricSamples extends PlotSamples
                 return;
         // New border, recompute, mark as 'new data'
         this.border_time = border_time;
-        computeVisibleSize();
+        computeVisibleSize(sample_map.get(request_type));
         have_new_samples = true;
     }
 
     /** Update visible size */
-    synchronized private void computeVisibleSize()
+    synchronized private void computeVisibleSize(PlotSample[] samples)
     {
         if (border_time == null)
             visible_size = samples.length;
         else
         {
-            final int last_index = PlotSampleSearch.findSampleLessThan(
-                                        samples, border_time);
+            final int last_index = 
+                PlotSampleSearch.findSampleLessThan(samples, border_time);
             visible_size = (last_index < 0)   ?   0   :   last_index + 1;
         }
     }
@@ -81,7 +121,7 @@ public class HistoricSamples extends PlotSamples
     {
         if (i >= visible_size)
             throw new IndexOutOfBoundsException("Index " + i + " exceeds visible size " + visible_size);
-        return samples[i];
+        return sample_map.get(request_type)[i];
     }
 
     /** {@inheritDoc} */
@@ -91,33 +131,157 @@ public class HistoricSamples extends PlotSamples
         return visible_size;
     }
 
-    /** Merge newly received archive data into historic samples
+    /** Merge newly received archive data into historic orgSamples
+     * @param channel_name
      *  @param source Info about data source
      *  @param result Samples to add/merge
+     * @throws ArchiveServiceException 
+     * @throws OsgiServiceUnavailableException 
      */
-    synchronized public void mergeArchivedData(final String source, final ArrayList<IValue> result)
+    synchronized public void mergeArchivedData(final String channel_name, 
+                                               final String source,
+                                               final List<IValue> result) 
+                                               throws OsgiServiceUnavailableException, 
+                                                      ArchiveServiceException
     {
         // Anything new at all?
         if (result.size() <= 0)
             return;
         // Turn IValues into PlotSamples
         final PlotSample new_samples[] = new PlotSample[result.size()];
-        for (int i=0; i<new_samples.length; ++i)
+        for (int i=0; i<new_samples.length; ++i) {
             new_samples[i] = new PlotSample(source, result.get(i));
+        }
+        if (hasSourceDeadbandInfo(source)) {
+            findAndSetArchiveDeadBandForNewSamples(channel_name, new_samples);
+        }
+
         // Merge with existing samples
-        final PlotSample merged[] = PlotSampleMerger.merge(samples, new_samples);
-        if (merged == samples)
-            return;
-        samples = merged;
-        computeVisibleSize();
+        PlotSample[] ext_samples = sample_map.get(request_type);
+        PlotSample[] merged_result = PlotSampleMerger.merge(ext_samples, new_samples);
+
+        computeVisibleSize(merged_result);
+        sample_map.put(request_type, merged_result);
+
         have_new_samples = true;
+        adel_info_complete = false;
     }
 
-    /** Delete all samples */
+
+    private boolean hasSourceDeadbandInfo(String source) {
+        // TODO (bknerr) : Well that whole thing should be refactored
+        return true;
+    }
+
+
+    /** Delete all orgSamples */
     synchronized public void clear()
     {
         visible_size = 0;
-        samples = new PlotSample[0];
+        for (RequestType type : RequestType.values()) {
+            sample_map.put(type, new PlotSample[0]);
+        }
         have_new_samples = true;
     }
+    
+    public void setAdelInfoComplete(boolean b) {
+        adel_info_complete = b;
+    }
+    public boolean adelInfoComplete() {
+        return adel_info_complete;
+    }
+    
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    synchronized public void updateRequestType(@Nonnull final RequestType type) {
+        super.updateRequestType(type);
+        computeVisibleSize(sample_map.get(request_type));
+    }
+    
+    private void findAndSetArchiveDeadBandForNewSamples(final String channel_name,
+                                                        final PlotSample[] new_samples) 
+                                                        throws OsgiServiceUnavailableException, 
+                                                               ArchiveServiceException {
+        if (new_samples.length > 0) {
+          Collection<IArchiveSample<Object, IAlarmSystemVariable<Object>>> adels = retrieveAdelSamples(channel_name,
+                                                                                                       new_samples[0],
+                                                                                                       new_samples[new_samples.length - 1]);
+          if (!adels.isEmpty()) {
+              Iterator<IArchiveSample<Object, IAlarmSystemVariable<Object>>> iter = adels.iterator();
+              IArchiveSample<Object, IAlarmSystemVariable<Object>> curAdel = iter.next();
+              
+              for (int i = 0; i < new_samples.length; i++) {
+                  PlotSample sample = new_samples[i];
+                  if (!sample.hasDeadband()) {
+                      findAndSetAdelValueForPlotSample(sample, iter, curAdel);
+                  }
+              }
+          }
+        }
+        
+    }
+    
+    private void findAndSetAdelValueForPlotSample(@Nonnull final PlotSample sample,
+                                                  @Nonnull final Iterator<IArchiveSample<Object, IAlarmSystemVariable<Object>>> iter, 
+                                                  @Nonnull final IArchiveSample<Object, IAlarmSystemVariable<Object>> curAdel) {
+  
+        final TimeInstant sampleTs = BaseTypeConversionSupport.toTimeInstant(sample.getTime());
+        
+        TimeInstant curAdelTs = curAdel.getSystemVariable().getTimestamp();
+        if (curAdelTs.isAfter(sampleTs)) {
+            sample.setDeadband(null); // no adel info for this sample
+            return;
+        }
+  
+        IArchiveSample<Object, IAlarmSystemVariable<Object>> nextAdel = iter.hasNext() ? 
+                                                                        iter.next() : 
+                                                                        null;
+        TimeInstant nextAdelTs = nextAdel != null ? 
+                                 nextAdel.getSystemVariable().getTimestamp() :
+                                 null;                                                                        
+
+        // find the adel pair curAdel, nextAdel where 
+        // curAdel.isBefore(ts) && (nextAdel.isAfter() || nextAdel == null)
+        while (! (curAdelTs.isBefore(sampleTs) && (nextAdelTs == null || nextAdelTs.isAfter(sampleTs)))) {
+            if (iter.hasNext()) {
+                curAdelTs = nextAdelTs;
+                nextAdel = iter.next();
+                nextAdelTs = nextAdel.getSystemVariable().getTimestamp();
+            } else { // no valid adel present, return with adel set to null 
+                sample.setDeadband(null);
+                return;
+            }
+        }
+  
+        sample.setDeadband((Number) curAdel.getValue());
+    }
+
+    private Collection<IArchiveSample<Object, IAlarmSystemVariable<Object>>> retrieveAdelSamples(final String channel_name, 
+                                                                                                 final PlotSample first, 
+                                                                                                 final PlotSample last) 
+                                                                                                 throws OsgiServiceUnavailableException,
+                                                                                                        ArchiveServiceException 
+    {
+        final IArchiveReaderFacade service = Activator.getDefault().getArchiveReaderService();
+        final TimeInstant start = BaseTypeConversionSupport.toTimeInstant(first.getTime());
+        final TimeInstant end = BaseTypeConversionSupport.toTimeInstant(last.getTime());
+        
+        final String adelChannelName = 
+            EpicsNameSupport.parseBaseName(channel_name) + 
+            EpicsChannelName.FIELD_SEP +
+            RecordField.ADEL.getFieldName();
+        
+        final IArchiveSample lastBefore = service.readLastSampleBefore(adelChannelName, start);
+        
+        Collection samples =
+            service.readSamples(adelChannelName, 
+                                start, 
+                                end);
+        LinkedList<IArchiveSample<Object, IAlarmSystemVariable<Object>>> allSamples = Lists.newLinkedList(samples);
+        allSamples.addFirst(lastBefore);
+        return allSamples;
+    }
+
 }

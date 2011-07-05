@@ -71,7 +71,7 @@ public class LdapUpdaterActivator implements BundleActivator {
      */
     public LdapUpdaterActivator() {
         if (INSTANCE != null) {
-            throw new IllegalStateException("Activator " + PLUGIN_ID + " does already exist.");
+            throw new IllegalStateException("TreeModelActivator " + PLUGIN_ID + " does already exist.");
         }
         INSTANCE = this; // Antipattern is required by the framework!
     }
@@ -145,7 +145,7 @@ public class LdapUpdaterActivator implements BundleActivator {
 	@Nonnull
     public ILdapUpdaterService getLdapUpdaterService() throws OsgiServiceUnavailableException {
 	    if (_ldapUpdaterService == null) {
-	        throw new OsgiServiceUnavailableException("Service field has not been set. Hasnt' the framework called Activator.start before?");
+	        throw new OsgiServiceUnavailableException("Service field has not been set. Hasnt' the framework called TreeModelActivator.start before?");
 	    }
         return _ldapUpdaterService;
     }
@@ -155,7 +155,7 @@ public class LdapUpdaterActivator implements BundleActivator {
 	@Nonnull
 	public ILdapUpdaterFileService getLdapUpdaterFileService() throws OsgiServiceUnavailableException {
 	    if (_ldapUpdaterFileService == null) {
-	        throw new OsgiServiceUnavailableException("Service field has not been set. Hasnt' the framework called Activator.start before?");
+	        throw new OsgiServiceUnavailableException("Service field has not been set. Hasnt' the framework called TreeModelActivator.start before?");
 	    }
 	    return _ldapUpdaterFileService;
 	}

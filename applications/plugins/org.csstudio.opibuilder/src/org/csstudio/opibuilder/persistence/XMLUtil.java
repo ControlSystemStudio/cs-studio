@@ -73,22 +73,25 @@ public class XMLUtil {
 	}
 
 	public static String widgetToXMLString(AbstractWidgetModel widgetModel, boolean prettyFormat){
-		XMLOutputter xmlOutputter = new XMLOutputter(prettyFormat ? Format.getPrettyFormat() :
-			Format.getRawFormat());
+		Format format = prettyFormat? Format.getPrettyFormat() : Format.getRawFormat();
+		XMLOutputter xmlOutputter = new XMLOutputter();
+		xmlOutputter.setFormat(format);
+
 		return xmlOutputter.outputString(widgetToXMLElement(widgetModel));
 	}
 
 	public static void widgetToOutputStream(AbstractWidgetModel widgetModel, OutputStream out, boolean prettyFormat) throws IOException{
 		XMLOutputter xmlOutputter = new XMLOutputter(prettyFormat ? Format.getPrettyFormat() :
 			Format.getRawFormat());
-		out.write(XML_HEADER.getBytes());
+		out.write(XML_HEADER.getBytes("UTF-8")); //$NON-NLS-1$
 		xmlOutputter.output(widgetToXMLElement(widgetModel), out);
 	}
 
 
 	public static AbstractWidgetModel XMLStringToWidget(String xmlString) throws Exception{
-		SAXBuilder saxBuilder = new SAXBuilder();
-		Document doc = saxBuilder.build(new ByteArrayInputStream(xmlString.getBytes()));
+		SAXBuilder saxBuilder = new SAXBuilder();	
+		InputStream stream= new ByteArrayInputStream(xmlString.getBytes("UTF-8")); //$NON-NLS-1$
+		Document doc = saxBuilder.build(stream);
 		Element root = doc.getRootElement();
 		return XMLElementToWidget(root);
 	}
@@ -121,7 +124,7 @@ public class XMLUtil {
 	 * @return
 	 * @throws Exception
 	 */
-	@SuppressWarnings("unchecked")
+	@SuppressWarnings("rawtypes")
 	public static AbstractWidgetModel XMLElementToWidget(Element element, DisplayModel displayModel) throws Exception{
 		AbstractWidgetModel rootWidgetModel = null;
 		if(element.getName().equals(XMLTAG_DISPLAY)){
@@ -150,7 +153,7 @@ public class XMLUtil {
 
 			//throw new Exception("The element is not a widget");
 
-
+		
 		List children = element.getChildren();
 		Iterator iterator = children.iterator();
 		Set<String> propIdSet = rootWidgetModel.getAllPropertyIDs();

@@ -9,7 +9,7 @@ package org.csstudio.common.trendplotter.export;
 
 import java.io.PrintStream;
 
-import org.csstudio.archivereader.ValueIterator;
+import org.csstudio.archive.reader.ValueIterator;
 import org.csstudio.common.trendplotter.Messages;
 import org.csstudio.common.trendplotter.model.Model;
 import org.csstudio.common.trendplotter.model.ModelItem;

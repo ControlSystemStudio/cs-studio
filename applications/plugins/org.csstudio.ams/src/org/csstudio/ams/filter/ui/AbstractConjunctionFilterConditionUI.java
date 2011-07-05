@@ -1,3 +1,4 @@
+
 /* 
  * Copyright (c) 2008 Stiftung Deutsches Elektronen-Synchrotron, 
  * Member of the Helmholtz Association, (DESY), HAMBURG, GERMANY.
@@ -19,13 +20,13 @@
  * PROJECT IN THE FILE LICENSE.HTML. IF THE LICENSE IS NOT INCLUDED YOU MAY FIND A COPY 
  * AT HTTP://WWW.DESY.DE/LEGAL/LICENSE.HTM
  */
- package org.csstudio.ams.filter.ui;
+
+package org.csstudio.ams.filter.ui;
 
 import java.sql.Connection;
 import java.sql.SQLException;
 import java.util.LinkedList;
 import java.util.List;
-
 import org.csstudio.ams.AMSException;
 import org.csstudio.ams.CycleDetectionUtil;
 import org.csstudio.ams.Log;
@@ -37,7 +38,6 @@ import org.csstudio.ams.dbAccess.configdb.FilterConditionDAO;
 import org.csstudio.ams.dbAccess.configdb.FilterConditionProcessVariableTObject;
 import org.csstudio.ams.dbAccess.configdb.FilterConditionTObject;
 import org.csstudio.ams.filter.FilterConditionProcessVariable;
-import org.csstudio.platform.logging.CentralLogger;
 import org.eclipse.osgi.util.NLS;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.SelectionAdapter;
@@ -116,8 +116,7 @@ public abstract class AbstractConjunctionFilterConditionUI extends
 			snapshot = collectDataToBeSaved(filterConditionID);
 			CommonConjunctionFilterConditionDAO.insert(conDb, snapshot);
 		} catch (Exception ex) {
-			CentralLogger.getInstance().fatal(this,
-					"Fail to create new dataset", ex);
+			Log.log(this, Log.FATAL, "Fail to create new dataset", ex);
 			throw new AMSException("Fail to create new dataset", ex);
 		}
 	}
@@ -309,9 +308,7 @@ public abstract class AbstractConjunctionFilterConditionUI extends
 			CommonConjunctionFilterConditionDAO
 					.remove(conDb, filterConditionID);
 		} catch (Exception ex) {
-			CentralLogger.getInstance().fatal(
-					this,
-					"Could not remove FilterCondition with reference: "
+			Log.log(this, Log.FATAL, "Could not remove FilterCondition with reference: "
 							+ filterConditionID, ex);
 			throw new AMSException(
 					"Could not remove FilterCondition with reference: "
@@ -350,8 +347,7 @@ public abstract class AbstractConjunctionFilterConditionUI extends
 			snapshot = CommonConjunctionFilterConditionDAO.select(conDb,
 					filterConditionID);
 		} catch (SQLException e) {
-			CentralLogger.getInstance().fatal(this,
-					"Can not load filter details!", e);
+			Log.log(this, Log.FATAL, "Can not load filter details!", e);
 			throw new AMSException("Can not load filter details!", e);
 		}
 
@@ -412,7 +408,7 @@ public abstract class AbstractConjunctionFilterConditionUI extends
 			CommonConjunctionFilterConditionDAO.update(conDb,
 					filterConfiguration);
 		} catch (Exception ex) {
-			CentralLogger.getInstance().fatal(this, "Fail to save dataset", ex);
+			Log.log(this, Log.FATAL, "Fail to save dataset", ex);
 			throw new AMSException("Fail to save dataset", ex);
 		}
 	}

@@ -10,6 +10,10 @@ package org.csstudio.common.trendplotter;
 import java.util.Dictionary;
 import java.util.logging.Logger;
 
+import org.csstudio.archive.common.service.ArchiveEngineServiceTracker;
+import org.csstudio.archive.common.service.ArchiveReaderServiceTracker;
+import org.csstudio.archive.common.service.IArchiveReaderFacade;
+import org.csstudio.domain.desy.service.osgi.OsgiServiceUnavailableException;
 import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.swt.graphics.Image;
 import org.eclipse.ui.plugin.AbstractUIPlugin;
@@ -33,6 +37,10 @@ public class Activator extends AbstractUIPlugin
 
     /** Logger for this plugin */
     private static Logger logger = Logger.getLogger(PLUGIN_ID);
+    
+    // FIXME (bknerr) : find out about proper dependency injection for osgi eclipse rcp
+    private ArchiveEngineServiceTracker _archiveEngineConfigServiceTracker;
+    private ArchiveReaderServiceTracker _archiveReaderServiceTracker;
 
     /** {@inheritDoc} */
     @Override
@@ -40,6 +48,12 @@ public class Activator extends AbstractUIPlugin
     {
         super.start(context);
         plugin = this;
+        
+        _archiveEngineConfigServiceTracker = new ArchiveEngineServiceTracker(context);
+        _archiveEngineConfigServiceTracker.open();
+
+        _archiveReaderServiceTracker = new ArchiveReaderServiceTracker(context);
+        _archiveReaderServiceTracker.open();
     }
 
     /** {@inheritDoc} */
@@ -47,6 +61,15 @@ public class Activator extends AbstractUIPlugin
     public void stop(BundleContext context) throws Exception
     {
         plugin = null;
+        
+        if (_archiveEngineConfigServiceTracker != null) {
+            _archiveEngineConfigServiceTracker.close();
+        }
+
+        if (_archiveReaderServiceTracker != null) {
+            _archiveReaderServiceTracker.close();
+        }
+        
         super.stop(context);
     }
 
@@ -93,5 +116,19 @@ public class Activator extends AbstractUIPlugin
     public static Logger getLogger()
     {
         return logger;
+    }
+    
+    /**
+     * Returns the archive reader service from the service tracker.
+     * @return the archive service or <code>null</code> if not available.
+     * @throws OsgiServiceUnavailableException
+     */
+    public IArchiveReaderFacade getArchiveReaderService() throws OsgiServiceUnavailableException {
+        final IArchiveReaderFacade service =
+            (IArchiveReaderFacade) _archiveReaderServiceTracker.getService();
+        if (service == null) {
+            throw new OsgiServiceUnavailableException("Archive reader service unavailable.");
+        }
+        return service;
     }
 }

@@ -14,8 +14,8 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
-import org.csstudio.apputil.ui.time.DateTimePickerDialog;
 import org.csstudio.swt.widgets.datadefinition.IManualStringValueChangeListener;
+import org.csstudio.swt.widgets.util.DateTimePickerDialog;
 import org.csstudio.ui.util.dialogs.ResourceSelectionDialog;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.Path;

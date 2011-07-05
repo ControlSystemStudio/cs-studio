@@ -14,6 +14,7 @@ import org.csstudio.swt.xygraph.undo.IOperationsManagerListener;
 import org.csstudio.swt.xygraph.undo.OperationsManager;
 import org.csstudio.swt.xygraph.undo.RemoveAnnotationCommand;
 import org.csstudio.swt.xygraph.undo.ZoomType;
+import org.csstudio.swt.xygraph.util.SingleSourceHelper;
 import org.csstudio.swt.xygraph.util.XYGraphMediaFactory;
 import org.eclipse.draw2d.ActionEvent;
 import org.eclipse.draw2d.ActionListener;
@@ -38,7 +39,6 @@ import org.eclipse.swt.graphics.ImageData;
 import org.eclipse.swt.graphics.ImageLoader;
 import org.eclipse.swt.graphics.RGB;
 import org.eclipse.swt.widgets.Display;
-import org.eclipse.swt.widgets.FileDialog;
 
 
 /**The toolbar for an xy-graph.
@@ -135,7 +135,8 @@ public class XYGraphToolbar extends Figure {
 		addUndoRedoButtons();
 		
 		addSeparator();
-		addSnapshotButton();
+		if(!SWT.getPlatform().startsWith("rap")) //$NON-NLS-1$
+			addSnapshotButton();
 	}
 
 //	@Override
@@ -152,10 +153,7 @@ public class XYGraphToolbar extends Figure {
 		snapShotButton.addActionListener(new ActionListener(){
 			public void actionPerformed(ActionEvent event) {
 			    // Prompt for file name
-				FileDialog dialog = new FileDialog(Display.getDefault().getShells()[0], SWT.SAVE);
-				dialog.setFilterNames(new String[] {"PNG Files", "All Files (*.*)" });
-		        dialog.setFilterExtensions(new String[] { "*.png", "*.*" }); // Windows
-			    String path = dialog.open();
+			    String path = SingleSourceHelper.getImageSavePath();
 			    if (path == null || path.length() <= 0)
 			        return;
 			    // Have valid name, so get image

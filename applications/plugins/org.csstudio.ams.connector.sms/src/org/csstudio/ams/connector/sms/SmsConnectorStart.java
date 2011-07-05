@@ -25,7 +25,6 @@ package org.csstudio.ams.connector.sms;
 
 import java.net.InetAddress;
 import java.util.Hashtable;
-
 import javax.jms.Connection;
 import javax.jms.ConnectionFactory;
 import javax.jms.JMSException;
@@ -35,7 +34,6 @@ import javax.jms.Session;
 import javax.naming.Context;
 import javax.naming.InitialContext;
 import javax.naming.NamingException;
-
 import org.csstudio.ams.AmsActivator;
 import org.csstudio.ams.AmsConstants;
 import org.csstudio.ams.Log;
@@ -43,7 +41,6 @@ import org.csstudio.ams.SynchObject;
 import org.csstudio.ams.Utils;
 import org.csstudio.ams.connector.sms.internal.SmsConnectorPreferenceKey;
 import org.csstudio.ams.internal.AmsPreferenceKey;
-import org.csstudio.platform.logging.CentralLogger;
 import org.eclipse.core.runtime.Platform;
 import org.eclipse.core.runtime.preferences.IPreferencesService;
 import org.eclipse.equinox.app.IApplication;
@@ -72,6 +69,7 @@ public class SmsConnectorStart implements IApplication, IGenericServiceListener<
 
     private static SmsConnectorStart _me;
 
+    private ISessionService xmppService;
     private Context extContext = null;
     private ConnectionFactory extFactory = null;
     private Connection extConnection = null;
@@ -91,7 +89,7 @@ public class SmsConnectorStart implements IApplication, IGenericServiceListener<
         _me = this;
         sObj = new SynchObject(STAT_INIT, System.currentTimeMillis());
         bStop = false;
-        
+        xmppService = null;
         IPreferencesService pref = Platform.getPreferencesService();
         managementPassword = pref.getString(AmsActivator.PLUGIN_ID, AmsPreferenceKey.P_AMS_MANAGEMENT_PASSWORD, "", null);
         if(managementPassword == null) {
@@ -110,6 +108,8 @@ public class SmsConnectorStart implements IApplication, IGenericServiceListener<
         
         SmsConnectorPreferenceKey.showPreferences();
 
+        SmsConnectorPlugin.getDefault().addSessionServiceListener(this);
+        
         // use synchronized method
         lastStatus = getStatus();
 
@@ -144,11 +144,11 @@ public class SmsConnectorStart implements IApplication, IGenericServiceListener<
                     
                     scw.stopWorking();
                     
-                    try
-                    {
+                    try {
                         scw.join(WAITFORTHREAD);
+                    } catch(InterruptedException ie) {
+                        // Can be ignored
                     }
-                    catch(InterruptedException ie) { }
 
                     if(scw.stoppedClean())
                     {
@@ -229,11 +229,11 @@ public class SmsConnectorStart implements IApplication, IGenericServiceListener<
             // Clean stop of the working thread
             scw.stopWorking();
             
-            try
-            {
+            try {
                 scw.join(WAITFORTHREAD);
+            } catch(InterruptedException ie) {
+                // Can be ignored
             }
-            catch(InterruptedException ie) { }
     
             if(scw.stoppedClean())
             {
@@ -251,31 +251,35 @@ public class SmsConnectorStart implements IApplication, IGenericServiceListener<
             }
         }
         
+        if (xmppService != null) {
+            xmppService.disconnect();
+        }
+        
         Log.log(this, Log.INFO, "Leaving start()");
         
-        if(restart)
-            return EXIT_RESTART;
-        else
-            return EXIT_OK;
+        Integer exitCode = IApplication.EXIT_OK;
+        if(restart) {
+            exitCode = IApplication.EXIT_RESTART;
+        }
+        
+        return exitCode;
     }
 
     
-    public void stop()
-    {
+    @Override
+    public void stop() {
         Log.log(Log.INFO, "method: stop()");
         return;
     }
 
-    public static SmsConnectorStart getInstance()
-    {
+    public static SmsConnectorStart getInstance() {
         return _me;
     }
     
     /**
      * Sets the restart flag to force a restart.
      */
-    public synchronized void setRestart()
-    {
+    public synchronized void setRestart() {
         restart = true;
         bStop = true;
     }
@@ -291,7 +295,7 @@ public class SmsConnectorStart implements IApplication, IGenericServiceListener<
 
     /**
      * 
-     * @return
+     * @return Password for remote management
      */
     public synchronized String getPassword()
     {
@@ -411,6 +415,7 @@ public class SmsConnectorStart implements IApplication, IGenericServiceListener<
         return true;
     }
     
+    @Override
     public void bindService(ISessionService sessionService) {
     	IPreferencesService pref = Platform.getPreferencesService();
     	String xmppServer = pref.getString(SmsConnectorPlugin.PLUGIN_ID, SmsConnectorPreferenceKey.P_XMPP_SERVER, "krynfs.desy.de", null);
@@ -419,12 +424,14 @@ public class SmsConnectorStart implements IApplication, IGenericServiceListener<
     	
     	try {
 			sessionService.connect(xmppUser, xmppPassword, xmppServer);
+			xmppService = sessionService;
 		} catch (Exception e) {
-			CentralLogger.getInstance().warn(this,
-					"XMPP connection is not available, " + e.toString());
+			Log.log(this, Log.WARN, "XXMPP connection is not available: " + e.getMessage());
+			xmppService = null;
 		}
     }
     
+    @Override
     public void unbindService(ISessionService service) {
     	service.disconnect();
     }

@@ -41,7 +41,7 @@ public class PlotSampleMerger
              } else if (A[a].getTime().isGreaterThan(B[b].getTime())) {
                  C[c] = B[b];
                  b++;
-             } else { // equal time stamp - no behaviour specified - last test says, take 'new', omit 'old', well then...
+             } else { // equal time stamp - no behaviour specified - test says, take 'new', omit 'old', well then...
                  C[c] = B[b];
                  b++;
                  a++;

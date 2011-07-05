@@ -24,7 +24,7 @@ package org.csstudio.archive.common.reader;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
-import org.csstudio.archive.common.reader.facade.IServiceProvider;
+import org.csstudio.archive.common.reader.facade.IArchiveServiceProvider;
 import org.csstudio.archive.common.requesttype.IArchiveRequestType;
 import org.csstudio.archive.common.service.ArchiveServiceException;
 import org.csstudio.data.values.IValue;
@@ -54,7 +54,7 @@ public class DesyArchiveValueIterator<V> extends AbstractValueIterator<V> {
      * @throws ArchiveServiceException
      * @throws OsgiServiceUnavailableException
      */
-    DesyArchiveValueIterator(@Nonnull final IServiceProvider provider,
+    DesyArchiveValueIterator(@Nonnull final IArchiveServiceProvider provider,
                              @Nonnull final String channelName,
                              @Nonnull final TimeInstant start,
                              @Nonnull final TimeInstant end,

@@ -1,3 +1,4 @@
+
 package org.csstudio.nams.configurator.actions;
 
 import org.csstudio.nams.configurator.Messages;
@@ -12,7 +13,6 @@ import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.swt.widgets.Display;
-import org.eclipse.swt.widgets.MessageBox;
 import org.eclipse.ui.IViewActionDelegate;
 import org.eclipse.ui.IViewPart;
 
@@ -28,13 +28,16 @@ public class DeleteConfugurationBeanAction extends Action implements
 	private IConfigurationBean bean;
 
 	public DeleteConfugurationBeanAction() {
+	    // Nothing to do
 	}
 
-	public void init(final IViewPart view) {
-
+	@Override
+    public void init(final IViewPart view) {
+        // Nothing to do
 	}
 
-	public void run(final IAction action) {
+	@Override
+    public void run(final IAction action) {
 		if (this.bean != null) {
 			try {
 				if (DeleteConfugurationBeanAction.configurationBeanService
@@ -59,11 +62,11 @@ public class DeleteConfugurationBeanAction extends Action implements
 		}
 	}
 
-	public void selectionChanged(final IAction action,
+	@Override
+    public void selectionChanged(final IAction action,
 			final ISelection selection) {
 		final IStructuredSelection sSelection = (IStructuredSelection) selection;
 		final Object source = sSelection.getFirstElement();
 		this.bean = (IConfigurationBean) source;
 	}
-
 }

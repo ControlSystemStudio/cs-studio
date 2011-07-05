@@ -1,3 +1,4 @@
+
 /* 
  * Copyright (c) 2008 C1 WPS mbH, 
  * HAMBURG, GERMANY.
@@ -22,8 +23,9 @@
  * MAY FIND A COPY AT
  * {@link http://www.eclipse.org/org/documents/epl-v10.html}.
  */
+
 package org.csstudio.nams.common.wam;
 
 public @interface Automat {
-
+    // Nothing
 }

@@ -27,12 +27,12 @@ import java.util.Iterator;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
-import org.csstudio.archive.common.reader.facade.IServiceProvider;
+import org.csstudio.archive.common.reader.facade.IArchiveServiceProvider;
 import org.csstudio.archive.common.requesttype.IArchiveRequestType;
 import org.csstudio.archive.common.service.ArchiveServiceException;
 import org.csstudio.archive.common.service.IArchiveReaderFacade;
 import org.csstudio.archive.common.service.sample.IArchiveSample;
-import org.csstudio.archivereader.ValueIterator;
+import org.csstudio.archive.reader.ValueIterator;
 import org.csstudio.data.values.IValue;
 import org.csstudio.domain.desy.service.osgi.OsgiServiceUnavailableException;
 import org.csstudio.domain.desy.system.ISystemVariable;
@@ -51,7 +51,7 @@ public abstract class AbstractValueIterator<V> implements ValueIterator {
     protected static final ArchiveSampleToIValueFunction ARCH_SAMPLE_2_IVALUE_FUNC =
         new ArchiveSampleToIValueFunction();
 
-    private final IServiceProvider _provider;
+    private final IArchiveServiceProvider _provider;
 
     private final String _channelName;
     private final TimeInstant _start;
@@ -67,7 +67,7 @@ public abstract class AbstractValueIterator<V> implements ValueIterator {
      * @throws ArchiveServiceException
      * @throws OsgiServiceUnavailableException
      */
-    protected AbstractValueIterator(@Nonnull final IServiceProvider provider,
+    protected AbstractValueIterator(@Nonnull final IArchiveServiceProvider provider,
                                     @Nonnull final String channelName,
                                     @Nonnull final TimeInstant start,
                                     @Nonnull final TimeInstant end,

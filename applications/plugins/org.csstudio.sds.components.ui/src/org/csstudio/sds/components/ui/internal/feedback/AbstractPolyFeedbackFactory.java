@@ -171,6 +171,7 @@ abstract class AbstractPolyFeedbackFactory implements
 	/**
 	 * {@inheritDoc}
 	 */
+	@SuppressWarnings("rawtypes")
 	public final Class getCreationTool() {
 		return PointListCreationTool.class;
 	}

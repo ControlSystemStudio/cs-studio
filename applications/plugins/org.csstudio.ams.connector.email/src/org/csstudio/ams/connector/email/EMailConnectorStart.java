@@ -25,7 +25,6 @@ package org.csstudio.ams.connector.email;
 
 import java.net.InetAddress;
 import java.util.Hashtable;
-
 import javax.jms.Connection;
 import javax.jms.ConnectionFactory;
 import javax.jms.JMSException;
@@ -35,7 +34,6 @@ import javax.jms.Session;
 import javax.naming.Context;
 import javax.naming.InitialContext;
 import javax.naming.NamingException;
-
 import org.csstudio.ams.AmsActivator;
 import org.csstudio.ams.AmsConstants;
 import org.csstudio.ams.Log;
@@ -43,7 +41,6 @@ import org.csstudio.ams.SynchObject;
 import org.csstudio.ams.Utils;
 import org.csstudio.ams.connector.email.internal.EMailConnectorPreferenceKey;
 import org.csstudio.ams.internal.AmsPreferenceKey;
-import org.csstudio.platform.logging.CentralLogger;
 import org.eclipse.core.runtime.Platform;
 import org.eclipse.core.runtime.preferences.IPreferencesService;
 import org.eclipse.equinox.app.IApplication;
@@ -377,8 +374,7 @@ public class EMailConnectorStart implements IApplication, IGenericServiceListene
 			sessionService.connect(xmppUser, xmppPassword, xmppServer);
 			xmppService = sessionService;
 		} catch (Exception e) {
-			CentralLogger.getInstance().warn(this,
-					"XMPP connection is not available, " + e.toString());
+		    Log.log(this, Log.WARN, "XMPP connection is not available: " + e.getMessage());
 		}
     }
     

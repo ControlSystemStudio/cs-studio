@@ -1,3 +1,4 @@
+
 package org.csstudio.nams.service.history.impl.confstore;
 
 import org.csstudio.nams.service.configurationaccess.localstore.declaration.LocalStoreConfigurationService;
@@ -17,10 +18,10 @@ public class HistoryServiceFactoryImpl implements HistoryServiceFactory {
 		// TODO Auto-generated constructor stub
 	}
 
-	public HistoryService createService() {
+	@Override
+    public HistoryService createService() {
 		// TODO Auto-generated method stub
 		return new HistoryServiceImpl(
 				HistoryServiceFactoryImpl.localStoreConfigurationService);
 	}
-
 }

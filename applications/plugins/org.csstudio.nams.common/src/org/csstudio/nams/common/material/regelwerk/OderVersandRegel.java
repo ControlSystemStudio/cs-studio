@@ -1,3 +1,4 @@
+
 package org.csstudio.nams.common.material.regelwerk;
 
 import java.util.Set;
@@ -9,7 +10,7 @@ public class OderVersandRegel extends AbstractNodeVersandRegel {
 	@Deprecated
 	@ForTesting
 	public OderVersandRegel() {
-
+	    // Nothing to do
 	}
 
 	public OderVersandRegel(final VersandRegel[] versandRegeln) {
@@ -44,5 +45,4 @@ public class OderVersandRegel extends AbstractNodeVersandRegel {
 		stringBuilder.append("]");
 		return stringBuilder.toString();
 	}
-
 }

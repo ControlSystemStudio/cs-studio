@@ -1,3 +1,4 @@
+
 package org.csstudio.nams.service.messaging.impl.jms;
 
 import java.util.Map;
@@ -31,15 +32,15 @@ public class JMSProducer implements Producer {
 
 	private final MessageProducer[] producers;
 	private boolean isClosed;
-	private final Logger logger;
-	private final Session[] sessions;
+	private final Logger _logger;
+	private final Session[] _sessions;
 
 	public JMSProducer(final String messageDestinationName,
 			final PostfachArt artDesPostfaches, final Session[] sessions)
 			throws JMSException {
 
-		this.sessions = sessions;
-		this.logger = JMSProducer.injectedLogger;
+		this._sessions = sessions;
+		this._logger = JMSProducer.injectedLogger;
 
 		this.producers = new MessageProducer[sessions.length];
 		try {
@@ -60,22 +61,24 @@ public class JMSProducer implements Producer {
 			}
 		} catch (final JMSException e) {
 			this.tryToClose();
-			this.logger.logErrorMessage(this, e.getLocalizedMessage(), e);
+			this._logger.logErrorMessage(this, e.getLocalizedMessage(), e);
 			throw e;
 		}
 		this.isClosed = false;
 	}
 
-	public boolean isClosed() {
+	@Override
+    public boolean isClosed() {
 		return this.isClosed;
 	}
 
-	public void sendeSystemnachricht(final SystemNachricht systemNachricht)
+	@Override
+    public void sendeSystemnachricht(final SystemNachricht systemNachricht)
 			throws MessagingException {
 		try {
 			if (systemNachricht.istSyncronisationsAufforderung()) {
-				for (int i = 0; i < this.sessions.length; i++) {
-					final MapMessage mapMessage = this.sessions[i]
+				for (int i = 0; i < this._sessions.length; i++) {
+					final MapMessage mapMessage = this._sessions[i]
 							.createMapMessage();
 					mapMessage.setString(MessageKeyEnum.MSGPROP_COMMAND
 							.getStringValue(),
@@ -84,8 +87,8 @@ public class JMSProducer implements Producer {
 					this.producers[i].send(mapMessage);
 				}
 			} else if (systemNachricht.istSyncronisationsBestaetigung()) {
-				for (int i = 0; i < this.sessions.length; i++) {
-					final MapMessage mapMessage = this.sessions[i]
+				for (int i = 0; i < this._sessions.length; i++) {
+					final MapMessage mapMessage = this._sessions[i]
 							.createMapMessage();
 					mapMessage.setString(MessageKeyEnum.MSGPROP_COMMAND
 							.getStringValue(),
@@ -94,18 +97,19 @@ public class JMSProducer implements Producer {
 					this.producers[i].send(mapMessage);
 				}
 			} else {
-				this.logger
+				this._logger
 						.logErrorMessage(this, "unbekannte Systemnachricht.");
 			}
 		} catch (final Throwable e) {
-			this.logger.logWarningMessage(this,
+			this._logger.logWarningMessage(this,
 					"Throwable recieved during send of system message", e);
 			throw new MessagingException(
 					"Throwable recieved during send of system message", e);
 		}
 	}
 
-	public void sendeVorgangsmappe(final Vorgangsmappe vorgangsmappe)
+	@Override
+    public void sendeVorgangsmappe(final Vorgangsmappe vorgangsmappe)
 			throws MessagingException {
 		final Regelwerkskennung regelwerkskennung = vorgangsmappe
 				.gibPruefliste().gibRegelwerkskennung();
@@ -117,9 +121,9 @@ public class JMSProducer implements Producer {
 				.getUnknownContentMap();
 
 		try {
-			for (int i = 0; i < this.sessions.length; i++) {
+			for (int i = 0; i < this._sessions.length; i++) {
 				MapMessage mapMessage;
-				mapMessage = this.sessions[i].createMapMessage();
+				mapMessage = this._sessions[i].createMapMessage();
 
 				final Set<Entry<MessageKeyEnum, String>> entrySet = contentMap
 						.entrySet();
@@ -142,23 +146,25 @@ public class JMSProducer implements Producer {
 				this.producers[i].send(mapMessage);
 			}
 		} catch (final JMSException e) {
-			this.logger.logWarningMessage(this,
+			this._logger.logWarningMessage(this,
 					"JMSException during send of Vorgangsmappe", e);
 			throw new MessagingException(
 					"JMSException during send of Vorgangsmappe", e);
 		}
 	}
 
-	public void tryToClose() {
+	@Override
+    public void tryToClose() {
 		for (final MessageProducer producer : this.producers) {
 			if (producer != null) {
 				try {
 					producer.close();
 				} catch (final JMSException e) {
+				    // Can be ignored
 				}
 			}
 		}
 		this.isClosed = true;
-		this.logger.logDebugMessage(this, "Producer closed");
+		this._logger.logDebugMessage(this, "Producer closed");
 	}
 }

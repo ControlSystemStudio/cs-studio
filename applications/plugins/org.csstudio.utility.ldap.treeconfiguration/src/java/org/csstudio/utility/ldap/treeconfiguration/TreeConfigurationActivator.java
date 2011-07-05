@@ -33,6 +33,12 @@ import org.osgi.framework.Bundle;
 import org.osgi.framework.BundleActivator;
 import org.osgi.framework.BundleContext;
 
+/**
+ * Activator. 
+ * 
+ * @author bknerr
+ * @since 01.07.2011
+ */
 public class TreeConfigurationActivator implements BundleActivator {
 
     /**
@@ -48,7 +54,7 @@ public class TreeConfigurationActivator implements BundleActivator {
      */
     public TreeConfigurationActivator() {
         if (INSTANCE != null) {
-            throw new IllegalStateException("Activator " + PLUGIN_ID + " does already exist.");
+            throw new IllegalStateException("TreeModelActivator " + PLUGIN_ID + " does already exist.");
         }
         INSTANCE = this; // Antipattern is required by the framework!
     }

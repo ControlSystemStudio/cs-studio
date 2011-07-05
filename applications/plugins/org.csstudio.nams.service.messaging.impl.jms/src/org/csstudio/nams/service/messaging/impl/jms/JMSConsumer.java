@@ -1,3 +1,4 @@
+
 package org.csstudio.nams.service.messaging.impl.jms;
 
 import java.util.Enumeration;
@@ -72,6 +73,7 @@ class JMSConsumer implements Consumer {
 			try {
 				this.consumer.close();
 			} catch (final JMSException e) {
+			    // Can be ignored
 			}
 			this.logger.logDebugMessage(this, "Consumer WorkThread stoped");
 		}
@@ -155,7 +157,8 @@ class JMSConsumer implements Consumer {
 		}
 	}
 
-	public void close() {
+	@Override
+    public void close() {
 		for (final WorkThread worker : this.workers) {
 			if (worker != null) {
 				worker.close();
@@ -165,11 +168,13 @@ class JMSConsumer implements Consumer {
 		this.logger.logDebugMessage(this, "Consumer closed");
 	}
 
-	public boolean isClosed() {
+	@Override
+    public boolean isClosed() {
 		return this.isClosed;
 	}
 
-	public NAMSMessage receiveMessage() throws MessagingException {
+	@Override
+    public NAMSMessage receiveMessage() throws MessagingException {
 		NAMSMessage result = null;
 		try {
 			final Message message = this.messageQueue.take();
@@ -207,7 +212,8 @@ class JMSConsumer implements Consumer {
 					}
 
 					final AcknowledgeHandler ackHandler = new AcknowledgeHandler() {
-						public void acknowledge() throws Throwable {
+						@Override
+                        public void acknowledge() throws Throwable {
 							mapMessage.acknowledge();
 							JMSConsumer.this.logger.logDebugMessage(this,
 									"JMSConsumer.ackHandler.acknowledge() called for message "
@@ -254,7 +260,8 @@ class JMSConsumer implements Consumer {
 						"unknown Message type received: "
 								+ unknownMessage.toString());
 				result = new DefaultNAMSMessage(new AcknowledgeHandler() {
-					public void acknowledge() throws Throwable {
+					@Override
+                    public void acknowledge() throws Throwable {
 						unknownMessage.acknowledge();
 						JMSConsumer.this.logger.logDebugMessage(this,
 								"JMSConsumer.ackHandler.acknowledge() called for message "

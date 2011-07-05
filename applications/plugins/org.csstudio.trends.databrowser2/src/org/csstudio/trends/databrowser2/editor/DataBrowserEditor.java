@@ -94,18 +94,19 @@ public class DataBrowserEditor extends EditorPart
     /** @see #isDirty() */
     private boolean is_dirty = false;
 
-    /** Create an empty data browser editor
+    /** Create data browser editor
+     *  @param input Input for editor, must be data browser config file
      *  @return DataBrowserEditor or <code>null</code> on error
      */
-    public static DataBrowserEditor createInstance()
+    public static DataBrowserEditor createInstance(final IEditorInput input)
     {
         final DataBrowserEditor editor;
         try
         {
-            IWorkbench workbench = PlatformUI.getWorkbench();
-            IWorkbenchWindow window = workbench.getActiveWorkbenchWindow();
-            IWorkbenchPage page = window.getActivePage();
-            editor = (DataBrowserEditor) page.openEditor(new EmptyEditorInput(), ID);
+        	final IWorkbench workbench = PlatformUI.getWorkbench();
+        	final IWorkbenchWindow window = workbench.getActiveWorkbenchWindow();
+        	final IWorkbenchPage page = window.getActivePage();
+            editor = (DataBrowserEditor) page.openEditor(input, ID);
         }
         catch (Exception ex)
         {
@@ -115,6 +116,14 @@ public class DataBrowserEditor extends EditorPart
         return editor;
     }
 
+    /** Create an empty data browser editor
+     *  @return DataBrowserEditor or <code>null</code> on error
+     */
+    public static DataBrowserEditor createInstance()
+    {
+    	return createInstance(new EmptyEditorInput());
+    }
+    
     /** @return Model displayed/edited by this EditorPart */
     public Model getModel()
     {

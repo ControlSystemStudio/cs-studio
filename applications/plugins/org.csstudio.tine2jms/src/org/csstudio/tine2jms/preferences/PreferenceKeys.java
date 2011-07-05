@@ -34,8 +34,8 @@ import org.slf4j.LoggerFactory;
  * @author Markus Moeller
  *
  */
-public class PreferenceKeys
-{
+public class PreferenceKeys {
+    
     private static final Logger LOG = LoggerFactory.getLogger(PreferenceKeys.class);
     
     public final static String XMPP_SERVER = "xmppServer";
@@ -47,8 +47,8 @@ public class PreferenceKeys
     public final static String JMS_TOPICS_ALARM = "jmsTopicsAlarm";
     public final static String TINE_FACILITY_NAMES = "tineFacilityNames";
     
-    public static void showPreferences()
-    {
+    public static void showPreferences() {
+        
         IPreferencesService p = Platform.getPreferencesService();
         
         LOG.info(XMPP_SERVER + ": " + p.getString(TineToJmsActivator.PLUGIN_ID, XMPP_SERVER, "NONE", null));

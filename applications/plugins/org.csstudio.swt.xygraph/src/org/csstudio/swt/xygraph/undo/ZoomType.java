@@ -9,6 +9,7 @@ package org.csstudio.swt.xygraph.undo;
 
 import org.csstudio.swt.xygraph.Messages;
 import org.csstudio.swt.xygraph.figures.XYGraphFlags;
+import org.csstudio.swt.xygraph.util.SingleSourceHelper;
 import org.csstudio.swt.xygraph.util.XYGraphMediaFactory;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.graphics.Cursor;
@@ -108,7 +109,7 @@ public enum ZoomType{
 			if(cursorImage == null)
 				cursor = new Cursor(Display.getDefault(), SWT.CURSOR_ARROW);
 			else
-				cursor = new Cursor(Display.getDefault(), cursorImage.getImageData(), 8, 8);
+				cursor = SingleSourceHelper.createCursor(Display.getDefault(), cursorImage.getImageData(), 8, 8);
 			XYGraphMediaFactory.getInstance().registerCursor(cursor);
 			this.flags = flags;
 		}

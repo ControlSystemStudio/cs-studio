@@ -58,6 +58,7 @@ public class AddModelItemCommand implements IUndoableCommand
                 item.addArchiveDataSource(archive);
             else
                 item.useDefaultArchiveDataSources();
+            
             item.setAxis(axis);
         }
         catch (Exception ex)

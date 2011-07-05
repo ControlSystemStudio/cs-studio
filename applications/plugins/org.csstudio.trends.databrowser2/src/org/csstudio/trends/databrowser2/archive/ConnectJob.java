@@ -7,9 +7,9 @@
  ******************************************************************************/
 package org.csstudio.trends.databrowser2.archive;
 
-import org.csstudio.archivereader.ArchiveInfo;
-import org.csstudio.archivereader.ArchiveReader;
-import org.csstudio.archivereader.ArchiveRepository;
+import org.csstudio.archive.reader.ArchiveInfo;
+import org.csstudio.archive.reader.ArchiveReader;
+import org.csstudio.archive.reader.ArchiveRepository;
 import org.csstudio.trends.databrowser2.Messages;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;

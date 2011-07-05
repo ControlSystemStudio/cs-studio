@@ -1,0 +1,16 @@
+Manifest-Version: 1.0
+Bundle-ManifestVersion: 2
+Bundle-Name: PV Script
+Bundle-Description: Context menu for PVs that allows invocation of scripts (external programs) with PVs
+Bundle-SymbolicName: org.csstudio.ui.menu.pvscript;singleton:=true
+Bundle-Version: 1.0.0.qualifier
+Bundle-Vendor: Kay Kasemir <kasemirk@ornl.gov> - SNS
+Bundle-Localization: plugin
+Bundle-RequiredExecutionEnvironment: JavaSE-1.6
+Require-Bundle: org.junit4,
+ org.eclipse.core.runtime;bundle-version="3.6.0",
+ org.eclipse.ui;bundle-version="3.6.0",
+ org.eclipse.help;bundle-version="3.5.0",
+ org.csstudio.java;bundle-version="3.0.0",
+ org.csstudio.csdata;bundle-version="3.0.0",
+ org.csstudio.ui.util;bundle-version="3.0.0"

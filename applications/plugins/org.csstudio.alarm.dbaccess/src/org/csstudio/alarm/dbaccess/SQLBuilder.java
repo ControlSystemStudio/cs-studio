@@ -131,7 +131,9 @@ public class SQLBuilder {
 
 				// FIXME (jhatje) : you cannot set the internals of the filter items here!
 				// You'll break anything!
-				//item.set_property("inMessage");
+				//Move the table structure check (is the property a column in the message table or
+				//a record in the message content table) in a separated service.
+				item.set_property("inMessage");
 			} else {
 				subqueryConditionPart.append(_subqueryCondition) ;
 			}

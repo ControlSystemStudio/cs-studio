@@ -1,3 +1,4 @@
+
 package org.csstudio.nams.service.preferenceservice;
 
 import org.csstudio.nams.common.activatorUtils.AbstractBundleActivator;
@@ -34,6 +35,7 @@ public class PreferenceServiceActivator extends AbstractBundleActivator {
 	 * The constructor
 	 */
 	public PreferenceServiceActivator() {
+	    // Nothing to do
 	}
 
 	/**
@@ -53,7 +55,8 @@ public class PreferenceServiceActivator extends AbstractBundleActivator {
 		result.put(PreferenceService.class, new PreferenceStoreServiceImpl());
 		result.put(PreferenceStoreAccessor.class,
 				new PreferenceStoreAccessor() {
-					public IPreferenceStore getPreferenceStore() {
+					@Override
+                    public IPreferenceStore getPreferenceStore() {
 						return preferenceStore;
 					}
 				});
@@ -76,5 +79,4 @@ public class PreferenceServiceActivator extends AbstractBundleActivator {
 		}
 		return this._preferenceStore;
 	}
-
 }

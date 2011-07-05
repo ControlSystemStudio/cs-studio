@@ -15,11 +15,12 @@ import java.util.HashMap;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-import org.csstudio.archivereader.ArchiveInfo;
-import org.csstudio.archivereader.ArchiveReader;
-import org.csstudio.archivereader.Severity;
-import org.csstudio.archivereader.UnknownChannelException;
-import org.csstudio.archivereader.ValueIterator;
+import org.csstudio.archive.rdb.RDBArchivePreferences;
+import org.csstudio.archive.reader.ArchiveInfo;
+import org.csstudio.archive.reader.ArchiveReader;
+import org.csstudio.archive.reader.Severity;
+import org.csstudio.archive.reader.UnknownChannelException;
+import org.csstudio.archive.reader.ValueIterator;
 import org.csstudio.data.values.ISeverity;
 import org.csstudio.data.values.ITimestamp;
 import org.csstudio.platform.utility.rdb.RDBUtil;
@@ -75,7 +76,7 @@ public class RDBArchiveReader implements ArchiveReader
         this.url = url;
         this.user = user;
         this.password = (password == null) ? 0 : password.length();
-        timeout = Preferences.getTimeoutSecs();
+        timeout = RDBArchivePreferences.getSQLTimeoutSecs();
         rdb = RDBUtil.connect(url, user, password, false);
         // Ignore the stored procedure for MySQL
         switch (rdb.getDialect())
@@ -102,7 +103,8 @@ public class RDBArchiveReader implements ArchiveReader
         final Statement statement = rdb.getConnection().createStatement();
         try
         {
-            statement.setQueryTimeout(timeout);
+        	if (timeout > 0)
+        		statement.setQueryTimeout(timeout);
             statement.setFetchSize(100);
             final ResultSet result = statement.executeQuery(sql.sel_stati);
             while (result.next())
@@ -124,7 +126,8 @@ public class RDBArchiveReader implements ArchiveReader
         final Statement statement = rdb.getConnection().createStatement();
         try
         {
-            statement.setQueryTimeout(timeout);
+        	if (timeout > 0)
+        		statement.setQueryTimeout(timeout);
             statement.setFetchSize(100);
             final ResultSet result = statement.executeQuery(sql.sel_severities);
             while (result.next())
@@ -307,7 +310,8 @@ public class RDBArchiveReader implements ArchiveReader
             rdb.getConnection().prepareStatement(sql.channel_sel_by_name);
         try
         {
-            statement.setQueryTimeout(timeout);
+        	if (timeout > 0)
+        		statement.setQueryTimeout(timeout);
             statement.setString(1, name);
             final ResultSet result = statement.executeQuery();
             if (!result.next())

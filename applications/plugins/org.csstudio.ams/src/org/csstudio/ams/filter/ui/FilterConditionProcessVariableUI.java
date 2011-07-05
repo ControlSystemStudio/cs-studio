@@ -29,6 +29,7 @@ import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
 import org.csstudio.ams.AMSException;
+import org.csstudio.ams.Log;
 import org.csstudio.ams.Messages;
 import org.csstudio.ams.dbAccess.HoldsAnDatabaseId;
 import org.csstudio.ams.dbAccess.configdb.FilterConditionProcessVariableDAO;
@@ -36,7 +37,6 @@ import org.csstudio.ams.dbAccess.configdb.FilterConditionProcessVariableTObject;
 import org.csstudio.ams.filter.FilterConditionProcessVariable;
 import org.csstudio.ams.filter.FilterConditionProcessVariable.Operator;
 import org.csstudio.ams.filter.FilterConditionProcessVariable.SuggestedProcessVariableType;
-import org.csstudio.platform.logging.CentralLogger;
 import org.csstudio.platform.model.pvs.IProcessVariableAddress;
 import org.csstudio.platform.model.pvs.ProcessVariableAdressFactory;
 import org.csstudio.platform.model.pvs.ValueType;
@@ -207,8 +207,7 @@ public class FilterConditionProcessVariableUI extends FilterConditionUI {
 				}
 			} catch (Exception ex) {
 				String message = Messages.FilterConditionProcessVaribaleBasedUI_Error_No_Connection_With_Reason;
-				CentralLogger.getInstance().error(this,
-						message, ex);
+				Log.log(this, Log.ERROR, message, ex);
 				if (ex.getMessage()!=null && ex.getMessage().trim().length()>0 && !ex.getMessage().equals("null")) {
 					message = message + ex.getMessage();
 				} else {
@@ -299,8 +298,7 @@ public class FilterConditionProcessVariableUI extends FilterConditionUI {
 			snapshot = collectDataToBeSaved(filterConditionID);
 			FilterConditionProcessVariableDAO.insert(conDb, snapshot);
 		} catch (Exception ex) {
-			CentralLogger.getInstance().fatal(this,
-					"Fail to create new dataset", ex);
+		    Log.log(this, Log.FATAL, "Fail to create new dataset", ex);
 			throw new AMSException("Fail to create new dataset", ex);
 		}
 	}
@@ -369,7 +367,7 @@ public class FilterConditionProcessVariableUI extends FilterConditionUI {
 		}
 
 		if (result == null) {
-			CentralLogger.getInstance().warn(this, "Enum constant not found!");
+		    Log.log(this, Log.WARN, "Enum constant not found!");
 		}
 
 		return result;
@@ -511,9 +509,7 @@ public class FilterConditionProcessVariableUI extends FilterConditionUI {
 		try {
 			FilterConditionProcessVariableDAO.remove(conDb, filterConditionID);
 		} catch (Exception ex) {
-			CentralLogger.getInstance().fatal(
-					this,
-					"Could not remove FilterCondition with reference: "
+		    Log.log(this, Log.FATAL,"Could not remove FilterCondition with reference: "
 							+ filterConditionID, ex);
 			throw new AMSException(
 					"Could not remove FilterCondition with reference: "
@@ -552,8 +548,7 @@ public class FilterConditionProcessVariableUI extends FilterConditionUI {
 			snapshot = FilterConditionProcessVariableDAO.select(conDb,
 					filterConditionID);
 		} catch (SQLException e) {
-			CentralLogger.getInstance().fatal(this,
-					"Can not load filter details!", e);
+		    Log.log(this, Log.FATAL, "Can not load filter details!", e);
 			throw new AMSException("Can not load filter details!", e);
 		}
 
@@ -594,7 +589,7 @@ public class FilterConditionProcessVariableUI extends FilterConditionUI {
 			FilterConditionProcessVariableDAO
 					.update(conDb, filterConfiguration);
 		} catch (Exception ex) {
-			CentralLogger.getInstance().fatal(this, "Fail to save dataset", ex);
+		    Log.log(this, Log.FATAL, "Fail to save dataset", ex);
 			throw new AMSException("Fail to save dataset", ex);
 		}
 

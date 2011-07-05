@@ -8,10 +8,17 @@
 package org.csstudio.common.trendplotter.model;
 
 import java.util.ArrayList;
+import java.util.List;
 
+import javax.annotation.Nonnull;
+
+import org.csstudio.archive.common.service.ArchiveServiceException;
 import org.csstudio.common.trendplotter.Messages;
 import org.csstudio.data.values.IValue;
+import org.csstudio.domain.desy.service.osgi.OsgiServiceUnavailableException;
 import org.csstudio.swt.xygraph.linearscale.Range;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /** Samples of a {@link PVItem}.
  *  <p>
@@ -27,11 +34,26 @@ import org.csstudio.swt.xygraph.linearscale.Range;
  */
 public class PVSamples extends PlotSamples
 {
+    @SuppressWarnings("unused")
+    private static final Logger LOG = LoggerFactory.getLogger(PVSamples.class);
+    
     /** Historic samples */
-    final private HistoricSamples history = new HistoricSamples();
+    final private HistoricSamples history;
 
     /** Live samples. Should start after end of historic samples */
-    final private LiveSamples live = new LiveSamples();
+    final private LiveSamples live;
+    
+    boolean show_deadband = false;
+
+    /**
+     * Constructor.
+     */
+    public PVSamples(@Nonnull final RequestType request_type) 
+    {
+        updateRequestType(request_type);
+        history = new HistoricSamples(request_type);
+        live = new LiveSamples();
+    }
 
     /** @return Maximum number of live samples in ring buffer */
     public int getLiveCapacity()
@@ -134,7 +156,7 @@ public class PVSamples extends PlotSamples
     @Override
     synchronized public boolean hasNewSamples()
     {
-        return history.hasNewSamples() | live.hasNewSamples();
+        return history.hasNewSamples() || live.hasNewSamples();
     }
 
     /** Test if samples changed since the last time this method was called.
@@ -148,17 +170,23 @@ public class PVSamples extends PlotSamples
         // the live.test if hist.test() was already true!
         final boolean hist_change = history.testAndClearNewSamplesFlag();
         final boolean live_change = live.testAndClearNewSamplesFlag();
-        return hist_change | live_change;
+        return hist_change || live_change;
     }
 
     /** Add data retrieved from an archive to the 'historic' section
      *  @param source Source of the samples
+     * @param server_name 
      *  @param result Historic data
+     * @throws ArchiveServiceException 
+     * @throws OsgiServiceUnavailableException 
      */
-    synchronized public void mergeArchivedData(final String source,
-            final ArrayList<IValue> result)
+    synchronized public void mergeArchivedData(final String channel_name,
+                                               final String server_name, 
+                                               final List<IValue> result) 
+                                               throws OsgiServiceUnavailableException, 
+                                                      ArchiveServiceException
     {
-        history.mergeArchivedData(source, result);
+        history.mergeArchivedData(channel_name, server_name, result);
     }
 
     /** Add another 'live' sample
@@ -208,5 +236,12 @@ public class PVSamples extends PlotSamples
             buf.append("     " + getSample(count-1));
         }
         return buf.toString();
+    }
+    
+    synchronized public void setLiveSamplesDeadband(Number deadband) {
+        live.setDeadband(deadband);
+    }
+    synchronized public void setHistorySamplesDeadband(Number deadband) {
+        history.setDeadband(deadband);
     }
 }

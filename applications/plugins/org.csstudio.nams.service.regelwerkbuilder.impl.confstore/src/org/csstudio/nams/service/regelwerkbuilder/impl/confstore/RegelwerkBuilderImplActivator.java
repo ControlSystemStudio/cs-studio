@@ -1,9 +1,11 @@
+
 package org.csstudio.nams.service.regelwerkbuilder.impl.confstore;
 
 import org.csstudio.nams.common.activatorUtils.AbstractBundleActivator;
 import org.csstudio.nams.common.activatorUtils.OSGiBundleActivationMethod;
 import org.csstudio.nams.common.activatorUtils.OSGiService;
 import org.csstudio.nams.common.activatorUtils.Required;
+import org.csstudio.nams.common.material.regelwerk.StringRegel;
 import org.csstudio.nams.service.configurationaccess.localstore.declaration.ConfigurationServiceFactory;
 import org.csstudio.nams.service.configurationaccess.localstore.declaration.DatabaseType;
 import org.csstudio.nams.service.configurationaccess.localstore.declaration.LocalStoreConfigurationService;
@@ -51,5 +53,12 @@ public class RegelwerkBuilderImplActivator extends AbstractBundleActivator {
 		RegelwerkBuilderServiceImpl.staticInject(logger);
 		RegelwerkBuilderServiceImpl.staticInject(pvConnectionService);
 		RegelwerkBuilderServiceImpl.staticInject(configurationStoreService);
+		
+	    //TODO: Ist das hier die richtige Stelle?
+        //      Augenscheinlich wird der Klasse StringRegel nirgendwo im Code ein Logger zugeordnet.
+        //      Es kommt jedoch vor, dass die Property VALUE keinen Zahlenwert enthält, sondern einen
+        //      String (Ein, Aus, ...). Das löst eine NumberFormatException aus, die auch korrekt
+        //      abgefangen wird. Der Logger, den die Klasse zur Fehlerausgabe benutzt, ist jedoch null.
+        StringRegel.staticInject(logger);
 	}
 }

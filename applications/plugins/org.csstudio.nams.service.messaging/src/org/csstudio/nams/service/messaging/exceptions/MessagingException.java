@@ -1,3 +1,4 @@
+
 package org.csstudio.nams.service.messaging.exceptions;
 
 public class MessagingException extends Exception {

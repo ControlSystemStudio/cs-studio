@@ -27,15 +27,15 @@ package org.csstudio.tine2jms.util;
  * @author Markus Moeller
  *
  */
-public class SeverityMapper
-{
+public class SeverityMapper {
+    
     /*
         0 = test alarm
-       15 = you can’t possible have beam unless you fix this
+       15 = you can't possible have beam unless you fix this
        Typically:
         0 => not really an alarm (not handled at CAS)
-        1 –  6 => information (not archived)
-        7 – 12 => warning
+        1 -  6 => information (not archived)
+        7 - 12 => warning
           > 12 => fatal
      */
     private static String SEVERITY[] = { "INVALID",
@@ -43,15 +43,12 @@ public class SeverityMapper
                                          "MINOR", "MINOR", "MINOR", "MINOR", "MINOR", "MINOR",
                                          "MAJOR", "MAJOR", "MAJOR"}; 
     
-    public static String getEPICSSeverity(int severity)
-    {
-        if((severity >= 0) || (severity <= 15))
-        {
+    public static String getEPICSSeverity(int severity) {
+        
+        if((severity >= 0) || (severity <= 15)) {
             return SEVERITY[severity];
         }
-        else
-        {
-            return SEVERITY[0];
-        }
+        
+        return SEVERITY[0];    
     }
 }
