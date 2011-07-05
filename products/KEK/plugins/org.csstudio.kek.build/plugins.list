@@ -43,6 +43,8 @@ org.csstudio.opibuilder.converter/**
 org.csstudio.opibuilder.examples/**
 org.csstudio.opibuilder.widgets/**
 org.csstudio.opibuilder/**
+org.csstudio.platform.jaasAuthentication/**
+org.csstudio.platform.jaasAuthentication.ui/**
 org.csstudio.platform.libs.epics.ui/**
 org.csstudio.platform.libs.epics/**
 org.csstudio.platform.libs.jdbc/**
@@ -51,6 +53,7 @@ org.csstudio.platform.libs.jms/**
 org.csstudio.platform.utility.jms/**
 org.csstudio.platform.utility.rdb/**
 org.csstudio.startup/**
+org.csstudio.sns.dummyAuthorization/**
 org.csstudio.sns.jms2rdb/**
 org.csstudio.swt.chart/**
 org.csstudio.swt.widgets/**
