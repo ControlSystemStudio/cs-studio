@@ -17,7 +17,7 @@ import org.junit.Test;
  * @version $Revision: 1.7 $
  * @since 12.05.2011
  */
-public class SlaveTest {
+public class SlaveUnitTest {
     private ProfibusSubnetDBO _profibusSubnet;
     private MasterDBO _master;
 

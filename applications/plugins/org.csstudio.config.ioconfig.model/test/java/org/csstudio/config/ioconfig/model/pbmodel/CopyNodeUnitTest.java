@@ -21,7 +21,7 @@ import org.junit.Test;
  * @since 12.05.2011
  */
 //CHECKSTYLE:OFF
-public class CopyNodeTest {
+public class CopyNodeUnitTest {
     
     private static final boolean OUTPUT = false;
     private static final boolean INPUT = true;

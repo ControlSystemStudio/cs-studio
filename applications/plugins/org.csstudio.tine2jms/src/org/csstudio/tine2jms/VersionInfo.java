@@ -27,14 +27,13 @@ package org.csstudio.tine2jms;
  * @author Markus Moeller
  *
  */
-public class VersionInfo
-{
-    public static final String NAME = "Tine2Jms";
-    public static final String VERSION = " 1.0.1";
-    public static final String BUILD = " - BUILD 2010-03-04 12:00";
+public class VersionInfo {
     
-    public static String getAll()
-    {
+    public static final String NAME = "Tine2Jms";
+    public static final String VERSION = " 1.1.0";
+    public static final String BUILD = " - BUILD 2011-07-04 11:00";
+    
+    public static String getAll() {
         return NAME + VERSION + BUILD;
     }
 }

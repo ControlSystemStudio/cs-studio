@@ -21,7 +21,7 @@ import org.junit.Test;
  * @version $Revision$
  * @since 17.04.2009
  */
-public class ChannelStructureTest {
+public class ChannelStructureUnitTest {
     private ProfibusSubnetDBO _profibusSubnet;
     private MasterDBO _master;
     private SlaveDBO _slave;

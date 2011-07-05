@@ -7,7 +7,7 @@ import static org.junit.Assert.assertTrue;
 import org.junit.Test;
 
 //CHECKSTYLE:OFF
-public class ExtUserPrmDataTest {
+public class ExtUserPrmDataUnitTest {
 
     @Test
     public void text() {

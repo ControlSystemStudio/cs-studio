@@ -39,7 +39,7 @@ import org.junit.Test;
  * @since 09.01.2009
  */
 //CHECKSTYLE:OFF
-public class ExtUserPrmDataConstTest {
+public class ExtUserPrmDataConstUnitTest {
 
     /**
      * Test method for {@link org.csstudio.config.ioconfig.model.pbmodel.gsdParser.ExtUserPrmDataConst#ExtUserPrmDataConst(java.lang.String, java.lang.String)}.

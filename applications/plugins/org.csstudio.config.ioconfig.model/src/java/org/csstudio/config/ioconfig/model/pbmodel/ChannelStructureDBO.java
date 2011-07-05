@@ -102,7 +102,9 @@ public class ChannelStructureDBO extends AbstractNodeDBO<ModuleDBO, ChannelDBO> 
     @Nonnull 
     public static ChannelStructureDBO makeChannelStructure(@Nonnull final ModuleDBO module, final boolean isInput,
                                                            @Nonnull final DataType type, @Nonnull final String name) throws PersistenceException {
-        return new ChannelStructureDBO(module, false, isInput, type, name, DEFAULT_MAX_STATION_ADDRESS);
+        ChannelStructureDBO channelStructureDBO = new ChannelStructureDBO(module, false, isInput, type, name, DEFAULT_MAX_STATION_ADDRESS);
+        channelStructureDBO.buildChildren(type, isInput, name);
+        return channelStructureDBO;
     }
 
     private void buildChildren(@Nonnull final DataType type, 
