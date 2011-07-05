@@ -556,8 +556,8 @@ public class TraceTableHandler implements ILazyContentProvider
                                                final OperationsManager operations_manager,
                                                final TableViewer table_viewer,
                                                final Shell shell) {
-        final TableViewerColumn view_col = 
-            TableHelper.createColumn(table_layout, table_viewer, Messages.RequestType, 75, 10);
+        // Request Type Column ----------
+        TableViewerColumn view_col = TableHelper.createColumn(table_layout, table_viewer, Messages.RequestType, 75, 10);
         view_col.setLabelProvider(new CellLabelProvider()
         {
             @Override
@@ -594,7 +594,7 @@ public class TraceTableHandler implements ILazyContentProvider
             @Override
             protected Object getValue(final Object element)
             {
-                return ((PVItem)element).getRequestType();
+                return ((PVItem)element).getRequestType() == RequestType.OPTIMIZED;
             }
 
             @Override

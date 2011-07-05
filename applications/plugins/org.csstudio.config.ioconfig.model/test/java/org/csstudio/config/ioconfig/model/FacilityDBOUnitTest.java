@@ -14,7 +14,7 @@ import org.junit.Before;
 import org.junit.Test;
 
 //CHECKSTYLE:OFF
-public class FacilityDBOTest {
+public class FacilityDBOUnitTest {
 
     @Test
     public void createFacility() throws PersistenceException{

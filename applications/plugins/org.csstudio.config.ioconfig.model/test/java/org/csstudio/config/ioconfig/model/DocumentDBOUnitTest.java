@@ -9,7 +9,7 @@ import org.junit.BeforeClass;
 import org.junit.Test;
 
 //CHECKSTYLE:OFF
-public class DocumentDBOTest {
+public class DocumentDBOUnitTest {
 
     @BeforeClass
     public static void setUp() {

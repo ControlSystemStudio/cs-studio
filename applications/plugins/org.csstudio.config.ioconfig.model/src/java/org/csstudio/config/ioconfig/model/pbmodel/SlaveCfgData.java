@@ -77,10 +77,10 @@ public class SlaveCfgData {
                 int parameter1;
                 if (slaveCfgData.size() > 1) {
                     parameter1 = slaveCfgData.get(1);
-                    setParameter(parameter0, parameter1);
+                    setSpecialFormat(parameter0, parameter1);
                 }
             } else {
-                setParameter(parameter0);
+                setCompactFormat(parameter0);
             }
         }
     }
@@ -93,7 +93,7 @@ public class SlaveCfgData {
      *            As integer value.
      */
     public SlaveCfgData(final int slaveCfgData) {
-        setParameter(slaveCfgData);
+        setCompactFormat(slaveCfgData);
     }
 
     /**
@@ -101,7 +101,7 @@ public class SlaveCfgData {
      * @param parameter
      *            The Slave Config Data Value.<br>
      */
-    private void setParameter(final int parameter) {
+    private void setCompactFormat(final int parameter) {
         setInput((parameter & 16) == 16);
         setOutput((parameter & 32) == 32);
         setWordSize((parameter & 64) == 64);
@@ -109,12 +109,13 @@ public class SlaveCfgData {
         setSize((parameter & 15) + 1);
     }
 
+
     /**
      * Set the Parameter from Special Format.
      * @param parameter
      *            The Slave Config Data Value.<br>
      */
-    private void setParameter(int parameter, int parameter2) {
+    private void setSpecialFormat(int parameter, int parameter2) {
         setInput((parameter & 64) == 64);
         setOutput((parameter & 128) == 128);
         setWordSize((parameter2 & 64) == 64);
@@ -238,7 +239,7 @@ public class SlaveCfgData {
      *            Set the new slaveCfgData.
      */
     public final void changeSlaveCfgData(final int slaveCfgData) {
-        setParameter(slaveCfgData);
+        setCompactFormat(slaveCfgData);
     }
 
 }

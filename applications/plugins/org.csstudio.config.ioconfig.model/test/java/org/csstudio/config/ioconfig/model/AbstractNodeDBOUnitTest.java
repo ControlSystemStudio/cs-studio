@@ -14,7 +14,7 @@ import org.junit.Ignore;
 import org.junit.Test;
 
 //CHECKSTYLE:OFF
-public class AbstractNodeDBOTest {
+public class AbstractNodeDBOUnitTest {
 
     @Test
     @Ignore("Need a correct TEST DB")

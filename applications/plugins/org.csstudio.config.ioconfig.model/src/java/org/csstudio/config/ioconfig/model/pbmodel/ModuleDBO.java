@@ -26,9 +26,11 @@ package org.csstudio.config.ioconfig.model.pbmodel;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
+import java.util.TreeSet;
 
 import javax.annotation.CheckForNull;
 import javax.annotation.Nonnull;
@@ -58,10 +60,11 @@ import org.hibernate.annotations.BatchSize;
 @Entity
 @BatchSize(size = 32)
 @Table(name = "ddb_Profibus_Module")
-public class ModuleDBO extends AbstractNodeDBO<SlaveDBO, ChannelStructureDBO> implements INodeWithPrototype {
+public class ModuleDBO extends AbstractNodeDBO<SlaveDBO, ChannelStructureDBO> implements
+        INodeWithPrototype {
     
     private static final long serialVersionUID = 1L;
-
+    
     /**
      * The number of module at the GSD File.
      */
@@ -235,8 +238,8 @@ public class ModuleDBO extends AbstractNodeDBO<SlaveDBO, ChannelStructureDBO> im
     public GSDModuleDBO getGSDModule() {
         GSDModuleDBO gsdModule = null;
         GSDFileDBO gsdFile = getGSDFile();
-        if(gsdFile!=null) {
-          gsdModule = gsdFile.getGSDModule(getModuleNumber());
+        if(gsdFile != null) {
+            gsdModule = gsdFile.getGSDModule(getModuleNumber());
         }
         return gsdModule;
     }
@@ -382,7 +385,7 @@ public class ModuleDBO extends AbstractNodeDBO<SlaveDBO, ChannelStructureDBO> im
     }
     
     @Transient
-    @Nonnull 
+    @Nonnull
     public Set<ChannelDBO> getPureChannels() {
         Set<ChannelDBO> result = new HashSet<ChannelDBO>();
         for (ChannelStructureDBO s : getChildren()) {
@@ -435,7 +438,7 @@ public class ModuleDBO extends AbstractNodeDBO<SlaveDBO, ChannelStructureDBO> im
         }
         return sb.toString();
     }
-
+    
     /**
      * {@inheritDoc}
      */
@@ -444,16 +447,17 @@ public class ModuleDBO extends AbstractNodeDBO<SlaveDBO, ChannelStructureDBO> im
     @Transient
     public Set<DocumentDBO> getPrototypeDocuments() {
         GSDModuleDBO gsdModule = getGSDModule();
-        return gsdModule==null?  new HashSet<DocumentDBO>():gsdModule.getDocuments();
+        return gsdModule == null ? new HashSet<DocumentDBO>() : gsdModule.getDocuments();
     }
-
+    
     /**
      * {@inheritDoc}
      */
     @Override
     @Nonnull
     public ChannelStructureDBO createChild() throws PersistenceException {
-        throw new UnsupportedOperationException("No simple child can be created for node type " + getClass().getName());
+        throw new UnsupportedOperationException("No simple child can be created for node type "
+                + getClass().getName());
     }
     
     /**
@@ -462,5 +466,96 @@ public class ModuleDBO extends AbstractNodeDBO<SlaveDBO, ChannelStructureDBO> im
     @Override
     public void accept(@Nonnull final INodeVisitor visitor) {
         visitor.visit(this);
-    }    
+    }
+    
+    /**
+     * @param newModuleNumber
+     */
+    public void setNewModel(int newModuleNumber, @Nonnull String createdBy) throws PersistenceException {
+        removeAllChild();
+        setModuleNumber(newModuleNumber);
+        GSDModuleDBO gsdModule = getGSDModule();
+        
+        // Unknown Module (--> Config the Epics Part)
+        if(gsdModule == null) {
+            throw new IllegalArgumentException("Module has no GSD Module");
+        }
+        createChannels(newModuleNumber, this, gsdModule, createdBy);
+    }
+    
+    /**
+     * @param selectedModuleNo
+     * @param hasChanged
+     * @param module
+     * @param gsdModule
+     * @param topGroup 
+     * @throws PersistenceException 
+     */
+    private void createChannels(int selectedModuleNo,
+                                @Nonnull final ModuleDBO module,
+                                @Nonnull final GSDModuleDBO gsdModule, String createdBy) throws PersistenceException {
+        // TODO (hrickens) [05.05.2011]:Kann die Abfrage nicht vereinfacht werden.
+        module.setConfigurationData(gsdModule.getGSDFile().getParsedGsdFileModel()
+                .getModule(selectedModuleNo).getExtUserPrmDataConst());
+        // Generate Input Channel
+        TreeSet<ModuleChannelPrototypeDBO> moduleChannelPrototypes = gsdModule
+                .getModuleChannelPrototypeNH();
+        if(moduleChannelPrototypes != null) {
+            ModuleChannelPrototypeDBO[] array = moduleChannelPrototypes
+                    .toArray(new ModuleChannelPrototypeDBO[0]);
+            for (int sortIndex = 0; sortIndex < array.length; sortIndex++) {
+                ModuleChannelPrototypeDBO prototype = array[sortIndex];
+                makeNewChannel(prototype, sortIndex, createdBy);
+            }
+        }
+        module.localUpdate();
+        module.localSave();
+    }
+    
+    private void makeNewChannel(@Nonnull final ModuleChannelPrototypeDBO channelPrototype,
+                                final int sortIndex, String createdBy) throws PersistenceException {
+        if(channelPrototype.isStructure()) {
+            makeStructChannel(channelPrototype, sortIndex, createdBy);
+        } else {
+            makeNewPureChannel(channelPrototype, sortIndex, createdBy);
+        }
+    }
+    
+    private void makeStructChannel(@Nonnull final ModuleChannelPrototypeDBO channelPrototype,
+                                   final int sortIndex, String createdBy) throws PersistenceException {
+        channelPrototype.getOffset();
+        Date now = new Date();
+        ChannelStructureDBO channelStructure = ChannelStructureDBO
+                .makeChannelStructure(this,
+                                      channelPrototype.isInput(),
+                                      channelPrototype.getType(),
+                                      channelPrototype.getName());
+        channelStructure.setName(channelPrototype.getName());
+        channelStructure.setStructureType(channelPrototype.getType());
+        channelStructure.setCreatedOn(now);
+        channelStructure.setUpdatedOn(now);
+        channelStructure.setCreatedBy(createdBy);
+        channelStructure.setUpdatedBy(createdBy);
+        channelStructure.moveSortIndex((short) sortIndex);
+        channelPrototype.save();
+    }
+    
+    private void makeNewPureChannel(@Nonnull final ModuleChannelPrototypeDBO channelPrototype,
+                                    final int sortIndex, String createdBy) throws PersistenceException {
+        Date now = new Date();
+        boolean isDigi = channelPrototype.getType().getBitSize() == 1;
+        ChannelStructureDBO cs = ChannelStructureDBO.makeSimpleChannel(this,
+                                                                       channelPrototype.getName(),
+                                                                       channelPrototype.isInput(),
+                                                                       isDigi);
+        cs.moveSortIndex((short) sortIndex);
+        ChannelDBO channel = cs.getFirstChannel();
+        channel.setCreatedOn(now);
+        channel.setUpdatedOn(now);
+        channel.setCreatedBy(createdBy);
+        channel.setUpdatedBy(createdBy);
+        channel.setChannelTypeNonHibernate(channelPrototype.getType());
+        channel.setStatusAddressOffset(channelPrototype.getShift());
+        channel.moveSortIndex((short) sortIndex);
+    }
 }

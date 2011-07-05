@@ -139,6 +139,7 @@ public class ChannelDBO extends AbstractNodeDBO<ChannelStructureDBO, VirtualLeaf
         setInput(input);
         setDigital(digital);
         setSortIndex(sortIndex);
+        setChannelType(DataType.DS33);//
         localUpdate();
     }
     
@@ -415,7 +416,7 @@ public class ChannelDBO extends AbstractNodeDBO<ChannelStructureDBO, VirtualLeaf
                                                        structSortIndex);
             }
         }
-        
+
         setChannelNumber(channelNumber);
         assembleEpicsAddressString();
     }
@@ -536,6 +537,7 @@ public class ChannelDBO extends AbstractNodeDBO<ChannelStructureDBO, VirtualLeaf
             sb.append("'");
             setEpicsAddressString(sb.toString());
         } catch (NullPointerException e) {
+            LOG.warn("",e);
             setEpicsAddressString("");
         }
         setDirty( (isDirty() || (oldAdr == null) || !oldAdr.equals(getEpicsAddressString())));
@@ -720,14 +722,6 @@ public class ChannelDBO extends AbstractNodeDBO<ChannelStructureDBO, VirtualLeaf
      * {@inheritDoc}
      */
     @Override
-    public void setChildren(@Nonnull final Set<VirtualLeaf> children) {
-        // Don't do anything
-    }
-    
-    /**
-     * {@inheritDoc}
-     */
-    @Override
     @Nonnull
     public VirtualLeaf createChild() throws PersistenceException {
         return VirtualLeaf.INSTANCE;
@@ -740,6 +734,7 @@ public class ChannelDBO extends AbstractNodeDBO<ChannelStructureDBO, VirtualLeaf
     public void accept(@Nonnull final INodeVisitor visitor) {
         visitor.visit(this);
     }
+    
     
     
 }
