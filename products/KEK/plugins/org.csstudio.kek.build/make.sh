@@ -2,12 +2,10 @@
 #
 # Script that triggers a build of "everything"
 #
-# In principle, this should be an ANT build.xml,
-# but the ant copy tasks were really slow compared to rsync.
-# Maybe use a 'system' ant task to call rsync?
-# In any case, this one is good enough for now.
+# Runs on Windows with cygwin installed
 #
 # Kay Kasemir
+CYGDRIVE=/cygdrive/c
 
 source settings.sh
 
@@ -47,4 +45,10 @@ do
 	  -Ddeltapack=$DELTAPACK 2>&1 | tee $feature/build.log
 done
 
- 
+# Patch headless launchers for windows
+unzip  $CYGDRIVE/$BUILDDIR/I.AlarmServer_kek_$VERSION/AlarmServer_kek_$VERSION-win32.win32.x86.zip
+cp $CYGDRIVE/$ECLIPSE_BASE/eclipse/eclipsec.exe  AlarmServer$VERSION/AlarmServer.exe
+zip -rm $CYGDRIVE/$BUILDDIR/I.AlarmServer_kek_$VERSION/AlarmServer_kek_$VERSION-win32.win32.x86.zip AlarmServer$VERSION 
+
+
+$ANT zip_sources

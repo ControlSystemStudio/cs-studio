@@ -114,7 +114,7 @@
          Use build dir, but don't include the  local.list
     -->
     <target name="zip_sources" depends="check_vars">
-        <zip destfile="apps/sns_css_src_${env.VERSION}.zip">
+        <zip destfile="${build_dir}/css_kek_${env.VERSION}-src.zip">
             <fileset dir="${repo_dir}/core/plugins" includesfile="plugins.list">
                 <exclude name="**/bin/**"/>
                 <exclude name="**/classes/**"/>
@@ -127,11 +127,11 @@
                 <exclude name="**/bin/**"/>
                 <exclude name="**/classes/**"/>
             </fileset>
-            <fileset dir="${repo_dir}/products/SNS/product" includesfile="plugins.list">
+            <fileset dir="${repo_dir}/products/KEK/plugins" includesfile="plugins.list">
                 <exclude name="**/bin/**"/>
                 <exclude name="**/classes/**"/>
             </fileset>
-            <fileset dir="${repo_dir}/products/SNS/product" includesfile="features.list">
+            <fileset dir="${repo_dir}/products/KEK/features" includesfile="features.list">
                <exclude name="**/bin/**"/>
                <exclude name="**/classes/**"/>
             </fileset>

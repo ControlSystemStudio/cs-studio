@@ -29,4 +29,34 @@ For details, see http://www.eclipse.org/legal/epl-v10.html
          id="org.csstudio.alarm.beast.ui.feature"
          version="0.0.0"/>
 
+   <requires>
+      <import plugin="org.eclipse.core.runtime" version="3.6.0" match="greaterOrEqual"/>
+      <import plugin="org.csstudio.java" version="3.0.0" match="greaterOrEqual"/>
+      <import plugin="org.csstudio.auth" version="1.0.0" match="greaterOrEqual"/>
+      <import plugin="org.eclipse.ui"/>
+      <import plugin="org.csstudio.ui.util" version="3.0.0" match="greaterOrEqual"/>
+      <import plugin="org.csstudio.platform.jaasAuthentication" version="3.0.0" match="greaterOrEqual"/>
+   </requires>
+
+   <plugin
+         id="org.csstudio.platform.jaasAuthentication"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"
+         unpack="false"/>
+
+   <plugin
+         id="org.csstudio.platform.jaasAuthentication.ui"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"
+         unpack="false"/>
+
+   <plugin
+         id="org.csstudio.sns.dummyAuthorization"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"
+         unpack="false"/>
+
 </feature>
