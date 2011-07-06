@@ -9,7 +9,7 @@ import java.util.concurrent.BlockingQueue;
 import org.csstudio.nams.common.service.ExecutionService;
 import org.csstudio.nams.common.service.StepByStepProcessor;
 import org.csstudio.nams.common.service.ThreadType;
-import org.csstudio.nams.service.logging.declaration.Logger;
+import org.csstudio.nams.service.logging.declaration.ILogger;
 import org.csstudio.nams.service.messaging.declaration.AbstractMultiConsumerMessageHandler.MultiConsumerMessageThreads;
 import org.csstudio.nams.service.messaging.exceptions.MessagingException;
 
@@ -31,7 +31,7 @@ public class MultiConsumersConsumer implements Consumer {
 	private final List<StepByStepProcessor> processors;
 	private boolean isClosed = true;
 
-	public MultiConsumersConsumer(final Logger logger,
+	public MultiConsumersConsumer(final ILogger logger,
 			final Consumer[] consumerArray,
 			final ExecutionService executionService) {
 		this.processors = new LinkedList<StepByStepProcessor>();
