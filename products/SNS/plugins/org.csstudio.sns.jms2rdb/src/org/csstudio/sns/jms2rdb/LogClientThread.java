@@ -111,7 +111,7 @@ public class LogClientThread extends Thread
         return last_message;
     }
 
-    /** @return Last messages received */
+    /** @return Last error received or empty string */
     public synchronized String getLastError()
     {
         return last_error;

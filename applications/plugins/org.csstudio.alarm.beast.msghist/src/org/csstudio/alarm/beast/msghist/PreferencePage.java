@@ -11,6 +11,7 @@ import org.csstudio.auth.ui.security.PasswordFieldEditor;
 import org.eclipse.core.runtime.preferences.InstanceScope;
 import org.eclipse.jface.preference.FieldEditorPreferencePage;
 import org.eclipse.jface.preference.IPreferenceStore;
+import org.eclipse.jface.preference.IntegerFieldEditor;
 import org.eclipse.jface.preference.StringFieldEditor;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.ui.IWorkbench;
@@ -52,6 +53,10 @@ public class PreferencePage extends FieldEditorPreferencePage
         addField(new PasswordFieldEditor(Preferences.RDB_PASSWORD, Messages.Pref_Password, parent, Activator.ID));
         addField(new StringFieldEditor(Preferences.RDB_SCHEMA, Messages.Pref_Schema, parent));
         addField(new StringFieldEditor(Preferences.START, Messages.Pref_Starttime, parent));
+        final IntegerFieldEditor max_properties =
+        	new IntegerFieldEditor(Preferences.MAX_PROPERTIES, Messages.Pref_MaxProperties, parent);
+        max_properties.setValidRange(0, Integer.MAX_VALUE);
+        addField(max_properties);
         addField(new TableColumnsFieldEditor(parent));
     }
 }

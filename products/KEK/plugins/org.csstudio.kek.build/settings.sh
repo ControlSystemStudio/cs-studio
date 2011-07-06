@@ -6,6 +6,8 @@
 export VERSION=3.0.0
 export TOP=/CSS/Repo/cs-studio-3.0
 
+export BUILDDIR=/CSS/build
+
 export ECLIPSE_BASE=/CSS/Eclipse/RCP
 export WORKSPACE=/CSS/RCPWorkspace
 
@@ -19,8 +21,6 @@ QUALIFIER=`date "+%Y%m%d"`
 
 export ECLIPSE=$ECLIPSE_BASE/eclipse
 export DELTAPACK=$ECLIPSE_BASE/eclipse-3.6.2-delta-pack/eclipse
-
-export BUILDDIR=$TOP/products/KEK/plugins/org.csstudio.kek.build/build
 
 # This can be empty unless you happen to have more than one version of
 # org.eclipse.pde.build_*, as can happen after installing updates

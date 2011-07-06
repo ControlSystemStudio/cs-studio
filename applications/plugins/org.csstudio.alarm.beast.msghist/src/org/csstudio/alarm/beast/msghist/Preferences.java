@@ -23,7 +23,8 @@ public class Preferences
 	public static final String RDB_SCHEMA = "rdb_schema";
 	public static final String COLUMNS = "prop_cols";
     public static final String START = "start";
-	
+    public static final String MAX_PROPERTIES = "max_properties"; 
+    
     /** Get preference settings for column definitions
      *  @return Array of raw strings for column preferences
      *  @throws Exception on error
@@ -93,5 +94,15 @@ public class Preferences
             start = service.getString(Activator.ID, Preferences.START,
                     start, null);
         return start;
+    }
+
+	public static int getMaxProperties()
+    {
+        final IPreferencesService service = Platform.getPreferencesService();
+        int max_properties = 100000;
+        if (service != null)
+        	max_properties = service.getInt(Activator.ID, Preferences.MAX_PROPERTIES,
+        			max_properties, null);
+        return max_properties;
     }
 }
