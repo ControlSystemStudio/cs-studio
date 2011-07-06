@@ -18,7 +18,7 @@ import org.csstudio.nams.common.fachwert.MessageKeyEnum;
 import org.csstudio.nams.common.material.AlarmNachricht;
 import org.csstudio.nams.common.material.SyncronisationsAufforderungsSystemNachchricht;
 import org.csstudio.nams.common.material.SyncronisationsBestaetigungSystemNachricht;
-import org.csstudio.nams.service.logging.declaration.Logger;
+import org.csstudio.nams.service.logging.declaration.ILogger;
 import org.csstudio.nams.service.messaging.declaration.Consumer;
 import org.csstudio.nams.service.messaging.declaration.DefaultNAMSMessage;
 import org.csstudio.nams.service.messaging.declaration.NAMSMessage;
@@ -34,12 +34,12 @@ class JMSConsumer implements Consumer {
 		private volatile boolean arbeitFortsetzen = true;
 		private MessageConsumer consumer;
 
-		private final Logger logger;
+		private final ILogger logger;
 
 		public WorkThread(final LinkedBlockingQueue<Message> messageQueue,
 				final Session session, final String source,
 				final String clientId, final PostfachArt art,
-				final Logger logger) throws JMSException {
+				final ILogger logger) throws JMSException {
 			super("JMSConsumer#WorkThread-" + (++WorkThread.instanceCount));
 			this.messageQueue = messageQueue;
 			this.logger = logger;
@@ -119,9 +119,9 @@ class JMSConsumer implements Consumer {
 		}
 	}
 
-	private static Logger injectedLogger;
+	private static ILogger injectedLogger;
 
-	public static void staticInjectLogger(final Logger logger) {
+	public static void staticInjectLogger(final ILogger logger) {
 		JMSConsumer.injectedLogger = logger;
 	}
 
@@ -129,7 +129,7 @@ class JMSConsumer implements Consumer {
 	private final WorkThread[] workers;
 	private final LinkedBlockingQueue<Message> messageQueue;
 
-	private final Logger logger;
+	private final ILogger logger;
 
 	public JMSConsumer(final String clientId, final String messageSourceName,
 			final PostfachArt art, final Session[] sessions)
