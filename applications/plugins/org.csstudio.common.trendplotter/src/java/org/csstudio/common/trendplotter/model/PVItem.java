@@ -79,10 +79,8 @@ public class PVItem extends ModelItem implements PVListener
     /** Archive data request type */
     private RequestType request_type = RequestType.OPTIMIZED;
     
-    
-    //private Boolean show_deadband = Boolean.FALSE;
-
-    //private Boolean has_deadband = Boolean.FALSE;
+    /** Internal flag to store the 'on first connection/value update' info */
+    private boolean first_pv_update = true;
 
     /** Initialize
      *  @param name PV name
@@ -95,19 +93,6 @@ public class PVItem extends ModelItem implements PVListener
         samples = new PVSamples(request_type);
         pv = PVFactory.createPV(name);
         this.period = period;
-    }
-
-    private Boolean retrieveDeadbandExistenceInfoFor(final String channelName) 
-                                                     throws OsgiServiceUnavailableException, 
-                                                            ArchiveServiceException {
-        IArchiveReaderFacade service = Activator.getDefault().getArchiveReaderService();
-
-        String baseName = EpicsNameSupport.parseBaseName(channelName);
-        
-        IArchiveChannel channel = 
-            service.getChannelByName(baseName + EpicsChannelName.FIELD_SEP + RecordField.ADEL.getFieldName());
-        
-        return channel != null;
     }
 
     /** Set new item name, which changes the underlying PV name
@@ -361,7 +346,7 @@ public class PVItem extends ModelItem implements PVListener
             logDisconnected();
     }
 
-    private boolean first_pv_update = true;
+
     private void onConnect(@Nonnull final IValue value) {
         if (first_pv_update) {
             first_pv_update = false;
@@ -370,8 +355,7 @@ public class PVItem extends ModelItem implements PVListener
                 INumericMetaData meta = (INumericMetaData) value.getMetaData();
                 final double displayHigh = meta.getDisplayHigh();
                 final double displayLow = meta.getDisplayLow();
-                
-                // TODO (bknerr) : That does not seem too correct 
+                // Call into the ui thread 
                 Display.getDefault().asyncExec(new Runnable() {
                     @Override
                     public void run() {
@@ -385,9 +369,9 @@ public class PVItem extends ModelItem implements PVListener
     // PVListener
     @Override
     @SuppressWarnings("nls")
-    public void pvValueUpdate(final PV pv)
+    public void pvValueUpdate(final PV new_pv)
     {
-        final IValue value = pv.getValue();
+        final IValue value = new_pv.getValue();
         
         onConnect(value);
 
