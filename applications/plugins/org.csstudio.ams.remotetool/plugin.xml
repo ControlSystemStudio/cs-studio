@@ -20,5 +20,13 @@
             class="org.csstudio.ams.remotetool.internal.PreferenceInitializer">
       </initializer>
    </extension>
+   <extension
+         id="AmsRemoteToolProduct"
+         point="org.eclipse.core.runtime.products">
+      <product
+            application="org.csstudio.ams.remotetool.AmsRemoteToolApplication"
+            name="AmsRemoteToolProduct">
+      </product>
+   </extension>
 
 </plugin>
