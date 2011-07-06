@@ -8,7 +8,7 @@ import org.csstudio.nams.common.service.StepByStepProcessor;
 import org.csstudio.nams.service.configurationaccess.localstore.declaration.ConfigurationServiceFactory;
 import org.csstudio.nams.service.configurationaccess.localstore.declaration.DatabaseType;
 import org.csstudio.nams.service.configurationaccess.localstore.declaration.LocalStoreConfigurationService;
-import org.csstudio.nams.service.logging.declaration.Logger;
+import org.csstudio.nams.service.logging.declaration.ILogger;
 import org.csstudio.nams.service.messaging.declaration.Consumer;
 import org.csstudio.nams.service.messaging.declaration.MessagingService;
 import org.csstudio.nams.service.messaging.declaration.MessagingSession;
@@ -21,13 +21,13 @@ import org.csstudio.nams.service.preferenceservice.declaration.PreferenceService
 
 public class SynchronizeServiceImpl implements SynchronizeService {
 
-	private final Logger _logger;
+	private final ILogger _logger;
 	private final ExecutionService _executionService;
 	private final ConfigurationServiceFactory _configurationServiceFactory;
 	private final PreferenceService _preferenceService;
 	private final MessagingService _messagingService;
 
-	public SynchronizeServiceImpl(final Logger logger,
+	public SynchronizeServiceImpl(final ILogger logger,
 			final ExecutionService executionService,
 			final PreferenceService preferenceService,
 			final ConfigurationServiceFactory configurationServiceFactory,

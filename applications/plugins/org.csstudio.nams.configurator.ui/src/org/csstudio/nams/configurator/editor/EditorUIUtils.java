@@ -14,7 +14,7 @@ import java.util.Comparator;
 import org.csstudio.nams.common.contract.Contract;
 import org.csstudio.nams.configurator.Messages;
 import org.csstudio.nams.configurator.beans.IConfigurationBean;
-import org.csstudio.nams.service.logging.declaration.Logger;
+import org.csstudio.nams.service.logging.declaration.ILogger;
 import org.eclipse.jface.viewers.ArrayContentProvider;
 import org.eclipse.jface.viewers.ComboViewer;
 import org.eclipse.jface.viewers.ISelectionChangedListener;
@@ -34,7 +34,7 @@ import org.eclipse.swt.widgets.Composite;
  * need for creating an instance.
  * 
  * This class need to be initialized before first used by injecting the
- * {@link Logger}.
+ * {@link ILogger}.
  */
 public final class EditorUIUtils {
 
@@ -99,7 +99,7 @@ public final class EditorUIUtils {
 		}
 	}
 
-	private static Logger logger;
+	private static ILogger logger;
 
 	/**
 	 * Erzeugt einen ComboViewer für Enums. Die Auswahländerungen des Viewers
@@ -208,7 +208,7 @@ public final class EditorUIUtils {
 		return true;
 	}
 
-	public static void staticInject(final Logger l) {
+	public static void staticInject(final ILogger l) {
 		EditorUIUtils.logger = l;
 	}
 
