@@ -24,7 +24,7 @@
 package org.csstudio.nams.application.department.decision.management;
 
 import org.csstudio.nams.application.department.decision.remote.RemotelyStoppable;
-import org.csstudio.nams.service.logging.declaration.Logger;
+import org.csstudio.nams.service.logging.declaration.ILogger;
 import org.csstudio.platform.management.CommandParameters;
 import org.csstudio.platform.management.CommandResult;
 import org.csstudio.platform.management.IManagementCommand;
@@ -45,7 +45,7 @@ public class Stop implements IManagementCommand {
 
     static final String ADMIN_PASSWORD = "admin4AMS";
 
-    private static Logger logger;
+    private static ILogger logger;
 
     private static RemotelyStoppable thingToBeStopped;
     
@@ -93,7 +93,7 @@ public class Stop implements IManagementCommand {
      * Injection of logger. Note: This method have to be called before any
      * instance of this class is created!
      */
-    public static void staticInject(final Logger logger) {
+    public static void staticInject(final ILogger logger) {
         Stop.logger = logger;
     }
 

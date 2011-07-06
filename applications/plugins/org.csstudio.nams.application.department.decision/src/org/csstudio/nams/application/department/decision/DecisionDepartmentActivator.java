@@ -50,7 +50,7 @@ import org.csstudio.nams.service.configurationaccess.localstore.declaration.Conf
 import org.csstudio.nams.service.configurationaccess.localstore.declaration.DatabaseType;
 import org.csstudio.nams.service.configurationaccess.localstore.declaration.LocalStoreConfigurationService;
 import org.csstudio.nams.service.history.declaration.HistoryService;
-import org.csstudio.nams.service.logging.declaration.Logger;
+import org.csstudio.nams.service.logging.declaration.ILogger;
 import org.csstudio.nams.service.messaging.declaration.Consumer;
 import org.csstudio.nams.service.messaging.declaration.MessagingService;
 import org.csstudio.nams.service.messaging.declaration.MessagingSession;
@@ -160,7 +160,7 @@ public class DecisionDepartmentActivator extends AbstractBundleActivator
     /**
      * Gemeinsames Attribut des Activators und der Application: Der Logger.
      */
-    private static Logger logger;
+    private static ILogger logger;
 
     /**
      * Gemeinsames Attribut des Activators und der Application: Fatory for
@@ -201,7 +201,7 @@ public class DecisionDepartmentActivator extends AbstractBundleActivator
      * @return {@code true} bei Erfolg, {@false} sonst.
      */
     private static boolean versucheZuSynchronisieren(
-            final DecisionDepartmentActivator instance, final Logger logger,
+            final DecisionDepartmentActivator instance, final ILogger logger,
             final Producer amsAusgangsProducer,
             final Consumer amsCommandConsumer,
             final LocalStoreConfigurationService localStoreConfigurationService) {
@@ -731,7 +731,7 @@ public class DecisionDepartmentActivator extends AbstractBundleActivator
      * @see BundleActivator#start(org.osgi.framework.BundleContext)
      */
     @OSGiBundleActivationMethod
-    public void startBundle(@OSGiService @Required final Logger injectedLogger,
+    public void startBundle(@OSGiService @Required final ILogger injectedLogger,
                             @OSGiService @Required final MessagingService injectedMessagingService,
                             @OSGiService @Required final PreferenceService injectedPreferenceService,
                             @OSGiService @Required final RegelwerkBuilderService injectedBuilderService,
@@ -827,7 +827,7 @@ public class DecisionDepartmentActivator extends AbstractBundleActivator
     @OSGiBundleDeactivationMethod
     public void stopBundle(@OSGiService
     @Required
-    final Logger logger) throws Exception {
+    final ILogger logger) throws Exception {
         logger.logInfoMessage(this, "Plugin "
                 + DecisionDepartmentActivator.PLUGIN_ID
                 + " stopped succesfully.");
@@ -979,7 +979,7 @@ public class DecisionDepartmentActivator extends AbstractBundleActivator
      *
      */
     @Override
-    public synchronized void stopRemotely(final Logger logger) {
+    public synchronized void stopRemotely(final ILogger logger) {
         this.stop();
         logger.logDebugMessage(this, "DecisionDepartmentActivator.stopRemotely(): After this.stop()");
     }
