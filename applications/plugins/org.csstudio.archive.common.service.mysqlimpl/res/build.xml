@@ -4,14 +4,16 @@
    <property name="sql.database" value="archive_test"/>
    <property name="sql.user" value="root"/>
    <property name="sql.pass" value="hostrootpw"/>
-   <property name="sql.connector.jar" value="mysql-connector-java-5.1.14.jar"/>
+   <property name="sql.connector.classpath" value="../../com.mysql.jdbc"/>
 
    <target name="create.database" depends="drop.database">
       <sql driver="${sql.driver}" 
            url="${sql.url}" 
            userid="${sql.user}" 
-           password="${sql.pass}"
-           classpath="${sql.connector.jar}">
+           password="${sql.pass}">
+      	<classpath>
+      	    <pathelement path="${sql.connector.classpath}"/>
+      	</classpath>
       	
       	<transaction>
       	    CREATE DATABASE ${sql.database};
@@ -23,31 +25,38 @@
    	  <antcall target="create.triggers"/>
    </target>
    
-   <target name="create.tables">
-     <sql driver="${sql.driver}" 
-          url="${sql.url}/${sql.database}" 
-          userid="${sql.user}" 
-          password="${sql.pass}"
-          classpath="${sql.connector.jar}">
+    <target name="create.tables">
+        <sql driver="${sql.driver}" 
+             url="${sql.url}/${sql.database}" 
+             userid="${sql.user}" 
+             password="${sql.pass}">
+            <classpath>
+                <pathelement path="${sql.connector.classpath}"/>
+            </classpath>     	
         
-     	<!-- take care, order matters! -->
-        <transaction src="tables/engine.sql"/>
-        <transaction src="tables/engine_status.sql"/>
-        <transaction src="tables/channel_group.sql"/>
-        <transaction src="tables/control_system.sql"/>
-        <transaction src="tables/channel.sql"/>
-        <transaction src="tables/channel_status.sql"/>
-        <transaction src="tables/sample.sql"/>
-     </sql>
-   </target>
+         	<!-- Take care, order matters due to foreign key constraints -->
+            <transaction src="tables/engine.sql"/>
+            <transaction src="tables/engine_status.sql"/>
+            <transaction src="tables/channel_group.sql"/>
+            <transaction src="tables/control_system.sql"/>
+            <transaction src="tables/channel.sql"/>
+            <transaction src="tables/channel_status.sql"/>
+            <transaction src="tables/sample.sql"/>
+            <transaction src="tables/sample_m.sql"/>
+            <transaction src="tables/sample_h.sql"/>
+        </sql>
+    </target>
 
-   <target name="create.triggers">
-      <sql driver="${sql.driver}" 
-           url="${sql.url}/${sql.database}" 
-           userid="${sql.user}" 
-           password="${sql.pass}"
-           classpath="${sql.connector.jar}"
-      	   delimiter="//">
+    <target name="create.triggers">
+        <sql driver="${sql.driver}" 
+             url="${sql.url}/${sql.database}" 
+             userid="${sql.user}" 
+             password="${sql.pass}"
+      	     delimiter="//">
+            <classpath>
+                <pathelement path="${sql.connector.classpath}"/>
+            </classpath>
+      	
             <transaction src="tables/triggers.sql"/>
        </sql>
     </target>
@@ -63,14 +72,43 @@
         <fail if="do.abort">Build aborted by user.</fail> 
         
         <sql driver="${sql.driver}" 
-            url="${sql.url}" 
-            userid="${sql.user}" 
-        	password="${sql.pass}"
-            classpath="${sql.connector.jar}">
-           
-            <transaction>
-                DROP DATABASE IF EXISTS ${sql.database};
-            </transaction>
+             url="${sql.url}" 
+             userid="${sql.user}" 
+        	 password="${sql.pass}">
+             <classpath>
+                 <pathelement path="${sql.connector.classpath}"/>
+             </classpath>
+            
+             <transaction>
+                 DROP DATABASE IF EXISTS ${sql.database};
+             </transaction>
          </sql>
     </target>
+	
+	<target name="clear.tables">
+        <sql driver="${sql.driver}" 
+             url="${sql.url}/${sql.database}" 
+             userid="${sql.user}" 
+        	 password="${sql.pass}">
+             <classpath>
+                 <pathelement path="${sql.connector.classpath}"/>
+             </classpath>
+            
+             <!-- 
+                 Order matters - it's vice versa as the table creation due to foreign key constraints
+                 And deletion instead of truncation is used on tables where foreign keys point to.  
+              -->
+             <transaction>
+             	TRUNCATE TABLE sample_h;
+             	TRUNCATE TABLE sample_m;
+             	TRUNCATE TABLE sample;
+             	TRUNCATE TABLE channel;
+             	TRUNCATE TABLE channel_status; 
+             	DELETE FROM control_system;
+             	DELETE FROM channel_group;
+             	TRUNCATE TABLE engine_status;
+             	DELETE FROM engine;
+             </transaction>
+         </sql>
+	</target>
 </project>

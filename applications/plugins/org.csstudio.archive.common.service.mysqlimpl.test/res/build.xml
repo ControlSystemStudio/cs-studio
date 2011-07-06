@@ -1,0 +1,26 @@
+<project name="Database creation" basedir=".">
+   <property name="sql.driver" value="com.mysql.jdbc.Driver"/>
+   <property name="sql.url" value="jdbc:mysql://localhost:3306"/>
+   <property name="sql.database" value="archive_test"/>
+   <property name="sql.user" value="root"/>
+   <property name="sql.pass" value="hostrootpw"/>
+   <property name="sql.connector.classpath" value="../../com.mysql.jdbc"/>
+
+	<target name="clear.tables">
+		<subant target="clear.tables" inheritall="true">
+			<fileset dir="../../org.csstudio.archive.common.service.mysqlimpl/res" includes="build.xml"/>
+		</subant>
+	</target>
+	
+    <target name="insert.test.data" depends="clear.tables">
+        <sql driver="${sql.driver}" 
+             url="${sql.url}/${sql.database}" 
+             userid="${sql.user}" 
+             password="${sql.pass}">
+             <classpath>
+                 <pathelement path="${sql.connector.classpath}"/>
+             </classpath>
+             <transaction src="data/test_data.sql"/>
+         </sql>
+    </target>
+</project>

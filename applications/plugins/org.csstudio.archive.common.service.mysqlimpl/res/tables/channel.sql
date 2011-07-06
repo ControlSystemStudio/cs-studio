@@ -19,4 +19,4 @@ CREATE TABLE `channel` (
   KEY `symbol` (`control_system_id`),
   CONSTRAINT `channel_ibfk_1` FOREIGN KEY (`group_id`) REFERENCES `channel_group` (`id`),
   CONSTRAINT `symbol` FOREIGN KEY (`control_system_id`) REFERENCES `control_system` (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=19010 DEFAULT CHARSET=latin1;
+) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=latin1;

@@ -12,4 +12,4 @@ CREATE TABLE `channel_group` (
   UNIQUE KEY `name` (`name`),
   KEY `engine_id` (`engine_id`),
   CONSTRAINT `channel_group_ibfk_1` FOREIGN KEY (`engine_id`) REFERENCES `engine` (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=13 DEFAULT CHARSET=latin1;
+) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=latin1;
