@@ -129,6 +129,8 @@
       <plugin id="org.remotercp.util"/>
       <plugin id="org.sat4j.core"/>
       <plugin id="org.sat4j.pb"/>
+      <plugin id="org.slf4j"/>
+      <plugin id="org.slf4j-log4j12"/>
    </plugins>
 
    <configurations>
