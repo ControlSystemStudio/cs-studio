@@ -45,7 +45,7 @@ package org.csstudio.nams.service.logging.declaration;
  *         href="mailto:mz@c1-wps.de">Matthias Zeimer</a>
  * @version 0.1, 18.04.2008
  */
-public interface Logger {
+public interface ILogger {
 	public void logDebugMessage(Object caller, String message);
 
 	public void logDebugMessage(Object caller, String message,
