@@ -340,6 +340,7 @@ public class DecisionDepartmentActivator extends AbstractBundleActivator
     public Object start(final IApplicationContext context)
     {
         Stop.staticInject(this);
+        Stop.staticInject(logger);
 
         ackMessages = new Collector();
         ackMessages.setApplication("AmsDecisionDepartment");
@@ -444,6 +445,12 @@ public class DecisionDepartmentActivator extends AbstractBundleActivator
 
         closeMessagingConnections();
 
+        if (xmppService != null) {
+            xmppService.disconnect();
+            DecisionDepartmentActivator.logger.logInfoMessage(this,
+                       "XMPP connection disconnected.");
+        }
+
         DecisionDepartmentActivator.logger.logInfoMessage(this,
                 "Decision department application successfully shuted down.");
 
@@ -496,8 +503,10 @@ public class DecisionDepartmentActivator extends AbstractBundleActivator
         }
         
         for(Consumer c : extAlarmConsumer) {
-            if ((c != null) && !c.isClosed()) {
-                c.close();
+            if (c != null) {
+                if(c.isClosed() == false) {
+                    c.close();
+                }
             }
         }
         
@@ -799,24 +808,7 @@ public class DecisionDepartmentActivator extends AbstractBundleActivator
      */
     @Override
     public void stop() {
-        DecisionDepartmentActivator.logger
-                .logInfoMessage(this,
-                        "Start to shut down decision department application on user request...");
-        this._continueWorking = false;
-        if (SyncronisationsAutomat.isRunning()) {
-            DecisionDepartmentActivator.logger.logInfoMessage(this,
-                    "Canceling running syncronisation...");
-            SyncronisationsAutomat.cancel();
-        }
-        
-        if (xmppService != null) {
-            xmppService.disconnect();
-        }
-        
-        DecisionDepartmentActivator.logger.logInfoMessage(this,
-                "Interrupting working thread...");
-
-        this._receiverThread.interrupt();
+        // Nothing to do here
     }
 
     /**
@@ -980,7 +972,19 @@ public class DecisionDepartmentActivator extends AbstractBundleActivator
      */
     @Override
     public synchronized void stopRemotely(final ILogger logger) {
-        this.stop();
+        
+        DecisionDepartmentActivator.logger .logInfoMessage(this,
+                "Start to shut down decision department application on user request...");
+        this._continueWorking = false;
+        if (SyncronisationsAutomat.isRunning()) {
+            DecisionDepartmentActivator.logger.logInfoMessage(this, "Canceling running syncronisation...");
+            SyncronisationsAutomat.cancel();
+        }
+
+        DecisionDepartmentActivator.logger.logInfoMessage(this, "Interrupting working thread...");
+
+        this._receiverThread.interrupt();
+
         logger.logDebugMessage(this, "DecisionDepartmentActivator.stopRemotely(): After this.stop()");
     }
 
