@@ -18,6 +18,7 @@ public class Messages extends NLS
 	public static String Error;
 	public static String PrefEdit_Command;
 	public static String PrefEdit_Description;
+	public static String PrefEdit_IndividualScripts;
 	public static String PrefEdit_Scripts;
 	public static String PreferenceErrorFmt;
 	public static String PreferencePageMessage;

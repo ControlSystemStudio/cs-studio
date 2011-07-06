@@ -17,8 +17,17 @@ import org.eclipse.core.runtime.preferences.IPreferencesService;
 @SuppressWarnings("nls")
 public class Preferences
 {
-	/** Name of preference that holds the descriptions and script names */
-	final public static String PREF_SCRIPTS = "scripts";
+	/** Names of preferences */
+	final public static String
+		PREV_INDIVIDUAL = "run_individual_scripts",
+		PREF_SCRIPTS = "scripts";
+	
+	/** @return <code>true</code> when scripts should run for each PV */
+	public static boolean getRunIndividualScripts()
+	{
+        final IPreferencesService prefs = Platform.getPreferencesService();
+        return prefs.getBoolean(Activator.ID, PREV_INDIVIDUAL, true, null);
+	}
 	
 	/** Get {@link ScriptInfo} entries from preferences
 	 *  @return ScriptInfo array
