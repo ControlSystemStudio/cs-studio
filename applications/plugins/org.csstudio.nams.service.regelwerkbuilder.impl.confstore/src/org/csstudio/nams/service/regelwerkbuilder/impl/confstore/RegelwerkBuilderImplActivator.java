@@ -9,7 +9,7 @@ import org.csstudio.nams.common.material.regelwerk.StringRegel;
 import org.csstudio.nams.service.configurationaccess.localstore.declaration.ConfigurationServiceFactory;
 import org.csstudio.nams.service.configurationaccess.localstore.declaration.DatabaseType;
 import org.csstudio.nams.service.configurationaccess.localstore.declaration.LocalStoreConfigurationService;
-import org.csstudio.nams.service.logging.declaration.Logger;
+import org.csstudio.nams.service.logging.declaration.ILogger;
 import org.csstudio.nams.service.preferenceservice.declaration.PreferenceService;
 import org.csstudio.nams.service.preferenceservice.declaration.PreferenceServiceDatabaseKeys;
 import org.csstudio.platform.simpledal.IProcessVariableConnectionService;
@@ -35,7 +35,7 @@ public class RegelwerkBuilderImplActivator extends AbstractBundleActivator {
 	                        final ConfigurationServiceFactory configurationServiceFactory,
 	                        @OSGiService
 	                        @Required
-	                        final Logger logger) {
+	                        final ILogger logger) {
 
 		final String connection = preferenceService.getString(PreferenceServiceDatabaseKeys.P_APP_DATABASE_CONNECTION);
         final String username = preferenceService.getString(PreferenceServiceDatabaseKeys.P_APP_DATABASE_USER);
