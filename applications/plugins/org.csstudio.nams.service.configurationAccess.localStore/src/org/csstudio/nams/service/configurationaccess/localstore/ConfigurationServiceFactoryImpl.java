@@ -185,10 +185,10 @@ public class ConfigurationServiceFactoryImpl implements
 	private final List<SessionFactory> sessionFactoryList = new LinkedList<SessionFactory>();
 
 	// private List<Session> sessionList = new LinkedList<Session>();
-	private final org.csstudio.nams.service.logging.declaration.Logger _logger;
+	private final org.csstudio.nams.service.logging.declaration.ILogger _logger;
 
 	public ConfigurationServiceFactoryImpl(
-			final org.csstudio.nams.service.logging.declaration.Logger logger) {
+			final org.csstudio.nams.service.logging.declaration.ILogger logger) {
 		this._logger = logger;
 	}
 
