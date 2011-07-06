@@ -773,6 +773,17 @@ public abstract class AbstractNodeEditor extends EditorPart implements INodeConf
                                        "The Settings not saved!\n\nDataBase Failure:",
                                        exception);
     }
+
+    /**
+     * @param exception
+     *            A exception to show in a Dialog,
+     */
+    protected void openErrorDialog(@Nonnull final Exception exception, @Nullable ProfiBusTreeView busTreeView) {
+        LOG.error("The Settings not saved!\n\nDataBase Failure:", exception);
+        DeviceDatabaseErrorDialog.open(null,
+                                       "The Settings not saved!\n\nDataBase Failure:",
+                                       exception, getProfiBusTreeView());
+    }
     
     public void perfromClose() {
         final IViewSite site = getProfiBusTreeView().getSite();
