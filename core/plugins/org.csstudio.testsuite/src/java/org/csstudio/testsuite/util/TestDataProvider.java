@@ -36,8 +36,11 @@ import java.util.Properties;
 import javax.annotation.CheckForNull;
 import javax.annotation.Nonnull;
 
+import org.csstudio.domain.common.SiteId;
+import org.csstudio.domain.common.resource.CssResourceLocator;
 import org.eclipse.core.runtime.Platform;
 import org.osgi.framework.Bundle;
+import org.osgi.framework.BundleException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -62,23 +65,21 @@ import com.google.common.base.Strings;
  */
 public final class TestDataProvider {
 
-    private static final String CONFIGURATION_REPO_PATH_KEY = "configRepoPath";
-
+    public static final TestDataProvider EMPTY_PROVIDER = new TestDataProvider();
 
     private static final Logger LOG = LoggerFactory.getLogger(TestDataProvider.class);
-    
- 
+
+    private static final String HOST_PROPERTIES_FILE_NAME = "host.properties";
+    private static final String HOST_PROPERTIES_ROOT_NS = "root";
+    private static final String HOST_PROPERTIES_NS_SEP = ".";
+
     private static final String CONFIGURATION_FILE_SUFFIX = "TestConfiguration.ini";
 
     private static final String SENSITIVE_FILE_KEY = "sensitiveConfigFilePath";
-    private static final String HOST_PROPERTIES_FILE_NAME = "host.properties";
 
-    public static final TestDataProvider EMPTY_PROVIDER = new TestDataProvider();
 
     private static TestDataProvider INSTANCE;
-
     private static Properties PROPERTIES = new Properties();
-
     private final String _pluginId;
 
     /**
@@ -87,7 +88,7 @@ public final class TestDataProvider {
     private TestDataProvider() {
         _pluginId = "<emptyProvider>";
     }
-    
+
     /**
      * Constructor.
      */
@@ -96,49 +97,40 @@ public final class TestDataProvider {
     }
 
     private static void loadProperties(@Nonnull final String pluginId)
-        throws IOException {
+        throws IOException, BundleException {
 
         findAndLoadGeneralProperties(pluginId);
-        
+
         findAndLoadGeneralSecretProperties(pluginId);
-        
+
         findAndLoadHostSpecificProperties();
     }
 
-    private static void findAndLoadGeneralProperties(@Nonnull final String pluginId) 
-                                                     throws IOException {
-        String testConfigFileName = createSiteSpecificName();
+    private static void findAndLoadGeneralProperties(@Nonnull final String pluginId)
+                                                     throws IOException, BundleException {
+        final String testConfigFileName = createSiteSpecificName();
         final URL resource = locateResource(pluginId, testConfigFileName);
         openStreamAndLoadProps(resource);
     }
 
-    private static void findAndLoadGeneralSecretProperties(@Nonnull final String pluginId) 
-                                                           throws IOException {
+    private static void findAndLoadGeneralSecretProperties(@Nonnull final String pluginId)
+                                                           throws IOException, BundleException {
         final String secretFile = findSensitiveDataFile();
         if (secretFile != null) {
             final URL resource = locateResource(pluginId, secretFile);
             openStreamAndLoadProps(resource);
         }
     }
-    
+
     private static void findAndLoadHostSpecificProperties() throws IOException {
-        final String configRepoPath = System.getProperty(CONFIGURATION_REPO_PATH_KEY);
-        final String siteId = System.getProperty(SiteId.JVM_ARG_KEY);
-        if (!Strings.isNullOrEmpty(configRepoPath) && !Strings.isNullOrEmpty(siteId)) {
-            final String pathname = configRepoPath + File.separator + siteId + File.separator + HOST_PROPERTIES_FILE_NAME;
-            try {
-                
-                final File configFile = new File(pathname);
-                URL resource = configFile.toURI().toURL();
-                openStreamAndLoadProps(resource);
-            } catch (final IOException e) {
-                LOG.warn("Host specific properties file could not be found: " + pathname);
-            }
-        } else {
-            LOG.warn("No " + CONFIGURATION_REPO_PATH_KEY + " or " + 
-                     SiteId.JVM_ARG_KEY + " specified as current jre's jvm arg.");
+        try {
+            final File configFile =
+                CssResourceLocator.locateSiteSpecificResource(HOST_PROPERTIES_FILE_NAME);
+            final URL resource = configFile.toURI().toURL();
+            openStreamAndLoadProps(resource);
+        } catch (final IOException e) {
+            LOG.warn("Host specific properties file could not be found: ", e);
         }
-        
     }
 
     private static void openStreamAndLoadProps(@Nonnull final URL resource) throws IOException {
@@ -152,10 +144,10 @@ public final class TestDataProvider {
             }
         }
     }
-    
+
     @CheckForNull
     private static String findSensitiveDataFile() {
-        
+
         if (PROPERTIES != null) {
             final String secretFilePath = (String) PROPERTIES.get(SENSITIVE_FILE_KEY);
             if (secretFilePath != null) {
@@ -164,23 +156,25 @@ public final class TestDataProvider {
         }
         return null;
     }
-    
+
     @Nonnull
     private static URL locateResource(@Nonnull final String pluginId,
                                       @Nonnull final String testConfigFileName) throws MalformedURLException,
-                                                                                       FileNotFoundException {
-        final Bundle bundle = Platform.getBundle(pluginId);
+                                                                                       FileNotFoundException,
+                                                                                       BundleException {
+        Bundle bundle = Platform.getBundle(pluginId);
         URL resource = null;
         if (bundle == null) {
             LOG.warn("Bundle could not be located. Try to find config file via current working dir.");
-            
+
             final String curDir = System.getProperty("user.dir");
             final File configFile = new File(curDir + File.separator + testConfigFileName);
             resource = configFile.toURI().toURL();
-        } else {
+        }  else {
+            bundle = whenFragmentReturnHostBundle(bundle);
             resource = bundle.getResource(testConfigFileName);
         }
-        
+
         if (resource == null) {
             throw new FileNotFoundException("Test configuration file for plugin " + pluginId +
                                             " and file name " + testConfigFileName +
@@ -188,6 +182,25 @@ public final class TestDataProvider {
         }
         return resource;
     }
+
+    @Nonnull
+    public static Bundle whenFragmentReturnHostBundle(@Nonnull final Bundle bundle) throws BundleException {
+        final String host =
+            (String) bundle.getHeaders().get(org.osgi.framework.Constants.FRAGMENT_HOST);
+        final String[] hostAndVersion = host.split(";");
+
+        if (!"null".equals(hostAndVersion[0]) || Strings.isNullOrEmpty(hostAndVersion[0])) {
+            final Bundle hostBundle = Platform.getBundle(hostAndVersion[0]);
+            if (hostBundle == null) {
+                throw new BundleException("Host bundle for " + bundle.getSymbolicName() + " could not be found.");
+            }
+            return hostBundle;
+        }
+        return bundle;
+    }
+
+
+
 
     /**
      * Retrieve test config property from file
@@ -201,16 +214,17 @@ public final class TestDataProvider {
 
     /**
      * Retrieve host specific property from file.
-     * Searches for keys with namespaces from {@link InetAddress#getHostName()} or if empty for  
-     * {@link InetAddress#getHostAddress()} in host.properties file.
-     * 
+     * Searches for keys with namespaces from {@link InetAddress#getHostName()} or if empty for
+     * {@link InetAddress#getHostAddress()} in host.properties file. If both are not present
+     * the host property with namespace {@link HOST_PROPERTIES_ROOT_NS} is checked as default.
+     *
      * @param key the describing key for the host specific property
      * @return the property object the property under namespace + "/" + key
-     * @throws UnknownHostException 
+     * @throws UnknownHostException
      */
     @CheckForNull
     public Object getHostProperty(@Nonnull final String key) {
-        
+
         InetAddress localHost;
         try {
             localHost = InetAddress.getLocalHost();
@@ -218,23 +232,25 @@ public final class TestDataProvider {
             if (object == null) {
                 object = PROPERTIES.get(localHost.getHostAddress() + "/" + key);
             }
+            if (object == null) {
+                object = PROPERTIES.get(HOST_PROPERTIES_ROOT_NS + "/" + key);
+            }
             return object;
-        } catch (UnknownHostException e) {
+        } catch (final UnknownHostException e) {
             LOG.warn("Local host could not be resolved for host property retrieval.", e);
         }
         return null;
     }
 
     /**
-     *
+     * Returns the lazily created instance of the test data provider.
      * @param pluginId id of the plugin in which the tests and their config file reside
      * @return the instance of the data provider
      * @throws TestProviderException
      */
     @Nonnull
     public static TestDataProvider getInstance(@Nonnull final String pluginId)
-        throws TestProviderException {
-
+                                               throws TestProviderException {
         try {
             synchronized (TestDataProvider.class) {
                 if (INSTANCE == null) {
@@ -243,12 +259,14 @@ public final class TestDataProvider {
                 } else if (!pluginId.equals(INSTANCE._pluginId)) {
                     PROPERTIES.clear();
                     loadProperties(pluginId);
-                } 
+                }
             }
             return INSTANCE;
 
         } catch (final IOException e) {
             throw new TestProviderException("Test config file for plugin " + pluginId + " couldn't be found or opened.", e);
+        } catch (final BundleException e) {
+            throw new TestProviderException("Bundle or host bundle for " + pluginId + " couldn't be found or opened.", e);
         }
     }
 
