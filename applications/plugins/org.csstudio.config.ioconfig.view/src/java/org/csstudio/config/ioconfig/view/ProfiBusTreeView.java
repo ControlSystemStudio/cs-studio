@@ -732,6 +732,10 @@ public class ProfiBusTreeView extends Composite {
                 .getImageDescriptorFromPlugin(IOConfigActivatorUI.PLUGIN_ID, "icons/refresh.gif"));
     }
     
+    public final void reload() {
+        _refreshAction.run();
+    }
+    
     /** refresh the Tree. Reload all Nodes */
     public final void refresh() {
         getViewer().setInput(new Object());
