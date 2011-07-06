@@ -13,7 +13,7 @@ import java.util.Locale;
 import org.csstudio.nams.common.fachwert.MessageKeyEnum;
 import org.csstudio.nams.common.fachwert.Millisekunden;
 import org.csstudio.nams.common.material.AlarmNachricht;
-import org.csstudio.nams.service.logging.declaration.Logger;
+import org.csstudio.nams.service.logging.declaration.ILogger;
 
 /**
  * @author Goesta Steen
@@ -21,9 +21,9 @@ import org.csstudio.nams.service.logging.declaration.Logger;
  */
 public class StringRegel implements VersandRegel {
 
-	private static Logger logger;
+	private static ILogger logger;
 
-	public static void staticInject(final Logger logger) {
+	public static void staticInject(final ILogger logger) {
 		StringRegel.logger = logger;
 	}
 
