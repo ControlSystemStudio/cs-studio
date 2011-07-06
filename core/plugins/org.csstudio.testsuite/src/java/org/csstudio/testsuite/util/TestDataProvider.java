@@ -185,21 +185,23 @@ public final class TestDataProvider {
 
     @Nonnull
     public static Bundle whenFragmentReturnHostBundle(@Nonnull final Bundle bundle) throws BundleException {
-        final String host =
+        String host =
             (String) bundle.getHeaders().get(org.osgi.framework.Constants.FRAGMENT_HOST);
-        final String[] hostAndVersion = host.split(";");
-
-        if (!"null".equals(hostAndVersion[0]) || Strings.isNullOrEmpty(hostAndVersion[0])) {
-            final Bundle hostBundle = Platform.getBundle(hostAndVersion[0]);
-            if (hostBundle == null) {
-                throw new BundleException("Host bundle for " + bundle.getSymbolicName() + " could not be found.");
+        if (host != null && !Strings.isNullOrEmpty(host)) {
+            final String[] hostAndVersion = host.split(";");
+            if (hostAndVersion != null && hostAndVersion.length > 0) {
+                host = hostAndVersion[0];
             }
-            return hostBundle;
+            if (!"null".equals(host) || Strings.isNullOrEmpty(host)) {
+                final Bundle hostBundle = Platform.getBundle(host);
+                if (hostBundle == null) {
+                    throw new BundleException("Host bundle for " + bundle.getSymbolicName() + " could not be found.");
+                }
+                return hostBundle;
+            }
         }
         return bundle;
     }
-
-
 
 
     /**
@@ -228,12 +230,12 @@ public final class TestDataProvider {
         InetAddress localHost;
         try {
             localHost = InetAddress.getLocalHost();
-            Object object = PROPERTIES.get(localHost.getHostName() + "/" + key);
+            Object object = PROPERTIES.get(localHost.getHostName() + HOST_PROPERTIES_NS_SEP + key);
             if (object == null) {
-                object = PROPERTIES.get(localHost.getHostAddress() + "/" + key);
+                object = PROPERTIES.get(localHost.getHostAddress() + HOST_PROPERTIES_NS_SEP + key);
             }
             if (object == null) {
-                object = PROPERTIES.get(HOST_PROPERTIES_ROOT_NS + "/" + key);
+                object = PROPERTIES.get(HOST_PROPERTIES_ROOT_NS + HOST_PROPERTIES_NS_SEP + key);
             }
             return object;
         } catch (final UnknownHostException e) {
