@@ -1,0 +1,76 @@
+<project name="Database creation" basedir=".">
+   <property name="sql.driver" value="com.mysql.jdbc.Driver"/>
+   <property name="sql.url" value="jdbc:mysql://localhost:3306"/>
+   <property name="sql.database" value="archive_test"/>
+   <property name="sql.user" value="root"/>
+   <property name="sql.pass" value="hostrootpw"/>
+   <property name="sql.connector.jar" value="mysql-connector-java-5.1.14.jar"/>
+
+   <target name="create.database" depends="drop.database">
+      <sql driver="${sql.driver}" 
+           url="${sql.url}" 
+           userid="${sql.user}" 
+           password="${sql.pass}"
+           classpath="${sql.connector.jar}">
+      	
+      	<transaction>
+      	    CREATE DATABASE ${sql.database};
+      	    USE ${sql.database};
+      	</transaction>
+      </sql>
+      
+      <antcall target="create.tables"/>
+   	  <antcall target="create.triggers"/>
+   </target>
+   
+   <target name="create.tables">
+     <sql driver="${sql.driver}" 
+          url="${sql.url}/${sql.database}" 
+          userid="${sql.user}" 
+          password="${sql.pass}"
+          classpath="${sql.connector.jar}">
+        
+     	<!-- take care, order matters! -->
+        <transaction src="tables/engine.sql"/>
+        <transaction src="tables/engine_status.sql"/>
+        <transaction src="tables/channel_group.sql"/>
+        <transaction src="tables/control_system.sql"/>
+        <transaction src="tables/channel.sql"/>
+        <transaction src="tables/channel_status.sql"/>
+        <transaction src="tables/sample.sql"/>
+     </sql>
+   </target>
+
+   <target name="create.triggers">
+      <sql driver="${sql.driver}" 
+           url="${sql.url}/${sql.database}" 
+           userid="${sql.user}" 
+           password="${sql.pass}"
+           classpath="${sql.connector.jar}"
+      	   delimiter="//">
+            <transaction src="tables/triggers.sql"/>
+       </sql>
+    </target>
+	
+    <target name="drop.database">
+	    <input message="Do you really want to delete database '${sql.database}'?" 
+               validargs="y,n" 
+	           addproperty="do.delete"
+               defaultvalue="y" />
+        <condition property="do.abort"> 
+            <equals arg1="n" arg2="${do.delete}"/> 
+        </condition> 
+        <fail if="do.abort">Build aborted by user.</fail> 
+        
+        <sql driver="${sql.driver}" 
+            url="${sql.url}" 
+            userid="${sql.user}" 
+        	password="${sql.pass}"
+            classpath="${sql.connector.jar}">
+           
+            <transaction>
+                DROP DATABASE IF EXISTS ${sql.database};
+            </transaction>
+         </sql>
+    </target>
+</project>
