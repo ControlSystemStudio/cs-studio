@@ -1,11 +1,89 @@
-<project name="Database creation" basedir=".">
-   <property name="sql.driver" value="com.mysql.jdbc.Driver"/>
-   <property name="sql.url" value="jdbc:mysql://localhost:3306"/>
-   <property name="sql.database" value="archive_test"/>
-   <property name="sql.user" value="root"/>
-   <property name="sql.pass" value="hostrootpw"/>
-   <property name="sql.connector.classpath" value="../../com.mysql.jdbc"/>
+<project name="DatabaseCreation" basedir=".">
+	<!-- 
+        Import the environment as properties prefixed with 'env'. 
+        Then set env.HOSTNAME to be the value of env.COMPUTERNAME (in case of windows OS) 
+        unless env.HOSTNAME (in case of linux OS) is already set in which case the 2nd line will 
+        have no effect (ant props are immutable). After that use env.HOSTNAME where the hostname 
+        is required.
+    -->
+	<target name="prepare.env">
+        <property environment="env"/>
+		
+		<!-- 
+		     sets host.name to the first env variable for the HOST/HOSTNAME/COMPUTERNAME that can be 
+		     found, once set the property host.name is immutable, remaining conditions don't have 
+		     any effect.
+		 -->
+		<condition property="host.name.org" value="${env.HOST}">
+		    <isset property="env.HOST"/> <!-- Solaris -->
+		</condition>
 
+		<condition property="host.name.org" value="${env.HOSTNAME}">
+		    <isset property="env.HOSTNAME"/> <!-- Linux -->
+		</condition>
+
+		<condition property="host.name.org" value="${env.COMPUTERNAME}">
+		    <isset property="env.COMPUTERNAME"/> <!-- Windows -->
+		</condition>
+
+        <echo message="HOSTNAME ORG = ${host.name.org}"/>
+		<script language="javascript"><![CDATA[
+			orgProp = DatabaseCreation.getProperty("host.name.org");
+			DatabaseCreation.setProperty("host.name", orgProp.toLowerCase());
+		]]></script>
+        <echo message="HOSTNAME to lowercase = ${host.name}"/>
+		
+		<!-- 
+		    Process host.properties file 
+		    Filter for props for being prefixed with host.name (case-insensitive)
+		    Remove all prefixes, load the props
+		 -->
+        <loadproperties srcfile="../../../../../config/DESY/host.properties">
+            <filterchain>
+            	<tokenfilter>
+            	    <containsregex pattern="^${host.name}\.(.+)$" flags="i"
+            	                   replace="\1"/>
+            	</tokenfilter>
+            </filterchain>
+        </loadproperties>
+		<!-- 
+		    Process host.properties file again
+		    Filter for props for being prefixed with "root." (case-insensitive)
+		    Remove all prefixes, load the props (those being loaded before cannot be overridden - props are immutable)
+		 -->
+        <loadproperties srcfile="../../../../../config/DESY/host.properties">
+            <filterchain>
+            	<tokenfilter>
+            	    <containsregex pattern="^root\.(.+)$" flags="i"
+            	                   replace="\1"/>
+            	</tokenfilter>
+            </filterchain>
+        </loadproperties>
+
+		<!--echo message="${import.foo}"/-->
+		<echo message="${mysqlArchiveHost}"/>
+		<echo message="${mysqlArchiveUser}"/>
+		<echo message="${mysqlArchivePort}"/>
+		<echo message="${mysqlArchiveDatabase}"/>
+		<echo message="not set ${root.mysqlArchiveHost}"/>
+		<echo message="not set ${krykpcj.mysqlArchiveHost}"/>
+		<echo message="not set ${krykpch.mysqlArchiveHost}"/>
+
+
+	</target>
+	
+    <property name="sql.driver" value="com.mysql.jdbc.Driver"/>
+    <property name="sql.url" value="jdbc:mysql://localhost:3306"/>
+    <property name="sql.database" value="archive_test"/>
+    <property name="sql.user" value="root"/>
+    <property name="sql.pass" value="hostrootpw"/>
+    <property name="sql.connector.classpath" value="../../com.mysql.jdbc"/>
+
+
+    <target name="create.and.fill.database" 
+    	    depends="create.database, create.tables, create.triggers">
+    </target>
+	
    <target name="create.database" depends="drop.database">
       <sql driver="${sql.driver}" 
            url="${sql.url}" 
@@ -20,12 +98,9 @@
       	    USE ${sql.database};
       	</transaction>
       </sql>
-      
-      <antcall target="create.tables"/>
-   	  <antcall target="create.triggers"/>
    </target>
    
-    <target name="create.tables">
+    <target name="create.tables" depends="prepare.env">
         <sql driver="${sql.driver}" 
              url="${sql.url}/${sql.database}" 
              userid="${sql.user}" 
@@ -47,7 +122,7 @@
         </sql>
     </target>
 
-    <target name="create.triggers">
+    <target name="create.triggers" depends="prepare.env">
         <sql driver="${sql.driver}" 
              url="${sql.url}/${sql.database}" 
              userid="${sql.user}" 
@@ -61,7 +136,7 @@
        </sql>
     </target>
 	
-    <target name="drop.database">
+    <target name="drop.database" depends="prepare.env">
 	    <input message="Do you really want to delete database '${sql.database}'?" 
                validargs="y,n" 
 	           addproperty="do.delete"
@@ -85,7 +160,7 @@
          </sql>
     </target>
 	
-	<target name="clear.tables">
+	<target name="clear.tables" depends="prepare.env">
         <sql driver="${sql.driver}" 
              url="${sql.url}/${sql.database}" 
              userid="${sql.user}" 
