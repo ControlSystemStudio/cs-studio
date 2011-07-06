@@ -39,8 +39,8 @@ import org.csstudio.config.ioconfig.model.pbmodel.ModuleDBO;
 import org.csstudio.config.ioconfig.model.pbmodel.ProfibusSubnetDBO;
 import org.csstudio.config.ioconfig.model.pbmodel.SlaveDBO;
 import org.csstudio.config.ioconfig.model.xml.ProfibusConfigXMLGenerator;
-import org.csstudio.testsuite.util.TestResourceLocator;
-import org.csstudio.testsuite.util.TestResourceLocator.RepoDomain;
+import org.csstudio.domain.common.resource.CssResourceLocator;
+import org.csstudio.domain.common.resource.CssResourceLocator.RepoDomain;
 import org.junit.After;
 import org.junit.Assert;
 import org.junit.Before;
@@ -231,7 +231,7 @@ public class XAVCConfigUnitTest {
     @Before
     public void setUp() throws Exception {
         final String resFilePath = 
-            TestResourceLocator.composeResourceLocationString(RepoDomain.APPLICATIONS, 
+            CssResourceLocator.composeResourceLocationString(RepoDomain.APPLICATIONS, 
                                                               IOConfigActivator.PLUGIN_ID, 
                                                               "res-test/ConfigFiles/XAVC.xml");
         _expected = new BufferedReader(new FileReader(resFilePath));
