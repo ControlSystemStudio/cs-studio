@@ -41,6 +41,16 @@ public class AlarmTreeContentProvider implements ILazyTreeContentProvider
     public void inputChanged(Viewer viewer, Object oldInput, Object newInput)
     {
         tree_viewer = (TreeViewer) viewer;
+        // Need to call setItemCount to update
+        // tree with new content
+        final int count;
+        if (newInput == null)
+        	// Empty input
+        	count = 0;
+        else
+            // The 'root' node is one element
+        	count = 1;
+    	tree_viewer.getTree().setItemCount(count);
     }
 
     /** TreeViewer calls this to request model item
@@ -52,23 +62,16 @@ public class AlarmTreeContentProvider implements ILazyTreeContentProvider
     public void updateElement(final Object parent, final int index)
     {
         final AlarmTreeItem item = (AlarmTreeItem) parent;
-        AlarmTreeItem child;
-        int count;
+        final AlarmTreeItem child;
 
         if (gui.getAlarmDisplayMode())
-        {
             child = item.getAlarmChild(index);
-            count = child.getAlarmChildCount();
-        }
         else
-        {
             child = item.getClientChild(index);
-            count = child.getChildCount();
-        }
         //System.out.println("Tree update: " + child.getName());
         tree_viewer.replace(parent, index, child);
         // Must be called to trigger tree viewer to descend further
-        tree_viewer.setChildCount(child, count);
+        updateChildCount(child, -1);
     }
 
     /** Called by TreeViewer to request child count
@@ -77,15 +80,15 @@ public class AlarmTreeContentProvider implements ILazyTreeContentProvider
      *  @see ILazyTreeContentProvider
      */
     @Override
-    public void updateChildCount(Object element, int currentChildCount)
-    {
-        final AlarmTreeItem item = (AlarmTreeItem) element;
-        final int count = gui.getAlarmDisplayMode()
-           ? item.getAlarmChildCount()
-           : item.getChildCount();
-           if (count != currentChildCount)
-            tree_viewer.setChildCount(element, count);
-    }
+	public void updateChildCount(final Object element, final int currentChildCount)
+	{
+		final AlarmTreeItem item = (AlarmTreeItem) element;
+		final int count = gui.getAlarmDisplayMode()
+			? item.getAlarmChildCount()
+	        : item.getChildCount();
+		if (count != currentChildCount)
+		    tree_viewer.setChildCount(element, count);
+	}
 
     /** @see ILazyTreeContentProvider */
     @Override
