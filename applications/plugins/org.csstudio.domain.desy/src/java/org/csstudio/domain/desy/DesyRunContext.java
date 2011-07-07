@@ -21,6 +21,9 @@
  */
 package org.csstudio.domain.desy;
 
+import javax.annotation.CheckForNull;
+import javax.annotation.Nonnull;
+
 
 /**
  * TODO (bknerr) :
@@ -50,16 +53,25 @@ public enum DesyRunContext {
     }
 
     public static boolean isTestContext() {
-        final String contextStr = System.getProperty(SYS_PROP_CONTEXT_KEY);
-        try {
-            return contextStr == null ? false :
-                                        valueOf(contextStr).isTest();
-        } catch (final IllegalArgumentException e) {
-            return false;
-        }
+        final DesyRunContext context = getContext();
+        return context != null ? context.isTest() : false;
     }
 
     public static boolean isProductionContext() {
         return !isTestContext();
+    }
+
+    @CheckForNull
+    public static DesyRunContext getContext() {
+        final String contextStr = System.getProperty(SYS_PROP_CONTEXT_KEY);
+        try {
+            return valueOf(contextStr);
+        } catch (final IllegalArgumentException e) {
+            return null;
+        }
+    }
+
+    public static void setContext(@Nonnull final DesyRunContext context) {
+        System.setProperty(SYS_PROP_CONTEXT_KEY, context.name());
     }
 }
