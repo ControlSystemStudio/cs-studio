@@ -59,17 +59,7 @@
             	</tokenfilter>
             </filterchain>
         </loadproperties>
-
-		<!--echo message="${import.foo}"/-->
-		<echo message="${mysqlArchiveHost}"/>
-		<echo message="${mysqlArchiveUser}"/>
-		<echo message="${mysqlArchivePort}"/>
-		<echo message="${mysqlArchiveDatabase}"/>
-		<echo message="not set ${root.mysqlArchiveHost}"/>
-		<echo message="not set ${krykpcj.mysqlArchiveHost}"/>
-		<echo message="not set ${krykpch.mysqlArchiveHost}"/>
-
-
+		<echo message="Properties with prefix '${host.name}.' and 'root.' loaded!"/>
 	</target>
 	
     <property name="sql.driver" value="com.mysql.jdbc.Driver"/>
