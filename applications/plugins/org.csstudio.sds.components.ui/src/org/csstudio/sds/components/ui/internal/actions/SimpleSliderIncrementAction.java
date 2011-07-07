@@ -47,9 +47,13 @@ public class SimpleSliderIncrementAction extends Action implements IObjectAction
      * (@inheritDoc)
      */
     public final void run(final IAction action) {
-        if (_widgetModel != null) {
+        this.run();
+    }
+    
+    @Override
+    public void run() {
+    	if (_widgetModel != null) {
             String title = "Change increment";
-//            String message = "Enter the new increment for the selected SimpleSlider";
             String message = "Enter the new increment";
             String initialValue = String.valueOf(_widgetModel.getIncrement());
             InputDialog incDialog = new IncInputDialog(null,
@@ -88,8 +92,8 @@ public class SimpleSliderIncrementAction extends Action implements IObjectAction
      *
      * (@inheritDoc)
      */
-    public final void selectionChanged(final IAction action, final ISelection selection) {
-        if (selection instanceof IStructuredSelection) {
+	public final void selectionChanged(final IAction action, final ISelection selection) {
+    	if (selection instanceof IStructuredSelection) {
             Object element = ((IStructuredSelection) selection).getFirstElement();
             if (element instanceof SimpleSliderEditPart) {
                 _widgetModel = (SimpleSliderModel) ((SimpleSliderEditPart) element)
@@ -119,12 +123,11 @@ public class SimpleSliderIncrementAction extends Action implements IObjectAction
         @Override
         protected Control createButtonBar(final Composite parent) {
             Control createButtonBar = super.createButtonBar(parent);
-            getShell().setSize(200,250);
+            getShell().pack();
             return createButtonBar;
         }
         @Override
         protected Control createDialogArea(final Composite parent) {
-//            getShell().setSize(300,200);
             final Composite createDialogArea = (Composite) super.createDialogArea(parent);
             final Composite chooserComposite = new Composite(createDialogArea, SWT.NONE);
             chooserComposite.setLayoutData(new GridData(SWT.CENTER, SWT.CENTER, true, false));
@@ -149,6 +152,7 @@ public class SimpleSliderIncrementAction extends Action implements IObjectAction
             button.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, false, false));
             button.setText("10.0");
             button.addSelectionListener(getListener(getText(), "10.0"));
+            chooserComposite.pack();
             Point cL = Display.getCurrent().getCursorLocation();
             getShell().setLocation(cL.x,cL.y-100);
             return createDialogArea;

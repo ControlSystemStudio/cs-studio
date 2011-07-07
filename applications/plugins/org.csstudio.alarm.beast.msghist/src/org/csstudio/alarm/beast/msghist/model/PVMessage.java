@@ -7,14 +7,14 @@
  ******************************************************************************/
 package org.csstudio.alarm.beast.msghist.model;
 
-import java.util.HashMap;
+import java.util.Map;
 
 /** A log message that provides IProcessVariable via the NAME property.
  *  @author Kay Kasemir
  */
 public class PVMessage extends Message
 {
-    public PVMessage(final int sequence, final int id, final HashMap<String, String> properties)
+    public PVMessage(final int sequence, final int id, final Map<String, String> properties)
     {
     	super(sequence, id, properties);
     }

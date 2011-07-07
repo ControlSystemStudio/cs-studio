@@ -50,19 +50,34 @@ public class RunScriptHandler extends AbstractHandler
 		final ISelection selection = HandlerUtil.getActiveMenuSelection(event);
         final ProcessVariable[] pvs = AdapterUtil.convert(selection, ProcessVariable.class);
         
-        // Execute script for each received PV
-        for (ProcessVariable pv : pvs)
-        {
+        if (Preferences.getRunIndividualScripts())
+        {   // Execute script for each received PV
+	        for (ProcessVariable pv : pvs)
+	        {
+	        	try
+	        	{
+	        		ScriptExecutor.runWithPVs(script, pv);
+	        	}
+	        	catch (Throwable ex)
+	        	{
+	        		MessageDialog.openError(null,
+	        				Messages.Error,
+	        				NLS.bind(Messages.ScriptExecutionErrorFmt, ex.getMessage()));
+	        		break;
+	        	}
+	        }
+        }
+        else
+        {	// Execute script once for all PVs
         	try
         	{
-        		ScriptExecutor.runWithPVs(script, pv.getName());
+        		ScriptExecutor.runWithPVs(script, pvs);
         	}
         	catch (Throwable ex)
         	{
         		MessageDialog.openError(null,
         				Messages.Error,
         				NLS.bind(Messages.ScriptExecutionErrorFmt, ex.getMessage()));
-        		break;
         	}
         }
         return null;

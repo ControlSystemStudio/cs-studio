@@ -32,6 +32,7 @@ public class Messages extends NLS
     public static String Filter_ValueTT;
     public static String MessageDetail;
     public static String MessageHistory;
+	public static String Pref_MaxProperties;
     public static String Pref_Password;
     public static String Pref_Schema;
     public static String Pref_Starttime;
@@ -39,6 +40,7 @@ public class Messages extends NLS
     public static String Pref_User;
     public static String Property;
     public static String PropertyValue_TTFmt;
+    public static String ReachedMaxPropertiesFmt;
     public static String SeqProvider_TTFmt;
     public static String ShowDetail;
     public static String TableColumnsEditor_Columns;

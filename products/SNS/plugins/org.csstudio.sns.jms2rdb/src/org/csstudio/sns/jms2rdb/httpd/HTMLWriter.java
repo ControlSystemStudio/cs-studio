@@ -95,7 +95,7 @@ public class HTMLWriter
      *  @see #tableLine(String[])
      *  @see #closeTable()
      */
-    protected void openTable(final int initial_colspan, final String headers[])
+    protected void openTable(final int initial_colspan, final String... headers)
     {
         text("<table border='0'>");
         text("  <tr bgcolor='#FFCC66'>");
@@ -112,7 +112,7 @@ public class HTMLWriter
      *                 Count must match the colspan of openTable
      *  @see #openTable(int, String[])
      */
-    protected void tableLine(final String[] columns)
+    protected void tableLine(final String... columns)
     {
         text("  <tr>");
         boolean first = true;

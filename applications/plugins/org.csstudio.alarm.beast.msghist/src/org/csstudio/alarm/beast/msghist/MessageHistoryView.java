@@ -41,11 +41,9 @@ public class MessageHistoryView extends ViewPart
                 SecureStorage.retrieveSecureStorage(Activator.ID, "rdb_password");          
             final String schema =
                 service.getString(Activator.ID, "rdb_schema", null, null);
-            final int max_properties =
-                service.getInt(Activator.ID, "max_properties", 1000, null);
             
             final Model model =
-            	new Model(url, user, password, schema, max_properties);
+            	new Model(url, user, password, schema, Preferences.getMaxProperties());
             final GUI gui = new GUI(getSite(), parent, model);
 
             // Trigger update

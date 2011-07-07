@@ -61,7 +61,7 @@ public class Model
     final public static String TAG_GREEN = "green";
     final public static String TAG_BLUE = "blue";
     final public static String TAG_TRACE_TYPE = "trace_type";
-    final public static String TAG_PERIOD = "period";
+    final public static String TAG_SCAN_PERIOD = "period";
     final public static String TAG_INPUT = "input";
     final public static String TAG_ARCHIVE = "archive";
     final public static String TAG_URL = "url";
@@ -739,7 +739,7 @@ public class Model
             throw new Exception("Wrong document type");
 
         scroll_enabled = DOMHelper.getSubelementBoolean(root_node, TAG_SCROLL, scroll_enabled);
-        update_period = DOMHelper.getSubelementDouble(root_node, TAG_PERIOD, update_period);
+        update_period = DOMHelper.getSubelementDouble(root_node, TAG_UPDATE_PERIOD, update_period);
 
         final String start = DOMHelper.getSubelementString(root_node, TAG_START);
         final String end = DOMHelper.getSubelementString(root_node, TAG_END);

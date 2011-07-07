@@ -7,6 +7,7 @@
  ******************************************************************************/
 package org.csstudio.ui.menu.pvscript;
 
+import org.csstudio.csdata.ProcessVariable;
 import org.junit.Test;
 
 /** JUnit demo of the {@link CommandRunner}
@@ -19,6 +20,6 @@ public class ScriptExecutorDemo
 	public void testScriptRunner() throws Exception
 	{
 		final ScriptInfo info = new ScriptInfo("Command 1", "notepad.exe");
-		ScriptExecutor.runWithPVs(info.getScript(), "pv1");
+		ScriptExecutor.runWithPVs(info.getScript(), new ProcessVariable("pv1"));
 	}
 }
