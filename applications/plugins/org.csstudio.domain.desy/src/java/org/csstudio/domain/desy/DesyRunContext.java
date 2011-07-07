@@ -73,7 +73,7 @@ public enum DesyRunContext {
     public static DesyRunContext getContext() {
         final String contextStr = System.getProperty(SYS_PROP_CONTEXT_KEY);
         try {
-            return valueOf(contextStr);
+            return contextStr != null ? valueOf(contextStr) : null;
         } catch (final IllegalArgumentException e) {
             return null;
         }
