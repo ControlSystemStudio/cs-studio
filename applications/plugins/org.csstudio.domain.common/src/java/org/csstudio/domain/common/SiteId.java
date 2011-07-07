@@ -21,7 +21,7 @@
  *
  * $Id$
  */
-package org.csstudio.testsuite.util;
+package org.csstudio.domain.common;
 
 import javax.annotation.Nonnull;
 
@@ -39,6 +39,12 @@ public enum SiteId {
     ITER("iter"),
     BNL("bnl");
 
+    /**
+     * Supposed to be set as jvm arg for any site's product/launch config/whatever to enable site
+     * specific dispatching of whatever you like to.
+     */
+    public static final String JVM_ARG_KEY = "siteId";
+    
     private final String _prefix;
 
     /**

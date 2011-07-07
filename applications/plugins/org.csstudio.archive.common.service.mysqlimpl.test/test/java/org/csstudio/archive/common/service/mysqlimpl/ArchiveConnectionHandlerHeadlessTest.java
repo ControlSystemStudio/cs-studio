@@ -21,6 +21,8 @@
  */
 package org.csstudio.archive.common.service.mysqlimpl;
 
+import java.sql.Connection;
+
 import javax.annotation.Nonnull;
 
 import junit.framework.Assert;
@@ -61,22 +63,23 @@ public class ArchiveConnectionHandlerHeadlessTest {
     
     @BeforeClass
     public static void setup() {
-        System.out.println("Before");
         
         try {
             PROV = TestDataProvider.getInstance("org.csstudio.archive.common.service.mysqlimpl.test");
         } catch (final Exception e) {
             Assert.fail("Unexpected exception:\n" + e.getMessage());
         }
-        _prefHost = (String) PROV.get("host");
-        _prefFailoverHost = (String) PROV.get("failoverHost");
-        _prefUser = (String) PROV.get("user");
-        _prefPassword = (String) PROV.get("password");
-        _prefPort = Integer.valueOf((String) PROV.get("port"));
-        _prefDatabaseName = (String) PROV.get("databaseName");
-        _prefMaxAllowedPacketSizeInKB = Integer.valueOf((String) PROV.get("maxAllowedPacketInKB"));
+        _prefHost = String.valueOf((String) PROV.getHostProperty("mysqlArchiveHost"));
+        _prefPort = Integer.valueOf((String) PROV.getHostProperty("mysqlArchivePort"));
+        _prefFailoverHost = "";
+        _prefUser = String.valueOf((String) PROV.getHostProperty("mysqlArchiveUser"));
+        _prefPassword = String.valueOf((String) PROV.getHostProperty("mysqlArchivePassword"));
+        _prefDatabaseName = String.valueOf((String) PROV.getHostProperty("mysqlArchiveDatabase"));
         
+        _prefMaxAllowedPacketSizeInKB = 1024;
+
         MysqlDataSource dataSource = createDataSource();
+        
         HANDLER = new ArchiveConnectionHandler(dataSource);
         
     }
@@ -105,8 +108,8 @@ public class ArchiveConnectionHandlerHeadlessTest {
     
     @Test
     public void getConnectionTest() throws ArchiveConnectionException {
-        HANDLER.getConnection();
-        
+        Connection con = HANDLER.getConnection();
+        Assert.assertNotNull(con);
         
     }
 }
