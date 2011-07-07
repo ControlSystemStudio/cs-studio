@@ -13,7 +13,6 @@ import org.csstudio.swt.xygraph.linearscale.AbstractScale.LabelSide;
 import org.csstudio.swt.xygraph.util.SWTConstants;
 import org.eclipse.draw2d.Figure;
 import org.eclipse.draw2d.Graphics;
-import org.eclipse.swt.SWT;
 
 /**
  * Linear scale tick marks. Part of code of this class is from SWTChart which is available at http://www.swtchart.org/
