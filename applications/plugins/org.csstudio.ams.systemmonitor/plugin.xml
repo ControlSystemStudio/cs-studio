@@ -11,5 +11,13 @@
          </run>
       </application>
    </extension>
+   <extension
+         id="AmsSystemMonitorProduct"
+         point="org.eclipse.core.runtime.products">
+      <product
+            application="org.csstudio.ams.systemmonitor.AmsSystemMonitorApplication"
+            name="AmsSystemMonitorProduct">
+      </product>
+   </extension>
 
 </plugin>
