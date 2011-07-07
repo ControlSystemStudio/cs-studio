@@ -56,7 +56,7 @@ public class NodeEditorInput implements IEditorInput {
     }
 
     @Nonnull
-    public AbstractNodeDBO getNode() {
+    public AbstractNodeDBO<?,?> getNode() {
         return _node;
     }
 

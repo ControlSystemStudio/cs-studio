@@ -94,9 +94,10 @@ import org.slf4j.LoggerFactory;
  * 
  * @author hrickens
  * @author $Author: hrickens $
+ * @param <T>
  * @since 31.03.2010
  */
-public abstract class AbstractNodeEditor extends EditorPart implements INodeConfig {
+public abstract class AbstractNodeEditor<T extends AbstractNodeDBO<?, ?>> extends EditorPart implements INodeConfig {
     
     /**
      * 
@@ -311,7 +312,7 @@ public abstract class AbstractNodeEditor extends EditorPart implements INodeConf
     // ---------------------------------------
     // Node Editor View
     
-    private AbstractNodeDBO _node;
+    private T _node;
     
     private Composite _parent;
     
@@ -572,7 +573,7 @@ public abstract class AbstractNodeEditor extends EditorPart implements INodeConf
      */
     @Override
     @Nonnull
-    public AbstractNodeDBO getNode() {
+    public T getNode() {
         return _node;
     }
     
@@ -635,7 +636,7 @@ public abstract class AbstractNodeEditor extends EditorPart implements INodeConf
                      @Nonnull final IEditorInput input) throws PartInitException {
         setSite(site);
         setInput(input);
-        _node = ((NodeEditorInput) input).getNode();
+        _node = (T) ((NodeEditorInput) input).getNode(); // TODO (hrickens) [07.07.2011]: Jörg fragen?
         setNew( ((NodeEditorInput) input).isNew());
         setPartName(_node.getName());
         getProfiBusTreeView().setOpenEditor(this);
