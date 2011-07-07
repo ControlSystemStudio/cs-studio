@@ -26,7 +26,15 @@ import javax.annotation.Nonnull;
 
 
 /**
- * TODO (bknerr) :
+ * Run context introduced for the case where it cannot be avoided to check whether code should run
+ * for tests or for production code.
+ * Typically, that's an indicator for bad design as code that is *only* executed for production
+ * should rather not be executed at all. But for instance code that submits
+ * jvm shutdown hooks via {@link Runtime#addShutdownHook(Thread)} interferes with the starting and
+ * stopping procedure for tests of the JUnit framework.
+ * In more detail: when JUnit ends a test run, the shutdown thread is invoked by the platform sort
+ * of out of sight of the just finished test. The the shutdown hook thread is likely to run when the
+ * next test is started by JUnit, which breaks the test encapsulation.
  *
  * @author bknerr
  * @since 07.07.2011
