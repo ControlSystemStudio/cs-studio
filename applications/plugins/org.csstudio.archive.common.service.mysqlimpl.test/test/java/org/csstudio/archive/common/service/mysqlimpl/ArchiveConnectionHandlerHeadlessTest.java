@@ -37,15 +37,15 @@ import com.google.common.base.Strings;
 import com.mysql.jdbc.jdbc2.optional.MysqlDataSource;
 
 /**
- * Test for {@link ArchiveConnectionHandler}. 
- * 
+ * Test for {@link ArchiveConnectionHandler}.
+ *
  * @author bknerr
  * @since 18.05.2011
  */
 public class ArchiveConnectionHandlerHeadlessTest {
-    
+
     private static org.csstudio.testsuite.util.TestDataProvider PROV;
-    
+
     private static String _prefHost;
     private static String _prefFailoverHost;
     private static String _prefUser;
@@ -53,37 +53,36 @@ public class ArchiveConnectionHandlerHeadlessTest {
     private static Integer _prefPort;
     private static String _prefDatabaseName;
     private static Integer _prefMaxAllowedPacketSizeInKB;
-    
+
     private static ArchiveConnectionHandler HANDLER;
-    
+
 //    private final String getInsertStatementPrefix(@Nonnull final String dbName) {
 //        return "INSERT INTO " + dbName + ".sample (channel_id, sample_time, nanosecs, value) VALUES ";
 //    }
 
-    
+
     @BeforeClass
     public static void setup() {
-        
         try {
             PROV = TestDataProvider.getInstance("org.csstudio.archive.common.service.mysqlimpl.test");
         } catch (final Exception e) {
             Assert.fail("Unexpected exception:\n" + e.getMessage());
         }
-        _prefHost = String.valueOf((String) PROV.getHostProperty("mysqlArchiveHost"));
-        _prefPort = Integer.valueOf((String) PROV.getHostProperty("mysqlArchivePort"));
+        _prefHost = String.valueOf(PROV.getHostProperty("mysqlHost"));
+        _prefPort = Integer.valueOf((String) PROV.getHostProperty("mysqlPort"));
         _prefFailoverHost = "";
-        _prefUser = String.valueOf((String) PROV.getHostProperty("mysqlArchiveUser"));
-        _prefPassword = String.valueOf((String) PROV.getHostProperty("mysqlArchivePassword"));
-        _prefDatabaseName = String.valueOf((String) PROV.getHostProperty("mysqlArchiveDatabase"));
-        
+        _prefUser = String.valueOf(PROV.getHostProperty("mysqlArchiveUser"));
+        _prefPassword = String.valueOf(PROV.getHostProperty("mysqlArchivePassword"));
+        _prefDatabaseName = String.valueOf(PROV.getHostProperty("mysqlArchiveDatabase"));
+
         _prefMaxAllowedPacketSizeInKB = 1024;
 
-        MysqlDataSource dataSource = createDataSource();
-        
+        final MysqlDataSource dataSource = createDataSource();
+
         HANDLER = new ArchiveConnectionHandler(dataSource);
-        
+
     }
-    
+
     @Nonnull
     private static MysqlDataSource createDataSource() {
 
@@ -100,16 +99,16 @@ public class ArchiveConnectionHandlerHeadlessTest {
         ds.setFailOverReadOnly(false);
         ds.setMaxAllowedPacket(_prefMaxAllowedPacketSizeInKB*1024);
         ds.setUseTimezone(true);
-        
+
         return ds;
     }
-    
-    
-    
+
+
+
     @Test
     public void getConnectionTest() throws ArchiveConnectionException {
-        Connection con = HANDLER.getConnection();
+        final Connection con = HANDLER.getConnection();
         Assert.assertNotNull(con);
-        
+
     }
 }
