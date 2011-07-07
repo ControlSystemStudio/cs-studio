@@ -24,23 +24,7 @@ package org.csstudio.config.ioconfig.commands;
 import javax.annotation.Nonnull;
 
 import org.csstudio.config.ioconfig.editorinputs.NodeEditorInput;
-import org.csstudio.config.ioconfig.editorparts.ChannelEditor;
-import org.csstudio.config.ioconfig.editorparts.ChannelStructureEditor;
-import org.csstudio.config.ioconfig.editorparts.FacilityEditor;
-import org.csstudio.config.ioconfig.editorparts.IocEditor;
-import org.csstudio.config.ioconfig.editorparts.MasterEditor;
-import org.csstudio.config.ioconfig.editorparts.ModuleEditor;
-import org.csstudio.config.ioconfig.editorparts.SlaveEditor;
-import org.csstudio.config.ioconfig.editorparts.SubnetEditor;
 import org.csstudio.config.ioconfig.model.AbstractNodeDBO;
-import org.csstudio.config.ioconfig.model.FacilityDBO;
-import org.csstudio.config.ioconfig.model.IocDBO;
-import org.csstudio.config.ioconfig.model.pbmodel.ChannelDBO;
-import org.csstudio.config.ioconfig.model.pbmodel.ChannelStructureDBO;
-import org.csstudio.config.ioconfig.model.pbmodel.MasterDBO;
-import org.csstudio.config.ioconfig.model.pbmodel.ModuleDBO;
-import org.csstudio.config.ioconfig.model.pbmodel.ProfibusSubnetDBO;
-import org.csstudio.config.ioconfig.model.pbmodel.SlaveDBO;
 import org.eclipse.ui.IWorkbenchPage;
 import org.eclipse.ui.PartInitException;
 

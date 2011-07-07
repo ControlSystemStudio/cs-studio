@@ -238,13 +238,14 @@ public class GSDModuleDBO extends DBClass implements Comparable<GSDModuleDBO>, I
         return getId() - other.getId();
     }
 
-    public String getConfigurationData() {
-        return _configurationData;
-    }
-
-    public void setConfigurationData(final String configurationData) {
-        _configurationData = configurationData;
-    }
+//    @CheckForNull
+//    public String getConfigurationData() {
+//        return _configurationData;
+//    }
+//
+//    public void setConfigurationData(final String configurationData) {
+//        _configurationData = configurationData;
+//    }
 
     /**
      * The I/O Parameter as series of numbers.<br>

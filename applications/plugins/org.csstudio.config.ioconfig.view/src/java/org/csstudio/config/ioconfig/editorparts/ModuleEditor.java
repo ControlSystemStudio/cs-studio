@@ -45,8 +45,6 @@ import javax.annotation.CheckForNull;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
-import org.csstudio.auth.security.SecurityFacade;
-import org.csstudio.auth.security.User;
 import org.csstudio.config.ioconfig.config.view.ChannelConfigDialog;
 import org.csstudio.config.ioconfig.config.view.ModuleListLabelProvider;
 import org.csstudio.config.ioconfig.config.view.helper.ConfigHelper;
@@ -58,9 +56,7 @@ import org.csstudio.config.ioconfig.model.pbmodel.GSDFileDBO;
 import org.csstudio.config.ioconfig.model.pbmodel.GSDModuleDBO;
 import org.csstudio.config.ioconfig.model.pbmodel.ModuleDBO;
 import org.csstudio.config.ioconfig.model.pbmodel.SlaveDBO;
-import org.csstudio.config.ioconfig.model.pbmodel.gsdParser.ExtUserPrmData;
 import org.csstudio.config.ioconfig.model.pbmodel.gsdParser.GsdModuleModel2;
-import org.csstudio.config.ioconfig.model.pbmodel.gsdParser.PrmTextItem;
 import org.csstudio.config.ioconfig.view.DeviceDatabaseErrorDialog;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.jface.viewers.ComboViewer;
@@ -72,6 +68,7 @@ import org.eclipse.jface.viewers.TableViewer;
 import org.eclipse.jface.viewers.Viewer;
 import org.eclipse.jface.viewers.ViewerFilter;
 import org.eclipse.jface.viewers.ViewerSorter;
+import org.eclipse.jface.window.Window;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.custom.ScrolledComposite;
 import org.eclipse.swt.events.ControlAdapter;
@@ -259,7 +256,7 @@ public class ModuleEditor extends AbstractGsdNodeEditor<ModuleDBO> {
      */
     @Override
     public void createPartControl(@Nonnull final Composite parent) {
-        _module = (ModuleDBO) getNode();
+        _module = getNode();
         super.createPartControl(parent);
         
         if(_module == null) {
@@ -280,29 +277,8 @@ public class ModuleEditor extends AbstractGsdNodeEditor<ModuleDBO> {
         final Composite comp = getNewTabItem(head, 2);
         comp.setLayout(new GridLayout(2, false));
         
-        /*
-         * Name
-         */
-        Group gName = new Group(comp, SWT.NONE);
-        gName.setText("Name");
-        gName.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, false, 2, 1));
-        gName.setLayout(new GridLayout(3, false));
+        buildNameGroup(comp);
         
-        setNameWidget(new Text(gName, SWT.BORDER | SWT.SINGLE));
-        Text nameWidget = getNameWidget();
-        if(nameWidget != null) {
-            setText(nameWidget, _module.getName(), 255);
-            nameWidget.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, false, 1, 1));
-        }
-        setIndexSpinner(ConfigHelper.getIndexSpinner(gName,
-                                                     _module,
-                                                     getMLSB(),
-                                                     "Sort Index",
-                                                     getProfiBusTreeView()));
-        
-        /*
-         * Top Composite.
-         */
         final Group topGroup = new Group(comp, SWT.NONE);
         topGroup.setLayoutData(new GridData(SWT.FILL, SWT.FILL, false, true, 1, 1));
         topGroup.setLayout(new GridLayout(3, false));
@@ -328,7 +304,6 @@ public class ModuleEditor extends AbstractGsdNodeEditor<ModuleDBO> {
         final Text filter = new Text(filterComposite, SWT.SINGLE | SWT.BORDER | SWT.SEARCH);
         filter.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, false, 1, 1));
         filter.setMessage("Module Filter");
-        // filter.setLayoutData(GridDataFactory.fillDefaults().create());
         filter.addModifyListener(new ModifyListener() {
             
             @Override
@@ -337,6 +312,49 @@ public class ModuleEditor extends AbstractGsdNodeEditor<ModuleDBO> {
             }
             
         });
+        final Button filterButton = buildFilterButton(filterComposite);
+        buildEditButton(topGroup);
+        
+        _moduleTypList = new TableViewer(topGroup, SWT.SINGLE | SWT.V_SCROLL | SWT.BORDER);
+        _moduleTypList.getTable().setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true, 2, 3));
+        _moduleTypList.setContentProvider(new ComboContentProvider());
+        _moduleTypList.setLabelProvider(new ModuleListLabelProvider(_moduleTypList.getTable(),
+                                                                    getGsdFile()));
+        setTypListFilter(filter, filterButton);
+        
+        setTypeListSorter();
+        
+        try {
+            makeCurrentUserParamData(topGroup);
+            _moduleTypList
+                    .addSelectionChangedListener(new ISelectionChangedListenerForModuleTypeList(topGroup,
+                                                                                                _moduleTypList));
+            
+            SlaveDBO slave = _module.getSlave();
+            if(getGsdFile() != null) {
+                Map<Integer, GsdModuleModel2> gsdModuleList = slave.getGSDFile()
+                        .getParsedGsdFileModel().getModuleMap();
+                _moduleTypList.setInput(gsdModuleList);
+                comp.layout();
+                _moduleTypList.getTable().setData(_module.getModuleNumber());
+                GsdModuleModel2 selectModuleModel = gsdModuleList.get(_module.getModuleNumber());
+                if(selectModuleModel != null) {
+                    _moduleTypList.setSelection(new StructuredSelection(selectModuleModel));
+                }
+            }
+            _moduleTypList.getTable().showSelection();
+        } catch (IOException e2) {
+            DeviceDatabaseErrorDialog.open(null, "Can't save Module. GSD File read error", e2);
+            LOG.error("Can't save Module. GSD File read error", e2);
+        }
+    }
+
+    /**
+     * @param filterComposite
+     * @return
+     */
+    @Nonnull
+    public Button buildFilterButton(@Nonnull Composite filterComposite) {
         final Button filterButton = new Button(filterComposite, SWT.CHECK);
         filterButton.setLayoutData(new GridData(SWT.CENTER, SWT.FILL, false, false, 1, 1));
         filterButton.setText("Only have prototype");
@@ -353,7 +371,13 @@ public class ModuleEditor extends AbstractGsdNodeEditor<ModuleDBO> {
             }
             
         });
-        
+        return filterButton;
+    }
+
+    /**
+     * @param topGroup
+     */
+    public void buildEditButton(@Nonnull final Group topGroup) {
         Button epicsEditButton = new Button(topGroup, SWT.PUSH);
         epicsEditButton.setText("Edit Prototype");
         epicsEditButton.addSelectionListener(new SelectionListener() {
@@ -371,22 +395,21 @@ public class ModuleEditor extends AbstractGsdNodeEditor<ModuleDBO> {
             private void action() {
                 GsdModuleModel2 firstElement = (GsdModuleModel2) ((StructuredSelection) _moduleTypList
                         .getSelection()).getFirstElement();
-                GSDModuleDBO gsdModule = _module.getGSDModule();
+                GSDModuleDBO gsdModule = getNode().getGSDModule();
                 gsdModule = openChannelConfigDialog(firstElement, gsdModule);
                 if(gsdModule != null) {
-                    _module.getGSDFile().addGSDModule(gsdModule);
-                    getProfiBusTreeView().refresh(_module);
+                    getNode().getGSDFile().addGSDModule(gsdModule);
+                    getProfiBusTreeView().refresh(getNode());
                 }
             }
         });
-        
-        //        new Label(topGroup, SWT.NONE).setText("Module Type: ");
-        
-        _moduleTypList = new TableViewer(topGroup, SWT.SINGLE | SWT.V_SCROLL | SWT.BORDER);
-        _moduleTypList.getTable().setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true, 2, 3));
-        _moduleTypList.setContentProvider(new ComboContentProvider());
-        _moduleTypList.setLabelProvider(new ModuleListLabelProvider(_moduleTypList.getTable(),
-                                                                    getGsdFile()));
+    }
+
+    /**
+     * @param filter 
+     * @param filterButton
+     */
+    public void setTypListFilter(@Nonnull final Text filter, @Nonnull final Button filterButton) {
         _moduleTypList.addFilter(new ViewerFilter() {
             
             @Override
@@ -428,7 +451,12 @@ public class ModuleEditor extends AbstractGsdNodeEditor<ModuleDBO> {
             }
             
         });
-        
+    }
+
+    /**
+     * 
+     */
+    public void setTypeListSorter() {
         _moduleTypList.setSorter(new ViewerSorter() {
             
             @Override
@@ -444,31 +472,28 @@ public class ModuleEditor extends AbstractGsdNodeEditor<ModuleDBO> {
             }
             
         });
+    }
+
+    /**
+     * @param comp
+     */
+    public void buildNameGroup(@Nonnull final Composite comp) {
+        Group gName = new Group(comp, SWT.NONE);
+        gName.setText("Name");
+        gName.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, false, 2, 1));
+        gName.setLayout(new GridLayout(3, false));
         
-        try {
-            makeCurrentUserParamData(topGroup);
-            _moduleTypList
-                    .addSelectionChangedListener(new ISelectionChangedListenerForModuleTypeList(topGroup,
-                                                                                                _moduleTypList));
-            
-            SlaveDBO slave = _module.getSlave();
-            if(getGsdFile() != null) {
-                //            Map<Integer, GsdModuleModel2> gsdModuleList = slave.getGSDSlaveData().getGsdModuleList2();
-                Map<Integer, GsdModuleModel2> gsdModuleList = slave.getGSDFile()
-                        .getParsedGsdFileModel().getModuleMap();
-                _moduleTypList.setInput(gsdModuleList);
-                comp.layout();
-                _moduleTypList.getTable().setData(_module.getModuleNumber());
-                GsdModuleModel2 selectModuleModel = gsdModuleList.get(_module.getModuleNumber());
-                if(selectModuleModel != null) {
-                    _moduleTypList.setSelection(new StructuredSelection(selectModuleModel));
-                }
-            }
-            _moduleTypList.getTable().showSelection();
-        } catch (IOException e2) {
-            DeviceDatabaseErrorDialog.open(null, "Can't save Module. GSD File read error", e2);
-            LOG.error("Can't save Module. GSD File read error", e2);
+        setNameWidget(new Text(gName, SWT.BORDER | SWT.SINGLE));
+        Text nameWidget = getNameWidget();
+        if(nameWidget != null) {
+            setText(nameWidget, _module.getName(), 255);
+            nameWidget.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, false, 1, 1));
         }
+        setIndexSpinner(ConfigHelper.getIndexSpinner(gName,
+                                                     _module,
+                                                     getMLSB(),
+                                                     "Sort Index",
+                                                     getProfiBusTreeView()));
     }
     
     /**
@@ -582,24 +607,38 @@ public class ModuleEditor extends AbstractGsdNodeEditor<ModuleDBO> {
         }
         for (Object prmTextObject : _prmTextCV) {
             if(prmTextObject instanceof ComboViewer) {
-                ComboViewer prmTextCV = (ComboViewer) prmTextObject;
-                if(!prmTextCV.getCombo().isDisposed()) {
-                    Integer index = (Integer) prmTextCV.getCombo().getData();
-                    if(index != null) {
-                        prmTextCV.getCombo().select(index);
-                    }
-                }
+                cancelComboViewer(prmTextObject);
             } else if(prmTextObject instanceof Text) {
-                Text prmText = (Text) prmTextObject;
-                if(!prmText.isDisposed()) {
-                    String value = (String) prmText.getData();
-                    if(value != null) {
-                        prmText.setText(value);
-                    }
-                }
+                cancelText(prmTextObject);
             }
         }
         save();
+    }
+
+    /**
+     * @param prmTextObject
+     */
+    public void cancelComboViewer(@Nonnull Object prmTextObject) {
+        ComboViewer prmTextCV = (ComboViewer) prmTextObject;
+        if(!prmTextCV.getCombo().isDisposed()) {
+            Integer index = (Integer) prmTextCV.getCombo().getData();
+            if(index != null) {
+                prmTextCV.getCombo().select(index);
+            }
+        }
+    }
+
+    /**
+     * @param prmTextObject
+     */
+    public void cancelText(@Nonnull Object prmTextObject) {
+        Text prmText = (Text) prmTextObject;
+        if(!prmText.isDisposed()) {
+            String value = (String) prmText.getData();
+            if(value != null) {
+                prmText.setText(value);
+            }
+        }
     }
     
     /** {@inheritDoc} */
@@ -610,6 +649,7 @@ public class ModuleEditor extends AbstractGsdNodeEditor<ModuleDBO> {
     
     /** {@inheritDoc} */
     @Override
+    @CheckForNull
     public final GSDFileDBO getGsdFile() {
         return _module.getSlave().getGSDFile();
     }
@@ -619,30 +659,8 @@ public class ModuleEditor extends AbstractGsdNodeEditor<ModuleDBO> {
      * @throws IOException 
      */
     @Override
-    public void setGsdFile(GSDFileDBO gsdFile) {
+    public void setGsdFile(@CheckForNull GSDFileDBO gsdFile) {
         _module.getSlave().setGSDFile(gsdFile);
-    }
-    
-    /**
-     *
-     * @param prmTextCV
-     * @throws IOException 
-     */
-    private void setModify(@Nonnull final ComboViewer prmTextCV) throws IOException {
-        PrmTextItem prmText = (PrmTextItem) ((StructuredSelection) prmTextCV.getSelection())
-                .getFirstElement();
-        ExtUserPrmData extUserPrmData = (ExtUserPrmData) prmTextCV.getInput();
-        Integer index = extUserPrmData.getIndex();
-        GsdModuleModel2 gsdModule = _module.getGsdModuleModel2();
-        int bytePos = gsdModule.getExtUserPrmDataRefMap().get(index).getIndex();
-        int bitMin = extUserPrmData.getMinBit();
-        int bitMax = extUserPrmData.getMaxBit();
-        
-        //        int val = 0;
-        //        if(prmText != null) {
-        //            val = prmText.getIndex();
-        //        }
-        //        gsdModule.addModify(bytePos, bitMin, bitMax, val);
     }
     
     /**
@@ -665,11 +683,7 @@ public class ModuleEditor extends AbstractGsdNodeEditor<ModuleDBO> {
                 gsdModule.setGSDFile(_module.getGSDFile());
             }
         }
-        String createdBy = "UNKNOWN";
-        User currentUser = SecurityFacade.getInstance().getCurrentUser();
-        if( (currentUser != null) && (currentUser.getUsername() != null)) {
-            createdBy = currentUser.getUsername();
-        }
+        String createdBy = getUserName();
         gsdModule.setCreatedBy(createdBy);
         gsdModule.setUpdatedBy(createdBy);
         Date date = new Date();
@@ -677,8 +691,7 @@ public class ModuleEditor extends AbstractGsdNodeEditor<ModuleDBO> {
         gsdModule.setUpdatedOn(date);
         ChannelConfigDialog channelConfigDialog = new ChannelConfigDialog(Display.getCurrent()
                 .getActiveShell(), model, gsdModule);
-        if(channelConfigDialog.open() == ChannelConfigDialog.OK) {
-            gsdModule.setConfigurationData(channelConfigDialog.getConfigurationData());
+        if(channelConfigDialog.open() == Window.OK) {
             String parameter = channelConfigDialog.getParameter();
             if(parameter.length() > 254) {
                 parameter = parameter.substring(0, 254);
