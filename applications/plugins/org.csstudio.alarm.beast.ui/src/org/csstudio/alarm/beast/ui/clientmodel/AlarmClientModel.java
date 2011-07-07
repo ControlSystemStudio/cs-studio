@@ -7,7 +7,8 @@
  ******************************************************************************/
 package org.csstudio.alarm.beast.ui.clientmodel;
 
-import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.Set;
 import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.logging.Level;
@@ -82,12 +83,12 @@ public class AlarmClientModel
     /** Array of items which are currently in alarm
      *  <br><b>SYNC:</b> Access needs to synchronize on <code>this</code>
      */
-    private ArrayList<AlarmTreePV> active_alarms = new ArrayList<AlarmTreePV>();
+    private Set<AlarmTreePV> active_alarms = new HashSet<AlarmTreePV>();
 
     /** Array of items which are in alarm but acknowledged
      *  <br><b>SYNC:</b> Access needs to synchronize on <code>this</code>
      */
-    private ArrayList<AlarmTreePV> acknowledged_alarms = new ArrayList<AlarmTreePV>();
+    private Set<AlarmTreePV> acknowledged_alarms = new HashSet<AlarmTreePV>();
 
     /** Listeners who registered for notifications */
     final private CopyOnWriteArrayList<AlarmClientModelListener> listeners =
@@ -946,15 +947,24 @@ public class AlarmClientModel
         {
             synchronized (this)
             {
-                active_alarms.remove(pv);
-                acknowledged_alarms.remove(pv);
                 final SeverityLevel severity = pv.getSeverity();
                 if (severity.ordinal() > 0)
                 {
                     if (severity.isActive())
-                        active_alarms.add(pv);
+                    {
+                    	active_alarms.add(pv);
+                        acknowledged_alarms.remove(pv);
+                    }
                     else
-                        acknowledged_alarms.add(pv);
+                    {
+                    	acknowledged_alarms.add(pv);
+                        active_alarms.remove(pv);
+                    }
+                }
+                else
+                {
+                    active_alarms.remove(pv);
+                    acknowledged_alarms.remove(pv);
                 }
                 if (!notify_listeners )
                     return;
