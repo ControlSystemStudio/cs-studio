@@ -32,17 +32,17 @@ import org.csstudio.domain.common.SiteId;
  * Util class to resolve location to data/resources without requiring the
  * bundle framework (and the epic fail of fragments always returning null on
  * getResource invocation).
- * 
+ *
  * @author bknerr
  * @since 14.06.2011
  */
 public final class CssResourceLocator {
-    
+
     public static final String CONFIGURATION_REPO_PATH_KEY = "configRepoPath";
-    
+
     /**
-     * Repository domains (as by convention in the CSS community).  
-     * 
+     * Repository domains (as by convention in the CSS community).
+     *
      * @author bknerr
      * @since 14.06.2011
      */
@@ -51,7 +51,7 @@ public final class CssResourceLocator {
         CORE("core"),
         BUILD("build"),
         PRODUCTS("products");
-        
+
         private final String _path;
 
         /**
@@ -65,7 +65,7 @@ public final class CssResourceLocator {
         public String getPath() {
             return _path;
         }
-        
+
         /**
          * {@inheritDoc}
          */
@@ -75,27 +75,27 @@ public final class CssResourceLocator {
             return getPath();
         }
     }
-    
+
     /**
      * Constructor.
      */
     private CssResourceLocator() {
         // Don't instantiate
     }
-    
+
     /**
-     * Composes the system property for the configuration repo path given as jvm arg via the key 
-     * {@link CONFIGURATION_REPO_PATH_KEY} with the system property given via the key 
-     * {@link SiteId#JVM_ARG_KEY} and the given file name to a filepath and returns the file object 
+     * Composes the system property for the configuration repo path given as jvm arg via the key
+     * {@link CONFIGURATION_REPO_PATH_KEY} with the system property given via the key
+     * {@link SiteId#JVM_ARG_KEY} and the given file name to a filepath and returns the file object
      * if existing.
-     * 
+     *
      * @param fileName the file name
      * @return the file found under the composed base path + site specific string + file name
      * @throws FileNotFoundException if file does not exist
      */
-    public static File locateSiteSpecificResource(@Nonnull final String fileName) 
+    public static File locateSiteSpecificResource(@Nonnull final String fileName)
                                                   throws FileNotFoundException {
-        String configRepoPath = System.getProperty(CONFIGURATION_REPO_PATH_KEY);
+        final String configRepoPath = System.getProperty(CONFIGURATION_REPO_PATH_KEY);
         if (configRepoPath != null) {
             return locateSiteSpecificResource(configRepoPath, fileName);
         }
@@ -114,26 +114,26 @@ public final class CssResourceLocator {
     @Nonnull
     public static File locateSiteSpecificResource(@Nonnull final String basePath,
                                                   @Nonnull final String fileName) throws FileNotFoundException {
-        String site = (String) System.getProperty(SiteId.JVM_ARG_KEY);
+        final String site = System.getProperty(SiteId.JVM_ARG_KEY);
         if (site == null) {
             throw new FileNotFoundException("Site specific path has not been set via jvm arg with key: " + SiteId.JVM_ARG_KEY);
         }
-        final File file = 
+        final File file =
             new File(basePath + File.separator + site + File.separator + fileName);
         if (file.exists()) {
             return file;
         }
         throw new FileNotFoundException("File resource " + file.getAbsolutePath() + " could not be found.");
     }
-    
+
     /**
-     * Composes a file that is checked for existence according to path convention in our repo, which 
+     * Composes a file that is checked for existence according to path convention in our repo, which
      * works for unit tests (without bundle framework) and headless/uiplugin tests (with framework):<br/>
-     * 
+     *
      * The composition looks like follows:<br/>
      * the composed path: "./../../../$domain/plugins/$pluginWorkspace/$pathUnderPluginWorkspace"
-     * 
-     * @param domain the repo domain in which the plugin resides 
+     *
+     * @param domain the repo domain in which the plugin resides
      * @param pluginWorkSpace the plugin name (by convention set as ID in the plugin's Activator singleton)
      * @param pathUnderPluginWorkspace the file path to the resource under the plugin under test
      * @return the file for which the path has been composed
@@ -143,22 +143,22 @@ public final class CssResourceLocator {
     public static File locateResourceFile(@Nonnull final RepoDomain domain,
                                           @Nonnull final String pluginName,
                                           @Nonnull final String pathUnderPluginWorkspace) throws FileNotFoundException {
-        File file = new File(composeResourceLocationString(domain, pluginName, pathUnderPluginWorkspace));
+        final File file = new File(composeResourceLocationString(domain, pluginName, pathUnderPluginWorkspace));
         if (!file.exists()) {
             throw new FileNotFoundException("File " + file.getAbsolutePath() + " does not exist.");
         }
         return file;
     }
-    
-    
+
+
     /**
      * Composes a file path according to path convention in our repo, which works for unit tests
      * (without bundle framework) and headless/uiplugin tests (with framework):<br/>
-     * 
+     *
      * The composition looks like follows:<br/>
      * the composed path: "./../../../$domain/plugins/$pluginWorkspace/$pathUnderPluginWorkspace"
-     * 
-     * @param domain the repo domain in which the plugin resides 
+     *
+     * @param domain the repo domain in which the plugin resides
      * @param pluginWorkSpace the plugin name (by convention set as ID in the plugin's Activator singleton)
      * @param pathUnderPluginWorkspace the file path to the resource under the plugin under test
      * @return the composed path: "./../../../$domain/plugins/$pluginName/$pathUnderPluginWorkspace"
@@ -167,9 +167,9 @@ public final class CssResourceLocator {
     public static String composeResourceLocationString(@Nonnull final RepoDomain domain,
                                                        @Nonnull final String pluginWorkSpace,
                                                        @Nonnull final String pathUnderPluginWorkspace) {
-        
+
         final File fromPluginToPluginPath = new File("./../../../" + domain.getPath() + "/plugins/" + pluginWorkSpace);
-        return new File(fromPluginToPluginPath, pathUnderPluginWorkspace).getAbsolutePath(); 
+        return new File(fromPluginToPluginPath, pathUnderPluginWorkspace).getAbsolutePath();
     }
-    
+
 }
