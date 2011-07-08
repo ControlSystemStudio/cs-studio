@@ -444,7 +444,7 @@ public class AlarmClientModel
         if (! server_alive)
         {
             server_alive = true;
-            fireNewAlarmState(null);
+            fireNewAlarmState(null, true);
         }
         // Change in maintenance mode?
         if (this.maintenance_mode  != maintenance_mode)
@@ -764,9 +764,9 @@ public class AlarmClientModel
         // Maximizing the severity would also fireNewAlarmState
         final AlarmTreeItem parent = pv.getClientParent();
         if (parent != null)
-            parent.maximizeSeverity(pv);
+            parent.maximizeSeverity(pv, true);
         else
-            fireNewAlarmState(pv);
+            fireNewAlarmState(pv, true);
     }
 
 	/** Update the enablement of a PV in model.
@@ -795,9 +795,9 @@ public class AlarmClientModel
         // Maximizing the severity would also fireNewAlarmState
         final AlarmTreeItem parent = pv.getClientParent();
         if (parent != null)
-            parent.maximizeSeverity(pv);
+            parent.maximizeSeverity(pv, true);
         else
-            fireNewAlarmState(pv);
+            fireNewAlarmState(pv, true);
 	}
 
 	/** Update the state of a PV in model.
@@ -940,8 +940,9 @@ public class AlarmClientModel
      *  May be called with a <code>null</code> PV
      *  to indicate that messages were received after a server timeout.
      *  @param pv PV that might have changed the alarm state or <code>null</code>
+     *  @param parent_changed true if a parent item was updated as well
      */
-    void fireNewAlarmState(final AlarmTreePV pv)
+    void fireNewAlarmState(final AlarmTreePV pv, final boolean parent_changed)
     {
         if (pv != null)
         {
@@ -974,7 +975,7 @@ public class AlarmClientModel
         {
             try
             {
-                listener.newAlarmState(this, pv);
+                listener.newAlarmState(this, pv, parent_changed);
             }
             catch (Throwable ex)
             {

@@ -252,7 +252,7 @@ public class AlarmTreeItem extends TreeItem
         this.message = message;
         final AlarmTreeItem parent = getClientParent();
         if (parent != null)
-            parent.maximizeSeverity(pv);
+            parent.maximizeSeverity(pv, false);
         return true;
     }
 
@@ -276,36 +276,50 @@ public class AlarmTreeItem extends TreeItem
      *  the root item will then notify the model,
      *  which will notify listeners.
      *  @param leaf PV that triggered this update
+     *  @param parent_changed A parent of the leave down to this node also changed
+     *  @return <code>true</code> if a previous parent of the leaf higher up the tree or this item changed
      */
-    public synchronized void maximizeSeverity(final AlarmTreeLeaf leaf)
+    public synchronized boolean maximizeSeverity(final AlarmTreeLeaf leaf, boolean parent_changed)
     {
-        // Get maximum child severity and its status
-        current_severity = SeverityLevel.OK;
-        severity = SeverityLevel.OK;
-        message = severity.getDisplayName();
+    	// Get maximum child severity and its status
+    	SeverityLevel new_current_severity = SeverityLevel.OK;
+    	SeverityLevel new_severity = SeverityLevel.OK;
+        String new_message = SeverityLevel.OK.getDisplayName();
         alarm_children.clear();
         final int n = getChildCount();
         for (int i=0; i<n; ++i)
         {
             final AlarmTreeItem child = getClientChild(i);
             // Maximize 'current' severity
-            if (child.getCurrentSeverity().ordinal() > current_severity.ordinal())
-                current_severity = child.getCurrentSeverity();
+            if (child.getCurrentSeverity().ordinal() > new_current_severity.ordinal())
+            	new_current_severity = child.getCurrentSeverity();
             // Maximize latched severity/status
             final SeverityLevel child_sevr = child.getSeverity();
             final int level = child_sevr.ordinal();
             if (level > 0)
                 alarm_children.add(child);
-            if (level > severity.ordinal())
+            if (level > new_severity.ordinal())
             {
-                severity = child_sevr;
-                message = child.getMessage();
+            	new_severity = child_sevr;
+            	new_message = child.getMessage();
             }
         }
+        
+        if (new_current_severity != current_severity  ||
+            new_severity != severity  ||
+            !new_message.equals(message))
+        {
+            current_severity = new_current_severity;
+            severity = new_severity;
+            message = new_message;
+        	parent_changed = true;
+        }
+        
         // Percolate changes towards root
         final AlarmTreeItem parent = getClientParent();
         if (parent != null)
-            parent.maximizeSeverity(leaf);
+        	return parent.maximizeSeverity(leaf, parent_changed);
+        return parent_changed;
     }
 
     /** {@inheritDoc} */

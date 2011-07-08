@@ -360,7 +360,7 @@ public class GUI implements AlarmClientModelListener
      */
     @Override
     public void newAlarmState(final AlarmClientModel model,
-            final AlarmTreePV pv)
+            final AlarmTreePV pv, final boolean parent_changed)
     {
         Display.getDefault().asyncExec(new Runnable()
         {
@@ -374,6 +374,19 @@ public class GUI implements AlarmClientModelListener
                     setErrorMessage(null);
                 // Refresh to indicate new state
                 if (pv != null)
+                {	// Update tree item for PV and parents up to root
+            		tree_viewer.refresh(pv, true);
+            		if (parent_changed)
+            		{	// Update parents up to root
+            			AlarmTreeItem item = pv.getClientParent();
+	                	while (! (item instanceof AlarmTreeRoot))
+	                	{
+	                		tree_viewer.refresh(item);
+	                		item = item.getClientParent();
+	                	}
+            		}
+                }
+                else // Refresh whole tree
                     tree_viewer.refresh();
             }
         });
