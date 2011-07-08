@@ -15,25 +15,38 @@ import java.io.PrintStream;
 @SuppressWarnings("nls")
 public class CreateTestDB
 {
-	final private static int COUNT = 1000;
+	// 5000 PVs in groups of 100 operate like this:
+	//
+	// PVs 000..099 Ramp 0..5000 and alarm at  90..100
+	// PVs 100..199 Ramp 0..5000 and alarm at 190..200
+	final private static int COUNT = 5000;
+	private static final int GROUPSIZE = 100;
 	
     public static void main(String[] args) throws Exception
     {
 		PrintStream out = new PrintStream("demo.db");
 		
-		for (int i=1; i<=COUNT; ++i)
+		for (int i=0; i<COUNT; ++i)
 		{
 			final String num = String.format("%04d", i);
+			
+			final int group = (1 + i/GROUPSIZE) * GROUPSIZE;
+			
+			out.println("# Group " + group);
 			out.println("record(calc, \"Ramp" + num + "\")");
 			out.println("{");
 			out.println("    field(INPA, \"Ramp" + num + "\")");
-			out.println("    field(CALC, \"A<50?A+1:0\")");
+			out.println("    field(CALC, \"A<" + COUNT + "?A+1:0\")");
 			out.println("    field(SCAN, \"1 second\")");
-			out.println("    field(HIGH, \"40\")");
-			out.println("    field(HIHI, \"45\")");
+			out.println("    field(HOPR, \"" + COUNT + "\")");
+			out.println("    field(FLNK, \"Alarm" + num + "\")");
+			out.println("}");
+			out.println("record(calc, \"Alarm" + num + "\")");
+			out.println("{");
+			out.println("    field(INPA, \"Ramp" + num + "\")");
+			out.println("    field(CALC, \"A>=" + (group-10) + "&&A<=" + group + "\")");
+			out.println("    field(HIGH, \"1\")");
 			out.println("    field(HSV , \"MINOR\")");
-			out.println("    field(HHSV, \"MAJOR\")");
-			out.println("    field(HOPR, \"50\")");
 			out.println("}");
 			out.println();
 		}
@@ -43,16 +56,16 @@ public class CreateTestDB
 		out.println("<?xml version=\"1.0\" encoding=\"UTF-8\" standalone=\"yes\"?>");
 		out.println("<config name=\"demo\">");
 		out.println("<component name=\"Area0000\">");
-		for (int i=1; i<=COUNT; ++i)
+		for (int i=0; i<COUNT; ++i)
 		{
 			final String num = String.format("%04d", i);
-			if ((i % 50) == 0)
+			if ((i % GROUPSIZE) == 0)
 			{
 		        out.println("</component>");
 				out.println("<component name=\"Area" + num + "\">");
 				
 			}
-			out.println("    <pv name=\"Ramp" + num + "\">");
+			out.println("    <pv name=\"Alarm" + num + "\">");
 			out.println("        <description>Test PV</description>");
 			out.println("        <latching>true</latching>");
 			out.println("        <annunciating>true</annunciating>");
