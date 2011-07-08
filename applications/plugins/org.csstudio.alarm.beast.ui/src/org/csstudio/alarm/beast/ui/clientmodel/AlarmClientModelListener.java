@@ -44,6 +44,7 @@ public interface AlarmClientModelListener extends AlarmClientModelConfigListener
      *
      *  @param model Model
      *  @param pv    PV that changed state or <code>null</code>
+     *  @param parent_changed true if a parent item was updated as well
      */
-    void newAlarmState(AlarmClientModel model, AlarmTreePV pv);
+    void newAlarmState(AlarmClientModel model, AlarmTreePV pv, boolean parent_changed);
 }

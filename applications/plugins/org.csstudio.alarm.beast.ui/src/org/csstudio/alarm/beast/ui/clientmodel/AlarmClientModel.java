@@ -7,7 +7,8 @@
  ******************************************************************************/
 package org.csstudio.alarm.beast.ui.clientmodel;
 
-import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.Set;
 import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.logging.Level;
@@ -82,12 +83,12 @@ public class AlarmClientModel
     /** Array of items which are currently in alarm
      *  <br><b>SYNC:</b> Access needs to synchronize on <code>this</code>
      */
-    private ArrayList<AlarmTreePV> active_alarms = new ArrayList<AlarmTreePV>();
+    private Set<AlarmTreePV> active_alarms = new HashSet<AlarmTreePV>();
 
     /** Array of items which are in alarm but acknowledged
      *  <br><b>SYNC:</b> Access needs to synchronize on <code>this</code>
      */
-    private ArrayList<AlarmTreePV> acknowledged_alarms = new ArrayList<AlarmTreePV>();
+    private Set<AlarmTreePV> acknowledged_alarms = new HashSet<AlarmTreePV>();
 
     /** Listeners who registered for notifications */
     final private CopyOnWriteArrayList<AlarmClientModelListener> listeners =
@@ -443,7 +444,7 @@ public class AlarmClientModel
         if (! server_alive)
         {
             server_alive = true;
-            fireNewAlarmState(null);
+            fireNewAlarmState(null, true);
         }
         // Change in maintenance mode?
         if (this.maintenance_mode  != maintenance_mode)
@@ -763,9 +764,9 @@ public class AlarmClientModel
         // Maximizing the severity would also fireNewAlarmState
         final AlarmTreeItem parent = pv.getClientParent();
         if (parent != null)
-            parent.maximizeSeverity(pv);
+            parent.maximizeSeverity(pv, true);
         else
-            fireNewAlarmState(pv);
+            fireNewAlarmState(pv, true);
     }
 
 	/** Update the enablement of a PV in model.
@@ -794,9 +795,9 @@ public class AlarmClientModel
         // Maximizing the severity would also fireNewAlarmState
         final AlarmTreeItem parent = pv.getClientParent();
         if (parent != null)
-            parent.maximizeSeverity(pv);
+            parent.maximizeSeverity(pv, true);
         else
-            fireNewAlarmState(pv);
+            fireNewAlarmState(pv, true);
 	}
 
 	/** Update the state of a PV in model.
@@ -939,22 +940,32 @@ public class AlarmClientModel
      *  May be called with a <code>null</code> PV
      *  to indicate that messages were received after a server timeout.
      *  @param pv PV that might have changed the alarm state or <code>null</code>
+     *  @param parent_changed true if a parent item was updated as well
      */
-    void fireNewAlarmState(final AlarmTreePV pv)
+    void fireNewAlarmState(final AlarmTreePV pv, final boolean parent_changed)
     {
         if (pv != null)
         {
             synchronized (this)
             {
-                active_alarms.remove(pv);
-                acknowledged_alarms.remove(pv);
                 final SeverityLevel severity = pv.getSeverity();
                 if (severity.ordinal() > 0)
                 {
                     if (severity.isActive())
-                        active_alarms.add(pv);
+                    {
+                    	active_alarms.add(pv);
+                        acknowledged_alarms.remove(pv);
+                    }
                     else
-                        acknowledged_alarms.add(pv);
+                    {
+                    	acknowledged_alarms.add(pv);
+                        active_alarms.remove(pv);
+                    }
+                }
+                else
+                {
+                    active_alarms.remove(pv);
+                    acknowledged_alarms.remove(pv);
                 }
                 if (!notify_listeners )
                     return;
@@ -964,7 +975,7 @@ public class AlarmClientModel
         {
             try
             {
-                listener.newAlarmState(this, pv);
+                listener.newAlarmState(this, pv, parent_changed);
             }
             catch (Throwable ex)
             {
