@@ -16,20 +16,17 @@ import org.eclipse.swt.SWT;
 import org.eclipse.swt.browser.Browser;
 import org.eclipse.swt.graphics.Color;
 import org.eclipse.swt.widgets.Composite;
-import org.eclipse.ui.internal.browser.BrowserViewer;
 
 /**Figure for a web browser widget.
  * @author Xihui Chen
  *
  */
-@SuppressWarnings("restriction")
-public class WebBrowserFigure extends AbstractSWTWidgetFigure {
+public class WebBrowserFigure extends AbstractWebBrowserFigure {
 
 	
 	private final static Color WHITE_COLOR = 
 		CustomMediaFactory.getInstance().getColor(CustomMediaFactory.COLOR_WHITE);
 	
-	private BrowserViewer browserViewer;
 	private Browser browser;
 	
 	
@@ -41,23 +38,14 @@ public class WebBrowserFigure extends AbstractSWTWidgetFigure {
 			boolean runmode, boolean showToolbar) {
 		super(composite, parentModel);
 		this.runmode = runmode;
-		if(runmode){
-			browserViewer = new BrowserViewer(
-					composite, showToolbar? BrowserViewer.BUTTON_BAR | BrowserViewer.LOCATION_BAR :SWT.None){
-				@Override
-				public void setBounds(int x, int y, int width,
-						int height) {
-					super.setBounds(x, y, width, height);
-					layout();
-				}
-			};
-			browser = browserViewer.getBrowser();
+		if(runmode){			
+			browser = new Browser(composite, SWT.None);
 		}
 	}
 
 	public void setUrl(String url){
 		if(runmode && url.trim().length() > 0)
-			browserViewer.setURL(url);
+			browser.setUrl(url);
 	}
 
 	@Override
@@ -72,7 +60,7 @@ public class WebBrowserFigure extends AbstractSWTWidgetFigure {
 	
 	@Override
 	public Composite getSWTWidget() {
-		return browserViewer;
+		return browser;
 	}	
 	
 	@Override
@@ -83,8 +71,7 @@ public class WebBrowserFigure extends AbstractSWTWidgetFigure {
 			//so that multiple browsers can be properly disposed.
 			UIBundlingThread.getInstance().addRunnable(new Runnable() {			
 				public void run() {				
-					browserViewer.dispose();
-					browserViewer = null;
+					browser.dispose();
 					browser = null;
 				}
 			});

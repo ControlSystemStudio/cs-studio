@@ -9,4 +9,8 @@ Require-Bundle: org.eclipse.ui;resolution:=optional,
 Bundle-RequiredExecutionEnvironment: J2SE-1.5
 Bundle-Vendor: Xihui Chen<chenx1@ornl.gov> - SNS
 Export-Package: org.csstudio.ui.util,
+ org.csstudio.ui.util.dnd,
+ org.csstudio.ui.util.swt.stringtable,
  org.csstudio.ui.util.thread
+Bundle-ActivationPolicy: lazy
+Bundle-Activator: org.csstudio.ui.util.Activator
