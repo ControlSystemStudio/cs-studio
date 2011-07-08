@@ -58,6 +58,8 @@ public class AlarmTreeLabelProvider extends CellLabelProvider
             !((AlarmTreePV)item).isEnabled())
         {
             cell.setImage(icon_provider.getDisabledIcon());
+            cell.setBackground(null);
+            cell.setForeground(null);
             return; // done, skip the color coding
         }
         else
@@ -68,15 +70,25 @@ public class AlarmTreeLabelProvider extends CellLabelProvider
         final SeverityLevel severity = item.getSeverity();
         //  'OK' severity isn't color-coded.
         if (severity == SeverityLevel.OK)
+        {
+            cell.setBackground(null);
+            cell.setForeground(null);
             return;
+        }
         //  Generally, the foreground (text) color is set,
         //  but for PV items with active alarms, the background
         //  color is set to make it stand out even more.
         final Color color = color_provider.getColor(severity);
         if ((item instanceof AlarmTreePV)  &&  severity.isActive())
+        {
             cell.setBackground(color);
+            cell.setForeground(null);
+        }
         else
+        {
             cell.setForeground(color);
+            cell.setBackground(null);
+        }
     }
 
     /** Provide item's "name (severity/status)"
