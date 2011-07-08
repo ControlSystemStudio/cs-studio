@@ -47,8 +47,9 @@ public class ValueCache<T> extends Function<T> {
      *
      * @param newValue the new value
      */
-    public void setValue(T newValue) {
-        this.value = newValue;
+    public void setValue(Object newValue) {
+        // TODO should add type check
+        this.value = type.cast(newValue);
     }
 
     /**

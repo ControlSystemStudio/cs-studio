@@ -23,10 +23,27 @@ public class ExceptionHandler {
     /**
      * Notifies of an exception being thrown.
      * 
-     * TODO: Needs pv
      * @param ex the exception
      */
     public void handleException(Exception ex) {
         log.log(Level.INFO, "Exception for PV", ex);
+    }
+    
+    public static ExceptionHandler createDefaultExceptionHandler(final PVWriter<?> pvWriter, final ThreadSwitch threadSwitch) {
+        final PVWriterImpl<?> pvWriterImpl = (PVWriterImpl<?>) pvWriter;
+        return new ExceptionHandler() {
+            @Override
+            public void handleException(final Exception ex) {
+                threadSwitch.post(new Runnable() {
+
+                    @Override
+                    public void run() {
+                        pvWriterImpl.setLastWriteException(ex);
+                        pvWriterImpl.firePvValueWritten();
+                    }
+                });
+            }
+            
+        };
     }
 }

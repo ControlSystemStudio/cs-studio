@@ -4,6 +4,11 @@
  */
 package org.epics.pvmanager;
 
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.concurrent.ScheduledExecutorService;
+import org.epics.pvmanager.util.ThreadFactories;
+
 /**
  * Manages the PV creation and scanning.
  *
@@ -62,6 +67,133 @@ public class PVManager {
      */
     public static <T> PVManagerExpression<T> read(DesiredRateExpression<T> pvExpression) {
         return new PVManagerExpression<T>(pvExpression);
+    }
+    
+    public static <T> PVManagerWriteExpression<T> write(WriteExpression<T> writeExpression) {
+        return new PVManagerWriteExpression<T>(writeExpression);
+    }
+    
+    private static ScheduledExecutorService pvManagerThreadPool = Executors.newSingleThreadScheduledExecutor(ThreadFactories.namedPool("PVMgr Worker "));
+    
+    private static class AbstractPVManagerExpression {
+        // Initialize to defaults
+        ThreadSwitch onThread;
+        DataSource source;
+
+        /**
+         * Defines which DataSource should be used to read the data.
+         *
+         * @param dataSource a connection manager
+         * @return this
+         */
+        public AbstractPVManagerExpression from(DataSource dataSource) {
+            if (dataSource == null)
+                throw new IllegalArgumentException("dataSource can't be null");
+            source = dataSource;
+            return this;
+        }
+
+        /**
+         * Defines on which thread the PVManager should notify the client.
+         *
+         * @param onThread the thread on which to notify
+         * @return this
+         */
+        public AbstractPVManagerExpression andNotify(ThreadSwitch onThread) {
+            if (this.onThread == null)  {
+                this.onThread = onThread;
+            } else {
+                throw new IllegalStateException("Already set what thread to notify");
+            }
+            return this;
+        }
+        
+        void checkDataSourceAndThreadSwitch() {
+            // Get defaults
+            if (source == null)
+                source = defaultDataSource;
+            if (onThread == null)
+                onThread = defaultOnThread;
+
+            // Check that a data source has been specified
+            if (source == null) {
+                throw new IllegalStateException("You need to specify a source either " +
+                        "using PVManager.setDefaultDataSource or by using " +
+                        "read(...).from(dataSource).");
+            }
+
+            // Check that thread switch has been specified
+            if (onThread == null) {
+                throw new IllegalStateException("You need to specify a thread either " +
+                        "using PVManager.setDefaultThreadSwitch or by using " +
+                        "read(...).andNotify(threadSwitch).");
+            }
+        }
+        
+    }
+    
+    public static class PVManagerWriteExpression<T> extends AbstractPVManagerExpression {
+        private WriteExpression<T> writeExpression;
+        private ExceptionHandler writeExceptionHandler;
+
+        /**
+         * Forwards exception to the given exception handler. No thread switch
+         * is done, so the handler is notified on the thread where the exception
+         * was thrown.
+         * <p>
+         * Giving a custom exception handler will disable the default handler,
+         * so {@link PVWriter#lastWriteException() } is no longer set and no notification
+         * is done.
+         *
+         * @param exceptionHandler an exception handler
+         * @return this
+         */
+        public PVManagerWriteExpression<T> routeWriteExceptionsTo(ExceptionHandler writeExceptionHandler) {
+            if (this.writeExceptionHandler != null)
+                throw new IllegalArgumentException("Exception handler already set");
+            this.writeExceptionHandler = writeExceptionHandler;
+            return this;
+        }
+
+        public PVManagerWriteExpression(WriteExpression<T> writeExpression) {
+            this.writeExpression = writeExpression;
+        }
+        
+        private PVWriter<T> create(boolean syncWrite) {
+            checkDataSourceAndThreadSwitch();
+
+            // Create PV and connect
+            PVWriterImpl<T> pvWriter = new PVWriterImpl<T>(syncWrite);
+            WriteBuffer writeBuffer = writeExpression.createWriteBuffer().build();
+            if (writeExceptionHandler == null) {
+                writeExceptionHandler = ExceptionHandler.createDefaultExceptionHandler(pvWriter, onThread);
+            }
+            WriteFunction<T> writeFunction = writeExpression.getWriteFunction();
+            
+            pvWriter.setWriteDirector(new WriteDirector<T>(writeFunction, writeBuffer, source, pvManagerThreadPool, writeExceptionHandler));
+            return pvWriter;
+        }
+        
+        public PVWriter<T> sync() {
+            return create(true);
+        }
+        
+        public PVWriter<T> async() {
+            return create(false);
+        }
+
+        @Override
+        @SuppressWarnings("unchecked")
+        public PVManagerWriteExpression<T> from(DataSource dataSource) {
+            return (PVManagerWriteExpression<T>) super.from(dataSource);
+        }
+
+        @Override
+        @SuppressWarnings("unchecked")
+        public PVManagerWriteExpression<T> andNotify(ThreadSwitch onThread) {
+            return (PVManagerWriteExpression<T>) super.andNotify(onThread);
+        }
+        
     }
 
     /**
