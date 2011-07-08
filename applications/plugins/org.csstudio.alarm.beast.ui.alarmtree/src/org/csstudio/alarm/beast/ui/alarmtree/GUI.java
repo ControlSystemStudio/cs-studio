@@ -56,6 +56,8 @@ public class GUI implements AlarmClientModelListener
     /** Model for this GUI */
     final private AlarmClientModel model;
 
+    final private Display display;
+    
     /** Error message.
      *  @see #setErrorMessage(String)
      */
@@ -76,6 +78,7 @@ public class GUI implements AlarmClientModelListener
             final IWorkbenchPartSite site)
     {
         this.model = model;
+        this.display = parent.getDisplay();
         createGUI(parent);
 
         if (model.isServerAlive())
@@ -114,7 +117,7 @@ public class GUI implements AlarmClientModelListener
 
         // Error label in top-right
         error_message = new Label(parent, 0);
-        error_message.setBackground(parent.getDisplay().getSystemColor(SWT.COLOR_MAGENTA));
+        error_message.setBackground(display.getSystemColor(SWT.COLOR_MAGENTA));
         FormData fd = new FormData();
         fd.top = new FormAttachment(0, 0);
         fd.right = new FormAttachment(100, 0);
@@ -313,7 +316,7 @@ public class GUI implements AlarmClientModelListener
     @Override
     public void serverTimeout(final AlarmClientModel model)
     {
-        Display.getDefault().asyncExec(new Runnable()
+        display.asyncExec(new Runnable()
         {
             @Override
             public void run()
@@ -330,7 +333,7 @@ public class GUI implements AlarmClientModelListener
     public void newAlarmConfiguration(final AlarmClientModel model)
     {
         final AlarmTreeRoot config = model.getConfigTree();
-        Display.getDefault().asyncExec(new Runnable()
+        display.asyncExec(new Runnable()
         {
             @Override
             public void run()
@@ -362,7 +365,7 @@ public class GUI implements AlarmClientModelListener
     public void newAlarmState(final AlarmClientModel model,
             final AlarmTreePV pv, final boolean parent_changed)
     {
-        Display.getDefault().asyncExec(new Runnable()
+        display.asyncExec(new Runnable()
         {
             @Override
             public void run()
