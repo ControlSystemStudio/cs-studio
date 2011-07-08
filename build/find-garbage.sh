@@ -1,7 +1,7 @@
 #!/bin/bash
 TEMPFILE="/tmp/css-find-garbage"
 rm -f $TEMPFILE
-
+ 
 find ../core -maxdepth 2 | xargs -I {} bash -c "echo {}; ls {} -1a | wc -l" | grep -x "3" -B1 | grep "/" > $TEMPFILE
 find ../applications -maxdepth 2 | xargs -I {} bash -c "echo {}; ls {} -1a | wc -l" | grep -x "3" -B1 | grep "/" >> $TEMPFILE
 find ../products -maxdepth 3 | xargs -I {} bash -c "echo {}; ls {} -1a | wc -l" | grep -x "3" -B1 | grep "/" >> $TEMPFILE
