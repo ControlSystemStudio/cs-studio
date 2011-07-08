@@ -29,12 +29,12 @@
 		    <isset property="env.COMPUTERNAME"/> <!-- Windows -->
 		</condition>
 
-        <echo message="HOSTNAME ORG = ${host.name.org}"/>
+        <echo message="Original computer or host name = ${host.name.org}"/>
 		<script language="javascript"><![CDATA[
 			orgProp = DatabaseCreation.getProperty("host.name.org");
 			DatabaseCreation.setProperty("host.name", orgProp.toLowerCase());
 		]]></script>
-        <echo message="HOSTNAME to lowercase = ${host.name}"/>
+        <echo message="...to lowercase = ${host.name}"/>
 		
 		<!-- 
 		    Process host.properties file 
@@ -76,7 +76,7 @@
 		<echo message="sql.url : ${sql.url}"/>
 		<echo message="sql.root.user : ${sql.root.user}"/>
 		<echo message="sql.root.pw : ${sql.root.pw}"/>
-		<echo message="sql.root.url : ${sql.root.pw}"/>
+
 		<echo message="sql.archive.db : ${sql.archive.db}"/>
 		<echo message="sql.archive.user : ${sql.archive.user}"/>
 		<echo message="sql.archive.pw : ${sql.archive.pw}"/>
@@ -193,39 +193,63 @@
 	</target>
 	
 	<target name="run.on.mysqlhost.after.installation" 
-		    description="Run this target on your mysql host: connect as root, set root password \
-		                 according to host.properties, create archive user, create archive db, \
-		                 grant privileges"
+		    description="Run this target on your mysql host: connect as root, set root password, \
+		according to host.properties, create archive user, create archive db, \
+		grant privileges"
 		    depends="prepare.env">
 		
         <sql driver="${sql.driver}" 
              url="jdbc:mysql://localhost:${mysqlPort}" 
              userid="${sql.root.user}"
-        	 password="">
+        	 password="${sql.root.pw}">
              <classpath>
                  <pathelement path="${sql.connector.classpath}"/>
              </classpath>
             
              <!-- 
                  Order matters - it's vice versa as the table creation due to foreign key constraints
-                 And deletion instead of truncation is used on tables where foreign keys point to.  
+                 And deletion instead of truncation is used on tables where foreign keys point to.
+                 
+                 ATTENTION: something like CREATE/DROP USER IF [NOT] EXISTS is not provided by mysql
+                            but creation of a user that already exist causes an error,
+                            dropping of a user if he doesn't exist causes an error as well, great. 
+                            (a known bug/feature request for more than 6 years now) so
+                            to make the script re-runnable, there's a workaround:
+                            - granting a harmless privilege to a user => creation of the user if
+                            he doesn't exist, and no error if he already has that privilege
+                            - dropping the user
+                            - newly creating the user
+                            - quitting software development and emigrating to the deep woods for 
+                              hugging trees...
+                              
+                 The first statement about log_bin_trust_function_creators enables the 
+                 trigger mechanism in a replication setup, which is too complicated to be explained 
+                 here. 
               -->
              <transaction>
-             	SET PASSWORD=PASSWORD('${sql.root.pw}');
+             	SET GLOBAL log_bin_trust_function_creators = 1;
+             	
+             	GRANT USAGE ON test.* TO '${sql.root.user}'@'%';
              	DROP USER '${sql.root.user}'@'%';
-             	CREATE USER '${sql.root.user}'@'%' identified by '${sql.root.pw}' IDENTIFIED BY '${sql.root.pw}';
+             	CREATE USER '${sql.root.user}'@'%' IDENTIFIED BY '${sql.root.pw}';
              	GRANT ALL PRIVILEGES ON *.* to '${sql.root.user}'@'%' WITH GRANT OPTION;
              	
+             	GRANT USAGE ON test.* TO '${sql.archive.user}'@'localhost';
              	DROP USER '${sql.archive.user}'@'localhost';
              	CREATE USER '${sql.archive.user}'@'localhost' identified by '${sql.archive.pw}';
+
+             	GRANT USAGE ON test.* TO '${sql.archive.user}'@'${sql.host}';
              	DROP USER '${sql.archive.user}'@'${sql.host}';
              	CREATE USER '${sql.archive.user}'@'${sql.host}' identified by '${sql.archive.pw}';
+             	
+             	GRANT USAGE ON test.* TO '${sql.archive.user}'@'%';
              	DROP USER '${sql.archive.user}'@'%';
              	CREATE USER '${sql.archive.user}'@'%' identified by '${sql.archive.pw}';
              	
              	GRANT ALL PRIVILEGES ON ${sql.archive.db}.* to '${sql.archive.user}'@'localhost';
              	GRANT ALL PRIVILEGES ON ${sql.archive.db}.* to '${sql.archive.user}'@'${sql.host}';
              	GRANT ALL PRIVILEGES ON ${sql.archive.db}.* to '${sql.archive.user}'@'%';
+             	
              	FLUSH PRIVILEGES;
              </transaction>
          </sql>

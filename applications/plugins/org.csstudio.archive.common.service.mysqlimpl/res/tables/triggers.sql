@@ -1,6 +1,6 @@
 DROP TRIGGER IF EXISTS updateLastSampleTime//
 
-CREATE DEFINER='root'@'localhost' 
+CREATE DEFINER='${sql.archive.user}'@'${sql.host}' 
     TRIGGER updateLastSampleTime 
         BEFORE INSERT ON sample 
         FOR EACH ROW 
