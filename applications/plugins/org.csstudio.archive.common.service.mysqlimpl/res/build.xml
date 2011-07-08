@@ -1,4 +1,7 @@
 <project name="DatabaseCreation" basedir=".">
+    <property name="sql.driver" value="com.mysql.jdbc.Driver"/>
+    <property name="sql.connector.classpath" value="../../com.mysql.jdbc"/>
+	
 	<!-- 
         Import the environment as properties prefixed with 'env'. 
         Then set env.HOSTNAME to be the value of env.COMPUTERNAME (in case of windows OS) 
@@ -60,14 +63,25 @@
             </filterchain>
         </loadproperties>
 		<echo message="Properties with prefix '${host.name}.' and 'root.' loaded!"/>
+	    
+	    <property name="sql.host" value="${mysqlHost}"/>
+	    <property name="sql.url" value="jdbc:mysql://${sql.host}:${mysqlPort}"/>
+	    <property name="sql.root.user" value="${mysqlRootUser}"/>
+	    <property name="sql.root.pw" value="${mysqlRootPassword}"/>
+		
+	    <property name="sql.archive.db" value="${mysqlArchiveDatabase}"/>
+	    <property name="sql.archive.user" value="${mysqlArchiveUser}"/>
+	    <property name="sql.archive.pw" value="${mysqlArchivePassword}"/>
+
+		<echo message="sql.url : ${sql.url}"/>
+		<echo message="sql.root.user : ${sql.root.user}"/>
+		<echo message="sql.root.pw : ${sql.root.pw}"/>
+		<echo message="sql.archive.db : ${sql.archive.db}"/>
+		<echo message="sql.archive.user : ${sql.archive.user}"/>
+		<echo message="sql.archive.pw : ${sql.archive.pw}"/>
+		
 	</target>
 	
-    <property name="sql.driver" value="com.mysql.jdbc.Driver"/>
-    <property name="sql.url" value="jdbc:mysql://localhost:3306"/>
-    <property name="sql.database" value="archive_test"/>
-    <property name="sql.user" value="root"/>
-    <property name="sql.pass" value="hostrootpw"/>
-    <property name="sql.connector.classpath" value="../../com.mysql.jdbc"/>
 
 
     <target name="create.and.fill.database" 
@@ -77,24 +91,24 @@
    <target name="create.database" depends="drop.database">
       <sql driver="${sql.driver}" 
            url="${sql.url}" 
-           userid="${sql.user}" 
-           password="${sql.pass}">
+           userid="${sql.archive.user}" 
+           password="${sql.archive.pw}">
       	<classpath>
       	    <pathelement path="${sql.connector.classpath}"/>
       	</classpath>
       	
       	<transaction>
-      	    CREATE DATABASE ${sql.database};
-      	    USE ${sql.database};
+      	    CREATE DATABASE ${sql.archive.db};
+      	    USE ${sql.archive.db};
       	</transaction>
       </sql>
    </target>
    
     <target name="create.tables" depends="prepare.env">
         <sql driver="${sql.driver}" 
-             url="${sql.url}/${sql.database}" 
-             userid="${sql.user}" 
-             password="${sql.pass}">
+             url="${sql.url}/${sql.archive.db}" 
+             userid="${sql.archive.user}" 
+             password="${sql.archive.pw}">
             <classpath>
                 <pathelement path="${sql.connector.classpath}"/>
             </classpath>     	
@@ -114,9 +128,9 @@
 
     <target name="create.triggers" depends="prepare.env">
         <sql driver="${sql.driver}" 
-             url="${sql.url}/${sql.database}" 
-             userid="${sql.user}" 
-             password="${sql.pass}"
+             url="${sql.url}/${sql.archive.db}" 
+             userid="${sql.archive.user}" 
+             password="${sql.archive.pw}"
       	     delimiter="//">
             <classpath>
                 <pathelement path="${sql.connector.classpath}"/>
@@ -127,7 +141,7 @@
     </target>
 	
     <target name="drop.database" depends="prepare.env">
-	    <input message="Do you really want to delete database '${sql.database}'?" 
+	    <input message="Do you really want to delete database '${sql.archive.db}'?" 
                validargs="y,n" 
 	           addproperty="do.delete"
                defaultvalue="y" />
@@ -138,23 +152,23 @@
         
         <sql driver="${sql.driver}" 
              url="${sql.url}" 
-             userid="${sql.user}" 
-        	 password="${sql.pass}">
+             userid="${sql.archive.user}" 
+        	 password="${sql.archive.pw}">
              <classpath>
                  <pathelement path="${sql.connector.classpath}"/>
              </classpath>
             
              <transaction>
-                 DROP DATABASE IF EXISTS ${sql.database};
+                 DROP DATABASE IF EXISTS ${sql.archive.db};
              </transaction>
          </sql>
     </target>
 	
 	<target name="clear.tables" depends="prepare.env">
         <sql driver="${sql.driver}" 
-             url="${sql.url}/${sql.database}" 
-             userid="${sql.user}" 
-        	 password="${sql.pass}">
+             url="${sql.url}/${sql.archive.db}" 
+             userid="${sql.archive.user}" 
+        	 password="${sql.archive.pw}">
              <classpath>
                  <pathelement path="${sql.connector.classpath}"/>
              </classpath>
@@ -175,5 +189,32 @@
              	DELETE FROM engine;
              </transaction>
          </sql>
+	</target>
+	
+	<target name="first.step.after.installation" description="Connect as root, set root password, create archive user, create archive db, grant privileges">
+        <sql driver="${sql.driver}" 
+             url="${sql.url}" 
+             userid="${sql.root.user}">
+             <classpath>
+                 <pathelement path="${sql.connector.classpath}"/>
+             </classpath>
+            
+             <!-- 
+                 Order matters - it's vice versa as the table creation due to foreign key constraints
+                 And deletion instead of truncation is used on tables where foreign keys point to.  
+              -->
+             <transaction>
+             	SET PASSWORD=PASSWORD('${sql.root.pw}');
+             	CREATE USER '${sql.archive.user}'@'%' identified by '${sql.archive.pw}';
+             	CREATE USER '${sql.archive.user}'@'localhost' identified by '${sql.archive.pw}';
+             	CREATE USER '${sql.archive.user}'@'${sql.host}' identified by '${sql.archive.pw}';
+             	
+             	GRANT ALL PRIVILEGES ON ${sql.archive.db}.* to '${sql.archive.user}'@'%';
+             	GRANT ALL PRIVILEGES ON ${sql.archive.db}.* to '${sql.archive.user}'@'localhost';
+             	GRANT ALL PRIVILEGES ON ${sql.archive.db}.* to '${sql.archive.user}'@'${sql.host}';
+             	FLUSH PRIVILEGES;
+             </transaction>
+         </sql>
+		
 	</target>
 </project>
