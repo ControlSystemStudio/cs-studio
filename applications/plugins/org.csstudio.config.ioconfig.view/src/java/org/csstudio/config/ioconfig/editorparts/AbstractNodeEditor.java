@@ -619,11 +619,15 @@ public abstract class AbstractNodeEditor<T extends AbstractNodeDBO<?, ?>> extend
      * @return
      */
     @Nonnull
-    private String getUserName() {
-        final User user = SecurityFacade.getInstance().getCurrentUser();
+    public static String getUserName() {
         String name = "Unknown";
-        if (user != null) {
-            name = user.getUsername();
+        try {
+            final User user = SecurityFacade.getInstance().getCurrentUser();
+            if (user != null) {
+                name = user.getUsername();
+            }
+        } catch (Exception e) {
+            // Nothing to do. No User avable use 'Unknown'.
         }
         return name;
     }
@@ -636,7 +640,7 @@ public abstract class AbstractNodeEditor<T extends AbstractNodeDBO<?, ?>> extend
                      @Nonnull final IEditorInput input) throws PartInitException {
         setSite(site);
         setInput(input);
-        _node = (T) ((NodeEditorInput) input).getNode(); // TODO (hrickens) [07.07.2011]: Jörg fragen?
+        _node = (T) ((NodeEditorInput) input).getNode();
         setNew( ((NodeEditorInput) input).isNew());
         setPartName(_node.getName());
         getProfiBusTreeView().setOpenEditor(this);

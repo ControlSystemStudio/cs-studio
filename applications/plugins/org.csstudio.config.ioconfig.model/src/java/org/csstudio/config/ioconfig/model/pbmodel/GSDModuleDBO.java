@@ -31,6 +31,7 @@ import java.util.TreeSet;
 
 import javax.annotation.CheckForNull;
 import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -73,6 +74,13 @@ public class GSDModuleDBO extends DBClass implements Comparable<GSDModuleDBO>, I
      * @since 16.05.2011
      */
     private static final class ComparatorImplementation implements Comparator<ModuleChannelPrototypeDBO> {
+        /**
+         * Constructor.
+         */
+        public ComparatorImplementation() {
+            // Constructor.
+        }
+
         @Override
         public int compare(@Nonnull final ModuleChannelPrototypeDBO o1, @Nonnull final ModuleChannelPrototypeDBO o2) {
             if(o1.isInput()&&!o2.isInput()) {
@@ -148,6 +156,7 @@ public class GSDModuleDBO extends DBClass implements Comparable<GSDModuleDBO>, I
      * @return the parent {@link GSDFileDBO}.
      */
     @ManyToOne
+    @CheckForNull
     public GSDFileDBO getGSDFile() {
         return _gsdFile;
     }
@@ -156,7 +165,7 @@ public class GSDModuleDBO extends DBClass implements Comparable<GSDModuleDBO>, I
      *
      * @param gsdFile set the parent {@link GSDFileDBO}.
      */
-    public void setGSDFile(final GSDFileDBO gsdFile) {
+    public void setGSDFile(@Nullable final GSDFileDBO gsdFile) {
         _gsdFile = gsdFile;
     }
 
@@ -202,21 +211,22 @@ public class GSDModuleDBO extends DBClass implements Comparable<GSDModuleDBO>, I
 
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "GSDModule", fetch = FetchType.EAGER)
 //    @OrderBy("offset")
+    @CheckForNull
     public Set<ModuleChannelPrototypeDBO> getModuleChannelPrototype() {
         return _moduleChannelPrototypes;
     }
+    
     @Transient
-    @CheckForNull
+    @Nonnull
     public TreeSet<ModuleChannelPrototypeDBO> getModuleChannelPrototypeNH() {
-        TreeSet<ModuleChannelPrototypeDBO> moduleChannelPrototypes = null;
+        TreeSet<ModuleChannelPrototypeDBO> moduleChannelPrototypes = new TreeSet<ModuleChannelPrototypeDBO>(new ComparatorImplementation());
         if(_moduleChannelPrototypes!=null) {
-            moduleChannelPrototypes = new TreeSet<ModuleChannelPrototypeDBO>(new ComparatorImplementation());
             moduleChannelPrototypes.addAll(_moduleChannelPrototypes);
         }
         return moduleChannelPrototypes;
     }
 
-    public void setModuleChannelPrototype(final Set<ModuleChannelPrototypeDBO> moduleChannelPrototypes) {
+    public void setModuleChannelPrototype(@Nullable final Set<ModuleChannelPrototypeDBO> moduleChannelPrototypes) {
         _moduleChannelPrototypes = moduleChannelPrototypes;
     }
 

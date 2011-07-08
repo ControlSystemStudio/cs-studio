@@ -1203,6 +1203,7 @@ public class ProfiBusTreeView extends Composite {
             text.setLayoutData(new GridData(SWT.FILL, SWT.FILL, false, false, 3, 1));
             
             label = new Label(createDialogArea, SWT.NONE);
+            label.setLayoutData(new GridData(SWT.BEGINNING, SWT.CENTER, false, false));
             createDialogArea.pack();
             return createDialogArea;
         }

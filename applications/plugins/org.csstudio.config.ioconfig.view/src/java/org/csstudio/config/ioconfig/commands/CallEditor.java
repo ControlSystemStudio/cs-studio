@@ -38,9 +38,8 @@ public class CallEditor extends AbstractCallNodeEditor {
 
 	public static final String ID = "org.csstudio.config.ioconfig.commands.callEditor";
 
-	// CHECKSTYLE OFF: CyclomaticComplexity
 	@Override
-	protected final void openNodeEditor(@Nonnull AbstractNodeDBO obj,
+	protected final void openNodeEditor(@Nonnull AbstractNodeDBO<?,?> obj,
 			@Nonnull IWorkbenchPage page) throws PartInitException {
 
 		NodeEditorInput input = new NodeEditorInput(obj);
@@ -50,5 +49,4 @@ public class CallEditor extends AbstractCallNodeEditor {
 		page.openEditor(input, id);
 
 	}
-	// CHECKSTYLE ON: CyclomaticComplexity
 }

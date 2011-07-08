@@ -43,14 +43,14 @@ import org.csstudio.config.ioconfig.model.pbmodel.GSDFileDBO;
  */
 public final class Repository {
 
-    private static IRepository _REPOSITORY;
+    private static IRepository _REPOSITORY = new HibernateRepository(null);
     private static List<DocumentDBO> _DOCUMENTS;
 
     /**
      * Default Constructor
      */
     private Repository() {
-        _REPOSITORY = new HibernateRepository(null);
+//        _REPOSITORY = new HibernateRepository(null);
     }
     
     /**
@@ -60,6 +60,9 @@ public final class Repository {
      * @param repository the repository to inject.
      */
     public static void injectIRepository(@Nonnull final IRepository repository) {
+        if(_REPOSITORY!=null) {
+            _REPOSITORY.close(); 
+        }
         _REPOSITORY = repository;
     }
 

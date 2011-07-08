@@ -33,8 +33,6 @@ import javax.annotation.CheckForNull;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
-import org.csstudio.auth.security.SecurityFacade;
-import org.csstudio.auth.security.User;
 import org.csstudio.config.ioconfig.config.view.helper.ConfigHelper;
 import org.csstudio.config.ioconfig.config.view.helper.GSDLabelProvider;
 import org.csstudio.config.ioconfig.config.view.helper.ShowFileSelectionListener;
@@ -804,7 +802,7 @@ public abstract class AbstractGsdNodeEditor<T extends AbstractNodeDBO<?, ?>> ext
             minBit = extUserPrmData.getMaxBit();
             maxBit = extUserPrmData.getMinBit();
         }
-        int mask = ~ ((int) (Math.pow(2, maxBit + 1) - Math.pow(2, minBit)));
+        int mask = ~((int) (Math.pow(2, maxBit + 1) - Math.pow(2, minBit)));
         if( (maxBit > 7) && (maxBit < 16)) {
             int modifyByteHigh = 0;
             int modifyByteLow = 0;
@@ -824,26 +822,5 @@ public abstract class AbstractGsdNodeEditor<T extends AbstractNodeDBO<?, ?>> ext
             int result = (modifyByte & mask) | (val);
             setPrmUserData(byteIndex, result);
         }
-    }
-    
-    /**
-     * Get the user name from the {@link SecurityFacade} or otherwise unknown.
-     * @return the User name.
-     */
-    @Nonnull
-    public String getUserName() {
-        String createdBy = "Unknown";
-        try {
-            SecurityFacade securityFacade = SecurityFacade.getInstance();
-            if(securityFacade!=null) {
-                User user = securityFacade.getCurrentUser();
-                if(user != null) {
-                    createdBy = user.getUsername();
-                }
-            }
-        } catch (Exception e) {
-            // nothing to do. No Userr found.
-        }
-        return createdBy;
     }
 }

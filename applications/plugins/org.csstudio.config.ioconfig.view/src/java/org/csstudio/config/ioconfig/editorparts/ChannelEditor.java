@@ -177,7 +177,6 @@ public class ChannelEditor extends AbstractNodeEditor<ChannelDBO> {
 		if (nameWidget != null) {
 			setName((String) nameWidget.getData());
 		}
-        ChannelDBO channel = getChannel();
     }
 
     /**

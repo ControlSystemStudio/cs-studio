@@ -29,21 +29,14 @@ import static org.csstudio.config.ioconfig.model.preference.PreferenceConstants.
 import static org.csstudio.config.ioconfig.model.preference.PreferenceConstants.HIBERNATE_CONNECTION_URL;
 import static org.csstudio.config.ioconfig.model.preference.PreferenceConstants.SHOW_SQL;
 
-import java.util.Date;
-
 import javax.annotation.Nonnull;
 
 import org.csstudio.config.ioconfig.model.preference.PreferenceConstants;
-import org.eclipse.core.runtime.IProgressMonitor;
-import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Platform;
-import org.eclipse.core.runtime.Status;
-import org.eclipse.core.runtime.jobs.Job;
 import org.eclipse.core.runtime.preferences.IEclipsePreferences.IPreferenceChangeListener;
 import org.eclipse.core.runtime.preferences.IEclipsePreferences.PreferenceChangeEvent;
 import org.eclipse.core.runtime.preferences.IPreferencesService;
 import org.eclipse.core.runtime.preferences.InstanceScope;
-import org.hibernate.SessionFactory;
 import org.hibernate.cfg.AnnotationConfiguration;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

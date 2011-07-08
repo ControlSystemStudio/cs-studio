@@ -692,11 +692,6 @@ public class ModuleEditor extends AbstractGsdNodeEditor<ModuleDBO> {
         ChannelConfigDialog channelConfigDialog = new ChannelConfigDialog(Display.getCurrent()
                 .getActiveShell(), model, gsdModule);
         if(channelConfigDialog.open() == Window.OK) {
-            String parameter = channelConfigDialog.getParameter();
-            if(parameter.length() > 254) {
-                parameter = parameter.substring(0, 254);
-            }
-            gsdModule.setParameter(parameter);
             try {
                 gsdModule.save();
                 return gsdModule;
