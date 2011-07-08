@@ -60,82 +60,9 @@ public final class HibernateManager extends AbstractHibernateManager {
     protected static final Logger LOG = LoggerFactory.getLogger(HibernateManager.class);
 
     private static HibernateManager _INSTANCE;
-    
 
     private AnnotationConfiguration _cfg;
     
-    private final SessionWatchDog _sessionWatchDog = new SessionWatchDog("Session Watch Dog");
-    
-    
-
-    /**
-     * 
-     * This class is a Watchdog over the Session Time. At DESY DB connection was after 24h rested: 
-     * 
-     * @author Rickens Helge
-     * @author $Author: $
-     * @since 16.12.2010
-     */
-    private static final class SessionWatchDog extends Job {
-        private SessionFactory _sessionFactory;
-        private int _sessionUseCounter;
-        private final long _timeToCloseSession = (3600000 * 5);
-        
-        protected SessionWatchDog(@Nonnull final String name) {
-            super(name);
-            setPriority(DECORATE);
-        }
-        
-        @Override
-        @Nonnull
-        protected IStatus run(@Nonnull IProgressMonitor monitor) {
-            boolean watch = true;
-            Date date = new Date();
-            while (watch) {
-                try {
-                    this.getThread();
-                    // Sleep 5 min.
-                    Thread.sleep(30000);
-                    // CHECKSTYLE OFF: EmptyBlock
-                } catch (InterruptedException e) {
-                    // Ignore Interrupt
-                }
-                // CHECKSTYLE ON: EmptyBlock
-                if( (_sessionFactory == null) || _sessionFactory.isClosed()) {
-                    break;
-                }
-                if(_sessionUseCounter == 0) {
-                    Date now = new Date();
-                    if(now.getTime() - date.getTime() > getTimeToCloseSession()) {
-                        LOG.info("DB Session closed by watchdog");
-                        _sessionFactory.close();
-                        _sessionFactory = null;
-                        break;
-                    }
-                    
-                } else {
-                    date = new Date();
-                    _sessionUseCounter = 0;
-                }
-            }
-            monitor.done();
-            return Status.OK_STATUS;
-        }
-        
-        public void setSessionFactory(@Nonnull final SessionFactory sessionFactory) {
-            _sessionFactory = sessionFactory;
-            
-        }
-        
-        public void useSession() {
-            _sessionUseCounter++;
-        }
-        
-        public long getTimeToCloseSession() {
-            return _timeToCloseSession;
-        }
-        
-    }
     private HibernateManager() {
         // Default constructor
     }
