@@ -122,8 +122,25 @@ public class GUI implements AlarmClientModelListener
 
         // Tree below the error label, filling the rest
         tree_viewer = new TreeViewer(parent,
-                SWT.VIRTUAL | SWT.MULTI | SWT.H_SCROLL | SWT.V_SCROLL |
-                SWT.BORDER | SWT.FULL_SELECTION);
+        		// Must be virtual for ILazyTreeContentProvider
+        		SWT.VIRTUAL |
+        		// V_SCROLL seems automatic, but H_SCROLL can help when view is small
+        		SWT.H_SCROLL | SWT.V_SCROLL
+    			// Used to have a border, not really needed
+        		// SWT.BORDER |
+        		// Used to have full-line-selection.
+        		// Actually looks better when only the elements are selected
+        		// SWT.FULL_SELECTION |
+        		// Used to have multi-element selection
+        		// (via Shift-click, Ctrl-click).
+        		// That's _nice_, but table display is really slow
+        		// (expand subtrees, update whole table)
+        		// because of the way SWT preserves the selection
+        		// https://bugs.eclipse.org/bugs/show_bug.cgi?id=259141
+        		// "Tree.getSelection() is extremely slow
+        		//  with SWT.VIRTUAL and SWT.MULTI"
+        		// | SWT.MULTI
+                );
         final Tree tree = tree_viewer.getTree();
         fd = new FormData();
         fd.top = new FormAttachment(error_message);
@@ -321,16 +338,19 @@ public class GUI implements AlarmClientModelListener
                 final Tree tree = tree_viewer.getTree();
                 if (tree.isDisposed())
                     return;
-                // Puzzling. After switching to ws=cocoa for OS X,
+                // Puzzling.
+                // After switching to ws=cocoa for OS X,
                 // the tree would stay blank until either waiting a long time,
                 // or switching to another window, opening a dialog etc.
                 // triggers a refresh.
                 // What seems to work is the combination of manual setRedraw(false, true)
                 // and a tree_viewer.refresh().
-                tree.setRedraw(false);
+                
+                // TODO Check if fixed now that content provider calls  setChildCount
+//                tree.setRedraw(false);
                 tree_viewer.setInput(config);
-                tree_viewer.refresh();
-                tree.setRedraw(true);
+//                tree_viewer.refresh();
+//                tree.setRedraw(true);
             }
         });
     }
