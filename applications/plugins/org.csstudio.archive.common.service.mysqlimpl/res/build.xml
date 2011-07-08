@@ -76,6 +76,7 @@
 		<echo message="sql.url : ${sql.url}"/>
 		<echo message="sql.root.user : ${sql.root.user}"/>
 		<echo message="sql.root.pw : ${sql.root.pw}"/>
+		<echo message="sql.root.url : ${sql.root.pw}"/>
 		<echo message="sql.archive.db : ${sql.archive.db}"/>
 		<echo message="sql.archive.user : ${sql.archive.user}"/>
 		<echo message="sql.archive.pw : ${sql.archive.pw}"/>
@@ -191,10 +192,16 @@
          </sql>
 	</target>
 	
-	<target name="first.step.after.installation" description="Connect as root, set root password, create archive user, create archive db, grant privileges">
+	<target name="run.on.mysqlhost.after.installation" 
+		    description="Run this target on your mysql host: connect as root, set root password \
+		                 according to host.properties, create archive user, create archive db, \
+		                 grant privileges"
+		    depends="prepare.env">
+		
         <sql driver="${sql.driver}" 
-             url="${sql.url}" 
-             userid="${sql.root.user}">
+             url="jdbc:mysql://localhost:${mysqlPort}" 
+             userid="${sql.root.user}"
+        	 password="">
              <classpath>
                  <pathelement path="${sql.connector.classpath}"/>
              </classpath>
@@ -205,13 +212,20 @@
               -->
              <transaction>
              	SET PASSWORD=PASSWORD('${sql.root.pw}');
-             	CREATE USER '${sql.archive.user}'@'%' identified by '${sql.archive.pw}';
-             	CREATE USER '${sql.archive.user}'@'localhost' identified by '${sql.archive.pw}';
-             	CREATE USER '${sql.archive.user}'@'${sql.host}' identified by '${sql.archive.pw}';
+             	DROP USER '${sql.root.user}'@'%';
+             	CREATE USER '${sql.root.user}'@'%' identified by '${sql.root.pw}' IDENTIFIED BY '${sql.root.pw}';
+             	GRANT ALL PRIVILEGES ON *.* to '${sql.root.user}'@'%' WITH GRANT OPTION;
              	
-             	GRANT ALL PRIVILEGES ON ${sql.archive.db}.* to '${sql.archive.user}'@'%';
+             	DROP USER '${sql.archive.user}'@'localhost';
+             	CREATE USER '${sql.archive.user}'@'localhost' identified by '${sql.archive.pw}';
+             	DROP USER '${sql.archive.user}'@'${sql.host}';
+             	CREATE USER '${sql.archive.user}'@'${sql.host}' identified by '${sql.archive.pw}';
+             	DROP USER '${sql.archive.user}'@'%';
+             	CREATE USER '${sql.archive.user}'@'%' identified by '${sql.archive.pw}';
+             	
              	GRANT ALL PRIVILEGES ON ${sql.archive.db}.* to '${sql.archive.user}'@'localhost';
              	GRANT ALL PRIVILEGES ON ${sql.archive.db}.* to '${sql.archive.user}'@'${sql.host}';
+             	GRANT ALL PRIVILEGES ON ${sql.archive.db}.* to '${sql.archive.user}'@'%';
              	FLUSH PRIVILEGES;
              </transaction>
          </sql>
