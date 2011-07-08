@@ -23,7 +23,7 @@ import org.eclipse.ui.internal.browser.BrowserViewer;
  *
  */
 @SuppressWarnings("restriction")
-public class WebBrowserFigure extends AbstractSWTWidgetFigure {
+public class WebBrowserFigure extends AbstractWebBrowserFigure {
 
 	
 	private final static Color WHITE_COLOR = 
