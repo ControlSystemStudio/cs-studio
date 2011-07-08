@@ -14,6 +14,7 @@ Export-Package: org.csstudio.utility.pvmanager,
  org.epics.pvmanager.data,
  org.epics.pvmanager.extra,
  org.epics.pvmanager.jca,
+ org.epics.pvmanager.loc,
  org.epics.pvmanager.sim,
  org.epics.pvmanager.types,
  org.epics.pvmanager.util
