@@ -7,7 +7,6 @@ import java.awt.image.BufferedImage;
 
 import org.csstudio.swt.xygraph.figures.XYGraph;
 import org.eclipse.draw2d.FigureUtilities;
-import org.eclipse.swt.SWT;
 import org.eclipse.swt.graphics.Cursor;
 import org.eclipse.swt.graphics.Font;
 import org.eclipse.swt.graphics.FontData;
@@ -23,8 +22,8 @@ public class SingleSourceHelperImpl extends SingleSourceHelper {
 
 	@Override
 	protected Cursor createInternalCursor(Display display, ImageData imageData,
-			int width, int height) {
-		return display.getSystemCursor(SWT.CURSOR_CROSS);
+			int width, int height, int style) {
+		return display.getSystemCursor(style);
 	}
 	@Override
 	protected Image createInternalVerticalTextImage(String text, Font font, RGB color,

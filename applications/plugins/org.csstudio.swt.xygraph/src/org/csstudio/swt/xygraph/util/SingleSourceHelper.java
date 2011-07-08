@@ -18,8 +18,8 @@ public abstract class SingleSourceHelper {
 	}
 	
 	public static Cursor createCursor(
-			Display display, ImageData imageData, int width, int height){
-		return IMPL.createInternalCursor(display, imageData, width, height);
+			Display display, ImageData imageData, int width, int height, int backUpSWTCursorStyle){
+		return IMPL.createInternalCursor(display, imageData, width, height, backUpSWTCursorStyle);
 	}
 	
 	public static Image createVerticalTextImage(String text, Font font, RGB color, boolean upToDown){
@@ -38,7 +38,7 @@ public abstract class SingleSourceHelper {
 	protected abstract String getInternalImageSavePath();
 
 	protected abstract Cursor createInternalCursor(
-			Display display, ImageData imageData, int width, int height);
+			Display display, ImageData imageData, int width, int height,int backUpSWTCursorStyle);
 	
 	protected abstract Image createInternalVerticalTextImage(
 			String text, Font font, RGB color, boolean upToDown);

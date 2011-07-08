@@ -21,8 +21,6 @@
  */
  package org.csstudio.swt.xygraph.util;
 
-import java.io.IOException;
-import java.io.InputStream;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Set;
@@ -109,7 +107,8 @@ public final class XYGraphMediaFactory {
 			if(CURSOR_GRABBING == null){				
 				CURSOR_GRABBING = SingleSourceHelper.createCursor(
 						Display.getDefault(),
-						getInstance().getImage("images/Grabbing.png").getImageData(), 8,8);		
+						getInstance().getImage("images/Grabbing.png").getImageData(), //$NON-NLS-1$
+						8,8, SWT.CURSOR_HAND);		
 			}
 			return CURSOR_GRABBING;
 
@@ -267,8 +266,7 @@ public final class XYGraphMediaFactory {
 	 * @return The system's default font.
 	 */
 	public Font getDefaultFont(final int style) {
-		// FIXME Die default Schriftart bzw. Schriftgröße hängt vom Betriebssystem ab 
-		return getFont("Arial", 10, style); //$NON-NLS-1$
+		return Display.getCurrent().getSystemFont(); //$NON-NLS-1$
 	}
 	
 
@@ -314,15 +312,15 @@ public final class XYGraphMediaFactory {
 			    // Must be running as JUnit test or demo w/o plugin environment.
 			    // The following only works for test code inside this plugin,
 			    // not when called from other plugins' test code.
-//				final Display display = Display.getCurrent();
-//	            final Image img = new Image(display, relativePath);
-				InputStream stream = XYGraphMediaFactory.class.getResourceAsStream(relativePath);
-				Image image = new Image(null, stream);
-				try {
-					stream.close();
-				} catch (IOException ioe) {
-				}
-	            _imageRegistry.put(relativePath, image);	            
+				final Display display = Display.getCurrent();
+	            final Image img = new Image(display, relativePath);
+//				InputStream stream = XYGraphMediaFactory.class.getResourceAsStream(relativePath);
+//				Image image = new Image(null, stream);
+//				try {
+//					stream.close();
+//				} catch (IOException ioe) {
+//				}
+	            _imageRegistry.put(relativePath, img);	            
 			}
 		}
 		return _imageRegistry.get(relativePath);
