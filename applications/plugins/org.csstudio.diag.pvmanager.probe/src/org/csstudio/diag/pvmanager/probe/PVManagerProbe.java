@@ -486,11 +486,15 @@ public class PVManagerProbe extends ViewPart {
 		}
 
 		// The PV is different, so disconnect and reset the visuals
-		if (pv != null)
+		if (pv != null) {
 			pv.close();
+			pv = null;
+		}
 		
-		if (pvWriter != null)
+		if (pvWriter != null) {
 			pvWriter.close();
+			pvWriter = null;
+		}
 
 		setValue(null);
 		setAlarm(null);
