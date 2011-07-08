@@ -113,7 +113,7 @@ public class AlarmConfigurationLoader
         config.configureItem(tree_component, tree_component.getGuidance(),
                 tree_component.getDisplays(), tree_component.getCommands());
 
-        System.out.println("Loading " + tree_component);
+        System.out.println("Loading " + tree_component.getPathName());
 
         // Get sub-components
         loadChildComponents(component, tree_component);
