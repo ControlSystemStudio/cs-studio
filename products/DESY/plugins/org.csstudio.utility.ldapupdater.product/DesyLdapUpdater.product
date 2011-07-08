@@ -40,25 +40,21 @@
       <plugin id="org.apache.tools.ant"/>
       <plugin id="org.apache.tools.ant.junit"/>
       <plugin id="org.csstudio.data"/>
-      <plugin id="org.csstudio.data.test" fragment="true"/>
       <plugin id="org.csstudio.desy.common.product.log4j" fragment="true"/>
+      <plugin id="org.csstudio.domain.common"/>
       <plugin id="org.csstudio.domain.desy"/>
-      <plugin id="org.csstudio.domain.desy.test" fragment="true"/>
       <plugin id="org.csstudio.email"/>
       <plugin id="org.csstudio.platform"/>
       <plugin id="org.csstudio.platform.libs.epics"/>
       <plugin id="org.csstudio.platform.libs.jmock"/>
       <plugin id="org.csstudio.platform.libs.jms"/>
-      <plugin id="org.csstudio.platform.test" fragment="true"/>
       <plugin id="org.csstudio.platform.utility.jms"/>
       <plugin id="org.csstudio.remote"/>
-      <plugin id="org.csstudio.remote.test" fragment="true"/>
       <plugin id="org.csstudio.testsuite"/>
       <plugin id="org.csstudio.utility.ldap.service"/>
       <plugin id="org.csstudio.utility.ldap.service.impl"/>
       <plugin id="org.csstudio.utility.ldap.treeconfiguration"/>
       <plugin id="org.csstudio.utility.ldapupdater"/>
-      <plugin id="org.csstudio.utility.ldapupdater.test" fragment="true"/>
       <plugin id="org.csstudio.utility.namespace.utility"/>
       <plugin id="org.csstudio.utility.pvmanager"/>
       <plugin id="org.csstudio.utility.treemodel"/>
@@ -157,6 +153,7 @@
       <plugin id="org.junit"/>
       <plugin id="org.junit4"/>
       <plugin id="org.remotercp.common"/>
+      <plugin id="org.remotercp.libs.mockito"/>
       <plugin id="org.remotercp.service.connection"/>
       <plugin id="org.slf4j"/>
       <plugin id="org.slf4j-log4j12"/>
