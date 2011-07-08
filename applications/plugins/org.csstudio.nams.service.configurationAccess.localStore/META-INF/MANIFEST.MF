@@ -10,7 +10,8 @@ Require-Bundle: org.eclipse.core.runtime,
  org.csstudio.nams.common.activatorUtils,
  org.csstudio.platform,
  org.csstudio.platform.simpledal;bundle-version="1.0.0",
- org.csstudio.nams.service.logging
+ org.csstudio.nams.service.logging,
+ org.junit;bundle-version="4.8.1"
 Eclipse-LazyStart: true
 Export-Package: org.csstudio.nams.service.configurationaccess.localstore;x-friends:="org.csstudio.nams.testUtils.testSuites",
  org.csstudio.nams.service.configurationaccess.localstore.declaration,
@@ -53,7 +54,6 @@ Bundle-ClassPath: .,
  lib-hibernate/jboss-system.jar,
  lib-hibernate/jgroups-2.2.8.jar,
  lib-hibernate/jta.jar,
- lib-hibernate/junit-3.8.1.jar,
  lib-hibernate/log4j-1.2.11.jar,
  lib-hibernate/oscache-2.1.jar,
  lib-hibernate/proxool-0.8.3.jar,

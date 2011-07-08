@@ -65,7 +65,7 @@ public class PreferencePage extends FieldEditorPreferencePage
             { Level.WARNING.getLocalizedName(), Level.WARNING.getName() },
             { Level.INFO.getLocalizedName(), Level.INFO.getName() },
             { Level.CONFIG.getLocalizedName(), Level.CONFIG.getName() },
-            { Level.FINE.getLocalizedName(), Level.CONFIG.getName() },
+            { Level.FINE.getLocalizedName(), Level.FINE.getName() },
             { Level.FINER.getLocalizedName(), Level.FINER.getName() },
             { Level.FINEST.getLocalizedName(), Level.FINEST.getName() },
             { Level.ALL.getLocalizedName(), Level.ALL.getName() },

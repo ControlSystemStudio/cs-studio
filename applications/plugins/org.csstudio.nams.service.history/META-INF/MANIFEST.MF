@@ -9,9 +9,10 @@ Require-Bundle: org.eclipse.core.runtime,
  org.csstudio.nams.common.activatorUtils,
  org.csstudio.nams.service.logging,
  org.csstudio.nams.common,
- org.junit4;bundle-version="4.5.0",
- org.csstudio.platform.libs.easymock;bundle-version="1.0.0"
+ org.csstudio.platform.libs.easymock;bundle-version="1.0.0",
+ org.junit;bundle-version="4.8.1"
 Eclipse-LazyStart: true
 Export-Package: org.csstudio.nams.service.history;x-friends:="org.csstudio.nams.testUtils.testSuites",
  org.csstudio.nams.service.history.declaration,
  org.csstudio.nams.service.history.extensionPoint
+Import-Package: org.easymock

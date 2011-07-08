@@ -16,9 +16,7 @@ import java.util.List;
 
 import org.csstudio.swt.widgets.datadefinition.IManualStringValueChangeListener;
 import org.csstudio.swt.widgets.util.DateTimePickerDialog;
-import org.csstudio.ui.util.dialogs.ResourceSelectionDialog;
-import org.eclipse.core.runtime.IPath;
-import org.eclipse.core.runtime.Path;
+import org.csstudio.swt.widgets.util.SingleSourceHelper;
 import org.eclipse.draw2d.ActionEvent;
 import org.eclipse.draw2d.ActionListener;
 import org.eclipse.draw2d.Button;
@@ -29,7 +27,6 @@ import org.eclipse.jface.window.Window;
 import org.eclipse.osgi.util.NLS;
 import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.widgets.Display;
-import org.eclipse.swt.widgets.FileDialog;
 
 public class TextInputFigure extends TextFigure {
 
@@ -163,7 +160,7 @@ public class TextInputFigure extends TextFigure {
 	 * @param newManualValue
 	 *            the new manual value
 	 */
-	private void fireManualValueChange(final String newManualValue) {		
+	public void fireManualValueChange(final String newManualValue) {		
 		
 			for (IManualStringValueChangeListener l : selectorListeners) {
 				l.manualValueChanged(newManualValue);
@@ -275,6 +272,14 @@ public class TextInputFigure extends TextFigure {
 	public void setFileReturnPart(FileReturnPart fileReturnPart) {
 		this.fileReturnPart = fileReturnPart;
 	}
+	
+	public String getCurrentPath() {
+		return currentPath;
+	}
+	
+	public void setCurrentPath(String currentPath) {
+		this.currentPath = currentPath;
+	}
 
 	private static Image createImage(String name) {
 		InputStream stream = TextInputFigure.class.getResourceAsStream(name);
@@ -290,62 +295,7 @@ public class TextInputFigure extends TextFigure {
 		public void actionPerformed(ActionEvent event) {
 			switch (getSelectorType()) {						
 			case FILE:
-				switch (getFileSource()) {
-				case WORKSPACE:
-					ResourceSelectionDialog dialog = 
-						new ResourceSelectionDialog(Display.getCurrent().getActiveShell(),
-								"Select workspace file", new String[]{"*.*"}); //$NON-NLS-2$
-					if(currentPath != null)
-						dialog.setSelectedResource(new Path(currentPath));					 
-					else if(startPath != null && startPath.trim().length() > 0)
-						dialog.setSelectedResource(new Path(startPath));
-					else 
-						dialog.setSelectedResource(new Path(getText()));
-					if(dialog.open() == Window.OK){
-						IPath path = dialog.getSelectedResource();
-						currentPath = path.toPortableString();
-						String fileString = currentPath;
-						switch (getFileReturnPart()) {
-						case NAME_ONLY:
-							fileString = path.removeFileExtension().lastSegment();
-							break;
-						case NAME_EXT:
-							fileString = path.lastSegment();
-							break;
-						case FULL_PATH:
-						default:
-							break;
-						}
-						setText(fileString);
-						fireManualValueChange(getText());
-					}
-					break;
-				case LOCAL:
-					FileDialog fileDialog = new FileDialog(Display.getCurrent().getActiveShell());
-					if(currentPath != null)
-						fileDialog.setFileName(currentPath);
-					String fileString = fileDialog.open();
-					if(fileString != null){
-						currentPath = fileString;
-						switch (getFileReturnPart()) {
-						case NAME_ONLY:
-							IPath path = new Path(fileString).removeFileExtension();
-							fileString = path.lastSegment();	
-							break;
-						case NAME_EXT:
-							fileString = new Path(fileString).lastSegment();
-							break;
-						case FULL_PATH:									
-						default:
-							break;
-						}
-						setText(fileString);
-						fireManualValueChange(getText());
-					}
-					break;
-				default:
-					break;
-				}
+				SingleSourceHelper.handleTextInputFigureFileSelector(TextInputFigure.this);
 				break;
 			case DATETIME:
 				DateTimePickerDialog dialog = new DateTimePickerDialog(Display.getCurrent().getActiveShell());

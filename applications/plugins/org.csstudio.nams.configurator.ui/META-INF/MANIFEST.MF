@@ -21,7 +21,7 @@ Require-Bundle: org.eclipse.ui,
  org.csstudio.nams.service.messaging,
  org.junit4;bundle-version="4.5.0",
  org.csstudio.platform.libs.easymock;bundle-version="1.0.0"
-Eclipse-LazyStart: true
+Bundle-ActivationPolicy: lazy
 Export-Package: org.csstudio.nams.configurator;x-friends:="org.csstudio.nams.testUtils.testSuites",
  org.csstudio.nams.configurator.actions;x-friends:="org.csstudio.nams.testUtils.testSuites",
  org.csstudio.nams.configurator.beans;x-friends:="org.csstudio.nams.testUtils.testSuites",

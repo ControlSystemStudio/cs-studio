@@ -56,6 +56,7 @@
       <plugin id="org.csstudio.diag.probe"/>
       <plugin id="org.csstudio.display.channelfinderviewer"/>
       <plugin id="org.csstudio.display.pvtable"/>
+      <plugin id="org.csstudio.domain.common"/>
       <plugin id="org.csstudio.domain.desy"/>
       <plugin id="org.csstudio.email"/>
       <plugin id="org.csstudio.email.ui"/>

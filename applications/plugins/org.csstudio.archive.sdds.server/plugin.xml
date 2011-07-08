@@ -32,17 +32,5 @@
             class="org.csstudio.archive.sdds.server.internal.PreferenceInitializer">
       </initializer>
    </extension>
-   <extension
-         id="SDDSServerProduct"
-         point="org.eclipse.core.runtime.products">
-      <product
-            application="org.csstudio.archive.sdds.server.SddsServerApplication"
-            name="SDDS-Server">
-         <property
-               name="appName"
-               value="SDDS-Server">
-         </property>
-      </product>
-   </extension>
 
 </plugin>

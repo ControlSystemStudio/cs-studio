@@ -399,7 +399,7 @@ public class PVItem extends ModelItem implements PVListener
         XMLWriter.start(writer, 2, Model.TAG_PV);
         writer.println();
         writeCommonConfig(writer);
-        XMLWriter.XML(writer, 3, Model.TAG_PERIOD, getScanPeriod());
+        XMLWriter.XML(writer, 3, Model.TAG_SCAN_PERIOD, getScanPeriod());
         XMLWriter.XML(writer, 3, Model.TAG_LIVE_SAMPLE_BUFFER_SIZE, getLiveCapacity());
         XMLWriter.XML(writer, 3, Model.TAG_REQUEST, getRequestType().name());
         for (ArchiveDataSource archive : archives)
@@ -425,7 +425,7 @@ public class PVItem extends ModelItem implements PVListener
     public static PVItem fromDocument(final Model model, final Element node) throws Exception
     {
         final String name = DOMHelper.getSubelementString(node, Model.TAG_NAME);
-        final double period = DOMHelper.getSubelementDouble(node, Model.TAG_PERIOD, 0.0);
+        final double period = DOMHelper.getSubelementDouble(node, Model.TAG_SCAN_PERIOD, 0.0);
 
         final PVItem item = new PVItem(name, period);
         final int buffer_size = DOMHelper.getSubelementInt(node, Model.TAG_LIVE_SAMPLE_BUFFER_SIZE, Preferences.getLiveSampleBufferSize());

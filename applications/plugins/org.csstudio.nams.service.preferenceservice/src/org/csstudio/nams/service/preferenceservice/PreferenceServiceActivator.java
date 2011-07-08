@@ -6,7 +6,7 @@ import org.csstudio.nams.common.activatorUtils.OSGiBundleActivationMethod;
 import org.csstudio.nams.common.activatorUtils.OSGiService;
 import org.csstudio.nams.common.activatorUtils.OSGiServiceOffers;
 import org.csstudio.nams.common.activatorUtils.Required;
-import org.csstudio.nams.service.logging.declaration.Logger;
+import org.csstudio.nams.service.logging.declaration.ILogger;
 import org.csstudio.nams.service.preferenceservice.declaration.PreferenceService;
 import org.csstudio.nams.service.preferenceservice.declaration.bridge4ui.PreferenceStoreAccessor;
 import org.csstudio.nams.service.preferenceservice.definition.PreferenceStoreServiceImpl;
@@ -46,7 +46,7 @@ public class PreferenceServiceActivator extends AbstractBundleActivator {
 	@OSGiBundleActivationMethod
 	public OSGiServiceOffers startBundle(@OSGiService
 	@Required
-	final Logger logger) {
+	final ILogger logger) {
 		final OSGiServiceOffers result = new OSGiServiceOffers();
 
 		final IPreferenceStore preferenceStore = this

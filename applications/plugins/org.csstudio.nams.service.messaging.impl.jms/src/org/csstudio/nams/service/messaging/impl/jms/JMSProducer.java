@@ -17,22 +17,22 @@ import org.csstudio.nams.common.fachwert.MessageKeyEnum;
 import org.csstudio.nams.common.material.AlarmNachricht;
 import org.csstudio.nams.common.material.Regelwerkskennung;
 import org.csstudio.nams.common.material.SystemNachricht;
-import org.csstudio.nams.service.logging.declaration.Logger;
+import org.csstudio.nams.service.logging.declaration.ILogger;
 import org.csstudio.nams.service.messaging.declaration.PostfachArt;
 import org.csstudio.nams.service.messaging.declaration.Producer;
 import org.csstudio.nams.service.messaging.exceptions.MessagingException;
 
 public class JMSProducer implements Producer {
 
-	private static Logger injectedLogger;
+	private static ILogger injectedLogger;
 
-	public static void staticInjectLogger(final Logger logger) {
+	public static void staticInjectLogger(final ILogger logger) {
 		JMSProducer.injectedLogger = logger;
 	}
 
 	private final MessageProducer[] producers;
 	private boolean isClosed;
-	private final Logger _logger;
+	private final ILogger _logger;
 	private final Session[] _sessions;
 
 	public JMSProducer(final String messageDestinationName,

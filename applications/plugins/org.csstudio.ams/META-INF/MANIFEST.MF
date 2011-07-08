@@ -18,7 +18,7 @@ Require-Bundle: org.eclipse.ui,
  org.csstudio.platform.utility.jms,
  org.junit4;bundle-version="4.3.1",
  org.slf4j;bundle-version="1.6.1",
- com.jdbc.mysql;bundle-version="5.1.14"
+ com.mysql.jdbc;bundle-version="5.1.14"
 Bundle-ClassPath: libs/derbyclient.jar,
  libs/derbytools.jar,
  libs/hsqldb.jar,

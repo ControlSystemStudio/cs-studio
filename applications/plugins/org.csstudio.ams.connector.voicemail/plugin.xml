@@ -41,17 +41,5 @@
          </stringParameter>
       </command>
    </extension>
-   <extension
-         id="AmsVoicemailConnectorProduct"
-         point="org.eclipse.core.runtime.products">
-      <product
-            application="org.csstudio.ams.connector.voicemail.VoicemailConnector"
-            name="AmsVoicemailConnector">
-         <property
-               name="appName"
-               value="AmsVoicemailConnector">
-         </property>
-      </product>
-   </extension>
 
 </plugin>

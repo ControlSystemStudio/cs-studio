@@ -7,6 +7,8 @@
  ******************************************************************************/
 package org.csstudio.ui.menu.pvscript;
 
+import org.csstudio.csdata.ProcessVariable;
+
 /** Tool for executing a command with PV argument
  *  @author Kay Kasemir
  */
@@ -17,13 +19,13 @@ public class ScriptExecutor
 	 *  @param pv One or more PV names
 	 *  @throws Exception on error
 	 */
-	public static void runWithPVs(final String script, final String... pv) throws Exception
+	public static void runWithPVs(final String script, final ProcessVariable... pv) throws Exception
 	{
 		// Build command: Script with PVs as arguments
 		final String[] command = new String[pv.length + 1];
 		command[0] = script;
 		for (int i=0; i<pv.length; ++i)
-			command[i+1] = pv[i];
+			command[i+1] = pv[i].getName();
 		
 		// Simply running the command is easy:
 		Runtime.getRuntime().exec(command);

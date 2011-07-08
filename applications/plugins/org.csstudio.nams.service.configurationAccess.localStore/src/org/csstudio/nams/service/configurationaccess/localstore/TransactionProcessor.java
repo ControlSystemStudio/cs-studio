@@ -11,7 +11,7 @@ import org.csstudio.nams.service.configurationaccess.localstore.declaration.exce
 import org.csstudio.nams.service.configurationaccess.localstore.declaration.exceptions.StorageError;
 import org.csstudio.nams.service.configurationaccess.localstore.declaration.exceptions.StorageException;
 import org.csstudio.nams.service.configurationaccess.localstore.internalDTOs.filterConditionSpecifics.HasManuallyJoinedElements;
-import org.csstudio.nams.service.logging.declaration.Logger;
+import org.csstudio.nams.service.logging.declaration.ILogger;
 import org.hibernate.CacheMode;
 import org.hibernate.FlushMode;
 import org.hibernate.HibernateException;
@@ -144,13 +144,13 @@ public class TransactionProcessor {
 	/**
 	 * The logger to log to. TODO Produce log output
 	 */
-	private final Logger _logger;
+	private final ILogger _logger;
 
 	/**
 	 * Creates an instance for given Hibernate {@link SessionFactory}.
 	 */
 	public TransactionProcessor(final SessionFactory sessionFactory,
-			final Logger logger) {
+			final ILogger logger) {
 		this._sessionFactory = sessionFactory;
 		this._logger = logger;
 		this.lock = new ReentrantLock(true);

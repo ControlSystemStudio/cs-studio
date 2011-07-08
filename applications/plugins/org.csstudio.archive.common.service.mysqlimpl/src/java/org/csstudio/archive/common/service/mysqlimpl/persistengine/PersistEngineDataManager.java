@@ -41,11 +41,11 @@ import org.csstudio.archive.common.service.mysqlimpl.dao.ArchiveConnectionHandle
 import org.csstudio.archive.common.service.mysqlimpl.notification.ArchiveNotifications;
 import org.csstudio.archive.common.service.util.DataRescueException;
 import org.csstudio.archive.common.service.util.DataRescueResult;
+import org.csstudio.domain.desy.DesyRunContext;
 import org.csstudio.domain.desy.time.TimeInstant.TimeInstantBuilder;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.google.common.base.Strings;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Sets;
 import com.google.inject.Inject;
@@ -196,8 +196,7 @@ public class PersistEngineDataManager {
      * of its run context, but we couldn't think of another option.
      */
     private void addGracefulShutdownHook() {
-        final String context = System.getProperty("context");
-        if (Strings.isNullOrEmpty(context) || !"CI".equals(context) ) {
+        if (DesyRunContext.isProductionContext()) {
             /**
              * Add shutdown hook.
              */

@@ -9,7 +9,7 @@ import org.csstudio.nams.common.activatorUtils.OSGiServiceOffers;
 import org.csstudio.nams.common.activatorUtils.Required;
 import org.csstudio.nams.service.history.declaration.HistoryService;
 import org.csstudio.nams.service.history.extensionPoint.HistoryServiceFactory;
-import org.csstudio.nams.service.logging.declaration.Logger;
+import org.csstudio.nams.service.logging.declaration.ILogger;
 import org.osgi.framework.BundleActivator;
 
 /**
@@ -25,7 +25,7 @@ public class HistoryActivator extends AbstractBundleActivator implements
 	public OSGiServiceOffers startBundle(
 			@OSGiService
 			@Required
-			final Logger logger,
+			final ILogger logger,
 			@ExecutableEclipseRCPExtension(extensionId = HistoryServiceFactory.class)
 			@Required
 			final Object historyServiceFactory) throws Exception {

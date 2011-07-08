@@ -13,9 +13,9 @@ Require-Bundle: com.google.common;bundle-version="0.9.0",
  org.slf4j;bundle-version="1.6.1",
  org.csstudio.auth;bundle-version="1.0.0",
  org.csstudio.dct;bundle-version="1.0.0",
+ org.csstudio.domain.common;bundle-version="1.0.0",
  org.csstudio.platform.libs.hibernate;bundle-version="1.0.0",
- org.csstudio.platform.libs.jdbc;bundle-version="1.1.1",
- org.csstudio.testsuite;bundle-version="1.0.0"
+ org.csstudio.platform.libs.jdbc;bundle-version="1.1.1"
 Bundle-ActivationPolicy: lazy
 Export-Package: org.csstudio.config.ioconfig.model,
  org.csstudio.config.ioconfig.model.pbmodel,

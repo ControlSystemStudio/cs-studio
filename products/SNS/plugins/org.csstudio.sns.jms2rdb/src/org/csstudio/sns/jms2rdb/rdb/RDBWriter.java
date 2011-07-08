@@ -12,7 +12,6 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.Statement;
 import java.sql.Timestamp;
-import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.Enumeration;
 import java.util.HashMap;
@@ -46,10 +45,6 @@ public class RDBWriter
 
     /** SQL statements */
     final private SQL sql;
-
-    /** Date format to use for log message time stamps */
-    final private SimpleDateFormat date_format =
-        new SimpleDateFormat(JMSLogMessage.DATE_FORMAT);
 
     /** Map of Property IDs, mapping property name to numeric ID */
     final private HashMap<String, Integer> properties =

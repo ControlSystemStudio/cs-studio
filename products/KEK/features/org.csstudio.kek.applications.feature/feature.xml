@@ -6,16 +6,24 @@
       provider-name="Kay Kasemir &lt;kasemirk@ornl.gov&gt; - SNS">
 
    <description url="http://www.example.com/description">
-      [Enter Feature Description here.]
+      CSS applications for KEK/J-PARC
    </description>
 
-   <copyright url="http://www.example.com/copyright">
-      [Enter Copyright Description here.]
-   </copyright>
-
-   <license url="http://www.example.com/license">
-      [Enter License Description here.]
+   <license url="http://www.eclipse.org/legal/epl-v10.html">
+      You must accept this license agreement in order to install and
+use this
+software.
+THIS SOFTWARE IS PROVIDED UNDER THIS LICENSE ON AN &quot;../AS IS&quot;
+BASIS. 
+WITHOUT WARRANTY OF ANY KIND, EXPRESSED OR IMPLIED, INCLUDING
+BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS
+FOR PARTICULAR PURPOSE AND NON-INFRINGEMENT.
+For details, see http://www.eclipse.org/legal/epl-v10.html
    </license>
+
+   <url>
+      <update label="KEK/J-PARC Update Site" url="http://www-linac.kek.jp/cont/css/updates"/>
+   </url>
 
    <includes
          id="org.csstudio.opibuilder.feature"
@@ -27,6 +35,9 @@
 
    <requires>
       <import plugin="org.eclipse.core.runtime" version="3.6.0" match="greaterOrEqual"/>
+      <import plugin="org.eclipse.ui" version="3.6.2" match="greaterOrEqual"/>
+      <import plugin="org.eclipse.ui.intro" version="3.4.0" match="greaterOrEqual"/>
+      <import plugin="org.eclipse.ui.intro.universal" version="3.2.0" match="greaterOrEqual"/>
       <import plugin="org.csstudio.startup" version="3.0.0" match="greaterOrEqual"/>
       <import plugin="org.csstudio.utility.product" version="1.0.0" match="greaterOrEqual"/>
       <import plugin="org.eclipse.help"/>
@@ -43,9 +54,6 @@
       <import plugin="org.csstudio.auth" version="1.0.0" match="greaterOrEqual"/>
       <import plugin="org.junit4"/>
       <import plugin="org.csstudio.apputil"/>
-      <import plugin="org.junit4" version="4.3.1" match="greaterOrEqual"/>
-      <import plugin="org.eclipse.ui" version="3.4.0" match="greaterOrEqual"/>
-      <import plugin="org.csstudio.platform.utility.rdb" version="1.0.0" match="greaterOrEqual"/>
       <import plugin="org.junit4" version="4.5.0" match="greaterOrEqual"/>
       <import plugin="org.eclipse.core.runtime" version="3.5.0" match="greaterOrEqual"/>
       <import plugin="org.eclipse.core.resources" version="3.5.0" match="greaterOrEqual"/>
@@ -53,9 +61,6 @@
       <import plugin="org.csstudio.platform.utility.rdb" version="1.2.2" match="greaterOrEqual"/>
       <import plugin="org.csstudio.apputil" version="1.0.11" match="greaterOrEqual"/>
       <import plugin="org.csstudio.auth.ui" version="1.0.0" match="greaterOrEqual"/>
-      <import plugin="org.eclipse.ui" version="3.6.2" match="greaterOrEqual"/>
-      <import plugin="org.eclipse.ui.intro" version="3.4.0" match="greaterOrEqual"/>
-      <import plugin="org.eclipse.ui.intro.universal" version="3.2.0" match="greaterOrEqual"/>
    </requires>
 
    <plugin
@@ -88,13 +93,6 @@
 
    <plugin
          id="org.csstudio.diag.epics.pvtree"
-         download-size="0"
-         install-size="0"
-         version="0.0.0"
-         unpack="false"/>
-
-   <plugin
-         id="org.csstudio.debugging.rdbshell"
          download-size="0"
          install-size="0"
          version="0.0.0"
