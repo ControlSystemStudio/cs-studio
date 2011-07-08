@@ -43,16 +43,16 @@ import org.csstudio.config.ioconfig.model.pbmodel.GSDFileDBO;
  */
 public final class Repository {
 
-    private static IRepository _REPOSITORY = new HibernateRepository();
+    private static IRepository _REPOSITORY;
     private static List<DocumentDBO> _DOCUMENTS;
 
     /**
-     * Default Constructor.
+     * Default Constructor
      */
     private Repository() {
-        //Default Constructor.
+        _REPOSITORY = new HibernateRepository(null);
     }
-
+    
     /**
      * For use different Repositories can inject the {@link IRepository}.<br>
      * e.g. Dummy Repositories for tests.<br>

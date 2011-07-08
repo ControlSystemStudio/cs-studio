@@ -29,6 +29,7 @@ import java.util.Comparator;
 import java.util.Set;
 import java.util.TreeSet;
 
+import javax.annotation.CheckForNull;
 import javax.annotation.Nonnull;
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
@@ -63,7 +64,7 @@ import org.slf4j.LoggerFactory;
         "gSDFile_Id", "moduleId" }) })
 public class GSDModuleDBO extends DBClass implements Comparable<GSDModuleDBO>, IDocumentable {
 
-    private static final Logger LOG = LoggerFactory.getLogger(GSDModuleDBO.class);
+    protected static final Logger LOG = LoggerFactory.getLogger(GSDModuleDBO.class);
     
     /**
      * @author hrickens
@@ -99,24 +100,6 @@ public class GSDModuleDBO extends DBClass implements Comparable<GSDModuleDBO>, I
      */
     private int _moduleId;
 
-    /**
-     * The GSD Module Configuration Data.
-     */
-    private String _configurationData;
-
-    /**
-     * The I/O Parameter as series of numbers.<br>
-     * Example: "AB1D33110000" D = Digital. AB = Analog Byte AW = Analog Word 0 = unknown. 1 =
-     * input. 2 = output. 3 = not used.
-     *
-     */
-    private String _parameter;
-
-//    /**
-//     * A collection of documents that relate to this node.
-//     */
-//    private Collection<Document> _document = new ArrayList<Document>();
-
     private Set<ModuleChannelPrototypeDBO> _moduleChannelPrototypes;
 
     private GSDFileDBO _gsdFile;
@@ -138,7 +121,7 @@ public class GSDModuleDBO extends DBClass implements Comparable<GSDModuleDBO>, I
      * @param name
      *            The Module name.
      */
-    public GSDModuleDBO(final String name) {
+    public GSDModuleDBO(@Nonnull final String name) {
         setName(name);
         _isDirty = true;
     }
@@ -183,7 +166,7 @@ public class GSDModuleDBO extends DBClass implements Comparable<GSDModuleDBO>, I
      *            set the Name of this GSD Module.
      */
     @Column(nullable=false)
-    public void setName(final String name) {
+    public void setName(@Nonnull final String name) {
         this._name = name;
     }
 
@@ -191,6 +174,7 @@ public class GSDModuleDBO extends DBClass implements Comparable<GSDModuleDBO>, I
      *
      * @return the Name of this GSD Module.
      */
+    @Nonnull
     public String getName() {
         return _name;
     }
@@ -199,32 +183,10 @@ public class GSDModuleDBO extends DBClass implements Comparable<GSDModuleDBO>, I
      * @return The Name of this GSD Module.
      */
     @Override
+    @Nonnull
     public String toString() {
         return getName();
     }
-
-    // Das ist der falsche weg!
-    // Kann nicht mit den Nodes in eine Table.
-    // Wenn muﬂ eine eigene Matching Table erstellt werden.
-//    /**
-//     *
-//     * @return documents that relate to this node.
-//     */
-//    @ManyToMany(fetch = FetchType.EAGER)
-//    @JoinTable(name = "MIME_FILES_ddb_Nodes", joinColumns = @JoinColumn(name = "docs_id", referencedColumnName = "id"), inverseJoinColumns = @JoinColumn(name = "nodes_id", referencedColumnName = "id"))
-//    public Collection<Document> getDocument() {
-//        return _document;
-//    }
-//
-//    /**
-//     * Set the documents relate to this node.
-//     *
-//     * @param document
-//     *            the documents to relate.
-//     */
-//    public void setDocument(final Collection<Document> document) {
-//        _document = document;
-//    }
 
     /**
      * Compare to GSDModule instances on the basis of the DB Key (ID).
@@ -234,40 +196,8 @@ public class GSDModuleDBO extends DBClass implements Comparable<GSDModuleDBO>, I
      * @return {@inheritDoc}
      */
     @Override
-    public int compareTo(final GSDModuleDBO other) {
-        return getId() - other.getId();
-    }
-
-//    @CheckForNull
-//    public String getConfigurationData() {
-//        return _configurationData;
-//    }
-//
-//    public void setConfigurationData(final String configurationData) {
-//        _configurationData = configurationData;
-//    }
-
-    /**
-     * The I/O Parameter as series of numbers.<br>
-     * Example: "AB1D33110000" D = Digital. AB = Analog Byte AW = Analog Word 0 = unknown. 1 =
-     * input. 2 = output. 3 = not used.
-     *
-     * @return The I/O Parameter as series of numbers.
-     */
-    public String getParameter() {
-        return _parameter;
-    }
-
-    /**
-     * The I/O Parameter as series of numbers.<br>
-     * Example: "AB1D33110000" D = Digital. AB = Analog Byte AW = Analog Word 0 = unknown. 1 =
-     * input. 2 = output. 3 = not used.
-     *
-     * @param parameter
-     *            Set the I/O Parameter as series of numbers.
-     */
-    public void setParameter(final String parameter) {
-        _parameter = parameter;
+    public int compareTo(@CheckForNull final GSDModuleDBO other) {
+        return other!=null ? getId() - other.getId() : -1;
     }
 
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "GSDModule", fetch = FetchType.EAGER)
@@ -276,6 +206,7 @@ public class GSDModuleDBO extends DBClass implements Comparable<GSDModuleDBO>, I
         return _moduleChannelPrototypes;
     }
     @Transient
+    @CheckForNull
     public TreeSet<ModuleChannelPrototypeDBO> getModuleChannelPrototypeNH() {
         TreeSet<ModuleChannelPrototypeDBO> moduleChannelPrototypes = null;
         if(_moduleChannelPrototypes!=null) {
@@ -289,7 +220,7 @@ public class GSDModuleDBO extends DBClass implements Comparable<GSDModuleDBO>, I
         _moduleChannelPrototypes = moduleChannelPrototypes;
     }
 
-    public void addModuleChannelPrototype(final ModuleChannelPrototypeDBO moduleChannelPrototype) {
+    public void addModuleChannelPrototype(@Nonnull final ModuleChannelPrototypeDBO moduleChannelPrototype) {
         if (_moduleChannelPrototypes == null) {
             _moduleChannelPrototypes = new TreeSet<ModuleChannelPrototypeDBO>(new ComparatorImplementation());
         }
@@ -297,7 +228,7 @@ public class GSDModuleDBO extends DBClass implements Comparable<GSDModuleDBO>, I
         moduleChannelPrototype.setGSDModule(this);
     }
 
-    public void removeModuleChannelPrototype(final ModuleChannelPrototypeDBO moduleChannelPrototype) {
+    public void removeModuleChannelPrototype(@Nonnull final ModuleChannelPrototypeDBO moduleChannelPrototype) {
         if (_moduleChannelPrototypes == null) {
             return;
         }
@@ -305,7 +236,7 @@ public class GSDModuleDBO extends DBClass implements Comparable<GSDModuleDBO>, I
         moduleChannelPrototype.setGSDModule(null);
     }
 
-    public void removeModuleChannelPrototype(final Collection<ModuleChannelPrototypeDBO> moduleChannelPrototypes) {
+    public void removeModuleChannelPrototype(@Nonnull final Collection<ModuleChannelPrototypeDBO> moduleChannelPrototypes) {
         if (_moduleChannelPrototypes == null) {
             return;
         }
@@ -361,8 +292,4 @@ public class GSDModuleDBO extends DBClass implements Comparable<GSDModuleDBO>, I
         _documents = documents;
 
     }
-
-//    public void save() throws PersistenceException {
-//        Repository.saveWithChildren(this);
-//    }
 }

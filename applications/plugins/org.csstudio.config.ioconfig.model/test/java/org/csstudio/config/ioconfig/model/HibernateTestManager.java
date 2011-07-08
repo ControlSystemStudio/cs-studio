@@ -21,27 +21,10 @@
  */
 package org.csstudio.config.ioconfig.model;
 
-import java.util.HashSet;
 import java.util.List;
-import java.util.Observable;
-import java.util.Set;
 
-import javax.annotation.CheckForNull;
 import javax.annotation.Nonnull;
 
-import org.csstudio.config.ioconfig.model.pbmodel.ChannelDBO;
-import org.csstudio.config.ioconfig.model.pbmodel.ChannelStructureDBO;
-import org.csstudio.config.ioconfig.model.pbmodel.GSDFileDBO;
-import org.csstudio.config.ioconfig.model.pbmodel.GSDModuleDBO;
-import org.csstudio.config.ioconfig.model.pbmodel.MasterDBO;
-import org.csstudio.config.ioconfig.model.pbmodel.ModuleChannelPrototypeDBO;
-import org.csstudio.config.ioconfig.model.pbmodel.ModuleDBO;
-import org.csstudio.config.ioconfig.model.pbmodel.ProfibusSubnetDBO;
-import org.csstudio.config.ioconfig.model.pbmodel.SlaveDBO;
-import org.hibernate.HibernateException;
-import org.hibernate.Session;
-import org.hibernate.SessionFactory;
-import org.hibernate.Transaction;
 import org.hibernate.cfg.AnnotationConfiguration;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -55,76 +38,19 @@ import org.slf4j.LoggerFactory;
  * @version $Revision: 1.14 $
  * @since 03.06.2009
  */
-public final class HibernateTestManager extends Observable implements IHibernateManager {
+public final class HibernateTestManager extends AbstractHibernateManager {
     
-    private static final Logger LOG = LoggerFactory.getLogger(HibernateTestManager.class);
+    static final Logger LOG = LoggerFactory.getLogger(HibernateTestManager.class);
     
+    private AnnotationConfiguration _cfg = new AnnotationConfiguration();
+
     private static HibernateTestManager _INSTANCE;
     
-    private SessionFactory _sessionFactoryDevDB;
-    private AnnotationConfiguration _cfg;
-    
-    /**
-     * The timeout in sec.
-     */
-    private int _timeout = 10;
-    private Transaction _trx;
-    private final Set<Class<?>> _classes = new HashSet<Class<?>>();
-    private Session _sessionLazy;
-    
-    /**
-     *
-     * @param timeout
-     *            set the DB Timeout.
-     */
-    public void setTimeout(final int timeout) {
-        _timeout = timeout;
-    }
-    
-    HibernateTestManager() {
-        // Default constructor
-    }
-    
-    public void setSessionFactory(@Nonnull final SessionFactory sf) {
-        synchronized (HibernateManager.class) {
-            _sessionFactoryDevDB = sf;
-        }
-    }
-    
-    private void initSessionFactoryDevDB() {
-        if( (_sessionFactoryDevDB != null) && !_sessionFactoryDevDB.isClosed()) {
-            return;
-        }
-        buildConifg();
-        try {
-            SessionFactory buildSessionFactory = _cfg.buildSessionFactory();
-            setSessionFactory(buildSessionFactory);
-            notifyObservers();
-        } catch (HibernateException e) {
-            LOG.error("Can't build DB Session", e);
-        }
-    }
-    
-    private void buildConifg() {
-        _classes.add(NodeImageDBO.class);
-        _classes.add(ChannelDBO.class);
-        _classes.add(ChannelStructureDBO.class);
-        _classes.add(ModuleDBO.class);
-        _classes.add(SlaveDBO.class);
-        _classes.add(MasterDBO.class);
-        _classes.add(ProfibusSubnetDBO.class);
-        _classes.add(GSDModuleDBO.class);
-        _classes.add(IocDBO.class);
-        _classes.add(FacilityDBO.class);
-        _classes.add(AbstractNodeDBO.class);
-        _classes.add(GSDFileDBO.class);
-        _classes.add(ModuleChannelPrototypeDBO.class);
-        _classes.add(DocumentDBO.class);
-        _classes.add(SearchNodeDBO.class);
-        _classes.add(SensorsDBO.class);
-        _classes.add(PV2IONameMatcherModelDBO.class);
+    @Override
+    protected void buildConifg() {
+        
         _cfg = new AnnotationConfiguration();
-        for (Class<?> clazz : _classes) {
+        for (Class<?> clazz : getClasses()) {
             _cfg.addAnnotatedClass(clazz);
         }
         _cfg.setProperty("org.hibernate.cfg.Environment.MAX_FETCH_DEPTH", "0")
@@ -156,130 +82,28 @@ public final class HibernateTestManager extends Observable implements IHibernate
         //	              .setProperty("hibernate.cache.use_second_level_cache", "true");
     }
     
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    @Nonnull
+    AnnotationConfiguration getCfg() {
+        return _cfg;
+    }
+    
     public void addClasses(@Nonnull final List<Class<?>> classes) {
-        _classes.addAll(classes);
+        getClasses().addAll(classes);
     }
     
     public void removeClasses(@Nonnull final List<Class<?>> classes) {
-        _classes.removeAll(classes);
+        getClasses().removeAll(classes);
     }
-    
-    @Override
-    @CheckForNull
-    public <T> T doInDevDBHibernateEager(@Nonnull final HibernateCallback hibernateCallback) throws PersistenceException {
-        initSessionFactoryDevDB();
-        _trx = null;
-        Session sessionEager = _sessionFactoryDevDB.openSession();
-        T result;
-        try {
-            _trx = sessionEager.getTransaction();
-            _trx.setTimeout(_timeout);
-            _trx.begin();
-            result = execute(hibernateCallback, sessionEager);
-            _trx.commit();
-        } catch (HibernateException ex) {
-            notifyObservers(ex);
-            tryRollback(ex);
-            throw new PersistenceException(ex);
-        } finally {
-            if(sessionEager != null) {
-                sessionEager.close();
-                sessionEager = null;
-            }
-        }
-        return result;
-    }
-    
-    /**
-     * @param ex
-     * @throws PersistenceException
-     */
-    private void tryRollback(@Nonnull HibernateException ex) throws PersistenceException {
-        notifyObservers(ex);
-        if(_trx != null) {
-            try {
-                _trx.rollback();
-            } catch (HibernateException exRb) {
-                LOG.error("Can't rollback", exRb);
-            }
-        }
-        LOG.error("Rollback! Exception was thrown: {}", ex);
-    }
-    
-    /**
-     *
-     * @param <T>
-     *            The result Object type.
-     * @param hibernateCallback
-     *            The Hibernate call back.
-     * @return the Session resulte.
-     */
-    @Override
-    @CheckForNull
-    public <T> T doInDevDBHibernateLazy(@Nonnull final HibernateCallback hibernateCallback) throws PersistenceException {
-        initSessionFactoryDevDB();
-        _trx = null;
-        if(_sessionLazy == null) {
-            _sessionLazy = _sessionFactoryDevDB.openSession();
-        }
-        try {
-            _trx = _sessionLazy.getTransaction();
-            _trx.setTimeout(_timeout);
-            _trx.begin();
-            T result = execute(hibernateCallback, _sessionLazy);
-            _trx.commit();
-            return result;
-        } catch (HibernateException ex) {
-            tryRollback(ex);
-            try {
-                if(_sessionLazy != null && _sessionLazy.isOpen()) {
-                    _sessionLazy.close();
-                }
-            } finally {
-                _sessionLazy = null;
-            }
-            throw new PersistenceException(ex);
-        }
-    }
-    
-    @CheckForNull
-    private <T> T execute(@Nonnull final HibernateCallback callback, @Nonnull final Session sess) {
-        return callback.execute(sess);
-    }
-    
-    @Override
-    public synchronized void closeSession() {
-        if( (_sessionLazy != null) && _sessionLazy.isOpen()) {
-            _sessionLazy.close();
-            _sessionLazy = null;
-        }
-        if( (_sessionFactoryDevDB != null) && !_sessionFactoryDevDB.isClosed()) {
-            _sessionFactoryDevDB.close();
-            _sessionFactoryDevDB = null;
-        }
-        LOG.info("DB Session  Factory closed");
-        
-    }
-    
+
     @Nonnull
-    public static synchronized HibernateTestManager getInstance() {
+    protected static synchronized HibernateTestManager getInstance() {
         if(_INSTANCE == null) {
             _INSTANCE = new HibernateTestManager();
         }
         return _INSTANCE;
     }
-    
-    @Nonnull
-    protected AnnotationConfiguration getCfg() {
-        return _cfg;
-    }
-    
-    /**
-     * @return
-     */
-    @Override
-    public boolean isConnected() {
-        return _sessionFactoryDevDB != null ? _sessionFactoryDevDB.isClosed() : false;
-    }
-    
 }

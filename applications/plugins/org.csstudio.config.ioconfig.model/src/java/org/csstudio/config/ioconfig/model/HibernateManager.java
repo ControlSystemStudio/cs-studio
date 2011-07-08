@@ -29,12 +29,8 @@ import static org.csstudio.config.ioconfig.model.preference.PreferenceConstants.
 import static org.csstudio.config.ioconfig.model.preference.PreferenceConstants.HIBERNATE_CONNECTION_URL;
 import static org.csstudio.config.ioconfig.model.preference.PreferenceConstants.SHOW_SQL;
 
-import java.util.ArrayList;
 import java.util.Date;
-import java.util.List;
-import java.util.Observable;
 
-import javax.annotation.CheckForNull;
 import javax.annotation.Nonnull;
 
 import org.csstudio.config.ioconfig.model.preference.PreferenceConstants;
@@ -47,10 +43,7 @@ import org.eclipse.core.runtime.preferences.IEclipsePreferences.IPreferenceChang
 import org.eclipse.core.runtime.preferences.IEclipsePreferences.PreferenceChangeEvent;
 import org.eclipse.core.runtime.preferences.IPreferencesService;
 import org.eclipse.core.runtime.preferences.InstanceScope;
-import org.hibernate.HibernateException;
-import org.hibernate.Session;
 import org.hibernate.SessionFactory;
-import org.hibernate.Transaction;
 import org.hibernate.cfg.AnnotationConfiguration;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -62,12 +55,19 @@ import org.slf4j.LoggerFactory;
  * @version $Revision: 1.14 $
  * @since 03.06.2009
  */
-public final class HibernateManager extends Observable implements IHibernateManager {
+public final class HibernateManager extends AbstractHibernateManager {
     
-    private static final Logger LOG = LoggerFactory.getLogger(HibernateManager.class);
-    
+    protected static final Logger LOG = LoggerFactory.getLogger(HibernateManager.class);
+
     private static HibernateManager _INSTANCE;
     
+
+    private AnnotationConfiguration _cfg;
+    
+    private final SessionWatchDog _sessionWatchDog = new SessionWatchDog("Session Watch Dog");
+    
+    
+
     /**
      * 
      * This class is a Watchdog over the Session Time. At DESY DB connection was after 24h rested: 
@@ -136,56 +136,12 @@ public final class HibernateManager extends Observable implements IHibernateMana
         }
         
     }
-    
-    private SessionFactory _sessionFactoryDevDB;
-    private AnnotationConfiguration _cfg;
-    
-    /**
-     * The timeout in sec.
-     */
-    private int _timeout = 10;
-    private Transaction _trx;
-    private final SessionWatchDog _sessionWatchDog = new SessionWatchDog("Session Watch Dog");
-    private final List<Class<?>> _classes = new ArrayList<Class<?>>();
-    private Session _sessionLazy;
-    
-    /**
-     *
-     * @param timeout
-     *            set the DB Timeout.
-     */
-    public void setTimeout(final int timeout) {
-        _timeout = timeout;
-    }
-    
     private HibernateManager() {
         // Default constructor
     }
     
-    /**
-     * {@inheritDoc}
-     */
-    public void setSessionFactory(@Nonnull final SessionFactory sf) {
-        synchronized (HibernateTestManager.class) {
-            _sessionFactoryDevDB = sf;
-        }
-    }
-    
-    private void initSessionFactoryDevDB() {
-        if( (_sessionFactoryDevDB != null) && !_sessionFactoryDevDB.isClosed()) {
-            return;
-        }
-        buildConifg();
-        try {
-            SessionFactory buildSessionFactory = _cfg.buildSessionFactory();
-            setSessionFactory(buildSessionFactory);
-            notifyObservers();
-        } catch (HibernateException e) {
-            LOG.error("Can't build DB Session", e);
-        }
-    }
-    
-    private void buildConifg() {
+    @Override
+    protected void buildConifg() {
         String pluginId = IOConfigActivator.PLUGIN_ID;
         new InstanceScope().getNode(pluginId)
                 .addPreferenceChangeListener(new IPreferenceChangeListener() {
@@ -199,7 +155,7 @@ public final class HibernateManager extends Observable implements IHibernateMana
         
         IPreferencesService prefs = Platform.getPreferencesService();
         _cfg = new AnnotationConfiguration();
-        for (Class<?> clazz : _classes) {
+        for (Class<?> clazz : getClasses()) {
             _cfg.addAnnotatedClass(clazz);
         }
         _cfg.setProperty("org.hibernate.cfg.Environment.MAX_FETCH_DEPTH", "0")
@@ -236,13 +192,6 @@ public final class HibernateManager extends Observable implements IHibernateMana
         setTimeout(prefs.getInt(pluginId, DDB_TIMEOUT, 90, null));
     }
     
-    public void addClasses(@Nonnull final List<Class<?>> classes) {
-        _classes.addAll(classes);
-    }
-    
-    public void removeClasses(@Nonnull final List<Class<?>> classes) {
-        _classes.removeAll(classes);
-    }
     
     /**
      * Set a Hibernate Property.
@@ -290,129 +239,17 @@ public final class HibernateManager extends Observable implements IHibernateMana
         }
     }
     
-    /**
-     * {@inheritDoc}
-     */
-    @Override
-    @CheckForNull
-    public <T> T doInDevDBHibernateEager(@Nonnull final HibernateCallback hibernateCallback) throws PersistenceException {
-        initSessionFactoryDevDB();
-        _sessionWatchDog.setSessionFactory(_sessionFactoryDevDB);
-        _sessionWatchDog.schedule(30000);
-        _sessionWatchDog.useSession();
-        _trx = null;
-        Session sessionEager = _sessionFactoryDevDB.openSession();
-        T result;
-        try {
-            _trx = sessionEager.getTransaction();
-            _trx.setTimeout(_timeout);
-            _trx.begin();
-            result = execute(hibernateCallback, sessionEager);
-            _trx.commit();
-        } catch (HibernateException ex) {
-            notifyObservers(ex);
-            tryRollback(ex);
-            throw new PersistenceException(ex);
-        } finally {
-            if(sessionEager != null) {
-                sessionEager.close();
-                sessionEager = null;
-            }
-        }
-        return result;
-    }
-    
-    /**
-     * @param ex
-     * @throws PersistenceException
-     */
-    private void tryRollback(@Nonnull HibernateException ex) throws PersistenceException {
-        notifyObservers(ex);
-        if(_trx != null) {
-            try {
-                _trx.rollback();
-            } catch (HibernateException exRb) {
-                LOG.error("Can't rollback", exRb);
-            }
-        }
-        LOG.error("Rollback! Exception was thrown: {}", ex);
-    }
-    
-    /**
-     * {@inheritDoc}
-     */
-    @Override
-    @CheckForNull
-    public <T> T doInDevDBHibernateLazy(@Nonnull final HibernateCallback hibernateCallback) throws PersistenceException {
-        initSessionFactoryDevDB();
-        _sessionWatchDog.setSessionFactory(_sessionFactoryDevDB);
-        _sessionWatchDog.schedule(30000);
-        _sessionWatchDog.useSession();
-        _trx = null;
-        if(_sessionLazy == null) {
-            _sessionLazy = _sessionFactoryDevDB.openSession();
-        }
-        try {
-            _trx = _sessionLazy.getTransaction();
-            _trx.setTimeout(_timeout);
-            _trx.begin();
-            T result = execute(hibernateCallback, _sessionLazy);
-            _trx.commit();
-            return result;
-        } catch (HibernateException ex) {
-            tryRollback(ex);
-            try {
-                if(_sessionLazy != null && _sessionLazy.isOpen()) {
-                    _sessionLazy.close();
-                }
-            } finally {
-                _sessionLazy = null;
-            }
-            throw new PersistenceException(ex);
-        }
-    }
-    
-    @CheckForNull
-    private <T> T execute(@Nonnull final HibernateCallback callback, @Nonnull final Session sess) {
-        return callback.execute(sess);
-    }
-    
-    /**
-     * {@inheritDoc}
-     */
-    @Override
-    public synchronized void closeSession() {
-        if( (_sessionLazy != null) && _sessionLazy.isOpen()) {
-            _sessionLazy.close();
-            _sessionLazy = null;
-        }
-        if( (_sessionFactoryDevDB != null) && !_sessionFactoryDevDB.isClosed()) {
-            _sessionFactoryDevDB.close();
-            _sessionFactoryDevDB = null;
-        }
-        LOG.info("DB Session  Factory closed");
-        
-    }
-    
     @Nonnull
-    public static synchronized HibernateManager getInstance() {
+    protected static synchronized HibernateManager getInstance() {
         if(_INSTANCE == null) {
             _INSTANCE = new HibernateManager();
         }
         return _INSTANCE;
     }
     
+    @Override
     @Nonnull
     protected AnnotationConfiguration getCfg() {
         return _cfg;
     }
-    
-    /**
-     * {@inheritDoc}
-     */
-    @Override
-    public boolean isConnected() {
-        return _sessionFactoryDevDB != null ? _sessionFactoryDevDB.isClosed() : false;
-    }
-    
 }
