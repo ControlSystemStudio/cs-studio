@@ -206,7 +206,8 @@ public class Application implements IApplication
         final AlarmConfiguration config;
         try
         {
-            config = new AlarmConfiguration(url, user, password);
+            config = new AlarmConfiguration(url, user, password, false);
+            System.out.println("Reading RDB configuration of '" + root + "'");
             config.readConfiguration(root, mode == Mode.IMPORT);
         }
         catch (Exception ex)
@@ -243,8 +244,9 @@ public class Application implements IApplication
                 break;
             case IMPORT:
                 {
-                    System.out.println("Importing configuration '" + root + "' from " + filename);
+                    System.out.println("Deleting existing RDB configuration for '" + root + "'");
                     config.removeAllItems();
+                    System.out.println("Importing configuration '" + root + "' from " + filename);
                     new AlarmConfigurationLoader(config).load(filename);
                 }
                 break;

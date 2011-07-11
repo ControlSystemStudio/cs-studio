@@ -173,7 +173,7 @@ public class AlarmConfigurationLoader
             throw new Exception("Cannot turn existing " + existing.getPathName()
                                 + " into PV");
 
-        System.out.println("Loading " + pv);
+        System.out.println("Loading " + pv.getPathName());
 
         loadCommonConfig(node, pv);
 

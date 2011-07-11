@@ -573,7 +573,14 @@ public class AlarmClientModel
         {
             if (config == null)
                 return;
-            config.configureItem(item, guidance, displays, commands);
+            try
+            {
+            	config.configureItem(item, guidance, displays, commands);
+            }
+            finally
+            {
+            	config.closeStatements();
+            }
         }
         synchronized (communicator_lock)
         {
@@ -608,9 +615,16 @@ public class AlarmClientModel
         {
             if (config == null)
                 return;
-            config.configurePV(pv, description, enabled, annunciate,
-                    latch, delay, count, filter,
-                    guidance, displays, commands);
+            try
+            {
+	            config.configurePV(pv, description, enabled, annunciate,
+	                    latch, delay, count, filter,
+	                    guidance, displays, commands);
+            }
+            finally
+            {
+            	config.closeStatements();
+            }
         }
         synchronized (communicator_lock)
         {
@@ -758,7 +772,14 @@ public class AlarmClientModel
         {
             if (config == null)
                 return;
-            config.readPVConfig(pv);
+            try
+            {
+            	config.readPVConfig(pv);
+            }
+            finally
+            {
+            	config.closeStatements();
+            }
         }
         // This could change the alarm tree after a PV was disabled or enabled.
         // Maximizing the severity would also fireNewAlarmState

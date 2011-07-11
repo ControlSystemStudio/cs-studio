@@ -37,6 +37,9 @@ public class AlarmConfiguration
 {
     /** Connection to configuration/state snapshot. */
     final private RDBUtil rdb;
+    
+    /** Use auto-reconnect? */
+    final private boolean auto_reconnect;
 
     /** SQL strings */
     final private SQL sql;
@@ -58,7 +61,40 @@ public class AlarmConfiguration
     private HashMap<String, AlarmTreePV> pvs = new HashMap<String, AlarmTreePV>();
 
     /** Re-used statements */
-    private PreparedStatement sel_items_by_parent_statement, sel_pv_by_id_statement;
+    private PreparedStatement sel_items_by_parent_statement, sel_pv_by_id_statement,
+                              update_pv_config_statement, insert_item_statement, insert_pv_statement,
+                              delete_guidance_by_id, insert_guidance,
+                              delete_displays_by_id, insert_display,
+                              delete_commands_by_id, insert_command,
+                              update_item_config_time;
+
+
+    /** Initialize
+     *  @param url RDB URL
+     *  @param user	RDB user name
+     *  @param password RDB password
+     *  @throws Exception on error
+     */
+    public AlarmConfiguration(final String url, final String user,
+    		final String password, final boolean auto_reconnect) throws Exception
+    {
+        // Allow auto-reconnect?
+    	this.auto_reconnect = auto_reconnect;
+        rdb = RDBUtil.connect(url, user, password, auto_reconnect);
+
+        // Disable it while reading initial config. because that
+        // can be 10% faster
+        if (auto_reconnect)
+        	rdb.setAutoReconnect(false);
+        sql = new SQL(rdb);
+        severity_mapping = new SeverityReader(rdb, sql);
+        message_mapping = new MessageReader(rdb, sql);
+        config_reader = new AlarmConfigurationReader(rdb, sql);
+
+        // Re-enable auto-connect if that was requested
+        if (auto_reconnect)
+        	rdb.setAutoReconnect(true);
+    }
 
     /** Initialize
      *  @param url RDB URL
@@ -69,21 +105,10 @@ public class AlarmConfiguration
     public AlarmConfiguration(final String url, final String user,
     		final String password) throws Exception
     {
-        // Allow auto-reconnect...
-        rdb = RDBUtil.connect(url, user, password, true);
-
-        // Disable it while reading initial config. because that
-        // can be 10% faster
-        rdb.setAutoReconnect(false);
-        sql = new SQL(rdb);
-        severity_mapping = new SeverityReader(rdb, sql);
-        message_mapping = new MessageReader(rdb, sql);
-        config_reader = new AlarmConfigurationReader(rdb, sql);
-
-        // Re-enable auto-connect
-        rdb.setAutoReconnect(true);
+    	this(url, user, password, true);
     }
 
+    
     /** List all configuration 'root' element names
      *  @return Array of 'root' elements
      *  @throws Exception on error
@@ -112,7 +137,8 @@ public class AlarmConfiguration
      */
     public void readConfiguration(final String root_name, final boolean create) throws Exception
     {
-        rdb.setAutoReconnect(false);
+    	if (auto_reconnect)
+    		rdb.setAutoReconnect(false);
         final AlarmTreeRoot new_config;
         try
         {
@@ -121,7 +147,8 @@ public class AlarmConfiguration
         }
         finally
         {
-            rdb.setAutoReconnect(true);
+        	if (auto_reconnect)
+        		rdb.setAutoReconnect(true);
         }
         synchronized (this)
         {
@@ -347,10 +374,10 @@ public class AlarmConfiguration
             throw new Exception(name + " already under " + found.getPathName());
 
         final int id = getNextItemID();
-        final PreparedStatement insertAsItem =
-            rdb.getConnection().prepareStatement(sql.insert_item);
-        final PreparedStatement insertAsPV =
-            rdb.getConnection().prepareStatement(sql.insert_pv);
+        if (insert_item_statement == null)
+        	insert_item_statement = rdb.getConnection().prepareStatement(sql.insert_item);
+        if (insert_pv_statement == null)
+        	insert_pv_statement = rdb.getConnection().prepareStatement(sql.insert_pv);
         final String description = name;
         final boolean latch = true;
         final boolean annunciate = false;
@@ -361,16 +388,16 @@ public class AlarmConfiguration
         try
         {
         	//Insert the PV as an item in the alarmtree table
-            insertAsItem.setInt(1, id);
-            insertAsItem.setInt(2, parent.getID());
-            insertAsItem.setString(3, name);
-            insertAsItem.executeUpdate();
+            insert_item_statement.setInt(1, id);
+            insert_item_statement.setInt(2, parent.getID());
+            insert_item_statement.setString(3, name);
+            insert_item_statement.executeUpdate();
             //Insert the PV into the pv table
-            insertAsPV.setInt(1, id);
-            insertAsPV.setString(2, description);
-            insertAsPV.setBoolean(3, annunciate);
-            insertAsPV.setBoolean(4, latch);
-            insertAsPV.executeUpdate();
+            insert_pv_statement.setInt(1, id);
+            insert_pv_statement.setString(2, description);
+            insert_pv_statement.setBoolean(3, annunciate);
+            insert_pv_statement.setBoolean(4, latch);
+            insert_pv_statement.executeUpdate();
 
             rdb.getConnection().commit();
         }
@@ -379,11 +406,6 @@ public class AlarmConfiguration
 			rdb.getConnection().rollback();
 			throw ex;
 		}
-        finally
-        {
-            insertAsItem.close();
-            insertAsPV.close();
-        }
 
         final AlarmTreePV pv = new AlarmTreePV(parent, name, id);
         pvs.put(name, pv);
@@ -402,21 +424,34 @@ public class AlarmConfiguration
             final GDCDataStructure guidance[], final GDCDataStructure displays[],
             final GDCDataStructure commands[]) throws Exception
     {
+    	// Prepare statements
+    	if (delete_guidance_by_id == null)
+    		delete_guidance_by_id = rdb.getConnection().prepareStatement(sql.delete_guidance_by_id);
+    	if (insert_guidance == null)
+    		insert_guidance = rdb.getConnection().prepareStatement(sql.insert_guidance);
+    	if (delete_displays_by_id == null)
+    		delete_displays_by_id = rdb.getConnection().prepareStatement(sql.delete_displays_by_id);
+    	if (insert_display == null)
+    		insert_display = rdb.getConnection().prepareStatement(sql.insert_display);
+    	if (delete_commands_by_id == null)
+    		delete_commands_by_id = rdb.getConnection().prepareStatement(sql.delete_commands_by_id);
+    	if (insert_command == null)
+    		insert_command = rdb.getConnection().prepareStatement(sql.insert_command);
+    	
     	//update guidance, displays and commands
-    	updateGDC(item.getID(), guidance, sql.delete_guidance_by_id, sql.insert_guidance);
-    	updateGDC(item.getID(), displays, sql.delete_displays_by_id, sql.insert_display);
-    	updateGDC(item.getID(), commands, sql.delete_commands_by_id, sql.insert_command);
+    	updateGDC(item.getID(), guidance, delete_guidance_by_id, insert_guidance);
+    	updateGDC(item.getID(), displays, delete_displays_by_id, insert_display);
+    	updateGDC(item.getID(), commands, delete_commands_by_id, insert_command);
 
-    	//update config_time
-    	final PreparedStatement statement =
-    		rdb.getConnection().prepareStatement(sql.update_item_config_time);
-
+    	if (update_item_config_time == null)
+    		update_item_config_time =
+    			rdb.getConnection().prepareStatement(sql.update_item_config_time);
     	try
     	{
     		final Timestamp config_time = new Timestamp(new Date().getTime());
-    		statement.setTimestamp(1, config_time);
-    		statement.setInt(2, item.getID());
-    		statement.executeUpdate();
+    		update_item_config_time.setTimestamp(1, config_time);
+    		update_item_config_time.setInt(2, item.getID());
+    		update_item_config_time.executeUpdate();
     		rdb.getConnection().commit();
     		// Update item's config time after RDB commit succeeded
             item.setConfigTime(TimestampFactory.fromSQLTimestamp(config_time));
@@ -426,10 +461,6 @@ public class AlarmConfiguration
             rdb.getConnection().rollback();
             throw ex;
         }
-    	finally
-    	{
-    		statement.close();
-    	}
     }
 
     /** Change a PV's configuration in RDB.
@@ -453,29 +484,25 @@ public class AlarmConfiguration
         final GDCDataStructure commands[]) throws Exception
     {
         configureItem(pv, guidance, displays, commands);
-        final PreparedStatement statement =
-            rdb.getConnection().prepareStatement(sql.update_pv_config);
+        if (update_pv_config_statement == null)
+        	update_pv_config_statement = rdb.getConnection().prepareStatement(sql.update_pv_config);
         try
         {
-            statement.setString(1, description);
-            statement.setBoolean(2, enabled);
-            statement.setBoolean(3, annunciate);
-            statement.setBoolean(4, latch);
-            statement.setInt(5, delay);
-            statement.setInt(6, count);
-            statement.setString(7, filter);
-            statement.setInt(8, pv.getID());
-            statement.executeUpdate();
+            update_pv_config_statement.setString(1, description);
+            update_pv_config_statement.setBoolean(2, enabled);
+            update_pv_config_statement.setBoolean(3, annunciate);
+            update_pv_config_statement.setBoolean(4, latch);
+            update_pv_config_statement.setInt(5, delay);
+            update_pv_config_statement.setInt(6, count);
+            update_pv_config_statement.setString(7, filter);
+            update_pv_config_statement.setInt(8, pv.getID());
+            update_pv_config_statement.executeUpdate();
             rdb.getConnection().commit();
         }
         catch (SQLException ex)
         {
             rdb.getConnection().rollback();
             throw ex;
-        }
-        finally
-        {
-            statement.close();
         }
     }
 
@@ -661,17 +688,13 @@ public class AlarmConfiguration
     /**Update guidance/displays/commands in RDB by id
      * @param id The id of the item in alarmtree.
      * @param gdcList guidance/displays/commands ArrayList.
-     * @param del_gdc_sql The sql update sentence for deleting old GDC.
-     * @param insert_gdc_sql The sql update sentence for inserting new GDC.
+     * @param deleteGDC The statement for deleting old GDC.
+     * @param insertGDC The statement for inserting new GDC.
      * @throws SQLException
      */
     private void updateGDC(final int id, final GDCDataStructure gdcList[],
-            final String del_gdc_sql, final String insert_gdc_sql) throws Exception
+            final PreparedStatement deleteGDC, final PreparedStatement insertGDC) throws Exception
     {
-        final PreparedStatement deleteGDC =
-            rdb.getConnection().prepareStatement(del_gdc_sql);
-        final PreparedStatement insertGDC =
-            rdb.getConnection().prepareStatement(insert_gdc_sql);
         try
         {
             deleteGDC.setInt(1, id);
@@ -696,11 +719,6 @@ public class AlarmConfiguration
             rdb.getConnection().rollback();
             throw ex;
         }
-        finally
-        {
-            deleteGDC.close();
-            insertGDC.close();
-        }
     }
 
     /** Delete all guidance, displays, commands for an item
@@ -709,35 +727,80 @@ public class AlarmConfiguration
      */
     private void deleteGDCWithoutCommit(final int id) throws Exception
     {
-        final PreparedStatement delGuidanceStatement =
-            rdb.getConnection().prepareStatement(sql.delete_guidance_by_id);
-        final PreparedStatement delDisplayStatement =
-            rdb.getConnection().prepareStatement(sql.delete_displays_by_id);
-        final PreparedStatement delCommandsStatement =
-            rdb.getConnection().prepareStatement(sql.delete_commands_by_id);
-        try
-        {
-            delGuidanceStatement.setInt(1, id);
-            delGuidanceStatement.executeUpdate();
-            delDisplayStatement.setInt(1, id);
-            delDisplayStatement.executeUpdate();
-            delCommandsStatement.setInt(1, id);
-            delCommandsStatement.executeUpdate();
-        }
-        finally
-        {
-        	delGuidanceStatement.close();
-        	delDisplayStatement.close();
-        	delCommandsStatement.close();
-        }
+    	if (delete_guidance_by_id == null)
+    		delete_guidance_by_id = rdb.getConnection().prepareStatement(sql.delete_guidance_by_id);
+    	if (delete_displays_by_id == null)
+    		delete_displays_by_id = rdb.getConnection().prepareStatement(sql.delete_displays_by_id);
+    	if (delete_commands_by_id == null)
+    		delete_commands_by_id = rdb.getConnection().prepareStatement(sql.delete_commands_by_id);
+    	delete_guidance_by_id.setInt(1, id);
+    	delete_guidance_by_id.executeUpdate();
+    	delete_displays_by_id.setInt(1, id);
+    	delete_displays_by_id.executeUpdate();
+    	delete_commands_by_id.setInt(1, id);
+    	delete_commands_by_id.executeUpdate();
     }
 
-    /** Close prepared statements that are lazily created when reading config */
+    /** Close prepared statements that are lazily created when reading/writing config.
+     *  Should be called when 'done' with a transaction because the config will
+     *  automatically re-connect to the RDB, but not re-create all statements
+     *  in such a case.
+     */
     @SuppressWarnings("nls")
-    private void closeStatements()
+    public void closeStatements()
     {
         try
         {
+        	if (update_item_config_time != null)
+        	{
+        		update_item_config_time.close();
+        		update_item_config_time = null;
+        	}
+        	if (delete_guidance_by_id != null)
+        	{
+        		delete_guidance_by_id.close();
+        		delete_guidance_by_id = null;
+        	}
+        	if (insert_guidance != null)
+        	{
+        		insert_guidance.close();
+        		insert_guidance = null;
+        	}
+        	if (delete_displays_by_id != null)
+        	{
+        		delete_displays_by_id.close();
+        		delete_displays_by_id = null;
+        	}
+        	if (insert_display != null)
+        	{
+        		insert_display.close();
+        		insert_display = null;
+        	}
+        	if (delete_commands_by_id != null)
+        	{
+        		delete_commands_by_id.close();
+        		delete_commands_by_id = null;
+        	}
+        	if (insert_command != null)
+        	{
+        		insert_command.close();
+        		insert_command = null;
+        	}
+        	if (insert_item_statement != null)
+        	{
+        		insert_item_statement.close();
+        		insert_item_statement = null;
+        	}
+        	if (insert_pv_statement != null)
+        	{
+        		insert_pv_statement.close();
+        		insert_pv_statement = null;
+        	}
+        	if (update_pv_config_statement != null)
+        	{
+        		update_pv_config_statement.close();
+        		update_pv_config_statement = null;
+        	}
             if (sel_items_by_parent_statement != null)
             {
                 sel_items_by_parent_statement.close();
