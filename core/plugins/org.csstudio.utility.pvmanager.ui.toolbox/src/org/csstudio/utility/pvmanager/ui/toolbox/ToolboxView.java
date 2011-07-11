@@ -1,5 +1,6 @@
 package org.csstudio.utility.pvmanager.ui.toolbox;
 
+import org.eclipse.jface.action.ActionContributionItem;
 import org.eclipse.jface.action.IMenuCreator;
 import org.eclipse.jface.action.IMenuManager;
 import org.eclipse.jface.action.IToolBarManager;
@@ -7,9 +8,11 @@ import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.events.SelectionListener;
 import org.eclipse.swt.graphics.Image;
+import org.eclipse.swt.graphics.Point;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.ui.part.ViewPart;
 import org.eclipse.swt.widgets.Control;
+import org.eclipse.swt.widgets.Event;
 import org.eclipse.swt.widgets.Menu;
 import org.eclipse.swt.widgets.MenuItem;
 import org.eclipse.swt.widgets.TabFolder;
@@ -110,7 +113,6 @@ public class ToolboxView extends ViewPart {
 		
 		// Displays the default data source at startup
 		CompositeDataSource dataSource = (CompositeDataSource) PVManager.getDefaultDataSource();
-		System.out.println(dataSource.getDefaultDataSource());
 		if (dataSource.getDefaultDataSource() != null) {
 			tableViewer.setInput(dataSource.getDataSources().get(dataSource.getDefaultDataSource()));
 		}
@@ -148,7 +150,14 @@ public class ToolboxView extends ViewPart {
 			}
 			
 			selectDataSourceAction = new Action("Select Data Source", SWT.DROP_DOWN) {
-
+				@Override
+				public void runWithEvent(Event event) {
+					//Point point = event.
+					ToolItem toolItem = (ToolItem) event.widget;
+					Point point = toolItem.getParent().toDisplay(new Point(toolItem.getBounds().x, toolItem.getBounds().y + toolItem.getBounds().height));
+					datasourceSelectionMenu.setLocation(point.x, point.y); // waiting
+					datasourceSelectionMenu.setVisible(true);
+				}
 			};
 			selectDataSourceAction.setImageDescriptor(ResourceManager.getPluginImageDescriptor("org.csstudio.utility.pvmanager.ui.toolbox", "icons/source.png"));
 			selectDataSourceAction.setToolTipText("Select Data Source");
