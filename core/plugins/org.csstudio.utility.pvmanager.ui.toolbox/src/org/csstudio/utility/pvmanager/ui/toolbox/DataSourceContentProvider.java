@@ -1,7 +1,5 @@
 package org.csstudio.utility.pvmanager.ui.toolbox;
 
-import java.util.Arrays;
-
 import org.eclipse.jface.viewers.IStructuredContentProvider;
 import org.eclipse.jface.viewers.Viewer;
 import org.epics.pvmanager.DataSource;
@@ -21,7 +19,6 @@ public class DataSourceContentProvider implements IStructuredContentProvider {
 	@Override
 	public Object[] getElements(Object inputElement) {
 		Object[] channels =  ((DataSource) inputElement).getChannels().values().toArray();
-		System.out.println(Arrays.toString(channels));
 		return channels;
 	}
 
