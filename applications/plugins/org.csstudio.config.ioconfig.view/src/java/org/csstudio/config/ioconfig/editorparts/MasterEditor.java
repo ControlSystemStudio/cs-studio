@@ -87,7 +87,7 @@ import org.slf4j.LoggerFactory;
  * @version $Revision: 1.2 $
  * @since 21.05.2010
  */
-public class MasterEditor extends AbstractGsdNodeEditor {
+public class MasterEditor extends AbstractGsdNodeEditor<MasterDBO> {
     
     private static final Logger LOG = LoggerFactory.getLogger(MasterEditor.class);
     

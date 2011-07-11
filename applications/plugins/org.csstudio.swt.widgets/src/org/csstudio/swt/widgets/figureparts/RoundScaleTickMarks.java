@@ -10,6 +10,7 @@ package org.csstudio.swt.widgets.figureparts;
 import java.util.ArrayList;
 
 import org.csstudio.swt.xygraph.linearscale.AbstractScale.LabelSide;
+import org.csstudio.ui.util.SWTConstants;
 import org.eclipse.draw2d.Figure;
 import org.eclipse.draw2d.Graphics;
 import org.eclipse.draw2d.geometry.Point;
@@ -119,7 +120,7 @@ public class RoundScaleTickMarks extends Figure {
     	//add gap to avoid overlap
     	double minRadians = scale.convertPixelToRadians(2);
         // draw tick marks
-        graphics.setLineStyle(SWT.LINE_SOLID);
+        graphics.setLineStyle(SWTConstants.LINE_SOLID);
         int r = scale.getRadius();
         
         if(scale.isLogScaleEnabled()) {

@@ -12,6 +12,8 @@ import javax.swing.SwingUtilities;
 /**
  * Embeds the logic to post events on a separate thread so that PVManager
  * can appropriately redirect the notifications.
+ * 
+ * TODO: should probably use the Executor interface
  *
  * @author carcassi
  */

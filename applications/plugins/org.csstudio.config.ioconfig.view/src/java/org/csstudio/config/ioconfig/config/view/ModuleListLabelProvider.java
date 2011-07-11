@@ -1,11 +1,14 @@
 package org.csstudio.config.ioconfig.config.view;
 
+import java.util.List;
+
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
 import org.csstudio.config.ioconfig.model.pbmodel.GSDFileDBO;
 import org.csstudio.config.ioconfig.model.pbmodel.GSDModuleDBO;
 import org.csstudio.config.ioconfig.model.pbmodel.SlaveCfgData;
+import org.csstudio.config.ioconfig.model.pbmodel.SlaveCfgDataFactory;
 import org.csstudio.config.ioconfig.model.pbmodel.gsdParser.GsdModuleModel2;
 import org.csstudio.platform.ui.util.CustomMediaFactory;
 import org.eclipse.jface.viewers.IColorProvider;
@@ -99,9 +102,14 @@ public class ModuleListLabelProvider extends LabelProvider implements IFontProvi
     public final Font getFont(@Nullable final Object element) {
         if (element instanceof GsdModuleModel2) {
             GsdModuleModel2 gmm = (GsdModuleModel2) element;
-            SlaveCfgData slaveCfgData = new SlaveCfgData(gmm.getValue());
-            boolean input = slaveCfgData.isInput();
-            boolean output = slaveCfgData.isOutput();
+            boolean input = false;
+            boolean output = false;
+            List<Integer> values = gmm.getValue();
+            SlaveCfgDataFactory slaveCfgDataFactory = new SlaveCfgDataFactory(values);
+            for (SlaveCfgData slaveCfgData : slaveCfgDataFactory.getSlaveCfgDataList()) {
+                input |= slaveCfgData.isInput();
+                output |= slaveCfgData.isOutput();
+            }
             if (input && output) {
                 return _BOLD;
             } else if (input || output) {
@@ -137,9 +145,14 @@ public class ModuleListLabelProvider extends LabelProvider implements IFontProvi
     public final Color getForeground(@Nullable final Object element) {
         if (element instanceof GsdModuleModel2) {
             GsdModuleModel2 gmm = (GsdModuleModel2) element;
-            SlaveCfgData slaveCfgData = new SlaveCfgData(gmm.getValue());
-            boolean input = slaveCfgData.isInput();
-            boolean output = slaveCfgData.isOutput();
+            boolean input = false;
+            boolean output = false;
+            List<Integer> values = gmm.getValue();
+            SlaveCfgDataFactory slaveCfgDataFactory = new SlaveCfgDataFactory(values);
+            for (SlaveCfgData slaveCfgData : slaveCfgDataFactory.getSlaveCfgDataList()) {
+                input = slaveCfgData.isInput();
+                output = slaveCfgData.isOutput();
+            }
             if (!input && !output) {
                 return _GRAY;
             } else {

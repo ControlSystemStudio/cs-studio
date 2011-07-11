@@ -13,29 +13,27 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
-import org.csstudio.swt.xygraph.linearscale.Range;
 import org.csstudio.swt.xygraph.linearscale.AbstractScale.LabelSide;
 import org.csstudio.swt.xygraph.linearscale.LinearScale.Orientation;
+import org.csstudio.swt.xygraph.linearscale.Range;
 import org.csstudio.swt.xygraph.undo.OperationsManager;
 import org.csstudio.swt.xygraph.undo.ZoomCommand;
 import org.csstudio.swt.xygraph.undo.ZoomType;
 import org.csstudio.swt.xygraph.util.Log10;
 import org.csstudio.swt.xygraph.util.SingleSourceHelper;
 import org.csstudio.swt.xygraph.util.XYGraphMediaFactory;
-import org.eclipse.draw2d.ColorConstants;
 import org.eclipse.draw2d.Figure;
 import org.eclipse.draw2d.Graphics;
 import org.eclipse.draw2d.Label;
-import org.eclipse.draw2d.SWTGraphics;
 import org.eclipse.draw2d.geometry.Dimension;
 import org.eclipse.draw2d.geometry.Rectangle;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.graphics.Color;
 import org.eclipse.swt.graphics.Font;
 import org.eclipse.swt.graphics.FontData;
-import org.eclipse.swt.graphics.GC;
 import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.graphics.RGB;
+import org.eclipse.swt.widgets.Display;
 
 /**
  * XY-Graph Figure.
@@ -45,8 +43,8 @@ import org.eclipse.swt.graphics.RGB;
 public class XYGraph extends Figure{
 
 	private static final int GAP = 2;
-	public final static Color WHITE_COLOR = ColorConstants.white;
-	public final static Color BLACK_COLOR = ColorConstants.black;
+//	public final static Color WHITE_COLOR = ColorConstants.white;
+//	public final static Color BLACK_COLOR = ColorConstants.black;
 
     /** Default colors for newly added item, used over when reaching the end.
      *  <p>
@@ -102,8 +100,10 @@ public class XYGraph extends Figure{
 		setOpaque(!transparent);
 		legendMap = new LinkedHashMap<Axis, Legend>();
 		titleLabel = new Label();
+		String sysFontName = 
+				Display.getCurrent().getSystemFont().getFontData()[0].getName();
 		setTitleFont(XYGraphMediaFactory.getInstance().getFont(
-				new FontData("Arial", 12, SWT.BOLD)));
+				new FontData(sysFontName, 12, SWT.BOLD)));
 		//titleLabel.setVisible(false);
 		xAxisList = new ArrayList<Axis>();
 		yAxisList = new ArrayList<Axis>();
@@ -376,7 +376,7 @@ public class XYGraph extends Figure{
 		if(legendMap.containsKey(trace.getYAxis()))
 			legendMap.get(trace.getYAxis()).addTrace(trace);
 		else{
-			legendMap.put(trace.getYAxis(), new Legend());
+			legendMap.put(trace.getYAxis(), new Legend(this));
 			legendMap.get(trace.getYAxis()).addTrace(trace);
 			add(legendMap.get(trace.getYAxis()));
 		}

@@ -480,7 +480,7 @@ public class GUI implements AlarmClientModelListener
     // @see AlarmClientModelListener
     @Override
     public void newAlarmState(final AlarmClientModel model,
-            final AlarmTreePV pv)
+            final AlarmTreePV pv, final boolean parent_changed)
     {
         gui_update.trigger();
         if (model.isServerAlive() && have_error_message)

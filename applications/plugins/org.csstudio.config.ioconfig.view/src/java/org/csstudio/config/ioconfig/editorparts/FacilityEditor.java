@@ -50,7 +50,7 @@ import org.slf4j.LoggerFactory;
  * @version $Revision: 1.2 $
  * @since 31.03.2010
  */
-public class FacilityEditor extends AbstractNodeEditor {
+public class FacilityEditor extends AbstractNodeEditor<FacilityDBO> {
     
     private static final Logger LOG = LoggerFactory.getLogger(FacilityEditor.class);
     public static final String ID = "org.csstudio.config.ioconfig.view.editor.facility";

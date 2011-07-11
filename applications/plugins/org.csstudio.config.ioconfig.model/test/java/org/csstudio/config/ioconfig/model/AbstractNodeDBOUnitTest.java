@@ -98,8 +98,7 @@ public class AbstractNodeDBOUnitTest {
 
     @BeforeClass
     public static void setUp() {
-        HibernateRepository repository = new HibernateRepository();
-        repository.injectHibernateManager(new HibernateTestManager());
+        HibernateRepository repository = new HibernateRepository(new HibernateTestManager());
         Repository.injectIRepository(repository);
     }
 

@@ -38,10 +38,11 @@ import org.eclipse.ui.ide.IDE;
  * Helper class used to open file from command line.
  *
  * @author Xihui Chen
- *
  */
 public class OpenDocumentEventProcessor implements Listener {
-    final private List<String> filesToOpen= new ArrayList<String>();
+	// Unless called with files to open, this list is never used,
+	// so initialize with 0 capacity
+    final private List<String> filesToOpen = new ArrayList<String>(0);
 
 	public final static String OPEN_DOC_PROCESSOR = "css.openDocProcessor"; //$NON-NLS-1$
 

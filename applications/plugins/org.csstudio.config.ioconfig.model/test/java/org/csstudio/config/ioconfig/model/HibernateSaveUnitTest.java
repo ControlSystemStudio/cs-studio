@@ -62,8 +62,7 @@ public class HibernateSaveUnitTest {
      */
     @Before
     public void setUp() throws Exception {
-        _repository = new HibernateRepository();
-        _repository.injectHibernateManager(new HibernateTestManager());
+        _repository = new HibernateRepository(new HibernateTestManager());
         Repository.injectIRepository(_repository);
         List<GSDFileDBO> load = _repository.load(GSDFileDBO.class);
         for (GSDFileDBO gsdFileDBO : load) {

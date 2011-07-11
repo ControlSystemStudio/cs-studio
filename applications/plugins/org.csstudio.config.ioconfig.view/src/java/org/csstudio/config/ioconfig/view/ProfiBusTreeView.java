@@ -732,6 +732,10 @@ public class ProfiBusTreeView extends Composite {
                 .getImageDescriptorFromPlugin(IOConfigActivatorUI.PLUGIN_ID, "icons/refresh.gif"));
     }
     
+    public final void reload() {
+        _refreshAction.run();
+    }
+    
     /** refresh the Tree. Reload all Nodes */
     public final void refresh() {
         getViewer().setInput(new Object());
@@ -1199,6 +1203,7 @@ public class ProfiBusTreeView extends Composite {
             text.setLayoutData(new GridData(SWT.FILL, SWT.FILL, false, false, 3, 1));
             
             label = new Label(createDialogArea, SWT.NONE);
+            label.setLayoutData(new GridData(SWT.BEGINNING, SWT.CENTER, false, false));
             createDialogArea.pack();
             return createDialogArea;
         }

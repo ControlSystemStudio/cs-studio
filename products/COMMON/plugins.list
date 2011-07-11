@@ -29,6 +29,7 @@ org.csstudio.diag.probe
 org.csstudio.diag.probe.intro
 org.csstudio.display.channelfinderviewer
 org.csstudio.display.pvtable
+org.csstudio.domain.common
 org.csstudio.domain.desy
 org.csstudio.email
 org.csstudio.email.ui

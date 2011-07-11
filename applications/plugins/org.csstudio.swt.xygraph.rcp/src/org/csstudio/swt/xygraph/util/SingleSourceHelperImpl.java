@@ -21,7 +21,7 @@ public class SingleSourceHelperImpl extends SingleSourceHelper {
 
 	@Override
 	protected Cursor createInternalCursor(Display display, ImageData imageData,
-			int width, int height) {
+			int width, int height, int style) {
 		return new Cursor(display, imageData, width, height);
 	}
 

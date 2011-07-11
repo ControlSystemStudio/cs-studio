@@ -152,7 +152,7 @@ class XYGraphTest extends Figure {
 		trace2Provider.setUpdateDelay(100);
 
 		trace2 = new Trace("Trace 2", xyGraph.primaryXAxis, xyGraph.primaryYAxis, trace2Provider);
-		trace2.setDataProvider(trace2Provider);
+		//trace2.setDataProvider(trace2Provider);
 		trace2.setTraceType(TraceType.SOLID_LINE);
 		trace2.setLineWidth(1);
 		trace2.setPointStyle(PointStyle.CIRCLE);

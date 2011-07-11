@@ -114,7 +114,7 @@ public class AlarmTreeLeaf extends AlarmTreeItem
      *  they receive it from the control system
      */
     @Override
-    public void maximizeSeverity(final AlarmTreeLeaf pv)
+    public boolean maximizeSeverity(final AlarmTreeLeaf pv, boolean parent_changed)
     {
         throw new IllegalStateException("Cannot maximize severity on leaf item"); //$NON-NLS-1$
     }

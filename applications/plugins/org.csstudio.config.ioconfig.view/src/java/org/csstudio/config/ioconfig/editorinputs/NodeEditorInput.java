@@ -56,7 +56,7 @@ public class NodeEditorInput implements IEditorInput {
     }
 
     @Nonnull
-    public AbstractNodeDBO getNode() {
+    public AbstractNodeDBO<?,?> getNode() {
         return _node;
     }
 
@@ -80,8 +80,13 @@ public class NodeEditorInput implements IEditorInput {
      * (@inheritDoc)
      */
     @Override
+    @Nonnull
     public String getName() {
-        return _node.getName();
+        String name = _node.getName();
+        if(name == null) {
+            name = _node.getNodeType().getName();
+        }
+        return name;
     }
 
     /**

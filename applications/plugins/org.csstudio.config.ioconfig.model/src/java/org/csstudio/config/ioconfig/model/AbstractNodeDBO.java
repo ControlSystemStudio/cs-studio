@@ -109,6 +109,7 @@ public abstract class AbstractNodeDBO<P extends AbstractNodeDBO, C extends Abstr
         // Do nothing
     }
 
+    @SuppressWarnings("unchecked")
     public AbstractNodeDBO(@Nonnull final P parent) throws PersistenceException {
         _parent = parent;
         _parent.addChild(this);
@@ -149,6 +150,7 @@ public abstract class AbstractNodeDBO<P extends AbstractNodeDBO, C extends Abstr
      *
      * @return the Children of this node.
      */
+    @SuppressWarnings("deprecation")
     @OneToMany(mappedBy = "parent", targetEntity = AbstractNodeDBO.class, fetch = FetchType.LAZY, cascade = {
             CascadeType.PERSIST, CascadeType.MERGE})
     @Cascade({org.hibernate.annotations.CascadeType.SAVE_UPDATE,

@@ -49,8 +49,8 @@ public class Axis extends LinearScale{
     /** The auto zoom interval in ms.*/
     final static int ZOOM_SPEED = 200;
 
-	private static final Color GRAY_COLOR = XYGraphMediaFactory.getInstance().getColor(
-			XYGraphMediaFactory.COLOR_GRAY);
+//	private static final Color GRAY_COLOR = XYGraphMediaFactory.getInstance().getColor(
+//			XYGraphMediaFactory.COLOR_GRAY);
 
     private String title;
 
@@ -67,9 +67,9 @@ public class Axis extends LinearScale{
 
 	private boolean showMinorGrid = false;
 
-	private Color majorGridColor = GRAY_COLOR;
+	private Color majorGridColor;
 
-	private Color minorGridColor = GRAY_COLOR;
+	private Color minorGridColor;
 
 	private boolean dashGridLine = true;
 
@@ -100,8 +100,9 @@ public class Axis extends LinearScale{
 		addMouseListener(panner);
 		addMouseMotionListener(panner);
 		grabbing = XYGraphMediaFactory.getCursor(CURSOR_TYPE.GRABBING);
+		Font sysFont = Display.getCurrent().getSystemFont();
 		titleFont = XYGraphMediaFactory.getInstance().getFont(
-				new FontData("Arial", 9, SWT.BOLD)); //$NON-NLS-1$
+				new FontData(sysFont.getFontData()[0].getName(), 12, SWT.BOLD)); //$NON-NLS-1$
 		if(getBackgroundColor() != null){
 			RGB backRGB = getBackgroundColor().getRGB();
 			revertBackColor = XYGraphMediaFactory.getInstance().getColor(255- backRGB.red,
@@ -425,6 +426,9 @@ public class Axis extends LinearScale{
 	 * @return the majorGridColor
 	 */
 	public Color getMajorGridColor() {
+		if(majorGridColor == null)
+			majorGridColor = XYGraphMediaFactory.getInstance().getColor
+			(XYGraphMediaFactory.COLOR_GRAY);
 		return majorGridColor;
 	}
 
@@ -441,6 +445,9 @@ public class Axis extends LinearScale{
 	 * @return the minorGridColor
 	 */
 	public Color getMinorGridColor() {
+		if(minorGridColor == null)
+			minorGridColor = XYGraphMediaFactory.getInstance().getColor
+			(XYGraphMediaFactory.COLOR_GRAY);
 		return minorGridColor;
 	}
 

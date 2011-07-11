@@ -65,7 +65,8 @@ public class MaintenanceModeAction extends AbstractUserDependentAction
             @Override
             public void newAlarmConfiguration(AlarmClientModel model) { /* Ignore */ }
             @Override
-            public void newAlarmState(AlarmClientModel model, AlarmTreePV pv) { /* Ignore */ }
+            public void newAlarmState(AlarmClientModel model, AlarmTreePV pv, boolean parent_changed)
+            { /* Ignore */ }
         });
     }
 
