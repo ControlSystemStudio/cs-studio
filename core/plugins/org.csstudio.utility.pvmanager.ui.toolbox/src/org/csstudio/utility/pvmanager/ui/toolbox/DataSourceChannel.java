@@ -51,5 +51,13 @@ public class DataSourceChannel implements Comparable<DataSourceChannel> {
 		return channel.getUsageCounter();
 	}
 	
+	public int getReadUsageCounter() {
+		return channel.getReadUsageCounter();
+	}
+	
+	public int getWriteUsageCounter() {
+		return channel.getWriteUsageCounter();
+	}
+	
 	
 }

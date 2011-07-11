@@ -123,13 +123,43 @@ public class ToolboxView extends ViewPart {
 		totalUsageColumn.setText("T");
 		totalUsageColumn.setToolTipText("Readers + Writers");
 		
+		// Read usage count column
+		TableViewerColumn readUsageViewerColumn = new TableViewerColumn(
+				tableViewer, SWT.NONE);
+		readUsageViewerColumn.setLabelProvider(new CellLabelProvider() {
+			
+			@Override
+			public void update(ViewerCell cell) {
+				cell.setText(Integer.toString(((DataSourceChannel) cell.getElement()).getReadUsageCounter()));
+			}
+		});
+		TableColumn readUsageColumn = readUsageViewerColumn.getColumn();
+		readUsageColumn.setText("R");
+		readUsageColumn.setToolTipText("Readers");
+		
+		// Write usage count column
+		TableViewerColumn writeUsageViewerColumn = new TableViewerColumn(
+				tableViewer, SWT.NONE);
+		writeUsageViewerColumn.setLabelProvider(new CellLabelProvider() {
+			
+			@Override
+			public void update(ViewerCell cell) {
+				cell.setText(Integer.toString(((DataSourceChannel) cell.getElement()).getWriteUsageCounter()));
+			}
+		});
+		TableColumn writeUsageColumn = writeUsageViewerColumn.getColumn();
+		writeUsageColumn.setText("W");
+		writeUsageColumn.setToolTipText("Writers");
+		
 		// Layout
 		
 		TableColumnLayout layout = new TableColumnLayout();
 		container.setLayout(layout);
 		layout.setColumnData(connectedViewerColumn.getColumn(), new ColumnWeightData(0, 24));
 		layout.setColumnData(pvNameViewerColumn.getColumn(), new ColumnWeightData(10));
-		layout.setColumnData(totalUsageViewerColumn.getColumn(), new ColumnWeightData(0, 24));
+		layout.setColumnData(totalUsageViewerColumn.getColumn(), new ColumnWeightData(0, 30));
+		layout.setColumnData(readUsageViewerColumn.getColumn(), new ColumnWeightData(0, 30));
+		layout.setColumnData(writeUsageViewerColumn.getColumn(), new ColumnWeightData(0, 30));
 		
 		tableViewer.setInput(DataSourceContentProvider.ALL);
 
