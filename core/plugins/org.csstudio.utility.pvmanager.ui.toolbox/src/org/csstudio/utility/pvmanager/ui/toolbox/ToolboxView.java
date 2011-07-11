@@ -126,11 +126,7 @@ public class ToolboxView extends ViewPart {
 		layout.setColumnData(pvNameViewerColumn.getColumn(), new ColumnWeightData(10));
 		layout.setColumnData(totalUsageViewerColumn.getColumn(), new ColumnWeightData(0, 24));
 		
-		// Displays the default data source at startup
-		CompositeDataSource dataSource = (CompositeDataSource) PVManager.getDefaultDataSource();
-		if (dataSource.getDefaultDataSource() != null) {
-			tableViewer.setInput(dataSource.getDefaultDataSource());
-		}
+		tableViewer.setInput(DataSourceContentProvider.ALL);
 
 		createActions();
 		initializeToolBar();
