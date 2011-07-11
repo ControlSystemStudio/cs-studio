@@ -56,8 +56,32 @@ public abstract class ChannelHandler<EType> {
         return channelName;
     }
 
-    public int getUsageCounter() {
+    /**
+     * Returns how many read or write PVs are open on
+     * this channel.
+     * 
+     * @return the number of open read/writes
+     */
+    public synchronized int getUsageCounter() {
         return readUsageCounter + writeUsageCounter;
+    }
+    
+    /**
+     * Returns how many read PVs are open on this channel.
+     * 
+     * @return the number of open reads
+     */
+    public synchronized int getReadUsageCounter() {
+        return readUsageCounter;
+    }
+    
+    /**
+     * Returns how many write PVs are open on this channel.
+     * 
+     * @return the number of open writes
+     */
+    public synchronized int getWriteUsageCounter() {
+        return writeUsageCounter;
     }
 
     public synchronized void addMonitor(Collector<?> collector, ValueCache<?> cache, final ExceptionHandler handler) {
