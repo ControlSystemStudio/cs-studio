@@ -294,4 +294,14 @@ public class WaterfallWidget extends Composite {
 	public boolean isShowRange() {
 		return rangeWidget.isVisible();
 	}
+	
+	@Override
+	public void dispose() {
+		// Close the PV on dispose
+		if (pv != null) {
+			pv.close();
+			pv = null;
+		}
+		super.dispose();
+	}
 }
