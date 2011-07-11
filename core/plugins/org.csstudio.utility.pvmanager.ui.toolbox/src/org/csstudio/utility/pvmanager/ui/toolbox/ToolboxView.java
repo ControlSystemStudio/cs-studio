@@ -60,6 +60,33 @@ public class ToolboxView extends ViewPart {
 		table.setLinesVisible(true);
 		tableViewer.setContentProvider(new DataSourceContentProvider());
 		
+		// Connected column
+		
+		TableViewerColumn connectedViewerColumn = new TableViewerColumn(
+				tableViewer, SWT.NONE);
+		connectedViewerColumn.setLabelProvider(new CellLabelProvider() {
+			
+			Image connected = ResourceManager.getPluginImageDescriptor("org.csstudio.utility.pvmanager.ui.toolbox", "icons/connected.png").createImage();
+			Image disconnected = ResourceManager.getPluginImageDescriptor("org.csstudio.utility.pvmanager.ui.toolbox", "icons/disconnected.png").createImage();
+			
+			@Override
+			public void update(ViewerCell cell) {
+				if (((ChannelHandler<?>) cell.getElement()).isConnected()) {
+					cell.setImage(connected);
+				} else {
+					cell.setImage(disconnected);
+				}
+			}
+			
+			@Override
+			public void dispose() {
+				connected.dispose();
+				super.dispose();
+			}
+		});
+		TableColumn connectedColumn = connectedViewerColumn.getColumn();
+		connectedColumn.setText("C");
+		
 		// PV Name column
 		
 		TableViewerColumn pvNameViewerColumn = new TableViewerColumn(
@@ -72,35 +99,18 @@ public class ToolboxView extends ViewPart {
 			}
 		});
 		TableColumn pvNameColumn = pvNameViewerColumn.getColumn();
-		pvNameColumn.setText("Value");
-		
-		// PV Name column
-		
-		TableViewerColumn connectedViewerColumn = new TableViewerColumn(
-				tableViewer, SWT.NONE);
-		connectedViewerColumn.setLabelProvider(new CellLabelProvider() {
-			
-			@Override
-			public void update(ViewerCell cell) {
-				if (((ChannelHandler<?>) cell.getElement()).isConnected()) {
-					cell.setText("Connected");
-				} else {
-					cell.setText("Not Connected");
-				}
-			}
-		});
-		TableColumn connectedColumn = connectedViewerColumn.getColumn();
-		connectedColumn.setText("Value");
+		pvNameColumn.setText("Channel");
 		
 		// Layout
 		
 		TableColumnLayout layout = new TableColumnLayout();
 		container.setLayout(layout);
-		layout.setColumnData(connectedViewerColumn.getColumn(), new ColumnWeightData(10));
+		layout.setColumnData(connectedViewerColumn.getColumn(), new ColumnWeightData(0, 24));
 		layout.setColumnData(pvNameViewerColumn.getColumn(), new ColumnWeightData(10));
 		
 		// Displays the default data source at startup
 		CompositeDataSource dataSource = (CompositeDataSource) PVManager.getDefaultDataSource();
+		System.out.println(dataSource.getDefaultDataSource());
 		if (dataSource.getDefaultDataSource() != null) {
 			tableViewer.setInput(dataSource.getDataSources().get(dataSource.getDefaultDataSource()));
 		}
