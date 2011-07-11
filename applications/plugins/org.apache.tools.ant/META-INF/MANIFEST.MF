@@ -2,7 +2,7 @@ Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: Ant
 Bundle-SymbolicName: org.apache.tools.ant
-Bundle-Version: 1.8.2
+Bundle-Version: 1.8.2.qualifier
 Export-Package: org.apache.tools.ant,
  org.apache.tools.ant.dispatch,
  org.apache.tools.ant.filters,
