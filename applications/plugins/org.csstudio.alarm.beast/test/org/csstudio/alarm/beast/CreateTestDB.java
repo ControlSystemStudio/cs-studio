@@ -15,15 +15,15 @@ import java.io.PrintStream;
 @SuppressWarnings("nls")
 public class CreateTestDB
 {
-	// 5000 PVs in groups of 100 operate like this:
+	// 50000 PVs in groups of 100 operate like this:
 	//
-	// PVs 000..099 Ramp 0..5000 and alarm at  90..100
-	// PVs 100..199 Ramp 0..5000 and alarm at 190..200
+	// PVs 0000..0099 Ramp 0..5000 and alarm at  90..100
+	// PVs 0100..0199 Ramp 0..5000 and alarm at 190..200
 	//
 	// When not latching, they alarm from 0-100, 100-200, ...
 	// to get a longer lasting alarm which then auto-resets
-	final private static int COUNT = 5000;
-	final private static int GROUPSIZE = 100;
+	final private static int COUNT = 50000;
+	final private static int GROUPSIZE = 200;
 	final private static boolean latch = false;
 	
     public static void main(String[] args) throws Exception
@@ -32,7 +32,7 @@ public class CreateTestDB
 		
 		for (int i=0; i<COUNT; ++i)
 		{
-			final String num = String.format("%04d", i);
+			final String num = String.format("%05d", i);
 			
 			final int group = (1 + i/GROUPSIZE) * GROUPSIZE;
 			
@@ -62,16 +62,11 @@ public class CreateTestDB
 		out = new PrintStream("demo.xml");
 		out.println("<?xml version=\"1.0\" encoding=\"UTF-8\" standalone=\"yes\"?>");
 		out.println("<config name=\"demo\">");
-		out.println("<component name=\"Area0000\">");
 		for (int i=0; i<COUNT; ++i)
 		{
-			final String num = String.format("%04d", i);
+			final String num = String.format("%05d", i);
 			if ((i % GROUPSIZE) == 0)
-			{
-		        out.println("</component>");
 				out.println("<component name=\"Area" + num + "\">");
-				
-			}
 			out.println("    <pv name=\"Alarm" + num + "\">");
 			out.println("        <description>Test PV</description>");
 			out.println("        <latching>" + latch + "</latching>");
