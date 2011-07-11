@@ -414,7 +414,7 @@ public class AmsSystemMonitorApplication implements IApplication
         
         LOG.debug("sendWarnMail(): " + text);
 
-        text = text + " [" + dateFormat.format(Calendar.getInstance().getTime()) + "]";
+        String mailText = text + " [" + dateFormat.format(Calendar.getInstance().getTime()) + "]";
         
         IPreferencesService pref = Platform.getPreferencesService();
         
@@ -438,14 +438,14 @@ public class AmsSystemMonitorApplication implements IApplication
                 to = to.substring(0, to.length() - 1);
             }
             
-            success = CommonMailer.sendMail(server, from, to, subject, text);
+            success = CommonMailer.sendMail(server, from, to, subject, mailText);
         }
         else
         {
             // We do not have any mail address. Use the emergency number from the preferences.
             to = pref.getString(AmsSystemMonitorActivator.PLUGIN_ID, PreferenceKeys.P_SMS_EMERGENCY_MAIL, "", null);
             LOG.info("Mail to: " + to);
-            success = CommonMailer.sendMail(server, from, to, subject, text);
+            success = CommonMailer.sendMail(server, from, to, subject, mailText);
         }
                 
         return success;
@@ -462,7 +462,7 @@ public class AmsSystemMonitorApplication implements IApplication
         success = true;
         
         LOG.debug("sendErrorSms(): " + text);
-        text = text + " [" + dateFormat.format(Calendar.getInstance().getTime()) + "]";
+        String mailText = text + " [" + dateFormat.format(Calendar.getInstance().getTime()) + "]";
 
         IPreferencesService prefs = Platform.getPreferencesService();
 
@@ -485,7 +485,7 @@ public class AmsSystemMonitorApplication implements IApplication
                     LOG.info("SMS to: " + list[i]);
                 }
                 
-                success = (CommonMailer.sendMultiMail(server, from, list, subject, text) == 0);
+                success = (CommonMailer.sendMultiMail(server, from, list, subject, mailText) == 0);
             }
             else
             {
@@ -494,7 +494,7 @@ public class AmsSystemMonitorApplication implements IApplication
                 to = localPart.replaceAll("\\$\\{NUMBER\\}", emergency) + "@" + domainPart;
                 LOG.info("SMS to: " + to);
                 
-                success = CommonMailer.sendMail(server, from, to, subject, text);
+                success = CommonMailer.sendMail(server, from, to, subject, mailText);
             }
         }
         else 
@@ -502,7 +502,7 @@ public class AmsSystemMonitorApplication implements IApplication
             to = localPart + "@" + domainPart;
             LOG.info("SMS to: " + to);
             
-            success = CommonMailer.sendMail(server, from, to, subject, text);
+            success = CommonMailer.sendMail(server, from, to, subject, mailText);
         }
         
         // Maybe we want to send the Alarm SMS a second time using the Old Alarm System (via James)
@@ -517,11 +517,11 @@ public class AmsSystemMonitorApplication implements IApplication
             {
                 for(int i = 0;i < list.length;i++)
                 {
-                    list[i] = "N:" + list[i] + " " + text;
+                    list[i] = "N:" + list[i] + " " + mailText;
                     LOG.info("SMS to: " + list[i]);
                 }
                 
-                success = (CommonMailer.sendMultiMail(server, from, "sms@krykmail.desy.de", list, text) == 0);
+                success = (CommonMailer.sendMultiMail(server, from, "sms@krykmail.desy.de", list, mailText) == 0);
             }
         }
         

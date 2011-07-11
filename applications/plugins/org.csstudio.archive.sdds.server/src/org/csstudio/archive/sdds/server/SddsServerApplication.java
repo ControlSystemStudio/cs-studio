@@ -139,8 +139,9 @@ public class SddsServerApplication implements IApplication, RemotelyStoppable, S
         
         if (xmppService != null) {
             xmppService.disconnect();
+            LOG.info("XMPP connection disconnected.");
         }
-        
+
         Integer exitType = null;
         if(restart) {
             LOG.info("Restarting {}", SddsServerActivator.PLUGIN_ID);
@@ -261,9 +262,10 @@ public class SddsServerApplication implements IApplication, RemotelyStoppable, S
                                          "sdds-server", null);
         String xmppPassword = pref.getString(SddsServerActivator.PLUGIN_ID, ServerPreferenceKey.P_XMPP_PASSWORD,
                                              "sdds-server", null);
-    	xmppService = sessionService;
-    	try {
+    	
+        try {
 			sessionService.connect(xmppUser, xmppPassword, xmppServer);
+			xmppService = sessionService;
 		} catch (Exception e) {
 			LOG.warn("XMPP connection is not available, ", e);
 			xmppService = null;
@@ -272,7 +274,7 @@ public class SddsServerApplication implements IApplication, RemotelyStoppable, S
     
     @Override
     public void unbindService(ISessionService service) {
-    	service.disconnect();
+        // Nothing to do here
     }
     
     public void nirvana()

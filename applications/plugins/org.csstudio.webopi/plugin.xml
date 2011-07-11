@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?eclipse version="3.4"?>
+<plugin>
+   <extension-point id="org.csstudio.opibuilder.graphicalFeedbackFactory" name="graphicalFeedbackFactory" schema="schema/graphicalFeedbackFactory.exsd"/>
+   <extension-point id="org.csstudio.opibuilder.widget" name="Widget" schema="schema/widget.exsd"/>
+   <extension
+         point="org.eclipse.rap.ui.entrypoint">
+      <entrypoint
+            class="org.csstudio.webopi.WorkbenchOPIRuntimeEntryPoint"
+            id="org.csstudio.webopi.workbenchOPIRuntime"
+            parameter="webopi">
+      </entrypoint>
+   </extension>
+   <extension
+         point="org.eclipse.ui.perspectives">
+      <perspective
+            class="org.csstudio.opibuilder.runmode.OPIRunnerPerspective"
+            id="org.csstudio.opibuilder.OPIRuntime"
+            name="OPIRuntime Perspective">
+      </perspective>
+   </extension>
+
+</plugin>

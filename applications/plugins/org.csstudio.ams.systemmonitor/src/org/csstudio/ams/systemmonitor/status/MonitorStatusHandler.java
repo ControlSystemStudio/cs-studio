@@ -33,11 +33,11 @@ import java.util.Calendar;
 import java.util.GregorianCalendar;
 import java.util.Iterator;
 import java.util.TreeSet;
-
-import org.apache.log4j.Logger;
+import org.csstudio.ams.systemmonitor.AmsSystemMonitorApplication;
 import org.csstudio.ams.systemmonitor.check.CheckResult;
-import org.csstudio.platform.logging.CentralLogger;
 import org.eclipse.core.runtime.Platform;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * This class handles the current check status and the previous check status if it produces
@@ -47,8 +47,8 @@ import org.eclipse.core.runtime.Platform;
  */
 public class MonitorStatusHandler
 {
-    /** The logger of this class. */
-    private Logger logger;
+    /** The class logger */
+    private static final Logger LOG = LoggerFactory.getLogger(AmsSystemMonitorApplication.class);
     
     /** Status of the AMS system check */
     // private MonitorStatus thisStatus;
@@ -66,10 +66,10 @@ public class MonitorStatusHandler
     private String workspaceLocation;
     
     /** Check interval in ms. A value of 0 forces a check for every runtime. */
-    private long checkInterval;
+    private long _checkInterval;
 
     /** Number of allowed timeouts */
-    private int allowedTimeoutCount;
+    private int _allowedTimeoutCount;
     
     /** Name of the status file */
     private String statusFileName;
@@ -79,8 +79,7 @@ public class MonitorStatusHandler
      * @param name
      * @param filename
      */
-    public MonitorStatusHandler(String name, String filename, int allowedTimeoutCount)
-    {
+    public MonitorStatusHandler(String name, String filename, int allowedTimeoutCount) {
         this(name, filename, 0, allowedTimeoutCount);
     }
     
@@ -90,13 +89,14 @@ public class MonitorStatusHandler
      * @param filename
      * @param checkInterval
      */
-    public MonitorStatusHandler(String name, String filename, long checkInterval, int allowedTimeoutCount)
-    {
-        logger = CentralLogger.getInstance().getLogger(this);
+    public MonitorStatusHandler(String name, String filename,
+                                long checkInterval,
+                                int allowedTimeoutCount) {
+        
         statusHandlerName = name;
         statusFileName = filename;
-        this.checkInterval = checkInterval;
-        this.allowedTimeoutCount = allowedTimeoutCount;
+        this._checkInterval = checkInterval;
+        this._allowedTimeoutCount = allowedTimeoutCount;
         currentStatus = new MonitorStatusEntry(0, CheckResult.NONE, "", false, false, false);
         
         // Retrieve the location of the workspace directory
@@ -110,18 +110,18 @@ public class MonitorStatusHandler
         }
         catch(IllegalStateException ise)
         {
-            logger.warn("Workspace location could not be found. Using working directory '.'");
+            LOG.warn("Workspace location could not be found. Using working directory '.'");
             workspaceLocation = "./";
         }
         
         statusHistory = loadStatus();
         if(statusHistory == null)
         {
-            logger.warn("MonitorStatus object '" + statusFileName + "' not found on disk. Creating a fresh object.");
+            LOG.warn("MonitorStatus object '" + statusFileName + "' not found on disk. Creating a fresh object.");
             statusHistory = new TreeSet<MonitorStatusEntry>(new MonitorStatusEntryComperator());
             if(storeStatus() == true)
             {
-                logger.info("Modem status object stored in " + workspaceLocation + statusFileName + ".");
+                LOG.info("Modem status object stored in " + workspaceLocation + statusFileName + ".");
             }
         }
     }
@@ -137,7 +137,7 @@ public class MonitorStatusHandler
         long delta = 0;
         
         // Do always a check if no check interval is set OR the history is empty (= no check before)
-        if((checkInterval == 0) || statusHistory.isEmpty())
+        if((_checkInterval == 0) || statusHistory.isEmpty())
         {
             return true;
         }
@@ -155,12 +155,12 @@ public class MonitorStatusHandler
         currentDate = new GregorianCalendar();
         delta = currentDate.getTimeInMillis() - prev.getCheckDate();
         
-        return ((checkInterval - delta) <= 60000);
+        return ((_checkInterval - delta) <= 60000);
     }
     
     /**
      * 
-     * @return
+     * @return Status entry
      */
     public MonitorStatusEntry getCurrentStatusEntry()
     {
@@ -178,7 +178,7 @@ public class MonitorStatusHandler
 
     /**
      * 
-     * @return
+     * @return Check result
      */
     public CheckResult getCurrentStatus()
     {
@@ -187,7 +187,7 @@ public class MonitorStatusHandler
     
     /**
      * 
-     * @return
+     * @return Check result
      */
     public CheckResult getPreviousStatus()
     {
@@ -219,7 +219,7 @@ public class MonitorStatusHandler
     
     /**
      * 
-     * @return
+     * @return True or False
      */
     public boolean sendErrorSms()
     {
@@ -246,7 +246,7 @@ public class MonitorStatusHandler
         }
         else if((currentStatus.getCheckStatus() == CheckResult.TIMEOUT) && (getSmsSentOfFirstHistoryEntry() == false))
         {
-            if(getNumberOfTimeouts() > allowedTimeoutCount)
+            if(getNumberOfTimeouts() > _allowedTimeoutCount)
             {
                 decision = true;
             }
@@ -257,7 +257,7 @@ public class MonitorStatusHandler
 
     /**
      * 
-     * @return
+     * @return True or False
      */
     public boolean getSmsSentOfFirstHistoryEntry()
     {
@@ -278,7 +278,7 @@ public class MonitorStatusHandler
 
     /**
      * 
-     * @return
+     * @return True or False
      */
     public boolean sendWarnMail()
     {
@@ -310,7 +310,7 @@ public class MonitorStatusHandler
     
     /**
      * 
-     * @return
+     * @return True or False
      */
     public boolean isPriviousSmsSent()
     {
@@ -328,7 +328,7 @@ public class MonitorStatusHandler
     
     /**
      * 
-     * @return
+     * @return True or False
      */
     public boolean isErrorStatusSet()
     {
@@ -345,7 +345,7 @@ public class MonitorStatusHandler
     
     /**
      * 
-     * @return
+     * @return The number of timeouts the test had caused
      */
     public int getNumberOfTimeouts()
     {
@@ -455,7 +455,7 @@ public class MonitorStatusHandler
 
     /**
      * 
-     * @return
+     * @return The status history string
      */
     public String getStatusHistoryAsString()
     {
@@ -480,7 +480,7 @@ public class MonitorStatusHandler
     
     /**
      * 
-     * @return
+     * @return True or False
      */
     public boolean storeStatus()
     {
@@ -497,21 +497,21 @@ public class MonitorStatusHandler
         }
         catch(FileNotFoundException fnfe)
         {
-            logger.error("storeDate(): [*** FileNotFoundException ***]: " + fnfe.getMessage());
+            LOG.error("storeDate(): [*** FileNotFoundException ***]: " + fnfe.getMessage());
             result = false;
         }
         catch(IOException ioe)
         {
-            logger.error("storeDate(): [*** IOException ***]: " + ioe.getMessage());
+            LOG.error("storeDate(): [*** IOException ***]: " + ioe.getMessage());
             result = false;
         }
         finally
         {
-            if(oos!=null){try{oos.close();}catch(Exception e){}oos=null;}
-            if(fos!=null){try{fos.close();}catch(Exception e){}fos=null;}
+            if(oos!=null){try{oos.close();}catch(Exception e){/*Can be ignored*/}oos=null;}
+            if(fos!=null){try{fos.close();}catch(Exception e){/*Can be ignored*/}fos=null;}
         }
 
-        logger.debug(getStatusHistoryAsString());
+        LOG.debug(getStatusHistoryAsString());
 
         return result;
     }
@@ -540,23 +540,20 @@ public class MonitorStatusHandler
         }
         catch(FileNotFoundException fnfe)
         {
-            logger.error("loadDate(): [*** FileNotFoundException ***]: " + fnfe.getMessage());
-            status = null;
+            LOG.error("loadDate(): [*** FileNotFoundException ***]: " + fnfe.getMessage());
         }
         catch(IOException ioe)
         {
-            logger.error("loadDate(): [*** IOException ***]: " + ioe.getMessage());
-            status = null;
+            LOG.error("loadDate(): [*** IOException ***]: " + ioe.getMessage());
         }
         catch(ClassNotFoundException cnfe)
         {
-            logger.error("loadDate(): [*** ClassNotFoundException ***]: " + cnfe.getMessage());
-            status = null;
+            LOG.error("loadDate(): [*** ClassNotFoundException ***]: " + cnfe.getMessage());
         }
         finally
         {
-            if(ois!=null){try{ois.close();}catch(Exception e){}ois=null;}
-            if(fis!=null){try{fis.close();}catch(Exception e){}fis=null;}
+            if(ois!=null){try{ois.close();}catch(Exception e){/*Can be ignored*/}ois=null;}
+            if(fis!=null){try{fis.close();}catch(Exception e){/*Can be ignored*/}fis=null;}
         }
         
         return status;
