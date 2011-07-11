@@ -41,7 +41,7 @@ public class CreateTestDB
 			out.println("{");
 			out.println("    field(INPA, \"Ramp" + num + "\")");
 			out.println("    field(CALC, \"A<" + COUNT + "?A+1:0\")");
-			out.println("    field(SCAN, \"1 second\")");
+			out.println("    field(SCAN, \".2 second\")");
 			out.println("    field(HOPR, \"" + COUNT + "\")");
 			out.println("    field(FLNK, \"Alarm" + num + "\")");
 			out.println("}");
@@ -66,7 +66,11 @@ public class CreateTestDB
 		{
 			final String num = String.format("%05d", i);
 			if ((i % GROUPSIZE) == 0)
+			{
+				if (i != 0)
+					out.println("</component>");
 				out.println("<component name=\"Area" + num + "\">");
+			}
 			out.println("    <pv name=\"Alarm" + num + "\">");
 			out.println("        <description>Test PV</description>");
 			out.println("        <latching>" + latch + "</latching>");
