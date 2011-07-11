@@ -19,8 +19,12 @@ public class CreateTestDB
 	//
 	// PVs 000..099 Ramp 0..5000 and alarm at  90..100
 	// PVs 100..199 Ramp 0..5000 and alarm at 190..200
+	//
+	// When not latching, they alarm from 0-100, 100-200, ...
+	// to get a longer lasting alarm which then auto-resets
 	final private static int COUNT = 5000;
-	private static final int GROUPSIZE = 100;
+	final private static int GROUPSIZE = 100;
+	final private static boolean latch = false;
 	
     public static void main(String[] args) throws Exception
     {
@@ -44,7 +48,10 @@ public class CreateTestDB
 			out.println("record(calc, \"Alarm" + num + "\")");
 			out.println("{");
 			out.println("    field(INPA, \"Ramp" + num + "\")");
-			out.println("    field(CALC, \"A>=" + (group-10) + "&&A<=" + group + "\")");
+			final int low = latch
+				? group - GROUPSIZE/10
+				: group - GROUPSIZE;
+			out.println("    field(CALC, \"A>=" + low + "&&A<=" + group + "\")");
 			out.println("    field(HIGH, \"1\")");
 			out.println("    field(HSV , \"MINOR\")");
 			out.println("}");
@@ -67,7 +74,7 @@ public class CreateTestDB
 			}
 			out.println("    <pv name=\"Alarm" + num + "\">");
 			out.println("        <description>Test PV</description>");
-			out.println("        <latching>true</latching>");
+			out.println("        <latching>" + latch + "</latching>");
 			out.println("        <annunciating>true</annunciating>");
 			out.println("        <guidance>");
 			out.println("            <title>Test</title>");
