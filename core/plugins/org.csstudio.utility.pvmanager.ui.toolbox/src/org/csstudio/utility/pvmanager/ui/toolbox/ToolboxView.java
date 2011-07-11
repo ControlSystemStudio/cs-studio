@@ -38,8 +38,9 @@ public class ToolboxView extends ViewPart {
 
 	public static final String ID = "org.csstudio.utility.pvmanager.ui.debug.ChannelListView"; //$NON-NLS-1$
 	private Table table;
-	private Action action;
+	private Action selectDataSourceAction;
 	TableViewer tableViewer;
+	private Action refreshAction;
 
 	public ToolboxView() {
 	}
@@ -58,22 +59,45 @@ public class ToolboxView extends ViewPart {
 		table.setHeaderVisible(true);
 		table.setLinesVisible(true);
 		tableViewer.setContentProvider(new DataSourceContentProvider());
-		TableViewerColumn tableViewerColumn_1 = new TableViewerColumn(
+		
+		// PV Name column
+		
+		TableViewerColumn pvNameViewerColumn = new TableViewerColumn(
 				tableViewer, SWT.NONE);
-		tableViewerColumn_1.setLabelProvider(new CellLabelProvider() {
+		pvNameViewerColumn.setLabelProvider(new CellLabelProvider() {
 			
 			@Override
 			public void update(ViewerCell cell) {
 				cell.setText(((ChannelHandler<?>) cell.getElement()).getChannelName());
 			}
 		});
-		TableColumn tblclmnValue = tableViewerColumn_1.getColumn();
-		tblclmnValue.setWidth(201);
-		tblclmnValue.setText("Value");
+		TableColumn pvNameColumn = pvNameViewerColumn.getColumn();
+		pvNameColumn.setText("Value");
+		
+		// PV Name column
+		
+		TableViewerColumn connectedViewerColumn = new TableViewerColumn(
+				tableViewer, SWT.NONE);
+		connectedViewerColumn.setLabelProvider(new CellLabelProvider() {
+			
+			@Override
+			public void update(ViewerCell cell) {
+				if (((ChannelHandler<?>) cell.getElement()).isConnected()) {
+					cell.setText("Connected");
+				} else {
+					cell.setText("Not Connected");
+				}
+			}
+		});
+		TableColumn connectedColumn = connectedViewerColumn.getColumn();
+		connectedColumn.setText("Value");
+		
+		// Layout
 		
 		TableColumnLayout layout = new TableColumnLayout();
 		container.setLayout(layout);
-		layout.setColumnData(tableViewerColumn_1.getColumn(), new ColumnWeightData(10));
+		layout.setColumnData(connectedViewerColumn.getColumn(), new ColumnWeightData(10));
+		layout.setColumnData(pvNameViewerColumn.getColumn(), new ColumnWeightData(10));
 		
 		// Displays the default data source at startup
 		CompositeDataSource dataSource = (CompositeDataSource) PVManager.getDefaultDataSource();
@@ -113,11 +137,11 @@ public class ToolboxView extends ViewPart {
 				});
 			}
 			
-			action = new Action("", SWT.DROP_DOWN) {
+			selectDataSourceAction = new Action("Select Data Source", SWT.DROP_DOWN) {
 			};
-			action.setImageDescriptor(ResourceManager.getPluginImageDescriptor("org.csstudio.utility.pvmanager.ui.toolbox", "icons/source.png"));
-			action.setToolTipText("Data source selection");
-			action.setMenuCreator(new IMenuCreator() {
+			selectDataSourceAction.setImageDescriptor(ResourceManager.getPluginImageDescriptor("org.csstudio.utility.pvmanager.ui.toolbox", "icons/source.png"));
+			selectDataSourceAction.setToolTipText("Select Data Source");
+			selectDataSourceAction.setMenuCreator(new IMenuCreator() {
 				
 				
 				
@@ -139,6 +163,15 @@ public class ToolboxView extends ViewPart {
 				}
 			});
 		}
+		{
+			refreshAction = new Action("Refresh data") {				@Override
+				public void run() {
+					tableViewer.refresh();
+				}
+			};
+			refreshAction.setToolTipText("Refresh data");
+			refreshAction.setImageDescriptor(ResourceManager.getPluginImageDescriptor("org.csstudio.utility.pvmanager.ui.toolbox", "icons/refresh.png"));
+		}
 	}
 
 	/**
@@ -147,7 +180,8 @@ public class ToolboxView extends ViewPart {
 	private void initializeToolBar() {
 		IToolBarManager toolbarManager = getViewSite().getActionBars()
 				.getToolBarManager();
-		toolbarManager.add(action);
+		toolbarManager.add(refreshAction);
+		toolbarManager.add(selectDataSourceAction);
 	}
 
 	/**
