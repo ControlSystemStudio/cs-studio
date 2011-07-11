@@ -147,7 +147,8 @@ public class ToolboxView extends ViewPart {
 				});
 			}
 			
-			selectDataSourceAction = new Action("Select Data Source", SWT.DROP_DOWN) {
+			selectDataSourceAction = new Action("Select Data Source", SWT.DROP_DOWN) {
+
 			};
 			selectDataSourceAction.setImageDescriptor(ResourceManager.getPluginImageDescriptor("org.csstudio.utility.pvmanager.ui.toolbox", "icons/source.png"));
 			selectDataSourceAction.setToolTipText("Select Data Source");
@@ -168,8 +169,7 @@ public class ToolboxView extends ViewPart {
 				
 				@Override
 				public void dispose() {
-					// TODO Auto-generated method stub
-					
+					datasourceSelectionMenu.dispose();
 				}
 			});
 		}
