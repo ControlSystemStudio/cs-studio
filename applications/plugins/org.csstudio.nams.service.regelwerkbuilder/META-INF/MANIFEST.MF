@@ -7,7 +7,8 @@ Bundle-Activator: org.csstudio.nams.service.regelwerkbuilder.RegelwerkBuilderAct
 Bundle-Vendor: DESY <css-developer@desy.de>, Markus Moeller
 Require-Bundle: org.eclipse.core.runtime,
  org.csstudio.nams.common,
- org.csstudio.nams.common.activatorUtils
+ org.csstudio.nams.common.activatorUtils,
+ org.junit;bundle-version="4.8.1"
 Eclipse-LazyStart: true
 Export-Package: org.csstudio.nams.service.regelwerkbuilder;x-friends:="org.csstudio.nams.testUtils.testSuites",
  org.csstudio.nams.service.regelwerkbuilder.declaration,

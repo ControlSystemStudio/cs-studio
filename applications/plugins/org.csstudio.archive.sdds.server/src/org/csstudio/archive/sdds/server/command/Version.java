@@ -42,7 +42,6 @@ public class Version extends ServerCommand {
      * 
      * 
      * @param buffer
-     * @param len
      * @param receivedValue
      * @param resultLength
      */

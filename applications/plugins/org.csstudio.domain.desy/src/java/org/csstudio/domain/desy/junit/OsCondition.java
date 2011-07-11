@@ -29,7 +29,7 @@ import com.google.common.collect.ImmutableSet;
 import com.google.common.collect.Sets;
 
 /**
- * TODO (bknerr) :
+ * The run condition that evaluates whether current operating system belongs to a specific os group.
  *
  * @author bknerr
  * @since 30.05.2011
@@ -37,9 +37,11 @@ import com.google.common.collect.Sets;
 public class OsCondition implements RunCondition {
 
     /**
-     * Used in @RunIf annotation as 'constant expression'.
-     * Unfortunately therefore, enums can only be used indirectly.
-     * Note, the values of the final strings must match the names of the
+     * Used in {@link org.csstudio.domain.desy.junit.RunIf} annotation as 'constant expression'.
+     * Unfortunately, enums can only be used indirectly
+     * ({@link OsGroup}.WIN.name() != 'constant expression').
+     *
+     * Attention, hence the values of the final strings must match the names of the
      * OsGroup enums.
      */
     public static final String WIN = "WIN";
@@ -74,7 +76,7 @@ public class OsCondition implements RunCondition {
      * {@inheritDoc}
      */
     @Override
-    public boolean isTrue() {
+    public boolean shallBeRun() {
         final String osType = System.getProperty("os.name");
 
         for (final OsGroup os : _oss) {

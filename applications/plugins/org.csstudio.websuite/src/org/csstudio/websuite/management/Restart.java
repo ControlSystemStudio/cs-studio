@@ -32,23 +32,20 @@ import org.csstudio.websuite.Stoppable;
  * @author Markus Moeller
  *
  */
-public class Restart implements IManagementCommand
-{
+public class Restart implements IManagementCommand {
+    
     private static Stoppable objectToBeRestarted = null;
 
     /* (non-Javadoc)
      * @see org.csstudio.platform.management.IManagementCommand#execute(org.csstudio.platform.management.CommandParameters)
      */
     @Override
-	public CommandResult execute(CommandParameters parameters)
-    {
+	public CommandResult execute(CommandParameters parameters) {
         objectToBeRestarted.setRestart();
-        
         return CommandResult.createMessageResult("Restarting Websuite");
     }
     
-    public static void staticInject(Stoppable obj)
-    {
+    public static void staticInject(Stoppable obj) {
         objectToBeRestarted = obj;
     }
 }

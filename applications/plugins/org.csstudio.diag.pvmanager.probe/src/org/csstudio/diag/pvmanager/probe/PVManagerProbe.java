@@ -1,7 +1,7 @@
 package org.csstudio.diag.pvmanager.probe;
 
 import static org.csstudio.utility.pvmanager.ui.SWTUtil.onSWTThread;
-import static org.epics.pvmanager.ExpressionLanguage.channel;
+import static org.epics.pvmanager.ExpressionLanguage.*;
 
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -36,6 +36,7 @@ import org.eclipse.ui.part.ViewPart;
 import org.epics.pvmanager.PV;
 import org.epics.pvmanager.PVManager;
 import org.epics.pvmanager.PVValueChangeListener;
+import org.epics.pvmanager.PVWriter;
 import org.epics.pvmanager.data.Alarm;
 import org.epics.pvmanager.data.AlarmSeverity;
 import org.epics.pvmanager.data.Display;
@@ -93,6 +94,9 @@ public class PVManagerProbe extends ViewPart {
 
 	/** Currently connected pv */
 	private PV<?> pv;
+	
+	/** Current pv write */
+	private PVWriter<Object> pvWriter;
 
 	/** Formatting used for the value text field */
 	private ValueFormat valueFormat = new SimpleValueFormat(3);
@@ -318,13 +322,14 @@ public class PVManagerProbe extends ViewPart {
 				final boolean enable = btn_adjust.getSelection();
 				newValueLabel.setVisible(enable);
 				newValueField.setVisible(enable);
+				newValueField.setText(valueField.getText());
 			}
 		});
 
 		newValueField.addSelectionListener(new SelectionAdapter() {
 			@Override
 			public void widgetDefaultSelected(final SelectionEvent e) {
-				// adjustValue(new_value.getText().trim());
+				pvWriter.write(newValueField.getText());
 			}
 		});
 
@@ -481,8 +486,15 @@ public class PVManagerProbe extends ViewPart {
 		}
 
 		// The PV is different, so disconnect and reset the visuals
-		if (pv != null)
+		if (pv != null) {
 			pv.close();
+			pv = null;
+		}
+		
+		if (pvWriter != null) {
+			pvWriter.close();
+			pvWriter = null;
+		}
 
 		setValue(null);
 		setAlarm(null);
@@ -519,6 +531,13 @@ public class PVManagerProbe extends ViewPart {
 				setMeter(Util.numericValueOf(obj), Util.displayOf(obj));
 			}
 		});
+		
+		try {
+			pvWriter = PVManager.write(toChannel(pvName.getName())).async();
+			newValueField.setEditable(true);
+		} catch (Exception e) {
+			newValueField.setEditable(false);
+		}
 		this.PVName = pvName;
 
 		// If this is an instance of the multiple view, show the PV name
@@ -582,8 +601,14 @@ public class PVManagerProbe extends ViewPart {
 	private void setValue(String value) {
 		if (value == null) {
 			valueField.setText(""); //$NON-NLS-1$
+			if (newValueField.isVisible() && !newValueField.isFocusControl()) {
+				newValueField.setText("");
+			}
 		} else {
 			valueField.setText(value);
+			if (newValueField.isVisible() && !newValueField.isFocusControl()) {
+				newValueField.setText(value);
+			}
 		}
 	}
 

@@ -1,3 +1,4 @@
+
 package org.csstudio.nams.configurator.service.synchronize;
 
 import org.csstudio.nams.common.material.SyncronisationsAufforderungsSystemNachchricht;
@@ -7,7 +8,7 @@ import org.csstudio.nams.common.service.StepByStepProcessor;
 import org.csstudio.nams.service.configurationaccess.localstore.declaration.ConfigurationServiceFactory;
 import org.csstudio.nams.service.configurationaccess.localstore.declaration.DatabaseType;
 import org.csstudio.nams.service.configurationaccess.localstore.declaration.LocalStoreConfigurationService;
-import org.csstudio.nams.service.logging.declaration.Logger;
+import org.csstudio.nams.service.logging.declaration.ILogger;
 import org.csstudio.nams.service.messaging.declaration.Consumer;
 import org.csstudio.nams.service.messaging.declaration.MessagingService;
 import org.csstudio.nams.service.messaging.declaration.MessagingSession;
@@ -20,26 +21,27 @@ import org.csstudio.nams.service.preferenceservice.declaration.PreferenceService
 
 public class SynchronizeServiceImpl implements SynchronizeService {
 
-	private final Logger logger;
-	private final ExecutionService executionService;
-	private final ConfigurationServiceFactory configurationServiceFactory;
-	private final PreferenceService preferenceService;
-	private final MessagingService messagingService;
+	private final ILogger _logger;
+	private final ExecutionService _executionService;
+	private final ConfigurationServiceFactory _configurationServiceFactory;
+	private final PreferenceService _preferenceService;
+	private final MessagingService _messagingService;
 
-	public SynchronizeServiceImpl(final Logger logger,
+	public SynchronizeServiceImpl(final ILogger logger,
 			final ExecutionService executionService,
 			final PreferenceService preferenceService,
 			final ConfigurationServiceFactory configurationServiceFactory,
 			MessagingService messagingService) {
-		this.logger = logger;
-		this.executionService = executionService;
-		this.preferenceService = preferenceService;
-		this.configurationServiceFactory = configurationServiceFactory;
-		this.messagingService = messagingService;
+		this._logger = logger;
+		this._executionService = executionService;
+		this._preferenceService = preferenceService;
+		this._configurationServiceFactory = configurationServiceFactory;
+		this._messagingService = messagingService;
 	}
 
-	public void sychronizeAlarmSystem(final Callback callback) {
-		this.executionService.executeAsynchronsly(ThreadTypes.SYNCHRONIZER,
+	@Override
+    public void sychronizeAlarmSystem(final Callback callback) {
+		this._executionService.executeAsynchronsly(ThreadTypes.SYNCHRONIZER,
 				new StepByStepProcessor() {
 					@Override
 					protected void doRunOneSingleStep() throws Throwable,
@@ -56,18 +58,18 @@ public class SynchronizeServiceImpl implements SynchronizeService {
 			callback.bereiteSynchronisationVor();
 
 			try {
-				final LocalStoreConfigurationService localStoreConfigurationService = this.configurationServiceFactory
+				final LocalStoreConfigurationService localStoreConfigurationService = this._configurationServiceFactory
 						.getConfigurationService(
-								this.preferenceService
+								this._preferenceService
 										.getString(PreferenceServiceDatabaseKeys.P_CONFIG_DATABASE_CONNECTION),
 								DatabaseType.Oracle10g,
-								this.preferenceService
+								this._preferenceService
 										.getString(PreferenceServiceDatabaseKeys.P_CONFIG_DATABASE_USER),
-								this.preferenceService
+								this._preferenceService
 										.getString(PreferenceServiceDatabaseKeys.P_CONFIG_DATABASE_PASSWORD));
 				localStoreConfigurationService.prepareSynchonization();
 			} catch (final Throwable t) {
-				this.logger.logErrorMessage(this,
+				this._logger.logErrorMessage(this,
 						"Error on preparation of synchronisation", t); //$NON-NLS-1$
 				callback.fehlerBeimVorbereitenDerSynchronisation(t);
 				callback.synchronisationAbgebrochen();
@@ -77,16 +79,16 @@ public class SynchronizeServiceImpl implements SynchronizeService {
 			callback.sendeNachrichtAnHintergrundSystem();
 
 			try {
-				MessagingSession messagingSession = this.messagingService
+				MessagingSession messagingSession = this._messagingService
 						.createNewMessagingSession(
 								// TODO aus dem prefservice
-								preferenceService.getString(PreferenceServiceJMSKeys.P_JMS_EXT_SYNCHRONIZE_PRODUCER_ID),
+								_preferenceService.getString(PreferenceServiceJMSKeys.P_JMS_EXT_SYNCHRONIZE_PRODUCER_ID),
 //								"syncServiceProducer",
-								new String[] { preferenceService
+								new String[] { _preferenceService
 										.getString(PreferenceServiceJMSKeys.P_JMS_EXTERN_SENDER_PROVIDER_URL) });
 				Producer producer = messagingSession
 						.createProducer(
-								preferenceService
+								_preferenceService
 										.getString(PreferenceServiceJMSKeys.P_JMS_EXT_TOPIC_COMMAND),
 								PostfachArt.TOPIC);
 
@@ -95,7 +97,7 @@ public class SynchronizeServiceImpl implements SynchronizeService {
 				producer.tryToClose();
 				messagingSession.close();
 			} catch (Throwable t) {
-				this.logger.logErrorMessage(this,
+				this._logger.logErrorMessage(this,
 						"Error on sending synchronization message", t); //$NON-NLS-1$
 				callback
 						.synchronisationsDurchHintergrundsystemsFehlgeschalgen(t
@@ -109,19 +111,19 @@ public class SynchronizeServiceImpl implements SynchronizeService {
 			MessagingSession messagingSession = null;
 			Consumer consumer = null;
 			try {
-				messagingSession = this.messagingService
+				messagingSession = this._messagingService
 						.createNewMessagingSession(
 								// TODO aus dem prefservice
-								preferenceService.getString(PreferenceServiceJMSKeys.P_JMS_EXT_SYNCHRONIZE_CONSUMER_ID),
+								_preferenceService.getString(PreferenceServiceJMSKeys.P_JMS_EXT_SYNCHRONIZE_CONSUMER_ID),
 //								"syncServiceConsumer",
 								new String[] {
-										preferenceService
+										_preferenceService
 												.getString(PreferenceServiceJMSKeys.P_JMS_EXTERN_PROVIDER_URL_1),
-										preferenceService
+										_preferenceService
 												.getString(PreferenceServiceJMSKeys.P_JMS_EXTERN_PROVIDER_URL_2) });
 				consumer = messagingSession
 						.createConsumer(
-								preferenceService
+								_preferenceService
 										.getString(PreferenceServiceJMSKeys.P_JMS_EXT_TOPIC_COMMAND),
 								PostfachArt.TOPIC);
 				NAMSMessage message;
@@ -139,7 +141,7 @@ public class SynchronizeServiceImpl implements SynchronizeService {
 					throw new Throwable("Error on receiving synchronization message"); //$NON-NLS-1$
 				}
 			} catch (Throwable t) {
-				this.logger.logErrorMessage(this,
+				this._logger.logErrorMessage(this,
 						"Error on receiving synchronization message", t); //$NON-NLS-1$
 				callback
 						.synchronisationsDurchHintergrundsystemsFehlgeschalgen(t

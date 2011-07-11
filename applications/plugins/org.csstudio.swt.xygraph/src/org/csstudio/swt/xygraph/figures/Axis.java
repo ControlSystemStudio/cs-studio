@@ -18,6 +18,7 @@ import org.csstudio.swt.xygraph.undo.SaveStateCommand;
 import org.csstudio.swt.xygraph.undo.ZoomType;
 import org.csstudio.swt.xygraph.util.GraphicsUtil;
 import org.csstudio.swt.xygraph.util.Log10;
+import org.csstudio.swt.xygraph.util.SWTConstants;
 import org.csstudio.swt.xygraph.util.XYGraphMediaFactory;
 import org.csstudio.swt.xygraph.util.XYGraphMediaFactory.CURSOR_TYPE;
 import org.eclipse.draw2d.FigureUtilities;
@@ -48,8 +49,8 @@ public class Axis extends LinearScale{
     /** The auto zoom interval in ms.*/
     final static int ZOOM_SPEED = 200;
 
-	private static final Color GRAY_COLOR = XYGraphMediaFactory.getInstance().getColor(
-			XYGraphMediaFactory.COLOR_GRAY);
+//	private static final Color GRAY_COLOR = XYGraphMediaFactory.getInstance().getColor(
+//			XYGraphMediaFactory.COLOR_GRAY);
 
     private String title;
 
@@ -66,9 +67,9 @@ public class Axis extends LinearScale{
 
 	private boolean showMinorGrid = false;
 
-	private Color majorGridColor = GRAY_COLOR;
+	private Color majorGridColor;
 
-	private Color minorGridColor = GRAY_COLOR;
+	private Color minorGridColor;
 
 	private boolean dashGridLine = true;
 
@@ -99,8 +100,9 @@ public class Axis extends LinearScale{
 		addMouseListener(panner);
 		addMouseMotionListener(panner);
 		grabbing = XYGraphMediaFactory.getCursor(CURSOR_TYPE.GRABBING);
+		Font sysFont = Display.getCurrent().getSystemFont();
 		titleFont = XYGraphMediaFactory.getInstance().getFont(
-				new FontData("Arial", 9, SWT.BOLD)); //$NON-NLS-1$
+				new FontData(sysFont.getFontData()[0].getName(), 12, SWT.BOLD)); //$NON-NLS-1$
 		if(getBackgroundColor() != null){
 			RGB backRGB = getBackgroundColor().getRGB();
 			revertBackColor = XYGraphMediaFactory.getInstance().getColor(255- backRGB.red,
@@ -188,7 +190,7 @@ public class Axis extends LinearScale{
 
 		super.paintClientArea(graphics);
 
-		graphics.pushState();
+//		graphics.pushState();
 		graphics.setFont(titleFont);
 		final Dimension titleSize = FigureUtilities.getTextExtents(title, titleFont);
 		if(isHorizontal()){
@@ -213,7 +215,7 @@ public class Axis extends LinearScale{
 			}
 		}
 
-		graphics.popState();
+//		graphics.popState();
 
 		// Show the start/end cursor or the 'rubberband' of a zoom operation?
 		if(armed && end != null && start != null){
@@ -221,7 +223,7 @@ public class Axis extends LinearScale{
 			case RUBBERBAND_ZOOM:
 			case HORIZONTAL_ZOOM:
 			case VERTICAL_ZOOM:
-				graphics.setLineStyle(SWT.LINE_DOT);
+				graphics.setLineStyle(SWTConstants.LINE_DOT);
 				graphics.setLineWidth(1);
 				graphics.setForegroundColor(revertBackColor);
 				graphics.drawRectangle(start.x, start.y, end.x - start.x-1, end.y - start.y-1);
@@ -424,6 +426,9 @@ public class Axis extends LinearScale{
 	 * @return the majorGridColor
 	 */
 	public Color getMajorGridColor() {
+		if(majorGridColor == null)
+			majorGridColor = XYGraphMediaFactory.getInstance().getColor
+			(XYGraphMediaFactory.COLOR_GRAY);
 		return majorGridColor;
 	}
 
@@ -440,6 +445,9 @@ public class Axis extends LinearScale{
 	 * @return the minorGridColor
 	 */
 	public Color getMinorGridColor() {
+		if(minorGridColor == null)
+			minorGridColor = XYGraphMediaFactory.getInstance().getColor
+			(XYGraphMediaFactory.COLOR_GRAY);
 		return minorGridColor;
 	}
 

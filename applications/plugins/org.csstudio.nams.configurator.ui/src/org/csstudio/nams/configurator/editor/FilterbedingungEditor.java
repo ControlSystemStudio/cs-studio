@@ -64,7 +64,7 @@ public class FilterbedingungEditor extends AbstractEditor<FilterbedingungBean> {
 
 	public static class FilterTypeBean extends
 			AbstractConfigurationBean<FilterTypeBean> {
-		private SupportedFilterTypes type;
+		private SupportedFilterTypes _type;
 
 		@Override
 		public String getDisplayName() {
@@ -77,7 +77,7 @@ public class FilterbedingungEditor extends AbstractEditor<FilterbedingungBean> {
 		}
 
 		public SupportedFilterTypes getType() {
-			return this.type;
+			return this._type;
 		}
 
 		@Override
@@ -86,8 +86,8 @@ public class FilterbedingungEditor extends AbstractEditor<FilterbedingungBean> {
 		}
 
 		public void setType(final SupportedFilterTypes type) {
-			final SupportedFilterTypes oldValue = this.type;
-			this.type = type;
+			final SupportedFilterTypes oldValue = this._type;
+			this._type = type;
 			this.pcs.firePropertyChange("type", oldValue, type); //$NON-NLS-1$
 		}
 

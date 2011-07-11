@@ -2,12 +2,12 @@ package org.csstudio.utility.quickstart;
 
 import org.csstudio.utility.quickstart.preferences.PreferenceConstants;
 import org.eclipse.core.resources.IFile;
+import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.Preferences;
 import org.eclipse.jface.action.IAction;
 import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.swt.SWT;
-import org.eclipse.swt.widgets.Dialog;
 import org.eclipse.swt.widgets.MessageBox;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.ui.IObjectActionDelegate;
@@ -36,7 +36,8 @@ public class AddToQuickstartAction implements IObjectActionDelegate {
 	/**
 	 * {@inheritDoc}
 	 */
-	public void setActivePart(IAction action, IWorkbenchPart targetPart) {
+	@Override
+    public void setActivePart(IAction action, IWorkbenchPart targetPart) {
 	}
 
 	/**
@@ -44,16 +45,20 @@ public class AddToQuickstartAction implements IObjectActionDelegate {
 	 * path to the preference 'sdsFile'. The preference is a string with all
 	 * quickstart files separated with ';'.
 	 */
-	public void run(IAction action) {
+	@Override
+    public void run(IAction action) {
 		if (_selection != null) {
 			Object element = _selection.getFirstElement();
+			if(element instanceof IPath) {
+			    System.out.println("");
+			}
 			if (element instanceof IFile) {
 				Preferences prefs = Activator.getDefault().getPluginPreferences();
 				String sdsFileList = prefs.getString(PreferenceConstants.SDS_FILES);
 				IFile file = (IFile) element;
 //				sdsFileList = trimSdsFileList(sdsFileList);
 				if(sdsFileList.split(";").length <= 20) {
-					sdsFileList = file.getLocation().toString() + "?;" + sdsFileList;
+					sdsFileList = file.getFullPath().toString() + "?;" + sdsFileList;
 					prefs.setValue("sdsFiles", sdsFileList);
 				} else {
 					Shell shell = PlatformUI.getWorkbench().getDisplay().getActiveShell();
@@ -89,7 +94,8 @@ public class AddToQuickstartAction implements IObjectActionDelegate {
 	/**
 	 * {@inheritDoc}
 	 */
-	public void selectionChanged(IAction action, ISelection selection) {
+	@Override
+    public void selectionChanged(IAction action, ISelection selection) {
 		if (selection instanceof IStructuredSelection) {
 			_selection = (IStructuredSelection) selection;
 		}

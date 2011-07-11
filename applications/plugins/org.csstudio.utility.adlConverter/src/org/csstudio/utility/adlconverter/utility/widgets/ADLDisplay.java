@@ -24,7 +24,6 @@
  */
 package org.csstudio.utility.adlconverter.utility.widgets;
 
-import org.csstudio.platform.logging.CentralLogger;
 import org.csstudio.sds.model.AbstractWidgetModel;
 import org.csstudio.sds.model.DisplayModel;
 import org.csstudio.utility.adlconverter.internationalization.Messages;
@@ -33,6 +32,8 @@ import org.csstudio.utility.adlconverter.utility.ADLWidget;
 import org.csstudio.utility.adlconverter.utility.FileLine;
 import org.csstudio.utility.adlconverter.utility.WrongADLFormatException;
 import org.csstudio.utility.adlconverter.utility.widgetparts.ADLObject;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * @author hrickens
@@ -42,6 +43,8 @@ import org.csstudio.utility.adlconverter.utility.widgetparts.ADLObject;
  */
 public class ADLDisplay extends Widget{
 
+    private static final Logger LOG = LoggerFactory.getLogger(ADLDisplay.class);
+    
     /** 
      * The Color of (front?) Object.
      */
@@ -86,19 +89,19 @@ public class ADLDisplay extends Widget{
             }else if(row[0].trim().toLowerCase().equals("cmap")){ //$NON-NLS-1$
                 _cmap=row[1].trim();
             }else if(row[0].trim().toLowerCase().equals("type")){ //$NON-NLS-1$
-                CentralLogger.getInstance().debug(this, "type:"+display.toString());
+                LOG.debug("type: {}", display.toString());
                 // TODO: Display --> type
             }else if(row[0].trim().toLowerCase().equals("gridspacing")){ //$NON-NLS-1$
-                CentralLogger.getInstance().debug(this, "gridspacing"+display.toString());
+                LOG.debug("gridspacing {}", display.toString());
                 // TODO: SDS don't support yet. Display --> gridSpacing
             }else if(row[0].trim().toLowerCase().equals("gridon")){ //$NON-NLS-1$
-                CentralLogger.getInstance().debug(this, "gridon"+display.toString());
+                LOG.debug("gridon {}", display.toString());
                 // TODO: SDS don't support yet. Display --> gridOn
             }else if(row[0].trim().toLowerCase().equals("snaptogrid")){ //$NON-NLS-1$
                 _widget.setPropertyValue(DisplayModel.PROP_GRID_ON, row[1].equals("1"));
-                CentralLogger.getInstance().debug(this, "snaptogrid"+display.toString());
+                LOG.debug("snaptogrid {}",display.toString());
             }else {//Unknown Property
-                CentralLogger.getInstance().info(this, "Unknwon Property: "+fileLine, new WrongADLFormatException(fileLine+Messages.Display_WrongADLFormatException_Parameter_End));
+                LOG.info("Unknwon Property: {}",fileLine, new WrongADLFormatException(fileLine+Messages.Display_WrongADLFormatException_Parameter_End));
             }
 
         }
@@ -136,12 +139,12 @@ public class ADLDisplay extends Widget{
      * 
      */
     private void setDefaults() {
-        String[] id= new String[]{DisplayModel.PROP_PRIMARY_PV,
-                                  DisplayModel.PROP_VISIBILITY,
-                                  DisplayModel.PROP_PERMISSSION_ID,
-                                  DisplayModel.PROP_LAYER,
-                                  DisplayModel.PROP_ENABLED,
-                                  DisplayModel.PROP_NAME};
+        String[] id= new String[]{AbstractWidgetModel.PROP_PRIMARY_PV,
+                                  AbstractWidgetModel.PROP_VISIBILITY,
+                                  AbstractWidgetModel.PROP_PERMISSSION_ID,
+                                  AbstractWidgetModel.PROP_LAYER,
+                                  AbstractWidgetModel.PROP_ENABLED,
+                                  AbstractWidgetModel.PROP_NAME};
         String[] value= new String[]{"","true","","","true","PolygonModel"}; //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$ //$NON-NLS-5$ //$NON-NLS-6$
         assert (id.length==value.length) :Messages.Display_AssertError;
         for (int i = 0; i < value.length; i++) {

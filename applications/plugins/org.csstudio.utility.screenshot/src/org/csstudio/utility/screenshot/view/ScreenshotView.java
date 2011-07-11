@@ -1,4 +1,3 @@
-
 /* 
  * Copyright (c) 2007 Stiftung Deutsches Elektronen-Synchrotron, 
  * Member of the Helmholtz Association, (DESY), HAMBURG, GERMANY.
@@ -25,13 +24,30 @@ package org.csstudio.utility.screenshot.view;
 
 import java.awt.datatransfer.FlavorEvent;
 import java.awt.datatransfer.FlavorListener;
-import org.csstudio.platform.logging.CentralLogger;
+
 import org.csstudio.utility.screenshot.IImageWorker;
 import org.csstudio.utility.screenshot.ScreenshotPlugin;
 import org.csstudio.utility.screenshot.ScreenshotWorker;
 import org.csstudio.utility.screenshot.destination.MailImageWorker;
 import org.csstudio.utility.screenshot.internal.localization.ScreenshotMessages;
-import org.csstudio.utility.screenshot.menu.action.*;
+import org.csstudio.utility.screenshot.menu.action.EditClearAction;
+import org.csstudio.utility.screenshot.menu.action.EditCopyAction;
+import org.csstudio.utility.screenshot.menu.action.EditPasteAction;
+import org.csstudio.utility.screenshot.menu.action.FilePrintImageAction;
+import org.csstudio.utility.screenshot.menu.action.FileSaveImageAsAction;
+import org.csstudio.utility.screenshot.menu.action.FileSendImageAction;
+import org.csstudio.utility.screenshot.menu.action.FitImageAction;
+import org.csstudio.utility.screenshot.menu.action.HelpDocumentationAction;
+import org.csstudio.utility.screenshot.menu.action.RestartBeepAction;
+import org.csstudio.utility.screenshot.menu.action.RestartFiveAction;
+import org.csstudio.utility.screenshot.menu.action.RestartSevenAction;
+import org.csstudio.utility.screenshot.menu.action.RestartThreeAction;
+import org.csstudio.utility.screenshot.menu.action.SelectionScreenAction;
+import org.csstudio.utility.screenshot.menu.action.SelectionSectionAction;
+import org.csstudio.utility.screenshot.menu.action.SelectionWindowAction;
+import org.csstudio.utility.screenshot.menu.action.ShowOriginalAction;
+import org.csstudio.utility.screenshot.menu.action.ZoomInAction;
+import org.csstudio.utility.screenshot.menu.action.ZoomOutAction;
 import org.csstudio.utility.screenshot.util.ClipboardHandler;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IConfigurationElement;
@@ -46,52 +62,50 @@ import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.ui.IActionBars;
 import org.eclipse.ui.part.ViewPart;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * @author Markus Moeller
  *
  */
-public class ScreenshotView extends ViewPart implements FlavorListener
-{
+public class ScreenshotView extends ViewPart implements FlavorListener {
+    private static final Logger LOG = LoggerFactory.getLogger(ScreenshotView.class);
+    
     private ScreenshotWorker worker;
     private IImageWorker[] imageWorker;
     private Action toolBarPasteAction;
     
     /**  */
     public ScreenshotView() {
-    	// Can be empty
+        // Can be empty
     }
-        
+    
     /**  */
     @Override
-	public void createPartControl(Composite parent)
-    {
+    public void createPartControl(Composite parent) {
         Action tempAction = null;
         IExtensionRegistry extReg = Platform.getExtensionRegistry();
         IConfigurationElement[] confElements = extReg
-                        .getConfigurationElementsFor("org.csstudio.utility.screenshot.ImageWorker");
-
-        CentralLogger.getInstance().debug(this, "Implementationen: " + confElements.length);
+                .getConfigurationElementsFor("org.csstudio.utility.screenshot.ImageWorker");
         
-        if(confElements.length > 0)
-        {
+        LOG.debug("Implementationen: {}", confElements.length);
+        
+        if(confElements.length > 0) {
             imageWorker = new IImageWorker[confElements.length];
-        
-            for(int x = 0;x < confElements.length;x++)
-            {
-                try
-                {
-                    imageWorker[x] = (IImageWorker)confElements[x].createExecutableExtension("class");                                
-                }
-                catch(CoreException ce)
-                {
-                    CentralLogger.getInstance().error(this, "*** CoreException *** : " + ce.getMessage());
+            
+            for (int x = 0; x < confElements.length; x++) {
+                try {
+                    imageWorker[x] = (IImageWorker) confElements[x]
+                            .createExecutableExtension("class");
+                } catch (CoreException ce) {
+                    LOG.error("*** CoreException *** : ", ce);
                 }
             }
         }
         
         worker = new ScreenshotWorker(parent);
-
+        
         // Add toolbar contributions
         IActionBars actionBars = getViewSite().getActionBars();
         IToolBarManager toolbarManager = actionBars.getToolBarManager();
@@ -109,57 +123,53 @@ public class ScreenshotView extends ViewPart implements FlavorListener
         tempAction = new FitImageAction(worker);
         tempAction.setImageDescriptor(ScreenshotPlugin.getImageDescriptor("icons/fitimage.gif"));
         toolbarManager.add(tempAction);
-
+        
         tempAction = new ShowOriginalAction(worker);
         tempAction.setImageDescriptor(ScreenshotPlugin.getImageDescriptor("icons/original.gif"));
         toolbarManager.add(tempAction);
-
+        
         toolbarManager.add(new Separator());
         
         // Copy / Paste icons
         tempAction = new EditCopyAction(worker);
         tempAction.setImageDescriptor(ScreenshotPlugin.getImageDescriptor("icons/copy.gif"));
         toolbarManager.add(tempAction);
-
+        
         toolBarPasteAction = new EditPasteAction(worker);
-        toolBarPasteAction.setImageDescriptor(ScreenshotPlugin.getImageDescriptor("icons/paste.gif"));
+        toolBarPasteAction.setImageDescriptor(ScreenshotPlugin
+                .getImageDescriptor("icons/paste.gif"));
         toolbarManager.add(toolBarPasteAction);
         ClipboardHandler.getInstance().addListener(this);
         
         toolbarManager.add(new Separator());
-
+        
         // Create the menu
         MenuManager fileMenu = new MenuManager(ScreenshotMessages.getString("ScreenshotView.MENU_FILE"));
-
-        if(imageWorker != null)
-        {
+        
+        if(imageWorker != null) {
             MenuManager fileSendMenu = new MenuManager(ScreenshotMessages.getString("ScreenshotView.MENU_FILE_SEND"));
             
-            for(int i = 0;i < imageWorker.length;i++)
-            {
+            for (int i = 0; i < imageWorker.length; i++) {
                 tempAction = new FileSendImageAction(worker, imageWorker[i]);
                 fileSendMenu.add(tempAction);
                 
-                if(imageWorker[i] instanceof MailImageWorker)
-                {
+                if(imageWorker[i] instanceof MailImageWorker) {
                     tempAction = new FileSendImageAction(worker, imageWorker[i]);
-                    tempAction.setImageDescriptor(ScreenshotPlugin.getImageDescriptor("icons/email.gif"));
+                    tempAction.setImageDescriptor(ScreenshotPlugin
+                            .getImageDescriptor("icons/email.gif"));
                     toolbarManager.add(tempAction);
-                }
-                else
-                {
+                } else {
                     tempAction = new FileSendImageAction(worker, imageWorker[i]);
-                    tempAction.setImageDescriptor(ScreenshotPlugin.getImageDescriptor("icons/send.gif"));
+                    tempAction.setImageDescriptor(ScreenshotPlugin
+                            .getImageDescriptor("icons/send.gif"));
                     toolbarManager.add(tempAction);
                 }
             }
             
             fileMenu.add(fileSendMenu);
             fileMenu.add(new Separator());
-        }
-        else
-        {
-            CentralLogger.getInstance().error(this, "Sorry, no image worker available.");
+        } else {
+            LOG.error("Sorry, no image worker available.");
         }
         
         toolbarManager.add(new Separator());
@@ -172,12 +182,12 @@ public class ScreenshotView extends ViewPart implements FlavorListener
         tempAction = new FileSaveImageAsAction(worker);
         tempAction.setImageDescriptor(ScreenshotPlugin.getImageDescriptor("icons/save.gif"));
         toolbarManager.add(tempAction);
-
+        
         tempAction = new FilePrintImageAction(worker, false);
         tempAction.setImageDescriptor(ScreenshotPlugin.getImageDescriptor("icons/print.gif"));
         toolbarManager.add(tempAction);
         toolbarManager.add(new Separator());
-
+        
         MenuManager editMenu = new MenuManager(ScreenshotMessages.getString("ScreenshotView.MENU_EDIT"));
         EditCopyAction copyAction = new EditCopyAction(worker);
         editMenu.add(copyAction);
@@ -206,7 +216,7 @@ public class ScreenshotView extends ViewPart implements FlavorListener
         tempAction.setImageDescriptor(ScreenshotPlugin.getImageDescriptor("icons/screen.gif"));
         toolbarManager.add(tempAction);
         toolbarManager.add(new Separator());
-       
+        
         MenuManager restartMenu = new MenuManager(ScreenshotMessages.getString("ScreenshotView.MENU_RESTART"));
         restartMenu.add(new RestartBeepAction(worker));
         restartMenu.add(new Separator());
@@ -216,29 +226,28 @@ public class ScreenshotView extends ViewPart implements FlavorListener
         
         MenuManager helpMenu = new MenuManager(ScreenshotMessages.getString("ScreenshotView.MENU_HELP"));
         helpMenu.add(new HelpDocumentationAction(worker));
-                
+        
         menuBar.add(fileMenu);
         menuBar.add(editMenu);
         menuBar.add(captureMenu);
         menuBar.add(restartMenu);
         menuBar.add(helpMenu);
-                
+        
         actionBars.updateActionBars();
-
+        
         worker.setDefaults();
     }
-
+    
     /**
      * Called when the View is to be disposed
-     */ 
+     */
     @Override
-	public void dispose() {
+    public void dispose() {
         
-    	worker.dispose();
+        worker.dispose();
         worker = null;
         
-        for(int i = 0;i < imageWorker.length;i++)
-        {
+        for (int i = 0; i < imageWorker.length; i++) {
             imageWorker[i] = null;
         }
         
@@ -262,13 +271,13 @@ public class ScreenshotView extends ViewPart implements FlavorListener
      * @see org.eclipse.ui.part.ViewPart#setFocus
      */
     @Override
-	public void setFocus() {
+    public void setFocus() {
         worker.setFocus();
     }
-
+    
     public void flavorsChanged(FlavorEvent flavorEvent) {
         
-    	if(ClipboardHandler.getInstance().isImageAvailable()) {
+        if(ClipboardHandler.getInstance().isImageAvailable()) {
             toolBarPasteAction.setEnabled(true);
         } else {
             toolBarPasteAction.setEnabled(false);

@@ -23,8 +23,6 @@
 
 package org.csstudio.ams.dbAccess.configdb;
 
-import java.io.Serializable;
-
 import org.csstudio.ams.dbAccess.ItemInterface;
 import org.csstudio.ams.dbAccess.TObject;
 
@@ -45,8 +43,10 @@ import org.csstudio.ams.dbAccess.TObject;
  * );
  * </pre>
  */
-public class TopicTObject extends TObject implements ItemInterface, Serializable{
-	/**
+@SuppressWarnings("hiding")
+public class TopicTObject extends TObject implements ItemInterface {
+	
+    /**
 	 * generated Serial version id.
 	 */
 	private static final long serialVersionUID = 1336106394298251516L;
@@ -120,7 +120,8 @@ public class TopicTObject extends TObject implements ItemInterface, Serializable
 	/**
 	 * The id of this topic.
 	 */
-	public int getID() {
+	@Override
+    public int getID() {
 		return topicID;
 	}
 

@@ -197,13 +197,6 @@
          unpack="false"/>
 
    <plugin
-         id="org.csstudio.platform.libs.jdom"
-         download-size="0"
-         install-size="0"
-         version="0.0.0"
-         unpack="false"/>
-
-   <plugin
          id="org.csstudio.auth.ui"
          download-size="0"
          install-size="0"
@@ -321,7 +314,7 @@
          unpack="false"/>
 
    <plugin
-         id="org.csstudio.utility.channel.adapters"
+         id="org.jdom"
          download-size="0"
          install-size="0"
          version="0.0.0"

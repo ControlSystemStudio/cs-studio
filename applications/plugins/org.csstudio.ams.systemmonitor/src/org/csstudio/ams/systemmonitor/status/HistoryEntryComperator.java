@@ -35,6 +35,7 @@ public class HistoryEntryComperator implements Comparator<MonitorStatusHistoryEn
     /** Generated serial version id */
     private static final long serialVersionUID = 1279665613470619038L;
 
+    @Override
     public int compare(MonitorStatusHistoryEntry arg0, MonitorStatusHistoryEntry arg1)
     {
         // Descending order. The youngest entry(highest timestamp) first.

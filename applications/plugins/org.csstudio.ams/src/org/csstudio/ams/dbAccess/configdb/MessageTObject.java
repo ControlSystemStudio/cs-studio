@@ -28,14 +28,16 @@ package org.csstudio.ams.dbAccess.configdb;
 	cProperty		VARCHAR(16),
 	cValue			VARCHAR(256)
  */
-public class MessageTObject
-{
-	private int 	messageID;
+@SuppressWarnings("hiding")
+public class MessageTObject {
+	
+    private int 	messageID;
 	private String 	property;
 	private String 	value;
 	
-	public MessageTObject()
-	{}
+	public MessageTObject() {
+	    // Nothing to do
+	}
 	
 	public MessageTObject(int messageID, String property, String value)
 	{

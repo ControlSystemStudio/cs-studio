@@ -101,7 +101,7 @@ public class ModemTestStatus
     
     /**
      * 
-     * @return
+     * @return The ID of this check
      */
     public String getCheckId()
     {

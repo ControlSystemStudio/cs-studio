@@ -1,13 +1,15 @@
+
 /**
  * 
  */
+
 package org.csstudio.nams.common.material.regelwerk;
 
 import java.math.BigDecimal;
 
 import org.csstudio.nams.common.fachwert.Millisekunden;
 import org.csstudio.nams.common.material.AlarmNachricht;
-import org.csstudio.nams.service.logging.declaration.Logger;
+import org.csstudio.nams.service.logging.declaration.ILogger;
 import org.csstudio.platform.model.pvs.IProcessVariableAddress;
 import org.csstudio.platform.model.pvs.ValueType;
 import org.csstudio.platform.simpledal.ConnectionState;
@@ -53,7 +55,8 @@ public class ProcessVariableRegel implements VersandRegel {
 		/**
 		 * {@inheritDoc}
 		 */
-		public void connectionStateChanged(final ConnectionState connectionState) {
+		@Override
+        public void connectionStateChanged(final ConnectionState connectionState) {
 			ProcessVariableRegel.logger.logDebugMessage(this,
 					"ConnectionState changed, new state: " + connectionState);
 			if (ConnectionState.CONNECTED.equals(connectionState)) {
@@ -72,7 +75,8 @@ public class ProcessVariableRegel implements VersandRegel {
 			return this._lastReceivedValue;
 		}
 
-		public void errorOccured(final String error) {
+		@Override
+        public void errorOccured(final String error) {
 			ProcessVariableRegel.logger.logWarningMessage(this, "Error reported by simple DAL : " + error);
 		}
 
@@ -86,7 +90,8 @@ public class ProcessVariableRegel implements VersandRegel {
 		/**
 		 * {@inheritDoc}
 		 */
-		public void valueChanged(final T value, final Timestamp timestamp) {
+		@Override
+        public void valueChanged(final T value, final Timestamp timestamp) {
 		    String tempValue = null;
 		    String tempTimestamp = null;
 		    tempValue = (value != null) ? value.toString() : "null";
@@ -97,14 +102,14 @@ public class ProcessVariableRegel implements VersandRegel {
 		}
 	}
 
-	private static Logger logger;
+	private static ILogger logger;
 
-	public static Logger getLogger() {
+	public static ILogger getLogger() {
 		return ProcessVariableRegel.logger;
 	}
 
 	public static void staticInject(
-			final org.csstudio.nams.service.logging.declaration.Logger logger) {
+			final org.csstudio.nams.service.logging.declaration.ILogger logger) {
 		ProcessVariableRegel.logger = logger;
 
 	}
@@ -161,7 +166,8 @@ public class ProcessVariableRegel implements VersandRegel {
 	 * @see de.c1wps.desy.ams.allgemeines.regelwerk.VersandRegel#pruefeNachrichtAufBestaetigungsUndAufhebungsNachricht(de.c1wps.desy.ams.allgemeines.AlarmNachricht,
 	 *      de.c1wps.desy.ams.allgemeines.regelwerk.Pruefliste)
 	 */
-	public void pruefeNachrichtAufBestaetigungsUndAufhebungsNachricht(
+	@Override
+    public void pruefeNachrichtAufBestaetigungsUndAufhebungsNachricht(
 			final AlarmNachricht nachricht, final Pruefliste bisherigesErgebnis) {
 		// evaluation is done on first processing
 	}
@@ -172,7 +178,8 @@ public class ProcessVariableRegel implements VersandRegel {
 	 * @see de.c1wps.desy.ams.allgemeines.regelwerk.VersandRegel#pruefeNachrichtAufTimeOuts(de.c1wps.desy.ams.allgemeines.regelwerk.Pruefliste,
 	 *      de.c1wps.desy.ams.allgemeines.Millisekunden)
 	 */
-	public Millisekunden pruefeNachrichtAufTimeOuts(
+	@Override
+    public Millisekunden pruefeNachrichtAufTimeOuts(
 			final Pruefliste bisherigesErgebnis,
 			final Millisekunden verstricheneZeitSeitErsterPruefung) {
 		// timeouts are irrelevant
@@ -185,7 +192,8 @@ public class ProcessVariableRegel implements VersandRegel {
 	 * @see de.c1wps.desy.ams.allgemeines.regelwerk.VersandRegel#pruefeNachrichtErstmalig(de.c1wps.desy.ams.allgemeines.AlarmNachricht,
 	 *      de.c1wps.desy.ams.allgemeines.regelwerk.Pruefliste)
 	 */
-	public Millisekunden pruefeNachrichtErstmalig(
+	@Override
+    public Millisekunden pruefeNachrichtErstmalig(
 			final AlarmNachricht nachricht, final Pruefliste ergebnisListe) {
 		if (this._processVariableChangeListener.isConnected()) {
 			final Object currentValue = this._processVariableChangeListener

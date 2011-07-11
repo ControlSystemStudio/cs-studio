@@ -10,12 +10,16 @@ import static org.csstudio.sds.cosyrules.color.MaintenanceRulePreference.MAINTEN
 import org.csstudio.sds.model.IRule;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.Platform;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * @author hrickens
  *
  */
 public class MaintenanceRule implements IRule {
+    
+    private static final Logger LOG = LoggerFactory.getLogger(MaintenanceRule.class);
     
     private IPath _defaultPath;
     private IPath _dispayPath = null;
@@ -33,10 +37,16 @@ public class MaintenanceRule implements IRule {
     /**
     * 
     */
-    private void init() {
-        _defaultPath = MAINTENANCE_UNKNOWN_DISPLAY_PATH.getValue();
-        _dispayPath = MAINTENANCE_DISPLAY_PATH.getValue();
-        _preFileName = MAINTENANCE_PRE_FILE_NAME.getValue();
+    private boolean init() {
+        try {
+            _defaultPath = MAINTENANCE_UNKNOWN_DISPLAY_PATH.getValue();
+            _dispayPath = MAINTENANCE_DISPLAY_PATH.getValue();
+            _preFileName = MAINTENANCE_PRE_FILE_NAME.getValue();
+            return true;
+        } catch (Exception e) {
+            LOG.warn("Wrong preferences!", e);
+        }
+        return false;
     }
     
     /* (non-Javadoc)
@@ -44,29 +54,31 @@ public class MaintenanceRule implements IRule {
      */
     @Override
     public Object evaluate(Object[] arguments) {
-        init();
-        IPath iPath = _defaultPath;
-        if (arguments.length > 0) {
-            Object obj = arguments[0];
-            if (obj instanceof String) {
-                String rtyp = (String) obj;
-                int indexOf = _preFileName.toLowerCase().indexOf("{rtyp}");
-                if (indexOf >= 0) {
-                    StringBuilder sb = new StringBuilder();
-                    sb.append(_preFileName.substring(0, indexOf));
-                    sb.append(rtyp);
-                    sb.append(_preFileName.substring(indexOf + 6));
-                    if (!sb.toString().toLowerCase().endsWith(".css-sds")) {
-                        sb.append(".css-sds");
+        IPath iPath = null;
+        if(init()) {
+            iPath = _defaultPath;
+            if(arguments.length > 0) {
+                Object obj = arguments[0];
+                if(obj instanceof String) {
+                    String rtyp = (String) obj;
+                    int indexOf = _preFileName.toLowerCase().indexOf("{rtyp}");
+                    if(indexOf >= 0) {
+                        StringBuilder sb = new StringBuilder();
+                        sb.append(_preFileName.substring(0, indexOf));
+                        sb.append(rtyp);
+                        sb.append(_preFileName.substring(indexOf + 6));
+                        if(!sb.toString().toLowerCase().endsWith(".css-sds")) {
+                            sb.append(".css-sds");
+                        }
+                        iPath = _dispayPath.append(sb.toString());
+                    } else {
+                        iPath = _dispayPath.append(_preFileName + rtyp + ".css-sds");
                     }
-                    iPath = _dispayPath.append(sb.toString());
-                } else {
-                    iPath = _dispayPath.append(_preFileName + rtyp + ".css-sds");
-                }
-                IPath location = Platform.getLocation();
-                IPath append = location.append(iPath);
-                if(!append.toFile().isFile()) {
-                    iPath = _defaultPath;
+                    IPath location = Platform.getLocation();
+                    IPath append = location.append(iPath);
+                    if(!append.toFile().isFile()) {
+                        iPath = _defaultPath;
+                    }
                 }
             }
         }

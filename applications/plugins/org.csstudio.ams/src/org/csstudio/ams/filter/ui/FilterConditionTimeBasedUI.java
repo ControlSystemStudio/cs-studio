@@ -1,3 +1,4 @@
+
 /* 
  * Copyright (c) 2008 Stiftung Deutsches Elektronen-Synchrotron, 
  * Member of the Helmholtz Association, (DESY), HAMBURG, GERMANY.
@@ -19,7 +20,8 @@
  * PROJECT IN THE FILE LICENSE.HTML. IF THE LICENSE IS NOT INCLUDED YOU MAY FIND A COPY 
  * AT HTTP://WWW.DESY.DE/LEGAL/LICENSE.HTM
  */
- package org.csstudio.ams.filter.ui;
+
+package org.csstudio.ams.filter.ui;
 
 import java.sql.Connection;
 import java.text.NumberFormat;
@@ -79,8 +81,8 @@ public class FilterConditionTimeBasedUI extends FilterConditionUI implements Sel
 		super();
 	}
 
-	public String getDisplayName()
-	{
+	@Override
+    public String getDisplayName() {
 		return Messages.FilterConditionTimeBasedUI_DisplayName;
 	}
 
@@ -137,10 +139,8 @@ public class FilterConditionTimeBasedUI extends FilterConditionUI implements Sel
 				setText(display, txtValue[1], showNumberFormat.format(storeNumberFormat.parse(condition.getConfirmCompValue())));
 				break;
 			}	
-		}
-		catch(Exception ex)
-		{
-			
+		} catch(Exception ex) {
+		    // Can be ignored
 		}
 	}
 	
@@ -194,11 +194,10 @@ public class FilterConditionTimeBasedUI extends FilterConditionUI implements Sel
 		}
 	}
 	
-	public void reset()
-	{
+	@Override
+    public void reset() {
 		setSelection(display, optTimeRemoval, true);
-		for(int i = 0; i <= 1; i++)
-		{
+		for(int i = 0; i <= 1; i++) {
 			deselectAll(display, cboKeyValue[i]);
 			deselectAll(display, cboKeyValueType[i]);
 			actOnKeyValueTypeChanged(i);
@@ -288,7 +287,8 @@ public class FilterConditionTimeBasedUI extends FilterConditionUI implements Sel
 			
 			cboKeyValueType[i].addSelectionListener(new SelectionAdapter()
 			{
-				public void widgetSelected(SelectionEvent e) 
+				@Override
+                public void widgetSelected(SelectionEvent e) 
 				{
 					actOnKeyValueTypeChanged(e.getSource() == cboKeyValueType[0] ? 0 : 1);
 				}
@@ -309,7 +309,8 @@ public class FilterConditionTimeBasedUI extends FilterConditionUI implements Sel
 		initText();
 	}
 	
-	public void widgetSelected(SelectionEvent e)
+	@Override
+    public void widgetSelected(SelectionEvent e)
 	{
 		if(e.getSource() == optTimeRemoval)
 		{
@@ -321,8 +322,9 @@ public class FilterConditionTimeBasedUI extends FilterConditionUI implements Sel
 		}
 	}
 
-	public void widgetDefaultSelected(SelectionEvent e)
-	{		
+	@Override
+    public void widgetDefaultSelected(SelectionEvent e) {
+	    // Nothing do do here?
 	}
 	
 	private VerifyInput currentValueVerify = null;
@@ -410,7 +412,8 @@ public class FilterConditionTimeBasedUI extends FilterConditionUI implements Sel
 		}
 	}
 	
-	public void createUI(Composite parent)
+	@Override
+    public void createUI(Composite parent)
 	{		
 		if(composite == null)
 		{
@@ -422,13 +425,15 @@ public class FilterConditionTimeBasedUI extends FilterConditionUI implements Sel
 		}
 	}
 	
-	public void dispose()
+	@Override
+    public void dispose()
 	{
 		if(composite != null)
 			composite.dispose();
 	}	
 	
-	public boolean check()
+	@Override
+    public boolean check()
 	{
 		if(!(check(0) && check(1)))
 			return false;
@@ -508,7 +513,8 @@ public class FilterConditionTimeBasedUI extends FilterConditionUI implements Sel
 		return false;
 	}
 	
-	public boolean isChanged()
+	@Override
+    public boolean isChanged()
 	{
 		FilterConditionTimeBasedTObject newElement = new FilterConditionTimeBasedTObject();
 		
@@ -520,7 +526,8 @@ public class FilterConditionTimeBasedUI extends FilterConditionUI implements Sel
 		return !newElement.equals(conditionOrg);
 	}
 
-	public void create(Connection conDb, int iFilterConditionID) throws AMSException 
+	@Override
+    public void create(Connection conDb, int iFilterConditionID) throws AMSException 
 	{
 		try
 		{
@@ -535,7 +542,8 @@ public class FilterConditionTimeBasedUI extends FilterConditionUI implements Sel
 		}
 	}
 
-	public void delete(Connection conDb, int iFilterConditionID) throws AMSException 
+	@Override
+    public void delete(Connection conDb, int iFilterConditionID) throws AMSException 
 	{
 		try
 		{	
@@ -547,7 +555,8 @@ public class FilterConditionTimeBasedUI extends FilterConditionUI implements Sel
 		}
 	}
 
-	public void load(Connection conDb, int iFilterConditionID) throws AMSException 
+	@Override
+    public void load(Connection conDb, int iFilterConditionID) throws AMSException 
 	{
 		try
 		{	
@@ -559,7 +568,8 @@ public class FilterConditionTimeBasedUI extends FilterConditionUI implements Sel
 		}
 	}
 
-	public void save(Connection conDb) throws AMSException 
+	@Override
+    public void save(Connection conDb) throws AMSException 
 	{
 		try
 		{
@@ -626,12 +636,14 @@ public class FilterConditionTimeBasedUI extends FilterConditionUI implements Sel
 			this.text = text;
 		}
 		
-		public int getID()
+		@Override
+        public int getID()
 		{
 			return id;
 		}
 		
-		public String toString()
+		@Override
+        public String toString()
 		{
 			return text == null ? "" : text;
 		}
@@ -646,7 +658,8 @@ public class FilterConditionTimeBasedUI extends FilterConditionUI implements Sel
 			this.validChars = validChars;
 		}
 		
-		public void verifyText(VerifyEvent e)
+		@Override
+        public void verifyText(VerifyEvent e)
 		{
 			switch(e.keyCode)
 			{

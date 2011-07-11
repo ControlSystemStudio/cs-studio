@@ -35,9 +35,10 @@ import org.csstudio.ams.dbAccess.TObject;
 	iTimeOutSec			NUMBER(11),
 	PRIMARY KEY (iUserGroupId)						
 */
-public class UserGroupTObject extends TObject implements ItemInterface
-{
-	private static final long serialVersionUID = 4181263580167586575L;
+@SuppressWarnings("hiding")
+public class UserGroupTObject extends TObject implements ItemInterface {
+	
+    private static final long serialVersionUID = 4181263580167586575L;
 	
 	private int 	userGroupID;// PRIMARY KEY
 	private int 	groupRef;
@@ -62,13 +63,12 @@ public class UserGroupTObject extends TObject implements ItemInterface
 		this.isActive = isActive;
 	}
 	
-	public UserGroupKey getKey()
-	{
+	public UserGroupKey getKey() {
 		return new UserGroupKey(userGroupID, name, groupRef);
 	}
 
-	public int getID()
-	{
+	@Override
+    public int getID() {
 		return userGroupID;
 	}
 
@@ -124,9 +124,10 @@ public class UserGroupTObject extends TObject implements ItemInterface
 		this.userGroupID = userGroupID;
 	}
 	
-	public boolean equals(Object obj)
-	{
-		if(!(obj instanceof UserGroupTObject))
+	@Override
+    public boolean equals(Object obj) {
+		
+	    if(!(obj instanceof UserGroupTObject))
 			return false;
 		
 		UserGroupTObject compare = (UserGroupTObject)obj;

@@ -1,3 +1,4 @@
+
 /* 
  * Copyright (c) C1 WPS mbH, HAMBURG, GERMANY. All Rights Reserved.
  *
@@ -21,12 +22,13 @@
  * MAY FIND A COPY AT
  * {@link http://www.eclipse.org/org/documents/epl-v10.html}.
  */
+
 package org.csstudio.nams.service.logging;
 
 import org.csstudio.nams.common.activatorUtils.AbstractBundleActivator;
 import org.csstudio.nams.common.activatorUtils.OSGiBundleActivationMethod;
 import org.csstudio.nams.common.activatorUtils.OSGiServiceOffers;
-import org.csstudio.nams.service.logging.declaration.Logger;
+import org.csstudio.nams.service.logging.declaration.ILogger;
 import org.csstudio.nams.service.logging.impl.LoggerImpl;
 import org.osgi.framework.BundleActivator;
 
@@ -51,7 +53,7 @@ public class LoggingServiceActivator extends AbstractBundleActivator implements
 	public OSGiServiceOffers startBundle() throws Exception {
 		final OSGiServiceOffers offers = new OSGiServiceOffers();
 
-		offers.put(Logger.class, new LoggerImpl());
+		offers.put(ILogger.class, new LoggerImpl());
 		return offers;
 	}
 }

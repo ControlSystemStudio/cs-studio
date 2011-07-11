@@ -1,3 +1,4 @@
+
 package org.csstudio.nams.service.regelwerkbuilder.impl.confstore;
 
 import java.util.Collection;
@@ -31,7 +32,7 @@ import org.csstudio.nams.service.configurationaccess.localstore.internalDTOs.fil
 import org.csstudio.nams.service.configurationaccess.localstore.internalDTOs.filterConditionSpecifics.StringFilterConditionDTO;
 import org.csstudio.nams.service.configurationaccess.localstore.internalDTOs.filterConditionSpecifics.TimeBasedFilterConditionDTO;
 import org.csstudio.nams.service.configurationaccess.localstore.internalDTOs.filterConditionSpecifics.TimeBasedType;
-import org.csstudio.nams.service.logging.declaration.Logger;
+import org.csstudio.nams.service.logging.declaration.ILogger;
 import org.csstudio.nams.service.regelwerkbuilder.declaration.RegelwerkBuilderService;
 import org.csstudio.nams.service.regelwerkbuilder.declaration.RegelwerksBuilderException;
 import org.csstudio.platform.simpledal.IProcessVariableConnectionService;
@@ -40,7 +41,7 @@ public class RegelwerkBuilderServiceImpl implements RegelwerkBuilderService {
 
 	private static IProcessVariableConnectionService pvConnectionService;
 	private static LocalStoreConfigurationService configurationStoreService;
-	private static Logger logger;
+	private static ILogger logger;
 
 	public static void staticInject(
 			final IProcessVariableConnectionService pvConnectionService) {
@@ -52,11 +53,12 @@ public class RegelwerkBuilderServiceImpl implements RegelwerkBuilderService {
 		RegelwerkBuilderServiceImpl.configurationStoreService = configurationStoreService;
 	}
 
-	public static void staticInject(final Logger logger) {
+	public static void staticInject(final ILogger logger) {
 		RegelwerkBuilderServiceImpl.logger = logger;
 	}
 
-	public List<Regelwerk> gibAlleRegelwerke()
+	@Override
+    public List<Regelwerk> gibAlleRegelwerke()
 			throws RegelwerksBuilderException {
 		final List<Regelwerk> results = new LinkedList<Regelwerk>();
 		try {

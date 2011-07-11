@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?eclipse version="3.4"?>
+<plugin>
+   <extension
+         point="org.csstudio.utility.pvmanager.datasource">
+      <datasource
+            datasource="org.epics.pvmanager.loc.LocalDataSource"
+            name="Local DataSource (loc)"
+            prefix="loc">
+      </datasource>
+   </extension>
+
+</plugin>

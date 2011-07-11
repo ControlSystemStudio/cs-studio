@@ -1,17 +1,21 @@
 package org.csstudio.cagateway;
 
 import org.csstudio.cagateway.preferences.CAGatewayPreference;
-import org.csstudio.platform.logging.CentralLogger;
 import org.eclipse.equinox.app.IApplication;
 import org.eclipse.equinox.app.IApplicationContext;
 import org.remotercp.common.tracker.IGenericServiceListener;
 import org.remotercp.service.connection.session.ISessionService;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class CaGateway implements IApplication, IGenericServiceListener<ISessionService> {
-	
+
+    private static final Logger LOG = LoggerFactory.getLogger(CaGateway.class);
+    
 	private static CaServer caGatewayInstance = null;
 
-	public Object start(IApplicationContext context) throws Exception {
+	@Override
+    public Object start(IApplicationContext context) throws Exception {
 		System.out.println("Start caGateway");
 		caGatewayInstance = CaServer.getGatewayInstance();	
 		
@@ -22,6 +26,7 @@ public class CaGateway implements IApplication, IGenericServiceListener<ISession
 
  
 
+    @Override
     public void bindService(ISessionService sessionService) {
         String username = CAGatewayPreference.XMPP_USER_NAME.getValue();
         String password = CAGatewayPreference.XMPP_PASSWORD.getValue();
@@ -30,15 +35,16 @@ public class CaGateway implements IApplication, IGenericServiceListener<ISession
     	try {
 			sessionService.connect(username, password, server);
 		} catch (Exception e) {
-			CentralLogger.getInstance().warn(this,
-					"XMPP connection is not available, " + e.toString());
+			LOG.warn("XMPP connection is not available, ", e);
 		}
     }
     
+    @Override
     public void unbindService(ISessionService service) {
     	service.disconnect();
     }
-	public void stop() {
+	@Override
+    public void stop() {
 		// TODO Auto-generated method stub
 
 	}

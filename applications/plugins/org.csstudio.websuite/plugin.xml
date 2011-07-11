@@ -2,7 +2,7 @@
 <?eclipse version="3.2"?>
 <plugin>
    <extension
-         id="WebSuite"
+         id="WebSuiteApplicationId"
          point="org.eclipse.core.runtime.applications">
       <application
             cardinality="singleton-global"
@@ -12,18 +12,6 @@
                class="org.csstudio.websuite.WebSuiteApplication">
          </run>
       </application>
-   </extension>
-   <extension
-         id="WebSuiteProduct"
-         point="org.eclipse.core.runtime.products">
-      <product
-            application="org.csstudio.websuite.WebSuite"
-            name="WebSuiteProduct">
-         <property
-               name="appName"
-               value="WebSuiteProduct">
-         </property>
-      </product>
    </extension>
    <extension
          point="org.csstudio.platform.managementCommands">
@@ -53,6 +41,14 @@
       <initializer
             class="org.csstudio.websuite.internal.PreferenceInitializer">
       </initializer>
+   </extension>
+   <extension
+         id="WebsuiteProduct"
+         point="org.eclipse.core.runtime.products">
+      <product
+            application="org.csstudio.websuite.WebSuiteApplicationId"
+            name="WebsuiteProduct">
+      </product>
    </extension>
 
 

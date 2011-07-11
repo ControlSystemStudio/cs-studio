@@ -32,68 +32,54 @@ import java.util.Map;
  * @author Markus Moeller
  *
  */
-public class Environment
-{
+public class Environment {
+    
     private String hostName;
     private String userName;
     private int pid;
     
     private static Environment _instance = null;
     
-    private Environment()
-    {
+    private Environment() {
+        
         Map <String, String> env = System.getenv();
         
-        if(env.containsKey("COMPUTERNAME"))
-        {
+        if(env.containsKey("COMPUTERNAME")) {
             hostName = env.get("COMPUTERNAME");
-        }
-        else
-        {
-            try
-            {
+        } else {
+            try {
                 hostName = InetAddress.getLocalHost().getHostName();
-            }
-            catch(UnknownHostException uhe)
-            {
+            } catch(UnknownHostException uhe) {
                 hostName = "unknown_host";
             }
         }
         
-        if(env.containsKey("USERNAME"))
-        {
+        if(env.containsKey("USERNAME")) {
             userName = env.get("USERNAME");
-        }
-        else
-        {
+        } else {
             userName = System.getProperty("user.name");
         }
         
         pid = 0;
     }
     
-    public static synchronized Environment getInstance()
-    {
-        if(_instance == null)
-        {
+    public static synchronized Environment getInstance() {
+        if(_instance == null) {
             _instance = new Environment();
         }
         
         return _instance;
     }
 
-    public String getHostName()
-    {
+    public String getHostName() {
         return hostName;
     }
 
-    public String getUserName()
-    {
+    public String getUserName() {
         return userName;
     }
 
-    public int getPid()
-    {
+    public int getPid() {
         return pid;
     }
 }

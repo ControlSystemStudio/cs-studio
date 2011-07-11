@@ -3,7 +3,6 @@
 
 <product name="css-nsls2" id="org.csstudio.nsls2.product.product" application="org.csstudio.nsls2.product.application" version="1.0.1.qualifier" useFeatures="true" includeLaunchers="true">
 
-
    <configIni use="default">
    </configIni>
 
@@ -32,7 +31,6 @@
    <vm>
    </vm>
 
-
    <plugins>
    </plugins>
 
@@ -42,8 +40,8 @@
       <feature id="org.csstudio.nsls2.nslscore.feature" version="3.0.0.qualifier"/>
       <feature id="org.csstudio.nsls2.applications.feature" version="3.0.0.qualifier"/>
       <feature id="org.csstudio.nsls2.intro.feature" version="3.0.0.qualifier"/>
-      <feature id="org.eclipse.rcp" version="3.6.1.r361_v20100827-9OArFLdFjY-ThSQXmKvKz0_T"/>
-      <feature id="org.eclipse.equinox.p2.user.ui" version="2.0.1.r361_v20100903-897HFZFFZRuSD2LMtVxyz0Vr"/>
+      <feature id="org.eclipse.rcp" version="3.6.2.r362_v20101104-9SAxFMKFkSAqi8axkv1ZjegmiBLY"/>
+      <feature id="org.eclipse.equinox.p2.user.ui" version="2.0.1.r361_v20100903-897HFa-FX0z-z-ntoaavz0JPX628"/>
    </features>
 
 

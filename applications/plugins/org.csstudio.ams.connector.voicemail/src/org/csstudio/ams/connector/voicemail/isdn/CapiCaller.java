@@ -28,10 +28,8 @@ import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import javax.sound.sampled.AudioInputStream;
 import javax.sound.sampled.AudioSystem;
-
 import org.csstudio.ams.Log;
 import org.csstudio.ams.connector.voicemail.speech.SpeechProducer;
-import org.csstudio.platform.logging.CentralLogger;
 import de.dfki.lt.signalproc.util.AudioConverterUtils;
 import uk.co.mmscomputing.device.capi.CapiCallApplication;
 import uk.co.mmscomputing.device.capi.CapiChannel;
@@ -59,15 +57,11 @@ public class CapiCaller implements MetadataListener
     /** Class that encapsulates the MaryClient */
     private SpeechProducer speech = null;
     
-    /** Common logger of CSS */
-    private CentralLogger logger = null;
-    
     /** Flag that indicates whether or not the object is busy(is making a call) */
     private boolean busy;
     
     public CapiCaller() throws CapiCallerException
     {
-        logger = CentralLogger.getInstance();
         initSpeechProducer();
         initCapiApplication();
         busy = false;
@@ -124,7 +118,7 @@ public class CapiCaller implements MetadataListener
         
         if(speech.getInputType().compareToIgnoreCase("text_de") == 0)
         {
-            baos = speech.getAudioStream("Guten Tag. Dies ist eine Nachricht des Alarmsystems. Benutzen Sie die Taste 1, um den Text zu hÃ¶ren.");
+            baos = speech.getAudioStream("Guten Tag. Dies ist eine Nachricht des Alarmsystems. Benutzen Sie die Taste 1, um den Text zu hören.");
         }
         else
         {
@@ -135,7 +129,7 @@ public class CapiCaller implements MetadataListener
         
         try
         {
-            logger.info(this, "Try connecting to " + telephoneNumber + ". Will wait for 60 sec.");
+            Log.log(this, Log.INFO, "Try connecting to " + telephoneNumber + ". Will wait for 60 sec.");
             
             // send connect request and wait for connection (max 60 sec.)
             channel = caller.connect(telephoneNumber, 60000);
@@ -148,10 +142,12 @@ public class CapiCaller implements MetadataListener
                 {
                     try
                     {
-                        logger.debug(this, "CapiCallApplication() is waiting...");
+                        Log.log(this, Log.DEBUG, "CapiCallApplication() is waiting...");
                         caller.wait(5000);
                     }
-                    catch(InterruptedException ie) {}
+                    catch(InterruptedException ie) {
+                        // Can be ignored
+                    }
                 }
 
                 return callInfo;
@@ -160,7 +156,7 @@ public class CapiCaller implements MetadataListener
             // waste input data
             channel.getInputStream().close();
             
-            logger.info(this, "Connected to " + telephoneNumber);
+            Log.log(this, Log.INFO, "Connected to " + telephoneNumber);
             
             // Send first text
             writeStream(baos);
@@ -175,13 +171,20 @@ public class CapiCaller implements MetadataListener
                 {
                     try
                     {
-                        logger.debug(this, "CapiCallApplication() is waiting...");
+                        Log.log(this, Log.DEBUG, "CapiCallApplication() is waiting...");
                         caller.wait(5000);
                     }
-                    catch(InterruptedException ie) {}
+                    catch(InterruptedException ie) {
+                        // Can be ignored
+                    }
                 }
                 
-                if(channel!=null){try{channel.close();}catch(IOException ioe){}channel=null;}
+                if(channel!=null) {
+                    try{channel.close();}catch(IOException ioe) {
+                    // Can be ignored
+                    }
+                    channel=null;
+                }
                 
                 return callInfo;
             }
@@ -194,7 +197,7 @@ public class CapiCaller implements MetadataListener
                 // Send info / menu text
                 if(speech.getInputType().compareToIgnoreCase("text_de") == 0)
                 {
-                    writeStream("Benutzen Sie die Taste 1, wenn Sie den Text nochmal hÃ¶ren wollen.");
+                    writeStream("Benutzen Sie die Taste 1, wenn Sie den Text nochmal hören wollen.");
                 }
                 else
                 {
@@ -206,11 +209,11 @@ public class CapiCaller implements MetadataListener
                 
                 if(key.equals("1"))
                 {
-                    logger.debug(this, "** REPEATING ** ");
+                    Log.log(this, Log.DEBUG, "** REPEATING ** ");
                 }
                 else
                 {
-                    logger.debug(this, "** DONE **");
+                    Log.log(this, Log.DEBUG, "** DONE **");
                     
                     repeat = false;
                 }
@@ -218,7 +221,7 @@ public class CapiCaller implements MetadataListener
             
             if(speech.getInputType().compareToIgnoreCase("text_de") == 0)
             {
-                writeStream("Danke. Auf WiederhÃ¶ren.");
+                writeStream("Danke. Auf Wiederhören.");
             }
             else
             {
@@ -228,14 +231,16 @@ public class CapiCaller implements MetadataListener
         catch(Exception e)
         {
             busy = false;
-            logger.error(this, e.getMessage());
+            Log.log(this, Log.ERROR, e.getMessage());
             throw new CapiCallerException(e.getMessage());
         }
         finally
         {
             if(channel != null)
             {
-                try{channel.close();}catch(IOException e) {}
+                try{channel.close();}catch(IOException e) {
+                    // Can be ignored
+                }
                 channel = null;
             }
         }
@@ -244,10 +249,12 @@ public class CapiCaller implements MetadataListener
         {
             try
             {
-                logger.debug(this, "CapiCallApplication() is waiting...");
+                Log.log(this, Log.DEBUG, "CapiCallApplication() is waiting...");
                 caller.wait(5000);
             }
-            catch(InterruptedException ie) {}
+            catch(InterruptedException ie) {
+                // Can be ignored
+            }
         }
 
         busy = false;
@@ -261,7 +268,7 @@ public class CapiCaller implements MetadataListener
      * @param telephoneNumber
      * @param message
      * @param chainIdAndPos
-     * @return
+     * @return CallInfo object
      * @throws CapiCallerException
      */
     public CallInfo makeCallWithReply(String telephoneNumber, String message, String chainIdAndPos) throws CapiCallerException
@@ -274,7 +281,7 @@ public class CapiCaller implements MetadataListener
         
         if(speech.getInputType().compareToIgnoreCase("text_de") == 0)
         {
-            baos = speech.getAudioStream("Guten Tag. Dies ist eine Nachricht des Alarmsystems. Benutzen Sie die Taste 1, um den Text zu hÃ¶ren.");
+            baos = speech.getAudioStream("Guten Tag. Dies ist eine Nachricht des Alarmsystems. Benutzen Sie die Taste 1, um den Text zu hören.");
         }
         else
         {
@@ -285,7 +292,7 @@ public class CapiCaller implements MetadataListener
         
         try
         {
-            logger.info(this, "Try connecting to " + telephoneNumber + ". Will wait for 60 sec.");
+            Log.log(this, Log.INFO, "Try connecting to " + telephoneNumber + ". Will wait for 60 sec.");
             
             // send connect request and wait for connection (max 60 sec.)
             channel = caller.connect(telephoneNumber, 60000);
@@ -298,10 +305,12 @@ public class CapiCaller implements MetadataListener
                 {
                     try
                     {
-                        logger.debug(this, "CapiCallApplication() is waiting...");
+                        Log.log(this, Log.DEBUG, "CapiCallApplication() is waiting...");
                         caller.wait(5000);
                     }
-                    catch(InterruptedException ie) {}
+                    catch(InterruptedException ie) {
+                        // Can be ignored
+                    }
                 }
 
                 return callInfo;
@@ -310,8 +319,8 @@ public class CapiCaller implements MetadataListener
             // waste input data
             channel.getInputStream().close();
             
-            logger.info(this, "Connected to " + telephoneNumber);
-//TODO
+            Log.log(this, Log.INFO, "Connected to " + telephoneNumber);
+            //TODO
             // Send first text
             writeStream(baos);
 
@@ -325,13 +334,22 @@ public class CapiCaller implements MetadataListener
                 {
                     try
                     {
-                        logger.debug(this, "CapiCallApplication() is waiting...");
+                        Log.log(this, Log.DEBUG, "CapiCallApplication() is waiting...");
                         caller.wait(5000);
                     }
-                    catch(InterruptedException ie) {}
+                    catch(InterruptedException ie) {
+                        // Can be ignored
+                    }
                 }
                 
-                if(channel!=null){try{channel.close();}catch(IOException ioe){}channel=null;}
+                if(channel!=null) {
+                    try {
+                        channel.close();
+                    } catch (IOException ioe) {
+                        // Can be ignored
+                    }
+                    channel=null;
+                }
                 
                 return callInfo;
             }
@@ -343,7 +361,7 @@ public class CapiCaller implements MetadataListener
                 
                 if(speech.getInputType().compareToIgnoreCase("text_de") == 0)
                 {
-                    writeStream("Benutzen Sie die Taste 1, wenn Sie den Text nochmal hÃ¶ren wollen.");
+                    writeStream("Benutzen Sie die Taste 1, wenn Sie den Text nochmal hören wollen.");
                 }
                 else
                 {
@@ -355,11 +373,11 @@ public class CapiCaller implements MetadataListener
                 
                 if(key.equals("1"))
                 {
-                    logger.debug(this, "** REPEATING ** ");
+                    Log.log(this, Log.DEBUG, "** REPEATING ** ");
                 }
                 else
                 {
-                    logger.debug(this, "** DONE **");
+                    Log.log(this, Log.DEBUG, "** DONE **");
                     
                     repeat = false;
                 }
@@ -385,7 +403,7 @@ public class CapiCaller implements MetadataListener
             //TODO:
             if(speech.getInputType().compareToIgnoreCase("text_de") == 0)
             {
-                writeStream("Danke. Auf WiederhÃ¶ren.");
+                writeStream("Danke. Auf Wiederhören.");
             }
             else
             {
@@ -395,22 +413,22 @@ public class CapiCaller implements MetadataListener
         catch(Exception e)
         {
             busy = false;
-            logger.error(this, e.getMessage());
+            Log.log(this, Log.ERROR, e.getMessage());
             throw new CapiCallerException(e.getMessage());
         }
         finally
         {
-            if(channel!=null){try{channel.close();}catch(IOException ioe){}channel=null;}
+            if(channel!=null){try{channel.close();}catch(IOException ioe){/* Can be ignored */}channel=null;}
         }
         
         synchronized(caller)
         {
             try
             {
-                logger.debug(this, "CapiCallApplication() is waiting...");
+                Log.log(this, Log.DEBUG, "CapiCallApplication() is waiting...");
                 caller.wait(5000);
             }
-            catch(InterruptedException ie) {}
+            catch(InterruptedException ie) {/* Can be ignored */}
         }
 
         busy = false;
@@ -430,7 +448,7 @@ public class CapiCaller implements MetadataListener
 
         try
         {
-            logger.debug(this, "Try sending data");
+            Log.log(this, Log.DEBUG, "Try sending data");
             
             ais = AudioSystem.getAudioInputStream(new ByteArrayInputStream(data.toByteArray()));
 
@@ -439,13 +457,13 @@ public class CapiCaller implements MetadataListener
         }
         catch(Exception e)
         {
-            logger.error(this, e.getMessage());
+            Log.log(this, Log.ERROR, e.getMessage());
             throw new CapiCallerException(e.getMessage());
         }
         finally
         {                        
-            if(ais!=null){try{ais.close();}catch(Exception e){}ais = null;}
-            if(data!=null){try{data.close();}catch(Exception e){}data = null;}
+            if(ais!=null){try{ais.close();}catch(Exception e){/* Can be ignored */}ais = null;}
+            if(data!=null){try{data.close();}catch(Exception e){/* Can be ignored */}}
         }
     }
     
@@ -461,7 +479,7 @@ public class CapiCaller implements MetadataListener
         
         try
         {
-            logger.debug(this, "Try sending data");
+            Log.log(this, Log.DEBUG, "Try sending data");
 
             baos = speech.getAudioStream(text);
             
@@ -477,13 +495,13 @@ public class CapiCaller implements MetadataListener
         }
         catch(Exception e)
         {
-            logger.error(this, e.getMessage());
+            Log.log(this, Log.ERROR, e.getMessage());
             throw new CapiCallerException(e.getMessage());
         }
         finally
         {                        
-            if(ais!=null){try{ais.close();}catch(Exception e){}ais = null;}
-            if(baos!=null){try{baos.close();}catch(Exception e){}baos = null;}
+            if(ais!=null){try{ais.close();}catch(Exception e){/* Can be ignored */}ais = null;}
+            if(baos!=null){try{baos.close();}catch(Exception e){/* Can be ignored */}baos = null;}
         }
     }
     
@@ -502,9 +520,9 @@ public class CapiCaller implements MetadataListener
                 // wait for 'length' DTMF tones within 10 secs
                 key = channel.getDTMFDigits(1, 10000);
                 
-                logger.debug(this, "DTMF " + key);
+                Log.log(this, Log.DEBUG, "DTMF " + key);
             }
-            catch(InterruptedException ie) {}
+            catch(InterruptedException ie) {/* Can be ignored */}
 
             if(key != null)
             {
@@ -518,7 +536,7 @@ public class CapiCaller implements MetadataListener
                 key = "";
             }
             
-            logger.debug(this, "DTMF " + key);    
+            Log.log(this, Log.DEBUG, "DTMF " + key);    
         }
         while(key.trim().compareToIgnoreCase("#") != 0);
        
@@ -538,9 +556,9 @@ public class CapiCaller implements MetadataListener
             // wait for 'length' DTMF tones within 10 secs
             key = channel.getDTMFDigits(1, 10000);
             
-            logger.debug(this, "DTMF " + key);
+            Log.log(this, Log.DEBUG, "DTMF " + key);
         }
-        catch(InterruptedException ie) {}
+        catch(InterruptedException ie) {/* Can be ignored */}
 
         channel.stopDTMF();
         
@@ -561,7 +579,7 @@ public class CapiCaller implements MetadataListener
             {
                 if(channel.isDTMFEnabled())
                 {
-                    logger.debug(this, "isDTMFEnabled() = true");
+                    Log.log(this, Log.DEBUG, "isDTMFEnabled() = true");
                     
                     try{channel.stopDTMF();}catch(IOException e)
                     {
@@ -570,15 +588,15 @@ public class CapiCaller implements MetadataListener
                 }
             }
             
-            logger.debug(this, "Disconnected");
+            Log.log(this, Log.DEBUG, "Disconnected");
         }
         else if(type instanceof Exception)
         {
-            logger.debug(this, type.toString(), (Exception)type);
+            Log.log(this, Log.DEBUG, type.toString(), (Exception)type);
         }
         else
         {
-            logger.debug(this, type.toString());
+            Log.log(this, Log.DEBUG, type.toString());
         }
     }
 }

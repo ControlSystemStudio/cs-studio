@@ -37,6 +37,7 @@ import javax.persistence.Transient;
 
 import org.csstudio.config.ioconfig.model.AbstractNodeDBO;
 import org.csstudio.config.ioconfig.model.GSDFileTypes;
+import org.csstudio.config.ioconfig.model.INodeVisitor;
 import org.csstudio.config.ioconfig.model.NodeType;
 import org.csstudio.config.ioconfig.model.PersistenceException;
 
@@ -143,8 +144,7 @@ public class MasterDBO extends AbstractNodeDBO<ProfibusSubnetDBO, SlaveDBO> {
      * @throws PersistenceException 
      */
     public MasterDBO(@Nonnull final ProfibusSubnetDBO profibusSubnet) throws PersistenceException {
-        setParent(profibusSubnet);
-        profibusSubnet.addChild(this);
+        super(profibusSubnet);
     }
 
     // ****************************************
@@ -334,6 +334,7 @@ public class MasterDBO extends AbstractNodeDBO<ProfibusSubnetDBO, SlaveDBO> {
      * @throws PersistenceException 
      */
     @Override
+    @Nonnull
     public MasterDBO copyParameter(final ProfibusSubnetDBO parentNode) throws PersistenceException {
             ProfibusSubnetDBO subnet = parentNode;
 
@@ -425,6 +426,7 @@ public class MasterDBO extends AbstractNodeDBO<ProfibusSubnetDBO, SlaveDBO> {
      * {@inheritDoc}
      */
     @Override
+    @Nonnull
     public GSDFileTypes needGSDFile() {
         return GSDFileTypes.Master;
     }
@@ -434,8 +436,25 @@ public class MasterDBO extends AbstractNodeDBO<ProfibusSubnetDBO, SlaveDBO> {
      */
     @Override
     @Transient
+    @Nonnull
     public NodeType getNodeType() {
         return NodeType.MASTER;
     }
 
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    @Nonnull
+    public SlaveDBO createChild() throws PersistenceException {
+        return new SlaveDBO(this);
+    }
+    
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public void accept(@Nonnull final INodeVisitor visitor) {
+        visitor.visit(this);
+    }
 }

@@ -11,7 +11,6 @@ import org.csstudio.dct.model.IRecord;
 import org.csstudio.dct.nameresolution.FieldFunctionContentProposal;
 import org.csstudio.dct.nameresolution.FieldFunctionExtension;
 import org.csstudio.dct.util.AliasResolutionUtil;
-import org.csstudio.platform.logging.CentralLogger;
 import org.eclipse.jface.bindings.keys.KeyStroke;
 import org.eclipse.jface.bindings.keys.ParseException;
 import org.eclipse.jface.fieldassist.ContentProposalAdapter;
@@ -22,8 +21,13 @@ import org.eclipse.jface.fieldassist.TextContentAdapter;
 import org.eclipse.jface.viewers.TextCellEditor;
 import org.eclipse.swt.graphics.Point;
 import org.eclipse.swt.widgets.Composite;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class ContentProposingTextCellEditor extends TextCellEditor implements IContentProposalListener2 {
+    
+    private static final Logger LOG = LoggerFactory.getLogger(ContentProposingTextCellEditor.class);
+    
 	IRecord record;
 
 	public ContentProposingTextCellEditor(Composite parent, final IRecord record) {
@@ -63,7 +67,8 @@ public class ContentProposingTextCellEditor extends TextCellEditor implements IC
 		contentProposalOpen = true;
 	}
 
-	protected void focusLost() {
+	@Override
+    protected void focusLost() {
 		if (isActivated() && !contentProposalOpen) {
 			fireApplyEditorValue();
 			deactivate();
@@ -71,8 +76,8 @@ public class ContentProposingTextCellEditor extends TextCellEditor implements IC
 	}
 
 	private static final class MyContentProposalProvider implements IContentProposalProvider {
-		private Map<String, String> aliases;
-		private IRecord record;
+		private final Map<String, String> aliases;
+		private final IRecord record;
 
 		private MyContentProposalProvider(IRecord record, Map<String, String> aliases) {
 			this.record = record;
@@ -107,7 +112,7 @@ public class ContentProposingTextCellEditor extends TextCellEditor implements IC
 			// .. propose function parameters
 			Pattern pattern = Pattern.compile(">([^(]+)\\((([^,()]*[,]?)*)[)]?");
 			Matcher matcher = pattern.matcher(contents.substring(0, position));
-			CentralLogger.getInstance().info(null, contents.substring(0, position));
+			LOG.info(contents.substring(0, position));
 
 			if (matcher.matches()) {
 				String name = matcher.group(1);

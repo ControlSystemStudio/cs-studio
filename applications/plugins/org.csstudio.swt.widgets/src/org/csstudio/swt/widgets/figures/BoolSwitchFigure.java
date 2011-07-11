@@ -9,6 +9,7 @@ package org.csstudio.swt.widgets.figures;
 
 
 import org.csstudio.swt.widgets.util.GraphicsUtil;
+import org.csstudio.swt.widgets.util.SingleSourceHelper;
 import org.csstudio.ui.util.CustomMediaFactory;
 import org.eclipse.draw2d.AbstractLayout;
 import org.eclipse.draw2d.Cursors;
@@ -437,7 +438,7 @@ public class BoolSwitchFigure extends AbstractBoolControlFigure {
 			if(horizontal){
 				if(!booleanValue){
 					Image image = new Image(Display.getCurrent(), bounds.width, bounds.height);
-					GC gc = new GC(image);		
+					GC gc = SingleSourceHelper.getImageGC(image);		
 					
 					Point p1 = new Point( bounds.x/0.8, (int) ((55.0/95.0)*bounds.height));
 					
@@ -453,7 +454,8 @@ public class BoolSwitchFigure extends AbstractBoolControlFigure {
 					gc.fillRectangle(image.getBounds());
 					Transform tr = new Transform(Display.getCurrent());
 					tr.translate(-bounds.x, -bounds.y/1.05f);
-					gc.setTransform(tr);
+					//gc.setTransform(tr);
+					SingleSourceHelper.setGCTransform(gc, tr);
 					gc.setBackground(BLACK_COLOR);
 					gc.fillPolygon(echelonShadow);
 				
@@ -463,7 +465,8 @@ public class BoolSwitchFigure extends AbstractBoolControlFigure {
 					
 					tr.translate(p1.x, p1.y);
 					tr.rotate((float) (Math.atan((double)(p2.y-p1.y)/(p2.x-p1.x))*180.0/Math.PI));
-					gc.setTransform(tr);
+					//gc.setTransform(tr);
+					SingleSourceHelper.setGCTransform(gc, tr);
 					gc.fillOval(0, -b/2 ,a,b);
 					tr.dispose();
 					gc.dispose();
@@ -478,7 +481,7 @@ public class BoolSwitchFigure extends AbstractBoolControlFigure {
 					
 				}else{
 					Image image = new Image(Display.getCurrent(), bounds.width, bounds.height);
-					GC gc = new GC(image);	
+					GC gc = SingleSourceHelper.getImageGC(image);	
 	
 					Point p1 = new Point(bounds.x+ bounds.width*0.8, (int) ((40.0/95.0)*bounds.height));
 					
@@ -494,7 +497,8 @@ public class BoolSwitchFigure extends AbstractBoolControlFigure {
 					
 					Transform tr = new Transform(Display.getCurrent());
 					tr.translate(-bounds.x, -bounds.y);
-					gc.setTransform(tr);
+					//gc.setTransform(tr);
+					SingleSourceHelper.setGCTransform(gc, tr);
 					
 					gc.setBackground(BLACK_COLOR);
 					gc.fillPolygon(echelonShadow);
@@ -505,7 +509,8 @@ public class BoolSwitchFigure extends AbstractBoolControlFigure {
 					
 					tr.translate(p1.x, p1.y);
 					tr.rotate((float) (Math.atan((double)(p1.x-p2.x)/(p2.y-p1.y))*180.0/Math.PI));
-					gc.setTransform(tr);			
+					//gc.setTransform(tr);
+					SingleSourceHelper.setGCTransform(gc, tr);			
 					gc.fillOval(-b/2,0, a,b);
 					tr.dispose();
 					gc.dispose();
@@ -521,7 +526,7 @@ public class BoolSwitchFigure extends AbstractBoolControlFigure {
 			}else {
 				if(booleanValue){
 					Image image = new Image(Display.getCurrent(), bounds.width, bounds.height);
-					GC gc = new GC(image);		
+					GC gc = SingleSourceHelper.getImageGC(image);		
 					
 					Point p1 = new Point((int) ((60.0/95.0)*bounds.width), bounds.y+3);
 					
@@ -537,7 +542,8 @@ public class BoolSwitchFigure extends AbstractBoolControlFigure {
 					gc.fillRectangle(image.getBounds());
 					Transform tr = new Transform(Display.getCurrent());
 					tr.translate(-bounds.x, -bounds.y/1.05f);
-					gc.setTransform(tr);
+					//gc.setTransform(tr);
+					SingleSourceHelper.setGCTransform(gc, tr);
 					gc.setBackground(BLACK_COLOR);
 					gc.fillPolygon(echelonShadow);
 				
@@ -547,7 +553,8 @@ public class BoolSwitchFigure extends AbstractBoolControlFigure {
 					
 					tr.translate(p1.x, p1.y);
 					tr.rotate((float) (Math.atan((double)(p2.y-p1.y)/(p2.x-p1.x))*180.0/Math.PI));
-					gc.setTransform(tr);
+					//gc.setTransform(tr);
+					SingleSourceHelper.setGCTransform(gc, tr);
 					gc.fillOval(0, -b/2 ,a,b);
 					tr.dispose();
 					gc.dispose();
@@ -562,7 +569,7 @@ public class BoolSwitchFigure extends AbstractBoolControlFigure {
 					
 				}else{
 					Image image = new Image(Display.getCurrent(), bounds.width, bounds.height);
-					GC gc = new GC(image);	
+					GC gc = SingleSourceHelper.getImageGC(image);	
 	
 					Point p1 = new Point((int) ((40.0/95.0)*bounds.width), bounds.y+ bounds.height*0.8);
 					
@@ -578,7 +585,8 @@ public class BoolSwitchFigure extends AbstractBoolControlFigure {
 					
 					Transform tr = new Transform(Display.getCurrent());
 					tr.translate(-bounds.x, -bounds.y);
-					gc.setTransform(tr);
+					//gc.setTransform(tr);
+					SingleSourceHelper.setGCTransform(gc, tr);;
 					
 					gc.setBackground(BLACK_COLOR);
 					gc.fillPolygon(echelonShadow);
@@ -589,7 +597,8 @@ public class BoolSwitchFigure extends AbstractBoolControlFigure {
 					
 					tr.translate(p1.x, p1.y);
 					tr.rotate(-(float) (Math.atan((double)(p1.y-p2.y)/(p2.x-p1.x))*180.0/Math.PI));
-					gc.setTransform(tr);			
+					//gc.setTransform(tr);
+					SingleSourceHelper.setGCTransform(gc, tr);			
 					gc.fillOval(0, -b/2,a,b);
 					tr.dispose();
 					gc.dispose();
@@ -628,7 +637,10 @@ public class BoolSwitchFigure extends AbstractBoolControlFigure {
 	Cursor cursor;
 
 	public BoolSwitchFigure() {
-		super();	
+		super();
+		if(SWT.getPlatform().startsWith("rap")) //$NON-NLS-1$
+			throw new RuntimeException(
+					"BoolSwitchFigure is not implemented for RAP yet!");
 		pedestal = new Pedestal();		
 		shadow = new Shadow();
 		bar = new Bar();
@@ -639,6 +651,7 @@ public class BoolSwitchFigure extends AbstractBoolControlFigure {
 		add(bar, BoolSwitchLayout.BAR);	
 		bar.add(boolLabel);
 		cursor = Cursors.HAND;		
+		
 	}
 	
 	/**

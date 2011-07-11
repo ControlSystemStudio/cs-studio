@@ -64,8 +64,8 @@ public class ArchiveChannelStatus implements IArchiveChannelStatus {
      */
     @Override
     @Nonnull
-    public ArchiveChannelId getChannelId() {
-        return _channelId;
+    public ArchiveChannelStatusId getId() {
+        return _id;
     }
 
     /**
@@ -73,8 +73,8 @@ public class ArchiveChannelStatus implements IArchiveChannelStatus {
      */
     @Override
     @Nonnull
-    public ArchiveChannelStatusId getId() {
-        return _id;
+    public ArchiveChannelId getChannelId() {
+        return _channelId;
     }
 
     /**

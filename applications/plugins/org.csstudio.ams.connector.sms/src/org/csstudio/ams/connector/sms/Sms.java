@@ -29,8 +29,8 @@ import java.io.Serializable;
  * @author Markus Moeller
  *
  */
-public class Sms implements Serializable
-{
+public class Sms implements Serializable {
+    
     /** Generated serial version id */
     private static final long serialVersionUID = -8708570044433736618L;
 
@@ -63,34 +63,27 @@ public class Sms implements Serializable
     // private static final String SMS_TEST_TEXT = "MODEM_CHECK{$EVENTTIME$}";
 
     /** First constructor. Assumes the priority is 2 (NORMAL) */
-    public Sms(long timestamp, String number, String text, Sms.Type type)
-    {
+    public Sms(long timestamp, String number, String text, Sms.Type smsType) {
+        
         this.smsTimestamp = timestamp;
         this.priority = 2;
         this.phoneNumber = number;
-        
         this.message = text;
         this.modemTest = (text.startsWith("MODEM_CHECK{") ? true : false);
-        
-        this.type = type;
+        this.type = smsType;
         this.state = Sms.State.NEW;
-        
         this.failCount = 0;
     }
     
     /** Second constructor. Contains also the priority field. */
-    public Sms(long timestamp, int priority, String number, String text, Sms.Type type)
-    {
+    public Sms(long timestamp, int prio, String number, String text, Sms.Type smsType) {
         this.smsTimestamp = timestamp;
-        this.priority = priority;
+        this.priority = prio;
         this.phoneNumber = number;
-        
         this.message = text;
         this.modemTest = (text.startsWith("MODEM_CHECK{") ? true : false);
-        
-        this.type = type;
+        this.type = smsType;
         this.state = Sms.State.NEW;
-        
         this.failCount = 0;
     }
 
@@ -98,8 +91,8 @@ public class Sms implements Serializable
      * Overwrites the method <code>toString()</code> from Object. Creates a nice string containg the content
      * of this SMS message.
      */
-    public String toString()
-    {
+    @Override
+    public String toString() {
         StringBuffer result = new StringBuffer();
         
         result.append("SMS{");
@@ -120,81 +113,66 @@ public class Sms implements Serializable
      * 
      * @return The timestamp
      */
-    public long getSmsTimestamp()
-    {
+    public long getSmsTimestamp() {
         return smsTimestamp;
     }
     
     /**
      * Sets the timestamp of this SMS message.
      * 
-     * @param smsTimestamp
+     * @param timestamp 
      */
-    public void setSmsTimestamp(long smsTimestamp)
-    {
-        this.smsTimestamp = smsTimestamp;
+    public void setSmsTimestamp(long timestamp) {
+        this.smsTimestamp = timestamp;
     }
 
-    public void setPriority(int priority)
-    {
-        this.priority = priority;
+    public void setPriority(int p) {
+        this.priority = p;
     }
     
-    public int getPriority()
-    {
+    public int getPriority() {
         return this.priority;
     }
     
-    public String getPhoneNumber()
-    {
+    public String getPhoneNumber() {
         return phoneNumber;
     }
 
-    public void setPhoneNumber(String phoneNumber)
-    {
-        this.phoneNumber = phoneNumber;
+    public void setPhoneNumber(String n) {
+        this.phoneNumber = n;
     }
 
-    public String getMessage()
-    {
+    public String getMessage() {
         return message;
     }
 
-    public void setMessage(String message)
-    {
-        this.message = message;
+    public void setMessage(String m) {
+        this.message = m;
     }
 
-    public Sms.State getState()
-    {
+    public Sms.State getState() {
         return state;
     }
 
-    public void setState(Sms.State state)
-    {
-        if(state == Sms.State.FAILED)
-        {
-            if(++this.failCount >= 3)
-            {
-                state = Sms.State.BAD;
+    public void setState(Sms.State s) {
+        if(s == Sms.State.FAILED) {
+            if(++this.failCount >= 3) {
+                s = Sms.State.BAD;
             }
         }
         
-        this.state = state;
+        this.state = s;
     }
 
-    public Sms.Type getType()
-    {
+    public Sms.Type getType() {
         return type;
     }
 
-    public void setType(Sms.Type type)
-    {
-        this.type = type;
+    public void setType(Sms.Type t) {
+        this.type = t;
     }
     
-    public boolean isModemTest()
-    {
+    public boolean isModemTest() {
         return modemTest;
     }
 
@@ -202,8 +180,7 @@ public class Sms implements Serializable
      * @author Markus
      *
      */
-    enum State
-    {
+    enum State {
         NEW, SENT, FAILED, BAD
     }
     
@@ -211,8 +188,7 @@ public class Sms implements Serializable
      * @author Markus
      *
      */
-    enum Type
-    {
+    enum Type {
         OUT, IN
     }
 }

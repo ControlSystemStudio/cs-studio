@@ -29,9 +29,9 @@ import java.nio.ByteOrder;
 
 import org.csstudio.ams.Log;
 
-public abstract class Telegram 
-{
-	//ausgehende
+public abstract class Telegram  {
+	
+    //ausgehende
 	public static final int TELID_TEXTTORECEIVER = 0x1000001;
 	
 	//eingehende
@@ -43,10 +43,9 @@ public abstract class Telegram
 	protected int telegramLen;
 	private int telegramCnt;
 	
-	protected Telegram(int telegramID, int telegramCnt)
-	{
-		this.telegramID = telegramID;
-		this.telegramCnt = telegramCnt;
+	protected Telegram(int id, int cnt) {
+		this.telegramID = id;
+		this.telegramCnt = cnt;
 	}
 
 	public int getTelegramCnt() {
@@ -57,8 +56,7 @@ public abstract class Telegram
 		return telegramID;
 	}
 
-	public ByteBuffer getWriteBuffer()
-	{
+	public ByteBuffer getWriteBuffer() {
 		ByteBuffer bb = ByteBuffer.allocate(telegramLen);
 		bb = bb.order(ByteOrder.LITTLE_ENDIAN);
 		bb = bb.putInt(telegramID);
@@ -70,10 +68,9 @@ public abstract class Telegram
 	
 	public abstract byte[] getWriteBytes();
 
-	public ByteBuffer putString(String str, int iLen, ByteBuffer bb)
-	{
-		if (str == null || str.length() == 0)
-	    {
+	public ByteBuffer putString(String str, int iLen, ByteBuffer bb) {
+		
+	    if (str == null || str.length() == 0) {
 			byte ba1[] = new byte[iLen];
 			bb = bb.put(ba1);
 			return bb;

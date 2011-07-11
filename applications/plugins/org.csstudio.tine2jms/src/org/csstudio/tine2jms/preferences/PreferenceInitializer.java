@@ -33,14 +33,14 @@ import org.eclipse.core.runtime.preferences.IEclipsePreferences;
  * @author Markus Moeller
  *
  */
-public class PreferenceInitializer extends AbstractPreferenceInitializer
-{
+public class PreferenceInitializer extends AbstractPreferenceInitializer {
+    
     /* (non-Javadoc)
      * @see org.eclipse.core.runtime.preferences.AbstractPreferenceInitializer#initializeDefaultPreferences()
      */
     @Override
-    public void initializeDefaultPreferences()
-    {
+    public void initializeDefaultPreferences() {
+        
         IEclipsePreferences prefs = new DefaultScope().getNode(TineToJmsActivator.PLUGIN_ID);
 
         prefs.put(PreferenceKeys.XMPP_SERVER, "server.where.ever");

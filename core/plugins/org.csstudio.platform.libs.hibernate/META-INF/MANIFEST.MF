@@ -16,8 +16,6 @@ Bundle-ClassPath: .,
  libs/javassist-3.9.0.GA.jar,
  libs/jta-1.1.jar,
  libs/hibernate-jpa-2.0-api-1.0.0.Final.jar,
- libs/slf4j-api-1.5.11.jar,
- libs/slf4j-log4j12-1.5.11.jar,
  libs/c3p0-0.9.1.2.jar
 Export-Package: antlr,
  antlr.ASdebug,
@@ -291,11 +289,9 @@ Export-Package: antlr,
  org.hibernate.tuple.entity,
  org.hibernate.type,
  org.hibernate.usertype,
- org.hibernate.util,
- org.slf4j,
- org.slf4j.helpers,
- org.slf4j.impl,
- org.slf4j.spi
+ org.hibernate.util
 Require-Bundle: org.eclipse.equinox.preferences;bundle-version="3.2.300",
  org.eclipse.core.runtime,
- org.csstudio.platform;bundle-version="1.1.0"
+ org.csstudio.platform;bundle-version="1.1.0",
+ org.slf4j;bundle-version="1.6.1",
+ org.slf4j-log4j12;bundle-version="1.6.1"

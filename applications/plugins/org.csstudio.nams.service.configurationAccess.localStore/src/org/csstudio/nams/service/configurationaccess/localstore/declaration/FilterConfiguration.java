@@ -1,3 +1,4 @@
+
 package org.csstudio.nams.service.configurationaccess.localstore.declaration;
 
 import java.util.Collection;
@@ -13,5 +14,4 @@ public class FilterConfiguration {
 	public Collection<FilterDTO> gibAlleFilter() {
 		return this.allaFilter;
 	}
-
 }

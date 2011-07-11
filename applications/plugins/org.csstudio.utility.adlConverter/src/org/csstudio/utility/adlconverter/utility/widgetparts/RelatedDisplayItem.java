@@ -24,12 +24,11 @@
  */
 package org.csstudio.utility.adlconverter.utility.widgetparts;
 
+import java.io.File;
 import java.util.HashMap;
 import java.util.Map;
-import java.io.File;
 
-import org.csstudio.platform.logging.CentralLogger;
-import org.csstudio.sds.components.model.WaveformModel;
+import org.csstudio.sds.components.model.AbstractChartModel;
 import org.csstudio.sds.model.AbstractWidgetModel;
 import org.csstudio.sds.model.ActionData;
 import org.csstudio.sds.model.WidgetProperty;
@@ -47,6 +46,8 @@ import org.eclipse.core.resources.IWorkspaceRoot;
 import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.Path;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * @author hrickens
@@ -55,6 +56,8 @@ import org.eclipse.core.runtime.Path;
  * @since 20.09.2007
  */
 public class RelatedDisplayItem extends WidgetPart {
+    
+    private static final Logger LOG = LoggerFactory.getLogger(RelatedDisplayItem.class);
 
     /**
      * The Button Label Text.
@@ -222,8 +225,9 @@ public class RelatedDisplayItem extends WidgetPart {
     /**
      * Generate all Elements from Related Display Item.
      */
+    @Override
     final void generateElements() {
-        _widgetModel.setPropertyValue(WaveformModel.PROP_LABELED_TICKS, true);
+        _widgetModel.setPropertyValue(AbstractChartModel.PROP_LABELED_TICKS, true);
 
         ActionData actionData = _widgetModel.getActionData();
         if (actionData == null) {
@@ -268,8 +272,7 @@ public class RelatedDisplayItem extends WidgetPart {
                     }
                 } else {
                     if (params[i].trim().length() > 0) {
-                        CentralLogger.getInstance().info(this,
-                                Messages.RelatedDisplayItem_Parameter_Error + params[i]+" ~ line: "+_args[_args.length-1]);
+                        LOG.info( Messages.RelatedDisplayItem_Parameter_Error+" ~ line: ", params[i],_args[_args.length-1]);
                     }
                 }
             }

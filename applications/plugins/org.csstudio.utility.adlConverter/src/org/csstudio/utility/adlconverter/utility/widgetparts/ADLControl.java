@@ -24,7 +24,6 @@
  */
 package org.csstudio.utility.adlconverter.utility.widgetparts;
 
-import org.csstudio.platform.logging.CentralLogger;
 import org.csstudio.sds.internal.rules.ParameterDescriptor;
 import org.csstudio.sds.model.AbstractWidgetModel;
 import org.csstudio.sds.model.DynamicsDescriptor;

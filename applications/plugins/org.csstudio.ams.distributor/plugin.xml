@@ -40,11 +40,7 @@
          point="org.eclipse.core.runtime.products">
       <product
             application="org.csstudio.ams.distributor.AmsDistributor"
-            name="AmsDistributor">
-         <property
-               name="appName"
-               value="AmsDistributor">
-         </property>
+            name="AmsDistributorProduct">
       </product>
    </extension>
 

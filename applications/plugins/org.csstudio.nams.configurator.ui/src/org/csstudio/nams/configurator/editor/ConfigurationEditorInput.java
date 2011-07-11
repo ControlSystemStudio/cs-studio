@@ -1,3 +1,4 @@
+
 package org.csstudio.nams.configurator.editor;
 
 import org.csstudio.nams.configurator.beans.IConfigurationBean;
@@ -27,11 +28,13 @@ public class ConfigurationEditorInput implements IEditorInput {
 		return editorInput.getBean() == this.getBean();
 	}
 
-	public boolean exists() {
+	@Override
+    public boolean exists() {
 		return false;
 	}
 
-	@SuppressWarnings("unchecked") //$NON-NLS-1$
+	@Override
+    @SuppressWarnings("unchecked") //$NON-NLS-1$
 	public Object getAdapter(final Class adapter) {
 		return null;
 	}
@@ -40,24 +43,27 @@ public class ConfigurationEditorInput implements IEditorInput {
 		return this.bean;
 	}
 
-	public ImageDescriptor getImageDescriptor() {
+	@Override
+    public ImageDescriptor getImageDescriptor() {
 		return null;
 	}
 
-	public String getName() {
+	@Override
+    public String getName() {
 		return "ConfigurationEditorInput"; //$NON-NLS-1$
 	}
 
-	public IPersistableElement getPersistable() {
+	@Override
+    public IPersistableElement getPersistable() {
 		return null;
 	}
 
-	public String getToolTipText() {
+	@Override
+    public String getToolTipText() {
 		return "Configuration Editor"; //$NON-NLS-1$
 	}
 
-	public void setBean(final IConfigurationBean bean) {
-		this.bean = bean;
+	public void setBean(final IConfigurationBean b) {
+		this.bean = b;
 	}
-
 }

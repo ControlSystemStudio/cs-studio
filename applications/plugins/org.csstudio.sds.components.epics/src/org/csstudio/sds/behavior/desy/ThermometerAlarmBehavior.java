@@ -53,6 +53,9 @@ import org.epics.css.dal.simple.AnyDataChannel;
  */
 public class ThermometerAlarmBehavior extends MarkedWidgetDesyAlarmBehavior<ThermometerModel> {
 
+    private String _defFillColor;
+    private String _defFillBackColor;
+
     /**
      * Constructor.
      */
@@ -66,12 +69,21 @@ public class ThermometerAlarmBehavior extends MarkedWidgetDesyAlarmBehavior<Ther
      * {@inheritDoc}
      */
     @Override
+    protected void doInitialize(ThermometerModel widget) {
+        super.doInitialize(widget);
+        _defFillBackColor = widget.getColor(ThermometerModel.PROP_FILLBACKGROUND_COLOR);
+    }
+    
+    /**
+     * {@inheritDoc}
+     */
+    @Override
     protected void doProcessValueChange( final ThermometerModel model, final AnyData anyData) {
         // .. fill level (influenced by current value)
         super.doProcessValueChange(model, anyData);
+        _defFillColor = determineColorBySeverity(anyData.getSeverity(), null);
         // .. fill color (influenced by severity)
-        model.setPropertyValue(ThermometerModel.PROP_FILL_COLOR,
-                determineColorBySeverity(anyData.getSeverity(), null));
+        model.setPropertyValue(ThermometerModel.PROP_FILL_COLOR,_defFillColor);
     }
 
     /**
@@ -80,9 +92,10 @@ public class ThermometerAlarmBehavior extends MarkedWidgetDesyAlarmBehavior<Ther
     @Override
     protected void doProcessConnectionStateChange( final ThermometerModel widget,final AnyDataChannel anyDataChannel) {
         ConnectionState connectionState = anyDataChannel.getProperty().getConnectionState();
-        widget.setPropertyValue(ThermometerModel.PROP_FILLBACKGROUND_COLOR, determineBackgroundColor(connectionState));
-        widget.setPropertyValue(ThermometerModel.PROP_FILL_COLOR, determineBackgroundColor(connectionState));
-
+        String fillBackColor = isConnected(anyDataChannel)?_defFillBackColor  : determineBackgroundColor(connectionState);
+        widget.setPropertyValue(ThermometerModel.PROP_FILLBACKGROUND_COLOR, fillBackColor);
+        String fillColor = isConnected(anyDataChannel)?_defFillColor  : determineBackgroundColor(connectionState);
+        widget.setPropertyValue(ThermometerModel.PROP_FILL_COLOR, fillColor);
     }
 
 }

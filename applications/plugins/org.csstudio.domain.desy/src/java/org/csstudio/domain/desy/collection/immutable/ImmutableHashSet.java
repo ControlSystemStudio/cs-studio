@@ -37,11 +37,11 @@ import javax.annotation.Nonnull;
 public class ImmutableHashSet<T> extends HashSet<T> implements IImmutableSet<T> {
 
     private static final long serialVersionUID = -5117797214644861139L;
+    static final IImmutableSet<?> EMPTY_SET = new ImmutableHashSet<Object>();
 
     public ImmutableHashSet() {
         super();
     }
-
 
     public ImmutableHashSet(@Nonnull final Collection<? extends T> c) {
         super(c);

@@ -27,8 +27,7 @@ package org.csstudio.tine2jms;
  * @author Markus Moeller
  *
  */
-public interface Stoppable
-{
+public interface Stoppable {
     public void stopWorking();
     public void setRestart();
 }
