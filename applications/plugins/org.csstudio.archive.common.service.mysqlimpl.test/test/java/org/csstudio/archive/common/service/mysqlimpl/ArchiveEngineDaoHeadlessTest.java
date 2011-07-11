@@ -23,13 +23,11 @@ package org.csstudio.archive.common.service.mysqlimpl;
 
 import java.net.MalformedURLException;
 import java.net.URL;
-import java.sql.SQLException;
 
 import javax.annotation.Nonnull;
 
 import junit.framework.Assert;
 
-import org.csstudio.archive.common.service.ArchiveConnectionException;
 import org.csstudio.archive.common.service.engine.ArchiveEngineId;
 import org.csstudio.archive.common.service.engine.IArchiveEngine;
 import org.csstudio.archive.common.service.mysqlimpl.dao.ArchiveDaoException;
@@ -48,7 +46,7 @@ import org.junit.Test;
 public class ArchiveEngineDaoHeadlessTest extends AbstractDaoTestSetup {
 
     @Test
-    public void testEngineDao() throws ArchiveConnectionException, ArchiveDaoException, SQLException, MalformedURLException {
+    public void testEngineDao() throws ArchiveDaoException, MalformedURLException {
         final IArchiveEngineDao dao = new ArchiveEngineDaoImpl(HANDLER, PERSIST_MGR);
         final IArchiveEngine noEngine = dao.retrieveEngineById(ArchiveEngineId.NONE);
         Assert.assertNull(noEngine);

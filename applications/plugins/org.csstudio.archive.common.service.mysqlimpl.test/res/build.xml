@@ -1,6 +1,6 @@
 <project name="db.testdata.insertion" basedir=".">
-   <!-- necessary for this project being imported of another build file, basedir will be 
-         'overridden' with the importing file's basedir... that's a very disputed break of encap -->
+   <!-- necessary for this project being imported by another build file, basedir will be 
+        'overridden' with the importing file's basedir... that's a very disputed break of encap -->
     <dirname property="this.basedir" file="${ant.file.db.testdata.insertion}" />
 
 	
