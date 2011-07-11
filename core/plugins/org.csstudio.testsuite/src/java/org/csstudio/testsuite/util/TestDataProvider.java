@@ -122,7 +122,7 @@ public final class TestDataProvider {
         }
     }
 
-    private static void findAndLoadHostSpecificProperties() throws IOException {
+    private static void findAndLoadHostSpecificProperties() {
         try {
             final File configFile =
                 CssResourceLocator.locateSiteSpecificResource(HOST_PROPERTIES_FILE_NAME);
@@ -187,18 +187,19 @@ public final class TestDataProvider {
     public static Bundle whenFragmentReturnHostBundle(@Nonnull final Bundle bundle) throws BundleException {
         String host =
             (String) bundle.getHeaders().get(org.osgi.framework.Constants.FRAGMENT_HOST);
-        if (host != null && !Strings.isNullOrEmpty(host)) {
+        if (!Strings.isNullOrEmpty(host)) {
             final String[] hostAndVersion = host.split(";");
-            if (hostAndVersion != null && hostAndVersion.length > 0) {
+            if (hostAndVersion.length > 0) {
                 host = hostAndVersion[0];
             }
-            if (!"null".equals(host) || Strings.isNullOrEmpty(host)) {
+            if (!Strings.isNullOrEmpty(host)) {
                 final Bundle hostBundle = Platform.getBundle(host);
                 if (hostBundle == null) {
                     throw new BundleException("Host bundle for " + bundle.getSymbolicName() + " could not be found.");
                 }
                 return hostBundle;
             }
+            throw new BundleException("Host bundle for " + bundle.getSymbolicName() + " could not be found.");
         }
         return bundle;
     }
