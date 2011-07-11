@@ -89,6 +89,7 @@ public class ToolboxView extends ViewPart {
 		});
 		TableColumn connectedColumn = connectedViewerColumn.getColumn();
 		connectedColumn.setText("C");
+		connectedColumn.setToolTipText("Connected or disconnected");
 		
 		// PV Name column
 		TableViewerColumn pvNameViewerColumn = new TableViewerColumn(
@@ -101,7 +102,7 @@ public class ToolboxView extends ViewPart {
 			}
 		});
 		TableColumn pvNameColumn = pvNameViewerColumn.getColumn();
-		pvNameColumn.setText("Channel");
+		pvNameColumn.setText("Channel name");
 		
 		// Total usage count column
 		TableViewerColumn totalUsageViewerColumn = new TableViewerColumn(
@@ -115,6 +116,7 @@ public class ToolboxView extends ViewPart {
 		});
 		TableColumn totalUsageColumn = totalUsageViewerColumn.getColumn();
 		totalUsageColumn.setText("T");
+		totalUsageColumn.setToolTipText("Readers + Writers");
 		
 		// Layout
 		
