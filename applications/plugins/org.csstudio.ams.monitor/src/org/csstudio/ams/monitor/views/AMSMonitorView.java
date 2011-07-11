@@ -692,7 +692,6 @@ public class AMSMonitorView extends ViewPart implements SelectionListener {
                 if (!array.isEmpty())
                     lastHistoryID = array.get(0).getHistoryID();
 
-                System.out.println("lastHistoryID=" + lastHistoryID);
             } catch (Exception ex) {
                 Log.log(Log.FATAL, ex);
             }
