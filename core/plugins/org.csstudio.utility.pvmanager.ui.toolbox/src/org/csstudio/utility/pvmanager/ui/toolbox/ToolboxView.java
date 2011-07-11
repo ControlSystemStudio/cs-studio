@@ -74,7 +74,7 @@ public class ToolboxView extends ViewPart {
 			
 			@Override
 			public void update(ViewerCell cell) {
-				if (((ChannelHandler<?>) cell.getElement()).isConnected()) {
+				if (((DataSourceChannel) cell.getElement()).isConnected()) {
 					cell.setImage(connected);
 				} else {
 					cell.setImage(disconnected);
@@ -98,7 +98,7 @@ public class ToolboxView extends ViewPart {
 			
 			@Override
 			public void update(ViewerCell cell) {
-				cell.setText(((ChannelHandler<?>) cell.getElement()).getChannelName());
+				cell.setText(((DataSourceChannel) cell.getElement()).getFullChannelName());
 			}
 		});
 		TableColumn pvNameColumn = pvNameViewerColumn.getColumn();
@@ -114,7 +114,7 @@ public class ToolboxView extends ViewPart {
 		// Displays the default data source at startup
 		CompositeDataSource dataSource = (CompositeDataSource) PVManager.getDefaultDataSource();
 		if (dataSource.getDefaultDataSource() != null) {
-			tableViewer.setInput(dataSource.getDataSources().get(dataSource.getDefaultDataSource()));
+			tableViewer.setInput(dataSource.getDefaultDataSource());
 		}
 
 		createActions();
@@ -137,7 +137,7 @@ public class ToolboxView extends ViewPart {
 					
 					@Override
 					public void widgetSelected(SelectionEvent e) {
-						tableViewer.setInput(((CompositeDataSource) PVManager.getDefaultDataSource()).getDataSources().get(finalName));
+						tableViewer.setInput(finalName);
 						
 					}
 					
