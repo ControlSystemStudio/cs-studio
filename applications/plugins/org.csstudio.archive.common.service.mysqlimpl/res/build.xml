@@ -1,7 +1,11 @@
-<project name="dbcreation">
-	<dirname property="mybasedir" file="${ant.file.dbcreation}" />
-    <property name="sql.driver" value="com.mysql.jdbc.Driver"/>
+<project name="db.creation">
+	<!-- necessary for this project being imported by another build file, basedir will be 
+	     'overridden' with the importing file's basedir... that's a very disputed break of encap -->
+	<dirname property="db.creation.basedir" file="${ant.file.db.creation}" />
+	
+	<property name="sql.driver" value="com.mysql.jdbc.Driver"/>
     <property name="sql.connector.classpath" value="../../com.mysql.jdbc"/>
+	
 	
 	<!-- 
         Import the environment as properties prefixed with 'env'. 
@@ -31,10 +35,14 @@
 		</condition>
 
         <echo message="Original computer or host name = ${host.name.org}"/>
-		<script language="javascript"><![CDATA[
-			orgProp = dbcreation.getProperty("host.name.org");
-			dbcreation.setProperty("host.name", orgProp.toLowerCase());
-		]]></script>
+		
+		<script language="javascript" >
+			<![CDATA[
+			      orgProp = project.getProperty("host.name.org");
+			      project.setProperty("host.name", orgProp.toLowerCase());
+		     ]]>
+		</script>
+		
         <echo message="...to lowercase = ${host.name}"/>
 		
 		<!-- 
