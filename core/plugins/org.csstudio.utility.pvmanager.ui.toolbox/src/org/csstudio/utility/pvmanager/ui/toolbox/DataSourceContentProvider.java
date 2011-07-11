@@ -14,7 +14,9 @@ import org.epics.pvmanager.PVManager;
 
 public class DataSourceContentProvider implements IStructuredContentProvider {
 	
-	public static Object ALL = new Object();
+	public static Object ALL = new Object() {
+		public String toString() {return "All";};
+	};
 
 	@Override
 	public void dispose() {

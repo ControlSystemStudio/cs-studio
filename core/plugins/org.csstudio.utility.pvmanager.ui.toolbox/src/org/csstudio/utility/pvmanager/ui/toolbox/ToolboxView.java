@@ -1,9 +1,14 @@
 package org.csstudio.utility.pvmanager.ui.toolbox;
 
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
+
 import org.eclipse.jface.action.ActionContributionItem;
 import org.eclipse.jface.action.IMenuCreator;
 import org.eclipse.jface.action.IMenuManager;
 import org.eclipse.jface.action.IToolBarManager;
+import org.eclipse.jface.action.Separator;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.events.SelectionListener;
@@ -132,6 +137,25 @@ public class ToolboxView extends ViewPart {
 		initializeToolBar();
 		initializeMenu();
 	}
+	
+	private MenuItem createDataSourceMenuItem(Menu parent, final Object input) {
+		MenuItem item = new MenuItem(parent, SWT.RADIO);
+		item.setText(input.toString());
+		item.addSelectionListener(new SelectionListener() {
+			
+			@Override
+			public void widgetSelected(SelectionEvent e) {
+				tableViewer.setInput(input);
+			}
+			
+			@Override
+			public void widgetDefaultSelected(SelectionEvent e) {
+				// TODO Auto-generated method stub
+				
+			}
+		});
+		return item;
+	}
 
 	/**
 	 * Create the actions.
@@ -139,25 +163,16 @@ public class ToolboxView extends ViewPart {
 	private void createActions() {
 		// Create the actions
 		{
+			// Drop down menu to select data source
+			// First selection for All and then each datasource in alphabetical order
 			final Menu datasourceSelectionMenu = new Menu(table);
-			for (String dataSourceName : ((CompositeDataSource) PVManager.getDefaultDataSource()).getDataSources().keySet()) {
-				MenuItem item = new MenuItem(datasourceSelectionMenu, SWT.RADIO);
-				item.setText(dataSourceName);
-				final String finalName = dataSourceName;
-				item.addSelectionListener(new SelectionListener() {
-					
-					@Override
-					public void widgetSelected(SelectionEvent e) {
-						tableViewer.setInput(finalName);
-						
-					}
-					
-					@Override
-					public void widgetDefaultSelected(SelectionEvent e) {
-						// TODO Auto-generated method stub
-						
-					}
-				});
+			MenuItem allItem = createDataSourceMenuItem(datasourceSelectionMenu, DataSourceContentProvider.ALL);
+			allItem.setSelection(true);
+			List<String> dataSourceNames = new ArrayList<String>(((CompositeDataSource) PVManager.getDefaultDataSource()).getDataSources().keySet());
+			Collections.sort(dataSourceNames);
+			
+			for (String dataSourceName : dataSourceNames) {
+				MenuItem dataSourceItem = createDataSourceMenuItem(datasourceSelectionMenu, dataSourceName);
 			}
 			
 			selectDataSourceAction = new Action("Select Data Source", SWT.DROP_DOWN) {
