@@ -5,9 +5,12 @@
 
 package org.epics.pvmanager;
 
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 /**
  * A data source that can dispatch a request to multiple different
@@ -16,6 +19,8 @@ import java.util.concurrent.ConcurrentHashMap;
  * @author carcassi
  */
 public class CompositeDataSource extends DataSource {
+    
+    private static Logger log = Logger.getLogger(CompositeDataSource.class.getName());
 
     // Stores all data sources by name
     private Map<String, DataSource> dataSources = new ConcurrentHashMap<String, DataSource>();
@@ -65,6 +70,15 @@ public class CompositeDataSource extends DataSource {
      */
     public String getDefaultDataSource() {
         return defaultDataSource;
+    }
+    
+    /**
+     * Returns the data sources registered to this composite data source.
+     * 
+     * @return the registered data sources
+     */
+    public Map<String, DataSource> getDataSources() {
+        return Collections.unmodifiableMap(dataSources);
     }
 
     /**
@@ -161,7 +175,7 @@ public class CompositeDataSource extends DataSource {
     public void disconnect(DataRecipe recipe) {
         Map<String, DataRecipe> splitRecipe = splitRecipes.get(recipe);
         if (splitRecipe == null) {
-            throw new IllegalStateException("Recipe was never opened or already closed");
+            throw new IllegalStateException("Asked to close DataRecipe " + recipe + " but was either already closed or never opened");
         }
 
         // Dispatch calls to all the data sources
@@ -208,6 +222,10 @@ public class CompositeDataSource extends DataSource {
     @Override
     public void concludeWrite(WriteBuffer writeBuffer, ExceptionHandler exceptionHandler) {
         Map<String, WriteBuffer> splitBuffer = writeBuffers.remove(writeBuffer);
+        if (splitBuffer == null) {
+            throw new IllegalStateException("Asked to close WriteBuffer " + writeBuffer + " but was either already closed or never opened");
+        }
+        
         for (Map.Entry<String, WriteBuffer> en : splitBuffer.entrySet()) {
             String dataSource = en.getKey();
             WriteBuffer splitWriteBuffer = en.getValue();

@@ -6,6 +6,7 @@ package org.epics.pvmanager;
 
 import java.util.List;
 import java.util.concurrent.CopyOnWriteArrayList;
+import java.util.concurrent.atomic.AtomicBoolean;
 
 /**
  * Implementation class for {@link PVWriter}.
@@ -39,6 +40,7 @@ class PVWriterImpl<T> implements PVWriter<T> {
      *
      * @param listener a new listener
      */
+    @Override
     public void addPVValueWriteListener(PVValueWriteListener listener) {
         if (isClosed())
             throw new IllegalStateException("Can't add listeners to a closed PV");
@@ -50,11 +52,13 @@ class PVWriterImpl<T> implements PVWriter<T> {
      *
      * @param listener the old listener
      */
+    @Override
     public void removePVValueChangeListener(PVValueWriteListener listener) {
         valueWriteListeners.remove(listener);
     }
     
     
+    @Override
     public void write(T newValue) {
         if (syncWrite) {
             writeDirector.syncWrite(newValue, this);
@@ -66,7 +70,7 @@ class PVWriterImpl<T> implements PVWriter<T> {
     // Theoretically, this should be checked only on the client thread.
     // Better to be conservative, and guarantee that another thread
     // cannot add a listener when another is closing.
-    private volatile boolean closed = false;
+    private AtomicBoolean closed = new AtomicBoolean(false);
 
     /**
      * De-registers all listeners, stops all notifications and closes all
@@ -74,10 +78,13 @@ class PVWriterImpl<T> implements PVWriter<T> {
      * is closed, it can't be re-opened. Subsequent calls to close do not
      * do anything.
      */
+    @Override
     public void close() {
-        valueWriteListeners.clear();
-        writeDirector.close();
-        closed = true;
+        boolean wasClosed = closed.getAndSet(true);
+        if (!wasClosed) {
+            valueWriteListeners.clear();
+            writeDirector.close();
+        }
     }
 
     /**
@@ -85,8 +92,9 @@ class PVWriterImpl<T> implements PVWriter<T> {
      *
      * @return true if closed
      */
+    @Override
     public boolean isClosed() {
-        return closed;
+        return closed.get();
     }
     
     /**
@@ -104,6 +112,7 @@ class PVWriterImpl<T> implements PVWriter<T> {
      *
      * @return the last generated exception or null
      */
+    @Override
     public Exception lastWriteException() {
         return lastWriteException;
     }

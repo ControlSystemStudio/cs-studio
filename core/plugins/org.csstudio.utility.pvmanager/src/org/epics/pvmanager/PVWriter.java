@@ -4,9 +4,6 @@
  */
 package org.epics.pvmanager;
 
-import java.util.List;
-import java.util.concurrent.CopyOnWriteArrayList;
-
 /**
  * An object representing a writable PV. The write payload is specified by the generic type,
  * and is changed is returned by {@link #write(java.lang.Object)}. Changes in
