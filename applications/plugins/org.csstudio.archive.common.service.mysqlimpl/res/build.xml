@@ -1,4 +1,5 @@
-<project name="DatabaseCreation" basedir=".">
+<project name="dbcreation">
+	<dirname property="mybasedir" file="${ant.file.dbcreation}" />
     <property name="sql.driver" value="com.mysql.jdbc.Driver"/>
     <property name="sql.connector.classpath" value="../../com.mysql.jdbc"/>
 	
@@ -31,8 +32,8 @@
 
         <echo message="Original computer or host name = ${host.name.org}"/>
 		<script language="javascript"><![CDATA[
-			orgProp = DatabaseCreation.getProperty("host.name.org");
-			DatabaseCreation.setProperty("host.name", orgProp.toLowerCase());
+			orgProp = dbcreation.getProperty("host.name.org");
+			dbcreation.setProperty("host.name", orgProp.toLowerCase());
 		]]></script>
         <echo message="...to lowercase = ${host.name}"/>
 		
@@ -214,13 +215,12 @@
                             but creation of a user that already exist causes an error,
                             dropping of a user if he doesn't exist causes an error as well, great. 
                             (a known bug/feature request for more than 6 years now) so
-                            to make the script re-runnable, there's a workaround:
-                            - granting a harmless privilege to a user => creation of the user if
-                            he doesn't exist, and no error if he already has that privilege
-                            - dropping the user
-                            - newly creating the user
-                            - quitting software development and emigrating to the deep woods for 
-                              hugging trees...
+                            to make the script re-runnable, for creating there's a workaround with 
+                            using the grant command. It creates a user if it doesn't exist and 
+                            doesn't throw an error if it does.
+                            If you want to drop a user, then you have to first grant the user a
+                            harmless privilege (then the user exists for sure), then it can be 
+                            safely dropped.
                               
                  The first statement about log_bin_trust_function_creators enables the 
                  trigger mechanism in a replication setup, which is too complicated to be explained 
@@ -229,26 +229,13 @@
              <transaction>
              	SET GLOBAL log_bin_trust_function_creators = 1;
              	
-             	GRANT USAGE ON test.* TO '${sql.root.user}'@'%';
-             	DROP USER '${sql.root.user}'@'%';
-             	CREATE USER '${sql.root.user}'@'%' IDENTIFIED BY '${sql.root.pw}';
-             	GRANT ALL PRIVILEGES ON *.* to '${sql.root.user}'@'%' WITH GRANT OPTION;
+             	GRANT ALL PRIVILEGES ON *.* TO '${sql.root.user}'@'%' IDENTIFIED BY '${sql.root.pw}' WITH GRANT OPTION;
              	
-             	GRANT USAGE ON test.* TO '${sql.archive.user}'@'localhost';
-             	DROP USER '${sql.archive.user}'@'localhost';
-             	CREATE USER '${sql.archive.user}'@'localhost' identified by '${sql.archive.pw}';
+             	GRANT ALL PRIVILEGES ON ${sql.archive.db}.* TO '${sql.archive.user}'@'localhost' IDENTIFIED BY '${sql.archive.pw}';
 
-             	GRANT USAGE ON test.* TO '${sql.archive.user}'@'${sql.host}';
-             	DROP USER '${sql.archive.user}'@'${sql.host}';
-             	CREATE USER '${sql.archive.user}'@'${sql.host}' identified by '${sql.archive.pw}';
+             	GRANT ALL PRIVILEGES ON ${sql.archive.db}.* TO '${sql.archive.user}'@'${sql.host}' IDENTIFIED BY '${sql.archive.pw}';
              	
-             	GRANT USAGE ON test.* TO '${sql.archive.user}'@'%';
-             	DROP USER '${sql.archive.user}'@'%';
-             	CREATE USER '${sql.archive.user}'@'%' identified by '${sql.archive.pw}';
-             	
-             	GRANT ALL PRIVILEGES ON ${sql.archive.db}.* to '${sql.archive.user}'@'localhost';
-             	GRANT ALL PRIVILEGES ON ${sql.archive.db}.* to '${sql.archive.user}'@'${sql.host}';
-             	GRANT ALL PRIVILEGES ON ${sql.archive.db}.* to '${sql.archive.user}'@'%';
+             	GRANT ALL PRIVILEGES ON ${sql.archive.db}.* TO '${sql.archive.user}'@'%' IDENTIFIED BY '${sql.archive.pw}';
              	
              	FLUSH PRIVILEGES;
              </transaction>
