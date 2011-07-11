@@ -47,6 +47,9 @@ public class DataSourceChannel implements Comparable<DataSourceChannel> {
 		return getFullChannelName().hashCode();
 	}
 	
+	public int getTotalUsageCounter() {
+		return channel.getUsageCounter();
+	}
 	
 	
 }

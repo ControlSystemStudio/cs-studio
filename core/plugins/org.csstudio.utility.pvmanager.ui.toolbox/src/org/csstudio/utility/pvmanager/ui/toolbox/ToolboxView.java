@@ -91,7 +91,6 @@ public class ToolboxView extends ViewPart {
 		connectedColumn.setText("C");
 		
 		// PV Name column
-		
 		TableViewerColumn pvNameViewerColumn = new TableViewerColumn(
 				tableViewer, SWT.NONE);
 		pvNameViewerColumn.setLabelProvider(new CellLabelProvider() {
@@ -104,12 +103,26 @@ public class ToolboxView extends ViewPart {
 		TableColumn pvNameColumn = pvNameViewerColumn.getColumn();
 		pvNameColumn.setText("Channel");
 		
+		// Total usage count column
+		TableViewerColumn totalUsageViewerColumn = new TableViewerColumn(
+				tableViewer, SWT.NONE);
+		totalUsageViewerColumn.setLabelProvider(new CellLabelProvider() {
+			
+			@Override
+			public void update(ViewerCell cell) {
+				cell.setText(Integer.toString(((DataSourceChannel) cell.getElement()).getTotalUsageCounter()));
+			}
+		});
+		TableColumn totalUsageColumn = totalUsageViewerColumn.getColumn();
+		totalUsageColumn.setText("T");
+		
 		// Layout
 		
 		TableColumnLayout layout = new TableColumnLayout();
 		container.setLayout(layout);
 		layout.setColumnData(connectedViewerColumn.getColumn(), new ColumnWeightData(0, 24));
 		layout.setColumnData(pvNameViewerColumn.getColumn(), new ColumnWeightData(10));
+		layout.setColumnData(totalUsageViewerColumn.getColumn(), new ColumnWeightData(0, 24));
 		
 		// Displays the default data source at startup
 		CompositeDataSource dataSource = (CompositeDataSource) PVManager.getDefaultDataSource();
