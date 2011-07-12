@@ -2,18 +2,6 @@
 <?eclipse version="3.2"?>
 <plugin>
    <extension
-         id="WebSuiteApplicationId"
-         point="org.eclipse.core.runtime.applications">
-      <application
-            cardinality="singleton-global"
-            thread="main"
-            visible="true">
-         <run
-               class="org.csstudio.websuite.WebSuiteApplication">
-         </run>
-      </application>
-   </extension>
-   <extension
          point="org.csstudio.platform.managementCommands">
       <command
             class="org.csstudio.websuite.management.Stop"
@@ -41,14 +29,6 @@
       <initializer
             class="org.csstudio.websuite.internal.PreferenceInitializer">
       </initializer>
-   </extension>
-   <extension
-         id="WebsuiteProduct"
-         point="org.eclipse.core.runtime.products">
-      <product
-            application="org.csstudio.websuite.WebSuiteApplicationId"
-            name="WebsuiteProduct">
-      </product>
    </extension>
 
 

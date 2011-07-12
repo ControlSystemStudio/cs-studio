@@ -67,7 +67,8 @@ import org.slf4j.LoggerFactory;
  * @author Markus Moeller
  * @version 1.0
  */
-public class WebSuiteApplication implements IApplication, Stoppable, RemotlyAccessible, IGenericServiceListener<ISessionService> {
+public class WebSuiteApplication implements IApplication, Stoppable,
+                                            RemotlyAccessible, IGenericServiceListener<ISessionService> {
     
     /** The provider of the alarm messages */
     private AlarmMessageListProvider alarmListProvider;
