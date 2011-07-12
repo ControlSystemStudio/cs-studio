@@ -33,7 +33,7 @@ import org.junit.Test;
  * @author bknerr
  * @since 20.12.2010
  */
-public class SampleAggregatorTest {
+public class SampleAggregatorUnitTest {
     
     
     @Test

@@ -38,7 +38,7 @@ import org.junit.Test;
  * @author bknerr
  * @since 11.07.2011
  */
-public class ArchiveEngineStatusDaoHeadlessTest extends AbstractDaoTestSetup {
+public class ArchiveEngineStatusDaoUnitTest extends AbstractDaoTestSetup {
 
     @Test
     public void testEngineStatusRetrieval() throws ArchiveDaoException {
@@ -52,7 +52,7 @@ public class ArchiveEngineStatusDaoHeadlessTest extends AbstractDaoTestSetup {
         Assert.assertNotNull(lastStatus);
         Assert.assertTrue(engineId.intValue() ==  lastStatus.getEngineId().intValue());
         Assert.assertEquals(EngineMonitorStatus.OFF, lastStatus.getStatus());
-        Assert.assertEquals(TimeInstantBuilder.fromNanos(1312156801000000000L), lastStatus.getTimestamp());
+        Assert.assertEquals(TimeInstantBuilder.fromNanos(1309478401000000000L), lastStatus.getTimestamp());
         Assert.assertEquals(ArchiveEngineStatus.ENGINE_STOP, lastStatus.getInfo());
     }
 

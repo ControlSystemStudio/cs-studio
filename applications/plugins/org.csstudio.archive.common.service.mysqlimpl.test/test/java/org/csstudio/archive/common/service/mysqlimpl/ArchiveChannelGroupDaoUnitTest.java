@@ -42,7 +42,8 @@ import org.junit.Test;
  * @author bknerr
  * @since 07.07.2011
  */
-public class ArchiveChannelGroupDaoHeadlessTest extends AbstractDaoTestSetup {
+public class ArchiveChannelGroupDaoUnitTest extends AbstractDaoTestSetup {
+
     @Test
     public void testChannelGroupDao() throws ArchiveDaoException {
         final IArchiveChannelGroupDao dao = new ArchiveChannelGroupDaoImpl(HANDLER, PERSIST_MGR);

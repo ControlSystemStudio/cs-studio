@@ -40,12 +40,12 @@ import org.junit.rules.TemporaryFolder;
 import com.google.common.collect.Lists;
 
 /**
- * TODO (bknerr) :
+ * Test for {@link PersistDataToFileRescuer}.
  *
  * @author bknerr
  * @since 11.04.2011
  */
-public class PersistDataToFileRescuerTest {
+public class PersistDataToFileRescuerUnitTest {
     private static File RESCUE_DIR;
 
     private static List<String> STATEMENTS;

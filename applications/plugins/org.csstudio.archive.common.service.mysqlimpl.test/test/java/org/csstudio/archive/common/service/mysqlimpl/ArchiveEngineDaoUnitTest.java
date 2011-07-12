@@ -43,7 +43,7 @@ import org.junit.Test;
  * @author bknerr
  * @since 18.05.2011
  */
-public class ArchiveEngineDaoHeadlessTest extends AbstractDaoTestSetup {
+public class ArchiveEngineDaoUnitTest extends AbstractDaoTestSetup {
 
     @Test
     public void testEngineDao() throws ArchiveDaoException, MalformedURLException {

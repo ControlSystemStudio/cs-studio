@@ -33,7 +33,7 @@ import org.junit.Test;
  * @author bknerr
  * @since 11.07.2011
  */
-public class RewriteBatchedStatementsPerformanceHeadlessTest extends AbstractDaoTestSetup {
+public class RewriteBatchedStatementsPerformanceUnitTest extends AbstractDaoTestSetup {
 
     /**
      * {@inheritDoc}
