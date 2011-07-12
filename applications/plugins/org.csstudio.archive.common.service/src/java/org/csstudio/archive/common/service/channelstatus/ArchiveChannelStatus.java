@@ -73,15 +73,6 @@ public class ArchiveChannelStatus implements IArchiveChannelStatus {
      */
     @Override
     @Nonnull
-    public ArchiveChannelId getChannelId() {
-        return _channelId;
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    @Override
-    @Nonnull
     public String getInfo() {
         return _info;
     }
@@ -93,6 +84,15 @@ public class ArchiveChannelStatus implements IArchiveChannelStatus {
     @Nonnull
     public TimeInstant getTime() {
         return _time;
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    @Nonnull
+    public ArchiveChannelId getChannelId() {
+        return _channelId;
     }
 
     /**
