@@ -109,13 +109,5 @@ public class WaterfallView extends ViewPart {
 			setPVName(memento.getString(MEMENTO_PVNAME));
 		}
 	}
-	
-	@Override
-	public void dispose() {
-		if (waterfallComposite != null) {
-			waterfallComposite.dispose();
-			waterfallComposite = null;
-		}
-		super.dispose();
-	}
+
 }
