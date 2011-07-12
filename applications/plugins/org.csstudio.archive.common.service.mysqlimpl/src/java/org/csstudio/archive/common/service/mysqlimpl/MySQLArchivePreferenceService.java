@@ -44,47 +44,47 @@ public class MySQLArchivePreferenceService {
      * @since 11.07.2011
      * @param <T> the type of the preference. It must match the type of the default value.
      */
-    private static final class MySQLArchiveServicePreferenceInner<T> extends AbstractPreference<T> {
+    private static final class MySQLArchiveServicePreference<T> extends AbstractPreference<T> {
 
         private static final Integer MIN_PACKET_SIZE_KB = 1024;
         private static final Integer MAX_PACKET_SIZE_KB = 65536;
         private static final int MIN_PERIOD_MS = 2000;
         private static final int MAX_PERIOD_MS = 60000;
 
-        public static final MySQLArchiveServicePreferenceInner<String> HOST =
-            new MySQLArchiveServicePreferenceInner<String>("host", "NOT PUBLIC");
+        public static final MySQLArchiveServicePreference<String> HOST =
+            new MySQLArchiveServicePreference<String>("host", "NOT PUBLIC");
 
-        public static final MySQLArchiveServicePreferenceInner<String> FAILOVER_HOST =
-            new MySQLArchiveServicePreferenceInner<String>("failoverHost", "");
+        public static final MySQLArchiveServicePreference<String> FAILOVER_HOST =
+            new MySQLArchiveServicePreference<String>("failoverHost", "");
 
-        public static final MySQLArchiveServicePreferenceInner<Integer> PERIOD_IN_MS =
-            new MySQLArchiveServicePreferenceInner<Integer>("periodInMS", 5000)
+        public static final MySQLArchiveServicePreference<Integer> PERIOD_IN_MS =
+            new MySQLArchiveServicePreference<Integer>("periodInMS", 5000)
                 .with(new MinMaxPreferenceValidator<Integer>(MIN_PERIOD_MS, MAX_PERIOD_MS));
 
-        public static final MySQLArchiveServicePreferenceInner<Integer> PORT =
-            new MySQLArchiveServicePreferenceInner<Integer>("port", 3306);
+        public static final MySQLArchiveServicePreference<Integer> PORT =
+            new MySQLArchiveServicePreference<Integer>("port", 3306);
 
-        public static final MySQLArchiveServicePreferenceInner<String> DATABASE_NAME =
-            new MySQLArchiveServicePreferenceInner<String>("databaseName", "archive");
+        public static final MySQLArchiveServicePreference<String> DATABASE_NAME =
+            new MySQLArchiveServicePreference<String>("databaseName", "archive");
 
-        public static final MySQLArchiveServicePreferenceInner<String> USER =
-            new MySQLArchiveServicePreferenceInner<String>("user", "NOT PUBLIC");
+        public static final MySQLArchiveServicePreference<String> USER =
+            new MySQLArchiveServicePreference<String>("user", "NOT PUBLIC");
 
-        public static final MySQLArchiveServicePreferenceInner<String> PASSWORD =
-            new MySQLArchiveServicePreferenceInner<String>("password", "NOT PUBLIC");
+        public static final MySQLArchiveServicePreference<String> PASSWORD =
+            new MySQLArchiveServicePreference<String>("password", "NOT PUBLIC");
 
-        public static final MySQLArchiveServicePreferenceInner<Integer> MAX_ALLOWED_PACKET_IN_KB =
-            new MySQLArchiveServicePreferenceInner<Integer>("maxAllowedPacketInKB", 32768)
+        public static final MySQLArchiveServicePreference<Integer> MAX_ALLOWED_PACKET_IN_KB =
+            new MySQLArchiveServicePreference<Integer>("maxAllowedPacketInKB", 32768)
                 .with(new MinMaxPreferenceValidator<Integer>(MIN_PACKET_SIZE_KB, MAX_PACKET_SIZE_KB));
 
-        public static final MySQLArchiveServicePreferenceInner<String> SMTP_HOST =
-            new MySQLArchiveServicePreferenceInner<String>("mailhost", "NOT PUBLIC");
+        public static final MySQLArchiveServicePreference<String> SMTP_HOST =
+            new MySQLArchiveServicePreference<String>("mailhost", "NOT PUBLIC");
 
-        public static final MySQLArchiveServicePreferenceInner<File> DATA_RESCUE_DIR =
-            new MySQLArchiveServicePreferenceInner<File>("dataRescueDir", new File("C:\\temp\\persistDataRescue"));
+        public static final MySQLArchiveServicePreference<File> DATA_RESCUE_DIR =
+            new MySQLArchiveServicePreference<File>("dataRescueDir", new File("C:\\temp\\persistDataRescue"));
 
-        public static final MySQLArchiveServicePreferenceInner<String> EMAIL_ADDRESS =
-            new MySQLArchiveServicePreferenceInner<String>("emailAddress", "NOT PUBLIC");
+        public static final MySQLArchiveServicePreference<String> EMAIL_ADDRESS =
+            new MySQLArchiveServicePreference<String>("emailAddress", "NOT PUBLIC");
 
 
         /**
@@ -92,8 +92,8 @@ public class MySQLArchivePreferenceService {
          * @param keyAsString
          * @param defaultValue
          */
-        private MySQLArchiveServicePreferenceInner(@Nonnull final String keyAsString,
-                                                @Nonnull final T defaultValue) {
+        private MySQLArchiveServicePreference(@Nonnull final String keyAsString,
+                                                   @Nonnull final T defaultValue) {
             super(keyAsString, defaultValue);
         }
 
@@ -104,7 +104,7 @@ public class MySQLArchivePreferenceService {
         @Override
         @Nonnull
         protected Class<? extends AbstractPreference<T>> getClassType() {
-            return (Class<? extends AbstractPreference<T>>) MySQLArchiveServicePreferenceInner.class;
+            return (Class<? extends AbstractPreference<T>>) MySQLArchiveServicePreference.class;
         }
 
         /**
@@ -117,8 +117,8 @@ public class MySQLArchivePreferenceService {
         }
 
         @Nonnull
-        private MySQLArchiveServicePreferenceInner<T> with(@Nonnull final IPreferenceValidator<T> val) {
-            return (MySQLArchiveServicePreferenceInner<T>) super.addValidator(val);
+        private MySQLArchiveServicePreference<T> with(@Nonnull final IPreferenceValidator<T> val) {
+            return (MySQLArchiveServicePreference<T>) super.addValidator(val);
         }
     }
 
@@ -129,47 +129,47 @@ public class MySQLArchivePreferenceService {
         // Empty
     }
     @Nonnull
-    public final String getHost() {
-        return MySQLArchiveServicePreferenceInner.HOST.getValue();
+    public String getHost() {
+        return MySQLArchiveServicePreference.HOST.getValue();
     }
     @Nonnull
-    public final String getFailOverHost() {
-        return MySQLArchiveServicePreferenceInner.FAILOVER_HOST.getValue();
+    public String getFailOverHost() {
+        return MySQLArchiveServicePreference.FAILOVER_HOST.getValue();
     }
     @Nonnull
-    public final File getDataRescueDir() {
-        return MySQLArchiveServicePreferenceInner.DATA_RESCUE_DIR.getValue();
+    public File getDataRescueDir() {
+        return MySQLArchiveServicePreference.DATA_RESCUE_DIR.getValue();
     }
     @Nonnull
-    public final String getDatabaseName() {
-        return MySQLArchiveServicePreferenceInner.DATABASE_NAME.getValue();
+    public String getDatabaseName() {
+        return MySQLArchiveServicePreference.DATABASE_NAME.getValue();
     }
     @Nonnull
-    public final String getEmailAddress() {
-        return MySQLArchiveServicePreferenceInner.EMAIL_ADDRESS.getValue();
+    public String getEmailAddress() {
+        return MySQLArchiveServicePreference.EMAIL_ADDRESS.getValue();
     }
     @Nonnull
-    public final Integer getMaxAllowedPacketSizeInKB() {
-        return MySQLArchiveServicePreferenceInner.MAX_ALLOWED_PACKET_IN_KB.getValue();
+    public Integer getMaxAllowedPacketSizeInKB() {
+        return MySQLArchiveServicePreference.MAX_ALLOWED_PACKET_IN_KB.getValue();
     }
     @Nonnull
-    public final Integer getPeriodInMS() {
-        return MySQLArchiveServicePreferenceInner.PERIOD_IN_MS.getValue();
+    public Integer getPeriodInMS() {
+        return MySQLArchiveServicePreference.PERIOD_IN_MS.getValue();
     }
     @Nonnull
-    public final String getPassword() {
-        return MySQLArchiveServicePreferenceInner.PASSWORD.getValue();
+    public String getPassword() {
+        return MySQLArchiveServicePreference.PASSWORD.getValue();
     }
     @Nonnull
-    public final String getSmtpHost() {
-        return MySQLArchiveServicePreferenceInner.SMTP_HOST.getValue();
+    public String getSmtpHost() {
+        return MySQLArchiveServicePreference.SMTP_HOST.getValue();
     }
     @Nonnull
     public String getUser() {
-        return MySQLArchiveServicePreferenceInner.USER.getValue();
+        return MySQLArchiveServicePreference.USER.getValue();
     }
     @Nonnull
     public Integer getPort() {
-        return MySQLArchiveServicePreferenceInner.PORT.getValue();
+        return MySQLArchiveServicePreference.PORT.getValue();
     }
 }
