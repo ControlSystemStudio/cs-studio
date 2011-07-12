@@ -44,6 +44,21 @@ public class JCADataSource extends DataSource {
     public JCADataSource() {
         this(JCALibrary.CHANNEL_ACCESS_JAVA, Monitor.VALUE | Monitor.ALARM);
     }
+    
+    /**
+     * Creates a new data source using the given context. The context will
+     * never be closed.
+     * 
+     * @param jcaContext the context to be used
+     * @param monitorMask Monitor.VALUE, ...
+     */
+    public JCADataSource(Context jcaContext, int monitorMask) {
+        super(true);
+        this.ctxt = jcaContext;
+        this.className = null;
+        this.destroyContextWhenDone = false;
+        this.monitorMask = monitorMask;
+    }
 
     /**
      * Creates a new data source using the className to create the context.
