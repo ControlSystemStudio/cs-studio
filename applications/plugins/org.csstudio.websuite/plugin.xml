@@ -30,6 +30,18 @@
             class="org.csstudio.websuite.internal.PreferenceInitializer">
       </initializer>
    </extension>
+   <extension
+         id="WebsuiteApplication"
+         point="org.eclipse.core.runtime.applications">
+      <application
+            cardinality="singleton-global"
+            thread="main"
+            visible="true">
+         <run
+               class="org.csstudio.websuite.WebSuiteApplication">
+         </run>
+      </application>
+   </extension>
 
 
 </plugin>
