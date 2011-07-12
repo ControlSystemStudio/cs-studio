@@ -4,6 +4,7 @@
  */
 package org.epics.pvmanager;
 
+import java.util.concurrent.Executor;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
@@ -16,7 +17,7 @@ import org.epics.pvmanager.util.ThreadFactories;
  */
 public class PVManager {
 
-    private static volatile ThreadSwitch defaultOnThread = ThreadSwitch.onTimerThread();
+    private static volatile Executor defaultNotificationExecutor = ThreadSwitch.onDefaultThread();
     private static volatile DataSource defaultDataSource = null;
 
     /**
@@ -24,8 +25,8 @@ public class PVManager {
      *
      * @param threadSwitch the new target thread
      */
-    public static void setDefaultThread(ThreadSwitch threadSwitch) {
-        defaultOnThread = threadSwitch;
+    public static void setDefaultThread(Executor threadSwitch) {
+        defaultNotificationExecutor = threadSwitch;
     }
 
     /**
@@ -77,7 +78,7 @@ public class PVManager {
     
     private static class AbstractPVManagerExpression {
         // Initialize to defaults
-        ThreadSwitch onThread;
+        Executor notificationExecutor;
         DataSource source;
 
         /**
@@ -99,9 +100,9 @@ public class PVManager {
          * @param onThread the thread on which to notify
          * @return this
          */
-        public AbstractPVManagerExpression andNotify(ThreadSwitch onThread) {
-            if (this.onThread == null)  {
-                this.onThread = onThread;
+        public AbstractPVManagerExpression andNotify(Executor onThread) {
+            if (this.notificationExecutor == null)  {
+                this.notificationExecutor = onThread;
             } else {
                 throw new IllegalStateException("Already set what thread to notify");
             }
@@ -112,8 +113,8 @@ public class PVManager {
             // Get defaults
             if (source == null)
                 source = defaultDataSource;
-            if (onThread == null)
-                onThread = defaultOnThread;
+            if (notificationExecutor == null)
+                notificationExecutor = defaultNotificationExecutor;
 
             // Check that a data source has been specified
             if (source == null) {
@@ -123,7 +124,7 @@ public class PVManager {
             }
 
             // Check that thread switch has been specified
-            if (onThread == null) {
+            if (notificationExecutor == null) {
                 throw new IllegalStateException("You need to specify a thread either " +
                         "using PVManager.setDefaultThreadSwitch or by using " +
                         "read(...).andNotify(threadSwitch).");
@@ -166,7 +167,7 @@ public class PVManager {
             PVWriterImpl<T> pvWriter = new PVWriterImpl<T>(syncWrite);
             WriteBuffer writeBuffer = writeExpression.createWriteBuffer().build();
             if (writeExceptionHandler == null) {
-                writeExceptionHandler = ExceptionHandler.createDefaultExceptionHandler(pvWriter, onThread);
+                writeExceptionHandler = ExceptionHandler.createDefaultExceptionHandler(pvWriter, notificationExecutor);
             }
             WriteFunction<T> writeFunction = writeExpression.getWriteFunction();
             
@@ -190,8 +191,8 @@ public class PVManager {
 
         @Override
         @SuppressWarnings("unchecked")
-        public PVManagerWriteExpression<T> andNotify(ThreadSwitch onThread) {
-            return (PVManagerWriteExpression<T>) super.andNotify(onThread);
+        public PVManagerWriteExpression<T> andNotify(Executor notificationExecutor) {
+            return (PVManagerWriteExpression<T>) super.andNotify(notificationExecutor);
         }
         
     }
@@ -206,7 +207,7 @@ public class PVManager {
         private DesiredRateExpression<T> aggregatedPVExpression;
         private ExceptionHandler exceptionHandler;
         // Initialize to defaults
-        private ThreadSwitch onThread;
+        private Executor notificationExecutor;
         private DataSource source;
 
         private PVManagerExpression(DesiredRateExpression<T> aggregatedPVExpression) {
@@ -251,9 +252,9 @@ public class PVManager {
          * @param onThread the thread on which to notify
          * @return this
          */
-        public PVManagerExpression<T> andNotify(ThreadSwitch onThread) {
-            if (this.onThread == null)  {
-                this.onThread = onThread;
+        public PVManagerExpression<T> andNotify(Executor notificationExecutor) {
+            if (this.notificationExecutor == null)  {
+                this.notificationExecutor = notificationExecutor;
             } else {
                 throw new IllegalStateException("Already set what thread to notify");
             }
@@ -278,8 +279,8 @@ public class PVManager {
             // Get defaults
             if (source == null)
                 source = defaultDataSource;
-            if (onThread == null)
-                onThread = defaultOnThread;
+            if (notificationExecutor == null)
+                notificationExecutor = defaultNotificationExecutor;
 
             // Check that a data source has been specified
             if (source == null) {
@@ -289,7 +290,7 @@ public class PVManager {
             }
 
             // Check that thread switch has been specified
-            if (onThread == null) {
+            if (notificationExecutor == null) {
                 throw new IllegalStateException("You need to specify a thread either " +
                         "using PVManager.setDefaultThreadSwitch or by using " +
                         "read(...).andNotify(threadSwitch).");
@@ -299,12 +300,12 @@ public class PVManager {
             PV<T> pv = PV.createPv(aggregatedPVExpression.getDefaultName());
             DataRecipe dataRecipe = aggregatedPVExpression.getDataRecipe();
             if (exceptionHandler == null) {
-                dataRecipe = dataRecipe.withExceptionHandler(new DefaultExceptionHandler(pv, onThread));
+                dataRecipe = dataRecipe.withExceptionHandler(new DefaultExceptionHandler(pv, notificationExecutor));
             } else {
                 dataRecipe = dataRecipe.withExceptionHandler(exceptionHandler);
             }
             Function<T> aggregatedFunction = aggregatedPVExpression.getFunction();
-            Notifier<T> notifier = new Notifier<T>(pv, aggregatedFunction, onThread, dataRecipe.getExceptionHandler());
+            Notifier<T> notifier = new Notifier<T>(pv, aggregatedFunction, notificationExecutor, dataRecipe.getExceptionHandler());
             Scanner.scan(notifier, scanPeriodMs);
             try {
                 source.connect(dataRecipe);

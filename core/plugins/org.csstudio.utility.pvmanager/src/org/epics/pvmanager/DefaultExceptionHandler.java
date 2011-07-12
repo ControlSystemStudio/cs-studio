@@ -5,6 +5,8 @@
 
 package org.epics.pvmanager;
 
+import java.util.concurrent.Executor;
+
 /**
  *
  * @author carcassi
@@ -12,16 +14,16 @@ package org.epics.pvmanager;
 class DefaultExceptionHandler extends ExceptionHandler {
 
     private final PV<?> pv;
-    private final ThreadSwitch threadSwitch;
+    private final Executor notificationExecutor;
 
-    DefaultExceptionHandler(PV<?> pv, ThreadSwitch threadSwitch) {
+    DefaultExceptionHandler(PV<?> pv, Executor notificationExecutor) {
         this.pv = pv;
-        this.threadSwitch = threadSwitch;
+        this.notificationExecutor = notificationExecutor;
     }
 
     @Override
     public void handleException(final Exception ex) {
-        threadSwitch.post(new Runnable() {
+        notificationExecutor.execute(new Runnable() {
 
             @Override
             public void run() {

@@ -6,8 +6,7 @@
 package org.epics.pvmanager;
 
 import java.lang.ref.WeakReference;
-import java.util.Queue;
-import java.util.concurrent.ConcurrentLinkedQueue;
+import java.util.concurrent.Executor;
 
 /**
  * Object responsible to notify the PV of changes on the appropriate thread.
@@ -18,7 +17,7 @@ class Notifier<T> {
 
     private final WeakReference<PV<T>> pvRef;
     private final Function<T> function;
-    private final ThreadSwitch onThread;
+    private final Executor notificationExecutor;
     private volatile PVRecipe pvRecipe;
     private final ExceptionHandler exceptionHandler;
 
@@ -32,12 +31,12 @@ class Notifier<T> {
      *
      * @param pv the pv on which to notify
      * @param function the function used to calculate new values
-     * @param onThread the thread switching mechanism
+     * @param notificationExecutor the thread switching mechanism
      */
-    Notifier(PV<T> pv, Function<T> function, ThreadSwitch onThread, ExceptionHandler exceptionHandler) {
+    Notifier(PV<T> pv, Function<T> function, Executor notificationExecutor, ExceptionHandler exceptionHandler) {
         this.pvRef = new WeakReference<PV<T>>(pv);
         this.function = function;
-        this.onThread = onThread;
+        this.notificationExecutor = notificationExecutor;
         this.exceptionHandler = exceptionHandler;
     }
 
@@ -65,53 +64,23 @@ class Notifier<T> {
         }
     }
 
-    /*
-     * Concurrent queue to safely publish objects.
-     * The timer thread will put objects in the queue, while the notification
-     * thread will take them.
-     * Given that the queue does not accept null, publish nullValue object
-     * instead of null.
-     */
-    private Queue<Object> publishingQueue = new ConcurrentLinkedQueue<Object>();
-    private static final Object nullValue = new Object();
-
-    private void push(T element) {
-        if (element != null) {
-            publishingQueue.add(element);
-        } else {
-            publishingQueue.add(nullValue);
-        }
-    }
-
-    private T pop() {
-        Object element = publishingQueue.poll();
-        if (element == nullValue)
-            return null;
-        else {
-            @SuppressWarnings("unchecked")
-            T popped = (T) element;
-            return popped;
-        }
-    }
-
     /**
      * Notifies the PV of a new value.
      */
     void notifyPv() {
         try {
-            // Using concurrent queue to safely publish object
-            T newValue = function.getValue();
-            push(newValue);
+            // The data will be shipped as part of the task,
+            // which is properly synchronized by the executor
+            final T newValue = function.getValue();
 
-            onThread.post(new Runnable() {
+            notificationExecutor.execute(new Runnable() {
 
                 @Override
                 public void run() {
-                    T safeValue = pop();
                     PV<T> pv = pvRef.get();
-                    if (pv != null && safeValue != null) {
+                    if (pv != null && newValue != null) {
                         Notification<T> notification =
-                                NotificationSupport.notification(pv.getValue(), safeValue);
+                                NotificationSupport.notification(pv.getValue(), newValue);
                         if (notification.isNotificationNeeded()) {
                             pv.setValue(notification.getNewValue());
                         }

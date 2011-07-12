@@ -5,6 +5,7 @@
 
 package org.epics.pvmanager;
 
+import java.util.concurrent.Executor;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -29,12 +30,12 @@ public class ExceptionHandler {
         log.log(Level.INFO, "Exception for PV", ex);
     }
     
-    public static ExceptionHandler createDefaultExceptionHandler(final PVWriter<?> pvWriter, final ThreadSwitch threadSwitch) {
+    public static ExceptionHandler createDefaultExceptionHandler(final PVWriter<?> pvWriter, final Executor notificationExecutor) {
         final PVWriterImpl<?> pvWriterImpl = (PVWriterImpl<?>) pvWriter;
         return new ExceptionHandler() {
             @Override
             public void handleException(final Exception ex) {
-                threadSwitch.post(new Runnable() {
+                notificationExecutor.execute(new Runnable() {
 
                     @Override
                     public void run() {

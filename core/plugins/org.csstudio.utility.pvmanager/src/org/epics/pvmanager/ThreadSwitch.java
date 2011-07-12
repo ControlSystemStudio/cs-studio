@@ -5,6 +5,7 @@
 
 package org.epics.pvmanager;
 
+import java.util.concurrent.Executor;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.swing.SwingUtilities;
@@ -22,43 +23,38 @@ public abstract class ThreadSwitch {
     private static final Logger log = Logger.getLogger(ThreadSwitch.class.getName());
 
     /**
-     * Tells the PV manager to notify on the Swing Event Dispatch Thread using
+     * Executes tasks on the Swing Event Dispatch Thread using
      * SwingUtilities.invokeLater().
-     * @return an object that posts events on the EDT
+     * 
+     * @return an executor that posts events on the EDT
      */
-    public static ThreadSwitch onSwingEDT() {
-        return ThreadSwitch.SWING;
+    public static Executor onSwingEDT() {
+        return ThreadSwitch.SWING_EXECUTOR;
     }
 
     /**
-     * Tells the PV manager to notify on the timer thread.
-     * @return an object that runs tasks on the timer thread
+     * Executes tasks on the current thread.
+     * 
+     * @return an object that runs tasks on the current thread
      */
-    public static ThreadSwitch onTimerThread() {
-        return ThreadSwitch.TIMER;
+    public static Executor onDefaultThread() {
+        return ThreadSwitch.CURRENT_EXECUTOR;
     }
 
-    /**
-     * Post the given task to the notification thread.
-     *
-     * @param run a new task
-     */
-    public abstract void post(Runnable run);
-
-    private static ThreadSwitch SWING = new ThreadSwitch() {
+    private static Executor SWING_EXECUTOR = new Executor() {
 
         @Override
-        public void post(Runnable task) {
-            SwingUtilities.invokeLater(task);
+        public void execute(Runnable command) {
+            SwingUtilities.invokeLater(command);
         }
     };
 
-    private static ThreadSwitch TIMER = new ThreadSwitch() {
+    private static Executor CURRENT_EXECUTOR = new Executor() {
 
         @Override
-        public void post(Runnable task) {
+        public void execute(Runnable command) {
             try {
-                task.run();
+                command.run();
             } catch (Exception ex) {
                 log.log(Level.WARNING, "Exception on the timer thread caused by a ValueListener", ex);
             } catch (AssertionError ex) {
