@@ -21,16 +21,14 @@
  */
 package org.csstudio.archive.common.service.mysqlimpl;
 
-import javax.annotation.Nonnull;
+import java.io.File;
 
 import junit.framework.Assert;
 
 import org.csstudio.archive.common.service.mysqlimpl.dao.ArchiveConnectionHandler;
 import org.csstudio.archive.common.service.mysqlimpl.persistengine.PersistEngineDataManager;
 import org.csstudio.testsuite.util.TestDataProvider;
-
-import com.google.common.base.Strings;
-import com.mysql.jdbc.jdbc2.optional.MysqlDataSource;
+import org.mockito.Mockito;
 
 /**
  * Test setup provider for {@link ArchiveConnectionHandler} and {@link PersistEngineDataManager}
@@ -43,51 +41,27 @@ public class ArchiveDaoTestHelper {
 
     private static TestDataProvider PROV;
 
-    private static String _prefHost;
-    private static String _prefFailoverHost;
-    private static String _prefUser;
-    private static String _prefPassword;
-    private static Integer _prefPort;
-    private static String _prefDatabaseName;
-    private static Integer _prefMaxAllowedPacketSizeInKB;
-
-    public static final ArchiveConnectionHandler getTestHandler() {
+    public static MySQLArchivePreferenceService createPrefServiceMock() {
         try {
             PROV = TestDataProvider.getInstance("org.csstudio.archive.common.service.mysqlimpl.test");
         } catch (final Exception e) {
             Assert.fail("Unexpected exception:\n" + e.getMessage());
         }
-        _prefHost = String.valueOf(PROV.getHostProperty("mysqlHost"));
-        _prefPort = Integer.valueOf((String) PROV.getHostProperty("mysqlPort"));
-        _prefFailoverHost = "";
-        _prefUser = String.valueOf(PROV.getHostProperty("mysqlArchiveUser"));
-        _prefPassword = String.valueOf(PROV.getHostProperty("mysqlArchivePassword"));
-        _prefDatabaseName = String.valueOf(PROV.getHostProperty("mysqlArchiveDatabase"));
 
-        _prefMaxAllowedPacketSizeInKB = 1024;
+        final MySQLArchivePreferenceService mock = Mockito.mock(MySQLArchivePreferenceService.class);
+        Mockito.when(mock.getDatabaseName()).thenReturn(String.valueOf(PROV.getHostProperty("mysqlArchiveDatabase")));
+        Mockito.when(mock.getDataRescueDir()).thenReturn(new File("./rescueTest"));
+        Mockito.when(mock.getEmailAddress()).thenReturn(System.getProperty("user.email"));
+        Mockito.when(mock.getFailOverHost()).thenReturn("");
+        Mockito.when(mock.getHost()).thenReturn(String.valueOf(PROV.getHostProperty("mysqlHost")));
+        Mockito.when(mock.getMaxAllowedPacketSizeInKB()).thenReturn(Integer.valueOf(1024));
+        Mockito.when(mock.getPassword()).thenReturn(String.valueOf(PROV.getHostProperty("mysqlArchivePassword")));
+        Mockito.when(mock.getPeriodInMS()).thenReturn(Integer.valueOf(3000));
+        Mockito.when(mock.getPort()).thenReturn(Integer.valueOf((String) PROV.getHostProperty("mysqlPort")));
+        Mockito.when(mock.getSmtpHost()).thenReturn("smtp.desy.de");
+        Mockito.when(mock.getUser()).thenReturn(String.valueOf(PROV.getHostProperty("mysqlArchiveUser")));
 
-        final MysqlDataSource dataSource = createDataSource();
-
-        return new ArchiveConnectionHandler(dataSource);
+        return mock;
     }
 
-    @Nonnull
-    private static MysqlDataSource createDataSource() {
-
-        final MysqlDataSource ds = new MysqlDataSource();
-        String hosts = _prefHost;
-        if (!Strings.isNullOrEmpty(_prefFailoverHost)) {
-            hosts += "," + _prefFailoverHost;
-        }
-        ds.setServerName(hosts);
-        ds.setPort(_prefPort);
-        ds.setDatabaseName(_prefDatabaseName);
-        ds.setUser(_prefUser);
-        ds.setPassword(_prefPassword);
-        ds.setFailOverReadOnly(false);
-        ds.setMaxAllowedPacket(_prefMaxAllowedPacketSizeInKB*1024);
-        ds.setUseTimezone(true);
-
-        return ds;
-    }
 }

@@ -39,7 +39,7 @@ import javax.annotation.Nullable;
 public final class ImmutableCollections {
 
     private static final IImmutableList<?> EMPTY_IMMUTABLE_LIST = ImmutableArrayList.EMPTY_LIST;
-    private static final IImmutableSet<?> EMPTY_IMMUTABLE_SET = ImmutableTreeSet.EMPTY_SET;
+    //private static final IImmutableSet<?> EMPTY_IMMUTABLE_SET = ImmutableTreeSet.EMPTY_SET;
     private static final IImmutableMap<?, ?> EMPTY_IMMUTABLE_MAP = ImmutableTreeMap.EMPTY_MAP;
 
     private ImmutableCollections() {
@@ -52,11 +52,11 @@ public final class ImmutableCollections {
         return (IImmutableList<T>) EMPTY_IMMUTABLE_LIST;
     }
 
-    @Nonnull
-    @SuppressWarnings("unchecked")
-    public static <T> IImmutableSet<T> emptySet() {
-        return (IImmutableSet<T>) EMPTY_IMMUTABLE_SET;
-    }
+//    @Nonnull
+//    @SuppressWarnings("unchecked")
+//    public static <T> IImmutableSet<T> emptySet() {
+//        return (IImmutableSet<T>) EMPTY_IMMUTABLE_SET;
+//    }
 
     @Nonnull
     @SuppressWarnings("unchecked")
@@ -71,12 +71,12 @@ public final class ImmutableCollections {
         return result;
     }
 
-    @Nonnull
-    public static <T> IImmutableSet<T> singleton(@Nonnull final T t) {
-        final ImmutableTreeSet<T> result = new ImmutableTreeSet<T>();
-        result.add(t);
-        return result;
-    }
+//    @Nonnull
+//    public static <T> IImmutableSet<T> singleton(@Nonnull final T t) {
+//        final ImmutableTreeSet<T> result = new ImmutableTreeSet<T>();
+//        result.add(t);
+//        return result;
+//    }
 
     @Nonnull
     public static <K, V> IImmutableMap<K, V> singletonMap(@Nonnull final K key, @Nonnull final V value) {

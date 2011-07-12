@@ -103,6 +103,7 @@ public class PersistDataWorker extends AbstractTimeMeasuredRunnable {
             _queuedStatements.drainTo(stmtStrings);
 
             connection = _mgr.getConnectionHandler().getConnection();
+
             sqlStmt = connection.createStatement();
             while (stmtStrings.peek() != null) {
                 sqlStmt = executeBatchOnCondition(connection, sqlStmt, stmtStrings.pop());
@@ -114,13 +115,6 @@ public class PersistDataWorker extends AbstractTimeMeasuredRunnable {
         } finally {
             _batchedStatements.clear();
             closeStatement(sqlStmt);
-            try {
-                finalizeWorker();
-            } catch (final ArchiveConnectionException e) {
-                LOG.warn("Connection retrieval for close failed on termination of worker");
-            } catch (final SQLException e) {
-                LOG.warn("Closing of connection failed on termination of worker");
-            }
         }
     }
 
@@ -208,17 +202,6 @@ public class PersistDataWorker extends AbstractTimeMeasuredRunnable {
             t.printStackTrace();
             _mgr.rescueDataToFileSystem(_batchedStatements);
         }
-    }
-
-    /**
-     * Called in finally block at the end of the {@link PersistDataWorker#run()} method.
-     * Can be overridden for instance to close the thread's own connection.
-     *
-     * @throws SQLException
-     * @throws ArchiveConnectionException
-     */
-    protected void finalizeWorker() throws SQLException, ArchiveConnectionException {
-        // Empty
     }
 
     private void processFailedBatch(@Nonnull final List<String> batchedStatements,

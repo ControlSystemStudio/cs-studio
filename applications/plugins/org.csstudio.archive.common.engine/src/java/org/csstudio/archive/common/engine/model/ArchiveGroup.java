@@ -128,9 +128,8 @@ public class ArchiveGroup {
 
     /**
      * Stop all the channels in group
-     * @throws EngineModelException
      */
-    public void stop(@Nonnull final String info) throws EngineModelException {
+    public void stop(@Nonnull final String info) {
         if (!_isRunning) {
             return;
         }

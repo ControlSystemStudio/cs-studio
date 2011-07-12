@@ -6,6 +6,7 @@ Bundle-Version: 2.0.0.qualifier
 Bundle-ClassPath: .
 Bundle-Vendor: DESY <css-developer@desy.de>, Bastian Knerr <bastian.knerr@desy.de>
 Export-Package: com.google.inject,
+ com.google.inject.assistedinject,
  com.google.inject.binder,
  com.google.inject.internal,
  com.google.inject.internal.asm,

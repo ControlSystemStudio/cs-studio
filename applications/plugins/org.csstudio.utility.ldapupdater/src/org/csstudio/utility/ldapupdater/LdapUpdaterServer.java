@@ -27,6 +27,7 @@ import static org.csstudio.utility.ldapupdater.preferences.LdapUpdaterPreference
 import static org.csstudio.utility.ldapupdater.preferences.LdapUpdaterPreference.XMPP_SERVER;
 import static org.csstudio.utility.ldapupdater.preferences.LdapUpdaterPreference.XMPP_USER;
 
+import java.util.Map;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.ScheduledFuture;
@@ -98,6 +99,9 @@ public class LdapUpdaterServer implements IApplication,
     @Nonnull
     public final Object start(@Nullable final IApplicationContext context)
     throws Exception {
+
+
+
         final long startTimeSec = LDAP_AUTO_START.getValue();
         final long intervalSec = LDAP_AUTO_INTERVAL.getValue();
 
@@ -105,12 +109,13 @@ public class LdapUpdaterServer implements IApplication,
 
         LOG.info(now.formatted());
 
-        final long delaySec = getDelayInSeconds(startTimeSec, now);
+        final long delayInS = getDelayInS(context, startTimeSec, now);
+
         logStartAndPeriod(startTimeSec, intervalSec);
 
         final ScheduledFuture<?> taskHandle =
             _updaterExecutor.scheduleAtFixedRate(new LdapUpdaterTask(),
-                                                 delaySec,
+                                                 delayInS,
                                                  intervalSec,
                                                  TimeUnit.SECONDS);
         synchronized (this) {
@@ -124,6 +129,25 @@ public class LdapUpdaterServer implements IApplication,
         _updaterExecutor.shutdown();
 
         return IApplication.EXIT_OK;
+    }
+
+    private long getDelayInS(@Nonnull final IApplicationContext context,
+                             final long startTimeSec,
+                             @Nonnull final TimeInstant now) {
+        final Map<?, ?> ctxArgs = context.getArguments();
+        long delayInS = -1;
+        if (ctxArgs.containsKey(IApplicationContext.APPLICATION_ARGS)) {
+            final String[] strArgs = (String[]) ctxArgs.get(IApplicationContext.APPLICATION_ARGS);
+            for (int i = 0; i < strArgs.length; i++) {
+                if ("-delayInS".equals(strArgs[i]) && i+1 < strArgs.length) {
+                    delayInS = Long.parseLong(strArgs[i+1], 10);
+                }
+            }
+        }
+        if (delayInS == -1) {
+            delayInS = calculateDelayInSeconds(startTimeSec, now);
+        }
+        return delayInS;
     }
 
 
@@ -140,7 +164,7 @@ public class LdapUpdaterServer implements IApplication,
     }
 
 
-    private long getDelayInSeconds(final long startTimeSec,
+    private long calculateDelayInSeconds(final long startTimeSec,
                                    @Nonnull final TimeInstant now) {
 
         final int secondsSinceMidnight = now.getInstant().get(DateTimeFieldType.secondOfDay());

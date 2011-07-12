@@ -21,16 +21,13 @@
  */
 package org.csstudio.archive.common.service.mysqlimpl.notification;
 
-import static org.csstudio.archive.common.service.mysqlimpl.MySQLArchiveServicePreference.EMAIL_ADDRESS;
-import static org.csstudio.archive.common.service.mysqlimpl.MySQLArchiveServicePreference.SMTP_HOST;
-
 import java.io.IOException;
 
 import javax.annotation.Nonnull;
 
-import org.slf4j.Logger;
 import org.csstudio.archive.common.service.mysqlimpl.persistengine.NotificationType;
 import org.csstudio.email.EMailSender;
+import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
@@ -51,17 +48,16 @@ public final class ArchiveNotifications {
     private static final Logger LOG =
             LoggerFactory.getLogger(ArchiveNotifications.class);
 
-    public static void notify(@Nonnull final NotificationType type,
+    public static void notify(@Nonnull final String smtpHost,
+                              @Nonnull final String emailAddress,
+                              @Nonnull final NotificationType type,
                               @Nonnull final String additionalBodyText) {
-
-        final String prefMailHost = SMTP_HOST.getValue();
-        final String prefEmailReceiver = EMAIL_ADDRESS.getValue();
 
         EMailSender mailer;
         try {
-            mailer = new EMailSender(prefMailHost,
-                                     "DontReply@MySQLArchiver",
-                                     prefEmailReceiver,
+            mailer = new EMailSender(smtpHost,
+                                     "no-reply@DesyKryoArchiver",
+                                     emailAddress,
                                      type.getSubject());
             mailer.addText(type.getText() + additionalBodyText);
             mailer.close();

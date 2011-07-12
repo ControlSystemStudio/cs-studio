@@ -40,34 +40,72 @@ import org.junit.BeforeClass;
  * @author bknerr
  * @since 07.07.2011
  */
-public class AbstractDaoTestSetup {
+public abstract class AbstractDaoTestSetup {
 
     protected static ArchiveConnectionHandler HANDLER;
     protected static PersistEngineDataManager PERSIST_MGR;
 
     private Savepoint _savepoint;
+    private boolean _autoCommit;
 
     @BeforeClass
-    public static void setup() throws ArchiveConnectionException, SQLException {
+    public static void beforeClass() throws ArchiveConnectionException {
 
-        HANDLER = ArchiveDaoTestHelper.getTestHandler();
+        HANDLER = new ArchiveConnectionHandler(ArchiveDaoTestHelper.createPrefServiceMock());
 
         final Connection con = HANDLER.getConnection();
         Assert.assertNotNull(con);
 
-        PERSIST_MGR = new PersistEngineDataManager(HANDLER);
+        PERSIST_MGR = new PersistEngineDataManager(HANDLER, ArchiveDaoTestHelper.createPrefServiceMock());
     }
 
+
     @Before
-    public void setSavePoint() throws ArchiveConnectionException, SQLException {
+    public void before() throws ArchiveConnectionException, SQLException {
+        setSavePoint();
+
+        beforeHook();
+    }
+
+    private void setSavePoint() throws ArchiveConnectionException, SQLException {
         final Connection con = HANDLER.getConnection();
+        _autoCommit = con.getAutoCommit();
+
         con.setAutoCommit(false);
         _savepoint = con.setSavepoint();
     }
+
+    /**
+     * Hook method called before any method annotated with {@link Before}.
+     *
+     * To be overridden by inheritors.
+     */
+    protected void beforeHook() {
+        // Empty on purpose
+    }
+
+    /**
+     * Hook method called before any method annotated with {@link After}.
+     *
+     * To be overridden by inheritors.
+     */
+    protected void afterHook() {
+        // Empty on purpose
+    }
+
     @After
-    public void rollBack() throws ArchiveConnectionException, SQLException {
+    public void after() throws ArchiveConnectionException, SQLException {
+        rollback();
+
+        afterHook();
+    }
+
+    private void rollback() throws ArchiveConnectionException, SQLException {
         final Connection con = HANDLER.getConnection();
         con.rollback(_savepoint);
-        con.setAutoCommit(true);
+        con.setAutoCommit(_autoCommit);
     }
+
+
+
 }

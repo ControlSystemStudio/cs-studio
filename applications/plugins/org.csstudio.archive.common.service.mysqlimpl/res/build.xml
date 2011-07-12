@@ -1,4 +1,12 @@
-<project name="DatabaseCreation" basedir=".">
+<project name="db.creation">
+	<!-- necessary for this project being imported by another build file, basedir will be 
+	     'overridden' with the importing file's basedir... that's a very disputed break of encap -->
+	<dirname property="db.creation.basedir" file="${ant.file.db.creation}" />
+	
+	<property name="sql.driver" value="com.mysql.jdbc.Driver"/>
+    <property name="sql.connector.classpath" value="../../com.mysql.jdbc"/>
+	
+	
 	<!-- 
         Import the environment as properties prefixed with 'env'. 
         Then set env.HOSTNAME to be the value of env.COMPUTERNAME (in case of windows OS) 
@@ -26,12 +34,16 @@
 		    <isset property="env.COMPUTERNAME"/> <!-- Windows -->
 		</condition>
 
-        <echo message="HOSTNAME ORG = ${host.name.org}"/>
-		<script language="javascript"><![CDATA[
-			orgProp = DatabaseCreation.getProperty("host.name.org");
-			DatabaseCreation.setProperty("host.name", orgProp.toLowerCase());
-		]]></script>
-        <echo message="HOSTNAME to lowercase = ${host.name}"/>
+        <echo message="Original computer or host name = ${host.name.org}"/>
+		
+		<script language="javascript" >
+			<![CDATA[
+			      orgProp = project.getProperty("host.name.org");
+			      project.setProperty("host.name", orgProp.toLowerCase());
+		     ]]>
+		</script>
+		
+        <echo message="...to lowercase = ${host.name}"/>
 		
 		<!-- 
 		    Process host.properties file 
@@ -60,14 +72,26 @@
             </filterchain>
         </loadproperties>
 		<echo message="Properties with prefix '${host.name}.' and 'root.' loaded!"/>
+	    
+	    <property name="sql.host" value="${mysqlHost}"/>
+	    <property name="sql.url" value="jdbc:mysql://${sql.host}:${mysqlPort}"/>
+	    <property name="sql.root.user" value="${mysqlRootUser}"/>
+	    <property name="sql.root.pw" value="${mysqlRootPassword}"/>
+		
+	    <property name="sql.archive.db" value="${mysqlArchiveDatabase}"/>
+	    <property name="sql.archive.user" value="${mysqlArchiveUser}"/>
+	    <property name="sql.archive.pw" value="${mysqlArchivePassword}"/>
+
+		<echo message="sql.url : ${sql.url}"/>
+		<echo message="sql.root.user : ${sql.root.user}"/>
+		<echo message="sql.root.pw : ${sql.root.pw}"/>
+
+		<echo message="sql.archive.db : ${sql.archive.db}"/>
+		<echo message="sql.archive.user : ${sql.archive.user}"/>
+		<echo message="sql.archive.pw : ${sql.archive.pw}"/>
+		
 	</target>
 	
-    <property name="sql.driver" value="com.mysql.jdbc.Driver"/>
-    <property name="sql.url" value="jdbc:mysql://localhost:3306"/>
-    <property name="sql.database" value="archive_test"/>
-    <property name="sql.user" value="root"/>
-    <property name="sql.pass" value="hostrootpw"/>
-    <property name="sql.connector.classpath" value="../../com.mysql.jdbc"/>
 
 
     <target name="create.and.fill.database" 
@@ -77,24 +101,24 @@
    <target name="create.database" depends="drop.database">
       <sql driver="${sql.driver}" 
            url="${sql.url}" 
-           userid="${sql.user}" 
-           password="${sql.pass}">
+           userid="${sql.archive.user}" 
+           password="${sql.archive.pw}">
       	<classpath>
       	    <pathelement path="${sql.connector.classpath}"/>
       	</classpath>
       	
       	<transaction>
-      	    CREATE DATABASE ${sql.database};
-      	    USE ${sql.database};
+      	    CREATE DATABASE ${sql.archive.db};
+      	    USE ${sql.archive.db};
       	</transaction>
       </sql>
    </target>
    
     <target name="create.tables" depends="prepare.env">
         <sql driver="${sql.driver}" 
-             url="${sql.url}/${sql.database}" 
-             userid="${sql.user}" 
-             password="${sql.pass}">
+             url="${sql.url}/${sql.archive.db}" 
+             userid="${sql.archive.user}" 
+             password="${sql.archive.pw}">
             <classpath>
                 <pathelement path="${sql.connector.classpath}"/>
             </classpath>     	
@@ -114,9 +138,9 @@
 
     <target name="create.triggers" depends="prepare.env">
         <sql driver="${sql.driver}" 
-             url="${sql.url}/${sql.database}" 
-             userid="${sql.user}" 
-             password="${sql.pass}"
+             url="${sql.url}/${sql.archive.db}" 
+             userid="${sql.archive.user}" 
+             password="${sql.archive.pw}"
       	     delimiter="//">
             <classpath>
                 <pathelement path="${sql.connector.classpath}"/>
@@ -127,7 +151,7 @@
     </target>
 	
     <target name="drop.database" depends="prepare.env">
-	    <input message="Do you really want to delete database '${sql.database}'?" 
+	    <input message="Do you really want to delete database '${sql.archive.db}'?" 
                validargs="y,n" 
 	           addproperty="do.delete"
                defaultvalue="y" />
@@ -138,23 +162,23 @@
         
         <sql driver="${sql.driver}" 
              url="${sql.url}" 
-             userid="${sql.user}" 
-        	 password="${sql.pass}">
+             userid="${sql.archive.user}" 
+        	 password="${sql.archive.pw}">
              <classpath>
                  <pathelement path="${sql.connector.classpath}"/>
              </classpath>
             
              <transaction>
-                 DROP DATABASE IF EXISTS ${sql.database};
+                 DROP DATABASE IF EXISTS ${sql.archive.db};
              </transaction>
          </sql>
     </target>
 	
 	<target name="clear.tables" depends="prepare.env">
         <sql driver="${sql.driver}" 
-             url="${sql.url}/${sql.database}" 
-             userid="${sql.user}" 
-        	 password="${sql.pass}">
+             url="${sql.url}/${sql.archive.db}" 
+             userid="${sql.archive.user}" 
+        	 password="${sql.archive.pw}">
              <classpath>
                  <pathelement path="${sql.connector.classpath}"/>
              </classpath>
@@ -175,5 +199,55 @@
              	DELETE FROM engine;
              </transaction>
          </sql>
+	</target>
+	
+	<target name="run.on.mysqlhost.after.installation" 
+		    description="Run this target on your mysql host: connect as root, set root password, \
+		according to host.properties, create archive user, create archive db, \
+		grant privileges"
+		    depends="prepare.env">
+		
+        <sql driver="${sql.driver}" 
+             url="jdbc:mysql://localhost:${mysqlPort}" 
+             userid="${sql.root.user}"
+        	 password="${sql.root.pw}">
+             <classpath>
+                 <pathelement path="${sql.connector.classpath}"/>
+             </classpath>
+            
+             <!-- 
+                 Order matters - it's vice versa as the table creation due to foreign key constraints
+                 And deletion instead of truncation is used on tables where foreign keys point to.
+                 
+                 ATTENTION: something like CREATE/DROP USER IF [NOT] EXISTS is not provided by mysql
+                            but creation of a user that already exist causes an error,
+                            dropping of a user if he doesn't exist causes an error as well, great. 
+                            (a known bug/feature request for more than 6 years now) so
+                            to make the script re-runnable, for creating there's a workaround with 
+                            using the grant command. It creates a user if it doesn't exist and 
+                            doesn't throw an error if it does.
+                            If you want to drop a user, then you have to first grant the user a
+                            harmless privilege (then the user exists for sure), then it can be 
+                            safely dropped.
+                              
+                 The first statement about log_bin_trust_function_creators enables the 
+                 trigger mechanism in a replication setup, which is too complicated to be explained 
+                 here. 
+              -->
+             <transaction>
+             	SET GLOBAL log_bin_trust_function_creators = 1;
+             	
+             	GRANT ALL PRIVILEGES ON *.* TO '${sql.root.user}'@'%' IDENTIFIED BY '${sql.root.pw}' WITH GRANT OPTION;
+             	
+             	GRANT ALL PRIVILEGES ON ${sql.archive.db}.* TO '${sql.archive.user}'@'localhost' IDENTIFIED BY '${sql.archive.pw}';
+
+             	GRANT ALL PRIVILEGES ON ${sql.archive.db}.* TO '${sql.archive.user}'@'${sql.host}' IDENTIFIED BY '${sql.archive.pw}';
+             	
+             	GRANT ALL PRIVILEGES ON ${sql.archive.db}.* TO '${sql.archive.user}'@'%' IDENTIFIED BY '${sql.archive.pw}';
+             	
+             	FLUSH PRIVILEGES;
+             </transaction>
+         </sql>
+		
 	</target>
 </project>
