@@ -40,12 +40,12 @@ import org.junit.rules.TemporaryFolder;
 import com.google.common.collect.Lists;
 
 /**
- * TODO (bknerr) :
+ * Test for {@link PersistDataToFileRescuer}.
  *
  * @author bknerr
  * @since 11.04.2011
  */
-public class PersistDataToFileRescuerTest {
+public class PersistDataToFileRescuerUnitTest {
     private static File RESCUE_DIR;
 
     private static List<String> STATEMENTS;
@@ -56,44 +56,44 @@ public class PersistDataToFileRescuerTest {
     // CHECKSTYLE:ON
 
     @Before
-    public void setup() throws IOException {
+    public void setup() {
         RESCUE_DIR = _folder.newFolder("test");
 
         STATEMENTS = Lists.newArrayList("FIRST",
                                         "SECOND",
                                         "THIRD");
     }
-    
+
     @Test
-    public void saveToPathTest() throws DataRescueException, IOException, ClassNotFoundException {
-        TimeInstant now = TimeInstantBuilder.fromNow();
-    
-        DataRescueResult result = PersistDataToFileRescuer.with(STATEMENTS).at(now).to(RESCUE_DIR).rescue();
-    
-        File infile = new File(result.getFilePath());
+    public void saveToPathTest() throws DataRescueException {
+        final TimeInstant now = TimeInstantBuilder.fromNow();
+
+        final DataRescueResult result = PersistDataToFileRescuer.with(STATEMENTS).at(now).to(RESCUE_DIR).rescue();
+
+        final File infile = new File(result.getFilePath());
         Assert.assertNotNull(infile);
-        
-        List<String> resultFromFile = readStatementsFromFile(infile);
-        
+
+        final List<String> resultFromFile = readStatementsFromFile(infile);
+
         Assert.assertEquals(STATEMENTS.size(), resultFromFile.size());
 
         int i = 0;
-        for (String stmt : STATEMENTS) {
+        for (final String stmt : STATEMENTS) {
             Assert.assertEquals(stmt, resultFromFile.get(i));
             i++;
         }
     }
-    
-    private List<String> readStatementsFromFile(File infile) throws IOException {
-        List<String> result = Lists.newArrayList();
+
+    private List<String> readStatementsFromFile(final File infile) {
+        final List<String> result = Lists.newArrayList();
         try {
-            BufferedReader in = new BufferedReader(new FileReader(infile));
+            final BufferedReader in = new BufferedReader(new FileReader(infile));
             String str;
             while ((str = in.readLine()) != null) {
                 result.add(str);
             }
             in.close();
-        } catch (IOException e) {
+        } catch (final IOException e) {
             // Ignore
         }
         return result;

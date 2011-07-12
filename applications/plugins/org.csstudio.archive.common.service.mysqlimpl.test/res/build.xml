@@ -1,22 +1,16 @@
-<project name="Insertion of Test Data" basedir=".">
-   <property name="sql.driver" value="com.mysql.jdbc.Driver"/>
-   <property name="sql.url" value="jdbc:mysql://localhost:3306"/>
-   <property name="sql.database" value="archive_test"/>
-   <property name="sql.user" value="root"/>
-   <property name="sql.pass" value="hostrootpw"/>
-   <property name="sql.connector.classpath" value="../../com.mysql.jdbc"/>
+<project name="db.testdata.insertion" basedir=".">
+   <!-- necessary for this project being imported by another build file, basedir will be 
+        'overridden' with the importing file's basedir... that's a very disputed break of encap -->
+    <dirname property="this.basedir" file="${ant.file.db.testdata.insertion}" />
 
-	<target name="clear.tables">
-		<subant target="clear.tables" inheritall="true">
-			<fileset dir="../../org.csstudio.archive.common.service.mysqlimpl/res" includes="build.xml"/>
-		</subant>
-	</target>
+	
+	<import file="../../org.csstudio.archive.common.service.mysqlimpl/res/build.xml"/>
 	
     <target name="insert.test.data" depends="clear.tables">
         <sql driver="${sql.driver}" 
-             url="${sql.url}/${sql.database}" 
-             userid="${sql.user}" 
-             password="${sql.pass}">
+             url="${sql.url}/${sql.archive.db}" 
+             userid="${sql.archive.user}" 
+             password="${sql.archive.pw}">
              <classpath>
                  <pathelement path="${sql.connector.classpath}"/>
              </classpath>

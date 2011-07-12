@@ -21,9 +21,6 @@
  */
 package org.csstudio.archive.common.service.mysqlimpl.persistengine;
 
-import static org.csstudio.archive.common.service.mysqlimpl.MySQLArchiveServicePreference.MAX_ALLOWED_PACKET_IN_KB;
-import static org.csstudio.archive.common.service.mysqlimpl.MySQLArchiveServicePreference.PERIOD_IN_MS;
-
 import java.io.File;
 import java.util.Comparator;
 import java.util.Iterator;
@@ -36,7 +33,7 @@ import java.util.concurrent.atomic.AtomicInteger;
 
 import javax.annotation.Nonnull;
 
-import org.csstudio.archive.common.service.mysqlimpl.MySQLArchiveServicePreference;
+import org.csstudio.archive.common.service.mysqlimpl.MySQLArchivePreferenceService;
 import org.csstudio.archive.common.service.mysqlimpl.dao.ArchiveConnectionHandler;
 import org.csstudio.archive.common.service.mysqlimpl.notification.ArchiveNotifications;
 import org.csstudio.archive.common.service.util.DataRescueException;
@@ -46,7 +43,6 @@ import org.csstudio.domain.desy.time.TimeInstant.TimeInstantBuilder;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.google.common.collect.Lists;
 import com.google.common.collect.Sets;
 import com.google.inject.Inject;
 
@@ -57,53 +53,8 @@ import com.google.inject.Inject;
  */
 public class PersistEngineDataManager {
 
-    /**
-     * Thread to hold the shutdown worker on stopping the engine.
-     *
-     * @author bknerr
-     * @since 11.05.2011
-     */
-    private final class ShutdownWorkerThread extends Thread {
-        /**
-         * Constructor.
-         */
-        public ShutdownWorkerThread() {
-            // Empty
-        }
-
-        /**
-         * {@inheritDoc}
-         */
-        @SuppressWarnings("synthetic-access")
-        @Override
-        public void run() {
-            if (!_executor.isTerminating()) {
-                _executor.execute(new PersistDataWorker(PersistEngineDataManager.this,
-                                                        "SHUTDOWN MySQL Archive Worker",
-                                                        _sqlStatementBatch,
-                                                        Integer.valueOf(0),
-                                                        _prefMaxAllowedPacketInBytes));
-                _executor.shutdown();
-                try {
-                    if (!_executor.awaitTermination(_prefPeriodInMS + 1, TimeUnit.MILLISECONDS)) {
-                        LOG.warn("Executor for PersistDataWorkers did not terminate in the specified period. Try to rescue data.");
-                        final List<String> statements = Lists.newLinkedList();
-                        _sqlStatementBatch.drainTo(statements);
-                        rescueDataToFileSystem(statements);
-                    }
-                } catch (final InterruptedException e) {
-                    Thread.currentThread().interrupt();
-                }
-            }
-        }
-    }
-
-
     private static final Logger LOG =
         LoggerFactory.getLogger(PersistEngineDataManager.class);
-
-
-    private static final File DATA_RESCUE_DIR = MySQLArchiveServicePreference.DATA_RESCUE_DIR.getValue();
 
 
     // TODO (bknerr) : number of threads?
@@ -138,7 +89,10 @@ public class PersistEngineDataManager {
     private final SqlStatementBatch _sqlStatementBatch;
 
     private Integer _prefPeriodInMS;
-    private Integer _prefMaxAllowedPacketInBytes;
+    private final Integer _prefMaxAllowedPacketInBytes;
+    private final File _prefRescueDir;
+    private final String _prefSmtpHost;
+    private final String _prefEmailAddress;
 
     private final ArchiveConnectionHandler _connectionHandler;
 
@@ -146,20 +100,20 @@ public class PersistEngineDataManager {
      * Constructor.
      */
     @Inject
-    public PersistEngineDataManager(@Nonnull final ArchiveConnectionHandler connectionHandler) {
+    public PersistEngineDataManager(@Nonnull final ArchiveConnectionHandler connectionHandler,
+                                    @Nonnull final MySQLArchivePreferenceService prefs) {
         _connectionHandler = connectionHandler;
-
-        loadAndCheckPreferences();
+        _prefMaxAllowedPacketInBytes = prefs.getMaxAllowedPacketSizeInKB()*1024;
+        _prefPeriodInMS = prefs.getPeriodInMS();
+        _prefRescueDir = prefs.getDataRescueDir();
+        _prefSmtpHost = prefs.getSmtpHost();
+        _prefEmailAddress = prefs.getEmailAddress();
 
         _sqlStatementBatch = SqlStatementBatch.INSTANCE;
 
-        addGracefulShutdownHook();
-    }
-
-
-    private void loadAndCheckPreferences() {
-        _prefMaxAllowedPacketInBytes = MAX_ALLOWED_PACKET_IN_KB.getValue() * 1024;
-        _prefPeriodInMS = PERIOD_IN_MS.getValue();
+        addGracefulShutdownHook(_executor,
+                                _sqlStatementBatch,
+                                _prefMaxAllowedPacketInBytes);
     }
 
     private void submitNewPersistDataWorker() {
@@ -195,12 +149,16 @@ public class PersistEngineDataManager {
      * meaning continuous integration. This is a flaw as the production code should be unaware
      * of its run context, but we couldn't think of another option.
      */
-    private void addGracefulShutdownHook() {
+    private void addGracefulShutdownHook(@Nonnull final ScheduledThreadPoolExecutor exec,
+                                         @Nonnull final SqlStatementBatch batch,
+                                         @Nonnull final Integer maxAllowedPacketInBytes) {
         if (DesyRunContext.isProductionContext()) {
             /**
              * Add shutdown hook.
              */
-            Runtime.getRuntime().addShutdownHook(new ShutdownWorkerThread());
+            Runtime.getRuntime().addShutdownHook(new ShutdownWorkerThread(this, exec,
+                                                                          batch,
+                                                                          maxAllowedPacketInBytes));
         }
     }
 
@@ -263,26 +221,36 @@ public class PersistEngineDataManager {
         it.remove();
     }
 
-
     public void rescueDataToFileSystem(@Nonnull final List<String> statements) {
+        rescueDataToFileSystem(_prefSmtpHost, _prefEmailAddress, _prefRescueDir, statements);
+    }
+
+    public void rescueDataToFileSystem(@Nonnull final String smtpHost,
+                                       @Nonnull final String address,
+                                       @Nonnull final File rescueDir,
+                                       @Nonnull final List<String> statements) {
         LOG.warn("Rescue statements: " + statements.size());
 
         try {
             final DataRescueResult result =
                 PersistDataToFileRescuer.with(statements)
                                         .at(TimeInstantBuilder.fromNow())
-                                        .to(DATA_RESCUE_DIR)
+                                        .to(rescueDir)
                                         .rescue();
             if (!result.hasSucceeded()) {
-                ArchiveNotifications.notify(NotificationType.PERSIST_DATA_FAILED, result.getFilePath());
+                ArchiveNotifications.notify(smtpHost, address, NotificationType.PERSIST_DATA_FAILED, result.getFilePath());
             }
         } catch (final DataRescueException e) {
-            ArchiveNotifications.notify(NotificationType.PERSIST_DATA_FAILED, e.getMessage());
+            ArchiveNotifications.notify(smtpHost, address, NotificationType.PERSIST_DATA_FAILED, e.getMessage());
         }
     }
 
     @Nonnull
     public ArchiveConnectionHandler getConnectionHandler() {
         return _connectionHandler;
+    }
+
+    public void shutdown() {
+        _executor.shutdown();
     }
 }
