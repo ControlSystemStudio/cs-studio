@@ -35,7 +35,6 @@ import javax.annotation.CheckForNull;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
-import org.slf4j.Logger;
 import org.csstudio.archive.common.service.ArchiveConnectionException;
 import org.csstudio.archive.common.service.channel.ArchiveChannelId;
 import org.csstudio.archive.common.service.channel.IArchiveChannel;
@@ -57,10 +56,11 @@ import org.csstudio.domain.desy.time.TimeInstant;
 import org.csstudio.domain.desy.time.TimeInstant.TimeInstantBuilder;
 import org.csstudio.domain.desy.typesupport.BaseTypeConversionSupport;
 import org.csstudio.domain.desy.typesupport.TypeSupportException;
-import org.slf4j.LoggerFactory;
 import org.joda.time.Duration;
 import org.joda.time.Hours;
 import org.joda.time.Minutes;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import com.google.common.base.Joiner;
 import com.google.common.collect.Lists;
@@ -134,10 +134,6 @@ public class ArchiveSampleDaoImpl extends AbstractArchiveDao implements IArchive
             if (stmts != null && !stmts.isEmpty()) {
                 getEngineMgr().submitStatementsToBatch(stmts);
             }
-        } catch (final ArchiveConnectionException e) {
-            throw new ArchiveDaoException(RETRIEVAL_FAILED, e);
-        } catch (final SQLException e) {
-            throw new ArchiveDaoException(RETRIEVAL_FAILED, e);
         } catch (final TypeSupportException e) {
             throw new ArchiveDaoException(RETRIEVAL_FAILED, e);
         }
@@ -147,8 +143,6 @@ public class ArchiveSampleDaoImpl extends AbstractArchiveDao implements IArchive
     private <V, T extends ISystemVariable<V>>
         List<String> composeStatements(@Nonnull final Collection<IArchiveSample<V, T>> samples)
                                        throws ArchiveDaoException,
-                                              ArchiveConnectionException,
-                                              SQLException,
                                               TypeSupportException {
 
         final Deque<String> values = Lists.newLinkedList();
@@ -295,8 +289,7 @@ public class ArchiveSampleDaoImpl extends AbstractArchiveDao implements IArchive
     @CheckForNull
     private List<String> joinStringsToStatementBatch(@Nonnull final Deque<String> values,
                                                      @Nonnull final Deque<String> valuesPerMinute,
-                                                     @Nonnull final Deque<String> valuesPerHour)
-        throws SQLException, ArchiveConnectionException {
+                                                     @Nonnull final Deque<String> valuesPerHour) {
         final List<String> statements = Lists.newLinkedList();
 
         joinValuesFieldIntoStatementsList(_insertSamplesStmt, values, statements);
@@ -506,7 +499,7 @@ public class ArchiveSampleDaoImpl extends AbstractArchiveDao implements IArchive
     private DesyArchiveRequestType determineRequestType(@CheckForNull final DesyArchiveRequestType type,
                                                         @Nonnull final String dataType,
                                                         @Nonnull final TimeInstant s,
-                                                        @Nonnull final TimeInstant e) throws ArchiveDaoException, TypeSupportException {
+                                                        @Nonnull final TimeInstant e) throws TypeSupportException {
 
         if (DesyArchiveRequestType.RAW.equals(type) || !ArchiveTypeConversionSupport.isDataTypeOptimizable(dataType)) {
             return DesyArchiveRequestType.RAW;
