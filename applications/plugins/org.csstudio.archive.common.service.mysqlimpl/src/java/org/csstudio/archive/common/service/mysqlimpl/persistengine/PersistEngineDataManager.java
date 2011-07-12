@@ -249,4 +249,8 @@ public class PersistEngineDataManager {
     public ArchiveConnectionHandler getConnectionHandler() {
         return _connectionHandler;
     }
+
+    public void shutdown() {
+        _executor.shutdown();
+    }
 }

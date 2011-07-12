@@ -31,6 +31,7 @@ import org.csstudio.archive.common.service.ArchiveConnectionException;
 import org.csstudio.archive.common.service.mysqlimpl.dao.ArchiveConnectionHandler;
 import org.csstudio.archive.common.service.mysqlimpl.persistengine.PersistEngineDataManager;
 import org.junit.After;
+import org.junit.AfterClass;
 import org.junit.Before;
 import org.junit.BeforeClass;
 
@@ -106,6 +107,12 @@ public abstract class AbstractDaoTestSetup {
         con.setAutoCommit(_autoCommit);
     }
 
+    @AfterClass
+    public static void afterClass() {
+        if (PERSIST_MGR != null) {
+            PERSIST_MGR.shutdown();
+        }
+    }
 
 
 }
