@@ -111,8 +111,6 @@ public class ArchiveChannelDaoImpl extends AbstractArchiveDao implements IArchiv
     @Nonnull
     private IArchiveChannel readChannelFromResultIntoCache(@Nonnull final ResultSet result)
                                                            throws SQLException,
-                                                                  ClassNotFoundException,
-                                                                  ArchiveDaoException,
                                                                   TypeSupportException {
         // id, name, datatype, group_id, last_sample_time
         final ArchiveChannelId id = new ArchiveChannelId(result.getLong(TAB + ".id"));
@@ -220,8 +218,6 @@ public class ArchiveChannelDaoImpl extends AbstractArchiveDao implements IArchiv
     private Set<IArchiveChannel> retrieveUncachedChannelsBy(@Nonnull final Set<String> names)
                                                           throws ArchiveConnectionException,
                                                                  SQLException,
-                                                                 ClassNotFoundException,
-                                                                 ArchiveDaoException,
                                                                  TypeSupportException {
 
         final Set<IArchiveChannel> foundChannels = Sets.newHashSetWithExpectedSize(names.size());
@@ -239,7 +235,7 @@ public class ArchiveChannelDaoImpl extends AbstractArchiveDao implements IArchiv
 
     @CheckForNull
     private IArchiveChannel retrieveUncachedChannelBy(@Nonnull final PreparedStatement stmt)
-                                                    throws SQLException, ClassNotFoundException, ArchiveDaoException, TypeSupportException
+                                                    throws SQLException, TypeSupportException
                                                      {
         try {
             final ResultSet result = stmt.executeQuery();
