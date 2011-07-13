@@ -8,4 +8,11 @@
 		hidden.
 	-->
 <extensions>
+      <page id="firststeps">
+         <group path="page-content/top-left">
+            <extension id="org.csstudio.nsls2.startup.intro-introExtension" importance="high"/>
+            <extension id="orgcsstudiodiagprobeintro-introExtension"  importance="medium"/>
+            <extension id="orgcsstudiodiagepicspvtreeintro-introExtension" importance="medium"/>
+         </group>
+      </page>
 </extensions>
