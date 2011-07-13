@@ -331,7 +331,7 @@ public class MessageProcessor extends Thread implements MessageListener {
         
         parent.setStatus(ApplicState.STOPPED);
 
-        LOG.info("executeMe() : ** DONE **");
+        LOG.info("Leaving method executeMe().");
     }
 
     public boolean stoppedClean() {
@@ -438,8 +438,8 @@ public class MessageProcessor extends Thread implements MessageListener {
         }
     }
     
-    public void setParent(Jms2OraApplication parent) {
-        this.parent = parent;
+    public void setParent(Jms2OraApplication p) {
+        this.parent = p;
     }
     
     public synchronized void stopWorking() {
@@ -464,7 +464,7 @@ public class MessageProcessor extends Thread implements MessageListener {
     
     /**
      * 
-     * @return
+     * @return Number of received messages
      */
     public Collector getReceivedMessagesCollector() {
         return receivedMessages;
@@ -472,7 +472,7 @@ public class MessageProcessor extends Thread implements MessageListener {
     
     /**
      * 
-     * @return
+     * @return Number of filtered messages
      */
     public Collector getFilteredMessagesCollector() {
         return filteredMessages;
@@ -480,7 +480,7 @@ public class MessageProcessor extends Thread implements MessageListener {
 
     /**
      * 
-     * @return
+     * @return Number of discarded messages
      */
     public Collector getDiscardedMessagesCollector() {
         return discardedMessages;
@@ -488,7 +488,7 @@ public class MessageProcessor extends Thread implements MessageListener {
 
     /**
      * 
-     * @return
+     * @return Number of stored messages
      */
     public Collector getStoredMessagesCollector() {
         return storedMessages;
