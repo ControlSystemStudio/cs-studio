@@ -8,6 +8,7 @@
 package org.csstudio.alarm.beast.ui.alarmtable;
 
 import java.util.Arrays;
+import java.util.Comparator;
 
 import org.csstudio.alarm.beast.client.AlarmTreePV;
 import org.csstudio.alarm.beast.ui.alarmtable.AlarmTableLabelProvider.ColumnInfo;
@@ -29,7 +30,7 @@ public class AlarmTableContentProvider implements ILazyContentProvider
 {
     private TableViewer table_viewer;
     private AlarmTreePV[] alarms;
-    private AlarmComparator comparator = new AlarmComparator(ColumnInfo.SEVERITY, false);
+    private Comparator<AlarmTreePV> comparator = AlarmComparator.getComparator(ColumnInfo.SEVERITY, false);
 
     /** Update the list of alarms to display.
      *  @param alarms
@@ -41,6 +42,7 @@ public class AlarmTableContentProvider implements ILazyContentProvider
             table_viewer.setItemCount(0);
         else
         {
+        	// TODO Limit size to ~5000 alarms, add "...more" entry when capping it?
             Arrays.sort(this.alarms, comparator);
             table_viewer.setItemCount(alarms.length);
             table_viewer.refresh();
@@ -54,7 +56,7 @@ public class AlarmTableContentProvider implements ILazyContentProvider
     }
 
     /** @param comparator Comparator that's used to sort alarms */
-    public void setComparator(final AlarmComparator comparator)
+    public void setComparator(final Comparator<AlarmTreePV> comparator)
     {
         this.comparator = comparator;
         // trigger refresh
