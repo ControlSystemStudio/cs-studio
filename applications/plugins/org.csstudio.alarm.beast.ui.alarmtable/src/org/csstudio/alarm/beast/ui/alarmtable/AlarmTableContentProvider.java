@@ -49,8 +49,8 @@ public class AlarmTableContentProvider implements ILazyContentProvider
     		this.alarms = new AlarmTreePV[alarm_table_row_limit + 1];
     		System.arraycopy(alarms, 0, this.alarms, 0, alarm_table_row_limit);
     		// Add explanatory entry to end
-    		final AlarmTreePV info = new AlarmTreePV(null, "More ...", -1);
-    		info.setDescription(NLS.bind("Display limited to {0} alarms", alarm_table_row_limit));
+    		final AlarmTreePV info = new AlarmTreePV(null, Messages.AlarmTableRowLimitMessage, -1);
+    		info.setDescription(NLS.bind(Messages.AlarmTableRowLimitInfoFmt, alarm_table_row_limit));
 			this.alarms[alarm_table_row_limit] = info;
 			// Sort all but that explanatory entry
             Arrays.sort(this.alarms, 0, alarm_table_row_limit, comparator);
