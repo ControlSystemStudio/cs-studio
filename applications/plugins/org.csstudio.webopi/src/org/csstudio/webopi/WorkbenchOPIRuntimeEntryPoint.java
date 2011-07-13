@@ -1,5 +1,6 @@
 package org.csstudio.webopi;
 
+import org.csstudio.rap.core.DisplayManager;
 import org.eclipse.rwt.lifecycle.IEntryPoint;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.ui.PlatformUI;
@@ -11,7 +12,7 @@ public class WorkbenchOPIRuntimeEntryPoint implements IEntryPoint {
 
 	public int createUI() {
 		Display display = PlatformUI.createDisplay();
-
+		DisplayManager.getInstance().registerDisplay(display);
 		WorkbenchAdvisor advisor = new ApplicationWorkbenchAdvisor();
 		return PlatformUI.createAndRunWorkbench( display, advisor );
 		

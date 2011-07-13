@@ -40,6 +40,7 @@ public class WebBrowserFigure extends AbstractWebBrowserFigure {
 		this.runmode = runmode;
 		if(runmode){			
 			browser = new Browser(composite, SWT.None);
+			browser.moveAbove(null);
 		}
 	}
 
@@ -69,7 +70,7 @@ public class WebBrowserFigure extends AbstractWebBrowserFigure {
 			super.dispose();	
 			//the browser must be disposed in the queue of UI thread, 
 			//so that multiple browsers can be properly disposed.
-			UIBundlingThread.getInstance().addRunnable(new Runnable() {			
+			UIBundlingThread.getInstance().addRunnable(browser.getDisplay(), new Runnable() {			
 				public void run() {				
 					browser.dispose();
 					browser = null;

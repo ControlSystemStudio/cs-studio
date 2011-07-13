@@ -30,7 +30,9 @@ public class PVWidgetConnectionHandler extends ConnectionHandler{
 		super.markWidgetAsDisconnected(pv);
 		final PV controlPV = editPart.getControlPV();
 		if(controlPV != null && controlPV == pv){
-		UIBundlingThread.getInstance().addRunnable(new Runnable() {
+		UIBundlingThread.getInstance().addRunnable(
+				editPart.getRoot().getViewer().getControl().getDisplay(), 
+				new Runnable() {
 			
 			public void run() {
 				editPart.getFigure().setEnabled(false);
@@ -46,7 +48,8 @@ public class PVWidgetConnectionHandler extends ConnectionHandler{
 		super.widgetConnectionRecovered(pv);
 		final PV controlPV = editPart.getControlPV();
 		if(controlPV != null && controlPV == pv){
-		UIBundlingThread.getInstance().addRunnable(new Runnable() {			
+		UIBundlingThread.getInstance().addRunnable(editPart.getRoot().getViewer().getControl().getDisplay(),
+			new Runnable() {			
 			public void run() {
 				editPart.getFigure().setEnabled(
 						editPart.getWidgetModel().isEnabled() 

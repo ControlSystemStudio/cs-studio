@@ -2,6 +2,7 @@ package org.csstudio.webopi;
 
 import org.csstudio.opibuilder.persistence.URLPath;
 import org.csstudio.opibuilder.runmode.RunModeService;
+import org.csstudio.opibuilder.runmode.OPIRunnerPerspective.Position;
 import org.csstudio.opibuilder.runmode.RunModeService.TargetWindow;
 import org.eclipse.core.runtime.Path;
 import org.eclipse.swt.SWT;
@@ -27,8 +28,9 @@ public class ApplicationWorkbenchWindowAdvisor extends WorkbenchWindowAdvisor {
     	shell.setText("hello Rap");
     	shell.setMaximized(true);
     	
-    	RunModeService.getInstance().runOPI(new URLPath(
-    			"http://ics-srv-web2.sns.ornl.gov/ade/css/Share/SNS_CCR_Screens/Site/main.opi"), TargetWindow.SAME_WINDOW, null);
+    	RunModeService.getInstance().runOPI(new Path(
+    			"C:\\Users\\5hz\\Work\\java test\\runtime-SNS_CSS.product\\BOY Examples\\1_1_Start_Up.opi"), 
+    			TargetWindow.SAME_WINDOW, null);
     	
     }
     
@@ -36,6 +38,9 @@ public class ApplicationWorkbenchWindowAdvisor extends WorkbenchWindowAdvisor {
     	
         IWorkbenchWindowConfigurer configurer = getWindowConfigurer();    
        
+        configurer.setShowCoolBar(true);
+        configurer.setShowMenuBar(false);
+        configurer.setShowStatusLine(false);
         
         configurer.setTitle("Hello RAP");
 

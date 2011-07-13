@@ -7,7 +7,6 @@
  ******************************************************************************/
 package org.csstudio.opibuilder.widgetActions;
 
-import java.net.URL;
 import java.util.logging.Level;
 
 import org.csstudio.opibuilder.OPIBuilderPlugin;
@@ -15,8 +14,9 @@ import org.csstudio.opibuilder.properties.StringProperty;
 import org.csstudio.opibuilder.properties.WidgetPropertyCategory;
 import org.csstudio.opibuilder.util.ConsoleService;
 import org.csstudio.opibuilder.widgetActions.WidgetActionFactory.ActionType;
+import org.eclipse.draw2d.rap.swt.SWT;
 import org.eclipse.osgi.util.NLS;
-import org.eclipse.ui.PlatformUI;
+import org.eclipse.rwt.widgets.ExternalBrowser;
 
 /**The action that opens webpage in default system web browser.
  * @author Xihui Chen
@@ -44,8 +44,9 @@ public class OpenWebpageAction extends AbstractWidgetAction {
 	        getHyperLink().startsWith("file:")) //$NON-NLS-1$
 		{
 			try {
-				PlatformUI.getWorkbench().getBrowserSupport().createBrowser("opi_web_browser").openURL( //$NON-NLS-1$
-						new URL(getHyperLink()));
+				ExternalBrowser.open("_blank", getHyperLink(), SWT.None);
+//				PlatformUI.getWorkbench().getBrowserSupport().createBrowser("opi_web_browser").openURL( //$NON-NLS-1$
+//						new URL(getHyperLink()));
 			} catch (Exception e) {
 				String message = NLS.bind("Failed to open the hyperlink: {0}\n{1}", getHyperLink(), e);
                 OPIBuilderPlugin.getLogger().log(Level.WARNING, "Failed to open " + getHyperLink(), e); //$NON-NLS-1$

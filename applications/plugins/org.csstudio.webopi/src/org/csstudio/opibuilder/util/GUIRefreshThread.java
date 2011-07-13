@@ -120,10 +120,10 @@ public final class GUIRefreshThread implements Runnable {
 	 * Process the complete queue.
 	 */
 	private void processQueue() {
-		if(!asyncEmpty)
-			return;
-		asyncEmpty = false;
-		Display display = PlatformUI.getWorkbench().getDisplay();
+//		if(!asyncEmpty)
+//			return;
+//		asyncEmpty = false;
+//		Display display = PlatformUI.getWorkbench().getDisplay();
 		Object[] tasksArray;
 		//copy the tasks queue.
 		synchronized (this) {
@@ -131,6 +131,7 @@ public final class GUIRefreshThread implements Runnable {
 			tasksQueue.clear();
 		}
 		for(Object o : tasksArray){
+			Display display = ((WidgetIgnorableUITask)o).getDisplay();
 				if(display!=null && !display.isDisposed())
 					try {
 						display.asyncExec(((WidgetIgnorableUITask) o).getRunnableTask());
@@ -138,8 +139,8 @@ public final class GUIRefreshThread implements Runnable {
 					    OPIBuilderPlugin.getLogger().log(Level.WARNING, "GUI refresh error", e); //$NON-NLS-1$
 					}
 		}
-		if(display!=null && !display.isDisposed())
-			display.asyncExec(resetAsyncEmpty);
+//		if(display!=null && !display.isDisposed())
+//			display.asyncExec(resetAsyncEmpty);
 	}
 
 	/**

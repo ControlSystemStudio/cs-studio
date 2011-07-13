@@ -30,6 +30,7 @@ import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Path;
 import org.eclipse.core.runtime.Status;
 import org.eclipse.core.runtime.jobs.Job;
+import org.eclipse.swt.widgets.Display;
 import org.eclipse.ui.progress.UIJob;
 
 /**
@@ -67,10 +68,11 @@ public class PlayWavFileAction extends AbstractWidgetAction {
 				try {
 					final InputStream in = ResourceUtil.pathToInputStream(
 							getAbsolutePath(), false);
-
-					UIJob playWavJob = new UIJob(getDescription()) {
-						@Override
-						public IStatus runInUIThread(IProgressMonitor monitor) {
+					Display display = 
+							getWidgetModel().getRootDisplayModel().getViewer().getControl().getDisplay();
+					display.asyncExec(new Runnable() {
+						
+						public void run() {							
 							try {
 								final BufferedInputStream bis;
 								if (!(in instanceof BufferedInputStream))
@@ -108,11 +110,9 @@ public class PlayWavFileAction extends AbstractWidgetAction {
 								ConsoleService.getInstance().writeError(
 										message + "\n" + e.getMessage()); //$NON-NLS-1$
 							}
-							return Status.OK_STATUS;
 						}
-					};
-					playWavJob.schedule();
-				} catch (Exception e) {
+					});
+				}catch (Exception e) {
 					final String message = "Failed to connect to wave file " + getPath(); //$NON-NLS-1$
 					OPIBuilderPlugin.getLogger().log(Level.WARNING, message, e);
 					ConsoleService.getInstance().writeError(

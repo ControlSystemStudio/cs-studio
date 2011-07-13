@@ -41,6 +41,7 @@ public class ComboFigure extends AbstractSWTWidgetFigure {
 		super(composite, parentModel);
 		combo = new Combo(composite, SWT.DROP_DOWN | SWT.READ_ONLY);
 		combo.setVisible(false);
+		combo.moveAbove(null);
 		selector = new Triangle();	
 		selector.setDirection(PositionConstants.SOUTH);
 		selector.setFill(true);

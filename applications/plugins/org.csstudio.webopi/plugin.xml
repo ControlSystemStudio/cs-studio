@@ -19,5 +19,35 @@
             name="OPIRuntime Perspective">
       </perspective>
    </extension>
+   <extension
+         point="org.eclipse.ui.views">
+      <category
+            id="org.csstudio.opibuilder.views"
+            name="BOY">
+      </category>
+      <view
+            allowMultiple="true"
+            category="org.csstudio.opibuilder.views"
+            class="org.csstudio.opibuilder.runmode.OPIView"
+            fastViewWidthRatio="0.3"
+            icon="icons/OPIRunner.png"
+            id="org.csstudio.opibuilder.opiView"
+            name="OPI View"
+            restorable="true">
+      </view>
+   </extension>
+   <extension
+         point="org.eclipse.ui.editors">      
+      <editor
+            class="org.csstudio.opibuilder.runmode.OPIRunner"
+            contributorClass="org.csstudio.opibuilder.runmode.OPIRunnerToolBarContributor"
+            default="true"
+            extensions="opi"
+            icon="icons/OPIRunner.png"
+            id="org.csstudio.opibuilder.OPIRunner"
+            name="OPI Runtime">
+      </editor>
+     
+   </extension>
 
 </plugin>

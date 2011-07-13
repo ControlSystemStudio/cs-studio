@@ -157,7 +157,7 @@ public class RunModeService {
 						targetWindow.getShell().forceFocus();						
 						targetWindow.getActivePage().openEditor(
 								runnerInput, OPIRunner.ID); //$NON-NLS-1$
-						targetWindow.getShell().moveAbove(null);
+//						targetWindow.getShell().moveAbove(null);
 					} catch (PartInitException e) {
 						OPIBuilderPlugin.getLogger().log(Level.WARNING,
 						        "Failed to run OPI " + path.lastSegment(), e);

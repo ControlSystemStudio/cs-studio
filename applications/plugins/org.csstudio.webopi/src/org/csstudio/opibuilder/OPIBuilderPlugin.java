@@ -23,7 +23,7 @@ public class OPIBuilderPlugin extends AbstractUIPlugin {
 	/**
 	 * The ID of the widget extension point.
 	 */
-	public static final String EXTPOINT_WIDGET = PLUGIN_ID + ".widget"; //$NON-NLS-1$
+	public static final String EXTPOINT_WIDGET = "org.csstudio.opibuilder.widget"; //$NON-NLS-1$
 
 
 	/**

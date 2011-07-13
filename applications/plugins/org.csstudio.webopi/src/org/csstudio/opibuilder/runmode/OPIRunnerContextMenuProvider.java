@@ -63,10 +63,10 @@ public final class OPIRunnerContextMenuProvider extends ContextMenuProvider {
 		ActionRegistry actionRegistry =
 			(ActionRegistry) opiRuntime.getAdapter(ActionRegistry.class);
 		
-		menu.appendToGroup(GEFActionConstants.GROUP_EDIT, 
-				WorkbenchWindowService.getInstance().getFullScreenAction(activeWindow));
-		menu.appendToGroup(GEFActionConstants.GROUP_EDIT, 
-				WorkbenchWindowService.getInstance().getCompactModeAction(activeWindow));
+//		menu.appendToGroup(GEFActionConstants.GROUP_EDIT, 
+//				WorkbenchWindowService.getInstance().getFullScreenAction(activeWindow));
+//		menu.appendToGroup(GEFActionConstants.GROUP_EDIT, 
+//				WorkbenchWindowService.getInstance().getCompactModeAction(activeWindow));
 		//actionRegistry.getAction(CompactModeAction.ID));
 
 		

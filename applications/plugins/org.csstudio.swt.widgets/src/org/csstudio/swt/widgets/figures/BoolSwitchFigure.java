@@ -8,6 +8,9 @@
 package org.csstudio.swt.widgets.figures;
 
 
+import java.util.logging.Level;
+
+import org.csstudio.swt.widgets.Activator;
 import org.csstudio.swt.widgets.util.GraphicsUtil;
 import org.csstudio.swt.widgets.util.SingleSourceHelper;
 import org.csstudio.ui.util.CustomMediaFactory;
@@ -394,10 +397,11 @@ public class BoolSwitchFigure extends AbstractBoolControlFigure {
 	class Pedestal extends Figure {
 		@Override
 		protected void paintFigure(Graphics graphics) {
-			graphics.setAntialias(SWT.ON);
-			graphics.setBackgroundColor(effect3D? WHITE_COLOR : GRAY_COLOR);
-			graphics.fillOval(bounds);
 			boolean support3D = GraphicsUtil.testPatternSupported(graphics);
+			graphics.setAntialias(SWT.ON);
+			graphics.setBackgroundColor(effect3D && support3D? WHITE_COLOR : GRAY_COLOR);
+			graphics.fillOval(bounds);
+			
 			if(effect3D && support3D) {
 				Pattern pattern;
 				if(booleanValue)
@@ -431,7 +435,11 @@ public class BoolSwitchFigure extends AbstractBoolControlFigure {
 	class Shadow extends Figure {
 		private final static int ALPHA = 80;
 		@Override
-		protected void paintClientArea(Graphics graphics) {			
+		protected void paintClientArea(Graphics graphics) {
+			if(SWT.getPlatform().startsWith("rap")) {//$NON-NLS-1$
+				super.paintClientArea(graphics);
+				return;
+			}
 			graphics.pushState();
 			graphics.setAlpha(ALPHA);
 			
@@ -617,13 +625,13 @@ public class BoolSwitchFigure extends AbstractBoolControlFigure {
 			super.paintClientArea(graphics);
 		}
 	}
-	private final static Color GRAY_COLOR = CustomMediaFactory.getInstance().getColor(
+	private final Color GRAY_COLOR = CustomMediaFactory.getInstance().getColor(
 			new RGB(200, 200, 200));
 	
 	
-	private final static Color WHITE_COLOR = CustomMediaFactory.getInstance().getColor(
+	private final Color WHITE_COLOR = CustomMediaFactory.getInstance().getColor(
 			CustomMediaFactory.COLOR_WHITE);
-	private final static Color BLACK_COLOR = CustomMediaFactory.getInstance().getColor(
+	private final Color BLACK_COLOR = CustomMediaFactory.getInstance().getColor(
 			CustomMediaFactory.COLOR_BLACK);
 	private boolean effect3D = true;
 	
@@ -638,9 +646,9 @@ public class BoolSwitchFigure extends AbstractBoolControlFigure {
 
 	public BoolSwitchFigure() {
 		super();
-		if(SWT.getPlatform().startsWith("rap")) //$NON-NLS-1$
-			throw new RuntimeException(
-					"BoolSwitchFigure is not implemented for RAP yet!");
+//		if(SWT.getPlatform().startsWith("rap")) //$NON-NLS-1$
+//			Activator.getLogger().log(Level.SEVERE, 
+//					"BoolSwitchFigure is not implemented for RAP yet!");
 		pedestal = new Pedestal();		
 		shadow = new Shadow();
 		bar = new Bar();

@@ -67,10 +67,10 @@ public class OPIRunnerPerspective implements IPerspectiveFactory {
         final IPlaceholderFolderLayout bottom = layout.createPlaceholderFolder(Position.BOTTOM.name(),
                 IPageLayout.BOTTOM, 0.75f, editor);
 		
-        bottom.addPlaceholder(ID_CONSOLE_VIEW);
+//        bottom.addPlaceholder(ID_CONSOLE_VIEW);
         bottom.addPlaceholder(OPIView.ID + SECOND_ID + Position.BOTTOM.name());
         
-		layout.addShowViewShortcut(ID_CONSOLE_VIEW);
+//		layout.addShowViewShortcut(ID_CONSOLE_VIEW);
 	}
 	
 	

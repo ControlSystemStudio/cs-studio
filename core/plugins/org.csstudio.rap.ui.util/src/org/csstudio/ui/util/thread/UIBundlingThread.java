@@ -33,13 +33,13 @@ public final class UIBundlingThread implements Runnable {
 	 * A queue, which contains runnables that process the events that occured
 	 * during the last SLEEP_TIME milliseconds.
 	 */
-	private Queue<Runnable> tasksQueue;
+	private Queue<DisplayRunnable> tasksQueue;
 
 	/**
 	 * Standard constructor.
 	 */
 	private UIBundlingThread() {
-		tasksQueue = new ConcurrentLinkedQueue<Runnable>();
+		tasksQueue = new ConcurrentLinkedQueue<DisplayRunnable>();
 
 		Executors.newScheduledThreadPool(1)
 				.scheduleAtFixedRate(this, 100, 20, TimeUnit.MILLISECONDS);
@@ -70,26 +70,51 @@ public final class UIBundlingThread implements Runnable {
 	 * Process the complete queue.
 	 */
 	private synchronized void processQueue() {
-		Display display;
-		if(PlatformUI.getWorkbench() != null)
-			display = PlatformUI.getWorkbench().getDisplay();
-		else
-			display = Display.getDefault();
-		Runnable r;
+//		if(PlatformUI.getWorkbench() != null)
+//			display = PlatformUI.getWorkbench().getDisplay();
+//		else
+//			display = Display.getDefault();
+		DisplayRunnable r;
 		while( (r=tasksQueue.poll()) != null){	
-			display.asyncExec(r);
+			r.display.asyncExec(r.runnable);
 		}
 	
 	}
 
 	/**
-	 * Adds the specified runnable to the queue.
+	 * Adds the specified runnable to the queue. It must be called in UI thread.
 	 * 
 	 * @param runnable
 	 *            the runnable
 	 */
 	public synchronized void addRunnable(final Runnable runnable) {
-		tasksQueue.add(runnable);
+		Display display = Display.getCurrent();
+		if(display == null)
+			throw new RuntimeException("This method must be called in UI thread!");
+		tasksQueue.add(new DisplayRunnable(runnable, display));
+	}
+	
+	
+	/**
+	 * Adds the specified runnable to the queue.
+	 * 
+	 * @param display the display to run the runnable.
+	 * @param runnable
+	 *            the runnable
+	 */
+	public synchronized void addRunnable(final Display display, final Runnable runnable) {
+		tasksQueue.add(new DisplayRunnable(runnable, display));
+	}
+	
+	
+	class DisplayRunnable {
+		private Runnable runnable;
+		private Display display;
+		public DisplayRunnable(Runnable runnable, Display display) {
+			this.runnable = runnable;
+			this.display = display;
+		}
+		
 	}
 
 }

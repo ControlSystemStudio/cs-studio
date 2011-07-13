@@ -12,8 +12,7 @@ public class ImplementationLoader {
 		Object result = null;		
 		try {
 			result = type.getClassLoader().loadClass(name + "Impl").newInstance(); //$NON-NLS-1$
-		} catch (Exception e) {
-			e.printStackTrace();
+		} catch (Exception e) {			
 		} 
 		return result;
 	}

@@ -71,7 +71,8 @@ public abstract class AbstractPVWidgetEditPart extends AbstractWidgetEditPart{
 					controlPVPropId.equals(pvPropID) &&
 					!writeAccessMarked){
 				if(pv.isWriteAllowed()){
-					UIBundlingThread.getInstance().addRunnable(new Runnable(){
+					UIBundlingThread.getInstance().addRunnable(
+							getViewer().getControl().getDisplay(), new Runnable(){
 						public void run() {
 							figure.setCursor(savedCursor);
 							figure.setEnabled(widgetModel.isEnabled());
@@ -80,7 +81,8 @@ public abstract class AbstractPVWidgetEditPart extends AbstractWidgetEditPart{
 						}
 					});
 				}else{
-					UIBundlingThread.getInstance().addRunnable(new Runnable(){
+					UIBundlingThread.getInstance().addRunnable(
+							getViewer().getControl().getDisplay(), new Runnable(){
 						public void run() {
 							if(figure.getCursor() != Cursors.NO)
 								savedCursor = figure.getCursor();

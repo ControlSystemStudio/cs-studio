@@ -25,6 +25,7 @@ public class WidgetActionFactory {
 		EXECUTE_JAVASCRIPT("Execute Javascript", createImage("icons/exeJS.png")),//$NON-NLS-2$
 		EXECUTE_PYTHONSCRIPT("Execute Python Script", createImage("icons/exePy.gif")),//$NON-NLS-2$
 		PLAY_SOUND("Play WAV File", createImage("icons/sound.gif")),//$NON-NLS-2$
+		OPEN_FILE("Open File", createImage("icons/openFile.png")),//$NON-NLS-2$		
 		OPEN_WEBPAGE("Open Webpage", createImage("icons/hyperlink.gif"));//$NON-NLS-2$
 		
 		private ImageDescriptor iconImage;
@@ -86,6 +87,8 @@ public class WidgetActionFactory {
 			return new ExecuteJavaScriptAction();
 		case EXECUTE_PYTHONSCRIPT:
 			return new ExecutePythonScriptAction();
+		case OPEN_FILE:
+			return new OpenFileAction();
 		case OPEN_WEBPAGE:
 			return new OpenWebpageAction();
 		case PLAY_SOUND:

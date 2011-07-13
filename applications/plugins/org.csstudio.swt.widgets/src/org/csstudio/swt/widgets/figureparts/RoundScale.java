@@ -60,8 +60,8 @@ public class RoundScale extends AbstractScale {
     private int radius;  
     
     
-    private final static Font DEFAULT_FONT = CustomMediaFactory.getInstance().getFont(
-    		CustomMediaFactory.FONT_ARIAL);
+//    private final Font DEFAULT_FONT = CustomMediaFactory.getInstance().getFont(
+//    		CustomMediaFactory.FONT_ARIAL);
     
     /**
      * Constructor.
@@ -72,7 +72,7 @@ public class RoundScale extends AbstractScale {
         tickMarks = new RoundScaleTickMarks(this);                  
         add(tickMarks);        
         add(tickLabels);    
-        setFont(DEFAULT_FONT);
+//        setFont(DEFAULT_FONT);
  
     }
 	
