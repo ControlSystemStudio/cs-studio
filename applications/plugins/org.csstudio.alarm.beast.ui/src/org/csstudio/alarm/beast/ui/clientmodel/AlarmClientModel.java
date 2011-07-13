@@ -397,7 +397,7 @@ public class AlarmClientModel
         monitor.subTask(Messages.AlarmClientModel_ReadingRDB);
         try
         {
-            new_config.readConfiguration(getConfigurationName(),false);
+            new_config.readConfiguration(getConfigurationName(), false, monitor);
             // Update model with newly received data
             synchronized (this)
             {

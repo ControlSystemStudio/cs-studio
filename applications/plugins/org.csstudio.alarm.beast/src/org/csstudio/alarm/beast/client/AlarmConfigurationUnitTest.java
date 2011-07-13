@@ -13,6 +13,7 @@ import java.io.PrintWriter;
 
 import org.csstudio.apputil.test.TestProperties;
 import org.csstudio.apputil.time.BenchmarkTimer;
+import org.eclipse.core.runtime.NullProgressMonitor;
 import org.junit.Ignore;
 import org.junit.Test;
 
@@ -49,7 +50,7 @@ public class AlarmConfigurationUnitTest
     		return null;
     	}
     	final AlarmConfiguration config = new AlarmConfiguration(url, user, password);
-    	config.readConfiguration(root, writable);
+    	config.readConfiguration(root, writable, new NullProgressMonitor());
     	return config;
     }
 
