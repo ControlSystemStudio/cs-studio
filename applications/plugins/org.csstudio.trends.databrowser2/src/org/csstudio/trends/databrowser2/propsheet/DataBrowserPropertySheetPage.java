@@ -210,8 +210,7 @@ public class DataBrowserPropertySheetPage extends Page
         final TableColumnLayout table_layout = new TableColumnLayout();
         model_item_top.setLayout(table_layout);
         trace_table = new TableViewer(model_item_top ,
-                SWT.H_SCROLL | SWT.V_SCROLL | SWT.MULTI | SWT.FULL_SELECTION
-                | SWT.VIRTUAL);
+                SWT.H_SCROLL | SWT.V_SCROLL | SWT.MULTI | SWT.FULL_SELECTION);
         final Table table = trace_table.getTable();
         table.setHeaderVisible(true);
         table.setLinesVisible(true);
