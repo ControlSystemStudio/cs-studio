@@ -17,7 +17,7 @@ org.csstudio.diag.postanalyser
 org.csstudio.diag.probe
 org.csstudio.diag.probe.intro
 org.csstudio.diag.pvmanager.probe
-org.csstudio.display.pvmanager.pvtable
+org.csstudio.display.pvtable
 org.csstudio.display.channelfinderviewer
 org.csstudio.display.waterfall
 org.csstudio.email
@@ -26,7 +26,6 @@ org.csstudio.java
 org.csstudio.logbook
 org.csstudio.logging
 org.csstudio.logging.ui
-org.csstudio.multiChannelViewer
 org.csstudio.nsls2.product
 org.csstudio.nsls2.startuphelper
 org.csstudio.nsls2.startup.intro
@@ -79,7 +78,6 @@ org.csstudio.utility.pv.simu
 org.csstudio.utility.pv.ui
 org.csstudio.utility.pvmanager
 org.csstudio.utility.pvmanager.epics
-org.csstudio.utility.pvmanager.jfreechart.widgets
 org.csstudio.utility.pvmanager.sim
 org.csstudio.utility.pvmanager.ui
 org.csstudio.utility.pvmanager.widgets
