@@ -99,7 +99,7 @@ public class AlarmTreeView extends ViewPart
             toolbar.add(new Separator());
         }
         toolbar.add(new CollapseAlarmTreeAction(gui));
-        toolbar.add(new ExpandCurrentAlarmsAction(gui));
+        toolbar.add(new OnlyAlarmsAction(gui));
 
         // Inform workbench about currently selected alarm in tree viewer
         getSite().setSelectionProvider(gui.getTreeViewer());

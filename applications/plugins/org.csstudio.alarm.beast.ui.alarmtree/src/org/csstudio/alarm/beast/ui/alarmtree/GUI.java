@@ -319,12 +319,13 @@ public class GUI implements AlarmClientModelListener
     }
 
     /** @param only_alarms Show only alarms? */
-    public void setAlarmDisplayMode(boolean only_alarms)
+    public void setAlarmDisplayMode(final boolean only_alarms)
     {
         show_only_alarms = only_alarms;
         tree_viewer.refresh();
-        if (show_only_alarms)
-            tree_viewer.expandAll();
+        // Expanding the whole tree can be very expensive
+		//        if (show_only_alarms)
+		//            tree_viewer.expandAll();
     }
 
     // @see AlarmClientModelListener
