@@ -9,6 +9,7 @@ package org.csstudio.alarm.beast.ui.alarmtree;
 
 import java.util.List;
 
+import org.csstudio.alarm.beast.SeverityLevel;
 import org.csstudio.alarm.beast.client.AlarmTreeItem;
 import org.csstudio.alarm.beast.client.AlarmTreePV;
 import org.csstudio.alarm.beast.client.AlarmTreePosition;
@@ -400,16 +401,28 @@ public class GUI implements AlarmClientModelListener
                     return;
                 if (model.isServerAlive())
                     setErrorMessage(null);
-                // Refresh to indicate new state
+                // Refresh affected items to indicate new state.
+                // A complete tree_viewer.refresh() would 'work'
+                // but be quite slow, so try to determine what
+                // needs to be refreshed
                 if (pv != null)
-                {	// Update tree item for PV and parents up to root
-            		tree_viewer.refresh(pv, true);
-            		if (parent_changed)
+                {	// Update tree item for PV
+                	final boolean pv_hidden = show_only_alarms  &&
+    			                              pv.getSeverity() == SeverityLevel.OK;
+                	if (pv_hidden)
+                		tree_viewer.remove(pv);
+                	else
+                		tree_viewer.refresh(pv, true);
+                	if (parent_changed)
             		{	// Update parents up to root
             			AlarmTreeItem item = pv.getClientParent();
-	                	while (! (item instanceof AlarmTreeRoot))
+            			while (! (item instanceof AlarmTreeRoot))
 	                	{
-	                		tree_viewer.refresh(item);
+	            			// Parent could become hidden with its PV
+            				if (pv_hidden && item.getSeverity() == SeverityLevel.OK)
+	            				tree_viewer.remove(item);
+	            			else
+	            				tree_viewer.refresh(item);
 	                		item = item.getClientParent();
 	                	}
             		}
