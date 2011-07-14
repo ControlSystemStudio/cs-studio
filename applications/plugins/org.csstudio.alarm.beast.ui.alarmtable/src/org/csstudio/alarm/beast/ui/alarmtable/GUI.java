@@ -33,7 +33,6 @@ import org.eclipse.jface.action.Separator;
 import org.eclipse.jface.layout.TableColumnLayout;
 import org.eclipse.jface.viewers.ColumnViewerToolTipSupport;
 import org.eclipse.jface.viewers.ColumnWeightData;
-import org.eclipse.jface.viewers.ISelectionProvider;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.viewers.StructuredSelection;
 import org.eclipse.jface.viewers.TableViewer;
@@ -171,14 +170,14 @@ public class GUI implements AlarmClientModelListener
         };
     }
 
-    /** @return Provider for selected active alarms */
-    public ISelectionProvider getSelectedAlarms()
+    /** @return Table of active alarms */
+    public TableViewer getActiveAlarmTable()
     {
         return active_table_viewer;
     }
 
-    /** @return Provider for selected acknowledged alarms */
-    public ISelectionProvider getSelectedAckAlarms()
+    /** @return Table of acknowledged alarms */
+    public TableViewer getAcknowledgedAlarmTable()
     {
         return acknowledged_table_viewer;
     }
@@ -392,7 +391,8 @@ public class GUI implements AlarmClientModelListener
                 final Shell shell = table.getShell();
                 final List<AlarmTreeItem> items =
                     ((IStructuredSelection)table_viewer.getSelection()).toList();
-                new ContextMenuHelper(manager, shell, items, model.isWriteAllowed());
+
+                new ContextMenuHelper(table_viewer, manager, shell, items, model.isWriteAllowed());
                 manager.add(new Separator());
                 // Add edit items
                 if (items.size() == 1 && model.isWriteAllowed())

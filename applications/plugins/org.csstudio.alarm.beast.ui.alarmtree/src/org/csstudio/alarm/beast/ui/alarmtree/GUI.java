@@ -234,7 +234,7 @@ public class GUI implements AlarmClientModelListener
         final List<AlarmTreeItem> items =
             ((IStructuredSelection)tree_viewer.getSelection()).toList();
 
-        new ContextMenuHelper(manager, shell, items, model.isWriteAllowed());
+        new ContextMenuHelper(null, manager, shell, items, model.isWriteAllowed());
         manager.add(new Separator());
 		if(model.isWriteAllowed())
 		{
