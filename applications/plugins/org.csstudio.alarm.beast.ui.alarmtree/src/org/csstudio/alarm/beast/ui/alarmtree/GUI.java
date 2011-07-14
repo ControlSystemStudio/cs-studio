@@ -45,6 +45,7 @@ import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.swt.widgets.Tree;
+import org.eclipse.swt.widgets.TreeItem;
 import org.eclipse.ui.IWorkbenchActionConstants;
 import org.eclipse.ui.IWorkbenchPartSite;
 
@@ -281,8 +282,31 @@ public class GUI implements AlarmClientModelListener
     /** Collapse the alarm tree */
     public void collapse()
     {
-        tree_viewer.collapseAll();
-        tree_viewer.refresh(false);
+    	final Tree tree = tree_viewer.getTree();
+		tree.setRedraw(false);
+		
+       	// This was very slow (>5 seconds for 50k PVs in 250 areas)
+    	// tree_viewer.collapseAll();
+        // tree_viewer.refresh(false);
+
+    	// Not much better:
+		//    	final TreePath[] expanded = tree_viewer.getExpandedTreePaths();
+		//    	for (TreePath path : expanded)
+		//    	{
+		//    		if (path.getSegmentCount() > 2)
+		//    			continue;
+		//    		tree_viewer.collapseToLevel(path, 1);
+		//    	}
+
+		// Fastest (<1 sec), collapsing just the first level of elements
+		final TreeItem[] items = tree.getItems();
+		for (TreeItem item : items)
+			item.setExpanded(false);
+		
+		// This was for Eclipse 3.6.2 under Windows (7)
+		// Implementation might need adjustment in later versions of SWT/JFace
+		
+    	tree.setRedraw(true);
     }
 
     /** @return <code>true</code> if we only show alarms,
