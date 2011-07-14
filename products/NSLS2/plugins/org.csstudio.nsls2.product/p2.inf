@@ -1,10 +1,11 @@
 instructions.configure=\
   addRepository(type:0,name:NSLS-II CSS dev update site,location:http${#58}//cs-studio.sourceforge.net/nsls2/dev-updates,enabled:false);\
   addRepository(type:1,name:NSLS-II CSS dev update site,location:http${#58}//cs-studio.sourceforge.net/nsls2/dev-updates,enabled:false);\
-  addRepository(type:0,name:NSLS-II Hg update site,location:http${#58}//cbes.javaforge.com/update,enabled:false);\
-  addRepository(type:1,name:NSLS-II Hg update site,location:http${#58}//cbes.javaforge.com/update,enabled:false);\
+  addRepository(type:0,name:Hg update site,location:http${#58}//cbes.javaforge.com/update,enabled:false);\
+  addRepository(type:1,name:Hg update site,location:http${#58}//cbes.javaforge.com/update,enabled:false);\
   addRepository(type:0,name:NSLS-II CSS update site,location:http${#58}//cs-studio.sourceforge.net/nsls2/updates,enabled:true);\
-  addRepository(type:1,name:NSLS-II CSS update site,location:http${#58}//cs-studio.sourceforge.net/nsls2/updates,enabled:true);
+  addRepository(type:1,name:NSLS-II CSS update site,location:http${#58}//cs-studio.sourceforge.net/nsls2/updates,enabled:true);\
+  mkdir(path:${installFolder}/logs)
   
 #  setProgramProperty(propName:org.eclipse.equinox.p2.cache,propValue:@user.home/p2Cache);\
 #  setProgramProperty(propName:org.eclipse.equinox.p2.installFolder,propValue:@user.home/p2InstallFolder);
