@@ -286,13 +286,6 @@
          unpack="false"/>
 
    <plugin
-         id="org.csstudio.utility.pv.ui"
-         download-size="0"
-         install-size="0"
-         version="0.0.0"
-         unpack="false"/>
-
-   <plugin
          id="org.csstudio.utility.pvmanager.epics"
          download-size="0"
          install-size="0"
