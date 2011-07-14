@@ -27,6 +27,8 @@ import org.csstudio.alarm.beast.ui.actions.RenameItemAction;
 import org.csstudio.alarm.beast.ui.clientmodel.AlarmClientModel;
 import org.csstudio.alarm.beast.ui.clientmodel.AlarmClientModelListener;
 import org.csstudio.ui.util.dnd.ControlSystemDragSource;
+import org.eclipse.core.runtime.Platform;
+import org.eclipse.core.runtime.preferences.IPreferencesService;
 import org.eclipse.jface.action.GroupMarker;
 import org.eclipse.jface.action.IMenuListener;
 import org.eclipse.jface.action.IMenuManager;
@@ -126,27 +128,32 @@ public class GUI implements AlarmClientModelListener
         error_message.setLayoutData(fd);
 
         // Tree below the error label, filling the rest
-        tree_viewer = new TreeViewer(parent,
+        final IPreferencesService service = Platform.getPreferencesService();
+        final boolean allow_multiselection =
+        	service.getBoolean(Activator.ID, "allow_multi_selection", false, null); //$NON-NLS-1$
+
+        final Tree tree =
+        	allow_multiselection
+        	? new MultiSelectionTree(parent, 
         		// Must be virtual for ILazyTreeContentProvider
         		SWT.VIRTUAL |
         		// V_SCROLL seems automatic, but H_SCROLL can help when view is small
-        		SWT.H_SCROLL | SWT.V_SCROLL
+        		SWT.H_SCROLL | SWT.V_SCROLL |
     			// Used to have a border, not really needed
         		// SWT.BORDER |
         		// Used to have full-line-selection.
         		// Actually looks better when only the elements are selected
         		// SWT.FULL_SELECTION |
-        		// Used to have multi-element selection
+        		// Multi-element selection
         		// (via Shift-click, Ctrl-click).
-        		// That's _nice_, but table display is really slow
-        		// (expand subtrees, update whole table)
+        		// with the original SWT.Tree is very slow
         		// because of the way SWT preserves the selection
         		// https://bugs.eclipse.org/bugs/show_bug.cgi?id=259141
-        		// "Tree.getSelection() is extremely slow
-        		//  with SWT.VIRTUAL and SWT.MULTI"
-        		// | SWT.MULTI
-                );
-        final Tree tree = tree_viewer.getTree();
+        		// With the patched MultiSelectionTree, it's OK
+        		SWT.MULTI)
+            : new Tree(parent, SWT.VIRTUAL | SWT.H_SCROLL | SWT.V_SCROLL);
+        
+        tree_viewer = new TreeViewer(tree);
         fd = new FormData();
         fd.top = new FormAttachment(error_message);
         fd.left = new FormAttachment(0, 0);
