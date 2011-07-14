@@ -4,10 +4,12 @@ org.csstudio.apputil
 org.csstudio.apputil.ui
 org.csstudio.auth
 org.csstudio.auth.ui
+org.csstudio.archive.rdb
 org.csstudio.archive.reader
 org.csstudio.archive.reader.channelarchiver
 org.csstudio.archive.reader.rdb
 org.csstudio.csdata
+org.csstudio.csdata.clipboard
 org.csstudio.data
 org.csstudio.diag.epics.pvtree
 org.csstudio.diag.epics.pvtree.intro
@@ -61,6 +63,7 @@ org.csstudio.trends.databrowser2.intro
 org.csstudio.trends.databrowser2.opiwidget
 org.csstudio.ui.help
 org.csstudio.ui.menu
+org.csstudio.ui.menu.app
 org.csstudio.ui.util
 org.csstudio.ui.preferences
 org.csstudio.utility.adlParser
