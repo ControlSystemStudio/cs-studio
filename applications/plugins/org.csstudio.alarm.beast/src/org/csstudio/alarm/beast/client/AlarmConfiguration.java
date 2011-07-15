@@ -260,7 +260,7 @@ public class AlarmConfiguration
         final ResultSet result = sel_items_by_parent_statement.executeQuery();
 
         final List<AlarmTreeItem> recurse_items = new ArrayList<AlarmTreeItem>();
-        while (result.next())
+        while (result.next()  &&  !monitor.isCanceled())
         {
             final int id = result.getInt(1);
             final String name = result.getString(17);
