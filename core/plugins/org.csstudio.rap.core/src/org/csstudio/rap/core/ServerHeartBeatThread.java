@@ -26,7 +26,6 @@ public class ServerHeartBeatThread implements Runnable{
 		return instance;
 	}
 	
-	@Override
 	public void run() {
 		while (true) {
 			beatCount++;
