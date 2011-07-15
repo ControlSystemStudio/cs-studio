@@ -77,10 +77,12 @@ public class AlarmConfiguration
      *  @param url RDB URL
      *  @param user	RDB user name
      *  @param password RDB password
+     *  @param schema
+     *  @param auto_reconnect
      *  @throws Exception on error
      */
     public AlarmConfiguration(final String url, final String user,
-    		final String password, final boolean auto_reconnect) throws Exception
+    		final String password, final String schema, final boolean auto_reconnect) throws Exception
     {
         // Allow auto-reconnect?
     	this.auto_reconnect = auto_reconnect;
@@ -90,7 +92,7 @@ public class AlarmConfiguration
         // can be 10% faster
         if (auto_reconnect)
         	rdb.setAutoReconnect(false);
-        sql = new SQL(rdb);
+        sql = new SQL(rdb, schema);
         severity_mapping = new SeverityReader(rdb, sql);
         message_mapping = new MessageReader(rdb, sql);
         config_reader = new AlarmConfigurationReader(rdb, sql);
@@ -104,12 +106,13 @@ public class AlarmConfiguration
      *  @param url RDB URL
      *  @param user	RDB user name
      *  @param password RDB password
+     *  @param schema
      *  @throws Exception on error
      */
     public AlarmConfiguration(final String url, final String user,
-    		final String password) throws Exception
+    		final String password, final String schema) throws Exception
     {
-    	this(url, user, password, true);
+    	this(url, user, password, schema, true);
     }
 
     

@@ -327,7 +327,7 @@ public class AlarmClientModel
         try
         {
             new_config = new AlarmConfiguration(Preferences.getRDB_Url(),Preferences.getRDB_User(),
-                                   Preferences.getRDB_Password())
+                                   Preferences.getRDB_Password(), Preferences.getRDB_Schema())
             {
                 // When reading config, create the root element
                 // that links to the model instead of the default AlarmTreeRoot

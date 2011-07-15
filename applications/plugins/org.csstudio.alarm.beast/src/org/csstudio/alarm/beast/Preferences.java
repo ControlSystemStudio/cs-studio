@@ -33,6 +33,7 @@ public class Preferences
     final public static String RDB_URL = "rdb_url";
     final public static String RDB_USER = "rdb_user";
     final public static String RDB_PASSWORD = "rdb_password";
+    final public static String RDB_SCHEMA = "rdb_schema";
     final public static String ROOT_COMPONENT = "root_component";
     final public static String GLOBAL_PREFIX = "global_prefix";
     final public static String JMS_URL = "jms_url";
@@ -103,7 +104,25 @@ public class Preferences
         return getString(RDB_URL);
     }
 
-    /** @return Configuration Name, i.e. name of alarm tree root component */
+    /** @return RDB User name */
+    public static String getRDB_User()
+    {
+    	return getSecureString(RDB_USER);
+    }
+
+	/** @return JMS Password */
+    public static String getRDB_Password()
+    {
+        return getSecureString(RDB_PASSWORD);
+    }
+
+	/** @return JMS Password */
+    public static String getRDB_Schema()
+    {
+        return getString(RDB_SCHEMA);
+    }
+
+	/** @return Configuration Name, i.e. name of alarm tree root component */
     public static String getAlarmTreeRoot()
     {
         return getString(ROOT_COMPONENT);
@@ -125,18 +144,6 @@ public class Preferences
     public static String getJMS_Password()
     {
     	return getSecureString(JMS_PASSWORD);
-    }
-
-    /** @return RDB User name */
-    public static String getRDB_User()
-    {
-    	return getSecureString(RDB_USER);
-    }
-
-    /** @return JMS Password */
-    public static String getRDB_Password()
-    {
-        return getSecureString(RDB_PASSWORD);
     }
 
     /** @param config Alarm configuration name (root)
