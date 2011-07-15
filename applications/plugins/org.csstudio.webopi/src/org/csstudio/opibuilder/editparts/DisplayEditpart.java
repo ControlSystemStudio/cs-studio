@@ -65,9 +65,10 @@ public class DisplayEditpart extends AbstractContainerEditpart {
 	protected void registerPropertyChangeHandlers() {
 		IWidgetPropertyChangeHandler backColorHandler = new IWidgetPropertyChangeHandler(){
 			public boolean handleChange(Object oldValue, Object newValue,
-					IFigure figure) {
-				getViewer().getControl().setBackground(
-						CustomMediaFactory.getInstance().getColor(((OPIColor)newValue).getRGBValue()));
+					IFigure figure) {		
+				figure.setBackgroundColor(((OPIColor)newValue).getSWTColor());
+//				getViewer().getControl().setForeground(
+//						CustomMediaFactory.getInstance().getColor(((OPIColor)newValue).getRGBValue()));
 				return false;
 			}
 		};		
@@ -143,6 +144,10 @@ public class DisplayEditpart extends AbstractContainerEditpart {
 			@Override
 			protected void paintFigure(Graphics graphics) {
 				super.paintFigure(graphics);
+				if(!getBackgroundColor().getRGB().equals(CustomMediaFactory.COLOR_WHITE)){
+					graphics.setBackgroundColor(getBackgroundColor());
+					graphics.fillRectangle(getBounds());
+				}
 				if(getExecutionMode() == ExecutionMode.EDIT_MODE && 
 						((DisplayModel)getModel()).isShowEditRange()){
 					graphics.pushState();
@@ -154,7 +159,7 @@ public class DisplayEditpart extends AbstractContainerEditpart {
 				}
 			}
 		};
-		f.setBorder(new MarginBorder(3));
+//		f.setBorder(new MarginBorder(3));		
 		f.setLayoutManager(new FreeformLayout());
 		
 		return f;

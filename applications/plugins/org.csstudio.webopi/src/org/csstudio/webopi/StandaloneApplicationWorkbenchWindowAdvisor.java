@@ -21,14 +21,13 @@ import org.eclipse.ui.application.WorkbenchWindowAdvisor;
 /**
  * Configures the initial size and appearance of a workbench window.
  */
-public class ApplicationWorkbenchWindowAdvisor extends WorkbenchWindowAdvisor {
+public class StandaloneApplicationWorkbenchWindowAdvisor extends WorkbenchWindowAdvisor {
 
-    public ApplicationWorkbenchWindowAdvisor(IWorkbenchWindowConfigurer configurer) {
+    public StandaloneApplicationWorkbenchWindowAdvisor(IWorkbenchWindowConfigurer configurer) {
         super(configurer);
     }
 
     
-    @SuppressWarnings("deprecation")
 	@Override
     public void postWindowCreate() {
     	super.postWindowCreate();
@@ -36,12 +35,6 @@ public class ApplicationWorkbenchWindowAdvisor extends WorkbenchWindowAdvisor {
     	Shell shell = configurer.getWindow().getShell();
     	shell.setText("WebOPI");
     	shell.setMaximized(true);
-		IPath path = RequestUtil.getOPIPathFromRequest();
-		if(path == null)
-			return;
-		 if(!RequestUtil.isStandaloneMode())			 		
-			RunModeService.getInstance().runOPI(path, 
-    			TargetWindow.SAME_WINDOW, null);
     	
     }
     
@@ -49,7 +42,7 @@ public class ApplicationWorkbenchWindowAdvisor extends WorkbenchWindowAdvisor {
     	
         IWorkbenchWindowConfigurer configurer = getWindowConfigurer();    
        
-        configurer.setShowCoolBar(!RequestUtil.isStandaloneMode());
+        configurer.setShowCoolBar(false);
         configurer.setShowMenuBar(false);
         configurer.setShowStatusLine(false);        
         configurer.setTitle("WebOPI");

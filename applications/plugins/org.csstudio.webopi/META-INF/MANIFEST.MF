@@ -43,3 +43,5 @@ Export-Package: org.csstudio.opibuilder,
 Bundle-ClassPath: lib/rhino/js.jar,
  lib/jython/jython.jar,
  .
+Import-Package: javax.servlet,
+ javax.servlet.http

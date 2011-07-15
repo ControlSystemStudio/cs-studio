@@ -9,6 +9,7 @@ package org.csstudio.opibuilder.runmode;
 
 import org.csstudio.opibuilder.model.DisplayModel;
 import org.eclipse.core.runtime.IProgressMonitor;
+import org.eclipse.rwt.graphics.Graphics;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.ui.IEditorInput;
 import org.eclipse.ui.IEditorSite;
@@ -65,8 +66,8 @@ public class OPIRunner extends EditorPart implements IOPIRuntime{
 	}
 
 	@Override
-	public void createPartControl(Composite parent) {
-		opiRuntimeDelegate.createGUI(parent);
+	public void createPartControl(Composite parent) {		
+		opiRuntimeDelegate.createGUI(parent);		
 	}
 
 	@Override

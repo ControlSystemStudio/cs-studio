@@ -13,17 +13,13 @@ import org.eclipse.ui.application.WorkbenchWindowAdvisor;
  * This workbench advisor creates the window advisor, and specifies
  * the perspective id for the initial window.
  */
-public class ApplicationWorkbenchAdvisor extends WorkbenchAdvisor {
+public class StandaloneApplicationWorkbenchAdvisor extends WorkbenchAdvisor {
 
     public WorkbenchWindowAdvisor createWorkbenchWindowAdvisor(IWorkbenchWindowConfigurer configurer) {
-        return new ApplicationWorkbenchWindowAdvisor(configurer);
+        return new StandaloneApplicationWorkbenchWindowAdvisor(configurer);
     }
 
-	public String getInitialWindowPerspectiveId() {
-		HttpServletRequest request = RWT.getRequest();
-		 String opiPath = request.getParameter( "mode" );
-		 if(opiPath!=null && opiPath.equals("standalone"))
+	public String getInitialWindowPerspectiveId() {		
 			 return StandaloneRuntimePerspective.ID;
-		return OPIRunnerPerspective.ID;
 	}
 }

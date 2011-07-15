@@ -34,15 +34,18 @@ public class ShowMacrosAction implements IObjectActionDelegate {
 
 	public void run(IAction action) {
 		AbstractWidgetModel widget = (AbstractWidgetModel) getSelectedWidget().getModel();
-		String message = NLS.bind("The predefined macros of {0}:\n", widget.getName());
+		String message = NLS.bind("The predefined macros on {0}:\n", widget.getName());
 		StringBuilder sb = new StringBuilder(message);
 		Map<String, String> macroMap = OPIBuilderMacroUtil.getWidgetMacroMap(widget);
-		for(final Map.Entry<String, String> entry: macroMap.entrySet()){
-			sb.append(entry.getKey() + "=" + entry.getValue() + "\n");
-		}
-		sb.append("\n");
-		sb.append("Note: Macros are loaded during OPI opening, so this won't reflect the macro changes after opening." +
-				"To reflect the latest changes, please reopen the OPI and show macros again.");
+		if(macroMap.isEmpty())
+			sb.append("\nNo macros."); //$NON-NLS-1$
+		else				
+			for(final Map.Entry<String, String> entry: macroMap.entrySet()){
+				sb.append(entry.getKey() + "=" + entry.getValue() + "\n");
+			}
+//		sb.append("\n");
+//		sb.append("Note: Macros are loaded during OPI opening, so this won't reflect the macro changes after opening." +
+//				"To reflect the latest changes, please reopen the OPI and show macros again.");
 		ConsoleService.getInstance().writeInfo(sb.toString());
 		MessageDialog.openInformation(targetPart.getSite().getShell(),
 				"Predefined Macros", sb.toString());		

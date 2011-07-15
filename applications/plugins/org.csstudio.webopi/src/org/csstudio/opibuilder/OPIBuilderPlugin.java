@@ -2,6 +2,12 @@ package org.csstudio.opibuilder;
 
 import java.util.logging.Logger;
 
+import org.csstudio.rap.preferences.ServerScope;
+import org.eclipse.core.runtime.Platform;
+import org.eclipse.core.runtime.preferences.ConfigurationScope;
+import org.eclipse.core.runtime.preferences.DefaultScope;
+import org.eclipse.core.runtime.preferences.InstanceScope;
+import org.eclipse.rap.ui.internal.preferences.SessionScope;
 import org.eclipse.ui.plugin.AbstractUIPlugin;
 import org.osgi.framework.BundleContext;
 
@@ -46,6 +52,11 @@ public class OPIBuilderPlugin extends AbstractUIPlugin {
 	 */
 	public void start(BundleContext context) throws Exception {
 		super.start(context);
+		Platform.getPreferencesService().setDefaultLookupOrder(PLUGIN_ID, null, new String[] { //
+				InstanceScope.SCOPE, //
+				ConfigurationScope.SCOPE, //
+				ServerScope.SCOPE, //$NON-NLS-1$
+				DefaultScope.SCOPE});
 		plugin = this;
 	}
 

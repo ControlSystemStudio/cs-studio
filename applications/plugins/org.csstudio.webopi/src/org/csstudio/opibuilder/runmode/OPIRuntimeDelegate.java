@@ -21,6 +21,7 @@ import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
 import org.eclipse.core.runtime.jobs.Job;
 import org.eclipse.draw2d.FigureCanvas;
+import org.eclipse.draw2d.Viewport;
 import org.eclipse.gef.ContextMenuProvider;
 import org.eclipse.gef.DragTracker;
 import org.eclipse.gef.EditDomain;
@@ -33,6 +34,7 @@ import org.eclipse.gef.editparts.ScalableFreeformRootEditPart;
 import org.eclipse.gef.editparts.ZoomManager;
 import org.eclipse.gef.tools.DragEditPartsTracker;
 import org.eclipse.gef.ui.actions.ActionRegistry;
+import org.eclipse.rwt.graphics.Graphics;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.custom.CTabFolder;
 import org.eclipse.swt.events.ControlAdapter;
@@ -191,7 +193,7 @@ public class OPIRuntimeDelegate implements IAdaptable{
 				return false;
 			}
 		};
-		viewer.createControl(parent);
+		viewer.createControl(parent);		
 		viewer.setRootEditPart(root);
 		viewer.setEditPartFactory(new WidgetEditPartFactory(
 				ExecutionMode.RUN_MODE));
@@ -419,7 +421,7 @@ public class OPIRuntimeDelegate implements IAdaptable{
 							});
 
 				} catch (final Exception e) {								
-					Display.getDefault().asyncExec(new Runnable() {
+					display.asyncExec(new Runnable() {
 						public void run() {
 							if (viewer != null && viewer.getControl() !=null) {											
 //								viewer.getControl().removePaintListener(loadingMessagePaintListener);

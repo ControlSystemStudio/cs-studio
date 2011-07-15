@@ -54,6 +54,8 @@ public class PreferencesHelper {
 	public static final String SHOW_FULLSCREEN_DIALOG = "show_fullscreen_dialog";
 	public static final String START_WINDOW_IN_COMPACT_MODE = "start_window_in_compact_mode";
 	public static final String URL_FILE_LOADING_TIMEOUT = "url_file_loading_timeout";
+	public static final String OPI_REPOSITORY = "opi_repository"; //$NON-NLS-1$
+	public static final String STARTUP_OPI = "startup_opi"; //$NON-NLS-1$
 	
 
 	private static final char ROW_SEPARATOR = '|'; 
@@ -273,5 +275,32 @@ public class PreferencesHelper {
     	return service.getInt(OPIBuilderPlugin.PLUGIN_ID, URL_FILE_LOADING_TIMEOUT, 8000, null);
     }
 
+    public static IPath getOPIRepository(){
+    	String opiRepo = getString(OPI_REPOSITORY);
+    	if(opiRepo == null || opiRepo.trim().isEmpty())
+    		return null;
+    	IPath repoPath;
+    	if(ResourceUtil.isURL(opiRepo))
+    		repoPath = new URLPath(opiRepo);
+    	else
+    		repoPath = new Path(opiRepo);
+    	return repoPath;
+    }
+    
+    /**
+     * @return the absolute path of the startup opi. null if not configured.
+     */
+    public static IPath getStartupOPI(){
+    	String startOPI = getString(STARTUP_OPI);
+    	if(startOPI == null || startOPI.trim().isEmpty())
+    		return null;
+    	IPath opiPath = new Path(startOPI);
+    	if(opiPath.isAbsolute())
+    		return opiPath;
+    	IPath repoPath = getOPIRepository();
+    	if(repoPath != null)
+    		opiPath = repoPath.append(opiPath);
+    	return opiPath;
+    }
 
 }

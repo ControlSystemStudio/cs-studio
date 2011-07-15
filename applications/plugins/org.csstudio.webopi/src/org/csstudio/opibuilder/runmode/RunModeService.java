@@ -9,6 +9,9 @@ package org.csstudio.opibuilder.runmode;
 
 import java.util.logging.Level;
 
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpUtils;
+
 import org.csstudio.opibuilder.OPIBuilderPlugin;
 import org.csstudio.opibuilder.runmode.OPIRunnerPerspective.Position;
 import org.csstudio.opibuilder.util.ErrorHandlerUtil;
@@ -16,8 +19,11 @@ import org.csstudio.opibuilder.util.MacrosInput;
 import org.csstudio.ui.util.thread.UIBundlingThread;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.draw2d.geometry.Rectangle;
+import org.eclipse.draw2d.rap.swt.SWT;
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.osgi.util.NLS;
+import org.eclipse.rwt.RWT;
+import org.eclipse.rwt.widgets.ExternalBrowser;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.ui.IEditorInput;
 import org.eclipse.ui.IEditorReference;
@@ -108,7 +114,12 @@ public class RunModeService {
 				IWorkbenchWindow targetWindow = null;
 				switch (target) {
 				case NEW_WINDOW:
-					targetWindow = createNewWindow(windowBounds);
+					HttpServletRequest request = RWT.getRequest();
+			    	StringBuffer sb = HttpUtils.getRequestURL(request);
+			    	sb.append("?opi=" + path.toString());
+			    	ExternalBrowser.open("_blank", sb.toString(), SWT.None);
+			    	
+//					targetWindow = createNewWindow(windowBounds);
 					break;
 				case RUN_WINDOW:
 					if(runWorkbenchWindow == null){

@@ -1,7 +1,10 @@
 package org.csstudio.opibuilder.runmode;
 
 import org.csstudio.opibuilder.model.DisplayModel;
+import org.csstudio.opibuilder.preferences.PreferencesHelper;
+import org.csstudio.opibuilder.util.RequestUtil;
 import org.eclipse.core.runtime.IAdaptable;
+import org.eclipse.core.runtime.IPath;
 import org.eclipse.osgi.util.NLS;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.ui.IActionBars;
@@ -91,7 +94,19 @@ public class OPIView extends ViewPart implements IOPIRuntime {
 
 	@Override
 	public void createPartControl(Composite parent) {
+		if(getOPIInput() == null){
+			IPath opiPath = RequestUtil.getOPIPathFromRequest();
+			if(opiPath == null)
+				throw new RuntimeException(
+						"OPI file path or OPI Repository is not specified in URL or preferences.");
+			try {
+				setOPIInput(new RunnerInput(opiPath, null, null));
+			} catch (PartInitException e) {
+				throw new RuntimeException(e);
+			}
+		}
 		opiRuntimeDelegate.createGUI(parent);
+		if(!RequestUtil.isStandaloneMode())
 		createToolbarButtons();
 	}
 	
