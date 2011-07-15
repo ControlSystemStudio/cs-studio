@@ -977,7 +977,6 @@ public class Trace extends Figure implements IDataProviderListener, IAxisListene
 		return name;
 	}
 
-	@Override
     public void dataChanged(IDataProvider dataProvider) {
 		//if the axis has been repainted, it will cause the trace to be repainted autoly,
 		//the trace doesn't have to be repainted again.
@@ -1061,12 +1060,10 @@ public class Trace extends Figure implements IDataProviderListener, IAxisListene
 	return -(low + 1);  // key not found.
     }
 
-	@Override
     public void axisRevalidated(Axis axis) {
 		repaint();
 	}
 
-	@Override
     public void axisRangeChanged(Axis axis, Range old_range, Range new_range) {
 		//do nothing
 	}

@@ -47,13 +47,11 @@ public class Grid extends Figure implements IAxisListener{
 		graphics.popState();
 	}
 
-	@Override
     public void axisRevalidated(Axis axis) {
 		if(axis.isShowMajorGrid())
 			repaint();
 	}
 
-	@Override
     public void axisRangeChanged(Axis axis, Range old_range, Range new_range) {
 		//do nothing
 	}

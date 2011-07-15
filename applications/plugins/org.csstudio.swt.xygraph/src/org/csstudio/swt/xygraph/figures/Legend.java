@@ -48,7 +48,6 @@ public class Legend extends RectangleFigure {
 //		setFont(LEGEND_FONT);
 		xyGraph.getPlotArea().addPropertyChangeListener(PlotArea.BACKGROUND_COLOR, new PropertyChangeListener() {
 			
-			@Override
 			public void propertyChange(PropertyChangeEvent evt) {
 				setBackgroundColor((Color) evt.getNewValue());
 			}

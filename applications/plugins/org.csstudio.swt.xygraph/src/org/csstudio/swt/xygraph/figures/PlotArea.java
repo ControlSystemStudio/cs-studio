@@ -270,7 +270,6 @@ public class PlotArea extends Figure {
 
 		private SaveStateCommand command;
 
-		@Override
         public void mousePressed(final MouseEvent me)
         {
             // Only react to 'main' mouse button, only react to 'real' zoom
@@ -314,7 +313,6 @@ public class PlotArea extends Figure {
         		// Start timer that will zoom while mouse button is pressed
         		Display.getCurrent().timerExec(Axis.ZOOM_SPEED, new Runnable()
         		{
-        			@Override
                     public void run()
         			{
         				if (!armed)
@@ -334,7 +332,6 @@ public class PlotArea extends Figure {
         	me.consume();
         }
 
-        @Override
         public void mouseDoubleClicked(final MouseEvent me) { /* Ignored */ }
 
         @Override
@@ -379,7 +376,6 @@ public class PlotArea extends Figure {
             }
 		}
 
-		@Override
         public void mouseReleased(final MouseEvent me)
 		{
             if (! armed)
