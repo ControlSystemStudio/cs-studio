@@ -13,6 +13,8 @@ import org.csstudio.opibuilder.runmode.RunModeService.TargetWindow;
 import org.csstudio.opibuilder.util.MacrosInput;
 import org.csstudio.opibuilder.util.ResourceUtil;
 import org.eclipse.core.runtime.IPath;
+import org.eclipse.draw2d.rap.swt.SWT;
+import org.eclipse.rwt.widgets.ExternalBrowser;
 
 /**The utility class to facilitate Javascript programming.
  * @author Xihui Chen
@@ -43,6 +45,10 @@ public class ScriptUtil {
 	 */
 	public final static void makeElogEntry(final String filePath){
 		throw new RuntimeException("Elog is not supported in RAP yet");
+	}
+	
+	public final static void openWebPage(String url){
+		ExternalBrowser.open("_blank", url, SWT.None); //$NON-NLS-1$
 	}
 
 }
