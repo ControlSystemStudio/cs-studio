@@ -2,7 +2,7 @@ Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: Jms2ora Plug-in
 Bundle-SymbolicName: org.csstudio.alarm.jms2ora;singleton:=true
-Bundle-Version: 2.3.4
+Bundle-Version: 2.3.5
 Bundle-Activator: org.csstudio.alarm.jms2ora.Jms2OraPlugin
 Bundle-ActivationPolicy: lazy
 Bundle-RequiredExecutionEnvironment: JavaSE-1.6
