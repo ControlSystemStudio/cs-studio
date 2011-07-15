@@ -21,9 +21,9 @@ import java.util.concurrent.TimeUnit;
 import java.util.logging.Level;
 
 import org.csstudio.alarm.beast.Activator;
-import org.csstudio.alarm.beast.DelayCheck;
 import org.csstudio.alarm.beast.Messages;
 import org.csstudio.alarm.beast.SQL;
+import org.csstudio.apputil.time.DelayCheck;
 import org.csstudio.data.values.TimestampFactory;
 import org.csstudio.platform.utility.rdb.RDBUtil;
 import org.eclipse.core.runtime.IProgressMonitor;
