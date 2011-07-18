@@ -1,8 +1,9 @@
 <?xml version="1.0" encoding="utf-8" ?>
 <introContent>
-  	<extensionContent id="orgcsstudiodiagepicspvtreeintro-introExtension" style="css/sample.css" name="PVTree intro Extension" path="firststeps/@">
-		<group style-id="content-group" id="orgcsstudiodiagepicspvtreeintro-introLink-group">
-       		<link label="Epics PVTree" url="http://sourceforge.net/apps/trac/cs-studio/wiki/EPICSPVTree" id="orgcsstudiodiagepicspvtreeintro-introLink" style-id="content-link">
+  	<extensionContent id="org.csstudio.diag.epics.pvtree.intro" style="css/intro.css" name="PVTree intro Extension" path="tutorials/@">
+		<group style-id="content-group" id="org.csstudio.diag.epics.pvtree.intro-group">
+       		<link label="Epics PVTree" url="http://sourceforge.net/apps/trac/cs-studio/wiki/EPICSPVTree" 
+       		id="pvtree-Link" style-id="content-link">
           		<text>This tool displays a Process Variable's value and the value of its inputs.</text>
        		</link>
        	</group>

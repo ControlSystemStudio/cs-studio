@@ -1,8 +1,15 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <?pde version="3.5"?>
 
-<product name="css-nsls2" id="org.csstudio.nsls2.product.product" application="org.csstudio.nsls2.product.application" version="1.0.1.qualifier" useFeatures="true" includeLaunchers="true">
+<product name="css-nsls2" id="org.csstudio.nsls2.product.product" application="org.csstudio.nsls2.product.application" version="3.0.1.qualifier" useFeatures="true" includeLaunchers="true">
 
+   <aboutInfo>
+      <image path="/org.csstudio.nsls2.product/icons/about.png"/>
+      <text>
+         Control System Studio is an Eclipse-based collections of tools to monitor and operate large scale control systems, such as the ones in the accelerator community. http://cs-studio.sourceforge.net
+version: 3.0.1.qualifier
+      </text>
+   </aboutInfo>
 
    <configIni use="default">
    </configIni>
@@ -31,7 +38,6 @@
 
    <vm>
    </vm>
-
 
    <plugins>
    </plugins>
