@@ -58,6 +58,10 @@ org.csstudio.startup
 org.csstudio.swt.chart
 org.csstudio.swt.widgets
 org.csstudio.swt.xygraph
+org.csstudio.systemopen
+org.csstudio.systemopen.linux
+org.csstudio.systemopen.mac
+org.csstudio.systemopen.win
 org.csstudio.trends.databrowser2
 org.csstudio.trends.databrowser2.intro
 org.csstudio.trends.databrowser2.opiwidget
@@ -83,4 +87,3 @@ org.csstudio.utility.pvmanager.sim
 org.csstudio.utility.pvmanager.ui
 org.csstudio.utility.pvmanager.widgets
 org.csstudio.workspace
-
