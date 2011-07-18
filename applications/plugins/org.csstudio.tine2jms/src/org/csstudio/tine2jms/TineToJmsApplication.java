@@ -61,6 +61,8 @@ public class TineToJmsApplication implements IApplication,
     /** JMS producer */
     private JmsProducer producer;
     
+    private ISessionService xmppService;
+    
     /** Array of alarm systems we want to monitor */
     private String[] facilities;
     
@@ -86,12 +88,13 @@ public class TineToJmsApplication implements IApplication,
         restart = false;
         
         alarmMonitor = null;
+        xmppService = null;
         facilities = null;
         
         try {
             producer = new JmsProducer(jmsClientId, jmsUrl, jmsTopics);
         } catch(JmsProducerException jpe) {
-            LOG.error("Cannot instantiate class JmsProducer.", jpe);
+            LOG.error("Cannot instantiate class JmsProducer: {}", jpe.getMessage());
             producer = null;
             working = false;
         }
@@ -117,8 +120,7 @@ public class TineToJmsApplication implements IApplication,
         synchronized(this) {
             try {
                 wait(5000);
-            }
-            catch(InterruptedException ie) {
+            } catch(InterruptedException ie) {
                 // Can be ignored
             }
         }
@@ -138,7 +140,7 @@ public class TineToJmsApplication implements IApplication,
         while(working) {
             synchronized(this) {
                 
-                LOG.debug("Waiting for alarms...\n");
+                LOG.info("Waiting for alarms...\n");
                 
                 try {
                     this.wait();
@@ -153,6 +155,10 @@ public class TineToJmsApplication implements IApplication,
             alarmMonitor[i].close();
         }
         
+        if (xmppService != null) {
+            xmppService.disconnect();
+        }
+        
         Integer exitCode = IApplication.EXIT_OK;
         if(restart) {
             exitCode = IApplication.EXIT_RESTART;
@@ -160,7 +166,6 @@ public class TineToJmsApplication implements IApplication,
         
         return exitCode;
     }
-
 
     @Override
     public synchronized void update(Observable messageCreator, Object obj) {
@@ -213,13 +218,15 @@ public class TineToJmsApplication implements IApplication,
     	
     	try {
 			sessionService.connect(xmppUser, xmppPassword, xmppServer);
+			xmppService = sessionService;
 		} catch (Exception e) {
-			LOG.warn("XMPP connection is not available, {}", e.toString());
+		    xmppService = null;
+			LOG.warn("XMPP connection is not available, {}", e.getMessage());
 		}
     }
     
     @Override
     public void unbindService(ISessionService service) {
-    	service.disconnect();
+    	// Nothing to do here
     }
 }
