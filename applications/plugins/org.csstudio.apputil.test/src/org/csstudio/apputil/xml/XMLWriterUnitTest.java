@@ -32,7 +32,8 @@ public class XMLWriterUnitTest
         XMLWriter.start(out, 0, "content");
         out.println();
         XMLWriter.XML(out, 1, "name", "value");
-        XMLWriter.XML(out, 1, "umlaut", "Hallš?");
+        // Code point 246 is o-umlaut
+		XMLWriter.XML(out, 1, "umlaut", "Hall\u00f6?");
         XMLWriter.end(out, 0, "content");
         
         // Get the XML as string

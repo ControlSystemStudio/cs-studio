@@ -19,6 +19,7 @@ import org.csstudio.apputil.args.BooleanOption;
 import org.csstudio.apputil.args.StringOption;
 import org.csstudio.data.values.TimestampFactory;
 import org.csstudio.logging.LogConfigurator;
+import org.eclipse.core.runtime.NullProgressMonitor;
 import org.eclipse.equinox.app.IApplication;
 import org.eclipse.equinox.app.IApplicationContext;
 
@@ -208,7 +209,25 @@ public class Application implements IApplication
         {
             config = new AlarmConfiguration(url, user, password, false);
             System.out.println("Reading RDB configuration of '" + root + "'");
-            config.readConfiguration(root, mode == Mode.IMPORT);
+            config.readConfiguration(root, mode == Mode.IMPORT, new NullProgressMonitor()
+			{
+				@Override
+				public void beginTask(final String name, final int totalWork)
+				{
+					System.out.println(name);
+				}
+				
+				@Override
+				public void subTask(final String name)
+				{
+					System.out.println(name);
+				}
+				@Override
+				public void done()
+				{
+					System.out.println("Done.");
+				}
+			});
         }
         catch (Exception ex)
         {

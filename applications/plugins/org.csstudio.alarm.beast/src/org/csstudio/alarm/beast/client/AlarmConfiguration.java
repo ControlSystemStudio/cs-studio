@@ -17,12 +17,16 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
+import java.util.concurrent.TimeUnit;
 import java.util.logging.Level;
 
 import org.csstudio.alarm.beast.Activator;
+import org.csstudio.alarm.beast.Messages;
 import org.csstudio.alarm.beast.SQL;
+import org.csstudio.apputil.time.DelayCheck;
 import org.csstudio.data.values.TimestampFactory;
 import org.csstudio.platform.utility.rdb.RDBUtil;
+import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.osgi.util.NLS;
 
 /** <p>Alarm Configuration as stored in RDB. It is identified
@@ -131,18 +135,22 @@ public class AlarmConfiguration
         return names.toArray(new String[names.size()]);
     }
 
+    
     /** Read configuration.
      *  @param root_name Name of root element.
      *  @param create Set <code>true</code> to create new tree if nothing found
+     *  @param monitor Progress monitor 
      */
-    public void readConfiguration(final String root_name, final boolean create) throws Exception
+    public void readConfiguration(final String root_name, final boolean create,
+    		final IProgressMonitor monitor) throws Exception
     {
     	if (auto_reconnect)
     		rdb.setAutoReconnect(false);
         final AlarmTreeRoot new_config;
+        final DelayCheck monitor_update_delay = new DelayCheck(1, TimeUnit.SECONDS);
         try
         {
-            new_config = readAlarmTree(root_name, create);
+            new_config = readAlarmTree(root_name, create, monitor, monitor_update_delay);
             closeStatements();
         }
         finally
@@ -197,12 +205,15 @@ public class AlarmConfiguration
     /** Get alarm tree configuration
      *  @param root_name Name of root component
      *  @param create Create empty alarm tree?
+     *  @param monitor Progress monitor
+     *  @param monitor_update_delay Delay for updates to monitor
      *  @return AlarmTreeRoot
      *  @throws Exception on error
      */
     @SuppressWarnings("nls")
     private AlarmTreeRoot readAlarmTree(final String root_name,
-            final boolean create) throws Exception
+            final boolean create,
+            final IProgressMonitor monitor, final DelayCheck monitor_update_delay) throws Exception
     {
         final PreparedStatement statement =
             rdb.getConnection().prepareStatement(sql.sel_configuration_by_name);
@@ -220,7 +231,7 @@ public class AlarmConfiguration
             final int id = result.getInt(1);
             final AlarmTreeRoot root = createAlarmTreeRoot(id, root_name);
             config_reader.readGuidanceDisplaysCommands(root);
-            readChildren(root);
+            readChildren(root, monitor, monitor_update_delay);
             return root;
         }
         finally
@@ -232,9 +243,12 @@ public class AlarmConfiguration
 
     /** Read configuration for child elements
      *  @param parent Parent node. Children get added to it.
+     *  @param monitor Progress monitor
+     *  @param monitor_update_delay Delay for updates to monitor 
      *  @throws Exception on error
      */
-    private void readChildren(final AlarmTreeItem parent) throws Exception
+    private void readChildren(final AlarmTreeItem parent,
+    		final IProgressMonitor monitor, final DelayCheck monitor_update_delay) throws Exception
     {
         if (sel_items_by_parent_statement == null)
             sel_items_by_parent_statement =
@@ -260,6 +274,12 @@ public class AlarmConfiguration
             {
                 final AlarmTreePV pv = new AlarmTreePV(parent, name, id);
                 pvs.put(name, pv);
+                // Periodically update progress monitor
+                if (monitor_update_delay.expired())
+                {
+                	final int count = pvs.size();
+                	monitor.subTask(NLS.bind(Messages.ReadConfigProgressFmt, count));
+                }
                 config_reader.configurePVfromResult(pv, result, severity_mapping, message_mapping);
                 item = pv;
             }
@@ -273,7 +293,7 @@ public class AlarmConfiguration
         // Cannot do that inside the above while() because that would reuse
         // the statement of the current ResultSet
         for (AlarmTreeItem item : recurse_items)
-            readChildren(item);
+            readChildren(item, monitor, monitor_update_delay);
         recurse_items.clear();
     }
 

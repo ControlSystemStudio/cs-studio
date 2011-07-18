@@ -12,15 +12,15 @@ import org.eclipse.jface.action.Action;
 /** Toolbar action that selects if we only show current alarms or all entries
  *  @author Kay Kasemir
  */
-public class ExpandCurrentAlarmsAction extends Action
+public class OnlyAlarmsAction extends Action
 {
     final private GUI gui;
 
-    public ExpandCurrentAlarmsAction(final GUI gui)
+    public OnlyAlarmsAction(final GUI gui)
     {
-        super(Messages.ExpandAlarms, AS_CHECK_BOX);
-        setImageDescriptor(Activator.getImageDescriptor("icons/expand.gif")); //$NON-NLS-1$
-        setToolTipText(Messages.ExpandAlarmsTT);
+        super(Messages.OnlyAlarms, AS_CHECK_BOX);
+        setImageDescriptor(Activator.getImageDescriptor("icons/only_alarms.gif")); //$NON-NLS-1$
+        setToolTipText(Messages.OnlyAlarmsTT);
         this.gui = gui;
     }
 

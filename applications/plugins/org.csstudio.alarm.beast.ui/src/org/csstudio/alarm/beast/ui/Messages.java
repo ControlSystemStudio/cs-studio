@@ -16,7 +16,7 @@ public class Messages extends NLS
 {
     private static final String BUNDLE_NAME = "org.csstudio.alarm.beast.ui.messages"; //$NON-NLS-1$
     public static String Acknowledge_Action;
-    public static String AcknowledgedAlarms;
+    public static String AcknowledgedAlarmsFmt;
     public static String AddComponent;
     public static String AddComponentDialog_CannotAddError;
     public static String AddComponentDialog_ComponentTT;
@@ -79,7 +79,7 @@ public class Messages extends NLS
     public static String Config_Message;
     public static String Config_Title;
     public static String ConfigureItem;
-    public static String CurrentAlarms;
+    public static String CurrentAlarmsFmt;
     public static String Detail;
     public static String DuplicatePV;
     public static String DuplicatePVMesgFmt;

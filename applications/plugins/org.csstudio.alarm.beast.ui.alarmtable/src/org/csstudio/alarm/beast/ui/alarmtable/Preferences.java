@@ -31,4 +31,11 @@ public class Preferences
         final IPreferencesService service = Platform.getPreferencesService();
         return service.getLong(Activator.ID, "suppression_millis", 1000, null);
     }
+
+    /** @return Alarm table row limit */
+	public static int getAlarmTableRowLimit()
+    {
+        final IPreferencesService service = Platform.getPreferencesService();
+        return service.getInt(Activator.ID, "alarm_table_row_limit", 2500, null);
+    }
 }

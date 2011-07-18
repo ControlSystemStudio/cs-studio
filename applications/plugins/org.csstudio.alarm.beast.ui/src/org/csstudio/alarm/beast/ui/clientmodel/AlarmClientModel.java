@@ -28,12 +28,35 @@ import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.osgi.util.NLS;
 
 /** Model of alarm information for client applications.
- *  <p>
- *  Obtains alarm configuration (PVs, their hierarchy, guidance, status, ...)
+ *  
+ *  <p>Obtains alarm configuration (PVs, their hierarchy, guidance, status, ...)
  *  from RDB, then monitors JMS for changes,
  *  sends out acknowledgments or changes to JMS,
- *  signals listeneres about updates, ...
- *
+ *  signals listeners about updates, ...
+ *  
+ *  <p>NOTE ON SYNCHRONIZATION:
+ *  <p>The model can be accessed from the GUI but also from JMS threads
+ *  that received updates from the alarm server.
+ *  One could lock the 'root' element or the 'model' on all access.
+ *  That might be easiest to implement and check, but potentially
+ *  slower because concurrent access to different parts of the model
+ *  are not possible.
+ *  <p>When synchronizing individual pieces of the model (area, pv, ...)
+ *  deadlocks are possible if elements are locked in reverse order.
+ *  The following order should prevent this:
+ *  <ol>
+ *  <li>For overall changes, lock the model.
+ *  <li>For changes to the alarm tree, lock affected items from the root down.
+ *  </ol>
+ *  
+ *  <p>Note that acknowledging an alarm tree entry will
+ *  <ol>
+ *  <li>Acknowledge all 'child' entries, recursing to individual PVs
+ *  <li>Access to 'root' element to send ack' request to JMS
+ *  </ol>
+ *  To prevent deadlocks, an acknowledge must therefore first lock the root element,
+ *  then the affected sub-elements of the alarm tree.
+ *  
  *  @author Kay Kasemir, Xihui Chen
  */
 @SuppressWarnings("nls")
@@ -374,7 +397,7 @@ public class AlarmClientModel
         monitor.subTask(Messages.AlarmClientModel_ReadingRDB);
         try
         {
-            new_config.readConfiguration(getConfigurationName(),false);
+            new_config.readConfiguration(getConfigurationName(), false, monitor);
             // Update model with newly received data
             synchronized (this)
             {
@@ -833,24 +856,20 @@ public class AlarmClientModel
         String name = info.getNameOrPath();
         if (AlarmTreePath.isPath(name))
             name = AlarmTreePath.getName(name);
-        synchronized (this)
+        server_alive = true;
+        final AlarmTreePV pv = findPV(name);
+        if (pv != null)
         {
-            server_alive = true;
-            final AlarmTreePV pv = findPV(name);
-            if (pv != null)
-            {
-                pv.setAlarmState(info.getCurrentSeverity(), info.getCurrentMessage(),
-                        info.getSeverity(), info.getMessage(),
-                        info.getValue(), info.getTimestamp());
-                return;
-            }
+            pv.setAlarmState(info.getCurrentSeverity(), info.getCurrentMessage(),
+                    info.getSeverity(), info.getMessage(),
+                    info.getValue(), info.getTimestamp());
+            return;
         }
         // Can this result in out-of-memory?!
         // First glance: No, since we just log & return.
         // Is there a memory leak in the logger?
         // The update comes from JMS, and the logger may also
         // send info to JMS. Is that a problem?
-        // Moved this outside the lock in case that makes a difference.
         Activator.getLogger().log(Level.WARNING,
             "Received update for unknown PV {0}", name);
     }

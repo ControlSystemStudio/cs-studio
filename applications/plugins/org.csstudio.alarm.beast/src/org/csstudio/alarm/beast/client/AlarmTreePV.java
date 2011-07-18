@@ -196,17 +196,27 @@ public class AlarmTreePV extends AlarmTreeLeaf
      *  @param value Value that triggered the update
      *  @param timestamp Time stamp for this update
      */
-    public synchronized void setAlarmState(final SeverityLevel current_severity,
+    public void setAlarmState(final SeverityLevel current_severity,
             final String current_message,
             final SeverityLevel severity, final String message,
             final String value,
             final ITimestamp timestamp)
     {
-        if (setAlarmState(current_severity, severity, message, timestamp)  &&
-            ! current_message.equals(this.current_message) )
+    	// Changing the alarm state will eventually recurse up to the root
+    	// to maximize the severities.
+    	// To prevent deadlock, first lock the root, then this and other affected items
+    	final AlarmTreeRoot root = getClientRoot();
+    	synchronized (root)
         {
-            this.current_message = current_message;
-            this.value = value;
+        	synchronized (this)
+            {
+                if (setAlarmState(current_severity, severity, message, timestamp)  &&
+                        ! current_message.equals(this.current_message) )
+                {
+                    this.current_message = current_message;
+                    this.value = value;
+                }
+            }
         }
     }
 
@@ -214,7 +224,7 @@ public class AlarmTreePV extends AlarmTreeLeaf
      *  @see AlarmTree#acknowledge()
      */
     @Override
-    public synchronized void acknowledge(final boolean acknowledge)
+    public void acknowledge(final boolean acknowledge)
     {
         getClientRoot().acknowledge(this, acknowledge);
     }
