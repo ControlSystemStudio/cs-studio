@@ -1,3 +1,4 @@
+
 package org.csstudio.nams.common.activatorUtils;
 
 public class InitialisationFailedError extends Error {
@@ -19,5 +20,4 @@ public class InitialisationFailedError extends Error {
 	public InitialisationFailedError(final Throwable t) {
 		super(t);
 	}
-
 }

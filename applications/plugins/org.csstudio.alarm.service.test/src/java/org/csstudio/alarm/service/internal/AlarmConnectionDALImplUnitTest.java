@@ -42,7 +42,7 @@ public class AlarmConnectionDALImplUnitTest {
     public void testConnectDisconnectOne() throws Exception {
         SimpleDALBroker simpleDALBroker = mock(SimpleDALBroker.class);
         IAlarmConfigurationService alarmConfigService = mock(IAlarmConfigurationService.class);
-        AlarmConnectionDALImpl connectionUnderTest = new AlarmConnectionDALImplForTest(alarmConfigService, simpleDALBroker);
+        AlarmConnectionDALImpl connectionUnderTest = new TestAlarmConnectionDALImpl(alarmConfigService, simpleDALBroker);
         
         IAlarmConnectionMonitor connectionMonitor = mock(IAlarmConnectionMonitor.class);
         connect(connectionUnderTest, connectionMonitor);
@@ -62,7 +62,7 @@ public class AlarmConnectionDALImplUnitTest {
     public void testConnectAndRegister() throws Exception {
         SimpleDALBroker simpleDALBroker = mock(SimpleDALBroker.class);
         IAlarmConfigurationService alarmConfigService = mock(IAlarmConfigurationService.class);
-        AlarmConnectionDALImpl connectionUnderTest = new AlarmConnectionDALImplForTest(alarmConfigService, simpleDALBroker);
+        AlarmConnectionDALImpl connectionUnderTest = new TestAlarmConnectionDALImpl(alarmConfigService, simpleDALBroker);
         
         IAlarmConnectionMonitor connectionMonitor = mock(IAlarmConnectionMonitor.class);
         connect(connectionUnderTest, connectionMonitor);
@@ -100,9 +100,9 @@ public class AlarmConnectionDALImplUnitTest {
      * framework for retrieval of preferences and access to ldap or file system. This way this test can be run
      * as a simple unit test.
      */
-    private static class AlarmConnectionDALImplForTest extends AlarmConnectionDALImpl {
+    private static class TestAlarmConnectionDALImpl extends AlarmConnectionDALImpl {
 
-        public AlarmConnectionDALImplForTest(@Nonnull final IAlarmConfigurationService alarmConfigService,
+        public TestAlarmConnectionDALImpl(@Nonnull final IAlarmConfigurationService alarmConfigService,
                                              @Nonnull final SimpleDALBroker simpleDALBroker) {
             super(alarmConfigService, simpleDALBroker);
         }

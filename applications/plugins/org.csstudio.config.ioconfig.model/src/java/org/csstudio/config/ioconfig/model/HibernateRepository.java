@@ -12,16 +12,16 @@ import javax.annotation.CheckForNull;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
-import org.apache.log4j.Logger;
 import org.csstudio.config.ioconfig.model.pbmodel.ChannelDBO;
 import org.csstudio.config.ioconfig.model.pbmodel.GSDFileDBO;
 import org.csstudio.config.ioconfig.model.pbmodel.GSDModuleDBO;
 import org.csstudio.config.ioconfig.model.pbmodel.ModuleChannelPrototypeDBO;
-import org.csstudio.platform.logging.CentralLogger;
 import org.hibernate.HibernateException;
 import org.hibernate.Query;
 import org.hibernate.SQLQuery;
 import org.hibernate.Session;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * Implementation for a Hibernate Repository.
@@ -33,8 +33,21 @@ import org.hibernate.Session;
  */
 public class HibernateRepository implements IRepository {
     
-    protected static final Logger LOG = CentralLogger.getInstance()
-            .getLogger(HibernateRepository.class);
+    private final IHibernateManager _instance;
+    protected static final Logger LOG = LoggerFactory.getLogger(HibernateRepository.class);
+    
+    /**
+     * 
+     * Constructor.
+     * @param hibernateManager the hibernateManager or null for default manager.
+     */
+    public HibernateRepository(@CheckForNull IHibernateManager hibernateManager) {
+        if(hibernateManager!=null) {
+            _instance = hibernateManager;
+        } else {
+            _instance = HibernateManager.getInstance();
+        }
+    }
     
     /**
      * @author hrickens
@@ -86,7 +99,7 @@ public class HibernateRepository implements IRepository {
     @Nonnull
     public final GSDModuleDBO saveWithChildren(@Nonnull final GSDModuleDBO gsdModule) throws PersistenceException {
         try {
-            HibernateManager.getInstance().doInDevDBHibernateLazy(new HibernateCallback() {
+            _instance.doInDevDBHibernateLazy(new HibernateCallback() {
                 private Session _session;
                 
                 @SuppressWarnings("unchecked")
@@ -111,7 +124,7 @@ public class HibernateRepository implements IRepository {
             });
             return gsdModule;
         } catch (HibernateException he) {
-            CentralLogger.getInstance().warn(Repository.class, he);
+            LOG.warn("Can't save", he);
             throw new PersistenceException(he);
         }
     }
@@ -124,7 +137,7 @@ public class HibernateRepository implements IRepository {
     @Nonnull
     public final <T extends DBClass> T saveOrUpdate(@Nonnull final T dbClass) throws PersistenceException {
         try {
-            HibernateManager.getInstance().doInDevDBHibernateLazy(new HibernateCallback() {
+            _instance.doInDevDBHibernateLazy(new HibernateCallback() {
                 
                 @SuppressWarnings("unchecked")
                 @Override
@@ -137,7 +150,7 @@ public class HibernateRepository implements IRepository {
             });
             return dbClass;
         } catch (HibernateException he) {
-            CentralLogger.getInstance().warn(Repository.class, he);
+            LOG.warn("Save or update failed", he);
             PersistenceException persistenceException = new PersistenceException(he);
             throw persistenceException;
         }
@@ -151,7 +164,7 @@ public class HibernateRepository implements IRepository {
     @Nonnull
     public final <T extends DBClass> T update(@Nonnull final T dbClass) throws PersistenceException {
         
-        HibernateManager.getInstance().doInDevDBHibernateLazy(new HibernateCallback() {
+        _instance.doInDevDBHibernateLazy(new HibernateCallback() {
             
             @Override
             @SuppressWarnings("unchecked")
@@ -188,7 +201,7 @@ public class HibernateRepository implements IRepository {
                 return nodes;
             }
         };
-        return HibernateManager.getInstance().doInDevDBHibernateLazy(hibernateCallback);
+        return _instance.doInDevDBHibernateLazy(hibernateCallback);
     }
     
     /**
@@ -214,7 +227,7 @@ public class HibernateRepository implements IRepository {
                 return nodes.get(0);
             }
         };
-        return HibernateManager.getInstance().doInDevDBHibernateLazy(hibernateCallback);
+        return _instance.doInDevDBHibernateLazy(hibernateCallback);
     }
     
     /**
@@ -223,7 +236,7 @@ public class HibernateRepository implements IRepository {
      */
     @Override
     public final <T extends DBClass> void removeNode(@Nonnull final T dbClass) throws PersistenceException {
-        HibernateManager.getInstance().doInDevDBHibernateLazy(new HibernateCallback() {
+        _instance.doInDevDBHibernateLazy(new HibernateCallback() {
             
             @Override
             @SuppressWarnings("unchecked")
@@ -244,7 +257,7 @@ public class HibernateRepository implements IRepository {
     @Nonnull
     public final GSDFileDBO save(@Nonnull final GSDFileDBO gsdFile) throws PersistenceException {
         
-        HibernateManager.getInstance().doInDevDBHibernateLazy(new HibernateCallback() {
+        _instance.doInDevDBHibernateLazy(new HibernateCallback() {
             
             @SuppressWarnings("unchecked")
             @Override
@@ -264,7 +277,7 @@ public class HibernateRepository implements IRepository {
      */
     @Override
     public final void removeGSDFiles(@Nonnull final GSDFileDBO gsdFile) throws PersistenceException {
-        HibernateManager.getInstance().doInDevDBHibernateLazy(new HibernateCallback() {
+        _instance.doInDevDBHibernateLazy(new HibernateCallback() {
             
             @SuppressWarnings("unchecked")
             @Override
@@ -284,7 +297,7 @@ public class HibernateRepository implements IRepository {
     @Override
     @CheckForNull
     public final List<DocumentDBO> loadDocument() throws PersistenceException {
-        return HibernateManager.getInstance().doInDevDBHibernateLazy(new HibernateCallback() {
+        return _instance.doInDevDBHibernateLazy(new HibernateCallback() {
             @Override
             @SuppressWarnings("unchecked")
             @CheckForNull
@@ -309,7 +322,7 @@ public class HibernateRepository implements IRepository {
     @Nonnull
     public final DocumentDBO save(@Nonnull final DocumentDBO document) throws PersistenceException {
         
-        HibernateManager.getInstance().doInDevDBHibernateLazy(new HibernateCallback() {
+        _instance.doInDevDBHibernateLazy(new HibernateCallback() {
             
             @SuppressWarnings("unchecked")
             @Override
@@ -332,7 +345,7 @@ public class HibernateRepository implements IRepository {
     @Nonnull
     public final DocumentDBO update(@Nonnull final DocumentDBO document) throws PersistenceException {
         
-        HibernateManager.getInstance().doInDevDBHibernateLazy(new HibernateCallback() {
+        _instance.doInDevDBHibernateLazy(new HibernateCallback() {
             
             @SuppressWarnings("unchecked")
             @Override
@@ -361,7 +374,7 @@ public class HibernateRepository implements IRepository {
     @Nonnull
     public final String getEpicsAddressString(@Nonnull final String ioName) throws PersistenceException {
         HibernateCallback hibernateCallback = new EpicsAddressHibernateCallback(ioName);
-        String epicsAddressString = HibernateManager.getInstance().doInDevDBHibernateEager(hibernateCallback);
+        String epicsAddressString = _instance.doInDevDBHibernateEager(hibernateCallback);
         return epicsAddressString==null?"":epicsAddressString;
     }
     
@@ -383,7 +396,7 @@ public class HibernateRepository implements IRepository {
                 return ioNames;
             }
         };
-        List<String> ioNameList = HibernateManager.getInstance().doInDevDBHibernateEager(hibernateCallback);
+        List<String> ioNameList = _instance.doInDevDBHibernateEager(hibernateCallback);
         return ioNameList==null?new ArrayList<String>():ioNameList;
     }
     
@@ -406,7 +419,11 @@ public class HibernateRepository implements IRepository {
                 return ioNames;
             }
         };
-        return HibernateManager.getInstance().doInDevDBHibernateEager(hibernateCallback);
+        List<String> doInDevDBHibernateEager = _instance.doInDevDBHibernateEager(hibernateCallback);
+        if(doInDevDBHibernateEager == null) {
+            doInDevDBHibernateEager = new ArrayList<String>();
+        }
+        return doInDevDBHibernateEager;
     }
     
     @Override
@@ -436,7 +453,11 @@ public class HibernateRepository implements IRepository {
                 return split[0];
             }
         };
-        return HibernateManager.getInstance().doInDevDBHibernateEager(hibernateCallback);
+        String doInDevDBHibernateEager = _instance.doInDevDBHibernateEager(hibernateCallback);
+        if(doInDevDBHibernateEager == null) {
+            doInDevDBHibernateEager="";
+        }
+        return doInDevDBHibernateEager;
     }
     
     @Override
@@ -455,7 +476,11 @@ public class HibernateRepository implements IRepository {
                 return sensors;
             }
         };
-        return HibernateManager.getInstance().doInDevDBHibernateEager(hibernateCallback);
+        List<SensorsDBO> doInDevDBHibernateEager = _instance.doInDevDBHibernateEager(hibernateCallback);
+        if(doInDevDBHibernateEager==null) {
+            doInDevDBHibernateEager = new ArrayList<SensorsDBO>();
+        }
+        return doInDevDBHibernateEager;
     }
     
     @Override
@@ -477,7 +502,7 @@ public class HibernateRepository implements IRepository {
                 return sensors.get(0);
             }
         };
-        return HibernateManager.getInstance().doInDevDBHibernateEager(hibernateCallback);
+        return _instance.doInDevDBHibernateEager(hibernateCallback);
     }
     
     @CheckForNull
@@ -506,7 +531,7 @@ public class HibernateRepository implements IRepository {
                 return rootPath;
             }
         };
-        return HibernateManager.getInstance().doInDevDBHibernateLazy(hibernateCallback);
+        return _instance.doInDevDBHibernateLazy(hibernateCallback);
     }
     
     @Override
@@ -527,7 +552,7 @@ public class HibernateRepository implements IRepository {
                 return nodes;
             }
         };
-        return HibernateManager.getInstance().doInDevDBHibernateLazy(hibernateCallback);
+        return _instance.doInDevDBHibernateLazy(hibernateCallback);
     }
     
     /**
@@ -555,20 +580,15 @@ public class HibernateRepository implements IRepository {
                     statement.append(String.format("pv.epicsName = '%s'", string));
                     notFirst = true;
                 }
-                try {
-                    return session.createQuery(statement.toString()).list();
-                } catch (HibernateException e) {
-                    LOG.warn("Hibernate Statement: " + statement);
-                    throw e;
-                }
+                return session.createQuery(statement.toString()).list();
             }
         };
-        return HibernateManager.getInstance().doInDevDBHibernateEager(hibernateCallback);
+        return _instance.doInDevDBHibernateEager(hibernateCallback);
     }
     
     @Override
     public final void close() {
-        HibernateManager.getInstance().closeSession();
+        _instance.closeSession();
     }
     
     /**
@@ -576,7 +596,7 @@ public class HibernateRepository implements IRepository {
      */
     @Override
     public final boolean isConnected() {
-        return HibernateManager.getInstance().isConnected();
+        return _instance.isConnected();
     }
     
 }

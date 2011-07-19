@@ -8,9 +8,9 @@
 package org.csstudio.swt.xygraph.figures;
 
 import org.csstudio.swt.xygraph.linearscale.Range;
+import org.csstudio.swt.xygraph.util.SWTConstants;
 import org.eclipse.draw2d.Figure;
 import org.eclipse.draw2d.Graphics;
-import org.eclipse.swt.SWT;
 
 /**The grid in the plot area.
  * @author Xihui Chen
@@ -32,7 +32,7 @@ public class Grid extends Figure implements IAxisListener{
 		super.paintFigure(graphics);
 		graphics.pushState();
 		if(axis.isShowMajorGrid()){
-			graphics.setLineStyle(axis.isDashGridLine()? SWT.LINE_DASH : SWT.LINE_SOLID);
+			graphics.setLineStyle(axis.isDashGridLine()? SWTConstants.LINE_DASH : SWTConstants.LINE_SOLID);
 			graphics.setForegroundColor(axis.getMajorGridColor());
 			graphics.setLineWidth(1);
 			for(int pos: axis.getScaleTickLabels().getTickLabelPositions()){
@@ -47,13 +47,11 @@ public class Grid extends Figure implements IAxisListener{
 		graphics.popState();
 	}
 
-	@Override
     public void axisRevalidated(Axis axis) {
 		if(axis.isShowMajorGrid())
 			repaint();
 	}
 
-	@Override
     public void axisRangeChanged(Axis axis, Range old_range, Range new_range) {
 		//do nothing
 	}

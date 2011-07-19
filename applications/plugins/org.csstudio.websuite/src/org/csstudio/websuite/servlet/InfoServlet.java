@@ -74,15 +74,15 @@ public class InfoServlet extends HttpServlet {
     }
     
     private void createPage(HttpServletRequest request, HttpServletResponse response)
-    throws ServletException, IOException {
+    throws IOException {
         
         StringBuilder page = null;
         
         String contextPath = request.getServletPath();
-        System.out.println("Servlet path: " + contextPath);
+        this.log("Servlet path: " + contextPath);
         
         String varPath = this.getServletContext().getRealPath("/var");
-        System.out.println("/webapp/var: " + varPath);
+        this.log("/webapp/var: " + varPath);
 
         page = new StringBuilder();
         page.append("<html>\n");

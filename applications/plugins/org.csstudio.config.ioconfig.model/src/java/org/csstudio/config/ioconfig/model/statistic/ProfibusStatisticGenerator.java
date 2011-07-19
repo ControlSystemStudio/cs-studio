@@ -43,7 +43,8 @@ import org.csstudio.config.ioconfig.model.pbmodel.MasterDBO;
 import org.csstudio.config.ioconfig.model.pbmodel.ModuleDBO;
 import org.csstudio.config.ioconfig.model.pbmodel.ProfibusSubnetDBO;
 import org.csstudio.config.ioconfig.model.pbmodel.SlaveDBO;
-import org.csstudio.platform.logging.CentralLogger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * @author Rickens Helge
@@ -53,6 +54,7 @@ import org.csstudio.platform.logging.CentralLogger;
  */
 public class ProfibusStatisticGenerator {
     
+    private static final Logger LOG = LoggerFactory.getLogger(ProfibusStatisticGenerator.class);
     private final StringBuilder _statistic;
     private final Map<GSDFileDBO, Integer> _gsdMasterFileMap;
     private final Map<GSDFileDBO, Integer> _gsdSlaveFileMap;
@@ -195,7 +197,7 @@ public class ProfibusStatisticGenerator {
     public void getStatisticFile(@Nonnull File path) throws IOException {
         FileWriter writer = new FileWriter(path);
         writer.append(_statistic.toString());
-        CentralLogger.getInstance().info(this, "Write File:" + path.getAbsolutePath());
+        LOG.info("Write File: {}", path.getAbsolutePath());
         writer.close();
     }
     

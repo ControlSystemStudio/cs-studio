@@ -28,7 +28,8 @@ import java.io.ByteArrayInputStream;
 import java.io.DataInputStream;
 import java.io.IOException;
 
-import org.apache.log4j.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * @author Markus Moeller
@@ -36,6 +37,8 @@ import org.apache.log4j.Logger;
  */
 public class DataRequestHeader implements IRequestHeader
 {
+    private static final Logger LOG = LoggerFactory.getLogger(DataRequestHeader.class);
+    
     /**  */
     private int fromSec;
 
@@ -159,7 +162,7 @@ public class DataRequestHeader implements IRequestHeader
             }
             
         } catch(IOException ioe) {
-            Logger.getLogger(this.getClass()).error("[*** IOException ***]: UUUURGS: " + ioe.getMessage());
+            LOG.error("[*** IOException ***]: UUUURGS: " + ioe.getMessage());
         }
     }
 

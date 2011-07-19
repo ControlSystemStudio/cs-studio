@@ -1,3 +1,4 @@
+
 package org.csstudio.nams.configurator.beans.filters;
 
 import org.csstudio.nams.configurator.beans.AbstractConfigurationBean;
@@ -60,7 +61,8 @@ public class JunctorConditionBean extends
 		return true;
 	}
 
-	public String getDisplayName() {
+	@Override
+    public String getDisplayName() {
 		return this.firstCondition + " " + this.junctor + " " //$NON-NLS-1$ //$NON-NLS-2$
 				+ this.secondCondition;
 	}
@@ -69,7 +71,8 @@ public class JunctorConditionBean extends
 		return this.firstCondition;
 	}
 
-	public int getID() {
+	@Override
+    public int getID() {
 		return 0;
 	}
 
@@ -106,7 +109,9 @@ public class JunctorConditionBean extends
 
 	}
 
-	public void setID(final int id) {
+	@Override
+    public void setID(final int id) {
+	    // Nothing to do
 	}
 
 	public void setJunctor(final JunctorConditionType junctor) {
@@ -123,8 +128,8 @@ public class JunctorConditionBean extends
 				oldValue, this.secondCondition);
 	}
 
-	public void setDisplayName(String name) {
+	@Override
+    public void setDisplayName(String name) {
 		// nothing to do here
 	}
-
 }

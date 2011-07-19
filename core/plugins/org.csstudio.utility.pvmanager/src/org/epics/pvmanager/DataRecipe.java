@@ -17,7 +17,7 @@ import java.util.Map;
  */
 public class DataRecipe {
 
-    private final Map<Collector, Map<String, ValueCache>> channelsPerCollector;
+    private final Map<Collector<?>, Map<String, ValueCache>> channelsPerCollector;
     private final ExceptionHandler exceptionHandler;
 
     /**
@@ -34,12 +34,12 @@ public class DataRecipe {
      *
      * @param channelsPerCollector the list of all channels needed by each collector
      */
-    DataRecipe(Map<Collector, Map<String, ValueCache>> channelsPerCollector) {
+    DataRecipe(Map<Collector<?>, Map<String, ValueCache>> channelsPerCollector) {
         this.channelsPerCollector = channelsPerCollector;
         exceptionHandler = new ExceptionHandler();
     }
 
-    DataRecipe(Map<Collector, Map<String, ValueCache>> channelsPerCollector, ExceptionHandler exceptionHandler) {
+    DataRecipe(Map<Collector<?>, Map<String, ValueCache>> channelsPerCollector, ExceptionHandler exceptionHandler) {
         this.channelsPerCollector = channelsPerCollector;
         this.exceptionHandler = exceptionHandler;
     }
@@ -58,9 +58,9 @@ public class DataRecipe {
      * @param caches the caches that the collector depends on
      * @return the new recipe
      */
-    public DataRecipe includeCollector(Collector collector, Map<String, ValueCache> caches) {
-        Map<Collector, Map<String, ValueCache>> newChannelsPerCollector =
-                new HashMap<Collector, Map<String, ValueCache>>(channelsPerCollector);
+    public DataRecipe includeCollector(Collector<?> collector, Map<String, ValueCache> caches) {
+        Map<Collector<?>, Map<String, ValueCache>> newChannelsPerCollector =
+                new HashMap<Collector<?>, Map<String, ValueCache>>(channelsPerCollector);
         Map<String, ValueCache> newCaches =
                 Collections.unmodifiableMap(new HashMap<String, ValueCache>(caches));
         newChannelsPerCollector.put(collector, newCaches);
@@ -76,8 +76,8 @@ public class DataRecipe {
      * @return the new recipe
      */
     public DataRecipe includeRecipe(DataRecipe dataRecipe) {
-        Map<Collector, Map<String, ValueCache>> newChannelsPerCollector =
-                new HashMap<Collector, Map<String, ValueCache>>(channelsPerCollector);
+        Map<Collector<?>, Map<String, ValueCache>> newChannelsPerCollector =
+                new HashMap<Collector<?>, Map<String, ValueCache>>(channelsPerCollector);
         newChannelsPerCollector.putAll(dataRecipe.channelsPerCollector);
         return new DataRecipe(Collections.unmodifiableMap(newChannelsPerCollector), exceptionHandler);
     }
@@ -92,7 +92,7 @@ public class DataRecipe {
      *
      * @return a map with all the channels organized by collector.
      */
-    public Map<Collector, Map<String, ValueCache>> getChannelsPerCollectors() {
+    public Map<Collector<?>, Map<String, ValueCache>> getChannelsPerCollectors() {
         return channelsPerCollector;
     }
 

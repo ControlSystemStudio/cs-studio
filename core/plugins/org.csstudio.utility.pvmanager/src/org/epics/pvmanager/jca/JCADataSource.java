@@ -6,17 +6,11 @@
 package org.epics.pvmanager.jca;
 
 import gov.aps.jca.CAException;
-import gov.aps.jca.Channel;
 import gov.aps.jca.Context;
 import gov.aps.jca.JCALibrary;
 import gov.aps.jca.Monitor;
-import java.util.HashSet;
-import org.epics.pvmanager.Collector;
+import org.epics.pvmanager.ChannelHandler;
 import org.epics.pvmanager.DataSource;
-import org.epics.pvmanager.ValueCache;
-import java.util.Map;
-import java.util.Set;
-import java.util.concurrent.ConcurrentHashMap;
 import java.util.logging.Logger;
 import org.epics.pvmanager.DataRecipe;
 import org.epics.pvmanager.ExceptionHandler;
@@ -50,6 +44,21 @@ public class JCADataSource extends DataSource {
     public JCADataSource() {
         this(JCALibrary.CHANNEL_ACCESS_JAVA, Monitor.VALUE | Monitor.ALARM);
     }
+    
+    /**
+     * Creates a new data source using the given context. The context will
+     * never be closed.
+     * 
+     * @param jcaContext the context to be used
+     * @param monitorMask Monitor.VALUE, ...
+     */
+    public JCADataSource(Context jcaContext, int monitorMask) {
+        super(true);
+        this.ctxt = jcaContext;
+        this.className = null;
+        this.destroyContextWhenDone = false;
+        this.monitorMask = monitorMask;
+    }
 
     /**
      * Creates a new data source using the className to create the context.
@@ -70,6 +79,7 @@ public class JCADataSource extends DataSource {
      * @param monitorMask Monitor.VALUE, ...
      */
     public JCADataSource(String className, int monitorMask, boolean destroyContextWhenDone) {
+        super(true);
         this.className = className;
         this.monitorMask = monitorMask;
         this.destroyContextWhenDone = destroyContextWhenDone;
@@ -97,7 +107,7 @@ public class JCADataSource extends DataSource {
      * Destroy JCA context.
      */
     private void releaseContext(ExceptionHandler handler) {
-        if (ctxt != null && connectedProcessors.isEmpty() && destroyContextWhenDone) {
+        if (ctxt != null && getChannels().isEmpty() && destroyContextWhenDone) {
             try {
                 // If a context was created and is the last pv active,
                 // destroy the context.
@@ -118,48 +128,38 @@ public class JCADataSource extends DataSource {
 
     @Override
     public synchronized void connect(DataRecipe dataRecipe) {
-        initContext(dataRecipe.getExceptionHandler());
-        Set<ValueProcessor> processors = new HashSet<ValueProcessor>();
-        for (Map.Entry<Collector, Map<String, ValueCache>> collEntry : dataRecipe.getChannelsPerCollectors().entrySet()) {
-            Collector collector = collEntry.getKey();
-            for (Map.Entry<String, ValueCache> entry : collEntry.getValue().entrySet()) {
-                ValueProcessor processor = createProcessor(entry.getKey(), collector, entry.getValue(), dataRecipe.getExceptionHandler());
-                if (processor != null)
-                    processors.add(processor);
+        try {
+            initContext(dataRecipe.getExceptionHandler());
+            super.connect(dataRecipe);
+        } finally {
+            try {
+                ctxt.flushIO();
+            } catch (CAException ex) {
+                dataRecipe.getExceptionHandler().handleException(ex);
             }
         }
-        connectedProcessors.put(dataRecipe, processors);
-    }
-
-    private Map<DataRecipe, Set<ValueProcessor>> connectedProcessors = new ConcurrentHashMap<DataRecipe, Set<ValueProcessor>>();
-
-    private ValueProcessor createProcessor(String pvName, Collector collector,
-            ValueCache<?> cache, ExceptionHandler handler) {
-        try {
-            Channel channel = ctxt.createChannel(pvName);
-            @SuppressWarnings("unchecked")
-            ValueProcessor processor = new JCAProcessor(channel, collector, cache, handler, monitorMask);
-            ctxt.flushIO();
-            return processor;
-        } catch (CAException e) {
-            handler.handleException(e);
-        } catch (RuntimeException e) {
-            handler.handleException(e);
-        }
-        return null;
     }
 
     @Override
-    public synchronized void disconnect(DataRecipe recipe) {
-        for (ValueProcessor processor : connectedProcessors.get(recipe)) {
+    public synchronized void disconnect(DataRecipe dataRecipe) {
+        try {
+            initContext(dataRecipe.getExceptionHandler());
+            super.disconnect(dataRecipe);
+        } finally {
             try {
-                processor.close();
-            } catch (Exception ex) {
-                recipe.getExceptionHandler().handleException(ex);
+                ctxt.flushIO();
+                releaseContext(dataRecipe.getExceptionHandler());
+            } catch (CAException ex) {
+                dataRecipe.getExceptionHandler().handleException(ex);
             }
         }
-        connectedProcessors.remove(recipe);
-        releaseContext(recipe.getExceptionHandler());
     }
+
+    @Override
+    protected ChannelHandler<?> createChannel(String channelName) {
+        return new JCAChannelHandler(channelName, ctxt, monitorMask);
+    }
+    
+    
 
 }

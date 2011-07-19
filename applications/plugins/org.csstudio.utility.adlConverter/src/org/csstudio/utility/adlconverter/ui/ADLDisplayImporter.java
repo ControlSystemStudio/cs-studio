@@ -29,7 +29,6 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.util.Formatter;
 
-import org.csstudio.platform.logging.CentralLogger;
 import org.csstudio.sds.importer.AbstractDisplayImporter;
 import org.csstudio.sds.internal.model.Layer;
 import org.csstudio.sds.internal.persistence.DisplayModelInputStream;
@@ -72,6 +71,8 @@ import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.swt.widgets.Display;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * @author hrickens
@@ -80,6 +81,8 @@ import org.eclipse.swt.widgets.Display;
  * @since 22.10.2007
  */
 public class ADLDisplayImporter extends AbstractDisplayImporter {
+    
+    private static final Logger LOG = LoggerFactory.getLogger(ADLDisplayImporter.class);
     /**
      * Store the Display to finalize if the colormap not finalize.
      */
@@ -87,46 +90,52 @@ public class ADLDisplayImporter extends AbstractDisplayImporter {
     private int _status;
     private static boolean _createFolderNever = false;
     private static boolean _createFolderAllways = false;
-
+    
     /**
      * Default Constructor.
      */
     public ADLDisplayImporter() {
+        // Default Constructor.
     }
-
+    
     /**
      * {@inheritDoc}
      * 
      * @throws CoreException
      */
     @Override
-    public final boolean importDisplay(final String sourceFile, final IPath targetProject,
-            final String targetFileName) throws CoreException {
-
+    public final boolean importDisplay(final String sourceFile,
+                                       final IPath targetProject,
+                                       final String targetFileName) throws CoreException {
+        
         _status = 0;
         ADLWidget storedBasicAttribute = null;
         ADLWidget storedDynamicAttribute = null;
         ADLWidget root = ParserADL.getNextElement(new File(sourceFile));
-
+        
         // this is the target display model
         DisplayModel displayModel = new DisplayModel();
         _storDisplay = null;
-        displayModel.getLayerSupport().addLayer(
-                new Layer(Messages.ADLDisplayImporter_ADLBackgroundLayerName,
-                        Messages.ADLDisplayImporter_ADLBackgroundLayerDes), 0);
-        displayModel.getLayerSupport().addLayer(
-                new Layer(Messages.ADLDisplayImporter_ADLDynamicLayerName,
-                        Messages.ADLDisplayImporter_ADLDynamicLayerDes), 2);
-        displayModel.getLayerSupport().addLayer(
-                new Layer(Messages.ADLDisplayImporter_ADLBargraphLayerName,
-                        Messages.ADLDisplayImporter_ADLBargraphLayerDes), 3);
-        displayModel.getLayerSupport().addLayer(
-                new Layer(Messages.ADLDisplayImporter_ADLActionLayerName,
-                        Messages.ADLDisplayImporter_ADLActionLayerDes), 4);
-
+        displayModel.getLayerSupport()
+                .addLayer(new Layer(Messages.ADLDisplayImporter_ADLBackgroundLayerName,
+                                    Messages.ADLDisplayImporter_ADLBackgroundLayerDes),
+                          0);
+        displayModel.getLayerSupport()
+                .addLayer(new Layer(Messages.ADLDisplayImporter_ADLDynamicLayerName,
+                                    Messages.ADLDisplayImporter_ADLDynamicLayerDes),
+                          2);
+        displayModel.getLayerSupport()
+                .addLayer(new Layer(Messages.ADLDisplayImporter_ADLBargraphLayerName,
+                                    Messages.ADLDisplayImporter_ADLBargraphLayerDes),
+                          3);
+        displayModel.getLayerSupport()
+                .addLayer(new Layer(Messages.ADLDisplayImporter_ADLActionLayerName,
+                                    Messages.ADLDisplayImporter_ADLActionLayerDes),
+                          4);
+        
         // search and set the color map
         for (ADLWidget adlWidget : root.getObjects()) {
-            if (adlWidget.getType().equals("color map")) { //$NON-NLS-1$
+            if(adlWidget.getType().equals("color map")) { //$NON-NLS-1$
                 try {
                     ADLHelper.setColorMap(adlWidget);
                     display(adlWidget, displayModel);
@@ -138,133 +147,165 @@ public class ADLDisplayImporter extends AbstractDisplayImporter {
         }
         for (ADLWidget adlWidget : root.getObjects()) {
             try {
-                if (adlWidget.getType().equals("arc")) { //$NON-NLS-1$
-                    AbstractWidgetModel element = new Arc(adlWidget, displayModel,
-                            storedBasicAttribute, storedDynamicAttribute).getElement();
+                if(adlWidget.getType().equals("arc")) { //$NON-NLS-1$
+                    AbstractWidgetModel element = new Arc(adlWidget,
+                                                          displayModel,
+                                                          storedBasicAttribute,
+                                                          storedDynamicAttribute).getElement();
                     displayModel.addWidget(element);
-                } else if (adlWidget.getType().equals("bar")) { //$NON-NLS-1$
-                    AbstractWidgetModel element = new Bargraph(adlWidget, storedBasicAttribute,
-                            storedDynamicAttribute).getElement();
+                } else if(adlWidget.getType().equals("bar")) { //$NON-NLS-1$
+                    AbstractWidgetModel element = new Bargraph(adlWidget,
+                                                               storedBasicAttribute,
+                                                               storedDynamicAttribute).getElement();
                     displayModel.addWidget(element);
-                } else if (adlWidget.getType().equals("byte")) { //$NON-NLS-1$
-                    displayModel.addWidget(new SixteenBinaryBar(adlWidget, storedBasicAttribute,
-                            storedDynamicAttribute).getElement());
-                } else if (adlWidget.getType().equals("cartesian plot")) { //$NON-NLS-1$
-                    displayModel.addWidget(new Waveform(adlWidget, storedBasicAttribute,
-                            storedDynamicAttribute).getElement());
-                } else if (adlWidget.getType().equals("choice button")) { //$NON-NLS-1$
-                    displayModel.addWidget(new ChoiceButton(adlWidget, storedBasicAttribute,
-                            storedDynamicAttribute).getElement());
-                } else if (adlWidget.getType().equals("color map")) { //$NON-NLS-1$
+                } else if(adlWidget.getType().equals("byte")) { //$NON-NLS-1$
+                    displayModel.addWidget(new SixteenBinaryBar(adlWidget,
+                                                                storedBasicAttribute,
+                                                                storedDynamicAttribute)
+                            .getElement());
+                } else if(adlWidget.getType().equals("cartesian plot")) { //$NON-NLS-1$
+                    displayModel.addWidget(new Waveform(adlWidget,
+                                                        storedBasicAttribute,
+                                                        storedDynamicAttribute).getElement());
+                } else if(adlWidget.getType().equals("choice button")) { //$NON-NLS-1$
+                    displayModel.addWidget(new ChoiceButton(adlWidget,
+                                                            storedBasicAttribute,
+                                                            storedDynamicAttribute).getElement());
+                } else if(adlWidget.getType().equals("color map")) { //$NON-NLS-1$
                     // do nothing
                     // ADLHelper.setColorMap(adlWidget);
                     // display(adlWidget, displayModel);
-                } else if (adlWidget.getType().equals("composite")) { //$NON-NLS-1$
-                    displayModel.addWidget(new GroupingContainer(adlWidget, storedBasicAttribute,
-                            storedDynamicAttribute, targetProject).getElement());
-                } else if (adlWidget.getType().startsWith("display")) { //$NON-NLS-1$
+                } else if(adlWidget.getType().equals("composite")) { //$NON-NLS-1$
+                    displayModel.addWidget(new GroupingContainer(adlWidget,
+                                                                 storedBasicAttribute,
+                                                                 storedDynamicAttribute,
+                                                                 targetProject).getElement());
+                } else if(adlWidget.getType().startsWith("display")) { //$NON-NLS-1$
                     display(adlWidget, displayModel);
-                } else if (adlWidget.getType().equals("dynamic symbol")) { //$NON-NLS-1$
-                    displayModel.addWidget(new Symbol(adlWidget, storedBasicAttribute,
-                            storedDynamicAttribute).getElement());
-                } else if (adlWidget.getType().equals("file")) { //$NON-NLS-1$
+                } else if(adlWidget.getType().equals("dynamic symbol")) { //$NON-NLS-1$
+                    displayModel.addWidget(new Symbol(adlWidget,
+                                                      storedBasicAttribute,
+                                                      storedDynamicAttribute).getElement());
+                } else if(adlWidget.getType().equals("file")) { //$NON-NLS-1$
                     // TODO: FILE --> Name and Version
                     ADLHelper.setPath(adlWidget);
-                } else if (adlWidget.getType().equals("image")) { //$NON-NLS-1$
-                    displayModel.addWidget(new Image(adlWidget, displayModel, storedBasicAttribute,
-                            storedDynamicAttribute, targetProject).getElement());
-                } else if (adlWidget.getType().equals("indicator")) { //$NON-NLS-1$
-                    displayModel.addWidget(new Bargraph(adlWidget, storedBasicAttribute,
-                            storedDynamicAttribute).getElement());
-                } else if (adlWidget.getType().equals("menu")) { //$NON-NLS-1$
-                    displayModel.addWidget(new RelatedDisplay(adlWidget, storedBasicAttribute,
-                            storedDynamicAttribute).getElement());
-                } else if (adlWidget.getType().equals("message button")
+                } else if(adlWidget.getType().equals("image")) { //$NON-NLS-1$
+                    displayModel.addWidget(new Image(adlWidget,
+                                                     displayModel,
+                                                     storedBasicAttribute,
+                                                     storedDynamicAttribute,
+                                                     targetProject).getElement());
+                } else if(adlWidget.getType().equals("indicator")) { //$NON-NLS-1$
+                    displayModel.addWidget(new Bargraph(adlWidget,
+                                                        storedBasicAttribute,
+                                                        storedDynamicAttribute).getElement());
+                } else if(adlWidget.getType().equals("menu")) { //$NON-NLS-1$
+                    displayModel.addWidget(new RelatedDisplay(adlWidget,
+                                                              storedBasicAttribute,
+                                                              storedDynamicAttribute).getElement());
+                } else if(adlWidget.getType().equals("message button")
                         || adlWidget.getType().equals("toggle button")) { //$NON-NLS-1$
-                    displayModel.addWidget(new ActionButton(adlWidget, storedBasicAttribute,
-                            storedDynamicAttribute).getElement());
-                } else if (adlWidget.getType().equals("meter")) { //$NON-NLS-1$
-                    displayModel.addWidget(new Meter(adlWidget, storedBasicAttribute,
-                            storedDynamicAttribute).getElement());
-                } else if (adlWidget.getType().equals("oval")) { //$NON-NLS-1$
-                    displayModel.addWidget(new Ellipse(adlWidget, displayModel,
-                            storedBasicAttribute, storedDynamicAttribute).getElement());
-                } else if (adlWidget.getType().equals("polygon")) { //$NON-NLS-1$
-                    displayModel.addWidget(new Polygon(adlWidget, displayModel,
-                            storedBasicAttribute, storedDynamicAttribute).getElement());
-                } else if (adlWidget.getType().endsWith("line")) { //$NON-NLS-1$
-                    Polyline polyline = new Polyline(adlWidget, displayModel, storedBasicAttribute,
-                            storedDynamicAttribute);
+                    displayModel.addWidget(new ActionButton(adlWidget,
+                                                            storedBasicAttribute,
+                                                            storedDynamicAttribute).getElement());
+                } else if(adlWidget.getType().equals("meter")) { //$NON-NLS-1$
+                    displayModel.addWidget(new Meter(adlWidget,
+                                                     storedBasicAttribute,
+                                                     storedDynamicAttribute).getElement());
+                } else if(adlWidget.getType().equals("oval")) { //$NON-NLS-1$
+                    displayModel.addWidget(new Ellipse(adlWidget,
+                                                       displayModel,
+                                                       storedBasicAttribute,
+                                                       storedDynamicAttribute).getElement());
+                } else if(adlWidget.getType().equals("polygon")) { //$NON-NLS-1$
+                    displayModel.addWidget(new Polygon(adlWidget,
+                                                       displayModel,
+                                                       storedBasicAttribute,
+                                                       storedDynamicAttribute).getElement());
+                } else if(adlWidget.getType().endsWith("line")) { //$NON-NLS-1$
+                    Polyline polyline = new Polyline(adlWidget,
+                                                     displayModel,
+                                                     storedBasicAttribute,
+                                                     storedDynamicAttribute);
                     displayModel.addWidget(polyline.getElement());
                     polyline = null;
-                } else if (adlWidget.getType().equals("rectangle")) { //$NON-NLS-1$
-                    displayModel.addWidget(new Rectangle(adlWidget, displayModel,
-                            storedBasicAttribute, storedDynamicAttribute).getElement());
-                } else if (adlWidget.getType().equals("related display")) { //$NON-NLS-1$
-                    displayModel.addWidget(new RelatedDisplay(adlWidget, storedBasicAttribute,
-                            storedDynamicAttribute).getElement());
-                } else if (adlWidget.getType().equals("strip chart")) { //$NON-NLS-1$
-                    displayModel.addWidget(new StripChart(adlWidget, storedBasicAttribute,
-                            storedDynamicAttribute).getElement());
-                } else if (adlWidget.getType().equals("text")) { //$NON-NLS-1$
-                    displayModel.addWidget(new Label(adlWidget, displayModel, storedBasicAttribute,
-                            storedDynamicAttribute).getElement());
-                } else if (adlWidget.getType().equals("text update")) { //$NON-NLS-1$
-                    displayModel.addWidget(new Label(adlWidget, displayModel, storedBasicAttribute,
-                            storedDynamicAttribute).getElement());
-                } else if (adlWidget.getType().equals("text entry")) { //$NON-NLS-1$
-                    displayModel.addWidget(new Textinput(adlWidget, storedBasicAttribute,
-                            storedDynamicAttribute).getElement());
-                } else if (adlWidget.getType().equals("valuator")) { //$NON-NLS-1$
-                    displayModel.addWidget(new Valuator(adlWidget, storedBasicAttribute,
-                            storedDynamicAttribute).getElement());
-                } else if (adlWidget.getType().contains("basic attribute")) { //$NON-NLS-1$
+                } else if(adlWidget.getType().equals("rectangle")) { //$NON-NLS-1$
+                    displayModel.addWidget(new Rectangle(adlWidget,
+                                                         displayModel,
+                                                         storedBasicAttribute,
+                                                         storedDynamicAttribute).getElement());
+                } else if(adlWidget.getType().equals("related display")) { //$NON-NLS-1$
+                    displayModel.addWidget(new RelatedDisplay(adlWidget,
+                                                              storedBasicAttribute,
+                                                              storedDynamicAttribute).getElement());
+                } else if(adlWidget.getType().equals("strip chart")) { //$NON-NLS-1$
+                    displayModel.addWidget(new StripChart(adlWidget,
+                                                          storedBasicAttribute,
+                                                          storedDynamicAttribute).getElement());
+                } else if(adlWidget.getType().equals("text")) { //$NON-NLS-1$
+                    displayModel.addWidget(new Label(adlWidget,
+                                                     displayModel,
+                                                     storedBasicAttribute,
+                                                     storedDynamicAttribute).getElement());
+                } else if(adlWidget.getType().equals("text update")) { //$NON-NLS-1$
+                    displayModel.addWidget(new Label(adlWidget,
+                                                     displayModel,
+                                                     storedBasicAttribute,
+                                                     storedDynamicAttribute).getElement());
+                } else if(adlWidget.getType().equals("text entry")) { //$NON-NLS-1$
+                    displayModel.addWidget(new Textinput(adlWidget,
+                                                         storedBasicAttribute,
+                                                         storedDynamicAttribute).getElement());
+                } else if(adlWidget.getType().equals("valuator")) { //$NON-NLS-1$
+                    displayModel.addWidget(new Valuator(adlWidget,
+                                                        storedBasicAttribute,
+                                                        storedDynamicAttribute).getElement());
+                } else if(adlWidget.getType().contains("basic attribute")) { //$NON-NLS-1$
                     storedBasicAttribute = adlWidget;
-                } else if (adlWidget.getType().contains("dynamic attribute")) { //$NON-NLS-1$
+                } else if(adlWidget.getType().contains("dynamic attribute")) { //$NON-NLS-1$
                     storedDynamicAttribute = adlWidget;
                 } else {
                     int lineNr = adlWidget.getBody().get(0).getLineNumber();
-                    CentralLogger.getInstance().info(
-                            this,
-                            Messages.ADLDisplayImporter_WARN_UNHANDLED_TYPE + adlWidget.getType()
-                                    + "Line: " + lineNr + " (ObjectNo:" + adlWidget.getObjectNr()
-                                    + ")in File: " + sourceFile);
+                    Object[] args = new Object[] {adlWidget.getType(), lineNr,
+                            adlWidget.getObjectNr(), sourceFile};
+                    LOG.info(Messages.ADLDisplayImporter_WARN_UNHANDLED_TYPE
+                            + "{} Line: {} (ObjectNo: {})in File: {}", args);
                 }
             } catch (Exception e) {
-                e.printStackTrace();
+                LOG.error("Error:_", e);
             }
         }
-
+        
         // create the target file in the workspace
         return createFile(targetProject, targetFileName, displayModel);
     }
-
-    public boolean importFaceplate(final String sourceFile, final IPath targetProject,
-            final String targetFileName) throws CoreException {
+    
+    public boolean importFaceplate(final String sourceFile,
+                                   final IPath targetProject,
+                                   final String targetFileName) throws CoreException {
         ADLWidget root = ParserADL.getNextElement(new File(sourceFile));
         DisplayModel displayModel = new DisplayModel();
         FaceplateParser.parse(root, displayModel);
         return createFile(targetProject, targetFileName, displayModel);
     }
-
-    public boolean importStripTool(final String sourceFile, final IPath targetProject,
-            final String targetFileName) throws CoreException, IOException {
+    
+    public boolean importStripTool(final String sourceFile,
+                                   final IPath targetProject,
+                                   final String targetFileName) throws CoreException, IOException {
         // ADLWidget root = ParserS.getNextElement(new File(sourceFile));
         StripTool stripTool = new StripTool();
         StripToolParser.parse(sourceFile, stripTool);
         return createFile(targetProject, targetFileName, stripTool);
     }
-
     
-    private boolean createFile(IPath targetProject, String targetFileName, DisplayModel displayModel)
-            throws CoreException {
+    private boolean createFile(IPath targetProject, String targetFileName, DisplayModel displayModel) throws CoreException {
         DisplayModelInputStream.setXMLHeader("<?xml version=\"1.0\" encoding=\"ISO-8859-1\"?>\n"); //$NON-NLS-1$
         DisplayModelInputStream modelInputStream = (DisplayModelInputStream) PersistenceUtil
                 .createStream(displayModel);
         IFile fileOut = handelPathAndFile(targetProject, targetFileName);
-        if(fileOut==null) {
+        if(fileOut == null) {
             return false;
-        } else if (fileOut.exists()) {
+        } else if(fileOut.exists()) {
             fileOut.setContents(modelInputStream, true, false, null);
         } else {
             fileOut.create(modelInputStream, true, null);
@@ -272,53 +313,58 @@ public class ADLDisplayImporter extends AbstractDisplayImporter {
         return true;
     }
     
-    private boolean createFile(IPath targetProject, String targetFileName, StripTool stripTool)
-    throws CoreException, IOException {
-    IFile fileOut = handelPathAndFile(targetProject, targetFileName);
-    if(fileOut==null) {
-        return false;
-    } else if (fileOut.exists()) {
-        InputStream xmlFileInputStream = stripTool.getXmlFileInputStream();
-        fileOut.setContents(xmlFileInputStream, true, false, null);
-    } else {
-        InputStream xmlFileInputStream = stripTool.getXmlFileInputStream();
-        fileOut.create(xmlFileInputStream, true, null);
+    private boolean createFile(IPath targetProject, String targetFileName, StripTool stripTool) throws CoreException,
+                                                                                               IOException {
+        IFile fileOut = handelPathAndFile(targetProject, targetFileName);
+        if(fileOut == null) {
+            return false;
+        } else if(fileOut.exists()) {
+            InputStream xmlFileInputStream = stripTool.getXmlFileInputStream();
+            fileOut.setContents(xmlFileInputStream, true, false, null);
+        } else {
+            InputStream xmlFileInputStream = stripTool.getXmlFileInputStream();
+            fileOut.create(xmlFileInputStream, true, null);
+        }
+        return true;
     }
-    return true;
-}
-
-        
+    
     private IFile handelPathAndFile(IPath targetProject, String targetFileName) throws CoreException {
         IWorkspaceRoot workspaceRoot = ResourcesPlugin.getWorkspace().getRoot();
         IPath filePath = targetProject.append(targetFileName.trim());
-        if (!workspaceRoot.exists(targetProject)) {
-            if (_createFolderAllways) {
+        if(!workspaceRoot.exists(targetProject)) {
+            if(_createFolderAllways) {
                 IFolder folder = workspaceRoot.getFolder(targetProject);
                 createFolder(folder);
-            } else if (_createFolderNever) {
+            } else if(_createFolderNever) {
                 return null;
             } else {
                 String[] dialogButtonsText = new String[] {
                         Messages.ADLDisplayImporter_Dialog_Yes_Button,
                         Messages.ADLDisplayImporter_Dialog_Yes2All_Button,
                         Messages.ADLDisplayImporter_Dialog_No_Button,
-                        Messages.ADLDisplayImporter_Dialog_No2All_Button, "cancel" };
+                        Messages.ADLDisplayImporter_Dialog_No2All_Button, "cancel"};
                 Formatter f = new Formatter();
                 f.format("Dir \"%s\" not exist!\r\nCreat this Folder?", targetProject);
-
+                
                 MessageDialog md = new MessageDialog(Display.getCurrent().getActiveShell(),
-                        Messages.ADLDisplayImporter_Dialog_Header_Directory_not_exist, null, f
-                                .toString(), MessageDialog.WARNING, dialogButtonsText, 0);
-
+                                                     Messages.ADLDisplayImporter_Dialog_Header_Directory_not_exist,
+                                                     null,
+                                                     f.toString(),
+                                                     MessageDialog.WARNING,
+                                                     dialogButtonsText,
+                                                     0);
+                
                 switch (md.open()) {
                     case 1:
                         _createFolderAllways = true;
+                        //$FALL-THROUGH$
                     case 0:
                         IFolder folder = workspaceRoot.getFolder(targetProject);
                         createFolder(folder);
                         break;
                     case 3:
                         _createFolderNever = true;
+                        //$FALL-THROUGH$
                     case 2:
                         _status = 2;
                         return null;
@@ -330,7 +376,7 @@ public class ADLDisplayImporter extends AbstractDisplayImporter {
         }
         return workspaceRoot.getFile(filePath);
     }
-
+    
     /**
      * Generate a Folder and parent folder.
      * 
@@ -342,15 +388,15 @@ public class ADLDisplayImporter extends AbstractDisplayImporter {
      * @see IFolder#create(int,boolean,IProgressMonitor)
      */
     private void createFolder(final IFolder folder) throws CoreException {
-        if (!folder.getParent().exists()) {
-            if (folder.getParent() instanceof IFolder) {
+        if(!folder.getParent().exists()) {
+            if(folder.getParent() instanceof IFolder) {
                 createFolder((IFolder) folder.getParent());
             }
         }
         folder.create(true, true, null);
-
+        
     }
-
+    
     /**
      * @param adlWidget
      *            the Main display widget.
@@ -359,31 +405,31 @@ public class ADLDisplayImporter extends AbstractDisplayImporter {
      */
     private void display(final ADLWidget adlWidget, final DisplayModel root) {
         try {
-            if (adlWidget.getType().startsWith("display")) {
-                if (ADLHelper.getRGB("0") == null) { //$NON-NLS-1$
+            if(adlWidget.getType().startsWith("display")) {
+                if(ADLHelper.getRGB("0") == null) { //$NON-NLS-1$
                     _storDisplay = adlWidget;
                 } else {
                     new ADLDisplay(adlWidget, root);
                 }
-            } else if (adlWidget.getType().equals("\"color map\"") && _storDisplay != null) { //$NON-NLS-1$
+            } else if(adlWidget.getType().equals("\"color map\"") && _storDisplay != null) { //$NON-NLS-1$
                 new ADLDisplay(_storDisplay, root);
                 _storDisplay = null;
             }
         } catch (Exception e) {
-            e.printStackTrace();
+            LOG.error("Error: ",e);
         }
     }
-
+    
     /**
      * @return
      */
     public int getStatus() {
         return _status;
     }
-
+    
     public static void reset() {
         _createFolderAllways = false;
         _createFolderNever = false;
     }
-
+    
 }

@@ -33,9 +33,9 @@ import java.util.List;
 import javax.annotation.CheckForNull;
 import javax.annotation.Nonnull;
 
-import org.apache.log4j.Logger;
 import org.csstudio.config.ioconfig.model.pbmodel.GSDFileDBO;
-import org.csstudio.platform.logging.CentralLogger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * @author hrickens
@@ -45,7 +45,7 @@ import org.csstudio.platform.logging.CentralLogger;
  */
 public final class GsdFileParser {
     
-    private static final Logger LOG = CentralLogger.getInstance().getLogger(GsdFileParser.class);
+    private static final Logger LOG = LoggerFactory.getLogger(GsdFileParser.class);
     
     private static List<String> _WARNING_LIST = new ArrayList<String>();
     
@@ -80,7 +80,7 @@ public final class GsdFileParser {
             String warning = String.format("Can't corret handle, at line %s, the Property: %s",
                                            lineCounter,
                                            line);
-            LOG.warn(warning);
+            LOG.warn("Can't corret handle, at line {}, the Property: {}", lineCounter, line);
             _WARNING_LIST.add(warning);
             throw e;
         }
@@ -210,7 +210,7 @@ public final class GsdFileParser {
                                      @Nonnull ParsedGsdFileModel parsedGsdFileModel,
                                      @Nonnull BufferedReader br) throws IOException {
         String[] lineParts = line.split("[\"]");
-        assert lineParts.length > 2;
+        assert lineParts.length > 1;
         Integer index = GsdFileParser.gsdValue2Int(lineParts[0].split("=")[1]);
         String text = lineParts[1].split(";")[0].trim();
         
@@ -256,10 +256,10 @@ public final class GsdFileParser {
             tmpLine = tmpLine.trim();
             if (isLineParameter(tmpLine, ";") || tmpLine.isEmpty()) {
                 // do nothing. Is a empty line or a comment;
+                continue;
             } else if (isLineParameter(tmpLine, "Ext_Module_Prm_Data_Len")
                     || isLineParameter(tmpLine, "F_Ext_Module_Prm_Data_Len")) {
                 extractKeyValue(tmpLine, lineCounter, br);
-//                gsdModuleModel.setExtModulePrmDataLen(extractKeyValue.getIntValue());
             } else if (isLineParameter(tmpLine, "Ext_User_Prm_Data_Const")
                     || isLineParameter(tmpLine, "F_Ext_User_Prm_Data_Const")) {
                 KeyValuePair extractKeyValue = extractKeyValue(tmpLine, lineCounter, br);
@@ -267,8 +267,6 @@ public final class GsdFileParser {
             } else if (isLineParameter(tmpLine, "Ext_User_Prm_Data_Ref")
                     || isLineParameter(tmpLine, "F_Ext_User_Prm_Data_Ref")) {
                 buildExtUserPrmDataRef(tmpLine, lineCounter, parsedGsdFileModel, gsdModuleModel, br);
-//                KeyValuePair extractKeyValue = extractKeyValue(tmpLine, lineCounter, br);
-//                gsdModuleModel.setProperty(extractKeyValue);
             } else if (isLineParameter(tmpLine, "Info_Text")) {
                 KeyValuePair extractKeyValue = extractKeyValue(tmpLine, lineCounter, br);
                 gsdModuleModel.setProperty(extractKeyValue);

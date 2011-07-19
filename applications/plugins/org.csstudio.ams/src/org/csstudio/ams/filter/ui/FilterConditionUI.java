@@ -1,3 +1,4 @@
+
 /* 
  * Copyright (c) 2008 Stiftung Deutsches Elektronen-Synchrotron, 
  * Member of the Helmholtz Association, (DESY), HAMBURG, GERMANY.
@@ -19,7 +20,8 @@
  * PROJECT IN THE FILE LICENSE.HTML. IF THE LICENSE IS NOT INCLUDED YOU MAY FIND A COPY 
  * AT HTTP://WWW.DESY.DE/LEGAL/LICENSE.HTM
  */
- package org.csstudio.ams.filter.ui;
+
+package org.csstudio.ams.filter.ui;
 
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
@@ -62,7 +64,8 @@ public abstract class FilterConditionUI implements IFilterConditionUI {
 			int style) {
 		MyRunnable myRun = new MyRunnable(shell, text, title,
 				new Integer(style)) {
-			public void run() {
+			@Override
+            public void run() {
 				MessageBox msg = new MessageBox((Shell) objGui,
 						((Integer) obj4).intValue());
 				msg.setMessage((String) objData);
@@ -92,7 +95,8 @@ public abstract class FilterConditionUI implements IFilterConditionUI {
 		
 		MyRunnable myRun = new MyRunnable(shell, buffer.toString(), title,
 				new Integer(style)) {
-			public void run() {
+			@Override
+            public void run() {
 				Shell internalShell = (Shell) objGui;
 				if (internalShell==null) {
 					internalShell = Display.getCurrent().getActiveShell();
@@ -142,7 +146,8 @@ public abstract class FilterConditionUI implements IFilterConditionUI {
 	 */
 	public static void initComboBoxUI(Display display, Combo cbo, List<?> list) {
 		display.syncExec(new MyRunnable(cbo, list) {
-			public void run() {
+			@Override
+            public void run() {
 				initComboBoxIntern(((Combo) objGui), (List<?>) objData);
 			}
 		});
@@ -169,7 +174,8 @@ public abstract class FilterConditionUI implements IFilterConditionUI {
 
 	public static void setComboBoxValueUI(Display display, Combo cbo, int id) {
 		display.syncExec(new MyRunnable(cbo, new Integer(id)) {
-			public void run() {
+			@Override
+            public void run() {
 				setComboBoxValue((Combo) objGui, ((Integer) objData).intValue());
 			}
 		});
@@ -198,7 +204,8 @@ public abstract class FilterConditionUI implements IFilterConditionUI {
 	public static void setComboBoxValueUI(Display display, Combo cbo,
 			String value) {
 		display.syncExec(new MyRunnable(cbo, value) {
-			public void run() {
+			@Override
+            public void run() {
 				setComboBoxValue((Combo) objGui, (String) objData);
 			}
 		});
@@ -223,7 +230,8 @@ public abstract class FilterConditionUI implements IFilterConditionUI {
 	 */
 	public int getSelectedComboBoxIdValueUI(Display display, Combo cbo) {
 		MyRunnable myRun = new MyRunnable(cbo) {
-			public void run() {
+			@Override
+            public void run() {
 				int iRet = getComboBoxValueIntern(((Combo) objGui));
 				objRet = new Integer(iRet);
 			}
@@ -243,7 +251,8 @@ public abstract class FilterConditionUI implements IFilterConditionUI {
 
 	public Object getSelectedComboBoxItemUI(Display display, Combo cbo) {
 		MyRunnable myRun = new MyRunnable(cbo) {
-			public void run() {
+			@Override
+            public void run() {
 				objRet = getSelectedComboBoxItem(((Combo) objGui));
 			}
 		};
@@ -268,7 +277,8 @@ public abstract class FilterConditionUI implements IFilterConditionUI {
 	public static ItemInterface[] getSelectedValuesUI(Display display,
 			org.eclipse.swt.widgets.List lst) {
 		MyRunnable myRun = new MyRunnable(lst) {
-			public void run() {
+			@Override
+            public void run() {
 				objRetAr = getSelectedValues((org.eclipse.swt.widgets.List) objGui);
 			}
 		};
@@ -278,7 +288,8 @@ public abstract class FilterConditionUI implements IFilterConditionUI {
 
 	public boolean isEmpty(Display display, Text txt) {
 		MyRunnable myRun = new MyRunnable(txt) {
-			public void run() {
+			@Override
+            public void run() {
 				String text = ((Text) objGui).getText();
 				if (text == null || text.trim().length() == 0) {
 					objRet = new Boolean(true);
@@ -313,11 +324,13 @@ public abstract class FilterConditionUI implements IFilterConditionUI {
 				if (is != null)
 					is.close();
 			} catch (Exception ex) {
+			    // Can be ignored
 			}
 			try {
 				if (os != null)
 					os.close();
 			} catch (Exception ex) {
+                // Can be ignored
 			}
 		}
 		return result;
@@ -325,7 +338,8 @@ public abstract class FilterConditionUI implements IFilterConditionUI {
 
 	public void refresh(Display display, TableViewer tblv) {
 		display.syncExec(new MyRunnable(tblv) {
-			public void run() {
+			@Override
+            public void run() {
 				((TableViewer) objGui).refresh();
 			}
 		});
@@ -333,7 +347,8 @@ public abstract class FilterConditionUI implements IFilterConditionUI {
 
 	public void setText(Display display, Text txt, String strtext) {
 		display.syncExec(new MyRunnable(txt, strtext) {
-			public void run() {
+			@Override
+            public void run() {
 				((Text) objGui).setText((String) objData);
 			}
 		});
@@ -341,7 +356,8 @@ public abstract class FilterConditionUI implements IFilterConditionUI {
 
 	public void setEnabled(Display display, Text txt, boolean bEn) {
 		display.syncExec(new MyRunnable(txt, new Boolean(bEn)) {
-			public void run() {
+			@Override
+            public void run() {
 				((Text) objGui).setEnabled(((Boolean) objData).booleanValue());
 			}
 		});
@@ -349,7 +365,8 @@ public abstract class FilterConditionUI implements IFilterConditionUI {
 
 	public void setEnabled(Display display, Combo cbo, boolean bEn) {
 		display.syncExec(new MyRunnable(cbo, new Boolean(bEn)) {
-			public void run() {
+			@Override
+            public void run() {
 				((Combo) objGui).setEnabled(((Boolean) objData).booleanValue());
 			}
 		});
@@ -357,7 +374,8 @@ public abstract class FilterConditionUI implements IFilterConditionUI {
 
 	public void deselectAll(Display display, Combo cbo) {
 		display.syncExec(new MyRunnable(cbo) {
-			public void run() {
+			@Override
+            public void run() {
 				((Combo) objGui).deselectAll();
 			}
 		});
@@ -365,7 +383,8 @@ public abstract class FilterConditionUI implements IFilterConditionUI {
 
 	public void addVerifyListener(Display display, Text txt, VerifyListener obj) {
 		display.syncExec(new MyRunnable(txt, obj) {
-			public void run() {
+			@Override
+            public void run() {
 				((Text) objGui).addVerifyListener((VerifyListener) objData);
 			}
 		});
@@ -374,7 +393,8 @@ public abstract class FilterConditionUI implements IFilterConditionUI {
 	public void removeVerifyListener(Display display, Text txt,
 			VerifyListener obj) {
 		display.syncExec(new MyRunnable(txt, obj) {
-			public void run() {
+			@Override
+            public void run() {
 				((Text) objGui).removeVerifyListener((VerifyListener) objData);
 			}
 		});
@@ -382,7 +402,8 @@ public abstract class FilterConditionUI implements IFilterConditionUI {
 
 	public void setSelection(Display display, Button bto, Boolean b) {
 		display.syncExec(new MyRunnable(bto, b) {
-			public void run() {
+			@Override
+            public void run() {
 				((Button) objGui).setSelection(((Boolean) objData)
 						.booleanValue());
 			}
@@ -391,7 +412,8 @@ public abstract class FilterConditionUI implements IFilterConditionUI {
 
 	public String getText(Display display, Label lbl) {
 		MyRunnable myRun = new MyRunnable(lbl) {
-			public void run() {
+			@Override
+            public void run() {
 				objRet = ((Label) objGui).getText();
 			}
 		};
@@ -401,7 +423,8 @@ public abstract class FilterConditionUI implements IFilterConditionUI {
 
 	public String getText(Display display, Text txt) {
 		MyRunnable myRun = new MyRunnable(txt) {
-			public void run() {
+			@Override
+            public void run() {
 				objRet = ((Text) objGui).getText();
 			}
 		};
@@ -411,7 +434,8 @@ public abstract class FilterConditionUI implements IFilterConditionUI {
 
 	public int getSelectionIndex(Display display, Combo cbo) {
 		MyRunnable myRun = new MyRunnable(cbo) {
-			public void run() {
+			@Override
+            public void run() {
 				objRet = new Integer(((Combo) objGui).getSelectionIndex());
 			}
 		};
@@ -424,7 +448,8 @@ public abstract class FilterConditionUI implements IFilterConditionUI {
 	 */
 	public String getItem(Display display, Combo cbo, int idx) {
 		MyRunnable myRun = new MyRunnable(cbo, new Integer(idx)) {
-			public void run() {
+			@Override
+            public void run() {
 				objRet = ((Combo) objGui).getItem(((Integer) objData)
 						.intValue());
 			}
@@ -435,7 +460,8 @@ public abstract class FilterConditionUI implements IFilterConditionUI {
 
 	public boolean getSelection(Display display, Button bto) {
 		MyRunnable myRun = new MyRunnable(bto) {
-			public void run() {
+			@Override
+            public void run() {
 				objRet = new Boolean(((Button) objGui).getSelection());
 			}
 		};

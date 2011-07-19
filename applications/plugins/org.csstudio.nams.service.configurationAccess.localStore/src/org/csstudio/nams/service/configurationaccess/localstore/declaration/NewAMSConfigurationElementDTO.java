@@ -1,3 +1,4 @@
+
 package org.csstudio.nams.service.configurationaccess.localstore.declaration;
 
 import org.csstudio.nams.service.configurationaccess.localstore.internalDTOs.RubrikDTO;
@@ -14,7 +15,8 @@ public interface NewAMSConfigurationElementDTO {
 	 * 
 	 * @see Object#equals(Object)
 	 */
-	public boolean equals(Object obj);
+	@Override
+    public boolean equals(Object obj);
 
 	/**
 	 * Liefert eine menschenlesbare, eindeutige Bezeichnung; z.B. den Name eines
@@ -27,7 +29,8 @@ public interface NewAMSConfigurationElementDTO {
 	 * 
 	 * @see Object#hashCode()
 	 */
-	public int hashCode();
+	@Override
+    public int hashCode();
 
 	/**
 	 * Prueft, ob dieses Konfigurationselement in der Rubrik mit dem angegebenen

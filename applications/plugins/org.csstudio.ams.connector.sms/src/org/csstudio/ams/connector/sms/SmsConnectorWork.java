@@ -426,7 +426,7 @@ public class SmsConnectorWork extends Thread implements AmsConstants
                 strPhoneNumber[i] = (strPhoneNumber[i] == null) ? "" : strPhoneNumber[i];
             }
             
-            modemService = new Service();
+            modemService = Service.getInstance();
 
             for(int i = 0;i < modemCount;i++)
             {
@@ -551,7 +551,7 @@ public class SmsConnectorWork extends Thread implements AmsConstants
                         
             amsSenderSession = amsSenderConnection.createSession(false, Session.CLIENT_ACKNOWLEDGE);
             
-            // CHANGED BY: Markus Möller, 25.05.2007
+            // CHANGED BY: Markus Moeller, 25.05.2007
             /*
             amsPublisherReply = amsSession.createProducer((Topic)amsContext.lookup(
                     storeAct.getString(org.csstudio.ams.internal.SampleService.P_JMS_AMS_TOPIC_REPLY)));

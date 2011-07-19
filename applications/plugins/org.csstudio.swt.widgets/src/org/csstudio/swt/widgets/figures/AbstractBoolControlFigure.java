@@ -52,6 +52,7 @@ public class AbstractBoolControlFigure extends AbstractBoolFigure {
 						}else
 							canceled = true;
 					}
+ 					if(!showConfirmDialog || !SWT.getPlatform().startsWith("rap")) //$NON-NLS-1$
 					me.consume();
 					repaint();
 				}

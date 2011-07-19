@@ -24,6 +24,7 @@
 package org.csstudio.config.ioconfig.model;
 
 import javax.annotation.CheckForNull;
+import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
 
@@ -35,27 +36,59 @@ import javax.annotation.Nullable;
  * @version $Revision: 1.7 $
  * @since 11.05.2011
  */
-@SuppressWarnings({"rawtypes", "unchecked"})
-public class VirtualRoot extends AbstractNodeDBO {
+public final class VirtualRoot extends AbstractNodeDBO<VirtualRoot, FacilityDBO> {
     
     private static final long serialVersionUID = -296484498706601307L;
+
+    private static final VirtualRoot INSTANCE = new VirtualRoot();
+    /**
+     * Constructor.
+     */
+    private VirtualRoot() {
+        // Don't instantiate
+    }
+    
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    @Nonnull
+    public VirtualRoot getParent() {
+        throw new UnsupportedOperationException(VirtualRoot.class + " does not feature a parent node.");
+    }
+    
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    @CheckForNull
+    public NodeType getNodeType() {
+        return null;
+    }
+    
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    @CheckForNull
+    protected VirtualRoot copyParameter(@Nullable VirtualRoot parent) throws PersistenceException {
+        return VirtualRoot.INSTANCE;
+    }
 
     /**
      * {@inheritDoc}
      */
     @Override
-    @CheckForNull
-    public final NodeType getNodeType() {
-        return null;
+    @Nonnull
+    public FacilityDBO createChild() throws PersistenceException {
+        return new FacilityDBO(INSTANCE);
     }
     
     /**
      * {@inheritDoc}
      */
     @Override
-    @CheckForNull
-    protected AbstractNodeDBO copyParameter(@Nullable AbstractNodeDBO parent) throws PersistenceException {
-        return null;
-    }
-    
+    public void accept(@Nonnull final INodeVisitor visitor) {
+        visitor.visit(this);
+    }    
 }

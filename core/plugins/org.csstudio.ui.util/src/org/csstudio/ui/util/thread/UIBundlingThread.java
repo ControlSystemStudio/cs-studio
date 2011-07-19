@@ -91,5 +91,15 @@ public final class UIBundlingThread implements Runnable {
 	public synchronized void addRunnable(final Runnable runnable) {
 		tasksQueue.add(runnable);
 	}
+	
+	/**
+	 * Adds the specified runnable to the queue. Fake method for adapting RAP.
+	 * 
+	 * @param runnable
+	 *            the runnable
+	 */
+	public synchronized void addRunnable(final Display display, final Runnable runnable) {
+		addRunnable(runnable);
+	}
 
 }

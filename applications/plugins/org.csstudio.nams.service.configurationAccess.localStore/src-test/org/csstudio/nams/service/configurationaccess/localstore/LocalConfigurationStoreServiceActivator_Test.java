@@ -5,7 +5,7 @@ import junit.framework.TestCase;
 
 import org.csstudio.nams.common.activatorUtils.OSGiServiceOffers;
 import org.csstudio.nams.service.configurationaccess.localstore.declaration.ConfigurationServiceFactory;
-import org.csstudio.nams.service.logging.declaration.Logger;
+import org.csstudio.nams.service.logging.declaration.ILogger;
 import org.junit.Test;
 
 public class LocalConfigurationStoreServiceActivator_Test extends TestCase {
@@ -15,7 +15,7 @@ public class LocalConfigurationStoreServiceActivator_Test extends TestCase {
 		final LocalConfigurationStoreServiceActivator activator = new LocalConfigurationStoreServiceActivator();
 
 		final OSGiServiceOffers serviceOffers = activator
-				.startBundle(new Logger() {
+				.startBundle(new ILogger() {
 
 					public void logDebugMessage(Object caller, String message) {
 					}

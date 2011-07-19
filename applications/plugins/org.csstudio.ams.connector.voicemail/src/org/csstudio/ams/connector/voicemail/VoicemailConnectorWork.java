@@ -47,9 +47,9 @@ import org.csstudio.ams.connector.voicemail.isdn.CallCenterException;
 import org.csstudio.platform.utility.jms.JmsRedundantReceiver;
 import org.eclipse.jface.preference.IPreferenceStore;
 
-public class VoicemailConnectorWork extends Thread implements AmsConstants
-{
-    private VoicemailConnectorStart vmcs = null;
+public class VoicemailConnectorWork extends Thread implements AmsConstants {
+    
+    private VoicemailConnectorStart application = null;
 
     // --- Sender ---
     private Context amsSenderContext = null;
@@ -59,7 +59,7 @@ public class VoicemailConnectorWork extends Thread implements AmsConstants
 
     private MessageProducer amsPublisherReply = null;
 
-    // CHANGED BY: Markus Möller, 06.11.2007
+    // CHANGED BY: Markus Moeller, 06.11.2007
     // private TopicSubscriber amsSubscriberVm = null;
     // private MessageConsumer amsSubscriberVm = null;
     private JmsRedundantReceiver amsReceiver = null; 
@@ -78,16 +78,14 @@ public class VoicemailConnectorWork extends Thread implements AmsConstants
     private boolean bStop = false;
     private boolean bStoppedClean = false;
 
-    public VoicemailConnectorWork(VoicemailConnectorStart vmcs)
-    {
-        this.vmcs = vmcs;
+    public VoicemailConnectorWork(VoicemailConnectorStart vmcs) {
+        this.application = vmcs;
     }
     
     /**
      * Sets the boolean variable that controlls the main loop to true
      */
-    public synchronized void stopWorking()
-    {
+    public synchronized void stopWorking() {
         bStop = true;
     }
     
@@ -96,13 +94,13 @@ public class VoicemailConnectorWork extends Thread implements AmsConstants
      * 
      * @return True, if the shutdown have occured clean otherwise false
      */
-    public boolean stoppedClean()
-    {
+    public boolean stoppedClean() {
         return bStoppedClean;
     }
 
-    public void run()
-    {
+    @Override
+    public void run() {
+        
         boolean bInitedVmService = false;
         boolean bInitedJms = false;
         int iErr = VoicemailConnectorStart.STAT_OK;
@@ -112,32 +110,30 @@ public class VoicemailConnectorWork extends Thread implements AmsConstants
 
         bStop = false;
         
-        while(bStop == false)
-        {
-            try
-            {
-                if (!bInitedVmService)
-                {
+        while(bStop == false) {
+            
+            try {
+                if (!bInitedVmService) {
+                    
                     bInitedVmService = initCallCenter();
                     // bInitedVmService = initVmService();
-                    if (!bInitedVmService)
-                    {
+                    if (!bInitedVmService) {
+                        
                         iErr = VoicemailConnectorStart.STAT_ERR_VM_SERVICE;
                         
                         // set it for not overwriting with next error
-                        vmcs.setStatus(iErr);
+                        application.setStatus(iErr);
                     }
                 }
 
-                if (!bInitedJms)
-                {
+                if (!bInitedJms) {
+                    
                     bInitedJms = initJms();
-                    if (!bInitedJms)
-                    {
+                    if (!bInitedJms) {
                         iErr = VoicemailConnectorStart.STAT_ERR_JMSCON;
                         
                         // set it for not overwriting with next error
-                        vmcs.setStatus(iErr);
+                        application.setStatus(iErr);
                     }
                 }
 
@@ -146,8 +142,8 @@ public class VoicemailConnectorWork extends Thread implements AmsConstants
                 if (bInitedVmService && bInitedJms)
                 {
                     iErr = VoicemailConnectorStart.STAT_OK;
-                    if (vmcs.getStatus() == VoicemailConnectorStart.STAT_INIT)
-                        vmcs.setStatus(VoicemailConnectorStart.STAT_OK);
+                    if (application.getStatus() == VoicemailConnectorStart.STAT_INIT)
+                        application.setStatus(VoicemailConnectorStart.STAT_OK);
 
                     // Log.log(this, Log.DEBUG, "runs");
                     
@@ -245,11 +241,11 @@ public class VoicemailConnectorWork extends Thread implements AmsConstants
                 
                 // set status in every loop
                 // set error status, can be OK if no error
-                vmcs.setStatus(iErr);
+                application.setStatus(iErr);
             }
             catch (Exception e)
             {
-                vmcs.setStatus(VoicemailConnectorStart.STAT_ERR_UNKNOWN);
+                application.setStatus(VoicemailConnectorStart.STAT_ERR_UNKNOWN);
                 Log.log(this, Log.FATAL, e);
 
                 // Disconnect - Don't forget to disconnect!
@@ -402,12 +398,12 @@ public class VoicemailConnectorWork extends Thread implements AmsConstants
                     storeAct.getString(org.csstudio.ams.internal.AmsPreferenceKey.P_JMS_AMS_CONNECTION_FACTORY));
             amsSenderConnection = amsSenderFactory.createConnection();
             
-            // ADDED BY: Markus Möller, 25.05.2007
+            // ADDED BY: Markus Moeller, 25.05.2007
             amsSenderConnection.setClientID("VoicemailConnectorWorkSenderInternal");
             
             amsSenderSession = amsSenderConnection.createSession(false, Session.CLIENT_ACKNOWLEDGE);
             
-            // CHANGED BY: Markus Möller, 25.05.2007
+            // CHANGED BY: Markus Moeller, 25.05.2007
             /*
             amsPublisherReply = amsSession.createProducer((Topic)amsContext.lookup(
                     storeAct.getString(org.csstudio.ams.internal.SampleService.P_JMS_AMS_TOPIC_REPLY)));
@@ -423,14 +419,14 @@ public class VoicemailConnectorWork extends Thread implements AmsConstants
 
             amsSenderConnection.start();
 
-            // CHANGED BY: Markus Möller, 25.05.2007
+            // CHANGED BY: Markus Moeller, 25.05.2007
             /*
             amsSubscriberVm = amsSession.createDurableSubscriber((Topic)amsContext.lookup(
                     storeAct.getString(org.csstudio.ams.internal.SampleService.P_JMS_AMS_TOPIC_VOICEMAIL_CONNECTOR)),
                     storeAct.getString(org.csstudio.ams.internal.SampleService.P_JMS_AMS_TSUB_VOICEMAIL_CONNECTOR));
             */
             
-            // CHANGED BY: Markus Möller, 28.06.2007
+            // CHANGED BY: Markus Moeller, 28.06.2007
             /*
             amsSubscriberVm = amsSession.createDurableSubscriber(amsSession.createTopic(
                     storeAct.getString(org.csstudio.ams.internal.SampleService.P_JMS_AMS_TOPIC_VOICEMAIL_CONNECTOR)),
@@ -847,5 +843,4 @@ public class VoicemailConnectorWork extends Thread implements AmsConstants
         // Log.log(this, Log.DEBUG, "readReply . . . exit");
         return VoicemailConnectorStart.STAT_OK;
     }
-
 }

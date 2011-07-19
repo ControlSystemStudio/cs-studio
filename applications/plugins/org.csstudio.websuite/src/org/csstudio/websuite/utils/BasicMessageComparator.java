@@ -28,15 +28,19 @@ import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Comparator;
-import org.csstudio.platform.logging.CentralLogger;
+
 import org.csstudio.websuite.dataModel.AlarmMessage;
 import org.csstudio.websuite.dataModel.BasicMessage;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**Comparator class for comapring BasicMessages in defined order PRIORITY,OUTDATED,ACK,EVENTTIME
  * @author ababic
  *
  */
 public class BasicMessageComparator implements Comparator<BasicMessage>, Serializable{
+    
+    private static final Logger LOG = LoggerFactory.getLogger(BasicMessageComparator.class);
 	
 	/** Generated serial version id */
     private static final long serialVersionUID = 2309005084573802194L;
@@ -69,14 +73,14 @@ public class BasicMessageComparator implements Comparator<BasicMessage>, Seriali
 								return 0;
 							}
 						}catch (ParseException e) {
-							CentralLogger.getInstance().error(this, "Message with faulty date",e);
+							LOG.error("Message with faulty date", e);
 							return 0;
 						}
 					}
 				}
 			}
 		}catch (Exception e) {
-			CentralLogger.getInstance().error(this, "Comparing problem",e);
+			LOG.error("Comparing problem", e);
 			return 0;
 		}
 		

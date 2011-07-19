@@ -33,10 +33,10 @@ import javax.annotation.CheckForNull;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
-import org.apache.log4j.Logger;
 import org.csstudio.config.ioconfig.config.view.helper.ConfigHelper;
 import org.csstudio.config.ioconfig.config.view.helper.GSDLabelProvider;
 import org.csstudio.config.ioconfig.config.view.helper.ShowFileSelectionListener;
+import org.csstudio.config.ioconfig.model.AbstractNodeDBO;
 import org.csstudio.config.ioconfig.model.GSDFileTypes;
 import org.csstudio.config.ioconfig.model.PersistenceException;
 import org.csstudio.config.ioconfig.model.Repository;
@@ -47,7 +47,6 @@ import org.csstudio.config.ioconfig.model.pbmodel.gsdParser.KeyValuePair;
 import org.csstudio.config.ioconfig.model.pbmodel.gsdParser.PrmText;
 import org.csstudio.config.ioconfig.model.pbmodel.gsdParser.PrmTextItem;
 import org.csstudio.config.ioconfig.view.DeviceDatabaseErrorDialog;
-import org.csstudio.platform.logging.CentralLogger;
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.layout.GridDataFactory;
 import org.eclipse.jface.layout.TableColumnLayout;
@@ -79,14 +78,17 @@ import org.eclipse.swt.widgets.TabFolder;
 import org.eclipse.swt.widgets.Text;
 import org.eclipse.ui.ISharedImages;
 import org.eclipse.ui.PlatformUI;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * @author hrickens
  * @author $Author: hrickens $
  * @version $Revision: 1.7 $
  * @since 20.04.2011
+ * @param <T> {@link AbstractNodeDBO} to edited.
  */
-public abstract class AbstractGsdNodeEditor extends AbstractNodeEditor {
+public abstract class AbstractGsdNodeEditor<T extends AbstractNodeDBO<?, ?>> extends AbstractNodeEditor<T> {
     
     /**
      * @author hrickens
@@ -205,7 +207,7 @@ public abstract class AbstractGsdNodeEditor extends AbstractNodeEditor {
                     } catch (PersistenceException pE) {
                         DeviceDatabaseErrorDialog
                                 .open(null, "Can't remove file from Database!", pE);
-                        CentralLogger.getInstance().error(this, pE);
+                        LOG.error("Can't remove file from Database!", pE);
                     }
                 }
             }
@@ -245,7 +247,7 @@ public abstract class AbstractGsdNodeEditor extends AbstractNodeEditor {
                     setSavebuttonEnabled("GSDFile", true);
                 }
             } catch (PersistenceException e) {
-                LOG.error(e);
+                LOG.error("Can't read GSDFile! Database error.", e);
                 DeviceDatabaseErrorDialog.open(null, "Can't read GSDFile! Database error.", e);
             }
         }
@@ -346,11 +348,11 @@ public abstract class AbstractGsdNodeEditor extends AbstractNodeEditor {
                 final GSDFileDBO file2 = (GSDFileDBO) e2;
                 
                 // sort wrong files to back.
-                if(!(file1.isMasterNonHN() || file1.isSlaveNonHN())
+                if(! (file1.isMasterNonHN() || file1.isSlaveNonHN())
                         && (file2.isMasterNonHN() || file2.isSlaveNonHN())) {
                     return -1;
                 } else if( (file1.isMasterNonHN() || file1.isSlaveNonHN())
-                        && !(file2.isMasterNonHN() || file2.isSlaveNonHN())) {
+                        && ! (file2.isMasterNonHN() || file2.isSlaveNonHN())) {
                     return 1;
                 }
                 
@@ -380,8 +382,7 @@ public abstract class AbstractGsdNodeEditor extends AbstractNodeEditor {
         }
     }
     
-    private static final Logger LOG = CentralLogger.getInstance()
-            .getLogger(AbstractGsdNodeEditor.class);
+    private static final Logger LOG = LoggerFactory.getLogger(AbstractGsdNodeEditor.class);
     
     private static void createGSDFileActions(@Nonnull final TableViewer viewer) {
         final Menu menu = new Menu(viewer.getControl());
@@ -474,7 +475,7 @@ public abstract class AbstractGsdNodeEditor extends AbstractNodeEditor {
             setGsdFiles(load);
         } catch (PersistenceException e) {
             DeviceDatabaseErrorDialog.open(null, "Can't read GSDFiles from Database!", e);
-            CentralLogger.getInstance().error(this, e);
+            LOG.error("Can't read GSDFiles from Database!", e);
         }
         List<GSDFileDBO> gsdFiles = getGsdFiles();
         if(gsdFiles == null) {
@@ -517,9 +518,9 @@ public abstract class AbstractGsdNodeEditor extends AbstractNodeEditor {
     }
     
     abstract void setGsdFile(GSDFileDBO gsdFile);
-
+    
     abstract GSDFileDBO getGsdFile();
-
+    
     /**
      * Fill the View whit data from GSDFile.
      * 
@@ -542,10 +543,14 @@ public abstract class AbstractGsdNodeEditor extends AbstractNodeEditor {
                             @Nonnull ExtUserPrmData extUserPrmData) {
         List<Integer> prmUserDataList = getPrmUserDataList();
         List<Integer> values = new ArrayList<Integer>();
-        values.add(prmUserDataList.get(extUserPrmDataRef.getIndex()));
-        int maxBit = extUserPrmData.getMaxBit();
-        if( (maxBit > 7) && (maxBit < 16)) {
-            values.add(prmUserDataList.get(extUserPrmDataRef.getIndex() + 1));
+        Integer index = extUserPrmDataRef.getIndex();
+        if(index < prmUserDataList.size()) {
+            Integer integer = prmUserDataList.get(index);
+            values.add(integer);
+            int maxBit = extUserPrmData.getMaxBit();
+            if( (maxBit > 7) && (maxBit < 16)) {
+                values.add(prmUserDataList.get(extUserPrmDataRef.getIndex() + 1));
+            }
         }
         int val = getValueFromBitMask(extUserPrmData, values);
         return val;
@@ -818,5 +823,4 @@ public abstract class AbstractGsdNodeEditor extends AbstractNodeEditor {
             setPrmUserData(byteIndex, result);
         }
     }
-    
 }

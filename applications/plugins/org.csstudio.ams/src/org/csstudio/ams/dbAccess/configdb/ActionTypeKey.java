@@ -23,34 +23,33 @@
 
 package org.csstudio.ams.dbAccess.configdb;
 
-public class ActionTypeKey
-{
-	public int 		actionTypeID;
+@SuppressWarnings("hiding")
+public class ActionTypeKey {
+	
+    public int 		actionTypeID;
 	public String 	name;
 	public int 		recieverType;
 	
 	
-	public ActionTypeKey(int actionTypeID, String name, int recieverType) 
-	{
+    public ActionTypeKey(int actionTypeID, String name, int recieverType) {
 		this.actionTypeID = actionTypeID;
 		this.name = name;
 		this.recieverType = recieverType;
 	}	
 	
-	public String toString()
-	{
+	@Override
+    public String toString() {
 		return name;
 	}
 	
-	public boolean equals(Object obj)
-	{
+	@Override
+    public boolean equals(Object obj) {
 		if(obj instanceof ActionTypeKey)
 			return ((ActionTypeKey)obj).actionTypeID == actionTypeID;
 		return false;		
 	}	
 	
-	public int getID()
-	{
+	public int getID() {
 		return actionTypeID;
 	}
 }

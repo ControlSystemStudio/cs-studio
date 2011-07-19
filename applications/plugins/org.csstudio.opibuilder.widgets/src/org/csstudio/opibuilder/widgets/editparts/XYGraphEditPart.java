@@ -434,7 +434,8 @@ public class XYGraphEditPart extends AbstractPVWidgetEditPart {
 					//which means that it cannot be ignored.
 					getWidgetModel().getProperty(propID).addPropertyChangeListener(new PropertyChangeListener() {
 						public void propertyChange(final PropertyChangeEvent evt) {
-							UIBundlingThread.getInstance().addRunnable(new Runnable() {
+							UIBundlingThread.getInstance().addRunnable(
+									getViewer().getControl().getDisplay(), new Runnable() {
 								public void run() {
 									handler.handleChange(
 											evt.getOldValue(), evt.getNewValue(), getFigure());

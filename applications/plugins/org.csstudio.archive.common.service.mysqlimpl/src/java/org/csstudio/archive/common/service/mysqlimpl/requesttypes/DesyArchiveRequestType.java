@@ -58,7 +58,7 @@ public enum DesyArchiveRequestType implements IArchiveRequestType {
      */
     private DesyArchiveRequestType(@Nonnull final String desc) {
         // Unfortunately enums cannot extend an abstract class, hence the delegator pattern.
-        _delegate = new AbstractArchiveRequestType("f", desc) {
+        _delegate = new AbstractArchiveRequestType(name(), desc) {
             // EMPTY
         };
     }
@@ -69,7 +69,7 @@ public enum DesyArchiveRequestType implements IArchiveRequestType {
     private DesyArchiveRequestType(@Nonnull final String desc,
                                    @Nonnull final IArchiveRequestTypeParameter<?>... params) {
         // Unfortunately enums cannot extend an abstract class, hence delegator pattern.
-        _delegate = new AbstractArchiveRequestType("f", desc, params) {
+        _delegate = new AbstractArchiveRequestType(name(), desc, params) {
             // EMPTY
         };
     }
@@ -134,7 +134,7 @@ public enum DesyArchiveRequestType implements IArchiveRequestType {
     }
 
     @Nonnull
-    public static DesyArchiveRequestType valueOf(@Nonnull final IArchiveRequestType other) throws RequestTypeParameterException {
+    public static DesyArchiveRequestType valueOf(@Nonnull final IArchiveRequestType other) {
 
         if (other instanceof DesyArchiveRequestType) {
             return (DesyArchiveRequestType) other;

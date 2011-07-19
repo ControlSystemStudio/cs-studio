@@ -27,6 +27,7 @@
 package org.csstudio.ams.messageminder;
 
 import org.csstudio.ams.AmsActivator;
+import org.csstudio.ams.Log;
 import org.csstudio.ams.internal.AmsPreferenceKey;
 import org.csstudio.ams.messageminder.preference.MessageMinderPreferenceKey;
 import org.csstudio.platform.logging.CentralLogger;
@@ -50,6 +51,7 @@ public final class MessageMinderStart implements IApplication, IGenericServiceLi
     // private boolean _run = true;
     private MessageGuardCommander _commander;
     private static MessageMinderStart _instance;
+    private ISessionService xmppService;
     public final static boolean CREATE_DURABLE = true;
     private String managementPassword;
 
@@ -60,6 +62,8 @@ public final class MessageMinderStart implements IApplication, IGenericServiceLi
         if(managementPassword == null) {
             managementPassword = "";
         }
+        
+        xmppService = null;
     }
     
     /* (non-Javadoc)
@@ -72,6 +76,8 @@ public final class MessageMinderStart implements IApplication, IGenericServiceLi
         
         CentralLogger.getInstance().info(this, "MessageMinder started...");
 
+        MessageMinderActivator.getDefault().addSessionServiceListener(this);
+        
         _commander = new MessageGuardCommander("MessageMinder");
         _commander.schedule();
         
@@ -80,19 +86,24 @@ public final class MessageMinderStart implements IApplication, IGenericServiceLi
             Thread.sleep(10000);
         }
         _commander.cancel();
-        if(_restart){
-            return EXIT_RESTART;
-        }else{
-            return EXIT_OK;
+        
+        if (xmppService != null) {
+            xmppService.disconnect();
         }
+        
+        Integer exitCode = IApplication.EXIT_OK;
+        if(_restart){
+            exitCode = IApplication.EXIT_RESTART;
+        }
+        
+        return exitCode;
     }
 
     /* (non-Javadoc)
      * @see org.eclipse.equinox.app.IApplication#stop()
      */
     public void stop() {
-        // TODO Auto-generated method stub
-
+        // Do nothing here
     }
 
     public boolean isRestart() {
@@ -112,8 +123,8 @@ public final class MessageMinderStart implements IApplication, IGenericServiceLi
     }
 
     /**
-     * 
-     * @return
+     *  
+     * @return The password for remote management
      */
     public synchronized String getPassword() {
         return managementPassword;
@@ -132,14 +143,14 @@ public final class MessageMinderStart implements IApplication, IGenericServiceLi
 
     	try {
 			sessionService.connect(xmppUser, xmppPassword, xmppServer);
+			xmppService = sessionService;
 		} catch (Exception e) {
-			CentralLogger.getInstance().warn(this,
-					"XMPP connection is not available, " + e.toString());
+		    Log.log(this, Log.WARN, "XMPP connection is not available: " + e.getMessage());
 		}
     }
     
     public void unbindService(ISessionService service) {
-    	service.disconnect();
+        // Nothing to do here
     }
     
 }

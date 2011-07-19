@@ -29,8 +29,6 @@ import java.util.Observer;
 import javax.jms.JMSException;
 import javax.jms.MapMessage;
 
-import org.apache.log4j.Logger;
-import org.csstudio.platform.logging.CentralLogger;
 import org.csstudio.tine2jms.management.Restart;
 import org.csstudio.tine2jms.management.Stop;
 import org.csstudio.tine2jms.preferences.PreferenceKeys;
@@ -42,24 +40,29 @@ import org.eclipse.equinox.app.IApplication;
 import org.eclipse.equinox.app.IApplicationContext;
 import org.remotercp.common.tracker.IGenericServiceListener;
 import org.remotercp.service.connection.session.ISessionService;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * @author Markus Moeller
  *
  */
-public class TineToJmsApplication implements IApplication, Stoppable, Observer, IGenericServiceListener<ISessionService>
-{
-    /** Common logger of CSS */
-    private Logger logger = null;
+public class TineToJmsApplication implements IApplication,
+                                             Stoppable,
+                                             Observer,
+                                             IGenericServiceListener<ISessionService> {
+    
+    /** Class logger */
+    private static final Logger LOG = LoggerFactory.getLogger(TineToJmsApplication.class);
     
     /** Alarm monitor */
-    private TineAlarmMonitor[] alarmMonitor = null;
+    private TineAlarmMonitor[] alarmMonitor;
     
     /** JMS producer */
-    private JmsProducer producer = null;
+    private JmsProducer producer;
     
     /** Array of alarm systems we want to monitor */
-    private String[] facilities = null;
+    private String[] facilities;
     
     /** Flag that indicates wheather or not the application should be stopped */
     private boolean working;
@@ -67,16 +70,14 @@ public class TineToJmsApplication implements IApplication, Stoppable, Observer, 
     /** Flag that indicates wheather or not the application should be restarted */
     private boolean restart;
 
-    public TineToJmsApplication()
-    {
+    public TineToJmsApplication() {
+        
         String jmsUrl = null;
         String jmsClientId = null;
         String jmsTopics = null;
         
         IPreferencesService preference = Platform.getPreferencesService();
         
-        logger = CentralLogger.getInstance().getLogger(this);
-
         jmsUrl = preference.getString(TineToJmsActivator.PLUGIN_ID, PreferenceKeys.JMS_PROVIDER_URL, "", null);
         jmsClientId = preference.getString(TineToJmsActivator.PLUGIN_ID, PreferenceKeys.JMS_CLIENT_ID, "", null);
         jmsTopics = preference.getString(TineToJmsActivator.PLUGIN_ID, PreferenceKeys.JMS_TOPICS_ALARM, "", null);
@@ -84,13 +85,13 @@ public class TineToJmsApplication implements IApplication, Stoppable, Observer, 
         working = true;
         restart = false;
         
-        try
-        {
+        alarmMonitor = null;
+        facilities = null;
+        
+        try {
             producer = new JmsProducer(jmsClientId, jmsUrl, jmsTopics);
-        }
-        catch(JmsProducerException jpe)
-        {
-            logger.error("Cannot instantiate class JmsProducer.", jpe);
+        } catch(JmsProducerException jpe) {
+            LOG.error("Cannot instantiate class JmsProducer.", jpe);
             producer = null;
             working = false;
         }
@@ -99,103 +100,95 @@ public class TineToJmsApplication implements IApplication, Stoppable, Observer, 
     /**
      * @see org.eclipse.equinox.app.IApplication#start(org.eclipse.equinox.app.IApplicationContext)
      */
-    public Object start(IApplicationContext context) throws Exception
-    {
-        IPreferencesService preference = Platform.getPreferencesService();
-
-        int result = IApplication.EXIT_OK;
+    @Override
+    public Object start(IApplicationContext context) throws Exception {
         
-        PreferenceKeys.showPreferences();
+        IPreferencesService preference = Platform.getPreferencesService();
 
         // Prepare the stop and restart action objects
         Stop.staticInject(this);
         Restart.staticInject(this);
         
+        TineToJmsActivator.getDefault().addSessionServiceListener(this);
+        
+        context.applicationRunning();
+        
         // Wait until some time for XMPP login
-        synchronized(this)
-        {
-            try
-            {
+        synchronized(this) {
+            try {
                 wait(5000);
             }
-            catch(InterruptedException ie) {}
+            catch(InterruptedException ie) {
+                // Can be ignored
+            }
         }
         
         facilities = preference.getString(TineToJmsActivator.PLUGIN_ID, PreferenceKeys.TINE_FACILITY_NAMES, "", null).split(",");
-        if(facilities == null)
-        {
-            logger.error("No alarm system / facility is defined.");
-            
+        if(facilities == null) {
+            LOG.error("No alarm system / facility is defined.");
             return IApplication.EXIT_OK;
         }
         
         alarmMonitor = new TineAlarmMonitor[facilities.length];
         
-        for(int i = 0;i < facilities.length;i++)
-        {
+        for(int i = 0;i < facilities.length;i++) {
             alarmMonitor[i] = new TineAlarmMonitor(this, facilities[i]);
         }
 
-        while(working)
-        {
-            synchronized(this)
-            {
-                logger.debug("Waiting for alarms...\n");
+        while(working) {
+            synchronized(this) {
                 
-                try
-                {
+                LOG.debug("Waiting for alarms...\n");
+                
+                try {
                     this.wait();
                 }
-                catch(InterruptedException e) {}                
+                catch(InterruptedException e) {
+                    // Can be ignored
+                }                
             }
         }
         
-        for(int i = 0;i < facilities.length;i++)
-        {
+        for(int i = 0;i < facilities.length;i++) {
             alarmMonitor[i].close();
         }
         
-        if(restart)
-        {
-            result = IApplication.EXIT_RESTART;
+        Integer exitCode = IApplication.EXIT_OK;
+        if(restart) {
+            exitCode = IApplication.EXIT_RESTART;
         }
         
-        return result;
+        return exitCode;
     }
 
 
-    public synchronized void update(Observable messageCreator, Object obj)
-    {
-        MapMessage msg = null;
+    @Override
+    public synchronized void update(Observable messageCreator, Object obj) {
         
+        MapMessage msg = null;
         AlarmMessage alarm = (AlarmMessage)obj;
         
-        try
-        {
+        try {
             msg = producer.createMapMessages(alarm);
             producer.sendMessage(msg);
-        }
-        catch(JMSException jmse)
-        {
-            logger.error("Cannot create MapMessage object.");
-        }
-        catch(JmsProducerException jpe)
-        {
-            logger.error("Cannot send MapMessage object.");
+        } catch(JMSException jmse) {
+            LOG.error("Cannot create MapMessage object.");
+        } catch(JmsProducerException jpe) {
+            LOG.error("Cannot send MapMessage object.");
         }
     }
 
-    public synchronized void stopWorking()
-    {
-        logger.info("Tine2Jms gets a stop request.");
+    @Override
+    public synchronized void stopWorking() {
+        LOG.info("Tine2Jms gets a stop request.");
         working = false;
         restart = false;
         this.notify();
     }
 
-    public synchronized void setRestart()
-    {
-        logger.info("Tine2Jms gets a restart request.");
+    @Override
+    public synchronized void setRestart() {
+        LOG.info("Tine2Jms gets a restart request.");
         working = false;
         restart = true;
         this.notify();
@@ -204,12 +197,14 @@ public class TineToJmsApplication implements IApplication, Stoppable, Observer, 
     /**
      * @see org.eclipse.equinox.app.IApplication#stop()
      */
-    public void stop()
-    {
-        logger.info("Method stop() was called...");
+    @Override
+    public void stop() {
+        LOG.info("Method stop() was called...");
     } 
     
+    @Override
     public void bindService(ISessionService sessionService) {
+        
         IPreferencesService preference = Platform.getPreferencesService();
 
         String xmppUser = preference.getString(TineToJmsActivator.PLUGIN_ID, PreferenceKeys.XMPP_USER, "", null);
@@ -219,11 +214,11 @@ public class TineToJmsApplication implements IApplication, Stoppable, Observer, 
     	try {
 			sessionService.connect(xmppUser, xmppPassword, xmppServer);
 		} catch (Exception e) {
-			CentralLogger.getInstance().warn(this,
-					"XMPP connection is not available, " + e.toString());
+			LOG.warn("XMPP connection is not available, {}", e.toString());
 		}
     }
     
+    @Override
     public void unbindService(ISessionService service) {
     	service.disconnect();
     }

@@ -7,4 +7,6 @@ Fragment-Host: org.csstudio.archive.common.service.mysqlimpl;bundle-version="1.0
 Bundle-RequiredExecutionEnvironment: JavaSE-1.6
 Bundle-Vendor: Desy <css-developer@desy.de>, Bastian Knerr
 Require-Bundle: org.junit;bundle-version="4.8.1",
- org.csstudio.testsuite;bundle-version="1.0.0"
+ org.csstudio.testsuite;bundle-version="1.0.0",
+ org.mockito;bundle-version="1.8.5"
+Bundle-ClassPath: .

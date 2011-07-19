@@ -37,20 +37,9 @@ package org.csstudio.config.ioconfig.commands;
 import javax.annotation.Nonnull;
 
 import org.csstudio.config.ioconfig.editorinputs.NodeEditorInput;
-import org.csstudio.config.ioconfig.editorparts.FacilityEditor;
-import org.csstudio.config.ioconfig.editorparts.IocEditor;
-import org.csstudio.config.ioconfig.editorparts.MasterEditor;
 import org.csstudio.config.ioconfig.editorparts.ModuleEditor;
-import org.csstudio.config.ioconfig.editorparts.SlaveEditor;
-import org.csstudio.config.ioconfig.editorparts.SubnetEditor;
 import org.csstudio.config.ioconfig.model.AbstractNodeDBO;
-import org.csstudio.config.ioconfig.model.FacilityDBO;
-import org.csstudio.config.ioconfig.model.IocDBO;
 import org.csstudio.config.ioconfig.model.PersistenceException;
-import org.csstudio.config.ioconfig.model.pbmodel.MasterDBO;
-import org.csstudio.config.ioconfig.model.pbmodel.ModuleDBO;
-import org.csstudio.config.ioconfig.model.pbmodel.ProfibusSubnetDBO;
-import org.csstudio.config.ioconfig.model.pbmodel.SlaveDBO;
 import org.eclipse.jface.dialogs.InputDialog;
 import org.eclipse.jface.window.Window;
 import org.eclipse.ui.IWorkbenchPage;
@@ -84,31 +73,35 @@ public class CallNewSiblingNodeEditor extends AbstractCallNodeEditor {
     protected void openNodeEditor(@Nonnull final AbstractNodeDBO siblingNode,
                                   @Nonnull final IWorkbenchPage page) throws PartInitException,
                                                                      PersistenceException {
-        AbstractNodeDBO<?,?> node = null;
-        String id = null;
+//        AbstractNodeDBO<?,?> node = null;
+//        String id = null;
+//        
+//        if(siblingNode instanceof FacilityDBO) {
+//            id = FacilityEditor.ID;
+//            node = new FacilityDBO();
+//        } else if(siblingNode instanceof IocDBO) {
+//            id = IocEditor.ID;
+//            node = new IocDBO( ((IocDBO) siblingNode).getParent());
+//        } else if(siblingNode instanceof ProfibusSubnetDBO) {
+//            id = SubnetEditor.ID;
+//            node = new ProfibusSubnetDBO( ((ProfibusSubnetDBO) siblingNode).getIoc());
+//        } else if(siblingNode instanceof MasterDBO) {
+//            id = MasterEditor.ID;
+//            node = new MasterDBO( ((MasterDBO) siblingNode).getProfibusSubnet());
+//        } else if(siblingNode instanceof SlaveDBO) {
+//            id = SlaveEditor.ID;
+//            node = new SlaveDBO( ((SlaveDBO) siblingNode).getProfibusDPMaster());
+//        } else if(siblingNode instanceof ModuleDBO) {
+//            id = ModuleEditor.ID;
+//            node = new ModuleDBO( ((ModuleDBO) siblingNode).getSlave());
+//        }
         
-        if(siblingNode instanceof FacilityDBO) {
-            id = FacilityEditor.ID;
-            node = new FacilityDBO();
-        } else if(siblingNode instanceof IocDBO) {
-            id = IocEditor.ID;
-            node = new IocDBO( ((IocDBO) siblingNode).getParent());
-        } else if(siblingNode instanceof ProfibusSubnetDBO) {
-            id = SubnetEditor.ID;
-            node = new ProfibusSubnetDBO( ((ProfibusSubnetDBO) siblingNode).getIoc());
-        } else if(siblingNode instanceof MasterDBO) {
-            id = MasterEditor.ID;
-            node = new MasterDBO( ((MasterDBO) siblingNode).getProfibusSubnet());
-        } else if(siblingNode instanceof SlaveDBO) {
-            id = SlaveEditor.ID;
-            node = new SlaveDBO( ((SlaveDBO) siblingNode).getProfibusDPMaster());
-        } else if(siblingNode instanceof ModuleDBO) {
-            id = ModuleEditor.ID;
-            node = new ModuleDBO( ((ModuleDBO) siblingNode).getSlave());
-        }
+        AbstractNodeDBO node = siblingNode.getParent().createChild();
+        String id = NodeEditorHandler.getEditorIdFor(node);
+        
         if( (node != null) && (id != null)) {
             if(id.equals(ModuleEditor.ID)) {
-                performOpen(siblingNode, page, node, id, "");
+                performOpen(siblingNode, page, node, id, " ");
             } else {
                 String nodeType = node.getNodeType().getName();
                 InputDialog idialog = new InputDialog(null,

@@ -28,18 +28,16 @@ import java.util.Set;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
-import org.apache.log4j.Logger;
 import org.csstudio.config.ioconfig.config.view.helper.Baudrates;
 import org.csstudio.config.ioconfig.config.view.helper.ConfigHelper;
 import org.csstudio.config.ioconfig.config.view.helper.ProfibusHelper;
 import org.csstudio.config.ioconfig.model.DocumentDBO;
-import org.csstudio.config.ioconfig.model.IOConifgActivator;
+import org.csstudio.config.ioconfig.model.IOConfigActivator;
 import org.csstudio.config.ioconfig.model.PersistenceException;
 import org.csstudio.config.ioconfig.model.pbmodel.ProfibusSubnetDBO;
 import org.csstudio.config.ioconfig.model.pbmodel.Ranges;
 import org.csstudio.config.ioconfig.model.preference.PreferenceConstants;
 import org.csstudio.config.ioconfig.view.DeviceDatabaseErrorDialog;
-import org.csstudio.platform.logging.CentralLogger;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.preferences.IEclipsePreferences;
 import org.eclipse.core.runtime.preferences.InstanceScope;
@@ -61,6 +59,8 @@ import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Group;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Text;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * @author hrickens
@@ -68,13 +68,12 @@ import org.eclipse.swt.widgets.Text;
  * @version $Revision: 1.2 $
  * @since 21.05.2010
  */
-public class SubnetEditor extends AbstractNodeEditor {
+public class SubnetEditor extends AbstractNodeEditor<ProfibusSubnetDBO> {
 
     public static final String ID = "org.csstudio.config.ioconfig.view.editor.subnet";
     
-    private static final Logger LOG = CentralLogger.getInstance()
-            .getLogger(SubnetEditor.class);
-
+    private static final Logger LOG = LoggerFactory.getLogger(SubnetEditor.class);
+    
     /**
      * An array with all kinds of Baudrates.
      */
@@ -246,7 +245,7 @@ public class SubnetEditor extends AbstractNodeEditor {
             }
             save();
         } catch (PersistenceException e) {
-            LOG.error(e);
+            LOG.error("Can't save Subnet! Database error.", e);
             DeviceDatabaseErrorDialog.open(null, "Can't save Subnet! Database error.", e);
         }
     }
@@ -305,7 +304,7 @@ public class SubnetEditor extends AbstractNodeEditor {
      */
     private void general(@Nonnull final String head) {
         InstanceScope instanceScope = new InstanceScope();
-        IEclipsePreferences prefNode = instanceScope.getNode(IOConifgActivator.PLUGIN_ID);
+        IEclipsePreferences prefNode = instanceScope.getNode(IOConfigActivator.PLUGIN_ID);
 
         Composite comp = ConfigHelper.getNewTabItem(head, getTabFolder(), 5, 470, 260);
         comp.setLayout(new GridLayout(4, false));

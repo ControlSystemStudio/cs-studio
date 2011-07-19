@@ -30,16 +30,15 @@ import java.util.regex.Pattern;
  * @author Markus Moeller
  *
  */
-public class TimeQuantity
-{
-    private static String getPart(String regex, String value)
-    {
+public class TimeQuantity {
+    
+    private static String getPart(String regex, String value) {
+        
         String unit = null;
         
         Pattern p = Pattern.compile(regex);
         Matcher m = p.matcher(value);
-        if(m.find())
-        {
+        if(m.find()) {
             unit = m.group();
         }
         
@@ -54,11 +53,11 @@ public class TimeQuantity
      * Note: The method only returns <b>positive</b> values! If the time value is negative, the method
      *       returns -1.
      * 
-     * @param value String containing the time quantity in minutes or seconds
+     * @param v String containing the time quantity in minutes or seconds
      * @return Time in milliseconds or -1 if an error occures
      */
-    public static long getMilliSeconds(String v)
-    {
+    public static long getMilliSeconds(String v) {
+        
         @SuppressWarnings("unused")
         String unit = null;
         @SuppressWarnings("unused")
@@ -81,11 +80,11 @@ public class TimeQuantity
      * Note: The method only returns <b>positive</b> values! If the time value is negative, the method
      *       returns -1.
      * 
-     * @param value String containing the time quantity in milliseconds or minutes
+     * @param v String containing the time quantity in milliseconds or minutes
      * @return Time in seconds or -1 if an error occures
      */
-    public static long getSeconds(String v)
-    {
+    public static long getSeconds(String v) {
+        
         @SuppressWarnings("unused")
         String unit = null;
         @SuppressWarnings("unused")
@@ -106,11 +105,11 @@ public class TimeQuantity
      * Note: The method only returns <b>positive</b> values! If the time value is negative, the method
      *       returns -1.
      * 
-     * @param value String containing the time quantity in milliseconds or seconds.
+     * @param v String containing the time quantity in milliseconds or seconds.
      * @return Time in minutes or -1 if an error occures
      */
-    public static long getMinutes(String v)
-    {
+    public static long getMinutes(String v) {
+        
         @SuppressWarnings("unused")
         String unit = null;
         @SuppressWarnings("unused")

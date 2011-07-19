@@ -26,12 +26,12 @@ package org.csstudio.archive.sdds.server.data;
 
 import java.util.ArrayList;
 
-import org.apache.log4j.Logger;
 import org.csstudio.archive.sdds.server.command.header.DataRequestHeader;
 import org.csstudio.archive.sdds.server.conversion.ConversionExecutor;
 import org.csstudio.archive.sdds.server.sdds.DataPathNotFoundException;
 import org.csstudio.archive.sdds.server.sdds.SddsFileReader;
-import org.csstudio.platform.logging.CentralLogger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * @author Markus Moeller
@@ -40,10 +40,10 @@ import org.csstudio.platform.logging.CentralLogger;
 public class DataCollector {
     
     /** The logger of this class */
-    private Logger logger;
+    private static final Logger LOG = LoggerFactory.getLogger(DataCollector.class);
     
     /**  */
-    private ConversionExecutor conversionExecutor;
+    private final ConversionExecutor conversionExecutor;
     
     /** */
     private SddsFileReader sddsReader;
@@ -53,13 +53,12 @@ public class DataCollector {
      */
     public DataCollector() throws DataCollectorException {
         
-        logger = CentralLogger.getInstance().getLogger(this);
         conversionExecutor = new ConversionExecutor();
         
         try {
             sddsReader = new SddsFileReader();
         } catch(DataPathNotFoundException dpnfe) {
-            logger.error("[*** DataPathNotFoundException ***]: " + dpnfe.getMessage());
+            LOG.error("[*** DataPathNotFoundException ***]: {}", dpnfe);
             throw new DataCollectorException("DataCollector: Cannot instantiate the class SddsFileReader: " + dpnfe.getMessage());
         }
     }

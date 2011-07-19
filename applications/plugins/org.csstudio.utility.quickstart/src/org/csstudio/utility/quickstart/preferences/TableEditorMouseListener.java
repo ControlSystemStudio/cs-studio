@@ -1,6 +1,5 @@
 package org.csstudio.utility.quickstart.preferences;
 
-import org.csstudio.platform.logging.CentralLogger;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.custom.TableEditor;
 import org.eclipse.swt.events.ModifyEvent;
@@ -13,13 +12,15 @@ import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Table;
 import org.eclipse.swt.widgets.TableItem;
 import org.eclipse.swt.widgets.Text;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class TableEditorMouseListener extends MouseAdapter {
 
+    private static final Logger LOG = LoggerFactory.getLogger(TableEditorMouseListener.class);
 
-
-	private TableEditor _editor;
-	private Table _table;
+	private final TableEditor _editor;
+	private final Table _table;
 
 
 	public TableEditorMouseListener(TableEditor editor, Table table) {
@@ -43,7 +44,8 @@ public class TableEditorMouseListener extends MouseAdapter {
 	 * Make the selected cell editable with a
 	 * double click. (Copied from an internet example)
 	 */
-	public void mouseDoubleClick(MouseEvent event) {
+	@Override
+    public void mouseDoubleClick(MouseEvent event) {
         // Dispose any existing editor
         Control old = _editor.getEditor();
         if (old != null) old.dispose();
@@ -74,8 +76,7 @@ public class TableEditorMouseListener extends MouseAdapter {
 			} else {
 				item.setText(2, "false");
 			}
-			CentralLogger.getInstance().debug(this,
-					"text of column 2: " + text);
+			LOG.debug("text of column 2: {}", text);
 			return;
 		}
 
@@ -102,6 +103,7 @@ public class TableEditorMouseListener extends MouseAdapter {
           // any time it's modified
           final int col = column;
           text.addModifyListener(new ModifyListener() {
+            @Override
             public void modifyText(ModifyEvent event) {
               // Set the text of the editor's control back into the cell
               item.setText(col, text.getText());

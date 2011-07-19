@@ -347,11 +347,11 @@ public abstract class AbstractScale extends Figure{
         }
         
         //in case of lower > upper, reverse them.       
-        if(lower > upper){
-        	double temp = lower;        	
-        	lower = upper;
-        	upper = temp;
-        }        
+//        if(lower > upper){
+//        	double temp = lower;        	
+//        	lower = upper;
+//        	upper = temp;
+//        }        
         
        // if (min == lower && max == upper) {
        //     return;

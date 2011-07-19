@@ -109,4 +109,5 @@ public class WaterfallView extends ViewPart {
 			setPVName(memento.getString(MEMENTO_PVNAME));
 		}
 	}
+
 }

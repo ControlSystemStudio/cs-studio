@@ -92,7 +92,7 @@ public final class AlarmTreeView extends ViewPart implements ISaveablePart2 {
     /**
      * The ID of this view.
      */
-    private static final String ID = "import org.csstudio.alarm.treeview..views.AlarmTreeView";
+    private static final String ID = "org.csstudio.alarm.treeview.views.AlarmTreeView";
     
     private static final Logger LOG = CentralLogger.getInstance().getLogger(AlarmTreeView.class);
     
@@ -265,7 +265,7 @@ public final class AlarmTreeView extends ViewPart implements ISaveablePart2 {
     
     /**
      * Queue that stores all modifications that have to be applied to the LDAP store on
-     * {@link import org.csstudio.alarm.treeview..views.actions.SaveInLdapAction}.
+     * {@link org.csstudio.alarm.treeview.views.actions.SaveInLdapAction}.
      */
     private final Queue<ITreeModificationItem> _ldapModificationItems = new LdapModificationQueue();
     
