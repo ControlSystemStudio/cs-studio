@@ -49,10 +49,8 @@
       <plugin id="org.csstudio.archive.common.requesttype"/>
       <plugin id="org.csstudio.archive.common.service"/>
       <plugin id="org.csstudio.archive.common.service.mysqlimpl"/>
-      <plugin id="org.csstudio.archive.sdds.server.log4j" fragment="true"/>
       <plugin id="org.csstudio.data"/>
       <plugin id="org.csstudio.desy.common.product.log4j" fragment="true"/>
-      <plugin id="org.csstudio.desy.css.product.log4j" fragment="true"/>
       <plugin id="org.csstudio.domain.common"/>
       <plugin id="org.csstudio.domain.desy"/>
       <plugin id="org.csstudio.domain.desy.epics"/>
@@ -70,7 +68,6 @@
       <plugin id="org.csstudio.utility.httpd"/>
       <plugin id="org.csstudio.utility.pv"/>
       <plugin id="org.csstudio.utility.pv.epics"/>
-      <plugin id="org.csstudio.utility.pv.epics.test" fragment="true"/>
       <plugin id="org.csstudio.utility.pvmanager"/>
       <plugin id="org.csstudio.workspace"/>
       <plugin id="org.eclipse.ant.core"/>
