@@ -156,7 +156,8 @@ public class PersistEngineDataManager {
             /**
              * Add shutdown hook.
              */
-            Runtime.getRuntime().addShutdownHook(new ShutdownWorkerThread(this, exec,
+            Runtime.getRuntime().addShutdownHook(new ShutdownWorkerThread(this,
+                                                                          exec,
                                                                           batch,
                                                                           maxAllowedPacketInBytes));
         }

@@ -79,7 +79,7 @@ public class ArchiveEngineStatusDaoImpl extends AbstractArchiveDao implements IA
             return "(" +
                    Joiner.on(",").join(from.getEngineId().longValue(),
                                        "'" + from.getStatus().name() + "'", // TODO (bknerr) : once we use hibernate...
-                                       "'" + from.getTimestamp().formatted() + "'",
+                                       from.getTimestamp().getNanos(),
                                        "'" + from.getInfo() + "'") +
                     ")";
         }

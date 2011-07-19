@@ -56,7 +56,7 @@ public class ArchiveDaoTestHelper {
         Mockito.when(mock.getHost()).thenReturn(String.valueOf(PROV.getHostProperty("mysqlHost")));
         Mockito.when(mock.getMaxAllowedPacketSizeInKB()).thenReturn(Integer.valueOf(1024));
         Mockito.when(mock.getPassword()).thenReturn(String.valueOf(PROV.getHostProperty("mysqlArchivePassword")));
-        Mockito.when(mock.getPeriodInMS()).thenReturn(Integer.valueOf(3000));
+        Mockito.when(mock.getPeriodInMS()).thenReturn(Integer.valueOf(2000));
         Mockito.when(mock.getPort()).thenReturn(Integer.valueOf((String) PROV.getHostProperty("mysqlPort")));
         Mockito.when(mock.getSmtpHost()).thenReturn("smtp.desy.de");
         Mockito.when(mock.getUser()).thenReturn(String.valueOf(PROV.getHostProperty("mysqlArchiveUser")));

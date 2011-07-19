@@ -52,15 +52,22 @@ public abstract class AbstractDaoTestSetup {
     @BeforeClass
     public static void beforeClass() throws ArchiveConnectionException {
 
-        HANDLER = new ArchiveConnectionHandler(ArchiveDaoTestHelper.createPrefServiceMock());
+        final MySQLArchivePreferenceService prefsMock = ArchiveDaoTestHelper.createPrefServiceMock();
+
+        HANDLER = new ArchiveConnectionHandler(prefsMock);
 
         final Connection con = HANDLER.getConnection();
         Assert.assertNotNull(con);
 
-        PERSIST_MGR = new PersistEngineDataManager(HANDLER, ArchiveDaoTestHelper.createPrefServiceMock());
+        PERSIST_MGR = new PersistEngineDataManager(HANDLER, prefsMock);
     }
 
 
+    /**
+     * Don't override. Use {@link AbstractDaoTestSetup#beforeHook()}.
+     * @throws ArchiveConnectionException
+     * @throws SQLException
+     */
     @Before
     public void before() throws ArchiveConnectionException, SQLException {
         setSavePoint();
@@ -80,25 +87,25 @@ public abstract class AbstractDaoTestSetup {
      * Hook method called before any method annotated with {@link Before}.
      *
      * To be overridden by inheritors.
+     * @throws SQLException
+     * @throws ArchiveConnectionException
      */
-    protected void beforeHook() {
+    @SuppressWarnings("unused")
+    protected void beforeHook() throws ArchiveConnectionException, SQLException {
         // Empty on purpose
     }
+
 
     /**
-     * Hook method called before any method annotated with {@link After}.
-     *
-     * To be overridden by inheritors.
+     * Don't override. Use {@link AbstractDaoTestSetup#afterHook()}.
+     * @throws ArchiveConnectionException
+     * @throws SQLException
      */
-    protected void afterHook() {
-        // Empty on purpose
-    }
-
     @After
     public void after() throws ArchiveConnectionException, SQLException {
-        rollback();
-
         afterHook();
+
+        rollback();
     }
 
     private void rollback() throws ArchiveConnectionException, SQLException {
@@ -107,12 +114,22 @@ public abstract class AbstractDaoTestSetup {
         con.setAutoCommit(_autoCommit);
     }
 
+    /**
+     * Hook method called before any method annotated with {@link After}.
+     *
+     * To be overridden by inheritors.
+     * @throws SQLException
+     * @throws ArchiveConnectionException
+     */
+    @SuppressWarnings("unused")
+    protected void afterHook() throws ArchiveConnectionException, SQLException {
+        // Empty on purpose
+    }
+
     @AfterClass
     public static void afterClass() {
         if (PERSIST_MGR != null) {
             PERSIST_MGR.shutdown();
         }
     }
-
-
 }

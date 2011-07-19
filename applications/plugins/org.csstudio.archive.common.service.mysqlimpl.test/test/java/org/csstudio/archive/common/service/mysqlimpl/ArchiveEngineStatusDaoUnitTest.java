@@ -28,6 +28,7 @@ import org.csstudio.archive.common.service.enginestatus.IArchiveEngineStatus;
 import org.csstudio.archive.common.service.mysqlimpl.dao.ArchiveDaoException;
 import org.csstudio.archive.common.service.mysqlimpl.enginestatus.ArchiveEngineStatusDaoImpl;
 import org.csstudio.archive.common.service.mysqlimpl.enginestatus.IArchiveEngineStatusDao;
+import org.csstudio.domain.desy.time.TimeInstant;
 import org.csstudio.domain.desy.time.TimeInstant.TimeInstantBuilder;
 import org.junit.Assert;
 import org.junit.Test;
@@ -57,9 +58,24 @@ public class ArchiveEngineStatusDaoUnitTest extends AbstractDaoTestSetup {
     }
 
     @Test
-    public void testEngineStatusSubmission() throws ArchiveDaoException {
+    public void testEngineStatusSubmission() throws ArchiveDaoException, InterruptedException {
         final IArchiveEngineStatusDao dao = new ArchiveEngineStatusDaoImpl(HANDLER, PERSIST_MGR);
 
-        dao.createMgmtEntry(new ArchiveEngineStatus(new ArchiveEngineId(1L), EngineMonitorStatus.ON, TimeInstantBuilder.fromNow(), "Tralala"));
+        final ArchiveEngineId engineId = new ArchiveEngineId(1000L);
+        final TimeInstant now = TimeInstantBuilder.fromNow();
+
+        final EngineMonitorStatus on = EngineMonitorStatus.ON;
+        final String info = "Tralala";
+
+        dao.createMgmtEntry(new ArchiveEngineStatus(engineId, on, now, info));
+
+        Thread.sleep(3000);
+
+        final IArchiveEngineStatus status = dao.retrieveLastEngineStatus(engineId, now.plusMillis(1000L));
+
+        Assert.assertNotNull(status);
+        Assert.assertEquals(engineId, status.getEngineId());
+        Assert.assertEquals(on, status.getStatus());
+        Assert.assertEquals(info, status.getInfo());
     }
 }

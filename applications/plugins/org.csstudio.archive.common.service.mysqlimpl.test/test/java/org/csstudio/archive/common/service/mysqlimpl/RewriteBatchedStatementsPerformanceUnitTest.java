@@ -25,10 +25,14 @@ import java.sql.PreparedStatement;
 import java.sql.SQLException;
 
 import org.csstudio.archive.common.service.ArchiveConnectionException;
+import org.csstudio.domain.desy.time.StopWatch;
+import org.csstudio.domain.desy.time.StopWatch.RunningStopWatch;
+import org.junit.Assert;
 import org.junit.Test;
 
 /**
- * TODO (bknerr) :
+ * Test for write performance of a single statement with a long VALUES list of inserts vs a single
+ * 'batched' statement with option rewritebatchedstatement=true.
  *
  * @author bknerr
  * @since 11.07.2011
@@ -39,33 +43,87 @@ public class RewriteBatchedStatementsPerformanceUnitTest extends AbstractDaoTest
      * {@inheritDoc}
      */
     @Override
-    public void before() throws ArchiveConnectionException, SQLException {
-        super.before();
+    protected void beforeHook() throws ArchiveConnectionException, SQLException {
+        super.beforeHook();
 
-        final PreparedStatement stmt = HANDLER.getConnection().prepareStatement("CREATE TEMPORARY TABLE batchedTest (id INT(10) UNSIGNED NOT NULL, time BIGINT NOT NULL, value VARCHAR(32000) NOT NULL, PRIMARY KEY(id)) ENGINE=InnoDB AUTO_INCREMENT=1");
+        final PreparedStatement stmt =
+            HANDLER.getConnection().prepareStatement("CREATE TEMPORARY TABLE IF NOT EXISTS batchedTest (id INT(10) UNSIGNED NOT NULL, time BIGINT NOT NULL, value VARCHAR(32000) NOT NULL, PRIMARY KEY(id)) ENGINE=InnoDB AUTO_INCREMENT=1");
         stmt.execute();
         stmt.close();
     }
 
     @Test
-    public void writeBatchedStatementsWithRewriteFlag() throws ArchiveConnectionException, SQLException {
-        final PreparedStatement stmt = HANDLER.getConnection().prepareStatement("INSERT INTO batchedTest (id, time, value) VALUES (1, 100000000000, '(fi,fu,fa)')");
+    public void singleStmtStrVsBatchedStmt() throws ArchiveConnectionException, SQLException {
+        final long numOfInserts = 10000;
+        final long elapsedStr = writeSingleLargeStmtWithValuesList(numOfInserts);
+
+        final long elapsedBatch = writeBatchStatement(numOfInserts);
+
+        Assert.assertTrue(elapsedStr > elapsedBatch);
+    }
+
+    public long writeSingleLargeStmtWithValuesList(final long numOfInserts) throws ArchiveConnectionException, SQLException {
+        final RunningStopWatch watch = StopWatch.start();
+
+        final StringBuilder builder = new StringBuilder();
+        builder.append("INSERT INTO batchedTest (id, time, value) VALUES (0, 100000000000, '(fi,fu,fa)')");
+        for (int i = 1; i < numOfInserts; i++) {
+            builder.append(",").append("(").append(i).append(", 100000000000, '(fi,fu,fa)')");
+        }
+        final long strTime = watch.getElapsedTimeInNS();
+        //System.out.println("string assembly : " + strTime);
+
+        watch.restart();
+        final PreparedStatement stmt =
+            HANDLER.getConnection().prepareStatement(builder.toString());
+
         stmt.execute();
         stmt.close();
 
+        final long execTime = watch.getElapsedTimeInNS();
+        //System.out.println("stmt exec : " + execTime);
+
+        return strTime + execTime;
     }
+
+    public long writeBatchStatement(final long numOfInserts) throws ArchiveConnectionException, SQLException {
+        final RunningStopWatch watch = StopWatch.start();
+
+        final PreparedStatement stmt =
+            HANDLER.getConnection().prepareStatement("INSERT INTO batchedTest (id, time, value) VALUES (?, ?, ?)");
+
+        for (int i = (int) numOfInserts; i < 2*numOfInserts; i++) {
+            stmt.setInt(1, i);
+            stmt.setLong(2, 100000000000L);
+            stmt.setString(3, "(fi,fu,fa)");
+            stmt.addBatch();
+        }
+        final long batchTime = watch.getElapsedTimeInNS();
+        //System.out.println("batch assembly : " + batchTime);
+
+        watch.restart();
+
+        stmt.executeBatch();
+        stmt.close();
+
+        final long execTime = watch.getElapsedTimeInNS();
+        //System.out.println("stmt exec : " + execTime);
+
+        return execTime + batchTime;
+    }
+
 
     /**
      * {@inheritDoc}
      */
     @Override
-    public void after() throws ArchiveConnectionException, SQLException {
-//        final Connection con = HANDLER.getConnection();
-//        final PreparedStatement stmt = con.prepareStatement("DROP TABLE IF EXISTS batchedTest");
-//        stmt.execute();
-//        stmt.close();
+    protected void afterHook() throws ArchiveConnectionException, SQLException {
+        final PreparedStatement stmt =
+            HANDLER.getConnection().prepareStatement("DROP TEMPORARY TABLE IF EXISTS batchedTest");
+        stmt.execute();
+        stmt.close();
 
-        super.after();
+        super.afterHook();
     }
 
 }
