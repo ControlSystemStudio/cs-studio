@@ -27,6 +27,7 @@ public class Messages extends NLS
     public static String Preferences_JMS_URL;
     public static String Preferences_JMS_USER;
     public static String Preferences_JMS_PASSWORD;
+    public static String Preferences_MAX_MESSAGES;
     public static String Property;
     public static String Server;
     public static String ShowProperties;

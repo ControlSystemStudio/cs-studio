@@ -49,7 +49,7 @@ public class AlarmConfigurationUnitTest
     		System.out.println("Skipping test: no alarm_rdb_* settings found.");
     		return null;
     	}
-    	final AlarmConfiguration config = new AlarmConfiguration(url, user, password);
+    	final AlarmConfiguration config = new AlarmConfiguration(url, user, password, "ALARM");
     	config.readConfiguration(root, writable, new NullProgressMonitor());
     	return config;
     }
