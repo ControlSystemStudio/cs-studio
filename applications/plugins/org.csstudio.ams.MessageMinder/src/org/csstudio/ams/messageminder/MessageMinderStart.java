@@ -30,7 +30,6 @@ import org.csstudio.ams.AmsActivator;
 import org.csstudio.ams.Log;
 import org.csstudio.ams.internal.AmsPreferenceKey;
 import org.csstudio.ams.messageminder.preference.MessageMinderPreferenceKey;
-import org.csstudio.platform.logging.CentralLogger;
 import org.eclipse.core.runtime.Platform;
 import org.eclipse.core.runtime.jobs.Job;
 import org.eclipse.core.runtime.preferences.IPreferencesService;
@@ -74,7 +73,7 @@ public final class MessageMinderStart implements IApplication, IGenericServiceLi
         
         MessageMinderPreferenceKey.showPreferences();
         
-        CentralLogger.getInstance().info(this, "MessageMinder started...");
+        Log.log(this, Log.INFO, "MessageMinder started...");
 
         MessageMinderActivator.getDefault().addSessionServiceListener(this);
         
@@ -82,7 +81,7 @@ public final class MessageMinderStart implements IApplication, IGenericServiceLi
         _commander.schedule();
         
         while(_commander.getState()!=Job.NONE){
-            CentralLogger.getInstance().info(this, "Commander state = " + String.valueOf(_commander.getState()));
+            Log.log(this, Log.INFO, "Commander state = " + String.valueOf(_commander.getState()));
             Thread.sleep(10000);
         }
         _commander.cancel();
@@ -152,5 +151,4 @@ public final class MessageMinderStart implements IApplication, IGenericServiceLi
     public void unbindService(ISessionService service) {
         // Nothing to do here
     }
-    
 }
