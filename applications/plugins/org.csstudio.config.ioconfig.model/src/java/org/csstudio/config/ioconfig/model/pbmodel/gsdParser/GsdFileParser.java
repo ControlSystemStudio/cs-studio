@@ -256,7 +256,6 @@ public final class GsdFileParser {
             tmpLine = tmpLine.trim();
             if (isLineParameter(tmpLine, ";") || tmpLine.isEmpty()) {
                 // do nothing. Is a empty line or a comment;
-                continue;
             } else if (isLineParameter(tmpLine, "Ext_Module_Prm_Data_Len")
                     || isLineParameter(tmpLine, "F_Ext_Module_Prm_Data_Len")) {
                 extractKeyValue(tmpLine, lineCounter, br);
