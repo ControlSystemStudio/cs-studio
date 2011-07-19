@@ -7,9 +7,11 @@
  ******************************************************************************/
 package org.csstudio.apputil.ui.swt;
 
+import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.osgi.util.NLS;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.dnd.DND;
@@ -20,6 +22,9 @@ import org.eclipse.swt.dnd.FileTransfer;
 import org.eclipse.swt.dnd.Transfer;
 import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
+import org.eclipse.swt.graphics.Image;
+import org.eclipse.swt.graphics.ImageData;
+import org.eclipse.swt.graphics.ImageLoader;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Button;
@@ -73,7 +78,37 @@ public class ImageTabFolder
         return button;
     }
 
-    /** Allow dropping file names (presumably images) */
+    /** Create an "Add Image" button that will interact with the image tabs
+     *  @param parent Parent widget
+     *  @param full Complete screenshot, or only application window?
+     *  @return SWT button
+     */
+    public Button createScreenshotButton(final Composite parent, final boolean full)
+    {
+        final Button button = new Button(parent, SWT.PUSH);
+        if (full)
+        {
+        	button.setText(Messages.AddFullScreenshot);
+        	button.setToolTipText(Messages.AddFullScreenshotTT);
+        }
+        else
+        {
+        	button.setText(Messages.AddApplicationScreenshot);
+        	button.setToolTipText(Messages.AddApplicationScreenshotTT);
+        }
+        button.addSelectionListener(new SelectionAdapter()
+        {
+            @Override
+            public void widgetSelected(SelectionEvent e)
+            {
+                addScreenshot(full);
+            }
+        });
+
+        return button;
+    }
+    
+	/** Allow dropping file names (presumably images) */
     private void hookDragAndDrop(Composite parent)
     {
         // Use the whole parent as drop target.
@@ -146,6 +181,42 @@ public class ImageTabFolder
         image_filenames.add(filename);
     }
 
+    @SuppressWarnings("nls")
+    protected void addScreenshot(final boolean full)
+    {
+    	// Hide the shell that displays the dialog
+    	// to keep the dialog itself out of the screenshot
+    	tab_folder.getShell().setVisible(false);
+    	
+    	// Take the screen shot
+		final Image image = full
+			? Screenshot.getFullScreenshot()
+			: Screenshot.getApplicationScreenshot();
+
+		// Show the dialog again
+		tab_folder.getShell().setVisible(true);
+
+        // Write to file
+        try
+        {
+        	final File screenshot_file = File.createTempFile("screenshot", ".png");
+        	screenshot_file.deleteOnExit();
+
+        	final ImageLoader loader = new ImageLoader();
+            loader.data = new ImageData[] { image.getImageData() };
+            image.dispose();
+    	    // Save
+    	    loader.save(screenshot_file.getPath(), SWT.IMAGE_PNG);
+        	
+        	addImage(screenshot_file.getPath());
+        }
+        catch (Exception ex)
+        {
+        	MessageDialog.openError(tab_folder.getShell(),
+        			"Error", ex.getMessage());
+        }
+    }
+    
     /** Remove image from preview and list of images-to-add
      *  @param i Index of image
      */
