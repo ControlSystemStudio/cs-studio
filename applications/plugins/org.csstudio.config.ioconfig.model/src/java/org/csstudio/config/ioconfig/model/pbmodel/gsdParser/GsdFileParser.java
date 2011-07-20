@@ -32,6 +32,7 @@ import java.util.List;
 
 import javax.annotation.CheckForNull;
 import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 
 import org.csstudio.config.ioconfig.model.pbmodel.GSDFileDBO;
 import org.slf4j.Logger;
@@ -77,11 +78,7 @@ public final class GsdFileParser {
             KeyValuePair keyValuePair = new KeyValuePair(key, value);
             return keyValuePair;
         } catch (IndexOutOfBoundsException e) {
-            String warning = String.format("Can't corret handle, at line %s, the Property: %s",
-                                           lineCounter,
-                                           line);
-            LOG.warn("Can't corret handle, at line {}, the Property: {}", lineCounter, line);
-            _WARNING_LIST.add(warning);
+            addWarning("Can't corret handle, at line %s, the Property: %s", lineCounter, line);
             throw e;
         }
     }
@@ -172,21 +169,15 @@ public final class GsdFileParser {
             KeyValuePair keyValuePair = extractKeyValue(line, lineCounter, br);
             parsedGsdFileModel.setProperty(keyValuePair);
         } catch (NumberFormatException e) {
-            String warning = String
-                    .format("Can't corret handle from GSD File %s, at line %s, the Property: %s",
-                            parsedGsdFileModel.getName(),
-                            lineCounter,
-                            line);
-            LOG.warn(warning, e);
-            _WARNING_LIST.add(warning);
+            addWarning("Can't corret handle from GSD File %s, at line %s, the Property: %s",
+                       parsedGsdFileModel.getName(),
+                       lineCounter,
+                       line);
         } catch (IndexOutOfBoundsException e) {
-            String warning = String
-                    .format("Can't corret handle from GSD File %s, at line %s, the Property: %s",
-                            parsedGsdFileModel.getName(),
-                            lineCounter,
-                            line);
-            LOG.warn(warning, e);
-            _WARNING_LIST.add(warning);
+            addWarning("Can't corret handle from GSD File %s, at line %s, the Property: %s",
+                       parsedGsdFileModel.getName(),
+                       lineCounter,
+                       line);
         }
         
     }
@@ -243,29 +234,59 @@ public final class GsdFileParser {
         String[] lineParts = line.split("[\";]");
         assert lineParts.length > 2;
         Integer moduleNo = null;
-        String name = lineParts[1].trim();
-        
-        ArrayList<Integer> valueList = new ArrayList<Integer>();
-        String value = getValue(lineParts[2], lineCounter, br);
-        GsdFileParser.addValues2IntList(value, valueList);
-        
-        GsdModuleModel2 gsdModuleModel = new GsdModuleModel2(name, valueList);
+        GsdModuleModel2 gsdModuleModel = createModule(lineCounter, br, lineParts);
         String tmpLine = br.readLine();
         while (!isLineParameter(tmpLine, "endmodule")) {
-            lineCounter.count();
             tmpLine = tmpLine.trim();
-            if (isLineParameter(tmpLine, ";") || tmpLine.isEmpty()) {
-                // do nothing. Is a empty line or a comment;
-                continue;
-            } else if (isLineParameter(tmpLine, "Ext_Module_Prm_Data_Len")
-                    || isLineParameter(tmpLine, "F_Ext_Module_Prm_Data_Len")) {
+            moduleNo =
+                       handleModuleLine(lineCounter,
+                                        parsedGsdFileModel,
+                                        br,
+                                        moduleNo,
+                                        gsdModuleModel,
+                                        tmpLine);
+            tmpLine = br.readLine();
+        }
+        if (moduleNo == null) {
+            moduleNo = _moduleNo++;
+        } else if (_moduleNo < moduleNo) {
+            _moduleNo = moduleNo+1;
+        }
+        gsdModuleModel.setModuleNumber(moduleNo);
+        parsedGsdFileModel.setModule(gsdModuleModel);
+    }
+
+    /**
+     * @param lineCounter
+     * @param parsedGsdFileModel
+     * @param br
+     * @param moduleNo
+     * @param gsdModuleModel
+     * @param tmpLine
+     * @return
+     * @throws IOException
+     */
+ // CHECKSTYLE OFF: CyclomaticComplexity
+    @CheckForNull
+    public Integer handleModuleLine(@Nonnull LineCounter lineCounter,
+                                    @Nonnull ParsedGsdFileModel parsedGsdFileModel,
+                                    @Nonnull BufferedReader br,
+                                    @Nullable Integer moduleNumber,
+                                    @Nonnull GsdModuleModel2 gsdModuleModel,
+                                    @Nullable String tmpLine) throws IOException {
+        lineCounter.count();
+        Integer moduleNo = moduleNumber;
+        // do nothing. Is a empty line or a comment;
+        if (!(isLineParameter(tmpLine, ";") || tmpLine.isEmpty())) {
+            if (isLineParameter(tmpLine, "Ext_Module_Prm_Data_Len")
+                || isLineParameter(tmpLine, "F_Ext_Module_Prm_Data_Len")) {
                 extractKeyValue(tmpLine, lineCounter, br);
             } else if (isLineParameter(tmpLine, "Ext_User_Prm_Data_Const")
-                    || isLineParameter(tmpLine, "F_Ext_User_Prm_Data_Const")) {
+                       || isLineParameter(tmpLine, "F_Ext_User_Prm_Data_Const")) {
                 KeyValuePair extractKeyValue = extractKeyValue(tmpLine, lineCounter, br);
                 gsdModuleModel.setExtUserPrmDataConst(extractKeyValue);
             } else if (isLineParameter(tmpLine, "Ext_User_Prm_Data_Ref")
-                    || isLineParameter(tmpLine, "F_Ext_User_Prm_Data_Ref")) {
+                       || isLineParameter(tmpLine, "F_Ext_User_Prm_Data_Ref")) {
                 buildExtUserPrmDataRef(tmpLine, lineCounter, parsedGsdFileModel, gsdModuleModel, br);
             } else if (isLineParameter(tmpLine, "Info_Text")) {
                 KeyValuePair extractKeyValue = extractKeyValue(tmpLine, lineCounter, br);
@@ -277,28 +298,63 @@ public final class GsdFileParser {
                 extractKeyValue(tmpLine, lineCounter, br);
                 //set F_IO_StructureDescCRC. This information can be ignored.
             } else {
-                try {
-                    tmpLine = tmpLine.split(";")[0].trim();
-                    moduleNo = gsdValue2Int(tmpLine);
-                } catch (NumberFormatException e) {
-                    String warning = String
-                            .format("Module parameter wrong at GSD File %s in line %s. Line: %s",
-                                    parsedGsdFileModel.getName(),
-                                    lineCounter,
-                                    tmpLine);
-                    LOG.warn(warning);
-                    _WARNING_LIST.add(warning);
-                }
+                moduleNo = extractModuleNo(lineCounter, parsedGsdFileModel, tmpLine);
             }
-            tmpLine = br.readLine();
         }
-        if (moduleNo == null) {
-            moduleNo = _moduleNo++;
-        } else if (_moduleNo < moduleNo) {
-            _moduleNo = moduleNo+1;
+        return moduleNo;
+    }
+ // CHECKSTYLE ON: CyclomaticComplexity
+    
+    /**
+     * @param lineCounter
+     * @param parsedGsdFileModel
+     * @param moduleNo
+     * @param tmpLine
+     * @return
+     */
+    @CheckForNull
+    public Integer extractModuleNo(@Nonnull LineCounter lineCounter,
+                                   @Nonnull ParsedGsdFileModel parsedGsdFileModel,
+                                   @Nonnull String tmpLine) {
+        try {
+            return gsdValue2Int(tmpLine.split(";")[0].trim());
+        } catch (NumberFormatException e) {
+            addWarning("Module parameter wrong at GSD File %s in line %s. Line: %s",
+                       lineCounter,
+                       parsedGsdFileModel.getName(),
+                       tmpLine);
         }
-        gsdModuleModel.setModuleNumber(moduleNo);
-        parsedGsdFileModel.setModule(gsdModuleModel);
+        return null;
+    }
+
+    /**
+     * @param lineCounter
+     * @param br
+     * @param lineParts
+     * @return
+     * @throws IOException
+     */
+    @Nonnull
+    public GsdModuleModel2 createModule(@Nonnull LineCounter lineCounter,
+                                        @Nonnull BufferedReader br,
+                                        @Nonnull String[] lineParts) throws IOException {
+        String name = lineParts[1].trim();
+        ArrayList<Integer> valueList = new ArrayList<Integer>();
+        String value = getValue(lineParts[2], lineCounter, br);
+        GsdFileParser.addValues2IntList(value, valueList);
+        GsdModuleModel2 gsdModuleModel = new GsdModuleModel2(name, valueList);
+        return gsdModuleModel;
+    }
+
+    /**
+     * @param lineCounter
+     * @param parsedGsdFileModel
+     * @param tmpLine
+     */
+    private static void addWarning(@Nonnull String message, @Nonnull Object... parameter) {
+        String warning = String.format(message, parameter);
+        LOG.warn(warning);
+        _WARNING_LIST.add(warning);
     }
     
     /**

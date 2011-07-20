@@ -30,16 +30,19 @@ import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
 
+import javax.annotation.CheckForNull;
 import javax.annotation.Nonnull;
 
 import org.csstudio.config.ioconfig.model.PersistenceException;
 import org.csstudio.config.ioconfig.model.pbmodel.ChannelDBO;
 import org.csstudio.config.ioconfig.model.pbmodel.ChannelStructureDBO;
-import org.csstudio.config.ioconfig.model.pbmodel.DataType;
+import org.csstudio.config.ioconfig.model.pbmodel.GSDFileDBO;
+import org.csstudio.config.ioconfig.model.pbmodel.GSDModuleDBO;
 import org.csstudio.config.ioconfig.model.pbmodel.MasterDBO;
 import org.csstudio.config.ioconfig.model.pbmodel.ModuleDBO;
 import org.csstudio.config.ioconfig.model.pbmodel.ProfibusSubnetDBO;
 import org.csstudio.config.ioconfig.model.pbmodel.SlaveDBO;
+import org.csstudio.config.ioconfig.model.pbmodel.gsdParser.GsdModuleModel2;
 import org.csstudio.config.ioconfig.model.xml.ProfibusConfigXMLGenerator;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -110,39 +113,26 @@ public class ProfibusConfigWinModGenerator {
         int posNormslaveParamDataSize = 0;
         int fdlAddress = slave.getFdlAddress();
         Map<Short, ModuleDBO> childrenAsMap = slave.getChildrenAsMap();
-        Set<Short> keySet = childrenAsMap.keySet();
+        Set<Entry<Short, ModuleDBO>> moduleEntrySet = childrenAsMap.entrySet();
         String modelName = slave.getModelName();
         if (modelName.length() > 24) {
             modelName = modelName.substring(0, 24);
         }
-        _winModConfig.append("DPSUBSYSTEM 1, ").append("DPADDRESS ")
-        		  .append(fdlAddress).append(", \"")
-        		  .append(slave.getGSDFile().getName())
-        		  .append("\", \"").append(modelName)
-        		  .append("\"").append(LINE_END)
-        		  .append("BEGIN").append(LINE_END)
-                  .append("  PNO_IDENT_NO ").append("\"")
-                  .append(ProfibusConfigXMLGenerator.getInt(slave.getIDNo()))
-                  .append("\"").append(LINE_END);
+        String gsdFileName = getGsdFileName(slave);
+        buildSlaveHeader(slave, fdlAddress, modelName, gsdFileName);
         String prmUserData = slave.getPrmUserData();
         if (!prmUserData.equals("Property not found")) {
-			String cleanPrmUserData = prmUserData
-					.replaceAll("(0x)", "")
-					.replaceAll(",", " ").replaceAll("  ", " ").trim();
+			String cleanPrmUserData = cleanString(prmUserData);
 			_winModConfig.append("  NORMSLAVE_PARAM_DATA ").append("\"");
 			posNormslaveParamDataSize = _winModConfig.length();
 			normslaveParamDataSize+=slave.getPrmUserDataList().size();
 			_winModConfig.append(" ").append(cleanPrmUserData).append(" ");
-			for (short key : keySet) {
-				ModuleDBO module = (ModuleDBO) childrenAsMap.get(key);
+			for (Entry<Short, ModuleDBO> entry : moduleEntrySet) {
+				ModuleDBO module = entry.getValue();
 				String configurationData = module.getConfigurationData();
-				if (configurationData != null) {
-					normslaveParamDataSize += configurationData.split(",").length;
-					String cleanConfigData = configurationData
-							.replaceAll("(0x)", "")
-							.replaceAll(",", " ").replaceAll("  ", " ").trim();
-					_winModConfig.append(cleanConfigData).append(" ");
-				}
+				normslaveParamDataSize =
+                                         appendConfigurationData(normslaveParamDataSize,
+                                                                 configurationData);
 			}
 			_winModConfig.deleteCharAt(_winModConfig.length() - 1);
             _winModConfig.append("\"").append(LINE_END);
@@ -151,34 +141,92 @@ public class ProfibusConfigWinModGenerator {
         StringBuilder sb = new StringBuilder(5);
         appendAs2HexString(sb, normslaveParamDataSize);
         _winModConfig.insert(posNormslaveParamDataSize, sb.toString());
-        for (short key : keySet) {
-            createModule((ModuleDBO) childrenAsMap.get(key), fdlAddress);
+        for (Entry<Short, ModuleDBO> entry : moduleEntrySet) {
+            createModule(entry.getValue(), fdlAddress);
         }
     }
 
+    /**
+     * @param normslaveParamDataSize
+     * @param configurationData
+     * @return
+     */
+    public int appendConfigurationData(final int normslaveParamDataSize, @CheckForNull String configurationData) {
+        int size = normslaveParamDataSize;
+        if (configurationData != null) {
+            size += configurationData.split(",").length;
+        	String cleanConfigData = cleanString(configurationData);
+        	_winModConfig.append(cleanConfigData).append(" ");
+        }
+        return size;
+    }
+
+    /**
+     * @param string2Clean
+     * @return
+     */
+    @Nonnull
+    public String cleanString(@Nonnull String string2Clean) {
+        String cleanString = string2Clean
+        		.replaceAll("(0x)", "")
+        		.replaceAll(",", " ").replaceAll("  ", " ").trim();
+        return cleanString;
+    }
+
+    /**
+     * @param slave
+     * @param fdlAddress
+     * @param modelName
+     * @param gsdFileName
+     */
+    public void buildSlaveHeader(@Nonnull final SlaveDBO slave, int fdlAddress, @Nonnull String modelName, @Nonnull String gsdFileName) {
+        _winModConfig.append("DPSUBSYSTEM 1, ").append("DPADDRESS ")
+        		  .append(fdlAddress).append(", \"")
+        		  .append(gsdFileName)
+        		  .append("\", \"").append(modelName)
+        		  .append("\"").append(LINE_END)
+        		  .append("BEGIN").append(LINE_END)
+                  .append("  PNO_IDENT_NO ").append("\"")
+                  .append(ProfibusConfigXMLGenerator.getInt(slave.getIDNo()))
+                  .append("\"").append(LINE_END);
+    }
+
+    /**
+     * @param slave
+     * @return
+     */
+    @Nonnull
+    private String getGsdFileName(@Nonnull SlaveDBO slave) {
+        GSDFileDBO gsdFile = slave.getGSDFile();
+        return gsdFile==null?"no GSD File available":gsdFile.getName();
+    }
+    
     /**
      * @param module
      * @throws PersistenceException 
      */
     private void createModule(@Nonnull final ModuleDBO module, final int fdlAddress) throws PersistenceException {
     	_module = module.getSortIndex()+1;
-		List<Integer> slaveCfgData;
-        slaveCfgData = module.getGsdModuleModel2().getValue();
-        int length = slaveCfgData.size();
-		if (module.getGSDModule() != null) {
-			_winModConfig.append("DPSUBSYSTEM 1, ").append("DPADDRESS ")
-					.append(fdlAddress + ", ").append("SLOT ").append(_slot++)
-					.append(", ")
-					.append("\"" + module.getGSDModule().getName() + "\"")
-					.append(LINE_END).append("BEGIN").append(LINE_END)
-					.append("  SLAVE_CFG_DATA ").append("\"");
-			appendAs2HexString(_winModConfig, length);
-			_winModConfig.append(" ").append(Arrays.toString(slaveCfgData.toArray()).replaceAll(",", " ").replaceAll("[\\[\\]]", ""))
-			.append("\"").append(LINE_END)
-			.append("  OBJECT_REMOVEABLE ").append("\"1\"")
-			.append(LINE_END).append("END").append(LINE_END)
-			.append(LINE_END);
-		}
+        List<Integer> slaveCfgData;
+        GsdModuleModel2 gsdModuleModel2 = module.getGsdModuleModel2();
+        if (gsdModuleModel2 != null) {
+            slaveCfgData = gsdModuleModel2.getValue();
+            int length = slaveCfgData.size();
+            GSDModuleDBO gsdModule = module.getGSDModule();
+            if (gsdModule != null) {
+                _winModConfig.append("DPSUBSYSTEM 1, ").append("DPADDRESS ")
+                        .append(fdlAddress + ", ").append("SLOT ").append(_slot++).append(", ")
+                        .append("\"" + gsdModule.getName() + "\"").append(LINE_END).append("BEGIN")
+                        .append(LINE_END).append("  SLAVE_CFG_DATA ").append("\"");
+                appendAs2HexString(_winModConfig, length);
+                _winModConfig
+                        .append(" ")
+                        .append(Arrays.toString(slaveCfgData.toArray()).replaceAll(",", " ")
+                                .replaceAll("[\\[\\]]", "")).append("\"").append(LINE_END)
+                        .append("  OBJECT_REMOVEABLE ").append("\"1\"").append(LINE_END)
+                        .append("END").append(LINE_END).append(LINE_END);
+            }
+        }
 		Map<Short, ChannelStructureDBO> channelStructsAsMap = module.getChildrenAsMap();
 		Set<Entry<Short, ChannelStructureDBO>> entrySet = channelStructsAsMap.entrySet();
 		for (Entry<Short, ChannelStructureDBO> entry : entrySet) {
@@ -190,141 +238,46 @@ public class ProfibusConfigWinModGenerator {
 	 * @param channelStructureDBO
 	 * @throws PersistenceException 
 	 */
-	private void createChannel(ChannelStructureDBO channelStructureDBO) throws PersistenceException {
+	private void createChannel(@Nonnull ChannelStructureDBO channelStructureDBO) throws PersistenceException {
 		Map<Short, ChannelDBO> channelsAsMap = channelStructureDBO.getChildrenAsMap();
 		Set<Entry<Short, ChannelDBO>> entrySet = channelsAsMap.entrySet();
 		for (Entry<Short, ChannelDBO> entry : entrySet) {
-			ChannelDBO channelDBO = entry.getValue();
-			char io1;
-			String io2="";
-			String def;
-			String convertedChannelType;
-			String mbbChannelType;
-			String desc = "";
-			int lines = 1;
-			DataType channelType = channelDBO.getChannelType();
-			switch (channelType) {
-			case BIT:
-				convertedChannelType = "B"; // Binary
-				break;
-			case INT8:
-			case UINT8:
-			    convertedChannelType = "A"; // Analog
-			    break;
-			case INT16:
-			case UINT16:
-				convertedChannelType = "A"; // Analog
-				lines = 2;
-				break;
-			case INT32:
-			case UINT32:
-				lines = 4;
-				convertedChannelType = "A"; // Analog
-				break;
-			case DS33:
-				lines = channelType.getByteSize();
-				desc = "> "+channelType;
-				convertedChannelType = "A"; // Analog
-				break;
-			default:
-				convertedChannelType = "A"; // Analog
-				break;
-			}
-			if(channelDBO.isInput()) {
-					io1 = 'E';              // Eingang
-					convertedChannelType += "I"; // Input
-					mbbChannelType = "DI";
-			} else {
-					io1 = 'A';              // Ausgang
-					convertedChannelType += "O"; // Output
-					mbbChannelType = "DO";
-			}
-
-			if(channelDBO.isDigital()) {
-				def = "0";
-			}else {
-				def = "0,00";
-				int byteSize = channelType.getByteSize();
-				switch (byteSize) {
-				case 1:
-					io2 = "B"; // Byte
-					break;
-				case 2:
-					io2 = "W"; // Word
-					break;
-				case 4:
-					io2 = "D"; // Double Word
-					break;
-				case 5:
-					io2 = "D"; // hier kommt sicherlich was anderes hin!
-					break;
-				default:
-					break;
-				}
-			}
+		    ChannelDBO channelDBO = entry.getValue();
+		    WinModChannel winModChannel = new WinModChannel(channelDBO);
 			
-			String description = channelDBO.getDescription();
-			if(description!=null) {
-				desc += description.replaceAll("[\r\n]", " ");
-			}
-//			int bytee = channelDBO.getStatusAddress()+1; //XXX ist Falsch!!! 
-			
-			int bytee;
-			Short bit = 0;
-			if(channelDBO.isDigital()) {
-				bit = channelDBO.getSortIndex();
-//				bytee = bit / 8;
-//				if(bytee>0) {
-//					bit = (short) (bit - (8*bytee));
-//				}
-				
-//				bytee = channelDBO.getFullChannelNumber();
-				
-				bytee = channelDBO.getChannelNumber();
-			} else {
-//				bytee = channelDBO.getStruct();
-				bytee = channelDBO.getFullChannelNumber();
-				bytee = channelDBO.getChannelNumber();
-			}
-			
-			String io = io1+""+io2;
-			if(lines>1) {
-			    appendLine(0, io, bytee, channelDBO, bit, convertedChannelType, def, desc);
-			    def = "0";
-			    io = io1+"B";
-    			for (int i = 0; i < lines; i++) {
-    				appendAddLine(i, io, bytee, channelDBO, bit, mbbChannelType, def, desc);
+			if(!winModChannel.single()) {
+			    appendLine(0, channelDBO, winModChannel, winModChannel.getConvertedChannelType());
+			    winModChannel.setDef("0");
+			    winModChannel.setIO2("B");
+    			for (int i = 0; i < winModChannel.getLineSize(); i++) {
+    				appendAddLine(i, channelDBO, winModChannel, winModChannel.getMbbChannelType());
     			}
 			} else { 
-			    appendAddLine(0, io, bytee, channelDBO, bit, convertedChannelType, def, desc);
+			    appendLine(0, channelDBO, winModChannel, winModChannel.getConvertedChannelType());
 			}
 		}
 	}
 
 	/**
 	 * @param lineNr
-	 * @param bit 
 	 * @param channelDBO 
-	 * @param bytee 
-	 * @param io 
-	 * @param def 
+	 * @param winModChannel TODO
 	 * @param channelType 
-	 * @param desc 
 	 */
-	private void appendLine(int lineNr, String io, int bytee, ChannelDBO channelDBO, Short bit, String channelType, String def, String desc) {
+	private void appendLine(int lineNr, @Nonnull ChannelDBO channelDBO, @Nonnull WinModChannel winModChannel, @Nonnull String channelType) {
 	    _winModSlaveAdr.append(_lineNr++).append(",");
 	    // Treibersignal
-	    addAdr(_winModSlaveAdr, _id,_module, io, bytee+lineNr, channelDBO.isDigital(), bit);
+	    addAdr(_winModSlaveAdr, _id,_module, winModChannel, lineNr, channelDBO.isDigital());
 	       // Adresse
         _winModSlaveAdr.append(",");
         // Symbol
         _winModSlaveAdr.append(",");
         if(channelDBO.getIoName()==null) {
-            addAdr(_winModSlaveAdr, _id,_module, io, bytee+lineNr, channelDBO.isDigital(), bit);
+            addAdr(_winModSlaveAdr, _id,_module, winModChannel, lineNr, channelDBO.isDigital());
         }else {
             _winModSlaveAdr.append("'").append(channelDBO.getIoName());
 //          if(lineNr>0) {
-            if(channelType.startsWith("D")&&io.endsWith("B")) {
+            if(channelType.startsWith("D")&&winModChannel.getIO().endsWith("B")) {
                 if(lineNr==4) {
                     _winModSlaveAdr.append("_Stat");
                 }else {
@@ -333,30 +286,30 @@ public class ProfibusConfigWinModGenerator {
             }
             _winModSlaveAdr.append("'");
         }
-        _winModSlaveAdr.append(",'").append(channelType).append("','").append(def).append("',");
+        _winModSlaveAdr.append(",'").append(channelType).append("','").append(winModChannel.getDef()).append("',");
         if(channelDBO.getDescription()!=null && !channelDBO.getDescription().isEmpty()) {
-            _winModSlaveAdr.append("'").append(desc).append("'");
+            _winModSlaveAdr.append("'").append(winModChannel.getDesc()).append("'");
         }
         _winModSlaveAdr.append(LINE_END);
 	}
 	
-	private void appendAddLine(int lineNr, String io, int bytee, ChannelDBO channelDBO, Short bit, String channelType, String def, String desc) {
+	private void appendAddLine(int lineNr, @Nonnull ChannelDBO channelDBO, @Nonnull WinModChannel winModChannel, @Nonnull String channelType) {
 		_winModSlaveAdr.append(_lineNr++).append(",");
 		// Treibersignal
-		addAdr(_winModSlaveAdr, _id,_module, io, bytee+lineNr, channelDBO.isDigital(), bit);
+		addAdr(_winModSlaveAdr, _id,_module, winModChannel, lineNr, channelDBO.isDigital());
 
 		// Adresse
 		_winModSlaveAdr.append(",");
-		addAdr(_winModSlaveAdr, _id,_module, io, bytee+lineNr, channelDBO.isDigital(), bit);
+		addAdr(_winModSlaveAdr, _id,_module, winModChannel, lineNr, channelDBO.isDigital());
 		
 		// Symbol
 		_winModSlaveAdr.append(",");
 		if(channelDBO.getIoName()==null) {
-			addAdr(_winModSlaveAdr, _id,_module, io, bytee+lineNr, channelDBO.isDigital(), bit);
+			addAdr(_winModSlaveAdr, _id,_module, winModChannel, lineNr, channelDBO.isDigital());
 		}else {
 			_winModSlaveAdr.append("'").append(channelDBO.getIoName());
 //			if(lineNr>0) {
-			if(channelType.startsWith("D")&&io.endsWith("B")) {
+			if(channelType.startsWith("D")&&winModChannel.getIO().endsWith("B")) {
 			    if(lineNr==4) {
 			        _winModSlaveAdr.append("_Stat");
 			    }else {
@@ -365,9 +318,9 @@ public class ProfibusConfigWinModGenerator {
 			}
 			_winModSlaveAdr.append("'");
 		}
-		_winModSlaveAdr.append(",'").append(channelType).append("','").append(def).append("',");
+		_winModSlaveAdr.append(",'").append(channelType).append("','").append(winModChannel.getDef()).append("',");
 		if(channelDBO.getDescription()!=null && !channelDBO.getDescription().isEmpty()) {
-			_winModSlaveAdr.append("'").append(desc).append("'");
+			_winModSlaveAdr.append("'").append(winModChannel.getDesc()).append("'");
 		}
 		_winModSlaveAdr.append(LINE_END);
 	}
@@ -377,16 +330,17 @@ public class ProfibusConfigWinModGenerator {
 	 * @param id
 	 * @param module
 	 * @param io
-	 * @param bytee
+	 * @param lineNr
 	 * @param digital
 	 * @param bit
 	 */
 	private void addAdr(@Nonnull StringBuilder winModSlaveAdr, int id, int module,
-			@Nonnull String io, int bytee, boolean digital, short bit) {
+			@Nonnull WinModChannel winModChannel, int lineNr, boolean digital) {
+	    short bit = winModChannel.getBit();
 	    int fullBytes = bit/8;
 	    int bitsModifier = fullBytes*8; 
-        int byt = bytee+fullBytes;
-		winModSlaveAdr.append("'ID").append(id).append(".M").append(module).append(".").append(io).append(" ").append(byt);
+        int byt = winModChannel.getByteNo()+lineNr+fullBytes;
+		winModSlaveAdr.append("'ID").append(id).append(".M").append(module).append(".").append(winModChannel.getIO()).append(" ").append(byt);
 		if(digital) {
 			winModSlaveAdr.append(".").append(bit-bitsModifier);
 		}

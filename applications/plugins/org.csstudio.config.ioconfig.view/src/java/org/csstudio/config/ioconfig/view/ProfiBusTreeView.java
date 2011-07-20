@@ -1014,7 +1014,7 @@ public class ProfiBusTreeView extends Composite {
                 AbstractNodeDBO node = childrenAsMap.get(node2Copy.getSortIndex());
                 if (node != null) {
                     int freeStationAddress = selectedNode
-                            .getfirstFreeStationAddress(AbstractNodeDBO.MAX_STATION_ADDRESS);
+                            .getfirstFreeStationAddress(AbstractNodeDBO.getMaxStationAddress());
                     node2Copy.setSortIndex(freeStationAddress);
                 }
                 selectedNode.addChild(node2Copy);
@@ -1025,7 +1025,7 @@ public class ProfiBusTreeView extends Composite {
                 copy = node2Copy.copyThisTo(selectedNode);
                 copy.setDirty(true);
                 copy.setSortIndexNonHibernate(selectedNode
-                        .getfirstFreeStationAddress(AbstractNodeDBO.MAX_STATION_ADDRESS));
+                        .getfirstFreeStationAddress(AbstractNodeDBO.getMaxStationAddress()));
             }
             getViewer().refresh();
             getViewer().setSelection(new StructuredSelection(copy));

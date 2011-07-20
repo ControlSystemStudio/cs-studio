@@ -3,6 +3,7 @@
  */
 package org.csstudio.config.ioconfig.model.pbmodel.gsdParser;
 
+import java.io.Serializable;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.TreeMap;
@@ -14,7 +15,9 @@ import javax.annotation.Nonnull;
  * @author hrickens
  *
  */
-public class ParsedGsdFileModel extends AbstractGsdPropertyModel {
+public class ParsedGsdFileModel extends AbstractGsdPropertyModel implements Serializable  {
+    
+    private static final long serialVersionUID = 1L;
     
     private final String _name;
     private final Map<Integer, PrmText> _prmTextMap;
@@ -124,6 +127,7 @@ public class ParsedGsdFileModel extends AbstractGsdPropertyModel {
      * 
      */
     public boolean isModularStation() {
-        return getIntProperty("Modular_Station")!=0;
+        Integer intProperty = getIntProperty("Modular_Station");
+        return intProperty==null?false:intProperty!=0;
     }
 }

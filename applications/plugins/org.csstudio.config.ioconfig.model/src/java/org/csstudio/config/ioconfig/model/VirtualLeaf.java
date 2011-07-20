@@ -64,7 +64,7 @@ public final class VirtualLeaf extends AbstractNodeDBO<ChannelDBO, VirtualLeaf> 
     }
     
     /**
-     * {@inheritDoc}
+     * have no nodeType
      */
     @Override
     @CheckForNull
@@ -72,9 +72,6 @@ public final class VirtualLeaf extends AbstractNodeDBO<ChannelDBO, VirtualLeaf> 
         return null;
     }
     
-    /**
-     * {@inheritDoc}
-     */
     @Override
     @Nonnull
     protected VirtualLeaf copyParameter(@Nonnull final ChannelDBO parent) throws PersistenceException {

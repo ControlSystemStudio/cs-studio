@@ -21,71 +21,49 @@
  *
  * $Id: DesyKrykCodeTemplates.xml,v 1.7 2010/04/20 11:43:22 bknerr Exp $
  */
-package org.csstudio.config.ioconfig.model;
+package org.csstudio.config.ioconfig.model.pbmodel.gsdParser;
 
-import javax.annotation.CheckForNull;
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.StringReader;
+import java.io.StringWriter;
+
 import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
 
+import org.csstudio.config.ioconfig.model.PersistenceException;
+import org.csstudio.config.ioconfig.model.pbmodel.ProfibusSubnetDBO;
+import org.csstudio.config.ioconfig.model.xml.ProfibusConfigXMLGenerator;
 
 /**
- * Virtual Root 
- * 
- * @author hrickens
- * @author $Author: hrickens $
- * @version $Revision: 1.7 $
- * @since 11.05.2011
+ * TODO (hrickens) : 
+ * @author  hrickens
+ * @author  $Author: hrickens $
+ * @version  $Revision: 1.7 $
+ * @since  20.07.2011
  */
-public final class VirtualRoot extends AbstractNodeDBO<VirtualRoot, FacilityDBO> {
+public final class GetProfibusXmlAsBufferReader {
     
-    private static final long serialVersionUID = -296484498706601307L;
-
-    private static final VirtualRoot INSTANCE = new VirtualRoot();
     /**
      * Constructor.
      */
-    private VirtualRoot() {
-        // Don't instantiate
+    private GetProfibusXmlAsBufferReader() {
+        // Constructor.
     }
     
     /**
-     * {@inheritDoc}
+     * @param parameterObject TODO
+     * @throws PersistenceException
+     * @throws IOException
      */
-    @Override
     @Nonnull
-    public VirtualRoot getParent() {
-        throw new UnsupportedOperationException(VirtualRoot.class + " does not feature a parent node.");
+    public static BufferedReader getProfibusXmlAsBufferReader(@Nonnull ProfibusSubnetDBO profibusSubnetDBO) throws PersistenceException,
+                                                                          IOException {
+        StringWriter sw = new StringWriter();
+        ProfibusConfigXMLGenerator generator = new ProfibusConfigXMLGenerator();
+        generator.setSubnet(profibusSubnetDBO);
+        
+        generator.getXmlFile(sw);
+        
+        return new BufferedReader(new StringReader(sw.toString()));
     }
-    
-    /**
-     * have no nodeType
-     */
-    @Override
-    @CheckForNull
-    public NodeType getNodeType() {
-        return null;
-    }
-    
-    @Override
-    @CheckForNull
-    protected VirtualRoot copyParameter(@Nullable VirtualRoot parent) throws PersistenceException {
-        return VirtualRoot.INSTANCE;
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    @Override
-    @Nonnull
-    public FacilityDBO createChild() throws PersistenceException {
-        return new FacilityDBO(INSTANCE);
-    }
-    
-    /**
-     * {@inheritDoc}
-     */
-    @Override
-    public void accept(@Nonnull final INodeVisitor visitor) {
-        visitor.visit(this);
-    }    
 }
