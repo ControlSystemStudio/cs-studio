@@ -517,6 +517,7 @@ public class PVManagerProbe extends ViewPart {
 
 		setStatus(Messages.Probe_statusSearching);
 		pv = PVManager.readAndWrite(channel(pvName.getName()))
+				.timeout(ms(5000), "No connection after 5s. Still trying...")
 				.notifyOn(swtThread()).asynchWriteAndReadEvery(hz(25));
 		pv.addPVReaderListener(new PVReaderListener() {
 			
@@ -535,9 +536,7 @@ public class PVManagerProbe extends ViewPart {
 			
 			@Override
 			public void pvWritten() {
-				System.out.println("Called");
 				Exception lastException = pv.lastWriteException();
-				System.out.println(lastException);
 				if (lastException instanceof WriteFailException) {
 					setReadOnly(true);
 				}
