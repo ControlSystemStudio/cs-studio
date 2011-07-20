@@ -43,6 +43,10 @@
       <product
             application="org.csstudio.ams.MessageMinder.MessageMinder"
             name="AmsMessageMinder">
+         <property
+               name="appName"
+               value="AmsMessageMinder">
+         </property>
       </product>
    </extension>
 
