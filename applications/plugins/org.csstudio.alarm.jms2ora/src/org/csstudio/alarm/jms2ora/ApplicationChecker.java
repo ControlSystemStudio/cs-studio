@@ -102,10 +102,10 @@ public class ApplicationChecker implements IGenericServiceListener<ISessionServi
 
         // Convert the time to ms
         maxReceiveDiffTime *= 60000L;
-        LOG.info("Max receive time difference: ", maxReceiveDiffTime);
+        LOG.info("Max receive time difference: {}", maxReceiveDiffTime);
         
         maxStoreDiffTime *= 60000L;
-        LOG.info("Max store time difference: ", maxStoreDiffTime);
+        LOG.info("Max store time difference: {}", maxStoreDiffTime);
         
         errorState = this.existsErrorFile();
         xmppSession = null;
@@ -147,7 +147,7 @@ public class ApplicationChecker implements IGenericServiceListener<ISessionServi
             try {
                 this.wait(5000);
             } catch(InterruptedException ie) {
-                LOG.error("[*** InterruptedException ***]: ", ie.getMessage());
+                LOG.error("[*** InterruptedException ***]: {}", ie.getMessage());
             }
         }
         
@@ -159,7 +159,7 @@ public class ApplicationChecker implements IGenericServiceListener<ISessionServi
         }
 
         LOG.info("Manager initialized");
-        LOG.info("Anzahl Directory-Elemente: ", rosterItems.size());
+        LOG.info("Anzahl Directory-Elemente: {}", rosterItems.size());
         
         jmsApplics = this.getRosterGroup(rosterItems, "jms-applications");
         currentApplic = this.getRosterApplication(jmsApplics, applicationName, host, user);
@@ -191,7 +191,7 @@ public class ApplicationChecker implements IGenericServiceListener<ISessionServi
         
         if(currentApplic != null) {
             
-            LOG.info("Anwendung gefunden: ", currentApplic.getUser().getID().getName());
+            LOG.info("Anwendung gefunden: {}", currentApplic.getUser().getID().getName());
             
             List<IManagementCommandService> managementServices =
                 xmppSession.getRemoteServiceProxies(
@@ -331,9 +331,9 @@ public class ApplicationChecker implements IGenericServiceListener<ISessionServi
                 }
             }
        } catch(JDOMException jdome) {
-           LOG.error("ApplicationChecker.isApplicWorking(): [*** JDOMException ***]: ", jdome.getMessage());
+           LOG.error("[*** JDOMException ***]: {}", jdome.getMessage());
         } catch(IOException ioe) {
-            LOG.error("ApplicationChecker.isApplicWorking(): [*** IOException ***]: ", ioe.getMessage());
+            LOG.error("[*** IOException ***]: {}", ioe.getMessage());
         } finally {
             reader.close();
         }
@@ -444,7 +444,7 @@ public class ApplicationChecker implements IGenericServiceListener<ISessionServi
                 try {
                     this.wait(2000);
                 } catch(InterruptedException ie) {
-                    LOG.error("[*** InterruptedException ***]: ", ie.getMessage());
+                    LOG.error("[*** InterruptedException ***]: {}", ie.getMessage());
                 }
   
                 roster = rosterManager.getRoster();
@@ -563,9 +563,9 @@ public class ApplicationChecker implements IGenericServiceListener<ISessionServi
             errorFileStream = new FileOutputStream(errorFile);
             errorFileStream.write(1);
         } catch(FileNotFoundException fnfe) {
-            LOG.error("[*** FileNotFoundException ***]: ", fnfe.getMessage());
+            LOG.error("[*** FileNotFoundException ***]: {}", fnfe.getMessage());
         } catch(IOException ioe) {
-            LOG.error("[*** IOException ***]: ", ioe.getMessage());
+            LOG.error("[*** IOException ***]: {}", ioe.getMessage());
         } finally {
             if(errorFileStream != null) {
                 try{errorFileStream.close();}catch(Exception e) { /*Can be ignored */ }
@@ -588,7 +588,7 @@ public class ApplicationChecker implements IGenericServiceListener<ISessionServi
             service.connect(xmppUser, xmppPassword, xmppServer);
             xmppSession = service;
         } catch (Exception e) {
-            LOG.error("XMPP login is NOT possible: " + e.getMessage());
+            LOG.error("XMPP login is NOT possible: {}" + e.getMessage());
             xmppSession = null;
         }
     }
