@@ -21,19 +21,17 @@
  */
 package org.csstudio.archive.common.service.mysqlimpl.channel;
 
-import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
 import java.util.Collection;
 import java.util.List;
-import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.LinkedBlockingQueue;
 
 import javax.annotation.Nonnull;
 
 import org.csstudio.archive.common.service.channel.ArchiveChannelId;
 import org.csstudio.archive.common.service.mysqlimpl.channel.UpdateDisplayInfoBatchQueueHandler.ArchiveChannelDisplayInfo;
-import org.csstudio.archive.common.service.mysqlimpl.dao.BatchQueueHandler;
+import org.csstudio.archive.common.service.mysqlimpl.dao.AbstractBatchQueueHandler;
 
 import com.google.common.base.Function;
 import com.google.common.collect.Collections2;
@@ -44,9 +42,7 @@ import com.google.common.collect.Collections2;
  * @author bknerr
  * @since 20.07.2011
  */
-public class UpdateDisplayInfoBatchQueueHandler implements BatchQueueHandler<ArchiveChannelDisplayInfo> {
-    private final String _database;
-    private final BlockingQueue<ArchiveChannelDisplayInfo> _queue;
+public class UpdateDisplayInfoBatchQueueHandler extends AbstractBatchQueueHandler<ArchiveChannelDisplayInfo> {
 
     /**
      * Entity holding the update display range information.
@@ -87,46 +83,28 @@ public class UpdateDisplayInfoBatchQueueHandler implements BatchQueueHandler<Arc
      * Constructor.
      */
     public UpdateDisplayInfoBatchQueueHandler(@Nonnull final String databaseName) {
-        _database = databaseName;
-        _queue = new LinkedBlockingQueue<ArchiveChannelDisplayInfo>();
+        super(databaseName, new LinkedBlockingQueue<ArchiveChannelDisplayInfo>());
     }
-    @Nonnull
-    private String composeString() {
-        return "UPDATE " + _database + "." + ArchiveChannelDaoImpl.TAB +
-               "SET display_high=?, display_low=? WHERE " + _database + "." + ArchiveChannelDaoImpl.TAB + ".id=?";
-    }
+
     /**
      * {@inheritDoc}
      */
     @Override
-    public void applyBatch(@Nonnull final PreparedStatement stmt,
-                           @Nonnull final ArchiveChannelDisplayInfo element) throws SQLException {
-        stmt.clearParameters();
+    @Nonnull
+    protected String composeSqlString() {
+        return "UPDATE " + getDatabase() + "." + ArchiveChannelDaoImpl.TAB +
+               "SET display_high=?, display_low=? WHERE " + getDatabase() + "." + ArchiveChannelDaoImpl.TAB + ".id=?";
+    }
 
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public void fillStatement(@Nonnull final PreparedStatement stmt,
+                              @Nonnull final ArchiveChannelDisplayInfo element) throws SQLException {
         stmt.setString(1, element.getHigh());
         stmt.setString(2, element.getLow());
         stmt.setInt(3, element.getId().intValue());
-
-        stmt.addBatch();
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    @Override
-    @Nonnull
-    public PreparedStatement createNewStatement(@Nonnull final Connection connection) throws SQLException {
-        final String sql = composeString();
-        return connection.prepareStatement(sql);
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    @Override
-    @Nonnull
-    public BlockingQueue<ArchiveChannelDisplayInfo> getQueue() {
-        return _queue;
     }
 
     /**
@@ -144,7 +122,7 @@ public class UpdateDisplayInfoBatchQueueHandler implements BatchQueueHandler<Arc
     @Override
     @Nonnull
     public Collection<String> convertToStatementString(@Nonnull final List<ArchiveChannelDisplayInfo> elements) {
-        final String sqlStr = composeString();
+        final String sqlStr = composeSqlString();
         final Collection<String> statements =
             Collections2.transform(elements,
                                    new Function<ArchiveChannelDisplayInfo, String>() {
@@ -160,6 +138,4 @@ public class UpdateDisplayInfoBatchQueueHandler implements BatchQueueHandler<Arc
                                     });
         return statements;
     }
-
-
 }

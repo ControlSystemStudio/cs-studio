@@ -35,7 +35,7 @@ import javax.annotation.CheckForNull;
 import javax.annotation.Nonnull;
 
 import org.csstudio.archive.common.service.ArchiveConnectionException;
-import org.csstudio.archive.common.service.mysqlimpl.dao.BatchQueueHandler;
+import org.csstudio.archive.common.service.mysqlimpl.dao.AbstractBatchQueueHandler;
 import org.csstudio.domain.desy.task.AbstractTimeMeasuredRunnable;
 import org.csstudio.domain.desy.time.TimeInstant.TimeInstantBuilder;
 import org.slf4j.Logger;
@@ -63,7 +63,7 @@ public class PersistDataWorker extends AbstractTimeMeasuredRunnable {
     private final String _name;
     private final long _period;
 
-    private final Map<Class<?>, BatchQueueHandler<?>> _batchQueueHandlerMap;
+    private final Map<Class<?>, AbstractBatchQueueHandler<?>> _batchQueueHandlerMap;
     private final List<Object> _elementsInBatch = Lists.newLinkedList();
 
 
@@ -73,7 +73,7 @@ public class PersistDataWorker extends AbstractTimeMeasuredRunnable {
     public PersistDataWorker(@Nonnull final PersistEngineDataManager mgr,
                              @Nonnull final String name,
                              @Nonnull final long period,
-                             @Nonnull final Map<Class<?>, BatchQueueHandler<?>> handlerMap) {
+                             @Nonnull final Map<Class<?>, AbstractBatchQueueHandler<?>> handlerMap) {
         _mgr = mgr;
         _name = name;
         _period = period;
@@ -102,9 +102,9 @@ public class PersistDataWorker extends AbstractTimeMeasuredRunnable {
     }
 
     private <T> void processBatchHandlerMap(@Nonnull final Connection connection,
-                                            @Nonnull final Map<Class<T>, BatchQueueHandler<T>> batchQueueHandlerMap,
+                                            @Nonnull final Map<Class<T>, AbstractBatchQueueHandler<T>> batchQueueHandlerMap,
                                             @Nonnull final List<T> elementsInBatch) {
-        for (final BatchQueueHandler<T> handler : batchQueueHandlerMap.values()) {
+        for (final AbstractBatchQueueHandler<T> handler : batchQueueHandlerMap.values()) {
             PreparedStatement stmt = null;
             try {
                 stmt = handler.createNewStatement(connection);
@@ -118,7 +118,7 @@ public class PersistDataWorker extends AbstractTimeMeasuredRunnable {
         }
     }
 
-    private <T> void processBatchForStatement(@Nonnull final BatchQueueHandler<T> handler,
+    private <T> void processBatchForStatement(@Nonnull final AbstractBatchQueueHandler<T> handler,
                                               @Nonnull final PreparedStatement stmt,
                                               @Nonnull final List<T> elementsInBatch) {
         final BlockingQueue<T> queue = handler.getQueue();
@@ -132,7 +132,7 @@ public class PersistDataWorker extends AbstractTimeMeasuredRunnable {
         }
     }
 
-    private <T> void addElementToBatch(@Nonnull final BatchQueueHandler<T> handler,
+    private <T> void addElementToBatch(@Nonnull final AbstractBatchQueueHandler<T> handler,
                                        @Nonnull final PreparedStatement stmt,
                                        @Nonnull final T element,
                                        @Nonnull final List<T> elementsInBatch) {
@@ -144,7 +144,7 @@ public class PersistDataWorker extends AbstractTimeMeasuredRunnable {
         }
     }
 
-    private <T> void executeBatchAndResetOnCondition(@Nonnull final BatchQueueHandler<T> handler,
+    private <T> void executeBatchAndResetOnCondition(@Nonnull final AbstractBatchQueueHandler<T> handler,
                                                      @Nonnull final PreparedStatement stmt,
                                                      @Nonnull final List<T> elementsInBatch,
                                                      final int noOfStmts) {
@@ -162,7 +162,7 @@ public class PersistDataWorker extends AbstractTimeMeasuredRunnable {
 
 
     private <T> void handleThrowable(@Nonnull final Throwable t,
-                                     @Nonnull final BatchQueueHandler<T> handler,
+                                     @Nonnull final AbstractBatchQueueHandler<T> handler,
                                      @Nonnull final List<T> elementsInBatch) {
         final Collection<String> statements = handler.convertToStatementString(elementsInBatch);
         try {

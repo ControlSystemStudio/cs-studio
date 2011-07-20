@@ -19,37 +19,45 @@
  * PROJECT IN THE FILE LICENSE.HTML. IF THE LICENSE IS NOT INCLUDED YOU MAY FIND A COPY
  * AT HTTP://WWW.DESY.DE/LEGAL/LICENSE.HTM
  */
-package org.csstudio.archive.common.service.mysqlimpl.dao;
+package org.csstudio.archive.common.service.mysqlimpl.sample;
 
-import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.SQLException;
-import java.util.Collection;
-import java.util.List;
-import java.util.concurrent.BlockingQueue;
+import java.util.concurrent.LinkedBlockingQueue;
 
 import javax.annotation.Nonnull;
 
+import org.csstudio.archive.common.service.mysqlimpl.sample.ArchiveSampleDaoImpl.HourReducedDataSample;
+
 /**
- * Strategy for those statements that shall be batched.
+ * TODO (bknerr) :
  *
  * @author bknerr
  * @since 20.07.2011
- * @param <T> the type of the entity used to fill the statement's batch
  */
-public interface BatchQueueHandler<T> {
+public class HourReducedDataSampleBatchQueueHandler extends
+                                                   AbstractReducedDataSampleBatchQueueHandler<HourReducedDataSample> {
+    /**
+     * Constructor.
+     */
+    public HourReducedDataSampleBatchQueueHandler(@Nonnull final String database) {
+        super(database, new LinkedBlockingQueue<HourReducedDataSample>());
+    }
 
-    void applyBatch(@Nonnull final PreparedStatement stmt, @Nonnull final T type) throws SQLException;
-
+    /**
+     * {@inheritDoc}
+     */
+    @Override
     @Nonnull
-    PreparedStatement createNewStatement(@Nonnull final Connection connection) throws SQLException;
+    protected String getTable() {
+        return "sample_h";
+    }
 
-    @Nonnull
-    BlockingQueue<T> getQueue();
 
+    /**
+     * {@inheritDoc}
+     */
+    @Override
     @Nonnull
-    Collection<String> convertToStatementString(@Nonnull final List<T> elements);
-
-    @Nonnull
-    Class<T> getType();
+    public Class<HourReducedDataSample> getType() {
+        return HourReducedDataSample.class;
+    }
 }

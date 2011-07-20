@@ -21,18 +21,16 @@
  */
 package org.csstudio.archive.common.service.mysqlimpl.enginestatus;
 
-import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
 import java.util.Collection;
 import java.util.List;
-import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.LinkedBlockingQueue;
 
 import javax.annotation.Nonnull;
 
 import org.csstudio.archive.common.service.enginestatus.IArchiveEngineStatus;
-import org.csstudio.archive.common.service.mysqlimpl.dao.BatchQueueHandler;
+import org.csstudio.archive.common.service.mysqlimpl.dao.AbstractBatchQueueHandler;
 
 import com.google.common.base.Function;
 import com.google.common.base.Joiner;
@@ -44,52 +42,33 @@ import com.google.common.collect.Collections2;
  * @author bknerr
  * @since 20.07.2011
  */
-final class ArchiveEngineStatusBatchQueueHandler implements BatchQueueHandler<IArchiveEngineStatus> {
+final class ArchiveEngineStatusBatchQueueHandler extends AbstractBatchQueueHandler<IArchiveEngineStatus> {
     private static final String VAL_WILDCARDS = "(?, ?, ?, ?)";
-    private final String _database;
-    private final BlockingQueue<IArchiveEngineStatus> _queue;
     /**
      * Constructor.
      */
     public ArchiveEngineStatusBatchQueueHandler(@Nonnull final String databaseName) {
-        _database = databaseName;
-        _queue = new LinkedBlockingQueue<IArchiveEngineStatus>();
+        super(databaseName, new LinkedBlockingQueue<IArchiveEngineStatus>());
     }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
     @Nonnull
-    private String composeString() {
-        return "INSERT INTO " + _database + "." + ArchiveEngineStatusDaoImpl.TAB + " (engine_id, status, time, info) VALUES " + VAL_WILDCARDS;
+    protected String composeSqlString() {
+        return "INSERT INTO " + getDatabase() + "." + ArchiveEngineStatusDaoImpl.TAB + " (engine_id, status, time, info) VALUES " + VAL_WILDCARDS;
     }
     /**
      * {@inheritDoc}
      */
     @Override
-    public void applyBatch(@Nonnull final PreparedStatement stmt,
-                           @Nonnull final IArchiveEngineStatus status) throws SQLException {
-        stmt.clearParameters();
-
+    public void fillStatement(@Nonnull final PreparedStatement stmt,
+                              @Nonnull final IArchiveEngineStatus status) throws SQLException {
         stmt.setInt(1, status.getEngineId().intValue());
         stmt.setString(2, status.getStatus().name());
         stmt.setLong(3, status.getTimestamp().getNanos());
         stmt.setString(4, status.getInfo());
-
-        stmt.addBatch();
-    }
-    /**
-     * {@inheritDoc}
-     */
-    @Override
-    @Nonnull
-    public PreparedStatement createNewStatement(@Nonnull final Connection connection) throws SQLException {
-        final String sql = composeString();
-        return connection.prepareStatement(sql);
-    }
-    /**
-     * {@inheritDoc}
-     */
-    @Override
-    @Nonnull
-    public BlockingQueue<IArchiveEngineStatus> getQueue() {
-        return _queue;
     }
     /**
      * {@inheritDoc}
@@ -105,7 +84,7 @@ final class ArchiveEngineStatusBatchQueueHandler implements BatchQueueHandler<IA
     @Override
     @Nonnull
     public Collection<String> convertToStatementString(@Nonnull final List<IArchiveEngineStatus> elements) {
-        final String sqlStr = composeString();
+        final String sqlStr = composeSqlString();
         final Collection<String> statements =
             Collections2.transform(elements,
                                    new Function<IArchiveEngineStatus, String>() {

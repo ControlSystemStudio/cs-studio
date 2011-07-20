@@ -30,7 +30,7 @@ import java.util.concurrent.TimeUnit;
 
 import javax.annotation.Nonnull;
 
-import org.csstudio.archive.common.service.mysqlimpl.dao.BatchQueueHandler;
+import org.csstudio.archive.common.service.mysqlimpl.dao.AbstractBatchQueueHandler;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -48,7 +48,7 @@ final class ShutdownWorkerThread extends Thread {
             LoggerFactory.getLogger(ShutdownWorkerThread.class);
 
     private final PersistEngineDataManager _persistEngineDataManager;
-    private final Map<Class<?>, BatchQueueHandler<?>> _strategyAndBatchMap;
+    private final Map<Class<?>, AbstractBatchQueueHandler<?>> _strategyAndBatchMap;
 
 
 
@@ -56,7 +56,7 @@ final class ShutdownWorkerThread extends Thread {
      * Constructor.
      */
     public ShutdownWorkerThread(@Nonnull final PersistEngineDataManager mgr,
-                                @Nonnull final Map<Class<?>, BatchQueueHandler<?>> strategyAndBatchMap) {
+                                @Nonnull final Map<Class<?>, AbstractBatchQueueHandler<?>> strategyAndBatchMap) {
         _persistEngineDataManager = mgr;
         _strategyAndBatchMap = strategyAndBatchMap;
     }
@@ -75,7 +75,7 @@ final class ShutdownWorkerThread extends Thread {
         try {
             if (!executor.awaitTermination(3000, TimeUnit.MILLISECONDS)) {
                 shutdownLog.warn("Executor for PersistDataWorkers did not terminate in the specified period. Try to rescue data.");
-                for (final BatchQueueHandler<?> handler : _strategyAndBatchMap.values()) {
+                for (final AbstractBatchQueueHandler<?> handler : _strategyAndBatchMap.values()) {
                     rescueQueueContent(handler);
                 }
             }
@@ -85,7 +85,7 @@ final class ShutdownWorkerThread extends Thread {
         executor.shutdownNow();
     }
 
-    private <T> void rescueQueueContent(@Nonnull final BatchQueueHandler<T> handler) {
+    private <T> void rescueQueueContent(@Nonnull final AbstractBatchQueueHandler<T> handler) {
         final List<T> elements = Lists.newLinkedList();
         handler.getQueue().drainTo(elements);
         final Collection<String> statements = handler.convertToStatementString(elements);

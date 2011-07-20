@@ -38,7 +38,7 @@ import javax.annotation.Nonnull;
 import org.csstudio.archive.common.service.mysqlimpl.MySQLArchivePreferenceService;
 import org.csstudio.archive.common.service.mysqlimpl.dao.ArchiveConnectionHandler;
 import org.csstudio.archive.common.service.mysqlimpl.dao.ArchiveDaoException;
-import org.csstudio.archive.common.service.mysqlimpl.dao.BatchQueueHandler;
+import org.csstudio.archive.common.service.mysqlimpl.dao.AbstractBatchQueueHandler;
 import org.csstudio.archive.common.service.mysqlimpl.notification.ArchiveNotifications;
 import org.csstudio.archive.common.service.util.DataRescueException;
 import org.csstudio.archive.common.service.util.DataRescueResult;
@@ -96,7 +96,7 @@ public class PersistEngineDataManager {
 
     private final ArchiveConnectionHandler _connectionHandler;
 
-    private final Map<Class<?>, BatchQueueHandler<?>> _strategyAndBatchMap = Maps.newConcurrentMap();
+    private final Map<Class<?>, AbstractBatchQueueHandler<?>> _strategyAndBatchMap = Maps.newConcurrentMap();
 
     /**
      * Constructor.
@@ -131,7 +131,7 @@ public class PersistEngineDataManager {
      * meaning continuous integration. This is a flaw as the production code should be unaware
      * of its run context, but we couldn't think of another option.
      */
-    private void addGracefulShutdownHook(@Nonnull final Map<Class<?>, BatchQueueHandler<?>> strategyAndBatchMap) {
+    private void addGracefulShutdownHook(@Nonnull final Map<Class<?>, AbstractBatchQueueHandler<?>> strategyAndBatchMap) {
         if (DesyRunContext.isProductionContext()) {
             /**
              * Add shutdown hook.
@@ -235,7 +235,7 @@ public class PersistEngineDataManager {
         _executor.shutdown();
     }
 
-    public void registerBatchQueueHandler(@Nonnull final BatchQueueHandler<?> batchStrategy) throws ArchiveDaoException {
+    public void registerBatchQueueHandler(@Nonnull final AbstractBatchQueueHandler<?> batchStrategy) throws ArchiveDaoException {
         final Class<?> type = batchStrategy.getType();
         if (_strategyAndBatchMap.containsKey(type)) {
             throw new ArchiveDaoException("A batch strategy for type " + type.getName() + " has already been registered.", null);
@@ -259,7 +259,7 @@ public class PersistEngineDataManager {
     @Nonnull
     private BlockingQueue<?> getQueueForTypeOf(@Nonnull final Object entry) throws ArchiveDaoException {
         final Class<?> type = entry.getClass();
-        final BatchQueueHandler<?> strategy = _strategyAndBatchMap.get(type);
+        final AbstractBatchQueueHandler<?> strategy = _strategyAndBatchMap.get(type);
         if (strategy != null) {
             return strategy.getQueue();
         }

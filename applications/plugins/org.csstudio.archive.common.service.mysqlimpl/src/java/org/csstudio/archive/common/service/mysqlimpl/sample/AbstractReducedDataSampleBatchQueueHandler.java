@@ -19,37 +19,41 @@
  * PROJECT IN THE FILE LICENSE.HTML. IF THE LICENSE IS NOT INCLUDED YOU MAY FIND A COPY
  * AT HTTP://WWW.DESY.DE/LEGAL/LICENSE.HTM
  */
-package org.csstudio.archive.common.service.mysqlimpl.channelstatus;
+package org.csstudio.archive.common.service.mysqlimpl.sample;
 
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.List;
-import java.util.concurrent.LinkedBlockingQueue;
+import java.util.concurrent.BlockingQueue;
 
 import javax.annotation.Nonnull;
 
-import org.csstudio.archive.common.service.channelstatus.IArchiveChannelStatus;
 import org.csstudio.archive.common.service.mysqlimpl.dao.AbstractBatchQueueHandler;
+import org.csstudio.archive.common.service.mysqlimpl.dao.ArchiveDaoException;
+import org.csstudio.archive.common.service.mysqlimpl.sample.ArchiveSampleDaoImpl.AbstractReducedDataSample;
 
 import com.google.common.base.Function;
 import com.google.common.base.Joiner;
 import com.google.common.collect.Collections2;
 
 /**
- * DBO specific batch strategy for high write throughput.
+ * TODO (bknerr) :
  *
  * @author bknerr
  * @since 20.07.2011
+ * @param <T> the type of the entity used to fill the statement's batch
  */
-public class ArchiveChannelStatusBatchQueueHandler extends AbstractBatchQueueHandler<IArchiveChannelStatus> {
-    private static final String VAL_WILDCARDS = "(?, ?, ?, ?)";
+public abstract class AbstractReducedDataSampleBatchQueueHandler<T extends AbstractReducedDataSample> extends AbstractBatchQueueHandler<T> {
+    private static final String VAL_WILDCARDS = "(?, ?, ?, ?, ?)";
 
     /**
      * Constructor.
      */
-    public ArchiveChannelStatusBatchQueueHandler(@Nonnull final String databaseName) {
-        super(databaseName,new LinkedBlockingQueue<IArchiveChannelStatus>());
+    public AbstractReducedDataSampleBatchQueueHandler(@Nonnull final String database,
+                                                      @Nonnull final BlockingQueue<T> queue) {
+        super(database, queue);
     }
 
     /**
@@ -58,20 +62,27 @@ public class ArchiveChannelStatusBatchQueueHandler extends AbstractBatchQueueHan
     @Override
     @Nonnull
     protected String composeSqlString() {
-        return "INSERT INTO " + getDatabase() + "." + ArchiveChannelStatusDaoImpl.TAB +
-               " (channel_id, connected, info, timestamp) VALUES " + VAL_WILDCARDS;
+        final String sql =
+            "INSERT INTO " + getDatabase() + "." + getTable() + " (channel_id, sample_time, avg_val, min_val, max_val) VALUES " + VAL_WILDCARDS;
+        return sql;
     }
+
+    @Nonnull
+    protected abstract String getTable();
 
     /**
      * {@inheritDoc}
      */
     @Override
-    public void fillStatement(@Nonnull final PreparedStatement stmt,
-                              @Nonnull final IArchiveChannelStatus element) throws SQLException {
+    protected void fillStatement(@Nonnull final PreparedStatement stmt,
+                                 @Nonnull final T element)
+                                 throws ArchiveDaoException,
+                                        SQLException {
         stmt.setInt(1, element.getChannelId().intValue());
-        stmt.setString(2, (element.isConnected() ? "'TRUE'" : "'FALSE'"));
-        stmt.setString(3, element.getInfo());
-        stmt.setLong(4, element.getTime().getNanos());
+        stmt.setLong(2, element.getTimestamp().getNanos());
+        stmt.setDouble(3, element.getAvg());
+        stmt.setDouble(4, element.getMin());
+        stmt.setDouble(5, element.getMax());
     }
 
     /**
@@ -79,35 +90,31 @@ public class ArchiveChannelStatusBatchQueueHandler extends AbstractBatchQueueHan
      */
     @Override
     @Nonnull
-    public Collection<String> convertToStatementString(@Nonnull final List<IArchiveChannelStatus> elements) {
-        final String sql = composeSqlString();
-        final String sqlWithoutValues = sql.replace(VAL_WILDCARDS, "");
+    public Collection<String> convertToStatementString(@Nonnull final List<T> elements) {
+        final String sqlWithoutValues = composeSqlString().replace(VAL_WILDCARDS, "");
 
-        final Collection<String> statements =
+        final Collection<String> values =
             Collections2.transform(elements,
-                                   new Function<IArchiveChannelStatus, String>() {
+                                   new Function<AbstractReducedDataSample, String>() {
                                        @Override
                                        @Nonnull
-                                       public String apply(@Nonnull final IArchiveChannelStatus entry) {
+                                       public String apply(@Nonnull final AbstractReducedDataSample input) {
                                            final String result =
-                                               sqlWithoutValues +
                                                "(" +
-                                               Joiner.on(",").join(entry.getChannelId().intValue(),
-                                                                   entry.isConnected() ? "'TRUE'" : "'FALSE'",
-                                                                   "'" + entry.getInfo() + "'",
-                                                                   entry.getTime().getNanos()) +
+                                               input.getChannelId().asString() + "," +
+                                               input.getTimestamp().getNanos() + "," +
+                                               input.getAvg() + "," +
+                                               input.getMin() + "," +
+                                               input.getMax() + "," +
                                                ")";
                                            return result;
                                        }
                                     });
-        return statements;
+        final String valuesStr =
+            Joiner.on(",").join(values);
+
+        return Collections.singleton(sqlWithoutValues + " " + valuesStr);
     }
-    /**
-     * {@inheritDoc}
-     */
-    @Override
-    @Nonnull
-    public Class<IArchiveChannelStatus> getType() {
-        return IArchiveChannelStatus.class;
-    }
+
+
 }
