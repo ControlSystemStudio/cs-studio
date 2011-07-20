@@ -151,7 +151,7 @@ public class PVTableEditor extends EditorPart implements ISelectionProvider {
 
 	private DynamicGroup group = group();
 	private PVReader<List<Object>> pv = PVManager.read(group)
-			.notifyOn(SWTUtil.onSWTThread()).every(hz(2));
+			.notifyOn(SWTUtil.swtThread()).every(hz(2));
 	private final PVReaderListener pvListener = new PVReaderListener() {
 
 		@Override

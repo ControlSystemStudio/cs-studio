@@ -1,6 +1,6 @@
 package org.csstudio.diag.pvmanager.probe;
 
-import static org.csstudio.utility.pvmanager.ui.SWTUtil.onSWTThread;
+import static org.csstudio.utility.pvmanager.ui.SWTUtil.swtThread;
 import static org.epics.pvmanager.ExpressionLanguage.*;
 import static org.epics.pvmanager.util.TimeDuration.*;
 
@@ -520,7 +520,7 @@ public class PVManagerProbe extends ViewPart {
 
 		setStatus(Messages.Probe_statusSearching);
 		pv = PVManager.read(channel(pvName.getName()))
-				.notifyOn(onSWTThread()).every(hz(25));
+				.notifyOn(swtThread()).every(hz(25));
 		pv.addPVReaderListener(new PVReaderListener() {
 			
 			@Override

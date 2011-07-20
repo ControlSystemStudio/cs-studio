@@ -233,7 +233,7 @@ public class WaterfallWidget extends Composite {
 			plot = waterfallPlotOf(vDoubleArray(pvName)).with(parameters, WaterfallPlotParameters.backgroundColor(color));
 			parameters = plot.getParameters();
 			pv = PVManager.read(plot)
-				.notifyOn(SWTUtil.onSWTThread()).every(hz(50));
+				.notifyOn(SWTUtil.swtThread()).every(hz(50));
 			pv.addPVReaderListener(new PVReaderListener() {
 				
 				@Override
