@@ -1,5 +1,5 @@
 /*
- * Copyright 2010 Brookhaven National Laboratory
+ * Copyright 2010-11 Brookhaven National Laboratory
  * All rights reserved. Use is subject to license terms.
  */
 
@@ -8,6 +8,7 @@ package org.epics.pvmanager;
 /**
  * Represent a building block that can store a particular value
  *
+ * @param <T> the type of the value held by the cache
  * @author carcassi
  */
 public class ValueCache<T> extends Function<T> {

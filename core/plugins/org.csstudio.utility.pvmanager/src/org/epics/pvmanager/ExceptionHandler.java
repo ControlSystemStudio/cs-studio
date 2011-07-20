@@ -1,5 +1,5 @@
 /*
- * Copyright 2010 Brookhaven National Laboratory
+ * Copyright 2010-11 Brookhaven National Laboratory
  * All rights reserved. Use is subject to license terms.
  */
 
@@ -30,8 +30,7 @@ public class ExceptionHandler {
         log.log(Level.INFO, "Exception for PV", ex);
     }
     
-    public static ExceptionHandler createDefaultExceptionHandler(final PVWriter<?> pvWriter, final Executor notificationExecutor) {
-        final PVWriterImpl<?> pvWriterImpl = (PVWriterImpl<?>) pvWriter;
+    static ExceptionHandler createDefaultExceptionHandler(final PVWriterImpl<?> pvWriter, final Executor notificationExecutor) {
         return new ExceptionHandler() {
             @Override
             public void handleException(final Exception ex) {
@@ -39,12 +38,29 @@ public class ExceptionHandler {
 
                     @Override
                     public void run() {
-                        pvWriterImpl.setLastWriteException(ex);
-                        pvWriterImpl.firePvValueWritten();
+                        pvWriter.setLastWriteException(ex);
+                        pvWriter.firePvWritten();
                     }
                 });
             }
             
+        };
+    }
+    
+    static ExceptionHandler createDefaultExceptionHanderl(final PVReaderImpl<?> pv, final Executor notificationExecutor) {
+        return new ExceptionHandler() {
+
+            @Override
+            public void handleException(final Exception ex) {
+                notificationExecutor.execute(new Runnable() {
+
+                    @Override
+                    public void run() {
+                        pv.setLastException(ex);
+                        pv.firePvValueChanged();
+                    }
+                });
+            }
         };
     }
 }

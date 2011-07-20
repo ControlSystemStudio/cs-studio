@@ -1,5 +1,5 @@
 /*
- * Copyright 2010 Brookhaven National Laboratory
+ * Copyright 2010-11 Brookhaven National Laboratory
  * All rights reserved. Use is subject to license terms.
  */
 
@@ -11,6 +11,7 @@ import org.epics.pvmanager.DesiredRateExpression;
 import org.epics.pvmanager.Collector;
 import org.epics.pvmanager.SourceRateExpression;
 import org.epics.pvmanager.Function;
+import org.epics.pvmanager.SourceRateExpressionImpl;
 import org.epics.pvmanager.util.TimeDuration;
 import static org.epics.pvmanager.ExpressionLanguage.*;
 
@@ -34,7 +35,7 @@ public class ExpressionLanguage {
      * @return an expression representing the channel
      */
     public static SourceRateExpression<VDouble> vDouble(String name) {
-        return new SourceRateExpression<VDouble>(name, VDouble.class);
+        return new SourceRateExpressionImpl<VDouble>(name, VDouble.class);
     }
 
     /**
@@ -44,7 +45,7 @@ public class ExpressionLanguage {
      * @return an expression representing the channel
      */
     public static SourceRateExpression<VFloatArray> vFloatArray(String name) {
-        return new SourceRateExpression<VFloatArray>(name, VFloatArray.class);
+        return new SourceRateExpressionImpl<VFloatArray>(name, VFloatArray.class);
     }
 
     /**
@@ -54,7 +55,7 @@ public class ExpressionLanguage {
      * @return an expression representing the channel
      */
     public static SourceRateExpression<VDoubleArray> vDoubleArray(String name) {
-        return new SourceRateExpression<VDoubleArray>(name, VDoubleArray.class);
+        return new SourceRateExpressionImpl<VDoubleArray>(name, VDoubleArray.class);
     }
 
     /**
@@ -64,7 +65,7 @@ public class ExpressionLanguage {
      * @return an expression representing the channel
      */
     public static SourceRateExpression<VInt> vInt(String name) {
-        return new SourceRateExpression<VInt>(name, VInt.class);
+        return new SourceRateExpressionImpl<VInt>(name, VInt.class);
     }
 
     /**
@@ -74,7 +75,7 @@ public class ExpressionLanguage {
      * @return an expression representing the channel
      */
     public static SourceRateExpression<VByteArray> vByteArray(String name) {
-        return new SourceRateExpression<VByteArray>(name, VByteArray.class);
+        return new SourceRateExpressionImpl<VByteArray>(name, VByteArray.class);
     }
 
     /**
@@ -84,7 +85,7 @@ public class ExpressionLanguage {
      * @return an expression representing the channel
      */
     public static SourceRateExpression<VShortArray> vShortArray(String name) {
-        return new SourceRateExpression<VShortArray>(name, VShortArray.class);
+        return new SourceRateExpressionImpl<VShortArray>(name, VShortArray.class);
     }
 
     /**
@@ -94,7 +95,7 @@ public class ExpressionLanguage {
      * @return an expression representing the channel
      */
     public static SourceRateExpression<VIntArray> vIntArray(String name) {
-        return new SourceRateExpression<VIntArray>(name, VIntArray.class);
+        return new SourceRateExpressionImpl<VIntArray>(name, VIntArray.class);
     }
 
     /**
@@ -104,7 +105,7 @@ public class ExpressionLanguage {
      * @return an expression representing the channel
      */
     public static SourceRateExpression<VString> vString(String name) {
-        return new SourceRateExpression<VString>(name, VString.class);
+        return new SourceRateExpressionImpl<VString>(name, VString.class);
     }
 
     /**
@@ -114,7 +115,7 @@ public class ExpressionLanguage {
      * @return an expression representing the channel
      */
     public static SourceRateExpression<VStringArray> vStringArray(String name) {
-        return new SourceRateExpression<VStringArray>(name, VStringArray.class);
+        return new SourceRateExpressionImpl<VStringArray>(name, VStringArray.class);
     }
 
     /**
@@ -124,7 +125,7 @@ public class ExpressionLanguage {
      * @return an expression representing the channel
      */
     public static SourceRateExpression<VEnum> vEnum(String name) {
-        return new SourceRateExpression<VEnum>(name, VEnum.class);
+        return new SourceRateExpressionImpl<VEnum>(name, VEnum.class);
     }
 
     /**

@@ -1,5 +1,5 @@
 /*
- * Copyright 2010 Brookhaven National Laboratory
+ * Copyright 2010-11 Brookhaven National Laboratory
  * All rights reserved. Use is subject to license terms.
  */
 
@@ -105,6 +105,12 @@ public class DataRecipe {
         return exceptionHandler;
     }
 
+    /**
+     * Creates a new data recipe with the given handler.
+     * 
+     * @param handler a new exception handler
+     * @return a new data recipe
+     */
     public DataRecipe withExceptionHandler(ExceptionHandler handler) {
         return new DataRecipe(channelsPerCollector, handler);
     }
