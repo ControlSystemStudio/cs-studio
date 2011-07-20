@@ -162,13 +162,13 @@ public abstract class DataSource {
      */
     public void prepareWrite(final WriteBuffer writeBuffer, final ExceptionHandler exceptionHandler) {
         if (!isWriteable())
-            throw new UnsupportedOperationException("This data source is read only");
+            throw new WriteFailException("Data source is read only");
         
         final Set<ChannelHandler> handlers = new HashSet<ChannelHandler>();
         for (String channelName : writeBuffer.getWriteCaches().keySet()) {
             ChannelHandler handler = channel(channelName);
             if (handler == null)
-                throw new WriteFailException();
+                throw new WriteFailException("Channel " + channelName + " does not exist");
             handlers.add(handler);
             }
 
@@ -195,7 +195,7 @@ public abstract class DataSource {
      */
     public void concludeWrite(final WriteBuffer writeBuffer, final ExceptionHandler exceptionHandler) {
         if (!isWriteable())
-            throw new UnsupportedOperationException("This data source is read only");
+            throw new WriteFailException("Data source is read only");
         
         if (!registeredBuffers.contains(writeBuffer)) {
             log.log(Level.WARNING, "WriteBuffer {0} was unregistered but was never registered. Ignoring it.", writeBuffer);
