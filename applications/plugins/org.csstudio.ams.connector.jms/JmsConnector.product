@@ -23,7 +23,7 @@
 
    <plugins>
       <plugin id="com.ibm.icu"/>
-      <plugin id="com.jdbc.mysql"/>
+      <plugin id="com.mysql.jdbc"/>
       <plugin id="javax.servlet"/>
       <plugin id="javax.servlet.jsp"/>
       <plugin id="org.apache.commons.el"/>
