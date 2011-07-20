@@ -49,13 +49,13 @@ public enum EditAction {
      * 
      * @param name
      */
-    private EditAction(String name) {
-        this.name = name;
+    private EditAction(String n) {
+        this.name = n;
     }
     
     /**
      * 
-     * @return
+     * @return String that contains the name of the action
      */
     public String getName() {
         return this.name;
@@ -64,7 +64,7 @@ public enum EditAction {
     /**
      * 
      * @param n
-     * @return
+     * @return The EditAction that matches the given name
      */
     public static EditAction getByName(String n) {
         

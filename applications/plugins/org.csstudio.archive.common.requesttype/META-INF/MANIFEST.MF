@@ -1,6 +1,6 @@
 Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
-Bundle-Name: Algorithm
+Bundle-Name: Request types (and algorithms) for archive services
 Bundle-SymbolicName: org.csstudio.archive.common.requesttype
 Bundle-Version: 1.0.0.qualifier
 Bundle-Activator: org.csstudio.archive.common.requesttype.algorithm.Activator

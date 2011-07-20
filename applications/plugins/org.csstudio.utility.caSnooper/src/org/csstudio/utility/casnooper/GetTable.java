@@ -21,22 +21,26 @@
  */
 package org.csstudio.utility.casnooper;
 
-import org.csstudio.platform.logging.CentralLogger;
 import org.csstudio.platform.management.CommandParameters;
 import org.csstudio.platform.management.CommandResult;
 import org.csstudio.platform.management.IManagementCommand;
-import org.csstudio.utility.casnooper.channel.SnooperStringParser;
 import org.csstudio.utility.casnooper.channel.ChannelCollector;
+import org.csstudio.utility.casnooper.channel.SnooperStringParser;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class GetTable implements IManagementCommand {
 
-    private SnooperStringParser parser = new SnooperStringParser();
+    private static final Logger LOG = LoggerFactory.getLogger(GetTable.class);
+    
+    private final SnooperStringParser parser = new SnooperStringParser();
     private ChannelCollector channel;
 
+    @Override
     public CommandResult execute(CommandParameters parameters) {
         channel = ChannelCollector.getInstance();
         if (channel.getSnoops() == null) {
-            CentralLogger.getInstance().info(this, "No data was captured");
+            LOG.info("No data was captured");
             return CommandResult.createMessageResult("No data was captured");
         }
         return CommandResult.createSuccessResult(parser.parse(channel

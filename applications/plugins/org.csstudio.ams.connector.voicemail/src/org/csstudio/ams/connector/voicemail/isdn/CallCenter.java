@@ -23,9 +23,7 @@
 
 package org.csstudio.ams.connector.voicemail.isdn;
 
-import java.util.Date;
-
-import org.csstudio.platform.logging.CentralLogger;
+import org.csstudio.ams.Log;
 
 /**
  * @author Markus Moeller
@@ -35,14 +33,11 @@ public class CallCenter
 {
     private CapiReceiver receiver = null;
     private CapiCaller caller = null;
-    private CentralLogger logger = null;
     
     private final int RETRY = 3;
     
     public CallCenter() throws CallCenterException
     {
-        logger = CentralLogger.getInstance();
-        
         try
         {
             receiver = new CapiReceiver();
@@ -60,8 +55,12 @@ public class CallCenter
         }
     }
     
-    public void makeCall(String telephoneNumber, String message, String textType, String chainIdAndPos, String waitUntil) throws CallCenterException
-    {
+    public void makeCall(String telephoneNumber,
+                         String message,
+                         String textType,
+                         String chainIdAndPos,
+                         String waitUntil) throws CallCenterException {
+        
         CallInfo callInfo;
         long waitTime = 0;
         int type;
@@ -74,7 +73,7 @@ public class CallCenter
         catch(NumberFormatException nfe)
         {
             type = 0;
-            logger.warn(this, "Text type is invalid: " + textType);
+            Log.log(this, Log.ERROR, "Text type is invalid: " + textType);
             throw new CallCenterException("Text type is invalid: " + textType);
         }
 
@@ -89,7 +88,7 @@ public class CallCenter
                 catch(NumberFormatException nfe)
                 {
                     waitTime = 0;
-                    logger.warn(this, "Wait time is invalid: " + waitUntil);
+                    Log.log(this, Log.WARN, "Wait time is invalid: " + waitUntil);
                     
                     // Throw only an exception if the alarm needs to be confirmed
                     if(CallCenter.TextType.TEXTTYPE_ALARM_WCONFIRM.ordinal() == type)
@@ -138,7 +137,7 @@ public class CallCenter
                     throw new CallCenterException(cce);
                 }
                 
-                logger.debug(this, "Confirmation code: " + callInfo.getConfirmationCode());
+                Log.log(this, Log.DEBUG, "Confirmation code: " + callInfo.getConfirmationCode());
                
                 break;
                 

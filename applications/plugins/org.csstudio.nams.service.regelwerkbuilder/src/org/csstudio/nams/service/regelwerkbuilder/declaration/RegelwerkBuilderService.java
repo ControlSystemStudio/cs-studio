@@ -1,3 +1,4 @@
+
 package org.csstudio.nams.service.regelwerkbuilder.declaration;
 
 import java.util.List;

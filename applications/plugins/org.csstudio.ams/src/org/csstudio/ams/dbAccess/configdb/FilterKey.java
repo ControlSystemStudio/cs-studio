@@ -23,25 +23,22 @@
 
 package org.csstudio.ams.dbAccess.configdb;
 
-import java.io.Serializable;
-
 import org.csstudio.ams.dbAccess.Key;
 
-public class FilterKey  extends Key implements Serializable
-{
-	private static final long serialVersionUID = -1005616479373447530L;
+@SuppressWarnings("hiding")
+public class FilterKey  extends Key {
+	
+    private static final long serialVersionUID = -1005616479373447530L;
 	
 	public int filterID;
 	public String filterName;
 	public int groupRef;
 	
-	public FilterKey()
-	{
+	public FilterKey() {
 		this(-1,null,-1);
 	}
 	
-	public FilterKey(int filterID, String name, int groupRef)
-	{
+	public FilterKey(int filterID, String name, int groupRef) {
 		super(Key.FILTER_KEY);
 		this.filterID = filterID;
 		this.filterName = name;
@@ -49,35 +46,35 @@ public class FilterKey  extends Key implements Serializable
 	}
 	
 	
-	public String toString()
-	{
+	@Override
+    public String toString() {
 		return filterName == null ? "" : filterName;
 	}
 	
-	public int hashCode()
-	{
+	@Override
+    public int hashCode() {
 		return (filterID + " " + filterName).hashCode();
 	}
 	
-	public boolean equals(Object obj)
-	{
+	@Override
+    public boolean equals(Object obj) {
 		if(obj instanceof FilterKey)
 			return ((FilterKey)obj).filterID == filterID;
 		return false;
 	}
 	
-	public int getID()
-	{
+	@Override
+    public int getID() {
 		return filterID;
 	}
 	
-	public int getGroupRef()
-	{
+	@Override
+    public int getGroupRef() {
 		return groupRef;
 	}
 	
-	public void setGroupRef(int groupRef)
-	{
+	@Override
+    public void setGroupRef(int groupRef) {
 		this.groupRef = groupRef;
 	}
 }

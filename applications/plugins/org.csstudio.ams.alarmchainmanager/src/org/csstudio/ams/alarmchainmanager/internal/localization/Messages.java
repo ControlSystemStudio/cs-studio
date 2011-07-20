@@ -1,3 +1,4 @@
+
 /* 
  * Copyright (c) 2008 Stiftung Deutsches Elektronen-Synchrotron, 
  * Member of the Helmholtz Association, (DESY), HAMBURG, GERMANY.
@@ -26,9 +27,9 @@ import java.util.MissingResourceException;
 import java.util.ResourceBundle;
 import org.eclipse.osgi.util.NLS;
 
-public class Messages extends NLS
-{
-	private static final String BUNDLE_NAME = "org.csstudio.ams.alarmchainmanager.internal.localization.messages";
+public class Messages extends NLS {
+	
+    private static final String BUNDLE_NAME = "org.csstudio.ams.alarmchainmanager.internal.localization.messages";
 	
 	public static String ManagerTable_tbl_Colum1;
 	public static String ManagerTable_tbl_Colum2;
@@ -64,6 +65,7 @@ public class Messages extends NLS
      * This method does nothing. 
      */
     private Messages() {
+        // Avoid instantiation
     }
     
     /**
@@ -73,14 +75,10 @@ public class Messages extends NLS
      * @param key   String
      * @return String
      */
-    public static String getString(String key)
-    {
-        try
-        {
+    public static String getString(String key) {
+        try {
             return RESOURCE_BUNDLE.getString(key);
-        }
-        catch (MissingResourceException e)
-        {
+        } catch (MissingResourceException e) {
             return '!' + key + '!';
         }
     }

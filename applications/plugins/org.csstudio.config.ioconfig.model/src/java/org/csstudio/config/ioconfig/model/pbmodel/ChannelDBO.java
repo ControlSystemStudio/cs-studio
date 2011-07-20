@@ -36,12 +36,14 @@ import javax.persistence.Table;
 import javax.persistence.Transient;
 
 import org.csstudio.config.ioconfig.model.AbstractNodeDBO;
-import org.csstudio.config.ioconfig.model.InvalidLeave;
+import org.csstudio.config.ioconfig.model.INodeVisitor;
 import org.csstudio.config.ioconfig.model.NodeType;
 import org.csstudio.config.ioconfig.model.PersistenceException;
+import org.csstudio.config.ioconfig.model.VirtualLeaf;
 import org.csstudio.config.ioconfig.model.tools.NodeMap;
-import org.csstudio.platform.logging.CentralLogger;
 import org.hibernate.annotations.BatchSize;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  *
@@ -53,7 +55,9 @@ import org.hibernate.annotations.BatchSize;
 @Entity
 @BatchSize(size = 32)
 @Table(name = "ddb_Profibus_Channel")
-public class ChannelDBO extends AbstractNodeDBO<ChannelStructureDBO, InvalidLeave> {
+public class ChannelDBO extends AbstractNodeDBO<ChannelStructureDBO, VirtualLeaf> {
+    
+    private static final Logger LOG = LoggerFactory.getLogger(ChannelDBO.class);
     
     private static final long serialVersionUID = 1L;
     
@@ -103,7 +107,7 @@ public class ChannelDBO extends AbstractNodeDBO<ChannelStructureDBO, InvalidLeav
     public ChannelDBO(@Nonnull final ChannelStructureDBO channelStructure,
                       final boolean input,
                       final boolean digital) throws PersistenceException {
-        this(channelStructure, null, input, digital, (short) -1);
+        this(channelStructure, " ", input, digital, (short) -1);
     }
     
     /**
@@ -130,12 +134,12 @@ public class ChannelDBO extends AbstractNodeDBO<ChannelStructureDBO, InvalidLeav
                       final boolean input,
                       final boolean digital,
                       final int sortIndex) throws PersistenceException {
+        super(channelStructure);
         setName(name);
         setInput(input);
         setDigital(digital);
-        setParent(channelStructure);
         setSortIndex(sortIndex);
-        channelStructure.addChild(this);
+        setChannelType(DataType.DS33);//
         localUpdate();
     }
     
@@ -259,22 +263,24 @@ public class ChannelDBO extends AbstractNodeDBO<ChannelStructureDBO, InvalidLeav
      */
     @Nonnull
     public DataType getChannelType() {
-        if(_channelType < DataType.values().length) {
-            return DataType.values()[_channelType];
-        }
-        return DataType.BIT;
+        return DataType.forId(_channelType);
     }
     
     /**
-     *
      * @param type set the Type of this {@link ChannelDBO}
      */
     public void setChannelType(@Nonnull final DataType type) {
-        _channelType = type.ordinal();
+        _channelType = type.getId();
     }
     
     public void setChannelTypeNonHibernate(@Nonnull final DataType type) throws PersistenceException {
-        if(getChannelType() != type) {
+        DataType channelType;
+        try {
+            channelType = getChannelType();
+        } catch (IllegalArgumentException e) {
+            channelType = null;
+        }
+        if(channelType==null||channelType != type) {
             setChannelType(type);
             setDirty(true);
             if(getModule() != null) {
@@ -400,7 +406,7 @@ public class ChannelDBO extends AbstractNodeDBO<ChannelStructureDBO, InvalidLeav
         short structSortIndex = getParent().getSortIndex();
         short moduleSortIndex = getModule().getSortIndex();
         
-        if(! ( (channelSortIndex <= 0) && (structSortIndex <= 0) && (moduleSortIndex <= 0))) {
+        if(!( (channelSortIndex <= 0) && (structSortIndex <= 0) && (moduleSortIndex <= 0))) {
             // if it a simple Channel (AI/AO)
             if(getChannelStructure().isSimple()) {
                 channelNumber = updateSimpleChannel(channelNumber, structSortIndex);
@@ -410,7 +416,7 @@ public class ChannelDBO extends AbstractNodeDBO<ChannelStructureDBO, InvalidLeav
                                                        structSortIndex);
             }
         }
-        
+
         setChannelNumber(channelNumber);
         assembleEpicsAddressString();
     }
@@ -450,8 +456,10 @@ public class ChannelDBO extends AbstractNodeDBO<ChannelStructureDBO, InvalidLeav
                             break;
                         } else {
                             ChannelDBO lastChannel = channelStructure.getLastChannel();
-                            cNumber = lastChannel.getChannelNumber()
-                                    + channelStructure.getStructureType().getByteSize();
+                            if(lastChannel != null) {
+                                cNumber = lastChannel.getChannelNumber()
+                                        + channelStructure.getStructureType().getByteSize();
+                            }
                             break;
                         }
                     }
@@ -470,7 +478,7 @@ public class ChannelDBO extends AbstractNodeDBO<ChannelStructureDBO, InvalidLeav
             while ( (channelStructure == null) && (counter > 0)) {
                 channelStructure = getModule().getChildrenAsMap().get(--counter);
                 ChannelDBO lastChannel = channelStructure.getLastChannel();
-                if(isRigthSimpleChannel(channelStructure, lastChannel)) {
+                if(isRightSimpleChannel(channelStructure, lastChannel)) {
                     // Previous Channel is:
                     cNr = lastChannel.getChannelNumber();
                     if(channelStructure.isSimple()) {
@@ -491,7 +499,7 @@ public class ChannelDBO extends AbstractNodeDBO<ChannelStructureDBO, InvalidLeav
      * @param lastChannel
      * @return
      */
-    private boolean isRigthSimpleChannel(@CheckForNull ChannelStructureDBO channelStructure,
+    private boolean isRightSimpleChannel(@CheckForNull ChannelStructureDBO channelStructure,
                                          @CheckForNull ChannelDBO lastChannel) {
         return (channelStructure != null) && (lastChannel != null)
                 && (lastChannel.isInput() == isInput());
@@ -514,9 +522,26 @@ public class ChannelDBO extends AbstractNodeDBO<ChannelStructureDBO, InvalidLeav
                 sb.append("/");
                 sb.append(getStatusAddress());
             }
-            sb.append(" 'T=");
-            Set<ModuleChannelPrototypeDBO> moduleChannelPrototypes = getModule().getGSDModule()
-                    .getModuleChannelPrototypeNH();
+            assembleEpicsAddressType(sb);
+            sb.append("'");
+            setEpicsAddressString(sb.toString());
+        } catch (NullPointerException e) {
+            LOG.warn("",e);
+            setEpicsAddressString("");
+        }
+        setDirty( (isDirty() || (oldAdr == null) || !oldAdr.equals(getEpicsAddressString())));
+    }
+
+    /**
+     * @param sb
+     * @throws PersistenceException
+     */
+    public void assembleEpicsAddressType(@Nonnull StringBuilder sb) throws PersistenceException {
+        sb.append(" 'T=");
+        GSDModuleDBO gsdModule = getModule().getGSDModule();
+        if(gsdModule != null) {
+            Set<ModuleChannelPrototypeDBO> moduleChannelPrototypes = gsdModule
+            .getModuleChannelPrototypeNH();
             for (ModuleChannelPrototypeDBO moduleChannelPrototype : moduleChannelPrototypes) {
                 if( (moduleChannelPrototype.isInput() == isInput())
                         && (getChannelNumber() == moduleChannelPrototype.getOffset())) {
@@ -528,19 +553,14 @@ public class ChannelDBO extends AbstractNodeDBO<ChannelStructureDBO, InvalidLeav
                     appendByteOdering(sb, moduleChannelPrototype);
                 }
             }
-            sb.append("'");
-            setEpicsAddressString(sb.toString());
-        } catch (NullPointerException e) {
-            setEpicsAddressString("");
         }
-        setDirty( (isDirty() || (oldAdr == null) || !oldAdr.equals(getEpicsAddressString())));
     }
 
     /**
      * @param sb
      * @param moduleChannelPrototype
      */
-    private void appendDataType(StringBuilder sb, ModuleChannelPrototypeDBO moduleChannelPrototype) {
+    private void appendDataType(@Nonnull StringBuilder sb, @Nonnull ModuleChannelPrototypeDBO moduleChannelPrototype) {
         if( (getChannelType() == DataType.BIT) && !getChannelStructure().isSimple()) {
             sb.append(getChannelStructure().getStructureType().getType());
             sb.append(getBitPostion());
@@ -553,8 +573,8 @@ public class ChannelDBO extends AbstractNodeDBO<ChannelStructureDBO, InvalidLeav
      * @param sb
      * @param moduleChannelPrototype
      */
-    private void appendByteOdering(StringBuilder sb,
-                                   ModuleChannelPrototypeDBO moduleChannelPrototype) {
+    private void appendByteOdering(@Nonnull StringBuilder sb,
+                                   @Nonnull ModuleChannelPrototypeDBO moduleChannelPrototype) {
         if( (moduleChannelPrototype.getMaximum() != null)
                 && (moduleChannelPrototype.getByteOrdering() > 0)) {
             sb.append(",O=" + moduleChannelPrototype.getByteOrdering());
@@ -565,7 +585,7 @@ public class ChannelDBO extends AbstractNodeDBO<ChannelStructureDBO, InvalidLeav
      * @param sb
      * @param moduleChannelPrototype
      */
-    private void appendMaximum(StringBuilder sb, ModuleChannelPrototypeDBO moduleChannelPrototype) {
+    private void appendMaximum(@Nonnull StringBuilder sb, @Nonnull ModuleChannelPrototypeDBO moduleChannelPrototype) {
         if(moduleChannelPrototype.getMaximum() != null) {
             sb.append(",H=" + moduleChannelPrototype.getMaximum());
         }
@@ -575,7 +595,7 @@ public class ChannelDBO extends AbstractNodeDBO<ChannelStructureDBO, InvalidLeav
      * @param sb
      * @param moduleChannelPrototype
      */
-    private void appendMinimum(StringBuilder sb, ModuleChannelPrototypeDBO moduleChannelPrototype) {
+    private void appendMinimum(@Nonnull StringBuilder sb, @Nonnull ModuleChannelPrototypeDBO moduleChannelPrototype) {
         if(moduleChannelPrototype.getMinimum() != null) {
             sb.append(",L=" + moduleChannelPrototype.getMinimum());
         }
@@ -585,7 +605,7 @@ public class ChannelDBO extends AbstractNodeDBO<ChannelStructureDBO, InvalidLeav
      * @param moduleChannelPrototype
      * @throws PersistenceException
      */
-    private void setChannelType(ModuleChannelPrototypeDBO moduleChannelPrototype) throws PersistenceException {
+    private void setChannelType(@Nonnull ModuleChannelPrototypeDBO moduleChannelPrototype) throws PersistenceException {
         if(getChannelStructure().isSimple()) {
             setChannelTypeNonHibernate(moduleChannelPrototype.getType());
         } else {
@@ -648,12 +668,13 @@ public class ChannelDBO extends AbstractNodeDBO<ChannelStructureDBO, InvalidLeav
             sb.append(getFullChannelNumber());
             sb.append(": ");
             sb.append(getName());
-            if( (getIoName() != null) && (getIoName().length() > 0)) {
-                sb.append(" [" + getIoName() + "]");
+            String ioName = getIoName();
+            if( (ioName != null) && (ioName.length() > 0)) {
+                sb.append(" [" + ioName + "]");
             }
         } catch (PersistenceException e) {
             sb.append("Device Database ERROR: ").append(e.getMessage());
-            CentralLogger.getInstance().error(this, e);
+            LOG.error("Device Database ERROR: {}", e);
         }
         return sb.toString();
     }
@@ -678,17 +699,33 @@ public class ChannelDBO extends AbstractNodeDBO<ChannelStructureDBO, InvalidLeav
     @Nonnull
     protected ChannelDBO copyParameter(@Nonnull final ChannelStructureDBO parentNode) throws PersistenceException {
         ChannelStructureDBO channelStructure = parentNode;
+        String name = getName();
+        if(name==null) {
+            name = " ";
+        }
         ChannelDBO copy = new ChannelDBO(channelStructure,
-                                         getName(),
+                                         name,
                                          isInput(),
                                          isDigital(),
                                          getSortIndex());
         // copy.setDocuments(getDocuments());
         // copy.setChannelNumber(getChannelNumber());
         copy.setChannelType(getChannelType());
-        copy.setCurrentValue(getCurrentValue());
-        copy.setCurrenUserParamDataIndex(getCurrenUserParamDataIndex());
-        copy.setIoName(getIoName());
+        String currentValue = getCurrentValue();
+        if(currentValue == null) {
+            currentValue="";
+        }
+        copy.setCurrentValue(currentValue);
+        String currenUserParamDataIndex = getCurrenUserParamDataIndex();
+        if(currenUserParamDataIndex==null) {
+            currenUserParamDataIndex= " ";
+        }
+        copy.setCurrenUserParamDataIndex(currenUserParamDataIndex);
+        String ioName = getIoName();
+        if(ioName==null) {
+            ioName = " ";
+        }
+        copy.setIoName(ioName);
         return copy;
     }
     
@@ -706,10 +743,28 @@ public class ChannelDBO extends AbstractNodeDBO<ChannelStructureDBO, InvalidLeav
      * {@inheritDoc}
      */
     @Override
-    @CheckForNull
-    public InvalidLeave addChild(@Nullable InvalidLeave child) throws PersistenceException {
-        // do nothing. Channel is the leave node.
-        return null;
+    @Nonnull
+    public VirtualLeaf addChild(@Nullable VirtualLeaf child) throws PersistenceException {
+        return VirtualLeaf.INSTANCE;
     }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    @Nonnull
+    public VirtualLeaf createChild() throws PersistenceException {
+        return VirtualLeaf.INSTANCE;
+    }
+    
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public void accept(@Nonnull final INodeVisitor visitor) {
+        visitor.visit(this);
+    }
+    
+    
     
 }

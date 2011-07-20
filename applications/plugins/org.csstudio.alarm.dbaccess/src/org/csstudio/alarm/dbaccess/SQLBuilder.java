@@ -10,7 +10,8 @@ import java.util.List;
 import java.util.Set;
 
 import org.csstudio.alarm.dbaccess.archivedb.FilterItem;
-import org.csstudio.platform.logging.CentralLogger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * Class that builds prepared SQL statements for settings in the expert search
@@ -20,6 +21,8 @@ import org.csstudio.platform.logging.CentralLogger;
  *
  */
 public class SQLBuilder {
+
+    private static final Logger LOG = LoggerFactory.getLogger(SQLBuilder.class);
 
 	private final Integer _maxRowNumLimit = 50000;
 	private Integer _maxRowNum = _maxRowNumLimit;
@@ -128,7 +131,9 @@ public class SQLBuilder {
 
 				// FIXME (jhatje) : you cannot set the internals of the filter items here!
 				// You'll break anything!
-				//item.set_property("inMessage");
+				//Move the table structure check (is the property a column in the message table or
+				//a record in the message content table) in a separated service.
+				item.set_property("inMessage");
 			} else {
 				subqueryConditionPart.append(_subqueryCondition) ;
 			}
@@ -174,10 +179,7 @@ public class SQLBuilder {
 			return propertySet;
 
 		} catch (final Exception sqle) {
-			CentralLogger.getInstance().error(
-					this,
-					"SQLException: Cannot read table column names: "
-							+ sqle.getMessage());
+            LOG.error("SQLException: Cannot read table column names: {}",sqle.getMessage());
 		} finally {
 		    if(_handler != null) {
 		        _handler.closeConnection();

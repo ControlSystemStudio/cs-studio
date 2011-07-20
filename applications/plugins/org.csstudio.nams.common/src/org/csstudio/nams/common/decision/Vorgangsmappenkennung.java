@@ -1,3 +1,4 @@
+
 package org.csstudio.nams.common.decision;
 
 import java.net.InetAddress;
@@ -52,12 +53,12 @@ public final class Vorgangsmappenkennung {
 	@Deprecated
 	private final long counter;
 
-	private Vorgangsmappenkennung(final String hostAdress, final long timeInMS,
-			final long counter, final String ergaenzung) {
-		this.hostAdress = hostAdress;
-		this.timeInMS = timeInMS;
-		this.counter = counter;
-		this.ergaenzung = ergaenzung;
+	private Vorgangsmappenkennung(final String address, final long timeMS,
+			final long cnt, final String e) {
+		this.hostAdress = address;
+		this.timeInMS = timeMS;
+		this.counter = cnt;
+		this.ergaenzung = e;
 	}
 
 	private Vorgangsmappenkennung(final String hostAdress, final long timeInMS,

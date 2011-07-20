@@ -28,11 +28,7 @@
          point="org.eclipse.core.runtime.products">
       <product
             application="org.csstudio.nams.application.department.decision.application"
-            name="AmsDepartmentDecision">
-         <property
-               name="appName"
-               value="AmsDepartmentDecision">
-         </property>
+            name="AmsDepartmentDecisionProduct">
       </product>
    </extension>
 

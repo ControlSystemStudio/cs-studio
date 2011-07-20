@@ -26,13 +26,13 @@ package org.csstudio.websuite.servlet;
 
 import java.io.IOException;
 import java.util.ArrayList;
+
 import javax.servlet.ServletConfig;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import org.apache.log4j.Logger;
-import org.csstudio.platform.logging.CentralLogger;
+
 import org.csstudio.websuite.WebSuiteActivator;
 import org.csstudio.websuite.internal.PreferenceConstants;
 import org.csstudio.websuite.utils.PageContent;
@@ -43,6 +43,8 @@ import org.csstudio.websuite.utils.Severity;
 import org.csstudio.websuite.utils.ValueReader;
 import org.eclipse.core.runtime.Platform;
 import org.eclipse.core.runtime.preferences.IPreferencesService;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * TODO (mmoeller) : 
@@ -72,17 +74,18 @@ public class PersonalPVInfoListServlet extends HttpServlet {
     private final int RELOAD_TIME = 30;
     
     /** Private logger for this class */
-    private Logger logger;
-
+    private static final Logger LOG = LoggerFactory.getLogger(PersonalPVInfoListServlet.class);
+    
     /** The URL of the AAPI web application */
     private String aapiWebApp;
 
+    private boolean iPhoneRequest;
+    
     @Override
 	public void init(ServletConfig config) throws ServletException {
         
         super.init(config);
         
-        logger = CentralLogger.getInstance().getLogger(this);
         valueReader = new ValueReader();
         pageContentContainer = PageContentContainer.getInstance();
         
@@ -90,6 +93,8 @@ public class PersonalPVInfoListServlet extends HttpServlet {
         hostName = pref.getString(WebSuiteActivator.PLUGIN_ID, PreferenceConstants.HOST_NAME, "loalhost", null);
         port = pref.getInt(WebSuiteActivator.PLUGIN_ID, PreferenceConstants.JETTY_PORT, 8080, null);
         aapiWebApp = pref.getString(WebSuiteActivator.PLUGIN_ID, PreferenceConstants.AAPI_WEB_APP, "", null);
+        
+        iPhoneRequest = false;
     }
     
     /**
@@ -129,11 +134,16 @@ public class PersonalPVInfoListServlet extends HttpServlet {
         if(param.containsParameter("content") && param.hasParameterAnyValue("content")) {
                 pageContent = pageContentContainer.getPageContent(param.getParameter("content"));
         } else {
-            logger.warn("Content page not available.");
+            LOG.warn("Content page not available.");
             response.sendRedirect("/PersonalPVInfo");
         }
         
-        logger.info("User-Agent: " + request.getHeader("User-Agent"));
+        String userAgent = request.getHeader("User-Agent");
+        LOG.info("User-Agent: " + userAgent);
+        
+        if (userAgent != null) {
+            this.iPhoneRequest = userAgent.contains("iPhone");
+        }
         
         page.append("<html>\n");
         page.append("<head>\n");
@@ -197,7 +207,15 @@ public class PersonalPVInfoListServlet extends HttpServlet {
             
             // PV Name
             page.append("<tr>\n");
-            page.append("<th colspan=\"2\" class=\"main\"><a href=\"" + aapiWebApp + "&METHOD=GET&NAMES=" + pe.getPvName() + "\" target=\"_blank\">" + pe.getPvName() + "</a></th>\n");
+            page.append("<th colspan=\"2\" class=\"main\">\n");
+            page.append("<a href=\"" + aapiWebApp + "&METHOD=GET&NAMES=" + pe.getPvName() + "\" target=\"_blank\">" + pe.getPvName() + "</a>");
+            
+            if(iPhoneRequest) {
+                // page.append("&nbsp;&nbsp;<a href=\"desyarchiver://" + pe.getPvName().replaceAll("\\:", "\\\\:") + "\" target=\"_blank\">iPhone-Plot</a>\n");
+                page.append("&nbsp;&nbsp;<a href=\"desyarchiver://" + pe.getPvName() + "\" target=\"_blank\">iPhone-Plot</a>\n");
+            }
+            
+            page.append("</th>\n");
             page.append("</tr>\n");
             
             appendEmptyRow(page);

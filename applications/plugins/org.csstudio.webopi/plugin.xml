@@ -1,0 +1,165 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?eclipse version="3.4"?>
+<plugin>
+   <extension-point id="org.csstudio.opibuilder.graphicalFeedbackFactory" name="graphicalFeedbackFactory" schema="schema/graphicalFeedbackFactory.exsd"/>
+   <extension-point id="org.csstudio.opibuilder.widget" name="Widget" schema="schema/widget.exsd"/>
+   <extension
+         point="org.eclipse.rap.ui.entrypoint">
+      <entrypoint
+            class="org.csstudio.webopi.WorkbenchOPIRuntimeEntryPoint"
+            id="org.csstudio.webopi.workbenchOPIRuntime"
+            parameter="webopi">
+      </entrypoint>
+      <entrypoint
+            class="org.csstudio.webopi.StandaloneOPIRuntimeEntryPoint"
+            id="org.csstudio.webopi.standaloneOPIRuntime"
+            parameter="webopi_s">
+      </entrypoint>
+   </extension>
+   <extension
+         point="org.eclipse.ui.perspectives">
+      <perspective
+            class="org.csstudio.opibuilder.runmode.OPIRunnerPerspective"
+            icon="icons/OPIRunner.png"
+            id="org.csstudio.opibuilder.OPIRuntime"
+            name="OPIRuntime Perspective">
+      </perspective>
+      <perspective
+            class="org.csstudio.opibuilder.runmode.StandaloneRuntimePerspective"
+            fixed="true"
+            icon="icons/OPIRunner.png"
+            id="org.csstudio.webopi.standaloneRuntime"
+            name="Standalone OPI Runtime Perspective">
+      </perspective>
+   </extension>
+   <extension
+         point="org.eclipse.ui.views">
+      <category
+            id="org.csstudio.opibuilder.views"
+            name="BOY">
+      </category>
+      <view
+            allowMultiple="true"
+            category="org.csstudio.opibuilder.views"
+            class="org.csstudio.opibuilder.runmode.OPIView"
+            fastViewWidthRatio="0.3"
+            icon="icons/OPIRunner.png"
+            id="org.csstudio.opibuilder.opiView"
+            name="OPI View"
+            restorable="true">
+      </view>
+   </extension>
+   <extension
+         point="org.eclipse.ui.editors">      
+      <editor
+            class="org.csstudio.opibuilder.runmode.OPIRunner"
+            contributorClass="org.csstudio.opibuilder.runmode.OPIRunnerToolBarContributor"
+            default="true"
+            extensions="opi"
+            icon="icons/OPIRunner.png"
+            id="org.csstudio.opibuilder.OPIRunner"
+            name="OPI Runtime">
+      </editor>
+     
+   </extension>
+
+<extension
+         point="org.eclipse.ui.actionSets">
+      <actionSet
+            id="org.csstudio.opibuilder.actionSet"
+            label="BOY Actions"
+            visible="true">        
+         <action
+               class="org.csstudio.opibuilder.actions.OpenTopOPIsAction"
+               icon="icons/OPIRunner.png"
+               id="org.csstudio.opibuilder.action1"
+               label="Top OPIs"
+               pulldown="true"
+               style="pulldown"
+               toolbarPath="Normal/addtions"
+               tooltip="Open Top OPIs in run mode">
+         </action>       
+      </actionSet>
+   </extension>
+   
+   <extension
+         point="org.eclipse.ui.popupMenus">
+      <objectContribution
+            adaptable="false"
+            id="org.csstudio.opibuilder.showPVInfo"
+            objectClass="org.csstudio.opibuilder.editparts.AbstractBaseEditPart">
+         <action
+               class="org.csstudio.opibuilder.actions.ShowPVInfoAction"
+               enablesFor="1"
+               id="org.csstudio.opibuilder.showPVInfoAction"
+               label="Show PV Info"
+               tooltip="Show detail infomation of PVs on this widget">
+         </action>
+         <visibility>
+            <and>
+               <objectState
+                     name="executionMode"
+                     value="RUN_MODE">
+               </objectState>
+               <objectState
+                     name="hasPVs"
+                     value="true">
+               </objectState>
+            </and>
+         </visibility>
+      </objectContribution>
+      <objectContribution
+            adaptable="true"
+            id="org.csstudio.opibuilder.CSSpopupMenu"
+            objectClass="org.csstudio.platform.model.IProcessVariable">
+         <menu
+               id="org.csstudio.popmenu"
+               label="CSS"
+               path="additions">
+            <groupMarker
+                  name="content">
+            </groupMarker>
+            <separator
+                  name="additions">
+            </separator>
+         </menu>
+         <action
+               class="org.csstudio.opibuilder.actions.OpenOPIProbeAction"
+               icon="icons/OPIRunner.png"
+               id="org.csstudio.opibuilder.openOPIProbeAction"
+               label="OPI Probe"
+               menubarPath="org.csstudio.popmenu/content"
+               tooltip="Send PV name to OPI Probe">
+         </action>
+      </objectContribution>
+      <objectContribution
+            adaptable="false"
+            id="org.csstudio.opibuilder.showMacros"
+            objectClass="org.csstudio.opibuilder.editparts.AbstractBaseEditPart">
+         <action
+               class="org.csstudio.opibuilder.actions.ShowMacrosAction"
+               enablesFor="1"
+               icon="icons/macro.png"
+               id="org.csstudio.opibuilder.showMacrosAction"
+               label="Show Macros"
+               menubarPath="print"
+               tooltip="Show detail infomation of PV">
+         </action>
+      </objectContribution>      
+   </extension>
+   <extension
+         point="org.eclipse.rap.ui.branding">
+      <branding
+            defaultEntrypointId="org.csstudio.webopi.workbenchOPIRuntime"
+            favicon="icons/OPIRunner.png"
+            id="org.csstudio.webopi.branding.workbench"
+            servletName="WebOPI">
+      </branding>
+      <branding
+            defaultEntrypointId="org.csstudio.webopi.standaloneOPIRuntime"
+            favicon="icons/OPIRunner.png"
+            id="org.csstudio.webopi.branding.standalone"
+            servletName="WebOPI_S">
+      </branding>
+   </extension>
+</plugin>

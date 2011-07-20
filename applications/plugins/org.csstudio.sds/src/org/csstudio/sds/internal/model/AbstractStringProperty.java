@@ -62,8 +62,10 @@ public abstract class AbstractStringProperty extends WidgetProperty {
 
 		if((value != null) && (value instanceof Number)) {
 		    NumberFormat instance = NumberFormat.getInstance(Locale.US);
-		    instance.setMinimumFractionDigits(0);
-		    instance.setMaximumFractionDigits(Integer.MAX_VALUE);
+		    instance.setGroupingUsed(false);
+		    int precision = getWidgetModel().getIntegerProperty("precision");
+		    instance.setMinimumFractionDigits(precision);
+		    instance.setMaximumFractionDigits(precision);
 		    acceptedValue = instance.format(value);
 		}else if ((value != null) && !(value instanceof String)) {
 			acceptedValue = value.toString();
@@ -75,7 +77,8 @@ public abstract class AbstractStringProperty extends WidgetProperty {
 	/**
 	 * {@inheritDoc}
 	 */
-	@SuppressWarnings("unchecked")
+	@Override
+    @SuppressWarnings("unchecked")
 	public Class[] getCompatibleJavaTypes() {
 		return new Class[]{Object.class, String.class};
 	}

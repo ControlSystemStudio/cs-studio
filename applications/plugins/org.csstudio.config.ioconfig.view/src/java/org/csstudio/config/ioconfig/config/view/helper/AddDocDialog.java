@@ -11,9 +11,8 @@ import javax.annotation.Nullable;
 
 import org.csstudio.config.ioconfig.model.DocumentDBO;
 import org.csstudio.config.ioconfig.model.IDocument;
-import org.csstudio.config.ioconfig.model.IOConifgActivator;
+import org.csstudio.config.ioconfig.model.IOConfigActivator;
 import org.csstudio.config.ioconfig.model.preference.PreferenceConstants;
-import org.csstudio.platform.logging.CentralLogger;
 import org.eclipse.core.runtime.preferences.IEclipsePreferences;
 import org.eclipse.core.runtime.preferences.InstanceScope;
 import org.eclipse.jface.dialogs.Dialog;
@@ -39,6 +38,8 @@ import org.eclipse.swt.widgets.FileDialog;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.swt.widgets.Text;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * @author Rickens Helge
@@ -46,6 +47,8 @@ import org.eclipse.swt.widgets.Text;
  * @since 14.12.2010
  */
 public class AddDocDialog extends Dialog {
+    
+    private static final Logger LOG = LoggerFactory.getLogger(AddDocDialog.class);
 
     private DocumentDBO _document;
     private GregorianCalendar _date;
@@ -67,7 +70,7 @@ public class AddDocDialog extends Dialog {
     @Override @Nonnull
     protected Control createDialogArea(@Nonnull final Composite parent) {
         InstanceScope instanceScope = new InstanceScope();
-        IEclipsePreferences node = instanceScope.getNode(IOConifgActivator.PLUGIN_ID);
+        IEclipsePreferences node = instanceScope.getNode(IOConfigActivator.PLUGIN_ID);
         _date = new GregorianCalendar();
         GridData gridData = (GridData) parent.getLayoutData();
         gridData.minimumWidth = 400;
@@ -274,7 +277,7 @@ public class AddDocDialog extends Dialog {
                         MessageDialog.openError(getParentShell(),
                                                 "File open Error",
                                                 "Can't read file!");
-                        CentralLogger.getInstance().error(this, e);
+                        LOG.error("File open Error. Can't read file!", e);
                     }
                 }
             }

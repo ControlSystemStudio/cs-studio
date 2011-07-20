@@ -27,6 +27,7 @@ package org.csstudio.sds.behavior.desy;
 import org.csstudio.sds.model.LabelModel;
 import org.csstudio.sds.model.TextTypeEnum;
 import org.epics.css.dal.simple.AnyData;
+import org.epics.css.dal.simple.AnyDataChannel;
 import org.epics.css.dal.simple.MetaData;
 
 /**
@@ -40,6 +41,8 @@ import org.epics.css.dal.simple.MetaData;
  */
 public class LabelAlarmBehaviorWithUnits extends AbstractDesyAlarmBehavior<LabelModel> {
 
+
+    private boolean _defTransparent;
 
     /**
      * Constructor.
@@ -56,6 +59,7 @@ public class LabelAlarmBehaviorWithUnits extends AbstractDesyAlarmBehavior<Label
     @Override
     protected void doInitialize(final LabelModel widget) {
         super.doInitialize(widget);
+        _defTransparent = widget.getBooleanProperty(LabelModel.PROP_TRANSPARENT);
         if(widget.getValueType().equals(TextTypeEnum.TEXT)) {
             widget.setJavaType(String.class);
         }
@@ -69,7 +73,16 @@ public class LabelAlarmBehaviorWithUnits extends AbstractDesyAlarmBehavior<Label
         super.doProcessValueChange(model, anyData);
         // .. fill level (influenced by current value)
         model.setPropertyValue(LabelModel.PROP_TEXTVALUE, anyData.stringValue());
-
+    }
+    
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    protected void doProcessConnectionStateChange(LabelModel widget, AnyDataChannel anyDataChannel) {
+        super.doProcessConnectionStateChange(widget, anyDataChannel);
+        boolean isTransparent = isConnected(anyDataChannel)&&_defTransparent;
+        widget.setPropertyValue(LabelModel.PROP_TRANSPARENT, isTransparent);
     }
 
     @Override

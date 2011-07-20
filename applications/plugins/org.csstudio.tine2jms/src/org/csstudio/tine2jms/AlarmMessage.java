@@ -29,24 +29,21 @@ import de.desy.tine.server.alarms.TAlarmMessage;
  * @author Markus Moeller
  *
  */
-public class AlarmMessage
-{
-    private TAlarmMessage alarm = null;
-    private String context = null;
+public class AlarmMessage {
     
-    public AlarmMessage(TAlarmMessage alarm, String context)
-    {
-        this.alarm = alarm;
-        this.context = context;
+    private TAlarmMessage _alarm;
+    private String _context;
+    
+    public AlarmMessage(TAlarmMessage alarm, String context) {
+        this._alarm = alarm;
+        this._context = context;
     }
     
-    public TAlarmMessage getAlarmMessage()
-    {
-        return alarm;
+    public TAlarmMessage getAlarmMessage() {
+        return _alarm;
     }
     
-    public String getContext()
-    {
-        return context;
+    public String getContext() {
+        return _context;
     }
 }

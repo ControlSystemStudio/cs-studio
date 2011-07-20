@@ -24,10 +24,14 @@ package org.csstudio.utility.nameSpaceSearch;
 import java.util.MissingResourceException;
 import java.util.ResourceBundle;
 
-import org.csstudio.platform.logging.CentralLogger;
 import org.eclipse.osgi.util.NLS;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class Messages extends NLS {
+    
+    private static final Logger LOG = LoggerFactory.getLogger(Messages.class);
+    
 	private static final String BUNDLE_NAME = "org.csstudio.utility.nameSpaceSearch.messages"; //$NON-NLS-1$
 
 	public static String MainView_Controller;
@@ -79,7 +83,7 @@ public class Messages extends NLS {
 		try {
 			return RESOURCE_BUNDLE.getString(key);
 		} catch (final MissingResourceException e) {
-			CentralLogger.getInstance().error(Messages.class, e);
+			LOG.error("Key '{}' Error", key,e);
 			return '!' + key + '!';
 		}
 	}

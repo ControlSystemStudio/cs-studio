@@ -1,3 +1,4 @@
+
 package org.csstudio.nams.service.configurationaccess.localstore.extensionPoint;
 
 import org.hibernate.dialect.Dialect;

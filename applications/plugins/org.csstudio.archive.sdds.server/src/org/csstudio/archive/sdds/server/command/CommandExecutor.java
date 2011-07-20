@@ -64,7 +64,6 @@ public class CommandExecutor
      * 
      * @param cmd
      * @param buffer
-     * @param len
      * @param receivedValue
      * @param resultLength
      * @throws ServerCommandException

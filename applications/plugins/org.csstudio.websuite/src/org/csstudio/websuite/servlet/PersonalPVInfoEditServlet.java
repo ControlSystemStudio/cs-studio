@@ -29,13 +29,13 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Set;
+
 import javax.servlet.ServletConfig;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import org.apache.log4j.Logger;
-import org.csstudio.platform.logging.CentralLogger;
+
 import org.csstudio.websuite.WebSuiteActivator;
 import org.csstudio.websuite.internal.PreferenceConstants;
 import org.csstudio.websuite.utils.EditAction;
@@ -45,6 +45,8 @@ import org.csstudio.websuite.utils.PageEntry;
 import org.csstudio.websuite.utils.RequestParameter;
 import org.eclipse.core.runtime.Platform;
 import org.eclipse.core.runtime.preferences.IPreferencesService;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * TODO (mmoeller) : 
@@ -68,8 +70,8 @@ public class PersonalPVInfoEditServlet extends HttpServlet {
     private int port;
 
     /** Private logger for this class */
-    private Logger logger;
-
+    private static final Logger LOG = LoggerFactory.getLogger(PersonalPVInfoEditServlet.class);
+    
     /**
      * 
      */
@@ -78,7 +80,6 @@ public class PersonalPVInfoEditServlet extends HttpServlet {
         
         super.init(config);
         
-        logger = CentralLogger.getInstance().getLogger(this);
         pageContentContainer = PageContentContainer.getInstance();
         
         IPreferencesService pref = Platform.getPreferencesService();
@@ -174,7 +175,7 @@ public class PersonalPVInfoEditServlet extends HttpServlet {
             response.sendRedirect(url);
         }
         
-        logger.info("User-Agent: " + request.getHeader("User-Agent"));
+        LOG.info("User-Agent: {}", request.getHeader("User-Agent"));
         
         page.append("<html>\n");
         page.append("<head>\n");

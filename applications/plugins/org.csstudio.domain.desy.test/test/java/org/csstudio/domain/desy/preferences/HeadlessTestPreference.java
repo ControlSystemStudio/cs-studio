@@ -74,14 +74,8 @@ final class HeadlessTestPreference<T> extends AbstractPreference<T> {
      *     new TestPreference<Boolean>("NOT_STATIC", true);
      */
     private HeadlessTestPreference(@Nonnull final String keyAsString, 
-                           @Nonnull final T defaultValue) {
+                                   @Nonnull final T defaultValue) {
         super(keyAsString, defaultValue);
-    }
-
-    @Override
-    @Nonnull 
-    public String getPluginID() {
-        return "QualifierForTest";
     }
 
     /**
@@ -93,5 +87,12 @@ final class HeadlessTestPreference<T> extends AbstractPreference<T> {
     protected Class<? extends AbstractPreference<T>> getClassType() {
         return (Class<? extends AbstractPreference<T>>) HeadlessTestPreference.class;
     }
+
+    @Override
+    @Nonnull 
+    public String getPluginID() {
+        return "QualifierForTest";
+    }
+
 
 }

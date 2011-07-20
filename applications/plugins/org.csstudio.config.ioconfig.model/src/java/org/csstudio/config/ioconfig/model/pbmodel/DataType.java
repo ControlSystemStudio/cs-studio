@@ -24,8 +24,12 @@
  */
 package org.csstudio.config.ioconfig.model.pbmodel;
 
+import java.util.Map;
+
 import javax.annotation.CheckForNull;
 import javax.annotation.Nonnull;
+
+import com.google.common.collect.Maps;
 
 /**
  * @author hrickens
@@ -38,63 +42,79 @@ public enum DataType {
     /**
      * Data Type for a single Bit.  
      */
-    BIT(1,"BIT",Messages.getString("DataType.Bit")), //$NON-NLS-1$
+    BIT(1, 1,"BIT",Messages.getString("DataType.Bit")), //$NON-NLS-1$
     /**
      * Data Type for a one byte long Integer.   
      */
-    INT8(8,"INT8",Messages.getString("DataType.INT8"),BIT,BIT,BIT,BIT,BIT,BIT,BIT,BIT), //$NON-NLS-1$
+    INT8(2, 8,"INT8",Messages.getString("DataType.INT8"),BIT,BIT,BIT,BIT,BIT,BIT,BIT,BIT), //$NON-NLS-1$
     /**
      * Data Type for a two byte long Integer.   
      */
-    INT16(16,"INT16",Messages.getString("DataType.INT16"),BIT,BIT,BIT,BIT,BIT,BIT,BIT,BIT,BIT,BIT,BIT,BIT,BIT,BIT,BIT,BIT), //$NON-NLS-1$
+    INT16(3, 16,"INT16",Messages.getString("DataType.INT16"),BIT,BIT,BIT,BIT,BIT,BIT,BIT,BIT,BIT,BIT,BIT,BIT,BIT,BIT,BIT,BIT), //$NON-NLS-1$
     /**
      * Data Type for a byte long unsigned Integer.   
      */
-    UINT8(8,"UNSIGN8",Messages.getString("DataType.UINT8"),BIT,BIT,BIT,BIT,BIT,BIT,BIT,BIT), //$NON-NLS-1$
+    UINT8(4, 8,"UNSIGN8",Messages.getString("DataType.UINT8"),BIT,BIT,BIT,BIT,BIT,BIT,BIT,BIT), //$NON-NLS-1$
     /**
      * Data Type for a two byte long unsigned Integer.   
      */
-    UINT16(16,"UNSIGN16",Messages.getString("DataType.UINT16"),BIT,BIT,BIT,BIT,BIT,BIT,BIT,BIT,BIT,BIT,BIT,BIT,BIT,BIT,BIT,BIT), //$NON-NLS-1$
+    UINT16(5, 16,"UNSIGN16",Messages.getString("DataType.UINT16"),BIT,BIT,BIT,BIT,BIT,BIT,BIT,BIT,BIT,BIT,BIT,BIT,BIT,BIT,BIT,BIT), //$NON-NLS-1$
     /**
      * Data Type for a four byte long unsigned Integer.   
      */
-    UINT32(32,"UNSIGN32",Messages.getString("DataType.UINT32"),BIT,BIT,BIT,BIT,BIT,BIT,BIT,BIT,BIT,BIT,BIT,BIT,BIT,BIT,BIT,BIT,BIT,BIT,BIT,BIT,BIT,BIT,BIT,BIT,BIT,BIT,BIT,BIT,BIT,BIT,BIT,BIT), //$NON-NLS-1$
+    UINT32(6, 32,"UNSIGN32",Messages.getString("DataType.UINT32"),BIT,BIT,BIT,BIT,BIT,BIT,BIT,BIT,BIT,BIT,BIT,BIT,BIT,BIT,BIT,BIT,BIT,BIT,BIT,BIT,BIT,BIT,BIT,BIT,BIT,BIT,BIT,BIT,BIT,BIT,BIT,BIT), //$NON-NLS-1$
     /**
      * Data Type for a Floating point.   
      */
-    FLOAT(32,"FLOAT",Messages.getString("DataType.FLOAT"),BIT,BIT,BIT,BIT,BIT,BIT,BIT,BIT,BIT,BIT,BIT,BIT,BIT,BIT,BIT,BIT,BIT,BIT,BIT,BIT,BIT,BIT,BIT,BIT,BIT,BIT,BIT,BIT,BIT,BIT,BIT,BIT), //$NON-NLS-1$
+    FLOAT(7, 32,"FLOAT",Messages.getString("DataType.FLOAT"),BIT,BIT,BIT,BIT,BIT,BIT,BIT,BIT,BIT,BIT,BIT,BIT,BIT,BIT,BIT,BIT,BIT,BIT,BIT,BIT,BIT,BIT,BIT,BIT,BIT,BIT,BIT,BIT,BIT,BIT,BIT,BIT), //$NON-NLS-1$
     /**
      * Data Type for a Floating point with a status bytes.   
      */
-    DS33(40,"DS-33",Messages.getString("DataType.DS33"),FLOAT,UINT8), //$NON-NLS-1$
+    DS33(8, 40,"DS-33",Messages.getString("DataType.DS33"),FLOAT,UINT8), //$NON-NLS-1$
     /**
      * A simple Channel.
      */
-    SIMPLE(8,"Simple", Messages.getString("DataType.Simple"),INT8), //$NON-NLS-1$
+    SIMPLE(9, 8,"Simple", Messages.getString("DataType.Simple"),INT8), //$NON-NLS-1$
     /**
      * Data Type for a four byte long signed Integer.   
      */
-    INT32(32,"INT32",Messages.getString("DataType.INT32"),BIT,BIT,BIT,BIT,BIT,BIT,BIT,BIT,BIT,BIT,BIT,BIT,BIT,BIT,BIT,BIT,BIT,BIT,BIT,BIT,BIT,BIT,BIT,BIT,BIT,BIT,BIT,BIT,BIT,BIT,BIT,BIT), //$NON-NLS-1$
+    INT32(10, 32,"INT32",Messages.getString("DataType.INT32"),BIT,BIT,BIT,BIT,BIT,BIT,BIT,BIT,BIT,BIT,BIT,BIT,BIT,BIT,BIT,BIT,BIT,BIT,BIT,BIT,BIT,BIT,BIT,BIT,BIT,BIT,BIT,BIT,BIT,BIT,BIT,BIT), //$NON-NLS-1$
     /**
      * Wago analog input unipolar.
      */
-    WAGO_AI(16,"WAGO_AI", Messages.getString("DataType.WAGO_AI"), UINT16), //$NON-NLS-1$
+    WAGO_AI(11, 16,"WAGO_AI", Messages.getString("DataType.WAGO_AI"), UINT16), //$NON-NLS-1$
     /**
      * Wago analog input bipolar 
      */
-    WAGO_AI2(16,"WAGO_AI2", Messages.getString("DataType.WAGO_AI2"), UINT16), //$NON-NLS-1$
+    WAGO_AI2(12, 16,"WAGO_AI2", Messages.getString("DataType.WAGO_AI2"), UINT16), //$NON-NLS-1$
     /**
      * Wago RTD temperature platinum 
      */
-    WAGO_PT(16,"WAGO_PT", Messages.getString("DataType.WAGO_PT"), UINT16),  //$NON-NLS-1$
+    WAGO_PT(13, 16,"WAGO_PT", Messages.getString("DataType.WAGO_PT"), UINT16),  //$NON-NLS-1$
     /**
      * WAGO analog input 4-20 mA.
      */
-    WAGO_AILVZ(16,"WAGO_AILVZ", Messages.getString("DataType.WAGO_AILVZ"), UINT16), //$NON-NLS-1$
+    WAGO_AILVZ(14, 16,"WAGO_AILVZ", Messages.getString("DataType.WAGO_AILVZ"), UINT16), //$NON-NLS-1$
     /**
      * Data Type for a Byte with a status bytes.   
      */
-    DS33_1(16,"DS-33-1",Messages.getString("DataType.DS33-1"),BIT,BIT,BIT,BIT,BIT,BIT,BIT,BIT,BIT,BIT,BIT,BIT,BIT,BIT,BIT,BIT); //$NON-NLS-1$
+    DS33_1(15, 16,"DS-33-1",Messages.getString("DataType.DS33-1"),BIT,BIT,BIT,BIT,BIT,BIT,BIT,BIT,BIT,BIT,BIT,BIT,BIT,BIT,BIT,BIT); //$NON-NLS-1$
+    
+    private static final Map<Integer, DataType> ID_MAP = Maps.newHashMapWithExpectedSize(DataType.values().length);
+    static {
+        for (DataType type : DataType.values()) {
+            Integer key = Integer.valueOf(type.getId());
+            if (ID_MAP.containsKey(key)) {
+                throw new IllegalStateException("Type ids for " + DataType.class.getName() + " should have been unique.");
+            }
+            ID_MAP.put(key, type);
+        }
+    }
+    
+    /**
+     * The id (instead of ordinal() which is potentially more unsafe)
+     */
+    private final int _id;
     
     /**
      * The size in Bit.
@@ -116,7 +136,9 @@ public enum DataType {
      * The default high range.
      */
     private String _high;
+    
     private final String _type;
+    
     
 
     /**
@@ -124,8 +146,12 @@ public enum DataType {
      * @param sizeOfBit The size in bit.
      * @param desc The long description.
      */
-    private DataType(final int sizeOfBit, @Nonnull final String type, @Nonnull final String desc, @Nonnull DataType...structure){
-        this(sizeOfBit,type, desc, null, null, structure);
+    private DataType(final int id,
+                     final int sizeOfBit, 
+                     @Nonnull final String type, 
+                     @Nonnull final String desc, 
+                     @Nonnull DataType...structure){
+        this(id, sizeOfBit,type, desc, null, null, structure);
     }
 
     
@@ -134,22 +160,36 @@ public enum DataType {
      * @param sizeOfBit The size in bit.
      * @param desc The long description.
      */
-    private DataType(final int sizeOfBit, @Nonnull final String type, @Nonnull final String desc, @CheckForNull Long low, @CheckForNull Long high, @Nonnull DataType...structure){
+    private DataType(final int id, 
+                     final int sizeOfBit, 
+                     @Nonnull final String type, 
+                     @Nonnull final String desc, 
+                     @CheckForNull Long low, 
+                     @CheckForNull Long high, 
+                     @Nonnull DataType...structure){
+        _id = id;
         _size = sizeOfBit;
         _type = type;
         _desc = desc;
-        if(low!=null) {
+        if(low != null) {
             _low = ",L="+low;
         }else {
             _low = "";
         }
-        if(high!=null) {
+        if(high != null) {
             _high = ",H="+high;
         }else {
             _high = "";
         }
 
         _structure = structure;
+    }
+    
+    /**
+     * @return the id as int of this type
+     */
+    public int getId() {
+        return _id;
     }
     
     /**
@@ -242,6 +282,20 @@ public enum DataType {
     public  String getDefaultHigh(){
         return _high;   
        }
+
+
+    /**
+     * @param channelId
+     * @return
+     */
+    @Nonnull
+    public static DataType forId(final int channelId) {
+        DataType type = ID_MAP.get(Integer.valueOf(channelId));
+        if (type == null) {
+            throw new IllegalArgumentException("No " + DataType.class.getName() + " object exists for id " + channelId );
+        }
+        return type;
+    }
     
     
 }

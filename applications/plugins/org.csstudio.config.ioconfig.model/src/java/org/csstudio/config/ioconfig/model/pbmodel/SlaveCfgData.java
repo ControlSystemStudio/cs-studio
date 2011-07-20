@@ -24,9 +24,12 @@
  */
 package org.csstudio.config.ioconfig.model.pbmodel;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import javax.annotation.Nonnull;
+
+import org.csstudio.config.ioconfig.model.pbmodel.gsdParser.GsdFileParser;
 
 /**
  * @author hrickens
@@ -55,53 +58,41 @@ public class SlaveCfgData {
     private boolean _consistency;
 
     private int _size;
+    
+    private final List<Integer> _parameter = new ArrayList<Integer>();
 
     /**
-     * Default Constructor.
      * 
-     * @param para
-     *            The Slave Config Data Value.<br>
-     *            As Hex Value with the prefix 0x or<br>
-     *            as Dec Value without prefix.
+     * Constructor for Compact Format
      */
-    public SlaveCfgData(@Nonnull final List<Integer> slaveCfgData) {
-        /*
-         * Bit 0-3: is size + 1 Bit 4: input Bit 5: output Bit 6: 0:byte, 1: word Bit 7: Consistenz
-         * 0:byte, 1: Module
-         */
-        int parameter0;
-        if (slaveCfgData.size() > 0) {
-            parameter0 = slaveCfgData.get(0);
-            // Test Simple oder Special Header
-            if ((parameter0 & 0x30) == 0) {
-                int parameter1;
-                if (slaveCfgData.size() > 1) {
-                    parameter1 = slaveCfgData.get(1);
-                    setParameter(parameter0, parameter1);
-                }
-            } else {
-                setParameter(parameter0);
-            }
-        }
+    public SlaveCfgData(@Nonnull int parameter) {
+        setCompactFormat(parameter);
+        _parameter.add(parameter);
     }
 
     /**
-     * Default Constructor.
      * 
-     * @param slaveCfgData
-     *            The Slave Config Data Value.<br>
-     *            As integer value.
+     * Constructor for Special Format
      */
-    public SlaveCfgData(final int slaveCfgData) {
-        setParameter(slaveCfgData);
+    public SlaveCfgData(@Nonnull int parameter0, int parameter1) {
+        setSpecialFormat(parameter0, parameter1);
+        _parameter.add(parameter0);
+        _parameter.add(parameter1);
     }
+    
 
     /**
      * Set the Parameter from Compact Format.
+     * 
+     * Bit 0-3: is size + 1 Bit 4: input Bit 5: output Bit 6: 0:byte, 1: word Bit 7: Consistenz
+     * 0:byte, 1: Module
+     * 
      * @param parameter
      *            The Slave Config Data Value.<br>
      */
-    private void setParameter(final int parameter) {
+    private void setCompactFormat(final int parameter) {
+        /*
+         */
         setInput((parameter & 16) == 16);
         setOutput((parameter & 32) == 32);
         setWordSize((parameter & 64) == 64);
@@ -109,12 +100,13 @@ public class SlaveCfgData {
         setSize((parameter & 15) + 1);
     }
 
+
     /**
      * Set the Parameter from Special Format.
      * @param parameter
      *            The Slave Config Data Value.<br>
      */
-    private void setParameter(int parameter, int parameter2) {
+    private void setSpecialFormat(int parameter, int parameter2) {
         setInput((parameter & 64) == 64);
         setOutput((parameter & 128) == 128);
         setWordSize((parameter2 & 64) == 64);
@@ -230,15 +222,12 @@ public class SlaveCfgData {
     public int getSize() {
         return _size;
     }
-
-    /**
-     * Change The Settings.
-     * 
-     * @param slaveCfgData
-     *            Set the new slaveCfgData.
-     */
-    public final void changeSlaveCfgData(final int slaveCfgData) {
-        setParameter(slaveCfgData);
+    
+    public int getByteLength() {
+        return getWordSize() * getSize();
     }
-
+    
+    public String getParameterAsHexString() {
+        return GsdFileParser.intList2HexString(_parameter);
+    }
 }

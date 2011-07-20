@@ -1,3 +1,4 @@
+
 package org.csstudio.nams.service.preferenceservice.ui.preferencepages;
 
 import org.csstudio.nams.service.configurationaccess.localstore.declaration.DatabaseType;

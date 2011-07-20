@@ -11,6 +11,7 @@ package org.csstudio.swt.widgets.figures;
 import org.csstudio.swt.widgets.figureparts.RoundScale;
 import org.csstudio.swt.widgets.figureparts.RoundScaledRamp;
 import org.csstudio.swt.widgets.figureparts.RoundScaledRamp.Threshold;
+import org.eclipse.swt.SWT;
 import org.eclipse.swt.graphics.Color;
 
 
@@ -29,12 +30,17 @@ public class AbstractRoundRampedFigure extends AbstractMarkedWidgetFigure {
 	public AbstractRoundRampedFigure() {
 		scale = new RoundScale();
 		ramp = new RoundScaledRamp((RoundScale) scale);	
+		if(SWT.getPlatform().startsWith("rap"))//$NON-NLS-1$
+			ramp.setVisible(false);
 	}
 	
 	@Override
 	public void setShowMarkers(boolean showMarkers) {		
 		super.setShowMarkers(showMarkers);
-		ramp.setVisible(showMarkers);	
+		if(SWT.getPlatform().startsWith("rap"))//$NON-NLS-1$
+			ramp.setVisible(false);
+		else
+			ramp.setVisible(showMarkers);	
 	}
 	
 	@Override

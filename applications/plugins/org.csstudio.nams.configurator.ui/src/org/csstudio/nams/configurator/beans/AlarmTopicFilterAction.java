@@ -1,3 +1,4 @@
+
 package org.csstudio.nams.configurator.beans;
 
 import org.csstudio.nams.service.configurationaccess.localstore.declaration.filterActions.AlarmTopicFilterActionType;
@@ -24,8 +25,8 @@ public class AlarmTopicFilterAction extends
 		return action;
 	}
 
-	public FilterActionType[] getFilterActionTypeValues() {
+	@Override
+    public FilterActionType[] getFilterActionTypeValues() {
 		return AlarmTopicFilterActionType.values();
 	}
-
 }

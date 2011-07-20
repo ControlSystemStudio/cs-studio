@@ -1,6 +1,6 @@
 package org.csstudio.config.ioconfig.model.preference;
 
-import org.csstudio.config.ioconfig.model.IOConifgActivator;
+import org.csstudio.config.ioconfig.model.IOConfigActivator;
 import org.eclipse.core.runtime.preferences.AbstractPreferenceInitializer;
 import org.eclipse.core.runtime.preferences.DefaultScope;
 import org.eclipse.core.runtime.preferences.IEclipsePreferences;
@@ -16,7 +16,7 @@ public class PreferenceInitializer extends AbstractPreferenceInitializer {
     @Override
     public void initializeDefaultPreferences() {
         IEclipsePreferences prefs = new DefaultScope()
-                .getNode(IOConifgActivator.getDefault().getPluginId());
+                .getNode(IOConfigActivator.getDefault().getPluginId());
 
         prefs.put(PreferenceConstants.DDB_FACILITIES, "Geb. 54,Geb. 55,XMTS,FLASH");
         prefs.put(PreferenceConstants.DDB_LOGBOOK,

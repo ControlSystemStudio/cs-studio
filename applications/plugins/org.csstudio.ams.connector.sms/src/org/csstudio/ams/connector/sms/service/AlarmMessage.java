@@ -35,37 +35,31 @@ import java.util.Set;
  *
  */
 
-public class AlarmMessage
-{
+public class AlarmMessage {
+    
     private HashMap<String, String> content = null;
     
-    public AlarmMessage()
-    {
+    public AlarmMessage() {
         content = new HashMap<String, String>();
     }
     
-    public boolean containsKey(String key)
-    {
+    public boolean containsKey(String key) {
         return content.containsKey(key);
     }
     
-    public String getValue(String key)
-    {
+    public String getValue(String key) {
         return content.get(key);
     }
     
-    public void add(String key, String value)
-    {
+    public void add(String key, String value) {
         content.put(key.toUpperCase(), value);
     }
     
-    public boolean isEmpty()
-    {
+    public boolean isEmpty() {
         return content.isEmpty();
     }
     
-    public Set<String> getKeys()
-    {
+    public Set<String> getKeys() {
         return content.keySet();
     }
 }

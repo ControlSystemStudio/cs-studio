@@ -28,9 +28,9 @@ import org.csstudio.ams.distributor.DistributorPlugin;
 import org.eclipse.core.runtime.Platform;
 import org.eclipse.core.runtime.preferences.IPreferencesService;
 
-public class DistributorPreferenceKey
-{
-	public static final String P_XMPP_SERVER = "xmppServer";
+public class DistributorPreferenceKey {
+	
+    public static final String P_XMPP_SERVER = "xmppServer";
 	public static final String P_XMPP_USER = "xmppUser";
 	public static final String P_XMPP_PASSWORD = "xmppPassword";
 	
@@ -39,9 +39,9 @@ public class DistributorPreferenceKey
 	 * them on the console.
 	 * 
 	 */
-	public static final void showPreferences()
-	{
-		IPreferencesService pref = Platform.getPreferencesService();
+	public static final void showPreferences() {
+		
+	    IPreferencesService pref = Platform.getPreferencesService();
 
 		Log.log(Log.INFO, P_XMPP_SERVER + ": " + pref.getString(DistributorPlugin.PLUGIN_ID, P_XMPP_SERVER, "NONE", null));
 		Log.log(Log.INFO, P_XMPP_USER + ": " + pref.getString(DistributorPlugin.PLUGIN_ID, P_XMPP_USER, "NONE", null));

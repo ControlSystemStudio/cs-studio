@@ -32,7 +32,6 @@ import org.csstudio.alarm.table.ui.messagetable.MessageTable;
 import org.csstudio.auth.security.SecurityFacade;
 import org.csstudio.auth.security.User;
 import org.csstudio.platform.CSSPlatformInfo;
-import org.csstudio.platform.logging.CentralLogger;
 import org.eclipse.jface.viewers.TableViewer;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.SelectionEvent;
@@ -45,6 +44,8 @@ import org.eclipse.swt.layout.RowLayout;
 import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Group;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * View to verify functionality of AMS. Add to {@link LogView} some buttons to send test messages.
@@ -57,6 +58,8 @@ import org.eclipse.swt.widgets.Group;
  */
 public class AmsVerifyView extends LogView {
 
+    private static final Logger LOG = LoggerFactory.getLogger(AmsVerifyView.class);
+    
     public static final String AMS_VERIFY_VIEW_ID = AmsVerifyView.class.getName();
 
     private static final String JMS_DATE_FORMAT = "yyyy-MM-dd HH:mm:ss.SSS"; //$NON-NLS-1$
@@ -168,10 +171,12 @@ public class AmsVerifyView extends LogView {
 
         verify1Button.addSelectionListener(new SelectionListener() {
 
+            @Override
             public void widgetSelected(final SelectionEvent e) {
                 sendVerifyMessage("#MODEMTEST#"); //$NON-NLS-1$
             }
 
+            @Override
             public void widgetDefaultSelected(final SelectionEvent e) {
             }
         });
@@ -182,10 +187,12 @@ public class AmsVerifyView extends LogView {
 
         verify2Button.addSelectionListener(new SelectionListener() {
 
+            @Override
             public void widgetSelected(final SelectionEvent e) {
                 sendVerifyMessage("#VOICEMAILTEST#"); //$NON-NLS-1$
             }
 
+            @Override
             public void widgetDefaultSelected(final SelectionEvent e) {
             }
         });
@@ -196,10 +203,12 @@ public class AmsVerifyView extends LogView {
 
         verify3Button.addSelectionListener(new SelectionListener() {
 
+            @Override
             public void widgetSelected(final SelectionEvent e) {
                 sendVerifyMessage("#MAILTEST#"); //$NON-NLS-1$
             }
 
+            @Override
             public void widgetDefaultSelected(final SelectionEvent e) {
             }
         });
@@ -210,10 +219,12 @@ public class AmsVerifyView extends LogView {
 
         verify4Button.addSelectionListener(new SelectionListener() {
 
+            @Override
             public void widgetSelected(final SelectionEvent e) {
                 sendVerifyMessage("#JMSCONNECTORTEST#"); //$NON-NLS-1$
             }
 
+            @Override
             public void widgetDefaultSelected(final SelectionEvent e) {
             }
         });
@@ -251,7 +262,7 @@ public class AmsVerifyView extends LogView {
                                   + textPropertyValue); //$NON-NLS-2$
             sender.sendMessage("ALARM"); //$NON-NLS-1$
         } catch (final Exception e) {
-            CentralLogger.getInstance().error(this, "Send message error: " + e.toString()); //$NON-NLS-1$
+            LOG.error("Send message error: ", e); //$NON-NLS-1$
         }
     }
 }

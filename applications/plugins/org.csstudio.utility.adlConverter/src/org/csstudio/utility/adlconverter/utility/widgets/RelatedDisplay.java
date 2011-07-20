@@ -24,7 +24,6 @@
  */
 package org.csstudio.utility.adlconverter.utility.widgets;
 
-import org.csstudio.platform.logging.CentralLogger;
 import org.csstudio.sds.components.model.MenuButtonModel;
 import org.csstudio.sds.internal.rules.ParameterDescriptor;
 import org.csstudio.sds.model.AbstractWidgetModel;
@@ -37,6 +36,8 @@ import org.csstudio.utility.adlconverter.utility.WrongADLFormatException;
 import org.csstudio.utility.adlconverter.utility.widgetparts.RelatedDisplayItem;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.graphics.FontData;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * @author hrickens
@@ -46,6 +47,8 @@ import org.eclipse.swt.graphics.FontData;
  */
 public class RelatedDisplay extends Widget {
 
+    private static final Logger LOG = LoggerFactory.getLogger(RelatedDisplay.class);
+    
     /**
      * If MenuButton used as Menu, control contain the dynamics Descriptor for the actionData
      * with the Rule=rule.actionData.
@@ -135,19 +138,19 @@ public class RelatedDisplay extends Widget {
                 label=row[1].replaceAll("\"", ""); //$NON-NLS-1$ //$NON-NLS-2$
             }else if(row[0].equals("visual")){ //$NON-NLS-1$
 //              TODO: RelatedDisplay-->visual  
-//                CentralLogger.getInstance().info(this, "Unsupported Property: "+fileLine);
+//                LOG.info(this, "Unsupported Property: "+fileLine);
             }else if(row[0].equals("clrmod")){ //$NON-NLS-1$
 //              TODO: RelatedDisplay-->clrmod  
-                CentralLogger.getInstance().info(this, "Unsupported Property: "+fileLine);
+                LOG.info("Unsupported Property: {}",fileLine);
             }else if(row[0].equals("selfkill")){ //$NON-NLS-1$
 //              TODO: RelatedDisplay-->selfkill  
-                CentralLogger.getInstance().info(this, "MEDM TODO: "+fileLine);
+                LOG.info("MEDM TODO: {}",fileLine);
             }else if(row[0].equals("menu_title")){ //$NON-NLS-1$
 //              TODO: RelatedDisplay-->menu_title  
-                CentralLogger.getInstance().info(this, "MEDM TODO: "+fileLine);
+                LOG.info("MEDM TODO: {}",fileLine);
             }else if(row[0].equals("decorate")){ //$NON-NLS-1$
 //              TODO: RelatedDisplay-->decorate  
-                CentralLogger.getInstance().info(this, "MEDM TODO: "+fileLine);
+                LOG.info("MEDM TODO: {}",fileLine);
             }else{                
                 throw new WrongADLFormatException(Messages.RelatedDisplay_WrongADLFormatException_Parameter_Begin+fileLine);
             }

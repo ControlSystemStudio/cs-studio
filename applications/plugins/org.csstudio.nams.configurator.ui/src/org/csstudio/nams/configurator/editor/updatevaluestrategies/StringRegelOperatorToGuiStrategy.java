@@ -1,6 +1,8 @@
+
 /**
  * 
  */
+
 package org.csstudio.nams.configurator.editor.updatevaluestrategies;
 
 import org.csstudio.nams.common.material.regelwerk.StringRegelOperator;

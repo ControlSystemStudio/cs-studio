@@ -1,3 +1,4 @@
+
 package org.csstudio.nams.common.material.regelwerk;
 
 import java.util.HashSet;
@@ -24,7 +25,7 @@ public abstract class AbstractNodeVersandRegel implements VersandRegel {
 	@Deprecated
 	@ForTesting
 	public AbstractNodeVersandRegel() {
-
+	    // Nothing to do here
 	}
 
 	// public Millisekunden gibverbleibendeWartezeit(
@@ -56,7 +57,7 @@ public abstract class AbstractNodeVersandRegel implements VersandRegel {
 	 * Berechnet anhand der ergebnisListe das Ergebnis dieser Regel.
 	 * 
 	 * @param ergebnisListe
-	 * @return
+	 * @return RegelErgebnis
 	 */
 	@Deprecated
 	@ForTesting
@@ -74,7 +75,8 @@ public abstract class AbstractNodeVersandRegel implements VersandRegel {
 		return ergebnis;
 	}
 
-	public void pruefeNachrichtAufBestaetigungsUndAufhebungsNachricht(
+	@Override
+    public void pruefeNachrichtAufBestaetigungsUndAufhebungsNachricht(
 			final AlarmNachricht nachricht, final Pruefliste bisherigesErgebnis) {
 		if (!bisherigesErgebnis.gibErgebnisFuerRegel(this).istEntschieden()) {
 			for (final VersandRegel regel : this.children) {
@@ -87,7 +89,8 @@ public abstract class AbstractNodeVersandRegel implements VersandRegel {
 		}
 	}
 
-	public Millisekunden pruefeNachrichtAufTimeOuts(
+	@Override
+    public Millisekunden pruefeNachrichtAufTimeOuts(
 			final Pruefliste bisherigesErgebnis,
 			final Millisekunden zeitSeitErsterEvaluation) {
 		final Set<Millisekunden> warteZeiten = new HashSet<Millisekunden>();
@@ -107,7 +110,8 @@ public abstract class AbstractNodeVersandRegel implements VersandRegel {
 		return this.gibKuerzesteWartezeit(warteZeiten);
 	}
 
-	public Millisekunden pruefeNachrichtErstmalig(
+	@Override
+    public Millisekunden pruefeNachrichtErstmalig(
 			final AlarmNachricht nachricht, final Pruefliste ergebnisListe) {
 		final Set<Millisekunden> warteZeiten = new HashSet<Millisekunden>();
 		if (!ergebnisListe.gibErgebnisFuerRegel(this).istEntschieden()) {

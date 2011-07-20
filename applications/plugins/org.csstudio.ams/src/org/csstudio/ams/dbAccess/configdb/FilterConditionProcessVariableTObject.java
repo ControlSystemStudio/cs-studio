@@ -23,8 +23,6 @@
 
 package org.csstudio.ams.dbAccess.configdb;
 
-import java.io.Serializable;
-
 import org.csstudio.ams.dbAccess.TObject;
 import org.csstudio.ams.filter.FilterConditionProcessVariable;
 
@@ -33,8 +31,7 @@ import org.csstudio.ams.filter.FilterConditionProcessVariable;
  * 
  * @see FilterConditionProcessVariable
  */
-public class FilterConditionProcessVariableTObject extends TObject implements
-		Serializable {
+public class FilterConditionProcessVariableTObject extends TObject {
 
 	/**
 	 * auto generated serial version id.

@@ -56,13 +56,6 @@
          unpack="false"/>
 
    <plugin
-         id="org.csstudio.platform.libs.jdom"
-         download-size="0"
-         install-size="0"
-         version="0.0.0"
-         unpack="false"/>
-
-   <plugin
          id="org.csstudio.platform.libs.jmock"
          download-size="0"
          install-size="0"
@@ -71,13 +64,6 @@
 
    <plugin
          id="org.csstudio.platform.libs.jms"
-         download-size="0"
-         install-size="0"
-         version="0.0.0"
-         unpack="false"/>
-
-   <plugin
-         id="org.csstudio.platform.libs.mockito"
          download-size="0"
          install-size="0"
          version="0.0.0"
@@ -419,6 +405,20 @@
 
    <plugin
          id="org.remotercp.util"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"
+         unpack="false"/>
+
+   <plugin
+         id="org.jdom"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"
+         unpack="false"/>
+
+   <plugin
+         id="org.mockito"
          download-size="0"
          install-size="0"
          version="0.0.0"

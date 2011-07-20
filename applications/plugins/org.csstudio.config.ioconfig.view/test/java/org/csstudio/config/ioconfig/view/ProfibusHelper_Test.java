@@ -12,7 +12,6 @@ import org.eclipse.swt.SWT;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.swt.widgets.Text;
-import org.junit.Ignore;
 import org.junit.Test;
 
 /*
@@ -98,20 +97,5 @@ public class ProfibusHelper_Test {
         assertEquals(textField.getText(), textField.getData());
         assertTrue(textField.getListeners(SWT.Verify).length>0);
     }
-
-    @Test
-    @Ignore("Does not compile!")
-    public void textabc() {
-//        final GsdModuleModel module = new GsdModuleModel("\"name\"2", new GsdSlaveModel());
-//        final SlaveCfgData[] makeSlaveCfgData = ProfibusHelper.makeSlaveCfgData(module);
-//        assertEquals(0, makeSlaveCfgData[0].getNumber());
-//        assertEquals(17, makeSlaveCfgData[0].getSize());
-//        assertEquals(8, makeSlaveCfgData[0].getWordSize());
-//        assertEquals(false, makeSlaveCfgData[0].isConsistency());
-//        assertEquals(false, makeSlaveCfgData[0].isInput());
-//        assertEquals(false, makeSlaveCfgData[0].isOutput());
-//        assertEquals(false, makeSlaveCfgData[0].isWordSize());
-    }
-
 }
 //CHECKSTYLE:ON

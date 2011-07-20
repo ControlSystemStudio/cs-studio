@@ -42,11 +42,9 @@ public class RunModeBoxInputTest {
 
 	private Path _path1;
 	private Path _path2;
-	private Path _path3;
 	
 	private Map<String, String> _aliases1;
 	private Map<String, String> _aliases2;
-	private Map<String, String> _aliases3;
 	
 	@Before
 	public void setUp() throws Exception {
@@ -56,12 +54,8 @@ public class RunModeBoxInputTest {
 		_aliases2 = new HashMap<String, String>();
 		_aliases2.put("channel", "local://myvalue2");
 		
-		_aliases3 = new HashMap<String, String>();
-		_aliases3.put("channel", "local://myvalue3");
-		
 		_path1 = new Path("/SDS/display1.css-sds");
-		_path1 = new Path("/SDS/display2.css-sds");
-		_path1 = new Path("/SDS/display3.css-sds");
+		_path2 = new Path("/SDS/display2.css-sds");
 		
 		_input = new RunModeBoxInput(_path1, _aliases1,
 				RunModeType.SHELL);

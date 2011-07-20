@@ -24,7 +24,6 @@ package org.csstudio.archive.common.service.mysqlimpl.enginestatus;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.sql.Timestamp;
 import java.util.Collection;
 
 import javax.annotation.CheckForNull;
@@ -147,7 +146,7 @@ public class ArchiveEngineStatusDaoImpl extends AbstractArchiveDao implements IA
         try {
             final PreparedStatement stmt = getConnection().prepareStatement(_selectLatestEngineStatusInfoStmt);
             // time < now
-            stmt.setTimestamp(1, new Timestamp(TimeInstantBuilder.fromNow().getMillis()));
+            stmt.setLong(1, latestAliveTime.getNanos());
             stmt.setInt(2, id.intValue());
 
             final ResultSet resultSet = stmt.executeQuery();
@@ -167,14 +166,14 @@ public class ArchiveEngineStatusDaoImpl extends AbstractArchiveDao implements IA
         final int idVal = resultSet.getInt("id");
         final int engineId = resultSet.getInt("engine_id");
         final String status = resultSet.getString("status");
-        final Timestamp time = resultSet.getTimestamp("time");
+        final long time = resultSet.getLong("time");
         final String info = resultSet.getString("info");
 
         return new ArchiveEngineStatus(new ArchiveEngineStatusId(idVal),
-                                new ArchiveEngineId(engineId),
-                                EngineMonitorStatus.valueOf(status),
-                                TimeInstantBuilder.fromMillis(time.getTime()),
-                                info);
+                                       new ArchiveEngineId(engineId),
+                                       EngineMonitorStatus.valueOf(status),
+                                       TimeInstantBuilder.fromNanos(time),
+                                       info);
     }
 
 }

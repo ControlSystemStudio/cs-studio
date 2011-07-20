@@ -1,3 +1,4 @@
+
 /*
  * Copyright (c) 2008 Stiftung Deutsches Elektronen-Synchrotron,
  * Member of the Helmholtz Association, (DESY), HAMBURG, GERMANY.
@@ -19,6 +20,7 @@
  * PROJECT IN THE FILE LICENSE.HTML. IF THE LICENSE IS NOT INCLUDED YOU MAY FIND A COPY
  * AT HTTP://WWW.DESY.DE/LEGAL/LICENSE.HTM
  */
+
 package org.csstudio.ams.dbAccess.configdb;
 
 import java.sql.Connection;
@@ -33,9 +35,9 @@ import org.csstudio.ams.Log;
 import org.csstudio.ams.dbAccess.DAO;
 import org.csstudio.platform.util.StringUtil;
 
-public abstract class HistoryDAO extends DAO
-{
-	private static PreparedStatement pstInsert = null;
+public abstract class HistoryDAO extends DAO {
+	
+    private static PreparedStatement pstInsert = null;
 	public static final int LEN_TYPE = 16;
 	public static final int LEN_MSGHOST = 64;
 	public static final int LEN_MSGPROC = 64;

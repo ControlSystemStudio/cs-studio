@@ -1,3 +1,4 @@
+
 package org.csstudio.nams.service.configurationaccess.localstore.internalDTOs;
 
 import javax.persistence.Column;
@@ -74,7 +75,8 @@ public class DefaultFilterTextDTO implements NewAMSConfigurationElementDTO {
 		return this.text;
 	}
 
-	public String getUniqueHumanReadableName() {
+	@Override
+    public String getUniqueHumanReadableName() {
 		return this.messageName;
 	}
 
@@ -91,7 +93,8 @@ public class DefaultFilterTextDTO implements NewAMSConfigurationElementDTO {
 		return result;
 	}
 
-	public boolean isInCategory(final int categoryDBId) {
+	@Override
+    public boolean isInCategory(final int categoryDBId) {
 		return false;
 	}
 

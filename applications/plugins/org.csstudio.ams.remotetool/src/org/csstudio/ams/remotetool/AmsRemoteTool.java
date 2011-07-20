@@ -23,12 +23,10 @@
 
 package org.csstudio.ams.remotetool;
 
-import java.util.Collection;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Vector;
 import org.csstudio.ams.remotetool.internal.PreferenceKeys;
-import org.csstudio.platform.logging.CentralLogger;
 import org.csstudio.platform.management.CommandDescription;
 import org.csstudio.platform.management.CommandParameters;
 import org.csstudio.platform.management.CommandResult;
@@ -40,61 +38,53 @@ import org.eclipse.ecf.presence.roster.IRoster;
 import org.eclipse.ecf.presence.roster.IRosterEntry;
 import org.eclipse.ecf.presence.roster.IRosterGroup;
 import org.eclipse.ecf.presence.roster.IRosterItem;
+import org.eclipse.ecf.presence.roster.IRosterManager;
 import org.eclipse.equinox.app.IApplication;
 import org.eclipse.equinox.app.IApplicationContext;
-import org.remotercp.common.servicelauncher.ServiceLauncher;
-import org.remotercp.ecf.ECFConstants;
-import org.remotercp.ecf.session.ISessionService;
-import org.remotercp.login.connection.HeadlessConnection;
-import org.remotercp.util.osgi.OsgiServiceLocatorUtil;
+import org.remotercp.common.tracker.IGenericServiceListener;
+import org.remotercp.service.connection.session.ISessionService;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * @author Markus Moeller
- *
+ * @version 2.0, 2011-07-06
  */
-public class AmsRemoteTool implements IApplication, IGenericServiceListener<ISessionService>
-{
+public class AmsRemoteTool implements IApplication, IGenericServiceListener<ISessionService> {
+    
+    /** The class logger */
+    private static final Logger LOG = LoggerFactory.getLogger(AmsRemoteTool.class);
+    
     /** Command line helper */
     private CommandLine cl;
     
-    /** The logger */
-    private CentralLogger logger;
+    private ISessionService xmppSession;
     
-    private ISessionService session;
-    
-    public AmsRemoteTool()
-    {
+    public AmsRemoteTool() {
         cl = null;
-        logger = CentralLogger.getInstance();
+        xmppSession = null;
     }
     
     /**
      * @see org.eclipse.equinox.app.IApplication#start(org.eclipse.equinox.app.IApplicationContext)
      */
-    @SuppressWarnings({ "deprecation", "unchecked" })
-    public Object start(IApplicationContext context) throws Exception
-    {
-        IRoster roster = null;
+    @SuppressWarnings("unchecked")
+    public Object start(IApplicationContext context) throws Exception {
+        
         Vector<IRosterItem> rosterItems = null;
         Vector<IRosterEntry> rosterEntries = null;
         IRosterGroup jmsApplics = null;
         IRosterEntry currentApplic = null;
         CommandParameters parameter = null;
         CommandDescription stopAction = null;
-        String applicName = null;
-        String name = null;
-        String user = null;
-        String host = null;
-        String pw = null;
-        int iResult = ApplicResult.RESULT_ERROR_GENERAL.ordinal();
+        int iResult = ApplicResult.RESULT_ERROR_GENERAL.getApplicResultNumber();
         
         String[] args = (String[])context.getArguments().get(IApplicationContext.APPLICATION_ARGS);
         cl = new CommandLine(args);
         
-        logger.info(this, "AmsRemoteTool started...");
+        LOG.info("AmsRemoteTool started...");
         
-        if(cl.exists("help") || cl.exists("?"))
-        {
+        if(cl.exists("help") || cl.exists("?")) {
             usage();
             return iResult;
         }
@@ -105,222 +95,194 @@ public class AmsRemoteTool implements IApplication, IGenericServiceListener<ISes
         // -host - Name of the computer on which the application runs
         // -username - Name of the user
         // -pw - Password for stopping
-        if(!cl.exists("host") || !cl.exists("applicname") || !cl.exists("username") || !cl.exists("pw"))
-        {
-            logger.error(this, "One or more application arguments are missing.");
+        if(!cl.exists("host") 
+                || !cl.exists("applicname") 
+                || !cl.exists("username") 
+                || !cl.exists("pw"))  {
+            
+            LOG.error("One or more application arguments are missing.");
             usage();
             return iResult;
         }
+        
+        Activator.getDefault().addSessionServiceListener(this);
+
+        String applicName = cl.value("applicname");
+        String host = cl.value("host");
+        String user = cl.value("username");
+        String pw = cl.value("pw");
                 
-        applicName = cl.value("applicname");
-        host = cl.value("host");
-        user = cl.value("username");
-        pw = cl.value("pw");
-        
-        logger.info(this, "Try to stop " + applicName + " on host " + host + ". Running under the account: " + user);
-        
-        connectToXMPPServer();
+        LOG.info("Try to stop " + applicName + " on host " + host + ". Running under the account: " + user);
 
-        session = OsgiServiceLocatorUtil.getOSGiService(Activator.getDefault().getBundle().getBundleContext(), ISessionService.class);
+        synchronized (this) {
+            try {
+                this.wait(2000);
+            } catch(InterruptedException ie) {
+                LOG.error("*** InterruptedException ***: " + ie.getMessage());
+            } 
+        }
+        
+        if (xmppSession == null) {
+            return ApplicResult.RESULT_ERROR_XMPP.getApplicResultNumber();
+        }
+        
+        IRosterManager rosterManager = xmppSession.getRosterManager();
 
+        IRoster roster = null;
         int count = 0;
   
         // We have to wait until the DCF connection manager have been initialized
-        synchronized(this)
-        {
-            do
-            {
-                try
-                {
+        synchronized(this) {
+            
+            do {
+                try {
                     this.wait(2000);
-                }
-                catch(InterruptedException ie)
-                {
-                    logger.error(this, "*** InterruptedException ***: " + ie.getMessage());
+                } catch(InterruptedException ie) {
+                    LOG.error("*** InterruptedException ***: " + ie.getMessage());
                 }
   
-                roster = session.getRoster();
+                roster = rosterManager.getRoster();
 
                 // Get the roster items
-                rosterItems = new Vector<IRosterItem>((Collection<IRosterItem>)roster.getItems());
-            }
-            while((++count <= 10) && (rosterItems.isEmpty()));
+                rosterItems = new Vector<IRosterItem>(roster.getItems());
+            } while((++count <= 10) && (rosterItems.isEmpty()));
         }
 
         // We have to wait until the DCF connection manager have been initialized
-        synchronized(this)
-        {
-            try
-            {
+        synchronized(this) {
+            try {
                 this.wait(2000);
-            }
-            catch(InterruptedException ie)
-            {
-                logger.error(this, "*** InterruptedException ***: " + ie.getMessage());
+            } catch(InterruptedException ie) {
+                LOG.error("*** InterruptedException ***: " + ie.getMessage());
             }
         }
         
-        if(rosterItems.size() == 0)
-        {
-            logger.info(this, "XMPP roster not found. Stopping application.");
-            return ApplicResult.RESULT_ERROR_XMPP.ordinal();
-        }
-        else
-        {
-            logger.info(this, "Manager initialized");
+        if(rosterItems.size() == 0) {
+            LOG.info("XMPP roster not found. Stopping application.");
+            return ApplicResult.RESULT_ERROR_XMPP.getApplicResultNumber();
         }
         
-        logger.info(this, "Anzahl Directory-Elemente: " + rosterItems.size());
+        LOG.info("Manager initialized");
+        LOG.info("Anzahl Directory-Elemente: " + rosterItems.size());
         
         // Get the group of JMS applications
-        for(IRosterItem ri : rosterItems)
-        {
-            if(ri.getName().compareToIgnoreCase("jms-applications") == 0)
-            {
+        for(IRosterItem ri : rosterItems) {
+            if(ri.getName().compareToIgnoreCase("jms-applications") == 0) {
                 jmsApplics = (IRosterGroup)ri;
                 break;
             }
         }
         
+        String name = null;
+        
         // Get the application container
-        if(jmsApplics != null)
-        {
-            rosterEntries = new Vector<IRosterEntry>((Collection<IRosterEntry>)jmsApplics.getEntries());
+        if(jmsApplics != null) {
+            
+            rosterEntries = new Vector<IRosterEntry>(jmsApplics.getEntries());
             
             Iterator<IRosterEntry> list = rosterEntries.iterator();
-            while(list.hasNext())
-            {
+            while(list.hasNext()) {
                 IRosterEntry ce = list.next();
                 name = ce.getUser().getID().toExternalForm();
-                if(name.contains(applicName))
-                {
-                    if((name.indexOf(host) > -1) && (name.indexOf(user) > -1))
-                    {
+                if(name.contains(applicName)) {
+                    if((name.indexOf(host) > -1) && (name.indexOf(user) > -1)) {
                         currentApplic = ce;
                         break;
                     }
                 }
             }
-        }
-        else
-        {
-            iResult = ApplicResult.RESULT_ERROR_UNKNOWN.ordinal();
+        } else {
+            iResult = ApplicResult.RESULT_ERROR_UNKNOWN.getApplicResultNumber();
         }
         
         IManagementCommandService service = null;
         
-        if(currentApplic != null)
-        {
-            logger.info(this, "Anwendung gefunden: " + currentApplic.getUser().getID().getName());
+        if(currentApplic != null) {
+            
+            LOG.info("Anwendung gefunden: " + currentApplic.getUser().getID().getName());
             
             List<IManagementCommandService> managementServices =
-                session.getRemoteServiceProxies(
+                xmppSession.getRemoteServiceProxies(
                     IManagementCommandService.class, new ID[] {currentApplic.getUser().getID()});
             
-            if (managementServices.size() == 1)
-            {
+            if (managementServices.size() == 1) {
                 service = managementServices.get(0);
                 CommandDescription[] commands = service.getSupportedCommands();
                 
-                for (int i = 0; i < commands.length; i++)
-                {
-                    if(commands[i].getLabel().compareToIgnoreCase("stop") == 0)
-                    {
+                for (int i = 0; i < commands.length; i++) {
+                    if(commands[i].getLabel().compareToIgnoreCase("stop") == 0) {
                         stopAction = commands[i];
                         break;
                     }
                 }
             }
             
-            if(stopAction != null)
-            {
+            if((stopAction != null) && (service != null)) {
+                
                 parameter = new CommandParameters();
                 parameter.set("Password", pw);
                 
                 CommandResult retValue = service.execute(stopAction.getIdentifier(), parameter);
-                if(retValue != null)
-                {
+                if(retValue != null) {
                     String result = (String)retValue.getValue();
-                    if((result.trim().startsWith("OK:")) || (result.indexOf("stopping") > -1))
-                    {
-                        logger.info(this, "Application stopped: " + result);
-                        iResult = ApplicResult.RESULT_OK.ordinal();
+                    if((result.trim().startsWith("OK:")) || (result.indexOf("stopping") > -1)) {
+                        LOG.info("Application stopped: " + result);
+                        iResult = ApplicResult.RESULT_OK.getApplicResultNumber();
+                    } else {
+                        LOG.error("Something went wrong: " + result);
+                        iResult = ApplicResult.RESULT_ERROR_INVALID_PASSWORD.getApplicResultNumber();
                     }
-                    else
-                    {
-                        logger.error(this, "Something went wrong: " + result);
-                        iResult = ApplicResult.RESULT_ERROR_INVALID_PASSWORD.ordinal();
-                    }
-                }
-                else
-                {
-                    logger.info(this, "Return value is null!");
-                    iResult = ApplicResult.RESULT_ERROR_UNKNOWN.ordinal();
+                } else {
+                    LOG.info("Return value is null!");
+                    iResult = ApplicResult.RESULT_ERROR_UNKNOWN.getApplicResultNumber();
                 }
             }
-        }        
-        else
-        {
-            iResult = ApplicResult.RESULT_ERROR_NOT_FOUND.ordinal();
+        } else {
+            iResult = ApplicResult.RESULT_ERROR_NOT_FOUND.getApplicResultNumber();
         }
-
+        
+        if (xmppSession != null) {
+            xmppSession.disconnect();
+        }
+        
         return iResult;
     }
     
-    public void connectToXMPPServer()
-    {
-        IPreferencesService pref = Platform.getPreferencesService();
-        String xmppServer = pref.getString(Activator.PLUGIN_ID, PreferenceKeys.P_XMPP_SERVER, "localhost", null);
-        String xmppUser = pref.getString(Activator.PLUGIN_ID, PreferenceKeys.P_XMPP_USER, "anonymous", null);
-        String xmppPassword = pref.getString(Activator.PLUGIN_ID, PreferenceKeys.P_XMPP_PASSWORD, "anonymous", null);
-
-        try
-        {
-            HeadlessConnection.connect(xmppUser, xmppPassword, xmppServer, ECFConstants.XMPP);
-            ServiceLauncher.startRemoteServices();     
-        }
-        catch(Exception e)
-        {
-            CentralLogger.getInstance().warn(this, "Could not connect to XMPP server: " + e.getMessage());
-        }
-    }
-
-    public void usage()
-    {
-        logger.info(this, "AmsRemoteTool, Markus Moeller, MKS 2, (C)2010");
-        logger.info(this, "This application stops an AMS process via XMPP action call.");
-        logger.info(this, "Options:");
-        logger.info(this, "-host - Name of the computer on which the AMS application is running.");
-        logger.info(this, "-applicname - XMPP account name of the AMS application.");
-        logger.info(this, "-username - Local computer account name under which the AMS application is running.");
-        logger.info(this, "-pw - Password that is needed to stop an application.");
-        logger.info(this, "[-help | -?] - Print this text. All other parameters will be ignored.");
+    public void usage() {
+        LOG.info("AmsRemoteTool, Markus Moeller, MKS 2, (C)2011");
+        LOG.info("This application stops an AMS process via XMPP action call.");
+        LOG.info("Options:");
+        LOG.info("-host - Name of the computer on which the AMS application is running.");
+        LOG.info("-applicname - XMPP account name of the AMS application.");
+        LOG.info("-username - Local computer account name under which the AMS application is running.");
+        LOG.info("-pw - Password that is needed to stop an application.");
+        LOG.info("[-help | -?] - Print this text. All other parameters will be ignored.");
     }
     
     /**
      * @see org.eclipse.equinox.app.IApplication#stop()
      */
-    public void stop()
-    {
-
+    public void stop() {
+        // Nothing to do here
     }
     
-
     public void bindService(ISessionService sessionService) {
-    	final String username = getValueFromPreferences(XMPP_USER, "anonymous");
-    	final String password = getValueFromPreferences(XMPP_PASSWD, "anonymous");
-    	final String server = getValueFromPreferences(XMPP_SERVER, "krynfs.desy.de");
+    	
+        IPreferencesService pref = Platform.getPreferencesService();
+        String xmppServer = pref.getString(Activator.PLUGIN_ID, PreferenceKeys.P_XMPP_SERVER, "localhost", null);
+        String xmppUser = pref.getString(Activator.PLUGIN_ID, PreferenceKeys.P_XMPP_USER, "anonymous", null);
+        String xmppPassword = pref.getString(Activator.PLUGIN_ID, PreferenceKeys.P_XMPP_PASSWORD, "anonymous", null);
     	
     	try {
-			sessionService.connect(username, password, server);
+			sessionService.connect(xmppUser, xmppPassword, xmppServer);
+			xmppSession = sessionService;
 		} catch (Exception e) {
-			CentralLogger.getInstance().warn(this,
-					"XMPP connection is not available, " + e.toString());
+			LOG.warn("XMPP connection is not available: " + e.getMessage());
+			xmppSession = null;
 		}
     }
     
     public void unbindService(ISessionService service) {
-    	service.disconnect();
+    	// Nothing to do here
     }
-    
 }

@@ -23,6 +23,7 @@
 
 import java.beans.PropertyChangeListener;
 import java.beans.PropertyChangeSupport;
+import java.util.UUID;
 
 import org.eclipse.core.runtime.IAdaptable;
 import org.eclipse.core.runtime.Platform;
@@ -89,7 +90,11 @@ public final class Layer implements IAdaptable {
 	 *            a description for the layer
 	 */
 	public Layer(final String id, final String description) {
-		_id = id;
+	    if (id != null && id.trim().length() > 0) {
+	        _id = id;
+	    } else {
+	        _id = UUID.randomUUID().toString();
+	    }
 		_description = description;
 		_visible = true;
 		_propertyChangeSupport = new PropertyChangeSupport(this);
@@ -193,39 +198,48 @@ public final class Layer implements IAdaptable {
 	/**
 	 * {@inheritDoc}
 	 */
-	@SuppressWarnings("unchecked")
+	@SuppressWarnings("rawtypes")
 	public Object getAdapter(final Class adapter) {
 		return Platform.getAdapterManager().getAdapter(this, adapter);
 	}
 
-	/**
-	 * {@inheritDoc}
-	 */
 	@Override
-	public boolean equals(final Object obj) {
-		boolean result = false;
+    public int hashCode() {
+        final int prime = 31;
+        int result = 1;
+        result = prime * result + ((_description == null) ? 0 : _description.hashCode());
+        result = prime * result + ((_id == null) ? 0 : _id.hashCode());
+        return result;
+    }
 
-		if (obj instanceof Layer) {
-			String id = ((Layer) obj)._id;
-			result = id.equals(_id);
-		}
-		return result;
-	}
+    @Override
+    public boolean equals(Object obj) {
+        if (this == obj)
+            return true;
+        if (obj == null)
+            return false;
+        if (getClass() != obj.getClass())
+            return false;
+        Layer other = (Layer) obj;
+        if (_description == null) {
+            if (other._description != null)
+                return false;
+        } else if (!_description.equals(other._description))
+            return false;
+        if (_id == null) {
+            if (other._id != null)
+                return false;
+        } else if (!_id.equals(other._id))
+            return false;
+        return true;
+    }
 
-	/**
-	 * {@inheritDoc}
-	 */
-	@Override
-	public int hashCode() {
-		return _id.hashCode();
-	}
-
-	/**
+    /**
 	 * {@inheritDoc}
 	 */
 	@Override
 	public String toString() {
-		return _description;
+		return _description + " [" + _id + "]";
 	}
 
 }

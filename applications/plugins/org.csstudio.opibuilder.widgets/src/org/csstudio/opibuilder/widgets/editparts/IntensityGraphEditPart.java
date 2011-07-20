@@ -332,7 +332,8 @@ public class IntensityGraphEditPart extends AbstractPVWidgetEditPart {
 							addPropertyChangeListener(new PropertyChangeListener() {
 								public void propertyChange(PropertyChangeEvent evt) {
 									handler.handleChange(evt.getOldValue(), evt.getNewValue(), getFigure());
-									UIBundlingThread.getInstance().addRunnable(new Runnable(){
+									UIBundlingThread.getInstance().addRunnable(
+											getViewer().getControl().getDisplay(), new Runnable(){
 										public void run() {
 											getFigure().repaint();
 										}

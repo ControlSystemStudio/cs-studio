@@ -34,7 +34,8 @@
 		*/
 package org.csstudio.utility.quickstart.preferences;
 
-import org.csstudio.platform.logging.CentralLogger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * TODO (jhatje) :
@@ -46,6 +47,8 @@ import org.csstudio.platform.logging.CentralLogger;
  */
 public class PreferenceValidator {
  
+    private static final Logger LOG = LoggerFactory.getLogger(PreferenceValidator.class);
+    
     /**
      * Check if there are all preference entries present and valid.
      * 
@@ -89,7 +92,7 @@ public class PreferenceValidator {
             return newPreferencePart;
         }
         } catch (Exception e) {
-            CentralLogger.getInstance().error(this, "Error in quickstart preferences format.");
+            LOG.error("Error in quickstart preferences format.");
         }
         return newPreferencePart;
     }

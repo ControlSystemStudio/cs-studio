@@ -26,16 +26,18 @@ package org.csstudio.ams.dbAccess.configdb;
 import java.io.Serializable;
 import java.util.List;
 
-public class AggrFilterConditionArrayStringTObject implements Serializable
-{
-	private static final long serialVersionUID = -6244399728102486674L;
+@SuppressWarnings("hiding")
+public class AggrFilterConditionArrayStringTObject implements Serializable {
+	
+    private static final long serialVersionUID = -6244399728102486674L;
 	
 	private FilterConditionArrayStringTObject arrayString;
 	private List<FilterConditionArrayStringValuesTObject> arrayStringValues;
 
-	public AggrFilterConditionArrayStringTObject(FilterConditionArrayStringTObject arrayString, List<FilterConditionArrayStringValuesTObject> arrayStringValues)
-	{
-		this.arrayString = arrayString;
+	public AggrFilterConditionArrayStringTObject(FilterConditionArrayStringTObject arrayString,
+	                    List<FilterConditionArrayStringValuesTObject> arrayStringValues) {
+		
+	    this.arrayString = arrayString;
 		this.arrayStringValues = arrayStringValues;
 	}
 	
@@ -58,9 +60,9 @@ public class AggrFilterConditionArrayStringTObject implements Serializable
 		this.arrayStringValues = arrayStringValues;
 	}
 	
-	public boolean isEquals(Object obj)
-	{
-		if(!(obj instanceof AggrFilterConditionArrayStringTObject))
+	public boolean isEquals(Object obj) {
+		
+	    if(!(obj instanceof AggrFilterConditionArrayStringTObject))
 			return false;
 		
 		AggrFilterConditionArrayStringTObject compare = (AggrFilterConditionArrayStringTObject)obj;

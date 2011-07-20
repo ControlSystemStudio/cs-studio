@@ -1,3 +1,4 @@
+
 package org.csstudio.nams.service.history.impl.confstore;
 
 import org.csstudio.nams.common.activatorUtils.AbstractBundleActivator;

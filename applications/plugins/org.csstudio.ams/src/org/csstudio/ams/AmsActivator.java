@@ -29,35 +29,35 @@ import org.osgi.framework.BundleContext;
 /**
  * The activator class controls the plug-in life cycle
  */
-public class AmsActivator extends AbstractCssUiPlugin
-{
-	// The plug-in ID
+public class AmsActivator extends AbstractCssUiPlugin {
+	
+    /** The plug-in ID */
 	public static final String PLUGIN_ID = "org.csstudio.ams"; //$NON-NLS-1$
 
-	// The shared instance
+	/** The shared instance */
 	private static AmsActivator _plugin;
 
 	/**
 	 * The constructor
 	 */
-	public AmsActivator()
-	{
+	public AmsActivator() {
 		_plugin = this;
 	}
 
 	/**
 	 * {@inheritDoc}
 	 */
-	public final void doStart(final BundleContext context) throws Exception
-	{
-		// SampleService.showPreferences();
+	@Override
+    public final void doStart(final BundleContext context) throws Exception {
+		// Nothing to do
 	}
 
 	/**
 	 * {@inheritDoc}
 	 */
-	public final void doStop(final BundleContext context) throws Exception
-	{
+	@Override
+    public final void doStop(final BundleContext context) throws Exception {
+	    // Nothing to do
 	}
 
 	/**
@@ -65,8 +65,7 @@ public class AmsActivator extends AbstractCssUiPlugin
 	 * 
 	 * @return the shared instance
 	 */
-	public static AmsActivator getDefault()
-	{
+	public static AmsActivator getDefault() {
 		return _plugin;
 	}
 
@@ -74,8 +73,7 @@ public class AmsActivator extends AbstractCssUiPlugin
 	 * {@inheritDoc}
 	 */
 	@Override
-	public String getPluginId()
-	{
+	public String getPluginId() {
 		return PLUGIN_ID;
 	}
 }

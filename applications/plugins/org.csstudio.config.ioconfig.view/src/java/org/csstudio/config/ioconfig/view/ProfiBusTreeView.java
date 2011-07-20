@@ -37,7 +37,6 @@ import javax.annotation.CheckForNull;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
-import org.apache.log4j.Logger;
 import org.csstudio.config.ioconfig.commands.CallEditor;
 import org.csstudio.config.ioconfig.commands.CallNewChildrenNodeEditor;
 import org.csstudio.config.ioconfig.commands.CallNewFacilityEditor;
@@ -47,7 +46,7 @@ import org.csstudio.config.ioconfig.config.view.helper.ProfibusHelper;
 import org.csstudio.config.ioconfig.editorparts.AbstractNodeEditor;
 import org.csstudio.config.ioconfig.model.AbstractNodeDBO;
 import org.csstudio.config.ioconfig.model.FacilityDBO;
-import org.csstudio.config.ioconfig.model.IOConifgActivator;
+import org.csstudio.config.ioconfig.model.IOConfigActivator;
 import org.csstudio.config.ioconfig.model.IocDBO;
 import org.csstudio.config.ioconfig.model.NamedDBClass;
 import org.csstudio.config.ioconfig.model.PersistenceException;
@@ -61,7 +60,6 @@ import org.csstudio.config.ioconfig.model.tools.NodeMap;
 import org.csstudio.config.ioconfig.view.actions.CreateStatisticAction;
 import org.csstudio.config.ioconfig.view.actions.CreateWinModAction;
 import org.csstudio.config.ioconfig.view.actions.CreateXMLConfigAction;
-import org.csstudio.platform.logging.CentralLogger;
 import org.csstudio.platform.ui.util.CustomMediaFactory;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
@@ -122,6 +120,8 @@ import org.eclipse.ui.IWorkbenchActionConstants;
 import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.handlers.IHandlerService;
 import org.eclipse.ui.part.DrillDownAdapter;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * @author hrickens
@@ -130,8 +130,7 @@ import org.eclipse.ui.part.DrillDownAdapter;
  */
 public class ProfiBusTreeView extends Composite {
     
-    static final Logger LOG = CentralLogger.getInstance().getLogger(ProfiBusTreeView.class);
-    
+    private static final Logger LOG = LoggerFactory.getLogger(ProfiBusTreeView.class);
     /**
      * The ID of the View.
      */
@@ -245,7 +244,7 @@ public class ProfiBusTreeView extends Composite {
     public ProfiBusTreeView(@Nonnull final Composite parent, final int style,
                             @Nonnull final IViewSite site) {
         super(parent, style);
-        new InstanceScope().getNode(IOConifgActivator.getDefault().getPluginId())
+        new InstanceScope().getNode(IOConfigActivator.getDefault().getPluginId())
                 .addPreferenceChangeListener(new HibernateDBPreferenceChangeListener());
         _site = site;
         
@@ -267,10 +266,10 @@ public class ProfiBusTreeView extends Composite {
         _site.setSelectionProvider(_viewer);
         ColumnViewerToolTipSupport.enableFor(_viewer);
         
-        LOG.debug("ID: " + _site.getId());
-        LOG.debug("PlugIn ID: " + _site.getPluginId());
-        LOG.debug("Name: " + _site.getRegisteredName());
-        LOG.debug("SecID: " + _site.getSecondaryId());
+        LOG.debug("ID: {}", _site.getId());
+        LOG.debug("PlugIn ID: {}", _site.getPluginId());
+        LOG.debug("Name: {}", _site.getRegisteredName());
+        LOG.debug("SecID: {}", _site.getSecondaryId());
         
         runFacilityLoaderJob();
         
@@ -733,6 +732,10 @@ public class ProfiBusTreeView extends Composite {
                 .getImageDescriptorFromPlugin(IOConfigActivatorUI.PLUGIN_ID, "icons/refresh.gif"));
     }
     
+    public final void reload() {
+        _refreshAction.run();
+    }
+    
     /** refresh the Tree. Reload all Nodes */
     public final void refresh() {
         getViewer().setInput(new Object());
@@ -901,7 +904,7 @@ public class ProfiBusTreeView extends Composite {
                 });
             } catch (PersistenceException e) {
                 DeviceDatabaseErrorDialog.open(null, "Can't read from Database!", e);
-                CentralLogger.getInstance().error(this, e);
+                LOG.error("Can't read from Database!", e);
             }
             monitor.done();
             return Status.OK_STATUS;
@@ -1200,6 +1203,7 @@ public class ProfiBusTreeView extends Composite {
             text.setLayoutData(new GridData(SWT.FILL, SWT.FILL, false, false, 3, 1));
             
             label = new Label(createDialogArea, SWT.NONE);
+            label.setLayoutData(new GridData(SWT.BEGINNING, SWT.CENTER, false, false));
             createDialogArea.pack();
             return createDialogArea;
         }
@@ -1255,7 +1259,7 @@ public class ProfiBusTreeView extends Composite {
                     setLoad(new ArrayList<FacilityDBO>());
                     DeviceDatabaseErrorDialog.open(null,
                                                    "Can't read from Database! Database Error.", e);
-                    CentralLogger.getInstance().error(this, e);
+                    LOG.error("Can't read from Database! Database Error.", e);
                 }
                 getViewer().getTree().removeAll();
                 getViewer().setInput(getLoad());

@@ -32,7 +32,6 @@ import javax.annotation.CheckForNull;
 import javax.annotation.Nonnull;
 
 import org.csstudio.archive.common.service.ArchiveConnectionException;
-import org.csstudio.archive.common.service.mysqlimpl.dao.ArchiveConnectionHandler;
 import org.csstudio.domain.desy.Strings;
 import org.csstudio.domain.desy.task.AbstractTimeMeasuredRunnable;
 import org.csstudio.domain.desy.time.TimeInstant.TimeInstantBuilder;
@@ -54,7 +53,8 @@ public class PersistDataWorker extends AbstractTimeMeasuredRunnable {
     private static final Logger LOG =
             LoggerFactory.getLogger(PersistDataWorker.class);
 
-    private final PersistEngineDataManager _mgr = PersistEngineDataManager.INSTANCE;
+    private final PersistEngineDataManager _mgr;
+
 
     private final String _name;
     private final long _period;
@@ -72,10 +72,12 @@ public class PersistDataWorker extends AbstractTimeMeasuredRunnable {
      * Constructor.
      * @param sqlStatements
      */
-    public PersistDataWorker(@Nonnull final String name,
+    public PersistDataWorker(@Nonnull final PersistEngineDataManager mgr,
+                             @Nonnull final String name,
                              @Nonnull final SqlStatementBatch sqlStatements,
                              @Nonnull final long period,
                              @Nonnull final long maxBatchSizeInBytes) {
+        _mgr = mgr;
         _name = name;
         _period = period;
         _numOfStmtsInBatch = 0;
@@ -100,7 +102,8 @@ public class PersistDataWorker extends AbstractTimeMeasuredRunnable {
             final Deque<String> stmtStrings = Lists.newLinkedList();
             _queuedStatements.drainTo(stmtStrings);
 
-            connection = ArchiveConnectionHandler.INSTANCE.getConnection();
+            connection = _mgr.getConnectionHandler().getConnection();
+
             sqlStmt = connection.createStatement();
             while (stmtStrings.peek() != null) {
                 sqlStmt = executeBatchOnCondition(connection, sqlStmt, stmtStrings.pop());
@@ -112,13 +115,6 @@ public class PersistDataWorker extends AbstractTimeMeasuredRunnable {
         } finally {
             _batchedStatements.clear();
             closeStatement(sqlStmt);
-            try {
-                finalizeWorker();
-            } catch (final ArchiveConnectionException e) {
-                LOG.warn("Connection retrieval for close failed on termination of worker");
-            } catch (final SQLException e) {
-                LOG.warn("Closing of connection failed on termination of worker");
-            }
         }
     }
 
@@ -206,17 +202,6 @@ public class PersistDataWorker extends AbstractTimeMeasuredRunnable {
             t.printStackTrace();
             _mgr.rescueDataToFileSystem(_batchedStatements);
         }
-    }
-
-    /**
-     * Called in finally block at the end of the {@link PersistDataWorker#run()} method.
-     * Can be overridden for instance to close the thread's own connection.
-     *
-     * @throws SQLException
-     * @throws ArchiveConnectionException
-     */
-    protected void finalizeWorker() throws SQLException, ArchiveConnectionException {
-        // Empty
     }
 
     private void processFailedBatch(@Nonnull final List<String> batchedStatements,

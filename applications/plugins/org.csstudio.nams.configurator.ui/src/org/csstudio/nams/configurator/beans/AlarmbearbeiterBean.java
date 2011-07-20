@@ -1,3 +1,4 @@
+
 package org.csstudio.nams.configurator.beans;
 
 import org.csstudio.nams.configurator.Messages;
@@ -98,7 +99,8 @@ public class AlarmbearbeiterBean extends
 		return this.confirmCode;
 	}
 
-	public String getDisplayName() {
+	@Override
+    public String getDisplayName() {
 		return this.getName() != null ? this.getName() : Messages.AlarmbearbeiterBean_without_name;
 	}
 
@@ -106,7 +108,8 @@ public class AlarmbearbeiterBean extends
 		return this.email;
 	}
 
-	public int getID() {
+	@Override
+    public int getID() {
 		return this.getUserID();
 	}
 
@@ -186,7 +189,8 @@ public class AlarmbearbeiterBean extends
 				.getEmail());
 	}
 
-	public void setID(final int id) {
+	@Override
+    public void setID(final int id) {
 		this.setUserID(id);
 	}
 
@@ -254,7 +258,8 @@ public class AlarmbearbeiterBean extends
 		this.setStatusCode(bean.getStatusCode());
 	}
 
-	public void setDisplayName(String name) {
+	@Override
+    public void setDisplayName(String name) {
 		this.setName(name);
 	}
 }

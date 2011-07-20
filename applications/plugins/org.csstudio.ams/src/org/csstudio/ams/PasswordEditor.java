@@ -1,3 +1,4 @@
+
 /* 
  * Copyright (c) 2008 Stiftung Deutsches Elektronen-Synchrotron, 
  * Member of the Helmholtz Association, (DESY), HAMBURG, GERMANY.
@@ -19,7 +20,8 @@
  * PROJECT IN THE FILE LICENSE.HTML. IF THE LICENSE IS NOT INCLUDED YOU MAY FIND A COPY 
  * AT HTTP://WWW.DESY.DE/LEGAL/LICENSE.HTM
  */
- package org.csstudio.ams;
+
+package org.csstudio.ams;
 
 import org.eclipse.jface.preference.FieldEditor;
 import org.eclipse.jface.resource.JFaceResources;
@@ -37,8 +39,8 @@ import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Text;
 
-public class PasswordEditor extends FieldEditor
-{
+public class PasswordEditor extends FieldEditor {
+    
     public static final int VALIDATE_ON_KEY_STROKE = 0;
     public static final int VALIDATE_ON_FOCUS_LOST = 1;
     public static int UNLIMITED = -1;
@@ -108,6 +110,7 @@ public class PasswordEditor extends FieldEditor
     /**
      * {@inheritDoc}
      */
+    @Override
     protected void adjustForNumColumns(int numColumns)
     {
         GridData gd = (GridData) textField.getLayoutData();
@@ -174,6 +177,7 @@ public class PasswordEditor extends FieldEditor
      * but must call <code>super.doFillIntoGrid</code>.
      * </p>
      */
+    @Override
     protected void doFillIntoGrid(Composite parent, int numColumns)
     {
         getLabelControl(parent);
@@ -199,6 +203,7 @@ public class PasswordEditor extends FieldEditor
     /**
      * Sets the field editor's value.
      */
+    @Override
     protected void doLoad()
     {
         if (textField != null) {
@@ -211,6 +216,7 @@ public class PasswordEditor extends FieldEditor
     /**
      * Sets the default field editor's value.
      */
+    @Override
     protected void doLoadDefault()
     {
         if (textField != null) {
@@ -224,6 +230,7 @@ public class PasswordEditor extends FieldEditor
     /**
      * Saves the field editor's value.
      */
+    @Override
     protected void doStore() {
         getPreferenceStore().setValue(getPreferenceName(), textField.getText());
     }
@@ -241,6 +248,7 @@ public class PasswordEditor extends FieldEditor
     /**
      * {@inheritDoc}
      */
+    @Override
     public int getNumberOfControls() {
         return 2;
     }
@@ -293,6 +301,7 @@ public class PasswordEditor extends FieldEditor
                     /**
                      * {@inheritDoc}
                      */
+                    @Override
                     public void keyReleased(KeyEvent e) {
                         valueChanged();
                     }
@@ -301,15 +310,18 @@ public class PasswordEditor extends FieldEditor
                 break;
             case VALIDATE_ON_FOCUS_LOST:
                 textField.addKeyListener(new KeyAdapter() {
+                    @Override
                     public void keyPressed(KeyEvent e) {
                         clearErrorMessage();
                     }
                 });
                 textField.addFocusListener(new FocusAdapter() {
+                    @Override
                     public void focusGained(FocusEvent e) {
                         refreshValidState();
                     }
 
+                    @Override
                     public void focusLost(FocusEvent e) {
                         valueChanged();
                         clearErrorMessage();
@@ -320,6 +332,7 @@ public class PasswordEditor extends FieldEditor
                 Assert.isTrue(false, "Unknown validate strategy");//$NON-NLS-1$
             }
             textField.addDisposeListener(new DisposeListener() {
+                @Override
                 public void widgetDisposed(DisposeEvent event) {
                     textField = null;
                 }
@@ -347,6 +360,7 @@ public class PasswordEditor extends FieldEditor
     /**
      * {@inheritDoc}
      */
+    @Override
     public boolean isValid() {
         return isValid;
     }
@@ -354,6 +368,7 @@ public class PasswordEditor extends FieldEditor
     /**
      * {@inheritDoc}
      */
+    @Override
     protected void refreshValidState() {
         isValid = checkState();
     }
@@ -381,6 +396,7 @@ public class PasswordEditor extends FieldEditor
     /**
      * {@inheritDoc}
      */
+    @Override
     public void setFocus()
     {
         if (textField != null) {
@@ -480,6 +496,7 @@ public class PasswordEditor extends FieldEditor
     /**
      * {@inheritDoc}
      */
+    @Override
     public void setEnabled(boolean enabled, Composite parent)
     {
         super.setEnabled(enabled, parent);

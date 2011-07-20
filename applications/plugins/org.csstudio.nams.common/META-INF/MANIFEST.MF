@@ -6,18 +6,14 @@ Bundle-Version: 1.3.0.qualifier
 Bundle-Activator: org.csstudio.nams.common.CommonActivator
 Require-Bundle: org.eclipse.core.runtime,
  org.csstudio.platform,
+ org.csstudio.platform.libs.dal,
+ org.csstudio.platform.libs.easymock;bundle-version="3.0.0",
+ org.csstudio.platform.simpledal;bundle-version="1.0.0",
  org.csstudio.nams.service.logging,
  org.csstudio.nams.common.activatorUtils,
- org.csstudio.platform.libs.dal,
- org.csstudio.platform.simpledal;bundle-version="1.0.0",
- org.junit4;bundle-version="4.5.0",
- org.csstudio.platform.libs.easymock;bundle-version="1.0.0"
+ org.junit;bundle-version="4.8.1"
 Eclipse-LazyStart: true
 Export-Package: 
- junit.extensions;uses:="junit.framework",
- junit.framework;uses:="org.junit.runner,org.junit.runner.notification",
- junit.runner;uses:="junit.framework",
- junit.textui;uses:="junit.framework,junit.runner",
  org.csstudio.nams.common;uses:="junit.framework,org.csstudio.nams.common.material,org.csstudio.nams.common.testutils",
  org.csstudio.nams.common.contract;uses:="junit.framework",
  org.csstudio.nams.common.decision,
@@ -32,19 +28,6 @@ Export-Package:
  org.csstudio.nams.common.service,
  org.csstudio.nams.common.testhelper,
  org.csstudio.nams.common.testutils;uses:="junit.framework",
- org.csstudio.nams.common.wam,
- org.junit,
- org.junit.internal,
- org.junit.internal.requests;uses:="org.junit.runner.manipulation,org.junit.runner,org.junit.runner.notification",
- org.junit.internal.runners;
-  uses:="org.junit.runner.manipulation,
-   junit.framework,
-   org.junit.runner,
-   org.junit.runner.notification",
- org.junit.runner;uses:="org.junit.runner.manipulation,junit.framework,org.junit.runner.notification",
- org.junit.runner.manipulation;uses:="org.junit.runner",
- org.junit.runner.notification;uses:="org.junit.runner",
- org.junit.runners;uses:="junit.framework,org.junit.internal.runners"
-Bundle-ClassPath: .,
- lib/junit.jar
+ org.csstudio.nams.common.wam
+Bundle-ClassPath: .
 Bundle-Vendor: DESY <css-developer@desy.de>, Markus Moeller
