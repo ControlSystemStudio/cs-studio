@@ -113,7 +113,7 @@ public class AlarmConfigurationLoader
         config.configureItem(tree_component, tree_component.getGuidance(),
                 tree_component.getDisplays(), tree_component.getCommands());
 
-        System.out.println("Loading " + tree_component);
+        System.out.println("Loading " + tree_component.getPathName());
 
         // Get sub-components
         loadChildComponents(component, tree_component);
@@ -173,7 +173,7 @@ public class AlarmConfigurationLoader
             throw new Exception("Cannot turn existing " + existing.getPathName()
                                 + " into PV");
 
-        System.out.println("Loading " + pv);
+        System.out.println("Loading " + pv.getPathName());
 
         loadCommonConfig(node, pv);
 

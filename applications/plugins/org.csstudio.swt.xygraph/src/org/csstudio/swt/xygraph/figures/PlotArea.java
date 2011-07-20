@@ -24,7 +24,6 @@ import org.eclipse.draw2d.MouseListener;
 import org.eclipse.draw2d.MouseMotionListener;
 import org.eclipse.draw2d.geometry.Point;
 import org.eclipse.draw2d.geometry.Rectangle;
-import org.eclipse.swt.SWT;
 import org.eclipse.swt.graphics.Color;
 import org.eclipse.swt.graphics.Cursor;
 import org.eclipse.swt.graphics.RGB;
@@ -35,7 +34,8 @@ import org.eclipse.swt.widgets.Display;
  * @author Kay Kasemir - Axis zoom/pan tweaks
  */
 public class PlotArea extends Figure {
-    final private XYGraph xyGraph;
+    public static final String BACKGROUND_COLOR = "background_color"; //$NON-NLS-1$
+	final private XYGraph xyGraph;
 	final private List<Trace> traceList = new ArrayList<Trace>();
 	final private List<Grid> gridList = new ArrayList<Grid>();
 	final private List<Annotation> annotationList = new ArrayList<Annotation>();
@@ -50,12 +50,12 @@ public class PlotArea extends Figure {
 	private Point end;
 	private boolean armed;
 
-	private Color revertBackColor;
+	private Color revertBackColor;	
 
 	public PlotArea(final XYGraph xyGraph) {
 		this.xyGraph = xyGraph;
-		setBackgroundColor(XYGraph.WHITE_COLOR);
-		setForegroundColor(XYGraph.BLACK_COLOR);
+		setBackgroundColor(XYGraphMediaFactory.getInstance().getColor(255,255,255));
+		setForegroundColor(XYGraphMediaFactory.getInstance().getColor(0,0,0));
 		setOpaque(true);
 		RGB backRGB = getBackgroundColor().getRGB();
 		revertBackColor = XYGraphMediaFactory.getInstance().getColor(255- backRGB.red,
@@ -71,8 +71,10 @@ public class PlotArea extends Figure {
 	public void setBackgroundColor(final Color bg) {
 		RGB backRGB = bg.getRGB();
 		revertBackColor = XYGraphMediaFactory.getInstance().getColor(255- backRGB.red,
-				255 - backRGB.green, 255 - backRGB.blue);
+				255 - backRGB.green, 255 - backRGB.blue);	
+		Color oldColor = getBackgroundColor();
 		super.setBackgroundColor(bg);
+		firePropertyChange(BACKGROUND_COLOR, oldColor, bg);
 
 	}
 
@@ -83,7 +85,8 @@ public class PlotArea extends Figure {
 		traceList.add(trace);
 		add(trace);
 		revalidate();
-	}
+	}	
+	
 
 	/**Remove a trace from the plot area.
 	 * @param trace
@@ -267,7 +270,6 @@ public class PlotArea extends Figure {
 
 		private SaveStateCommand command;
 
-		@Override
         public void mousePressed(final MouseEvent me)
         {
             // Only react to 'main' mouse button, only react to 'real' zoom
@@ -311,7 +313,6 @@ public class PlotArea extends Figure {
         		// Start timer that will zoom while mouse button is pressed
         		Display.getCurrent().timerExec(Axis.ZOOM_SPEED, new Runnable()
         		{
-        			@Override
                     public void run()
         			{
         				if (!armed)
@@ -331,7 +332,6 @@ public class PlotArea extends Figure {
         	me.consume();
         }
 
-        @Override
         public void mouseDoubleClicked(final MouseEvent me) { /* Ignored */ }
 
         @Override
@@ -376,7 +376,6 @@ public class PlotArea extends Figure {
             }
 		}
 
-		@Override
         public void mouseReleased(final MouseEvent me)
 		{
             if (! armed)

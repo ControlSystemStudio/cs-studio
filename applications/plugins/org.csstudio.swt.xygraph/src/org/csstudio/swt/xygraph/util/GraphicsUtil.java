@@ -9,7 +9,6 @@ package org.csstudio.swt.xygraph.util;
 
 import org.eclipse.draw2d.FigureUtilities;
 import org.eclipse.draw2d.Graphics;
-import org.eclipse.draw2d.geometry.Dimension;
 import org.eclipse.draw2d.geometry.Point;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.graphics.Image;
@@ -60,11 +59,11 @@ public final class GraphicsUtil {
 				graphics.popState();
 			}
 		} catch (Exception e) {// If rotate is not supported by the graphics.
-			final Dimension titleSize = FigureUtilities.getTextExtents(text,
-					graphics.getFont());
+//			final Dimension titleSize = FigureUtilities.getTextExtents(text,
+//					graphics.getFont());
 
-			final int w = titleSize.height;
-			final int h = titleSize.width + 1;
+//			final int w = titleSize.height;
+//			final int h = titleSize.width + 1;
 			Image image = null;
 			try {
 				image = SingleSourceHelper.createVerticalTextImage(text,

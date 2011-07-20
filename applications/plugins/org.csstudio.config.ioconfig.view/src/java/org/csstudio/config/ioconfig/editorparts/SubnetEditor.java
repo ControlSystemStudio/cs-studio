@@ -68,7 +68,7 @@ import org.slf4j.LoggerFactory;
  * @version $Revision: 1.2 $
  * @since 21.05.2010
  */
-public class SubnetEditor extends AbstractNodeEditor {
+public class SubnetEditor extends AbstractNodeEditor<ProfibusSubnetDBO> {
 
     public static final String ID = "org.csstudio.config.ioconfig.view.editor.subnet";
     

@@ -5,9 +5,12 @@
 
 package org.epics.pvmanager;
 
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 /**
  * A data source that can dispatch a request to multiple different
@@ -16,12 +19,18 @@ import java.util.concurrent.ConcurrentHashMap;
  * @author carcassi
  */
 public class CompositeDataSource extends DataSource {
+    
+    private static Logger log = Logger.getLogger(CompositeDataSource.class.getName());
 
     // Stores all data sources by name
     private Map<String, DataSource> dataSources = new ConcurrentHashMap<String, DataSource>();
 
     private volatile String delimiter = "://";
     private volatile String defaultDataSource;
+
+    public CompositeDataSource() {
+        super(true);
+    }
 
     /**
      * Returns the delimeter that divides the data source name from the
@@ -62,6 +71,15 @@ public class CompositeDataSource extends DataSource {
     public String getDefaultDataSource() {
         return defaultDataSource;
     }
+    
+    /**
+     * Returns the data sources registered to this composite data source.
+     * 
+     * @return the registered data sources
+     */
+    public Map<String, DataSource> getDataSources() {
+        return Collections.unmodifiableMap(dataSources);
+    }
 
     /**
      * Sets the data source to be used if the channel does not specify
@@ -80,6 +98,31 @@ public class CompositeDataSource extends DataSource {
     // re-sent for disconnection
     private Map<DataRecipe, Map<String, DataRecipe>> splitRecipes =
             new ConcurrentHashMap<DataRecipe, Map<String, DataRecipe>>();
+    private Map<WriteBuffer, Map<String, WriteBuffer>> writeBuffers =
+            new ConcurrentHashMap<WriteBuffer, Map<String, WriteBuffer>>();
+    
+    private String nameOf(String channelName) {
+        int indexDelimiter = channelName.indexOf(delimiter);
+        if (indexDelimiter == -1) {
+            return channelName;
+        } else {
+            return channelName.substring(indexDelimiter + delimiter.length());
+        }
+    }
+    
+    private String sourceOf(String channelName) {
+        int indexDelimiter = channelName.indexOf(delimiter);
+        if (indexDelimiter == -1) {
+            if (defaultDataSource == null)
+                throw new IllegalArgumentException("Channel " + channelName + " uses the default data source but one was never set.");
+            return defaultDataSource;
+        } else {
+            String source = channelName.substring(0, indexDelimiter);
+            if (dataSources.containsKey(source))
+                return source;
+            throw new IllegalArgumentException("Data source " + source + " for " + channelName + " was not configured.");
+        }
+    }
 
     @Override
     public void connect(DataRecipe recipe) {
@@ -87,18 +130,12 @@ public class CompositeDataSource extends DataSource {
 
         // Iterate through the recipe to understand how to distribute
         // the calls
-        for (Map.Entry<Collector, Map<String, ValueCache>> collEntry : recipe.getChannelsPerCollectors().entrySet()) {
+        for (Map.Entry<Collector<?>, Map<String, ValueCache>> collEntry : recipe.getChannelsPerCollectors().entrySet()) {
             Map<String, Map<String, ValueCache>> routingCaches = new HashMap<String, Map<String, ValueCache>>();
             Collector collector = collEntry.getKey();
             for (Map.Entry<String, ValueCache> entry : collEntry.getValue().entrySet()) {
-                String name = entry.getKey();
-                String dataSource = defaultDataSource;
-
-                int indexDelimiter = name.indexOf(delimiter);
-                if (indexDelimiter != -1) {
-                    dataSource = name.substring(0, indexDelimiter);
-                    name = name.substring(indexDelimiter + delimiter.length());
-                }
+                String name = nameOf(entry.getKey());
+                String dataSource = sourceOf(entry.getKey());
 
                 if (dataSource == null)
                     throw new IllegalArgumentException("Channel " + name + " uses the default data source but one was never set.");
@@ -138,7 +175,7 @@ public class CompositeDataSource extends DataSource {
     public void disconnect(DataRecipe recipe) {
         Map<String, DataRecipe> splitRecipe = splitRecipes.get(recipe);
         if (splitRecipe == null) {
-            throw new IllegalStateException("Recipe was never opened or already closed");
+            throw new IllegalStateException("Asked to close DataRecipe " + recipe + " but was either already closed or never opened");
         }
 
         // Dispatch calls to all the data sources
@@ -154,6 +191,59 @@ public class CompositeDataSource extends DataSource {
         splitRecipes.remove(recipe);
     }
 
+    @Override
+    public void prepareWrite(WriteBuffer writeBuffer, ExceptionHandler exceptionHandler) {
+        // Chop the buffer along different data sources
+        Map<String, Map<String, WriteCache<?>>> buffers = new HashMap<String, Map<String, WriteCache<?>>>();
+        for (Map.Entry<String, WriteCache<?>> en : writeBuffer.getWriteCaches().entrySet()) {
+            String channelName = nameOf(en.getKey());
+            String dataSource = sourceOf(en.getKey());
+            WriteCache<?> cache = en.getValue();
+            Map<String, WriteCache<?>> buffer = buffers.get(dataSource);
+            if (buffer == null) {
+                buffer = new HashMap<String, WriteCache<?>>();
+                buffers.put(dataSource, buffer);
+            }
+            buffer.put(channelName, cache);
+        }
+        
+        Map<String, WriteBuffer> splitBuffers = new HashMap<String, WriteBuffer>();
+        for (Map.Entry<String, Map<String, WriteCache<?>>> en : buffers.entrySet()) {
+            String dataSource = en.getKey();
+            Map<String, WriteCache<?>> val = en.getValue();
+            WriteBuffer newWriteBuffer = new WriteBufferBuilder().addCaches(val).build();
+            splitBuffers.put(dataSource, newWriteBuffer);
+            dataSources.get(dataSource).prepareWrite(newWriteBuffer, exceptionHandler);
+        }
+        
+        writeBuffers.put(writeBuffer, splitBuffers);
+    }
 
+    @Override
+    public void concludeWrite(WriteBuffer writeBuffer, ExceptionHandler exceptionHandler) {
+        Map<String, WriteBuffer> splitBuffer = writeBuffers.remove(writeBuffer);
+        if (splitBuffer == null) {
+            throw new IllegalStateException("Asked to close WriteBuffer " + writeBuffer + " but was either already closed or never opened");
+        }
+        
+        for (Map.Entry<String, WriteBuffer> en : splitBuffer.entrySet()) {
+            String dataSource = en.getKey();
+            WriteBuffer splitWriteBuffer = en.getValue();
+            dataSources.get(dataSource).concludeWrite(splitWriteBuffer, exceptionHandler);
+        }
+    }
+    
+
+    @Override
+    ChannelHandler<?> channel(String channelName) {
+        String name = nameOf(channelName);
+        String dataSource = sourceOf(channelName);
+        return dataSources.get(dataSource).channel(name);
+    }
+    
+    @Override
+    protected ChannelHandler<?> createChannel(String channelName) {
+        throw new UnsupportedOperationException("Composite data source can't create channels directly.");
+    }
 
 }

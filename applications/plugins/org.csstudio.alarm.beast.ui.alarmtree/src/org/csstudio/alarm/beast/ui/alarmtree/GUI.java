@@ -9,6 +9,7 @@ package org.csstudio.alarm.beast.ui.alarmtree;
 
 import java.util.List;
 
+import org.csstudio.alarm.beast.SeverityLevel;
 import org.csstudio.alarm.beast.client.AlarmTreeItem;
 import org.csstudio.alarm.beast.client.AlarmTreePV;
 import org.csstudio.alarm.beast.client.AlarmTreePosition;
@@ -26,6 +27,8 @@ import org.csstudio.alarm.beast.ui.actions.RenameItemAction;
 import org.csstudio.alarm.beast.ui.clientmodel.AlarmClientModel;
 import org.csstudio.alarm.beast.ui.clientmodel.AlarmClientModelListener;
 import org.csstudio.ui.util.dnd.ControlSystemDragSource;
+import org.eclipse.core.runtime.Platform;
+import org.eclipse.core.runtime.preferences.IPreferencesService;
 import org.eclipse.jface.action.GroupMarker;
 import org.eclipse.jface.action.IMenuListener;
 import org.eclipse.jface.action.IMenuManager;
@@ -45,6 +48,7 @@ import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.swt.widgets.Tree;
+import org.eclipse.swt.widgets.TreeItem;
 import org.eclipse.ui.IWorkbenchActionConstants;
 import org.eclipse.ui.IWorkbenchPartSite;
 
@@ -56,6 +60,8 @@ public class GUI implements AlarmClientModelListener
     /** Model for this GUI */
     final private AlarmClientModel model;
 
+    final private Display display;
+    
     /** Error message.
      *  @see #setErrorMessage(String)
      */
@@ -76,6 +82,7 @@ public class GUI implements AlarmClientModelListener
             final IWorkbenchPartSite site)
     {
         this.model = model;
+        this.display = parent.getDisplay();
         createGUI(parent);
 
         if (model.isServerAlive())
@@ -114,17 +121,39 @@ public class GUI implements AlarmClientModelListener
 
         // Error label in top-right
         error_message = new Label(parent, 0);
-        error_message.setBackground(parent.getDisplay().getSystemColor(SWT.COLOR_MAGENTA));
+        error_message.setBackground(display.getSystemColor(SWT.COLOR_MAGENTA));
         FormData fd = new FormData();
         fd.top = new FormAttachment(0, 0);
         fd.right = new FormAttachment(100, 0);
         error_message.setLayoutData(fd);
 
         // Tree below the error label, filling the rest
-        tree_viewer = new TreeViewer(parent,
-                SWT.VIRTUAL | SWT.MULTI | SWT.H_SCROLL | SWT.V_SCROLL |
-                SWT.BORDER | SWT.FULL_SELECTION);
-        final Tree tree = tree_viewer.getTree();
+        final IPreferencesService service = Platform.getPreferencesService();
+        final boolean allow_multiselection =
+        	service.getBoolean(Activator.ID, "allow_multi_selection", false, null); //$NON-NLS-1$
+
+        final Tree tree =
+        	allow_multiselection
+        	? new MultiSelectionTree(parent, 
+        		// Must be virtual for ILazyTreeContentProvider
+        		SWT.VIRTUAL |
+        		// V_SCROLL seems automatic, but H_SCROLL can help when view is small
+        		SWT.H_SCROLL | SWT.V_SCROLL |
+    			// Used to have a border, not really needed
+        		// SWT.BORDER |
+        		// Used to have full-line-selection.
+        		// Actually looks better when only the elements are selected
+        		// SWT.FULL_SELECTION |
+        		// Multi-element selection
+        		// (via Shift-click, Ctrl-click).
+        		// with the original SWT.Tree is very slow
+        		// because of the way SWT preserves the selection
+        		// https://bugs.eclipse.org/bugs/show_bug.cgi?id=259141
+        		// With the patched MultiSelectionTree, it's OK
+        		SWT.MULTI)
+            : new Tree(parent, SWT.VIRTUAL | SWT.H_SCROLL | SWT.V_SCROLL);
+        
+        tree_viewer = new TreeViewer(tree);
         fd = new FormData();
         fd.top = new FormAttachment(error_message);
         fd.left = new FormAttachment(0, 0);
@@ -214,7 +243,7 @@ public class GUI implements AlarmClientModelListener
         final List<AlarmTreeItem> items =
             ((IStructuredSelection)tree_viewer.getSelection()).toList();
 
-        new ContextMenuHelper(manager, shell, items, model.isWriteAllowed());
+        new ContextMenuHelper(null, manager, shell, items, model.isWriteAllowed());
         manager.add(new Separator());
 		if(model.isWriteAllowed())
 		{
@@ -261,8 +290,31 @@ public class GUI implements AlarmClientModelListener
     /** Collapse the alarm tree */
     public void collapse()
     {
-        tree_viewer.collapseAll();
-        tree_viewer.refresh(false);
+    	final Tree tree = tree_viewer.getTree();
+		tree.setRedraw(false);
+		
+       	// This was very slow (>5 seconds for 50k PVs in 250 areas)
+    	// tree_viewer.collapseAll();
+        // tree_viewer.refresh(false);
+
+    	// Not much better:
+		//    	final TreePath[] expanded = tree_viewer.getExpandedTreePaths();
+		//    	for (TreePath path : expanded)
+		//    	{
+		//    		if (path.getSegmentCount() > 2)
+		//    			continue;
+		//    		tree_viewer.collapseToLevel(path, 1);
+		//    	}
+
+		// Fastest (<1 sec), collapsing just the first level of elements
+		final TreeItem[] items = tree.getItems();
+		for (TreeItem item : items)
+			item.setExpanded(false);
+		
+		// This was for Eclipse 3.6.2 under Windows (7)
+		// Implementation might need adjustment in later versions of SWT/JFace
+		
+    	tree.setRedraw(true);
     }
 
     /** @return <code>true</code> if we only show alarms,
@@ -275,12 +327,13 @@ public class GUI implements AlarmClientModelListener
     }
 
     /** @param only_alarms Show only alarms? */
-    public void setAlarmDisplayMode(boolean only_alarms)
+    public void setAlarmDisplayMode(final boolean only_alarms)
     {
         show_only_alarms = only_alarms;
         tree_viewer.refresh();
-        if (show_only_alarms)
-            tree_viewer.expandAll();
+        // Expanding the whole tree can be very expensive
+		//        if (show_only_alarms)
+		//            tree_viewer.expandAll();
     }
 
     // @see AlarmClientModelListener
@@ -296,7 +349,7 @@ public class GUI implements AlarmClientModelListener
     @Override
     public void serverTimeout(final AlarmClientModel model)
     {
-        Display.getDefault().asyncExec(new Runnable()
+        display.asyncExec(new Runnable()
         {
             @Override
             public void run()
@@ -313,7 +366,7 @@ public class GUI implements AlarmClientModelListener
     public void newAlarmConfiguration(final AlarmClientModel model)
     {
         final AlarmTreeRoot config = model.getConfigTree();
-        Display.getDefault().asyncExec(new Runnable()
+        display.asyncExec(new Runnable()
         {
             @Override
             public void run()
@@ -321,16 +374,19 @@ public class GUI implements AlarmClientModelListener
                 final Tree tree = tree_viewer.getTree();
                 if (tree.isDisposed())
                     return;
-                // Puzzling. After switching to ws=cocoa for OS X,
+                // Puzzling.
+                // After switching to ws=cocoa for OS X,
                 // the tree would stay blank until either waiting a long time,
                 // or switching to another window, opening a dialog etc.
                 // triggers a refresh.
                 // What seems to work is the combination of manual setRedraw(false, true)
                 // and a tree_viewer.refresh().
-                tree.setRedraw(false);
+                
+                // TODO Check if fixed now that content provider calls  setChildCount
+//                tree.setRedraw(false);
                 tree_viewer.setInput(config);
-                tree_viewer.refresh();
-                tree.setRedraw(true);
+//                tree_viewer.refresh();
+//                tree.setRedraw(true);
             }
         });
     }
@@ -340,9 +396,9 @@ public class GUI implements AlarmClientModelListener
      */
     @Override
     public void newAlarmState(final AlarmClientModel model,
-            final AlarmTreePV pv)
+            final AlarmTreePV pv, final boolean parent_changed)
     {
-        Display.getDefault().asyncExec(new Runnable()
+        display.asyncExec(new Runnable()
         {
             @Override
             public void run()
@@ -352,8 +408,33 @@ public class GUI implements AlarmClientModelListener
                     return;
                 if (model.isServerAlive())
                     setErrorMessage(null);
-                // Refresh to indicate new state
+                // Refresh affected items to indicate new state.
+                // A complete tree_viewer.refresh() would 'work'
+                // but be quite slow, so try to determine what
+                // needs to be refreshed
                 if (pv != null)
+                {	// Update tree item for PV
+                	final boolean pv_hidden = show_only_alarms  &&
+    			                              pv.getSeverity() == SeverityLevel.OK;
+                	if (pv_hidden)
+                		tree_viewer.remove(pv);
+                	else
+                		tree_viewer.refresh(pv, true);
+                	if (parent_changed)
+            		{	// Update parents up to root
+            			AlarmTreeItem item = pv.getClientParent();
+            			while (! (item instanceof AlarmTreeRoot))
+	                	{
+	            			// Parent could become hidden with its PV
+            				if (pv_hidden && item.getSeverity() == SeverityLevel.OK)
+	            				tree_viewer.remove(item);
+	            			else
+	            				tree_viewer.refresh(item);
+	                		item = item.getClientParent();
+	                	}
+            		}
+                }
+                else // Refresh whole tree
                     tree_viewer.refresh();
             }
         });

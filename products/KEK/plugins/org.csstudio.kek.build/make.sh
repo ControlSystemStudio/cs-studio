@@ -2,12 +2,10 @@
 #
 # Script that triggers a build of "everything"
 #
-# In principle, this should be an ANT build.xml,
-# but the ant copy tasks were really slow compared to rsync.
-# Maybe use a 'system' ant task to call rsync?
-# In any case, this one is good enough for now.
+# Runs on Windows with cygwin installed
 #
 # Kay Kasemir
+CYGDRIVE=/cygdrive/c
 
 source settings.sh
 
@@ -17,51 +15,43 @@ $ANT clean
 echo Fetching sources
 $ANT get_sources
 
-cd css
-java -jar $ECLIPSE/plugins/org.eclipse.equinox.launcher_*.jar \
-  -application org.eclipse.ant.core.antRunner \
-  -buildfile $ECLIPSE/plugins/org.eclipse.pde.build_$PDE_VER/scripts/productBuild/productBuild.xml \
-  -Dbuilder=$TOP/products/KEK/plugins/org.csstudio.kek.build/css \
-  -Dversion=$VERSION \
-  -Ddeltapack=$DELTAPACK
-   > build.log 2>&1
-
-OK=1
-# Each build log contains 2(!) "BUILD SUCCESSFUL" lines
-for prod in $PRODS
+for prod in alarmconfig alarmserver archiveengine css engineconfig jms2rdb
 do
-    if [ `cat $prod/build.log | grep -c "BUILD SUCCESSFUL"` -eq 2 ]
-    then
-        echo OK: $prod
-    else
-        echo Build failed: $prod
-        OK=0
-    fi
+	echo Building $prod Product
+	java -jar $ECLIPSE/plugins/org.eclipse.equinox.launcher_*.jar \
+	  -application org.eclipse.ant.core.antRunner \
+	  -buildfile $ECLIPSE/plugins/org.eclipse.pde.build_$PDE_VER/scripts/productBuild/productBuild.xml \
+	  -Dbuilder=$TOP/products/KEK/plugins/org.csstudio.kek.build/$prod \
+	  -DbuildDirectory=$BUILDDIR \
+	  -Dbase=$ECLIPSE_BASE \
+	  -Dversion=$VERSION \
+	  -Dqualifier=$QUALIFIER \
+	  -Ddeltapack=$DELTAPACK 2>&1 | tee $prod/build.log
 done
 
-if [ $OK = 1 ]
-then
-    echo Collecting ZIP files
-    mkdir -p apps
-    
-    ## Basic EPICS
-    sh patch_product.sh build/I.epics_css_$VERSION/epics_css_$VERSION-macosx.$OSWIN.x86.zip  CSS_EPICS_$VERSION css.app/Contents/MacOS/css apps/epics_css_$VERSION-macosx.$OSWIN.x86.zip
-    sh patch_product.sh build/I.epics_css_$VERSION/epics_css_$VERSION-linux.gtk.x86.zip      CSS_EPICS_$VERSION css                        apps/epics_css_$VERSION-linux.gtk.x86.zip
-    sh patch_product.sh build/I.epics_css_$VERSION/epics_css_$VERSION-linux.gtk.x86_64.zip   CSS_EPICS_$VERSION css                        apps/epics_css_$VERSION-linux.gtk.x86_64.zip
-    sh patch_product.sh build/I.epics_css_$VERSION/epics_css_$VERSION-win32.win32.x86.zip    CSS_EPICS_$VERSION css.exe                    apps/epics_css_$VERSION-win32.win32.x86.zip
-    sh patch_product.sh build/I.epics_css_$VERSION/epics_css_$VERSION-win32.win32.x86_64.zip CSS_EPICS_$VERSION css.exe                    apps/epics_css_$VERSION-win32.win32.x86_64.zip
+for feature in optional 
+do
+	echo Building $feature Features
+	# Features depend on the CSS product, so they will only compile
+	# after the product compiled OK
+	java -jar $ECLIPSE/plugins/org.eclipse.equinox.launcher_*.jar \
+	  -application org.eclipse.ant.core.antRunner \
+	  -buildfile $ECLIPSE/plugins/org.eclipse.pde.build_$PDE_VER/scripts/build.xml \
+	  -Dbuilder=$TOP/products/KEK/plugins/org.csstudio.kek.build/$feature \
+	  -DbuildDirectory=$BUILDDIR \
+	  -Dbase=$ECLIPSE_BASE \
+	  -Dversion=$VERSION \
+	  -Dqualifier=$QUALIFIER \
+	  -Ddeltapack=$DELTAPACK 2>&1 | tee $feature/build.log
+done
 
-    ## SNS CSS
-    # OS X
-    sh patch_product.sh build/I.sns_css_$VERSION/sns_css_$VERSION-macosx.$OSWIN.x86.zip   CSS_$VERSION    css.app/Contents/MacOS/css    apps/sns_css_$VERSION-macosx.$OSWIN.x86.zip
-	sh patch_product.sh build/I.sns_css_$VERSION/sns_css_$VERSION-linux.gtk.x86.zip       CSS_$VERSION    css                           apps/sns_css_$VERSION-linux.gtk.x86.zip
-	sh patch_product.sh build/I.sns_css_$VERSION/sns_css_$VERSION-linux.gtk.x86_64.zip    CSS_$VERSION    css                           apps/sns_css_$VERSION-linux.gtk.x86_64.zip
-	sh patch_product.sh build/I.sns_css_$VERSION/sns_css_$VERSION-win32.win32.x86.zip     CSS_$VERSION    css.exe                       apps/sns_css_$VERSION-win32.win32.x86.zip
-	sh patch_product.sh build/I.sns_css_$VERSION/sns_css_$VERSION-win32.win32.x86_64.zip  CSS_$VERSION    css.exe                       apps/sns_css_$VERSION-win32.win32.x86_64.zip
+# Patch headless launchers for windows
+unzip  $CYGDRIVE/$BUILDDIR/I.AlarmServer_kek_$VERSION/AlarmServer_kek_$VERSION-win32.win32.x86.zip
+cp $CYGDRIVE/$ECLIPSE_BASE/eclipse/eclipsec.exe  AlarmServer$VERSION/AlarmServer.exe
+zip -rm $CYGDRIVE/$BUILDDIR/I.AlarmServer_kek_$VERSION/AlarmServer_kek_$VERSION-win32.win32.x86.zip AlarmServer$VERSION 
 
-    ## Optional feature is already in buildRepo
+unzip  $CYGDRIVE/$BUILDDIR/I.AlarmConfigTool_kek_$VERSION/AlarmConfigTool_kek_$VERSION-win32.win32.x86.zip
+cp $CYGDRIVE/$ECLIPSE_BASE/eclipse/eclipsec.exe  AlarmConfigTool$VERSION/AlarmConfigTool.exe
+zip -rm $CYGDRIVE/$BUILDDIR/I.AlarmConfigTool_kek_$VERSION/AlarmConfigTool_kek_$VERSION-win32.win32.x86.zip AlarmConfigTool$VERSION 
 
-    ## Source code
-    ant zip_sources
-fi
-
+$ANT zip_sources

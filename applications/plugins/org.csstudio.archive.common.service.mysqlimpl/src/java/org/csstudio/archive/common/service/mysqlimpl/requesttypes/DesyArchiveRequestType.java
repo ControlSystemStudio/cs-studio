@@ -134,7 +134,7 @@ public enum DesyArchiveRequestType implements IArchiveRequestType {
     }
 
     @Nonnull
-    public static DesyArchiveRequestType valueOf(@Nonnull final IArchiveRequestType other) throws RequestTypeParameterException {
+    public static DesyArchiveRequestType valueOf(@Nonnull final IArchiveRequestType other) {
 
         if (other instanceof DesyArchiveRequestType) {
             return (DesyArchiveRequestType) other;

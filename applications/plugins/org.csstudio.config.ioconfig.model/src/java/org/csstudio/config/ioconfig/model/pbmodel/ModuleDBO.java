@@ -300,12 +300,15 @@ public class ModuleDBO extends AbstractNodeDBO<SlaveDBO, ChannelStructureDBO> im
         GsdModuleModel2 gsdModuleModel2 = getGsdModuleModel2();
         if(gsdModuleModel2 != null) {
             short offset = getSortIndex();
-            SlaveCfgData slaveCfgData = new SlaveCfgData(gsdModuleModel2.getValue());
-            int byteMulti = 1;
-            if(slaveCfgData.isWordSize()) {
-                byteMulti = 2;
+            List<Integer> values = gsdModuleModel2.getValue();
+            for (Integer value : values) {
+                SlaveCfgData slaveCfgData = new SlaveCfgData(value);
+                int byteMulti = 1;
+                if(slaveCfgData.isWordSize()) {
+                    byteMulti = 2;
+                }
+                offset += (slaveCfgData.getNumber() * byteMulti);
             }
-            offset += (slaveCfgData.getNumber() * byteMulti);
             return offset;
         }
         return -1;

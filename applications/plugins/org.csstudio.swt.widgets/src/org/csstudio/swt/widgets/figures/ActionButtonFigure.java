@@ -23,6 +23,7 @@ import org.csstudio.swt.widgets.util.AbstractInputStreamRunnable;
 import org.csstudio.swt.widgets.util.IJobErrorHandler;
 import org.csstudio.swt.widgets.util.ResourceUtil;
 import org.csstudio.ui.util.CustomMediaFactory;
+import org.csstudio.ui.util.SWTConstants;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.draw2d.ColorConstants;
 import org.eclipse.draw2d.Cursors;
@@ -303,7 +304,10 @@ public class ActionButtonFigure extends Figure implements Introspectable{
 					label.setIcon(image);
 				else {
 					if(grayImage == null)
-						grayImage = new Image(null, image, SWT.IMAGE_GRAY);
+						if(SWT.getPlatform().startsWith("rap")) //$NON-NLS-1$
+							grayImage = image;
+						else
+							grayImage = new Image(null, image, SWTConstants.IMAGE_GRAY);
 					label.setIcon(grayImage);
 				}
 			}
@@ -335,7 +339,10 @@ public class ActionButtonFigure extends Figure implements Introspectable{
 					label.setIcon(image);
 				else{
 					if(grayImage == null && image != null)
-						grayImage = new Image(null, image, SWT.IMAGE_GRAY);
+						if(SWT.getPlatform().startsWith("rap")) //$NON-NLS-1$
+							grayImage = image;
+						else
+							grayImage = new Image(null, image, SWTConstants.IMAGE_GRAY);
 					label.setIcon(grayImage);
 				}
 			}
@@ -356,7 +363,10 @@ public class ActionButtonFigure extends Figure implements Introspectable{
 			label.setIcon(image);
 		else{
 			if(grayImage == null && image != null)
-				grayImage = new Image(null, image, SWT.IMAGE_GRAY);
+				if(SWT.getPlatform().startsWith("rap")) //$NON-NLS-1$
+					grayImage = image;
+				else
+					grayImage = new Image(null, image, SWTConstants.IMAGE_GRAY);
 			label.setIcon(grayImage);
 		}
 	}

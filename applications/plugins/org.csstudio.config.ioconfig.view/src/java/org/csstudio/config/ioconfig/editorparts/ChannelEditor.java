@@ -73,7 +73,7 @@ import org.slf4j.LoggerFactory;
  * @author $Author: hrickens $
  * @since 21.05.2010
  */
-public class ChannelEditor extends AbstractNodeEditor {
+public class ChannelEditor extends AbstractNodeEditor<ChannelDBO> {
 
     private static final Logger LOG = LoggerFactory.getLogger(ChannelEditor.class);
     
@@ -177,7 +177,6 @@ public class ChannelEditor extends AbstractNodeEditor {
 		if (nameWidget != null) {
 			setName((String) nameWidget.getData());
 		}
-        ChannelDBO channel = getChannel();
     }
 
     /**

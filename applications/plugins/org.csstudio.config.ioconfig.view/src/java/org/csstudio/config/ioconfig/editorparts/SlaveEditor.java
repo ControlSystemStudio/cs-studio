@@ -89,7 +89,7 @@ import org.slf4j.LoggerFactory;
  * @version $Revision: 1.3 $
  * @since 21.05.2010
  */
-public class SlaveEditor extends AbstractGsdNodeEditor {
+public class SlaveEditor extends AbstractGsdNodeEditor<SlaveDBO> {
     
     public static final String ID = "org.csstudio.config.ioconfig.view.editor.slave";
 

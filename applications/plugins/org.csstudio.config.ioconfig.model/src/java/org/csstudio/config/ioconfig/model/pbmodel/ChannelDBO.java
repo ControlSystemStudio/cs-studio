@@ -107,7 +107,7 @@ public class ChannelDBO extends AbstractNodeDBO<ChannelStructureDBO, VirtualLeaf
     public ChannelDBO(@Nonnull final ChannelStructureDBO channelStructure,
                       final boolean input,
                       final boolean digital) throws PersistenceException {
-        this(channelStructure, null, input, digital, (short) -1);
+        this(channelStructure, " ", input, digital, (short) -1);
     }
     
     /**
@@ -406,7 +406,7 @@ public class ChannelDBO extends AbstractNodeDBO<ChannelStructureDBO, VirtualLeaf
         short structSortIndex = getParent().getSortIndex();
         short moduleSortIndex = getModule().getSortIndex();
         
-        if(! ( (channelSortIndex <= 0) && (structSortIndex <= 0) && (moduleSortIndex <= 0))) {
+        if(!( (channelSortIndex <= 0) && (structSortIndex <= 0) && (moduleSortIndex <= 0))) {
             // if it a simple Channel (AI/AO)
             if(getChannelStructure().isSimple()) {
                 channelNumber = updateSimpleChannel(channelNumber, structSortIndex);
@@ -456,8 +456,10 @@ public class ChannelDBO extends AbstractNodeDBO<ChannelStructureDBO, VirtualLeaf
                             break;
                         } else {
                             ChannelDBO lastChannel = channelStructure.getLastChannel();
-                            cNumber = lastChannel.getChannelNumber()
-                                    + channelStructure.getStructureType().getByteSize();
+                            if(lastChannel != null) {
+                                cNumber = lastChannel.getChannelNumber()
+                                        + channelStructure.getStructureType().getByteSize();
+                            }
                             break;
                         }
                     }
@@ -520,20 +522,7 @@ public class ChannelDBO extends AbstractNodeDBO<ChannelStructureDBO, VirtualLeaf
                 sb.append("/");
                 sb.append(getStatusAddress());
             }
-            sb.append(" 'T=");
-            Set<ModuleChannelPrototypeDBO> moduleChannelPrototypes = getModule().getGSDModule()
-                    .getModuleChannelPrototypeNH();
-            for (ModuleChannelPrototypeDBO moduleChannelPrototype : moduleChannelPrototypes) {
-                if( (moduleChannelPrototype.isInput() == isInput())
-                        && (getChannelNumber() == moduleChannelPrototype.getOffset())) {
-                    setChannelType(moduleChannelPrototype);
-                    appendDataType(sb, moduleChannelPrototype);
-                    setStatusAddressOffset(moduleChannelPrototype.getShift());
-                    appendMinimum(sb, moduleChannelPrototype);
-                    appendMaximum(sb, moduleChannelPrototype);
-                    appendByteOdering(sb, moduleChannelPrototype);
-                }
-            }
+            assembleEpicsAddressType(sb);
             sb.append("'");
             setEpicsAddressString(sb.toString());
         } catch (NullPointerException e) {
@@ -545,9 +534,33 @@ public class ChannelDBO extends AbstractNodeDBO<ChannelStructureDBO, VirtualLeaf
 
     /**
      * @param sb
+     * @throws PersistenceException
+     */
+    public void assembleEpicsAddressType(@Nonnull StringBuilder sb) throws PersistenceException {
+        sb.append(" 'T=");
+        GSDModuleDBO gsdModule = getModule().getGSDModule();
+        if(gsdModule != null) {
+            Set<ModuleChannelPrototypeDBO> moduleChannelPrototypes = gsdModule
+            .getModuleChannelPrototypeNH();
+            for (ModuleChannelPrototypeDBO moduleChannelPrototype : moduleChannelPrototypes) {
+                if( (moduleChannelPrototype.isInput() == isInput())
+                        && (getChannelNumber() == moduleChannelPrototype.getOffset())) {
+                    setChannelType(moduleChannelPrototype);
+                    appendDataType(sb, moduleChannelPrototype);
+                    setStatusAddressOffset(moduleChannelPrototype.getShift());
+                    appendMinimum(sb, moduleChannelPrototype);
+                    appendMaximum(sb, moduleChannelPrototype);
+                    appendByteOdering(sb, moduleChannelPrototype);
+                }
+            }
+        }
+    }
+
+    /**
+     * @param sb
      * @param moduleChannelPrototype
      */
-    private void appendDataType(StringBuilder sb, ModuleChannelPrototypeDBO moduleChannelPrototype) {
+    private void appendDataType(@Nonnull StringBuilder sb, @Nonnull ModuleChannelPrototypeDBO moduleChannelPrototype) {
         if( (getChannelType() == DataType.BIT) && !getChannelStructure().isSimple()) {
             sb.append(getChannelStructure().getStructureType().getType());
             sb.append(getBitPostion());
@@ -560,8 +573,8 @@ public class ChannelDBO extends AbstractNodeDBO<ChannelStructureDBO, VirtualLeaf
      * @param sb
      * @param moduleChannelPrototype
      */
-    private void appendByteOdering(StringBuilder sb,
-                                   ModuleChannelPrototypeDBO moduleChannelPrototype) {
+    private void appendByteOdering(@Nonnull StringBuilder sb,
+                                   @Nonnull ModuleChannelPrototypeDBO moduleChannelPrototype) {
         if( (moduleChannelPrototype.getMaximum() != null)
                 && (moduleChannelPrototype.getByteOrdering() > 0)) {
             sb.append(",O=" + moduleChannelPrototype.getByteOrdering());
@@ -572,7 +585,7 @@ public class ChannelDBO extends AbstractNodeDBO<ChannelStructureDBO, VirtualLeaf
      * @param sb
      * @param moduleChannelPrototype
      */
-    private void appendMaximum(StringBuilder sb, ModuleChannelPrototypeDBO moduleChannelPrototype) {
+    private void appendMaximum(@Nonnull StringBuilder sb, @Nonnull ModuleChannelPrototypeDBO moduleChannelPrototype) {
         if(moduleChannelPrototype.getMaximum() != null) {
             sb.append(",H=" + moduleChannelPrototype.getMaximum());
         }
@@ -582,7 +595,7 @@ public class ChannelDBO extends AbstractNodeDBO<ChannelStructureDBO, VirtualLeaf
      * @param sb
      * @param moduleChannelPrototype
      */
-    private void appendMinimum(StringBuilder sb, ModuleChannelPrototypeDBO moduleChannelPrototype) {
+    private void appendMinimum(@Nonnull StringBuilder sb, @Nonnull ModuleChannelPrototypeDBO moduleChannelPrototype) {
         if(moduleChannelPrototype.getMinimum() != null) {
             sb.append(",L=" + moduleChannelPrototype.getMinimum());
         }
@@ -592,7 +605,7 @@ public class ChannelDBO extends AbstractNodeDBO<ChannelStructureDBO, VirtualLeaf
      * @param moduleChannelPrototype
      * @throws PersistenceException
      */
-    private void setChannelType(ModuleChannelPrototypeDBO moduleChannelPrototype) throws PersistenceException {
+    private void setChannelType(@Nonnull ModuleChannelPrototypeDBO moduleChannelPrototype) throws PersistenceException {
         if(getChannelStructure().isSimple()) {
             setChannelTypeNonHibernate(moduleChannelPrototype.getType());
         } else {
@@ -655,8 +668,9 @@ public class ChannelDBO extends AbstractNodeDBO<ChannelStructureDBO, VirtualLeaf
             sb.append(getFullChannelNumber());
             sb.append(": ");
             sb.append(getName());
-            if( (getIoName() != null) && (getIoName().length() > 0)) {
-                sb.append(" [" + getIoName() + "]");
+            String ioName = getIoName();
+            if( (ioName != null) && (ioName.length() > 0)) {
+                sb.append(" [" + ioName + "]");
             }
         } catch (PersistenceException e) {
             sb.append("Device Database ERROR: ").append(e.getMessage());
@@ -685,17 +699,33 @@ public class ChannelDBO extends AbstractNodeDBO<ChannelStructureDBO, VirtualLeaf
     @Nonnull
     protected ChannelDBO copyParameter(@Nonnull final ChannelStructureDBO parentNode) throws PersistenceException {
         ChannelStructureDBO channelStructure = parentNode;
+        String name = getName();
+        if(name==null) {
+            name = " ";
+        }
         ChannelDBO copy = new ChannelDBO(channelStructure,
-                                         getName(),
+                                         name,
                                          isInput(),
                                          isDigital(),
                                          getSortIndex());
         // copy.setDocuments(getDocuments());
         // copy.setChannelNumber(getChannelNumber());
         copy.setChannelType(getChannelType());
-        copy.setCurrentValue(getCurrentValue());
-        copy.setCurrenUserParamDataIndex(getCurrenUserParamDataIndex());
-        copy.setIoName(getIoName());
+        String currentValue = getCurrentValue();
+        if(currentValue == null) {
+            currentValue="";
+        }
+        copy.setCurrentValue(currentValue);
+        String currenUserParamDataIndex = getCurrenUserParamDataIndex();
+        if(currenUserParamDataIndex==null) {
+            currenUserParamDataIndex= " ";
+        }
+        copy.setCurrenUserParamDataIndex(currenUserParamDataIndex);
+        String ioName = getIoName();
+        if(ioName==null) {
+            ioName = " ";
+        }
+        copy.setIoName(ioName);
         return copy;
     }
     

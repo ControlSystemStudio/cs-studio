@@ -40,18 +40,19 @@ import org.csstudio.config.ioconfig.model.pbmodel.SlaveDBO;
 import org.csstudio.config.ioconfig.model.pbmodel.gsdParser.GSDTestFiles;
 import org.junit.After;
 import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Test;
 
 /**
- * TODO (hrickens) : 
- * 
+ * TODO (hrickens) :
+ *
  * @author hrickens
  * @author $Author: hrickens $
  * @version $Revision: 1.7 $
  * @since 01.07.2011
  */
 public class HibernateSaveUnitTest {
-    
+
     private HibernateRepository _repository;
     private FacilityDBO _facilityDBO;
     private GSDFileDBO _b756p33;
@@ -62,11 +63,10 @@ public class HibernateSaveUnitTest {
      */
     @Before
     public void setUp() throws Exception {
-        _repository = new HibernateRepository();
-        _repository.injectHibernateManager(new HibernateTestManager());
+        _repository = new HibernateRepository(new HibernateTestManager());
         Repository.injectIRepository(_repository);
-        List<GSDFileDBO> load = _repository.load(GSDFileDBO.class);
-        for (GSDFileDBO gsdFileDBO : load) {
+        final List<GSDFileDBO> load = _repository.load(GSDFileDBO.class);
+        for (final GSDFileDBO gsdFileDBO : load) {
             if(gsdFileDBO.getName().equals("B756_P33.GSD")) {
                 _b756p33 = gsdFileDBO;
                 _gsdFileExist = true;
@@ -77,35 +77,36 @@ public class HibernateSaveUnitTest {
             _b756p33 = GSDTestFiles.B756_P33.getFileAsGSDFileDBO();
             _repository.save(_b756p33);
         }
-        
+
     }
-    
+
+    @Ignore
     @Test
     public void saveTest() throws Exception {
-        
+
         // Facility
         _facilityDBO = new FacilityDBO();
         _facilityDBO.setName("unit Test facility");
         _facilityDBO.setSortIndex(0);
         _facilityDBO.save();
-        
+
         FacilityDBO facilityLoad = _repository.load(FacilityDBO.class, _facilityDBO.getId());
-        
+
         assertEquals(_facilityDBO, facilityLoad);
-        
+
         // IOC
-        IocDBO ioc = _facilityDBO.createChild();
+        final IocDBO ioc = _facilityDBO.createChild();
         ioc.setName("unit test ioc");
         ioc.save();
-        
+
         facilityLoad = _repository.load(FacilityDBO.class, _facilityDBO.getId());
         Set<IocDBO> iocSet = facilityLoad.getChildren();
         assertFalse(iocSet.isEmpty());
         IocDBO iocLoad = iocSet.iterator().next();
         assertEquals(ioc, iocLoad);
-        
+
         // Subnet
-        ProfibusSubnetDBO profibusSubnet = iocLoad.createChild();
+        final ProfibusSubnetDBO profibusSubnet = iocLoad.createChild();
         profibusSubnet.setName("unit test subnet");
         profibusSubnet.save();
 
@@ -116,14 +117,14 @@ public class HibernateSaveUnitTest {
         Set<ProfibusSubnetDBO> profibusSubnetSet = iocLoad.getChildren();
         assertFalse(profibusSubnetSet.isEmpty());
         ProfibusSubnetDBO profibusSubnetLoad = profibusSubnetSet.iterator().next();
-        
+
         assertEquals(profibusSubnet, profibusSubnetLoad);
-        
+
         // Master
-        MasterDBO master = profibusSubnetLoad.createChild();
+        final MasterDBO master = profibusSubnetLoad.createChild();
         master.setName("unit test master");
         master.save();
-        
+
         facilityLoad = _repository.load(FacilityDBO.class, _facilityDBO.getId());
         iocSet = facilityLoad.getChildren();
         assertFalse(iocSet.isEmpty());
@@ -134,15 +135,15 @@ public class HibernateSaveUnitTest {
         Set<MasterDBO> masterSet = profibusSubnetLoad.getChildren();
         assertFalse(masterSet.isEmpty());
         MasterDBO masterLoad = masterSet.iterator().next();
-        
+
         assertEquals(master, masterLoad);
-        
+
         // Slave
-        SlaveDBO slave = masterLoad.createChild();
+        final SlaveDBO slave = masterLoad.createChild();
         slave.setName("unit test slave");
         slave.setGSDFile(_b756p33);
         slave.save();
-        
+
         facilityLoad = _repository.load(FacilityDBO.class, _facilityDBO.getId());
         iocSet = facilityLoad.getChildren();
         assertFalse(iocSet.isEmpty());
@@ -156,18 +157,18 @@ public class HibernateSaveUnitTest {
         Set<SlaveDBO> slaveSet = masterLoad.getChildren();
         assertFalse(slaveSet.isEmpty());
         SlaveDBO slaveLoad = slaveSet.iterator().next();
-        
+
         assertEquals(slave, slaveLoad);
-        
+
         // Module
-        ModuleDBO module = slaveLoad.createChild();
+        final ModuleDBO module = slaveLoad.createChild();
         module.setName("unit test module");
-        
+
         module.save();
-        Map<Integer, GSDModuleDBO> gsdModules = _b756p33.getGSDModules();
-        GSDModuleDBO gsdModule = _b756p33.getGSDModule(4550);
+        final Map<Integer, GSDModuleDBO> gsdModules = _b756p33.getGSDModules();
+        final GSDModuleDBO gsdModule = _b756p33.getGSDModule(4550);
         module.setNewModel(4550, "a Tester");
-        
+
         facilityLoad = _repository.load(FacilityDBO.class, _facilityDBO.getId());
         iocSet = facilityLoad.getChildren();
         assertFalse(iocSet.isEmpty());
@@ -181,15 +182,15 @@ public class HibernateSaveUnitTest {
         slaveSet = masterLoad.getChildren();
         assertFalse(slaveSet.isEmpty());
         slaveLoad = slaveSet.iterator().next();
-        Set<ModuleDBO> moduleSet = slaveLoad.getChildren();
+        final Set<ModuleDBO> moduleSet = slaveLoad.getChildren();
         assertFalse(moduleSet.isEmpty());
-        ModuleDBO moduleLoad = moduleSet.iterator().next();
-        
+        final ModuleDBO moduleLoad = moduleSet.iterator().next();
+
         assertEquals(module, moduleLoad);
-        
-        
+
+
     }
-    
+
     /**
      * @throws java.lang.Exception
      */
@@ -202,5 +203,5 @@ public class HibernateSaveUnitTest {
             _repository.removeGSDFiles(_b756p33);
         }
     }
-    
+
 }

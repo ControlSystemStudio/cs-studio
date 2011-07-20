@@ -172,7 +172,9 @@ public class XYGraphToolbar extends Figure {
 
 	private void addUndoRedoButtons() {
 		//undo button		
-		final GrayableButton undoButton = new GrayableButton(XYGraphMediaFactory.getInstance().getImage("images/Undo.png"));
+		final GrayableButton undoButton = new GrayableButton(
+				XYGraphMediaFactory.getInstance().getImage("images/Undo.png"), //$NON-NLS-1$
+				XYGraphMediaFactory.getInstance().getImage("images/Undo_Gray.png")); //$NON-NLS-1$
 		undoButton.setToolTip(new Label("Undo"));
 		undoButton.setEnabled(false);
 		addButton(undoButton);		
@@ -196,7 +198,9 @@ public class XYGraphToolbar extends Figure {
 		});
 		
 		// redo button
-		final GrayableButton redoButton = new GrayableButton(XYGraphMediaFactory.getInstance().getImage("images/Redo.png"));
+		final GrayableButton redoButton = new GrayableButton(
+				XYGraphMediaFactory.getInstance().getImage("images/Redo.png"),//$NON-NLS-1$
+				XYGraphMediaFactory.getInstance().getImage("images/Redo_Gray.png")); //$NON-NLS-1$
 		redoButton.setToolTip(new Label("Redo"));
 		redoButton.setEnabled(false);
 		addButton(redoButton);		

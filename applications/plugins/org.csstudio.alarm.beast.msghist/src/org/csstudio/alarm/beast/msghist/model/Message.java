@@ -9,8 +9,8 @@ package org.csstudio.alarm.beast.msghist.model;
 
 import java.text.SimpleDateFormat;
 import java.util.Date;
-import java.util.HashMap;
 import java.util.Iterator;
+import java.util.Map;
 import java.util.Set;
 
 import org.csstudio.apputil.time.SecondsParser;
@@ -55,7 +55,7 @@ public class Message implements IPropertySource
     final private int sequence, id;
 
     /** Map of property names and values */
-    final private HashMap<String, String> properties;
+    final private Map<String, String> properties;
 
     /** Constructor
      *  @param sequence Sequence number
@@ -63,7 +63,7 @@ public class Message implements IPropertySource
      *  @param properties Map of message properties
      */
     public Message(final int sequence,
-            final int id, final HashMap<String, String> properties)
+            final int id, final Map<String, String> properties)
     {
         this.sequence = sequence;
         this.id = id;

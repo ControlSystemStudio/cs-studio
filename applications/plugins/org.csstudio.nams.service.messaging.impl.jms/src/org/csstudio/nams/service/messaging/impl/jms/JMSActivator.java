@@ -5,7 +5,7 @@ import org.csstudio.nams.common.activatorUtils.AbstractBundleActivator;
 import org.csstudio.nams.common.activatorUtils.OSGiBundleActivationMethod;
 import org.csstudio.nams.common.activatorUtils.OSGiService;
 import org.csstudio.nams.common.activatorUtils.Required;
-import org.csstudio.nams.service.logging.declaration.Logger;
+import org.csstudio.nams.service.logging.declaration.ILogger;
 import org.csstudio.nams.service.preferenceservice.declaration.PreferenceService;
 import org.osgi.framework.BundleActivator;
 
@@ -22,7 +22,7 @@ public class JMSActivator extends AbstractBundleActivator implements
 	@OSGiBundleActivationMethod
 	public void startBundle(@OSGiService
 	@Required
-	final Logger logger, @OSGiService
+	final ILogger logger, @OSGiService
 	@Required
 	final PreferenceService injectedPreferenceService) {
 		this.preferenceService = injectedPreferenceService;

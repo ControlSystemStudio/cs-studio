@@ -56,13 +56,16 @@ public class Controller implements ArchiveFetchJobListener
     final private Display display;
 
     /** Model with data to display */
-    final Model model;
+    final private Model model;
+
+    /** Listener to model that informs this controller */
+	private ModelListener model_listener;
 
     /** GUI for displaying the data */
-    final Plot plot;
+    final private Plot plot;
 
     /** Timer that triggers scrolling or trace redraws */
-    final Timer update_timer = new Timer("Update Timer", true); //$NON-NLS-1$
+    final private Timer update_timer = new Timer("Update Timer", true); //$NON-NLS-1$
 
     /** Task executed by update_timer */
     private TimerTask update_task = null;
@@ -94,6 +97,7 @@ public class Controller implements ArchiveFetchJobListener
 
     /** Is there any Y axis that's auto-scaled? */
     private volatile boolean have_autoscale_axis = false;
+
 
     /** Initialize
      *  @param shell Shell
@@ -261,8 +265,7 @@ public class Controller implements ArchiveFetchJobListener
             }
         });
 
-        // Listen to Model changes, update Plot
-        model.addListener(new ModelListener()
+        model_listener = new ModelListener()
         {
             @Override
             public void changedUpdatePeriod()
@@ -361,7 +364,8 @@ public class Controller implements ArchiveFetchJobListener
             {
                 plot.updateScrollButton(scroll_enabled);
             }
-        });
+        };
+        model.addListener(model_listener);
     }
 
     /** @param suppress_redraws <code>true</code> if controller should suppress
@@ -499,6 +503,7 @@ public class Controller implements ArchiveFetchJobListener
         }
         // Stop update task
         model.stop();
+        model.removeListener(model_listener);
         update_task.cancel();
         update_task = null;
     }

@@ -115,7 +115,6 @@ public class ProfibusConfigWinModGenerator {
         if (modelName.length() > 24) {
             modelName = modelName.substring(0, 24);
         }
-
         _winModConfig.append("DPSUBSYSTEM 1, ").append("DPADDRESS ")
         		  .append(fdlAddress).append(", \"")
         		  .append(slave.getGSDFile().getName())

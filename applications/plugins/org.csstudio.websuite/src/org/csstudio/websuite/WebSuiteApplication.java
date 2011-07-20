@@ -67,7 +67,8 @@ import org.slf4j.LoggerFactory;
  * @author Markus Moeller
  * @version 1.0
  */
-public class WebSuiteApplication implements IApplication, Stoppable, RemotlyAccessible, IGenericServiceListener<ISessionService> {
+public class WebSuiteApplication implements IApplication, Stoppable,
+                                            RemotlyAccessible, IGenericServiceListener<ISessionService> {
     
     /** The provider of the alarm messages */
     private AlarmMessageListProvider alarmListProvider;
@@ -77,6 +78,9 @@ public class WebSuiteApplication implements IApplication, Stoppable, RemotlyAcce
     
     /** Object for synchronization */
     private final Object lock;
+    
+    /** Service for the XMPP login */
+    private ISessionService xmppService;
     
     /** The port that is used by JETTY */
     private int jettyPort;
@@ -92,6 +96,7 @@ public class WebSuiteApplication implements IApplication, Stoppable, RemotlyAcce
         lock = new Object();
         running = true;
         restart = false;
+        xmppService = null;
     }
     
     /**
@@ -136,6 +141,11 @@ public class WebSuiteApplication implements IApplication, Stoppable, RemotlyAcce
         
         HttpServiceHelper.stopHttpService(jettyPort);
         AlarmMessageListProvider.getInstance().closeJms();
+        
+        if (xmppService != null) {
+            xmppService.disconnect();
+            LOG.info("XMPP connection disconnected.");
+        }
         
         Integer exitCode;
         if(restart) {
@@ -224,6 +234,7 @@ public class WebSuiteApplication implements IApplication, Stoppable, RemotlyAcce
     	
     	try {
 			sessionService.connect(xmppUser, xmppPassword, xmppServer);
+			xmppService = sessionService;
 		} catch (Exception e) {
 			LOG.warn("XMPP connection is not available: " + e.getMessage());
 		}
@@ -231,7 +242,7 @@ public class WebSuiteApplication implements IApplication, Stoppable, RemotlyAcce
     
     @Override
     public void unbindService(ISessionService service) {
-    	service.disconnect();
+    	// Nothing to do here
     }
     
     /**

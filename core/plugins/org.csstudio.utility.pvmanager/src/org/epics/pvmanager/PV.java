@@ -108,9 +108,9 @@ public final class PV<T> {
     }
 
     /**
-     * Adds a listener to the value. This method is thread safe.
+     * Removes a listener to the value. This method is thread safe.
      *
-     * @param listener a new listener
+     * @param listener the old listener
      */
     public void removePVValueChangeListener(PVValueChangeListener listener) {
         // Removing a delegate will cause the proper comparisons

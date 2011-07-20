@@ -8,6 +8,7 @@
 package org.csstudio.trends.databrowser2.propsheet;
 
 import org.csstudio.apputil.time.RelativeTime;
+import org.csstudio.apputil.ui.swt.TableColumnSortHelper;
 import org.csstudio.swt.xygraph.undo.OperationsManager;
 import org.csstudio.swt.xygraph.util.XYGraphMediaFactory;
 import org.csstudio.trends.databrowser2.Activator;
@@ -27,7 +28,7 @@ import org.eclipse.jface.viewers.CellLabelProvider;
 import org.eclipse.jface.viewers.CheckboxCellEditor;
 import org.eclipse.jface.viewers.ColumnViewerToolTipSupport;
 import org.eclipse.jface.viewers.ComboBoxCellEditor;
-import org.eclipse.jface.viewers.ILazyContentProvider;
+import org.eclipse.jface.viewers.IStructuredContentProvider;
 import org.eclipse.jface.viewers.TableViewer;
 import org.eclipse.jface.viewers.TableViewerColumn;
 import org.eclipse.jface.viewers.Viewer;
@@ -41,7 +42,7 @@ import org.eclipse.swt.widgets.Shell;
  *  Each 'row' in the table is a ModelItem.
  *  @author Kay Kasemir
  */
-public class TraceTableHandler implements ILazyContentProvider
+public class TraceTableHandler implements IStructuredContentProvider
 {
     /** Prompt for the 'raw request' warning? */
     static private boolean prompt_for_raw_data_request = true;
@@ -76,7 +77,7 @@ public class TraceTableHandler implements ILazyContentProvider
         public void itemAdded(final ModelItem item)
         {
             trace_table.cancelEditing();
-            trace_table.setItemCount(model.getItemCount());
+            trace_table.refresh();
         }
 
         @Override
@@ -87,7 +88,6 @@ public class TraceTableHandler implements ILazyContentProvider
             // To get a clear table update, all of this seems to be required
             trace_table.cancelEditing();
             trace_table.setSelection(null);
-            trace_table.setItemCount(model.getItemCount());
             trace_table.refresh();
         }
 
@@ -138,6 +138,19 @@ public class TraceTableHandler implements ILazyContentProvider
                 return Messages.TraceVisibilityTT;
             }
         });
+        new TableColumnSortHelper<ModelItem>(table_viewer, view_col)
+        {
+			@Override
+            public int compare(final ModelItem item1, final ModelItem item2)
+            {
+				final int v1 = item1.isVisible() ? 1 : 0;
+				final int v2 = item2.isVisible() ? 1 : 0;
+				final int cmp = v1 - v2;
+				if (cmp != 0)
+					return cmp;
+				return item1.getName().compareTo(item2.getName());
+            }
+        };
         view_col.setEditingSupport(new EditSupportBase(table_viewer)
         {
             @Override
@@ -186,6 +199,14 @@ public class TraceTableHandler implements ILazyContentProvider
                 return Messages.ItemNameTT;
             }
         });
+        new TableColumnSortHelper<ModelItem>(table_viewer, view_col)
+        {
+			@Override
+            public int compare(final ModelItem item1, final ModelItem item2)
+            {
+				return item1.getName().compareTo(item2.getName());
+            }
+        };
         view_col.setEditingSupport(new EditSupportBase(table_viewer)
         {
             @Override
@@ -222,6 +243,14 @@ public class TraceTableHandler implements ILazyContentProvider
                 return Messages.TraceDisplayNameTT;
             }
         });
+        new TableColumnSortHelper<ModelItem>(table_viewer, view_col)
+        {
+			@Override
+            public int compare(final ModelItem item1, final ModelItem item2)
+            {
+				return item1.getDisplayName().compareTo(item2.getDisplayName());
+            }
+        };
         view_col.setEditingSupport(new EditSupportBase(table_viewer)
         {
             @Override
@@ -463,6 +492,17 @@ public class TraceTableHandler implements ILazyContentProvider
                 return Messages.AxisTT;
             }
         });
+        new TableColumnSortHelper<ModelItem>(table_viewer, view_col)
+        {
+			@Override
+            public int compare(final ModelItem item1, final ModelItem item2)
+            {
+				final int cmp = item1.getAxis().getName().compareTo(item2.getAxis().getName());
+				if (cmp != 0)
+					return cmp;
+				return item1.getDisplayName().compareTo(item2.getDisplayName());
+            }
+        };
         view_col.setEditingSupport(new EditSupportBase(table_viewer)
         {
             @Override
@@ -596,9 +636,7 @@ public class TraceTableHandler implements ILazyContentProvider
         ColumnViewerToolTipSupport.enableFor(table_viewer);
     }
 
-    /** Set input to a Model
-     *  @see ILazyContentProvider#inputChanged(Viewer, Object, Object)
-     */
+    /** {@inheritDoc} */
     @Override
     public void inputChanged(final Viewer viewer, final Object old_model, final Object new_model)
     {
@@ -610,20 +648,20 @@ public class TraceTableHandler implements ILazyContentProvider
         if (trace_table == null  ||  model == null)
             return;
 
-        trace_table.setItemCount(model.getItemCount());
         model.addListener(model_listener);
     }
 
-    /** Called by ILazyContentProvider to get the ModelItem for a table row
-     *  {@inheritDoc}
-     */
+    /** {@inheritDoc} */
     @Override
-    public void updateElement(int index)
+    public Object[] getElements(final Object inputElement)
     {
-        trace_table.replace(model.getItem(index), index);
+    	final ModelItem[] items = new ModelItem[model.getItemCount()];
+    	for (int i=0; i<items.length; ++i)
+    		items[i] = model.getItem(i);
+	    return items;
     }
 
-    /** {@inheritDoc} */
+	/** {@inheritDoc} */
     @Override
     public void dispose()
     {

@@ -10,7 +10,8 @@ Require-Bundle: org.eclipse.ui,
  org.csstudio.nams.service.logging,
  org.csstudio.nams.service.preferenceservice,
  org.csstudio.nams.service.configurationAccess.localStore,
- org.csstudio.nams.common
+ org.csstudio.nams.common,
+ org.junit;bundle-version="4.8.1"
 Eclipse-LazyStart: true
 Export-Package: org.csstudio.nams.service.preferenceservice.ui;x-friends:="org.csstudio.nams.testUtils.testSuites",
  org.csstudio.nams.service.preferenceservice.ui.preferencepages;x-friends:="org.csstudio.nams.testUtils.testSuites"

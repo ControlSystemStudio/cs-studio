@@ -156,4 +156,23 @@ public class RingBuffer<T>
             start = 0;
         return result;
     }
+
+    /** @return Array with content of ring buffer */
+	public T[] toArray(T[] array)
+    {
+		if (array.length != size)
+			array = (T[]) Arrays.copyOf(array, size);
+		
+	    //  [start], [start+1], ..., [start+size-1]
+	    //  with wrap-around at [capacity-1].
+		if (start + size <= capacity)
+			System.arraycopy(ring, start, array, 0, size);
+		else
+		{
+			final int part = capacity - start;
+			System.arraycopy(ring, start, array, 0, part);
+			System.arraycopy(ring, 0, array, part, size-part);
+		}
+		return array;
+    }
 }

@@ -16,7 +16,7 @@ sleep 6
 schtasks /Run /TN AmsMessageMinder
 sleep 6
 
-schtasks /Run /TN AmsDecisionDepartment
+schtasks /Run /TN AmsDepartmentDecision
 sleep 6
 
 schtasks /Run /TN AmsEMailConnector

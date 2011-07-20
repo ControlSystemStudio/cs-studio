@@ -8,6 +8,8 @@
 package org.csstudio.diag.epics.pvtree;
 
 import org.csstudio.apputil.ui.swt.ComboHistoryHelper;
+import org.csstudio.csdata.ProcessVariable;
+import org.csstudio.ui.util.dnd.ControlSystemDropTarget;
 import org.eclipse.jface.action.IMenuListener;
 import org.eclipse.jface.action.IMenuManager;
 import org.eclipse.jface.action.MenuManager;
@@ -126,19 +128,18 @@ public class PVTreeView extends ViewPart
         viewer.setLabelProvider(new PVTreeLabelProvider());
         viewer.setInput(getViewSite());
 
-        // TODO Support drag/drop?
-//        new ProcessVariableDragSource(viewer.getTree(), viewer);
-//        new ProcessVariableDropTarget(viewer.getTree())
-//        {
-//            /** @see org.csstudio.data.exchange.ProcessVariableDropTarget#handleDrop(java.lang.String) */
-//            @Override
-//            public void handleDrop(IProcessVariable name,
-//                                   DropTargetEvent event)
-//            {
-//                setPVName(name.getName());
-//            }
-//        };
-
+        // Support drop
+        new ControlSystemDropTarget(parent, ProcessVariable.class, String.class)
+		{
+			@Override
+			public void handleDrop(final Object item)
+			{
+				if (item instanceof ProcessVariable)
+					setPVName(((ProcessVariable) item).getName());
+				else
+					setPVName((String) item);
+			}
+		};
 
         // Stop the press when we're no more
         pv_name.addDisposeListener(new DisposeListener()

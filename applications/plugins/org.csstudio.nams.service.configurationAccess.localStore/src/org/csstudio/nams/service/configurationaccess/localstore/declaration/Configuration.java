@@ -13,14 +13,14 @@ import org.csstudio.nams.service.configurationaccess.localstore.internalDTOs.Rub
 import org.csstudio.nams.service.configurationaccess.localstore.internalDTOs.User2UserGroupDTO;
 import org.csstudio.nams.service.configurationaccess.localstore.internalDTOs.filterConditionSpecifics.FilterConditionsToFilterDTO;
 import org.csstudio.nams.service.configurationaccess.localstore.internalDTOs.filterConditionSpecifics.StrgArFiltCondCompValDTO;
-import org.csstudio.nams.service.logging.declaration.Logger;
+import org.csstudio.nams.service.logging.declaration.ILogger;
 
 @Entity
 public class Configuration {
 	@SuppressWarnings("unused")
-	private static Logger _logger;
+	private static ILogger _logger;
 
-	public static void staticInject(final Logger logger) {
+	public static void staticInject(final ILogger logger) {
 		Configuration._logger = logger;
 	}
 

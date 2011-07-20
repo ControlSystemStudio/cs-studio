@@ -256,10 +256,10 @@ public final class GsdFileParser {
             tmpLine = tmpLine.trim();
             if (isLineParameter(tmpLine, ";") || tmpLine.isEmpty()) {
                 // do nothing. Is a empty line or a comment;
+                continue;
             } else if (isLineParameter(tmpLine, "Ext_Module_Prm_Data_Len")
                     || isLineParameter(tmpLine, "F_Ext_Module_Prm_Data_Len")) {
                 extractKeyValue(tmpLine, lineCounter, br);
-//                gsdModuleModel.setExtModulePrmDataLen(extractKeyValue.getIntValue());
             } else if (isLineParameter(tmpLine, "Ext_User_Prm_Data_Const")
                     || isLineParameter(tmpLine, "F_Ext_User_Prm_Data_Const")) {
                 KeyValuePair extractKeyValue = extractKeyValue(tmpLine, lineCounter, br);
@@ -267,8 +267,6 @@ public final class GsdFileParser {
             } else if (isLineParameter(tmpLine, "Ext_User_Prm_Data_Ref")
                     || isLineParameter(tmpLine, "F_Ext_User_Prm_Data_Ref")) {
                 buildExtUserPrmDataRef(tmpLine, lineCounter, parsedGsdFileModel, gsdModuleModel, br);
-//                KeyValuePair extractKeyValue = extractKeyValue(tmpLine, lineCounter, br);
-//                gsdModuleModel.setProperty(extractKeyValue);
             } else if (isLineParameter(tmpLine, "Info_Text")) {
                 KeyValuePair extractKeyValue = extractKeyValue(tmpLine, lineCounter, br);
                 gsdModuleModel.setProperty(extractKeyValue);

@@ -30,35 +30,35 @@ import org.csstudio.domain.desy.preferences.AbstractPreference;
 import org.csstudio.utility.ldapupdater.LdapUpdaterActivator;
 
 /**
- * LDAP updater preferences. 
- * 
+ * LDAP updater preferences.
+ *
  * @author bknerr
  * @since 26.04.2011
  * @param <T> the type of the preference
  */
 public class LdapUpdaterPreference<T> extends AbstractPreference<T> {
-    
-    public static final LdapUpdaterPreference<File> IOC_DBL_DUMP_PATH = 
+
+    public static final LdapUpdaterPreference<File> IOC_DBL_DUMP_PATH =
         new LdapUpdaterPreference<File>("iocDblDumpPath", new File("Y:\\directoryServer\\"));
-    
-    public static final LdapUpdaterPreference<File> HISTORY_DAT_FILEPATH = 
+
+    public static final LdapUpdaterPreference<File> HISTORY_DAT_FILEPATH =
         new LdapUpdaterPreference<File>("ldapHistPath", new File("Y:\\scripts\\ldap-tests\\history.dat"));
-    
-    public static final LdapUpdaterPreference<String> XMPP_USER = 
+
+    public static final LdapUpdaterPreference<String> XMPP_USER =
         new LdapUpdaterPreference<String>("xmppUser", "anonymous");
-    
-    public static final LdapUpdaterPreference<String> XMPP_PASSWORD = 
+
+    public static final LdapUpdaterPreference<String> XMPP_PASSWORD =
         new LdapUpdaterPreference<String>("xmppPassword", "anonymous");
-    
-    public static final LdapUpdaterPreference<HostAddress> XMPP_SERVER = 
+
+    public static final LdapUpdaterPreference<HostAddress> XMPP_SERVER =
         new LdapUpdaterPreference<HostAddress>("xmppServer", new HostAddress("krynfs.desy.de"));
-    
-    public static final LdapUpdaterPreference<Long> LDAP_AUTO_START = 
+
+    public static final LdapUpdaterPreference<Long> LDAP_AUTO_START =
         new LdapUpdaterPreference<Long>("ldapAutoStart", Long.valueOf(46800));
-    
-    public static final LdapUpdaterPreference<Long> LDAP_AUTO_INTERVAL = 
+
+    public static final LdapUpdaterPreference<Long> LDAP_AUTO_INTERVAL =
         new LdapUpdaterPreference<Long>("ldapAutoInterval", Long.valueOf(43200));
-    
+
     /**
      * Constructor.
      */
@@ -85,5 +85,5 @@ public class LdapUpdaterPreference<T> extends AbstractPreference<T> {
     public String getPluginID() {
         return LdapUpdaterActivator.PLUGIN_ID;
     }
-    
+
 }

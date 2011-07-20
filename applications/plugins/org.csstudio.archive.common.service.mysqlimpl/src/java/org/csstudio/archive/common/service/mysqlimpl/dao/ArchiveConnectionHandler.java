@@ -29,6 +29,7 @@ import javax.annotation.CheckForNull;
 import javax.annotation.Nonnull;
 
 import org.csstudio.archive.common.service.ArchiveConnectionException;
+import org.csstudio.archive.common.service.mysqlimpl.MySQLArchivePreferenceService;
 import org.csstudio.archive.common.service.mysqlimpl.persistengine.PersistDataWorker;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -69,8 +70,29 @@ public class ArchiveConnectionHandler {
      * Constructor.
      */
     @Inject
-    public ArchiveConnectionHandler(@Nonnull final MysqlDataSource dataSource) {
-        _dataSource = dataSource;
+    public ArchiveConnectionHandler(@Nonnull final MySQLArchivePreferenceService prefs) {
+        _dataSource = createDataSource(prefs);
+    }
+
+    @Nonnull
+    private MysqlDataSource createDataSource(@Nonnull final MySQLArchivePreferenceService prefs) {
+
+        final MysqlDataSource ds = new MysqlDataSource();
+        String hosts = prefs.getHost();
+        final String failoverHost = prefs.getFailOverHost();
+        if (!Strings.isNullOrEmpty(failoverHost)) {
+            hosts += "," + failoverHost;
+        }
+        ds.setServerName(hosts);
+        ds.setPort(prefs.getPort());
+        ds.setDatabaseName(prefs.getDatabaseName());
+        ds.setUser(prefs.getUser());
+        ds.setPassword(prefs.getPassword());
+        ds.setFailOverReadOnly(false);
+        ds.setMaxAllowedPacket(prefs.getMaxAllowedPacketSizeInKB()*1024);
+        ds.setUseTimezone(true);
+
+        return ds;
     }
 
     /**
@@ -157,6 +179,11 @@ public class ArchiveConnectionHandler {
     @CheckForNull
     public String getDatabaseName() {
         return _dataSource.getDatabaseName();
+    }
+
+    @Nonnull
+    public Integer getMaxAllowedPacketInBytes() {
+        return Integer.valueOf(_dataSource.getMaxAllowedPacket());
     }
 }
 

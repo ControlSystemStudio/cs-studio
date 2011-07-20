@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <?pde version="3.5"?>
 
-<product name="Css" uid="kek" id="org.csstudio.kek.product.product" application="org.csstudio.kek.product.application" version="1.0.0" useFeatures="true" includeLaunchers="true">
+<product name="Css" uid="kek" id="org.csstudio.kek.product.product" application="org.csstudio.kek.product.application" version="3.0.0" useFeatures="true" includeLaunchers="true">
 
    <aboutInfo>
       <image path="/org.csstudio.utility.product/icons/aboutSide.png"/>
@@ -45,13 +45,11 @@ http://sourceforge.net/apps/trac/cs-studio/wiki
       </win>
    </launcher>
 
-
    <vm>
       <linux include="false">org.eclipse.jdt.launching.JRE_CONTAINER/org.eclipse.jdt.internal.debug.ui.launcher.StandardVMType/JavaSE-1.6</linux>
       <macos include="false">org.eclipse.jdt.launching.JRE_CONTAINER/org.eclipse.jdt.internal.debug.ui.launcher.StandardVMType/JavaSE-1.6</macos>
       <solaris include="false">org.eclipse.jdt.launching.JRE_CONTAINER/org.eclipse.jdt.internal.debug.ui.launcher.StandardVMType/JavaSE-1.6</solaris>
    </vm>
-
 
    <plugins>
    </plugins>

@@ -54,7 +54,7 @@ public class IfGraterThen implements IRule {
                 d1 = ((Double) arguments[0]);
             } else if (arguments[0] instanceof Long) {
                 d1 = ((Long) arguments[0]).doubleValue();
-            } else if ((arguments[0] instanceof String) && (arguments[2] instanceof String)) {
+            } else if ((arguments[0] instanceof String) && (arguments[1] instanceof String)) {
                 return ((String) arguments[0]).compareTo((String) arguments[1]) > 0;
             } else if (arguments[0] instanceof String) {
                 try {

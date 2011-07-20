@@ -20,37 +20,49 @@ import org.eclipse.jface.viewers.ISelectionChangedListener;
 import org.eclipse.jface.viewers.ISelectionProvider;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.viewers.SelectionChangedEvent;
+import org.eclipse.jface.viewers.Viewer;
 
-/** Action that acknowledges alarms
+/** Action that acknowledges or un-acknowledges alarms
  *  @author Kay Kasemir
  *  @author Xihui Chen
  */
-public class AcknowledgeAction extends AbstractUserDependentAction {
+public class AcknowledgeAction extends AbstractUserDependentAction
+{
+    final private static boolean allow_anonymous_acknowledge = Preferences.getAllowAnonyACK();
+    final private boolean acknowledge;
+	private Viewer viewer = null;
 	private ISelectionProvider selection_provider;
     private List<AlarmTreeItem> alarms;
-    private static boolean allow_anonymous_acknowledge = Preferences.getAllowAnonyACK();
-
+    
     /** Initialize action
-     *  @param selection_provider Selection provider that must give AlarmTree items
+     *  @param acknowledge Acknowledge, or un-acknowledge?
+     *  @param selection_provider Selection provider that must give
+     *                            {@link AlarmTreeItem} elements
      */
-    public AcknowledgeAction(final ISelectionProvider selection_provider)
+    public AcknowledgeAction(final boolean acknowledge,
+    		final ISelectionProvider selection_provider)
     {
-
-    	super(Messages.Acknowledge_Action,
-                Activator.getImageDescriptor("icons/acknowledge.gif"), AuthIDs.ACKNOWLEDGE, allow_anonymous_acknowledge); //$NON-NLS-1$
-        this.selection_provider = selection_provider;
+    	super(acknowledge ? Messages.Acknowledge_Action
+    			          : Messages.UnacknowledgeAction,
+              acknowledge ? Activator.getImageDescriptor("icons/acknowledge.gif") //$NON-NLS-1$
+            		      : Activator.getImageDescriptor("icons/unacknowledge.gif"), //$NON-NLS-1$
+              AuthIDs.ACKNOWLEDGE, allow_anonymous_acknowledge);
+    	this.acknowledge = acknowledge;
+    	this.selection_provider = selection_provider;
         selection_provider.addSelectionChangedListener(new ISelectionChangedListener()
         {
             @Override
             public void selectionChanged(SelectionChangedEvent event)
             {
-            	boolean isEmpty= event.getSelection().isEmpty();
-
-                if(!isEmpty) {
+            	final boolean isEmpty = event.getSelection().isEmpty();
+                //authorization
+                if(!isEmpty)
+                {
                 	setEnabledWithoutAuthorization(true);
-                	//authorization
                 	setEnabled(SecurityFacade.getInstance().canExecute(AuthIDs.ACKNOWLEDGE, allow_anonymous_acknowledge));
-                }else {
+                }
+                else
+                {
                 	setEnabledWithoutAuthorization(false);
                 	setEnabled(false);
                 }
@@ -61,12 +73,17 @@ public class AcknowledgeAction extends AbstractUserDependentAction {
     }
 
     /** Initialize action
+     *  @param acknowledge Acknowledge, or un-acknowledge?
      *  @param alarms Alarms to acknowledge when action runs
      */
-    public AcknowledgeAction(final List<AlarmTreeItem> alarms)
+    public AcknowledgeAction(final boolean acknowledge, final List<AlarmTreeItem> alarms)
     {
-        super(Messages.Acknowledge_Action,
-                Activator.getImageDescriptor("icons/acknowledge.gif"), AuthIDs.ACKNOWLEDGE, allow_anonymous_acknowledge); //$NON-NLS-1$
+    	super(acknowledge ? Messages.Acknowledge_Action
+		                  : Messages.UnacknowledgeAction,
+              acknowledge ? Activator.getImageDescriptor("icons/acknowledge.gif") //$NON-NLS-1$
+  		                  : Activator.getImageDescriptor("icons/unacknowledge.gif"), //$NON-NLS-1$
+              AuthIDs.ACKNOWLEDGE, allow_anonymous_acknowledge);
+    	this.acknowledge = acknowledge;
         this.alarms = alarms;
 
         //authorization
@@ -74,24 +91,34 @@ public class AcknowledgeAction extends AbstractUserDependentAction {
     	setEnabledWithoutAuthorization(true);
     }
 
+    /** @param viewer Current selection of this viewer
+     *                will be cleared when the (un-)acknowledge is performed
+     */
+    public void clearSelectionOnAcknowledgement(final Viewer viewer)
+    {
+    	this.viewer = viewer;
+    }
 
     /** {@inheritDoc} */
     @Override
     protected void doWork()
     {
-        if (alarms != null)
+    	if (alarms != null)
         {
+        	if (viewer != null)
+        		viewer.setSelection(null);
             for (AlarmTreeItem item : alarms)
-                item.acknowledge(true);
+                item.acknowledge(acknowledge);
         }
         else
         {
             final Object items[] =
              ((IStructuredSelection)selection_provider.getSelection()).toArray();
+        	if (viewer != null)
+        		viewer.setSelection(null);
             for (Object item : items)
                 if (item instanceof AlarmTreeItem)
-                    ((AlarmTreeItem)item).acknowledge(true);
+                    ((AlarmTreeItem)item).acknowledge(acknowledge);
         }
     }
-
 }

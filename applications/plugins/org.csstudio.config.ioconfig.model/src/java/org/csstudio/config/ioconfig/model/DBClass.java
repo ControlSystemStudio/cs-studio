@@ -64,8 +64,8 @@ public class DBClass {
      * The date who this Node last update is.
      */
     private Date _updatedOn;
-    
     private boolean _dirty;
+    
     
     /**
      *

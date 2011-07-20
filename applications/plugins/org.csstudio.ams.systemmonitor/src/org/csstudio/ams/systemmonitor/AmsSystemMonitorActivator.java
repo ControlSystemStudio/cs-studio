@@ -23,7 +23,7 @@
 
 package org.csstudio.ams.systemmonitor;
 
-import org.csstudio.platform.AbstractCssPlugin;
+import org.eclipse.core.runtime.Plugin;
 import org.osgi.framework.BundleContext;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -31,7 +31,7 @@ import org.slf4j.LoggerFactory;
 /**
  * The activator class controls the plug-in life cycle
  */
-public class AmsSystemMonitorActivator extends AbstractCssPlugin {
+public class AmsSystemMonitorActivator extends Plugin {
     
     /** The class logger */
     private static final Logger LOG = LoggerFactory.getLogger(AmsSystemMonitorActivator.class);
@@ -59,17 +59,16 @@ public class AmsSystemMonitorActivator extends AbstractCssPlugin {
 	}
 
     @Override
-    protected void doStart(BundleContext context) throws Exception {
+    public void start(BundleContext context) throws Exception {
         LOG.info("AmsSystemMonitor plugin started.");
     }
 
     @Override
-    protected void doStop(BundleContext context) throws Exception {
+    public void stop(BundleContext context) throws Exception {
         plugin = null;
         LOG.info("AmsSystemMonitor plugin stopped.");
     }
 
-    @Override
     public String getPluginId() {
         return PLUGIN_ID;
     }

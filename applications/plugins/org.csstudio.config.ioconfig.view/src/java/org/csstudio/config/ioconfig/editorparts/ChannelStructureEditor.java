@@ -63,7 +63,7 @@ import org.slf4j.LoggerFactory;
  * @version $Revision: 1.2 $
  * @since 21.05.2010
  */
-public class ChannelStructureEditor extends AbstractNodeEditor {
+public class ChannelStructureEditor extends AbstractNodeEditor<ChannelStructureDBO> {
 
     private static final Logger LOG = LoggerFactory.getLogger(ChannelStructureEditor.class);
     public static final String ID = "org.csstudio.config.ioconfig.view.editor.channelstructure";

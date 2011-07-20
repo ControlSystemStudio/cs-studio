@@ -19,7 +19,7 @@ import org.csstudio.nams.configurator.service.ConfigurationBeanServiceImpl;
 import org.csstudio.nams.service.configurationaccess.localstore.declaration.ConfigurationServiceFactory;
 import org.csstudio.nams.service.configurationaccess.localstore.declaration.DatabaseType;
 import org.csstudio.nams.service.configurationaccess.localstore.declaration.LocalStoreConfigurationService;
-import org.csstudio.nams.service.logging.declaration.Logger;
+import org.csstudio.nams.service.logging.declaration.ILogger;
 import org.csstudio.nams.service.preferenceservice.declaration.HoldsAPreferenceId;
 import org.csstudio.nams.service.preferenceservice.declaration.PreferenceService;
 import org.csstudio.nams.service.preferenceservice.declaration.PreferenceServiceDatabaseKeys;
@@ -58,7 +58,7 @@ public abstract class AbstractNamsView extends ViewPart {
 	protected static ConfigurationBeanService _configurationBeanService;
 	private static PreferenceService _preferenceService;
 	private static ConfigurationServiceFactory _configurationServiceFactory;
-	private static Logger _logger;
+	private static ILogger _logger;
 	private static Semaphore semaphore = new Semaphore(1);
 
 	public static boolean isInitialized() {
@@ -70,7 +70,7 @@ public abstract class AbstractNamsView extends ViewPart {
 		AbstractNamsView._configurationServiceFactory = configurationServiceFactory;
 	}
 
-	public static void staticInject(final Logger logger) {
+	public static void staticInject(final ILogger logger) {
 		AbstractNamsView._logger = logger;
 	}
 

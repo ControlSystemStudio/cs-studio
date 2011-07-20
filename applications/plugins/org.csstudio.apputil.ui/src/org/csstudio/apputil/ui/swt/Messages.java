@@ -12,6 +12,10 @@ import org.eclipse.osgi.util.NLS;
 public class Messages extends NLS
 {
     private static final String BUNDLE_NAME = "org.csstudio.apputil.ui.swt.messages"; //$NON-NLS-1$
+	public static String AddApplicationScreenshot;
+	public static String AddApplicationScreenshotTT;
+	public static String AddFullScreenshot;
+	public static String AddFullScreenshotTT;
     public static String AddImage;
     public static String AddImageTT;
     public static String ImageTabFmt;

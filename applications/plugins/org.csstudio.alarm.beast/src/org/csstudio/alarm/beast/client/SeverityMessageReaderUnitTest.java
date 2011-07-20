@@ -37,7 +37,7 @@ public class SeverityMessageReaderUnitTest
 
         // Create reader
         final RDBUtil rdb = RDBUtil.connect(rdb_url, rdb_user, rdb_password, false);
-        final SQL sql = new SQL(rdb);
+        final SQL sql = new SQL(rdb, "ALARM");
         final SeverityReader severities = new SeverityReader(rdb, sql);
         rdb.close();
 
@@ -65,7 +65,7 @@ public class SeverityMessageReaderUnitTest
 
         // Create reader
         final RDBUtil rdb = RDBUtil.connect(rdb_url, rdb_user, rdb_password, false);
-        final SQL sql = new SQL(rdb);
+        final SQL sql = new SQL(rdb, "ALARM");
         final MessageReader messages = new MessageReader(rdb, sql);
         rdb.close();
 

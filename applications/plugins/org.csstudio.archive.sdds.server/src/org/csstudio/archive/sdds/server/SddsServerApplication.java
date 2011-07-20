@@ -38,6 +38,8 @@ import javax.management.ObjectName;
 import org.csstudio.archive.sdds.server.internal.ServerPreferenceKey;
 import org.csstudio.archive.sdds.server.io.Server;
 import org.csstudio.archive.sdds.server.io.ServerException;
+import org.csstudio.archive.sdds.server.management.Restart;
+import org.csstudio.archive.sdds.server.management.Stop;
 import org.eclipse.core.runtime.Platform;
 import org.eclipse.core.runtime.preferences.IPreferencesService;
 import org.eclipse.equinox.app.IApplication;
@@ -59,6 +61,9 @@ public class SddsServerApplication implements IApplication, RemotelyStoppable, S
     /** The logger of this class */
     private static final Logger LOG = LoggerFactory.getLogger(SddsServerApplication.class);
     
+    /** Session service for the XMPP login */
+    private ISessionService xmppService;
+    
     /** Help object for synchronization purposes */
     private final Object lock;
     
@@ -73,6 +78,7 @@ public class SddsServerApplication implements IApplication, RemotelyStoppable, S
      */
     public SddsServerApplication() {
         lock = new Object();
+        xmppService = null;
         running = true;
         restart = false;
     }
@@ -83,7 +89,6 @@ public class SddsServerApplication implements IApplication, RemotelyStoppable, S
     @Override
 	public Object start(IApplicationContext context) throws Exception {
         
-        Integer exitType = null;
         int serverPort;
         boolean useJmx = false;
         
@@ -97,14 +102,18 @@ public class SddsServerApplication implements IApplication, RemotelyStoppable, S
         		false, null);
         
         try {
+            
+            if (useJmx == false) {
+                Stop.injectStaticObject(this);
+                Restart.injectStaticObject(this);
+                SddsServerActivator.getDefault().addSessionServiceListener(this);
+            } else {
+                connectMBeanServer();
+            }
+
             server = new Server(serverPort);
             server.start();
             
-            if (useJmx == false) {
-                SddsServerActivator.getDefault().addSessionServiceListener(this);
-            } else {
-            	connectMBeanServer();
-            }
         } catch(ServerException se) {
             LOG.error("Cannot create an instance of the Server class. ", se);
             LOG.error("Stopping application!");
@@ -128,6 +137,12 @@ public class SddsServerApplication implements IApplication, RemotelyStoppable, S
             server.stopServer();
         }
         
+        if (xmppService != null) {
+            xmppService.disconnect();
+            LOG.info("XMPP connection disconnected.");
+        }
+
+        Integer exitType = null;
         if(restart) {
             LOG.info("Restarting {}", SddsServerActivator.PLUGIN_ID);
             exitType = IApplication.EXIT_RESTART;
@@ -146,7 +161,6 @@ public class SddsServerApplication implements IApplication, RemotelyStoppable, S
 	public void stop() {
     	// Nothing to do here
     }
-
 
     /**
      * 
@@ -240,6 +254,7 @@ public class SddsServerApplication implements IApplication, RemotelyStoppable, S
 
     @Override
     public void bindService(ISessionService sessionService) {
+        
         IPreferencesService pref = Platform.getPreferencesService();
         String xmppServer = pref.getString(SddsServerActivator.PLUGIN_ID, ServerPreferenceKey.P_XMPP_SERVER,
                                            "krynfs.desy.de", null);
@@ -248,16 +263,18 @@ public class SddsServerApplication implements IApplication, RemotelyStoppable, S
         String xmppPassword = pref.getString(SddsServerActivator.PLUGIN_ID, ServerPreferenceKey.P_XMPP_PASSWORD,
                                              "sdds-server", null);
     	
-    	try {
+        try {
 			sessionService.connect(xmppUser, xmppPassword, xmppServer);
+			xmppService = sessionService;
 		} catch (Exception e) {
 			LOG.warn("XMPP connection is not available, ", e);
+			xmppService = null;
 		}
     }
     
     @Override
     public void unbindService(ISessionService service) {
-    	service.disconnect();
+        // Nothing to do here
     }
     
     public void nirvana()

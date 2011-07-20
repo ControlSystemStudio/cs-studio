@@ -23,8 +23,6 @@
  */
 package org.csstudio.config.ioconfig.model;
 
-import java.rmi.activation.UnknownObjectException;
-
 import javax.annotation.CheckForNull;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -38,8 +36,7 @@ import javax.annotation.Nullable;
  * @version $Revision: 1.7 $
  * @since 11.05.2011
  */
-@SuppressWarnings({"rawtypes", "unchecked"})
-public class VirtualRoot extends AbstractNodeDBO<VirtualRoot, FacilityDBO> {
+public final class VirtualRoot extends AbstractNodeDBO<VirtualRoot, FacilityDBO> {
     
     private static final long serialVersionUID = -296484498706601307L;
 
@@ -65,7 +62,7 @@ public class VirtualRoot extends AbstractNodeDBO<VirtualRoot, FacilityDBO> {
      */
     @Override
     @CheckForNull
-    public final NodeType getNodeType() {
+    public NodeType getNodeType() {
         return null;
     }
     

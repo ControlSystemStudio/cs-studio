@@ -9,7 +9,7 @@ import java.math.BigDecimal;
 
 import org.csstudio.nams.common.fachwert.Millisekunden;
 import org.csstudio.nams.common.material.AlarmNachricht;
-import org.csstudio.nams.service.logging.declaration.Logger;
+import org.csstudio.nams.service.logging.declaration.ILogger;
 import org.csstudio.platform.model.pvs.IProcessVariableAddress;
 import org.csstudio.platform.model.pvs.ValueType;
 import org.csstudio.platform.simpledal.ConnectionState;
@@ -102,14 +102,14 @@ public class ProcessVariableRegel implements VersandRegel {
 		}
 	}
 
-	private static Logger logger;
+	private static ILogger logger;
 
-	public static Logger getLogger() {
+	public static ILogger getLogger() {
 		return ProcessVariableRegel.logger;
 	}
 
 	public static void staticInject(
-			final org.csstudio.nams.service.logging.declaration.Logger logger) {
+			final org.csstudio.nams.service.logging.declaration.ILogger logger) {
 		ProcessVariableRegel.logger = logger;
 
 	}

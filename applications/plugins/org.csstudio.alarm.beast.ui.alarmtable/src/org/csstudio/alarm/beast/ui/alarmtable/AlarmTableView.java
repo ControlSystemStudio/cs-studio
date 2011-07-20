@@ -13,7 +13,6 @@ import java.util.logging.Logger;
 import org.csstudio.alarm.beast.ui.Messages;
 import org.csstudio.alarm.beast.ui.actions.AcknowledgeAction;
 import org.csstudio.alarm.beast.ui.actions.MaintenanceModeAction;
-import org.csstudio.alarm.beast.ui.actions.UnAcknowledgeAction;
 import org.csstudio.alarm.beast.ui.clientmodel.AlarmClientModel;
 import org.eclipse.jface.action.IToolBarManager;
 import org.eclipse.jface.action.Separator;
@@ -76,8 +75,12 @@ public class AlarmTableView extends ViewPart
             final IToolBarManager toolbar = getViewSite().getActionBars().getToolBarManager();
             toolbar.add(new MaintenanceModeAction(model));
             toolbar.add(new Separator());
-            toolbar.add(new AcknowledgeAction(gui.getSelectedAlarms()));
-            toolbar.add(new UnAcknowledgeAction(gui.getSelectedAckAlarms()));
+            AcknowledgeAction action = new AcknowledgeAction(true, gui.getActiveAlarmTable());
+            action.clearSelectionOnAcknowledgement(gui.getActiveAlarmTable());
+			toolbar.add(action);
+			action = new AcknowledgeAction(false, gui.getAcknowledgedAlarmTable());
+            action.clearSelectionOnAcknowledgement(gui.getAcknowledgedAlarmTable());
+			toolbar.add(action);
         }
     }
 

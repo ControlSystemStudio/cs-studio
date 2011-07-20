@@ -14,12 +14,15 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.Map;
 
+import org.csstudio.alarm.beast.msghist.Messages;
 import org.csstudio.alarm.beast.msghist.model.Message;
 import org.csstudio.alarm.beast.msghist.model.MessagePropertyFilter;
 import org.csstudio.alarm.beast.msghist.model.PVMessage;
 import org.csstudio.platform.utility.rdb.RDBUtil;
 import org.eclipse.core.runtime.IProgressMonitor;
+import org.eclipse.osgi.util.NLS;
 
 /** Helper for accessing the CSS message RDB.
  *  @author Kay Kasemir
@@ -102,7 +105,8 @@ public class MessageRDB
             Date datum = null;
             Date last_datum = null;
             Message last_message = null;
-            HashMap<String, String> props = null;
+            Map<String, String> props = null;
+            int prop_count = 0;
             while (!monitor.isCanceled()  &&  result.next())
             {
                 // Fixed ID and DATUM
@@ -139,6 +143,7 @@ public class MessageRDB
                 final String prop = sql.getPropertyNameById(result.getInt(res_idx++));
                 final String value = result.getString(res_idx);
                 props.put(prop, value);
+                ++prop_count;
             }
             // No more results.
             // Was another (partial) message assembled?
@@ -149,6 +154,17 @@ public class MessageRDB
                 messages.add(createMessage(++sequence, id, props));
                 if (last_message != null  &&  last_datum != null)
                     last_message.setDelta(last_datum, datum);
+            }
+            
+            System.out.println("Properties: " + prop_count + ", max: " + max_properties);
+            if (prop_count >= max_properties)
+            {
+                props = new HashMap<String, String>();
+                props.put(Message.TYPE, "internal");
+                props.put("TEXT",
+                		NLS.bind(Messages.ReachedMaxPropertiesFmt, max_properties));
+                final Message message = createMessage(++sequence, id, props);
+            	messages.add(message);
             }
         }
         finally
@@ -169,7 +185,7 @@ public class MessageRDB
      *  @return Message or PVMessage
      */
     private Message createMessage(final int sequence, final int id,
-                                  final HashMap<String, String> props)
+                                  final Map<String, String> props)
     {
         // Is there a better way to determine which messages
         // have PVs and which don't??

@@ -5,7 +5,7 @@ import junit.framework.Assert;
 import org.csstudio.nams.common.material.AlarmNachricht;
 import org.csstudio.nams.common.material.Regelwerkskennung;
 import org.csstudio.nams.common.testutils.AbstractTestObject;
-import org.csstudio.nams.service.logging.declaration.Logger;
+import org.csstudio.nams.service.logging.declaration.ILogger;
 import org.csstudio.platform.model.pvs.ControlSystemEnum;
 import org.csstudio.platform.model.pvs.IProcessVariableAddress;
 import org.csstudio.platform.model.pvs.ValueType;
@@ -713,7 +713,7 @@ public class ProcessVariableRegel_Test extends
 	protected void setUp() throws Exception {
 		super.setUp();
 		this._connectionServiceMock = this.createPVServiceMock();
-		ProcessVariableRegel.staticInject(new Logger() {
+		ProcessVariableRegel.staticInject(new ILogger() {
 
 			@Override
             public void logDebugMessage(final Object caller,

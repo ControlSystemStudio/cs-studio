@@ -5,7 +5,13 @@ Bundle-SymbolicName: org.csstudio.rap.ui.util
 Bundle-Version: 1.0.0.qualifier
 Require-Bundle: org.eclipse.ui;resolution:=optional,
  org.eclipse.core.runtime,
- org.eclipse.rap.ui;bundle-version="1.4.0";resolution:=optional
+ org.eclipse.rap.ui;bundle-version="1.4.0";resolution:=optional,
+ org.csstudio.rap.core;bundle-version="1.0.0"
 Bundle-RequiredExecutionEnvironment: J2SE-1.5
 Bundle-Vendor: Xihui Chen<chenx1@ornl.gov> - SNS
-Export-Package: org.csstudio.ui.util
+Export-Package: org.csstudio.ui.util,
+ org.csstudio.ui.util.dnd,
+ org.csstudio.ui.util.swt.stringtable,
+ org.csstudio.ui.util.thread
+Bundle-ActivationPolicy: lazy
+Bundle-Activator: org.csstudio.ui.util.Activator

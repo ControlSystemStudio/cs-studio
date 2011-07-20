@@ -20,7 +20,7 @@ import org.csstudio.nams.service.configurationaccess.localstore.declaration.exce
 import org.csstudio.nams.service.configurationaccess.localstore.internalDTOs.DefaultFilterTextDTO;
 import org.csstudio.nams.service.configurationaccess.localstore.internalDTOs.FilterConditionDTO;
 import org.csstudio.nams.service.configurationaccess.localstore.internalDTOs.RubrikDTO;
-import org.csstudio.nams.service.logging.declaration.Logger;
+import org.csstudio.nams.service.logging.declaration.ILogger;
 import org.hibernate.CacheMode;
 import org.hibernate.FlushMode;
 import org.hibernate.HibernateException;
@@ -37,7 +37,7 @@ import org.hibernate.classic.Session;
 class LocalStoreConfigurationServiceImpl implements
 		LocalStoreConfigurationService {
 
-	private final Logger _logger;
+	private final ILogger _logger;
 	private final SessionFactory _sessionFactory;
 
 	private Session _sessionWorkingOn = null;
@@ -53,7 +53,7 @@ class LocalStoreConfigurationServiceImpl implements
 	 * @param logger
 	 */
 	public LocalStoreConfigurationServiceImpl(
-			final SessionFactory sessionFactory, final Logger logger) {
+			final SessionFactory sessionFactory, final ILogger logger) {
 		this._sessionFactory = sessionFactory;
 		this._logger = logger;
 

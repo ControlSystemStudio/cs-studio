@@ -325,7 +325,7 @@ public abstract class ArchiveTypeConversionSupport<T> extends AbstractTypeSuppor
                                             @Nonnull final TimeInstant time,
                                             @Nonnull final IArchiveControlSystem cs,
                                             @SuppressWarnings("unused") @Nonnull final T low,
-                                            @SuppressWarnings("unused") @Nonnull final T high) throws TypeSupportException {
+                                            @SuppressWarnings("unused") @Nonnull final T high) {
         // CHECKSTYLE ON : ParameterNumber
         return new ArchiveChannel(id,
                                   name,

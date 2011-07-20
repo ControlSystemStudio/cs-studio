@@ -75,14 +75,14 @@ import org.csstudio.nams.service.configurationaccess.localstore.internalDTOs.fil
 import org.csstudio.nams.service.configurationaccess.localstore.internalDTOs.filterConditionSpecifics.StringArFilterConditionDTO;
 import org.csstudio.nams.service.configurationaccess.localstore.internalDTOs.filterConditionSpecifics.StringFilterConditionDTO;
 import org.csstudio.nams.service.configurationaccess.localstore.internalDTOs.filterConditionSpecifics.TimeBasedFilterConditionDTO;
-import org.csstudio.nams.service.logging.declaration.Logger;
+import org.csstudio.nams.service.logging.declaration.ILogger;
 
 public class ConfigurationBeanServiceImpl implements ConfigurationBeanService {
 
-	private static Logger _logger;
+	private static ILogger _logger;
 	private static ConfigurationBeanService _previosInstance;
 
-	public static void staticInject(final Logger logger) {
+	public static void staticInject(final ILogger logger) {
 		ConfigurationBeanServiceImpl._logger = logger;
 	}
 

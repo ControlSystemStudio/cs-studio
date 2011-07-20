@@ -152,8 +152,7 @@ public class Jms2OraApplication implements IApplication, Stoppable,
             user = cmd.value("username", "");
             
             ApplicationStopper stopper = new ApplicationStopper();
-            boolean success = stopper.stopExternInstance(Jms2OraPlugin.getDefault().getBundleContext(),
-                                                         "jms2oracle", host, user);
+            boolean success = stopper.stopExternInstance("jms2oracle", host, user);
         
             if(success) {
                 LOG.info("jms2ora stopped.");
@@ -170,13 +169,12 @@ public class Jms2OraApplication implements IApplication, Stoppable,
             user = cmd.value("username", "");
 
             ApplicationChecker checker = new ApplicationChecker();
-            boolean success = checker.checkExternInstance(Jms2OraPlugin.getDefault().getBundleContext(),
-                                                          "jms2oracle", host, user);
+            boolean success = checker.checkExternInstance("jms2oracle", host, user);
         
             if(success) {
                 LOG.info("jms2ora is working.\n");
             } else {
-                LOG.error("jms2ora does not work.\n");
+                LOG.error("jms2ora is NOT working.\n");
             }
             
             return IApplication.EXIT_OK;

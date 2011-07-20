@@ -31,15 +31,12 @@ import java.io.IOException;
 import java.io.StringReader;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
-import java.util.Arrays;
-import java.util.Collection;
 import java.util.Date;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Vector;
 import org.csstudio.alarm.jms2ora.preferences.PreferenceConstants;
 import org.csstudio.alarm.jms2ora.util.JmsSender;
-import org.csstudio.platform.logging.CentralLogger;
 import org.csstudio.platform.management.CommandDescription;
 import org.csstudio.platform.management.CommandResult;
 import org.csstudio.platform.management.IManagementCommandService;
@@ -50,14 +47,13 @@ import org.eclipse.ecf.presence.roster.IRoster;
 import org.eclipse.ecf.presence.roster.IRosterEntry;
 import org.eclipse.ecf.presence.roster.IRosterGroup;
 import org.eclipse.ecf.presence.roster.IRosterItem;
+import org.eclipse.ecf.presence.roster.IRosterManager;
 import org.jdom.Attribute;
 import org.jdom.Document;
 import org.jdom.Element;
 import org.jdom.JDOMException;
 import org.jdom.input.SAXBuilder;
-import org.osgi.framework.BundleContext;
-import org.osgi.framework.InvalidSyntaxException;
-import org.osgi.util.tracker.ServiceTracker;
+import org.remotercp.common.tracker.IGenericServiceListener;
 import org.remotercp.service.connection.session.ISessionService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -69,14 +65,14 @@ import org.slf4j.LoggerFactory;
  * @version 
  * @since 30.09.2010
  */
-public class ApplicationChecker {
-
-    /** */
-    private ISessionService session;
+public class ApplicationChecker implements IGenericServiceListener<ISessionService> {
 
     /** The class logger */
     private static final Logger LOG = LoggerFactory.getLogger(ApplicationChecker.class);
 
+    /** The SessionService for the XMPP login */
+    private ISessionService xmppSession;
+    
     /**
      * Max. time difference between now and the last received message (ms).
      * The preference value is given as minutes and has to be converted. 
@@ -112,62 +108,38 @@ public class ApplicationChecker {
         LOG.info("Max store time difference: ", maxStoreDiffTime);
         
         errorState = this.existsErrorFile();
+        xmppSession = null;
     }
 
     /**
      * 
-     * @param bundleContext
      * @param applicationName
      * @param host
      * @param user
-     * @param password
      */
-    public boolean checkExternInstance(BundleContext bundleContext, String applicationName, String host, String user)
-    {
+    public boolean checkExternInstance(String applicationName, String host, String user) {
+        
         Vector<IRosterItem> rosterItems = null;
         IRosterGroup jmsApplics = null;
         IRosterEntry currentApplic = null;
         boolean success = false;
-        
-        IPreferencesService prefs = Platform.getPreferencesService();
-        String xmppUser = prefs.getString(Jms2OraPlugin.PLUGIN_ID,
-                PreferenceConstants.XMPP_REMOTE_USER_NAME, "anonymous", null);
-        String xmppPassword = prefs.getString(Jms2OraPlugin.PLUGIN_ID,
-                PreferenceConstants.XMPP_REMOTE_PASSWORD, "anonymous", null);
-        String xmppServer = prefs.getString(Jms2OraPlugin.PLUGIN_ID,
-                PreferenceConstants.XMPP_SERVER, "krynfs.desy.de", null);
-        
-        connectToXMPPServer(xmppServer, xmppUser, xmppPassword);
-
-        String serviceFilter = "(&(objectClass=" +
-        ISessionService.class.getName() + "))";
-
-        // Get the Session Service from the Application Admin Service
-        ServiceTracker tracker = null;
-        try {
-            tracker = new ServiceTracker(bundleContext, bundleContext.createFilter(serviceFilter), null);
-            tracker.open();
-        
-            Object[] allServices = tracker.getServices();
-            if(allServices != null) {
                 
-                List<Object> services = Arrays.asList(allServices);
-                ISessionService[] regApps = services.toArray(new ISessionService[0]);
-                
-                if(regApps.length > 0) {
-                    
-                    session = regApps[0];
-                    success = true;
-                }
-            } else {
-                success = false;
+        Jms2OraPlugin.getDefault().addSessionServiceListener(this);
+        
+        Object lock = new Object();
+        synchronized (lock) {
+            try {
+                lock.wait(3000);
+            } catch (InterruptedException ie) {
+                // Can be ignored
             }
-            
-            tracker.close();
-        } catch(InvalidSyntaxException e) {
-            success = false;
         }
-
+        
+        if (xmppSession == null) {
+            LOG.info("XMPP login failed. Stopping application.");
+            return success;
+        }
+        
         rosterItems = getRosterItems();
 
         synchronized(this) {
@@ -184,17 +156,20 @@ public class ApplicationChecker {
             
             // Allways 'false' here
             return success;
-        } else {
-            LOG.info("Manager initialized");
         }
 
+        LOG.info("Manager initialized");
         LOG.info("Anzahl Directory-Elemente: ", rosterItems.size());
         
         jmsApplics = this.getRosterGroup(rosterItems, "jms-applications");
-        currentApplic = this.getRosterApplication(jmsApplics, "jms2oracle", host, user);
+        currentApplic = this.getRosterApplication(jmsApplics, applicationName, host, user);
         
         if(currentApplic != null) {
             success = this.getStatisticsAndCheck(currentApplic);
+        }
+        
+        if (xmppSession != null) {
+            xmppSession.disconnect();
         }
         
         return success;
@@ -216,28 +191,28 @@ public class ApplicationChecker {
         
         if(currentApplic != null) {
             
-            // TODO:
-            // LOG.info("Anwendung gefunden: ", currentApplic.getUser().getID().getName());
+            LOG.info("Anwendung gefunden: ", currentApplic.getUser().getID().getName());
             
-//            List<IManagementCommandService> managementServices =
-//                session.getRemoteServiceProxies(
-//                    IManagementCommandService.class, new ID[] {currentApplic.getUser().getID()});
+            List<IManagementCommandService> managementServices =
+                xmppSession.getRemoteServiceProxies(
+                    IManagementCommandService.class, new ID[] {currentApplic.getUser().getID()});
             
-            List<IManagementCommandService> managementServices = null;
-
             if(managementServices.size() == 1) {
                 
                 service = managementServices.get(0);
                 CommandDescription[] commands = service.getSupportedCommands();
                 
                 for(int i = 0; i < commands.length; i++) {
-                    
                     if(commands[i].getLabel().compareToIgnoreCase("get statistics") == 0) {
-                        
                         getStatisticsAction = commands[i];
                         break;
                     }
                 }
+            }
+            
+            if (service == null) {
+                LOG.error("Cannot get the management command service.");
+                return result;
             }
             
             if(getStatisticsAction != null) {
@@ -360,7 +335,7 @@ public class ApplicationChecker {
         } catch(IOException ioe) {
             LOG.error("ApplicationChecker.isApplicWorking(): [*** IOException ***]: ", ioe.getMessage());
         } finally {
-            if(reader != null) reader.close();
+            reader.close();
         }
 
         return result;
@@ -437,8 +412,6 @@ public class ApplicationChecker {
                             break;
                         }
                     }
-                } else {
-                    result = null;
                 }
                 
                 if(result != null) {
@@ -450,57 +423,36 @@ public class ApplicationChecker {
         return result;
     }
     
-    private boolean connectToXMPPServer(String xmppServer, String xmppUser, String xmppPassword)
-    {
-        boolean success = false;
-        
-        // TODO:
-//        try
-//        {
-//            HeadlessConnection.connect(xmppUser, xmppPassword, xmppServer, ECFConstants.XMPP);
-//            ServiceLauncher.startRemoteServices();
-//            success = true;
-//        }
-//        catch(Exception e)
-//        {
-//            CentralLogger.getInstance().warn(this, "Could not connect to XMPP server: " + e.getMessage());
-//            success = false;
-//        }
-        
-        return success;
-    }
-
     /**
      * 
      * @return
      */
     @SuppressWarnings("unchecked")
-    private Vector<IRosterItem> getRosterItems()
-    {
+    private Vector<IRosterItem> getRosterItems() {
+        
         IRoster roster = null;
         Vector<IRosterItem> rosterItems = null;
         int count = 0;
-
-        // We have to wait until the DCF connection manager have been initialized
-        synchronized(this)
-        {
-            do
-            {
-                try
-                {
+        
+        IRosterManager rosterManager = xmppSession.getRosterManager();
+        
+        // We have to wait until the ECF connection manager have been initialized
+        synchronized(this) {
+            
+            do {
+            
+                try {
                     this.wait(2000);
-                }
-                catch(InterruptedException ie)
-                {
+                } catch(InterruptedException ie) {
                     LOG.error("[*** InterruptedException ***]: ", ie.getMessage());
                 }
   
-                roster = session.getRoster();
+                roster = rosterManager.getRoster();
 
                 // Get the roster items
-                rosterItems = new Vector<IRosterItem>((Collection<IRosterItem>)roster.getItems());
-            }
-            while((++count <= 10) && (rosterItems.isEmpty()));
+                rosterItems = new Vector<IRosterItem>(roster.getItems());
+            
+            } while((++count <= 10) && (rosterItems.isEmpty()));
         }
         
         return rosterItems;
@@ -512,15 +464,13 @@ public class ApplicationChecker {
      * @param groupName
      * @return
      */
-    private IRosterGroup getRosterGroup(Vector<IRosterItem> rosterItems, String groupName)
-    {
+    private IRosterGroup getRosterGroup(Vector<IRosterItem> rosterItems, String groupName) {
+        
         IRosterGroup jmsApplics = null;
 
         // Get the group of JMS applications
-        for(IRosterItem ri : rosterItems)
-        {
-            if(ri.getName().compareToIgnoreCase(groupName) == 0)
-            {
+        for(IRosterItem ri : rosterItems) {
+            if(ri.getName().compareToIgnoreCase(groupName) == 0) {
                 jmsApplics = (IRosterGroup)ri;
                 break;
             }
@@ -538,22 +488,23 @@ public class ApplicationChecker {
      * @return
      */
     @SuppressWarnings("unchecked")
-    private IRosterEntry getRosterApplication(IRosterGroup jmsApplics, String applicName, String host, String user)
-    {
+    private IRosterEntry getRosterApplication(IRosterGroup jmsApplics,
+                                              String applicName,
+                                              String host, String user) {
+        
         Vector<IRosterEntry> rosterEntries = null;
         IRosterEntry currentApplic = null;
         String name = null;
         
         if(jmsApplics != null)
         {
-            rosterEntries = new Vector<IRosterEntry>((Collection<IRosterEntry>)jmsApplics.getEntries());
+            rosterEntries = new Vector<IRosterEntry>(jmsApplics.getEntries());
             
             Iterator<IRosterEntry> list = rosterEntries.iterator();
             while(list.hasNext())
             {
                 IRosterEntry ce = list.next();
-                // TODO:
-                name = ""; //ce.getUser().getID().toExternalForm();
+                name = ce.getUser().getID().toExternalForm();
                 if(name.contains(applicName))
                 {
                     if((name.indexOf(host) > -1) && (name.indexOf(user) > -1))
@@ -571,7 +522,6 @@ public class ApplicationChecker {
     private boolean existsErrorFile() {
         
         String workspaceLocation = null;
-        boolean fileExists = false;
         
         // Retrieve the location of the workspace directory
         try {
@@ -585,12 +535,11 @@ public class ApplicationChecker {
         }
         
         File errorFile = new File(workspaceLocation + "error");
-        if(fileExists = errorFile.exists()) {
-            
+        if(errorFile.exists()) {
             errorFile.delete();
         }
         
-        return fileExists;
+        return errorFile.exists();
     }
     
     private void createErrorFile() {
@@ -623,5 +572,28 @@ public class ApplicationChecker {
                 errorFileStream = null;
             }
         }
+    }
+
+    public void bindService(ISessionService service) {
+
+        IPreferencesService prefs = Platform.getPreferencesService();
+        String xmppUser = prefs.getString(Jms2OraPlugin.PLUGIN_ID,
+                PreferenceConstants.XMPP_REMOTE_USER_NAME, "anonymous", null);
+        String xmppPassword = prefs.getString(Jms2OraPlugin.PLUGIN_ID,
+                PreferenceConstants.XMPP_REMOTE_PASSWORD, "anonymous", null);
+        String xmppServer = prefs.getString(Jms2OraPlugin.PLUGIN_ID,
+                PreferenceConstants.XMPP_SERVER, "krynfs.desy.de", null);
+
+        try {
+            service.connect(xmppUser, xmppPassword, xmppServer);
+            xmppSession = service;
+        } catch (Exception e) {
+            LOG.error("XMPP login is NOT possible: " + e.getMessage());
+            xmppSession = null;
+        }
+    }
+
+    public void unbindService(ISessionService service) {
+        // Nothing to do here
     }
 }

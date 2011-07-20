@@ -87,6 +87,9 @@ public class AlarmTableLabelProvider extends CellLabelProvider
     public String getToolTipText(final Object element)
     {
         final AlarmTreePV alarm = (AlarmTreePV) element;
+        // Special handling of 'info' entry that has no parent
+        if (alarm.getParent() == null)
+        	return alarm.getDescription();
         return alarm.getToolTipText();
     }
 
@@ -97,6 +100,7 @@ public class AlarmTableLabelProvider extends CellLabelProvider
         // AlarmTableProvider should always provide "AlarmTreePV" elements
         final AlarmTreePV alarm = (AlarmTreePV) cell.getElement();
 
+        // Special handling of 'info' entry that has no parent
         switch (column)
         {
         case PV:
@@ -109,20 +113,30 @@ public class AlarmTableLabelProvider extends CellLabelProvider
             cell.setText(alarm.getTimestampText());
             break;
         case CURRENT_SEVERITY:
+        	if (alarm.getParent() == null)
+        		return;
             cell.setText(alarm.getCurrentSeverity().getDisplayName());
             cell.setBackground(color_provider.getColor(alarm.getCurrentSeverity()));
             break;
         case CURRENT_STATUS:
+        	if (alarm.getParent() == null)
+        		return;
             cell.setText(alarm.getCurrentMessage());
             break;
         case SEVERITY:
+        	if (alarm.getParent() == null)
+        		return;
             cell.setText(alarm.getSeverity().getDisplayName());
             cell.setBackground(color_provider.getColor(alarm.getSeverity()));
             break;
         case STATUS:
+        	if (alarm.getParent() == null)
+        		return;
             cell.setText(alarm.getMessage());
             break;
         case VALUE:
+        	if (alarm.getParent() == null)
+        		return;
             cell.setText(alarm.getValue());
             break;
         }

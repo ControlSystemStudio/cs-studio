@@ -24,7 +24,7 @@
 
 package org.csstudio.alarm.jms2ora;
 
-import org.csstudio.platform.AbstractCssPlugin;
+import org.osgi.framework.BundleActivator;
 import org.osgi.framework.BundleContext;
 import org.remotercp.common.tracker.GenericServiceTracker;
 import org.remotercp.common.tracker.IGenericServiceListener;
@@ -35,7 +35,7 @@ import org.slf4j.LoggerFactory;
 /**
  * The activator class controls the plug-in life cycle
  */
-public class Jms2OraPlugin extends AbstractCssPlugin {
+public class Jms2OraPlugin implements BundleActivator {
     
     /** The shared instance */
     private static Jms2OraPlugin plugin;
@@ -51,22 +51,21 @@ public class Jms2OraPlugin extends AbstractCssPlugin {
 
     private GenericServiceTracker<ISessionService> _genericServiceTracker;
     
-    @Override
-    protected void doStart(BundleContext context) throws Exception {        
+    public void start(BundleContext context) throws Exception {
         
         LOG.info("Jms2Ora is starting.");
-        
+
         plugin = this;
-        
         bundleContext = context;
-		_genericServiceTracker = new GenericServiceTracker<ISessionService>(
-				context, ISessionService.class);
-		_genericServiceTracker.open();
+        
+        _genericServiceTracker = new GenericServiceTracker<ISessionService>(
+                context, ISessionService.class);
+        _genericServiceTracker.open();
     }
 
-    @Override
-    protected void doStop(BundleContext context) throws Exception {
+    public void stop(BundleContext context) throws Exception {
         plugin = null;
+        bundleContext = null;
     }
 
     /**
@@ -87,7 +86,6 @@ public class Jms2OraPlugin extends AbstractCssPlugin {
 		return plugin;
 	}
 
-    @Override
     public String getPluginId() {
         return PLUGIN_ID;
     }

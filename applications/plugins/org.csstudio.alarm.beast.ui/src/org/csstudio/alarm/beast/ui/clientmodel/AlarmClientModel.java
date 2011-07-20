@@ -7,7 +7,8 @@
  ******************************************************************************/
 package org.csstudio.alarm.beast.ui.clientmodel;
 
-import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.Set;
 import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.logging.Level;
@@ -27,12 +28,35 @@ import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.osgi.util.NLS;
 
 /** Model of alarm information for client applications.
- *  <p>
- *  Obtains alarm configuration (PVs, their hierarchy, guidance, status, ...)
+ *  
+ *  <p>Obtains alarm configuration (PVs, their hierarchy, guidance, status, ...)
  *  from RDB, then monitors JMS for changes,
  *  sends out acknowledgments or changes to JMS,
- *  signals listeneres about updates, ...
- *
+ *  signals listeners about updates, ...
+ *  
+ *  <p>NOTE ON SYNCHRONIZATION:
+ *  <p>The model can be accessed from the GUI but also from JMS threads
+ *  that received updates from the alarm server.
+ *  One could lock the 'root' element or the 'model' on all access.
+ *  That might be easiest to implement and check, but potentially
+ *  slower because concurrent access to different parts of the model
+ *  are not possible.
+ *  <p>When synchronizing individual pieces of the model (area, pv, ...)
+ *  deadlocks are possible if elements are locked in reverse order.
+ *  The following order should prevent this:
+ *  <ol>
+ *  <li>For overall changes, lock the model.
+ *  <li>For changes to the alarm tree, lock affected items from the root down.
+ *  </ol>
+ *  
+ *  <p>Note that acknowledging an alarm tree entry will
+ *  <ol>
+ *  <li>Acknowledge all 'child' entries, recursing to individual PVs
+ *  <li>Access to 'root' element to send ack' request to JMS
+ *  </ol>
+ *  To prevent deadlocks, an acknowledge must therefore first lock the root element,
+ *  then the affected sub-elements of the alarm tree.
+ *  
  *  @author Kay Kasemir, Xihui Chen
  */
 @SuppressWarnings("nls")
@@ -82,12 +106,12 @@ public class AlarmClientModel
     /** Array of items which are currently in alarm
      *  <br><b>SYNC:</b> Access needs to synchronize on <code>this</code>
      */
-    private ArrayList<AlarmTreePV> active_alarms = new ArrayList<AlarmTreePV>();
+    private Set<AlarmTreePV> active_alarms = new HashSet<AlarmTreePV>();
 
     /** Array of items which are in alarm but acknowledged
      *  <br><b>SYNC:</b> Access needs to synchronize on <code>this</code>
      */
-    private ArrayList<AlarmTreePV> acknowledged_alarms = new ArrayList<AlarmTreePV>();
+    private Set<AlarmTreePV> acknowledged_alarms = new HashSet<AlarmTreePV>();
 
     /** Listeners who registered for notifications */
     final private CopyOnWriteArrayList<AlarmClientModelListener> listeners =
@@ -201,6 +225,7 @@ public class AlarmClientModel
     public void setConfigurationName(final String new_root_name,
     		final AlarmClientModelConfigListener listener)
     {
+    	// TODO If loading, ignore change
     	synchronized (this)
         {
         	if (new_root_name.equals(config_name))
@@ -302,8 +327,19 @@ public class AlarmClientModel
         final AlarmConfiguration new_config;
         try
         {
+        	// TODO Rearrange AlarmClientModel, AlarmConfiguration
+        	// This is currently odd:
+        	// Reading a new configuration (tree), but while doing that
+        	// we already update the active_alarms & acknowledged_alarms
+        	// of this model.
+        	// Better have a separate
+        	// 1) AlarmConfiguration with config tree AND active_alarms, acknowledged_alarms
+        	// 2) RDB reader/writer
+        	// 3) AlarmClientModel that uses 1 & 2
+        	// That way, the 'notify_listeners' can go away:
+        	// Reading a new config does not affect an existing config.
             new_config = new AlarmConfiguration(Preferences.getRDB_Url(),Preferences.getRDB_User(),
-                                   Preferences.getRDB_Password())
+                                   Preferences.getRDB_Password(), Preferences.getRDB_Schema())
             {
                 // When reading config, create the root element
                 // that links to the model instead of the default AlarmTreeRoot
@@ -373,7 +409,7 @@ public class AlarmClientModel
         monitor.subTask(Messages.AlarmClientModel_ReadingRDB);
         try
         {
-            new_config.readConfiguration(getConfigurationName(),false);
+            new_config.readConfiguration(getConfigurationName(), false, monitor);
             // Update model with newly received data
             synchronized (this)
             {
@@ -415,6 +451,19 @@ public class AlarmClientModel
         {
             notify_listeners = true;
         }
+
+        if (monitor.isCanceled())
+        {
+            createPseudoAlarmTree("Cancelled");
+            synchronized (this)
+            {
+            	if (config != null)
+            		config.close();
+                config = null;
+                active_alarms.clear();
+                acknowledged_alarms.clear();
+            }
+        }
         fireNewConfig();
         monitor.done();
     }
@@ -443,7 +492,7 @@ public class AlarmClientModel
         if (! server_alive)
         {
             server_alive = true;
-            fireNewAlarmState(null);
+            fireNewAlarmState(null, true);
         }
         // Change in maintenance mode?
         if (this.maintenance_mode  != maintenance_mode)
@@ -572,7 +621,14 @@ public class AlarmClientModel
         {
             if (config == null)
                 return;
-            config.configureItem(item, guidance, displays, commands);
+            try
+            {
+            	config.configureItem(item, guidance, displays, commands);
+            }
+            finally
+            {
+            	config.closeStatements();
+            }
         }
         synchronized (communicator_lock)
         {
@@ -607,9 +663,16 @@ public class AlarmClientModel
         {
             if (config == null)
                 return;
-            config.configurePV(pv, description, enabled, annunciate,
-                    latch, delay, count, filter,
-                    guidance, displays, commands);
+            try
+            {
+	            config.configurePV(pv, description, enabled, annunciate,
+	                    latch, delay, count, filter,
+	                    guidance, displays, commands);
+            }
+            finally
+            {
+            	config.closeStatements();
+            }
         }
         synchronized (communicator_lock)
         {
@@ -757,15 +820,22 @@ public class AlarmClientModel
         {
             if (config == null)
                 return;
-            config.readPVConfig(pv);
+            try
+            {
+            	config.readPVConfig(pv);
+            }
+            finally
+            {
+            	config.closeStatements();
+            }
         }
         // This could change the alarm tree after a PV was disabled or enabled.
         // Maximizing the severity would also fireNewAlarmState
         final AlarmTreeItem parent = pv.getClientParent();
         if (parent != null)
-            parent.maximizeSeverity(pv);
+            parent.maximizeSeverity(pv, true);
         else
-            fireNewAlarmState(pv);
+            fireNewAlarmState(pv, true);
     }
 
 	/** Update the enablement of a PV in model.
@@ -794,9 +864,9 @@ public class AlarmClientModel
         // Maximizing the severity would also fireNewAlarmState
         final AlarmTreeItem parent = pv.getClientParent();
         if (parent != null)
-            parent.maximizeSeverity(pv);
+            parent.maximizeSeverity(pv, true);
         else
-            fireNewAlarmState(pv);
+            fireNewAlarmState(pv, true);
 	}
 
 	/** Update the state of a PV in model.
@@ -811,24 +881,20 @@ public class AlarmClientModel
         String name = info.getNameOrPath();
         if (AlarmTreePath.isPath(name))
             name = AlarmTreePath.getName(name);
-        synchronized (this)
+        server_alive = true;
+        final AlarmTreePV pv = findPV(name);
+        if (pv != null)
         {
-            server_alive = true;
-            final AlarmTreePV pv = findPV(name);
-            if (pv != null)
-            {
-                pv.setAlarmState(info.getCurrentSeverity(), info.getCurrentMessage(),
-                        info.getSeverity(), info.getMessage(),
-                        info.getValue(), info.getTimestamp());
-                return;
-            }
+            pv.setAlarmState(info.getCurrentSeverity(), info.getCurrentMessage(),
+                    info.getSeverity(), info.getMessage(),
+                    info.getValue(), info.getTimestamp());
+            return;
         }
         // Can this result in out-of-memory?!
         // First glance: No, since we just log & return.
         // Is there a memory leak in the logger?
         // The update comes from JMS, and the logger may also
         // send info to JMS. Is that a problem?
-        // Moved this outside the lock in case that makes a difference.
         Activator.getLogger().log(Level.WARNING,
             "Received update for unknown PV {0}", name);
     }
@@ -939,22 +1005,32 @@ public class AlarmClientModel
      *  May be called with a <code>null</code> PV
      *  to indicate that messages were received after a server timeout.
      *  @param pv PV that might have changed the alarm state or <code>null</code>
+     *  @param parent_changed true if a parent item was updated as well
      */
-    void fireNewAlarmState(final AlarmTreePV pv)
+    void fireNewAlarmState(final AlarmTreePV pv, final boolean parent_changed)
     {
         if (pv != null)
         {
             synchronized (this)
             {
-                active_alarms.remove(pv);
-                acknowledged_alarms.remove(pv);
                 final SeverityLevel severity = pv.getSeverity();
                 if (severity.ordinal() > 0)
                 {
                     if (severity.isActive())
-                        active_alarms.add(pv);
+                    {
+                    	active_alarms.add(pv);
+                        acknowledged_alarms.remove(pv);
+                    }
                     else
-                        acknowledged_alarms.add(pv);
+                    {
+                    	acknowledged_alarms.add(pv);
+                        active_alarms.remove(pv);
+                    }
+                }
+                else
+                {
+                    active_alarms.remove(pv);
+                    acknowledged_alarms.remove(pv);
                 }
                 if (!notify_listeners )
                     return;
@@ -964,7 +1040,7 @@ public class AlarmClientModel
         {
             try
             {
-                listener.newAlarmState(this, pv);
+                listener.newAlarmState(this, pv, parent_changed);
             }
             catch (Throwable ex)
             {

@@ -94,9 +94,10 @@ import org.slf4j.LoggerFactory;
  * 
  * @author hrickens
  * @author $Author: hrickens $
+ * @param <T>
  * @since 31.03.2010
  */
-public abstract class AbstractNodeEditor extends EditorPart implements INodeConfig {
+public abstract class AbstractNodeEditor<T extends AbstractNodeDBO<?, ?>> extends EditorPart implements INodeConfig {
     
     /**
      * 
@@ -311,7 +312,7 @@ public abstract class AbstractNodeEditor extends EditorPart implements INodeConf
     // ---------------------------------------
     // Node Editor View
     
-    private AbstractNodeDBO _node;
+    private T _node;
     
     private Composite _parent;
     
@@ -572,7 +573,7 @@ public abstract class AbstractNodeEditor extends EditorPart implements INodeConf
      */
     @Override
     @Nonnull
-    public AbstractNodeDBO getNode() {
+    public T getNode() {
         return _node;
     }
     
@@ -618,11 +619,15 @@ public abstract class AbstractNodeEditor extends EditorPart implements INodeConf
      * @return
      */
     @Nonnull
-    private String getUserName() {
-        final User user = SecurityFacade.getInstance().getCurrentUser();
+    public static String getUserName() {
         String name = "Unknown";
-        if (user != null) {
-            name = user.getUsername();
+        try {
+            final User user = SecurityFacade.getInstance().getCurrentUser();
+            if (user != null) {
+                name = user.getUsername();
+            }
+        } catch (Exception e) {
+            // Nothing to do. No User avable use 'Unknown'.
         }
         return name;
     }
@@ -635,7 +640,7 @@ public abstract class AbstractNodeEditor extends EditorPart implements INodeConf
                      @Nonnull final IEditorInput input) throws PartInitException {
         setSite(site);
         setInput(input);
-        _node = ((NodeEditorInput) input).getNode();
+        _node = (T) ((NodeEditorInput) input).getNode();
         setNew( ((NodeEditorInput) input).isNew());
         setPartName(_node.getName());
         getProfiBusTreeView().setOpenEditor(this);
@@ -772,6 +777,17 @@ public abstract class AbstractNodeEditor extends EditorPart implements INodeConf
         DeviceDatabaseErrorDialog.open(null,
                                        "The Settings not saved!\n\nDataBase Failure:",
                                        exception);
+    }
+
+    /**
+     * @param exception
+     *            A exception to show in a Dialog,
+     */
+    protected void openErrorDialog(@Nonnull final Exception exception, @Nullable ProfiBusTreeView busTreeView) {
+        LOG.error("The Settings not saved!\n\nDataBase Failure:", exception);
+        DeviceDatabaseErrorDialog.open(null,
+                                       "The Settings not saved!\n\nDataBase Failure:",
+                                       exception, getProfiBusTreeView());
     }
     
     public void perfromClose() {

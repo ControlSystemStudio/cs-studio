@@ -11,8 +11,8 @@ import javax.annotation.Nonnull;
 
 import org.csstudio.config.ioconfig.model.IOConfigActivator;
 import org.csstudio.config.ioconfig.model.pbmodel.GSDFileDBO;
-import org.csstudio.testsuite.util.TestResourceLocator;
-import org.csstudio.testsuite.util.TestResourceLocator.RepoDomain;
+import org.csstudio.domain.common.resource.CssResourceLocator;
+import org.csstudio.domain.common.resource.CssResourceLocator.RepoDomain;
 
 /**
  * @author hrickens
@@ -47,7 +47,7 @@ public enum GSDTestFiles {
     @Nonnull
     public String getFileAsString() throws IOException {
         final String resFilePath = 
-            TestResourceLocator.composeResourceLocationString(RepoDomain.APPLICATIONS, 
+            CssResourceLocator.composeResourceLocationString(RepoDomain.APPLICATIONS, 
                                                               IOConfigActivator.PLUGIN_ID, 
                                                               "res-test/GSDFiles/" + _fileName);
         FileReader fr = new FileReader(resFilePath);

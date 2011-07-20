@@ -85,6 +85,9 @@ public class DataBrowserEditor extends EditorPart
     /** Data model */
     private Model model;
 
+    /** Listener to model that updates this editor*/
+	private ModelListener model_listener;
+
     /** GUI for the plot */
     private Plot plot;
 
@@ -138,28 +141,36 @@ public class DataBrowserEditor extends EditorPart
             throws PartInitException
     {
         setSite(site);
-        setInput(input);
         // Update the editor's name from "Data Browser" to file name
         setPartName(input.getName());
-        model = new Model();
-        // If it's a file, load content into Model
-        final IFile file = getInputFile();
-        if (file != null)
+        
+        if (input instanceof DataBrowserModelEditorInput)
         {
-            try
-            {
-                model.read(file.getContents(true));
-            }
-            catch (Exception ex)
-            {
-                throw new PartInitException(NLS.bind(Messages.ConfigFileErrorFmt, input.getName()), ex);
-            }
+        	model = ((DataBrowserModelEditorInput)input).getModel();
+        	setInput(input);
         }
-        else if (! (input instanceof EmptyEditorInput))
-            throw new PartInitException("Cannot handle " + input.getName()); //$NON-NLS-1$
+        else
+        {
+	        model = new Model();
+	        setInput(new DataBrowserModelEditorInput(input, model));
+	        // If it's a file, load content into Model
+	        final IFile file = getInputFile();
+	        if (file != null)
+	        {
+	            try
+	            {
+	                model.read(file.getContents(true));
+	            }
+	            catch (Exception ex)
+	            {
+	                throw new PartInitException(NLS.bind(Messages.ConfigFileErrorFmt, input.getName()), ex);
+	            }
+	        }
+	        else if (! (input instanceof EmptyEditorInput))
+	            throw new PartInitException("Cannot handle " + input.getName()); //$NON-NLS-1$
+        }
 
-        // Update 'dirty' state when model changes in any way
-        model.addListener(new ModelListener()
+        model_listener = new ModelListener()
         {
             @Override
             public void changedUpdatePeriod()
@@ -204,7 +215,8 @@ public class DataBrowserEditor extends EditorPart
             @Override
             public void scrollEnabled(final boolean scroll_enabled)
             {   setDirty(true);   }
-        });
+        };
+        model.addListener(model_listener);
     }
 
     /** Provide custom property sheet for this editor */
@@ -335,6 +347,7 @@ public class DataBrowserEditor extends EditorPart
     @Override
     public void dispose()
     {
+    	model.removeListener(model_listener);
         if (controller != null)
         {
             controller.stop();
@@ -406,7 +419,7 @@ public class DataBrowserEditor extends EditorPart
             return;
         // Set that file as editor's input, so that just 'save' instead of
         // 'save as' is possible from now on
-        setInput(new FileEditorInput(file));
+        setInput(new DataBrowserModelEditorInput(new FileEditorInput(file), model));
         setPartName(file.getName());
     }
 

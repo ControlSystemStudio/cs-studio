@@ -166,10 +166,8 @@ public class SmsConnectorCheck extends ACheckProcessor
             {
                 throw new AmsSystemMonitorException("Timeout!", AmsSystemMonitorException.ERROR_CODE_TIMEOUT);
             }
-            else
-            {
-                throw new AmsSystemMonitorException("No response from the SmsConnector.", AmsSystemMonitorException.ERROR_CODE_SMS_CONNECTOR_ERROR);
-            }
+
+            throw new AmsSystemMonitorException("No response from the SmsConnector.", AmsSystemMonitorException.ERROR_CODE_SMS_CONNECTOR_ERROR);
         }
         else if(result == CheckResult.ERROR)
         {

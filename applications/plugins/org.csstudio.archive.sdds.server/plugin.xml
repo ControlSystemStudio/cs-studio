@@ -33,15 +33,11 @@
       </initializer>
    </extension>
    <extension
-         id="SDDSServerProduct"
+         id="SddsServerProduct"
          point="org.eclipse.core.runtime.products">
       <product
             application="org.csstudio.archive.sdds.server.SddsServerApplication"
-            name="SDDS-Server">
-         <property
-               name="appName"
-               value="SDDS-Server">
-         </property>
+            name="SddsServerProduct">
       </product>
    </extension>
 

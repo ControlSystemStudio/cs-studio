@@ -36,6 +36,7 @@ import org.csstudio.swt.widgets.introspection.Introspectable;
 import org.csstudio.swt.widgets.util.AbstractInputStreamRunnable;
 import org.csstudio.swt.widgets.util.IJobErrorHandler;
 import org.csstudio.swt.widgets.util.ResourceUtil;
+import org.csstudio.swt.widgets.util.SingleSourceHelper;
 import org.csstudio.swt.widgets.util.TextPainter;
 import org.csstudio.ui.util.thread.UIBundlingThread;
 import org.eclipse.core.runtime.IPath;
@@ -49,6 +50,7 @@ import org.eclipse.swt.graphics.GC;
 import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.graphics.ImageData;
 import org.eclipse.swt.graphics.ImageLoader;
+import org.eclipse.swt.widgets.Canvas;
 import org.eclipse.swt.widgets.Display;
 
 /**
@@ -276,7 +278,10 @@ public final class ImageFigure extends Figure implements Introspectable {
 						stream.close();
 					} catch (IOException e) {
 					}
-					animated = (originalImageDataArray.length > 1);
+					if(SWT.getPlatform().startsWith("rap")) //$NON-NLS-1$
+						animated = false;
+					else
+						animated = (originalImageDataArray.length > 1);
 					loadingImage = false;
 					repaint();
 				}
@@ -391,7 +396,7 @@ public final class ImageFigure extends Figure implements Introspectable {
 
 				if (offScreenImageGC != null && !offScreenImageGC.isDisposed())
 					offScreenImageGC.dispose();
-				offScreenImageGC = new GC(offScreenImage);
+				offScreenImageGC = SingleSourceHelper.getImageGC(offScreenImage);// new GC(offScreenImage);
 			}
 		}
 

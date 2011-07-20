@@ -205,6 +205,7 @@ public class DocumentDBO implements Comparable<DocumentDBO>, IDocument {
         _image = image;
     }
 
+    @SuppressWarnings("deprecation")
     @Transient
     public void setImage(@Nonnull byte[] imageAsByteArray) {
         _image = Hibernate.createBlob(imageAsByteArray);

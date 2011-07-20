@@ -4,8 +4,6 @@ import static org.epics.pvmanager.data.ExpressionLanguage.vDoubleArray;
 import static org.epics.pvmanager.extra.ExpressionLanguage.waterfallPlotOf;
 import static org.epics.pvmanager.extra.WaterfallPlotParameters.pixelDuration;
 
-import java.awt.Color;
-
 import org.csstudio.ui.util.widgets.RangeListener;
 import org.csstudio.ui.util.widgets.RangeWidget;
 import org.csstudio.utility.pvmanager.ui.SWTUtil;
@@ -13,6 +11,8 @@ import org.eclipse.swt.SWT;
 import org.eclipse.swt.custom.CLabel;
 import org.eclipse.swt.events.ControlEvent;
 import org.eclipse.swt.events.ControlListener;
+import org.eclipse.swt.events.DisposeEvent;
+import org.eclipse.swt.events.DisposeListener;
 import org.eclipse.swt.events.MouseAdapter;
 import org.eclipse.swt.events.MouseEvent;
 import org.eclipse.swt.graphics.Point;
@@ -54,6 +54,19 @@ public class WaterfallWidget extends Composite {
 	 */
 	public WaterfallWidget(Composite parent, int style) {
 		super(parent, style);
+		
+		// Close PV on dispose
+		addDisposeListener(new DisposeListener() {
+			
+			@Override
+			public void widgetDisposed(DisposeEvent e) {
+				if (pv != null) {
+					pv.close();
+					pv = null;
+				}
+			}
+		});
+		
 		GridLayout gridLayout = new GridLayout(2, false);
 		gridLayout.horizontalSpacing = 0;
 		gridLayout.verticalSpacing = 0;
@@ -294,4 +307,5 @@ public class WaterfallWidget extends Composite {
 	public boolean isShowRange() {
 		return rangeWidget.isVisible();
 	}
+
 }

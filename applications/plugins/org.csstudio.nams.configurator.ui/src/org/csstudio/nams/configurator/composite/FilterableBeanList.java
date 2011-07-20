@@ -9,7 +9,7 @@ import org.csstudio.nams.configurator.Messages;
 import org.csstudio.nams.configurator.actions.OpenConfigurationEditorAction;
 import org.csstudio.nams.configurator.beans.AbstractConfigurationBean;
 import org.csstudio.nams.configurator.beans.IConfigurationBean;
-import org.csstudio.nams.service.logging.declaration.Logger;
+import org.csstudio.nams.service.logging.declaration.ILogger;
 import org.eclipse.jface.layout.GridDataFactory;
 import org.eclipse.jface.viewers.ArrayContentProvider;
 import org.eclipse.jface.viewers.ComboViewer;
@@ -65,9 +65,9 @@ public abstract class FilterableBeanList {
 
 	}
 
-	private static Logger logger;
+	private static ILogger logger;
 
-	public static void staticInject(final Logger logger) {
+	public static void staticInject(final ILogger logger) {
 		FilterableBeanList.logger = logger;
 	}
 

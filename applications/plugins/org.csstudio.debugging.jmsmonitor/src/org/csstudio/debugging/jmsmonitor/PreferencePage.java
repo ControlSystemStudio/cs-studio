@@ -11,6 +11,7 @@ import org.csstudio.auth.ui.security.PasswordFieldEditor;
 import org.eclipse.core.runtime.preferences.InstanceScope;
 import org.eclipse.jface.preference.FieldEditorPreferencePage;
 import org.eclipse.jface.preference.IPreferenceStore;
+import org.eclipse.jface.preference.IntegerFieldEditor;
 import org.eclipse.jface.preference.StringFieldEditor;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.ui.IWorkbench;
@@ -51,5 +52,8 @@ public class PreferencePage extends FieldEditorPreferencePage
         addField(new StringFieldEditor(Preferences.JMS_URL, Messages.Preferences_JMS_URL, parent));
         addField(new PasswordFieldEditor(Preferences.JMS_USER, Messages.Preferences_JMS_USER, parent, Activator.ID, false));
         addField(new PasswordFieldEditor(Preferences.JMS_PASSWORD, Messages.Preferences_JMS_PASSWORD, parent, Activator.ID));
+        final IntegerFieldEditor max_messages = new IntegerFieldEditor(Preferences.MAX_MESSAGES, Messages.Preferences_MAX_MESSAGES, parent);
+		max_messages.setValidRange(1, Integer.MAX_VALUE);
+        addField(max_messages);
     }
 }

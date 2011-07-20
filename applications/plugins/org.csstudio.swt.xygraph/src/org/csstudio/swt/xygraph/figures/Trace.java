@@ -16,8 +16,8 @@ import org.csstudio.swt.xygraph.dataprovider.IDataProvider;
 import org.csstudio.swt.xygraph.dataprovider.IDataProviderListener;
 import org.csstudio.swt.xygraph.dataprovider.ISample;
 import org.csstudio.swt.xygraph.dataprovider.Sample;
-import org.csstudio.swt.xygraph.linearscale.Range;
 import org.csstudio.swt.xygraph.linearscale.AbstractScale.LabelSide;
+import org.csstudio.swt.xygraph.linearscale.Range;
 import org.csstudio.swt.xygraph.util.SWTConstants;
 import org.eclipse.draw2d.Figure;
 import org.eclipse.draw2d.Graphics;
@@ -816,7 +816,7 @@ public class Trace extends Figure implements IDataProviderListener, IAxisListene
 		if(xyGraph.getLegendMap().containsKey(axis))
 			xyGraph.getLegendMap().get(axis).addTrace(this);
 		else{
-			xyGraph.getLegendMap().put(axis, new Legend());
+			xyGraph.getLegendMap().put(axis, new Legend(xyGraph));
 			xyGraph.getLegendMap().get(axis).addTrace(this);
 			xyGraph.add(xyGraph.getLegendMap().get(axis));
 		}
@@ -977,7 +977,6 @@ public class Trace extends Figure implements IDataProviderListener, IAxisListene
 		return name;
 	}
 
-	@Override
     public void dataChanged(IDataProvider dataProvider) {
 		//if the axis has been repainted, it will cause the trace to be repainted autoly,
 		//the trace doesn't have to be repainted again.
@@ -1061,12 +1060,10 @@ public class Trace extends Figure implements IDataProviderListener, IAxisListene
 	return -(low + 1);  // key not found.
     }
 
-	@Override
     public void axisRevalidated(Axis axis) {
 		repaint();
 	}
 
-	@Override
     public void axisRangeChanged(Axis axis, Range old_range, Range new_range) {
 		//do nothing
 	}

@@ -34,7 +34,7 @@
       <plugin id="com.google.common"/>
       <plugin id="com.google.inject"/>
       <plugin id="com.ibm.icu"/>
-      <plugin id="com.jdbc.mysql"/>
+      <plugin id="com.mysql.jdbc"/>
       <plugin id="javax.annotation"/>
       <plugin id="javax.servlet"/>
       <plugin id="javax.servlet.jsp"/>
@@ -46,21 +46,16 @@
       <plugin id="org.apache.tools.ant.junit"/>
       <plugin id="org.csstudio.apputil"/>
       <plugin id="org.csstudio.archive.common.engine"/>
-      <plugin id="org.csstudio.archive.common.engine.test" fragment="true"/>
       <plugin id="org.csstudio.archive.common.requesttype"/>
-      <plugin id="org.csstudio.archive.common.requesttype.test" fragment="true"/>
       <plugin id="org.csstudio.archive.common.service"/>
       <plugin id="org.csstudio.archive.common.service.mysqlimpl"/>
-      <plugin id="org.csstudio.archive.common.service.mysqlimpl.test" fragment="true"/>
       <plugin id="org.csstudio.data"/>
       <plugin id="org.csstudio.data.test" fragment="true"/>
       <plugin id="org.csstudio.desy.common.product.log4j" fragment="true"/>
+      <plugin id="org.csstudio.domain.common"/>
       <plugin id="org.csstudio.domain.desy"/>
       <plugin id="org.csstudio.domain.desy.epics"/>
-      <plugin id="org.csstudio.domain.desy.epics.test" fragment="true"/>
       <plugin id="org.csstudio.domain.desy.softioc"/>
-      <plugin id="org.csstudio.domain.desy.softioc.test" fragment="true"/>
-      <plugin id="org.csstudio.domain.desy.test" fragment="true"/>
       <plugin id="org.csstudio.email"/>
       <plugin id="org.csstudio.java"/>
       <plugin id="org.csstudio.platform"/>
@@ -68,10 +63,8 @@
       <plugin id="org.csstudio.platform.libs.epics"/>
       <plugin id="org.csstudio.platform.libs.jmock"/>
       <plugin id="org.csstudio.platform.libs.jms"/>
-      <plugin id="org.csstudio.platform.test" fragment="true"/>
       <plugin id="org.csstudio.platform.utility.jms"/>
       <plugin id="org.csstudio.remote"/>
-      <plugin id="org.csstudio.remote.test" fragment="true"/>
       <plugin id="org.csstudio.testsuite"/>
       <plugin id="org.csstudio.utility.httpd"/>
       <plugin id="org.csstudio.utility.pv"/>
