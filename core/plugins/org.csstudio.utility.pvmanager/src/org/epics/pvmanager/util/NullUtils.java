@@ -1,11 +1,12 @@
 /*
- * Copyright 2010 Brookhaven National Laboratory
+ * Copyright 2010-11 Brookhaven National Laboratory
  * All rights reserved. Use is subject to license terms.
  */
 
-package org.epics.pvmanager;
+package org.epics.pvmanager.util;
 
 /**
+ * Utility class to handle null values.
  *
  * @author carcassi
  */

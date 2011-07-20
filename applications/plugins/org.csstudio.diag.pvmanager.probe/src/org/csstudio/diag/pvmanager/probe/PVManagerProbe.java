@@ -2,6 +2,7 @@ package org.csstudio.diag.pvmanager.probe;
 
 import static org.csstudio.utility.pvmanager.ui.SWTUtil.onSWTThread;
 import static org.epics.pvmanager.ExpressionLanguage.*;
+import static org.epics.pvmanager.util.TimeDuration.*;
 
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -35,7 +36,8 @@ import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.part.ViewPart;
 import org.epics.pvmanager.PV;
 import org.epics.pvmanager.PVManager;
-import org.epics.pvmanager.PVValueChangeListener;
+import org.epics.pvmanager.PVReader;
+import org.epics.pvmanager.PVReaderListener;
 import org.epics.pvmanager.PVWriter;
 import org.epics.pvmanager.data.Alarm;
 import org.epics.pvmanager.data.AlarmSeverity;
@@ -93,7 +95,7 @@ public class PVManagerProbe extends ViewPart {
 	private ProcessVariable PVName;
 
 	/** Currently connected pv */
-	private PV<?> pv;
+	private PVReader<?> pv;
 	
 	/** Current pv write */
 	private PVWriter<Object> pvWriter;
@@ -518,11 +520,11 @@ public class PVManagerProbe extends ViewPart {
 
 		setStatus(Messages.Probe_statusSearching);
 		pv = PVManager.read(channel(pvName.getName()))
-				.andNotify(onSWTThread()).atHz(25);
-		pv.addPVValueChangeListener(new PVValueChangeListener() {
-
+				.notifyOn(onSWTThread()).every(hz(25));
+		pv.addPVReaderListener(new PVReaderListener() {
+			
 			@Override
-			public void pvValueChanged() {
+			public void pvChanged() {
 				Object obj = pv.getValue();
 				setLastError(pv.lastException());
 				setValue(valueFormat.format(obj));
@@ -533,7 +535,7 @@ public class PVManagerProbe extends ViewPart {
 		});
 		
 		try {
-			pvWriter = PVManager.write(toChannel(pvName.getName())).async();
+			pvWriter = PVManager.write(channel(pvName.getName())).async();
 			newValueField.setEditable(true);
 		} catch (Exception e) {
 			newValueField.setEditable(false);

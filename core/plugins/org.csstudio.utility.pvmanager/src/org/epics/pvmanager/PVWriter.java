@@ -1,5 +1,5 @@
 /*
- * Copyright 2008-2011 Brookhaven National Laboratory
+ * Copyright 2010-11 Brookhaven National Laboratory
  * All rights reserved. Use is subject to license terms.
  */
 package org.epics.pvmanager;
@@ -11,6 +11,7 @@ package org.epics.pvmanager;
  * can be registered from any thread. The value can only be accessed on the
  * thread on which the listeners is called.
  *
+ * @param <T> type of the write payload
  * @author carcassi
  */
 public interface PVWriter<T> {
@@ -20,14 +21,14 @@ public interface PVWriter<T> {
      *
      * @param listener a new listener
      */
-    public void addPVValueWriteListener(PVValueWriteListener listener);
+    public void addPVWriterListener(PVWriterListener listener);
 
     /**
      * Removes a listener to the value. This method is thread safe.
      *
      * @param listener the old listener
      */
-    public void removePVValueChangeListener(PVValueWriteListener listener);
+    public void removePVWriterListener(PVWriterListener listener);
     
     /**
      * Writes a new value. This method can be synchronous or synchronous

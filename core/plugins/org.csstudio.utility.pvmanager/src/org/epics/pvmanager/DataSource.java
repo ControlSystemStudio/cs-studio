@@ -1,5 +1,5 @@
 /*
- * Copyright 2010 Brookhaven National Laboratory
+ * Copyright 2010-11 Brookhaven National Laboratory
  * All rights reserved. Use is subject to license terms.
  */
 package org.epics.pvmanager;
@@ -15,7 +15,7 @@ import java.util.concurrent.Executors;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import org.epics.pvmanager.util.ThreadFactories;
+import static org.epics.pvmanager.util.Executors.*;
 
 /**
  * A source for data that is going to be processed by the PVManager.
@@ -63,6 +63,8 @@ public abstract class DataSource {
         ChannelHandler<?> channel = usedChannels.get(channelName);
         if (channel == null) {
             channel = createChannel(channelName);
+            if (channel == null)
+                return null;
             usedChannels.put(channelName, channel);
         }
         return channel;
@@ -80,7 +82,7 @@ public abstract class DataSource {
     // The executor used by the data source to perform asynchronous operations,
     // such as connections and writes. I am current using a single thread for
     // all data sources, which can be changed if needed.
-    private static Executor exec = Executors.newSingleThreadExecutor(ThreadFactories.namedPool("PVMgr DataSource Worker "));
+    private static Executor exec = Executors.newSingleThreadExecutor(namedPool("PVMgr DataSource Worker "));
     
     // Keeps track of the recipes and buffers that were opened with
     // this data source.
@@ -102,6 +104,8 @@ public abstract class DataSource {
             for (Map.Entry<String, ValueCache> entry : collEntry.getValue().entrySet()) {
                 String channelName = entry.getKey();
                 final ChannelHandler<?> channelHandler = channel(channelName);
+                if (channelHandler == null)
+                    throw new ReadFailException();
                 final ValueCache cache = entry.getValue();
 
                 // Add monitor on other thread in case it triggers notifications
@@ -162,8 +166,11 @@ public abstract class DataSource {
         
         final Set<ChannelHandler> handlers = new HashSet<ChannelHandler>();
         for (String channelName : writeBuffer.getWriteCaches().keySet()) {
-            handlers.add(channel(channelName));
-        }
+            ChannelHandler handler = channel(channelName);
+            if (handler == null)
+                throw new WriteFailException();
+            handlers.add(handler);
+            }
 
         // Connect using another thread
         exec.execute(new Runnable() {

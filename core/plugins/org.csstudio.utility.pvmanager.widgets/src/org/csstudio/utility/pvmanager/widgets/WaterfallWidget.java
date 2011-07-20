@@ -3,6 +3,7 @@ package org.csstudio.utility.pvmanager.widgets;
 import static org.epics.pvmanager.data.ExpressionLanguage.vDoubleArray;
 import static org.epics.pvmanager.extra.ExpressionLanguage.waterfallPlotOf;
 import static org.epics.pvmanager.extra.WaterfallPlotParameters.pixelDuration;
+import static org.epics.pvmanager.util.TimeDuration.*;
 
 import org.csstudio.ui.util.widgets.RangeListener;
 import org.csstudio.ui.util.widgets.RangeWidget;
@@ -20,9 +21,9 @@ import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Label;
-import org.epics.pvmanager.PV;
 import org.epics.pvmanager.PVManager;
-import org.epics.pvmanager.PVValueChangeListener;
+import org.epics.pvmanager.PVReader;
+import org.epics.pvmanager.PVReaderListener;
 import org.epics.pvmanager.data.VImage;
 import org.epics.pvmanager.extra.WaterfallPlot;
 import org.epics.pvmanager.extra.WaterfallPlotParameters;
@@ -141,7 +142,7 @@ public class WaterfallWidget extends Composite {
 	// The pv name for connection
 	private String pvName;
 	// The pv created by pvmanager
-	private PV<VImage> pv;
+	private PVReader<VImage> pv;
 	
 	/**
 	 * The pv name to connect to.
@@ -232,11 +233,11 @@ public class WaterfallWidget extends Composite {
 			plot = waterfallPlotOf(vDoubleArray(pvName)).with(parameters, WaterfallPlotParameters.backgroundColor(color));
 			parameters = plot.getParameters();
 			pv = PVManager.read(plot)
-				.andNotify(SWTUtil.onSWTThread()).atHz(50);
-			pv.addPVValueChangeListener(new PVValueChangeListener() {
+				.notifyOn(SWTUtil.onSWTThread()).every(hz(50));
+			pv.addPVReaderListener(new PVReaderListener() {
 				
 				@Override
-				public void pvValueChanged() {
+				public void pvChanged() {
 					setLastError(pv.lastException());
 					imageDisplay.setVImage(pv.getValue());
 				}

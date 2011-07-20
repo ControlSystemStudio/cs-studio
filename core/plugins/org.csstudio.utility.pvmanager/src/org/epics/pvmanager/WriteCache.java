@@ -1,5 +1,5 @@
 /*
- * Copyright 2010 Brookhaven National Laboratory
+ * Copyright 2010-11 Brookhaven National Laboratory
  * All rights reserved. Use is subject to license terms.
  */
 
@@ -13,6 +13,7 @@ import java.util.List;
 /**
  * Represent part of the write buffer that holds the value for one pv.
  *
+ * @param <T> the payload type to be held in the cache
  * @author carcassi
  */
 public class WriteCache<T> extends WriteFunction<T> {
@@ -51,10 +52,22 @@ public class WriteCache<T> extends WriteFunction<T> {
         this.value = newValue;
     }
 
+    /**
+     * Changes which channels need to be written before the channel
+     * for this cache can be written.
+     * 
+     * @param precedingChannels a list of channel names
+     */
     public void setPrecedingChannels(List<String> precedingChannels) {
         this.precedingChannels = Collections.unmodifiableList(new ArrayList<String>(precedingChannels));
     }
 
+    /**
+     * Returns all the channels in the same buffer that should be written
+     * before writing the channel for this cache.
+     * 
+     * @return a list of channel names
+     */
     public Collection<String> getPrecedingChannels() {
         return precedingChannels;
     }

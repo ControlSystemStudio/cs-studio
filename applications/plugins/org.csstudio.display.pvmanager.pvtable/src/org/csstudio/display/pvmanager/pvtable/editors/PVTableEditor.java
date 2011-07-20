@@ -6,6 +6,7 @@ package org.csstudio.display.pvmanager.pvtable.editors;
 import static org.epics.pvmanager.ExpressionLanguage.channel;
 import static org.epics.pvmanager.ExpressionLanguage.latestValueOf;
 import static org.epics.pvmanager.extra.ExpressionLanguage.group;
+import static org.epics.pvmanager.util.TimeDuration.*;
 
 import java.io.ByteArrayInputStream;
 import java.io.InputStream;
@@ -93,7 +94,8 @@ import org.eclipse.ui.part.EditorPart;
 import org.eclipse.ui.part.FileEditorInput;
 import org.epics.pvmanager.PV;
 import org.epics.pvmanager.PVManager;
-import org.epics.pvmanager.PVValueChangeListener;
+import org.epics.pvmanager.PVReader;
+import org.epics.pvmanager.PVReaderListener;
 import org.epics.pvmanager.data.SimpleValueFormat;
 import org.epics.pvmanager.data.Util;
 import org.epics.pvmanager.data.ValueFormat;
@@ -148,12 +150,12 @@ public class PVTableEditor extends EditorPart implements ISelectionProvider {
 	private boolean isDirty = false;
 
 	private DynamicGroup group = group();
-	private PV<List<Object>> pv = PVManager.read(group)
-			.andNotify(SWTUtil.onSWTThread()).atHz(2);
-	private final PVValueChangeListener pvListener = new PVValueChangeListener() {
+	private PVReader<List<Object>> pv = PVManager.read(group)
+			.notifyOn(SWTUtil.onSWTThread()).every(hz(2));
+	private final PVReaderListener pvListener = new PVReaderListener() {
 
 		@Override
-		public void pvValueChanged() {
+		public void pvChanged() {
 			PVTableModel model = (PVTableModel) tableViewer.getInput();
 			if (model != null) {
 				model.updateValues(pv.getValue(), group.lastExceptions());
@@ -343,7 +345,7 @@ public class PVTableEditor extends EditorPart implements ISelectionProvider {
 	@Override
 	public void dispose() {
 		super.dispose();
-		pv.removePVValueChangeListener(pvListener);
+		pv.removePVReaderListener(pvListener);
 		unregisterSelectionListener();
 	}
 
@@ -844,7 +846,7 @@ public class PVTableEditor extends EditorPart implements ISelectionProvider {
 				}
 			}
 		});
-		pv.addPVValueChangeListener(pvListener);
+		pv.addPVReaderListener(pvListener);
 
 	}
 
