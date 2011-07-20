@@ -93,7 +93,7 @@ public class XMPP101
 			chat.addMessageListener(this);
 	    }
 
-		/** @see ChatListener */
+		/** @see IndividualChatListener */
 		@Override
 		public void processMessage(final Chat chat, final Message message)
 		{

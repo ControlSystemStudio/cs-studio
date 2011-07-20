@@ -8,12 +8,15 @@ import java.util.Set;
 import java.util.concurrent.CopyOnWriteArrayList;
 
 import org.jivesoftware.smack.AccountManager;
+import org.jivesoftware.smack.Chat;
+import org.jivesoftware.smack.ChatManagerListener;
 import org.jivesoftware.smack.ConnectionConfiguration;
 import org.jivesoftware.smack.PacketListener;
 import org.jivesoftware.smack.SmackConfiguration;
 import org.jivesoftware.smack.XMPPConnection;
 import org.jivesoftware.smack.packet.Message;
 import org.jivesoftware.smack.packet.Packet;
+import org.jivesoftware.smack.packet.Presence;
 import org.jivesoftware.smack.util.StringUtils;
 import org.jivesoftware.smackx.muc.DefaultParticipantStatusListener;
 import org.jivesoftware.smackx.muc.MultiUserChat;
@@ -29,7 +32,7 @@ import org.jivesoftware.smackx.muc.MultiUserChat;
  *  @author Kay Kasemir
  */
 @SuppressWarnings("nls")
-public class Nerdbin
+public class GroupChat
 {
 	/** Connection to server */
 	final private XMPPConnection connection;
@@ -43,15 +46,15 @@ public class Nerdbin
 	/** Nerds in the chat group */
 	final private Set<String> nerds = new HashSet<String>();
 	
-	/** Listeners to the {@link Nerdbin} */
-	final private List<NerdbinListener> listeners = new CopyOnWriteArrayList<NerdbinListener>();
+	/** Listeners to the {@link GroupChat} */
+	final private List<GroupChatListener> listeners = new CopyOnWriteArrayList<GroupChatListener>();
 	
 	/** Initialize
 	 *  @param host XMMP server host
 	 *  @param group Chat group to join
 	 *  @throws Exception on error
 	 */
-	public Nerdbin(final String host, final String group) throws Exception
+	public GroupChat(final String host, final String group) throws Exception
     {
 		// Avoid message "couldn't setup local SOCKS5 proxy on port" on disconnect
 		SmackConfiguration.setLocalSocks5ProxyEnabled(false);
@@ -63,7 +66,7 @@ public class Nerdbin
     }
 
 	/** @param listener Listener to add */
-	public void addListener(final NerdbinListener listener)
+	public void addListener(final GroupChatListener listener)
 	{
 		listeners.add(listener);
 	}
@@ -95,6 +98,9 @@ public class Nerdbin
 		// Log on
 		connection.login(user, password, "css");
 
+		connection.sendPacket(
+			new Presence(Presence.Type.available, "online", 0, Presence.Mode.chat));
+		
 	    // Join chat group
 		chat = new MultiUserChat(connection, group);
 		chat.join(user);
@@ -153,8 +159,21 @@ public class Nerdbin
 					if (nick.length() <= 0)
 						nick = "SERVER";
 					final String body = message.getBody();
-					for (NerdbinListener listener : listeners)
+					for (GroupChatListener listener : listeners)
 						listener.receive(nick, nick.equals(user), body);
+				}
+			}
+		});
+		
+		// Listen to invitations
+		connection.getChatManager().addChatListener(new ChatManagerListener()
+		{
+			@Override
+			public void chatCreated(final Chat chat, final boolean createdLocally)
+			{
+				for (GroupChatListener listener : listeners)
+				{
+					listener.receivedInvitation(chat.getParticipant());
 				}
 			}
 		});
@@ -169,8 +188,8 @@ public class Nerdbin
 			array = nerds.toArray(new String[nerds.size()]);
         }
 		Arrays.sort(array);
-		for (NerdbinListener listener : listeners)
-			listener.nerdAlert(array);
+		for (GroupChatListener listener : listeners)
+			listener.groupMemberUpdate(array);
     }
 
 	/** Disconnect from chat server */
@@ -178,6 +197,7 @@ public class Nerdbin
     {
     	if (chat != null)
     		chat.leave();
+    	listeners.clear();
     	connection.disconnect();
     }
 
