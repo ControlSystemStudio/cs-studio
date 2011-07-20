@@ -47,6 +47,10 @@
       <product
             application="org.csstudio.ams.connector.email.AmsEMailConnector"
             name="AmsEMailConnectorProduct">
+         <property
+               name="appName"
+               value="AmsEMailConnectorProduct">
+         </property>
       </product>
    </extension>
 
