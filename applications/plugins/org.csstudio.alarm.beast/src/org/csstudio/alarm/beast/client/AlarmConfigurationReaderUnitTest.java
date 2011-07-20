@@ -44,7 +44,7 @@ public class AlarmConfigurationReaderUnitTest
 
         // Create reader
         final RDBUtil rdb = RDBUtil.connect(rdb_url, rdb_user, rdb_password, false);
-        final SQL sql = new SQL(rdb);
+        final SQL sql = new SQL(rdb, "ALARM");
         final AlarmConfigurationReader reader = new AlarmConfigurationReader(rdb, sql);
         final SeverityReader severities = new SeverityReader(rdb, sql);
         final MessageReader messages = new MessageReader(rdb, sql);

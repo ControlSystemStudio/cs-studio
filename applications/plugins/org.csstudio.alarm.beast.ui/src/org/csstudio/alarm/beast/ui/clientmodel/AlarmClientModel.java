@@ -225,6 +225,7 @@ public class AlarmClientModel
     public void setConfigurationName(final String new_root_name,
     		final AlarmClientModelConfigListener listener)
     {
+    	// TODO If loading, ignore change
     	synchronized (this)
         {
         	if (new_root_name.equals(config_name))
@@ -326,8 +327,19 @@ public class AlarmClientModel
         final AlarmConfiguration new_config;
         try
         {
+        	// TODO Rearrange AlarmClientModel, AlarmConfiguration
+        	// This is currently odd:
+        	// Reading a new configuration (tree), but while doing that
+        	// we already update the active_alarms & acknowledged_alarms
+        	// of this model.
+        	// Better have a separate
+        	// 1) AlarmConfiguration with config tree AND active_alarms, acknowledged_alarms
+        	// 2) RDB reader/writer
+        	// 3) AlarmClientModel that uses 1 & 2
+        	// That way, the 'notify_listeners' can go away:
+        	// Reading a new config does not affect an existing config.
             new_config = new AlarmConfiguration(Preferences.getRDB_Url(),Preferences.getRDB_User(),
-                                   Preferences.getRDB_Password())
+                                   Preferences.getRDB_Password(), Preferences.getRDB_Schema())
             {
                 // When reading config, create the root element
                 // that links to the model instead of the default AlarmTreeRoot
@@ -438,6 +450,19 @@ public class AlarmClientModel
         synchronized (this)
         {
             notify_listeners = true;
+        }
+
+        if (monitor.isCanceled())
+        {
+            createPseudoAlarmTree("Cancelled");
+            synchronized (this)
+            {
+            	if (config != null)
+            		config.close();
+                config = null;
+                active_alarms.clear();
+                acknowledged_alarms.clear();
+            }
         }
         fireNewConfig();
         monitor.done();

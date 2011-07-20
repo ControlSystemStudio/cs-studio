@@ -37,9 +37,10 @@ public class GlobalAlarmReader
         final String url = Preferences.getRDB_Url();
         final String user = Preferences.getRDB_User();
         final String password = Preferences.getRDB_Password();
+        final String schema = Preferences.getRDB_Schema();
 
         rdb = RDBUtil.connect(url, user, password, false);
-        sql = new SQL(rdb);
+        sql = new SQL(rdb, schema);
     }
 
     /** Must be called to release resources */

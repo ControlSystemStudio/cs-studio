@@ -21,6 +21,7 @@ public class Preferences
     public static final String JMS_URL = "jms_url";
     public static final String JMS_USER = "jms_user";
     public static final String JMS_PASSWORD = "jms_password";
+    public static final String MAX_MESSAGES = "max_messages";
 
     /** @return URL of JMS server or <code>null</code> */
     public static String getJMS_URL()
@@ -38,10 +39,15 @@ public class Preferences
     {
         return getSecureString(JMS_PASSWORD);
     }
-    
-    private static String getSecureString(final String setting) {
-    	String value = SecureStorage.retrieveSecureStorage(Activator.ID, setting);        	
-        return value;
+
+    public static int getMaxMessages()
+    {
+        final IPreferencesService preferences = Platform.getPreferencesService();
+        return preferences.getInt(Activator.ID, MAX_MESSAGES, 500, null);
     }
     
+    private static String getSecureString(final String setting)
+    {
+    	return SecureStorage.retrieveSecureStorage(Activator.ID, setting);        	
+    }
 }

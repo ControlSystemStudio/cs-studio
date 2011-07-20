@@ -139,7 +139,7 @@ abstract public class ElogDialog extends TitleAreaDialog
         sash.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true));
 
         // Put our widgets in another box to have own layout in there
-        final Composite box = new Composite(sash, 0);
+        final Composite box = new Composite(sash, SWT.BORDER);
         final GridLayout layout = new GridLayout();
         layout.numColumns = 2;
         box.setLayout(layout);
@@ -225,7 +225,7 @@ abstract public class ElogDialog extends TitleAreaDialog
         gd.verticalAlignment = SWT.FILL;
         body.setLayoutData(gd);
 
-        image_tabfolder = new ImageTabFolder(sash, SWT.TOP);
+        image_tabfolder = new ImageTabFolder(sash, SWT.TOP | SWT.BORDER);
 
         sash.setWeights(new int[] { 80, 20 });
 
@@ -241,7 +241,7 @@ abstract public class ElogDialog extends TitleAreaDialog
     protected Control createButtonBar(final Composite parent)
     {
         final Composite composite = new Composite(parent, SWT.NONE);
-        final GridLayout layout = new GridLayout(2, false);
+        final GridLayout layout = new GridLayout(4, false);
         layout.marginWidth = 0;
         layout.marginHeight = 0;
         layout.horizontalSpacing = 0;
@@ -249,7 +249,13 @@ abstract public class ElogDialog extends TitleAreaDialog
         composite.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, false, false));
         composite.setFont(parent.getFont());
 
-        final Button button = image_tabfolder.createAddButton(composite);
+        Button button = image_tabfolder.createAddButton(composite);
+        button.setLayoutData(new GridData(SWT.LEFT, SWT.CENTER, true, false));
+
+        button = image_tabfolder.createScreenshotButton(composite, true);
+        button.setLayoutData(new GridData(SWT.LEFT, SWT.CENTER, true, false));
+
+        button = image_tabfolder.createScreenshotButton(composite, false);
         button.setLayoutData(new GridData(SWT.LEFT, SWT.CENTER, true, false));
 
         super.createButtonBar(composite);

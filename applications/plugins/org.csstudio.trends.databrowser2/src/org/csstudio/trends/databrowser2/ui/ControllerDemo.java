@@ -7,6 +7,7 @@
  ******************************************************************************/
 package org.csstudio.trends.databrowser2.ui;
 
+import org.csstudio.apputil.macros.MacroTable;
 import org.csstudio.data.values.ITimestamp;
 import org.csstudio.trends.databrowser2.model.ArchiveDataSource;
 import org.csstudio.trends.databrowser2.model.FormulaInput;
@@ -49,11 +50,13 @@ public class ControllerDemo
     private void createModel() throws Exception
     {
         model = new Model();
-
+        final MacroTable macros = new MacroTable("simu=\"sim://sine(-1, 1, 20, 0.25)\",name=Sine (scanned)");
+        model.setMacros(macros);
+        
         ModelItem item;
 
-        item = new PVItem("sim://sine(-1, 1, 20, 0.25)", 1);
-        item.setDisplayName("Sine (scanned)");
+        item = new PVItem("$(simu)", 1);
+        item.setDisplayName("$(name)");
         model.addItem(item);
 
         item = new FormulaItem("math", "sine*0.5+2",

@@ -29,7 +29,7 @@ import org.eclipse.equinox.app.IApplicationContext;
 @SuppressWarnings("nls")
 public class Application implements IApplication
 {
-    private String url, user, password;
+    private String url, user, password, schema;
     private String root;
     private enum Mode
     {
@@ -50,6 +50,8 @@ public class Application implements IApplication
                 "Database user", Preferences.getRDB_User());
         final StringOption password = new StringOption(parser, "-rdb_pass",
                 "Database password", Preferences.getRDB_Password());
+        final StringOption schema = new StringOption(parser, "-rdb_schema",
+                "Database scheme", Preferences.getRDB_Schema());
         final BooleanOption do_list = new BooleanOption(parser, "-list",
                 "List available configurations");
         final StringOption root = new StringOption(parser, "-root",
@@ -83,6 +85,7 @@ public class Application implements IApplication
         this.url = url.get();
         this.user = user.get().isEmpty() ? null : user.get();
         this.password = password.get().isEmpty() ? null : password.get();
+        this.schema = schema.get().isEmpty() ? "" : schema.get();
         if (do_list.get())
         {
             mode = Mode.LIST;
@@ -152,7 +155,7 @@ public class Application implements IApplication
         final AlarmConfiguration config;
         try
         {
-            config = new AlarmConfiguration(url, user, password);
+            config = new AlarmConfiguration(url, user, password, schema);
         }
         catch (Exception ex)
         {
@@ -207,7 +210,7 @@ public class Application implements IApplication
         final AlarmConfiguration config;
         try
         {
-            config = new AlarmConfiguration(url, user, password, false);
+            config = new AlarmConfiguration(url, user, password, schema, false);
             System.out.println("Reading RDB configuration of '" + root + "'");
             config.readConfiguration(root, mode == Mode.IMPORT, new NullProgressMonitor()
 			{

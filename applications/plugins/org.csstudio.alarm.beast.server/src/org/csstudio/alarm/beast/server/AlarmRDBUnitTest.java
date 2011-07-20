@@ -32,6 +32,7 @@ public class AlarmRDBUnitTest
 				settings.getString("alarm_rdb_url"),
 				settings.getString("alarm_rdb_user"),
 				settings.getString("alarm_rdb_password"),
+				"ALARM",
 				alarm_root);
 		final TreeItem root = rdb.readConfiguration();
 		root.dump(System.out);

@@ -43,8 +43,8 @@ public class PVItem extends ModelItem implements PVListener
     final private ArrayList<ArchiveDataSource> archives
         = new ArrayList<ArchiveDataSource>();
 
-    /** Control system PV */
-    private PV pv;
+    /** Control system PV, set when running */
+    private PV pv = null;
 
     /** Most recently received value */
     private volatile IValue current_value;
@@ -69,7 +69,6 @@ public class PVItem extends ModelItem implements PVListener
     public PVItem(final String name, final double period) throws Exception
     {
         super(name);
-        pv = PVFactory.createPV(name);
         this.period = period;
     }
 
@@ -82,12 +81,11 @@ public class PVItem extends ModelItem implements PVListener
         if (! super.setName(new_name))
             return false;
         // Stop PV, clear samples
-        final boolean running = pv.isRunning();
+        final boolean running = (pv != null);
         if (running)
             stop();
         samples.clear();
         // Create new PV, maybe start it
-        pv = PVFactory.createPV(getName());
         if (running)
             start(scan_timer);
         return true;
@@ -110,7 +108,7 @@ public class PVItem extends ModelItem implements PVListener
         // Don't 'scan' faster than 1 Hz. Instead switch to on-change.
         if (period < 0.1)
             period = 0.0;
-        final boolean running = pv.isRunning();
+        final boolean running = (pv != null);
         if (running)
             stop();
         this.period = period;
@@ -259,9 +257,11 @@ public class PVItem extends ModelItem implements PVListener
     @SuppressWarnings("nls")
     public void start(final Timer timer) throws Exception
     {
-        if (pv.isRunning())
+        if (pv != null)
             throw new RuntimeException("Already started " + getName());
         this.scan_timer = timer;
+        
+        pv = PVFactory.createPV(getResolvedName());
         pv.addListener(this);
         pv.start();
         // Log every received value?
@@ -285,7 +285,7 @@ public class PVItem extends ModelItem implements PVListener
     @SuppressWarnings("nls")
     public void stop()
     {
-        if (!pv.isRunning())
+        if (pv == null)
             throw new RuntimeException("Not running " + getName());
         if (scanner != null)
         {
@@ -294,6 +294,7 @@ public class PVItem extends ModelItem implements PVListener
         }
         pv.removeListener(this);
         pv.stop();
+        pv = null;
     }
 
     /** {@inheritDoc} */
