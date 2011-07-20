@@ -15,7 +15,7 @@ $ANT clean
 echo Fetching sources
 $ANT get_sources
 
-for prod in alarmconfig archiveengine css engineconfig jms2rdb
+for prod in alarmconfig alarmserver archiveengine css engineconfig jms2rdb
 do
 	echo Building $prod Product
 	java -jar $ECLIPSE/plugins/org.eclipse.equinox.launcher_*.jar \
@@ -50,5 +50,8 @@ unzip  $CYGDRIVE/$BUILDDIR/I.AlarmServer_kek_$VERSION/AlarmServer_kek_$VERSION-w
 cp $CYGDRIVE/$ECLIPSE_BASE/eclipse/eclipsec.exe  AlarmServer$VERSION/AlarmServer.exe
 zip -rm $CYGDRIVE/$BUILDDIR/I.AlarmServer_kek_$VERSION/AlarmServer_kek_$VERSION-win32.win32.x86.zip AlarmServer$VERSION 
 
+unzip  $CYGDRIVE/$BUILDDIR/I.AlarmConfigTool_kek_$VERSION/AlarmConfigTool_kek_$VERSION-win32.win32.x86.zip
+cp $CYGDRIVE/$ECLIPSE_BASE/eclipse/eclipsec.exe  AlarmConfigTool$VERSION/AlarmConfigTool.exe
+zip -rm $CYGDRIVE/$BUILDDIR/I.AlarmConfigTool_kek_$VERSION/AlarmConfigTool_kek_$VERSION-win32.win32.x86.zip AlarmConfigTool$VERSION 
 
 $ANT zip_sources

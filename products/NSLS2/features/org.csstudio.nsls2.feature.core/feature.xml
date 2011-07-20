@@ -176,13 +176,6 @@
          unpack="false"/>
 
    <plugin
-         id="org.csstudio.utility.pvmanager.jfreechart.widgets"
-         download-size="0"
-         install-size="0"
-         version="0.0.0"
-         unpack="false"/>
-
-   <plugin
          id="org.csstudio.platform.utility.rdb"
          download-size="0"
          install-size="0"
@@ -286,13 +279,6 @@
          unpack="false"/>
 
    <plugin
-         id="org.csstudio.utility.pv.ui"
-         download-size="0"
-         install-size="0"
-         version="0.0.0"
-         unpack="false"/>
-
-   <plugin
          id="org.csstudio.utility.pvmanager.epics"
          download-size="0"
          install-size="0"
@@ -314,7 +300,21 @@
          unpack="false"/>
 
    <plugin
-         id="org.jdom"
+         id="org.csstudio.utility.channel.adapters"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"
+         unpack="false"/>
+
+   <plugin
+         id="org.csstudio.csdata.clipboard"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"
+         unpack="false"/>
+
+   <plugin
+         id="org.csstudio.ui.menu.app"
          download-size="0"
          install-size="0"
          version="0.0.0"

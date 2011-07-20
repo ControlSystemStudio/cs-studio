@@ -23,7 +23,7 @@ import org.eclipse.core.runtime.jobs.Job;
  */
 public class ReadInfoJob extends Job
 {
-    final private String rdb_url, rdb_user, rdb_password;
+    final private String rdb_url, rdb_user, rdb_password, rdb_schema;
     final private GlobalAlarm alarm;
     final private ReadInfoJobListener listener;
 
@@ -31,10 +31,12 @@ public class ReadInfoJob extends Job
      *  @param rdb_url Alarm RDB URL
      *  @param rdb_user .. user
      *  @param rdb_password .. password
+     *  @param rdb_schema .. schema
      *  @param alarm Global alarm to update with GUI info from RDB
      *  @param listener Listener to be notified, or <code>null</code>
      */
     public ReadInfoJob(final String rdb_url, final String rdb_user, final String rdb_password,
+    		final String rdb_schema,
             final GlobalAlarm alarm, final ReadInfoJobListener listener)
     {
         super(Messages.ReadConfigJobName);
@@ -43,6 +45,7 @@ public class ReadInfoJob extends Job
         this.rdb_url = rdb_url;
         this.rdb_user = rdb_user;
         this.rdb_password = rdb_password;
+        this.rdb_schema = rdb_schema;
         this.alarm = alarm;
         this.listener = listener;
     }
@@ -58,7 +61,7 @@ public class ReadInfoJob extends Job
         {
             rdb = RDBUtil.connect(rdb_url, rdb_user, rdb_password, false);
             monitor.subTask(Messages.AlarmClientModel_ReadingRDB);
-            final SQL sql = new SQL(rdb);
+            final SQL sql = new SQL(rdb, rdb_schema);
             alarm.completeGuiInfo(rdb, sql);
         }
         catch (Exception ex)

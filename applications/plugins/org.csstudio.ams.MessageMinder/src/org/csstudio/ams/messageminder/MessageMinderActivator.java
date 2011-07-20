@@ -23,7 +23,7 @@
 
 package org.csstudio.ams.messageminder;
 
-import org.csstudio.platform.ui.AbstractCssUiPlugin;
+import org.eclipse.core.runtime.Plugin;
 import org.osgi.framework.BundleContext;
 import org.remotercp.common.tracker.GenericServiceTracker;
 import org.remotercp.common.tracker.IGenericServiceListener;
@@ -32,7 +32,7 @@ import org.remotercp.service.connection.session.ISessionService;
 /**
  * The activator class controls the plug-in life cycle.
  */
-public class MessageMinderActivator extends AbstractCssUiPlugin {
+public class MessageMinderActivator extends Plugin {
 	
     /**
 	 *  The plug-in ID.
@@ -57,7 +57,7 @@ public class MessageMinderActivator extends AbstractCssUiPlugin {
 	 * {@inheritDoc}
 	 */
 	@Override
-	public void doStart(BundleContext context) throws Exception {
+	public void start(BundleContext context) throws Exception {
 		_plugin = this; 
 		_genericServiceTracker = new GenericServiceTracker<ISessionService>(
 				context, ISessionService.class);
@@ -68,7 +68,7 @@ public class MessageMinderActivator extends AbstractCssUiPlugin {
      * {@inheritDoc}
      */
 	@Override
-    public void doStop(BundleContext context) throws Exception {
+    public void stop(BundleContext context) throws Exception {
 		_plugin = null;
 	}
 
@@ -82,9 +82,8 @@ public class MessageMinderActivator extends AbstractCssUiPlugin {
 	}
 
     /**
-     * {@inheritDoc}
+     * 
      */
-    @Override
     public String getPluginId() {
         return PLUGIN_ID;
     }

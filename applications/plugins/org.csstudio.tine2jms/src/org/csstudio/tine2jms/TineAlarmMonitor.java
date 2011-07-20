@@ -106,12 +106,12 @@ public class TineAlarmMonitor extends Observable implements AlarmMonitorHandler 
                     this.lastTimeStamp = alarm.getTimeStamp();
                     
                     date = new Date(alarm.getTimeStamp());
-                    LOG.debug(_context + ": Neuer Alarm Timestamp: " + dateFormat.format(date));
+                    LOG.info(_context + ": Neuer Alarm Timestamp: " + dateFormat.format(date));
                     
                     date = null;
                     
                     am = new AlarmMessage(alarm, _context);
-                    receivedMessages.incrementValue();
+                    //receivedMessages.incrementValue();
                     
                     setChanged();
                     notifyObservers(am);

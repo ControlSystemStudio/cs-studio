@@ -7,30 +7,108 @@
  ******************************************************************************/
 package org.csstudio.alarm.beast.ui.alarmtable;
 
-import java.io.Serializable;
 import java.util.Comparator;
 
 import org.csstudio.alarm.beast.client.AlarmTreePV;
 import org.csstudio.alarm.beast.ui.alarmtable.AlarmTableLabelProvider.ColumnInfo;
+import org.csstudio.data.values.ITimestamp;
+import org.csstudio.data.values.TimestampFactory;
 
-/** ViewerComparator (= table sorter) that compares one column of an alarm.
+/** Comparator (= table sorter) that compares one column of an alarm.
  *  @author Kay Kasemir
  */
-public class AlarmComparator implements Comparator<AlarmTreePV>, Serializable
+public class AlarmComparator implements Comparator<AlarmTreePV>
 {
-    /** Serializable... */
-    private static final long serialVersionUID = 1L;
+	/** Create comparator for AlarmTreePV entries
+	 * 
+	 *  @param col_info What to use for the comparison
+	 *  @param up Up or downward sort?
+	 *  @return Comparator<AlarmTreePV>
+	 */
+    public static Comparator<AlarmTreePV> getComparator(final ColumnInfo col_info, final boolean up)
+    {
+    	switch (col_info)
+        {
+        case CURRENT_SEVERITY:
+        	return new AlarmComparator(up)
+			{
+				@Override
+				protected int doCompare(final AlarmTreePV pv1, final AlarmTreePV pv2)
+				{
+					final int level1 = pv1.getCurrentSeverity().ordinal();
+					final int level2 = pv2.getCurrentSeverity().ordinal();
+		            if (level1 == level2)
+		                return super.doCompare(pv1, pv2);
+		            return level1 - level2;
+				}
+			};
+        case SEVERITY:
+        	return new AlarmComparator(up)
+			{
+				@Override
+				protected int doCompare(final AlarmTreePV pv1, final AlarmTreePV pv2)
+				{
+					final int level1 = pv1.getSeverity().ordinal();
+					final int level2 = pv2.getSeverity().ordinal();
+		            if (level1 == level2)
+		                return super.doCompare(pv1, pv2);
+		            return level1 - level2;
+				}
+			};
+        case STATUS:
+        	return new AlarmComparator(up)
+			{
+				@Override
+				protected int doCompare(final AlarmTreePV pv1, final AlarmTreePV pv2)
+				{
+		            final int cmp = pv1.getMessage().compareTo(pv2.getMessage());
+		            if (cmp != 0)
+		            	return cmp;
+	                return super.doCompare(pv1, pv2);
+				}
+			};
+        case DESCRIPTION:
+        	return new AlarmComparator(up)
+			{
+				@Override
+				protected int doCompare(final AlarmTreePV pv1, final AlarmTreePV pv2)
+				{
+		            final int cmp = pv1.getDescription().compareTo(pv2.getDescription());
+		            if (cmp != 0)
+		            	return cmp;
+	                return super.doCompare(pv1, pv2);
+				}
+			};
+        case TIME:
+        	return new AlarmComparator(up)
+			{
+				@Override
+				protected int doCompare(final AlarmTreePV pv1, final AlarmTreePV pv2)
+				{
+					ITimestamp time1 = pv1.getTimestamp();
+					ITimestamp time2 = pv2.getTimestamp();
+					if (time1 == null)
+						time1 = TimestampFactory.createTimestamp(0, 0);
+					if (time2 == null)
+						time2 = TimestampFactory.createTimestamp(0, 0);
+					final int cmp = time1.compareTo(time2);
+		            if (cmp != 0)
+		            	return cmp;
+	                return super.doCompare(pv1, pv2);
+				}
+			};
+        default:
+        	return new AlarmComparator(up);
+        }
+    }
 
-	final private ColumnInfo col_info;
     final private boolean up;
-
+    
     /** Initialize
-     *  @param col_info ColumnInfo that selects what to compare
      *  @param up Sort 'up' or 'down'?
      */
-    public AlarmComparator(final ColumnInfo col_info, final boolean up)
+    private AlarmComparator(final boolean up)
     {
-        this.col_info = col_info;
         this.up = up;
     }
 
@@ -38,66 +116,23 @@ public class AlarmComparator implements Comparator<AlarmTreePV>, Serializable
     @Override
     public int compare(final AlarmTreePV pv1, final AlarmTreePV pv2)
     {
-        switch (col_info)
-        {
-        case CURRENT_SEVERITY:
-        {
-            int level1 = pv1.getCurrentSeverity().ordinal();
-            int level2 = pv2.getCurrentSeverity().ordinal();
-            if (level1 == level2)
-                return compareByName(pv1, pv2);
-            if (up)
-                return level2 - level1;
-            return level1 - level2;
-        }
-        case SEVERITY:
-        {
-            int level1 = pv1.getSeverity().ordinal();
-            int level2 = pv2.getSeverity().ordinal();
-            if (level1 == level2)
-                return compareByName(pv1, pv2);
-            if (up)
-                return level2 - level1;
-            return level1 - level2;
-        }
-        case STATUS:
-            return compareProperties(pv1, pv2, pv1.getMessage(), pv2.getMessage());
-        case TIME:
-            return compareProperties(pv1, pv2, pv1.getTimestampText(), pv2.getTimestampText());
-        case DESCRIPTION:
-            return compareProperties(pv1, pv2, pv1.getDescription(), pv2.getDescription());
-        default:
-        }
-        return compareByName(pv1, pv2);
+    	if (up)
+    		return doCompare(pv1, pv2);
+    	else
+    		return -doCompare(pv1, pv2);
     }
 
-    /** Compare properties, falling back to name when they're equal
-     *  @param pv1
-     *  @param pv2
-     *  @param prop1
-     *  @param prop2
-     *  @return comparison -1, 0, 1
-     */
-    private int compareProperties(final AlarmTreePV pv1, final AlarmTreePV pv2,
-                final String prop1, final String prop2)
-    {
-        final int cmp = up ? prop2.compareTo(prop1) : prop1.compareTo(prop2);
-        if (cmp == 0)
-            return compareByName(pv1, pv2);
-        return cmp;
-    }
-
-    /** Compare PV names
+    /** Compare PVs in 'up' order
+     * 
+     *  Default compares by name, derived class can override.
      *  @param pv1
      *  @param pv2
      *  @return comparison -1, 0, 1
      */
-    private int compareByName(final AlarmTreePV pv1, final AlarmTreePV pv2)
+    protected int doCompare(AlarmTreePV pv1, AlarmTreePV pv2)
     {
-        final String prop1 = pv1.getName();
+    	final String prop1 = pv1.getName();
         final String prop2 = pv2.getName();
-        if (up)
-            return prop2.compareTo(prop1);
         return prop1.compareTo(prop2);
     }
 }

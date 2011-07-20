@@ -10,6 +10,7 @@ package org.csstudio.trends.databrowser2.search;
 import java.util.ArrayList;
 import java.util.Arrays;
 
+import org.csstudio.apputil.ui.swt.TableColumnSortHelper;
 import org.csstudio.archive.reader.ArchiveInfo;
 import org.csstudio.archive.reader.ArchiveReader;
 import org.csstudio.trends.databrowser2.Messages;
@@ -168,6 +169,14 @@ public abstract class ArchiveListGUI
                 cell.setText(archive.getName());
             }
         });
+        new TableColumnSortHelper<ArchiveDataSource>(archive_table, col)
+        {
+			@Override
+            public int compare(final ArchiveDataSource item1, final ArchiveDataSource item2)
+            {
+				return item1.getName().compareTo(item2.getName());
+            }
+        };
         col = TableHelper.createColumn(table_layout, archive_table, Messages.ArchiveDescription, 50, 100);
         col.setLabelProvider(new CellLabelProvider()
         {
@@ -178,6 +187,14 @@ public abstract class ArchiveListGUI
                 cell.setText(archive.getDescription());
             }
         });
+        new TableColumnSortHelper<ArchiveDataSource>(archive_table, col)
+        {
+			@Override
+            public int compare(final ArchiveDataSource item1, final ArchiveDataSource item2)
+            {
+				return item1.getDescription().compareTo(item2.getDescription());
+            }
+        };
         col = TableHelper.createColumn(table_layout, archive_table, Messages.ArchiveKey, 35, 5);
         col.setLabelProvider(new CellLabelProvider()
         {
@@ -188,6 +205,14 @@ public abstract class ArchiveListGUI
                 cell.setText(Integer.toString(archive.getKey()));
             }
         });
+        new TableColumnSortHelper<ArchiveDataSource>(archive_table, col)
+        {
+			@Override
+            public int compare(final ArchiveDataSource item1, final ArchiveDataSource item2)
+            {
+				return item1.getKey() - item2.getKey();
+            }
+        };
         final Table table = archive_table.getTable();
         table.setHeaderVisible(true);
         table.setLinesVisible(true);

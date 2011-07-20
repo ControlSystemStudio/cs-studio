@@ -54,11 +54,12 @@ public class AlarmRDB
     private PreparedStatement updateGlobalStatement;
 
 	public AlarmRDB(final AlarmServer server, final String url,
-			final String user, final String password, final String root_name) throws Exception
+			final String user, final String password,
+			final String schema, final String root_name) throws Exception
     {
 		this.server = server;
 		rdb = RDBUtil.connect(url, user, password, true);
-		sql = new SQL(rdb);
+		sql = new SQL(rdb, schema);
         connection = rdb.getConnection();
 		this.root_name = root_name;
         // Disable auto-reconnect: Slightly faster, and we just connected OK.

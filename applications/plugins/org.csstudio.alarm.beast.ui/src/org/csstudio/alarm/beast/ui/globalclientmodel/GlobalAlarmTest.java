@@ -107,7 +107,7 @@ public class GlobalAlarmTest implements ReadInfoJobListener
         synchronized (this)
         {
             received_rdb_info = 0;
-            new ReadInfoJob(rdb_url, rdb_user, rdb_password, alarm, this).schedule();
+            new ReadInfoJob(rdb_url, rdb_user, rdb_password, "ALARM", alarm, this).schedule();
             for (int i=0; received_rdb_info == 0  &&  i<10; ++i)
                 wait(1000);
             assertEquals(1, received_rdb_info);
@@ -157,8 +157,8 @@ public class GlobalAlarmTest implements ReadInfoJobListener
         synchronized (this)
         {
             received_rdb_info = 0;
-            final ReadInfoJob job1 = new ReadInfoJob(rdb_url, rdb_user, rdb_password, alarm1, this);
-            final ReadInfoJob job2 = new ReadInfoJob(rdb_url, rdb_user, rdb_password, alarm2, this);
+            final ReadInfoJob job1 = new ReadInfoJob(rdb_url, rdb_user, rdb_password, "ALARM", alarm1, this);
+            final ReadInfoJob job2 = new ReadInfoJob(rdb_url, rdb_user, rdb_password, "ALARM", alarm2, this);
             job1.schedule();
             job2.schedule();
             for (int i=0; received_rdb_info != 2 &&  i<10; ++i)

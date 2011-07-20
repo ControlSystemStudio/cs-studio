@@ -14,7 +14,6 @@ import org.csstudio.alarm.beast.Preferences;
 import org.csstudio.alarm.beast.ui.actions.AcknowledgeAction;
 import org.csstudio.alarm.beast.ui.actions.ConfigureItemAction;
 import org.csstudio.alarm.beast.ui.actions.MaintenanceModeAction;
-import org.csstudio.alarm.beast.ui.actions.UnAcknowledgeAction;
 import org.csstudio.alarm.beast.ui.clientmodel.AlarmClientModel;
 import org.eclipse.jface.action.IToolBarManager;
 import org.eclipse.jface.action.Separator;
@@ -95,12 +94,12 @@ public class AlarmTreeView extends ViewPart
             toolbar.add(new InfoAction(model));
             toolbar.add(new DebugAction(model));
             toolbar.add(new ConfigureItemAction(parent.getShell(), model, gui.getTreeViewer()));
-            toolbar.add(new AcknowledgeAction(gui.getTreeViewer()));
-            toolbar.add(new UnAcknowledgeAction(gui.getTreeViewer()));
+            toolbar.add(new AcknowledgeAction(true, gui.getTreeViewer()));
+            toolbar.add(new AcknowledgeAction(false, gui.getTreeViewer()));
             toolbar.add(new Separator());
         }
         toolbar.add(new CollapseAlarmTreeAction(gui));
-        toolbar.add(new ExpandCurrentAlarmsAction(gui));
+        toolbar.add(new OnlyAlarmsAction(gui));
 
         // Inform workbench about currently selected alarm in tree viewer
         getSite().setSelectionProvider(gui.getTreeViewer());

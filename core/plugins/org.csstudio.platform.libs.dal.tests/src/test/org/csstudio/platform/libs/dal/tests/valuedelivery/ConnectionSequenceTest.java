@@ -73,6 +73,10 @@ record(ai, "ConstantPVPassive") {
 public class ConnectionSequenceTest extends AbstractDalBoundaryTest {
     
     private static final String SOME_PV = "CMTBSTC1K10_temp";
+    
+    // this is a candidate for further investigation at desy
+    // related to the strange connection sequences for _bi (possibly also _mbbi)
+    // private static final String SOME_PV = "12K1:ALARM_ANALOG_AL_bi";
 
     // disabled outside desy
     public void notestConnectSomePV() throws Exception {

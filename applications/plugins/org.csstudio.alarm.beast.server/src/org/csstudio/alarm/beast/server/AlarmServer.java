@@ -80,7 +80,9 @@ public class AlarmServer
     {
         this.work_queue = work_queue;
         rdb = new AlarmRDB(this, Preferences.getRDB_Url(),
-        		Preferences.getRDB_User(), Preferences.getRDB_Password(),
+        		Preferences.getRDB_User(),
+        		Preferences.getRDB_Password(),
+        		Preferences.getRDB_Schema(),
         		Preferences.getAlarmTreeRoot());
         messenger = new ServerCommunicator(this, work_queue);
         readConfiguration();

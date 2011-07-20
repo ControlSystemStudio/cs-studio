@@ -7,6 +7,8 @@
  ******************************************************************************/
 package org.csstudio.archive.reader.rdb.jparc;
 
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -90,12 +92,30 @@ public class JParcArchiveReader implements ArchiveReader
 	
 	/** {@inheritDoc} */
 	@Override
-	public String[] getNamesByPattern(int key, String glob_pattern)
+	public String[] getNamesByPattern(final int key, final String glob_pattern)
 	        throws Exception
 	{
 		// TODO A relational database usually has a 'faster' way
 		// of searching by glob, so this should be implemented by
 		// going to the RDB and not by using the reg-ex version
+//		final List<String> names = new ArrayList<String>();
+//		final PreparedStatement statement = 
+//			rdb.getConnection().prepareStatement("SELECT name FROM channels WHERE name LIKE ?");
+//		try
+//		{
+//			statement.setString(1, glob_pattern);
+//			final ResultSet result = statement.executeQuery();
+//			while (result.next())
+//			{
+//				names.add(result.getString(1));
+//			}
+//			result.close();
+//		}
+//		finally
+//		{
+//			statement.close();
+//		}
+//		return names.toArray(new String[names.size()]);
 		return getNamesByRegExp(key, RegExHelper.fullRegexFromGlob(glob_pattern));
 	}
 

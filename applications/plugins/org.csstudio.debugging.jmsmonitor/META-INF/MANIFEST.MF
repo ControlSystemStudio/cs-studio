@@ -2,7 +2,7 @@ Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: JMS Monitor
 Bundle-SymbolicName: org.csstudio.debugging.jmsmonitor;singleton:=true
-Bundle-Version: 3.0.0.qualifier
+Bundle-Version: 3.0.1.qualifier
 Bundle-Vendor: Kay Kasemir <kasemirk@ornl.gov> - SNS
 Bundle-Localization: plugin
 Bundle-Description: JMS Message Monitor/Debug tool

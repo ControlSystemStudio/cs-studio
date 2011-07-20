@@ -4,10 +4,10 @@
    <extension
          point="org.eclipse.ui.preferencePages">
       <page
-            category="org.csstudio.platform.ui.css.applications.display"
+            category="org.csstudio.platform.ui.css.platform"
             class="org.csstudio.channelfinder.preferences.ChannelFinderPreferencePage"
             id="org.csstudio.channelviewer.preferences.ChannelFinderPreferencePage"
-            name="ChannelFinderPreferences">
+            name="ChannelFinder">
       </page>
    </extension>
 

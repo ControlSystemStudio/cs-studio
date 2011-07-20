@@ -38,6 +38,10 @@
       <product
             application="org.csstudio.tine2jms.Tine2Jms"
             name="Tine2JmsProduct">
+         <property
+               name="appName"
+               value="Tine2JmsProduct">
+         </property>
       </product>
    </extension>
 

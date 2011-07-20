@@ -11,6 +11,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 
 import org.csstudio.apputil.ui.swt.ComboHistoryHelper;
+import org.csstudio.apputil.ui.swt.TableColumnSortHelper;
 import org.csstudio.archive.reader.ArchiveReader;
 import org.csstudio.trends.databrowser2.Activator;
 import org.csstudio.trends.databrowser2.Messages;
@@ -218,6 +219,14 @@ public class SearchView extends ViewPart
                 cell.setText(channel.getProcessVariable().getName());
             }
         });
+        new TableColumnSortHelper<ChannelInfo>(channel_table, col)
+        {
+			@Override
+            public int compare(final ChannelInfo item1, final ChannelInfo item2)
+            {
+				return item1.getProcessVariable().getName().compareTo(item2.getProcessVariable().getName());
+            }
+        };
         col = TableHelper.createColumn(table_layout, channel_table, Messages.ArchiveName, 50, 100);
         col.setLabelProvider(new CellLabelProvider()
         {
@@ -228,6 +237,14 @@ public class SearchView extends ViewPart
                 cell.setText(channel.getArchiveDataSource().getName());
             }
         });
+        new TableColumnSortHelper<ChannelInfo>(channel_table, col)
+        {
+			@Override
+            public int compare(final ChannelInfo item1, final ChannelInfo item2)
+            {
+				return item1.getArchiveDataSource().getName().compareTo(item2.getArchiveDataSource().getName());
+            }
+        };
         final Table table = channel_table.getTable();
         table.setHeaderVisible(true);
         table.setLinesVisible(true);

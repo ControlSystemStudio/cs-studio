@@ -24,6 +24,7 @@ import javax.jms.Session;
 import javax.jms.TextMessage;
 import javax.jms.Topic;
 
+import org.csstudio.apputil.ringbuffer.RingBuffer;
 import org.csstudio.logging.JMSLogMessage;
 import org.csstudio.platform.utility.jms.JMSConnectionFactory;
 import org.csstudio.platform.utility.jms.JMSConnectionListener;
@@ -50,8 +51,8 @@ public class Model implements ExceptionListener, MessageListener, JMSConnectionL
      */
     private volatile boolean run = true;
 
-    final private ArrayList<ReceivedMessage> messages =
-        new ArrayList<ReceivedMessage>();
+    final private RingBuffer<ReceivedMessage> messages =
+    	new RingBuffer<ReceivedMessage>(Preferences.getMaxMessages());
 
     private CopyOnWriteArrayList<ModelListener> listeners =
         new CopyOnWriteArrayList<ModelListener>();

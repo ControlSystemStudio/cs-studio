@@ -21,9 +21,9 @@ import org.csstudio.alarm.beast.ui.actions.DurationAction;
 import org.csstudio.alarm.beast.ui.actions.GuidanceAction;
 import org.csstudio.alarm.beast.ui.actions.RelatedDisplayAction;
 import org.csstudio.alarm.beast.ui.actions.SendToElogAction;
-import org.csstudio.alarm.beast.ui.actions.UnAcknowledgeAction;
 import org.csstudio.apputil.ui.elog.SendToElogActionHelper;
 import org.eclipse.jface.action.IMenuManager;
+import org.eclipse.jface.viewers.Viewer;
 import org.eclipse.swt.widgets.Shell;
 
 /** Helper for handling the context menu of alarm tree items
@@ -43,12 +43,14 @@ public class ContextMenuHelper
 
     /** Add menu entries for guidance messages, related displays,
      *  and acknowledgment
+     *  @param viewer Viewer that provided the selected items. May be <code>null</code>.
+     *                If provided, some menu actions may change the selection.
      *  @param manager Manager of context menu
      *  @param shell Shell that menu actions may use
      *  @param items Currently selected alarm tree items
      *  @param allow_write Allow configuration changes, acknowledgement?
      */
-    public ContextMenuHelper(final IMenuManager manager,
+    public ContextMenuHelper(Viewer viewer, final IMenuManager manager,
             final Shell shell,
             final List<AlarmTreeItem> items,
             final boolean allow_write)
@@ -97,9 +99,17 @@ public class ContextMenuHelper
         if (allow_write)
         {
             if (alarms.size() > 0)
-                manager.add(new AcknowledgeAction(alarms));
+            {
+                final AcknowledgeAction action = new AcknowledgeAction(true, alarms);
+                action.clearSelectionOnAcknowledgement(viewer);
+				manager.add(action);
+            }
             if (ack_alarms.size() > 0)
-                manager.add(new UnAcknowledgeAction(ack_alarms));
+            {
+                final AcknowledgeAction action = new AcknowledgeAction(false, ack_alarms);
+                action.clearSelectionOnAcknowledgement(viewer);
+				manager.add(action);
+            }
         }
     }
 

@@ -114,7 +114,7 @@ public class EMailSenderDialog extends TitleAreaDialog
         sash.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true));
 
         // Put our widgets in another box to have own layout in there
-        final Composite box = new Composite(sash, 0);
+        final Composite box = new Composite(sash, SWT.BORDER);
         final GridLayout layout = new GridLayout();
         layout.numColumns = 2;
         box.setLayout(layout);
@@ -160,7 +160,7 @@ public class EMailSenderDialog extends TitleAreaDialog
         txt_body.setLayoutData(gd);
         txt_body.setText(body);
 
-        image_tabfolder = new ImageTabFolder(sash, 0);
+        image_tabfolder = new ImageTabFolder(sash, SWT.BORDER);
         // Maybe add image
         if (image_filename != null)
             image_tabfolder.addImage(image_filename);
@@ -176,7 +176,7 @@ public class EMailSenderDialog extends TitleAreaDialog
     protected Control createButtonBar(final Composite parent)
     {
         final Composite composite = new Composite(parent, SWT.NONE);
-        final GridLayout layout = new GridLayout(2, false);
+        final GridLayout layout = new GridLayout(4, false);
         layout.marginWidth = 0;
         layout.marginHeight = 0;
         layout.horizontalSpacing = 0;
@@ -184,9 +184,15 @@ public class EMailSenderDialog extends TitleAreaDialog
         composite.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, false, false));
         composite.setFont(parent.getFont());
 
-        final Button button = image_tabfolder.createAddButton(composite);
+        Button button = image_tabfolder.createAddButton(composite);
         button.setLayoutData(new GridData(SWT.LEFT, SWT.CENTER, true, false));
 
+        button = image_tabfolder.createScreenshotButton(composite, true);
+        button.setLayoutData(new GridData(SWT.LEFT, SWT.CENTER, true, false));
+
+        button = image_tabfolder.createScreenshotButton(composite, false);
+        button.setLayoutData(new GridData(SWT.LEFT, SWT.CENTER, true, false));
+        
         super.createButtonBar(composite);
         return composite;
     }

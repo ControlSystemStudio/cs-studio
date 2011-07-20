@@ -1,0 +1,3 @@
+
+a#probe-Link img { background-image : url(graphics/probe.gif); }
+a#probe-Link:hover img { background-image : url(graphics/probe.gif); }

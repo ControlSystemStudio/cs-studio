@@ -16,4 +16,5 @@ Require-Bundle: org.eclipse.core.runtime;bundle-version="3.6.0",
  com.google.common,
  org.csstudio.ui.menu;bundle-version="3.0.0",
  org.csstudio.platform.libs.jersey;bundle-version="1.1.5",
- org.junit
+ org.junit,
+ org.eclipse.help

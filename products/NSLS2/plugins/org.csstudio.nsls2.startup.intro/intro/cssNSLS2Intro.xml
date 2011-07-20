@@ -1,8 +1,9 @@
 <?xml version="1.0" encoding="utf-8" ?>
 <introContent>
-  	<extensionContent id="org.csstudio.nsls2.startup.intro-introExtension" style="css/sample.css" name="CSS strartup intro" path="firststeps/@">
-		<group style-id="content-group" id="orgcsstudionsls2startupintro-introLink-group">
-       		<link label=" Introduction to CSS" url="http://org.eclipse.ui.intro/showPage?id=css-nsls2-intro" id="orgcsstudionsls2startupintro-introLink" style-id="content-link">
+  	<extensionContent id="org.csstudio.nsls2.intro" style="css/sample.css" name="CSS strartup intro" path="firststeps/@">
+		<group style-id="content-group" id="org.csstudio.nsls2.intro-group">
+       		<link label=" Introduction to CSS" url="http://org.eclipse.ui.intro/showPage?id=css-nsls2-intro" 
+       		id="nsls2-Link" style-id="content-link">
           		<text>
 				  CSS is a collection of control system tools, and this version of CSS
 				  was pre-configured for use at the NSLS2, connecting to the 'EPICS'
