@@ -1,8 +1,20 @@
+/*******************************************************************************
+ * Copyright (c) 2011 Oak Ridge National Laboratory.
+ * All rights reserved. This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License v1.0
+ * which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-v10.html
+ ******************************************************************************/
 package org.csstudio.utility.chat;
 
 import java.net.InetAddress;
 
 import org.eclipse.jface.dialogs.MessageDialog;
+import org.eclipse.jface.layout.TableColumnLayout;
+import org.eclipse.jface.viewers.ArrayContentProvider;
+import org.eclipse.jface.viewers.ColumnWeightData;
+import org.eclipse.jface.viewers.TableViewer;
+import org.eclipse.jface.viewers.TableViewerColumn;
 import org.eclipse.osgi.util.NLS;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.custom.SashForm;
@@ -16,7 +28,6 @@ import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Label;
-import org.eclipse.swt.widgets.List;
 import org.eclipse.swt.widgets.Text;
 
 /** GUI for a {@link GroupChat}
@@ -32,7 +43,7 @@ public class GroupChatGUI
 	final private StyleRange from_style = new StyleRange();
 	final private StyleRange self_style = new StyleRange();
 
-	private List nerdlist;
+	private TableViewer group_members;
 	private Text name, send;
 	private StyledText messages;
 
@@ -88,8 +99,22 @@ public class GroupChatGUI
 		label.setText(Messages.Participants);
 		label.setLayoutData(new GridData());
 		
-		nerdlist = new List(parent, SWT.V_SCROLL);
-		nerdlist.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true));
+		// To use TableColumnLayout, the table must
+		// be the only child in a container
+		final Composite box = new Composite(parent, 0);
+		box.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true));
+		
+		final TableColumnLayout table_layout = new TableColumnLayout();
+		box.setLayout(table_layout);
+		
+		group_members = new TableViewer(box, SWT.V_SCROLL);
+		group_members.setLabelProvider(new GroupMemberLabelProvider());
+		
+		final TableViewerColumn view_col = new TableViewerColumn(group_members, 0);
+		table_layout.setColumnData(view_col.getColumn(), new ColumnWeightData(100));
+		view_col.setLabelProvider(new GroupMemberLabelProvider());
+		group_members.setContentProvider(new ArrayContentProvider());
+
 	}
 	
 	/** Create panel that displays chat messages
@@ -179,9 +204,9 @@ public class GroupChatGUI
 	 */
     public void showGroupMembers(final String[] nerds)
     {
-		if (nerdlist.isDisposed())
+		if (group_members.getControl().isDisposed())
 			return;
-		nerdlist.setItems(nerds);
+		group_members.setInput(nerds);
     }
 
     /** Add a message to the display
@@ -196,12 +221,16 @@ public class GroupChatGUI
 
 		// Style the 'from' section
 		final StyleRange style = is_self ? self_style : from_style;
-		style.start = messages.getText().length();
+		final int orig_length = messages.getText().length();
+		style.start = orig_length;
 		style.length = from.length() + 2;
 		messages.append(from + ": "); //$NON-NLS-1$
 		messages.setStyleRange(style);
 		
 		messages.append(text + "\n"); //$NON-NLS-1$
+		
+		// Scroll to location of the newly added text
+		messages.setSelection(orig_length);
     }
     
     /** Display error

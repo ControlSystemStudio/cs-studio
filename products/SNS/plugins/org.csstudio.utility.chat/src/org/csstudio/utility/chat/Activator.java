@@ -7,28 +7,23 @@
  ******************************************************************************/
 package org.csstudio.utility.chat;
 
-import org.eclipse.osgi.util.NLS;
+import org.eclipse.jface.resource.ImageDescriptor;
+import org.eclipse.ui.plugin.AbstractUIPlugin;
 
-/** Localized messages
+/** Not really activator, just holds ID etc.
  *  @author Kay Kasemir
  */
-public class Messages extends NLS
+@SuppressWarnings("nls")
+public class Activator
 {
-	private static final String BUNDLE_NAME = "org.csstudio.utility.chat.messages"; //$NON-NLS-1$
-	public static String Error;
-	public static String Participants;
-	public static String Send;
-	public static String SendErrorFmt;
-	public static String UserName;
-
-	static
+	/** Plugin ID defined in MANIFEST.MF */
+    final public static String ID = "org.csstudio.utility.chat";
+    
+    /** @param path Path within plugin to image
+     *  @return {@link ImageDescriptor}
+     */
+    public static ImageDescriptor getImage(final String path)
 	{
-		// initialize resource bundle
-		NLS.initializeMessages(BUNDLE_NAME, Messages.class);
-	}
-
-	private Messages()
-	{
-		// Prevent instantiation
+		return AbstractUIPlugin.imageDescriptorFromPlugin(ID, path);
 	}
 }
