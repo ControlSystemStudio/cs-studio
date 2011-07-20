@@ -31,7 +31,7 @@
             name="AmsDepartmentDecisionProduct">
          <property
                name="appName"
-               value="AmsDepartmentDecision">
+               value="AmsDepartmentDecisionProduct">
          </property>
       </product>
    </extension>

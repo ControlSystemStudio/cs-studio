@@ -28,9 +28,7 @@
       <plugin id="org.apache.log4j"/>
       <plugin id="org.csstudio.archive.sdds.server.log4j" fragment="true"/>
       <plugin id="org.csstudio.data"/>
-      <plugin id="org.csstudio.data.test" fragment="true"/>
       <plugin id="org.csstudio.desy.common.product.log4j" fragment="true"/>
-      <plugin id="org.csstudio.desy.css.product.log4j" fragment="true"/>
       <plugin id="org.csstudio.nams.application.department.decision"/>
       <plugin id="org.csstudio.nams.common"/>
       <plugin id="org.csstudio.nams.common.activatorUtils"/>
@@ -52,10 +50,8 @@
       <plugin id="org.csstudio.platform.libs.jmock"/>
       <plugin id="org.csstudio.platform.libs.jms"/>
       <plugin id="org.csstudio.platform.simpledal"/>
-      <plugin id="org.csstudio.platform.test" fragment="true"/>
       <plugin id="org.csstudio.platform.utility.jms"/>
       <plugin id="org.csstudio.remote"/>
-      <plugin id="org.csstudio.remote.test" fragment="true"/>
       <plugin id="org.csstudio.workspace"/>
       <plugin id="org.eclipse.ant.core"/>
       <plugin id="org.eclipse.core.commands"/>
