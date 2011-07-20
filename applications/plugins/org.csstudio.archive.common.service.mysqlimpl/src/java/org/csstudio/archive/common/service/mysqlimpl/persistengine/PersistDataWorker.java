@@ -23,21 +23,25 @@ package org.csstudio.archive.common.service.mysqlimpl.persistengine;
 
 import java.sql.BatchUpdateException;
 import java.sql.Connection;
+import java.sql.PreparedStatement;
 import java.sql.SQLException;
 import java.sql.Statement;
-import java.util.Deque;
+import java.util.Collection;
 import java.util.List;
+import java.util.Map;
+import java.util.concurrent.BlockingQueue;
 
 import javax.annotation.CheckForNull;
 import javax.annotation.Nonnull;
 
 import org.csstudio.archive.common.service.ArchiveConnectionException;
-import org.csstudio.domain.desy.Strings;
+import org.csstudio.archive.common.service.mysqlimpl.dao.BatchQueueHandler;
 import org.csstudio.domain.desy.task.AbstractTimeMeasuredRunnable;
 import org.csstudio.domain.desy.time.TimeInstant.TimeInstantBuilder;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.google.common.collect.Iterables;
 import com.google.common.collect.Lists;
 
 /**
@@ -59,162 +63,139 @@ public class PersistDataWorker extends AbstractTimeMeasuredRunnable {
     private final String _name;
     private final long _period;
 
-    private final List<String> _batchedStatements;
-    private final SqlStatementBatch _queuedStatements;
-
-    private int _numOfStmtsInBatch;
-    private long _totalSizeOfBatchInBytes;
-    private final long _maxBatchSizeInBytes;
-
+    private final Map<Class<?>, BatchQueueHandler<?>> _batchQueueHandlerMap;
+    private final List<Object> _elementsInBatch = Lists.newLinkedList();
 
 
     /**
      * Constructor.
-     * @param sqlStatements
      */
     public PersistDataWorker(@Nonnull final PersistEngineDataManager mgr,
                              @Nonnull final String name,
-                             @Nonnull final SqlStatementBatch sqlStatements,
                              @Nonnull final long period,
-                             @Nonnull final long maxBatchSizeInBytes) {
+                             @Nonnull final Map<Class<?>, BatchQueueHandler<?>> handlerMap) {
         _mgr = mgr;
         _name = name;
         _period = period;
-        _numOfStmtsInBatch = 0;
-        _totalSizeOfBatchInBytes = 0;
-        _maxBatchSizeInBytes = maxBatchSizeInBytes;
 
-        _queuedStatements = sqlStatements;
-        _batchedStatements = Lists.newLinkedList();
+        _batchQueueHandlerMap = handlerMap;
     }
 
     /**
      * {@inheritDoc}
      */
+    @SuppressWarnings({"unchecked", "rawtypes"})
     @Override
     public void measuredRun() {
         LOG.info("RUN: " + _name + " at " + TimeInstantBuilder.fromNow().formatted());
 
-        Statement sqlStmt = null;
         Connection connection = null;
         try {
-
-            final Deque<String> stmtStrings = Lists.newLinkedList();
-            _queuedStatements.drainTo(stmtStrings);
-
             connection = _mgr.getConnectionHandler().getConnection();
+        } catch (final ArchiveConnectionException e) {
+            LOG.error("Connection to archive failed", e);
+            // FIXME (bknerr) : strategy for queues getting full, when to rescue data?
+            return;
+        }
 
-            sqlStmt = connection.createStatement();
-            while (stmtStrings.peek() != null) {
-                sqlStmt = executeBatchOnCondition(connection, sqlStmt, stmtStrings.pop());
+        processBatchHandlerMap(connection, (Map) _batchQueueHandlerMap, _elementsInBatch);
+    }
+
+    private <T> void processBatchHandlerMap(@Nonnull final Connection connection,
+                                            @Nonnull final Map<Class<T>, BatchQueueHandler<T>> batchQueueHandlerMap,
+                                            @Nonnull final List<T> elementsInBatch) {
+        for (final BatchQueueHandler<T> handler : batchQueueHandlerMap.values()) {
+            PreparedStatement stmt = null;
+            try {
+                stmt = handler.createNewStatement(connection);
+                processBatchForStatement(handler, stmt, elementsInBatch);
+            } catch (final SQLException e) {
+                LOG.error("Creation of batch statement failed for strategy " + handler.getType().getName(), e);
+                // FIXME (bknerr) : strategy for queues getting full, when to rescue data?
+            } finally {
+                closeStatement(stmt);
             }
-            executeBatchAndResetSqlStatement(connection, sqlStmt);
-
-        } catch (final Throwable t) {
-            handleThrowable(t);
-        } finally {
-            _batchedStatements.clear();
-            closeStatement(sqlStmt);
         }
     }
 
-    /**
-     * Collects the queued statements in a batch for the sql statement. If the number of statements
-     * exceeds 500, the statement is executed and closed, the batched statements field is cleared,
-     * and a newly created statement is returned. Otherwise the very same statement is returned, ready
-     * for more queued statements to be batched.
-     *
-     * @param connection
-     * @param PStmt
-     * @param stmtStr
-     * @return
-     */
-    @Nonnull
-    private Statement executeBatchOnCondition(@Nonnull final Connection connection,
-                                              @Nonnull final Statement pSqlStmt,
-                                              @Nonnull final String stmtStr) {
-        final Statement sqlStmt = pSqlStmt;
-
-        if(stmtSizeConditionNotMet(stmtStr, _numOfStmtsInBatch)) {
-            addStmtStrToBatchedStmt(stmtStr, sqlStmt);
-            return sqlStmt;
+    private <T> void processBatchForStatement(@Nonnull final BatchQueueHandler<T> handler,
+                                              @Nonnull final PreparedStatement stmt,
+                                              @Nonnull final List<T> elementsInBatch) {
+        final BlockingQueue<T> queue = handler.getQueue();
+        T element = null;
+        while ((element = queue.poll()) != null) {
+            addElementToBatch(handler, stmt, element, elementsInBatch);
+            executeBatchAndResetOnCondition(handler, stmt, elementsInBatch, 999);
         }
-
-        return executeBatchAndResetSqlStatement(connection, sqlStmt);
+        if (!elementsInBatch.isEmpty()) {
+            executeBatchAndResetOnCondition(handler, stmt, elementsInBatch, 0);
+        }
     }
 
-    private boolean stmtSizeConditionNotMet(@Nonnull final String stmtStr,
-                                            @Nonnull final int numOfStmtsInBatch) {
-        final int sizeInBytes = Strings.getSizeInBytes(stmtStr);
-        _totalSizeOfBatchInBytes += sizeInBytes;
-        if (numOfStmtsInBatch < 100 && _totalSizeOfBatchInBytes < _maxBatchSizeInBytes) {
-            return true;
-        }
-        return false;
-    }
-
-    private void addStmtStrToBatchedStmt(@Nonnull final String stmtStr,
-                                         @Nonnull final Statement sqlStmt) {
+    private <T> void addElementToBatch(@Nonnull final BatchQueueHandler<T> handler,
+                                       @Nonnull final PreparedStatement stmt,
+                                       @Nonnull final T element,
+                                       @Nonnull final List<T> elementsInBatch) {
         try {
-            _batchedStatements.add(stmtStr);
-            sqlStmt.addBatch(stmtStr);
-            _numOfStmtsInBatch++;
+            elementsInBatch.add(element);
+            handler.applyBatch(stmt, element);
         } catch (final Throwable t) {
-            handleThrowable(t);
+            handleThrowable(t, handler, elementsInBatch);
         }
     }
 
-    @Nonnull
-    private Statement executeBatchAndResetSqlStatement(@Nonnull final Connection connection,
-                                                       @Nonnull final Statement sqlStmt) {
-        try {
-            sqlStmt.executeBatch();
-            LOG.info("Execute batched stmt - num: " + _batchedStatements.size());
-
-            return connection.createStatement();
-        }  catch (final Throwable t) {
-            handleThrowable(t);
-        } finally {
-            _batchedStatements.clear();
-            closeStatement(sqlStmt);
-            _numOfStmtsInBatch = 0;
-            _totalSizeOfBatchInBytes = 0;
+    private <T> void executeBatchAndResetOnCondition(@Nonnull final BatchQueueHandler<T> handler,
+                                                     @Nonnull final PreparedStatement stmt,
+                                                     @Nonnull final List<T> elementsInBatch,
+                                                     final int noOfStmts) {
+        if (elementsInBatch.size() > noOfStmts) {
+            LOG.info("Execute batched stmt - num: " + elementsInBatch.size());
+            try {
+                stmt.executeBatch();
+            } catch (final Throwable t) {
+                handleThrowable(t, handler, elementsInBatch);
+            } finally {
+                elementsInBatch.clear();
+            }
         }
-        return sqlStmt;
     }
 
 
-
-    void handleThrowable(@Nonnull final Throwable t) {
+    private <T> void handleThrowable(@Nonnull final Throwable t,
+                                     @Nonnull final BatchQueueHandler<T> handler,
+                                     @Nonnull final List<T> elementsInBatch) {
+        final Collection<String> statements = handler.convertToStatementString(elementsInBatch);
         try {
             throw t;
         } catch (final ArchiveConnectionException se) {
             LOG.error("Archive Connection failed. No batch update. Drain unpersisted statements to file system.", se);
-            _mgr.rescueDataToFileSystem(_batchedStatements);
+            _mgr.rescueDataToFileSystem(statements);
         } catch (final BatchUpdateException be) {
             LOG.error("Batched update failed. Drain unpersisted statements to file system.", be);
-            processFailedBatch(_batchedStatements, be);
+            processFailedBatch(statements, be);
         } catch (final SQLException se) {
-            LOG.error("Batched update failed. Statement was already closed or driver does not support batched statements.", se);
-            _mgr.rescueDataToFileSystem(_batchedStatements);
+            LOG.error("Batched update failed. Batched statement could not be composed.", se);
+            _mgr.rescueDataToFileSystem(statements);
         } catch (final Throwable tt) {
             LOG.error("Unknown throwable. Thread " + _name + " is terminated", tt);
             t.printStackTrace();
-            _mgr.rescueDataToFileSystem(_batchedStatements);
+            _mgr.rescueDataToFileSystem(statements);
+        } finally {
+            elementsInBatch.clear();
         }
     }
 
-    private void processFailedBatch(@Nonnull final List<String> batchedStatements,
-                                    @Nonnull final BatchUpdateException be) {
+    private <T> void processFailedBatch(@Nonnull final Collection<String> batchedStatements,
+                                        @Nonnull final BatchUpdateException be) {
         // NOT all statements have been successfully executed! (Depends on RDBM)
         final int[] updateCounts = be.getUpdateCounts();
         if (updateCounts.length == batchedStatements.size()) {
-            // All statements have been tried executed, look for the failed ones
+            // All statements have been tried to be executed, look for the failed ones
             final List<String> failedStmts = findFailedStatements(updateCounts, batchedStatements);
             _mgr.rescueDataToFileSystem(failedStmts);
         } else {
             // Not all statements have been tried to be executed - safe only the failed ones
-            _mgr.rescueDataToFileSystem(batchedStatements.subList(updateCounts.length, batchedStatements.size()));
+            _mgr.rescueDataToFileSystem(Iterables.skip(batchedStatements, updateCounts.length));
         }
     }
 
@@ -230,12 +211,14 @@ public class PersistDataWorker extends AbstractTimeMeasuredRunnable {
 
     @Nonnull
     private static List<String> findFailedStatements(@Nonnull final int[] updateCounts,
-                                                     @Nonnull final List<String> allStmts) {
+                                                     @Nonnull final Collection<String> allStmts) {
         final List<String> failedStmts = Lists.newLinkedList();
-        for (int j = 0; j < updateCounts.length; j++) {
-            if (updateCounts[j] == Statement.EXECUTE_FAILED) {
-                failedStmts.add(allStmts.get(j));
+        int i = 0;
+        for (final String stmt : allStmts) {
+            if (i < updateCounts.length && updateCounts[i] == Statement.EXECUTE_FAILED) {
+                failedStmts.add(stmt);
             }
+            i++;
         }
         return failedStmts;
     }

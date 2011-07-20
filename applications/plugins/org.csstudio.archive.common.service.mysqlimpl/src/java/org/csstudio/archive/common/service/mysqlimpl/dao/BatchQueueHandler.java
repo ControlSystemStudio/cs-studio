@@ -19,65 +19,37 @@
  * PROJECT IN THE FILE LICENSE.HTML. IF THE LICENSE IS NOT INCLUDED YOU MAY FIND A COPY
  * AT HTTP://WWW.DESY.DE/LEGAL/LICENSE.HTM
  */
-package org.csstudio.archive.common.service.mysqlimpl.persistengine;
+package org.csstudio.archive.common.service.mysqlimpl.dao;
 
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.SQLException;
 import java.util.Collection;
+import java.util.List;
 import java.util.concurrent.BlockingQueue;
-import java.util.concurrent.LinkedBlockingQueue;
 
-import javax.annotation.CheckForNull;
 import javax.annotation.Nonnull;
-import javax.annotation.concurrent.GuardedBy;
-
-import org.csstudio.domain.desy.Strings;
 
 /**
- * TODO (bknerr) :
+ * Strategy for those statements that shall be batched.
  *
  * @author bknerr
- * @since 08.02.2011
+ * @since 20.07.2011
+ * @param <T> the type of the entity used to fill the statement's batch
  */
-public enum SqlStatementBatch {
-    INSTANCE;
+public interface BatchQueueHandler<T> {
 
-    @GuardedBy("this")
-    private long _sizeInBytes = 0;
+    void applyBatch(@Nonnull final PreparedStatement stmt, @Nonnull final T type) throws SQLException;
 
-    private final BlockingQueue<String> _statements = new LinkedBlockingQueue<String>();
+    @Nonnull
+    PreparedStatement createNewStatement(@Nonnull final Connection connection) throws SQLException;
 
-    private SqlStatementBatch() {
-        // Empty
-    }
-    public void submitStatement(@Nonnull final String statement) {
-        _statements.add(statement); // non blocking add
-        synchronized (this) {
-            _sizeInBytes += Strings.getSizeInBytes(statement);
-        }
-    }
+    @Nonnull
+    BlockingQueue<T> getQueue();
 
-    @CheckForNull
-    public String peek() {
-        return _statements.peek();
-    }
+    @Nonnull
+    Collection<String> convertToStatementString(@Nonnull final List<T> elements);
 
-    @CheckForNull
-    public synchronized String poll() {
-        final String polled = _statements.poll();
-        if (polled == null) {
-            return null;
-        }
-        _sizeInBytes -= Strings.getSizeInBytes(polled);
-        return polled;
-    }
-
-    public int drainTo(@Nonnull final Collection<? super String> c) {
-        return _statements.drainTo(c);
-    }
-
-
-    public synchronized long sizeInBytes() {
-        return _sizeInBytes;
-    }
-
-
+    @Nonnull
+    Class<T> getType();
 }

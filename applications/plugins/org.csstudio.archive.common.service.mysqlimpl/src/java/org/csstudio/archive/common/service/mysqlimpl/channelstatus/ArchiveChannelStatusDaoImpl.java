@@ -25,6 +25,7 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Timestamp;
+import java.util.Collections;
 
 import javax.annotation.CheckForNull;
 import javax.annotation.Nonnull;
@@ -39,7 +40,6 @@ import org.csstudio.archive.common.service.mysqlimpl.dao.ArchiveDaoException;
 import org.csstudio.archive.common.service.mysqlimpl.persistengine.PersistEngineDataManager;
 import org.csstudio.domain.desy.time.TimeInstant.TimeInstantBuilder;
 
-import com.google.common.base.Joiner;
 import com.google.inject.Inject;
 
 /**
@@ -53,11 +53,6 @@ public class ArchiveChannelStatusDaoImpl extends AbstractArchiveDao implements I
 
     public static final String TAB = "channel_status";
 
-    private final String _insertChannelStatusStmtPrefix =
-        "INSERT INTO " + getDatabaseName() + "." + TAB +
-                     " (channel_id, connected, info, timestamp) " +
-                     "VALUES ";
-
     private final String _selectLatestChannelStatusStmt =
         "SELECT id, channel_id, connected, info, timestamp FROM " +
         getDatabaseName() + "." + TAB +
@@ -65,20 +60,17 @@ public class ArchiveChannelStatusDaoImpl extends AbstractArchiveDao implements I
 
     @Inject
     public ArchiveChannelStatusDaoImpl(@Nonnull final ArchiveConnectionHandler handler,
-                                       @Nonnull final PersistEngineDataManager persister) {
+                                       @Nonnull final PersistEngineDataManager persister) throws ArchiveDaoException {
         super(handler, persister);
+
+        getEngineMgr().registerBatchQueueHandler(new ArchiveChannelStatusBatchQueueHandler(getDatabaseName()));
     }
 
 
     @Override
     public void createChannelStatus(@Nonnull final IArchiveChannelStatus entry) throws ArchiveDaoException {
-        final String stmtStr = Joiner.on(",").join(entry.getChannelId().intValue(),
-                                                   (entry.isConnected() ? "'TRUE'" : "'FALSE'"),
-                                                   "'" + entry.getInfo() + "'",
-                                                   "'" + entry.getTime().formatted() + "'");
 
-
-        getEngineMgr().submitStatementToBatch(_insertChannelStatusStmtPrefix + "("  + stmtStr + ")");
+        getEngineMgr().submitToBatch(Collections.singleton(entry));
     }
 
 
