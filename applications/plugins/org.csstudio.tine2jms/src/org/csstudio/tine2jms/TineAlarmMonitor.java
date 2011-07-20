@@ -91,7 +91,6 @@ public class TineAlarmMonitor extends Observable implements AlarmMonitorHandler 
         Date date = null;
         
         TAlarmMessage[] ams = alarmMonitor.getLastAcquiredAlarms(0, true);
-        
         if(ams != null) {
             
             date = new Date(alarmMonitor.getLastAcquiredAlarmTime());
@@ -99,19 +98,19 @@ public class TineAlarmMonitor extends Observable implements AlarmMonitorHandler 
             date = null;
     
             if(ams.length > 0) {
-                alarm = ams[ams.length - 1];
                 
+                alarm = ams[ams.length - 1];
                 if(alarm.getTimeStamp() > this.lastTimeStamp) {
                     
                     this.lastTimeStamp = alarm.getTimeStamp();
                     
                     date = new Date(alarm.getTimeStamp());
-                    LOG.info(_context + ": Neuer Alarm Timestamp: " + dateFormat.format(date));
+                    LOG.debug(_context + ": Neuer Alarm Timestamp: " + dateFormat.format(date));
                     
                     date = null;
                     
                     am = new AlarmMessage(alarm, _context);
-                    //receivedMessages.incrementValue();
+                    receivedMessages.incrementValue();
                     
                     setChanged();
                     notifyObservers(am);
