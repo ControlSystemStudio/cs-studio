@@ -263,11 +263,23 @@ public class AlarmTreeItem extends TreeItem
      *
      *  @param acknowledge Acknowledge, or un-acknowledge?
      */
-    public synchronized void acknowledge(final boolean acknowledge)
+    public void acknowledge(final boolean acknowledge)
     {
-        final int n = getChildCount();
-        for (int i=0; i<n; ++i)
-            getClientChild(i).acknowledge(acknowledge);
+    	// Acknowledging alarms will recurse to the PVs,
+    	// then call up to the root to send a notification
+    	// to JMS (for the AlarmClientModelRoot)
+    	// To prevent deadlocks, first lock the root,
+    	// then this and other affected tree items
+        final AlarmTreeRoot root = getClientRoot();
+        synchronized (root)
+        {
+        	synchronized (this)
+            {
+            	final int n = getChildCount();
+                for (int i=0; i<n; ++i)
+                    getClientChild(i).acknowledge(acknowledge);
+            }
+        }
     }
 
     /** Set severity/status of this item by maximizing over its child

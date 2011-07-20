@@ -72,13 +72,14 @@ public class SQL
 
 	/** Initialize
      *  @param rdb RDBUtil
+	 *  @param schema 
      */
-    public SQL(final RDBUtil rdb) throws Exception
+    public SQL(final RDBUtil rdb, final String schema) throws Exception
     {
         if (rdb.getDialect() == Dialect.MySQL || rdb.getDialect() == Dialect.PostgreSQL)
             schema_prefix = "";
         else if (rdb.getDialect() == Dialect.Oracle)
-            schema_prefix = "ALARM.";
+            schema_prefix = schema + ".";
         else
         	throw new Exception("This database is not supported");
 

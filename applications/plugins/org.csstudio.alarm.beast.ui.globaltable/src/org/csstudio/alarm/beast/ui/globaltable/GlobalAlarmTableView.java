@@ -112,7 +112,7 @@ public class GlobalAlarmTableView extends ViewPart
                 // TODO 'Select configuration' action
                 final List<AlarmTreeItem> items =
                     ((IStructuredSelection)table_viewer.getSelection()).toList();
-                new ContextMenuHelper(manager, table.getShell(), items, false);
+                new ContextMenuHelper(null, manager, table.getShell(), items, false);
                 manager.add(new Separator());
                 manager.add(new AlarmPerspectiveAction());
                 manager.add(new Separator());

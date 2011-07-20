@@ -8,6 +8,10 @@
             content="intro/cssNSLS2Intro.xml"
             configId="org.eclipse.ui.intro.universalConfig">
       </configExtension>
+      <configExtension
+            configId="org.eclipse.ui.intro.universalConfig"
+            content="intro/cssNSLS2New.xml">
+      </configExtension>
    </extension>
 
 </plugin>

@@ -44,6 +44,10 @@ and finally they can also be changed via the preference GUI:
     the srever to which the tool actually connected.
 <li>JMS User, Password: User and password used to establish the connection
     to the JMS server. They can often be left blank.
+<li>Max Message Count: If the JMS monitor continued to display every received
+    message, this would consume a lot of memory.
+    The tool therefore employs a ring buffer. By default, it only keeps the last
+    500 messages, but you can adjust that number.
 </ul>
 
 </body>

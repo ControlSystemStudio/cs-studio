@@ -5,8 +5,8 @@ import java.util.concurrent.ConcurrentLinkedQueue;
 import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
 
+import org.csstudio.rap.core.DisplayManager;
 import org.eclipse.swt.widgets.Display;
-import org.eclipse.ui.PlatformUI;
 
 
 
@@ -34,6 +34,7 @@ public final class UIBundlingThread implements Runnable {
 	 * during the last SLEEP_TIME milliseconds.
 	 */
 	private Queue<DisplayRunnable> tasksQueue;
+	
 
 	/**
 	 * Standard constructor.
@@ -54,14 +55,13 @@ public final class UIBundlingThread implements Runnable {
 		if (instance == null) {
 			instance = new UIBundlingThread();
 		}
-
 		return instance;
 	}
 
 	/**
 	 * {@inheritDoc}.
 	 */
-	public void run() {
+	public void run() {		
 		if(!tasksQueue.isEmpty())
 			processQueue();
 	}
@@ -70,13 +70,14 @@ public final class UIBundlingThread implements Runnable {
 	 * Process the complete queue.
 	 */
 	private synchronized void processQueue() {
-//		if(PlatformUI.getWorkbench() != null)
-//			display = PlatformUI.getWorkbench().getDisplay();
-//		else
-//			display = Display.getDefault();
-		DisplayRunnable r;
+		DisplayRunnable r;		
 		while( (r=tasksQueue.poll()) != null){	
-			r.display.asyncExec(r.runnable);
+			try {
+				if(!r.display.isDisposed() && 
+						DisplayManager.getInstance().isDisplayAlive(r.display))
+					r.display.asyncExec(r.runnable);
+			} catch (Exception e) {				
+			}
 		}
 	
 	}

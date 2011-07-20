@@ -33,11 +33,11 @@ import org.eclipse.jface.action.Separator;
 import org.eclipse.jface.layout.TableColumnLayout;
 import org.eclipse.jface.viewers.ColumnViewerToolTipSupport;
 import org.eclipse.jface.viewers.ColumnWeightData;
-import org.eclipse.jface.viewers.ISelectionProvider;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.viewers.StructuredSelection;
 import org.eclipse.jface.viewers.TableViewer;
 import org.eclipse.jface.viewers.TableViewerColumn;
+import org.eclipse.osgi.util.NLS;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.custom.SashForm;
 import org.eclipse.swt.events.DisposeEvent;
@@ -63,11 +63,19 @@ import org.eclipse.ui.IWorkbenchPartSite;
  */
 public class GUI implements AlarmClientModelListener
 {
-    final private Display display;
+	/** Initial place holder for display of alarm counts
+	 *  to allocate enough screen space
+	 */
+	final private static String ALARM_COUNT_PLACEHOLDER = "999999"; //$NON-NLS-1$
+
+	final private Display display;
 
     /** Model with all the alarm information */
     final private AlarmClientModel model;
 
+    /** Labels to show alarm counts */
+	private Label current_alarms, acknowledged_alarms;
+    
     /** TableViewer for active alarms */
     private TableViewer active_table_viewer;
 
@@ -104,9 +112,11 @@ public class GUI implements AlarmClientModelListener
                 public void run()
                 {
                     //System.out.println("GUI Update");
-                    final Table act_table = active_table_viewer.getTable();
-                    if (act_table.isDisposed())
+                    if (current_alarms.isDisposed())
                         return;
+                    
+                    // Display counts, update tables
+                    
                     // Don't use TableViewer.setInput(), it causes flicker on Linux!
                     // active_table_viewer.setInput(model.getActiveAlarms());
                     // acknowledged_table_viewer.setInput(model.getAcknowledgedAlarms());
@@ -114,10 +124,13 @@ public class GUI implements AlarmClientModelListener
                     // Instead, tell ModelInstanceProvider about the data,
                     // which then updates the table with setItemCount(), refresh(),
                     // as that happens to not flicker.
-                    ((AlarmTableContentProvider)
-                        active_table_viewer.getContentProvider()).setAlarms(model.getActiveAlarms());
-                    ((AlarmTableContentProvider)
-                        acknowledged_table_viewer.getContentProvider()).setAlarms(model.getAcknowledgedAlarms());
+                    AlarmTreePV[] alarms = model.getActiveAlarms();
+                    current_alarms.setText(NLS.bind(Messages.CurrentAlarmsFmt, alarms.length));
+					((AlarmTableContentProvider) active_table_viewer.getContentProvider()).setAlarms(alarms);
+
+                    alarms = model.getAcknowledgedAlarms();
+                    acknowledged_alarms.setText(NLS.bind(Messages.AcknowledgedAlarmsFmt, alarms.length));
+					((AlarmTableContentProvider) acknowledged_table_viewer.getContentProvider()).setAlarms(alarms);
                 }
             });
         }
@@ -171,14 +184,14 @@ public class GUI implements AlarmClientModelListener
         };
     }
 
-    /** @return Provider for selected active alarms */
-    public ISelectionProvider getSelectedAlarms()
+    /** @return Table of active alarms */
+    public TableViewer getActiveAlarmTable()
     {
         return active_table_viewer;
     }
 
-    /** @return Provider for selected acknowledged alarms */
-    public ISelectionProvider getSelectedAckAlarms()
+    /** @return Table of acknowledged alarms */
+    public TableViewer getAcknowledgedAlarmTable()
     {
         return acknowledged_table_viewer;
     }
@@ -236,20 +249,17 @@ public class GUI implements AlarmClientModelListener
         layout.numColumns = 5;
         box.setLayout(layout);
 
-        GridData gd;
-
-        // Current Alarms {Error}   Select: ___ filter ___ [X]
-        Label l = new Label(box, 0);
-        l.setText(Messages.CurrentAlarms);
-        l.setLayoutData(new GridData());
+        current_alarms = new Label(box, 0);
+        current_alarms.setText(NLS.bind(Messages.CurrentAlarmsFmt, ALARM_COUNT_PLACEHOLDER));
+        current_alarms.setLayoutData(new GridData());
 
         error_message = new Label(box, 0);
-        gd = new GridData();
+        GridData gd = new GridData();
         gd.horizontalAlignment = SWT.RIGHT;
         gd.grabExcessHorizontalSpace = true;
         error_message.setLayoutData(gd);
 
-        l = new Label(box, 0);
+        Label l = new Label(box, 0);
         l.setText(Messages.Filter);
         l.setLayoutData(new GridData());
 
@@ -282,10 +292,9 @@ public class GUI implements AlarmClientModelListener
         final Composite box = new Composite(sash, SWT.BORDER);
         box.setLayout(new GridLayout());
 
-        // Ack'ed alarms
-        Label l = new Label(box, 0);
-        l.setText(Messages.AcknowledgedAlarms);
-        l.setLayoutData(new GridData());
+        acknowledged_alarms = new Label(box, 0);
+        acknowledged_alarms.setText(NLS.bind(Messages.AcknowledgedAlarmsFmt, ALARM_COUNT_PLACEHOLDER));
+        acknowledged_alarms.setLayoutData(new GridData());
 
         // Table w/ ack'ed alarms
         acknowledged_table_viewer = createAlarmTable(box);
@@ -392,7 +401,8 @@ public class GUI implements AlarmClientModelListener
                 final Shell shell = table.getShell();
                 final List<AlarmTreeItem> items =
                     ((IStructuredSelection)table_viewer.getSelection()).toList();
-                new ContextMenuHelper(manager, shell, items, model.isWriteAllowed());
+
+                new ContextMenuHelper(table_viewer, manager, shell, items, model.isWriteAllowed());
                 manager.add(new Separator());
                 // Add edit items
                 if (items.size() == 1 && model.isWriteAllowed())

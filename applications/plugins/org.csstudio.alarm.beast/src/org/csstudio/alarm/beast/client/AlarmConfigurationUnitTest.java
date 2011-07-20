@@ -13,6 +13,7 @@ import java.io.PrintWriter;
 
 import org.csstudio.apputil.test.TestProperties;
 import org.csstudio.apputil.time.BenchmarkTimer;
+import org.eclipse.core.runtime.NullProgressMonitor;
 import org.junit.Ignore;
 import org.junit.Test;
 
@@ -48,8 +49,8 @@ public class AlarmConfigurationUnitTest
     		System.out.println("Skipping test: no alarm_rdb_* settings found.");
     		return null;
     	}
-    	final AlarmConfiguration config = new AlarmConfiguration(url, user, password);
-    	config.readConfiguration(root, writable);
+    	final AlarmConfiguration config = new AlarmConfiguration(url, user, password, "ALARM");
+    	config.readConfiguration(root, writable, new NullProgressMonitor());
     	return config;
     }
 

@@ -22,8 +22,8 @@ import org.eclipse.swt.widgets.Shell;
 
 /**
  * A simple TreeViewer to demonstrate usage of an ILazyContentProvider.
- * 
  */
+@SuppressWarnings("nls")
 public class Snippet047VirtualLazyTreeViewer {
 	// Totally beside the point but was confusing when
 	// trying to understand this snippet:
@@ -89,7 +89,7 @@ public class Snippet047VirtualLazyTreeViewer {
 			this.parent = parent;
 		}
 
-		public String toString() {
+        public String toString() {
 			return "Leaf " + this.counter;
 		}
 	}

@@ -266,7 +266,7 @@ public class GlobalAlarmModel
             }
             // Complete GUI detail in background
             final ReadInfoJob read_job = new ReadInfoJob(Preferences.getRDB_Url(),Preferences.getRDB_User(),
-                    Preferences.getRDB_Password(), alarm, null);
+                    Preferences.getRDB_Password(), Preferences.getRDB_Schema(), alarm, null);
             // Wait a little to give fireAlarmUpdate a head-start
             read_job.schedule(100);
         }

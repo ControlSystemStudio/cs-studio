@@ -1,6 +1,7 @@
 package org.csstudio.nsls2.product;
 
 import org.csstudio.nsls2.product.Messages;
+import org.csstudio.ui.menu.app.ApplicationActionBarAdvisor;
 import org.eclipse.swt.graphics.Point;
 import org.eclipse.ui.application.ActionBarAdvisor;
 import org.eclipse.ui.application.IActionBarConfigurer;

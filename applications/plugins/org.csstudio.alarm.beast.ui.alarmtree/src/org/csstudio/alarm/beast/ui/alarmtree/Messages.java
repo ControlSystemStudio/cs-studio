@@ -15,8 +15,8 @@ public class Messages extends NLS
     public static String CannotGetAlarmInfoFmt;
     public static String Collapse;
     public static String CollapseTT;
-    public static String ExpandAlarms;
-    public static String ExpandAlarmsTT;
+    public static String OnlyAlarms;
+    public static String OnlyAlarmsTT;
     public static String SelectAlarmConfiguration;
 
     static

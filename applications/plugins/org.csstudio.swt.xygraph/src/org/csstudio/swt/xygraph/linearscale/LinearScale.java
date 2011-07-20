@@ -166,7 +166,7 @@ public class LinearScale extends AbstractScale {
 	 * If false, return the absolute position which has the scale bounds counted.
 	 * @return position in pixels
 	 */
-	public int getValuePosition(double value, boolean relative) {
+	public int getValuePosition(double value, boolean relative) {		
 		if(dirty)
 			updateTick();
 		//coerce to range		

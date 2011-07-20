@@ -33,10 +33,14 @@ public class CreateTestDB
 		for (int i=0; i<COUNT; ++i)
 		{
 			final String num = String.format("%05d", i);
-			
 			final int group = (1 + i/GROUPSIZE) * GROUPSIZE;
-			
-			out.println("# Group " + group);
+
+			// Tried to use one "Ramp":
+			// With Alarm... using INP="Ramp CP" the result
+			// was "rngBufPut overflow in scanOnce".
+			// With a long FLNK chain from Ramp via Alarm00000,
+			// Alarm00001 to Alarm49999 the soft IOC just crashed.
+			// So it's 2 records per alarm.
 			out.println("record(calc, \"Ramp" + num + "\")");
 			out.println("{");
 			out.println("    field(INPA, \"Ramp" + num + "\")");
@@ -45,6 +49,7 @@ public class CreateTestDB
 			out.println("    field(HOPR, \"" + COUNT + "\")");
 			out.println("    field(FLNK, \"Alarm" + num + "\")");
 			out.println("}");
+
 			out.println("record(calc, \"Alarm" + num + "\")");
 			out.println("{");
 			out.println("    field(INPA, \"Ramp" + num + "\")");
@@ -62,6 +67,23 @@ public class CreateTestDB
 		out = new PrintStream("demo.xml");
 		out.println("<?xml version=\"1.0\" encoding=\"UTF-8\" standalone=\"yes\"?>");
 		out.println("<config name=\"demo\">");
+		out.println("<component name=\"Simulated\">");
+		out.println("    <pv name=\"sim://sine\">");
+		out.println("        <description>Test PV</description>");
+		out.println("        <latching>true</latching>");
+		out.println("        <annunciating>true</annunciating>");
+		out.println("    </pv>");
+		out.println("    <pv name=\"sim://ramp\">");
+		out.println("        <description>Test PV</description>");
+		out.println("        <latching>true</latching>");
+		out.println("        <annunciating>true</annunciating>");
+		out.println("    </pv>");
+		out.println("    <pv name=\"sim://noise\">");
+		out.println("        <description>Test PV</description>");
+		out.println("        <latching>true</latching>");
+		out.println("        <annunciating>true</annunciating>");
+		out.println("    </pv>");
+		out.println("</component>");
 		for (int i=0; i<COUNT; ++i)
 		{
 			final String num = String.format("%05d", i);

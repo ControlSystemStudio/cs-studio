@@ -58,6 +58,6 @@ public class AlarmColumnSortingSelector extends SelectionAdapter
         table.setSortColumn(column);
         
         ((AlarmTableContentProvider)table_viewer.getContentProvider())
-            .setComparator(new AlarmComparator(col_info, up));
+            .setComparator(AlarmComparator.getComparator(col_info, up));
     }
 }
