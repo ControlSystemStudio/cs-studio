@@ -28,7 +28,9 @@ import java.util.Set;
 import java.util.SortedSet;
 import java.util.TreeSet;
 
+import javax.annotation.CheckForNull;
 import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.ManyToOne;
@@ -60,7 +62,7 @@ public class MasterDBO extends AbstractNodeDBO<ProfibusSubnetDBO, SlaveDBO> {
      * The highest accept station address.
      */
     @Transient
-    public static final int MAX_STATION_ADDRESS = 126;
+    private static final int MAX_STATION_ADDRESS = 126;
 
     // ********************
     // * Database Fields. *
@@ -186,12 +188,13 @@ public class MasterDBO extends AbstractNodeDBO<ProfibusSubnetDBO, SlaveDBO> {
     public void setRedundant(final int fdlAddress) {
         this._fdlAddress = (short)fdlAddress;
     }
-
+    
+    @CheckForNull
     public String getMasterUserData() {
         return _masterUserData;
     }
 
-    public void setMasterUserData(final String masterUserData) {
+    public void setMasterUserData(@Nullable final String masterUserData) {
         this._masterUserData = masterUserData;
     }
 
@@ -203,11 +206,12 @@ public class MasterDBO extends AbstractNodeDBO<ProfibusSubnetDBO, SlaveDBO> {
         this._minSlaveInt = minSlaveInt;
     }
 
+    @CheckForNull
     public String getModelName() {
         return _modelName;
     }
 
-    public void setModelName(final String modelName) {
+    public void setModelName(@Nullable final String modelName) {
         this._modelName = modelName;
     }
 
@@ -227,11 +231,12 @@ public class MasterDBO extends AbstractNodeDBO<ProfibusSubnetDBO, SlaveDBO> {
         this._profibusPnoId = profibusPnoId;
     }
 
+    @CheckForNull
     public String getProfibusdpmasterBez() {
         return _profibusdpmasterBez;
     }
 
-    public void setProfibusdpmasterBez(final String profibusdpmasterBez) {
+    public void setProfibusdpmasterBez(@Nullable final String profibusdpmasterBez) {
         this._profibusdpmasterBez = profibusdpmasterBez;
     }
 
@@ -243,20 +248,22 @@ public class MasterDBO extends AbstractNodeDBO<ProfibusSubnetDBO, SlaveDBO> {
         this._profibusdpmasterId = profibusDPMasterId;
     }
 
+    @CheckForNull
     public String getVendorName() {
         return _vendorName;
     }
 
-    public void setVendorName(final String vendorName) {
+    public void setVendorName(@Nullable final String vendorName) {
         this._vendorName = vendorName;
     }
 
     @ManyToOne
+    @Nonnull
     public ProfibusSubnetDBO getProfibusSubnet() {
         return (ProfibusSubnetDBO) getParent();
     }
 
-    public void setProfibusSubnet(final ProfibusSubnetDBO profibusSubnet) {
+    public void setProfibusSubnet(@Nonnull final ProfibusSubnetDBO profibusSubnet) {
         this.setParent(profibusSubnet);
     }
 
@@ -264,6 +271,7 @@ public class MasterDBO extends AbstractNodeDBO<ProfibusSubnetDBO, SlaveDBO> {
      * @return the GSDFile.
      */
     @ManyToOne
+    @CheckForNull
     public GSDFileDBO getGSDFile() {
         return _gsdFile;
     }
@@ -272,7 +280,7 @@ public class MasterDBO extends AbstractNodeDBO<ProfibusSubnetDBO, SlaveDBO> {
      * @param gsdFile
      *            set the GSDFile.
      */
-    public void setGSDFile(final GSDFileDBO gsdFile) {
+    public void setGSDFile(@Nullable final GSDFileDBO gsdFile) {
         _gsdFile = gsdFile;
     }
 
@@ -285,14 +293,16 @@ public class MasterDBO extends AbstractNodeDBO<ProfibusSubnetDBO, SlaveDBO> {
      * @return
      */
     @Transient
+    @CheckForNull
     public String getEpicsAdressString() {
         return getProfibusSubnet().getEpicsAddressString();
     }
 
     @Transient
+    @Nonnull
     public SortedSet<Short> getFreeStationAddress() throws PersistenceException{
         TreeSet<Short> freeAddressList = new TreeSet<Short>();
-        for (short i = 0; i < MAX_STATION_ADDRESS; i++) {
+        for (short i = 0; i < getMaxStationAddress(); i++) {
             freeAddressList.add(i);
         }
         freeAddressList.remove(getSortIndex());
@@ -305,9 +315,10 @@ public class MasterDBO extends AbstractNodeDBO<ProfibusSubnetDBO, SlaveDBO> {
     }
 
     @Transient
+    @CheckForNull
     public SortedSet<Short> getFreeMStationAddress(final boolean redunant) throws PersistenceException{
         TreeSet<Short> freeAddressList = new TreeSet<Short>();
-        for (short i = 0; i < MAX_STATION_ADDRESS; i++) {
+        for (short i = 0; i < getMaxStationAddress(); i++) {
             freeAddressList.add(i);
         }
         Set<Short> keySet = getChildrenAsMap().keySet();
@@ -335,7 +346,7 @@ public class MasterDBO extends AbstractNodeDBO<ProfibusSubnetDBO, SlaveDBO> {
      */
     @Override
     @Nonnull
-    public MasterDBO copyParameter(final ProfibusSubnetDBO parentNode) throws PersistenceException {
+    public MasterDBO copyParameter(@Nonnull final ProfibusSubnetDBO parentNode) throws PersistenceException {
             ProfibusSubnetDBO subnet = parentNode;
 
             MasterDBO copy = new MasterDBO(subnet);
@@ -456,5 +467,25 @@ public class MasterDBO extends AbstractNodeDBO<ProfibusSubnetDBO, SlaveDBO> {
     @Override
     public void accept(@Nonnull final INodeVisitor visitor) {
         visitor.visit(this);
+    }
+    
+    public static int getMaxStationAddress() {
+        return MAX_STATION_ADDRESS;
+    }
+    
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public boolean equals(@CheckForNull Object obj) {
+        return super.equals(obj);
+    }
+    
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public int hashCode() {
+        return super.hashCode();
     }
 }

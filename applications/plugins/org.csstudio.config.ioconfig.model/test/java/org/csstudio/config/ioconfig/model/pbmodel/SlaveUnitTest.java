@@ -61,7 +61,6 @@ public class SlaveUnitTest {
     public void setDown() {
         _master = null;
         _profibusSubnet = null;
-        Repository.injectIRepository(null);
     }
     
 }

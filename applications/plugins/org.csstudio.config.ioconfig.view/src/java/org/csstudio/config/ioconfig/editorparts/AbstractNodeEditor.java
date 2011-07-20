@@ -755,7 +755,7 @@ public abstract class AbstractNodeEditor<T extends AbstractNodeDBO<?, ?>> extend
                         final AbstractNodeDBO nodeParent = (AbstractNodeDBO) obj;
                         
                         getNode()
-                                .moveSortIndex(nodeParent.getfirstFreeStationAddress(AbstractNodeDBO.MAX_STATION_ADDRESS));
+                                .moveSortIndex(nodeParent.getfirstFreeStationAddress(AbstractNodeDBO.getMaxStationAddress()));
                         nodeParent.addChild(getNode());
                     }
                 }

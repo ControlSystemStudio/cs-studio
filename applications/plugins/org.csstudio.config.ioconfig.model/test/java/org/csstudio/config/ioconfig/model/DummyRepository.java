@@ -1,6 +1,7 @@
 package org.csstudio.config.ioconfig.model;
 
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
@@ -15,27 +16,27 @@ public class DummyRepository implements IRepository {
 
     @Override
     public String getEpicsAddressString(final String ioName) {
-        return null;
+        return "DummyRepository";
     }
 
     @Override
     public List<String> getIoNames() {
-        return null;
+        return new ArrayList<String>();
     }
 
     @Override
     public List<String> getIoNames(final String iocName) {
-        return null;
+        return new ArrayList<String>();
     }
 
     @Override
     public <T> List<T> load(final Class<T> clazz) {
-        return null;
+        return new ArrayList<T>();
     }
 
     @Override
     public List<DocumentDBO> loadDocument() {
-        return null;
+        return new ArrayList<DocumentDBO>();
     }
 
     @Override
@@ -50,13 +51,13 @@ public class DummyRepository implements IRepository {
 
     @Override
     public GSDFileDBO save(final GSDFileDBO gsdFile) {
-        return null;
+        return gsdFile;
     }
 
     @Override
     public <T extends DBClass> T saveOrUpdate(final T dbClass) throws PersistenceException {
         dbClass.setId(_id++);
-        return null;
+        return dbClass;
     }
 
     public GSDModuleDBO saveWithChildren(final GSDModuleDBO gsdModule) throws PersistenceException {
@@ -65,12 +66,12 @@ public class DummyRepository implements IRepository {
 
     @Override
     public <T extends DBClass> T update(final T dbClass) {
-        return null;
+        return dbClass;
     }
 
     @Override
     public DocumentDBO update(final DocumentDBO document) {
-        return null;
+        return document;
     }
 
     @Override
@@ -80,7 +81,7 @@ public class DummyRepository implements IRepository {
 
     @Override
     public List<SensorsDBO> loadSensors(final String ioName) {
-        return null;
+        return new ArrayList<SensorsDBO>();
     }
 
     @Override
@@ -98,12 +99,12 @@ public class DummyRepository implements IRepository {
 
     @Override
     public DocumentDBO save(final DocumentDBO document) {
-        return null;
+        return document;
     }
 
     @Override
     public String getShortChannelDesc(final String ioName) {
-        return null;
+        return "DummyRepository";
     }
 
     @Override
@@ -118,7 +119,7 @@ public class DummyRepository implements IRepository {
 
     @Override
     public List<PV2IONameMatcherModelDBO> loadPV2IONameMatcher(final Collection<String> pvName) {
-        return null;
+        return new ArrayList<PV2IONameMatcherModelDBO>();
     }
 
     /**

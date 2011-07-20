@@ -79,7 +79,7 @@ public abstract class AbstractNodeDBO<P extends AbstractNodeDBO, C extends Abstr
      * The highest accept station address.
      */
     @Transient
-    public static final int MAX_STATION_ADDRESS = 128;
+    private static final int MAX_STATION_ADDRESS = 128;
     
     /**
      * The Node Patent.
@@ -620,4 +620,9 @@ public abstract class AbstractNodeDBO<P extends AbstractNodeDBO, C extends Abstr
     public abstract C createChild() throws PersistenceException;
 
     public abstract void accept(@Nonnull final INodeVisitor visitor);
+    
+    public static int getMaxStationAddress() {
+        return MAX_STATION_ADDRESS;
+    }
+
 }

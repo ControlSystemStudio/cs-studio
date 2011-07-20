@@ -9,7 +9,6 @@ import org.csstudio.config.ioconfig.model.DummyRepository;
 import org.csstudio.config.ioconfig.model.IocDBO;
 import org.csstudio.config.ioconfig.model.PersistenceException;
 import org.csstudio.config.ioconfig.model.Repository;
-import org.junit.After;
 import org.junit.Before;
 import org.junit.Ignore;
 import org.junit.Test;
@@ -35,11 +34,6 @@ public class ChannelStructureUnitTest {
         _slave = new SlaveDBO(_master);
     }
     
-    @After
-    public void setDown() {
-        Repository.injectIRepository(null);
-    }
-
     @Test
     public void testModule() throws PersistenceException {
         ChannelStructureDBO out = new ChannelStructureDBO();

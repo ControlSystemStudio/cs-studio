@@ -57,7 +57,6 @@ public abstract class AbstractHibernateManager extends Observable implements IHi
     
     private static final Logger LOG = LoggerFactory.getLogger(HibernateTestManager.class);
     private static final Set<Class<?>> CLASSES = new HashSet<Class<?>>();
-    @Nonnull
     private SessionFactory _sessionFactoryDevDB;
     private Session _sessionLazy;
     

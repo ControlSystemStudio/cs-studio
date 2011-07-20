@@ -24,6 +24,7 @@
  */
 package org.csstudio.config.ioconfig.model.pbmodel;
 
+import java.io.Serializable;
 import java.util.Collection;
 import java.util.Comparator;
 import java.util.Set;
@@ -73,7 +74,9 @@ public class GSDModuleDBO extends DBClass implements Comparable<GSDModuleDBO>, I
      * @version $Revision: 1.7 $
      * @since 16.05.2011
      */
-    private static final class ComparatorImplementation implements Comparator<ModuleChannelPrototypeDBO> {
+    private static final class ComparatorImplementation implements Comparator<ModuleChannelPrototypeDBO>, Serializable {
+        
+        private static final long serialVersionUID = 1L;
         /**
          * Constructor.
          */
@@ -197,18 +200,6 @@ public class GSDModuleDBO extends DBClass implements Comparable<GSDModuleDBO>, I
         return getName();
     }
 
-    /**
-     * Compare to GSDModule instances on the basis of the DB Key (ID).
-     *
-     * @param other
-     *            the other GSDModule to compare whit this one.
-     * @return {@inheritDoc}
-     */
-    @Override
-    public int compareTo(@CheckForNull final GSDModuleDBO other) {
-        return other!=null ? getId() - other.getId() : -1;
-    }
-
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "GSDModule", fetch = FetchType.EAGER)
 //    @OrderBy("offset")
     @CheckForNull
@@ -274,7 +265,8 @@ public class GSDModuleDBO extends DBClass implements Comparable<GSDModuleDBO>, I
 
     @Transient
     public int getGsdFileId() {
-        return getGSDFile().getId();
+        GSDFileDBO gsdFile = getGSDFile();
+        return gsdFile==null?-1:gsdFile.getId();
     }
 
     /**
@@ -302,4 +294,48 @@ public class GSDModuleDBO extends DBClass implements Comparable<GSDModuleDBO>, I
         _documents = documents;
 
     }
+    
+    /**
+     * Compare to GSDModule instances on the basis of the DB Key (ID).
+     *
+     * @param other
+     *            the other GSDModule to compare whit this one.
+     * @return {@inheritDoc}
+     */
+    @Override
+    public int compareTo(@CheckForNull final GSDModuleDBO other) {
+        return other!=null ? getId() - other.getId() : -1;
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public int hashCode() {
+        final int prime = 31;
+        int result = 1;
+        result = prime * result + getId();
+        return result;
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public boolean equals(@CheckForNull Object obj) {
+        if (this == obj) {
+            return true;
+        }
+        if (obj == null) {
+            return false;
+        }
+        if (getClass() != obj.getClass()) {
+            return false;
+        }
+        GSDModuleDBO other = (GSDModuleDBO) obj;
+        return (getId() == other.getId());
+    }
+    
+    
+
 }
