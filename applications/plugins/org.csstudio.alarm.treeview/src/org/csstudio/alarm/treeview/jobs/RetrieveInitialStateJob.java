@@ -75,7 +75,10 @@ public class RetrieveInitialStateJob extends Job {
         
         final IAlarmService alarmService = AlarmTreePlugin.getDefault().getAlarmService();
         if (alarmService != null) {
+            LOG.info("Initial state retrieval for " + initItems.size() + " items starts");
+            long start = System.currentTimeMillis();
             alarmService.retrieveInitialState(initItems);
+            LOG.info("Initial state retrieval for " + initItems.size() + " items ends after " + (System.currentTimeMillis() - start) + " msec");
         } else {
             LOG.warn("Initial state could not be retrieved because alarm service is not available.");
         }
