@@ -140,7 +140,7 @@ public class TineToJmsApplication implements IApplication,
         while(working) {
             synchronized(this) {
                 
-                LOG.info("Waiting for alarms...\n");
+                LOG.info("Waiting for alarms...");
                 
                 try {
                     this.wait();
