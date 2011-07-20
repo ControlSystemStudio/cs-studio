@@ -21,11 +21,14 @@
  */
 package org.csstudio.platform.logging;
 
+import java.util.Enumeration;
 import java.util.Properties;
 
 import org.apache.log4j.BasicConfigurator;
+import org.apache.log4j.LogManager;
 import org.apache.log4j.Logger;
 import org.apache.log4j.PropertyConfigurator;
+import org.apache.log4j.spi.LoggerRepository;
 import org.csstudio.platform.CSSPlatformPlugin;
 import org.csstudio.platform.security.SecureStorage;
 
@@ -231,7 +234,24 @@ public final class CentralLogger {
 	 * Configure the log4j library.
 	 */
 	public void configure() {
-		final CSSPlatformPlugin plugin = CSSPlatformPlugin.getDefault();
+		
+	    // TODO: Markus Moeller, 2011-07-20
+	    //       This is a hack to avoid that the CentralLogger overwrites an existing configuration.
+	    //       1. Search for existing loggers
+	    //       2. If we have some loggers DO NOT configure the CentralLogger
+	    //       3. If the repository does not contain any logger, configure the CentralLogger
+	    
+	    // Look for existing logger
+	    LoggerRepository repo = LogManager.getLoggerRepository();
+	    if (repo != null) {
+	        Enumeration<?> en = repo.getCurrentLoggers();
+    	    if (en.hasMoreElements()) {
+    	        // Some other plugin has configured log4j
+    	        return;
+    	    }
+	    }
+	    
+	    final CSSPlatformPlugin plugin = CSSPlatformPlugin.getDefault();
 		if (plugin == null)
 		{
 		    // Not running in full Eclipse environment, probably because
