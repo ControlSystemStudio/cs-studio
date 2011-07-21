@@ -71,8 +71,8 @@ public class ArchiveSample<V,
      */
     @Override
     @Nonnull
-    public T getSystemVariable() {
-        return _sysVar;
+    public V getValue() {
+        return _sysVar.getData();
     }
 
     /**
@@ -80,8 +80,8 @@ public class ArchiveSample<V,
      */
     @Override
     @Nonnull
-    public V getValue() {
-        return _sysVar.getData();
+    public T getSystemVariable() {
+        return _sysVar;
     }
 
     @CheckForNull
