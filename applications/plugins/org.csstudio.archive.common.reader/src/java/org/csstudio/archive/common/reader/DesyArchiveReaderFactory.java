@@ -118,9 +118,11 @@ public final class DesyArchiveReaderFactory implements ArchiveReaderFactory {
         @Override
         @Nonnull
         public ArchiveInfo[] getArchiveInfos() {
-            return new ArchiveInfo[] {new ArchiveInfo("Desy Kryo Archive",
-                                                      "MySQL Cluster",
-                                                      5)};
+            return new ArchiveInfo[] {
+                                      new ArchiveInfo("Desy Kryo Archive",
+                                      "MySQL Cluster",
+                                      5),
+                                      };
         }
 
         @Override

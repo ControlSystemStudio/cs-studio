@@ -72,40 +72,40 @@ public class MysqlArchiveReaderActivator implements BundleActivator {
         return INSTANCE;
     }
 
-	@Nonnull
-	static BundleContext getContext() {
-		return CONTEXT;
-	}
+    @Nonnull
+    static BundleContext getContext() {
+        return CONTEXT;
+    }
 
-	/**
-	 * {@inheritDoc}
-	 */
-	@Override
+    /**
+     * {@inheritDoc}
+     */
+    @Override
     public void start(@Nonnull final BundleContext context) throws Exception {
-		MysqlArchiveReaderActivator.CONTEXT = context;
+        MysqlArchiveReaderActivator.CONTEXT = context;
 
         _archiveEngineConfigServiceTracker = new ArchiveEngineServiceTracker(context);
         _archiveEngineConfigServiceTracker.open();
 
         _archiveReaderServiceTracker = new ArchiveReaderServiceTracker(context);
         _archiveReaderServiceTracker.open();
-	}
+    }
 
-	/**
-	 * {@inheritDoc}
-	 */
-	@Override
+    /**
+     * {@inheritDoc}
+     */
+    @Override
     public void stop(@Nonnull final BundleContext bundleContext) throws Exception {
-	    MysqlArchiveReaderActivator.CONTEXT = null;
+        MysqlArchiveReaderActivator.CONTEXT = null;
 
-	    if (_archiveEngineConfigServiceTracker != null) {
+        if (_archiveEngineConfigServiceTracker != null) {
             _archiveEngineConfigServiceTracker.close();
         }
 
         if (_archiveReaderServiceTracker != null) {
             _archiveReaderServiceTracker.close();
         }
-	}
+    }
 
     /**
      * Returns the archive reader service from the service tracker.

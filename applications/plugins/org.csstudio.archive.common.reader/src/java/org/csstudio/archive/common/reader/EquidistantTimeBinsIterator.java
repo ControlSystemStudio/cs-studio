@@ -95,7 +95,7 @@ public class EquidistantTimeBinsIterator<V> extends AbstractValueIterator<V> {
     private IArchiveSample<V, ISystemVariable<V>> _lastSampleOfLastWindow;
     private final INumericMetaData _metaData;
     private SampleMinMaxAggregator _agg;
-    private boolean _noSamples = false;
+    private final boolean _noSamples;
 
     /**
      * Constructor.
@@ -109,8 +109,7 @@ public class EquidistantTimeBinsIterator<V> extends AbstractValueIterator<V> {
                                        @Nonnull final TimeInstant end,
                                        @Nullable final IArchiveRequestType type,
                                        final int timeBins) throws OsgiServiceUnavailableException,
-                                                                  ArchiveServiceException,
-                                                                  TypeSupportException {
+                                                                  ArchiveServiceException {
         super(provider, channelName, start, end, type);
         _numOfWindows = timeBins;
 
@@ -165,8 +164,7 @@ public class EquidistantTimeBinsIterator<V> extends AbstractValueIterator<V> {
     @Nonnull
     private SampleAndWindow<V> findFirstSampleAndItsWindow(@Nonnull final TimeInstant startTime,
                                                            @Nonnull final ReadableDuration windowLength,
-                                                           @CheckForNull final Iterator<IArchiveSample<V, ISystemVariable<V>>> samplesIter)
-                                                           throws ArchiveServiceException, OsgiServiceUnavailableException {
+                                                           @CheckForNull final Iterator<IArchiveSample<V, ISystemVariable<V>>> samplesIter) {
 
         if (samplesIter.hasNext()) {
             final IArchiveSample<V, ISystemVariable<V>> firstSampleInWindow = samplesIter.next();
