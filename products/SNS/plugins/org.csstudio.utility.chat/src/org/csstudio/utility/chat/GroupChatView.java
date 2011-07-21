@@ -7,10 +7,15 @@
  ******************************************************************************/
 package org.csstudio.utility.chat;
 
+import java.util.Queue;
+import java.util.concurrent.ConcurrentLinkedQueue;
+import java.util.concurrent.atomic.AtomicReference;
+
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
 import org.eclipse.core.runtime.jobs.Job;
+import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.osgi.util.NLS;
 import org.eclipse.swt.events.DisposeEvent;
 import org.eclipse.swt.events.DisposeListener;
@@ -18,9 +23,13 @@ import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Display;
 
 /** RCP View for the group chat
+ * 
+ *  <p>The View is also the 'Controller'
+ *  for a {@link GroupChat} model and {@link GroupChatGUI} display.
+ *  
  *  @author Kay Kasemir
  */
-public class ViewPart extends org.eclipse.ui.part.ViewPart
+public class GroupChatView extends org.eclipse.ui.part.ViewPart
 	implements GroupChatListener, GroupChatGUIListener
 {
 	private Display display;
@@ -33,6 +42,7 @@ public class ViewPart extends org.eclipse.ui.part.ViewPart
 	{
 		display = parent.getDisplay();
 		gui = new GroupChatGUI(parent, this);
+		
         parent.addDisposeListener(new DisposeListener()
 		{
 			@Override
@@ -64,7 +74,7 @@ public class ViewPart extends org.eclipse.ui.part.ViewPart
 			chat_group = null;
 		}
 		// Perform connection in background thread
-		new Job("Connect")
+		new Job("Connect") //$NON-NLS-1$
 		{
 			private GroupChat new_chat;
 			private String error = null;
@@ -74,16 +84,16 @@ public class ViewPart extends org.eclipse.ui.part.ViewPart
             {
 				try
 				{
-					new_chat = new GroupChat(
-							"localhost", "css@conference.localhost");
-    				new_chat.addListener(ViewPart.this);
+					new_chat = new GroupChat(Preferences.getChatServer(),
+							Preferences.getGroup());
+    				new_chat.addListener(GroupChatView.this);
 					new_chat.connect(name);
 		        }
 		        catch (Exception ex)
 		        {
 		        	if (new_chat != null)
 		        		new_chat.disconnect();
-		        	error = NLS.bind("Error connecting to chat server:\n{0}\n",
+		        	error = NLS.bind(Messages.ConnectionErrorFmt,
 		   					 ex.getMessage());
 		        }
 
@@ -121,7 +131,7 @@ public class ViewPart extends org.eclipse.ui.part.ViewPart
 		catch (Exception ex)
 		{
         	final String error = 
-    			NLS.bind("Error sending to chat server:\n{0}\n",
+    			NLS.bind(Messages.SendErrorFmt,
    					 ex.getMessage());
         	gui.showError(error);
 		}
@@ -155,12 +165,58 @@ public class ViewPart extends org.eclipse.ui.part.ViewPart
 		});
     }
 
+	/** Queue of views opened when accepting an individual chat,
+	 *  to be used when that chat actually starts. 
+	 */
+	final private Queue<IndividualChatView> pending_views
+	  = new ConcurrentLinkedQueue<IndividualChatView>();
+	
+	/** Received invitation to individual chat
+	 * 
+	 *  <p>Prompt user if this is accepted,
+	 *  then open a view for the separate chat
+	 *  
+	 *  {@inheritDoc}
+	 */
+	@Override
+    public IndividualChatGUI receivedInvitation(final String from)
+    {
+		final AtomicReference<IndividualChatGUI> new_gui
+			= new AtomicReference<IndividualChatGUI>(null);
+		
+		display.syncExec(new Runnable()
+		{
+			@Override
+            public void run()
+            {
+				if (! MessageDialog.openQuestion(gui.getShell(),
+						Messages.ChatInvitation,
+						NLS.bind(Messages.AcceptInvitationFmt, from)))
+					return;
+				final IndividualChatView view = createIndividualChatView();
+				pending_views.add(view);
+				new_gui.set(view.getGUI());
+            }
+		});
+		
+	    return new_gui.get();
+    }
+
+	/** Create view for individual chat.
+	 *  <p>Will be called on the UI thread
+	 *  @return newly created {@link IndividualChatView}
+	 */
+	protected IndividualChatView createIndividualChatView()
+    {
+		// TODO Open view...
+		throw new Error("Not implemented"); //$NON-NLS-1$
+    }
+
 	/** {@inheritDoc} */
 	@Override
-    public IndividualChatGUI receivedInvitation(String from)
-    {
-	    // TODO Auto-generated method stub
-		System.out.println("Received invitation from " + from);
-	    return null;
+    public void startIndividualChat(final String from, final IndividualChat chat)
+    {	// Recently opened view should be in the queue...
+		final IndividualChatView view = pending_views.remove();
+		view.setChat(from, chat);
     }
 }

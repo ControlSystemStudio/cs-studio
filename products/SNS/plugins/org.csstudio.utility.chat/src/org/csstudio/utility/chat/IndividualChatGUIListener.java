@@ -7,16 +7,13 @@
  ******************************************************************************/
 package org.csstudio.utility.chat;
 
-/** Listener to the {@link GroupChatGUI}
+/** Listener to an {@link IndividualChatGUI}
  *  @author Kay Kasemir
  */
-public interface GroupChatGUIListener
-	extends IndividualChatGUIListener
+public interface IndividualChatGUIListener
 {
-	/** Log in to chat was requested via GUI.
-	 * 
-	 *  <p>When done, call {@link GroupChatGUI#updateLogin(String)}
-	 *  @param user_name User name to use for log in
+	/** User entered message to send in GUI
+	 *  @param message_text Message text
 	 */
-	public void doStartLogin(String user_name);
+	public void doSend(String message_text);
 }

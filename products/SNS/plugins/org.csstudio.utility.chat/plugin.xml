@@ -9,7 +9,7 @@
       </category>
       <view
             category="org.csstudio"
-            class="org.csstudio.utility.chat.ViewPart"
+            class="org.csstudio.utility.chat.GroupChatView"
             icon="icons/group16.png"
             id="org.csstudio.utility.chat.view"
             name="%ChatView"

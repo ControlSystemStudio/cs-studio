@@ -15,11 +15,18 @@ import org.eclipse.osgi.util.NLS;
 public class Messages extends NLS
 {
 	private static final String BUNDLE_NAME = "org.csstudio.utility.chat.messages"; //$NON-NLS-1$
+
+	public static String AcceptInvitationFmt;
+
+	public static String ChatInvitation;
+
+	public static String ConnectionErrorFmt;
 	public static String Error;
 	public static String Participants;
 	public static String Send;
 	public static String SendErrorFmt;
 	public static String UserName;
+	public static String UserSERVER;
 
 	static
 	{

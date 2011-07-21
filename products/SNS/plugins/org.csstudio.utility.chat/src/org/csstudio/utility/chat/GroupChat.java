@@ -180,7 +180,10 @@ public class GroupChat
 			{
 				for (GroupChatListener listener : listeners)
 				{
-					listener.receivedInvitation(chat.getParticipant());
+					final String from = chat.getParticipant();
+					final IndividualChatGUI gui = listener.receivedInvitation(from);
+					if (gui != null)
+						listener.startIndividualChat(from, new IndividualChat(user, chat));
 				}
 			}
 		});

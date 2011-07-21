@@ -7,16 +7,19 @@
  ******************************************************************************/
 package org.csstudio.utility.chat;
 
-/** Listener to the {@link GroupChatGUI}
+/** Chat preferences
  *  @author Kay Kasemir
  */
-public interface GroupChatGUIListener
-	extends IndividualChatGUIListener
+@SuppressWarnings("nls")
+public class Preferences
 {
-	/** Log in to chat was requested via GUI.
-	 * 
-	 *  <p>When done, call {@link GroupChatGUI#updateLogin(String)}
-	 *  @param user_name User name to use for log in
-	 */
-	public void doStartLogin(String user_name);
+	public static String getChatServer()
+    {
+	    return "localhost";
+    }
+
+    public static String getGroup()
+    {
+	    return "css@conference.localhost";
+    }
 }

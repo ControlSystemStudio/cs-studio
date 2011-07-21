@@ -24,7 +24,21 @@ public class ChatGUIDemo
 	    
 	    shell.setImage(new Image(display, "icons/group.png"));
 
-	    ViewPart view = new ViewPart();
+	    GroupChatView view = new GroupChatView()
+	    {
+			@Override
+            protected IndividualChatView createIndividualChatView()
+            {
+	    	    final Shell shell = new Shell(display);
+	    	    shell.setImage(new Image(display, "icons/person.png"));
+	    	    
+	    	    final IndividualChatView view = new IndividualChatView();
+	    	    view.createPartControl(shell);
+	    	    shell.setSize(400, 300);
+	    	    shell.setVisible(true);
+	            return view;
+            }
+	    };
 	    view.createPartControl(shell);
 	    view.setFocus();
         

@@ -22,4 +22,12 @@ public interface GroupChatListener extends IndividualChatListener
 	 *  @return {@link IndividualChatGUI} if interested, <code>null</code> to ignore
 	 */
 	public IndividualChatGUI receivedInvitation(String from);
+
+	/** If listener responds to invitation with GUI,
+	 *  it will then receive the handle to the
+	 *  individual chat
+	 *  @param from Person who invited us
+	 *  @param chat {@link IndividualChat} that we accepted
+	 */
+	public void startIndividualChat(final String from, IndividualChat chat);
 }
