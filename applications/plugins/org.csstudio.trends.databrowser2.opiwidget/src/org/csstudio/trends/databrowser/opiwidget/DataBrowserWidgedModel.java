@@ -8,16 +8,22 @@
 package org.csstudio.trends.databrowser.opiwidget;
 
 import java.io.InputStream;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import org.csstudio.apputil.macros.InfiniteLoopException;
 import org.csstudio.apputil.macros.MacroTable;
 import org.csstudio.apputil.macros.MacroUtil;
+import org.csstudio.opibuilder.model.AbstractContainerModel;
 import org.csstudio.opibuilder.model.AbstractWidgetModel;
 import org.csstudio.opibuilder.properties.BooleanProperty;
 import org.csstudio.opibuilder.properties.FilePathProperty;
 import org.csstudio.opibuilder.properties.WidgetPropertyCategory;
+import org.csstudio.opibuilder.util.MacrosInput;
 import org.csstudio.opibuilder.util.ResourceUtil;
 import org.csstudio.opibuilder.visualparts.BorderStyle;
 import org.csstudio.trends.databrowser2.model.Model;
@@ -32,7 +38,7 @@ import org.eclipse.core.runtime.Path;
  *
  *  @author Kay Kasemir
  */
-public class DataBrowserWidgedModel extends AbstractWidgetModel
+public class DataBrowserWidgedModel extends AbstractContainerModel
 {
     /** Widget ID registered in plugin.xml */
     final public static String ID = "org.csstudio.trends.databrowser.opiwidget"; //$NON-NLS-1$
@@ -50,6 +56,26 @@ public class DataBrowserWidgedModel extends AbstractWidgetModel
         setSize(400, 300);
     }
 
+    /** No child widgets in the original sense
+     *  of the {@link AbstractContainerModel}
+     *  {@inheritDoc}}
+     */
+	@Override
+	public List<AbstractWidgetModel> getChildren()
+	{
+		return new ArrayList<AbstractWidgetModel>(0);
+	}
+	
+    /** No editing of child widgets in the original sense
+     *  of the {@link AbstractContainerModel}
+     *  {@inheritDoc}}
+     */
+	@Override
+	public boolean isChildrenOperationAllowable()
+	{
+		return false;
+	}
+    
     /** {@inheritDoc}} */
     @Override
     public String getTypeID()
@@ -74,15 +100,25 @@ public class DataBrowserWidgedModel extends AbstractWidgetModel
         return (IPath) getPropertyValue(PROP_FILENAME);
     }
 
+    /** @return All macros of this widget, including optional parent settings */
+    private MacroTable getAllMacros()
+    {
+        final Map<String, String> macros = new HashMap<String, String>();
+        final MacrosInput macro_input = getMacrosInput();
+        if (macro_input.isInclude_parent_macros())
+        	macros.putAll(getParentMacroMap());
+        macros.putAll(macro_input.getMacrosMap());
+        return new MacroTable(macros);
+    }
+    
     /** @return Path to data browser configuration file, macros are expanded */
     public IPath getExpandedFilename()
     {
         IPath path = getPlainFilename();
 
-        final MacroTable macros = new MacroTable(getParent().getMacroMap());
         try
         {
-            final String new_path = MacroUtil.replaceMacros(path.toPortableString(), macros);
+            final String new_path = MacroUtil.replaceMacros(path.toPortableString(), getAllMacros());
             path = new Path(new_path);
         }
         catch (InfiniteLoopException e)
@@ -106,6 +142,7 @@ public class DataBrowserWidgedModel extends AbstractWidgetModel
     public Model createDataBrowserModel() throws CoreException, Exception
     {
         final Model model = new Model();
+        model.setMacros(getAllMacros());
         final InputStream input = ResourceUtil.pathToInputStream(getExpandedFilename());
         model.read(input);
         return model;

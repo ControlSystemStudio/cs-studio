@@ -1,5 +1,5 @@
 /*
- * Copyright 2010 Brookhaven National Laboratory
+ * Copyright 2010-11 Brookhaven National Laboratory
  * All rights reserved. Use is subject to license terms.
  */
 
@@ -13,11 +13,11 @@ package org.epics.pvmanager;
  *
  * @author carcassi
  */
-public interface PVValueChangeListener {
+public interface PVReaderListener {
 
     /**
      * Notified when the value of the PV has changed.
      */
-    void pvValueChanged();
+    void pvChanged();
 
 }

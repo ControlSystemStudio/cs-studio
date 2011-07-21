@@ -1,11 +1,11 @@
 /*
- * Copyright 2010 Brookhaven National Laboratory
+ * Copyright 2010-11 Brookhaven National Laboratory
  * All rights reserved. Use is subject to license terms.
  */
 
 package org.epics.pvmanager.types;
 
-import org.epics.pvmanager.NullUtils;
+import org.epics.pvmanager.util.NullUtils;
 import org.epics.pvmanager.TypeSupport;
 import java.util.ArrayList;
 import java.util.List;

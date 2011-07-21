@@ -76,6 +76,7 @@ public class PVNodeItem implements IAlarmInitItem {
 
     @Override
     public void notFound(@Nonnull final String pvName) {
+        // the pv was not connected, therefore the alarm state could not be determined, thus it is UNKNOWN.
         final Alarm alarm = new Alarm(pvName,
                                       EpicsAlarmSeverity.UNKNOWN,
                                       new Date(System.currentTimeMillis()));

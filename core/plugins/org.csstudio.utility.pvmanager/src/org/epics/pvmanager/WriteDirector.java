@@ -1,13 +1,16 @@
 /*
- * Copyright 2008-2011 Brookhaven National Laboratory
+ * Copyright 2010-11 Brookhaven National Laboratory
  * All rights reserved. Use is subject to license terms.
  */
 package org.epics.pvmanager;
 
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.Executor;
+import java.util.concurrent.ScheduledExecutorService;
+import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicReference;
 import java.util.logging.Logger;
+import org.epics.pvmanager.util.TimeDuration;
 
 /**
  * Orchestrates the different classes to perform writes.
@@ -21,15 +24,21 @@ class WriteDirector<T> {
     private final WriteFunction<T> writeFunction;
     private final WriteBuffer writeBuffer;
     private final DataSource dataSource;
-    private final Executor executor;
+    private final ScheduledExecutorService executor;
     private final ExceptionHandler exceptionHandler;
+    private final TimeDuration timeout;
+    private final String timeoutMessage;
 
-    public WriteDirector(WriteFunction<T> writeFunction, WriteBuffer writeBuffer, DataSource dataSource, Executor executor, ExceptionHandler exceptionHandler) {
+    public WriteDirector(WriteFunction<T> writeFunction, WriteBuffer writeBuffer, DataSource dataSource,
+            ScheduledExecutorService executor, ExceptionHandler exceptionHandler,
+            TimeDuration timeout, String timeoutMessage) {
         this.writeFunction = writeFunction;
         this.writeBuffer = writeBuffer;
         this.dataSource = dataSource;
         this.executor = executor;
         this.exceptionHandler = exceptionHandler;
+        this.timeout = timeout;
+        this.timeoutMessage = timeoutMessage;
     }
     
     void init() {
@@ -37,23 +46,51 @@ class WriteDirector<T> {
     }
     
     void write(final T newValue, final PVWriterImpl<T> pvWriter) {
-        executor.execute(new Runnable() {
-
-            @Override
-            public void run() {
-                synchronized(writeBuffer) {
-                    writeFunction.setValue(newValue);
-                    dataSource.write(writeBuffer, new Runnable() {
-
-                        @Override
-                        public void run() {
-                            pvWriter.firePvValueWritten();
-                        }
-                    }, exceptionHandler);
-                }
-            }
-        });
+        WriteTask newTask = new WriteTask(pvWriter, newValue);
+        executor.execute(newTask);
+        if (timeout != null) {
+            executor.schedule(newTask.timeout(), timeout.getNanoSec(), TimeUnit.NANOSECONDS);
+        }
     }
+    
+    private class WriteTask implements Runnable {
+        final PVWriterImpl<T> pvWriter;
+        final T newValue;
+        private volatile boolean done = false;
+
+        public WriteTask(PVWriterImpl<T> pvWriter, T newValue) {
+            this.pvWriter = pvWriter;
+            this.newValue = newValue;
+        }
+        
+        private Runnable timeout() {
+            return new Runnable() {
+
+                @Override
+                public void run() {
+                    if (!done) {
+                        exceptionHandler.handleException(new TimeoutException(timeoutMessage));
+                    }
+                }
+            };
+        }
+
+        @Override
+        public void run() {
+            synchronized(writeBuffer) {
+                writeFunction.setValue(newValue);
+                dataSource.write(writeBuffer, new Runnable() {
+
+                    @Override
+                    public void run() {
+                        done = true;
+                        pvWriter.firePvWritten();
+                    }
+                }, exceptionHandler);
+            }
+        }
+    
+    };
     
     void syncWrite(final T newValue, final PVWriterImpl<T> pvWriter) {
         log.finest("Sync write: creating latch");
@@ -71,7 +108,7 @@ class WriteDirector<T> {
                             @Override
                             public void run() {
                                 log.finest("Writing done, releasing latch");
-                                pvWriter.firePvValueWritten();
+                                pvWriter.firePvWritten();
                                 latch.countDown();
                             }
                         }, new ExceptionHandler() {
