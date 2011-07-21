@@ -1,5 +1,5 @@
 /*
- * Copyright 2008-2011 Brookhaven National Laboratory
+ * Copyright 2010-11 Brookhaven National Laboratory
  * All rights reserved. Use is subject to license terms.
  */
 package org.epics.pvmanager;
@@ -7,6 +7,7 @@ package org.epics.pvmanager;
 import java.util.List;
 import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.concurrent.atomic.AtomicBoolean;
+import java.util.concurrent.atomic.AtomicReference;
 
 /**
  * Implementation class for {@link PVWriter}.
@@ -14,19 +15,29 @@ import java.util.concurrent.atomic.AtomicBoolean;
  * @author carcassi
  */
 class PVWriterImpl<T> implements PVWriter<T> {
+    
+    static <T> PVWriterImpl<T> implOf(PVWriter<T> pvWriter) {
+        if (pvWriter instanceof PVWriterImpl) {
+            return (PVWriterImpl<T>) pvWriter;
+        }
+        
+        throw new IllegalArgumentException("PVWriter must be implemented using PVWriterImpl");
+    }
 
-    private List<PVValueWriteListener> valueWriteListeners = new CopyOnWriteArrayList<PVValueWriteListener>();
-    private volatile Exception lastWriteException;
+    private List<PVWriterListener> pvWriterListeners = new CopyOnWriteArrayList<PVWriterListener>();
+    private AtomicReference<Exception> lastWriteException = new AtomicReference<Exception>();
     private volatile  WriteDirector<T> writeDirector;
     private final boolean syncWrite;
+    private final boolean notifyFirstListener; 
 
-    PVWriterImpl(boolean syncWrite) {
+    PVWriterImpl(boolean syncWrite, boolean notifyFirstListener) {
         this.syncWrite = syncWrite;
+        this.notifyFirstListener = notifyFirstListener;
     }
     
-    void firePvValueWritten() {
-        for (PVValueWriteListener listener : valueWriteListeners) {
-            listener.pvValueWritten();
+    void firePvWritten() {
+        for (PVWriterListener listener : pvWriterListeners) {
+            listener.pvWritten();
         }
     }
 
@@ -41,10 +52,22 @@ class PVWriterImpl<T> implements PVWriter<T> {
      * @param listener a new listener
      */
     @Override
-    public void addPVValueWriteListener(PVValueWriteListener listener) {
+    public void addPVWriterListener(PVWriterListener listener) {
         if (isClosed())
             throw new IllegalStateException("Can't add listeners to a closed PV");
-        valueWriteListeners.add(listener);
+        
+        // Check whether to notify when the first listener is added.
+        // This is done to make sure that exceptions thrown at pv creation
+        // are not lost since the listener is added after the pv is created.
+        // If the notification is done on a separate thread, the context switch
+        // is enough to make sure the listener is registerred before the event
+        // arrives, but if the notification is done on the same thread
+        // the notification would be lost.
+        boolean notify = pvWriterListeners.isEmpty() && notifyFirstListener &&
+                lastWriteException.get() != null;
+        pvWriterListeners.add(listener);
+        if (notify)
+            listener.pvWritten();
     }
 
     /**
@@ -53,8 +76,8 @@ class PVWriterImpl<T> implements PVWriter<T> {
      * @param listener the old listener
      */
     @Override
-    public void removePVValueChangeListener(PVValueWriteListener listener) {
-        valueWriteListeners.remove(listener);
+    public void removePVWriterListener(PVWriterListener listener) {
+        pvWriterListeners.remove(listener);
     }
     
     
@@ -82,7 +105,7 @@ class PVWriterImpl<T> implements PVWriter<T> {
     public void close() {
         boolean wasClosed = closed.getAndSet(true);
         if (!wasClosed) {
-            valueWriteListeners.clear();
+            pvWriterListeners.clear();
             writeDirector.close();
         }
     }
@@ -103,7 +126,7 @@ class PVWriterImpl<T> implements PVWriter<T> {
      * @param ex the new exception
      */
     void setLastWriteException(Exception ex) {
-        lastWriteException = ex;
+        lastWriteException.set(ex);
     }
 
     /**
@@ -114,7 +137,7 @@ class PVWriterImpl<T> implements PVWriter<T> {
      */
     @Override
     public Exception lastWriteException() {
-        return lastWriteException;
+        return lastWriteException.getAndSet(null);
     }
     
 }

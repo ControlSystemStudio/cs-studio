@@ -1,5 +1,5 @@
 /*
- * Copyright 2008-2011 Brookhaven National Laboratory
+ * Copyright 2010-11 Brookhaven National Laboratory
  * All rights reserved. Use is subject to license terms.
  */
 package org.epics.pvmanager;
@@ -10,7 +10,9 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 /**
+ * Manages the connection for each channel of a data source.
  *
+ * @param <EType> type of the connection payload
  * @author carcassi
  */
 public abstract class ChannelHandler<EType> {
@@ -47,11 +49,23 @@ public abstract class ChannelHandler<EType> {
             }
         }
     }
-
+    
+    /**
+     * Creates a new channel handler.
+     * 
+     * @param channelName the name of the channel this handler will be responsible of
+     */
     public ChannelHandler(String channelName) {
+        if (channelName == null)
+            throw new NullPointerException("Channel name cannot be null");
         this.channelName = channelName;
     }
 
+    /**
+     * Returns the name of the channel.
+     * 
+     * @return the channel name; can't be null
+     */
     public String getChannelName() {
         return channelName;
     }
@@ -84,7 +98,15 @@ public abstract class ChannelHandler<EType> {
         return writeUsageCounter;
     }
 
-    public synchronized void addMonitor(Collector<?> collector, ValueCache<?> cache, final ExceptionHandler handler) {
+    /**
+     * Used by the data source to add a read request on the channel managed
+     * by this handler.
+     * 
+     * @param collector collector to be notified at each update
+     * @param cache cache to contain the new value
+     * @param handler to be notified in case of errors
+     */
+    protected synchronized void addMonitor(Collector<?> collector, ValueCache<?> cache, final ExceptionHandler handler) {
         readUsageCounter++;
         MonitorHandler monitor = new MonitorHandler(collector, cache, handler);
         monitors.put(collector, monitor);
@@ -94,7 +116,12 @@ public abstract class ChannelHandler<EType> {
         } 
     }
 
-    public synchronized void removeMonitor(Collector<?> collector) {
+    /**
+     * Used by the data source to remove a read request.
+     * 
+     * @param collector the collector that does not need to be notified anymore
+     */
+    protected synchronized void removeMonitor(Collector<?> collector) {
         monitors.remove(collector);
         readUsageCounter--;
         guardedDisconnect(new ExceptionHandler() {
@@ -106,17 +133,36 @@ public abstract class ChannelHandler<EType> {
         });
     }
 
-    public synchronized void addWriter(ExceptionHandler handler) {
+    /**
+     * Used by the data source to prepare the channel managed by this handler
+     * for write.
+     * 
+     * @param handler to be notified in case of errors
+     */
+    protected synchronized void addWriter(ExceptionHandler handler) {
         guardedConnect(handler);
         writeUsageCounter++;
     }
 
-    public synchronized void removeWrite(ExceptionHandler exceptionHandler) {
+    /**
+     * Used by the data source to conclude writes to the channel managed by this handler.
+     * 
+     * @param exceptionHandler to be notified in case of errors
+     */
+    protected synchronized void removeWrite(ExceptionHandler exceptionHandler) {
         writeUsageCounter--;
         guardedDisconnect(exceptionHandler);
     }
 
-    public final void processValue(EType payload) {
+    /**
+     * Process the payload for this channel. This should be called whenever
+     * a new value needs to be processed. The handler will take care of
+     * calling {@link #updateCache(java.lang.Object, org.epics.pvmanager.ValueCache) }
+     * for each read monitor that was setup.
+     * 
+     * @param payload the payload of for this type of channel
+     */
+    protected final void processValue(EType payload) {
         lastValue = payload;
         for (MonitorHandler monitor : monitors.values()) {
             monitor.processValue(payload);
@@ -135,13 +181,45 @@ public abstract class ChannelHandler<EType> {
         }
     }
 
-    public abstract void connect(final ExceptionHandler handler);
+    /**
+     * Used by the handler to open the connection. This is called whenever
+     * the first read or write request is made.
+     * 
+     * @param handler to be notified in case of errors
+     */
+    protected abstract void connect(final ExceptionHandler handler);
 
-    public abstract void disconnect(final ExceptionHandler handler);
+    /**
+     * Used by the handler to close the connection. This is called whenever
+     * the last reader or writer is de-registered.
+     * 
+     * @param handler to be notified in case of errors
+     */
+    protected abstract void disconnect(final ExceptionHandler handler);
 
-    public abstract void write(Object newValue, ChannelWriteCallback callback);
+    /**
+     * Implements a write operation. Write the newValues to the channel
+     * and call the callback when done.
+     * 
+     * @param newValue new value to be written
+     * @param callback called when done or on error
+     */
+    protected abstract void write(Object newValue, ChannelWriteCallback callback);
 
-    public abstract boolean updateCache(EType event, ValueCache<?> cache);
+    /**
+     * Used by the handler to forward values. Extracts the value form the
+     * payload and stores it in the cache.
+     * 
+     * @param event the payload
+     * @param cache the cache where to store the new value
+     * @return true if a new value was stored
+     */
+    protected abstract boolean updateCache(EType event, ValueCache<?> cache);
 
+    /**
+     * Returns true if it is connected.
+     * 
+     * @return true if underlying channel is connected
+     */
     public abstract boolean isConnected();
 }

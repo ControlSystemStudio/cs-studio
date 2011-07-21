@@ -337,7 +337,9 @@ public class ModuleDBO extends AbstractNodeDBO<SlaveDBO, ChannelStructureDBO> im
         }
         //            copy.setDocuments(getDocuments());
         copy.setConfigurationData(getConfigurationData());
-        copy.setExtModulePrmDataLen(getExtModulePrmDataLen());
+        String extModulePrmDataLen = getExtModulePrmDataLen();
+        extModulePrmDataLen = extModulePrmDataLen == null?"":extModulePrmDataLen;
+        copy.setExtModulePrmDataLen(extModulePrmDataLen);
         
         for (ChannelStructureDBO node : getChildrenAsMap().values()) {
             ChannelStructureDBO childrenCopy = node.copyThisTo(copy);
@@ -496,10 +498,15 @@ public class ModuleDBO extends AbstractNodeDBO<SlaveDBO, ChannelStructureDBO> im
      */
     private void createChannels(int selectedModuleNo,
                                 @Nonnull final ModuleDBO module,
-                                @Nonnull final GSDModuleDBO gsdModule, String createdBy) throws PersistenceException {
+                                @Nonnull final GSDModuleDBO gsdModule, @Nonnull String createdBy) throws PersistenceException {
         // TODO (hrickens) [05.05.2011]:Kann die Abfrage nicht vereinfacht werden.
-        module.setConfigurationData(gsdModule.getGSDFile().getParsedGsdFileModel()
-                .getModule(selectedModuleNo).getExtUserPrmDataConst());
+        GSDFileDBO gsdFile = gsdModule.getGSDFile();
+        if(gsdFile!=null) {
+            GsdModuleModel2 module2 = gsdFile.getParsedGsdFileModel().getModule(selectedModuleNo);
+            if(module2!=null) {
+                module.setConfigurationData(module2.getExtUserPrmDataConst());
+            }
+        }
         // Generate Input Channel
         TreeSet<ModuleChannelPrototypeDBO> moduleChannelPrototypes = gsdModule
                 .getModuleChannelPrototypeNH();
@@ -516,7 +523,7 @@ public class ModuleDBO extends AbstractNodeDBO<SlaveDBO, ChannelStructureDBO> im
     }
     
     private void makeNewChannel(@Nonnull final ModuleChannelPrototypeDBO channelPrototype,
-                                final int sortIndex, String createdBy) throws PersistenceException {
+                                final int sortIndex, @Nonnull String createdBy) throws PersistenceException {
         if(channelPrototype.isStructure()) {
             makeStructChannel(channelPrototype, sortIndex, createdBy);
         } else {
@@ -525,7 +532,7 @@ public class ModuleDBO extends AbstractNodeDBO<SlaveDBO, ChannelStructureDBO> im
     }
     
     private void makeStructChannel(@Nonnull final ModuleChannelPrototypeDBO channelPrototype,
-                                   final int sortIndex, String createdBy) throws PersistenceException {
+                                   final int sortIndex, @Nonnull String createdBy) throws PersistenceException {
         channelPrototype.getOffset();
         Date now = new Date();
         ChannelStructureDBO channelStructure = ChannelStructureDBO
@@ -544,7 +551,7 @@ public class ModuleDBO extends AbstractNodeDBO<SlaveDBO, ChannelStructureDBO> im
     }
     
     private void makeNewPureChannel(@Nonnull final ModuleChannelPrototypeDBO channelPrototype,
-                                    final int sortIndex, String createdBy) throws PersistenceException {
+                                    final int sortIndex, @Nonnull String createdBy) throws PersistenceException {
         Date now = new Date();
         boolean isDigi = channelPrototype.getType().getBitSize() == 1;
         ChannelStructureDBO cs = ChannelStructureDBO.makeSimpleChannel(this,
@@ -553,12 +560,24 @@ public class ModuleDBO extends AbstractNodeDBO<SlaveDBO, ChannelStructureDBO> im
                                                                        isDigi);
         cs.moveSortIndex((short) sortIndex);
         ChannelDBO channel = cs.getFirstChannel();
-        channel.setCreatedOn(now);
-        channel.setUpdatedOn(now);
-        channel.setCreatedBy(createdBy);
-        channel.setUpdatedBy(createdBy);
-        channel.setChannelTypeNonHibernate(channelPrototype.getType());
-        channel.setStatusAddressOffset(channelPrototype.getShift());
-        channel.moveSortIndex((short) sortIndex);
+        if (channel != null) {
+            channel.setCreatedOn(now);
+            channel.setUpdatedOn(now);
+            channel.setCreatedBy(createdBy);
+            channel.setUpdatedBy(createdBy);
+            channel.setChannelTypeNonHibernate(channelPrototype.getType());
+            channel.setStatusAddressOffset(channelPrototype.getShift());
+            channel.moveSortIndex((short) sortIndex);
+        }
+    }
+    
+    @Override
+    public boolean equals(@CheckForNull Object obj) {
+        return super.equals(obj);
+    }
+    
+    @Override
+    public int hashCode() {
+        return super.hashCode();
     }
 }

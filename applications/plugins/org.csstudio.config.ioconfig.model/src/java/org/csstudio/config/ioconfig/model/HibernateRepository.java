@@ -531,7 +531,8 @@ public class HibernateRepository implements IRepository {
                 return rootPath;
             }
         };
-        return _instance.doInDevDBHibernateLazy(hibernateCallback);
+        List<Integer> doInDevDBHibernateLazy = _instance.doInDevDBHibernateLazy(hibernateCallback);
+        return doInDevDBHibernateLazy==null?new ArrayList<Integer>():doInDevDBHibernateLazy;
     }
     
     @Override

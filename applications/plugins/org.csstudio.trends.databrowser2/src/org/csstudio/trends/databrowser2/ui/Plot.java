@@ -326,7 +326,7 @@ public class Plot
     {
         final Axis xaxis = xygraph.primaryXAxis;
         final Axis yaxis = getYAxis(item.getAxisIndex());
-        final Trace trace = new Trace(item.getDisplayName(),
+        final Trace trace = new Trace(item.getResolvedDisplayName(),
                xaxis, yaxis, item.getSamples());
         trace.setPointStyle(PointStyle.NONE);
         setTraceType(item, trace);

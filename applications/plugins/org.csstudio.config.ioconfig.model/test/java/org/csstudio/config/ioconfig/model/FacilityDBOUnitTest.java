@@ -9,7 +9,6 @@ import java.sql.Date;
 import java.util.HashSet;
 import java.util.Set;
 
-import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -98,10 +97,10 @@ public class FacilityDBOUnitTest {
     public void setUp() throws Exception {
         Repository.injectIRepository(new DummyRepository());
     }
-    @After
-    public void setDown() {
-        Repository.injectIRepository(null);
-    }
+//    @After
+//    public void setDown() {
+//        Repository.injectIRepository(null);
+//    }
 
 }
 //CHECKSTYLE:ON

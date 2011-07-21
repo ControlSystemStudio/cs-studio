@@ -144,7 +144,7 @@ public class InitialStateRetriever {
 
         @Override
         public void notFound(@Nonnull final String pvName) {
-            // TODO (jpenning) NYI notFound
+            // if the pv was not found the alarm table will not be notified
         }
     }
 

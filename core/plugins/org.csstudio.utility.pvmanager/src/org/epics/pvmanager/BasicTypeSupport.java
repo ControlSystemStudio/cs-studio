@@ -1,5 +1,5 @@
 /*
- * Copyright 2008-2010 Brookhaven National Laboratory
+ * Copyright 2010-11 Brookhaven National Laboratory
  * All rights reserved. Use is subject to license terms.
  */
 
@@ -32,6 +32,10 @@ public class BasicTypeSupport {
 
         // Add support for lists
         addList();
+        
+        // Add support for numbers and strings
+        TypeSupport.addTypeSupport(NotificationSupport.immutableTypeSupport(Number.class));
+        TypeSupport.addTypeSupport(NotificationSupport.immutableTypeSupport(String.class));
 
         installed = true;
     }

@@ -6,12 +6,18 @@ import static org.junit.Assert.assertTrue;
 
 import org.junit.Test;
 
-//CHECKSTYLE:OFF
+/**
+ * 
+ * @author hrickens
+ * @author $Author: hrickens $
+ * @version $Revision: 1.7 $
+ * @since 20.07.2011
+ */
 public class ExtUserPrmDataUnitTest {
 
     @Test
     public void text() {
-        ExtUserPrmData out = new ExtUserPrmData(null, null, "desc");
+        ExtUserPrmData out = new ExtUserPrmData(new ParsedGsdFileModel("JUnitTest"), 1, "desc");
         assertEquals(out.getText(), "desc");
         out.setText("");
         assertEquals(out.getText(), "");
@@ -22,7 +28,7 @@ public class ExtUserPrmDataUnitTest {
 
     @Test
     public void defaults() {
-        ExtUserPrmData out = new ExtUserPrmData(null, null, null);
+        ExtUserPrmData out = new ExtUserPrmData(new ParsedGsdFileModel("JUnitTest"), 1, "");
         assertTrue(out.getDefault()==0);
         out.setDefault("0");
         assertTrue(out.getDefault()==0);
@@ -43,7 +49,7 @@ public class ExtUserPrmDataUnitTest {
 
     @Test
     public void minBit() {
-        ExtUserPrmData out = new ExtUserPrmData(null, null, null);
+        ExtUserPrmData out = new ExtUserPrmData(new ParsedGsdFileModel("JUnitTest"), 1, "");
         assertTrue(out.getMinBit()==0);
         assertTrue(out.getMinBit()==0);
         out.setMinBit("0");
@@ -64,7 +70,7 @@ public class ExtUserPrmDataUnitTest {
 
     @Test
     public void maxBit() {
-        ExtUserPrmData out = new ExtUserPrmData(null, null, null);
+        ExtUserPrmData out = new ExtUserPrmData(new ParsedGsdFileModel("JUnitTest"), 1, "");
         assertTrue(out.getMaxBit()==0);
         out.setMaxBit("0");
         assertTrue(out.getMaxBit()==0);
@@ -85,7 +91,7 @@ public class ExtUserPrmDataUnitTest {
 
     @Test
     public void maxValue() {
-        ExtUserPrmData out = new ExtUserPrmData(null, null, null);
+        ExtUserPrmData out = new ExtUserPrmData(new ParsedGsdFileModel("JUnitTest"), 1, "");
 
         out.setValueRange("-100", "0");
         assertEquals(-100, out.getMinValue());
@@ -106,4 +112,3 @@ public class ExtUserPrmDataUnitTest {
     }
 
 }
-//CHECKSTYLE:ON

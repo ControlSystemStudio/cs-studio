@@ -720,7 +720,7 @@ public class ModuleEditor extends AbstractGsdNodeEditor<ModuleDBO> {
                 getProfiBusTreeView().getTreeViewer().setInput(getModule());
             } else if(obj instanceof SlaveDBO) {
                 SlaveDBO nodeParent = (SlaveDBO) obj;
-                getModule().moveSortIndex(nodeParent.getfirstFreeStationAddress(AbstractNodeDBO.MAX_STATION_ADDRESS));
+                getModule().moveSortIndex(nodeParent.getfirstFreeStationAddress(AbstractNodeDBO.getMaxStationAddress()));
                 nodeParent.addChild(getModule());
             }
         } catch (PersistenceException e) {

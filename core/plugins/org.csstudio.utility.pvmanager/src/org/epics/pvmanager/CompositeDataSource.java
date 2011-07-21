@@ -1,5 +1,5 @@
 /*
- * Copyright 2010 Brookhaven National Laboratory
+ * Copyright 2010-11 Brookhaven National Laboratory
  * All rights reserved. Use is subject to license terms.
  */
 
@@ -28,6 +28,9 @@ public class CompositeDataSource extends DataSource {
     private volatile String delimiter = "://";
     private volatile String defaultDataSource;
 
+    /**
+     * Creates a new CompositeDataSource.
+     */
     public CompositeDataSource() {
         super(true);
     }
@@ -175,7 +178,8 @@ public class CompositeDataSource extends DataSource {
     public void disconnect(DataRecipe recipe) {
         Map<String, DataRecipe> splitRecipe = splitRecipes.get(recipe);
         if (splitRecipe == null) {
-            throw new IllegalStateException("Asked to close DataRecipe " + recipe + " but was either already closed or never opened");
+            log.log(Level.WARNING, "DataRecipe {0} was disconnected but was never connected. Ignoring it.", recipe);
+            return;
         }
 
         // Dispatch calls to all the data sources
@@ -223,7 +227,8 @@ public class CompositeDataSource extends DataSource {
     public void concludeWrite(WriteBuffer writeBuffer, ExceptionHandler exceptionHandler) {
         Map<String, WriteBuffer> splitBuffer = writeBuffers.remove(writeBuffer);
         if (splitBuffer == null) {
-            throw new IllegalStateException("Asked to close WriteBuffer " + writeBuffer + " but was either already closed or never opened");
+            log.log(Level.WARNING, "WriteBuffer {0} was unregistered but was never registered. Ignoring it.", writeBuffer);
+            return;
         }
         
         for (Map.Entry<String, WriteBuffer> en : splitBuffer.entrySet()) {

@@ -10,7 +10,6 @@ package org.csstudio.opibuilder.runmode;
 import java.util.logging.Level;
 
 import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpUtils;
 
 import org.csstudio.opibuilder.OPIBuilderPlugin;
 import org.csstudio.opibuilder.runmode.OPIRunnerPerspective.Position;
@@ -115,9 +114,11 @@ public class RunModeService {
 				switch (target) {
 				case NEW_WINDOW:
 					HttpServletRequest request = RWT.getRequest();
-			    	StringBuffer sb = HttpUtils.getRequestURL(request);
-			    	sb.append("?opi=" + path.toString());
-			    	ExternalBrowser.open("_blank", sb.toString(), SWT.None);
+			    	String url = request.getRequestURL().toString();
+			    	//to allow multilple browser instances, session id is not allowed
+			    	if(url.contains(";jsessionid")) //$NON-NLS-1$
+			    		url = url.substring(0, url.indexOf(";jsessionid"));//$NON-NLS-1$			    	
+			    	ExternalBrowser.open("_blank", url+"?opi=" + path.toString(), SWT.None);
 			    	
 //					targetWindow = createNewWindow(windowBounds);
 					break;

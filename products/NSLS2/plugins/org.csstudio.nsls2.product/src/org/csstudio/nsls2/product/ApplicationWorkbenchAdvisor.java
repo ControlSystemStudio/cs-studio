@@ -1,6 +1,8 @@
 package org.csstudio.nsls2.product;
 
+import org.csstudio.startup.application.OpenDocumentEventProcessor;
 import org.eclipse.jface.resource.ImageDescriptor;
+import org.eclipse.swt.widgets.Display;
 import org.eclipse.ui.application.IWorkbenchConfigurer;
 import org.eclipse.ui.application.IWorkbenchWindowConfigurer;
 import org.eclipse.ui.application.WorkbenchAdvisor;
@@ -12,7 +14,14 @@ public class ApplicationWorkbenchAdvisor extends WorkbenchAdvisor {
 
 	// private static final String PERSPECTIVE_ID =
 	// "org.csstudio.nsls2.product.perspective";
+	private OpenDocumentEventProcessor openDocProcessor;
 
+    public ApplicationWorkbenchAdvisor(
+			OpenDocumentEventProcessor openDocProcessor) {
+    	this.openDocProcessor = openDocProcessor;
+    }
+
+    @Override
 	public WorkbenchWindowAdvisor createWorkbenchWindowAdvisor(
 			IWorkbenchWindowConfigurer configurer) {
 		return new ApplicationWorkbenchWindowAdvisor(configurer);
@@ -30,6 +39,14 @@ public class ApplicationWorkbenchAdvisor extends WorkbenchAdvisor {
 		return CSSPerspective.ID;
 	}
 
+
+    @Override
+    public void eventLoopIdle(final Display display)
+    {
+    	if(openDocProcessor != null)
+    		openDocProcessor.catchUp(display);
+    	super.eventLoopIdle(display);
+    }
 	/**
 	 * 
 	 * register the icons that are registered by the IDE application

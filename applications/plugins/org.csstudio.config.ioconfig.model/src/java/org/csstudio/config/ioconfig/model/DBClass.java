@@ -67,10 +67,6 @@ public class DBClass {
     private boolean _dirty;
     
     
-    /**
-     *
-     * @return the Node key ID.
-     */
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "SEQ_G_DDB")
     @SequenceGenerator(name = "SEQ_G_DDB", sequenceName = "SEQ_DDB")
@@ -78,19 +74,10 @@ public class DBClass {
         return _id;
     }
     
-    /**
-     *
-     * @param id
-     *            set the Node key ID.
-     */
     public void setId(final int id) {
         this._id = id;
     }
     
-    /**
-     *
-     * @return the Name of the creator of this Node.
-     */
     @Nonnull
     public String getCreatedBy() {
         return _createdBy;

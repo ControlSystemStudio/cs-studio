@@ -70,6 +70,7 @@ public class AbstractNodeDBOUnitTest {
         Repository.update(facility);
 
         final FacilityDBO load = Repository.load(FacilityDBO.class, facility.getId());
+        assertNotNull(load);
         assertTrue(load.getDocuments().contains(first));
 
     }
@@ -81,6 +82,7 @@ public class AbstractNodeDBOUnitTest {
 //        Collection<Facility> result = Repository.load(Facility.class);
 
         final FacilityDBO load = Repository.load(FacilityDBO.class, 8061);
+        assertNotNull(load);
         final IocDBO ioc = new IocDBO(load);
         ioc.setName("unitest-"+System.currentTimeMillis());
         load.save();

@@ -26,8 +26,6 @@ package org.csstudio.config.ioconfig.model.pbmodel.gsdParser;
 import java.io.BufferedReader;
 import java.io.FileReader;
 import java.io.IOException;
-import java.io.StringReader;
-import java.io.StringWriter;
 
 import org.csstudio.config.ioconfig.model.FacilityDBO;
 import org.csstudio.config.ioconfig.model.IocDBO;
@@ -36,7 +34,6 @@ import org.csstudio.config.ioconfig.model.pbmodel.MasterDBO;
 import org.csstudio.config.ioconfig.model.pbmodel.ModuleDBO;
 import org.csstudio.config.ioconfig.model.pbmodel.ProfibusSubnetDBO;
 import org.csstudio.config.ioconfig.model.pbmodel.SlaveDBO;
-import org.csstudio.config.ioconfig.model.xml.ProfibusConfigXMLGenerator;
 import org.junit.After;
 import org.junit.Assert;
 import org.junit.Before;
@@ -148,13 +145,7 @@ public class KS2ConfigUnitTest {
         buildSlave38(ks2Master);
         buildSlave39(ks2Master);
 
-        final StringWriter sw = new StringWriter();
-        final ProfibusConfigXMLGenerator generator = new ProfibusConfigXMLGenerator();
-        generator.setSubnet(ks2Subnet);
-
-        generator.getXmlFile(sw);
-
-        _out = new BufferedReader(new StringReader(sw.toString()));
+        _out = GetProfibusXmlAsBufferReader.getProfibusXmlAsBufferReader(ks2Subnet);
 
         _lineNo = 1;
         _eLine = _expected.readLine();

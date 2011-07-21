@@ -1,5 +1,5 @@
 /*
- * Copyright 2008-2011 Brookhaven National Laboratory
+ * Copyright 2010-11 Brookhaven National Laboratory
  * All rights reserved. Use is subject to license terms.
  */
 package org.epics.pvmanager;
@@ -9,10 +9,10 @@ package org.epics.pvmanager;
  *
  * @author carcassi
  */
-public interface PVValueWriteListener {
+public interface PVWriterListener {
     
     /**
      * Notified when the value was written.
      */
-    public void pvValueWritten();
+    public void pvWritten();
 }
