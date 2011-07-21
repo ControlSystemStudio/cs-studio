@@ -51,6 +51,11 @@ import org.epics.pvmanager.TypeSupport;
 public abstract class ArchiveEngineTypeSupport<V> extends AbstractTypeSupport<V> {
     // CHECKSTYLE ON : AbstractClassName
 
+    private static final String[] SCALAR_TYPE_PACKAGES =
+        new String[]{"java.lang", "org.csstudio.domain.desy.epics.types"};
+
+    private static boolean INSTALLED;
+
     /**
      * Constructor.
      * @param type
@@ -59,14 +64,6 @@ public abstract class ArchiveEngineTypeSupport<V> extends AbstractTypeSupport<V>
     public ArchiveEngineTypeSupport(@Nonnull final Class<V> type) {
         super(type, ArchiveEngineTypeSupport.class);
     }
-
-
-    private static final String[] SCALAR_TYPE_PACKAGES =
-        new String[]{"java.lang",
-                     "org.csstudio.domain.desy.epics.types"};
-//    private static final String[] MULTI_SCALAR_TYPE_PACKAGES =
-//        new String[]{"java.util",
-//                     "org.csstudio.domain.desy.epics.types"};
 
     /**
      * Concrete implementation for this kind of type support.
@@ -122,7 +119,6 @@ public abstract class ArchiveEngineTypeSupport<V> extends AbstractTypeSupport<V>
 
     }
 
-    private static boolean INSTALLED = false;
 
     public static void install() {
         if (INSTALLED) {
@@ -172,10 +168,9 @@ public abstract class ArchiveEngineTypeSupport<V> extends AbstractTypeSupport<V>
 
         if (scalar) {
             return support.createArchiveChannel(cfg);
-        } else { // TODO (bknerr) : can it be supported throughout the service impl?
-         // take care, V is here Collection<V>, the correct cast has to be performed by the invoker
-            return (ArchiveChannel) support.createMultiScalarArchiveChannel(cfg);
         }
+        // take care, V is here Collection<V>, the correct cast has to be performed by the invoker
+        return (ArchiveChannel) support.createMultiScalarArchiveChannel(cfg);
 
     }
 

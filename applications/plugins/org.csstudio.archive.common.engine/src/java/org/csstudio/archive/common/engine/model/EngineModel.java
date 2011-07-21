@@ -85,7 +85,7 @@ public final class EngineModel {
     private volatile State _state = State.IDLE;
 
     /** Start time of the model */
-    private TimeInstant _startTime = null;
+    private TimeInstant _startTime;
 
     private final long _writePeriodInMS;
     private final long _heartBeatPeriodInMS;
