@@ -38,6 +38,8 @@ import org.slf4j.LoggerFactory;
  */
 public final class ArchiveNotifications {
 
+    private static final Logger LOG =
+        LoggerFactory.getLogger(ArchiveNotifications.class);
     /**
      * Constructor.
      */
@@ -45,8 +47,6 @@ public final class ArchiveNotifications {
         // Don't instantiate
     }
 
-    private static final Logger LOG =
-            LoggerFactory.getLogger(ArchiveNotifications.class);
 
     public static void notify(@Nonnull final String smtpHost,
                               @Nonnull final String emailAddress,

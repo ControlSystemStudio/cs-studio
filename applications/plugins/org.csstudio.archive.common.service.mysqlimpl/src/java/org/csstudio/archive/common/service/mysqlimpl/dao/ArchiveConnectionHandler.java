@@ -48,11 +48,11 @@ import com.mysql.jdbc.jdbc2.optional.MysqlDataSource;
  */
 public class ArchiveConnectionHandler {
 
-    private static final String ARCHIVE_CONNECTION_EXCEPTION_MSG =
-        "Archive connection could not be established";
-
     static final Logger LOG = LoggerFactory.getLogger(ArchiveConnectionHandler.class);
     static final Logger WORKER_LOG = LoggerFactory.getLogger(PersistDataWorker.class);
+
+    private static final String ARCHIVE_CONNECTION_EXCEPTION_MSG =
+        "Archive connection could not be established";
 
 
     /**

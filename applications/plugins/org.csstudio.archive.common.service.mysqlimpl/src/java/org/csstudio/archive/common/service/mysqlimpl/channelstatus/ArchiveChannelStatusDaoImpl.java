@@ -49,9 +49,9 @@ import com.google.inject.Inject;
  */
 public class ArchiveChannelStatusDaoImpl extends AbstractArchiveDao implements IArchiveChannelStatusDao {
 
-    private static final String EXC_MSG = "Retrieval of channel status from archive failed.";
-
     public static final String TAB = "channel_status";
+
+    private static final String EXC_MSG = "Retrieval of channel status from archive failed.";
 
     private final String _selectLatestChannelStatusStmt =
         "SELECT id, channel_id, connected, info, timestamp FROM " +

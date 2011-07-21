@@ -32,14 +32,13 @@ import javax.annotation.Nonnull;
 
 import org.csstudio.archive.common.service.mysqlimpl.dao.AbstractBatchQueueHandler;
 import org.csstudio.archive.common.service.mysqlimpl.dao.ArchiveDaoException;
-import org.csstudio.archive.common.service.mysqlimpl.sample.ArchiveSampleDaoImpl.AbstractReducedDataSample;
 
 import com.google.common.base.Function;
 import com.google.common.base.Joiner;
 import com.google.common.collect.Collections2;
 
 /**
- * TODO (bknerr) :
+ * Batch queue handler for reduced data samples.
  *
  * @author bknerr
  * @since 20.07.2011

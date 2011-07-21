@@ -21,12 +21,57 @@
  */
 package org.csstudio.archive.common.service.mysqlimpl.sample;
 
+import javax.annotation.Nonnull;
+
+import org.csstudio.archive.common.service.channel.ArchiveChannelId;
+import org.csstudio.domain.desy.time.TimeInstant;
+
 /**
- * TODO (bknerr) : 
- * 
+ * Reduced data archive sample (not a real sample, but a derived value).
+ *
  * @author bknerr
- * @since 20.07.2011
+ * @since 21.07.2011
  */
-public class ArchiveReducedDataSample {
-    
+abstract class AbstractReducedDataSample {
+
+    private final ArchiveChannelId _channelId;
+    private final TimeInstant _timestamp;
+    private final Double _avg;
+    private final Double _min;
+    private final Double _max;
+
+    /**
+     * Constructor.
+     */
+    protected AbstractReducedDataSample(@Nonnull final ArchiveChannelId id,
+                                        @Nonnull final TimeInstant timestamp,
+                                        @Nonnull final Double avg,
+                                        @Nonnull final Double min,
+                                        @Nonnull final Double max) {
+        _channelId = id;
+        _timestamp = timestamp;
+        _avg = avg;
+        _min = min;
+        _max = max;
+    }
+    @Nonnull
+    protected ArchiveChannelId getChannelId() {
+        return _channelId;
+    }
+    @Nonnull
+    public TimeInstant getTimestamp() {
+        return _timestamp;
+    }
+    @Nonnull
+    public Double getAvg() {
+        return _avg;
+    }
+    @Nonnull
+    public Double getMin() {
+        return _min;
+    }
+    @Nonnull
+    public Double getMax() {
+        return _max;
+    }
 }

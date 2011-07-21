@@ -53,9 +53,9 @@ import com.google.inject.Inject;
  */
 public class ArchiveEngineStatusDaoImpl extends AbstractArchiveDao implements IArchiveEngineStatusDao {
 
-    private static final String EXC_MSG = "Retrieval of engine status from archive failed.";
-
     static final String TAB = "engine_status";
+
+    private static final String EXC_MSG = "Retrieval of engine status from archive failed.";
 
     private final String _selectLatestEngineStatusInfoStmt =
         "SELECT id, engine_id, status, time, info FROM " + getDatabaseName() + "." + TAB +

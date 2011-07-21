@@ -58,8 +58,6 @@ import org.csstudio.domain.desy.typesupport.TypeSupportException;
 import org.joda.time.Duration;
 import org.joda.time.Hours;
 import org.joda.time.Minutes;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
@@ -73,52 +71,12 @@ import com.google.inject.Inject;
  */
 public class ArchiveSampleDaoImpl extends AbstractArchiveDao implements IArchiveSampleDao {
 
-    private static final Logger LOG =
-        LoggerFactory.getLogger(ArchiveSampleDaoImpl.class);
-
-    abstract class AbstractReducedDataSample {
-
-        private final ArchiveChannelId _channelId;
-        private final TimeInstant _timestamp;
-        private final Double _avg;
-        private final Double _min;
-        private final Double _max;
-
-        /**
-         * Constructor.
-         */
-        protected AbstractReducedDataSample(@Nonnull final ArchiveChannelId id,
-                                            @Nonnull final TimeInstant timestamp,
-                                            @Nonnull final Double avg,
-                                            @Nonnull final Double min,
-                                            @Nonnull final Double max) {
-            _channelId = id;
-            _timestamp = timestamp;
-            _avg = avg;
-            _min = min;
-            _max = max;
-        }
-        @Nonnull
-        protected ArchiveChannelId getChannelId() {
-            return _channelId;
-        }
-        @Nonnull
-        public TimeInstant getTimestamp() {
-            return _timestamp;
-        }
-        @Nonnull
-        public Double getAvg() {
-            return _avg;
-        }
-        @Nonnull
-        public Double getMin() {
-            return _min;
-        }
-        @Nonnull
-        public Double getMax() {
-            return _max;
-        }
-    }
+    /**
+     * Minute type sample.
+     *
+     * @author bknerr
+     * @since 21.07.2011
+     */
     class MinuteReducedDataSample extends AbstractReducedDataSample {
         /**
          * Constructor.
@@ -131,6 +89,12 @@ public class ArchiveSampleDaoImpl extends AbstractArchiveDao implements IArchive
             super(id, timestamp, avg, min, max);
         }
     }
+    /**
+     * Hour type sample.
+     *
+     * @author bknerr
+     * @since 21.07.2011
+     */
     class HourReducedDataSample extends AbstractReducedDataSample {
         /**
          * Constructor.
@@ -148,9 +112,10 @@ public class ArchiveSampleDaoImpl extends AbstractArchiveDao implements IArchive
 
     private static final String RETRIEVAL_FAILED = "Sample retrieval from archive failed.";
 
+    private static final String SELECT_RAW_PREFIX = "SELECT sample_time, nanosecs, value ";
+
     private final String _dbName = getDatabaseName();
 
-    private static final String SELECT_RAW_PREFIX = "SELECT sample_time, nanosecs, value ";
     private final String _selectSamplesStmt =
         SELECT_RAW_PREFIX +
         "FROM " + _dbName + "." + ARCH_TABLE_PLACEHOLDER + " WHERE channel_id=? " +
@@ -163,6 +128,7 @@ public class ArchiveSampleDaoImpl extends AbstractArchiveDao implements IArchive
         SELECT_RAW_PREFIX +
         "FROM " + _dbName + ".sample WHERE channel_id=? " +
         "AND sample_time<? ORDER BY sample_time DESC LIMIT 1";
+
 
     private final Map<ArchiveChannelId, SampleMinMaxAggregator> _reducedDataMapForMinutes =
         Maps.newConcurrentMap();

@@ -24,7 +24,6 @@ package org.csstudio.archive.common.service.mysqlimpl.persistengine;
 import java.io.File;
 import java.util.Collection;
 import java.util.Comparator;
-import java.util.Iterator;
 import java.util.Map;
 import java.util.SortedSet;
 import java.util.concurrent.BlockingQueue;
@@ -36,9 +35,9 @@ import java.util.concurrent.atomic.AtomicInteger;
 import javax.annotation.Nonnull;
 
 import org.csstudio.archive.common.service.mysqlimpl.MySQLArchivePreferenceService;
+import org.csstudio.archive.common.service.mysqlimpl.dao.AbstractBatchQueueHandler;
 import org.csstudio.archive.common.service.mysqlimpl.dao.ArchiveConnectionHandler;
 import org.csstudio.archive.common.service.mysqlimpl.dao.ArchiveDaoException;
-import org.csstudio.archive.common.service.mysqlimpl.dao.AbstractBatchQueueHandler;
 import org.csstudio.archive.common.service.mysqlimpl.notification.ArchiveNotifications;
 import org.csstudio.archive.common.service.util.DataRescueException;
 import org.csstudio.archive.common.service.util.DataRescueResult;
@@ -88,8 +87,7 @@ public class PersistEngineDataManager {
                         });
     private final AtomicInteger _workerId = new AtomicInteger(0);
 
-    private Integer _prefPeriodInMS;
-    private final Integer _prefMaxAllowedPacketInBytes;
+    private final Integer _prefPeriodInMS;
     private final File _prefRescueDir;
     private final String _prefSmtpHost;
     private final String _prefEmailAddress;
@@ -105,7 +103,6 @@ public class PersistEngineDataManager {
     public PersistEngineDataManager(@Nonnull final ArchiveConnectionHandler connectionHandler,
                                     @Nonnull final MySQLArchivePreferenceService prefs) {
         _connectionHandler = connectionHandler;
-        _prefMaxAllowedPacketInBytes = prefs.getMaxAllowedPacketSizeInKB()*1024;
         _prefPeriodInMS = prefs.getPeriodInMS();
         _prefRescueDir = prefs.getDataRescueDir();
         _prefSmtpHost = prefs.getSmtpHost();
@@ -180,27 +177,27 @@ public class PersistEngineDataManager {
 //    private boolean doesSqlQueueLengthExceedMaxAllowedPacketSize() {
 //        return _sqlStatementBatch.sizeInBytes() > _prefMaxAllowedPacketInBytes;
 //    }
-
-    private boolean poolSizeExhausted() {
-        return _executor.getPoolSize() >= _executor.getCorePoolSize();
-    }
-
-    private boolean isPeriodAlreadySetToMinimum(final long period) {
-        return Long.valueOf(period).intValue() <= 2000;
-    }
-
-    private void handlePoolExhaustionWithMinimumPeriodCornerCase() {
-        // FIXME (bknerr) : handle pool and thread frequency exhaustion
-        // notify staff, rescue data to disc with dedicated worker
-    }
-
-    private void lowerPeriodAndRemoveOldestWorker(@Nonnull final Iterator<PersistDataWorker> it,
-                                                  @Nonnull final PersistDataWorker oldestWorker) {
-        _prefPeriodInMS = Math.max(_prefPeriodInMS>>1, 2000);
-        LOG.info("Remove Worker: " + oldestWorker.getName());
-        _executor.remove(oldestWorker);
-        it.remove();
-    }
+//
+//    private boolean poolSizeExhausted() {
+//        return _executor.getPoolSize() >= _executor.getCorePoolSize();
+//    }
+//
+//    private boolean isPeriodAlreadySetToMinimum(final long period) {
+//        return Long.valueOf(period).intValue() <= 2000;
+//    }
+//
+//    private void handlePoolExhaustionWithMinimumPeriodCornerCase() {
+//        // FIXME (bknerr) : handle pool and thread frequency exhaustion
+//        // notify staff, rescue data to disc with dedicated worker
+//    }
+//
+//    private void lowerPeriodAndRemoveOldestWorker(@Nonnull final Iterator<PersistDataWorker> it,
+//                                                  @Nonnull final PersistDataWorker oldestWorker) {
+//        _prefPeriodInMS = Math.max(_prefPeriodInMS>>1, 2000);
+//        LOG.info("Remove Worker: " + oldestWorker.getName());
+//        _executor.remove(oldestWorker);
+//        it.remove();
+//    }
 
     public void rescueDataToFileSystem(@Nonnull final Iterable<String> statements) {
         rescueDataToFileSystem(_prefSmtpHost, _prefEmailAddress, _prefRescueDir, statements);

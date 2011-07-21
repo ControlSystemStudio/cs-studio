@@ -72,17 +72,20 @@ import com.google.inject.Inject;
  */
 public class ArchiveChannelDaoImpl extends AbstractArchiveDao implements IArchiveChannelDao {
 
+    public static final String TAB = "channel";
+
     private static final String EXC_MSG = "Channel table access failed.";
 
     private static final Timestamp DEFAULT_ZERO_TIMESTAMP = new Timestamp(0L);
+
+    private static final String CS_TAB = ArchiveControlSystemDaoImpl.TAB;
+
     /**
      * Archive channel configuration cache.
      */
     private final Map<String, IArchiveChannel> _channelCacheByName = Maps.newHashMap();
     private final Map<ArchiveChannelId, IArchiveChannel> _channelCacheById = Maps.newHashMap();
 
-    public static final String TAB = "channel";
-    private static final String CS_TAB = ArchiveControlSystemDaoImpl.TAB;
 
     private final String _selectChannelPrefix =
         "SELECT " + TAB + ".id, " + TAB + ".name, " + TAB + ".datatype, " + TAB + ".group_id, " + TAB + ".last_sample_time, " +
