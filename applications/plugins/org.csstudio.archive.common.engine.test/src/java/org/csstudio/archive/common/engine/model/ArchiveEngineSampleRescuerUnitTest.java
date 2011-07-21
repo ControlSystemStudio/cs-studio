@@ -48,79 +48,80 @@ import org.junit.Test;
 import org.junit.rules.TemporaryFolder;
 
 /**
- * Test for {@link ArchiveEngineSampleRescuer}. 
- * 
+ * Test for {@link ArchiveEngineSampleRescuer}.
+ *
  * @author bknerr
  * @since Mar 28, 2011
  */
 public class ArchiveEngineSampleRescuerUnitTest {
-    
+
     private static File RESCUE_DIR;
-    
+
     private static List<IArchiveSample<Object, ISystemVariable<Object>>> SAMPLES;
-    
+
     @Rule
     public TemporaryFolder _folder = new TemporaryFolder();
-    
+
     @SuppressWarnings({ "unchecked", "rawtypes" })
     @Before
-    public void setup() throws IOException {  
+    public void setup() {
         RESCUE_DIR = _folder.newFolder("test");
-        
-        IArchiveSample<Double, ISystemVariable<Double>> sample1 = 
-            new ArchiveSample<Double, ISystemVariable<Double>>(new ArchiveChannelId(1), 
-                                                               new EpicsSystemVariable("foo", 
-                                                                                       Double.valueOf(2.0), 
-                                                                                       ControlSystem.EPICS_DEFAULT, 
+
+        final IArchiveSample<Double, ISystemVariable<Double>> sample1 =
+            new ArchiveSample<Double, ISystemVariable<Double>>(new ArchiveChannelId(1),
+                                                               new EpicsSystemVariable("foo",
+                                                                                       Double.valueOf(2.0),
+                                                                                       ControlSystem.EPICS_DEFAULT,
                                                                                        TimeInstantBuilder.fromNow(),
-                                                                                       null), 
+                                                                                       null),
                                                                null);
-        IArchiveSample<Integer, ISystemVariable<Integer>> sample2 = 
-            new ArchiveSample<Integer, ISystemVariable<Integer>>(new ArchiveChannelId(3), 
-                    new EpicsSystemVariable("bar", 
-                                            Integer.valueOf(26), 
-                                            ControlSystem.EPICS_DEFAULT, 
+        final IArchiveSample<Integer, ISystemVariable<Integer>> sample2 =
+            new ArchiveSample<Integer, ISystemVariable<Integer>>(new ArchiveChannelId(3),
+                    new EpicsSystemVariable("bar",
+                                            Integer.valueOf(26),
+                                            ControlSystem.EPICS_DEFAULT,
                                             TimeInstantBuilder.fromNow(),
-                                            null), 
+                                            null),
                                             null);
-        IArchiveSample<EpicsEnum, ISystemVariable<EpicsEnum>> sample3 = 
-            new ArchiveSample<EpicsEnum, ISystemVariable<EpicsEnum>>(new ArchiveChannelId(3), 
-                    new EpicsSystemVariable("bar", 
-                                            EpicsEnum.createFromRaw(666), 
-                                            ControlSystem.EPICS_DEFAULT, 
+        final IArchiveSample<EpicsEnum, ISystemVariable<EpicsEnum>> sample3 =
+            new ArchiveSample<EpicsEnum, ISystemVariable<EpicsEnum>>(new ArchiveChannelId(3),
+                    new EpicsSystemVariable("bar",
+                                            EpicsEnum.createFromRaw(666),
+                                            ControlSystem.EPICS_DEFAULT,
                                             TimeInstantBuilder.fromNow(),
-                                            null), 
+                                            null),
                                             null);
-        
+
         SAMPLES = new ArrayList();
         SAMPLES.add((IArchiveSample) sample1);
         SAMPLES.add((IArchiveSample) sample2);
         SAMPLES.add((IArchiveSample) sample3);
-        
+
     }
-    
+
     @Test
     public void saveToPathTest() throws DataRescueException, IOException, ClassNotFoundException {
-        TimeInstant now = TimeInstantBuilder.fromNow();
+        final TimeInstant now = TimeInstantBuilder.fromNow();
 
-        DataRescueResult rescueResult = ArchiveEngineSampleRescuer.with(SAMPLES).at(now).to(RESCUE_DIR).rescue();
-        
-        File infile = new File(rescueResult.getFilePath());
+        final DataRescueResult rescueResult = ArchiveEngineSampleRescuer.with(SAMPLES).at(now).to(RESCUE_DIR).rescue();
+
+        final File infile = new File(rescueResult.getFilePath());
         Assert.assertNotNull(infile);
 
-        List<IArchiveSample<?, ?>> result = readSamplesFromFile(infile);
-        
+        final List<IArchiveSample<?, ?>> result = readSamplesFromFile(infile);
+
         Assert.assertEquals(3, result.size());
-        Assert.assertEquals(Double.valueOf(2.0), (Double) result.get(0).getValue());
-        Assert.assertEquals(Integer.valueOf(26), (Integer) result.get(1).getValue());
+        Assert.assertEquals(Double.valueOf(2.0), result.get(0).getValue());
+        Assert.assertEquals(Integer.valueOf(26), result.get(1).getValue());
         Assert.assertEquals(Integer.valueOf(666), ((EpicsEnum) result.get(2).getValue()).getRaw());
     }
 
-    private List<IArchiveSample<?, ?>> readSamplesFromFile(File infile) throws IOException,
+    private List<IArchiveSample<?, ?>> readSamplesFromFile(final File infile) throws IOException,
                                                                          FileNotFoundException,
                                                                          ClassNotFoundException {
-        ObjectInputStream objectIn = new ObjectInputStream(new BufferedInputStream(new FileInputStream(infile)));
+        final ObjectInputStream objectIn = new ObjectInputStream(new BufferedInputStream(new FileInputStream(infile)));
         @SuppressWarnings("unchecked")
+        final
         List<IArchiveSample<?,?>> result = (List<IArchiveSample<?,?>>) objectIn.readObject();
         objectIn.close();
         return result;

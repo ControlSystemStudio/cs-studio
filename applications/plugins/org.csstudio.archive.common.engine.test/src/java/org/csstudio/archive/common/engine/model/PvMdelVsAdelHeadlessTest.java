@@ -50,32 +50,32 @@ import com.google.common.collect.Lists;
 
 /**
  * Tests for a numeric channel with different .ADEL, .MDEL settings whether the update events
- * of {@link PV} are correctly triggered.  
- * 
+ * of {@link PV} are correctly triggered.
+ *
  * Attention! <br/>
- * Epics does not guarantee that a connection to an EPICS PV with ADEL/MDEL == x yields a 
+ * Epics does not guarantee that a connection to an EPICS PV with ADEL/MDEL == x yields a
  * value stream of i(0)..i(n), in which <br/>
  * <code>abs(i(j)-i(j+1)) >= x, 0 < j < n-1</code> <br/>
  * is always true. The very first value abs(i(0)-i(1)) may not be larger than the specified deadband.
- * 
- * That is due to the internals of Epics. On connection the very first update event is always the 
- * most recent value - NOT the most recent value according to the 'ARCHIVE' or 'MONITOR' connection. 
- * Only from the second value update on, those values are delivered that correspond to the ARCHIVE 
+ *
+ * That is due to the internals of Epics. On connection the very first update event is always the
+ * most recent value - NOT the most recent value according to the 'ARCHIVE' or 'MONITOR' connection.
+ * Only from the second value update on, those values are delivered that correspond to the ARCHIVE
  * or MONITOR fields in the IOC.
- * 
- * Hence, two identically configured connections that observe the very same PV may yield 
+ *
+ * Hence, two identically configured connections that observe the very same PV may yield
  * different value streams for identical time intervals depending on when precisely they have been
  * started (and stopped and restarted and so on), AND they do not ensure that consecutive values present
  * in the delivered stream feature the configured deadband either!
- * 
+ *
  * @author bknerr
  * @since 31.05.2011
  */
 public class PvMdelVsAdelHeadlessTest {
-    
+
     private static Double ADEL = 1.1;
     private static Double MDEL = 0.9;
-    
+
     private SoftIoc _softIoc;
 
     private final class TestListener implements PVListener {
@@ -89,9 +89,9 @@ public class PvMdelVsAdelHeadlessTest {
         }
         @Override
         public void pvValueUpdate(@Nonnull final PV pv) {
-            IDoubleValue value = (IDoubleValue) pv.getValue();
+            final IDoubleValue value = (IDoubleValue) pv.getValue();
             synchronized (_values) {
-                Double v = Double.valueOf(value.getValue());
+                final Double v = Double.valueOf(value.getValue());
                 _values.add(v);
             }
         }
@@ -100,24 +100,24 @@ public class PvMdelVsAdelHeadlessTest {
             // Empty
         }
     }
-    
+
     @Before
     public void setup() throws IOException, URISyntaxException {
-        URL dbBundleResourceUrl = PvMdelVsAdelHeadlessTest.class.getClassLoader().getResource("db/adelVsMdel.db");
-        URL dbFileUrl = FileLocator.toFileURL(dbBundleResourceUrl);
-        
-        ISoftIocConfigurator cfg = new BasicSoftIocConfigurator().with(new File(dbFileUrl.getFile()));
+        final URL dbBundleResourceUrl = PvMdelVsAdelHeadlessTest.class.getClassLoader().getResource("db/adelVsMdel.db");
+        final URL dbFileUrl = FileLocator.toFileURL(dbBundleResourceUrl);
+
+        final ISoftIocConfigurator cfg = new BasicSoftIocConfigurator().with(new File(dbFileUrl.getFile()));
         _softIoc = new SoftIoc(cfg);
         _softIoc.start();
-        
+
         // ATTENTION: dont use EpicsPlugin.ID, since then that bundle is activated and the default prefs
-        // are read immediately into the EpicsPlugin singleton. 
-        IEclipsePreferences prefs = new DefaultScope().getNode("org.csstudio.platform.libs.epics");
-        // Then this 
+        // are read immediately into the EpicsPlugin singleton.
+        final IEclipsePreferences prefs = new DefaultScope().getNode("org.csstudio.platform.libs.epics");
+        // Then this
         prefs.put("use_pure_java", "false");
     }
-    
-    
+
+
     @Test
     public void testMdelForCalcRecord() throws Exception {
         testPV("SoftIocTest:adelVsMdel", "VALUE", MDEL);
@@ -135,12 +135,12 @@ public class PvMdelVsAdelHeadlessTest {
         testPV("SoftIocTest:adelVsMdel_ai", "ARCHIVE", ADEL);
     }
 
-    
-    private void testPV(@Nonnull final String pvName, 
+
+    private void testPV(@Nonnull final String pvName,
                         @Nonnull final String monitorMode,
                         @Nonnull final Double expDeadband) throws Exception {
-        PV pv = new MyEpicsPVFactory().createPV(pvName, monitorMode);
-        TestListener listener = addListenerAndRunPV(pv);
+        final PV pv = new MyEpicsPVFactory().createPV(pvName, monitorMode);
+        final TestListener listener = addListenerAndRunPV(pv);
         checkForUpdateSensitivity(listener._values, expDeadband);
     }
 
@@ -157,30 +157,30 @@ public class PvMdelVsAdelHeadlessTest {
             Thread.sleep(100l);
         }
         pv.stop();
-        
+
         return listener;
     }
 
     private void checkForUpdateSensitivity(final List<Double> values, final double deadband) {
         synchronized (values) {
             try {
-                Assert.assertTrue(values.size() > 2); 
-                Iterator<Double> iterator = values.iterator();
-                // forget the first value, which may or may not adhere to the specified deadband 
+                Assert.assertTrue(values.size() > 2);
+                final Iterator<Double> iterator = values.iterator();
+                // forget the first value, which may or may not adhere to the specified deadband
                 iterator.next();
-                // get the second value as first value, and init last value 
-                Double lastValue = iterator.next() - (deadband + 0.1);
+                // get the second value as first value, and init last value
+                final Double lastValue = iterator.next() - (deadband + 0.1);
                 for (;iterator.hasNext();) {
-                    Double value = (Double) iterator.next();
+                    final Double value = iterator.next();
                     Assert.assertTrue(Math.abs(value - lastValue) > deadband);
-                    
+
                 }
             } finally {
                 values.clear();
             }
         }
     }
-    
+
     @After
     public void stopSoftIoc() throws IOException {
         _softIoc.stop();
