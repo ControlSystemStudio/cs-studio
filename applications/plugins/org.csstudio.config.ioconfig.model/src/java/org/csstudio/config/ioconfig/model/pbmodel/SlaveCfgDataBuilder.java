@@ -21,41 +21,50 @@
  *
  * $Id: DesyKrykCodeTemplates.xml,v 1.7 2010/04/20 11:43:22 bknerr Exp $
  */
-package org.csstudio.config.ioconfig.model;
+package org.csstudio.config.ioconfig.model.pbmodel;
 
-import javax.annotation.CheckForNull;
+import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.List;
+
 import javax.annotation.Nonnull;
 
 /**
- * TODO (hrickens) : 
+ * Create SlaveCfgData's from a set of parameter 
  * 
  * @author hrickens
  * @author $Author: hrickens $
  * @version $Revision: 1.7 $
- * @since 21.06.2011
+ * @since 05.07.2011
  */
-public interface IHibernateManager {
-    
-    
-    @CheckForNull
-    <T> T doInDevDBHibernateEager(@Nonnull final IHibernateCallback hibernateCallback) throws PersistenceException;
+public class SlaveCfgDataBuilder {
+ 
+    private final List<SlaveCfgData> _slaveCfgDataList = new ArrayList<SlaveCfgData>(); 
     
     /**
-     *
-     * @param <T>
-     *            The result Object type.
-     * @param hibernateCallback
-     *            The Hibernate call back.
-     * @return the Session resulte.
+     * Constructor.
      */
-    @CheckForNull
-    <T> T doInDevDBHibernateLazy(@Nonnull final IHibernateCallback hibernateCallback) throws PersistenceException;
+    public SlaveCfgDataBuilder(@Nonnull final List<Integer> slaveCfgData) {
+        
+       Iterator<Integer> iterator = slaveCfgData.iterator();
+        while (iterator.hasNext()) {
+            Integer parameter = (Integer) iterator.next();
+            // Test Simple oder Special Header
+            if( parameter != 0 && (parameter & 0x30) == 0) {
+                int parameter1;
+                if(iterator.hasNext()) {
+                    parameter1 = (Integer) iterator.next();
+                    _slaveCfgDataList.add(new SlaveCfgData(parameter, parameter1));
+                    
+                }
+            } else {
+                _slaveCfgDataList.add(new SlaveCfgData(parameter));
+            }
+        }
+    }
     
-    void closeSession();
-    
-    /**
-     * @return
-     */
-    boolean isConnected();
-    
+    @Nonnull
+    public List<SlaveCfgData> getSlaveCfgDataList() {
+        return _slaveCfgDataList;
+    }
 }

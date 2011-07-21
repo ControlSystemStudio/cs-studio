@@ -58,7 +58,7 @@ import org.slf4j.LoggerFactory;
  * @version $Revision: 1.2 $
  * @since 27.07.2010
  */
-public class ProcessVariable2IONameImplemation implements ProcessVariable2IONameService {
+public class ProcessVariable2IONameImplemation implements IProcessVariable2IONameService {
 
     private static final Logger LOG = LoggerFactory
             .getLogger(ProcessVariable2IONameImplemation.class);

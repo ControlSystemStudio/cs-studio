@@ -795,25 +795,16 @@ public class ChannelDBO extends AbstractNodeDBO<ChannelStructureDBO, VirtualLeaf
         return VirtualLeaf.INSTANCE;
     }
     
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public void accept(@Nonnull final INodeVisitor visitor) {
         visitor.visit(this);
     }
     
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public boolean equals(@CheckForNull Object obj) {
         return super.equals(obj);
     }
     
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public int hashCode() {
         return super.hashCode();

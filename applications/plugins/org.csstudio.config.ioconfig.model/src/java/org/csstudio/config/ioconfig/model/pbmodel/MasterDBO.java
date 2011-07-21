@@ -336,7 +336,7 @@ public class MasterDBO extends AbstractNodeDBO<ProfibusSubnetDBO, SlaveDBO> {
 
     @Override
     @Transient
-    public short getfirstFreeStationAddress(final int maxStationAddress) throws PersistenceException {
+    public int getfirstFreeStationAddress(final int maxStationAddress) throws PersistenceException {
         return getFreeStationAddress().first();
     }
 
@@ -461,31 +461,25 @@ public class MasterDBO extends AbstractNodeDBO<ProfibusSubnetDBO, SlaveDBO> {
         return new SlaveDBO(this);
     }
     
-    /**
-     * {@inheritDoc}
-     */
+    
+    public static int getMaxStationAddress() {
+        return MAX_STATION_ADDRESS;
+    }
+
+    // CHECKSTYLE OFF: StrictDuplicateCode 
     @Override
     public void accept(@Nonnull final INodeVisitor visitor) {
         visitor.visit(this);
     }
     
-    public static int getMaxStationAddress() {
-        return MAX_STATION_ADDRESS;
-    }
-    
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public boolean equals(@CheckForNull Object obj) {
         return super.equals(obj);
     }
     
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public int hashCode() {
         return super.hashCode();
     }
+    // CHECKSTYLE ON: StrictDuplicateCode 
 }

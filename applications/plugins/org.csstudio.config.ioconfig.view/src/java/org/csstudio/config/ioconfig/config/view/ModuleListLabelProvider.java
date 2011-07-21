@@ -8,7 +8,7 @@ import javax.annotation.Nullable;
 import org.csstudio.config.ioconfig.model.pbmodel.GSDFileDBO;
 import org.csstudio.config.ioconfig.model.pbmodel.GSDModuleDBO;
 import org.csstudio.config.ioconfig.model.pbmodel.SlaveCfgData;
-import org.csstudio.config.ioconfig.model.pbmodel.SlaveCfgDataFactory;
+import org.csstudio.config.ioconfig.model.pbmodel.SlaveCfgDataBuilder;
 import org.csstudio.config.ioconfig.model.pbmodel.gsdParser.GsdModuleModel2;
 import org.csstudio.platform.ui.util.CustomMediaFactory;
 import org.eclipse.jface.viewers.IColorProvider;
@@ -105,7 +105,7 @@ public class ModuleListLabelProvider extends LabelProvider implements IFontProvi
             boolean input = false;
             boolean output = false;
             List<Integer> values = gmm.getValue();
-            SlaveCfgDataFactory slaveCfgDataFactory = new SlaveCfgDataFactory(values);
+            SlaveCfgDataBuilder slaveCfgDataFactory = new SlaveCfgDataBuilder(values);
             for (SlaveCfgData slaveCfgData : slaveCfgDataFactory.getSlaveCfgDataList()) {
                 input |= slaveCfgData.isInput();
                 output |= slaveCfgData.isOutput();
@@ -148,7 +148,7 @@ public class ModuleListLabelProvider extends LabelProvider implements IFontProvi
             boolean input = false;
             boolean output = false;
             List<Integer> values = gmm.getValue();
-            SlaveCfgDataFactory slaveCfgDataFactory = new SlaveCfgDataFactory(values);
+            SlaveCfgDataBuilder slaveCfgDataFactory = new SlaveCfgDataBuilder(values);
             for (SlaveCfgData slaveCfgData : slaveCfgDataFactory.getSlaveCfgDataList()) {
                 input = slaveCfgData.isInput();
                 output = slaveCfgData.isOutput();

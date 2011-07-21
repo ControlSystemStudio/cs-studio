@@ -39,7 +39,7 @@ import org.csstudio.config.ioconfig.model.PersistenceException;
  * @version $Revision: 1.2 $
  * @since 27.08.2009
  */
-public interface DocumentService {
+public interface IDocumentService {
 
     /**
      * Open the Document with the OS default Application.

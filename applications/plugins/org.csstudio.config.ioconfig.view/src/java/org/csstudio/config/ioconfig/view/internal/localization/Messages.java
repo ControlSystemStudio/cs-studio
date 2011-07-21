@@ -21,10 +21,9 @@
  *
  * $Id: DesyKrykCodeTemplates.xml,v 1.7 2010/04/20 11:43:22 bknerr Exp $
  */
-package org.csstudio.config.ioconfig.model;
+package org.csstudio.config.ioconfig.view.internal.localization;
 
-import javax.annotation.CheckForNull;
-import javax.annotation.Nonnull;
+import org.eclipse.osgi.util.NLS;
 
 /**
  * TODO (hrickens) : 
@@ -32,30 +31,35 @@ import javax.annotation.Nonnull;
  * @author hrickens
  * @author $Author: hrickens $
  * @version $Revision: 1.7 $
- * @since 21.06.2011
+ * @since 21.07.2011
  */
-public interface IHibernateManager {
+public class Messages extends NLS {
+    private static final String BUNDLE_NAME =
+                                              "org.csstudio.config.ioconfig.view.internal.localization.messages"; //$NON-NLS-1$
+    public static String ChannelConfigDialog_Count;
+    public static String ChannelConfigDialog_AD;
+    public static String ChannelConfigDialog_Add;
+    public static String ChannelConfigDialog_CantRemove;
+    public static String ChannelConfigDialog_CantUpdate;
+    public static String ChannelConfigDialog_DB_ErrorMsg;
+    public static String ChannelConfigDialog_DB_ErrorTitel;
+    public static String ChannelConfigDialog_Documents;
+    public static String ChannelConfigDialog_ErrorNoInt;
+    public static String ChannelConfigDialog_ErrorNoString;
+    public static String ChannelConfigDialog_Input;
+    public static String ChannelConfigDialog_Input_;
+    public static String ChannelConfigDialog_Module;
+    public static String ChannelConfigDialog_Output;
+    public static String ChannelConfigDialog_Output_;
+    public static String ChannelConfigDialog_Parameter_;
+    public static String ChannelConfigDialog_Remove;
+    public static String NodeEditor_Msg;
+    public static String NodeEditor_Title;
+    static {
+        // initialize resource bundle
+        NLS.initializeMessages(BUNDLE_NAME, Messages.class);
+    }
     
-    
-    @CheckForNull
-    <T> T doInDevDBHibernateEager(@Nonnull final IHibernateCallback hibernateCallback) throws PersistenceException;
-    
-    /**
-     *
-     * @param <T>
-     *            The result Object type.
-     * @param hibernateCallback
-     *            The Hibernate call back.
-     * @return the Session resulte.
-     */
-    @CheckForNull
-    <T> T doInDevDBHibernateLazy(@Nonnull final IHibernateCallback hibernateCallback) throws PersistenceException;
-    
-    void closeSession();
-    
-    /**
-     * @return
-     */
-    boolean isConnected();
-    
+    private Messages() {
+    }
 }

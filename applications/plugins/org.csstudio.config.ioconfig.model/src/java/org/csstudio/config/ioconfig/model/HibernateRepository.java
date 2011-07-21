@@ -55,7 +55,7 @@ public class HibernateRepository implements IRepository {
      * @version $Revision: 1.9 $
      * @since 08.04.2010
      */
-    private static final class EpicsAddressHibernateCallback implements HibernateCallback {
+    private static final class EpicsAddressHibernateCallback implements IHibernateCallback {
         private final String _ioName;
         
         protected EpicsAddressHibernateCallback(@Nonnull final String ioName) {
@@ -99,7 +99,7 @@ public class HibernateRepository implements IRepository {
     @Nonnull
     public final GSDModuleDBO saveWithChildren(@Nonnull final GSDModuleDBO gsdModule) throws PersistenceException {
         try {
-            _instance.doInDevDBHibernateLazy(new HibernateCallback() {
+            _instance.doInDevDBHibernateLazy(new IHibernateCallback() {
                 private Session _session;
                 
                 @SuppressWarnings("unchecked")
@@ -137,7 +137,7 @@ public class HibernateRepository implements IRepository {
     @Nonnull
     public final <T extends DBClass> T saveOrUpdate(@Nonnull final T dbClass) throws PersistenceException {
         try {
-            _instance.doInDevDBHibernateLazy(new HibernateCallback() {
+            _instance.doInDevDBHibernateLazy(new IHibernateCallback() {
                 
                 @SuppressWarnings("unchecked")
                 @Override
@@ -164,7 +164,7 @@ public class HibernateRepository implements IRepository {
     @Nonnull
     public final <T extends DBClass> T update(@Nonnull final T dbClass) throws PersistenceException {
         
-        _instance.doInDevDBHibernateLazy(new HibernateCallback() {
+        _instance.doInDevDBHibernateLazy(new IHibernateCallback() {
             
             @Override
             @SuppressWarnings("unchecked")
@@ -187,7 +187,7 @@ public class HibernateRepository implements IRepository {
     @Override
     @CheckForNull
     public final <T> List<T> load(@Nonnull final Class<T> clazz) throws PersistenceException {
-        HibernateCallback hibernateCallback = new HibernateCallback() {
+        IHibernateCallback hibernateCallback = new IHibernateCallback() {
             @Override
             @SuppressWarnings("unchecked")
             @CheckForNull
@@ -211,7 +211,7 @@ public class HibernateRepository implements IRepository {
     @Override
     @CheckForNull
     public final <T> T load(@Nonnull final Class<T> clazz, @Nonnull final Serializable id) throws PersistenceException {
-        HibernateCallback hibernateCallback = new HibernateCallback() {
+        IHibernateCallback hibernateCallback = new IHibernateCallback() {
             @Override
             @SuppressWarnings("unchecked")
             @CheckForNull
@@ -236,7 +236,7 @@ public class HibernateRepository implements IRepository {
      */
     @Override
     public final <T extends DBClass> void removeNode(@Nonnull final T dbClass) throws PersistenceException {
-        _instance.doInDevDBHibernateLazy(new HibernateCallback() {
+        _instance.doInDevDBHibernateLazy(new IHibernateCallback() {
             
             @Override
             @SuppressWarnings("unchecked")
@@ -257,7 +257,7 @@ public class HibernateRepository implements IRepository {
     @Nonnull
     public final GSDFileDBO save(@Nonnull final GSDFileDBO gsdFile) throws PersistenceException {
         
-        _instance.doInDevDBHibernateLazy(new HibernateCallback() {
+        _instance.doInDevDBHibernateLazy(new IHibernateCallback() {
             
             @SuppressWarnings("unchecked")
             @Override
@@ -277,7 +277,7 @@ public class HibernateRepository implements IRepository {
      */
     @Override
     public final void removeGSDFiles(@Nonnull final GSDFileDBO gsdFile) throws PersistenceException {
-        _instance.doInDevDBHibernateLazy(new HibernateCallback() {
+        _instance.doInDevDBHibernateLazy(new IHibernateCallback() {
             
             @SuppressWarnings("unchecked")
             @Override
@@ -297,7 +297,7 @@ public class HibernateRepository implements IRepository {
     @Override
     @CheckForNull
     public final List<DocumentDBO> loadDocument() throws PersistenceException {
-        return _instance.doInDevDBHibernateLazy(new HibernateCallback() {
+        return _instance.doInDevDBHibernateLazy(new IHibernateCallback() {
             @Override
             @SuppressWarnings("unchecked")
             @CheckForNull
@@ -322,7 +322,7 @@ public class HibernateRepository implements IRepository {
     @Nonnull
     public final DocumentDBO save(@Nonnull final DocumentDBO document) throws PersistenceException {
         
-        _instance.doInDevDBHibernateLazy(new HibernateCallback() {
+        _instance.doInDevDBHibernateLazy(new IHibernateCallback() {
             
             @SuppressWarnings("unchecked")
             @Override
@@ -345,7 +345,7 @@ public class HibernateRepository implements IRepository {
     @Nonnull
     public final DocumentDBO update(@Nonnull final DocumentDBO document) throws PersistenceException {
         
-        _instance.doInDevDBHibernateLazy(new HibernateCallback() {
+        _instance.doInDevDBHibernateLazy(new IHibernateCallback() {
             
             @SuppressWarnings("unchecked")
             @Override
@@ -373,7 +373,7 @@ public class HibernateRepository implements IRepository {
     @Override
     @Nonnull
     public final String getEpicsAddressString(@Nonnull final String ioName) throws PersistenceException {
-        HibernateCallback hibernateCallback = new EpicsAddressHibernateCallback(ioName);
+        IHibernateCallback hibernateCallback = new EpicsAddressHibernateCallback(ioName);
         String epicsAddressString = _instance.doInDevDBHibernateEager(hibernateCallback);
         return epicsAddressString==null?"":epicsAddressString;
     }
@@ -385,7 +385,7 @@ public class HibernateRepository implements IRepository {
     @Override
     @Nonnull
     public final List<String> getIoNames() throws PersistenceException {
-        HibernateCallback hibernateCallback = new HibernateCallback() {
+        IHibernateCallback hibernateCallback = new IHibernateCallback() {
             @Override
             @SuppressWarnings("unchecked")
             @Nonnull
@@ -407,7 +407,7 @@ public class HibernateRepository implements IRepository {
     @Override
     @Nonnull
     public final List<String> getIoNames(@Nonnull final String iocName) throws PersistenceException {
-        HibernateCallback hibernateCallback = new HibernateCallback() {
+        IHibernateCallback hibernateCallback = new IHibernateCallback() {
             @Override
             @SuppressWarnings("unchecked")
             @Nonnull
@@ -429,7 +429,7 @@ public class HibernateRepository implements IRepository {
     @Override
     @Nonnull
     public final String getShortChannelDesc(@Nonnull final String ioName) throws PersistenceException {
-        HibernateCallback hibernateCallback = new HibernateCallback() {
+        IHibernateCallback hibernateCallback = new IHibernateCallback() {
             @Override
             @SuppressWarnings("unchecked")
             @Nonnull
@@ -463,7 +463,7 @@ public class HibernateRepository implements IRepository {
     @Override
     @Nonnull
     public final List<SensorsDBO> loadSensors(@Nonnull final String ioName) throws PersistenceException {
-        HibernateCallback hibernateCallback = new HibernateCallback() {
+        IHibernateCallback hibernateCallback = new IHibernateCallback() {
             @Override
             @SuppressWarnings("unchecked")
             @Nonnull
@@ -486,7 +486,7 @@ public class HibernateRepository implements IRepository {
     @Override
     @CheckForNull
     public final SensorsDBO loadSensor(@Nonnull final String ioName, @Nonnull final String selection) throws PersistenceException {
-        HibernateCallback hibernateCallback = new HibernateCallback() {
+        IHibernateCallback hibernateCallback = new IHibernateCallback() {
             @Override
             @SuppressWarnings("unchecked")
             @CheckForNull
@@ -508,7 +508,7 @@ public class HibernateRepository implements IRepository {
     @CheckForNull
     @Nonnull
     public final List<Integer> getRootPath(final int id) throws PersistenceException {
-        HibernateCallback hibernateCallback = new HibernateCallback() {
+        IHibernateCallback hibernateCallback = new IHibernateCallback() {
             @SuppressWarnings("unchecked")
             @Override
             @Nonnull
@@ -538,7 +538,7 @@ public class HibernateRepository implements IRepository {
     @Override
     @CheckForNull
     public final ChannelDBO loadChannel(@Nullable final String ioName) throws PersistenceException {
-        HibernateCallback hibernateCallback = new HibernateCallback() {
+        IHibernateCallback hibernateCallback = new IHibernateCallback() {
             @SuppressWarnings("unchecked")
             @Override
             @CheckForNull
@@ -563,7 +563,7 @@ public class HibernateRepository implements IRepository {
     @Override
     @CheckForNull
     public final List<PV2IONameMatcherModelDBO> loadPV2IONameMatcher(@Nullable final Collection<String> pvName) throws PersistenceException {
-        HibernateCallback hibernateCallback = new HibernateCallback() {
+        IHibernateCallback hibernateCallback = new IHibernateCallback() {
             @SuppressWarnings("unchecked")
             @Override
             @CheckForNull

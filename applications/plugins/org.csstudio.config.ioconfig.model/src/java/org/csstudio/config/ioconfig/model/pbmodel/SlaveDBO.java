@@ -518,7 +518,7 @@ public class SlaveDBO extends AbstractNodeDBO<MasterDBO, ModuleDBO> {
         return new ModuleDBO(this);
     }
     
-    
+    // CHECKSTYLE OFF: StrictDuplicateCode
     @Override
     public void accept(@Nonnull final INodeVisitor visitor) {
         visitor.visit(this);
@@ -533,4 +533,5 @@ public class SlaveDBO extends AbstractNodeDBO<MasterDBO, ModuleDBO> {
     public int hashCode() {
         return super.hashCode();
     }
+    // CHECKSTYLE ON: StrictDuplicateCode
 }

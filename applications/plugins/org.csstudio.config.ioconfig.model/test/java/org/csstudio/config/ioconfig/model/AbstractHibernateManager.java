@@ -109,7 +109,7 @@ public abstract class AbstractHibernateManager extends Observable implements IHi
 
     @Override
     @CheckForNull
-    public final <T> T doInDevDBHibernateEager(@Nonnull final HibernateCallback hibernateCallback) throws PersistenceException {
+    public final <T> T doInDevDBHibernateEager(@Nonnull final IHibernateCallback hibernateCallback) throws PersistenceException {
         try {
             initSessionFactoryDevDB();
         } catch (Exception e) {
@@ -147,7 +147,7 @@ public abstract class AbstractHibernateManager extends Observable implements IHi
      */
     @Override
     @CheckForNull
-    public final <T> T doInDevDBHibernateLazy(@Nonnull final HibernateCallback hibernateCallback) throws PersistenceException {
+    public final <T> T doInDevDBHibernateLazy(@Nonnull final IHibernateCallback hibernateCallback) throws PersistenceException {
         initSessionFactoryDevDB();
         _trx = null;
         if(_sessionLazy == null) {
@@ -178,7 +178,7 @@ public abstract class AbstractHibernateManager extends Observable implements IHi
 
     @CheckForNull
     final
-    <T> T execute(@Nonnull final HibernateCallback callback, @Nonnull final Session sess) {
+    <T> T execute(@Nonnull final IHibernateCallback callback, @Nonnull final Session sess) {
         return callback.execute(sess);
     }
 
