@@ -202,6 +202,14 @@ public class GroupChat
 			listener.groupMemberUpdate(array);
     }
 
+    /** @param text Message to send to the chat
+     *  @throws Exception on error
+     */
+	public void send(final String text) throws Exception
+    {
+    	chat.sendMessage(text);
+    }
+	
 	/** Disconnect from chat server */
     public void disconnect()
     {
@@ -209,13 +217,5 @@ public class GroupChat
     		chat.leave();
     	listeners.clear();
     	connection.disconnect();
-    }
-
-    /** @param text Message to send to the chat
-     *  @throws Exception on error
-     */
-	public void send(final String text) throws Exception
-    {
-    	chat.sendMessage(text);
     }
 }

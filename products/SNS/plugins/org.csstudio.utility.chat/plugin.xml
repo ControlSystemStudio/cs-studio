@@ -11,8 +11,17 @@
             category="org.csstudio"
             class="org.csstudio.utility.chat.GroupChatView"
             icon="icons/group16.png"
-            id="org.csstudio.utility.chat.view"
+            id="org.csstudio.utility.chat.group"
             name="%ChatView"
+            restorable="true">
+      </view>
+      <view
+            allowMultiple="true"
+            category="org.csstudio"
+            class="org.csstudio.utility.chat.IndividualChatView"
+            icon="icons/person16.png"
+            id="org.csstudio.utility.chat.individual"
+            name="%IndividualChat"
             restorable="true">
       </view>
    </extension>
@@ -28,10 +37,19 @@
                style="push">
             <parameter
                   name="org.eclipse.ui.views.showView.viewId"
-                  value="org.csstudio.utility.chat.view">
+                  value="org.csstudio.utility.chat.group">
             </parameter>
          </command>
       </menuContribution>
+   </extension>
+   <extension
+         point="org.eclipse.ui.preferencePages">
+      <page
+            category="org.csstudio.platform.ui.css.applications.utilities"
+            id="org.csstudio.utility.chat.preferences"
+            class="org.csstudio.utility.chat.PreferencePage"
+            name="%ChatView">
+      </page>
    </extension>
 
 </plugin>

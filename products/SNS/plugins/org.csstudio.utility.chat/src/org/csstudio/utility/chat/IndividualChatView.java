@@ -24,6 +24,9 @@ import org.eclipse.swt.widgets.Display;
 public class IndividualChatView extends org.eclipse.ui.part.ViewPart
 	implements IndividualChatListener, IndividualChatGUIListener
 {
+	/** View ID defined in plugin.xml */
+	final public static String ID = "org.csstudio.utility.chat.individual"; //$NON-NLS-1$
+	
 	private Display display;
 	private IndividualChat chat = null;
 	private IndividualChatGUI gui;
@@ -64,7 +67,7 @@ public class IndividualChatView extends org.eclipse.ui.part.ViewPart
 	{
 		if (this.chat != null)
 			throw new Error("Already initialized"); //$NON-NLS-1$
-		setPartName(NLS.bind("Chat with {0}", from));
+		setPartName(NLS.bind(Messages.IndividualChatTitleFmt, from));
 		this.chat = chat;
 		chat.addListener(this);
 	}
@@ -102,8 +105,15 @@ public class IndividualChatView extends org.eclipse.ui.part.ViewPart
 		});
     }
 
+	/** @return {@link IndividualChatGUI} handled by this view */
 	public IndividualChatGUI getGUI()
     {
 	    return gui;
+    }
+
+	/** Close the view */
+	public void close()
+    {
+		getSite().getPage().hideView(this);
     }
 }

@@ -7,8 +7,11 @@
  ******************************************************************************/
 package org.csstudio.utility.chat;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Queue;
 import java.util.concurrent.ConcurrentLinkedQueue;
+import java.util.concurrent.atomic.AtomicInteger;
 import java.util.concurrent.atomic.AtomicReference;
 
 import org.eclipse.core.runtime.IProgressMonitor;
@@ -21,6 +24,7 @@ import org.eclipse.swt.events.DisposeEvent;
 import org.eclipse.swt.events.DisposeListener;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Display;
+import org.eclipse.ui.IWorkbenchPage;
 
 /** RCP View for the group chat
  * 
@@ -36,6 +40,21 @@ public class GroupChatView extends org.eclipse.ui.part.ViewPart
 	private GroupChat chat_group = null;
 	private GroupChatGUI gui;
 
+	/** Queue of views opened when accepting an individual chat,
+	 *  to be used when that chat actually starts. 
+	 */
+	final private Queue<IndividualChatView> pending_views
+	  = new ConcurrentLinkedQueue<IndividualChatView>();
+	
+	/** Closing the 'group' chat disconnects us
+	 *  from the server and thus invalidates the
+	 *  individual chats.
+	 *  Keeping track of opened indiv. chats allows
+	 *  us to close them.
+	 */
+	final private List<IndividualChatView> individual_views
+	  = new ArrayList<IndividualChatView>();
+	
 	/** {@inheritDoc} */
 	@Override
 	public void createPartControl(final Composite parent)
@@ -48,6 +67,8 @@ public class GroupChatView extends org.eclipse.ui.part.ViewPart
 			@Override
 			public void widgetDisposed(DisposeEvent e)
 			{
+				for (IndividualChatView view : individual_views)
+					view.close();
 				if (chat_group != null)
 				{
 					chat_group.disconnect();
@@ -165,12 +186,6 @@ public class GroupChatView extends org.eclipse.ui.part.ViewPart
 		});
     }
 
-	/** Queue of views opened when accepting an individual chat,
-	 *  to be used when that chat actually starts. 
-	 */
-	final private Queue<IndividualChatView> pending_views
-	  = new ConcurrentLinkedQueue<IndividualChatView>();
-	
 	/** Received invitation to individual chat
 	 * 
 	 *  <p>Prompt user if this is accepted,
@@ -193,23 +208,42 @@ public class GroupChatView extends org.eclipse.ui.part.ViewPart
 						Messages.ChatInvitation,
 						NLS.bind(Messages.AcceptInvitationFmt, from)))
 					return;
-				final IndividualChatView view = createIndividualChatView();
-				pending_views.add(view);
-				new_gui.set(view.getGUI());
+				try
+				{
+					final IndividualChatView view = createIndividualChatView();
+					individual_views.add(view);
+					pending_views.add(view);
+					new_gui.set(view.getGUI());
+				}
+				catch (Exception ex)
+				{
+					MessageDialog.openError(gui.getShell(),
+							Messages.Error,
+							NLS.bind(Messages.OpenViewErrorFmt, ex.getMessage()));						
+				}
             }
 		});
 		
 	    return new_gui.get();
     }
 
+	/** Counter for IndividualChatView instances
+	 *  to allow multiple copies of the view
+	 */
+	final private static AtomicInteger view_ids = new AtomicInteger(0);
+	
 	/** Create view for individual chat.
 	 *  <p>Will be called on the UI thread
 	 *  @return newly created {@link IndividualChatView}
+	 *  @throws Exception on error
 	 */
-	protected IndividualChatView createIndividualChatView()
+	protected IndividualChatView createIndividualChatView() throws Exception
     {
-		// TODO Open view...
-		throw new Error("Not implemented"); //$NON-NLS-1$
+		final IndividualChatView view = (IndividualChatView)
+			getSite().getPage().showView(IndividualChatView.ID,
+					"View" + view_ids.incrementAndGet(), //$NON-NLS-1$
+					IWorkbenchPage.VIEW_ACTIVATE);
+		return view;
     }
 
 	/** {@inheritDoc} */

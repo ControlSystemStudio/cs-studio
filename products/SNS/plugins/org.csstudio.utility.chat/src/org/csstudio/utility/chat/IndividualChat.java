@@ -7,6 +7,7 @@
  ******************************************************************************/
 package org.csstudio.utility.chat;
 
+import org.eclipse.osgi.util.NLS;
 import org.jivesoftware.smack.Chat;
 import org.jivesoftware.smack.MessageListener;
 import org.jivesoftware.smack.packet.Message;
@@ -60,6 +61,8 @@ public class IndividualChat implements MessageListener
      */
 	public void send(final String text) throws Exception
     {
+		if (chat == null)
+			return;
     	chat.sendMessage(text);
 		listener.receive(user, true, text);
     }
@@ -67,7 +70,18 @@ public class IndividualChat implements MessageListener
 	/** Disconnect from the chat */
 	public void disconnect()
     {
-		chat.removeMessageListener(this);
+		if (chat != null)
+		{
+			try
+			{
+				chat.sendMessage(NLS.bind(Messages.LeaveChatFmt, user));
+			}
+			catch (Exception ex)
+			{
+				// Ignore, closing anyway
+			}
+			chat.removeMessageListener(this);
+		}
 		listener = null;
     }
 }
