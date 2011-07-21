@@ -18,7 +18,7 @@ build/build
 build/ext
 
 # ignore all log files ?
-event.log
+logs/*.log
 
 
 # SNS, KEK Products: Ignore output of headless build
