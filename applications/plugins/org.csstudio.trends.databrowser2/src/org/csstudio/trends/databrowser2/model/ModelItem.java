@@ -79,12 +79,20 @@ abstract public class ModelItem
         this.model = model;
     }
     
-    /** @return Name of this item (PV, Formula, ...) */
+    /** @return Name of this item (PV, Formula, ...), may contain macros */
     public String getName()
     {
         return name;
     }
 
+    /** @return Name of this item (PV, Formula, ...) with all macros resolved */
+    public String getResolvedName()
+    {
+    	if (model == null)
+    		return name;
+        return model.resolveMacros(name);
+    }
+    
     /** @param new_name New item name
      *  @see #getName()
      *  @return <code>true</code> if name was actually changed
@@ -101,12 +109,24 @@ abstract public class ModelItem
         return true;
     }
 
-    /** @return Preferred display name, used in plot legend */
+    /** @return Preferred display name, used in plot legend.
+     *  May contain macros.
+     */
     public String getDisplayName()
     {
         return display_name;
     }
 
+    /** @return Preferred display name, used in plot legend,
+     *          with macros resolved.
+     */
+    public String getResolvedDisplayName()
+    {
+    	if (model == null)
+    		return display_name;
+    	return model.resolveMacros(display_name);
+    }
+    
     /** @param new_display_name New display name
      *  @see #getDisplayName()
      */

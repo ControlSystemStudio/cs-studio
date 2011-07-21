@@ -1,5 +1,5 @@
 /*
- * Copyright 2008-2011 Brookhaven National Laboratory
+ * Copyright 2010-11 Brookhaven National Laboratory
  * All rights reserved. Use is subject to license terms.
  */
 

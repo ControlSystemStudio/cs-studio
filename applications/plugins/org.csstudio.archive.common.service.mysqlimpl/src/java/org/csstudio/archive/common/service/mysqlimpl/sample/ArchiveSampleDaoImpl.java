@@ -27,7 +27,6 @@ import java.sql.SQLException;
 import java.sql.Timestamp;
 import java.util.Collection;
 import java.util.Collections;
-import java.util.Deque;
 import java.util.List;
 import java.util.Map;
 
@@ -62,7 +61,6 @@ import org.joda.time.Minutes;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.google.common.base.Joiner;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 import com.google.inject.Inject;
@@ -75,24 +73,82 @@ import com.google.inject.Inject;
  */
 public class ArchiveSampleDaoImpl extends AbstractArchiveDao implements IArchiveSampleDao {
 
-
-
-    private static final String ARCH_TABLE_PLACEHOLDER = "<arch.table>";
-
     private static final Logger LOG =
         LoggerFactory.getLogger(ArchiveSampleDaoImpl.class);
+
+    abstract class AbstractReducedDataSample {
+
+        private final ArchiveChannelId _channelId;
+        private final TimeInstant _timestamp;
+        private final Double _avg;
+        private final Double _min;
+        private final Double _max;
+
+        /**
+         * Constructor.
+         */
+        protected AbstractReducedDataSample(@Nonnull final ArchiveChannelId id,
+                                            @Nonnull final TimeInstant timestamp,
+                                            @Nonnull final Double avg,
+                                            @Nonnull final Double min,
+                                            @Nonnull final Double max) {
+            _channelId = id;
+            _timestamp = timestamp;
+            _avg = avg;
+            _min = min;
+            _max = max;
+        }
+        @Nonnull
+        protected ArchiveChannelId getChannelId() {
+            return _channelId;
+        }
+        @Nonnull
+        public TimeInstant getTimestamp() {
+            return _timestamp;
+        }
+        @Nonnull
+        public Double getAvg() {
+            return _avg;
+        }
+        @Nonnull
+        public Double getMin() {
+            return _min;
+        }
+        @Nonnull
+        public Double getMax() {
+            return _max;
+        }
+    }
+    class MinuteReducedDataSample extends AbstractReducedDataSample {
+        /**
+         * Constructor.
+         */
+        public MinuteReducedDataSample(@Nonnull final ArchiveChannelId id,
+                                       @Nonnull final TimeInstant timestamp,
+                                       @Nonnull final Double avg,
+                                       @Nonnull final Double min,
+                                       @Nonnull final Double max) {
+            super(id, timestamp, avg, min, max);
+        }
+    }
+    class HourReducedDataSample extends AbstractReducedDataSample {
+        /**
+         * Constructor.
+         */
+        public HourReducedDataSample(@Nonnull final ArchiveChannelId id,
+                                     @Nonnull final TimeInstant timestamp,
+                                     @Nonnull final Double avg,
+                                     @Nonnull final Double min,
+                                     @Nonnull final Double max) {
+            super(id, timestamp, avg, min, max);
+        }
+    }
+
+    private static final String ARCH_TABLE_PLACEHOLDER = "<arch.table>";
 
     private static final String RETRIEVAL_FAILED = "Sample retrieval from archive failed.";
 
     private final String _dbName = getDatabaseName();
-
-    // FIXME (bknerr) : refactor this shit into CRUD command objects with factories
-    private final String _insertSamplesStmt =
-        "INSERT INTO " + _dbName + ".sample (channel_id, sample_time, nanosecs, value) VALUES ";
-    private final String _insertSamplesPerMinuteStmt =
-        "INSERT INTO " + _dbName + ".sample_m (channel_id, sample_time, avg_val, min_val, max_val) VALUES ";
-    private final String _insertSamplesPerHourStmt =
-        "INSERT INTO " + _dbName + ".sample_h (channel_id, sample_time, avg_val, min_val, max_val) VALUES ";
 
     private static final String SELECT_RAW_PREFIX = "SELECT sample_time, nanosecs, value ";
     private final String _selectSamplesStmt =
@@ -119,8 +175,14 @@ public class ArchiveSampleDaoImpl extends AbstractArchiveDao implements IArchive
      */
     @Inject
     public ArchiveSampleDaoImpl(@Nonnull final ArchiveConnectionHandler handler,
-                                @Nonnull final PersistEngineDataManager persister) {
+                                @Nonnull final PersistEngineDataManager persister) throws ArchiveDaoException {
         super(handler, persister);
+
+        getEngineMgr().registerBatchQueueHandler(new ArchiveSampleBatchQueueHandler(getDatabaseName()));
+
+        getEngineMgr().registerBatchQueueHandler(new MinuteReducedDataSampleBatchQueueHandler(getDatabaseName()));
+
+        getEngineMgr().registerBatchQueueHandler(new HourReducedDataSampleBatchQueueHandler(getDatabaseName()));
     }
 
     /**
@@ -129,105 +191,122 @@ public class ArchiveSampleDaoImpl extends AbstractArchiveDao implements IArchive
     @Override
     public <V, T extends ISystemVariable<V>>
     void createSamples(@Nonnull final Collection<IArchiveSample<V, T>> samples) throws ArchiveDaoException {
+
+        getEngineMgr().submitToBatch(samples);
+
         try {
-            final List<String> stmts = composeStatements(samples);
-            if (stmts != null && !stmts.isEmpty()) {
-                getEngineMgr().submitStatementsToBatch(stmts);
-            }
+            List<? extends AbstractReducedDataSample> minuteSamples;
+                minuteSamples = generatePerMinuteSamples(samples);
+            getEngineMgr().submitToBatch(minuteSamples);
+
+            final List<? extends AbstractReducedDataSample> hourSamples =
+                generatePerHourSamples(minuteSamples);
+            getEngineMgr().submitToBatch(hourSamples);
         } catch (final TypeSupportException e) {
-            throw new ArchiveDaoException(RETRIEVAL_FAILED, e);
+            throw new ArchiveDaoException("Type support for sample type could not be found.", e);
         }
     }
 
-    @CheckForNull
-    private <V, T extends ISystemVariable<V>>
-        List<String> composeStatements(@Nonnull final Collection<IArchiveSample<V, T>> samples)
-                                       throws ArchiveDaoException,
-                                              TypeSupportException {
+    @Nonnull
+    private List<? extends AbstractReducedDataSample>
+        generatePerHourSamples(@Nonnull final Collection<? extends AbstractReducedDataSample> samples) {
 
-        final Deque<String> values = Lists.newLinkedList();
-        final Deque<String> valuesPerMinute = Lists.newLinkedList();
-        final Deque<String> valuesPerHour = Lists.newLinkedList();
+        if (samples.isEmpty()) {
+            return Collections.emptyList();
+        }
+        final List<HourReducedDataSample> hourSamples = Lists.newLinkedList();
 
-        for (final IArchiveSample<V, T> sample : samples) {
+        for (final AbstractReducedDataSample sample : samples) {
+
+            final Double newValue = sample.getAvg();
+            final Double minValue = sample.getMin();
+            final Double maxValue = sample.getMax();
+            final TimeInstant time = sample.getTimestamp();
 
             final ArchiveChannelId channelId = sample.getChannelId();
+            SampleMinMaxAggregator agg = _reducedDataMapForHours.get(channelId);
+
+            agg = aggregateSample(newValue, minValue, maxValue, time, channelId, agg, _reducedDataMapForHours);
+
+            if (isReducedDataWriteDueAndHasChanged(newValue, agg, time, Hours.ONE.toStandardDuration())) {
+                hourSamples.add(new HourReducedDataSample(channelId,
+                                                          time,
+                                                          agg.getAvg(),
+                                                          agg.getMin(),
+                                                          agg.getMax()));
+            }
+
+
+        }
+        return hourSamples;
+    }
+
+    @Nonnull
+    private <V, T extends ISystemVariable<V>>
+    List<? extends AbstractReducedDataSample> generatePerMinuteSamples(@Nonnull final Collection<IArchiveSample<V, T>> samples)
+                                                                       throws TypeSupportException {
+        if (samples.isEmpty()) {
+            return Collections.emptyList();
+        }
+        final List<MinuteReducedDataSample> minuteSamples = Lists.newLinkedList();
+
+        for (final IArchiveSample<V, T> sample : samples) {
             final T sysVar = sample.getSystemVariable();
-            final TimeInstant timestamp = sysVar.getTimestamp();
-            if (sysVar.getData() == null) {
-                LOG.warn("Value is null for channel id " + channelId.asString() + ". No sample created.");
-                continue;
-            }
+            final V data = sysVar.getData();
 
-            values.add(createSampleValueStmtStr(channelId,
-                                                sysVar,
-                                                timestamp));
-            if (ArchiveTypeConversionSupport.isDataTypeOptimizable(sysVar.getData().getClass())) {
-                writeReducedData(channelId,
-                                 sysVar,
-                                 timestamp,
-                                 valuesPerMinute,
-                                 valuesPerHour);
+            if (ArchiveTypeConversionSupport.isDataTypeOptimizable(data.getClass())) {
+
+                final Double newValue = createDoubleFromValueOrNull(sysVar);
+                if (newValue == null) {
+                    continue;
+                }
+                final Double minValue = newValue;
+                final Double maxValue = newValue;
+                final TimeInstant time = sample.getSystemVariable().getTimestamp();
+
+                final ArchiveChannelId channelId = sample.getChannelId();
+                SampleMinMaxAggregator agg = _reducedDataMapForMinutes.get(channelId);
+
+                agg = aggregateSample(newValue, minValue, maxValue, time, channelId, agg, _reducedDataMapForMinutes);
+
+                if (isReducedDataWriteDueAndHasChanged(newValue, agg, time, Minutes.ONE.toStandardDuration())) {
+                    minuteSamples.add(new MinuteReducedDataSample(channelId,
+                                                                  time,
+                                                                  agg.getAvg(),
+                                                                  agg.getMin(),
+                                                                  agg.getMax()));
+                }
             }
         }
-        return joinStringsToStatementBatch(values, valuesPerMinute, valuesPerHour);
+        return minuteSamples;
+
     }
 
-
-    private <T extends ISystemVariable<?>>
-        void writeReducedData(@Nonnull final ArchiveChannelId channelId,
-                              @Nonnull final T data,
-                              @Nonnull final TimeInstant timestamp,
-                              @Nonnull final Deque<String> valuesPerMinute,
-                              @Nonnull final Deque<String> valuesPerHour) throws ArchiveDaoException {
-
-        final Double newValue = createDoubleFromValueOrNull(data);
-        if (newValue == null) {
-            return;
+    @Nonnull
+    private SampleMinMaxAggregator aggregateSample(@Nonnull final Double newValue,
+                                                   @Nonnull final Double minValue,
+                                                   @Nonnull final Double maxValue,
+                                                   @Nonnull final TimeInstant time,
+                                                   @Nonnull final ArchiveChannelId channelId,
+                                                   @Nonnull final SampleMinMaxAggregator agg,
+                                                   @Nonnull final Map<ArchiveChannelId, SampleMinMaxAggregator> aggMap) {
+        if (agg != null) {
+            agg.aggregate(newValue, minValue, maxValue, time);
+            return agg;
         }
+        final SampleMinMaxAggregator aggregator = new SampleMinMaxAggregator(newValue, time);
+        aggMap.put(channelId, aggregator);
 
-        final String minuteValueStr = aggregateAndComposeValueString(_reducedDataMapForMinutes,
-                                                                     channelId,
-                                                                     newValue,
-                                                                     newValue,
-                                                                     newValue,
-                                                                     timestamp,
-                                                                     Minutes.ONE.toStandardDuration());
-        if (minuteValueStr == null) {
-            return;
-        }
-        valuesPerMinute.add(minuteValueStr); // add to write VALUES() list for minutes
-        final SampleMinMaxAggregator minuteAgg = _reducedDataMapForMinutes.get(channelId);
-
-        final Double avg = minuteAgg.getAvg();
-        final Double min = minuteAgg.getMin();
-        final Double max = minuteAgg.getMax();
-
-        final String hourValueStr = aggregateAndComposeValueString(_reducedDataMapForHours,
-                                                                   channelId,
-                                                                   avg == null ? newValue : avg,
-                                                                   min == null ? newValue : min,
-                                                                   max == null ? newValue : max,
-                                                                   timestamp,
-                                                                   Hours.ONE.toStandardDuration());
-        minuteAgg.reset();
-        if (hourValueStr == null) {
-            return;
-        }
-        valuesPerHour.add(hourValueStr);
-
-
-        final SampleMinMaxAggregator hoursAgg = _reducedDataMapForHours.get(channelId);
-        // for days would be here...
-        hoursAgg.reset(); // and reset this aggregator
+        return aggregator;
     }
+
 
     @CheckForNull
     private <T extends ISystemVariable<?>>
-    Double createDoubleFromValueOrNull(@Nonnull final T data) {
+    Double createDoubleFromValueOrNull(@Nonnull final T sysVar) {
         Double newValue = null;
         try {
-            newValue = BaseTypeConversionSupport.toDouble(data.getData());
+            newValue = BaseTypeConversionSupport.toDouble(sysVar.getData());
         } catch (final TypeSupportException e) {
             return null; // not convertible. Type support missing.
         }
@@ -237,32 +316,6 @@ public class ArchiveSampleDaoImpl extends AbstractArchiveDao implements IArchive
         return newValue;
     }
 
-    // CHECKSTYLE OFF: ParameterNumber
-    @CheckForNull
-    private String aggregateAndComposeValueString(@Nonnull final Map<ArchiveChannelId, SampleMinMaxAggregator> map,
-                                                  @Nonnull final ArchiveChannelId channelId,
-                                                  @Nonnull final Double newValue,
-                                                  @Nonnull final Double min,
-                                                  @Nonnull final Double max,
-                                                  @Nonnull final TimeInstant timestamp,
-                                                  @Nonnull final Duration interval) throws ArchiveDaoException {
-        // CHECKSTYLE ON: ParameterNumber
-        SampleMinMaxAggregator agg =  map.get(channelId);
-        if (agg == null) {
-            agg = new SampleMinMaxAggregator(newValue, /*highestAlarm,*/ timestamp);
-            map.put(channelId, agg);
-        } else {
-            agg.aggregate(newValue, /*highestAlarm,*/ min, max, timestamp);
-        }
-        if (!isReducedDataWriteDueAndHasChanged(newValue, agg, timestamp, interval)) {
-            return null;
-        }
-        return createReducedSampleValueString(channelId,
-                                              timestamp,
-                                              agg.getAvg(),
-                                              agg.getMin(),
-                                              agg.getMax());
-    }
 
     private boolean isReducedDataWriteDueAndHasChanged(@Nonnull final Double newVal,
                                                        @Nonnull final SampleMinMaxAggregator agg,
@@ -283,81 +336,6 @@ public class ArchiveSampleDaoImpl extends AbstractArchiveDao implements IArchive
             return false; // hasn't changed much TODO (bknerr) : consider a sort of 'deadband' here, too
         }
         return true;
-    }
-
-
-    @CheckForNull
-    private List<String> joinStringsToStatementBatch(@Nonnull final Deque<String> values,
-                                                     @Nonnull final Deque<String> valuesPerMinute,
-                                                     @Nonnull final Deque<String> valuesPerHour) {
-        final List<String> statements = Lists.newLinkedList();
-
-        joinValuesFieldIntoStatementsList(_insertSamplesStmt, values, statements);
-
-        joinValuesFieldIntoStatementsList(_insertSamplesPerMinuteStmt, valuesPerMinute, statements);
-
-        joinValuesFieldIntoStatementsList(_insertSamplesPerHourStmt, valuesPerHour, statements);
-
-        return statements;
-    }
-
-    private void joinValuesFieldIntoStatementsList(@Nonnull final String insertStmt,
-                                                   @Nonnull final Deque<String> values,
-                                                   @Nonnull final List<String> statements) {
-        if (!values.isEmpty()) {
-            final String allValues = Joiner.on(", ").join(values);
-            statements.add(Joiner.on(" ").join(insertStmt, allValues));
-        }
-    }
-
-    /**
-     * The simple VALUES component for table sample:
-     * "(channel_id, smpl_time, /// severity_id, status_id, // str_val, nanosecs),"
-     */
-    @Nonnull
-    private <T extends ISystemVariable<?>>
-        String createSampleValueStmtStr(@Nonnull final ArchiveChannelId channelId,
-                                        @Nonnull final T value,
-                                        @Nonnull final TimeInstant timestamp) {
-            try {
-
-                return "(" + Joiner.on(", ").join(channelId.intValue(),
-                                                  "'" + timestamp.formatted() + "'",
-                                                  timestamp.getFractalSecondsInNanos(),
-                                                  "'" + ArchiveTypeConversionSupport.toArchiveString(value.getData()) + "'") +
-                        ")";
-
-            } catch (final TypeSupportException e) {
-                LOG.warn("No type support for archive string representation.", e);
-                return "";
-            }
-        }
-
-    /**
-     * The averaged VALUES component for table sample_*:
-     * "(channel_id, sample_time, highest_severity_id, avg_val, min_val, max_val)"
-     * @throws ArchiveSeverityDaoException
-     */
-    @Nonnull
-    private String createReducedSampleValueString(@Nonnull final ArchiveChannelId channelId,
-                                                  @Nonnull final TimeInstant timestamp,
-                                                  @CheckForNull final Double avg,
-                                                  @CheckForNull final Double min,
-                                                  @CheckForNull final Double max) throws ArchiveDaoException {
-        // write for all samples_x (channel_id, sample_time, avg_val, min_val, max_val)
-        if (avg == null) {
-            throw new ArchiveDaoException("Average value must not be null on write reduced samples.", null);
-        }
-
-        final String valueStr =
-            "(" +
-            Joiner.on(",").join(channelId.intValue(),
-                                "'" + timestamp.formatted() + "'",
-                                avg,
-                                min == null ? avg : min,
-                                max == null ? avg : max) +
-            ")";
-        return valueStr;
     }
 
 

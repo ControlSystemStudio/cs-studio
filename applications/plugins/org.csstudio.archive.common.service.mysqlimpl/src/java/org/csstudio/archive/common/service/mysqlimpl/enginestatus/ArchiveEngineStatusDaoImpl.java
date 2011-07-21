@@ -21,10 +21,12 @@
  */
 package org.csstudio.archive.common.service.mysqlimpl.enginestatus;
 
+
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.Collection;
+import java.util.Collections;
 
 import javax.annotation.CheckForNull;
 import javax.annotation.Nonnull;
@@ -41,54 +43,19 @@ import org.csstudio.archive.common.service.mysqlimpl.persistengine.PersistEngine
 import org.csstudio.domain.desy.time.TimeInstant;
 import org.csstudio.domain.desy.time.TimeInstant.TimeInstantBuilder;
 
-import com.google.common.base.Function;
-import com.google.common.base.Joiner;
-import com.google.common.collect.Iterables;
 import com.google.inject.Inject;
 
 /**
- * TODO (bknerr) :
+ * Dao implementation using
  *
  * @author bknerr
  * @since 02.02.2011
  */
 public class ArchiveEngineStatusDaoImpl extends AbstractArchiveDao implements IArchiveEngineStatusDao {
 
-    /**
-     * Converter function to single sql VALUE, i.e. comma separated strings embraced by parentheses.
-     * TODO (bknerr) : extract to be used by all VALUE assemblers
-     *
-     * @author bknerr
-     * @since 03.02.2011
-     */
-    private static final class MonitorStates2SqlValue implements Function<IArchiveEngineStatus, String> {
-        /**
-         * Constructor.
-         */
-        public MonitorStates2SqlValue() {
-            // Empty
-        }
-
-        /**
-         * {@inheritDoc}
-         */
-        @Override
-        @Nonnull
-        public String apply(@Nonnull final IArchiveEngineStatus from) {
-
-            return "(" +
-                   Joiner.on(",").join(from.getEngineId().longValue(),
-                                       "'" + from.getStatus().name() + "'", // TODO (bknerr) : once we use hibernate...
-                                       "'" + from.getTimestamp().formatted() + "'",
-                                       "'" + from.getInfo() + "'") +
-                    ")";
-        }
-    }
-    private static final MonitorStates2SqlValue M2S_FUNC = new MonitorStates2SqlValue();
-
     private static final String EXC_MSG = "Retrieval of engine status from archive failed.";
 
-    private static final String TAB = "engine_status";
+    static final String TAB = "engine_status";
 
     private final String _selectLatestEngineStatusInfoStmt =
         "SELECT id, engine_id, status, time, info FROM " + getDatabaseName() + "." + TAB +
@@ -101,13 +68,10 @@ public class ArchiveEngineStatusDaoImpl extends AbstractArchiveDao implements IA
      */
     @Inject
     public ArchiveEngineStatusDaoImpl(@Nonnull final ArchiveConnectionHandler handler,
-                                      @Nonnull final PersistEngineDataManager persister) {
+                                      @Nonnull final PersistEngineDataManager persister) throws ArchiveDaoException {
         super(handler, persister);
-    }
 
-    @Nonnull
-    private String createMgmtEntryUpdateStmtPrefix(@Nonnull final String database) {
-        return "INSERT INTO " + database + "." + TAB + " (engine_id, status, time, info) VALUES ";
+        getEngineMgr().registerBatchQueueHandler(new ArchiveEngineStatusBatchQueueHandler(getDatabaseName()));
     }
 
     /**
@@ -115,12 +79,9 @@ public class ArchiveEngineStatusDaoImpl extends AbstractArchiveDao implements IA
      */
     @Override
     @CheckForNull
-    public IArchiveEngineStatus createMgmtEntry(@Nonnull final IArchiveEngineStatus entry) throws ArchiveDaoException {
-        final String sqlValue = M2S_FUNC.apply(entry);
-        final String stmtStr = createMgmtEntryUpdateStmtPrefix(getDatabaseName()) + sqlValue;
-
-        getEngineMgr().submitStatementToBatch(stmtStr);
-        return null;
+    public IArchiveEngineStatus createMgmtEntry(@Nonnull final IArchiveEngineStatus state) throws ArchiveDaoException {
+        getEngineMgr().submitToBatch(Collections.singleton(state));
+        return state;
     }
 
     /**
@@ -128,11 +89,7 @@ public class ArchiveEngineStatusDaoImpl extends AbstractArchiveDao implements IA
      */
     @Override
     public boolean createMgmtEntries(@Nonnull final Collection<IArchiveEngineStatus> monitorStates) throws ArchiveDaoException {
-
-        final String values = Joiner.on(",").join(Iterables.transform(monitorStates, M2S_FUNC));
-        final String stmtStr = createMgmtEntryUpdateStmtPrefix(getDatabaseName()) + values;
-
-        getEngineMgr().submitStatementToBatch(stmtStr);
+        getEngineMgr().submitToBatch(monitorStates);
         return true;
     }
 

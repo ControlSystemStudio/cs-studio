@@ -227,6 +227,7 @@ public class SlaveCfgData {
         return getWordSize() * getSize();
     }
     
+    @Nonnull
     public String getParameterAsHexString() {
         return GsdFileParser.intList2HexString(_parameter);
     }

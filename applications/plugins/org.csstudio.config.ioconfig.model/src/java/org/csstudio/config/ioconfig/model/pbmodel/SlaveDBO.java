@@ -519,11 +519,18 @@ public class SlaveDBO extends AbstractNodeDBO<MasterDBO, ModuleDBO> {
     }
     
     
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public void accept(@Nonnull final INodeVisitor visitor) {
         visitor.visit(this);
-    }    
+    }
+    
+    @Override
+    public boolean equals(@CheckForNull Object obj) {
+        return super.equals(obj);
+    }
+    
+    @Override
+    public int hashCode() {
+        return super.hashCode();
+    }
 }

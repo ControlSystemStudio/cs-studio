@@ -11,6 +11,7 @@ import org.eclipse.ui.IWorkbenchPart;
 import org.eclipse.ui.IWorkbenchPartReference;
 import org.eclipse.ui.part.ViewPart;
 import org.epics.pvmanager.PV;
+import org.epics.pvmanager.PVReader;
 import org.epics.pvmanager.data.VMultiDouble;
 
 public abstract class MultiChannelPlotAwareView extends ViewPart {
@@ -110,6 +111,6 @@ public abstract class MultiChannelPlotAwareView extends ViewPart {
     
     protected abstract void updateChannelGroup(CSSChannelGroup old_group, CSSChannelGroup new_group);
     
-    protected abstract void updatePV(PV<VMultiDouble> old_pv,PV<VMultiDouble> new_pv);
+    protected abstract void updatePV(PVReader<VMultiDouble> old_pv,PVReader<VMultiDouble> new_pv);
 
 }

@@ -21,12 +21,16 @@
  */
 package org.csstudio.archive.common.service.mysqlimpl.persistengine;
 
+import java.util.Collection;
 import java.util.List;
-import java.util.concurrent.ScheduledThreadPoolExecutor;
+import java.util.Map;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
 
 import javax.annotation.Nonnull;
 
+import org.csstudio.archive.common.service.mysqlimpl.dao.AbstractBatchQueueHandler;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -39,26 +43,22 @@ import com.google.common.collect.Lists;
  * @since 11.05.2011
  */
 final class ShutdownWorkerThread extends Thread {
-    private final PersistEngineDataManager _persistEngineDataManager;
 
     private final Logger shutdownLog =
             LoggerFactory.getLogger(ShutdownWorkerThread.class);
 
-    private final ScheduledThreadPoolExecutor _exec;
-    private final SqlStatementBatch _batch;
-    private final Integer _maxAllowedPacketSize;
+    private final PersistEngineDataManager _persistEngineDataManager;
+    private final Map<Class<?>, AbstractBatchQueueHandler<?>> _strategyAndBatchMap;
+
+
 
     /**
      * Constructor.
      */
     public ShutdownWorkerThread(@Nonnull final PersistEngineDataManager mgr,
-                                @Nonnull final ScheduledThreadPoolExecutor executor,
-                                @Nonnull final SqlStatementBatch batch,
-                                @Nonnull final Integer maxAllowedPacketInBytes) {
+                                @Nonnull final Map<Class<?>, AbstractBatchQueueHandler<?>> strategyAndBatchMap) {
         _persistEngineDataManager = mgr;
-        _exec = executor;
-        _batch = batch;
-        _maxAllowedPacketSize = maxAllowedPacketInBytes;
+        _strategyAndBatchMap = strategyAndBatchMap;
     }
 
     /**
@@ -66,23 +66,29 @@ final class ShutdownWorkerThread extends Thread {
      */
     @Override
     public void run() {
-        if (!_exec.isTerminating()) {
-            _exec.execute(new PersistDataWorker(_persistEngineDataManager,
-                                                "SHUTDOWN MySQL Archive Worker",
-                                                _batch,
-                                                Integer.valueOf(0),
-                                                _maxAllowedPacketSize));
-            _exec.shutdown();
-            try {
-                if (!_exec.awaitTermination(_maxAllowedPacketSize + 1, TimeUnit.MILLISECONDS)) {
-                    shutdownLog.warn("Executor for PersistDataWorkers did not terminate in the specified period. Try to rescue data.");
-                    final List<String> statements = Lists.newLinkedList();
-                    _batch.drainTo(statements);
-                    _persistEngineDataManager.rescueDataToFileSystem(statements);
+        final ExecutorService executor = Executors.newSingleThreadExecutor();
+        executor.execute(new PersistDataWorker(_persistEngineDataManager,
+                                               "SHUTDOWN MySQL Archive Worker",
+                                               Integer.valueOf(0),
+                                               _strategyAndBatchMap));
+        executor.shutdown();
+        try {
+            if (!executor.awaitTermination(3000, TimeUnit.MILLISECONDS)) {
+                shutdownLog.warn("Executor for PersistDataWorkers did not terminate in the specified period. Try to rescue data.");
+                for (final AbstractBatchQueueHandler<?> handler : _strategyAndBatchMap.values()) {
+                    rescueQueueContent(handler);
                 }
-            } catch (final InterruptedException e) {
-                Thread.currentThread().interrupt();
             }
+        } catch (final InterruptedException e) {
+            Thread.currentThread().interrupt();
         }
+        executor.shutdownNow();
+    }
+
+    private <T> void rescueQueueContent(@Nonnull final AbstractBatchQueueHandler<T> handler) {
+        final List<T> elements = Lists.newLinkedList();
+        handler.getQueue().drainTo(elements);
+        final Collection<String> statements = handler.convertToStatementString(elements);
+        _persistEngineDataManager.rescueDataToFileSystem(statements);
     }
 }

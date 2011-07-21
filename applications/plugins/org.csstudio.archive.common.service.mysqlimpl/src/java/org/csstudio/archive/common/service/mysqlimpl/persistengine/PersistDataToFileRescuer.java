@@ -51,13 +51,13 @@ public class PersistDataToFileRescuer extends AbstractToFileDataRescuer {
     /**
      * Constructor.
      */
-    PersistDataToFileRescuer(@Nonnull final List<String> statements) {
+    PersistDataToFileRescuer(@Nonnull final Iterable<String> statements) {
         super();
         _statements = Lists.newLinkedList(statements);
     }
 
     @Nonnull
-    public static PersistDataToFileRescuer with(@Nonnull final List<String> statements) {
+    public static PersistDataToFileRescuer with(@Nonnull final Iterable<String> statements) {
         return new PersistDataToFileRescuer(statements);
     }
 

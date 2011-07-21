@@ -1,11 +1,12 @@
 /*
- * Copyright 2008-2011 Brookhaven National Laboratory
+ * Copyright 2010-11 Brookhaven National Laboratory
  * All rights reserved. Use is subject to license terms.
  */
 package org.epics.pvmanager.loc;
 
 import org.epics.pvmanager.ChannelWriteCallback;
 import org.epics.pvmanager.ChannelHandler;
+import org.epics.pvmanager.Collector;
 import org.epics.pvmanager.ExceptionHandler;
 import org.epics.pvmanager.ValueCache;
 import org.epics.pvmanager.data.AlarmSeverity;
@@ -32,6 +33,30 @@ class LocalChannelHandler extends ChannelHandler<Object> {
     @Override
     public void disconnect(ExceptionHandler handler) {
         // Nothing to be done
+    }
+
+    @Override
+    protected synchronized void addMonitor(Collector<?> collector, ValueCache<?> cache, ExceptionHandler handler) {
+        // Override for test visibility purposes
+        super.addMonitor(collector, cache, handler);
+    }
+
+    @Override
+    protected synchronized void addWriter(ExceptionHandler handler) {
+        // Override for test visibility purposes
+        super.addWriter(handler);
+    }
+
+    @Override
+    protected synchronized void removeMonitor(Collector<?> collector) {
+        // Override for test visibility purposes
+        super.removeMonitor(collector);
+    }
+
+    @Override
+    protected synchronized void removeWrite(ExceptionHandler exceptionHandler) {
+        // Override for test visibility purposes
+        super.removeWrite(exceptionHandler);
     }
 
     @Override

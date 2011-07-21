@@ -1,5 +1,5 @@
 /*
- * Copyright 2010 Brookhaven National Laboratory
+ * Copyright 2010-11 Brookhaven National Laboratory
  * All rights reserved. Use is subject to license terms.
  */
 
@@ -7,18 +7,24 @@ package org.epics.pvmanager;
 
 import java.lang.ref.WeakReference;
 import java.util.concurrent.Executor;
+import java.util.concurrent.ScheduledExecutorService;
+import java.util.concurrent.ScheduledFuture;
+import java.util.concurrent.TimeUnit;
+import org.epics.pvmanager.util.TimeDuration;
 
 /**
- * Object responsible to notify the PV of changes on the appropriate thread.
+ * Object responsible to notify the PVReader of changes on the appropriate thread.
  *
  * @author carcassi
  */
 class Notifier<T> {
 
-    private final WeakReference<PV<T>> pvRef;
+    private final WeakReference<PVReaderImpl<T>> pvRef;
     private final Function<T> function;
     private final Executor notificationExecutor;
+    private final ScheduledExecutorService scannerExecutor;
     private volatile PVRecipe pvRecipe;
+    private volatile ScheduledFuture<?> scanTaskHandle;
     private final ExceptionHandler exceptionHandler;
 
     /**
@@ -33,17 +39,18 @@ class Notifier<T> {
      * @param function the function used to calculate new values
      * @param notificationExecutor the thread switching mechanism
      */
-    Notifier(PV<T> pv, Function<T> function, Executor notificationExecutor, ExceptionHandler exceptionHandler) {
-        this.pvRef = new WeakReference<PV<T>>(pv);
+    Notifier(PVReaderImpl<T> pv, Function<T> function, ScheduledExecutorService scannerExecutor, Executor notificationExecutor, ExceptionHandler exceptionHandler) {
+        this.pvRef = new WeakReference<PVReaderImpl<T>>(pv);
         this.function = function;
         this.notificationExecutor = notificationExecutor;
+        this.scannerExecutor = scannerExecutor;
         this.exceptionHandler = exceptionHandler;
     }
 
     /**
      * Determines whether the notifier is active or not.
      * <p>
-     * The notifier becomes inactive if the PV is closed or is garbage collected.
+     * The notifier becomes inactive if the PVReader is closed or is garbage collected.
      * The first time this function determines that the notifier is inactive,
      * it will ask the data source to close all channels relative to the
      * pv.
@@ -52,7 +59,7 @@ class Notifier<T> {
      */
     boolean isActive() {
         // Making sure to get the reference once for thread safety
-        final PV<T> pv = pvRef.get();
+        final PVReader<T> pv = pvRef.get();
         if (pv != null && !pv.isClosed()) {
             return true;
         } else {
@@ -63,9 +70,9 @@ class Notifier<T> {
             return false;
         }
     }
-
+    
     /**
-     * Notifies the PV of a new value.
+     * Notifies the PVReader of a new value.
      */
     void notifyPv() {
         try {
@@ -77,7 +84,7 @@ class Notifier<T> {
 
                 @Override
                 public void run() {
-                    PV<T> pv = pvRef.get();
+                    PVReaderImpl<T> pv = pvRef.get();
                     if (pv != null && newValue != null) {
                         Notification<T> notification =
                                 NotificationSupport.notification(pv.getValue(), newValue);
@@ -98,6 +105,37 @@ class Notifier<T> {
 
     PVRecipe getPvRecipe() {
         return pvRecipe;
+    }
+    
+    void startScan(TimeDuration duration) {
+        scanTaskHandle = scannerExecutor.scheduleWithFixedDelay(new Runnable() {
+
+            @Override
+            public void run() {
+                if (isActive()) {
+                    notifyPv();
+                } else {
+                    stopScan();
+                }
+            }
+        }, 0, duration.getNanoSec(), TimeUnit.NANOSECONDS);
+    }
+    
+    void timeout(TimeDuration timeout, final String timeoutMessage) {
+        scannerExecutor.schedule(new Runnable() {
+
+            @Override
+            public void run() {
+                PVReaderImpl<T> pv = pvRef.get();
+                if (pv != null && pv.getValue() == null) {
+                    exceptionHandler.handleException(new TimeoutException(timeoutMessage));
+                }
+            }
+        }, timeout.getNanoSec(), TimeUnit.NANOSECONDS);
+    }
+    
+    void stopScan() {
+        scanTaskHandle.cancel(false);
     }
 
 }

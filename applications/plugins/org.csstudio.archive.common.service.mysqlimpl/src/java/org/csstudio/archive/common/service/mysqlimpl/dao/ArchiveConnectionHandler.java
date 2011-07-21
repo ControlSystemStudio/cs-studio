@@ -92,6 +92,8 @@ public class ArchiveConnectionHandler {
         ds.setMaxAllowedPacket(prefs.getMaxAllowedPacketSizeInKB()*1024);
         ds.setUseTimezone(true);
 
+        ds.setRewriteBatchedStatements(true);
+
         return ds;
     }
 

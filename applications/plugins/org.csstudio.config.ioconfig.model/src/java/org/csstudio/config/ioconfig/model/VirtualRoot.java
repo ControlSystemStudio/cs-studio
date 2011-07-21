@@ -58,7 +58,7 @@ public final class VirtualRoot extends AbstractNodeDBO<VirtualRoot, FacilityDBO>
     }
     
     /**
-     * {@inheritDoc}
+     * have no nodeType
      */
     @Override
     @CheckForNull
@@ -66,9 +66,6 @@ public final class VirtualRoot extends AbstractNodeDBO<VirtualRoot, FacilityDBO>
         return null;
     }
     
-    /**
-     * {@inheritDoc}
-     */
     @Override
     @CheckForNull
     protected VirtualRoot copyParameter(@Nullable VirtualRoot parent) throws PersistenceException {

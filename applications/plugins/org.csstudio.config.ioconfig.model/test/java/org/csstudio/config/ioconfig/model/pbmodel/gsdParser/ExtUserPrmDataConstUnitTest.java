@@ -29,6 +29,8 @@ import static org.junit.Assert.fail;
 
 import java.util.List;
 
+import javax.annotation.Nonnull;
+
 import org.junit.Ignore;
 import org.junit.Test;
 
@@ -38,109 +40,83 @@ import org.junit.Test;
  * @version $Revision$
  * @since 09.01.2009
  */
-//CHECKSTYLE:OFF
 public class ExtUserPrmDataConstUnitTest {
 
     /**
      * Test method for {@link org.csstudio.config.ioconfig.model.pbmodel.gsdParser.ExtUserPrmDataConst#ExtUserPrmDataConst(java.lang.String, java.lang.String)}.
      */
     @Test
-    public void testEmptyExtUserPrmDataConst() {
+    public final void testEmptyExtUserPrmDataConst() {
         ParsedGsdFileModel out = new ParsedGsdFileModel("Test");
-        ExtUserPrmData extUserPrmData = new ExtUserPrmData(out, 0, "");
-        extUserPrmData.setMinBit("0");
-        extUserPrmData.setMaxBit("0");
-        extUserPrmData.setDefault("1");
-        out.setExtUserPrmDataDefault(extUserPrmData, 0);
-        
-        List<Integer> extUserPrmDataConst = out.getExtUserPrmDataConst();
-        assertEquals(Integer.valueOf(1), extUserPrmDataConst.get(0));
-        
-        extUserPrmData = new ExtUserPrmData(out, 1, "");
-        extUserPrmData.setMinBit("1");
-        extUserPrmData.setMaxBit("2");
-        extUserPrmData.setDefault("3");
-        out.setExtUserPrmDataDefault(extUserPrmData, 0);
-        
-        extUserPrmDataConst = out.getExtUserPrmDataConst();
-        assertEquals(Integer.valueOf(7), extUserPrmDataConst.get(0));
-        
-        extUserPrmData = new ExtUserPrmData(out, 2, "");
-        extUserPrmData.setMinBit("0");
-        extUserPrmData.setMaxBit("7");
-        extUserPrmData.setDefault("255");
-        out.setExtUserPrmDataDefault(extUserPrmData, 1);
-
-        extUserPrmDataConst = out.getExtUserPrmDataConst();
-        assertEquals(Integer.valueOf(255), extUserPrmDataConst.get(1));
-        
-        extUserPrmData = new ExtUserPrmData(out, 3, "");
-        extUserPrmData.setMinBit("0");
-        extUserPrmData.setMaxBit("15");
-        extUserPrmData.setDefault("55555");
-        out.setExtUserPrmDataDefault(extUserPrmData, 2);
-        
-        extUserPrmDataConst = out.getExtUserPrmDataConst();
-        assertEquals(Integer.valueOf(3), extUserPrmDataConst.get(2));
-
-        extUserPrmDataConst = out.getExtUserPrmDataConst();
-        assertEquals(Integer.valueOf(217), extUserPrmDataConst.get(3));
-        
+        testExtUserPrmDataConst(out, 0, 4, 255, 4, 255, 3);        
     }
 
     @Test
-    public void testFilledExtUserPrmDataConst() {
+    public final void testFilledExtUserPrmDataConst() {
         ParsedGsdFileModel out = new ParsedGsdFileModel("Test");
+        setExtUserPrmDataConst(out);
+        testExtUserPrmDataConst(out, 118, 116, 255, 116, 255, 3);
+    }
+
+    /**
+     * @param out
+     * @return
+     */
+    @Nonnull
+    public final ExtUserPrmData createExtUserPrmData(@Nonnull ParsedGsdFileModel out, int index, @Nonnull String minBit, @Nonnull String maxBit, @Nonnull String def ) {
+        ExtUserPrmData extUserPrmData = new ExtUserPrmData(out, index, "");
+        extUserPrmData.setMinBit(minBit);
+        extUserPrmData.setMaxBit(maxBit);
+        extUserPrmData.setDefault(def);
+        return extUserPrmData;
+    }
+
+
+    /**
+     * @param out
+     */
+    public final void testExtUserPrmDataConst(@Nonnull ParsedGsdFileModel out, @Nonnull Integer... expec) {
+        int i = 0;
+        ExtUserPrmData extUserPrmData = createExtUserPrmData(out, 0, "0", "0", "0");
+        out.setExtUserPrmDataDefault(extUserPrmData, 0);
         
+        List<Integer> extUserPrmDataConst = out.getExtUserPrmDataConst();
+        assertEquals(expec[i++], extUserPrmDataConst.get(0));
+        
+        extUserPrmData = createExtUserPrmData(out, 1, "1", "2", "2");
+        out.setExtUserPrmDataDefault(extUserPrmData, 0);
+        
+        extUserPrmDataConst = out.getExtUserPrmDataConst();
+        assertEquals(expec[i++], extUserPrmDataConst.get(0));
+        
+        extUserPrmData = createExtUserPrmData(out, 2, "0", "7", "255");
+        out.setExtUserPrmDataDefault(extUserPrmData, 1);
+        
+        extUserPrmDataConst = out.getExtUserPrmDataConst();
+        assertEquals(expec[i++], extUserPrmDataConst.get(1));
+        
+        extUserPrmData = createExtUserPrmData(out, 3, "0", "15", "55555");
+        out.setExtUserPrmDataDefault(extUserPrmData, 2);
+        
+        extUserPrmDataConst = out.getExtUserPrmDataConst();
+        assertEquals(expec[i++], extUserPrmDataConst.get(0));
+
+        extUserPrmDataConst = out.getExtUserPrmDataConst();
+        assertEquals(expec[i++], extUserPrmDataConst.get(1));
+
+        extUserPrmDataConst = out.getExtUserPrmDataConst();
+        assertEquals(expec[i++], extUserPrmDataConst.get(2));
+    }
+
+    /**
+     * @param out
+     */
+    public final void setExtUserPrmDataConst(@Nonnull ParsedGsdFileModel out) {
         out.setExtUserPrmDataConst(new KeyValuePair("key(0)", "0x77"));
         out.setExtUserPrmDataConst(new KeyValuePair("key(1)", "0x77"));
         out.setExtUserPrmDataConst(new KeyValuePair("key(2)", "0x77"));
         out.setExtUserPrmDataConst(new KeyValuePair("key(3)", "0x77"));
         out.setExtUserPrmDataConst(new KeyValuePair("key(4)", "0x77"));
-        
-        
-        ExtUserPrmData extUserPrmData = new ExtUserPrmData(out, 0, "");
-        extUserPrmData.setMinBit("0");
-        extUserPrmData.setMaxBit("0");
-        extUserPrmData.setDefault("0");
-        out.setExtUserPrmDataDefault(extUserPrmData, 0);
-        
-        List<Integer> extUserPrmDataConst = out.getExtUserPrmDataConst();
-        assertEquals(Integer.valueOf(118), extUserPrmDataConst.get(0));
-        
-        extUserPrmData = new ExtUserPrmData(out, 1, "");
-        extUserPrmData.setMinBit("1");
-        extUserPrmData.setMaxBit("2");
-        extUserPrmData.setDefault("2");
-        out.setExtUserPrmDataDefault(extUserPrmData, 0);
-        
-        extUserPrmDataConst = out.getExtUserPrmDataConst();
-        assertEquals(Integer.valueOf(116), extUserPrmDataConst.get(0));
-        
-        extUserPrmData = new ExtUserPrmData(out, 2, "");
-        extUserPrmData.setMinBit("0");
-        extUserPrmData.setMaxBit("7");
-        extUserPrmData.setDefault("255");
-        out.setExtUserPrmDataDefault(extUserPrmData, 1);
-        
-        extUserPrmDataConst = out.getExtUserPrmDataConst();
-        assertEquals(Integer.valueOf(255), extUserPrmDataConst.get(1));
-        
-        extUserPrmData = new ExtUserPrmData(out, 3, "");
-        extUserPrmData.setMinBit("0");
-        extUserPrmData.setMaxBit("15");
-        extUserPrmData.setDefault("55555");
-        out.setExtUserPrmDataDefault(extUserPrmData, 2);
-        
-        extUserPrmDataConst = out.getExtUserPrmDataConst();
-        assertEquals(Integer.valueOf(3), extUserPrmDataConst.get(2));
-
-        extUserPrmDataConst = out.getExtUserPrmDataConst();
-        assertEquals(Integer.valueOf(217), extUserPrmDataConst.get(3));
-
-        extUserPrmDataConst = out.getExtUserPrmDataConst();
-        assertEquals(Integer.valueOf(119), extUserPrmDataConst.get(4));
-        
     }
     
     /**
@@ -148,7 +124,7 @@ public class ExtUserPrmDataConstUnitTest {
      */
     @Ignore("Not yet implemented")
     @Test
-    public void testIndexValueData() {
+    public final void testIndexValueData() {
         fail("Not yet implemented");
     }
 
@@ -157,7 +133,7 @@ public class ExtUserPrmDataConstUnitTest {
      */
     @Ignore("Not yet implemented")
     @Test
-    public void testGetIndex() {
+    public final void testGetIndex() {
         fail("Not yet implemented");
     }
 
@@ -166,7 +142,7 @@ public class ExtUserPrmDataConstUnitTest {
      */
     @Ignore("Not yet implemented")
     @Test
-    public void testSetIndex() {
+    public final void testSetIndex() {
         fail("Not yet implemented");
     }
 
@@ -175,7 +151,7 @@ public class ExtUserPrmDataConstUnitTest {
      */
     @Ignore("Not yet implemented")
     @Test
-    public void testGetValue() {
+    public final void testGetValue() {
         fail("Not yet implemented");
     }
 
@@ -184,7 +160,7 @@ public class ExtUserPrmDataConstUnitTest {
      */
     @Ignore("Not yet implemented")
     @Test
-    public void testSetValue() {
+    public final void testSetValue() {
         fail("Not yet implemented");
     }
 
@@ -193,9 +169,8 @@ public class ExtUserPrmDataConstUnitTest {
      */
     @Ignore("Not yet implemented")
     @Test
-    public void testToString() {
+    public final void testToString() {
         fail("Not yet implemented");
     }
 
 }
-//CHECKSTYLE:ON

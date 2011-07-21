@@ -1,4 +1,10 @@
+/*
+ * Copyright 2010-11 Brookhaven National Laboratory
+ * All rights reserved. Use is subject to license terms.
+ */
 package org.epics.pvmanager;
+
+import org.epics.pvmanager.util.NullUtils;
 
 /**
  * Dedicated notification type support.

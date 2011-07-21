@@ -30,7 +30,11 @@ import org.csstudio.domain.desy.alarm.IAlarm;
 import org.csstudio.domain.desy.system.ISystemVariable;
 
 /**
- * TODO (bknerr) : find a better abstraction for this object (@see {@link IArchiveMinMaxSample}).
+ * TODO (bknerr) : find a better abstraction for this object
+ * (@see {@link IArchiveMinMaxSample}).
+ *
+ * The min max information has to be related to an time interval. This abstraction is
+ * due to the IValue stuff of Kasemir.
  *
  * @author bknerr
  * @since 11.01.2011

@@ -43,6 +43,7 @@ import org.csstudio.archive.common.service.channelgroup.ArchiveChannelGroupId;
 import org.csstudio.archive.common.service.controlsystem.ArchiveControlSystem;
 import org.csstudio.archive.common.service.controlsystem.ArchiveControlSystemId;
 import org.csstudio.archive.common.service.controlsystem.IArchiveControlSystem;
+import org.csstudio.archive.common.service.mysqlimpl.channel.UpdateDisplayInfoBatchQueueHandler.ArchiveChannelDisplayInfo;
 import org.csstudio.archive.common.service.mysqlimpl.controlsystem.ArchiveControlSystemDaoImpl;
 import org.csstudio.archive.common.service.mysqlimpl.dao.AbstractArchiveDao;
 import org.csstudio.archive.common.service.mysqlimpl.dao.ArchiveConnectionHandler;
@@ -101,11 +102,13 @@ public class ArchiveChannelDaoImpl extends AbstractArchiveDao implements IArchiv
 
     /**
      * Constructor.
+     * @throws ArchiveDaoException
      */
     @Inject
     public ArchiveChannelDaoImpl(@Nonnull final ArchiveConnectionHandler handler,
-                                 @Nonnull final PersistEngineDataManager persister) {
+                                 @Nonnull final PersistEngineDataManager persister) throws ArchiveDaoException {
         super(handler, persister);
+        getEngineMgr().registerBatchQueueHandler(new UpdateDisplayInfoBatchQueueHandler(getDatabaseName()));
     }
 
     @Nonnull
@@ -300,16 +303,14 @@ public class ArchiveChannelDaoImpl extends AbstractArchiveDao implements IArchiv
     public <V extends Comparable<? super V>> void updateDisplayRanges(@Nonnull final ArchiveChannelId id,
                                                                       @Nonnull final V displayLow,
                                                                       @Nonnull final V displayHigh) throws ArchiveDaoException {
-        String updateDisplayRangesStmt;
         try {
-            updateDisplayRangesStmt = "UPDATE " + getDatabaseName() + "." + TAB +
-            " SET display_high=" + ArchiveTypeConversionSupport.toArchiveString(displayHigh) +
-            ", display_low=" + ArchiveTypeConversionSupport.toArchiveString(displayLow) +
-            " WHERE " + getDatabaseName() + "." + TAB + ".id=" + id.asString();
-
-            getEngineMgr().submitStatementToBatch(updateDisplayRangesStmt);
+            final ArchiveChannelDisplayInfo info =
+                new ArchiveChannelDisplayInfo(id,
+                                              ArchiveTypeConversionSupport.toArchiveString(displayHigh),
+                                              ArchiveTypeConversionSupport.toArchiveString(displayLow));
+            getEngineMgr().submitToBatch(Collections.singleton(info));
         } catch (final TypeSupportException e) {
-            handleExceptions(EXC_MSG + " Display ranges could not be written.", e);
+            throw new ArchiveDaoException("Update display failed. No type support found for " + displayLow.getClass().getName(), e);
         }
     }
 

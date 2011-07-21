@@ -20,6 +20,7 @@ import org.eclipse.swt.widgets.Listener;
 import org.eclipse.swt.widgets.Menu;
 import org.eclipse.swt.widgets.TableColumn;
 import org.epics.pvmanager.PV;
+import org.epics.pvmanager.PVReader;
 import org.epics.pvmanager.data.VMultiDouble;
 
 import ca.odell.glazedlists.event.ListEvent;
@@ -230,7 +231,7 @@ public class ChannelsListView extends MultiChannelPlotAwareView implements
 	}
 
 	@Override
-	protected void updatePV(PV<VMultiDouble> oldPv, PV<VMultiDouble> newPv) {
+	protected void updatePV(PVReader<VMultiDouble> oldPv, PVReader<VMultiDouble> newPv) {
 		// nothing todo since this view does not display any live data
 	}
 

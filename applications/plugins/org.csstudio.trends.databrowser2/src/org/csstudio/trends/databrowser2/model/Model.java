@@ -12,16 +12,22 @@ import java.io.OutputStream;
 import java.io.PrintWriter;
 import java.util.ArrayList;
 import java.util.Timer;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 
+import org.csstudio.apputil.macros.IMacroTableProvider;
+import org.csstudio.apputil.macros.InfiniteLoopException;
+import org.csstudio.apputil.macros.MacroUtil;
 import org.csstudio.apputil.time.RelativeTime;
 import org.csstudio.apputil.time.StartEndTimeParser;
 import org.csstudio.apputil.xml.DOMHelper;
 import org.csstudio.apputil.xml.XMLWriter;
 import org.csstudio.data.values.ITimestamp;
 import org.csstudio.data.values.TimestampFactory;
+import org.csstudio.trends.databrowser2.Activator;
 import org.csstudio.trends.databrowser2.Messages;
 import org.csstudio.trends.databrowser2.preferences.Preferences;
 import org.eclipse.osgi.util.NLS;
@@ -97,6 +103,10 @@ public class Model
         new RGB(114,  40,   3), // brown
         new RGB(219, 128,   4), // orange
     };
+    
+    /** Macros */
+    private IMacroTableProvider macros = null;
+    
     /** Listeners to model changes */
     final private ArrayList<ModelListener> listeners = new ArrayList<ModelListener>();
 
@@ -133,7 +143,33 @@ public class Model
     /** How should plot rescale when archived data arrives? */
     private ArchiveRescale archive_rescale = Preferences.getArchiveRescale();
 
-    /** @param listener New listener to notify */
+    /** @param macros Macros to use in this model */
+    public void setMacros(final IMacroTableProvider macros)
+    {
+    	this.macros = macros;
+    }
+    
+    /** Resolve macros
+     *  @param text Text that might contain "$(macro)"
+     *  @return Text with all macros replaced by their value
+     */
+    public String resolveMacros(final String text)
+    {
+    	if (macros == null)
+    		return text;
+    	try
+        {
+	        return MacroUtil.replaceMacros(text, macros);
+        }
+        catch (InfiniteLoopException ex)
+        {
+        	Activator.getLogger().log(Level.WARNING,
+        			"Problem in macro {0}: {1}", new Object[] { text, ex.getMessage()});
+        	return "Macro Error";
+        }
+    }
+
+	/** @param listener New listener to notify */
     public void addListener(final ModelListener listener)
     {
         listeners.add(listener);

@@ -280,7 +280,6 @@ public class ModuleUnitTest {
         _slave = null;
         _master = null;
         _profibusSubnet = null;
-        Repository.injectIRepository(null);
     }
 
 

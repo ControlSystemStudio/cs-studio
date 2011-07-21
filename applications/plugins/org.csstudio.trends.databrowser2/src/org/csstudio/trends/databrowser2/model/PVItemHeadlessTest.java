@@ -20,7 +20,7 @@ import org.junit.Test;
  *  @author Kay Kasemir
  */
 @SuppressWarnings("nls")
-public class PVItemTest
+public class PVItemHeadlessTest
 {
     /** Time in seconds for each test */
     private static final double RUNTIME_SECS = 10.0;

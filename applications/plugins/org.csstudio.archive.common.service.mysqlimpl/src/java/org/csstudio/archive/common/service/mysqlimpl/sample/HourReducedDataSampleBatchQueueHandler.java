@@ -19,65 +19,45 @@
  * PROJECT IN THE FILE LICENSE.HTML. IF THE LICENSE IS NOT INCLUDED YOU MAY FIND A COPY
  * AT HTTP://WWW.DESY.DE/LEGAL/LICENSE.HTM
  */
-package org.csstudio.archive.common.service.mysqlimpl.persistengine;
+package org.csstudio.archive.common.service.mysqlimpl.sample;
 
-import java.util.Collection;
-import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.LinkedBlockingQueue;
 
-import javax.annotation.CheckForNull;
 import javax.annotation.Nonnull;
-import javax.annotation.concurrent.GuardedBy;
 
-import org.csstudio.domain.desy.Strings;
+import org.csstudio.archive.common.service.mysqlimpl.sample.ArchiveSampleDaoImpl.HourReducedDataSample;
 
 /**
  * TODO (bknerr) :
  *
  * @author bknerr
- * @since 08.02.2011
+ * @since 20.07.2011
  */
-public enum SqlStatementBatch {
-    INSTANCE;
-
-    @GuardedBy("this")
-    private long _sizeInBytes = 0;
-
-    private final BlockingQueue<String> _statements = new LinkedBlockingQueue<String>();
-
-    private SqlStatementBatch() {
-        // Empty
-    }
-    public void submitStatement(@Nonnull final String statement) {
-        _statements.add(statement); // non blocking add
-        synchronized (this) {
-            _sizeInBytes += Strings.getSizeInBytes(statement);
-        }
+public class HourReducedDataSampleBatchQueueHandler extends
+                                                   AbstractReducedDataSampleBatchQueueHandler<HourReducedDataSample> {
+    /**
+     * Constructor.
+     */
+    public HourReducedDataSampleBatchQueueHandler(@Nonnull final String database) {
+        super(database, new LinkedBlockingQueue<HourReducedDataSample>());
     }
 
-    @CheckForNull
-    public String peek() {
-        return _statements.peek();
-    }
-
-    @CheckForNull
-    public synchronized String poll() {
-        final String polled = _statements.poll();
-        if (polled == null) {
-            return null;
-        }
-        _sizeInBytes -= Strings.getSizeInBytes(polled);
-        return polled;
-    }
-
-    public int drainTo(@Nonnull final Collection<? super String> c) {
-        return _statements.drainTo(c);
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    @Nonnull
+    protected String getTable() {
+        return "sample_h";
     }
 
 
-    public synchronized long sizeInBytes() {
-        return _sizeInBytes;
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    @Nonnull
+    public Class<HourReducedDataSample> getType() {
+        return HourReducedDataSample.class;
     }
-
-
 }

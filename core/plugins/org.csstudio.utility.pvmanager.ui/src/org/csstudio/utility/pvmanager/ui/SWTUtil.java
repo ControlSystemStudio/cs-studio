@@ -28,7 +28,7 @@ public class SWTUtil {
         }
     };
     
-	public static Executor onSWTThread() {
+	public static Executor swtThread() {
 		return SWTThread;
 	}
 	

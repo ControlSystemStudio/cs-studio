@@ -15,25 +15,8 @@
         is required.
     -->
 	<target name="prepare.env">
-        <property environment="env"/>
-		
-		<!-- 
-		     sets host.name to the first env variable for the HOST/HOSTNAME/COMPUTERNAME that can be 
-		     found, once set the property host.name is immutable, remaining conditions don't have 
-		     any effect.
-		 -->
-		<condition property="host.name.org" value="${env.HOST}">
-		    <isset property="env.HOST"/> <!-- Solaris -->
-		</condition>
-
-		<condition property="host.name.org" value="${env.HOSTNAME}">
-		    <isset property="env.HOSTNAME"/> <!-- Linux -->
-		</condition>
-
-		<condition property="host.name.org" value="${env.COMPUTERNAME}">
-		    <isset property="env.COMPUTERNAME"/> <!-- Windows -->
-		</condition>
-
+        
+		<exec executable="hostname" outputproperty="host.name.org"/>
         <echo message="Original computer or host name = ${host.name.org}"/>
 		
 		<script language="javascript" >
@@ -75,30 +58,27 @@
 	    
 	    <property name="sql.host" value="${mysqlHost}"/>
 	    <property name="sql.url" value="jdbc:mysql://${sql.host}:${mysqlPort}"/>
+		<echo message="sql.url : ${sql.url}"/>
 	    <property name="sql.root.user" value="${mysqlRootUser}"/>
+		<echo message="sql.root.user : ${sql.root.user}"/>
 	    <property name="sql.root.pw" value="${mysqlRootPassword}"/>
+		<echo message="sql.root.pw : ${sql.root.pw}"/>
 		
 	    <property name="sql.archive.db" value="${mysqlArchiveDatabase}"/>
-	    <property name="sql.archive.user" value="${mysqlArchiveUser}"/>
-	    <property name="sql.archive.pw" value="${mysqlArchivePassword}"/>
-
-		<echo message="sql.url : ${sql.url}"/>
-		<echo message="sql.root.user : ${sql.root.user}"/>
-		<echo message="sql.root.pw : ${sql.root.pw}"/>
-
 		<echo message="sql.archive.db : ${sql.archive.db}"/>
+	    <property name="sql.archive.user" value="${mysqlArchiveUser}"/>
 		<echo message="sql.archive.user : ${sql.archive.user}"/>
+	    <property name="sql.archive.pw" value="${mysqlArchivePassword}"/>
 		<echo message="sql.archive.pw : ${sql.archive.pw}"/>
-		
 	</target>
 	
 
 
-    <target name="create.and.fill.database" 
+    <target name="create.db.and.schema" 
     	    depends="create.database, create.tables, create.triggers">
     </target>
 	
-   <target name="create.database" depends="drop.database">
+   <target name="create.database" depends="drop.database, init.users">
       <sql driver="${sql.driver}" 
            url="${sql.url}" 
            userid="${sql.archive.user}" 
@@ -151,7 +131,7 @@
     </target>
 	
     <target name="drop.database" depends="prepare.env">
-	    <input message="Do you really want to delete database '${sql.archive.db}'?" 
+	    <input message="Do you really want to delete database '${sql.archive.db}' if exists?" 
                validargs="y,n" 
 	           addproperty="do.delete"
                defaultvalue="y" />
@@ -201,14 +181,14 @@
          </sql>
 	</target>
 	
-	<target name="run.on.mysqlhost.after.installation" 
+	<target name="init.users" 
 		    description="Run this target on your mysql host: connect as root, set root password, \
 		according to host.properties, create archive user, create archive db, \
 		grant privileges"
 		    depends="prepare.env">
 		
         <sql driver="${sql.driver}" 
-             url="jdbc:mysql://localhost:${mysqlPort}" 
+             url="${sql.url}" 
              userid="${sql.root.user}"
         	 password="${sql.root.pw}">
              <classpath>
