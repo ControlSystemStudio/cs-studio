@@ -28,6 +28,7 @@ public class IndividualChat implements MessageListener
 	private IndividualChatListener listener = null;
 	
 	/** Initialize
+	 *  @param user We
 	 *  @param chat XMPP chat
 	 */
 	public IndividualChat(final String user, final Chat chat)
@@ -49,6 +50,8 @@ public class IndividualChat implements MessageListener
 	@Override
     public void processMessage(Chat chat, Message message)
     {
+		if (listener == null)
+			return;
 		String name = StringUtils.parseName(message.getFrom());
 		if (name.length() <= 0)
 			name = Messages.UserSERVER;
@@ -72,6 +75,9 @@ public class IndividualChat implements MessageListener
     {
 		if (chat != null)
 		{
+			// TODO Unclear how to close a chat
+			// The other participant still stays in the chat.
+			// For now just sending a "bye" message
 			try
 			{
 				chat.sendMessage(NLS.bind(Messages.LeaveChatFmt, user));

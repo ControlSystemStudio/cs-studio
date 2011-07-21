@@ -10,6 +10,7 @@ package org.csstudio.utility.chat;
 /** Info about person in chat
  *  @author Kay Kasemir
  */
+@SuppressWarnings("nls")
 public class Person implements Comparable<Person>
 {
 	final private String name;
@@ -58,5 +59,11 @@ public class Person implements Comparable<Person>
     public int compareTo(final Person other)
     {
 	    return name.compareTo(other.name);
+    }
+
+    @Override
+    public String toString()
+    {
+	    return name + " (" + address + ")";
     }
 }

@@ -56,6 +56,9 @@ public class GroupChat
 	
 	/** Listeners to the {@link GroupChat} */
 	final private List<GroupChatListener> listeners = new CopyOnWriteArrayList<GroupChatListener>();
+
+	/** Our name used in this group chat */
+	private String user;
 	
 	/** Initialize
 	 *  @param host XMMP server host
@@ -85,6 +88,8 @@ public class GroupChat
 	 */
     public void connect(final String user) throws Exception
     {
+    	this.user = user;
+    	
     	// Default password
 		final String password = "$" + user;
 		
@@ -182,6 +187,8 @@ public class GroupChat
 			@Override
 			public void chatCreated(final Chat chat, final boolean createdLocally)
 			{
+				if (createdLocally)
+					return;
 				for (GroupChatListener listener : listeners)
 				{
 					final String from = chat.getParticipant();
@@ -221,5 +228,24 @@ public class GroupChat
     		chat.leave();
     	listeners.clear();
     	connection.disconnect();
+    }
+
+    /** Start individual chat
+     *  @param person A {@link Person} in the chat group
+     *  @return New {@link IndividualChat}
+     */
+	public IndividualChat createIndividualChat(final Person person)
+    {
+		// When we contact the person via the in-room nickname,
+		// that "works" but is not the same as contacting the
+		// person directly, as done by other chat clients like "pidgin".
+
+		// So try direct
+		String address = person.getAddress();
+		// and fall back to in-room address
+		if (address == null  ||  address.isEmpty())
+			address = group + "/" + person.getName();
+		final Chat new_chat = chat.createPrivateChat(address, null);
+		return new IndividualChat(user, new_chat);
     }
 }

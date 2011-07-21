@@ -71,6 +71,7 @@ public class IndividualChatView extends org.eclipse.ui.part.ViewPart
 		setPartName(NLS.bind(Messages.IndividualChatTitleFmt, from));
 		this.chat = chat;
 		chat.addListener(this);
+		setFocus();
 	}
 	
 	/** {@inheritDoc} */

@@ -9,10 +9,13 @@ package org.csstudio.utility.chat;
 
 import java.net.InetAddress;
 
+import org.eclipse.jface.action.Action;
+import org.eclipse.jface.action.MenuManager;
 import org.eclipse.jface.layout.TableColumnLayout;
 import org.eclipse.jface.viewers.ArrayContentProvider;
 import org.eclipse.jface.viewers.ColumnViewerToolTipSupport;
 import org.eclipse.jface.viewers.ColumnWeightData;
+import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.viewers.TableViewer;
 import org.eclipse.jface.viewers.TableViewerColumn;
 import org.eclipse.swt.SWT;
@@ -24,6 +27,7 @@ import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Label;
+import org.eclipse.swt.widgets.Menu;
 import org.eclipse.swt.widgets.Text;
 
 /** GUI for a {@link GroupChat}
@@ -100,7 +104,6 @@ public class GroupChatGUI extends IndividualChatGUI
 		group_members.setContentProvider(new ArrayContentProvider());
 		
         ColumnViewerToolTipSupport.enableFor(group_members);
-
 	}
 	
 	/** Create panel that displays chat messages
@@ -143,6 +146,23 @@ public class GroupChatGUI extends IndividualChatGUI
     protected void connectActions()
     {
 		super.connectActions();
+
+		// Context menu for chat group members
+        final MenuManager manager = new MenuManager();
+        manager.add(new Action("Contact", Activator.getImage("icons/person16.png"))
+        {
+        	@Override
+            public void run()
+            {
+        		final IStructuredSelection selection = (IStructuredSelection)group_members.getSelection();
+        		final Person person = (Person)selection.getFirstElement();
+        		if (listener != null)
+        			listener.doContact(person);
+            }
+        });
+        final Menu menu = manager.createContextMenu(group_members.getTable());
+        group_members.getTable().setMenu(menu);
+
 		name.addSelectionListener(new SelectionAdapter()
 		{
 			@Override

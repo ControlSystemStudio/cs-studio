@@ -19,4 +19,9 @@ public interface GroupChatGUIListener
 	 *  @param user_name User name to use for log in
 	 */
 	public void doStartLogin(String user_name);
+
+	/** User requested individual chat
+	 *  @param person User name to contact
+	 */
+	public void doContact(Person person);
 }

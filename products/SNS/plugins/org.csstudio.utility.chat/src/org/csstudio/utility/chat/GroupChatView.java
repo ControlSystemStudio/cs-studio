@@ -140,6 +140,21 @@ public class GroupChatView extends org.eclipse.ui.part.ViewPart
 	}
 	
 	/** {@inheritDoc} */
+	@Override
+    public void doContact(final Person person)
+    {
+		// Open new View
+		final IndividualChatView view = createIndividualChatView();
+		if (view == null)
+			return;
+		individual_views.add(view);
+
+		// Run chat in there
+		final IndividualChat chat = chat_group.createIndividualChat(person);
+		view.setChat(person.getName(), chat);
+    }
+
+	/** {@inheritDoc} */
     @Override
     public void doSend(final String message_text)
 	{
@@ -208,19 +223,12 @@ public class GroupChatView extends org.eclipse.ui.part.ViewPart
 						Messages.ChatInvitation,
 						NLS.bind(Messages.AcceptInvitationFmt, from)))
 					return;
-				try
-				{
-					final IndividualChatView view = createIndividualChatView();
-					individual_views.add(view);
-					pending_views.add(view);
-					new_gui.set(view.getGUI());
-				}
-				catch (Exception ex)
-				{
-					MessageDialog.openError(gui.getShell(),
-							Messages.Error,
-							NLS.bind(Messages.OpenViewErrorFmt, ex.getMessage()));						
-				}
+				final IndividualChatView view = createIndividualChatView();
+				if (view == null)
+					return;
+				individual_views.add(view);
+				pending_views.add(view);
+				new_gui.set(view.getGUI());
             }
 		});
 		
@@ -234,16 +242,24 @@ public class GroupChatView extends org.eclipse.ui.part.ViewPart
 	
 	/** Create view for individual chat.
 	 *  <p>Will be called on the UI thread
-	 *  @return newly created {@link IndividualChatView}
-	 *  @throws Exception on error
+	 *  @return newly created {@link IndividualChatView} or <code>null</code> on error
 	 */
-	protected IndividualChatView createIndividualChatView() throws Exception
+	protected IndividualChatView createIndividualChatView()
     {
-		final IndividualChatView view = (IndividualChatView)
-			getSite().getPage().showView(IndividualChatView.ID,
-					"View" + view_ids.incrementAndGet(), //$NON-NLS-1$
-					IWorkbenchPage.VIEW_ACTIVATE);
-		return view;
+		try
+		{
+			return (IndividualChatView)
+				getSite().getPage().showView(IndividualChatView.ID,
+						"View" + view_ids.incrementAndGet(), //$NON-NLS-1$
+						IWorkbenchPage.VIEW_ACTIVATE);
+		}
+		catch (Exception ex)
+		{
+			MessageDialog.openError(gui.getShell(),
+					Messages.Error,
+					NLS.bind(Messages.OpenViewErrorFmt, ex.getMessage()));						
+		}
+		return null;
     }
 
 	/** {@inheritDoc} */
