@@ -15,7 +15,7 @@ public interface GroupChatListener extends IndividualChatListener
 	/** Members of chat group have changed
 	 *  @param nerds Names of nerds in the group
 	 */
-	public void groupMemberUpdate(String[] nerds);
+	public void groupMemberUpdate(Person[] nerds);
 	
 	/** Handle invitation to individual chat
 	 *  @param from Person who invited us

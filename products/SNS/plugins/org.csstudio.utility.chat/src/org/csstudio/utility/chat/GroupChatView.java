@@ -174,7 +174,7 @@ public class GroupChatView extends org.eclipse.ui.part.ViewPart
 
 	/** {@inheritDoc} */
 	@Override
-    public void groupMemberUpdate(final String[] nerds)
+    public void groupMemberUpdate(final Person[] nerds)
     {
 		display.asyncExec(new Runnable()
 		{

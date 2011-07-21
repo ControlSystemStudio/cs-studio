@@ -35,6 +35,13 @@ public class GroupMemberLabelProvider extends CellLabelProvider
     	}
 	    super.dispose();
     }
+    
+	@Override
+    public String getToolTipText(final Object element)
+    {
+		final Person person = (Person) element;
+		return person.getAddress();
+    }
 
 	/** Display name of member with generic icon
 	 *  {@inheritDoc}
@@ -42,8 +49,8 @@ public class GroupMemberLabelProvider extends CellLabelProvider
 	@Override
 	public void update(final ViewerCell cell)
 	{
-		final String name = cell.getElement().toString();
-		cell.setText(name);
+		final Person person = (Person) cell.getElement();
+		cell.setText(person.getName());
 		
 		if (icon == null)
 		{

@@ -12,6 +12,7 @@ import org.eclipse.swt.events.DisposeEvent;
 import org.eclipse.swt.events.DisposeListener;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Display;
+import org.eclipse.ui.IWorkbenchPartSite;
 
 /** RCP View for an individual chat
  * 
@@ -114,6 +115,8 @@ public class IndividualChatView extends org.eclipse.ui.part.ViewPart
 	/** Close the view */
 	public void close()
     {
-		getSite().getPage().hideView(this);
+		final IWorkbenchPartSite site = getSite();
+		if (site != null)
+			site.getPage().hideView(this);
     }
 }

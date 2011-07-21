@@ -11,6 +11,7 @@ import java.net.InetAddress;
 
 import org.eclipse.jface.layout.TableColumnLayout;
 import org.eclipse.jface.viewers.ArrayContentProvider;
+import org.eclipse.jface.viewers.ColumnViewerToolTipSupport;
 import org.eclipse.jface.viewers.ColumnWeightData;
 import org.eclipse.jface.viewers.TableViewer;
 import org.eclipse.jface.viewers.TableViewerColumn;
@@ -97,6 +98,8 @@ public class GroupChatGUI extends IndividualChatGUI
 		table_layout.setColumnData(view_col.getColumn(), new ColumnWeightData(100));
 		view_col.setLabelProvider(new GroupMemberLabelProvider());
 		group_members.setContentProvider(new ArrayContentProvider());
+		
+        ColumnViewerToolTipSupport.enableFor(group_members);
 
 	}
 	
@@ -163,7 +166,7 @@ public class GroupChatGUI extends IndividualChatGUI
 	/** Display chat group members
 	 *  @param nerds People in the chat group
 	 */
-    public void showGroupMembers(final String[] nerds)
+    public void showGroupMembers(final Person[] nerds)
     {
 		if (group_members.getControl().isDisposed())
 			return;

@@ -27,6 +27,7 @@ import org.jivesoftware.smack.packet.Presence;
 import org.jivesoftware.smack.util.StringUtils;
 import org.jivesoftware.smackx.muc.DefaultParticipantStatusListener;
 import org.jivesoftware.smackx.muc.MultiUserChat;
+import org.jivesoftware.smackx.muc.Occupant;
 
 /** A place for nerds to chat
  * 
@@ -51,7 +52,7 @@ public class GroupChat
 	private MultiUserChat chat;
 	
 	/** Nerds in the chat group */
-	final private Set<String> nerds = new HashSet<String>();
+	final private Set<Person> nerds = new HashSet<Person>();
 	
 	/** Listeners to the {@link GroupChat} */
 	final private List<GroupChatListener> listeners = new CopyOnWriteArrayList<GroupChatListener>();
@@ -119,9 +120,10 @@ public class GroupChat
 			public void joined(final String participant)
 			{
 				final String nick = StringUtils.parseResource(participant);
+				final Occupant info = chat.getOccupant(participant);
 				synchronized (nerds)
                 {
-					nerds.add(nick);
+					nerds.add(new Person(nick, info.getJid()));
                 }
 				fireNerdAlert();
 			}
@@ -141,15 +143,17 @@ public class GroupChat
 		// Determine who's there initially
 		synchronized (nerds)
         {
+			// Add ourself, which we don't always seem to get from server
+			nerds.add(new Person(user, connection.getUser()));
+			// Then query server, which might include an update for ourself
 			final Iterator<String> occupants = chat.getOccupants();
 			while (occupants.hasNext())
 			{
 				final String occupant = occupants.next();
+				final Occupant info = chat.getOccupant(occupant);
 				final String nick = StringUtils.parseResource(occupant);
-				nerds.add(nick);
+				nerds.add(new Person(nick, info.getJid()));
 			}
-			// Add ourself, which we don't always seem to get from server
-			nerds.add(user);
         }
 		fireNerdAlert();
 		
@@ -192,10 +196,10 @@ public class GroupChat
     /** Notify listeners about current nerd list */
 	private void fireNerdAlert()
     {
-		final String[] array;
+		final Person[] array;
 		synchronized (nerds)
         {
-			array = nerds.toArray(new String[nerds.size()]);
+			array = nerds.toArray(new Person[nerds.size()]);
         }
 		Arrays.sort(array);
 		for (GroupChatListener listener : listeners)
