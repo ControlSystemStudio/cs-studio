@@ -88,16 +88,14 @@ public class PersistDataWorker extends AbstractTimeMeasuredRunnable {
     public void measuredRun() {
         LOG.info("RUN: " + _name + " at " + TimeInstantBuilder.fromNow().formatted());
 
-        Connection connection = null;
         try {
-            connection = _mgr.getConnectionHandler().getConnection();
+            final Connection connection = _mgr.getConnectionHandler().getConnection();
+
+            processBatchHandlerMap(connection, _handlerProvider, _rescueDataList);
         } catch (final ArchiveConnectionException e) {
             LOG.error("Connection to archive failed", e);
             // FIXME (bknerr) : strategy for queues getting full, when to rescue data?
-            return;
         }
-
-        processBatchHandlerMap(connection, _handlerProvider, _rescueDataList);
     }
 
     @SuppressWarnings("unchecked")
@@ -105,10 +103,13 @@ public class PersistDataWorker extends AbstractTimeMeasuredRunnable {
                                             @Nonnull final IBatchQueueHandlerProvider handlerProvider,
                                             @Nonnull final List<T> rescueDataList) {
         for (final BatchQueueHandlerSupport<?> handler : handlerProvider.getHandlers()) {
+
             PreparedStatement stmt = null;
             try {
-                stmt = handler.createNewStatement(connection);
-                processBatchForStatement((BatchQueueHandlerSupport<T>) handler, stmt, rescueDataList);
+                if (!handler.getQueue().isEmpty()) {
+                    stmt = handler.createNewStatement(connection);
+                    processBatchForStatement((BatchQueueHandlerSupport<T>) handler, stmt, rescueDataList);
+                }
             } catch (final SQLException e) {
                 LOG.error("Creation of batch statement failed for strategy " + handler.getType().getName(), e);
                 // FIXME (bknerr) : strategy for queues getting full, when to rescue data?
@@ -122,17 +123,19 @@ public class PersistDataWorker extends AbstractTimeMeasuredRunnable {
                                               @Nonnull final PreparedStatement stmt,
                                               @Nonnull final List<T> rescueDataList) {
         final BlockingQueue<T> queue = handler.getQueue();
+
+        boolean hasExecutedBatch = false;
         T element;
         while ((element = queue.poll()) != null) {
-            addElementToBatch(handler, stmt, element, rescueDataList);
-            executeBatchAndResetOnCondition(handler, stmt, rescueDataList, 999);
+            addElementToBatchAndRescueList(handler, stmt, element, rescueDataList);
+            hasExecutedBatch = executeBatchAndClearListOnCondition(handler, stmt, rescueDataList, 999);
         }
-        if (!rescueDataList.isEmpty()) {
-            executeBatchAndResetOnCondition(handler, stmt, rescueDataList, 0);
+        if (!hasExecutedBatch) {
+            executeBatchAndClearListOnCondition(handler, stmt, rescueDataList, 0);
         }
     }
 
-    private <T> void addElementToBatch(@Nonnull final BatchQueueHandlerSupport<T> handler,
+    private <T> void addElementToBatchAndRescueList(@Nonnull final BatchQueueHandlerSupport<T> handler,
                                        @Nonnull final PreparedStatement stmt,
                                        @Nonnull final T element,
                                        @Nonnull final List<T> rescueDataList) {
@@ -145,11 +148,11 @@ public class PersistDataWorker extends AbstractTimeMeasuredRunnable {
     }
 
     @Nonnull
-    private <T> List<T> executeBatchAndResetOnCondition(@Nonnull final BatchQueueHandlerSupport<T> handler,
-                                                        @Nonnull final PreparedStatement stmt,
-                                                        @Nonnull final List<T> rescueDataList,
-                                                        final int noOfStmts) {
-        if (rescueDataList.size() > noOfStmts) {
+    private <T> boolean executeBatchAndClearListOnCondition(@Nonnull final BatchQueueHandlerSupport<T> handler,
+                                                            @Nonnull final PreparedStatement stmt,
+                                                            @Nonnull final List<T> rescueDataList,
+                                                            final int minBatchSize) {
+        if (rescueDataList.size() > minBatchSize) {
             LOG.info("Execute batched stmt - num: " + rescueDataList.size());
             try {
                 stmt.executeBatch();
@@ -158,8 +161,9 @@ public class PersistDataWorker extends AbstractTimeMeasuredRunnable {
             } finally {
                 rescueDataList.clear();
             }
+            return true;
         }
-        return rescueDataList;
+        return false;
     }
 
 

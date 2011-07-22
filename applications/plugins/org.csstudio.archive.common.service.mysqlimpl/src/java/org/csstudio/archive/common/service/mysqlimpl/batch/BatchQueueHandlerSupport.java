@@ -78,8 +78,11 @@ public abstract class BatchQueueHandlerSupport<T> extends AbstractTypeSupport<T>
      * @param handler
      */
     public static <T> void installHandlerIfNotExists(@Nonnull final BatchQueueHandlerSupport<T> handler) {
-        AbstractTypeSupport.installIfNotExists(BatchQueueHandlerSupport.class, handler.getType(), handler);
-        SUPPORT_MAP.put(handler.getType(), handler);
+        final Class<T> type = handler.getType();
+
+        AbstractTypeSupport.installIfNotExists(BatchQueueHandlerSupport.class, type, handler);
+
+        SUPPORT_MAP.put(type, (BatchQueueHandlerSupport<?>) findTypeSupportFor(BatchQueueHandlerSupport.class, type));
     }
     @Nonnull
     public static Collection<BatchQueueHandlerSupport<?>> getInstalledHandlers() {
@@ -94,7 +97,8 @@ public abstract class BatchQueueHandlerSupport<T> extends AbstractTypeSupport<T>
         final Class<T> type = (Class<T>) newEntries.iterator().next().getClass();
         final BatchQueueHandlerSupport<T> support = (BatchQueueHandlerSupport<T>) findTypeSupportForOrThrowTSE(BatchQueueHandlerSupport.class, type);
 
-        support.getQueue().addAll(newEntries);
+        final BlockingQueue<T> queue = support.getQueue();
+        queue.addAll(newEntries);
     }
 
     @Nonnull

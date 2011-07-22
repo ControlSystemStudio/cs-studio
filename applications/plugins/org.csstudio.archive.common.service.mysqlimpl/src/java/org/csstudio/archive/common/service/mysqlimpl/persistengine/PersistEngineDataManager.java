@@ -108,24 +108,35 @@ public class PersistEngineDataManager {
     public PersistEngineDataManager(@Nonnull final ArchiveConnectionHandler connectionHandler,
                                     @Nonnull final MySQLArchivePreferenceService prefs) {
         _connectionHandler = connectionHandler;
+
         _prefPeriodInMS = prefs.getPeriodInMS();
         _prefRescueDir = prefs.getDataRescueDir();
         _prefSmtpHost = prefs.getSmtpHost();
         _prefEmailAddress = prefs.getEmailAddress();
 
+        final PersistDataWorker worker = submitNewPersistDataWorker(_executor,
+                                                                    _prefPeriodInMS,
+                                                                    _handlerProvider,
+                                                                    _workerId);
+        _submittedWorkers.add(worker);
+
         addGracefulShutdownHook(_handlerProvider);
     }
 
-    private void submitNewPersistDataWorker() {
+    @Nonnull
+    private PersistDataWorker submitNewPersistDataWorker(@Nonnull final ScheduledThreadPoolExecutor executor,
+                                                         @Nonnull final Integer prefPeriodInMS,
+                                                         @Nonnull final IBatchQueueHandlerProvider handlerProvider,
+                                                         @Nonnull final AtomicInteger workerId) {
         final PersistDataWorker newWorker = new PersistDataWorker(this,
-                                                                  "PERIODIC MySQL Archive Worker: " + _workerId.getAndIncrement(),
-                                                                  _prefPeriodInMS,
-                                                                  _handlerProvider);
-        _executor.scheduleAtFixedRate(newWorker,
-                                      0L,
-                                      newWorker.getPeriodInMS(),
-                                      TimeUnit.MILLISECONDS);
-        _submittedWorkers.add(newWorker);
+                                                                  "PERIODIC MySQL Archive Worker: " + workerId.getAndIncrement(),
+                                                                  prefPeriodInMS,
+                                                                  handlerProvider);
+        executor.scheduleAtFixedRate(newWorker,
+                                     0L,
+                                     newWorker.getPeriodInMS(),
+                                     TimeUnit.MILLISECONDS);
+        return newWorker;
     }
 
     /**
@@ -241,8 +252,8 @@ public class PersistEngineDataManager {
 
         BatchQueueHandlerSupport.addToQueue(entries);
 
-        if (isAnotherWorkerRequired()) {
-            submitNewPersistDataWorker();
-        }
+//        if (isAnotherWorkerRequired()) {
+//            submitNewPersistDataWorker();
+//        }
     }
 }

@@ -51,7 +51,7 @@ public class ArchiveDaoTestHelper {
         final MySQLArchivePreferenceService mock = Mockito.mock(MySQLArchivePreferenceService.class);
         Mockito.when(mock.getDatabaseName()).thenReturn(String.valueOf(PROV.getHostProperty("mysqlArchiveDatabase")));
         Mockito.when(mock.getDataRescueDir()).thenReturn(new File("./rescueTest"));
-        Mockito.when(mock.getEmailAddress()).thenReturn(System.getProperty("user.email"));
+        Mockito.when(mock.getEmailAddress()).thenReturn(String.valueOf(PROV.getHostProperty("mysqlArchiverEmail")));
         Mockito.when(mock.getFailOverHost()).thenReturn("");
         Mockito.when(mock.getHost()).thenReturn(String.valueOf(PROV.getHostProperty("mysqlHost")));
         Mockito.when(mock.getMaxAllowedPacketSizeInKB()).thenReturn(Integer.valueOf(1024));

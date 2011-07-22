@@ -55,7 +55,7 @@ import com.google.inject.Inject;
  */
 public class ArchiveEngineStatusDaoImpl extends AbstractArchiveDao implements IArchiveEngineStatusDao {
 
-    static final String TAB = "engine_status";
+    public static final String TAB = "engine_status";
 
     private static final String EXC_MSG = "Retrieval of engine status from archive failed.";
 
@@ -108,7 +108,6 @@ public class ArchiveEngineStatusDaoImpl extends AbstractArchiveDao implements IA
                                                          @Nonnull final TimeInstant latestAliveTime) throws ArchiveDaoException {
         try {
             final PreparedStatement stmt = getConnection().prepareStatement(_selectLatestEngineStatusInfoStmt);
-            // time < now
             stmt.setLong(1, latestAliveTime.getNanos());
             stmt.setInt(2, id.intValue());
 

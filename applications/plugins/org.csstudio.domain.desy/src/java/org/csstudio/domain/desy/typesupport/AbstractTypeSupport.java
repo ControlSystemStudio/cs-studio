@@ -47,11 +47,11 @@ public abstract class AbstractTypeSupport<T> extends TypeSupport<T> {
     protected static <T> TypeSupport<T> findTypeSupportForOrThrowTSE(@SuppressWarnings("rawtypes") @Nonnull final Class<? extends TypeSupport> supportFamily,
                                                                      @Nonnull final Class<T> typeClass)
                                                                      throws TypeSupportException {
-        final TypeSupport<T> support = findTypeSupportFor(supportFamily, typeClass);
-        if (support == null) {
+        try {
+            return findTypeSupportFor(supportFamily, typeClass);
+        } catch (final RuntimeException e) {
             throw new TypeSupportException("Type support for " + typeClass.getName() + " not present in family " + supportFamily.getName(), null);
         }
-        return support;
     }
 
     public static <T> void installIfNotExists(@SuppressWarnings("rawtypes") @Nonnull final Class<? extends TypeSupport> family,

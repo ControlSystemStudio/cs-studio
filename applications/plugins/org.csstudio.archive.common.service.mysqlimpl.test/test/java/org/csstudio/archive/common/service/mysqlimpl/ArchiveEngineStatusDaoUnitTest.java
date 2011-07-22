@@ -28,9 +28,9 @@ import org.csstudio.archive.common.service.enginestatus.IArchiveEngineStatus;
 import org.csstudio.archive.common.service.mysqlimpl.dao.ArchiveDaoException;
 import org.csstudio.archive.common.service.mysqlimpl.enginestatus.ArchiveEngineStatusDaoImpl;
 import org.csstudio.archive.common.service.mysqlimpl.enginestatus.IArchiveEngineStatusDao;
-import org.csstudio.domain.desy.time.TimeInstant;
 import org.csstudio.domain.desy.time.TimeInstant.TimeInstantBuilder;
 import org.junit.Assert;
+import org.junit.BeforeClass;
 import org.junit.Test;
 
 /**
@@ -41,15 +41,20 @@ import org.junit.Test;
  */
 public class ArchiveEngineStatusDaoUnitTest extends AbstractDaoTestSetup {
 
+    private static IArchiveEngineStatusDao DAO;
+
+    @BeforeClass
+    public static void setupDao() {
+        DAO = new ArchiveEngineStatusDaoImpl(HANDLER, PERSIST_MGR);
+    }
+
     @Test
     public void testEngineStatusRetrieval() throws ArchiveDaoException {
-        final IArchiveEngineStatusDao dao = new ArchiveEngineStatusDaoImpl(HANDLER, PERSIST_MGR);
-
-        final IArchiveEngineStatus status = dao.retrieveLastEngineStatus(ArchiveEngineId.NONE, TimeInstantBuilder.fromNow());
+        final IArchiveEngineStatus status = DAO.retrieveLastEngineStatus(ArchiveEngineId.NONE, TimeInstantBuilder.fromNow());
         Assert.assertNull(status);
 
         final ArchiveEngineId engineId = new ArchiveEngineId(1L);
-        final IArchiveEngineStatus lastStatus = dao.retrieveLastEngineStatus(engineId, TimeInstantBuilder.fromNow());
+        final IArchiveEngineStatus lastStatus = DAO.retrieveLastEngineStatus(engineId, TimeInstantBuilder.fromNow());
         Assert.assertNotNull(lastStatus);
         Assert.assertTrue(engineId.intValue() ==  lastStatus.getEngineId().intValue());
         Assert.assertEquals(EngineMonitorStatus.OFF, lastStatus.getStatus());
@@ -57,25 +62,4 @@ public class ArchiveEngineStatusDaoUnitTest extends AbstractDaoTestSetup {
         Assert.assertEquals(ArchiveEngineStatus.ENGINE_STOP, lastStatus.getInfo());
     }
 
-    @Test
-    public void testEngineStatusSubmission() throws ArchiveDaoException, InterruptedException {
-        final IArchiveEngineStatusDao dao = new ArchiveEngineStatusDaoImpl(HANDLER, PERSIST_MGR);
-
-        final ArchiveEngineId engineId = new ArchiveEngineId(1000L);
-        final TimeInstant now = TimeInstantBuilder.fromNow();
-
-        final EngineMonitorStatus on = EngineMonitorStatus.ON;
-        final String info = "Tralala";
-
-        dao.createMgmtEntry(new ArchiveEngineStatus(engineId, on, now, info));
-
-        Thread.sleep(3000);
-
-        final IArchiveEngineStatus status = dao.retrieveLastEngineStatus(engineId, now.plusMillis(1000L));
-
-        Assert.assertNotNull(status);
-        Assert.assertEquals(engineId, status.getEngineId());
-        Assert.assertEquals(on, status.getStatus());
-        Assert.assertEquals(info, status.getInfo());
-    }
 }
