@@ -53,7 +53,7 @@ import com.google.common.collect.Lists;
  * @author bknerr
  * @since 22.07.2011
  */
-public class ArchiveEngineStatusDaoWriteBatchTest extends AbstractDaoTestSetup {
+public class ArchiveEngineStatusDaoWriteBatchUnitTest extends AbstractDaoTestSetup {
 
     private static IArchiveEngineStatusDao DAO;
     private static final ArchiveEngineId ENGINE_SINGLE_ID = new ArchiveEngineId(997L);
