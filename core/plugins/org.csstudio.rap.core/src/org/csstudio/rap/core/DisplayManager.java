@@ -28,8 +28,8 @@ public class DisplayManager {
 					@Override
 					public void beat(long beatCount) {
 						DisplayManager.this.beatCount = beatCount;
-						if (beatCount % 100 == 0)
-							System.out.println("DisplayManager: Number of clients: "
+						if (beatCount % 500 == 0)
+							RAPCorePlugin.getLogger().log(Level.INFO, "DisplayManager: Number of clients: "
 									+ displayMap.size());
 						for (Entry<Display, DisplayResource> entry : displayMap
 								.entrySet().toArray(new Entry[0])) {
