@@ -24,52 +24,52 @@ package org.csstudio.domain.desy.net;
 import org.junit.Test;
 
 /**
- * Test class for {@link IpAddress}. 
- * 
+ * Test class for {@link IpAddress}.
+ *
  * @author bknerr
  * @since 26.04.2011
  */
 public class IpAddressTest {
-    
+
     @Test(expected=IllegalArgumentException.class)
     public void testInvalidIpAddress1() {
         @SuppressWarnings("unused")
-        IpAddress a = new IpAddress("");
+        final IpAddress a = new IpAddress("");
     }
     @Test(expected=IllegalArgumentException.class)
     public void testInvalidIpAddress2() {
         @SuppressWarnings("unused")
-        IpAddress a = new IpAddress("foo");
+        final IpAddress a = new IpAddress("foo");
     }
     @Test(expected=IllegalArgumentException.class)
     public void testInvalidIpAddress3() {
         @SuppressWarnings("unused")
-        IpAddress a = new IpAddress("-1.0.0.0");
+        final IpAddress a = new IpAddress("-1.0.0.0");
     }
     @Test(expected=IllegalArgumentException.class)
     public void testInvalidIpAddress4() {
         @SuppressWarnings("unused")
-        IpAddress a = new IpAddress("256.0.0.0");
+        final IpAddress a = new IpAddress("256.0.0.0");
     }
     @Test(expected=IllegalArgumentException.class)
     public void testInvalidIpAddress5() {
         @SuppressWarnings("unused")
-        IpAddress a = new IpAddress("1.0.0.256");
+        final IpAddress a = new IpAddress("1.0.0.256");
     }
-    
+
     @Test
     public void testValidIpAddress1() {
         @SuppressWarnings("unused")
-        IpAddress a = new IpAddress("0.0.0.0");
+        final IpAddress a = new IpAddress("0.0.0.0");
     }
     @Test
     public void testValidIpAddress2() {
         @SuppressWarnings("unused")
-        IpAddress a = new IpAddress("22.33.44.55");
+        final IpAddress a = new IpAddress("22.33.44.55");
     }
     @Test
     public void testValidIpAddress3() {
         @SuppressWarnings("unused")
-        IpAddress a = new IpAddress("255.255.255.255");
+        final IpAddress a = new IpAddress("255.255.255.255");
     }
 }

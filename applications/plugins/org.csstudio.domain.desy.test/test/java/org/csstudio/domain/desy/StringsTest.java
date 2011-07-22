@@ -31,13 +31,13 @@ import junit.framework.Assert;
 import org.junit.Test;
 
 /**
- * Test for {@link Strings}. 
- * 
+ * Test for {@link Strings}.
+ *
  * @author bknerr
  * @since 17.05.2011
  */
 public class StringsTest {
-    
+
     @Test
     public final void testTrim() {
         Assert.assertEquals("", Strings.trim("", 'f'));
@@ -48,35 +48,35 @@ public class StringsTest {
         Assert.assertEquals("aha ", Strings.trim("aha \"\"", '\"'));
         Assert.assertEquals("a??=[]()//", Strings.trim("|||a??=[]()//|", '|'));
     }
-    
+
     @Test
     public final void testSplitIgnoreInQuotesEmptyReturns() {
-        
+
         Collection<String> split = Strings.splitIgnoreWithinQuotes("", ' ');
         assertEquals(0, split.size());
         split = Strings.splitIgnoreWithinQuotes("x", 'x');
         assertEquals(0, split.size());
         split = Strings.splitIgnoreWithinQuotes("   ", ' ');
         assertEquals(0, split.size());
-        
+
     }
-    
+
     @Test
     public final void testSplitIgnoreInQuotes() {
-        
+
         Collection<String> split = Strings.splitIgnoreWithinQuotes("tritra  tru lala", ' ');
         assertEquals(3, split.size());
         Iterator<String> it = split.iterator();
         assertEquals("tritra", it.next());
         assertEquals("tru", it.next());
         assertEquals("lala", it.next());
-        
+
         split = Strings.splitIgnoreWithinQuotes("  tri\"tra tru \" lala", ' ');
         it = split.iterator();
         assertEquals(2, split.size());
         assertEquals("tri\"tra tru \"", it.next());
         assertEquals("lala", it.next());
-        
+
         split = Strings.splitIgnoreWithinQuotes("aa,\"bb,bb\",cc\",dd\"ee", ',');
         it = split.iterator();
         assertEquals(3, split.size());
@@ -84,7 +84,7 @@ public class StringsTest {
         assertEquals("\"bb,bb\"", it.next());
         assertEquals("cc\",dd\"ee", it.next());
 
-      
+
         split = Strings.splitIgnoreWithinQuotes("xxx  /tmp/demox\"Hello Dolly\"xthisxxxxisxxxx\" a test \"xxx", 'x');
         it = split.iterator();
         assertEquals(5, split.size());
@@ -93,14 +93,14 @@ public class StringsTest {
         assertEquals("this", it.next());
         assertEquals("is", it.next());
         assertEquals("\" a test \"", it.next());
-        
+
     }
-    
+
     @Test
     public final void testSplitIgnore() {
-        Collection<String> split = 
-            Strings.splitIgnore("xxx  /tmp/demox\"Hello Dolly\"xthisxxxxisxxxx\" a test \"xxx", 
-                                'x', 
+        Collection<String> split =
+            Strings.splitIgnore("xxx  /tmp/demox\"Hello Dolly\"xthisxxxxisxxxx\" a test \"xxx",
+                                'x',
                                 'i');
         Iterator<String> it = split.iterator();
         assertEquals(4, split.size());
@@ -108,7 +108,7 @@ public class StringsTest {
         assertEquals("\"Hello Dolly\"", it.next());
         assertEquals("thisxxxxis", it.next());
         assertEquals("\" a test \"", it.next());
-        
+
         split = Strings.splitIgnore("aa,|bb,bb|,cc|,ddee", ',', '|');
         it = split.iterator();
         assertEquals(4, split.size());
@@ -120,9 +120,9 @@ public class StringsTest {
 
     @Test
     public final void testSplitIgnoreInQuotesTrimmed() {
-        Collection<String> split = 
+        final Collection<String> split =
             Strings.splitIgnoreWithinQuotesTrimmed("xxx  /tmp/demox\"Hello Dolly\"xthisxxxxisxxxx\" a test \"xxx", 'x', '\"');
-        Iterator<String> it = split.iterator();
+        final Iterator<String> it = split.iterator();
         assertEquals(5, split.size());
         assertEquals("  /tmp/demo", it.next());
         assertEquals("Hello Dolly", it.next());
@@ -133,9 +133,9 @@ public class StringsTest {
 
     @Test
     public final void testSplitIgnoreInQuotesTrimmedRegexLiteral() {
-        Collection<String> split = 
+        final Collection<String> split =
             Strings.splitIgnoreWithinQuotes("|||This is a|| || |\"complicated||test.\"|||Hello, \"fox|and\"dog", '|');
-        Iterator<String> it = split.iterator();
+        final Iterator<String> it = split.iterator();
         assertEquals(5, split.size());
         assertEquals("This is a", it.next());
         assertEquals(" ", it.next());
@@ -143,30 +143,30 @@ public class StringsTest {
         assertEquals("\"complicated||test.\"", it.next());
         assertEquals("Hello, \"fox|and\"dog", it.next());
     }
-    
+
     @Test
     public final void testSplitOnCommasIgnoreInQuotes() {
-        
-        String[] empty = Strings.splitOnCommaIgnoreInQuotes("");
+
+        final String[] empty = Strings.splitOnCommaIgnoreInQuotes("");
         Assert.assertNotNull(empty);
         Assert.assertEquals(1, empty.length);
         Assert.assertEquals("", empty[0]);
 
-        String[] notEmpty = Strings.splitOnCommaIgnoreInQuotes("hallo");
+        final String[] notEmpty = Strings.splitOnCommaIgnoreInQuotes("hallo");
         Assert.assertNotNull(notEmpty);
         Assert.assertEquals(1, notEmpty.length);
         Assert.assertEquals("hallo", notEmpty[0]);
 
         Assert.assertEquals(1, Strings.splitOnCommaIgnoreInQuotes("  ").length);
         Assert.assertEquals(2, Strings.splitOnCommaIgnoreInQuotes(" ,  ").length);
-        
+
         String[] source = Strings.splitOnCommaIgnoreInQuotes("a,b,\"c,d\",e");
         Assert.assertEquals(4, source.length);
         Assert.assertEquals("a", source[0]);
         Assert.assertEquals("b", source[1]);
         Assert.assertEquals("\"c,d\"", source[2]);
         Assert.assertEquals("e", source[3]);
-        
+
         source = Strings.splitOnCommaIgnoreInQuotes("conf,\"use");
         Assert.assertEquals(1, source.length);
         Assert.assertEquals("conf,\"use", source[0]);
@@ -175,21 +175,21 @@ public class StringsTest {
         Assert.assertEquals(2, source.length);
         Assert.assertEquals("co,\"nf", source[0]);
         Assert.assertEquals("\"us,\"e", source[1]);
- 
+
 
     }
-    
+
     @Test
     public final void testSizeInBytes() {
         Assert.assertEquals(0, Strings.getSizeInBytes(null));
         Assert.assertEquals(0, Strings.getSizeInBytes(""));
-        
-        String normal1 = "Wir koennen spueren, wie wir die Form verlieren.";
+
+        final String normal1 = "Wir koennen spueren, wie wir die Form verlieren.";
         Assert.assertEquals(normal1.getBytes().length, Strings.getSizeInBytes(normal1));
-        String normal2 = "1234567890!@#$%^&*()-_=+`~{}[]\\|'\";:,.<>/?";
+        final String normal2 = "1234567890!@#$%^&*()-_=+`~{}[]\\|'\";:,.<>/?";
         Assert.assertEquals(normal2.getBytes().length, Strings.getSizeInBytes(normal2));
-        
-        String freak = "€‚ƒ„…†‡ˆ‰Š‹ŒŽ‘’“”•–—˜™š›œžŸ ¡¢£¤¥¦§¨©ª«¬­®¯°±²³´µ¶·¸¹º»¼½¾¿ÀÁÂÃÄÅÆÇÈÉÊËÌÍÎÏÐÑÒÓÔÕÖ×ØÙÚÛÜÝÞßàáâãäåæçèéêëìíîïðñòóôõö÷øùúûüýþÿ";
+
+        final String freak = "€‚ƒ„…†‡ˆ‰Š‹ŒŽ‘’“”•–—˜™š›œžŸ ¡¢£¤¥¦§¨©ª«¬­®¯°±²³´µ¶·¸¹º»¼½¾¿ÀÁÂÃÄÅÆÇÈÉÊËÌÍÎÏÐÑÒÓÔÕÖ×ØÙÚÛÜÝÞßàáâãäåæçèéêëìíîïðñòóôõö÷øùúûüýþÿ";
         Assert.assertEquals(freak.getBytes().length, Strings.getSizeInBytes(freak));
     }
 }
