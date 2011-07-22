@@ -30,8 +30,8 @@ import java.util.concurrent.LinkedBlockingQueue;
 import javax.annotation.Nonnull;
 
 import org.csstudio.archive.common.service.channel.ArchiveChannelId;
+import org.csstudio.archive.common.service.mysqlimpl.batch.BatchQueueHandlerSupport;
 import org.csstudio.archive.common.service.mysqlimpl.channel.UpdateDisplayInfoBatchQueueHandler.ArchiveChannelDisplayInfo;
-import org.csstudio.archive.common.service.mysqlimpl.dao.AbstractBatchQueueHandler;
 
 import com.google.common.base.Function;
 import com.google.common.collect.Collections2;
@@ -42,7 +42,7 @@ import com.google.common.collect.Collections2;
  * @author bknerr
  * @since 20.07.2011
  */
-public class UpdateDisplayInfoBatchQueueHandler extends AbstractBatchQueueHandler<ArchiveChannelDisplayInfo> {
+public class UpdateDisplayInfoBatchQueueHandler extends BatchQueueHandlerSupport<ArchiveChannelDisplayInfo> {
 
     /**
      * Entity holding the update display range information.
@@ -83,7 +83,7 @@ public class UpdateDisplayInfoBatchQueueHandler extends AbstractBatchQueueHandle
      * Constructor.
      */
     public UpdateDisplayInfoBatchQueueHandler(@Nonnull final String databaseName) {
-        super(databaseName, new LinkedBlockingQueue<ArchiveChannelDisplayInfo>());
+        super(ArchiveChannelDisplayInfo.class, databaseName, new LinkedBlockingQueue<ArchiveChannelDisplayInfo>());
     }
 
     /**

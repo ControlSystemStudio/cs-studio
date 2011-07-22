@@ -43,6 +43,7 @@ import org.csstudio.archive.common.service.channelgroup.ArchiveChannelGroupId;
 import org.csstudio.archive.common.service.controlsystem.ArchiveControlSystem;
 import org.csstudio.archive.common.service.controlsystem.ArchiveControlSystemId;
 import org.csstudio.archive.common.service.controlsystem.IArchiveControlSystem;
+import org.csstudio.archive.common.service.mysqlimpl.batch.BatchQueueHandlerSupport;
 import org.csstudio.archive.common.service.mysqlimpl.channel.UpdateDisplayInfoBatchQueueHandler.ArchiveChannelDisplayInfo;
 import org.csstudio.archive.common.service.mysqlimpl.controlsystem.ArchiveControlSystemDaoImpl;
 import org.csstudio.archive.common.service.mysqlimpl.dao.AbstractArchiveDao;
@@ -109,9 +110,9 @@ public class ArchiveChannelDaoImpl extends AbstractArchiveDao implements IArchiv
      */
     @Inject
     public ArchiveChannelDaoImpl(@Nonnull final ArchiveConnectionHandler handler,
-                                 @Nonnull final PersistEngineDataManager persister) throws ArchiveDaoException {
+                                 @Nonnull final PersistEngineDataManager persister) {
         super(handler, persister);
-        getEngineMgr().registerBatchQueueHandler(new UpdateDisplayInfoBatchQueueHandler(getDatabaseName()));
+        BatchQueueHandlerSupport.installHandlerIfNotExists(new UpdateDisplayInfoBatchQueueHandler(getDatabaseName()));
     }
 
     @Nonnull

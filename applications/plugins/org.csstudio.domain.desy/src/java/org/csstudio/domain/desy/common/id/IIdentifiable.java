@@ -19,37 +19,25 @@
  * PROJECT IN THE FILE LICENSE.HTML. IF THE LICENSE IS NOT INCLUDED YOU MAY FIND A COPY
  * AT HTTP://WWW.DESY.DE/LEGAL/LICENSE.HTM
  */
-package org.csstudio.archive.common.service.channelgroup;
+package org.csstudio.domain.desy.common.id;
 
 import javax.annotation.Nonnull;
 
-import org.csstudio.archive.common.service.engine.ArchiveEngineId;
-import org.csstudio.domain.desy.common.id.IIdentifiable;
-
 /**
- * Read only interface of an channel group in the archive.
+ * Interface of entities identified by an {@link Id}.
  *
  * @author bknerr
- * @since 12.11.2010
+ * @since 02.11.2010
+ *
+ * @param <T> type of the entity
  */
-public interface IArchiveChannelGroup extends IIdentifiable<ArchiveChannelGroupId>{
+public interface IIdentifiable<T extends Id<T>> {
 
     /**
-     * @return the channel group name
+     * Returns the {@link Id} of this entitiy.
+     *
+     * @return the id
      */
     @Nonnull
-    String getName();
-
-    /**
-     * @return the channel group description
-     */
-    @Nonnull
-    String getDescription();
-
-    /**
-     * @return the enabling channel id
-     */
-    @Nonnull
-    ArchiveEngineId getEngineId();
-
+    T getId();
 }

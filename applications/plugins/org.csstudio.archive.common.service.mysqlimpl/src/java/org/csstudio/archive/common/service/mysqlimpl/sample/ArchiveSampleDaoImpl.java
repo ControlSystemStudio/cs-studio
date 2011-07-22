@@ -38,6 +38,7 @@ import org.csstudio.archive.common.service.ArchiveConnectionException;
 import org.csstudio.archive.common.service.channel.ArchiveChannelId;
 import org.csstudio.archive.common.service.channel.IArchiveChannel;
 import org.csstudio.archive.common.service.controlsystem.IArchiveControlSystem;
+import org.csstudio.archive.common.service.mysqlimpl.batch.BatchQueueHandlerSupport;
 import org.csstudio.archive.common.service.mysqlimpl.dao.AbstractArchiveDao;
 import org.csstudio.archive.common.service.mysqlimpl.dao.ArchiveConnectionHandler;
 import org.csstudio.archive.common.service.mysqlimpl.dao.ArchiveDaoException;
@@ -141,14 +142,12 @@ public class ArchiveSampleDaoImpl extends AbstractArchiveDao implements IArchive
      */
     @Inject
     public ArchiveSampleDaoImpl(@Nonnull final ArchiveConnectionHandler handler,
-                                @Nonnull final PersistEngineDataManager persister) throws ArchiveDaoException {
+                                @Nonnull final PersistEngineDataManager persister) {
         super(handler, persister);
 
-        getEngineMgr().registerBatchQueueHandler(new ArchiveSampleBatchQueueHandler(getDatabaseName()));
-
-        getEngineMgr().registerBatchQueueHandler(new MinuteReducedDataSampleBatchQueueHandler(getDatabaseName()));
-
-        getEngineMgr().registerBatchQueueHandler(new HourReducedDataSampleBatchQueueHandler(getDatabaseName()));
+        BatchQueueHandlerSupport.installHandlerIfNotExists(new ArchiveSampleBatchQueueHandler(getDatabaseName()));
+        BatchQueueHandlerSupport.installHandlerIfNotExists(new MinuteReducedDataSampleBatchQueueHandler(getDatabaseName()));
+        BatchQueueHandlerSupport.installHandlerIfNotExists(new HourReducedDataSampleBatchQueueHandler(getDatabaseName()));
     }
 
     /**
@@ -158,16 +157,17 @@ public class ArchiveSampleDaoImpl extends AbstractArchiveDao implements IArchive
     public <V, T extends ISystemVariable<V>>
     void createSamples(@Nonnull final Collection<IArchiveSample<V, T>> samples) throws ArchiveDaoException {
 
-        getEngineMgr().submitToBatch(samples);
-
         try {
-            List<? extends AbstractReducedDataSample> minuteSamples;
+            getEngineMgr().submitToBatch(samples);
+
+            final List<? extends AbstractReducedDataSample> minuteSamples;
                 minuteSamples = generatePerMinuteSamples(samples);
             getEngineMgr().submitToBatch(minuteSamples);
 
             final List<? extends AbstractReducedDataSample> hourSamples =
                 generatePerHourSamples(minuteSamples);
             getEngineMgr().submitToBatch(hourSamples);
+
         } catch (final TypeSupportException e) {
             throw new ArchiveDaoException("Type support for sample type could not be found.", e);
         }

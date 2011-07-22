@@ -36,12 +36,14 @@ import org.csstudio.archive.common.service.enginestatus.ArchiveEngineStatus;
 import org.csstudio.archive.common.service.enginestatus.ArchiveEngineStatusId;
 import org.csstudio.archive.common.service.enginestatus.EngineMonitorStatus;
 import org.csstudio.archive.common.service.enginestatus.IArchiveEngineStatus;
+import org.csstudio.archive.common.service.mysqlimpl.batch.BatchQueueHandlerSupport;
 import org.csstudio.archive.common.service.mysqlimpl.dao.AbstractArchiveDao;
 import org.csstudio.archive.common.service.mysqlimpl.dao.ArchiveConnectionHandler;
 import org.csstudio.archive.common.service.mysqlimpl.dao.ArchiveDaoException;
 import org.csstudio.archive.common.service.mysqlimpl.persistengine.PersistEngineDataManager;
 import org.csstudio.domain.desy.time.TimeInstant;
 import org.csstudio.domain.desy.time.TimeInstant.TimeInstantBuilder;
+import org.csstudio.domain.desy.typesupport.TypeSupportException;
 
 import com.google.inject.Inject;
 
@@ -68,10 +70,10 @@ public class ArchiveEngineStatusDaoImpl extends AbstractArchiveDao implements IA
      */
     @Inject
     public ArchiveEngineStatusDaoImpl(@Nonnull final ArchiveConnectionHandler handler,
-                                      @Nonnull final PersistEngineDataManager persister) throws ArchiveDaoException {
+                                      @Nonnull final PersistEngineDataManager persister) {
         super(handler, persister);
 
-        getEngineMgr().registerBatchQueueHandler(new ArchiveEngineStatusBatchQueueHandler(getDatabaseName()));
+        BatchQueueHandlerSupport.installHandlerIfNotExists(new ArchiveEngineStatusBatchQueueHandler(getDatabaseName()));
     }
 
     /**
@@ -79,9 +81,9 @@ public class ArchiveEngineStatusDaoImpl extends AbstractArchiveDao implements IA
      */
     @Override
     @CheckForNull
-    public IArchiveEngineStatus createMgmtEntry(@Nonnull final IArchiveEngineStatus state) throws ArchiveDaoException {
-        getEngineMgr().submitToBatch(Collections.singleton(state));
-        return state;
+    public IArchiveEngineStatus createMgmtEntry(@Nonnull final IArchiveEngineStatus status) throws ArchiveDaoException {
+        createMgmtEntries(Collections.singleton(status));
+        return status;
     }
 
     /**
@@ -89,7 +91,11 @@ public class ArchiveEngineStatusDaoImpl extends AbstractArchiveDao implements IA
      */
     @Override
     public boolean createMgmtEntries(@Nonnull final Collection<IArchiveEngineStatus> monitorStates) throws ArchiveDaoException {
-        getEngineMgr().submitToBatch(monitorStates);
+        try {
+            getEngineMgr().submitToBatch(monitorStates);
+        } catch (final TypeSupportException e) {
+            throw new ArchiveDaoException("Batch type support missing for " + IArchiveEngineStatus.class.getName(), e);
+        }
         return true;
     }
 

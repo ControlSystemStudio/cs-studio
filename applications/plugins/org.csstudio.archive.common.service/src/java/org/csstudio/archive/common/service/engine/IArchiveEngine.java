@@ -26,7 +26,7 @@ import java.net.URL;
 
 import javax.annotation.Nonnull;
 
-import org.csstudio.domain.desy.common.id.Identifiable;
+import org.csstudio.domain.desy.common.id.IIdentifiable;
 import org.csstudio.domain.desy.time.TimeInstant;
 
 /**
@@ -35,7 +35,7 @@ import org.csstudio.domain.desy.time.TimeInstant;
  * @author bknerr
  * @since 12.11.2010
  */
-public interface IArchiveEngine extends Identifiable<ArchiveEngineId>{
+public interface IArchiveEngine extends IIdentifiable<ArchiveEngineId>{
 
     /**
      * Returns the engine URL.

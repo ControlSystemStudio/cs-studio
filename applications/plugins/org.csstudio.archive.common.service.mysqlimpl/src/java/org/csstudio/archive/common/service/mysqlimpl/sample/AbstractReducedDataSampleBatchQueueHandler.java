@@ -30,7 +30,7 @@ import java.util.concurrent.BlockingQueue;
 
 import javax.annotation.Nonnull;
 
-import org.csstudio.archive.common.service.mysqlimpl.dao.AbstractBatchQueueHandler;
+import org.csstudio.archive.common.service.mysqlimpl.batch.BatchQueueHandlerSupport;
 import org.csstudio.archive.common.service.mysqlimpl.dao.ArchiveDaoException;
 
 import com.google.common.base.Function;
@@ -44,15 +44,16 @@ import com.google.common.collect.Collections2;
  * @since 20.07.2011
  * @param <T> the type of the entity used to fill the statement's batch
  */
-public abstract class AbstractReducedDataSampleBatchQueueHandler<T extends AbstractReducedDataSample> extends AbstractBatchQueueHandler<T> {
+public abstract class AbstractReducedDataSampleBatchQueueHandler<T extends AbstractReducedDataSample> extends BatchQueueHandlerSupport<T> {
     private static final String VAL_WILDCARDS = "(?, ?, ?, ?, ?)";
 
     /**
      * Constructor.
      */
-    public AbstractReducedDataSampleBatchQueueHandler(@Nonnull final String database,
+    public AbstractReducedDataSampleBatchQueueHandler(@Nonnull final Class<T> typeClass,
+                                                      @Nonnull final String database,
                                                       @Nonnull final BlockingQueue<T> queue) {
-        super(database, queue);
+        super(typeClass, database, queue);
     }
 
     /**

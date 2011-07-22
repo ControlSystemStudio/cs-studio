@@ -30,7 +30,7 @@ import java.util.concurrent.LinkedBlockingQueue;
 
 import javax.annotation.Nonnull;
 
-import org.csstudio.archive.common.service.mysqlimpl.dao.AbstractBatchQueueHandler;
+import org.csstudio.archive.common.service.mysqlimpl.batch.BatchQueueHandlerSupport;
 import org.csstudio.archive.common.service.mysqlimpl.dao.ArchiveDaoException;
 import org.csstudio.archive.common.service.mysqlimpl.types.ArchiveTypeConversionSupport;
 import org.csstudio.archive.common.service.sample.IArchiveSample;
@@ -49,7 +49,7 @@ import com.google.common.collect.Collections2;
  * @since 20.07.2011
  */
 @SuppressWarnings("rawtypes")
-public class ArchiveSampleBatchQueueHandler extends AbstractBatchQueueHandler<IArchiveSample> {
+public class ArchiveSampleBatchQueueHandler extends BatchQueueHandlerSupport<IArchiveSample> {
 
     static final Logger LOG = LoggerFactory.getLogger(ArchiveSampleBatchQueueHandler.class);
 
@@ -59,7 +59,7 @@ public class ArchiveSampleBatchQueueHandler extends AbstractBatchQueueHandler<IA
      * Constructor.
      */
     public ArchiveSampleBatchQueueHandler(@Nonnull final String databaseName) {
-        super(databaseName, new LinkedBlockingQueue<IArchiveSample>());
+        super(IArchiveSample.class, databaseName, new LinkedBlockingQueue<IArchiveSample>());
     }
 
     @Override

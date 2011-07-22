@@ -39,7 +39,7 @@ public class HourReducedDataSampleBatchQueueHandler extends
      * Constructor.
      */
     public HourReducedDataSampleBatchQueueHandler(@Nonnull final String database) {
-        super(database, new LinkedBlockingQueue<HourReducedDataSample>());
+        super(HourReducedDataSample.class, database, new LinkedBlockingQueue<HourReducedDataSample>());
     }
 
     /**

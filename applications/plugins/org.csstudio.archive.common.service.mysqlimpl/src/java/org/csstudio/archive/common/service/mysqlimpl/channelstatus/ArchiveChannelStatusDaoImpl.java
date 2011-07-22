@@ -34,11 +34,13 @@ import org.csstudio.archive.common.service.channel.ArchiveChannelId;
 import org.csstudio.archive.common.service.channelstatus.ArchiveChannelStatus;
 import org.csstudio.archive.common.service.channelstatus.ArchiveChannelStatusId;
 import org.csstudio.archive.common.service.channelstatus.IArchiveChannelStatus;
+import org.csstudio.archive.common.service.mysqlimpl.batch.BatchQueueHandlerSupport;
 import org.csstudio.archive.common.service.mysqlimpl.dao.AbstractArchiveDao;
 import org.csstudio.archive.common.service.mysqlimpl.dao.ArchiveConnectionHandler;
 import org.csstudio.archive.common.service.mysqlimpl.dao.ArchiveDaoException;
 import org.csstudio.archive.common.service.mysqlimpl.persistengine.PersistEngineDataManager;
 import org.csstudio.domain.desy.time.TimeInstant.TimeInstantBuilder;
+import org.csstudio.domain.desy.typesupport.TypeSupportException;
 
 import com.google.inject.Inject;
 
@@ -60,17 +62,20 @@ public class ArchiveChannelStatusDaoImpl extends AbstractArchiveDao implements I
 
     @Inject
     public ArchiveChannelStatusDaoImpl(@Nonnull final ArchiveConnectionHandler handler,
-                                       @Nonnull final PersistEngineDataManager persister) throws ArchiveDaoException {
+                                       @Nonnull final PersistEngineDataManager persister) {
         super(handler, persister);
 
-        getEngineMgr().registerBatchQueueHandler(new ArchiveChannelStatusBatchQueueHandler(getDatabaseName()));
+        BatchQueueHandlerSupport.installHandlerIfNotExists(new ArchiveChannelStatusBatchQueueHandler(getDatabaseName()));
     }
 
 
     @Override
     public void createChannelStatus(@Nonnull final IArchiveChannelStatus entry) throws ArchiveDaoException {
-
-        getEngineMgr().submitToBatch(Collections.singleton(entry));
+        try {
+            BatchQueueHandlerSupport.addToQueue(Collections.singleton(entry));
+        } catch (final TypeSupportException e) {
+            throw new ArchiveDaoException("Batch type support missing for " + entry.getClass().getName(), e);
+        }
     }
 
 

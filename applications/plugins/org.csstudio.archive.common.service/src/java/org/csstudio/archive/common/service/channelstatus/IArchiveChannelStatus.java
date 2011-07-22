@@ -24,7 +24,7 @@ package org.csstudio.archive.common.service.channelstatus;
 import javax.annotation.Nonnull;
 
 import org.csstudio.archive.common.service.channel.ArchiveChannelId;
-import org.csstudio.domain.desy.common.id.Identifiable;
+import org.csstudio.domain.desy.common.id.IIdentifiable;
 import org.csstudio.domain.desy.time.TimeInstant;
 
 /**
@@ -33,7 +33,7 @@ import org.csstudio.domain.desy.time.TimeInstant;
  * @author bknerr
  * @since Mar 25, 2011
  */
-public interface IArchiveChannelStatus extends Identifiable<ArchiveChannelStatusId> {
+public interface IArchiveChannelStatus extends IIdentifiable<ArchiveChannelStatusId> {
 
     @Nonnull
     ArchiveChannelId getChannelId();

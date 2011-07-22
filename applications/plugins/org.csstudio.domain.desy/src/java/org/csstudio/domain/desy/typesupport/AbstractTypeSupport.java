@@ -54,4 +54,13 @@ public abstract class AbstractTypeSupport<T> extends TypeSupport<T> {
         return support;
     }
 
+    public static <T> void installIfNotExists(@SuppressWarnings("rawtypes") @Nonnull final Class<? extends TypeSupport> family,
+                                              @Nonnull final Class<T> type,
+                                              @Nonnull final AbstractTypeSupport<T> support) {
+        try {
+            findTypeSupportForOrThrowTSE(family, type);
+        } catch (final TypeSupportException e) {
+            addTypeSupport(support);
+        }
+    }
 }

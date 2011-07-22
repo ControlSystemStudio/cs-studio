@@ -24,9 +24,7 @@ package org.csstudio.archive.common.service.mysqlimpl.persistengine;
 import java.io.File;
 import java.util.Collection;
 import java.util.Comparator;
-import java.util.Map;
 import java.util.SortedSet;
-import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
@@ -35,19 +33,19 @@ import java.util.concurrent.atomic.AtomicInteger;
 import javax.annotation.Nonnull;
 
 import org.csstudio.archive.common.service.mysqlimpl.MySQLArchivePreferenceService;
-import org.csstudio.archive.common.service.mysqlimpl.dao.AbstractBatchQueueHandler;
+import org.csstudio.archive.common.service.mysqlimpl.batch.BatchQueueHandlerSupport;
+import org.csstudio.archive.common.service.mysqlimpl.batch.IBatchQueueHandlerProvider;
 import org.csstudio.archive.common.service.mysqlimpl.dao.ArchiveConnectionHandler;
-import org.csstudio.archive.common.service.mysqlimpl.dao.ArchiveDaoException;
 import org.csstudio.archive.common.service.mysqlimpl.notification.ArchiveNotifications;
 import org.csstudio.archive.common.service.util.DataRescueException;
 import org.csstudio.archive.common.service.util.DataRescueResult;
 import org.csstudio.domain.desy.DesyRunContext;
 import org.csstudio.domain.desy.time.TimeInstant.TimeInstantBuilder;
+import org.csstudio.domain.desy.typesupport.TypeSupportException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.google.common.collect.Iterables;
-import com.google.common.collect.Maps;
 import com.google.common.collect.Sets;
 import com.google.inject.Inject;
 
@@ -94,7 +92,14 @@ public class PersistEngineDataManager {
 
     private final ArchiveConnectionHandler _connectionHandler;
 
-    private final Map<Class<?>, AbstractBatchQueueHandler<?>> _strategyAndBatchMap = Maps.newConcurrentMap();
+    private final IBatchQueueHandlerProvider _handlerProvider =
+        new IBatchQueueHandlerProvider() {
+            @Override
+            @Nonnull
+            public Collection<BatchQueueHandlerSupport<?>> getHandlers() {
+                return BatchQueueHandlerSupport.getInstalledHandlers();
+            }
+        };
 
     /**
      * Constructor.
@@ -108,14 +113,14 @@ public class PersistEngineDataManager {
         _prefSmtpHost = prefs.getSmtpHost();
         _prefEmailAddress = prefs.getEmailAddress();
 
-        addGracefulShutdownHook(_strategyAndBatchMap);
+        addGracefulShutdownHook(_handlerProvider);
     }
 
     private void submitNewPersistDataWorker() {
         final PersistDataWorker newWorker = new PersistDataWorker(this,
                                                                   "PERIODIC MySQL Archive Worker: " + _workerId.getAndIncrement(),
                                                                   _prefPeriodInMS,
-                                                                  _strategyAndBatchMap);
+                                                                  _handlerProvider);
         _executor.scheduleAtFixedRate(newWorker,
                                       0L,
                                       newWorker.getPeriodInMS(),
@@ -128,13 +133,13 @@ public class PersistEngineDataManager {
      * meaning continuous integration. This is a flaw as the production code should be unaware
      * of its run context, but we couldn't think of another option.
      */
-    private void addGracefulShutdownHook(@Nonnull final Map<Class<?>, AbstractBatchQueueHandler<?>> strategyAndBatchMap) {
+    private void addGracefulShutdownHook(@Nonnull final IBatchQueueHandlerProvider provider) {
         if (DesyRunContext.isProductionContext()) {
             /**
              * Add shutdown hook.
              */
             Runtime.getRuntime().addShutdownHook(new ShutdownWorkerThread(this,
-                                                                          strategyAndBatchMap));
+                                                                          provider));
         }
     }
 
@@ -232,34 +237,12 @@ public class PersistEngineDataManager {
         _executor.shutdown();
     }
 
-    public void registerBatchQueueHandler(@Nonnull final AbstractBatchQueueHandler<?> batchStrategy) throws ArchiveDaoException {
-        final Class<?> type = batchStrategy.getType();
-        if (_strategyAndBatchMap.containsKey(type)) {
-            throw new ArchiveDaoException("A batch strategy for type " + type.getName() + " has already been registered.", null);
-        }
-        _strategyAndBatchMap.put(batchStrategy.getType(), batchStrategy);
-    }
+    public void submitToBatch(@Nonnull final Collection<?> entries) throws TypeSupportException {
 
-    @SuppressWarnings({ "rawtypes", "unchecked" })
-    public void submitToBatch(@Nonnull final Collection<?> entries) throws ArchiveDaoException {
-        if (entries.isEmpty()) {
-            return;
-        }
-        final BlockingQueue<?> queue = getQueueForTypeOf(entries.iterator().next());
-        queue.addAll((Collection) entries);
+        BatchQueueHandlerSupport.addToQueue(entries);
 
         if (isAnotherWorkerRequired()) {
             submitNewPersistDataWorker();
         }
-    }
-
-    @Nonnull
-    private BlockingQueue<?> getQueueForTypeOf(@Nonnull final Object entry) throws ArchiveDaoException {
-        final Class<?> type = entry.getClass();
-        final AbstractBatchQueueHandler<?> strategy = _strategyAndBatchMap.get(type);
-        if (strategy != null) {
-            return strategy.getQueue();
-        }
-        throw new ArchiveDaoException("A batch strategy for type " + type.getName() + " has not been registered.", null);
     }
 }

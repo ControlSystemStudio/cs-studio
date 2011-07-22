@@ -23,14 +23,14 @@ package org.csstudio.archive.common.service.mysqlimpl.persistengine;
 
 import java.util.Collection;
 import java.util.List;
-import java.util.Map;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
 
 import javax.annotation.Nonnull;
 
-import org.csstudio.archive.common.service.mysqlimpl.dao.AbstractBatchQueueHandler;
+import org.csstudio.archive.common.service.mysqlimpl.batch.BatchQueueHandlerSupport;
+import org.csstudio.archive.common.service.mysqlimpl.batch.IBatchQueueHandlerProvider;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -48,7 +48,7 @@ final class ShutdownWorkerThread extends Thread {
             LoggerFactory.getLogger(ShutdownWorkerThread.class);
 
     private final PersistEngineDataManager _persistEngineDataManager;
-    private final Map<Class<?>, AbstractBatchQueueHandler<?>> _strategyAndBatchMap;
+    private final IBatchQueueHandlerProvider _handlerProvider;
 
 
 
@@ -56,9 +56,9 @@ final class ShutdownWorkerThread extends Thread {
      * Constructor.
      */
     public ShutdownWorkerThread(@Nonnull final PersistEngineDataManager mgr,
-                                @Nonnull final Map<Class<?>, AbstractBatchQueueHandler<?>> strategyAndBatchMap) {
+                                @Nonnull final IBatchQueueHandlerProvider provider) {
         _persistEngineDataManager = mgr;
-        _strategyAndBatchMap = strategyAndBatchMap;
+        _handlerProvider = provider;
     }
 
     /**
@@ -70,12 +70,12 @@ final class ShutdownWorkerThread extends Thread {
         executor.execute(new PersistDataWorker(_persistEngineDataManager,
                                                "SHUTDOWN MySQL Archive Worker",
                                                Integer.valueOf(0),
-                                               _strategyAndBatchMap));
+                                               _handlerProvider));
         executor.shutdown();
         try {
             if (!executor.awaitTermination(3000, TimeUnit.MILLISECONDS)) {
                 shutdownLog.warn("Executor for PersistDataWorkers did not terminate in the specified period. Try to rescue data.");
-                for (final AbstractBatchQueueHandler<?> handler : _strategyAndBatchMap.values()) {
+                for (final BatchQueueHandlerSupport<?> handler : _handlerProvider.getHandlers()) {
                     rescueQueueContent(handler);
                 }
             }
@@ -85,7 +85,7 @@ final class ShutdownWorkerThread extends Thread {
         executor.shutdownNow();
     }
 
-    private <T> void rescueQueueContent(@Nonnull final AbstractBatchQueueHandler<T> handler) {
+    private <T> void rescueQueueContent(@Nonnull final BatchQueueHandlerSupport<T> handler) {
         final List<T> elements = Lists.newLinkedList();
         handler.getQueue().drainTo(elements);
         final Collection<String> statements = handler.convertToStatementString(elements);

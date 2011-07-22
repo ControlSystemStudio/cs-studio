@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2010 Stiftung Deutsches Elektronen-Synchrotron,
+ * Copyright (c) 2011 Stiftung Deutsches Elektronen-Synchrotron,
  * Member of the Helmholtz Association, (DESY), HAMBURG, GERMANY.
  *
  * THIS SOFTWARE IS PROVIDED UNDER THIS LICENSE ON AN "../AS IS" BASIS.
@@ -19,25 +19,20 @@
  * PROJECT IN THE FILE LICENSE.HTML. IF THE LICENSE IS NOT INCLUDED YOU MAY FIND A COPY
  * AT HTTP://WWW.DESY.DE/LEGAL/LICENSE.HTM
  */
-package org.csstudio.domain.desy.common.id;
+package org.csstudio.archive.common.service.mysqlimpl.batch;
+
+import java.util.Collection;
 
 import javax.annotation.Nonnull;
 
+
 /**
- * Interface of entities identified by an {@link Id}.
+ * A provider for the group of registered/installed handlers.
  *
  * @author bknerr
- * @since 02.11.2010
- *
- * @param <T> type of the entity
+ * @since 22.07.2011
  */
-public interface Identifiable<T extends Id<T>> {
-
-    /**
-     * Returns the {@link Id} of this entitiy.
-     *
-     * @return the id
-     */
+public interface IBatchQueueHandlerProvider {
     @Nonnull
-    T getId();
+    Collection<BatchQueueHandlerSupport<?>> getHandlers();
 }
