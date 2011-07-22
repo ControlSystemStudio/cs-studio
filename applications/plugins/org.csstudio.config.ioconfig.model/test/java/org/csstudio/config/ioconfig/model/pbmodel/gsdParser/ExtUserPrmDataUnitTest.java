@@ -4,6 +4,8 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 
+import org.csstudio.config.ioconfig.model.pbmodel.GSDFileDBO;
+import org.junit.Before;
 import org.junit.Test;
 
 /**
@@ -15,9 +17,11 @@ import org.junit.Test;
  */
 public class ExtUserPrmDataUnitTest {
 
+    private GSDFileDBO _gsdFileDBO;
+
     @Test
     public void text() {
-        ExtUserPrmData out = new ExtUserPrmData(new ParsedGsdFileModel("JUnitTest"), 1, "desc");
+        ExtUserPrmData out = new ExtUserPrmData(new ParsedGsdFileModel(_gsdFileDBO), 1, "desc");
         assertEquals(out.getText(), "desc");
         out.setText("");
         assertEquals(out.getText(), "");
@@ -28,7 +32,7 @@ public class ExtUserPrmDataUnitTest {
 
     @Test
     public void defaults() {
-        ExtUserPrmData out = new ExtUserPrmData(new ParsedGsdFileModel("JUnitTest"), 1, "");
+        ExtUserPrmData out = new ExtUserPrmData(new ParsedGsdFileModel(_gsdFileDBO), 1, "");
         assertTrue(out.getDefault()==0);
         out.setDefault("0");
         assertTrue(out.getDefault()==0);
@@ -49,7 +53,7 @@ public class ExtUserPrmDataUnitTest {
 
     @Test
     public void minBit() {
-        ExtUserPrmData out = new ExtUserPrmData(new ParsedGsdFileModel("JUnitTest"), 1, "");
+        ExtUserPrmData out = new ExtUserPrmData(new ParsedGsdFileModel(_gsdFileDBO), 1, "");
         assertTrue(out.getMinBit()==0);
         assertTrue(out.getMinBit()==0);
         out.setMinBit("0");
@@ -70,7 +74,7 @@ public class ExtUserPrmDataUnitTest {
 
     @Test
     public void maxBit() {
-        ExtUserPrmData out = new ExtUserPrmData(new ParsedGsdFileModel("JUnitTest"), 1, "");
+        ExtUserPrmData out = new ExtUserPrmData(new ParsedGsdFileModel(_gsdFileDBO), 1, "");
         assertTrue(out.getMaxBit()==0);
         out.setMaxBit("0");
         assertTrue(out.getMaxBit()==0);
@@ -91,7 +95,7 @@ public class ExtUserPrmDataUnitTest {
 
     @Test
     public void maxValue() {
-        ExtUserPrmData out = new ExtUserPrmData(new ParsedGsdFileModel("JUnitTest"), 1, "");
+        ExtUserPrmData out = new ExtUserPrmData(new ParsedGsdFileModel(_gsdFileDBO), 1, "");
 
         out.setValueRange("-100", "0");
         assertEquals(-100, out.getMinValue());
@@ -111,4 +115,8 @@ public class ExtUserPrmDataUnitTest {
 
     }
 
+    @Before
+    public void setUp() throws Exception {
+        _gsdFileDBO = new GSDFileDBO("JUnitTest", "JUnitTest File");
+    }
 }

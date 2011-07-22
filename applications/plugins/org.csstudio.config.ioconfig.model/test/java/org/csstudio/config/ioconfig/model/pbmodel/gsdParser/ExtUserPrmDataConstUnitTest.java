@@ -31,6 +31,8 @@ import java.util.List;
 
 import javax.annotation.Nonnull;
 
+import org.csstudio.config.ioconfig.model.pbmodel.GSDFileDBO;
+import org.junit.Before;
 import org.junit.Ignore;
 import org.junit.Test;
 
@@ -42,18 +44,20 @@ import org.junit.Test;
  */
 public class ExtUserPrmDataConstUnitTest {
 
+    private GSDFileDBO _gsdFileDBO;
+
     /**
      * Test method for {@link org.csstudio.config.ioconfig.model.pbmodel.gsdParser.ExtUserPrmDataConst#ExtUserPrmDataConst(java.lang.String, java.lang.String)}.
      */
     @Test
     public final void testEmptyExtUserPrmDataConst() {
-        ParsedGsdFileModel out = new ParsedGsdFileModel("Test");
+        ParsedGsdFileModel out = new ParsedGsdFileModel(_gsdFileDBO);
         testExtUserPrmDataConst(out, 0, 4, 255, 4, 255, 3);        
     }
 
     @Test
     public final void testFilledExtUserPrmDataConst() {
-        ParsedGsdFileModel out = new ParsedGsdFileModel("Test");
+        ParsedGsdFileModel out = new ParsedGsdFileModel(_gsdFileDBO);
         setExtUserPrmDataConst(out);
         testExtUserPrmDataConst(out, 118, 116, 255, 116, 255, 3);
     }
@@ -171,6 +175,11 @@ public class ExtUserPrmDataConstUnitTest {
     @Test
     public final void testToString() {
         fail("Not yet implemented");
+    }
+    
+    @Before
+    public void setUp() throws Exception {
+        _gsdFileDBO = new GSDFileDBO("JUnitTest", "JUnitTest File");
     }
 
 }

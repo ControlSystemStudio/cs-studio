@@ -36,7 +36,7 @@ import org.csstudio.config.ioconfig.model.pbmodel.MasterDBO;
 import org.csstudio.config.ioconfig.model.pbmodel.ModuleDBO;
 import org.csstudio.config.ioconfig.model.pbmodel.ProfibusSubnetDBO;
 import org.csstudio.config.ioconfig.model.pbmodel.SlaveDBO;
-import org.junit.Before;
+import org.junit.BeforeClass;
 import org.junit.Ignore;
 import org.junit.Test;
 
@@ -52,10 +52,8 @@ public class HibernateLoadUnitTest {
     /**
      * @throws java.lang.Exception
      */
-    @Before
-    public void setUp() throws Exception {
-//        IPreferencesService prefs = Platform.getPreferencesService();
-//        prefs.getString("org.csstudio.platform", "log4j.appender.css_console.Threshold", "", null))
+    @BeforeClass
+    public static void setUpBeforeClass() throws Exception {
         final HibernateRepository repository = new HibernateRepository(new HibernateTestManager());
         Repository.injectIRepository(repository);
     }

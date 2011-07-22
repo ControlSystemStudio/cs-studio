@@ -140,7 +140,7 @@ public class ChannelConfigDialog extends Dialog implements IHasDocumentableObjec
      */
     public ChannelConfigDialog(@Nullable final Shell parentShell,
                                @Nonnull final GsdModuleModel2 gsdModuleModel,
-                               @Nonnull GSDModuleDBO gsdModule) {
+                               @Nonnull final GSDModuleDBO gsdModule) {
         super(parentShell);
         setShellStyle(SWT.MODELESS | SWT.CLOSE | SWT.MAX | SWT.TITLE | SWT.BORDER | SWT.RESIZE);
         _moduleModel = gsdModuleModel;
@@ -163,6 +163,11 @@ public class ChannelConfigDialog extends Dialog implements IHasDocumentableObjec
     @Override
     @Nonnull
     public IDocumentable getDocumentableObject() {
+        return _gsdModule;
+    }
+    
+    @Nonnull
+    public GSDModuleDBO getGsdModule() {
         return _gsdModule;
     }
     
@@ -242,6 +247,12 @@ public class ChannelConfigDialog extends Dialog implements IHasDocumentableObjec
         closeAllCellEditors(_outputTableViewer);
         setEmptyChannelPrototypeName2Unused();
         _gsdModule.setDocuments(_documentationManageView.getDocuments());
+        try {
+            _gsdModule.save();
+        } catch (PersistenceException e) {
+            e.printStackTrace();
+            DeviceDatabaseErrorDialog.open(null, "The Settings not saved!\n\nDataBase Failure:", e);
+        }
         super.okPressed();
     }
 

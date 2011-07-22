@@ -58,7 +58,7 @@ public class SlaveUnitTest {
     }
     
     @After
-    public void setDown() {
+    public void tearDown() {
         _master = null;
         _profibusSubnet = null;
     }

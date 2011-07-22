@@ -788,11 +788,6 @@ public abstract class AbstractNodeEditor<T extends AbstractNodeDBO<?,?>> extends
      */
     protected void openErrorDialog(@Nonnull final Exception exception, @Nullable ProfiBusTreeView busTreeView) {
         LOG.error("The Settings not saved!\n\nDataBase Failure:", exception);
-        System.out.println(" - - -- - - - ");
-        exception.printStackTrace();
-        System.out.println(" - - -- - - - ");
-        System.out.println(exception.getLocalizedMessage());
-        System.out.println(" - - -- - - - ");
         DeviceDatabaseErrorDialog.open(null,
                                        "The Settings not saved!\n\nDataBase Failure:",
                                        exception, getProfiBusTreeView());

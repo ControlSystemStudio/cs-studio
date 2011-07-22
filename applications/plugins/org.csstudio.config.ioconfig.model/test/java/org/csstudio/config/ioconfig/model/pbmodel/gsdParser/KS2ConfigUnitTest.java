@@ -166,7 +166,7 @@ public class KS2ConfigUnitTest {
     }
 
     @After
-    public void setDown() throws Exception {
+    public void tearDown() throws Exception {
         System.out.println("      ---------- --------- -------- ------ ----- ---- --- -- -  -   -    -     -      -       -        -");
         while (_eLine != null && _outLine != null) {
             _eLine = _expected.readLine();
