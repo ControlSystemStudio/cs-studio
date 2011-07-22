@@ -23,42 +23,28 @@
  
 package org.csstudio.ams.connector.voicemail;
 
-import java.util.Hashtable;
-import javax.jms.Connection;
-import javax.jms.ConnectionFactory;
-import javax.jms.JMSException;
 import javax.jms.MapMessage;
 import javax.jms.Message;
-import javax.jms.MessageProducer;
-import javax.jms.Session;
-import javax.naming.Context;
-import javax.naming.InitialContext;
-import javax.naming.NamingException;
 import org.csstudio.ams.AmsActivator;
 import org.csstudio.ams.AmsConstants;
 import org.csstudio.ams.Log;
 import org.csstudio.ams.connector.voicemail.isdn.CallCenter;
 import org.csstudio.ams.connector.voicemail.isdn.CallCenterException;
 import org.csstudio.platform.utility.jms.JmsRedundantReceiver;
+import org.csstudio.platform.utility.jms.JmsSimpleProducer;
 import org.eclipse.jface.preference.IPreferenceStore;
 
 public class VoicemailConnectorWork extends Thread implements AmsConstants {
     
     private VoicemailConnectorStart application = null;
 
-    // --- Sender ---
-    private Context amsSenderContext = null;
-    private ConnectionFactory amsSenderFactory = null;
-    private Connection amsSenderConnection = null;
-    private Session amsSenderSession = null;
-
-    private MessageProducer amsPublisherReply = null;
-
-    // CHANGED BY: Markus Moeller, 06.11.2007
-    // private TopicSubscriber amsSubscriberVm = null;
-    // private MessageConsumer amsSubscriberVm = null;
-    private JmsRedundantReceiver amsReceiver = null; 
+    /** The producer sends messages to topic T_AMS_CON_REPLY */
+    private JmsSimpleProducer amsPublisherReply;
     
+    /** The consumer that listens to topic T_AMS_CONNECTOR_VOICEMAIL */
+    private JmsRedundantReceiver amsReceiver; 
+    
+    /** The class that makes the telephone calls */
     private CallCenter callCenter;
     
     private boolean bStop;
@@ -105,7 +91,7 @@ public class VoicemailConnectorWork extends Thread implements AmsConstants {
                 
                 if (!bInitedVmService) {
                     
-                    bInitedVmService = initCallCenter();
+                    bInitedVmService = true; //initCallCenter();
                     if (!bInitedVmService) {
                         
                         iErr = VoicemailConnectorStart.STAT_ERR_VM_SERVICE;
@@ -199,6 +185,7 @@ public class VoicemailConnectorWork extends Thread implements AmsConstants {
         Log.log(this, Log.INFO, "Voicemail connector exited");
     }
 
+    @SuppressWarnings("unused")
     private boolean initCallCenter() {
         
         try {
@@ -219,109 +206,52 @@ public class VoicemailConnectorWork extends Thread implements AmsConstants {
     private boolean initJms() {
         
         IPreferenceStore storeAct = AmsActivator.getDefault().getPreferenceStore();
-        Hashtable<String, String> properties = null;
-        boolean result = false;
+        boolean success = false;
         
         boolean durable = Boolean.parseBoolean(storeAct.getString(org.csstudio.ams.internal.AmsPreferenceKey.P_JMS_AMS_CREATE_DURABLE));
-
+        
+        String url = storeAct.getString(org.csstudio.ams.internal.AmsPreferenceKey.P_JMS_AMS_PROVIDER_URL_1);
+        String topic = storeAct.getString(org.csstudio.ams.internal.AmsPreferenceKey.P_JMS_AMS_TOPIC_REPLY);
+        String factoryClass = storeAct.getString(org.csstudio.ams.internal.AmsPreferenceKey.P_JMS_AMS_CONNECTION_FACTORY_CLASS);
+        
+        amsPublisherReply = new JmsSimpleProducer("VoicemailConnectorWorkSenderInternal", url, factoryClass, topic);
+        if (amsPublisherReply.isConnected() == false) {
+            Log.log(this, Log.FATAL, "Could not create amsPublisherReply");
+            return false;
+        }
+        
         try {
-            storeAct = AmsActivator.getDefault().getPreferenceStore();
-            properties = new Hashtable<String, String>();
-            properties.put(Context.INITIAL_CONTEXT_FACTORY, 
-                    storeAct.getString(org.csstudio.ams.internal.AmsPreferenceKey.P_JMS_AMS_CONNECTION_FACTORY_CLASS));
-            properties.put(Context.PROVIDER_URL, 
-                    storeAct.getString(org.csstudio.ams.internal.AmsPreferenceKey.P_JMS_AMS_PROVIDER_URL_1));
-            amsSenderContext = new InitialContext(properties);
-            
-            amsSenderFactory = (ConnectionFactory) amsSenderContext.lookup(
-                    storeAct.getString(org.csstudio.ams.internal.AmsPreferenceKey.P_JMS_AMS_CONNECTION_FACTORY));
-            amsSenderConnection = amsSenderFactory.createConnection();
-            
-            // ADDED BY: Markus Moeller, 25.05.2007
-            amsSenderConnection.setClientID("VoicemailConnectorWorkSenderInternal");
-            
-            amsSenderSession = amsSenderConnection.createSession(false, Session.CLIENT_ACKNOWLEDGE);
-            
-            // CHANGED BY: Markus Moeller, 25.05.2007
-            /*
-            amsPublisherReply = amsSession.createProducer((Topic)amsContext.lookup(
-                    storeAct.getString(org.csstudio.ams.internal.SampleService.P_JMS_AMS_TOPIC_REPLY)));
-            */
-            
-            amsPublisherReply = amsSenderSession.createProducer(amsSenderSession.createTopic(
-                    storeAct.getString(org.csstudio.ams.internal.AmsPreferenceKey.P_JMS_AMS_TOPIC_REPLY)));
-            if (amsPublisherReply == null)
-            {
-                Log.log(this, Log.FATAL, "could not create amsPublisherReply");
-                return false;
-            }
-
-            amsSenderConnection.start();
-
-            // CHANGED BY: Markus Moeller, 25.05.2007
-            /*
-            amsSubscriberVm = amsSession.createDurableSubscriber((Topic)amsContext.lookup(
-                    storeAct.getString(org.csstudio.ams.internal.SampleService.P_JMS_AMS_TOPIC_VOICEMAIL_CONNECTOR)),
-                    storeAct.getString(org.csstudio.ams.internal.SampleService.P_JMS_AMS_TSUB_VOICEMAIL_CONNECTOR));
-            */
-            
-            // CHANGED BY: Markus Moeller, 28.06.2007
-            /*
-            amsSubscriberVm = amsSession.createDurableSubscriber(amsSession.createTopic(
-                    storeAct.getString(org.csstudio.ams.internal.SampleService.P_JMS_AMS_TOPIC_VOICEMAIL_CONNECTOR)),
-                    storeAct.getString(org.csstudio.ams.internal.SampleService.P_JMS_AMS_TSUB_VOICEMAIL_CONNECTOR));
-            
-            
-            amsSubscriberVm = amsSession.createConsumer(amsSession.createTopic(
-                    storeAct.getString(org.csstudio.ams.internal.SampleService.P_JMS_AMS_TOPIC_VOICEMAIL_CONNECTOR)));
-
-            if (amsSubscriberVm == null)
-            {
-                Log.log(this, Log.FATAL, "could not create amsSubscriberVm");
-                return false;
-            }
-            */
             
             amsReceiver = new JmsRedundantReceiver("VoicemailConnectorWorkReceiverInternal", storeAct.getString(org.csstudio.ams.internal.AmsPreferenceKey.P_JMS_AMS_PROVIDER_URL_1), storeAct.getString(org.csstudio.ams.internal.AmsPreferenceKey.P_JMS_AMS_PROVIDER_URL_2));
-            result = amsReceiver.createRedundantSubscriber(
+            success = amsReceiver.createRedundantSubscriber(
                     "amsSubscriberVm",
                     storeAct.getString(org.csstudio.ams.internal.AmsPreferenceKey.P_JMS_AMS_TOPIC_VOICEMAIL_CONNECTOR),
                     storeAct.getString(org.csstudio.ams.internal.AmsPreferenceKey.P_JMS_AMS_TSUB_VOICEMAIL_CONNECTOR),
                     durable);
-            if(result == false) {
-                Log.log(this, Log.FATAL, "could not create amsSubscriberVm");
-                return false;
+            
+            if(success == false) {
+                Log.log(this, Log.FATAL, "Could not create amsSubscriberVm");
             }
             
-            return true;
         } catch(Exception e) {
-            Log.log(this, Log.FATAL, "could not init internal Jms", e);
+            Log.log(this, Log.FATAL, "Could not init internal Jms: " + e.getMessage());
         }
-        return false;
+        
+        return success;
     }
 
     public void closeJms() {
         
         Log.log(this, Log.INFO, "Exiting internal jms communication");
         
+        if (amsPublisherReply != null) {
+            amsPublisherReply.closeAll();
+        }
+        
         if(amsReceiver != null) {
             amsReceiver.closeAll();
         }
         
-        // if (amsSubscriberVm != null){try{amsSubscriberVm.close();amsSubscriberVm=null;}
-        // catch (JMSException e){Log.log(this, Log.WARN, e);}}
-        
-        if (amsPublisherReply != null){try{amsPublisherReply.close();amsPublisherReply=null;}
-        catch (JMSException e){Log.log(this, Log.WARN, e);}}    
-        if (amsSenderSession != null){try{amsSenderSession.close();amsSenderSession=null;}
-        catch (JMSException e){Log.log(this, Log.WARN, e);}}
-        if (amsSenderConnection != null){try{amsSenderConnection.stop();}
-        catch (JMSException e){Log.log(this, Log.WARN, e);}}
-        if (amsSenderConnection != null){try{amsSenderConnection.close();amsSenderConnection=null;}
-        catch (JMSException e){Log.log(this, Log.WARN, e);}}
-        if (amsSenderContext != null){try{amsSenderContext.close();amsSenderContext=null;}
-        catch (NamingException e){Log.log(this, Log.WARN, e);}}
-
         Log.log(this, Log.INFO, "JMS internal communication closed");
     }
     
@@ -333,6 +263,7 @@ public class VoicemailConnectorWork extends Thread implements AmsConstants {
         } catch(Exception e) {
             Log.log(this, Log.FATAL, "could not acknowledge: " + e.getMessage());
         }
+        
         return false;
     }
     
