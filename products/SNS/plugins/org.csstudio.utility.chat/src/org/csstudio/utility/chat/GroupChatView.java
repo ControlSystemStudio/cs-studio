@@ -21,10 +21,12 @@ import org.eclipse.core.runtime.Status;
 import org.eclipse.core.runtime.jobs.Job;
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.osgi.util.NLS;
+import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.DisposeEvent;
 import org.eclipse.swt.events.DisposeListener;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Display;
+import org.eclipse.swt.widgets.FileDialog;
 import org.eclipse.ui.IWorkbenchPage;
 
 /** RCP View for the group chat
@@ -249,6 +251,28 @@ public class GroupChatView extends org.eclipse.ui.part.ViewPart
 		});
 		
 	    return new_gui.get();
+    }
+
+	/** {@inheritDoc} */
+	@Override
+    public File receivedFile(final String requestor, final String file_name)
+    {
+		final AtomicReference<File> name = new AtomicReference<File>(null);
+		// Query in UI thread
+		display.syncExec(new Runnable()
+		{
+			@Override
+            public void run()
+            {
+				final FileDialog dlg = new FileDialog(gui.getShell(), SWT.SAVE);
+				dlg.setText(NLS.bind("Save file from {0} ?", requestor));
+				dlg.setFileName(file_name);
+				final String selected = dlg.open();
+				if (selected != null)
+					name.set(new File(selected));
+            }
+		});
+		return name.get();
     }
 
 	/** Counter for IndividualChatView instances

@@ -7,6 +7,8 @@
  ******************************************************************************/
 package org.csstudio.utility.chat;
 
+import java.io.File;
+
 /** Listener to a group chat
  *  @author Kay
  */
@@ -30,4 +32,11 @@ public interface GroupChatListener extends IndividualChatListener
 	 *  @param chat {@link IndividualChat} that we accepted
 	 */
 	public void startIndividualChat(final String from, IndividualChat chat);
+
+	/** Handle received file
+	 *  @param requestor Person who sent the file
+	 *  @param fileName File name
+	 *  @return File if interested in receiving the file, or <code>null</code> to reject
+	 */
+	public File receivedFile(final String requestor, final String fileName);
 }

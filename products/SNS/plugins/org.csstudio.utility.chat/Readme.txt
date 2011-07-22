@@ -31,3 +31,17 @@ Stop openfire,
 in conf/openfile.xml, set <setup>true</setup> to false,
 start openfile,
 open the admin
+
+
+
+When used with Pidgin as another test client:
+Set account within pidgin to
+Protocol: XMPP
+Username, password: Something that's been added in openfire,
+       or select "Create this new account on server" to create
+Domain: name of server, like "localhost"
+Domain: smack as default works OK
+
+Under "Advanced":
+Connect port: 5222
+File Transfer proxies: server:7777, like "localhost:7777"
