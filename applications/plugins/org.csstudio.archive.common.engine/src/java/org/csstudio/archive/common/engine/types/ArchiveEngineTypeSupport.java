@@ -109,8 +109,8 @@ public abstract class ArchiveEngineTypeSupport<V> extends AbstractTypeSupport<V>
             try {
                 // FIXME (bknerr) : find solution for collection values - multiscalar wrapper?
                 channel = new ArchiveChannel<Collection<V>, ISystemVariable<Collection<V>>>(cfg.getName(),
-                                                                                                 cfg.getId(),
-                                                                                                 null);
+                                                                                            cfg.getId(),
+                                                                                            null);
             } catch (final EngineModelException e) {
                 throw new TypeSupportException("Channel could not be instantiated.", e);
             }
