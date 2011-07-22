@@ -218,6 +218,6 @@ public class ResourceUtil {
 	 */
 	@SuppressWarnings("nls")
     public static boolean isURL(final String url){
-		return url.contains(":/");  //$NON-NLS-1$
+		return url.contains("://");  //$NON-NLS-1$
 	}	
 }

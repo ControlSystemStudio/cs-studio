@@ -1,7 +1,6 @@
 package org.csstudio.opibuilder.runmode;
 
 import org.csstudio.opibuilder.model.DisplayModel;
-import org.csstudio.opibuilder.preferences.PreferencesHelper;
 import org.csstudio.opibuilder.util.RequestUtil;
 import org.eclipse.core.runtime.IAdaptable;
 import org.eclipse.core.runtime.IPath;
@@ -29,6 +28,8 @@ public class OPIView extends ViewPart implements IOPIRuntime {
 	
 	private static final String TAG_INPUT = "input"; //$NON-NLS-1$
 	private static final String TAG_FACTORY_ID = "factory_id"; //$NON-NLS-1$
+	
+	private static boolean openFromPerspective = false;
 	
 
 	/**
@@ -94,7 +95,8 @@ public class OPIView extends ViewPart implements IOPIRuntime {
 
 	@Override
 	public void createPartControl(Composite parent) {
-		if(getOPIInput() == null){
+		if(getOPIInput() == null && openFromPerspective){
+			openFromPerspective = false;
 			IPath opiPath = RequestUtil.getOPIPathFromRequest();
 			if(opiPath == null)
 				throw new RuntimeException(
@@ -174,6 +176,14 @@ public class OPIView extends ViewPart implements IOPIRuntime {
 			return super.getAdapter(adapter);
 
 	}
-
+	
+	/**When OPI View is opened from perspective, it cannot specify opi input.
+	 * So it uses default start up OPI. This flag will be reset to false after 
+	 * view is created.
+	 * @param openFromPerspective
+	 */
+	public static void setOpenFromPerspective(boolean openFromPerspective) {
+		OPIView.openFromPerspective = openFromPerspective;
+	}
 	
 }
