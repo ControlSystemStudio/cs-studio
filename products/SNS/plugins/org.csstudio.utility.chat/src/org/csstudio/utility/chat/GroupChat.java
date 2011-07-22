@@ -7,13 +7,17 @@
  ******************************************************************************/
 package org.csstudio.utility.chat;
 
+import java.io.File;
 import java.util.Arrays;
 import java.util.HashSet;
 import java.util.Iterator;
-import java.util.List;
 import java.util.Set;
-import java.util.concurrent.CopyOnWriteArrayList;
 
+import org.eclipse.core.runtime.IProgressMonitor;
+import org.eclipse.core.runtime.IStatus;
+import org.eclipse.core.runtime.Status;
+import org.eclipse.core.runtime.jobs.Job;
+import org.eclipse.osgi.util.NLS;
 import org.jivesoftware.smack.AccountManager;
 import org.jivesoftware.smack.Chat;
 import org.jivesoftware.smack.ChatManagerListener;
@@ -23,8 +27,12 @@ import org.jivesoftware.smack.SmackConfiguration;
 import org.jivesoftware.smack.XMPPConnection;
 import org.jivesoftware.smack.packet.Message;
 import org.jivesoftware.smack.packet.Packet;
-import org.jivesoftware.smack.packet.Presence;
 import org.jivesoftware.smack.util.StringUtils;
+import org.jivesoftware.smackx.filetransfer.FileTransferListener;
+import org.jivesoftware.smackx.filetransfer.FileTransferManager;
+import org.jivesoftware.smackx.filetransfer.FileTransferRequest;
+import org.jivesoftware.smackx.filetransfer.IncomingFileTransfer;
+import org.jivesoftware.smackx.filetransfer.OutgoingFileTransfer;
 import org.jivesoftware.smackx.muc.DefaultParticipantStatusListener;
 import org.jivesoftware.smackx.muc.MultiUserChat;
 import org.jivesoftware.smackx.muc.Occupant;
@@ -39,11 +47,16 @@ import org.jivesoftware.smackx.muc.Occupant;
  *  
  *  @author Kay Kasemir
  */
-@SuppressWarnings("nls")
 public class GroupChat
 {
+	/** XMPP 'resource' used to connect */
+	private static final String XMPP_RESOURCE = "css"; //$NON-NLS-1$
+
 	/** Connection to server */
 	final private XMPPConnection connection;
+
+	/** Smack file transfer manager for connection */
+	private FileTransferManager file_manager;
 	
 	/** Name of chat group */
 	final private String group;
@@ -55,10 +68,11 @@ public class GroupChat
 	final private Set<Person> nerds = new HashSet<Person>();
 	
 	/** Listeners to the {@link GroupChat} */
-	final private List<GroupChatListener> listeners = new CopyOnWriteArrayList<GroupChatListener>();
+	private GroupChatListener listener = null;
 
 	/** Our name used in this group chat */
 	private String user;
+
 	
 	/** Initialize
 	 *  @param host XMMP server host
@@ -79,20 +93,20 @@ public class GroupChat
 	/** @param listener Listener to add */
 	public void addListener(final GroupChatListener listener)
 	{
-		listeners.add(listener);
+		if (this.listener != null)
+			throw new Error("Can only have one listener"); //$NON-NLS-1$
+		this.listener = listener;
 	}
 	
 	/** Connect to the server
 	 *  @param user User name
+	 *  @param password Password
 	 *  @throws Exception on error
 	 */
-    public void connect(final String user) throws Exception
+    public void connect(final String user, final String password) throws Exception
     {
     	this.user = user;
     	
-    	// Default password
-		final String password = "$" + user;
-		
 		// Try to create account.
 		// If account already exists, this will fail.
 		final AccountManager accounts = connection.getAccountManager();
@@ -109,11 +123,8 @@ public class GroupChat
 		}
 		
 		// Log on
-		connection.login(user, password, "css");
+		connection.login(user, password, XMPP_RESOURCE);
 
-		connection.sendPacket(
-			new Presence(Presence.Type.available, "online", 0, Presence.Mode.chat));
-		
 	    // Join chat group
 		chat = new MultiUserChat(connection, group);
 		chat.join(user);
@@ -173,9 +184,9 @@ public class GroupChat
 					final Message message = (Message) packet;
 					String nick = StringUtils.parseResource(message.getFrom());
 					if (nick.length() <= 0)
-						nick = "SERVER";
+						nick = Messages.UserSERVER;
 					final String body = message.getBody();
-					for (GroupChatListener listener : listeners)
+					if (listener != null)
 						listener.receive(nick, nick.equals(user), body);
 				}
 			}
@@ -189,18 +200,105 @@ public class GroupChat
 			{
 				if (createdLocally)
 					return;
-				for (GroupChatListener listener : listeners)
+				if (listener != null)
 				{
 					final String from = chat.getParticipant();
 					final IndividualChatGUI gui = listener.receivedInvitation(from);
-					if (gui != null)
+					if (gui == null)
+					{	// Politely refuse
+						try
+						{
+							chat.sendMessage(NLS.bind(Messages.DeclineChatFmt, user));
+						}
+						catch (Exception ex)
+						{
+							// Ignore
+						}
+					}
+					else
 						listener.startIndividualChat(from, new IndividualChat(user, chat));
 				}
 			}
 		});
+
+		// Listen to received files
+		file_manager = new FileTransferManager(connection);
+		file_manager.addFileTransferListener(new FileTransferListener()
+		{
+			@Override
+			public void fileTransferRequest(final FileTransferRequest request)
+			{
+				File file = null;
+				if (listener != null)
+					file = listener.receivedFile(request.getRequestor(), request.getFileName());
+				if (file != null)
+				{
+					final IncomingFileTransfer transfer = request.accept();
+					receiveFile(transfer, file);
+				}
+				else
+					request.reject();
+			}
+		});
     }
     
-    /** Notify listeners about current nerd list */
+    /** Receive a file, displaying progress in Eclipse Job
+     *  @param transfer {@link IncomingFileTransfer}
+     *  @param file {@link File} to create
+     */
+    protected void receiveFile(final IncomingFileTransfer transfer, final File file)
+    {
+    	new Job("Receive File") //$NON-NLS-1$
+    	{
+			@Override
+            protected IStatus run(final IProgressMonitor monitor)
+            {
+				// TODO Receiving file from Pidgin does not work.
+				// Sending to Pidgin is OK, but not receiving
+				// Piding proxy settings?
+				monitor.beginTask("Receive file", IProgressMonitor.UNKNOWN);
+				try
+				{
+					System.out.println("Receiving " + file.getPath());
+					transfer.recieveFile(file);
+					System.out.println("started...");
+					while (! transfer.isDone())
+					{
+						if (monitor.isCanceled())
+						{
+							transfer.cancel();
+							break;
+						}
+						System.out.println("received " + transfer.getAmountWritten());
+						monitor.subTask(NLS.bind("Received {0} of {1} bytes",
+								transfer.getAmountWritten(),
+								transfer.getFileSize()));
+						Thread.sleep(1000);
+					}
+				}
+				catch (Exception ex)
+				{
+					ex.printStackTrace();
+					monitor.subTask("Error saving to " + file.getName() + ": " + ex.getMessage());
+					while (! monitor.isCanceled())
+					{
+						try
+						{
+							Thread.sleep(1000);
+						}
+						catch (Exception e)
+						{
+							break;
+						}
+					}
+				}
+				monitor.done();
+	            return Status.OK_STATUS;
+            }
+    	}.schedule();
+     }
+
+	/** Notify listeners about current nerd list */
 	private void fireNerdAlert()
     {
 		final Person[] array;
@@ -209,7 +307,7 @@ public class GroupChat
 			array = nerds.toArray(new Person[nerds.size()]);
         }
 		Arrays.sort(array);
-		for (GroupChatListener listener : listeners)
+		if (listener != null)
 			listener.groupMemberUpdate(array);
     }
 
@@ -224,10 +322,18 @@ public class GroupChat
 	/** Disconnect from chat server */
     public void disconnect()
     {
-    	if (chat != null)
-    		chat.leave();
-    	listeners.clear();
-    	connection.disconnect();
+    	listener = null;
+    	file_manager = null;
+    	try
+    	{
+	    	if (chat != null)
+	    		chat.leave();
+	    	connection.disconnect();
+    	}
+    	catch (Throwable ex)
+    	{
+    		// Ignore, shutting down
+    	}
     }
 
     /** Start individual chat
@@ -244,8 +350,50 @@ public class GroupChat
 		String address = person.getAddress();
 		// and fall back to in-room address
 		if (address == null  ||  address.isEmpty())
-			address = group + "/" + person.getName();
+			address = group + "/" + person.getName(); //$NON-NLS-1$
 		final Chat new_chat = chat.createPrivateChat(address, null);
 		return new IndividualChat(user, new_chat);
+    }
+
+	/** Start a file transfer
+	 *  @param person Recipient of the file
+	 *  @param file The File
+	 *  @throws Exception on error
+	 */
+	public void sendFile(final Person person, final File file) throws Exception
+    {
+		if (file_manager == null)
+			return;
+		final OutgoingFileTransfer transfer = file_manager.createOutgoingFileTransfer(person.getAddress());
+        transfer.sendFile(file, file.getName());
+        // Eclipse Job to monitor and maybe cancel the transfer
+        new Job(Messages.JobSendingFile)
+        {
+			@Override
+            protected IStatus run(final IProgressMonitor monitor)
+            {
+				monitor.beginTask(file.getName(), IProgressMonitor.UNKNOWN);
+				while (! transfer.isDone())
+				{
+					if (monitor.isCanceled())
+					{
+						transfer.cancel();
+						break;
+					}
+					monitor.subTask(NLS.bind(Messages.JobSendingFileUpdateFmt,
+							transfer.getBytesSent(), transfer.getFileSize()));
+					try
+                    {
+	                    Thread.sleep(1000);
+                    }
+                    catch (InterruptedException e)
+                    {
+	                    // ignore
+                    }
+				}
+				monitor.done();
+	            return Status.OK_STATUS;
+            }
+        }.schedule();
     }
 }

@@ -7,6 +7,7 @@
  ******************************************************************************/
 package org.csstudio.utility.chat;
 
+import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Queue;
@@ -20,10 +21,12 @@ import org.eclipse.core.runtime.Status;
 import org.eclipse.core.runtime.jobs.Job;
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.osgi.util.NLS;
+import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.DisposeEvent;
 import org.eclipse.swt.events.DisposeListener;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Display;
+import org.eclipse.swt.widgets.FileDialog;
 import org.eclipse.ui.IWorkbenchPage;
 
 /** RCP View for the group chat
@@ -87,7 +90,7 @@ public class GroupChatView extends org.eclipse.ui.part.ViewPart
 
 	/** {@inheritDoc} */
 	@Override
-    public void doStartLogin(final String name)
+    public void doStartLogin(final String name, final String password)
 	{
 		if (chat_group != null)
 		{
@@ -108,7 +111,7 @@ public class GroupChatView extends org.eclipse.ui.part.ViewPart
 					new_chat = new GroupChat(Preferences.getChatServer(),
 							Preferences.getGroup());
     				new_chat.addListener(GroupChatView.this);
-					new_chat.connect(name);
+					new_chat.connect(name, password);
 		        }
 		        catch (Exception ex)
 		        {
@@ -152,6 +155,21 @@ public class GroupChatView extends org.eclipse.ui.part.ViewPart
 		// Run chat in there
 		final IndividualChat chat = chat_group.createIndividualChat(person);
 		view.setChat(person.getName(), chat);
+    }
+	
+	/** {@inheritDoc} */
+	@Override
+    public void doSendFile(final Person person, final File file)
+    {
+		try
+		{
+			chat_group.sendFile(person, file);
+		}
+		catch (Exception ex)
+		{
+			MessageDialog.openError(gui.getShell(),	Messages.Error,
+					NLS.bind(Messages.SendFileErrorFmt, ex.getMessage()));
+		}
     }
 
 	/** {@inheritDoc} */
@@ -233,6 +251,28 @@ public class GroupChatView extends org.eclipse.ui.part.ViewPart
 		});
 		
 	    return new_gui.get();
+    }
+
+	/** {@inheritDoc} */
+	@Override
+    public File receivedFile(final String requestor, final String file_name)
+    {
+		final AtomicReference<File> name = new AtomicReference<File>(null);
+		// Query in UI thread
+		display.syncExec(new Runnable()
+		{
+			@Override
+            public void run()
+            {
+				final FileDialog dlg = new FileDialog(gui.getShell(), SWT.SAVE);
+				dlg.setText(NLS.bind("Save file from {0} ?", requestor));
+				dlg.setFileName(file_name);
+				final String selected = dlg.open();
+				if (selected != null)
+					name.set(new File(selected));
+            }
+		});
+		return name.get();
     }
 
 	/** Counter for IndividualChatView instances
