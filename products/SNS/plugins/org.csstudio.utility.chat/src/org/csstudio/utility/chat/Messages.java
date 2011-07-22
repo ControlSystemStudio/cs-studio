@@ -26,6 +26,7 @@ public class Messages extends NLS
 	public static String LeftChatFmt;
 	public static String OpenViewErrorFmt;
 	public static String Participants;
+	public static String Password;
 	public static String PreferencesGroup;
 	public static String PreferencesServer;
 	public static String PreferencesTitle;

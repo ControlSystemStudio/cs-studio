@@ -87,7 +87,7 @@ public class GroupChatView extends org.eclipse.ui.part.ViewPart
 
 	/** {@inheritDoc} */
 	@Override
-    public void doStartLogin(final String name)
+    public void doStartLogin(final String name, final String password)
 	{
 		if (chat_group != null)
 		{
@@ -108,7 +108,7 @@ public class GroupChatView extends org.eclipse.ui.part.ViewPart
 					new_chat = new GroupChat(Preferences.getChatServer(),
 							Preferences.getGroup());
     				new_chat.addListener(GroupChatView.this);
-					new_chat.connect(name);
+					new_chat.connect(name, password);
 		        }
 		        catch (Exception ex)
 		        {

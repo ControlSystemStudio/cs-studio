@@ -86,15 +86,13 @@ public class GroupChat
 	
 	/** Connect to the server
 	 *  @param user User name
+	 *  @param password Password
 	 *  @throws Exception on error
 	 */
-    public void connect(final String user) throws Exception
+    public void connect(final String user, final String password) throws Exception
     {
     	this.user = user;
     	
-    	// TODO remove Default password
-		final String password = "$" + user; //$NON-NLS-1$
-		
 		// Try to create account.
 		// If account already exists, this will fail.
 		final AccountManager accounts = connection.getAccountManager();

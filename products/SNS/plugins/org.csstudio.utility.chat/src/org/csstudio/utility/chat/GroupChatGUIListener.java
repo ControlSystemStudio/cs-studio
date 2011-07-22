@@ -17,8 +17,9 @@ public interface GroupChatGUIListener
 	 * 
 	 *  <p>When done, call {@link GroupChatGUI#updateLogin(String)}
 	 *  @param user_name User name to use for log in
+	 *  @param password 
 	 */
-	public void doStartLogin(String user_name);
+	public void doStartLogin(String user_name, String password);
 
 	/** User requested individual chat
 	 *  @param person User name to contact
