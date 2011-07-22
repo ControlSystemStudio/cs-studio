@@ -7,15 +7,16 @@
  ******************************************************************************/
 package org.csstudio.utility.chat;
 
+import java.io.File;
 import java.net.InetAddress;
 
-import org.eclipse.jface.action.Action;
+import org.csstudio.apputil.ui.swt.Screenshot;
 import org.eclipse.jface.action.MenuManager;
+import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.layout.TableColumnLayout;
 import org.eclipse.jface.viewers.ArrayContentProvider;
 import org.eclipse.jface.viewers.ColumnViewerToolTipSupport;
 import org.eclipse.jface.viewers.ColumnWeightData;
-import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.viewers.TableViewer;
 import org.eclipse.jface.viewers.TableViewerColumn;
 import org.eclipse.swt.SWT;
@@ -24,10 +25,14 @@ import org.eclipse.swt.events.FocusAdapter;
 import org.eclipse.swt.events.FocusEvent;
 import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
+import org.eclipse.swt.graphics.Image;
+import org.eclipse.swt.graphics.ImageData;
+import org.eclipse.swt.graphics.ImageLoader;
 import org.eclipse.swt.layout.FillLayout;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Composite;
+import org.eclipse.swt.widgets.FileDialog;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Menu;
 import org.eclipse.swt.widgets.Text;
@@ -160,16 +165,60 @@ public class GroupChatGUI extends IndividualChatGUI
 
 		// Context menu for chat group members
         final MenuManager manager = new MenuManager();
-        manager.add(new Action(Messages.StartIndividualChat,
-        		Activator.getImage("icons/person16.png")) //$NON-NLS-1$
+        manager.add(new SendToPersonAction(Messages.StartIndividualChat,
+        		"icons/person16.png", group_members)//$NON-NLS-1$
         {
         	@Override
-            public void run()
+        	protected void doSendToPerson(final Person person)
             {
-        		final IStructuredSelection selection = (IStructuredSelection)group_members.getSelection();
-        		final Person person = (Person)selection.getFirstElement();
         		if (listener != null)
         			listener.doContact(person);
+            }
+        });
+        manager.add(new SendToPersonAction(Messages.SendFile,
+        		"icons/send_file.png", group_members) //$NON-NLS-1$
+        {
+        	@Override
+        	protected void doSendToPerson(final Person person)
+            {
+        		if (listener == null)
+        			return;
+        		final FileDialog dlg = new FileDialog(group_members.getControl().getShell(), SWT.OPEN);
+        		dlg.setFilterExtensions(new String[] { "*.*" }); //$NON-NLS-1$
+        		final String filename = dlg.open();
+        		if (filename != null)
+        			listener.doSendFile(person, new File(filename));
+            }
+        });
+        manager.add(new SendToPersonAction(Messages.SendScreenshot,
+        		"icons/send_image.png", group_members) //$NON-NLS-1$
+        {
+        	@Override
+        	protected void doSendToPerson(final Person person)
+            {
+        		if (listener == null)
+        			return;
+        		
+        		final Image image = Screenshot.getFullScreenshot();
+            	final File screenshot_file;
+                try
+                {
+                	screenshot_file = File.createTempFile("screenshot", ".png"); //$NON-NLS-1$ //$NON-NLS-2$
+                	screenshot_file.deleteOnExit();
+
+                	final ImageLoader loader = new ImageLoader();
+                    loader.data = new ImageData[] { image.getImageData() };
+                    image.dispose();
+            	    // Save
+            	    loader.save(screenshot_file.getPath(), SWT.IMAGE_PNG);
+                }
+                catch (Exception ex)
+                {
+                	MessageDialog.openError(group_members.getControl().getShell(),
+                			Messages.Error, ex.getMessage());
+                	return;
+                }
+    			listener.doSendFile(person, screenshot_file);
             }
         });
         final Menu menu = manager.createContextMenu(group_members.getTable());

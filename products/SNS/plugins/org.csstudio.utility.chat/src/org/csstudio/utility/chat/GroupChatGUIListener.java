@@ -7,6 +7,8 @@
  ******************************************************************************/
 package org.csstudio.utility.chat;
 
+import java.io.File;
+
 /** Listener to the {@link GroupChatGUI}
  *  @author Kay Kasemir
  */
@@ -25,4 +27,10 @@ public interface GroupChatGUIListener
 	 *  @param person User name to contact
 	 */
 	public void doContact(Person person);
+
+	/** User requested sending a file to a person
+	 *  @param person receipient
+	 *  @param file File to send
+	 */
+	public void doSendFile(Person person, File file);
 }

@@ -7,6 +7,7 @@
  ******************************************************************************/
 package org.csstudio.utility.chat;
 
+import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Queue;
@@ -152,6 +153,21 @@ public class GroupChatView extends org.eclipse.ui.part.ViewPart
 		// Run chat in there
 		final IndividualChat chat = chat_group.createIndividualChat(person);
 		view.setChat(person.getName(), chat);
+    }
+	
+	/** {@inheritDoc} */
+	@Override
+    public void doSendFile(final Person person, final File file)
+    {
+		try
+		{
+			chat_group.sendFile(person, file);
+		}
+		catch (Exception ex)
+		{
+			MessageDialog.openError(gui.getShell(),	Messages.Error,
+					NLS.bind(Messages.SendFileErrorFmt, ex.getMessage()));
+		}
     }
 
 	/** {@inheritDoc} */

@@ -22,6 +22,8 @@ public class Messages extends NLS
 	public static String DeclineChatFmt;
 	public static String Error;
 	public static String IndividualChatTitleFmt;
+	public static String JobSendingFile;
+	public static String JobSendingFileUpdateFmt;
 	public static String LeaveChatFmt;
 	public static String LeftChatFmt;
 	public static String OpenViewErrorFmt;
@@ -32,6 +34,9 @@ public class Messages extends NLS
 	public static String PreferencesTitle;
 	public static String Send;
 	public static String SendErrorFmt;
+	public static String SendFile;
+	public static String SendFileErrorFmt;
+	public static String SendScreenshot;
 	public static String StartIndividualChat;
 	public static String UserName;
 	public static String UserSERVER;

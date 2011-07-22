@@ -7,6 +7,7 @@
  ******************************************************************************/
 package org.csstudio.utility.chat;
 
+import java.io.File;
 import java.util.Arrays;
 import java.util.HashSet;
 import java.util.Iterator;
@@ -14,6 +15,10 @@ import java.util.List;
 import java.util.Set;
 import java.util.concurrent.CopyOnWriteArrayList;
 
+import org.eclipse.core.runtime.IProgressMonitor;
+import org.eclipse.core.runtime.IStatus;
+import org.eclipse.core.runtime.Status;
+import org.eclipse.core.runtime.jobs.Job;
 import org.eclipse.osgi.util.NLS;
 import org.jivesoftware.smack.AccountManager;
 import org.jivesoftware.smack.Chat;
@@ -25,6 +30,8 @@ import org.jivesoftware.smack.XMPPConnection;
 import org.jivesoftware.smack.packet.Message;
 import org.jivesoftware.smack.packet.Packet;
 import org.jivesoftware.smack.util.StringUtils;
+import org.jivesoftware.smackx.filetransfer.FileTransferManager;
+import org.jivesoftware.smackx.filetransfer.OutgoingFileTransfer;
 import org.jivesoftware.smackx.muc.DefaultParticipantStatusListener;
 import org.jivesoftware.smackx.muc.MultiUserChat;
 import org.jivesoftware.smackx.muc.Occupant;
@@ -255,5 +262,46 @@ public class GroupChat
 			address = group + "/" + person.getName(); //$NON-NLS-1$
 		final Chat new_chat = chat.createPrivateChat(address, null);
 		return new IndividualChat(user, new_chat);
+    }
+
+	/** Start a file transfer
+	 *  @param person Recipient of the file
+	 *  @param file The File
+	 *  @throws Exception on error
+	 */
+	public void sendFile(final Person person, final File file) throws Exception
+    {
+		final FileTransferManager manager = new FileTransferManager(connection);
+		final OutgoingFileTransfer transfer = manager.createOutgoingFileTransfer(person.getAddress());
+        transfer.sendFile(file, file.getName());
+        // Eclipse Job to monitor and maybe cancel the transfer
+        new Job(Messages.JobSendingFile)
+        {
+			@Override
+            protected IStatus run(final IProgressMonitor monitor)
+            {
+				monitor.beginTask(file.getName(), IProgressMonitor.UNKNOWN);
+				while (! transfer.isDone())
+				{
+					if (monitor.isCanceled())
+					{
+						transfer.cancel();
+						break;
+					}
+					monitor.subTask(NLS.bind(Messages.JobSendingFileUpdateFmt,
+							transfer.getBytesSent(), transfer.getFileSize()));
+					try
+                    {
+	                    Thread.sleep(1000);
+                    }
+                    catch (InterruptedException e)
+                    {
+	                    // ignore
+                    }
+				}
+				monitor.done();
+	            return Status.OK_STATUS;
+            }
+        }.schedule();
     }
 }
