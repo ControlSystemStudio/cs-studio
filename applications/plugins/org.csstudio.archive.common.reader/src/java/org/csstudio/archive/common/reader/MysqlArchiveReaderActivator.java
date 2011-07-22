@@ -44,7 +44,6 @@ public class MysqlArchiveReaderActivator implements BundleActivator {
     public static final String PLUGIN_ID = "org.csstudio.archive.common.reader";
 
     private static MysqlArchiveReaderActivator INSTANCE;
-    private static BundleContext CONTEXT;
 
 
     // FIXME (bknerr) : find out about proper dependency injection for osgi eclipse rcp
@@ -72,18 +71,11 @@ public class MysqlArchiveReaderActivator implements BundleActivator {
         return INSTANCE;
     }
 
-    @Nonnull
-    static BundleContext getContext() {
-        return CONTEXT;
-    }
-
     /**
      * {@inheritDoc}
      */
     @Override
     public void start(@Nonnull final BundleContext context) throws Exception {
-        MysqlArchiveReaderActivator.CONTEXT = context;
-
         _archiveEngineConfigServiceTracker = new ArchiveEngineServiceTracker(context);
         _archiveEngineConfigServiceTracker.open();
 
@@ -96,8 +88,6 @@ public class MysqlArchiveReaderActivator implements BundleActivator {
      */
     @Override
     public void stop(@Nonnull final BundleContext bundleContext) throws Exception {
-        MysqlArchiveReaderActivator.CONTEXT = null;
-
         if (_archiveEngineConfigServiceTracker != null) {
             _archiveEngineConfigServiceTracker.close();
         }

@@ -166,7 +166,7 @@ public class EquidistantTimeBinsIterator<V> extends AbstractValueIterator<V> {
                                                            @Nonnull final ReadableDuration windowLength,
                                                            @CheckForNull final Iterator<IArchiveSample<V, ISystemVariable<V>>> samplesIter) {
 
-        if (samplesIter.hasNext()) {
+        if (samplesIter != null && samplesIter.hasNext()) {
             final IArchiveSample<V, ISystemVariable<V>> firstSampleInWindow = samplesIter.next();
             final int window = findWindowOfFirstSample(firstSampleInWindow.getSystemVariable().getTimestamp(),
                                                      startTime,
