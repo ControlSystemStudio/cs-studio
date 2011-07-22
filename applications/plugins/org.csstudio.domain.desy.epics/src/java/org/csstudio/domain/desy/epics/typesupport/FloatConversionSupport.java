@@ -38,16 +38,18 @@ import org.csstudio.domain.desy.typesupport.TypeSupportException;
  */
 final class FloatConversionSupport extends EpicsIMetaDataTypeSupport<Float> {
 
-    @Nonnull
-    private Float toFloat(final double d) {
-        return Float.valueOf(Double.valueOf(d).floatValue());
-    }
     /**
      * Constructor.
      */
     public FloatConversionSupport() {
         super(Float.class);
     }
+
+    @Nonnull
+    private Float toFloat(final double d) {
+        return Float.valueOf(Double.valueOf(d).floatValue());
+    }
+
     /**
      * {@inheritDoc}
      */
