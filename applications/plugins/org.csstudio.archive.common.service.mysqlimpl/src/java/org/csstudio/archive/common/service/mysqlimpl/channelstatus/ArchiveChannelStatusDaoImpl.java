@@ -72,7 +72,7 @@ public class ArchiveChannelStatusDaoImpl extends AbstractArchiveDao implements I
     @Override
     public void createChannelStatus(@Nonnull final IArchiveChannelStatus entry) throws ArchiveDaoException {
         try {
-            BatchQueueHandlerSupport.addToQueue(Collections.singleton(entry));
+            getEngineMgr().submitToBatch(Collections.singleton(entry));
         } catch (final TypeSupportException e) {
             throw new ArchiveDaoException("Batch type support missing for " + entry.getClass().getName(), e);
         }
