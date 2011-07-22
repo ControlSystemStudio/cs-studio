@@ -53,7 +53,6 @@ import org.joda.time.format.PeriodFormatterBuilder;
  */
 public final class TimeInstant implements Comparable<TimeInstant>, Serializable {
 
-    private static final long serialVersionUID = 3157468437971986526L;
 
     public static final DateTimeFormatter STD_DATE_FMT =
         DateTimeFormat.forPattern("yyyy-MM-dd");
@@ -98,12 +97,14 @@ public final class TimeInstant implements Comparable<TimeInstant>, Serializable 
         new PeriodFormatterBuilder().append(STD_DURATION_FMT)
                                     .appendMillis().toFormatter();
 
-    private static final int NANOS_PER_SECOND = 1000000000;
-    private static final int NANOS_PER_MILLIS = 1000000;
-    private static final int MILLIS_PER_SECOND = 1000;
+
+    public static final int NANOS_PER_SECOND = 1000000000;
+    public static final int NANOS_PER_MILLIS = 1000000;
+    public static final int MILLIS_PER_SECOND = 1000;
 
     public static final Long MAX_SECONDS = Long.MAX_VALUE / MILLIS_PER_SECOND - 1;
 
+    private static final long serialVersionUID = 3157468437971986526L;
 
     /**
      * The wrapped immutable joda time instant.

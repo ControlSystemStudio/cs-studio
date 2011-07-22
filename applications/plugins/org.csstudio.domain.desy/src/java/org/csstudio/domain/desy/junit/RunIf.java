@@ -40,7 +40,7 @@ import javax.annotation.Nonnull;
 public @interface RunIf {
 
     @Nonnull
-    Class<? extends RunCondition> conditionClass();
+    Class<? extends IRunCondition> conditionClass();
 
     @Nonnull
     String[] arguments() default {};

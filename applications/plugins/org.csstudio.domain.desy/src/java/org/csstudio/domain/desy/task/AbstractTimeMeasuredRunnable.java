@@ -44,9 +44,8 @@ public abstract class AbstractTimeMeasuredRunnable implements Runnable {
     private final AverageWithExponentialDecayCache _avgRunDurationInNanos =
         new AverageWithExponentialDecayCache(0.8);
 
-    private long _lastElapsedRunTimeInNanos = 0L;
-
     private final RunningStopWatch _stopWatch;
+    private long _lastElapsedRunTimeInNanos;
 
     /**
      * Constructor.

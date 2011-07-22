@@ -27,6 +27,6 @@ package org.csstudio.domain.desy.junit;
  * @author bknerr
  * @since 30.05.2011
  */
-public interface RunCondition {
+public interface IRunCondition {
     boolean shallBeRun();
 }
