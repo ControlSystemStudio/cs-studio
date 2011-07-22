@@ -41,14 +41,12 @@ public class HostAddressTest {
     @Test(expected=IllegalArgumentException.class)
     public void testInvalidHostAddress2() {
         @SuppressWarnings("unused")
-        final
-        HostAddress a = new HostAddress(".");
+        final HostAddress a = new HostAddress(".");
     }
     @Test(expected=IllegalArgumentException.class)
     public void testInvalidHostAddress3() {
         @SuppressWarnings("unused")
-        final
-        HostAddress a = new HostAddress("_._");
+        final HostAddress a = new HostAddress("_._");
     }
 
     @Test
