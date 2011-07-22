@@ -45,19 +45,24 @@ public final class TestSuiteFactory {
 // CHECKSTYLE:ON
 
     /**
-     * Don't instantiate.
-     */
-    private TestSuiteFactory() {
-        // Empty
-    }
-    
-    /**
      * The common suffix for all test classes.
      */
     public static final String COMMON_TEST_SUFFIX = "Test";
 
     // Get site specific test data provider
     private static TestDataProvider PROV = createTestDataProvider();
+
+    private static final String BUNDLES = getPropertyOrEmptyString("bundles", PROV);
+    private static final String BUNDLES_BLACKLIST  = getPropertyOrEmptyString("bundleBlacklist", PROV);
+    private static final String PACKAGE_BLACKLIST = getPropertyOrEmptyString("packageBlacklist", PROV);
+
+    /**
+     * Don't instantiate.
+     */
+    private TestSuiteFactory() {
+        // Empty
+    }
+
     @Nonnull
     private static TestDataProvider createTestDataProvider() {
         try {
@@ -69,17 +74,13 @@ public final class TestSuiteFactory {
         return TestDataProvider.EMPTY_PROVIDER;
     }
 
-    private static final String BUNDLES = getPropertyOrEmptyString("bundles", PROV);
-    private static final String BUNDLES_BLACKLIST  = getPropertyOrEmptyString("bundleBlacklist", PROV);
-    private static final String PACKAGE_BLACKLIST = getPropertyOrEmptyString("packageBlacklist", PROV);
-    
     @Nonnull
-    private static String getPropertyOrEmptyString(@Nonnull final String property, 
+    private static String getPropertyOrEmptyString(@Nonnull final String property,
                                                    @Nonnull final TestDataProvider prov) {
-        String result = (String) prov.get(property);
+        final String result = (String) prov.get(property);
         return result == null ? "" : result;
     }
-    
+
     /**
      * The test suite provider.
      *
