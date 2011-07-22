@@ -148,8 +148,8 @@ public class JmsSimpleProducer {
     public void closeAll() {
         if(producer!=null){try{producer.close();}catch(Exception e){/*Can be ignored*/}producer=null;}
         topic = null;
-        if(session!=null){try{session.close();}catch(Exception e){/*Can be ignored*/}session=null;}
         if(connection!=null){try{connection.stop();}catch(Exception e){/*Can be ignored*/}}
+        if(session!=null){try{session.close();}catch(Exception e){/*Can be ignored*/}session=null;}
         if(connection!=null){try{connection.close();}catch(Exception e){/*Can be ignored*/}connection=null;}
         factory = null;
         if(context!=null){try{context.close();}catch(Exception e){/*Can be ignored*/}context=null;}
