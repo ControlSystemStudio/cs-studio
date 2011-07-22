@@ -38,8 +38,8 @@ import uk.co.mmscomputing.util.metadata.MetadataListener;
  * @author Markus Moeller
  *
  */
-public class CapiReceiver extends Thread implements MetadataListener
-{
+public class CapiReceiver extends Thread implements MetadataListener {
+    
     /** CAPI Interface for sending and receiving telephone calls */
     private CapiServerApplication receiver = null;
     
@@ -55,8 +55,8 @@ public class CapiReceiver extends Thread implements MetadataListener
     /**  */
     private long statusChanged = 0;
     
-    public CapiReceiver() throws CapiReceiverException
-    {
+    public CapiReceiver() throws CapiReceiverException {
+        
         initSpeechProducer();
         refreshStatus();
         
@@ -77,53 +77,39 @@ public class CapiReceiver extends Thread implements MetadataListener
         // want to listen
         md.addListener(this);
         
-        try
-        {
+        try {
             receiver = new CapiServerApplication(md);
             receiver.start();
-        }
-        catch(CapiException ce)
-        {
+        } catch(CapiException ce) {
             throw new CapiReceiverException(ce.getMessage());
         }
     }
     
-    private void initSpeechProducer() throws CapiReceiverException
-    {
+    private void initSpeechProducer() throws CapiReceiverException {
+        
         speech = SpeechProducer.getInstance();
-        if(!speech.isConnected())
-        {
+        if(!speech.isConnected()) {
             speech.closeAll();
             speech = null;
-            
             throw new CapiReceiverException("Connection to MARY server failed.");
         }        
     }
 
     @Override
-    public void run()
-    {
+    public void run() {
         // TODO Auto-generated method stub
-        
     }
     
-    public Telegram readTelegram()
-    {
+    public Telegram readTelegram() {
+        
         Telegram tel = null;
         
-        try
-        {
+        try {
             channel = receiver.accept();
-        }
-        catch(InterruptedException ie)
-        {
-            // TODO Auto-generated catch block
-            ie.printStackTrace();
-        }
-        finally
-        {
-            if(channel != null)
-            {
+        } catch(InterruptedException ie) {
+            Log.log(Log.ERROR, "[*** InterruptedException ***]: " + ie.getMessage());
+        } finally {
+            if(channel != null) {
                 try{channel.close();}catch(IOException e) {/* Can be ignored */}
                 channel = null;
             }
@@ -132,18 +118,26 @@ public class CapiReceiver extends Thread implements MetadataListener
         return tel;
     }
     
-    public boolean isWorking()
-    {
+    public boolean isWorking() {
         return ((System.currentTimeMillis() - statusChanged) > 180000 ? false : true);
     }
     
-    private void refreshStatus()
-    {
+    private void refreshStatus() {
         this.statusChanged = System.currentTimeMillis();
     }
     
-    public void update(Object type, Metadata metadata)
-    {
+    public void update(Object type, Metadata metadata) {
         Log.log(this, Log.DEBUG, type.toString());
+    }
+    
+    public void close() {
+        
+        if (speech != null) {
+            speech.closeAll();
+        }
+        
+        if (receiver != null) {
+            receiver.close();
+        }
     }
 }

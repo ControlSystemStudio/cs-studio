@@ -16,8 +16,8 @@ Require-Bundle: org.eclipse.core.runtime,
  org.eclipse.ecf.identity;bundle-version="3.1.100",
  org.csstudio.remote;bundle-version="1.0.0"
 Eclipse-LazyStart: true
-Bundle-ClassPath: lib/capi.jar,
+Bundle-ClassPath: .,
+ lib/capi.jar,
  lib/maryclient.jar,
- lib/signalproc.jar,
- .
+ lib/signalproc.jar
 Bundle-Vendor: DESY <css-developer@desy.de>, Markus Moeller
