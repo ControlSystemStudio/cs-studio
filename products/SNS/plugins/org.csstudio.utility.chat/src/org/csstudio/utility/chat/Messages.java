@@ -19,9 +19,11 @@ public class Messages extends NLS
 	public static String AcceptInvitationFmt;
 	public static String ChatInvitation;
 	public static String ConnectionErrorFmt;
+	public static String DeclineChatFmt;
 	public static String Error;
 	public static String IndividualChatTitleFmt;
 	public static String LeaveChatFmt;
+	public static String LeftChatFmt;
 	public static String OpenViewErrorFmt;
 	public static String Participants;
 	public static String PreferencesGroup;
@@ -29,6 +31,7 @@ public class Messages extends NLS
 	public static String PreferencesTitle;
 	public static String Send;
 	public static String SendErrorFmt;
+	public static String StartIndividualChat;
 	public static String UserName;
 	public static String UserSERVER;
 

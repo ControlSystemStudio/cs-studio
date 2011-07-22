@@ -14,6 +14,7 @@ import java.util.List;
 import java.util.Set;
 import java.util.concurrent.CopyOnWriteArrayList;
 
+import org.eclipse.osgi.util.NLS;
 import org.jivesoftware.smack.AccountManager;
 import org.jivesoftware.smack.Chat;
 import org.jivesoftware.smack.ChatManagerListener;
@@ -23,7 +24,6 @@ import org.jivesoftware.smack.SmackConfiguration;
 import org.jivesoftware.smack.XMPPConnection;
 import org.jivesoftware.smack.packet.Message;
 import org.jivesoftware.smack.packet.Packet;
-import org.jivesoftware.smack.packet.Presence;
 import org.jivesoftware.smack.util.StringUtils;
 import org.jivesoftware.smackx.muc.DefaultParticipantStatusListener;
 import org.jivesoftware.smackx.muc.MultiUserChat;
@@ -39,9 +39,11 @@ import org.jivesoftware.smackx.muc.Occupant;
  *  
  *  @author Kay Kasemir
  */
-@SuppressWarnings("nls")
 public class GroupChat
 {
+	/** XMPP 'resource' used to connect */
+	private static final String XMPP_RESOURCE = "css"; //$NON-NLS-1$
+
 	/** Connection to server */
 	final private XMPPConnection connection;
 	
@@ -90,8 +92,8 @@ public class GroupChat
     {
     	this.user = user;
     	
-    	// Default password
-		final String password = "$" + user;
+    	// TODO remove Default password
+		final String password = "$" + user; //$NON-NLS-1$
 		
 		// Try to create account.
 		// If account already exists, this will fail.
@@ -109,11 +111,8 @@ public class GroupChat
 		}
 		
 		// Log on
-		connection.login(user, password, "css");
+		connection.login(user, password, XMPP_RESOURCE);
 
-		connection.sendPacket(
-			new Presence(Presence.Type.available, "online", 0, Presence.Mode.chat));
-		
 	    // Join chat group
 		chat = new MultiUserChat(connection, group);
 		chat.join(user);
@@ -173,7 +172,7 @@ public class GroupChat
 					final Message message = (Message) packet;
 					String nick = StringUtils.parseResource(message.getFrom());
 					if (nick.length() <= 0)
-						nick = "SERVER";
+						nick = Messages.UserSERVER;
 					final String body = message.getBody();
 					for (GroupChatListener listener : listeners)
 						listener.receive(nick, nick.equals(user), body);
@@ -193,7 +192,18 @@ public class GroupChat
 				{
 					final String from = chat.getParticipant();
 					final IndividualChatGUI gui = listener.receivedInvitation(from);
-					if (gui != null)
+					if (gui == null)
+					{	// Politely refuse
+						try
+						{
+							chat.sendMessage(NLS.bind(Messages.DeclineChatFmt, user));
+						}
+						catch (Exception ex)
+						{
+							// Ignore
+						}
+					}
+					else
 						listener.startIndividualChat(from, new IndividualChat(user, chat));
 				}
 			}
@@ -244,7 +254,7 @@ public class GroupChat
 		String address = person.getAddress();
 		// and fall back to in-room address
 		if (address == null  ||  address.isEmpty())
-			address = group + "/" + person.getName();
+			address = group + "/" + person.getName(); //$NON-NLS-1$
 		final Chat new_chat = chat.createPrivateChat(address, null);
 		return new IndividualChat(user, new_chat);
     }

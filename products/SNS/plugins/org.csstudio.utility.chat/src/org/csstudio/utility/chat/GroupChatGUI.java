@@ -149,7 +149,8 @@ public class GroupChatGUI extends IndividualChatGUI
 
 		// Context menu for chat group members
         final MenuManager manager = new MenuManager();
-        manager.add(new Action("Contact", Activator.getImage("icons/person16.png"))
+        manager.add(new Action(Messages.StartIndividualChat,
+        		Activator.getImage("icons/person16.png")) //$NON-NLS-1$
         {
         	@Override
             public void run()
