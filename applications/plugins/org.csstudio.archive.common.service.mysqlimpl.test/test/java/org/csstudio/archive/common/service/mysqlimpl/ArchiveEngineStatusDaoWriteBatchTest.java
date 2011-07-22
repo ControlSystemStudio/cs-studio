@@ -74,11 +74,9 @@ public class ArchiveEngineStatusDaoWriteBatchTest extends AbstractDaoTestSetup {
      *
      * @throws ArchiveDaoException
      * @throws InterruptedException
-     * @throws SQLException
-     * @throws ArchiveConnectionException
      */
     @Test
-    public void testEngineStatusSubmission() throws ArchiveDaoException, InterruptedException, ArchiveConnectionException, SQLException {
+    public void testEngineStatusSubmission() throws ArchiveDaoException, InterruptedException {
 
         final TimeInstant now = TimeInstantBuilder.fromNow();
 
@@ -103,16 +101,7 @@ public class ArchiveEngineStatusDaoWriteBatchTest extends AbstractDaoTestSetup {
         final Collection<IArchiveEngineStatus> first = Lists.newLinkedList();
         final Collection<IArchiveEngineStatus> second = Lists.newLinkedList();
         final Collection<IArchiveEngineStatus> third = Lists.newLinkedList();
-
-        for (int i = 0; i < 2000; i++) {
-            final EngineMonitorStatus st = i%2 > 0 ? EngineMonitorStatus.ON : EngineMonitorStatus.OFF;
-
-            first.add(new ArchiveEngineStatus(ENGINE_BATCH_ID, st, now.plusMillis(i*1000), BATCH_INSERT_INFO));
-            second.add(new ArchiveEngineStatus(ENGINE_BATCH_ID, st, now.plusMillis(i*1000 + 2000000), BATCH_INSERT_INFO));
-            third.add(new ArchiveEngineStatus(ENGINE_BATCH_ID, st, now.plusMillis(i*1000 + 4000000), BATCH_INSERT_INFO));
-        }
-        final TimeInstant lastOne = now.plusMillis(6000001L);
-        third.add(new ArchiveEngineStatus(ENGINE_BATCH_ID, EngineMonitorStatus.ON, lastOne, BATCH_INSERT_INFO));
+        final TimeInstant lastOne = prepareMgmtEntryBatches(now, first, second, third);
 
         DAO.createMgmtEntries(first);
         Thread.sleep(500);
@@ -123,13 +112,11 @@ public class ArchiveEngineStatusDaoWriteBatchTest extends AbstractDaoTestSetup {
 
         final IArchiveEngineStatus status = DAO.retrieveLastEngineStatus(ENGINE_BATCH_ID, now.plusMillis(7000000L));
 
-        Assert.assertNotNull(status);
-        Assert.assertEquals(ENGINE_BATCH_ID, status.getEngineId());
-        Assert.assertEquals(ENGINE_BATCH_ID, status.getEngineId());
-        Assert.assertTrue(lastOne.equals(status.getTimestamp()));
-        Assert.assertEquals(BATCH_INSERT_INFO, status.getInfo());
+        assertLastMgmtEntry(lastOne, status);
+        assertMgmtEntryBatches();
+    }
 
-
+    private void assertMgmtEntryBatches() throws ArchiveConnectionException, SQLException {
         final Connection connection = HANDLER.getConnection();
         final Statement stmt = connection.createStatement();
         final ResultSet resultSet =
@@ -139,8 +126,39 @@ public class ArchiveEngineStatusDaoWriteBatchTest extends AbstractDaoTestSetup {
         Assert.assertTrue(resultSet.next());
         final int count = resultSet.getInt(1);
         Assert.assertTrue(count == 6001);
-
         stmt.close();
+    }
+
+    private void assertLastMgmtEntry(@Nonnull final TimeInstant lastOne,
+                                     @Nonnull final IArchiveEngineStatus status) {
+        Assert.assertNotNull(status);
+        Assert.assertEquals(ENGINE_BATCH_ID, status.getEngineId());
+        Assert.assertEquals(ENGINE_BATCH_ID, status.getEngineId());
+        Assert.assertTrue(lastOne.equals(status.getTimestamp()));
+        Assert.assertEquals(BATCH_INSERT_INFO, status.getInfo());
+    }
+
+    /**
+     * @param now
+     * @param first
+     * @param second
+     * @param third
+     * @return
+     */
+    private TimeInstant prepareMgmtEntryBatches(final TimeInstant now,
+                                                final Collection<IArchiveEngineStatus> first,
+                                                final Collection<IArchiveEngineStatus> second,
+                                                final Collection<IArchiveEngineStatus> third) {
+        for (int i = 0; i < 2000; i++) {
+            final EngineMonitorStatus st = i%2 > 0 ? EngineMonitorStatus.ON : EngineMonitorStatus.OFF;
+
+            first.add(new ArchiveEngineStatus(ENGINE_BATCH_ID, st, now.plusMillis(i*1000), BATCH_INSERT_INFO));
+            second.add(new ArchiveEngineStatus(ENGINE_BATCH_ID, st, now.plusMillis(i*1000 + 2000000), BATCH_INSERT_INFO));
+            third.add(new ArchiveEngineStatus(ENGINE_BATCH_ID, st, now.plusMillis(i*1000 + 4000000), BATCH_INSERT_INFO));
+        }
+        final TimeInstant lastOne = now.plusMillis(6000001L);
+        third.add(new ArchiveEngineStatus(ENGINE_BATCH_ID, EngineMonitorStatus.ON, lastOne, BATCH_INSERT_INFO));
+        return lastOne;
     }
 
     @AfterClass
