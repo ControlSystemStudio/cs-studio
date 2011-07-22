@@ -116,7 +116,7 @@ public class SampleBuffer<V,
     @Nonnull
     public String toString() {
         return String.format(
-        "Sample buffer '%s': %d samples, %d samples max, %.1f samples average, %d overruns",
+        "Sample buffer '%s': %d samples, %d samples max, %.1f samples average",
             _channelName,
             super.size(),
             _stats.getMaxSize(),

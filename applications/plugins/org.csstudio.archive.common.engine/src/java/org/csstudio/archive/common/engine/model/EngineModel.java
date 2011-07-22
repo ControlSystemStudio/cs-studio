@@ -421,11 +421,17 @@ public final class EngineModel {
                 ArchiveEngineTypeSupport.toArchiveChannel(channelCfg);
             channel.setServiceProvider(provider);
 
-            writeExecutor.addChannel(channel);
+            @SuppressWarnings("unchecked")
+            final ArchiveChannel<Object, ISystemVariable<Object>> presentChannel =
+                (ArchiveChannel<Object, ISystemVariable<Object>>) channelMap.putIfAbsent(channel.getName(), channel);
 
-            channelMap.putIfAbsent(channel.getName(), channel);
-
-            group.add(channel);
+            if (presentChannel != null) {
+                writeExecutor.addChannel(presentChannel);
+                group.add(presentChannel);
+            } else {
+                writeExecutor.addChannel(channel);
+                group.add(channel);
+            }
         }
     }
 

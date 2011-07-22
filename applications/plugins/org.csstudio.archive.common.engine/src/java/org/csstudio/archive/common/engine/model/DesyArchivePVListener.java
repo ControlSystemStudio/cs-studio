@@ -34,6 +34,7 @@ import org.csstudio.archive.common.service.sample.IArchiveSample;
 import org.csstudio.data.values.IMetaData;
 import org.csstudio.data.values.INumericMetaData;
 import org.csstudio.data.values.IValue;
+import org.csstudio.domain.desy.epics.types.EpicsGraphicsData;
 import org.csstudio.domain.desy.epics.types.EpicsMetaData;
 import org.csstudio.domain.desy.epics.types.EpicsSystemVariable;
 import org.csstudio.domain.desy.epics.typesupport.EpicsIMetaDataTypeSupport;
@@ -183,9 +184,12 @@ abstract class DesyArchivePVListener<V, T extends ISystemVariable<V>> implements
        if (metaData instanceof INumericMetaData) {
             try {
                 final IArchiveEngineFacade service = _provider.getEngineFacade();
-                service.writeChannelDisplayRangeInfo(id,
-                                                     (W) data.getGrData().getDisplayLow(),
-                                                     (W) data.getGrData().getDisplayHigh());
+                final EpicsGraphicsData<W> graphicsData = (EpicsGraphicsData<W>) data.getGrData();
+                if (graphicsData != null) {
+                    service.writeChannelDisplayRangeInfo(id,
+                                                         graphicsData.getDisplayLow(),
+                                                         graphicsData.getDisplayHigh());
+                }
             } catch (final OsgiServiceUnavailableException e) {
                 throw new EngineModelException("Service unavailable on updating display range info.", e);
             } catch (final ArchiveServiceException e) {
