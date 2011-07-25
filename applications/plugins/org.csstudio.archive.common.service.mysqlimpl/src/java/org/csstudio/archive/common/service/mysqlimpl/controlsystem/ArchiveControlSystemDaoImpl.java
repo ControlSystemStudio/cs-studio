@@ -23,6 +23,7 @@ package org.csstudio.archive.common.service.mysqlimpl.controlsystem;
 
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.util.Map;
 
 import javax.annotation.CheckForNull;
@@ -52,10 +53,8 @@ public class ArchiveControlSystemDaoImpl extends AbstractArchiveDao implements I
 
     private static final String RETRIEVAL_FAILED = "Control system retrieval from archive failed.";
 
-    private final String _selectCSByIdStmt = "SELECT name,type FROM " +
-                                             getDatabaseName() +
+    private final String _selectCSByIdStmt = "SELECT id, name, type FROM " + getDatabaseName() +
                                              "." + TAB + " WHERE id=?";
-
 
     private final Map<ArchiveControlSystemId, IArchiveControlSystem> _cacheById = Maps.newHashMap();
 
@@ -84,11 +83,7 @@ public class ArchiveControlSystemDaoImpl extends AbstractArchiveDao implements I
             stmt.setLong(1, id.longValue());
             final ResultSet result = stmt.executeQuery();
             if (result.next()) {
-                final String name = result.getString("name");
-                final String type = result.getString("type");
-                cs = new ArchiveControlSystem(name,
-                                              Enum.valueOf(ControlSystemType.class, type));
-
+                cs = createControlSystemFromQueryResult(result);
                 _cacheById.put(id, cs);
                 return cs;
             }
@@ -98,6 +93,20 @@ public class ArchiveControlSystemDaoImpl extends AbstractArchiveDao implements I
             closeStatement(stmt, "Closing of statement " + _selectCSByIdStmt + " failed.");
         }
         return null;
+    }
+
+    @Nonnull
+    private IArchiveControlSystem createControlSystemFromQueryResult(@Nonnull final ResultSet result) throws SQLException {
+
+        final ArchiveControlSystemId resultId = new ArchiveControlSystemId(result.getInt("id"));
+        final String name = result.getString("name");
+        final String type = result.getString("type");
+
+        final IArchiveControlSystem cs =
+            new ArchiveControlSystem(resultId,
+                                     name,
+                                     Enum.valueOf(ControlSystemType.class, type));
+        return cs;
     }
 
 }

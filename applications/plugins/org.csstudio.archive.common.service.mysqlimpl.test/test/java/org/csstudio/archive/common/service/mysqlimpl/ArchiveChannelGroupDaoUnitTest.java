@@ -34,6 +34,7 @@ import org.csstudio.archive.common.service.engine.ArchiveEngineId;
 import org.csstudio.archive.common.service.mysqlimpl.channelgroup.ArchiveChannelGroupDaoImpl;
 import org.csstudio.archive.common.service.mysqlimpl.channelgroup.IArchiveChannelGroupDao;
 import org.csstudio.archive.common.service.mysqlimpl.dao.ArchiveDaoException;
+import org.junit.BeforeClass;
 import org.junit.Test;
 
 /**
@@ -44,16 +45,21 @@ import org.junit.Test;
  */
 public class ArchiveChannelGroupDaoUnitTest extends AbstractDaoTestSetup {
 
+    private static IArchiveChannelGroupDao DAO;
+
+    @BeforeClass
+    public static void setupDao() {
+        DAO = new ArchiveChannelGroupDaoImpl(HANDLER, PERSIST_MGR);
+    }
+
     @Test
     public void testChannelGroupDao() throws ArchiveDaoException {
-        final IArchiveChannelGroupDao dao = new ArchiveChannelGroupDaoImpl(HANDLER, PERSIST_MGR);
-
         Collection<IArchiveChannelGroup> groups =
-            dao.retrieveGroupsByEngineId(new ArchiveEngineId(26L));
+            DAO.retrieveGroupsByEngineId(new ArchiveEngineId(26L));
         Assert.assertTrue(groups.isEmpty());
 
         final ArchiveEngineId engineId = new ArchiveEngineId(1L);
-        groups = dao.retrieveGroupsByEngineId(engineId);
+        groups = DAO.retrieveGroupsByEngineId(engineId);
         Assert.assertTrue(2 == groups.size());
         final Iterator<IArchiveChannelGroup> it = groups.iterator();
         IArchiveChannelGroup group = it.next();
