@@ -46,9 +46,9 @@ import com.google.common.collect.Lists;
  * @since 11.04.2011
  */
 public class PersistDataToFileRescuerUnitTest {
-    private static File RESCUE_DIR;
+    private File _rescueDir;
 
-    private static List<String> STATEMENTS;
+    private List<String> _statements;
 
     // CHECKSTYLE:OFF
     @Rule
@@ -57,9 +57,9 @@ public class PersistDataToFileRescuerUnitTest {
 
     @Before
     public void setup() {
-        RESCUE_DIR = _folder.newFolder("test");
+        _rescueDir = _folder.newFolder("test");
 
-        STATEMENTS = Lists.newArrayList("FIRST",
+        _statements = Lists.newArrayList("FIRST",
                                         "SECOND",
                                         "THIRD");
     }
@@ -68,17 +68,17 @@ public class PersistDataToFileRescuerUnitTest {
     public void saveToPathTest() throws DataRescueException {
         final TimeInstant now = TimeInstantBuilder.fromNow();
 
-        final DataRescueResult result = PersistDataToFileRescuer.with(STATEMENTS).at(now).to(RESCUE_DIR).rescue();
+        final DataRescueResult result = PersistDataToFileRescuer.with(_statements).at(now).to(_rescueDir).rescue();
 
         final File infile = new File(result.getFilePath());
         Assert.assertNotNull(infile);
 
         final List<String> resultFromFile = readStatementsFromFile(infile);
 
-        Assert.assertEquals(STATEMENTS.size(), resultFromFile.size());
+        Assert.assertEquals(_statements.size(), resultFromFile.size());
 
         int i = 0;
-        for (final String stmt : STATEMENTS) {
+        for (final String stmt : _statements) {
             Assert.assertEquals(stmt, resultFromFile.get(i));
             i++;
         }
