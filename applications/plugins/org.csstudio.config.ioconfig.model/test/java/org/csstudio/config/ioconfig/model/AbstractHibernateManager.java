@@ -96,7 +96,7 @@ public abstract class AbstractHibernateManager extends Observable implements IHi
     @Override
     public final synchronized void closeSession() {
         if( (_sessionLazy != null) && _sessionLazy.isOpen()) {
-            _sessionLazy.close();
+//            _sessionLazy.close();
             _sessionLazy.disconnect();
             _sessionLazy = null;
         }
