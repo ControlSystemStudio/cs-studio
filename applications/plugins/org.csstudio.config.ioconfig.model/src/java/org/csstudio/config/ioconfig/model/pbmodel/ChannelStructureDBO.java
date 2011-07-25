@@ -255,7 +255,7 @@ public class ChannelStructureDBO extends AbstractNodeDBO<ModuleDBO, ChannelDBO> 
     }
 
     @Override
-    public short getfirstFreeStationAddress(final int maxStationAddress) throws PersistenceException {
+    public int getfirstFreeStationAddress(final int maxStationAddress) throws PersistenceException {
         if (isSimple()) {
             return getSortIndex();
         }
@@ -336,9 +336,7 @@ public class ChannelStructureDBO extends AbstractNodeDBO<ModuleDBO, ChannelDBO> 
         throw new UnsupportedOperationException("No simple child can be created for node type " + getClass().getName());
     }
     
-    /**
-     * {@inheritDoc}
-     */
+    // CHECKSTYLE OFF: StrictDuplicateCode
     @Override
     public void accept(@Nonnull final INodeVisitor visitor) {
         visitor.visit(this);
@@ -353,4 +351,5 @@ public class ChannelStructureDBO extends AbstractNodeDBO<ModuleDBO, ChannelDBO> 
     public int hashCode() {
         return super.hashCode();
     }
+    // CHECKSTYLE ON: StrictDuplicateCode 
 }

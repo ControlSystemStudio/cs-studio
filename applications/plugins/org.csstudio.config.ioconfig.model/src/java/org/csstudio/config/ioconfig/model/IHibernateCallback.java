@@ -33,7 +33,7 @@ import org.hibernate.Session;
  * @version $Revision: 1.1 $
  * @since 03.06.2009
  */
-public interface HibernateCallback {
+public interface IHibernateCallback {
 
     /**
      * Execute the Query.

@@ -40,6 +40,7 @@ import org.csstudio.config.ioconfig.editorinputs.NodeEditorInput;
 import org.csstudio.config.ioconfig.editorparts.ModuleEditor;
 import org.csstudio.config.ioconfig.model.AbstractNodeDBO;
 import org.csstudio.config.ioconfig.model.PersistenceException;
+import org.csstudio.config.ioconfig.view.internal.localization.Messages;
 import org.eclipse.jface.dialogs.InputDialog;
 import org.eclipse.jface.window.Window;
 import org.eclipse.ui.IWorkbenchPage;
@@ -53,7 +54,7 @@ import org.eclipse.ui.PartInitException;
  */
 public class CallNewSiblingNodeEditor extends AbstractCallNodeEditor {
     
-    private static final String ID = "org.csstudio.config.ioconfig.commands.callNewSiblingEditor";
+    private static final String ID = "org.csstudio.config.ioconfig.commands.callNewSiblingEditor";//$NON-NLS-1$
     
     /**
      * @return
@@ -68,35 +69,11 @@ public class CallNewSiblingNodeEditor extends AbstractCallNodeEditor {
      * @throws PartInitException
      * @throws PersistenceException 
      */
-    // CHECKSTYLE OFF: CyclomaticComplexity
     @Override
-    protected void openNodeEditor(@Nonnull final AbstractNodeDBO siblingNode,
+    protected void openNodeEditor(@Nonnull final AbstractNodeDBO<AbstractNodeDBO<?, ?>, AbstractNodeDBO<?, ?>> siblingNode,
                                   @Nonnull final IWorkbenchPage page) throws PartInitException,
                                                                      PersistenceException {
-//        AbstractNodeDBO<?,?> node = null;
-//        String id = null;
-//        
-//        if(siblingNode instanceof FacilityDBO) {
-//            id = FacilityEditor.ID;
-//            node = new FacilityDBO();
-//        } else if(siblingNode instanceof IocDBO) {
-//            id = IocEditor.ID;
-//            node = new IocDBO( ((IocDBO) siblingNode).getParent());
-//        } else if(siblingNode instanceof ProfibusSubnetDBO) {
-//            id = SubnetEditor.ID;
-//            node = new ProfibusSubnetDBO( ((ProfibusSubnetDBO) siblingNode).getIoc());
-//        } else if(siblingNode instanceof MasterDBO) {
-//            id = MasterEditor.ID;
-//            node = new MasterDBO( ((MasterDBO) siblingNode).getProfibusSubnet());
-//        } else if(siblingNode instanceof SlaveDBO) {
-//            id = SlaveEditor.ID;
-//            node = new SlaveDBO( ((SlaveDBO) siblingNode).getProfibusDPMaster());
-//        } else if(siblingNode instanceof ModuleDBO) {
-//            id = ModuleEditor.ID;
-//            node = new ModuleDBO( ((ModuleDBO) siblingNode).getSlave());
-//        }
-        
-        AbstractNodeDBO node = siblingNode.getParent().createChild();
+        AbstractNodeDBO<?,?> node = siblingNode.getParent().createChild();
         String id = NodeEditorHandler.getEditorIdFor(node);
         
         if( (node != null) && (id != null)) {
@@ -104,11 +81,10 @@ public class CallNewSiblingNodeEditor extends AbstractCallNodeEditor {
                 performOpen(siblingNode, page, node, id, " ");
             } else {
                 String nodeType = node.getNodeType().getName();
-                InputDialog idialog = new InputDialog(null,
-                                                      "Create new " + nodeType,
-                                                      "Enter the name of the " + nodeType,
-                                                      siblingNode.getName(),
-                                                      null);
+                String title = String.format(Messages.NodeEditor_Title, nodeType);
+                String msg = String.format(Messages.NodeEditor_Msg, nodeType);
+                InputDialog idialog =
+                                      new InputDialog(null, title, msg, siblingNode.getName(), null);
                 idialog.setBlockOnOpen(true);
                 if(idialog.open() == Window.OK) {
                     String name;
@@ -117,7 +93,6 @@ public class CallNewSiblingNodeEditor extends AbstractCallNodeEditor {
                     } else {
                         name = nodeType;
                     }
-
                     performOpen(siblingNode, page, node, id, name);
                 } else {
                     siblingNode.removeChild(node);
@@ -125,7 +100,6 @@ public class CallNewSiblingNodeEditor extends AbstractCallNodeEditor {
             }
         }
     }
-    // CHECKSTYLE ON: CyclomaticComplexity
 
     /**
      * @param siblingNode

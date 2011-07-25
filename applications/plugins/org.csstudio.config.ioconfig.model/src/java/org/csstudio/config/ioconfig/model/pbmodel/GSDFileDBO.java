@@ -198,10 +198,7 @@ public class GSDFileDBO implements Serializable {
      */
     @CheckForNull
     public GSDModuleDBO getGSDModule(@Nonnull final Integer indexModule) {
-        if(_gSDModules == null) {
-            _gSDModules = new HashMap<Integer, GSDModuleDBO>();
-        }
-        return _gSDModules.get(indexModule);
+        return _gSDModules == null?null:_gSDModules.get(indexModule);
     }
     
     /** @return the Name of this gsdFile */

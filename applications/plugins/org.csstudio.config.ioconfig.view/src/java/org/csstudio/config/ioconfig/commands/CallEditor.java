@@ -36,10 +36,10 @@ import org.eclipse.ui.PartInitException;
  */
 public class CallEditor extends AbstractCallNodeEditor {
 
-	public static final String ID = "org.csstudio.config.ioconfig.commands.callEditor";
+	public static final String ID = "org.csstudio.config.ioconfig.commands.callEditor";//$NON-NLS-1$
 
 	@Override
-	protected final void openNodeEditor(@Nonnull AbstractNodeDBO<?,?> obj,
+	protected final void openNodeEditor(@Nonnull AbstractNodeDBO<AbstractNodeDBO<?,?>,AbstractNodeDBO<?,?>> obj,
 			@Nonnull IWorkbenchPage page) throws PartInitException {
 
 		NodeEditorInput input = new NodeEditorInput(obj);

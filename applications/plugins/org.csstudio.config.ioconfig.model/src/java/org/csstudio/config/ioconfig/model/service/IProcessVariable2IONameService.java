@@ -49,7 +49,7 @@ import org.csstudio.config.ioconfig.model.PersistenceException;
  * @version $Revision: 1.2 $
  * @since 27.07.2010
  */
-public interface ProcessVariable2IONameService {
+public interface IProcessVariable2IONameService {
 
     @CheckForNull
     String getIOName(@Nonnull final String pvName);

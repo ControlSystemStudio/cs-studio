@@ -49,7 +49,7 @@ import org.slf4j.LoggerFactory;
  * @version $Revision: 1.3 $
  * @since 27.08.2009
  */
-public class LogbookDocumentService implements DocumentService {
+public class LogbookDocumentService implements IDocumentService {
     
     private static final Logger LOG = LoggerFactory.getLogger(LogbookDocumentService.class);
     

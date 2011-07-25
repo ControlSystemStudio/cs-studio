@@ -101,7 +101,7 @@ public final class DeviceDatabaseErrorDialog {
         MessageDialog messageDialog = new MessageDialog(parent, title, null,
                           sb.toString(), MessageDialog.ERROR,
                           dialogButtonLabels, 1);
-        if (messageDialog.open() == 1) {
+        if (messageDialog.open() == 1 && busTreeView!=null) {
             busTreeView.reload();
         }
     }

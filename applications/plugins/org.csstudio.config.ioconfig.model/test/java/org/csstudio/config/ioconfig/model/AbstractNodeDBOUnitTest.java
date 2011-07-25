@@ -9,6 +9,7 @@ import static org.junit.Assert.assertTrue;
 import java.util.Collection;
 
 import org.csstudio.config.ioconfig.model.pbmodel.ProfibusSubnetDBO;
+import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.Ignore;
 import org.junit.Test;
@@ -99,10 +100,14 @@ public class AbstractNodeDBOUnitTest {
     }
 
     @BeforeClass
-    public static void setUp() {
+    public static void setUpBeforeClass() {
         HibernateRepository repository = new HibernateRepository(new HibernateTestManager());
         Repository.injectIRepository(repository);
     }
-
+    
+    @AfterClass
+    public static void tearDownAfterClass() {
+        Repository.close();
+    }
 }
 //CHECKSTYLE:ON

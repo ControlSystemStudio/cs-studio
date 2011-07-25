@@ -276,7 +276,7 @@ public class ModuleUnitTest {
     }
 
     @After
-    public void setDown() {
+    public void tearDown() {
         _slave = null;
         _master = null;
         _profibusSubnet = null;

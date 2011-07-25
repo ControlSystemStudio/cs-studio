@@ -226,9 +226,9 @@ public class ModuleChannelPrototypeDBO extends DBClass implements Comparable<Mod
 
     @Override
     public  int compareTo(@CheckForNull ModuleChannelPrototypeDBO other) {
-//        if(other==null) {
-//            return -1;
-//        }
+        if(other==null) {
+            return -1;
+        }
         if(getId() == other.getId()) {
             return 0;
         }else if(isInput()==other.isInput()) {
@@ -242,20 +242,14 @@ public class ModuleChannelPrototypeDBO extends DBClass implements Comparable<Mod
         
     }
     
-//    /**
-//     * {@inheritDoc}
-//     */
-//    @Override
-//    public final boolean equals(@CheckForNull Object obj) {
-//        return super.equals(obj);
-//    }
-//    
-//    /**
-//     * {@inheritDoc}
-//     */
-//    @Override
-//    public int hashCode() {
-//        return super.hashCode();
-//    }
+    @Override
+    public final boolean equals(@CheckForNull Object obj) {
+        return super.equals(obj);
+    }
+    
+    @Override
+    public int hashCode() {
+        return super.hashCode();
+    }
 
 }
