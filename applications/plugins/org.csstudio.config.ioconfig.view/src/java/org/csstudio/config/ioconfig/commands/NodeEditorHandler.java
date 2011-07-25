@@ -21,6 +21,7 @@
  */
 package org.csstudio.config.ioconfig.commands;
 
+import javax.annotation.CheckForNull;
 import javax.annotation.Nonnull;
 
 import org.csstudio.config.ioconfig.model.AbstractNodeDBO;
@@ -40,7 +41,7 @@ public final class NodeEditorHandler {
         // Don't instantiate
     }
 
-    @Nonnull
+    @CheckForNull
     public static String getEditorIdFor(@Nonnull final AbstractNodeDBO<?, ?> node) {
         node.accept(EditorIdNodeVisitor.INSTANCE);
         return EditorIdNodeVisitor.INSTANCE.getId();

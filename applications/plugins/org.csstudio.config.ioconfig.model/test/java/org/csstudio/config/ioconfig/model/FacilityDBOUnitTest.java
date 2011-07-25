@@ -9,7 +9,7 @@ import java.sql.Date;
 import java.util.HashSet;
 import java.util.Set;
 
-import org.junit.Before;
+import org.junit.BeforeClass;
 import org.junit.Test;
 
 //CHECKSTYLE:OFF
@@ -93,8 +93,8 @@ public class FacilityDBOUnitTest {
         facility.setVersion(11);
         return facility;
     }
-    @Before
-    public void setUp() throws Exception {
+    @BeforeClass
+    public static void setUp() throws Exception {
         Repository.injectIRepository(new DummyRepository());
     }
 //    @After

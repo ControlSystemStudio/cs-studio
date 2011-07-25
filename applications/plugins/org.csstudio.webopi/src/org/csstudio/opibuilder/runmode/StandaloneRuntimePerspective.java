@@ -1,9 +1,7 @@
 package org.csstudio.opibuilder.runmode;
 
-import org.csstudio.opibuilder.runmode.OPIRunnerPerspective.Position;
 import org.eclipse.ui.IPageLayout;
 import org.eclipse.ui.IPerspectiveFactory;
-import org.eclipse.ui.IPlaceholderFolderLayout;
 
 /**
  * Configures the perspective layout. This class is contributed through the
@@ -22,6 +20,7 @@ public class StandaloneRuntimePerspective implements IPerspectiveFactory {
 //                IPageLayout.LEFT, 1.0f, editorArea);
 //
 //		center.addPlaceholder(OPIView.ID);
+		OPIView.setOpenFromPerspective(true);
 		layout.addStandaloneView(OPIView.ID, false, IPageLayout.LEFT, 1.0f,
 				editorArea);
 	}

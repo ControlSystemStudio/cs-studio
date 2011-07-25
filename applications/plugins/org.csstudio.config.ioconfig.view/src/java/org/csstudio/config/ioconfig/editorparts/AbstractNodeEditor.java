@@ -97,7 +97,7 @@ import org.slf4j.LoggerFactory;
  * @param <T>
  * @since 31.03.2010
  */
-public abstract class AbstractNodeEditor<T extends AbstractNodeDBO<?, ?>> extends EditorPart implements INodeConfig {
+public abstract class AbstractNodeEditor<T extends AbstractNodeDBO<?,?>> extends EditorPart implements INodeConfig {
     
     /**
      * 
@@ -124,7 +124,7 @@ public abstract class AbstractNodeEditor<T extends AbstractNodeDBO<?, ?>> extend
                 }
                 setSaveButtonSaved();
             } else {
-                AbstractNodeDBO<?,?> node = getNode();
+                T node = getNode();
                 final boolean openQuestion = MessageDialog
                         .openQuestion(getShell(), "Cancel", "You dispose this "
                                 + node.getClass().getSimpleName() + "?");
@@ -506,8 +506,11 @@ public abstract class AbstractNodeEditor<T extends AbstractNodeDBO<?, ?>> extend
      * 
      * @return The Documentation Manage View.
      */
-    @CheckForNull
+    @Nonnull
     protected final DocumentationManageView getDocumentationManageView() {
+        if(_documentationManageView == null) {
+            documents();
+        }
         return _documentationManageView;
     }
     
@@ -627,7 +630,7 @@ public abstract class AbstractNodeEditor<T extends AbstractNodeDBO<?, ?>> extend
                 name = user.getUsername();
             }
         } catch (Exception e) {
-            // Nothing to do. No User avable use 'Unknown'.
+            name = "Unknown";
         }
         return name;
     }
@@ -816,7 +819,7 @@ public abstract class AbstractNodeEditor<T extends AbstractNodeDBO<?, ?>> extend
         IProgressMonitor progressMonitor = dia.getProgressMonitor();
         try {
             progressMonitor.beginTask("Save " + getNode(), 3);
-            AbstractNodeDBO parent = getNode().getParent();
+            AbstractNodeDBO<?,?> parent = getNode().getParent();
             progressMonitor.worked(1);
             try {
                 if (parent == null) {
@@ -878,10 +881,7 @@ public abstract class AbstractNodeEditor<T extends AbstractNodeDBO<?, ?>> extend
     @SuppressWarnings("unused")
     protected void setBackgroundComposite() {
         final int columnNum = 5;
-        final AbstractNodeDBO node = getNode();
-        if (node == null) {
-            return;
-        }
+        final T node = getNode();
         getParent().setLayout(new GridLayout(columnNum, true));
         final Label headlineLabel = new Label(getParent(), SWT.NONE);
         if (_FONT == null) {

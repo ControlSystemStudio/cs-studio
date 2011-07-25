@@ -528,7 +528,7 @@ public final class GsdFileParser {
         StringReader sr = new StringReader(gsdFileDBO.getGSDFile());
         BufferedReader br = new BufferedReader(sr);
         try {
-            ParsedGsdFileModel parsedGsdFileModel = new ParsedGsdFileModel(gsdFileDBO.getName());
+            ParsedGsdFileModel parsedGsdFileModel = new ParsedGsdFileModel(gsdFileDBO);
             return parse(br, parsedGsdFileModel);
         } finally {
             if (br != null) {

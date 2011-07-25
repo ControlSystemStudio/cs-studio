@@ -249,7 +249,7 @@ public abstract class AbstractNodeDBO<P extends AbstractNodeDBO, C extends Abstr
      * @throws PersistenceException 
      */
     @Transient
-    public short getfirstFreeStationAddress(final int maxStationAddress) throws PersistenceException {
+    public int getfirstFreeStationAddress(final int maxStationAddress) throws PersistenceException {
         final Map<Short, C> children = getChildrenAsMap();
         Short nextKey = 0;
         if(!children.containsKey(nextKey)) {
@@ -264,7 +264,7 @@ public abstract class AbstractNodeDBO<P extends AbstractNodeDBO, C extends Abstr
                 nextKey = key;
             }
         }
-        return (short) (nextKey + 1);
+        return nextKey + 1;
     }
     
     /**

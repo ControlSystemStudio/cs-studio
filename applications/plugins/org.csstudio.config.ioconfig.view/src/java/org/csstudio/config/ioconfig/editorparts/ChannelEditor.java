@@ -35,7 +35,6 @@ import org.csstudio.config.ioconfig.model.PersistenceException;
 import org.csstudio.config.ioconfig.model.Repository;
 import org.csstudio.config.ioconfig.model.SensorsDBO;
 import org.csstudio.config.ioconfig.model.pbmodel.ChannelDBO;
-import org.csstudio.config.ioconfig.model.pbmodel.GSDFileDBO;
 import org.csstudio.config.ioconfig.model.pbmodel.GSDModuleDBO;
 import org.csstudio.config.ioconfig.model.pbmodel.ModuleChannelPrototypeDBO;
 import org.csstudio.config.ioconfig.model.tools.NodeMap;
@@ -75,7 +74,7 @@ import org.slf4j.LoggerFactory;
  */
 public class ChannelEditor extends AbstractNodeEditor<ChannelDBO> {
 
-    private static final Logger LOG = LoggerFactory.getLogger(ChannelEditor.class);
+    protected static final Logger LOG = LoggerFactory.getLogger(ChannelEditor.class);
     
 	/**
 	 * @author hrickens
@@ -89,51 +88,61 @@ public class ChannelEditor extends AbstractNodeEditor<ChannelDBO> {
 			// Default Constructor.
 		}
     	
-		private void doAssemble() {
-		    ChannelDBO channel = getChannel();
-		    if(channel==null) {
-		    	return;
-		    }
-			GSDModuleDBO module = channel.getModule().getGSDModule();
-		    TreeSet<ModuleChannelPrototypeDBO> moduleChannelPrototypes = module
-		            .getModuleChannelPrototypeNH();
-		    ModuleChannelPrototypeDBO[] array = moduleChannelPrototypes
-		            .toArray(new ModuleChannelPrototypeDBO[0]);
-		    ModuleChannelPrototypeDBO moduleChannelPrototype = array[channel
-		            .getChannelStructure().getSortIndex()];
-		    channel.setStatusAddressOffset(moduleChannelPrototype.getShift());
-		    String name;
-		    if (!moduleChannelPrototype.isStructure()) {
-		        name = moduleChannelPrototype.getName();
-		    } else {
-		        name = moduleChannelPrototype.getName() + channel.getSortIndex();
-		    }
-		    Text nameWidget = getNameWidget();
-			if ((nameWidget != null) && !name.equals(channel.getName())) {
-				nameWidget.setText(name);
-			}
-		    if (moduleChannelPrototype.getType() != channel.getChannelStructure()
-		            .getStructureType()) {
-		        channel.getChannelStructure().setStructureType(
-		                moduleChannelPrototype.getType());
-		        if (channel.getChannelStructure().isSimple()) {
-		            channel.setChannelType(moduleChannelPrototype.getType());
-		        }
-		    }
-	        channel.setName(moduleChannelPrototype.getName());
-		    String oldAdr = channel.getEpicsAddressStringNH();
-		    try {
+        private void doAssemble() {
+            ChannelDBO channel = getNode();
+            GSDModuleDBO module = channel.getModule().getGSDModule();
+            if (module != null) {
+                TreeSet<ModuleChannelPrototypeDBO> moduleChannelPrototypes =
+                                                                             module.getModuleChannelPrototypeNH();
+                ModuleChannelPrototypeDBO[] array =
+                                                    moduleChannelPrototypes
+                                                            .toArray(new ModuleChannelPrototypeDBO[0]);
+                ModuleChannelPrototypeDBO moduleChannelPrototype =
+                                                                   array[channel
+                                                                           .getChannelStructure()
+                                                                           .getSortIndex()];
+                channel.setStatusAddressOffset(moduleChannelPrototype.getShift());
+                setWidgetName(channel, moduleChannelPrototype);
+                setChannelName(channel, moduleChannelPrototype);
+            }
+            String oldAdr = channel.getEpicsAddressStringNH();
+            try {
                 channel.assembleEpicsAddressString();
                 String newAdr = channel.getEpicsAddressStringNH();
                 Text addressText = getAddressText();
-                if (addressText!=null&&!newAdr.equals(oldAdr)) {
+                if (addressText != null && !newAdr.equals(oldAdr)) {
                     addressText.setText(newAdr);
                 }
             } catch (PersistenceException e) {
-                DeviceDatabaseErrorDialog.open(null, "Can't calulate Epics Address. Database error!", e);
+                DeviceDatabaseErrorDialog.open(null,
+                                               "Can't calulate Epics Address. Database error!",
+                                               e);
                 LOG.error("Can't calulate Epics Address. Database error!", e);
             }
-		}
+        }
+
+        public void setChannelName(@Nonnull ChannelDBO channel,
+                                   @Nonnull ModuleChannelPrototypeDBO moduleChannelPrototype) {
+            if (moduleChannelPrototype.getType() != channel.getChannelStructure()
+                    .getStructureType()) {
+                channel.getChannelStructure()
+                        .setStructureType(moduleChannelPrototype.getType());
+                if (channel.getChannelStructure().isSimple()) {
+                    channel.setChannelType(moduleChannelPrototype.getType());
+                }
+            }
+            channel.setName(moduleChannelPrototype.getName());
+        }
+
+        public void setWidgetName(@Nonnull ChannelDBO channel,
+                                  @Nonnull ModuleChannelPrototypeDBO moduleChannelPrototype) {
+            String name = moduleChannelPrototype.getName();
+            name += !moduleChannelPrototype.isStructure()?"": channel.getSortIndex();
+            Text nameWidget = getNameWidget();
+            if ((nameWidget != null) && !name.equals(channel.getName())) {
+                nameWidget.setText(name);
+            }
+        }
 
 		@Override
 		public void widgetDefaultSelected(@Nonnull final SelectionEvent e) {
@@ -149,17 +158,12 @@ public class ChannelEditor extends AbstractNodeEditor<ChannelDBO> {
 	public static final String ID = "org.csstudio.config.ioconfig.view.editor.channel";
 
     /**
-     * The Profibus Channel Object.
-     */
-    private ChannelDBO _channel;
-    /**
      * The EPICS address string of the Channel.
      */
     private Text _addressText;
     /**
      * The GSD File of the parent Module.
      */
-    private GSDFileDBO _gsdFile;
     private Text _ioNameText;
     private ComboViewer _sensorsViewer;
 
@@ -192,8 +196,8 @@ public class ChannelEditor extends AbstractNodeEditor<ChannelDBO> {
         setAddressText(new Text(epicsAddressGroup, SWT.FLAT | SWT.SINGLE));
 		Text addressText = getAddressText();
 		if (addressText != null) {
-			ChannelDBO channel = getChannel();
-			if (channel!=null && channel.getName() != null) {
+			ChannelDBO channel = getNode();
+			if (channel.getName() != null) {
 				addressText.setText(channel.getEpicsAddressStringNH());
 			}
 			addressText.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true,
@@ -227,20 +231,21 @@ public class ChannelEditor extends AbstractNodeEditor<ChannelDBO> {
         gName.setLayout(new GridLayout(3, false));
         setNameWidget(new Text(gName, SWT.BORDER | SWT.SINGLE));
         Text nameWidget = getNameWidget();
-		ChannelDBO channel = getChannel();
-		if(channel!=null) {
-			if (nameWidget != null) {
-				nameWidget.setLayoutData(new GridData(SWT.FILL, SWT.CENTER,
-						true, true, 1, 1));
-				setText(nameWidget, channel.getName(), 255);
-				nameWidget.setEditable(false);
-			}
-			Spinner indexSpinner = ConfigHelper.getIndexSpinner(gName, channel,
-					getMLSB(), "Index", getProfiBusTreeView());
-			setIndexSpinner(indexSpinner);
-			indexSpinner.setEnabled(false);
-		}
-	}
+        ChannelDBO channel = getNode();
+        if (nameWidget != null) {
+            nameWidget.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, true, 1, 1));
+            setText(nameWidget, channel.getName(), 255);
+            nameWidget.setEditable(false);
+        }
+        Spinner indexSpinner =
+                               ConfigHelper.getIndexSpinner(gName,
+                                                            channel,
+                                                            getMLSB(),
+                                                            "Index",
+                                                            getProfiBusTreeView());
+        setIndexSpinner(indexSpinner);
+        indexSpinner.setEnabled(false);
+    }
 
 	/**
 	 * @param comp
@@ -254,24 +259,18 @@ public class ChannelEditor extends AbstractNodeEditor<ChannelDBO> {
         ioNameGroup.setText("IO Name: ");
         _ioNameText = new Text(ioNameGroup, SWT.BORDER | SWT.SINGLE);
         _ioNameText.setLayoutData(new GridData(SWT.FILL, SWT.BOTTOM, true, false, 1, 1));
-        setText(_ioNameText, getChannel().getIoName(), 255);
+        setText(_ioNameText, getNode().getIoName(), 255);
 		return ioNameGroup;
 	}
 
 	@Override
-    public void createPartControl(@Nonnull final Composite parent) {
-        setChannel((ChannelDBO) getNode());
+    public final void createPartControl(@Nonnull final Composite parent) {
         super.createPartControl(parent);
         NodeMap.countChannelConfigComposite();
-        if (getChannel() == null) {
-            newNode();
-        } else {
-            _gsdFile = getChannel().getGSDFile();
-        }
         setSavebuttonEnabled(null, getNode().isPersistent());
         String[] heads = {"Channel settings", "Documents", "GSD File List" };
         general(heads[0]);
-        if (getChannel().isDirty()) {
+        if (getNode().isDirty()) {
             perfromSave();
         }
         _ioNameText.setFocus();
@@ -282,10 +281,11 @@ public class ChannelEditor extends AbstractNodeEditor<ChannelDBO> {
 	 * @param comp
 	 */
 	private void createSensorField(@Nonnull final Composite comp) {
-		if ((getChannel().getIoName() != null) && !getChannel().getIoName().isEmpty()) {
+		String ioName = getNode().getIoName();
+        if ((ioName != null) && !ioName.isEmpty()) {
             List<SensorsDBO> loadSensors = null;
             try {
-                loadSensors = Repository.loadSensors(getChannel().getIoName());
+                loadSensors = Repository.loadSensors(ioName);
             } catch (PersistenceException e) {
                 DeviceDatabaseErrorDialog.open(null, "Can't read sensor ID's from Database", e);
                 LOG.error("Can't read sensor ID's from Database", e);
@@ -306,10 +306,8 @@ public class ChannelEditor extends AbstractNodeEditor<ChannelDBO> {
         sizeGroup.setText("Size: ");
         Text sizeText = new Text(sizeGroup, SWT.SINGLE | SWT.RIGHT);
         sizeText.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, false, 1, 1));
-        ChannelDBO channel = getChannel();
-        if (channel != null) {
-            setText(sizeText, channel.getChSize(), 255);
-        }
+        ChannelDBO channel = getNode();
+        setText(sizeText, channel.getChSize(), 255);
         sizeText.setEditable(false);
 	}
 
@@ -317,26 +315,26 @@ public class ChannelEditor extends AbstractNodeEditor<ChannelDBO> {
      * {@inheritDoc}
      */
     @Override
-    public void doSave(@Nullable final IProgressMonitor monitor) {
+    public final void doSave(@Nullable final IProgressMonitor monitor) {
         super.doSave(monitor);
         // Channel Settings
-        ChannelDBO channel = getChannel();
-        if (channel != null) {
-            channel.setIoName(_ioNameText.getText());
-            channel.setName(getNameWidget().getText());
-            _ioNameText.setData(_ioNameText.getText());
-            if (_sensorsViewer != null) {
-                SensorsDBO firstElement = (SensorsDBO) ((StructuredSelection) _sensorsViewer
-                        .getSelection()).getFirstElement();
-                channel.setCurrentValue(Integer.toString(firstElement.getId()));
-                Combo combo = _sensorsViewer.getCombo();
-                combo.setData(combo.getSelectionIndex());
-            }
-            // Document
-            Set<DocumentDBO> docs = getDocumentationManageView().getDocuments();
-            channel.setDocuments(docs);
+        ChannelDBO channel = getNode();
+        channel.setIoName(_ioNameText.getText());
+        Text nameWidget = getNameWidget();
+        channel.setName(nameWidget==null?"":nameWidget.getText());
+        _ioNameText.setData(_ioNameText.getText());
+        if (_sensorsViewer != null) {
+            SensorsDBO firstElement =
+                                      (SensorsDBO) ((StructuredSelection) _sensorsViewer
+                                              .getSelection()).getFirstElement();
+            channel.setCurrentValue(Integer.toString(firstElement.getId()));
+            Combo combo = _sensorsViewer.getCombo();
+            combo.setData(combo.getSelectionIndex());
         }
-        save();
+        // Document
+        Set<DocumentDBO> docs = getDocumentationManageView().getDocuments();
+        channel.setDocuments(docs);
+   save();
     }
 
     /**
@@ -357,18 +355,17 @@ public class ChannelEditor extends AbstractNodeEditor<ChannelDBO> {
 
         // Description Group
         makeDescGroup(comp, 3);
-        comp.setTabList(new Control[] {ioNameGroup, getDescText().getParent()});
+        Text descText = getDescText();
+        if(descText != null) {
+            Control[] tabList = new Control[] {ioNameGroup, descText.getParent()};
+            comp.setTabList(tabList);
+        }
     }
 
 
     @CheckForNull
-	protected Text getAddressText() {
+	protected final Text getAddressText() {
 		return _addressText;
-	}
-
-    @CheckForNull
-	protected ChannelDBO getChannel() {
-		return _channel;
 	}
 
     /**
@@ -386,16 +383,15 @@ public class ChannelEditor extends AbstractNodeEditor<ChannelDBO> {
 		_sensorsViewer.setContentProvider(new ArrayContentProvider());
 		_sensorsViewer.setInput(loadSensors.toArray());
 		int id = 0;
-		ChannelDBO channel = getChannel();
-		if(channel!=null) {
-            if ( (channel.getCurrentValue() != null) && (channel.getCurrentValue().length() > 0)) {
-                id = Integer.parseInt(channel.getCurrentValue());
-            } else {
-                id = loadSensors.get(0).getId();
-                channel.setCurrentValue(Integer.toString(id));
-                channel.setDirty(true);
-            }
-		}
+        ChannelDBO channel = getNode();
+        String currentValue = channel.getCurrentValue();
+        if ((currentValue != null) && (currentValue.length() > 0)) {
+            id = Integer.parseInt(currentValue);
+        } else {
+            id = loadSensors.get(0).getId();
+            channel.setCurrentValue(Integer.toString(id));
+            channel.setDirty(true);
+        }
 		_sensorsViewer.getCombo().select(0);
 		for (SensorsDBO sensors : loadSensors) {
 		    if (id == sensors.getId()) {
@@ -406,20 +402,16 @@ public class ChannelEditor extends AbstractNodeEditor<ChannelDBO> {
 		_sensorsViewer.getCombo().addModifyListener(getMLSB());
 	}
 
-	protected void setAddressText(@CheckForNull Text addressText) {
-		_addressText = addressText;
-	}
+    protected final void setAddressText(@CheckForNull Text addressText) {
+        _addressText = addressText;
+    }
 
-	protected void setChannel(@Nullable ChannelDBO channel) {
-		_channel = channel;
-	}
-	
 	/**
      *
      * @param ioNameText
      *            Set the new IOName for this channel.
      */
-    public void setIoNameText(@Nonnull final String ioNameText) {
+    public final void setIoNameText(@Nonnull final String ioNameText) {
         _ioNameText.setText(ioNameText);
     }
 

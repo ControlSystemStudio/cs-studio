@@ -91,7 +91,7 @@ public class NamedDBClass extends DBClass {
     }
     @Transient
     public void setSortIndex(@Nonnull final Integer sortIndex) {
-        _sortIndex = sortIndex.shortValue();
+        setSortIndex(sortIndex.shortValue());
     }
 
     /**

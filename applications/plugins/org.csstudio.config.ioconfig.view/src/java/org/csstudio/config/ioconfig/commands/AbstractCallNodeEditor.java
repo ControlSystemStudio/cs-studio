@@ -41,6 +41,7 @@ import org.csstudio.config.ioconfig.model.AbstractNodeDBO;
 import org.csstudio.config.ioconfig.model.PersistenceException;
 import org.csstudio.config.ioconfig.view.DeviceDatabaseErrorDialog;
 import org.csstudio.config.ioconfig.view.MainView;
+import org.csstudio.config.ioconfig.view.internal.localization.IOConfigMessages;
 import org.eclipse.core.commands.AbstractHandler;
 import org.eclipse.core.commands.ExecutionEvent;
 import org.eclipse.core.commands.ExecutionException;
@@ -81,18 +82,18 @@ public abstract class AbstractCallNodeEditor extends AbstractHandler {
                 try {
                     openNodeEditor(obj, page);
                 } catch (PartInitException e1) {
-                    MessageDialog.openError(null, "ERROR", e1.getMessage());
-                    LOG.error("Can't open editor!",e1);
+                    MessageDialog.openError(null, "ERROR", e1.getMessage()); //$NON-NLS-1$
+                    LOG.error("Can't open editor!",e1); //$NON-NLS-1$
                 } catch (PersistenceException e2) {
-                    LOG.error("Can't open editor!",e2);
-                    DeviceDatabaseErrorDialog.open(null, "Can't open Editor", e2);
+                    LOG.error("Can't open editor!",e2); //$NON-NLS-1$
+                    DeviceDatabaseErrorDialog.open(null, IOConfigMessages.AbstractCallNodeEditor_DialogErrorMsg, e2);
                 }
             }
         }
         return null;
     }
 
-    protected abstract void openNodeEditor(@Nonnull final AbstractNodeDBO<?,?> parentNode,
+    protected abstract void openNodeEditor(@Nonnull final AbstractNodeDBO<AbstractNodeDBO<?,?>,AbstractNodeDBO<?,?>> parentNode,
                                            @Nonnull IWorkbenchPage page) throws PartInitException, PersistenceException;
 
 

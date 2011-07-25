@@ -83,11 +83,7 @@ public class IocEditor extends AbstractNodeEditor<IocDBO> {
     @Override
     public void createPartControl(@Nonnull final Composite parent) {
         super.createPartControl(parent);
-        _ioc = (IocDBO) getNode();
-        if (_ioc == null) {
-            getNode();
-            newNode();
-        }
+        _ioc = getNode();
         main("IOC");
         selecttTabFolder(0);    
     }

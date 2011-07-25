@@ -11,6 +11,8 @@ import java.util.TreeMap;
 import javax.annotation.CheckForNull;
 import javax.annotation.Nonnull;
 
+import org.csstudio.config.ioconfig.model.pbmodel.GSDFileDBO;
+
 /**
  * @author hrickens
  *
@@ -23,12 +25,15 @@ public class ParsedGsdFileModel extends AbstractGsdPropertyModel implements Seri
     private final Map<Integer, PrmText> _prmTextMap;
     private final Map<Integer, GsdModuleModel2> _gsdModuleModelMap;
     private final Map<Integer, ExtUserPrmData> _gsdExtUserPrmData;
+    private final GSDFileDBO _gsdFileDBO;
+    
     /**
      * Constructor.
-     * @param name
+     * @param gsdFileDBO
      */
-    public ParsedGsdFileModel(@Nonnull String name) {
-        _name = name;
+    public ParsedGsdFileModel(@Nonnull GSDFileDBO gsdFileDBO) {
+        _gsdFileDBO = gsdFileDBO;
+        _name = gsdFileDBO.getName();
         _prmTextMap = new TreeMap<Integer, PrmText>();
         _gsdModuleModelMap = new TreeMap<Integer, GsdModuleModel2>();
         _gsdExtUserPrmData = new HashMap<Integer, ExtUserPrmData>();
@@ -129,5 +134,10 @@ public class ParsedGsdFileModel extends AbstractGsdPropertyModel implements Seri
     public boolean isModularStation() {
         Integer intProperty = getIntProperty("Modular_Station");
         return intProperty==null?false:intProperty!=0;
+    }
+
+    @Nonnull
+    public GSDFileDBO getGsdFileDBO() {
+        return _gsdFileDBO;
     }
 }

@@ -6,7 +6,6 @@ package org.csstudio.config.ioconfig.model.pbmodel.gsdParser;
 
 import junit.framework.Assert;
 
-import org.junit.Before;
 import org.junit.Ignore;
 import org.junit.Test;
 
@@ -16,14 +15,6 @@ import org.junit.Test;
 // CHECKSTYLE:OFF
 @Ignore
 public class AcceptGSDFileUnitTest {
-
-    /**
-     * @throws java.lang.Exception
-     */
-    @Before
-    public void setUp() throws Exception {
-//        GSDTestFiles.B756_P33.getFileAsString();
-    }
 
     @Test
     public void GSDTestFile_3KStrND() throws Exception {

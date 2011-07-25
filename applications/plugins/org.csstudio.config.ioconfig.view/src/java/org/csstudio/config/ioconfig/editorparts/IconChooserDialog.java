@@ -25,6 +25,7 @@ package org.csstudio.config.ioconfig.editorparts;
 
 import javax.annotation.CheckForNull;
 import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 
 import org.csstudio.config.ioconfig.config.view.helper.IconManageView;
 import org.csstudio.config.ioconfig.model.AbstractNodeDBO;
@@ -38,7 +39,7 @@ import org.eclipse.swt.widgets.Shell;
 
 /**
 *
-* TODO: make a Dialog to select a Icon for this node.
+* Make a Dialog to select a Icon for this node.
 *
 * @author hrickens
 * @author $Author: hrickens $
@@ -46,7 +47,7 @@ import org.eclipse.swt.widgets.Shell;
 */
 public class IconChooserDialog extends Dialog {
 
-	private final AbstractNodeDBO _node;
+	private final AbstractNodeDBO<?,?> _node;
 	/*
 	 * (non-Javadoc)
 	 *
@@ -54,7 +55,7 @@ public class IconChooserDialog extends Dialog {
 	 */
 	private IconManageView _iconManageView;
 
-	protected IconChooserDialog(@Nonnull final Shell parentShell, @Nonnull final AbstractNodeDBO node) {
+	protected IconChooserDialog(@Nullable final Shell parentShell, @Nonnull final AbstractNodeDBO<?,?> node) {
 		super(parentShell);
 		this.setShellStyle(SWT.RESIZE | SWT.BORDER | SWT.CLOSE | SWT.MIN | SWT.MAX | SWT.TITLE
 				| SWT.ON_TOP | // SWT.TOOL| SWT.SHEET|

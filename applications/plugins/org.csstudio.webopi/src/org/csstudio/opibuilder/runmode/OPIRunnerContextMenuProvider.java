@@ -58,10 +58,10 @@ public final class OPIRunnerContextMenuProvider extends ContextMenuProvider {
 		addWidgetActionToMenu(menu);
 		GEFActionConstants.addStandardActionGroups(menu);
 		
-		IWorkbenchWindow activeWindow = PlatformUI.getWorkbench().getActiveWorkbenchWindow();
-		
-		ActionRegistry actionRegistry =
-			(ActionRegistry) opiRuntime.getAdapter(ActionRegistry.class);
+//		IWorkbenchWindow activeWindow = PlatformUI.getWorkbench().getActiveWorkbenchWindow();
+//		
+//		ActionRegistry actionRegistry =
+//			(ActionRegistry) opiRuntime.getAdapter(ActionRegistry.class);
 		
 //		menu.appendToGroup(GEFActionConstants.GROUP_EDIT, 
 //				WorkbenchWindowService.getInstance().getFullScreenAction(activeWindow));
@@ -71,7 +71,7 @@ public final class OPIRunnerContextMenuProvider extends ContextMenuProvider {
 
 		
 
-		menu.appendToGroup(GEFActionConstants.GROUP_EDIT, actionRegistry.getAction(ActionFactory.PRINT.getId()));
+//		menu.appendToGroup(GEFActionConstants.GROUP_EDIT, actionRegistry.getAction(ActionFactory.PRINT.getId()));
 
 //		MenuManager cssMenu = new MenuManager("CSS", "css");
 //		cssMenu.add(new Separator("additions")); //$NON-NLS-1$

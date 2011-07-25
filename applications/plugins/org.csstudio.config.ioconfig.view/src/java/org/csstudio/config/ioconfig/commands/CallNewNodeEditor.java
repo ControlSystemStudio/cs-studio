@@ -32,6 +32,7 @@ import org.csstudio.auth.security.User;
 import org.csstudio.config.ioconfig.editorinputs.NodeEditorInput;
 import org.csstudio.config.ioconfig.editorparts.FacilityEditor;
 import org.csstudio.config.ioconfig.model.FacilityDBO;
+import org.csstudio.config.ioconfig.view.internal.localization.Messages;
 import org.eclipse.core.commands.AbstractHandler;
 import org.eclipse.core.commands.ExecutionEvent;
 import org.eclipse.core.commands.ExecutionException;
@@ -76,7 +77,7 @@ public class CallNewNodeEditor extends AbstractHandler {
             try {
                 page.openEditor(input, FacilityEditor.ID);
             } catch (PartInitException e) {
-            	LOG.error("Can't open Facility Editor", e);
+            	LOG.error("Can't open Facility Editor", e);//$NON-NLS-1$
             }
             node = getNode();
         }
@@ -87,15 +88,16 @@ public class CallNewNodeEditor extends AbstractHandler {
     private boolean newNode(@Nullable final String nameOffer) {
 
         String nodeType = getNode().getClass().getSimpleName();
-
-        InputDialog id = new InputDialog(Display.getDefault().getActiveShell(), "Create new " + nodeType,
-                "Enter the name of the " + nodeType, nameOffer, null);
+        String title = String.format(Messages.NodeEditor_Title, nodeType);
+        String msg = String.format(Messages.NodeEditor_Msg, nodeType);
+        InputDialog id = new InputDialog(Display.getDefault().getActiveShell(), title,
+                msg, nameOffer, null);
         id.setBlockOnOpen(true);
         if (id.open() == Window.OK) {
             getNode().setName(id.getValue());
             getNode().setSortIndex(0);
             User user = SecurityFacade.getInstance().getCurrentUser();
-            String name = "Unknown";
+            String name = "Unknown";//$NON-NLS-1$
             if (user != null) {
                 name = user.getUsername();
             }

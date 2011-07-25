@@ -608,7 +608,8 @@ public class EPICS_V3_PV extends PlatformObject
     {
         //INumericMetaData metaData = (INumericMetaData) DBR_Helper.decodeMetaData(ev.getDBR());
 
-        Activator.getLogger().log(Level.FINEST, "meta: {0}", new Object[] { ev.getDBR().getClass().getName() });
+    	if(ev.getDBR() != null)
+    		Activator.getLogger().log(Level.FINEST, "meta: {0}", new Object[] { ev.getDBR().getClass().getName() });
 
         final Logger log = Activator.getLogger();
         // This runs in a CA thread.

@@ -27,6 +27,7 @@ package org.csstudio.config.ioconfig.model.pbmodel.gsdParser;
 import java.util.Arrays;
 import java.util.List;
 
+import org.csstudio.config.ioconfig.model.pbmodel.GSDFileDBO;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
@@ -47,7 +48,8 @@ public class ParsedGsdFileModelUnitTest {
      */
     @Before
     public void setUp() throws Exception {
-        _out = new ParsedGsdFileModel("Test");
+        GSDFileDBO gsdFileDBO = new GSDFileDBO("JUnitTest", "JUnitTest File");
+        _out = new ParsedGsdFileModel(gsdFileDBO);
     }
     
     @Test

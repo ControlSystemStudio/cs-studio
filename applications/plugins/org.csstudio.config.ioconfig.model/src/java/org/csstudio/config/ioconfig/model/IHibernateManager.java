@@ -38,7 +38,7 @@ public interface IHibernateManager {
     
     
     @CheckForNull
-    <T> T doInDevDBHibernateEager(@Nonnull final HibernateCallback hibernateCallback) throws PersistenceException;
+    <T> T doInDevDBHibernateEager(@Nonnull final IHibernateCallback hibernateCallback) throws PersistenceException;
     
     /**
      *
@@ -49,7 +49,7 @@ public interface IHibernateManager {
      * @return the Session resulte.
      */
     @CheckForNull
-    <T> T doInDevDBHibernateLazy(@Nonnull final HibernateCallback hibernateCallback) throws PersistenceException;
+    <T> T doInDevDBHibernateLazy(@Nonnull final IHibernateCallback hibernateCallback) throws PersistenceException;
     
     void closeSession();
     

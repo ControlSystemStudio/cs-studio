@@ -258,73 +258,52 @@ public class ProfibusConfigWinModGenerator {
 		}
 	}
 
-	/**
-	 * @param lineNr
-	 * @param channelDBO 
-	 * @param winModChannel TODO
-	 * @param channelType 
-	 */
 	private void appendLine(int lineNr, @Nonnull ChannelDBO channelDBO, @Nonnull WinModChannel winModChannel, @Nonnull String channelType) {
-	    _winModSlaveAdr.append(_lineNr++).append(",");
-	    // Treibersignal
-	    addAdr(_winModSlaveAdr, _id,_module, winModChannel, lineNr, channelDBO.isDigital());
-	       // Adresse
-        _winModSlaveAdr.append(",");
-        // Symbol
-        _winModSlaveAdr.append(",");
-        if(channelDBO.getIoName()==null) {
-            addAdr(_winModSlaveAdr, _id,_module, winModChannel, lineNr, channelDBO.isDigital());
-        }else {
-            _winModSlaveAdr.append("'").append(channelDBO.getIoName());
-//          if(lineNr>0) {
-            if(channelType.startsWith("D")&&winModChannel.getIO().endsWith("B")) {
-                if(lineNr==4) {
-                    _winModSlaveAdr.append("_Stat");
-                }else {
-                    _winModSlaveAdr.append("_Byte").append(lineNr);
-                }
-            }
-            _winModSlaveAdr.append("'");
-        }
-        _winModSlaveAdr.append(",'").append(channelType).append("','").append(winModChannel.getDef()).append("',");
-        if(channelDBO.getDescription()!=null && !channelDBO.getDescription().isEmpty()) {
-            _winModSlaveAdr.append("'").append(winModChannel.getDesc()).append("'");
-        }
-        _winModSlaveAdr.append(LINE_END);
+        appendLine(lineNr, channelDBO, winModChannel, channelType, false);
 	}
 	
 	private void appendAddLine(int lineNr, @Nonnull ChannelDBO channelDBO, @Nonnull WinModChannel winModChannel, @Nonnull String channelType) {
-		_winModSlaveAdr.append(_lineNr++).append(",");
-		// Treibersignal
-		addAdr(_winModSlaveAdr, _id,_module, winModChannel, lineNr, channelDBO.isDigital());
-
-		// Adresse
-		_winModSlaveAdr.append(",");
-		addAdr(_winModSlaveAdr, _id,_module, winModChannel, lineNr, channelDBO.isDigital());
-		
-		// Symbol
-		_winModSlaveAdr.append(",");
-		if(channelDBO.getIoName()==null) {
-			addAdr(_winModSlaveAdr, _id,_module, winModChannel, lineNr, channelDBO.isDigital());
-		}else {
-			_winModSlaveAdr.append("'").append(channelDBO.getIoName());
-//			if(lineNr>0) {
-			if(channelType.startsWith("D")&&winModChannel.getIO().endsWith("B")) {
-			    if(lineNr==4) {
-			        _winModSlaveAdr.append("_Stat");
-			    }else {
-			        _winModSlaveAdr.append("_Byte").append(lineNr);
-			    }
-			}
-			_winModSlaveAdr.append("'");
-		}
-		_winModSlaveAdr.append(",'").append(channelType).append("','").append(winModChannel.getDef()).append("',");
-		if(channelDBO.getDescription()!=null && !channelDBO.getDescription().isEmpty()) {
-			_winModSlaveAdr.append("'").append(winModChannel.getDesc()).append("'");
-		}
-		_winModSlaveAdr.append(LINE_END);
+	    appendLine(lineNr, channelDBO, winModChannel, channelType, true);
 	}
 
+	private void appendLine(int lineNr, @Nonnull ChannelDBO channelDBO, @Nonnull WinModChannel winModChannel, @Nonnull String channelType, boolean add) {
+	    _winModSlaveAdr.append(_lineNr++).append(",");
+	    // Treibersignal
+	    addAdr(_winModSlaveAdr, _id,_module, winModChannel, lineNr, channelDBO.isDigital());
+	    // Adresse
+	    _winModSlaveAdr.append(",");
+	    if(add) {
+	        addAdr(_winModSlaveAdr, _id,_module, winModChannel, lineNr, channelDBO.isDigital());
+	    }
+	    // Symbol
+	    addSymbol(lineNr, channelDBO, winModChannel, channelType);
+	    _winModSlaveAdr.append(",'").append(channelType).append("','").append(winModChannel.getDef()).append("',");
+	    if(channelDBO.getDescription()!=null && !channelDBO.getDescription().isEmpty()) {
+	        _winModSlaveAdr.append("'").append(winModChannel.getDesc()).append("'");
+	    }
+	    _winModSlaveAdr.append(LINE_END);
+	    
+	}
+
+    public void addSymbol(int lineNr,
+                          @Nonnull ChannelDBO channelDBO,
+                          @Nonnull WinModChannel winModChannel,
+                          @Nonnull String channelType) {
+        _winModSlaveAdr.append(",");
+	    if(channelDBO.getIoName()==null) {
+	        addAdr(_winModSlaveAdr, _id,_module, winModChannel, lineNr, channelDBO.isDigital());
+	    }else {
+	        _winModSlaveAdr.append("'").append(channelDBO.getIoName());
+	        if(channelType.startsWith("D")&&winModChannel.getIO().endsWith("B")) {
+	            if(lineNr==4) {
+	                _winModSlaveAdr.append("_Stat");
+	            }else {
+	                _winModSlaveAdr.append("_Byte").append(lineNr);
+	            }
+	        }
+	        _winModSlaveAdr.append("'");
+	    }
+    }
 	/**
 	 * @param winModSlaveAdr
 	 * @param id

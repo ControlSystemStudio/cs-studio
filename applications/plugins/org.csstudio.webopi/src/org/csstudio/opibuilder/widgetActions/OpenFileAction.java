@@ -39,7 +39,7 @@ public class OpenFileAction extends AbstractWidgetAction {
 	@Override
 	public void run() {
 		MessageDialog.openWarning(Display.getCurrent().getActiveShell(), "Not Implemented", 
-				"Sorry, Open File action is not implemented for RAP!");
+				"Sorry, Open File action is not implemented for WebOPI!");
 	}
 
 	private IPath getPath(){
