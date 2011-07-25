@@ -19,7 +19,7 @@
  * PROJECT IN THE FILE LICENSE.HTML. IF THE LICENSE IS NOT INCLUDED YOU MAY FIND A COPY
  * AT HTTP://WWW.DESY.DE/LEGAL/LICENSE.HTM
  */
-package org.csstudio.archive.common.service.mysqlimpl;
+package org.csstudio.archive.common.service.mysqlimpl.engine;
 
 import java.net.MalformedURLException;
 import java.net.URL;
@@ -30,6 +30,7 @@ import junit.framework.Assert;
 
 import org.csstudio.archive.common.service.engine.ArchiveEngineId;
 import org.csstudio.archive.common.service.engine.IArchiveEngine;
+import org.csstudio.archive.common.service.mysqlimpl.dao.AbstractDaoTestSetup;
 import org.csstudio.archive.common.service.mysqlimpl.dao.ArchiveDaoException;
 import org.csstudio.archive.common.service.mysqlimpl.engine.ArchiveEngineDaoImpl;
 import org.csstudio.archive.common.service.mysqlimpl.engine.IArchiveEngineDao;

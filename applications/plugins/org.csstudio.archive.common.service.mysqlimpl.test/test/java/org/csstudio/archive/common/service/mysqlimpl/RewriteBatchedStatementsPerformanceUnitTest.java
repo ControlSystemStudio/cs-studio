@@ -25,6 +25,7 @@ import java.sql.PreparedStatement;
 import java.sql.SQLException;
 
 import org.csstudio.archive.common.service.ArchiveConnectionException;
+import org.csstudio.archive.common.service.mysqlimpl.dao.AbstractDaoTestSetup;
 import org.csstudio.domain.desy.time.StopWatch;
 import org.csstudio.domain.desy.time.StopWatch.RunningStopWatch;
 import org.junit.Assert;

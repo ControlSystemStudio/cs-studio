@@ -19,7 +19,7 @@
  * PROJECT IN THE FILE LICENSE.HTML. IF THE LICENSE IS NOT INCLUDED YOU MAY FIND A COPY
  * AT HTTP://WWW.DESY.DE/LEGAL/LICENSE.HTM
  */
-package org.csstudio.archive.common.service.mysqlimpl;
+package org.csstudio.archive.common.service.mysqlimpl.controlsystem;
 
 import junit.framework.Assert;
 
@@ -27,6 +27,7 @@ import org.csstudio.archive.common.service.controlsystem.ArchiveControlSystemId;
 import org.csstudio.archive.common.service.controlsystem.IArchiveControlSystem;
 import org.csstudio.archive.common.service.mysqlimpl.controlsystem.ArchiveControlSystemDaoImpl;
 import org.csstudio.archive.common.service.mysqlimpl.controlsystem.IArchiveControlSystemDao;
+import org.csstudio.archive.common.service.mysqlimpl.dao.AbstractDaoTestSetup;
 import org.csstudio.archive.common.service.mysqlimpl.dao.ArchiveDaoException;
 import org.csstudio.domain.desy.system.ControlSystem;
 import org.junit.BeforeClass;

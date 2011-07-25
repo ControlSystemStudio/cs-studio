@@ -19,12 +19,13 @@
  * PROJECT IN THE FILE LICENSE.HTML. IF THE LICENSE IS NOT INCLUDED YOU MAY FIND A COPY
  * AT HTTP://WWW.DESY.DE/LEGAL/LICENSE.HTM
  */
-package org.csstudio.archive.common.service.mysqlimpl;
+package org.csstudio.archive.common.service.mysqlimpl.dao;
 
 import java.io.File;
 
 import junit.framework.Assert;
 
+import org.csstudio.archive.common.service.mysqlimpl.MySQLArchivePreferenceService;
 import org.csstudio.archive.common.service.mysqlimpl.dao.ArchiveConnectionHandler;
 import org.csstudio.archive.common.service.mysqlimpl.persistengine.PersistEngineDataManager;
 import org.csstudio.testsuite.util.TestDataProvider;

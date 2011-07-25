@@ -19,7 +19,7 @@
  * PROJECT IN THE FILE LICENSE.HTML. IF THE LICENSE IS NOT INCLUDED YOU MAY FIND A COPY
  * AT HTTP://WWW.DESY.DE/LEGAL/LICENSE.HTM
  */
-package org.csstudio.archive.common.service.mysqlimpl;
+package org.csstudio.archive.common.service.mysqlimpl.channelgroup;
 
 import java.util.Collection;
 import java.util.Iterator;
@@ -33,6 +33,7 @@ import org.csstudio.archive.common.service.channelgroup.IArchiveChannelGroup;
 import org.csstudio.archive.common.service.engine.ArchiveEngineId;
 import org.csstudio.archive.common.service.mysqlimpl.channelgroup.ArchiveChannelGroupDaoImpl;
 import org.csstudio.archive.common.service.mysqlimpl.channelgroup.IArchiveChannelGroupDao;
+import org.csstudio.archive.common.service.mysqlimpl.dao.AbstractDaoTestSetup;
 import org.csstudio.archive.common.service.mysqlimpl.dao.ArchiveDaoException;
 import org.junit.BeforeClass;
 import org.junit.Test;
