@@ -76,7 +76,7 @@ org.csstudio.utility.pvmanager.epics
 org.csstudio.utility.pvmanager.loc
 org.csstudio.utility.pvmanager.jfreechart.widgets
 org.csstudio.utility.pvmanager.sim
-org.csstudio.utility.pvmanager.toolbox
+org.csstudio.utility.pvmanager.ui.toolbox
 org.csstudio.utility.pvmanager.ui
 org.csstudio.utility.pvmanager.widgets
 org.csstudio.utility.pvmanager.widgets.test
