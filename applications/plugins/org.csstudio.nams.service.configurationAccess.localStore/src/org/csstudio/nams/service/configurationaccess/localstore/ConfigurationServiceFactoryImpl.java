@@ -335,9 +335,9 @@ public class ConfigurationServiceFactoryImpl implements
 						"class");
 
 		if (connectionData.getDatabaseType().equals(
-				DatabaseType.HSQL_1_8_0_FOR_TEST)) {
+				DatabaseType.HSQL_2_2_FOR_TEST)) {
 			try {
-				Class.forName(DatabaseType.HSQL_1_8_0_FOR_TEST.getDriverName())
+				Class.forName(DatabaseType.HSQL_2_2_FOR_TEST.getDriverName())
 						.newInstance();
 				final SchemaUpdate schemaUpdate = new SchemaUpdate(
 						configuration);

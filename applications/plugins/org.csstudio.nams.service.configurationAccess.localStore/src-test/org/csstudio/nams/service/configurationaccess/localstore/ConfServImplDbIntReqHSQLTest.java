@@ -60,7 +60,7 @@ public class ConfServImplDbIntReqHSQLTest
 
 		final LocalStoreConfigurationService result = factory
 				.getConfigurationService("jdbc:hsqldb:mem:namscfg",
-						DatabaseType.HSQL_1_8_0_FOR_TEST, "sa", "");
+						DatabaseType.HSQL_2_2_FOR_TEST, "sa", "");
 
 		return result;
 	}
