@@ -10,7 +10,7 @@ package org.csstudio.opibuilder.widgetActions;
 import java.util.logging.Level;
 
 import org.csstudio.opibuilder.OPIBuilderPlugin;
-import org.csstudio.opibuilder.properties.BooleanProperty;
+import org.csstudio.opibuilder.properties.ComboProperty;
 import org.csstudio.opibuilder.properties.WidgetPropertyCategory;
 import org.csstudio.opibuilder.runmode.DisplayOpenManager;
 import org.csstudio.opibuilder.runmode.IOPIRuntime;
@@ -25,6 +25,7 @@ import org.eclipse.swt.widgets.Display;
 import org.eclipse.ui.IWorkbenchPart;
 import org.eclipse.ui.PartInitException;
 import org.eclipse.ui.PlatformUI;
+import org.jdom.Element;
 
 /**
  * The action running another OPI file.
@@ -37,17 +38,47 @@ public class OpenDisplayAction extends AbstractOpenOPIAction {
 
 	public static final String PROP_REPLACE = "replace";//$NON-NLS-1$
 
+	private enum OpenDisplayTarget{
+		NEW_TAB("Open in new Tab"),
+		REPLACE("Replace"),		
+		NEW_WINDOW("Open in new Window");
+		
+		private String description;
+		private OpenDisplayTarget(String desc) {
+			this.description = desc;
+		}
+		
+		public static String[] stringValues(){
+			String[] sv = new String[values().length];
+			int i=0;
+			for(OpenDisplayTarget p : values())
+				sv[i++] = p.description;
+			return sv;
+		}
+	}
+	
 
 	@Override
 	protected void configureProperties() {
 		super.configureProperties();
-		addProperty(new BooleanProperty(PROP_REPLACE, "Replace",
-				WidgetPropertyCategory.Basic, true));
+		addProperty(new ComboProperty(PROP_REPLACE, "Target",
+				WidgetPropertyCategory.Basic, OpenDisplayTarget.stringValues(), 1){
+			@Override
+			public Object readValueFromXML(Element propElement) {
+				try {
+					Integer index = Integer.parseInt(propElement.getValue());
+					return index;
+				} catch (NumberFormatException e) {
+					boolean b = Boolean.parseBoolean(propElement.getValue());
+					return b?new Integer(1): new Integer(0);
+				}
+			}
+		});
 	}
 
 	@Override
 	protected void openOPI(IPath absolutePath) {
-		if (!ctrlPressed && !shiftPressed && isReplace()) {				
+		if (!ctrlPressed && !shiftPressed && getOpenDisplayTarget() == OpenDisplayTarget.REPLACE) {				
 			IWorkbenchPart activePart = PlatformUI.getWorkbench()
 					.getActiveWorkbenchWindow().getActivePage()
 					.getActivePart();
@@ -71,7 +102,19 @@ public class OpenDisplayAction extends AbstractOpenOPIAction {
 			}
 		} else {
 			TargetWindow target;
-			if (shiftPressed && !ctrlPressed)
+			if(!ctrlPressed && !shiftPressed){
+				switch (getOpenDisplayTarget()) {
+				case NEW_TAB:
+					target = TargetWindow.SAME_WINDOW;
+					break;
+				case NEW_WINDOW:
+					target = TargetWindow.NEW_WINDOW;
+					break;
+				default:
+					target = TargetWindow.SAME_WINDOW;
+					break;
+				}
+			}else if (shiftPressed && !ctrlPressed)
 				target = TargetWindow.NEW_WINDOW;
 			else
 				target = TargetWindow.SAME_WINDOW;
@@ -81,8 +124,9 @@ public class OpenDisplayAction extends AbstractOpenOPIAction {
 		}		
 	}
 
-	private boolean isReplace() {
-		return (Boolean) getPropertyValue(PROP_REPLACE);
+	private OpenDisplayTarget getOpenDisplayTarget() {
+		int index = (Integer) getPropertyValue(PROP_REPLACE);
+		return OpenDisplayTarget.values()[index];
 	}
 
 	@Override
