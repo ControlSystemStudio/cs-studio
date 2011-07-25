@@ -25,6 +25,7 @@ package org.csstudio.opibuilder.properties;
 import org.csstudio.opibuilder.editparts.ExecutionMode;
 import org.csstudio.opibuilder.persistence.URLPath;
 import org.csstudio.opibuilder.script.RuleData;
+import org.csstudio.opibuilder.util.OPIBuilderMacroUtil;
 import org.csstudio.opibuilder.util.ResourceUtil;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.Path;
@@ -98,11 +99,16 @@ public class FilePathProperty extends AbstractWidgetProperty {
 	public Object getPropertyValue() {
 		if(widgetModel !=null && widgetModel.getExecutionMode() == ExecutionMode.RUN_MODE
 				&& propertyValue != null &&
-				!((IPath)propertyValue).isEmpty() && !((IPath)propertyValue).isAbsolute()){
-				return ResourceUtil.buildAbsolutePath(widgetModel, (IPath) propertyValue);
+				!((IPath)propertyValue).isEmpty()){
+			String s = OPIBuilderMacroUtil.replaceMacros(
+					widgetModel, propertyValue.toString());
+			IPath path = ResourceUtil.getPathFromString(s);
+			if(!path.isAbsolute())
+				return ResourceUtil.buildAbsolutePath(widgetModel, path);
 		}			
 		return super.getPropertyValue();
 	}
+	
 	
 
 	@Override
