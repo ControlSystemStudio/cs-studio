@@ -111,7 +111,7 @@ public class RelatedDisplay2Model extends AbstractADL2Model {
 					rdDisplay.getLabel().replaceAll("\"", ""));
 		}
 		if ((rdDisplay.getPolicy() != null)) { // policy is present
-			if (rdDisplay.getPolicy().equals("replace display")) { // replace
+			if (rdDisplay.getPolicy().replaceAll("\"", "").equals("replace display")) { // replace
 																	// the
 																	// display
 				odAction.setPropertyValue(OpenDisplayAction.PROP_REPLACE, true);

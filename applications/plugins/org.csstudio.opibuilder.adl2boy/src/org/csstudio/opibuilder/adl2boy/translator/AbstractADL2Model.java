@@ -17,6 +17,7 @@ import org.csstudio.opibuilder.script.PVTuple;
 import org.csstudio.opibuilder.script.RuleData;
 import org.csstudio.opibuilder.script.RulesInput;
 import org.csstudio.opibuilder.util.OPIColor;
+import org.csstudio.opibuilder.widgets.model.AbstractShapeModel;
 import org.csstudio.utility.adlparser.fileParser.ADLWidget;
 import org.csstudio.utility.adlparser.fileParser.widgetParts.ADLBasicAttribute;
 import org.csstudio.utility.adlparser.fileParser.widgetParts.ADLConnected;
@@ -375,5 +376,29 @@ public abstract class AbstractADL2Model {
 		color = ColorUtilities
 				.matchToTableColor(this.colorMap[displayForeColor]);
 		widgetModel.setPropertyValue(propertyName, color);
+	}
+
+	protected void setShapesColorFillLine(ADLAbstractWidget shapeWidget) {
+		if (shapeWidget.getAdlBasicAttribute().getFill().equals("solid") ) {
+			widgetModel.setPropertyValue(AbstractShapeModel.PROP_TRANSPARENT, false);
+			widgetModel.setPropertyValue(AbstractShapeModel.PROP_FILL_LEVEL, 100);
+			widgetModel.setPropertyValue(AbstractShapeModel.PROP_HORIZONTAL_FILL, true);
+			
+		}
+		else if (shapeWidget.getAdlBasicAttribute().getFill().equals("outline")) {
+			widgetModel.setPropertyValue(AbstractShapeModel.PROP_TRANSPARENT, true);
+			OPIColor fColor = (OPIColor)widgetModel.getPropertyValue(AbstractWidgetModel.PROP_COLOR_FOREGROUND);
+			widgetModel.setPropertyValue(AbstractShapeModel.PROP_LINE_COLOR, fColor);
+			if ( shapeWidget.getAdlBasicAttribute().getStyle().equals("solid") ) {
+				widgetModel.setPropertyValue(AbstractShapeModel.PROP_LINE_STYLE, 0);
+			}
+			if ( shapeWidget.getAdlBasicAttribute().getStyle().equals("dash") ) {
+				widgetModel.setPropertyValue(AbstractShapeModel.PROP_LINE_STYLE, 1);
+				
+			}
+			int lineWidth = shapeWidget.getAdlBasicAttribute().getWidth();
+			if (lineWidth == 0)lineWidth = 1;
+			widgetModel.setPropertyValue(AbstractShapeModel.PROP_LINE_WIDTH, lineWidth );
+		}
 	}
 }
