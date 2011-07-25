@@ -59,7 +59,9 @@ public class CachedConstructorPerformanceUnitTest {
         }
         public TestDBRType newInstance( final int count ) {
             try {
+              // CHECKSTYLE OFF
               return _ctor.newInstance( new Object[] {new Integer( count )} );
+              // CHECKSTYLE ON
             } catch( final Exception ex ) {
                 // Empty
             }

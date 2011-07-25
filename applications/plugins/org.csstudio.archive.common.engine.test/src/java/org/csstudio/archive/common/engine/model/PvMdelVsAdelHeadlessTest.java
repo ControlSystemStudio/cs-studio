@@ -78,7 +78,7 @@ public class PvMdelVsAdelHeadlessTest {
 
     private SoftIoc _softIoc;
 
-    private final class TestListener implements PVListener {
+    private static final class TestListener implements PVListener {
         public final List<Double> _values = Lists.newLinkedList();
 
         /**

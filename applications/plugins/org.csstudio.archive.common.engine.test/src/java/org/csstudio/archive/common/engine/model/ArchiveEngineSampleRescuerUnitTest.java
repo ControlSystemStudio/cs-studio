@@ -35,6 +35,7 @@ import org.csstudio.archive.common.service.sample.ArchiveSample;
 import org.csstudio.archive.common.service.sample.IArchiveSample;
 import org.csstudio.archive.common.service.util.DataRescueException;
 import org.csstudio.archive.common.service.util.DataRescueResult;
+import org.csstudio.domain.desy.epics.alarm.EpicsAlarm;
 import org.csstudio.domain.desy.epics.types.EpicsEnum;
 import org.csstudio.domain.desy.epics.types.EpicsSystemVariable;
 import org.csstudio.domain.desy.system.ControlSystem;
@@ -55,9 +56,9 @@ import org.junit.rules.TemporaryFolder;
  */
 public class ArchiveEngineSampleRescuerUnitTest {
 
-    private static File RESCUE_DIR;
 
-    private static List<IArchiveSample<Object, ISystemVariable<Object>>> SAMPLES;
+    private List<IArchiveSample<Object, ISystemVariable<Object>>> _samples;
+    private File _rescueDir;
 
     @Rule
     public TemporaryFolder _folder = new TemporaryFolder();
@@ -65,7 +66,7 @@ public class ArchiveEngineSampleRescuerUnitTest {
     @SuppressWarnings({ "unchecked", "rawtypes" })
     @Before
     public void setup() {
-        RESCUE_DIR = _folder.newFolder("test");
+        _rescueDir = _folder.newFolder("test");
 
         final IArchiveSample<Double, ISystemVariable<Double>> sample1 =
             new ArchiveSample<Double, ISystemVariable<Double>>(new ArchiveChannelId(1),
@@ -73,29 +74,29 @@ public class ArchiveEngineSampleRescuerUnitTest {
                                                                                        Double.valueOf(2.0),
                                                                                        ControlSystem.EPICS_DEFAULT,
                                                                                        TimeInstantBuilder.fromNow(),
-                                                                                       null),
+                                                                                       EpicsAlarm.UNKNOWN),
                                                                null);
         final IArchiveSample<Integer, ISystemVariable<Integer>> sample2 =
-            new ArchiveSample<Integer, ISystemVariable<Integer>>(new ArchiveChannelId(3),
-                    new EpicsSystemVariable("bar",
-                                            Integer.valueOf(26),
-                                            ControlSystem.EPICS_DEFAULT,
-                                            TimeInstantBuilder.fromNow(),
-                                            null),
-                                            null);
+            new ArchiveSample<Integer, ISystemVariable<Integer>>(new ArchiveChannelId(2),
+                                                                 new EpicsSystemVariable("bar",
+                                                                                         Integer.valueOf(26),
+                                                                                         ControlSystem.EPICS_DEFAULT,
+                                                                                         TimeInstantBuilder.fromNow(),
+                                                                                         EpicsAlarm.UNKNOWN),
+                                                                 null);
         final IArchiveSample<EpicsEnum, ISystemVariable<EpicsEnum>> sample3 =
             new ArchiveSample<EpicsEnum, ISystemVariable<EpicsEnum>>(new ArchiveChannelId(3),
-                    new EpicsSystemVariable("bar",
-                                            EpicsEnum.createFromRaw(666),
-                                            ControlSystem.EPICS_DEFAULT,
-                                            TimeInstantBuilder.fromNow(),
-                                            null),
-                                            null);
+                                                                     new EpicsSystemVariable("bar",
+                                                                                             EpicsEnum.createFromRaw(666),
+                                                                                             ControlSystem.EPICS_DEFAULT,
+                                                                                             TimeInstantBuilder.fromNow(),
+                                                                                             EpicsAlarm.UNKNOWN),
+                                                                     null);
 
-        SAMPLES = new ArrayList();
-        SAMPLES.add((IArchiveSample) sample1);
-        SAMPLES.add((IArchiveSample) sample2);
-        SAMPLES.add((IArchiveSample) sample3);
+        _samples = new ArrayList();
+        _samples.add((IArchiveSample) sample1);
+        _samples.add((IArchiveSample) sample2);
+        _samples.add((IArchiveSample) sample3);
 
     }
 
@@ -103,7 +104,8 @@ public class ArchiveEngineSampleRescuerUnitTest {
     public void saveToPathTest() throws DataRescueException, IOException, ClassNotFoundException {
         final TimeInstant now = TimeInstantBuilder.fromNow();
 
-        final DataRescueResult rescueResult = ArchiveEngineSampleRescuer.with(SAMPLES).at(now).to(RESCUE_DIR).rescue();
+        final DataRescueResult rescueResult =
+            ArchiveEngineSampleRescuer.with(_samples).at(now).to(_rescueDir).rescue();
 
         final File infile = new File(rescueResult.getFilePath());
         Assert.assertNotNull(infile);
