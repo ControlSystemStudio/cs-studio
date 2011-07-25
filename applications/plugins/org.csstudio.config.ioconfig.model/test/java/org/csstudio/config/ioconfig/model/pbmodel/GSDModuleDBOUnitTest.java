@@ -28,6 +28,7 @@ import org.csstudio.config.ioconfig.model.HibernateTestManager;
 import org.csstudio.config.ioconfig.model.PersistenceException;
 import org.csstudio.config.ioconfig.model.Repository;
 import org.junit.After;
+import org.junit.AfterClass;
 import org.junit.Assert;
 import org.junit.BeforeClass;
 import org.junit.Test;
@@ -80,6 +81,12 @@ public class GSDModuleDBOUnitTest {
             Repository.removeNode(_gsdModuleDBO);
         }
     }
+    
+    @AfterClass
+    public static void tearDownAfterClass() {
+        Repository.close();
+    }
+
     
 }
 

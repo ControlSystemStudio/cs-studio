@@ -18,7 +18,7 @@ import org.junit.Test;
 public class DocumentDBOUnitTest {
 
     @BeforeClass
-    public static void setUp() {
+    public static void setUpBeforeClass() {
         HibernateRepository repository = new HibernateRepository(new HibernateTestManager());
         Repository.injectIRepository(repository);
     }
@@ -29,5 +29,10 @@ public class DocumentDBOUnitTest {
         assertNotNull(result);
         assertTrue(result.size()>0);
     }
+    
+    public static void tearDownAfterClass() {
+        Repository.close();
+    }
+
 
 }

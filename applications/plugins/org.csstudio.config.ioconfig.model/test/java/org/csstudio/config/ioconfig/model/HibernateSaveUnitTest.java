@@ -38,6 +38,7 @@ import org.csstudio.config.ioconfig.model.pbmodel.ProfibusSubnetDBO;
 import org.csstudio.config.ioconfig.model.pbmodel.SlaveDBO;
 import org.csstudio.config.ioconfig.model.pbmodel.gsdParser.GSDTestFiles;
 import org.junit.After;
+import org.junit.AfterClass;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.BeforeClass;
@@ -347,5 +348,11 @@ public class HibernateSaveUnitTest {
             _REPOSITORY.removeGSDFiles(_b756p33);
         }
     }
+    
+    @AfterClass
+    public static void tearDownAfterClass() {
+        Repository.close();
+    }
+
     
 }

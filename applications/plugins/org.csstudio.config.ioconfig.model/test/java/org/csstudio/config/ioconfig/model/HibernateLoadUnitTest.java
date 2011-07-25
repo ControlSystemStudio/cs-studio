@@ -36,6 +36,7 @@ import org.csstudio.config.ioconfig.model.pbmodel.MasterDBO;
 import org.csstudio.config.ioconfig.model.pbmodel.ModuleDBO;
 import org.csstudio.config.ioconfig.model.pbmodel.ProfibusSubnetDBO;
 import org.csstudio.config.ioconfig.model.pbmodel.SlaveDBO;
+import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.Ignore;
 import org.junit.Test;
@@ -58,10 +59,15 @@ public class HibernateLoadUnitTest {
         Repository.injectIRepository(repository);
     }
 
+    @AfterClass
+    public static void tearDownAfterClass() {
+        Repository.close();
+    }
+
+    
     @Ignore // TODO (hrickens) : infinite loop ??? does not terminate
     @Test
     public void loadFromHibernate() throws Exception {
-        Repository.close();
         final List<FacilityDBO> load = Repository.load(FacilityDBO.class);
         assertNotNull(load);
         assertFalse(load.isEmpty());
@@ -190,7 +196,6 @@ public class HibernateLoadUnitTest {
 
     @Test
     public void loadDocumentWithFalseFromHibernate() throws Exception {
-        Repository.close();
         List<DocumentDBO> loadDocument = Repository.loadDocument(false);
         assertNotNull(loadDocument);
         assertFalse(loadDocument.isEmpty());
