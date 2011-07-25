@@ -81,8 +81,9 @@ public abstract class BatchQueueHandlerSupport<T> extends AbstractTypeSupport<T>
         final Class<T> type = handler.getType();
 
         AbstractTypeSupport.installIfNotExists(BatchQueueHandlerSupport.class, type, handler);
-
-        SUPPORT_MAP.put(type, (BatchQueueHandlerSupport<?>) findTypeSupportFor(BatchQueueHandlerSupport.class, type));
+        final BatchQueueHandlerSupport<?> support =
+            (BatchQueueHandlerSupport<?>) findTypeSupportFor(BatchQueueHandlerSupport.class, type);
+        SUPPORT_MAP.put(type, support);
     }
     @Nonnull
     public static Collection<BatchQueueHandlerSupport<?>> getInstalledHandlers() {

@@ -93,7 +93,7 @@ public class MySQLArchivePreferenceService {
          * @param defaultValue
          */
         private MySQLArchiveServicePreference(@Nonnull final String keyAsString,
-                                                   @Nonnull final T defaultValue) {
+                                              @Nonnull final T defaultValue) {
             super(keyAsString, defaultValue);
         }
 
