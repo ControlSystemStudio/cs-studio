@@ -53,6 +53,10 @@ public class Composite2Model extends AbstractADL2Model {
 			String[] compositeFile = compositeWidget.get_compositeFile().replaceAll("\"", "").split(";");
 			if (compositeFile.length > 0){
 				widgetModel.setPropertyValue(LinkingContainerModel.PROP_OPI_FILE, compositeFile[0].replace(".adl", ".opi"));
+				
+				if (compositeFile[1].length() > 0){
+					widgetModel.setPropertyValue(AbstractContainerModel.PROP_MACROS, makeMacros(compositeFile[1]));
+				}
 			}
 			else {
 				TranslatorUtils.printNotHandledWarning(className, "composite file");

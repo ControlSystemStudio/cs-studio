@@ -16,6 +16,7 @@ import org.csstudio.opibuilder.script.Expression;
 import org.csstudio.opibuilder.script.PVTuple;
 import org.csstudio.opibuilder.script.RuleData;
 import org.csstudio.opibuilder.script.RulesInput;
+import org.csstudio.opibuilder.util.MacrosInput;
 import org.csstudio.opibuilder.util.OPIColor;
 import org.csstudio.opibuilder.widgets.model.AbstractShapeModel;
 import org.csstudio.utility.adlparser.fileParser.ADLWidget;
@@ -400,5 +401,44 @@ public abstract class AbstractADL2Model {
 			if (lineWidth == 0)lineWidth = 1;
 			widgetModel.setPropertyValue(AbstractShapeModel.PROP_LINE_WIDTH, lineWidth );
 		}
+	}
+
+	/**
+	 * @param args
+	 * @return
+	 */
+	public MacrosInput makeMacros(String args) {
+		String resArgs = removeParentMacros(args);
+		String argsIn = "true, " + resArgs;
+		MacrosInput macIn = null;
+		try {
+			macIn = MacrosInput.recoverFromString(argsIn);
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		return macIn;
+	}
+
+	/**
+	 * Remove parent macros (i.e. P=$(P))from the list. We can now pass parent
+	 * Macros.
+	 * 
+	 * @param args
+	 * @return
+	 */
+	public String removeParentMacros(String args) {
+		String[] argList = args.split(",");
+		StringBuffer strBuff = new StringBuffer();
+		for (int ii = 0; ii < argList.length; ii++) {
+			String[] argParts = argList[ii].split("=");
+			if (!argParts[1].replaceAll(" ", "").equals(
+					"$(" + argParts[0].trim() + ")")) {
+				if (strBuff.length() != 0)
+					strBuff.append(", ");
+				strBuff.append(argList[ii]);
+			}
+		}
+		String resArgs = strBuff.toString();
+		return resArgs;
 	}
 }
