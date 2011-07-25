@@ -15,6 +15,8 @@ import org.csstudio.opibuilder.properties.StringProperty;
 import org.csstudio.opibuilder.properties.WidgetPropertyCategory;
 import org.csstudio.opibuilder.util.ConsoleService;
 import org.csstudio.opibuilder.widgetActions.WidgetActionFactory.ActionType;
+import org.eclipse.jface.dialogs.MessageDialog;
+import org.eclipse.swt.widgets.Display;
 
 /**The action executing a system command.
  * @author Xihui Chen
@@ -44,8 +46,8 @@ public class ExecuteCommandAction extends AbstractWidgetAction {
 
 	@Override
 	public void run() {
-		ConsoleService.getInstance().writeInfo("Execute Command: " + getCommand());
-		new CommandExecutor(getCommand(), getDirectory(), getWaitTime());
+		MessageDialog.openWarning(Display.getCurrent().getActiveShell(), "Not Implemented", 
+				"Sorry, Execute Command action is not implemented for WebOPI!");
 		
 	}
 	

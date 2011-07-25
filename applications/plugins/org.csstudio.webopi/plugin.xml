@@ -150,16 +150,34 @@
    <extension
          point="org.eclipse.rap.ui.branding">
       <branding
+            body="html/body.html"
             defaultEntrypointId="org.csstudio.webopi.workbenchOPIRuntime"
             favicon="icons/OPIRunner.png"
             id="org.csstudio.webopi.branding.workbench"
-            servletName="WebOPI">
+            servletName="WebOPI"
+            title="WebOPI">
       </branding>
       <branding
+            body="html/body.html"
             defaultEntrypointId="org.csstudio.webopi.standaloneOPIRuntime"
             favicon="icons/OPIRunner.png"
             id="org.csstudio.webopi.branding.standalone"
-            servletName="WebOPI_S">
+            servletName="WebOPI_S"
+            title="WebOPI Stanalone Mode">
       </branding>
+   </extension>
+   <extension
+         point="org.eclipse.equinox.http.registry.resources">
+      <resource
+            alias="/loading.gif"
+            base-name="html/loading.gif">
+      </resource>
+   </extension>
+   <extension
+         point="org.eclipse.equinox.http.registry.servlets">
+      <servlet
+            alias="/"
+            class="org.csstudio.webopi.RedirectServlet">
+      </servlet>
    </extension>
 </plugin>

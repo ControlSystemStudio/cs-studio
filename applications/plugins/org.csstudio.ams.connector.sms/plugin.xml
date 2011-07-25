@@ -52,6 +52,10 @@
       <product
             application="org.csstudio.ams.connector.sms.SmsConnector"
             name="AmsSmsConnectorProduct">
+         <property
+               name="appName"
+               value="AmsSmsConnectorProduct">
+         </property>
       </product>
    </extension>
 

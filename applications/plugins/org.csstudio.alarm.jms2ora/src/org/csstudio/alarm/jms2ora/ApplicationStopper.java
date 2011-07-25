@@ -100,7 +100,7 @@ public class ApplicationStopper implements IGenericServiceListener<ISessionServi
             try {
                 lock.wait(5000);
             } catch(InterruptedException ie) {
-                LOG.error("[*** InterruptedException ***]: " + ie.getMessage());
+                LOG.error("[*** InterruptedException ***]: {}" + ie.getMessage());
             }
         }
         
@@ -112,7 +112,7 @@ public class ApplicationStopper implements IGenericServiceListener<ISessionServi
         }
         
         LOG.info("Manager initialized");
-        LOG.info("Anzahl Directory-Elemente: " + rosterItems.size());
+        LOG.info("Anzahl Directory-Elemente: {}" + rosterItems.size());
         
         jmsApplics = this.getRosterGroup(rosterItems, "jms-applications");
         currentApplic = this.getRosterApplication(jmsApplics, applicationName, host, user);
@@ -149,7 +149,7 @@ public class ApplicationStopper implements IGenericServiceListener<ISessionServi
                 try {
                     this.wait(2000);
                 } catch(InterruptedException ie) {
-                    LOG.error("[*** InterruptedException ***]: ", ie.getMessage());
+                    LOG.error("[*** InterruptedException ***]: {}", ie.getMessage());
                 }
   
                 roster = rosterManager.getRoster();
@@ -242,7 +242,7 @@ public class ApplicationStopper implements IGenericServiceListener<ISessionServi
         
         if(currentApplic != null) {
             
-            LOG.info("Anwendung gefunden: " + currentApplic.getUser().getID().getName());
+            LOG.info("Anwendung gefunden: {}" + currentApplic.getUser().getID().getName());
 
             List<IManagementCommandService> managementServices =
                 xmppSession.getRemoteServiceProxies(
@@ -271,10 +271,10 @@ public class ApplicationStopper implements IGenericServiceListener<ISessionServi
                     returnValue = (String)retValue.getValue();
                     if((returnValue.trim().startsWith("OK:")) || (returnValue.indexOf("stopping") > -1)) {
                         result = true;
-                        LOG.info("Application stopped: " + result);
+                        LOG.info("Application stopped: {}", result);
                         // iResult = ApplicResult.RESULT_OK.ordinal();
                     } else {
-                        LOG.error("Something went wrong: " + result);
+                        LOG.error("Something went wrong: {}", result);
                         // iResult = ApplicResult.RESULT_ERROR_INVALID_PASSWORD.ordinal();
                     }
                 } else {
@@ -302,7 +302,7 @@ public class ApplicationStopper implements IGenericServiceListener<ISessionServi
             xmppSession = sessionService;
         } catch (Exception e) {
             xmppSession = null;
-            LOG.warn("XMPP connection is not available, " + e.getMessage());
+            LOG.warn("XMPP connection is not available: {}", e.getMessage());
         }
     }
 

@@ -29,6 +29,10 @@
       <product
             application="org.csstudio.nams.application.department.decision.application"
             name="AmsDepartmentDecisionProduct">
+         <property
+               name="appName"
+               value="AmsDepartmentDecisionProduct">
+         </property>
       </product>
    </extension>
 

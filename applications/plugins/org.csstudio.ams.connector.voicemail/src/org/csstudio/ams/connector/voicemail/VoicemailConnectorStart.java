@@ -140,6 +140,11 @@ public class VoicemailConnectorStart implements IApplication,
             
             try {
                 
+                if (scw == null) {
+                    scw = new VoicemailConnectorWork(this);
+                    scw.start();
+                }
+
                 // > S10min
                 if (iTimeouts > 1) {
                     
@@ -152,11 +157,6 @@ public class VoicemailConnectorStart implements IApplication,
                     }
                     
                     iTimeouts = 0;
-                }
-                    
-                if (scw == null) {
-                    scw = new VoicemailConnectorWork(this);
-                    scw.start();
                 }
                 
                 if (!bInitedJms) {
@@ -239,7 +239,7 @@ public class VoicemailConnectorStart implements IApplication,
             } else {
                 Log.log(this, Log.FATAL, "Restart/Exit: Thread did NOT stop clean.");
                 scw.closeJms();
-                scw.closeVmService();
+                scw.closeCallCenter();
                 scw = null;
             }
         }

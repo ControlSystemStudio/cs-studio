@@ -21,11 +21,14 @@
  */
 package org.csstudio.platform.logging;
 
+import java.util.Enumeration;
 import java.util.Properties;
 
 import org.apache.log4j.BasicConfigurator;
+import org.apache.log4j.LogManager;
 import org.apache.log4j.Logger;
 import org.apache.log4j.PropertyConfigurator;
+import org.apache.log4j.spi.LoggerRepository;
 import org.csstudio.platform.CSSPlatformPlugin;
 import org.csstudio.platform.security.SecureStorage;
 
@@ -231,7 +234,8 @@ public final class CentralLogger {
 	 * Configure the log4j library.
 	 */
 	public void configure() {
-		final CSSPlatformPlugin plugin = CSSPlatformPlugin.getDefault();
+		    
+	    final CSSPlatformPlugin plugin = CSSPlatformPlugin.getDefault();
 		if (plugin == null)
 		{
 		    // Not running in full Eclipse environment, probably because

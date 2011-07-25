@@ -11,6 +11,7 @@ import org.csstudio.opibuilder.visualparts.PrintModeDialog;
 import org.eclipse.gef.GraphicalViewer;
 import org.eclipse.gef.print.PrintGraphicalViewerOperation;
 import org.eclipse.gef.ui.actions.WorkbenchPartAction;
+import org.eclipse.rwt.internal.widgets.JSExecutor;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.printing.PrintDialog;
 import org.eclipse.swt.printing.Printer;
@@ -41,8 +42,9 @@ public PrintDisplayAction(IWorkbenchPart part) {
 /**
  * @see org.eclipse.gef.ui.actions.WorkbenchPartAction#calculateEnabled()
  */
-protected boolean calculateEnabled() {	
-	return printers != null && printers.length > 0;
+protected boolean calculateEnabled() {
+	return true;
+//	return printers != null && printers.length > 0;
 }
 
 /**
@@ -64,21 +66,24 @@ protected void init() {
  * @see org.eclipse.jface.action.Action#run()
  */
 public void run() {
-	int printMode = new PrintModeDialog(null).open();
-	if (printMode == -1)
-		return;
-	GraphicalViewer viewer;
-	viewer = (GraphicalViewer)getWorkbenchPart().getAdapter(GraphicalViewer.class);
 	
-	PrintDialog dialog = new PrintDialog(viewer.getControl().getShell(), SWT.NULL);
-	PrinterData data = dialog.open();
+	JSExecutor.executeJS("window.print();");
 	
-	if (data != null) {
-		PrintGraphicalViewerOperation op = 
-					new PrintGraphicalViewerOperation(new Printer(data), viewer);
-		op.setPrintMode(printMode);
-		op.run(getWorkbenchPart().getTitle());
-	}
+//	int printMode = new PrintModeDialog(null).open();
+//	if (printMode == -1)
+//		return;
+//	GraphicalViewer viewer;
+//	viewer = (GraphicalViewer)getWorkbenchPart().getAdapter(GraphicalViewer.class);
+//	
+//	PrintDialog dialog = new PrintDialog(viewer.getControl().getShell(), SWT.NULL);
+//	PrinterData data = dialog.open();
+//	
+//	if (data != null) {
+//		PrintGraphicalViewerOperation op = 
+//					new PrintGraphicalViewerOperation(new Printer(data), viewer);
+//		op.setPrintMode(printMode);
+//		op.run(getWorkbenchPart().getTitle());
+//	}
 }
 
 }

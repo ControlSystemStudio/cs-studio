@@ -29,30 +29,37 @@ import org.csstudio.ams.Log;
  * @author Markus Moeller
  *
  */
-public class CallCenter
-{
-    private CapiReceiver receiver = null;
-    private CapiCaller caller = null;
+public class CallCenter {
     
+    /** The receiver of a call */
+    private CapiReceiver receiver;
+    
+    /** The class that makes a call */
+    private CapiCaller caller;
+    
+    /** Flag that indicates if the CallCenter is initialized and active */
+    private boolean active;
+    
+    /** Number of retries for a call */
     private final int RETRY = 3;
     
-    public CallCenter() throws CallCenterException
-    {
-        try
-        {
+    public CallCenter() throws CallCenterException {
+        try {
             receiver = new CapiReceiver();
             receiver.start();
-            
             caller = new CapiCaller();
-        }
-        catch(CapiReceiverException cre)
-        {
+            active = true;
+        } catch(CapiReceiverException cre) {
+            active = false;
             throw new CallCenterException(cre);
-        }
-        catch(CapiCallerException cce)
-        {
+        } catch(CapiCallerException cce) {
+            active = false;
             throw new CallCenterException(cce);
         }
+    }
+    
+    public boolean isActive() {
+        return active;
     }
     
     public void makeCall(String telephoneNumber,
@@ -66,27 +73,19 @@ public class CallCenter
         int type;
         int callCount = 0;
         
-        try
-        {
+        try {
             type = Integer.parseInt(textType);
-        }
-        catch(NumberFormatException nfe)
-        {
+        } catch(NumberFormatException nfe) {
             type = 0;
             Log.log(this, Log.ERROR, "Text type is invalid: " + textType);
             throw new CallCenterException("Text type is invalid: " + textType);
         }
 
-        if(waitUntil != null)
-        {
-            if(waitUntil.trim().length() > 0)
-            {
-                try
-                {
+        if(waitUntil != null) {
+            if(waitUntil.trim().length() > 0) {
+                try {
                     waitTime = Long.parseLong(waitUntil);
-                }
-                catch(NumberFormatException nfe)
-                {
+                } catch(NumberFormatException nfe) {
                     waitTime = 0;
                     Log.log(this, Log.WARN, "Wait time is invalid: " + waitUntil);
                     
@@ -99,22 +98,17 @@ public class CallCenter
             }
         }
         
-        switch(type)
-        {
+        switch(type) {
+            
             case 1: // TEXTTYPE_ALARM_WOCONFIRM
                 
-                try
-                {
-                    do
-                    {
+                try {
+                    do {
                         callInfo = null;
                         callInfo = caller.makeCallWithoutReply(telephoneNumber, message);
                         callCount++;
-                    }
-                    while((!callInfo.isSuccess()) && (callCount < RETRY));
-                }
-                catch(CapiCallerException cce)
-                {
+                    } while((!callInfo.isSuccess()) && (callCount < RETRY));
+                } catch(CapiCallerException cce) {
                     throw new CallCenterException(cce);
                 }
 
@@ -122,18 +116,13 @@ public class CallCenter
                 
             case 2: // TEXTTYPE_ALARM_WCONFIRM
 
-                try
-                {
-                    do
-                    {
+                try {
+                    do {
                         callInfo = null;
                         callInfo = caller.makeCallWithReply(telephoneNumber, message, chainIdAndPos);
                         callCount++;
-                    }
-                    while((!callInfo.isSuccess()) && (System.currentTimeMillis() < waitTime));
-                }
-                catch(CapiCallerException cce)
-                {
+                    } while((!callInfo.isSuccess()) && (System.currentTimeMillis() < waitTime));
+                } catch(CapiCallerException cce) {
                     throw new CallCenterException(cce);
                 }
                 
@@ -148,8 +137,18 @@ public class CallCenter
         }
     }
     
-    public enum TextType
-    {
+    public void closeCallCenter() {
+        
+        if (receiver != null) {
+            receiver.close();
+        }
+        
+        if (caller != null) {
+            caller.close();
+        }
+    }
+    
+    public enum TextType {
         INVALID, TEXTTYPE_ALARM_WOCONFIRM, TEXTTYPE_ALARM_WCONFIRM, TEXTTYPE_ALARMCONFIRM_OK,
         TEXTTYPE_ALARMCONFIRM_NOK, TEXTTYPE_STATUSCHANGE_OK, TEXTTYPE_STATUSCHANGE_NOK
     }

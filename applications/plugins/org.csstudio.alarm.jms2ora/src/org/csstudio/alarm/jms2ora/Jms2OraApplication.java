@@ -172,9 +172,9 @@ public class Jms2OraApplication implements IApplication, Stoppable,
             boolean success = checker.checkExternInstance("jms2oracle", host, user);
         
             if(success) {
-                LOG.info("jms2ora is working.\n");
+                LOG.info("jms2ora is working.");
             } else {
-                LOG.error("jms2ora is NOT working.\n");
+                LOG.error("jms2ora is NOT working.");
             }
             
             return IApplication.EXIT_OK;
@@ -300,7 +300,7 @@ public class Jms2OraApplication implements IApplication, Stoppable,
 			sessionService.connect(xmppInfo.getXmppUser(), xmppInfo.getXmppPassword(), xmppInfo.getXmppServer());
 			xmppService = sessionService;
     	} catch (Exception e) {
-		    LOG.warn("XMPP connection is not available, " + e.toString());
+		    LOG.warn("XMPP connection is not available: {}", e.toString());
 		}
     }
     

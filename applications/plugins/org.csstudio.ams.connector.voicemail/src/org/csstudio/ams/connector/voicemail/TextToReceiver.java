@@ -32,11 +32,9 @@ public class TextToReceiver extends Telegram
 	private int chainIdAndPos;		//4
 	private int textType;			//4
 	
-	@SuppressWarnings("hiding")
-    public TextToReceiver(int telegramCnt, String text,
-	                      String receiver, int chainIdAndPos, int textType) {
-		
-	    super(Telegram.TELID_TEXTTORECEIVER, telegramCnt);
+	public TextToReceiver(	int telegramCnt, String text, String receiver, int chainIdAndPos, int textType)
+	{
+		super(Telegram.TELID_TEXTTORECEIVER, telegramCnt);
 		telegramLen = 12 + 296;
 
 		this.text = text;
@@ -45,8 +43,8 @@ public class TextToReceiver extends Telegram
 		this.textType = textType;
 	}
 
-	@Override
-    public byte[] getWriteBytes() {
+	public byte[] getWriteBytes()
+	{
 		ByteBuffer bb = getWriteBuffer();
 		
 		bb = putString(text, 256, bb);

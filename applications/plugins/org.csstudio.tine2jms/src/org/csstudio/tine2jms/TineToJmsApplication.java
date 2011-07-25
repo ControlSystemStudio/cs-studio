@@ -25,10 +25,8 @@ package org.csstudio.tine2jms;
 
 import java.util.Observable;
 import java.util.Observer;
-
 import javax.jms.JMSException;
 import javax.jms.MapMessage;
-
 import org.csstudio.tine2jms.management.Restart;
 import org.csstudio.tine2jms.management.Stop;
 import org.csstudio.tine2jms.preferences.PreferenceKeys;

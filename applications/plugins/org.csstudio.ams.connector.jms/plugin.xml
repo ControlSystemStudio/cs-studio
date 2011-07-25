@@ -43,6 +43,10 @@
       <product
             application="org.csstudio.ams.connector.jms.AmsJMSConnectorId"
             name="AmsJmsConnector">
+         <property
+               name="appName"
+               value="AmsJmsConnector">
+         </property>
       </product>
    </extension>
 

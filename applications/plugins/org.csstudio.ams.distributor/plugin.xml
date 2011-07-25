@@ -41,6 +41,10 @@
       <product
             application="org.csstudio.ams.distributor.AmsDistributor"
             name="AmsDistributorProduct">
+         <property
+               name="appName"
+               value="AmsDistributorProduct">
+         </property>
       </product>
    </extension>
 
