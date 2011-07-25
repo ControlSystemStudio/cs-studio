@@ -17,7 +17,7 @@
             class="org.csstudio.utility.adlparser.Perspective"
             icon="icons/medm.JPG"
             id="org.csstudio.utility.adlParser.perspective"
-            name="Perspective">
+            name="ADL Parser">
       </perspective>
    </extension>
    <extension
