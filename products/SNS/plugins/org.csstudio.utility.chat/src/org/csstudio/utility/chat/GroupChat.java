@@ -46,6 +46,8 @@ import org.jivesoftware.smackx.muc.Occupant;
  *  In addition, this layer would allow replacment
  *  of the protocol.
  *  
+ *  TODO Allow use with HTTP proxy
+ *  
  *  @author Kay Kasemir
  */
 public class GroupChat
