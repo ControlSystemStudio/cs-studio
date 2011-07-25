@@ -35,5 +35,13 @@
             label="Restart">
       </command>
    </extension>
+   <extension
+         id="Syslog2JmsProduct"
+         point="org.eclipse.core.runtime.products">
+      <product
+            application="org.csstudio.syslog2jms.Syslog2JmsApplication"
+            name="Syslog2JmsProduct">
+      </product>
+   </extension>
 
 </plugin>
