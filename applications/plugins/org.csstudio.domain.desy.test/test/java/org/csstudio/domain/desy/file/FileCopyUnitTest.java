@@ -36,80 +36,78 @@ import org.junit.Test;
 import org.junit.rules.TemporaryFolder;
 
 /**
- * Test for {@link FileCopy}. 
- * 
+ * Test for {@link FileCopy}.
+ *
  * @author bknerr
  * @since 30.05.2011
  */
 public class FileCopyUnitTest {
-    
+
+    private static final String CONTENT = "Test content for temp files:\nwith\nfour\nlines\n";
+
     // CHECKSTYLE:OFF
     @Rule
     public TemporaryFolder _testFolder = new TemporaryFolder();
     // CHECKSTYLE:ON
-    
-    private static final String CONTENT = "Test content for temp files:\nwith\nfour\nlines\n";
-    
 
-    
     @Test
     public void testCopyFileToFile() throws IOException {
-        
-        File tmpSource = _testFolder.newFile("source.test");
+
+        final File tmpSource = _testFolder.newFile("source.test");
         insertContent(tmpSource, CONTENT);
-        File tmpTarget = _testFolder.newFile("target.test");
-        
+        final File tmpTarget = _testFolder.newFile("target.test");
+
         FileCopy.copy(tmpSource, tmpTarget);
-        
+
         Assert.assertTrue(fileContentsMatch(tmpSource, tmpTarget));
     }
 
     @Test
     public void testCopyFileToDirectory() throws IOException {
-        File tmpSource = _testFolder.newFile("source.test");
+        final File tmpSource = _testFolder.newFile("source.test");
         insertContent(tmpSource, CONTENT);
-        File tmpTargetFolder = _testFolder.newFolder("target.folder");
-        
+        final File tmpTargetFolder = _testFolder.newFolder("target.folder");
+
         FileCopy.copy(tmpSource, tmpTargetFolder);
-        
-        File tmpTarget = new File(tmpTargetFolder, "source.test");
+
+        final File tmpTarget = new File(tmpTargetFolder, "source.test");
         Assert.assertTrue(tmpTarget.exists());
         Assert.assertTrue(fileContentsMatch(tmpSource, tmpTarget));
-        
+
     }
 
     @Test
     public void testCopyDirectory() throws IOException {
-        File tmpSource = _testFolder.newFolder("source.folder");
-        
-        File tmpSubFolderSource = new File(tmpSource, "subfolder");
+        final File tmpSource = _testFolder.newFolder("source.folder");
+
+        final File tmpSubFolderSource = new File(tmpSource, "subfolder");
         tmpSubFolderSource.mkdir();
-        
-        File tmpTargetFolder = _testFolder.newFolder("target.folder");
-        
-        
+
+        final File tmpTargetFolder = _testFolder.newFolder("target.folder");
+
+
         FileCopy.copy(tmpSource, tmpTargetFolder);
-        
-        
-        File tmpTarget = new File(tmpTargetFolder, "source.folder");
+
+
+        final File tmpTarget = new File(tmpTargetFolder, "source.folder");
         Assert.assertTrue(tmpTarget.exists());
-        File tmpTargetSubFolder = new File(tmpTarget, "subfolder");
+        final File tmpTargetSubFolder = new File(tmpTarget, "subfolder");
         Assert.assertTrue(tmpTargetSubFolder.exists());
-        
+
     }
-    
-    private void insertContent(@Nonnull final File file, 
+
+    private void insertContent(@Nonnull final File file,
                                @Nonnull final String content) throws IOException {
-        FileWriter writer = new FileWriter(file, true);
+        final FileWriter writer = new FileWriter(file, true);
         writer.append(content);
         writer.close();
     }
 
-    private boolean fileContentsMatch(@Nonnull final File first, 
+    private boolean fileContentsMatch(@Nonnull final File first,
                                       @Nonnull final File second) throws IOException {
-        
-        String firstStr = readFileIntoString(first);
-        String secStr = readFileIntoString(second);
+
+        final String firstStr = readFileIntoString(first);
+        final String secStr = readFileIntoString(second);
         return firstStr.equals(secStr);
     }
 
@@ -118,14 +116,14 @@ public class FileCopyUnitTest {
         if (!file.isFile()) {
             throw new IllegalArgumentException("File " + file.getName() + " cannot be read into string (is it a directory?).");
         }
-        FileInputStream fin =  new FileInputStream(file);
-        BufferedReader myInput = new BufferedReader(new InputStreamReader(fin));
-        StringBuilder sb = new StringBuilder();
+        final FileInputStream fin =  new FileInputStream(file);
+        final BufferedReader myInput = new BufferedReader(new InputStreamReader(fin));
+        final StringBuilder sb = new StringBuilder();
         String line = null;
-        while ((line = myInput.readLine()) != null) {  
+        while ((line = myInput.readLine()) != null) {
                    sb.append(line).append("\n");
         }
         return sb.toString();
     }
-    
+
 }

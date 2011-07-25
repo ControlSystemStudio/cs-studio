@@ -38,6 +38,7 @@ import org.csstudio.archive.common.service.ArchiveConnectionException;
 import org.csstudio.archive.common.service.channel.ArchiveChannelId;
 import org.csstudio.archive.common.service.channel.IArchiveChannel;
 import org.csstudio.archive.common.service.controlsystem.IArchiveControlSystem;
+import org.csstudio.archive.common.service.mysqlimpl.batch.BatchQueueHandlerSupport;
 import org.csstudio.archive.common.service.mysqlimpl.dao.AbstractArchiveDao;
 import org.csstudio.archive.common.service.mysqlimpl.dao.ArchiveConnectionHandler;
 import org.csstudio.archive.common.service.mysqlimpl.dao.ArchiveDaoException;
@@ -58,8 +59,6 @@ import org.csstudio.domain.desy.typesupport.TypeSupportException;
 import org.joda.time.Duration;
 import org.joda.time.Hours;
 import org.joda.time.Minutes;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
@@ -73,52 +72,12 @@ import com.google.inject.Inject;
  */
 public class ArchiveSampleDaoImpl extends AbstractArchiveDao implements IArchiveSampleDao {
 
-    private static final Logger LOG =
-        LoggerFactory.getLogger(ArchiveSampleDaoImpl.class);
-
-    abstract class AbstractReducedDataSample {
-
-        private final ArchiveChannelId _channelId;
-        private final TimeInstant _timestamp;
-        private final Double _avg;
-        private final Double _min;
-        private final Double _max;
-
-        /**
-         * Constructor.
-         */
-        protected AbstractReducedDataSample(@Nonnull final ArchiveChannelId id,
-                                            @Nonnull final TimeInstant timestamp,
-                                            @Nonnull final Double avg,
-                                            @Nonnull final Double min,
-                                            @Nonnull final Double max) {
-            _channelId = id;
-            _timestamp = timestamp;
-            _avg = avg;
-            _min = min;
-            _max = max;
-        }
-        @Nonnull
-        protected ArchiveChannelId getChannelId() {
-            return _channelId;
-        }
-        @Nonnull
-        public TimeInstant getTimestamp() {
-            return _timestamp;
-        }
-        @Nonnull
-        public Double getAvg() {
-            return _avg;
-        }
-        @Nonnull
-        public Double getMin() {
-            return _min;
-        }
-        @Nonnull
-        public Double getMax() {
-            return _max;
-        }
-    }
+    /**
+     * Minute type sample.
+     *
+     * @author bknerr
+     * @since 21.07.2011
+     */
     class MinuteReducedDataSample extends AbstractReducedDataSample {
         /**
          * Constructor.
@@ -131,6 +90,12 @@ public class ArchiveSampleDaoImpl extends AbstractArchiveDao implements IArchive
             super(id, timestamp, avg, min, max);
         }
     }
+    /**
+     * Hour type sample.
+     *
+     * @author bknerr
+     * @since 21.07.2011
+     */
     class HourReducedDataSample extends AbstractReducedDataSample {
         /**
          * Constructor.
@@ -148,9 +113,10 @@ public class ArchiveSampleDaoImpl extends AbstractArchiveDao implements IArchive
 
     private static final String RETRIEVAL_FAILED = "Sample retrieval from archive failed.";
 
+    private static final String SELECT_RAW_PREFIX = "SELECT sample_time, nanosecs, value ";
+
     private final String _dbName = getDatabaseName();
 
-    private static final String SELECT_RAW_PREFIX = "SELECT sample_time, nanosecs, value ";
     private final String _selectSamplesStmt =
         SELECT_RAW_PREFIX +
         "FROM " + _dbName + "." + ARCH_TABLE_PLACEHOLDER + " WHERE channel_id=? " +
@@ -164,6 +130,7 @@ public class ArchiveSampleDaoImpl extends AbstractArchiveDao implements IArchive
         "FROM " + _dbName + ".sample WHERE channel_id=? " +
         "AND sample_time<? ORDER BY sample_time DESC LIMIT 1";
 
+
     private final Map<ArchiveChannelId, SampleMinMaxAggregator> _reducedDataMapForMinutes =
         Maps.newConcurrentMap();
     private final Map<ArchiveChannelId, SampleMinMaxAggregator> _reducedDataMapForHours =
@@ -175,14 +142,12 @@ public class ArchiveSampleDaoImpl extends AbstractArchiveDao implements IArchive
      */
     @Inject
     public ArchiveSampleDaoImpl(@Nonnull final ArchiveConnectionHandler handler,
-                                @Nonnull final PersistEngineDataManager persister) throws ArchiveDaoException {
+                                @Nonnull final PersistEngineDataManager persister) {
         super(handler, persister);
 
-        getEngineMgr().registerBatchQueueHandler(new ArchiveSampleBatchQueueHandler(getDatabaseName()));
-
-        getEngineMgr().registerBatchQueueHandler(new MinuteReducedDataSampleBatchQueueHandler(getDatabaseName()));
-
-        getEngineMgr().registerBatchQueueHandler(new HourReducedDataSampleBatchQueueHandler(getDatabaseName()));
+        BatchQueueHandlerSupport.installHandlerIfNotExists(new ArchiveSampleBatchQueueHandler(getDatabaseName()));
+        BatchQueueHandlerSupport.installHandlerIfNotExists(new MinuteReducedDataSampleBatchQueueHandler(getDatabaseName()));
+        BatchQueueHandlerSupport.installHandlerIfNotExists(new HourReducedDataSampleBatchQueueHandler(getDatabaseName()));
     }
 
     /**
@@ -192,16 +157,17 @@ public class ArchiveSampleDaoImpl extends AbstractArchiveDao implements IArchive
     public <V, T extends ISystemVariable<V>>
     void createSamples(@Nonnull final Collection<IArchiveSample<V, T>> samples) throws ArchiveDaoException {
 
-        getEngineMgr().submitToBatch(samples);
-
         try {
-            List<? extends AbstractReducedDataSample> minuteSamples;
+            getEngineMgr().submitToBatch(samples);
+
+            final List<? extends AbstractReducedDataSample> minuteSamples;
                 minuteSamples = generatePerMinuteSamples(samples);
             getEngineMgr().submitToBatch(minuteSamples);
 
             final List<? extends AbstractReducedDataSample> hourSamples =
                 generatePerHourSamples(minuteSamples);
             getEngineMgr().submitToBatch(hourSamples);
+
         } catch (final TypeSupportException e) {
             throw new ArchiveDaoException("Type support for sample type could not be found.", e);
         }

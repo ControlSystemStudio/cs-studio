@@ -24,19 +24,14 @@ package org.csstudio.domain.desy.preferences;
 import javax.annotation.Nonnull;
 
 /**
- * Test Helper class.  
- * 
+ * Test Helper class.
+ *
  * @author bknerr
  * @since 20.04.2011
  * @param <T> the preference type
  */
 final class HeadlessTestPreference<T> extends AbstractPreference<T> {
 
-    /**
-     * For test purposes
-     */
-    @SuppressWarnings("unused")
-    private final Integer _notTestPreference = Integer.valueOf(0);
 
     public static final HeadlessTestPreference<String> STRING_PREF =
         new HeadlessTestPreference<String>("String_Pref", "Some string");
@@ -54,7 +49,7 @@ final class HeadlessTestPreference<T> extends AbstractPreference<T> {
         new HeadlessTestPreference<Double>("Double_Pref", 12.34);
 
     public static final HeadlessTestPreference<Double> DOUBLE_PREF_WITH_VAL =
-        (HeadlessTestPreference<Double>) new HeadlessTestPreference<Double>("Double_Pref", 
+        (HeadlessTestPreference<Double>) new HeadlessTestPreference<Double>("Double_Pref",
                                12.34).addValidator(new MinMaxPreferenceValidator<Double>(0.0, 100.0));
 
     public static final HeadlessTestPreference<Boolean> BOOLEAN_PREF =
@@ -65,6 +60,11 @@ final class HeadlessTestPreference<T> extends AbstractPreference<T> {
      */
     public static final Integer STATIC_NOT_TESTPREFERENCE = new Integer(0);
 
+    /**
+     * For test purposes
+     */
+    @SuppressWarnings("unused")
+    private final Integer _notTestPreference = Integer.valueOf(0);
 
     /**
      * The following two lines of a non static instance field of type <itself> enable an
@@ -73,7 +73,7 @@ final class HeadlessTestPreference<T> extends AbstractPreference<T> {
      * public final TestPreference<Boolean> NOT_STATIC =
      *     new TestPreference<Boolean>("NOT_STATIC", true);
      */
-    private HeadlessTestPreference(@Nonnull final String keyAsString, 
+    private HeadlessTestPreference(@Nonnull final String keyAsString,
                                    @Nonnull final T defaultValue) {
         super(keyAsString, defaultValue);
     }
@@ -83,13 +83,13 @@ final class HeadlessTestPreference<T> extends AbstractPreference<T> {
      */
     @SuppressWarnings("unchecked")
     @Override
-    @Nonnull 
+    @Nonnull
     protected Class<? extends AbstractPreference<T>> getClassType() {
         return (Class<? extends AbstractPreference<T>>) HeadlessTestPreference.class;
     }
 
     @Override
-    @Nonnull 
+    @Nonnull
     public String getPluginID() {
         return "QualifierForTest";
     }

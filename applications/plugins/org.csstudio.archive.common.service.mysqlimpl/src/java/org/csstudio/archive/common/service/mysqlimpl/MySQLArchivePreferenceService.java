@@ -46,10 +46,10 @@ public class MySQLArchivePreferenceService {
      */
     private static final class MySQLArchiveServicePreference<T> extends AbstractPreference<T> {
 
-        private static final Integer MIN_PACKET_SIZE_KB = 1024;
-        private static final Integer MAX_PACKET_SIZE_KB = 65536;
-        private static final int MIN_PERIOD_MS = 2000;
-        private static final int MAX_PERIOD_MS = 60000;
+        public static final Integer MIN_PACKET_SIZE_KB = 1024;
+        public static final Integer MAX_PACKET_SIZE_KB = 65536;
+        public static final int MIN_PERIOD_MS = 2000;
+        public static final int MAX_PERIOD_MS = 60000;
 
         public static final MySQLArchiveServicePreference<String> HOST =
             new MySQLArchiveServicePreference<String>("host", "NOT PUBLIC");
@@ -93,7 +93,7 @@ public class MySQLArchivePreferenceService {
          * @param defaultValue
          */
         private MySQLArchiveServicePreference(@Nonnull final String keyAsString,
-                                                   @Nonnull final T defaultValue) {
+                                              @Nonnull final T defaultValue) {
             super(keyAsString, defaultValue);
         }
 

@@ -38,16 +38,18 @@ import org.csstudio.domain.desy.typesupport.TypeSupportException;
  */
 final class IntegerConversionSupport extends EpicsIMetaDataTypeSupport<Integer> {
 
-    @Nonnull
-    private Integer toInteger(final double d) {
-        return Integer.valueOf(Double.valueOf(d).intValue());
-    }
     /**
      * Constructor.
      */
     public IntegerConversionSupport() {
         super(Integer.class);
     }
+
+    @Nonnull
+    private Integer toInteger(final double d) {
+        return Integer.valueOf(Double.valueOf(d).intValue());
+    }
+
     /**
      * {@inheritDoc}
      */

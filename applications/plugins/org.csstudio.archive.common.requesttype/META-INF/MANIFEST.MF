@@ -3,7 +3,6 @@ Bundle-ManifestVersion: 2
 Bundle-Name: Request types (and algorithms) for archive services
 Bundle-SymbolicName: org.csstudio.archive.common.requesttype
 Bundle-Version: 1.0.0.qualifier
-Bundle-Activator: org.csstudio.archive.common.requesttype.algorithm.Activator
 Bundle-Vendor: Desy <css-developer@desy.de>, Markus Moeller, Bastian Knerr
 Require-Bundle: org.eclipse.core.runtime,
  org.csstudio.domain.desy;bundle-version="1.0.0",

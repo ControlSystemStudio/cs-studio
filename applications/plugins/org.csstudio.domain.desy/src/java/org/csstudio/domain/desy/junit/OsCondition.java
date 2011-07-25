@@ -34,7 +34,7 @@ import com.google.common.collect.Sets;
  * @author bknerr
  * @since 30.05.2011
  */
-public class OsCondition implements RunCondition {
+public class OsCondition implements IRunCondition {
 
     /**
      * Used in {@link org.csstudio.domain.desy.junit.RunIf} annotation as 'constant expression'.

@@ -25,13 +25,14 @@ import java.util.ArrayList;
 import java.util.Collection;
 
 import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 
 import org.csstudio.archive.common.reader.facade.IArchiveServiceProvider;
 import org.csstudio.archive.common.service.ArchiveServiceException;
 import org.csstudio.archive.common.service.IArchiveReaderFacade;
+import org.csstudio.archive.common.service.channel.ArchiveChannel;
 import org.csstudio.archive.common.service.channel.ArchiveChannelId;
 import org.csstudio.archive.common.service.channel.IArchiveChannel;
-import org.csstudio.archive.common.service.channel.ArchiveChannel;
 import org.csstudio.archive.common.service.channelgroup.ArchiveChannelGroupId;
 import org.csstudio.archive.common.service.controlsystem.ArchiveControlSystem;
 import org.csstudio.archive.common.service.sample.ArchiveMinMaxSample;
@@ -49,17 +50,17 @@ import org.csstudio.domain.desy.types.Limits;
 import org.junit.Assert;
 import org.mockito.Mockito;
 /**
- * Sample arrays for test purposes. 
- * 
+ * Sample arrays for test purposes.
+ *
  * @author bknerr
  * @since 20.06.2011
  */
 public final class TestUtils {
-    
-    
+
+
     public static final String CHANNEL_NAME_1 = "TEST_CHANNEL_1";
     public static final String CHANNEL_NAME_2 = "TEST_CHANNEL_2";
-    
+
     public static final IArchiveChannel CHANNEL_1 = new ArchiveChannel(new ArchiveChannelId(1L),
                                                                        CHANNEL_NAME_1,
                                                                        "Double",
@@ -72,15 +73,15 @@ public final class TestUtils {
                                                                        new ArchiveChannelGroupId(2L),
                                                                        TimeInstantBuilder.fromMillis(0L),
                                                                        new ArchiveControlSystem("EPICS", ControlSystemType.EPICS_V3));
- 
+
     @SuppressWarnings("rawtypes")
-    public static final Collection<IArchiveMinMaxSample> CHANNEL_1_SAMPLES = 
+    public static final Collection<IArchiveMinMaxSample> CHANNEL_1_SAMPLES =
         new ArrayList<IArchiveMinMaxSample>();
 
     @SuppressWarnings("rawtypes")
-    public static final Collection<IArchiveMinMaxSample> CHANNEL_2_SAMPLES = 
+    public static final Collection<IArchiveMinMaxSample> CHANNEL_2_SAMPLES =
         new ArrayList<IArchiveMinMaxSample>();
-    
+
     static {
         int id = 0;
         CHANNEL_1_SAMPLES.add(new ArchiveMinMaxSample<Double, ISystemVariable<Double>>(new ArchiveChannelId(id++),
@@ -99,16 +100,16 @@ public final class TestUtils {
                                                                                                                  EpicsAlarm.UNKNOWN),
                                                                                        EpicsAlarm.UNKNOWN,
                                                                                        19.0, 21.0));
-        
+
         CHANNEL_2_SAMPLES.add(createArchiveMinMaxDoubleSample(CHANNEL_NAME_2, TimeInstantBuilder.fromMillis(125L), 5.0));
         CHANNEL_2_SAMPLES.add(createArchiveMinMaxDoubleSample(CHANNEL_NAME_2, TimeInstantBuilder.fromMillis(135L), 15.0));
         CHANNEL_2_SAMPLES.add(createArchiveMinMaxDoubleSample(CHANNEL_NAME_2, TimeInstantBuilder.fromMillis(170L), 1.0));
     }
-    
-    
+
+
     @SuppressWarnings("rawtypes")
     public static IArchiveMinMaxSample createArchiveMinMaxDoubleSample(@Nonnull final String channelName,
-                                                                       @Nonnull final TimeInstant ts, 
+                                                                       @Nonnull final TimeInstant ts,
                                                                        @Nonnull final Double value) {
         return new ArchiveMinMaxSample<Double, ISystemVariable<Double>>(new ArchiveChannelId(0L),
                                                                         new EpicsSystemVariable<Double>(channelName,
@@ -119,33 +120,33 @@ public final class TestUtils {
                                                                          EpicsAlarm.UNKNOWN,
                                                                          value, value);
     }
-    
-    
+
+
     @SuppressWarnings("rawtypes")
     @Nonnull
-    public static IArchiveServiceProvider createCustomizedMockedServiceProvider(@Nonnull final String channelName, 
+    public static IArchiveServiceProvider createCustomizedMockedServiceProvider(@Nonnull final String channelName,
                                                                          @Nonnull final TimeInstant start,
                                                                          @Nonnull final TimeInstant end,
                                                                          @Nonnull final Collection expectedResult) {
         return createCustomizedMockedServiceProvider(channelName, start, end, expectedResult, null, null, null);
     }
-    
+
     @SuppressWarnings("rawtypes")
     @Nonnull
-    public static IArchiveServiceProvider createCustomizedMockedServiceProvider(@Nonnull final String channelName, 
+    public static IArchiveServiceProvider createCustomizedMockedServiceProvider(@Nonnull final String channelName,
                                                                          @Nonnull final TimeInstant start,
                                                                          @Nonnull final TimeInstant end,
                                                                          @Nonnull final Collection expectedResult,
-                                                                         @Nonnull final IArchiveChannel expectedChannel,
-                                                                         @Nonnull final Limits expLimits,
-                                                                         @Nonnull final IArchiveSample expLastSampleBefore) {
-        final IArchiveServiceProvider provider = 
+                                                                         @Nullable final IArchiveChannel expectedChannel,
+                                                                         @Nullable final Limits expLimits,
+                                                                         @Nullable final IArchiveSample expLastSampleBefore) {
+        final IArchiveServiceProvider provider =
             new IArchiveServiceProvider() {
                 @SuppressWarnings({ "unchecked" })
                 @Override
                 @Nonnull
                 public IArchiveReaderFacade getReaderFacade() throws OsgiServiceUnavailableException {
-                    IArchiveReaderFacade mock = Mockito.mock(IArchiveReaderFacade.class);
+                    final IArchiveReaderFacade mock = Mockito.mock(IArchiveReaderFacade.class);
                     try {
                         Mockito.when(mock.readSamples(channelName, start, end, null)).thenReturn(expectedResult);
                         Mockito.when(mock.getChannelByName(channelName)).thenReturn(expectedChannel);

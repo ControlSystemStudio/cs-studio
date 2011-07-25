@@ -62,22 +62,22 @@ import com.google.common.base.Strings;
  */
 public final class CssTestSuite {
     private static final Logger LOG = LoggerFactory.getLogger(CssTestSuite.class);
-    
+
     private CssTestSuite() {
         // Empty
     }
 
     @Nonnull
-	public static Test suite() {
+    public static Test suite() {
 
-    	String filter = System.getProperty("testFilter");
-    	if (Strings.isNullOrEmpty(filter)) {
-    	    LOG.info("No test class filter has been set in the jvm arguments of the lauch configuration.\nDefault is {} (for all classes *{}.java).", 
-    	             TestSuiteFactory.COMMON_TEST_SUFFIX,
-    	             TestSuiteFactory.COMMON_TEST_SUFFIX);
+        String filter = System.getProperty("testFilter");
+        if (Strings.isNullOrEmpty(filter)) {
+            LOG.info("No test class filter has been set in the jvm arguments of the lauch configuration.\nDefault is {} (for all classes *{}.java).",
+                     TestSuiteFactory.COMMON_TEST_SUFFIX,
+                     TestSuiteFactory.COMMON_TEST_SUFFIX);
 
-    	    filter = TestSuiteFactory.COMMON_TEST_SUFFIX;
-    	}
+            filter = TestSuiteFactory.COMMON_TEST_SUFFIX;
+        }
 
         return TestSuiteFactory.getSuite("CssTestSuite_" + filter,
                                          filter,

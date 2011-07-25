@@ -24,10 +24,7 @@ package org.csstudio.archive.common.service.mysqlimpl.persistengine;
 import java.io.File;
 import java.util.Collection;
 import java.util.Comparator;
-import java.util.Iterator;
-import java.util.Map;
 import java.util.SortedSet;
-import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
@@ -36,19 +33,19 @@ import java.util.concurrent.atomic.AtomicInteger;
 import javax.annotation.Nonnull;
 
 import org.csstudio.archive.common.service.mysqlimpl.MySQLArchivePreferenceService;
+import org.csstudio.archive.common.service.mysqlimpl.batch.BatchQueueHandlerSupport;
+import org.csstudio.archive.common.service.mysqlimpl.batch.IBatchQueueHandlerProvider;
 import org.csstudio.archive.common.service.mysqlimpl.dao.ArchiveConnectionHandler;
-import org.csstudio.archive.common.service.mysqlimpl.dao.ArchiveDaoException;
-import org.csstudio.archive.common.service.mysqlimpl.dao.AbstractBatchQueueHandler;
 import org.csstudio.archive.common.service.mysqlimpl.notification.ArchiveNotifications;
 import org.csstudio.archive.common.service.util.DataRescueException;
 import org.csstudio.archive.common.service.util.DataRescueResult;
 import org.csstudio.domain.desy.DesyRunContext;
 import org.csstudio.domain.desy.time.TimeInstant.TimeInstantBuilder;
+import org.csstudio.domain.desy.typesupport.TypeSupportException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.google.common.collect.Iterables;
-import com.google.common.collect.Maps;
 import com.google.common.collect.Sets;
 import com.google.inject.Inject;
 
@@ -88,15 +85,21 @@ public class PersistEngineDataManager {
                         });
     private final AtomicInteger _workerId = new AtomicInteger(0);
 
-    private Integer _prefPeriodInMS;
-    private final Integer _prefMaxAllowedPacketInBytes;
+    private final Integer _prefPeriodInMS;
     private final File _prefRescueDir;
     private final String _prefSmtpHost;
     private final String _prefEmailAddress;
 
     private final ArchiveConnectionHandler _connectionHandler;
 
-    private final Map<Class<?>, AbstractBatchQueueHandler<?>> _strategyAndBatchMap = Maps.newConcurrentMap();
+    private final IBatchQueueHandlerProvider _handlerProvider =
+        new IBatchQueueHandlerProvider() {
+            @Override
+            @Nonnull
+            public Collection<BatchQueueHandlerSupport<?>> getHandlers() {
+                return BatchQueueHandlerSupport.getInstalledHandlers();
+            }
+        };
 
     /**
      * Constructor.
@@ -105,25 +108,32 @@ public class PersistEngineDataManager {
     public PersistEngineDataManager(@Nonnull final ArchiveConnectionHandler connectionHandler,
                                     @Nonnull final MySQLArchivePreferenceService prefs) {
         _connectionHandler = connectionHandler;
-        _prefMaxAllowedPacketInBytes = prefs.getMaxAllowedPacketSizeInKB()*1024;
+
         _prefPeriodInMS = prefs.getPeriodInMS();
         _prefRescueDir = prefs.getDataRescueDir();
         _prefSmtpHost = prefs.getSmtpHost();
         _prefEmailAddress = prefs.getEmailAddress();
 
-        addGracefulShutdownHook(_strategyAndBatchMap);
+        addGracefulShutdownHook(_handlerProvider);
     }
 
-    private void submitNewPersistDataWorker() {
+    @Nonnull
+    private PersistDataWorker submitNewPersistDataWorker(@Nonnull final ScheduledThreadPoolExecutor executor,
+                                                         @Nonnull final Integer prefPeriodInMS,
+                                                         @Nonnull final IBatchQueueHandlerProvider handlerProvider,
+                                                         @Nonnull final AtomicInteger workerId,
+                                                         @Nonnull final SortedSet<PersistDataWorker> submittedWorkers) {
         final PersistDataWorker newWorker = new PersistDataWorker(this,
-                                                                  "PERIODIC MySQL Archive Worker: " + _workerId.getAndIncrement(),
-                                                                  _prefPeriodInMS,
-                                                                  _strategyAndBatchMap);
-        _executor.scheduleAtFixedRate(newWorker,
-                                      0L,
-                                      newWorker.getPeriodInMS(),
-                                      TimeUnit.MILLISECONDS);
-        _submittedWorkers.add(newWorker);
+                                                                  "PERIODIC MySQL Archive Worker: " + workerId.getAndIncrement(),
+                                                                  prefPeriodInMS,
+                                                                  handlerProvider);
+        executor.scheduleAtFixedRate(newWorker,
+                                     0L,
+                                     newWorker.getPeriodInMS(),
+                                     TimeUnit.MILLISECONDS);
+        submittedWorkers.add(newWorker);
+
+        return newWorker;
     }
 
     /**
@@ -131,13 +141,13 @@ public class PersistEngineDataManager {
      * meaning continuous integration. This is a flaw as the production code should be unaware
      * of its run context, but we couldn't think of another option.
      */
-    private void addGracefulShutdownHook(@Nonnull final Map<Class<?>, AbstractBatchQueueHandler<?>> strategyAndBatchMap) {
+    private void addGracefulShutdownHook(@Nonnull final IBatchQueueHandlerProvider provider) {
         if (DesyRunContext.isProductionContext()) {
             /**
              * Add shutdown hook.
              */
             Runtime.getRuntime().addShutdownHook(new ShutdownWorkerThread(this,
-                                                                          strategyAndBatchMap));
+                                                                          provider));
         }
     }
 
@@ -180,27 +190,27 @@ public class PersistEngineDataManager {
 //    private boolean doesSqlQueueLengthExceedMaxAllowedPacketSize() {
 //        return _sqlStatementBatch.sizeInBytes() > _prefMaxAllowedPacketInBytes;
 //    }
-
-    private boolean poolSizeExhausted() {
-        return _executor.getPoolSize() >= _executor.getCorePoolSize();
-    }
-
-    private boolean isPeriodAlreadySetToMinimum(final long period) {
-        return Long.valueOf(period).intValue() <= 2000;
-    }
-
-    private void handlePoolExhaustionWithMinimumPeriodCornerCase() {
-        // FIXME (bknerr) : handle pool and thread frequency exhaustion
-        // notify staff, rescue data to disc with dedicated worker
-    }
-
-    private void lowerPeriodAndRemoveOldestWorker(@Nonnull final Iterator<PersistDataWorker> it,
-                                                  @Nonnull final PersistDataWorker oldestWorker) {
-        _prefPeriodInMS = Math.max(_prefPeriodInMS>>1, 2000);
-        LOG.info("Remove Worker: " + oldestWorker.getName());
-        _executor.remove(oldestWorker);
-        it.remove();
-    }
+//
+//    private boolean poolSizeExhausted() {
+//        return _executor.getPoolSize() >= _executor.getCorePoolSize();
+//    }
+//
+//    private boolean isPeriodAlreadySetToMinimum(final long period) {
+//        return Long.valueOf(period).intValue() <= 2000;
+//    }
+//
+//    private void handlePoolExhaustionWithMinimumPeriodCornerCase() {
+//        // FIXME (bknerr) : handle pool and thread frequency exhaustion
+//        // notify staff, rescue data to disc with dedicated worker
+//    }
+//
+//    private void lowerPeriodAndRemoveOldestWorker(@Nonnull final Iterator<PersistDataWorker> it,
+//                                                  @Nonnull final PersistDataWorker oldestWorker) {
+//        _prefPeriodInMS = Math.max(_prefPeriodInMS>>1, 2000);
+//        LOG.info("Remove Worker: " + oldestWorker.getName());
+//        _executor.remove(oldestWorker);
+//        it.remove();
+//    }
 
     public void rescueDataToFileSystem(@Nonnull final Iterable<String> statements) {
         rescueDataToFileSystem(_prefSmtpHost, _prefEmailAddress, _prefRescueDir, statements);
@@ -235,34 +245,16 @@ public class PersistEngineDataManager {
         _executor.shutdown();
     }
 
-    public void registerBatchQueueHandler(@Nonnull final AbstractBatchQueueHandler<?> batchStrategy) throws ArchiveDaoException {
-        final Class<?> type = batchStrategy.getType();
-        if (_strategyAndBatchMap.containsKey(type)) {
-            throw new ArchiveDaoException("A batch strategy for type " + type.getName() + " has already been registered.", null);
-        }
-        _strategyAndBatchMap.put(batchStrategy.getType(), batchStrategy);
-    }
+    public void submitToBatch(@Nonnull final Collection<?> entries) throws TypeSupportException {
 
-    @SuppressWarnings({ "rawtypes", "unchecked" })
-    public void submitToBatch(@Nonnull final Collection<?> entries) throws ArchiveDaoException {
-        if (entries.isEmpty()) {
-            return;
-        }
-        final BlockingQueue<?> queue = getQueueForTypeOf(entries.iterator().next());
-        queue.addAll((Collection) entries);
+        BatchQueueHandlerSupport.addToQueue(entries);
 
         if (isAnotherWorkerRequired()) {
-            submitNewPersistDataWorker();
+            submitNewPersistDataWorker(_executor,
+                                       _prefPeriodInMS,
+                                       _handlerProvider,
+                                       _workerId,
+                                       _submittedWorkers);
         }
-    }
-
-    @Nonnull
-    private BlockingQueue<?> getQueueForTypeOf(@Nonnull final Object entry) throws ArchiveDaoException {
-        final Class<?> type = entry.getClass();
-        final AbstractBatchQueueHandler<?> strategy = _strategyAndBatchMap.get(type);
-        if (strategy != null) {
-            return strategy.getQueue();
-        }
-        throw new ArchiveDaoException("A batch strategy for type " + type.getName() + " has not been registered.", null);
     }
 }

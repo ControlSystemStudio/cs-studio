@@ -19,64 +19,59 @@
  * PROJECT IN THE FILE LICENSE.HTML. IF THE LICENSE IS NOT INCLUDED YOU MAY FIND A COPY
  * AT HTTP://WWW.DESY.DE/LEGAL/LICENSE.HTM
  */
-package org.csstudio.domain.desy.collection.immutable;
+package org.csstudio.archive.common.service.mysqlimpl.sample;
 
-import java.util.List;
-
-import javax.annotation.CheckForNull;
 import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
+
+import org.csstudio.archive.common.service.channel.ArchiveChannelId;
+import org.csstudio.domain.desy.time.TimeInstant;
 
 /**
- * Immutable list.
+ * Reduced data archive sample (not a real sample, but a derived value).
  *
- * @param <T> Type of contained elements
- * @see java.util.List
- * @author Bastian Knerr (bastian.knerr@desy.de)
+ * @author bknerr
+ * @since 21.07.2011
  */
-public interface IImmutableList<T> extends IImmutableCollection<T> {
+abstract class AbstractReducedDataSample {
 
-
-    @CheckForNull
-    T get(int index);
-
-
-    int indexOf(@Nullable Object o);
-
-
-    int lastIndexOf(@Nullable Object o);
-
-
-    @Nonnull
-    ImmutableListIterator<T> listIterator();
-
-
-    @Nonnull
-    ImmutableListIterator<T> listIterator(int index);
+    private final ArchiveChannelId _channelId;
+    private final TimeInstant _timestamp;
+    private final Double _avg;
+    private final Double _min;
+    private final Double _max;
 
     /**
-     * A COPY of the specified sublist.
-     * @param fromIndex
-     * @param toIndex
-     * @return the sublist
+     * Constructor.
      */
+    protected AbstractReducedDataSample(@Nonnull final ArchiveChannelId id,
+                                        @Nonnull final TimeInstant timestamp,
+                                        @Nonnull final Double avg,
+                                        @Nonnull final Double min,
+                                        @Nonnull final Double max) {
+        _channelId = id;
+        _timestamp = timestamp;
+        _avg = avg;
+        _min = min;
+        _max = max;
+    }
     @Nonnull
-    List<T> subList(int fromIndex, int toIndex);
-
-
-    @CheckForNull
-    T pollFirst();
-
-
-    @Override
+    protected ArchiveChannelId getChannelId() {
+        return _channelId;
+    }
     @Nonnull
-    IImmutableList<T> filter(@Nonnull Filter<T> filter);
-
-    /**
-     * Copied to a new mutable list.
-     * @return a list view
-     */
+    public TimeInstant getTimestamp() {
+        return _timestamp;
+    }
     @Nonnull
-    List<T> toList();
-
+    public Double getAvg() {
+        return _avg;
+    }
+    @Nonnull
+    public Double getMin() {
+        return _min;
+    }
+    @Nonnull
+    public Double getMax() {
+        return _max;
+    }
 }

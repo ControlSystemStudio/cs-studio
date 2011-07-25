@@ -37,10 +37,10 @@ import org.junit.Test;
  * @version $Revision: 1.7 $
  * @since 22.07.2011
  */
-public class DataBaseConnectionUnitTest {
+public class DatabaseConnectionUnitTest {
     
     @Test
-    public void krykmantDBTestConectionTest() throws Exception {
+    public void krykmantDBTestConnectionTest() throws Exception {
         HibernateTestManager hibernateManager = new HibernateTestManager();
         Assert.assertNotNull(hibernateManager);
         hibernateManager.buildConifg();
@@ -56,7 +56,7 @@ public class DataBaseConnectionUnitTest {
     }
     
     @Test
-    public void kryklogtDBTestConectionTest() throws Exception {
+    public void kryklogtDBTestConnectionTest() throws Exception {
         HibernateTestManager hibernateManager = new HibernateTestManager();
         Assert.assertNotNull(hibernateManager);
         hibernateManager.buildConifg();

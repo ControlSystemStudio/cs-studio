@@ -76,19 +76,15 @@ public class MySqlServiceImplActivator implements BundleActivator {
         return INSTANCE;
     }
 
-    /*
-	 * (non-Javadoc)
-	 * @see org.osgi.framework.BundleActivator#start(org.osgi.framework.BundleContext)
-	 */
-	@Override
+    @Override
     public void start(@Nonnull final BundleContext context) throws Exception {
 
-	    final Injector injector = Guice.createInjector(new MySQLArchiveServiceImplModule());
-	    _connectionHandler = injector.getInstance(ArchiveConnectionHandler.class);
-	    final MySQLArchiveEngineServiceImpl engineServiceImpl =
-	        injector.getInstance(MySQLArchiveEngineServiceImpl.class);
-	    final MySQLArchiveReaderServiceImpl readerServiceImpl =
-	        injector.getInstance(MySQLArchiveReaderServiceImpl.class);
+        final Injector injector = Guice.createInjector(new MySQLArchiveServiceImplModule());
+        _connectionHandler = injector.getInstance(ArchiveConnectionHandler.class);
+        final MySQLArchiveEngineServiceImpl engineServiceImpl =
+            injector.getInstance(MySQLArchiveEngineServiceImpl.class);
+        final MySQLArchiveReaderServiceImpl readerServiceImpl =
+            injector.getInstance(MySQLArchiveReaderServiceImpl.class);
 
 
 
@@ -110,16 +106,16 @@ public class MySqlServiceImplActivator implements BundleActivator {
         context.registerService(IArchiveReaderFacade.class.getName(),
                                 readerServiceImpl,
                                 propsRd);
-	}
+    }
 
 
-	@Override
+    @Override
     public void stop(@Nonnull final BundleContext bundleContext) throws Exception {
 
-	    // Services are automatically unregistered
+        // Services are automatically unregistered
 
-	    if (_connectionHandler != null) {
-	        _connectionHandler.disconnect();
-	    }
-	}
+        if (_connectionHandler != null) {
+            _connectionHandler.disconnect();
+        }
+    }
 }

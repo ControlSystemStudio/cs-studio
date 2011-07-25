@@ -118,9 +118,11 @@ public final class DesyArchiveReaderFactory implements ArchiveReaderFactory {
         @Override
         @Nonnull
         public ArchiveInfo[] getArchiveInfos() {
-            return new ArchiveInfo[] {new ArchiveInfo("Desy Kryo Archive",
-                                                      "MySQL Cluster",
-                                                      5)};
+            return new ArchiveInfo[] {
+                                      new ArchiveInfo("Desy Kryo Archive",
+                                      "MySQL Cluster",
+                                      5),
+                                      };
         }
 
         @Override
@@ -173,8 +175,9 @@ public final class DesyArchiveReaderFactory implements ArchiveReaderFactory {
             final IArchiveReaderFacade service = _provider.getReaderFacade();
             final IArchiveChannel channel = service.getChannelByName(name);
 
-            if (BaseTypeConversionSupport.isDataTypeConvertibleToDouble(channel.getDataType(),
-                                                                       "java.lang",
+            if (channel!= null &&
+                BaseTypeConversionSupport.isDataTypeConvertibleToDouble(channel.getDataType(),
+                                                                        "java.lang",
                                                                         "org.csstudio.domain.desy.epics.types")) {
                 final EquidistantTimeBinsIterator<Object> iter =
                     new EquidistantTimeBinsIterator<Object>(_provider, name, s, e, findRequestType("AVG_PER_HOUR"), count);

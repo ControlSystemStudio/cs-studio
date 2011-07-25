@@ -51,7 +51,7 @@ import org.epics.pvmanager.TypeSupport;
 public abstract class EpicsSystemVariableSupport<T> extends SystemVariableSupport<T> {
 // CHECKSTYLE ON : AbstractClassName
 
-    private static boolean INSTALLED = false;
+    private static boolean INSTALLED;
 
     /**
      * Constructor.

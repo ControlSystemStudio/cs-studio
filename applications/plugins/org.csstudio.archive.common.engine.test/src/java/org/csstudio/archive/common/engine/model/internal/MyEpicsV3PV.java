@@ -35,7 +35,7 @@ import org.csstudio.utility.pv.epics.PVContext;
 import org.csstudio.utility.pv.epics.RefCountedChannel;
 import org.eclipse.core.runtime.PlatformObject;
 
-/** 
+/**
  * EPICS ChannelAccess implementation of the PV interface.
  *
  * Copied to handle monitor mask per channel...
@@ -48,7 +48,7 @@ public class MyEpicsV3PV extends PlatformObject
             implements PV, ConnectionListener, MonitorListener
 {
     // CHECKSTYLE:OFF
-    
+
     /** Use plain mode?
      *  @see #EPICS_V3_PV(String, boolean)
      */
@@ -164,11 +164,11 @@ public class MyEpicsV3PV extends PlatformObject
         public GetCallbackListener() {
             // TODO Auto-generated constructor stub
         }
-
-        public void reset()
+        synchronized public void reset()
         {
             got_response = false;
         }
+
 
         @Override
         public void getCompleted(final GetEvent event)
@@ -227,7 +227,7 @@ public class MyEpicsV3PV extends PlatformObject
      *               No time etc.
      *               Some PVs only work in plain mode, example: "record.RTYP".
      */
-    public MyEpicsV3PV(final String name, 
+    public MyEpicsV3PV(final String name,
                        final MonitorMask mask,
                        final boolean plain)
     {
@@ -276,8 +276,9 @@ public class MyEpicsV3PV extends PlatformObject
         while (! connected)
         {   // Wait...
             final long remain = end_time - System.currentTimeMillis();
-            if (remain <= 0)
+            if (remain <= 0) {
                 throw new Exception("PV " + name + " connection timeout");
+            }
             synchronized (this)
             {
                 this.wait(remain);
@@ -298,8 +299,9 @@ public class MyEpicsV3PV extends PlatformObject
             while (! get_callback.got_response)
             {   // Wait...
                 final long remain = end_time - System.currentTimeMillis();
-                if (remain <= 0)
+                if (remain <= 0) {
                     throw new Exception("PV " + name + " value timeout");
+                }
                 get_callback.wait(remain);
             }
         }
@@ -319,8 +321,9 @@ public class MyEpicsV3PV extends PlatformObject
     public void addListener(final PVListener listener)
     {
         listeners.add(listener);
-         if (running && isConnected())
+         if (running && isConnected()) {
             listener.pvValueUpdate(this);
+        }
     }
 
     /** {@inheritDoc} */
@@ -368,8 +371,9 @@ public class MyEpicsV3PV extends PlatformObject
         synchronized (this)
         {
             // Never attempted a connection?
-            if (channel_ref == null)
+            if (channel_ref == null) {
                 return;
+            }
             channel_ref_copy = channel_ref;
             channel_ref = null;
             connected = false;
@@ -386,7 +390,7 @@ public class MyEpicsV3PV extends PlatformObject
     }
 
     private final MonitorMask _monitorMask;
-    
+
     /** Subscribe for value updates. */
     void subscribe()
     {
@@ -413,9 +417,9 @@ public class MyEpicsV3PV extends PlatformObject
                 //      N subscriptions.
                 final DBRType type = DBR_Helper.getTimeType(plain,
                                         channel.getFieldType());
-                
+
                 //final MonitorMask mask = PVContext.monitor_mask;
-                
+
                 logger.log(Level.FINER, "{0} subscribed as {1} ({2})",
                         new Object[] { name, type.getName(), _monitorMask.name() } );
                 state = State.Subscribing;
@@ -588,8 +592,9 @@ public class MyEpicsV3PV extends PlatformObject
     void handleConnected(final Channel channel)
     {
         Activator.getLogger().log(Level.FINEST, "{0} connected ({1})", new Object[] { name, state.name() });
-        if (state == State.Connected)
+        if (state == State.Connected) {
             return;
+        }
         state = State.Connected;
 
         // If we're "running", we need to get the meta data and
@@ -597,13 +602,13 @@ public class MyEpicsV3PV extends PlatformObject
         // Otherwise, we're done.
         if (!running)
         {
-            connected = true;
-            meta = null;
             synchronized (this)
             {
-                this.notifyAll();
+                connected = true;
+                meta = null;
+                    this.notifyAll();
+                return;
             }
-            return;
         }
         // else: running, get meta data, then subscribe
         try
@@ -614,12 +619,13 @@ public class MyEpicsV3PV extends PlatformObject
                 state = State.GettingMetadata;
                 Activator.getLogger().fine("Getting meta info for type "
                                     + type.getName());
-                if (type.isDOUBLE()  ||  type.isFLOAT())
+                if (type.isDOUBLE()  ||  type.isFLOAT()) {
                     type = DBRType.CTRL_DOUBLE;
-                else if (type.isENUM())
+                } else if (type.isENUM()) {
                     type = DBRType.LABELS_ENUM;
-                else
+                } else {
                     type = DBRType.CTRL_SHORT;
+                }
                 channel.get(type, 1, meta_get_listener);
                 return;
             }
@@ -654,10 +660,12 @@ public class MyEpicsV3PV extends PlatformObject
             return;
         }
 
-        if (subscription == null)
-        {
-            log.finer(name + " monitor while not subscribed (" + state.name() + ")");
-            return;
+        synchronized (this) {
+            if (subscription == null)
+            {
+                log.finer(name + " monitor while not subscribed (" + state.name() + ")");
+                return;
+            }
         }
 
         if (! ev.getStatus().isSuccessful())

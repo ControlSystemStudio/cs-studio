@@ -19,76 +19,14 @@
  * PROJECT IN THE FILE LICENSE.HTML. IF THE LICENSE IS NOT INCLUDED YOU MAY FIND A COPY
  * AT HTTP://WWW.DESY.DE/LEGAL/LICENSE.HTM
  */
-package org.csstudio.domain.desy.collection.immutable;
-import java.util.ListIterator;
-
-import javax.annotation.CheckForNull;
-import javax.annotation.Nonnull;
+package org.csstudio.domain.desy.junit;
 
 /**
- * Immutable list iterator. Guaranteed to throw {@link UnsupportedOperationException}s on
- * modifying methods.
+ * Run condition evaluator.
  *
- * @author baschtl
- *
- * @param <T>
+ * @author bknerr
+ * @since 30.05.2011
  */
-public class ImmutableListIterator<T> extends AbstractImmutableListIterator<T> {
-
-    private final ListIterator<T> _iterator;
-
-    public ImmutableListIterator(@Nonnull final ListIterator<T> iterator) {
-        _iterator = iterator;
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    @Override
-    public boolean hasPrevious() {
-        return _iterator.hasPrevious();
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    @Override
-    public int nextIndex() {
-        return _iterator.nextIndex();
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    @Override
-    @CheckForNull
-    public T previous() {
-        return _iterator.previous();
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    @Override
-    public int previousIndex() {
-        return _iterator.previousIndex();
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    @Override
-    public boolean hasNext() {
-        return _iterator.hasNext();
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    @Override
-    @CheckForNull
-    public T next() {
-        return _iterator.next();
-    }
-
+public interface IRunCondition {
+    boolean shallBeRun();
 }

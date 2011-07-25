@@ -47,7 +47,8 @@ class GroupsResponse extends AbstractResponse {
                                         Messages.HTTP_COLUMN_CONNECTED,
                                         Messages.HTTP_COLUMN_RECEIVEDVALUES,
                                         Messages.HTTP_COLUMN_QUEUEAVG,
-                                        Messages.HTTP_COLUMN_QUEUEMAX});
+                                        Messages.HTTP_COLUMN_QUEUEMAX,
+                                        });
     }
 
     private void createGroupsTable(@Nonnull final HTMLWriter html) {
@@ -88,7 +89,8 @@ class GroupsResponse extends AbstractResponse {
                                          createChannelConnectedTableEntry(numOfConnectedChannels, numOfChannels),
                                          Long.toString(numOfReceivedSamples),
                                          String.format("%.1f", avgQueueLength),
-                                         Integer.toString(maxQueueLength)});
+                                         Integer.toString(maxQueueLength),
+                                         });
         }
 
         closeTableWithSummaryRow(html,

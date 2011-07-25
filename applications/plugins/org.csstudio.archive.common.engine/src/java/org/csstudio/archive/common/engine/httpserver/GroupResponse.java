@@ -65,11 +65,11 @@ class GroupResponse extends AbstractResponse {
                                       @Nonnull final HTMLWriter html) {
         // Basic group info
         html.openTable(2, new String[] {
-            Messages.HTTP_STATUS
+            Messages.HTTP_STATUS,
         });
         html.tableLine(new String[] {
             Messages.HTTP_STATE,
-            group.isEnabled() ? Messages.HTTP_ENABLED : Messages.HTTP_DISABLED
+            group.isEnabled() ? Messages.HTTP_ENABLED : Messages.HTTP_DISABLED,
         });
         html.closeTable();
     }
@@ -85,7 +85,7 @@ class GroupResponse extends AbstractResponse {
             Messages.HTTP_COLUMN_RECEIVEDVALUES,
             Messages.HTTP_QUEUELEN,
             Messages.HTTP_COLUMN_QUEUEAVG,
-            Messages.HTTP_COLUMN_QUEUEMAX
+            Messages.HTTP_COLUMN_QUEUEMAX,
         });
         for (final ArchiveChannel<?, ?> channel : group.getChannels()) {
             try {

@@ -30,7 +30,7 @@ import java.util.concurrent.LinkedBlockingQueue;
 import javax.annotation.Nonnull;
 
 import org.csstudio.archive.common.service.enginestatus.IArchiveEngineStatus;
-import org.csstudio.archive.common.service.mysqlimpl.dao.AbstractBatchQueueHandler;
+import org.csstudio.archive.common.service.mysqlimpl.batch.BatchQueueHandlerSupport;
 
 import com.google.common.base.Function;
 import com.google.common.base.Joiner;
@@ -42,13 +42,13 @@ import com.google.common.collect.Collections2;
  * @author bknerr
  * @since 20.07.2011
  */
-final class ArchiveEngineStatusBatchQueueHandler extends AbstractBatchQueueHandler<IArchiveEngineStatus> {
+public final class ArchiveEngineStatusBatchQueueHandler extends BatchQueueHandlerSupport<IArchiveEngineStatus> {
     private static final String VAL_WILDCARDS = "(?, ?, ?, ?)";
     /**
      * Constructor.
      */
     public ArchiveEngineStatusBatchQueueHandler(@Nonnull final String databaseName) {
-        super(databaseName, new LinkedBlockingQueue<IArchiveEngineStatus>());
+        super(IArchiveEngineStatus.class, databaseName, new LinkedBlockingQueue<IArchiveEngineStatus>());
     }
 
     /**

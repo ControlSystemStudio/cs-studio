@@ -38,16 +38,18 @@ import org.csstudio.domain.desy.typesupport.TypeSupportException;
  */
 final class LongConversionSupport extends EpicsIMetaDataTypeSupport<Long> {
 
-    @Nonnull
-    private Long toLong(final double d) {
-        return Long.valueOf(Double.valueOf(d).longValue());
-    }
     /**
      * Constructor.
      */
     public LongConversionSupport() {
         super(Long.class);
     }
+
+    @Nonnull
+    private Long toLong(final double d) {
+        return Long.valueOf(Double.valueOf(d).longValue());
+    }
+
     /**
      * {@inheritDoc}
      */

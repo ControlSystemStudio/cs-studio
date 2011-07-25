@@ -26,38 +26,38 @@ import junit.framework.Assert;
 import org.junit.Test;
 
 /**
- * Test class for {@link HostAddress}. 
- * 
+ * Test class for {@link HostAddress}.
+ *
  * @author bknerr
  * @since 26.04.2011
  */
 public class HostAddressTest {
-    
+
     @Test(expected=IllegalArgumentException.class)
     public void testInvalidHostAddress1() {
         @SuppressWarnings("unused")
-        HostAddress a = new HostAddress("");
+        final HostAddress a = new HostAddress("");
     }
     @Test(expected=IllegalArgumentException.class)
     public void testInvalidHostAddress2() {
         @SuppressWarnings("unused")
-        HostAddress a = new HostAddress(".");
+        final HostAddress a = new HostAddress(".");
     }
     @Test(expected=IllegalArgumentException.class)
     public void testInvalidHostAddress3() {
         @SuppressWarnings("unused")
-        HostAddress a = new HostAddress("_._");
+        final HostAddress a = new HostAddress("_._");
     }
 
     @Test
     public void validHostAddress1() {
-        HostAddress a = new HostAddress("foo");
+        final HostAddress a = new HostAddress("foo");
         Assert.assertEquals("foo", a.getHostAddress());
     }
 
     @Test
     public void validHostAddress2() {
-        HostAddress a = new HostAddress("www.haldern-pop.de");
+        final HostAddress a = new HostAddress("www.haldern-pop.de");
         Assert.assertEquals("www.haldern-pop.de", a.getHostAddress());
     }
 }

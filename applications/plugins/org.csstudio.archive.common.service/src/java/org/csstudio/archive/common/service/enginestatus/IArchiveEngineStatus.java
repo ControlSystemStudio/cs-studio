@@ -24,7 +24,7 @@ package org.csstudio.archive.common.service.enginestatus;
 import javax.annotation.Nonnull;
 
 import org.csstudio.archive.common.service.engine.ArchiveEngineId;
-import org.csstudio.domain.desy.common.id.Identifiable;
+import org.csstudio.domain.desy.common.id.IIdentifiable;
 import org.csstudio.domain.desy.time.TimeInstant;
 
 /**
@@ -33,7 +33,7 @@ import org.csstudio.domain.desy.time.TimeInstant;
  * @author bknerr
  * @since 02.02.2011
  */
-public interface IArchiveEngineStatus extends Identifiable<ArchiveEngineStatusId> {
+public interface IArchiveEngineStatus extends IIdentifiable<ArchiveEngineStatusId> {
 
     @Nonnull
     String getInfo();

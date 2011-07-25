@@ -61,44 +61,6 @@ import com.google.common.collect.Iterables;
 public abstract class ArchiveTypeConversionSupport<T> extends AbstractTypeSupport<T> {
     // CHECKSTYLE ON : AbstractClassName
 
-    private static final String[] SCALAR_TYPE_PACKAGES =
-        new String[]{"java.lang",
-                     "org.csstudio.domain.desy.epics.types"};
-    private static final String[] MULTI_SCALAR_TYPE_PACKAGES =
-        new String[]{"java.util",
-                     "org.csstudio.domain.desy.epics.types"};
-
-    /**
-     * Type to archive string converter function for guava collection transforming.
-     *
-     * @author bknerr
-     * @since 22.12.2010
-     */
-    private final class Type2StringFunction implements Function<T, String> {
-        private final ArchiveTypeConversionSupport<T> _support;
-
-        /**
-         * Constructor.
-         * @param support
-         */
-        public Type2StringFunction(@Nonnull final ArchiveTypeConversionSupport<T> support) {
-            _support = support;
-        }
-
-        @Override
-        @CheckForNull
-        public String apply(@Nonnull final T from) {
-            try {
-                return _support.convertToArchiveString(from);
-            } catch (final TypeSupportException e) {
-                LOG.warn("No type conversion to archive string for {}", from.getClass().getName() + " registered.");
-                return null;
-            }
-        }
-    }
-
-    static final Logger LOG = LoggerFactory.getLogger(ArchiveTypeConversionSupport.class);
-
     protected static final String ARCHIVE_COLLECTION_ELEM_SEP = "\\,";
     protected static final String ARCHIVE_COLLECTION_PREFIX = "[";
     protected static final String ARCHIVE_COLLECTION_SUFFIX = "]";
@@ -108,41 +70,23 @@ public abstract class ArchiveTypeConversionSupport<T> extends AbstractTypeSuppor
 
     protected static final String ARCHIVE_NULL_ENTRY = "<null>";
 
-    private static boolean INSTALLED = false;
+    private static final String[] SCALAR_TYPE_PACKAGES =
+        new String[]{
+                     "java.lang",
+                     "org.csstudio.domain.desy.epics.types",
+                     };
+    private static final String[] MULTI_SCALAR_TYPE_PACKAGES =
+        new String[]{
+                     "java.util",
+                     "org.csstudio.domain.desy.epics.types",
+                     };
 
-    @Nonnull
-    protected static String collectionEmbrace(@Nonnull final String input) {
-        return embrace(ARCHIVE_COLLECTION_PREFIX, input, ARCHIVE_COLLECTION_SUFFIX);
-    }
-    @Nonnull
-    protected static String tupleEmbrace(@Nonnull final String input) {
-        return embrace(ARCHIVE_TUPLE_PREFIX, input, ARCHIVE_TUPLE_SUFFIX);
-    }
-    @Nonnull
-    private static String embrace(@Nonnull final String prefix, @Nonnull final String input, @Nonnull final String suffix) {
-        return prefix + input + suffix;
-    }
-    @CheckForNull
-    protected static String collectionRelease(@Nonnull final String input) {
-        return release(ARCHIVE_COLLECTION_PREFIX, input, ARCHIVE_COLLECTION_SUFFIX);
-    }
-    @CheckForNull
-    protected static String tupleRelease(@Nonnull final String input) {
-        return release(ARCHIVE_TUPLE_PREFIX, input, ARCHIVE_TUPLE_SUFFIX);
-    }
-    @CheckForNull
-    private static String release(@Nonnull final String prefix, @Nonnull final String input, @Nonnull final String suffix) {
-        if (input.startsWith(prefix) && input.endsWith(suffix)) {
-            return input.substring(prefix.length(),
-                                   input.length() - suffix.length());
-        }
-        return null;
-    }
+    private static boolean INSTALLED;
 
     /**
      * Constructor.
      */
-    ArchiveTypeConversionSupport(@Nonnull final Class<T> type) {
+    protected ArchiveTypeConversionSupport(@Nonnull final Class<T> type) {
         super(type, ArchiveTypeConversionSupport.class);
     }
 
@@ -313,29 +257,6 @@ public abstract class ArchiveTypeConversionSupport<T> extends AbstractTypeSuppor
                                      (T) fromArchiveString(datatype, high));
     }
 
-    /**
-     * Has to be overriden for all types that support display ranges in the channel abstraction
-     */
-    @Nonnull
-    // CHECKSTYLE OFF : ParameterNumber
-    protected IArchiveChannel createChannel(@Nonnull final ArchiveChannelId id,
-                                            @Nonnull final String name,
-                                            @Nonnull final String datatype,
-                                            @Nonnull final ArchiveChannelGroupId archiveChannelGroupId,
-                                            @Nonnull final TimeInstant time,
-                                            @Nonnull final IArchiveControlSystem cs,
-                                            @SuppressWarnings("unused") @Nonnull final T low,
-                                            @SuppressWarnings("unused") @Nonnull final T high) {
-        // CHECKSTYLE ON : ParameterNumber
-        return new ArchiveChannel(id,
-                                  name,
-                                  datatype,
-                                  archiveChannelGroupId,
-                                  time,
-                                  cs);
-    }
-
-
     @SuppressWarnings("unchecked")
     @Nonnull
     private static <T> T multiScalarSupport(@Nonnull final String datatype,
@@ -355,48 +276,6 @@ public abstract class ArchiveTypeConversionSupport<T> extends AbstractTypeSuppor
         }
 
         throw new TypeSupportException("Either class unknown or conversion type support not registered for " + datatype, null);
-    }
-
-
-    @Nonnull
-    protected String convertFromMultiScalarToArchiveString(@Nonnull final Collection<T> values) throws TypeSupportException {
-        if (values.isEmpty()) {
-            return "";
-        }
-        @SuppressWarnings("unchecked")
-        final ArchiveTypeConversionSupport<T> support =
-            (ArchiveTypeConversionSupport<T>) findTypeSupportForOrThrowTSE(ArchiveTypeConversionSupport.class,
-                                                                   values.iterator().next().getClass());
-
-        final Collection<String> items =
-            Collections2.filter(Collections2.transform(values,  new Type2StringFunction(support)),
-                                Predicates.<String>notNull());
-        if (values.size() != items.size()) {
-            throw new TypeSupportException("Number of transformed elements (" + items.size() +
-                                           " does not match the number of input elements (" + values.size() + "!", null);
-        }
-        final String result = Joiner.on(ARCHIVE_COLLECTION_ELEM_SEP).join(items);
-        return collectionEmbrace(result);
-    }
-
-
-    @Nonnull
-    protected abstract String convertToArchiveString(@Nonnull final T value) throws TypeSupportException;
-    @Nonnull
-    protected abstract T convertFromArchiveString(@Nonnull final String value) throws TypeSupportException;
-    @Nonnull
-    protected abstract Collection<T> convertFromArchiveStringToMultiScalar(@Nonnull Class<?> collectionClass, @Nonnull final String values) throws TypeSupportException;
-    @Nonnull
-    protected abstract T convertFromDouble(@Nonnull final Double value) throws TypeSupportException;
-    /**
-     * A type support overriding this method with return value <code>Boolean.TRUE</code> has to
-     * implement a valid 'convertToDouble' method.
-     *
-     * @return true if the data type is optimizable by averaging (i.e. convertible to Double)
-     */
-    @Nonnull
-    protected Boolean isOptimizableByAveraging() {
-        return Boolean.FALSE;
     }
 
     @Nonnull
@@ -429,4 +308,129 @@ public abstract class ArchiveTypeConversionSupport<T> extends AbstractTypeSuppor
         }
     }
 
+    @Nonnull
+    protected static String collectionEmbrace(@Nonnull final String input) {
+        return embrace(ARCHIVE_COLLECTION_PREFIX, input, ARCHIVE_COLLECTION_SUFFIX);
+    }
+    @Nonnull
+    protected static String tupleEmbrace(@Nonnull final String input) {
+        return embrace(ARCHIVE_TUPLE_PREFIX, input, ARCHIVE_TUPLE_SUFFIX);
+    }
+    @Nonnull
+    private static String embrace(@Nonnull final String prefix, @Nonnull final String input, @Nonnull final String suffix) {
+        return prefix + input + suffix;
+    }
+    @CheckForNull
+    protected static String collectionRelease(@Nonnull final String input) {
+        return release(ARCHIVE_COLLECTION_PREFIX, input, ARCHIVE_COLLECTION_SUFFIX);
+    }
+    @CheckForNull
+    protected static String tupleRelease(@Nonnull final String input) {
+        return release(ARCHIVE_TUPLE_PREFIX, input, ARCHIVE_TUPLE_SUFFIX);
+    }
+    @CheckForNull
+    private static String release(@Nonnull final String prefix, @Nonnull final String input, @Nonnull final String suffix) {
+        if (input.startsWith(prefix) && input.endsWith(suffix)) {
+            return input.substring(prefix.length(),
+                                   input.length() - suffix.length());
+        }
+        return null;
+    }
+
+    /**
+     * Type to archive string converter function for guava collection transforming.
+     *
+     * @author bknerr
+     * @since 22.12.2010
+     */
+    private final class Type2StringFunction implements Function<T, String> {
+        private final Logger _log =
+                LoggerFactory.getLogger(ArchiveTypeConversionSupport.Type2StringFunction.class);
+        private final ArchiveTypeConversionSupport<T> _support;
+
+        /**
+         * Constructor.
+         * @param support
+         */
+        public Type2StringFunction(@Nonnull final ArchiveTypeConversionSupport<T> support) {
+            _support = support;
+        }
+
+        @Override
+        @CheckForNull
+        public String apply(@Nonnull final T from) {
+            try {
+                return _support.convertToArchiveString(from);
+            } catch (final TypeSupportException e) {
+                _log.warn("No type conversion to archive string for {}", from.getClass().getName() + " registered.");
+                return null;
+            }
+        }
+    }
+
+
+    @Nonnull
+    protected abstract String convertToArchiveString(@Nonnull final T value) throws TypeSupportException;
+    @Nonnull
+    protected abstract T convertFromArchiveString(@Nonnull final String value) throws TypeSupportException;
+    @Nonnull
+    protected abstract Collection<T> convertFromArchiveStringToMultiScalar(@Nonnull Class<?> collectionClass,
+                                                                           @Nonnull final String values)
+                                                                           throws TypeSupportException;
+    @Nonnull
+    protected abstract T convertFromDouble(@Nonnull final Double value) throws TypeSupportException;
+
+    /**
+     * A type support overriding this method with return value <code>Boolean.TRUE</code> has to
+     * implement a valid 'convertToDouble' method.
+     *
+     * @return true if the data type is optimizable by averaging (i.e. convertible to Double)
+     */
+    @Nonnull
+    protected Boolean isOptimizableByAveraging() {
+        return Boolean.FALSE;
+    }
+
+    /**
+     * Has to be overriden for all types that support display ranges in the channel abstraction
+     */
+    @Nonnull
+    // CHECKSTYLE OFF : ParameterNumber
+    protected IArchiveChannel createChannel(@Nonnull final ArchiveChannelId id,
+                                            @Nonnull final String name,
+                                            @Nonnull final String datatype,
+                                            @Nonnull final ArchiveChannelGroupId archiveChannelGroupId,
+                                            @Nonnull final TimeInstant time,
+                                            @Nonnull final IArchiveControlSystem cs,
+                                            @SuppressWarnings("unused") @Nonnull final T low,
+                                            @SuppressWarnings("unused") @Nonnull final T high) {
+        // CHECKSTYLE ON : ParameterNumber
+        return new ArchiveChannel(id,
+                                  name,
+                                  datatype,
+                                  archiveChannelGroupId,
+                                  time,
+                                  cs);
+    }
+
+    @Nonnull
+    protected String convertFromMultiScalarToArchiveString(@Nonnull final Collection<T> values) throws TypeSupportException {
+        if (values.isEmpty()) {
+            return "";
+        }
+        @SuppressWarnings("unchecked")
+        final ArchiveTypeConversionSupport<T> support =
+            (ArchiveTypeConversionSupport<T>) findTypeSupportForOrThrowTSE(ArchiveTypeConversionSupport.class,
+                                                                   values.iterator().next().getClass());
+
+        final Collection<String> items =
+            Collections2.filter(Collections2.transform(values,  new Type2StringFunction(support)),
+                                Predicates.<String>notNull());
+        if (values.size() != items.size()) {
+            throw new TypeSupportException("Number of transformed elements (" + items.size() +
+                                           " does not match the number of input elements (" + values.size() + "!", null);
+        }
+        final String result = Joiner.on(ARCHIVE_COLLECTION_ELEM_SEP).join(items);
+        return collectionEmbrace(result);
+    }
 }

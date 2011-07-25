@@ -31,7 +31,7 @@ public class ArchiveGroup {
     private final ConcurrentMap<String, ArchiveChannel<?, ?>> _channelMap;
 
     /** Set to <code>true</code> while running. */
-    private boolean _isRunning = false;
+    private boolean _isRunning;
 
     /**
      * Constructor.
@@ -94,14 +94,14 @@ public class ArchiveGroup {
 //    }
 
     /** Locate a channel by name.
-	 *
-	 *  @param channel_name
-	 *  @return Channel or <code>null</code>s
-	 */
+     *
+     *  @param channel_name
+     *  @return Channel or <code>null</code>s
+     */
     @CheckForNull
     public final ArchiveChannel<?, ?> findChannel(@Nonnull final String name) {
         return _channelMap.get(name);
-	}
+    }
 
 
     /** @return <code>true</code> if group is currently enabled */

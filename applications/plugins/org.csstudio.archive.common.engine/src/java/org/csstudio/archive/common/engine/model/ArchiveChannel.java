@@ -11,17 +11,17 @@ import javax.annotation.CheckForNull;
 import javax.annotation.Nonnull;
 import javax.annotation.concurrent.GuardedBy;
 
-import org.slf4j.Logger;
 import org.csstudio.archive.common.engine.service.IServiceProvider;
 import org.csstudio.archive.common.service.IArchiveEngineFacade;
 import org.csstudio.archive.common.service.channel.ArchiveChannelId;
 import org.csstudio.archive.common.service.sample.IArchiveSample;
-import org.csstudio.domain.desy.system.ISystemVariable;
-import org.slf4j.LoggerFactory;
 import org.csstudio.domain.desy.service.osgi.OsgiServiceUnavailableException;
+import org.csstudio.domain.desy.system.ISystemVariable;
 import org.csstudio.utility.pv.PV;
 import org.csstudio.utility.pv.PVFactory;
 import org.csstudio.utility.pv.PVListener;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /** Base for archived channels.
  *
@@ -59,7 +59,7 @@ public class ArchiveChannel<V, T extends ISystemVariable<V>> {
      *  the 'running' state.
      */
     @GuardedBy("this")
-    private volatile boolean _isStarted = false;
+    private volatile boolean _isStarted;
 
     /** Most recent value of the PV.
      *  <p>
@@ -79,7 +79,7 @@ public class ArchiveChannel<V, T extends ISystemVariable<V>> {
     /**
      * Counter for received values (monitor updates)
      */
-    private long _receivedSampleCount = 0;
+    private long _receivedSampleCount;
 
     private IServiceProvider _provider = new IServiceProvider() {
         @Override
@@ -172,13 +172,13 @@ public class ArchiveChannel<V, T extends ISystemVariable<V>> {
      * Stop archiving this channel
      */
     public void stop(@Nonnull final String info) {
-    	if (!_isStarted) {
+        if (!_isStarted) {
             return;
         }
-    	_listener.setStopInfo(info);
-    	synchronized (this) {
-    	    _isStarted = false;
-    	}
+        _listener.setStopInfo(info);
+        synchronized (this) {
+            _isStarted = false;
+        }
         _pv.stop();
     }
 

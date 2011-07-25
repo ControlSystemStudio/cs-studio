@@ -38,16 +38,18 @@ import org.csstudio.domain.desy.typesupport.TypeSupportException;
  */
 final class ShortConversionSupport extends EpicsIMetaDataTypeSupport<Short> {
 
-    @Nonnull
-    private Short toShort(final double d) {
-        return Short.valueOf(Double.valueOf(d).shortValue());
-    }
     /**
      * Constructor.
      */
     public ShortConversionSupport() {
         super(Short.class);
     }
+
+    @Nonnull
+    private Short toShort(final double d) {
+        return Short.valueOf(Double.valueOf(d).shortValue());
+    }
+
     /**
      * {@inheritDoc}
      */

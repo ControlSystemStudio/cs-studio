@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2011 Stiftung Deutsches Elektronen-Synchrotron,
+ * Copyright (c) 2010 Stiftung Deutsches Elektronen-Synchrotron,
  * Member of the Helmholtz Association, (DESY), HAMBURG, GERMANY.
  *
  * THIS SOFTWARE IS PROVIDED UNDER THIS LICENSE ON AN "../AS IS" BASIS.
@@ -19,34 +19,25 @@
  * PROJECT IN THE FILE LICENSE.HTML. IF THE LICENSE IS NOT INCLUDED YOU MAY FIND A COPY
  * AT HTTP://WWW.DESY.DE/LEGAL/LICENSE.HTM
  */
-package org.csstudio.domain.desy.collection;
-
-import java.util.Set;
+package org.csstudio.domain.desy.common.id;
 
 import javax.annotation.Nonnull;
 
-import com.google.common.collect.Sets;
-
 /**
- * TODO (bknerr) :
+ * Interface of entities identified by an {@link Id}.
  *
  * @author bknerr
- * @since 13.04.2011
+ * @since 02.11.2010
+ *
+ * @param <T> type of the entity
  */
-public final class IterablesUtil {
+public interface IIdentifiable<T extends Id<T>> {
 
     /**
-     * Don't instantiate.
+     * Returns the {@link Id} of this entitiy.
+     *
+     * @return the id
      */
-    private IterablesUtil() {
-        // Empty
-    }
-
-    public static <T> boolean containsDuplicates(@Nonnull final T[] array) {
-        final Set<T> set = Sets.newHashSet(array);
-        if (set.size() < array.length) {
-            return true;
-        }
-        return false;
-    }
+    @Nonnull
+    T getId();
 }

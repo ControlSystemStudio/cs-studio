@@ -22,7 +22,6 @@ import junit.framework.JUnit4TestAdapter;
 import junit.framework.Test;
 import junit.framework.TestCase;
 
-
 import org.osgi.framework.Bundle;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -169,7 +168,7 @@ public class BundleTestCollector {
 
         if (isItATestClass(testClass)) {
             if (!className.endsWith(commonFilterSuffix)) {
-                LOG.warn("Class {} is a test, but does not end on *{}.java.\n Please rename to one out of for this launch config: {}", 
+                LOG.warn("Class {} is a test, but does not end on *{}.java.\n Please rename to one out of for this launch config: {}",
                          new Object[] {className, commonFilterSuffix, Joiner.on(", ").join(testClassFilters)});
             } else {
                 for (final String filter : testClassFilters) { // check for filters
@@ -301,7 +300,7 @@ public class BundleTestCollector {
     private static boolean isFragment(@Nonnull final Bundle bundle) {
         final Enumeration<?> headerKeys = bundle.getHeaders().keys();
         while (headerKeys.hasMoreElements()) {
-            if (headerKeys.nextElement().toString().equals("Fragment-Host")) { //$NON-NLS-1$
+            if ("Fragment-Host".equals(headerKeys.nextElement().toString())) { //$NON-NLS-1$
                 return true;
             }
         }
@@ -314,7 +313,7 @@ public class BundleTestCollector {
         final Enumeration<?> keys = bundle.getHeaders().keys();
         final Enumeration<?> e = bundle.getHeaders().elements();
         while (keys.hasMoreElements() && e.hasMoreElements()) {
-            if (keys.nextElement().toString().equals("Fragment-Host")) {
+            if ("Fragment-Host".equals(keys.nextElement().toString())) {
                 fragmenthost = e.nextElement().toString();
             } else {
                 e.nextElement();

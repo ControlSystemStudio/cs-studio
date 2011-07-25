@@ -43,6 +43,7 @@ import org.csstudio.archive.common.service.channelgroup.ArchiveChannelGroupId;
 import org.csstudio.archive.common.service.controlsystem.ArchiveControlSystem;
 import org.csstudio.archive.common.service.controlsystem.ArchiveControlSystemId;
 import org.csstudio.archive.common.service.controlsystem.IArchiveControlSystem;
+import org.csstudio.archive.common.service.mysqlimpl.batch.BatchQueueHandlerSupport;
 import org.csstudio.archive.common.service.mysqlimpl.channel.UpdateDisplayInfoBatchQueueHandler.ArchiveChannelDisplayInfo;
 import org.csstudio.archive.common.service.mysqlimpl.controlsystem.ArchiveControlSystemDaoImpl;
 import org.csstudio.archive.common.service.mysqlimpl.dao.AbstractArchiveDao;
@@ -72,17 +73,20 @@ import com.google.inject.Inject;
  */
 public class ArchiveChannelDaoImpl extends AbstractArchiveDao implements IArchiveChannelDao {
 
+    public static final String TAB = "channel";
+
     private static final String EXC_MSG = "Channel table access failed.";
 
     private static final Timestamp DEFAULT_ZERO_TIMESTAMP = new Timestamp(0L);
+
+    private static final String CS_TAB = ArchiveControlSystemDaoImpl.TAB;
+
     /**
      * Archive channel configuration cache.
      */
     private final Map<String, IArchiveChannel> _channelCacheByName = Maps.newHashMap();
     private final Map<ArchiveChannelId, IArchiveChannel> _channelCacheById = Maps.newHashMap();
 
-    public static final String TAB = "channel";
-    private static final String CS_TAB = ArchiveControlSystemDaoImpl.TAB;
 
     private final String _selectChannelPrefix =
         "SELECT " + TAB + ".id, " + TAB + ".name, " + TAB + ".datatype, " + TAB + ".group_id, " + TAB + ".last_sample_time, " +
@@ -106,9 +110,9 @@ public class ArchiveChannelDaoImpl extends AbstractArchiveDao implements IArchiv
      */
     @Inject
     public ArchiveChannelDaoImpl(@Nonnull final ArchiveConnectionHandler handler,
-                                 @Nonnull final PersistEngineDataManager persister) throws ArchiveDaoException {
+                                 @Nonnull final PersistEngineDataManager persister) {
         super(handler, persister);
-        getEngineMgr().registerBatchQueueHandler(new UpdateDisplayInfoBatchQueueHandler(getDatabaseName()));
+        BatchQueueHandlerSupport.installHandlerIfNotExists(new UpdateDisplayInfoBatchQueueHandler(getDatabaseName()));
     }
 
     @Nonnull

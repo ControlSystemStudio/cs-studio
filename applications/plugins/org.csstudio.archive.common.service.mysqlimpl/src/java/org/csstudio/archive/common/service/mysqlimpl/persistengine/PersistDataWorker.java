@@ -28,14 +28,14 @@ import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.Collection;
 import java.util.List;
-import java.util.Map;
 import java.util.concurrent.BlockingQueue;
 
 import javax.annotation.CheckForNull;
 import javax.annotation.Nonnull;
 
 import org.csstudio.archive.common.service.ArchiveConnectionException;
-import org.csstudio.archive.common.service.mysqlimpl.dao.AbstractBatchQueueHandler;
+import org.csstudio.archive.common.service.mysqlimpl.batch.BatchQueueHandlerSupport;
+import org.csstudio.archive.common.service.mysqlimpl.batch.IBatchQueueHandlerProvider;
 import org.csstudio.domain.desy.task.AbstractTimeMeasuredRunnable;
 import org.csstudio.domain.desy.time.TimeInstant.TimeInstantBuilder;
 import org.slf4j.Logger;
@@ -63,8 +63,8 @@ public class PersistDataWorker extends AbstractTimeMeasuredRunnable {
     private final String _name;
     private final long _period;
 
-    private final Map<Class<?>, AbstractBatchQueueHandler<?>> _batchQueueHandlerMap;
-    private final List<Object> _elementsInBatch = Lists.newLinkedList();
+    private final IBatchQueueHandlerProvider _handlerProvider;
+    private final List<Object> _rescueDataList = Lists.newLinkedList();
 
 
     /**
@@ -73,42 +73,43 @@ public class PersistDataWorker extends AbstractTimeMeasuredRunnable {
     public PersistDataWorker(@Nonnull final PersistEngineDataManager mgr,
                              @Nonnull final String name,
                              @Nonnull final long period,
-                             @Nonnull final Map<Class<?>, AbstractBatchQueueHandler<?>> handlerMap) {
+                             @Nonnull final IBatchQueueHandlerProvider provider) {
         _mgr = mgr;
         _name = name;
         _period = period;
 
-        _batchQueueHandlerMap = handlerMap;
+        _handlerProvider = provider;
     }
 
     /**
      * {@inheritDoc}
      */
-    @SuppressWarnings({"unchecked", "rawtypes"})
     @Override
     public void measuredRun() {
         LOG.info("RUN: " + _name + " at " + TimeInstantBuilder.fromNow().formatted());
 
-        Connection connection = null;
         try {
-            connection = _mgr.getConnectionHandler().getConnection();
+            final Connection connection = _mgr.getConnectionHandler().getConnection();
+
+            processBatchHandlerMap(connection, _handlerProvider, _rescueDataList);
         } catch (final ArchiveConnectionException e) {
             LOG.error("Connection to archive failed", e);
             // FIXME (bknerr) : strategy for queues getting full, when to rescue data?
-            return;
         }
-
-        processBatchHandlerMap(connection, (Map) _batchQueueHandlerMap, _elementsInBatch);
     }
 
+    @SuppressWarnings("unchecked")
     private <T> void processBatchHandlerMap(@Nonnull final Connection connection,
-                                            @Nonnull final Map<Class<T>, AbstractBatchQueueHandler<T>> batchQueueHandlerMap,
-                                            @Nonnull final List<T> elementsInBatch) {
-        for (final AbstractBatchQueueHandler<T> handler : batchQueueHandlerMap.values()) {
+                                            @Nonnull final IBatchQueueHandlerProvider handlerProvider,
+                                            @Nonnull final List<T> rescueDataList) {
+        for (final BatchQueueHandlerSupport<?> handler : handlerProvider.getHandlers()) {
+
             PreparedStatement stmt = null;
             try {
-                stmt = handler.createNewStatement(connection);
-                processBatchForStatement(handler, stmt, elementsInBatch);
+                if (!handler.getQueue().isEmpty()) {
+                    stmt = handler.createNewStatement(connection);
+                    processBatchForStatement((BatchQueueHandlerSupport<T>) handler, stmt, rescueDataList);
+                }
             } catch (final SQLException e) {
                 LOG.error("Creation of batch statement failed for strategy " + handler.getType().getName(), e);
                 // FIXME (bknerr) : strategy for queues getting full, when to rescue data?
@@ -118,53 +119,58 @@ public class PersistDataWorker extends AbstractTimeMeasuredRunnable {
         }
     }
 
-    private <T> void processBatchForStatement(@Nonnull final AbstractBatchQueueHandler<T> handler,
+    private <T> void processBatchForStatement(@Nonnull final BatchQueueHandlerSupport<T> handler,
                                               @Nonnull final PreparedStatement stmt,
-                                              @Nonnull final List<T> elementsInBatch) {
+                                              @Nonnull final List<T> rescueDataList) {
         final BlockingQueue<T> queue = handler.getQueue();
-        T element = null;
+
+        boolean hasExecutedBatch = false;
+        T element;
         while ((element = queue.poll()) != null) {
-            addElementToBatch(handler, stmt, element, elementsInBatch);
-            executeBatchAndResetOnCondition(handler, stmt, elementsInBatch, 999);
+            addElementToBatchAndRescueList(handler, stmt, element, rescueDataList);
+            hasExecutedBatch = executeBatchAndClearListOnCondition(handler, stmt, rescueDataList, 999);
         }
-        if (!elementsInBatch.isEmpty()) {
-            executeBatchAndResetOnCondition(handler, stmt, elementsInBatch, 0);
+        if (!hasExecutedBatch) {
+            executeBatchAndClearListOnCondition(handler, stmt, rescueDataList, 0);
         }
     }
 
-    private <T> void addElementToBatch(@Nonnull final AbstractBatchQueueHandler<T> handler,
+    private <T> void addElementToBatchAndRescueList(@Nonnull final BatchQueueHandlerSupport<T> handler,
                                        @Nonnull final PreparedStatement stmt,
                                        @Nonnull final T element,
-                                       @Nonnull final List<T> elementsInBatch) {
+                                       @Nonnull final List<T> rescueDataList) {
         try {
-            elementsInBatch.add(element);
+            rescueDataList.add(element);
             handler.applyBatch(stmt, element);
         } catch (final Throwable t) {
-            handleThrowable(t, handler, elementsInBatch);
+            handleThrowable(t, handler, rescueDataList);
         }
     }
 
-    private <T> void executeBatchAndResetOnCondition(@Nonnull final AbstractBatchQueueHandler<T> handler,
-                                                     @Nonnull final PreparedStatement stmt,
-                                                     @Nonnull final List<T> elementsInBatch,
-                                                     final int noOfStmts) {
-        if (elementsInBatch.size() > noOfStmts) {
-            LOG.info("Execute batched stmt - num: " + elementsInBatch.size());
+    @Nonnull
+    private <T> boolean executeBatchAndClearListOnCondition(@Nonnull final BatchQueueHandlerSupport<T> handler,
+                                                            @Nonnull final PreparedStatement stmt,
+                                                            @Nonnull final List<T> rescueDataList,
+                                                            final int minBatchSize) {
+        if (rescueDataList.size() > minBatchSize) {
+            LOG.info("Execute batched stmt - num: " + rescueDataList.size());
             try {
                 stmt.executeBatch();
             } catch (final Throwable t) {
-                handleThrowable(t, handler, elementsInBatch);
+                handleThrowable(t, handler, rescueDataList);
             } finally {
-                elementsInBatch.clear();
+                rescueDataList.clear();
             }
+            return true;
         }
+        return false;
     }
 
 
     private <T> void handleThrowable(@Nonnull final Throwable t,
-                                     @Nonnull final AbstractBatchQueueHandler<T> handler,
-                                     @Nonnull final List<T> elementsInBatch) {
-        final Collection<String> statements = handler.convertToStatementString(elementsInBatch);
+                                     @Nonnull final BatchQueueHandlerSupport<T> handler,
+                                     @Nonnull final List<T> rescueDataList) {
+        final Collection<String> statements = handler.convertToStatementString(rescueDataList);
         try {
             throw t;
         } catch (final ArchiveConnectionException se) {
@@ -181,7 +187,7 @@ public class PersistDataWorker extends AbstractTimeMeasuredRunnable {
             t.printStackTrace();
             _mgr.rescueDataToFileSystem(statements);
         } finally {
-            elementsInBatch.clear();
+            rescueDataList.clear();
         }
     }
 

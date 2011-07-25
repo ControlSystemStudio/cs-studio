@@ -19,36 +19,87 @@
  * PROJECT IN THE FILE LICENSE.HTML. IF THE LICENSE IS NOT INCLUDED YOU MAY FIND A COPY
  * AT HTTP://WWW.DESY.DE/LEGAL/LICENSE.HTM
  */
-package org.csstudio.archive.common.service.mysqlimpl.dao;
+package org.csstudio.archive.common.service.mysqlimpl.batch;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
 import java.util.Collection;
 import java.util.List;
+import java.util.Map;
 import java.util.concurrent.BlockingQueue;
 
 import javax.annotation.Nonnull;
+
+import org.csstudio.archive.common.service.mysqlimpl.dao.ArchiveDaoException;
+import org.csstudio.domain.desy.typesupport.AbstractTypeSupport;
+import org.csstudio.domain.desy.typesupport.TypeSupportException;
+
+import com.google.common.collect.Maps;
 
 /**
  * Strategy for those statements that shall be batched.
  *
  * @author bknerr
  * @since 20.07.2011
- * @param <T> the type of the entity used to fill the statement's batch
+ * @param <T> the supported class type
+ * CHECKSTYLE OFF: AbstractClassName
+ *                 This class is accessed statically, hence the name should be short and descriptive!
  */
-public abstract class AbstractBatchQueueHandler<T> {
+public abstract class BatchQueueHandlerSupport<T> extends AbstractTypeSupport<T> {
+    // CHECKSTYLE ON : AbstractClassName
+
+    /**
+     * Is already stored in {@link org.epics.pvmanager.TypeSupport}, but that's not accessible from here.
+     */
+    private static final Map<Class<?>, BatchQueueHandlerSupport<?>> SUPPORT_MAP =
+        Maps.newConcurrentMap();
 
     private final String _database;
     private final BlockingQueue<T> _queue;
 
+
     /**
      * Constructor.
      */
-    public AbstractBatchQueueHandler(@Nonnull final String database,
-                             @Nonnull final BlockingQueue<T> queue) {
+    public BatchQueueHandlerSupport(@Nonnull final Class<T> typeClass,
+                                    @Nonnull final String database,
+                                    @Nonnull final BlockingQueue<T> queue) {
+        super(typeClass, BatchQueueHandlerSupport.class);
+
         _database = database;
         _queue = queue;
+    }
+
+    /**
+     * Install a specific batch queue handler support if it does not already exist.
+     *
+     * @param <T>
+     * @param handler
+     */
+    public static <T> void installHandlerIfNotExists(@Nonnull final BatchQueueHandlerSupport<T> handler) {
+        final Class<T> type = handler.getType();
+
+        AbstractTypeSupport.installIfNotExists(BatchQueueHandlerSupport.class, type, handler);
+        final BatchQueueHandlerSupport<?> support =
+            (BatchQueueHandlerSupport<?>) findTypeSupportFor(BatchQueueHandlerSupport.class, type);
+        SUPPORT_MAP.put(type, support);
+    }
+    @Nonnull
+    public static Collection<BatchQueueHandlerSupport<?>> getInstalledHandlers() {
+        return SUPPORT_MAP.values();
+    }
+
+    public static <T> void addToQueue(@Nonnull final Collection<T> newEntries) throws TypeSupportException {
+        if (newEntries.isEmpty()) {
+            return;
+        }
+        @SuppressWarnings("unchecked")
+        final Class<T> type = (Class<T>) newEntries.iterator().next().getClass();
+        final BatchQueueHandlerSupport<T> support = (BatchQueueHandlerSupport<T>) findTypeSupportForOrThrowTSE(BatchQueueHandlerSupport.class, type);
+
+        final BlockingQueue<T> queue = support.getQueue();
+        queue.addAll(newEntries);
     }
 
     @Nonnull

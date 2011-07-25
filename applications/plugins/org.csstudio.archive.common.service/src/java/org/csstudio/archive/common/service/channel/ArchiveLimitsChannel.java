@@ -50,8 +50,8 @@ public class ArchiveLimitsChannel<V extends Comparable<? super V>> extends Archi
                                 @Nonnull final ArchiveChannelGroupId grpId,
                                 @Nullable final TimeInstant ltstTimestamp,
                                 @Nonnull final IArchiveControlSystem system,
-                                @Nullable final V lo,
-                                @Nullable final V hi) {
+                                @Nonnull final V lo,
+                                @Nonnull final V hi) {
         // CHECKSTYLE  ON : ParameterNumber
         super(id, name, type, grpId, ltstTimestamp, system);
         _limits = Limits.create(lo, hi);
