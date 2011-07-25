@@ -26,3 +26,11 @@ INSERT INTO control_system (id, name, type)
               (2, 'DoocsDefault', 'DOOCS'),
               (3, 'TangoDefault', 'TANGO');
               
+--
+-- Channels
+--        
+INSERT INTO channel (id, name, description, datatype, group_id, last_sample_time, control_system_id, display_high, display_low)
+       VALUES (1, 'doubleChannel1', 'test double channel 1', 'Double', 1, unix_timestamp('2011-01-01 00:00:01')*1000000000, 1, '20.0', '10.0'),
+              (2, 'doubleChannel2', 'test double channel 2', 'Double', 1, unix_timestamp('2010-01-01 01:02:03')*1000000000, 1, '25.0', '5.0'),
+              (3, 'byteChannel1', 'test byte channel 1', 'Byte', 2, unix_timestamp('2011-05-01 00:00:01')*1000000000, 1, '127', '-128'),
+              (4, 'enumChannel1', 'test enum channel 1', 'EpicsEnum', 2, unix_timestamp('2010-01-01 01:02:03')*1000000000, 1, NULL, NULL);              

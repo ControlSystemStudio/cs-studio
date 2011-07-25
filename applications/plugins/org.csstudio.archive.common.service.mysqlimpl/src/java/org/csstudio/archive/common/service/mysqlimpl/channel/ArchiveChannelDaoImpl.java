@@ -24,7 +24,6 @@ package org.csstudio.archive.common.service.mysqlimpl.channel;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
@@ -51,6 +50,7 @@ import org.csstudio.archive.common.service.mysqlimpl.dao.ArchiveConnectionHandle
 import org.csstudio.archive.common.service.mysqlimpl.dao.ArchiveDaoException;
 import org.csstudio.archive.common.service.mysqlimpl.persistengine.PersistEngineDataManager;
 import org.csstudio.archive.common.service.mysqlimpl.types.ArchiveTypeConversionSupport;
+import org.csstudio.domain.desy.epics.typesupport.EpicsSystemVariableSupport;
 import org.csstudio.domain.desy.system.ControlSystemType;
 import org.csstudio.domain.desy.time.TimeInstant;
 import org.csstudio.domain.desy.time.TimeInstant.TimeInstantBuilder;
@@ -76,8 +76,6 @@ public class ArchiveChannelDaoImpl extends AbstractArchiveDao implements IArchiv
     public static final String TAB = "channel";
 
     private static final String EXC_MSG = "Channel table access failed.";
-
-    private static final Timestamp DEFAULT_ZERO_TIMESTAMP = new Timestamp(0L);
 
     private static final String CS_TAB = ArchiveControlSystemDaoImpl.TAB;
 
@@ -112,6 +110,10 @@ public class ArchiveChannelDaoImpl extends AbstractArchiveDao implements IArchiv
     public ArchiveChannelDaoImpl(@Nonnull final ArchiveConnectionHandler handler,
                                  @Nonnull final PersistEngineDataManager persister) {
         super(handler, persister);
+
+        ArchiveTypeConversionSupport.install();
+        EpicsSystemVariableSupport.install();
+
         BatchQueueHandlerSupport.installHandlerIfNotExists(new UpdateDisplayInfoBatchQueueHandler(getDatabaseName()));
     }
 
@@ -124,10 +126,10 @@ public class ArchiveChannelDaoImpl extends AbstractArchiveDao implements IArchiv
         final String name = result.getString(TAB + ".name");
         final String datatype = result.getString(TAB + ".datatype");
         final long groupId = result.getLong(TAB + ".group_id");
-        final Timestamp lastSampleTime = result.getTimestamp(TAB + ".last_sample_time");
+        final long lastSampleTime = result.getLong(TAB + ".last_sample_time");
 
-        final TimeInstant time = lastSampleTime.after(DEFAULT_ZERO_TIMESTAMP) ?
-                                 TimeInstantBuilder.fromMillis(lastSampleTime.getTime()) :
+        final TimeInstant time = lastSampleTime > 0L ?
+                                 TimeInstantBuilder.fromNanos(lastSampleTime) :
                                  null;
 
         String dispHi = result.getString(TAB + ".display_high");
@@ -313,8 +315,25 @@ public class ArchiveChannelDaoImpl extends AbstractArchiveDao implements IArchiv
                                               ArchiveTypeConversionSupport.toArchiveString(displayHigh),
                                               ArchiveTypeConversionSupport.toArchiveString(displayLow));
             getEngineMgr().submitToBatch(Collections.singleton(info));
+            clearCache(id);
         } catch (final TypeSupportException e) {
             throw new ArchiveDaoException("Update display failed. No type support found for " + displayLow.getClass().getName(), e);
+        }
+    }
+
+    private void clearCache(@Nonnull final ArchiveChannelId id) {
+        final IArchiveChannel channel = _channelCacheById.get(id);
+        removeFromCaches(channel);
+    }
+    @SuppressWarnings("unused")
+    private void clearCache(@Nonnull final String name) {
+        final IArchiveChannel channel = _channelCacheByName.get(name);
+        removeFromCaches(channel);
+    }
+    private void removeFromCaches(@CheckForNull final IArchiveChannel channel) {
+        if (channel != null) {
+            _channelCacheByName.remove(channel.getName());
+            _channelCacheById.remove(channel.getId());
         }
     }
 

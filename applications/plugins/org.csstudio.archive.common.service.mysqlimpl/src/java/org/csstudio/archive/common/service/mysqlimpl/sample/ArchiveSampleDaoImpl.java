@@ -49,6 +49,7 @@ import org.csstudio.archive.common.service.sample.ArchiveMinMaxSample;
 import org.csstudio.archive.common.service.sample.IArchiveMinMaxSample;
 import org.csstudio.archive.common.service.sample.IArchiveSample;
 import org.csstudio.archive.common.service.sample.SampleMinMaxAggregator;
+import org.csstudio.domain.desy.epics.typesupport.EpicsSystemVariableSupport;
 import org.csstudio.domain.desy.system.ControlSystem;
 import org.csstudio.domain.desy.system.ISystemVariable;
 import org.csstudio.domain.desy.system.SystemVariableSupport;
@@ -144,6 +145,9 @@ public class ArchiveSampleDaoImpl extends AbstractArchiveDao implements IArchive
     public ArchiveSampleDaoImpl(@Nonnull final ArchiveConnectionHandler handler,
                                 @Nonnull final PersistEngineDataManager persister) {
         super(handler, persister);
+
+        ArchiveTypeConversionSupport.install();
+        EpicsSystemVariableSupport.install();
 
         BatchQueueHandlerSupport.installHandlerIfNotExists(new ArchiveSampleBatchQueueHandler(getDatabaseName()));
         BatchQueueHandlerSupport.installHandlerIfNotExists(new MinuteReducedDataSampleBatchQueueHandler(getDatabaseName()));

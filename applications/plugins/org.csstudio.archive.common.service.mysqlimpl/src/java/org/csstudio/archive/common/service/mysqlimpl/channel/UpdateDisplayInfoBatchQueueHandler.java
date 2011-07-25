@@ -93,7 +93,7 @@ public class UpdateDisplayInfoBatchQueueHandler extends BatchQueueHandlerSupport
     @Nonnull
     protected String composeSqlString() {
         return "UPDATE " + getDatabase() + "." + ArchiveChannelDaoImpl.TAB +
-               "SET display_high=?, display_low=? WHERE " + getDatabase() + "." + ArchiveChannelDaoImpl.TAB + ".id=?";
+               " SET display_high=?, display_low=? WHERE id=?";
     }
 
     /**
