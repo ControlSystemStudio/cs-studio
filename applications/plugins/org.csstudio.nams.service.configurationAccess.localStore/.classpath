@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <classpath>
 	<classpathentry exported="true" kind="lib" path="lib-hsql/hsqldb.jar"/>
+	<classpathentry exported="true" kind="lib" path="lib-hsql/servlet.jar"/>
 	<classpathentry exported="true" kind="lib" path="lib-hibernate/ant-1.6.5.jar"/>
 	<classpathentry exported="true" kind="lib" path="lib-hibernate/ant-antlr-1.6.5.jar"/>
 	<classpathentry exported="true" kind="lib" path="lib-hibernate/ant-junit-1.6.5.jar"/>
