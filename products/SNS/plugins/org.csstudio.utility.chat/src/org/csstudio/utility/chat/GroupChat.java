@@ -30,6 +30,7 @@ import org.jivesoftware.smack.packet.Packet;
 import org.jivesoftware.smack.util.StringUtils;
 import org.jivesoftware.smackx.filetransfer.FileTransferListener;
 import org.jivesoftware.smackx.filetransfer.FileTransferManager;
+import org.jivesoftware.smackx.filetransfer.FileTransferNegotiator;
 import org.jivesoftware.smackx.filetransfer.FileTransferRequest;
 import org.jivesoftware.smackx.filetransfer.IncomingFileTransfer;
 import org.jivesoftware.smackx.filetransfer.OutgoingFileTransfer;
@@ -81,8 +82,19 @@ public class GroupChat
 	 */
 	public GroupChat(final String host, final String group) throws Exception
     {
-		// Avoid message "couldn't setup local SOCKS5 proxy on port" on disconnect
+		// File transfer supposedly runs better (faster)
+		// via direct point-to-point transfers from
+		// sender to receiver using a SOCKS5 proxy.
+		// However, firewalls can prevent that.
+		// Plus, if openfire is running on the same computer,
+		// it will already occupy the 7777 port and that results in message
+		// "couldn't setup local SOCKS5 proxy on port"
+		// Simply disabling SOCKS5 will cause all file _sending_ to fail:
 		SmackConfiguration.setLocalSocks5ProxyEnabled(false);
+		// Setting this option will cause smack to ignore SOCKS5,
+		// and it'll all work:
+		FileTransferNegotiator.IBB_ONLY = true;
+		
 		// Connect to host, port
 		final ConnectionConfiguration config = new ConnectionConfiguration(host, 5222);
 		connection = new XMPPConnection(config);
@@ -150,7 +162,7 @@ public class GroupChat
 				final String nick = StringUtils.parseResource(participant);
 				synchronized (nerds)
                 {
-					nerds.remove(nick);
+					nerds.remove(new Person(nick, participant));
                 }
 				fireNerdAlert();
 			}
@@ -253,15 +265,10 @@ public class GroupChat
 			@Override
             protected IStatus run(final IProgressMonitor monitor)
             {
-				// TODO Receiving file from Pidgin does not work.
-				// Sending to Pidgin is OK, but not receiving
-				// Piding proxy settings?
-				monitor.beginTask("Receive file", IProgressMonitor.UNKNOWN);
+				monitor.beginTask(Messages.ReceiveTaskName, IProgressMonitor.UNKNOWN);
 				try
 				{
-					System.out.println("Receiving " + file.getPath());
 					transfer.recieveFile(file);
-					System.out.println("started...");
 					while (! transfer.isDone())
 					{
 						if (monitor.isCanceled())
@@ -269,8 +276,7 @@ public class GroupChat
 							transfer.cancel();
 							break;
 						}
-						System.out.println("received " + transfer.getAmountWritten());
-						monitor.subTask(NLS.bind("Received {0} of {1} bytes",
+						monitor.subTask(NLS.bind(Messages.ReceiveProgressFmt,
 								transfer.getAmountWritten(),
 								transfer.getFileSize()));
 						Thread.sleep(1000);
@@ -279,7 +285,8 @@ public class GroupChat
 				catch (Exception ex)
 				{
 					ex.printStackTrace();
-					monitor.subTask("Error saving to " + file.getName() + ": " + ex.getMessage());
+					monitor.subTask(NLS.bind(Messages.ReceiveErrorFmt,
+							file.getName(), ex.getMessage()));
 					while (! monitor.isCanceled())
 					{
 						try

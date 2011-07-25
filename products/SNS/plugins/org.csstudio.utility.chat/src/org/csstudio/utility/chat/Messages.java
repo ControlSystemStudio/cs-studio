@@ -32,6 +32,10 @@ public class Messages extends NLS
 	public static String PreferencesGroup;
 	public static String PreferencesServer;
 	public static String PreferencesTitle;
+	public static String ReceiveErrorFmt;
+	public static String ReceiveProgressFmt;
+	public static String ReceiveTaskName;
+	public static String SaveReceivedFileFmt;
 	public static String Send;
 	public static String SendErrorFmt;
 	public static String SendFile;

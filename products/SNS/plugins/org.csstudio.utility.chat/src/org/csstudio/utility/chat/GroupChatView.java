@@ -265,7 +265,7 @@ public class GroupChatView extends org.eclipse.ui.part.ViewPart
             public void run()
             {
 				final FileDialog dlg = new FileDialog(gui.getShell(), SWT.SAVE);
-				dlg.setText(NLS.bind("Save file from {0} ?", requestor));
+				dlg.setText(NLS.bind(Messages.SaveReceivedFileFmt, requestor));
 				dlg.setFileName(file_name);
 				final String selected = dlg.open();
 				if (selected != null)
