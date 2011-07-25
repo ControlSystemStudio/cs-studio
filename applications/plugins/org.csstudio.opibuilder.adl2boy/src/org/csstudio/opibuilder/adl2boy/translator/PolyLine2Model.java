@@ -7,6 +7,7 @@
 package org.csstudio.opibuilder.adl2boy.translator;
 
 import org.csstudio.opibuilder.model.AbstractContainerModel;
+import org.csstudio.opibuilder.widgets.model.AbstractShapeModel;
 import org.csstudio.opibuilder.widgets.model.PolyLineModel;
 import org.csstudio.utility.adlparser.fileParser.ADLWidget;
 import org.csstudio.utility.adlparser.fileParser.widgets.PolyLine;
@@ -27,6 +28,7 @@ public class PolyLine2Model extends AbstractADL2Model {
 			setADLDynamicAttributeProps(polylineWidget, widgetModel);
 		}
 		((PolyLineModel)widgetModel).setPoints(polylineWidget.getAdlPoints().getPointsList(), true);
+		widgetModel.setPropertyValue(AbstractShapeModel.PROP_FILL_LEVEL, 100.0);
 		if ( polylineWidget.hasADLBasicAttribute() ) {
 			setShapesColorFillLine(polylineWidget);
 		}
