@@ -14,7 +14,7 @@
    <extension
          point="org.eclipse.ui.perspectives">
       <perspective
-            name="Perspective"
+            name="ADL-2-BOY"
             class="org.csstudio.opibuilder.adl2boy.Perspective"
             id="org.csstudio.opibuilder.adl2boy.perspective">
       </perspective>
