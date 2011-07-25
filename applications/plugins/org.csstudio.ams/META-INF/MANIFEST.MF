@@ -19,11 +19,10 @@ Require-Bundle: org.eclipse.ui,
  org.junit4;bundle-version="4.3.1",
  org.slf4j;bundle-version="1.6.1",
  com.mysql.jdbc;bundle-version="5.1.14"
-Bundle-ClassPath: libs/derbyclient.jar,
+Bundle-ClassPath: .,
+ libs/derbyclient.jar,
  libs/derbytools.jar,
- libs/hsqldb.jar,
- libs/servlet.jar,
- .
+ libs/hsqldb.jar
 Export-Package: org.csstudio.ams,
  org.csstudio.ams.configReplicator,
  org.csstudio.ams.dbAccess,
