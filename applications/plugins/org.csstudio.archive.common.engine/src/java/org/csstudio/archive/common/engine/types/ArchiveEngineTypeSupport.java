@@ -90,8 +90,8 @@ public abstract class ArchiveEngineTypeSupport<V> extends AbstractTypeSupport<V>
             ArchiveChannel<V, ISystemVariable<V>> channel;
             try {
                 channel = new ArchiveChannel<V, ISystemVariable<V>>(cfg.getName(),
-                                                                         cfg.getId(),
-                                                                         _typeClass);
+                                                                    cfg.getId(),
+                                                                    _typeClass);
             } catch (final EngineModelException e) {
                 throw new TypeSupportException("Channel could not be instantiated.", e);
             }
@@ -100,6 +100,7 @@ public abstract class ArchiveEngineTypeSupport<V> extends AbstractTypeSupport<V>
         /**
          * {@inheritDoc}
          */
+        @SuppressWarnings("unchecked")
         @Override
         @Nonnull
         protected ArchiveChannel<Collection<V>, ISystemVariable<Collection<V>>>
@@ -110,7 +111,7 @@ public abstract class ArchiveEngineTypeSupport<V> extends AbstractTypeSupport<V>
                 // FIXME (bknerr) : find solution for collection values - multiscalar wrapper?
                 channel = new ArchiveChannel<Collection<V>, ISystemVariable<Collection<V>>>(cfg.getName(),
                                                                                             cfg.getId(),
-                                                                                            null);
+                                                                                            (Class<Collection<V>>) _typeClass);
             } catch (final EngineModelException e) {
                 throw new TypeSupportException("Channel could not be instantiated.", e);
             }
@@ -120,6 +121,7 @@ public abstract class ArchiveEngineTypeSupport<V> extends AbstractTypeSupport<V>
     }
 
 
+    @SuppressWarnings("rawtypes")
     public static void install() {
         if (INSTALLED) {
             return;
@@ -135,6 +137,8 @@ public abstract class ArchiveEngineTypeSupport<V> extends AbstractTypeSupport<V>
         TypeSupport.addTypeSupport(new ConcreteArchiveEngineTypeSupport<Float>(Float.class));
         TypeSupport.addTypeSupport(new ConcreteArchiveEngineTypeSupport<String>(String.class));
         TypeSupport.addTypeSupport(new ConcreteArchiveEngineTypeSupport<EpicsEnum>(EpicsEnum.class));
+
+        TypeSupport.addTypeSupport(new ConcreteArchiveEngineTypeSupport<Collection>(Collection.class));
 
         INSTALLED = true;
     }
