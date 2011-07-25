@@ -165,7 +165,8 @@ public class GroupChatGUI extends IndividualChatGUI
 
 		// Context menu for chat group members
         final MenuManager manager = new MenuManager();
-        manager.add(new SendToPersonAction(Messages.StartIndividualChat,
+        
+        manager.add(new SendToPersonAction(this, Messages.StartIndividualChat,
         		"icons/person16.png", group_members)//$NON-NLS-1$
         {
         	@Override
@@ -175,7 +176,7 @@ public class GroupChatGUI extends IndividualChatGUI
         			listener.doContact(person);
             }
         });
-        manager.add(new SendToPersonAction(Messages.SendFile,
+        manager.add(new SendToPersonAction(this, Messages.SendFile,
         		"icons/send_file.png", group_members) //$NON-NLS-1$
         {
         	@Override
@@ -190,7 +191,7 @@ public class GroupChatGUI extends IndividualChatGUI
         			listener.doSendFile(person, new File(filename));
             }
         });
-        manager.add(new SendToPersonAction(Messages.SendScreenshot,
+        manager.add(new SendToPersonAction(this, Messages.SendScreenshot,
         		"icons/send_image.png", group_members) //$NON-NLS-1$
         {
         	@Override
@@ -266,5 +267,15 @@ public class GroupChatGUI extends IndividualChatGUI
 		if (group_members.getControl().isDisposed())
 			return;
 		group_members.setInput(nerds);
+    }
+
+    /** @param person {@link Person}
+     *  @return <code>true</code> if person matches ourself
+     */
+	boolean isOurself(final Person person)
+    {
+		if (listener == null)
+			return true;
+	    return listener.isOurself(person);
     }
 }

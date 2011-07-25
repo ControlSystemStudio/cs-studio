@@ -30,6 +30,7 @@ import org.jivesoftware.smack.packet.Packet;
 import org.jivesoftware.smack.util.StringUtils;
 import org.jivesoftware.smackx.filetransfer.FileTransferListener;
 import org.jivesoftware.smackx.filetransfer.FileTransferManager;
+import org.jivesoftware.smackx.filetransfer.FileTransferNegotiator;
 import org.jivesoftware.smackx.filetransfer.FileTransferRequest;
 import org.jivesoftware.smackx.filetransfer.IncomingFileTransfer;
 import org.jivesoftware.smackx.filetransfer.OutgoingFileTransfer;
@@ -44,6 +45,8 @@ import org.jivesoftware.smackx.muc.Occupant;
  *  not immediately obvious.
  *  In addition, this layer would allow replacment
  *  of the protocol.
+ *  
+ *  TODO Allow use with HTTP proxy
  *  
  *  @author Kay Kasemir
  */
@@ -71,7 +74,7 @@ public class GroupChat
 	private GroupChatListener listener = null;
 
 	/** Our name used in this group chat */
-	private String user;
+	private Person user;
 
 	
 	/** Initialize
@@ -81,8 +84,19 @@ public class GroupChat
 	 */
 	public GroupChat(final String host, final String group) throws Exception
     {
-		// Avoid message "couldn't setup local SOCKS5 proxy on port" on disconnect
+		// File transfer supposedly runs better (faster)
+		// via direct point-to-point transfers from
+		// sender to receiver using a SOCKS5 proxy.
+		// However, firewalls can prevent that.
+		// Plus, if openfire is running on the same computer,
+		// it will already occupy the 7777 port and that results in message
+		// "couldn't setup local SOCKS5 proxy on port"
+		// Simply disabling SOCKS5 will cause all file _sending_ to fail:
 		SmackConfiguration.setLocalSocks5ProxyEnabled(false);
+		// Setting this option will cause smack to ignore SOCKS5,
+		// and it'll all work:
+		FileTransferNegotiator.IBB_ONLY = true;
+		
 		// Connect to host, port
 		final ConnectionConfiguration config = new ConnectionConfiguration(host, 5222);
 		connection = new XMPPConnection(config);
@@ -99,14 +113,12 @@ public class GroupChat
 	}
 	
 	/** Connect to the server
-	 *  @param user User name
+	 *  @param user_name User name
 	 *  @param password Password
 	 *  @throws Exception on error
 	 */
-    public void connect(final String user, final String password) throws Exception
+    public void connect(final String user_name, final String password) throws Exception
     {
-    	this.user = user;
-    	
 		// Try to create account.
 		// If account already exists, this will fail.
 		final AccountManager accounts = connection.getAccountManager();
@@ -114,7 +126,7 @@ public class GroupChat
 		{
 			try
 			{
-				accounts.createAccount(user, password);
+				accounts.createAccount(user_name, password);
 			}
 			catch (final Exception ex)
 			{
@@ -123,11 +135,12 @@ public class GroupChat
 		}
 		
 		// Log on
-		connection.login(user, password, XMPP_RESOURCE);
-
+		connection.login(user_name, password, XMPP_RESOURCE);
+		user = new Person(user_name, connection.getUser());
+		
 	    // Join chat group
 		chat = new MultiUserChat(connection, group);
-		chat.join(user);
+		chat.join(user_name);
 		
 		// Listen to nerd changes
 		chat.addParticipantStatusListener(new DefaultParticipantStatusListener()
@@ -150,7 +163,7 @@ public class GroupChat
 				final String nick = StringUtils.parseResource(participant);
 				synchronized (nerds)
                 {
-					nerds.remove(nick);
+					nerds.remove(new Person(nick, participant));
                 }
 				fireNerdAlert();
 			}
@@ -160,7 +173,7 @@ public class GroupChat
 		synchronized (nerds)
         {
 			// Add ourself, which we don't always seem to get from server
-			nerds.add(new Person(user, connection.getUser()));
+			nerds.add(user);
 			// Then query server, which might include an update for ourself
 			final Iterator<String> occupants = chat.getOccupants();
 			while (occupants.hasNext())
@@ -216,7 +229,7 @@ public class GroupChat
 						}
 					}
 					else
-						listener.startIndividualChat(from, new IndividualChat(user, chat));
+						listener.startIndividualChat(from, new IndividualChat(user_name, chat));
 				}
 			}
 		});
@@ -242,7 +255,13 @@ public class GroupChat
 		});
     }
     
-    /** Receive a file, displaying progress in Eclipse Job
+    /** @return {@link Person} used to log onto the chat group */
+    public Person getUser()
+    {
+        return user;
+    }
+
+	/** Receive a file, displaying progress in Eclipse Job
      *  @param transfer {@link IncomingFileTransfer}
      *  @param file {@link File} to create
      */
@@ -253,15 +272,10 @@ public class GroupChat
 			@Override
             protected IStatus run(final IProgressMonitor monitor)
             {
-				// TODO Receiving file from Pidgin does not work.
-				// Sending to Pidgin is OK, but not receiving
-				// Piding proxy settings?
-				monitor.beginTask("Receive file", IProgressMonitor.UNKNOWN);
+				monitor.beginTask(Messages.ReceiveTaskName, IProgressMonitor.UNKNOWN);
 				try
 				{
-					System.out.println("Receiving " + file.getPath());
 					transfer.recieveFile(file);
-					System.out.println("started...");
 					while (! transfer.isDone())
 					{
 						if (monitor.isCanceled())
@@ -269,8 +283,7 @@ public class GroupChat
 							transfer.cancel();
 							break;
 						}
-						System.out.println("received " + transfer.getAmountWritten());
-						monitor.subTask(NLS.bind("Received {0} of {1} bytes",
+						monitor.subTask(NLS.bind(Messages.ReceiveProgressFmt,
 								transfer.getAmountWritten(),
 								transfer.getFileSize()));
 						Thread.sleep(1000);
@@ -279,7 +292,8 @@ public class GroupChat
 				catch (Exception ex)
 				{
 					ex.printStackTrace();
-					monitor.subTask("Error saving to " + file.getName() + ": " + ex.getMessage());
+					monitor.subTask(NLS.bind(Messages.ReceiveErrorFmt,
+							file.getName(), ex.getMessage()));
 					while (! monitor.isCanceled())
 					{
 						try
@@ -352,7 +366,7 @@ public class GroupChat
 		if (address == null  ||  address.isEmpty())
 			address = group + "/" + person.getName(); //$NON-NLS-1$
 		final Chat new_chat = chat.createPrivateChat(address, null);
-		return new IndividualChat(user, new_chat);
+		return new IndividualChat(user.getName(), new_chat);
     }
 
 	/** Start a file transfer

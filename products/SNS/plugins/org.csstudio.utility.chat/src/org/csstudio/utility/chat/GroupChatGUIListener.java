@@ -23,6 +23,13 @@ public interface GroupChatGUIListener
 	 */
 	public void doStartLogin(String user_name, String password);
 
+	/** Check if a person matches ourself
+	 *  <p>Called to prevent sending files etc. to ourself
+	 *  @param person {@link Person}
+	 *  @return <code>true</code> if person describes current user
+	 */
+	public boolean isOurself(Person person);
+
 	/** User requested individual chat
 	 *  @param person User name to contact
 	 */
