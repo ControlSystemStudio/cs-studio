@@ -40,13 +40,14 @@ import org.csstudio.domain.desy.typesupport.TypeSupportException;
  * @author bknerr
  * @since 25.07.2011
  */
+@SuppressWarnings("rawtypes")
 public class CollectionConversionSupport extends EpicsIMetaDataTypeSupport<Collection> {
 
     /**
      * Constructor.
      */
-    public CollectionConversionSupport(@SuppressWarnings("rawtypes") @Nonnull final Class<Collection> type) {
-        super(type);
+    public CollectionConversionSupport() {
+        super(Collection.class);
     }
 
     /**

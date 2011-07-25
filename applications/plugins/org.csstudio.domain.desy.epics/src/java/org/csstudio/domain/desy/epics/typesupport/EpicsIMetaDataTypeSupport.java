@@ -68,6 +68,7 @@ public abstract class EpicsIMetaDataTypeSupport<T> extends AbstractTypeSupport<T
         TypeSupport.addTypeSupport(new DoubleConversionSupport());
         TypeSupport.addTypeSupport(new FloatConversionSupport());
         TypeSupport.addTypeSupport(new EpicsEnumConversionSupport());
+        TypeSupport.addTypeSupport(new CollectionConversionSupport());
 
         INSTALLED = true;
     }

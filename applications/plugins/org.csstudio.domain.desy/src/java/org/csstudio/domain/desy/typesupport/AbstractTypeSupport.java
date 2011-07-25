@@ -48,10 +48,16 @@ public abstract class AbstractTypeSupport<T> extends TypeSupport<T> {
                                                                      @Nonnull final Class<T> typeClass)
                                                                      throws TypeSupportException {
         try {
-            return findTypeSupportFor(supportFamily, typeClass);
+            final TypeSupport<T> support = findTypeSupportFor(supportFamily, typeClass);
+            if (support != null) {
+                return support;
+            }
+        // CHECKSTYLE OFF: EmptyBlock
         } catch (final RuntimeException e) {
-            throw new TypeSupportException("Type support for " + typeClass.getName() + " not present in family " + supportFamily.getName(), null);
+            // Ignore
         }
+        // CHECKSTYLE ON: EmptyBlock
+        throw new TypeSupportException("Type support for " + typeClass.getName() + " not present in family " + supportFamily.getName(), null);
     }
 
     public static <T> void installIfNotExists(@SuppressWarnings("rawtypes") @Nonnull final Class<? extends TypeSupport> family,
