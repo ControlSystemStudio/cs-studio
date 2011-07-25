@@ -114,12 +114,6 @@ public class PersistEngineDataManager {
         _prefSmtpHost = prefs.getSmtpHost();
         _prefEmailAddress = prefs.getEmailAddress();
 
-        final PersistDataWorker worker = submitNewPersistDataWorker(_executor,
-                                                                    _prefPeriodInMS,
-                                                                    _handlerProvider,
-                                                                    _workerId);
-        _submittedWorkers.add(worker);
-
         addGracefulShutdownHook(_handlerProvider);
     }
 
@@ -127,7 +121,8 @@ public class PersistEngineDataManager {
     private PersistDataWorker submitNewPersistDataWorker(@Nonnull final ScheduledThreadPoolExecutor executor,
                                                          @Nonnull final Integer prefPeriodInMS,
                                                          @Nonnull final IBatchQueueHandlerProvider handlerProvider,
-                                                         @Nonnull final AtomicInteger workerId) {
+                                                         @Nonnull final AtomicInteger workerId,
+                                                         @Nonnull final SortedSet<PersistDataWorker> submittedWorkers) {
         final PersistDataWorker newWorker = new PersistDataWorker(this,
                                                                   "PERIODIC MySQL Archive Worker: " + workerId.getAndIncrement(),
                                                                   prefPeriodInMS,
@@ -136,6 +131,8 @@ public class PersistEngineDataManager {
                                      0L,
                                      newWorker.getPeriodInMS(),
                                      TimeUnit.MILLISECONDS);
+        submittedWorkers.add(newWorker);
+
         return newWorker;
     }
 
@@ -252,8 +249,12 @@ public class PersistEngineDataManager {
 
         BatchQueueHandlerSupport.addToQueue(entries);
 
-//        if (isAnotherWorkerRequired()) {
-//            submitNewPersistDataWorker();
-//        }
+        if (isAnotherWorkerRequired()) {
+            submitNewPersistDataWorker(_executor,
+                                       _prefPeriodInMS,
+                                       _handlerProvider,
+                                       _workerId,
+                                       _submittedWorkers);
+        }
     }
 }
