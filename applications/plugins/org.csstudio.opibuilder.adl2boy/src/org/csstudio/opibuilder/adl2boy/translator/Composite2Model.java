@@ -30,6 +30,7 @@ public class Composite2Model extends AbstractADL2Model {
 		}
 		else {
 			widgetModel = new GroupingContainerModel();
+			widgetModel.setPropertyValue(GroupingContainerModel.PROP_TRANSPARENT,true);
 		}
 		parentModel.addChild(widgetModel, true);
 	}
@@ -49,8 +50,13 @@ public class Composite2Model extends AbstractADL2Model {
 			}
 		}
 		if (compositeWidget.hasCompositeFile()) {
-			//Add Composite File to Composite2Model
-			TranslatorUtils.printNotHandledWarning(className, "composite file");
+			String[] compositeFile = compositeWidget.get_compositeFile().replaceAll("\"", "").split(";");
+			if (compositeFile.length > 0){
+				widgetModel.setPropertyValue(LinkingContainerModel.PROP_OPI_FILE, compositeFile[0].replace(".adl", ".opi"));
+			}
+			else {
+				TranslatorUtils.printNotHandledWarning(className, "composite file");
+			}
 		}
 		else {
 			TranslatorUtils.ConvertChildren(compositeWidget.getChildWidgets(), (AbstractContainerModel)widgetModel, colorMap);
