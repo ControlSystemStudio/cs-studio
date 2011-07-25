@@ -237,17 +237,22 @@ public class XmlSlave {
         for (ModuleDBO module : _modules) {
             GsdModuleModel2 gsdModuleModel2 = module.getGsdModuleModel2();
             if(gsdModuleModel2 != null) {
-                SlaveCfgData slaveCfgData = new SlaveCfgData(gsdModuleModel2.getValue());
-                int leng = 0;
-                if(slaveCfgData.isInput()) {
-                    leng = slaveCfgData.getWordSize() * slaveCfgData.getSize();
-                    aat = aat.concat(Integer.toString(leng));
+                List<Integer> values = gsdModuleModel2.getValue();
+                for (Integer value : values) {
+                    SlaveCfgData slaveCfgData = new SlaveCfgData(value);
+                    int leng = 0;
+                    if(slaveCfgData.isInput()) {
+                        leng = slaveCfgData.getByteLength();
+                        aat = aat.concat(Integer.toString(leng));
+                    }
+                    
+                    // TODO (hrickens) [05.07.2011]: Das ist dochz ziemlich sicher falsch! Sollte eins nicht Output sein?
+                    if(slaveCfgData.isInput()) {
+                        leng += slaveCfgData.getByteLength();
+                        aat = aat.concat(Integer.toString(leng));
+                    }
+                    offset += leng;
                 }
-                if(slaveCfgData.isInput()) {
-                    leng += slaveCfgData.getWordSize() * slaveCfgData.getSize();
-                    aat = aat.concat(Integer.toString(leng));
-                }
-                offset += leng;
             }
         }
         int slaveAatLen = 2;

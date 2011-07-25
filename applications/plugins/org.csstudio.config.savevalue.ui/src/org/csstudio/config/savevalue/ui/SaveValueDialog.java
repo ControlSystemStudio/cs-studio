@@ -33,12 +33,10 @@ import java.rmi.registry.LocateRegistry;
 import java.rmi.registry.Registry;
 import java.util.Set;
 
-import javax.naming.NamingException;
 import javax.naming.directory.SearchControls;
 import javax.naming.directory.SearchResult;
 import javax.naming.ldap.LdapName;
 
-import org.apache.log4j.Logger;
 import org.csstudio.auth.security.SecurityFacade;
 import org.csstudio.auth.security.User;
 import org.csstudio.config.savevalue.service.SaveValueRequest;
@@ -46,14 +44,13 @@ import org.csstudio.config.savevalue.service.SaveValueResult;
 import org.csstudio.config.savevalue.service.SaveValueService;
 import org.csstudio.config.savevalue.service.SaveValueServiceException;
 import org.csstudio.platform.CSSPlatformInfo;
-import org.csstudio.platform.logging.CentralLogger;
 import org.csstudio.platform.model.pvs.ControlSystemEnum;
 import org.csstudio.platform.model.pvs.ProcessVariableAdressFactory;
 import org.csstudio.utility.ldap.service.ILdapSearchResult;
 import org.csstudio.utility.ldap.service.ILdapService;
 import org.csstudio.utility.ldap.service.LdapServiceException;
-import org.csstudio.utility.ldap.service.util.LdapUtils;
 import org.csstudio.utility.ldap.service.util.LdapNameUtils;
+import org.csstudio.utility.ldap.service.util.LdapUtils;
 import org.eclipse.core.runtime.Platform;
 import org.eclipse.core.runtime.preferences.IPreferencesService;
 import org.eclipse.jface.dialogs.Dialog;
@@ -74,6 +71,8 @@ import org.eclipse.swt.widgets.Table;
 import org.eclipse.swt.widgets.TableColumn;
 import org.eclipse.swt.widgets.TableItem;
 import org.eclipse.swt.widgets.Text;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 
 /**
@@ -86,7 +85,8 @@ public class SaveValueDialog extends Dialog {
 	/**
 	 * The logger.
 	 */
-    private static final Logger LOG = CentralLogger.getInstance().getLogger(SaveValueDialog.class);
+    private static final Logger LOG = LoggerFactory.getLogger(SaveValueDialog.class);
+    
 	/**
 	 * Text box that displays the process variable.
 	 */
@@ -303,7 +303,7 @@ public class SaveValueDialog extends Dialog {
 	 *         otherwise.
 	 */
 	private String findIoc(String pv) {
-		LOG.debug("Trying to find IOC for process variable: " + pv); //$NON-NLS-1$
+		LOG.debug("Trying to find IOC for process variable: {}", pv); //$NON-NLS-1$
 		if (pv.contains(".") && ProcessVariableAdressFactory.getInstance().getDefaultControlSystem() == ControlSystemEnum.EPICS) {
 		    pv = pv.substring(0, pv.indexOf("."));
 		}
@@ -324,7 +324,7 @@ public class SaveValueDialog extends Dialog {
 	    final Set<SearchResult> answerSet = result.getAnswerSet();
 	    try {
 	        if (answerSet.size() > 1) {
-	            LOG.error("IOC could not be uniquely identified for PV: " + pv ); //$NON-NLS-1$
+	            LOG.error("IOC could not be uniquely identified for PV: {}", pv ); //$NON-NLS-1$
 	            String iocs = "";
 	            for (final SearchResult row : answerSet) {
                     final String nameInNamespace = row.getNameInNamespace();
@@ -342,7 +342,7 @@ public class SaveValueDialog extends Dialog {
 	                return null;
 	            }
 	        }
-	        LOG.error("IOC name could not be parsed out of search result: " + row.getNameInNamespace()); //$NON-NLS-1$
+	        LOG.error("IOC name could not be parsed out of search result: {}", row.getNameInNamespace()); //$NON-NLS-1$
 
 	    } catch (LdapServiceException e) {
 	        return Messages.SaveValueDialog_ERRMSG_DETAIL_IOC_NAME_UNPARSEABLE + "\n" + e.getLocalizedMessage();
@@ -403,7 +403,8 @@ public class SaveValueDialog extends Dialog {
 		final Runnable r = new Runnable() {
 			private Registry _reg;
 
-			public void run() {
+			@Override
+            public void run() {
 				final boolean[] success = new boolean[_services.length];
 				try {
 					locateRmiRegistry();
@@ -438,7 +439,8 @@ public class SaveValueDialog extends Dialog {
 						final int index = i;
 						final String resultCopy = result;
 						Display.getDefault().asyncExec(new Runnable() {
-							public void run() {
+							@Override
+                            public void run() {
 								final TableItem item = _resultsTable.getItem(index);
 								item.setText(1, resultCopy);
 								final int color = success[index] ? SWT.COLOR_DARK_GREEN
@@ -450,7 +452,8 @@ public class SaveValueDialog extends Dialog {
 					}
 					LOG.debug("Finished calling remote Save Value services"); //$NON-NLS-1$
 					Display.getDefault().asyncExec(new Runnable() {
-						public void run() {
+						@Override
+                        public void run() {
 							boolean overallSuccess = true;
 							for (int i = 0; i < success.length; i++) {
 								if (_services[i].isRequired()) {
@@ -475,7 +478,8 @@ public class SaveValueDialog extends Dialog {
 					LOG.error("Could not connect to RMI registry", e); //$NON-NLS-1$
 					final String message = e.getMessage();
 					Display.getDefault().asyncExec(new Runnable() {
-						public void run() {
+						@Override
+                        public void run() {
 							MessageDialog.openError(null, Messages.SaveValueDialog_DIALOG_TITLE,
 									Messages.SaveValueDialog_ERRMSG_NO_RMI_REGISTRY
 											+ message);
@@ -572,7 +576,8 @@ public class SaveValueDialog extends Dialog {
 
 		final Image[] image = new Image[1];
 		display.syncExec(new Runnable() {
-			public void run() {
+			@Override
+            public void run() {
 				image[0] = display.getSystemImage(imageID);
 			}
 		});

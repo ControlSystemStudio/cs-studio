@@ -26,19 +26,21 @@ package org.csstudio.websuite.servlet;
 
 import java.io.IOException;
 import java.util.ArrayList;
+
 import javax.servlet.ServletConfig;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import org.apache.log4j.Logger;
-import org.csstudio.platform.logging.CentralLogger;
+
 import org.csstudio.websuite.WebSuiteActivator;
 import org.csstudio.websuite.internal.PreferenceConstants;
 import org.csstudio.websuite.utils.PageContent;
 import org.csstudio.websuite.utils.PageContentContainer;
 import org.eclipse.core.runtime.Platform;
 import org.eclipse.core.runtime.preferences.IPreferencesService;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * This is the main servlet. Always it will be called first. It shows the list of available configurations.
@@ -65,7 +67,7 @@ public class PersonalPVInfoServlet extends HttpServlet {
     private int port;
 
     /** Private logger for this class */
-    private Logger logger;
+    private static final Logger LOG = LoggerFactory.getLogger(PersonalPVInfoServlet.class);
 
     /**
      * 
@@ -75,7 +77,6 @@ public class PersonalPVInfoServlet extends HttpServlet {
         
         super.init(config);
         
-        logger = CentralLogger.getInstance().getLogger(this);
         pageContentContainer = PageContentContainer.getInstance();
         
         IPreferencesService pref = Platform.getPreferencesService();
@@ -115,7 +116,7 @@ public class PersonalPVInfoServlet extends HttpServlet {
 
         StringBuilder page = new StringBuilder();
         
-        logger.info("User-Agent: " + request.getHeader("User-Agent"));
+        LOG.info("User-Agent: ",  request.getHeader("User-Agent"));
         
         page.append("<html>\n");
         page.append("<head>\n");

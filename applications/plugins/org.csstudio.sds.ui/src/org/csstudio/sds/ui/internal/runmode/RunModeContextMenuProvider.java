@@ -19,8 +19,9 @@
  * PROJECT IN THE FILE LICENSE.HTML. IF THE LICENSE IS NOT INCLUDED YOU MAY FIND A COPY 
  * AT HTTP://WWW.DESY.DE/LEGAL/LICENSE.HTM
  */
- package org.csstudio.sds.ui.internal.runmode;
+package org.csstudio.sds.ui.internal.runmode;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import org.csstudio.platform.ui.util.CustomMediaFactory;
@@ -29,6 +30,8 @@ import org.csstudio.sds.model.properties.actions.AbstractWidgetActionModel;
 import org.csstudio.sds.ui.SdsUiPlugin;
 import org.csstudio.sds.ui.editparts.AbstractBaseEditPart;
 import org.csstudio.sds.ui.widgetactionhandler.WidgetActionHandlerService;
+import org.eclipse.core.runtime.CoreException;
+import org.eclipse.core.runtime.IConfigurationElement;
 import org.eclipse.core.runtime.Platform;
 import org.eclipse.gef.ContextMenuProvider;
 import org.eclipse.gef.EditPartViewer;
@@ -42,6 +45,7 @@ import org.eclipse.jface.action.MenuManager;
 import org.eclipse.jface.action.Separator;
 import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.jface.viewers.StructuredSelection;
+import org.eclipse.ui.IObjectActionDelegate;
 import org.eclipse.ui.model.IWorkbenchAdapter;
 
 /**
@@ -52,7 +56,7 @@ import org.eclipse.ui.model.IWorkbenchAdapter;
  * 
  */
 public final class RunModeContextMenuProvider extends ContextMenuProvider {
-	
+
 	/**
 	 * The ID for the close action.
 	 */
@@ -61,12 +65,12 @@ public final class RunModeContextMenuProvider extends ContextMenuProvider {
 	 * The action registry.
 	 */
 	private ActionRegistry _actionRegistry;
-	
+
 	@Override
-    public void addMenuListener(IMenuListener listener) {
-        super.addMenuListener(listener);
-    }
-    
+	public void addMenuListener(IMenuListener listener) {
+		super.addMenuListener(listener);
+	}
+
 	/**
 	 * Constructor.
 	 * 
@@ -87,7 +91,7 @@ public final class RunModeContextMenuProvider extends ContextMenuProvider {
 		super.removeAll();
 		super.setViewer(null);
 	}
-	
+
 	/**
 	 * {@inheritDoc}
 	 */
@@ -95,41 +99,86 @@ public final class RunModeContextMenuProvider extends ContextMenuProvider {
 	public void buildContextMenu(final IMenuManager menu) {
 		menu.add(new Separator("actions"));
 		this.addWidgetActionToMenu(menu);
-		
+
 		IAction closeAction = _actionRegistry.getAction(CLOSE_ACTION_ID);
 		GEFActionConstants.addStandardActionGroups(menu);
-		if (closeAction!=null) {
-			ImageDescriptor close = CustomMediaFactory.getInstance().getImageDescriptorFromPlugin(SdsUiPlugin.PLUGIN_ID, "icons/delete.gif");
+		if (closeAction != null) {
+			ImageDescriptor close = CustomMediaFactory.getInstance()
+					.getImageDescriptorFromPlugin(SdsUiPlugin.PLUGIN_ID,
+							"icons/delete.gif");
 			closeAction.setImageDescriptor(close);
 			menu.add(closeAction);
 		}
 	}
-	
+
 	/**
-	 * Adds the defined {@link AbstractWidgetActionModel}s to the given {@link IMenuManager}.
-	 * @param menu The {@link IMenuManager}
+	 * Adds the defined {@link AbstractWidgetActionModel}s to the given
+	 * {@link IMenuManager}.
+	 * 
+	 * @param menu
+	 *            The {@link IMenuManager}
 	 */
 	@SuppressWarnings("rawtypes")
 	private void addWidgetActionToMenu(final IMenuManager menu) {
 		List selectedEditParts = getViewer().getSelectedEditParts();
-		if (selectedEditParts.size()==1) {
+		if (selectedEditParts.size() == 1) {
 			if (selectedEditParts.get(0) instanceof AbstractBaseEditPart) {
-				AbstractBaseEditPart editPart = (AbstractBaseEditPart) selectedEditParts.get(0);
+				AbstractBaseEditPart editPart = (AbstractBaseEditPart) selectedEditParts
+						.get(0);
 				AbstractWidgetModel widget = editPart.getWidgetModel();
-				
-				List<AbstractWidgetActionModel> widgetActions = widget.getActionData().getWidgetActions();
+
+				List<AbstractWidgetActionModel> widgetActions = widget
+						.getActionData().getWidgetActions();
 				if (!widgetActions.isEmpty()) {
-					if(widgetActions.size()>3) {
-						MenuManager actionMenu = new MenuManager("Actions", "actions");
+					if (widgetActions.size() > 3) {
+						MenuManager actionMenu = new MenuManager("Actions",
+								"actions");
 						fillMenu(actionMenu, widget, widgetActions);
 						menu.add(actionMenu);
 					} else {
 						fillMenu(menu, widget, widgetActions);
 					}
 				}
+				List<IAction> objectContributions = getObjectContributions(editPart);
+				for (IAction action : objectContributions) {
+					menu.add(action);
+				}
 			}
 			getViewer().setSelection(StructuredSelection.EMPTY);
 		}
+	}
+
+	public List<IAction> getObjectContributions(AbstractBaseEditPart editPart) {
+		List<IAction> actions = new ArrayList<IAction>();
+		IConfigurationElement[] configurationElements = Platform
+				.getExtensionRegistry().getConfigurationElementsFor(
+						"org.eclipse.ui.popupMenus");
+		for (IConfigurationElement configurationElement : configurationElements) {
+			String clazz = configurationElement.getAttribute("objectClass");
+			if (clazz != null) {
+				String name = editPart.getClass().getName();
+				if (name.contains(clazz)) {
+					for (IConfigurationElement child : configurationElement.getChildren()) {
+						try {
+							Object extension = child.createExecutableExtension("class");
+							String label = child.getAttribute("label");
+							if (extension instanceof IAction && label != null) {
+								IAction action = (IAction) extension;
+								action.setText(label);
+								if (extension instanceof IObjectActionDelegate) {
+									IObjectActionDelegate actionDelegate = (IObjectActionDelegate) extension;
+									actionDelegate.selectionChanged(action, new StructuredSelection(editPart));
+								}
+								actions.add(action);
+							}
+						} catch (CoreException e) {
+							// nothing to do
+						}
+					}
+				}
+			}
+		}
+		return actions;
 	}
 
 	/**
@@ -143,50 +192,59 @@ public final class RunModeContextMenuProvider extends ContextMenuProvider {
 			menu.add(new MenuAction(widget, action));
 		}
 	}
-	
+
 	/**
 	 * An Action, which encapsulates a {@link AbstractWidgetActionModel}.
+	 * 
 	 * @author Kai Meyer
-	 *
+	 * 
 	 */
 	private final class MenuAction extends Action {
 		/**
 		 * The selected widget model.
 		 */
 		private AbstractWidgetModel _widget;
-		
+
 		/**
 		 * The {@link AbstractWidgetActionModel}.
 		 */
 		private AbstractWidgetActionModel _widgetAction;
-		
+
 		/**
 		 * Constructor.
-		 * @param widgetAction The encapsulated {@link AbstractWidgetActionModel}
+		 * 
+		 * @param widgetAction
+		 *            The encapsulated {@link AbstractWidgetActionModel}
 		 */
-		public MenuAction(AbstractWidgetModel widget, final AbstractWidgetActionModel widgetAction) {
+		public MenuAction(AbstractWidgetModel widget,
+				final AbstractWidgetActionModel widgetAction) {
 			assert widget != null;
 			assert widgetAction != null;
 			_widget = widget;
 			_widgetAction = widgetAction;
-			
+
 			// decorate the action
 			this.setText(_widgetAction.getActionLabel());
-			IWorkbenchAdapter adapter = (IWorkbenchAdapter) Platform.getAdapterManager().getAdapter(widgetAction, IWorkbenchAdapter.class);
-			if (adapter!=null) {
-				this.setImageDescriptor(adapter.getImageDescriptor(widgetAction));
+			IWorkbenchAdapter adapter = (IWorkbenchAdapter) Platform
+					.getAdapterManager().getAdapter(widgetAction,
+							IWorkbenchAdapter.class);
+			if (adapter != null) {
+				this.setImageDescriptor(adapter
+						.getImageDescriptor(widgetAction));
 			}
-			
-			// enablement of the action is dependent on the enablement of the corresponding widget
+
+			// enablement of the action is dependent on the enablement of the
+			// corresponding widget
 			this.setEnabled(_widget.isAccesible() && widgetAction.isEnabled());
 		}
-		
+
 		/**
 		 * {@inheritDoc}
 		 */
 		@Override
 		public void run() {
-			WidgetActionHandlerService.getInstance().performAction(_widget, _widgetAction);
+			WidgetActionHandlerService.getInstance().performAction(_widget,
+					_widgetAction);
 		}
 	}
 

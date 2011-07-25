@@ -25,7 +25,6 @@ package org.csstudio.ams.connector.voicemail;
 
 import java.net.InetAddress;
 import java.util.Hashtable;
-
 import javax.jms.Connection;
 import javax.jms.ConnectionFactory;
 import javax.jms.JMSException;
@@ -35,7 +34,6 @@ import javax.jms.Session;
 import javax.naming.Context;
 import javax.naming.InitialContext;
 import javax.naming.NamingException;
-
 import org.csstudio.ams.AmsActivator;
 import org.csstudio.ams.AmsConstants;
 import org.csstudio.ams.Log;
@@ -43,7 +41,6 @@ import org.csstudio.ams.SynchObject;
 import org.csstudio.ams.Utils;
 import org.csstudio.ams.connector.voicemail.internal.VoicemailConnectorPreferenceKey;
 import org.csstudio.ams.internal.AmsPreferenceKey;
-import org.csstudio.platform.logging.CentralLogger;
 import org.eclipse.core.runtime.Platform;
 import org.eclipse.core.runtime.preferences.IPreferencesService;
 import org.eclipse.equinox.app.IApplication;
@@ -52,8 +49,9 @@ import org.eclipse.jface.preference.IPreferenceStore;
 import org.remotercp.common.tracker.IGenericServiceListener;
 import org.remotercp.service.connection.session.ISessionService;
 
-public class VoicemailConnectorStart implements IApplication, IGenericServiceListener<ISessionService> 
-{
+public class VoicemailConnectorStart implements IApplication,
+                                                IGenericServiceListener<ISessionService> {
+
     public final static int STAT_INIT = 0;
     public final static int STAT_OK = 1;
     public final static int STAT_ERR_VM_SERVICE = 2;            //at read, only vm new
@@ -74,6 +72,8 @@ public class VoicemailConnectorStart implements IApplication, IGenericServiceLis
     
     private MessageProducer extPublisherStatusChange = null;
     
+    private ISessionService xmppService;
+    
     private SynchObject sObj = null;
     private int lastStatus = 0;
     
@@ -81,10 +81,10 @@ public class VoicemailConnectorStart implements IApplication, IGenericServiceLis
     private String managementPassword; 
     private boolean restart;
 
-    public VoicemailConnectorStart()
-    {
+    public VoicemailConnectorStart() {
         _instance = this;
         sObj = new SynchObject(STAT_INIT, System.currentTimeMillis());
+        xmppService = null;
         
         IPreferencesService pref = Platform.getPreferencesService();
         managementPassword = pref.getString(AmsActivator.PLUGIN_ID, AmsPreferenceKey.P_AMS_MANAGEMENT_PASSWORD, "", null);
@@ -93,43 +93,40 @@ public class VoicemailConnectorStart implements IApplication, IGenericServiceLis
         }
     }
     
-    public void stop()
-    {
+    public void stop() {
         return;
     }
 
-    public static VoicemailConnectorStart getInstance()
-    {
+    public static VoicemailConnectorStart getInstance() {
         return _instance;
     }
     
-    public synchronized void setRestart()
-    {
+    public synchronized void setRestart() {
         restart = true;
         bStop = true;
     }
 
-    public synchronized void setShutdown()
-    {
+    public synchronized void setShutdown() {
         restart = false;
         bStop = true;
     }
     
     /**
      * 
-     * @return
+     * @return A String object that contains the management password
      */
-    public synchronized String getPassword()
-    {
+    public synchronized String getPassword() {
         return managementPassword;
     }
 
     @SuppressWarnings("static-access")
-    public Object start(IApplicationContext context) throws Exception
-    {
+    public Object start(IApplicationContext context) throws Exception {
+        
         VoicemailConnectorWork scw = null;
         boolean bInitedJms = false;
-        lastStatus = getStatus();                                               // use synchronized method
+        
+        // use synchronized method
+        lastStatus = getStatus();
         int iTimeouts = 0;
 
         Log.log(this, Log.INFO, "start");
@@ -139,27 +136,30 @@ public class VoicemailConnectorStart implements IApplication, IGenericServiceLis
         bStop = false;
         restart = false;
 
-        while(bStop == false)
-        {
-            try
-            {
-                if (iTimeouts > 1) //>10min
-                {
-                    scw.interrupt();
-                    scw = null;
-                    try{scw.sleep(20000);}
-                    catch(Exception e){}
-                    iTimeouts = 0;
-                }
-                    
-                if (scw == null)
-                {
+        while(bStop == false) {
+            
+            try {
+                
+                if (scw == null) {
                     scw = new VoicemailConnectorWork(this);
                     scw.start();
                 }
+
+                // > S10min
+                if (iTimeouts > 1) {
+                    
+                    scw.interrupt();
+                    scw = null;
+                    try {
+                        scw.sleep(20000);
+                    } catch(Exception e) {
+                        // Can be ignored
+                    }
+                    
+                    iTimeouts = 0;
+                }
                 
-                if (!bInitedJms)
-                {
+                if (!bInitedJms) {
                     bInitedJms = initJms();
                 }
         
@@ -220,38 +220,40 @@ public class VoicemailConnectorStart implements IApplication, IGenericServiceLis
             }
         }
 
-        Log.log(this, Log.INFO, "FilterManagerStart is exiting now");
+        Log.log(this, Log.INFO, "VoicemailConnectorStart is exiting now");
         
-        if(scw != null)
-        {
+        if(scw != null) {
+            
             // Clean stop of the working thread
             scw.stopWorking();
             
-            try
-            {
+            try {
                 scw.join(WAITFORTHREAD);
+            } catch(InterruptedException ie) {
+                // Can be ignored
             }
-            catch(InterruptedException ie) { }
     
-            if(scw.stoppedClean())
-            {
+            if(scw.stoppedClean()) {
                 Log.log(this, Log.FATAL, "Restart/Exit: Thread stopped clean.");
-                
                 scw = null;
-            }
-            else
-            {
+            } else {
                 Log.log(this, Log.FATAL, "Restart/Exit: Thread did NOT stop clean.");
                 scw.closeJms();
-                scw.closeVmService();
+                scw.closeCallCenter();
                 scw = null;
             }
         }
         
-        if(restart)
-            return EXIT_RESTART;
-        else
-            return EXIT_OK;
+        if (xmppService != null) {
+            xmppService.disconnect();
+        }
+        
+        Integer exitCode = IApplication.EXIT_OK;
+        if(restart) {
+            exitCode = EXIT_RESTART;
+        }
+        
+        return exitCode;
     }
 
     public int getStatus()
@@ -281,12 +283,12 @@ public class VoicemailConnectorStart implements IApplication, IGenericServiceLis
                     storeAct.getString(org.csstudio.ams.internal.AmsPreferenceKey.P_JMS_EXTERN_CONNECTION_FACTORY));
             extConnection = extFactory.createConnection();
             
-            // ADDED BY: Markus M�ller, 25.05.2007
+            // ADDED BY: Markus Moeller, 25.05.2007
             extConnection.setClientID("VoicemailConnectorStartSenderExternal");
             
             extSession = extConnection.createSession(false, Session.CLIENT_ACKNOWLEDGE);
             
-            // CHANGED BY: Markus M�ller, 25.05.2007
+            // CHANGED BY: Markus Moeller, 25.05.2007
             /*
             extPublisherStatusChange = extSession.createProducer((Topic)extContext.lookup(
                     storeAct.getString(org.csstudio.ams.internal.SampleService.P_JMS_EXT_TOPIC_STATUSCHANGE)));
@@ -369,20 +371,21 @@ public class VoicemailConnectorStart implements IApplication, IGenericServiceLis
     }
     
     public void bindService(ISessionService sessionService) {
-    	IPreferencesService pref = Platform.getPreferencesService();
+    	
+        IPreferencesService pref = Platform.getPreferencesService();
     	String xmppServer = pref.getString(VoicemailConnectorPlugin.PLUGIN_ID, VoicemailConnectorPreferenceKey.P_XMPP_SERVER, "krynfs.desy.de", null);
         String xmppUser = pref.getString(VoicemailConnectorPlugin.PLUGIN_ID, VoicemailConnectorPreferenceKey.P_XMPP_USER, "anonymous", null);
         String xmppPassword = pref.getString(VoicemailConnectorPlugin.PLUGIN_ID, VoicemailConnectorPreferenceKey.P_XMPP_PASSWORD, "anonymous", null);
    	
     	try {
 			sessionService.connect(xmppUser, xmppPassword, xmppServer);
+			xmppService = sessionService;
 		} catch (Exception e) {
-			CentralLogger.getInstance().warn(this,
-					"XMPP connection is not available, " + e.toString());
+			Log.log(this, Log.WARN, "XMPP connection is not available: " + e.getMessage());
 		}
     }
     
     public void unbindService(ISessionService service) {
-    	service.disconnect();
+    	// Nothing to do here
     }
 }

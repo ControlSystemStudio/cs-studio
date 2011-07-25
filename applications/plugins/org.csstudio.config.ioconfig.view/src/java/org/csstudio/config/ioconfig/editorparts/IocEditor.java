@@ -61,7 +61,7 @@ import org.eclipse.swt.widgets.Text;
  * @version $Revision: 1.2 $
  * @since 21.05.2010
  */
-public class IocEditor extends AbstractNodeEditor {
+public class IocEditor extends AbstractNodeEditor<IocDBO> {
 
     public static final String ID = "org.csstudio.config.ioconfig.view.editor.ioc";
 
@@ -83,11 +83,7 @@ public class IocEditor extends AbstractNodeEditor {
     @Override
     public void createPartControl(@Nonnull final Composite parent) {
         super.createPartControl(parent);
-        _ioc = (IocDBO) getNode();
-        if (_ioc == null) {
-            getNode();
-            newNode();
-        }
+        _ioc = getNode();
         main("IOC");
         selecttTabFolder(0);    
     }

@@ -26,7 +26,7 @@ import java.io.IOException;
 
 import junit.framework.Assert;
 
-import org.csstudio.utility.ldapUpdater.files.SuffixBasedFileFilter;
+import org.csstudio.utility.ldapupdater.files.SuffixBasedFileFilter;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.TemporaryFolder;

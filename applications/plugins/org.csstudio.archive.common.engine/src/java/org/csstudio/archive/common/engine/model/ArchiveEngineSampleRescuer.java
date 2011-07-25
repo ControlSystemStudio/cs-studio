@@ -44,25 +44,23 @@ import org.csstudio.domain.desy.time.TimeInstant;
  * @author bknerr
  * @since Mar 28, 2011
  */
-class ArchiveEngineSampleRescuer extends AbstractToFileDataRescuer {
+final class ArchiveEngineSampleRescuer extends AbstractToFileDataRescuer {
 
     private static final String FILE_SUFFIX = ".ser";
     private final List<IArchiveSample<Object, ISystemVariable<Object>>> _samplesToBeSerialized;
+
+    /**
+     * Constructor.
+     */
+    private ArchiveEngineSampleRescuer(@Nonnull final List<IArchiveSample<Object, ISystemVariable<Object>>> samples) {
+        super();
+        _samplesToBeSerialized = samples;
+    }
 
     @Nonnull
     public static ArchiveEngineSampleRescuer with(@Nonnull final List<IArchiveSample<Object, ISystemVariable<Object>>> samples) {
         return new ArchiveEngineSampleRescuer(samples);
     }
-
-    /**
-     * Constructor.
-     */
-    ArchiveEngineSampleRescuer(@Nonnull final List<IArchiveSample<Object, ISystemVariable<Object>>> samples) {
-        super();
-        _samplesToBeSerialized = samples;
-    }
-
-
 
     @Override
     protected void writeToFile(@Nonnull final OutputStream output) throws IOException {

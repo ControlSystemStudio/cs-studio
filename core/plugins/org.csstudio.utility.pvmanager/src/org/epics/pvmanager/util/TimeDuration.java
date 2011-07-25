@@ -1,5 +1,5 @@
 /*
- * Copyright 2010 Brookhaven National Laboratory
+ * Copyright 2010-11 Brookhaven National Laboratory
  * All rights reserved. Use is subject to license terms.
  */
 
@@ -32,6 +32,19 @@ public class TimeDuration {
     public long getNanoSec() {
         return nanoSec;
     }
+    
+    /**
+     * A new duration in hertz, will convert to the length of the period.
+     * 
+     * @param hz frequency to be converted to a duration
+     * @return a new duration
+     */
+    public static TimeDuration hz(double hz) {
+        if (hz <= 0.0) {
+            throw new IllegalArgumentException("Frequency has to be greater than 0.0");
+        }
+        return nanos((long) (1000000000.0 / hz));
+    }
 
     /**
      * A new duration in milliseconds.
@@ -41,6 +54,16 @@ public class TimeDuration {
      */
     public static TimeDuration ms(int ms) {
         return new TimeDuration(((long) ms) * 1000000);
+    }
+
+    /**
+     * A new duration in milliseconds.
+     * @param ms milliseconds of the duration
+     * @return a new duration
+     * @throws IllegalArgumentException if the duration is negative
+     */
+    public static TimeDuration ms(double ms) {
+        return new TimeDuration((long) (ms * 1000000));
     }
 
     /**

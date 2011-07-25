@@ -29,7 +29,6 @@ package org.csstudio.ams.connector.sms.service;
  * @author Markus Moeller
  * 
  */
-public class SmsService
-{
-
+public class SmsService {
+    // TODO: Implement me
 }

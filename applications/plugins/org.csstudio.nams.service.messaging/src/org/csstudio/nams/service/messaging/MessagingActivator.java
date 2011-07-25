@@ -1,3 +1,4 @@
+
 /* 
  * Copyright (c) C1 WPS mbH, HAMBURG, GERMANY. All Rights Reserved.
  *
@@ -21,6 +22,7 @@
  * MAY FIND A COPY AT
  * {@link http://www.eclipse.org/org/documents/epl-v10.html}.
  */
+
 package org.csstudio.nams.service.messaging;
 
 import org.csstudio.nams.common.activatorUtils.AbstractBundleActivator;

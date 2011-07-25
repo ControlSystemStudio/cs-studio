@@ -43,16 +43,6 @@ import com.google.common.collect.Iterables;
 public abstract class AbstractNumberArchiveTypeConversionSupport<N extends Number> extends ArchiveTypeConversionSupport<N> {
 
     /**
-     * Constructor.
-     * @param type
-     */
-    AbstractNumberArchiveTypeConversionSupport(@Nonnull final Class<N> type) {
-        super(type);
-    }
-
-
-
-    /**
      * Number to string convertible function.
      *
      * @author bknerr
@@ -77,6 +67,14 @@ public abstract class AbstractNumberArchiveTypeConversionSupport<N extends Numbe
         }
     }
     private final String2NumberFunction _string2NumberFunc = new String2NumberFunction();
+
+    /**
+     * Constructor.
+     * @param type
+     */
+    AbstractNumberArchiveTypeConversionSupport(@Nonnull final Class<N> type) {
+        super(type);
+    }
 
     /**
      * {@inheritDoc}

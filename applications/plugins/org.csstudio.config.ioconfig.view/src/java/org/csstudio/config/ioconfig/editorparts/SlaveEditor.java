@@ -33,7 +33,6 @@ import javax.annotation.CheckForNull;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
-import org.apache.log4j.Logger;
 import org.csstudio.config.ioconfig.config.view.OverviewLabelProvider;
 import org.csstudio.config.ioconfig.config.view.helper.ProfibusHelper;
 import org.csstudio.config.ioconfig.model.AbstractNodeDBO;
@@ -47,7 +46,6 @@ import org.csstudio.config.ioconfig.model.pbmodel.Ranges;
 import org.csstudio.config.ioconfig.model.pbmodel.SlaveDBO;
 import org.csstudio.config.ioconfig.model.pbmodel.gsdParser.ParsedGsdFileModel;
 import org.csstudio.config.ioconfig.view.DeviceDatabaseErrorDialog;
-import org.csstudio.platform.logging.CentralLogger;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.jface.viewers.ArrayContentProvider;
 import org.eclipse.jface.viewers.ComboViewer;
@@ -82,6 +80,8 @@ import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Table;
 import org.eclipse.swt.widgets.TableColumn;
 import org.eclipse.swt.widgets.Text;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * @author hrickens
@@ -89,11 +89,11 @@ import org.eclipse.swt.widgets.Text;
  * @version $Revision: 1.3 $
  * @since 21.05.2010
  */
-public class SlaveEditor extends AbstractGsdNodeEditor {
+public class SlaveEditor extends AbstractGsdNodeEditor<SlaveDBO> {
     
     public static final String ID = "org.csstudio.config.ioconfig.view.editor.slave";
-    
-    protected static final Logger LOG = CentralLogger.getInstance().getLogger(SlaveEditor.class);
+
+    private static final Logger LOG = LoggerFactory.getLogger(SlaveEditor.class);
     
     private Group _currentUserParamDataGroup;
     /**
@@ -218,7 +218,7 @@ public class SlaveEditor extends AbstractGsdNodeEditor {
                     fill(_gsdFile);
                 }
             } catch (PersistenceException e) {
-                LOG.error(e);
+                LOG.error("Can't undo. Database error", e);
                 DeviceDatabaseErrorDialog.open(null, "Can't undo. Database error", e);
             }
         }
@@ -235,7 +235,7 @@ public class SlaveEditor extends AbstractGsdNodeEditor {
             makeSlaveKonfiguration();
             selecttTabFolder(0);
         } catch (PersistenceException e) {
-            LOG.error(e);
+            LOG.error("Can't open Slave Edior! Database error", e);
             DeviceDatabaseErrorDialog.open(null, "Can't open Slave Edior! Database error", e);
         }
     }
@@ -290,10 +290,10 @@ public class SlaveEditor extends AbstractGsdNodeEditor {
             save();
         } catch (PersistenceException e1) {
             DeviceDatabaseErrorDialog.open(null, "Can't save Slave. Database error", e1);
-            CentralLogger.getInstance().error(this, e1.getLocalizedMessage());
+            LOG.error("Can't save Slave. Database error", e1);
         } catch (IOException e2) {
             DeviceDatabaseErrorDialog.open(null, "Can't save Slave.GSD File read error", e2);
-            CentralLogger.getInstance().error(this, e2.getLocalizedMessage());
+            LOG.error("Can't save Slave.GSD File read error", e2);
         }
     }
     

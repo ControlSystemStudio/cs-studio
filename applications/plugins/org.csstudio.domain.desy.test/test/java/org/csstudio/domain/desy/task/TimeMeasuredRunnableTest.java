@@ -26,28 +26,28 @@ import org.junit.Assert;
 import org.junit.Test;
 
 /**
- * Test for {@link AbstractTimeMeasuredRunnable}. 
- * 
+ * Test for {@link AbstractTimeMeasuredRunnable}.
+ *
  * @author bknerr
  * @since 10.05.2011
  */
 public class TimeMeasuredRunnableTest {
-    
+
     /**
      * Test time provider.
-     * 
+     *
      * @author bknerr
      * @since 11.05.2011
      */
     private final class TestTimeProviderImplementation implements ICurrentTimeProvider {
-        private int _index = 0;
-        private int[] _time = new int[] {0, // init runnable's internal stop watch 
-                                         0, // start first run 
-                                         20,// end first run
-                                         20,// start second run
-                                         30 // end second run
-                                         };
-        
+        private int _index;
+        private final int[] _time = new int[] {0,  // init runnable's internal stop watch
+                                               0,  // start first run
+                                               20, // end first run
+                                               20, // start second run
+                                               30, // end second run
+                                              };
+
         /**
          * Constructor.
          */
@@ -59,7 +59,7 @@ public class TimeMeasuredRunnableTest {
         public long getCurrentTimeInNanos() {
             return (long) (getCurrentTimeInMillis()*1e6);
         }
-        
+
         @Override
         public long getCurrentTimeInMillis() {
             return _time[_index++];
@@ -68,10 +68,10 @@ public class TimeMeasuredRunnableTest {
 
     @Test
     public void testRunnableStatistics() {
-        final ICurrentTimeProvider provider = 
+        final ICurrentTimeProvider provider =
             new TestTimeProviderImplementation();
-        
-        final AbstractTimeMeasuredRunnable worker = 
+
+        final AbstractTimeMeasuredRunnable worker =
             new AbstractTimeMeasuredRunnable(provider) {
                 @Override
                 protected void measuredRun() {
@@ -81,30 +81,30 @@ public class TimeMeasuredRunnableTest {
         Assert.assertTrue(worker.getLastElapsedTimeInNanos() == 0L);
         Assert.assertTrue(worker.getAverageRunTimeInMillis() == 0L);
         Assert.assertTrue(worker.getAverageRunTimeInNanos() == 0L);
-        
+
         worker.run();
-        long firstRunTimeInNanos = worker.getLastElapsedTimeInNanos();
-        Assert.assertTrue(firstRunTimeInNanos == (long)20*1e6);
+        final long firstRunTimeInNanos = worker.getLastElapsedTimeInNanos();
+        Assert.assertTrue(firstRunTimeInNanos == 20*1e6);
         //CHECKSTYLE OFF: NestedBlock
         {
-            long averageRunTimeInNanos = worker.getAverageRunTimeInNanos();
-            long avg = (long) (20);
-            Assert.assertTrue(averageRunTimeInNanos == (long)avg*1e6);
-            long averageRunTimeInMillis = worker.getAverageRunTimeInMillis();
+            final long averageRunTimeInNanos = worker.getAverageRunTimeInNanos();
+            final long avg = 20;
+            Assert.assertTrue(averageRunTimeInNanos == avg*1e6);
+            final long averageRunTimeInMillis = worker.getAverageRunTimeInMillis();
             Assert.assertTrue(averageRunTimeInMillis == avg);
         }
-        
+
         worker.run();
-        long secondRunTimeInNanos = worker.getLastElapsedTimeInNanos();
-        Assert.assertTrue(secondRunTimeInNanos == (long)10*1e6);
+        final long secondRunTimeInNanos = worker.getLastElapsedTimeInNanos();
+        Assert.assertTrue(secondRunTimeInNanos == 10*1e6);
         {
-            long averageRunTimeInNanos = worker.getAverageRunTimeInNanos();
-            long avg = (long) (20*0.8+10*0.2);
-            Assert.assertTrue(averageRunTimeInNanos == (long)avg*1e6);
-            long averageRunTimeInMillis = worker.getAverageRunTimeInMillis();
+            final long averageRunTimeInNanos = worker.getAverageRunTimeInNanos();
+            final long avg = (long) (20*0.8+10*0.2);
+            Assert.assertTrue(averageRunTimeInNanos == avg*1e6);
+            final long averageRunTimeInMillis = worker.getAverageRunTimeInMillis();
             Assert.assertTrue(averageRunTimeInMillis == avg);
         }
         //CHECKSTYLE ON: NestedBlock
     }
-    
+
 }

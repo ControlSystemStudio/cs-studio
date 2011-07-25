@@ -19,11 +19,12 @@ package org.csstudio.alarm.table.preferences;
 
 import javax.annotation.Nonnull;
 
-import org.csstudio.platform.logging.CentralLogger;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Table;
 import org.eclipse.swt.widgets.TableItem;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * Preference Table to set the names and widths of columns in
@@ -34,6 +35,8 @@ import org.eclipse.swt.widgets.TableItem;
  */
 public class ExchangeablePreferenceColumnTableEditor extends PreferenceColumnTableEditor {
 
+    private static final Logger LOG = LoggerFactory
+            .getLogger(ExchangeablePreferenceColumnTableEditor.class);
 
 
 	/**
@@ -85,14 +88,12 @@ public class ExchangeablePreferenceColumnTableEditor extends PreferenceColumnTab
 	 * @param topicTitle
 	 */
 	public void setSelectionToColumnEditor(final int row, @Nonnull final String topicTitle) {
-		CentralLogger.getInstance().debug(this,
-				"Selected row in topic table: " + row + " " + topicTitle);
+		LOG.debug("Selected row in topic table: {} {}",row, topicTitle);
 
 		_mouseListener.cleanUp();
 
 		if (_columnTableSettings == null) {
-			CentralLogger.getInstance().error(this,
-					"no related column settings!");
+			LOG.error("no related column settings!");
 			return;
 		}
 		updateTopicTitle(topicTitle);
@@ -110,8 +111,7 @@ public class ExchangeablePreferenceColumnTableEditor extends PreferenceColumnTab
 		if ((0 > _row) || (_row >= _columnTableSettings.size())) {
 			_currentColumnTableSet = _columnTableSettings.get(0);
 			if (_currentColumnTableSet == null) {
-				CentralLogger.getInstance().warn(this,
-						"no column settings in default");
+				LOG.warn("no column settings in default");
 				return;
 			}
 		} else {

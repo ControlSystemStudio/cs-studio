@@ -38,6 +38,11 @@ public class SampleBuffer<V,
                           T extends ISystemVariable<V>,
                           S extends IArchiveSample<V, T>> extends ForwardingBlockingQueue<S>
 {
+    /** Is the buffer in an error state because of RDB write errors?
+     *  Note that this is global for all buffers, not per instance!
+     */
+    private static volatile boolean ERROR;
+
     /** Name of channel that writes to this buffer.
      *  (we keep only the name, not the full channel,
      *  to decouple stuff).
@@ -50,10 +55,6 @@ public class SampleBuffer<V,
     /** Statistics */
     private final BufferStats _stats = new BufferStats();
 
-    /** Is the buffer in an error state because of RDB write errors?
-     *  Note that this is global for all buffers, not per instance!
-     */
-    private static volatile boolean ERROR = false;
 
     /**
      * Create sample buffer with flexible capacity
@@ -87,11 +88,11 @@ public class SampleBuffer<V,
     @Override
     @SuppressWarnings("nls")
     public boolean add(@Nonnull final S value) {
-	    if (!super.offer(value)) {
+        if (!super.offer(value)) {
             // FIXME (bknerr) : data rescue if adding to sample buffer failed.
-	        return false;
+            return false;
         }
-    	return true;
+        return true;
     }
 
     /** Update stats with current values */
@@ -115,7 +116,7 @@ public class SampleBuffer<V,
     @Nonnull
     public String toString() {
         return String.format(
-        "Sample buffer '%s': %d samples, %d samples max, %.1f samples average, %d overruns",
+        "Sample buffer '%s': %d samples, %d samples max, %.1f samples average",
             _channelName,
             super.size(),
             _stats.getMaxSize(),

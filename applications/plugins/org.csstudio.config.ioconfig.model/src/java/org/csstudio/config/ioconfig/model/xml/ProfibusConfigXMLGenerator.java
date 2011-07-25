@@ -33,18 +33,19 @@ import java.util.Iterator;
 import java.util.Map;
 import java.util.Set;
 
+import javax.annotation.CheckForNull;
 import javax.annotation.Nonnull;
 
-import org.apache.log4j.Logger;
 import org.csstudio.config.ioconfig.model.PersistenceException;
 import org.csstudio.config.ioconfig.model.pbmodel.MasterDBO;
 import org.csstudio.config.ioconfig.model.pbmodel.ProfibusSubnetDBO;
 import org.csstudio.config.ioconfig.model.pbmodel.SlaveDBO;
-import org.csstudio.platform.logging.CentralLogger;
 import org.jdom.Document;
 import org.jdom.Element;
 import org.jdom.output.Format;
 import org.jdom.output.XMLOutputter;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * @author hrickens
@@ -54,8 +55,7 @@ import org.jdom.output.XMLOutputter;
  */
 public class ProfibusConfigXMLGenerator {
 
-    private static final Logger LOG = CentralLogger.getInstance()
-            .getLogger(ProfibusConfigXMLGenerator.class);
+    private static final Logger LOG = LoggerFactory.getLogger(ProfibusConfigXMLGenerator.class);
     
     /**
      * The Profibus Config XML {@link Document}.
@@ -165,6 +165,10 @@ public class ProfibusConfigXMLGenerator {
             autoClear = "1";
         }
         short fdl = master.getSortIndex();
+        String masterUserData = master.getMasterUserData();
+        if(masterUserData==null) {
+            masterUserData="";
+        }
         String[] masterValues = new String[] {
                 /* bus_para_len */"66"/*
                                        * TODO:busParaLen is Default=66? und muss das geändert werden
@@ -192,8 +196,8 @@ public class ProfibusConfigXMLGenerator {
                 /* data_control_time */Integer.toString(master.getDataControlTime()),
                 /* reserved */"0,0,0,0,0,0",// TODO:reserved is Default=0? und muss das geändert werden können?
                 /* master_user_data_length */Integer
-                        .toString(master.getMasterUserData().split(",").length),
-                /* master_user_data */master.getMasterUserData() };
+                        .toString(masterUserData.split(",").length),
+                /* master_user_data */masterUserData };
         assert masterKeys.length == masterValues.length;
         for (int i = 0; i < masterKeys.length; i++) {
             _master.setAttribute(masterKeys[i], masterValues[i]);
@@ -226,7 +230,7 @@ public class ProfibusConfigXMLGenerator {
      */
     public final void getXmlFile(@Nonnull final File path) throws IOException {
         Writer writer = new FileWriter(path);
-        LOG.info("Write File:" + path.getAbsolutePath());
+        LOG.info("Write File: {}", path.getAbsolutePath());
         getXmlFile(writer);
     }
     
@@ -261,19 +265,23 @@ public class ProfibusConfigXMLGenerator {
      * Return the integer value of a String.
      * The String can dec or hex.
      * @param value The integer value as Sting.
-     * @return The value as int.
+     * @return The value as int. Is the string invalid return -1
      */
-    public static int getInt(@Nonnull final String value) {
-        String tmp = value.toUpperCase().trim();
-        int radix = 10;
-        try {
-            if(tmp.startsWith("0X")) {
-                tmp = tmp.substring(2);
-                radix=16;
+    public static int getInt(@CheckForNull final String value) {
+        int val = -1;
+        if(value!=null) {
+            String tmp = value.toUpperCase().trim();
+            int radix = 10;
+            try {
+                if(tmp.startsWith("0X")) {
+                    tmp = tmp.substring(2);
+                    radix=16;
+                }
+                val = Integer.parseInt(tmp,radix);
+            }catch (Exception e) {
+                val = -1;
             }
-            return Integer.parseInt(tmp,radix);
-        }catch (Exception e) {
-            return -1;
         }
+        return val;
     }
 }

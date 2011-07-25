@@ -51,6 +51,11 @@ import org.epics.pvmanager.TypeSupport;
 public abstract class ArchiveEngineTypeSupport<V> extends AbstractTypeSupport<V> {
     // CHECKSTYLE ON : AbstractClassName
 
+    private static final String[] SCALAR_TYPE_PACKAGES =
+        new String[]{"java.lang", "org.csstudio.domain.desy.epics.types"};
+
+    private static boolean INSTALLED;
+
     /**
      * Constructor.
      * @param type
@@ -59,14 +64,6 @@ public abstract class ArchiveEngineTypeSupport<V> extends AbstractTypeSupport<V>
     public ArchiveEngineTypeSupport(@Nonnull final Class<V> type) {
         super(type, ArchiveEngineTypeSupport.class);
     }
-
-
-    private static final String[] SCALAR_TYPE_PACKAGES =
-        new String[]{"java.lang",
-                     "org.csstudio.domain.desy.epics.types"};
-//    private static final String[] MULTI_SCALAR_TYPE_PACKAGES =
-//        new String[]{"java.util",
-//                     "org.csstudio.domain.desy.epics.types"};
 
     /**
      * Concrete implementation for this kind of type support.
@@ -93,8 +90,8 @@ public abstract class ArchiveEngineTypeSupport<V> extends AbstractTypeSupport<V>
             ArchiveChannel<V, ISystemVariable<V>> channel;
             try {
                 channel = new ArchiveChannel<V, ISystemVariable<V>>(cfg.getName(),
-                                                                         cfg.getId(),
-                                                                         _typeClass);
+                                                                    cfg.getId(),
+                                                                    _typeClass);
             } catch (final EngineModelException e) {
                 throw new TypeSupportException("Channel could not be instantiated.", e);
             }
@@ -103,6 +100,7 @@ public abstract class ArchiveEngineTypeSupport<V> extends AbstractTypeSupport<V>
         /**
          * {@inheritDoc}
          */
+        @SuppressWarnings("unchecked")
         @Override
         @Nonnull
         protected ArchiveChannel<Collection<V>, ISystemVariable<Collection<V>>>
@@ -112,8 +110,8 @@ public abstract class ArchiveEngineTypeSupport<V> extends AbstractTypeSupport<V>
             try {
                 // FIXME (bknerr) : find solution for collection values - multiscalar wrapper?
                 channel = new ArchiveChannel<Collection<V>, ISystemVariable<Collection<V>>>(cfg.getName(),
-                                                                                                 cfg.getId(),
-                                                                                                 null);
+                                                                                            cfg.getId(),
+                                                                                            (Class<Collection<V>>) _typeClass);
             } catch (final EngineModelException e) {
                 throw new TypeSupportException("Channel could not be instantiated.", e);
             }
@@ -122,8 +120,8 @@ public abstract class ArchiveEngineTypeSupport<V> extends AbstractTypeSupport<V>
 
     }
 
-    private static boolean INSTALLED = false;
 
+    @SuppressWarnings("rawtypes")
     public static void install() {
         if (INSTALLED) {
             return;
@@ -139,6 +137,8 @@ public abstract class ArchiveEngineTypeSupport<V> extends AbstractTypeSupport<V>
         TypeSupport.addTypeSupport(new ConcreteArchiveEngineTypeSupport<Float>(Float.class));
         TypeSupport.addTypeSupport(new ConcreteArchiveEngineTypeSupport<String>(String.class));
         TypeSupport.addTypeSupport(new ConcreteArchiveEngineTypeSupport<EpicsEnum>(EpicsEnum.class));
+
+        TypeSupport.addTypeSupport(new ConcreteArchiveEngineTypeSupport<Collection>(Collection.class));
 
         INSTALLED = true;
     }
@@ -172,10 +172,9 @@ public abstract class ArchiveEngineTypeSupport<V> extends AbstractTypeSupport<V>
 
         if (scalar) {
             return support.createArchiveChannel(cfg);
-        } else { // TODO (bknerr) : can it be supported throughout the service impl?
-         // take care, V is here Collection<V>, the correct cast has to be performed by the invoker
-            return (ArchiveChannel) support.createMultiScalarArchiveChannel(cfg);
         }
+        // take care, V is here Collection<V>, the correct cast has to be performed by the invoker
+        return (ArchiveChannel) support.createMultiScalarArchiveChannel(cfg);
 
     }
 

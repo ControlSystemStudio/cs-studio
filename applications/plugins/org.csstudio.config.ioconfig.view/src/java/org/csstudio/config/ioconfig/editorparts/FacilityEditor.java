@@ -31,7 +31,6 @@ import org.csstudio.config.ioconfig.model.DocumentDBO;
 import org.csstudio.config.ioconfig.model.FacilityDBO;
 import org.csstudio.config.ioconfig.model.PersistenceException;
 import org.csstudio.config.ioconfig.view.DeviceDatabaseErrorDialog;
-import org.csstudio.platform.logging.CentralLogger;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.layout.GridData;
@@ -40,6 +39,8 @@ import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Group;
 import org.eclipse.swt.widgets.Spinner;
 import org.eclipse.swt.widgets.Text;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * Editor for {@link FacilityDBO} node's
@@ -49,15 +50,16 @@ import org.eclipse.swt.widgets.Text;
  * @version $Revision: 1.2 $
  * @since 31.03.2010
  */
-public class FacilityEditor extends AbstractNodeEditor{
-
+public class FacilityEditor extends AbstractNodeEditor<FacilityDBO> {
+    
+    private static final Logger LOG = LoggerFactory.getLogger(FacilityEditor.class);
     public static final String ID = "org.csstudio.config.ioconfig.view.editor.facility";
-
+    
     /**
      * The Facility Object.
      */
     private FacilityDBO _facility;
-
+    
     /**
      *
      * Constructor.
@@ -65,45 +67,44 @@ public class FacilityEditor extends AbstractNodeEditor{
     public FacilityEditor() {
         //  nothing to do.
     }
-
+    
     /**
      * Constructor.
      */
-    public FacilityEditor(@Nonnull final Composite parent,final short sortIndex) {
+    public FacilityEditor(@Nonnull final Composite parent, final short sortIndex) {
         super(true);
         getProfiBusTreeView().getTreeViewer().setSelection(null);
         newNode();
         try {
             getNode().moveSortIndex(sortIndex);
         } catch (PersistenceException e) {
-            CentralLogger.getInstance().error(this, e);
+            LOG.error("Can't create Facility. Database Error.", e);
             DeviceDatabaseErrorDialog.open(null, "Can't create Facility. Database Error.", e);
         }
         buildGui();
     }
-
+    
     /**
      * @param parent
      *            The Parent Composite.
      * @param facility
      *            to Configure. Is NULL create a new one.
      */
-    public FacilityEditor(@Nonnull final Composite parent,@Nonnull final FacilityDBO facility) {
+    public FacilityEditor(@Nonnull final Composite parent, @Nonnull final FacilityDBO facility) {
         super(facility == null);
         _facility = facility;
         buildGui();
         selecttTabFolder(0);
     }
-
-
+    
     @Override
     public void createPartControl(@Nonnull final Composite parent) {
         super.createPartControl(parent);
         _facility = (FacilityDBO) getNode();
         buildGui();
         selecttTabFolder(0);
-   }
-
+    }
+    
     /**
      * (@inheritDoc)
      */
@@ -111,30 +112,36 @@ public class FacilityEditor extends AbstractNodeEditor{
     public void doSave(@Nonnull final IProgressMonitor monitor) {
         super.doSave(monitor);
         // Main
-        _facility.setName(getNameWidget().getText());
-        getNameWidget().setData(getNameWidget().getText());
-
-        getIndexSpinner().setData(_facility.getSortIndex());
-
+        Text nameWidget = getNameWidget();
+        if(nameWidget != null) {
+            _facility.setName(nameWidget.getText());
+            nameWidget.setData(nameWidget.getText());
+        }
+        
+        Spinner indexSpinner = getIndexSpinner();
+        if(indexSpinner != null) {
+            indexSpinner.setData(_facility.getSortIndex());
+        }
+        
         // Document
         DocumentationManageView documentationManageView = getDocumentationManageView();
-        if (documentationManageView != null) {
+        if(documentationManageView != null) {
             Set<DocumentDBO> docs = documentationManageView.getDocuments();
             _facility.setDocuments(docs);
         }
-
+        
         save();
-//        getProfiBusTreeView().refresh(getNode());
-//        getProfiBusTreeView().refresh();
+        //        getProfiBusTreeView().refresh(getNode());
+        //        getProfiBusTreeView().refresh();
     }
-
+    
     private void buildGui() {
         setSavebuttonEnabled(null, getNode().isPersistent());
         main("Facility");
         getProfiBusTreeView().refresh(getNode()); // TODO: denke dieser refresh ist Überflüssig
         // _tabFolder.pack();
     }
-
+    
     /**
      * Generate the Main IOC configuration Tab.
      *
@@ -142,31 +149,36 @@ public class FacilityEditor extends AbstractNodeEditor{
      *            The headline of the tab.
      */
     private void main(@Nonnull final String head) {
-        Composite comp = ConfigHelper.getNewTabItem(head, getTabFolder(), 5,300,260);
+        Composite comp = ConfigHelper.getNewTabItem(head, getTabFolder(), 5, 300, 260);
         comp.setLayout(new GridLayout(4, false));
-
+        
         Group gName = new Group(comp, SWT.NONE);
         gName.setText("Name");
         gName.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, false, 5, 1));
         gName.setLayout(new GridLayout(3, false));
-
+        
         Text nameText = new Text(gName, SWT.BORDER | SWT.SINGLE);
         setText(nameText, _facility.getName(), 255);
         nameText.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, false, 1, 1));
         setNameWidget(nameText);
-        setIndexSpinner(ConfigHelper.getIndexSpinner(gName, _facility, getMLSB(), "Index",
-                getProfiBusTreeView()));
-
-        makeDescGroup(comp,3);
+        setIndexSpinner(ConfigHelper.getIndexSpinner(gName,
+                                                     _facility,
+                                                     getMLSB(),
+                                                     "Index",
+                                                     getProfiBusTreeView()));
+        
+        makeDescGroup(comp, 3);
     }
-
+    
     @Override
     public void cancel() {
         super.cancel();
-        if (_facility != null) {
-            Object data = getParent().getData("version");
-            if (data != null) {
-                if (data instanceof Text) {
+        if(_facility != null) {
+            Object data = null;
+            Composite parent = getParent();
+            if(parent != null) {
+                data = parent.getData("version");
+                if(data != null && data instanceof Text) {
                     Text text = (Text) data;
                     text.setText("");
                 }
@@ -176,14 +188,18 @@ public class FacilityEditor extends AbstractNodeEditor{
                 indexSpinner.setSelection((Short) indexSpinner.getData());
             }
             Text nameWidget = getNameWidget();
-            if(nameWidget!=null) {
+            if(nameWidget != null) {
                 nameWidget.setText((String) nameWidget.getData());
             }
         }
+        cancelDocumentationManageView();
+        setSaveButtonSaved();
+    }
+
+    private void cancelDocumentationManageView() {
         DocumentationManageView dMV = getDocumentationManageView();
-        if (dMV != null) {
+        if(dMV != null) {
             dMV.cancel();
         }
-        setSaveButtonSaved();
     }
 }

@@ -34,19 +34,19 @@ import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import javax.jms.MapMessage;
 
-import org.apache.log4j.Logger;
 import org.csstudio.alarm.service.declaration.AlarmMessageKey;
 import org.csstudio.alarm.table.dataModel.AlarmMessage;
 import org.csstudio.alarm.table.dataModel.BasicMessage;
 import org.csstudio.alarm.table.jms.ISendMapMessage;
-import org.csstudio.platform.CSSPlatformInfo;
-import org.csstudio.platform.logging.CentralLogger;
 import org.csstudio.auth.security.SecurityFacade;
 import org.csstudio.auth.security.User;
+import org.csstudio.platform.CSSPlatformInfo;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
 import org.eclipse.core.runtime.jobs.Job;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 
 /**
@@ -58,9 +58,9 @@ import org.eclipse.core.runtime.jobs.Job;
  */
 public final class SendAcknowledge extends Job {
 
-    private static final Logger LOG = CentralLogger.getInstance().getLogger(SendAcknowledge.class);
-
-    private List<AlarmMessage> messagesToSend;
+    private static final Logger LOG = LoggerFactory.getLogger(SendAcknowledge.class);
+    
+    private final List<AlarmMessage> messagesToSend;
     private static String JMS_DATE_FORMAT = "yyyy-MM-dd HH:mm:ss.SSS";
 
     /**
@@ -162,10 +162,8 @@ public final class SendAcknowledge extends Job {
                 if (user != null) {
                     String property = message.getProperty(AlarmMessageKey.EVENTTIME.getDefiningName());
                     property = property == null ? "<set to null>" : property;
-                    LOG.debug(user.getUsername()
-                            + " send Ack message, MsgName: "
-                            + message.getName()
-                            + " MsgTime: " + property); //$NON-NLS-2$
+                    Object[] args = new Object[] {user.getUsername(), message.getName(), property};
+                    LOG.debug("{} send Ack message, MsgName: {} MsgTime: {}", args); //$NON-NLS-2$
                 }
                 sender.sendMessage(AlarmMessageKey.ACK.getDefiningName());
             }

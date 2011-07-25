@@ -6,7 +6,7 @@ package org.csstudio.utility.pvmanager.jfreechart.widgets;
 import static org.csstudio.utility.pvmanager.jfreechart.widgets.VMultiChannelChartDisplay.DOMAIN_AXIS_TYPE_POSITION;
 import static org.epics.pvmanager.data.ExpressionLanguage.synchronizedArrayOf;
 import static org.epics.pvmanager.data.ExpressionLanguage.vDoubles;
-import static org.epics.pvmanager.util.TimeDuration.ms;
+import static org.epics.pvmanager.util.TimeDuration.*;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -23,9 +23,9 @@ import org.eclipse.swt.layout.FormAttachment;
 import org.eclipse.swt.layout.FormData;
 import org.eclipse.swt.layout.FormLayout;
 import org.eclipse.swt.widgets.Composite;
-import org.epics.pvmanager.PV;
 import org.epics.pvmanager.PVManager;
-import org.epics.pvmanager.PVValueChangeListener;
+import org.epics.pvmanager.PVReader;
+import org.epics.pvmanager.PVReaderListener;
 import org.epics.pvmanager.data.VMultiDouble;
 
 /**
@@ -89,7 +89,7 @@ public class XYChartWidget extends Composite {
 	private List<Double> channelPositions;
 
 	// The pv created by pvmanager
-	private PV<VMultiDouble> pv;
+	private PVReader<VMultiDouble> pv;
 
 	public List<String> getChannelNames() {
 		return channelNames;
@@ -157,11 +157,11 @@ public class XYChartWidget extends Composite {
 					.read(synchronizedArrayOf(
 							ms(75),
 							vDoubles(Collections.unmodifiableList(channelNames))))
-					.andNotify(SWTUtil.onSWTThread()).atHz(10);
-			pv.addPVValueChangeListener(new PVValueChangeListener() {
-
+					.notifyOn(SWTUtil.swtThread()).every(hz(10));
+			pv.addPVReaderListener(new PVReaderListener() {
+				
 				@Override
-				public void pvValueChanged() {
+				public void pvChanged() {
 					// TODO try avoiding the creation of the arraylist
 					ArrayList<VMultiDouble> value = new ArrayList<VMultiDouble>();
 					value.add(pv.getValue());

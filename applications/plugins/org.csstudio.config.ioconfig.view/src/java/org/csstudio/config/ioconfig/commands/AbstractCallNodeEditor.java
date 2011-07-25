@@ -37,12 +37,11 @@ package org.csstudio.config.ioconfig.commands;
 import javax.annotation.CheckForNull;
 import javax.annotation.Nonnull;
 
-import org.apache.log4j.Logger;
 import org.csstudio.config.ioconfig.model.AbstractNodeDBO;
 import org.csstudio.config.ioconfig.model.PersistenceException;
 import org.csstudio.config.ioconfig.view.DeviceDatabaseErrorDialog;
 import org.csstudio.config.ioconfig.view.MainView;
-import org.csstudio.platform.logging.CentralLogger;
+import org.csstudio.config.ioconfig.view.internal.localization.IOConfigMessages;
 import org.eclipse.core.commands.AbstractHandler;
 import org.eclipse.core.commands.ExecutionEvent;
 import org.eclipse.core.commands.ExecutionException;
@@ -53,6 +52,8 @@ import org.eclipse.ui.IWorkbenchPage;
 import org.eclipse.ui.IWorkbenchWindow;
 import org.eclipse.ui.PartInitException;
 import org.eclipse.ui.handlers.HandlerUtil;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * @author hrickens
@@ -62,8 +63,7 @@ import org.eclipse.ui.handlers.HandlerUtil;
  */
 public abstract class AbstractCallNodeEditor extends AbstractHandler {
 
-    private static final Logger LOG = CentralLogger.getInstance()
-            .getLogger(AbstractCallNodeEditor.class);
+    private static final Logger LOG = LoggerFactory.getLogger(AbstractCallNodeEditor.class);
     
     /**
      * (@inheritDoc)
@@ -82,18 +82,20 @@ public abstract class AbstractCallNodeEditor extends AbstractHandler {
                 try {
                     openNodeEditor(obj, page);
                 } catch (PartInitException e1) {
-                    LOG.error(e1);
-                    MessageDialog.openError(null, "ERROR", e1.getMessage());
+                    MessageDialog.openError(null, "ERROR", e1.getMessage()); //$NON-NLS-1$
+                    LOG.error("Can't open editor!",e1); //$NON-NLS-1$
                 } catch (PersistenceException e2) {
-                    LOG.error(e2);
-                    DeviceDatabaseErrorDialog.open(null, "Can't open Editor", e2);
+                    LOG.error("Can't open editor!",e2); //$NON-NLS-1$
+                    DeviceDatabaseErrorDialog.open(null, IOConfigMessages.AbstractCallNodeEditor_DialogErrorMsg, e2);
                 }
             }
         }
         return null;
     }
 
-    protected abstract void openNodeEditor(@Nonnull AbstractNodeDBO<?,?> parentNode,@Nonnull IWorkbenchPage page) throws PartInitException, PersistenceException;
+    protected abstract void openNodeEditor(@Nonnull final AbstractNodeDBO<AbstractNodeDBO<?,?>,AbstractNodeDBO<?,?>> parentNode,
+                                           @Nonnull IWorkbenchPage page) throws PartInitException, PersistenceException;
+
 
     /**
      * @return
@@ -114,5 +116,6 @@ public abstract class AbstractCallNodeEditor extends AbstractHandler {
         }
         return null;
     }
+    
 
 }

@@ -1,14 +1,28 @@
 package org.csstudio.nams.common.activatorUtils;
 
 import java.lang.reflect.Method;
-
 import org.osgi.framework.BundleActivator;
 import org.osgi.framework.BundleContext;
+import org.remotercp.common.tracker.GenericServiceTracker;
+import org.remotercp.common.tracker.IGenericServiceListener;
+import org.remotercp.service.connection.session.ISessionService;
 
 public abstract class AbstractBundleActivator implements BundleActivator {
 
-	final public void start(final BundleContext context) throws Exception {
-		final Method bundleStartMethod = AnnotatedActivatorUtils
+    protected static AbstractBundleActivator instance;
+
+    protected GenericServiceTracker<ISessionService> _genericServiceTracker;
+    
+    public static AbstractBundleActivator getDefault() {
+        return instance;
+    }
+    
+	@Override
+    final public void start(final BundleContext context) throws Exception {
+		
+	    instance = this;
+	    
+	    final Method bundleStartMethod = AnnotatedActivatorUtils
 				.findAnnotatedMethod(this, OSGiBundleActivationMethod.class);
 
 		if (bundleStartMethod == null) {
@@ -43,6 +57,11 @@ public abstract class AbstractBundleActivator implements BundleActivator {
 			}
 		}
 
+		// For XMPP login
+        _genericServiceTracker = new GenericServiceTracker<ISessionService>(
+                context, ISessionService.class);
+        _genericServiceTracker.open();
+
 		// INVOKE
 		final Object[] paramValues = AnnotatedActivatorUtils
 				.evaluateParamValues(context, requestedParams);
@@ -63,7 +82,8 @@ public abstract class AbstractBundleActivator implements BundleActivator {
 		}
 	}
 
-	final public void stop(final BundleContext context) throws Exception {
+	@Override
+    final public void stop(final BundleContext context) throws Exception {
 		final Method bundleSopMethod = AnnotatedActivatorUtils
 				.findAnnotatedMethod(this, OSGiBundleDeactivationMethod.class);
 
@@ -97,5 +117,10 @@ public abstract class AbstractBundleActivator implements BundleActivator {
 					.evaluateParamValues(context, requestedParams);
 			bundleSopMethod.invoke(this, paramValues);
 		}
+	}
+	
+    public void addSessionServiceListener(
+                IGenericServiceListener<ISessionService> sessionServiceListener) {
+	              _genericServiceTracker.addServiceListener(sessionServiceListener);
 	}
 }

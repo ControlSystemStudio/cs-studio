@@ -1,10 +1,11 @@
 /*
- * Copyright 2010 Brookhaven National Laboratory
+ * Copyright 2010-11 Brookhaven National Laboratory
  * All rights reserved. Use is subject to license terms.
  */
 
 package org.epics.pvmanager;
 
+import java.util.concurrent.Executor;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -23,10 +24,43 @@ public class ExceptionHandler {
     /**
      * Notifies of an exception being thrown.
      * 
-     * TODO: Needs pv
      * @param ex the exception
      */
     public void handleException(Exception ex) {
         log.log(Level.INFO, "Exception for PV", ex);
+    }
+    
+    static ExceptionHandler createDefaultExceptionHandler(final PVWriterImpl<?> pvWriter, final Executor notificationExecutor) {
+        return new ExceptionHandler() {
+            @Override
+            public void handleException(final Exception ex) {
+                notificationExecutor.execute(new Runnable() {
+
+                    @Override
+                    public void run() {
+                        pvWriter.setLastWriteException(ex);
+                        pvWriter.firePvWritten();
+                    }
+                });
+            }
+            
+        };
+    }
+    
+    static ExceptionHandler createDefaultExceptionHanderl(final PVReaderImpl<?> pv, final Executor notificationExecutor) {
+        return new ExceptionHandler() {
+
+            @Override
+            public void handleException(final Exception ex) {
+                notificationExecutor.execute(new Runnable() {
+
+                    @Override
+                    public void run() {
+                        pv.setLastException(ex);
+                        pv.firePvValueChanged();
+                    }
+                });
+            }
+        };
     }
 }

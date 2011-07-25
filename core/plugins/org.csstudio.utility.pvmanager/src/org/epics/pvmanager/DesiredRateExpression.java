@@ -1,5 +1,5 @@
 /*
- * Copyright 2010 Brookhaven National Laboratory
+ * Copyright 2010-11 Brookhaven National Laboratory
  * All rights reserved. Use is subject to license terms.
  */
 
@@ -33,7 +33,7 @@ public class DesiredRateExpression<T> {
         if (!(collector instanceof Collector)){
             throw new IllegalArgumentException("collector must be of type Collector");
         }
-        this.recipe = expression.createDataRecipe((Collector) collector);
+        this.recipe = SourceRateExpressionImpl.implOf(expression).createDataRecipe((Collector) collector);
         this.function = collector;
         this.defaultName = defaultName;
     }

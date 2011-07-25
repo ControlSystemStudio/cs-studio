@@ -1,3 +1,4 @@
+
 package org.csstudio.nams.common.service;
 
 /**
@@ -16,7 +17,7 @@ public interface ExecutionService {
 	 * @param <GT>
 	 *            Der Typ der Gruppenidentifikation - ein beliebiges
 	 *            Enum-Element.
-	 * @param group
+	 * @param groupId
 	 *            Die Gruppenidentifikation, zu der das Runnable gehört
 	 *            (vornehmlich zur Identifikation bei Tests); existiert diese
 	 *            Gruppe nicht, so wird eine Fehler verursacht.

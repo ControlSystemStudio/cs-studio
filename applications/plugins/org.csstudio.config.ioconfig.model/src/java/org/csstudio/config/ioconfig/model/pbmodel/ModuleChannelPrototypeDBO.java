@@ -24,6 +24,9 @@
  */
 package org.csstudio.config.ioconfig.model.pbmodel;
 
+import javax.annotation.CheckForNull;
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.ManyToOne;
@@ -105,11 +108,12 @@ public class ModuleChannelPrototypeDBO extends DBClass implements Comparable<Mod
     }
 
     @ManyToOne
+    @CheckForNull
     public GSDModuleDBO getGSDModule() {
         return _gSDModule;
     }
 
-    public void setGSDModule(GSDModuleDBO module) {
+    public void setGSDModule(@Nullable GSDModuleDBO module) {
         _gSDModule = module;
     }
 
@@ -123,11 +127,12 @@ public class ModuleChannelPrototypeDBO extends DBClass implements Comparable<Mod
     }
 
     @Column(nullable = false)
+    @Nonnull
     public String getName() {
         return _name;
     }
 
-    public void setName(final String name) {
+    public void setName(@Nonnull final String name) {
         _name = name;
     }
 
@@ -136,11 +141,12 @@ public class ModuleChannelPrototypeDBO extends DBClass implements Comparable<Mod
      * @return the {@link DataType}
      */
     @Column(nullable = false)
+    @Nonnull
     public DataType getType() {
         return _type;
     }
 
-    public void setType(final DataType type) {
+    public void setType(@Nonnull final DataType type) {
         _type = type;
     }
 
@@ -176,30 +182,33 @@ public class ModuleChannelPrototypeDBO extends DBClass implements Comparable<Mod
         _input = input;
     }
     
+    @CheckForNull
     public Integer getMinimum() {
         return _minimum;
     }
     
     @Column(nullable=true)
-    public void setMinimum(Integer minimum) {
+    public void setMinimum(@Nullable Integer minimum) {
         _minimum = minimum;
     }
 
+    @CheckForNull
     public Integer getMaximum() {
         return _maximum;
     }
 
     @Column(nullable=true)
-    public void setMaximum(Integer maximum) {
+    public void setMaximum(@Nullable Integer maximum) {
         _maximum = maximum;
     }
 
     @Column(nullable=true)
+    @CheckForNull
     public Integer getByteOrdering() {
         return _byteOrdering;
     }
 
-    public void setByteOrdering(Integer byteOrdering) {
+    public void setByteOrdering(@Nullable Integer byteOrdering) {
         _byteOrdering = byteOrdering;
     }
 
@@ -216,7 +225,10 @@ public class ModuleChannelPrototypeDBO extends DBClass implements Comparable<Mod
     }
 
     @Override
-    public int compareTo(ModuleChannelPrototypeDBO other) {
+    public  int compareTo(@CheckForNull ModuleChannelPrototypeDBO other) {
+        if(other==null) {
+            return -1;
+        }
         if(getId() == other.getId()) {
             return 0;
         }else if(isInput()==other.isInput()) {
@@ -228,6 +240,16 @@ public class ModuleChannelPrototypeDBO extends DBClass implements Comparable<Mod
         // this is a Error handling
         return getId() - other.getId();
         
+    }
+    
+    @Override
+    public final boolean equals(@CheckForNull Object obj) {
+        return super.equals(obj);
+    }
+    
+    @Override
+    public int hashCode() {
+        return super.hashCode();
     }
 
 }

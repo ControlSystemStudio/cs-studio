@@ -27,16 +27,12 @@ package org.csstudio.config.ioconfig.model;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
 
-import java.util.Iterator;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
-import org.csstudio.config.ioconfig.model.pbmodel.ChannelStructureDBO;
-import org.csstudio.config.ioconfig.model.pbmodel.MasterDBO;
-import org.csstudio.config.ioconfig.model.pbmodel.ModuleDBO;
-import org.csstudio.config.ioconfig.model.pbmodel.ProfibusSubnetDBO;
-import org.csstudio.config.ioconfig.model.pbmodel.SlaveDBO;
-import org.junit.Before;
+import org.junit.AfterClass;
+import org.junit.BeforeClass;
 import org.junit.Test;
 
 /**
@@ -47,33 +43,29 @@ import org.junit.Test;
  */
 //CHECKSTYLE:OFF
 public class HibernateLoadUnitTest {
-    
+
     /**
      * @throws java.lang.Exception
      */
-    @Before
-    public void setUp() throws Exception {
-//        IPreferencesService prefs = Platform.getPreferencesService();
-//        prefs.getString("org.csstudio.platform", "log4j.appender.css_console.Threshold", "", null))
+    @BeforeClass
+    public static void setUpBeforeClass() throws Exception {
+        final HibernateRepository repository = new HibernateRepository(new HibernateTestManager());
+        Repository.injectIRepository(repository);
     }
+
+    @AfterClass
+    public static void tearDownAfterClass() {
+        Repository.close();
+    }
+
     
-    
+    @SuppressWarnings("rawtypes")
     @Test
     public void loadFromHibernate() throws Exception {
-        Repository.close();
-        List<FacilityDBO> load = Repository.load(FacilityDBO.class);
+        final List<FacilityDBO> load = Repository.load(FacilityDBO.class);
         assertNotNull(load);
         assertFalse(load.isEmpty());
-        
-        Iterator<FacilityDBO> iterator = load.iterator();
-        while (iterator.hasNext()) {
-            FacilityDBO next = iterator.next();
-            assertNotNull(next);
-            Set<DocumentDBO> documents = next.getDocuments();
-            assertNotNull(documents);
-            testIocs(next.getChildren());
-        }
-       
+        testChildrens(new HashSet<AbstractNodeDBO>(load));
         List<DocumentDBO> loadDocument = Repository.loadDocument(false);
         assertNotNull(loadDocument);
         assertFalse(loadDocument.isEmpty());
@@ -84,112 +76,20 @@ public class HibernateLoadUnitTest {
         assertNotNull(loadDocument);
         assertFalse(loadDocument.isEmpty());
 
-        
+
     }
 
-
-    /**
-     * @param next
-     */
-    private void testIocs(Set<IocDBO> iocs) {
-        if(!iocs.isEmpty()) {
-            Iterator<IocDBO> iocIterator = iocs.iterator();
-            while (iocIterator.hasNext()) {
-                IocDBO iocDBO = iocIterator.next();
-                Set<DocumentDBO> doc = iocDBO.getDocuments();
-                assertNotNull(doc);
-                testSubnets(iocDBO.getChildren());
-            }
-            
+    @SuppressWarnings({ "rawtypes", "unchecked" })
+    private void testChildrens(final Set<AbstractNodeDBO> nodes) {
+        for (AbstractNodeDBO node : nodes) {
+            final Set<DocumentDBO> doc = node.getDocuments();
+            assertNotNull(doc);
+            testChildrens(node.getChildren());
         }
     }
-    
-    /**
-     * @param children
-     */
-    private void testSubnets(Set<ProfibusSubnetDBO> children) {
-        if(!children.isEmpty()) {
-            Iterator<ProfibusSubnetDBO> subnetIterator = children.iterator();
-            while (subnetIterator.hasNext()) {
-                ProfibusSubnetDBO subnetDBO = subnetIterator.next();
-                Set<DocumentDBO> doc = subnetDBO.getDocuments();
-                assertNotNull(doc);
-                testMaster(subnetDBO.getChildren());
-            }
-            
-        }
-    }
-
-
-    /**
-     * @param children
-     */
-    private void testMaster(Set<MasterDBO> children) {
-        if(!children.isEmpty()) {
-            Iterator<MasterDBO> masterIterator = children.iterator();
-            while (masterIterator.hasNext()) {
-                MasterDBO masterDBO = masterIterator.next();
-                Set<DocumentDBO> doc = masterDBO.getDocuments();
-                assertNotNull(doc);
-                testSlave(masterDBO.getChildren());
-            }
-            
-        }
-    }
-
-
-    /**
-     * @param children
-     */
-    private void testSlave(Set<SlaveDBO> children) {
-        if(!children.isEmpty()) {
-            Iterator<SlaveDBO> iterator = children.iterator();
-            while (iterator.hasNext()) {
-                SlaveDBO dbo = iterator.next();
-                Set<DocumentDBO> doc = dbo.getDocuments();
-                assertNotNull(doc);
-                testModule(dbo.getChildren());
-            }
-        }
-    }
-
-
-    /**
-     * @param children
-     */
-    private void testModule(Set<ModuleDBO> children) {
-        if(!children.isEmpty()) {
-            Iterator<ModuleDBO> iterator = children.iterator();
-            while (iterator.hasNext()) {
-                ModuleDBO dbo = iterator.next();
-                Set<DocumentDBO> doc = dbo.getDocuments();
-                assertNotNull(doc);
-                testChannelStructure(dbo.getChildren());
-            }
-        }
-        
-    }
-
-
-    /**
-     * @param children
-     */
-    private void testChannelStructure(Set<ChannelStructureDBO> children) {
-        if(!children.isEmpty()) {
-            Iterator<ChannelStructureDBO> iterator = children.iterator();
-            while (iterator.hasNext()) {
-                ChannelStructureDBO dbo = iterator.next();
-                Set<DocumentDBO> doc = dbo.getDocuments();
-                assertNotNull(doc);
-            }
-        }
-        
-    }
-
 
     @Test
     public void loadDocumentWithFalseFromHibernate() throws Exception {
-        Repository.close();
         List<DocumentDBO> loadDocument = Repository.loadDocument(false);
         assertNotNull(loadDocument);
         assertFalse(loadDocument.isEmpty());
@@ -200,7 +100,6 @@ public class HibernateLoadUnitTest {
         assertNotNull(loadDocument);
         assertFalse(loadDocument.isEmpty());
     }
-    
-    
+
+
 }
-//CHECKSTYLE:ON

@@ -24,7 +24,6 @@
  */
 package org.csstudio.utility.adlconverter.utility.widgets;
 
-import org.csstudio.platform.logging.CentralLogger;
 import org.csstudio.sds.components.model.ImageModel;
 import org.csstudio.sds.model.AbstractWidgetModel;
 import org.csstudio.utility.adlconverter.Activator;

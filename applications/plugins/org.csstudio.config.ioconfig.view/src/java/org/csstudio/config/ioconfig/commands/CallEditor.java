@@ -24,23 +24,7 @@ package org.csstudio.config.ioconfig.commands;
 import javax.annotation.Nonnull;
 
 import org.csstudio.config.ioconfig.editorinputs.NodeEditorInput;
-import org.csstudio.config.ioconfig.editorparts.ChannelEditor;
-import org.csstudio.config.ioconfig.editorparts.ChannelStructureEditor;
-import org.csstudio.config.ioconfig.editorparts.FacilityEditor;
-import org.csstudio.config.ioconfig.editorparts.IocEditor;
-import org.csstudio.config.ioconfig.editorparts.MasterEditor;
-import org.csstudio.config.ioconfig.editorparts.ModuleEditor;
-import org.csstudio.config.ioconfig.editorparts.SlaveEditor;
-import org.csstudio.config.ioconfig.editorparts.SubnetEditor;
 import org.csstudio.config.ioconfig.model.AbstractNodeDBO;
-import org.csstudio.config.ioconfig.model.FacilityDBO;
-import org.csstudio.config.ioconfig.model.IocDBO;
-import org.csstudio.config.ioconfig.model.pbmodel.ChannelDBO;
-import org.csstudio.config.ioconfig.model.pbmodel.ChannelStructureDBO;
-import org.csstudio.config.ioconfig.model.pbmodel.MasterDBO;
-import org.csstudio.config.ioconfig.model.pbmodel.ModuleDBO;
-import org.csstudio.config.ioconfig.model.pbmodel.ProfibusSubnetDBO;
-import org.csstudio.config.ioconfig.model.pbmodel.SlaveDBO;
 import org.eclipse.ui.IWorkbenchPage;
 import org.eclipse.ui.PartInitException;
 
@@ -52,32 +36,17 @@ import org.eclipse.ui.PartInitException;
  */
 public class CallEditor extends AbstractCallNodeEditor {
 
-	public static final String ID = "org.csstudio.config.ioconfig.commands.callEditor";
+	public static final String ID = "org.csstudio.config.ioconfig.commands.callEditor";//$NON-NLS-1$
 
-	// CHECKSTYLE OFF: CyclomaticComplexity
 	@Override
-	protected final void openNodeEditor(@Nonnull AbstractNodeDBO obj,
+	protected final void openNodeEditor(@Nonnull AbstractNodeDBO<AbstractNodeDBO<?,?>,AbstractNodeDBO<?,?>> obj,
 			@Nonnull IWorkbenchPage page) throws PartInitException {
 
 		NodeEditorInput input = new NodeEditorInput(obj);
-		if (obj instanceof FacilityDBO) {
-			page.openEditor(input, FacilityEditor.ID);
-		} else if (obj instanceof IocDBO) {
-			page.openEditor(input, IocEditor.ID);
-		} else if (obj instanceof ProfibusSubnetDBO) {
-			page.openEditor(input, SubnetEditor.ID);
-		} else if (obj instanceof MasterDBO) {
-			page.openEditor(input, MasterEditor.ID);
-		} else if (obj instanceof SlaveDBO) {
-			page.openEditor(input, SlaveEditor.ID);
-		} else if (obj instanceof ModuleDBO) {
-			page.openEditor(input, ModuleEditor.ID);
-		} else if (obj instanceof ChannelDBO) {
-			page.openEditor(input, ChannelEditor.ID);
-		} else if (obj instanceof ChannelStructureDBO) {
-			page.openEditor(input, ChannelStructureEditor.ID);
-		}
+		
+		String id = NodeEditorHandler.getEditorIdFor(obj);
+
+		page.openEditor(input, id);
 
 	}
-	// CHECKSTYLE ON: CyclomaticComplexity
 }

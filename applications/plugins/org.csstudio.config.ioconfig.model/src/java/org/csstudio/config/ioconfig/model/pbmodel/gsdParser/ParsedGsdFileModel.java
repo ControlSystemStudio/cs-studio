@@ -3,6 +3,7 @@
  */
 package org.csstudio.config.ioconfig.model.pbmodel.gsdParser;
 
+import java.io.Serializable;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.TreeMap;
@@ -10,22 +11,29 @@ import java.util.TreeMap;
 import javax.annotation.CheckForNull;
 import javax.annotation.Nonnull;
 
+import org.csstudio.config.ioconfig.model.pbmodel.GSDFileDBO;
+
 /**
  * @author hrickens
  *
  */
-public class ParsedGsdFileModel extends AbstractGsdPropertyModel {
+public class ParsedGsdFileModel extends AbstractGsdPropertyModel implements Serializable  {
+    
+    private static final long serialVersionUID = 1L;
     
     private final String _name;
     private final Map<Integer, PrmText> _prmTextMap;
     private final Map<Integer, GsdModuleModel2> _gsdModuleModelMap;
     private final Map<Integer, ExtUserPrmData> _gsdExtUserPrmData;
+    private final GSDFileDBO _gsdFileDBO;
+    
     /**
      * Constructor.
-     * @param name
+     * @param gsdFileDBO
      */
-    public ParsedGsdFileModel(@Nonnull String name) {
-        _name = name;
+    public ParsedGsdFileModel(@Nonnull GSDFileDBO gsdFileDBO) {
+        _gsdFileDBO = gsdFileDBO;
+        _name = gsdFileDBO.getName();
         _prmTextMap = new TreeMap<Integer, PrmText>();
         _gsdModuleModelMap = new TreeMap<Integer, GsdModuleModel2>();
         _gsdExtUserPrmData = new HashMap<Integer, ExtUserPrmData>();
@@ -118,5 +126,18 @@ public class ParsedGsdFileModel extends AbstractGsdPropertyModel {
         Integer intProperty = getIntProperty("Station_Type");
         // Station_Type == 1 => Master
         return intProperty==null?false:intProperty==1;
+    }
+
+    /**
+     * 
+     */
+    public boolean isModularStation() {
+        Integer intProperty = getIntProperty("Modular_Station");
+        return intProperty==null?false:intProperty!=0;
+    }
+
+    @Nonnull
+    public GSDFileDBO getGsdFileDBO() {
+        return _gsdFileDBO;
     }
 }

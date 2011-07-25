@@ -24,9 +24,10 @@
  */
 package org.csstudio.utility.adlconverter.utility.widgets;
 
-import org.csstudio.platform.logging.CentralLogger;
 import org.csstudio.sds.components.model.TextInputModel;
 import org.csstudio.sds.internal.rules.ParameterDescriptor;
+import org.csstudio.sds.model.AbstractTextTypeWidgetModel;
+import org.csstudio.sds.model.AbstractWidgetModel;
 import org.csstudio.sds.model.DynamicsDescriptor;
 import org.csstudio.sds.model.TextTypeEnum;
 import org.csstudio.utility.adlconverter.internationalization.Messages;
@@ -35,6 +36,8 @@ import org.csstudio.utility.adlconverter.utility.ADLWidget;
 import org.csstudio.utility.adlconverter.utility.DebugHelper;
 import org.csstudio.utility.adlconverter.utility.FileLine;
 import org.csstudio.utility.adlconverter.utility.WrongADLFormatException;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * @author hrickens
@@ -43,6 +46,8 @@ import org.csstudio.utility.adlconverter.utility.WrongADLFormatException;
  * @since 18.09.2007
  */
 public class Textinput extends Widget {
+    
+    private static final Logger LOG = LoggerFactory.getLogger(Textinput.class);
 
     /**
      * @param textInput The ADLWidget that describe the Textinput.
@@ -50,6 +55,7 @@ public class Textinput extends Widget {
      * @param storedBasicAttribute 
      * @throws WrongADLFormatException WrongADLFormatException Wrong ADL format or untreated parameter found.
      */
+    @SuppressWarnings("restriction")
     public Textinput(final ADLWidget textInput, ADLWidget storedBasicAttribute, ADLWidget storedDynamicAttribute) throws WrongADLFormatException {
         super(textInput, storedBasicAttribute, storedDynamicAttribute);
         for (FileLine fileLine : textInput.getBody()) {
@@ -88,20 +94,20 @@ public class Textinput extends Widget {
                     id = 4;
                 }else{
                     //TODO: Textinput --> align formats
-                    CentralLogger.getInstance().debug(this, Messages.Textinput_Align_Debug+fileLine);
+                    LOG.debug(Messages.Textinput_Align_Debug, fileLine);
                 }
                 _widget.setPropertyValue(TextInputModel.PROP_TEXT_ALIGNMENT, id);
             }else if(row[0].equals("format")){ //$NON-NLS-1$
                 if(row[1].equals("\"string\"")){ //$NON-NLS-1$
-                    _widget.setPropertyValue(TextInputModel.PROP_TEXT_TYPE, TextTypeEnum.TEXT);
+                    _widget.setPropertyValue(AbstractTextTypeWidgetModel.PROP_TEXT_TYPE, TextTypeEnum.TEXT);
                 }else if(row[1].equals("\"exponential\"")){ //$NON-NLS-1$
-                    _widget.setPropertyValue(TextInputModel.PROP_TEXT_TYPE, TextTypeEnum.EXP);
+                    _widget.setPropertyValue(AbstractTextTypeWidgetModel.PROP_TEXT_TYPE, TextTypeEnum.EXP);
                 }else if(row[1].equals("\"decimal\"")){ //$NON-NLS-1$
-                    _widget.setPropertyValue(TextInputModel.PROP_TEXT_TYPE, TextTypeEnum.DOUBLE);
+                    _widget.setPropertyValue(AbstractTextTypeWidgetModel.PROP_TEXT_TYPE, TextTypeEnum.DOUBLE);
                 }else if(row[1].equals("\"hexadecimal\"")){ //$NON-NLS-1$
-                    _widget.setPropertyValue(TextInputModel.PROP_TEXT_TYPE, TextTypeEnum.HEX);
+                    _widget.setPropertyValue(AbstractTextTypeWidgetModel.PROP_TEXT_TYPE, TextTypeEnum.HEX);
                 }else{
-                    CentralLogger.getInstance().debug(this, Messages.Textinput_Format_Debug+fileLine);
+                    LOG.debug(Messages.Textinput_Format_Debug, fileLine);
                 }
             }else{                
 
@@ -128,7 +134,7 @@ public class Textinput extends Widget {
 //        <property type="sds.option" id="border.style">
 //        <option id="5" />
 //        </property>
-        _widget.setPropertyValue(TextInputModel.PROP_BORDER_STYLE, 5);
+        _widget.setPropertyValue(AbstractWidgetModel.PROP_BORDER_STYLE, 5);
         _widget.setLayer(Messages.ADLDisplayImporter_ADLActionLayerName);
 
     }

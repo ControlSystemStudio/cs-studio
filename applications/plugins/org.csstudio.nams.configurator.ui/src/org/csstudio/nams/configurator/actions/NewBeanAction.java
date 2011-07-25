@@ -18,14 +18,16 @@ public class NewBeanAction extends Action implements IViewActionDelegate {
 	private Class<IConfigurationBean> bean;
 
 	public NewBeanAction() {
-
+        // Nothing to do
 	}
 
-	public void init(final IViewPart view) {
-
+	@Override
+    public void init(final IViewPart view) {
+        // Nothing to do
 	}
 
-	public void run(final IAction action) {
+	@Override
+    public void run(final IAction action) {
 		ConfigurationEditorInput editorInput;
 		try {
 			editorInput = new ConfigurationEditorInput(this.bean.newInstance());
@@ -47,11 +49,11 @@ public class NewBeanAction extends Action implements IViewActionDelegate {
 		}
 	}
 
-	public void selectionChanged(final IAction action,
+	@Override
+    public void selectionChanged(final IAction action,
 			final ISelection selection) {
 		final IStructuredSelection sSelection = (IStructuredSelection) selection;
 		final Object source = sSelection.getFirstElement();
 		this.bean = (Class<IConfigurationBean>) source.getClass();
 	}
-
 }

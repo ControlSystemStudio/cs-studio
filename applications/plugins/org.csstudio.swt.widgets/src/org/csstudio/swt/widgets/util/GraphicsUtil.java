@@ -9,6 +9,7 @@ package org.csstudio.swt.widgets.util;
 
 import org.csstudio.swt.widgets.Preferences;
 import org.eclipse.draw2d.Graphics;
+import org.eclipse.swt.SWT;
 import org.eclipse.swt.graphics.RGB;
 
 /**The utility class contains functions that all related with graphics.
@@ -18,6 +19,8 @@ import org.eclipse.swt.graphics.RGB;
 public class GraphicsUtil {
 
 	public static synchronized boolean testPatternSupported(Graphics graphics){
+		if(SWT.getPlatform().startsWith("rap")) //$NON-NLS-1$
+			return false;
 		if(!Preferences.useAdvancedGraphics())
 			return false;
 		String value = System.getProperty(Preferences.PROHIBIT_ADVANCED_GRAPHICS); //$NON-NLS-1$

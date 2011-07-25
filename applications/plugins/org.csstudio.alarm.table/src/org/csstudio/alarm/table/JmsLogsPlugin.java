@@ -41,7 +41,6 @@ import org.csstudio.alarm.table.service.AlarmSoundService;
 import org.csstudio.alarm.table.service.IAlarmSoundService;
 import org.csstudio.alarm.table.service.ITopicsetService;
 import org.csstudio.alarm.table.service.TopicsetService;
-import org.csstudio.platform.logging.CentralLogger;
 import org.csstudio.platform.ui.AbstractCssUiPlugin;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
@@ -50,11 +49,15 @@ import org.eclipse.ui.plugin.AbstractUIPlugin;
 import org.osgi.framework.BundleContext;
 import org.osgi.framework.ServiceReference;
 import org.osgi.framework.ServiceRegistration;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * The main plugin class to be used in the desktop.
  */
 public class JmsLogsPlugin extends AbstractCssUiPlugin {
+    
+    private static final Logger LOG = LoggerFactory.getLogger(JmsLogsPlugin.class);
 
 	// The plug-in ID
 	public static final String PLUGIN_ID = "org.csstudio.alarm.table"; //$NON-NLS-1$
@@ -113,7 +116,8 @@ public class JmsLogsPlugin extends AbstractCssUiPlugin {
 	/**
 	 * This method is called upon plug-in activation
 	 */
-	public void doStart(final BundleContext context) throws Exception {
+	@Override
+    public void doStart(final BundleContext context) throws Exception {
 		_alarmService = getService(context, IAlarmService.class);
 		_alarmConfigurationService = getService(context,
 				IAlarmConfigurationService.class);
@@ -167,8 +171,9 @@ public class JmsLogsPlugin extends AbstractCssUiPlugin {
 	/**
 	 * This method is called when the plug-in is stopped
 	 */
-	public void doStop(final BundleContext context) throws Exception {
-		CentralLogger.getInstance().info(this, "doStop");
+	@Override
+    public void doStop(final BundleContext context) throws Exception {
+		LOG.info("doStop");
 		safelyDisconnect(_topicsetServiceForAlarmViews);
 		safelyDisconnect(_topicsetServiceForLogViews);
 
@@ -182,8 +187,8 @@ public class JmsLogsPlugin extends AbstractCssUiPlugin {
 		try {
 			topicsetService.disconnectAll();
 		} catch (final RuntimeException e) {
-			CentralLogger.getInstance().error(this,
-					"Error while disconnecting " + topicsetService, e);
+			LOG.error("Error while disconnecting {}", topicsetService,
+					e);
 		}
 	}
 

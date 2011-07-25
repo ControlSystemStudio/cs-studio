@@ -64,8 +64,12 @@ import org.hibernate.annotations.Cascade;
 @Entity
 @Table(name = "ddb_node")
 @Inheritance(strategy = InheritanceType.JOINED)
-public abstract class AbstractNodeDBO<P extends AbstractNodeDBO, C extends AbstractNodeDBO> extends
-        NamedDBClass implements Comparable<AbstractNodeDBO<P,C>>, IDocumentable, INode, Serializable {
+public abstract class AbstractNodeDBO<P extends AbstractNodeDBO, C extends AbstractNodeDBO> 
+                                     extends NamedDBClass 
+                                     implements Comparable<AbstractNodeDBO<P,C>>, 
+                                                IDocumentable, 
+                                                INode,
+                                                Serializable {
     
     private static final long serialVersionUID = 1L;
 
@@ -75,7 +79,7 @@ public abstract class AbstractNodeDBO<P extends AbstractNodeDBO, C extends Abstr
      * The highest accept station address.
      */
     @Transient
-    public static final int MAX_STATION_ADDRESS = 128;
+    private static final int MAX_STATION_ADDRESS = 128;
     
     /**
      * The Node Patent.
@@ -103,6 +107,12 @@ public abstract class AbstractNodeDBO<P extends AbstractNodeDBO, C extends Abstr
      */
     public AbstractNodeDBO() {
         // Do nothing
+    }
+
+    @SuppressWarnings("unchecked")
+    public AbstractNodeDBO(@Nonnull final P parent) throws PersistenceException {
+        _parent = parent;
+        _parent.addChild(this);
     }
     
     /**
@@ -140,6 +150,7 @@ public abstract class AbstractNodeDBO<P extends AbstractNodeDBO, C extends Abstr
      *
      * @return the Children of this node.
      */
+    @SuppressWarnings("deprecation")
     @OneToMany(mappedBy = "parent", targetEntity = AbstractNodeDBO.class, fetch = FetchType.LAZY, cascade = {
             CascadeType.PERSIST, CascadeType.MERGE})
     @Cascade({org.hibernate.annotations.CascadeType.SAVE_UPDATE,
@@ -238,7 +249,7 @@ public abstract class AbstractNodeDBO<P extends AbstractNodeDBO, C extends Abstr
      * @throws PersistenceException 
      */
     @Transient
-    public short getfirstFreeStationAddress(final int maxStationAddress) throws PersistenceException {
+    public int getfirstFreeStationAddress(final int maxStationAddress) throws PersistenceException {
         final Map<Short, C> children = getChildrenAsMap();
         Short nextKey = 0;
         if(!children.containsKey(nextKey)) {
@@ -253,7 +264,7 @@ public abstract class AbstractNodeDBO<P extends AbstractNodeDBO, C extends Abstr
                 nextKey = key;
             }
         }
-        return (short) (nextKey + 1);
+        return nextKey + 1;
     }
     
     /**
@@ -604,4 +615,14 @@ public abstract class AbstractNodeDBO<P extends AbstractNodeDBO, C extends Abstr
     public GSDFileTypes needGSDFile() {
         return GSDFileTypes.NONE;
     }
+    
+    @Nonnull
+    public abstract C createChild() throws PersistenceException;
+
+    public abstract void accept(@Nonnull final INodeVisitor visitor);
+    
+    public static int getMaxStationAddress() {
+        return MAX_STATION_ADDRESS;
+    }
+
 }

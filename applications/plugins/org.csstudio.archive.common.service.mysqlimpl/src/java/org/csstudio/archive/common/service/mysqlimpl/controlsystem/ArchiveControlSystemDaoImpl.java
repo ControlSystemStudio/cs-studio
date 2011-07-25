@@ -48,9 +48,9 @@ import com.google.inject.Inject;
  */
 public class ArchiveControlSystemDaoImpl extends AbstractArchiveDao implements IArchiveControlSystemDao {
 
-    private static final String RETRIEVAL_FAILED = "Control system retrieval from archive failed.";
-
     public static final String TAB = "control_system";
+
+    private static final String RETRIEVAL_FAILED = "Control system retrieval from archive failed.";
 
     private final String _selectCSByIdStmt = "SELECT name,type FROM " +
                                              getDatabaseName() +

@@ -6,9 +6,9 @@ import java.util.LinkedList;
 import java.util.List;
 
 /**
- * Mock of {@link Logger}s for unit-testing.
+ * Mock of {@link ILogger}s for unit-testing.
  */
-public class LoggerMock implements Logger {
+public class LoggerMock implements ILogger {
 
 	public class LogEntry {
 		private final LogType logType;

@@ -28,16 +28,17 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.GregorianCalendar;
 import java.util.List;
-import org.apache.log4j.Logger;
-import org.csstudio.archive.sdds.server.Activator;
+
+import org.csstudio.archive.sdds.server.SddsServerActivator;
 import org.csstudio.archive.sdds.server.command.header.DataRequestHeader;
 import org.csstudio.archive.sdds.server.data.EpicsRecordData;
 import org.csstudio.archive.sdds.server.internal.ServerPreferenceKey;
 import org.csstudio.archive.sdds.server.sdds.SDDSType;
 import org.csstudio.archive.sdds.server.util.DataException;
-import org.csstudio.platform.logging.CentralLogger;
 import org.eclipse.core.runtime.Platform;
 import org.eclipse.core.runtime.preferences.IPreferencesService;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * TODO (mmoeller) : 
@@ -49,11 +50,11 @@ import org.eclipse.core.runtime.preferences.IPreferencesService;
 public class AverageHandler extends AlgorithmHandler {
     
     /** The logger for this class */
-    private Logger logger;
+    private static final Logger LOG = LoggerFactory.getLogger(AverageHandler.class);
     
     /** Max. allowed difference of the last allowed record (in seconds)*/ 
     @SuppressWarnings("unused")
-	private long validRecordBeforeTime;
+	private final long validRecordBeforeTime;
 
     /**
      * @param maxSamples
@@ -62,12 +63,11 @@ public class AverageHandler extends AlgorithmHandler {
         
         super(maxSamples);
         
-        logger = CentralLogger.getInstance().getLogger(this);
         
         IPreferencesService pref = Platform.getPreferencesService();
-        validRecordBeforeTime = pref.getLong(Activator.PLUGIN_ID, ServerPreferenceKey.P_VALID_RECORD_BEFORE, 3600, null);
+        validRecordBeforeTime = pref.getLong(SddsServerActivator.PLUGIN_ID, ServerPreferenceKey.P_VALID_RECORD_BEFORE, 3600, null);
         
-        logger.info(this.getClass().getSimpleName() + " created. Max. samples per request: " + maxSamples);
+        LOG.info(this.getClass().getSimpleName() + " created. Max. samples per request: " + maxSamples);
     }
     
     /* (non-Javadoc)
@@ -193,7 +193,7 @@ public class AverageHandler extends AlgorithmHandler {
             if (Float.isNaN(avg) == false) {
 				EpicsRecordData newData = new EpicsRecordData(curTime, 0L, 0L, new Double(String.valueOf(avg)), SDDSType.SDDS_DOUBLE);
 				resultData.add(newData);
-				logger.debug(newData.toString());
+				LOG.debug(newData.toString());
 				newData = null;
             }
             

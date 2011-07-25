@@ -43,6 +43,8 @@ import org.csstudio.archive.common.service.channelgroup.ArchiveChannelGroupId;
 import org.csstudio.archive.common.service.controlsystem.ArchiveControlSystem;
 import org.csstudio.archive.common.service.controlsystem.ArchiveControlSystemId;
 import org.csstudio.archive.common.service.controlsystem.IArchiveControlSystem;
+import org.csstudio.archive.common.service.mysqlimpl.batch.BatchQueueHandlerSupport;
+import org.csstudio.archive.common.service.mysqlimpl.channel.UpdateDisplayInfoBatchQueueHandler.ArchiveChannelDisplayInfo;
 import org.csstudio.archive.common.service.mysqlimpl.controlsystem.ArchiveControlSystemDaoImpl;
 import org.csstudio.archive.common.service.mysqlimpl.dao.AbstractArchiveDao;
 import org.csstudio.archive.common.service.mysqlimpl.dao.ArchiveConnectionHandler;
@@ -71,17 +73,20 @@ import com.google.inject.Inject;
  */
 public class ArchiveChannelDaoImpl extends AbstractArchiveDao implements IArchiveChannelDao {
 
+    public static final String TAB = "channel";
+
     private static final String EXC_MSG = "Channel table access failed.";
 
     private static final Timestamp DEFAULT_ZERO_TIMESTAMP = new Timestamp(0L);
+
+    private static final String CS_TAB = ArchiveControlSystemDaoImpl.TAB;
+
     /**
      * Archive channel configuration cache.
      */
     private final Map<String, IArchiveChannel> _channelCacheByName = Maps.newHashMap();
     private final Map<ArchiveChannelId, IArchiveChannel> _channelCacheById = Maps.newHashMap();
 
-    public static final String TAB = "channel";
-    private static final String CS_TAB = ArchiveControlSystemDaoImpl.TAB;
 
     private final String _selectChannelPrefix =
         "SELECT " + TAB + ".id, " + TAB + ".name, " + TAB + ".datatype, " + TAB + ".group_id, " + TAB + ".last_sample_time, " +
@@ -101,18 +106,18 @@ public class ArchiveChannelDaoImpl extends AbstractArchiveDao implements IArchiv
 
     /**
      * Constructor.
+     * @throws ArchiveDaoException
      */
     @Inject
     public ArchiveChannelDaoImpl(@Nonnull final ArchiveConnectionHandler handler,
                                  @Nonnull final PersistEngineDataManager persister) {
         super(handler, persister);
+        BatchQueueHandlerSupport.installHandlerIfNotExists(new UpdateDisplayInfoBatchQueueHandler(getDatabaseName()));
     }
 
     @Nonnull
     private IArchiveChannel readChannelFromResultIntoCache(@Nonnull final ResultSet result)
                                                            throws SQLException,
-                                                                  ClassNotFoundException,
-                                                                  ArchiveDaoException,
                                                                   TypeSupportException {
         // id, name, datatype, group_id, last_sample_time
         final ArchiveChannelId id = new ArchiveChannelId(result.getLong(TAB + ".id"));
@@ -220,8 +225,6 @@ public class ArchiveChannelDaoImpl extends AbstractArchiveDao implements IArchiv
     private Set<IArchiveChannel> retrieveUncachedChannelsBy(@Nonnull final Set<String> names)
                                                           throws ArchiveConnectionException,
                                                                  SQLException,
-                                                                 ClassNotFoundException,
-                                                                 ArchiveDaoException,
                                                                  TypeSupportException {
 
         final Set<IArchiveChannel> foundChannels = Sets.newHashSetWithExpectedSize(names.size());
@@ -239,7 +242,7 @@ public class ArchiveChannelDaoImpl extends AbstractArchiveDao implements IArchiv
 
     @CheckForNull
     private IArchiveChannel retrieveUncachedChannelBy(@Nonnull final PreparedStatement stmt)
-                                                    throws SQLException, ClassNotFoundException, ArchiveDaoException, TypeSupportException
+                                                    throws SQLException, TypeSupportException
                                                      {
         try {
             final ResultSet result = stmt.executeQuery();
@@ -304,16 +307,14 @@ public class ArchiveChannelDaoImpl extends AbstractArchiveDao implements IArchiv
     public <V extends Comparable<? super V>> void updateDisplayRanges(@Nonnull final ArchiveChannelId id,
                                                                       @Nonnull final V displayLow,
                                                                       @Nonnull final V displayHigh) throws ArchiveDaoException {
-        String updateDisplayRangesStmt;
         try {
-            updateDisplayRangesStmt = "UPDATE " + getDatabaseName() + "." + TAB +
-            " SET display_high=" + ArchiveTypeConversionSupport.toArchiveString(displayHigh) +
-            ", display_low=" + ArchiveTypeConversionSupport.toArchiveString(displayLow) +
-            " WHERE " + getDatabaseName() + "." + TAB + ".id=" + id.asString();
-
-            getEngineMgr().submitStatementToBatch(updateDisplayRangesStmt);
+            final ArchiveChannelDisplayInfo info =
+                new ArchiveChannelDisplayInfo(id,
+                                              ArchiveTypeConversionSupport.toArchiveString(displayHigh),
+                                              ArchiveTypeConversionSupport.toArchiveString(displayLow));
+            getEngineMgr().submitToBatch(Collections.singleton(info));
         } catch (final TypeSupportException e) {
-            handleExceptions(EXC_MSG + " Display ranges could not be written.", e);
+            throw new ArchiveDaoException("Update display failed. No type support found for " + displayLow.getClass().getName(), e);
         }
     }
 

@@ -1,6 +1,8 @@
+
 /**
  * 
  */
+
 package org.csstudio.nams.common.activatorUtils;
 
 public enum ApplicationStepResult {

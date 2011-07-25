@@ -1,3 +1,4 @@
+
 /* 
  * Copyright (c) 2008 Stiftung Deutsches Elektronen-Synchrotron, 
  * Member of the Helmholtz Association, (DESY), HAMBURG, GERMANY.
@@ -19,7 +20,8 @@
  * PROJECT IN THE FILE LICENSE.HTML. IF THE LICENSE IS NOT INCLUDED YOU MAY FIND A COPY 
  * AT HTTP://WWW.DESY.DE/LEGAL/LICENSE.HTM
  */
- package org.csstudio.ams.connector.voicemail;
+
+package org.csstudio.ams.connector.voicemail;
 
 import java.util.MissingResourceException;
 import java.util.ResourceBundle;
@@ -27,7 +29,8 @@ import java.util.ResourceBundle;
 import org.eclipse.osgi.util.NLS;
 
 public class Messages extends NLS {
-	private static final String BUNDLE_NAME = "org.csstudio.ams.connector.voicemail.messages";
+	
+    private static final String BUNDLE_NAME = "org.csstudio.ams.connector.voicemail.messages";
 
 	public static String P_VM_SERVICE;
 	public static String P_VM_PORT;
@@ -48,6 +51,7 @@ public class Messages extends NLS {
 			.getBundle(BUNDLE_NAME);
 
 	private Messages() {
+	    // Avoid instantiation
 	}
 	
 	public static String getString(String key) {

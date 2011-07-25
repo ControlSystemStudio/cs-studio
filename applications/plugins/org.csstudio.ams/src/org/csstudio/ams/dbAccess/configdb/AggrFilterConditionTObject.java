@@ -23,23 +23,21 @@
 
 package org.csstudio.ams.dbAccess.configdb;
 
-import java.io.Serializable;
-
 import org.csstudio.ams.dbAccess.TObject;
 
 /**
 	iFilterConditionID		NUMBER(11) NOT NULL,
 	iFilterConditionTypeRef NUMBER(11),
 */
-public class AggrFilterConditionTObject extends TObject implements Serializable
-{
-	private static final long serialVersionUID = -2308859649795309770L;
+@SuppressWarnings("hiding")
+public class AggrFilterConditionTObject extends TObject {
+	
+    private static final long serialVersionUID = -2308859649795309770L;
 	
 	private int filterConditionID;
 	private int filterConditionTypeRef;
 	
-	public AggrFilterConditionTObject(int filterConditionID, int filterConditionTypeRef)
-	{
+	public AggrFilterConditionTObject(int filterConditionID, int filterConditionTypeRef) {
 		this.filterConditionID = filterConditionID;
 		this.filterConditionTypeRef = filterConditionTypeRef;
 	}

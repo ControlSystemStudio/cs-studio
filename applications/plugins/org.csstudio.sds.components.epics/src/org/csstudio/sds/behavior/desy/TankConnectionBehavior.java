@@ -61,7 +61,6 @@ public class TankConnectionBehavior extends MarkedWidgetDesyConnectionBehavior<T
         // add Invisible Property Id here
         addInvisiblePropertyId(TankModel.PROP_FILL_COLOR);
         addInvisiblePropertyId(TankModel.PROP_FILLBACKGROUND_COLOR);
-
     }
 
     /**
@@ -80,11 +79,10 @@ public class TankConnectionBehavior extends MarkedWidgetDesyConnectionBehavior<T
     @Override
     protected void doProcessConnectionStateChange( final TankModel widget, final AnyDataChannel anyDataChannel) {
         ConnectionState connectionState = anyDataChannel.getProperty().getConnectionState();
-        String fillBackColor = (connectionState==ConnectionState.CONNECTED)?_defFillBackColor  : determineBackgroundColor(connectionState);
+        String fillBackColor = isConnected(anyDataChannel)?_defFillBackColor  : determineBackgroundColor(connectionState);
         widget.setPropertyValue(TankModel.PROP_FILLBACKGROUND_COLOR, fillBackColor);
-        String fillColor = (connectionState==ConnectionState.CONNECTED)?_defFillColor  : determineBackgroundColor(connectionState);
+        String fillColor = isConnected(anyDataChannel)?_defFillColor  : determineBackgroundColor(connectionState);
         widget.setPropertyValue(TankModel.PROP_FILL_COLOR, fillColor);
-
     }
 
 }

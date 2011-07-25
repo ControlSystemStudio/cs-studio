@@ -1,3 +1,4 @@
+
 package org.csstudio.nams.configurator.editor;
 
 import org.csstudio.nams.configurator.Messages;

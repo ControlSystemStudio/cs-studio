@@ -27,12 +27,28 @@ package org.csstudio.ams.remotetool;
  * @author Markus Moeller
  *
  */
-public enum ApplicResult
-{
-    RESULT_OK,
-    RESULT_ERROR_GENERAL,
-    RESULT_ERROR_NOT_FOUND,
-    RESULT_ERROR_INVALID_PASSWORD,
-    RESULT_ERROR_XMPP,
-    RESULT_ERROR_UNKNOWN;
+public enum ApplicResult {
+    
+    RESULT_OK(0),
+    RESULT_ERROR_GENERAL(2),
+    RESULT_ERROR_NOT_FOUND(3),
+    RESULT_ERROR_INVALID_PASSWORD(4),
+    RESULT_ERROR_XMPP(5),
+    RESULT_ERROR_UNKNOWN(6);
+    
+    /** The result number */
+    private int number;
+    
+    private ApplicResult(int nr) {
+        number = nr;
+    }
+    
+    /**
+     * Returns the result number.
+     * 
+     * @return The number of the return result.
+     */
+    public int getApplicResultNumber() {
+        return number;
+    }
 }

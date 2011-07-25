@@ -43,15 +43,7 @@ import com.google.common.collect.Iterables;
 public class EnumArchiveTypeConversionSupport extends ArchiveTypeConversionSupport<EpicsEnum> {
 
     /**
-     * Constructor.
-     * @param type
-     */
-    EnumArchiveTypeConversionSupport() {
-        super(EpicsEnum.class);
-    }
-
-    /**
-     * guava converter function
+     * Guava converter function
      *
      * @author bknerr
      * @since 22.12.2010
@@ -75,7 +67,15 @@ public class EnumArchiveTypeConversionSupport extends ArchiveTypeConversionSuppo
               }
           }
     }
-    private final ArchiveString2EpicsEnumFunction _archiveString2EpicsEnumFunc = new ArchiveString2EpicsEnumFunction();
+    private final ArchiveString2EpicsEnumFunction _archiveString2EpicsEnumFunc =
+        new ArchiveString2EpicsEnumFunction();
+
+    /**
+     * Constructor.
+     */
+    EnumArchiveTypeConversionSupport() {
+        super(EpicsEnum.class);
+    }
 
     /**
      * {@inheritDoc}

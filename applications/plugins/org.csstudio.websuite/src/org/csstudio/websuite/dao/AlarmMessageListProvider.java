@@ -31,7 +31,6 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Vector;
 
-import org.csstudio.platform.logging.CentralLogger;
 import org.csstudio.websuite.WebSuiteActivator;
 import org.csstudio.websuite.dataModel.AlarmMessage;
 import org.csstudio.websuite.dataModel.AlarmMessageList;
@@ -44,6 +43,8 @@ import org.eclipse.core.runtime.preferences.IPreferencesService;
 import org.jdom.Document;
 import org.jdom.Element;
 import org.jdom.output.XMLOutputter;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * Data access object that provides the AlarmMessageList in different formats
@@ -52,6 +53,8 @@ import org.jdom.output.XMLOutputter;
  * @author ababic, Markus Moeller
  */
 public class AlarmMessageListProvider {
+   
+    private static final Logger LOG = LoggerFactory.getLogger(AlarmMessageListProvider.class);
     
     /** This instance */
 	private static AlarmMessageListProvider instance = null;
@@ -66,7 +69,7 @@ public class AlarmMessageListProvider {
 	private JmsMessageReceiver jmsMessageReceiver = null;
 	
 	/** Comma separated lsit of all alarm topics */
-	private String alarmTopicList;
+	private final String alarmTopicList;
 	
 	/** Just the id of this plugin */
 	public static final String PLUGIN_ID = "org.csstudio.alertviewer";
@@ -75,10 +78,10 @@ public class AlarmMessageListProvider {
 	 * It sets the columns that will be included in the response.
 	 * For all valid columns check the configuration file.
 	 * 
-	 * @param displayParameters
+	 * @param params
 	 */
-	public void setDisplayParameters(LinkedList<String> displayParameters) {
-		this.displayParameters = displayParameters;
+	public void setDisplayParameters(LinkedList<String> params) {
+		this.displayParameters = params;
 	}
 
 	
@@ -86,25 +89,27 @@ public class AlarmMessageListProvider {
 	 * Private constructor - singleton
 	 * 
 	 * @param defaultTopicSet
-	 * @param displayParameters
+	 * @param params
 	 */
-	private AlarmMessageListProvider(String defaultTopicSet, LinkedList<String> displayParameters) {
+	private AlarmMessageListProvider(String defaultTopicSet, LinkedList<String> params) {
 	    
 	    IPreferencesService preferences = Platform.getPreferencesService();
         
 		messageList = new AlarmMessageList();
 		jmsMessageReceiver = new JmsMessageReceiver(messageList);
 		
-		if(defaultTopicSet == null)
-		{
-			defaultTopicSet = preferences.getString(WebSuiteActivator.PLUGIN_ID, PreferenceConstants.DEFAULT_TOPIC_SET, "ALARM", null);
+		
+		if(defaultTopicSet == null) {
+			defaultTopicSet = preferences.getString(WebSuiteActivator.PLUGIN_ID,
+			                                        PreferenceConstants.DEFAULT_TOPIC_SET,
+			                                        "ALARM", null);
 		}
 		
 		alarmTopicList = defaultTopicSet;
 		
 		jmsMessageReceiver.initializeJMSConnection(defaultTopicSet);
-		if(displayParameters !=null){
-			setDisplayParameters(displayParameters);
+		if(params !=null){
+			setDisplayParameters(params);
 		}else{
 			setDisplayParameters(getDefaultDisplayParameters());
 		}
@@ -406,7 +411,7 @@ public class AlarmMessageListProvider {
             try {
                 outputter.output(output, out);
             } catch(IOException e) {
-                CentralLogger.getInstance().error(this, "Cannot write to buffer", e);
+                LOG.error("Cannot write to buffer: " + e.getMessage());
             }
 
             return;
@@ -423,7 +428,7 @@ public class AlarmMessageListProvider {
 		    
 		    Vector<? extends BasicMessage> ml = messageList.getJMSMessageList();
 		    Collections.sort(ml, new BasicMessageComparator());
-		} catch(Exception e) {}
+		} catch(Exception e) {/* Can be ignored */}
 
         Iterator<? extends BasicMessage> iter = messageList.getJMSMessageList().iterator();
 
@@ -434,6 +439,10 @@ public class AlarmMessageListProvider {
     			Element alarmMessage = new Element("alarm");
     			basicMessage = iter.next();
     			
+                if (((AlarmMessage)basicMessage).isOutdated()) {
+                    continue;
+                }
+
     			// Only messages with severity MAJOR or MINOR should be returned
     			String severity = basicMessage.getHashMap().get("SEVERITY");
     			if(severity != null) {
@@ -495,7 +504,7 @@ public class AlarmMessageListProvider {
 		try {
 			outputter.output(output, out);
 		} catch(IOException e) {
-			CentralLogger.getInstance().error(this, "Cannot write to buffer: " + e.getMessage());
+			LOG.error("Cannot write to buffer: " + e.getMessage());
 		}
 	}
 }

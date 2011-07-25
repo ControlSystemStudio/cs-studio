@@ -1,3 +1,4 @@
+
 package org.csstudio.nams.common.material.regelwerk;
 
 import org.csstudio.nams.common.material.Regelwerkskennung;
@@ -15,5 +16,4 @@ public class DummyPruefliste extends Pruefliste {
 	public WeiteresVersandVorgehen gesamtErgebnis() {
 		return WeiteresVersandVorgehen.NICHT_VERSENDEN;
 	}
-
 }

@@ -67,6 +67,9 @@ public class CSSJmsAppender extends AppenderSkeleton
     /** Unused password */
     private String password;
 
+    /** */
+    private String tcfBindingName;
+
     /** Thread that performs the actual logging.
      *  When parameters change, a new/different thread will be created.
      *  <p>
@@ -80,10 +83,26 @@ public class CSSJmsAppender extends AppenderSkeleton
         return url;
     }
 
-    /** @param providerURL JMS server URL */
+    /** @param url JMS server URL */
     public void setProviderURL(final String url)
     {
         this.url = url.trim();
+    }
+
+    /**
+     * The <b>TopicConnectionFactoryBindingName</b> option takes a
+     * string value. Its value will be used to lookup the appropriate
+     * <code>TopicConnectionFactory</code> from the JNDI context.
+     */
+    public void setTopicConnectionFactoryBindingName(String tcfBindingName) {
+        this.tcfBindingName = tcfBindingName;
+    }
+  
+    /**
+     * Returns the value of the <b>TopicConnectionFactoryBindingName</b> option.
+     */
+    public String getTopicConnectionFactoryBindingName() {
+        return tcfBindingName;
     }
 
     /** @returns JMS topic used for logging */

@@ -69,7 +69,15 @@ public abstract class BaseTypeConversionSupport<T> extends AbstractTypeSupport<T
         }
     }
 
-    private static boolean INSTALLED = false;
+    private static boolean INSTALLED;
+
+    /**
+     * Constructor.
+     */
+    protected BaseTypeConversionSupport(@Nonnull final Class<T> type) {
+        super(type, BaseTypeConversionSupport.class);
+    }
+
     public static void install() {
         if (INSTALLED) {
             return;
@@ -78,12 +86,6 @@ public abstract class BaseTypeConversionSupport<T> extends AbstractTypeSupport<T
         TypeSupport.addTypeSupport(new StringBaseTypeConversionSupport());
 
         INSTALLED = true;
-    }
-    /**
-     * Constructor.
-     */
-    protected BaseTypeConversionSupport(@Nonnull final Class<T> type) {
-        super(type, BaseTypeConversionSupport.class);
     }
 
     @Nonnull

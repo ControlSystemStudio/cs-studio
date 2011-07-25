@@ -30,6 +30,7 @@ import javax.annotation.CheckForNull;
 import org.csstudio.diag.icsiocmonitor.service.IIocConnectionReporter;
 import org.csstudio.diag.interconnectionServer.server.IocConnectionReporter;
 import org.csstudio.platform.AbstractCssPlugin;
+import org.csstudio.utility.ldap.LdapServiceImplActivator;
 import org.csstudio.utility.ldap.service.ILdapService;
 import org.csstudio.utility.ldap.service.LdapServiceTracker;
 import org.osgi.framework.BundleContext;
@@ -76,6 +77,8 @@ public class Activator extends AbstractCssPlugin {
 //		context.registerService(IIocConnectionReporter.class.getName(),
 //				reporter, props);
 
+	LdapServiceImplActivator.getDefault();
+		
 		_ldapServiceTracker = new LdapServiceTracker(context);
 		_ldapServiceTracker.open();
 		_genericServiceTracker = new GenericServiceTracker<ISessionService>(

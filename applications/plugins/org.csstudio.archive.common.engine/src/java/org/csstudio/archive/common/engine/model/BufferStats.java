@@ -19,7 +19,7 @@ import org.csstudio.domain.desy.calc.AverageWithExponentialDecayCache;
 @ThreadSafe
 public final class BufferStats {
     @GuardedBy("this")
-    private int _maxSize = 0;
+    private int _maxSize;
 
     @GuardedBy("this")
     private final AverageWithExponentialDecayCache _avgSize = new AverageWithExponentialDecayCache(0.1);

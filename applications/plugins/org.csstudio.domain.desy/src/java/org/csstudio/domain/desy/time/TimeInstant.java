@@ -53,7 +53,6 @@ import org.joda.time.format.PeriodFormatterBuilder;
  */
 public final class TimeInstant implements Comparable<TimeInstant>, Serializable {
 
-    private static final long serialVersionUID = 3157468437971986526L;
 
     public static final DateTimeFormatter STD_DATE_FMT =
         DateTimeFormat.forPattern("yyyy-MM-dd");
@@ -98,12 +97,14 @@ public final class TimeInstant implements Comparable<TimeInstant>, Serializable 
         new PeriodFormatterBuilder().append(STD_DURATION_FMT)
                                     .appendMillis().toFormatter();
 
-    private static final int NANOS_PER_SECOND = 1000000000;
-    private static final int NANOS_PER_MILLIS = 1000000;
-    private static final int MILLIS_PER_SECOND = 1000;
+
+    public static final int NANOS_PER_SECOND = 1000000000;
+    public static final int NANOS_PER_MILLIS = 1000000;
+    public static final int MILLIS_PER_SECOND = 1000;
 
     public static final Long MAX_SECONDS = Long.MAX_VALUE / MILLIS_PER_SECOND - 1;
 
+    private static final long serialVersionUID = 3157468437971986526L;
 
     /**
      * The wrapped immutable joda time instant.
@@ -308,7 +309,7 @@ public final class TimeInstant implements Comparable<TimeInstant>, Serializable 
 
     /**
      * Returns a new immutable time instant object.
-     * @param millis the number of millis to add (or to subtract if negative
+     * @param millis nonnegative number of millis to add
      * @return a new time instant object
      * @throws IllegalArgumentException when millis is negative and
      */
@@ -321,6 +322,29 @@ public final class TimeInstant implements Comparable<TimeInstant>, Serializable 
             return this;
         }
         final Instant i = new Instant(getMillis() + millis);
+        return new TimeInstant(i, _fracMillisInNanos);
+    }
+
+
+    /**
+     * Returns a new immutable time instant object.
+     * @param millis nonnegative number of millis to subtract
+     * @return a new time instant obejct
+     * @throws IllegalArgumentException when computed time difference would cause instant before epoch
+     */
+    @Nonnull
+    public TimeInstant minusMillis(final long millis) {
+        if (millis < 0) {
+            throw new IllegalArgumentException("Millis may not be negative, use plusMillis.");
+        }
+        if (millis == 0) {
+            return this;
+        }
+        final long diff = getMillis() - millis;
+        if (diff < 0L) {
+            throw new IllegalArgumentException("Time instant would become negative, meaning before epoch.");
+        }
+        final Instant i = new Instant(diff);
         return new TimeInstant(i, _fracMillisInNanos);
     }
 
@@ -379,4 +403,5 @@ public final class TimeInstant implements Comparable<TimeInstant>, Serializable 
                                      @Nonnull final TimeInstant endTime) {
         return Math.abs(endTime.getMillis() - startTime.getMillis());
     }
+
 }

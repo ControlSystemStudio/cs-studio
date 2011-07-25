@@ -25,6 +25,7 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Timestamp;
+import java.util.Collections;
 
 import javax.annotation.CheckForNull;
 import javax.annotation.Nonnull;
@@ -33,13 +34,14 @@ import org.csstudio.archive.common.service.channel.ArchiveChannelId;
 import org.csstudio.archive.common.service.channelstatus.ArchiveChannelStatus;
 import org.csstudio.archive.common.service.channelstatus.ArchiveChannelStatusId;
 import org.csstudio.archive.common.service.channelstatus.IArchiveChannelStatus;
+import org.csstudio.archive.common.service.mysqlimpl.batch.BatchQueueHandlerSupport;
 import org.csstudio.archive.common.service.mysqlimpl.dao.AbstractArchiveDao;
 import org.csstudio.archive.common.service.mysqlimpl.dao.ArchiveConnectionHandler;
 import org.csstudio.archive.common.service.mysqlimpl.dao.ArchiveDaoException;
 import org.csstudio.archive.common.service.mysqlimpl.persistengine.PersistEngineDataManager;
 import org.csstudio.domain.desy.time.TimeInstant.TimeInstantBuilder;
+import org.csstudio.domain.desy.typesupport.TypeSupportException;
 
-import com.google.common.base.Joiner;
 import com.google.inject.Inject;
 
 /**
@@ -49,14 +51,9 @@ import com.google.inject.Inject;
  */
 public class ArchiveChannelStatusDaoImpl extends AbstractArchiveDao implements IArchiveChannelStatusDao {
 
-    private static final String EXC_MSG = "Retrieval of channel status from archive failed.";
-
     public static final String TAB = "channel_status";
 
-    private final String _insertChannelStatusStmtPrefix =
-        "INSERT INTO " + getDatabaseName() + "." + TAB +
-                     " (channel_id, connected, info, timestamp) " +
-                     "VALUES ";
+    private static final String EXC_MSG = "Retrieval of channel status from archive failed.";
 
     private final String _selectLatestChannelStatusStmt =
         "SELECT id, channel_id, connected, info, timestamp FROM " +
@@ -67,18 +64,18 @@ public class ArchiveChannelStatusDaoImpl extends AbstractArchiveDao implements I
     public ArchiveChannelStatusDaoImpl(@Nonnull final ArchiveConnectionHandler handler,
                                        @Nonnull final PersistEngineDataManager persister) {
         super(handler, persister);
+
+        BatchQueueHandlerSupport.installHandlerIfNotExists(new ArchiveChannelStatusBatchQueueHandler(getDatabaseName()));
     }
 
 
     @Override
     public void createChannelStatus(@Nonnull final IArchiveChannelStatus entry) throws ArchiveDaoException {
-        final String stmtStr = Joiner.on(",").join(entry.getChannelId().intValue(),
-                                                   (entry.isConnected() ? "'TRUE'" : "'FALSE'"),
-                                                   "'" + entry.getInfo() + "'",
-                                                   "'" + entry.getTime().formatted() + "'");
-
-
-        getEngineMgr().submitStatementToBatch(_insertChannelStatusStmtPrefix + "("  + stmtStr + ")");
+        try {
+            getEngineMgr().submitToBatch(Collections.singleton(entry));
+        } catch (final TypeSupportException e) {
+            throw new ArchiveDaoException("Batch type support missing for " + entry.getClass().getName(), e);
+        }
     }
 
 

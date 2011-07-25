@@ -38,16 +38,18 @@ import org.csstudio.domain.desy.typesupport.TypeSupportException;
  */
 final class ByteConversionSupport extends EpicsIMetaDataTypeSupport<Byte> {
 
-    @Nonnull
-    private Byte toByte(final double d) {
-        return Byte.valueOf(Double.valueOf(d).byteValue());
-    }
     /**
      * Constructor.
      */
     public ByteConversionSupport() {
         super(Byte.class);
     }
+
+    @Nonnull
+    private Byte toByte(final double d) {
+        return Byte.valueOf(Double.valueOf(d).byteValue());
+    }
+
     /**
      * {@inheritDoc}
      */

@@ -1,3 +1,4 @@
+
 package org.csstudio.nams.configurator.composite;
 
 import org.eclipse.swt.SWT;

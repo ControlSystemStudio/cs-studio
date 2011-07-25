@@ -1,3 +1,4 @@
+
 package org.csstudio.nams.configurator.beans;
 
 import java.beans.PropertyChangeListener;

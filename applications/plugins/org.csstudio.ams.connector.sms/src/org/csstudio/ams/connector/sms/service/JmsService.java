@@ -29,7 +29,6 @@ package org.csstudio.ams.connector.sms.service;
  * @author Markus Moeller
  * 
  */
-public class JmsService
-{
-
+public class JmsService {
+    // TODO: Bring to life
 }

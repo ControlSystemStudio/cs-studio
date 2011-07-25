@@ -40,15 +40,15 @@ import org.eclipse.ui.model.WorkbenchContentProvider;
 import org.eclipse.ui.model.WorkbenchLabelProvider;
 
 /**
- * TODO (hrickens) : 
- * 
+ * TODO (hrickens) :
+ *
  * @author hrickens
  * @author $Author: hrickens $
  * @version $Revision: 1.7 $
  * @since 11.04.2011
  */
 public class WorkspaceDirectoryFieldEditor extends StringButtonFieldEditor {
-    
+
     /**
      * Initial path for the Browse dialog.
      */
@@ -56,7 +56,7 @@ public class WorkspaceDirectoryFieldEditor extends StringButtonFieldEditor {
     private final IWorkspace _workspace;
 
     /**
-     * Creates a new directory field editor 
+     * Creates a new directory field editor
      */
     protected WorkspaceDirectoryFieldEditor() {
         _workspace = ResourcesPlugin.getWorkspace();
@@ -64,12 +64,12 @@ public class WorkspaceDirectoryFieldEditor extends StringButtonFieldEditor {
 
     /**
      * Creates a directory field editor.
-     * 
+     *
      * @param name the name of the preference this field editor works on
      * @param labelText the label text of the field editor
      * @param parent the parent of the field editor's control
      */
-    public WorkspaceDirectoryFieldEditor(String name, String labelText, Composite parent) {
+    public WorkspaceDirectoryFieldEditor(final String name, final String labelText, final Composite parent) {
         _workspace = ResourcesPlugin.getWorkspace();
         init(name, labelText);
         setErrorMessage(JFaceResources
@@ -103,16 +103,19 @@ public class WorkspaceDirectoryFieldEditor extends StringButtonFieldEditor {
         if (fileName.length() == 0 && isEmptyStringAllowed()) {
             return true;
         }
-        IResource findMember = _workspace.getRoot().findMember(fileName);
-        int type = findMember.getType();
-        
+        final IResource findMember = _workspace.getRoot().findMember(fileName);
+        if (findMember == null) {
+            return false;
+        }
+        final int type = findMember.getType();
+
         boolean state = false;
         switch (type) {
             case IResource.PROJECT:
             case IResource.FOLDER:
                 state = true;
                 break;
-            
+
             default:
                 state = false;
                 break;
@@ -124,9 +127,9 @@ public class WorkspaceDirectoryFieldEditor extends StringButtonFieldEditor {
      * Helper that opens the directory chooser dialog.
      * @param startingDirectory The directory the dialog will open in.
      * @return File File or <code>null</code>.
-     * 
+     *
      */
-    private String getDirectory(IResource startingDirectory) {
+    private String getDirectory(final IResource startingDirectory) {
 
         final ElementTreeSelectionDialog fileDialog = new ElementTreeSelectionDialog(getShell(),
                                                                          new WorkbenchLabelProvider(),
@@ -138,19 +141,19 @@ public class WorkspaceDirectoryFieldEditor extends StringButtonFieldEditor {
             fileDialog.setInitialSelection(filterPath.getFullPath());
         }
         fileDialog.addFilter(new ViewerFilter() {
-            
+
             @Override
-            public boolean select(Viewer viewer,
-                                  Object parentElement,
-                                  Object element) {
+            public boolean select(final Viewer viewer,
+                                  final Object parentElement,
+                                  final Object element) {
                 return  !(element instanceof IFile);
             }
         });
         fileDialog.setInput(_workspace.getRoot());
-        int status = fileDialog.open();
+        final int status = fileDialog.open();
         if (status == Window.OK) {
-            IResource firstResult = (IResource) fileDialog.getFirstResult();
-            IPath fullPath = firstResult.getFullPath();
+            final IResource firstResult = (IResource) fileDialog.getFirstResult();
+            final IPath fullPath = firstResult.getFullPath();
             return fullPath.toString();
         }
 
@@ -162,7 +165,7 @@ public class WorkspaceDirectoryFieldEditor extends StringButtonFieldEditor {
      * @param path initial path for the Browse dialog
      * @since 3.6
      */
-    public void setFilterPath(IResource path) {
+    public void setFilterPath(final IResource path) {
         filterPath = path;
     }
 

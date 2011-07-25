@@ -23,9 +23,8 @@
  */
 package org.csstudio.config.ioconfig.view;
 
-import java.util.Formatter;
-
 import javax.annotation.CheckForNull;
+import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
 import org.eclipse.jface.dialogs.MessageDialog;
@@ -45,11 +44,26 @@ public final class DeviceDatabaseErrorDialog {
      * Constructor.
      */
     private DeviceDatabaseErrorDialog() {
-        // Constructor
+        // Constructor.
     }
     
+    public static void open(@Nullable Shell parent,@CheckForNull String message,@CheckForNull Exception e, @CheckForNull ProfiBusTreeView busTreeView) {
+        StringBuilder sb = buildMessage(message, e);
+        openDialog(parent,  sb, busTreeView);
+        
+    }
     public static void open(@Nullable Shell parent,@CheckForNull String message,@CheckForNull Exception e) {
-        String title = "Device Database Error!";
+        StringBuilder sb = buildMessage(message, e);
+        openDialog(parent,  sb, null);
+    }
+
+    /**
+     * @param message
+     * @param e
+     * @return
+     */
+    @Nonnull
+    private static StringBuilder buildMessage(@CheckForNull String message, @CheckForNull Exception e) {
         StringBuilder sb = new StringBuilder();
         if(message!=null) {
             sb.append(message)
@@ -67,7 +81,29 @@ public final class DeviceDatabaseErrorDialog {
 
             sb.append(eMessage);
         }
-        MessageDialog.openError(parent, title, sb.toString());
+        return sb;
+    }
+
+    /**
+     * @param parent
+     * @param title
+     * @param sb
+     * @param busTreeView 
+     */
+    private static void openDialog(@Nullable Shell parent, @Nonnull StringBuilder sb, @CheckForNull ProfiBusTreeView busTreeView) {
+        String title = "Device Database Error!";
+        String[] dialogButtonLabels;
+        if(busTreeView!=null) {
+            dialogButtonLabels = new String[] {"Close", "Reload DB" };
+        } else {
+            dialogButtonLabels = new String[] {"Close"};
+        }
+        MessageDialog messageDialog = new MessageDialog(parent, title, null,
+                          sb.toString(), MessageDialog.ERROR,
+                          dialogButtonLabels, 1);
+        if (messageDialog.open() == 1 && busTreeView!=null) {
+            busTreeView.reload();
+        }
     }
     
 }

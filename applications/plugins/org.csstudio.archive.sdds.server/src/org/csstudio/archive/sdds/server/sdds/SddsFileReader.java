@@ -30,11 +30,12 @@ import java.util.Calendar;
 import java.util.GregorianCalendar;
 import java.util.List;
 import java.util.Vector;
-import org.apache.log4j.Logger;
+
 import org.csstudio.archive.sdds.server.conversion.SampleParameter;
 import org.csstudio.archive.sdds.server.data.EpicsRecordData;
 import org.csstudio.archive.sdds.server.data.RecordDataCollection;
-import org.csstudio.platform.logging.CentralLogger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * The class reads a specified SDDS file and offers a method to get the data from the file.
@@ -46,32 +47,26 @@ import org.csstudio.platform.logging.CentralLogger;
 public class SddsFileReader {
     
     /** The path to the data files */
-    private ArchiveLocation dataPath;
+    private final ArchiveLocation dataPath;
     
     /** The logger for this class */
-    private Logger logger;
+    private static final Logger LOG = LoggerFactory.getLogger(SddsFileReader.class);
     
     /**
      * Constructor that gets a string containing the path to the data files.
      * 
-     * @param path Path to the data files
      * @throws DataPathNotFoundException 
      */
     public SddsFileReader() throws DataPathNotFoundException {
-        
-        logger = CentralLogger.getInstance().getLogger(this);
-        
         dataPath = new ArchiveLocation();
         dataPath.loadLocationList("./archive_data_source.txt");
-        
-        System.out.println(" OK");
     }
     
     /**
      * 
      * @param startTime
      * @param endTime
-     * @return
+     * @return Returns array of String that contains all paths for the given time interval
      */
     public String[] getAllPaths(long startTime, long endTime) {
         return dataPath.getAllPaths(startTime, endTime);
@@ -117,14 +112,14 @@ public class SddsFileReader {
                 try {
                     threadGroup.wait(10);
                 } catch(InterruptedException ie) {
-                    logger.warn("*** Interrupted ***");
+                    LOG.warn("*** Interrupted ***");
                 }
             }
         }
         
         long et = System.currentTimeMillis() - st;
         
-        logger.debug("Finished in " + et + " Millisekunden (" + (et / 1000) + " sec)");
+        LOG.debug("Finished in " + et + " Millisekunden (" + (et / 1000) + " sec)");
         
         dataCollection = new RecordDataCollection();
         Vector<EpicsRecordData> allResults = new Vector<EpicsRecordData>();
@@ -178,7 +173,7 @@ public class SddsFileReader {
      * modify others and call 'mktime()' to get new start_time.
      * 
      * @param dwStartTime
-     * @return
+     * @return The last timestamp of the month
      */
     public long getEndTimeOfPreviousMonth(long dwStartTime) { 
         
@@ -203,7 +198,7 @@ public class SddsFileReader {
      *  modify others and call 'mktime()' to get new start_time.
      *  
      * @param dwStartTime
-     * @return
+     * @return The first timestamp of the next month
      */
     public long getStartTimeOfNextMonth(long dwStartTime) { 
         

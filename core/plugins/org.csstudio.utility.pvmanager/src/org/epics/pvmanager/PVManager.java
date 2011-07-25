@@ -1,26 +1,68 @@
 /*
- * Copyright 2010 Brookhaven National Laboratory
+ * Copyright 2010-11 Brookhaven National Laboratory
  * All rights reserved. Use is subject to license terms.
  */
 package org.epics.pvmanager;
 
+import java.util.concurrent.Executor;
+import java.util.concurrent.Executors;
+import java.util.concurrent.ScheduledExecutorService;
+
 /**
- * Manages the PV creation and scanning.
+ * Entry point for the library, manages the defaults and allows to create
+ * {@link PVReader}, {@link PVWriter} and {@link PV } from an read or write expression.
+ * <p>
+ * <b>NotificationExecutor</b> - This is used for all notifications.
+ * By default this uses {@link ExpressionLanguage#localThread()} so that
+ * the notification are done on whatever current thread needs to notify.
+ * This means that new read notifications are run on threads managed by
+ * the ReadScannerExecutorService, write notifications are run on threads
+ * managed by the DataSource and exceptions notification are run on the thread
+ * where the exception is done. This can be changed to make all notifications
+ * routed to single threaded sub-systems, such as UI environments like SWING,
+ * SWT or similar. This can be changed on a PV by PV basis.
+ * <p>
+ * <b>AsynchWriteExecutor</b> - This is used for asynchronous writes, to return
+ * right away, and for running timeouts on each write.
+ * By default this uses the internal PVManager work pool. The work
+ * submitted here is the calculation of the corresponding {@link WriteExpression}
+ * and submission to the {@link DataSource}. The DataSource itself typically
+ * has asynchronous work, which is executed in the DataSource specific threads.
+ * Changing this to {@link ExpressionLanguage#localThread()} will make that preparation
+ * task on the thread that calls {@link PVWriter#write(java.lang.Object) } but
+ * it will not transform the call in a synchronous call.
+ * <p>
+ * <b>ReadScannerExecutorService</b> - This is used to run the periodic
+ * scan for new values. By default this uses the internal PVManager work pool. The work
+ * submitted here is the calculation of the corresponding {@link DesiredRateExpression}
+ * and submission to the NotificationExecutor.
  *
  * @author carcassi
  */
 public class PVManager {
 
-    private static volatile ThreadSwitch defaultOnThread = ThreadSwitch.onTimerThread();
+    private static volatile Executor defaultNotificationExecutor = org.epics.pvmanager.util.Executors.localThread();
     private static volatile DataSource defaultDataSource = null;
+    private static final ScheduledExecutorService workerPool = Executors.newSingleThreadScheduledExecutor(org.epics.pvmanager.util.Executors.namedPool("PVMgr Worker "));
+    private static ScheduledExecutorService readScannerExecutorService = workerPool;
+    private static ScheduledExecutorService asyncWriteExecutor = workerPool;
 
     /**
-     * Changes the default thread on which notifications are going to be posted.
+     * Changes the default executor on which all notifications are going to be posted.
      *
-     * @param threadSwitch the new target thread
+     * @param notificationExecutor the new notification executor
      */
-    public static void setDefaultThread(ThreadSwitch threadSwitch) {
-        defaultOnThread = threadSwitch;
+    public static void setDefaultNotificationExecutor(Executor notificationExecutor) {
+        defaultNotificationExecutor = notificationExecutor;
+    }
+
+    /**
+     * Returns the current default executor that will execute all notifications.
+     * 
+     * @return the default executor
+     */
+    public static Executor getDefaultNotificationExecutor() {
+        return defaultNotificationExecutor;
     }
 
     /**
@@ -33,7 +75,7 @@ public class PVManager {
     }
 
     /**
-     * The current data source.
+     * Returns the current default data source.
      * 
      * @return a data source or null if it was not set
      */
@@ -42,146 +84,93 @@ public class PVManager {
     }
 
     /**
-     * Reads the given expression. Will return the average of the values collected
-     * at the scan rate.
+     * Reads the given expression, and returns an object to configure the parameters
+     * for the read. At each notification it will return the latest value,
+     * even if more had been received from the last notification.
      *
-     * @param <T> type of the pv value
+     * @param <T> type of the read payload
      * @param pvExpression the expression to read
-     * @return a pv manager expression
+     * @return the read configuration
      */
-    public static <T> PVManagerExpression<T> read(SourceRateExpression<T> pvExpression) {
-        return new PVManagerExpression<T>(ExpressionLanguage.latestValueOf(pvExpression));
+    public static <T> PVReaderConfiguration<T> read(SourceRateExpression<T> pvExpression) {
+        return new PVReaderConfiguration<T>(ExpressionLanguage.latestValueOf(pvExpression));
     }
 
     /**
-     * Reads the given expression.
+     * Reads the given expression, and returns an object to configure the parameters
+     * for the read.
      *
-     * @param <T> type of the pv value
+     * @param <T> type of the read payload
      * @param pvExpression the expression to read
-     * @return a pv manager expression
+     * @return the read configuration
      */
-    public static <T> PVManagerExpression<T> read(DesiredRateExpression<T> pvExpression) {
-        return new PVManagerExpression<T>(pvExpression);
+    public static <T> PVReaderConfiguration<T> read(DesiredRateExpression<T> pvExpression) {
+        return new PVReaderConfiguration<T>(pvExpression);
+    }
+    
+    /**
+     * Writes the given expression, and returns an object to configure the parameters
+     * for the write.
+     *
+     * @param <T> type of the write payload
+     * @param writeExpression the expression to write
+     * @return the write configuration
+     */
+    public static <T> PVWriterConfiguration<T> write(WriteExpression<T> writeExpression) {
+        return new PVWriterConfiguration<T>(writeExpression);
+    }
+    
+    /**
+     * Both reads and writes the given expression, and returns an object to configure the parameters
+     * for the both read and write. It's similar to use both {@link #read(org.epics.pvmanager.SourceRateExpression) }
+     * and {@link #write(org.epics.pvmanager.WriteExpression) ) at the same time.
+     *
+     * @param <R> type of the read payload
+     * @param <W> type of the write payload
+     * @param readWriteExpression the expression to read and write
+     * @return the read and write configuration
+     */
+    public static <R, W> PVConfiguration<R, W> readAndWrite(ReadWriteExpression<R, W> readWriteExpression) {
+        return new PVConfiguration<R, W>(ExpressionLanguage.latestValueOf(readWriteExpression.getSourceRateExpressionImpl()),
+                readWriteExpression.getWriteExpressionImpl());
     }
 
     /**
-     * An expression used to set the final parameters on how the pv expression
-     * should be monitored.
-     * @param <T> the type of the expression
+     * Returns the current executor on which the asynchronous calls are executed.
+     * 
+     * @return the current executor
      */
-    public static class PVManagerExpression<T>  {
-
-        private DesiredRateExpression<T> aggregatedPVExpression;
-        private ExceptionHandler exceptionHandler;
-        // Initialize to defaults
-        private ThreadSwitch onThread;
-        private DataSource source;
-
-        private PVManagerExpression(DesiredRateExpression<T> aggregatedPVExpression) {
-            this.aggregatedPVExpression = aggregatedPVExpression;
-        }
-
-        /**
-         * Forwards exception to the given exception handler. No thread switch
-         * is done, so the handler is notified on the thread where the exception
-         * was thrown.
-         * <p>
-         * Giving a custom exception handler will disable the default handler,
-         * so {@link PV#lastException() } is no longer set and no notification
-         * is done.
-         *
-         * @param exceptionHandler an exception handler
-         * @return this
-         */
-        public PVManagerExpression<T> routeExceptionsTo(ExceptionHandler exceptionHandler) {
-            if (this.exceptionHandler != null)
-                throw new IllegalArgumentException("Exception handler already set");
-            this.exceptionHandler = exceptionHandler;
-            return this;
-        }
-
-        /**
-         * Defines which DataSource should be used to read the data.
-         *
-         * @param dataSource a connection manager
-         * @return this
-         */
-        public PVManagerExpression<T> from(DataSource dataSource) {
-            if (dataSource == null)
-                throw new IllegalArgumentException("dataSource can't be null");
-            source = dataSource;
-            return this;
-        }
-
-        /**
-         * Defines on which thread the PVManager should notify the client.
-         *
-         * @param onThread the thread on which to notify
-         * @return this
-         */
-        public PVManagerExpression<T> andNotify(ThreadSwitch onThread) {
-            if (this.onThread == null)  {
-                this.onThread = onThread;
-            } else {
-                throw new IllegalStateException("Already set what thread to notify");
-            }
-            return this;
-        }
-
-        /**
-         * Sets the rate of scan of the expression and creates the actual {@link PV}
-         * object that can be monitored through listeners.
-         * @param rate rate in Hz; should be between 0 and 50
-         * @return the PV
-         */
-        public PV<T> atHz(double rate) {
-            if (rate <= 0)
-                throw new IllegalArgumentException("Rate has to be greater than 0 (requested " + rate + ")");
-            
-            if (rate > 200.0)
-                throw new IllegalArgumentException("Current implementation limits the rate up to 200 Hz (requested " + rate + ")");
-            
-            long scanPeriodMs = (long) (1000.0 * (1.0 / rate));
-
-            // Get defaults
-            if (source == null)
-                source = defaultDataSource;
-            if (onThread == null)
-                onThread = defaultOnThread;
-
-            // Check that a data source has been specified
-            if (source == null) {
-                throw new IllegalStateException("You need to specify a source either " +
-                        "using PVManager.setDefaultDataSource or by using " +
-                        "read(...).from(dataSource).");
-            }
-
-            // Check that thread switch has been specified
-            if (onThread == null) {
-                throw new IllegalStateException("You need to specify a thread either " +
-                        "using PVManager.setDefaultThreadSwitch or by using " +
-                        "read(...).andNotify(threadSwitch).");
-            }
-
-            // Create PV and connect
-            PV<T> pv = PV.createPv(aggregatedPVExpression.getDefaultName());
-            DataRecipe dataRecipe = aggregatedPVExpression.getDataRecipe();
-            if (exceptionHandler == null) {
-                dataRecipe = dataRecipe.withExceptionHandler(new DefaultExceptionHandler(pv, onThread));
-            } else {
-                dataRecipe = dataRecipe.withExceptionHandler(exceptionHandler);
-            }
-            Function<T> aggregatedFunction = aggregatedPVExpression.getFunction();
-            Notifier<T> notifier = new Notifier<T>(pv, aggregatedFunction, onThread, dataRecipe.getExceptionHandler());
-            Scanner.scan(notifier, scanPeriodMs);
-            try {
-                source.connect(dataRecipe);
-            } catch (RuntimeException ex) {
-                dataRecipe.getExceptionHandler().handleException(ex);
-            }
-            PVRecipe recipe = new PVRecipe(dataRecipe, source, notifier);
-            notifier.setPvRecipe(recipe);
-            return pv;
-        }
+    public static ScheduledExecutorService getAsyncWriteExecutor() {
+        return asyncWriteExecutor;
     }
+
+    /**
+     * Changes the executor used for the asynchronous write calls.
+     * 
+     * @param asyncWriteExecutor the new executor
+     */
+    public static void setAsyncWriteExecutor(ScheduledExecutorService asyncWriteExecutor) {
+        PVManager.asyncWriteExecutor = asyncWriteExecutor;
+    }
+
+    /**
+     * Returns the executor service used to schedule and run the 
+     * periodic reading scan for new values.
+     * 
+     * @return the service for the read operations
+     */
+    public static ScheduledExecutorService getReadScannerExecutorService() {
+        return readScannerExecutorService;
+    }
+
+    /**
+     * Changes the executor service to use for executing the periodic read
+     * scan.
+     * 
+     * @param readScannerExecutorService  the new service for the read operations
+     */
+    public static void setReadScannerExecutorService(ScheduledExecutorService readScannerExecutorService) {
+        PVManager.readScannerExecutorService = readScannerExecutorService;
+    }
+    
 }

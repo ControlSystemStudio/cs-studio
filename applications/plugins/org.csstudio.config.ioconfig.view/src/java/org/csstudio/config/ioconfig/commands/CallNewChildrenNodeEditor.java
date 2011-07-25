@@ -37,19 +37,10 @@ package org.csstudio.config.ioconfig.commands;
 import javax.annotation.Nonnull;
 
 import org.csstudio.config.ioconfig.editorinputs.NodeEditorInput;
-import org.csstudio.config.ioconfig.editorparts.IocEditor;
-import org.csstudio.config.ioconfig.editorparts.MasterEditor;
 import org.csstudio.config.ioconfig.editorparts.ModuleEditor;
-import org.csstudio.config.ioconfig.editorparts.SlaveEditor;
-import org.csstudio.config.ioconfig.editorparts.SubnetEditor;
 import org.csstudio.config.ioconfig.model.AbstractNodeDBO;
-import org.csstudio.config.ioconfig.model.FacilityDBO;
-import org.csstudio.config.ioconfig.model.IocDBO;
 import org.csstudio.config.ioconfig.model.PersistenceException;
-import org.csstudio.config.ioconfig.model.pbmodel.MasterDBO;
-import org.csstudio.config.ioconfig.model.pbmodel.ModuleDBO;
-import org.csstudio.config.ioconfig.model.pbmodel.ProfibusSubnetDBO;
-import org.csstudio.config.ioconfig.model.pbmodel.SlaveDBO;
+import org.csstudio.config.ioconfig.view.internal.localization.Messages;
 import org.eclipse.jface.dialogs.InputDialog;
 import org.eclipse.jface.window.Window;
 import org.eclipse.ui.IWorkbenchPage;
@@ -63,7 +54,7 @@ import org.eclipse.ui.PartInitException;
  */
 public class CallNewChildrenNodeEditor extends AbstractCallNodeEditor {
 
-    private static final String ID = "org.csstudio.config.ioconfig.commands.callNewChildrenEditor";
+    private static final String ID = "org.csstudio.config.ioconfig.commands.callNewChildrenEditor";//$NON-NLS-1$
 
     /**
      * @return
@@ -78,56 +69,39 @@ public class CallNewChildrenNodeEditor extends AbstractCallNodeEditor {
      * @throws PartInitException
      * @throws PersistenceException 
      */
-    // CHECKSTYLE OFF: CyclomaticComplexity
     @Override
-    protected void openNodeEditor(@Nonnull final AbstractNodeDBO parentNode,@Nonnull final IWorkbenchPage page) throws PartInitException, PersistenceException {
-        AbstractNodeDBO node = null;
-        String id = null;
-
-        if (parentNode instanceof FacilityDBO) {
-            id = IocEditor.ID;
-            node = new IocDBO((FacilityDBO)parentNode);
-        }else if (parentNode instanceof IocDBO) {
-            id = SubnetEditor.ID;
-            node = new ProfibusSubnetDBO((IocDBO) parentNode);
-        } else if (parentNode instanceof ProfibusSubnetDBO) {
-            id = MasterEditor.ID;
-            node = new MasterDBO((ProfibusSubnetDBO) parentNode);
-        } else if (parentNode instanceof MasterDBO) {
-            id = SlaveEditor.ID;
-            node = new SlaveDBO((MasterDBO) parentNode);
-        } else if (parentNode instanceof SlaveDBO) {
-            id = ModuleEditor.ID;
-            node = new ModuleDBO((SlaveDBO) parentNode);
-        }
-        	
-        if((node != null) && (id != null)) {
-            String nodeType = node.getNodeType().getName();
-        	if(id.equals(ModuleEditor.ID)){
-        		node.setName("");
-        		node.setSortIndexNonHibernate(parentNode.getfirstFreeStationAddress(128));
-        		NodeEditorInput input = new NodeEditorInput(node,true);
+    protected void openNodeEditor(@Nonnull final AbstractNodeDBO<AbstractNodeDBO<?,?>,AbstractNodeDBO<?,?>> parentNode,
+                                  @Nonnull final IWorkbenchPage page) throws PartInitException, 
+                                                                     PersistenceException {
+        AbstractNodeDBO<?, ?> createChild = parentNode.createChild();
+        String id = NodeEditorHandler.getEditorIdFor((AbstractNodeDBO<?, ?>) createChild);
+        
+        if (((AbstractNodeDBO<?, ?>) createChild != null) && (id != null)) {
+            String nodeType = ((AbstractNodeDBO<?, ?>) createChild).getNodeType().getName();
+            if (id.equals(ModuleEditor.ID)) {
+        		((AbstractNodeDBO<?, ?>) createChild).setName(" "); //$NON-NLS-1$
+        		((AbstractNodeDBO<?, ?>) createChild).setSortIndexNonHibernate(parentNode.getfirstFreeStationAddress(128));
+        		NodeEditorInput input = new NodeEditorInput((AbstractNodeDBO<?, ?>) createChild,true);
         		page.openEditor(input, id);
         	} else {
-	        	InputDialog idialog = new InputDialog(null, "Create new " + nodeType,
-	                                                  "Enter the name of the " + nodeType, nodeType, null);
+        	    String title = String.format(Messages.NodeEditor_Title, nodeType);
+        	    String msg = String.format(Messages.NodeEditor_Msg, nodeType);
+                InputDialog idialog = new InputDialog(null, title, msg, nodeType, null);
 	            idialog.setBlockOnOpen(true);
 	            if (idialog.open() == Window.OK) {
 	                // TODO: (hrickens) set the right max station Address
-	                node.setSortIndexNonHibernate(parentNode.getfirstFreeStationAddress(128));
+	                ((AbstractNodeDBO<?, ?>) createChild).setSortIndexNonHibernate(parentNode.getfirstFreeStationAddress(128));
 	                if((idialog.getValue()!=null)&&!idialog.getValue().isEmpty()) {
-	                    node.setName(idialog.getValue());
+	                    ((AbstractNodeDBO<?, ?>) createChild).setName(idialog.getValue());
 	                } else {
-	                    node.setName(nodeType);
+	                    ((AbstractNodeDBO<?, ?>) createChild).setName(nodeType);
 	                }
-	                NodeEditorInput input = new NodeEditorInput(node,true);
+	                NodeEditorInput input = new NodeEditorInput((AbstractNodeDBO<?, ?>) createChild,true);
 	                page.openEditor(input, id);
 	            } else {
-	                parentNode.removeChild(node);
+	                parentNode.removeChild(createChild);
 	            }
         	}
         }
     }
-    // CHECKSTYLE ON: CyclomaticComplexity
-
 }

@@ -1,3 +1,4 @@
+
 package org.csstudio.nams.service.regelwerkbuilder.declaration;
 
 import org.csstudio.nams.common.material.regelwerk.Regelwerk;
@@ -11,6 +12,7 @@ public class RegelwerksBuilderException extends Exception {
 	private static final long serialVersionUID = -6257594513186459756L;
 
 	public RegelwerksBuilderException() {
+	    // Nothing to do
 	}
 
 	public RegelwerksBuilderException(final String arg0) {

@@ -40,12 +40,14 @@ import javax.persistence.Transient;
 
 import org.csstudio.config.ioconfig.model.AbstractNodeDBO;
 import org.csstudio.config.ioconfig.model.GSDFileTypes;
+import org.csstudio.config.ioconfig.model.INodeVisitor;
 import org.csstudio.config.ioconfig.model.NodeType;
 import org.csstudio.config.ioconfig.model.PersistenceException;
 import org.csstudio.config.ioconfig.model.pbmodel.gsdParser.GsdFileParser;
 import org.csstudio.config.ioconfig.model.pbmodel.gsdParser.ParsedGsdFileModel;
-import org.csstudio.platform.logging.CentralLogger;
 import org.hibernate.annotations.BatchSize;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * @author gerke
@@ -58,6 +60,9 @@ import org.hibernate.annotations.BatchSize;
 @BatchSize(size = 32)
 @Table(name = "ddb_Profibus_Slave")
 public class SlaveDBO extends AbstractNodeDBO<MasterDBO, ModuleDBO> {
+    
+    private static final Logger LOG = LoggerFactory.getLogger(SlaveDBO.class);
+    
     private static final long serialVersionUID = 1L;
     /**
      * Vendor name of slave.
@@ -144,8 +149,7 @@ public class SlaveDBO extends AbstractNodeDBO<MasterDBO, ModuleDBO> {
     }
     
     private SlaveDBO(@Nonnull final MasterDBO master, final int stationAddress) throws PersistenceException {
-        setParent(master);
-        master.addChild(this);
+        super(master);
         moveSortIndex(stationAddress);
     }
     
@@ -395,10 +399,12 @@ public class SlaveDBO extends AbstractNodeDBO<MasterDBO, ModuleDBO> {
             setPrmUserData(parsedGsdFileModel.getExtUserPrmDataConst());
             setProfibusPNoID(parsedGsdFileModel.getIdentNumber());
             setRevision(parsedGsdFileModel.getRevision());
-            
+            parsedGsdFileModel.isModularStation();
             _maxSize = parsedGsdFileModel.getMaxModule().shortValue();
-            if(_maxSize < 1) {
-                return false;
+            if(parsedGsdFileModel.isModularStation()) {
+                if(_maxSize < 1) {
+                    return false;
+                }
             }
         }
         return true;
@@ -470,7 +476,7 @@ public class SlaveDBO extends AbstractNodeDBO<MasterDBO, ModuleDBO> {
         if(getParent() == null) {
             // Have no Parent
             setSortIndexNonHibernate(index);
-            CentralLogger.getInstance().warn(this, "Slave has no Parent!");
+            LOG.warn("Slave has no Parent!");
             return;
         }
         if(index < 0) {
@@ -502,5 +508,30 @@ public class SlaveDBO extends AbstractNodeDBO<MasterDBO, ModuleDBO> {
     public NodeType getNodeType() {
         return NodeType.SLAVE;
     }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    @Nonnull
+    public ModuleDBO createChild() throws PersistenceException {
+        return new ModuleDBO(this);
+    }
     
+    // CHECKSTYLE OFF: StrictDuplicateCode
+    @Override
+    public void accept(@Nonnull final INodeVisitor visitor) {
+        visitor.visit(this);
+    }
+    
+    @Override
+    public boolean equals(@CheckForNull Object obj) {
+        return super.equals(obj);
+    }
+    
+    @Override
+    public int hashCode() {
+        return super.hashCode();
+    }
+    // CHECKSTYLE ON: StrictDuplicateCode
 }

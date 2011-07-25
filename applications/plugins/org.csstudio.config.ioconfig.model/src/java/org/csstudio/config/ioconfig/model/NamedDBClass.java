@@ -91,7 +91,7 @@ public class NamedDBClass extends DBClass {
     }
     @Transient
     public void setSortIndex(@Nonnull final Integer sortIndex) {
-        _sortIndex = sortIndex.shortValue();
+        setSortIndex(sortIndex.shortValue());
     }
 
     /**
@@ -142,14 +142,9 @@ public class NamedDBClass extends DBClass {
             return false;
         }
         if(_sortIndex == null) {
-            if(other._sortIndex != null) {
-                return false;
-            }
-        } else if(!_sortIndex.equals(other._sortIndex)) {
-            return false;
+            return other._sortIndex == null;
+        } else { 
+            return _sortIndex.equals(other._sortIndex);
         }
-        return true;
     }
-    
-    
 }

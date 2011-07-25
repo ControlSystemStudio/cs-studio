@@ -1,7 +1,8 @@
 package org.csstudio.diag.pvmanager.probe;
 
-import static org.csstudio.utility.pvmanager.ui.SWTUtil.onSWTThread;
-import static org.epics.pvmanager.ExpressionLanguage.channel;
+import static org.csstudio.utility.pvmanager.ui.SWTUtil.swtThread;
+import static org.epics.pvmanager.ExpressionLanguage.*;
+import static org.epics.pvmanager.util.TimeDuration.*;
 
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -35,7 +36,11 @@ import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.part.ViewPart;
 import org.epics.pvmanager.PV;
 import org.epics.pvmanager.PVManager;
-import org.epics.pvmanager.PVValueChangeListener;
+import org.epics.pvmanager.PVReader;
+import org.epics.pvmanager.PVReaderListener;
+import org.epics.pvmanager.PVWriter;
+import org.epics.pvmanager.PVWriterListener;
+import org.epics.pvmanager.WriteFailException;
 import org.epics.pvmanager.data.Alarm;
 import org.epics.pvmanager.data.AlarmSeverity;
 import org.epics.pvmanager.data.Display;
@@ -87,12 +92,14 @@ public class PVManagerProbe extends ViewPart {
 	private GridLayout gl_topBox;
 	private FormData fd_topBox;
 	private FormData fd_bottomBox;
+	
+	private boolean readOnly = true;
 
 	/** Currently displayed pv */
 	private ProcessVariable PVName;
 
 	/** Currently connected pv */
-	private PV<?> pv;
+	private PV<Object, Object> pv;
 
 	/** Formatting used for the value text field */
 	private ValueFormat valueFormat = new SimpleValueFormat(3);
@@ -318,13 +325,14 @@ public class PVManagerProbe extends ViewPart {
 				final boolean enable = btn_adjust.getSelection();
 				newValueLabel.setVisible(enable);
 				newValueField.setVisible(enable);
+				newValueField.setText(valueField.getText());
 			}
 		});
 
 		newValueField.addSelectionListener(new SelectionAdapter() {
 			@Override
 			public void widgetDefaultSelected(final SelectionEvent e) {
-				// adjustValue(new_value.getText().trim());
+				pv.write(newValueField.getText());
 			}
 		});
 
@@ -481,13 +489,16 @@ public class PVManagerProbe extends ViewPart {
 		}
 
 		// The PV is different, so disconnect and reset the visuals
-		if (pv != null)
+		if (pv != null) {
 			pv.close();
+			pv = null;
+		}
 
 		setValue(null);
 		setAlarm(null);
 		setTime(null);
 		setMeter(null, null);
+		setReadOnly(false);
 
 		// If name is blank, update status to waiting and qui
 		if ((pvName == null) || pvName.equals("")) { //$NON-NLS-1$
@@ -505,12 +516,13 @@ public class PVManagerProbe extends ViewPart {
 		}
 
 		setStatus(Messages.Probe_statusSearching);
-		pv = PVManager.read(channel(pvName.getName()))
-				.andNotify(onSWTThread()).atHz(25);
-		pv.addPVValueChangeListener(new PVValueChangeListener() {
-
+		pv = PVManager.readAndWrite(channel(pvName.getName()))
+				.timeout(ms(5000), "No connection after 5s. Still trying...")
+				.notifyOn(swtThread()).asynchWriteAndReadEvery(hz(25));
+		pv.addPVReaderListener(new PVReaderListener() {
+			
 			@Override
-			public void pvValueChanged() {
+			public void pvChanged() {
 				Object obj = pv.getValue();
 				setLastError(pv.lastException());
 				setValue(valueFormat.format(obj));
@@ -519,6 +531,18 @@ public class PVManagerProbe extends ViewPart {
 				setMeter(Util.numericValueOf(obj), Util.displayOf(obj));
 			}
 		});
+		
+		pv.addPVWriterListener(new PVWriterListener() {
+			
+			@Override
+			public void pvWritten() {
+				Exception lastException = pv.lastWriteException();
+				if (lastException instanceof WriteFailException) {
+					setReadOnly(true);
+				}
+			}
+		});
+		
 		this.PVName = pvName;
 
 		// If this is an instance of the multiple view, show the PV name
@@ -582,8 +606,14 @@ public class PVManagerProbe extends ViewPart {
 	private void setValue(String value) {
 		if (value == null) {
 			valueField.setText(""); //$NON-NLS-1$
+			if (newValueField.isVisible() && !newValueField.isFocusControl()) {
+				newValueField.setText("");
+			}
 		} else {
 			valueField.setText(value);
+			if (newValueField.isVisible() && !newValueField.isFocusControl()) {
+				newValueField.setText(value);
+			}
 		}
 	}
 
@@ -638,6 +668,15 @@ public class PVManagerProbe extends ViewPart {
 					display.getUpperDisplayLimit(), 1);
 			meter.setValue(value);
 		}
+	}
+	
+	public void setReadOnly(boolean readOnly) {
+		this.readOnly = readOnly;
+		newValueField.setEditable(!readOnly);
+	}
+	
+	public boolean isReadOnly() {
+		return readOnly;
 	}
 
 	/**

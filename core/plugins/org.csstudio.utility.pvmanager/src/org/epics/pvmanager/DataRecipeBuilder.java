@@ -1,5 +1,5 @@
 /*
- * Copyright 2010 Brookhaven National Laboratory
+ * Copyright 2010-11 Brookhaven National Laboratory
  * All rights reserved. Use is subject to license terms.
  */
 
@@ -14,13 +14,13 @@ import java.util.Map;
  */
 class DataRecipeBuilder {
 
-    private final Map<Collector, Map<String, ValueCache>> channelsPerCollector;
+    private final Map<Collector<?>, Map<String, ValueCache>> channelsPerCollector;
 
     DataRecipeBuilder() {
-        channelsPerCollector = new HashMap<Collector, Map<String, ValueCache>>();
+        channelsPerCollector = new HashMap<Collector<?>, Map<String, ValueCache>>();
     }
 
-    void addCollector(Collector collector, Map<String, ValueCache> caches) {
+    void addCollector(Collector<?> collector, Map<String, ValueCache> caches) {
         channelsPerCollector.put(collector, caches);
     }
 
@@ -29,6 +29,6 @@ class DataRecipeBuilder {
     }
 
     DataRecipe build() {
-        return new DataRecipe(new HashMap<Collector, Map<String, ValueCache>>(channelsPerCollector));
+        return new DataRecipe(new HashMap<Collector<?>, Map<String, ValueCache>>(channelsPerCollector));
     }
 }

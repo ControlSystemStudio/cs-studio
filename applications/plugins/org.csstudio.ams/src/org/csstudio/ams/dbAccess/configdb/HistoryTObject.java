@@ -27,9 +27,10 @@ import java.util.Date;
 
 import org.csstudio.ams.dbAccess.TObject;
 
-public class HistoryTObject extends TObject 
-{
-	private static final long serialVersionUID = 2093650845338572349L;
+@SuppressWarnings("hiding")
+public class HistoryTObject extends TObject {
+	
+    private static final long serialVersionUID = 2093650845338572349L;
 	
 	private int 	historyID;
 	private Date 	timeNew;
@@ -48,7 +49,10 @@ public class HistoryTObject extends TObject
 	private String	destType;
 	private String	destAdress;
 	
-	public HistoryTObject(){}
+	public HistoryTObject() {
+	    // Nothing to do
+	}
+	
 	public HistoryTObject(	int historyID,
 							Date 	timeNew,
 							String	type,
@@ -103,9 +107,11 @@ public class HistoryTObject extends TObject
 	public String getGroupName() {
 		return groupName;
 	}
+	
 	public void setGroupName(String groupName) {
 		this.groupName = groupName;
 	}
+	
 	public String getDestAdress() {
 		return destAdress;
 	}
@@ -193,15 +199,19 @@ public class HistoryTObject extends TObject
 	public void setUserRef(int userRef) {
 		this.userRef = userRef;
 	}
+	
 	public String getMsgEventtime() {
 		return msgEventtime;
 	}
+	
 	public void setMsgEventtime(String msgEventtime) {
 		this.msgEventtime = msgEventtime;
 	}
+	
 	public String getMsgName() {
 		return msgName;
 	}
+	
 	public void setMsgName(String msgName) {
 		this.msgName = msgName;
 	}

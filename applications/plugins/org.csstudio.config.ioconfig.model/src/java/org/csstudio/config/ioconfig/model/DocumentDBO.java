@@ -205,6 +205,7 @@ public class DocumentDBO implements Comparable<DocumentDBO>, IDocument {
         _image = image;
     }
 
+    @SuppressWarnings("deprecation")
     @Transient
     public void setImage(@Nonnull byte[] imageAsByteArray) {
         _image = Hibernate.createBlob(imageAsByteArray);
@@ -378,20 +379,14 @@ public class DocumentDBO implements Comparable<DocumentDBO>, IDocument {
 
     
     
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public int hashCode() {
-        final int prime = 31;
+        final int prime = 73;
         int result = 1;
         result = prime * result + ( (_id == null) ? 0 : _id.hashCode());
         return result;
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public boolean equals(@CheckForNull Object obj) {
         if (this == obj) {

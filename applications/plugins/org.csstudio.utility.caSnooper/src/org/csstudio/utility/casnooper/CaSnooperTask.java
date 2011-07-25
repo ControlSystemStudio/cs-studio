@@ -1,6 +1,6 @@
 package org.csstudio.utility.casnooper;
 
-import org.csstudio.platform.logging.CentralLogger;
+
 import org.csstudio.platform.startupservice.IStartupServiceListener;
 import org.csstudio.platform.startupservice.StartupServiceEnumerator;
 import org.csstudio.utility.casnooper.preferences.PreferenceConstants;
@@ -10,13 +10,19 @@ import org.eclipse.equinox.app.IApplication;
 import org.eclipse.equinox.app.IApplicationContext;
 import org.remotercp.common.tracker.IGenericServiceListener;
 import org.remotercp.service.connection.session.ISessionService;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class CaSnooperTask implements IApplication, IGenericServiceListener<ISessionService> {
 	
+    private static final Logger LOG = LoggerFactory.getLogger(CaSnooperTask.class);
+    
 	private static SnooperServer snooperServerInstance = null;
 
-	public Object start(IApplicationContext context) throws Exception {
+	@Override
+    public Object start(IApplicationContext context) throws Exception {
 		
+		Activator.getDefault().addSessionServiceListener(this);
 		
 		System.out.println("Start caSnooper");
 		snooperServerInstance = SnooperServer.getInstance();
@@ -30,11 +36,13 @@ public class CaSnooperTask implements IApplication, IGenericServiceListener<ISes
 	}
 
 
-	public void stop() {
+	@Override
+    public void stop() {
 		snooperServerInstance.destroy();
 
 	}
 
+    @Override
     public void bindService(ISessionService sessionService) {
         IPreferencesService prefs = Platform.getPreferencesService();
         String username = prefs.getString(Activator.PLUGIN_ID,
@@ -47,11 +55,11 @@ public class CaSnooperTask implements IApplication, IGenericServiceListener<ISes
     	try {
 			sessionService.connect(username, password, server);
 		} catch (Exception e) {
-			CentralLogger.getInstance().warn(this,
-					"XMPP connection is not available, " + e.toString());
+			LOG.warn("XMPP connection is not available, ", e);
 		}
     }
     
+    @Override
     public void unbindService(ISessionService service) {
     	service.disconnect();
     }

@@ -29,30 +29,25 @@ import java.util.Vector;
  * @author Markus Moeller
  *
  */
-public class ConnectorTopicContainer
-{
+public class ConnectorTopicContainer {
+    
     private Vector<ConnectorTopic> content;
     
-    public ConnectorTopicContainer()
-    {
+    public ConnectorTopicContainer() {
         content = new Vector<ConnectorTopic>();
     }
     
-    public void addConnectorTopic(ConnectorTopic connectorTopic)
-    {
+    public void addConnectorTopic(ConnectorTopic connectorTopic) {
         content.add(connectorTopic);
     }
     
-    public ConnectorTopic getConnectorTopicByTopicName(String topicName)
-    {
+    public ConnectorTopic getConnectorTopicByTopicName(String topicName) {
+        
         ConnectorTopic result = null;
         
-        if(!content.isEmpty())
-        {
-            for(ConnectorTopic o : content)
-            {
-                if(o.getTopicName().compareTo(topicName) == 0)
-                {
+        if(!content.isEmpty()) {
+            for(ConnectorTopic o : content) {
+                if(o.getTopicName().compareTo(topicName) == 0) {
                     result = o;
                     break;
                 }
@@ -62,16 +57,13 @@ public class ConnectorTopicContainer
         return result;
     }
     
-    public ConnectorTopic getConnectorTopicByConnectorName(String conName)
-    {
+    public ConnectorTopic getConnectorTopicByConnectorName(String conName) {
+        
         ConnectorTopic result = null;
         
-        if(!content.isEmpty())
-        {
-            for(ConnectorTopic o : content)
-            {
-                if(o.getConnectorName().compareToIgnoreCase(conName) == 0)
-                {
+        if(!content.isEmpty()) {
+            for(ConnectorTopic o : content) {
+                if(o.getConnectorName().compareToIgnoreCase(conName) == 0) {
                     result = o;
                     break;
                 }

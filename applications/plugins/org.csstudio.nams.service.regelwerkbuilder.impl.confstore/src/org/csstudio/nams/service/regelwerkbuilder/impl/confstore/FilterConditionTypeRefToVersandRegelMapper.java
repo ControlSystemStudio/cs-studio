@@ -1,3 +1,4 @@
+
 package org.csstudio.nams.service.regelwerkbuilder.impl.confstore;
 
 import org.csstudio.nams.service.configurationaccess.localstore.internalDTOs.FilterConditionDTO;
@@ -30,18 +31,18 @@ public enum FilterConditionTypeRefToVersandRegelMapper {
 			final Class<? extends FilterConditionDTO> clazz) {
 		for (final FilterConditionTypeRefToVersandRegelMapper enumC : FilterConditionTypeRefToVersandRegelMapper
 				.values()) {
-			if (enumC.clazz == clazz) {
+			if (enumC._clazz == clazz) {
 				return enumC;
 			}
 		}
 		return null;
 	}
 
-	private final Class<? extends FilterConditionDTO> clazz;
+	private final Class<? extends FilterConditionDTO> _clazz;
 
 	private FilterConditionTypeRefToVersandRegelMapper(
 			final Class<? extends FilterConditionDTO> clazz) {
 		// this.id = iD;
-		this.clazz = clazz;
+		this._clazz = clazz;
 	}
 }

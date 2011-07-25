@@ -25,7 +25,6 @@ package org.csstudio.ams.connector.jms;
 
 import java.net.InetAddress;
 import java.util.Hashtable;
-
 import javax.jms.Connection;
 import javax.jms.ConnectionFactory;
 import javax.jms.JMSException;
@@ -35,7 +34,6 @@ import javax.jms.Session;
 import javax.naming.Context;
 import javax.naming.InitialContext;
 import javax.naming.NamingException;
-
 import org.csstudio.ams.AmsActivator;
 import org.csstudio.ams.AmsConstants;
 import org.csstudio.ams.Log;
@@ -43,7 +41,6 @@ import org.csstudio.ams.SynchObject;
 import org.csstudio.ams.Utils;
 import org.csstudio.ams.connector.jms.preferences.JmsConnectorPreferenceKey;
 import org.csstudio.ams.internal.AmsPreferenceKey;
-import org.csstudio.platform.logging.CentralLogger;
 import org.eclipse.core.runtime.Platform;
 import org.eclipse.core.runtime.preferences.IPreferencesService;
 import org.eclipse.equinox.app.IApplication;
@@ -57,7 +54,8 @@ public class JMSConnectorStart implements IApplication, IGenericServiceListener<
     public final static int STAT_INIT = 0;
     public final static int STAT_OK = 1;
     public final static int STAT_ERR_JMS_SEND = 3;
-    public final static int STAT_ERR_JMS_CONNECTION_FAILED = 4;                                // jms communication to ams internal jms partners
+    // jms communication to ams internal jms partners
+    public final static int STAT_ERR_JMS_CONNECTION_FAILED = 4;
     public final static int STAT_ERR_UNKNOWN = 5;
 
     public final static long WAITFORTHREAD = 10000;
@@ -72,7 +70,9 @@ public class JMSConnectorStart implements IApplication, IGenericServiceListener<
     
     private MessageProducer extPublisherStatusChange = null;
     
-    private SynchObject sObj = null;
+    private ISessionService xmppService;
+    
+    private SynchObject sObj;
     private String managementPassword; 
     private int lastStatus = 0;
     
@@ -82,6 +82,7 @@ public class JMSConnectorStart implements IApplication, IGenericServiceListener<
     public JMSConnectorStart()
     {
         _instance = this;
+        xmppService = null;
         sObj = new SynchObject(STAT_INIT, System.currentTimeMillis());
         
         IPreferencesService pref = Platform.getPreferencesService();
@@ -91,34 +92,29 @@ public class JMSConnectorStart implements IApplication, IGenericServiceListener<
         }
     }
     
-    public void stop()
-    {
+    public void stop() {
         return;
     }
 
-    public static JMSConnectorStart getInstance()
-    {
+    public static JMSConnectorStart getInstance() {
         return _instance;
     }
     
-    public synchronized void setRestart()
-    {
+    public synchronized void setRestart() {
         restart = true;
         bStop = true;
     }
 
-    public synchronized void setShutdown()
-    {
+    public synchronized void setShutdown() {
         restart = false;
         bStop = true;
     }
 
     /**
      * 
-     * @return
+     * @return The management password
      */
-    public synchronized String getPassword()
-    {
+    public synchronized String getPassword() {
         return managementPassword;
     }
 
@@ -130,6 +126,8 @@ public class JMSConnectorStart implements IApplication, IGenericServiceListener<
         Log.log(this, Log.INFO, "start");
         
         JmsConnectorPreferenceKey.showPreferences();
+        
+        JMSConnectorPlugin.getDefault().addSessionServiceListener(this);
         
         JMSConnectorWork ecw = null;
         boolean bInitedJms = false;
@@ -208,30 +206,32 @@ public class JMSConnectorStart implements IApplication, IGenericServiceListener<
             // Clean stop of the working thread
             ecw.stopWorking();
             
-            try
-            {
+            try {
                 ecw.join(WAITFORTHREAD);
+            } catch(InterruptedException ie) {
+                // Can be ignored
             }
-            catch(InterruptedException ie) { }
     
-            if(ecw.stoppedClean())
-            {
+            if(ecw.stoppedClean()) {
                 Log.log(this, Log.FATAL, "Restart/Exit: Thread stopped clean.");
-                
                 ecw = null;
-            }
-            else
-            {
+            } else {
                 Log.log(this, Log.FATAL, "Restart/Exit: Thread did NOT stop clean.");
                 ecw.closeJms();
                 ecw = null;
             }
         }
         
-        if(restart)
-            return EXIT_RESTART;
-        else
-            return EXIT_OK;
+        if (xmppService != null) {
+            xmppService.disconnect();
+        }
+        
+        Integer exitCode = IApplication.EXIT_OK;
+        if(restart) {
+            exitCode = IApplication.EXIT_RESTART;
+        }
+        
+        return exitCode;
     }
     
     public int getStatus()
@@ -260,12 +260,12 @@ public class JMSConnectorStart implements IApplication, IGenericServiceListener<
                     storeAct.getString(org.csstudio.ams.internal.AmsPreferenceKey.P_JMS_EXTERN_CONNECTION_FACTORY));
             extConnection = extFactory.createConnection();
             
-            // ADDED BY: Markus M�ller, 25.05.2007
+            // ADDED BY: Markus Moeller, 25.05.2007
             extConnection.setClientID("JMSConnectorStartSenderExternal");
             
             extSession = extConnection.createSession(false, Session.CLIENT_ACKNOWLEDGE);
             
-            // CHANGED BY: Markus M�ller, 25.05.2007
+            // CHANGED BY: Markus Moeller, 25.05.2007
             /*
             extPublisherStatusChange = extSession.createProducer((Topic)extContext.lookup(
                     storeAct.getString(org.csstudio.ams.internal.SampleService.P_JMS_EXT_TOPIC_STATUSCHANGE)));
@@ -273,8 +273,7 @@ public class JMSConnectorStart implements IApplication, IGenericServiceListener<
             
             extPublisherStatusChange = extSession.createProducer(extSession.createTopic(
                     storeAct.getString(org.csstudio.ams.internal.AmsPreferenceKey.P_JMS_EXT_TOPIC_STATUSCHANGE)));
-            if (extPublisherStatusChange == null)
-            {
+            if (extPublisherStatusChange == null) {
                 Log.log(this, Log.FATAL, "could not create extPublisherStatusChange");
                 return false;
             }
@@ -290,8 +289,8 @@ public class JMSConnectorStart implements IApplication, IGenericServiceListener<
         return false;
     }
 
-    private void closeJms()
-    {
+    private void closeJms() {
+        
         Log.log(this, Log.INFO, "exiting external jms communication");
         
         if (extPublisherStatusChange != null){
@@ -348,20 +347,22 @@ public class JMSConnectorStart implements IApplication, IGenericServiceListener<
     }
     
     public void bindService(ISessionService sessionService) {
-    	IPreferencesService pref = Platform.getPreferencesService();
+    	
+        IPreferencesService pref = Platform.getPreferencesService();
     	String xmppServer = pref.getString(JMSConnectorPlugin.PLUGIN_ID, JmsConnectorPreferenceKey.P_XMPP_SERVER, "krynfs.desy.de", null);
         String xmppUser = pref.getString(JMSConnectorPlugin.PLUGIN_ID, JmsConnectorPreferenceKey.P_XMPP_USER, "anonymous", null);
         String xmppPassword = pref.getString(JMSConnectorPlugin.PLUGIN_ID, JmsConnectorPreferenceKey.P_XMPP_PASSWORD, "anonymous", null);
     	
     	try {
 			sessionService.connect(xmppUser, xmppPassword, xmppServer);
+			xmppService = sessionService;
+			Log.log(this, Log.INFO, "XMPP connection created.");
 		} catch (Exception e) {
-			CentralLogger.getInstance().warn(this,
-					"XMPP connection is not available, " + e.toString());
+			Log.log(this, Log.WARN, "XMPP connection is not available: " + e.getMessage());
 		}
     }
     
     public void unbindService(ISessionService service) {
-    	service.disconnect();
+    	// Nothing to do here
     }
 }

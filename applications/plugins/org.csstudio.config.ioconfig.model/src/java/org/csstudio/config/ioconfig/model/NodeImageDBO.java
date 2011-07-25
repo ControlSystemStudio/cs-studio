@@ -24,6 +24,7 @@
  */
 package org.csstudio.config.ioconfig.model;
 
+import javax.annotation.CheckForNull;
 import javax.annotation.Nonnull;
 import javax.persistence.Basic;
 import javax.persistence.Column;
@@ -135,10 +136,34 @@ public class NodeImageDBO implements Comparable<NodeImageDBO> {
      * {@inheritDoc}
      */
     @Override
-    public int compareTo(@Nonnull NodeImageDBO arg0) {
-        return (getId()-arg0.getId());
+    public int compareTo(@CheckForNull NodeImageDBO arg0) {
+        return arg0==null?-1:(getId()-arg0.getId());
     }
 
+    @Override
+    public int hashCode() {
+        final int prime = 47;
+        int result = 1;
+        result = prime * result + _id;
+        return result;
+    }
+
+    @Override
+    public boolean equals(@CheckForNull Object obj) {
+        if (this == obj) {
+            return true;
+        }
+        if (obj == null) {
+            return false;
+        }
+        if (getClass() != obj.getClass()) {
+            return false;
+        }
+        NodeImageDBO other = (NodeImageDBO) obj;
+        return _id == other._id;
+    }
+
+    
     
 //    /**
 //     * 

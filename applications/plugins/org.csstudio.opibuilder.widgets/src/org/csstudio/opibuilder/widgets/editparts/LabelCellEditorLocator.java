@@ -29,6 +29,7 @@ public class LabelCellEditorLocator
 	
 		public void relocate(CellEditor celleditor) {
 			Text text = (Text)celleditor.getControl();
+			text.moveAbove(null);
 			Rectangle rect = labelFigure.getClientArea();
 			labelFigure.translateToAbsolute(rect);
 			org.eclipse.swt.graphics.Rectangle trim = text.computeTrim(0, 0, 0, 0);

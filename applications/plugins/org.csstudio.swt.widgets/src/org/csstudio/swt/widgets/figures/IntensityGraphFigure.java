@@ -18,9 +18,11 @@ import org.csstudio.swt.widgets.datadefinition.ColorMap.PredefinedColorMap;
 import org.csstudio.swt.widgets.figureparts.ColorMapRamp;
 import org.csstudio.swt.widgets.introspection.DefaultWidgetIntrospector;
 import org.csstudio.swt.widgets.introspection.Introspectable;
+import org.csstudio.swt.widgets.util.SingleSourceHelper;
 import org.csstudio.swt.xygraph.figures.Axis;
 import org.csstudio.swt.xygraph.linearscale.Range;
 import org.csstudio.ui.util.CustomMediaFactory;
+import org.csstudio.ui.util.SWTConstants;
 import org.eclipse.draw2d.Figure;
 import org.eclipse.draw2d.FigureUtilities;
 import org.eclipse.draw2d.Graphics;
@@ -138,7 +140,7 @@ public class IntensityGraphFigure extends Figure implements Introspectable {
 		
 				
 			if(armed && end != null && start != null){
-				graphics.setLineStyle(SWT.LINE_DOT);
+				graphics.setLineStyle(SWTConstants.LINE_DOT);
 				graphics.setLineWidth(1);				
 				graphics.setForegroundColor(BLACK_COLOR);
 				graphics.drawRectangle(start.x, start.y, end.x - start.x, end.y - start.y);
@@ -147,6 +149,8 @@ public class IntensityGraphFigure extends Figure implements Introspectable {
 		}
 		
 		private synchronized void updateTextCursor(MouseEvent me) {
+			if(SWT.getPlatform().startsWith("rap")) //$NON-NLS-1$
+				return;
 					if(croppedDataArray == null)
 						return;
 					if(getCursor() != null)
@@ -166,7 +170,7 @@ public class IntensityGraphFigure extends Figure implements Introspectable {
 					Image image = new Image(Display.getDefault(),
 							size.width + CURSOR_SIZE, size.height + CURSOR_SIZE);
 					
-					GC gc = new GC(image);
+					GC gc = SingleSourceHelper.getImageGC(image);
 					//gc.setAlpha(0);
 					gc.setBackground(TRANSPARENT_COLOR);					
 					gc.fillRectangle(image.getBounds());
@@ -181,7 +185,8 @@ public class IntensityGraphFigure extends Figure implements Introspectable {
 					
 					ImageData imageData = image.getImageData();
 					imageData.transparentPixel = imageData.palette.getPixel(TRANSPARENT_COLOR.getRGB());
-					setCursor(new Cursor(null, imageData, CURSOR_SIZE/2 ,CURSOR_SIZE/2));
+					setCursor(SingleSourceHelper.createCursor(Display.getCurrent(),
+							imageData, CURSOR_SIZE/2 ,CURSOR_SIZE/2, SWT.CURSOR_CROSS));
 					gc.dispose();
 					image.dispose();
 		}
