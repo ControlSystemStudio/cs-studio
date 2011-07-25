@@ -22,7 +22,8 @@ Require-Bundle: org.eclipse.ui,
 Bundle-ClassPath: .,
  libs/derbyclient.jar,
  libs/derbytools.jar,
- libs/hsqldb.jar
+ libs/hsqldb.jar,
+ libs/servlet.jar
 Export-Package: org.csstudio.ams,
  org.csstudio.ams.configReplicator,
  org.csstudio.ams.dbAccess,
