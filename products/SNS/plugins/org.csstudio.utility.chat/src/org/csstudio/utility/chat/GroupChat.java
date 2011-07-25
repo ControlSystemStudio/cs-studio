@@ -72,7 +72,7 @@ public class GroupChat
 	private GroupChatListener listener = null;
 
 	/** Our name used in this group chat */
-	private String user;
+	private Person user;
 
 	
 	/** Initialize
@@ -111,14 +111,12 @@ public class GroupChat
 	}
 	
 	/** Connect to the server
-	 *  @param user User name
+	 *  @param user_name User name
 	 *  @param password Password
 	 *  @throws Exception on error
 	 */
-    public void connect(final String user, final String password) throws Exception
+    public void connect(final String user_name, final String password) throws Exception
     {
-    	this.user = user;
-    	
 		// Try to create account.
 		// If account already exists, this will fail.
 		final AccountManager accounts = connection.getAccountManager();
@@ -126,7 +124,7 @@ public class GroupChat
 		{
 			try
 			{
-				accounts.createAccount(user, password);
+				accounts.createAccount(user_name, password);
 			}
 			catch (final Exception ex)
 			{
@@ -135,11 +133,12 @@ public class GroupChat
 		}
 		
 		// Log on
-		connection.login(user, password, XMPP_RESOURCE);
-
+		connection.login(user_name, password, XMPP_RESOURCE);
+		user = new Person(user_name, connection.getUser());
+		
 	    // Join chat group
 		chat = new MultiUserChat(connection, group);
-		chat.join(user);
+		chat.join(user_name);
 		
 		// Listen to nerd changes
 		chat.addParticipantStatusListener(new DefaultParticipantStatusListener()
@@ -172,7 +171,7 @@ public class GroupChat
 		synchronized (nerds)
         {
 			// Add ourself, which we don't always seem to get from server
-			nerds.add(new Person(user, connection.getUser()));
+			nerds.add(user);
 			// Then query server, which might include an update for ourself
 			final Iterator<String> occupants = chat.getOccupants();
 			while (occupants.hasNext())
@@ -228,7 +227,7 @@ public class GroupChat
 						}
 					}
 					else
-						listener.startIndividualChat(from, new IndividualChat(user, chat));
+						listener.startIndividualChat(from, new IndividualChat(user_name, chat));
 				}
 			}
 		});
@@ -254,7 +253,13 @@ public class GroupChat
 		});
     }
     
-    /** Receive a file, displaying progress in Eclipse Job
+    /** @return {@link Person} used to log onto the chat group */
+    public Person getUser()
+    {
+        return user;
+    }
+
+	/** Receive a file, displaying progress in Eclipse Job
      *  @param transfer {@link IncomingFileTransfer}
      *  @param file {@link File} to create
      */
@@ -359,7 +364,7 @@ public class GroupChat
 		if (address == null  ||  address.isEmpty())
 			address = group + "/" + person.getName(); //$NON-NLS-1$
 		final Chat new_chat = chat.createPrivateChat(address, null);
-		return new IndividualChat(user, new_chat);
+		return new IndividualChat(user.getName(), new_chat);
     }
 
 	/** Start a file transfer

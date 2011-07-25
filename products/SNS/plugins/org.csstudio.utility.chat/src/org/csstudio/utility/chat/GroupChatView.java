@@ -144,6 +144,15 @@ public class GroupChatView extends org.eclipse.ui.part.ViewPart
 	
 	/** {@inheritDoc} */
 	@Override
+    public boolean isOurself(final Person person)
+    {
+		if (chat_group == null  ||  person == null)
+			return false;
+		return person.equals(chat_group.getUser());
+    }
+	
+	/** {@inheritDoc} */
+	@Override
     public void doContact(final Person person)
     {
 		// Open new View

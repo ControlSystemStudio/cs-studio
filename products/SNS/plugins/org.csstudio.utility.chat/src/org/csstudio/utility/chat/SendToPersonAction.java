@@ -8,8 +8,10 @@
 package org.csstudio.utility.chat;
 
 import org.eclipse.jface.action.Action;
+import org.eclipse.jface.viewers.ISelectionChangedListener;
 import org.eclipse.jface.viewers.ISelectionProvider;
 import org.eclipse.jface.viewers.IStructuredSelection;
+import org.eclipse.jface.viewers.SelectionChangedEvent;
 
 /** Base for action that initiates sending something
  *  to a {@link Person}
@@ -19,16 +21,35 @@ abstract public class SendToPersonAction extends Action
 {
 	final private ISelectionProvider provider;
 
-	/**@param label Action label
-	 * @param icon_path Path to icon
-	 * @param provider Provider for {@link Person} selections
+	/** Initialize
+	 *  @param gui {@link GroupChatGUI}, to prevent sending stuff to ourself 
+	 *  @param label Action label
+	 *  @param icon_path Path to icon
+	 *  @param provider Provider for {@link Person} selections
 	 */
-	public SendToPersonAction(final String label,
+	public SendToPersonAction(final GroupChatGUI gui,
+			final String label,
 			final String icon_path,
 			final ISelectionProvider provider)
 	{
 		super(label, Activator.getImage(icon_path));
 		this.provider = provider;
+		provider.addSelectionChangedListener(new ISelectionChangedListener()
+		{
+			@Override
+			public void selectionChanged(final SelectionChangedEvent event)
+			{
+				boolean self = false;
+				final IStructuredSelection selection =
+					(IStructuredSelection) event.getSelection();
+				if (selection != null)
+				{
+					final Person person = (Person)selection.getFirstElement();
+					self = gui.isOurself(person);
+				}
+				setEnabled(! self);
+			}
+		});
 	}
 	
 	@Override
