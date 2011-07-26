@@ -80,6 +80,19 @@ public abstract class EpicsSystemVariableSupport<T> extends SystemVariableSuppor
     }
 
     @Nonnull
+    public static <T>
+    IValue toIMinMaxDoubleValue(@Nonnull final IAlarmSystemVariable<T> sysVar,
+                                @Nonnull final T min,
+                                @Nonnull final T max) throws TypeSupportException {
+        final T valueData = sysVar.getData();
+        @SuppressWarnings("unchecked")
+        final Class<T> typeClass = (Class<T>) valueData.getClass();
+        final EpicsSystemVariableSupport<T> support =
+            (EpicsSystemVariableSupport<T>) findTypeSupportForOrThrowTSE(EpicsSystemVariableSupport.class, typeClass);
+        return support.convertToIMinMaxDoubleValue(sysVar, min, max);
+    }
+
+    @Nonnull
     protected static IValue createMinMaxDoubleValueFromNumber(@Nonnull final TimeInstant timestamp,
                                                               @Nonnull final EpicsAlarm alarm,
                                                               @Nonnull final Number valueData,
@@ -104,19 +117,6 @@ public abstract class EpicsSystemVariableSupport<T> extends SystemVariableSuppor
         final EpicsSystemVariableSupport<T> support =
             (EpicsSystemVariableSupport<T>) findTypeSupportForOrThrowTSE(EpicsSystemVariableSupport.class, typeClass);
         return support.convertCollectionToIValue(data, alarm, timestamp);
-    }
-
-    @Nonnull
-    public static <T>
-    IValue toIMinMaxDoubleValue(@Nonnull final IAlarmSystemVariable<T> sysVar,
-                                @Nonnull final T min,
-                                @Nonnull final T max) throws TypeSupportException {
-        final T valueData = sysVar.getData();
-        @SuppressWarnings("unchecked")
-        final Class<T> typeClass = (Class<T>) valueData.getClass();
-        final EpicsSystemVariableSupport<T> support =
-            (EpicsSystemVariableSupport<T>) findTypeSupportForOrThrowTSE(EpicsSystemVariableSupport.class, typeClass);
-        return support.convertToIMinMaxDoubleValue(sysVar, min, max);
     }
 
 
