@@ -1,5 +1,7 @@
 package org.csstudio.rap.core;
 
+import java.util.ArrayList;
+import java.util.Enumeration;
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
@@ -7,6 +9,9 @@ import java.util.Map;
 import java.util.Map.Entry;
 import java.util.logging.Level;
 
+import javax.servlet.http.HttpServletRequest;
+
+import org.eclipse.rwt.RWT;
 import org.eclipse.rwt.lifecycle.UICallBack;
 import org.eclipse.swt.widgets.Display;
 
@@ -15,6 +20,8 @@ public class DisplayManager {
 	private static Map<Display, DisplayResource> displayMap = new HashMap<Display, DisplayResource>();
 
 	private static DisplayManager instance;
+	
+	private static List<Object> objectList =new ArrayList<Object>();
 
 	private long beatCount;
 	
@@ -36,12 +43,14 @@ public class DisplayManager {
 								displayMap.get(display).isLive = false;
 							try {
 								if(display.isDisposed() || !isDisplayAlive(display)){
-									RAPCorePlugin.getLogger().log(Level.INFO, 
-											"DisplayManager: " + display + " is Disposed! Number of display: " + displayMap.size());
 									for(Runnable runnable : entry.getValue().getDisposeListeners()){
 										runnable.run();
 									}
 									unRegisterDisplay(display);
+									RAPCorePlugin.getLogger().log(Level.INFO, 
+											"DisplayManager: " + display + " on " + entry.getValue().remoteHost +
+											" is Disposed! Number of display: " + displayMap.size() +
+											" Number of widgets: " + objectList.size());
 								}else
 									display.asyncExec(new Runnable() {
 										
@@ -78,7 +87,10 @@ public class DisplayManager {
 	public void registerDisplay(Display display) {
 		if(displayMap.containsKey(display))
 			return;
-		displayMap.put(display, new DisplayResource(beatCount, true));
+		HttpServletRequest request = RWT.getRequest();
+		displayMap.put(display, new DisplayResource(beatCount, true, 
+				request.getRemoteHost() + " : " + request.getHeader("User-Agent"))); //$NON-NLS-1$ //$NON-NLS-2$
+		
 		display.asyncExec(new Runnable() {
 			
 			@Override
@@ -87,9 +99,17 @@ public class DisplayManager {
 				UICallBack.deactivate(callbackID);
 				UICallBack.activate(callbackID);				
 			}
-		});
-		RAPCorePlugin.getLogger().log(Level.INFO, 
-				"DisplayManager: " + display + " is registered. Number of display: " + displayMap.size());
+		});		
+		StringBuilder sb = new StringBuilder("DisplayManger: "); //$NON-NLS-1$
+		sb.append(display + " on " + request.getRemoteHost());
+		sb.append(" is registered. Number of display: ");
+		sb.append(displayMap.size());
+		for(Entry<Display, DisplayResource> entry : displayMap.entrySet()){
+			sb.append("\n");
+			sb.append("Client: ");
+			sb.append(entry.getValue().remoteHost);
+		}
+		RAPCorePlugin.getLogger().log(Level.INFO, sb.toString());
 		
 	}
 	
@@ -140,14 +160,24 @@ public class DisplayManager {
 		return displayMap.get(display).isLive;
 	}
 
+	public void registerObject(Object obj){
+		objectList.add(obj);
+	}
+	
+	public void unRegisterObject(Object obj){
+		objectList.remove(obj);
+	}
+	
 	class DisplayResource {
 		private long heartCount;
 		private Boolean isLive;
 		private List<Runnable> disposeListenerList;
-		public DisplayResource(long beatCount, Boolean isLive) {
+		private String remoteHost;
+		public DisplayResource(long beatCount, Boolean isLive, String remoteHost) {
 			super();
 			this.heartCount = beatCount;
 			this.isLive = isLive;
+			this.remoteHost = remoteHost;
 		}
 		
 		public void addDisposeListener(Runnable disposeListener){

@@ -174,6 +174,7 @@ public abstract class AbstractBaseEditPart extends AbstractGraphicalEditPart {
 	public void activate() {
 		if (!isActive()) {
 			super.activate();
+			DisplayManager.getInstance().registerObject(this);
 			initFigure(getFigure());
 
 			// add listener to all properties.
@@ -274,6 +275,7 @@ public abstract class AbstractBaseEditPart extends AbstractGraphicalEditPart {
 		} catch (Exception e) {
 			ErrorHandlerUtil.handleError("Failed to add dispose listener.", e);
 		}
+		
 	}
 
 	/**
@@ -334,6 +336,7 @@ public abstract class AbstractBaseEditPart extends AbstractGraphicalEditPart {
 				ErrorHandlerUtil.handleError("Failed to remove dispose listener.",
 						e);
 			}
+			DisplayManager.getInstance().unRegisterObject(this);
 		}
 
 	}

@@ -11,3 +11,5 @@ Bundle-RequiredExecutionEnvironment: JavaSE-1.6
 Bundle-Vendor: Xihui Chen<chenx1@ornl.gov> - SNS
 Export-Package: org.csstudio.rap.core,
  org.csstudio.rap.preferences
+Import-Package: javax.servlet,
+ javax.servlet.http
