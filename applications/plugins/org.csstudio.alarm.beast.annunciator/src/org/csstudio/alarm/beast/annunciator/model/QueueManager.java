@@ -7,9 +7,11 @@
  ******************************************************************************/
 package org.csstudio.alarm.beast.annunciator.model;
 
+import org.csstudio.alarm.beast.annunciator.Messages;
 import org.csstudio.utility.speech.Annunciator;
 import org.csstudio.utility.speech.AnnunciatorFactory;
 import org.csstudio.utility.speech.Translation;
+import org.eclipse.osgi.util.NLS;
 
 /** Queue Manager for the JMS-to-speech tool.
  *  Reads messages from queue, annunciates them, notifies listener.
@@ -23,7 +25,10 @@ import org.csstudio.utility.speech.Translation;
 @SuppressWarnings("nls")
 public class QueueManager implements Runnable
 {
-    /** Code used to wake the queue manager; not spoken */
+	/** Delay (millisecs) to wait after an error */
+    final private static int ERROR_DELAY_MS = 5000;
+
+	/** Code used to wake the queue manager; not spoken */
     final static private String MAGIC_EXIT_MESSAGE = "PleaseDoExitNow?!";
 
     final private JMSAnnunciatorListener listener;
@@ -65,23 +70,9 @@ public class QueueManager implements Runnable
     @Override
     public void run()
     {
-        // The main application will NOT exit when this thread exits.
-        // onMessage will continue to receive messages,
-        // just this thread will no longer be around to say anything.
-        // So it would be good to try whatever to keep running.
-        //
-        // Maybe log the exception, but put another while (true)
-        // around everything so it will try again.
-        //
-        // OR:
-        // Turn Application.run into a static, then set it to "false"
-        // in case of errors in here, so that the whole application will
-        // stop, because having the application continue to run while
-        // the thread that does the actual talking has died will
-        // lead to confusion.
-        while (true) // Wait for anybody to add messages to the queue
+        while (run)
         {
-            Annunciator speech = null;
+        	Annunciator speech = null;
             try
             {
                 // Create annunciator
@@ -89,11 +80,11 @@ public class QueueManager implements Runnable
                 if (translations != null)
                     speech.setTranslations(translations);
 
-                while (true) // Wait for anybody to add messages to the queue
+                while (run) // Wait for anybody to add messages to the queue
                 {
                     // Retrieves and removes the head of this queue, waiting if
                     // no elements are present on this queue.
-                    AnnunciationMessage qc = queue.poll();
+                	AnnunciationMessage qc = queue.poll();
                     String message = qc.getMessage();
 
                     // Exit requested?
@@ -123,16 +114,23 @@ public class QueueManager implements Runnable
                             else
                                 ++flurry;
                         }
-                        final String more = "There are " + flurry
-                            + " more messages";
+                        final String more = NLS.bind(Messages.MoreMessagesFmt, flurry);
                         speech.say(more);
                         listener.performedAnnunciation(new AnnunciationMessage(Severity.forInfo(), more));
                     }
                 }
             }
-            catch (Exception ex)
+            catch (Throwable ex)
             {
                 listener.annunciatorError(ex);
+                try
+                {
+                	Thread.sleep(ERROR_DELAY_MS);
+                }
+                catch (InterruptedException iex)
+                {
+                	// Ignore
+                }
             }
             finally
             {
