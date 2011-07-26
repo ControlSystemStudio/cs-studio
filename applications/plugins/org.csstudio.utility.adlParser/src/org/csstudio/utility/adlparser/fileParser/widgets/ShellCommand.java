@@ -4,13 +4,11 @@ import java.util.ArrayList;
 
 import org.csstudio.utility.adlparser.Activator;
 import org.csstudio.utility.adlparser.IImageKeys;
-import org.csstudio.utility.adlparser.fileParser.ADLResource;
 import org.csstudio.utility.adlparser.fileParser.ADLWidget;
 import org.csstudio.utility.adlparser.fileParser.FileLine;
 import org.csstudio.utility.adlparser.fileParser.WrongADLFormatException;
-import org.csstudio.utility.adlparser.fileParser.widgetParts.ADLLimits;
-import org.csstudio.utility.adlparser.fileParser.widgetParts.ADLMonitor;
 import org.csstudio.utility.adlparser.fileParser.widgetParts.ADLObject;
+import org.csstudio.utility.adlparser.fileParser.widgetParts.CommandItem;
 import org.csstudio.utility.adlparser.internationalization.Messages;
 
 /**
@@ -18,12 +16,13 @@ import org.csstudio.utility.adlparser.internationalization.Messages;
  * @author hammonds
  *
  */
-public class ShellCommand extends ADLAbstractWidget {
+public class ShellCommand extends ADLAbstractWidget implements IWidgetWithColorsInBase {
 	private int _clr;
 	private int _bclr;
     private boolean _isBackColorDefined;
     private boolean _isForeColorDefined;
 	private String label = new String();
+	private ArrayList<CommandItem> cmdItems = new ArrayList<CommandItem>();
 
 	public ShellCommand(ADLWidget adlWidget) {
 		super(adlWidget);
@@ -46,15 +45,20 @@ public class ShellCommand extends ADLAbstractWidget {
 					throw new WrongADLFormatException(Messages.Label_WrongADLFormatException_Parameter_Begin + bodyPart + Messages.Label_WrongADLFormatException_Parameter_End);
 				}
 	            if(FileLine.argEquals(row[0], "clr")){ //$NON-NLS-1$
-	                set_clr(FileLine.getIntValue(row[1]));
+	                setClr(FileLine.getIntValue(row[1]));
 	        		set_isForeColorDefined(true);
 	            }else if(FileLine.argEquals(row[0], "bclr")){ //$NON-NLS-1$
-	                set_bclr(FileLine.getIntValue(row[1]));
+	                setBclr(FileLine.getIntValue(row[1]));
 	        		set_isBackColorDefined(true);
 	            }else if(FileLine.argEquals(row[0], "label")){ //$NON-NLS-1$
 	                setLabel(FileLine.getTrimmedValue(row[1]));
 	            }
             }
+			for (ADLWidget item : adlWidget.getObjects()){
+				if (item.getType().startsWith("command[")){
+					cmdItems.add(new CommandItem(item));
+				}
+			}
 		}
 		catch (WrongADLFormatException ex) {
 			
@@ -84,28 +88,28 @@ public class ShellCommand extends ADLAbstractWidget {
 	/**
 	 * @param _clr the _clr to set
 	 */
-	public void set_clr(int _clr) {
+	public void setClr(int _clr) {
 		this._clr = _clr;
 	}
 
 	/**
 	 * @return the _clr
 	 */
-	public int get_clr() {
+	public int getForegroundColor() {
 		return _clr;
 	}
 
 	/**
 	 * @param _bclr the _bclr to set
 	 */
-	public void set_bclr(int _bclr) {
+	public void setBclr(int _bclr) {
 		this._bclr = _bclr;
 	}
 
 	/**
 	 * @return the _bclr
 	 */
-	public int get_bclr() {
+	public int getBackgroundColor() {
 		return _bclr;
 	}
 
@@ -119,7 +123,7 @@ public class ShellCommand extends ADLAbstractWidget {
 	/**
 	 * @return the _isBackColorDefined
 	 */
-	public boolean is_isBackColorDefined() {
+	public boolean isBackColorDefined() {
 		return _isBackColorDefined;
 	}
 
@@ -133,7 +137,17 @@ public class ShellCommand extends ADLAbstractWidget {
 	/**
 	 * @return the _isForeColorDefined
 	 */
-	public boolean is_isForeColorDefined() {
+	public boolean isForeColorDefined() {
 		return _isForeColorDefined;
+	}
+	public CommandItem[] getCommandItems(){
+		if ( cmdItems.size() > 0 ){
+			CommandItem[] retItems = new CommandItem[cmdItems.size()];
+			for (int ii=0; ii<cmdItems.size(); ii++){
+				retItems[ii] = cmdItems.get(ii);
+			}
+			return retItems;
+		}
+		return null;
 	}
 }
