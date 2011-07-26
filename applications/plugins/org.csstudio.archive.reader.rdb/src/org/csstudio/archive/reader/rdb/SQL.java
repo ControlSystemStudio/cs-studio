@@ -36,6 +36,7 @@ public class SQL
     final public String sample_sel_initial_time;
     final public String sample_sel_array_vals;
     final public String sample_sel_by_id_start_end;
+	final public String sample_count_by_id_start_end;
     
     /** Initialize SQL statements
      *  @param dialect RDB dialect
@@ -108,5 +109,8 @@ public class SQL
             sample_sel_array_vals = "SELECT float_val FROM " + prefix + "array_val" +
                 " WHERE channel_id=? AND smpl_time=? AND nanosecs=? ORDER BY seq_nbr";
         }
+        // Rough count, ignoring nanosecs for the non-Oracle dialects
+        sample_count_by_id_start_end = "SELECT COUNT(*) FROM " + prefix + "sample" +
+          "   WHERE channel_id=? AND smpl_time BETWEEN ? AND ?";
     }
 }

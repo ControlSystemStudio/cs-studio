@@ -278,9 +278,22 @@ public class RDBArchiveReader implements ArchiveReader
             final ITimestamp start, final ITimestamp end) throws UnknownChannelException, Exception
     {
         final int channel_id = getChannelID(name);
-        return new RawSampleIterator(this, channel_id, start, end);
+        return getRawValues(channel_id, start, end);
     }
 
+    /** Fetch raw samples
+     *  @param channel_id Channel ID in RDB
+     *  @param start Start time
+     *  @param end End time
+     *  @return {@link ValueIterator} for raw samples
+     *  @throws Exception on error
+     */
+    public ValueIterator getRawValues(final int channel_id,
+            final ITimestamp start, final ITimestamp end) throws Exception
+    {
+        return new RawSampleIterator(this, channel_id, start, end);
+    }
+    
     /** {@inheritDoc} */
     @Override
     public ValueIterator getOptimizedValues(final int key, final String name,
@@ -288,13 +301,38 @@ public class RDBArchiveReader implements ArchiveReader
     {
         if (count <= 0)
             throw new Exception("Count must be positive");
+        final int channel_id = getChannelID(name);
+        
+        // Use stored procedure in RDB server?
         if (stored_procedure.length() > 0)
-        {
-            final int channel_id = getChannelID(name);
             return new StoredProcedureValueIterator(this, stored_procedure, channel_id, start, end, count);
+
+        // Else: Determine how many samples there are
+        final PreparedStatement count_samples = rdb.getConnection().prepareStatement(
+        		sql.sample_count_by_id_start_end);
+        final int counted;
+        try
+        {
+	        count_samples.setInt(1, channel_id);
+	        count_samples.setTimestamp(2, start.toSQLTimestamp());
+	        count_samples.setTimestamp(3, end.toSQLTimestamp());
+	        final ResultSet result = count_samples.executeQuery();
+	        if (! result.next())
+	        	throw new Exception("Cannot count samples");
+	        counted = result.getInt(1);
         }
-        // Else: Fetch raw data and perform averaging
-        final ValueIterator raw_data = getRawValues(key, name, start, end);
+        finally
+        {
+        	count_samples.close();
+        }
+        // Fetch raw data and perform averaging
+        final ValueIterator raw_data = getRawValues(channel_id, start, end);
+        
+        // If there weren't that many, that's it
+        if (counted < count)
+        	return raw_data;
+        
+        // Else: Perform averaging to reduce sample count
         final double seconds = (end.toDouble() - start.toDouble()) / count;
         return new AveragedValueIterator(raw_data, seconds);
     }
