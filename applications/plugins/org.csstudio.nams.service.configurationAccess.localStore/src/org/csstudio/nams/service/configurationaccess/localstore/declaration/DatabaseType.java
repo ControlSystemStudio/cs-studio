@@ -54,9 +54,9 @@ public enum DatabaseType {
 	 * Treiber und Dialect für HSQL. "jdbc:hsqldb:file:namsconfigurator.db"
 	 * oder "jdbc:hsqldb:mem:namsconfigurator". User "sa", password "".
 	 */
-	HSQL_2_2_FOR_TEST(
-			"HSQL database engine 2.2.0 or higher for test purposes",
-			"org.hsqldb.jdbc.JDBCDriver", HSQLDialect.class);
+	HSQL_1_8_0_10_FOR_TEST(
+			"HSQL database engine 1.8.x or higher for test purposes",
+			"org.hsqldb.jdbcDriver", HSQLDialect.class);
 
 	private final String driverName;
 	private final Class<? extends Dialect> hibernateDialect;

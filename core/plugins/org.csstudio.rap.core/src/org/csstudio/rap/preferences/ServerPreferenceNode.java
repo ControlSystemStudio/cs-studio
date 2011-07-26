@@ -381,7 +381,7 @@ public class ServerPreferenceNode implements IEclipsePreferences {
 				 userDir = "C:/Users/5hz/Desktop";
 			 }
 			 
-			 Properties properties = loadProperties(userDir + "/conf/css_rap.ini"); //$NON-NLS-1$
+			 Properties properties = loadProperties(userDir + "/webapps/css_rap.ini"); //$NON-NLS-1$
 
 			 //Cannot use context since it doesn't exist if no UI created.
 //			ServletContext sc = RWT.getRequest().getSession()

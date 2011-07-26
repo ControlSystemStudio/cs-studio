@@ -27,10 +27,7 @@ public class DisplayManager {
 					@SuppressWarnings("unchecked")
 					@Override
 					public void beat(long beatCount) {
-						DisplayManager.this.beatCount = beatCount;
-						if (beatCount % 500 == 0)
-							RAPCorePlugin.getLogger().log(Level.INFO, "DisplayManager: Number of clients: "
-									+ displayMap.size());
+						DisplayManager.this.beatCount = beatCount;						
 						for (Entry<Display, DisplayResource> entry : displayMap
 								.entrySet().toArray(new Entry[0])) {
 							final Display display = entry.getKey();
@@ -40,7 +37,7 @@ public class DisplayManager {
 							try {
 								if(display.isDisposed() || !isDisplayAlive(display)){
 									RAPCorePlugin.getLogger().log(Level.INFO, 
-											"DisplayManager: " + display + " is Disposed!");
+											"DisplayManager: " + display + " is Disposed! Number of display: " + displayMap.size());
 									for(Runnable runnable : entry.getValue().getDisposeListeners()){
 										runnable.run();
 									}
@@ -92,7 +89,8 @@ public class DisplayManager {
 			}
 		});
 		RAPCorePlugin.getLogger().log(Level.INFO, 
-				"DisplayManager: " + display + " is registered.");
+				"DisplayManager: " + display + " is registered. Number of display: " + displayMap.size());
+		
 	}
 	
 	private String generateNewUICallbackID(){

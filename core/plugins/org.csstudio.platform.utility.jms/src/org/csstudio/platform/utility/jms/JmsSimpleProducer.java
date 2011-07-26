@@ -24,6 +24,8 @@
 
 package org.csstudio.platform.utility.jms;
 
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
 import java.util.Hashtable;
 import javax.jms.Connection;
 import javax.jms.ConnectionFactory;
@@ -56,13 +58,17 @@ public class JmsSimpleProducer {
     private String clientId;
     private String jmsUrl;
     private String jmsTopic;
-
+    
+    private SimpleDateFormat dateFormater;
+    
     public JmsSimpleProducer(String id, String url, String f, String t) {
         
         clientId = id;
         jmsUrl = url;
         jmsTopic = t;
 
+        dateFormater = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss.SSS");
+        
         properties = new Hashtable<String, String>();
         
         // Set the properties for the context
@@ -100,7 +106,7 @@ public class JmsSimpleProducer {
         } catch(JMSException jmse) {
             // logger.info(" *** JMSException *** : " + jmse.getMessage());
             closeAll();
-        }       
+        }   
     }
 
     /**
@@ -122,6 +128,10 @@ public class JmsSimpleProducer {
         return message;
     }
 
+    public String getCurrentDateAsString() {
+        return dateFormater.format(Calendar.getInstance().getTime());
+    }
+    
     /**
      * 
      * @param message

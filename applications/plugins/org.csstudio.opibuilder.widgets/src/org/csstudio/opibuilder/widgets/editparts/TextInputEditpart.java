@@ -346,6 +346,7 @@ public class TextInputEditpart extends TextUpdateEditPart {
 					return text;
 			case DECIAML:
 			case EXP:
+			case COMPACT:
 				return parseDouble(text, true);
 			case DEFAULT:
 			default:
@@ -369,6 +370,7 @@ public class TextInputEditpart extends TextUpdateEditPart {
 					return text;
 			case DECIAML:
 			case EXP:
+			case COMPACT:
 				return parseDouble(text, true);
 			case DEFAULT:
 			default:
@@ -389,6 +391,7 @@ public class TextInputEditpart extends TextUpdateEditPart {
 				return text;
 			case DECIAML:
 			case EXP:
+			case COMPACT:
 				return parseDouble(text, true);
 			case DEFAULT:
 			default:
@@ -451,6 +454,7 @@ public class TextInputEditpart extends TextUpdateEditPart {
 		return (int) i; // EPICS_V3_PV doesn't support Long
 
 	}
+
 
 	@Override
 	protected String formatValue(Object newValue, String propId, IFigure figure) {

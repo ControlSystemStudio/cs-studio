@@ -27,8 +27,11 @@ org.csstudio.diag.epics.pvtree
 org.csstudio.diag.epics.pvtree.intro
 org.csstudio.diag.probe
 org.csstudio.diag.probe.intro
+org.csstudio.diag.pvmanager.probe
 org.csstudio.display.channelfinderviewer
+org.csstudio.display.pvmanager.pvtable
 org.csstudio.display.pvtable
+org.csstudio.display.waterfall
 org.csstudio.domain.common
 org.csstudio.domain.desy
 org.csstudio.email
@@ -36,6 +39,8 @@ org.csstudio.email.ui
 org.csstudio.java
 org.csstudio.logbook
 org.csstudio.logging
+org.csstudio.logging.ui
+org.csstudio.logging.test
 org.csstudio.multiChannelViewer
 org.csstudio.openfile
 org.csstudio.opibuilder
@@ -52,6 +57,7 @@ org.csstudio.swt.xygraph
 org.csstudio.testsuite
 org.csstudio.trends.databrowser2
 org.csstudio.ui.menu
+org.csstudio.ui.menu.test
 org.csstudio.ui.preferences
 org.csstudio.utility.adlParser
 org.csstudio.utility.channel
@@ -67,10 +73,13 @@ org.csstudio.utility.pv.simu
 org.csstudio.utility.pv.ui
 org.csstudio.utility.pvmanager
 org.csstudio.utility.pvmanager.epics
+org.csstudio.utility.pvmanager.loc
 org.csstudio.utility.pvmanager.jfreechart.widgets
 org.csstudio.utility.pvmanager.sim
+org.csstudio.utility.pvmanager.ui.toolbox
 org.csstudio.utility.pvmanager.ui
 org.csstudio.utility.pvmanager.widgets
+org.csstudio.utility.pvmanager.widgets.test
 org.csstudio.utility.speech
 org.csstudio.ui.util
 org.csstudio.platform

@@ -25,7 +25,8 @@ public class TextUpdateModel extends LabelModel {
 		EXP("Exponential"),
 		HEX("Hex 32"),		
 		STRING("String"),
-		HEX64("Hex 64");
+		HEX64("Hex 64"),
+		COMPACT("Compact");
 		
 		private String description;
 		private FormatEnum(String description) {

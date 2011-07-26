@@ -9,6 +9,8 @@ package org.csstudio.opibuilder.visualparts;
 
 import org.eclipse.jface.dialogs.Dialog;
 import org.eclipse.swt.SWT;
+import org.eclipse.swt.events.KeyEvent;
+import org.eclipse.swt.events.KeyListener;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
@@ -46,6 +48,19 @@ public class MultilineTextEditDialog extends Dialog {
 		text = new Text(container, SWT.MULTI | SWT.BORDER | SWT.H_SCROLL | SWT.V_SCROLL);
 		text.setText(contents);
 		text.setLayoutData(gridData);
+		text.addKeyListener(new KeyListener() {
+			
+			public void keyReleased(KeyEvent e) {}
+			
+			public void keyPressed(KeyEvent e) {		
+				if (e.character == '\r') { // Return key	            
+	                if ((e.stateMask & SWT.CTRL) != 0) {
+	                    okPressed();
+	                }
+	            }
+	            return;	
+			}
+		});
 		return container;
 	}
 	
