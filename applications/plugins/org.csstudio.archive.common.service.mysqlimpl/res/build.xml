@@ -1,4 +1,4 @@
-<project name="db.creation">
+<project name="db.creation" default="create.db.and.schema">
 	<!-- necessary for this project being imported by another build file, basedir will be 
 	     'overridden' with the importing file's basedir... that's a very disputed break of encap -->
 	<dirname property="db.creation.basedir" file="${ant.file.db.creation}" />
@@ -14,7 +14,7 @@
         have no effect (ant props are immutable). After that use env.HOSTNAME where the hostname 
         is required.
     -->
-	<target name="prepare.env">
+	<target name="prepare.env" description="Determines the current host name and parses the host.properties file accordingly">
         
 		<exec executable="hostname" outputproperty="host.name.org"/>
         <echo message="Original computer or host name = ${host.name.org}"/>
@@ -59,10 +59,6 @@
 	    <property name="sql.host" value="${mysqlHost}"/>
 	    <property name="sql.url" value="jdbc:mysql://${sql.host}:${mysqlPort}"/>
 		<echo message="sql.url : ${sql.url}"/>
-	    <property name="sql.root.user" value="${mysqlRootUser}"/>
-		<echo message="sql.root.user : ${sql.root.user}"/>
-	    <property name="sql.root.pw" value="${mysqlRootPassword}"/>
-		<echo message="sql.root.pw : ${sql.root.pw}"/>
 		
 	    <property name="sql.archive.db" value="${mysqlArchiveDatabase}"/>
 		<echo message="sql.archive.db : ${sql.archive.db}"/>
@@ -74,7 +70,8 @@
 	
 
 
-    <target name="create.db.and.schema" 
+    <target name="create.db.and.schema"
+    	    description="Drops and recreates the archive database"
     	    depends="create.database, create.tables, create.triggers">
     </target>
 	
@@ -94,7 +91,9 @@
       </sql>
    </target>
    
-    <target name="create.tables" depends="prepare.env">
+    <target name="create.tables" 
+    	    description="Creates all tables for the archive engine"
+    	    depends="prepare.env">
         <sql driver="${sql.driver}" 
              url="${sql.url}/${sql.archive.db}" 
              userid="${sql.archive.user}" 
@@ -116,7 +115,9 @@
         </sql>
     </target>
 
-    <target name="create.triggers" depends="prepare.env">
+    <target name="create.triggers" 
+    	    description="Creates all triggers on tables for the archive engine"
+    	    depends="prepare.env">
         <sql driver="${sql.driver}" 
              url="${sql.url}/${sql.archive.db}" 
              userid="${sql.archive.user}" 
@@ -130,7 +131,9 @@
        </sql>
     </target>
 	
-    <target name="drop.database" depends="prepare.env">
+    <target name="drop.database" 
+    	    description="Drops the database (if you say so)"
+    	    depends="prepare.env">
 	    <input message="Do you really want to delete database '${sql.archive.db}' if exists?" 
                validargs="y,n" 
 	           addproperty="do.delete"
@@ -154,7 +157,9 @@
          </sql>
     </target>
 	
-	<target name="clear.tables" depends="prepare.env">
+	<target name="clear.tables" 
+		    description="Truncates all contents of all tables in the archive database"
+		    depends="prepare.env">
         <sql driver="${sql.driver}" 
              url="${sql.url}/${sql.archive.db}" 
              userid="${sql.archive.user}" 
@@ -182,14 +187,17 @@
 	</target>
 	
 	<target name="init.users" 
-		    description="Run this target on your mysql host: connect as root, set root password, \
-		according to host.properties, create archive user, create archive db, \
-		grant privileges"
+		    description="Run this target on your mysql host. All required users/privileges according to host.properties file will be inserted."
 		    depends="prepare.env">
+		
+		<input message="Please enter db root password:"
+		       addproperty="sql.root.pw">
+			<handler type="secure"/>
+	    </input>
 		
         <sql driver="${sql.driver}" 
              url="${sql.url}" 
-             userid="${sql.root.user}"
+             userid="root"
         	 password="${sql.root.pw}">
              <classpath>
                  <pathelement path="${sql.connector.classpath}"/>
@@ -217,7 +225,7 @@
              <transaction>
              	SET GLOBAL log_bin_trust_function_creators = 1;
              	
-             	GRANT ALL PRIVILEGES ON *.* TO '${sql.root.user}'@'%' IDENTIFIED BY '${sql.root.pw}' WITH GRANT OPTION;
+             	GRANT ALL PRIVILEGES ON *.* TO 'root'@'%' IDENTIFIED BY '${sql.root.pw}' WITH GRANT OPTION;
              	
              	GRANT ALL PRIVILEGES ON ${sql.archive.db}.* TO '${sql.archive.user}'@'localhost' IDENTIFIED BY '${sql.archive.pw}';
 
