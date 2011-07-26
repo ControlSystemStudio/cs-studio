@@ -19,12 +19,15 @@ import org.csstudio.opibuilder.script.RulesInput;
 import org.csstudio.opibuilder.util.MacrosInput;
 import org.csstudio.opibuilder.util.OPIColor;
 import org.csstudio.opibuilder.widgets.model.AbstractShapeModel;
+import org.csstudio.opibuilder.widgets.model.ArcModel;
 import org.csstudio.utility.adlparser.fileParser.ADLWidget;
 import org.csstudio.utility.adlparser.fileParser.widgetParts.ADLBasicAttribute;
 import org.csstudio.utility.adlparser.fileParser.widgetParts.ADLConnected;
 import org.csstudio.utility.adlparser.fileParser.widgetParts.ADLDynamicAttribute;
 import org.csstudio.utility.adlparser.fileParser.widgetParts.ADLObject;
 import org.csstudio.utility.adlparser.fileParser.widgets.ADLAbstractWidget;
+import org.csstudio.utility.adlparser.fileParser.widgets.IWidgetWithColorsInBase;
+import org.csstudio.utility.adlparser.fileParser.widgets.RelatedDisplay;
 import org.eclipse.swt.graphics.RGB;
 
 /**
@@ -381,13 +384,17 @@ public abstract class AbstractADL2Model {
 
 	protected void setShapesColorFillLine(ADLAbstractWidget shapeWidget) {
 		if (shapeWidget.getAdlBasicAttribute().getFill().equals("solid") ) {
-			widgetModel.setPropertyValue(AbstractShapeModel.PROP_TRANSPARENT, false);
+			if (!(widgetModel instanceof ArcModel)){
+				widgetModel.setPropertyValue(AbstractShapeModel.PROP_TRANSPARENT, false);
+			}
 			widgetModel.setPropertyValue(AbstractShapeModel.PROP_FILL_LEVEL, 100);
 			widgetModel.setPropertyValue(AbstractShapeModel.PROP_HORIZONTAL_FILL, true);
 			
 		}
 		else if (shapeWidget.getAdlBasicAttribute().getFill().equals("outline")) {
-			widgetModel.setPropertyValue(AbstractShapeModel.PROP_TRANSPARENT, true);
+			if (!(widgetModel instanceof ArcModel)){
+				widgetModel.setPropertyValue(AbstractShapeModel.PROP_TRANSPARENT, true);
+			}
 			OPIColor fColor = (OPIColor)widgetModel.getPropertyValue(AbstractWidgetModel.PROP_COLOR_FOREGROUND);
 			widgetModel.setPropertyValue(AbstractShapeModel.PROP_LINE_COLOR, fColor);
 			if ( shapeWidget.getAdlBasicAttribute().getStyle().equals("solid") ) {
@@ -440,5 +447,19 @@ public abstract class AbstractADL2Model {
 		}
 		String resArgs = strBuff.toString();
 		return resArgs;
+	}
+
+	/**
+	 * @param rdWidget
+	 */
+	public void setWidgetColors(IWidgetWithColorsInBase rdWidget) {
+		if (rdWidget.isForeColorDefined()) {
+			setColor(rdWidget.getForegroundColor(),
+					AbstractWidgetModel.PROP_COLOR_FOREGROUND);
+		}
+		if (rdWidget.isBackColorDefined()) {
+			setColor(rdWidget.getBackgroundColor(),
+					AbstractWidgetModel.PROP_COLOR_BACKGROUND);
+		}
 	}
 }

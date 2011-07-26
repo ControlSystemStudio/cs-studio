@@ -7,7 +7,6 @@
 package org.csstudio.opibuilder.adl2boy.translator;
 
 import org.csstudio.opibuilder.model.AbstractContainerModel;
-import org.csstudio.opibuilder.model.AbstractWidgetModel;
 import org.csstudio.opibuilder.util.MacrosInput;
 import org.csstudio.opibuilder.widgetActions.ActionsInput;
 import org.csstudio.opibuilder.widgetActions.OpenDisplayAction;
@@ -72,20 +71,6 @@ public class RelatedDisplay2Model extends AbstractADL2Model {
 			}
 		}
 		widgetModel.setPropertyValue(MenuButtonModel.PROP_LABEL, label);
-	}
-
-	/**
-	 * @param rdWidget
-	 */
-	public void setWidgetColors(RelatedDisplay rdWidget) {
-		if (rdWidget.isForeColorDefined()) {
-			setColor(rdWidget.getForegroundColor(),
-					AbstractWidgetModel.PROP_COLOR_FOREGROUND);
-		}
-		if (rdWidget.isBackColorDefined()) {
-			setColor(rdWidget.getBackgroundColor(),
-					AbstractWidgetModel.PROP_COLOR_BACKGROUND);
-		}
 	}
 
 	/**
