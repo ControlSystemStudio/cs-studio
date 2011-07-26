@@ -104,7 +104,11 @@ public class TraceTableHandler implements IStructuredContentProvider
         }
 
         @Override
-        public void changedItemDataConfig(final PVItem item) { /* Ignored */ }
+        public void changedItemDataConfig(final PVItem item)
+        {
+            trace_table.refresh(item);
+        }
+        
         @Override
         public void scrollEnabled(final boolean scroll_enabled) { /* Ignored */ }
     };
