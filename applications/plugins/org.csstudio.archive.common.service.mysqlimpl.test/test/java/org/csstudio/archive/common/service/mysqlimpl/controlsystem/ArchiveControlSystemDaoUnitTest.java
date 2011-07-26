@@ -25,8 +25,6 @@ import junit.framework.Assert;
 
 import org.csstudio.archive.common.service.controlsystem.ArchiveControlSystemId;
 import org.csstudio.archive.common.service.controlsystem.IArchiveControlSystem;
-import org.csstudio.archive.common.service.mysqlimpl.controlsystem.ArchiveControlSystemDaoImpl;
-import org.csstudio.archive.common.service.mysqlimpl.controlsystem.IArchiveControlSystemDao;
 import org.csstudio.archive.common.service.mysqlimpl.dao.AbstractDaoTestSetup;
 import org.csstudio.archive.common.service.mysqlimpl.dao.ArchiveDaoException;
 import org.csstudio.domain.desy.system.ControlSystem;
@@ -62,6 +60,6 @@ public class ArchiveControlSystemDaoUnitTest extends AbstractDaoTestSetup {
         Assert.assertNotNull(cs);
         Assert.assertEquals(id, cs.getId());
         Assert.assertEquals("EpicsDefault", cs.getName());
-        Assert.assertEquals(ControlSystem.EPICS_DEFAULT, cs.getType());
+        Assert.assertEquals(ControlSystem.EPICS_DEFAULT.getType(), cs.getType());
     }
 }
