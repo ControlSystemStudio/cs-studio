@@ -24,7 +24,6 @@ package org.csstudio.archive.common.service.mysqlimpl.channelstatus;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.sql.Timestamp;
 import java.util.Collections;
 
 import javax.annotation.CheckForNull;
@@ -56,9 +55,9 @@ public class ArchiveChannelStatusDaoImpl extends AbstractArchiveDao implements I
     private static final String EXC_MSG = "Retrieval of channel status from archive failed.";
 
     private final String _selectLatestChannelStatusStmt =
-        "SELECT id, channel_id, connected, info, timestamp FROM " +
+        "SELECT id, channel_id, connected, info, time FROM " +
         getDatabaseName() + "." + TAB +
-        " WHERE channel_id=? ORDER BY timestamp DESC LIMIT 1";
+        " WHERE channel_id=? ORDER BY time DESC LIMIT 1";
 
     @Inject
     public ArchiveChannelStatusDaoImpl(@Nonnull final ArchiveConnectionHandler handler,
@@ -103,18 +102,18 @@ public class ArchiveChannelStatusDaoImpl extends AbstractArchiveDao implements I
     @Nonnull
     private IArchiveChannelStatus createChannelStatusFromResult(@Nonnull final ResultSet resultSet)
                                                                 throws SQLException {
-        // id, channel_id, connected, info, timestamp
-        final int id = resultSet.getInt(1);
-        final int channelId = resultSet.getInt(2);
-        final boolean connected = resultSet.getBoolean(3);
-        final String info = resultSet.getString(4);
-        final Timestamp timestamp = resultSet.getTimestamp(5);
+        // id, channel_id, connected, info, time
+        final int id = resultSet.getInt("id");
+        final int channelId = resultSet.getInt("channel_id");
+        final boolean connected = resultSet.getBoolean("connected");
+        final String info = resultSet.getString("info");
+        final long time = resultSet.getLong("time");
 
         return new ArchiveChannelStatus(new ArchiveChannelStatusId(id),
                                         new ArchiveChannelId(channelId),
                                         connected,
                                         info,
-                                        TimeInstantBuilder.fromMillis(timestamp.getTime()));
+                                        TimeInstantBuilder.fromNanos(time));
     }
 
 }

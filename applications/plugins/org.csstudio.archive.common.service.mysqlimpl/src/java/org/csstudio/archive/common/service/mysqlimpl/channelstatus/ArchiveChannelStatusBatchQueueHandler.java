@@ -59,7 +59,7 @@ public class ArchiveChannelStatusBatchQueueHandler extends BatchQueueHandlerSupp
     @Nonnull
     protected String composeSqlString() {
         return "INSERT INTO " + getDatabase() + "." + ArchiveChannelStatusDaoImpl.TAB +
-               " (channel_id, connected, info, timestamp) VALUES " + VAL_WILDCARDS;
+               " (channel_id, connected, info, time) VALUES " + VAL_WILDCARDS;
     }
 
     /**
@@ -69,7 +69,7 @@ public class ArchiveChannelStatusBatchQueueHandler extends BatchQueueHandlerSupp
     public void fillStatement(@Nonnull final PreparedStatement stmt,
                               @Nonnull final IArchiveChannelStatus element) throws SQLException {
         stmt.setInt(1, element.getChannelId().intValue());
-        stmt.setString(2, (element.isConnected() ? "'TRUE'" : "'FALSE'"));
+        stmt.setString(2, (element.isConnected() ? "TRUE" : "FALSE"));
         stmt.setString(3, element.getInfo());
         stmt.setLong(4, element.getTime().getNanos());
     }
