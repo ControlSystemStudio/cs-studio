@@ -99,6 +99,7 @@ public abstract class AbstractToFileDataRescuer {
         final File path = _rescueDir;
 
         _rescueFilePath = new File(path, fileName);
+        _rescueFilePath.createNewFile();
 
         final OutputStream ostream = new FileOutputStream(_rescueFilePath);
         final OutputStream buffer = new BufferedOutputStream(ostream);
