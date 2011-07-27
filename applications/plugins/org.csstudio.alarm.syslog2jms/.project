@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <projectDescription>
-	<name>org.csstudio.syslog2jms</name>
+	<name>org.csstudio.alarm.syslog2jms</name>
 	<comment></comment>
 	<projects>
 	</projects>
