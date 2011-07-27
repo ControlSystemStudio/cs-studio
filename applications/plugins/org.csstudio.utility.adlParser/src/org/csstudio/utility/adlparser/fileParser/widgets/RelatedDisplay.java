@@ -17,7 +17,7 @@ import org.csstudio.utility.adlparser.internationalization.Messages;
  * @author hammonds
  *
  */
-public class RelatedDisplay extends ADLAbstractWidget {
+public class RelatedDisplay extends ADLAbstractWidget implements IWidgetWithColorsInBase {
 	private String label = new String();
 	private String visual = new String("menu");
 	private int bclr;

@@ -17,6 +17,7 @@ import org.csstudio.platform.utility.rdb.RDBUtil.Dialect;
 public class SQL
 {
     // 'smpl_eng' table
+	final public String smpl_eng_list;
     final public String smpl_eng_sel_by_name;
 	final public String smpl_eng_delete;
 	final public String smpl_eng_insert;
@@ -49,6 +50,7 @@ public class SQL
     public SQL(final Dialect dialect, final String schema)
     {
 	    // 'smpl_eng' table
+    	smpl_eng_list = "SELECT eng_id, name, descr, url FROM " + schema + "smpl_eng";
         smpl_eng_sel_by_name = "SELECT eng_id, descr, url FROM " + schema + "smpl_eng WHERE name=?";
         smpl_eng_delete = "DELETE FROM " + schema + "smpl_eng WHERE eng_id=?";
         smpl_eng_insert = "INSERT INTO " + schema + "smpl_eng(eng_id, name, descr, url) VALUES (?,?,?,?)";

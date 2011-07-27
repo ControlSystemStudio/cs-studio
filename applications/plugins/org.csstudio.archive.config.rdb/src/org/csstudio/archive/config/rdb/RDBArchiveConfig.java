@@ -80,6 +80,26 @@ public class RDBArchiveConfig implements ArchiveConfig
 		loadSampleModes();
     }
 
+	/** {@inheritDoc} */
+	@Override
+    public EngineConfig[] getEngines() throws Exception
+    {
+		final Statement statement = rdb.getConnection().createStatement();
+		final List<EngineConfig> engines = new ArrayList<EngineConfig>();
+		try
+		{
+			final ResultSet result = statement.executeQuery(sql.smpl_eng_list);
+			while (result.next())
+				engines.add(new RDBEngineConfig(result.getInt(1),
+						result.getString(2), result.getString(3), result.getString(4)));
+		}
+		finally
+		{
+			statement.close();
+		}
+	    return engines.toArray(new EngineConfig[engines.size()]);
+    }
+
 	/** Load RDB information about sample modes */
 	private void loadSampleModes() throws Exception
     {

@@ -22,9 +22,9 @@ import org.csstudio.opibuilder.widgetActions.WidgetActionFactory.ActionType;
  */
 public class ExecuteCommandAction extends AbstractWidgetAction {
 
-	private final static String PROP_COMMAND = "command";
-	private final static String PROP_DIRECTORY = "command_directory";
-	private final static String PROP_WAIT_TIME = "wait_time";
+	public final static String PROP_COMMAND = "command";
+	public final static String PROP_DIRECTORY = "command_directory";
+	public final static String PROP_WAIT_TIME = "wait_time";
 	
 	@Override
 	protected void configureProperties() {

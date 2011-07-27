@@ -37,7 +37,6 @@ import org.csstudio.utility.adlparser.internationalization.Messages;
  * @since 20.09.2007
  */
 public class RelatedDisplayItem extends WidgetPart {
-	//TODO Strip out old code lines that refer to SDS implementations
 	//TODO Add LineParser routines to get commonly used entries 
 
     /**
@@ -93,63 +92,6 @@ public class RelatedDisplayItem extends WidgetPart {
     }
     
     
-//    final String checkPath(String path, String name){
-//    	path = path.trim();
-//    	if(path.endsWith("/"))
-//    		path = path.substring(0, path.length()-1);
-//    	
-//    	IWorkspaceRoot root = ResourcesPlugin.getWorkspace().getRoot();
-//    	
-//    	// Both file formats are checked, to ensure that if multiple displays are being
-//    	// converted out of order, this method doesn't break by failing to find
-//    	// the yet to be converted <filename>.adl display.
-//    	File file1 = new File(path + "/" + name + ".adl");
-//    	File file2 = new File(path + "/" + name + ".css-sds");
-//    	Path path1 = new Path(path + "/" + name + ".adl");
-//    	Path path2 = new Path(path + "/" + name + ".css-sds");
-//    	
-//    	if(file1.exists() || file2.exists())
-//    		return path.replaceAll(root.getRawLocation().toString(), "");
-//    	
-//    	if(root.exists(path1) || root.exists(path2))
-//    		return root.getFullPath().toString();
-//    	 
-//    	return null;
-//    }
-    
-    
-//**    /**
-//**     * First checks the parent path of the calling display, then the workspace path, then
-  //**     * each of the display paths provided in the preferences for the source file
-  //**     * of this display.  Returns the FIRST directory where the display exists. 
-  //**     */
-  //**    final String findPath() {
-  //**    	// At this point, _name = <filename>.css-sds.
-  //**    	String name = _name.replaceAll(".css-sds", "");
-  //**    	String parent = ADLHelper.getFolderPath();
-  //**    	String path = null;
-  //**    	String allpaths = Activator.getDefault().getPreferenceStore().getString(ADLConverterPreferenceConstants.P_STRING_Display_Paths);
-  //**    	String[] displaypaths = allpaths.split(",");    	
-  //**    	if(name.startsWith("/"))
-  //**    		name = name.substring(1,name.length());
-  //**
-  //**    	path = checkPath(parent, name);
-  //**    	if(path != null)
-  //**    		return path;
-  //**    	
-  //**    	path = checkPath("", name);
-  //**    	if(path != null)
-  //**    		return path;
-  //**    	
-  //**    	for(String dpath : displaypaths){
-  //**    		path = checkPath(dpath, name);
-  //**    		if(path != null)
-  //**    			return path;
-  //**    	}
-  //**  	
-  //**    	// Return the default if nothing else is found
-  //**    	return Activator.getDefault().getPreferenceStore().getString(ADLConverterPreferenceConstants.P_STRING_Path_Target);
-  //**    }
 
     /**
      * {@inheritDoc}
@@ -183,10 +125,8 @@ public class RelatedDisplayItem extends WidgetPart {
                 _fileName = row;
             } else if (head.equals("args")) { //$NON-NLS-1$
                   _args = row;
-//                _args = Arrays.copyOf(row, row.length+1);
-//                _args[_args.length-1]=fileLine.toString();
             } else if (head.equals("policy")) { //$NON-NLS-1$
-                setPolicy(row);
+                setPolicy(row.replaceAll("\"", ""));
             } else if (head.equals("x")) { //$NON-NLS-1$
                 // Do Nothing
                 // SDS not support this Property
@@ -209,72 +149,6 @@ public class RelatedDisplayItem extends WidgetPart {
         }
     }
 
-//**    /**
-  //**     * Generate all Elements from Related Display Item.
-  //**     */
-  //**    final void generateElements() {
-  //**        _widgetModel.setPropertyValue(WaveformModel.PROP_LABELED_TICKS, true);
-  //**
-  //**        ActionData actionData = _widgetModel.getActionData();
-  //**        if (actionData == null) {
-  //**            actionData = new ActionData();
-  //**        }
-  //**
-  //**        // new Open Shell Action
-  //**        OpenDisplayActionModelFactory factoy = new OpenDisplayActionModelFactory();
-  //**        OpenDisplayActionModel action = (OpenDisplayActionModel) factoy.createWidgetActionModel();
-  //**
-  //**        if (_label != null) {
-  //**            action.getProperty(OpenDisplayActionModel.PROP_DESCRIPTION).setPropertyValue(
-  //**                    _label.replaceAll("\"", "")); //$NON-NLS-1$ //$NON-NLS-2$
-  //**        }
-  //**
-  //**        // Set the Resource
-  //**        if (_name != null) {
-  //**            _name = ADLHelper.cleanFilePath(_name);
-  //**            if (!_name.toLowerCase().endsWith(".css-sds")) {
-  //**                _name = _name.concat(".css-sds");
-  //**            }
-  //**          ////////////////////////////
-  //**           _path = findPath();
-  //**            ////////////////////////////
-  //**            IPath path = new Path(_path);
-  //**            path = path.append(_name);
-  //**            WidgetProperty prop = action.getProperty(OpenDisplayActionModel.PROP_RESOURCE);
-  //**            prop.setPropertyValue(path);
-  //**        }
-  //**
-  //**        if (_args != null) {
-  //**           Map<String, String> map = new HashMap<String, String>();
-  //**            String[] params = _args[0].split(",");//$NON-NLS-1$
-  //**            for (int i = 0; i < params.length; i++) {
-  //**
-  //**                if (params[i].contains("=")) {
-  //**                    String[] param = params[i].split("=");//$NON-NLS-1$
-  //**                    if (param.length  >1) {
-  //**                        map.put(param[0].trim(), param[1].trim());
-  //**                    }else{
-  //**                        map.put(param[0].trim(), "");
-  //**                    }
-  //**                } else {
-  //**                    if (params[i].trim().length() > 0) {
-  //**                        CentralLogger.getInstance().info(this,
-  //**                                Messages.RelatedDisplayItem_Parameter_Error + params[i]+" ~ line: "+_args[_args.length-1]);
-  //**                    }
-  //**                }
-  //**            }
-  //**
-  //**            action.getProperty(OpenDisplayActionModel.PROP_ALIASES).setPropertyValue(map);
-  //**        }
-  //**
-  //**        if (_policy != null) {
-  //**            action.getProperty(OpenDisplayActionModel.PROP_CLOSE).setPropertyValue(
-  //**                    _policy.contains("replace display"));
-  //**        }
-  //**        actionData.addAction(action);
-  //**        _widgetModel.setPropertyValue(AbstractWidgetModel.PROP_ACTIONDATA, actionData);
-  //**    }
-  //**
     /**
      * 
      * @return the Label of the Related Display Item.

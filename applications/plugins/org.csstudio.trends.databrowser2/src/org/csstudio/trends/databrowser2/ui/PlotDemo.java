@@ -11,7 +11,9 @@ import java.io.PrintWriter;
 import java.util.ArrayList;
 
 import org.csstudio.csdata.ProcessVariable;
+import org.csstudio.data.values.ITimestamp;
 import org.csstudio.data.values.IValue;
+import org.csstudio.data.values.TimestampFactory;
 import org.csstudio.trends.databrowser2.model.ArchiveDataSource;
 import org.csstudio.trends.databrowser2.model.ModelItem;
 import org.csstudio.trends.databrowser2.model.PlotSampleArray;
@@ -41,13 +43,16 @@ import org.junit.Test;
 public class PlotDemo
 {
     private boolean run = true;
-
+    private volatile boolean scroll = true;
+    private ITimestamp start_time, end_time;
+    
     final private PlotListener listener = new PlotListener()
     {
         @Override
         public void scrollRequested(final boolean enable_scrolling)
         {
         	System.out.println("Scroll enabled: " + enable_scrolling);
+        	scroll = enable_scrolling;
         }
 
         @Override
@@ -59,7 +64,9 @@ public class PlotDemo
         @Override
         public void timeAxisChanged(final long start_ms, final long end_ms)
         {
-        	System.out.println("Time axis: " + start_ms + " ... " + end_ms);
+        	start_time = TimestampFactory.fromMillisecs(start_ms);
+        	end_time = TimestampFactory.fromMillisecs(end_ms);
+        	System.out.println("Time axis: " + start_time + " ... " + end_time);
         }
 
         @Override
@@ -83,6 +90,7 @@ public class PlotDemo
 
     private void createGUI(final Composite parent)
     {
+    	final Display display = parent.getDisplay();
         final GridLayout layout = new GridLayout(1, false);
         parent.setLayout(layout);
 
@@ -141,8 +149,41 @@ public class PlotDemo
         item.setColor(new RGB(0, 0, 255));
         plot.addTrace(item);
 
-        plot.setTimeRange(samples.getSample(0).getValue().getTime(),
-                          samples.getSample(samples.getSize()-1).getValue().getTime());
+        start_time = samples.getSample(0).getValue().getTime();
+        end_time = samples.getSample(samples.getSize()-1).getValue().getTime();
+        plot.setTimeRange(start_time, end_time);
+        
+        new Thread(new Runnable()
+        {
+			@Override
+            public void run()
+            {
+				while (true)
+				{
+					try
+					{
+						Thread.sleep(1000);
+					}
+					catch (Exception ex)
+					{
+						return;
+					}
+					if (scroll)
+					{
+						start_time = TimestampFactory.createTimestamp(start_time.seconds() + 1, start_time.nanoseconds());
+						end_time = TimestampFactory.createTimestamp(end_time.seconds() + 1, end_time.nanoseconds());
+						display.syncExec(new Runnable()
+						{
+							@Override
+		                    public void run()
+		                    {
+						        plot.setTimeRange(start_time, end_time);
+		                    }
+						});
+					}
+				}
+            }
+        }, "Scroller").start();
     }
 
     @Test
@@ -160,6 +201,5 @@ public class PlotDemo
             if (!display.readAndDispatch())
                 display.sleep();
         }
-        shell.close();
     }
 }

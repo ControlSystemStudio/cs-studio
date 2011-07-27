@@ -119,14 +119,14 @@ public class TranslatorUtils {
 				else if (widgetType.equals("valuator")){
 					new Valuator2Model(adlWidget, colorMap, parentModel);
 				}
+				else if (widgetType.equals("shell command")){
+					new ShellCommand2Model(adlWidget, colorMap, parentModel);
+				}
 				else if (widgetType.equals("basic attribute")){
 					ArrayList<ADLWidget> children = adlWidget.getObjects();
 					for (ADLWidget child : children){
 						setDefaultBasicAttribute(child);
 					}
-				}
-				else if (widgetType.equals("shell command")){
-					printNotHandledMessage(widgetType);
 				}
 				else if (widgetType.equals("dynamic attribute")){
 					ArrayList<ADLWidget> children = adlWidget.getObjects();
