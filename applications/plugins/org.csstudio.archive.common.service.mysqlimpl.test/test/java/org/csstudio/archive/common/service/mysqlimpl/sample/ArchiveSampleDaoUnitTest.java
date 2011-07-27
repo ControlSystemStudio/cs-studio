@@ -49,6 +49,7 @@ import org.csstudio.archive.common.service.mysqlimpl.dao.ArchiveDaoException;
 import org.csstudio.archive.common.service.mysqlimpl.requesttypes.DesyArchiveRequestType;
 import org.csstudio.archive.common.service.sample.IArchiveSample;
 import org.csstudio.domain.desy.system.ISystemVariable;
+import org.csstudio.domain.desy.time.TimeInstant;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.Test;
@@ -82,15 +83,49 @@ public class ArchiveSampleDaoUnitTest extends AbstractDaoTestSetup {
         Assert.assertNotNull(sample);
         Assert.assertEquals(sample.getSystemVariable().getTimestamp(), END);
 
+        assertRawSamples(channel);
+
+        assertPerMinuteSamples(channel);
+
+        assertPerHourSamples(channel);
+
+        undoCreateSamples();
+    }
+
+    private void assertPerHourSamples(final IArchiveChannel channel) throws ArchiveDaoException {
+        final Collection<IArchiveSample<Object, ISystemVariable<Object>>> hourSamples =
+            SAMPLE_DAO.retrieveSamples(DesyArchiveRequestType.AVG_PER_HOUR, channel, START, END);
+        Assert.assertNotNull(hourSamples);
+        Assert.assertFalse(hourSamples.isEmpty());
+
+        TimeInstant lastTime = hourSamples.iterator().next().getSystemVariable().getTimestamp().minusMillis(1000*60*60);
+        for (final IArchiveSample<Object, ISystemVariable<Object>> minSample : hourSamples) {
+            final TimeInstant curTime = minSample.getSystemVariable().getTimestamp();
+            Assert.assertTrue(!curTime.isBefore(lastTime.plusMillis(1000*60)));
+            lastTime= curTime;
+        }
+    }
+
+    private void assertPerMinuteSamples(final IArchiveChannel channel) throws ArchiveDaoException {
+        final Collection<IArchiveSample<Object, ISystemVariable<Object>>> minSamples =
+            SAMPLE_DAO.retrieveSamples(DesyArchiveRequestType.AVG_PER_MINUTE, channel, START, END);
+        Assert.assertNotNull(minSamples);
+        Assert.assertFalse(minSamples.isEmpty());
+
+        TimeInstant lastTime = minSamples.iterator().next().getSystemVariable().getTimestamp().minusMillis(1000*60);
+        for (final IArchiveSample<Object, ISystemVariable<Object>> minSample : minSamples) {
+            final TimeInstant curTime = minSample.getSystemVariable().getTimestamp();
+            Assert.assertTrue(!curTime.isBefore(lastTime.plusMillis(1000*60)));
+            lastTime= curTime;
+        }
+    }
+
+    private void assertRawSamples(final IArchiveChannel channel) throws ArchiveDaoException {
         final Collection<IArchiveSample<Object, ISystemVariable<Object>>> rawSamples =
             SAMPLE_DAO.retrieveSamples(DesyArchiveRequestType.RAW, channel, START, END);
         Assert.assertNotNull(rawSamples);
         Assert.assertFalse(rawSamples.isEmpty());
         Assert.assertEquals(SAMPLES.size(), rawSamples.size());
-
-
-
-        undoCreateSamples();
     }
 
     private static void undoCreateSamples() throws ArchiveConnectionException, SQLException {
