@@ -75,6 +75,7 @@ $(pv_value)</tooltip>
     <height>88</height>
     <name>Label_6</name>
     <transparent>false</transparent>
+    <show_scrollbar>false</show_scrollbar>
     <background_color>
       <color red="255" green="255" blue="223" />
     </background_color>
@@ -97,6 +98,7 @@ $(pv_value)</tooltip>
     <horizontal_alignment>1</horizontal_alignment>
     <actions hook="false" />
     <y>463</y>
+    <wrap_words>true</wrap_words>
     <tooltip />
     <x>297</x>
   </widget>
@@ -108,6 +110,7 @@ $(pv_value)</tooltip>
     <height>106</height>
     <name>Label</name>
     <transparent>false</transparent>
+    <show_scrollbar>false</show_scrollbar>
     <background_color>
       <color red="255" green="255" blue="223" />
     </background_color>
@@ -118,7 +121,7 @@ $(pv_value)</tooltip>
     <enabled>true</enabled>
     <text>A widget with Open OPI action hooked has context menu: Open, Open in New Tab or Open in New Window. You can also hold the Ctrl/Shift key while clicking on the widget to open the OPI in new Tab/Window.</text>
     <font>
-      <fontdata fontName="Arial" height="9" style="1" />
+      <fontdata fontName="Arial" height="10" style="1" />
     </font>
     <width>294</width>
     <border_style>1</border_style>
@@ -130,6 +133,7 @@ $(pv_value)</tooltip>
     <horizontal_alignment>1</horizontal_alignment>
     <actions hook="false" />
     <y>207</y>
+    <wrap_words>true</wrap_words>
     <tooltip />
     <x>468</x>
   </widget>
@@ -171,7 +175,7 @@ $(pv_value)</tooltip>
         <macros>
           <include_parent_macros>true</include_parent_macros>
         </macros>
-        <replace>true</replace>
+        <replace>1</replace>
         <description />
       </action>
     </actions>
@@ -186,6 +190,7 @@ $(pv_value)</tooltip>
     <height>16</height>
     <name>Label_2</name>
     <transparent>false</transparent>
+    <show_scrollbar>false</show_scrollbar>
     <background_color>
       <color red="132" green="193" blue="255" />
     </background_color>
@@ -208,6 +213,7 @@ $(pv_value)</tooltip>
     <horizontal_alignment>1</horizontal_alignment>
     <actions hook="false" />
     <y>199</y>
+    <wrap_words>true</wrap_words>
     <tooltip>$(pv_name)
 $(pv_value)</tooltip>
     <x>143</x>
@@ -220,6 +226,7 @@ $(pv_value)</tooltip>
     <height>79</height>
     <name>Label_4</name>
     <transparent>false</transparent>
+    <show_scrollbar>false</show_scrollbar>
     <background_color>
       <color red="255" green="255" blue="223" />
     </background_color>
@@ -230,7 +237,7 @@ $(pv_value)</tooltip>
     <enabled>true</enabled>
     <text>Actions can be attached to any widget so that actions can be executed from that widget. They are configured from the Actions Property. There are several types of actions that can be associated with any type of widget. You may also add customzied action through Eclipse plugin mechanism.</text>
     <font>
-      <fontdata fontName="Arial" height="9" style="0" />
+      <opifont.name>Default</opifont.name>
     </font>
     <width>745</width>
     <border_style>1</border_style>
@@ -242,6 +249,7 @@ $(pv_value)</tooltip>
     <horizontal_alignment>0</horizontal_alignment>
     <actions hook="false" />
     <y>113</y>
+    <wrap_words>true</wrap_words>
     <tooltip />
     <x>17</x>
   </widget>
@@ -289,6 +297,7 @@ $(pv_value)</tooltip>
     <height>16</height>
     <name>Label_7</name>
     <transparent>false</transparent>
+    <show_scrollbar>false</show_scrollbar>
     <background_color>
       <color red="0" green="255" blue="128" />
     </background_color>
@@ -311,6 +320,7 @@ $(pv_value)</tooltip>
     <horizontal_alignment>1</horizontal_alignment>
     <actions hook="false" />
     <y>454</y>
+    <wrap_words>true</wrap_words>
     <tooltip>$(pv_name)
 $(pv_value)</tooltip>
     <x>388</x>
@@ -323,6 +333,7 @@ $(pv_value)</tooltip>
     <height>86</height>
     <name>Label_8</name>
     <transparent>false</transparent>
+    <show_scrollbar>false</show_scrollbar>
     <background_color>
       <color red="135" green="181" blue="255" />
     </background_color>
@@ -345,6 +356,7 @@ $(pv_value)</tooltip>
     <horizontal_alignment>1</horizontal_alignment>
     <actions hook="false" />
     <y>6</y>
+    <wrap_words>true</wrap_words>
     <tooltip />
     <x>17</x>
   </widget>
@@ -386,7 +398,7 @@ $(pv_value)</tooltip>
         <macros>
           <include_parent_macros>true</include_parent_macros>
         </macros>
-        <replace>true</replace>
+        <replace>1</replace>
         <description />
       </action>
     </actions>
@@ -401,6 +413,7 @@ $(pv_value)</tooltip>
     <height>43</height>
     <name>Label_9</name>
     <transparent>false</transparent>
+    <show_scrollbar>false</show_scrollbar>
     <background_color>
       <color red="135" green="181" blue="255" />
     </background_color>
@@ -423,6 +436,7 @@ $(pv_value)</tooltip>
     <horizontal_alignment>1</horizontal_alignment>
     <actions hook="false" />
     <y>49</y>
+    <wrap_words>true</wrap_words>
     <tooltip />
     <x>311</x>
   </widget>
@@ -434,6 +448,7 @@ $(pv_value)</tooltip>
     <height>44</height>
     <name>Label_10</name>
     <transparent>false</transparent>
+    <show_scrollbar>false</show_scrollbar>
     <background_color>
       <color red="135" green="181" blue="255" />
     </background_color>
@@ -456,6 +471,7 @@ $(pv_value)</tooltip>
     <horizontal_alignment>1</horizontal_alignment>
     <actions hook="false" />
     <y>6</y>
+    <wrap_words>true</wrap_words>
     <tooltip />
     <x>311</x>
   </widget>
@@ -467,6 +483,7 @@ $(pv_value)</tooltip>
     <height>16</height>
     <name>Label_10</name>
     <transparent>false</transparent>
+    <show_scrollbar>false</show_scrollbar>
     <background_color>
       <color red="0" green="255" blue="128" />
     </background_color>
@@ -489,6 +506,7 @@ $(pv_value)</tooltip>
     <horizontal_alignment>1</horizontal_alignment>
     <actions hook="false" />
     <y>104</y>
+    <wrap_words>true</wrap_words>
     <tooltip>$(pv_name)
 $(pv_value)</tooltip>
     <x>277</x>
@@ -539,6 +557,7 @@ $(pv_value)</tooltip>
       <height>22</height>
       <name>Label_28</name>
       <transparent>true</transparent>
+      <show_scrollbar>false</show_scrollbar>
       <background_color>
         <color red="255" green="255" blue="255" />
       </background_color>
@@ -561,6 +580,7 @@ $(pv_value)</tooltip>
       <horizontal_alignment>1</horizontal_alignment>
       <actions hook="false" />
       <y>11</y>
+      <wrap_words>true</wrap_words>
       <tooltip />
       <x>41</x>
     </widget>
@@ -698,6 +718,7 @@ $(pv_value)</tooltip>
     <height>20</height>
     <name>Label_11</name>
     <transparent>false</transparent>
+    <show_scrollbar>false</show_scrollbar>
     <background_color>
       <color red="132" green="193" blue="255" />
     </background_color>
@@ -720,6 +741,7 @@ $(pv_value)</tooltip>
     <horizontal_alignment>1</horizontal_alignment>
     <actions hook="false" />
     <y>337</y>
+    <wrap_words>true</wrap_words>
     <tooltip>$(pv_name)
 $(pv_value)</tooltip>
     <x>242</x>
@@ -916,6 +938,7 @@ $(pv_value)</tooltip>
     <height>88</height>
     <name>Label_12</name>
     <transparent>false</transparent>
+    <show_scrollbar>false</show_scrollbar>
     <background_color>
       <color red="255" green="255" blue="223" />
     </background_color>
@@ -938,6 +961,7 @@ $(pv_value)</tooltip>
     <horizontal_alignment>1</horizontal_alignment>
     <actions hook="false" />
     <y>463</y>
+    <wrap_words>true</wrap_words>
     <tooltip />
     <x>17</x>
   </widget>
@@ -949,6 +973,7 @@ $(pv_value)</tooltip>
     <height>16</height>
     <name>Label_13</name>
     <transparent>false</transparent>
+    <show_scrollbar>false</show_scrollbar>
     <background_color>
       <color red="0" green="255" blue="128" />
     </background_color>
@@ -971,15 +996,16 @@ $(pv_value)</tooltip>
     <horizontal_alignment>1</horizontal_alignment>
     <actions hook="false" />
     <y>454</y>
+    <wrap_words>true</wrap_words>
     <tooltip>$(pv_name)
 $(pv_value)</tooltip>
     <x>108</x>
   </widget>
   <widget typeId="org.csstudio.opibuilder.widgets.ActionButton" version="1.0">
-    <border_alarm_sensitive>true</border_alarm_sensitive>
+    <border_alarm_sensitive>false</border_alarm_sensitive>
     <visible>true</visible>
     <scripts />
-    <height>50</height>
+    <height>37</height>
     <forecolor_alarm_sensitive>false</forecolor_alarm_sensitive>
     <name>Label_1</name>
     <pv_name />
@@ -992,12 +1018,12 @@ $(pv_value)</tooltip>
     <widget_type>Action Button</widget_type>
     <enabled>true</enabled>
     <text>Open 2_OPI_Editor_Perspective.opi&#xD;
-Replace = false</text>
+Open in new Tab</text>
     <backcolor_alarm_sensitive>false</backcolor_alarm_sensitive>
     <font>
-      <fontdata fontName="Arial" height="9" style="0" />
+      <opifont.name>Default</opifont.name>
     </font>
-    <width>231</width>
+    <width>266</width>
     <push_action_index>0</push_action_index>
     <border_style>0</border_style>
     <image />
@@ -1007,25 +1033,25 @@ Replace = false</text>
     <border_color>
       <color red="0" green="128" blue="255" />
     </border_color>
-    <y>243</y>
+    <y>222</y>
     <actions hook="true">
       <action type="OPEN_DISPLAY">
         <path>2_OPI_Editor_Perspective.opi</path>
         <macros>
           <include_parent_macros>true</include_parent_macros>
         </macros>
-        <replace>false</replace>
+        <replace>0</replace>
         <description />
       </action>
     </actions>
     <tooltip />
-    <x>201</x>
+    <x>180</x>
   </widget>
   <widget typeId="org.csstudio.opibuilder.widgets.ActionButton" version="1.0">
-    <border_alarm_sensitive>true</border_alarm_sensitive>
+    <border_alarm_sensitive>false</border_alarm_sensitive>
     <visible>true</visible>
     <scripts />
-    <height>50</height>
+    <height>82</height>
     <forecolor_alarm_sensitive>false</forecolor_alarm_sensitive>
     <name>Action Button_7</name>
     <pv_name />
@@ -1038,10 +1064,10 @@ Replace = false</text>
     <widget_type>Action Button</widget_type>
     <enabled>true</enabled>
     <text>Open 1_Start_Up.opi&#xD;
-Replace = true</text>
+Replace</text>
     <backcolor_alarm_sensitive>false</backcolor_alarm_sensitive>
     <font>
-      <fontdata fontName="Arial" height="9" style="0" />
+      <opifont.name>Default</opifont.name>
     </font>
     <width>127</width>
     <push_action_index>0</push_action_index>
@@ -1053,14 +1079,14 @@ Replace = true</text>
     <border_color>
       <color red="0" green="128" blue="255" />
     </border_color>
-    <y>243</y>
+    <y>222</y>
     <actions hook="true">
       <action type="OPEN_DISPLAY">
         <path>1_1_Start_Up.opi</path>
         <macros>
           <include_parent_macros>true</include_parent_macros>
         </macros>
-        <replace>true</replace>
+        <replace>1</replace>
         <description />
       </action>
     </actions>
@@ -1075,6 +1101,7 @@ Replace = true</text>
     <height>16</height>
     <name>Label_12</name>
     <transparent>false</transparent>
+    <show_scrollbar>false</show_scrollbar>
     <background_color>
       <color red="0" green="255" blue="128" />
     </background_color>
@@ -1097,8 +1124,55 @@ Replace = true</text>
     <horizontal_alignment>1</horizontal_alignment>
     <actions hook="false" />
     <y>199</y>
+    <wrap_words>true</wrap_words>
     <tooltip>$(pv_name)
 $(pv_value)</tooltip>
     <x>594</x>
+  </widget>
+  <widget typeId="org.csstudio.opibuilder.widgets.ActionButton" version="1.0">
+    <border_alarm_sensitive>false</border_alarm_sensitive>
+    <visible>true</visible>
+    <scripts />
+    <height>37</height>
+    <forecolor_alarm_sensitive>false</forecolor_alarm_sensitive>
+    <name>Action Button_8</name>
+    <pv_name />
+    <background_color>
+      <color red="240" green="240" blue="240" />
+    </background_color>
+    <foreground_color>
+      <color red="0" green="0" blue="128" />
+    </foreground_color>
+    <widget_type>Action Button</widget_type>
+    <enabled>true</enabled>
+    <text>Open widgets/2_1_LED.opi&#xD;
+Open in new Window</text>
+    <backcolor_alarm_sensitive>false</backcolor_alarm_sensitive>
+    <font>
+      <opifont.name>Default</opifont.name>
+    </font>
+    <width>266</width>
+    <push_action_index>0</push_action_index>
+    <border_style>0</border_style>
+    <image />
+    <rules />
+    <toggle_button>false</toggle_button>
+    <border_width>1</border_width>
+    <border_color>
+      <color red="0" green="128" blue="255" />
+    </border_color>
+    <y>267</y>
+    <actions hook="true">
+      <action type="OPEN_DISPLAY">
+        <path>widgets/2_1_LED.opi</path>
+        <macros>
+          <include_parent_macros>true</include_parent_macros>
+        </macros>
+        <replace>2</replace>
+        <description />
+      </action>
+    </actions>
+    <tooltip />
+    <x>180</x>
   </widget>
 </display>

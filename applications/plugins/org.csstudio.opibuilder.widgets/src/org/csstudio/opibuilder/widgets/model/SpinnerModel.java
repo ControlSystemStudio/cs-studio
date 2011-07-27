@@ -40,6 +40,8 @@ public class SpinnerModel extends LabelModel {
 
 	public static final String PROP_LIMITS_FROM_PV = "limits_from_pv"; //$NON-NLS-1$	
 	public static final String PROP_PRECISION = "precision";	//$NON-NLS-1$
+	public static final String PROP_PRECISION_FROM_PV = "precision_from_pv";	//$NON-NLS-1$
+
 
 
 	/**
@@ -89,6 +91,9 @@ public class SpinnerModel extends LabelModel {
 		
 		addProperty(new IntegerProperty(PROP_PRECISION, "Precision", 
 				WidgetPropertyCategory.Display, 3, 0, 100));
+		addProperty(new BooleanProperty(PROP_PRECISION_FROM_PV, "Precision from PV", 
+				WidgetPropertyCategory.Display, false));
+
 
 	}	
 
@@ -128,6 +133,10 @@ public class SpinnerModel extends LabelModel {
 	 */
 	public boolean isLimitsFromPV() {
 		return (Boolean) getProperty(PROP_LIMITS_FROM_PV).getPropertyValue();
+	}
+	
+	public boolean isPrecisionFromPV(){
+		return (Boolean) getProperty(PROP_PRECISION_FROM_PV).getPropertyValue();
 	}
 		
 	@Override
