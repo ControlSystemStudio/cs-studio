@@ -22,15 +22,12 @@
  *
  */
 
-package org.csstudio.syslog2jms.management;
+package org.csstudio.alarm.syslog2jms.preferences;
 
-import org.csstudio.platform.management.CommandParameters;
-import org.csstudio.platform.management.CommandResult;
-import org.csstudio.platform.management.IManagementCommand;
-import org.csstudio.syslog2jms.Activator;
-import org.csstudio.syslog2jms.preferences.PreferenceConstants;
-import org.eclipse.core.runtime.Platform;
-import org.eclipse.core.runtime.preferences.IPreferencesService;
+import org.csstudio.alarm.syslog2jms.Activator;
+import org.eclipse.core.runtime.preferences.AbstractPreferenceInitializer;
+import org.eclipse.core.runtime.preferences.DefaultScope;
+import org.eclipse.core.runtime.preferences.IEclipsePreferences;
 
 /**
  * TODO (mmoeller) : 
@@ -39,18 +36,18 @@ import org.eclipse.core.runtime.preferences.IPreferencesService;
  * @version 1.0
  * @since 25.07.2011
  */
-public class GetDescription implements IManagementCommand {
+public class PreferenceInitializer extends AbstractPreferenceInitializer {
     
-    /**
-     * {@inheritDoc}
-     */
     @Override
-    public CommandResult execute(CommandParameters parameters) {
-        IPreferencesService prefs = Platform.getPreferencesService();
-        String desc = prefs.getString(Activator.PLUGIN_ID,
-                                      PreferenceConstants.DESCRIPTION,
-                                      "I am a simple but happy application.", null);
-        
-        return CommandResult.createMessageResult(desc);
+    public void initializeDefaultPreferences() {
+        IEclipsePreferences prefs = new DefaultScope().getNode(Activator.getDefault().getPluginId());
+
+        prefs.put(PreferenceConstants.XMPP_USER_NAME, "anonymous");
+        prefs.put(PreferenceConstants.XMPP_PASSWORD, "anonymous");
+        prefs.put(PreferenceConstants.XMPP_SERVER, "xmppserver.where.ever");
+        prefs.put(PreferenceConstants.JMS_PRODUCER_URL, "");
+        prefs.put(PreferenceConstants.JMS_PRODUCER_FACTORY, "");
+        prefs.put(PreferenceConstants.JMS_PRODUCER_TOPIC_NAME, "");
+        prefs.put(PreferenceConstants.DESCRIPTION , "Headless application");
     }
 }

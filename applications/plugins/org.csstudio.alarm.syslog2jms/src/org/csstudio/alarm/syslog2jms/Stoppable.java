@@ -1,6 +1,6 @@
 
 /* 
- * Copyright (c) 2011 Stiftung Deutsches Elektronen-Synchrotron, 
+ * Copyright (c) 2008 Stiftung Deutsches Elektronen-Synchrotron, 
  * Member of the Helmholtz Association, (DESY), HAMBURG, GERMANY.
  *
  * THIS SOFTWARE IS PROVIDED UNDER THIS LICENSE ON AN "../AS IS" BASIS. 
@@ -19,22 +19,16 @@
  * USAGE AND OTHER RIGHTS AND OBLIGATIONS IS INCLUDED WITH THE DISTRIBUTION OF THIS 
  * PROJECT IN THE FILE LICENSE.HTML. IF THE LICENSE IS NOT INCLUDED YOU MAY FIND A COPY 
  * AT HTTP://WWW.DESY.DE/LEGAL/LICENSE.HTM
- *
  */
 
-package org.csstudio.syslog2jms.preferences;
+package org.csstudio.alarm.syslog2jms;
 
 /**
  * @author Markus Moeller
  *
  */
-public class PreferenceConstants {
-
-    public static final String XMPP_SERVER = "xmppServer";
-    public static final String XMPP_USER_NAME = "xmppUserName";
-    public static final String XMPP_PASSWORD = "xmppPassword";
-    public static final String JMS_PRODUCER_URL = "jmsProducerUrl";
-    public static final String JMS_PRODUCER_FACTORY = "jmsProducerFactory";
-    public static final String JMS_PRODUCER_TOPIC_NAME = "jmsProducerTopicName";
-    public static final String DESCRIPTION = "description";
+public interface Stoppable
+{
+    public void stopWorking();
+    public void setRestart();
 }

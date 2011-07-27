@@ -22,14 +22,15 @@
  *
  */
 
-package org.csstudio.syslog2jms.management;
+package org.csstudio.alarm.syslog2jms.management;
 
 import java.util.Arrays;
 import java.util.List;
+
+import org.csstudio.alarm.syslog2jms.Activator;
 import org.csstudio.platform.management.CommandParameters;
 import org.csstudio.platform.management.CommandResult;
 import org.csstudio.platform.management.IManagementCommand;
-import org.csstudio.syslog2jms.Activator;
 import org.osgi.framework.BundleContext;
 import org.osgi.framework.InvalidSyntaxException;
 import org.osgi.service.application.ApplicationHandle;

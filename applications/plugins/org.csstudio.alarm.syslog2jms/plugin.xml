@@ -7,7 +7,7 @@
          point="org.eclipse.core.runtime.applications">
       <application>
          <run
-               class="org.csstudio.syslog2jms.Syslog2JmsApplication">
+               class="org.csstudio.alarm.syslog2jms.Syslog2JmsApplication">
          </run>
       </application>
    </extension>
@@ -20,17 +20,17 @@
    <extension
          point="org.csstudio.platform.managementCommands">
       <command
-            class="org.csstudio.syslog2jms.management.Stop"
+            class="org.csstudio.alarm.syslog2jms.management.Stop"
             id="org.csstudio.syslog2jms.Stop"
             label="Stop">
       </command>
       <command
-            class="org.csstudio.syslog2jms.management.GetDescription"
+            class="org.csstudio.alarm.syslog2jms.management.GetDescription"
             id="org.csstudio.syslog2jms.GetDescription"
             label="GetDescription">
       </command>
       <command
-            class="org.csstudio.syslog2jms.management.Restart"
+            class="org.csstudio.alarm.syslog2jms.management.Restart"
             id="org.csstudio.syslog2jms.Restart"
             label="Restart">
       </command>

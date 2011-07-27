@@ -22,12 +22,12 @@
  *
  */
 
-package org.csstudio.syslog2jms.preferences;
+package org.csstudio.alarm.syslog2jms.management;
 
-import org.csstudio.syslog2jms.Activator;
-import org.eclipse.core.runtime.preferences.AbstractPreferenceInitializer;
-import org.eclipse.core.runtime.preferences.DefaultScope;
-import org.eclipse.core.runtime.preferences.IEclipsePreferences;
+import org.csstudio.alarm.syslog2jms.Stoppable;
+import org.csstudio.platform.management.CommandParameters;
+import org.csstudio.platform.management.CommandResult;
+import org.csstudio.platform.management.IManagementCommand;
 
 /**
  * TODO (mmoeller) : 
@@ -36,18 +36,20 @@ import org.eclipse.core.runtime.preferences.IEclipsePreferences;
  * @version 1.0
  * @since 25.07.2011
  */
-public class PreferenceInitializer extends AbstractPreferenceInitializer {
+public class Restart implements IManagementCommand {
     
+    private static Stoppable objectToBeRestarted = null;
+    
+    /**
+     * {@inheritDoc}
+     */
     @Override
-    public void initializeDefaultPreferences() {
-        IEclipsePreferences prefs = new DefaultScope().getNode(Activator.getDefault().getPluginId());
+    public CommandResult execute(CommandParameters parameters) {
+        objectToBeRestarted.setRestart();
+        return CommandResult.createMessageResult("\nRestarting Syslog2Jms...");
+    }
 
-        prefs.put(PreferenceConstants.XMPP_USER_NAME, "anonymous");
-        prefs.put(PreferenceConstants.XMPP_PASSWORD, "anonymous");
-        prefs.put(PreferenceConstants.XMPP_SERVER, "xmppserver.where.ever");
-        prefs.put(PreferenceConstants.JMS_PRODUCER_URL, "");
-        prefs.put(PreferenceConstants.JMS_PRODUCER_FACTORY, "");
-        prefs.put(PreferenceConstants.JMS_PRODUCER_TOPIC_NAME, "");
-        prefs.put(PreferenceConstants.DESCRIPTION , "Headless application");
+    public static void staticInject(Stoppable obj) {
+        objectToBeRestarted = obj;
     }
 }

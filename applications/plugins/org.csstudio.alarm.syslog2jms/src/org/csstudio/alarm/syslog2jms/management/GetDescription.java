@@ -22,12 +22,15 @@
  *
  */
 
-package org.csstudio.syslog2jms.management;
+package org.csstudio.alarm.syslog2jms.management;
 
+import org.csstudio.alarm.syslog2jms.Activator;
 import org.csstudio.platform.management.CommandParameters;
 import org.csstudio.platform.management.CommandResult;
 import org.csstudio.platform.management.IManagementCommand;
-import org.csstudio.syslog2jms.Stoppable;
+import org.csstudio.alarm.syslog2jms.preferences.PreferenceConstants;
+import org.eclipse.core.runtime.Platform;
+import org.eclipse.core.runtime.preferences.IPreferencesService;
 
 /**
  * TODO (mmoeller) : 
@@ -36,20 +39,18 @@ import org.csstudio.syslog2jms.Stoppable;
  * @version 1.0
  * @since 25.07.2011
  */
-public class Restart implements IManagementCommand {
-    
-    private static Stoppable objectToBeRestarted = null;
+public class GetDescription implements IManagementCommand {
     
     /**
      * {@inheritDoc}
      */
     @Override
     public CommandResult execute(CommandParameters parameters) {
-        objectToBeRestarted.setRestart();
-        return CommandResult.createMessageResult("\nRestarting Syslog2Jms...");
-    }
-
-    public static void staticInject(Stoppable obj) {
-        objectToBeRestarted = obj;
+        IPreferencesService prefs = Platform.getPreferencesService();
+        String desc = prefs.getString(Activator.PLUGIN_ID,
+                                      PreferenceConstants.DESCRIPTION,
+                                      "I am a simple but happy application.", null);
+        
+        return CommandResult.createMessageResult(desc);
     }
 }

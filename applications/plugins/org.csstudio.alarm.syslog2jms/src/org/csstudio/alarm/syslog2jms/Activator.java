@@ -22,7 +22,7 @@
  *
  */
 
-package org.csstudio.syslog2jms;
+package org.csstudio.alarm.syslog2jms;
 
 import org.osgi.framework.BundleActivator;
 import org.osgi.framework.BundleContext;
@@ -41,7 +41,7 @@ public class Activator implements BundleActivator {
     private static final Logger LOG = LoggerFactory.getLogger(Activator.class);
 
     /** The plug-in ID */
-    public static final String PLUGIN_ID = "org.csstudio.syslog2jms";
+    public static final String PLUGIN_ID = "org.csstudio.alarm.syslog2jms";
 
     private GenericServiceTracker<ISessionService> _genericServiceTracker;
 

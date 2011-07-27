@@ -22,13 +22,12 @@
  *
  */
 
-package org.csstudio.syslog2jms;
+package org.csstudio.alarm.syslog2jms;
 
 import javax.jms.MapMessage;
-
+import org.csstudio.alarm.syslog2jms.management.Restart;
 import org.csstudio.platform.utility.jms.JmsSimpleProducer;
-import org.csstudio.syslog2jms.management.Restart;
-import org.csstudio.syslog2jms.preferences.PreferenceConstants;
+import org.csstudio.alarm.syslog2jms.preferences.PreferenceConstants;
 import org.eclipse.core.runtime.Platform;
 import org.eclipse.core.runtime.preferences.IPreferencesService;
 import org.eclipse.equinox.app.IApplication;
