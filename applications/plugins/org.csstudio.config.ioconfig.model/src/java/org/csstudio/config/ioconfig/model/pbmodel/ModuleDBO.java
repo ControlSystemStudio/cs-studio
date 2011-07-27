@@ -124,7 +124,7 @@ public class ModuleDBO extends AbstractNodeDBO<SlaveDBO, ChannelStructureDBO> im
     
     public void setConfigurationData(@CheckForNull final String configurationData) {
         if(configurationData != null && !configurationData.trim().isEmpty()) {
-            String[] split = configurationData.split(",");
+            final String[] split = configurationData.split(",");
             _configurationData = new ArrayList<Integer>();
             for (String value : split) {
                 _configurationData.add(GsdFileParser.gsdValue2Int(value));
@@ -133,7 +133,7 @@ public class ModuleDBO extends AbstractNodeDBO<SlaveDBO, ChannelStructureDBO> im
     }
     
     @Transient
-    public void setConfigurationDataByte(@Nonnull Integer index, @Nonnull Integer value) {
+    public void setConfigurationDataByte(@Nonnull final Integer index, @Nonnull final Integer value) {
         _configurationData.set(index, value);
     }
     
@@ -158,8 +158,7 @@ public class ModuleDBO extends AbstractNodeDBO<SlaveDBO, ChannelStructureDBO> im
                 sub++;
             }
             if(module != null) {
-                int inputOffset = module.getInputOffsetNH() + module.getInputSize();
-                //                setInputOffset(inputOffset);
+                final int inputOffset = module.getInputOffsetNH() + module.getInputSize();
                 return inputOffset;
             }
         }
@@ -193,8 +192,7 @@ public class ModuleDBO extends AbstractNodeDBO<SlaveDBO, ChannelStructureDBO> im
                 sub++;
             }
             if(module != null) {
-                int outputOffset = module.getOutputOffsetNH() + module.getOutputSize();
-                //                setOutputOffset(outputOffset);
+                final int outputOffset = module.getOutputOffsetNH() + module.getOutputSize();
                 return outputOffset;
             }
         }
@@ -237,7 +235,7 @@ public class ModuleDBO extends AbstractNodeDBO<SlaveDBO, ChannelStructureDBO> im
     @CheckForNull
     public GSDModuleDBO getGSDModule() {
         GSDModuleDBO gsdModule = null;
-        GSDFileDBO gsdFile = getGSDFile();
+        final GSDFileDBO gsdFile = getGSDFile();
         if(gsdFile != null) {
             gsdModule = gsdFile.getGSDModule(getModuleNumber());
         }
@@ -288,7 +286,7 @@ public class ModuleDBO extends AbstractNodeDBO<SlaveDBO, ChannelStructureDBO> im
     @CheckForNull
     public GsdModuleModel2 getGsdModuleModel2() {
         GsdModuleModel2 module = null;
-        GSDFileDBO gsdFile = getParent().getGSDFile();
+        final GSDFileDBO gsdFile = getParent().getGSDFile();
         if(gsdFile != null) {
             module = gsdFile.getParsedGsdFileModel().getModule(getModuleNumber());
         }
@@ -297,12 +295,12 @@ public class ModuleDBO extends AbstractNodeDBO<SlaveDBO, ChannelStructureDBO> im
     
     @Transient
     public short getMaxOffset() throws IOException {
-        GsdModuleModel2 gsdModuleModel2 = getGsdModuleModel2();
+        final GsdModuleModel2 gsdModuleModel2 = getGsdModuleModel2();
         if(gsdModuleModel2 != null) {
             short offset = getSortIndex();
-            List<Integer> values = gsdModuleModel2.getValue();
+            final List<Integer> values = gsdModuleModel2.getValue();
             for (Integer value : values) {
-                SlaveCfgData slaveCfgData = new SlaveCfgData(value);
+                final SlaveCfgData slaveCfgData = new SlaveCfgData(value);
                 int byteMulti = 1;
                 if(slaveCfgData.isWordSize()) {
                     byteMulti = 2;
@@ -317,7 +315,7 @@ public class ModuleDBO extends AbstractNodeDBO<SlaveDBO, ChannelStructureDBO> im
     @Override
     @Nonnull
     public ModuleDBO copyThisTo(@Nonnull final SlaveDBO parentNode) throws PersistenceException {
-        ModuleDBO copy = (ModuleDBO) super.copyThisTo(parentNode);
+        final ModuleDBO copy = (ModuleDBO) super.copyThisTo(parentNode);
         copy.setName(getName());
         return copy;
     }
@@ -329,8 +327,8 @@ public class ModuleDBO extends AbstractNodeDBO<SlaveDBO, ChannelStructureDBO> im
     @Override
     @Nonnull
     public ModuleDBO copyParameter(@Nonnull final SlaveDBO parentNode) throws PersistenceException {
-        SlaveDBO slave = parentNode;
-        ModuleDBO copy = new ModuleDBO(slave);
+        final SlaveDBO slave = parentNode;
+        final ModuleDBO copy = new ModuleDBO(slave);
         copy.setModuleNumber(getModuleNumber());
         if(slave.getChildrenAsMap().get(getSortIndex()) == null) {
             copy.setSortIndex((int) getSortIndex());
@@ -342,7 +340,7 @@ public class ModuleDBO extends AbstractNodeDBO<SlaveDBO, ChannelStructureDBO> im
         copy.setExtModulePrmDataLen(extModulePrmDataLen);
         
         for (ChannelStructureDBO node : getChildrenAsMap().values()) {
-            ChannelStructureDBO childrenCopy = node.copyThisTo(copy);
+            final ChannelStructureDBO childrenCopy = node.copyThisTo(copy);
             childrenCopy.setSortIndexNonHibernate(node.getSortIndex());
         }
         
@@ -359,14 +357,14 @@ public class ModuleDBO extends AbstractNodeDBO<SlaveDBO, ChannelStructureDBO> im
         input = 0;
         output = 0;
         
-        Set<ChannelStructureDBO> channelStructs = getChildren();
+        final Set<ChannelStructureDBO> channelStructs = getChildren();
         for (ChannelStructureDBO channelStructure : channelStructs) {
-            Set<ChannelDBO> channels = channelStructure.getChildren();
+            final Set<ChannelDBO> channels = channelStructure.getChildren();
             for (ChannelDBO channel : channels) {
                 int bitSize;
                 try {
                     bitSize = channel.getChannelType().getBitSize();
-                } catch (IllegalArgumentException e) {
+                } catch (final IllegalArgumentException e) {
                     bitSize = 0;
                 }
                 if(channel.isInput()) {
@@ -392,7 +390,7 @@ public class ModuleDBO extends AbstractNodeDBO<SlaveDBO, ChannelStructureDBO> im
     @Transient
     @Nonnull
     public Set<ChannelDBO> getPureChannels() {
-        Set<ChannelDBO> result = new HashSet<ChannelDBO>();
+        final Set<ChannelDBO> result = new HashSet<ChannelDBO>();
         for (ChannelStructureDBO s : getChildren()) {
             if(s.isSimple()) {
                 result.addAll(s.getChildren());
@@ -430,7 +428,7 @@ public class ModuleDBO extends AbstractNodeDBO<SlaveDBO, ChannelStructureDBO> im
     @Override
     @Nonnull
     public String toString() {
-        StringBuffer sb = new StringBuffer();
+        final StringBuffer sb = new StringBuffer();
         if(getSortIndex() != null) {
             sb.append(getSortIndex());
         }
@@ -451,7 +449,7 @@ public class ModuleDBO extends AbstractNodeDBO<SlaveDBO, ChannelStructureDBO> im
     @Nonnull
     @Transient
     public Set<DocumentDBO> getPrototypeDocuments() {
-        GSDModuleDBO gsdModule = getGSDModule();
+        final GSDModuleDBO gsdModule = getGSDModule();
         return gsdModule == null ? new HashSet<DocumentDBO>() : gsdModule.getDocuments();
     }
     
@@ -476,10 +474,10 @@ public class ModuleDBO extends AbstractNodeDBO<SlaveDBO, ChannelStructureDBO> im
     /**
      * @param newModuleNumber
      */
-    public void setNewModel(int newModuleNumber, @Nonnull String createdBy) throws PersistenceException {
+    public final void setNewModel(final int newModuleNumber, @Nonnull final String createdBy) throws PersistenceException {
         removeAllChild();
         setModuleNumber(newModuleNumber);
-        GSDModuleDBO gsdModule = getGSDModule();
+        final GSDModuleDBO gsdModule = getGSDModule();
         
         // Unknown Module (--> Config the Epics Part)
         if(gsdModule == null) {
@@ -496,25 +494,25 @@ public class ModuleDBO extends AbstractNodeDBO<SlaveDBO, ChannelStructureDBO> im
      * @param topGroup 
      * @throws PersistenceException 
      */
-    private void createChannels(int selectedModuleNo,
+    private void createChannels(final int selectedModuleNo,
                                 @Nonnull final ModuleDBO module,
-                                @Nonnull final GSDModuleDBO gsdModule, @Nonnull String createdBy) throws PersistenceException {
+                                @Nonnull final GSDModuleDBO gsdModule, @Nonnull final String createdBy) throws PersistenceException {
         // TODO (hrickens) [05.05.2011]:Kann die Abfrage nicht vereinfacht werden.
-        GSDFileDBO gsdFile = gsdModule.getGSDFile();
+        final GSDFileDBO gsdFile = gsdModule.getGSDFile();
         if(gsdFile!=null) {
-            GsdModuleModel2 module2 = gsdFile.getParsedGsdFileModel().getModule(selectedModuleNo);
+            final GsdModuleModel2 module2 = gsdFile.getParsedGsdFileModel().getModule(selectedModuleNo);
             if(module2!=null) {
                 module.setConfigurationData(module2.getExtUserPrmDataConst());
             }
         }
         // Generate Input Channel
-        TreeSet<ModuleChannelPrototypeDBO> moduleChannelPrototypes = gsdModule
+        final TreeSet<ModuleChannelPrototypeDBO> moduleChannelPrototypes = gsdModule
                 .getModuleChannelPrototypeNH();
         if(moduleChannelPrototypes != null) {
-            ModuleChannelPrototypeDBO[] array = moduleChannelPrototypes
+            final ModuleChannelPrototypeDBO[] array = moduleChannelPrototypes
                     .toArray(new ModuleChannelPrototypeDBO[0]);
             for (int sortIndex = 0; sortIndex < array.length; sortIndex++) {
-                ModuleChannelPrototypeDBO prototype = array[sortIndex];
+                final ModuleChannelPrototypeDBO prototype = array[sortIndex];
                 makeNewChannel(prototype, sortIndex, createdBy);
             }
         }
@@ -523,7 +521,7 @@ public class ModuleDBO extends AbstractNodeDBO<SlaveDBO, ChannelStructureDBO> im
     }
     
     private void makeNewChannel(@Nonnull final ModuleChannelPrototypeDBO channelPrototype,
-                                final int sortIndex, @Nonnull String createdBy) throws PersistenceException {
+                                final int sortIndex, @Nonnull final String createdBy) throws PersistenceException {
         if(channelPrototype.isStructure()) {
             makeStructChannel(channelPrototype, sortIndex, createdBy);
         } else {
@@ -531,35 +529,27 @@ public class ModuleDBO extends AbstractNodeDBO<SlaveDBO, ChannelStructureDBO> im
         }
     }
     
-    private void makeStructChannel(@Nonnull final ModuleChannelPrototypeDBO channelPrototype,
-                                   final int sortIndex, @Nonnull String createdBy) throws PersistenceException {
+    private void makeStructChannel(@Nonnull final ModuleChannelPrototypeDBO channelPrototype, final int sortIndex, @Nonnull final String createdBy) throws PersistenceException {
         channelPrototype.getOffset();
-        Date now = new Date();
-        ChannelStructureDBO channelStructure = ChannelStructureDBO
-                .makeChannelStructure(this,
-                                      channelPrototype.isInput(),
-                                      channelPrototype.getType(),
-                                      channelPrototype.getName());
-        channelStructure.setName(channelPrototype.getName());
-        channelStructure.setStructureType(channelPrototype.getType());
+        final Date now = new Date();
+        final ChannelStructureDBO channelStructure = ChannelStructureDBO.makeChannelStructure(this,channelPrototype);
         channelStructure.setCreatedOn(now);
         channelStructure.setUpdatedOn(now);
         channelStructure.setCreatedBy(createdBy);
         channelStructure.setUpdatedBy(createdBy);
-        channelStructure.moveSortIndex((short) sortIndex);
+        channelStructure.moveSortIndex(sortIndex);
         channelPrototype.save();
     }
     
-    private void makeNewPureChannel(@Nonnull final ModuleChannelPrototypeDBO channelPrototype,
-                                    final int sortIndex, @Nonnull String createdBy) throws PersistenceException {
-        Date now = new Date();
-        boolean isDigi = channelPrototype.getType().getBitSize() == 1;
-        ChannelStructureDBO cs = ChannelStructureDBO.makeSimpleChannel(this,
+    private void makeNewPureChannel(@Nonnull final ModuleChannelPrototypeDBO channelPrototype, final int sortIndex, @Nonnull final String createdBy) throws PersistenceException {
+        final Date now = new Date();
+        final boolean isDigi = channelPrototype.getType().getBitSize() == 1;
+        final ChannelStructureDBO cs = ChannelStructureDBO.makeSimpleChannel(this,
                                                                        channelPrototype.getName(),
                                                                        channelPrototype.isInput(),
                                                                        isDigi);
-        cs.moveSortIndex((short) sortIndex);
-        ChannelDBO channel = cs.getFirstChannel();
+        cs.moveSortIndex(sortIndex);
+        final ChannelDBO channel = cs.getFirstChannel();
         if (channel != null) {
             channel.setCreatedOn(now);
             channel.setUpdatedOn(now);
@@ -567,12 +557,13 @@ public class ModuleDBO extends AbstractNodeDBO<SlaveDBO, ChannelStructureDBO> im
             channel.setUpdatedBy(createdBy);
             channel.setChannelTypeNonHibernate(channelPrototype.getType());
             channel.setStatusAddressOffset(channelPrototype.getShift());
-            channel.moveSortIndex((short) sortIndex);
+            channel.moveSortIndex(sortIndex);
+            channel.setChannelNumber(channelPrototype.getOffset());
         }
     }
     
     @Override
-    public boolean equals(@CheckForNull Object obj) {
+    public boolean equals(@CheckForNull final Object obj) {
         return super.equals(obj);
     }
     

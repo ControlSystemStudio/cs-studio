@@ -89,13 +89,9 @@ public class ChannelDBO extends AbstractNodeDBO<ChannelStructureDBO, VirtualLeaf
      * Station Address. The max Station Address is {@link ChannelDBO}
      * {@value #DEFAULT_MAX_STATION_ADDRESS}
      *
-     * @param channelStructure
-     *            the parent Channel Structure.
-     *
-     * @param input
-     *            only if true then is the channel a Input otherwise a Output channel.
-     * @param digital
-     *            only if true then is the channel a Digital otherwise a Analog channel.
+     * @param channelStructure the parent Channel Structure.
+     * @param input only if true then is the channel a Input otherwise a Output channel.
+     * @param digital only if true then is the channel a Digital otherwise a Analog channel.
      * @throws PersistenceException 
      */
     public ChannelDBO(@Nonnull final ChannelStructureDBO channelStructure,
@@ -109,18 +105,13 @@ public class ChannelDBO extends AbstractNodeDBO<ChannelStructureDBO, VirtualLeaf
      * Station Address. The max Station Address is {@link ChannelDBO}
      * {@value #DEFAULT_MAX_STATION_ADDRESS}
      *
-     * @param channelStructure
-     *            the parent Channel Structure.
+     * @param channelStructure the parent Channel Structure.
      *
-     * @param name
-     *            the name of this Channel.
+     * @param name the name of this Channel.
      *
-     * @param input
-     *            only if true then is the channel a Input otherwise a Output channel.
-     * @param digital
-     *            only if true then is the channel a Digital otherwise a Analog channel.
-     * @param sortIndex
-     *            the sort posiotion for this Channel.
+     * @param input only if true then is the channel a Input otherwise a Output channel.
+     * @param digital only if true then is the channel a Digital otherwise a Analog channel.
+     * @param sortIndex the sort posiotion for this Channel.
      * @throws PersistenceException 
      */
     public ChannelDBO(@Nonnull final ChannelStructureDBO channelStructure,
@@ -164,8 +155,7 @@ public class ChannelDBO extends AbstractNodeDBO<ChannelStructureDBO, VirtualLeaf
      * Only used from Hibernate or Internal! The Channel number are automatic set when the sortIndex
      * are set.
      *
-     * @param channelNumber
-     *            the channel start Address.
+     * @param channelNumber the channel start Address.
      */
     public void setChannelNumber(final int channelNumber) {
         this._channelNumber = channelNumber;
@@ -371,116 +361,23 @@ public class ChannelDBO extends AbstractNodeDBO<ChannelStructureDBO, VirtualLeaf
     @Override
     protected void localUpdate() throws PersistenceException {
         NodeMap.countlocalUpdate();
-        int channelNumber = 0;
-        final short channelSortIndex = getSortIndex();
-        final short structSortIndex = getParent().getSortIndex();
-        final short moduleSortIndex = getModule().getSortIndex();
-        
-        if (!((channelSortIndex <= 0) && (structSortIndex <= 0) && (moduleSortIndex <= 0))) {
-            if (getChannelStructure().isSimple()) {
-                channelNumber = updateSimpleChannel(channelNumber, structSortIndex);
-            } else {
-                channelNumber =
-                                updateStructureChannel(channelNumber,
-                                                       channelSortIndex,
-                                                       structSortIndex);
-            }
-        }
-        
-        setChannelNumber(channelNumber);
         assembleEpicsAddressString();
-    }
-    
-    private int updateStructureChannel(final int channelNumber,
-                                       final short channelSortIndex,
-                                       final short structSortIndex) throws PersistenceException {
-        Integer cNumber = getNextFreeChannelNumberFromParent(channelSortIndex);
-        
-        if (cNumber == null) {
-            cNumber = getNextFreeChannelNumberFromPreviousModul(structSortIndex);
-        }
-        
-        return cNumber == null ? channelNumber : cNumber;
-    }
-    
-    @CheckForNull
-    private Integer getNextFreeChannelNumberFromPreviousModul(final short structSortIndex) throws PersistenceException {
-        Integer cNumber = null;
-        if(structSortIndex > 0) {
-            ChannelStructureDBO channelStructure = null;
-            short counter = structSortIndex;
-            while ( (channelStructure == null) && (counter > 0)) {
-                channelStructure = getModule().getChildrenAsMap().get(--counter);
-                if(channelStructure != null) {
-                    final ChannelDBO lastChannel = channelStructure.getLastChannel();
-                    cNumber = getChannelNumberFromChannel(lastChannel, channelStructure);
-                    channelStructure = null;
-                }
-            }
-        }
-        return cNumber;
-    }
-    
-    @CheckForNull
-    private Integer getChannelNumberFromChannel(@CheckForNull final ChannelDBO lastChannel, @Nonnull final ChannelStructureDBO channelStructure) {
-        Integer cNumber = null;
-        if(lastChannel != null && lastChannel.isInput() == isInput()) {
-            if (channelStructure.isSimple()) {
-                cNumber = lastChannel.getChannelNumber();
-                cNumber += lastChannel.getChannelType().getByteSize();
-            } else {
-                cNumber = lastChannel.getChannelNumber();
-                cNumber += channelStructure.getStructureType().getByteSize();
-            }
-        }
-        return cNumber;
     }
 
     @CheckForNull
-    private Integer getNextFreeChannelNumberFromParent(final short channelSortIndex) throws PersistenceException {
-        Integer cNumber = null;
-        if (channelSortIndex > 0) {
-            ChannelDBO channel = null;
-            short counter = channelSortIndex;
-            while ((channel == null) && (counter > 0)) {
-                channel = getChannelStructure().getChildrenAsMap().get(--counter);
+    public int getNextFreeChannelNumberFromParent(final int channelNumber) throws PersistenceException {
+        int cNumber = channelNumber;
+        if (channelNumber > 0) {
+            final SortedMap<Short, ChannelDBO> headMap = getChannelStructure().getChildrenAsMap().headMap(getSortIndex());
+            if(!headMap.isEmpty()) {
+                final ChannelDBO channel = headMap.get(headMap.lastKey());
                 if (channel != null) {
                     cNumber = channel.getChannelNumber();
                     cNumber += channel.getChannelType().getByteSize();
-                    return cNumber;
                 }
             }
         }
         return cNumber;
-    }
-    
-    private int updateSimpleChannel(final int channelNumber, final short structSortIndex) throws PersistenceException {
-        int cNr = structSortIndex;
-        if (structSortIndex > 0) {
-            ChannelStructureDBO channelStructure = null;
-            final SortedMap<Short, ChannelStructureDBO> childrenAsMap = getModule().getChildrenAsMap();
-            final SortedMap<Short, ChannelStructureDBO> subMap = childrenAsMap.headMap(structSortIndex);
-                while (!subMap.isEmpty() && (channelStructure = subMap.remove(subMap.lastKey())) != null) {
-                    final ChannelDBO lastChannel = channelStructure.getLastChannel();
-                    if (isRightSimpleChannel(channelStructure, lastChannel)) {
-                        // Previous Channel is:
-                        cNr = lastChannel.getChannelNumber();
-                        if (channelStructure.isSimple()) {
-                            cNr += lastChannel.getChannelType().getByteSize();
-                        } else {
-                            cNr += channelStructure.getStructureType().getByteSize();
-                        }
-                        break;
-                    }
-                }
-        }
-        return cNr;
-    }
-    
-    private boolean isRightSimpleChannel(@CheckForNull final ChannelStructureDBO channelStructure,
-                                         @CheckForNull final ChannelDBO lastChannel) {
-        return (channelStructure != null) && (lastChannel != null)
-               && (lastChannel.isInput() == isInput());
     }
     
     @Transient

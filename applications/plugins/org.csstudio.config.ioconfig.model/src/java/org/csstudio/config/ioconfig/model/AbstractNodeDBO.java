@@ -72,9 +72,9 @@ public abstract class AbstractNodeDBO<P extends AbstractNodeDBO, C extends Abstr
                                                 INode,
                                                 Serializable {
     
-    private static final long serialVersionUID = 1L;
-
     protected static final int DEFAULT_MAX_STATION_ADDRESS = 255;
+
+    private static final long serialVersionUID = 1L;
     
     /**
      * The highest accept station address.
@@ -118,8 +118,7 @@ public abstract class AbstractNodeDBO<P extends AbstractNodeDBO, C extends Abstr
     
     /**
      *
-     * @param parent
-     *            set the Parent of this Node
+     * @param parent set the Parent of this Node
      */
     public void setParent(@Nonnull final P parent) {
         _parent = parent;
@@ -208,19 +207,10 @@ public abstract class AbstractNodeDBO<P extends AbstractNodeDBO, C extends Abstr
         _children.clear();
     }
     
-    /**
-     * Remove a children from this Node.
-     *
-     * @param child
-     *            the children that remove.
-     */
     public void removeChild(@Nonnull final C child) {
         _children.remove(child);
     }
     
-    /**
-     * Remove a children from this Node.
-     */
     public void removeAllChild() {
         clearChildren();
     }
@@ -242,13 +232,6 @@ public abstract class AbstractNodeDBO<P extends AbstractNodeDBO, C extends Abstr
         return nodeMap;
     }
     
-    /**
-     *
-     * @param maxStationAddress
-     *            the maximum Station Address.
-     * @return the first free Station Address.
-     * @throws PersistenceException 
-     */
     @Transient
     public int getfirstFreeStationAddress(final int maxStationAddress) throws PersistenceException {
         final Map<Short, C> children = getChildrenAsMap();
@@ -276,9 +259,8 @@ public abstract class AbstractNodeDBO<P extends AbstractNodeDBO, C extends Abstr
     public final boolean hasChildren() throws PersistenceException {
         try {
             return (_children != null) && (_children.size() > 0);
-        } catch (Exception e) {
-            PersistenceException persistenceException = new PersistenceException(e);
-            throw persistenceException;
+        } catch (final Exception e) {
+            throw new PersistenceException(e);
         }
     }
     
@@ -320,7 +302,6 @@ public abstract class AbstractNodeDBO<P extends AbstractNodeDBO, C extends Abstr
     @Nonnull
     public void addDocument(@Nonnull final DocumentDBO document) {
         this._documents.add(document);
-//        return this;
     }
     
     /**
@@ -376,13 +357,12 @@ public abstract class AbstractNodeDBO<P extends AbstractNodeDBO, C extends Abstr
      * Swap the SortIndex of two nodes. Is the given SortIndex in use the other node became the old
      * SortIndex of this node.
      *
-     * @param toIdx
-     *            the new sortIndex for this node.
+     * @param toIdx the new sortIndex for this node.
      * @throws PersistenceException 
      */
     public void moveSortIndex(final int toIndex) throws PersistenceException {
-        short index = this.getSortIndex();
-        short toIdx = (short) toIndex;
+        final short index = this.getSortIndex();
+        final short toIdx = (short) toIndex;
         if(toIdx == index) {
             return;
         }
@@ -403,16 +383,17 @@ public abstract class AbstractNodeDBO<P extends AbstractNodeDBO, C extends Abstr
      * @param toIdx
      * @throws PersistenceException
      */
-    private void moveNode(short index, short toIdx) throws PersistenceException {
+    private void moveNode(final short index, final short toIdx) throws PersistenceException {
         short direction = 1;
         // Move a exist Node
         int start = index;
-        P parent = getParent();
+        final P parent = getParent();
         if(parent != null) {
             @SuppressWarnings("unchecked")
+            final
             Map<Short, AbstractNodeDBO<AbstractNodeDBO<?,?>, AbstractNodeDBO<?,?>>> childrenAsMap = parent
                     .getChildrenAsMap();
-            AbstractNodeDBO<AbstractNodeDBO<?, ?>, AbstractNodeDBO<?, ?>> moveNode = childrenAsMap.get(index);
+            final AbstractNodeDBO<AbstractNodeDBO<?, ?>, AbstractNodeDBO<?, ?>> moveNode = childrenAsMap.get(index);
             if(index > toIdx) {
                 direction = -1;
             }
@@ -435,9 +416,10 @@ public abstract class AbstractNodeDBO<P extends AbstractNodeDBO, C extends Abstr
         }
         AbstractNodeDBO<P, C> node = this;
         idx = toIndex;
-        P parent = getParent();
+        final P parent = getParent();
         if(parent != null) {
             @SuppressWarnings("unchecked")
+            final
             Map<Short, ? extends AbstractNodeDBO<P,C>> childrenAsMap = parent.getChildrenAsMap();
             do {
                 final AbstractNodeDBO<P, C> nextNode = childrenAsMap.get(idx);
@@ -455,16 +437,10 @@ public abstract class AbstractNodeDBO<P extends AbstractNodeDBO, C extends Abstr
         //        }
     }
     
-    //    @Transient
-    //    public final HashSet<Node> getChangeNodeSet() {
-    //        return _changeNodeSet;
-    //    }
-    
     /**
      * Copy this node to the given Parent Node.
      *
-     * @param parentNode
-     *            the target parent node.
+     * @param parentNode the target parent node.
      * @return the copy of this node.
      * @throws PersistenceException 
      */
@@ -540,7 +516,7 @@ public abstract class AbstractNodeDBO<P extends AbstractNodeDBO, C extends Abstr
             localUpdate();
             updateChildrenOf(this);
         } else {
-            P parent = getParent();
+            final P parent = getParent();
             if(parent != null) {
                 updateChildrenOf(parent);
             }
@@ -554,6 +530,7 @@ public abstract class AbstractNodeDBO<P extends AbstractNodeDBO, C extends Abstr
      */
     protected void updateChildrenOf(@Nonnull final AbstractNodeDBO node) throws PersistenceException {
         @SuppressWarnings("unchecked")
+        final
         Map<Short, AbstractNodeDBO<AbstractNodeDBO<?,?>, AbstractNodeDBO<?,?>>> childrenAsMap = node.getChildrenAsMap();
         for (final AbstractNodeDBO<?,?> n : childrenAsMap.values()) {
             n.localUpdate();
@@ -586,11 +563,7 @@ public abstract class AbstractNodeDBO<P extends AbstractNodeDBO, C extends Abstr
     }
     
     /**
-     * {@link Comparable}.
-     *
-     * @param other
-     *            the node to compare whit this node.
-     * @return if this node equals whit the give node return 0.
+     * {@inheritDoc}
      */
     @Override
     public int compareTo(@CheckForNull final AbstractNodeDBO<P,C> other) {

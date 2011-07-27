@@ -113,7 +113,7 @@ public class ModuleChannelPrototypeDBO extends DBClass implements Comparable<Mod
         return _gSDModule;
     }
 
-    public void setGSDModule(@Nullable GSDModuleDBO module) {
+    public void setGSDModule(@Nullable final GSDModuleDBO module) {
         _gSDModule = module;
     }
 
@@ -163,7 +163,7 @@ public class ModuleChannelPrototypeDBO extends DBClass implements Comparable<Mod
         return _structure;
     }
 
-    public void setStructure(boolean structure) {
+    public void setStructure(final boolean structure) {
         _structure = structure;
     }
 
@@ -178,7 +178,7 @@ public class ModuleChannelPrototypeDBO extends DBClass implements Comparable<Mod
      *            set only <b>true</b> if the channel direction is <b>input</b> <br>
      *            also the direction is input output. 
      */
-    public void setInput(boolean input) {
+    public final void setInput(final boolean input) {
         _input = input;
     }
     
@@ -188,7 +188,7 @@ public class ModuleChannelPrototypeDBO extends DBClass implements Comparable<Mod
     }
     
     @Column(nullable=true)
-    public void setMinimum(@Nullable Integer minimum) {
+    public void setMinimum(@Nullable final Integer minimum) {
         _minimum = minimum;
     }
 
@@ -198,7 +198,7 @@ public class ModuleChannelPrototypeDBO extends DBClass implements Comparable<Mod
     }
 
     @Column(nullable=true)
-    public void setMaximum(@Nullable Integer maximum) {
+    public void setMaximum(@Nullable final Integer maximum) {
         _maximum = maximum;
     }
 
@@ -208,7 +208,7 @@ public class ModuleChannelPrototypeDBO extends DBClass implements Comparable<Mod
         return _byteOrdering;
     }
 
-    public void setByteOrdering(@Nullable Integer byteOrdering) {
+    public void setByteOrdering(@Nullable final Integer byteOrdering) {
         _byteOrdering = byteOrdering;
     }
 
@@ -225,7 +225,7 @@ public class ModuleChannelPrototypeDBO extends DBClass implements Comparable<Mod
     }
 
     @Override
-    public  int compareTo(@CheckForNull ModuleChannelPrototypeDBO other) {
+    public  int compareTo(@CheckForNull final ModuleChannelPrototypeDBO other) {
         if(other==null) {
             return -1;
         }
@@ -243,13 +243,29 @@ public class ModuleChannelPrototypeDBO extends DBClass implements Comparable<Mod
     }
     
     @Override
-    public final boolean equals(@CheckForNull Object obj) {
+    public final boolean equals(@CheckForNull final Object obj) {
         return super.equals(obj);
     }
     
     @Override
     public int hashCode() {
         return super.hashCode();
+    }
+    
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    @Nonnull
+    public String toString() {
+        final StringBuilder sb = new StringBuilder();
+        if(_input) {
+            sb.append("-i-> ");
+        } else {
+            sb.append("<-o- ");
+        }
+        sb.append(_offset).append(":").append(_name);
+        return sb.toString(); 
     }
 
 }
