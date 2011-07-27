@@ -213,7 +213,7 @@ public class AnnunciatorView extends ViewPart implements JMSAnnunciatorListener
      *  {@inheritDoc}
      */
     @Override
-    public void annunciatorError(final Exception ex)
+    public void annunciatorError(final Throwable ex)
     {
         logAnnunciation(new AnnunciationMessage(Severity.forError(), ex.getMessage()));
         ex.printStackTrace();

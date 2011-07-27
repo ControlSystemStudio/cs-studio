@@ -12,6 +12,8 @@ import org.jivesoftware.smack.Chat;
 import org.jivesoftware.smack.MessageListener;
 import org.jivesoftware.smack.packet.Message;
 import org.jivesoftware.smack.util.StringUtils;
+import org.jivesoftware.smackx.ChatState;
+import org.jivesoftware.smackx.packet.ChatStateExtension;
 
 /** A place for individuals to chat
  * 
@@ -23,8 +25,13 @@ import org.jivesoftware.smack.util.StringUtils;
  */
 public class IndividualChat implements MessageListener
 {
+	/** Our name in the chat */
 	final private String user;
-	final private Chat chat;
+	
+	/** Smack {@link Chat} */
+	private Chat chat;
+	
+	/** Listener to messages from this chat */
 	private IndividualChatListener listener = null;
 	
 	/** Initialize
@@ -48,8 +55,22 @@ public class IndividualChat implements MessageListener
 
 	/** {@inheritDoc} */
 	@Override
-    public void processMessage(Chat chat, Message message)
+    public void processMessage(final Chat chat, final Message message)
     {
+		// Have we already disconnected from the chat?
+		if (this.chat == null)
+		{	// Try to tell sender that we're gone
+			try
+			{
+				chat.sendMessage(NLS.bind(Messages.LeaveChatFmt, user));
+			}
+			catch (Exception ex)
+			{
+				// Ignore
+			}
+			return;
+		}
+		// Anybody listening (yet)
 		if (listener == null)
 			return;
 		String name = StringUtils.parseName(message.getFrom());
@@ -75,19 +96,34 @@ public class IndividualChat implements MessageListener
     {
 		if (chat != null)
 		{
-			// TODO Unclear how to close a chat
-			// The other participant still stays in the chat.
-			// For now just sending a "bye" message
 			try
 			{
-				chat.sendMessage(NLS.bind(Messages.LeaveChatFmt, user));
+				// Unclear how to close an individual chat.
+				// The other participant still stays in the chat,
+				// the Smack library still receives updates
+				// as long as it has (weak) references to the chat.
+				
+				// Send a "bye" message to the human reader of the chat
+				chat.sendMessage(NLS.bind(Messages.LeftChatFmt, user));
+
+				// Send a 'gone' state update to the other chat program
+				final Message message = new Message();
+				message.addExtension(new ChatStateExtension(ChatState.gone));
+				chat.sendMessage(message);
 			}
 			catch (Exception ex)
 			{
 				// Ignore, closing anyway
 			}
+			// Stop listening, stop notofying out listener
 			chat.removeMessageListener(this);
+			listener = null;
+			// Release reference to chat as flag that we no longer care
+			chat = null;
+			// Force GC so that smack library removes weak references to this chat
+			System.gc();
+			// If the chat partner now sends another message on this chat,
+			// it will look like an invitation to a new chat to the Smack library
 		}
-		listener = null;
     }
 }

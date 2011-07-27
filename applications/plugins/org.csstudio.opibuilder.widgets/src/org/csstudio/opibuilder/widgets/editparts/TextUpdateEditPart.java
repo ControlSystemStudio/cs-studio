@@ -312,6 +312,22 @@ public class TextUpdateEditPart extends AbstractPVWidgetEditPart {
 			else
 				text = value.format();
 			break;
+		case COMPACT:
+			if (value instanceof IDoubleValue)
+			{
+				double dValue = ((IDoubleValue)value).getValue();
+				if ( ((dValue > 0.0001) && (dValue < 10000))||
+						((dValue < -0.0001) && (dValue > -10000)) ||
+						dValue == 0.0){
+					text = value.format(Format.Decimal, tempPrecision);
+				}
+				else{
+					text = value.format(Format.Exponential, tempPrecision);
+				}
+			}
+			else
+				text = value.format();
+			break;
 		case STRING:
 			text = value.format(Format.String, tempPrecision);
 			break;

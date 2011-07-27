@@ -32,24 +32,19 @@ public class ADLTestObjects {
 		object.addBody(new FileLine("//", 7));
 		object.addBody(new FileLine("name=myfile.adl", 8));
 		object.addBody(new FileLine("args=\"P=$(P),M=$(M)\"", 9));
-		object.addBody(new FileLine("policy=true", 10));
+		object.addBody(new FileLine("policy=replace display", 10));
 		object.addBody(new FileLine("xyz=true", 11));
 
 		return object;
 	}
 
-	/**
-	 * Setup a normal control
-	 * 
-	 * @return
-	 */
 	public static ADLWidget setupRelDisp() {
 		ADLWidget object = new ADLWidget("display[1]", null, 5);
 		object.addBody(new FileLine("label=myLabel", 6));
 		object.addBody(new FileLine("//", 7));
 		object.addBody(new FileLine("name=myfile.adl", 8));
 		object.addBody(new FileLine("args=\"P=$(P),M=$(M)\"", 9));
-		object.addBody(new FileLine("policy=replace display", 10));
+		object.addBody(new FileLine("policy=\"replace display\"", 10));
 
 		return object;
 	}

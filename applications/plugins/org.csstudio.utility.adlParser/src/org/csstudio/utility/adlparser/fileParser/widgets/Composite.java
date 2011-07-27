@@ -46,16 +46,16 @@ public class Composite extends ADLAbstractWidget {
 	        }
 	        for (FileLine fileLine : adlWidget.getBody()) {
 	            String obj = fileLine.getLine();
-	            String[] row = obj.trim().split("="); //$NON-NLS-1$
+	            String[] row = obj.trim().split("=", 2); //$NON-NLS-1$
 	            if(row.length<2){
 	                throw new WrongADLFormatException(Messages.Label_WrongADLFormatException_Parameter_Begin+obj+Messages.Label_WrongADLFormatException_Parameter_End);
 	            }
 	            if(FileLine.argEquals(row[0], "composite file") || FileLine.argEquals(row[0], "composite name")){ //$NON-NLS-1$
 	                set_compositeFile(FileLine.getTrimmedValue(row[1]));
-	                if (_compositeFile.equals("")){
+	            	_hasCompositeFile = true;
+	                if (_compositeFile.replaceAll("\"", "").equals("")){
 	                	_hasCompositeFile = false;
 	                }
-	            	_hasCompositeFile = true;
 	            }
 	        }
 		}

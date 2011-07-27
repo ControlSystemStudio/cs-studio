@@ -28,7 +28,7 @@ public class QueueManagerDemo
         }
 
         @Override
-        public void annunciatorError(final Exception ex)
+        public void annunciatorError(final Throwable ex)
         {
             ex.printStackTrace();
         }

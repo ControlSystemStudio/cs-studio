@@ -7,11 +7,9 @@
 package org.csstudio.opibuilder.adl2boy.translator;
 
 import org.csstudio.opibuilder.model.AbstractContainerModel;
-import org.csstudio.opibuilder.model.AbstractWidgetModel;
-import org.csstudio.opibuilder.util.OPIColor;
-import org.csstudio.opibuilder.widgets.model.AbstractShapeModel;
 import org.csstudio.opibuilder.widgets.model.RectangleModel;
 import org.csstudio.utility.adlparser.fileParser.ADLWidget;
+import org.csstudio.utility.adlparser.fileParser.widgets.ADLAbstractWidget;
 import org.csstudio.utility.adlparser.fileParser.widgets.Rectangle;
 import org.eclipse.swt.graphics.RGB;
 
@@ -23,7 +21,7 @@ public class Rectangle2Model extends AbstractADL2Model {
 
 	@Override
 	public void processWidget(ADLWidget adlWidget) {
-		Rectangle rectWidget = new Rectangle(adlWidget);
+		ADLAbstractWidget rectWidget = new Rectangle(adlWidget);
 		if (rectWidget != null) {
 			setADLObjectProps(rectWidget, widgetModel);
 			setADLBasicAttributeProps(rectWidget, widgetModel, true);
@@ -31,26 +29,7 @@ public class Rectangle2Model extends AbstractADL2Model {
 		}
 		//check fill parameters
 		if ( rectWidget.hasADLBasicAttribute() ) {
-			if (rectWidget.getAdlBasicAttribute().getFill().equals("solid") ) {
-				widgetModel.setPropertyValue(RectangleModel.PROP_TRANSPARENT, false);
-				widgetModel.setPropertyValue(RectangleModel.PROP_FILL_LEVEL, 100);
-				widgetModel.setPropertyValue(RectangleModel.PROP_HORIZONTAL_FILL, true);
-				
-			}
-			else if (rectWidget.getAdlBasicAttribute().getFill().equals("outline")) {
-				widgetModel.setPropertyValue(RectangleModel.PROP_TRANSPARENT, true);
-				OPIColor fColor = (OPIColor)widgetModel.getPropertyValue(AbstractWidgetModel.PROP_COLOR_FOREGROUND);
-				widgetModel.setPropertyValue(AbstractShapeModel.PROP_LINE_COLOR, fColor);
-				if ( rectWidget.getAdlBasicAttribute().getStyle().equals("solid") ) {
-					widgetModel.setPropertyValue(RectangleModel.PROP_LINE_STYLE, "Solid");
-				}
-				if ( rectWidget.getAdlBasicAttribute().getStyle().equals("dash") ) {
-					widgetModel.setPropertyValue(RectangleModel.PROP_LINE_STYLE, "Dash");
-					
-				}
-				widgetModel.setPropertyValue(RectangleModel.PROP_LINE_WIDTH, rectWidget.getAdlBasicAttribute().getWidth());
-			}
-			
+			setShapesColorFillLine(rectWidget);
 		}
 	}
 

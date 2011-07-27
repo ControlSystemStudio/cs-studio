@@ -4,7 +4,7 @@
 	<classpathentry kind="con" path="org.eclipse.pde.core.requiredPlugins"/>
 	<classpathentry kind="src" path="src"/>
 	<classpathentry kind="src" path="test"/>
-	<classpathentry kind="lib" path="lib/smack.jar" sourcepath="C:/Users/Kay/Desktop/XMPP/smack_src_3_2_1/smack_src_3_2_1/source"/>
-	<classpathentry kind="lib" path="lib/smackx.jar" sourcepath="C:/Users/Kay/Desktop/XMPP/smack_src_3_2_1/smack_src_3_2_1/source"/>
+	<classpathentry kind="lib" path="lib/smack.jar" sourcepath="lib/smack_src_3_2_1.zip"/>
+	<classpathentry kind="lib" path="lib/smackx.jar" sourcepath="lib/smack_src_3_2_1.zip"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>
