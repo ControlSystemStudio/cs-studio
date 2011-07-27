@@ -2,11 +2,11 @@
 <feature
       id="org.csstudio.nsls2.product.feature"
       label="CSS-NSLS-II Product Feature"
-      version="3.0.0.qualifier"
+      version="3.0.1.qualifier"
       provider-name="Kunal Shroff &lt;kshroff@bnl.gov&gt;, Gabriele Carcassi &lt;carcassi@bnl.gov&gt; - BNL">
 
    <description url="http://www.example.com/description">
-      [Enter Feature Description here.]
+      The NSLS2 product feature.
    </description>
 
    <copyright url="http://www.example.com/copyright">
