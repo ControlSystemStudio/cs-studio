@@ -26,6 +26,10 @@
       <product
             application="org.csstudio.ams.remotetool.AmsRemoteToolApplication"
             name="AmsRemoteToolProduct">
+         <property
+               name="appName"
+               value="AmsRemoteToolProduct">
+         </property>
       </product>
    </extension>
 
