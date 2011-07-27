@@ -373,6 +373,8 @@ public class ModuleEditor extends AbstractGsdNodeEditor<ModuleDBO> {
         final Button epicsEditButton = buildEditButton(topGroup);
         buildModuleTypList(comp, topGroup, filter, filterButton);
         epicsEditButton.addSelectionListener(new EditButtonSelectionListener(_moduleTypList));
+        filterButton.addSelectionListener(new FilterButtonSelectionListener(_moduleTypList));
+        filter.addModifyListener(new FilterModifyListener(_moduleTypList));
     }
 
     private void buildModuleTypList(@Nonnull final Composite comp,
@@ -418,7 +420,6 @@ public class ModuleEditor extends AbstractGsdNodeEditor<ModuleDBO> {
         final Text filter = new Text(filterComposite, SWT.SINGLE | SWT.BORDER | SWT.SEARCH);
         filter.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, false, 1, 1));
         filter.setMessage("Module Filter");
-        filter.addModifyListener(new FilterModifyListener(_moduleTypList));
         return filter;
     }
 
@@ -445,7 +446,6 @@ public class ModuleEditor extends AbstractGsdNodeEditor<ModuleDBO> {
         final Button filterButton = new Button(filterComposite, SWT.CHECK);
         filterButton.setLayoutData(new GridData(SWT.CENTER, SWT.FILL, false, false, 1, 1));
         filterButton.setText("Only have prototype");
-        filterButton.addSelectionListener(new FilterButtonSelectionListener(_moduleTypList));
         return filterButton;
     }
 
