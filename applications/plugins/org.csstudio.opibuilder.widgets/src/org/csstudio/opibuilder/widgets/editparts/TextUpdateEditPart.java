@@ -67,6 +67,7 @@ public class TextUpdateEditPart extends AbstractPVWidgetEditPart {
 		labelFigure.setOpaque(!widgetModel.isTransparent());
 		labelFigure.setHorizontalAlignment(widgetModel.getHorizontalAlignment());
 		labelFigure.setVerticalAlignment(widgetModel.getVerticalAlignment());
+		labelFigure.setRotate(widgetModel.getRotationAngle());
 		return labelFigure;
 	}
 
@@ -236,6 +237,15 @@ public class TextUpdateEditPart extends AbstractPVWidgetEditPart {
 			}
 		};
 		setPropertyChangeHandler(TextUpdateModel.PROP_SHOW_UNITS, handler);
+		
+		handler = new IWidgetPropertyChangeHandler(){
+			public boolean handleChange(Object oldValue, Object newValue,
+					final IFigure figure) {
+				((TextFigure)figure).setRotate((Double)newValue);
+				return true;
+			}
+		};
+		setPropertyChangeHandler(TextUpdateModel.PROP_ROTATION, handler);
 	}
 
 	@Override
