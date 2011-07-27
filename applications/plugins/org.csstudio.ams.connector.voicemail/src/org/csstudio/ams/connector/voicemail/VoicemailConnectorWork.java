@@ -91,7 +91,7 @@ public class VoicemailConnectorWork extends Thread implements AmsConstants {
                 
                 if (!bInitedVmService) {
                     
-                    bInitedVmService = true; //initCallCenter();
+                    bInitedVmService = initCallCenter();
                     if (!bInitedVmService) {
                         
                         iErr = VoicemailConnectorStart.STAT_ERR_VM_SERVICE;
@@ -185,7 +185,6 @@ public class VoicemailConnectorWork extends Thread implements AmsConstants {
         Log.log(this, Log.INFO, "Voicemail connector exited");
     }
 
-    @SuppressWarnings("unused")
     private boolean initCallCenter() {
         
         try {

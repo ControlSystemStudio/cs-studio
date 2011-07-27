@@ -26,18 +26,13 @@
       <plugin id="javax.servlet"/>
       <plugin id="org.apache.log4j"/>
       <plugin id="org.csstudio.ams.remotetool"/>
-      <plugin id="org.csstudio.archive.sdds.server.log4j" fragment="true"/>
       <plugin id="org.csstudio.data"/>
-      <plugin id="org.csstudio.data.test" fragment="true"/>
       <plugin id="org.csstudio.desy.common.product.log4j" fragment="true"/>
-      <plugin id="org.csstudio.desy.css.product.log4j" fragment="true"/>
       <plugin id="org.csstudio.platform"/>
       <plugin id="org.csstudio.platform.libs.jmock"/>
       <plugin id="org.csstudio.platform.libs.jms"/>
-      <plugin id="org.csstudio.platform.test" fragment="true"/>
       <plugin id="org.csstudio.platform.utility.jms"/>
       <plugin id="org.csstudio.remote"/>
-      <plugin id="org.csstudio.remote.test" fragment="true"/>
       <plugin id="org.csstudio.workspace"/>
       <plugin id="org.eclipse.ant.core"/>
       <plugin id="org.eclipse.core.commands"/>
@@ -48,9 +43,11 @@
       <plugin id="org.eclipse.core.expressions"/>
       <plugin id="org.eclipse.core.filesystem"/>
       <plugin id="org.eclipse.core.filesystem.win32.x86" fragment="true"/>
+      <plugin id="org.eclipse.core.filesystem.win32.x86_64" fragment="true"/>
       <plugin id="org.eclipse.core.jobs"/>
       <plugin id="org.eclipse.core.net"/>
       <plugin id="org.eclipse.core.net.win32.x86" fragment="true"/>
+      <plugin id="org.eclipse.core.net.win32.x86_64" fragment="true"/>
       <plugin id="org.eclipse.core.resources"/>
       <plugin id="org.eclipse.core.resources.win32.x86" fragment="true"/>
       <plugin id="org.eclipse.core.runtime"/>
@@ -99,6 +96,7 @@
       <plugin id="org.eclipse.osgi.services"/>
       <plugin id="org.eclipse.swt"/>
       <plugin id="org.eclipse.swt.win32.win32.x86" fragment="true"/>
+      <plugin id="org.eclipse.swt.win32.win32.x86_64" fragment="true"/>
       <plugin id="org.eclipse.ui"/>
       <plugin id="org.eclipse.ui.workbench"/>
       <plugin id="org.hamcrest.core"/>
@@ -107,7 +105,6 @@
       <plugin id="org.junit"/>
       <plugin id="org.junit4"/>
       <plugin id="org.remotercp.common"/>
-      <plugin id="org.remotercp.common.test" fragment="true"/>
       <plugin id="org.remotercp.domain.authorization"/>
       <plugin id="org.remotercp.domain.preferences"/>
       <plugin id="org.remotercp.domain.provisioning"/>
@@ -117,7 +114,6 @@
       <plugin id="org.remotercp.service.provisioning"/>
       <plugin id="org.remotercp.ui.administration"/>
       <plugin id="org.remotercp.util"/>
-      <plugin id="org.remotercp.util.test" fragment="true"/>
       <plugin id="org.sat4j.core"/>
       <plugin id="org.sat4j.pb"/>
       <plugin id="org.slf4j"/>
