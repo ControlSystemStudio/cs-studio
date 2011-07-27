@@ -113,6 +113,8 @@ public class FilePathProperty extends AbstractWidgetProperty {
 			IPath path = ResourceUtil.getPathFromString(s);
 			if(!path.isAbsolute())
 				return ResourceUtil.buildAbsolutePath(widgetModel, path);
+			else
+				return path;
 		}			
 		return super.getPropertyValue();
 	}
