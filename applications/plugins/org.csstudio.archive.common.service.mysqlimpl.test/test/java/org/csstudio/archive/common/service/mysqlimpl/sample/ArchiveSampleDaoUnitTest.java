@@ -21,44 +21,31 @@
  */
 package org.csstudio.archive.common.service.mysqlimpl.sample;
 
-import static org.csstudio.archive.common.service.mysqlimpl.sample.ArchiveSampleDaoImpl.TAB_SAMPLE_H;
-
-import java.util.concurrent.LinkedBlockingQueue;
-
-import javax.annotation.Nonnull;
-
+import org.csstudio.archive.common.service.mysqlimpl.dao.AbstractDaoTestSetup;
+import org.csstudio.archive.common.service.mysqlimpl.dao.ArchiveDaoException;
+import org.junit.BeforeClass;
+import org.junit.Test;
 
 /**
- * Batch queue handler for reduced data samples for hours.
+ * Integration test for {@link ArchiveSampleDaoImpl}.
  *
  * @author bknerr
- * @since 20.07.2011
+ * @since 27.07.2011
  */
-public class HourReducedDataSampleBatchQueueHandler extends
-                                                   AbstractReducedDataSampleBatchQueueHandler<HourReducedDataSample> {
-    /**
-     * Constructor.
-     */
-    public HourReducedDataSampleBatchQueueHandler(@Nonnull final String database) {
-        super(HourReducedDataSample.class, database, new LinkedBlockingQueue<HourReducedDataSample>());
+public class ArchiveSampleDaoUnitTest extends AbstractDaoTestSetup {
+    private static IArchiveSampleDao DAO;
+
+    @BeforeClass
+    public static void setupDao() {
+        DAO = new ArchiveSampleDaoImpl(HANDLER, PERSIST_MGR);
     }
 
-    /**
-     * {@inheritDoc}
-     */
-    @Override
-    @Nonnull
-    protected String getTable() {
-        return TAB_SAMPLE_H;
-    }
+    @Test
+    public void test() throws ArchiveDaoException, InterruptedException {
+        DAO.createSamples(TestSampleProvider.SAMPLES);
 
+        Thread.sleep(2500);
 
-    /**
-     * {@inheritDoc}
-     */
-    @Override
-    @Nonnull
-    public Class<HourReducedDataSample> getType() {
-        return HourReducedDataSample.class;
+        System.out.println();
     }
 }

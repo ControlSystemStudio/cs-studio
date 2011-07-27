@@ -75,7 +75,7 @@
     	    depends="create.database, create.tables, create.triggers">
     </target>
 	
-   <target name="create.database" depends="drop.database, init.users">
+   <target name="create.database" depends="drop.database">
       <sql driver="${sql.driver}" 
            url="${sql.url}" 
            userid="${sql.archive.user}" 

@@ -21,44 +21,26 @@
  */
 package org.csstudio.archive.common.service.mysqlimpl.sample;
 
-import static org.csstudio.archive.common.service.mysqlimpl.sample.ArchiveSampleDaoImpl.TAB_SAMPLE_H;
-
-import java.util.concurrent.LinkedBlockingQueue;
-
 import javax.annotation.Nonnull;
 
+import org.csstudio.archive.common.service.channel.ArchiveChannelId;
+import org.csstudio.domain.desy.time.TimeInstant;
 
 /**
- * Batch queue handler for reduced data samples for hours.
+ * Hour type sample.
  *
  * @author bknerr
- * @since 20.07.2011
+ * @since 21.07.2011
  */
-public class HourReducedDataSampleBatchQueueHandler extends
-                                                   AbstractReducedDataSampleBatchQueueHandler<HourReducedDataSample> {
+class HourReducedDataSample extends AbstractReducedDataSample {
     /**
      * Constructor.
      */
-    public HourReducedDataSampleBatchQueueHandler(@Nonnull final String database) {
-        super(HourReducedDataSample.class, database, new LinkedBlockingQueue<HourReducedDataSample>());
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    @Override
-    @Nonnull
-    protected String getTable() {
-        return TAB_SAMPLE_H;
-    }
-
-
-    /**
-     * {@inheritDoc}
-     */
-    @Override
-    @Nonnull
-    public Class<HourReducedDataSample> getType() {
-        return HourReducedDataSample.class;
+    public HourReducedDataSample(@Nonnull final ArchiveChannelId id,
+                                 @Nonnull final TimeInstant timestamp,
+                                 @Nonnull final Double avg,
+                                 @Nonnull final Double min,
+                                 @Nonnull final Double max) {
+        super(id, timestamp, avg, min, max);
     }
 }

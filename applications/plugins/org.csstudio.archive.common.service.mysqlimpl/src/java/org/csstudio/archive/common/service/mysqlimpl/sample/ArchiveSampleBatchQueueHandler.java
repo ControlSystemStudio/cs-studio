@@ -21,6 +21,11 @@
  */
 package org.csstudio.archive.common.service.mysqlimpl.sample;
 
+import static org.csstudio.archive.common.service.mysqlimpl.sample.ArchiveSampleDaoImpl.COLUMN_CHANNEL_ID;
+import static org.csstudio.archive.common.service.mysqlimpl.sample.ArchiveSampleDaoImpl.COLUMN_TIME;
+import static org.csstudio.archive.common.service.mysqlimpl.sample.ArchiveSampleDaoImpl.COLUMN_VALUE;
+import static org.csstudio.archive.common.service.mysqlimpl.sample.ArchiveSampleDaoImpl.TAB_SAMPLE;
+
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
 import java.util.Collection;
@@ -66,7 +71,9 @@ public class ArchiveSampleBatchQueueHandler extends BatchQueueHandlerSupport<IAr
     @Nonnull
     protected String composeSqlString() {
         final String sql =
-            "INSERT INTO " + getDatabase() + ".sample (channel_id, sample_time, value) VALUES " + VAL_WILDCARDS;
+            "INSERT INTO " + getDatabase() + "." + TAB_SAMPLE + " " +
+            Joiner.on(",").join(COLUMN_CHANNEL_ID, COLUMN_TIME, COLUMN_VALUE)+ " " +
+            "VALUES " + VAL_WILDCARDS;
         return sql;
     }
     /**
@@ -94,7 +101,6 @@ public class ArchiveSampleBatchQueueHandler extends BatchQueueHandlerSupport<IAr
         final String sql = composeSqlString();
         final String sqlWithoutValues = sql.replace(VAL_WILDCARDS, "");
 
-
         final Collection<String> statements =
             Collections2.transform(elements,
                                    new Function<IArchiveSample, String>() {
@@ -104,9 +110,9 @@ public class ArchiveSampleBatchQueueHandler extends BatchQueueHandlerSupport<IAr
                                            try {
                                                final String result =
                                                    "(" +
-                                                   input.getChannelId().asString() + "," +
-                                                   input.getSystemVariable().getTimestamp().getNanos() + "," +
-                                                   ArchiveTypeConversionSupport.toArchiveString(input.getValue()) +
+                                                   Joiner.on(",").join(input.getChannelId().asString(),+
+                                                                       input.getSystemVariable().getTimestamp().getNanos(),
+                                                                       ArchiveTypeConversionSupport.toArchiveString(input.getValue())) +
                                                    ")";
                                                return result;
                                            } catch (final TypeSupportException e) {

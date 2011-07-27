@@ -61,6 +61,7 @@ import org.joda.time.Duration;
 import org.joda.time.Hours;
 import org.joda.time.Minutes;
 
+import com.google.common.base.Joiner;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 import com.google.inject.Inject;
@@ -73,70 +74,43 @@ import com.google.inject.Inject;
  */
 public class ArchiveSampleDaoImpl extends AbstractArchiveDao implements IArchiveSampleDao {
 
-    /**
-     * Minute type sample.
-     *
-     * @author bknerr
-     * @since 21.07.2011
-     */
-    class MinuteReducedDataSample extends AbstractReducedDataSample {
-        /**
-         * Constructor.
-         */
-        public MinuteReducedDataSample(@Nonnull final ArchiveChannelId id,
-                                       @Nonnull final TimeInstant timestamp,
-                                       @Nonnull final Double avg,
-                                       @Nonnull final Double min,
-                                       @Nonnull final Double max) {
-            super(id, timestamp, avg, min, max);
-        }
-    }
-    /**
-     * Hour type sample.
-     *
-     * @author bknerr
-     * @since 21.07.2011
-     */
-    class HourReducedDataSample extends AbstractReducedDataSample {
-        /**
-         * Constructor.
-         */
-        public HourReducedDataSample(@Nonnull final ArchiveChannelId id,
-                                     @Nonnull final TimeInstant timestamp,
-                                     @Nonnull final Double avg,
-                                     @Nonnull final Double min,
-                                     @Nonnull final Double max) {
-            super(id, timestamp, avg, min, max);
-        }
-    }
+    public static final String TAB_SAMPLE = "sample";
+    public static final String TAB_SAMPLE_M = "sample_m";
+    public static final String TAB_SAMPLE_H = "sample_h";
+
+    public static final String COLUMN_TIME = "time";
+    public static final String COLUMN_CHANNEL_ID = "channel_id";
+    public static final String COLUMN_VALUE = "value";
+    public static final String COLUMN_AVG = "avg_value";
+    public static final String COLUMN_MIN = "min_value";
+    public static final String COLUMN_MAX = "max_value";
 
     private static final String ARCH_TABLE_PLACEHOLDER = "<arch.table>";
 
     private static final String RETRIEVAL_FAILED = "Sample retrieval from archive failed.";
 
-    private static final String SELECT_RAW_PREFIX = "SELECT sample_time, nanosecs, value ";
+    private static final String SELECT_RAW_PREFIX =
+        "SELECT " + Joiner.on(",").join(COLUMN_CHANNEL_ID, COLUMN_TIME, COLUMN_VALUE) + " ";
 
     private final String _dbName = getDatabaseName();
 
     private final String _selectSamplesStmt =
         SELECT_RAW_PREFIX +
-        "FROM " + _dbName + "." + ARCH_TABLE_PLACEHOLDER + " WHERE channel_id=? " +
-        "AND sample_time BETWEEN ? AND ?";
+        "FROM " + _dbName + "." + ARCH_TABLE_PLACEHOLDER + " WHERE " + COLUMN_CHANNEL_ID + "=? " +
+        "AND " + COLUMN_TIME + " BETWEEN ? AND ?";
     private final String _selectOptSamplesStmt =
-        "SELECT sample_time, avg_val, min_val, max_val " +
-        "FROM " + _dbName + "."+ ARCH_TABLE_PLACEHOLDER + " WHERE channel_id=? " +
-        "AND sample_time BETWEEN ? AND ?";
+        "SELECT " + Joiner.on(",").join(COLUMN_CHANNEL_ID, COLUMN_TIME, COLUMN_AVG, COLUMN_MIN, COLUMN_MAX) + " " +
+        "FROM " + _dbName + "."+ ARCH_TABLE_PLACEHOLDER + " WHERE " + COLUMN_CHANNEL_ID + "=? " +
+        "AND " + COLUMN_TIME + " BETWEEN ? AND ?";
     private final String _selectLatestSampleBeforeTimeStmt =
         SELECT_RAW_PREFIX +
-        "FROM " + _dbName + ".sample WHERE channel_id=? " +
-        "AND sample_time<? ORDER BY sample_time DESC LIMIT 1";
-
+        "FROM " + _dbName + "." + TAB_SAMPLE + " WHERE " + COLUMN_CHANNEL_ID + "=? " +
+        "AND " + COLUMN_TIME + "<? ORDER BY " + COLUMN_TIME + " DESC LIMIT 1";
 
     private final Map<ArchiveChannelId, SampleMinMaxAggregator> _reducedDataMapForMinutes =
         Maps.newConcurrentMap();
     private final Map<ArchiveChannelId, SampleMinMaxAggregator> _reducedDataMapForHours =
         Maps.newConcurrentMap();
-
 
     /**
      * Constructor.
@@ -270,7 +244,6 @@ public class ArchiveSampleDaoImpl extends AbstractArchiveDao implements IArchive
         return aggregator;
     }
 
-
     @CheckForNull
     private <T extends ISystemVariable<?>>
     Double createDoubleFromValueOrNull(@Nonnull final T sysVar) {
@@ -307,7 +280,6 @@ public class ArchiveSampleDaoImpl extends AbstractArchiveDao implements IArchive
         }
         return true;
     }
-
 
     /**
      * {@inheritDoc}
@@ -383,13 +355,13 @@ public class ArchiveSampleDaoImpl extends AbstractArchiveDao implements IArchive
         PreparedStatement stmt = null;
         switch (type) {
             case RAW :
-                stmt = getConnection().prepareStatement(_selectSamplesStmt.replaceFirst(ARCH_TABLE_PLACEHOLDER, "sample"));
+                stmt = getConnection().prepareStatement(_selectSamplesStmt.replaceFirst(ARCH_TABLE_PLACEHOLDER, TAB_SAMPLE));
                 break;
             case AVG_PER_MINUTE :
-                stmt = getConnection().prepareStatement(_selectOptSamplesStmt.replaceFirst(ARCH_TABLE_PLACEHOLDER, "sample_m"));
+                stmt = getConnection().prepareStatement(_selectOptSamplesStmt.replaceFirst(ARCH_TABLE_PLACEHOLDER, TAB_SAMPLE_M));
                 break;
             case AVG_PER_HOUR :
-                stmt = getConnection().prepareStatement(_selectOptSamplesStmt.replaceFirst(ARCH_TABLE_PLACEHOLDER, "sample_h"));
+                stmt = getConnection().prepareStatement(_selectOptSamplesStmt.replaceFirst(ARCH_TABLE_PLACEHOLDER, TAB_SAMPLE_H));
                 break;
             default :
         }
@@ -406,32 +378,31 @@ public class ArchiveSampleDaoImpl extends AbstractArchiveDao implements IArchive
                                                                                                    ArchiveDaoException,
                                                                                                    TypeSupportException {
         final String dataType = channel.getDataType();
-        final Timestamp timestamp = result.getTimestamp("sample_time");
 
-        long nanosecs = 0L;
         V value = null;
         V min = null;
         V max = null;
 
         switch (type) {
             case RAW : {
-                // (..., nanosecs, value)
-                nanosecs = result.getLong("nanosecs");
-                value = ArchiveTypeConversionSupport.fromArchiveString(dataType, result.getString("value"));
+                // (..., value)
+                value = ArchiveTypeConversionSupport.fromArchiveString(dataType, result.getString(COLUMN_VALUE));
                 break;
             }
             case AVG_PER_MINUTE :
             case AVG_PER_HOUR : {
                 // (..., avg_val, min_val, max_val)
-                value = ArchiveTypeConversionSupport.fromDouble(dataType, result.getDouble("avg_val"));
-                min = ArchiveTypeConversionSupport.fromDouble(dataType, result.getDouble("min_val"));
-                max = ArchiveTypeConversionSupport.fromDouble(dataType, result.getDouble("max_val"));
+                value = ArchiveTypeConversionSupport.fromDouble(dataType, result.getDouble(COLUMN_AVG));
+                min = ArchiveTypeConversionSupport.fromDouble(dataType, result.getDouble(COLUMN_MIN));
+                max = ArchiveTypeConversionSupport.fromDouble(dataType, result.getDouble(COLUMN_MAX));
                 break;
             }
             default:
                 throw new ArchiveDaoException("Archive request type unknown. Sample could not be created from query", null);
         }
-        final TimeInstant timeInstant = TimeInstantBuilder.fromMillis(timestamp.getTime()).plusNanosPerSecond(nanosecs);
+        final long time = result.getLong(COLUMN_TIME);
+
+        final TimeInstant timeInstant = TimeInstantBuilder.fromNanos(time);
         final IArchiveControlSystem cs = channel.getControlSystem();
         final ISystemVariable<V> sysVar = SystemVariableSupport.create(channel.getName(),
                                                                        value,
