@@ -28,17 +28,27 @@ import static org.csstudio.archive.common.service.mysqlimpl.sample.ArchiveSample
 import static org.csstudio.archive.common.service.mysqlimpl.sample.ArchiveSampleDaoImpl.TAB_SAMPLE_M;
 import static org.csstudio.archive.common.service.mysqlimpl.sample.TestSampleProvider.CHANNEL_ID;
 import static org.csstudio.archive.common.service.mysqlimpl.sample.TestSampleProvider.END;
+import static org.csstudio.archive.common.service.mysqlimpl.sample.TestSampleProvider.SAMPLES;
 import static org.csstudio.archive.common.service.mysqlimpl.sample.TestSampleProvider.START;
 
 import java.sql.Connection;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.util.Collection;
 
 import javax.annotation.Nonnull;
 
+import junit.framework.Assert;
+
 import org.csstudio.archive.common.service.ArchiveConnectionException;
+import org.csstudio.archive.common.service.channel.IArchiveChannel;
+import org.csstudio.archive.common.service.mysqlimpl.channel.ArchiveChannelDaoImpl;
+import org.csstudio.archive.common.service.mysqlimpl.channel.IArchiveChannelDao;
 import org.csstudio.archive.common.service.mysqlimpl.dao.AbstractDaoTestSetup;
 import org.csstudio.archive.common.service.mysqlimpl.dao.ArchiveDaoException;
+import org.csstudio.archive.common.service.mysqlimpl.requesttypes.DesyArchiveRequestType;
+import org.csstudio.archive.common.service.sample.IArchiveSample;
+import org.csstudio.domain.desy.system.ISystemVariable;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.Test;
@@ -50,18 +60,35 @@ import org.junit.Test;
  * @since 27.07.2011
  */
 public class ArchiveSampleDaoUnitTest extends AbstractDaoTestSetup {
-    private static IArchiveSampleDao DAO;
+    private static IArchiveSampleDao SAMPLE_DAO;
+    private static IArchiveChannelDao CHANNEL_DAO;
 
     @BeforeClass
     public static void setupDao() {
-        DAO = new ArchiveSampleDaoImpl(HANDLER, PERSIST_MGR);
+        SAMPLE_DAO = new ArchiveSampleDaoImpl(HANDLER, PERSIST_MGR);
+        CHANNEL_DAO = new ArchiveChannelDaoImpl(HANDLER, PERSIST_MGR);
     }
 
     @Test
     public void testCreateSamples() throws ArchiveDaoException, InterruptedException, ArchiveConnectionException, SQLException {
-        DAO.createSamples(TestSampleProvider.SAMPLES);
+        SAMPLE_DAO.createSamples(SAMPLES);
 
         Thread.sleep(2500);
+
+        final IArchiveChannel channel = CHANNEL_DAO.retrieveChannelById(CHANNEL_ID);
+        final IArchiveSample<Object,ISystemVariable<Object>> sample =
+            SAMPLE_DAO.retrieveLatestSampleBeforeTime(channel, END.plusMillis(1L));
+
+        Assert.assertNotNull(sample);
+        Assert.assertEquals(sample.getSystemVariable().getTimestamp(), END);
+
+        final Collection<IArchiveSample<Object, ISystemVariable<Object>>> rawSamples =
+            SAMPLE_DAO.retrieveSamples(DesyArchiveRequestType.RAW, channel, START, END);
+        Assert.assertNotNull(rawSamples);
+        Assert.assertFalse(rawSamples.isEmpty());
+        Assert.assertEquals(SAMPLES.size(), rawSamples.size());
+
+
 
         undoCreateSamples();
     }

@@ -91,6 +91,6 @@ public class TestSampleProvider {
 
         }
 
-        END = SAMPLES.peekLast().getSystemVariable().getTimestamp();
+        END = time;
     }
 }

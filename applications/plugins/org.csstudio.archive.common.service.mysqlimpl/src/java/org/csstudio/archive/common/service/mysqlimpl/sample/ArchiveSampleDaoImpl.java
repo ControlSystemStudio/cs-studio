@@ -24,7 +24,6 @@ package org.csstudio.archive.common.service.mysqlimpl.sample;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.sql.Timestamp;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
@@ -327,10 +326,11 @@ public class ArchiveSampleDaoImpl extends AbstractArchiveDao implements IArchive
                                                                             ArchiveDaoException,
                                                                             TypeSupportException {
         final List<IArchiveSample<V, T>> samples = Lists.newArrayList();
-        while (result != null && result.next()) {
+        while (result != null && !result.isAfterLast()) {
             final IArchiveSample<V, T> sample =
                 createSampleFromQueryResult(reqType, channel, result);
             samples.add(sample);
+            result.next();
         }
         return samples;
     }
@@ -345,8 +345,8 @@ public class ArchiveSampleDaoImpl extends AbstractArchiveDao implements IArchive
         PreparedStatement stmt;
         stmt = dispatchRequestTypeToStatement(reqType);
         stmt.setInt(1, channel.getId().intValue());
-        stmt.setTimestamp(2, new Timestamp(s.getMillis()));
-        stmt.setTimestamp(3, new Timestamp(e.getMillis() + 1)); // + 1 for all with nanosecs > 1
+        stmt.setLong(2, s.getNanos());
+        stmt.setLong(3, e.getNanos());
         return stmt;
     }
 
@@ -357,6 +357,7 @@ public class ArchiveSampleDaoImpl extends AbstractArchiveDao implements IArchive
         PreparedStatement stmt = null;
         switch (type) {
             case RAW :
+                System.out.println(_selectSamplesStmt.replaceFirst(ARCH_TABLE_PLACEHOLDER, TAB_SAMPLE));
                 stmt = getConnection().prepareStatement(_selectSamplesStmt.replaceFirst(ARCH_TABLE_PLACEHOLDER, TAB_SAMPLE));
                 break;
             case AVG_PER_MINUTE :
@@ -452,7 +453,7 @@ public class ArchiveSampleDaoImpl extends AbstractArchiveDao implements IArchive
         try {
             stmt = getConnection().prepareStatement(_selectLatestSampleBeforeTimeStmt);
             stmt.setInt(1, channel.getId().intValue());
-            stmt.setTimestamp(2, new Timestamp(time.getMillis()));
+            stmt.setLong(2, time.getNanos());
             final ResultSet result = stmt.executeQuery();
             if (result.next()) {
                 return createSampleFromQueryResult(DesyArchiveRequestType.RAW, channel, result);
