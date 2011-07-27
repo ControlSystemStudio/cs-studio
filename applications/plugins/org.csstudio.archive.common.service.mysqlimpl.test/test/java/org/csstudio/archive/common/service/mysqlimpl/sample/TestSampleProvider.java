@@ -21,7 +21,7 @@
  */
 package org.csstudio.archive.common.service.mysqlimpl.sample;
 
-import java.util.Collection;
+import java.util.LinkedList;
 
 import org.csstudio.archive.common.service.channel.ArchiveChannelId;
 import org.csstudio.archive.common.service.sample.ArchiveSample;
@@ -44,38 +44,30 @@ import com.google.common.collect.Lists;
 @SuppressWarnings({"unchecked", "rawtypes"})
 public class TestSampleProvider {
 
-    public static final Collection<IArchiveSample<Object, ISystemVariable<Object>>> SAMPLES =
+
+    public static final LinkedList<IArchiveSample<Object, ISystemVariable<Object>>> SAMPLES =
         Lists.newLinkedList();
 
-    /**
-     * Time 2 months before now.
-     */
-    public static final TimeInstant START =
-        TimeInstantBuilder.fromNow().minusMillis(1000*60*60*24*31*2);
+    public static TimeInstant START;
+    public static TimeInstant END;
 
-    private static final ArchiveChannelId CHANNEL_ID = new ArchiveChannelId(2L);
+    public static final ArchiveChannelId CHANNEL_ID = new ArchiveChannelId(2L);
 
     static {
-        Double d = 1.0;
-        IArchiveSample sample =
-            new ArchiveSample<Double, ISystemVariable<Double>>(CHANNEL_ID,
-                                                               new EpicsSystemVariable<Double>("fuup",
-                                                                                               d,
-                                                                                               ControlSystem.EPICS_DEFAULT,
-                                                                                               START,
-                                                                                               EpicsAlarm.UNKNOWN),
-                                                                                               EpicsAlarm.UNKNOWN);
-        SAMPLES.add(sample);
+        START = TimeInstantBuilder.fromNow();
 
-        // for half an hour, every half a minute a sample, values are ramping
+        Double d = 0.0;
+        // for half an hour, every half a minute a sample, values are ramping = 50h
         // intended for filling of sample_m table
+        TimeInstant time = START;
         for (int i = 0; i < 100; i++) {
-            sample =
+            time = time.plusMillis(1000*30);
+            final IArchiveSample sample =
                 new ArchiveSample<Double, ISystemVariable<Double>>(CHANNEL_ID,
                                                                    new EpicsSystemVariable<Double>("fuup",
                                                                                                    d += 1.0,
                                                                                                    ControlSystem.EPICS_DEFAULT,
-                                                                                                   START.plusMillis(1000*30),
+                                                                                                   time,
                                                                                                    EpicsAlarm.UNKNOWN),
                                                                    EpicsAlarm.UNKNOWN);
 
@@ -83,18 +75,22 @@ public class TestSampleProvider {
         }
 
         // for 5 days, every half hour, values still ramping
-        d = 1.0;
+        d = 0.0;
         for (int i = 0; i < 5*24*2; i++) {
-            sample =
+            time = time.plusMillis(1000*60*30);
+            final IArchiveSample sample =
                 new ArchiveSample<Double, ISystemVariable<Double>>(CHANNEL_ID,
-                        new EpicsSystemVariable<Double>("fuup",
-                                d += 1.0,
-                                ControlSystem.EPICS_DEFAULT,
-                                START.plusMillis(1000*60*30),
-                                EpicsAlarm.UNKNOWN),
-                                EpicsAlarm.UNKNOWN);
+                                                                   new EpicsSystemVariable<Double>("fuup",
+                                                                                                   d += 1.0,
+                                                                                                   ControlSystem.EPICS_DEFAULT,
+                                                                                                   time,
+                                                                                                   EpicsAlarm.UNKNOWN),
+                                                                   EpicsAlarm.UNKNOWN);
 
             SAMPLES.add(sample);
+
         }
+
+        END = SAMPLES.peekLast().getSystemVariable().getTimestamp();
     }
 }

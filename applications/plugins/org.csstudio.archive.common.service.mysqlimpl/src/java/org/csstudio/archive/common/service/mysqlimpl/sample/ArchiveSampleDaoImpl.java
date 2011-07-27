@@ -81,9 +81,9 @@ public class ArchiveSampleDaoImpl extends AbstractArchiveDao implements IArchive
     public static final String COLUMN_TIME = "time";
     public static final String COLUMN_CHANNEL_ID = "channel_id";
     public static final String COLUMN_VALUE = "value";
-    public static final String COLUMN_AVG = "avg_value";
-    public static final String COLUMN_MIN = "min_value";
-    public static final String COLUMN_MAX = "max_value";
+    public static final String COLUMN_AVG = "avg_val";
+    public static final String COLUMN_MIN = "min_val";
+    public static final String COLUMN_MAX = "max_val";
 
     private static final String ARCH_TABLE_PLACEHOLDER = "<arch.table>";
 
@@ -178,6 +178,7 @@ public class ArchiveSampleDaoImpl extends AbstractArchiveDao implements IArchive
                                                           agg.getAvg(),
                                                           agg.getMin(),
                                                           agg.getMax()));
+                agg.reset();
             }
 
 
@@ -219,6 +220,7 @@ public class ArchiveSampleDaoImpl extends AbstractArchiveDao implements IArchive
                                                                   agg.getAvg(),
                                                                   agg.getMin(),
                                                                   agg.getMax()));
+                    agg.reset();
                 }
             }
         }

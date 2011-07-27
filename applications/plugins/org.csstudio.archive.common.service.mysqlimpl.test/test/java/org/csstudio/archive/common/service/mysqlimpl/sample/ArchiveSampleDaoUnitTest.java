@@ -21,8 +21,25 @@
  */
 package org.csstudio.archive.common.service.mysqlimpl.sample;
 
+import static org.csstudio.archive.common.service.mysqlimpl.sample.ArchiveSampleDaoImpl.COLUMN_CHANNEL_ID;
+import static org.csstudio.archive.common.service.mysqlimpl.sample.ArchiveSampleDaoImpl.COLUMN_TIME;
+import static org.csstudio.archive.common.service.mysqlimpl.sample.ArchiveSampleDaoImpl.TAB_SAMPLE;
+import static org.csstudio.archive.common.service.mysqlimpl.sample.ArchiveSampleDaoImpl.TAB_SAMPLE_H;
+import static org.csstudio.archive.common.service.mysqlimpl.sample.ArchiveSampleDaoImpl.TAB_SAMPLE_M;
+import static org.csstudio.archive.common.service.mysqlimpl.sample.TestSampleProvider.CHANNEL_ID;
+import static org.csstudio.archive.common.service.mysqlimpl.sample.TestSampleProvider.END;
+import static org.csstudio.archive.common.service.mysqlimpl.sample.TestSampleProvider.START;
+
+import java.sql.Connection;
+import java.sql.SQLException;
+import java.sql.Statement;
+
+import javax.annotation.Nonnull;
+
+import org.csstudio.archive.common.service.ArchiveConnectionException;
 import org.csstudio.archive.common.service.mysqlimpl.dao.AbstractDaoTestSetup;
 import org.csstudio.archive.common.service.mysqlimpl.dao.ArchiveDaoException;
+import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
@@ -41,11 +58,33 @@ public class ArchiveSampleDaoUnitTest extends AbstractDaoTestSetup {
     }
 
     @Test
-    public void test() throws ArchiveDaoException, InterruptedException {
+    public void testCreateSamples() throws ArchiveDaoException, InterruptedException, ArchiveConnectionException, SQLException {
         DAO.createSamples(TestSampleProvider.SAMPLES);
 
         Thread.sleep(2500);
 
-        System.out.println();
+        undoCreateSamples();
     }
+
+    private static void undoCreateSamples() throws ArchiveConnectionException, SQLException {
+        final Connection connection = HANDLER.getConnection();
+        final Statement stmt = connection.createStatement();
+        executeStatementForTable(stmt, TAB_SAMPLE);
+        executeStatementForTable(stmt, TAB_SAMPLE_M);
+        executeStatementForTable(stmt, TAB_SAMPLE_H);
+        stmt.close();
+    }
+
+    private static void executeStatementForTable(@Nonnull final Statement stmt,
+                                                 @Nonnull final String table) throws SQLException {
+        stmt.execute("DELETE FROM " + table + " " +
+                     "WHERE " + COLUMN_TIME + " between " + START.minusMillis(1L).getNanos() + " AND " + END.plusMillis(1L).getNanos() + " " +
+                     "AND " + COLUMN_CHANNEL_ID + "=" + CHANNEL_ID.asString());
+    }
+
+    @AfterClass
+    public static void undoBatchedStatements() throws ArchiveConnectionException, SQLException {
+        undoCreateSamples();
+    }
+
 }

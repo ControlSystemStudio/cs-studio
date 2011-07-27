@@ -72,7 +72,7 @@ public class ArchiveSampleBatchQueueHandler extends BatchQueueHandlerSupport<IAr
     protected String composeSqlString() {
         final String sql =
             "INSERT INTO " + getDatabase() + "." + TAB_SAMPLE + " " +
-            Joiner.on(",").join(COLUMN_CHANNEL_ID, COLUMN_TIME, COLUMN_VALUE)+ " " +
+            "(" + Joiner.on(",").join(COLUMN_CHANNEL_ID, COLUMN_TIME, COLUMN_VALUE)+ ") " +
             "VALUES " + VAL_WILDCARDS;
         return sql;
     }
