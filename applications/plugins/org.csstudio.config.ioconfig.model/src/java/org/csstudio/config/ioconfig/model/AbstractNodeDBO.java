@@ -27,6 +27,7 @@ import java.util.Date;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
+import java.util.SortedMap;
 import java.util.TreeMap;
 
 import javax.annotation.CheckForNull;
@@ -231,8 +232,8 @@ public abstract class AbstractNodeDBO<P extends AbstractNodeDBO, C extends Abstr
      */
     @Transient
     @Nonnull
-    public Map<Short, C> getChildrenAsMap() throws PersistenceException {
-        final Map<Short, C> nodeMap = new TreeMap<Short, C>();
+    public SortedMap<Short, C> getChildrenAsMap() throws PersistenceException {
+        final SortedMap<Short, C> nodeMap = new TreeMap<Short, C>();
         if(hasChildren()) {
             for (final C child : getChildren()) {
                 nodeMap.put(child.getSortIndex(), child);
