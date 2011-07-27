@@ -455,7 +455,7 @@ public class ChannelDBO extends AbstractNodeDBO<ChannelStructureDBO, VirtualLeaf
     }
     
     private int updateSimpleChannel(final int channelNumber, final short structSortIndex) throws PersistenceException {
-        int cNr = channelNumber;
+        int cNr = structSortIndex;
         if (structSortIndex > 0) {
             ChannelStructureDBO channelStructure = null;
             final SortedMap<Short, ChannelStructureDBO> childrenAsMap = getModule().getChildrenAsMap();
