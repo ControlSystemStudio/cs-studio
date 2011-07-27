@@ -14,7 +14,7 @@
    <extension
          point="org.eclipse.core.runtime.preferences">
       <initializer
-            class="org.csstudio.syslog2jms.preferences.PreferenceInitializer">
+            class="org.csstudio.alarm.syslog2jms.preferences.PreferenceInitializer">
       </initializer>
    </extension>
    <extension
