@@ -41,14 +41,14 @@ public class DatabaseConnectionUnitTest {
     
     @Test
     public void krykmantDBTestConnectionTest() throws Exception {
-        HibernateTestManager hibernateManager = new HibernateTestManager();
+        final HibernateTestManager hibernateManager = new HibernateTestManager();
         Assert.assertNotNull(hibernateManager);
         hibernateManager.buildConifg();
-        AnnotationConfiguration cfg = hibernateManager.getCfg();
+        final AnnotationConfiguration cfg = hibernateManager.getCfg();
         Assert.assertNotNull(cfg);
-        SessionFactory buildSessionFactory = cfg.buildSessionFactory();
+        final SessionFactory buildSessionFactory = cfg.buildSessionFactory();
         Assert.assertNotNull(buildSessionFactory);
-        Session openSession = buildSessionFactory.openSession();
+        final Session openSession = buildSessionFactory.openSession();
         Assert.assertNotNull(openSession);
         Assert.assertTrue("Test Database Session is not open", openSession.isOpen());
         Assert.assertTrue("Test Database Session is not connected", openSession.isConnected());
@@ -57,16 +57,16 @@ public class DatabaseConnectionUnitTest {
     
     @Test
     public void kryklogtDBTestConnectionTest() throws Exception {
-        HibernateTestManager hibernateManager = new HibernateTestManager();
+        final HibernateTestManager hibernateManager = new HibernateTestManager();
         Assert.assertNotNull(hibernateManager);
         hibernateManager.buildConifg();
-        AnnotationConfiguration cfg = hibernateManager.getCfg();
+        final AnnotationConfiguration cfg = hibernateManager.getCfg();
         Assert.assertNotNull(cfg);
         cfg.setProperty("hibernate.connection.username", "KRYKLOGT")
                 .setProperty("hibernate.connection.password", "KRYKLOGT");
-        SessionFactory buildSessionFactory = cfg.buildSessionFactory();
+        final SessionFactory buildSessionFactory = cfg.buildSessionFactory();
         Assert.assertNotNull(buildSessionFactory);
-        Session openSession = buildSessionFactory.openSession();
+        final Session openSession = buildSessionFactory.openSession();
         Assert.assertNotNull(openSession);
         Assert.assertTrue("Test Database Session is not open", openSession.isOpen());
         Assert.assertTrue("Test Database Session is not connected", openSession.isConnected());

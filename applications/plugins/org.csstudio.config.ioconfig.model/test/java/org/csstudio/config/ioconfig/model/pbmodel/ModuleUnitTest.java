@@ -55,7 +55,7 @@ public class ModuleUnitTest {
         try {
             out.setConfigurationData("^1234567890ß´qwertzuiopü+asdfghjklöä#yxcvbnm,.-QAY\\\"");
             fail("NumberFormatException not thowed!");
-        } catch (NumberFormatException e) {
+        } catch (final NumberFormatException e) {
             assertTrue(true);
         }
 //        assertEquals(out.getConfigurationData(), "^1234567890ß´qwertzuiopü+asdfghjklöä#yxcvbnm,.-QAY\\\"");
@@ -133,8 +133,7 @@ public class ModuleUnitTest {
         final ChannelStructureDBO channelStructure = ChannelStructureDBO.makeChannelStructure(out, false, DataType.INT8, "StructChannelModel");
         channelStructure.setId(21);
         channelStructure.moveSortIndex((short) 121);
-
-        final ChannelStructureDBO simpleChannelStructure = ChannelStructureDBO.makeSimpleChannel(out, false);
+        final ChannelStructureDBO simpleChannelStructure = ChannelStructureDBO.makeSimpleChannel(out, "", false, false);
         simpleChannelStructure.setSimple(true);
 
         final ChannelDBO pureChannel = new ChannelDBO(simpleChannelStructure,false,false);
@@ -179,7 +178,7 @@ public class ModuleUnitTest {
         _slave.localSave();
 
         // create the test Module
-        ModuleDBO out = new ModuleDBO(_slave);
+        final ModuleDBO out = new ModuleDBO(_slave);
         out.localSave();
 
         // test Parent
