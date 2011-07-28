@@ -96,6 +96,11 @@ CREATE TABLE IF NOT EXISTS message_content
 
 
 # Example Message with some elements
+-- NOTE:
+-- When you manually insert data as shown below,
+-- you need to also update the sequences to cover
+-- the message and message_content IDs that you
+-- used for the data!
 INSERT INTO message VALUES(1, NOW(), 'log', '', 'INFO');
 INSERT INTO message_content VALUES(3, 1, 3, NOW());
 INSERT INTO message_content VALUES(4, 1, 4, 'Message Text');

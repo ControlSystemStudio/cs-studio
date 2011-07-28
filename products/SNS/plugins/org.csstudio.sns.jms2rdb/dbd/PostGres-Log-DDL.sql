@@ -60,11 +60,11 @@ INSERT INTO msg_property_type VALUES (8, 'APPLICATION-ID');
 INSERT INTO msg_property_type VALUES (9, 'CLASS');
 INSERT INTO msg_property_type VALUES (10,'FILENAME');
 -- add these new properties to avoid error in css while using mess history and filtering
---INSERT INTO msg_property_type VALUES (11,'SEQ');
---INSERT INTO msg_property_type VALUES (12,'SEVERITY');
---INSERT INTO msg_property_type VALUES (13,'ID');
---INSERT INTO msg_property_type VALUES (14,'DELTA');
---INSERT INTO msg_property_type VALUES (15,'TIME');
+INSERT INTO msg_property_type VALUES (11,'SEQ');
+INSERT INTO msg_property_type VALUES (12,'SEVERITY');
+INSERT INTO msg_property_type VALUES (13,'ID');
+INSERT INTO msg_property_type VALUES (14,'DELTA');
+INSERT INTO msg_property_type VALUES (15,'TIME');
 /*SELECT * FROM msg_property_type;*/
 
 -- Message
@@ -99,11 +99,18 @@ create index msg_id_idx on message_content (message_id);
 create index msg_pp_type_id_idx on message_content (msg_property_type_id);
 
 -- Example Message with some elements
+-- NOTE:
+-- When you manually insert data as shown below,
+-- you need to also update the sequences to cover
+-- the message and message_content IDs that you
+-- used for the data!
+/*
 INSERT INTO message VALUES(1, NOW(), 'log', '', 'INFO');
 INSERT INTO message_content VALUES(3, 1, 3, NOW());
 INSERT INTO message_content VALUES(4, 1, 4, 'Message Text');
 INSERT INTO message_content VALUES(5, 1, 5, 'User Fred');
 INSERT INTO message_content VALUES(6, 1, 6, 'My Host');
+*/
 
 /*
 -- Dump messages with all their properties
@@ -128,4 +135,3 @@ SELECT m.id ID, m.datum Date, mpt.name as Property, mct.value as Value
     AND m.datum >= '2008-06-23'
   ORDER BY mct.MESSAGE_ID, Property DESC;
 */  
-  
