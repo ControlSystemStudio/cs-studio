@@ -30,6 +30,7 @@ import javax.annotation.Nonnull;
 
 import org.csstudio.data.values.ITimestamp;
 import org.csstudio.data.values.TimestampFactory;
+import org.csstudio.domain.desy.system.ISystemVariable;
 import org.csstudio.domain.desy.time.TimeInstant;
 import org.csstudio.domain.desy.time.TimeInstant.TimeInstantBuilder;
 import org.epics.pvmanager.TypeSupport;
@@ -233,6 +234,31 @@ public abstract class BaseTypeConversionSupport<T> extends AbstractTypeSupport<T
                                                               typeClass);
         return support.convertToDouble(value);
     }
+
+
+    /**
+     * Tries to convert the system variable's data to {@link Double} and returns <code>null</code>
+     * if a type support for conversion is not possible or the return value is {@link Double#NaN}.
+     * @param <T> the data type
+     * @param <V> the system variable type
+     * @param sysVar the system variable
+     * @return a double value or <code>null</code>
+     */
+    @CheckForNull
+    public static <T, V extends ISystemVariable<T>>
+    Double createDoubleFromValueOrNull(@Nonnull final V sysVar) {
+        Double newValue = null;
+        try {
+            newValue = BaseTypeConversionSupport.toDouble(sysVar.getData());
+        } catch (final TypeSupportException e) {
+            return null; // not convertible. Type support missing.
+        }
+        if (newValue.equals(Double.NaN)) {
+            return null; // not convertible, no data reduction possible
+        }
+        return newValue;
+    }
+
 
     /**
      * To be overridden for types that are convertible to {@link java.lnag.Double}
