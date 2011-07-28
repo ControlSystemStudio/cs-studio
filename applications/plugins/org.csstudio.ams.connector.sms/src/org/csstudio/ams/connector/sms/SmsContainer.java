@@ -112,26 +112,24 @@ public class SmsContainer implements AmsConstants {
                 text = msg.getString(MSGPROP_RECEIVERTEXT);
                 recNo = msg.getString(MSGPROP_RECEIVERADDR);
                 timestamp = msg.getJMSTimestamp();
-                String parsedRecNo = null;
                 
                 if(!acknowledge(message)) {
                     result = SmsConnectorStart.STAT_ERR_JMSCON;
                 } else {            
-                    if(parsedRecNo == null) {
-                        try {
-                            parsedRecNo = parsePhoneNumber(recNo);
-                            sms = new Sms(timestamp, parsedRecNo, text, Sms.Type.OUT);
-                            content.add(sms);
-                            
-                            result = SmsConnectorStart.STAT_OK;
-                        } catch(Exception e) {
-                            Log.log(this, Log.FATAL, "Parsing phone number - failed.");
-                            
-                            // Although parsing failed, we have to return OK.
-                            // Otherwise the application will be forced to restart.
-                            result = SmsConnectorStart.STAT_OK;
-                        }                   
+                    
+                    try {
+                        sms = new Sms(timestamp, parsePhoneNumber(recNo), text, Sms.Type.OUT);
+                        content.add(sms);
+                        
+                        result = SmsConnectorStart.STAT_OK;
+                    } catch(Exception e) {
+                        Log.log(this, Log.FATAL, "Parsing phone number - failed.");
+                        
+                        // Although parsing failed, we have to return OK.
+                        // Otherwise the application will be forced to restart.
+                        result = SmsConnectorStart.STAT_OK;
                     }
+                    
                 }
             } catch(JMSException jmse) {
                 result = SmsConnectorStart.STAT_ERR_JMSCON;
@@ -402,8 +400,8 @@ public class SmsContainer implements AmsConstants {
                 }
                 finally
                 {
-                    if(ois!=null){try{ois.close();}catch(Exception e){}ois=null;}
-                    if(fis!=null){try{fis.close();}catch(Exception e){}fis=null;}
+                    if(ois!=null){try{ois.close();}catch(Exception e){/*Ignore me*/}ois=null;}
+                    if(fis!=null){try{fis.close();}catch(Exception e){/*Ignore me*/}fis=null;}
                 }
             }
             else
@@ -474,20 +472,25 @@ public class SmsContainer implements AmsConstants {
      * 
      * @throws Exception - NOT YET(may be remove this)
      */
-    private String parsePhoneNumber(String mobile) throws Exception
-    {
+    private String parsePhoneNumber(String mobile) throws Exception {
+        
         StringBuffer sbMobile = new StringBuffer(mobile);
         StringBuffer sbTest = new StringBuffer("+0123456789");
         int i = 0;
-
-        if (sbMobile.length() > 0)                                              // first char (can be +0123456789)
-        {
-            if (sbTest.indexOf(String.valueOf(sbMobile.charAt(i))) < 0)         // first char found in sbTest
-                sbMobile.deleteCharAt(0);                                       // if not found
-            else
-                i++;
+        
+        // first char (can be +0123456789)
+        if (sbMobile.length() > 0) {
             
-            sbTest.deleteCharAt(0);                                             // delete '+'
+            // first char found in sbTest
+            if (sbTest.indexOf(String.valueOf(sbMobile.charAt(i))) < 0) {        
+                sbMobile.deleteCharAt(0);                                       
+            } else {
+             // if not found
+                i++;
+            }
+            
+            // delete '+'
+            sbTest.deleteCharAt(0);                                             
         }
         
         while (i < sbMobile.length())                                           // other chars (can be 0123456789)

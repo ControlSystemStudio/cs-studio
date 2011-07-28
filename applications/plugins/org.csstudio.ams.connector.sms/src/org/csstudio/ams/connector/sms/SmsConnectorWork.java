@@ -23,30 +23,21 @@
  
 package org.csstudio.ams.connector.sms;
 
-import java.text.SimpleDateFormat;
-import java.util.Calendar;
-import java.util.Hashtable;
 import java.util.LinkedList;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
-import javax.jms.Connection;
-import javax.jms.ConnectionFactory;
 import javax.jms.JMSException;
 import javax.jms.MapMessage;
 import javax.jms.Message;
-import javax.jms.MessageProducer;
-import javax.jms.Session;
-import javax.jms.Topic;
-import javax.naming.Context;
-import javax.naming.InitialContext;
-import javax.naming.NamingException;
 import org.csstudio.ams.AmsActivator;
 import org.csstudio.ams.AmsConstants;
 import org.csstudio.ams.Log;
 import org.csstudio.ams.connector.sms.internal.SmsConnectorPreferenceKey;
 import org.csstudio.ams.connector.sms.service.Environment;
 import org.csstudio.ams.connector.sms.service.JmsSender;
+import org.csstudio.ams.internal.AmsPreferenceKey;
 import org.csstudio.platform.utility.jms.JmsRedundantReceiver;
+import org.csstudio.platform.utility.jms.JmsSimpleProducer;
 import org.eclipse.jface.preference.IPreferenceStore;
 import org.smslib.InboundMessage;
 import org.smslib.InboundMessage.MessageClasses;
@@ -65,12 +56,7 @@ public class SmsConnectorWork extends Thread implements AmsConstants {
     // private final int CONSUMER_CONNECTIONS = 2;
     
     // --- Sender ---
-    private Context amsSenderContext = null;
-    private ConnectionFactory amsSenderFactory = null;
-    private Connection amsSenderConnection = null;
-    private Session amsSenderSession = null;
-    
-    private MessageProducer amsPublisherReply = null;
+    private JmsSimpleProducer amsPublisherReply;
 
     // --- Receiver ---
     private JmsRedundantReceiver amsReceiver = null;    
@@ -162,123 +148,70 @@ public class SmsConnectorWork extends Thread implements AmsConstants {
 
                     // Log.log(this, Log.DEBUG, "is running");
 
-                    // First check the connectors manage topic
-                    // Maybe a user wants to delete some messages
                     Message message = null;
-                    try
-                    {
-                        message = amsReceiver.receive("amsConnectorManager");
-                    }
-                    catch(Exception e)
-                    {
-                        Log.log(this, Log.FATAL, "could not receive from internal jms: amsConnectorManager", e);
+                    try {
+                        message = amsReceiver.receive("amsSubscriberSmsModemtest");
+                        iErr = smsContainer.addModemtestSms(message);
+                    } catch(Exception e) {
+                        Log.log(this, Log.FATAL, "Could not receive from internal jms: amsSubscriberSmsModemtest", e);
                         iErr = SmsConnectorStart.STAT_ERR_JMSCON;
                     }
                     
-                    // If we got a message from the manager plugin, start the ConnectorMessageManager
-                    if(message != null)
+                    // TODO: The methods should throw an exception
+                    // Now look for SMS messages
+                    message = null;
+                    try
                     {
-                        Log.log(Log.INFO, "Received a message from ConnectorMessageManager");
-                        
-                        ConnectorMessageManager manager = null;
-                        try
-                        {
-                            manager = new ConnectorMessageManager(amsSenderConnection, amsReceiver);
-                            manager.begin(message);
-                            manager.closeJms();
-                            
-                            iErr = SmsConnectorStart.STAT_OK;
-                        }
-                        catch(JMSException jmse)
-                        {
-                            if (manager != null) {
-                                manager.closeJms();
-                            }
-                            Log.log(this, Log.FATAL, "the connector message manager does not work properly", jmse);
-                            iErr = SmsConnectorStart.STAT_ERR_JMSCON;
-                        }
-                        
-                        manager = null;
+                        message = amsReceiver.receive("amsSubscriberSms");
+                        iErr = smsContainer.addSms(message);
+                    }
+                    catch(Exception e)
+                    {
+                        Log.log(this, Log.FATAL, "Could not receive from internal jms: amsSubscriberSms", e);
+                        iErr = SmsConnectorStart.STAT_ERR_JMSCON;
                     }
                     
-                    if(iErr == SmsConnectorStart.STAT_ERR_JMSCON)
+                    if(smsContainer.hasContent())
+                    {
+                        //FIXME:
+                        //TODO:
+                        // send 1 SMS, other in the next run
+                        // iErr = sendSmsMsg(message);
+                        iErr = sendSmsMsg();
+                        sleep(100);
+                    }
+                    
+                    if (iErr == SmsConnectorStart.STAT_OK)
+                    {
+                        if((System.currentTimeMillis() - lastReadingTime) > readWaitingPeriod)
+                        {
+                            // read max. limit SMS, other in the next run
+                            iErr = readSmsMsg(/*1*/);
+                            lastReadingTime = System.currentTimeMillis();
+                        }                            
+                    }
+                    
+                    if (iErr == SmsConnectorStart.STAT_ERR_MODEM_SEND)
+                    {
+                        Log.log(this, Log.ERROR, "Closing Modem.");
+                        closeModem();
+                        bInitedModem = false;
+                        closeJms();
+                        bInitedJms = false;
+                    }
+                    
+                    if (iErr == SmsConnectorStart.STAT_ERR_MODEM)
+                    {
+                        Log.log(this, Log.ERROR, "Closing Modem.");
+                        closeModem();
+                        bInitedModem = false;
+                    }
+                    
+                    if (iErr == SmsConnectorStart.STAT_ERR_JMSCON)
                     {
                         Log.log(this, Log.ERROR, "Closing JMS communication.");
                         closeJms();
                         bInitedJms = false;
-                    }
-
-                    if(iErr == SmsConnectorStart.STAT_OK)
-                    {
-                        // Look for a modem test message
-                        message = null;
-                        try
-                        {
-                            message = amsReceiver.receive("amsSubscriberSmsModemtest");
-                            iErr = smsContainer.addModemtestSms(message);
-                        }
-                        catch(Exception e)
-                        {
-                            Log.log(this, Log.FATAL, "Could not receive from internal jms: amsSubscriberSmsModemtest", e);
-                            iErr = SmsConnectorStart.STAT_ERR_JMSCON;
-                        }
-                        
-                        // TODO: The methods should throw an exception
-                        // Now look for SMS messages
-                        message = null;
-                        try
-                        {
-                            message = amsReceiver.receive("amsSubscriberSms");
-                            iErr = smsContainer.addSms(message);
-                        }
-                        catch(Exception e)
-                        {
-                            Log.log(this, Log.FATAL, "Could not receive from internal jms: amsSubscriberSms", e);
-                            iErr = SmsConnectorStart.STAT_ERR_JMSCON;
-                        }
-                        
-                        if(smsContainer.hasContent())
-                        {
-                            //FIXME:
-                            //TODO:
-                            // send 1 SMS, other in the next run
-                            // iErr = sendSmsMsg(message);
-                            iErr = sendSmsMsg();
-                            sleep(100);
-                        }
-                        
-                        if (iErr == SmsConnectorStart.STAT_OK)
-                        {
-                            if((System.currentTimeMillis() - lastReadingTime) > readWaitingPeriod)
-                            {
-                                // read max. limit SMS, other in the next run
-                                iErr = readSmsMsg(/*1*/);
-                                lastReadingTime = System.currentTimeMillis();
-                            }                            
-                        }
-                        
-                        if (iErr == SmsConnectorStart.STAT_ERR_MODEM_SEND)
-                        {
-                            Log.log(this, Log.ERROR, "Closing Modem.");
-                            closeModem();
-                            bInitedModem = false;
-                            closeJms();
-                            bInitedJms = false;
-                        }
-                        
-                        if (iErr == SmsConnectorStart.STAT_ERR_MODEM)
-                        {
-                            Log.log(this, Log.ERROR, "Closing Modem.");
-                            closeModem();
-                            bInitedModem = false;
-                        }
-                        
-                        if (iErr == SmsConnectorStart.STAT_ERR_JMSCON)
-                        {
-                            Log.log(this, Log.ERROR, "Closing JMS communication.");
-                            closeJms();
-                            bInitedJms = false;
-                        }
                     }
                 }
 
@@ -474,7 +407,7 @@ public class SmsConnectorWork extends Thread implements AmsConstants {
         {
             Log.log(this, Log.FATAL, "could not init modem", e);
             
-            JmsSender sender = new JmsSender("SmsConnectorAlarmSender", store.getString(org.csstudio.ams.internal.AmsPreferenceKey.P_JMS_AMS_SENDER_PROVIDER_URL), "ALARM");
+            JmsSender sender = new JmsSender("SmsConnectorAlarmSender", store.getString(AmsPreferenceKey.P_JMS_AMS_SENDER_PROVIDER_URL), "ALARM");
             if(sender.isConnected())
             {
                 if(sender.sendMessage("alarm", "SmsConnectorWork: Cannot init modem [" + e.getMessage() + "]", "MAJOR") == false)
@@ -519,65 +452,43 @@ public class SmsConnectorWork extends Thread implements AmsConstants {
         modemService = null;
     }
     
-    public synchronized void stopWorking()
-    {
+    public synchronized void stopWorking() {
         bStop = true;
     }
     
-    public boolean stoppedClean()
-    {
+    public boolean stoppedClean() {
         return bStoppedClean;
     }
     
-    private boolean initJms()
-    {
-        IPreferenceStore storeAct = AmsActivator.getDefault().getPreferenceStore();
-        Hashtable<String, String> properties = null;
+    private boolean initJms() {
+        
         boolean result = false;
         
-        boolean durable = Boolean.parseBoolean(storeAct.getString(org.csstudio.ams.internal.AmsPreferenceKey.P_JMS_AMS_CREATE_DURABLE));
-       
+        IPreferenceStore storeAct = AmsActivator.getDefault().getPreferenceStore();
+        String factoryClass = storeAct.getString(AmsPreferenceKey.P_JMS_AMS_CONNECTION_FACTORY_CLASS);
+        String url = storeAct.getString(AmsPreferenceKey.P_JMS_AMS_SENDER_PROVIDER_URL);
+        String topic = storeAct.getString(AmsPreferenceKey.P_JMS_AMS_TOPIC_REPLY);
+        
+        amsPublisherReply = new JmsSimpleProducer("SmsConnectorWorkSenderInternal", url,
+                                                  factoryClass, topic);
+        if (amsPublisherReply == null) {
+            Log.log(this, Log.FATAL, "Could not create amsPublisherReply");
+            return false;
+        }
+
         try
         {
-            properties = new Hashtable<String, String>();
-            properties.put(Context.INITIAL_CONTEXT_FACTORY, 
-                    storeAct.getString(org.csstudio.ams.internal.AmsPreferenceKey.P_JMS_AMS_CONNECTION_FACTORY_CLASS));
-            properties.put(Context.PROVIDER_URL, 
-                    storeAct.getString(org.csstudio.ams.internal.AmsPreferenceKey.P_JMS_AMS_SENDER_PROVIDER_URL));
-            amsSenderContext = new InitialContext(properties);
             
-            amsSenderFactory = (ConnectionFactory) amsSenderContext.lookup(
-                    storeAct.getString(org.csstudio.ams.internal.AmsPreferenceKey.P_JMS_AMS_CONNECTION_FACTORY));
-            amsSenderConnection = amsSenderFactory.createConnection();
-            
-            amsSenderConnection.setClientID("SmsConnectorWorkSenderInternal");
-                        
-            amsSenderSession = amsSenderConnection.createSession(false, Session.CLIENT_ACKNOWLEDGE);
-            
-            // CHANGED BY: Markus Moeller, 25.05.2007
-            /*
-            amsPublisherReply = amsSession.createProducer((Topic)amsContext.lookup(
-                    storeAct.getString(org.csstudio.ams.internal.SampleService.P_JMS_AMS_TOPIC_REPLY)));
-            */
-            
-            amsPublisherReply = amsSenderSession.createProducer(amsSenderSession.createTopic(
-                    storeAct.getString(org.csstudio.ams.internal.AmsPreferenceKey.P_JMS_AMS_TOPIC_REPLY)));
-            if (amsPublisherReply == null)
-            {
-                Log.log(this, Log.FATAL, "could not create amsPublisherReply");
-                return false;
-            }
-            
-            amsSenderConnection.start();
+            boolean durable = Boolean.parseBoolean(storeAct.getString(AmsPreferenceKey.P_JMS_AMS_CREATE_DURABLE));
 
             // Create the redundant receiver
-            amsReceiver = new JmsRedundantReceiver("SmsConnectorWorkReceiverInternal", storeAct.getString(org.csstudio.ams.internal.AmsPreferenceKey.P_JMS_AMS_PROVIDER_URL_1), storeAct.getString(org.csstudio.ams.internal.AmsPreferenceKey.P_JMS_AMS_PROVIDER_URL_2));
+            amsReceiver = new JmsRedundantReceiver("SmsConnectorWorkReceiverInternal", storeAct.getString(AmsPreferenceKey.P_JMS_AMS_PROVIDER_URL_1), storeAct.getString(AmsPreferenceKey.P_JMS_AMS_PROVIDER_URL_2));
            
             // Create first subscriber (default topic for the connector) 
             result = amsReceiver.createRedundantSubscriber(
                     "amsSubscriberSms",
-                    storeAct.getString(org.csstudio.ams.internal.AmsPreferenceKey.P_JMS_AMS_TOPIC_SMS_CONNECTOR),
-                    storeAct.getString(org.csstudio.ams.internal.AmsPreferenceKey.P_JMS_AMS_TSUB_SMS_CONNECTOR),
+                    storeAct.getString(AmsPreferenceKey.P_JMS_AMS_TOPIC_SMS_CONNECTOR),
+                    storeAct.getString(AmsPreferenceKey.P_JMS_AMS_TSUB_SMS_CONNECTOR),
                     durable);
             if(result == false)
             {
@@ -588,8 +499,8 @@ public class SmsConnectorWork extends Thread implements AmsConstants {
             // Create second subscriber (topic for the modem test) 
             result = amsReceiver.createRedundantSubscriber(
                     "amsSubscriberSmsModemtest",
-                    storeAct.getString(org.csstudio.ams.internal.AmsPreferenceKey.P_JMS_AMS_TOPIC_CONNECTOR_DEVICETEST),
-                    storeAct.getString(org.csstudio.ams.internal.AmsPreferenceKey.P_JMS_AMS_TSUB_SMS_CONNECTOR_DEVICETEST),
+                    storeAct.getString(AmsPreferenceKey.P_JMS_AMS_TOPIC_CONNECTOR_DEVICETEST),
+                    storeAct.getString(AmsPreferenceKey.P_JMS_AMS_TSUB_SMS_CONNECTOR_DEVICETEST),
                     durable);
             if(result == false)
             {
@@ -616,7 +527,7 @@ public class SmsConnectorWork extends Thread implements AmsConstants {
         {
             Log.log(this, Log.FATAL, "could not init internal Jms", e);
             
-            JmsSender sender = new JmsSender("SmsConnectorAlarmSender", storeAct.getString(org.csstudio.ams.internal.AmsPreferenceKey.P_JMS_AMS_SENDER_PROVIDER_URL), "ALARM");
+            JmsSender sender = new JmsSender("SmsConnectorAlarmSender", storeAct.getString(AmsPreferenceKey.P_JMS_AMS_SENDER_PROVIDER_URL), "ALARM");
             if(sender.isConnected())
             {
                 if(sender.sendMessage("alarm", "SmsConnectorWork: Cannot init internal Jms [" + e.getMessage() + "]", "MAJOR") == false)
@@ -640,42 +551,26 @@ public class SmsConnectorWork extends Thread implements AmsConstants {
         return false;
     }
 
-    public void closeJms()
-    {
-        Log.log(this, Log.INFO, "exiting internal jms communication");
+    public void closeJms() {
+        
+        Log.log(this, Log.INFO, "Exiting internal JMS communication");
 
-        if(amsReceiver != null)
-        {
+        if(amsReceiver != null) {
             amsReceiver.closeAll();
         }
         
-        if (amsPublisherReply != null){try{amsPublisherReply.close();amsPublisherReply=null;}
-        catch (JMSException e){Log.log(this, Log.WARN, e);}}    
-        if (amsSenderSession != null){try{amsSenderSession.close();amsSenderSession=null;}
-        catch (JMSException e){Log.log(this, Log.WARN, e);}}
-        if (amsSenderConnection != null){try{amsSenderConnection.stop();}
-        catch (JMSException e){Log.log(this, Log.WARN, e);}}
-        if (amsSenderConnection != null){try{amsSenderConnection.close();amsSenderConnection=null;}
-        catch (JMSException e){Log.log(this, Log.WARN, e);}}
-        if (amsSenderContext != null){try{amsSenderContext.close();amsSenderContext=null;}
-        catch (NamingException e){Log.log(this, Log.WARN, e);}}
-
-        Log.log(this, Log.INFO, "jms internal communication closed");
+        if (amsPublisherReply != null) {
+            amsPublisherReply.closeAll();
+        }
+        
+        Log.log(this, Log.INFO, "JMS internal communication closed");
     }
     
-    private boolean acknowledge(Message msg)
-    {
-        try
-        {
-            msg.acknowledge();
-            return true;
-        }
-        catch(Exception e)
-        {
-            Log.log(this, Log.FATAL, "could not acknowledge", e);
-        }
-        return false;
-    }
+    /**
+     * 
+     * @param msg
+     * @return
+     */
     
     /**
      * Sends the SMS stored in the SmsContainer.
@@ -758,7 +653,7 @@ public class SmsConnectorWork extends Thread implements AmsConstants {
                                 
                                 IPreferenceStore store = AmsActivator.getDefault().getPreferenceStore();
 
-                                JmsSender sender = new JmsSender("SmsConnectorAlarmSender", store.getString(org.csstudio.ams.internal.AmsPreferenceKey.P_JMS_AMS_SENDER_PROVIDER_URL), "ALARM");
+                                JmsSender sender = new JmsSender("SmsConnectorAlarmSender", store.getString(AmsPreferenceKey.P_JMS_AMS_SENDER_PROVIDER_URL), "ALARM");
                                 if(sender.isConnected())
                                 {
                                     if(sender.sendMessage("alarm", "SmsConnectorWork: SMS set to state BAD: " + sms.toString(), "MINOR") == false)
@@ -850,22 +745,14 @@ public class SmsConnectorWork extends Thread implements AmsConstants {
     
     private void sendTestAnswer(String checkId, String text, String severity, String value)
     {
-        SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss.SSS");
-        Topic topic = null;
-        MessageProducer amsPublisherCheck = null;
-        MapMessage mapMessage = null;
-        String topicName = null;
-
-        
         IPreferenceStore storeAct = org.csstudio.ams.AmsActivator.getDefault().getPreferenceStore();
-        topicName = storeAct.getString(org.csstudio.ams.internal.AmsPreferenceKey.P_JMS_AMS_TOPIC_MONITOR);
+        String topicName = storeAct.getString(AmsPreferenceKey.P_JMS_AMS_TOPIC_MONITOR);
 
         try {
-            topic = amsSenderSession.createTopic(topicName);
-            amsPublisherCheck = amsSenderSession.createProducer(topic);
-            mapMessage = amsSenderSession.createMapMessage();
+            
+            MapMessage mapMessage = amsPublisherReply.createMapMessage();
             mapMessage.setString("TYPE", "event");
-            mapMessage.setString("EVENTTIME", dateFormat.format(Calendar.getInstance().getTime()));
+            mapMessage.setString("EVENTTIME", amsPublisherReply.getCurrentDateAsString());
             mapMessage.setString("TEXT", text);
             mapMessage.setString("SEVERITY", severity);
             mapMessage.setString("VALUE", value);
@@ -876,15 +763,9 @@ public class SmsConnectorWork extends Thread implements AmsConstants {
             mapMessage.setString("APPLICATION-ID", "SmsConnector");
             mapMessage.setString("DESTINATION", "AmsSystemMonitor");
             
-            amsPublisherCheck.send(mapMessage);
+            amsPublisherReply.sendMessage(topicName, mapMessage);
         } catch(JMSException jmse) {
             Log.log(this, Log.ERROR, "Answer message could NOT be sent.");
-        } finally {
-            if(amsPublisherCheck != null) {
-                try{amsPublisherCheck.close();}catch(JMSException e){/*Can be ignored*/}
-                amsPublisherCheck=null;
-            }
-            topic = null;
         }
     }
         
@@ -896,7 +777,7 @@ public class SmsConnectorWork extends Thread implements AmsConstants {
             Log.log(this, Log.WARN, "got unknown message " + message);
             
             // Deletes all received messages of the session
-            if (!acknowledge(message))
+            if (!amsReceiver.acknowledge(message))
                 return SmsConnectorStart.STAT_ERR_JMSCON;
             return SmsConnectorStart.STAT_OK;
         }
@@ -918,7 +799,7 @@ public class SmsConnectorWork extends Thread implements AmsConstants {
                 catch (Exception e)
                 {
                     Log.log(this, Log.FATAL, "Parsing phone number - failed.");
-                    if (acknowledge(message)) // deletes all received messages of the session
+                    if (amsReceiver.acknowledge(message)) // deletes all received messages of the session
                         return SmsConnectorStart.STAT_OK;
                     iErr = SmsConnectorStart.STAT_ERR_JMSCON;
                 }
@@ -927,7 +808,7 @@ public class SmsConnectorWork extends Thread implements AmsConstants {
             {
                 if (sendSms(text, parsedRecNo))
                 {
-                    if (acknowledge(message))                               // deletes all received messages of the session
+                    if (amsReceiver.acknowledge(message))                               // deletes all received messages of the session
                         return SmsConnectorStart.STAT_OK;
 
                     iErr = SmsConnectorStart.STAT_ERR_JMSCON;
@@ -1464,7 +1345,7 @@ public class SmsConnectorWork extends Thread implements AmsConstants {
                 MapMessage mapMsg = null;
                 try
                 {
-                    mapMsg = amsSenderSession.createMapMessage();
+                    mapMsg = amsPublisherReply.createMapMessage();
                 }
                 catch(Exception e)
                 {
@@ -1512,7 +1393,7 @@ public class SmsConnectorWork extends Thread implements AmsConstants {
 
                 try
                 {
-                    amsPublisherReply.send(mapMsg);
+                    amsPublisherReply.sendMessage(mapMsg);
                 }
                 catch(Exception e)
                 {
