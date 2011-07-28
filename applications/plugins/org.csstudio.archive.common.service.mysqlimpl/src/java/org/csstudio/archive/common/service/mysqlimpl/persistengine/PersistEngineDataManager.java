@@ -40,7 +40,6 @@ import org.csstudio.archive.common.service.mysqlimpl.notification.ArchiveNotific
 import org.csstudio.archive.common.service.util.DataRescueException;
 import org.csstudio.archive.common.service.util.DataRescueResult;
 import org.csstudio.domain.desy.DesyRunContext;
-import org.csstudio.domain.desy.time.TimeInstant.TimeInstantBuilder;
 import org.csstudio.domain.desy.typesupport.TypeSupportException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -224,8 +223,7 @@ public class PersistEngineDataManager {
 
         try {
             final DataRescueResult result =
-                PersistDataToFileRescuer.with(statements)
-                                        .at(TimeInstantBuilder.fromNow())
+                PersistDataToFileRescuer.with(statements, 100L)
                                         .to(rescueDir)
                                         .rescue();
             if (!result.hasSucceeded()) {

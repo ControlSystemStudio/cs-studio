@@ -98,33 +98,29 @@ public class ArchiveSampleBatchQueueHandler extends BatchQueueHandlerSupport<IAr
     @Override
     @Nonnull
     public Collection<String> convertToStatementString(@Nonnull final List<IArchiveSample> elements) {
-        final String sql = composeSqlString();
-        final String sqlWithoutValues = sql.replace(VAL_WILDCARDS, "");
+        final String sqlWithoutValues = composeSqlString().replace(VAL_WILDCARDS, "");
 
-        final Collection<String> statements =
+        final Collection<String> values =
             Collections2.transform(elements,
                                    new Function<IArchiveSample, String>() {
                                        @Override
                                        @Nonnull
                                        public String apply(@Nonnull final IArchiveSample input) {
                                            try {
-                                               final String result =
+                                               final String value =
                                                    "(" +
                                                    Joiner.on(",").join(input.getChannelId().asString(),+
                                                                        input.getSystemVariable().getTimestamp().getNanos(),
-                                                                       ArchiveTypeConversionSupport.toArchiveString(input.getValue())) +
+                                                                       "'" + ArchiveTypeConversionSupport.toArchiveString(input.getValue()) + "'") +
                                                    ")";
-                                               return result;
+                                               return value;
                                            } catch (final TypeSupportException e) {
                                                LOG.error("Type support missing for " + input.getValue().getClass().getName(), e);
                                            }
                                            return null;
                                        }
                                     });
-        final String values =
-            Joiner.on(",").join(statements);
-
-        return Collections.singleton(sqlWithoutValues + " " + values);
+        return Collections.singleton(sqlWithoutValues + Joiner.on(",").join(values) + ";");
     }
 
     /**

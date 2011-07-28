@@ -42,11 +42,10 @@ import org.slf4j.LoggerFactory;
  */
 public abstract class AbstractToFileDataRescuer {
 
-    private static final Logger LOG = LoggerFactory
-            .getLogger(AbstractToFileDataRescuer.class);
+    private static final Logger LOG = LoggerFactory.getLogger(AbstractToFileDataRescuer.class);
 
-    private File _rescueDir;
-    private File _rescueFilePath;
+    protected File _rescueDir;
+    protected File _rescueFilePath;
 
     private TimeInstant _timeStamp;
 
@@ -82,8 +81,16 @@ public abstract class AbstractToFileDataRescuer {
     }
 
     protected abstract void writeToFile(@Nonnull final OutputStream output) throws IOException;
+    /**
+     * Creates the rescue file.
+     *
+     * @param path path where the file shall reside, has to exist
+     * @return the file (already created)
+     * @throws IOException
+     */
     @Nonnull
-    protected abstract String composeRescueFileName();
+    protected abstract File createRescueFile(@Nonnull final File path) throws IOException;
+
     @Nonnull
     protected abstract DataRescueResult handleExceptionForRescueResult(@Nonnull final Exception e) throws DataRescueException;
 
@@ -95,17 +102,31 @@ public abstract class AbstractToFileDataRescuer {
 
     @Nonnull
     private OutputStream createOutputStream() throws IOException {
-        final String fileName = composeRescueFileName();
         final File path = _rescueDir;
+        path.mkdirs();
 
-        _rescueFilePath = new File(path, fileName);
-        _rescueFilePath.createNewFile();
+        _rescueFilePath = createRescueFile(path);
 
-        final OutputStream ostream = new FileOutputStream(_rescueFilePath);
+        OutputStream ostream;
+        if(_rescueFilePath.exists()) {
+            ostream = new FileOutputStream(_rescueFilePath, determineAppendPolicy());
+        } else {
+            _rescueFilePath.createNewFile();
+            ostream = new FileOutputStream(_rescueFilePath);
+        }
+
         final OutputStream buffer = new BufferedOutputStream(ostream);
         return buffer;
     }
 
+    /**
+     * Sets the append policy for the rescue file, in case it does already exist.
+     * Default is <code>false</code> (i.e. bytes will be written to the beginning of the file)
+     * @return true if bytes shall be appended to the rescue file (default false).
+     */
+    protected boolean determineAppendPolicy() {
+        return false;
+    }
 
     protected void setTimeStamp(@Nonnull final TimeInstant timeStamp) {
         _timeStamp = timeStamp;
@@ -115,6 +136,4 @@ public abstract class AbstractToFileDataRescuer {
     protected TimeInstant getTimeStamp() {
         return _timeStamp;
     }
-
-
 }

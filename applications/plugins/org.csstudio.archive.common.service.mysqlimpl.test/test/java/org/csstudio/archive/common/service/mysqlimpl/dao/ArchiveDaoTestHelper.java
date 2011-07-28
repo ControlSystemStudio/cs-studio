@@ -26,7 +26,6 @@ import java.io.File;
 import junit.framework.Assert;
 
 import org.csstudio.archive.common.service.mysqlimpl.MySQLArchivePreferenceService;
-import org.csstudio.archive.common.service.mysqlimpl.dao.ArchiveConnectionHandler;
 import org.csstudio.archive.common.service.mysqlimpl.persistengine.PersistEngineDataManager;
 import org.csstudio.testsuite.util.TestDataProvider;
 import org.mockito.Mockito;
@@ -51,7 +50,7 @@ public class ArchiveDaoTestHelper {
 
         final MySQLArchivePreferenceService mock = Mockito.mock(MySQLArchivePreferenceService.class);
         Mockito.when(mock.getDatabaseName()).thenReturn(String.valueOf(PROV.getHostProperty("mysqlArchiveDatabase")));
-        Mockito.when(mock.getDataRescueDir()).thenReturn(new File("./rescueTest"));
+        Mockito.when(mock.getDataRescueDir()).thenReturn(new File("D:/temp/rescue"));
         Mockito.when(mock.getEmailAddress()).thenReturn(String.valueOf(PROV.getHostProperty("mysqlArchiverEmail")));
         Mockito.when(mock.getFailOverHost()).thenReturn("");
         Mockito.when(mock.getHost()).thenReturn(String.valueOf(PROV.getHostProperty("mysqlHost")));

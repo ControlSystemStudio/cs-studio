@@ -21,6 +21,7 @@
  */
 package org.csstudio.archive.common.service.mysqlimpl.persistengine;
 
+import java.io.File;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.io.OutputStreamWriter;
@@ -32,8 +33,10 @@ import org.csstudio.archive.common.service.util.AbstractToFileDataRescuer;
 import org.csstudio.archive.common.service.util.DataRescueException;
 import org.csstudio.archive.common.service.util.DataRescueResult;
 import org.csstudio.domain.desy.time.TimeInstant;
+import org.csstudio.domain.desy.time.TimeInstant.TimeInstantBuilder;
 
 import com.google.common.collect.Lists;
+import com.google.common.io.Files;
 
 /**
  * Implements the data rescue of the given SQL statement strings to a file with .sql
@@ -44,21 +47,26 @@ import com.google.common.collect.Lists;
  */
 public class PersistDataToFileRescuer extends AbstractToFileDataRescuer {
 
-    private static final String FILE_SUFFIX = ".sql";
+    private static final String RESCUE_FILE_PREFIX = "failed_statements";
+    private static final String RESCUE_FILE_SUFFIX = ".sql";
 
     private final List<String> _statements;
+    private final long _fileLengthInBytesThreshold;
 
     /**
      * Constructor.
      */
-    PersistDataToFileRescuer(@Nonnull final Iterable<String> statements) {
+    private PersistDataToFileRescuer(@Nonnull final Iterable<String> statements,
+                                     final long maxFileLengthInBytes) {
         super();
         _statements = Lists.newLinkedList(statements);
+        _fileLengthInBytesThreshold = maxFileLengthInBytes;
     }
 
     @Nonnull
-    public static PersistDataToFileRescuer with(@Nonnull final Iterable<String> statements) {
-        return new PersistDataToFileRescuer(statements);
+    public static PersistDataToFileRescuer with(@Nonnull final Iterable<String> statements,
+                                                final long maxFileLengthInBytes) {
+        return new PersistDataToFileRescuer(statements, maxFileLengthInBytes);
     }
 
     /**
@@ -77,11 +85,33 @@ public class PersistDataToFileRescuer extends AbstractToFileDataRescuer {
 
     /**
      * {@inheritDoc}
+     *
+     * Creates a rescue file. If it already exists, it is checked whether it is already larger than
+     * the given threshold. In this case the file is moved to a different file with the current time's
+     * timestamp and a new log file is created.
      */
     @Override
     @Nonnull
-    protected String composeRescueFileName() {
-        return "rescue_" + getTimeStamp().formatted(TimeInstant.STD_DATETIME_FMT_FOR_FS) + FILE_SUFFIX;
+    protected File createRescueFile(@Nonnull final File path) throws IOException {
+        final File file = new File(path, RESCUE_FILE_PREFIX + RESCUE_FILE_SUFFIX);
+        if (!file.createNewFile()) { // exists already
+            if (file.length() > _fileLengthInBytesThreshold) {
+                Files.move(file, new File(path,
+                                          RESCUE_FILE_PREFIX +
+                                          TimeInstantBuilder.fromNow().formatted(TimeInstant.STD_DATETIME_FMT_FOR_FS) +
+                                          RESCUE_FILE_SUFFIX));
+                file.createNewFile();
+            }
+        }
+        return file;
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    protected boolean determineAppendPolicy() {
+        return true;
     }
 
     /**

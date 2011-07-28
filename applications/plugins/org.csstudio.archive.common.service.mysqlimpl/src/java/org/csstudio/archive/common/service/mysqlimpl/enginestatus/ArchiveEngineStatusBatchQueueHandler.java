@@ -24,6 +24,7 @@ package org.csstudio.archive.common.service.mysqlimpl.enginestatus;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.List;
 import java.util.concurrent.LinkedBlockingQueue;
 
@@ -57,7 +58,8 @@ public final class ArchiveEngineStatusBatchQueueHandler extends BatchQueueHandle
     @Override
     @Nonnull
     protected String composeSqlString() {
-        return "INSERT INTO " + getDatabase() + "." + ArchiveEngineStatusDaoImpl.TAB + " (engine_id, status, time, info) VALUES " + VAL_WILDCARDS;
+        return "INSERT INTO " + getDatabase() + "." + ArchiveEngineStatusDaoImpl.TAB +
+               " (engine_id, status, time, info) VALUES " + VAL_WILDCARDS;
     }
     /**
      * {@inheritDoc}
@@ -84,23 +86,23 @@ public final class ArchiveEngineStatusBatchQueueHandler extends BatchQueueHandle
     @Override
     @Nonnull
     public Collection<String> convertToStatementString(@Nonnull final List<IArchiveEngineStatus> elements) {
-        final String sqlStr = composeSqlString();
-        final Collection<String> statements =
+        final String sqlStr = composeSqlString().replace(VAL_WILDCARDS, "");
+        final Collection<String> values =
             Collections2.transform(elements,
                                    new Function<IArchiveEngineStatus, String>() {
                                        @Override
                                        @Nonnull
                                        public String apply(@Nonnull final IArchiveEngineStatus input) {
-                                           final String replacement =
+                                           final String value =
                                                "(" +
-                                               Joiner.on(",").join("'" + input.getEngineId().asString() + "'",
+                                               Joiner.on(",").join(input.getEngineId().asString(),
                                                                    "'" + input.getStatus().name() + "'",
                                                                    input.getTimestamp().getNanos(),
                                                                    "'" + input.getInfo() + "'") +
                                                ")";
-                                           return sqlStr.replaceAll(VAL_WILDCARDS, replacement);
+                                           return value;
                                        }
                                    });
-        return statements;
+        return Collections.singleton(sqlStr + Joiner.on(",").join(values) + ";");
     }
 }

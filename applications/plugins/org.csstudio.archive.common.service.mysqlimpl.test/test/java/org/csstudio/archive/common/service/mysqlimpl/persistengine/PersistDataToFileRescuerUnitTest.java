@@ -68,7 +68,8 @@ public class PersistDataToFileRescuerUnitTest {
     public void saveToPathTest() throws DataRescueException {
         final TimeInstant now = TimeInstantBuilder.fromNow();
 
-        final DataRescueResult result = PersistDataToFileRescuer.with(_statements).at(now).to(_rescueDir).rescue();
+        final DataRescueResult result =
+            PersistDataToFileRescuer.with(_statements, 1000L).at(now).to(_rescueDir).rescue();
 
         final File infile = new File(result.getFilePath());
         Assert.assertNotNull(infile);

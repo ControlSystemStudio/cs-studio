@@ -36,6 +36,7 @@ import javax.annotation.Nonnull;
 import org.csstudio.archive.common.service.ArchiveConnectionException;
 import org.csstudio.archive.common.service.mysqlimpl.batch.BatchQueueHandlerSupport;
 import org.csstudio.archive.common.service.mysqlimpl.batch.IBatchQueueHandlerProvider;
+import org.csstudio.archive.common.service.mysqlimpl.dao.ArchiveDaoException;
 import org.csstudio.domain.desy.task.AbstractTimeMeasuredRunnable;
 import org.csstudio.domain.desy.time.TimeInstant.TimeInstantBuilder;
 import org.slf4j.Logger;
@@ -61,7 +62,7 @@ public class PersistDataWorker extends AbstractTimeMeasuredRunnable {
 
 
     private final String _name;
-    private final long _period;
+    private final long _periodInMS;
 
     private final IBatchQueueHandlerProvider _handlerProvider;
     private final List<Object> _rescueDataList = Lists.newLinkedList();
@@ -72,11 +73,11 @@ public class PersistDataWorker extends AbstractTimeMeasuredRunnable {
      */
     public PersistDataWorker(@Nonnull final PersistEngineDataManager mgr,
                              @Nonnull final String name,
-                             @Nonnull final long period,
+                             @Nonnull final long periodInMS,
                              @Nonnull final IBatchQueueHandlerProvider provider) {
         _mgr = mgr;
         _name = name;
-        _period = period;
+        _periodInMS = periodInMS;
 
         _handlerProvider = provider;
     }
@@ -128,10 +129,10 @@ public class PersistDataWorker extends AbstractTimeMeasuredRunnable {
         T element;
         while ((element = queue.poll()) != null) {
             addElementToBatchAndRescueList(handler, stmt, element, rescueDataList);
-            hasExecutedBatch = executeBatchAndClearListOnCondition(handler, stmt, rescueDataList, 999);
+            hasExecutedBatch = executeBatchAndClearListOnCondition(handler, stmt, rescueDataList, 1000);
         }
         if (!hasExecutedBatch) {
-            executeBatchAndClearListOnCondition(handler, stmt, rescueDataList, 0);
+            executeBatchAndClearListOnCondition(handler, stmt, rescueDataList, 1);
         }
     }
 
@@ -142,7 +143,7 @@ public class PersistDataWorker extends AbstractTimeMeasuredRunnable {
         try {
             rescueDataList.add(element);
             handler.applyBatch(stmt, element);
-        } catch (final Throwable t) {
+        } catch (final ArchiveDaoException t) {
             handleThrowable(t, handler, rescueDataList);
         }
     }
@@ -152,7 +153,7 @@ public class PersistDataWorker extends AbstractTimeMeasuredRunnable {
                                                             @Nonnull final PreparedStatement stmt,
                                                             @Nonnull final List<T> rescueDataList,
                                                             final int minBatchSize) {
-        if (rescueDataList.size() > minBatchSize) {
+        if (rescueDataList.size() >= minBatchSize) {
             LOG.info("Execute batched stmt - num: " + rescueDataList.size());
             try {
                 stmt.executeBatch();
@@ -235,6 +236,6 @@ public class PersistDataWorker extends AbstractTimeMeasuredRunnable {
     }
 
     public long getPeriodInMS() {
-        return _period;
+        return _periodInMS;
     }
 }

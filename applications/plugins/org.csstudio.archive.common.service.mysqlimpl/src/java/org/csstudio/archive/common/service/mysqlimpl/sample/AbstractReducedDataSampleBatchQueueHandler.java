@@ -117,10 +117,7 @@ public abstract class AbstractReducedDataSampleBatchQueueHandler<T extends Abstr
                                            return result;
                                        }
                                     });
-        final String valuesStr =
-            Joiner.on(",").join(values);
-
-        return Collections.singleton(sqlWithoutValues + " " + valuesStr);
+        return Collections.singleton(sqlWithoutValues + Joiner.on(",").join(values) + ";");
     }
 
 
