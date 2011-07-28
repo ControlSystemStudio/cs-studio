@@ -12,6 +12,12 @@ package org.csstudio.archive.config;
  */
 public interface ArchiveConfig
 {
+	/** List names of all engines
+	 *  @return Array of {@link EngineConfig}
+	 *  @throws Exception on error, e.g. RDB access problem
+	 */
+	public EngineConfig[] getEngines() throws Exception;
+	
 	/** Locate archive sample engine configuration
 	 *  @param name Name of the engine, e.g. "Vacuum"
 	 *  @return EngineConfig or <code>null</code> when not found

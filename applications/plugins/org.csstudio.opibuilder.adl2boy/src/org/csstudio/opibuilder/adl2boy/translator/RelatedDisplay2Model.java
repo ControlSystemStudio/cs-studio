@@ -7,7 +7,6 @@
 package org.csstudio.opibuilder.adl2boy.translator;
 
 import org.csstudio.opibuilder.model.AbstractContainerModel;
-import org.csstudio.opibuilder.model.AbstractWidgetModel;
 import org.csstudio.opibuilder.util.MacrosInput;
 import org.csstudio.opibuilder.widgetActions.ActionsInput;
 import org.csstudio.opibuilder.widgetActions.OpenDisplayAction;
@@ -75,20 +74,6 @@ public class RelatedDisplay2Model extends AbstractADL2Model {
 	}
 
 	/**
-	 * @param rdWidget
-	 */
-	public void setWidgetColors(RelatedDisplay rdWidget) {
-		if (rdWidget.isForeColorDefined()) {
-			setColor(rdWidget.getForegroundColor(),
-					AbstractWidgetModel.PROP_COLOR_FOREGROUND);
-		}
-		if (rdWidget.isBackColorDefined()) {
-			setColor(rdWidget.getBackgroundColor(),
-					AbstractWidgetModel.PROP_COLOR_BACKGROUND);
-		}
-	}
-
-	/**
 	 * @param rdDisplays
 	 * @param ii
 	 * @return
@@ -111,7 +96,7 @@ public class RelatedDisplay2Model extends AbstractADL2Model {
 					rdDisplay.getLabel().replaceAll("\"", ""));
 		}
 		if ((rdDisplay.getPolicy() != null)) { // policy is present
-			if (rdDisplay.getPolicy().equals("replace display")) { // replace
+			if (rdDisplay.getPolicy().replaceAll("\"", "").equals("replace display")) { // replace
 																	// the
 																	// display
 				odAction.setPropertyValue(OpenDisplayAction.PROP_REPLACE, true);
@@ -139,45 +124,6 @@ public class RelatedDisplay2Model extends AbstractADL2Model {
 			MacrosInput macIn = makeMacros(args);
 			odAction.setPropertyValue(OpenDisplayAction.PROP_MACROS, macIn);
 		}
-	}
-
-	/**
-	 * @param args
-	 * @return
-	 */
-	public MacrosInput makeMacros(String args) {
-		String resArgs = removeParentMacros(args);
-		String argsIn = "true, " + resArgs;
-		MacrosInput macIn = null;
-		try {
-			macIn = MacrosInput.recoverFromString(argsIn);
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
-		return macIn;
-	}
-
-	/**
-	 * Remove parent macros (i.e. P=$(P))from the list. We can now pass parent
-	 * Macros.
-	 * 
-	 * @param args
-	 * @return
-	 */
-	public String removeParentMacros(String args) {
-		String[] argList = args.split(",");
-		StringBuffer strBuff = new StringBuffer();
-		for (int ii = 0; ii < argList.length; ii++) {
-			String[] argParts = argList[ii].split("=");
-			if (!argParts[1].replaceAll(" ", "").equals(
-					"$(" + argParts[0].trim() + ")")) {
-				if (strBuff.length() != 0)
-					strBuff.append(", ");
-				strBuff.append(argList[ii]);
-			}
-		}
-		String resArgs = strBuff.toString();
-		return resArgs;
 	}
 
 	public void cleanup() {

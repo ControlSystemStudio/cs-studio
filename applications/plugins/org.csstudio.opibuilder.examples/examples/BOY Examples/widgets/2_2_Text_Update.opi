@@ -35,6 +35,7 @@
     <height>86</height>
     <name>Label_8</name>
     <transparent>false</transparent>
+    <show_scrollbar>false</show_scrollbar>
     <background_color>
       <color red="135" green="181" blue="255" />
     </background_color>
@@ -57,6 +58,7 @@
     <horizontal_alignment>1</horizontal_alignment>
     <actions hook="false" />
     <y>6</y>
+    <wrap_words>true</wrap_words>
     <tooltip />
     <x>17</x>
   </widget>
@@ -68,6 +70,7 @@
     <height>43</height>
     <name>Label_6</name>
     <transparent>false</transparent>
+    <show_scrollbar>false</show_scrollbar>
     <background_color>
       <color red="135" green="181" blue="255" />
     </background_color>
@@ -90,6 +93,7 @@
     <horizontal_alignment>1</horizontal_alignment>
     <actions hook="false" />
     <y>49</y>
+    <wrap_words>true</wrap_words>
     <tooltip />
     <x>311</x>
   </widget>
@@ -101,6 +105,7 @@
     <height>44</height>
     <name>Label_9</name>
     <transparent>false</transparent>
+    <show_scrollbar>false</show_scrollbar>
     <background_color>
       <color red="135" green="181" blue="255" />
     </background_color>
@@ -123,6 +128,7 @@
     <horizontal_alignment>1</horizontal_alignment>
     <actions hook="false" />
     <y>6</y>
+    <wrap_words>true</wrap_words>
     <tooltip />
     <x>311</x>
   </widget>
@@ -132,6 +138,7 @@
     <vertical_alignment>1</vertical_alignment>
     <show_units>true</show_units>
     <auto_size>false</auto_size>
+    <rotation_angle>0.0</rotation_angle>
     <scripts />
     <height>20</height>
     <forecolor_alarm_sensitive>false</forecolor_alarm_sensitive>
@@ -175,6 +182,7 @@ $(pv_value)</tooltip>
     <vertical_alignment>1</vertical_alignment>
     <show_units>true</show_units>
     <auto_size>false</auto_size>
+    <rotation_angle>0.0</rotation_angle>
     <scripts />
     <height>20</height>
     <forecolor_alarm_sensitive>false</forecolor_alarm_sensitive>
@@ -218,6 +226,7 @@ $(pv_value)</tooltip>
     <vertical_alignment>1</vertical_alignment>
     <show_units>false</show_units>
     <auto_size>false</auto_size>
+    <rotation_angle>0.0</rotation_angle>
     <scripts />
     <height>20</height>
     <forecolor_alarm_sensitive>false</forecolor_alarm_sensitive>
@@ -261,6 +270,7 @@ $(pv_value)</tooltip>
     <vertical_alignment>1</vertical_alignment>
     <show_units>false</show_units>
     <auto_size>false</auto_size>
+    <rotation_angle>0.0</rotation_angle>
     <scripts />
     <height>20</height>
     <forecolor_alarm_sensitive>true</forecolor_alarm_sensitive>
@@ -336,7 +346,7 @@ $(pv_value)</tooltip>
         <macros>
           <include_parent_macros>true</include_parent_macros>
         </macros>
-        <replace>true</replace>
+        <replace>1</replace>
         <description />
       </action>
     </actions>
@@ -389,6 +399,7 @@ $(pv_value)</tooltip>
       <height>22</height>
       <name>Label_28</name>
       <transparent>true</transparent>
+      <show_scrollbar>false</show_scrollbar>
       <background_color>
         <color red="255" green="255" blue="255" />
       </background_color>
@@ -411,6 +422,7 @@ $(pv_value)</tooltip>
       <horizontal_alignment>1</horizontal_alignment>
       <actions hook="false" />
       <y>11</y>
+      <wrap_words>true</wrap_words>
       <tooltip />
       <x>41</x>
     </widget>
@@ -504,6 +516,7 @@ $(pv_value)</tooltip>
     <vertical_alignment>1</vertical_alignment>
     <show_units>true</show_units>
     <auto_size>false</auto_size>
+    <rotation_angle>0.0</rotation_angle>
     <scripts />
     <height>56</height>
     <forecolor_alarm_sensitive>false</forecolor_alarm_sensitive>
@@ -537,6 +550,57 @@ $(pv_value)</tooltip>
     <actions hook="false" />
     <y>149</y>
     <wrap_words>true</wrap_words>
+    <tooltip>$(pv_name)
+$(pv_value)</tooltip>
+    <x>356</x>
+  </widget>
+  <widget typeId="org.csstudio.opibuilder.widgets.TextUpdate" version="1.0">
+    <border_alarm_sensitive>true</border_alarm_sensitive>
+    <visible>true</visible>
+    <vertical_alignment>1</vertical_alignment>
+    <show_units>true</show_units>
+    <auto_size>false</auto_size>
+    <rotation_angle>0.1</rotation_angle>
+    <scripts />
+    <height>223</height>
+    <forecolor_alarm_sensitive>false</forecolor_alarm_sensitive>
+    <name>Text Update_5</name>
+    <format_type>0</format_type>
+    <precision_from_pv>true</precision_from_pv>
+    <transparent>true</transparent>
+    <pv_name />
+    <background_color>
+      <color red="255" green="255" blue="255" />
+    </background_color>
+    <foreground_color>
+      <color red="0" green="0" blue="0" />
+    </foreground_color>
+    <widget_type>Text Update</widget_type>
+    <enabled>true</enabled>
+    <text>Rotated text</text>
+    <backcolor_alarm_sensitive>false</backcolor_alarm_sensitive>
+    <precision>0</precision>
+    <font>
+      <fontdata fontName="Arial" height="12" style="0" />
+    </font>
+    <width>202</width>
+    <border_style>0</border_style>
+    <rules>
+      <rule name="Rule" prop_id="rotation_angle" out_exp="true">
+        <exp bool_exp="true">
+          <value>pv0</value>
+        </exp>
+        <pv trig="true">sim://ramp(1,359, 10, 0.1)</pv>
+      </rule>
+    </rules>
+    <border_width>1</border_width>
+    <border_color>
+      <color red="0" green="128" blue="255" />
+    </border_color>
+    <horizontal_alignment>0</horizontal_alignment>
+    <actions hook="false" />
+    <y>229</y>
+    <wrap_words>false</wrap_words>
     <tooltip>$(pv_name)
 $(pv_value)</tooltip>
     <x>356</x>

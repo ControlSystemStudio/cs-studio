@@ -40,6 +40,8 @@ public class ArchiveConfigApplication implements IApplication
         final ArgParser parser = new ArgParser();
         final BooleanOption help = new BooleanOption(parser,
                 "-help", "show help");
+        final BooleanOption  list = new BooleanOption(parser,
+                "-list", "List engine names");
         final StringOption  engine_name = new StringOption(parser,
                 "-engine", "my_engine", "Engine Name", "");
         final StringOption filename = new StringOption(parser,
@@ -90,7 +92,7 @@ public class ArchiveConfigApplication implements IApplication
             System.out.println(parser.getHelp());
             return IApplication.EXIT_OK;
         }
-        if (engine_name.get().length() <= 0)
+        if (!list.get() && engine_name.get().length() <= 0)
         {
             System.err.println("Missing option " + engine_name.getOption());
             System.err.println(parser.getHelp());
@@ -101,6 +103,14 @@ public class ArchiveConfigApplication implements IApplication
 
         try
         {
+        	if (list.get())
+        	{
+        		final RDBArchiveConfig config = new RDBArchiveConfig(rdb_url.get(), rdb_user.get(),
+                		rdb_password.get(), rdb_schema.get());
+        		final EngineConfig[] engines = config.getEngines();
+        		for (EngineConfig engine : engines)
+        			System.out.println(engine);
+        	}
             if (do_export.get())
             {
             	final PrintStream out;

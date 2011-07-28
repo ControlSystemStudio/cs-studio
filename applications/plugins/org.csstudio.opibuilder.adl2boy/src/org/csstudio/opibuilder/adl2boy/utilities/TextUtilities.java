@@ -91,8 +91,7 @@ public class TextUtilities {
 				TranslatorUtils.printNotHandledWarning("", "format - octal");
 			}			
 			else if (format.equals("compact")){
-				// TODO Add format to TextUtilities handle compact format
-				TranslatorUtils.printNotHandledWarning("", "format - compact");
+				textModel.setPropertyValue(TextUpdateModel.PROP_FORMAT_TYPE, 6);
 			}			
 			else if (format.equals("sexagesimal")){
 				// TODO Add format to TextUtilities handle sexagesimal format

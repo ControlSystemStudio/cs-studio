@@ -72,7 +72,7 @@ public class FileLine {
      * @return
      */
     public static boolean argEquals(String arg, String toCompare) {
-    	if(arg.trim().equalsIgnoreCase(toCompare)) {
+    	if(arg.trim().replaceAll( "\"", "" ).equalsIgnoreCase(toCompare)) {
     		return true;
     	}
     	else {

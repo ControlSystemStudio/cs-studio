@@ -99,7 +99,7 @@ public class Application implements IApplication, JMSAnnunciatorListener
 
     /** {@inheritDoc} */
     @Override
-    public void annunciatorError(final Exception ex)
+    public void annunciatorError(final Throwable ex)
     {
         ex.printStackTrace();
         run = false;

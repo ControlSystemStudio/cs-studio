@@ -52,6 +52,7 @@ public class ChoiceButton2Model extends AbstractADL2Model {
 			//TODO Menu2Model Figure out what to do if colorMode is discrete
 			TranslatorUtils.printNotHandledWarning(className, "discrete color mode");
 		}
+		widgetModel.setPropertyValue(AbstractPVWidgetModel.PROP_BORDER_ALARMSENSITIVE, false);
 	}
 
 	@Override

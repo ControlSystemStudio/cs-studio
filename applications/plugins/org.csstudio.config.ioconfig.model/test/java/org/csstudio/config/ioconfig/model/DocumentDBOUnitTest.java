@@ -5,6 +5,7 @@ import static org.junit.Assert.assertTrue;
 
 import java.util.Collection;
 
+import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
@@ -19,20 +20,19 @@ public class DocumentDBOUnitTest {
 
     @BeforeClass
     public static void setUpBeforeClass() {
-        HibernateRepository repository = new HibernateRepository(new HibernateTestManager());
+        final HibernateRepository repository = new HibernateRepository(new HibernateTestManager());
         Repository.injectIRepository(repository);
     }
 
     @Test
     public void readDocuments() throws PersistenceException {
-        Collection<DocumentDBO> result = Repository.loadDocument(true);
+        final Collection<DocumentDBO> result = Repository.loadDocument(true);
         assertNotNull(result);
         assertTrue(result.size()>0);
     }
     
+    @AfterClass
     public static void tearDownAfterClass() {
         Repository.close();
     }
-
-
 }
