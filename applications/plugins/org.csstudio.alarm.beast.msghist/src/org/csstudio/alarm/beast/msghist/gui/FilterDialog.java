@@ -56,7 +56,14 @@ public class FilterDialog extends TitleAreaDialog
         filters = current_filters;
     }
     
-    /** {@inhericDoc} */
+    /** Allow resize */
+    @Override
+    protected boolean isResizable()
+    {
+	    return true;
+    }
+
+	/** {@inhericDoc} */
     @Override
     protected Control createDialogArea(final Composite parent)
     {
@@ -64,7 +71,11 @@ public class FilterDialog extends TitleAreaDialog
         
         setMessage(Messages.Filter_Message);
         
-        final Composite box = new Composite(area, 0);
+        final Composite outer_box = new Composite(area, 0);
+        outer_box.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true));
+        outer_box.setLayout(new GridLayout(1, false));
+        
+        final Composite box = new Composite(outer_box, SWT.BORDER);
         box.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true));
         
         final GridLayout layout = new GridLayout();
@@ -107,19 +118,10 @@ public class FilterDialog extends TitleAreaDialog
             value_text[i].setLayoutData(new GridData(SWT.FILL, 0, true, false));
         }
 
-        // New row
-        l = new Label(box, SWT.SEPARATOR | SWT.HORIZONTAL);
-        gd = new GridData();
-        gd.horizontalSpan = layout.numColumns;
-        gd.grabExcessHorizontalSpace = true;
-        gd.horizontalAlignment = SWT.FILL;
-        l.setLayoutData(gd);
-
-        // New row
-        l = new Label(box, 0);
+        // -- End of 'inner' box
+        l = new Label(outer_box, 0);
         l.setText(Messages.Filter_ValuePatternHelp);
         gd = new GridData();
-        gd.horizontalSpan = layout.numColumns;
         gd.grabExcessHorizontalSpace = true;
         gd.horizontalAlignment = SWT.RIGHT;
         l.setLayoutData(gd);
