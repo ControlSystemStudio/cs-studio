@@ -123,6 +123,34 @@ public class JmsSimpleProducer {
     }
     
     /**
+     * Sends a message to a different topic by creating a temporary publisher
+     * @param topicName
+     * @param message
+     */
+    public void sendMessage(String topicName, Message message) throws JMSException {
+
+        Topic localTopic = null;
+        MessageProducer localProducer = null;
+        
+        if (this.isConnected()) {
+            
+            try {
+                localTopic = session.createTopic(topicName);
+                localProducer = session.createProducer(localTopic);
+                localProducer.send(message);
+            } catch (JMSException jmse) {
+                throw new JMSException(jmse.getMessage());
+            } finally {
+                if (localProducer != null) {
+                    try{localProducer.close();}catch(Exception e){/*Ignore me*/}
+                }
+            }
+        } else {
+            throw new JMSException("Publisher is not connected.");
+        }
+    }
+    
+    /**
      * 
      * @param message
      * @return True if the message has been sent, otherwise false
@@ -138,7 +166,7 @@ public class JmsSimpleProducer {
         
         return success;
     }
-    
+
     public boolean isConnected() {
         return (connection != null);
     }
