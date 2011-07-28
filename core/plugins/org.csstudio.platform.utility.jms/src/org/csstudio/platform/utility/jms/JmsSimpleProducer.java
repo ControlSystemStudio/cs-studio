@@ -113,18 +113,8 @@ public class JmsSimpleProducer {
      * 
      * @return The fresh MapMessage
      */
-    public MapMessage createMapMessage() {
-        
-        MapMessage message = null;
-        
-        if(session != null) {
-            try {
-                message = session.createMapMessage();
-            } catch(JMSException jmse) {
-                // Can be ignored
-            }
-        }
-        
+    public MapMessage createMapMessage() throws JMSException {
+        MapMessage message = session.createMapMessage();
         return message;
     }
 
@@ -136,17 +126,15 @@ public class JmsSimpleProducer {
      * 
      * @param message
      * @return True if the message has been sent, otherwise false
+     * @throws JMSException 
      */
-    public boolean sendMessage(Message message) {
+    public boolean sendMessage(Message message) throws JMSException {
         
         boolean success = false;
  
-        try {
-            // TODO: producer.send(message, DeliveryMode.PERSISTENT, 1, 0);
-            producer.send(message);
-        } catch (JMSException jmse) {
-            // Can be ignored
-        }
+        // TODO: producer.send(message, DeliveryMode.PERSISTENT, 1, 0);
+        producer.send(message);
+        success = true;
         
         return success;
     }
