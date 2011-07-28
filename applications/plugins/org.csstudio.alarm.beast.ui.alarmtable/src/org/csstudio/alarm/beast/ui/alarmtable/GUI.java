@@ -25,6 +25,7 @@ import org.csstudio.alarm.beast.ui.clientmodel.AlarmClientModel;
 import org.csstudio.alarm.beast.ui.clientmodel.AlarmClientModelListener;
 import org.csstudio.apputil.text.RegExHelper;
 import org.csstudio.ui.util.dnd.ControlSystemDragSource;
+import org.csstudio.ui.util.helpers.ComboHistoryHelper;
 import org.eclipse.jface.action.GroupMarker;
 import org.eclipse.jface.action.IMenuListener;
 import org.eclipse.jface.action.IMenuManager;
@@ -48,13 +49,13 @@ import org.eclipse.swt.layout.FillLayout;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Button;
+import org.eclipse.swt.widgets.Combo;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.swt.widgets.Table;
 import org.eclipse.swt.widgets.TableColumn;
-import org.eclipse.swt.widgets.Text;
 import org.eclipse.ui.IWorkbenchActionConstants;
 import org.eclipse.ui.IWorkbenchPartSite;
 
@@ -83,7 +84,7 @@ public class GUI implements AlarmClientModelListener
     private TableViewer acknowledged_table_viewer;
 
     /** PV selection filter text box */
-    private Text filter;
+    private Combo filter;
 
     /** PV un-select button */
     private Button unselect;
@@ -202,7 +203,7 @@ public class GUI implements AlarmClientModelListener
     private void createComponents(final Composite parent)
     {
         parent.setLayout(new FillLayout());
-        SashForm sash = new SashForm(parent, SWT.VERTICAL | SWT.SMOOTH);
+        final SashForm sash = new SashForm(parent, SWT.VERTICAL | SWT.SMOOTH);
         sash.setLayout(new FillLayout());
 
         color_provider = new SeverityColorProvider(parent);
@@ -214,16 +215,20 @@ public class GUI implements AlarmClientModelListener
 
         // Update selection in active & ack'ed alarm table
         // in response to filter changes
-        filter.addSelectionListener(new SelectionAdapter()
-        {
-            @Override
-            public void widgetDefaultSelected(final SelectionEvent e)
-            {
+        final ComboHistoryHelper filter_history =
+        	new ComboHistoryHelper(Activator.getDefault().getDialogSettings(),
+        			"FILTER", filter) //$NON-NLS-1$
+		{
+			@Override
+			public void newSelection(String entry)
+			{
                 final String filter_text = filter.getText().trim();
                 selectFilteredPVs(filter_text, active_table_viewer);
                 selectFilteredPVs(filter_text, acknowledged_table_viewer);
-            }
-        });
+			}
+		};
+		filter_history.loadSettings();
+		
         // Clear filter, un-select all items
         unselect.addSelectionListener(new SelectionAdapter()
         {
@@ -263,7 +268,7 @@ public class GUI implements AlarmClientModelListener
         l.setText(Messages.Filter);
         l.setLayoutData(new GridData());
 
-        filter = new Text(box, SWT.BORDER);
+        filter = new Combo(box, SWT.BORDER);
         filter.setToolTipText(Messages.FilterTT);
         gd = new GridData();
         gd.grabExcessHorizontalSpace = true;
