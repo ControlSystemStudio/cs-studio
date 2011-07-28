@@ -70,7 +70,11 @@ public class ArchiveConfigApplication implements IApplication
                 "-rdb_password", "password", "RDB Password", RDBArchivePreferences.getPassword());
         final StringOption  rdb_schema = new StringOption(parser,
                 "-rdb_schema", "schema", "RDB schema (table prefix), ending in '.'", RDBArchivePreferences.getSchema());
-		
+        // Option handled by Eclipse,
+        // but this way it shows up in the help message
+        new StringOption(parser, "-pluginCustomization", "/path/to/mysettings.ini",
+                        "Eclipse plugin defaults", null);
+
         // NOTE:
         // On OS X, the application will have a file
         // EngineConfigImport.app/Contents/Info.plist
