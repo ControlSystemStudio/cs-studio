@@ -136,9 +136,9 @@ public class PersistDataWorker extends AbstractTimeMeasuredRunnable {
     }
 
     private <T> void addElementToBatchAndRescueList(@Nonnull final BatchQueueHandlerSupport<T> handler,
-                                       @Nonnull final PreparedStatement stmt,
-                                       @Nonnull final T element,
-                                       @Nonnull final List<T> rescueDataList) {
+                                                    @Nonnull final PreparedStatement stmt,
+                                                    @Nonnull final T element,
+                                                    @Nonnull final List<T> rescueDataList) {
         try {
             rescueDataList.add(element);
             handler.applyBatch(stmt, element);

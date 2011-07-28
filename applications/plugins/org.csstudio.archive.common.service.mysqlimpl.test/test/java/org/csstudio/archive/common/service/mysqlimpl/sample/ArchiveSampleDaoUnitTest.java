@@ -21,26 +21,13 @@
  */
 package org.csstudio.archive.common.service.mysqlimpl.sample;
 
-import static org.csstudio.archive.common.service.mysqlimpl.sample.ArchiveSampleDaoImpl.COLUMN_CHANNEL_ID;
-import static org.csstudio.archive.common.service.mysqlimpl.sample.ArchiveSampleDaoImpl.COLUMN_TIME;
-import static org.csstudio.archive.common.service.mysqlimpl.sample.ArchiveSampleDaoImpl.TAB_SAMPLE;
-import static org.csstudio.archive.common.service.mysqlimpl.sample.ArchiveSampleDaoImpl.TAB_SAMPLE_H;
-import static org.csstudio.archive.common.service.mysqlimpl.sample.ArchiveSampleDaoImpl.TAB_SAMPLE_M;
-import static org.csstudio.archive.common.service.mysqlimpl.sample.TestSampleProvider.CHANNEL_ID;
-import static org.csstudio.archive.common.service.mysqlimpl.sample.TestSampleProvider.END;
-import static org.csstudio.archive.common.service.mysqlimpl.sample.TestSampleProvider.SAMPLES;
+import static org.csstudio.archive.common.service.mysqlimpl.sample.TestSampleProvider.CHANNEL_ID_3RD;
 import static org.csstudio.archive.common.service.mysqlimpl.sample.TestSampleProvider.START;
 
-import java.sql.Connection;
-import java.sql.SQLException;
-import java.sql.Statement;
 import java.util.Collection;
-
-import javax.annotation.Nonnull;
 
 import junit.framework.Assert;
 
-import org.csstudio.archive.common.service.ArchiveConnectionException;
 import org.csstudio.archive.common.service.channel.IArchiveChannel;
 import org.csstudio.archive.common.service.mysqlimpl.channel.ArchiveChannelDaoImpl;
 import org.csstudio.archive.common.service.mysqlimpl.channel.IArchiveChannelDao;
@@ -49,13 +36,13 @@ import org.csstudio.archive.common.service.mysqlimpl.dao.ArchiveDaoException;
 import org.csstudio.archive.common.service.mysqlimpl.requesttypes.DesyArchiveRequestType;
 import org.csstudio.archive.common.service.sample.IArchiveSample;
 import org.csstudio.domain.desy.system.ISystemVariable;
-import org.csstudio.domain.desy.time.TimeInstant;
-import org.junit.AfterClass;
+import org.csstudio.domain.desy.time.TimeInstant.TimeInstantBuilder;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
+
 /**
- * Integration test for {@link ArchiveSampleDaoImpl}.
+ * Integration test for {@link ArchiveSampleDaoImpl} with rollbacks.
  *
  * @author bknerr
  * @since 27.07.2011
@@ -66,87 +53,23 @@ public class ArchiveSampleDaoUnitTest extends AbstractDaoTestSetup {
 
     @BeforeClass
     public static void setupDao() {
-        SAMPLE_DAO = new ArchiveSampleDaoImpl(HANDLER, PERSIST_MGR);
         CHANNEL_DAO = new ArchiveChannelDaoImpl(HANDLER, PERSIST_MGR);
+        SAMPLE_DAO = new ArchiveSampleDaoImpl(HANDLER, PERSIST_MGR, CHANNEL_DAO);
     }
 
     @Test
-    public void testCreateSamples() throws ArchiveDaoException, InterruptedException, ArchiveConnectionException, SQLException {
-        SAMPLE_DAO.createSamples(SAMPLES);
-
-        Thread.sleep(2500);
-
-        final IArchiveChannel channel = CHANNEL_DAO.retrieveChannelById(CHANNEL_ID);
+    public void retrieveSamples() throws ArchiveDaoException {
+        final IArchiveChannel channel = CHANNEL_DAO.retrieveChannelById(CHANNEL_ID_3RD);
         final IArchiveSample<Object,ISystemVariable<Object>> sample =
-            SAMPLE_DAO.retrieveLatestSampleBeforeTime(channel, END.plusMillis(1L));
-
+            SAMPLE_DAO.retrieveLatestSampleBeforeTime(channel, START);
         Assert.assertNotNull(sample);
-        Assert.assertEquals(sample.getSystemVariable().getTimestamp(), END);
+        Assert.assertEquals(Byte.valueOf((byte) 26), sample.getValue());
 
-        assertRawSamples(channel);
 
-        assertPerMinuteSamples(channel);
-
-        assertPerHourSamples(channel);
-
-        undoCreateSamples();
+        final Collection<IArchiveSample<Object,ISystemVariable<Object>>>
+            samples = SAMPLE_DAO.retrieveSamples(DesyArchiveRequestType.RAW, channel, TimeInstantBuilder.fromNanos(1L), START);
+        Assert.assertNotNull(samples);
+        Assert.assertEquals(1, samples.size());
+        Assert.assertEquals(Byte.valueOf((byte) 26), samples.iterator().next().getValue());
     }
-
-    private void assertPerHourSamples(final IArchiveChannel channel) throws ArchiveDaoException {
-        final Collection<IArchiveSample<Object, ISystemVariable<Object>>> hourSamples =
-            SAMPLE_DAO.retrieveSamples(DesyArchiveRequestType.AVG_PER_HOUR, channel, START, END);
-        Assert.assertNotNull(hourSamples);
-        Assert.assertFalse(hourSamples.isEmpty());
-
-        TimeInstant lastTime = hourSamples.iterator().next().getSystemVariable().getTimestamp().minusMillis(1000*60*60);
-        for (final IArchiveSample<Object, ISystemVariable<Object>> minSample : hourSamples) {
-            final TimeInstant curTime = minSample.getSystemVariable().getTimestamp();
-            Assert.assertTrue(!curTime.isBefore(lastTime.plusMillis(1000*60)));
-            lastTime= curTime;
-        }
-    }
-
-    private void assertPerMinuteSamples(final IArchiveChannel channel) throws ArchiveDaoException {
-        final Collection<IArchiveSample<Object, ISystemVariable<Object>>> minSamples =
-            SAMPLE_DAO.retrieveSamples(DesyArchiveRequestType.AVG_PER_MINUTE, channel, START, END);
-        Assert.assertNotNull(minSamples);
-        Assert.assertFalse(minSamples.isEmpty());
-
-        TimeInstant lastTime = minSamples.iterator().next().getSystemVariable().getTimestamp().minusMillis(1000*60);
-        for (final IArchiveSample<Object, ISystemVariable<Object>> minSample : minSamples) {
-            final TimeInstant curTime = minSample.getSystemVariable().getTimestamp();
-            Assert.assertTrue(!curTime.isBefore(lastTime.plusMillis(1000*60)));
-            lastTime= curTime;
-        }
-    }
-
-    private void assertRawSamples(final IArchiveChannel channel) throws ArchiveDaoException {
-        final Collection<IArchiveSample<Object, ISystemVariable<Object>>> rawSamples =
-            SAMPLE_DAO.retrieveSamples(DesyArchiveRequestType.RAW, channel, START, END);
-        Assert.assertNotNull(rawSamples);
-        Assert.assertFalse(rawSamples.isEmpty());
-        Assert.assertEquals(SAMPLES.size(), rawSamples.size());
-    }
-
-    private static void undoCreateSamples() throws ArchiveConnectionException, SQLException {
-        final Connection connection = HANDLER.getConnection();
-        final Statement stmt = connection.createStatement();
-        executeStatementForTable(stmt, TAB_SAMPLE);
-        executeStatementForTable(stmt, TAB_SAMPLE_M);
-        executeStatementForTable(stmt, TAB_SAMPLE_H);
-        stmt.close();
-    }
-
-    private static void executeStatementForTable(@Nonnull final Statement stmt,
-                                                 @Nonnull final String table) throws SQLException {
-        stmt.execute("DELETE FROM " + table + " " +
-                     "WHERE " + COLUMN_TIME + " between " + START.minusMillis(1L).getNanos() + " AND " + END.plusMillis(1L).getNanos() + " " +
-                     "AND " + COLUMN_CHANNEL_ID + "=" + CHANNEL_ID.asString());
-    }
-
-    @AfterClass
-    public static void undoBatchedStatements() throws ArchiveConnectionException, SQLException {
-        undoCreateSamples();
-    }
-
 }

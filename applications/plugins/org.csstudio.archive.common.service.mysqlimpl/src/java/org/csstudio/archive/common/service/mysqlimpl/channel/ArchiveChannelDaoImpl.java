@@ -244,15 +244,15 @@ public class ArchiveChannelDaoImpl extends AbstractArchiveDao implements IArchiv
 
     @CheckForNull
     private IArchiveChannel retrieveUncachedChannelBy(@Nonnull final PreparedStatement stmt)
-                                                    throws SQLException, TypeSupportException
-                                                     {
+                                                      throws SQLException, TypeSupportException {
+        ResultSet result = null;
         try {
-            final ResultSet result = stmt.executeQuery();
+            result = stmt.executeQuery();
             if (result != null && result.next()) {
                 return readChannelFromResultIntoCache(result);
             }
         } finally {
-            closeStatement(stmt, "Closing of statement: '" + stmt.toString() + "' failed.");
+            closeStatement(result, stmt, "Closing of result set or statement resources failed: " + stmt.toString());
         }
         return null;
     }
@@ -271,12 +271,13 @@ public class ArchiveChannelDaoImpl extends AbstractArchiveDao implements IArchiv
         }
         // Nothing yet in the cache? Ask the database:
         PreparedStatement stmt = null;
+        ResultSet result = null;
         try {
             stmt = getConnection().prepareStatement(_selectChannelsByGroupId);
             stmt.setInt(1, groupId.intValue());
 
             final List<IArchiveChannel> channels = Lists.newArrayList();
-            final ResultSet result = stmt.executeQuery();
+            result = stmt.executeQuery();
             while (result.next()) {
                 channels.add(readChannelFromResultIntoCache(result));
             }
@@ -285,7 +286,7 @@ public class ArchiveChannelDaoImpl extends AbstractArchiveDao implements IArchiv
         } catch (final Exception e) {
             handleExceptions(EXC_MSG, e);
         } finally {
-            closeStatement(stmt, "Closing of statement " + _selectChannelsByGroupId + " failed.");
+            closeStatement(result, stmt, "Closing of statement " + _selectChannelsByGroupId + " failed.");
         }
         return Collections.emptyList();
     }
@@ -370,18 +371,19 @@ public class ArchiveChannelDaoImpl extends AbstractArchiveDao implements IArchiv
         if (_channelCacheByName.size() < numOfChannels) {
 
             PreparedStatement stmt = null;
+            ResultSet result = null;
             try {
                 stmt = getConnection().prepareStatement(_selectMatchingChannelsStmt);
                 stmt.setString(1, pattern.toString());
 
-                final ResultSet result = stmt.executeQuery();
+                result = stmt.executeQuery();
                 while (result.next()) {
                     readChannelFromResultIntoCache(result);
                 }
             } catch (final Exception e) {
                 handleExceptions(EXC_MSG + ": Number of channels could not be determined.", e);
             } finally {
-                closeStatement(stmt, "Closing of statement: '" + _selectMatchingChannelsStmt + "' failed.");
+                closeStatement(result, stmt, "Closing of statement: '" + _selectMatchingChannelsStmt + "' failed.");
             }
         }
         return createMatchingChannelsCollection(_channelCacheByName, pattern);
@@ -407,16 +409,17 @@ public class ArchiveChannelDaoImpl extends AbstractArchiveDao implements IArchiv
     private int retrieveNumberOfChannels() throws ArchiveDaoException {
 
         PreparedStatement stmt = null;
+        ResultSet result = null;
         try {
             stmt = getConnection().prepareStatement(_selectCountAllChannelsStmt);
-            final ResultSet result = stmt.executeQuery();
+            result = stmt.executeQuery();
             if (result.next()) {
                 return result.getInt(1);
             }
         } catch (final Exception e) {
             handleExceptions(EXC_MSG + ": Number of channels could not be determined.", e);
         } finally {
-            closeStatement(stmt, "Closing of statement " + _selectCountAllChannelsStmt + " failed.");
+            closeStatement(result, stmt, "Closing of statement " + _selectCountAllChannelsStmt + " failed.");
         }
         return 0;
     }

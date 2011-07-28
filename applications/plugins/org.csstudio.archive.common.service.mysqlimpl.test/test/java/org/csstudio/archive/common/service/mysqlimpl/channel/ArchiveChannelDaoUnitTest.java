@@ -119,12 +119,12 @@ public class ArchiveChannelDaoUnitTest extends AbstractDaoTestSetup {
 
     @Test
     public void testChannelRetrieval() throws ArchiveDaoException {
-        IArchiveChannel channel = DAO.retrieveChannelBy("doubleChannel1");
+        IArchiveChannel channel = DAO.retrieveChannelBy("enumChannel1");
 
-        assertChannelContent(channel, "Double", "doubleChannel1", Double.valueOf(10.0), Double.valueOf(20.0), new ArchiveChannelGroupId(1L), 1293840001000000000L);
+        assertChannelContent(channel, "EpicsEnum", "enumChannel1", null, null, new ArchiveChannelGroupId(2L), 1262307723000000000L);
 
         channel = DAO.retrieveChannelById(new ArchiveChannelId(3L));
-        assertChannelContent(channel, "Byte", "byteChannel1", Byte.valueOf((byte) -128), Byte.valueOf((byte) 127), new ArchiveChannelGroupId(2L), 1304208001000000000L);
+        assertChannelContent(channel, "Byte", "byteChannel1", Byte.valueOf((byte) -128), Byte.valueOf((byte) 127), new ArchiveChannelGroupId(2L), 2000000000L);
     }
 
     private void assertChannelContent(@Nonnull final IArchiveChannel channel,
@@ -139,8 +139,12 @@ public class ArchiveChannelDaoUnitTest extends AbstractDaoTestSetup {
         Assert.assertEquals(name, channel.getName());
         Assert.assertEquals("EpicsDefault", channel.getControlSystem().getName());
         Assert.assertEquals(ControlSystem.EPICS_DEFAULT.getType(), channel.getControlSystem().getType());
-        Assert.assertEquals(low, channel.getDisplayLimits().getLow());
-        Assert.assertEquals(high, channel.getDisplayLimits().getHigh());
+        if (low != null) {
+            Assert.assertEquals(low, channel.getDisplayLimits().getLow());
+        }
+        if (high != null) {
+            Assert.assertEquals(high, channel.getDisplayLimits().getHigh());
+        }
         Assert.assertEquals(groupId, channel.getGroupId());
         Assert.assertEquals(TimeInstantBuilder.fromNanos(nanos), channel.getLatestTimestamp());
     }

@@ -118,13 +118,14 @@ public class ArchiveEngineDaoImpl extends AbstractArchiveDao implements IArchive
     private IArchiveEngine retrieveEngineByStmt(@Nonnull final PreparedStatement statement)
                                                 throws SQLException,
                                                        MalformedURLException {
+        ResultSet result = null;
         try {
-            final ResultSet result = statement.executeQuery();
+            result = statement.executeQuery();
             if (result.next()) {
                 return createArchiveEngineFromResult(result);
             }
         } finally {
-            closeStatement(statement, "Closing of statement " + statement.toString() + " failed.");
+            closeStatement(result, statement, "Closing of statement " + statement.toString() + " failed.");
         }
         return null;
     }
@@ -160,7 +161,7 @@ public class ArchiveEngineDaoImpl extends AbstractArchiveDao implements IArchive
         } catch (final Exception e) {
             handleExceptions(EXC_MSG, e);
         } finally {
-            closeStatement(statement, "Closing of statement " + _selectEngineByNameStmt + " failed.");
+            closeStatement(null, statement, "Closing of statement " + _selectEngineByNameStmt + " failed.");
         }
     }
 }

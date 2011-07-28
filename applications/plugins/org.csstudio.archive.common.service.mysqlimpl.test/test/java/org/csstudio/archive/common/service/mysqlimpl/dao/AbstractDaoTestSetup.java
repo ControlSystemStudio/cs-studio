@@ -29,7 +29,6 @@ import junit.framework.Assert;
 
 import org.csstudio.archive.common.service.ArchiveConnectionException;
 import org.csstudio.archive.common.service.mysqlimpl.MySQLArchivePreferenceService;
-import org.csstudio.archive.common.service.mysqlimpl.dao.ArchiveConnectionHandler;
 import org.csstudio.archive.common.service.mysqlimpl.persistengine.PersistEngineDataManager;
 import org.junit.After;
 import org.junit.AfterClass;
@@ -49,6 +48,20 @@ public abstract class AbstractDaoTestSetup {
 
     private Savepoint _savepoint;
     private boolean _autoCommit;
+    private final boolean _withRollback;
+
+    /**
+     * Constructor.
+     */
+    public AbstractDaoTestSetup(final boolean withRollback) {
+        _withRollback = withRollback;
+    }
+    /**
+     * Constructor.
+     */
+    public AbstractDaoTestSetup() {
+        this(true);
+    }
 
     @BeforeClass
     public static void beforeClass() throws ArchiveConnectionException {
@@ -71,7 +84,9 @@ public abstract class AbstractDaoTestSetup {
      */
     @Before
     public void before() throws ArchiveConnectionException, SQLException {
-        setSavePoint();
+        if (_withRollback) {
+            setSavePoint();
+        }
 
         beforeHook();
     }
@@ -106,7 +121,9 @@ public abstract class AbstractDaoTestSetup {
     public void after() throws ArchiveConnectionException, SQLException {
         afterHook();
 
-        rollback();
+        if (_withRollback) {
+            rollback();
+        }
     }
 
     private void rollback() throws ArchiveConnectionException, SQLException {

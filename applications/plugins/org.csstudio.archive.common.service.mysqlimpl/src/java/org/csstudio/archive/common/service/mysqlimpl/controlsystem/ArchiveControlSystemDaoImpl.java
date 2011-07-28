@@ -78,10 +78,11 @@ public class ArchiveControlSystemDaoImpl extends AbstractArchiveDao implements I
             return cs;
         }
         PreparedStatement stmt = null;
+        ResultSet result = null;
         try {
             stmt = getConnection().prepareStatement(_selectCSByIdStmt);
             stmt.setLong(1, id.longValue());
-            final ResultSet result = stmt.executeQuery();
+            result = stmt.executeQuery();
             if (result.next()) {
                 cs = createControlSystemFromQueryResult(result);
                 _cacheById.put(id, cs);
@@ -90,7 +91,7 @@ public class ArchiveControlSystemDaoImpl extends AbstractArchiveDao implements I
         } catch (final Exception e) {
             handleExceptions(RETRIEVAL_FAILED, e);
         } finally {
-            closeStatement(stmt, "Closing of statement " + _selectCSByIdStmt + " failed.");
+            closeStatement(result, stmt, "Closing of statement " + _selectCSByIdStmt + " failed.");
         }
         return null;
     }
