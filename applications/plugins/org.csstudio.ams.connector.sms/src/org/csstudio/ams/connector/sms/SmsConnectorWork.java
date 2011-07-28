@@ -58,8 +58,8 @@ import org.smslib.Service;
 import org.smslib.StatusReportMessage;
 import org.smslib.modem.SerialModemGateway;
 
-public class SmsConnectorWork extends Thread implements AmsConstants
-{
+public class SmsConnectorWork extends Thread implements AmsConstants {
+    
     private SmsConnectorStart scs = null;
 
     // private final int CONSUMER_CONNECTIONS = 2;
@@ -103,18 +103,19 @@ public class SmsConnectorWork extends Thread implements AmsConstants
     /** Text for the test SMS */
     public static final String SMS_TEST_TEXT = "[MODEMTEST{$CHECKID,$GATEWAYID}]";
     
-    public SmsConnectorWork(SmsConnectorStart scs)
+    public SmsConnectorWork(SmsConnectorStart starter)
     {
         // Set the "parent" object
-        this.scs = scs;
+        this.scs = starter;
         smsContainer = new SmsContainer();
         readWaitingPeriod = 0;
         modemInfo = new ModemInfoContainer();
         testStatus = new ModemTestStatus();
     }
     
-    public void run()
-    {
+    @Override
+    public void run() {
+        
         boolean bInitedModem = false;
         boolean bInitedJms = false;        
         long lastReadingTime = 0;
@@ -190,7 +191,9 @@ public class SmsConnectorWork extends Thread implements AmsConstants
                         }
                         catch(JMSException jmse)
                         {
-                            manager.closeJms();
+                            if (manager != null) {
+                                manager.closeJms();
+                            }
                             Log.log(this, Log.FATAL, "the connector message manager does not work properly", jmse);
                             iErr = SmsConnectorStart.STAT_ERR_JMSCON;
                         }
@@ -857,8 +860,7 @@ public class SmsConnectorWork extends Thread implements AmsConstants
         IPreferenceStore storeAct = org.csstudio.ams.AmsActivator.getDefault().getPreferenceStore();
         topicName = storeAct.getString(org.csstudio.ams.internal.AmsPreferenceKey.P_JMS_AMS_TOPIC_MONITOR);
 
-        try
-        {
+        try {
             topic = amsSenderSession.createTopic(topicName);
             amsPublisherCheck = amsSenderSession.createProducer(topic);
             mapMessage = amsSenderSession.createMapMessage();
@@ -875,14 +877,13 @@ public class SmsConnectorWork extends Thread implements AmsConstants
             mapMessage.setString("DESTINATION", "AmsSystemMonitor");
             
             amsPublisherCheck.send(mapMessage);
-        }
-        catch(JMSException jmse)
-        {
+        } catch(JMSException jmse) {
             Log.log(this, Log.ERROR, "Answer message could NOT be sent.");
-        }
-        finally
-        {
-            if(amsPublisherCheck!=null){try{amsPublisherCheck.close();}catch(JMSException e){}amsPublisherCheck=null;}
+        } finally {
+            if(amsPublisherCheck != null) {
+                try{amsPublisherCheck.close();}catch(JMSException e){/*Can be ignored*/}
+                amsPublisherCheck=null;
+            }
             topic = null;
         }
     }
@@ -890,8 +891,8 @@ public class SmsConnectorWork extends Thread implements AmsConstants
     @SuppressWarnings("unused")
     private int sendSmsMsg(Message message) throws Exception
     {
-        if (!(message instanceof MapMessage))
-        {
+        if (!(message instanceof MapMessage)) {
+            
             Log.log(this, Log.WARN, "got unknown message " + message);
             
             // Deletes all received messages of the session
@@ -899,50 +900,48 @@ public class SmsConnectorWork extends Thread implements AmsConstants
                 return SmsConnectorStart.STAT_ERR_JMSCON;
             return SmsConnectorStart.STAT_OK;
         }
-        else
-        {
-            MapMessage msg = (MapMessage) message;
-            String text = msg.getString(MSGPROP_RECEIVERTEXT);
-            String recNo = msg.getString(MSGPROP_RECEIVERADDR);
-            String parsedRecNo = null;
+        
+        MapMessage msg = (MapMessage) message;
+        String text = msg.getString(MSGPROP_RECEIVERTEXT);
+        String recNo = msg.getString(MSGPROP_RECEIVERADDR);
+        String parsedRecNo = null;
 
-            int iErr = SmsConnectorStart.STAT_ERR_UNDEFINED;
-            for (int j = 1 ; j <= 5 ; j++) //only for short net breaks
+        int iErr = SmsConnectorStart.STAT_ERR_UNDEFINED;
+        for (int j = 1 ; j <= 5 ; j++) //only for short net breaks
+        {
+            if (parsedRecNo == null)
             {
-                if (parsedRecNo == null)
+                try
                 {
-                    try
-                    {
-                        parsedRecNo = parsePhoneNumber(recNo);
-                    }
-                    catch (Exception e)
-                    {
-                        Log.log(this, Log.FATAL, "Parsing phone number - failed.");
-                        if (acknowledge(message)) // deletes all received messages of the session
-                            return SmsConnectorStart.STAT_OK;
-                        iErr = SmsConnectorStart.STAT_ERR_JMSCON;
-                    }
+                    parsedRecNo = parsePhoneNumber(recNo);
                 }
-                if (parsedRecNo != null)
+                catch (Exception e)
                 {
-                    if (sendSms(text, parsedRecNo))
-                    {
-                        if (acknowledge(message))                               // deletes all received messages of the session
-                            return SmsConnectorStart.STAT_OK;
-    
-                        iErr = SmsConnectorStart.STAT_ERR_JMSCON;
-                    }
-                    else
-                    {
-                        iErr = SmsConnectorStart.STAT_ERR_MODEM_SEND;
-                    }
+                    Log.log(this, Log.FATAL, "Parsing phone number - failed.");
+                    if (acknowledge(message)) // deletes all received messages of the session
+                        return SmsConnectorStart.STAT_OK;
+                    iErr = SmsConnectorStart.STAT_ERR_JMSCON;
                 }
-                
-                sleep(2000);
+            }
+            if (parsedRecNo != null)
+            {
+                if (sendSms(text, parsedRecNo))
+                {
+                    if (acknowledge(message))                               // deletes all received messages of the session
+                        return SmsConnectorStart.STAT_OK;
+
+                    iErr = SmsConnectorStart.STAT_ERR_JMSCON;
+                }
+                else
+                {
+                    iErr = SmsConnectorStart.STAT_ERR_MODEM_SEND;
+                }
             }
             
-            return iErr;
+            sleep(2000);
         }
+        
+        return iErr;
     }
     
     private String parsePhoneNumber(String mobile) throws Exception
@@ -1200,7 +1199,7 @@ public class SmsConnectorWork extends Thread implements AmsConstants
         // application you should use the necessary getXXX methods.
         for (int i = 0; i < msgList.size(); i++)
         {
-            InboundMessage smsMsg = (InboundMessage) msgList.get(i);
+            InboundMessage smsMsg = msgList.get(i);
             String text = null;
             
             // BEWARE: We can get an InboundBinaryMessage and will run into problems
@@ -1223,22 +1222,22 @@ public class SmsConnectorWork extends Thread implements AmsConstants
                         + smsStat.getOriginator() + "/" + smsStat.getStatus().toString() + "/" 
                         + smsStat.getDate() + "/" + smsStat.getSent() + "/" + smsStat.getReceived() + "/" 
                         + smsStat.getRefNo());
-                if (!deleteMessage((InboundMessage)msgList.get(i)))
+                if (!deleteMessage(msgList.get(i)))
                     return SmsConnectorStart.STAT_ERR_MODEM;
                 continue;
             }
             
-            if (smsMsg.getType() != MessageTypes.INBOUND)
-            {
+            if (smsMsg.getType() != MessageTypes.INBOUND) {
+                
                 Log.log(this, Log.INFO, "receive message unknown type: '" + text 
                         + "' originator/type/date/smscRef = " 
                         + smsMsg.getOriginator() + "/" + smsMsg.getType() + "/" + smsMsg.getDate() + "/" + smsMsg.getMpRefNo());
-                if (!deleteMessage((InboundMessage)msgList.get(i)))
+                if (!deleteMessage(msgList.get(i)))
                     return SmsConnectorStart.STAT_ERR_MODEM;
                 continue;
             }
-            else
-                Log.log(this, Log.INFO, "receive incoming message: '" + text 
+            
+            Log.log(this, Log.INFO, "receive incoming message: '" + text 
                         + "' originator/date/smscRef = " 
                         + smsMsg.getOriginator() + "/" + smsMsg.getDate() + "/" + smsMsg.getMpRefNo());
 
@@ -1282,7 +1281,7 @@ public class SmsConnectorWork extends Thread implements AmsConstants
 
             if(testStatus.isTestAnswer(text))
             {
-                if(!deleteMessage((InboundMessage)msgList.get(i)))
+                if(!deleteMessage(msgList.get(i)))
                 {
                     return SmsConnectorStart.STAT_ERR_MODEM;
                 }
@@ -1525,10 +1524,10 @@ public class SmsConnectorWork extends Thread implements AmsConstants
             }
             
             Log.log(this, Log.DEBUG, "start delete");
-            if (!deleteMessage((InboundMessage)msgList.get(i)))
+            if (!deleteMessage(msgList.get(i)))
                 return SmsConnectorStart.STAT_ERR_MODEM;
 
-            Log.log(this, Log.DEBUG, "delete done");
+            Log.log(this, Log.DEBUG, "Delete done");
         }
         
         Log.log(this, Log.DEBUG, "readReply . . . exit");
