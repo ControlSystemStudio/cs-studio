@@ -51,7 +51,7 @@ public class Image extends ADLAbstractWidget {
 				if (FileLine.argEquals(row[0], "type")){
 					setImageType(FileLine.getTrimmedValue(row[1]));
 				}
-				else if (FileLine.argEquals(row[0], "image_name")){
+				else if (FileLine.argEquals(row[0], "image name")){
 					setImageName(FileLine.getTrimmedValue(row[1]));
 				}
 				else if (FileLine.argEquals(row[0], "calc")){

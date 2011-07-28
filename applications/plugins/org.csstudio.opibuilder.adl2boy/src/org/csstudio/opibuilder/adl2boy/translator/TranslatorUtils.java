@@ -15,6 +15,7 @@ import java.util.ListIterator;
 import org.csstudio.opibuilder.model.AbstractContainerModel;
 import org.csstudio.opibuilder.model.AbstractWidgetModel;
 import org.csstudio.opibuilder.model.DisplayModel;
+import org.csstudio.opibuilder.widgets.model.ImageModel;
 import org.csstudio.opibuilder.widgets.model.RectangleModel;
 import org.csstudio.utility.adlparser.fileParser.ADLWidget;
 import org.csstudio.utility.adlparser.fileParser.ColorMap;
@@ -66,7 +67,8 @@ public class TranslatorUtils {
 					printNotHandledMessage(widgetType);
 				}
 				else if (widgetType.equals("file")){
-					printNotHandledMessage(widgetType);
+					//There is really nothing to do here.  This is in every adl
+					//file and there is no translating to be done
 				}
 				else if (widgetType.equals("image")){
 					new Image2Model(adlWidget, colorMap, parentModel);
@@ -119,14 +121,14 @@ public class TranslatorUtils {
 				else if (widgetType.equals("valuator")){
 					new Valuator2Model(adlWidget, colorMap, parentModel);
 				}
+				else if (widgetType.equals("shell command")){
+					new ShellCommand2Model(adlWidget, colorMap, parentModel);
+				}
 				else if (widgetType.equals("basic attribute")){
 					ArrayList<ADLWidget> children = adlWidget.getObjects();
 					for (ADLWidget child : children){
 						setDefaultBasicAttribute(child);
 					}
-				}
-				else if (widgetType.equals("shell command")){
-					printNotHandledMessage(widgetType);
 				}
 				else if (widgetType.equals("dynamic attribute")){
 					ArrayList<ADLWidget> children = adlWidget.getObjects();
@@ -144,6 +146,7 @@ public class TranslatorUtils {
 		
 		lowerWidgetType(parentModel, AbstractContainerModel.class);
 		lowerWidgetType(parentModel, RectangleModel.class);
+		lowerWidgetType(parentModel, ImageModel.class);
 	}
 
 	private static void lowerWidgetType(AbstractContainerModel parentModel,

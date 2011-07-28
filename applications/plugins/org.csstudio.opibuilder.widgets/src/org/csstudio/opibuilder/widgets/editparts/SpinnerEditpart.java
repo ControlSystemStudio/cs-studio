@@ -41,6 +41,9 @@ public class SpinnerEditpart extends AbstractPVWidgetEditPart {
 
 	private PVListener pvLoadLimitsListener;
 	private INumericMetaData meta = null;
+	private INumericMetaData meta2 = null;
+	private PVListener pvLoadPrecisionListener;
+	
 	@Override
 	protected IFigure doCreateFigure() {
 		SpinnerFigure spinner = new SpinnerFigure();
@@ -120,6 +123,26 @@ public class SpinnerEditpart extends AbstractPVWidgetEditPart {
 							public void pvDisconnected(PV pv) {}
 						};
 					pv.addListener(pvLoadLimitsListener);
+				}
+			}
+			if(model.isPrecisionFromPV()){
+				PV pv = getPV(AbstractPVWidgetModel.PROP_PVNAME);
+				if(pv != null){
+					if(pvLoadPrecisionListener == null)
+						pvLoadPrecisionListener = new PVListener() {
+							public void pvValueUpdate(PV pv) {
+								IValue value = pv.getValue();
+								if (value != null && value.getMetaData() instanceof INumericMetaData){
+									INumericMetaData new_meta = (INumericMetaData)value.getMetaData();
+									if(meta2== null || !meta2.equals(new_meta)){
+										meta2 = new_meta;
+										model.setPropertyValue(SpinnerModel.PROP_PRECISION,	meta2.getPrecision());
+									}
+								}
+							}
+							public void pvDisconnected(PV pv) {}
+						};
+					pv.addListener(pvLoadPrecisionListener);
 				}
 			}
 		}
@@ -291,6 +314,9 @@ public class SpinnerEditpart extends AbstractPVWidgetEditPart {
 			PV pv = getPV(AbstractPVWidgetModel.PROP_PVNAME);
 			if(pv != null && pvLoadLimitsListener != null){
 				pv.removeListener(pvLoadLimitsListener);
+			}
+			if(pv != null && pvLoadPrecisionListener != null){
+				pv.removeListener(pvLoadPrecisionListener);
 			}
 		}
 
