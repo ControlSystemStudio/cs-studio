@@ -287,12 +287,12 @@ public class XMLImport extends DefaultHandler
                 	// get all the errors once instead of having
                 	// to run the tool error by error
                 	if (steal_channels)
-                    	System.out.format("Channel '%s/%s - %s' already found in '%s/%s', moved to this engine",
+                    	System.out.format("Channel '%s/%s - %s' already found in '%s/%s', moved to this engine\n",
                                 engine.getName(), group.getName(), name,
                                 other_engine.getName(), other_group.getName());
                 	else
                 	{
-                    	System.out.format("WARNING: Channel '%s/%s - %s' already found in '%s/%s', not added again to this engine",
+                    	System.out.format("WARNING: Channel '%s/%s - %s' already found in '%s/%s', not added again to this engine\n",
                                 engine.getName(), group.getName(), name,
                                 other_engine.getName(), other_group.getName());
                 		return;
