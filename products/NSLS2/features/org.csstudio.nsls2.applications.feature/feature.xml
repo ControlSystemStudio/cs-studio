@@ -2,11 +2,11 @@
 <feature
       id="org.csstudio.nsls2.applications.feature"
       label="CSS-NSLS-II Applications"
-      version="3.0.0.qualifier"
+      version="3.0.1.qualifier"
       provider-name="Kunal Shroff &lt;kshroff@bnl.gov&gt;, Gabriele Carcassi &lt;carcassi@bnl.gov&gt; - BNL">
 
    <description url="http://www.example.com/description">
-      [Enter Feature Description here.]
+      A group of applications avaliable on css-nsls2
    </description>
 
    <copyright url="http://www.example.com/copyright">
