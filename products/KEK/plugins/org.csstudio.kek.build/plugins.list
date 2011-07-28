@@ -33,7 +33,9 @@ org.csstudio.display.rdbtable/**
 org.csstudio.email.ui/**
 org.csstudio.email/**
 org.csstudio.java/**
+org.csstudio.kek.build/**
 org.csstudio.kek.product/**
+org.csstudio.kek.product.office/**
 org.csstudio.logbook/**
 org.csstudio.logging.ui/**
 org.csstudio.logging/**
