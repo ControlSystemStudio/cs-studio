@@ -26,9 +26,9 @@ import org.eclipse.osgi.util.NLS;
  *  <p>
  *  Basic hierarchy:
  *  <ul>
- *  <li>One AlarmTreeRoot
- *  <li>Many AlarmTreeItem entries to build the hierarchy
- *  <li>Finally AlarmTreePV entries as leaves
+ *  <li>One {@link AlarmTreeRoot}
+ *  <li>Many {@link AlarmTreeItem} entries to build the hierarchy
+ *  <li>Finally {@link AlarmTreePV} entries as leaves
  *  </ul>
  *  @see AlarmTreeRoot
  *  @see AlarmTreeComponent
