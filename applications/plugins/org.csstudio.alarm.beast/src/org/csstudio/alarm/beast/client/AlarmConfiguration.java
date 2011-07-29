@@ -29,12 +29,17 @@ import org.csstudio.platform.utility.rdb.RDBUtil;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.osgi.util.NLS;
 
-/** <p>Alarm Configuration as stored in RDB. It is identified
+/** Alarm Configuration as stored in RDB. It is identified
  *  by rdb_url plus root_component, which means all operations
- *  with this object is related to its root_component.</p>
- *  <p>This class can read and write the configuration which is stored in RDB.</p>
+ *  with this object is related to its root_component.
+ *  
+ *  <p>This class can read and write the configuration which is stored in RDB.
+ *
  *  <p>The AlarmClientModel combines this with JMS communication,
- *  inform listeners etc.</p>
+ *  inform listeners etc.
+ *  
+ *  <p>See NOTE ON SYNCHRONIZATION in AlarmClientModel
+ *  
  *  @author Kay Kasemir, Xihui Chen
  */
 public class AlarmConfiguration

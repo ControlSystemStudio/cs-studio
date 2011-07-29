@@ -6,6 +6,7 @@ org.csstudio.alarm.beast.server/**
 org.csstudio.alarm.beast.ui/**
 org.csstudio.alarm.beast.ui.alarmtable/**
 org.csstudio.alarm.beast.ui.alarmtree/**
+org.csstudio.alarm.beast.ui.areapanel/**
 org.csstudio.alarm.beast.ui.globaltable/**
 org.csstudio.apputil.ui/**
 org.csstudio.apputil/**

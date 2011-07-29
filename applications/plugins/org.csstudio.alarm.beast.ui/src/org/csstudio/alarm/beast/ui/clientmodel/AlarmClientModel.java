@@ -41,6 +41,7 @@ import org.eclipse.osgi.util.NLS;
  *  That might be easiest to implement and check, but potentially
  *  slower because concurrent access to different parts of the model
  *  are not possible.
+ *  
  *  <p>When synchronizing individual pieces of the model (area, pv, ...)
  *  deadlocks are possible if elements are locked in reverse order.
  *  The following order should prevent this:
