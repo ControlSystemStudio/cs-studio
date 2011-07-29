@@ -15,6 +15,7 @@
 - <a href="#perspective">Perspective</a>
 - <a href="#tree">Alarm Tree</a>
 - <a href="#table">Alarm Table</a>
+- <a href="#panel">Alarm Area Panel</a>
 - <a href="#preferences">Preferences</a>
 - <a href="#edit">Editing Configuration</a>
 - <a href="#pv_config">Alarm PV Configuration</a>
@@ -726,6 +727,54 @@ For example, one can drag alarms into most email tools or
 the web interface to an elog system. The dragged text will include
 the alarm PV, description, and its current state.
 </p>
+
+
+<!-- ++++++++++++++++++++++++++++++++++++++++++++++++++++ -->
+<h2><a name=panel>Alarm Area Panel</a></h2> 
+<!-- ++++++++++++++++++++++++++++++++++++++++++++++++++++ -->
+<p>
+The Alarm Area Panel is a top-level display of the current alarm state.
+A preference setting of the panel is used to configure which
+level of the alarm tree hierarchy it should display.
+</>
+
+<img class="float" src="AlarmPanel.png" alt="Alarm Panel" width="317" height="560"></img>
+
+<p>
+It will typically be used to display the first level of the alarm
+hierarchy, that is all Area components of the alarm tree.
+For each area, it displays the name, coloring the panel to indicate the
+alarm state of that area.
+</p>
+<p>
+The tool can also be used to display a single panel with the
+alarm state of the overall alarm tree, i.e. the root element,
+by configuring it to use level 0 of the alarm tree hierarchy.
+When set to level 2 of the alarm tree, it will display all System
+components. With level 3 it would display all Sub-System components,
+but this and higher alarm tree components are not useful in practice.
+</p>
+
+<p>
+The context menu of a panel item allows access to the alarm tree,
+opening the alarm tree view and focusing on the respecive alarm tree element.
+The context menu also allows acknowledge/un-acknowledge of the alarm tree item
+and all the alarm tree elements below it.
+</p>
+
+<p>
+The tool has the following preference settings:
+<ul>
+<li>Alarm Tree Level:
+Determines from which level of the alarm tree the items are displayed.
+0 for root, 1 for area, 2 for system, 3 and higher would be sub-systems but
+that is less practical. 
+</li>
+<li>Panel Columns: Determines in how many columns the items will be arranged for display.
+</li>
+</ul>
+</p>
+
 
 
 <!-- ++++++++++++++++++++++++++++++++++++++++++++++++++++ -->
