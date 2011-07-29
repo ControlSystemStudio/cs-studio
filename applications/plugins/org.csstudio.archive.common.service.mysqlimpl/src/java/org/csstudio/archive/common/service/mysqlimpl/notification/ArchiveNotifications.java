@@ -21,12 +21,9 @@
  */
 package org.csstudio.archive.common.service.mysqlimpl.notification;
 
-import java.io.IOException;
-
 import javax.annotation.Nonnull;
 
 import org.csstudio.archive.common.service.mysqlimpl.persistengine.NotificationType;
-import org.csstudio.email.EMailSender;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -38,8 +35,13 @@ import org.slf4j.LoggerFactory;
  */
 public final class ArchiveNotifications {
 
-    private static final Logger LOG =
-        LoggerFactory.getLogger(ArchiveNotifications.class);
+    /**
+     * See configuration of this logger - if log4j is used - see log4j.properties
+     */
+    private static final Logger EMAIL_LOG =
+        LoggerFactory.getLogger("ErrorPerEmailLogger");
+
+
     /**
      * Constructor.
      */
@@ -48,22 +50,10 @@ public final class ArchiveNotifications {
     }
 
 
-    public static void notify(@Nonnull final String smtpHost,
-                              @Nonnull final String emailAddress,
-                              @Nonnull final NotificationType type,
+    public static void notify(@Nonnull final NotificationType type,
                               @Nonnull final String additionalBodyText) {
 
-        EMailSender mailer;
-        try {
-            mailer = new EMailSender(smtpHost,
-                                     "no-reply@DesyKryoArchiver",
-                                     emailAddress,
-                                     type.getSubject());
-            mailer.addText(type.getText() + additionalBodyText);
-            mailer.close();
-        } catch (final IOException e) {
-            LOG.error("Email notification for " + type.name() + " failed.");
-        }
+        EMAIL_LOG.info("" + type.getFullInfo() + ":\n" + additionalBodyText);
     }
 
 }

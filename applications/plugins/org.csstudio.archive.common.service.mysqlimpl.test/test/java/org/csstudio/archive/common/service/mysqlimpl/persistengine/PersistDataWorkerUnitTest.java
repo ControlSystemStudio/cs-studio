@@ -33,6 +33,7 @@ import javax.annotation.Nonnull;
 
 import junit.framework.Assert;
 
+import org.apache.log4j.PropertyConfigurator;
 import org.csstudio.archive.common.service.ArchiveConnectionException;
 import org.csstudio.archive.common.service.mysqlimpl.MySQLArchivePreferenceService;
 import org.csstudio.archive.common.service.mysqlimpl.batch.BatchQueueHandlerSupport;
@@ -57,6 +58,8 @@ import com.google.common.collect.Lists;
  * @since 28.07.2011
  */
 public class PersistDataWorkerUnitTest {
+
+
 
     private static ArchiveConnectionHandler HANDLER;
     private static PersistEngineDataManager PERSIST_MGR;
@@ -128,6 +131,8 @@ public class PersistDataWorkerUnitTest {
 
     @BeforeClass
     public static void setup() throws ArchiveConnectionException {
+        PropertyConfigurator.configure("log4j.properties");
+
         final MySQLArchivePreferenceService prefsMock = ArchiveDaoTestHelper.createPrefServiceMock();
 
         HANDLER = new ArchiveConnectionHandler(prefsMock);
