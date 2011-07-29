@@ -7,6 +7,8 @@ import java.util.ArrayList;
 import java.util.EventObject;
 import java.util.List;
 import java.util.Set;
+import java.util.SortedMap;
+import java.util.TreeMap;
 import java.util.UUID;
 
 import org.csstudio.dct.DctActivator;
@@ -50,11 +52,13 @@ import org.eclipse.jface.viewers.TreeSelection;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.custom.CCombo;
 import org.eclipse.swt.custom.StackLayout;
+import org.eclipse.swt.custom.StyleRange;
 import org.eclipse.swt.custom.StyledText;
 import org.eclipse.swt.events.ModifyEvent;
 import org.eclipse.swt.events.ModifyListener;
 import org.eclipse.swt.events.MouseAdapter;
 import org.eclipse.swt.events.MouseEvent;
+import org.eclipse.swt.graphics.Color;
 import org.eclipse.swt.layout.FillLayout;
 import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
@@ -291,12 +295,127 @@ public final class DctEditor extends MultiPageEditorPart implements CommandStack
 	 */
 	private void updatePreview() {
 		if (exporterDescriptor != null) {
-			dbFilePreviewText.setText(exporterDescriptor.getExporter().export(getProject()));
+			String export = exporterDescriptor.getExporter().export(getProject());
+			
+            StyleRange[] ranges = buildStyleRange(export);
+            dbFilePreviewText.setText(export);
+            dbFilePreviewText.setStyleRanges(ranges);
 		}
 
 	}
 
-	/**
+    private StyleRange[] buildStyleRange(String export) {
+        SortedMap<Integer, StyleRange> styleRanges = new TreeMap<Integer, StyleRange>();
+        Color comment = CustomMediaFactory.getInstance().getColor(63, 127, 95);
+        Color string = CustomMediaFactory.getInstance().getColor(42, 0, 255);
+        Color field = CustomMediaFactory.getInstance().getColor(0, 0, 0);
+        Color record = CustomMediaFactory.getInstance().getColor(127, 0, 85);
+        Color background = CustomMediaFactory.getInstance().getColor(255, 255, 255);
+        Color error = CustomMediaFactory.getInstance().getColor(255, 0, 0);
+        buildStyleRangeComment(export, styleRanges, comment, background);
+        buildStyleRangeStringWithErrorDetection(export, styleRanges, string, background, error);
+        buildStyleRangeField(export, styleRanges, field, background);
+        buildStyleRangeRecord(export, styleRanges, record, background);
+        return styleRanges.values().toArray(new StyleRange[0]);
+    }
+
+    public void buildStyleRangeRecord(String export,
+                                      SortedMap<Integer, StyleRange> styleRanges,
+                                      Color record,
+                                      Color background) {
+        int lastPosision;
+        lastPosision = 0;
+        while(lastPosision<export.length()) {
+            int start = export.indexOf("record(",lastPosision);
+            int end = start+7;
+            if(start>=0) {
+                start+=7;
+                end = export.indexOf(',',start+1);
+                if(end>=0) {
+                    styleRanges.put(start,new StyleRange(start, end-(start), record, background, SWT.NORMAL));
+                } else {
+                    break;
+                }
+            } else {
+                break;
+            }
+            lastPosision = end+1;
+            
+        }
+    }
+
+    public void buildStyleRangeField(String export,
+                                     SortedMap<Integer, StyleRange> styleRanges,
+                                     Color field,
+                                     Color background) {
+        int lastPosision;
+        lastPosision = 0;
+        while(lastPosision<export.length()) {
+            int start = export.indexOf("field(",lastPosision);
+            int end = start+6;
+            if(start>=0) {
+                start+=6;
+                end = export.indexOf(',',start+1);
+                if(end>=0) {
+                    styleRanges.put(start,new StyleRange(start, end-(start), field, background, SWT.BOLD));
+                } else {
+                    break;
+                }
+            } else {
+                break;
+            }
+            lastPosision = end+1;
+            
+        }
+    }
+
+    public void buildStyleRangeStringWithErrorDetection(String export,
+                                                        SortedMap<Integer, StyleRange> styleRanges,
+                                                        Color string,
+                                                        Color background,
+                                                        Color error) {
+        int lastPosision;
+        lastPosision = 0;
+        while(lastPosision<export.length()) {
+            int start = export.indexOf('"',lastPosision);
+            int end = start;
+            if(start>=0) {
+                end = export.indexOf('"',start+1);
+                if(end>=start && (export.startsWith("%%%", start+1)||export.startsWith("<Error", start+1))) {
+                    styleRanges.put(start,new StyleRange(start, end-start+1, error, background, SWT.NORMAL));
+                }else if(end>=start) {
+                    styleRanges.put(start,new StyleRange(start, end-start+1, string, background, SWT.NORMAL));
+                } else {
+                    break;
+                }
+            } else {
+                break;
+            }
+            lastPosision = end+1;
+            
+        }
+    }
+
+    public void buildStyleRangeComment(String export,
+                                      SortedMap<Integer, StyleRange> styleRanges,
+                                      Color comment,
+                                      Color background) {
+        int lastPosision = 0;
+        while(lastPosision<export.length()) {
+            int start = export.indexOf('#',lastPosision);
+            int end = start;
+            if(start>=0) {
+                end = export.indexOf("\n",start+1);
+                styleRanges.put(start,new StyleRange(start, end-(start), comment, background, SWT.NORMAL));
+            } else {
+                break;
+            }
+            lastPosision = end+1;
+            
+        }
+    }
+
+    /**
 	 * Creates the pages of the multi-page editor.
 	 */
 	@Override
