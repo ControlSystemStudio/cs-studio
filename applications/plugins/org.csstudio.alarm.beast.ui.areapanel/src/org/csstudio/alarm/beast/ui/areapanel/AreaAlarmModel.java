@@ -46,7 +46,7 @@ public class AreaAlarmModel implements AlarmClientModelListener
 		final AlarmTreeRoot root = model.getConfigTree();
 		synchronized (root)
         {
-			collectPanelItems(root, items, 1, panel_level);
+			collectPanelItems(root, items, 0, panel_level);
         }
 		this.items = items.toArray(new AlarmTreeItem[items.size()]);
     }
@@ -64,15 +64,9 @@ public class AreaAlarmModel implements AlarmClientModelListener
 			return;
 		final int n = item.getChildCount();
 		if (item_level == panel_level)
-		{
-			for (int i=0;  i<n;  ++i)
-				items.add(item.getClientChild(i));
-		}
-		else
-		{
-			for (int i=0;  i<n;  ++i)
-				collectPanelItems(item.getClientChild(i), items, item_level+1, panel_level);
-		}
+			items.add(item);
+		for (int i=0;  i<n;  ++i)
+			collectPanelItems(item.getClientChild(i), items, item_level+1, panel_level);
     }
 	
 	/** @return Items in alarm panel */

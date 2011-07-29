@@ -33,5 +33,14 @@
          </command>
       </menuContribution>
    </extension>
+   <extension
+         point="org.eclipse.ui.preferencePages">
+      <page
+            category="org.csstudio.platform.ui.css.applications.alarm"
+            class="org.csstudio.alarm.beast.ui.areapanel.PreferencePage"
+            id="org.csstudio.alarm.beast.ui.areapanel.preferences"
+            name="%AreaPanel">
+      </page>
+   </extension>
 
 </plugin>
