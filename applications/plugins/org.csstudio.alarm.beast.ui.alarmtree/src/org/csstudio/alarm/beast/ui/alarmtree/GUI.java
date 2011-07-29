@@ -462,6 +462,7 @@ public class GUI implements AlarmClientModelListener
                 ((AlarmTreePV)item).acknowledge(false);
     }
 
+    /** @return {@link TreeViewer} for alarm tree */
     public TreeViewer getTreeViewer()
     {
         return tree_viewer;

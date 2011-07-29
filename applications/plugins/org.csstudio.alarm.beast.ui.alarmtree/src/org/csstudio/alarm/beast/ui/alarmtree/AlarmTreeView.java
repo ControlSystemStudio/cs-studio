@@ -11,12 +11,14 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import org.csstudio.alarm.beast.Preferences;
+import org.csstudio.alarm.beast.client.AlarmTreeItem;
 import org.csstudio.alarm.beast.ui.actions.AcknowledgeAction;
 import org.csstudio.alarm.beast.ui.actions.ConfigureItemAction;
 import org.csstudio.alarm.beast.ui.actions.MaintenanceModeAction;
 import org.csstudio.alarm.beast.ui.clientmodel.AlarmClientModel;
 import org.eclipse.jface.action.IToolBarManager;
 import org.eclipse.jface.action.Separator;
+import org.eclipse.jface.viewers.StructuredSelection;
 import org.eclipse.osgi.util.NLS;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.DisposeEvent;
@@ -111,5 +113,12 @@ public class AlarmTreeView extends ViewPart
     {
         if (gui != null)
             gui.setFocus();
+    }
+
+    /** @param item Alarm tree item to focus, i.e. to select and show */
+	public void setFocus(final AlarmTreeItem item)
+    {
+        if (gui != null)
+            gui.getTreeViewer().setSelection(new StructuredSelection(item));
     }
 }
