@@ -10,6 +10,7 @@ package org.csstudio.alarm.beast.ui;
 import org.eclipse.ui.IFolderLayout;
 import org.eclipse.ui.IPageLayout;
 import org.eclipse.ui.IPerspectiveFactory;
+import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.console.IConsoleConstants;
 
 /** Alarm Perspective
@@ -27,6 +28,8 @@ public class Perspective implements IPerspectiveFactory
     // This way, one could replace the table or tree view plugins.
     final private static String ID_SNS_PV_UTIL =
         "org.csstudio.diag.pvfields.view.PVFieldsView";
+    final private static String ID_ALARM_PANEL =
+        "org.csstudio.alarm.beast.ui.areapanel";
     final private static String ID_ALARM_TREE =
         "org.csstudio.alarm.beast.ui.alarmtree.View";
     final private static String ID_ALARM_TABLE =
@@ -34,19 +37,26 @@ public class Perspective implements IPerspectiveFactory
 
     @Override
     @SuppressWarnings("deprecation")
-    public void createInitialLayout(IPageLayout layout)
+    public void createInitialLayout(final IPageLayout layout)
     {
         // left | editor
         //      |
         //      |
         //      +-------------
         //      | bottom
-        String editor = layout.getEditorArea();
-        IFolderLayout left = layout.createFolder("left",
+    	final String editor = layout.getEditorArea();
+        final IFolderLayout left = layout.createFolder("left",
                         IPageLayout.LEFT, 0.25f, editor);
-        IFolderLayout bottom = layout.createFolder("bottom",
+        final IFolderLayout bottom = layout.createFolder("bottom",
                         IPageLayout.BOTTOM, 0.66f, editor);
+        
+        
         // Stuff for 'left'
+        if (isViewAvaialble(ID_ALARM_PANEL))
+        {
+        	final IFolderLayout topleft = layout.createFolder("topleft", IPageLayout.TOP, 0.4f, "left");
+        	topleft.addView(ID_ALARM_PANEL);
+        }
         left.addView(ID_ALARM_TREE);
         left.addPlaceholder(IPageLayout.ID_RES_NAV);
         left.addPlaceholder(IPageLayout.ID_PROP_SHEET);
@@ -59,5 +69,11 @@ public class Perspective implements IPerspectiveFactory
         // Populate the "Window/Views..." menu with suggested views
         layout.addShowViewShortcut(IPageLayout.ID_RES_NAV);
         layout.addShowViewShortcut(IConsoleConstants.ID_CONSOLE_VIEW);
+    }
+
+    /** Check if view is available, i.e. suitable plugin was included in product */
+	private boolean isViewAvaialble(final String view)
+    {
+		return PlatformUI.getWorkbench().getViewRegistry().find(view) != null;
     }
 }
