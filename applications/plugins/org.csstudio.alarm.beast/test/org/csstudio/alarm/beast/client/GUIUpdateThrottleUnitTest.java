@@ -5,19 +5,20 @@
  *  which accompanies this distribution, and is available at
  *  http://www.eclipse.org/legal/epl-v10.html
  ******************************************************************************/
-package org.csstudio.alarm.beast.ui;
+package org.csstudio.alarm.beast.client;
 
 import static org.junit.Assert.*;
 
 import java.util.concurrent.atomic.AtomicInteger;
 
+import org.csstudio.alarm.beast.client.GUIUpdateThrottle;
 import org.junit.Test;
 
 /** JUnit test of GUIUpdateThrottle
  *  @author Kay Kasemir
  */
 @SuppressWarnings("nls")
-public class GUIUpdateThrottleTest
+public class GUIUpdateThrottleUnitTest
 {
     private static final long INITIAL = 100;
     private static final long SUPPRESS = 1000;

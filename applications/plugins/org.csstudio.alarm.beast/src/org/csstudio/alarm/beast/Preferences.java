@@ -27,7 +27,7 @@ import org.eclipse.core.runtime.preferences.IPreferencesService;
 @SuppressWarnings("nls")
 public class Preferences
 {
-    final public static String READONLY = "readonly";
+	final public static String READONLY = "readonly";
     final public static String ALLOW_CONFIG_SELECTION = "allow_config_selection";
     final public static String AnonyACK = "allow_anonymous_acknowledge";
     final public static String RDB_URL = "rdb_url";
@@ -52,6 +52,8 @@ public class Preferences
     final public static String COLOR_MAJOR = "color_major";
     final public static String COLOR_INVALID = "color_invalid";
     final public static String MAX_CONTEXT_MENU_ENTRIES = "max_context_menu_entries";
+    final public static String GUI_UPDATE_SUPPRESSION_MILLIS = "gui_update_suppression_millis";
+    final public static String GUI_UPDATE_INITIAL_MILLIS = "gui_update_initial_millis";
 
     final private static String SERVER_SUFFIX = "_SERVER";
     final private static String CLIENT_SUFFIX = "_CLIENT";
@@ -271,6 +273,20 @@ public class Preferences
                     new Object[] { color_pref_name, color });
         }
         return rgb;
+    }
+    
+    /** @return Delay in millisecs for the initial update after trigger */
+    public static long getGuiThrottleInitialMillis()
+    {
+        final IPreferencesService service = Platform.getPreferencesService();
+        return service.getLong(Activator.ID, GUI_UPDATE_INITIAL_MILLIS, 100, null);
+    }
+
+    /** @return Delay in millisecs for the suppression of a burst of events */
+    public static long getGuiThrottleSuppressionMillis()
+    {
+        final IPreferencesService service = Platform.getPreferencesService();
+        return service.getLong(Activator.ID, GUI_UPDATE_SUPPRESSION_MILLIS, 1000, null);
     }
 
     /** @return Maximum number of context menu entries before summarizing them */

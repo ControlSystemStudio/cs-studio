@@ -13,8 +13,8 @@ import java.util.regex.Pattern;
 
 import org.csstudio.alarm.beast.client.AlarmTreeItem;
 import org.csstudio.alarm.beast.client.AlarmTreePV;
+import org.csstudio.alarm.beast.client.GUIUpdateThrottle;
 import org.csstudio.alarm.beast.ui.ContextMenuHelper;
-import org.csstudio.alarm.beast.ui.GUIUpdateThrottle;
 import org.csstudio.alarm.beast.ui.Messages;
 import org.csstudio.alarm.beast.ui.SelectionHelper;
 import org.csstudio.alarm.beast.ui.SeverityColorProvider;
@@ -98,9 +98,7 @@ public class GUI implements AlarmClientModelListener
     private Label error_message;
 
     /** GUI updates are throttled to reduce flicker */
-    final private GUIUpdateThrottle gui_update =
-        new GUIUpdateThrottle(Preferences.getInitialMillis(),
-                              Preferences.getSuppressionMillis())
+    final private GUIUpdateThrottle gui_update = new GUIUpdateThrottle()
     {
         @Override
         protected void fire()

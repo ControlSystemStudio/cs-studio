@@ -12,7 +12,7 @@ import java.util.List;
 import java.util.logging.Level;
 
 import org.csstudio.alarm.beast.client.AlarmTreeItem;
-import org.csstudio.alarm.beast.ui.GUIUpdateThrottle;
+import org.csstudio.alarm.beast.client.GUIUpdateThrottle;
 import org.csstudio.alarm.beast.ui.SeverityColorProvider;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.DisposeEvent;
@@ -76,7 +76,7 @@ public class View extends ViewPart implements AreaAlarmModelListener
 		createAlarmPanelGUI(parent);
 
 		// Schedule updates
-		throttle = new GUIUpdateThrottle(100, 1000)
+		throttle = new GUIUpdateThrottle()
 		{
 			@Override
 	        protected void fire()
