@@ -8,14 +8,12 @@
 package org.csstudio.alarm.beast.ui.areapanel;
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 
 import org.csstudio.alarm.beast.SeverityLevel;
 import org.csstudio.alarm.beast.client.AlarmTreeItem;
 import org.csstudio.alarm.beast.ui.ContextMenuHelper;
 import org.csstudio.alarm.beast.ui.SeverityColorProvider;
-import org.csstudio.alarm.beast.ui.actions.AcknowledgeAction;
 import org.csstudio.alarm.beast.ui.actions.AlarmPerspectiveAction;
 import org.eclipse.jface.action.GroupMarker;
 import org.eclipse.jface.action.IMenuListener;
@@ -70,6 +68,7 @@ public class AlarmPanelItem extends Canvas implements PaintListener
 			@Override
 			public void menuAboutToShow(IMenuManager manager)
 			{
+				manager.add(new ShowInAlarmTreeAction(item));
 				new ContextMenuHelper(null, manager, getShell(), item_as_list, true);
                 manager.add(new Separator());
                 manager.add(new AlarmPerspectiveAction());

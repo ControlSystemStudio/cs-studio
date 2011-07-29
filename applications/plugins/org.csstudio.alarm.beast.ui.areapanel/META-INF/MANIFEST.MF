@@ -15,4 +15,5 @@ Require-Bundle: org.junit4,
  org.csstudio.apputil;bundle-version="3.0.0",
  org.csstudio.apputil.ui;bundle-version="3.0.0",
  org.csstudio.alarm.beast;bundle-version="3.0.0",
- org.csstudio.alarm.beast.ui;bundle-version="3.0.0"
+ org.csstudio.alarm.beast.ui;bundle-version="3.0.0",
+ org.csstudio.alarm.beast.ui.alarmtree;bundle-version="3.0.1"
