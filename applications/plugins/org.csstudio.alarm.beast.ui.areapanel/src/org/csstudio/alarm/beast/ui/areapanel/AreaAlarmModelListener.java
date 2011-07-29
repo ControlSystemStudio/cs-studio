@@ -7,4 +7,10 @@ public interface AreaAlarmModelListener
 
 	/** Invoked when some alarm(s) changed */
 	public void alarmsChanged();
+
+	/** Invoked when the server communication times out.
+	 *  <p>
+	 *  On recovery, there will be alarmsChanged calls
+	 */
+	public void serverTimeout();
 }

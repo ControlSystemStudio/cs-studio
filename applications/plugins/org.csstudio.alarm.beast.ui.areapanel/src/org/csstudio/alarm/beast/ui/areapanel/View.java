@@ -13,11 +13,14 @@ import java.util.logging.Level;
 
 import org.csstudio.alarm.beast.client.AlarmTreeItem;
 import org.csstudio.alarm.beast.client.GUIUpdateThrottle;
+import org.csstudio.alarm.beast.ui.Messages;
 import org.csstudio.alarm.beast.ui.SeverityColorProvider;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.DisposeEvent;
 import org.eclipse.swt.events.DisposeListener;
-import org.eclipse.swt.layout.FillLayout;
+import org.eclipse.swt.layout.FormAttachment;
+import org.eclipse.swt.layout.FormData;
+import org.eclipse.swt.layout.FormLayout;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Composite;
@@ -32,8 +35,14 @@ public class View extends ViewPart implements AreaAlarmModelListener
 	/** Model */
 	private AreaAlarmModel model;
 	
+	/** Colors for alarm severities */
 	private SeverityColorProvider color_provider;
 
+	/** Error display (server disconnect) */
+	private Label error_message;
+	
+	private volatile boolean have_error_message = true;
+	
 	/** GUI box that holds the {@link AlarmPanelItem}s */
 	private Composite panel_box;
 	
@@ -104,10 +113,64 @@ public class View extends ViewPart implements AreaAlarmModelListener
 	private void createAlarmPanelGUI(final Composite parent)
     {
 		color_provider = new SeverityColorProvider(parent);
-		parent.setLayout(new FillLayout());
+		parent.setLayout(new FormLayout());
+		
+		error_message = new Label(parent, 0);
+		FormData fd = new FormData();
+		fd.right = new FormAttachment(100);
+		fd.top = new FormAttachment(0);
+		error_message.setLayoutData(fd);
+		
 		panel_box = new Composite(parent, 0);
+		fd = new FormData();
+		fd.left = new FormAttachment(0);
+		fd.top = new FormAttachment(error_message);
+		fd.right = new FormAttachment(100);
+		fd.bottom = new FormAttachment(100);
+		panel_box.setLayoutData(fd);
+
+		setErrorMessage(Messages.WaitingForServer);
 		fillPanelBox();
     }
+	
+	private void setErrorMessage(final String text)
+	{
+		if (text == null  &&  ! have_error_message)
+				return;
+		
+		if (error_message.isDisposed())
+			return;
+		error_message.getDisplay().asyncExec(new Runnable()
+		{
+			@Override
+			public void run()
+			{
+				if (have_error_message && text == null)
+				{
+					error_message.setText(""); //$NON-NLS-1$
+			        error_message.setBackground(null);
+			        have_error_message = false;
+			        final FormData fd = (FormData)panel_box.getLayoutData();
+			        fd.top = new FormAttachment(0);
+			        panel_box.getParent().layout();
+			        return;
+				}
+				else if (text != null)
+				{
+					error_message.setText(text);
+			        error_message.setBackground(
+			        		error_message.getDisplay().getSystemColor(SWT.COLOR_MAGENTA));
+			        if (! have_error_message)
+			        {
+				        final FormData fd = (FormData)panel_box.getLayoutData();
+				        fd.top = new FormAttachment(error_message);
+				        have_error_message = true;
+			        }
+			        panel_box.getParent().layout();
+				}
+			}
+		});
+	}
 
 	/** Fill <code>panel_box</code> with items for model */
 	private void fillPanelBox()
@@ -159,9 +222,18 @@ public class View extends ViewPart implements AreaAlarmModelListener
 		});
     }
 
+	/** {@inheritDoc} */
 	@Override
     public void alarmsChanged()
     {
 		throttle.trigger();
+		setErrorMessage(null);
+    }
+
+	/** {@inheritDoc} */
+	@Override
+    public void serverTimeout()
+    {
+		setErrorMessage(Messages.ServerTimeout);
     }
 }

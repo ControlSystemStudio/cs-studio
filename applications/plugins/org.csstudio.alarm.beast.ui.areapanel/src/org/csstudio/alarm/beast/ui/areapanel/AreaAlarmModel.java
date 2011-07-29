@@ -93,7 +93,7 @@ public class AreaAlarmModel implements AlarmClientModelListener
 	@Override
     public void serverTimeout(final AlarmClientModel model)
     {
-	    // TODO Auto-generated method stub
+		listener.serverTimeout();
     }
 
 	/** {@inheritDoc} */
