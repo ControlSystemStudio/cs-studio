@@ -134,6 +134,7 @@ public class SQL
                 "INSERT INTO " + schema + "sample " +
                 "(channel_id, smpl_time, severity_id, status_id, str_val, nanosecs)" +
                 "VALUES (?,?,?,?,?,?)";
+            break;
          default:
         	 throw new Error("Unknown RDB Dialect " + dialect);
 		}
