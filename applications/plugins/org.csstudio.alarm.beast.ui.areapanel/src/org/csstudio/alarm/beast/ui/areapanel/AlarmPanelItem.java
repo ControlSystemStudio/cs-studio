@@ -7,9 +7,21 @@
  ******************************************************************************/
 package org.csstudio.alarm.beast.ui.areapanel;
 
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
+
 import org.csstudio.alarm.beast.SeverityLevel;
 import org.csstudio.alarm.beast.client.AlarmTreeItem;
+import org.csstudio.alarm.beast.ui.ContextMenuHelper;
 import org.csstudio.alarm.beast.ui.SeverityColorProvider;
+import org.csstudio.alarm.beast.ui.actions.AcknowledgeAction;
+import org.csstudio.alarm.beast.ui.actions.AlarmPerspectiveAction;
+import org.eclipse.jface.action.GroupMarker;
+import org.eclipse.jface.action.IMenuListener;
+import org.eclipse.jface.action.IMenuManager;
+import org.eclipse.jface.action.MenuManager;
+import org.eclipse.jface.action.Separator;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.PaintEvent;
 import org.eclipse.swt.events.PaintListener;
@@ -19,6 +31,8 @@ import org.eclipse.swt.graphics.Rectangle;
 import org.eclipse.swt.widgets.Canvas;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Display;
+import org.eclipse.swt.widgets.Menu;
+import org.eclipse.ui.IWorkbenchActionConstants;
 
 /** GUI element for one {@link AlarmTreeItem} on the alarm panel
  *  @author Kay Kasemir
@@ -34,14 +48,39 @@ public class AlarmPanelItem extends Canvas implements PaintListener
 	 *  @param color_provider
 	 *  @param item
 	 */
-	public AlarmPanelItem(final Composite parent, final SeverityColorProvider color_provider, AlarmTreeItem item)
+	public AlarmPanelItem(final Composite parent, final SeverityColorProvider color_provider,
+			final AlarmTreeItem item)
     {
 		super(parent, SWT.DOUBLE_BUFFERED);
 		this.color_provider = color_provider;
 		this.item = item;
 		addPaintListener(this);
+		addContextMenu();
     }
 	
+	private void addContextMenu()
+    {
+		final List<AlarmTreeItem> item_as_list = new ArrayList<AlarmTreeItem>(1);
+		item_as_list.add(item);
+
+		final MenuManager manager = new MenuManager();
+		manager.setRemoveAllWhenShown(true);
+		manager.addMenuListener(new IMenuListener()
+		{
+			@Override
+			public void menuAboutToShow(IMenuManager manager)
+			{
+				new ContextMenuHelper(null, manager, getShell(), item_as_list, true);
+                manager.add(new Separator());
+                manager.add(new AlarmPerspectiveAction());
+                manager.add(new Separator());
+                manager.add(new GroupMarker(IWorkbenchActionConstants.MB_ADDITIONS));
+			}
+		});
+		final Menu menu = manager.createContextMenu(this);
+		setMenu(menu);
+    }
+
 	/** Draw the item
 	 *  {@inheritDoc}
 	 */
