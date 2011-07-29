@@ -83,9 +83,12 @@ public class WebBrowserFigure extends AbstractWebBrowserFigure {
 			//so that multiple browsers can be properly disposed.
 			UIBundlingThread.getInstance().addRunnable(new Runnable() {			
 				public void run() {				
-					browserViewer.dispose();
-					browserViewer = null;
-					browser = null;
+					if(!browserViewer.isDisposed()){
+						browserViewer.dispose();
+						browserViewer = null;
+						browser = null;
+					}
+					
 				}
 			});
 		}

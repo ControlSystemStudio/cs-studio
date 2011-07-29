@@ -116,9 +116,11 @@ public class ComboFigure extends AbstractSWTWidgetFigure {
 				combo.getDisplay(), new Runnable() {
 			
 			public void run() {
-				combo.setMenu(null);
-				combo.dispose();
-				combo = null;				
+				if(!combo.isDisposed()){
+					combo.setMenu(null);
+					combo.dispose();
+					combo = null;			
+				}
 			}
 		});
 		
