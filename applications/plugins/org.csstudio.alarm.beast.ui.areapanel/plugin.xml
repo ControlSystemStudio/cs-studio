@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?eclipse version="3.4"?>
+<plugin>
+   <extension
+         point="org.eclipse.ui.views">
+      <category
+            id="org.csstudio"
+            name="CSS">
+      </category>
+      <view
+            category="org.csstudio"
+            class="org.csstudio.alarm.beast.ui.areapanel.View"
+            icon="icons/areapanel.png"
+            id="org.csstudio.alarm.beast.ui.areapanel"
+            name="%AreaPanel"
+            restorable="true">
+      </view>
+   </extension>
+   <extension
+         point="org.eclipse.ui.menus">
+      <menuContribution
+            allPopups="false"
+            locationURI="menu:alarm">
+         <command
+               commandId="org.eclipse.ui.views.showView"
+               icon="icons/areapanel.png"
+               label="%AreaPanel"
+               style="push">
+            <parameter
+                  name="org.eclipse.ui.views.showView.viewId"
+                  value="org.csstudio.alarm.beast.ui.areapanel">
+            </parameter>
+         </command>
+      </menuContribution>
+   </extension>
+
+</plugin>
