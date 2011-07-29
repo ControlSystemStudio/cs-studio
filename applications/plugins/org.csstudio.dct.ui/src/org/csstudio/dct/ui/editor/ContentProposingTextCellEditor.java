@@ -91,7 +91,7 @@ public class ContentProposingTextCellEditor extends TextCellEditor implements IC
 			if (contents.substring(position - 1, position).equals("$")) {
 				for (String key : aliases.keySet()) {
 					proposals.add(new FieldFunctionContentProposal("(" + key + ")", "$(" + key + ")", "Variable. Current value is "
-							+ aliases.get(key), 5));
+							+ aliases.get(key), 6));
 				}
 			}
 
