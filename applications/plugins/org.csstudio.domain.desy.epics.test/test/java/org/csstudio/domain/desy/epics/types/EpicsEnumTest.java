@@ -21,20 +21,21 @@
  */
 package org.csstudio.domain.desy.epics.types;
 
+import static org.csstudio.domain.desy.epics.types.EpicsEnum.RAW;
+import static org.csstudio.domain.desy.epics.types.EpicsEnum.SEP;
+import static org.csstudio.domain.desy.epics.types.EpicsEnum.STATE;
 import junit.framework.Assert;
 
 import org.junit.Test;
 
-import static org.csstudio.domain.desy.epics.types.EpicsEnum.*;
-
 /**
- * Test for {@link EpicsEnum}. 
- * 
+ * Test for {@link EpicsEnum}.
+ *
  * @author bknerr
  * @since 12.05.2011
  */
 public class EpicsEnumTest {
-    
+
     @Test(expected=IllegalArgumentException.class)
     public void testInvalidCreationFromString1() {
         EpicsEnum.createFromString("");
@@ -54,7 +55,7 @@ public class EpicsEnumTest {
     public void testInvalidCreationFromString4() {
         EpicsEnum.createFromString("STATE(hallo):2");
     }
-    
+
     @Test
     public void testRawCreationFromStringExponentialNotation() {
         EpicsEnum fromString = EpicsEnum.createFromString("RAW:1e6");
@@ -66,70 +67,71 @@ public class EpicsEnumTest {
 
     @Test
     public void testRawCreationFromStringNegativeInteger() {
-        EpicsEnum fromString = EpicsEnum.createFromString("RAW:-13");
+        final EpicsEnum fromString = EpicsEnum.createFromString("RAW:-13");
         Assert.assertEquals(Integer.valueOf(-13), fromString.getRaw());
     }
-    
+
     @Test
     public void testCreationFromString() {
-        EpicsEnum fromStateString = EpicsEnum.createFromString(STATE + "(0)" + SEP + "hallo");
+        final EpicsEnum fromStateString = EpicsEnum.createFromString(STATE + "(0)" + SEP + "hallo");
         Assert.assertTrue(fromStateString.isState());
         Assert.assertFalse(fromStateString.isRaw());
         Assert.assertEquals(Integer.valueOf(0), fromStateString.getStateIndex());
         Assert.assertEquals("hallo", fromStateString.getState());
         try {
             fromStateString.getRaw();
-        } catch (IllegalStateException e) {
+        } catch (final IllegalStateException e) {
             // Great.
         }
-        
-        EpicsEnum fromRawString = EpicsEnum.createFromString(RAW + SEP + "26");
+
+        final EpicsEnum fromRawString = EpicsEnum.createFromString(RAW + SEP + "26");
         Assert.assertFalse(fromRawString.isState());
         Assert.assertTrue(fromRawString.isRaw());
         Assert.assertEquals(Integer.valueOf(26), fromRawString.getRaw());
         try {
             fromRawString.getState();
-        } catch (IllegalStateException e) {
+        } catch (final IllegalStateException e) {
             // Great.
         }
         try {
             fromRawString.getStateIndex();
-        } catch (IllegalStateException e) {
+        } catch (final IllegalStateException e) {
             // Great.
         }
-        
+
     }
-    
+
     @Test
     public void testCreationFromRaw() {
-        EpicsEnum fromRaw = EpicsEnum.createFromRaw(1);
+        final EpicsEnum fromRaw = EpicsEnum.createFromRaw(1);
         Assert.assertFalse(fromRaw.isState());
         Assert.assertTrue(fromRaw.isRaw());
         Assert.assertEquals(Integer.valueOf(1), fromRaw.getRaw());
         try {
             fromRaw.getState();
-        } catch (IllegalStateException e) {
+        } catch (final IllegalStateException e) {
             // Great.
         }
         try {
             fromRaw.getStateIndex();
-        } catch (IllegalStateException e) {
+        } catch (final IllegalStateException e) {
             // Great.
         }
-        String string = fromRaw.toString();
+        final String string = fromRaw.toString();
         Assert.assertEquals(fromRaw, EpicsEnum.createFromString(string));
-        
+
     }
-    
+
     @Test
     public void testCreationFromState() {
-    
-        EpicsEnum fromStateName = EpicsEnum.createFromStateName("huhu");
+
+        final EpicsEnum fromStateName = EpicsEnum.createFromStateName("huhu");
         Assert.assertFalse(fromStateName.isRaw());
         Assert.assertTrue(fromStateName.isState());
-        String string = fromStateName.toString();
-        EpicsEnum fromString = EpicsEnum.createFromString(string);
+        final String stateStr = fromStateName.toString();
+        Assert.assertEquals("huhu", stateStr);
+        final EpicsEnum fromString = EpicsEnum.createFromString(stateStr);
         Assert.assertEquals(fromStateName, fromString);
     }
-    
+
 }
