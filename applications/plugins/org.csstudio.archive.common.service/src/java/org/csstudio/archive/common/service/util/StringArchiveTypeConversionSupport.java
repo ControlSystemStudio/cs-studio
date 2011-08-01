@@ -19,42 +19,32 @@
  * PROJECT IN THE FILE LICENSE.HTML. IF THE LICENSE IS NOT INCLUDED YOU MAY FIND A COPY
  * AT HTTP://WWW.DESY.DE/LEGAL/LICENSE.HTM
  */
-package org.csstudio.archive.common.service.sample;
+package org.csstudio.archive.common.service.util;
 
-import javax.annotation.CheckForNull;
+import java.util.Collection;
+
 import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
 
-import org.csstudio.archive.common.service.channel.ArchiveChannelId;
-import org.csstudio.domain.desy.alarm.IAlarm;
-import org.csstudio.domain.desy.system.ISystemVariable;
+import org.csstudio.domain.desy.typesupport.TypeSupportException;
+
+import com.google.common.base.Splitter;
+import com.google.common.collect.Lists;
 
 /**
- * Data transfer object for sample.
+ * TODO (bknerr) :
  *
  * @author bknerr
- * @since 24.01.2011
- * @param <V> the data value type
- * @param <T> the css value type with alarm information
+ * @since 13.12.2010
  */
-public class ArchiveSample<V, T extends ISystemVariable<V>>
-                          implements IArchiveSample<V, T> {
+public class StringArchiveTypeConversionSupport extends ArchiveTypeConversionSupport<String> {
 
-    private static final long serialVersionUID = -2244316283884247177L;
-
-    private final ArchiveChannelId _channelId;
-    private final T _sysVar;
-    private final IAlarm _alarm;
 
     /**
      * Constructor.
+     * @param type
      */
-    public ArchiveSample(@Nonnull final ArchiveChannelId channelId,
-                         @Nonnull final T data,
-                         @Nullable final IAlarm alarm) {
-        _channelId = channelId;
-        _sysVar = data;
-        _alarm = alarm;
+    StringArchiveTypeConversionSupport() {
+        super(String.class);
     }
 
     /**
@@ -62,8 +52,8 @@ public class ArchiveSample<V, T extends ISystemVariable<V>>
      */
     @Override
     @Nonnull
-    public ArchiveChannelId getChannelId() {
-        return _channelId;
+    public String convertToArchiveString(@Nonnull final String value) throws TypeSupportException {
+        return value;
     }
 
     /**
@@ -71,8 +61,8 @@ public class ArchiveSample<V, T extends ISystemVariable<V>>
      */
     @Override
     @Nonnull
-    public V getValue() {
-        return _sysVar.getData();
+    public String convertFromArchiveString(@Nonnull final String value) {
+        return value;
     }
 
     /**
@@ -80,12 +70,17 @@ public class ArchiveSample<V, T extends ISystemVariable<V>>
      */
     @Override
     @Nonnull
-    public T getSystemVariable() {
-        return _sysVar;
+    public String convertFromDouble(@Nonnull final Double value) {
+        return value.toString();
     }
 
-    @CheckForNull
-    public IAlarm getAlarm() {
-        return _alarm;
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    @Nonnull
+    public Collection<String> convertFromArchiveStringToMultiScalar(@Nonnull final Class<?> collectionClass,
+                                                                    @Nonnull final String values) throws TypeSupportException {
+        return Lists.newArrayList(Splitter.on(ARCHIVE_COLLECTION_ELEM_SEP).split(values));
     }
 }
