@@ -21,7 +21,6 @@
  */
 package org.csstudio.archive.common.service.mysqlimpl.persistengine;
 
-import java.io.File;
 import java.util.Collection;
 import java.util.Comparator;
 import java.util.SortedSet;
@@ -86,9 +85,9 @@ public class PersistEngineDataManager {
     private final AtomicInteger _workerId = new AtomicInteger(0);
 
     private final Integer _prefPeriodInMS;
-    private final File _prefRescueDir;
-    private final String _prefSmtpHost;
-    private final String _prefEmailAddress;
+//    private final File _prefRescueDir;
+//    private final String _prefSmtpHost;
+//    private final String _prefEmailAddress;
 
     private final ArchiveConnectionHandler _connectionHandler;
 
@@ -110,9 +109,9 @@ public class PersistEngineDataManager {
         _connectionHandler = connectionHandler;
 
         _prefPeriodInMS = prefs.getPeriodInMS();
-        _prefRescueDir = prefs.getDataRescueDir();
-        _prefSmtpHost = prefs.getSmtpHost();
-        _prefEmailAddress = prefs.getEmailAddress();
+//        _prefRescueDir = prefs.getDataRescueDir();
+//        _prefSmtpHost = prefs.getSmtpHost();
+//        _prefEmailAddress = prefs.getEmailAddress();
 
         addGracefulShutdownHook(_handlerProvider);
     }

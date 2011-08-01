@@ -57,9 +57,7 @@ import com.google.common.collect.Lists;
  * @author bknerr
  * @since 28.07.2011
  */
-public class PersistDataWorkerUnitTest {
-
-
+public class PersistDataWorkerHeadlessTest {
 
     private static ArchiveConnectionHandler HANDLER;
     private static PersistEngineDataManager PERSIST_MGR;
@@ -131,7 +129,7 @@ public class PersistDataWorkerUnitTest {
 
     @BeforeClass
     public static void setup() throws ArchiveConnectionException {
-        PropertyConfigurator.configure("log4j.properties");
+        PropertyConfigurator.configure("../../../products/DESY/plugins/org.csstudio.archive.common.engine.product.log4j/log4j.properties");
 
         final MySQLArchivePreferenceService prefsMock = ArchiveDaoTestHelper.createPrefServiceMock();
 
