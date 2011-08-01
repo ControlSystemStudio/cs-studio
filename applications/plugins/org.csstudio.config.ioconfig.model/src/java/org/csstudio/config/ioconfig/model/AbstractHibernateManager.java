@@ -72,6 +72,7 @@ public abstract class AbstractHibernateManager extends Observable implements IHi
      */
     protected AbstractHibernateManager() {
         super();
+        CLASSES.add(VirtualRoot.class);
         CLASSES.add(NodeImageDBO.class);
         CLASSES.add(ChannelDBO.class);
         CLASSES.add(ChannelStructureDBO.class);
