@@ -115,23 +115,24 @@ public abstract class AbstractScale extends Figure{
     public String format(Object obj) {     
         	
             if (isDateEnabled()) {
-              	if (formatPattern == null || formatPattern.equals("")
+              	if (autoFormat || formatPattern == null || formatPattern.equals("")
             			|| formatPattern.equals(default_decimal_format)
             			|| formatPattern.equals(DEFAULT_ENGINEERING_FORMAT)) {            		
-            		formatPattern =  DEFAULT_DATE_FORMAT;                            
-	                if (timeUnit == Calendar.MILLISECOND) {
+            		formatPattern =  DEFAULT_DATE_FORMAT;     
+            		double length = Math.abs(max - min);
+	                if (length <=1000 || timeUnit == Calendar.MILLISECOND) { //less than a second
 	                	formatPattern = "HH:mm:ss.SSS";
-	                } else if (timeUnit == Calendar.SECOND) {
+	                } else if (length <=3600000d || timeUnit == Calendar.SECOND) { //less than a hour
 	                	formatPattern = "HH:mm:ss";
-	                } else if (timeUnit == Calendar.MINUTE) {
+	                } else if (length <= 86400000d || timeUnit == Calendar.MINUTE) { // less than a day
 	                	formatPattern = "HH:mm";
-	                } else if (timeUnit == Calendar.HOUR_OF_DAY) {
+	                } else if (length <= 604800000d || timeUnit == Calendar.HOUR_OF_DAY) { //less than a week
 	                	formatPattern = "dd HH:mm";
-	                } else if (timeUnit == Calendar.DATE) {
+	                } else if (length <= 2592000000d || timeUnit == Calendar.DATE) { //less than a month
 	                	formatPattern = "MMMMM d";
-	                } else if (timeUnit == Calendar.MONTH) {
+	                } else if (length <= 31536000000d ||timeUnit == Calendar.MONTH) { //less than a year
 	                	formatPattern = "yyyy MMMMM";
-	                } else if (timeUnit == Calendar.YEAR) {
+	                } else {//if (timeUnit == Calendar.YEAR) {
 	                	formatPattern = "yyyy";
 	                } 
 	                autoFormat = true;

@@ -339,10 +339,14 @@ public class XYGraphEditPart extends AbstractPVWidgetEditPart {
 					axis.setDateEnabled(false);
 					axis.setAutoFormat(true);
 					break;
+				}else if((Integer)newValue == 8){
+					axis.setDateEnabled(true);
+					axis.setAutoFormat(true);
+				}else {
+					String format = XYGraphModel.TIME_FORMAT_ARRAY[(Integer)newValue];
+					axis.setDateEnabled(true);
+					axis.setFormatPattern(format);
 				}
-				String format = XYGraphModel.TIME_FORMAT_ARRAY[(Integer)newValue];
-				axis.setDateEnabled(true);
-				axis.setFormatPattern(format);
 				break;
 			case SCALE_FONT:
 				axis.setFont(((OPIFont)newValue).getSWTFont());
