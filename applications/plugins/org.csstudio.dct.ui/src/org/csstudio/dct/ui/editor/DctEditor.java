@@ -170,6 +170,8 @@ public final class DctEditor extends MultiPageEditorPart implements CommandStack
 
     private boolean _caseSensetiv;
 
+    private Text _searchBox;
+
 	/**
 	 * Constructor.
 	 */
@@ -289,16 +291,16 @@ public final class DctEditor extends MultiPageEditorPart implements CommandStack
 			}
 		});
 		    
-		final Text searchBox = new Text(c, SWT.SEARCH);
-		searchBox.setMessage("Search");
-		searchBox.setLayoutData(GridDataFactory.fillDefaults().hint(200, 0).create());
-		searchBox.addModifyListener(new SearchModifyListener(searchBox));
-		searchBox.addKeyListener(new KeyAdapter() {
+		_searchBox = new Text(c, SWT.SEARCH);
+		_searchBox.setMessage("Search");
+		_searchBox.setLayoutData(GridDataFactory.fillDefaults().hint(200, 0).create());
+		_searchBox.addModifyListener(new SearchModifyListener(_searchBox));
+		_searchBox.addKeyListener(new KeyAdapter() {
 		    
 		    @Override
             public void keyReleased(KeyEvent e) {
-		        if(e.keyCode==SWT.KEYPAD_CR||e.keyCode==SWT.CR) {
-		            searchAndMarkInPreview(searchBox.getText(), true, isCaseSensetiv());
+		        if(e.keyCode==SWT.KEYPAD_CR||e.keyCode==SWT.CR||e.keyCode==SWT.F3) {
+		            searchAndMarkInPreview(_searchBox.getText(), true, isCaseSensetiv());
 		        }
 		    }
         });
@@ -307,7 +309,7 @@ public final class DctEditor extends MultiPageEditorPart implements CommandStack
 		
 		Button searchButton = new Button(c, SWT.NONE);
 		searchButton.setLayoutData(swtDefaults.create());
-		searchButton.addSelectionListener(new SearchListener(searchBox));
+		searchButton.addSelectionListener(new SearchListener(_searchBox));
 		searchButton.setText("Search");
 		
 		final Button caseSensetivButton = new Button(c, SWT.CHECK);
@@ -365,7 +367,15 @@ public final class DctEditor extends MultiPageEditorPart implements CommandStack
 		dbFilePreviewText.setLayoutData(LayoutUtil.createGridDataForFillingCell());
 		dbFilePreviewText.setEditable(false);
 		dbFilePreviewText.setFont(CustomMediaFactory.getInstance().getFont("Courier", 11, SWT.NORMAL));
-
+		dbFilePreviewText.addKeyListener(new KeyAdapter() {
+            
+            @Override
+            public void keyReleased(KeyEvent e) {
+                if(e.keyCode==SWT.F3) {
+                    searchAndMarkInPreview(_searchBox.getText(), true, isCaseSensetiv());
+                }
+            }
+        });
 		int index = addPage(composite);
 		setPageText(index, "Preview DB-File");
 	}
@@ -415,6 +425,7 @@ public final class DctEditor extends MultiPageEditorPart implements CommandStack
             dbFilePreviewText.setText(export);
             dbFilePreviewText.setStyleRanges(ranges);
 		}
+		_searchBox.setFocus();
 
 	}
 
