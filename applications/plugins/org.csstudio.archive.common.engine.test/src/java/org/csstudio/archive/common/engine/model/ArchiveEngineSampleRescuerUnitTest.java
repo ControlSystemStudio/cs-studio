@@ -21,32 +21,43 @@
  */
 package org.csstudio.archive.common.engine.model;
 
-import java.io.BufferedInputStream;
 import java.io.File;
 import java.io.FileInputStream;
-import java.io.FileNotFoundException;
 import java.io.IOException;
-import java.io.ObjectInputStream;
+import java.io.InputStreamReader;
+import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Iterator;
 import java.util.List;
 
+import javax.annotation.Nonnull;
+
+import org.apache.log4j.PropertyConfigurator;
 import org.csstudio.archive.common.service.channel.ArchiveChannelId;
 import org.csstudio.archive.common.service.sample.ArchiveSample;
+import org.csstudio.archive.common.service.sample.ArchiveSampleProtos;
+import org.csstudio.archive.common.service.sample.ArchiveSampleProtos.Samples;
 import org.csstudio.archive.common.service.sample.IArchiveSample;
-import org.csstudio.archive.common.service.util.DataRescueException;
-import org.csstudio.archive.common.service.util.DataRescueResult;
+import org.csstudio.archive.common.service.util.ArchiveTypeConversionSupport;
 import org.csstudio.domain.desy.epics.alarm.EpicsAlarm;
 import org.csstudio.domain.desy.epics.types.EpicsEnum;
 import org.csstudio.domain.desy.epics.types.EpicsSystemVariable;
 import org.csstudio.domain.desy.system.ControlSystem;
 import org.csstudio.domain.desy.system.ISystemVariable;
-import org.csstudio.domain.desy.time.TimeInstant;
 import org.csstudio.domain.desy.time.TimeInstant.TimeInstantBuilder;
+import org.csstudio.domain.desy.typesupport.TypeSupportException;
+import org.junit.AfterClass;
 import org.junit.Assert;
 import org.junit.Before;
-import org.junit.Rule;
 import org.junit.Test;
-import org.junit.rules.TemporaryFolder;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import com.google.common.collect.Iterables;
+import com.google.common.collect.Lists;
+import com.google.common.io.Files;
+import com.google.protobuf.TextFormat;
 
 /**
  * Test for {@link ArchiveEngineSampleRescuer}.
@@ -55,22 +66,27 @@ import org.junit.rules.TemporaryFolder;
  * @since Mar 28, 2011
  */
 public class ArchiveEngineSampleRescuerUnitTest {
-
+    /**
+     * Rolling file appender for serialised data of samples.
+     */
+    private static final Logger RESCUE_LOG =
+        LoggerFactory.getLogger("SerializedSamplesRescueLogger");
 
     private List<IArchiveSample<Object, ISystemVariable<Object>>> _samples;
-    private File _rescueDir;
-
-    @Rule
-    public TemporaryFolder _folder = new TemporaryFolder();
+    private static File RESCUE_FILE;
 
     @SuppressWarnings({ "unchecked", "rawtypes" })
     @Before
     public void setup() {
-        _rescueDir = _folder.newFolder("test");
+        PropertyConfigurator.configure("../../../products/DESY/plugins/org.csstudio.archive.common.engine.product.log4j/log4j.properties");
+
+        RESCUE_FILE = new File("rescue/samples/samples.ser");
+
+        ArchiveTypeConversionSupport.install();
 
         final IArchiveSample<Double, ISystemVariable<Double>> sample1 =
             new ArchiveSample<Double, ISystemVariable<Double>>(new ArchiveChannelId(1),
-                                                               new EpicsSystemVariable("foo",
+                                                               new EpicsSystemVariable("leonard",
                                                                                        Double.valueOf(2.0),
                                                                                        ControlSystem.EPICS_DEFAULT,
                                                                                        TimeInstantBuilder.fromNow(),
@@ -78,7 +94,7 @@ public class ArchiveEngineSampleRescuerUnitTest {
                                                                null);
         final IArchiveSample<Integer, ISystemVariable<Integer>> sample2 =
             new ArchiveSample<Integer, ISystemVariable<Integer>>(new ArchiveChannelId(2),
-                                                                 new EpicsSystemVariable("bar",
+                                                                 new EpicsSystemVariable("sheldon",
                                                                                          Integer.valueOf(26),
                                                                                          ControlSystem.EPICS_DEFAULT,
                                                                                          TimeInstantBuilder.fromNow(),
@@ -86,47 +102,118 @@ public class ArchiveEngineSampleRescuerUnitTest {
                                                                  null);
         final IArchiveSample<EpicsEnum, ISystemVariable<EpicsEnum>> sample3 =
             new ArchiveSample<EpicsEnum, ISystemVariable<EpicsEnum>>(new ArchiveChannelId(3),
-                                                                     new EpicsSystemVariable("bar",
+                                                                     new EpicsSystemVariable("howard",
                                                                                              EpicsEnum.createFromRaw(666),
                                                                                              ControlSystem.EPICS_DEFAULT,
                                                                                              TimeInstantBuilder.fromNow(),
                                                                                              EpicsAlarm.UNKNOWN),
                                                                      null);
+        final IArchiveSample<Collection<Double>, ISystemVariable<Collection<Double>>> sample4 =
+            new ArchiveSample<Collection<Double>, ISystemVariable<Collection<Double>>>(new ArchiveChannelId(3),
+                    new EpicsSystemVariable("rajesh",
+                                            Lists.newArrayList(1.0, 2.0, 3.0, 4.0, 5.0),
+                                            ControlSystem.EPICS_DEFAULT,
+                                            TimeInstantBuilder.fromNow(),
+                                            EpicsAlarm.UNKNOWN),
+                                            null);
 
         _samples = new ArrayList();
         _samples.add((IArchiveSample) sample1);
         _samples.add((IArchiveSample) sample2);
         _samples.add((IArchiveSample) sample3);
+        _samples.add((IArchiveSample) sample4);
 
     }
 
     @Test
-    public void saveToPathTest() throws DataRescueException, IOException, ClassNotFoundException {
-        final TimeInstant now = TimeInstantBuilder.fromNow();
+    public void saveToPathTest() throws InterruptedException, TypeSupportException {
+        Assert.assertTrue(RESCUE_FILE.exists() && RESCUE_FILE.isFile());
 
-        final DataRescueResult rescueResult =
-            ArchiveEngineSampleRescuer.with(_samples).at(now).to(_rescueDir).rescue();
+        final ArchiveSampleProtos.Samples.Builder gpbSamplesBuilder =
+            ArchiveSampleProtos.Samples.newBuilder();
 
-        final File infile = new File(rescueResult.getFilePath());
-        Assert.assertNotNull(infile);
+        final Samples gpbSamples = buildGPBSamples(gpbSamplesBuilder);
 
-        final List<IArchiveSample<?, ?>> result = readSamplesFromFile(infile);
+        RESCUE_LOG.info(gpbSamples.toString());
 
-        Assert.assertEquals(3, result.size());
-        Assert.assertEquals(Double.valueOf(2.0), result.get(0).getValue());
-        Assert.assertEquals(Integer.valueOf(26), result.get(1).getValue());
-        Assert.assertEquals(Integer.valueOf(666), ((EpicsEnum) result.get(2).getValue()).getRaw());
+        Thread.sleep(500);
+
+        final Samples result = readSamplesFromFile(gpbSamplesBuilder);
+
+        assertResult(result);
     }
 
-    private List<IArchiveSample<?, ?>> readSamplesFromFile(final File infile) throws IOException,
-                                                                         FileNotFoundException,
-                                                                         ClassNotFoundException {
-        final ObjectInputStream objectIn = new ObjectInputStream(new BufferedInputStream(new FileInputStream(infile)));
-        @SuppressWarnings("unchecked")
-        final
-        List<IArchiveSample<?,?>> result = (List<IArchiveSample<?,?>>) objectIn.readObject();
-        objectIn.close();
+    @SuppressWarnings("unchecked")
+    private void assertResult(@Nonnull final Samples result) throws TypeSupportException {
+        Assert.assertEquals(_samples.size(), result.getSampleCount());
+
+        final Iterator<IArchiveSample<Object, ISystemVariable<Object>>> iterator = _samples.iterator();
+
+        Assert.assertEquals(iterator.next().getValue(),
+                            ArchiveTypeConversionSupport.fromArchiveString(Double.class, result.getSample(0).getData()));
+        Assert.assertEquals(iterator.next().getValue(),
+                            ArchiveTypeConversionSupport.fromArchiveString(Integer.class, result.getSample(1).getData()));
+        Assert.assertEquals(iterator.next().getValue(),
+                            ArchiveTypeConversionSupport.fromArchiveString(EpicsEnum.class, result.getSample(2).getData()));
+
+
+        final Collection<Double> collResult =
+            ArchiveTypeConversionSupport.fromMultiScalarArchiveString(ArrayList.class,
+                                                                      Double.class,
+                                                                      result.getSample(3).getData());
+        Assert.assertTrue(Iterables.size(collResult) == 5);
+
+        final Iterator<Double> iter = collResult.iterator();
+        for (final Double element : (Collection<Double>) iterator.next().getValue()) {
+            Assert.assertEquals(iter.next(), element);
+        }
+    }
+
+    private Samples buildGPBSamples(@Nonnull final ArchiveSampleProtos.Samples.Builder gpbSamples) throws TypeSupportException {
+        final ArchiveSampleProtos.ArchiveSample.Builder builder =
+            ArchiveSampleProtos.ArchiveSample.newBuilder();
+
+        for (final IArchiveSample<Object, ISystemVariable<Object>> sample : _samples) {
+            final ISystemVariable<Object> sysVar = sample.getSystemVariable();
+            //builder.clear();
+            final ArchiveSampleProtos.ArchiveSample gpbSample =
+                builder.setChannelId(sysVar.getName())
+                       .setControlSystemId(sysVar.getOrigin().getId())
+                       .setNanosSinceEpoch(sysVar.getTimestamp().getNanos())
+                       .setData(ArchiveTypeConversionSupport.toArchiveString(sysVar.getData()))
+                       .build();
+            gpbSamples.addSample(gpbSample);
+        }
+        return gpbSamples.build();
+    }
+
+    private Samples readSamplesFromFile(@Nonnull final ArchiveSampleProtos.Samples.Builder gpbSamples) {
+        gpbSamples.clear();
+        gpbSamples.build();
+        InputStreamReader reader = null;
+        try {
+            reader = new InputStreamReader(new FileInputStream("rescue/samples/samples.ser"), "ASCII");
+            TextFormat.merge(reader, gpbSamples);
+        } catch (final UnsupportedEncodingException e) {
+            Assert.fail(e.getMessage());
+        } catch (final IOException e) {
+            Assert.fail(e.getMessage());
+        } finally {
+            if (reader != null) {
+                try {
+                    reader.close();
+                } catch (final IOException e) {
+                    Assert.fail(e.getMessage());
+                }
+            }
+        }
+        final Samples result = gpbSamples.build();
         return result;
     }
 
+    @AfterClass
+    public static void teardown() throws IOException {
+        Files.write(new byte[0], RESCUE_FILE);
+        Assert.assertTrue(RESCUE_FILE.length() == 0L);
+    }
 }
