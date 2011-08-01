@@ -2,7 +2,9 @@
 #
 # Script that triggers a build of "everything"
 #
-# Runs on Windows with cygwin installed
+# Runs on Windows with cygwin installed:
+#
+#  time source make.sh
 #
 # Kay Kasemir
 CYGDRIVE=/cygdrive/c
@@ -18,8 +20,7 @@ $ANT get_sources
 for prod in alarmconfig alarmserver archiveengine css engineconfig jms2rdb
 do
 	echo Building $prod Product
-	java -jar $ECLIPSE/plugins/org.eclipse.equinox.launcher_*.jar \
-	  -application org.eclipse.ant.core.antRunner \
+	$ECLIPSE_ANT \
 	  -buildfile $ECLIPSE/plugins/org.eclipse.pde.build_$PDE_VER/scripts/productBuild/productBuild.xml \
 	  -Dbuilder=$TOP/products/KEK/plugins/org.csstudio.kek.build/$prod \
 	  -DbuildDirectory=$BUILDDIR \
@@ -34,8 +35,7 @@ do
 	echo Building $feature Features
 	# Features depend on the CSS product, so they will only compile
 	# after the product compiled OK
-	java -jar $ECLIPSE/plugins/org.eclipse.equinox.launcher_*.jar \
-	  -application org.eclipse.ant.core.antRunner \
+	$ECLIPSE_ANT \
 	  -buildfile $ECLIPSE/plugins/org.eclipse.pde.build_$PDE_VER/scripts/build.xml \
 	  -Dbuilder=$TOP/products/KEK/plugins/org.csstudio.kek.build/$feature \
 	  -DbuildDirectory=$BUILDDIR \
