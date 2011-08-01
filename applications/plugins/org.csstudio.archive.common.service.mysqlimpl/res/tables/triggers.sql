@@ -1,7 +1,6 @@
 DROP TRIGGER IF EXISTS updateLastSampleTime//
 
-CREATE 
-    TRIGGER updateLastSampleTime 
+CREATE TRIGGER updateLastSampleTime 
         BEFORE INSERT ON sample 
         FOR EACH ROW 
             BEGIN 
