@@ -134,6 +134,9 @@ public class ContentProposingTextCellEditor extends TextCellEditor implements IC
 						currentParameter += s;
 					}
 				}
+				if(currentParameterIndex==0) {
+				    knownParameters.add(parameters);
+				}
 
 				for (FieldFunctionExtension e : extensions) {
 					if (name.equals(e.getName())) {
