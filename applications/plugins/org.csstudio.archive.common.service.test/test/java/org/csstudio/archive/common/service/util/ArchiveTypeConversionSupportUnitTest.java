@@ -19,13 +19,13 @@
  * PROJECT IN THE FILE LICENSE.HTML. IF THE LICENSE IS NOT INCLUDED YOU MAY FIND A COPY
  * AT HTTP://WWW.DESY.DE/LEGAL/LICENSE.HTM
  */
-package org.csstudio.archive.common.service.mysqlimpl.types;
+package org.csstudio.archive.common.service.util;
 
-import static org.csstudio.archive.common.service.mysqlimpl.types.ArchiveTypeConversionSupport.ARCHIVE_COLLECTION_ELEM_SEP;
-import static org.csstudio.archive.common.service.mysqlimpl.types.ArchiveTypeConversionSupport.ARCHIVE_COLLECTION_PREFIX;
-import static org.csstudio.archive.common.service.mysqlimpl.types.ArchiveTypeConversionSupport.ARCHIVE_COLLECTION_SUFFIX;
-import static org.csstudio.archive.common.service.mysqlimpl.types.ArchiveTypeConversionSupport.collectionEmbrace;
-import static org.csstudio.archive.common.service.mysqlimpl.types.ArchiveTypeConversionSupport.collectionRelease;
+import static org.csstudio.archive.common.service.util.ArchiveTypeConversionSupport.ARCHIVE_COLLECTION_ELEM_SEP;
+import static org.csstudio.archive.common.service.util.ArchiveTypeConversionSupport.ARCHIVE_COLLECTION_PREFIX;
+import static org.csstudio.archive.common.service.util.ArchiveTypeConversionSupport.ARCHIVE_COLLECTION_SUFFIX;
+import static org.csstudio.archive.common.service.util.ArchiveTypeConversionSupport.collectionEmbrace;
+import static org.csstudio.archive.common.service.util.ArchiveTypeConversionSupport.collectionRelease;
 
 import java.util.Collection;
 import java.util.Iterator;
@@ -33,6 +33,7 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Vector;
 
+import org.csstudio.archive.common.service.util.ArchiveTypeConversionSupport;
 import org.csstudio.domain.desy.epics.types.EpicsEnum;
 import org.csstudio.domain.desy.typesupport.TypeSupportException;
 import org.junit.Assert;
@@ -173,7 +174,7 @@ public class ArchiveTypeConversionSupportUnitTest {
                     final EpicsEnum tFromA = ArchiveTypeConversionSupport.fromArchiveString(EpicsEnum.class, archiveString);
                     Assert.assertNotNull(tFromA);
                     Assert.assertEquals("MyState", tFromA.getState());
-                    
+
                 }
         } catch (final TypeSupportException e) {
             Assert.fail();

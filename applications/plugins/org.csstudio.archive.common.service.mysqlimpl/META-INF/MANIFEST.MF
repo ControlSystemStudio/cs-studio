@@ -21,4 +21,3 @@ Require-Bundle: org.csstudio.domain.desy;bundle-version="1.0.0",
  org.slf4j;bundle-version="1.6.1"
 Bundle-Vendor: Desy <css-developer@desy.de>, Bastian Knerr
 Bundle-ClassPath: .
-Export-Package: org.csstudio.archive.common.service.mysqlimpl.types

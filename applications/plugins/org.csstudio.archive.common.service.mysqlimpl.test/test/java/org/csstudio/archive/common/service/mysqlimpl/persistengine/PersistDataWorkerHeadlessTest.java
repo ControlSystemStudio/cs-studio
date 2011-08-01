@@ -89,6 +89,7 @@ public class PersistDataWorkerHeadlessTest {
         @SuppressWarnings({ "rawtypes", "unchecked" })
             @Override
             public Collection<BatchQueueHandlerSupport<?>> getHandlers() {
+                @SuppressWarnings("synthetic-access")
                 final BatchQueueHandlerSupport<IArchiveSample> batchHandler =
                     new BatchQueueHandlerSupport<IArchiveSample>(IArchiveSample.class,
                                                                  HANDLER.getDatabaseName(),
