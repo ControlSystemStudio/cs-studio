@@ -216,7 +216,7 @@ public final class DctEditor extends MultiPageEditorPart implements CommandStack
 		final Text searchBox = new Text(c, SWT.None);
 		searchBox.addModifyListener(new ModifyListener() {
 			public void modifyText(ModifyEvent e) {
-				searchAndMarkInPreview(searchBox.getText(), false);
+				searchAndMarkInPreview(searchBox.getText(), false, false);
 			}
 		});
 
@@ -224,7 +224,7 @@ public final class DctEditor extends MultiPageEditorPart implements CommandStack
 		searchButton.addMouseListener(new MouseAdapter() {
 			@Override
 			public void mouseUp(MouseEvent e) {
-				searchAndMarkInPreview(searchBox.getText(), true);
+				searchAndMarkInPreview(searchBox.getText(), true, false);
 			}
 		});
 		searchButton.setText("Search");
@@ -273,18 +273,25 @@ public final class DctEditor extends MultiPageEditorPart implements CommandStack
 		setPageText(index, "Preview DB-File");
 	}
 
-	private void searchAndMarkInPreview(String criteria, boolean startFromCaret) {
-
-		if (criteria != null && criteria.length() > 0) {
+	private void searchAndMarkInPreview(String criteria2, boolean startFromCaret, boolean caseSensitiv) {
+		if (criteria2 != null && criteria2.length() > 0) {
 			int offset = startFromCaret?dbFilePreviewText.getCaretOffset() : 0;
-			String text = dbFilePreviewText.getText();
+			String text;
+			String criteria;
+			if(caseSensitiv) {
+			   text = dbFilePreviewText.getText();
+			   criteria = criteria2;
+			} else {
+			    text = dbFilePreviewText.getText().toLowerCase();
+			    criteria = criteria2.toLowerCase();
+			}
 			int index = text.substring(offset).indexOf(criteria);
 			
 			if(index>-1) {
 				int pos = offset + index;
 				dbFilePreviewText.setSelection(pos, pos + criteria.length());
-			} else {
-				searchAndMarkInPreview(criteria, false);
+			} else if(startFromCaret) {
+				searchAndMarkInPreview(criteria, false, caseSensitiv);
 			}
 		}
 
