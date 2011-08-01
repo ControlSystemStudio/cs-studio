@@ -70,14 +70,14 @@ public class EpicsDBSyntaxHighlighterImpl implements IEpicsDBSyntaxHighlighter {
         Color background = CustomMediaFactory.getInstance().getColor(255, 255, 255);
         Color error = CustomMediaFactory.getInstance().getColor(255, 0, 0);
         String export = _epicsDB.toString();
-        buildStyleRangeComment(export, styleRanges, comment, background);
-        buildStyleRangeStringWithErrorDetection(export, styleRanges, string, background, error);
-        buildStyleRangeField(export, styleRanges, field, background);
-        buildStyleRangeRecord(export, styleRanges, record, background);
+        styleRanges = buildStyleRangeComment(export, styleRanges, comment, background);
+        styleRanges = buildStyleRangeStringWithErrorDetection(export, styleRanges, string, background, error);
+        styleRanges = buildStyleRangeField(export, styleRanges, field, background);
+        styleRanges = buildStyleRangeRecord(export, styleRanges, record, background);
         return styleRanges.values().toArray(new StyleRange[0]);
     }
     
-    private void buildStyleRangeRecord(String export,
+    private SortedMap<Integer, StyleRange> buildStyleRangeRecord(String export,
                                        SortedMap<Integer, StyleRange> styleRanges,
                                        Color record,
                                        Color background) {
@@ -102,11 +102,11 @@ public class EpicsDBSyntaxHighlighterImpl implements IEpicsDBSyntaxHighlighter {
                 break;
             }
             lastPosision = end + 1;
-            
         }
+        return styleRanges;
     }
     
-    private void buildStyleRangeField(String export,
+    private SortedMap<Integer, StyleRange> buildStyleRangeField(String export,
                                       SortedMap<Integer, StyleRange> styleRanges,
                                       Color field,
                                       Color background) {
@@ -131,11 +131,11 @@ public class EpicsDBSyntaxHighlighterImpl implements IEpicsDBSyntaxHighlighter {
                 break;
             }
             lastPosision = end + 1;
-            
         }
+        return styleRanges;
     }
     
-    private void buildStyleRangeStringWithErrorDetection(String export,
+    private SortedMap<Integer, StyleRange> buildStyleRangeStringWithErrorDetection(String export,
                                                          SortedMap<Integer, StyleRange> styleRanges,
                                                          Color string,
                                                          Color background,
@@ -168,14 +168,14 @@ public class EpicsDBSyntaxHighlighterImpl implements IEpicsDBSyntaxHighlighter {
                 break;
             }
             lastPosision = end + 1;
-            
         }
+        return styleRanges;
     }
     
-    private void buildStyleRangeComment(String export,
-                                        SortedMap<Integer, StyleRange> styleRanges,
-                                        Color comment,
-                                        Color background) {
+    private SortedMap<Integer, StyleRange> buildStyleRangeComment(final String export,
+                                        final SortedMap<Integer, StyleRange> styleRanges,
+                                        final Color comment,
+                                        final Color background) {
         int lastPosision = 0;
         while (lastPosision < export.length()) {
             int start = export.indexOf('#', lastPosision);
@@ -191,8 +191,8 @@ public class EpicsDBSyntaxHighlighterImpl implements IEpicsDBSyntaxHighlighter {
                 break;
             }
             lastPosision = end + 1;
-            
         }
+        return styleRanges;
     }
     
 }

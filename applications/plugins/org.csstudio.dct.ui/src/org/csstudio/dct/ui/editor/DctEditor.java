@@ -303,7 +303,8 @@ public final class DctEditor extends MultiPageEditorPart implements CommandStack
 	}
 
     private StyleRange[] buildStyleRange(String export) {
-        IEpicsDBSyntaxHighlighter highlighter = new EpicsDBSyntaxHighlighterImpl(); 
+        IEpicsDBSyntaxHighlighter highlighter = new EpicsDBSyntaxHighlighterImpl();
+        highlighter.append(export);
         return highlighter.getStyleRange();
     }
 
