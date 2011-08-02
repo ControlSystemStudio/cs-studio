@@ -21,6 +21,12 @@
  */
 package org.csstudio.archive.common.service.mysqlimpl.sample;
 
+import static org.csstudio.archive.common.service.mysqlimpl.sample.ArchiveSampleDaoImpl.COLUMN_AVG;
+import static org.csstudio.archive.common.service.mysqlimpl.sample.ArchiveSampleDaoImpl.COLUMN_CHANNEL_ID;
+import static org.csstudio.archive.common.service.mysqlimpl.sample.ArchiveSampleDaoImpl.COLUMN_MAX;
+import static org.csstudio.archive.common.service.mysqlimpl.sample.ArchiveSampleDaoImpl.COLUMN_MIN;
+import static org.csstudio.archive.common.service.mysqlimpl.sample.ArchiveSampleDaoImpl.COLUMN_TIME;
+
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
 import java.util.Collection;
@@ -63,7 +69,8 @@ public abstract class AbstractReducedDataSampleBatchQueueHandler<T extends Abstr
     @Nonnull
     protected String composeSqlString() {
         final String sql =
-            "INSERT INTO " + getDatabase() + "." + getTable() + " (channel_id, sample_time, avg_val, min_val, max_val) VALUES " + VAL_WILDCARDS;
+            "INSERT INTO " + getDatabase() + "." + getTable() +
+            " (" + Joiner.on(",").join(COLUMN_CHANNEL_ID, COLUMN_TIME, COLUMN_AVG, COLUMN_MIN, COLUMN_MAX) + ") VALUES " + VAL_WILDCARDS;
         return sql;
     }
 
@@ -101,19 +108,16 @@ public abstract class AbstractReducedDataSampleBatchQueueHandler<T extends Abstr
                                        public String apply(@Nonnull final AbstractReducedDataSample input) {
                                            final String result =
                                                "(" +
-                                               input.getChannelId().asString() + "," +
-                                               input.getTimestamp().getNanos() + "," +
-                                               input.getAvg() + "," +
-                                               input.getMin() + "," +
-                                               input.getMax() + "," +
+                                               Joiner.on(",").join(input.getChannelId().asString(),
+                                                                   input.getTimestamp().getNanos(),
+                                                                   input.getAvg(),
+                                                                   input.getMin(),
+                                                                   input.getMax()) +
                                                ")";
                                            return result;
                                        }
                                     });
-        final String valuesStr =
-            Joiner.on(",").join(values);
-
-        return Collections.singleton(sqlWithoutValues + " " + valuesStr);
+        return Collections.singleton(sqlWithoutValues + Joiner.on(",").join(values) + ";");
     }
 
 

@@ -36,6 +36,7 @@
       <plugin id="com.ibm.icu"/>
       <plugin id="com.mysql.jdbc"/>
       <plugin id="javax.annotation"/>
+      <plugin id="javax.mail"/>
       <plugin id="javax.servlet"/>
       <plugin id="javax.servlet.jsp"/>
       <plugin id="org.apache.commons.el"/>
@@ -46,11 +47,11 @@
       <plugin id="org.apache.tools.ant.junit"/>
       <plugin id="org.csstudio.apputil"/>
       <plugin id="org.csstudio.archive.common.engine"/>
+      <plugin id="org.csstudio.archive.common.engine.product.log4j" fragment="true"/>
       <plugin id="org.csstudio.archive.common.requesttype"/>
       <plugin id="org.csstudio.archive.common.service"/>
       <plugin id="org.csstudio.archive.common.service.mysqlimpl"/>
       <plugin id="org.csstudio.data"/>
-      <plugin id="org.csstudio.desy.common.product.log4j" fragment="true"/>
       <plugin id="org.csstudio.domain.common"/>
       <plugin id="org.csstudio.domain.desy"/>
       <plugin id="org.csstudio.domain.desy.epics"/>

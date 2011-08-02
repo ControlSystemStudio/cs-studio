@@ -1,0 +1,8 @@
+Manifest-Version: 1.0
+Bundle-ManifestVersion: 2
+Bundle-Name: Google Protocol Buffers for Java
+Bundle-SymbolicName: com.google.protobuf
+Bundle-Version: 2.4.1.qualifier
+Bundle-Vendor: DESY <css-developer@desy.de>, Bastian Knerr <bastian.knerr@desy.de>
+Bundle-RequiredExecutionEnvironment: JavaSE-1.6
+Export-Package: com.google.protobuf

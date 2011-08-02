@@ -21,21 +21,20 @@
  */
 package org.csstudio.archive.common.engine.model;
 
-import java.io.FileNotFoundException;
-import java.io.IOException;
-import java.io.ObjectOutput;
-import java.io.ObjectOutputStream;
-import java.io.OutputStream;
 import java.util.List;
 
 import javax.annotation.Nonnull;
 
+import org.csstudio.archive.common.service.sample.ArchiveSampleProtos;
+import org.csstudio.archive.common.service.sample.ArchiveSampleProtos.Samples;
 import org.csstudio.archive.common.service.sample.IArchiveSample;
-import org.csstudio.archive.common.service.util.AbstractToFileDataRescuer;
-import org.csstudio.archive.common.service.util.DataRescueException;
+import org.csstudio.archive.common.service.util.ArchiveTypeConversionSupport;
 import org.csstudio.archive.common.service.util.DataRescueResult;
 import org.csstudio.domain.desy.system.ISystemVariable;
-import org.csstudio.domain.desy.time.TimeInstant;
+import org.csstudio.domain.desy.time.TimeInstant.TimeInstantBuilder;
+import org.csstudio.domain.desy.typesupport.TypeSupportException;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * Implements a data rescue functionality in case the archive services are unavailable.
@@ -44,9 +43,16 @@ import org.csstudio.domain.desy.time.TimeInstant;
  * @author bknerr
  * @since Mar 28, 2011
  */
-final class ArchiveEngineSampleRescuer extends AbstractToFileDataRescuer {
+final class ArchiveEngineSampleRescuer {
 
-    private static final String FILE_SUFFIX = ".ser";
+    private static final Logger EMAIL_LOG =
+        LoggerFactory.getLogger("ErrorPerEmailLogger");
+    /**
+     * Rolling file appender for serialised data of samples.
+     */
+    private static final Logger RESCUE_LOG =
+        LoggerFactory.getLogger("SerializedSamplesRescueLogger");
+
     private final List<IArchiveSample<Object, ISystemVariable<Object>>> _samplesToBeSerialized;
 
     /**
@@ -62,35 +68,40 @@ final class ArchiveEngineSampleRescuer extends AbstractToFileDataRescuer {
         return new ArchiveEngineSampleRescuer(samples);
     }
 
-    @Override
-    protected void writeToFile(@Nonnull final OutputStream output) throws IOException {
-        final ObjectOutput objectOutput = new ObjectOutputStream(output);
-        objectOutput.writeObject(_samplesToBeSerialized);
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    @Override
     @Nonnull
-    protected String composeRescueFileName() {
-        return "rescue_" + getTimeStamp().formatted(TimeInstant.STD_DATETIME_FMT_FOR_FS) + "_S" + _samplesToBeSerialized.size()+ FILE_SUFFIX;
-    }
+    public DataRescueResult rescue() {
 
-    /**
-     * {@inheritDoc}
-     */
-    @Override
-    @Nonnull
-    protected DataRescueResult handleExceptionForRescueResult(@Nonnull final Exception e) throws DataRescueException {
+        final ArchiveSampleProtos.Samples.Builder gpbSamplesBuilder =
+            ArchiveSampleProtos.Samples.newBuilder();
+
+        Samples gpbSamples = null;
         try {
-            throw e;
-        } catch (final FileNotFoundException fe) {
-            throw new DataRescueException("Mmh", fe);
-        } catch (final IOException ioe) {
-            throw new DataRescueException("Mmh", ioe);
-        } catch (final Exception ee) {
-            throw new DataRescueException("Unknown exception.", ee);
+            gpbSamples = buildGPBSamples(gpbSamplesBuilder);
+            RESCUE_LOG.info(gpbSamples.toString());
+        } catch (final Throwable t) {
+            EMAIL_LOG.info("Data rescue for samples failed. Samples lost: {}", _samplesToBeSerialized.size());
+            return DataRescueResult.failure("rescue/samples/samples.ser.*", TimeInstantBuilder.fromNow());
         }
+
+        return DataRescueResult.success("foo", null);
+    }
+
+    @Nonnull
+    private Samples buildGPBSamples(@Nonnull final ArchiveSampleProtos.Samples.Builder gpbSamples) throws TypeSupportException {
+        final ArchiveSampleProtos.ArchiveSample.Builder builder =
+            ArchiveSampleProtos.ArchiveSample.newBuilder();
+
+        for (final IArchiveSample<Object, ISystemVariable<Object>> sample : _samplesToBeSerialized) {
+            final ISystemVariable<Object> sysVar = sample.getSystemVariable();
+            //builder.clear();
+            final ArchiveSampleProtos.ArchiveSample gpbSample =
+                builder.setChannelId(sysVar.getName())
+                       .setControlSystemId(sysVar.getOrigin().getId())
+                       .setNanosSinceEpoch(sysVar.getTimestamp().getNanos())
+                       .setData(ArchiveTypeConversionSupport.toArchiveString(sysVar.getData()))
+                       .build();
+            gpbSamples.addSample(gpbSample);
+        }
+        return gpbSamples.build();
     }
 }

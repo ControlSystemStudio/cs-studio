@@ -24,6 +24,7 @@ package org.csstudio.archive.common.service.mysqlimpl.channelstatus;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.List;
 import java.util.concurrent.LinkedBlockingQueue;
 
@@ -80,17 +81,15 @@ public class ArchiveChannelStatusBatchQueueHandler extends BatchQueueHandlerSupp
     @Override
     @Nonnull
     public Collection<String> convertToStatementString(@Nonnull final List<IArchiveChannelStatus> elements) {
-        final String sql = composeSqlString();
-        final String sqlWithoutValues = sql.replace(VAL_WILDCARDS, "");
+        final String sqlWithoutValues = composeSqlString().replace(VAL_WILDCARDS, "");
 
-        final Collection<String> statements =
+        final Collection<String> valueList =
             Collections2.transform(elements,
                                    new Function<IArchiveChannelStatus, String>() {
                                        @Override
                                        @Nonnull
                                        public String apply(@Nonnull final IArchiveChannelStatus entry) {
                                            final String result =
-                                               sqlWithoutValues +
                                                "(" +
                                                Joiner.on(",").join(entry.getChannelId().intValue(),
                                                                    entry.isConnected() ? "'TRUE'" : "'FALSE'",
@@ -100,7 +99,7 @@ public class ArchiveChannelStatusBatchQueueHandler extends BatchQueueHandlerSupp
                                            return result;
                                        }
                                     });
-        return statements;
+        return Collections.singleton(sqlWithoutValues + Joiner.on(",").join(valueList) + ";");
     }
     /**
      * {@inheritDoc}

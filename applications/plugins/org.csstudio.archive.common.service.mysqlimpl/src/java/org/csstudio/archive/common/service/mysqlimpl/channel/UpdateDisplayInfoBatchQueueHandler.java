@@ -133,7 +133,7 @@ public class UpdateDisplayInfoBatchQueueHandler extends BatchQueueHandlerSupport
                                            result = sqlStr.replaceFirst("\\?", "'" + input.getHigh() + "'");
                                            result = result.replaceFirst("\\?", "'" + input.getLow() + "'");
                                            result = result.replaceFirst("\\?", input.getId().asString());
-                                           return result;
+                                           return result + ";";
                                        }
                                     });
         return statements;

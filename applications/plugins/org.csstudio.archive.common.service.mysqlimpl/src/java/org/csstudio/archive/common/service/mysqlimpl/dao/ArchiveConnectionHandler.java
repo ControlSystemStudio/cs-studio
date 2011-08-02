@@ -170,10 +170,11 @@ public class ArchiveConnectionHandler {
      */
     @Nonnull
     public Connection getConnection() throws ArchiveConnectionException {
-        final Connection connection = _archiveConnection.get();
+        Connection connection = _archiveConnection.get();
         if (connection == null) {
             // the calling thread has not yet a connection registered.
-            return connect(_dataSource);
+            connection = connect(_dataSource);
+            _archiveConnection.set(connection);
         }
         return connection;
     }

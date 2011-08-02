@@ -37,8 +37,8 @@ import org.csstudio.domain.desy.system.ISystemVariable;
  * @param <V> the data value type
  * @param <T> the css value type with alarm information
  */
-public class ArchiveSample<V,
-                           T extends ISystemVariable<V>> implements IArchiveSample<V, T> {
+public class ArchiveSample<V, T extends ISystemVariable<V>>
+                          implements IArchiveSample<V, T> {
 
     private static final long serialVersionUID = -2244316283884247177L;
 

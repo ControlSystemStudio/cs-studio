@@ -21,14 +21,15 @@
  */
 package org.csstudio.archive.common.service.mysqlimpl.sample;
 
+import static org.csstudio.archive.common.service.mysqlimpl.sample.ArchiveSampleDaoImpl.TAB_SAMPLE_H;
+
 import java.util.concurrent.LinkedBlockingQueue;
 
 import javax.annotation.Nonnull;
 
-import org.csstudio.archive.common.service.mysqlimpl.sample.ArchiveSampleDaoImpl.HourReducedDataSample;
 
 /**
- * TODO (bknerr) :
+ * Batch queue handler for reduced data samples for hours.
  *
  * @author bknerr
  * @since 20.07.2011
@@ -48,7 +49,7 @@ public class HourReducedDataSampleBatchQueueHandler extends
     @Override
     @Nonnull
     protected String getTable() {
-        return "sample_h";
+        return TAB_SAMPLE_H;
     }
 
 

@@ -21,6 +21,11 @@
  */
 package org.csstudio.archive.common.service.mysqlimpl.sample;
 
+import static org.csstudio.archive.common.service.mysqlimpl.sample.ArchiveSampleDaoImpl.COLUMN_CHANNEL_ID;
+import static org.csstudio.archive.common.service.mysqlimpl.sample.ArchiveSampleDaoImpl.COLUMN_TIME;
+import static org.csstudio.archive.common.service.mysqlimpl.sample.ArchiveSampleDaoImpl.COLUMN_VALUE;
+import static org.csstudio.archive.common.service.mysqlimpl.sample.ArchiveSampleDaoImpl.TAB_SAMPLE;
+
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
 import java.util.Collection;
@@ -32,8 +37,8 @@ import javax.annotation.Nonnull;
 
 import org.csstudio.archive.common.service.mysqlimpl.batch.BatchQueueHandlerSupport;
 import org.csstudio.archive.common.service.mysqlimpl.dao.ArchiveDaoException;
-import org.csstudio.archive.common.service.mysqlimpl.types.ArchiveTypeConversionSupport;
 import org.csstudio.archive.common.service.sample.IArchiveSample;
+import org.csstudio.archive.common.service.util.ArchiveTypeConversionSupport;
 import org.csstudio.domain.desy.typesupport.TypeSupportException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -66,7 +71,9 @@ public class ArchiveSampleBatchQueueHandler extends BatchQueueHandlerSupport<IAr
     @Nonnull
     protected String composeSqlString() {
         final String sql =
-            "INSERT INTO " + getDatabase() + ".sample (channel_id, sample_time, value) VALUES " + VAL_WILDCARDS;
+            "INSERT INTO " + getDatabase() + "." + TAB_SAMPLE + " " +
+            "(" + Joiner.on(",").join(COLUMN_CHANNEL_ID, COLUMN_TIME, COLUMN_VALUE)+ ") " +
+            "VALUES " + VAL_WILDCARDS;
         return sql;
     }
     /**
@@ -91,34 +98,29 @@ public class ArchiveSampleBatchQueueHandler extends BatchQueueHandlerSupport<IAr
     @Override
     @Nonnull
     public Collection<String> convertToStatementString(@Nonnull final List<IArchiveSample> elements) {
-        final String sql = composeSqlString();
-        final String sqlWithoutValues = sql.replace(VAL_WILDCARDS, "");
+        final String sqlWithoutValues = composeSqlString().replace(VAL_WILDCARDS, "");
 
-
-        final Collection<String> statements =
+        final Collection<String> values =
             Collections2.transform(elements,
                                    new Function<IArchiveSample, String>() {
                                        @Override
                                        @Nonnull
                                        public String apply(@Nonnull final IArchiveSample input) {
                                            try {
-                                               final String result =
+                                               final String value =
                                                    "(" +
-                                                   input.getChannelId().asString() + "," +
-                                                   input.getSystemVariable().getTimestamp().getNanos() + "," +
-                                                   ArchiveTypeConversionSupport.toArchiveString(input.getValue()) +
+                                                   Joiner.on(",").join(input.getChannelId().asString(),+
+                                                                       input.getSystemVariable().getTimestamp().getNanos(),
+                                                                       "'" + ArchiveTypeConversionSupport.toArchiveString(input.getValue()) + "'") +
                                                    ")";
-                                               return result;
+                                               return value;
                                            } catch (final TypeSupportException e) {
                                                LOG.error("Type support missing for " + input.getValue().getClass().getName(), e);
                                            }
                                            return null;
                                        }
                                     });
-        final String values =
-            Joiner.on(",").join(statements);
-
-        return Collections.singleton(sqlWithoutValues + " " + values);
+        return Collections.singleton(sqlWithoutValues + Joiner.on(",").join(values) + ";");
     }
 
     /**

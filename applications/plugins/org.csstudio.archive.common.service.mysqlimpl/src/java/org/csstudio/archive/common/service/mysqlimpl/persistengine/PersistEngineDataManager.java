@@ -21,7 +21,6 @@
  */
 package org.csstudio.archive.common.service.mysqlimpl.persistengine;
 
-import java.io.File;
 import java.util.Collection;
 import java.util.Comparator;
 import java.util.SortedSet;
@@ -37,10 +36,7 @@ import org.csstudio.archive.common.service.mysqlimpl.batch.BatchQueueHandlerSupp
 import org.csstudio.archive.common.service.mysqlimpl.batch.IBatchQueueHandlerProvider;
 import org.csstudio.archive.common.service.mysqlimpl.dao.ArchiveConnectionHandler;
 import org.csstudio.archive.common.service.mysqlimpl.notification.ArchiveNotifications;
-import org.csstudio.archive.common.service.util.DataRescueException;
-import org.csstudio.archive.common.service.util.DataRescueResult;
 import org.csstudio.domain.desy.DesyRunContext;
-import org.csstudio.domain.desy.time.TimeInstant.TimeInstantBuilder;
 import org.csstudio.domain.desy.typesupport.TypeSupportException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -58,6 +54,9 @@ public class PersistEngineDataManager {
 
     private static final Logger LOG =
         LoggerFactory.getLogger(PersistEngineDataManager.class);
+
+    private static final Logger RESCUE_LOG =
+        LoggerFactory.getLogger("StatementRescueLogger");
 
 
     // TODO (bknerr) : number of threads?
@@ -86,9 +85,9 @@ public class PersistEngineDataManager {
     private final AtomicInteger _workerId = new AtomicInteger(0);
 
     private final Integer _prefPeriodInMS;
-    private final File _prefRescueDir;
-    private final String _prefSmtpHost;
-    private final String _prefEmailAddress;
+//    private final File _prefRescueDir;
+//    private final String _prefSmtpHost;
+//    private final String _prefEmailAddress;
 
     private final ArchiveConnectionHandler _connectionHandler;
 
@@ -110,9 +109,9 @@ public class PersistEngineDataManager {
         _connectionHandler = connectionHandler;
 
         _prefPeriodInMS = prefs.getPeriodInMS();
-        _prefRescueDir = prefs.getDataRescueDir();
-        _prefSmtpHost = prefs.getSmtpHost();
-        _prefEmailAddress = prefs.getEmailAddress();
+//        _prefRescueDir = prefs.getDataRescueDir();
+//        _prefSmtpHost = prefs.getSmtpHost();
+//        _prefEmailAddress = prefs.getEmailAddress();
 
         addGracefulShutdownHook(_handlerProvider);
     }
@@ -212,28 +211,16 @@ public class PersistEngineDataManager {
 //        it.remove();
 //    }
 
+
     public void rescueDataToFileSystem(@Nonnull final Iterable<String> statements) {
-        rescueDataToFileSystem(_prefSmtpHost, _prefEmailAddress, _prefRescueDir, statements);
-    }
-
-    public void rescueDataToFileSystem(@Nonnull final String smtpHost,
-                                       @Nonnull final String address,
-                                       @Nonnull final File rescueDir,
-                                       @Nonnull final Iterable<String> statements) {
-        LOG.warn("Rescue statements: " + Iterables.size(statements));
-
-        try {
-            final DataRescueResult result =
-                PersistDataToFileRescuer.with(statements)
-                                        .at(TimeInstantBuilder.fromNow())
-                                        .to(rescueDir)
-                                        .rescue();
-            if (!result.hasSucceeded()) {
-                ArchiveNotifications.notify(smtpHost, address, NotificationType.PERSIST_DATA_FAILED, result.getFilePath());
-            }
-        } catch (final DataRescueException e) {
-            ArchiveNotifications.notify(smtpHost, address, NotificationType.PERSIST_DATA_FAILED, e.getMessage());
+        final int noOfRescuedStmts = Iterables.size(statements);
+        LOG.warn("Rescue statements: " + noOfRescuedStmts);
+        int no = 0;
+        for (final String stmt : statements) {
+            RESCUE_LOG.info(stmt);
+            no++;
         }
+        ArchiveNotifications.notify(NotificationType.PERSIST_DATA_FAILED, "#Rescued: " + no);
     }
 
     @Nonnull

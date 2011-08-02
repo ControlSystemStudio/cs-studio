@@ -29,12 +29,10 @@ import java.util.List;
 import javax.annotation.CheckForNull;
 import javax.annotation.Nonnull;
 
-import org.csstudio.archive.common.engine.ArchiveEnginePreference;
 import org.csstudio.archive.common.engine.service.IServiceProvider;
 import org.csstudio.archive.common.service.ArchiveServiceException;
 import org.csstudio.archive.common.service.IArchiveEngineFacade;
 import org.csstudio.archive.common.service.sample.IArchiveSample;
-import org.csstudio.archive.common.service.util.DataRescueException;
 import org.csstudio.domain.desy.calc.CumulativeAverageCache;
 import org.csstudio.domain.desy.service.osgi.OsgiServiceUnavailableException;
 import org.csstudio.domain.desy.system.ISystemVariable;
@@ -55,6 +53,11 @@ import com.google.common.collect.Lists;
 final class WriteWorker extends AbstractTimeMeasuredRunnable {
 
     private static final Logger WORKER_LOG = LoggerFactory.getLogger(WriteWorker.class);
+    /**
+     * See configuration of this logger - if log4j is used - see log4j.properties
+     */
+    private static final Logger EMAIL_LOG =
+        LoggerFactory.getLogger("ErrorPerEmailLogger");
 
     private final String _name;
     private final Collection<ArchiveChannel<Object, ISystemVariable<Object>>> _channels;
@@ -102,29 +105,28 @@ final class WriteWorker extends AbstractTimeMeasuredRunnable {
         } catch (final ArchiveServiceException e) {
             WORKER_LOG.error("Exception within service impl. Data rescue should be handled there.", e);
         } catch (final Throwable t) {
-            WORKER_LOG.error("Unknown throwable. Thread {} is terminated", _name);
+            WORKER_LOG.error("Unknown throwable in thread {}.", _name);
             t.printStackTrace();
+            EMAIL_LOG.info("Unknown throwable in thread {}. See event.log for more info.", _name);
         }
     }
 
     private long writeSamples(@Nonnull final IServiceProvider provider,
-                              @Nonnull final List<IArchiveSample<Object, ISystemVariable<Object>>> samples)
-                              throws ArchiveServiceException {
+                              @Nonnull final List<IArchiveSample<Object, ISystemVariable<Object>>> samples) throws ArchiveServiceException {
 
+        IArchiveEngineFacade service;
         try {
-            final IArchiveEngineFacade service = provider.getEngineFacade();
-            service.writeSamples(samples);
+            service = provider.getEngineFacade();
         } catch (final OsgiServiceUnavailableException e) {
-            try {
-                ArchiveEngineSampleRescuer.with(samples).to(ArchiveEnginePreference.DATA_RESCUE_DIR.getValue()).rescue();
-            } catch (final DataRescueException e1) {
-                WORKER_LOG.error("Data rescue to file system failed!: {}", e1.getMessage());
-                throw new ArchiveServiceException("Data rescue failed.", e1);
-            }
+            EMAIL_LOG.error("Archive service unavailable: {}\nRescue serialized samples", e.getMessage());
+            ArchiveEngineSampleRescuer.with(samples).rescue();
+            return 0;
         }
-
+        // when there's a service, the service impl handles the rescue of data
+        service.writeSamples(samples);
         return samples.size();
     }
+
 
     @Nonnull
     private LinkedList<IArchiveSample<Object, ISystemVariable<Object>>>

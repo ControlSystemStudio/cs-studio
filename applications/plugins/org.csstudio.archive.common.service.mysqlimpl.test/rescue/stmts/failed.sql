@@ -1,0 +1,12 @@
+INSERT INTO archive_test.sample (channel_id, time, value) VALUES (1,2000000002,'26.0');
+INSERT INTO archive_test.sample (channel_id, time, value) VALUES (2,2000000003,'26.0');
+INSERT INTO archive_test.sample (channel_id, time, value) VALUES (3,2000000004,'26.0');
+INSERT INTO archive_test.sample (channel_id, time, value) VALUES (1,2000000002,'26.0');
+INSERT INTO archive_test.sample (channel_id, time, value) VALUES (2,2000000003,'26.0');
+INSERT INTO archive_test.sample (channel_id, time, value) VALUES (3,2000000004,'26.0');
+INSERT INTO archive_test.sample (channel_id, time, value) VALUES (1,2000000002,'26.0');
+INSERT INTO archive_test.sample (channel_id, time, value) VALUES (2,2000000003,'26.0');
+INSERT INTO archive_test.sample (channel_id, time, value) VALUES (3,2000000004,'26.0');
+INSERT INTO archive_test.sample (channel_id, time, value) VALUES (1,2000000002,'26.0');
+INSERT INTO archive_test.sample (channel_id, time, value) VALUES (2,2000000003,'26.0');
+INSERT INTO archive_test.sample (channel_id, time, value) VALUES (3,2000000004,'26.0');
