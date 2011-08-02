@@ -2,7 +2,7 @@
  * Copyright © 2008, Brian Joyce
  * By Brian Joyce, Duolog Technologies Ltd., Galway, Ireland
  * June 13, 2008
- * 
+ *
  * http://www.eclipse.org/articles/Article-PDEJUnitAntAutomation/index.html#PDETestListener
  */
 package org.csstudio.testsuite.pde;
@@ -20,14 +20,15 @@ import java.net.ServerSocket;
  * @since 16.06.2011
  */
 public class PDETestPortLocator {
-  //CHECKSTYLE:OFF
-    public static void main(String[] args) {
+  //CHECKSTYLE OFF: |
+    @SuppressWarnings("all")
+    public static void main(final String[] args) {
         new PDETestPortLocator().savePortToFile();
     }
 
     public void savePortToFile() {
-        int port = locatePDETestPortNumber();
-        File propsFile = new File("pde_test_port.properties");
+        final int port = locatePDETestPortNumber();
+        final File propsFile = new File("pde_test_port.properties");
         System.out.println("PDE Test port: " + port);
         OutputStream os = null;
         try {
@@ -35,13 +36,13 @@ public class PDETestPortLocator {
             os.write(("pde.test.port=" + String.valueOf(port)).getBytes());
             os.flush();
             System.out.println("PDE Test port saved to file " + propsFile.getAbsolutePath());
-        } catch (IOException ioe) {
+        } catch (final IOException ioe) {
             ioe.printStackTrace();
         } finally {
             if (os != null) {
                 try {
                     os.close();
-                } catch (IOException ioe) {
+                } catch (final IOException ioe) {
                     // ignore
                 }
             }
@@ -54,13 +55,13 @@ public class PDETestPortLocator {
         try {
             socket = new ServerSocket(0);
             return socket.getLocalPort();
-        } catch (IOException e) {
+        } catch (final IOException e) {
             // ignore
         } finally {
             if (socket != null) {
                 try {
                     socket.close();
-                } catch (IOException e) {
+                } catch (final IOException e) {
                     // ignore
                 }
             }
@@ -68,4 +69,4 @@ public class PDETestPortLocator {
         return -1;
     }
 }
-//CHECKSTYLE:ON
+//CHECKSTYLE ON: |

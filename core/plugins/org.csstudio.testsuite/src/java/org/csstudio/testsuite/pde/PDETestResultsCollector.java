@@ -19,6 +19,7 @@ import org.eclipse.jdt.internal.junit.model.RemoteTestRunnerClient;
  * @author bknerr
  * @since 16.06.2011
  */
+//CHECKSTYLE OFF: |
 @SuppressWarnings("all")
 public final class PDETestResultsCollector {
     //CHECKSTYLE:OFF
@@ -67,4 +68,4 @@ public final class PDETestResultsCollector {
         }
     }
 }
-//CHECKSTYLE:ON
+//CHECKSTYLE ON: |

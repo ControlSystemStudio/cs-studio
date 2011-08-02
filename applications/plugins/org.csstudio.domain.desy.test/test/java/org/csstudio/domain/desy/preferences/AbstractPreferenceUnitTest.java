@@ -39,9 +39,10 @@ import org.junit.Test;
  * @version $Revision$
  * @since 14.06.2010
  */
-// CHECKSTYLE:OFF The class to test is abstract, but not its test...
+// CHECKSTYLE OFF: AbstractClassName
 public class AbstractPreferenceUnitTest {
-// CHECKSTYLE:ON
+// CHECKSTYLE ON: AbstractClassName
+
 
     @Test
     public void testPreferencesDefaults() {
@@ -76,7 +77,7 @@ public class AbstractPreferenceUnitTest {
         assertEquals("true", UnitTestPreference.BOOLEAN_PREF.getDefaultAsString());
         assertEquals("Unit_Boolean_Pref", UnitTestPreference.BOOLEAN_PREF.getKeyAsString());
     }
-    
+
 
     @Test
     public void testGetAllPreferences() {

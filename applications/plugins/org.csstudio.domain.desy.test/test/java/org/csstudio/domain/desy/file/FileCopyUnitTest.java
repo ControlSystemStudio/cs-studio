@@ -45,10 +45,11 @@ public class FileCopyUnitTest {
 
     private static final String CONTENT = "Test content for temp files:\nwith\nfour\nlines\n";
 
-    // CHECKSTYLE:OFF
+    // CHECKSTYLE OFF: |
     @Rule
     public TemporaryFolder _testFolder = new TemporaryFolder();
-    // CHECKSTYLE:ON
+    // CHECKSTYLE ON: |
+
 
     @Test
     public void testCopyFileToFile() throws IOException {
