@@ -66,7 +66,6 @@
       <plugin id="org.csstudio.java"/>
       <plugin id="org.csstudio.logbook"/>
       <plugin id="org.csstudio.logging"/>
-      <plugin id="org.csstudio.logging.test" fragment="true"/>
       <plugin id="org.csstudio.logging.ui"/>
       <plugin id="org.csstudio.multiChannelViewer"/>
       <plugin id="org.csstudio.openfile"/>
