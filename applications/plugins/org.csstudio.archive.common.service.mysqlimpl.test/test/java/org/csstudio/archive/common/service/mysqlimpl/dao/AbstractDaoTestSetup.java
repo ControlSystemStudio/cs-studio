@@ -43,8 +43,10 @@ import org.junit.BeforeClass;
  */
 public abstract class AbstractDaoTestSetup {
 
+    // CHECKSTYLE OFF: |
     protected static ArchiveConnectionHandler HANDLER;
     protected static PersistEngineDataManager PERSIST_MGR;
+    // CHECKSTYLE ON: |
 
     private Savepoint _savepoint;
     private boolean _autoCommit;

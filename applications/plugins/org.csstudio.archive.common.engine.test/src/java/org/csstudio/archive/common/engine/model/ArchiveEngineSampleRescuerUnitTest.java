@@ -81,7 +81,7 @@ public class ArchiveEngineSampleRescuerUnitTest {
     public void setup() {
         LogManager.resetConfiguration();
         PropertyConfigurator.configure("../../../products/DESY/plugins/org.csstudio.archive.common.engine.product.log4j/log4j.properties");
-        RESCUE_SAMPLES = new File("rescue/samples/samples.gbf");
+        RESCUE_SAMPLES = new File("rescue/samples/samples.gpb");
         Assert.assertTrue(RESCUE_SAMPLES.exists());
 
         ArchiveTypeConversionSupport.install();

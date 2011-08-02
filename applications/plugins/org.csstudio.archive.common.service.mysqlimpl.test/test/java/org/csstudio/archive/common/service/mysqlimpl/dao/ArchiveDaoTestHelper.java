@@ -23,24 +23,35 @@ package org.csstudio.archive.common.service.mysqlimpl.dao;
 
 import java.io.File;
 
+import javax.annotation.Nonnull;
+
 import junit.framework.Assert;
 
 import org.csstudio.archive.common.service.mysqlimpl.MySQLArchivePreferenceService;
-import org.csstudio.archive.common.service.mysqlimpl.persistengine.PersistEngineDataManager;
 import org.csstudio.testsuite.util.TestDataProvider;
 import org.mockito.Mockito;
 
 /**
- * Test setup provider for {@link ArchiveConnectionHandler} and {@link PersistEngineDataManager}
+ * Test setup provider for {@link ArchiveConnectionHandler} and
+ * {@link org.csstudio.archive.common.service.mysqlimpl.persistengine.PersistEngineDataManager}
  * for the integration tests of the Daos.
  *
  * @author bknerr
  * @since 07.07.2011
  */
-public class ArchiveDaoTestHelper {
+public final class ArchiveDaoTestHelper {
 
     private static TestDataProvider PROV;
 
+
+    /**
+     * Constructor.
+     */
+    private ArchiveDaoTestHelper() {
+        // EMPTY
+    }
+
+    @Nonnull
     public static MySQLArchivePreferenceService createPrefServiceMock() {
         try {
             PROV = TestDataProvider.getInstance("org.csstudio.archive.common.service.mysqlimpl.test");
@@ -63,5 +74,4 @@ public class ArchiveDaoTestHelper {
 
         return mock;
     }
-
 }

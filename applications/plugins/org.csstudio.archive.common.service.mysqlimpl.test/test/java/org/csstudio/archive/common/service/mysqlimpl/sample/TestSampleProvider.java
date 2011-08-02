@@ -50,9 +50,10 @@ public final class TestSampleProvider {
         Lists.newLinkedList();
     public static final LinkedList<IArchiveSample<Object, ISystemVariable<Object>>> SAMPLES_HOUR =
         Lists.newLinkedList();
-
+    // CHECKSTYLE OFF: |
     public static TimeInstant START;
     public static TimeInstant END;
+    // CHECKSTYLE ON: |
 
     public static final ArchiveChannelId CHANNEL_ID_1ST = new ArchiveChannelId(1L);
     public static final ArchiveChannelId CHANNEL_ID_2ND = new ArchiveChannelId(2L);
@@ -67,10 +68,11 @@ public final class TestSampleProvider {
         TimeInstant time = START;
         for (int i = 0; i < 100; i++) {
             time = time.plusMillis(1000*30);
+            d += 1.0;
             final IArchiveSample sample =
                 new ArchiveSample<Double, ISystemVariable<Double>>(CHANNEL_ID_2ND,
                                                                    new EpicsSystemVariable<Double>("fuup",
-                                                                                                   d += 1.0,
+                                                                                                   d,
                                                                                                    ControlSystem.EPICS_DEFAULT,
                                                                                                    time,
                                                                                                    EpicsAlarm.UNKNOWN),
@@ -83,10 +85,11 @@ public final class TestSampleProvider {
         d = 0.0;
         for (int i = 0; i < 5*24*2; i++) {
             time = time.plusMillis(1000*60*30);
+            d += 1.0;
             final IArchiveSample sample =
                 new ArchiveSample<Double, ISystemVariable<Double>>(CHANNEL_ID_2ND,
                                                                    new EpicsSystemVariable<Double>("fuup",
-                                                                                                   d += 1.0,
+                                                                                                   d,
                                                                                                    ControlSystem.EPICS_DEFAULT,
                                                                                                    time,
                                                                                                    EpicsAlarm.UNKNOWN),
