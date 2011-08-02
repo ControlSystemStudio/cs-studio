@@ -71,6 +71,10 @@ For details, see http://www.eclipse.org/legal/epl-v10.html
       <import plugin="org.csstudio.trends.databrowser2" version="3.0.1" match="greaterOrEqual"/>
       <import plugin="org.csstudio.swt.xygraph" version="1.1.1" match="greaterOrEqual"/>
       <import plugin="org.csstudio.kek.product" version="3.0.0" match="greaterOrEqual"/>
+      <import plugin="org.csstudio.apputil" version="3.0.0" match="greaterOrEqual"/>
+      <import plugin="org.csstudio.platform.utility.rdb" version="1.4.0" match="greaterOrEqual"/>
+      <import plugin="org.csstudio.archive.reader" version="3.0.0" match="greaterOrEqual"/>
+      <import plugin="org.csstudio.archive.rdb" version="3.0.1" match="greaterOrEqual"/>
    </requires>
 
    <plugin
