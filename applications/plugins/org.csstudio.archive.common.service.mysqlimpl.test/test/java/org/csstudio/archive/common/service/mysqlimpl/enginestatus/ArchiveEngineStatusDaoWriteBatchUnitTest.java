@@ -36,9 +36,6 @@ import org.csstudio.archive.common.service.enginestatus.EngineMonitorStatus;
 import org.csstudio.archive.common.service.enginestatus.IArchiveEngineStatus;
 import org.csstudio.archive.common.service.mysqlimpl.dao.AbstractDaoTestSetup;
 import org.csstudio.archive.common.service.mysqlimpl.dao.ArchiveDaoException;
-import org.csstudio.archive.common.service.mysqlimpl.enginestatus.ArchiveEngineStatusDaoImpl;
-import org.csstudio.archive.common.service.mysqlimpl.enginestatus.IArchiveEngineStatusDao;
-import org.csstudio.archive.common.service.mysqlimpl.persistengine.PersistDataWorker;
 import org.csstudio.domain.desy.time.TimeInstant;
 import org.csstudio.domain.desy.time.TimeInstant.TimeInstantBuilder;
 import org.junit.AfterClass;
@@ -68,7 +65,7 @@ public class ArchiveEngineStatusDaoWriteBatchUnitTest extends AbstractDaoTestSet
     }
 
     /**
-     * This test starts one or more {@link PersistDataWorker} implicitly that have their own
+     * This test starts one or more {@link org.csstudio.archive.common.service.mysqlimpl.persistengine.PersistDataWorker} implicitly that have their own
      * database connection. Hence the normal rollback in the test setup won't work.
      *
      * The test data has to be removed in the {@link this#teardown()} method again.
@@ -130,6 +127,7 @@ public class ArchiveEngineStatusDaoWriteBatchUnitTest extends AbstractDaoTestSet
         stmt.close();
     }
 
+
     private void assertLastMgmtEntry(@Nonnull final TimeInstant lastOne,
                                      @Nonnull final IArchiveEngineStatus status) {
         Assert.assertNotNull(status);
@@ -139,17 +137,11 @@ public class ArchiveEngineStatusDaoWriteBatchUnitTest extends AbstractDaoTestSet
         Assert.assertEquals(BATCH_INSERT_INFO, status.getInfo());
     }
 
-    /**
-     * @param now
-     * @param first
-     * @param second
-     * @param third
-     * @return
-     */
-    private TimeInstant prepareMgmtEntryBatches(final TimeInstant now,
-                                                final Collection<IArchiveEngineStatus> first,
-                                                final Collection<IArchiveEngineStatus> second,
-                                                final Collection<IArchiveEngineStatus> third) {
+    @Nonnull
+    private TimeInstant prepareMgmtEntryBatches(@Nonnull final TimeInstant now,
+                                                @Nonnull final Collection<IArchiveEngineStatus> first,
+                                                @Nonnull final Collection<IArchiveEngineStatus> second,
+                                                @Nonnull final Collection<IArchiveEngineStatus> third) {
         for (int i = 0; i < 2000; i++) {
             final EngineMonitorStatus st = i%2 > 0 ? EngineMonitorStatus.ON : EngineMonitorStatus.OFF;
 

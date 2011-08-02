@@ -42,8 +42,7 @@ import com.google.common.collect.Lists;
  * @since 27.07.2011
  */
 @SuppressWarnings({"unchecked", "rawtypes"})
-public class TestSampleProvider {
-
+public final class TestSampleProvider {
 
     public static final LinkedList<IArchiveSample<Object, ISystemVariable<Object>>> SAMPLES =
         Lists.newLinkedList();
@@ -157,5 +156,12 @@ public class TestSampleProvider {
                             EpicsAlarm.UNKNOWN);
         SAMPLES_HOUR.add(sample);
 
+    }
+
+    /**
+     * Constructor.
+     */
+    private TestSampleProvider() {
+        // EMPTY
     }
 }

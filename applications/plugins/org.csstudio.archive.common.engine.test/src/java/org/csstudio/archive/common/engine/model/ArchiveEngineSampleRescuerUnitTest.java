@@ -33,6 +33,7 @@ import java.util.List;
 
 import javax.annotation.Nonnull;
 
+import org.apache.log4j.LogManager;
 import org.apache.log4j.PropertyConfigurator;
 import org.csstudio.archive.common.service.channel.ArchiveChannelId;
 import org.csstudio.archive.common.service.sample.ArchiveSample;
@@ -73,14 +74,15 @@ public class ArchiveEngineSampleRescuerUnitTest {
         LoggerFactory.getLogger("SerializedSamplesRescueLogger");
 
     private List<IArchiveSample<Object, ISystemVariable<Object>>> _samples;
-    private static File RESCUE_FILE;
+    private static File RESCUE_SAMPLES;
 
     @SuppressWarnings({ "unchecked", "rawtypes" })
     @Before
     public void setup() {
+        LogManager.resetConfiguration();
         PropertyConfigurator.configure("../../../products/DESY/plugins/org.csstudio.archive.common.engine.product.log4j/log4j.properties");
-
-        RESCUE_FILE = new File("rescue/samples/samples.ser");
+        RESCUE_SAMPLES = new File("rescue/samples/samples.gbf");
+        Assert.assertTrue(RESCUE_SAMPLES.exists());
 
         ArchiveTypeConversionSupport.install();
 
@@ -127,7 +129,7 @@ public class ArchiveEngineSampleRescuerUnitTest {
 
     @Test
     public void saveToPathTest() throws InterruptedException, TypeSupportException {
-        Assert.assertTrue(RESCUE_FILE.exists() && RESCUE_FILE.isFile());
+        Assert.assertTrue(RESCUE_SAMPLES.exists() && RESCUE_SAMPLES.isFile());
 
         final ArchiveSampleProtos.Samples.Builder gpbSamplesBuilder =
             ArchiveSampleProtos.Samples.newBuilder();
@@ -192,7 +194,7 @@ public class ArchiveEngineSampleRescuerUnitTest {
         gpbSamples.build();
         InputStreamReader reader = null;
         try {
-            reader = new InputStreamReader(new FileInputStream("rescue/samples/samples.ser"), "ASCII");
+            reader = new InputStreamReader(new FileInputStream(RESCUE_SAMPLES.getAbsolutePath()), "ASCII");
             TextFormat.merge(reader, gpbSamples);
         } catch (final UnsupportedEncodingException e) {
             Assert.fail(e.getMessage());
@@ -213,7 +215,7 @@ public class ArchiveEngineSampleRescuerUnitTest {
 
     @AfterClass
     public static void teardown() throws IOException {
-        Files.write(new byte[0], RESCUE_FILE);
-        Assert.assertTrue(RESCUE_FILE.length() == 0L);
+        Files.write(new byte[0], RESCUE_SAMPLES);
+        Assert.assertTrue(RESCUE_SAMPLES.length() == 0L);
     }
 }

@@ -21,35 +21,35 @@
  */
 package org.csstudio.archive.common.service.mysqlimpl.persistengine;
 
+import java.io.File;
+import java.io.IOException;
+import java.nio.charset.Charset;
 import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.SQLException;
 import java.util.Collection;
 import java.util.Collections;
-import java.util.List;
 import java.util.concurrent.LinkedBlockingQueue;
 
 import javax.annotation.Nonnull;
 
 import junit.framework.Assert;
 
+import org.apache.log4j.LogManager;
 import org.apache.log4j.PropertyConfigurator;
 import org.csstudio.archive.common.service.ArchiveConnectionException;
 import org.csstudio.archive.common.service.mysqlimpl.MySQLArchivePreferenceService;
 import org.csstudio.archive.common.service.mysqlimpl.batch.BatchQueueHandlerSupport;
 import org.csstudio.archive.common.service.mysqlimpl.batch.IBatchQueueHandlerProvider;
 import org.csstudio.archive.common.service.mysqlimpl.dao.ArchiveConnectionHandler;
-import org.csstudio.archive.common.service.mysqlimpl.dao.ArchiveDaoException;
 import org.csstudio.archive.common.service.mysqlimpl.dao.ArchiveDaoTestHelper;
-import org.csstudio.archive.common.service.mysqlimpl.sample.ArchiveSampleDaoImpl;
 import org.csstudio.archive.common.service.mysqlimpl.sample.TestSampleProvider;
 import org.csstudio.archive.common.service.sample.IArchiveSample;
+import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.Test;
 import org.mockito.Mockito;
 
-import com.google.common.base.Joiner;
 import com.google.common.collect.Lists;
+import com.google.common.io.Files;
 
 /**
  * TODO (bknerr) :
@@ -59,12 +59,15 @@ import com.google.common.collect.Lists;
  */
 public class PersistDataWorkerHeadlessTest {
 
+    static final String TEST_STATEMENT = "Test Statement: ";
+
     private static ArchiveConnectionHandler HANDLER;
     private static PersistEngineDataManager PERSIST_MGR;
 
     private static IBatchQueueHandlerProvider NO_HANDLER_PROVIDER =
         new IBatchQueueHandlerProvider() {
             @Override
+            @Nonnull
             public Collection<BatchQueueHandlerSupport<?>> getHandlers() {
                 return Collections.emptyList();
             }
@@ -74,6 +77,7 @@ public class PersistDataWorkerHeadlessTest {
         new IBatchQueueHandlerProvider() {
             @SuppressWarnings({ "rawtypes", "unchecked" })
             @Override
+            @Nonnull
             public Collection<BatchQueueHandlerSupport<?>> getHandlers() {
                 final BatchQueueHandlerSupport mock1 = Mockito.mock(BatchQueueHandlerSupport.class);
                 Mockito.when(mock1.getQueue()).thenReturn(new LinkedBlockingQueue<Object>());
@@ -88,49 +92,28 @@ public class PersistDataWorkerHeadlessTest {
         new IBatchQueueHandlerProvider() {
         @SuppressWarnings({ "rawtypes", "unchecked" })
             @Override
+            @Nonnull
             public Collection<BatchQueueHandlerSupport<?>> getHandlers() {
                 @SuppressWarnings("synthetic-access")
                 final BatchQueueHandlerSupport<IArchiveSample> batchHandler =
-                    new BatchQueueHandlerSupport<IArchiveSample>(IArchiveSample.class,
-                                                                 HANDLER.getDatabaseName(),
-                                                                 new LinkedBlockingQueue<IArchiveSample>(TestSampleProvider.SAMPLES_MIN)) {
-                    private int _i = 0;
-
-                    @Override
-                    protected void fillStatement(@Nonnull final PreparedStatement stmt,
-                                                 @Nonnull final IArchiveSample element) throws ArchiveDaoException,
-                                                                              SQLException {
-                        stmt.setInt(-1, -1); // wrong statement
-                    }
-                    @Override
-                    @Nonnull
-                    protected String composeSqlString() {
-                        return "INSERT INTO " + getDatabase() + "." + ArchiveSampleDaoImpl.TAB_SAMPLE +
-                        " (channel_id, time, value) VALUES (" + Joiner.on(",").join(_i++,
-                                                                                    (2000000000 + _i),
-                                                                                    "'26.0'") +
-                                                                ")";
-                    }
-                    @Override
-                    @Nonnull
-                    public Collection<String> convertToStatementString(@Nonnull final List<IArchiveSample> elements) {
-                        return Collections.singleton(composeSqlString() + ";");
-                    }
-                    @Override
-                    @Nonnull
-                    public Class<IArchiveSample> getType() {
-                        return IArchiveSample.class;
-                    }
-                };
+                    new FalseFillStmtHandler(IArchiveSample.class, HANDLER.getDatabaseName(), new LinkedBlockingQueue<IArchiveSample>(TestSampleProvider.SAMPLES_MIN));
                 return (Collection) Lists.newArrayList(batchHandler);
             }
         };
 
+    private static File RESCUE_PATH;
+    private static File RESCUE_STMTS;
 
 
     @BeforeClass
     public static void setup() throws ArchiveConnectionException {
+        LogManager.resetConfiguration(); // might already be read from another .log4j fragment (on default eclipse includes all fragments)
         PropertyConfigurator.configure("../../../products/DESY/plugins/org.csstudio.archive.common.engine.product.log4j/log4j.properties");
+
+
+        RESCUE_PATH = new File("rescue");
+        RESCUE_STMTS = new File(RESCUE_PATH, "stmts/failed.sql");
+        Assert.assertTrue(RESCUE_STMTS.exists());
 
         final MySQLArchivePreferenceService prefsMock = ArchiveDaoTestHelper.createPrefServiceMock();
 
@@ -147,20 +130,34 @@ public class PersistDataWorkerHeadlessTest {
         final PersistDataWorker worker =
             new PersistDataWorker(PERSIST_MGR, "Test Data Worker", 1000, NO_HANDLER_PROVIDER);
         worker.run();
+        Assert.assertTrue(RESCUE_STMTS.length() == 0L);
+
     }
     @Test
     public void testOnProviderForHandlersWithEmptyQueues() {
         final PersistDataWorker worker =
             new PersistDataWorker(PERSIST_MGR, "Test Data Worker", 1000, HANDLER_WITH_EMPTY_QUEUES_PROVIDER);
         worker.run();
+        Assert.assertTrue(RESCUE_STMTS.length() == 0L);
     }
 
     @Test
-    public void testOnHandlerWithWronglyFilledStatement() {
+    public void testOnHandlerWithWronglyFilledStatement() throws IOException {
         final PersistDataWorker worker =
             new PersistDataWorker(PERSIST_MGR, "Test Data Worker", 1000, FALSE_STMT_PROVIDER);
         worker.run();
+        Assert.assertTrue(RESCUE_STMTS.length() > 0L);
         worker.run();
 
+        final SimpleLineProcessor lineProcessor = new SimpleLineProcessor();
+        Files.readLines(RESCUE_STMTS, Charset.defaultCharset(),
+                        lineProcessor);
+        Assert.assertTrue(lineProcessor.getI() == 5);
+    }
+
+    @AfterClass
+    public static void tearDown() throws IOException {
+        Files.write(new byte[0], RESCUE_STMTS);
+        Assert.assertTrue(RESCUE_STMTS.length() == 0L);
     }
 }

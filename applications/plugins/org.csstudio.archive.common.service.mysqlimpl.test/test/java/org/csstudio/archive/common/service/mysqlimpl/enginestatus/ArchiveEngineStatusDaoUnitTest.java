@@ -27,8 +27,6 @@ import org.csstudio.archive.common.service.enginestatus.EngineMonitorStatus;
 import org.csstudio.archive.common.service.enginestatus.IArchiveEngineStatus;
 import org.csstudio.archive.common.service.mysqlimpl.dao.AbstractDaoTestSetup;
 import org.csstudio.archive.common.service.mysqlimpl.dao.ArchiveDaoException;
-import org.csstudio.archive.common.service.mysqlimpl.enginestatus.ArchiveEngineStatusDaoImpl;
-import org.csstudio.archive.common.service.mysqlimpl.enginestatus.IArchiveEngineStatusDao;
 import org.csstudio.domain.desy.time.TimeInstant.TimeInstantBuilder;
 import org.junit.Assert;
 import org.junit.BeforeClass;
