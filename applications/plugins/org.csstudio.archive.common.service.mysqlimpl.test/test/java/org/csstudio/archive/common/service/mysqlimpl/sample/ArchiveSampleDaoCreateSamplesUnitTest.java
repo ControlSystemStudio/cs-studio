@@ -71,19 +71,19 @@ public class ArchiveSampleDaoCreateSamplesUnitTest extends AbstractDaoTestSetup 
     private static IArchiveChannelDao CHANNEL_DAO;
 
     /**
+     * Constructor.
+     */
+    public ArchiveSampleDaoCreateSamplesUnitTest() {
+        super(false);
+    }
+
+    /**
      * {@inheritDoc}
      */
     @Override
     protected void beforeHook() throws ArchiveConnectionException, SQLException {
         CHANNEL_DAO = new ArchiveChannelDaoImpl(HANDLER, PERSIST_MGR);
         SAMPLE_DAO = new ArchiveSampleDaoImpl(HANDLER, PERSIST_MGR, CHANNEL_DAO);
-    }
-
-    /**
-     * Constructor.
-     */
-    public ArchiveSampleDaoCreateSamplesUnitTest() {
-        super(false);
     }
 
     @Test
@@ -98,7 +98,7 @@ public class ArchiveSampleDaoCreateSamplesUnitTest extends AbstractDaoTestSetup 
 
         assertSamples(minSamples);
 
-        undoSampleCreation(START, START.plusMillis(1000*60));
+        undoSampleCreation(START, START.plusMillis(1000*60), CHANNEL_ID_1ST);
     }
 
     @Test
@@ -113,7 +113,7 @@ public class ArchiveSampleDaoCreateSamplesUnitTest extends AbstractDaoTestSetup 
 
         assertSamples(hourSamples);
 
-        undoSampleCreation(START, START.plusMillis(1000*60*60));
+        undoSampleCreation(START, START.plusMillis(1000*60*60), CHANNEL_ID_1ST);
     }
 
     @SuppressWarnings("rawtypes")
@@ -156,10 +156,10 @@ public class ArchiveSampleDaoCreateSamplesUnitTest extends AbstractDaoTestSetup 
 
         assertPerHourSamples(channel);
 
-        undoSampleCreation(START, END);
+        undoSampleCreation(START, END, CHANNEL_ID_1ST);
     }
 
-    private void assertPerHourSamples(final IArchiveChannel channel) throws ArchiveDaoException {
+    private void assertPerHourSamples(@Nonnull final IArchiveChannel channel) throws ArchiveDaoException {
         final Collection<IArchiveSample<Object, ISystemVariable<Object>>> hourSamples =
             SAMPLE_DAO.retrieveSamples(DesyArchiveRequestType.AVG_PER_HOUR, channel, START, END);
         Assert.assertNotNull(hourSamples);
@@ -173,7 +173,7 @@ public class ArchiveSampleDaoCreateSamplesUnitTest extends AbstractDaoTestSetup 
         }
     }
 
-    private void assertPerMinuteSamples(final IArchiveChannel channel) throws ArchiveDaoException {
+    private void assertPerMinuteSamples(@Nonnull final IArchiveChannel channel) throws ArchiveDaoException {
         final Collection<IArchiveSample<Object, ISystemVariable<Object>>> minSamples =
             SAMPLE_DAO.retrieveSamples(DesyArchiveRequestType.AVG_PER_MINUTE, channel, START, END);
         Assert.assertNotNull(minSamples);
@@ -187,7 +187,7 @@ public class ArchiveSampleDaoCreateSamplesUnitTest extends AbstractDaoTestSetup 
         }
     }
 
-    private void assertRawSamples(final IArchiveChannel channel) throws ArchiveDaoException {
+    private void assertRawSamples(@Nonnull final IArchiveChannel channel) throws ArchiveDaoException {
         final Collection<IArchiveSample<Object, ISystemVariable<Object>>> rawSamples =
             SAMPLE_DAO.retrieveSamples(DesyArchiveRequestType.RAW, channel, START, END);
         Assert.assertNotNull(rawSamples);
@@ -195,10 +195,12 @@ public class ArchiveSampleDaoCreateSamplesUnitTest extends AbstractDaoTestSetup 
         Assert.assertEquals(SAMPLES.size(), rawSamples.size());
     }
 
-    private static void undoSampleCreation(final TimeInstant start, final TimeInstant end) throws ArchiveConnectionException, SQLException {
-        executeDeleteStatementForTable(TAB_SAMPLE, CHANNEL_ID_1ST, start, end);
-        executeDeleteStatementForTable(TAB_SAMPLE_M, CHANNEL_ID_1ST, start, end);
-        executeDeleteStatementForTable(TAB_SAMPLE_H, CHANNEL_ID_1ST, start, end);
+    private static void undoSampleCreation(@Nonnull final TimeInstant start,
+                                           @Nonnull final TimeInstant end,
+                                           @Nonnull final ArchiveChannelId channelId) throws ArchiveConnectionException, SQLException {
+        executeDeleteStatementForTable(TAB_SAMPLE, channelId, start, end);
+        executeDeleteStatementForTable(TAB_SAMPLE_M, channelId, start, end);
+        executeDeleteStatementForTable(TAB_SAMPLE_H, channelId, start, end);
     }
 
     private static void executeDeleteStatementForTable(@Nonnull final String table,
@@ -215,6 +217,6 @@ public class ArchiveSampleDaoCreateSamplesUnitTest extends AbstractDaoTestSetup 
 
     @AfterClass
     public static void undoBatchedStatements() throws ArchiveConnectionException, SQLException {
-        undoSampleCreation(START, START.plusMillis(1000*60*60));
+        undoSampleCreation(START, END.plusMillis(1L), CHANNEL_ID_2ND);
     }
 }
