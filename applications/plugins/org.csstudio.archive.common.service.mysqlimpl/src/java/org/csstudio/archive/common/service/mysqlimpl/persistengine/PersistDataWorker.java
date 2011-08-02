@@ -185,7 +185,6 @@ public class PersistDataWorker extends AbstractTimeMeasuredRunnable {
             _mgr.rescueDataToFileSystem(statements);
         } catch (final Throwable tt) {
             LOG.error("Unknown throwable. Thread " + _name + " is terminated", tt);
-            t.printStackTrace();
             _mgr.rescueDataToFileSystem(statements);
         } finally {
             rescueDataList.clear();
