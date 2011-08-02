@@ -88,16 +88,21 @@ public class PersistDataWorkerHeadlessTest {
             }
         };
 
+    @SuppressWarnings("rawtypes")
     private static IBatchQueueHandlerProvider FALSE_STMT_PROVIDER =
         new IBatchQueueHandlerProvider() {
-        @SuppressWarnings({ "rawtypes", "unchecked" })
+            private BatchQueueHandlerSupport<IArchiveSample> _handler;
+
+            @SuppressWarnings({ "unchecked", "synthetic-access" })
             @Override
             @Nonnull
             public Collection<BatchQueueHandlerSupport<?>> getHandlers() {
-                @SuppressWarnings("synthetic-access")
-                final BatchQueueHandlerSupport<IArchiveSample> batchHandler =
-                    new FalseFillStmtHandler(IArchiveSample.class, HANDLER.getDatabaseName(), new LinkedBlockingQueue<IArchiveSample>(TestSampleProvider.SAMPLES_MIN));
-                return (Collection) Lists.newArrayList(batchHandler);
+                if (_handler == null) {
+                    _handler = new FalseFillStmtHandler(IArchiveSample.class,
+                                                        HANDLER.getDatabaseName(),
+                                                        new LinkedBlockingQueue<IArchiveSample>(TestSampleProvider.SAMPLES_MIN));
+                }
+                return (Collection) Lists.newArrayList(_handler);
             }
         };
 
@@ -147,12 +152,12 @@ public class PersistDataWorkerHeadlessTest {
             new PersistDataWorker(PERSIST_MGR, "Test Data Worker", 1000, FALSE_STMT_PROVIDER);
         worker.run();
         Assert.assertTrue(RESCUE_STMTS.length() > 0L);
-        worker.run();
 
         final SimpleLineProcessor lineProcessor = new SimpleLineProcessor();
-        Files.readLines(RESCUE_STMTS, Charset.defaultCharset(),
-                        lineProcessor);
-        Assert.assertTrue(lineProcessor.getI() == 5);
+        Files.readLines(RESCUE_STMTS, Charset.defaultCharset(), lineProcessor);
+        Assert.assertTrue(lineProcessor.getI() == 3);
+
+        worker.run();
     }
 
     @AfterClass

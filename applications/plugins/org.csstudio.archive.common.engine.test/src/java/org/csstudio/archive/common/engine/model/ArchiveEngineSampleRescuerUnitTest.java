@@ -171,6 +171,7 @@ public class ArchiveEngineSampleRescuerUnitTest {
         }
     }
 
+
     private Samples buildGPBSamples(@Nonnull final ArchiveSampleProtos.Samples.Builder gpbSamples) throws TypeSupportException {
         final ArchiveSampleProtos.ArchiveSample.Builder builder =
             ArchiveSampleProtos.ArchiveSample.newBuilder();
