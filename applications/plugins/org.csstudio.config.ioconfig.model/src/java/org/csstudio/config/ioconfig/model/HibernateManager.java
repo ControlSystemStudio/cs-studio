@@ -62,7 +62,7 @@ public final class HibernateManager extends AbstractHibernateManager {
     
     @Override
     protected void buildConifg() {
-        String pluginId = IOConfigActivator.PLUGIN_ID;
+        final String pluginId = IOConfigActivator.PLUGIN_ID;
         new InstanceScope().getNode(pluginId)
                 .addPreferenceChangeListener(new IPreferenceChangeListener() {
                     
@@ -73,7 +73,7 @@ public final class HibernateManager extends AbstractHibernateManager {
                     }
                 });
         
-        IPreferencesService prefs = Platform.getPreferencesService();
+        final IPreferencesService prefs = Platform.getPreferencesService();
         _cfg = new AnnotationConfiguration();
         for (Class<?> clazz : getClasses()) {
             _cfg.addAnnotatedClass(clazz);
@@ -108,7 +108,7 @@ public final class HibernateManager extends AbstractHibernateManager {
                 .setProperty("hibernate.show_sql", "false");
 //                .setProperty("hibernate.format_sql", "true")
 //                .setProperty("hibernate.use_sql_comments", "true")
-//	              .setProperty("hibernate.cache.use_second_level_cache", "true");
+//                  .setProperty("hibernate.cache.use_second_level_cache", "true");
         setTimeout(prefs.getInt(pluginId, DDB_TIMEOUT, 90, null));
     }
     
@@ -138,7 +138,7 @@ public final class HibernateManager extends AbstractHibernateManager {
      * @param value
      */
     private void setStringProperty(@Nonnull final String property, @Nonnull final Object value) {
-        String stringValue = ((String) value).trim();
+        final String stringValue = ((String) value).trim();
         
         if(property.equals(DDB_PASSWORD)) {
             _cfg.setProperty("hibernate.connection.password", stringValue);

@@ -72,16 +72,6 @@ public class GSDFileDBO implements Serializable {
     
     private ParsedGsdFileModel _parsedGsdFileModel;
     
-    @Transient
-    public boolean isMasterNonHN() {
-        return getParsedGsdFileModel().isMaster();
-    }
-    
-    @Transient
-    public boolean isSlaveNonHN() {
-        return getParsedGsdFileModel().isSalve();
-    }
-    
     /** */
     public GSDFileDBO() {
         // Constructor for Hibernate
@@ -110,7 +100,7 @@ public class GSDFileDBO implements Serializable {
      * @param id
      *            set the ID.
      */
-    public void setId(final int id) {
+    public void setId( final int id) {
         this._id = id;
     }
     
@@ -134,7 +124,7 @@ public class GSDFileDBO implements Serializable {
     public void setGSDFile(@Nonnull final String gsdFile) throws IOException {
         _gsdFile = gsdFile;
         if(_gsdFile!=null) {
-            GsdFileParser gsdFileParser = new GsdFileParser();
+            final GsdFileParser gsdFileParser = new GsdFileParser();
             _parsedGsdFileModel = gsdFileParser.parse(this);
         }
     }
@@ -154,7 +144,6 @@ public class GSDFileDBO implements Serializable {
         this._name = name;
         Diagnose.addNewLine(_name + "\t" + this.getClass().getSimpleName());
     }
-    
     /**
      *
      * @return a map of the Modules from this GSD File.
@@ -175,6 +164,18 @@ public class GSDFileDBO implements Serializable {
     public void setGSDModules(@Nullable final Map<Integer, GSDModuleDBO> gsdModules) {
         _gSDModules = gsdModules;
     }
+
+    /**
+     * Get a Module of this File.
+     *
+     * @param indexModule
+     *            the index for the given Module.
+     * @return the selected Module.
+     */
+    @CheckForNull
+    public GSDModuleDBO getGSDModule(@Nonnull final Integer indexModule) {
+        return _gSDModules == null?null:_gSDModules.get(indexModule);
+    }
     
     /**
      *
@@ -189,16 +190,14 @@ public class GSDFileDBO implements Serializable {
         _gSDModules.put(gSDModule.getModuleId(), gSDModule);
     }
     
-    /**
-     * Get a Module of this File.
-     *
-     * @param indexModule
-     *            the index for the given Module.
-     * @return the selected Module.
-     */
-    @CheckForNull
-    public GSDModuleDBO getGSDModule(@Nonnull final Integer indexModule) {
-        return _gSDModules == null?null:_gSDModules.get(indexModule);
+    @Transient
+    public boolean isMasterNonHN() {
+        return getParsedGsdFileModel().isMaster();
+    }
+    
+    @Transient
+    public boolean isSlaveNonHN() {
+        return getParsedGsdFileModel().isSalve();
     }
     
     /** @return the Name of this gsdFile */

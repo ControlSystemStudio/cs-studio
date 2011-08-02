@@ -43,45 +43,45 @@ import org.junit.Test;
 //CHECKSTYLE:OFF
 public class UserPrmDataUnitTest {
     
-    private GSDFileDBO _BIMF5861;
-    private GSDFileDBO _B756_P33;
-
+    private GSDFileDBO _bIMF5861;
+    private GSDFileDBO _b756P33;
+    
     /**
      * @throws java.lang.Exception
      */
     @Before
     public void setUp() throws Exception {
-        _B756_P33 = GSDTestFiles.B756_P33.getFileAsGSDFileDBO();
+        _b756P33 = GSDTestFiles.B756_P33.getFileAsGSDFileDBO();
     }
-
+    
     @Test
-    public void UserPrmDataB756_P33Test() throws Exception {
-        List<Integer> expected = Arrays.asList(0,0,0,0,0,0,0,2,0,203,67,195,127,0,1,0,0,0,0);
-        _B756_P33 = GSDTestFiles.B756_P33.getFileAsGSDFileDBO();
-        AbstractGsdPropertyModel parsedGsdFileModel = _B756_P33.getParsedGsdFileModel();
-        List<Integer> out = parsedGsdFileModel.getExtUserPrmDataConst();
+    public void userPrmBIMF5861DataTest() throws Exception {
+        final List<Integer> expected = Arrays.asList(0,1,0,55,0,19,0,0,0,1,1);
+        _bIMF5861 = GSDTestFiles.BIMF5861.getFileAsGSDFileDBO();
+        final AbstractGsdPropertyModel parsedGsdFileModel = _bIMF5861.getParsedGsdFileModel();
+        final List<Integer> out = parsedGsdFileModel.getExtUserPrmDataConst();
         assertNotNull(out);
         assertEquals(expected.size(), out.size());
         
         for (int i = 0; i < out.size(); i++) {
-            Integer intOut = out.get(i);
-            Integer intExp = expected.get(i);
+            final Integer intOut = out.get(i);
+            final Integer intExp = expected.get(i);
             assertEquals("UserPrmData not equal at position "+i, intExp, intOut);
         }
     }
     
     @Test
-    public void userPrmBIMF5861DataTest() throws Exception {
-        List<Integer> expected = Arrays.asList(0,1,0,55,0,19,0,0,0,1,1);
-        _BIMF5861 = GSDTestFiles.BIMF5861.getFileAsGSDFileDBO();
-        AbstractGsdPropertyModel parsedGsdFileModel = _BIMF5861.getParsedGsdFileModel();
-        List<Integer> out = parsedGsdFileModel.getExtUserPrmDataConst();
+    public void userPrmDataB756P33Test() throws Exception {
+        final List<Integer> expected = Arrays.asList(0,0,0,0,0,0,0,2,0,203,67,195,127,0,1,0,0,0,0);
+        _b756P33 = GSDTestFiles.B756_P33.getFileAsGSDFileDBO();
+        final AbstractGsdPropertyModel parsedGsdFileModel = _b756P33.getParsedGsdFileModel();
+        final List<Integer> out = parsedGsdFileModel.getExtUserPrmDataConst();
         assertNotNull(out);
         assertEquals(expected.size(), out.size());
         
         for (int i = 0; i < out.size(); i++) {
-            Integer intOut = out.get(i);
-            Integer intExp = expected.get(i);
+            final Integer intOut = out.get(i);
+            final Integer intExp = expected.get(i);
             assertEquals("UserPrmData not equal at position "+i, intExp, intOut);
         }
     }

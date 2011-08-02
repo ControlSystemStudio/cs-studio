@@ -27,6 +27,8 @@ package org.csstudio.config.ioconfig.model.pbmodel.gsdParser;
 import java.util.Arrays;
 import java.util.List;
 
+import javax.annotation.Nonnull;
+
 import org.csstudio.config.ioconfig.model.pbmodel.GSDFileDBO;
 import org.junit.Assert;
 import org.junit.Before;
@@ -42,24 +44,24 @@ import org.junit.Test;
 public class ParsedGsdFileModelUnitTest {
     
     private ParsedGsdFileModel _out;
-
+    
     /**
      * @throws java.lang.Exception
      */
     @Before
     public void setUp() throws Exception {
-        GSDFileDBO gsdFileDBO = new GSDFileDBO("JUnitTest", "JUnitTest File");
+        final GSDFileDBO gsdFileDBO = new GSDFileDBO("JUnitTest", "#Profibus_DP\nVendor_Name            = JUnitTest");
         _out = new ParsedGsdFileModel(gsdFileDBO);
     }
     
     @Test
     public void testProperty() throws Exception {
-        String value1 = "\"Das ist ein Value\"";
-        String value2 = "\"aAbBcC!§$%&/()=?+#*',.-;:_\"";
-        String value3 = "\"1234\"";
-        List<Integer> listValue1 = Arrays.asList(0,16,171,161,93);
-        List<Integer> listValue2 = Arrays.asList(0,16,123,12,99);
-        List<Integer> listValue3 = Arrays.asList(0,16,123,12,171);
+        final String value1 = "\"Das ist ein Value\"";
+        final String value2 = "\"aAbBcC!§$%&/()=?+#*',.-;:_\"";
+        final String value3 = "\"1234\"";
+        final List<Integer> listValue1 = Arrays.asList(0,16,171,161,93);
+        final List<Integer> listValue2 = Arrays.asList(0,16,123,12,99);
+        final List<Integer> listValue3 = Arrays.asList(0,16,123,12,171);
         
         KeyValuePair keyValuePair = new KeyValuePair("int1", "123456");
         _out.setProperty(keyValuePair);
@@ -79,47 +81,56 @@ public class ParsedGsdFileModelUnitTest {
         _out.setProperty(keyValuePair);
         keyValuePair = new KeyValuePair("intList3", "0x00,0x10, 123, 012, 0xAb");
         _out.setProperty(keyValuePair);
-        
-        // Test Integer values
-        Assert.assertEquals(Integer.valueOf(123456), _out.getIntValue("int1"));
-        Assert.assertEquals(Integer.valueOf(171), _out.getIntValue("int2"));
-        Assert.assertEquals(Integer.valueOf(0), _out.getIntValue("int3"));
-        
-        // Test String values
-        Assert.assertEquals(value1, _out.getStringValue("string1"));
-        Assert.assertEquals(value2, _out.getStringValue("string2"));
-        Assert.assertEquals(value3, _out.getStringValue("string3"));
-        
+        testIntegerValue();
+        testStringVaule(value1, value2, value3);
+        testIntListValues(listValue1, listValue2, listValue3);
+    }
+
+    private void testIntListValues(@Nonnull final List<Integer> listValue1,
+                                   @Nonnull final List<Integer> listValue2,
+                                   @Nonnull final List<Integer> listValue3) {
         // Test Integer List values
         Assert.assertEquals(listValue1, _out.getIntListValue("intList1"));
         Assert.assertEquals(listValue2, _out.getIntListValue("intList2"));
         Assert.assertEquals(listValue3, _out.getIntListValue("intList3"));
-        
+        // Test wrong Type
+        Assert.assertNull(_out.getIntListValue("int3"));
+        Assert.assertNull(_out.getIntListValue("string3"));
+        Assert.assertNull(_out.getIntListValue("unknownProperty"));
+    }
+
+    private void testStringVaule(@Nonnull final String value1, @Nonnull final String value2, @Nonnull final String value3) {
+        // Test String values
+        Assert.assertEquals(value1, _out.getStringValue("string1"));
+        Assert.assertEquals(value2, _out.getStringValue("string2"));
+        Assert.assertEquals(value3, _out.getStringValue("string3"));
+        // Test wrong Type
+        Assert.assertNull(_out.getStringValue("int2"));
+        Assert.assertNull(_out.getStringValue("intList2"));
+        Assert.assertNull(_out.getStringValue("unknownProperty"));
+    }
+
+    private void testIntegerValue() {
+        // Test Integer values
+        Assert.assertEquals(Integer.valueOf(123456), _out.getIntValue("int1"));
+        Assert.assertEquals(Integer.valueOf(171), _out.getIntValue("int2"));
+        Assert.assertEquals(Integer.valueOf(0), _out.getIntValue("int3"));
         // Test wrong Type
         Assert.assertNull(_out.getIntValue("sting1"));
         Assert.assertNull(_out.getIntValue("intList1"));
-        
-        Assert.assertNull(_out.getStringValue("int2"));
-        Assert.assertNull(_out.getStringValue("intList2"));
-        
-        Assert.assertNull(_out.getIntListValue("int3"));
-        Assert.assertNull(_out.getIntListValue("string3"));
-        
         Assert.assertNull(_out.getIntValue("unknownProperty"));
-        Assert.assertNull(_out.getStringValue("unknownProperty"));
-        Assert.assertNull(_out.getIntListValue("unknownProperty"));
     }
     
     @Test
     public void testPutModel() throws Exception {
-        List<Integer> value1 = Arrays.asList(0,16,171,161,93);
-        GsdModuleModel2 gsdModuleModel1 = new GsdModuleModel2("M1", value1);
+        final List<Integer> value1 = Arrays.asList(0,16,171,161,93);
+        final GsdModuleModel2 gsdModuleModel1 = new GsdModuleModel2("M1", value1);
         gsdModuleModel1.setModuleNumber(1);
         _out.setModule(gsdModuleModel1);
-        GsdModuleModel2 gsdModuleModel2 = new GsdModuleModel2("M2", value1);
+        final GsdModuleModel2 gsdModuleModel2 = new GsdModuleModel2("M2", value1);
         gsdModuleModel2.setModuleNumber(2);
         _out.setModule(gsdModuleModel2);
-        GsdModuleModel2 gsdModuleModel3 = new GsdModuleModel2("M3", value1);
+        final GsdModuleModel2 gsdModuleModel3 = new GsdModuleModel2("M3", value1);
         gsdModuleModel3.setModuleNumber(3);
         _out.setModule(gsdModuleModel3);
         
@@ -131,15 +142,15 @@ public class ParsedGsdFileModelUnitTest {
     
     @Test (expected=IllegalArgumentException.class)
     public void testPutModelFail() throws Exception {
-        List<Integer> value1 = Arrays.asList(0,16,171,161,93);
-        GsdModuleModel2 gsdModuleModel1 = new GsdModuleModel2("M1", value1);
+        final List<Integer> value1 = Arrays.asList(0,16,171,161,93);
+        final GsdModuleModel2 gsdModuleModel1 = new GsdModuleModel2("M1", value1);
         gsdModuleModel1.setModuleNumber(1);
         _out.setModule(gsdModuleModel1);
-        GsdModuleModel2 gsdModuleModel2 = new GsdModuleModel2("M2", value1);
+        final GsdModuleModel2 gsdModuleModel2 = new GsdModuleModel2("M2", value1);
         gsdModuleModel1.setModuleNumber(2);
         _out.setModule(gsdModuleModel2);
         
-        GsdModuleModel2 gsdModuleModel3 = new GsdModuleModel2("M3", value1);
+        final GsdModuleModel2 gsdModuleModel3 = new GsdModuleModel2("M3", value1);
         // throws exeption! Each ModuleNumber only once per file!
         gsdModuleModel1.setModuleNumber(1);
         _out.setModule(gsdModuleModel3);

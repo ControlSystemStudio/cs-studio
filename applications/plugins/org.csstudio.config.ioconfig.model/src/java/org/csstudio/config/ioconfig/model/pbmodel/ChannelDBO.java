@@ -92,7 +92,7 @@ public class ChannelDBO extends AbstractNodeDBO<ChannelStructureDBO, VirtualLeaf
      * @param channelStructure the parent Channel Structure.
      * @param input only if true then is the channel a Input otherwise a Output channel.
      * @param digital only if true then is the channel a Digital otherwise a Analog channel.
-     * @throws PersistenceException 
+     * @throws PersistenceException
      */
     public ChannelDBO(@Nonnull final ChannelStructureDBO channelStructure,
                       final boolean input,
@@ -112,7 +112,7 @@ public class ChannelDBO extends AbstractNodeDBO<ChannelStructureDBO, VirtualLeaf
      * @param input only if true then is the channel a Input otherwise a Output channel.
      * @param digital only if true then is the channel a Digital otherwise a Analog channel.
      * @param sortIndex the sort posiotion for this Channel.
-     * @throws PersistenceException 
+     * @throws PersistenceException
      */
     public ChannelDBO(@Nonnull final ChannelStructureDBO channelStructure,
                       @Nonnull final String name,
@@ -128,256 +128,50 @@ public class ChannelDBO extends AbstractNodeDBO<ChannelStructureDBO, VirtualLeaf
         localUpdate();
     }
     
-    /**
-     * @return The Channel number inclusive offset.
-     * @throws PersistenceException 
-     */
-    @Transient
-    public int getFullChannelNumber() throws PersistenceException {
-        int value = 0;
-        if (isInput()) {
-            value = getModule().getInputOffsetNH();
-        } else {
-            value = getModule().getOutputOffsetNH();
-        }
-        return value + _channelNumber;
-    }
-    
-    /**
-     *
-     * @return the Channel Number exclusive offset.
-     */
-    public int getChannelNumber() {
-        return _channelNumber;
-    }
-    
-    /**
-     * Only used from Hibernate or Internal! The Channel number are automatic set when the sortIndex
-     * are set.
-     *
-     * @param channelNumber the channel start Address.
-     */
-    public void setChannelNumber(final int channelNumber) {
-        this._channelNumber = channelNumber;
-    }
-    
-    /**
-     * @return is only true when this Channel is an Input.
-     */
-    public boolean isInput() {
-        return _input;
-    }
-    
-    /**
-     * @param input this channel as Input.
-     */
-    public void setInput(final boolean input) {
-        this._input = input;
-    }
-    
-    /**
-     * @return is only true when this Channel is an Output.
-     */
-    @Transient
-    public boolean isOutput() {
-        return !isInput();
-    }
-    
-    /**
-     * @param output set this channel as Output.
-     */
-    public void setOutput(final boolean output) {
-        setInput(!output);
-    }
-    
-    /**
-     * @return the IO Name of this Channel.
-     */
-    @CheckForNull
-    public String getIoName() {
-        return _ioName;
-    }
-    
-    /**
-     * @param ioName the IO Name of this Channel.
-     */
-    public void setIoName(@Nonnull final String ioName) {
-        this._ioName = ioName;
-    }
-    
-    /**
-     * @return is only true if the {@link ChannelDBO} digital.
-     */
-    public boolean isDigital() {
-        return _digital;
-    }
-    
-    /**
-     * @param digital set only true if this {@link ChannelDBO} digital.
-     */
-    public void setDigital(final boolean digital) {
-        _digital = digital;
-    }
-    
-    /**
-     * @return the bit size of the Channel.
-     */
-    @Transient
-    public int getChSize() {
-        return getChannelType().getBitSize();
-    }
-    
-    /**
-     * @return the Type of this {@link ChannelDBO}
-     */
-    @Nonnull
-    public DataType getChannelType() {
-        return DataType.forId(_channelType);
-    }
-    
-    /**
-     * @param type set the Type of this {@link ChannelDBO}
-     */
-    public void setChannelType(@Nonnull final DataType type) {
-        _channelType = type.getId();
-    }
-    
-    public void setChannelTypeNonHibernate(@Nonnull final DataType type) throws PersistenceException {
-        DataType channelType;
-        try {
-            channelType = getChannelType();
-        } catch (final IllegalArgumentException e) {
-            channelType = null;
-        }
-        if (channelType == null || channelType != type) {
-            setChannelType(type);
-            setDirty(true);
-            if (getModule() != null) {
-                // Don't work with only one update!
-                getModule().update();
-                getModule().update();
-            } else {
-                localUpdate();
-            }
-        }
-    }
-    
-    @CheckForNull
-    public String getCurrenUserParamDataIndex() {
-        return _currenUserParamDataIndex;
-    }
-    
-    public void setCurrenUserParamDataIndex(@Nonnull final String currenUserParamDataIndex) {
-        _currenUserParamDataIndex = currenUserParamDataIndex;
-    }
-    
-    @CheckForNull
-    public String getCurrentValue() {
-        return _currentValue;
-    }
-    
-    public void setCurrentValue(@Nonnull final String currentValue) {
-        _currentValue = currentValue;
-    }
-    
-    @Column(name = "CHSIZE")
-    public int getStatusAddressOffset() {
-        return _statusAddressOffset;
-    }
-    
-    @Transient
-    public int getStatusAddress() throws PersistenceException {
-        return getModule().getInputOffsetNH() + _statusAddressOffset;
-    }
-    
-    public void setStatusAddressOffset(@CheckForNull final Integer statusAddress) {
-        _statusAddressOffset = statusAddress == null ? -1 : statusAddress;
-    }
-    
-    /**
-     * contribution to ioName (PV-link to EPICSORA)
-     *
-     * @param epicsAdress the Epics Address String.
-     */
-    public void setEpicsAddressString(@Nonnull final String epicsAdress) {
-        _epicsAdress = epicsAdress;
-    }
-    
-    /**
-     * contribution to ioName (PV-link to EPICSORA)
-     *
-     * @return the Epics Address String
-     */
-    @Transient
-    @Nonnull
-    public String getEpicsAddressStringNH() {
-        return _epicsAdress == null ? "" : _epicsAdress;
-    }
-    
-    /**
-     * contribution to ioName (PV-link to EPICSORA)
-     *
-     * @return the Epics Address String
-     */
-    @Nonnull
-    public String getEpicsAddressString() {
-        return _epicsAdress == null ? "" : _epicsAdress;
-    }
-    
-    @Transient
-    public int getStruct() {
-        int index = 0;
-        if (isDigital()) {
-            index = getSortIndex();
-        }
-        return index;
-    }
-    
-    /**
-     * @return the parent {@link ChannelStructureDBO}.
-     */
-    @ManyToOne
-    @Nonnull
-    public ChannelStructureDBO getChannelStructure() {
-        return (ChannelStructureDBO) getParent();
-    }
-    
-    /**
-     * @param channelStructure the parent {@link ChannelStructureDBO} of this Channel.
-     */
-    public void setChannelStructure(@Nonnull final ChannelStructureDBO channelStructure) {
-        this.setParent(channelStructure);
-    }
-    
-    @Transient
-    @CheckForNull
-    public GSDFileDBO getGSDFile() {
-        return getChannelStructure().getModule().getGSDFile();
+    @Override
+    public void accept(@Nonnull final INodeVisitor visitor) {
+        visitor.visit(this);
     }
     
     /**
      * {@inheritDoc}
      */
     @Override
-    protected void localUpdate() throws PersistenceException {
-        NodeMap.countlocalUpdate();
-        assembleEpicsAddressString();
+    @Nonnull
+    public VirtualLeaf addChild(@Nullable final VirtualLeaf child) throws PersistenceException {
+        return VirtualLeaf.INSTANCE;
     }
-
-    @CheckForNull
-    public int getNextFreeChannelNumberFromParent(final int channelNumber) throws PersistenceException {
-        int cNumber = channelNumber;
-        if (channelNumber > 0) {
-            final SortedMap<Short, ChannelDBO> headMap = getChannelStructure().getChildrenAsMap().headMap(getSortIndex());
-            if(!headMap.isEmpty()) {
-                final ChannelDBO channel = headMap.get(headMap.lastKey());
-                if (channel != null) {
-                    cNumber = channel.getChannelNumber();
-                    cNumber += channel.getChannelType().getByteSize();
-                }
-            }
+    
+    private void appendByteOdering(@Nonnull final StringBuilder sb,
+                                   @Nonnull final ModuleChannelPrototypeDBO moduleChannelPrototype) {
+        final Integer byteOrdering = moduleChannelPrototype.getByteOrdering();
+        if (byteOrdering !=null && byteOrdering > 0) {
+            sb.append(",O=" + byteOrdering);
         }
-        return cNumber;
+    }
+    
+    private void appendDataType(@Nonnull final StringBuilder sb,
+                                @Nonnull final ModuleChannelPrototypeDBO moduleChannelPrototype) {
+        if (getChannelType() == DataType.BIT && !getChannelStructure().isSimple()) {
+            sb.append(getChannelStructure().getStructureType().getType());
+            sb.append(getBitPostion());
+        } else {
+            sb.append(moduleChannelPrototype.getType().getType());
+        }
+    }
+    
+    private void appendMaximum(@Nonnull final StringBuilder sb,
+                               @Nonnull final ModuleChannelPrototypeDBO moduleChannelPrototype) {
+        if (moduleChannelPrototype.getMaximum() != null) {
+            sb.append(",H=" + moduleChannelPrototype.getMaximum());
+        }
+    }
+    
+    private void appendMinimum(@Nonnull final StringBuilder sb,
+                               @Nonnull final ModuleChannelPrototypeDBO moduleChannelPrototype) {
+        if (moduleChannelPrototype.getMinimum() != null) {
+            sb.append(",L=" + moduleChannelPrototype.getMinimum());
+        }
     }
     
     @Transient
@@ -400,7 +194,7 @@ public class ChannelDBO extends AbstractNodeDBO<ChannelStructureDBO, VirtualLeaf
             LOG.warn("", e);
             setEpicsAddressString("");
         }
-        setDirty((isDirty() || (oldAdr == null) || !oldAdr.equals(getEpicsAddressString())));
+        setDirty((isDirty() || oldAdr == null || !oldAdr.equals(getEpicsAddressString())));
     }
     
     private void assembleEpicsAddressType(@Nonnull final StringBuilder sb) throws PersistenceException {
@@ -408,12 +202,12 @@ public class ChannelDBO extends AbstractNodeDBO<ChannelStructureDBO, VirtualLeaf
         final GSDModuleDBO gsdModule = getModule().getGSDModule();
         if (gsdModule != null) {
             final Set<ModuleChannelPrototypeDBO> moduleChannelPrototypes =
-                                                                     gsdModule
-                                                                             .getModuleChannelPrototypeNH();
-            for (ModuleChannelPrototypeDBO moduleChannelPrototype : moduleChannelPrototypes) {
-                if ((moduleChannelPrototype != null)
-                    && (moduleChannelPrototype.isInput() == isInput())
-                    && (getChannelNumber() == moduleChannelPrototype.getOffset())) {
+                gsdModule
+                .getModuleChannelPrototypeNH();
+            for (final ModuleChannelPrototypeDBO moduleChannelPrototype : moduleChannelPrototypes) {
+                if (moduleChannelPrototype != null
+                        && moduleChannelPrototype.isInput() == isInput()
+                        && getChannelNumber() == moduleChannelPrototype.getOffset()) {
                     setChannelType(moduleChannelPrototype);
                     appendDataType(sb, moduleChannelPrototype);
                     setStatusAddressOffset(moduleChannelPrototype.getShift());
@@ -425,126 +219,9 @@ public class ChannelDBO extends AbstractNodeDBO<ChannelStructureDBO, VirtualLeaf
         }
     }
     
-    private void appendDataType(@Nonnull final StringBuilder sb,
-                                @Nonnull final ModuleChannelPrototypeDBO moduleChannelPrototype) {
-        if ((getChannelType() == DataType.BIT) && !getChannelStructure().isSimple()) {
-            sb.append(getChannelStructure().getStructureType().getType());
-            sb.append(getBitPostion());
-        } else {
-            sb.append(moduleChannelPrototype.getType().getType());
-        }
-    }
-    
-    private void appendByteOdering(@Nonnull final StringBuilder sb,
-                                   @Nonnull final ModuleChannelPrototypeDBO moduleChannelPrototype) {
-        final Integer byteOrdering = moduleChannelPrototype.getByteOrdering();
-        if ((byteOrdering !=null) && (byteOrdering > 0)) {
-            sb.append(",O=" + byteOrdering);
-        }
-    }
-    
-    private void appendMaximum(@Nonnull final StringBuilder sb,
-                               @Nonnull final ModuleChannelPrototypeDBO moduleChannelPrototype) {
-        if (moduleChannelPrototype.getMaximum() != null) {
-            sb.append(",H=" + moduleChannelPrototype.getMaximum());
-        }
-    }
-    
-    private void appendMinimum(@Nonnull final StringBuilder sb,
-                               @Nonnull final ModuleChannelPrototypeDBO moduleChannelPrototype) {
-        if (moduleChannelPrototype.getMinimum() != null) {
-            sb.append(",L=" + moduleChannelPrototype.getMinimum());
-        }
-    }
-    
-    private void setChannelType(@Nonnull final ModuleChannelPrototypeDBO moduleChannelPrototype) throws PersistenceException {
-        if (getChannelStructure().isSimple()) {
-            setChannelTypeNonHibernate(moduleChannelPrototype.getType());
-        } else {
-            setChannelTypeNonHibernate(moduleChannelPrototype.getType().getStructure()[0]);
-        }
-    }
-    
-    @Transient
-    @Nonnull
-    public String getBitPostion() {
-        final StringBuilder sb = new StringBuilder();
-        if (getChannelType() == DataType.BIT) {
-            sb.append(",B=");
-            sb.append(getSortIndex());
-        }
-        return sb.toString();
-    }
-    
-    /**
-     *
-     * @return the parent {@link ModuleDBO}.
-     */
-    @Transient
-    @Nonnull
-    public ModuleDBO getModule() {
-        return getChannelStructure().getModule();
-    }
-    
     /**
      * {@inheritDoc}
-     * @throws PersistenceException 
-     */
-    @Override
-    public void update() throws PersistenceException {
-        localUpdate();
-        if (_isUpdated) {
-            _isUpdated = false;
-        }
-    }
-    
-    /**
-     * {@inheritDoc}
-     */
-    @Override
-    public void save() throws PersistenceException {
-        super.save();
-        _isUpdated = false;
-    }
-    
-    /**
-     * @return The Name of this Node.
-     * @throws PersistenceException 
-     */
-    @Override
-    @Nonnull
-    public String toString() {
-        final StringBuffer sb = new StringBuffer();
-        try {
-            sb.append(getFullChannelNumber());
-            sb.append(": ");
-            sb.append(getName());
-            final String ioName = getIoName();
-            if ((ioName != null) && (ioName.length() > 0)) {
-                sb.append(" [" + ioName + "]");
-            }
-        } catch (final PersistenceException e) {
-            sb.append("Device Database ERROR: ").append(e.getMessage());
-            LOG.error("Device Database ERROR: {}", e);
-        }
-        return sb.toString();
-    }
-    
-    /**
-     * {@inheritDoc}
-     * @throws PersistenceException 
-     */
-    @Override
-    @Nonnull
-    public ChannelDBO copyThisTo(@Nonnull final ChannelStructureDBO parentNode) throws PersistenceException {
-        final ChannelDBO copy = (ChannelDBO) super.copyThisTo(parentNode);
-        copy.setName(getName());
-        return copy;
-    }
-    
-    /**
-     * {@inheritDoc}
-     * @throws PersistenceException 
+     * @throws PersistenceException
      */
     @Override
     @Nonnull
@@ -555,11 +232,11 @@ public class ChannelDBO extends AbstractNodeDBO<ChannelStructureDBO, VirtualLeaf
             name = " ";
         }
         final ChannelDBO copy =
-                          new ChannelDBO(channelStructure,
-                                         name,
-                                         isInput(),
-                                         isDigital(),
-                                         getSortIndex());
+            new ChannelDBO(channelStructure,
+                           name,
+                           isInput(),
+                           isDigital(),
+                           getSortIndex());
         copy.setChannelType(getChannelType());
         String currentValue = getCurrentValue();
         if (currentValue == null) {
@@ -581,21 +258,14 @@ public class ChannelDBO extends AbstractNodeDBO<ChannelStructureDBO, VirtualLeaf
     
     /**
      * {@inheritDoc}
-     */
-    @Override
-    @Transient
-    @Nonnull
-    public NodeType getNodeType() {
-        return NodeType.CHANNEL;
-    }
-    
-    /**
-     * {@inheritDoc}
+     * @throws PersistenceException
      */
     @Override
     @Nonnull
-    public VirtualLeaf addChild(@Nullable final VirtualLeaf child) throws PersistenceException {
-        return VirtualLeaf.INSTANCE;
+    public ChannelDBO copyThisTo(@Nonnull final ChannelStructureDBO parentNode) throws PersistenceException {
+        final ChannelDBO copy = (ChannelDBO) super.copyThisTo(parentNode);
+        copy.setName(getName());
+        return copy;
     }
     
     /**
@@ -608,18 +278,348 @@ public class ChannelDBO extends AbstractNodeDBO<ChannelStructureDBO, VirtualLeaf
     }
     
     @Override
-    public void accept(@Nonnull final INodeVisitor visitor) {
-        visitor.visit(this);
-    }
-    
-    @Override
     public boolean equals(@CheckForNull final Object obj) {
         return super.equals(obj);
+    }
+    
+    @Transient
+    @Nonnull
+    public String getBitPostion() {
+        final StringBuilder sb = new StringBuilder();
+        if (getChannelType() == DataType.BIT) {
+            sb.append(",B=");
+            sb.append(getSortIndex());
+        }
+        return sb.toString();
+    }
+    
+    /**
+     *
+     * @return the Channel Number exclusive offset.
+     */
+    public int getChannelNumber() {
+        return _channelNumber;
+    }
+    
+    /**
+     * @return the parent {@link ChannelStructureDBO}.
+     */
+    @ManyToOne
+    @Nonnull
+    public ChannelStructureDBO getChannelStructure() {
+        return getParent();
+    }
+    
+    /**
+     * @return the Type of this {@link ChannelDBO}
+     */
+    @Nonnull
+    public DataType getChannelType() {
+        return DataType.forId(_channelType);
+    }
+    
+    /**
+     * @return the bit size of the Channel.
+     */
+    @Transient
+    public int getChSize() {
+        return getChannelType().getBitSize();
+    }
+    
+    @CheckForNull
+    public String getCurrentValue() {
+        return _currentValue;
+    }
+    
+    @CheckForNull
+    public String getCurrenUserParamDataIndex() {
+        return _currenUserParamDataIndex;
+    }
+    
+    /**
+     * contribution to ioName (PV-link to EPICSORA)
+     *
+     * @return the Epics Address String
+     */
+    @Nonnull
+    public String getEpicsAddressString() {
+        return _epicsAdress == null ? "" : _epicsAdress;
+    }
+    
+    /**
+     * contribution to ioName (PV-link to EPICSORA)
+     *
+     * @return the Epics Address String
+     */
+    @Transient
+    @Nonnull
+    public String getEpicsAddressStringNH() {
+        return _epicsAdress == null ? "" : _epicsAdress;
+    }
+    
+    /**
+     * @return The Channel number inclusive offset.
+     * @throws PersistenceException
+     */
+    @Transient
+    public int getFullChannelNumber() throws PersistenceException {
+        int value = 0;
+        if (isInput()) {
+            value = getModule().getInputOffsetNH();
+        } else {
+            value = getModule().getOutputOffsetNH();
+        }
+        return value + _channelNumber;
+    }
+    
+    @Transient
+    @CheckForNull
+    public GSDFileDBO getGSDFile() {
+        return getChannelStructure().getModule().getGSDFile();
+    }
+    
+    /**
+     * @return the IO Name of this Channel.
+     */
+    @CheckForNull
+    public String getIoName() {
+        return _ioName;
+    }
+    
+    /**
+     *
+     * @return the parent {@link ModuleDBO}.
+     */
+    @Transient
+    @Nonnull
+    public ModuleDBO getModule() {
+        return getChannelStructure().getModule();
+    }
+    
+    public int getNextFreeChannelNumberFromParent(final int channelNumber) throws PersistenceException {
+        int cNumber = channelNumber;
+        if (channelNumber > 0) {
+            final SortedMap<Short, ChannelDBO> headMap = getChannelStructure().getChildrenAsMap().headMap(getSortIndex());
+            if(!headMap.isEmpty()) {
+                final ChannelDBO channel = headMap.get(headMap.lastKey());
+                if (channel != null) {
+                    cNumber = channel.getChannelNumber();
+                    cNumber += channel.getChannelType().getByteSize();
+                }
+            }
+        }
+        return cNumber;
+    }
+    
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    @Transient
+    @Nonnull
+    public NodeType getNodeType() {
+        return NodeType.CHANNEL;
+    }
+    
+    @Transient
+    public int getStatusAddress() throws PersistenceException {
+        return getModule().getInputOffsetNH() + _statusAddressOffset;
+    }
+    
+    @Column(name = "CHSIZE")
+    public int getStatusAddressOffset() {
+        return _statusAddressOffset;
+    }
+    
+    @Transient
+    public int getStruct() {
+        int index = 0;
+        if (isDigital()) {
+            index = getSortIndex();
+        }
+        return index;
     }
     
     @Override
     public int hashCode() {
         return super.hashCode();
+    }
+    
+    /**
+     * @return is only true if the {@link ChannelDBO} digital.
+     */
+    public boolean isDigital() {
+        return _digital;
+    }
+    
+    /**
+     * @return is only true when this Channel is an Input.
+     */
+    public boolean isInput() {
+        return _input;
+    }
+    
+    /**
+     * @return is only true when this Channel is an Output.
+     */
+    @Transient
+    public boolean isOutput() {
+        return !isInput();
+    }
+    
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    protected void localUpdate() throws PersistenceException {
+        NodeMap.countlocalUpdate();
+        assembleEpicsAddressString();
+    }
+    
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public void save() throws PersistenceException {
+        super.save();
+        _isUpdated = false;
+    }
+    
+    /**
+     * Only used from Hibernate or Internal! The Channel number are automatic set when the sortIndex
+     * are set.
+     *
+     * @param channelNumber the channel start Address.
+     */
+    public void setChannelNumber(final int channelNumber) {
+        this._channelNumber = channelNumber;
+    }
+    
+    /**
+     * @param channelStructure the parent {@link ChannelStructureDBO} of this Channel.
+     */
+    public void setChannelStructure(@Nonnull final ChannelStructureDBO channelStructure) {
+        this.setParent(channelStructure);
+    }
+    
+    /**
+     * @param type set the Type of this {@link ChannelDBO}
+     */
+    public void setChannelType(@Nonnull final DataType type) {
+        _channelType = type.getId();
+    }
+    
+    private void setChannelType(@Nonnull final ModuleChannelPrototypeDBO moduleChannelPrototype) throws PersistenceException {
+        if (getChannelStructure().isSimple()) {
+            setChannelTypeNonHibernate(moduleChannelPrototype.getType());
+        } else {
+            setChannelTypeNonHibernate(moduleChannelPrototype.getType().getStructure()[0]);
+        }
+    }
+    
+    @Transient
+    public void setChannelTypeNonHibernate(@Nonnull final DataType type) throws PersistenceException {
+        DataType channelType;
+        try {
+            channelType = getChannelType();
+        } catch (final IllegalArgumentException e) {
+            channelType = null;
+        }
+        if (channelType == null || channelType != type) {
+            setChannelType(type);
+            setDirty(true);
+            if (getModule() != null) {
+                // Don't work with only one update!
+                getModule().update();
+                getModule().update();
+            } else {
+                localUpdate();
+            }
+        }
+    }
+    
+    public void setCurrentValue(@Nonnull final String currentValue) {
+        _currentValue = currentValue;
+    }
+    
+    public void setCurrenUserParamDataIndex(@Nonnull final String currenUserParamDataIndex) {
+        _currenUserParamDataIndex = currenUserParamDataIndex;
+    }
+    
+    /**
+     * @param digital set only true if this {@link ChannelDBO} digital.
+     */
+    public void setDigital(final boolean digital) {
+        _digital = digital;
+    }
+    
+    /**
+     * contribution to ioName (PV-link to EPICSORA)
+     *
+     * @param epicsAdress the Epics Address String.
+     */
+    public void setEpicsAddressString(@Nonnull final String epicsAdress) {
+        _epicsAdress = epicsAdress;
+    }
+    
+    /**
+     * @param input this channel as Input.
+     */
+    public void setInput(final boolean input) {
+        this._input = input;
+    }
+    
+    /**
+     * @param ioName the IO Name of this Channel.
+     */
+    public void setIoName(@Nonnull final String ioName) {
+        this._ioName = ioName;
+    }
+    
+    /**
+     * @param output set this channel as Output.
+     */
+    public void setOutput(final boolean output) {
+        setInput(!output);
+    }
+    
+    public void setStatusAddressOffset(@CheckForNull final Integer statusAddress) {
+        _statusAddressOffset = statusAddress == null ? -1 : statusAddress;
+    }
+    
+    /**
+     * @return The Name of this Node.
+     * @throws PersistenceException
+     */
+    @Override
+    @Nonnull
+    public String toString() {
+        final StringBuffer sb = new StringBuffer();
+        try {
+            sb.append(getFullChannelNumber());
+            sb.append(": ");
+            sb.append(getName());
+            final String ioName = getIoName();
+            if (ioName != null && ioName.length() > 0) {
+                sb.append(" [" + ioName + "]");
+            }
+        } catch (final PersistenceException e) {
+            sb.append("Device Database ERROR: ").append(e.getMessage());
+            LOG.error("Device Database ERROR: {}", e);
+        }
+        return sb.toString();
+    }
+    
+    /**
+     * {@inheritDoc}
+     * @throws PersistenceException
+     */
+    @Override
+    public void update() throws PersistenceException {
+        localUpdate();
+        if (_isUpdated) {
+            _isUpdated = false;
+        }
     }
     
 }

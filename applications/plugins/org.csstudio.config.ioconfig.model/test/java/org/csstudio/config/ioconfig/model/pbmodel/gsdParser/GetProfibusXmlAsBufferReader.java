@@ -35,7 +35,7 @@ import org.csstudio.config.ioconfig.model.pbmodel.ProfibusSubnetDBO;
 import org.csstudio.config.ioconfig.model.xml.ProfibusConfigXMLGenerator;
 
 /**
- * TODO (hrickens) : 
+ * TODO (hrickens) :
  * @author  hrickens
  * @author  $Author: hrickens $
  * @version  $Revision: 1.7 $
@@ -56,10 +56,10 @@ public final class GetProfibusXmlAsBufferReader {
      * @throws IOException
      */
     @Nonnull
-    public static BufferedReader getProfibusXmlAsBufferReader(@Nonnull ProfibusSubnetDBO profibusSubnetDBO) throws PersistenceException,
-                                                                          IOException {
-        StringWriter sw = new StringWriter();
-        ProfibusConfigXMLGenerator generator = new ProfibusConfigXMLGenerator();
+    public static BufferedReader getProfibusXmlAsBufferReader(@Nonnull final ProfibusSubnetDBO profibusSubnetDBO) throws PersistenceException,
+    IOException {
+        final StringWriter sw = new StringWriter();
+        final ProfibusConfigXMLGenerator generator = new ProfibusConfigXMLGenerator();
         generator.setSubnet(profibusSubnetDBO);
         
         generator.getXmlFile(sw);

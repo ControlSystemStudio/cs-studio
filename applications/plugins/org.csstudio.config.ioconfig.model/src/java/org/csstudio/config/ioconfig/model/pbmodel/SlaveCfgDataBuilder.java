@@ -45,10 +45,9 @@ public class SlaveCfgDataBuilder {
      * Constructor.
      */
     public SlaveCfgDataBuilder(@Nonnull final List<Integer> slaveCfgData) {
-        
-       Iterator<Integer> iterator = slaveCfgData.iterator();
+       final Iterator<Integer> iterator = slaveCfgData.iterator();
         while (iterator.hasNext()) {
-            Integer parameter = (Integer) iterator.next();
+            final Integer parameter = (Integer) iterator.next();
             // Test Simple oder Special Header
             if( parameter != 0 && (parameter & 0x30) == 0) {
                 int parameter1;

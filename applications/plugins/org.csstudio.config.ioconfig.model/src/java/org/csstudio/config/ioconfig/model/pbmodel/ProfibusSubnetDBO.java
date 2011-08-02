@@ -30,18 +30,11 @@ import org.csstudio.config.ioconfig.model.PersistenceException;
 public class ProfibusSubnetDBO extends AbstractNodeDBO<IocDBO, MasterDBO> {
 
     private static final long serialVersionUID = 1L;
-    /**
-     * Subnet baud rate.
-     */
+    /** Subnet baud rate. */
     private String _baudRate;
-    /**
-     * Slot time.
-     */
+    /** Slot time. */
     private int _slotTime;
-
-    /**
-     * Min. Station delay time.
-     */
+    /** Min. Station delay time. */
     private int _minTsdr;
     /** Max. Station delay time. */
     private int _maxTsdr;
@@ -73,13 +66,9 @@ public class ProfibusSubnetDBO extends AbstractNodeDBO<IocDBO, MasterDBO> {
     private short _slaveNumber;
     /** Number of subcriber at project. */
     private short _subscriber;
-    /**
-     * Quota of FDL, FMS or S7 communication at project.
-     */
+    /** Quota of FDL, FMS or S7 communication at project. */
     private String _quotaFdlFmsS7com;
-    /**
-     * Communication profil: DP, Standard, Universal (DP,FMS),User defined.
-     */
+    /** Communication profil: DP, Standard, Universal (DP,FMS),User defined. */
     private String _profil; //
 
     /**
@@ -98,38 +87,26 @@ public class ProfibusSubnetDBO extends AbstractNodeDBO<IocDBO, MasterDBO> {
         super(ioc);
     }
 
-    /**
-     *
-     * @return get the Baudrate
-     */
     @CheckForNull
-    public final String getBaudRate() {
+    public String getBaudRate() {
         return _baudRate;
     }
 
-    /**
-     *
-     * @param baudRate
-     *            Set the Baudrate for the PBNet
-     */
-    public final void setBaudRate(@Nullable final String baudRate) {
+    public void setBaudRate(@Nullable final String baudRate) {
         _baudRate = baudRate;
     }
 
     /**
-     *
      * @return the length of the CU-Line.
      */
-    public final float getCuLineLength() {
+    public float getCuLineLength() {
         return _cuLineLength;
     }
 
     /**
-     *
-     * @param cuLineLength
-     *            Set the length of CU-Line.
+     * @param cuLineLength Set the length of CU-Line.
      */
-    public final void setCuLineLength(final float cuLineLength) {
+    public void setCuLineLength(final float cuLineLength) {
         this._cuLineLength = cuLineLength;
     }
 
@@ -137,7 +114,7 @@ public class ProfibusSubnetDBO extends AbstractNodeDBO<IocDBO, MasterDBO> {
      *
      * @return the Gap.
      */
-    public final short getGap() {
+    public short getGap() {
         return _gap;
     }
 
@@ -146,7 +123,7 @@ public class ProfibusSubnetDBO extends AbstractNodeDBO<IocDBO, MasterDBO> {
      * @param gap
      *            set the Gap.
      */
-    public final void setGap(final int gap) {
+    public void setGap(final int gap) {
         this._gap = (short)gap;
     }
 
@@ -154,7 +131,7 @@ public class ProfibusSubnetDBO extends AbstractNodeDBO<IocDBO, MasterDBO> {
      *
      * @return the HSA (Highest Server Adress).
      */
-    public final short getHsa() {
+    public short getHsa() {
         return _hsa;
     }
 
@@ -163,7 +140,7 @@ public class ProfibusSubnetDBO extends AbstractNodeDBO<IocDBO, MasterDBO> {
      * @param hsa
      *            set the HSA (Highest Server Adress).
      */
-    public final void setHsa(final int hsa) {
+    public void setHsa(final int hsa) {
         this._hsa = (short)hsa;
     }
 
@@ -171,7 +148,7 @@ public class ProfibusSubnetDBO extends AbstractNodeDBO<IocDBO, MasterDBO> {
      *
      * @return the length of the LWL.
      */
-    public final float getLwlLength() {
+    public float getLwlLength() {
         return _lwlLength;
     }
 
@@ -180,7 +157,7 @@ public class ProfibusSubnetDBO extends AbstractNodeDBO<IocDBO, MasterDBO> {
      * @param lwlLength
      *            set the length of the LWL.
      */
-    public final void setLwlLength(final float lwlLength) {
+    public void setLwlLength(final float lwlLength) {
         this._lwlLength = lwlLength;
     }
 
@@ -188,7 +165,7 @@ public class ProfibusSubnetDBO extends AbstractNodeDBO<IocDBO, MasterDBO> {
      *
      * @return the number of Profibus Master
      */
-    public final short getMasterNumber() {
+    public short getMasterNumber() {
         return _masterNumber;
     }
 
@@ -197,7 +174,7 @@ public class ProfibusSubnetDBO extends AbstractNodeDBO<IocDBO, MasterDBO> {
      * @param masterNumber
      *            set the number of Profibus Master
      */
-    public final void setMasterNumber(final short masterNumber) {
+    public void setMasterNumber(final short masterNumber) {
         this._masterNumber = masterNumber;
     }
 
@@ -205,7 +182,7 @@ public class ProfibusSubnetDBO extends AbstractNodeDBO<IocDBO, MasterDBO> {
      *
      * @return the max Tsdr
      */
-    public final int getMaxTsdr() {
+    public int getMaxTsdr() {
         return _maxTsdr;
     }
 
@@ -214,7 +191,7 @@ public class ProfibusSubnetDBO extends AbstractNodeDBO<IocDBO, MasterDBO> {
      * @param maxTsdr
      *            set the max Tsdr
      */
-    public final void setMaxTsdr(final int maxTsdr) {
+    public void setMaxTsdr(final int maxTsdr) {
         this._maxTsdr = maxTsdr;
     }
 
@@ -222,7 +199,7 @@ public class ProfibusSubnetDBO extends AbstractNodeDBO<IocDBO, MasterDBO> {
      *
      * @return the min Tsdr.
      */
-    public final int getMinTsdr() {
+    public int getMinTsdr() {
         return _minTsdr;
     }
 
@@ -231,7 +208,7 @@ public class ProfibusSubnetDBO extends AbstractNodeDBO<IocDBO, MasterDBO> {
      * @param minTsdr
      *            set the min Tsdr.
      */
-    public final void setMinTsdr(final int minTsdr) {
+    public void setMinTsdr(final int minTsdr) {
         this._minTsdr = minTsdr;
     }
 
@@ -239,7 +216,7 @@ public class ProfibusSubnetDBO extends AbstractNodeDBO<IocDBO, MasterDBO> {
      *
      * @return The olm Number.
      */
-    public final short getOlmNumber() {
+    public short getOlmNumber() {
         return _olmNumber;
     }
 
@@ -248,7 +225,7 @@ public class ProfibusSubnetDBO extends AbstractNodeDBO<IocDBO, MasterDBO> {
      * @param olmNumber
      *            get the olm number.
      */
-    public final void setOlmNumber(final short olmNumber) {
+    public void setOlmNumber(final short olmNumber) {
         this._olmNumber = olmNumber;
     }
 
@@ -256,7 +233,7 @@ public class ProfibusSubnetDBO extends AbstractNodeDBO<IocDBO, MasterDBO> {
      *
      * @return the state of Option.
      */
-    public final boolean isOptionPar() {
+    public boolean isOptionPar() {
         return _option;
     }
 
@@ -265,7 +242,7 @@ public class ProfibusSubnetDBO extends AbstractNodeDBO<IocDBO, MasterDBO> {
      * @param optionPar
      *            set the state of option
      */
-    public final void setOptionPar(final boolean optionPar) {
+    public void setOptionPar(final boolean optionPar) {
         this._option = optionPar;
     }
 
@@ -274,7 +251,7 @@ public class ProfibusSubnetDBO extends AbstractNodeDBO<IocDBO, MasterDBO> {
      * @return the Profile.
      */
     @CheckForNull
-    public final String getProfil() {
+    public String getProfil() {
         return _profil;
     }
 
@@ -283,7 +260,7 @@ public class ProfibusSubnetDBO extends AbstractNodeDBO<IocDBO, MasterDBO> {
      * @param profil
      *            set the Profile
      */
-    public final void setProfil(@Nullable final String profil) {
+    public void setProfil(@Nullable final String profil) {
         _profil = profil;
     }
 
@@ -292,7 +269,7 @@ public class ProfibusSubnetDBO extends AbstractNodeDBO<IocDBO, MasterDBO> {
      * @return the quota Fdl Fms S7 com.
      */
     @CheckForNull
-    public final String getQuotaFdlFmsS7com() {
+    public String getQuotaFdlFmsS7com() {
         return _quotaFdlFmsS7com;
     }
 
@@ -301,7 +278,7 @@ public class ProfibusSubnetDBO extends AbstractNodeDBO<IocDBO, MasterDBO> {
      * @param quotaFdlFmsS7Com
      *            set the quota Fdl Fms S7 com.
      */
-    public final void setQuotaFdlFmsS7com(@Nullable final String quotaFdlFmsS7Com) {
+    public void setQuotaFdlFmsS7com(@Nullable final String quotaFdlFmsS7Com) {
         _quotaFdlFmsS7com = quotaFdlFmsS7Com;
     }
 
@@ -309,7 +286,7 @@ public class ProfibusSubnetDBO extends AbstractNodeDBO<IocDBO, MasterDBO> {
      *
      * @return the Repeater number.
      */
-    public final short getRepeaterNumber() {
+    public short getRepeaterNumber() {
         return _repeaterNumber;
     }
 
@@ -318,63 +295,63 @@ public class ProfibusSubnetDBO extends AbstractNodeDBO<IocDBO, MasterDBO> {
      * @param repeaterNumber
      *            set the Repeater number.
      */
-    public final void setRepeaterNumber(final int repeaterNumber) {
+    public void setRepeaterNumber(final int repeaterNumber) {
         _repeaterNumber = (short) repeaterNumber;
     }
 
-    public final short getSlaveNumber() {
+    public short getSlaveNumber() {
         return _slaveNumber;
     }
 
-    public final void setSlaveNumber(final short slaveNumber) {
+    public void setSlaveNumber(final short slaveNumber) {
         this._slaveNumber = slaveNumber;
     }
 
-    public final int getSlotTime() {
+    public int getSlotTime() {
         return _slotTime;
     }
 
-    public final void setSlotTime(final int slotTime) {
+    public void setSlotTime(final int slotTime) {
         this._slotTime = slotTime;
     }
 
-    public final short getSubscriber() {
+    public short getSubscriber() {
         return _subscriber;
     }
 
-    public final void setSubscriber(final short subscriber) {
+    public void setSubscriber(final short subscriber) {
         this._subscriber = subscriber;
     }
 
-    public final short getTqui() {
+    public short getTqui() {
         return _tqui;
     }
 
-    public final void setTqui(final int tqui) {
+    public void setTqui(final int tqui) {
         this._tqui = (short)tqui;
     }
 
-    public final short getTset() {
+    public short getTset() {
         return _tset;
     }
 
-    public final void setTset(final int tset) {
+    public void setTset(final int tset) {
         this._tset = (short)tset;
     }
 
-    public final long getTtr() {
+    public long getTtr() {
         return _ttr;
     }
 
-    public final void setTtr(final long ttr) {
+    public void setTtr(final long ttr) {
         this._ttr = ttr;
     }
 
-    public final int getWatchdog() {
+    public int getWatchdog() {
         return _watchdog;
     }
 
-    public final void setWatchdog(final int watchdog) {
+    public void setWatchdog(final int watchdog) {
         this._watchdog = watchdog;
     }
 
@@ -390,7 +367,7 @@ public class ProfibusSubnetDBO extends AbstractNodeDBO<IocDBO, MasterDBO> {
      */
     @ManyToOne // TODO (hrickens) [11.05.2011]: Wieso ist hier eine ManyToOne Beziehung? Die ist doch inder der getParent Methode.
     @Nonnull
-    public final IocDBO getIoc() {
+    public IocDBO getIoc() {
         return (IocDBO) getParent();
     }
 
@@ -399,7 +376,7 @@ public class ProfibusSubnetDBO extends AbstractNodeDBO<IocDBO, MasterDBO> {
      * @param ioc
      *            set the parent Ioc of this subnet.
      */
-    public final void setIoc(@Nonnull final IocDBO ioc) {
+    public void setIoc(@Nonnull final IocDBO ioc) {
         this.setParent(ioc);
     }
 
@@ -427,8 +404,7 @@ public class ProfibusSubnetDBO extends AbstractNodeDBO<IocDBO, MasterDBO> {
     @Override
     @Nonnull
     public final ProfibusSubnetDBO copyParameter(@Nonnull final IocDBO parent) throws PersistenceException {
-            IocDBO ioc = parent;
-            ProfibusSubnetDBO copy = new ProfibusSubnetDBO(ioc);
+            final ProfibusSubnetDBO copy = new ProfibusSubnetDBO(parent);
             copy.setDescription(getDescription());
             copy.setBaudRate(getBaudRate());
             copy.setCuLineLength(getCuLineLength());
@@ -456,9 +432,9 @@ public class ProfibusSubnetDBO extends AbstractNodeDBO<IocDBO, MasterDBO> {
     @Override
     @Nonnull
     public final ProfibusSubnetDBO copyThisTo(@Nonnull final IocDBO parentNode) throws PersistenceException {
-        ProfibusSubnetDBO copy = (ProfibusSubnetDBO) super.copyThisTo(parentNode);
+        final ProfibusSubnetDBO copy = (ProfibusSubnetDBO) super.copyThisTo(parentNode);
         for (MasterDBO node : getChildren()) {
-            MasterDBO childrenCopy = node.copyThisTo(copy);
+            final MasterDBO childrenCopy = node.copyThisTo(copy);
             childrenCopy.setSortIndexNonHibernate(node.getSortIndex());
         }
         return copy;
@@ -488,7 +464,7 @@ public class ProfibusSubnetDBO extends AbstractNodeDBO<IocDBO, MasterDBO> {
     }
     
     @Override
-    public boolean equals(@CheckForNull Object obj) {
+    public boolean equals(@CheckForNull final Object obj) {
         return super.equals(obj);
     }
     

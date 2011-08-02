@@ -43,9 +43,9 @@ import org.csstudio.config.ioconfig.model.pbmodel.ChannelDBO;
  */
 public final class VirtualLeaf extends AbstractNodeDBO<ChannelDBO, VirtualLeaf> {
 
+    public static final VirtualLeaf INSTANCE = new VirtualLeaf();
     private static final long serialVersionUID = 1L;
 
-    public static final VirtualLeaf INSTANCE = new VirtualLeaf();
     
     /**
      * Constructor.

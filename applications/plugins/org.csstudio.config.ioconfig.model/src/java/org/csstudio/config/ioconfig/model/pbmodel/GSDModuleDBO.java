@@ -137,21 +137,12 @@ public class GSDModuleDBO extends DBClass implements Comparable<GSDModuleDBO>, I
         _isDirty = true;
     }
 
-    /**
-     * @return is only true has this Module unsaved values.
-     */
-    @Override
-    @Transient
-    public boolean isDirty() {
-        return _isDirty;
+    public int getModuleId() {
+        return _moduleId;
     }
 
-    /**
-     * @param dirty set true when the Module have unsaved values.
-     */
-    @Override
-    public void setDirty(final boolean dirty) {
-        _isDirty = dirty;
+    public void setModuleId(final int moduleId) {
+        _moduleId = moduleId;
     }
 
     /**
@@ -191,34 +182,24 @@ public class GSDModuleDBO extends DBClass implements Comparable<GSDModuleDBO>, I
         return _name;
     }
 
-    /**
-     * @return The Name of this GSD Module.
-     */
-    @Override
-    @Nonnull
-    public String toString() {
-        return getName();
-    }
-
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "GSDModule", fetch = FetchType.EAGER)
-//    @OrderBy("offset")
     @CheckForNull
     public Set<ModuleChannelPrototypeDBO> getModuleChannelPrototype() {
         return _moduleChannelPrototypes;
     }
     
+    public void setModuleChannelPrototype(@Nullable final Set<ModuleChannelPrototypeDBO> moduleChannelPrototypes) {
+        _moduleChannelPrototypes = moduleChannelPrototypes;
+    }
+    
     @Transient
     @Nonnull
     public TreeSet<ModuleChannelPrototypeDBO> getModuleChannelPrototypeNH() {
-        TreeSet<ModuleChannelPrototypeDBO> moduleChannelPrototypes = new TreeSet<ModuleChannelPrototypeDBO>(new ComparatorImplementation());
+        final TreeSet<ModuleChannelPrototypeDBO> moduleChannelPrototypes = new TreeSet<ModuleChannelPrototypeDBO>(new ComparatorImplementation());
         if(_moduleChannelPrototypes!=null) {
             moduleChannelPrototypes.addAll(_moduleChannelPrototypes);
         }
         return moduleChannelPrototypes;
-    }
-
-    public void setModuleChannelPrototype(@Nullable final Set<ModuleChannelPrototypeDBO> moduleChannelPrototypes) {
-        _moduleChannelPrototypes = moduleChannelPrototypes;
     }
 
     public void addModuleChannelPrototype(@Nonnull final ModuleChannelPrototypeDBO moduleChannelPrototype) {
@@ -255,19 +236,29 @@ public class GSDModuleDBO extends DBClass implements Comparable<GSDModuleDBO>, I
         return getId() != 0;
     }
 
-    public int getModuleId() {
-        return _moduleId;
-    }
-
-    public void setModuleId(final int moduleId) {
-        _moduleId = moduleId;
-    }
-
     @Transient
     public int getGsdFileId() {
-        GSDFileDBO gsdFile = getGSDFile();
+        final GSDFileDBO gsdFile = getGSDFile();
         return gsdFile==null?-1:gsdFile.getId();
     }
+    
+    /**
+     * @return is only true has this Module unsaved values.
+     */
+    @Override
+    @Transient
+    public boolean isDirty() {
+        return _isDirty;
+    }
+
+    /**
+     * @param dirty set true when the Module have unsaved values.
+     */
+    @Override
+    public void setDirty(final boolean dirty) {
+        _isDirty = dirty;
+    }
+
 
     /**
      *  Die Tabellen MIME_FILES und MIME_FILES_DDB_MCPROTOTYPE liegen auf einer anderen DB.
@@ -294,7 +285,16 @@ public class GSDModuleDBO extends DBClass implements Comparable<GSDModuleDBO>, I
         _documents = documents;
 
     }
-    
+
+    /**
+     * @return The Name of this GSD Module.
+     */
+    @Override
+    @Nonnull
+    public String toString() {
+        return getName();
+    }
+
     /**
      * Compare to GSDModule instances on the basis of the DB Key (ID).
      *
@@ -322,7 +322,7 @@ public class GSDModuleDBO extends DBClass implements Comparable<GSDModuleDBO>, I
      * {@inheritDoc}
      */
     @Override
-    public boolean equals(@CheckForNull Object obj) {
+    public boolean equals(@CheckForNull final Object obj) {
         if (this == obj) {
             return true;
         }
@@ -332,7 +332,7 @@ public class GSDModuleDBO extends DBClass implements Comparable<GSDModuleDBO>, I
         if (getClass() != obj.getClass()) {
             return false;
         }
-        GSDModuleDBO other = (GSDModuleDBO) obj;
+        final GSDModuleDBO other = (GSDModuleDBO) obj;
         return (getId() == other.getId());
     }
     

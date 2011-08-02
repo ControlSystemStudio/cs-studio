@@ -100,7 +100,7 @@ public class NamedDBClass extends DBClass {
     @Override
     @Nonnull
     public String toString() {
-        StringBuffer sb = new StringBuffer();
+        final StringBuffer sb = new StringBuffer();
         if (getSortIndex() != null) {
             sb.append(getSortIndex());
         }
@@ -127,7 +127,7 @@ public class NamedDBClass extends DBClass {
      * {@inheritDoc}
      */
     @Override
-    public boolean equals(@CheckForNull Object obj) {
+    public boolean equals(@CheckForNull final Object obj) {
         if(this == obj) {
             return true;
         }
@@ -137,7 +137,7 @@ public class NamedDBClass extends DBClass {
         if(getClass() != obj.getClass()) {
             return false;
         }
-        NamedDBClass other = (NamedDBClass) obj;
+        final NamedDBClass other = (NamedDBClass) obj;
         if(getId() != other.getId()) {
             return false;
         }

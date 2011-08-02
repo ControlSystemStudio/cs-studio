@@ -43,43 +43,52 @@ import org.junit.Test;
  * @since 09.01.2009
  */
 public class ExtUserPrmDataConstUnitTest {
-
+    
     private GSDFileDBO _gsdFileDBO;
-
-    /**
-     * Test method for {@link org.csstudio.config.ioconfig.model.pbmodel.gsdParser.ExtUserPrmDataConst#ExtUserPrmDataConst(java.lang.String, java.lang.String)}.
-     */
-    @Test
-    public final void testEmptyExtUserPrmDataConst() {
-        ParsedGsdFileModel out = new ParsedGsdFileModel(_gsdFileDBO);
-        testExtUserPrmDataConst(out, 0, 4, 255, 4, 255, 3);        
-    }
-
-    @Test
-    public final void testFilledExtUserPrmDataConst() {
-        ParsedGsdFileModel out = new ParsedGsdFileModel(_gsdFileDBO);
-        setExtUserPrmDataConst(out);
-        testExtUserPrmDataConst(out, 118, 116, 255, 116, 255, 3);
-    }
-
+    
     /**
      * @param out
      * @return
      */
     @Nonnull
-    public final ExtUserPrmData createExtUserPrmData(@Nonnull ParsedGsdFileModel out, int index, @Nonnull String minBit, @Nonnull String maxBit, @Nonnull String def ) {
-        ExtUserPrmData extUserPrmData = new ExtUserPrmData(out, index, "");
+    public final ExtUserPrmData createExtUserPrmData(@Nonnull final ParsedGsdFileModel out, final int index, @Nonnull final String minBit, @Nonnull final String maxBit, @Nonnull final String def ) {
+        final ExtUserPrmData extUserPrmData = new ExtUserPrmData(out, index, "");
         extUserPrmData.setMinBit(minBit);
         extUserPrmData.setMaxBit(maxBit);
         extUserPrmData.setDefault(def);
         return extUserPrmData;
     }
-
-
+    
     /**
      * @param out
      */
-    public final void testExtUserPrmDataConst(@Nonnull ParsedGsdFileModel out, @Nonnull Integer... expec) {
+    public final void setExtUserPrmDataConst(@Nonnull final ParsedGsdFileModel out) {
+        out.setExtUserPrmDataConst(new KeyValuePair("key(0)", "0x77"));
+        out.setExtUserPrmDataConst(new KeyValuePair("key(1)", "0x77"));
+        out.setExtUserPrmDataConst(new KeyValuePair("key(2)", "0x77"));
+        out.setExtUserPrmDataConst(new KeyValuePair("key(3)", "0x77"));
+        out.setExtUserPrmDataConst(new KeyValuePair("key(4)", "0x77"));
+    }
+    
+    @Before
+    public void setUp() throws Exception {
+        _gsdFileDBO = new GSDFileDBO("JUnitTest", "#Profibus_DP\nVendor_Name            = JUnitTest");
+    }
+    
+    
+    /**
+     * Test method for {@link org.csstudio.config.ioconfig.model.pbmodel.gsdParser.ExtUserPrmDataConst#ExtUserPrmDataConst(java.lang.String, java.lang.String)}.
+     */
+    @Test
+    public final void testEmptyExtUserPrmDataConst() {
+        final ParsedGsdFileModel out = new ParsedGsdFileModel(_gsdFileDBO);
+        testExtUserPrmDataConst(out, 0, 4, 255, 4, 255, 3);
+    }
+    
+    /**
+     * @param out
+     */
+    public final void testExtUserPrmDataConst(@Nonnull final ParsedGsdFileModel out, @Nonnull final Integer... expec) {
         int i = 0;
         ExtUserPrmData extUserPrmData = createExtUserPrmData(out, 0, "0", "0", "0");
         out.setExtUserPrmDataDefault(extUserPrmData, 0);
@@ -104,23 +113,37 @@ public class ExtUserPrmDataConstUnitTest {
         
         extUserPrmDataConst = out.getExtUserPrmDataConst();
         assertEquals(expec[i++], extUserPrmDataConst.get(0));
-
+        
         extUserPrmDataConst = out.getExtUserPrmDataConst();
         assertEquals(expec[i++], extUserPrmDataConst.get(1));
-
+        
         extUserPrmDataConst = out.getExtUserPrmDataConst();
         assertEquals(expec[i++], extUserPrmDataConst.get(2));
     }
-
+    
+    @Test
+    public final void testFilledExtUserPrmDataConst() {
+        final ParsedGsdFileModel out = new ParsedGsdFileModel(_gsdFileDBO);
+        setExtUserPrmDataConst(out);
+        testExtUserPrmDataConst(out, 118, 116, 255, 116, 255, 3);
+    }
+    
     /**
-     * @param out
+     * Test method for {@link org.csstudio.config.ioconfig.model.pbmodel.gsdParser.IndexValueData#getIndex()}.
      */
-    public final void setExtUserPrmDataConst(@Nonnull ParsedGsdFileModel out) {
-        out.setExtUserPrmDataConst(new KeyValuePair("key(0)", "0x77"));
-        out.setExtUserPrmDataConst(new KeyValuePair("key(1)", "0x77"));
-        out.setExtUserPrmDataConst(new KeyValuePair("key(2)", "0x77"));
-        out.setExtUserPrmDataConst(new KeyValuePair("key(3)", "0x77"));
-        out.setExtUserPrmDataConst(new KeyValuePair("key(4)", "0x77"));
+    @Ignore("Not yet implemented")
+    @Test
+    public final void testGetIndex() {
+        fail("Not yet implemented");
+    }
+    
+    /**
+     * Test method for {@link org.csstudio.config.ioconfig.model.pbmodel.gsdParser.IndexValueData#getValue()}.
+     */
+    @Ignore("Not yet implemented")
+    @Test
+    public final void testGetValue() {
+        fail("Not yet implemented");
     }
     
     /**
@@ -131,16 +154,7 @@ public class ExtUserPrmDataConstUnitTest {
     public final void testIndexValueData() {
         fail("Not yet implemented");
     }
-
-    /**
-     * Test method for {@link org.csstudio.config.ioconfig.model.pbmodel.gsdParser.IndexValueData#getIndex()}.
-     */
-    @Ignore("Not yet implemented")
-    @Test
-    public final void testGetIndex() {
-        fail("Not yet implemented");
-    }
-
+    
     /**
      * Test method for {@link org.csstudio.config.ioconfig.model.pbmodel.gsdParser.IndexValueData#setIndex(java.lang.String)}.
      */
@@ -149,16 +163,7 @@ public class ExtUserPrmDataConstUnitTest {
     public final void testSetIndex() {
         fail("Not yet implemented");
     }
-
-    /**
-     * Test method for {@link org.csstudio.config.ioconfig.model.pbmodel.gsdParser.IndexValueData#getValue()}.
-     */
-    @Ignore("Not yet implemented")
-    @Test
-    public final void testGetValue() {
-        fail("Not yet implemented");
-    }
-
+    
     /**
      * Test method for {@link org.csstudio.config.ioconfig.model.pbmodel.gsdParser.IndexValueData#setValue(java.lang.String)}.
      */
@@ -167,7 +172,7 @@ public class ExtUserPrmDataConstUnitTest {
     public final void testSetValue() {
         fail("Not yet implemented");
     }
-
+    
     /**
      * Test method for {@link org.csstudio.config.ioconfig.model.pbmodel.gsdParser.IndexValueData#toString()}.
      */
@@ -177,9 +182,4 @@ public class ExtUserPrmDataConstUnitTest {
         fail("Not yet implemented");
     }
     
-    @Before
-    public void setUp() throws Exception {
-        _gsdFileDBO = new GSDFileDBO("JUnitTest", "JUnitTest File");
-    }
-
 }

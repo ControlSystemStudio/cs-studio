@@ -36,33 +36,12 @@ public enum GSDTestFiles {
     
     private final String _fileName;
     private GSDFileDBO _gsdFileDBO;
-
+    
     /**
      * 
      */
-    private GSDTestFiles(@Nonnull String fileName) {
+    private GSDTestFiles(@Nonnull final String fileName) {
         _fileName = fileName;
-    }
-    
-    @Nonnull
-    public String getFileAsString() throws IOException {
-        final String resFilePath = 
-            CssResourceLocator.composeResourceLocationString(RepoDomain.APPLICATIONS, 
-                                                              IOConfigActivator.PLUGIN_ID, 
-                                                              "res-test/GSDFiles/" + _fileName);
-        FileReader fr = new FileReader(resFilePath);
-        BufferedReader bf = new BufferedReader(fr);
-        try {
-            String line;
-            StringBuilder fileAsString = new StringBuilder();
-            while (null != (line = bf.readLine())) {
-                fileAsString.append(line);
-                fileAsString.append(String.format("%n"));
-            }
-            return fileAsString.toString();
-        } finally {
-            bf.close();
-        }
     }
     
     @Nonnull
@@ -71,5 +50,26 @@ public enum GSDTestFiles {
             _gsdFileDBO = new GSDFileDBO(_fileName, getFileAsString());
         }
         return _gsdFileDBO;
+    }
+    
+    @Nonnull
+    public String getFileAsString() throws IOException {
+        final String resFilePath =
+            CssResourceLocator.composeResourceLocationString(RepoDomain.APPLICATIONS,
+                                                             IOConfigActivator.PLUGIN_ID,
+                                                             "res-test/GSDFiles/" + _fileName);
+        final FileReader fr = new FileReader(resFilePath);
+        final BufferedReader bf = new BufferedReader(fr);
+        try {
+            String line;
+            final StringBuilder fileAsString = new StringBuilder();
+            while (null != (line = bf.readLine())) {
+                fileAsString.append(line);
+                fileAsString.append(String.format("%n"));
+            }
+            return fileAsString.toString();
+        } finally {
+            bf.close();
+        }
     }
 }

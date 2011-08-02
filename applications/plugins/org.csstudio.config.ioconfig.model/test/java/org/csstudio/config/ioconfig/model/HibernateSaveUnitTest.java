@@ -46,8 +46,6 @@ import org.junit.Ignore;
 import org.junit.Test;
 
 /**
- * TODO (hrickens) :
- *
  * @author hrickens
  * @author $Author: hrickens $
  * @version $Revision: 1.7 $
@@ -56,9 +54,12 @@ import org.junit.Test;
 public class HibernateSaveUnitTest {
     
     private static HibernateRepository _REPOSITORY;
+
     private FacilityDBO _facilityDBO;
+    
     private GSDFileDBO _b756p33;
-    private boolean _gsdFileExist = false;
+    
+    private boolean _gsdFileExist;
     
     /**
      * @throws java.lang.Exception
@@ -69,13 +70,127 @@ public class HibernateSaveUnitTest {
         Repository.injectIRepository(_REPOSITORY);
         
     }
+    @AfterClass
+    public static void tearDownAfterClass() {
+        Repository.close();
+    }
+    
+    /**
+     * @throws PersistenceException
+     */
+    public void createTestFacility() throws PersistenceException {
+        _facilityDBO = new FacilityDBO();
+        _facilityDBO.setName("unit Test facility");
+        _facilityDBO.setSortIndex(0);
+        _facilityDBO.save();
+    }
+    
+    /**
+     * @return
+     * @throws PersistenceException
+     */
+    @Nonnull
+    public IocDBO createTestIoc() throws PersistenceException {
+        final IocDBO ioc = _facilityDBO.createChild();
+        ioc.setName("unit test ioc");
+        ioc.save();
+        return ioc;
+    }
+    
+    /**
+     * @param slaveLoad
+     * @return
+     * @throws PersistenceException
+     */
+    @Nonnull
+    public ModuleDBO createTestModule(@Nonnull final SlaveDBO slaveLoad) throws PersistenceException {
+        final ModuleDBO module = slaveLoad.createChild();
+        module.setName("unit test module");
+        module.save();
+        module.setNewModel(4550, "a Tester");
+        return module;
+    }
+    
+    /**
+     * @param masterLoad
+     * @return
+     * @throws PersistenceException
+     */
+    @Nonnull
+    public SlaveDBO createTestSlave(@Nonnull final MasterDBO masterLoad) throws PersistenceException {
+        final SlaveDBO slave = masterLoad.createChild();
+        slave.setName("unit test slave");
+        slave.setGSDFile(_b756p33);
+        slave.save();
+        return slave;
+    }
+    
+    /**
+     * @param iocLoad
+     * @return
+     * @throws PersistenceException
+     */
+    @Nonnull
+    public ProfibusSubnetDBO createTestSubnet(@Nonnull final IocDBO iocLoad) throws PersistenceException {
+        final ProfibusSubnetDBO profibusSubnet = iocLoad.createChild();
+        profibusSubnet.setName("unit test subnet");
+        profibusSubnet.save();
+        return profibusSubnet;
+    }
+    
+    /**
+     * @param profibusSubnetLoad
+     * @return
+     * @throws PersistenceException
+     */
+    @Nonnull
+    public MasterDBO createTextMaster(@Nonnull final ProfibusSubnetDBO profibusSubnetLoad) throws PersistenceException {
+        final MasterDBO master = profibusSubnetLoad.createChild();
+        master.setName("unit test master");
+        master.save();
+        return master;
+    }
+    
+    @Ignore
+    @Test
+    public void saveTest() throws Exception {
+        
+        // Facility
+        createTestFacility();
+        
+        final FacilityDBO facilityLoad = _REPOSITORY.load(FacilityDBO.class, _facilityDBO.getId());
+        assertEquals(_facilityDBO, facilityLoad);
+        
+        // IOC
+        final IocDBO ioc = createTestIoc();
+        
+        final IocDBO iocLoad = testIoc(ioc);
+        
+        // Subnet
+        final ProfibusSubnetDBO profibusSubnet = createTestSubnet(iocLoad);
+        final ProfibusSubnetDBO profibusSubnetLoad = testSubnet(profibusSubnet);
+        
+        // Master
+        final MasterDBO master = createTextMaster(profibusSubnetLoad);
+        final MasterDBO masterLoad = testMaster(master);
+        
+        // Slave
+        final SlaveDBO slave = createTestSlave(masterLoad);
+        final SlaveDBO slaveLoad = testSlave(slave);
+        
+        // Module
+        final ModuleDBO module = createTestModule(slaveLoad);
+        
+        testModule(module);
+        
+    }
     
     @Before
     public void setUp() throws Exception {
         final List<GSDFileDBO> load = _REPOSITORY.load(GSDFileDBO.class);
         if (load != null) {
             for (final GSDFileDBO gsdFileDBO : load) {
-                if (gsdFileDBO.getName().equals("B756_P33.GSD")) {
+                if ("B756_P33.GSD".equals(gsdFileDBO.getName())) {
                     _b756p33 = gsdFileDBO;
                     _gsdFileExist = true;
                     break;
@@ -89,40 +204,64 @@ public class HibernateSaveUnitTest {
         
     }
     
-    @Ignore
-    @Test
-    public void saveTest() throws Exception {
-        
-        // Facility
-        createTestFacility();
-        
-        FacilityDBO facilityLoad = _REPOSITORY.load(FacilityDBO.class, _facilityDBO.getId());
-        assertEquals(_facilityDBO, facilityLoad);
-        
-        // IOC
-        final IocDBO ioc = createTestIoc();
-        
-        IocDBO iocLoad = testIoc(ioc);
-        
-        // Subnet
-        final ProfibusSubnetDBO profibusSubnet = createTestSubnet(iocLoad);
-        ProfibusSubnetDBO profibusSubnetLoad = testSubnet(profibusSubnet);
-        
-        // Master
-        final MasterDBO master = createTextMaster(profibusSubnetLoad);
-        MasterDBO masterLoad = testMaster(master);
-        
-        // Slave
-        final SlaveDBO slave = createTestSlave(masterLoad);
-        SlaveDBO slaveLoad = testSlave(slave);
-        
-        // Module
-        final ModuleDBO module = createTestModule(slaveLoad);
-        
-        testModule(module);
-        
+    /**
+     * @throws java.lang.Exception
+     */
+    @After
+    public void tearDown() throws Exception {
+        if (_facilityDBO != null) {
+            _REPOSITORY.removeNode(_facilityDBO);
+        }
+        if (!_gsdFileExist && _b756p33 != null) {
+            _REPOSITORY.removeGSDFiles(_b756p33);
+        }
     }
-
+    
+    /**
+     * @param ioc
+     * @return
+     * @throws PersistenceException
+     */
+    @Nonnull
+    public IocDBO testIoc(@Nonnull final IocDBO ioc) throws PersistenceException {
+        FacilityDBO facilityLoad;
+        facilityLoad = _REPOSITORY.load(FacilityDBO.class, _facilityDBO.getId());
+        Assert.assertNotNull(facilityLoad);
+        final Set<IocDBO> iocSet = facilityLoad.getChildren();
+        assertFalse(iocSet.isEmpty());
+        final IocDBO iocLoad = iocSet.iterator().next();
+        assertEquals(ioc, iocLoad);
+        return iocLoad;
+    }
+    
+    /**
+     * @param master
+     * @return
+     * @throws PersistenceException
+     */
+    @Nonnull
+    public MasterDBO testMaster(@Nonnull final MasterDBO master) throws PersistenceException {
+        FacilityDBO facilityLoad;
+        Set<IocDBO> iocSet;
+        IocDBO iocLoad;
+        Set<ProfibusSubnetDBO> profibusSubnetSet;
+        ProfibusSubnetDBO profibusSubnetLoad;
+        facilityLoad = _REPOSITORY.load(FacilityDBO.class, _facilityDBO.getId());
+        Assert.assertNotNull(facilityLoad);
+        iocSet = facilityLoad.getChildren();
+        assertFalse(iocSet.isEmpty());
+        iocLoad = iocSet.iterator().next();
+        profibusSubnetSet = iocLoad.getChildren();
+        assertFalse(profibusSubnetSet.isEmpty());
+        profibusSubnetLoad = profibusSubnetSet.iterator().next();
+        final Set<MasterDBO> masterSet = profibusSubnetLoad.getChildren();
+        assertFalse(masterSet.isEmpty());
+        final MasterDBO masterLoad = masterSet.iterator().next();
+        
+        assertEquals(master, masterLoad);
+        return masterLoad;
+    }
+    
     /**
      * @param module
      * @throws PersistenceException
@@ -158,27 +297,13 @@ public class HibernateSaveUnitTest {
         }
         assertEquals(module, moduleLoad);
     }
-
-    /**
-     * @param slaveLoad
-     * @return
-     * @throws PersistenceException
-     */
-    @Nonnull 
-    public ModuleDBO createTestModule(@Nonnull SlaveDBO slaveLoad) throws PersistenceException {
-        final ModuleDBO module = slaveLoad.createChild();
-        module.setName("unit test module");
-        module.save();
-        module.setNewModel(4550, "a Tester");
-        return module;
-    }
-
+    
     /**
      * @param slave
      * @return
      * @throws PersistenceException
      */
-    @Nonnull 
+    @Nonnull
     public SlaveDBO testSlave(@Nonnull final SlaveDBO slave) throws PersistenceException {
         FacilityDBO facilityLoad;
         Set<IocDBO> iocSet;
@@ -198,48 +323,20 @@ public class HibernateSaveUnitTest {
         masterSet = profibusSubnetLoad.getChildren();
         assertFalse(masterSet.isEmpty());
         masterLoad = masterSet.iterator().next();
-        Set<SlaveDBO> slaveSet = masterLoad.getChildren();
+        final Set<SlaveDBO> slaveSet = masterLoad.getChildren();
         assertFalse(slaveSet.isEmpty());
-        SlaveDBO slaveLoad = slaveSet.iterator().next();
+        final SlaveDBO slaveLoad = slaveSet.iterator().next();
         
         assertEquals(slave, slaveLoad);
         return slaveLoad;
     }
-
-    /**
-     * @param master
-     * @return
-     * @throws PersistenceException
-     */
-    @Nonnull 
-    public MasterDBO testMaster(@Nonnull final MasterDBO master) throws PersistenceException {
-        FacilityDBO facilityLoad;
-        Set<IocDBO> iocSet;
-        IocDBO iocLoad;
-        Set<ProfibusSubnetDBO> profibusSubnetSet;
-        ProfibusSubnetDBO profibusSubnetLoad;
-        facilityLoad = _REPOSITORY.load(FacilityDBO.class, _facilityDBO.getId());
-        Assert.assertNotNull(facilityLoad);
-        iocSet = facilityLoad.getChildren();
-        assertFalse(iocSet.isEmpty());
-        iocLoad = iocSet.iterator().next();
-        profibusSubnetSet = iocLoad.getChildren();
-        assertFalse(profibusSubnetSet.isEmpty());
-        profibusSubnetLoad = profibusSubnetSet.iterator().next();
-        Set<MasterDBO> masterSet = profibusSubnetLoad.getChildren();
-        assertFalse(masterSet.isEmpty());
-        MasterDBO masterLoad = masterSet.iterator().next();
-        
-        assertEquals(master, masterLoad);
-        return masterLoad;
-    }
-
+    
     /**
      * @param profibusSubnet
      * @return
      * @throws PersistenceException
      */
-    @Nonnull 
+    @Nonnull
     public ProfibusSubnetDBO testSubnet(@Nonnull final ProfibusSubnetDBO profibusSubnet) throws PersistenceException {
         FacilityDBO facilityLoad;
         Set<IocDBO> iocSet;
@@ -249,110 +346,13 @@ public class HibernateSaveUnitTest {
         iocSet = facilityLoad.getChildren();
         assertFalse(iocSet.isEmpty());
         iocLoad = iocSet.iterator().next();
-        Set<ProfibusSubnetDBO> profibusSubnetSet = iocLoad.getChildren();
+        final Set<ProfibusSubnetDBO> profibusSubnetSet = iocLoad.getChildren();
         assertFalse(profibusSubnetSet.isEmpty());
-        ProfibusSubnetDBO profibusSubnetLoad = profibusSubnetSet.iterator().next();
+        final ProfibusSubnetDBO profibusSubnetLoad = profibusSubnetSet.iterator().next();
         
         assertEquals(profibusSubnet, profibusSubnetLoad);
         return profibusSubnetLoad;
     }
-
-    /**
-     * @param ioc
-     * @return
-     * @throws PersistenceException
-     */
-    @Nonnull 
-    public IocDBO testIoc(@Nonnull final IocDBO ioc) throws PersistenceException {
-        FacilityDBO facilityLoad;
-        facilityLoad = _REPOSITORY.load(FacilityDBO.class, _facilityDBO.getId());
-        Assert.assertNotNull(facilityLoad);
-        Set<IocDBO> iocSet = facilityLoad.getChildren();
-        assertFalse(iocSet.isEmpty());
-        IocDBO iocLoad = iocSet.iterator().next();
-        assertEquals(ioc, iocLoad);
-        return iocLoad;
-    }
     
-    /**
-     * @param masterLoad
-     * @return
-     * @throws PersistenceException
-     */
-    @Nonnull
-    public SlaveDBO createTestSlave(@Nonnull MasterDBO masterLoad) throws PersistenceException {
-        final SlaveDBO slave = masterLoad.createChild();
-        slave.setName("unit test slave");
-        slave.setGSDFile(_b756p33);
-        slave.save();
-        return slave;
-    }
-    
-    /**
-     * @param profibusSubnetLoad
-     * @return
-     * @throws PersistenceException
-     */
-    @Nonnull
-    public MasterDBO createTextMaster(@Nonnull ProfibusSubnetDBO profibusSubnetLoad) throws PersistenceException {
-        final MasterDBO master = profibusSubnetLoad.createChild();
-        master.setName("unit test master");
-        master.save();
-        return master;
-    }
-    
-    /**
-     * @param iocLoad
-     * @return
-     * @throws PersistenceException
-     */
-    @Nonnull
-    public ProfibusSubnetDBO createTestSubnet(@Nonnull IocDBO iocLoad) throws PersistenceException {
-        final ProfibusSubnetDBO profibusSubnet = iocLoad.createChild();
-        profibusSubnet.setName("unit test subnet");
-        profibusSubnet.save();
-        return profibusSubnet;
-    }
-    
-    /**
-     * @return
-     * @throws PersistenceException
-     */
-    @Nonnull
-    public IocDBO createTestIoc() throws PersistenceException {
-        final IocDBO ioc = _facilityDBO.createChild();
-        ioc.setName("unit test ioc");
-        ioc.save();
-        return ioc;
-    }
-    
-    /**
-     * @throws PersistenceException
-     */
-    public void createTestFacility() throws PersistenceException {
-        _facilityDBO = new FacilityDBO();
-        _facilityDBO.setName("unit Test facility");
-        _facilityDBO.setSortIndex(0);
-        _facilityDBO.save();
-    }
-    
-    /**
-     * @throws java.lang.Exception
-     */
-    @After
-    public void tearDown() throws Exception {
-        if (_facilityDBO != null) {
-            _REPOSITORY.removeNode(_facilityDBO);
-        }
-        if (!_gsdFileExist && _b756p33 != null) {
-            _REPOSITORY.removeGSDFiles(_b756p33);
-        }
-    }
-    
-    @AfterClass
-    public static void tearDownAfterClass() {
-        Repository.close();
-    }
-
     
 }

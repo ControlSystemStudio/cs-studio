@@ -28,89 +28,7 @@ public class CopyNodeUnitTest {
     private ProfibusSubnetDBO _profibusSubnet;
     private MasterDBO _master;
     private SlaveDBO _slave;
-
-
-    @Test
-    public void testCopyModule() throws Exception {
-        assertEquals("--- Precondition wrong!","@Subnet:1234", _slave.getEpicsAdressString());
-        
-        // Copy a Module to the same Slave
-        ModuleDBO module = new ModuleDBO(_slave);
-        module.setName("Module");
-        ChannelStructureDBO sco = ChannelStructureDBO.makeChannelStructure(module,OUTPUT,DataType.INT8,"SCO ");
-        ChannelDBO pci = new ChannelDBO(sco,INPUT,false);
-        pci.setChannelType(DataType.INT16);
-        pci.setName("PCI");
-        module.localSave();
-        
-        assertEquals(1, _slave.getChildren().size());
-        
-        NamedDBClass node = module.copyThisTo(_slave);
-        // - Test Slave
-        assertEquals(2, _slave.getChildren().size());
-        
-        // - Test Module 
-        ModuleDBO copyModule = (ModuleDBO) node;
-        assertEquals(_slave, copyModule.getParent());
-        assertEquals("Module", copyModule.getName());
-        assertEquals(0, copyModule.getId());
-        
-        // -- Test Children
-        assertEquals(module.getChildren().size(), copyModule.getChildren().size());
-        assertEquals(module.getPureChannels().size(), copyModule.getPureChannels().size());
-        assertEquals(module.getChildren().size(), copyModule.getChildren().size());
-
-        // -- Test PCO Children
-        Set<ChannelDBO> pureChannels = module.getPureChannels();
-        Set<ChannelDBO> copyPureChannels = copyModule.getPureChannels();
-        assertEquals(pureChannels, copyPureChannels);
-        assertEquals(pureChannels.isEmpty(), copyPureChannels.isEmpty());
-        assertEquals(pureChannels.size(), copyPureChannels.size());
-        Iterator<ChannelDBO> iterator = pureChannels.iterator();
-        Iterator<ChannelDBO> copyIterator = copyPureChannels.iterator();
-        while(iterator.hasNext()&&copyIterator.hasNext()) {
-            ChannelDBO channel = iterator.next();
-            ChannelDBO copy = copyIterator.next();
-            assertEquals(channel, copy);
-            assertEquals(channel.isDigital(), copy.isDigital());
-            assertEquals(channel.isInput(), copy.isInput());
-            assertEquals(channel.getChannelNumber(), copy.getChannelNumber());
-            assertEquals(channel.getChannelStructure(), copy.getChannelStructure());
-            assertEquals(channel.getChannelType(), copy.getChannelType());
-            assertEquals(channel.getChSize(), copy.getChSize());
-            assertEquals(channel, copy);
-            assertEquals(channel, copy);
-        }
-        // -- Test PCO Children
-        
-        Set<ChannelStructureDBO> channelStructs = module.getChildren();
-        Set<ChannelStructureDBO> copyChannelStructs = copyModule.getChildren();
-        assertEquals(channelStructs.isEmpty(), copyChannelStructs.isEmpty());
-        assertEquals(channelStructs.size(), copyChannelStructs.size());
-        
-        while(iterator.hasNext()&&copyIterator.hasNext()) {
-            ChannelDBO channel = iterator.next();
-            ChannelDBO copy = copyIterator.next();
-            assertEquals(channel, copy);
-            assertEquals(channel.isDigital(), copy.isDigital());
-            assertEquals(channel.isInput(), copy.isInput());
-            assertEquals(channel.getChannelNumber(), copy.getChannelNumber());
-            assertEquals(channel.getChannelStructure(), copy.getChannelStructure());
-            assertEquals(channel.getChannelType(), copy.getChannelType());
-            assertEquals(channel.getChSize(), copy.getChSize());
-            assertEquals(channel.getCurrenUserParamDataIndex(), copy.getCurrenUserParamDataIndex());
-            assertEquals(channel.getDescription(), copy.getDescription());
-            assertEquals(channel.getGSDFile(), copy.getGSDFile());
-            assertEquals(channel.getIoName(), copy.getIoName());
-            assertEquals(channel.getModule(), copy.getModule());
-            assertEquals(channel.getName(), copy.getName());
-            assertEquals(channel.getParent(), copy.getParent());
-            assertEquals(channel.getStruct(), copy.getStruct());
-            assertEquals(channel.getVersion(), copy.getVersion());
-        }
-        
-        // Paste the Module to are other Slave
-    }
+    
     
     @Before
     public void setUp() throws PersistenceException {
@@ -132,6 +50,88 @@ public class CopyNodeUnitTest {
         _slave = null;
         _master = null;
         _profibusSubnet = null;
+    }
+    
+    @Test
+    public void testCopyModule() throws Exception {
+        assertEquals("--- Precondition wrong!","@Subnet:1234", _slave.getEpicsAdressString());
+        
+        // Copy a Module to the same Slave
+        final ModuleDBO module = new ModuleDBO(_slave);
+        module.setName("Module");
+        final ChannelStructureDBO sco = ChannelStructureDBO.makeChannelStructure(module,OUTPUT,DataType.INT8,"SCO ");
+        final ChannelDBO pci = new ChannelDBO(sco,INPUT,false);
+        pci.setChannelType(DataType.INT16);
+        pci.setName("PCI");
+        module.localSave();
+        
+        assertEquals(1, _slave.getChildren().size());
+        
+        final NamedDBClass node = module.copyThisTo(_slave);
+        // - Test Slave
+        assertEquals(2, _slave.getChildren().size());
+        
+        // - Test Module
+        final ModuleDBO copyModule = (ModuleDBO) node;
+        assertEquals(_slave, copyModule.getParent());
+        assertEquals("Module", copyModule.getName());
+        assertEquals(0, copyModule.getId());
+        
+        // -- Test Children
+        assertEquals(module.getChildren().size(), copyModule.getChildren().size());
+        assertEquals(module.getPureChannels().size(), copyModule.getPureChannels().size());
+        assertEquals(module.getChildren().size(), copyModule.getChildren().size());
+        
+        // -- Test PCO Children
+        final Set<ChannelDBO> pureChannels = module.getPureChannels();
+        final Set<ChannelDBO> copyPureChannels = copyModule.getPureChannels();
+        assertEquals(pureChannels, copyPureChannels);
+        assertEquals(pureChannels.isEmpty(), copyPureChannels.isEmpty());
+        assertEquals(pureChannels.size(), copyPureChannels.size());
+        final Iterator<ChannelDBO> iterator = pureChannels.iterator();
+        final Iterator<ChannelDBO> copyIterator = copyPureChannels.iterator();
+        while(iterator.hasNext()&&copyIterator.hasNext()) {
+            final ChannelDBO channel = iterator.next();
+            final ChannelDBO copy = copyIterator.next();
+            assertEquals(channel, copy);
+            assertEquals(channel.isDigital(), copy.isDigital());
+            assertEquals(channel.isInput(), copy.isInput());
+            assertEquals(channel.getChannelNumber(), copy.getChannelNumber());
+            assertEquals(channel.getChannelStructure(), copy.getChannelStructure());
+            assertEquals(channel.getChannelType(), copy.getChannelType());
+            assertEquals(channel.getChSize(), copy.getChSize());
+            assertEquals(channel, copy);
+            assertEquals(channel, copy);
+        }
+        // -- Test PCO Children
+        
+        final Set<ChannelStructureDBO> channelStructs = module.getChildren();
+        final Set<ChannelStructureDBO> copyChannelStructs = copyModule.getChildren();
+        assertEquals(channelStructs.isEmpty(), copyChannelStructs.isEmpty());
+        assertEquals(channelStructs.size(), copyChannelStructs.size());
+        
+        while(iterator.hasNext()&&copyIterator.hasNext()) {
+            final ChannelDBO channel = iterator.next();
+            final ChannelDBO copy = copyIterator.next();
+            assertEquals(channel, copy);
+            assertEquals(channel.isDigital(), copy.isDigital());
+            assertEquals(channel.isInput(), copy.isInput());
+            assertEquals(channel.getChannelNumber(), copy.getChannelNumber());
+            assertEquals(channel.getChannelStructure(), copy.getChannelStructure());
+            assertEquals(channel.getChannelType(), copy.getChannelType());
+            assertEquals(channel.getChSize(), copy.getChSize());
+            assertEquals(channel.getCurrenUserParamDataIndex(), copy.getCurrenUserParamDataIndex());
+            assertEquals(channel.getDescription(), copy.getDescription());
+            assertEquals(channel.getGSDFile(), copy.getGSDFile());
+            assertEquals(channel.getIoName(), copy.getIoName());
+            assertEquals(channel.getModule(), copy.getModule());
+            assertEquals(channel.getName(), copy.getName());
+            assertEquals(channel.getParent(), copy.getParent());
+            assertEquals(channel.getStruct(), copy.getStruct());
+            assertEquals(channel.getVersion(), copy.getVersion());
+        }
+        
+        // Paste the Module to are other Slave
     }
     
 }

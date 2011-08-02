@@ -14,8 +14,13 @@ import org.junit.BeforeClass;
 import org.junit.Ignore;
 import org.junit.Test;
 
-//CHECKSTYLE:OFF
-public class AbstractNodeDBOUnitTest {
+/**
+ * @author hrickens
+ * @author $Author: hrickens $
+ * @version $Revision: 1.7 $
+ * @since 02.08.2011
+ */
+public class AbstNodeDBOUnitTest {
 
     @Test
     @Ignore("Need a correct TEST DB")
@@ -101,7 +106,7 @@ public class AbstractNodeDBOUnitTest {
 
     @BeforeClass
     public static void setUpBeforeClass() {
-        HibernateRepository repository = new HibernateRepository(new HibernateTestManager());
+        final HibernateRepository repository = new HibernateRepository(new HibernateTestManager());
         Repository.injectIRepository(repository);
     }
     

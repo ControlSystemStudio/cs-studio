@@ -9,52 +9,35 @@ import java.sql.Date;
 import java.util.HashSet;
 import java.util.Set;
 
+import javax.annotation.Nonnull;
+
 import org.junit.BeforeClass;
 import org.junit.Test;
 
-//CHECKSTYLE:OFF
+/**
+ * @author hrickens
+ * @author $Author: hrickens $
+ * @version $Revision: 1.7 $
+ * @since 02.08.2011
+ */
 public class FacilityDBOUnitTest {
-
-    @Test
-    public void createFacility() throws PersistenceException{
-        final DocumentDBO document = new DocumentDBO("subDoc","descDoc","keyDoc");
-        final Set<DocumentDBO> docs = new HashSet<DocumentDBO>();
-        docs.add(document);
-        final FacilityDBO facility = CreateFacility("FacNameTest", docs);
-        assertEquals(0,facility.getId());
-        assertEquals(null, facility.getParent());
-        assertEquals("Creater", facility.getCreatedBy());
-        assertEquals(Date.valueOf("2011-11-11"),facility.getCreatedOn());
-        assertEquals("Updater", facility.getUpdatedBy());
-        assertEquals(Date.valueOf("2012-12-12"), facility.getUpdatedOn());
-        assertEquals("description line 1\r\ndescription line 2",facility.getDescription());
-        assertEquals(docs,facility.getDocuments());
-        assertEquals("FacNameTest",facility.getName());
-        assertEquals((short)12, (short) facility.getSortIndex());
-        assertEquals(11,facility.getVersion());
-
-        facility.localSave();
-
-        assertTrue(facility.getId()>0);
-        assertEquals(null, facility.getParent());
-        assertEquals("Creater", facility.getCreatedBy());
-        assertEquals(Date.valueOf("2011-11-11"),facility.getCreatedOn());
-        assertEquals("Updater", facility.getUpdatedBy());
-        assertEquals(Date.valueOf("2012-12-12"), facility.getUpdatedOn());
-        assertEquals("description line 1\r\ndescription line 2",facility.getDescription());
-        assertEquals(docs,facility.getDocuments());
-        assertEquals("FacNameTest",facility.getName());
-        assertEquals((short)12, (short) facility.getSortIndex());
-        assertEquals(11,facility.getVersion());
+    
+    @BeforeClass
+    public static void setUp() throws Exception {
+        Repository.injectIRepository(new DummyRepository());
     }
+    //    @After
+    //    public void setDown() {
+    //        Repository.injectIRepository(null);
+    //    }
     
     @Test
     public void compareFacilitys() throws Exception {
         final DocumentDBO document = new DocumentDBO("subDoc","descDoc","keyDoc");
         final Set<DocumentDBO> docs = new HashSet<DocumentDBO>();
         docs.add(document);
-        final FacilityDBO facility1 = CreateFacility("FacNameTest1", docs);
-        final FacilityDBO facility2 = CreateFacility("FacNameTest2", docs);
+        final FacilityDBO facility1 = createFacility(docs);
+        final FacilityDBO facility2 = createFacility(docs);
         
         facility1.localSave();
         facility2.localSave();
@@ -74,13 +57,45 @@ public class FacilityDBOUnitTest {
         assertFalse(0==facility2.compareTo(facility1));
         
     }
+    @Test
+    public void createFacility() throws PersistenceException{
+        final DocumentDBO document = new DocumentDBO("subDoc","descDoc","keyDoc");
+        final Set<DocumentDBO> docs = new HashSet<DocumentDBO>();
+        docs.add(document);
+        final FacilityDBO facility = createFacility(docs);
+        assertEquals(0,facility.getId());
+        assertEquals(null, facility.getParent());
+        assertEquals("Creater", facility.getCreatedBy());
+        assertEquals(Date.valueOf("2011-11-11"),facility.getCreatedOn());
+        assertEquals("Updater", facility.getUpdatedBy());
+        assertEquals(Date.valueOf("2012-12-12"), facility.getUpdatedOn());
+        assertEquals("description line 1\r\ndescription line 2",facility.getDescription());
+        assertEquals(docs,facility.getDocuments());
+        assertEquals("FacNameTest",facility.getName());
+        assertEquals((short)12, (short) facility.getSortIndex());
+        assertEquals(11,facility.getVersion());
+        
+        facility.localSave();
+        
+        assertTrue(facility.getId()>0);
+        assertEquals(null, facility.getParent());
+        assertEquals("Creater", facility.getCreatedBy());
+        assertEquals(Date.valueOf("2011-11-11"),facility.getCreatedOn());
+        assertEquals("Updater", facility.getUpdatedBy());
+        assertEquals(Date.valueOf("2012-12-12"), facility.getUpdatedOn());
+        assertEquals("description line 1\r\ndescription line 2",facility.getDescription());
+        assertEquals(docs,facility.getDocuments());
+        assertEquals("FacNameTest",facility.getName());
+        assertEquals((short)12, (short) facility.getSortIndex());
+        assertEquals(11,facility.getVersion());
+    }
     /**
-     * @param string
      * @param docs
      * @return
-     * @throws PersistenceException 
+     * @throws PersistenceException
      */
-    private FacilityDBO CreateFacility(String string, Set<DocumentDBO> docs) throws PersistenceException {
+    @Nonnull
+    private FacilityDBO createFacility(@Nonnull final Set<DocumentDBO> docs) throws PersistenceException {
         final FacilityDBO facility = new FacilityDBO();
         facility.setCreatedBy("Creater");
         facility.setCreatedOn(Date.valueOf("2011-11-11"));
@@ -93,14 +108,6 @@ public class FacilityDBOUnitTest {
         facility.setVersion(11);
         return facility;
     }
-    @BeforeClass
-    public static void setUp() throws Exception {
-        Repository.injectIRepository(new DummyRepository());
-    }
-//    @After
-//    public void setDown() {
-//        Repository.injectIRepository(null);
-//    }
-
+    
 }
 //CHECKSTYLE:ON
