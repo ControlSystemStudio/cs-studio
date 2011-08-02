@@ -139,6 +139,7 @@ public class Plot
         // Configure axes
         final Axis time_axis = xygraph.primaryXAxis;
         time_axis.setDateEnabled(true);
+        time_axis.setAutoFormat(true);
         time_axis.setTitle(Messages.Plot_TimeAxisName);
         time_axis.setFont(axis_font);
         time_axis.setTitleFont(axis_title_font);
