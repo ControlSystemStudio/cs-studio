@@ -79,17 +79,21 @@ public final class HibernateManager extends AbstractHibernateManager {
         for (Class<?> clazz : getClasses()) {
             _cfg.addAnnotatedClass(clazz);
         }
+        final String classDriver = prefs.getString(pluginId, HIBERNATE_CONNECTION_DRIVER_CLASS, "", null);
+        final String url = prefs.getString(pluginId, HIBERNATE_CONNECTION_URL, "", null);
+        final String userName = prefs.getString(pluginId, DDB_USER_NAME, "", null);
+        final String password = prefs.getString(pluginId, DDB_PASSWORD, "", null);
+        LOG.debug("Use User: "+userName);
+        LOG.debug("Use Password: "+password);
+        
         _cfg.setProperty("org.hibernate.cfg.Environment.MAX_FETCH_DEPTH", "0")
                 .setProperty("hibernate.connection.driver_class",
-                             prefs.getString(pluginId, HIBERNATE_CONNECTION_DRIVER_CLASS, "", null))
+                             classDriver)
                 .setProperty("hibernate.dialect", prefs.getString(pluginId, DIALECT, "", null))
                 .setProperty("hibernate.order_updates", "false")
-                .setProperty("hibernate.connection.url",
-                             prefs.getString(pluginId, HIBERNATE_CONNECTION_URL, "", null))
-                .setProperty("hibernate.connection.username",
-                             prefs.getString(pluginId, DDB_USER_NAME, "", null))
-                .setProperty("hibernate.connection.password",
-                             prefs.getString(pluginId, DDB_PASSWORD, "", null))
+                .setProperty("hibernate.connection.url",url)
+                .setProperty("hibernate.connection.username",userName)
+                .setProperty("hibernate.connection.password", password)
                 .setProperty("transaction.factory_class",
                              "org.hibernate.transaction.JDBCTransactionFactory")
                 .setProperty("hibernate.cache.provider_class",

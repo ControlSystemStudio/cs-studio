@@ -59,8 +59,8 @@ public final class HibernateTestManager extends AbstractHibernateManager {
                 .setProperty("hibernate.order_updates", "false")
                 .setProperty("hibernate.connection.url",
                              "jdbc:oracle:thin:@(DESCRIPTION =(ADDRESS = (PROTOCOL = TCP)(HOST = dbsrv01.desy.de)(PORT = 1521))(ADDRESS = (PROTOCOL = TCP)(HOST = dbsrv02.desy.de)(PORT = 1521))(ADDRESS = (PROTOCOL = TCP)(HOST = dbsrv03.desy.de)(PORT = 1521))(LOAD_BALANCE = yes)(CONNECT_DATA = (SERVER = DEDICATED)(SERVICE_NAME = desy_db.desy.de)(FAILOVER_MODE = (TYPE = NONE)(METHOD = BASIC)(RETRIES = 180)(DELAY = 5))))")
-                .setProperty("hibernate.connection.username", "KRYKMANT")
                 .setProperty("hibernate.connection.password", "KRYKMANT")
+                .setProperty("hibernate.connection.username", "KRYKMANT")
                 .setProperty("transaction.factory_class",
                              "org.hibernate.transaction.JDBCTransactionFactory")
                 .setProperty("hibernate.cache.provider_class",
