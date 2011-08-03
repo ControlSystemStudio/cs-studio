@@ -239,6 +239,7 @@ public final class CentralLogger {
 	    
 	    // Check if there are some configured logger
 	    LoggerRepository repo = LogManager.getLoggerRepository();
+	    
 	    Enumeration<?> l = repo.getCurrentLoggers();
 	    Enumeration<?> c = repo.getCurrentCategories();
 	    if (l.hasMoreElements() || c.hasMoreElements()) {
@@ -246,6 +247,13 @@ public final class CentralLogger {
 	        return;
 	    }
 	    
+        Logger rootLogger = repo.getRootLogger();
+        if (rootLogger != null) {
+            // If we find a root logger, DO NOT configure the CentralLogger
+            return;
+        }
+
+        // Configure the CentralLogger
         final CSSPlatformPlugin plugin = CSSPlatformPlugin.getDefault();
 		if (plugin == null)
 		{
