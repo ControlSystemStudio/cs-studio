@@ -16,13 +16,12 @@ public class Messages extends NLS
 {
     private static final String BUNDLE_NAME = "org.csstudio.alarm.beast.server.messages"; //$NON-NLS-1$
     
-    public static String AnnunciationFmt;
-    public static String BasicAnnunciationFmt;
-    public static String BasicAnnunciationPrefix;
-    public static String StartupMessage;
     public static String AlarmMessageDisabled;
     public static String AlarmMessageDisconnected;
     public static String AlarmMessageNotConnected;
+    public static String AnnunciationFmt;
+    public static String FormattedAnnunciationPrefix;
+    public static String StartupMessage;
 
     static
     {

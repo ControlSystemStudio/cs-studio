@@ -6,7 +6,10 @@
    <feature url="features/org.csstudio.nsls2.nslscore.feature_3.0.0.qualifier.jar" id="org.csstudio.nsls2.nslscore.feature" version="3.0.0.qualifier">
       <category name="Core"/>
    </feature>
-   <feature url="features/org.csstudio.nsls2.applications.feature_3.0.0.qualifier.jar" id="org.csstudio.nsls2.applications.feature" version="3.0.0.qualifier">
+   <feature url="features/org.csstudio.nsls2.applications.feature_3.0.1.qualifier.jar" id="org.csstudio.nsls2.applications.feature" version="3.0.1.qualifier">
+      <category name="Applications"/>
+   </feature>
+   <feature url="features/org.csstudio.nsls2.basic.applications.feature_3.0.0.qualifier.jar" id="org.csstudio.nsls2.basic.applications.feature" version="3.0.0.qualifier">
       <category name="Applications"/>
    </feature>
    <category-def name="Core" label="Core"/>

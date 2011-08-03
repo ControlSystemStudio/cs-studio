@@ -3,11 +3,9 @@ package org.csstudio.opibuilder.adl2boy.translator;
 import org.csstudio.opibuilder.model.AbstractContainerModel;
 import org.csstudio.opibuilder.widgetActions.ActionsInput;
 import org.csstudio.opibuilder.widgetActions.ExecuteCommandAction;
-import org.csstudio.opibuilder.widgetActions.OpenDisplayAction;
-import org.csstudio.opibuilder.widgets.model.ActionButtonModel;
+import org.csstudio.opibuilder.widgets.model.MenuButtonModel;
 import org.csstudio.utility.adlparser.fileParser.ADLWidget;
 import org.csstudio.utility.adlparser.fileParser.widgetParts.CommandItem;
-import org.csstudio.utility.adlparser.fileParser.widgetParts.RelatedDisplayItem;
 import org.csstudio.utility.adlparser.fileParser.widgets.ShellCommand;
 import org.eclipse.swt.graphics.RGB;
 
@@ -43,14 +41,17 @@ public class ShellCommand2Model extends AbstractADL2Model {
 		ExecuteCommandAction exeAction = new ExecuteCommandAction();
 		exeAction.setPropertyValue(ExecuteCommandAction.PROP_DESCRIPTION,
 				commandItem.getLabel());
-
+		exeAction.setPropertyValue(
+				ExecuteCommandAction.PROP_COMMAND,
+				commandItem.getCommandName() + " "
+						+ commandItem.getArgs());
 		return exeAction;
 	}
 
 	@Override
 	public void makeModel(ADLWidget adlWidget,
 			AbstractContainerModel parentModel) {
-		widgetModel = new ActionButtonModel();
+		widgetModel = new MenuButtonModel();
 		parentModel.addChild(widgetModel, true);
 
 	}

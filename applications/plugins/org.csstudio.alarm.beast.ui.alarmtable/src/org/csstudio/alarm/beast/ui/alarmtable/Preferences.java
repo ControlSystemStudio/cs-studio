@@ -18,20 +18,6 @@ import org.eclipse.core.runtime.preferences.IPreferencesService;
 @SuppressWarnings("nls")
 public class Preferences
 {
-    /** @return Delay in millisecs for the initial update after trigger */
-    public static long getInitialMillis()
-    {
-        final IPreferencesService service = Platform.getPreferencesService();
-        return service.getLong(Activator.ID, "initial_millis", 100, null);
-    }
-
-    /** @return Delay in millisecs for the suppression of a burst of events */
-    public static long getSuppressionMillis()
-    {
-        final IPreferencesService service = Platform.getPreferencesService();
-        return service.getLong(Activator.ID, "suppression_millis", 1000, null);
-    }
-
     /** @return Alarm table row limit */
 	public static int getAlarmTableRowLimit()
     {

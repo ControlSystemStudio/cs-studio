@@ -156,7 +156,7 @@ public class MessageRDB
                     last_message.setDelta(last_datum, datum);
             }
             
-            System.out.println("Properties: " + prop_count + ", max: " + max_properties);
+            // Was readout stopped because we reached max. number of properties?
             if (prop_count >= max_properties)
             {
                 props = new HashMap<String, String>();

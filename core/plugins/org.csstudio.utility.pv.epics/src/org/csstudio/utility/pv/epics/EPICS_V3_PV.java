@@ -583,6 +583,8 @@ public class EPICS_V3_PV extends PlatformObject
                     type = DBRType.CTRL_DOUBLE;
                 else if (type.isENUM())
                     type = DBRType.LABELS_ENUM;
+                else if (type.isINT())
+                	type = DBRType.CTRL_INT;
                 else
                     type = DBRType.CTRL_SHORT;
                 channel.get(type, 1, meta_get_listener);

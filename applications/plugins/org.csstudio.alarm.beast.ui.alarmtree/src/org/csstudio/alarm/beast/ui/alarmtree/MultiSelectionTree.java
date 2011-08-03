@@ -40,7 +40,8 @@ public class MultiSelectionTree extends Tree
 		super(parent, style);
 		addSelectionListener(new SelectionAdapter()
 		{
-			public void widgetSelected(final SelectionEvent e)
+			@Override
+            public void widgetSelected(final SelectionEvent e)
 			{
 				if (! (e.item instanceof TreeItem))
 					return;

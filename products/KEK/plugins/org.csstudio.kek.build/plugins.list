@@ -6,6 +6,7 @@ org.csstudio.alarm.beast.server/**
 org.csstudio.alarm.beast.ui/**
 org.csstudio.alarm.beast.ui.alarmtable/**
 org.csstudio.alarm.beast.ui.alarmtree/**
+org.csstudio.alarm.beast.ui.areapanel/**
 org.csstudio.alarm.beast.ui.globaltable/**
 org.csstudio.apputil.ui/**
 org.csstudio.apputil/**
@@ -16,6 +17,7 @@ org.csstudio.archive.rdb/**
 org.csstudio.archive.reader.channelarchiver/**
 org.csstudio.archive.reader/**
 org.csstudio.archive.reader.rdb/**
+org.csstudio.archive.reader.rdb.jparc/**
 org.csstudio.archive.writer/**
 org.csstudio.archive.writer.rdb/**
 org.csstudio.auth.ui/**
@@ -33,7 +35,9 @@ org.csstudio.display.rdbtable/**
 org.csstudio.email.ui/**
 org.csstudio.email/**
 org.csstudio.java/**
+org.csstudio.kek.build/**
 org.csstudio.kek.product/**
+org.csstudio.kek.product.office/**
 org.csstudio.logbook/**
 org.csstudio.logging.ui/**
 org.csstudio.logging/**
@@ -59,6 +63,7 @@ org.csstudio.swt.chart/**
 org.csstudio.swt.widgets/**
 org.csstudio.swt.xygraph/**
 org.csstudio.trends.databrowser2/**
+org.csstudio.trends.databrowser2.opiwidget/**
 org.csstudio.ui.help/**
 org.csstudio.ui.preferences/**
 org.csstudio.ui.menu/**

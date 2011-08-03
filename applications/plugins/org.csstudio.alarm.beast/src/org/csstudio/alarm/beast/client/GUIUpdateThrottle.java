@@ -5,9 +5,12 @@
  *  which accompanies this distribution, and is available at
  *  http://www.eclipse.org/legal/epl-v10.html
  ******************************************************************************/
-package org.csstudio.alarm.beast.ui;
+package org.csstudio.alarm.beast.client;
 
 import java.util.logging.Level;
+
+import org.csstudio.alarm.beast.Activator;
+import org.csstudio.alarm.beast.Preferences;
 
 /** GUI Update throttle
  *  <p>
@@ -39,6 +42,14 @@ abstract public class GUIUpdateThrottle extends Thread
     /** Flag that tells thread to run or exit */
     private volatile boolean run = true;
 
+    /** Initialize from preferences */
+    public GUIUpdateThrottle()
+    {
+    	this(Preferences.getGuiThrottleInitialMillis(),
+    	     Preferences.getGuiThrottleSuppressionMillis());
+    }
+
+    
     /** Initialize
      *  @param initial_millis Delay [ms] for the initial update after trigger
      *  @param suppression_millis Delay [ms] for the suppression of a burst of events

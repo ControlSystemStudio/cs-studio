@@ -15,6 +15,7 @@
 - <a href="#perspective">Perspective</a>
 - <a href="#tree">Alarm Tree</a>
 - <a href="#table">Alarm Table</a>
+- <a href="#panel">Alarm Area Panel</a>
 - <a href="#preferences">Preferences</a>
 - <a href="#edit">Editing Configuration</a>
 - <a href="#pv_config">Alarm PV Configuration</a>
@@ -729,6 +730,54 @@ the alarm PV, description, and its current state.
 
 
 <!-- ++++++++++++++++++++++++++++++++++++++++++++++++++++ -->
+<h2><a name=panel>Alarm Area Panel</a></h2> 
+<!-- ++++++++++++++++++++++++++++++++++++++++++++++++++++ -->
+<p>
+The Alarm Area Panel is a top-level display of the current alarm state.
+A preference setting of the panel is used to configure which
+level of the alarm tree hierarchy it should display.
+</>
+
+<img class="float" src="AlarmPanel.png" alt="Alarm Panel" width="317" height="560"></img>
+
+<p>
+It will typically be used to display the first level of the alarm
+hierarchy, that is all Area components of the alarm tree.
+For each area, it displays the name, coloring the panel to indicate the
+alarm state of that area.
+</p>
+<p>
+The tool can also be used to display a single panel with the
+alarm state of the overall alarm tree, i.e. the root element,
+by configuring it to use level 0 of the alarm tree hierarchy.
+When set to level 2 of the alarm tree, it will display all System
+components. With level 3 it would display all Sub-System components,
+but this and higher alarm tree components are not useful in practice.
+</p>
+
+<p>
+The context menu of a panel item allows access to the alarm tree,
+opening the alarm tree view and focusing on the respecive alarm tree element.
+The context menu also allows acknowledge/un-acknowledge of the alarm tree item
+and all the alarm tree elements below it.
+</p>
+
+<p>
+The tool has the following preference settings:
+<ul>
+<li>Alarm Tree Level:
+Determines from which level of the alarm tree the items are displayed.
+0 for root, 1 for area, 2 for system, 3 and higher would be sub-systems but
+that is less practical. 
+</li>
+<li>Panel Columns: Determines in how many columns the items will be arranged for display.
+</li>
+</ul>
+</p>
+
+
+
+<!-- ++++++++++++++++++++++++++++++++++++++++++++++++++++ -->
 <h2><a name=preferences>Preference Settings</a></h2> 
 <!-- ++++++++++++++++++++++++++++++++++++++++++++++++++++ -->
 <img class="float" src=AlarmPreferences.png alt="Alarm Preferences Configuration">
@@ -961,7 +1010,12 @@ the PV or to move it to another location in the alarm tree.
 <p>
 The PV's description should be more human-readable than
 the raw PV name. It is displayed with the alarm
-and also used for <a href="#annunciation">annunciation.</a>
+and also used for annunciation.
+</p>
+<p>
+Check the <a href="#annunciation">annunciation</a> description
+further below for details on how the description is used
+for the annunciation of alarms.
 </p>
 
 <h3>Enabling Alarms</h3>
@@ -1063,8 +1117,8 @@ For alarms that are <a href="#pv_config">configured to be annunciated</a>,
 the alarm server sends an annunciation request to the annunciator.
 </p>
 <p>
-The annunciation is performed by is either the Annunciator tool included
-in the CSS alarm user interface, or the standalone JMS2Speech tool.
+The annunciation is performed by is either the Annunciator view included
+in the CSS alarm user interface, or the standalone Annunciator tool.
 In the control room, at least one instance of these annunciation tools should
 be running on a designated alarm OPI at all times.
 </p>
@@ -1077,7 +1131,7 @@ The CSS Annunciator included in CSS is started via the menu
 
 <h3>Annunciator</h3>
 <p>
-JMS2Speech is a standalone tool. While it has to be launched from the command-line,
+The Annunciator is also available as standalone tool. While it has to be launched from the command-line,
 separate from the CSS GUI, its advantage lies in the fact that it continues to
 annunciate even when the CSS GUI is closed.
 It will annunciate independently from alarm table or -tree displays.
@@ -1087,7 +1141,6 @@ It is usually launched by a shell command
 <pre>
   annunciator
 </pre>
-which ends up starting the JMS2SPEECH tool.
 </p>
 
 <h3>Annunciation Text</h3>
@@ -1102,14 +1155,53 @@ will result in an annunciation
   "MAJOR alarm: Low Water Pressure"
 </pre>
 </p>
+
 <p>
-When prefixed with a '*', the alarm server will suppress the
-alarm severity, so a PV with Description "*Low Water Pressure"
-results in just announcing
+When prefixed with an asterisk character '*', the alarm server will
+use the description as given.
+It will <i>not</i> prefix it with the alarm severity.
+</p>
+<p>
+A PV with Description "*Low Water Pressure" thus results in just announcing
 <pre>
   "Low Water Pressure"
 </pre>
 </p>
+
+<p>
+In addition, descriptions starting with '*' can include the following
+formatting elements:
+</p>
+<ul>
+<li>The text "{0}" is replaced with the current alarm severity.</li>
+<li>The text "{1}" is replaced with the value of the trigger PV that caused the alarm.</li>
+</ul>
+
+<p>
+For example, a PV with description "*{0} alarm: Low Water Pressure"
+would again result in an annunciation
+<pre>
+  "MAJOR alarm: Low Water Pressure"
+</pre>
+The effect would be the same as having used the default annunciation
+format without "*...".
+</p>
+<p>
+By using the "*..." format, however, you can also use descriptions like
+"*{0} water alarm, level is {1} gallons"
+which will result in an annunciation similar to
+<pre>
+  "MAJOR water alarm, level is 3.142 gallons"
+</pre>
+</p>
+<p>The format elements can be in any order. For example, the value can be used
+before the alarm severity. The description "*Water below {1} gallons, {0} alarm"
+will result in an annunciation similar to
+<pre>
+  "Water below 3.142 gallons, MAJOR alarm"
+</pre>
+</p>
+
 
 <h3>Annunciation Order</h3>
 <p>

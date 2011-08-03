@@ -1,0 +1,19 @@
+Manifest-Version: 1.0
+Bundle-ManifestVersion: 2
+Bundle-Name: Alarm area panel display
+Bundle-Description: Panel display of alarm area summaries
+Bundle-SymbolicName: org.csstudio.alarm.beast.ui.areapanel;singleton:=true
+Bundle-Version: 1.0.0.qualifier
+Bundle-Vendor: Kay Kasemir <kasemirk@ornl.gov> - SNS
+Bundle-Localization: plugin
+Bundle-RequiredExecutionEnvironment: JavaSE-1.6
+Require-Bundle: org.junit4,
+ org.eclipse.core.runtime;bundle-version="3.6.0",
+ org.eclipse.ui;bundle-version="3.6.0",
+ org.csstudio.auth;bundle-version="3.0.0",
+ org.csstudio.auth.ui;bundle-version="3.0.1",
+ org.csstudio.apputil;bundle-version="3.0.0",
+ org.csstudio.apputil.ui;bundle-version="3.0.0",
+ org.csstudio.alarm.beast;bundle-version="3.0.0",
+ org.csstudio.alarm.beast.ui;bundle-version="3.0.0",
+ org.csstudio.alarm.beast.ui.alarmtree;bundle-version="3.0.1"
