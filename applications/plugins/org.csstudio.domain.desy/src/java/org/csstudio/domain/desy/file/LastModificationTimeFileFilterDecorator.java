@@ -29,8 +29,6 @@ import javax.annotation.Nullable;
 import org.csstudio.domain.desy.time.TimeInstant;
 import org.csstudio.domain.desy.time.TimeInstant.TimeInstantBuilder;
 
-import com.google.common.base.Predicate;
-
 /**
  * Filter decorator that filters all files with last modification times before the given time
  * threshold.
@@ -52,7 +50,7 @@ public class LastModificationTimeFileFilterDecorator extends AbstractFilePathPar
     /**
      * Constructor.
      */
-    public LastModificationTimeFileFilterDecorator(@Nullable final Predicate<File> baseDecorator,
+    public LastModificationTimeFileFilterDecorator(@Nullable final IFilePathDepthFilter baseDecorator,
                                                    @Nonnull final TimeInstant timeThreshold) {
         super(baseDecorator);
         _timeThreshold = timeThreshold;
@@ -65,7 +63,7 @@ public class LastModificationTimeFileFilterDecorator extends AbstractFilePathPar
      */
     @Override
     public boolean apply(@Nonnull final File input) {
-        if (baseDecoratorApply(input)) {
+        if (baseFilterApply(input)) {
             return true;
         }
 

@@ -24,48 +24,16 @@ package org.csstudio.domain.desy.file;
 import java.io.File;
 
 import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
+
+import com.google.common.base.Predicate;
 
 /**
- * Abstract implementation of file path
+ * Predicate for filtering file traversal according to current traversal depth in the dir tree.
  *
  * @author bknerr
- * @since 28.04.2011
+ * @since 03.08.2011
  */
-public abstract class AbstractFilePathParserFilterDecorator implements IFilePathDepthFilter {
+public interface IFilePathDepthFilter extends Predicate<File> {
 
-    /**
-     * The base filter (decorator) or <code>null</code>.
-     */
-    private final IFilePathDepthFilter _baseFilter;
-
-    /**
-     * Constructor.
-     */
-    public AbstractFilePathParserFilterDecorator() {
-        this(null);
-    }
-    /**
-     * Constructor.
-     */
-    public AbstractFilePathParserFilterDecorator(@Nullable final IFilePathDepthFilter baseFilter) {
-        _baseFilter = baseFilter;
-    }
-
-    /**
-     * Filter to include current depth of recursive traversal into filter decision.
-     *
-     * @param input the file or directory to filter
-     * @param currentDepth the current depth of the recursive traversal
-     * @return true if the file or directory should be filtered
-     */
-    @Override
-    public boolean apply(@Nonnull final File input,
-                         final int currentDepth) {
-        return false;
-    }
-
-    protected boolean baseFilterApply(@Nonnull final File input) {
-        return _baseFilter != null && _baseFilter.apply(input);
-    }
+    boolean apply(@Nonnull final File f, final int currentDepth);
 }

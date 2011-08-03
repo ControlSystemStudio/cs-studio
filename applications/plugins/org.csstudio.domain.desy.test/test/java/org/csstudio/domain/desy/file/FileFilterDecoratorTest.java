@@ -24,6 +24,8 @@ package org.csstudio.domain.desy.file;
 import java.io.File;
 import java.io.IOException;
 
+import javax.annotation.Nonnull;
+
 import junit.framework.Assert;
 
 import org.csstudio.domain.desy.time.TimeInstant;
@@ -49,20 +51,15 @@ public class FileFilterDecoratorTest {
 
     @Test
     public void combineDecoratorTest() throws InterruptedException, IOException {
-        final File file1 = _tempFolder.newFile("early.rightSuffix");
-        Assert.assertTrue(file1.exists());
-        final File file1a = _tempFolder.newFile("early.wrongSuffix");
-        Assert.assertTrue(file1a.exists());
+        final File file1 = createFile("early.rightSuffix");
+        final File file1a = createFile("early.wrongSuffix");
 
-        Thread.sleep(10);
+        Thread.sleep(50);
         final TimeInstant threshold = TimeInstantBuilder.fromNow();
-        Thread.sleep(10);
+        Thread.sleep(50);
 
-        final File file2 = _tempFolder.newFile("late.wrongSuffix");
-        Assert.assertTrue(file2.exists());
-        final File file2a = _tempFolder.newFile("late.rightSuffix");
-        Assert.assertTrue(file2a.exists());
-
+        final File file2 = createFile("late.wrongSuffix");
+        final File file2a = createFile("late.rightSuffix");
 
         final Predicate<File> timeFilter =
             new LastModificationTimeFileFilterDecorator(threshold);
@@ -94,5 +91,12 @@ public class FileFilterDecoratorTest {
         Assert.assertTrue(timeAndSuffixFilter.apply(file1a));
         Assert.assertTrue(timeAndSuffixFilter.apply(file2));
         Assert.assertFalse(timeAndSuffixFilter.apply(file2a));
+    }
+
+    @Nonnull
+    private File createFile(@Nonnull final String fileName) throws IOException {
+        final File file = _tempFolder.newFile(fileName);
+        Assert.assertTrue(file.exists());
+        return file;
     }
 }

@@ -26,8 +26,6 @@ import java.io.File;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
-import com.google.common.base.Predicate;
-
 
 /**
  * Filter decorator that checks for the files' suffix and their directory depth.
@@ -50,10 +48,10 @@ public class SuffixBasedFileFilterDecorator extends AbstractFilePathParserFilter
     /**
      * Constructor.
      */
-    public SuffixBasedFileFilterDecorator(@Nullable final Predicate<File> baseDecorator,
+    public SuffixBasedFileFilterDecorator(@Nullable final IFilePathDepthFilter baseFilter,
                                           @Nonnull final String fileNameSuffix,
                                           final int depth) {
-        super(baseDecorator);
+        super(baseFilter);
         _suffix = fileNameSuffix;
         _finalDepth = depth;
     }
@@ -83,7 +81,7 @@ public class SuffixBasedFileFilterDecorator extends AbstractFilePathParserFilter
      */
     @Override
     public boolean apply(@Nonnull final File input) {
-        if (baseDecoratorApply(input)) {
+        if (baseFilterApply(input)) {
             return true;
         }
 
