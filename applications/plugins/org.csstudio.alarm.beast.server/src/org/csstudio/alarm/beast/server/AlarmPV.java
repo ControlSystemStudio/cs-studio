@@ -126,8 +126,8 @@ public class AlarmPV extends TreeItem implements AlarmLogicListener, PVListener,
         this.description = description;
         // Determine 'priority' based on description
         final String basic_description;
-        if (description.startsWith(Messages.BasicAnnunciationPrefix))
-            basic_description = description.substring(Messages.BasicAnnunciationPrefix.length()).trim();
+        if (description.startsWith(Messages.FormattedAnnunciationPrefix))
+            basic_description = description.substring(Messages.FormattedAnnunciationPrefix.length()).trim();
         else
             basic_description = description.trim();
         logic.setPriority(basic_description.startsWith("!"));
@@ -275,18 +275,26 @@ public class AlarmPV extends TreeItem implements AlarmLogicListener, PVListener,
     @Override
     public void annunciateAlarm(final SeverityLevel level)
     {
+
         final String message;
         // For annunciation texts like "* Some Message" where
-        // "*" is the BasicAnnunciationPrefix, remove the prefix
-        // and use the basic format.
+        // "*" is the FormattedAnnunciationPrefix, remove the prefix
+        // and use the description as a format.
         // Otherwise use the severity level and the text with the
         // normal AnnunciationFmt
-        if (description.startsWith(Messages.BasicAnnunciationPrefix))
-            message = NLS.bind(Messages.BasicAnnunciationFmt,
-                               description.substring(Messages.BasicAnnunciationPrefix.length()));
+        if (description.startsWith(Messages.FormattedAnnunciationPrefix))
+        {
+            String value = getAlarmLogic().getAlarmState().getValue();
+            if (value == null)
+            	value = "null";
+        	message = NLS.bind(description.substring(Messages.FormattedAnnunciationPrefix.length()),
+        			level.getDisplayName(), value);
+        }
         else
             message = NLS.bind(Messages.AnnunciationFmt,
-                               level.getDisplayName(), description);
+                               level.getDisplayName(),
+                               description);
+        
         if (server != null)
             server.sendAnnunciation(level, message);
     }
