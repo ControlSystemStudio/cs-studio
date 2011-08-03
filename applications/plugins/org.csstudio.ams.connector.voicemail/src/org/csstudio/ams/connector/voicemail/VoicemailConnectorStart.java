@@ -129,9 +129,9 @@ public class VoicemailConnectorStart implements IApplication,
         lastStatus = getStatus();
         int iTimeouts = 0;
 
-        Log.log(this, Log.INFO, "start");
-
-        VoicemailConnectorPreferenceKey.showPreferences();
+        Log.log(this, Log.INFO, "Starting application " + VoicemailConnectorPlugin.PLUGIN_ID);
+        VoicemailConnectorPlugin.getDefault().addSessionServiceListener(this);
+        context.applicationRunning();
         
         bStop = false;
         restart = false;
