@@ -24,41 +24,59 @@ package org.csstudio.domain.desy.file;
 import java.io.File;
 
 import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
+
+import org.csstudio.domain.desy.time.TimeInstant;
+import org.csstudio.domain.desy.time.TimeInstant.TimeInstantBuilder;
 
 import com.google.common.base.Predicate;
 
 /**
- * TODO (bknerr) :
+ * Filter decorator that filters all files with last modification times before the given time
+ * threshold.
+ * Or in other words, files older than the threshold are rejected.
  *
  * @author bknerr
- * @since 28.04.2011
+ * @since 03.08.2011
  */
-public abstract class AbstractFilePathParserFilter implements Predicate<File> {
+public class LastModificationTimeFileFilterDecorator extends AbstractFilePathParserFilterDecorator {
+
+    private final TimeInstant _timeThreshold;
+
     /**
      * Constructor.
      */
-    public AbstractFilePathParserFilter() {
-        // Empty
+    public LastModificationTimeFileFilterDecorator(@Nonnull final TimeInstant timeThreshold) {
+        this(null, timeThreshold);
     }
-
     /**
-     * Filter to include current depth of recursive traversal into filter decision.
-     *
-     * @param input the file or directory to filter
-     * @param currentDepth the current depth of the recursive traversal
-     * @return true if the file or directory should be filtered
+     * Constructor.
      */
-    @SuppressWarnings("unused")
-    public boolean apply(@Nonnull final File input,
-                         final int currentDepth) {
-        return false;
+    public LastModificationTimeFileFilterDecorator(@Nullable final Predicate<File> baseDecorator,
+                                                   @Nonnull final TimeInstant timeThreshold) {
+        super(baseDecorator);
+        _timeThreshold = timeThreshold;
     }
 
     /**
      * {@inheritDoc}
+     *
+     * Filters anything but files ending on the specified suffix.
      */
     @Override
     public boolean apply(@Nonnull final File input) {
-        return false;
+        if (baseDecoratorApply(input)) {
+            return true;
+        }
+
+        if (!input.isFile()) {
+            return true;
+        }
+        final TimeInstant lastModified = TimeInstantBuilder.fromMillis(input.lastModified());
+        // don't filter the file, if the last modification time lies after or exactly on the threshold
+        if (!_timeThreshold.isAfter(lastModified)) {
+            return false;
+        }
+        return true;
     }
 }

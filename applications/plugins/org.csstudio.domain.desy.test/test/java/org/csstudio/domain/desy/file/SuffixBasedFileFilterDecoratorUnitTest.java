@@ -22,55 +22,39 @@
 package org.csstudio.domain.desy.file;
 
 import java.io.File;
+import java.io.IOException;
 
-import javax.annotation.Nonnull;
+import junit.framework.Assert;
+
+import org.junit.Rule;
+import org.junit.Test;
+import org.junit.rules.TemporaryFolder;
 
 /**
- * TODO (bknerr) :
+ * Test for {@link SuffixBasedFileFilterDecorator}.
  *
  * @author bknerr
- * @since 27.04.2011
+ * @since 28.04.2011
  */
-public class FilteredRecursiveFilePathParser extends AbstractRecursiveFilePathParser {
+public class SuffixBasedFileFilterDecoratorUnitTest {
 
-    private final AbstractFilePathParserFilterDecorator _filter;
+    // CHECKSTYLE OFF: VisibilityModifier
+    @Rule
+    public TemporaryFolder _tempFolder = new TemporaryFolder();
+    // CHECKSTYLE ON: VisibilityModifier
 
-    /**
-     * Constructor.
-     */
-    public FilteredRecursiveFilePathParser(@Nonnull final AbstractFilePathParserFilterDecorator filter) {
-        _filter = filter;
-    }
+    @Test
+    public void testFilter() throws IOException {
+        final File validFileDepth0 = _tempFolder.newFile("a.test");
+        Assert.assertTrue(validFileDepth0.exists());
 
-    /**
-     * {@inheritDoc}
-     */
-    @Override
-    protected void processFile(@Nonnull final File f,
-                               final int currentDepth) {
-        if (!_filter.apply(f, currentDepth)) {
-            processFilteredFile(f, currentDepth);
-        }
+        final SuffixBasedFileFilterDecorator filter = new SuffixBasedFileFilterDecorator(".test", 1);
+        Assert.assertFalse(filter.apply(validFileDepth0));
+        Assert.assertFalse(filter.apply(validFileDepth0, 1));
+        Assert.assertTrue(filter.apply(validFileDepth0, 2));
 
-    }
-    /**
-     * {@inheritDoc}
-     */
-    @Override
-    protected void processDirectory(@Nonnull final File f, final int currentDepth) {
-        if (!_filter.apply(f, currentDepth)) {
-            processFilteredDirectory(f, currentDepth);
-        }
-    }
-
-    @SuppressWarnings("unused")
-    protected void processFilteredDirectory(@Nonnull final File file,
-                                                     final int currentDepth) {
-        // Override in implementation
-    }
-    @SuppressWarnings("unused")
-    protected void processFilteredFile(@Nonnull final File file,
-                                                final int currentDepth) {
-        // Override in implementation
+        final File dir = _tempFolder.newFolder("testDir");
+        Assert.assertTrue(filter.apply(dir));
+        Assert.assertTrue(filter.apply(dir, 2));
     }
 }

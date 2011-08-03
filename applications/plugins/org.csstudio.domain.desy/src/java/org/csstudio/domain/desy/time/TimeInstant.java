@@ -311,7 +311,7 @@ public final class TimeInstant implements Comparable<TimeInstant>, Serializable 
      * Returns a new immutable time instant object.
      * @param millis nonnegative number of millis to add
      * @return a new time instant object
-     * @throws IllegalArgumentException when millis is negative and
+     * @throws IllegalArgumentException when millis is negative
      */
     @Nonnull
     public TimeInstant plusMillis(final long millis) {
@@ -329,7 +329,7 @@ public final class TimeInstant implements Comparable<TimeInstant>, Serializable 
     /**
      * Returns a new immutable time instant object.
      * @param millis nonnegative number of millis to subtract
-     * @return a new time instant obejct
+     * @return a new time instant object
      * @throws IllegalArgumentException when computed time difference would cause instant before epoch
      */
     @Nonnull
@@ -350,9 +350,31 @@ public final class TimeInstant implements Comparable<TimeInstant>, Serializable 
 
     /**
      * Returns a new immutable time instant object.
+     * @param seconds nonnegative number of seconds to subtract
+     * @return a new time instant object
+     * @throws IllegalArgumentException when computed time difference would cause instant before epoch
+     */
+    @Nonnull
+    public TimeInstant minusSeconds(@Nonnull final Long intervalInS) {
+        if (intervalInS < 0) {
+            throw new IllegalArgumentException("Millis may not be negative, use plusMillis.");
+        }
+        if (intervalInS == 0) {
+            return this;
+        }
+        final long diffMS = getMillis() - intervalInS*MILLIS_PER_SECOND;
+        if (diffMS < 0L) {
+            throw new IllegalArgumentException("Time instant would become negative, meaning before epoch.");
+        }
+        final Instant i = new Instant(diffMS);
+        return new TimeInstant(i, _fracMillisInNanos);
+    }
+
+    /**
+     * Returns a new immutable time instant object.
      * @param nanosPerSecond
      * @return the newly constructed time instant
-     * @throws IllegalArgumentException when millis
+     * @throws IllegalArgumentException when nanosPerSecond are negative or greater than {@TimeInstant#NANOS_PER_SECOND}.
      */
     @Nonnull
     public TimeInstant plusNanosPerSecond(final long nanosPerSecond) {

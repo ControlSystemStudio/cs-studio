@@ -24,53 +24,55 @@ package org.csstudio.domain.desy.file;
 import java.io.File;
 
 import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
+
+import com.google.common.base.Predicate;
 
 /**
  * TODO (bknerr) :
  *
  * @author bknerr
- * @since 27.04.2011
+ * @since 28.04.2011
  */
-public class FilteredRecursiveFilePathParser extends AbstractRecursiveFilePathParser {
+public abstract class AbstractFilePathParserFilterDecorator implements Predicate<File> {
 
-    private final AbstractFilePathParserFilterDecorator _filter;
+    private final Predicate<File>_baseDecorator;
 
     /**
      * Constructor.
      */
-    public FilteredRecursiveFilePathParser(@Nonnull final AbstractFilePathParserFilterDecorator filter) {
-        _filter = filter;
+    public AbstractFilePathParserFilterDecorator() {
+        this(null);
+    }
+    /**
+     * Constructor.
+     */
+    public AbstractFilePathParserFilterDecorator(@Nullable final Predicate<File> baseDecorator) {
+        _baseDecorator = baseDecorator;
+    }
+
+    /**
+     * Filter to include current depth of recursive traversal into filter decision.
+     *
+     * @param input the file or directory to filter
+     * @param currentDepth the current depth of the recursive traversal
+     * @return true if the file or directory should be filtered
+     */
+    @SuppressWarnings("unused")
+    public boolean apply(@Nonnull final File input,
+                         final int currentDepth) {
+        return false;
     }
 
     /**
      * {@inheritDoc}
      */
     @Override
-    protected void processFile(@Nonnull final File f,
-                               final int currentDepth) {
-        if (!_filter.apply(f, currentDepth)) {
-            processFilteredFile(f, currentDepth);
-        }
-
-    }
-    /**
-     * {@inheritDoc}
-     */
-    @Override
-    protected void processDirectory(@Nonnull final File f, final int currentDepth) {
-        if (!_filter.apply(f, currentDepth)) {
-            processFilteredDirectory(f, currentDepth);
-        }
+    public boolean apply(@Nonnull final File input) {
+        return false;
     }
 
-    @SuppressWarnings("unused")
-    protected void processFilteredDirectory(@Nonnull final File file,
-                                                     final int currentDepth) {
-        // Override in implementation
-    }
-    @SuppressWarnings("unused")
-    protected void processFilteredFile(@Nonnull final File file,
-                                                final int currentDepth) {
-        // Override in implementation
+    protected boolean baseDecoratorApply(@Nonnull final File input) {
+        return _baseDecorator != null && _baseDecorator.apply(input);
     }
 }

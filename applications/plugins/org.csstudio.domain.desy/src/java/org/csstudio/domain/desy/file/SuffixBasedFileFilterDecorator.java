@@ -24,53 +24,75 @@ package org.csstudio.domain.desy.file;
 import java.io.File;
 
 import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
+
+import com.google.common.base.Predicate;
+
 
 /**
- * TODO (bknerr) :
+ * Filter decorator that checks for the files' suffix and their directory depth.
  *
  * @author bknerr
- * @since 27.04.2011
+ * @since 28.04.2011
  */
-public class FilteredRecursiveFilePathParser extends AbstractRecursiveFilePathParser {
+public class SuffixBasedFileFilterDecorator extends AbstractFilePathParserFilterDecorator {
 
-    private final AbstractFilePathParserFilterDecorator _filter;
+    private final String _suffix;
+    private final int _finalDepth;
 
     /**
      * Constructor.
      */
-    public FilteredRecursiveFilePathParser(@Nonnull final AbstractFilePathParserFilterDecorator filter) {
-        _filter = filter;
+    public SuffixBasedFileFilterDecorator(@Nonnull final String fileNameSuffix,
+                                          final int depth) {
+        this(null, fileNameSuffix, depth);
+    }
+    /**
+     * Constructor.
+     */
+    public SuffixBasedFileFilterDecorator(@Nullable final Predicate<File> baseDecorator,
+                                          @Nonnull final String fileNameSuffix,
+                                          final int depth) {
+        super(baseDecorator);
+        _suffix = fileNameSuffix;
+        _finalDepth = depth;
     }
 
     /**
      * {@inheritDoc}
+     *
+     * Filters directories deeper than final depth and
+     * files ending on the specified suffix.
      */
     @Override
-    protected void processFile(@Nonnull final File f,
-                               final int currentDepth) {
-        if (!_filter.apply(f, currentDepth)) {
-            processFilteredFile(f, currentDepth);
+    public boolean apply(@Nonnull final File input,
+                                  final int currentDepth) {
+        if (currentDepth > _finalDepth) {
+            return true;
         }
-
+        if (input.isDirectory()) {
+            return true;
+        }
+        return apply(input);
     }
+
     /**
      * {@inheritDoc}
+     *
+     * Filters anything but files ending on the specified suffix.
      */
     @Override
-    protected void processDirectory(@Nonnull final File f, final int currentDepth) {
-        if (!_filter.apply(f, currentDepth)) {
-            processFilteredDirectory(f, currentDepth);
+    public boolean apply(@Nonnull final File input) {
+        if (baseDecoratorApply(input)) {
+            return true;
         }
-    }
 
-    @SuppressWarnings("unused")
-    protected void processFilteredDirectory(@Nonnull final File file,
-                                                     final int currentDepth) {
-        // Override in implementation
-    }
-    @SuppressWarnings("unused")
-    protected void processFilteredFile(@Nonnull final File file,
-                                                final int currentDepth) {
-        // Override in implementation
+        if (!input.isFile()) {
+            return true;
+        }
+        if (input.getName().endsWith(_suffix)) {
+            return false;
+        }
+        return true;
     }
 }
