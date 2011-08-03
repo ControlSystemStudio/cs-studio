@@ -104,16 +104,14 @@ public class BootFileContentParser extends AbstractLineBasedFileContentParser {
     @Nonnull
     private SortedSet<Record> getBootRecordsFromFile(@Nonnull final File directory,
                                                      @Nonnull final String iocName) throws IOException {
-        final RecordsFileContentParser parser = new RecordsFileContentParser();
-        parser.parseFile(new File(directory, iocName + UpdaterLdapConstants.RECORDS_FILE_SUFFIX));
-        return parser.getRecords();
+        return RecordsFileContentParser.parse(new File(directory, iocName + UpdaterLdapConstants.RECORDS_FILE_SUFFIX));
     }
 
     /**
      * {@inheritDoc}
      */
     @Override
-    protected void processLine(@Nonnull final String line) {
+    protected void parseLine(@Nonnull final String line) {
         if (isNotACommment(line)) {
 
             final Pattern pattern =
@@ -129,6 +127,6 @@ public class BootFileContentParser extends AbstractLineBasedFileContentParser {
     }
 
     private boolean isNotACommment(@Nonnull final String line) {
-        return !Pattern.matches("^/s*#.*", line);
+        return !Pattern.matches("^[ \\t]*#.*", line);
     }
 }

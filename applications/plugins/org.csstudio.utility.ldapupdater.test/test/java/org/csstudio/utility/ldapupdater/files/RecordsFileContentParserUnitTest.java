@@ -25,6 +25,8 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.util.Iterator;
+import java.util.SortedSet;
 
 import org.csstudio.utility.ldapupdater.model.Record;
 import org.junit.Assert;
@@ -46,45 +48,47 @@ public class RecordsFileContentParserUnitTest {
 
     @Test(expected=FileNotFoundException.class)
     public void testNotExisting() throws IOException {
-        final RecordsFileContentParser parser = new RecordsFileContentParser();
-        parser.parseFile(new File("notExists"));
+        RecordsFileContentParser.parse(new File("notExists"));
     }
 
     @Test(expected=IllegalArgumentException.class)
     public void testNotAFile() throws IOException {
         final File dir = _tempFolder.newFolder("iAmAFolder");
 
-        final RecordsFileContentParser parser = new RecordsFileContentParser();
-        parser.parseFile(dir);
+        RecordsFileContentParser.parse(dir);
     }
 
 
     @Test
     public void testEmptyFile() throws IOException {
         final File emptyFile= _tempFolder.newFile("empty");
-        final RecordsFileContentParser parser = new RecordsFileContentParser();
-        parser.parseFile(emptyFile);
+        final SortedSet<Record> records = RecordsFileContentParser.parse(emptyFile);
 
-        Assert.assertTrue(parser.getRecords().isEmpty());
+        Assert.assertTrue(records.isEmpty());
     }
 
     @Test
     public void testNonEmptyFile() throws IOException {
         final File nonEmptyFile= _tempFolder.newFile("notEmpty");
         final FileWriter writer = new FileWriter(nonEmptyFile);
-        writer.write("b\n");
-        writer.write("c\n");
-        writer.write("a\n");
+        writer.write("b \n");
+        writer.write(" c\n");
+        writer.write("#lupsch\n");
+        writer.write("a\t\n");
+        writer.write("\t X \n");
         writer.write("B\n");
+        writer.write(" # fupsi\n");
         writer.close();
 
-        final RecordsFileContentParser parser = new RecordsFileContentParser();
-        parser.parseFile(nonEmptyFile);
-        for (final Record r : parser.getRecords()) {
-            System.out.println(r.getName());
-        }
+        final SortedSet<Record> records = RecordsFileContentParser.parse(nonEmptyFile);
 
-        Assert.assertEquals(4, parser.getRecords().size());
+        Assert.assertEquals(5, records.size());
 
+        final Iterator<Record> iter = records.iterator();
+        Assert.assertEquals("a", iter.next().getName());
+        Assert.assertEquals("B", iter.next().getName());
+        Assert.assertEquals("b", iter.next().getName());
+        Assert.assertEquals("c", iter.next().getName());
+        Assert.assertEquals("X", iter.next().getName());
     }
 }

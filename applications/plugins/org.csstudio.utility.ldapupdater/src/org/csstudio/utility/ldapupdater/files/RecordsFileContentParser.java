@@ -21,15 +21,20 @@
  */
 package org.csstudio.utility.ldapupdater.files;
 
+import java.io.File;
+import java.io.IOException;
+import java.nio.charset.Charset;
 import java.util.Comparator;
 import java.util.SortedSet;
 
 import javax.annotation.Nonnull;
 
-import org.csstudio.domain.desy.file.AbstractLineBasedFileContentParser;
 import org.csstudio.utility.ldapupdater.model.Record;
 
+import com.google.common.base.Strings;
 import com.google.common.collect.Sets;
+import com.google.common.io.Files;
+import com.google.common.io.LineProcessor;
 
 /**
  * Reads the lines of a file and puts them into a sorted set (lexicographically by name).
@@ -37,47 +42,77 @@ import com.google.common.collect.Sets;
  * @author bknerr
  * @since 28.04.2011
  */
-public class RecordsFileContentParser extends AbstractLineBasedFileContentParser {
+public final class RecordsFileContentParser {
 
-    private final SortedSet<Record> _records =
-        Sets.newTreeSet(new Comparator<Record>() {
-                            @Override
-                            public int compare(@Nonnull final Record r1, @Nonnull final Record r2) {
+    /**
+     * Line based record name processor.
+     *
+     * @author bknerr
+     * @since 03.08.2011
+     */
+    private static final class RecordLineProcessor implements LineProcessor<SortedSet<Record>> {
 
-                                final String r1Name = r1.getName();
-                                final String r2Name = r2.getName();
+        private final SortedSet<Record> _records =
+            Sets.newTreeSet(new Comparator<Record>() {
+                @Override
+                public int compare(@Nonnull final Record r1, @Nonnull final Record r2) {
 
-                                final int c1 = r1Name.compareToIgnoreCase(r2Name);
-                                if (c1 != 0) {
-                                    return c1; // completely different strings
-                                }
-                                // strings only differing by case
-                                return r1Name.compareTo(r2Name);
-                            }
-                        });
+                    final String r1Name = r1.getName();
+                    final String r2Name = r2.getName();
+
+                    final int c1 = r1Name.compareToIgnoreCase(r2Name);
+                    if (c1 != 0) {
+                        return c1; // completely different strings
+                    }
+                    // strings only differing by case
+                    return r1Name.compareTo(r2Name);
+                }
+            });
+
+        /**
+         * Constructor.
+         */
+        public RecordLineProcessor() {
+            // EMPTY
+        }
+
+        @Override
+        public boolean processLine(@Nonnull final String line) throws IOException {
+            if (!isEmptyOrComment(line)) {
+                final String[] fields = line.split(",");
+                if (fields != null && fields.length > 0) {
+                    final String name = fields[0].trim();
+                    final String desc = fields.length >= 2 ? fields[1].trim() : "";
+                    _records.add(new Record(name, desc));
+                }
+            }
+            return true;
+        }
+
+        private boolean isEmptyOrComment(@Nonnull final String line) {
+            return Strings.isNullOrEmpty(line) || line.matches("^[ \\t]*#.*");
+        }
+
+        @Override
+        @Nonnull
+        public SortedSet<Record> getResult() {
+            return _records;
+        }
+    }
 
     /**
      * Constructor.
      */
-    public RecordsFileContentParser() {
-        super();
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    @Override
-    protected void processLine(@Nonnull final String line) {
-        final String[] fields = line.split(",");
-        if (fields != null && fields.length > 0) {
-            final String name = fields[0];
-            final String desc = fields.length >= 2 ? fields[1] : "";
-            _records.add(new Record(name, desc));
-        }
+    private RecordsFileContentParser() {
+        // EMPTY
     }
 
     @Nonnull
-    public SortedSet<Record> getRecords() {
-        return _records;
+    public static SortedSet<Record> parse(@Nonnull final File file) throws IOException {
+        final SortedSet<Record> records =
+            Files.readLines(file,
+                            Charset.defaultCharset(),
+                            new RecordLineProcessor());
+        return records;
     }
 }
