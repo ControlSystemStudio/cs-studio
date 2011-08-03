@@ -35,6 +35,12 @@ GRANT ALL ON archive.* TO archive@localhost IDENTIFIED BY '$archive';
 GRANT INSERT, SELECT, UPDATE, DELETE ON archive.* TO archive@'%' IDENTIFIED BY '$archive';
 FLUSH PRIVILEGES;
 
+-- Create 'report' user who can read data
+GRANT SELECT ON archive.* TO report@localhost IDENTIFIED BY '$report';
+GRANT SELECT ON archive.* TO report@'%' IDENTIFIED BY '$report';
+FLUSH PRIVILEGES;
+
+
 USE mysql;
 SELECT User, Host FROM user;
 SELECT User, Host, Db FROM db;
