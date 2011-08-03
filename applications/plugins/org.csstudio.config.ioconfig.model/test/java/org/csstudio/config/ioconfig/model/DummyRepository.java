@@ -120,19 +120,19 @@ public class DummyRepository implements IRepository {
     
     @Override
     @Nonnull
-    public DocumentDBO save(@Nullable final DocumentDBO document) {
+    public DocumentDBO save(@Nonnull final DocumentDBO document) {
         return document;
     }
     
     @Override
     @Nonnull
-    public GSDFileDBO save(@Nullable final GSDFileDBO gsdFile) {
+    public GSDFileDBO save(@Nonnull final GSDFileDBO gsdFile) {
         return gsdFile;
     }
     
     @Override
     @Nonnull
-    public <T extends DBClass> T saveOrUpdate(@Nullable final T dbClass) throws PersistenceException {
+    public <T extends DBClass> T saveOrUpdate(@Nonnull final T dbClass) throws PersistenceException {
         dbClass.setId(_id++);
         return dbClass;
     }
@@ -148,15 +148,14 @@ public class DummyRepository implements IRepository {
     
     @Override
     @Nonnull
-    public DocumentDBO update(@Nullable final DocumentDBO document) {
+    public DocumentDBO update(@Nonnull final DocumentDBO document) {
         return document;
     }
     
     @Override
     @Nonnull
-    public <T extends DBClass> T update(@Nullable final T dbClass) {
+    public <T extends DBClass> T update(@Nonnull final T dbClass) {
         return dbClass;
     }
     
 }
-//CHECKSTYLE:ON
