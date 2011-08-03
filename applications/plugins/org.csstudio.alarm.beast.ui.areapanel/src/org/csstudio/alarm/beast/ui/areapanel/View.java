@@ -24,6 +24,7 @@ import org.eclipse.swt.layout.FormLayout;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Composite;
+import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.ui.part.ViewPart;
 
@@ -38,6 +39,9 @@ public class View extends ViewPart implements AreaAlarmModelListener
 	/** Colors for alarm severities */
 	private SeverityColorProvider color_provider;
 
+	/** Display */
+	private Display display;
+
 	/** Error display (server disconnect) */
 	private Label error_message;
 	
@@ -51,6 +55,7 @@ public class View extends ViewPart implements AreaAlarmModelListener
 
 	/** Throttle for panel_box updates */
 	private GUIUpdateThrottle throttle;
+
 	
 	/** {@inheritDoc} */
 	@SuppressWarnings("nls")
@@ -90,7 +95,9 @@ public class View extends ViewPart implements AreaAlarmModelListener
 			@Override
 	        protected void fire()
 	        {
-				panel_box.getDisplay().asyncExec(new Runnable()
+				if (panel_box.isDisposed())
+					return;
+				display.asyncExec(new Runnable()
 				{
 					@Override
 		            public void run()
@@ -100,6 +107,7 @@ public class View extends ViewPart implements AreaAlarmModelListener
 			            // Remove existing alarm panels
 						for (AlarmPanelItem panel : panels)
 							panel.updateAlarmState();
+						setErrorMessage(null);
 		            }
 				});
 	        }
@@ -112,6 +120,7 @@ public class View extends ViewPart implements AreaAlarmModelListener
 	 */
 	private void createAlarmPanelGUI(final Composite parent)
     {
+		display = parent.getDisplay();
 		color_provider = new SeverityColorProvider(parent);
 		parent.setLayout(new FormLayout());
 		
@@ -133,43 +142,37 @@ public class View extends ViewPart implements AreaAlarmModelListener
 		fillPanelBox();
     }
 	
+	/** Update the error messages
+	 *  @param text Message to show or <code>null</code> to clear/hide the message
+	 */
 	private void setErrorMessage(final String text)
 	{
 		if (text == null  &&  ! have_error_message)
 				return;
-		
 		if (error_message.isDisposed())
 			return;
-		error_message.getDisplay().asyncExec(new Runnable()
-		{
-			@Override
-			public void run()
-			{
-				if (have_error_message && text == null)
-				{
-					error_message.setText(""); //$NON-NLS-1$
-			        error_message.setBackground(null);
-			        have_error_message = false;
-			        final FormData fd = (FormData)panel_box.getLayoutData();
-			        fd.top = new FormAttachment(0);
-			        panel_box.getParent().layout();
-			        return;
-				}
-				else if (text != null)
-				{
-					error_message.setText(text);
-			        error_message.setBackground(
-			        		error_message.getDisplay().getSystemColor(SWT.COLOR_MAGENTA));
-			        if (! have_error_message)
-			        {
-				        final FormData fd = (FormData)panel_box.getLayoutData();
-				        fd.top = new FormAttachment(error_message);
-				        have_error_message = true;
-			        }
-			        panel_box.getParent().layout();
-				}
-			}
-		});
+		if (have_error_message && text == null)
+		{	// Clear and hide the error message label
+			error_message.setText(""); //$NON-NLS-1$
+	        error_message.setBackground(null);
+	        have_error_message = false;
+	        final FormData fd = (FormData)panel_box.getLayoutData();
+	        fd.top = new FormAttachment(0);
+	        panel_box.getParent().layout();
+	        return;
+		}
+		else if (text != null)
+		{	// Set message
+			error_message.setText(text);
+	        error_message.setBackground(display.getSystemColor(SWT.COLOR_MAGENTA));
+	        if (! have_error_message)
+	        {	// Display the associated label
+		        final FormData fd = (FormData)panel_box.getLayoutData();
+		        fd.top = new FormAttachment(error_message);
+		        have_error_message = true;
+	        }
+	        panel_box.getParent().layout();
+		}
 	}
 
 	/** Fill <code>panel_box</code> with items for model */
@@ -203,7 +206,7 @@ public class View extends ViewPart implements AreaAlarmModelListener
     {
 		if (panel_box.isDisposed())
 			return;
-		panel_box.getDisplay().asyncExec(new Runnable()
+		display.asyncExec(new Runnable()
 		{
 			@Override
             public void run()
@@ -227,13 +230,21 @@ public class View extends ViewPart implements AreaAlarmModelListener
     public void alarmsChanged()
     {
 		throttle.trigger();
-		setErrorMessage(null);
     }
 
 	/** {@inheritDoc} */
 	@Override
     public void serverTimeout()
     {
-		setErrorMessage(Messages.ServerTimeout);
+		if (display.isDisposed())
+			return;
+		display.asyncExec(new Runnable()
+		{
+			@Override
+			public void run()
+			{
+				setErrorMessage(Messages.ServerTimeout);
+			}
+		});
     }
 }
