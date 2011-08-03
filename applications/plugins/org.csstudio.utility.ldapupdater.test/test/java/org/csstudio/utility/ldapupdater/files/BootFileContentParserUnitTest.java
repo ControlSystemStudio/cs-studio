@@ -34,7 +34,6 @@ import junit.framework.Assert;
 
 import org.csstudio.domain.desy.net.IpAddress;
 import org.csstudio.utility.ldap.treeconfiguration.LdapFieldsAndAttributes;
-import org.csstudio.utility.ldapupdater.files.BootFileContentParser;
 import org.csstudio.utility.ldapupdater.model.IOC;
 import org.junit.Before;
 import org.junit.Rule;
@@ -44,37 +43,39 @@ import org.junit.rules.TemporaryFolder;
 import com.google.common.collect.Sets;
 
 /**
- * Test for {@link BootFileContentParser}. 
- * 
+ * Test for {@link BootFileContentParser}.
+ *
  * @author bknerr
  * @since 28.04.2011
  */
 public class BootFileContentParserUnitTest {
-    
-    
+
+    private static File TEMP_DIR;
+
+    // CHECKSTYLE OFF: VisibilityModifier
     @Rule
-    public static TemporaryFolder _tempFolder = new TemporaryFolder();
-    
-    private static File _tempDir;
-    
+    public TemporaryFolder _tempFolder = new TemporaryFolder();
+    // CHECKSTYLE ON: VisibilityModifier
+
+
     @Before
     public void setup() {
-        _tempDir = _tempFolder.newFolder("dir");
+        TEMP_DIR = _tempFolder.newFolder("dir");
     }
-    
+
     @Test
     public void testValidFile() throws IOException, ParseException {
-        
-        createAndWriteFileForIoc(_tempDir, "foo.boot", "  "  + LdapFieldsAndAttributes.ATTR_VAL_IOC_IP_ADDRESS + "  = 1.2.3.4 ");
-        createAndWriteFileForIoc(_tempDir, "bar.boot", " # tallest man on earth\n" +
+
+        createAndWriteFileForIoc(TEMP_DIR, "foo.boot", "  "  + LdapFieldsAndAttributes.ATTR_VAL_IOC_IP_ADDRESS + "  = 1.2.3.4 ");
+        createAndWriteFileForIoc(TEMP_DIR, "bar.boot", " # tallest man on earth\n" +
                                  LdapFieldsAndAttributes.ATTR_VAL_IOC_IP_ADDRESS + "=1.1.1.1");
 
-        createAndWriteFileForIoc(_tempDir, "foo.records", "rec1\nrec2\nrec3");
-        createAndWriteFileForIoc(_tempDir, "bar.records", "");
-                
-        BootFileContentParser parser = new BootFileContentParser(_tempDir, Sets.newHashSet("foo", "bar"));
-        Map<String, IOC> outMap = parser.getIocMap();
-        
+        createAndWriteFileForIoc(TEMP_DIR, "foo.records", "rec1\nrec2\nrec3");
+        createAndWriteFileForIoc(TEMP_DIR, "bar.records", "");
+
+        final BootFileContentParser parser = new BootFileContentParser(TEMP_DIR, Sets.newHashSet("foo", "bar"));
+        final Map<String, IOC> outMap = parser.getIocMap();
+
         Assert.assertEquals(2, outMap.size());
         Assert.assertEquals(new IpAddress("1.1.1.1"), outMap.get("bar").getIpAddress());
         Assert.assertEquals(new IpAddress("1.2.3.4"), outMap.get("foo").getIpAddress());
@@ -82,38 +83,39 @@ public class BootFileContentParserUnitTest {
         Assert.assertEquals(3, outMap.get("foo").getRecordSet().size());
         Assert.assertEquals(0, outMap.get("bar").getRecordSet().size());
     }
-    
+
     @SuppressWarnings("unused")
     @Test(expected=FileNotFoundException.class) // .records file missing
     public void testMissingRecordsFile() throws IOException, ParseException {
-        createAndWriteFileForIoc(_tempDir, "xxx", "tralala");
-        
-        new BootFileContentParser(_tempDir, Sets.newHashSet("xxx"));
+        createAndWriteFileForIoc(TEMP_DIR, "xxx", "tralala");
+
+        new BootFileContentParser(TEMP_DIR, Sets.newHashSet("xxx"));
     }
 
     @SuppressWarnings("unused")
     @Test(expected=FileNotFoundException.class) // .records file missing
     public void testMissingBootFile() throws IOException, ParseException {
-        createAndWriteFileForIoc(_tempDir, "xxx.records", "tralala");
-        createAndWriteFileForIoc(_tempDir, "xxx", "tralala");
-        
-        new BootFileContentParser(_tempDir, Sets.newHashSet("xxx"));
+        createAndWriteFileForIoc(TEMP_DIR, "xxx.records", "tralala");
+        createAndWriteFileForIoc(TEMP_DIR, "xxx", "tralala");
+
+        new BootFileContentParser(TEMP_DIR, Sets.newHashSet("xxx"));
     }
 
     @SuppressWarnings("unused")
     @Test(expected=ParseException.class) // .records file missing
     public void testInvalidBootFile() throws IOException, ParseException {
-        createAndWriteFileForIoc(_tempDir, "xxx.records", "");
-        createAndWriteFileForIoc(_tempDir, "xxx.boot", "tralala");
-        
-        new BootFileContentParser(_tempDir, Sets.newHashSet("xxx"));
+        createAndWriteFileForIoc(TEMP_DIR, "xxx.records", "");
+        createAndWriteFileForIoc(TEMP_DIR, "xxx.boot", "tralala");
+
+        new BootFileContentParser(TEMP_DIR, Sets.newHashSet("xxx"));
     }
-    
+
+    @Nonnull
     private File createAndWriteFileForIoc(@Nonnull final File dir,
-                                          @Nonnull final String fileName, 
+                                          @Nonnull final String fileName,
                                           @Nonnull final String line) throws IOException {
-        File file = new File(dir, fileName);
-        FileWriter writer = new FileWriter(file);
+        final File file = new File(dir, fileName);
+        final FileWriter writer = new FileWriter(file);
         writer.write(line);
         writer.close();
         return file;
