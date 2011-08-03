@@ -20,6 +20,8 @@ GRANT INSERT, SELECT, UPDATE ON alarm.* TO alarm@'%' IDENTIFIED BY '$alarm';
 FLUSH PRIVILEGES;
 
 -- Allow user 'reports' to read from the alarm tables
+-- Assuming  user 'report' already exists.
+-- Otherwise create it by adding ... IDENTIFIED BY '$report';
 GRANT SELECT ON alarm.* TO report@localhost;
 GRANT SELECT ON alarm.* TO report@'%';
 FLUSH PRIVILEGES;
