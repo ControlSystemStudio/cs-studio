@@ -22,7 +22,6 @@
 package org.csstudio.utility.ldapupdater.action;
 
 import static org.csstudio.utility.ldap.treeconfiguration.LdapEpicsControlsConfiguration.IOC;
-import static org.csstudio.utility.ldapupdater.preferences.LdapUpdaterPreference.IOC_DBL_DUMP_PATH;
 
 import java.io.File;
 import java.util.Map;
@@ -82,27 +81,27 @@ public class TidyUpLdapAction implements IManagementCommand {
         }
     }
 
-	/* (non-Javadoc)
-	 * @see org.csstudio.platform.management.IManagementCommand#execute(org.csstudio.platform.management.CommandParameters)
-	 */
-	@Override
-	@Nonnull
+    /* (non-Javadoc)
+     * @see org.csstudio.platform.management.IManagementCommand#execute(org.csstudio.platform.management.CommandParameters)
+     */
+    @Override
+    @Nonnull
     public final CommandResult execute(@Nonnull final CommandParameters parameters) {
-	        try {
-	            if (!UPDATER.isBusy()){
-	                UPDATER.setBusy(true);
-	                tidyUpLdapFromIOCFiles();
-	            } else{
-	                return CommandResult.createMessageResult("ldapUpdater is busy for max. 300 s (was probably started by timer). Try later!");
-	            }
-	        } catch (final Exception e) {
-	            LOG.error("Exception while running ldapUpdater", e);
-	            return CommandResult.createFailureResult("\"" + e.getCause() + "\"" + "-" + "Exception while running ldapUpdater");
-	        } finally {
-	            UPDATER.setBusy(false);
-	        }
-	        return CommandResult.createSuccessResult();
-	}
+            try {
+                if (!UPDATER.isBusy()){
+                    UPDATER.setBusy(true);
+                    tidyUpLdapFromIOCFiles();
+                } else{
+                    return CommandResult.createMessageResult("ldapUpdater is busy for max. 300 s (was probably started by timer). Try later!");
+                }
+            } catch (final Exception e) {
+                LOG.error("Exception while running ldapUpdater", e);
+                return CommandResult.createFailureResult("\"" + e.getCause() + "\"" + "-" + "Exception while running ldapUpdater");
+            } finally {
+                UPDATER.setBusy(false);
+            }
+            return CommandResult.createSuccessResult();
+    }
 
 
     private void tidyUpLdapFromIOCFiles() {

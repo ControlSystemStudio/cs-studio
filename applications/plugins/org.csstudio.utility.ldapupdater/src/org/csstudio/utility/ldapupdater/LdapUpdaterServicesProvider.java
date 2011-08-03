@@ -23,41 +23,44 @@ package org.csstudio.utility.ldapupdater;
 
 import javax.annotation.Nonnull;
 
-import org.csstudio.utility.ldapupdater.service.ILdapFacade;
+import org.csstudio.domain.desy.service.osgi.OsgiServiceUnavailableException;
+import org.csstudio.utility.ldap.service.ILdapService;
+import org.csstudio.utility.ldapupdater.preferences.LdapUpdaterPreferencesService;
 import org.csstudio.utility.ldapupdater.service.ILdapUpdaterServicesProvider;
-import org.csstudio.utility.ldapupdater.service.ILdapUpdaterFileService;
-import org.csstudio.utility.ldapupdater.service.ILdapUpdaterService;
-import org.csstudio.utility.ldapupdater.service.impl.LdapFacadeImpl;
-import org.csstudio.utility.ldapupdater.service.impl.LdapUpdaterFileServiceImpl;
-import org.csstudio.utility.ldapupdater.service.impl.LdapUpdaterServiceImpl;
-
-import com.google.inject.AbstractModule;
+import org.osgi.util.tracker.ServiceTracker;
 
 /**
- * TODO (bknerr) :
+ * Services provider for DI (is mockable in tests).
  *
  * @author bknerr
- * @since 27.04.2011
+ * @since 03.08.2011
  */
-public class LdapUpdaterModule extends AbstractModule {
-    private final ILdapUpdaterServicesProvider _serviceProvider;
+final class LdapUpdaterServicesProvider implements ILdapUpdaterServicesProvider {
+
+    private final ServiceTracker _ldapServiceTracker;
+    private final LdapUpdaterPreferencesService _prefsService;
 
     /**
      * Constructor.
      */
-    public LdapUpdaterModule(@Nonnull final ILdapUpdaterServicesProvider provider) {
-        _serviceProvider = provider;
+    public LdapUpdaterServicesProvider(@Nonnull final ServiceTracker ldapServiceTracker) {
+        _ldapServiceTracker = ldapServiceTracker;
+        _prefsService = new LdapUpdaterPreferencesService();
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
-    protected void configure() {
-        bind(ILdapUpdaterServicesProvider.class).toInstance(_serviceProvider);
-        bind(ILdapFacade.class).to(LdapFacadeImpl.class);
-        bind(ILdapUpdaterService.class).to(LdapUpdaterServiceImpl.class);
-        bind(ILdapUpdaterFileService.class).to(LdapUpdaterFileServiceImpl.class);
+    @Nonnull
+    public ILdapService getLdapService() throws OsgiServiceUnavailableException {
+        final ILdapService service =  (ILdapService) _ldapServiceTracker.getService();
+        if (service == null) {
+            throw new OsgiServiceUnavailableException("LDAP service could not be retrieved. Please try again later or check LDAP connection.");
+        }
+        return service;
     }
 
+    @Override
+    @Nonnull
+    public LdapUpdaterPreferencesService getPreferencesService() {
+        return _prefsService;
+    }
 }

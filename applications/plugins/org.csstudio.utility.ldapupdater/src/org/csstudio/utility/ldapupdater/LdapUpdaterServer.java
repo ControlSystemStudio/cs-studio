@@ -21,12 +21,6 @@
  */
 package org.csstudio.utility.ldapupdater;
 
-import static org.csstudio.utility.ldapupdater.preferences.LdapUpdaterPreference.LDAP_AUTO_INTERVAL;
-import static org.csstudio.utility.ldapupdater.preferences.LdapUpdaterPreference.LDAP_AUTO_START;
-import static org.csstudio.utility.ldapupdater.preferences.LdapUpdaterPreference.XMPP_PASSWORD;
-import static org.csstudio.utility.ldapupdater.preferences.LdapUpdaterPreference.XMPP_SERVER;
-import static org.csstudio.utility.ldapupdater.preferences.LdapUpdaterPreference.XMPP_USER;
-
 import java.util.Map;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
@@ -39,7 +33,7 @@ import javax.annotation.Nullable;
 import org.csstudio.domain.desy.net.HostAddress;
 import org.csstudio.domain.desy.time.TimeInstant;
 import org.csstudio.domain.desy.time.TimeInstant.TimeInstantBuilder;
-import org.csstudio.platform.logging.CentralLogger;
+import org.csstudio.utility.ldapupdater.preferences.LdapUpdaterPreferencesService;
 import org.eclipse.equinox.app.IApplication;
 import org.eclipse.equinox.app.IApplicationContext;
 import org.joda.time.DateTimeFieldType;
@@ -59,14 +53,19 @@ import org.slf4j.LoggerFactory;
 public class LdapUpdaterServer implements IApplication,
                                           IGenericServiceListener<ISessionService> {
 
+    private static final Logger LOG = LoggerFactory.getLogger(LdapUpdaterServer.class);
+
     /**
      * The running instance of this server.
      */
     private static LdapUpdaterServer INSTANCE;
 
-    private static final Logger LOG = LoggerFactory.getLogger(LdapUpdaterServer.class);
-
     private volatile boolean _stopped;
+
+    private final ScheduledExecutorService _updaterExecutor =
+        Executors.newSingleThreadScheduledExecutor();
+
+    private final LdapUpdaterPreferencesService _prefsService;
 
     /**
      * Constructor.
@@ -76,6 +75,8 @@ public class LdapUpdaterServer implements IApplication,
             throw new IllegalStateException("Application LdAP Updater Server does already exist.");
         }
         INSTANCE = this; // Antipattern is required by the framework!
+
+        _prefsService = LdapUpdaterActivator.getDefault().getLdapUpdaterPreferencesService();
     }
 
 
@@ -90,7 +91,6 @@ public class LdapUpdaterServer implements IApplication,
         return INSTANCE;
     }
 
-    private final ScheduledExecutorService _updaterExecutor = Executors.newSingleThreadScheduledExecutor();
 
     /**
      * {@inheritDoc}
@@ -101,9 +101,8 @@ public class LdapUpdaterServer implements IApplication,
     throws Exception {
 
 
-
-        final long startTimeSec = LDAP_AUTO_START.getValue();
-        final long intervalSec = LDAP_AUTO_INTERVAL.getValue();
+        final long startTimeSec = _prefsService.getLdapAutoStart();
+        final long intervalSec = _prefsService.getLdapStartInterval();
 
         final TimeInstant now = TimeInstantBuilder.fromNow();
 
@@ -192,16 +191,16 @@ public class LdapUpdaterServer implements IApplication,
      */
     @Override
     public void bindService(@Nonnull final ISessionService sessionService) {
-        final String username = XMPP_USER.getValue();
-        final String password = XMPP_PASSWORD.getValue();
-        final HostAddress server = XMPP_SERVER.getValue();
 
-    	try {
-			sessionService.connect(username, password, server.getHostAddress());
-		} catch (final Exception e) {
-			CentralLogger.getInstance().warn(this,
-					"XMPP connection is not available, " + e.toString());
-		}
+        final String username = _prefsService.getXmppUser();
+        final String password = _prefsService.getXmppPassword();
+        final HostAddress server = _prefsService.getXmppServer();
+
+        try {
+            sessionService.connect(username, password, server.getHostAddress());
+        } catch (final Exception e) {
+            LOG.warn("XMPP connection is not available, {}", e.toString());
+        }
     }
 
     /**
@@ -209,6 +208,6 @@ public class LdapUpdaterServer implements IApplication,
      */
     @Override
     public void unbindService(@Nonnull final ISessionService service) {
-    	service.disconnect();
+        service.disconnect();
     }
 }

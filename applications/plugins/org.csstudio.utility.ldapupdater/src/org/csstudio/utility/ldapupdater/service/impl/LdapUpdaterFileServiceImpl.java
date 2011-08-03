@@ -37,8 +37,8 @@ import org.csstudio.utility.ldapupdater.files.FileBySuffixCollector;
 import org.csstudio.utility.ldapupdater.mail.NotificationMailer;
 import org.csstudio.utility.ldapupdater.model.IOC;
 import org.csstudio.utility.ldapupdater.model.Record;
-import org.csstudio.utility.ldapupdater.preferences.LdapUpdaterPreference;
 import org.csstudio.utility.ldapupdater.service.ILdapUpdaterFileService;
+import org.csstudio.utility.ldapupdater.service.ILdapUpdaterServicesProvider;
 import org.csstudio.utility.ldapupdater.service.LdapUpdaterServiceException;
 
 import com.google.common.base.Joiner;
@@ -46,6 +46,7 @@ import com.google.common.base.Strings;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 import com.google.common.collect.Sets;
+import com.google.inject.Inject;
 
 /**
  * TODO (bknerr) :
@@ -55,7 +56,16 @@ import com.google.common.collect.Sets;
  */
 public class LdapUpdaterFileServiceImpl implements ILdapUpdaterFileService {
 
+    private final ILdapUpdaterServicesProvider _provider;
     private final Map<File, Map<String, IOC>> _cache = Maps.newConcurrentMap();
+
+    /**
+     * Constructor.
+     */
+    @Inject
+    public LdapUpdaterFileServiceImpl(@Nonnull final ILdapUpdaterServicesProvider provider) {
+        _provider = provider;
+    }
 
     @Override
     @Nonnull
@@ -141,7 +151,7 @@ public class LdapUpdaterFileServiceImpl implements ILdapUpdaterFileService {
     @Override
     @Nonnull
     public Set<Record> getBootRecordsFromIocFile(@Nonnull final String iocName) throws LdapUpdaterServiceException {
-        final File bootDirectory = LdapUpdaterPreference.IOC_DBL_DUMP_PATH.getValue();
+        final File bootDirectory = _provider.getPreferencesService().getIocDblDumpPath();
 
         if (notExistsInCache(bootDirectory)) {
             final Map<String, IOC> newMap = createIocMapFromIocNameSet(bootDirectory, Sets.newHashSet(iocName));

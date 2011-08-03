@@ -238,10 +238,9 @@ public final class LdapUpdaterServiceImpl implements ILdapUpdaterService {
                 "\nProceed with next record.");
             }
             return 1;
-        } else {
-            LOG.warn("Record " + recordFromFSName + " could not be written. Unallowed characters!");
-            forbiddenRecords.append(recordFromFSName + "\n");
         }
+        LOG.warn("Record " + recordFromFSName + " could not be written. Unallowed characters!");
+        forbiddenRecords.append(recordFromFSName + "\n");
         return 0;
     }
 
