@@ -54,6 +54,7 @@ import org.csstudio.utility.ldapupdater.files.HistoryFileContentModel;
 import org.csstudio.utility.ldapupdater.mail.NotificationMailer;
 import org.csstudio.utility.ldapupdater.model.IOC;
 import org.csstudio.utility.ldapupdater.model.Record;
+import org.csstudio.utility.ldapupdater.preferences.LdapUpdaterPreferencesService;
 import org.csstudio.utility.ldapupdater.service.ILdapFacade;
 import org.csstudio.utility.ldapupdater.service.ILdapUpdaterFileService;
 import org.csstudio.utility.ldapupdater.service.ILdapUpdaterService;
@@ -125,15 +126,18 @@ public final class LdapUpdaterServiceImpl implements ILdapUpdaterService {
 
     private final ILdapFacade _facade;
     private final ILdapUpdaterFileService _fileService;
+    private final LdapUpdaterPreferencesService _prefsService;
 
     /**
      * Don't instantiate.
      */
     @Inject
     public LdapUpdaterServiceImpl(@Nonnull final ILdapFacade facade,
-                                  @Nonnull final ILdapUpdaterFileService fileService) {
+                                  @Nonnull final ILdapUpdaterFileService fileService,
+                                  @Nonnull final LdapUpdaterPreferencesService prefService) {
         _facade = facade;
         _fileService = fileService;
+        _prefsService = prefService;
     }
 
 
@@ -298,11 +302,13 @@ public final class LdapUpdaterServiceImpl implements ILdapUpdaterService {
             throw new LdapUpdaterServiceException("Exception in LDAP facade on creating or updating IOC in LDAP.", e);
         }
 
-        final UpdateIOCResult updateResult = updateIocInLdapWithRecordsFromBootFile(recordMapFromLdap, iocFromLdap);
+        final UpdateIOCResult updateResult =
+            updateIocInLdapWithRecordsFromBootFile(recordMapFromLdap, iocFromLdap);
 
         // TODO (bknerr) : does only make sense when the update process has been stopped
         if (updateResult.hasNoError()) {
-            HistoryFileAccess.appendLineToHistfile(iocFromFS.getName(),
+            HistoryFileAccess.appendLineToHistfile(_prefsService.getHistoryDatFilePath(),
+                                                   iocFromFS.getName(),
                                                    updateResult.getNumOfRecsWritten(),
                                                    updateResult.getNumOfRecsInFile(),
                                                    updateResult.getNumOfRecsInLDAP() );
@@ -318,7 +324,10 @@ public final class LdapUpdaterServiceImpl implements ILdapUpdaterService {
         LOG.info("IOC " + iocName +
                  " (from file system) does not yet exist in LDAP - added to facility MISC.\n");
 
-        validateAndUpdateIpAddressAttribute(iocFromFS.getIpAddress(), iocMapFromLdap.values());
+        final IpAddress ipAddress = iocFromFS.getIpAddress();
+        if (ipAddress != null) {
+            validateAndUpdateIpAddressAttribute(ipAddress, iocMapFromLdap.values());
+        }
 
         final LdapName middleName = createLdapName(COMPONENT.getNodeTypeName(), LdapEpicsControlsFieldsAndAttributes.ECOM_EPICS_IOC_FIELD_VALUE,
                                                    FACILITY.getNodeTypeName(), UpdaterLdapConstants.FACILITY_MISC_FIELD_VALUE);

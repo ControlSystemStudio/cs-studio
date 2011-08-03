@@ -52,7 +52,7 @@ import com.google.common.collect.Maps;
 public class BootFileContentParser extends AbstractLineBasedFileContentParser {
 
     private IpAddress _ipAddress;
-    private boolean _ipAddressFound = false;
+    private boolean _ipAddressFound;
     private final Map<String, IOC> _iocMap;
 
 

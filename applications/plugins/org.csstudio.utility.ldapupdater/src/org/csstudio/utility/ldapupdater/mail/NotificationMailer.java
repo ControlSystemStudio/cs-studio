@@ -21,8 +21,6 @@
  */
 package org.csstudio.utility.ldapupdater.mail;
 
-import static org.csstudio.utility.ldapupdater.preferences.LdapUpdaterPreference.IOC_DBL_DUMP_PATH;
-
 import java.io.IOException;
 import java.util.List;
 import java.util.Map;
@@ -37,12 +35,14 @@ import javax.naming.directory.Attribute;
 import org.csstudio.domain.desy.net.IpAddress;
 import org.csstudio.email.EMailSender;
 import org.csstudio.email.EmailUtils;
-import org.csstudio.platform.util.StringUtil;
 import org.csstudio.utility.ldap.treeconfiguration.LdapEpicsControlsConfiguration;
 import org.csstudio.utility.ldap.treeconfiguration.LdapEpicsControlsFieldsAndAttributes;
+import org.csstudio.utility.ldapupdater.LdapUpdaterActivator;
+import org.csstudio.utility.ldapupdater.preferences.LdapUpdaterPreferencesService;
 import org.csstudio.utility.treemodel.INodeComponent;
 
 import com.google.common.base.Joiner;
+import com.google.common.base.Strings;
 
 /**
  * Encapsulates LDAP Updater specific mail functionality.
@@ -102,10 +102,11 @@ public final class NotificationMailer {
 
 
     public static void sendMissingIOCsNotificationMails(@Nonnull final Map<String, List<String>> missingIOCsPerPerson) {
+        final LdapUpdaterPreferencesService prefs = LdapUpdaterActivator.getDefault().getLdapUpdaterPreferencesService();
         for (final Entry<String, List<String>> entry : missingIOCsPerPerson.entrySet()) {
             sendMail(NotificationType.UNKNOWN_IOCS_IN_LDAP,
                                       entry.getKey(),
-                                      "\n(in directory " + IOC_DBL_DUMP_PATH.getValue() + ")" +
+                                      "\n(in directory " + prefs.getIocDblDumpPath() + ")" +
                                       "\n\n" + entry.getValue());
         }
     }
@@ -115,15 +116,19 @@ public final class NotificationMailer {
                                                       @Nonnull final StringBuilder forbiddenRecords) throws NamingException {
        if (forbiddenRecords.length() > 0) {
            final Attribute attr = iocFromLDAP.getAttribute(LdapEpicsControlsFieldsAndAttributes.ATTR_FIELD_RESPONSIBLE_PERSON);
-           String person;
-           if (attr != null && !StringUtil.hasLength((String) attr.get())) {
-               person = (String) attr.get();
-           } else {
+           String person = null;
+           if (attr != null) {
+               final String strAttr = (String) attr.get();
+               if (!Strings.isNullOrEmpty(strAttr)) {
+                   person = strAttr;
+               }
+           }
+           if (person == null) {
                person = DEFAULT_RESPONSIBLE_PERSON;
            }
            sendMail(NotificationType.UNALLOWED_CHARS,
-                                     person,
-                                     "\nIn IOC " + iocName + ":\n\n" + forbiddenRecords.toString());
+                    person,
+                    "\nIn IOC " + iocName + ":\n\n" + forbiddenRecords.toString());
        }
    }
 

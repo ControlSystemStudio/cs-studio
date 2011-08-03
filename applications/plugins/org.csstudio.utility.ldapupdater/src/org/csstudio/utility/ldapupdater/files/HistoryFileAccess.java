@@ -22,23 +22,23 @@
 
 package org.csstudio.utility.ldapupdater.files;
 
-import static org.csstudio.utility.ldapupdater.preferences.LdapUpdaterPreference.HISTORY_DAT_FILEPATH;
-
-import java.io.BufferedReader;
 import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.FileReader;
-import java.io.FileWriter;
 import java.io.IOException;
+import java.nio.charset.Charset;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import javax.annotation.CheckForNull;
 import javax.annotation.Nonnull;
 
 import org.csstudio.domain.desy.time.TimeInstant;
 import org.csstudio.domain.desy.time.TimeInstant.TimeInstantBuilder;
+import org.csstudio.utility.ldapupdater.preferences.LdapUpdaterPreferencesService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import com.google.common.io.Files;
+import com.google.common.io.LineProcessor;
 
 /**
  *
@@ -57,80 +57,89 @@ import org.slf4j.LoggerFactory;
 @Deprecated
 public class HistoryFileAccess {
 
+    /**
+     * Line Processor for the history file.
+     *
+     * @author bknerr
+     * @since 03.08.2011
+     */
+    private final class HistoryFileLineProcessor implements LineProcessor<HistoryFileContentModel> {
+        private final Logger _log = LoggerFactory
+                .getLogger(HistoryFileAccess.HistoryFileLineProcessor.class);
+        private HistoryFileContentModel _model = new HistoryFileContentModel();
+
+        private final LdapUpdaterPreferencesService _histPrefsService;
+
+        /**
+         * Constructor.
+         */
+        public HistoryFileLineProcessor(@Nonnull final LdapUpdaterPreferencesService prefs) {
+            _histPrefsService = prefs;
+        }
+
+        @Override
+        public boolean processLine(@Nonnull final String line) throws IOException {
+
+            if (isNotEmptyOrComment(line)) {
+                final Pattern p = Pattern.compile("(\\S+)\\s+(\\S+)\\s+(\\S+).*");
+                // matches any rows with at least 3 columns separated by spaces
+                final Matcher m = p.matcher(line);
+                if(!m.matches()) {
+                    _log.error("Error during file parsing in {}, row: " + "{}", _histPrefsService.getHistoryDatFilePath(), line);
+                } else {
+                    _model = updateRecordTimeStampsInModel(m.group(1),
+                                                           TimeInstantBuilder.fromSeconds(Long.parseLong(m.group(3))),
+                                                           _model);
+                }
+            }
+            return true;
+        }
+
+        private boolean isNotEmptyOrComment(@Nonnull final String line) {
+            return line.length() > 0 && Pattern.matches("\\s*#.*", line);
+        }
+
+        @Override
+        @Nonnull
+        public HistoryFileContentModel getResult() {
+            return _model;
+        }
+    }
+
     private static final Logger LOG = LoggerFactory.getLogger(HistoryFileAccess.class);
+    private final LdapUpdaterPreferencesService _prefsService;
 
     /**
      * Constructor.
      */
-    public HistoryFileAccess () {
-        // Empty
+    public HistoryFileAccess (@Nonnull final LdapUpdaterPreferencesService prefsService) {
+        _prefsService = prefsService;
     }
 
     /**
      * Reads the history file and extracts the time stamp information
      * @return a model of the file contents
      */
-    @Nonnull
+    @CheckForNull
     public HistoryFileContentModel readFile() {
 
-        HistoryFileContentModel model = new HistoryFileContentModel();
-        BufferedReader fr = null;
-
-        final File filePath = HISTORY_DAT_FILEPATH.getValue();
+        final File file = _prefsService.getHistoryDatFilePath();
+        HistoryFileContentModel model = null;
         try {
-            fr = new BufferedReader(new FileReader(filePath));
+            model = Files.readLines(file,
+                                    Charset.defaultCharset(),
+                                    new HistoryFileLineProcessor(_prefsService));
+            LOG.info("IOC names in history-file : {}",  model.getEntrySet().size());
 
-            model = processLineByLine(model, fr);
-            fr.close();
-        } catch (final FileNotFoundException e) {
-            LOG.error ("Error : File not Found(r) : {}", filePath );
         } catch (final IOException e) {
-            LOG.error ("I/O-Exception while handling {}", filePath );
-        } finally {
-            try {
-                if (fr != null) {
-                    fr.close();
-                }
-            } catch (final IOException e) {
-                LOG.error ("I/O-Exception while closing {}", filePath );
-            }
+            LOG.error ("I/O-Exception while handling {}", file.getAbsolutePath() );
         }
-        LOG.info("IOC names in history-file : {}",  model.getEntrySet().size());
 
         return model;
 
     }
 
-    @Nonnull
-    private HistoryFileContentModel processLineByLine(@Nonnull final HistoryFileContentModel model,
-                                                      @Nonnull final BufferedReader fr) throws IOException {
-        HistoryFileContentModel newModel = model;
-        String line;
-        while ((line = fr.readLine()) != null) {
-            if (line.length() > 0) {
-                final Pattern comment = Pattern.compile("\\s*#.*");
-                final Matcher commentMatcher = comment.matcher(line);
-                if (commentMatcher.matches()) {
-                    continue;
-                }
-                final Pattern p = Pattern.compile("(\\S+)\\s+(\\S+)\\s+(\\S+).*");
-                // matches any rows with at least 3 columns separated by spaces
-                final Matcher m = p.matcher(line);
-                if(!m.matches()) {
-                    final String emsg = "Error during file parsing in " + HISTORY_DAT_FILEPATH.getValue() + ", row: " + "\"" + line + "\"";
-                    LOG.error(emsg);
-                    throw new RuntimeException(emsg);
-                }
-                newModel = updateRecordTimeStampsInModel(m.group(1),
-                                                         TimeInstantBuilder.fromSeconds(Long.parseLong(m.group(3))),
-                                                         model);
-            }
-        }
-        return newModel;
-    }
-
-    @Nonnull
-    private HistoryFileContentModel updateRecordTimeStampsInModel(@Nonnull final String record,
+    @Nonnull HistoryFileContentModel updateRecordTimeStampsInModel(@Nonnull final String record,
                                                                   @Nonnull final TimeInstant timeInstant,
                                                                   @Nonnull final HistoryFileContentModel model) {
         final TimeInstant storedLastUpdated = model.getTimeForRecord(record);
@@ -141,23 +150,20 @@ public class HistoryFileAccess {
     }
 
     /**
-     * append a line to the history file.
+     * Append a line to the history file.
      *
      * @param iocName the name of ioc to be inserted in the history file
      * @param numOfRecordsWritten .
      * @param numOfRecordsInFile .
      * @param numOfRecordsInLDAP .
      */
-    public static void appendLineToHistfile(@Nonnull final String iocName,
+    public static void appendLineToHistfile(@Nonnull final File historyFilePath,
+                                            @Nonnull final String iocName,
                                             final int numOfRecordsWritten,
                                             final int numOfRecordsInFile,
                                             final int numOfRecordsInLDAP) {
 
-        FileWriter fw;
         try {
-            fw = new FileWriter(HISTORY_DAT_FILEPATH.getValue(), true);
-
-
             final TimeInstant now = TimeInstantBuilder.fromNow();
             final String line = String.format("%1$-20sxxx%2$15s   %3$s   %4$-12s(%5$s)%6$s",
                                               iocName,
@@ -166,12 +172,9 @@ public class HistoryFileAccess {
                                               String.valueOf(numOfRecordsWritten + "/" + numOfRecordsInFile),
                                               String.valueOf(numOfRecordsInLDAP),
                                               System.getProperty("line.separator"));
-
-            fw.append ( line );
-            fw.flush();
-            fw.close();
+            Files.append(line, historyFilePath, Charset.defaultCharset());
         } catch (final IOException e) {
-            LOG.error("I/O-Exception while trying to append a line to {}", HISTORY_DAT_FILEPATH.getValue());
+            LOG.error("I/O-Exception while trying to append a line to {}", historyFilePath.getAbsoluteFile());
         }
     }
 }

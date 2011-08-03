@@ -43,58 +43,58 @@ import org.csstudio.domain.desy.time.TimeInstant;
 @Deprecated
 public final class HistoryFileContentModel {
 
-	private final Map<String, TimeInstant> _historyMap = new HashMap<String, TimeInstant>();
+    private final Map<String, TimeInstant> _historyMap = new HashMap<String, TimeInstant>();
 
-	/**
-	 * Constructor.
-	 */
-	public HistoryFileContentModel() {
-		// Empty
-	}
+    /**
+     * Constructor.
+     */
+    public HistoryFileContentModel() {
+        // Empty
+    }
 
-	/**
-	 * Setter for an entry.
-	 * @param name file name
-	 * @param timestamp time stamp of last processing
-	 */
-	public void setEntry(@Nonnull final String name, @Nonnull final TimeInstant timestamp) {
-		_historyMap.put(name, timestamp);
-	}
+    /**
+     * Setter for an entry.
+     * @param name file name
+     * @param timestamp time stamp of last processing
+     */
+    public void setEntry(@Nonnull final String name, @Nonnull final TimeInstant timestamp) {
+        _historyMap.put(name, timestamp);
+    }
 
-	/**
-	 * Getter of the entry set.
-	 * @return the entry set
-	 */
-	@Nonnull
-	public Set<Entry<String, TimeInstant>> getEntrySet() {
-		return _historyMap.entrySet();
-	}
+    /**
+     * Getter of the entry set.
+     * @return the entry set
+     */
+    @Nonnull
+    public Set<Entry<String, TimeInstant>> getEntrySet() {
+        return _historyMap.entrySet();
+    }
 
-	/**
-	 * Retrieves the timestamp for a record
-	 * @param record the record
-	 * @return the timestamp
-	 */
-	@CheckForNull
-	public TimeInstant getTimeForRecord(@Nonnull final String record) {
-		return _historyMap.get(record);
-	}
+    /**
+     * Retrieves the timestamp for a record
+     * @param record the record
+     * @return the timestamp
+     */
+    @CheckForNull
+    public TimeInstant getTimeForRecord(@Nonnull final String record) {
+        return _historyMap.get(record);
+    }
 
-	/**
-	 * Delegator if set contains the ioc entry
-	 * @param iocName the ioc
-	 * @return true if the set contains an entry for this ioc
-	 */
-	public boolean contains(@Nonnull final String iocName) {
-		return _historyMap.containsKey(iocName);
-	}
+    /**
+     * Delegator if set contains the ioc entry
+     * @param iocName the ioc
+     * @return true if the set contains an entry for this ioc
+     */
+    public boolean contains(@Nonnull final String iocName) {
+        return _historyMap.containsKey(iocName);
+    }
 
-	/**
-	 * Yields a copy of the set of all contained ioc names.
-	 * @return the copied set of ioc names
-	 */
-	@Nonnull
-	public Set<String> getIOCNameKeys() {
-		return new HashSet<String>(_historyMap.keySet());
-	}
+    /**
+     * Yields a copy of the set of all contained ioc names.
+     * @return the copied set of ioc names
+     */
+    @Nonnull
+    public Set<String> getIOCNameKeys() {
+        return new HashSet<String>(_historyMap.keySet());
+    }
 }
