@@ -59,7 +59,6 @@ import org.slf4j.LoggerFactory;
 public class ChannelDBO extends AbstractNodeDBO<ChannelStructureDBO, VirtualLeaf> {
     
     private static final Logger LOG = LoggerFactory.getLogger(ChannelDBO.class);
-    
     private static final long serialVersionUID = 1L;
     
     private int _channelNumber;
@@ -231,12 +230,11 @@ public class ChannelDBO extends AbstractNodeDBO<ChannelStructureDBO, VirtualLeaf
         if (name == null) {
             name = " ";
         }
-        final ChannelDBO copy =
-            new ChannelDBO(channelStructure,
-                           name,
-                           isInput(),
-                           isDigital(),
-                           getSortIndex());
+        final ChannelDBO copy = new ChannelDBO(channelStructure,
+                                               name,
+                                               isInput(),
+                                               isDigital(),
+                                               getSortIndex());
         copy.setChannelType(getChannelType());
         String currentValue = getCurrentValue();
         if (currentValue == null) {
@@ -433,11 +431,7 @@ public class ChannelDBO extends AbstractNodeDBO<ChannelStructureDBO, VirtualLeaf
     
     @Transient
     public int getStruct() {
-        int index = 0;
-        if (isDigital()) {
-            index = getSortIndex();
-        }
-        return index;
+        return isDigital()?getSortIndex():0;
     }
     
     @Override

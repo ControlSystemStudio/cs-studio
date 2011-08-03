@@ -19,7 +19,7 @@
  * PROJECT IN THE FILE LICENSE.HTML. IF THE LICENSE IS NOT INCLUDED YOU MAY FIND A COPY
  * AT HTTP://WWW.DESY.DE/LEGAL/LICENSE.HTM
  */
-package org.csstudio.config.ioconfig.model;
+package org.csstudio.config.ioconfig.model.hibernate;
 
 import static org.csstudio.config.ioconfig.model.preference.PreferenceConstants.DDB_PASSWORD;
 import static org.csstudio.config.ioconfig.model.preference.PreferenceConstants.DDB_TIMEOUT;
@@ -31,6 +31,7 @@ import static org.csstudio.config.ioconfig.model.preference.PreferenceConstants.
 
 import javax.annotation.Nonnull;
 
+import org.csstudio.config.ioconfig.model.IOConfigActivator;
 import org.csstudio.config.ioconfig.model.preference.PreferenceConstants;
 import org.eclipse.core.runtime.Platform;
 import org.eclipse.core.runtime.preferences.IEclipsePreferences.IPreferenceChangeListener;

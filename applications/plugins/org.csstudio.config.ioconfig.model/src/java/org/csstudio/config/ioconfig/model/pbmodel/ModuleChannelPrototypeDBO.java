@@ -35,7 +35,7 @@ import javax.persistence.Transient;
 
 import org.csstudio.config.ioconfig.model.DBClass;
 import org.csstudio.config.ioconfig.model.PersistenceException;
-import org.csstudio.config.ioconfig.model.Repository;
+import org.csstudio.config.ioconfig.model.hibernate.Repository;
 
 /**
  * @author hrickens

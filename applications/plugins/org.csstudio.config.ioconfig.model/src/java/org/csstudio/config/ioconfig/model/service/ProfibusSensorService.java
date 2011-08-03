@@ -30,8 +30,8 @@ import java.util.List;
 import javax.annotation.Nonnull;
 
 import org.csstudio.config.ioconfig.model.PersistenceException;
-import org.csstudio.config.ioconfig.model.Repository;
 import org.csstudio.config.ioconfig.model.SensorsDBO;
+import org.csstudio.config.ioconfig.model.hibernate.Repository;
 import org.csstudio.dct.ISensorIdService;
 
 /**

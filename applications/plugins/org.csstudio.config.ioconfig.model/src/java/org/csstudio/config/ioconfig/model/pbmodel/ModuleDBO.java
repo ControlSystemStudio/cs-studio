@@ -19,9 +19,6 @@
  * PROJECT IN THE FILE LICENSE.HTML. IF THE LICENSE IS NOT INCLUDED YOU MAY FIND A COPY
  * AT HTTP://WWW.DESY.DE/LEGAL/LICENSE.HTM
  */
-/*
- * $Id: Module.java,v 1.5 2010/08/20 13:33:08 hrickens Exp $
- */
 package org.csstudio.config.ioconfig.model.pbmodel;
 
 import java.io.IOException;
@@ -56,7 +53,6 @@ import org.hibernate.annotations.BatchSize;
  * @version $Revision: 1.5 $
  * @since 22.03.2007
  */
-
 @Entity
 @BatchSize(size = 32)
 @Table(name = "ddb_Profibus_Module")
@@ -65,18 +61,12 @@ INodeWithPrototype {
     
     private static final long serialVersionUID = 1L;
     
-    private int _moduleNumber = -1;
-    
-    private List<Integer> _configurationData = new ArrayList<Integer>();
-    
     private int _inputSize;
-    
     private int _outputSize;
-    
     private int _inputOffset;
-    
     private int _outputOffset;
-    
+    private int _moduleNumber = -1;
+    private List<Integer> _configurationData = new ArrayList<Integer>();
     @Transient
     private String _extModulePrmDataLen;
     
@@ -124,12 +114,10 @@ INodeWithPrototype {
         String extModulePrmDataLen = getExtModulePrmDataLen();
         extModulePrmDataLen = extModulePrmDataLen == null?"":extModulePrmDataLen;
         copy.setExtModulePrmDataLen(extModulePrmDataLen);
-        
         for (final ChannelStructureDBO node : getChildrenAsMap().values()) {
             final ChannelStructureDBO childrenCopy = node.copyThisTo(copy);
             childrenCopy.setSortIndexNonHibernate(node.getSortIndex());
         }
-        
         return copy;
     }
     
@@ -141,14 +129,6 @@ INodeWithPrototype {
         return copy;
     }
     
-    /**
-     * @param selectedModuleNo
-     * @param hasChanged
-     * @param module
-     * @param gsdModule
-     * @param topGroup
-     * @throws PersistenceException
-     */
     private void createChannels(final int selectedModuleNo,
                                 @Nonnull final ModuleDBO module,
                                 @Nonnull final GSDModuleDBO gsdModule, @Nonnull final String createdBy) throws PersistenceException {
@@ -161,8 +141,7 @@ INodeWithPrototype {
             }
         }
         // Generate Input Channel
-        final TreeSet<ModuleChannelPrototypeDBO> moduleChannelPrototypes = gsdModule
-        .getModuleChannelPrototypeNH();
+        final TreeSet<ModuleChannelPrototypeDBO> moduleChannelPrototypes = gsdModule.getModuleChannelPrototypeNH();
         if(moduleChannelPrototypes != null) {
             final ModuleChannelPrototypeDBO[] array = moduleChannelPrototypes
             .toArray(new ModuleChannelPrototypeDBO[0]);
@@ -226,10 +205,8 @@ INodeWithPrototype {
     public String getExtUserPrmDataConst() {
         if(getConfigurationData() == null) {
             List<Integer> extUserPrmDataConst;
-            String defaultUserPrmDataConst;
             extUserPrmDataConst = getGsdModuleModel2().getExtUserPrmDataConst();
-            defaultUserPrmDataConst = GsdFileParser.intList2HexString(extUserPrmDataConst);
-            return defaultUserPrmDataConst;
+            return GsdFileParser.intList2HexString(extUserPrmDataConst);
         }
         return getConfigurationData();
     }
@@ -243,23 +220,15 @@ INodeWithPrototype {
     @Transient
     @CheckForNull
     public GSDModuleDBO getGSDModule() {
-        GSDModuleDBO gsdModule = null;
         final GSDFileDBO gsdFile = getGSDFile();
-        if(gsdFile != null) {
-            gsdModule = gsdFile.getGSDModule(getModuleNumber());
-        }
-        return gsdModule;
+        return gsdFile == null?null:gsdFile.getGSDModule(getModuleNumber());
     }
     
     @Transient
     @CheckForNull
     public GsdModuleModel2 getGsdModuleModel2() {
-        GsdModuleModel2 module = null;
         final GSDFileDBO gsdFile = getParent().getGSDFile();
-        if(gsdFile != null) {
-            module = gsdFile.getParsedGsdFileModel().getModule(getModuleNumber());
-        }
-        return module;
+        return gsdFile == null?null:gsdFile.getParsedGsdFileModel().getModule(getModuleNumber());
     }
     
     public int getInputOffset() {
@@ -268,20 +237,8 @@ INodeWithPrototype {
     
     @Transient
     public int getInputOffsetNH() throws PersistenceException {
-        if(getSlave() != null) {
-            ModuleDBO module = null;
-            int sub = 1;
-            while ( module == null && getSortIndex() - sub >= 0) {
-                module = getSlave().getChildrenAsMap()
-                .get((short) (getSortIndex() - sub));
-                sub++;
-            }
-            if(module != null) {
-                final int inputOffset = module.getInputOffsetNH() + module.getInputSize();
-                return inputOffset;
-            }
-        }
-        return 0;
+        final ModuleDBO module = getModuleBefore();
+        return module == null?0:module.getInputOffsetNH() + module.getInputSize();
     }
     
     public int getInputSize() {
@@ -327,22 +284,24 @@ INodeWithPrototype {
     
     @Transient
     public int getOutputOffsetNH() throws PersistenceException {
-        if(getSlave() != null) {
-            ModuleDBO module = null;
+        final ModuleDBO module = getModuleBefore();
+        return module == null?0:module.getOutputOffsetNH() + module.getOutputSize();
+    }
+
+    @Transient
+    @CheckForNull
+    private ModuleDBO getModuleBefore() throws PersistenceException {
+        ModuleDBO module = null;
+        if (getSlave() != null) {
             int sub = 1;
-            while ( module == null && getSortIndex() - sub >= 0) {
-                module = getSlave().getChildrenAsMap()
-                .get((short) (getSortIndex() - sub));
+            while (module == null && getSortIndex() - sub >= 0) {
+                module = getSlave().getChildrenAsMap().get((short) (getSortIndex() - sub));
                 sub++;
             }
-            if(module != null) {
-                final int outputOffset = module.getOutputOffsetNH() + module.getOutputSize();
-                return outputOffset;
-            }
         }
-        return 0;
+        return module;
     }
-    
+
     public int getOutputSize() {
         return _outputSize;
     }
@@ -430,10 +389,7 @@ INodeWithPrototype {
         cs.moveSortIndex(sortIndex);
         final ChannelDBO channel = cs.getFirstChannel();
         if (channel != null) {
-            channel.setCreatedOn(now);
-            channel.setUpdatedOn(now);
-            channel.setCreatedBy(createdBy);
-            channel.setUpdatedBy(createdBy);
+            channel.setCreationData(createdBy, now);
             channel.setChannelTypeNonHibernate(channelPrototype.getType());
             channel.setStatusAddressOffset(channelPrototype.getShift());
             channel.moveSortIndex(sortIndex);
@@ -445,10 +401,7 @@ INodeWithPrototype {
         channelPrototype.getOffset();
         final Date now = new Date();
         final ChannelStructureDBO channelStructure = ChannelStructureDBO.makeChannelStructure(this,channelPrototype);
-        channelStructure.setCreatedOn(now);
-        channelStructure.setUpdatedOn(now);
-        channelStructure.setCreatedBy(createdBy);
-        channelStructure.setUpdatedBy(createdBy);
+        channelStructure.setCreationData(createdBy, now);
         channelStructure.moveSortIndex(sortIndex);
         channelPrototype.save();
     }
@@ -499,9 +452,7 @@ INodeWithPrototype {
         removeAllChild();
         setModuleNumber(newModuleNumber);
         final GSDModuleDBO gsdModule = getGSDModule();
-        
-        // Unknown Module (--> Config the Epics Part)
-        if(gsdModule == null) {
+        if(gsdModule == null) { // Unknown Module (--> Config the Epics Part)
             throw new IllegalArgumentException("Module has no GSD Module");
         }
         createChannels(newModuleNumber, this, gsdModule, createdBy);
@@ -529,12 +480,9 @@ INodeWithPrototype {
         if(getSortIndex() != null) {
             sb.append(getSortIndex());
         }
-        sb.append('[');
-        sb.append(getModuleNumber());
-        sb.append(']');
+        sb.append('[').append(getModuleNumber()).append(']');
         if(getName() != null) {
-            sb.append(':');
-            sb.append(getName());
+            sb.append(':').append(getName());
         }
         return sb.toString();
     }

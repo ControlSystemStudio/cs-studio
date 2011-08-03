@@ -1,4 +1,4 @@
-package org.csstudio.config.ioconfig.model;
+package org.csstudio.config.ioconfig.model.hibernate;
 
 import java.io.Serializable;
 import java.math.BigDecimal;
@@ -12,6 +12,11 @@ import javax.annotation.CheckForNull;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
+import org.csstudio.config.ioconfig.model.DBClass;
+import org.csstudio.config.ioconfig.model.DocumentDBO;
+import org.csstudio.config.ioconfig.model.PV2IONameMatcherModelDBO;
+import org.csstudio.config.ioconfig.model.PersistenceException;
+import org.csstudio.config.ioconfig.model.SensorsDBO;
 import org.csstudio.config.ioconfig.model.pbmodel.ChannelDBO;
 import org.csstudio.config.ioconfig.model.pbmodel.GSDFileDBO;
 import org.csstudio.config.ioconfig.model.pbmodel.GSDModuleDBO;
@@ -102,8 +107,7 @@ public class HibernateRepository implements IRepository {
      * Get the Epics Address string to an IO Name. It the name not found return the string '$$$
      * IO-Name NOT found! $$$'.
      *
-     * @param ioName
-     *            the IO-Name.
+     * @param ioName the IO-Name.
      * @return the Epics Adress for the given IO-Name.
      * @throws PersistenceException
      */
@@ -214,17 +218,11 @@ public class HibernateRepository implements IRepository {
                     return "";
                 }
                 final String[] split = string.split("[\r\n]");
-                if (split[0].length() > 40) {
-                    return split[0].substring(0, 40);
-                }
-                return split[0];
+                return split[0].length() > 40?split[0].substring(0, 40) : split[0];
             }
         };
-        String doInDevDBHibernateEager = _instance.doInDevDBHibernateEager(hibernateCallback);
-        if(doInDevDBHibernateEager == null) {
-            doInDevDBHibernateEager="";
-        }
-        return doInDevDBHibernateEager;
+        final String doInDevDBHibernateEager = _instance.doInDevDBHibernateEager(hibernateCallback);
+        return doInDevDBHibernateEager == null?"":doInDevDBHibernateEager;
     }
     
     /**
@@ -249,11 +247,7 @@ public class HibernateRepository implements IRepository {
             public List<T> execute(@Nonnull final Session session) {
                 final Query query = session.createQuery("from " + clazz.getName());
                 final List<T> nodes = query.list();
-                
-                if (nodes.isEmpty()) {
-                    return null;
-                }
-                return nodes;
+                return nodes.isEmpty()?null:nodes;
             }
         };
         return _instance.doInDevDBHibernateLazy(hibernateCallback);
@@ -275,11 +269,7 @@ public class HibernateRepository implements IRepository {
                 .createQuery("select c from " + clazz.getName() + " c where c.id = :id")
                 .setString("id", id.toString()).list();
                 
-                if (nodes.isEmpty()) {
-                    return null;
-                }
-                
-                return nodes.get(0);
+                return nodes.isEmpty()?null:nodes.get(0);
             }
         };
         return _instance.doInDevDBHibernateLazy(hibernateCallback);
@@ -321,12 +311,9 @@ public class HibernateRepository implements IRepository {
                 final Query query = session.createQuery("from " + DocumentDBO.class.getName()
                                                         + " where length(image) > 0");
                 final List<DocumentDBO> nodes = query.list();
-                if (nodes.isEmpty()) {
-                    return null;
-                }
-                return nodes;
+                
+                return nodes.isEmpty()?null:nodes;
             }
-            
         });
     }
     
@@ -374,10 +361,7 @@ public class HibernateRepository implements IRepository {
                 + " where c.currentValue like s.id" + " and c.ioName like '" + ioName + "'";
                 final Query query = session.createQuery(statment);
                 final List<SensorsDBO> sensors = query.list();
-                if (sensors == null || sensors.size() < 1) {
-                    return null;
-                }
-                return sensors.get(0);
+                return (sensors == null || sensors.size() < 1)?null:sensors.get(0);
             }
         };
         return _instance.doInDevDBHibernateEager(hibernateCallback);
@@ -399,11 +383,8 @@ public class HibernateRepository implements IRepository {
                 return sensors;
             }
         };
-        List<SensorsDBO> doInDevDBHibernateEager = _instance.doInDevDBHibernateEager(hibernateCallback);
-        if(doInDevDBHibernateEager==null) {
-            doInDevDBHibernateEager = new ArrayList<SensorsDBO>();
-        }
-        return doInDevDBHibernateEager;
+        final List<SensorsDBO> doInDevDBHibernateEager = _instance.doInDevDBHibernateEager(hibernateCallback);
+        return doInDevDBHibernateEager==null?new ArrayList<SensorsDBO>():doInDevDBHibernateEager;
     }
     
     /**
@@ -578,7 +559,6 @@ public class HibernateRepository implements IRepository {
     
     /**
      * {@inheritDoc}
-     * @throws PersistenceException
      */
     @Override
     @Nonnull

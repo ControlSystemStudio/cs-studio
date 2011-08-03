@@ -33,7 +33,7 @@ import javax.annotation.Nonnull;
 import org.csstudio.config.ioconfig.model.INode;
 import org.csstudio.config.ioconfig.model.PV2IONameMatcherModelDBO;
 import org.csstudio.config.ioconfig.model.PersistenceException;
-import org.csstudio.config.ioconfig.model.Repository;
+import org.csstudio.config.ioconfig.model.hibernate.Repository;
 import org.csstudio.config.ioconfig.model.pbmodel.ChannelDBO;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

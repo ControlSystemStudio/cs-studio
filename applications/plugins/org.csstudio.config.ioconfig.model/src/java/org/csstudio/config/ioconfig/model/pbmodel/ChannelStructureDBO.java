@@ -203,7 +203,6 @@ public class ChannelStructureDBO extends AbstractNodeDBO<ModuleDBO, ChannelDBO> 
         if(name==null){
             name="";
         }
-        
         final ChannelStructureDBO copy = new ChannelStructureDBO(module,
                                                                  isSimple(),
                                                                  true,
@@ -249,21 +248,14 @@ public class ChannelStructureDBO extends AbstractNodeDBO<ModuleDBO, ChannelDBO> 
     
     @Override
     public int getfirstFreeStationAddress(final int maxStationAddress) throws PersistenceException {
-        if (isSimple()) {
-            return getSortIndex();
-        }
-        return super.getfirstFreeStationAddress(maxStationAddress);
+        return isSimple()?getSortIndex():super.getfirstFreeStationAddress(maxStationAddress);
     }
     
     @Transient
     @CheckForNull
     public ChannelDBO getLastChannel() throws PersistenceException {
         final TreeMap<Short, ChannelDBO> treeMap = (TreeMap<Short, ChannelDBO>) getChildrenAsMap();
-        if (treeMap.size() > 0) {
-            final Short lastKey = treeMap.lastKey();
-            return treeMap.get(lastKey);
-        }
-        return null;
+        return treeMap.isEmpty()?null:treeMap.get(treeMap.lastKey());
     }
     
     /**

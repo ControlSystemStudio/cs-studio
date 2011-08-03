@@ -19,9 +19,6 @@
  * PROJECT IN THE FILE LICENSE.HTML. IF THE LICENSE IS NOT INCLUDED YOU MAY FIND A COPY
  * AT HTTP://WWW.DESY.DE/LEGAL/LICENSE.HTM
  */
-/*
- * $Id: Slave.java,v 1.7 2010/09/03 07:13:20 hrickens Exp $
- */
 package org.csstudio.config.ioconfig.model.pbmodel;
 
 import java.util.ArrayList;
@@ -64,13 +61,7 @@ public class SlaveDBO extends AbstractNodeDBO<MasterDBO, ModuleDBO> {
     private static final Logger LOG = LoggerFactory.getLogger(SlaveDBO.class);
     
     private static final long serialVersionUID = 1L;
-    /**
-     * Vendor name of slave.
-     */
     private String _vendorName;
-    /**
-     * Model name of slave.
-     */
     private String _modelName;
     /**
      * Revision of GSD-file.
@@ -80,56 +71,33 @@ public class SlaveDBO extends AbstractNodeDBO<MasterDBO, ModuleDBO> {
      * Profibus ident given by Profibus Nutzerorganisation.
      */
     private int _profibusPNoID;
-    
     /**
      * Station address.
      */
     private short _fdlAddress;
-    
     /**
      * Slave flag.
      */
     private short _slaveFlag;
-    /**
-     * Slave Type.
-     */
     private short _slaveType;
-    /**
-     * Station Status.
-     */
     private short _stationStatus;
-    /**
-     * Watchdog factor 1.
-     */
     private short _wdFact1;
-    /**
-     * Watchdog factor 2.
-     */
     private short _wdFact2;
     /**
      * Min. station delay time.
      */
     private short _minTsdr;
-    /**
-     * Group ident.
-     */
     private short _groupIdent;
     /**
      * Parameter user data.
      */
     private List<Integer> _prmUserDataList = new ArrayList<Integer>();
-    
-    /**
-     * The GSD file for this Slave.
-     */
     private GSDFileDBO _gsdFile;
-    
     /**
      * Date from GSD File. The max size of module slots.
      */
     @Transient
     private short _maxSize = 1;
-    
     /**
      * Date from GSD File. The slot index number.
      */
@@ -378,12 +346,10 @@ public class SlaveDBO extends AbstractNodeDBO<MasterDBO, ModuleDBO> {
     @Override
     public void moveSortIndex(final int toIndex) throws PersistenceException {
         final short index = (short) toIndex;
-        if(index == getSortIndex()) {
-            // no new Address don't move
-            return;
+        if(index == getSortIndex()) { // no new Address don't move
+            return;  
         }
-        if(getParent() == null) {
-            // Have no Parent
+        if(getParent() == null) { // Have no Parent
             setSortIndexNonHibernate(index);
             LOG.warn("Slave has no Parent!");
             return;
@@ -470,7 +436,6 @@ public class SlaveDBO extends AbstractNodeDBO<MasterDBO, ModuleDBO> {
     }
     
     public void setPrmUserData(@Nonnull final String prmUserData) {
-        // System.out.println("prmUserData in:  " + prmUserData);
         if(prmUserData != null) {
             final String[] split = prmUserData.split(",");
             _prmUserDataList = new ArrayList<Integer>();
@@ -480,10 +445,6 @@ public class SlaveDBO extends AbstractNodeDBO<MasterDBO, ModuleDBO> {
         }
     }
     
-    /**
-     * @param index
-     * @param newValue
-     */
     @Transient
     public void setPrmUserDataByte(final int index, @Nonnull final Integer newValue) {
         _prmUserDataList.set(index, newValue);
@@ -517,9 +478,7 @@ public class SlaveDBO extends AbstractNodeDBO<MasterDBO, ModuleDBO> {
     }
     
     /**
-     *
-     * @param vendorName
-     *            Set the Vendor name of this slave.
+     * @param vendorName Set the Vendor name of this slave.
      */
     public void setVendorName(@Nonnull final String vendorName) {
         _vendorName = vendorName;

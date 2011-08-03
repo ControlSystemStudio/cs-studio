@@ -21,7 +21,7 @@
  *
  * $Id: DesyKrykCodeTemplates.xml,v 1.7 2010/04/20 11:43:22 bknerr Exp $
  */
-package org.csstudio.config.ioconfig.model;
+package org.csstudio.config.ioconfig.model.hibernate;
 
 import java.util.HashSet;
 import java.util.Observable;
@@ -30,6 +30,16 @@ import java.util.Set;
 import javax.annotation.CheckForNull;
 import javax.annotation.Nonnull;
 
+import org.csstudio.config.ioconfig.model.AbstractNodeDBO;
+import org.csstudio.config.ioconfig.model.DocumentDBO;
+import org.csstudio.config.ioconfig.model.FacilityDBO;
+import org.csstudio.config.ioconfig.model.IocDBO;
+import org.csstudio.config.ioconfig.model.NodeImageDBO;
+import org.csstudio.config.ioconfig.model.PV2IONameMatcherModelDBO;
+import org.csstudio.config.ioconfig.model.PersistenceException;
+import org.csstudio.config.ioconfig.model.SearchNodeDBO;
+import org.csstudio.config.ioconfig.model.SensorsDBO;
+import org.csstudio.config.ioconfig.model.VirtualRoot;
 import org.csstudio.config.ioconfig.model.pbmodel.ChannelDBO;
 import org.csstudio.config.ioconfig.model.pbmodel.ChannelStructureDBO;
 import org.csstudio.config.ioconfig.model.pbmodel.GSDFileDBO;

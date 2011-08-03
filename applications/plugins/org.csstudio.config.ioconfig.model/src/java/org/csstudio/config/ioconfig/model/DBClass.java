@@ -31,6 +31,8 @@ import javax.persistence.MappedSuperclass;
 import javax.persistence.SequenceGenerator;
 import javax.persistence.Transient;
 
+import org.csstudio.config.ioconfig.model.hibernate.Repository;
+
 /**
  * @author hrickens
  * @author $Author: hrickens $
@@ -145,6 +147,15 @@ public class DBClass {
      */
     public void setUpdatedOn(@Nonnull final Date updatedOn) {
         this._updatedOn = updatedOn;
+    }
+    
+    
+    @Transient
+    public void setCreationData(@Nonnull final String creater, @Nonnull final Date creationDate){
+        setCreatedBy(creater);
+        setUpdatedBy(creater);
+        setCreatedOn(creationDate);
+        setUpdatedOn(creationDate);
     }
     
     /**

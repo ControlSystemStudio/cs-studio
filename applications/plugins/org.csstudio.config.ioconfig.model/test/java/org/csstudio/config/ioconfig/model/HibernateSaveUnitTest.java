@@ -31,6 +31,9 @@ import java.util.Set;
 
 import javax.annotation.Nonnull;
 
+import org.csstudio.config.ioconfig.model.hibernate.HibernateRepository;
+import org.csstudio.config.ioconfig.model.hibernate.HibernateTestManager;
+import org.csstudio.config.ioconfig.model.hibernate.Repository;
 import org.csstudio.config.ioconfig.model.pbmodel.GSDFileDBO;
 import org.csstudio.config.ioconfig.model.pbmodel.MasterDBO;
 import org.csstudio.config.ioconfig.model.pbmodel.ModuleDBO;

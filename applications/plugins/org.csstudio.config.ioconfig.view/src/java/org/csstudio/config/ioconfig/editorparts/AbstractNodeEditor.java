@@ -28,8 +28,6 @@ import javax.annotation.CheckForNull;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
-import org.csstudio.auth.security.SecurityFacade;
-import org.csstudio.auth.security.User;
 import org.csstudio.config.ioconfig.config.view.INodeConfig;
 import org.csstudio.config.ioconfig.config.view.helper.ConfigHelper;
 import org.csstudio.config.ioconfig.config.view.helper.DocumentationManageView;
@@ -41,6 +39,7 @@ import org.csstudio.config.ioconfig.model.PersistenceException;
 import org.csstudio.config.ioconfig.model.pbmodel.GSDFileDBO;
 import org.csstudio.config.ioconfig.model.pbmodel.MasterDBO;
 import org.csstudio.config.ioconfig.model.pbmodel.SlaveDBO;
+import org.csstudio.config.ioconfig.model.tools.UserName;
 import org.csstudio.config.ioconfig.view.DeviceDatabaseErrorDialog;
 import org.csstudio.config.ioconfig.view.MainView;
 import org.csstudio.config.ioconfig.view.ProfiBusTreeView;
@@ -623,16 +622,7 @@ public abstract class AbstractNodeEditor<T extends AbstractNodeDBO<?,?>> extends
      */
     @Nonnull
     public static String getUserName() {
-        String name = "Unknown";
-        try {
-            final User user = SecurityFacade.getInstance().getCurrentUser();
-            if (user != null) {
-                name = user.getUsername();
-            }
-        } catch (Exception e) {
-            name = "Unknown";
-        }
-        return name;
+        return UserName.getUserName();
     }
     
     /**
@@ -742,9 +732,8 @@ public abstract class AbstractNodeEditor<T extends AbstractNodeDBO<?,?>> extends
         try {
             if (id.open() == Window.OK) {
                 getNode().setName(id.getValue());
-                String name = getUserName();
-                getNode().setCreatedBy(name);
-                getNode().setCreatedOn(new Date());
+                final String name = getUserName();
+                getNode().setCreationData(name, new Date());
                 getNode().setVersion(-2);
                 id.close();
                 
@@ -898,13 +887,7 @@ public abstract class AbstractNodeEditor<T extends AbstractNodeDBO<?,?>> extends
         /** The description field with the name of the User that make changes. */
         String temp = "";
         if (isNew()) {
-            final SecurityFacade securityFacade = SecurityFacade.getInstance();
-            if (securityFacade != null && securityFacade.getCurrentUser() != null
-                    && securityFacade.getCurrentUser().getUsername() != null) {
-                temp = securityFacade.getCurrentUser().getUsername();
-                node.setCreatedBy(temp);
-                
-            }
+            node.setCreatedBy(getUserName());
         } else if (node != null && node.getCreatedBy() != null) {
             temp = node.getCreatedBy();
         }

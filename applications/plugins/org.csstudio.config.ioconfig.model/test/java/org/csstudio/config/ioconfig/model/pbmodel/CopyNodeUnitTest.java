@@ -5,11 +5,13 @@ import static org.junit.Assert.assertEquals;
 import java.util.Iterator;
 import java.util.Set;
 
+import javax.annotation.Nonnull;
+
 import org.csstudio.config.ioconfig.model.DummyRepository;
 import org.csstudio.config.ioconfig.model.IocDBO;
 import org.csstudio.config.ioconfig.model.NamedDBClass;
 import org.csstudio.config.ioconfig.model.PersistenceException;
-import org.csstudio.config.ioconfig.model.Repository;
+import org.csstudio.config.ioconfig.model.hibernate.Repository;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
@@ -20,7 +22,6 @@ import org.junit.Test;
  * @version $Revision: 1.7 $
  * @since 12.05.2011
  */
-//CHECKSTYLE:OFF
 public class CopyNodeUnitTest {
     
     private static final boolean OUTPUT = false;
@@ -71,11 +72,7 @@ public class CopyNodeUnitTest {
         // - Test Slave
         assertEquals(2, _slave.getChildren().size());
         
-        // - Test Module
-        final ModuleDBO copyModule = (ModuleDBO) node;
-        assertEquals(_slave, copyModule.getParent());
-        assertEquals("Module", copyModule.getName());
-        assertEquals(0, copyModule.getId());
+        final ModuleDBO copyModule = testModule(node);
         
         // -- Test Children
         assertEquals(module.getChildren().size(), copyModule.getChildren().size());
@@ -90,21 +87,16 @@ public class CopyNodeUnitTest {
         assertEquals(pureChannels.size(), copyPureChannels.size());
         final Iterator<ChannelDBO> iterator = pureChannels.iterator();
         final Iterator<ChannelDBO> copyIterator = copyPureChannels.iterator();
-        while(iterator.hasNext()&&copyIterator.hasNext()) {
-            final ChannelDBO channel = iterator.next();
-            final ChannelDBO copy = copyIterator.next();
-            assertEquals(channel, copy);
-            assertEquals(channel.isDigital(), copy.isDigital());
-            assertEquals(channel.isInput(), copy.isInput());
-            assertEquals(channel.getChannelNumber(), copy.getChannelNumber());
-            assertEquals(channel.getChannelStructure(), copy.getChannelStructure());
-            assertEquals(channel.getChannelType(), copy.getChannelType());
-            assertEquals(channel.getChSize(), copy.getChSize());
-            assertEquals(channel, copy);
-            assertEquals(channel, copy);
-        }
-        // -- Test PCO Children
+        testPureChannels(iterator, copyIterator);
+        testStructureChannels(module, copyModule, iterator, copyIterator);
         
+        // Paste the Module to are other Slave
+    }
+
+    private void testStructureChannels(@Nonnull final ModuleDBO module,
+                                       @Nonnull final ModuleDBO copyModule,
+                                       @Nonnull final Iterator<ChannelDBO> iterator,
+                                       @Nonnull final Iterator<ChannelDBO> copyIterator) {
         final Set<ChannelStructureDBO> channelStructs = module.getChildren();
         final Set<ChannelStructureDBO> copyChannelStructs = copyModule.getChildren();
         assertEquals(channelStructs.isEmpty(), copyChannelStructs.isEmpty());
@@ -130,9 +122,33 @@ public class CopyNodeUnitTest {
             assertEquals(channel.getStruct(), copy.getStruct());
             assertEquals(channel.getVersion(), copy.getVersion());
         }
-        
-        // Paste the Module to are other Slave
+    }
+
+    private void testPureChannels(@Nonnull final Iterator<ChannelDBO> iterator,
+                                  @Nonnull final Iterator<ChannelDBO> copyIterator) {
+        while(iterator.hasNext()&&copyIterator.hasNext()) {
+            final ChannelDBO channel = iterator.next();
+            final ChannelDBO copy = copyIterator.next();
+            assertEquals(channel, copy);
+            assertEquals(channel.isDigital(), copy.isDigital());
+            assertEquals(channel.isInput(), copy.isInput());
+            assertEquals(channel.getChannelNumber(), copy.getChannelNumber());
+            assertEquals(channel.getChannelStructure(), copy.getChannelStructure());
+            assertEquals(channel.getChannelType(), copy.getChannelType());
+            assertEquals(channel.getChSize(), copy.getChSize());
+            assertEquals(channel, copy);
+            assertEquals(channel, copy);
+        }
+    }
+
+    @Nonnull 
+    private ModuleDBO testModule(@Nonnull final NamedDBClass node) {
+        // - Test Module
+        final ModuleDBO copyModule = (ModuleDBO) node;
+        assertEquals(_slave, copyModule.getParent());
+        assertEquals("Module", copyModule.getName());
+        assertEquals(0, copyModule.getId());
+        return copyModule;
     }
     
 }
-//CHECKSTYLE:ON

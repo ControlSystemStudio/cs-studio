@@ -38,7 +38,7 @@ import org.csstudio.config.ioconfig.editorparts.AbstractNodeEditor;
 import org.csstudio.config.ioconfig.model.DBClass;
 import org.csstudio.config.ioconfig.model.IDocumentable;
 import org.csstudio.config.ioconfig.model.PersistenceException;
-import org.csstudio.config.ioconfig.model.Repository;
+import org.csstudio.config.ioconfig.model.hibernate.Repository;
 import org.csstudio.config.ioconfig.model.pbmodel.DataType;
 import org.csstudio.config.ioconfig.model.pbmodel.GSDModuleDBO;
 import org.csstudio.config.ioconfig.model.pbmodel.ModuleChannelPrototypeDBO;
@@ -718,13 +718,10 @@ public class ChannelConfigDialog extends Dialog implements IHasDocumentableObjec
             } else {
                 type = DataType.UINT8;
             }
-            ModuleChannelPrototypeDBO moduleChannelPrototype = new ModuleChannelPrototypeDBO();
-            String user = AbstractNodeEditor.getUserName();
-            moduleChannelPrototype.setCreatedBy(user);
-            moduleChannelPrototype.setUpdatedBy(user);
-            Date date = new Date();
-            moduleChannelPrototype.setCreatedOn(date);
-            moduleChannelPrototype.setUpdatedOn(date);
+            final ModuleChannelPrototypeDBO moduleChannelPrototype = new ModuleChannelPrototypeDBO();
+            final String user = AbstractNodeEditor.getUserName();
+            final Date date = new Date();
+            moduleChannelPrototype.setCreationData(user, date);
             moduleChannelPrototype.setName(""); //$NON-NLS-1$
             
             moduleChannelPrototype.setGSDModule(_gsdMod);

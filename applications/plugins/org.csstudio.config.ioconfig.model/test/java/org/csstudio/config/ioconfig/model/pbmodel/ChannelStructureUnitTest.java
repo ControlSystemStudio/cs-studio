@@ -8,7 +8,7 @@ import static org.junit.Assert.assertTrue;
 import org.csstudio.config.ioconfig.model.DummyRepository;
 import org.csstudio.config.ioconfig.model.IocDBO;
 import org.csstudio.config.ioconfig.model.PersistenceException;
-import org.csstudio.config.ioconfig.model.Repository;
+import org.csstudio.config.ioconfig.model.hibernate.Repository;
 import org.junit.Before;
 import org.junit.Ignore;
 import org.junit.Test;

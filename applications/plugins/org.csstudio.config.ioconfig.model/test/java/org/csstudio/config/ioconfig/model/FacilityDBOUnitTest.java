@@ -11,6 +11,7 @@ import java.util.Set;
 
 import javax.annotation.Nonnull;
 
+import org.csstudio.config.ioconfig.model.hibernate.Repository;
 import org.junit.BeforeClass;
 import org.junit.Test;
 

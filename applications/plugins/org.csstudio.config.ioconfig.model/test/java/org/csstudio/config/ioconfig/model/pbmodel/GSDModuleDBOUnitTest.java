@@ -23,10 +23,10 @@
  */
 package org.csstudio.config.ioconfig.model.pbmodel;
 
-import org.csstudio.config.ioconfig.model.HibernateRepository;
-import org.csstudio.config.ioconfig.model.HibernateTestManager;
 import org.csstudio.config.ioconfig.model.PersistenceException;
-import org.csstudio.config.ioconfig.model.Repository;
+import org.csstudio.config.ioconfig.model.hibernate.HibernateRepository;
+import org.csstudio.config.ioconfig.model.hibernate.HibernateTestManager;
+import org.csstudio.config.ioconfig.model.hibernate.Repository;
 import org.junit.After;
 import org.junit.AfterClass;
 import org.junit.Assert;

@@ -24,7 +24,7 @@
  */
 package org.csstudio.config.ioconfig.view;
 
-import org.csstudio.config.ioconfig.model.HibernateTestManager;
+import org.csstudio.config.ioconfig.model.hibernate.HibernateTestManager;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;

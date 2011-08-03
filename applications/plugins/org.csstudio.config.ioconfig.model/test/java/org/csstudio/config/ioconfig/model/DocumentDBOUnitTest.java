@@ -5,6 +5,9 @@ import static org.junit.Assert.assertTrue;
 
 import java.util.Collection;
 
+import org.csstudio.config.ioconfig.model.hibernate.HibernateRepository;
+import org.csstudio.config.ioconfig.model.hibernate.HibernateTestManager;
+import org.csstudio.config.ioconfig.model.hibernate.Repository;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.Test;
