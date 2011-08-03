@@ -31,6 +31,11 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
+import javax.annotation.Nonnull;
+
+import org.csstudio.config.ioconfig.model.hibernate.HibernateRepository;
+import org.csstudio.config.ioconfig.model.hibernate.HibernateTestManager;
+import org.csstudio.config.ioconfig.model.hibernate.Repository;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.Test;
@@ -80,7 +85,7 @@ public class HibernateLoadUnitTest {
     }
 
     @SuppressWarnings({ "rawtypes", "unchecked" })
-    private void testChildrens(final Set<AbstractNodeDBO> nodes) {
+    private void testChildrens(@Nonnull final Set<AbstractNodeDBO> nodes) {
         for (AbstractNodeDBO node : nodes) {
             final Set<DocumentDBO> doc = node.getDocuments();
             assertNotNull(doc);

@@ -36,8 +36,6 @@ import javax.annotation.CheckForNull;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
-import org.csstudio.auth.security.SecurityFacade;
-import org.csstudio.auth.security.User;
 import org.csstudio.config.ioconfig.model.AbstractNodeDBO;
 import org.csstudio.config.ioconfig.model.FacilityDBO;
 import org.csstudio.config.ioconfig.model.IocDBO;
@@ -48,6 +46,7 @@ import org.csstudio.config.ioconfig.model.pbmodel.MasterDBO;
 import org.csstudio.config.ioconfig.model.pbmodel.ModuleDBO;
 import org.csstudio.config.ioconfig.model.pbmodel.ProfibusSubnetDBO;
 import org.csstudio.config.ioconfig.model.pbmodel.SlaveDBO;
+import org.csstudio.config.ioconfig.model.tools.UserName;
 import org.csstudio.config.ioconfig.view.DeviceDatabaseErrorDialog;
 import org.csstudio.config.ioconfig.view.IOConfigActivatorUI;
 import org.csstudio.config.ioconfig.view.ProfiBusTreeView;
@@ -313,11 +312,7 @@ public final class ConfigHelper {
      */
     @Nonnull
     public static String getUserName() {
-        User user = SecurityFacade.getInstance().getCurrentUser();
-        if (user != null) {
-            return user.getUsername();
-        }
-        return "unknown";
+        return UserName.getUserName();
     }
 
     /**

@@ -61,268 +61,51 @@ public class XAVCConfigUnitTest {
     private GSDFileDBO _b756P33;
     private GSDFileDBO _bIMF5861;
     private GSDFileDBO _siPart;
+    private boolean _debugPrint;
     
-    private void addNewModule(@Nonnull SlaveDBO pk2, int moduleNumber, int sortIndex) throws PersistenceException, IOException {
-        ModuleDBO mo = new ModuleDBO(pk2);
+    private void addNewModule(@Nonnull final SlaveDBO pk2, final int moduleNumber, final int sortIndex) throws PersistenceException, IOException {
+        final ModuleDBO mo = new ModuleDBO(pk2);
         mo.setSortIndex(sortIndex);
         mo.setModuleNumber(moduleNumber);
-        GsdModuleModel2 gsdModuleModel2 = mo.getGsdModuleModel2();
+        final GsdModuleModel2 gsdModuleModel2 = mo.getGsdModuleModel2();
         Assert.assertNotNull(gsdModuleModel2);
         mo.setConfigurationData(gsdModuleModel2.getExtUserPrmDataConst());
     }
     
-    private void buildSlave05(@Nonnull MasterDBO xavcMaster) throws PersistenceException, IOException {
-        SlaveDBO pk2 = getNewSlave(xavcMaster, 5);
-        
-        pk2.setGSDFile(_b756P33);
-        
-        addNewModule(pk2, 8330, 0);
-        for (int i = 0; i < 7; i++) {
-            addNewModule(pk2, 4360, i+1);
-        }
-        // (hrickens) [30.03.2011]: Die sind später hinzu gekommen!
-        //        for (int i = 0; i < 2; i++) {
-        //        addNewModule(pk2, 5132);
-        //        }
-    }
-    
-    private void buildSlave10(@Nonnull MasterDBO xavcMaster) throws PersistenceException, IOException {
-        SlaveDBO pk2 = getNewSlave(xavcMaster, 10);
-        setBIMF5861Settings(pk2);
-        addNewModule(pk2, 1,0);
-    }
-
-    /**
-     * @param pk2
-     * @throws IOException
-     */
-    private void setBIMF5861Settings(@Nonnull SlaveDBO pk2) throws IOException {
-        pk2.setGSDFile(_bIMF5861);
-        pk2.setPrmUserDataByte(8, 16);
-        pk2.setPrmUserDataByte(10, 17);
-    }
-    
-    private void buildSlave11(@Nonnull MasterDBO xavcMaster) throws PersistenceException, IOException {
-        SlaveDBO pk2 = getNewSlave(xavcMaster, 11);
-        
-        setBIMF5861Settings(pk2);
-        
-        addNewModule(pk2, 1,0);
-    }
-    
-    private void buildSlave12(@Nonnull MasterDBO xavcMaster) throws PersistenceException, IOException {
-        SlaveDBO pk2 = getNewSlave(xavcMaster, 12);
-        
-        setBIMF5861Settings(pk2);
-        
-        addNewModule(pk2, 1,0);
-    }
-    
-    private void buildSlave13(@Nonnull MasterDBO xavcMaster) throws PersistenceException, IOException {
-        SlaveDBO pk2 = getNewSlave(xavcMaster, 13);
-        
-        setBIMF5861Settings(pk2);
-        
-        addNewModule(pk2, 1,0);
-    }
-    
-    private void buildSlave20(@Nonnull MasterDBO xavcMaster) throws PersistenceException, IOException {
-        SlaveDBO pk2 = getNewSlave(xavcMaster, 20);
-        pk2.setMinTsdr(200);
-        
-        pk2.setGSDFile(_siPart);
-        
-        addNewModule(pk2, 3,0);
-    }
-    
-    private void buildSlave21(@Nonnull MasterDBO xavcMaster) throws PersistenceException, IOException {
-        SlaveDBO pk2 = getNewSlave(xavcMaster, 21);
-        pk2.setMinTsdr(200);
-        
-        pk2.setGSDFile(_siPart);
-        
-        addNewModule(pk2, 3,0);
-    }
-    
-    private void buildSlave22(@Nonnull MasterDBO xavcMaster) throws PersistenceException, IOException {
-        SlaveDBO pk2 = getNewSlave(xavcMaster, 22);
-        pk2.setMinTsdr(200);
-        
-        pk2.setGSDFile(_siPart);
-        
-        addNewModule(pk2, 3,0);
-    }
-    
-    private void buildSlave23(@Nonnull MasterDBO xavcMaster) throws PersistenceException, IOException {
-        SlaveDBO pk2 = getNewSlave(xavcMaster, 23);
-        pk2.setMinTsdr(200);
-        
-        pk2.setGSDFile(_siPart);
-        
-        addNewModule(pk2, 3,0);
-    }
-    
-    private void buildSlave24(@Nonnull MasterDBO xavcMaster) throws PersistenceException, IOException {
-        SlaveDBO pk2 = getNewSlave(xavcMaster, 24);
-        pk2.setMinTsdr(200);
-        
-        pk2.setGSDFile(_siPart);
-        
-        addNewModule(pk2, 3,0);
-    }
-    
-    private void buildSlave25(@Nonnull MasterDBO xavcMaster) throws PersistenceException, IOException {
-        SlaveDBO pk2 = getNewSlave(xavcMaster, 25);
-        pk2.setMinTsdr(200);
-        
-        pk2.setGSDFile(_siPart);
-        
-        addNewModule(pk2, 3,0);
-    }
-    
-    private void buildSlave26(@Nonnull MasterDBO xavcMaster) throws PersistenceException, IOException {
-        SlaveDBO pk2 = getNewSlave(xavcMaster, 26);
-        pk2.setMinTsdr(200);
-        
-        pk2.setGSDFile(_siPart);
-        
-        addNewModule(pk2, 3,0);
-    }
-    
-    @Nonnull
-    private SlaveDBO getNewSlave(@Nonnull MasterDBO xavcMaster, int address) throws PersistenceException {
-        SlaveDBO slave = new SlaveDBO(xavcMaster);
-        slave.setFdlAddress(address);
-        slave.setSortIndexNonHibernate(address);
-        slave.setMinTsdr(11);
-        slave.setWdFact1(100);
-        slave.setWdFact2(10);
-        slave.setStationStatus(136);
-        slave.setSlaveFlag(192);
-        Assert.assertNotNull(slave);
-        return slave;
-    }
-    
-    @After
-    public void tearDown() throws Exception {
-        System.out
-                .println("      ---------- --------- -------- ------ ----- ---- --- -- -  -   -    -     -      -       -        -");
-        while (_eLine != null && _outLine != null) {
-            _eLine = _expected.readLine();
-            _outLine = _out.readLine();
-            _lineNo++;
-            System.out.println("E: " + _lineNo + _eLine);
-            System.out.println("C: " + _lineNo + _outLine);
-        }
-        System.out
-                .println("      ---------- --------- -------- ------ ----- ---- --- -- -  -   -    -     -      -       -        -");
-        while (_eLine != null) {
-            _eLine = _expected.readLine();
-            _lineNo++;
-            System.out.println(_lineNo + _eLine);
-        }
-        _out.close();
-        _expected.close();
-    }
-    
-    /**
-     * @throws java.lang.Exception
-     */
-    @Before
-    public void setUp() throws Exception {
-        final String resFilePath = 
-            CssResourceLocator.composeResourceLocationString(RepoDomain.APPLICATIONS, 
-                                                              IOConfigActivator.PLUGIN_ID, 
-                                                              "res-test/ConfigFiles/XAVC.xml");
-        _expected = new BufferedReader(new FileReader(resFilePath));
-        _b756P33 = GSDTestFiles.B756_P33.getFileAsGSDFileDBO();
-        _bIMF5861 = GSDTestFiles.BIMF5861.getFileAsGSDFileDBO();
-        _siPart = GSDTestFiles.SiPart.getFileAsGSDFileDBO();
-    }
-
-    @Test
-    public void testXAVCConfig() throws Exception {
-        FacilityDBO xavcFacility = buildFacility();
-        IocDBO xavcIoc = buildIoc(xavcFacility);
-        ProfibusSubnetDBO xavcSubnet = buildSubnet(xavcIoc);
-        MasterDBO xavcMaster = buildMaster(xavcSubnet);
-        
-        buildSlaves(xavcMaster);
-        
-        _out = GetProfibusXmlAsBufferReader.getProfibusXmlAsBufferReader(xavcSubnet);
-        _lineNo = 1;
-        _eLine = _expected.readLine();
-        _outLine = _out.readLine();
-        while (_eLine != null && _outLine != null) {
-            System.out.println("E: " + _lineNo + _eLine);
-            System.out.println("C: " + _lineNo + _outLine);
-            _eLine = _eLine.replaceAll(", 0", ",0");
-            
-            Assert.assertEquals("@Line "+_lineNo, _eLine.toLowerCase(), _outLine.toLowerCase());
-            _eLine = _expected.readLine();
-            _outLine = _out.readLine();
-            _lineNo++;
-        }
-        
-        if (_eLine != null || _outLine != null) {
-            Assert.fail("Config files have not the same size");
-        }
-    }
-
-    /**
-     * @param xavcMaster
-     * @throws PersistenceException
-     * @throws IOException
-     */
-    public void buildSlaves(@Nonnull MasterDBO xavcMaster) throws PersistenceException, IOException {
-        buildSlave05(xavcMaster);
-        buildSlave10(xavcMaster);
-        buildSlave11(xavcMaster);
-        buildSlave12(xavcMaster);
-        buildSlave13(xavcMaster);
-        buildSlave20(xavcMaster);
-        buildSlave21(xavcMaster);
-        buildSlave22(xavcMaster);
-        buildSlave23(xavcMaster);
-        buildSlave24(xavcMaster);
-        buildSlave25(xavcMaster);
-        buildSlave26(xavcMaster);
-    }
-
     /**
      * @return
      */
     @Nonnull
     public FacilityDBO buildFacility() {
-        FacilityDBO xavcFacility = new FacilityDBO();
+        final FacilityDBO xavcFacility = new FacilityDBO();
         xavcFacility.setName("AMTF_XAVC");
         xavcFacility.setSortIndex(10);
         Assert.assertNotNull(xavcFacility);
         return xavcFacility;
     }
-
+    
     /**
      * @param xavcFacility
      * @return
      * @throws PersistenceException
      */
     @Nonnull
-    public IocDBO buildIoc(@Nonnull FacilityDBO xavcFacility) throws PersistenceException {
-        IocDBO xavcIoc = new IocDBO(xavcFacility);
+    public IocDBO buildIoc(@Nonnull final FacilityDBO xavcFacility) throws PersistenceException {
+        final IocDBO xavcIoc = new IocDBO(xavcFacility);
         xavcIoc.setName("XAVC_PB");
         xavcIoc.setSortIndex(0);
         Assert.assertNotNull(xavcIoc);
         return xavcIoc;
     }
-
+    
     /**
      * @param xavcSubnet
      * @return
      * @throws PersistenceException
      */
     @Nonnull
-    public MasterDBO buildMaster(@Nonnull ProfibusSubnetDBO xavcSubnet) throws PersistenceException {
-        MasterDBO xavcMaster = new MasterDBO(xavcSubnet);
+    public MasterDBO buildMaster(@Nonnull final ProfibusSubnetDBO xavcSubnet) throws PersistenceException {
+        final MasterDBO xavcMaster = new MasterDBO(xavcSubnet);
         xavcMaster.setName("Master");
         xavcMaster.setSortIndex(1);
         xavcMaster.setRedundant(-1);
@@ -338,19 +121,147 @@ public class XAVCConfigUnitTest {
         xavcMaster.setMaxBusParaLen(128);
         xavcMaster.setMaxSlaveParaLen(244);
         xavcMaster
-                .setMasterUserData("0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0");
+        .setMasterUserData("0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0");
         Assert.assertNotNull(xavcMaster);
         return xavcMaster;
     }
-
+    
+    private void buildSlave05(@Nonnull final MasterDBO xavcMaster) throws PersistenceException, IOException {
+        final SlaveDBO pk2 = getNewSlave(xavcMaster, 5);
+        
+        pk2.setGSDFile(_b756P33);
+        
+        addNewModule(pk2, 8330, 0);
+        for (int i = 0; i < 7; i++) {
+            addNewModule(pk2, 4360, i+1);
+        }
+        // (hrickens) [30.03.2011]: Die sind später hinzu gekommen!
+        //        for (int i = 0; i < 2; i++) {
+        //        addNewModule(pk2, 5132);
+        //        }
+    }
+    
+    private void buildSlave10(@Nonnull final MasterDBO xavcMaster) throws PersistenceException, IOException {
+        final SlaveDBO pk2 = getNewSlave(xavcMaster, 10);
+        setBIMF5861Settings(pk2);
+        addNewModule(pk2, 1,0);
+    }
+    
+    private void buildSlave11(@Nonnull final MasterDBO xavcMaster) throws PersistenceException, IOException {
+        final SlaveDBO pk2 = getNewSlave(xavcMaster, 11);
+        
+        setBIMF5861Settings(pk2);
+        
+        addNewModule(pk2, 1,0);
+    }
+    
+    private void buildSlave12(@Nonnull final MasterDBO xavcMaster) throws PersistenceException, IOException {
+        final SlaveDBO pk2 = getNewSlave(xavcMaster, 12);
+        
+        setBIMF5861Settings(pk2);
+        
+        addNewModule(pk2, 1,0);
+    }
+    
+    private void buildSlave13(@Nonnull final MasterDBO xavcMaster) throws PersistenceException, IOException {
+        final SlaveDBO pk2 = getNewSlave(xavcMaster, 13);
+        
+        setBIMF5861Settings(pk2);
+        
+        addNewModule(pk2, 1,0);
+    }
+    
+    private void buildSlave20(@Nonnull final MasterDBO xavcMaster) throws PersistenceException, IOException {
+        final SlaveDBO pk2 = getNewSlave(xavcMaster, 20);
+        pk2.setMinTsdr(200);
+        
+        pk2.setGSDFile(_siPart);
+        
+        addNewModule(pk2, 3,0);
+    }
+    
+    private void buildSlave21(@Nonnull final MasterDBO xavcMaster) throws PersistenceException, IOException {
+        final SlaveDBO pk2 = getNewSlave(xavcMaster, 21);
+        pk2.setMinTsdr(200);
+        
+        pk2.setGSDFile(_siPart);
+        
+        addNewModule(pk2, 3,0);
+    }
+    
+    private void buildSlave22(@Nonnull final MasterDBO xavcMaster) throws PersistenceException, IOException {
+        final SlaveDBO pk2 = getNewSlave(xavcMaster, 22);
+        pk2.setMinTsdr(200);
+        
+        pk2.setGSDFile(_siPart);
+        
+        addNewModule(pk2, 3,0);
+    }
+    
+    private void buildSlave23(@Nonnull final MasterDBO xavcMaster) throws PersistenceException, IOException {
+        final SlaveDBO pk2 = getNewSlave(xavcMaster, 23);
+        pk2.setMinTsdr(200);
+        
+        pk2.setGSDFile(_siPart);
+        
+        addNewModule(pk2, 3,0);
+    }
+    
+    private void buildSlave24(@Nonnull final MasterDBO xavcMaster) throws PersistenceException, IOException {
+        final SlaveDBO pk2 = getNewSlave(xavcMaster, 24);
+        pk2.setMinTsdr(200);
+        
+        pk2.setGSDFile(_siPart);
+        
+        addNewModule(pk2, 3,0);
+    }
+    
+    private void buildSlave25(@Nonnull final MasterDBO xavcMaster) throws PersistenceException, IOException {
+        final SlaveDBO pk2 = getNewSlave(xavcMaster, 25);
+        pk2.setMinTsdr(200);
+        
+        pk2.setGSDFile(_siPart);
+        
+        addNewModule(pk2, 3,0);
+    }
+    
+    private void buildSlave26(@Nonnull final MasterDBO xavcMaster) throws PersistenceException, IOException {
+        final SlaveDBO pk2 = getNewSlave(xavcMaster, 26);
+        pk2.setMinTsdr(200);
+        
+        pk2.setGSDFile(_siPart);
+        
+        addNewModule(pk2, 3,0);
+    }
+    
+    /**
+     * @param xavcMaster
+     * @throws PersistenceException
+     * @throws IOException
+     */
+    public void buildSlaves(@Nonnull final MasterDBO xavcMaster) throws PersistenceException, IOException {
+        buildSlave05(xavcMaster);
+        buildSlave10(xavcMaster);
+        buildSlave11(xavcMaster);
+        buildSlave12(xavcMaster);
+        buildSlave13(xavcMaster);
+        buildSlave20(xavcMaster);
+        buildSlave21(xavcMaster);
+        buildSlave22(xavcMaster);
+        buildSlave23(xavcMaster);
+        buildSlave24(xavcMaster);
+        buildSlave25(xavcMaster);
+        buildSlave26(xavcMaster);
+    }
+    
     /**
      * @param xavcIoc
      * @return
      * @throws PersistenceException
      */
     @Nonnull
-    public ProfibusSubnetDBO buildSubnet(@Nonnull IocDBO xavcIoc) throws PersistenceException {
-        ProfibusSubnetDBO xavcSubnet = new ProfibusSubnetDBO(xavcIoc);
+    public ProfibusSubnetDBO buildSubnet(@Nonnull final IocDBO xavcIoc) throws PersistenceException {
+        final ProfibusSubnetDBO xavcSubnet = new ProfibusSubnetDBO(xavcIoc);
         xavcSubnet.setName("XAVC");
         xavcSubnet.setSortIndex(1);
         
@@ -369,4 +280,102 @@ public class XAVCConfigUnitTest {
         return xavcSubnet;
     }
     
+    public void debugComparePrint() {
+        if(_debugPrint) {
+            System.out.println("E: " + _lineNo + _eLine);
+            System.out.println("C: " + _lineNo + _outLine);
+        }
+    }
+    
+    @Nonnull
+    private SlaveDBO getNewSlave(@Nonnull final MasterDBO xavcMaster, final int address) throws PersistenceException {
+        final SlaveDBO slave = new SlaveDBO(xavcMaster);
+        slave.setFdlAddress(address);
+        slave.setSortIndexNonHibernate(address);
+        slave.setMinTsdr(11);
+        slave.setWdFact1(100);
+        slave.setWdFact2(10);
+        slave.setStationStatus(136);
+        slave.setSlaveFlag(192);
+        Assert.assertNotNull(slave);
+        return slave;
+    }
+    
+    /**
+     * @param pk2
+     * @throws IOException
+     */
+    private void setBIMF5861Settings(@Nonnull final SlaveDBO pk2) throws IOException {
+        pk2.setGSDFile(_bIMF5861);
+        pk2.setPrmUserDataByte(8, 16);
+        pk2.setPrmUserDataByte(10, 17);
+    }
+    
+    /**
+     * @throws java.lang.Exception
+     */
+    @Before
+    public void setUp() throws Exception {
+        final String resFilePath =
+            CssResourceLocator.composeResourceLocationString(RepoDomain.APPLICATIONS,
+                                                             IOConfigActivator.PLUGIN_ID,
+                                                             "res-test/ConfigFiles/XAVC.xml");
+        _expected = new BufferedReader(new FileReader(resFilePath));
+        _b756P33 = GSDTestFiles.B756_P33.getFileAsGSDFileDBO();
+        _bIMF5861 = GSDTestFiles.BIMF5861.getFileAsGSDFileDBO();
+        _siPart = GSDTestFiles.SiPart.getFileAsGSDFileDBO();
+    }
+    
+    public final void sysoutDebug(@Nonnull final String msg) {
+        if(_debugPrint) {
+            System.out.println(msg);
+        }
+    }
+    
+    @After
+    public void tearDown() throws Exception {
+        sysoutDebug("      ---------- --------- -------- ------ ----- ---- --- -- -  -   -    -     -      -       -        -");
+        while (_eLine != null && _outLine != null) {
+            _eLine = _expected.readLine();
+            _outLine = _out.readLine();
+            _lineNo++;
+            debugComparePrint();
+        }
+        sysoutDebug("      ---------- --------- -------- ------ ----- ---- --- -- -  -   -    -     -      -       -        -");
+        while (_eLine != null) {
+            _eLine = _expected.readLine();
+            _lineNo++;
+            sysoutDebug(_lineNo + _eLine);
+        }
+        _out.close();
+        _expected.close();
+    }
+    
+    @Test
+    public void testXAVCConfig() throws Exception {
+        final FacilityDBO xavcFacility = buildFacility();
+        final IocDBO xavcIoc = buildIoc(xavcFacility);
+        final ProfibusSubnetDBO xavcSubnet = buildSubnet(xavcIoc);
+        final MasterDBO xavcMaster = buildMaster(xavcSubnet);
+        
+        buildSlaves(xavcMaster);
+        
+        _out = GetProfibusXmlAsBufferReader.getProfibusXmlAsBufferReader(xavcSubnet);
+        _lineNo = 1;
+        _eLine = _expected.readLine();
+        _outLine = _out.readLine();
+        while (_eLine != null && _outLine != null) {
+            debugComparePrint();
+            _eLine = _eLine.replaceAll(", 0", ",0");
+            
+            Assert.assertEquals("@Line "+_lineNo, _eLine.toLowerCase(), _outLine.toLowerCase());
+            _eLine = _expected.readLine();
+            _outLine = _out.readLine();
+            _lineNo++;
+        }
+        
+        if (_eLine != null || _outLine != null) {
+            Assert.fail("Config files have not the same size");
+        }
+    }
 }

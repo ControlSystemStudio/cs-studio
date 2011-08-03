@@ -21,49 +21,44 @@
  *
  * $Id: DesyKrykCodeTemplates.xml,v 1.7 2010/04/20 11:43:22 bknerr Exp $
  */
-package org.csstudio.config.ioconfig.model.pbmodel.gsdParser;
-
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.StringReader;
-import java.io.StringWriter;
+package org.csstudio.config.ioconfig.model.tools;
 
 import javax.annotation.Nonnull;
 
-import org.csstudio.config.ioconfig.model.PersistenceException;
-import org.csstudio.config.ioconfig.model.pbmodel.ProfibusSubnetDBO;
-import org.csstudio.config.ioconfig.model.xml.ProfibusConfigXMLGenerator;
+import org.csstudio.auth.security.SecurityFacade;
+import org.csstudio.auth.security.User;
 
 /**
- * TODO (hrickens) :
- * @author  hrickens
- * @author  $Author: hrickens $
- * @version  $Revision: 1.7 $
- * @since  20.07.2011
+ * Get a the Login User name. Is nobody login return unkown.  
+ * 
+ * @author hrickens
+ * @author $Author: hrickens $
+ * @version $Revision: 1.7 $
+ * @since 02.08.2011
  */
-public final class GetProfibusXmlAsBufferReader {
-    
+public final class UserName {
+
     /**
      * Constructor.
      */
-    private GetProfibusXmlAsBufferReader() {
+    private UserName() {
         // Constructor.
     }
     
     /**
-     * @param parameterObject TODO
-     * @throws PersistenceException
-     * @throws IOException
+     * Get a the Login User name. Is nobody login return unkown.  
      */
     @Nonnull
-    public static BufferedReader getProfibusXmlAsBufferReader(@Nonnull final ProfibusSubnetDBO profibusSubnetDBO) throws PersistenceException,
-    IOException {
-        final StringWriter sw = new StringWriter();
-        final ProfibusConfigXMLGenerator generator = new ProfibusConfigXMLGenerator();
-        generator.setSubnet(profibusSubnetDBO);
-        
-        generator.getXmlFile(sw);
-        
-        return new BufferedReader(new StringReader(sw.toString()));
+    public static String getUserName() {
+        String name = "Unknown";
+        try {
+            final User user = SecurityFacade.getInstance().getCurrentUser();
+            if (user != null) {
+                name = user.getUsername();
+            }
+        } catch (final Exception e) {
+            name = "Unknown";
+        }
+        return name;
     }
 }

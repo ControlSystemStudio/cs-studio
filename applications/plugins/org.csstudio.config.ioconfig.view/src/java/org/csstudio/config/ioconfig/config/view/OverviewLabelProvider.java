@@ -79,7 +79,7 @@ public class OverviewLabelProvider implements ITableLabelProvider, IColorProvide
             case 3:
                 return channel.getIoName();
             case 4:
-                return channel.getEpicsAddressStringNH();
+                return channel.getEpicsAddressString();
             case 5:
                 return channel.getDescription();
             case 6:

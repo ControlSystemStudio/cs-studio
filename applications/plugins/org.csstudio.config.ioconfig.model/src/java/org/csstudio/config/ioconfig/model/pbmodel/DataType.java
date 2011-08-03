@@ -103,7 +103,7 @@ public enum DataType {
     private static final Map<Integer, DataType> ID_MAP = Maps.newHashMapWithExpectedSize(DataType.values().length);
     static {
         for (DataType type : DataType.values()) {
-            Integer key = Integer.valueOf(type.getId());
+            final Integer key = Integer.valueOf(type.getId());
             if (ID_MAP.containsKey(key)) {
                 throw new IllegalStateException("Type ids for " + DataType.class.getName() + " should have been unique.");
             }
@@ -150,7 +150,7 @@ public enum DataType {
                      final int sizeOfBit, 
                      @Nonnull final String type, 
                      @Nonnull final String desc, 
-                     @Nonnull DataType...structure){
+                     @Nonnull final DataType...structure){
         this(id, sizeOfBit,type, desc, null, null, structure);
     }
 
@@ -164,9 +164,9 @@ public enum DataType {
                      final int sizeOfBit, 
                      @Nonnull final String type, 
                      @Nonnull final String desc, 
-                     @CheckForNull Long low, 
-                     @CheckForNull Long high, 
-                     @Nonnull DataType...structure){
+                     @CheckForNull final Long low, 
+                     @CheckForNull final Long high, 
+                     @Nonnull final DataType...structure){
         _id = id;
         _size = sizeOfBit;
         _type = type;
@@ -249,7 +249,7 @@ public enum DataType {
      */
     @Nonnull 
     public static String[] getNames(){
-        String[] names = new String[DataType.values().length];
+        final String[] names = new String[DataType.values().length];
         for (int i = 0; i < DataType.values().length; i++) {
          names[i] = DataType.values()[i].getType();   
         }
@@ -290,7 +290,7 @@ public enum DataType {
      */
     @Nonnull
     public static DataType forId(final int channelId) {
-        DataType type = ID_MAP.get(Integer.valueOf(channelId));
+        final DataType type = ID_MAP.get(Integer.valueOf(channelId));
         if (type == null) {
             throw new IllegalArgumentException("No " + DataType.class.getName() + " object exists for id " + channelId );
         }

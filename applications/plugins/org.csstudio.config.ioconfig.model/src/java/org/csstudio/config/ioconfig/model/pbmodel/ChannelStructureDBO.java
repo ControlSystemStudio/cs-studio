@@ -52,12 +52,13 @@ import org.hibernate.annotations.BatchSize;
 @BatchSize(size=32)
 @Table(name = "ddb_Profibus_Channel_Structure")
 public class ChannelStructureDBO extends AbstractNodeDBO<ModuleDBO, ChannelDBO> {
-
+    
     private static final long serialVersionUID = 1L;
     private static final String LINE_SEPARATOR = System.getProperty("line.separator");
+    
     private String _structureType;
     private boolean _simple;
-
+    
     /**
      * Default Constructor used only by Hibernate. To crate a {@link ChannelStructureDBO} use the
      * Factory methods.
@@ -65,23 +66,23 @@ public class ChannelStructureDBO extends AbstractNodeDBO<ModuleDBO, ChannelDBO> 
     public ChannelStructureDBO() {
         // Constructor for Hibernate
     }
-
+    
     private ChannelStructureDBO(@Nonnull final ModuleDBO module, final boolean simple, final boolean isInput, @Nonnull final DataType type,
                                 @Nonnull final String name) throws PersistenceException {
         this(module, simple, isInput, type, name, DEFAULT_MAX_STATION_ADDRESS);
     }
-
+    
+    
     private ChannelStructureDBO(@Nonnull final ModuleDBO module, final boolean simple, final boolean isInput, @Nonnull final DataType type,
                                 @Nonnull final String name, final int defaultMaxStationAddress) throws PersistenceException {
         super(module);
         setSimple(simple);
         setName("Struct of " + name);
         setStructureType(type);
-
+        
         buildChildren(type, isInput, name);
-
+        
     }
-    
     /**
      * Constructor.
      * Build ChannelStructure with simple = false and build his children.
@@ -96,34 +97,72 @@ public class ChannelStructureDBO extends AbstractNodeDBO<ModuleDBO, ChannelDBO> 
         buildChildren(channelPrototype);
     }
 
-    @SuppressWarnings("unused")
-    @Nonnull 
-    public static ChannelStructureDBO makeSimpleChannel(@Nonnull final ModuleDBO module, 
-                                                        @Nonnull final String name, 
-                                                        final boolean isInput,
-                                                        final boolean isDigit) throws PersistenceException {
-        final ChannelStructureDBO channelStructure = new ChannelStructureDBO(module, true, isInput,
-                DataType.SIMPLE, name);
-        new ChannelDBO(channelStructure, name, isInput, isDigit, channelStructure.getSortIndex());
-        return channelStructure;
-    }
-
-    
     // TODO (hrickens) [27.07.2011]: kann weg. Nur die Tests müssen noch umgestellt werden!
-    @Nonnull 
+    @Nonnull
     public static ChannelStructureDBO makeChannelStructure(@Nonnull final ModuleDBO module, final boolean isInput,
                                                            @Nonnull final DataType type, @Nonnull final String name) throws PersistenceException {
         final ChannelStructureDBO channelStructureDBO = new ChannelStructureDBO(module, false, isInput, type, name, DEFAULT_MAX_STATION_ADDRESS);
         channelStructureDBO.buildChildren(type, isInput, name);
         return channelStructureDBO;
     }
-    @Nonnull 
+    @Nonnull
     public static ChannelStructureDBO makeChannelStructure(@Nonnull final ModuleDBO module,
                                                            @Nonnull final ModuleChannelPrototypeDBO channelPrototype) throws PersistenceException {
         final ChannelStructureDBO channelStructureDBO = new ChannelStructureDBO(module, channelPrototype, DEFAULT_MAX_STATION_ADDRESS);
         return channelStructureDBO;
     }
-
+    
+    @SuppressWarnings("unused")
+    @Nonnull
+    public static ChannelStructureDBO makeSimpleChannel(@Nonnull final ModuleDBO module,
+                                                        @Nonnull final String name,
+                                                        final boolean isInput,
+                                                        final boolean isDigit) throws PersistenceException {
+        final ChannelStructureDBO channelStructure = new ChannelStructureDBO(module, true, isInput,
+                                                                             DataType.SIMPLE, name);
+        new ChannelDBO(channelStructure, name, isInput, isDigit, channelStructure.getSortIndex());
+        return channelStructure;
+    }
+    
+    // CHECKSTYLE OFF: StrictDuplicateCode
+    @Override
+    public void accept(@Nonnull final INodeVisitor visitor) {
+        visitor.visit(this);
+    }
+    @Override
+    public void assembleEpicsAddressString() throws PersistenceException {
+        for (final ChannelDBO node : getChildrenAsMap().values()) {
+            if (node != null) {
+                node.localUpdate();
+                if (node.isDirty()) {
+                    node.save();
+                }
+            }
+        }
+    }
+    
+    private void buildChildren(@Nonnull final DataType type,
+                               final boolean isInput,
+                               @Nonnull final String name) throws PersistenceException {
+        if (isSimple()) {
+            return;
+        }
+        
+        final DataType[] structer = type.getStructure();
+        for (short sortIndex = 0; sortIndex < structer.length; sortIndex++) {
+            final ChannelDBO channel = new ChannelDBO(this,
+                                                      name + sortIndex,
+                                                      isInput,
+                                                      structer[sortIndex].getByteSize() < 8,
+                                                      sortIndex);
+            // Use setChannelType to reduce the local Updates.
+            // Make a local Update after add all Channels.
+            channel.setChannelType(structer[sortIndex]);
+        }
+        getModule().update();
+        getModule().update();
+    }
+    
     /**
      * @param channelPrototype
      */
@@ -131,58 +170,151 @@ public class ChannelStructureDBO extends AbstractNodeDBO<ModuleDBO, ChannelDBO> 
         if (isSimple()) {
             return;
         }
-
+        
         final DataType[] structer = channelPrototype.getType().getStructure();
         final String name = channelPrototype.getName();
         for (short sortIndex = 0; sortIndex < structer.length; sortIndex++) {
-            final ChannelDBO channel = new ChannelDBO(this, 
-                                                name + sortIndex, 
-                                                channelPrototype.isInput(), 
-                                                structer[sortIndex].getByteSize() < 8, 
-                                                sortIndex);
-
+            final ChannelDBO channel = new ChannelDBO(this,
+                                                      name + sortIndex,
+                                                      channelPrototype.isInput(),
+                                                      structer[sortIndex].getByteSize() < 8,
+                                                      sortIndex);
+            
             // Use setChannelType to reduce the local Updates.
             // Make a local Update after add all Channels.
             channel.setChannelType(structer[sortIndex]);
             channel.setChannelNumber(channel.getNextFreeChannelNumberFromParent(channelPrototype.getOffset()));
         }
         getModule().update();
-        getModule().update();        
-    }
-    private void buildChildren(@Nonnull final DataType type, 
-                               final boolean isInput, 
-                               @Nonnull final String name) throws PersistenceException {
-        if (isSimple()) {
-            return;
-        }
-
-        final DataType[] structer = type.getStructure();
-        for (short sortIndex = 0; sortIndex < structer.length; sortIndex++) {
-            final ChannelDBO channel = new ChannelDBO(this, 
-                                                name + sortIndex, 
-                                                isInput, 
-                                                structer[sortIndex].getByteSize() < 8, 
-                                                sortIndex);
-
-            channel.setName(name + sortIndex);
-            // Use setChannelType to reduce the local Updates.
-            // Make a local Update after add all Channels.
-            channel.setChannelType(structer[sortIndex]);
-        }
-        getModule().update();
         getModule().update();
     }
-
+    
+    /**
+     * {@inheritDoc}
+     * @throws PersistenceException
+     */
+    @Override
+    @Nonnull
+    public ChannelStructureDBO copyParameter(@Nonnull final ModuleDBO parentNode) throws PersistenceException {
+        final ModuleDBO module = parentNode;
+        String name = getName();
+        if(name==null){
+            name="";
+        }
+        final ChannelStructureDBO copy = new ChannelStructureDBO(module,
+                                                                 isSimple(),
+                                                                 true,
+                                                                 getStructureType(),
+                                                                 name);
+        copy.setSortIndex((int) getSortIndex());
+        copy.removeAllChild();
+        for (final ChannelDBO node : getChildrenAsMap().values()) {
+            final ChannelDBO childrenCopy = node.copyThisTo(copy);
+            childrenCopy.setSortIndexNonHibernate(node.getSortIndex());
+        }
+        return copy;
+    }
+    
+    @Override
+    @Nonnull
+    public ChannelStructureDBO copyThisTo(@Nonnull final ModuleDBO parentNode) throws PersistenceException {
+        final ChannelStructureDBO copy = (ChannelStructureDBO) super.copyThisTo(parentNode);
+        copy.setName(getName());
+        return copy;
+    }
+    
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    @Nonnull
+    public ChannelDBO createChild() throws PersistenceException {
+        throw new UnsupportedOperationException("No simple child can be created for node type " + getClass().getName());
+    }
+    
+    @Override
+    public boolean equals(@CheckForNull final Object obj) {
+        return super.equals(obj);
+    }
+    
+    @Transient
+    @CheckForNull
+    public ChannelDBO getFirstChannel() throws PersistenceException {
+        final TreeMap<Short, ChannelDBO> treeMap = (TreeMap<Short, ChannelDBO>) getChildrenAsMap();
+        return treeMap.get(treeMap.firstKey());
+    }
+    
+    @Override
+    public int getfirstFreeStationAddress(final int maxStationAddress) throws PersistenceException {
+        return isSimple()?getSortIndex():super.getfirstFreeStationAddress(maxStationAddress);
+    }
+    
+    @Transient
+    @CheckForNull
+    public ChannelDBO getLastChannel() throws PersistenceException {
+        final TreeMap<Short, ChannelDBO> treeMap = (TreeMap<Short, ChannelDBO>) getChildrenAsMap();
+        return treeMap.isEmpty()?null:treeMap.get(treeMap.lastKey());
+    }
+    
     /**
      *
      * @return the parent Module.
      */
     @ManyToOne
-    @Nonnull 
+    @Nonnull
     public ModuleDBO getModule() {
-        return (ModuleDBO) getParent();
+        return getParent();
     }
-
+    
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    @Transient
+    @Nonnull
+    public NodeType getNodeType() {
+        return NodeType.CHANNEL_STRUCTURE;
+    }
+    
+    @Nonnull
+    public DataType getStructureType() {
+        return DataType.valueOf(_structureType);
+    }
+    
+    @Override
+    public int hashCode() {
+        return super.hashCode();
+    }
+    // CHECKSTYLE ON: StrictDuplicateCode
+    
+    public boolean isSimple() {
+        return _simple;
+    }
+    
+    @Override
+    protected void localUpdate() throws PersistenceException {
+        final Collection<ChannelDBO> values = getChildrenAsMap().values();
+        for (final ChannelDBO channel : values) {
+            channel.localUpdate();
+        }
+    }
+    
+    @Override
+    public void setCreatedBy(@Nonnull final String createdBy) {
+        super.setCreatedBy(createdBy);
+        for (final NamedDBClass node : getChildren()) {
+            node.setCreatedBy(createdBy);
+        }
+    }
+    
+    @Override
+    public void setCreatedOn(@Nonnull final Date createdOn) {
+        super.setCreatedOn(createdOn);
+        for (final ChannelDBO node : getChildren()) {
+            node.setCreatedOn(createdOn);
+        }
+    }
+    
     /**
      *
      * @param module
@@ -191,39 +323,11 @@ public class ChannelStructureDBO extends AbstractNodeDBO<ModuleDBO, ChannelDBO> 
     public void setModule(@Nonnull final ModuleDBO module) {
         this.setParent(module);
     }
-
-    @Transient
-    @CheckForNull 
-    public ChannelDBO getFirstChannel() throws PersistenceException {
-        final TreeMap<Short, ChannelDBO> treeMap = (TreeMap<Short, ChannelDBO>) getChildrenAsMap();
-        return treeMap.get(treeMap.firstKey());
-    }
-
-    @Transient
-    @CheckForNull 
-    public ChannelDBO getLastChannel() throws PersistenceException {
-        final TreeMap<Short, ChannelDBO> treeMap = (TreeMap<Short, ChannelDBO>) getChildrenAsMap();
-        if (treeMap.size() > 0) {
-            final Short lastKey = treeMap.lastKey();
-            return treeMap.get(lastKey);
-        }
-        return null;
-    }
-
-    public boolean isSimple() {
-        return _simple;
-    }
-
+    
     public void setSimple(final boolean simple) {
         _simple = simple;
-
     }
-
-    @Nonnull 
-    public DataType getStructureType() {
-        return DataType.valueOf(_structureType);
-    }
-
+    
     public void setStructureType(@CheckForNull final DataType type) {
         if (type == null) {
             _structureType = DataType.BIT.name();
@@ -231,9 +335,25 @@ public class ChannelStructureDBO extends AbstractNodeDBO<ModuleDBO, ChannelDBO> 
             _structureType = type.name();
         }
     }
-
+    
     @Override
-    @Nonnull 
+    public void setUpdatedBy(@Nonnull final String updatedBy) {
+        super.setUpdatedBy(updatedBy);
+        for (final NamedDBClass node : getChildren()) {
+            node.setUpdatedBy(updatedBy);
+        }
+    }
+    
+    @Override
+    public void setUpdatedOn(@Nonnull final Date updatedOn) {
+        super.setUpdatedOn(updatedOn);
+        for (final ChannelDBO node : getChildren()) {
+            node.setUpdatedOn(updatedOn);
+        }
+    }
+    
+    @Override
+    @Nonnull
     public String toString() {
         ChannelDBO channel;
         final StringBuilder sb = new StringBuilder();
@@ -245,7 +365,7 @@ public class ChannelStructureDBO extends AbstractNodeDBO<ModuleDBO, ChannelDBO> 
             }
             sb.append(getName() + " (" + getStructureType().name() + " structure)");
             
-            for (NamedDBClass node : getChildrenAsMap().values()) {
+            for (final NamedDBClass node : getChildrenAsMap().values()) {
                 sb.append(LINE_SEPARATOR);
                 sb.append("\t- ");
                 sb.append(node.toString());
@@ -257,136 +377,5 @@ public class ChannelStructureDBO extends AbstractNodeDBO<ModuleDBO, ChannelDBO> 
         }
         return sb.toString();
     }
-
-    @Override
-    public void setCreatedBy(@Nonnull final String createdBy) {
-        super.setCreatedBy(createdBy);
-        for (NamedDBClass node : getChildren()) {
-            node.setCreatedBy(createdBy);
-        }
-    }
-
-    @Override
-    public void setUpdatedBy(@Nonnull final String updatedBy) {
-        super.setUpdatedBy(updatedBy);
-        for (NamedDBClass node : getChildren()) {
-            node.setUpdatedBy(updatedBy);
-        }
-    }
-
-    @Override
-    public void setCreatedOn(@Nonnull final Date createdOn) {
-        super.setCreatedOn(createdOn);
-        for (ChannelDBO node : getChildren()) {
-            node.setCreatedOn(createdOn);
-        }
-    }
-
-    @Override
-    public void setUpdatedOn(@Nonnull final Date updatedOn) {
-        super.setUpdatedOn(updatedOn);
-        for (ChannelDBO node : getChildren()) {
-            node.setUpdatedOn(updatedOn);
-        }
-    }
-
-    @Override
-    public int getfirstFreeStationAddress(final int maxStationAddress) throws PersistenceException {
-        if (isSimple()) {
-            return getSortIndex();
-        }
-        return super.getfirstFreeStationAddress(maxStationAddress);
-    }
-
-    @Override
-    @Nonnull 
-    public ChannelStructureDBO copyThisTo(@Nonnull final ModuleDBO parentNode) throws PersistenceException {
-        final ChannelStructureDBO copy = (ChannelStructureDBO) super.copyThisTo(parentNode);
-        copy.setName(getName());
-        return copy;
-    }
-
-    /**
-     * {@inheritDoc}
-     * @throws PersistenceException 
-     */
-    @Override
-    @Nonnull 
-    public ChannelStructureDBO copyParameter(@Nonnull final ModuleDBO parentNode) throws PersistenceException {
-        final ModuleDBO module = parentNode;
-        String name = getName();
-        if(name==null){
-            name="";
-        }
-        
-        final ChannelStructureDBO copy = new ChannelStructureDBO(module,
-                                                           isSimple(),
-                                                           true,
-                                                           getStructureType(),
-                                                           name);
-        copy.setSortIndex((int) getSortIndex());
-        copy.removeAllChild();
-        for (ChannelDBO node : getChildrenAsMap().values()) {
-            final ChannelDBO childrenCopy = node.copyThisTo(copy);
-            childrenCopy.setSortIndexNonHibernate(node.getSortIndex());
-        }
-        return copy;
-    }
-
-    @Override
-    protected void localUpdate() throws PersistenceException {
-        final Collection<ChannelDBO> values = getChildrenAsMap().values();
-        for (ChannelDBO channel : values) {
-            channel.localUpdate();
-        }
-    }
-
-    @Override
-    public void assembleEpicsAddressString() throws PersistenceException {
-        for (ChannelDBO node : getChildrenAsMap().values()) {
-            if (node != null) {
-                node.localUpdate();
-                if (node.isDirty()) {
-                    node.save();
-                }
-            }
-        }
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    @Override
-    @Transient
-    @Nonnull
-    public NodeType getNodeType() {
-        return NodeType.CHANNEL_STRUCTURE;
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    @Override
-    @Nonnull
-    public ChannelDBO createChild() throws PersistenceException {
-        throw new UnsupportedOperationException("No simple child can be created for node type " + getClass().getName());
-    }
     
-    // CHECKSTYLE OFF: StrictDuplicateCode
-    @Override
-    public void accept(@Nonnull final INodeVisitor visitor) {
-        visitor.visit(this);
-    }
-    
-    @Override
-    public boolean equals(@CheckForNull final Object obj) {
-        return super.equals(obj);
-    }
-    
-    @Override
-    public int hashCode() {
-        return super.hashCode();
-    }
-    // CHECKSTYLE ON: StrictDuplicateCode 
-
 }

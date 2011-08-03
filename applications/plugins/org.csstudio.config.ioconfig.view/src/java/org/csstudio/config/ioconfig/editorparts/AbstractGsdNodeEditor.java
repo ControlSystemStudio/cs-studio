@@ -39,7 +39,7 @@ import org.csstudio.config.ioconfig.config.view.helper.ShowFileSelectionListener
 import org.csstudio.config.ioconfig.model.AbstractNodeDBO;
 import org.csstudio.config.ioconfig.model.GSDFileTypes;
 import org.csstudio.config.ioconfig.model.PersistenceException;
-import org.csstudio.config.ioconfig.model.Repository;
+import org.csstudio.config.ioconfig.model.hibernate.Repository;
 import org.csstudio.config.ioconfig.model.pbmodel.GSDFileDBO;
 import org.csstudio.config.ioconfig.model.pbmodel.gsdParser.AbstractGsdPropertyModel;
 import org.csstudio.config.ioconfig.model.pbmodel.gsdParser.ExtUserPrmData;

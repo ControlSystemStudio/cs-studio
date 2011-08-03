@@ -18,6 +18,7 @@ Require-Bundle: com.google.common;bundle-version="0.9.0",
  org.csstudio.platform.libs.jdbc;bundle-version="1.1.1"
 Bundle-ActivationPolicy: lazy
 Export-Package: org.csstudio.config.ioconfig.model,
+ org.csstudio.config.ioconfig.model.hibernate,
  org.csstudio.config.ioconfig.model.pbmodel,
  org.csstudio.config.ioconfig.model.pbmodel.gsdParser,
  org.csstudio.config.ioconfig.model.preference,

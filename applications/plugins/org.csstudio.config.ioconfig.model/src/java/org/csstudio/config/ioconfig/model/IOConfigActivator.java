@@ -8,29 +8,28 @@ import org.osgi.framework.BundleContext;
 /**
  * The activator class controls the plug-in life cycle.
  */
-public class IOConfigActivator extends AbstractCssPlugin{
-
-	/**
-	 *  The plug-in ID.
-	 */
-	public static final String PLUGIN_ID = "org.csstudio.config.ioconfig.model";
-
-	/**
-	 *  The shared instance
-	 */
-	private static IOConfigActivator INSTANCE;
-
+public class IOConfigActivator extends AbstractCssPlugin {
+    
+    /**
+     *  The plug-in ID.
+     */
+    public static final String PLUGIN_ID = "org.csstudio.config.ioconfig.model";
+    
+    /**
+     *  The shared instance
+     */
+    private static IOConfigActivator INSTANCE;
+    
     /**
      * The constructor
      */
     public IOConfigActivator() {
-		if (INSTANCE != null) { // ENSURE SINGLETON
-			throw new IllegalStateException("Class " + PLUGIN_ID
-					+ " already exists.");
-		}
-		INSTANCE = this;
+        if (INSTANCE != null) { // ENSURE SINGLETON
+            throw new IllegalStateException("Class " + PLUGIN_ID + " already exists.");
+        }
+        INSTANCE = this;
     }
-
+    
     /**
      * Returns the shared instance
      *
@@ -38,9 +37,9 @@ public class IOConfigActivator extends AbstractCssPlugin{
      */
     @Nonnull
     public static IOConfigActivator getDefault() {
-		return INSTANCE;
+        return INSTANCE;
     }
-
+    
     /**
      * {@inheritDoc}
      */
@@ -48,7 +47,7 @@ public class IOConfigActivator extends AbstractCssPlugin{
     protected void doStart(@Nonnull final BundleContext context) throws Exception {
         // nothing to start
     }
-
+    
     /**
      * {@inheritDoc}
      */
@@ -56,7 +55,7 @@ public class IOConfigActivator extends AbstractCssPlugin{
     protected void doStop(@Nonnull final BundleContext context) throws Exception {
         // nothing to stop
     }
-
+    
     /**
      * {@inheritDoc}
      */
@@ -65,5 +64,5 @@ public class IOConfigActivator extends AbstractCssPlugin{
     public String getPluginId() {
         return PLUGIN_ID;
     }
-
+    
 }

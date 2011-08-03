@@ -754,11 +754,11 @@ public class ModuleEditor extends AbstractGsdNodeEditor<ModuleDBO> {
         final String createdBy = getUserName();
         final Date date = new Date();
         if(gsdModuleDBO==null) {
-            gsdModule.setCreatedBy(createdBy);
-            gsdModule.setCreatedOn(date);
+            gsdModule.setCreationData(createdBy, date);
+        } else {
+            gsdModule.setUpdatedBy(createdBy);
+            gsdModule.setUpdatedOn(date);
         }
-        gsdModule.setUpdatedBy(createdBy);
-        gsdModule.setUpdatedOn(date);
         final ChannelConfigDialog channelConfigDialog = new ChannelConfigDialog(Display.getCurrent()
                 .getActiveShell(), model, gsdModule);
         if(channelConfigDialog.open() == Window.OK) {
@@ -773,8 +773,7 @@ public class ModuleEditor extends AbstractGsdNodeEditor<ModuleDBO> {
      */
     @Override
     protected boolean newNode() {
-        getNode().setCreatedBy(getUserName());
-        getNode().setCreatedOn(new Date());
+        getNode().setCreationData(getUserName(), new Date());
         getNode().setVersion(-2);
         
         final Object obj = ((StructuredSelection) getProfiBusTreeView().getTreeViewer().getSelection())

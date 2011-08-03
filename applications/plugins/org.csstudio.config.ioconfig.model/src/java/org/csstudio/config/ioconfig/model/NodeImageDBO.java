@@ -43,17 +43,17 @@ import javax.persistence.Lob;
 //@Entity
 //@Table( name="ddb_NodeImage")
 public class NodeImageDBO implements Comparable<NodeImageDBO> {
-
+    
     /**
      * Key ID.
      */
     private int _id;
-
+    
     /**
      * The Image Name / Desc.
      */
     private String _name;
-
+    
     /**
      * The File Name.
      */
@@ -61,41 +61,67 @@ public class NodeImageDBO implements Comparable<NodeImageDBO> {
     
     
     /**
-     * The Image Data. 
+     * The Image Data.
      */
     private byte[] _imageBytes;
-
-//    private Set<Node> _nodes;
-
+    
+    //    private Set<Node> _nodes;
+    
     /**
      * Default Constructor needed by Hibernate.
      */
     public NodeImageDBO() {
         // Constructor for Hibernate
     }
-
+    
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public int compareTo(@CheckForNull final NodeImageDBO arg0) {
+        return arg0==null?-1:getId()-arg0.getId();
+    }
+    
+    @Override
+    public boolean equals(@CheckForNull final Object obj) {
+        if (this == obj) {
+            return true;
+        }
+        if (obj == null) {
+            return false;
+        }
+        if (getClass() != obj.getClass()) {
+            return false;
+        }
+        final NodeImageDBO other = (NodeImageDBO) obj;
+        return _id == other._id;
+    }
+    
+    /**
+     * 
+     * @return the Image File name.
+     */
+    @Nonnull
+    @Column(nullable=false)
+    public String getFile() {
+        return _file;
+    }
+    
     /** @return the ID. */
     @Id
     @GeneratedValue
     public int getId() {
         return _id;
     }
-
-    /**
-     * @param id Set the Image node key ID.
-     */
-    public void setId(int id) {
-        _id = id;
+    
+    @Lob
+    @Basic(fetch=FetchType.EAGER)
+    @Column(nullable=false)
+    @Nonnull
+    public byte[] getImageBytes() {
+        return _imageBytes;
     }
-
-    /**
-     * 
-     * @param name set the Name of this Node.
-     */
-    public void setName(@Nonnull String name) {
-        _name = name;
-    }
-
+    
     /**
      * 
      * @return the Name of this Node.
@@ -106,40 +132,6 @@ public class NodeImageDBO implements Comparable<NodeImageDBO> {
         return _name;
     }
     
-    /**
-     * 
-     * @return the Image File name. 
-     */
-    @Nonnull
-    @Column(nullable=false)
-    public String getFile() {
-        return _file;
-    }
-
-    public void setFile(@Nonnull String file) {
-        _file = file;
-    }
-
-    @Lob
-    @Basic(fetch=FetchType.EAGER)
-    @Column(nullable=false)
-    @Nonnull
-    public byte[] getImageBytes() {
-        return _imageBytes;
-    }
-
-    public void setImageBytes(@Nonnull byte[] imageBytes) {
-        _imageBytes = imageBytes;
-    }
-    
-    /**
-     * {@inheritDoc}
-     */
-    @Override
-    public int compareTo(@CheckForNull NodeImageDBO arg0) {
-        return arg0==null?-1:(getId()-arg0.getId());
-    }
-
     @Override
     public int hashCode() {
         final int prime = 47;
@@ -147,44 +139,52 @@ public class NodeImageDBO implements Comparable<NodeImageDBO> {
         result = prime * result + _id;
         return result;
     }
-
-    @Override
-    public boolean equals(@CheckForNull Object obj) {
-        if (this == obj) {
-            return true;
-        }
-        if (obj == null) {
-            return false;
-        }
-        if (getClass() != obj.getClass()) {
-            return false;
-        }
-        NodeImageDBO other = (NodeImageDBO) obj;
-        return _id == other._id;
+    
+    public void setFile(@Nonnull final String file) {
+        _file = file;
     }
-
+    
+    /**
+     * @param id Set the Image node key ID.
+     */
+    public void setId(final int id) {
+        _id = id;
+    }
+    
+    public void setImageBytes(@Nonnull final byte[] imageBytes) {
+        _imageBytes = imageBytes;
+    }
+    
+    /**
+     * 
+     * @param name set the Name of this Node.
+     */
+    public void setName(@Nonnull final String name) {
+        _name = name;
+    }
     
     
-//    /**
-//     * 
-//     * @return the Children of this node.
-//     */
-//    @OneToMany(mappedBy = "id", targetEntity = Node.class, fetch = FetchType.EAGER, cascade = {
-//            CascadeType.PERSIST, CascadeType.MERGE })
-//    @Cascade( { org.hibernate.annotations.CascadeType.SAVE_UPDATE,
-//            org.hibernate.annotations.CascadeType.DELETE_ORPHAN })
-//    public Set<? extends Node> getNodes() {
-//        return _nodes;
-//    }
-//
-//    /**
-//     * Set the Children to this node.
-//     * 
-//     * @param children
-//     *            The Children for this node.
-//     */
-//    public void setNodes(Set<Node> nodes) {
-//        _nodes = nodes;
-//    }
+    
+    //    /**
+    //     *
+    //     * @return the Children of this node.
+    //     */
+    //    @OneToMany(mappedBy = "id", targetEntity = Node.class, fetch = FetchType.EAGER, cascade = {
+    //            CascadeType.PERSIST, CascadeType.MERGE })
+    //    @Cascade( { org.hibernate.annotations.CascadeType.SAVE_UPDATE,
+    //            org.hibernate.annotations.CascadeType.DELETE_ORPHAN })
+    //    public Set<? extends Node> getNodes() {
+    //        return _nodes;
+    //    }
+    //
+    //    /**
+    //     * Set the Children to this node.
+    //     *
+    //     * @param children
+    //     *            The Children for this node.
+    //     */
+    //    public void setNodes(Set<Node> nodes) {
+    //        _nodes = nodes;
+    //    }
     
 }

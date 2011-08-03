@@ -68,7 +68,7 @@ public final class VirtualRoot extends AbstractNodeDBO<VirtualRoot, FacilityDBO>
     
     @Override
     @CheckForNull
-    protected VirtualRoot copyParameter(@Nullable VirtualRoot parent) throws PersistenceException {
+    protected VirtualRoot copyParameter(@Nullable final VirtualRoot parent) throws PersistenceException {
         return VirtualRoot.INSTANCE;
     }
 

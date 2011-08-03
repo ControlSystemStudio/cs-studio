@@ -22,7 +22,7 @@
 /*
  * $Id: Repository.java,v 1.5 2010/08/20 13:33:04 hrickens Exp $
  */
-package org.csstudio.config.ioconfig.model;
+package org.csstudio.config.ioconfig.model.hibernate;
 
 
 import java.io.Serializable;
@@ -32,6 +32,11 @@ import java.util.List;
 import javax.annotation.CheckForNull;
 import javax.annotation.Nonnull;
 
+import org.csstudio.config.ioconfig.model.DBClass;
+import org.csstudio.config.ioconfig.model.DocumentDBO;
+import org.csstudio.config.ioconfig.model.PV2IONameMatcherModelDBO;
+import org.csstudio.config.ioconfig.model.PersistenceException;
+import org.csstudio.config.ioconfig.model.SensorsDBO;
 import org.csstudio.config.ioconfig.model.pbmodel.ChannelDBO;
 import org.csstudio.config.ioconfig.model.pbmodel.GSDFileDBO;
 

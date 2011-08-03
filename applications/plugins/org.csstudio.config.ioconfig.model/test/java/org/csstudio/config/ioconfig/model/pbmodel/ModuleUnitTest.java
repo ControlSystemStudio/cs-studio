@@ -9,7 +9,7 @@ import static org.junit.Assert.fail;
 import org.csstudio.config.ioconfig.model.DummyRepository;
 import org.csstudio.config.ioconfig.model.IocDBO;
 import org.csstudio.config.ioconfig.model.PersistenceException;
-import org.csstudio.config.ioconfig.model.Repository;
+import org.csstudio.config.ioconfig.model.hibernate.Repository;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Ignore;
@@ -136,7 +136,7 @@ public class ModuleUnitTest {
         final ChannelStructureDBO simpleChannelStructure = ChannelStructureDBO.makeSimpleChannel(out, "", false, false);
         simpleChannelStructure.setSimple(true);
 
-        final ChannelDBO pureChannel = new ChannelDBO(simpleChannelStructure,false,false);
+        final ChannelDBO pureChannel = new ChannelDBO(simpleChannelStructure," ",false,false,-1);
         pureChannel.setName("PureChannel");
         pureChannel.setId(12);
         pureChannel.moveSortIndex((short) 0);

@@ -27,11 +27,10 @@ import javax.annotation.CheckForNull;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
-import org.csstudio.auth.security.SecurityFacade;
-import org.csstudio.auth.security.User;
 import org.csstudio.config.ioconfig.editorinputs.NodeEditorInput;
 import org.csstudio.config.ioconfig.editorparts.FacilityEditor;
 import org.csstudio.config.ioconfig.model.FacilityDBO;
+import org.csstudio.config.ioconfig.model.tools.UserName;
 import org.csstudio.config.ioconfig.view.internal.localization.Messages;
 import org.eclipse.core.commands.AbstractHandler;
 import org.eclipse.core.commands.ExecutionEvent;
@@ -87,22 +86,17 @@ public class CallNewNodeEditor extends AbstractHandler {
 
     private boolean newNode(@Nullable final String nameOffer) {
 
-        String nodeType = getNode().getClass().getSimpleName();
-        String title = String.format(Messages.NodeEditor_Title, nodeType);
-        String msg = String.format(Messages.NodeEditor_Msg, nodeType);
-        InputDialog id = new InputDialog(Display.getDefault().getActiveShell(), title,
+        final String nodeType = getNode().getClass().getSimpleName();
+        final String title = String.format(Messages.NodeEditor_Title, nodeType);
+        final String msg = String.format(Messages.NodeEditor_Msg, nodeType);
+        final InputDialog id = new InputDialog(Display.getDefault().getActiveShell(), title,
                 msg, nameOffer, null);
         id.setBlockOnOpen(true);
         if (id.open() == Window.OK) {
             getNode().setName(id.getValue());
             getNode().setSortIndex(0);
-            User user = SecurityFacade.getInstance().getCurrentUser();
-            String name = "Unknown";//$NON-NLS-1$
-            if (user != null) {
-                name = user.getUsername();
-            }
-            getNode().setCreatedBy(name);
-            getNode().setCreatedOn(new Date());
+            String name = UserName.getUserName();
+            getNode().setCreationData(name, new Date());
 //            getNode().setVersion(-2);
             return true;
         }

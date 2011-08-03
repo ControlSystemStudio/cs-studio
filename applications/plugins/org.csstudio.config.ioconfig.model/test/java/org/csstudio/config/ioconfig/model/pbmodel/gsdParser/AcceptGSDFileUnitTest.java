@@ -12,106 +12,104 @@ import org.junit.Test;
 /**
  * @author hrickens
  */
-// CHECKSTYLE:OFF
 @Ignore
 public class AcceptGSDFileUnitTest {
 
     @Test
-    public void GSDTestFile_3KStrND() throws Exception {
+    public void gSDTestFile3KStrND() throws Exception {
         AbstractGsdPropertyModel model = GSDTestFiles._3KStrND.getFileAsGSDFileDBO().getParsedGsdFileModel();
         Assert.assertNotNull(model);
         model = null;
     }
 
     @Test
-    public void GSDTestFile_ABB_0812() throws Exception {
+    public void gSDTestFileABB0812() throws Exception {
         AbstractGsdPropertyModel model = GSDTestFiles.ABB_0812.getFileAsGSDFileDBO().getParsedGsdFileModel();
         Assert.assertNotNull(model);
         model = null;
     }
 
     @Test
-    public void GSDTestFile_B756_P33() throws Exception {
+    public void gSDTestFileB756P33() throws Exception {
         AbstractGsdPropertyModel model = GSDTestFiles.B756_P33.getFileAsGSDFileDBO().getParsedGsdFileModel();
         Assert.assertNotNull(model);
         model = null;
     }
 
     @Test
-    public void GSDTestFile_BIMF5861() throws Exception {
+    public void gSDTestFileBIMF5861() throws Exception {
         AbstractGsdPropertyModel model = GSDTestFiles.BIMF5861.getFileAsGSDFileDBO().getParsedGsdFileModel();
         Assert.assertNotNull(model);
         model = null;
     }
 
     @Test
-    public void GSDTestFile_DESY_MSyS_V10() throws Exception {
+    public void gSDTestFileDESYMSySV10() throws Exception {
         AbstractGsdPropertyModel model = GSDTestFiles.DESY_MSyS_V10.getFileAsGSDFileDBO().getParsedGsdFileModel();
         Assert.assertNotNull(model);
         model = null;
     }
 
     @Test
-    public void GSDTestFile_DESY_MSyS_V11() throws Exception {
+    public void gSDTestFileDesyMSySV11() throws Exception {
         AbstractGsdPropertyModel model = GSDTestFiles.DESY_MSyS_V11.getFileAsGSDFileDBO().getParsedGsdFileModel();
         Assert.assertNotNull(model);
         model = null;
     }
 
     @Test
-    public void GSDTestFile_gm_04b5() throws Exception {
+    public void gSDTestFilegm04b5() throws Exception {
         AbstractGsdPropertyModel model = GSDTestFiles.gm_04b5.getFileAsGSDFileDBO().getParsedGsdFileModel();
         Assert.assertNotNull(model);
         model = null;
     }
 
     @Test
-    public void GSDTestFile_PF009A8() throws Exception {
+    public void gSDTestFilePF009A8() throws Exception {
         AbstractGsdPropertyModel model = GSDTestFiles.PF009A8.getFileAsGSDFileDBO().getParsedGsdFileModel();
         Assert.assertNotNull(model);
         model = null;
     }
 
     @Test
-    public void GSDTestFile_siem8045() throws Exception {
+    public void gSDTestFilesiem8045() throws Exception {
         AbstractGsdPropertyModel model = GSDTestFiles.siem8045.getFileAsGSDFileDBO().getParsedGsdFileModel();
         Assert.assertNotNull(model);
         model = null;
     }
 
     @Test
-    public void GSDTestFile_SOFTB203() throws Exception {
+    public void gSDTestFileSOFTB203() throws Exception {
         AbstractGsdPropertyModel model = GSDTestFiles.SOFTB203.getFileAsGSDFileDBO().getParsedGsdFileModel();
         Assert.assertNotNull(model);
         model = null;
     }
 
     @Test
-    public void GSDTestFile_YP0004C2() throws Exception {
+    public void gSDTestFileYP0004C2() throws Exception {
         AbstractGsdPropertyModel model = GSDTestFiles.YP0004C2.getFileAsGSDFileDBO().getParsedGsdFileModel();
         Assert.assertNotNull(model);
         model = null;
     }
 
     @Test
-    public void GSDTestFile_YP003051() throws Exception {
+    public void gSDTestFileYP003051() throws Exception {
         AbstractGsdPropertyModel model = GSDTestFiles.YP003051.getFileAsGSDFileDBO().getParsedGsdFileModel();
         Assert.assertNotNull(model);
         model = null;
     }
 
     @Test
-    public void GSDTestFile_YP0206CA() throws Exception {
+    public void gSDTestFileYP0206CA() throws Exception {
         AbstractGsdPropertyModel model = GSDTestFiles.YP0206CA.getFileAsGSDFileDBO().getParsedGsdFileModel();
         Assert.assertNotNull(model);
         model = null;
     }
 
     @Test
-    public void GSDTestFile_SiPart() throws Exception {
+    public void gSDTestFileSiPart() throws Exception {
         AbstractGsdPropertyModel model = GSDTestFiles.SiPart.getFileAsGSDFileDBO().getParsedGsdFileModel();
         Assert.assertNotNull(model);
         model = null;
     }
 }
-//CHECKSTYLE:ON

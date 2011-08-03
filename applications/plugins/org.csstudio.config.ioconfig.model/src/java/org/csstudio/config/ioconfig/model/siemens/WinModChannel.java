@@ -30,7 +30,7 @@ import org.csstudio.config.ioconfig.model.pbmodel.ChannelDBO;
 import org.csstudio.config.ioconfig.model.pbmodel.DataType;
 
 /**
- * TODO (hrickens) : 
+ * TODO (hrickens) :
  * 
  * @author hrickens
  * @author $Author: hrickens $
@@ -38,7 +38,7 @@ import org.csstudio.config.ioconfig.model.pbmodel.DataType;
  * @since 20.07.2011
  */
 public class WinModChannel {
-
+    
     private final char[] _convertedChannelType = new char[2];
     private int _lines;
     private String _desc;
@@ -48,11 +48,11 @@ public class WinModChannel {
     private String _io2;
     private Short _bit;
     private int _bytee;
-
+    
     /**
      * Constructor.
      * @param channelDBO
-     * @throws PersistenceException 
+     * @throws PersistenceException
      */
     public WinModChannel(@Nonnull final ChannelDBO channelDBO) throws PersistenceException {
         setIsInput(channelDBO.isInput());
@@ -60,7 +60,75 @@ public class WinModChannel {
         addDescription(channelDBO);
         setByteNo(channelDBO);
     }
-
+    
+    /**
+     * @param channelDBO
+     */
+    public void addDescription(@Nonnull final ChannelDBO channelDBO) {
+        final String description = channelDBO.getDescription();
+        if(description!=null) {
+            _desc += description.replaceAll("[\r\n]", " ");
+        }
+    }
+    
+    /**
+     * @return
+     */
+    public short getBit() {
+        return _bit;
+    }
+    
+    /**
+     * @return
+     */
+    public int getByteNo() {
+        return _bytee;
+    }
+    
+    @Nonnull
+    public String getConvertedChannelType() {
+        return String.valueOf(_convertedChannelType);
+    }
+    
+    /**
+     * @return
+     */
+    @Nonnull
+    public String getDef() {
+        return _def;
+    }
+    
+    /**
+     * @return
+     */
+    @Nonnull
+    public String getDesc() {
+        return _desc;
+    }
+    
+    /**
+     * @return
+     */
+    @Nonnull
+    public String getIO() {
+        return _io1+_io2;
+    }
+    
+    /**
+     * @return
+     */
+    public int getLineSize() {
+        return _lines;
+    }
+    
+    /**
+     * @return
+     */
+    @Nonnull
+    public String getMbbChannelType() {
+        return _mbbChannelType;
+    }
+    
     /**
      * @param channelDBO
      * @throws PersistenceException
@@ -68,32 +136,21 @@ public class WinModChannel {
     public void setByteNo(@Nonnull final ChannelDBO channelDBO) throws PersistenceException {
         if(channelDBO.isDigital()) {
             _bit = channelDBO.getSortIndex();
-//          bytee = bit / 8;
-//          if(bytee>0) {
-//              bit = (short) (bit - (8*bytee));
-//          }
+            //          bytee = bit / 8;
+            //          if(bytee>0) {
+            //              bit = (short) (bit - (8*bytee));
+            //          }
             
-//          bytee = channelDBO.getFullChannelNumber();
+            //          bytee = channelDBO.getFullChannelNumber();
             
             _bytee = channelDBO.getChannelNumber();
         } else {
             _bit = 0;
-//          bytee = channelDBO.getStruct();
-//            _bytee = channelDBO.getFullChannelNumber();
+            //          bytee = channelDBO.getStruct();
+            //            _bytee = channelDBO.getFullChannelNumber();
             _bytee = channelDBO.getChannelNumber();
         }
     }
-
-    /**
-     * @param channelDBO
-     */
-    public void addDescription(@Nonnull final ChannelDBO channelDBO) {
-        String description = channelDBO.getDescription();
-        if(description!=null) {
-            _desc += description.replaceAll("[\r\n]", " ");
-        }
-    }
-
     /**
      * @param channelType
      */
@@ -130,30 +187,29 @@ public class WinModChannel {
     // CHECKSTYLE ON: CyclomaticComplexity
     
     /**
-     * @param isInput
+     * @param string
      */
-    public void setIsInput(final boolean isInput) {
-        if (isInput) {
-            _io1 = 'E'; // Eingang
-            _convertedChannelType[1] = 'I'; // Input
-            _mbbChannelType = "DI";
-        } else {
-            _io1 = 'A'; // Ausgang
-            _convertedChannelType[1] = 'O'; // Output
-            _mbbChannelType = "DO";
-        }
+    public void setDef(@Nonnull final String def) {
+        _def = def;
     }
-
+    
+    /**
+     * @param c
+     */
+    public void setIO2(@Nonnull final String io2) {
+        _io2 = io2;
+    }
+    
     /**
      * @param channelDBO
      */
     public void setIsDigital(@Nonnull final ChannelDBO channelDBO) {
-        DataType channelType = channelDBO.getChannelType();
+        final DataType channelType = channelDBO.getChannelType();
         if (channelDBO.isDigital()) {
             _def = "0";
         } else {
             _def = "0,00";
-            int byteSize = channelType.getByteSize();
+            final int byteSize = channelType.getByteSize();
             switch (byteSize) {
                 case 1:
                     _io2 = "B"; // Byte
@@ -170,87 +226,31 @@ public class WinModChannel {
                 default:
                     break;
             }
-        }        
+        }
     }
-
-    @Nonnull
-    public String getConvertedChannelType() {
-        return String.valueOf(_convertedChannelType);
+    
+    /**
+     * @param isInput
+     */
+    public void setIsInput(final boolean isInput) {
+        if (isInput) {
+            _io1 = 'E'; // Eingang
+            _convertedChannelType[1] = 'I'; // Input
+            _mbbChannelType = "DI";
+        } else {
+            _io1 = 'A'; // Ausgang
+            _convertedChannelType[1] = 'O'; // Output
+            _mbbChannelType = "DO";
+        }
     }
-
+    
     /**
      * @return
      */
     public boolean single() {
         return _lines>1;
     }
-
-    /**
-     * @return
-     */
-    public int getByteNo() {
-        return _bytee;
-    }
-
-    /**
-     * @return
-     */
-    @Nonnull
-    public String getDesc() {
-        return _desc;
-    }
-
-    /**
-     * @param string
-     */
-    public void setDef(@Nonnull String def) {
-        _def = def;
-    }
-    /**
-     * @return
-     */
-    @Nonnull
-    public String getDef() {
-        return _def;
-    }
-
-    /**
-     * @return
-     */
-    public short getBit() {
-        return _bit;
-    }
-
-    /**
-     * @return
-     */
-    @Nonnull
-    public String getIO() {
-        return _io1+_io2;
-    }
-
-    /**
-     * @return
-     */
-    public int getLineSize() {
-        return _lines;
-    }
-
-    /**
-     * @param c
-     */
-    public void setIO2(@Nonnull String io2) {
-        _io2 = io2;
-    }
-
-    /**
-     * @return
-     */
-    @Nonnull
-    public String getMbbChannelType() {
-        return _mbbChannelType;
-    }
-
-
-
+    
+    
+    
 }

@@ -31,7 +31,7 @@ import javax.annotation.CheckForNull;
 import javax.annotation.Nonnull;
 
 import org.csstudio.config.ioconfig.model.PersistenceException;
-import org.csstudio.config.ioconfig.model.Repository;
+import org.csstudio.config.ioconfig.model.hibernate.Repository;
 import org.csstudio.dct.IoNameService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -43,46 +43,15 @@ import org.slf4j.LoggerFactory;
  * @since 12.02.2009
  */
 public class ProfiBusIoNameService implements IoNameService {
-
-    private static final Logger LOG = LoggerFactory.getLogger(ProfiBusIoNameService.class);
     
-    /**
-     * Get the Epics Address string to an IO Name. It the name not found return the string '$$$
-     * IO-Name NOT found! $$$'.
-     * 
-     * @param ioName the IO-Name.
-     * @return Field and the Epics Address String for the given IO-Name separated by ':'.
-     * @throws PersistenceException 
-     */
-    @Override
-    @Nonnull
-    public final String getEpicsAddress(@Nonnull String ioName, @Nonnull String field) {
-        // return the Bus-type
-        if(field.equals("DTYP")) {
-            // at the moment only Profibus DP
-            return "PBDP";
-        } else if(field.equals("DESC")) {
-            try {
-                return Repository.getShortChannelDesc(ioName);
-            } catch (PersistenceException e) {
-                LOG.error("Can't load short channel description", e);
-                return "%%% Database not available %%%";
-            }
-        }
-        try {
-            return Repository.getEpicsAddressString(ioName);
-        } catch (PersistenceException e) {
-            LOG.error("Can't load EPICS address string", e);
-            return "%%% Database not available %%%";
-        }
-    }
+    private static final Logger LOG = LoggerFactory.getLogger(ProfiBusIoNameService.class);
     
     @Override
     @CheckForNull
     public List<String> getAllIoNames(){
         try {
             return Repository.getIoNames();
-        } catch (PersistenceException e) {
+        } catch (final PersistenceException e) {
             LOG.error("Can't load IO-Names", e);
             return null;
         }
@@ -93,18 +62,49 @@ public class ProfiBusIoNameService implements IoNameService {
      * IO-Name NOT found! $$$'.
      * 
      * @param ioName the IO-Name.
+     * @return Field and the Epics Address String for the given IO-Name separated by ':'.
+     * @throws PersistenceException
+     */
+    @Override
+    @Nonnull
+    public final String getEpicsAddress(@Nonnull final String ioName, @Nonnull final String field) {
+        // return the Bus-type
+        if("DTYP".equals(field)) {
+            // at the moment only Profibus DP
+            return "PBDP";
+        } else if("DESC".equals(field)) {
+            try {
+                return Repository.getShortChannelDesc(ioName);
+            } catch (final PersistenceException e) {
+                LOG.error("Can't load short channel description", e);
+                return "%%% Database not available %%%";
+            }
+        }
+        try {
+            return Repository.getEpicsAddressString(ioName);
+        } catch (final PersistenceException e) {
+            LOG.error("Can't load EPICS address string", e);
+            return "%%% Database not available %%%";
+        }
+    }
+    
+    /**
+     * Get the Epics Address string to an IO Name. It the name not found return the string '$$$
+     * IO-Name NOT found! $$$'.
+     * 
+     * @param ioName the IO-Name.
      * @return the Epics Adress for the given IO-Name.
      */
-    @Nonnull 
-    public List<String> getIoNamesFromIoc(@Nonnull String iocName){
+    @Nonnull
+    public List<String> getIoNamesFromIoc(@Nonnull final String iocName){
         try {
             return Repository.getIoNames(iocName);
-        } catch (PersistenceException e) {
+        } catch (final PersistenceException e) {
             LOG.error("Can't load IO_Names from IOC", e);
-            ArrayList<String> al = new ArrayList<String>();
+            final ArrayList<String> al = new ArrayList<String>();
             al.add("%%% Database not available %%%");
             return al;
         }
     }
-
+    
 }

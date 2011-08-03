@@ -21,41 +21,22 @@
  *
  * $Id: DesyKrykCodeTemplates.xml,v 1.7 2010/04/20 11:43:22 bknerr Exp $
  */
-package org.csstudio.config.ioconfig.model;
+package org.csstudio.dct.ui.editor.highlighter;
 
-import javax.annotation.CheckForNull;
-import javax.annotation.Nonnull;
+import org.eclipse.swt.custom.StyleRange;
 
 /**
- * TODO (hrickens) : 
+ * 
+ * Build the {@link StyleRange} to highlight an EPICS DB File.
  * 
  * @author hrickens
  * @author $Author: hrickens $
  * @version $Revision: 1.7 $
- * @since 21.06.2011
+ * @since 01.08.2011
  */
-public interface IHibernateManager {
+public interface IEpicsDBSyntaxHighlighter {
     
+    IEpicsDBSyntaxHighlighter append(String epicsDB);
     
-    @CheckForNull
-    <T> T doInDevDBHibernateEager(@Nonnull final IHibernateCallback hibernateCallback) throws PersistenceException;
-    
-    /**
-     *
-     * @param <T>
-     *            The result Object type.
-     * @param hibernateCallback
-     *            The Hibernate call back.
-     * @return the Session resulte.
-     */
-    @CheckForNull
-    <T> T doInDevDBHibernateLazy(@Nonnull final IHibernateCallback hibernateCallback) throws PersistenceException;
-    
-    void closeSession();
-    
-    /**
-     * @return
-     */
-    boolean isConnected();
-    
+    StyleRange[] getStyleRange();
 }

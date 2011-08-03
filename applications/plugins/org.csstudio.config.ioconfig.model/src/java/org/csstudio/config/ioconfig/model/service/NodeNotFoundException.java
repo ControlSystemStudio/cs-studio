@@ -54,7 +54,7 @@ public class NodeNotFoundException extends Exception {
     /**
      * Constructor.
      */
-    public NodeNotFoundException(@Nonnull State state) {
+    public NodeNotFoundException(@Nonnull final State state) {
         _state = state;
         
     }

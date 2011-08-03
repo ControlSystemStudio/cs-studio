@@ -7,8 +7,6 @@ import java.util.ArrayList;
 import java.util.EventObject;
 import java.util.List;
 import java.util.Set;
-import java.util.SortedMap;
-import java.util.TreeMap;
 import java.util.UUID;
 
 import org.csstudio.dct.DctActivator;
@@ -27,6 +25,8 @@ import org.csstudio.dct.model.internal.ProjectFactory;
 import org.csstudio.dct.model.visitors.ProblemVisitor;
 import org.csstudio.dct.model.visitors.ProblemVisitor.MarkableError;
 import org.csstudio.dct.model.visitors.SearchVisitor;
+import org.csstudio.dct.ui.editor.highlighter.EpicsDBSyntaxHighlighterImpl;
+import org.csstudio.dct.ui.editor.highlighter.IEpicsDBSyntaxHighlighter;
 import org.csstudio.dct.ui.editor.outline.internal.OutlinePage;
 import org.csstudio.platform.ui.util.CustomMediaFactory;
 import org.csstudio.platform.ui.util.LayoutUtil;
@@ -40,6 +40,8 @@ import org.eclipse.core.runtime.NullProgressMonitor;
 import org.eclipse.gef.commands.CommandStack;
 import org.eclipse.gef.commands.CommandStackListener;
 import org.eclipse.jface.dialogs.MessageDialog;
+import org.eclipse.jface.layout.GridDataFactory;
+import org.eclipse.jface.layout.GridLayoutFactory;
 import org.eclipse.jface.viewers.ArrayContentProvider;
 import org.eclipse.jface.viewers.ComboViewer;
 import org.eclipse.jface.viewers.ISelectionChangedListener;
@@ -54,12 +56,16 @@ import org.eclipse.swt.custom.CCombo;
 import org.eclipse.swt.custom.StackLayout;
 import org.eclipse.swt.custom.StyleRange;
 import org.eclipse.swt.custom.StyledText;
+import org.eclipse.swt.events.KeyAdapter;
+import org.eclipse.swt.events.KeyEvent;
 import org.eclipse.swt.events.ModifyEvent;
 import org.eclipse.swt.events.ModifyListener;
 import org.eclipse.swt.events.MouseAdapter;
 import org.eclipse.swt.events.MouseEvent;
+import org.eclipse.swt.events.SelectionEvent;
+import org.eclipse.swt.events.SelectionListener;
 import org.eclipse.swt.graphics.Color;
-import org.eclipse.swt.layout.FillLayout;
+import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Display;
@@ -85,6 +91,68 @@ import org.slf4j.LoggerFactory;
  */
 public final class DctEditor extends MultiPageEditorPart implements CommandStackListener {
     
+    /**
+     * @author hrickens
+     * @author $Author: hrickens $
+     * @version $Revision: 1.7 $
+     * @since 01.08.2011
+     */
+    private final class SearchListener implements SelectionListener {
+        private final Text _searchBox;
+
+        /**
+         * Constructor.
+         */
+        public SearchListener(Text searchBox) {
+            _searchBox = searchBox;
+        }
+        
+        public void widgetSelected(SelectionEvent e) {
+            search();
+        }
+        
+        private void search() {
+            searchAndMarkInPreview(_searchBox.getText(), true, isCaseSensetiv());
+        }
+        
+        public void widgetDefaultSelected(SelectionEvent e) {
+            search();
+        }
+    }
+
+
+    /**
+     * @author hrickens
+     * @author $Author: hrickens $
+     * @version $Revision: 1.7 $
+     * @since 01.08.2011
+     */
+    private final class SearchModifyListener implements ModifyListener {
+        private final Text _searchBox;
+        Color red = Display.getDefault().getSystemColor(SWT.COLOR_RED);
+        Color white = Display.getDefault().getSystemColor(SWT.COLOR_WHITE);
+        Color black = Display.getDefault().getSystemColor(SWT.COLOR_BLACK);
+        
+        /**
+         * Constructor.
+         */
+        private SearchModifyListener(final Text searchBox) {
+            _searchBox = searchBox;
+        }
+        
+        public void modifyText(ModifyEvent e) {
+            
+        	boolean found = searchAndMarkInPreview(_searchBox.getText(), false, isCaseSensetiv());
+        	if(found) {
+        	    _searchBox.setBackground(white);
+        	    _searchBox.setForeground(black);
+        	} else {
+        	    _searchBox.setForeground(white);
+        	    _searchBox.setBackground(red);
+        	}
+        }
+    }
+
     private static final Logger LOG = LoggerFactory.getLogger(DctEditor.class);
     
 	private Project project;
@@ -99,6 +167,10 @@ public final class DctEditor extends MultiPageEditorPart implements CommandStack
 	private Composite contentPanel;
 	private StyledText dbFilePreviewText;
 	private ExporterDescriptor exporterDescriptor;
+
+    private boolean _caseSensetiv;
+
+    private Text _searchBox;
 
 	/**
 	 * Constructor.
@@ -185,11 +257,16 @@ public final class DctEditor extends MultiPageEditorPart implements CommandStack
 
 		Composite c = new Composite(composite, SWT.NONE);
 		c.setLayoutData(LayoutUtil.createGridData());
-		FillLayout layout = new FillLayout();
-		layout.spacing=5;
-		c.setLayout(layout);
+		GridLayout gridLayout = GridLayoutFactory.swtDefaults().numColumns(5).create();
+//		FillLayout layout = new FillLayout();
+//		layout.spacing=5;
+//		c.setLayout(layout);
+		c.setLayout(gridLayout);
 
-		ComboViewer viewer = new ComboViewer(new CCombo(c, SWT.READ_ONLY | SWT.BORDER));
+		CCombo list = new CCombo(c, SWT.READ_ONLY | SWT.BORDER);
+		GridDataFactory swtDefaults = GridDataFactory.swtDefaults();
+		list.setLayoutData(swtDefaults.create());
+        ComboViewer viewer = new ComboViewer(list);
 		viewer.getCCombo().setEditable(false);
 		viewer.getCCombo().setVisibleItemCount(20);
 		viewer.setContentProvider(new ArrayContentProvider());
@@ -213,24 +290,45 @@ public final class DctEditor extends MultiPageEditorPart implements CommandStack
 				updatePreview();
 			}
 		});
-
-		final Text searchBox = new Text(c, SWT.None);
-		searchBox.addModifyListener(new ModifyListener() {
-			public void modifyText(ModifyEvent e) {
-				searchAndMarkInPreview(searchBox.getText(), false);
-			}
-		});
-
+		    
+		_searchBox = new Text(c, SWT.SEARCH);
+		_searchBox.setMessage("Search");
+		_searchBox.setLayoutData(GridDataFactory.fillDefaults().hint(200, 0).create());
+		_searchBox.addModifyListener(new SearchModifyListener(_searchBox));
+		_searchBox.addKeyListener(new KeyAdapter() {
+		    
+		    @Override
+            public void keyReleased(KeyEvent e) {
+		        if(e.keyCode==SWT.KEYPAD_CR||e.keyCode==SWT.CR||e.keyCode==SWT.F3) {
+		            searchAndMarkInPreview(_searchBox.getText(), true, isCaseSensetiv());
+		        }
+		    }
+        });
+            
+            
+		
 		Button searchButton = new Button(c, SWT.NONE);
-		searchButton.addMouseListener(new MouseAdapter() {
-			@Override
-			public void mouseUp(MouseEvent e) {
-				searchAndMarkInPreview(searchBox.getText(), true);
-			}
-		});
+		searchButton.setLayoutData(swtDefaults.create());
+		searchButton.addSelectionListener(new SearchListener(_searchBox));
 		searchButton.setText("Search");
+		
+		final Button caseSensetivButton = new Button(c, SWT.CHECK);
+        caseSensetivButton.setLayoutData(swtDefaults.create());
+        caseSensetivButton.setText("Case Sensetiv");
+        caseSensetivButton.addSelectionListener(new SelectionListener() {
+            
+            public void widgetSelected(SelectionEvent e) {
+                setCaseSensetiv(caseSensetivButton.getSelection());
+            }
+            
+            public void widgetDefaultSelected(SelectionEvent e) {
+                setCaseSensetiv(caseSensetivButton.getSelection());
+            }
+        });
+        
 
 		Button saveToFileButton = new Button(c, SWT.NONE);
+		saveToFileButton.setLayoutData(swtDefaults.grab(true, false).align(SWT.END, SWT.CENTER).create());
 		saveToFileButton.addMouseListener(new MouseAdapter() {
 			@Override
 			public void mouseUp(MouseEvent event) {
@@ -269,150 +367,72 @@ public final class DctEditor extends MultiPageEditorPart implements CommandStack
 		dbFilePreviewText.setLayoutData(LayoutUtil.createGridDataForFillingCell());
 		dbFilePreviewText.setEditable(false);
 		dbFilePreviewText.setFont(CustomMediaFactory.getInstance().getFont("Courier", 11, SWT.NORMAL));
-
+		dbFilePreviewText.addKeyListener(new KeyAdapter() {
+            
+            @Override
+            public void keyReleased(KeyEvent e) {
+                if(e.keyCode==SWT.F3) {
+                    searchAndMarkInPreview(_searchBox.getText(), true, isCaseSensetiv());
+                }
+            }
+        });
 		int index = addPage(composite);
 		setPageText(index, "Preview DB-File");
 	}
 
-	private void searchAndMarkInPreview(String criteria, boolean startFromCaret) {
-
-		if (criteria != null && criteria.length() > 0) {
+	protected boolean searchAndMarkInPreview(String criteria2, boolean startFromCaret, boolean caseSensitiv) {
+	    boolean found = true;
+		if (criteria2 != null && criteria2.length() > 0) {
 			int offset = startFromCaret?dbFilePreviewText.getCaretOffset() : 0;
-			String text = dbFilePreviewText.getText();
+			String text;
+			String criteria;
+			if(caseSensitiv) {
+			   text = dbFilePreviewText.getText();
+			   criteria = criteria2;
+			} else {
+			    text = dbFilePreviewText.getText().toLowerCase();
+			    criteria = criteria2.toLowerCase();
+			}
 			int index = text.substring(offset).indexOf(criteria);
 			
 			if(index>-1) {
 				int pos = offset + index;
 				dbFilePreviewText.setSelection(pos, pos + criteria.length());
+				found = true;
+			} else if(startFromCaret) {
+			    found = searchAndMarkInPreview(criteria, false, caseSensitiv);
 			} else {
-				searchAndMarkInPreview(criteria, false);
+			    found = false;
 			}
 		}
-
+	    return found;
 	}
+	
+	protected boolean isCaseSensetiv() {
+        return _caseSensetiv;
+    }
+	
+	protected void setCaseSensetiv(boolean caseSensetiv) {
+        _caseSensetiv = caseSensetiv;
+    }
 	/**
 	 * Updates the preview of the db file.
 	 */
 	private void updatePreview() {
 		if (exporterDescriptor != null) {
 			String export = exporterDescriptor.getExporter().export(getProject());
-			
             StyleRange[] ranges = buildStyleRange(export);
             dbFilePreviewText.setText(export);
             dbFilePreviewText.setStyleRanges(ranges);
 		}
+		_searchBox.setFocus();
 
 	}
 
     private StyleRange[] buildStyleRange(String export) {
-        SortedMap<Integer, StyleRange> styleRanges = new TreeMap<Integer, StyleRange>();
-        Color comment = CustomMediaFactory.getInstance().getColor(63, 127, 95);
-        Color string = CustomMediaFactory.getInstance().getColor(42, 0, 255);
-        Color field = CustomMediaFactory.getInstance().getColor(0, 0, 0);
-        Color record = CustomMediaFactory.getInstance().getColor(127, 0, 85);
-        Color background = CustomMediaFactory.getInstance().getColor(255, 255, 255);
-        Color error = CustomMediaFactory.getInstance().getColor(255, 0, 0);
-        buildStyleRangeComment(export, styleRanges, comment, background);
-        buildStyleRangeStringWithErrorDetection(export, styleRanges, string, background, error);
-        buildStyleRangeField(export, styleRanges, field, background);
-        buildStyleRangeRecord(export, styleRanges, record, background);
-        return styleRanges.values().toArray(new StyleRange[0]);
-    }
-
-    public void buildStyleRangeRecord(String export,
-                                      SortedMap<Integer, StyleRange> styleRanges,
-                                      Color record,
-                                      Color background) {
-        int lastPosision;
-        lastPosision = 0;
-        while(lastPosision<export.length()) {
-            int start = export.indexOf("record(",lastPosision);
-            int end = start+7;
-            if(start>=0) {
-                start+=7;
-                end = export.indexOf(',',start+1);
-                if(end>=0) {
-                    styleRanges.put(start,new StyleRange(start, end-(start), record, background, SWT.NORMAL));
-                } else {
-                    break;
-                }
-            } else {
-                break;
-            }
-            lastPosision = end+1;
-            
-        }
-    }
-
-    public void buildStyleRangeField(String export,
-                                     SortedMap<Integer, StyleRange> styleRanges,
-                                     Color field,
-                                     Color background) {
-        int lastPosision;
-        lastPosision = 0;
-        while(lastPosision<export.length()) {
-            int start = export.indexOf("field(",lastPosision);
-            int end = start+6;
-            if(start>=0) {
-                start+=6;
-                end = export.indexOf(',',start+1);
-                if(end>=0) {
-                    styleRanges.put(start,new StyleRange(start, end-(start), field, background, SWT.BOLD));
-                } else {
-                    break;
-                }
-            } else {
-                break;
-            }
-            lastPosision = end+1;
-            
-        }
-    }
-
-    public void buildStyleRangeStringWithErrorDetection(String export,
-                                                        SortedMap<Integer, StyleRange> styleRanges,
-                                                        Color string,
-                                                        Color background,
-                                                        Color error) {
-        int lastPosision;
-        lastPosision = 0;
-        while(lastPosision<export.length()) {
-            int start = export.indexOf('"',lastPosision);
-            int end = start;
-            if(start>=0) {
-                end = export.indexOf('"',start+1);
-                if(end>=start && (export.startsWith("%%%", start+1)||export.startsWith("<Error", start+1))) {
-                    styleRanges.put(start,new StyleRange(start, end-start+1, error, background, SWT.NORMAL));
-                }else if(end>=start) {
-                    styleRanges.put(start,new StyleRange(start, end-start+1, string, background, SWT.NORMAL));
-                } else {
-                    break;
-                }
-            } else {
-                break;
-            }
-            lastPosision = end+1;
-            
-        }
-    }
-
-    public void buildStyleRangeComment(String export,
-                                      SortedMap<Integer, StyleRange> styleRanges,
-                                      Color comment,
-                                      Color background) {
-        int lastPosision = 0;
-        while(lastPosision<export.length()) {
-            int start = export.indexOf('#',lastPosision);
-            int end = start;
-            if(start>=0) {
-                end = export.indexOf("\n",start+1);
-                styleRanges.put(start,new StyleRange(start, end-(start), comment, background, SWT.NORMAL));
-            } else {
-                break;
-            }
-            lastPosision = end+1;
-            
-        }
+        IEpicsDBSyntaxHighlighter highlighter = new EpicsDBSyntaxHighlighterImpl();
+        highlighter.append(export);
+        return highlighter.getStyleRange();
     }
 
     /**
@@ -519,7 +539,6 @@ public final class DctEditor extends MultiPageEditorPart implements CommandStack
 	 *{@inheritDoc}
 	 */
 	@Override
-    @SuppressWarnings("unchecked")
 	public Object getAdapter(Class adapter) {
 		Object result = null;
 

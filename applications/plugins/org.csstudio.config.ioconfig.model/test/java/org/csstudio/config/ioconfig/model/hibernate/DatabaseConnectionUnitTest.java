@@ -21,7 +21,7 @@
  *
  * $Id: DesyKrykCodeTemplates.xml,v 1.7 2010/04/20 11:43:22 bknerr Exp $
  */
-package org.csstudio.config.ioconfig.model;
+package org.csstudio.config.ioconfig.model.hibernate;
 
 import org.hibernate.SessionFactory;
 import org.hibernate.cfg.AnnotationConfiguration;

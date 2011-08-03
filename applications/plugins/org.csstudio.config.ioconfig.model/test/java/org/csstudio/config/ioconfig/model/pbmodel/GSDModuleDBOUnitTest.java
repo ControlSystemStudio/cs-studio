@@ -23,10 +23,10 @@
  */
 package org.csstudio.config.ioconfig.model.pbmodel;
 
-import org.csstudio.config.ioconfig.model.HibernateRepository;
-import org.csstudio.config.ioconfig.model.HibernateTestManager;
 import org.csstudio.config.ioconfig.model.PersistenceException;
-import org.csstudio.config.ioconfig.model.Repository;
+import org.csstudio.config.ioconfig.model.hibernate.HibernateRepository;
+import org.csstudio.config.ioconfig.model.hibernate.HibernateTestManager;
+import org.csstudio.config.ioconfig.model.hibernate.Repository;
 import org.junit.After;
 import org.junit.AfterClass;
 import org.junit.Assert;
@@ -41,38 +41,21 @@ import org.junit.Test;
  * @since 22.07.2011
  */
 public class GSDModuleDBOUnitTest {
-
+    
     private static HibernateRepository _REPOSITORY;
+    
     private int _id;
     private GSDModuleDBO _gsdModuleDBO;
-
-    
-    @Test
-    public void testGSDModuleDBO() throws Exception {
-        _gsdModuleDBO = new GSDModuleDBO("JUnitTest");
-        _gsdModuleDBO.save();
-        _id = _gsdModuleDBO.getId();
-        Assert.assertTrue(_id>0);
-        
-        //test load
-        GSDModuleDBO load = Repository.load(GSDModuleDBO.class, _id);
-        Assert.assertNotNull(load);
-        Assert.assertEquals(_gsdModuleDBO, load);
-        
-        //test update
-        load.setName("new JUnitTest");
-        load.save();
-        
-        GSDModuleDBO update = Repository.load(GSDModuleDBO.class, _id);
-        Assert.assertNotNull(update);
-        Assert.assertEquals(load, update);
-    }
-    
     
     @BeforeClass
     public static void setUpBeforeClass(){
         _REPOSITORY = new HibernateRepository(new HibernateTestManager());
         Repository.injectIRepository(_REPOSITORY);
+    }
+    
+    @AfterClass
+    public static void tearDownAfterClass() {
+        Repository.close();
     }
     
     @After
@@ -82,11 +65,27 @@ public class GSDModuleDBOUnitTest {
         }
     }
     
-    @AfterClass
-    public static void tearDownAfterClass() {
-        Repository.close();
+    @Test
+    public void testGSDModuleDBO() throws Exception {
+        _gsdModuleDBO = new GSDModuleDBO("JUnitTest");
+        _gsdModuleDBO.save();
+        _id = _gsdModuleDBO.getId();
+        Assert.assertTrue(_id>0);
+        
+        //test load
+        final GSDModuleDBO load = Repository.load(GSDModuleDBO.class, _id);
+        Assert.assertNotNull(load);
+        Assert.assertEquals(_gsdModuleDBO, load);
+        
+        //test update
+        load.setName("new JUnitTest");
+        load.save();
+        
+        final GSDModuleDBO update = Repository.load(GSDModuleDBO.class, _id);
+        Assert.assertNotNull(update);
+        Assert.assertEquals(load, update);
     }
-
+    
     
 }
 

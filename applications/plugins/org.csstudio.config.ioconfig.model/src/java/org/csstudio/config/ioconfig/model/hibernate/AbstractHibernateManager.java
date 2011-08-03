@@ -21,7 +21,7 @@
  *
  * $Id: DesyKrykCodeTemplates.xml,v 1.7 2010/04/20 11:43:22 bknerr Exp $
  */
-package org.csstudio.config.ioconfig.model;
+package org.csstudio.config.ioconfig.model.hibernate;
 
 import java.util.HashSet;
 import java.util.Observable;
@@ -30,6 +30,16 @@ import java.util.Set;
 import javax.annotation.CheckForNull;
 import javax.annotation.Nonnull;
 
+import org.csstudio.config.ioconfig.model.AbstractNodeDBO;
+import org.csstudio.config.ioconfig.model.DocumentDBO;
+import org.csstudio.config.ioconfig.model.FacilityDBO;
+import org.csstudio.config.ioconfig.model.IocDBO;
+import org.csstudio.config.ioconfig.model.NodeImageDBO;
+import org.csstudio.config.ioconfig.model.PV2IONameMatcherModelDBO;
+import org.csstudio.config.ioconfig.model.PersistenceException;
+import org.csstudio.config.ioconfig.model.SearchNodeDBO;
+import org.csstudio.config.ioconfig.model.SensorsDBO;
+import org.csstudio.config.ioconfig.model.VirtualRoot;
 import org.csstudio.config.ioconfig.model.pbmodel.ChannelDBO;
 import org.csstudio.config.ioconfig.model.pbmodel.ChannelStructureDBO;
 import org.csstudio.config.ioconfig.model.pbmodel.GSDFileDBO;
@@ -57,6 +67,7 @@ public abstract class AbstractHibernateManager extends Observable implements IHi
     
     private static final Logger LOG = LoggerFactory.getLogger(HibernateTestManager.class);
     private static final Set<Class<?>> CLASSES = new HashSet<Class<?>>();
+    
     private SessionFactory _sessionFactoryDevDB;
     private Session _sessionLazy;
     
@@ -64,9 +75,9 @@ public abstract class AbstractHibernateManager extends Observable implements IHi
      * The timeout in sec.
      */
     private int _timeout = 10;
-
+    
     private Transaction _trx;
-
+    
     /**
      * Constructor.
      */
@@ -91,30 +102,30 @@ public abstract class AbstractHibernateManager extends Observable implements IHi
         CLASSES.add(SensorsDBO.class);
         CLASSES.add(PV2IONameMatcherModelDBO.class);
     }
-
+    
     protected abstract void buildConifg();
-
+    
     @Override
     public final synchronized void closeSession() {
-        if( (_sessionLazy != null) && _sessionLazy.isOpen()) {
-//            _sessionLazy.close();
+        if( _sessionLazy != null && _sessionLazy.isOpen()) {
+            //            _sessionLazy.close();
             _sessionLazy.disconnect();
             _sessionLazy = null;
         }
-        if( (_sessionFactoryDevDB != null) && !_sessionFactoryDevDB.isClosed()) {
+        if( _sessionFactoryDevDB != null && !_sessionFactoryDevDB.isClosed()) {
             _sessionFactoryDevDB.close();
             _sessionFactoryDevDB = null;
         }
         LOG.info("DB Session  Factory closed");
         
     }
-
+    
     @Override
     @CheckForNull
     public final <T> T doInDevDBHibernateEager(@Nonnull final IHibernateCallback hibernateCallback) throws PersistenceException {
         try {
             initSessionFactoryDevDB();
-        } catch (Exception e) {
+        } catch (final Exception e) {
             throw new PersistenceException("Can't init Hibernate Session",e);
         }
         _trx = null;
@@ -126,7 +137,7 @@ public abstract class AbstractHibernateManager extends Observable implements IHi
             _trx.begin();
             result = execute(hibernateCallback, sessionEager);
             _trx.commit();
-        } catch (HibernateException ex) {
+        } catch (final HibernateException ex) {
             notifyObservers(ex);
             tryRollback(ex);
             throw new PersistenceException(ex);
@@ -138,7 +149,7 @@ public abstract class AbstractHibernateManager extends Observable implements IHi
         }
         return result;
     }
-
+    
     /**
      *
      * @param <T>
@@ -162,10 +173,10 @@ public abstract class AbstractHibernateManager extends Observable implements IHi
             _trx = _sessionLazy.getTransaction();
             _trx.setTimeout(_timeout);
             _trx.begin();
-            T result = execute(hibernateCallback, _sessionLazy);
+            final T result = execute(hibernateCallback, _sessionLazy);
             _trx.commit();
             return result;
-        } catch (HibernateException ex) {
+        } catch (final HibernateException ex) {
             tryRollback(ex);
             try {
                 if(_sessionLazy != null && _sessionLazy.isOpen()) {
@@ -177,26 +188,26 @@ public abstract class AbstractHibernateManager extends Observable implements IHi
             throw new PersistenceException(ex);
         }
     }
-
+    
     @CheckForNull
     final
     <T> T execute(@Nonnull final IHibernateCallback callback, @Nonnull final Session sess) {
         return callback.execute(sess);
     }
-
+    
     @Nonnull
     abstract AnnotationConfiguration getCfg();
-
+    
     private void initSessionFactoryDevDB() {
-        if( (_sessionFactoryDevDB != null) && !_sessionFactoryDevDB.isClosed()) {
+        if( _sessionFactoryDevDB != null && !_sessionFactoryDevDB.isClosed()) {
             return;
         }
         buildConifg();
-        SessionFactory buildSessionFactory = getCfg().buildSessionFactory();
+        final SessionFactory buildSessionFactory = getCfg().buildSessionFactory();
         setSessionFactory(buildSessionFactory);
         notifyObservers();
     }
-
+    
     /**
      * @return
      */
@@ -204,13 +215,13 @@ public abstract class AbstractHibernateManager extends Observable implements IHi
     public final boolean isConnected() {
         return _sessionFactoryDevDB != null ? _sessionFactoryDevDB.isClosed() : false;
     }
-
+    
     public final void setSessionFactory(@Nonnull final SessionFactory sf) {
         synchronized (HibernateManager.class) {
             _sessionFactoryDevDB = sf;
         }
     }
-
+    
     /**
      *
      * @param timeout
@@ -219,17 +230,17 @@ public abstract class AbstractHibernateManager extends Observable implements IHi
     public final void setTimeout(final int timeout) {
         _timeout = timeout;
     }
-
+    
     /**
      * @param ex
      * @throws PersistenceException
      */
-    final void tryRollback(@Nonnull HibernateException ex) throws PersistenceException {
+    final void tryRollback(@Nonnull final HibernateException ex) throws PersistenceException {
         notifyObservers(ex);
         if(_trx != null) {
             try {
                 _trx.rollback();
-            } catch (HibernateException exRb) {
+            } catch (final HibernateException exRb) {
                 LOG.error("Can't rollback", exRb);
             }
         }
@@ -240,5 +251,4 @@ public abstract class AbstractHibernateManager extends Observable implements IHi
     public static Set<Class<?>> getClasses() {
         return CLASSES;
     }
-    
 }
