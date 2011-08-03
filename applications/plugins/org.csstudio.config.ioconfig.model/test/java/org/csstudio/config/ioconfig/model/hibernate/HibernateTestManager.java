@@ -25,7 +25,6 @@ import java.util.List;
 
 import javax.annotation.Nonnull;
 
-import org.csstudio.config.ioconfig.model.hibernate.AbstractHibernateManager;
 import org.hibernate.cfg.AnnotationConfiguration;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

@@ -155,8 +155,6 @@ public class ChannelStructureDBO extends AbstractNodeDBO<ModuleDBO, ChannelDBO> 
                                                       isInput,
                                                       structer[sortIndex].getByteSize() < 8,
                                                       sortIndex);
-            
-            channel.setName(name + sortIndex);
             // Use setChannelType to reduce the local Updates.
             // Make a local Update after add all Channels.
             channel.setChannelType(structer[sortIndex]);

@@ -105,10 +105,10 @@ public class ChannelEditor extends AbstractNodeEditor<ChannelDBO> {
                 setWidgetName(channel, moduleChannelPrototype);
                 setChannelName(channel, moduleChannelPrototype);
             }
-            String oldAdr = channel.getEpicsAddressStringNH();
+            String oldAdr = channel.getEpicsAddressString();
             try {
                 channel.assembleEpicsAddressString();
-                String newAdr = channel.getEpicsAddressStringNH();
+                String newAdr = channel.getEpicsAddressString();
                 Text addressText = getAddressText();
                 if (addressText != null && !newAdr.equals(oldAdr)) {
                     addressText.setText(newAdr);
@@ -198,7 +198,7 @@ public class ChannelEditor extends AbstractNodeEditor<ChannelDBO> {
 		if (addressText != null) {
 			ChannelDBO channel = getNode();
 			if (channel.getName() != null) {
-				addressText.setText(channel.getEpicsAddressStringNH());
+				addressText.setText(channel.getEpicsAddressString());
 			}
 			addressText.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true,
 					true, 1, 1));

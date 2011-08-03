@@ -136,7 +136,7 @@ public class ModuleUnitTest {
         final ChannelStructureDBO simpleChannelStructure = ChannelStructureDBO.makeSimpleChannel(out, "", false, false);
         simpleChannelStructure.setSimple(true);
 
-        final ChannelDBO pureChannel = new ChannelDBO(simpleChannelStructure,false,false);
+        final ChannelDBO pureChannel = new ChannelDBO(simpleChannelStructure," ",false,false,-1);
         pureChannel.setName("PureChannel");
         pureChannel.setId(12);
         pureChannel.moveSortIndex((short) 0);

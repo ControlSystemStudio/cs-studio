@@ -61,7 +61,7 @@ public class CopyNodeUnitTest {
         final ModuleDBO module = new ModuleDBO(_slave);
         module.setName("Module");
         final ChannelStructureDBO sco = ChannelStructureDBO.makeChannelStructure(module,OUTPUT,DataType.INT8,"SCO ");
-        final ChannelDBO pci = new ChannelDBO(sco,INPUT,false);
+        final ChannelDBO pci = new ChannelDBO(sco," ",INPUT,false, -1);
         pci.setChannelType(DataType.INT16);
         pci.setName("PCI");
         module.localSave();
