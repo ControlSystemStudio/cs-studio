@@ -21,5 +21,6 @@ Bundle-ClassPath: .,
  libs/mail.jar,
  libs/commons-net-2.0.jar,
  libs/jsmpp-2.1.0.jar,
+ libs/comm.jar,
  libs/smslib-3.5.1.jar
 Bundle-Vendor: DESY <css-developer@desy.de>, Markus Moeller
