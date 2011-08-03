@@ -31,7 +31,7 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.Iterator;
 import java.util.List;
-import java.util.Map;
+import java.util.SortedMap;
 
 import javax.annotation.CheckForNull;
 import javax.annotation.Nonnull;
@@ -60,6 +60,7 @@ import org.csstudio.config.ioconfig.model.tools.NodeMap;
 import org.csstudio.config.ioconfig.view.actions.CreateStatisticAction;
 import org.csstudio.config.ioconfig.view.actions.CreateWinModAction;
 import org.csstudio.config.ioconfig.view.actions.CreateXMLConfigAction;
+import org.csstudio.config.ioconfig.view.serachview.SearchDialog;
 import org.csstudio.platform.ui.util.CustomMediaFactory;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
@@ -130,14 +131,487 @@ import org.slf4j.LoggerFactory;
  */
 public class ProfiBusTreeView extends Composite {
     
-    private static final Logger LOG = LoggerFactory.getLogger(ProfiBusTreeView.class);
+    /**
+     * @author Rickens Helge
+     * @author $Author: $
+     * @since 12.01.2011
+     */
+    private final class DBLoderJob extends Job {
+        /**
+         * Constructor.
+         * @param name The Taskname
+         */
+        protected DBLoderJob(@Nonnull final String name) {
+            super(name);
+        }
+        
+        @Override
+        @Nonnull
+        protected IStatus run(@Nonnull final IProgressMonitor monitor) {
+            monitor.beginTask("DBLoaderMonitor", IProgressMonitor.UNKNOWN);
+            monitor.setTaskName("Load \t-\tStart Time: " + new Date());
+            Repository.close();
+            try {
+                setLoad(Repository.load(FacilityDBO.class));
+                PlatformUI.getWorkbench().getDisplay().syncExec(new Runnable() {
+                    @Override
+                    public void run() {
+                        getViewer().setInput(getLoad());
+                        getViewer().getTree().setEnabled(true);
+                    }
+                });
+            } catch (final PersistenceException e) {
+                LOG.error("Can't read from Database!", e);
+                DeviceDatabaseErrorDialog.open(null, "Can't read from Database!", e);
+            }
+            monitor.done();
+            return Status.OK_STATUS;
+        }
+    }
+    /**
+     * 
+     * Delete the selected Nodes.
+     * 
+     * @author hrickens
+     * @author $Author: $
+     * @since 08.10.2010
+     */
+    private final class DeleteNodeActionExtension extends Action {
+        
+        public DeleteNodeActionExtension() {
+            // constructor
+        }
+        
+        /**
+         * @param errMsg
+         * @param errMsgHead
+         * @param dbClass
+         */
+        private void deleteFacility(@Nonnull final String errMsg,@Nullable final String errMsgHead,@Nonnull final NamedDBClass dbClass) {
+            final FacilityDBO fac = (FacilityDBO) dbClass;
+            try {
+                Repository.removeNode(fac);
+                getLoad().remove(fac);
+                getViewer().remove(getLoad());
+            } catch (final Exception e) {
+                ProfibusHelper.openErrorDialog(getSite().getShell(), errMsgHead, errMsg,
+                                               fac, e);
+                return;
+            }
+        }
+        
+        @Override
+        @SuppressWarnings("unchecked")
+        public void run() {
+            final String errMsg = "Device Data Base (DDB) Error\nCan't delete the %1s '%2s' (ID: %3s)";
+            final String errMsgHead = "Device Database Error";
+            final String message = String.format("Delete %1s: %2s", getSelectedNodes().toArray()[0]
+                                           .getClass().getSimpleName(), getSelectedNodes());
+            final boolean openConfirm = MessageDialog.openConfirm(getShell(), "Delete Node", message);
+            if (openConfirm) {
+                AbstractNodeDBO<?,?> parent = null;
+                NamedDBClass dbClass = null;
+                final Iterator<NamedDBClass> iterator = getSelectedNodes().iterator();
+                while (iterator.hasNext()) {
+                    dbClass = iterator.next();
+                    if (dbClass instanceof FacilityDBO) {
+                        deleteFacility(errMsg, errMsgHead, dbClass);
+                    } else if (dbClass instanceof AbstractNodeDBO) {
+                        try {
+                            parent = ((AbstractNodeDBO<?,?>) dbClass).delete();
+                        } catch (final PersistenceException e) {
+                            ProfibusHelper.openErrorDialog(getSite().getShell(),
+                                                           errMsgHead,
+                                                           errMsg,
+                                                           dbClass,
+                                                           e);
+                        }
+                    }
+                }
+                if (parent != null) {
+                    setSelectedNode(new StructuredSelection(parent));
+                    refresh(parent);
+                    getTreeViewer().setSelection(getSelectedNodes(), true);
+                } else {
+                    refresh();
+                }
+                _editNodeAction.run();
+            }
+        }
+    }
+    /**
+     * @author hrickens
+     * @author $Author: $
+     * @since 05.10.2010
+     */
+    private final class HibernateDBPreferenceChangeListener implements IPreferenceChangeListener {
+        
+        public HibernateDBPreferenceChangeListener() {
+            // Default Constructor.
+        }
+        
+        @Override
+        public void preferenceChange(@Nonnull final PreferenceChangeEvent event) {
+            final String property = event.getKey();
+            if (property.equals(DDB_PASSWORD) || property.equals(DDB_USER_NAME)
+                    || property.equals(DIALECT)
+                    || property.equals(HIBERNATE_CONNECTION_DRIVER_CLASS)
+                    || property.equals(HIBERNATE_CONNECTION_URL)) {
+                try {
+                    final List<FacilityDBO> load = Repository.load(FacilityDBO.class);
+                    setLoad(load);
+                } catch (final PersistenceException e) {
+                    setLoad(new ArrayList<FacilityDBO>());
+                    DeviceDatabaseErrorDialog.open(null,
+                                                   "Can't read from Database! Database Error.", e);
+                    LOG.error("Can't read from Database! Database Error.", e);
+                }
+                getViewer().getTree().removeAll();
+                getViewer().setInput(getLoad());
+                getViewer().refresh(false);
+            }
+        }
+    }
+    /**
+     * @author hrickens
+     * @author $Author: $
+     * @since 08.10.2010
+     */
+    private static final class InfoDialog extends Dialog {
+        
+        InfoDialog(@Nonnull final Shell parentShell) {
+            super(parentShell);
+        }
+        
+        @Override
+        @Nonnull
+        protected Control createDialogArea(@Nonnull final Composite parent) {
+            final Composite createDialogArea = (Composite) super.createDialogArea(parent);
+            createDialogArea.setLayoutData(new GridData(SWT.FILL, SWT.TOP, true, false));
+            
+            createDialogArea.setLayout(GridLayoutFactory.swtDefaults().equalWidth(true)
+                                       .numColumns(3).create());
+            Label label = new Label(createDialogArea, SWT.NONE);
+            label.setLayoutData(new GridData(SWT.BEGINNING, SWT.CENTER, false, false));
+            label.setText("Nodes: " + NodeMap.getNumberOfNodes());
+            
+            label = new Label(createDialogArea, SWT.NONE);
+            label.setLayoutData(new GridData(SWT.BEGINNING, SWT.CENTER, false, false));
+            
+            label = new Label(createDialogArea, SWT.NONE);
+            
+            label = new Label(createDialogArea, SWT.NONE);
+            label.setLayoutData(new GridData(SWT.BEGINNING, SWT.CENTER, false, false));
+            label.setText("Assemble: " + NodeMap.getCountAssembleEpicsAddressString());
+            
+            label = new Label(createDialogArea, SWT.NONE);
+            label.setLayoutData(new GridData(SWT.BEGINNING, SWT.CENTER, false, false));
+            label.setText("LocalUpdate: " + NodeMap.getLocalUpdate());
+            
+            label = new Label(createDialogArea, SWT.NONE);
+            label.setLayoutData(new GridData(SWT.BEGINNING, SWT.CENTER, false, false));
+            label.setText("ChannelConfig: " + NodeMap.getChannelConfigComposite());
+            
+            final Text text = new Text(createDialogArea, SWT.BORDER | SWT.H_SCROLL | SWT.V_SCROLL);
+            text.setLayoutData(new GridData(SWT.FILL, SWT.FILL, false, false, 3, 1));
+            
+            label = new Label(createDialogArea, SWT.NONE);
+            label.setLayoutData(new GridData(SWT.BEGINNING, SWT.CENTER, false, false));
+            createDialogArea.pack();
+            return createDialogArea;
+        }
+    }
+    
+    /**
+     *
+     * @author hrickens
+     * @author $Author: hrickens $
+     * @since 20.06.2007
+     */
+    class NameSorter extends ViewerSorter {
+        
+        @Override
+        public int category(@Nullable final Object element) {
+            return super.category(element);
+        }
+        
+        @Override
+        public int compare(@Nonnull final Viewer viewer, @Nullable final Object e1,
+                           @Nullable final Object e2) {
+            if ( e1 instanceof NamedDBClass && e2 instanceof NamedDBClass) {
+                final NamedDBClass node1 = (NamedDBClass) e1;
+                final NamedDBClass node2 = (NamedDBClass) e2;
+                if ( node1.getSortIndex() == null || node2.getSortIndex() == null) {
+                    return -1;
+                }
+                int sortIndex = node1.getSortIndex() - node2.getSortIndex().shortValue();
+                if (sortIndex == 0) {
+                    sortIndex = node1.getId() - node2.getId();
+                }
+                return sortIndex;
+            }
+            return 0;
+        }
+    }
+    /**
+     * @author hrickens
+     * @author $Author: $
+     * @since 07.10.2010
+     */
+    private final class NodeSelcetionChangedListener implements ISelectionChangedListener {
+        
+        public NodeSelcetionChangedListener() {
+            // Default Constructor
+        }
+        
+        @Override
+        public void selectionChanged(@Nonnull final SelectionChangedEvent event) {
+            if (event.getSelection() instanceof StructuredSelection) {
+                final StructuredSelection selection = (StructuredSelection) event.getSelection();
+                if (!selection.equals(getSelectedNodes())) {
+                    setSelectedNode(selection);
+                    if ( getSelectedNodes() != null && !getSelectedNodes().isEmpty()) {
+                        getEditNodeAction().run();
+                    }
+                }
+            }
+        }
+    }
+    /**
+     * 
+     * Paste a Node to the selected node in the Tree.
+     * 
+     * @author hrickens
+     * @author $Author: $
+     * @since 08.10.2010
+     */
+    private final class PasteNodeAction extends Action {
+        public PasteNodeAction() {
+            // Constructor
+        }
+        
+        private void copy2Parent(@Nonnull final AbstractNodeDBO selectedNode,
+                                 @Nonnull final AbstractNodeDBO node2Copy) throws PersistenceException {
+            AbstractNodeDBO<?,?> copy = null;
+            if (isMove()) {
+                final AbstractNodeDBO oldParent = node2Copy.getParent();
+                oldParent.removeChild(node2Copy);
+                final SortedMap<Short, AbstractNodeDBO<AbstractNodeDBO<?,?>, AbstractNodeDBO<?,?>>> childrenAsMap = selectedNode.getChildrenAsMap();
+                final AbstractNodeDBO<?,?> node = childrenAsMap.get(node2Copy.getSortIndex());
+                if (node != null) {
+                    final int freeStationAddress = selectedNode
+                    .getfirstFreeStationAddress(AbstractNodeDBO.getMaxStationAddress());
+                    node2Copy.setSortIndex(freeStationAddress);
+                }
+                selectedNode.addChild(node2Copy);
+                copy = node2Copy;
+                selectedNode.save();
+            } else {
+                // paste to a Parent
+                copy = node2Copy.copyThisTo(selectedNode);
+                copy.setDirty(true);
+                copy.setSortIndexNonHibernate(selectedNode
+                                              .getfirstFreeStationAddress(AbstractNodeDBO.getMaxStationAddress()));
+            }
+            getViewer().refresh();
+            getViewer().setSelection(new StructuredSelection(copy));
+        }
+        
+        /**
+         * @param selectedNode
+         * @param node2Copy
+         * @throws PersistenceException
+         */
+        private void copy2Sibling(@Nonnull final AbstractNodeDBO<?,?> selectedNode,
+                                  @Nonnull final AbstractNodeDBO node2Copy) throws PersistenceException {
+            AbstractNodeDBO<?,?> nodeCopy = null;
+            if (isMove()) {
+                final AbstractNodeDBO oldParent = node2Copy.getParent();
+                oldParent.removeChild(node2Copy);
+                final AbstractNodeDBO parent = selectedNode.getParent();
+                node2Copy.setSortIndex((int) selectedNode.getSortIndex());
+                parent.addChild(node2Copy);
+                parent.save();
+                nodeCopy = node2Copy;
+            } else {
+                // paste to a sibling
+                short targetIndex = selectedNode.getSortIndex();
+                targetIndex++;
+                nodeCopy = node2Copy.copyThisTo(selectedNode.getParent());
+                nodeCopy.moveSortIndex(targetIndex);
+            }
+            refresh();
+            getViewer().setSelection(new StructuredSelection(nodeCopy));
+        }
+        
+        private void copyFacility(@Nonnull final FacilityDBO selectedNode) throws PersistenceException {
+            final FacilityDBO copy = selectedNode.copyThisTo(null);
+            copy.setSortIndexNonHibernate(selectedNode.getSortIndex() + 1);
+            final List<FacilityDBO> load = getLoad();
+            load.add(copy);
+            getViewer().setInput(load);
+            getViewer().setSelection(new StructuredSelection(copy));
+        }
+        
+        @Override
+        public void run() {
+            final Object firstElement = getSelectedNodes().getFirstElement();
+            AbstractNodeDBO<?,?> selectedNode;
+            if (firstElement instanceof AbstractNodeDBO) {
+                selectedNode = (AbstractNodeDBO<?,?>) firstElement;
+            } else {
+                return;
+            }
+            
+            for (final AbstractNodeDBO<?,?> node2Copy : getCopiedNodesReferenceList()) {
+                try {
+                    if (node2Copy instanceof FacilityDBO) {
+                        copyFacility((FacilityDBO) selectedNode);
+                    } else if (selectedNode.getClass().isInstance(node2Copy.getParent())) {
+                        copy2Parent(selectedNode, node2Copy);
+                    } else if (selectedNode.getClass().isInstance(node2Copy)) {
+                        copy2Sibling(selectedNode, node2Copy);
+                    }
+                } catch (final PersistenceException e) {
+                    DeviceDatabaseErrorDialog.open(null, "Can't copy Node! Database Error.", e);
+                    LOG.error("Can't copy Node. Device Database Error", e);
+                }
+            }
+        }
+    }
+    /**
+     * 
+     * Rename the selected Node on the tree.
+     * 
+     * @author hrickens
+     * @author $Author: $
+     * @since 08.10.2010
+     */
+    private final class RenameNodeAction extends Action {
+        private final TreeEditor _editor;
+        
+        RenameNodeAction(@Nonnull final TreeEditor editor) {
+            _editor = editor;
+        }
+        
+        @Override
+        public void run() {
+            final Tree tree = getViewer().getTree();
+            final NamedDBClass node = (NamedDBClass) ((StructuredSelection) getViewer()
+                    .getSelection()).getFirstElement();
+            final TreeItem item = tree.getSelection()[0];
+            // Create a text field to do the editing
+            String editText = "";
+            if (node instanceof ChannelDBO) {
+                editText = ((ChannelDBO) node).getIoName();
+            } else {
+                editText = node.getName();
+            }
+            if (editText == null) {
+                editText = "";
+            }
+            final Text text = new Text(tree, SWT.BORDER);
+            text.setText(editText);
+            text.selectAll();
+            text.setFocus();
+            
+            // If the text field loses focus, set its text into the tree and end the editing session
+            text.addFocusListener(new FocusAdapter() {
+                @Override
+                public void focusLost(@Nonnull final FocusEvent event) {
+                    text.dispose();
+                }
+            });
+            
+            // Set the text field into the editor
+            _editor.setEditor(text, item);
+        }
+    }
+    /**
+     *
+     * @author hrickens
+     * @author $Author: hrickens $
+     * @since 20.06.2007
+     */
+    static class ViewLabelProvider extends ColumnLabelProvider {
+        
+        private static final Color PROGRAMMABLE_MARKER_COLOR = CustomMediaFactory.getInstance()
+        .getColor(255, 140, 0);
+        private static final Font PROGRAMMABLE_MARKER_FONT = CustomMediaFactory.getInstance()
+        .getFont("Tahoma", 8, SWT.ITALIC);
+        
+        @Override
+        @CheckForNull
+        public Color getBackground(@Nullable final Object element) {
+            if (haveProgrammableModule(element)) {
+                return PROGRAMMABLE_MARKER_COLOR;
+            }
+            return null;
+        }
+        
+        @Override
+        @CheckForNull
+        public Font getFont(@Nullable final Object element) {
+            if (haveProgrammableModule(element)) {
+                return PROGRAMMABLE_MARKER_FONT;
+            }
+            return null;
+        }
+        
+        @Override
+        @CheckForNull
+        public Image getImage(@Nullable final Object obj) {
+            if (obj instanceof AbstractNodeDBO) {
+                final AbstractNodeDBO<?,?> node = (AbstractNodeDBO<?,?>) obj;
+                return ConfigHelper.getImageFromNode(node);
+            }
+            return null;
+        }
+        
+        @Override
+        @CheckForNull
+        public String getText(@Nonnull final Object element) {
+            String text = super.getText(element);
+            final String[] split = text.split("(\r(\n)?)");
+            if (split.length > 1) {
+                text = split[0];
+            }
+            if (haveProgrammableModule(element)) {
+                return text + " [prog]";
+            }
+            return text;
+        }
+        
+        @Override
+        @CheckForNull
+        public String getToolTipText(@Nullable final Object element) {
+            if (haveProgrammableModule(element)) {
+                return "Is a programmable Module!";
+            }
+            return null;
+        }
+        
+        private boolean haveProgrammableModule(@Nullable final Object element) {
+            /*
+             * TODO: (hrickens) Das finden von Projekt Document Datein führt teilweise dazu das sich
+             * CSS Aufhängt! if (element instanceof Slave) { Slave node = (Slave) element;
+             * Set<Document> documents = node.getDocuments(); while (documents.iterator().hasNext())
+             * { Document doc = (Document) documents.iterator().next(); if (doc.getSubject() != null
+             * && doc.getSubject().startsWith("Projekt:")) { return true; } } }
+             */
+            return false;
+        }
+        
+    }
     /**
      * The ID of the View.
      */
     public static final String ID = ProfiBusTreeView.class.getName();
     public static final String PARENT_NODE_ID = "org.csstudio.config.ioconfig.parent.node";
+
+    protected static final Logger LOG = LoggerFactory.getLogger(ProfiBusTreeView.class);
+
     private final IViewSite _site;
-    
     /**
      * The ProfiBus Tree View.
      */
@@ -153,7 +627,7 @@ public class ProfiBusTreeView extends Composite {
     /**
      * A Copy from a Node.
      */
-    private List<AbstractNodeDBO> _copiedNodesReferenceList;
+    private List<AbstractNodeDBO<?,?>> _copiedNodesReferenceList;
     /**
      * Select _copiedNodesReferenceList Nodes a Copied or moved
      */
@@ -178,59 +652,55 @@ public class ProfiBusTreeView extends Composite {
      * A Action to delete the selected Node.
      */
     private IAction _deletNodeAction;
+    
     /**
      * The action to create the XML config file.
      */
     private IAction _createNewXMLConfigFile;
+    
     /**
      * The action to Copy a Node.
      */
     private IAction _copyNodeAction;
+    
     /**
      * The action to Cut a Node.
      */
     private Action _cutNodeAction;
+    
     /**
      * The action to paste the copied Node.
      */
     private IAction _pasteNodeAction;
+    
     /**
      * The Action to refresh the TreeView.
      */
     private IAction _refreshAction;
+    
     /**
      * The Action to open the Search-Dialog.
      */
     private IAction _searchAction;
+    
     /**
      * The Action to reassemble the EPICS Address String.
      */
     private IAction _assembleEpicsAddressStringAction;
+    
     /**
      * A List of all loaded {@link FacilityDBO}'s
      */
     private List<FacilityDBO> _load;
-    /**
-    * The actual open Node Config Editor.
-    */
-    private AbstractNodeEditor _openNodeEditor;
-    private Action _createNewSiemensConfigFile;
-
-    private CreateStatisticAction _createNewStatisticFile;
     
     /**
-     * Retrieves the image descriptor for specified image from the workbench's image registry.
-     * Unlike Images, image descriptors themselves do not need to be disposed.
-     *
-     * @param symbolicName
-     *            the symbolic name of the image; there are constants declared in this interface for
-     *            build-in images that come with the workbench
-     * @return the image descriptor, or null if not found
+     * The actual open Node Config Editor.
      */
-    @CheckForNull
-    private static ImageDescriptor getSharedImageDescriptor(@Nonnull final String symbolicName) {
-        return PlatformUI.getWorkbench().getSharedImages().getImageDescriptor(symbolicName);
-    }
+    private AbstractNodeEditor<?> _openNodeEditor;
+    
+    private Action _createNewSiemensConfigFile;
+    
+    private CreateStatisticAction _createNewStatisticFile;
     
     /**
      * @param parent
@@ -245,16 +715,16 @@ public class ProfiBusTreeView extends Composite {
                             @Nonnull final IViewSite site) {
         super(parent, style);
         new InstanceScope().getNode(IOConfigActivator.getDefault().getPluginId())
-                .addPreferenceChangeListener(new HibernateDBPreferenceChangeListener());
+        .addPreferenceChangeListener(new HibernateDBPreferenceChangeListener());
         _site = site;
         
-        GridLayout layout = GridLayoutFactory.fillDefaults().equalWidth(true).create();
+        final GridLayout layout = GridLayoutFactory.fillDefaults().equalWidth(true).create();
         this.setLayout(layout);
         this.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true));
         
         _viewer = new TreeViewer(this, SWT.MULTI | SWT.H_SCROLL | SWT.V_SCROLL | SWT.BORDER);
-        ColumnViewerEditorActivationStrategy editorActivationStrategy = new ColumnViewerEditorActivationStrategy(
-                                                                                                                 _viewer);
+        final ColumnViewerEditorActivationStrategy editorActivationStrategy = new ColumnViewerEditorActivationStrategy(
+                                                                                                                       _viewer);
         TreeViewerEditor.create(_viewer, editorActivationStrategy, ColumnViewerEditor.DEFAULT);
         _drillDownAdapter = new DrillDownAdapter(_viewer);
         _viewer.setContentProvider(new ProfibusTreeContentProvider());
@@ -290,58 +760,12 @@ public class ProfiBusTreeView extends Composite {
     }
     
     /**
-     * 
-     */
-    protected void runFacilityLoaderJob() {
-        getViewer().setInput("Please wait a moment");
-        AbstractNodeEditor openEditor = getOpenEditor();
-        if (openEditor != null) {
-            openEditor.perfromClose();
-        }
-        try {
-            getViewer().getTree().setEnabled(false);
-            Job loadJob = new DBLoderJob("DBLoader");
-            loadJob.setUser(true);
-            loadJob.schedule();
-        } catch (RuntimeException e) {
-            ProfibusHelper.openErrorDialog(_site.getShell(), "Data Base Error",
-                                           "Device Data Base (DDB) Error\n"
-                                                   + "Can't load the Root data", null, e);
-            return;
-        }
-    }
-    
-    /**
      * Add a new Facility to the tree root.
      *
-     * @param node
-     *            the new Facility.
+     * @param node the new Facility.
      */
-    public final void addFacility(@Nullable final AbstractNodeDBO node) {
-        if (node instanceof FacilityDBO) {
-            getViewer().setInput(node);
-        }
-    }
-    
-    private void contributeToActionBars() {
-        IActionBars bars = _site.getActionBars();
-        fillLocalToolBar(bars.getToolBarManager());
-    }
-    
-    /**
-     * Open a ConfigComposite for the tree selection Node.
-     */
-    protected void editNode() {
-        _editNodeAction.setEnabled(false);
-        
-        closeOpenEditor();
-        IHandlerService handlerService = (IHandlerService) _site.getService(IHandlerService.class);
-        try {
-            handlerService.executeCommand(CallEditor.ID, null);
-        } catch (Exception ex) {
-            LOG.error(ex.getMessage(), ex);
-        }
-        return;
+    public final void addFacility(@Nullable final FacilityDBO node) {
+        getViewer().setInput(node);
     }
     
     /**
@@ -352,6 +776,27 @@ public class ProfiBusTreeView extends Composite {
             _openNodeEditor.perfromClose();
             _openNodeEditor = null;
         }
+    }
+    
+    private void contributeToActionBars() {
+        final IActionBars bars = _site.getActionBars();
+        fillLocalToolBar(bars.getToolBarManager());
+    }
+    
+    /**
+     * Open a ConfigComposite for the tree selection Node.
+     */
+    protected void editNode() {
+        _editNodeAction.setEnabled(false);
+        
+        closeOpenEditor();
+        final IHandlerService handlerService = (IHandlerService) _site.getService(IHandlerService.class);
+        try {
+            handlerService.executeCommand(CallEditor.ID, null);
+        } catch (final Exception ex) {
+            LOG.error(ex.getMessage(), ex);
+        }
+        return;
     }
     
     /**
@@ -366,9 +811,9 @@ public class ProfiBusTreeView extends Composite {
     
     // CHECKSTYLE OFF: CyclomaticComplexity
     protected void fillContextMenu(@Nonnull final IMenuManager manager) {
-        StructuredSelection selection = getSelectedNodes();
+        final StructuredSelection selection = getSelectedNodes();
         if (selection != null) {
-            Object selectedNode = selection.getFirstElement();
+            final Object selectedNode = selection.getFirstElement();
             if (selectedNode instanceof FacilityDBO) {
                 setContriebutionActions("New Ioc", FacilityDBO.class, IocDBO.class, manager);
                 manager.add(new Separator());
@@ -404,24 +849,6 @@ public class ProfiBusTreeView extends Composite {
     }
     // CHECKSTYLE ON: CyclomaticComplexity
     
-    /**
-     * @param manager
-     */
-    private void fillModuleContextMenu(@Nonnull final IMenuManager manager) {
-        _newNodeAction.setText("Add new " + ModuleDBO.class.getSimpleName());
-        manager.add(_newNodeAction);
-        manager.add(_copyNodeAction);
-        manager.add(_cutNodeAction);
-        
-        boolean pasteEnable = (_copiedNodesReferenceList != null)
-                && (_copiedNodesReferenceList.size() > 0)
-                && (ModuleDBO.class.isInstance(_copiedNodesReferenceList.get(0)));
-        _pasteNodeAction.setEnabled(pasteEnable);
-        manager.add(_pasteNodeAction);
-        manager.add(_deletNodeAction);
-        manager.add(new Separator());
-    }
-    
     private void fillLocalToolBar(@Nonnull final IToolBarManager manager) {
         manager.add(new Separator());
         manager.add(makeNewFacilityAction());
@@ -433,12 +860,69 @@ public class ProfiBusTreeView extends Composite {
     }
     
     /**
+     * @param manager
+     */
+    private void fillModuleContextMenu(@Nonnull final IMenuManager manager) {
+        _newNodeAction.setText("Add new " + ModuleDBO.class.getSimpleName());
+        manager.add(_newNodeAction);
+        manager.add(_copyNodeAction);
+        manager.add(_cutNodeAction);
+        
+        final boolean pasteEnable = _copiedNodesReferenceList != null
+        && _copiedNodesReferenceList.size() > 0
+        && ModuleDBO.class.isInstance(_copiedNodesReferenceList.get(0));
+        _pasteNodeAction.setEnabled(pasteEnable);
+        manager.add(_pasteNodeAction);
+        manager.add(_deletNodeAction);
+        manager.add(new Separator());
+    }
+    
+    @Nonnull
+    protected IAction getDoubleClickAction() {
+        return _doubleClickAction;
+    }
+    
+    @Nonnull
+    protected final IAction getEditNodeAction() {
+        assert _editNodeAction != null;
+        return _editNodeAction;
+    }
+    
+    @Nonnull
+    protected List<FacilityDBO> getLoad() {
+        return _load;
+    }
+    
+    @CheckForNull
+    public AbstractNodeEditor<?> getOpenEditor() {
+        return _openNodeEditor;
+    }
+    
+    @CheckForNull
+    public StructuredSelection getSelectedNodes() {
+        return _selectedNode;
+    }
+    
+    /**
+     * @return the site
+     */
+    @Nonnull
+    public IViewSite getSite() {
+        return _site;
+    }
+    
+    /**
      *
      * @return the Control of the TreeViewer
      */
     @Nonnull
     public final TreeViewer getTreeViewer() {
         return getViewer();
+    }
+    
+    @Nonnull
+    public TreeViewer getViewer() {
+        return _viewer;
     }
     
     private void hookContextMenu() {
@@ -450,16 +934,16 @@ public class ProfiBusTreeView extends Composite {
                 ProfiBusTreeView.this.fillContextMenu(manager);
             }
         });
-        Menu menu = popupMenuMgr.createContextMenu(getViewer().getControl());
+        final Menu menu = popupMenuMgr.createContextMenu(getViewer().getControl());
         menu.setVisible(false);
         
         getViewer().getControl().setMenu(menu);
         _site.registerContextMenu(popupMenuMgr, getViewer());
         
-        ImageDescriptor iDesc = CustomMediaFactory.getInstance()
-                .getImageDescriptorFromPlugin(IOConfigActivatorUI.PLUGIN_ID,
-                                              "icons/collapse_all.gif");
-        Action collapseAllAction = new Action() {
+        final ImageDescriptor iDesc = CustomMediaFactory.getInstance()
+        .getImageDescriptorFromPlugin(IOConfigActivatorUI.PLUGIN_ID,
+                                      "icons/collapse_all.gif");
+        final Action collapseAllAction = new Action() {
             @Override
             public void run() {
                 getViewer().collapseAll();
@@ -469,8 +953,8 @@ public class ProfiBusTreeView extends Composite {
         collapseAllAction.setToolTipText("Collapse All");
         collapseAllAction.setImageDescriptor(iDesc);
         _site.getActionBars().getToolBarManager().add(collapseAllAction);
-        ToolBar tB = new ToolBar(getViewer().getTree(), SWT.NONE);
-        ToolBarManager tBM = new ToolBarManager(tB);
+        final ToolBar tB = new ToolBar(getViewer().getTree(), SWT.NONE);
+        final ToolBarManager tBM = new ToolBarManager(tB);
         tBM.add(collapseAllAction);
         tBM.createControl(getViewer().getTree());
     }
@@ -484,9 +968,8 @@ public class ProfiBusTreeView extends Composite {
         });
     }
     
-    @Nonnull
-    protected IAction getDoubleClickAction() {
-        return _doubleClickAction;
+    protected boolean isMove() {
+        return _move;
     }
     
     private void makeActions() {
@@ -515,12 +998,12 @@ public class ProfiBusTreeView extends Composite {
         _assembleEpicsAddressStringAction = new Action() {
             @Override
             public void run() {
-                Object selectedNode = getSelectedNodes().getFirstElement();
+                final Object selectedNode = getSelectedNodes().getFirstElement();
                 if (selectedNode instanceof AbstractNodeDBO) {
-                    AbstractNodeDBO node = (AbstractNodeDBO) selectedNode;
+                    final AbstractNodeDBO<?,?> node = (AbstractNodeDBO<?,?>) selectedNode;
                     try {
                         node.assembleEpicsAddressString();
-                    } catch (PersistenceException e) {
+                    } catch (final PersistenceException e) {
                         // TODO Handle DDB Error
                         e.printStackTrace();
                     }
@@ -529,31 +1012,62 @@ public class ProfiBusTreeView extends Composite {
         };
         _assembleEpicsAddressStringAction.setText("Refresh EPCICS Adr");
         _assembleEpicsAddressStringAction
-                .setToolTipText("Refesh from all childen the EPICS Address Strings");
+        .setToolTipText("Refesh from all childen the EPICS Address Strings");
         _assembleEpicsAddressStringAction.setImageDescriptor(CustomMediaFactory.getInstance()
-                .getImageDescriptorFromPlugin(IOConfigActivatorUI.PLUGIN_ID, "icons/refresh.gif"));
+                                                             .getImageDescriptorFromPlugin(IOConfigActivatorUI.PLUGIN_ID, "icons/refresh.gif"));
         
     }
     
-    private void makeCreateNewXMLConfigFile() {
-        _createNewXMLConfigFile = new CreateXMLConfigAction("Create EPICS", this);
-        _createNewXMLConfigFile.setToolTipText("Action Create tooltip");
-        _createNewXMLConfigFile
-                .setImageDescriptor(getSharedImageDescriptor(ISharedImages.IMG_OBJ_FILE));
+    private void makeCopyNodeAction() {
+        _copyNodeAction = new Action() {
+            
+            @Override
+            @SuppressWarnings("unchecked")
+            public void run() {
+                setCopiedNodesReferenceList(getSelectedNodes().toList());
+                setMove(false);
+            }
+        };
+        _copyNodeAction.setText("&Copy");
+        _copyNodeAction.setToolTipText("Copy this Node");
+        _copyNodeAction.setImageDescriptor(getSharedImageDescriptor(ISharedImages.IMG_TOOL_COPY));
     }
     
     private void makeCreateNewSiemensConfigFile() {
         _createNewSiemensConfigFile = new CreateWinModAction("Create WinMod", this);
         _createNewSiemensConfigFile.setToolTipText("Action Create tooltip");
         _createNewSiemensConfigFile
-                .setImageDescriptor(getSharedImageDescriptor(ISharedImages.IMG_OBJ_FILE));
+        .setImageDescriptor(getSharedImageDescriptor(ISharedImages.IMG_OBJ_FILE));
     }
     
     private void makeCreateNewStatisticFile() {
         _createNewStatisticFile = new CreateStatisticAction("Create Statistik", this);
         _createNewStatisticFile.setToolTipText("Action Create tooltip");
         _createNewStatisticFile
-                .setImageDescriptor(getSharedImageDescriptor(ISharedImages.IMG_OBJ_FILE));
+        .setImageDescriptor(getSharedImageDescriptor(ISharedImages.IMG_OBJ_FILE));
+    }
+    
+    private void makeCreateNewXMLConfigFile() {
+        _createNewXMLConfigFile = new CreateXMLConfigAction("Create EPICS", this);
+        _createNewXMLConfigFile.setToolTipText("Action Create tooltip");
+        _createNewXMLConfigFile
+        .setImageDescriptor(getSharedImageDescriptor(ISharedImages.IMG_OBJ_FILE));
+    }
+    
+    private void makeCutNodeAction() {
+        _cutNodeAction = new Action() {
+            
+            @Override
+            @SuppressWarnings("unchecked")
+            public void run() {
+                setCopiedNodesReferenceList(getSelectedNodes().toList());
+                setMove(true);
+            }
+        };
+        _cutNodeAction.setText("Cut");
+        _cutNodeAction.setAccelerator(SWT.CTRL | 'x');
+        _cutNodeAction.setToolTipText("Cut this Node");
+        _cutNodeAction.setImageDescriptor(getSharedImageDescriptor(ISharedImages.IMG_TOOL_CUT));
     }
     
     private void makeDeletNodeAction() {
@@ -562,7 +1076,7 @@ public class ProfiBusTreeView extends Composite {
         _deletNodeAction.setAccelerator(SWT.DEL);
         _deletNodeAction.setToolTipText("Delete this Node");
         _deletNodeAction
-                .setImageDescriptor(getSharedImageDescriptor(ISharedImages.IMG_OBJS_ERROR_TSK));
+        .setImageDescriptor(getSharedImageDescriptor(ISharedImages.IMG_OBJS_ERROR_TSK));
     }
     
     /**
@@ -581,7 +1095,7 @@ public class ProfiBusTreeView extends Composite {
         _editNodeAction.setText("Edit");
         _editNodeAction.setToolTipText("Edit Node");
         _editNodeAction
-                .setImageDescriptor(getSharedImageDescriptor(ISharedImages.IMG_TOOL_NEW_WIZARD));
+        .setImageDescriptor(getSharedImageDescriptor(ISharedImages.IMG_TOOL_NEW_WIZARD));
         
     }
     
@@ -599,7 +1113,7 @@ public class ProfiBusTreeView extends Composite {
         _newChildrenNodeAction.setToolTipText("Action 1 tooltip");
         _newChildrenNodeAction.setAccelerator('n');
         _newChildrenNodeAction
-                .setImageDescriptor(getSharedImageDescriptor(ISharedImages.IMG_OBJ_ADD));
+        .setImageDescriptor(getSharedImageDescriptor(ISharedImages.IMG_OBJ_ADD));
     }
     
     /**
@@ -607,16 +1121,16 @@ public class ProfiBusTreeView extends Composite {
      */
     @Nonnull
     private Action makeNewFacilityAction() {
-        Action newFacilityAction = new Action() {
+        final Action newFacilityAction = new Action() {
             
             @Override
             public void run() {
                 closeOpenEditor();
-                IHandlerService handlerService = (IHandlerService) getSite()
-                        .getService(IHandlerService.class);
+                final IHandlerService handlerService = (IHandlerService) getSite()
+                .getService(IHandlerService.class);
                 try {
                     handlerService.executeCommand(CallNewFacilityEditor.ID, null);
-                } catch (Exception ex) {
+                } catch (final Exception ex) {
                     LOG.error(ex.getMessage(), ex);
                 }
             }
@@ -624,7 +1138,7 @@ public class ProfiBusTreeView extends Composite {
         newFacilityAction.setText("new Facility");
         newFacilityAction.setToolTipText("Create a new Facility");
         newFacilityAction
-                .setImageDescriptor(getSharedImageDescriptor(ISharedImages.IMG_TOOL_NEW_WIZARD));
+        .setImageDescriptor(getSharedImageDescriptor(ISharedImages.IMG_TOOL_NEW_WIZARD));
         return newFacilityAction;
         
     }
@@ -644,38 +1158,7 @@ public class ProfiBusTreeView extends Composite {
         _newNodeAction.setText("New");
         _newNodeAction.setToolTipText("Action 1 tooltip");
         _newNodeAction
-                .setImageDescriptor(getSharedImageDescriptor(ISharedImages.IMG_ETOOL_HOME_NAV));
-    }
-    
-    private void makeCopyNodeAction() {
-        _copyNodeAction = new Action() {
-            
-            @Override
-            @SuppressWarnings("unchecked")
-            public void run() {
-                _copiedNodesReferenceList = getSelectedNodes().toList();
-                setMove(false);
-            }
-        };
-        _copyNodeAction.setText("&Copy");
-        _copyNodeAction.setToolTipText("Copy this Node");
-        _copyNodeAction.setImageDescriptor(getSharedImageDescriptor(ISharedImages.IMG_TOOL_COPY));
-    }
-    
-    private void makeCutNodeAction() {
-        _cutNodeAction = new Action() {
-            
-            @Override
-            @SuppressWarnings("unchecked")
-            public void run() {
-                _copiedNodesReferenceList = getSelectedNodes().toList();
-                setMove(true);
-            }
-        };
-        _cutNodeAction.setText("Cut");
-        _cutNodeAction.setAccelerator(SWT.CTRL | 'x');
-        _cutNodeAction.setToolTipText("Cut this Node");
-        _cutNodeAction.setImageDescriptor(getSharedImageDescriptor(ISharedImages.IMG_TOOL_CUT));
+        .setImageDescriptor(getSharedImageDescriptor(ISharedImages.IMG_ETOOL_HOME_NAV));
     }
     
     private void makePasteNodeAction() {
@@ -685,36 +1168,7 @@ public class ProfiBusTreeView extends Composite {
         _pasteNodeAction.setToolTipText("Paste this Node");
         _pasteNodeAction.setImageDescriptor(getSharedImageDescriptor(ISharedImages.IMG_TOOL_PASTE));
         _pasteNodeAction
-                .setDisabledImageDescriptor(getSharedImageDescriptor(ISharedImages.IMG_TOOL_PASTE_DISABLED));
-        
-    }
-    
-    /**
-     * Generate a Action that open the {@link SearchDialog}.
-     */
-    private void makeSearchAction() {
-        _searchAction = new Action() {
-            
-            @Override
-            public void run() {
-                SearchDialog searchDialog = new SearchDialog(getShell(), ProfiBusTreeView.this);
-                searchDialog.open();
-            }
-            
-        };
-        _searchAction.setText("Search");
-        _searchAction.setToolTipText("Search a Node");
-        _searchAction.setImageDescriptor(CustomMediaFactory.getInstance()
-                .getImageDescriptorFromPlugin(IOConfigActivatorUI.PLUGIN_ID, "icons/search.png"));
-    }
-    
-    private void makeTreeNodeRenameAction() {
-        
-        // Create the editor and set its attributes
-        final TreeEditor editor = new TreeEditor(getViewer().getTree());
-        editor.horizontalAlignment = SWT.LEFT;
-        editor.grabHorizontal = true;
-        _doubleClickAction = new RenameNodeAction(editor);
+        .setDisabledImageDescriptor(getSharedImageDescriptor(ISharedImages.IMG_TOOL_PASTE_DISABLED));
         
     }
     
@@ -729,11 +1183,60 @@ public class ProfiBusTreeView extends Composite {
         _refreshAction.setText("Reload");
         _refreshAction.setToolTipText("Reload from the DataBase.");
         _refreshAction.setImageDescriptor(CustomMediaFactory.getInstance()
-                .getImageDescriptorFromPlugin(IOConfigActivatorUI.PLUGIN_ID, "icons/refresh.gif"));
+                                          .getImageDescriptorFromPlugin(IOConfigActivatorUI.PLUGIN_ID, "icons/refresh.gif"));
     }
     
-    public final void reload() {
-        _refreshAction.run();
+    /**
+     * Generate a Action that open the {@link SearchDialog}.
+     */
+    private void makeSearchAction() {
+        _searchAction = new Action() {
+            
+            @Override
+            public void run() {
+                final SearchDialog searchDialog = new SearchDialog(getShell(), ProfiBusTreeView.this);
+                searchDialog.open();
+            }
+            
+        };
+        _searchAction.setText("Search");
+        _searchAction.setToolTipText("Search a Node");
+        _searchAction.setImageDescriptor(CustomMediaFactory.getInstance()
+                                         .getImageDescriptorFromPlugin(IOConfigActivatorUI.PLUGIN_ID, "icons/search.png"));
+    }
+    
+    private void makeTreeNodeRenameAction() {
+        
+        // Create the editor and set its attributes
+        final TreeEditor editor = new TreeEditor(getViewer().getTree());
+        editor.horizontalAlignment = SWT.LEFT;
+        editor.grabHorizontal = true;
+        _doubleClickAction = new RenameNodeAction(editor);
+        
+    }
+    
+    private void openEditor(@Nonnull final String editorID) {
+        final IHandlerService handlerService = (IHandlerService) _site.getService(IHandlerService.class);
+        try {
+            closeOpenEditor();
+            handlerService.executeCommand(editorID, null);
+        } catch (final Exception ex) {
+            LOG.error(ex.getMessage(), ex);
+        }
+    }
+    
+    protected void openInfoDialog() {
+        final Shell shell = new Shell(getShell(), SWT.DIALOG_TRIM | SWT.PRIMARY_MODAL);
+        final Dialog infoDialog = new InfoDialog(shell);
+        infoDialog.open();
+    }
+    
+    protected void openNewEmptyChildrenNode() {
+        openEditor(CallNewChildrenNodeEditor.getEditorID());
+    }
+    
+    private void openNewEmptySiblingNode() {
+        openEditor(CallNewSiblingNodeEditor.getEditorID());
     }
     
     /** refresh the Tree. Reload all Nodes */
@@ -750,6 +1253,38 @@ public class ProfiBusTreeView extends Composite {
      */
     public final void refresh(@Nullable final Object element) {
         getViewer().refresh(element, true);
+    }
+    
+    public final void reload() {
+        _refreshAction.run();
+    }
+    
+    public void removeOpenEditor(@Nullable final AbstractNodeEditor<?> openNodeEditor) {
+        if (_openNodeEditor != null && _openNodeEditor.equals(openNodeEditor)) {
+            _openNodeEditor = null;
+        }
+    }
+    
+    /**
+     * 
+     */
+    protected void runFacilityLoaderJob() {
+        getViewer().setInput("Please wait a moment");
+        final AbstractNodeEditor<?> openEditor = getOpenEditor();
+        if (openEditor != null) {
+            openEditor.perfromClose();
+        }
+        try {
+            getViewer().getTree().setEnabled(false);
+            final Job loadJob = new DBLoderJob("DBLoader");
+            loadJob.setUser(true);
+            loadJob.schedule();
+        } catch (final RuntimeException e) {
+            ProfibusHelper.openErrorDialog(_site.getShell(), "Data Base Error",
+                                           "Device Data Base (DDB) Error\n"
+                                           + "Can't load the Root data", null, e);
+            return;
+        }
     }
     
     /**
@@ -772,12 +1307,12 @@ public class ProfiBusTreeView extends Composite {
                                          @Nonnull final Class<?> childClazz,
                                          @Nonnull final IMenuManager manager) {
         _newChildrenNodeAction.setText(text);
-        boolean pasteEnable = (_copiedNodesReferenceList != null)
-                && (_copiedNodesReferenceList.size() > 0)
-                && (clazz.isInstance(_copiedNodesReferenceList.get(0))
-                        || childClazz.isInstance(_copiedNodesReferenceList.get(0)) || (clazz
-                        .equals(FacilityDBO.class) && FacilityDBO.class
-                        .isInstance(_copiedNodesReferenceList.get(0))));
+        final boolean pasteEnable = _copiedNodesReferenceList != null
+        && _copiedNodesReferenceList.size() > 0
+        && (clazz.isInstance(_copiedNodesReferenceList.get(0))
+                || childClazz.isInstance(_copiedNodesReferenceList.get(0)) || clazz
+                .equals(FacilityDBO.class) && FacilityDBO.class
+                .isInstance(_copiedNodesReferenceList.get(0)));
         _pasteNodeAction.setEnabled(pasteEnable);
         manager.add(_newChildrenNodeAction);
         manager.add(_copyNodeAction);
@@ -786,596 +1321,45 @@ public class ProfiBusTreeView extends Composite {
         manager.add(_deletNodeAction);
     }
     
-    private void openEditor(@Nonnull final String editorID) {
-        IHandlerService handlerService = (IHandlerService) _site.getService(IHandlerService.class);
-        try {
-            closeOpenEditor();
-            handlerService.executeCommand(editorID, null);
-        } catch (Exception ex) {
-            LOG.error(ex.getMessage(), ex);
-        }
+    protected void setLoad(@Nonnull final List<FacilityDBO> load) {
+        _load = load;
     }
     
-    protected void openInfoDialog() {
-        Shell shell = new Shell(getShell(), SWT.DIALOG_TRIM | SWT.PRIMARY_MODAL);
-        Dialog infoDialog = new InfoDialog(shell);
-        infoDialog.open();
-    }
-    
-    protected void openNewEmptyChildrenNode() {
-        openEditor(CallNewChildrenNodeEditor.getEditorID());
-    }
-    
-    private void openNewEmptySiblingNode() {
-        openEditor(CallNewSiblingNodeEditor.getEditorID());
-    }
-    
-    /**
-     * @return the site
-     */
-    @Nonnull
-    public IViewSite getSite() {
-        return _site;
+    protected void setMove(final boolean move) {
+        _move = move;
     }
     
     /**
      * @param abstractNodeEditor
      */
-    public void setOpenEditor(@Nullable final AbstractNodeEditor openNodeEditor) {
+    public void setOpenEditor(@Nullable final AbstractNodeEditor<?> openNodeEditor) {
         _openNodeEditor = openNodeEditor;
     }
     
-    public void removeOpenEditor(@Nullable final AbstractNodeEditor openNodeEditor) {
-        if (_openNodeEditor != null && _openNodeEditor.equals(openNodeEditor)) {
-            _openNodeEditor = null;
-        }
-    }
-    
-    @CheckForNull
-    public AbstractNodeEditor getOpenEditor() {
-        return _openNodeEditor;
-    }
-    
-    protected void setSelectedNode(@Nullable StructuredSelection selectedNode) {
+    protected void setSelectedNode(@Nullable final StructuredSelection selectedNode) {
         _selectedNode = selectedNode;
     }
     
+    /**
+     * Retrieves the image descriptor for specified image from the workbench's image registry.
+     * Unlike Images, image descriptors themselves do not need to be disposed.
+     *
+     * @param symbolicName
+     *            the symbolic name of the image; there are constants declared in this interface for
+     *            build-in images that come with the workbench
+     * @return the image descriptor, or null if not found
+     */
     @CheckForNull
-    public StructuredSelection getSelectedNodes() {
-        return _selectedNode;
-    }
-    
-    @Nonnull
-    protected TreeViewer getViewer() {
-        return _viewer;
-    }
-    
-    protected void setLoad(@Nonnull List<FacilityDBO> load) {
-        _load = load;
-    }
-    
-    @Nonnull
-    protected List<FacilityDBO> getLoad() {
-        return _load;
-    }
-    
-    @Nonnull
-    protected final IAction getEditNodeAction() {
-        assert _editNodeAction != null;
-        return _editNodeAction;
-    }
-    
-    protected void setMove(boolean move) {
-        _move = move;
+    private static ImageDescriptor getSharedImageDescriptor(@Nonnull final String symbolicName) {
+        return PlatformUI.getWorkbench().getSharedImages().getImageDescriptor(symbolicName);
     }
 
-    protected boolean isMove() {
-        return _move;
+    protected final void setCopiedNodesReferenceList(@Nonnull final List<AbstractNodeDBO<?,?>> copiedNodesReferenceList) {
+        _copiedNodesReferenceList = copiedNodesReferenceList;
     }
 
-    /**
-     * @author Rickens Helge
-     * @author $Author: $
-     * @since 12.01.2011
-     */
-    private final class DBLoderJob extends Job {
-        /**
-         * Constructor.
-         * @param name The Taskname
-         */
-        private DBLoderJob(@Nonnull String name) {
-            super(name);
-        }
-        
-        @Override
-        @Nonnull
-        protected IStatus run(@Nonnull final IProgressMonitor monitor) {
-            monitor.beginTask("DBLoaderMonitor", IProgressMonitor.UNKNOWN);
-            monitor.setTaskName("Load \t-\tStart Time: " + new Date());
-            Repository.close();
-            try {
-                setLoad(Repository.load(FacilityDBO.class));
-                PlatformUI.getWorkbench().getDisplay().syncExec(new Runnable() {
-                    @Override
-                    public void run() {
-                        getViewer().setInput(getLoad());
-                        getViewer().getTree().setEnabled(true);
-                    }
-                });
-            } catch (PersistenceException e) {
-                DeviceDatabaseErrorDialog.open(null, "Can't read from Database!", e);
-                LOG.error("Can't read from Database!", e);
-            }
-            monitor.done();
-            return Status.OK_STATUS;
-        }
-    }
-    
-    /**
-     * 
-     * Rename the selected Node on the tree. 
-     * 
-     * @author hrickens
-     * @author $Author: $
-     * @since 08.10.2010
-     */
-    private final class RenameNodeAction extends Action {
-        private final TreeEditor _editor;
-        
-        RenameNodeAction(@Nonnull TreeEditor editor) {
-            _editor = editor;
-        }
-        
-        @Override
-        public void run() {
-            Tree tree = getViewer().getTree();
-            final NamedDBClass node = (NamedDBClass) ((StructuredSelection) getViewer()
-                    .getSelection()).getFirstElement();
-            final TreeItem item = tree.getSelection()[0];
-            // Create a text field to do the editing
-            String editText = "";
-            if (node instanceof ChannelDBO) {
-                editText = ((ChannelDBO) node).getIoName();
-            } else {
-                editText = node.getName();
-            }
-            if (editText == null) {
-                editText = "";
-            }
-            final Text text = new Text(tree, SWT.BORDER);
-            text.setText(editText);
-            text.selectAll();
-            text.setFocus();
-            
-            // If the text field loses focus, set its text into the tree and end the editing session
-            text.addFocusListener(new FocusAdapter() {
-                @Override
-                public void focusLost(@Nonnull final FocusEvent event) {
-                    text.dispose();
-                }
-            });
-            
-            // Set the text field into the editor
-            _editor.setEditor(text, item);
-        }
-    }
-    
-    /**
-     * 
-     * Paste a Node to the selected node in the Tree. 
-     * 
-     * @author hrickens
-     * @author $Author: $
-     * @since 08.10.2010
-     */
-    private final class PasteNodeAction extends Action {
-        public PasteNodeAction() {
-            // Constructor
-        }
-        
-        @Override
-        public void run() {
-            Object firstElement = getSelectedNodes().getFirstElement();
-            AbstractNodeDBO selectedNode;
-            if (firstElement instanceof AbstractNodeDBO) {
-                selectedNode = (AbstractNodeDBO) firstElement;
-            } else {
-                return;
-            }
-            
-            for (AbstractNodeDBO node2Copy : _copiedNodesReferenceList) {
-                try {
-                    if (node2Copy instanceof FacilityDBO) {
-                        copyFacility(selectedNode);
-                    } else if (selectedNode.getClass().isInstance(node2Copy.getParent())) {
-                        copy2Parent(selectedNode, node2Copy);
-                    } else if (selectedNode.getClass().isInstance(node2Copy)) {
-                        copy2Sibling(selectedNode, node2Copy);
-                    }
-                } catch (PersistenceException e) {
-                    DeviceDatabaseErrorDialog.open(null, "Can't copy Node! Database Error.", e);
-                    LOG.error("Can't copy Node. Device Database Error", e);
-                }
-            }
-        }
-        
-        /**
-         * @param selectedNode
-         * @param node2Copy
-         * @throws PersistenceException 
-         */
-        private void copy2Parent(@Nonnull AbstractNodeDBO selectedNode,
-                                 @Nonnull AbstractNodeDBO node2Copy) throws PersistenceException {
-            AbstractNodeDBO copy = null;
-            if (isMove()) {
-                AbstractNodeDBO oldParent = node2Copy.getParent();
-                oldParent.removeChild(node2Copy);
-                Map<Short, AbstractNodeDBO<AbstractNodeDBO, AbstractNodeDBO>> childrenAsMap = selectedNode.getChildrenAsMap();
-                AbstractNodeDBO node = childrenAsMap.get(node2Copy.getSortIndex());
-                if (node != null) {
-                    int freeStationAddress = selectedNode
-                            .getfirstFreeStationAddress(AbstractNodeDBO.getMaxStationAddress());
-                    node2Copy.setSortIndex(freeStationAddress);
-                }
-                selectedNode.addChild(node2Copy);
-                copy = node2Copy;
-                selectedNode.save();
-            } else {
-                // paste to a Parent
-                copy = node2Copy.copyThisTo(selectedNode);
-                copy.setDirty(true);
-                copy.setSortIndexNonHibernate(selectedNode
-                        .getfirstFreeStationAddress(AbstractNodeDBO.getMaxStationAddress()));
-            }
-            getViewer().refresh();
-            getViewer().setSelection(new StructuredSelection(copy));
-        }
-        
-        /**
-         * @param selectedNode
-         * @param node2Copy
-         * @throws PersistenceException 
-         */
-        private void copy2Sibling(@Nonnull AbstractNodeDBO selectedNode,
-                                  @Nonnull AbstractNodeDBO node2Copy) throws PersistenceException {
-            AbstractNodeDBO nodeCopy = null;
-            if (isMove()) {
-                AbstractNodeDBO oldParent = node2Copy.getParent();
-                oldParent.removeChild(node2Copy);
-                AbstractNodeDBO parent = selectedNode.getParent();
-                node2Copy.setSortIndex((int) selectedNode.getSortIndex());
-                parent.addChild(node2Copy);
-                parent.save();
-                nodeCopy = node2Copy;
-            } else {
-                // paste to a sibling
-                short targetIndex = (selectedNode.getSortIndex());
-                targetIndex++;
-                nodeCopy = node2Copy.copyThisTo(selectedNode.getParent());
-                nodeCopy.moveSortIndex(targetIndex);
-            }
-            refresh();
-            getViewer().setSelection(new StructuredSelection(nodeCopy));
-        }
-        
-        /**
-         * @param selectedNode
-         * @throws PersistenceException 
-         */
-        private void copyFacility(@Nonnull AbstractNodeDBO selectedNode)
-                                                                        throws PersistenceException {
-            final FacilityDBO copy = (FacilityDBO) selectedNode.copyThisTo(null);
-            copy.setSortIndexNonHibernate(selectedNode.getSortIndex() + 1);
-            List<FacilityDBO> load = getLoad();
-            load.add(copy);
-            getViewer().setInput(load);
-            getViewer().setSelection(new StructuredSelection(copy));
-        }
-    }
-    
-    /**
-     * 
-     * Delete the selected Nodes. 
-     * 
-     * @author hrickens
-     * @author $Author: $
-     * @since 08.10.2010
-     */
-    private final class DeleteNodeActionExtension extends Action {
-        
-        public DeleteNodeActionExtension() {
-            // constructor
-        }
-        
-        @Override
-        @SuppressWarnings("unchecked")
-        public void run() {
-            String errMsg = "Device Data Base (DDB) Error\nCan't delete the %1s '%2s' (ID: %3s)";
-            String errMsgHead = "Device Database Error";
-            boolean openConfirm = MessageDialog.openConfirm(getShell(), "Delete Node", String
-                    .format("Delete %1s: %2s", getSelectedNodes().toArray()[0].getClass()
-                            .getSimpleName(), getSelectedNodes()));
-            if (openConfirm) {
-                AbstractNodeDBO parent = null;
-                NamedDBClass dbClass = null;
-                Iterator<NamedDBClass> iterator = getSelectedNodes().iterator();
-                while (iterator.hasNext()) {
-                    dbClass = iterator.next();
-                    if (dbClass instanceof FacilityDBO) {
-                        deleteFacility(errMsg, errMsgHead, dbClass);
-                    } else if (dbClass instanceof AbstractNodeDBO) {
-                        parent = deleteNode(errMsg, errMsgHead, dbClass);
-                    }
-                }
-                if (parent != null) {
-                    setSelectedNode(new StructuredSelection(parent));
-                    refresh(parent);
-                    getTreeViewer().setSelection(getSelectedNodes(), true);
-                } else {
-                    refresh();
-                }
-                _editNodeAction.run();
-            }
-        }
-
-        /**
-         * @param errMsg
-         * @param errMsgHead
-         * @param dbClass
-         * @return
-         */
-        @CheckForNull
-        private AbstractNodeDBO deleteNode(@Nonnull String errMsg,@Nullable String errMsgHead,@Nonnull NamedDBClass dbClass) {
-            AbstractNodeDBO parent;
-            AbstractNodeDBO node = (AbstractNodeDBO) dbClass;
-            parent = node.getParent();
-            parent.removeChild(node);
-            try {
-                parent.save();
-            } catch (PersistenceException e) {
-                ProfibusHelper.openErrorDialog(getSite().getShell(), errMsgHead, errMsg,
-                                               node, e);
-                return null;
-            }
-            return parent;
-        }
-
-        /**
-         * @param errMsg
-         * @param errMsgHead
-         * @param dbClass
-         */
-        private void deleteFacility(@Nonnull String errMsg,@Nullable String errMsgHead,@Nonnull NamedDBClass dbClass) {
-            FacilityDBO fac = (FacilityDBO) dbClass;
-            try {
-                Repository.removeNode(fac);
-                getLoad().remove(fac);
-                getViewer().remove(getLoad());
-            } catch (Exception e) {
-                ProfibusHelper.openErrorDialog(getSite().getShell(), errMsgHead, errMsg,
-                                               fac, e);
-                return;
-            }
-        }
-    }
-    
-    /**
-     * @author hrickens
-     * @author $Author: $
-     * @since 08.10.2010
-     */
-    private static final class InfoDialog extends Dialog {
-        
-        InfoDialog(@Nonnull Shell parentShell) {
-            super(parentShell);
-        }
-        
-        @Override
-        @Nonnull
-        protected Control createDialogArea(@Nonnull final Composite parent) {
-            final Composite createDialogArea = (Composite) super.createDialogArea(parent);
-            createDialogArea.setLayoutData(new GridData(SWT.FILL, SWT.TOP, true, false));
-            
-            createDialogArea.setLayout(GridLayoutFactory.swtDefaults().equalWidth(true)
-                    .numColumns(3).create());
-            Label label = new Label(createDialogArea, SWT.NONE);
-            label.setLayoutData(new GridData(SWT.BEGINNING, SWT.CENTER, false, false));
-            label.setText("Nodes: " + NodeMap.getNumberOfNodes());
-            
-            label = new Label(createDialogArea, SWT.NONE);
-            label.setLayoutData(new GridData(SWT.BEGINNING, SWT.CENTER, false, false));
-            
-            label = new Label(createDialogArea, SWT.NONE);
-            
-            label = new Label(createDialogArea, SWT.NONE);
-            label.setLayoutData(new GridData(SWT.BEGINNING, SWT.CENTER, false, false));
-            label.setText("Assemble: " + NodeMap.getCountAssembleEpicsAddressString());
-            
-            label = new Label(createDialogArea, SWT.NONE);
-            label.setLayoutData(new GridData(SWT.BEGINNING, SWT.CENTER, false, false));
-            label.setText("LocalUpdate: " + NodeMap.getLocalUpdate());
-            
-            label = new Label(createDialogArea, SWT.NONE);
-            label.setLayoutData(new GridData(SWT.BEGINNING, SWT.CENTER, false, false));
-            label.setText("ChannelConfig: " + NodeMap.getChannelConfigComposite());
-            
-            final Text text = new Text(createDialogArea, SWT.BORDER | SWT.H_SCROLL | SWT.V_SCROLL);
-            text.setLayoutData(new GridData(SWT.FILL, SWT.FILL, false, false, 3, 1));
-            
-            label = new Label(createDialogArea, SWT.NONE);
-            label.setLayoutData(new GridData(SWT.BEGINNING, SWT.CENTER, false, false));
-            createDialogArea.pack();
-            return createDialogArea;
-        }
-    }
-    
-    /**
-     * @author hrickens
-     * @author $Author: $
-     * @since 07.10.2010
-     */
-    private final class NodeSelcetionChangedListener implements ISelectionChangedListener {
-        
-        public NodeSelcetionChangedListener() {
-            // Default Constructor
-        }
-        
-        @Override
-        public void selectionChanged(@Nonnull final SelectionChangedEvent event) {
-            if (event.getSelection() instanceof StructuredSelection) {
-                StructuredSelection selection = (StructuredSelection) event.getSelection();
-                if (!selection.equals(getSelectedNodes())) {
-                    setSelectedNode(selection);
-                    if ( (getSelectedNodes() != null) && !getSelectedNodes().isEmpty()) {
-                        getEditNodeAction().run();
-                    }
-                }
-            }
-        }
-    }
-    
-    /**
-     * @author hrickens
-     * @author $Author: $
-     * @since 05.10.2010
-     */
-    private final class HibernateDBPreferenceChangeListener implements IPreferenceChangeListener {
-        
-        public HibernateDBPreferenceChangeListener() {
-            // Default Constructor.
-        }
-        
-        @Override
-        public void preferenceChange(@Nonnull final PreferenceChangeEvent event) {
-            String property = event.getKey();
-            if (property.equals(DDB_PASSWORD) || property.equals(DDB_USER_NAME)
-                    || property.equals(DIALECT)
-                    || property.equals(HIBERNATE_CONNECTION_DRIVER_CLASS)
-                    || property.equals(HIBERNATE_CONNECTION_URL)) {
-                try {
-                    List<FacilityDBO> load = Repository.load(FacilityDBO.class);
-                    setLoad(load);
-                } catch (PersistenceException e) {
-                    setLoad(new ArrayList<FacilityDBO>());
-                    DeviceDatabaseErrorDialog.open(null,
-                                                   "Can't read from Database! Database Error.", e);
-                    LOG.error("Can't read from Database! Database Error.", e);
-                }
-                getViewer().getTree().removeAll();
-                getViewer().setInput(getLoad());
-                getViewer().refresh(false);
-            }
-        }
-    }
-    
-    /**
-     *
-     * @author hrickens
-     * @author $Author: hrickens $
-     * @since 20.06.2007
-     */
-    class NameSorter extends ViewerSorter {
-        
-        @Override
-        public int category(@Nullable final Object element) {
-            return super.category(element);
-        }
-        
-        @Override
-        public int compare(@Nonnull final Viewer viewer, @Nullable final Object e1,
-                           @Nullable final Object e2) {
-            if ( (e1 instanceof NamedDBClass) && (e2 instanceof NamedDBClass)) {
-                NamedDBClass node1 = (NamedDBClass) e1;
-                NamedDBClass node2 = (NamedDBClass) e2;
-                if ( (node1.getSortIndex() == null) || (node2.getSortIndex() == null)) {
-                    return -1;
-                }
-                int sortIndex = node1.getSortIndex() - node2.getSortIndex().shortValue();
-                if (sortIndex == 0) {
-                    sortIndex = node1.getId() - node2.getId();
-                }
-                return sortIndex;
-            }
-            return 0;
-        }
-    }
-    
-    /**
-     *
-     * @author hrickens
-     * @author $Author: hrickens $
-     * @since 20.06.2007
-     */
-    static class ViewLabelProvider extends ColumnLabelProvider {
-        
-        private static final Color PROGRAMMABLE_MARKER_COLOR = CustomMediaFactory.getInstance()
-                .getColor(255, 140, 0);
-        private static final Font PROGRAMMABLE_MARKER_FONT = CustomMediaFactory.getInstance()
-                .getFont("Tahoma", 8, SWT.ITALIC);
-        
-        @Override
-        @CheckForNull
-        public Color getBackground(@Nullable final Object element) {
-            if (haveProgrammableModule(element)) {
-                return PROGRAMMABLE_MARKER_COLOR;
-            }
-            return null;
-        }
-        
-        @Override
-        @CheckForNull
-        public Font getFont(@Nullable final Object element) {
-            if (haveProgrammableModule(element)) {
-                return PROGRAMMABLE_MARKER_FONT;
-            }
-            return null;
-        }
-        
-        @Override
-        @CheckForNull
-        public Image getImage(@Nullable final Object obj) {
-            if (obj instanceof AbstractNodeDBO) {
-                AbstractNodeDBO node = (AbstractNodeDBO) obj;
-                return ConfigHelper.getImageFromNode(node);
-            } else if (obj instanceof FacilityDBO) {
-                return ConfigHelper.getImageMaxSize("icons/css.gif", -1, -1);
-            }
-            return null;
-        }
-        
-        @Override
-        @CheckForNull
-        public String getText(@Nonnull final Object element) {
-            String text = super.getText(element);
-            String[] split = text.split("(\r(\n)?)");
-            if (split.length > 1) {
-                text = split[0];
-            }
-            if (haveProgrammableModule(element)) {
-                return text + " [prog]";
-            }
-            return text;
-        }
-        
-        @Override
-        @CheckForNull
-        public String getToolTipText(@Nullable final Object element) {
-            if (haveProgrammableModule(element)) {
-                return "Is a programmable Module!";
-            }
-            return null;
-        }
-        
-        private boolean haveProgrammableModule(@Nullable final Object element) {
-            /*
-             * TODO: (hrickens) Das finden von Projekt Document Datein führt teilweise dazu das sich
-             * CSS Aufhängt! if (element instanceof Slave) { Slave node = (Slave) element;
-             * Set<Document> documents = node.getDocuments(); while (documents.iterator().hasNext())
-             * { Document doc = (Document) documents.iterator().next(); if (doc.getSubject() != null
-             * && doc.getSubject().startsWith("Projekt:")) { return true; } } }
-             */
-            return false;
-        }
-        
+    @Nonnull 
+    protected List<AbstractNodeDBO<?,?>> getCopiedNodesReferenceList() {
+        return _copiedNodesReferenceList;
     }
 }

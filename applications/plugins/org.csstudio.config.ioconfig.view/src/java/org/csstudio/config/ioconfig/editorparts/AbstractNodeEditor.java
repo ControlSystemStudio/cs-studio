@@ -803,16 +803,17 @@ public abstract class AbstractNodeEditor<T extends AbstractNodeDBO<?,?>> extends
      * Save or Update the Node to the Data Base.
      */
     final void save() {
-        ProgressMonitorDialog dia = new ProgressMonitorDialog(getShell());
+        final ProgressMonitorDialog dia = new ProgressMonitorDialog(getShell());
         dia.open();
-        IProgressMonitor progressMonitor = dia.getProgressMonitor();
+        final IProgressMonitor progressMonitor = dia.getProgressMonitor();
         try {
-            progressMonitor.beginTask("Save " + getNode(), 3);
-            AbstractNodeDBO<?,?> parent = getNode().getParent();
+            final T node = getNode();
+            progressMonitor.beginTask("Save " + node, 3);
+            final AbstractNodeDBO<?,?> parent = node.getParent();
             progressMonitor.worked(1);
             try {
                 if (parent == null) {
-                    getNode().localSave();
+                    node.localSave();
                 } else {
                     parent.localSave();
                 }
@@ -821,26 +822,26 @@ public abstract class AbstractNodeEditor<T extends AbstractNodeDBO<?,?>> extends
             }
             progressMonitor.worked(2);
             setSaveButtonSaved();
-            Button saveButton = getSaveButton();
+            final Button saveButton = getSaveButton();
             if (saveButton != null) {
                 saveButton.setText("&Save");
             }
             
-            getHeaderField(HeaderFields.DB_ID).setText(getNode().getId() + "");
+            getHeaderField(HeaderFields.DB_ID).setText(node.getId() + "");
             progressMonitor.worked(3);
             
-            if (isNew() && !getNode().isRootNode()) {
+            if (isNew() && !node.isRootNode()) {
                 getProfiBusTreeView().refresh(parent);
-                getProfiBusTreeView().getTreeViewer().expandToLevel(getNode(),
+                getProfiBusTreeView().getTreeViewer().expandToLevel(node,
                                                                     AbstractTreeViewer.ALL_LEVELS);
-            } else if (isNew() && getNode().isRootNode()) {
-                getProfiBusTreeView().addFacility(getNode());
-                getProfiBusTreeView().refresh(getNode());
+            } else if (isNew() && node.isRootNode()) {
+                getProfiBusTreeView().addFacility((FacilityDBO) node);
+                getProfiBusTreeView().refresh(node);
                 getProfiBusTreeView().refresh();
                 
             } else {
                 // refresh the View
-                getProfiBusTreeView().refresh(getNode());
+                getProfiBusTreeView().refresh(node);
             }
             setNew(false);
         } finally {
