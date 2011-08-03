@@ -109,6 +109,7 @@ public class AreaAlarmModel implements AlarmClientModelListener
 	/** Must be called when model no longer used to release resources */
 	public void close()
     {
+		model.removeListener(this);
 		model.release();
     }
 }
