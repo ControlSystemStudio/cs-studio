@@ -64,6 +64,7 @@ public class BootFileContentParser extends AbstractLineBasedFileContentParser {
     public BootFileContentParser(@Nonnull final File directory,
                                  @Nonnull final Collection<String> iocNames) throws IOException, ParseException {
         _iocMap = Maps.newHashMapWithExpectedSize(iocNames.size());
+
         for (final String iocName : iocNames) {
 
             final SortedSet<Record> records = getBootRecordsFromFile(directory, iocName);

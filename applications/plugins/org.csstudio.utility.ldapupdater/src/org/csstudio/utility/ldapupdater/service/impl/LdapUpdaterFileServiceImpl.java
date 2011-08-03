@@ -31,6 +31,8 @@ import java.util.Set;
 
 import javax.annotation.Nonnull;
 
+import org.csstudio.domain.desy.time.TimeInstant;
+import org.csstudio.domain.desy.time.TimeInstant.TimeInstantBuilder;
 import org.csstudio.utility.ldapupdater.UpdaterLdapConstants;
 import org.csstudio.utility.ldapupdater.files.BootFileContentParser;
 import org.csstudio.utility.ldapupdater.files.FileBySuffixCollector;
@@ -46,6 +48,7 @@ import com.google.common.base.Strings;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 import com.google.common.collect.Sets;
+import com.google.common.io.Files;
 import com.google.inject.Inject;
 
 /**
@@ -76,17 +79,21 @@ public class LdapUpdaterFileServiceImpl implements ILdapUpdaterFileService {
             return _cache.get(bootDirectory);
         }
 
-        Map<String, File> recordFileMap;
+        Map<String, File> iocFilesMap;
         try {
-            recordFileMap = new FileBySuffixCollector(bootDirectory, UpdaterLdapConstants.RECORDS_FILE_SUFFIX).getFileMap();
-            final Map<String, File> bootFileMap =
-                new FileBySuffixCollector(bootDirectory, UpdaterLdapConstants.BOOT_FILE_SUFFIX).getFileMap();
+            iocFilesMap =
+                new FileBySuffixCollector(bootDirectory,
+                                          UpdaterLdapConstants.RECORDS_FILE_SUFFIX).getFileMap();
 
-            validateBootFilesVsRecordFiles(recordFileMap, bootFileMap);
+            final Map<String, File> bootFileMap =
+                new FileBySuffixCollector(bootDirectory,
+                                          UpdaterLdapConstants.BOOT_FILE_SUFFIX).getFileMap();
+
+            validateBootFilesVsRecordFiles(iocFilesMap, bootFileMap);
 
             final Map<String, IOC> iocsFromFSMap =
                 createIntersectionIocMapFromFiles(bootDirectory,
-                                                  recordFileMap,
+                                                  iocFilesMap,
                                                   bootFileMap);
 
             _cache.put(bootDirectory, iocsFromFSMap);
@@ -183,9 +190,32 @@ public class LdapUpdaterFileServiceImpl implements ILdapUpdaterFileService {
             final BootFileContentParser parser = new BootFileContentParser(bootDirectory, iocNames);
             return parser.getIocMap();
         } catch (final IOException e) {
-            throw new LdapUpdaterServiceException("", e);
+            throw new LdapUpdaterServiceException("Parsing of boot and/or record files failed.", e);
         } catch (final ParseException e) {
-            throw new LdapUpdaterServiceException("", e);
+            throw new LdapUpdaterServiceException("Parsing of boot and/or record files failed.", e);
+        }
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    @Nonnull
+    public TimeInstant getAndUpdateLastHeartBeat() throws LdapUpdaterServiceException {
+        final File heartBeatFile = _provider.getPreferencesService().getHeartBeatFile();
+        try {
+            if (!heartBeatFile.exists()) {
+                heartBeatFile.createNewFile();
+                final Long intervalInS = _provider.getPreferencesService().getLdapStartInterval();
+                return TimeInstantBuilder.fromMillis(heartBeatFile.lastModified()).minusSeconds(intervalInS);
+            }
+
+            final TimeInstant lastModified = TimeInstantBuilder.fromMillis(heartBeatFile.lastModified());
+            Files.touch(heartBeatFile);
+            return lastModified;
+
+        } catch (final IOException e) {
+            throw new LdapUpdaterServiceException("Creation of heartbeatfile failed: " + heartBeatFile.getAbsolutePath(), e);
         }
     }
 }

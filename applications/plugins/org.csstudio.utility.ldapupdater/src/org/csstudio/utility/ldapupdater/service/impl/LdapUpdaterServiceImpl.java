@@ -50,7 +50,6 @@ import org.csstudio.utility.ldap.treeconfiguration.LdapEpicsControlsFieldsAndAtt
 import org.csstudio.utility.ldap.treeconfiguration.LdapFieldsAndAttributes;
 import org.csstudio.utility.ldapupdater.UpdaterLdapConstants;
 import org.csstudio.utility.ldapupdater.files.HistoryFileAccess;
-import org.csstudio.utility.ldapupdater.files.HistoryFileContentModel;
 import org.csstudio.utility.ldapupdater.mail.NotificationMailer;
 import org.csstudio.utility.ldapupdater.model.IOC;
 import org.csstudio.utility.ldapupdater.model.Record;
@@ -139,21 +138,6 @@ public final class LdapUpdaterServiceImpl implements ILdapUpdaterService {
         _fileService = fileService;
         _prefsService = prefService;
     }
-
-
-    private boolean isIOCFileNewerThanHistoryEntry(@Nonnull final IOC ioc,
-                                                  @Nonnull final HistoryFileContentModel historyFileModel) {
-        final TimeInstant lastBootTime = ioc.getLastBootTime();
-        if (lastBootTime != null) {
-            final TimeInstant timeFromHistoryFile = historyFileModel.getTimeForRecord(ioc.getName());
-            if (timeFromHistoryFile != null) {
-                return lastBootTime.isAfter(timeFromHistoryFile);
-            }
-        }
-        return true;
-    }
-
-
 
     /**
      * {@inheritDoc}
@@ -267,21 +251,18 @@ public final class LdapUpdaterServiceImpl implements ILdapUpdaterService {
     @Override
     public void updateLDAPFromIOCList(@Nonnull final Map<String, INodeComponent<LdapEpicsControlsConfiguration>> iocMapFromLdap,
                                       @Nonnull final Map<String, IOC> iocMapFromFS,
-                                      @Nonnull final HistoryFileContentModel historyFileModel) throws LdapUpdaterServiceException {
+                                      @Nonnull final TimeInstant lastHeartBeat) throws LdapUpdaterServiceException {
 
         for (final Entry<String, IOC> entry : iocMapFromFS.entrySet()) {
 
             final String iocFromFSName = entry.getKey();
             final IOC iocFromFS = entry.getValue();
 
-            if (historyFileModel.contains(iocFromFSName)) {
-                if (!isIOCFileNewerThanHistoryEntry(iocFromFS, historyFileModel)) {
-                    LOG.debug("IOC file for " + iocFromFSName
-                              + " is not newer than history file time stamp.");
-                    continue;
-                }
-            } // else means 'new IOC file in directory'
-
+            if (iocFromFS.getLastBootTime().isBefore(lastHeartBeat)) {
+                LOG.debug("IOC file for " + iocFromFSName
+                          + " is not newer than history file time stamp.");
+                continue;
+            }
             createOrUpdateIocInLdap(iocMapFromLdap, iocFromFS);
         }
     }

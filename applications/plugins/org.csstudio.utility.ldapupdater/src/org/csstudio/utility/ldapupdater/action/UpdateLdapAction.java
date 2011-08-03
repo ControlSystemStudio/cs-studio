@@ -45,7 +45,6 @@ import org.csstudio.utility.ldap.treeconfiguration.LdapEpicsControlsConfiguratio
 import org.csstudio.utility.ldap.treeconfiguration.LdapEpicsControlsFieldsAndAttributes;
 import org.csstudio.utility.ldapupdater.LdapUpdaterActivator;
 import org.csstudio.utility.ldapupdater.LdapUpdaterUtil;
-import org.csstudio.utility.ldapupdater.files.HistoryFileAccess;
 import org.csstudio.utility.ldapupdater.files.HistoryFileContentModel;
 import org.csstudio.utility.ldapupdater.mail.NotificationMailer;
 import org.csstudio.utility.ldapupdater.model.IOC;
@@ -152,16 +151,19 @@ public class UpdateLdapAction implements IManagementCommand {
     private void updateIocsInLdap(@Nonnull final Map<String, INodeComponent<LdapEpicsControlsConfiguration>> iocsFromLdapBySimpleName)
                                   throws LdapUpdaterServiceException {
 
-            final HistoryFileAccess histFileReader = new HistoryFileAccess(_prefsService);
-            final HistoryFileContentModel historyFileModel = histFileReader.readFile();
+            final TimeInstant lastHeartBeat = _fileService.getAndUpdateLastHeartBeat();
 
-            validateHistoryFileEntriesVsLDAPEntries(iocsFromLdapBySimpleName, historyFileModel);
+//            final HistoryFileAccess histFileReader = new HistoryFileAccess(_prefsService);
+//            final HistoryFileContentModel historyFileModel = histFileReader.readFile();
+//
+//            validateHistoryFileEntriesVsLDAPEntries(iocsFromLdapBySimpleName, historyFileModel);
 
+            // find IOC files newer than lastHeartBeat
             final File bootDirectory = _prefsService.getIocDblDumpPath();
             final Map<String, IOC> iocsFromFSMap =
                     _fileService.retrieveIocInformationFromBootDirectory(bootDirectory);
 
-            _updaterService.updateLDAPFromIOCList(iocsFromLdapBySimpleName, iocsFromFSMap, historyFileModel);
+            _updaterService.updateLDAPFromIOCList(iocsFromLdapBySimpleName, iocsFromFSMap, lastHeartBeat);
     }
 
 

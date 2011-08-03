@@ -49,6 +49,9 @@ public class LdapUpdaterPreferencesService {
         public static final LdapUpdaterPreference<File> IOC_DBL_DUMP_PATH =
             new LdapUpdaterPreference<File>("iocDblDumpPath", new File("Y:\\directoryServer\\"));
 
+        public static final LdapUpdaterPreference<File> HEARTBEAT_FILEPATH =
+            new LdapUpdaterPreference<File>("heartbeatfile", new File("Y:\\scripts\\ldap-tests\\ldapupdater.heartbeat"));
+
         public static final LdapUpdaterPreference<File> HISTORY_DAT_FILEPATH =
             new LdapUpdaterPreference<File>("ldapHistPath", new File("Y:\\scripts\\ldap-tests\\history.dat"));
 
@@ -109,6 +112,10 @@ public class LdapUpdaterPreferencesService {
     @Nonnull
     public File getHistoryDatFilePath() {
         return LdapUpdaterPreference.HISTORY_DAT_FILEPATH.getValue();
+    }
+    @Nonnull
+    public File getHeartBeatFile() {
+        return LdapUpdaterPreference.HEARTBEAT_FILEPATH.getValue();
     }
     @Nonnull
     public String getXmppUser() {

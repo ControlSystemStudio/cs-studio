@@ -41,8 +41,6 @@ import com.google.common.io.Files;
 import com.google.common.io.LineProcessor;
 
 /**
- *
- *
  * Class to access the dedicated history file that holds the time stamps of the last update times
  * for any IOC file.
  *
@@ -172,7 +170,11 @@ public class HistoryFileAccess {
                                               String.valueOf(numOfRecordsWritten + "/" + numOfRecordsInFile),
                                               String.valueOf(numOfRecordsInLDAP),
                                               System.getProperty("line.separator"));
+            if (!historyFilePath.exists()) {
+                historyFilePath.createNewFile();
+            }
             Files.append(line, historyFilePath, Charset.defaultCharset());
+
         } catch (final IOException e) {
             LOG.error("I/O-Exception while trying to append a line to {}", historyFilePath.getAbsoluteFile());
         }
