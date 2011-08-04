@@ -93,6 +93,7 @@ public class PersistEngineDataManager {
 
     private final IBatchQueueHandlerProvider _handlerProvider =
         new IBatchQueueHandlerProvider() {
+            @SuppressWarnings("rawtypes")
             @Override
             @Nonnull
             public Collection<BatchQueueHandlerSupport> getHandlers() {

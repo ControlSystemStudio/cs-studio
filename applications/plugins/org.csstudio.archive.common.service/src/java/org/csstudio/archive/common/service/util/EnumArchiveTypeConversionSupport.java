@@ -21,13 +21,10 @@
  */
 package org.csstudio.archive.common.service.util;
 
-import javax.annotation.CheckForNull;
 import javax.annotation.Nonnull;
 
 import org.csstudio.domain.desy.epics.types.EpicsEnum;
 import org.csstudio.domain.desy.typesupport.TypeSupportException;
-
-import com.google.common.base.Function;
 
 /**
  * TODO (bknerr) :
@@ -36,34 +33,6 @@ import com.google.common.base.Function;
  * @since 15.12.2010
  */
 public class EnumArchiveTypeConversionSupport extends ArchiveTypeConversionSupport<EpicsEnum> {
-
-    /**
-     * Guava converter function
-     *
-     * @author bknerr
-     * @since 22.12.2010
-     */
-    private final class ArchiveString2EpicsEnumFunction implements
-            Function<String, EpicsEnum> {
-        /**
-         * Constructor.
-         */
-        public ArchiveString2EpicsEnumFunction() {
-            // Empty
-        }
-
-        @Override
-          @CheckForNull
-          public EpicsEnum apply(@Nonnull final String from) {
-              try {
-                  return convertFromArchiveString(from);
-              } catch (final TypeSupportException e) {
-                  return null;
-              }
-          }
-    }
-    private final ArchiveString2EpicsEnumFunction _archiveString2EpicsEnumFunc =
-        new ArchiveString2EpicsEnumFunction();
 
     /**
      * Constructor.

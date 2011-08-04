@@ -150,7 +150,6 @@ public abstract class ArchiveEngineTypeSupport<V extends Serializable> extends A
         INSTALLED = true;
     }
 
-    @SuppressWarnings({ "unchecked", "rawtypes" })
     @Nonnull
     public static <V extends Serializable>
     ArchiveChannel<V, ISystemVariable<V>> createArchiveChannel(@Nonnull final IArchiveChannel cfg) throws TypeSupportException {

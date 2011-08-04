@@ -84,6 +84,7 @@ public class ArchiveMultiScalarTypeConversionSupportUnitTest {
         }
     }
 
+    @SuppressWarnings("rawtypes")
     @Test
     public void testDeSerialization() throws TypeSupportException {
         Serializable start = Lists.newArrayList(Double.valueOf(1.0), Double.valueOf(2.0));
@@ -98,12 +99,10 @@ public class ArchiveMultiScalarTypeConversionSupportUnitTest {
         Assert.assertEquals(Double.valueOf(1.0), result2.get(0));
         Assert.assertEquals(Double.valueOf(2.0), result2.get(1));
 
-
         start = Sets.<EpicsEnum>newHashSet(Arrays.asList(new EpicsEnum[] {EpicsEnum.createFromRaw(-1)}));
         byteArray = ArchiveTypeConversionSupport.toByteArray(start);
         final HashSet result3 = ArchiveTypeConversionSupport.fromByteArray(byteArray);
-        Assert.assertEquals(Double.valueOf(1.0), result2.get(0));
-        Assert.assertEquals(Double.valueOf(2.0), result2.get(1));
+        Assert.assertEquals(EpicsEnum.createFromRaw(-1), result3.iterator().next());
     }
 
     @Test
@@ -179,7 +178,6 @@ public class ArchiveMultiScalarTypeConversionSupportUnitTest {
         final Serializable valuesB2 = Lists.newArrayList(Byte.valueOf("0"),
                                                              Byte.valueOf("1"));
 
-        @SuppressWarnings("unchecked")
         final Serializable valuesB = Lists.newArrayList(valuesB1, valuesB2);
         try {
             final String archiveString = ArchiveTypeConversionSupport.toArchiveString(valuesB);
@@ -196,7 +194,7 @@ public class ArchiveMultiScalarTypeConversionSupportUnitTest {
     @Test
     public void testMultiScalarEnumConversion() {
         final Serializable valuesE = Lists.newArrayList(EpicsEnum.createFromRaw(1),
-                                                                 EpicsEnum.createFromStateName("second"));
+                                                        EpicsEnum.createFromStateName("second"));
         try {
             final String archiveString = ArchiveTypeConversionSupport.toArchiveString(valuesE);
             Assert.assertEquals(ARCHIVE_COLLECTION_PREFIX +
@@ -204,8 +202,11 @@ public class ArchiveMultiScalarTypeConversionSupportUnitTest {
                                 ARCHIVE_COLLECTION_ELEM_SEP +
                                 EpicsEnum.STATE + "(0)" + EpicsEnum.SEP + "second"+
                                 ARCHIVE_COLLECTION_SUFFIX, archiveString);
+            @SuppressWarnings("unchecked")
             final Vector<EpicsEnum> enums =
-                ArchiveTypeConversionSupport.fromArchiveString(Vector.class, EpicsEnum.class, archiveString);
+                ArchiveTypeConversionSupport.fromArchiveString(Vector.class,
+                                                               EpicsEnum.class,
+                                                               archiveString);
             Assert.assertEquals(2, enums.size());
 
             final Iterator<EpicsEnum> iterator = enums.iterator();

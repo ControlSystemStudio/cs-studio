@@ -24,6 +24,13 @@ package org.csstudio.archive.common.service.util;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.EnumSet;
+import java.util.HashSet;
+import java.util.LinkedList;
+import java.util.Set;
+import java.util.Stack;
+import java.util.TreeSet;
+import java.util.Vector;
 
 import javax.annotation.Nonnull;
 
@@ -34,36 +41,42 @@ import org.epics.pvmanager.TypeSupport;
 import com.google.common.base.Joiner;
 import com.google.common.base.Predicates;
 import com.google.common.collect.Collections2;
-import com.google.common.collect.Lists;
+import com.google.common.collect.Sets;
 
 /**
- * Type conversions for {@link T}.
+ * Type conversions for {@link T}. Unfortunately, the basic collection type do not shace a common
+ * interface combining Collection and Serializable.
+ * So, we have to
  *
  * @author bknerr
  * @since 16.12.2010
+ * @param <T> the supported type
  */
-abstract class CollectionTypeConversionSupport<T extends Serializable & Collection> extends ArchiveTypeConversionSupport<T> {
+// CHECKSTYLE OFF : AbstractClassName
+abstract class CollectionTypeConversionSupport<T extends Serializable & Collection<T>> extends ArchiveTypeConversionSupport<T> {
+// CHECKSTYLE ON : AbstractClassName
 
+    private static final Set<Class<?>> BASIC_COLL_TYPES =
+        Sets.<Class<?>>newHashSet(ArrayList.class,
+                                  LinkedList.class,
+                                  EnumSet.class,
+                                  HashSet.class,
+                                  TreeSet.class,
+                                  Stack.class,
+                                  Vector.class);
     /**
-     * TODO (bknerr) :
+     * Concrete implementation for the different types.
      *
      * @author bknerr
      * @since 04.08.2011
      */
-    private static final class ArrayListArchiveTypeConversionSupport extends CollectionTypeConversionSupport<ArrayList> {
+    private static final class ConcreteCollectionArchiveTypeConversionSupport<T extends Serializable & Collection<T>>
+                               extends CollectionTypeConversionSupport<T> {
         /**
          * Constructor.
          */
-        protected ArrayListArchiveTypeConversionSupport() {
-            super(ArrayList.class);
-        }
-        /**
-         * {@inheritDoc}
-         */
-        @Override
-        @Nonnull
-        protected ArrayList<Double> convertFromDouble(@Nonnull final Double value) throws TypeSupportException {
-            return Lists.newArrayList(value);
+        protected ConcreteCollectionArchiveTypeConversionSupport(@Nonnull final Class<T> typeClass) {
+            super(typeClass);
         }
     }
 
@@ -76,14 +89,16 @@ abstract class CollectionTypeConversionSupport<T extends Serializable & Collecti
         super(typeClass);
     }
 
+    @SuppressWarnings({ "rawtypes", "unchecked" })
     public static void install() {
         if (INSTALLED) {
             return;
         }
         BaseTypeConversionSupport.install();
 
-        TypeSupport.addTypeSupport(new ArrayListArchiveTypeConversionSupport());
-        //TypeSupport.addTypeSupport(new LinkedListArchiveTypeConversionSupport());
+        for (final Class<?> clazz : BASIC_COLL_TYPES) {
+            TypeSupport.addTypeSupport(new ConcreteCollectionArchiveTypeConversionSupport(clazz));
+        }
 
         INSTALLED = true;
     }
@@ -102,7 +117,6 @@ abstract class CollectionTypeConversionSupport<T extends Serializable & Collecti
             (ArchiveTypeConversionSupport<T>) findTypeSupportForOrThrowTSE(ArchiveTypeConversionSupport.class,
                                                                            values.iterator().next().getClass());
 
-        @SuppressWarnings("unchecked")
         final Collection<String> items =
             Collections2.filter(Collections2.transform(values,  new Type2StringFunction(support)),
                                 Predicates.<String>notNull());
@@ -129,5 +143,14 @@ abstract class CollectionTypeConversionSupport<T extends Serializable & Collecti
         throw new TypeSupportException("This method cannot be invoked for Collection.class subtypes!" +
                                        " Use ArchiveTypeConversionSupport.fromArchiveString(Class<C>, Class<E>, String) instead," +
                                        " where you specify the Collection type C, and the elements type E to convert the String into.", null);
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    @Nonnull
+    protected T convertFromDouble(@Nonnull final Double value) throws TypeSupportException {
+        throw new TypeSupportException("This method doesn't make sense for collection based types!", null);
     }
 }
