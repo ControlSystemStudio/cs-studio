@@ -6,6 +6,7 @@ package org.epics.pvmanager;
 
 import java.util.Collections;
 import java.util.Map;
+import org.epics.pvmanager.WriteCache;
 
 /**
  * Represents all the values, channel names and ordering information needed

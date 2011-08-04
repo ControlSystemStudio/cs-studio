@@ -26,11 +26,24 @@ class AdaptiveRange implements Display {
     private Double upperDisplayLimit = 0.0;
     
     private boolean firstValue = true;
+    private boolean limitsChanged = false;
+
+    public boolean limitsChanged() {
+        boolean returnValue = limitsChanged;
+        limitsChanged = false;
+        return returnValue;
+    }
 
     public void considerValues(List<VDoubleArray> values) {
         for (VDoubleArray vDoubleArray : values) {
-            for (int i = 0; i < vDoubleArray.getArray().length; i++) {
-                double d = vDoubleArray.getArray()[i];
+            considerValues(vDoubleArray.getArray());
+        }
+    }
+
+    void considerValues(double[] array) {
+        for (int i = 0; i < array.length; i++) {
+            double d = array[i];
+            if (!Double.isNaN(d)) {
                 if (firstValue) {
                     lowerDisplayLimit = d;
                     lowerCtrlLimit = d;
@@ -41,18 +54,21 @@ class AdaptiveRange implements Display {
                     upperCtrlLimit = d;
                     upperDisplayLimit = d;
                     firstValue = false;
+                    limitsChanged = true;
                 } else {
                     if (d > upperDisplayLimit) {
                         upperWarningLimit = d;
                         upperAlarmLimit = d;
                         upperCtrlLimit = d;
                         upperDisplayLimit = d;
+                        limitsChanged = true;
                     }
                     if (d < lowerDisplayLimit) {
                         lowerDisplayLimit = d;
                         lowerCtrlLimit = d;
                         lowerAlarmLimit = d;
                         lowerWarningLimit = d;
+                        limitsChanged = true;
                     }
                 }
             }

@@ -45,12 +45,18 @@ class PVReaderImpl<T> implements PVReader<T> {
     }
 
     private List<PVReaderListener> pvReaderListeners = new CopyOnWriteArrayList<PVReaderListener>();
-    private final boolean notifyFirstListener; 
+    private final boolean notifyFirstListener;
+    private volatile boolean missedNotification = false;
 
     void firePvValueChanged() {
+        lastExceptionToNotify = false;
+        boolean missed = true;
         for (PVReaderListener listener : pvReaderListeners) {
             listener.pvChanged();
+            missed = false;
         }
+        if (missed)
+            missedNotification = true;
     }
 
     /**
@@ -70,11 +76,10 @@ class PVReaderImpl<T> implements PVReader<T> {
         // is enough to make sure the listener is registerred before the event
         // arrives, but if the notification is done on the same thread
         // the notification would be lost.
-        boolean notify = pvReaderListeners.isEmpty() && notifyFirstListener &&
-                (value != null || lastException.get() != null);
+        boolean notify = notifyFirstListener && missedNotification;
         pvReaderListeners.add(listener);
         if (notify)
-            listener.pvChanged();
+            firePvValueChanged();
     }
 
     /**
@@ -195,6 +200,17 @@ class PVReaderImpl<T> implements PVReader<T> {
     }
     
     private AtomicReference<Exception> lastException = new AtomicReference<Exception>();
+    private volatile boolean lastExceptionToNotify = false;
+
+    /**
+     * Whether there is an exception that needs to be notified to the client.
+     * This is used to throttle back exceptions.
+     * 
+     * @return true if this pvReader needs to notify an exception
+     */
+    boolean isLastExceptionToNotify() {
+        return lastExceptionToNotify;
+    }
     
     /**
      * Changes the last exception associated with the PVReader.
@@ -203,6 +219,7 @@ class PVReaderImpl<T> implements PVReader<T> {
      */
     void setLastException(Exception ex) {
         lastException.set(ex);
+        lastExceptionToNotify = true;
     }
 
     /**

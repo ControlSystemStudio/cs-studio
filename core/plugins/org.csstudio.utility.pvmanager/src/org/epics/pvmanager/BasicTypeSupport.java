@@ -6,7 +6,9 @@
 package org.epics.pvmanager;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 /**
  * Implements support for basic standard java types.
@@ -33,6 +35,10 @@ public class BasicTypeSupport {
         // Add support for lists
         addList();
         
+        // Add support for maps
+        // TODO should actually return immutable maps?
+        TypeSupport.addTypeSupport(NotificationSupport.immutableTypeSupport(Map.class));
+        
         // Add support for numbers and strings
         TypeSupport.addTypeSupport(NotificationSupport.immutableTypeSupport(Number.class));
         TypeSupport.addTypeSupport(NotificationSupport.immutableTypeSupport(String.class));
@@ -41,6 +47,9 @@ public class BasicTypeSupport {
     }
 
     private static void addList() {
+        // TODO this is actually very broken:
+        // Clients can modify the list contents! (should return immutable list)
+        // PVManager is modifying the same list! (client will see dirty changes)
         TypeSupport.addTypeSupport(new NotificationSupport<List>(List.class) {
 
             @Override

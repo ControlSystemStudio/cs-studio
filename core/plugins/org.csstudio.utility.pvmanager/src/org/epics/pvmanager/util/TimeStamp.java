@@ -20,7 +20,7 @@ import java.util.Date;
  *
  * @author carcassi
  */
-public class TimeStamp implements Comparable {
+public class TimeStamp implements Comparable<TimeStamp> {
 
     /*
      * When the class is initialized, get the current timestamp and nanotime,
@@ -130,8 +130,7 @@ public class TimeStamp implements Comparable {
      * @return comparison result
      */
     @Override
-    public int compareTo(Object o) {
-        TimeStamp other = (TimeStamp) o;
+    public int compareTo(TimeStamp other) {
 	if (unixSec < other.unixSec) {
             return -1;
         } else if (unixSec == other.unixSec) {

@@ -3,7 +3,7 @@
  * All rights reserved. Use is subject to license terms.
  */
 
-package org.epics.pvmanager.types;
+package org.epics.pvmanager;
 
 import org.epics.pvmanager.Function;
 import java.util.ArrayList;

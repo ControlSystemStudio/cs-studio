@@ -4,6 +4,8 @@
  */
 package org.epics.pvmanager;
 
+import org.epics.pvmanager.expression.WriteExpressionImpl;
+import org.epics.pvmanager.expression.WriteExpression;
 import java.util.concurrent.Executor;
 import org.epics.pvmanager.util.Executors;
 import org.epics.pvmanager.util.TimeDuration;
@@ -72,11 +74,11 @@ public class PVWriterConfiguration<T> extends CommonConfiguration {
 
         // Create PVReader and connect
         PVWriterImpl<T> pvWriter = new PVWriterImpl<T>(syncWrite, Executors.localThread() == notificationExecutor);
-        WriteBuffer writeBuffer = WriteExpressionImpl.implOf(writeExpression).createWriteBuffer().build();
+        WriteBuffer writeBuffer = writeExpression.createWriteBuffer();
         if (exceptionHandler == null) {
             exceptionHandler = ExceptionHandler.createDefaultExceptionHandler(pvWriter, notificationExecutor);
         }
-        WriteFunction<T> writeFunction = WriteExpressionImpl.implOf(writeExpression).getWriteFunction();
+        WriteFunction<T> writeFunction =writeExpression.getWriteFunction();
 
         try {
             if (timeoutMessage == null)

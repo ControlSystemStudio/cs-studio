@@ -4,6 +4,11 @@
  */
 package org.epics.pvmanager;
 
+import org.epics.pvmanager.expression.DesiredRateReadWriteExpression;
+import org.epics.pvmanager.expression.DesiredRateExpression;
+import org.epics.pvmanager.expression.WriteExpression;
+import org.epics.pvmanager.expression.SourceRateExpression;
+import org.epics.pvmanager.expression.SourceRateReadWriteExpression;
 import java.util.concurrent.Executor;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
@@ -130,9 +135,22 @@ public class PVManager {
      * @param readWriteExpression the expression to read and write
      * @return the read and write configuration
      */
-    public static <R, W> PVConfiguration<R, W> readAndWrite(ReadWriteExpression<R, W> readWriteExpression) {
-        return new PVConfiguration<R, W>(ExpressionLanguage.latestValueOf(readWriteExpression.getSourceRateExpressionImpl()),
-                readWriteExpression.getWriteExpressionImpl());
+    public static <R, W> PVConfiguration<R, W> readAndWrite(SourceRateReadWriteExpression<R, W> readWriteExpression) {
+        return readAndWrite(ExpressionLanguage.latestValueOf(readWriteExpression));
+    }
+    
+    /**
+     * Both reads and writes the given expression, and returns an object to configure the parameters
+     * for the both read and write. It's similar to use both {@link #read(org.epics.pvmanager.SourceRateExpression) }
+     * and {@link #write(org.epics.pvmanager.WriteExpression) ) at the same time.
+     *
+     * @param <R> type of the read payload
+     * @param <W> type of the write payload
+     * @param readWriteExpression the expression to read and write
+     * @return the read and write configuration
+     */
+    public static <R, W> PVConfiguration<R, W> readAndWrite(DesiredRateReadWriteExpression<R, W> readWriteExpression) {
+        return new PVConfiguration<R, W>(readWriteExpression);
     }
 
     /**

@@ -4,6 +4,7 @@
  */
 package org.epics.pvmanager;
 
+import org.epics.pvmanager.expression.DesiredRateExpression;
 import java.util.concurrent.Executor;
 import org.epics.pvmanager.util.Executors;
 import org.epics.pvmanager.util.TimeDuration;
@@ -66,7 +67,7 @@ public class PVReaderConfiguration<T> extends CommonConfiguration {
         if (this.exceptionHandler != null) {
             throw new IllegalArgumentException("Exception handler already set");
         }
-        this.exceptionHandler = exceptionHandler;
+        this.exceptionHandler = ExceptionHandler.safeHandler(exceptionHandler);
         return this;
     }
 
@@ -87,7 +88,7 @@ public class PVReaderConfiguration<T> extends CommonConfiguration {
         checkDataSourceAndThreadSwitch();
 
         // Create PVReader and connect
-        PVReaderImpl<T> pv = new PVReaderImpl<T>(aggregatedPVExpression.getDefaultName(), Executors.localThread() == notificationExecutor);
+        PVReaderImpl<T> pv = new PVReaderImpl<T>(aggregatedPVExpression.getName(), Executors.localThread() == notificationExecutor);
         DataRecipe dataRecipe = aggregatedPVExpression.getDataRecipe();
         if (exceptionHandler == null) {
             dataRecipe = dataRecipe.withExceptionHandler(ExceptionHandler.createDefaultExceptionHanderl(pv, notificationExecutor));

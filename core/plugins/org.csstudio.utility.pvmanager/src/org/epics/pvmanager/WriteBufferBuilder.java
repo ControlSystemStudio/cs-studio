@@ -7,30 +7,31 @@ package org.epics.pvmanager;
 
 import java.util.HashMap;
 import java.util.Map;
+import org.epics.pvmanager.WriteCache;
 
 /**
  *
  * @author carcassi
  */
-class WriteBufferBuilder {
+public class WriteBufferBuilder {
 
     private final Map<String, WriteCache<?>> caches;
 
-    WriteBufferBuilder() {
+    public WriteBufferBuilder() {
         caches = new HashMap<String, WriteCache<?>>();
     }
 
-    WriteBufferBuilder addCaches(Map<String, WriteCache<?>> newCaches) {
+    public WriteBufferBuilder addCaches(Map<String, WriteCache<?>> newCaches) {
         caches.putAll(newCaches);
         return this;
     }
 
-    WriteBufferBuilder addBuffer(WriteBufferBuilder buffer) {
+    public WriteBufferBuilder addBuffer(WriteBufferBuilder buffer) {
         caches.putAll(buffer.caches);
         return this;
     }
 
-    WriteBuffer build() {
+    public WriteBuffer build() {
         return new WriteBuffer(new HashMap<String, WriteCache<?>>(caches));
     }
 }

@@ -3,38 +3,33 @@
  * All rights reserved. Use is subject to license terms.
  */
 
-package org.epics.pvmanager;
+package org.epics.pvmanager.expression;
 
+import org.epics.pvmanager.WriteBufferBuilder;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import org.epics.pvmanager.WriteBuffer;
+import org.epics.pvmanager.WriteCache;
+import org.epics.pvmanager.WriteFunction;
 
 /**
- * An expression that represent a pv write.
- * Objects of this class are not created directly but through the operators defined
- * in {@link ExpressionLanguage}.
+ * Implementation class for {@link WriteExpression}.
  *
- * @param <T> type taken by the expression
+ * @param <W> type of the write payload
  * @author carcassi
  */
-public class WriteExpressionImpl<T> implements WriteExpression<T> {
-    
-    static <T> WriteExpressionImpl<T> implOf(WriteExpression<T> writeExpression) {
-        if (writeExpression instanceof WriteExpressionImpl) {
-            return (WriteExpressionImpl<T>) writeExpression;
-        }
-        
-        if (writeExpression instanceof ReadWriteExpression) {
-            return ((ReadWriteExpression<?, T>) writeExpression).getWriteExpressionImpl();
-        }
-        
-        throw new IllegalArgumentException("WriteExpression must be implemented using WriteExpressionImpl");
-    }
+public class WriteExpressionImpl<W> extends WriteExpressionListImpl<W> implements WriteExpression<W> {
 
     private Map<String, WriteCache<?>> writeCaches;
-    private WriteFunction<T> writeFunction;
-    private final String defaultName;
+    private WriteFunction<W> writeFunction;
+    private String defaultName;
+    
+    {
+        // Make sure that the list includes this expression
+        addThis();
+    }
 
     /**
      * Constructor that represents a single channel of a particular type.
@@ -42,7 +37,7 @@ public class WriteExpressionImpl<T> implements WriteExpression<T> {
      * @param channelName the name of the channel
      */
     public WriteExpressionImpl(String channelName) {
-        WriteCache<T> cache = new WriteCache<T>();
+        WriteCache<W> cache = new WriteCache<W>();
         writeCaches = new HashMap<String, WriteCache<?>>();
         writeCaches.put(channelName, cache);
         this.writeFunction = cache;
@@ -50,14 +45,14 @@ public class WriteExpressionImpl<T> implements WriteExpression<T> {
     }
 
     /**
-     * Creates a new write expression.
+     * Changes the name for this expression
      * 
-     * @param childExpression the expression used as arguments by this expression
-     * @param function the function that will decompose the payload for this expression
-     * @param defaultName the name for this expression
+     * @param name new name
+     * @return this
      */
-    public WriteExpressionImpl(WriteExpressionImpl<?> childExpression, WriteFunction<T> function, String defaultName) {
-        this(Collections.<WriteExpressionImpl<?>>singletonList(childExpression), function, defaultName);
+    public final WriteExpression<W> as(String name) {
+        defaultName = name;
+        return this;
     }
 
     /**
@@ -67,10 +62,10 @@ public class WriteExpressionImpl<T> implements WriteExpression<T> {
      * @param function the function that will decompose the payload for this expression
      * @param defaultName the name for this expression
      */
-    public WriteExpressionImpl(List<WriteExpressionImpl<?>> childExpressions, WriteFunction<T> function, String defaultName) {
+    public WriteExpressionImpl(WriteExpressionList<?> childExpressions, WriteFunction<W> function, String defaultName) {
         writeCaches = new HashMap<String, WriteCache<?>>();
-        for (WriteExpressionImpl<?> childExpression : childExpressions) {
-            for (Map.Entry<String, WriteCache<?>> entry : childExpression.getWriteCaches().entrySet()) {
+        for (WriteExpression<?> childExpression : childExpressions.getWriteExpressions()) {
+            for (Map.Entry<String, WriteCache<?>> entry : childExpression.getWriteExpressionImpl().getWriteCaches().entrySet()) {
                 String pvName = entry.getKey();
                 if (writeCaches.keySet().contains(pvName)) {
                     throw new RuntimeException("Can't define a write operation that writes to the same channel more than once.");
@@ -87,7 +82,8 @@ public class WriteExpressionImpl<T> implements WriteExpression<T> {
      *
      * @return a name
      */
-    public String getDefaultName() {
+    @Override
+    public final String getName() {
         return defaultName;
     }
 
@@ -105,20 +101,26 @@ public class WriteExpressionImpl<T> implements WriteExpression<T> {
      *
      * @return the function
      */
-    public WriteFunction<T> getWriteFunction() {
+    @Override
+    public final WriteFunction<W> getWriteFunction() {
         return writeFunction;
     }
 
     /**
      * Creates a data recipe for the given expression.
      *
-     * @param collector the collector to be notified by changes in this expression
      * @return a data recipe
      */
-    WriteBufferBuilder createWriteBuffer() {
+    @Override
+    public final WriteBuffer createWriteBuffer() {
         WriteBufferBuilder buffer = new WriteBufferBuilder();
         buffer.addCaches(writeCaches);
-        return buffer;
+        return buffer.build();
+    }
+
+    @Override
+    public final WriteExpressionImpl<W> getWriteExpressionImpl() {
+        return this;
     }
 
 }

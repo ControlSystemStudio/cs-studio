@@ -30,6 +30,21 @@ public class ExceptionHandler {
         log.log(Level.INFO, "Exception for PV", ex);
     }
     
+    static ExceptionHandler safeHandler(final ExceptionHandler exceptionHandler) {
+        return new ExceptionHandler() {
+
+            @Override
+            public void handleException(Exception ex) {
+                try {
+                    exceptionHandler.handleException(ex);
+                } catch(RuntimeException e) {
+                    log.log(Level.INFO, "Exception handler throw an exception", e);
+                }
+            }
+            
+        };
+    }
+    
     static ExceptionHandler createDefaultExceptionHandler(final PVWriterImpl<?> pvWriter, final Executor notificationExecutor) {
         return new ExceptionHandler() {
             @Override
@@ -57,7 +72,6 @@ public class ExceptionHandler {
                     @Override
                     public void run() {
                         pv.setLastException(ex);
-                        pv.firePvValueChanged();
                     }
                 });
             }

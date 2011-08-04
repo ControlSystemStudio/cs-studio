@@ -18,9 +18,9 @@ import java.util.List;
  *
  * @author carcassi
  */
-public class Util {
+public class ValueUtil {
 
-    private Util() {
+    private ValueUtil() {
         // Can't instanciate
     }
 

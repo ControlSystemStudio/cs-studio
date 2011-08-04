@@ -4,6 +4,7 @@
  */
 package org.epics.pvmanager;
 
+import org.epics.pvmanager.expression.DesiredRateReadWriteExpression;
 import java.util.concurrent.Executor;
 import org.epics.pvmanager.util.TimeDuration;
 
@@ -19,9 +20,9 @@ public class PVConfiguration<R, W> extends CommonConfiguration {
     private final PVReaderConfiguration<R> pvReaderConfiguration;
     private final PVWriterConfiguration<W> pvWriterConfiguration;
 
-    PVConfiguration(DesiredRateExpression<R> readExpression, WriteExpression<W> writeExpression) {
-        pvReaderConfiguration = new PVReaderConfiguration<R>(readExpression);
-        pvWriterConfiguration = new PVWriterConfiguration<W>(writeExpression);
+    PVConfiguration(DesiredRateReadWriteExpression<R, W> readWriteExpression) {
+        pvReaderConfiguration = new PVReaderConfiguration<R>(readWriteExpression);
+        pvWriterConfiguration = new PVWriterConfiguration<W>(readWriteExpression);
     }
     
     @Override

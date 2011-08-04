@@ -5,6 +5,7 @@
 
 package org.epics.pvmanager;
 
+import java.util.Collection;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.Map;
@@ -112,7 +113,7 @@ public abstract class TypeSupport<T> {
         }
 
         // If we get the cached support for a specific type,
-        // we are guaranteeded that they support is for that type
+        // we are guaranteed that they support is for that type
         @SuppressWarnings("unchecked")
         TypeSupport<T> support = (TypeSupport<T>) calcSupportMap.get(typeClass);
         if (support == null) {
@@ -124,6 +125,12 @@ public abstract class TypeSupport<T> {
             calcSupportMap.put(typeClass, support);
         }
         return support;
+    }
+    
+    protected static <T extends TypeSupport<?>> Collection<T> typeSupportsFor(final Class<T> supportFamily) {
+        @SuppressWarnings("unchecked")
+        Collection<T> supports = (Collection<T>) (Collection) allTypeSupports.get(supportFamily).values();
+        return supports;
     }
 
     private static <T> TypeSupport<T> calculateSupport(final Class<T> typeClass,
@@ -192,14 +199,14 @@ public abstract class TypeSupport<T> {
      *
      * @return the support family
      */
-    private Class<? extends TypeSupport> getTypeSupportFamily() {
+    protected Class<? extends TypeSupport> getTypeSupportFamily() {
         return typeSupportFamily;
     }
 
     /**
      * Defines on which class the support is defined.
      */
-    private Class<T> getType() {
+    protected Class<T> getType() {
         return type;
     }
 

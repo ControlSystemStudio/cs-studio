@@ -12,23 +12,23 @@ import java.util.Map;
  *
  * @author carcassi
  */
-class DataRecipeBuilder {
+public class DataRecipeBuilder {
 
     private final Map<Collector<?>, Map<String, ValueCache>> channelsPerCollector;
 
-    DataRecipeBuilder() {
+    public DataRecipeBuilder() {
         channelsPerCollector = new HashMap<Collector<?>, Map<String, ValueCache>>();
     }
 
-    void addCollector(Collector<?> collector, Map<String, ValueCache> caches) {
+    public void addCollector(Collector<?> collector, Map<String, ValueCache> caches) {
         channelsPerCollector.put(collector, caches);
     }
 
-    void addAll(DataRecipeBuilder recipe) {
+    public void addAll(DataRecipeBuilder recipe) {
         channelsPerCollector.putAll(recipe.channelsPerCollector);
     }
 
-    DataRecipe build() {
+    public DataRecipe build() {
         return new DataRecipe(new HashMap<Collector<?>, Map<String, ValueCache>>(channelsPerCollector));
     }
 }
