@@ -485,6 +485,15 @@ public abstract class AbstractNodeDBO<P extends AbstractNodeDBO, C extends Abstr
         return GSDFileTypes.NONE;
     }
     
+    @SuppressWarnings("unchecked")
+    @Nonnull
+    public P delete() throws PersistenceException {
+        final P parent = getParent();
+        parent.removeChild(this);
+        parent.save();
+        return parent;
+    }
+    
     @Nonnull
     public abstract C createChild() throws PersistenceException;
 
