@@ -21,36 +21,99 @@
  */
 package org.csstudio.archive.common.service.util;
 
+import java.io.Serializable;
+import java.util.ArrayList;
+import java.util.Collection;
+
 import javax.annotation.Nonnull;
 
-import org.csstudio.domain.desy.collection.ISerializableCollection;
+import org.csstudio.domain.desy.typesupport.BaseTypeConversionSupport;
 import org.csstudio.domain.desy.typesupport.TypeSupportException;
+import org.epics.pvmanager.TypeSupport;
+
+import com.google.common.base.Joiner;
+import com.google.common.base.Predicates;
+import com.google.common.collect.Collections2;
+import com.google.common.collect.Lists;
 
 /**
- * Type conversions for {@link ISerializableCollection}.
+ * Type conversions for {@link T}.
  *
  * @author bknerr
  * @since 16.12.2010
  */
-@SuppressWarnings("rawtypes")
-final class CollectionTypeConversionSupport extends ArchiveTypeConversionSupport<ISerializableCollection> {
+abstract class CollectionTypeConversionSupport<T extends Serializable & Collection> extends ArchiveTypeConversionSupport<T> {
+
+    /**
+     * TODO (bknerr) :
+     *
+     * @author bknerr
+     * @since 04.08.2011
+     */
+    private static final class ArrayListArchiveTypeConversionSupport extends CollectionTypeConversionSupport<ArrayList> {
+        /**
+         * Constructor.
+         */
+        protected ArrayListArchiveTypeConversionSupport() {
+            super(ArrayList.class);
+        }
+        /**
+         * {@inheritDoc}
+         */
+        @Override
+        @Nonnull
+        protected ArrayList<Double> convertFromDouble(@Nonnull final Double value) throws TypeSupportException {
+            return Lists.newArrayList(value);
+        }
+    }
+
+    private static boolean INSTALLED;
 
     /**
      * Constructor.
-     * @param type
      */
-    CollectionTypeConversionSupport() {
-        super(ISerializableCollection.class);
+    CollectionTypeConversionSupport(@Nonnull final Class<T> typeClass) {
+        super(typeClass);
     }
 
-    @SuppressWarnings("unchecked")
+    public static void install() {
+        if (INSTALLED) {
+            return;
+        }
+        BaseTypeConversionSupport.install();
+
+        TypeSupport.addTypeSupport(new ArrayListArchiveTypeConversionSupport());
+        //TypeSupport.addTypeSupport(new LinkedListArchiveTypeConversionSupport());
+
+        INSTALLED = true;
+    }
+
+    /**
+     * {@inheritDoc}
+     */
     @Override
     @Nonnull
-    protected String convertToArchiveString(@Nonnull final ISerializableCollection values) throws TypeSupportException {
+    protected String convertToArchiveString(@Nonnull final T values) throws TypeSupportException {
         if (values.isEmpty()) {
             return "";
         }
-        return convertFromMultiScalarToArchiveString(values);
+        @SuppressWarnings("unchecked")
+        final ArchiveTypeConversionSupport<T> support =
+            (ArchiveTypeConversionSupport<T>) findTypeSupportForOrThrowTSE(ArchiveTypeConversionSupport.class,
+                                                                           values.iterator().next().getClass());
+
+        @SuppressWarnings("unchecked")
+        final Collection<String> items =
+            Collections2.filter(Collections2.transform(values,  new Type2StringFunction(support)),
+                                Predicates.<String>notNull());
+        if (values.size() != items.size()) {
+            throw new TypeSupportException("Number of transformed elements (" + items.size() +
+                                           " does not match the number of input elements (" + values.size() + "!", null);
+        }
+
+        final String result = Joiner.on(ARCHIVE_COLLECTION_ELEM_SEP).join(items);
+
+        return collectionEmbrace(result);
     }
 
     /**
@@ -62,33 +125,9 @@ final class CollectionTypeConversionSupport extends ArchiveTypeConversionSupport
      */
     @Override
     @Nonnull
-    protected ISerializableCollection convertFromArchiveString(@Nonnull final String value) throws TypeSupportException {
-        throw new TypeSupportException("This method shall not be invoked for type Collection.class." +
-                                       " Use .class type of T for Collection<T>! as parameter." , null);
-    }
-
-    /**
-     * {@inheritDoc}
-     *
-     * ATTENTION: guaranteed to throw {@link TypeSupportException}.<br>
-     *            Use {@link ArchiveTypeConversionSupport#fromMultiScalarArchiveString(Class<T>, String)}
-     *            with Class<T> for Collection<T> instead of Collection.class.
-     */
-    @SuppressWarnings("unchecked")
-    @Override
-    @Nonnull
-    protected ISerializableCollection convertFromArchiveStringToMultiScalar(@Nonnull final Class<?> collectionClass,
-                                                               @Nonnull final String values) throws TypeSupportException {
-        throw new TypeSupportException("This method shall not be invoked for class type Collection.class." +
-                                       " Use .class type of T for a Collection<T> as parameter." , null);
-    }
-    /**
-     * {@inheritDoc}
-     */
-    @Override
-    @Nonnull
-    protected ISerializableCollection convertFromDouble(@Nonnull final Double value) throws TypeSupportException {
-        throw new TypeSupportException("This method is not defined (yet?) for Collection.class.\n" +
-                                       "Perhaps it will make sense for archiving the magnitudes of numerical vectors?" , null);
+    protected T convertFromArchiveString(@Nonnull final String value) throws TypeSupportException {
+        throw new TypeSupportException("This method cannot be invoked for Collection.class subtypes!" +
+                                       " Use ArchiveTypeConversionSupport.fromArchiveString(Class<C>, Class<E>, String) instead," +
+                                       " where you specify the Collection type C, and the elements type E to convert the String into.", null);
     }
 }

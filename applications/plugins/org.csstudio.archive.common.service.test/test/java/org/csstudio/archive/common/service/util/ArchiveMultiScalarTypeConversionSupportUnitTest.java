@@ -27,9 +27,11 @@ import static org.csstudio.archive.common.service.util.ArchiveTypeConversionSupp
 
 import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.Vector;
+import java.util.concurrent.CopyOnWriteArrayList;
 
 import org.csstudio.domain.desy.epics.types.EpicsEnum;
 import org.csstudio.domain.desy.typesupport.TypeSupportException;
@@ -38,6 +40,7 @@ import org.junit.BeforeClass;
 import org.junit.Test;
 
 import com.google.common.collect.Lists;
+import com.google.common.collect.Sets;
 
 /**
  * Test of multi scalar type conversion in {@link ArchiveTypeConversionSupport}.
@@ -82,13 +85,25 @@ public class ArchiveMultiScalarTypeConversionSupportUnitTest {
     }
 
     @Test
-    public void testMultiScalarStringToByteArrayConversion() {
-        final Serializable valuesS = Lists.newArrayList("modest", "mouse");
-        try {
-            final byte[] bytes = ArchiveTypeConversionSupport.toByteArray(valuesS);
-        } catch (final TypeSupportException e) {
-            Assert.fail();
-        }
+    public void testDeSerialization() throws TypeSupportException {
+        Serializable start = Lists.newArrayList(Double.valueOf(1.0), Double.valueOf(2.0));
+        byte[] byteArray = ArchiveTypeConversionSupport.toByteArray(start);
+        final ArrayList result = ArchiveTypeConversionSupport.fromByteArray(byteArray);
+        Assert.assertEquals(Double.valueOf(1.0), result.get(0));
+        Assert.assertEquals(Double.valueOf(2.0), result.get(1));
+
+        start = new CopyOnWriteArrayList<Double>(new Double[]{ Double.valueOf(1.0), Double.valueOf(2.0)});
+        byteArray = ArchiveTypeConversionSupport.toByteArray(start);
+        final CopyOnWriteArrayList result2 = ArchiveTypeConversionSupport.fromByteArray(byteArray);
+        Assert.assertEquals(Double.valueOf(1.0), result2.get(0));
+        Assert.assertEquals(Double.valueOf(2.0), result2.get(1));
+
+
+        start = Sets.<EpicsEnum>newHashSet(Arrays.asList(new EpicsEnum[] {EpicsEnum.createFromRaw(-1)}));
+        byteArray = ArchiveTypeConversionSupport.toByteArray(start);
+        final HashSet result3 = ArchiveTypeConversionSupport.fromByteArray(byteArray);
+        Assert.assertEquals(Double.valueOf(1.0), result2.get(0));
+        Assert.assertEquals(Double.valueOf(2.0), result2.get(1));
     }
 
     @Test
@@ -190,7 +205,7 @@ public class ArchiveMultiScalarTypeConversionSupportUnitTest {
                                 EpicsEnum.STATE + "(0)" + EpicsEnum.SEP + "second"+
                                 ARCHIVE_COLLECTION_SUFFIX, archiveString);
             final Vector<EpicsEnum> enums =
-                (Vector<EpicsEnum>) ArchiveTypeConversionSupport.fromMultiScalarArchiveString(Vector.class, EpicsEnum.class, archiveString);
+                ArchiveTypeConversionSupport.fromArchiveString(Vector.class, EpicsEnum.class, archiveString);
             Assert.assertEquals(2, enums.size());
 
             final Iterator<EpicsEnum> iterator = enums.iterator();

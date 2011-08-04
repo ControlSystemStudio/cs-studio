@@ -161,9 +161,9 @@ public class ArchiveEngineSampleRescuerUnitTest {
 
 
         final Collection<Double> collResult =
-            ArchiveTypeConversionSupport.fromMultiScalarArchiveString(ArrayList.class,
-                                                                      Double.class,
-                                                                      result.getSample(3).getData());
+            ArchiveTypeConversionSupport.fromArchiveString(ArrayList.class,
+                                                           Double.class,
+                                                           result.getSample(3).getData());
         Assert.assertTrue(Iterables.size(collResult) == 5);
 
         final Iterator<Double> iter = collResult.iterator();

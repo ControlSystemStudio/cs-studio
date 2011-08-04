@@ -74,6 +74,24 @@ public class ArchiveTypeConversionSupportUnitTest {
     }
 
     @Test
+    public void testDeSerialization() throws TypeSupportException {
+        Serializable start = Double.valueOf(2.0);
+        byte[] byteArray = ArchiveTypeConversionSupport.toByteArray(start);
+        Serializable result = ArchiveTypeConversionSupport.fromByteArray(byteArray);
+        Assert.assertEquals(result, start);
+
+        start = "hello";
+        byteArray = ArchiveTypeConversionSupport.toByteArray(start);
+        result = ArchiveTypeConversionSupport.fromByteArray(byteArray);
+        Assert.assertEquals(result, start);
+
+        start = EpicsEnum.createFromRaw(1);
+        byteArray = ArchiveTypeConversionSupport.toByteArray(start);
+        result = ArchiveTypeConversionSupport.fromByteArray(byteArray);
+        Assert.assertEquals(result, start);
+    }
+
+    @Test
     public void testScalarDoubleArchiveStringConversion() {
 
         try {

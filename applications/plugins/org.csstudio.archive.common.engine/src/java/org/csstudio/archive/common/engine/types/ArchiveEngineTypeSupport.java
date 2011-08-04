@@ -52,7 +52,7 @@ import org.epics.pvmanager.TypeSupport;
 public abstract class ArchiveEngineTypeSupport<V extends Serializable> extends AbstractTypeSupport<V> {
     // CHECKSTYLE ON : AbstractClassName
 
-    private static final String[] SCALAR_TYPE_PACKAGES =
+    private static final String[] ADDITIONAL_TYPE_PACKAGES =
         new String[]{"java.lang", "org.csstudio.domain.desy.epics.types"};
 
     private static boolean INSTALLED;
@@ -156,12 +156,13 @@ public abstract class ArchiveEngineTypeSupport<V extends Serializable> extends A
     ArchiveChannel<V, ISystemVariable<V>> toArchiveChannel(@Nonnull final IArchiveChannel cfg) throws TypeSupportException {
 
         final String dataType = cfg.getDataType();
-        Class<V> typeClass = BaseTypeConversionSupport.createTypeClassFromString(dataType,
-                                                                   SCALAR_TYPE_PACKAGES);
+        Class<V> typeClass =
+            BaseTypeConversionSupport.createBaseTypeClassFromString(dataType,
+                                                                    ADDITIONAL_TYPE_PACKAGES);
         boolean scalar = true;
         if (typeClass == null) {
             typeClass = BaseTypeConversionSupport.createTypeClassFromMultiScalarString(dataType,
-                                                                                       SCALAR_TYPE_PACKAGES);
+                                                                                       ADDITIONAL_TYPE_PACKAGES);
             if (typeClass == null) {
                 throw new TypeSupportException("Data type " + dataType + " for channel " +
                                                cfg.getName() + " is unknown.", null);
