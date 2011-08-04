@@ -97,8 +97,8 @@ import org.epics.pvmanager.PVManager;
 import org.epics.pvmanager.PVReader;
 import org.epics.pvmanager.PVReaderListener;
 import org.epics.pvmanager.data.SimpleValueFormat;
-import org.epics.pvmanager.data.Util;
 import org.epics.pvmanager.data.ValueFormat;
+import org.epics.pvmanager.data.ValueUtil;
 import org.epics.pvmanager.extra.DynamicGroup;
 import com.swtdesigner.TableViewerColumnSorter;
 
@@ -560,7 +560,7 @@ public class PVTableEditor extends EditorPart implements ISelectionProvider {
 				Item item = (Item) o;
 				if (item == null || item.getValue() == null)
 					return null;
-				return Util.alarmOf(item.getValue()).getAlarmSeverity();
+				return ValueUtil.alarmOf(item.getValue()).getAlarmSeverity();
 			}
 		};
 		tableViewerColumn_2.setLabelProvider(new PVColumnLabelProvider() {
@@ -572,7 +572,7 @@ public class PVTableEditor extends EditorPart implements ISelectionProvider {
 				Item item = (Item) element;
 				if (item == null || item.getValue() == null)
 					return null;
-				return Util.alarmOf(item.getValue()).getAlarmSeverity()
+				return ValueUtil.alarmOf(item.getValue()).getAlarmSeverity()
 						.toString();
 			}
 		});
@@ -590,7 +590,7 @@ public class PVTableEditor extends EditorPart implements ISelectionProvider {
 				Item item = (Item) element;
 				if (item == null || item.getValue() == null)
 					return null;
-				return Util.timeOf(item.getValue()).getTimeStamp().toString();
+				return ValueUtil.timeOf(item.getValue()).getTimeStamp().toString();
 			}
 		});
 		TableColumn tblclmnTime = tableViewerColumn_3.getColumn();

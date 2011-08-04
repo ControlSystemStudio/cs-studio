@@ -12,10 +12,11 @@ Bundle-RequiredExecutionEnvironment: JavaSE-1.6
 Export-Package: org.csstudio.utility.pvmanager,
  org.epics.pvmanager,
  org.epics.pvmanager.data,
+ org.epics.pvmanager.expression,
  org.epics.pvmanager.extra,
  org.epics.pvmanager.jca,
  org.epics.pvmanager.loc,
  org.epics.pvmanager.sim,
- org.epics.pvmanager.types,
+ org.epics.pvmanager.test,
  org.epics.pvmanager.util
 Bundle-ActivationPolicy: lazy

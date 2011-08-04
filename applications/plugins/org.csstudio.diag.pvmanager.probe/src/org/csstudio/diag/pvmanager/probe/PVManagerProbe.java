@@ -47,8 +47,8 @@ import org.epics.pvmanager.data.Display;
 import org.epics.pvmanager.data.Enum;
 import org.epics.pvmanager.data.SimpleValueFormat;
 import org.epics.pvmanager.data.Time;
-import org.epics.pvmanager.data.Util;
 import org.epics.pvmanager.data.ValueFormat;
+import org.epics.pvmanager.data.ValueUtil;
 import org.epics.pvmanager.util.TimeStampFormat;
 
 /**
@@ -409,9 +409,9 @@ public class PVManagerProbe extends ViewPart {
 			info.append(Messages.Probe_infoStateNotConnected).append(nl);
 		} else {
 			Object value = pv.getValue();
-			Alarm alarm = Util.alarmOf(value);
-			Display display = Util.displayOf(value);
-			Class<?> type = Util.typeOf(value);
+			Alarm alarm = ValueUtil.alarmOf(value);
+			Display display = ValueUtil.displayOf(value);
+			Class<?> type = ValueUtil.typeOf(value);
 
 			//info.append(Messages.S_ChannelInfo).append("  ").append(pv.getName()).append(nl); //$NON-NLS-1$
 			if (pv.getValue() == null) {
@@ -526,9 +526,9 @@ public class PVManagerProbe extends ViewPart {
 				Object obj = pv.getValue();
 				setLastError(pv.lastException());
 				setValue(valueFormat.format(obj));
-				setAlarm(Util.alarmOf(obj));
-				setTime(Util.timeOf(obj));
-				setMeter(Util.numericValueOf(obj), Util.displayOf(obj));
+				setAlarm(ValueUtil.alarmOf(obj));
+				setTime(ValueUtil.timeOf(obj));
+				setMeter(ValueUtil.numericValueOf(obj), ValueUtil.displayOf(obj));
 			}
 		});
 		
