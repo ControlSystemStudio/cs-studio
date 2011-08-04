@@ -34,8 +34,8 @@ import org.csstudio.config.ioconfig.editorparts.SlaveEditor;
 import org.csstudio.config.ioconfig.editorparts.SubnetEditor;
 import org.csstudio.config.ioconfig.model.FacilityDBO;
 import org.csstudio.config.ioconfig.model.INodeVisitor;
-import org.csstudio.config.ioconfig.model.VirtualLeaf;
 import org.csstudio.config.ioconfig.model.IocDBO;
+import org.csstudio.config.ioconfig.model.VirtualLeaf;
 import org.csstudio.config.ioconfig.model.VirtualRoot;
 import org.csstudio.config.ioconfig.model.pbmodel.ChannelDBO;
 import org.csstudio.config.ioconfig.model.pbmodel.ChannelStructureDBO;
@@ -45,7 +45,7 @@ import org.csstudio.config.ioconfig.model.pbmodel.ProfibusSubnetDBO;
 import org.csstudio.config.ioconfig.model.pbmodel.SlaveDBO;
 
 /**
- * Visitor to provide the node specific editor id. 
+ * Visitor to provide the node specific editor id.
  * 
  * @author bknerr
  * @since 10.06.2011
@@ -53,7 +53,7 @@ import org.csstudio.config.ioconfig.model.pbmodel.SlaveDBO;
 public enum EditorIdNodeVisitor implements INodeVisitor {
     INSTANCE;
     
-    private String _id = null;
+    private String _id;
     
     /**
      * Constructor.
@@ -66,13 +66,22 @@ public enum EditorIdNodeVisitor implements INodeVisitor {
     public String getId() {
         return _id;
     }
-
+    
     /**
      * {@inheritDoc}
      */
     @Override
-    public void visit(@Nonnull final VirtualRoot node) {
-        // Don't do anything
+    public void visit(@Nonnull final ChannelDBO node) {
+        _id = ChannelEditor.ID;
+        
+    }
+    
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public void visit(@Nonnull final ChannelStructureDBO node) {
+        _id = ChannelStructureEditor.ID;
     }
     
     /**
@@ -90,15 +99,7 @@ public enum EditorIdNodeVisitor implements INodeVisitor {
     public void visit(@Nonnull final IocDBO node) {
         _id = IocEditor.ID;
     }
-
-    /**
-     * {@inheritDoc}
-     */
-    @Override
-    public void visit(@Nonnull final ProfibusSubnetDBO node) {
-        _id = SubnetEditor.ID;
-    }
-
+    
     /**
      * {@inheritDoc}
      */
@@ -106,15 +107,7 @@ public enum EditorIdNodeVisitor implements INodeVisitor {
     public void visit(@Nonnull final MasterDBO node) {
         _id = MasterEditor.ID;
     }
-
-    /**
-     * {@inheritDoc}
-     */
-    @Override
-    public void visit(@Nonnull final SlaveDBO node) {
-        _id = SlaveEditor.ID;
-    }
-
+    
     /**
      * {@inheritDoc}
      */
@@ -122,29 +115,36 @@ public enum EditorIdNodeVisitor implements INodeVisitor {
     public void visit(@Nonnull final ModuleDBO node) {
         _id = ModuleEditor.ID;
     }
-
+    
     /**
      * {@inheritDoc}
      */
     @Override
-    public void visit(@Nonnull final ChannelStructureDBO node) {
-        _id = ChannelStructureEditor.ID;
+    public void visit(@Nonnull final ProfibusSubnetDBO node) {
+        _id = SubnetEditor.ID;
     }
-
+    
     /**
      * {@inheritDoc}
      */
     @Override
-    public void visit(@Nonnull final ChannelDBO node) {
-        _id = ChannelEditor.ID;
-        
+    public void visit(@Nonnull final SlaveDBO node) {
+        _id = SlaveEditor.ID;
     }
-
+    
     /**
      * {@inheritDoc}
      */
     @Override
     public void visit(@Nonnull final VirtualLeaf node) {
+        // Don't do anything
+    }
+    
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public void visit(@Nonnull final VirtualRoot node) {
         // Don't do anything
     }
     

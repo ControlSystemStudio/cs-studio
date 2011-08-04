@@ -54,11 +54,11 @@ import org.slf4j.LoggerFactory;
  * @since 01.04.2010
  */
 public class CallNewNodeEditor extends AbstractHandler {
-
+    
     private static final Logger LOG = LoggerFactory.getLogger(CallNewNodeEditor.class);
     
     private FacilityDBO _fac;
-
+    
     /**
      * (@inheritDoc)
      */
@@ -66,48 +66,48 @@ public class CallNewNodeEditor extends AbstractHandler {
     @CheckForNull
     public Object execute(@Nonnull final ExecutionEvent event) throws ExecutionException {
         // Get the view
-        IWorkbenchWindow window = HandlerUtil.getActiveWorkbenchWindow(event);
-        IWorkbenchPage page = window.getActivePage();
+        final IWorkbenchWindow window = HandlerUtil.getActiveWorkbenchWindow(event);
+        final IWorkbenchPage page = window.getActivePage();
         FacilityDBO node = null;
         // Get the selection
         // If we had a selection lets open the editor
         if (newNode("")) {
-            NodeEditorInput input = new NodeEditorInput(getNode(), true);
+            final NodeEditorInput input = new NodeEditorInput(getNode(), true);
             try {
                 page.openEditor(input, FacilityEditor.ID);
-            } catch (PartInitException e) {
-            	LOG.error("Can't open Facility Editor", e);//$NON-NLS-1$
+            } catch (final PartInitException e) {
+                LOG.error("Can't open Facility Editor", e);//$NON-NLS-1$
             }
             node = getNode();
         }
         _fac = null;
         return node;
     }
-
-    private boolean newNode(@Nullable final String nameOffer) {
-
-        final String nodeType = getNode().getClass().getSimpleName();
-        final String title = String.format(Messages.NodeEditor_Title, nodeType);
-        final String msg = String.format(Messages.NodeEditor_Msg, nodeType);
-        final InputDialog id = new InputDialog(Display.getDefault().getActiveShell(), title,
-                msg, nameOffer, null);
-        id.setBlockOnOpen(true);
-        if (id.open() == Window.OK) {
-            getNode().setName(id.getValue());
-            getNode().setSortIndex(0);
-            String name = UserName.getUserName();
-            getNode().setCreationData(name, new Date());
-//            getNode().setVersion(-2);
-            return true;
-        }
-        return false;
-    }
-
+    
     @Nonnull
     private FacilityDBO getNode() {
         if(_fac == null) {
             _fac = new FacilityDBO();
         }
         return _fac;
+    }
+    
+    private boolean newNode(@Nullable final String nameOffer) {
+        
+        final String nodeType = getNode().getClass().getSimpleName();
+        final String title = String.format(Messages.NodeEditor_Title, nodeType);
+        final String msg = String.format(Messages.NodeEditor_Msg, nodeType);
+        final InputDialog id = new InputDialog(Display.getDefault().getActiveShell(), title,
+                                               msg, nameOffer, null);
+        id.setBlockOnOpen(true);
+        if (id.open() == Window.OK) {
+            getNode().setName(id.getValue());
+            getNode().setSortIndex(0);
+            final String name = UserName.getUserName();
+            getNode().setCreationData(name, new Date());
+            //            getNode().setVersion(-2);
+            return true;
+        }
+        return false;
     }
 }

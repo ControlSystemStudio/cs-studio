@@ -18,8 +18,6 @@
  * USAGE AND OTHER RIGHTS AND OBLIGATIONS IS INCLUDED WITH THE DISTRIBUTION OF THIS
  * PROJECT IN THE FILE LICENSE.HTML. IF THE LICENSE IS NOT INCLUDED YOU MAY FIND A COPY
  * AT HTTP://WWW.DESY.DE/LEGAL/LICENSE.HTM
- *
- * $Id: DesyKrykCodeTemplates.xml,v 1.7 2010/04/20 11:43:22 bknerr Exp $
  */
 package org.csstudio.config.ioconfig.editorparts;
 
@@ -38,54 +36,49 @@ import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Shell;
 
 /**
-*
-* Make a Dialog to select a Icon for this node.
-*
-* @author hrickens
-* @author $Author: hrickens $
-* @since 21.05.2010
-*/
+ *
+ * Make a Dialog to select a Icon for this node.
+ *
+ * @author hrickens
+ * @author $Author: hrickens $
+ * @since 21.05.2010
+ */
 public class IconChooserDialog extends Dialog {
-
-	private final AbstractNodeDBO<?,?> _node;
-	/*
-	 * (non-Javadoc)
-	 *
-	 * @see org.eclipse.jface.dialogs.Dialog#createDialogArea(org.eclipse.swt.widgets.Composite)
-	 */
-	private IconManageView _iconManageView;
-
-	protected IconChooserDialog(@Nullable final Shell parentShell, @Nonnull final AbstractNodeDBO<?,?> node) {
-		super(parentShell);
-		this.setShellStyle(SWT.RESIZE | SWT.BORDER | SWT.CLOSE | SWT.MIN | SWT.MAX | SWT.TITLE
-				| SWT.ON_TOP | // SWT.TOOL| SWT.SHEET|
-				SWT.PRIMARY_MODAL);
-		_node = node;
-	}
-
-	/**
-	 * {@inheritDoc}
-	 */
-	@Override
-	protected void configureShell(@Nonnull final Shell shell) {
-		super.configureShell(shell);
-		shell.setText("Icon chooser");
-		shell.setMaximized(true);
-	}
-
-	@Override
-	@Nonnull
-	protected Control createDialogArea(@Nonnull final Composite parent) {
-		final Composite createDialogArea = (Composite) super.createDialogArea(parent);
-		createDialogArea.setLayout(GridLayoutFactory.fillDefaults().create());
-		_iconManageView = new IconManageView(createDialogArea, SWT.NONE, _node);
-		return _iconManageView;
-	}
-
-	@CheckForNull
-	// TODO: prüfen ob hier wirklich null kommen kann.
-	public NodeImageDBO getImage() {
-		return _iconManageView.getSelectedImage();
-	}
-
+    
+    private final AbstractNodeDBO<?,?> _node;
+    private IconManageView _iconManageView;
+    
+    protected IconChooserDialog(@Nullable final Shell parentShell, @Nonnull final AbstractNodeDBO<?,?> node) {
+        super(parentShell);
+        this.setShellStyle(SWT.RESIZE | SWT.BORDER | SWT.CLOSE | SWT.MIN | SWT.MAX | SWT.TITLE
+                           | SWT.ON_TOP | // SWT.TOOL| SWT.SHEET|
+                           SWT.PRIMARY_MODAL);
+        _node = node;
+    }
+    
+    @CheckForNull
+    // TODO: prüfen ob hier wirklich null kommen kann.
+    public NodeImageDBO getImage() {
+        return _iconManageView.getSelectedImage();
+    }
+    
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    protected void configureShell(@Nonnull final Shell shell) {
+        super.configureShell(shell);
+        shell.setText("Icon chooser");
+        shell.setMaximized(true);
+    }
+    
+    @Override
+    @Nonnull
+    protected Control createDialogArea(@Nonnull final Composite parent) {
+        final Composite createDialogArea = (Composite) super.createDialogArea(parent);
+        createDialogArea.setLayout(GridLayoutFactory.fillDefaults().create());
+        _iconManageView = new IconManageView(createDialogArea, SWT.NONE, _node);
+        return _iconManageView;
+    }
+    
 }

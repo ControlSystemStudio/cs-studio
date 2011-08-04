@@ -18,33 +18,33 @@ import org.slf4j.LoggerFactory;
 
 /**
  * 
- * Caller for a Facility Editor with a new Facility. 
+ * Caller for a Facility Editor with a new Facility.
  * 
  * @author hrickens
  * @author $Author: $
  * @since 01.10.2010
  */
 public class CallNewFacilityEditor extends AbstractHandler {
-
+    
+    public static final String ID = "org.csstudio.config.ioconfig.commands.callNewFacilityEditor";//$NON-NLS-1$
     private static final Logger LOG = LoggerFactory.getLogger(CallNewFacilityEditor.class);
-	public static final String ID = "org.csstudio.config.ioconfig.commands.callNewFacilityEditor";//$NON-NLS-1$
-
-	@Override
-	@CheckForNull
-	public Object execute(@Nonnull ExecutionEvent event) throws ExecutionException {
-		IWorkbenchWindow window = HandlerUtil.getActiveWorkbenchWindow(event);
-        IWorkbenchPage page = window.getActivePage();
+    
+    @Override
+    @CheckForNull
+    public Object execute(@Nonnull final ExecutionEvent event) throws ExecutionException {
+        final IWorkbenchWindow window = HandlerUtil.getActiveWorkbenchWindow(event);
+        final IWorkbenchPage page = window.getActivePage();
         
-        FacilityDBO facilityDBO = new FacilityDBO();
+        final FacilityDBO facilityDBO = new FacilityDBO();
         facilityDBO.setName("new Facility"); //$NON-NLS-1$
         facilityDBO.setSortIndex(0);
-		NodeEditorInput input = new NodeEditorInput(facilityDBO, true);
-		try {
-			page.openEditor(input, FacilityEditor.ID);
-		} catch (PartInitException e) {
-			LOG.error("Can't open Facility Editor Error:", e);//$NON-NLS-1$
-		}		
-		return null;
-	}
-
+        final NodeEditorInput input = new NodeEditorInput(facilityDBO, true);
+        try {
+            page.openEditor(input, FacilityEditor.ID);
+        } catch (final PartInitException e) {
+            LOG.error("Can't open Facility Editor Error:", e);//$NON-NLS-1$
+        }
+        return null;
+    }
+    
 }

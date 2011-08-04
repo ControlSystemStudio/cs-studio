@@ -21,58 +21,79 @@ import org.eclipse.swt.widgets.Display;
  * @since 14.12.2010
  */
 public class OverviewLabelProvider implements ITableLabelProvider, IColorProvider {
-
+    
     @Override
-    public Image getColumnImage(@Nullable Object element, int columnIndex) {
+    public void addListener(@Nullable final ILabelProviderListener listener) {
+        // Don't use Listener
+    }
+    
+    @Override
+    public void dispose() {
+        // Nothing to dispose
+    }
+    
+    @Override
+    @CheckForNull
+    public Color getBackground(@Nullable final Object element) {
+        if (element instanceof ModuleDBO) {
+            return Display.getCurrent().getSystemColor(SWT.COLOR_YELLOW);
+        }
         return null;
     }
-
+    
     @Override
-    public String getColumnText(@Nullable Object element, int columnIndex) {
+    @CheckForNull
+    public Image getColumnImage(@Nullable final Object element, final int columnIndex) {
+        return null;
+    }
+    
+    @Override
+    @CheckForNull
+    public String getColumnText(@Nullable final Object element, final int columnIndex) {
         if (element instanceof ChannelDBO) {
-            ChannelDBO channel = (ChannelDBO) element;
+            final ChannelDBO channel = (ChannelDBO) element;
             getChannelColumnText(channel, columnIndex);
         }
         if (element instanceof ModuleDBO) {
-            ModuleDBO module = (ModuleDBO) element;
+            final ModuleDBO module = (ModuleDBO) element;
             return getModuleColumnText(module, columnIndex);
-
+            
         }
         return null;
     }
-
-    /**
-     * @param element
-     * @param columnIndex
-     * @return
-     */
+    
+    @Override
     @CheckForNull
-    private String getModuleColumnText(@Nonnull ModuleDBO module, int columnIndex) {
-        switch (columnIndex) {
-            case 0:
-                return module.getSortIndex()+"";
-            case 2:
-                return module.getName();
-            default:
-                return null;
-        }
+    public Color getForeground(@Nullable final Object element) {
+        return null;
     }
-
+    
+    @Override
+    public final boolean isLabelProperty(@Nullable final Object element,@Nullable final String property) {
+        return false;
+    }
+    
+    @Override
+    public void removeListener(@Nullable final ILabelProviderListener listener) {
+        // Don't use Listener
+        
+    }
+    
     /**
      * @param element
      * @param columnIndex
      */
- // CHECKSTYLE OFF: CyclomaticComplexity
+    // CHECKSTYLE OFF: CyclomaticComplexity
     @CheckForNull
-    private String getChannelColumnText(@Nonnull ChannelDBO channel, int columnIndex) {
+    private String getChannelColumnText(@Nonnull final ChannelDBO channel, final int columnIndex) {
         switch (columnIndex) {
             case 0:
                 return "  ";
             case 1:
                 try {
                     return channel.getFullChannelNumber()+"";
-                } catch (PersistenceException e) {
-                    return "DB Error!"; 
+                } catch (final PersistenceException e) {
+                    return "DB Error!";
                 }
             case 2:
                 return channel.getName();
@@ -90,40 +111,23 @@ public class OverviewLabelProvider implements ITableLabelProvider, IColorProvide
                 return null;
         }
     }
- // CHECKSTYLE On: CyclomaticComplexity
+    // CHECKSTYLE On: CyclomaticComplexity
     
-    @Override
-    public void addListener(@Nullable ILabelProviderListener listener) {
-        // Don't use Listener
-    }
-
-    @Override
-    public void dispose() {
-        // Nothing to dispose
-    }
-
-    @Override
-    public final boolean isLabelProperty(@Nullable Object element,@Nullable String property) {
-        return false;
-    }
-
-    @Override
-    public void removeListener(@Nullable ILabelProviderListener listener) {
-        // Don't use Listener
-        
-    }
-
-    @Override
-    public Color getBackground(@Nullable Object element) {
-        if (element instanceof ModuleDBO) {
-            return Display.getCurrent().getSystemColor(SWT.COLOR_YELLOW);
+    /**
+     * @param element
+     * @param columnIndex
+     * @return
+     */
+    @CheckForNull
+    private String getModuleColumnText(@Nonnull final ModuleDBO module, final int columnIndex) {
+        switch (columnIndex) {
+            case 0:
+                return module.getSortIndex()+"";
+            case 2:
+                return module.getName();
+            default:
+                return null;
         }
-        return null;
     }
-
-    @Override
-    public Color getForeground(@Nullable Object element) {
-        return null;
-    }
-
+    
 }

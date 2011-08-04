@@ -24,6 +24,8 @@
  */
 package org.csstudio.config.ioconfig.view;
 
+import javax.annotation.Nonnull;
+
 import org.eclipse.jface.action.IAction;
 import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.ui.IWorkbenchWindow;
@@ -37,33 +39,38 @@ import org.eclipse.ui.WorkbenchException;
  * @since 20.07.2007
  */
 public class ShowIOConfig implements IWorkbenchWindowActionDelegate {
-
+    
     /** A workbench window handle. */
     private IWorkbenchWindow _window;
-
+    
     /**
      * {@inheritDoc}
      */
+    @Override
     public void dispose() {
-
+        // Nothig do dispose
     }
-
+    
     /** {@inheritDoc} */
-    public final void init(final IWorkbenchWindow window) {
+    @Override
+    public final void init(@Nonnull final IWorkbenchWindow window) {
         _window = window;
     }
-
+    
     /** {@inheritDoc} */
-    public final void run(final IAction action) {
+    @Override
+    public final void run(@Nonnull final IAction action) {
         try {
             IOConfigActivatorUI.getDefault().getWorkbench().showPerspective("org.csstudio.config.ioconfig.view.perspective", _window);
-        } catch (WorkbenchException e) {
+        } catch (final WorkbenchException e) {
             e.printStackTrace();
         }
     }
-
+    
     /** {@inheritDoc} */
-    public void selectionChanged(final IAction action,
-            final ISelection selection) {
+    @Override
+    public void selectionChanged(@Nonnull final IAction action,
+                                 @Nonnull final ISelection selection) {
+        // nothing to do at selection change
     }
 }

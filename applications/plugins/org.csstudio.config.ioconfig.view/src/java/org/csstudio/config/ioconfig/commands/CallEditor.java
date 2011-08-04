@@ -35,18 +35,18 @@ import org.eclipse.ui.PartInitException;
  * @since 01.04.2010
  */
 public class CallEditor extends AbstractCallNodeEditor {
-
-	public static final String ID = "org.csstudio.config.ioconfig.commands.callEditor";//$NON-NLS-1$
-
-	@Override
-	protected final void openNodeEditor(@Nonnull AbstractNodeDBO<AbstractNodeDBO<?,?>,AbstractNodeDBO<?,?>> obj,
-			@Nonnull IWorkbenchPage page) throws PartInitException {
-
-		NodeEditorInput input = new NodeEditorInput(obj);
-		
-		String id = NodeEditorHandler.getEditorIdFor(obj);
-
-		page.openEditor(input, id);
-
-	}
+    
+    public static final String ID = "org.csstudio.config.ioconfig.commands.callEditor";//$NON-NLS-1$
+    
+    @Override
+    protected final void openNodeEditor(@Nonnull final AbstractNodeDBO<AbstractNodeDBO<?,?>,AbstractNodeDBO<?,?>> obj,
+                                        @Nonnull final IWorkbenchPage page) throws PartInitException {
+        
+        final NodeEditorInput input = new NodeEditorInput(obj);
+        
+        final String id = NodeEditorHandler.getEditorIdFor(obj);
+        
+        page.openEditor(input, id);
+        
+    }
 }

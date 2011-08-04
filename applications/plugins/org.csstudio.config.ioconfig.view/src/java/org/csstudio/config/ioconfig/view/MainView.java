@@ -24,7 +24,8 @@
  */
 package org.csstudio.config.ioconfig.view;
 
-import org.csstudio.config.ioconfig.model.hibernate.HibernateTestManager;
+import javax.annotation.Nonnull;
+
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
@@ -39,8 +40,8 @@ import org.eclipse.ui.part.ViewPart;
  * @since 19.06.2007
  */
 public class MainView extends ViewPart {
-
-
+    
+    
     public static final String ID = "org.csstudio.config.ioconfig.view.MainView";
     private ProfiBusTreeView _profiBusTreeView;
     
@@ -48,19 +49,27 @@ public class MainView extends ViewPart {
      * @param parent The Parent Composite
      */
     @Override
-    public void createPartControl(final Composite parent) {
-        GridLayout layout = new GridLayout(1,false);
+    public void createPartControl(@Nonnull final Composite parent) {
+        final GridLayout layout = new GridLayout(1,false);
         layout.marginHeight=0;
         layout.marginWidth=0;
         layout.marginLeft=0;
         parent.setLayout(layout);
         parent.setLayoutData(new GridData(SWT.FILL, SWT.FILL,true,true,1,1));
         parent.setBackground(Display.getCurrent().getSystemColor(SWT.COLOR_MAGENTA));
-        ProfiBusTreeView profiBusTreeView = new ProfiBusTreeView(parent,SWT.NONE,getViewSite());
+        final ProfiBusTreeView profiBusTreeView = new ProfiBusTreeView(parent,SWT.NONE,getViewSite());
         setProfiBusTreeView(profiBusTreeView);
-//        HibernateManager.getInstance().addObserver(profiBusTreeView);
+        //        HibernateManager.getInstance().addObserver(profiBusTreeView);
     }
-
+    
+    /**
+     * @return the profiBusTreeView
+     */
+    @Nonnull
+    public ProfiBusTreeView getProfiBusTreeView() {
+        return _profiBusTreeView;
+    }
+    
     /**
      * The Profibus TreeViewer get the Focus.
      */
@@ -68,23 +77,16 @@ public class MainView extends ViewPart {
     public void setFocus() {
         getProfiBusTreeView().setFocus();
     }
-
+    
     /**
      * @param profiBusTreeView the profiBusTreeView to set
      */
-    private void setProfiBusTreeView(ProfiBusTreeView profiBusTreeView) {
+    private void setProfiBusTreeView(@Nonnull final ProfiBusTreeView profiBusTreeView) {
         _profiBusTreeView = profiBusTreeView;
     }
-
-    /**
-     * @return the profiBusTreeView
-     */
-    public ProfiBusTreeView getProfiBusTreeView() {
-        return _profiBusTreeView;
-    }
     
     
-
-
-
+    
+    
+    
 }

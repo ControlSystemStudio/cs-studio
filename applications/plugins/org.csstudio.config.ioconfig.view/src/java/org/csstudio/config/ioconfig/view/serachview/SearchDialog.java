@@ -82,6 +82,70 @@ import org.slf4j.LoggerFactory;
 public class SearchDialog extends Dialog {
     
     /**
+     * TODO (hrickens) : 
+     * 
+     * @author hrickens
+     * @author $Author: hrickens $
+     * @version $Revision: 1.7 $
+     * @since 03.08.2011
+     */
+    private final class FilterModifyListener implements ModifyListener {
+        private final TableViewer _resultTableView;
+        private final AbstractStringViewerFilter _viewerFilter;
+        private final Text _filerText;
+        
+        /**
+         * Constructor.
+         */
+        protected FilterModifyListener(@Nonnull final TableViewer resultTableView,
+                                       @Nonnull final AbstractStringViewerFilter viewerFilter,
+                                       @Nonnull final Text filerText) {
+            _resultTableView = resultTableView;
+            _viewerFilter = viewerFilter;
+            _filerText = filerText;
+        }
+        
+        @Override
+        public void modifyText(@Nullable final ModifyEvent e) {
+            _viewerFilter.setText(_filerText.getText());
+            _resultTableView.refresh();
+        }
+    }
+    /**
+     * @author hrickens
+     * @author $Author: hrickens $
+     * @version $Revision: 1.7 $
+     * @since 03.08.2011
+     */
+    private final class RefreshSelectionListener implements SelectionListener {
+        private final Button _csButton;
+        private final AbstractStringViewerFilter _viewerFilter;
+        private final TableViewer _resultTableView;
+        
+        protected RefreshSelectionListener(@Nonnull final Button checkButton,
+                                         @Nonnull final AbstractStringViewerFilter viewerFilter,
+                                         @Nonnull final TableViewer resultTableView) {
+            _csButton = checkButton;
+            _viewerFilter = viewerFilter;
+            _resultTableView = resultTableView;
+        }
+        
+        private void setCaseSensetive() {
+            _viewerFilter.setCaseSensetive(_csButton.getSelection());
+            _resultTableView.refresh();
+        }
+        
+        @Override
+        public void widgetDefaultSelected(@Nullable final SelectionEvent e) {
+            setCaseSensetive();
+        }
+        
+        @Override
+        public void widgetSelected(@Nullable final SelectionEvent e) {
+            setCaseSensetive();
+        }
+    }
+    /**
      * 
      * Viewer filter for the EPICS Address column.
      * 
@@ -265,55 +329,93 @@ public class SearchDialog extends Dialog {
     protected Control createDialogArea(@Nonnull final Composite parent) {
         final Composite localDialogArea1 = (Composite) super.createDialogArea(parent);
         localDialogArea1.getShell().setText("Search DDB Node");
-        localDialogArea1.setLayout(GridLayoutFactory.swtDefaults()
-                                   .numColumns(6).equalWidth(false).create());
+        localDialogArea1.setLayout(GridLayoutFactory.swtDefaults().numColumns(6).equalWidth(false).create());
         
-        Label label = new Label(localDialogArea1, SWT.NONE);
-        label.setLayoutData(new GridData(SWT.BEGINNING, SWT.CENTER, false,
-                                         false, 2, 1));
-        label.setText("Name:");
-        label = new Label(localDialogArea1, SWT.NONE);
-        label.setLayoutData(new GridData(SWT.BEGINNING, SWT.CENTER, false,
-                                         false, 2, 1));
-        label.setText("IO Name:");
-        label = new Label(localDialogArea1, SWT.NONE);
-        label.setLayoutData(new GridData(SWT.BEGINNING, SWT.CENTER, false,
-                                         false, 2, 1));
-        label.setText("EPICS Address:");
+        buildSearchTitels(localDialogArea1);
         
-        final GridDataFactory gdfText = GridDataFactory.swtDefaults()
-        .align(SWT.FILL, SWT.CENTER).grab(true, false);
+        final GridDataFactory gdfText = GridDataFactory.swtDefaults().align(SWT.FILL, SWT.CENTER)
+                                                .grab(true, false);
         
         final Button csNameButton = new Button(localDialogArea1, SWT.CHECK);
-        csNameButton.setLayoutData(new GridData(SWT.BEGINNING, SWT.CENTER,
-                                                false, false));
+        csNameButton.setLayoutData(new GridData(SWT.BEGINNING, SWT.CENTER, false, false));
         csNameButton.setToolTipText("Case Sensitive");
-        
-        final Text searchTextName = new Text(localDialogArea1, SWT.SINGLE
-                                             | SWT.LEAD | SWT.BORDER | SWT.SEARCH);
+        final Text searchTextName = new Text(localDialogArea1, SWT.SINGLE | SWT.LEAD | SWT.BORDER
+                                                               | SWT.SEARCH);
         gdfText.applyTo(searchTextName);
         searchTextName.setMessage("Name Filter");
         
         final Button csIONameButton = new Button(localDialogArea1, SWT.CHECK);
-        csIONameButton.setLayoutData(new GridData(SWT.BEGINNING, SWT.CENTER,
-                                                  false, false));
+        csIONameButton.setLayoutData(new GridData(SWT.BEGINNING, SWT.CENTER, false, false));
         csIONameButton.setToolTipText("Case Sensitive");
-        final Text searchTextIOName = new Text(localDialogArea1, SWT.SINGLE
-                                               | SWT.LEAD | SWT.BORDER | SWT.SEARCH);
+        final Text searchTextIOName =  new Text(localDialogArea1, SWT.SINGLE | SWT.LEAD | SWT.BORDER
+                                                                 | SWT.SEARCH);
         gdfText.applyTo(searchTextIOName);
         searchTextIOName.setMessage("IO Name Filter");
         final TableColumnLayout tableColumnLayout = new TableColumnLayout();
         
         final Button csEASButton = new Button(localDialogArea1, SWT.CHECK);
-        csEASButton.setLayoutData(new GridData(SWT.BEGINNING, SWT.CENTER,
-                                               false, false));
+        csEASButton.setLayoutData(new GridData(SWT.BEGINNING, SWT.CENTER, false, false));
         csEASButton.setToolTipText("Case Sensitive");
-        final Text searchTextAddressString = new Text(localDialogArea1,
-                                                      SWT.SINGLE | SWT.LEAD | SWT.BORDER | SWT.SEARCH);
+        final Text searchTextAddressString =  new Text(localDialogArea1, SWT.SINGLE | SWT.LEAD
+                                                                        | SWT.BORDER | SWT.SEARCH);
         gdfText.applyTo(searchTextAddressString);
         searchTextAddressString.setMessage("Epics Address Filter");
         
-        final Composite tableComposite = new Composite(localDialogArea1,
+        final TableViewer resultTableView = buildSearchTable(localDialogArea1, tableColumnLayout);
+        
+        final NameViewerFilter nameViewerFilter = new NameViewerFilter();
+        resultTableView.addFilter(nameViewerFilter);
+        final IONameViewerFilter ioNameViewerFilter = new IONameViewerFilter();
+        resultTableView.addFilter(ioNameViewerFilter);
+        final EpicsAddressViewerFilter epicsAddressViewerFilter = new EpicsAddressViewerFilter();
+        resultTableView.addFilter(epicsAddressViewerFilter);
+        
+        csNameButton.addSelectionListener(new RefreshSelectionListener(csNameButton, nameViewerFilter, resultTableView));
+        FilterModifyListener listener = new FilterModifyListener(resultTableView, nameViewerFilter, searchTextName);
+        searchTextName.addModifyListener(listener);
+        
+        csIONameButton.addSelectionListener(new RefreshSelectionListener(csIONameButton, ioNameViewerFilter, resultTableView));
+        listener = new FilterModifyListener(resultTableView, ioNameViewerFilter, searchTextIOName);
+        searchTextIOName.addModifyListener(listener);
+        
+        csEASButton.addSelectionListener(new RefreshSelectionListener(csEASButton, epicsAddressViewerFilter, resultTableView));
+        listener = new FilterModifyListener(resultTableView,epicsAddressViewerFilter,searchTextAddressString);
+        searchTextAddressString.addModifyListener(listener);
+        
+        resultTableView.addSelectionChangedListener(new ISelectionChangedListener() {
+            @Override
+            public void selectionChanged(@Nonnull final SelectionChangedEvent event) {
+                final StructuredSelection selection = (StructuredSelection) event.getSelection();
+                setSearchNode((SearchNodeDBO) selection.getFirstElement());
+            }
+        });
+        
+        resultTableView.setInput(_load);
+        return localDialogArea1;
+    }
+
+    /**
+     * @param parent
+     */
+    private void buildSearchTitels(@Nonnull final Composite parent) {
+        Label label = new Label(parent, SWT.NONE);
+        label.setLayoutData(new GridData(SWT.BEGINNING, SWT.CENTER, false,
+                                         false, 2, 1));
+        label.setText("Name:");
+        label = new Label(parent, SWT.NONE);
+        label.setLayoutData(new GridData(SWT.BEGINNING, SWT.CENTER, false,
+                                         false, 2, 1));
+        label.setText("IO Name:");
+        label = new Label(parent, SWT.NONE);
+        label.setLayoutData(new GridData(SWT.BEGINNING, SWT.CENTER, false,
+                                         false, 2, 1));
+        label.setText("EPICS Address:");
+    }
+
+    @Nonnull
+    private TableViewer buildSearchTable(@Nonnull final Composite tableParent,
+                                         @Nonnull final TableColumnLayout tableColumnLayout) {
+        final Composite tableComposite = new Composite(tableParent,
                                                        SWT.FULL_SELECTION);
         GridDataFactory.fillDefaults().grab(true, true).span(6, 1)
         .hint(800, 300).applyTo(tableComposite);
@@ -504,113 +606,7 @@ public class SearchDialog extends Dialog {
                                         new ColumnWeightData(2, 2, true));
         
         resultTableView.setContentProvider(new TableContentProvider());
-        
-        final NameViewerFilter nameViewerFilter = new NameViewerFilter();
-        resultTableView.addFilter(nameViewerFilter);
-        final IONameViewerFilter ioNameViewerFilter = new IONameViewerFilter();
-        resultTableView.addFilter(ioNameViewerFilter);
-        final EpicsAddressViewerFilter epicsAddressViewerFilter = new EpicsAddressViewerFilter();
-        resultTableView.addFilter(epicsAddressViewerFilter);
-        
-        csNameButton.addSelectionListener(new SelectionListener() {
-            
-            private void setCaseSensetive() {
-                nameViewerFilter.setCaseSensetive(csNameButton.getSelection());
-                resultTableView.refresh();
-            }
-            
-            @Override
-            public void widgetDefaultSelected(@Nullable final SelectionEvent e) {
-                setCaseSensetive();
-            }
-            
-            @Override
-            public void widgetSelected(@Nullable final SelectionEvent e) {
-                setCaseSensetive();
-            }
-        });
-        
-        searchTextName.addModifyListener(new ModifyListener() {
-            
-            @Override
-            public void modifyText(@Nullable final ModifyEvent e) {
-                nameViewerFilter.setText(searchTextName.getText());
-                resultTableView.refresh();
-            }
-            
-        });
-        
-        csIONameButton.addSelectionListener(new SelectionListener() {
-            
-            private void setCaseSensetive() {
-                ioNameViewerFilter.setCaseSensetive(csIONameButton.getSelection());
-                resultTableView.refresh();
-            }
-            
-            @Override
-            public void widgetDefaultSelected(@Nullable final SelectionEvent e) {
-                setCaseSensetive();
-            }
-            
-            @Override
-            public void widgetSelected(@Nullable final SelectionEvent e) {
-                setCaseSensetive();
-            }
-        });
-        
-        searchTextIOName.addModifyListener(new ModifyListener() {
-            
-            @Override
-            public void modifyText(@Nullable final ModifyEvent e) {
-                ioNameViewerFilter.setText(searchTextIOName.getText());
-                resultTableView.refresh();
-            }
-            
-        });
-        
-        csEASButton.addSelectionListener(new SelectionListener() {
-            
-            private void setCaseSensetive() {
-                epicsAddressViewerFilter.setCaseSensetive(csEASButton
-                                                          .getSelection());
-                resultTableView.refresh();
-            }
-            
-            @Override
-            public void widgetDefaultSelected(@Nullable final SelectionEvent e) {
-                setCaseSensetive();
-            }
-            
-            @Override
-            public void widgetSelected(@Nullable final SelectionEvent e) {
-                setCaseSensetive();
-            }
-        });
-        
-        searchTextAddressString.addModifyListener(new ModifyListener() {
-            
-            @Override
-            public void modifyText(@Nullable final ModifyEvent e) {
-                epicsAddressViewerFilter.setText(searchTextAddressString
-                                                 .getText());
-                resultTableView.refresh();
-            }
-            
-        });
-        
-        resultTableView.addSelectionChangedListener(new ISelectionChangedListener() {
-            @Override
-            public void selectionChanged(
-                                         @Nonnull final SelectionChangedEvent event) {
-                final StructuredSelection selection = (StructuredSelection) event
-                .getSelection();
-                setSearchNode((SearchNodeDBO) selection
-                              .getFirstElement());
-            }
-        });
-        
-        resultTableView.setInput(_load);
-        return localDialogArea1;
+        return resultTableView;
     }
     
     @Override

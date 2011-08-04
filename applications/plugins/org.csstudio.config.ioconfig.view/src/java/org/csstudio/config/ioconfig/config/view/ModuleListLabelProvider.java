@@ -28,8 +28,7 @@ import org.eclipse.swt.widgets.Table;
  * @version $Revision: 1.2 $
  * @since 07.01.2009
  */
-public class ModuleListLabelProvider extends LabelProvider implements IFontProvider,
-    IColorProvider {
+public class ModuleListLabelProvider extends LabelProvider implements IFontProvider, IColorProvider {
     /**
      * Font for Module that have an Input or Output. (Style is Normal)
      */
@@ -63,16 +62,16 @@ public class ModuleListLabelProvider extends LabelProvider implements IFontProvi
      * The Table Font name.
      */
     private static String _NAME;
-
+    
     /**
      * Default Constructor.
      * 
      * @param table
      *            the Table how use this LabelProvider.
-     * @param file 
+     * @param file
      */
     public ModuleListLabelProvider(@Nonnull final Table table) {
-        FontData fontData = table.getFont().getFontData()[0];
+        final FontData fontData = table.getFont().getFontData()[0];
         if(_GRAY==null) {
             _HEIGHT = fontData.getHeight();
             _NAME = fontData.getName();
@@ -82,19 +81,33 @@ public class ModuleListLabelProvider extends LabelProvider implements IFontProvi
             _ITALIC = CustomMediaFactory.getInstance().getFont(_NAME, _HEIGHT, SWT.ITALIC);
         }
     }
-
+    
     /**
      * {@inheritDoc}
      */
     @Override
-    @Nonnull
-    public final String getText(@Nonnull final Object element) {
-        if (element instanceof GsdModuleModel2) {
-            return ((GsdModuleModel2) element).getModuleNumber() + " : " + element.toString();
-        }
-        return element.toString();
+    public final void dispose() {
+        super.dispose();
     }
-
+    
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    @CheckForNull
+    public final Color getBackground(@Nullable final Object element) {
+        if (element instanceof GsdModuleModel2) {
+            final GsdModuleModel2 gmm = (GsdModuleModel2) element;
+            final int selectedModuleNo = gmm.getModuleNumber();
+            final GSDFileDBO gsdFileDBO = gmm.getParent().getGsdFileDBO();
+            final GSDModuleDBO module = gsdFileDBO.getGSDModule(selectedModuleNo);
+            if (module != null) {
+                return YELLOW;
+            }
+        }
+        return null;
+    }
+    
     /**
      * {@inheritDoc}
      */
@@ -102,12 +115,12 @@ public class ModuleListLabelProvider extends LabelProvider implements IFontProvi
     @Nonnull
     public final Font getFont(@Nullable final Object element) {
         if (element instanceof GsdModuleModel2) {
-            GsdModuleModel2 gmm = (GsdModuleModel2) element;
+            final GsdModuleModel2 gmm = (GsdModuleModel2) element;
             boolean input = false;
             boolean output = false;
-            List<Integer> values = gmm.getValue();
-            SlaveCfgDataBuilder slaveCfgDataFactory = new SlaveCfgDataBuilder(values);
-            for (SlaveCfgData slaveCfgData : slaveCfgDataFactory.getSlaveCfgDataList()) {
+            final List<Integer> values = gmm.getValue();
+            final SlaveCfgDataBuilder slaveCfgDataFactory = new SlaveCfgDataBuilder(values);
+            for (final SlaveCfgData slaveCfgData : slaveCfgDataFactory.getSlaveCfgDataList()) {
                 input |= slaveCfgData.isInput();
                 output |= slaveCfgData.isOutput();
             }
@@ -122,25 +135,7 @@ public class ModuleListLabelProvider extends LabelProvider implements IFontProvi
             return _NORMAL;
         }
     }
-
-    /**
-     * {@inheritDoc}
-     */
-    @Override
-    @CheckForNull
-    public final Color getBackground(@Nullable final Object element) {
-        if (element instanceof GsdModuleModel2) {
-            GsdModuleModel2 gmm = (GsdModuleModel2) element;
-            int selectedModuleNo = gmm.getModuleNumber();
-            GSDFileDBO gsdFileDBO = gmm.getParent().getGsdFileDBO();
-            GSDModuleDBO module = gsdFileDBO.getGSDModule(selectedModuleNo);
-            if (module != null) {
-                return YELLOW;
-            }
-        }
-        return null;
-    }
-
+    
     /**
      * {@inheritDoc}
      */
@@ -148,12 +143,12 @@ public class ModuleListLabelProvider extends LabelProvider implements IFontProvi
     @Nonnull
     public final Color getForeground(@Nullable final Object element) {
         if (element instanceof GsdModuleModel2) {
-            GsdModuleModel2 gmm = (GsdModuleModel2) element;
+            final GsdModuleModel2 gmm = (GsdModuleModel2) element;
             boolean input = false;
             boolean output = false;
-            List<Integer> values = gmm.getValue();
-            SlaveCfgDataBuilder slaveCfgDataFactory = new SlaveCfgDataBuilder(values);
-            for (SlaveCfgData slaveCfgData : slaveCfgDataFactory.getSlaveCfgDataList()) {
+            final List<Integer> values = gmm.getValue();
+            final SlaveCfgDataBuilder slaveCfgDataFactory = new SlaveCfgDataBuilder(values);
+            for (final SlaveCfgData slaveCfgData : slaveCfgDataFactory.getSlaveCfgDataList()) {
                 input = slaveCfgData.isInput();
                 output = slaveCfgData.isOutput();
             }
@@ -166,12 +161,16 @@ public class ModuleListLabelProvider extends LabelProvider implements IFontProvi
             return BLACK;
         }
     }
-
+    
     /**
      * {@inheritDoc}
      */
     @Override
-    public final void dispose() {
-        super.dispose();
+    @Nonnull
+    public final String getText(@Nonnull final Object element) {
+        if (element instanceof GsdModuleModel2) {
+            return ((GsdModuleModel2) element).getModuleNumber() + " : " + element.toString();
+        }
+        return element.toString();
     }
 }

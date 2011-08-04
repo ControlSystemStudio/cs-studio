@@ -47,27 +47,27 @@ public final class DeviceDatabaseErrorDialog {
         // Constructor.
     }
     
-    public static void open(@Nullable Shell parent,@CheckForNull String message,@CheckForNull Exception e, @CheckForNull ProfiBusTreeView busTreeView) {
-        StringBuilder sb = buildMessage(message, e);
+    public static void open(@Nullable final Shell parent,@CheckForNull final String message,@CheckForNull final Exception e) {
+        final StringBuilder sb = buildMessage(message, e);
+        openDialog(parent,  sb, null);
+    }
+    public static void open(@Nullable final Shell parent,@CheckForNull final String message,@CheckForNull final Exception e, @CheckForNull final ProfiBusTreeView busTreeView) {
+        final StringBuilder sb = buildMessage(message, e);
         openDialog(parent,  sb, busTreeView);
         
     }
-    public static void open(@Nullable Shell parent,@CheckForNull String message,@CheckForNull Exception e) {
-        StringBuilder sb = buildMessage(message, e);
-        openDialog(parent,  sb, null);
-    }
-
+    
     /**
      * @param message
      * @param e
      * @return
      */
     @Nonnull
-    private static StringBuilder buildMessage(@CheckForNull String message, @CheckForNull Exception e) {
-        StringBuilder sb = new StringBuilder();
+    private static StringBuilder buildMessage(@CheckForNull final String message, @CheckForNull final Exception e) {
+        final StringBuilder sb = new StringBuilder();
         if(message!=null) {
             sb.append(message)
-              .append("\r");
+            .append("\r");
             
         }
         if(e!=null) {
@@ -78,29 +78,29 @@ public final class DeviceDatabaseErrorDialog {
                     eMessage = "Unknown Exception";
                 }
             }
-
+            
             sb.append(eMessage);
         }
         return sb;
     }
-
+    
     /**
      * @param parent
      * @param title
      * @param sb
-     * @param busTreeView 
+     * @param busTreeView
      */
-    private static void openDialog(@Nullable Shell parent, @Nonnull StringBuilder sb, @CheckForNull ProfiBusTreeView busTreeView) {
-        String title = "Device Database Error!";
+    private static void openDialog(@Nullable final Shell parent, @Nonnull final StringBuilder sb, @CheckForNull final ProfiBusTreeView busTreeView) {
+        final String title = "Device Database Error!";
         String[] dialogButtonLabels;
         if(busTreeView!=null) {
             dialogButtonLabels = new String[] {"Close", "Reload DB" };
         } else {
             dialogButtonLabels = new String[] {"Close"};
         }
-        MessageDialog messageDialog = new MessageDialog(parent, title, null,
-                          sb.toString(), MessageDialog.ERROR,
-                          dialogButtonLabels, 1);
+        final MessageDialog messageDialog = new MessageDialog(parent, title, null,
+                                                              sb.toString(), MessageDialog.ERROR,
+                                                              dialogButtonLabels, 1);
         if (messageDialog.open() == 1 && busTreeView!=null) {
             busTreeView.reload();
         }
