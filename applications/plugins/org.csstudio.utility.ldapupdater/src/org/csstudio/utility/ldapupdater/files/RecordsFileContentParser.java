@@ -22,6 +22,7 @@
 package org.csstudio.utility.ldapupdater.files;
 
 import java.io.File;
+import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.nio.charset.Charset;
 import java.util.Comparator;
@@ -109,6 +110,12 @@ public final class RecordsFileContentParser {
 
     @Nonnull
     public static SortedSet<Record> parse(@Nonnull final File file) throws IOException {
+        if (!file.exists()) {
+            throw new FileNotFoundException("File " + file.getAbsolutePath() + " does not exist.");
+        }
+        if (!file.isFile()) {
+            throw new IllegalArgumentException("File " + file.getAbsolutePath() + " is not a file.");
+        }
         final SortedSet<Record> records =
             Files.readLines(file,
                             Charset.defaultCharset(),

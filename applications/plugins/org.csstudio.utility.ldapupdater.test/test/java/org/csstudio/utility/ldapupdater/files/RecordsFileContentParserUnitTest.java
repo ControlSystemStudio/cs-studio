@@ -54,7 +54,6 @@ public class RecordsFileContentParserUnitTest {
     @Test(expected=IllegalArgumentException.class)
     public void testNotAFile() throws IOException {
         final File dir = _tempFolder.newFolder("iAmAFolder");
-
         RecordsFileContentParser.parse(dir);
     }
 
