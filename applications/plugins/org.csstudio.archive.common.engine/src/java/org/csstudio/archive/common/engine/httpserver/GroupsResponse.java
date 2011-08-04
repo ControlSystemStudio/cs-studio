@@ -66,8 +66,9 @@ class GroupsResponse extends AbstractResponse {
             int maxQueueLength = 0;
             long numOfReceivedSamples = 0;
 
-            final Collection<ArchiveChannel<?, ?>> channels = group.getChannels();
-            for (final ArchiveChannel<?, ?> channel : channels) {
+            @SuppressWarnings("rawtypes")
+            final Collection<ArchiveChannel> channels = group.getChannels();
+            for (@SuppressWarnings("rawtypes") final ArchiveChannel channel : channels) {
                 if (channel.isConnected()) {
                     ++numOfConnectedChannels;
                 }

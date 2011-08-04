@@ -7,6 +7,13 @@
  ******************************************************************************/
 package org.csstudio.archive.common.engine;
 
+import gov.aps.jca.CAException;
+import gov.aps.jca.Context;
+import gov.aps.jca.JCALibrary;
+import gov.aps.jca.Monitor;
+
+import java.util.concurrent.Executors;
+
 import javax.annotation.CheckForNull;
 import javax.annotation.Nonnull;
 
@@ -26,6 +33,8 @@ import org.csstudio.domain.desy.time.StopWatch.RunningStopWatch;
 import org.csstudio.domain.desy.time.TimeInstant;
 import org.eclipse.equinox.app.IApplication;
 import org.eclipse.equinox.app.IApplicationContext;
+import org.epics.pvmanager.PVManager;
+import org.epics.pvmanager.jca.JCADataSource;
 import org.joda.time.Period;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -108,6 +117,20 @@ public class ArchiveEngineApplication implements IApplication {
         }
         // Install the type supports for the engine
         ArchiveEngineTypeSupport.install();
+
+
+
+        try {
+            final Context jcaContext = JCALibrary.getInstance().createContext(JCALibrary.JNI_THREAD_SAFE);
+            PVManager.setDefaultDataSource(new JCADataSource(jcaContext, Monitor.LOG));
+            PVManager.setReadScannerExecutorService(Executors.newScheduledThreadPool(5));
+        } catch (final CAException e1) {
+            // TODO Auto-generated catch block
+            e1.printStackTrace();
+        }
+
+
+
 
         LOG.info("DESY Archive Engine Version {}.", EngineModel.getVersion());
         _run = true;

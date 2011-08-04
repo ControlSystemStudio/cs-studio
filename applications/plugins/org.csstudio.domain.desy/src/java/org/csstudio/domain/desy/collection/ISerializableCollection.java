@@ -19,31 +19,19 @@
  * PROJECT IN THE FILE LICENSE.HTML. IF THE LICENSE IS NOT INCLUDED YOU MAY FIND A COPY
  * AT HTTP://WWW.DESY.DE/LEGAL/LICENSE.HTM
  */
-package org.csstudio.archive.common.service.sample;
+package org.csstudio.domain.desy.collection;
 
 import java.io.Serializable;
-
-import javax.annotation.Nonnull;
-
-import org.csstudio.archive.common.service.channel.ArchiveChannelId;
-import org.csstudio.domain.desy.system.ISystemVariable;
+import java.util.Collection;
 
 /**
- * Read-only interface for archive sample.
+ * Helper interface for collections that are completely serializable.
  *
  * @author bknerr
- * @since 24.01.2011
- * @param <V> the data value type
- * @param <T> the css value type with alarm information
+ * @since 04.08.2011
+ * @param <T> the type of the elements in the collection
+ *
  */
-public interface IArchiveSample<V extends Serializable, T extends ISystemVariable<V>> extends Serializable {
-
-    @Nonnull
-    ArchiveChannelId getChannelId();
-
-    @Nonnull
-    T getSystemVariable();
-
-    @Nonnull
-    V getValue();
+public interface ISerializableCollection<T> extends Collection<T>, Serializable {
+    // EMPTY
 }

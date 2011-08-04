@@ -21,37 +21,29 @@
  */
 package org.csstudio.archive.common.service.util;
 
-import static org.csstudio.archive.common.service.util.ArchiveTypeConversionSupport.ARCHIVE_COLLECTION_ELEM_SEP;
 import static org.csstudio.archive.common.service.util.ArchiveTypeConversionSupport.ARCHIVE_COLLECTION_PREFIX;
 import static org.csstudio.archive.common.service.util.ArchiveTypeConversionSupport.ARCHIVE_COLLECTION_SUFFIX;
 import static org.csstudio.archive.common.service.util.ArchiveTypeConversionSupport.collectionEmbrace;
 import static org.csstudio.archive.common.service.util.ArchiveTypeConversionSupport.collectionRelease;
 
-import java.util.Collection;
-import java.util.Iterator;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Vector;
+import java.io.Serializable;
 
-import org.csstudio.archive.common.service.util.ArchiveTypeConversionSupport;
 import org.csstudio.domain.desy.epics.types.EpicsEnum;
 import org.csstudio.domain.desy.typesupport.TypeSupportException;
 import org.junit.Assert;
-import org.junit.Before;
+import org.junit.BeforeClass;
 import org.junit.Test;
 
-import com.google.common.collect.Lists;
-
 /**
- * Test, what else.
+ * Test of scalar type conversion in {@link ArchiveTypeConversionSupport}.
  *
  * @author bknerr
  * @since 10.12.2010
  */
 public class ArchiveTypeConversionSupportUnitTest {
 
-    @Before
-    public void setup() {
+    @BeforeClass
+    public static void setup() {
         ArchiveTypeConversionSupport.install();
     }
 
@@ -181,173 +173,27 @@ public class ArchiveTypeConversionSupportUnitTest {
         }
     }
 
-    @Test
-    public void testMultiScalarEmptyConversion() {
-
-        final List<String> valuesEmpty = Lists.newArrayList();
-        try {
-            final String archiveString = ArchiveTypeConversionSupport.toArchiveString(valuesEmpty);
-            Assert.assertEquals("", archiveString);
-
-            ArchiveTypeConversionSupport.fromArchiveString("IDoNotExist", "Iwasborninafactory,,,,whohoo");
-        } catch (final TypeSupportException e) {
-            Assert.assertTrue(true);
-        }
-    }
-
-    @Test
-    public void testMultiScalarMisMatchConversion() {
-        try {
-            ArchiveTypeConversionSupport.fromArchiveString(Integer.class, "theshapeofpunk,tocome");
-        } catch (final TypeSupportException e) {
-            Assert.assertTrue(true);
-        }
-
-    }
-
-    @Test
-    public void testMultiScalarStringConversion() {
-        final Collection<String> valuesS = Lists.newArrayList("modest", "mouse");
-        try {
-            final String archiveString = ArchiveTypeConversionSupport.toArchiveString(valuesS);
-            Assert.assertEquals(ARCHIVE_COLLECTION_PREFIX + "modest\\,mouse" + ARCHIVE_COLLECTION_SUFFIX,
-                                archiveString);
-        } catch (final TypeSupportException e) {
-            Assert.fail();
-        }
-    }
-
-    @Test
-    public void testMultiScalarIntegerConversion() {
-        final Collection<Integer> valuesI = Lists.newArrayList(1,2,3,4);
-        try {
-            final String archiveString = ArchiveTypeConversionSupport.toArchiveString(valuesI);
-            Assert.assertEquals(ARCHIVE_COLLECTION_PREFIX + "1\\,2\\,3\\,4" + ARCHIVE_COLLECTION_SUFFIX, archiveString);
-        } catch (final TypeSupportException e) {
-            Assert.fail();
-        }
-
-    }
-
-    @Test
-    public void testMultiScalarDoubleConversion() {
-        final Collection<Double> valuesD = Lists.newArrayList(1.0,2.0);
-        try {
-            final String archiveString = ArchiveTypeConversionSupport.toArchiveString(valuesD);
-            Assert.assertEquals(ARCHIVE_COLLECTION_PREFIX + "1.0\\,2.0" + ARCHIVE_COLLECTION_SUFFIX, archiveString);
-        } catch (final TypeSupportException e) {
-            Assert.fail();
-        }
-    }
-
-    @Test
-    public void testMultiScalarFloatConversion() {
-        final Collection<Float> valuesF = Lists.newArrayList(1.0F, 2.0F);
-        try {
-            final String archiveString = ArchiveTypeConversionSupport.toArchiveString(valuesF);
-            Assert.assertEquals(ARCHIVE_COLLECTION_PREFIX + "1.0\\,2.0" + ARCHIVE_COLLECTION_SUFFIX, archiveString);
-
-            final Collection<Float> coll = ArchiveTypeConversionSupport.fromArchiveString("HashSet<Float>", archiveString);
-
-            final Iterator<Float> iterator = coll.iterator();
-            Assert.assertTrue(iterator.next().equals(1.0F));
-            Assert.assertTrue(iterator.next().equals(2.0F));
-        } catch (final TypeSupportException e) {
-            Assert.fail();
-        }
-    }
-
-    @Test
-    public void testMultiScalarByteConversion() {
-        final Collection<Byte> valuesB = Lists.newArrayList(Byte.valueOf("127"),
-                                                            Byte.valueOf("-128"));
-        try {
-            final String archiveString = ArchiveTypeConversionSupport.toArchiveString(valuesB);
-            Assert.assertEquals(ARCHIVE_COLLECTION_PREFIX + "127\\,-128" + ARCHIVE_COLLECTION_SUFFIX, archiveString);
-
-
-            final Collection<Byte> coll =
-                ArchiveTypeConversionSupport.fromArchiveString("ArrayList<Byte>", archiveString);
-
-            final Iterator<Byte> iterator = coll.iterator();
-            Assert.assertEquals(Byte.valueOf("127"), iterator.next());
-            Assert.assertEquals(Byte.valueOf("-128"), iterator.next());
-
-        } catch (final TypeSupportException e) {
-            Assert.fail();
-        }
-    }
-
-    @Test
-    public void testMultiScalarCollectionConversion() {
-        final Collection<Byte> valuesB1 = Lists.newArrayList(Byte.valueOf("127"),
-                                                             Byte.valueOf("-128"));
-        final Collection<Byte> valuesB2 = Lists.newArrayList(Byte.valueOf("0"),
-                                                             Byte.valueOf("1"));
-
-        @SuppressWarnings("unchecked")
-        final Collection<Collection<Byte>> valuesB = Lists.newArrayList(valuesB1, valuesB2);
-        try {
-            final String archiveString = ArchiveTypeConversionSupport.toArchiveString(valuesB);
-            final String valuesB1String = ARCHIVE_COLLECTION_PREFIX + "127\\,-128" + ARCHIVE_COLLECTION_SUFFIX;
-            final String valuesB2String = ARCHIVE_COLLECTION_PREFIX + "0\\,1" + ARCHIVE_COLLECTION_SUFFIX;
-            Assert.assertEquals(ARCHIVE_COLLECTION_PREFIX + valuesB1String +  "\\," +
-                                                            valuesB2String +
-                                ARCHIVE_COLLECTION_SUFFIX, archiveString);
-        } catch (final TypeSupportException e) {
-            Assert.fail();
-        }
-    }
-
-    @Test
-    public void testMultiScalarEnumConversion() {
-        final Collection<EpicsEnum> valuesE = Lists.newArrayList(EpicsEnum.createFromRaw(1),
-                                                                 EpicsEnum.createFromStateName("second"));
-        try {
-            final String archiveString = ArchiveTypeConversionSupport.toArchiveString(valuesE);
-            Assert.assertEquals(ARCHIVE_COLLECTION_PREFIX +
-                                EpicsEnum.RAW + EpicsEnum.SEP + "1" +
-                                ARCHIVE_COLLECTION_ELEM_SEP +
-                                EpicsEnum.STATE + "(0)" + EpicsEnum.SEP + "second"+
-                                ARCHIVE_COLLECTION_SUFFIX, archiveString);
-            final Vector<EpicsEnum> enums =
-                (Vector<EpicsEnum>) ArchiveTypeConversionSupport.fromMultiScalarArchiveString(Vector.class, EpicsEnum.class, archiveString);
-            Assert.assertEquals(2, enums.size());
-
-            final Iterator<EpicsEnum> iterator = enums.iterator();
-            final EpicsEnum first = iterator.next();
-            Assert.assertEquals(Integer.valueOf(1), first.getRaw());
-
-            final EpicsEnum second = iterator.next();
-            Assert.assertEquals("second", second.getState());
-            Assert.assertEquals(Integer.valueOf(0), second.getStateIndex());
-
-        } catch (final TypeSupportException e) {
-            Assert.fail();
-        }
-    }
-
     /**
      * For test purposes.
      *
      * @author bknerr
      * @since 13.12.2010
      */
-    private static final class IDoNotExist {
+    private static final class IDoNotExist implements Serializable {
+        private static final long serialVersionUID = 4206609653727732553L;
+
         public IDoNotExist() {
             // EMPTY
         }
     }
+
+
+    @Test(expected=TypeSupportException.class)
+    public void testTargetTypeDoesntExistException() throws TypeSupportException {
+        ArchiveTypeConversionSupport.fromArchiveString("IDoNotExist", "Iwasborninafactory,,,,whohoo");
+    }
     @Test(expected=TypeSupportException.class)
     public void testTypeNotSuppportedException() throws TypeSupportException {
         ArchiveTypeConversionSupport.toArchiveString(new IDoNotExist());
-    }
-    @Test(expected=TypeSupportException.class)
-    public void testInvalidCollectionTypeConversions1() throws TypeSupportException {
-        ArchiveTypeConversionSupport.fromMultiScalarArchiveString(LinkedList.class, Collection.class, "");
-    }
-    @Test(expected=TypeSupportException.class)
-    public void testInvalidCollectionTypeConversions2() throws TypeSupportException {
-        ArchiveTypeConversionSupport.fromArchiveString(Collection.class, "");
     }
 }

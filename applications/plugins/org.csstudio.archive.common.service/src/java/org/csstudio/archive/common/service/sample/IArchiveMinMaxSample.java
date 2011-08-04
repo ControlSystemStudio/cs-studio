@@ -21,6 +21,8 @@
  */
 package org.csstudio.archive.common.service.sample;
 
+import java.io.Serializable;
+
 import javax.annotation.Nonnull;
 
 import org.csstudio.domain.desy.system.ISystemVariable;
@@ -38,7 +40,7 @@ import org.csstudio.domain.desy.system.ISystemVariable;
  * @param <V> the base type of the data of the composite system value
  * @param <T> the type of the composite system value (with alarm and timestamp)
  */
-public interface IArchiveMinMaxSample<V,
+public interface IArchiveMinMaxSample<V extends Serializable,
                                       T extends ISystemVariable<V>>
     extends IArchiveSample<V, T> {
 

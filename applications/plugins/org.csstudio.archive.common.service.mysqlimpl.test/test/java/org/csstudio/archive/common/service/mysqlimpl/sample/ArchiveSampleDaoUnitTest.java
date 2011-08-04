@@ -24,6 +24,7 @@ package org.csstudio.archive.common.service.mysqlimpl.sample;
 import static org.csstudio.archive.common.service.mysqlimpl.sample.TestSampleProvider.CHANNEL_ID_3RD;
 import static org.csstudio.archive.common.service.mysqlimpl.sample.TestSampleProvider.START;
 
+import java.io.Serializable;
 import java.util.Collection;
 
 import junit.framework.Assert;
@@ -60,13 +61,13 @@ public class ArchiveSampleDaoUnitTest extends AbstractDaoTestSetup {
     @Test
     public void retrieveSamples() throws ArchiveDaoException {
         final IArchiveChannel channel = CHANNEL_DAO.retrieveChannelById(CHANNEL_ID_3RD);
-        final IArchiveSample<Object,ISystemVariable<Object>> sample =
+        final IArchiveSample<Serializable, ISystemVariable<Serializable>> sample =
             SAMPLE_DAO.retrieveLatestSampleBeforeTime(channel, START);
         Assert.assertNotNull(sample);
         Assert.assertEquals(Byte.valueOf((byte) 26), sample.getValue());
 
 
-        final Collection<IArchiveSample<Object,ISystemVariable<Object>>>
+        final Collection<IArchiveSample<Serializable,ISystemVariable<Serializable>>>
             samples = SAMPLE_DAO.retrieveSamples(DesyArchiveRequestType.RAW, channel, TimeInstantBuilder.fromNanos(1L), START);
         Assert.assertNotNull(samples);
         Assert.assertEquals(1, samples.size());

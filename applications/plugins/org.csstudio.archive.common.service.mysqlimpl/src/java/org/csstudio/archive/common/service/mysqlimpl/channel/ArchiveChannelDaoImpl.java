@@ -21,6 +21,7 @@
  */
 package org.csstudio.archive.common.service.mysqlimpl.channel;
 
+import java.io.Serializable;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -307,9 +308,10 @@ public class ArchiveChannelDaoImpl extends AbstractArchiveDao implements IArchiv
      * {@inheritDoc}
      */
     @Override
-    public <V extends Comparable<? super V>> void updateDisplayRanges(@Nonnull final ArchiveChannelId id,
-                                                                      @Nonnull final V displayLow,
-                                                                      @Nonnull final V displayHigh) throws ArchiveDaoException {
+    public <V extends Comparable<? super V> & Serializable>
+    void updateDisplayRanges(@Nonnull final ArchiveChannelId id,
+                             @Nonnull final V displayLow,
+                             @Nonnull final V displayHigh) throws ArchiveDaoException {
         try {
             final ArchiveChannelDisplayInfo info =
                 new ArchiveChannelDisplayInfo(id,

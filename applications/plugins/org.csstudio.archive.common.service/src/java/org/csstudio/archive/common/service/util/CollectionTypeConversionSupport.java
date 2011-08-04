@@ -21,32 +21,32 @@
  */
 package org.csstudio.archive.common.service.util;
 
-import java.util.Collection;
-
 import javax.annotation.Nonnull;
 
+import org.csstudio.domain.desy.collection.ISerializableCollection;
 import org.csstudio.domain.desy.typesupport.TypeSupportException;
 
 /**
- * Type conversions for {@link Collection}.
+ * Type conversions for {@link ISerializableCollection}.
  *
  * @author bknerr
  * @since 16.12.2010
  */
 @SuppressWarnings("rawtypes")
-final class CollectionTypeConversionSupport extends ArchiveTypeConversionSupport<Collection> {
+final class CollectionTypeConversionSupport extends ArchiveTypeConversionSupport<ISerializableCollection> {
+
     /**
      * Constructor.
      * @param type
      */
     CollectionTypeConversionSupport() {
-        super(Collection.class);
+        super(ISerializableCollection.class);
     }
 
     @SuppressWarnings("unchecked")
     @Override
     @Nonnull
-    protected String convertToArchiveString(@Nonnull final Collection values) throws TypeSupportException {
+    protected String convertToArchiveString(@Nonnull final ISerializableCollection values) throws TypeSupportException {
         if (values.isEmpty()) {
             return "";
         }
@@ -62,7 +62,7 @@ final class CollectionTypeConversionSupport extends ArchiveTypeConversionSupport
      */
     @Override
     @Nonnull
-    protected Collection convertFromArchiveString(@Nonnull final String value) throws TypeSupportException {
+    protected ISerializableCollection convertFromArchiveString(@Nonnull final String value) throws TypeSupportException {
         throw new TypeSupportException("This method shall not be invoked for type Collection.class." +
                                        " Use .class type of T for Collection<T>! as parameter." , null);
     }
@@ -77,7 +77,7 @@ final class CollectionTypeConversionSupport extends ArchiveTypeConversionSupport
     @SuppressWarnings("unchecked")
     @Override
     @Nonnull
-    protected Collection convertFromArchiveStringToMultiScalar(@Nonnull final Class<?> collectionClass,
+    protected ISerializableCollection convertFromArchiveStringToMultiScalar(@Nonnull final Class<?> collectionClass,
                                                                @Nonnull final String values) throws TypeSupportException {
         throw new TypeSupportException("This method shall not be invoked for class type Collection.class." +
                                        " Use .class type of T for a Collection<T> as parameter." , null);
@@ -87,7 +87,7 @@ final class CollectionTypeConversionSupport extends ArchiveTypeConversionSupport
      */
     @Override
     @Nonnull
-    protected Collection convertFromDouble(@Nonnull final Double value) throws TypeSupportException {
+    protected ISerializableCollection convertFromDouble(@Nonnull final Double value) throws TypeSupportException {
         throw new TypeSupportException("This method is not defined (yet?) for Collection.class.\n" +
                                        "Perhaps it will make sense for archiving the magnitudes of numerical vectors?" , null);
     }
