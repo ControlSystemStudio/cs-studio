@@ -266,9 +266,7 @@ public class HibernateRepository implements IRepository {
             @CheckForNull
             public T execute(@Nonnull final Session session) {
                 final List<T> nodes = session
-                .createQuery("select c from " + clazz.getName() + " c where c.id = :id")
-                .setString("id", id.toString()).list();
-                
+                .createQuery("select c from " + clazz.getName() + " c where c.id = "+id).list();
                 return nodes.isEmpty()?null:nodes.get(0);
             }
         };
