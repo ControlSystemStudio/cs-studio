@@ -27,10 +27,6 @@ abstract class AbstractStringViewerFilter extends ViewerFilter {
         return _searchText != null && _searchText.trim().length() > 0;
     }
     
-    /**
-     * @param sNode
-     * @return
-     */
     protected boolean compareStrings(@Nonnull final String text) {
         String string1;
         String string2 = getSearchText();
@@ -42,7 +38,7 @@ abstract class AbstractStringViewerFilter extends ViewerFilter {
                 string2 = string2.toLowerCase();
             }
         }
-        return string1.contains(string2);
+        return string2==null?false:string1.contains(string2);
     }
     
     @CheckForNull

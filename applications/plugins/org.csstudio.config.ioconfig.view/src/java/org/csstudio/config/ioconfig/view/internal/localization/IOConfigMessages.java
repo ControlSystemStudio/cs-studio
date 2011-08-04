@@ -33,15 +33,15 @@ import org.eclipse.osgi.util.NLS;
  * @version $Revision: 1.7 $
  * @since 21.07.2011
  */
-public class IOConfigMessages extends NLS {
-    private static final String BUNDLE_NAME =
-                                              "org.csstudio.config.ioconfig.view.internal.localization.messages"; //$NON-NLS-1$
+public final class IOConfigMessages extends NLS {
     public static String AbstractCallNodeEditor_DialogErrorMsg;
+    private static final String BUNDLE_NAME = "org.csstudio.config.ioconfig.view.internal.localization.messages"; //$NON-NLS-1$
     static {
         // initialize resource bundle
         NLS.initializeMessages(BUNDLE_NAME, IOConfigMessages.class);
     }
     
     private IOConfigMessages() {
+        // constructor
     }
 }

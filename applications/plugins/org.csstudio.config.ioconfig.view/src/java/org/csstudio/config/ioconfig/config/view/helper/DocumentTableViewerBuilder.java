@@ -1,44 +1,33 @@
 /*
- * Copyright (c) 2010 Stiftung Deutsches Elektronen-Synchrotron,
+ * Copyright (c) 2007 Stiftung Deutsches Elektronen-Synchrotron,
  * Member of the Helmholtz Association, (DESY), HAMBURG, GERMANY.
  *
  * THIS SOFTWARE IS PROVIDED UNDER THIS LICENSE ON AN "../AS IS" BASIS.
- * WITHOUT WARRANTY OF ANY KIND, EXPRESSED OR IMPLIED, INCLUDING BUT
-		NOT LIMITED
- * TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR PARTICULAR PURPOSE
-		AND
- * NON-INFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS
-		BE LIABLE
- * FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF
-		CONTRACT,
- * TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE
-		SOFTWARE OR
- * THE USE OR OTHER DEALINGS IN THE SOFTWARE. SHOULD THE SOFTWARE PROVE
-		DEFECTIVE
- * IN ANY RESPECT, THE USER ASSUMES THE COST OF ANY NECESSARY SERVICING,
-		REPAIR OR
- * CORRECTION. THIS DISCLAIMER OF WARRANTY CONSTITUTES AN ESSENTIAL PART
-		OF THIS LICENSE.
- * NO USE OF ANY SOFTWARE IS AUTHORIZED HEREUNDER EXCEPT UNDER THIS
-		DISCLAIMER.
- * DESY HAS NO OBLIGATION TO PROVIDE MAINTENANCE, SUPPORT, UPDATES,
-		ENHANCEMENTS,
+ * WITHOUT WARRANTY OF ANY KIND, EXPRESSED OR IMPLIED, INCLUDING BUT NOT LIMITED
+ * TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR PARTICULAR PURPOSE AND
+ * NON-INFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE
+ * FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT,
+ * TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR
+ * THE USE OR OTHER DEALINGS IN THE SOFTWARE. SHOULD THE SOFTWARE PROVE DEFECTIVE
+ * IN ANY RESPECT, THE USER ASSUMES THE COST OF ANY NECESSARY SERVICING, REPAIR OR
+ * CORRECTION. THIS DISCLAIMER OF WARRANTY CONSTITUTES AN ESSENTIAL PART OF THIS LICENSE.
+ * NO USE OF ANY SOFTWARE IS AUTHORIZED HEREUNDER EXCEPT UNDER THIS DISCLAIMER.
+ * DESY HAS NO OBLIGATION TO PROVIDE MAINTENANCE, SUPPORT, UPDATES, ENHANCEMENTS,
  * OR MODIFICATIONS.
- * THE FULL LICENSE SPECIFYING FOR THE SOFTWARE THE REDISTRIBUTION,
-		MODIFICATION,
- * USAGE AND OTHER RIGHTS AND OBLIGATIONS IS INCLUDED WITH THE
-		DISTRIBUTION OF THIS
- * PROJECT IN THE FILE LICENSE.HTML. IF THE LICENSE IS NOT INCLUDED YOU
-		MAY FIND A COPY
+ * THE FULL LICENSE SPECIFYING FOR THE SOFTWARE THE REDISTRIBUTION, MODIFICATION,
+ * USAGE AND OTHER RIGHTS AND OBLIGATIONS IS INCLUDED WITH THE DISTRIBUTION OF THIS
+ * PROJECT IN THE FILE LICENSE.HTML. IF THE LICENSE IS NOT INCLUDED YOU MAY FIND A COPY
  * AT HTTP://WWW.DESY.DE/LEGAL/LICENSE.HTM
  */
 package org.csstudio.config.ioconfig.config.view.helper;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.Date;
 import java.util.List;
 import java.util.Set;
 
+import javax.annotation.CheckForNull;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
@@ -53,7 +42,6 @@ import org.eclipse.jface.layout.GridDataFactory;
 import org.eclipse.jface.layout.TableColumnLayout;
 import org.eclipse.jface.viewers.CellLabelProvider;
 import org.eclipse.jface.viewers.ColumnPixelData;
-import org.eclipse.jface.viewers.ColumnViewer;
 import org.eclipse.jface.viewers.ColumnWeightData;
 import org.eclipse.jface.viewers.IStructuredContentProvider;
 import org.eclipse.jface.viewers.StructuredSelection;
@@ -61,9 +49,7 @@ import org.eclipse.jface.viewers.TableViewer;
 import org.eclipse.jface.viewers.TableViewerColumn;
 import org.eclipse.jface.viewers.Viewer;
 import org.eclipse.jface.viewers.ViewerCell;
-import org.eclipse.jface.viewers.ViewerComparator;
 import org.eclipse.swt.SWT;
-import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.events.SelectionListener;
 import org.eclipse.swt.widgets.Composite;
@@ -83,84 +69,7 @@ import org.slf4j.LoggerFactory;
  * @version $Revision: 1.2 $
  * @since 30.07.2010
  */
-public class DocumentTableViewerBuilder {
-    
-    /**
-     * @author hrickens
-     * @author $Author: hrickens $
-     * @version $Revision: 1.2 $
-     * @since 17.08.2010
-     */
-    private abstract static class AbstractColumnViewerSorter extends ViewerComparator {
-        public static final int ASC = 1;
-        
-        public static final int NONE = 0;
-        
-        public static final int DESC = -1;
-        
-        private int direction = 0;
-        
-        private final TableViewerColumn column;
-        
-        private final ColumnViewer viewer;
-        
-        public AbstractColumnViewerSorter(final ColumnViewer viewer, final TableViewerColumn column) {
-            this.column = column;
-            this.viewer = viewer;
-            this.column.getColumn().addSelectionListener(new SelectionAdapter() {
-                
-                @Override
-                public void widgetSelected(final SelectionEvent e) {
-                    if( AbstractColumnViewerSorter.this.viewer.getComparator() != null ) {
-                        if( AbstractColumnViewerSorter.this.viewer.getComparator() == AbstractColumnViewerSorter.this ) {
-                            final int tdirection = AbstractColumnViewerSorter.this.direction;
-                            
-                            if( tdirection == ASC ) {
-                                setSorter(AbstractColumnViewerSorter.this, DESC);
-                            } else if( tdirection == DESC ) {
-                                setSorter(AbstractColumnViewerSorter.this, NONE);
-                            }
-                        } else {
-                            setSorter(AbstractColumnViewerSorter.this, ASC);
-                        }
-                    } else {
-                        setSorter(AbstractColumnViewerSorter.this, ASC);
-                    }
-                }
-            });
-        }
-        
-        @Override
-        public int compare(final Viewer viewer, final Object e1, final Object e2) {
-            return direction * doCompare(viewer, e1, e2);
-        }
-        
-        public void setSorter(final AbstractColumnViewerSorter sorter, final int direction) {
-            if( direction == NONE ) {
-                column.getColumn().getParent().setSortColumn(null);
-                column.getColumn().getParent().setSortDirection(SWT.NONE);
-                viewer.setComparator(null);
-            } else {
-                column.getColumn().getParent().setSortColumn(column.getColumn());
-                sorter.direction = direction;
-                
-                if( direction == ASC ) {
-                    column.getColumn().getParent().setSortDirection(SWT.DOWN);
-                } else {
-                    column.getColumn().getParent().setSortDirection(SWT.UP);
-                }
-                
-                if( viewer.getComparator() == sorter ) {
-                    viewer.refresh();
-                } else {
-                    viewer.setComparator(sorter);
-                }
-                
-            }
-        }
-        
-        protected abstract int doCompare(Viewer viewer, Object e1, Object e2);
-    }
+public final class DocumentTableViewerBuilder {
     
     /**
      * @author Rickens Helge
@@ -253,6 +162,13 @@ public class DocumentTableViewerBuilder {
     private static class TableContentProvider implements IStructuredContentProvider {
         
         /**
+         * Constructor.
+         */
+        public TableContentProvider() {
+            // Constructor.
+        }
+        
+        /**
          * Disposes any resources.
          */
         @Override
@@ -265,12 +181,13 @@ public class DocumentTableViewerBuilder {
          */
         @Override
         @SuppressWarnings("unchecked")
-        public final Object[] getElements(final Object arg0) {
+        @CheckForNull
+        public final Object[] getElements(@Nullable final Object arg0) {
             if (arg0 instanceof List) {
                 final List<IDocument> list = (List<IDocument>) arg0;
                 return list.toArray(new IDocument[list.size()]);
             } else if (arg0 instanceof Set) {
-                final Set docSet = (Set) arg0;
+                final Set<IDocument> docSet = (Set<IDocument>) arg0;
                 return docSet.toArray(new IDocument[docSet.size()]);
                 
             }
@@ -289,13 +206,21 @@ public class DocumentTableViewerBuilder {
          *            the new input
          */
         @Override
-        public final void inputChanged(final Viewer arg0, final Object arg1, final Object arg2) {
+        public final void inputChanged(@Nonnull final Viewer arg0, @Nullable final Object arg1, @Nullable final Object arg2) {
             // do noting
         }
     }
     
-    private static final Logger LOG = LoggerFactory.getLogger(DocumentTableViewerBuilder.class);
+    protected static final Logger LOG = LoggerFactory.getLogger(DocumentTableViewerBuilder.class);
     
+    /**
+     * Constructor.
+     */
+    private DocumentTableViewerBuilder() {
+        // Constructor.
+    }
+    
+    @Nonnull
     public static TableViewer crateDocumentTable(@Nonnull final Composite group, final boolean showHierarchy) {
         final TableColumnLayout tableColumnLayout = new TableColumnLayout();
         final Composite tableComposite = new Composite(group, SWT.BORDER);
@@ -326,20 +251,24 @@ public class DocumentTableViewerBuilder {
         final AbstractColumnViewerSorter columnViewerSorter = new AbstractColumnViewerSorter(tableViewer, column) {
             
             @Override
-            protected int doCompare(final Viewer viewer, final Object e1, final Object e2) {
+            protected int doCompare(@Nonnull final Viewer viewer, @Nonnull final Object e1, @Nonnull final Object e2) {
                 final IDocument doc1 = (IDocument) e1;
                 final IDocument doc2 = (IDocument) e2;
-                return compareStrings(doc1.getCreatedDate().toString(), doc2.getCreatedDate()
-                                      .toString());
+                final Date createdDate1 = doc1.getCreatedDate();
+                final Date createdDate2 = doc2.getCreatedDate();
+                final String date1 = createdDate1==null?"":createdDate1.toString();
+                final String date2 = createdDate2==null?"":createdDate2.toString();
+                return compareStrings(date1, date2);
             }
         };
         
-        columnViewerSorter.setSorter(columnViewerSorter, AbstractColumnViewerSorter.DESC);
+        columnViewerSorter.setSorter(columnViewerSorter, SORT_DIRECTION.DESC);
         tableViewer.setContentProvider(new TableContentProvider());
         return tableViewer;
     }
     
-    public static AddFile2DBSelectionListener getAddFile2DBSelectionListener(final TableViewer viewer) {
+    @Nonnull 
+    public static AddFile2DBSelectionListener getAddFile2DBSelectionListener(@Nonnull final TableViewer viewer) {
         return new AddFile2DBSelectionListener(viewer);
     }
     
@@ -364,7 +293,7 @@ public class DocumentTableViewerBuilder {
         viewer.getTable().setMenu(menu);
     }
     
-    private static int compareStrings(final String string1, final String string2) {
+    protected static int compareStrings(@CheckForNull final String string1, @CheckForNull final String string2) {
         if(string1==null&&string2==null) {
             return 0;
         } else if(string1==null) {
@@ -375,25 +304,21 @@ public class DocumentTableViewerBuilder {
         return string1.compareToIgnoreCase(string2);
     }
     
-    /**
-     * @param tableColumnLayout
-     * @param tableViewer
-     * @return
-     * @return
-     */
-    private static TableViewerColumn createDateColumn(final TableColumnLayout tableColumnLayout,
-                                                      final TableViewer tableViewer) {
-        TableViewerColumn column;
-        // Column Create Date
-        column = new TableViewerColumn(tableViewer, SWT.NONE);
+    @Nonnull 
+    private static TableViewerColumn createDateColumn(@Nonnull final TableColumnLayout tableColumnLayout,
+                                                      @Nonnull final TableViewer tableViewer) {
+        final TableViewerColumn column = new TableViewerColumn(tableViewer, SWT.NONE);
         column.getColumn().setText("Create Date");
         column.setLabelProvider(new CellLabelProvider() {
             @Override
-            public void update(final ViewerCell cell) {
-                cell.setText(((IDocument) cell.getElement()).getCreatedDate().toString());
+            public void update(@Nonnull final ViewerCell cell) {
+                final IDocument iDocument = (IDocument) cell.getElement();
+                final Date createdDate = iDocument==null?null:iDocument.getCreatedDate();
+                final String date = createdDate == null ? "" : createdDate.toString();
+                cell.setText(date);
             }
         });
-        
+
         tableColumnLayout.setColumnData(column.getColumn(), new ColumnWeightData(3, 80, true));
         
         return column;
@@ -404,13 +329,14 @@ public class DocumentTableViewerBuilder {
      * @param tableColumnLayout
      * @param tableViewer
      */
-    private static void createDescColumn(final TableColumnLayout tableColumnLayout,
-                                         final TableViewer tableViewer) {
+    @SuppressWarnings("unused")
+    private static void createDescColumn(@Nonnull final TableColumnLayout tableColumnLayout,
+                                         @Nonnull final TableViewer tableViewer) {
         final TableViewerColumn column2 = new TableViewerColumn(tableViewer, SWT.NONE);
         column2.getColumn().setText("Desc");
         column2.setLabelProvider(new CellLabelProvider() {
             @Override
-            public void update(final ViewerCell cell) {
+            public void update(@Nonnull final ViewerCell cell) {
                 final IDocument document = (IDocument) cell.getElement();
                 cell.setText(document.getDesclong());
             }
@@ -418,7 +344,7 @@ public class DocumentTableViewerBuilder {
         new AbstractColumnViewerSorter(tableViewer, column2) {
             
             @Override
-            protected int doCompare(final Viewer viewer, final Object e1, final Object e2) {
+            protected int doCompare(@Nonnull final Viewer viewer, @Nonnull final Object e1, @Nonnull final Object e2) {
                 final IDocument doc1 = (IDocument) e1;
                 final IDocument doc2 = (IDocument) e2;
                 return compareStrings(doc1.getDesclong(), doc2.getDesclong());
@@ -428,13 +354,10 @@ public class DocumentTableViewerBuilder {
         tableColumnLayout.setColumnData(column2.getColumn(), new ColumnWeightData(6, 140, true));
     }
     
-    /**
-     * @param tableColumnLayout
-     * @param tableViewer
-     * @return
-     */
-    private static TableViewerColumn createHierarchyColumn(final TableColumnLayout tableColumnLayout,
-                                                           final TableViewer tableViewer) {
+    @SuppressWarnings("unused")
+    @Nonnull 
+    private static TableViewerColumn createHierarchyColumn(@Nonnull final TableColumnLayout tableColumnLayout,
+                                                           @Nonnull final TableViewer tableViewer) {
         // Column Hierarchy
         final TableViewerColumn column = new TableViewerColumn(tableViewer, SWT.NONE);
         column.getColumn().setText("Hierarchy");
@@ -469,13 +392,14 @@ public class DocumentTableViewerBuilder {
      * @param tableColumnLayout
      * @param tableViewer
      */
-    private static void createKeywordsColumn(final TableColumnLayout tableColumnLayout,
-                                             final TableViewer tableViewer) {
+    @SuppressWarnings("unused")
+    private static void createKeywordsColumn(@Nonnull final TableColumnLayout tableColumnLayout,
+                                             @Nonnull final TableViewer tableViewer) {
         final TableViewerColumn column2 = new TableViewerColumn(tableViewer, SWT.NONE);
         column2.getColumn().setText("Key Words");
         column2.setLabelProvider(new CellLabelProvider() {
             @Override
-            public void update(final ViewerCell cell) {
+            public void update(@Nonnull final ViewerCell cell) {
                 final IDocument document = (IDocument) cell.getElement();
                 cell.setText(document.getKeywords());
             }
@@ -483,7 +407,7 @@ public class DocumentTableViewerBuilder {
         new AbstractColumnViewerSorter(tableViewer, column2) {
             
             @Override
-            protected int doCompare(final Viewer viewer, final Object e1, final Object e2) {
+            protected int doCompare(@Nonnull final Viewer viewer, @Nonnull final Object e1, @Nonnull final Object e2) {
                 final IDocument doc1 = (IDocument) e1;
                 final IDocument doc2 = (IDocument) e2;
                 return compareStrings(doc1.getKeywords(), doc2.getKeywords());
@@ -497,8 +421,9 @@ public class DocumentTableViewerBuilder {
      * @param tableColumnLayout
      * @param tableViewer
      */
-    private static void createSubjectColumn(final TableColumnLayout tableColumnLayout,
-                                            final TableViewer tableViewer) {
+    @SuppressWarnings("unused")
+    private static void createSubjectColumn(@Nonnull final TableColumnLayout tableColumnLayout,
+                                            @Nonnull final TableViewer tableViewer) {
         // Column Subject
         TableViewerColumn column = new TableViewerColumn(tableViewer, SWT.NONE);
         column.getColumn().setText("Subject");
@@ -538,7 +463,7 @@ public class DocumentTableViewerBuilder {
         new AbstractColumnViewerSorter(tableViewer, column) {
             
             @Override
-            protected int doCompare(final Viewer viewer, final Object e1, final Object e2) {
+            protected int doCompare(@Nonnull final Viewer viewer, @Nonnull final Object e1, @Nonnull final Object e2) {
                 final IDocument doc1 = (IDocument) e1;
                 final IDocument doc2 = (IDocument) e2;
                 return compareStrings(doc1.getMimeType(), doc2.getMimeType());

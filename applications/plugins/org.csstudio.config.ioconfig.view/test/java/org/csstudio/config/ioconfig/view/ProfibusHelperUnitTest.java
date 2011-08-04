@@ -45,8 +45,7 @@ import org.junit.Test;
  * @version $Revision: 1.2 $
  * @since 12.12.2008
  */
-// CHECKSTYLE:OFF
-public class ProfibusHelper_Test {
+public class ProfibusHelperUnitTest {
 
 
     @Test
@@ -98,4 +97,3 @@ public class ProfibusHelper_Test {
         assertTrue(textField.getListeners(SWT.Verify).length>0);
     }
 }
-//CHECKSTYLE:ON

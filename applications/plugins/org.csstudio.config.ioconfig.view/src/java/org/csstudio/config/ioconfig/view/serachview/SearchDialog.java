@@ -82,7 +82,34 @@ import org.slf4j.LoggerFactory;
 public class SearchDialog extends Dialog {
     
     /**
-     * TODO (hrickens) : 
+     * This class provides the content for the table.
+     */
+    public class TableContentProvider implements IStructuredContentProvider {
+        
+        @Override
+        public void dispose() {
+            // We don't create any resources, so we don't dispose any
+        }
+        
+        @Override
+        @CheckForNull
+        @SuppressWarnings("rawtypes")
+        public Object[] getElements(@Nullable final Object inputElement) {
+            if (inputElement instanceof List) {
+                return ((List) inputElement).toArray();
+            }
+            return null;
+        }
+        
+        @Override
+        public void inputChanged(@Nullable final Viewer viewer,
+                                 @Nullable final Object oldInput, @Nullable final Object newInput) {
+            // Empty
+        }
+        
+    }
+    /**
+     * TODO (hrickens) :
      * 
      * @author hrickens
      * @author $Author: hrickens $
@@ -123,16 +150,11 @@ public class SearchDialog extends Dialog {
         private final TableViewer _resultTableView;
         
         protected RefreshSelectionListener(@Nonnull final Button checkButton,
-                                         @Nonnull final AbstractStringViewerFilter viewerFilter,
-                                         @Nonnull final TableViewer resultTableView) {
+                                           @Nonnull final AbstractStringViewerFilter viewerFilter,
+                                           @Nonnull final TableViewer resultTableView) {
             _csButton = checkButton;
             _viewerFilter = viewerFilter;
             _resultTableView = resultTableView;
-        }
-        
-        private void setCaseSensetive() {
-            _viewerFilter.setCaseSensetive(_csButton.getSelection());
-            _resultTableView.refresh();
         }
         
         @Override
@@ -144,95 +166,12 @@ public class SearchDialog extends Dialog {
         public void widgetSelected(@Nullable final SelectionEvent e) {
             setCaseSensetive();
         }
+        
+        private void setCaseSensetive() {
+            _viewerFilter.setCaseSensetive(_csButton.getSelection());
+            _resultTableView.refresh();
+        }
     }
-    /**
-     * 
-     * Viewer filter for the EPICS Address column.
-     * 
-     * @author hrickens
-     * @author $Author: $
-     * @since 23.09.2010
-     */
-    final class EpicsAddressViewerFilter extends AbstractStringViewerFilter {
-        
-        private boolean checkNodeEpicsAddress(@CheckForNull final SearchNodeDBO node) {
-            return node != null && node.getEpicsAddressString() != null;
-        }
-        
-        @Override
-        public boolean select(@Nullable final Viewer viewer,
-                              @Nullable final Object parentElement, @Nullable final Object element) {
-            if (element instanceof SearchNodeDBO) {
-                final SearchNodeDBO sNode = (SearchNodeDBO) element;
-                if (checkSearchText(getSearchText())
-                        && checkNodeEpicsAddress(sNode)) {
-                    return compareStrings(sNode.getEpicsAddressString());
-                }
-            }
-            return !checkSearchText(getSearchText());
-        }
-        
-    }
-    /**
-     * 
-     * Viewer filter for the IO Name column.
-     * 
-     * @author hrickens
-     * @author $Author: $
-     * @since 23.09.2010
-     */
-    final class IONameViewerFilter extends AbstractStringViewerFilter {
-        
-        private boolean checkNodeIOName(@CheckForNull final SearchNodeDBO node) {
-            return node != null && node.getIoName() != null;
-        }
-        
-        @Override
-        public boolean select(@Nullable final Viewer viewer,
-                              @Nullable final Object parentElement, @Nullable final Object element) {
-            if (element instanceof SearchNodeDBO) {
-                final SearchNodeDBO sNode = (SearchNodeDBO) element;
-                if (checkSearchText(getSearchText()) && checkNodeIOName(sNode)) {
-                    return compareStrings(sNode.getIoName());
-                }
-            }
-            return !checkSearchText(getSearchText());
-        }
-        
-    }
-    /**
-     * 
-     * Viewer filter for the Name column.
-     * 
-     * @author hrickens
-     * @author $Author: $
-     * @since 23.09.2010
-     */
-    final class NameViewerFilter extends AbstractStringViewerFilter {
-        
-        public NameViewerFilter() {
-            // Default Constructor
-        }
-        
-        private boolean checkNodeName(@CheckForNull final SearchNodeDBO node) {
-            return node != null && node.getName() != null;
-        }
-        
-        @Override
-        public boolean select(@Nullable final Viewer viewer,
-                              @Nullable final Object parentElement,
-                              @Nullable final Object element) {
-            if (element instanceof SearchNodeDBO) {
-                final SearchNodeDBO sNode = (SearchNodeDBO) element;
-                if (checkSearchText(getSearchText()) && checkNodeName(sNode)) {
-                    return compareStrings(sNode.getName());
-                }
-            }
-            return !checkSearchText(getSearchText());
-        }
-        
-    }
-    
     /**
      * 
      * Sorter for each column of the Search Dialog Table.
@@ -250,10 +189,6 @@ public class SearchDialog extends Dialog {
             _state = state;
         }
         
-        private void setState() {
-            _sorter.setState(_state);
-        }
-        
         @Override
         public void widgetDefaultSelected(@Nullable final SelectionEvent e) {
             setState();
@@ -263,32 +198,97 @@ public class SearchDialog extends Dialog {
         public void widgetSelected(@Nullable final SelectionEvent e) {
             setState();
         }
+        
+        private void setState() {
+            _sorter.setState(_state);
+        }
+    }
+    /**
+     * 
+     * Viewer filter for the EPICS Address column.
+     * 
+     * @author hrickens
+     * @author $Author: $
+     * @since 23.09.2010
+     */
+    final class EpicsAddressViewerFilter extends AbstractStringViewerFilter {
+        
+        @Override
+        public boolean select(@Nullable final Viewer viewer,
+                              @Nullable final Object parentElement, @Nullable final Object element) {
+            if (element instanceof SearchNodeDBO) {
+                final SearchNodeDBO sNode = (SearchNodeDBO) element;
+                if (checkSearchText(getSearchText())
+                        && checkNodeEpicsAddress(sNode)) {
+                    return compareStrings(sNode.getEpicsAddressString());
+                }
+            }
+            return !checkSearchText(getSearchText());
+        }
+        
+        private boolean checkNodeEpicsAddress(@CheckForNull final SearchNodeDBO node) {
+            return node != null && node.getEpicsAddressString() != null;
+        }
+        
     }
     
     /**
-     * This class provides the content for the table.
+     * 
+     * Viewer filter for the IO Name column.
+     * 
+     * @author hrickens
+     * @author $Author: $
+     * @since 23.09.2010
      */
-    public class TableContentProvider implements IStructuredContentProvider {
+    final class IONameViewerFilter extends AbstractStringViewerFilter {
         
         @Override
-        public void dispose() {
-            // We don't create any resources, so we don't dispose any
-        }
-        
-        @Override
-        @CheckForNull
-        @SuppressWarnings("rawtypes")
-        public Object[] getElements(@Nullable final Object inputElement) {
-            if (inputElement instanceof List) {
-                return ((List) inputElement).toArray();
+        public boolean select(@Nullable final Viewer viewer,
+                              @Nullable final Object parentElement, @Nullable final Object element) {
+            if (element instanceof SearchNodeDBO) {
+                final SearchNodeDBO sNode = (SearchNodeDBO) element;
+                if (checkSearchText(getSearchText()) && checkNodeIOName(sNode)) {
+                    return compareStrings(sNode.getIoName());
+                }
             }
-            return null;
+            return !checkSearchText(getSearchText());
+        }
+        
+        private boolean checkNodeIOName(@CheckForNull final SearchNodeDBO node) {
+            return node != null && node.getIoName() != null;
+        }
+        
+    }
+    
+    /**
+     * 
+     * Viewer filter for the Name column.
+     * 
+     * @author hrickens
+     * @author $Author: $
+     * @since 23.09.2010
+     */
+    final class NameViewerFilter extends AbstractStringViewerFilter {
+        
+        public NameViewerFilter() {
+            // Default Constructor
         }
         
         @Override
-        public void inputChanged(@Nullable final Viewer viewer,
-                                 @Nullable final Object oldInput, @Nullable final Object newInput) {
-            // Empty
+        public boolean select(@Nullable final Viewer viewer,
+                              @Nullable final Object parentElement,
+                              @Nullable final Object element) {
+            if (element instanceof SearchNodeDBO) {
+                final SearchNodeDBO sNode = (SearchNodeDBO) element;
+                if (checkSearchText(getSearchText()) && checkNodeName(sNode)) {
+                    return compareStrings(sNode.getName());
+                }
+            }
+            return !checkSearchText(getSearchText());
+        }
+        
+        private boolean checkNodeName(@CheckForNull final SearchNodeDBO node) {
+            return node != null && node.getName() != null;
         }
         
     }
@@ -299,11 +299,11 @@ public class SearchDialog extends Dialog {
     
     private List<SearchNodeDBO> _load;
     private final ProfiBusTreeView _profiBusTreeView;
-
+    
     private Map<Integer, SearchNodeDBO> _loadMap;
     
     public SearchDialog(@Nullable final Shell parentShell,
-                           @Nonnull final ProfiBusTreeView profiBusTreeView) {
+                        @Nonnull final ProfiBusTreeView profiBusTreeView) {
         super(parentShell);
         _profiBusTreeView = profiBusTreeView;
         setShellStyle(SWT.CLOSE | SWT.TITLE | SWT.MAX | SWT.RESIZE
@@ -311,7 +311,7 @@ public class SearchDialog extends Dialog {
         try {
             _loadMap = new HashMap<Integer, SearchNodeDBO>();
             _load = Repository.load(SearchNodeDBO.class);
-            for (SearchNodeDBO node : _load) {
+            for (final SearchNodeDBO node : _load) {
                 _loadMap.put(node.getId(), node);
             }
         } catch (final PersistenceException e) {
@@ -321,97 +321,10 @@ public class SearchDialog extends Dialog {
         }
     }
     
-    /**
-     * {@inheritDoc}
-     */
-    @Override
-    @Nonnull
-    protected Control createDialogArea(@Nonnull final Composite parent) {
-        final Composite localDialogArea1 = (Composite) super.createDialogArea(parent);
-        localDialogArea1.getShell().setText("Search DDB Node");
-        localDialogArea1.setLayout(GridLayoutFactory.swtDefaults().numColumns(6).equalWidth(false).create());
-        
-        buildSearchTitels(localDialogArea1);
-        
-        final GridDataFactory gdfText = GridDataFactory.swtDefaults().align(SWT.FILL, SWT.CENTER)
-                                                .grab(true, false);
-        
-        final Button csNameButton = new Button(localDialogArea1, SWT.CHECK);
-        csNameButton.setLayoutData(new GridData(SWT.BEGINNING, SWT.CENTER, false, false));
-        csNameButton.setToolTipText("Case Sensitive");
-        final Text searchTextName = new Text(localDialogArea1, SWT.SINGLE | SWT.LEAD | SWT.BORDER
-                                                               | SWT.SEARCH);
-        gdfText.applyTo(searchTextName);
-        searchTextName.setMessage("Name Filter");
-        
-        final Button csIONameButton = new Button(localDialogArea1, SWT.CHECK);
-        csIONameButton.setLayoutData(new GridData(SWT.BEGINNING, SWT.CENTER, false, false));
-        csIONameButton.setToolTipText("Case Sensitive");
-        final Text searchTextIOName =  new Text(localDialogArea1, SWT.SINGLE | SWT.LEAD | SWT.BORDER
-                                                                 | SWT.SEARCH);
-        gdfText.applyTo(searchTextIOName);
-        searchTextIOName.setMessage("IO Name Filter");
-        final TableColumnLayout tableColumnLayout = new TableColumnLayout();
-        
-        final Button csEASButton = new Button(localDialogArea1, SWT.CHECK);
-        csEASButton.setLayoutData(new GridData(SWT.BEGINNING, SWT.CENTER, false, false));
-        csEASButton.setToolTipText("Case Sensitive");
-        final Text searchTextAddressString =  new Text(localDialogArea1, SWT.SINGLE | SWT.LEAD
-                                                                        | SWT.BORDER | SWT.SEARCH);
-        gdfText.applyTo(searchTextAddressString);
-        searchTextAddressString.setMessage("Epics Address Filter");
-        
-        final TableViewer resultTableView = buildSearchTable(localDialogArea1, tableColumnLayout);
-        
-        final NameViewerFilter nameViewerFilter = new NameViewerFilter();
-        resultTableView.addFilter(nameViewerFilter);
-        final IONameViewerFilter ioNameViewerFilter = new IONameViewerFilter();
-        resultTableView.addFilter(ioNameViewerFilter);
-        final EpicsAddressViewerFilter epicsAddressViewerFilter = new EpicsAddressViewerFilter();
-        resultTableView.addFilter(epicsAddressViewerFilter);
-        
-        csNameButton.addSelectionListener(new RefreshSelectionListener(csNameButton, nameViewerFilter, resultTableView));
-        FilterModifyListener listener = new FilterModifyListener(resultTableView, nameViewerFilter, searchTextName);
-        searchTextName.addModifyListener(listener);
-        
-        csIONameButton.addSelectionListener(new RefreshSelectionListener(csIONameButton, ioNameViewerFilter, resultTableView));
-        listener = new FilterModifyListener(resultTableView, ioNameViewerFilter, searchTextIOName);
-        searchTextIOName.addModifyListener(listener);
-        
-        csEASButton.addSelectionListener(new RefreshSelectionListener(csEASButton, epicsAddressViewerFilter, resultTableView));
-        listener = new FilterModifyListener(resultTableView,epicsAddressViewerFilter,searchTextAddressString);
-        searchTextAddressString.addModifyListener(listener);
-        
-        resultTableView.addSelectionChangedListener(new ISelectionChangedListener() {
-            @Override
-            public void selectionChanged(@Nonnull final SelectionChangedEvent event) {
-                final StructuredSelection selection = (StructuredSelection) event.getSelection();
-                setSearchNode((SearchNodeDBO) selection.getFirstElement());
-            }
-        });
-        
-        resultTableView.setInput(_load);
-        return localDialogArea1;
+    public final void setSearchNode(@Nullable final SearchNodeDBO searchNode) {
+        _searchNode = searchNode;
     }
-
-    /**
-     * @param parent
-     */
-    private void buildSearchTitels(@Nonnull final Composite parent) {
-        Label label = new Label(parent, SWT.NONE);
-        label.setLayoutData(new GridData(SWT.BEGINNING, SWT.CENTER, false,
-                                         false, 2, 1));
-        label.setText("Name:");
-        label = new Label(parent, SWT.NONE);
-        label.setLayoutData(new GridData(SWT.BEGINNING, SWT.CENTER, false,
-                                         false, 2, 1));
-        label.setText("IO Name:");
-        label = new Label(parent, SWT.NONE);
-        label.setLayoutData(new GridData(SWT.BEGINNING, SWT.CENTER, false,
-                                         false, 2, 1));
-        label.setText("EPICS Address:");
-    }
-
+    
     @Nonnull
     private TableViewer buildSearchTable(@Nonnull final Composite tableParent,
                                          @Nonnull final TableColumnLayout tableColumnLayout) {
@@ -609,20 +522,24 @@ public class SearchDialog extends Dialog {
         return resultTableView;
     }
     
-    @Override
-    protected final void okPressed() {
-        if(_searchNode!=null) {
-            try {
-                selectAbstractNodeFromSearchNode();
-            // CHECKSTYLE OFF: EmptyBlock
-            } catch (final PersistenceException e) {
-                // nothing to do. No Node to show
-            }
-            // CHECKSTYLE ON: EmptyBlock
-        }
-        super.okPressed();
+    /**
+     * @param parent
+     */
+    private void buildSearchTitels(@Nonnull final Composite parent) {
+        Label label = new Label(parent, SWT.NONE);
+        label.setLayoutData(new GridData(SWT.BEGINNING, SWT.CENTER, false,
+                                         false, 2, 1));
+        label.setText("Name:");
+        label = new Label(parent, SWT.NONE);
+        label.setLayoutData(new GridData(SWT.BEGINNING, SWT.CENTER, false,
+                                         false, 2, 1));
+        label.setText("IO Name:");
+        label = new Label(parent, SWT.NONE);
+        label.setLayoutData(new GridData(SWT.BEGINNING, SWT.CENTER, false,
+                                         false, 2, 1));
+        label.setText("EPICS Address:");
     }
-
+    
     /**
      * @throws PersistenceException
      */
@@ -646,10 +563,10 @@ public class SearchDialog extends Dialog {
             selectedNode = Repository.load(FacilityDBO.class, facilityID);
             final Iterator<Integer> iterator = nodeIds.iterator();
             while (iterator.hasNext()) {
-                final Integer nextId = (Integer) iterator.next();
+                final Integer nextId = iterator.next();
                 @SuppressWarnings({ "unchecked", "rawtypes" })
-                final Set<AbstractNodeDBO<AbstractNodeDBO, AbstractNodeDBO>> children = (Set<AbstractNodeDBO<AbstractNodeDBO, AbstractNodeDBO>>) selectedNode.getChildren();
-                for (@SuppressWarnings("rawtypes") AbstractNodeDBO<AbstractNodeDBO, AbstractNodeDBO> abstractNodeDBO : children) {
+                final Set<AbstractNodeDBO<AbstractNodeDBO, AbstractNodeDBO>> children = selectedNode.getChildren();
+                for (@SuppressWarnings("rawtypes") final AbstractNodeDBO<AbstractNodeDBO, AbstractNodeDBO> abstractNodeDBO : children) {
                     if(abstractNodeDBO.getId()==nextId) {
                         selectedNode = abstractNodeDBO;
                     }
@@ -659,13 +576,96 @@ public class SearchDialog extends Dialog {
         }
     }
     
-    public final void setSearchNode(@Nullable final SearchNodeDBO searchNode) {
-        _searchNode = searchNode;
-    }
-    
     private void showNode(@CheckForNull final AbstractNodeDBO<?,?> node) {
         if(node!=null) {
             _profiBusTreeView.getViewer().setSelection(new StructuredSelection(node));
         }
+    }
+    
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    @Nonnull
+    protected Control createDialogArea(@Nonnull final Composite parent) {
+        final Composite localDialogArea1 = (Composite) super.createDialogArea(parent);
+        localDialogArea1.getShell().setText("Search DDB Node");
+        localDialogArea1.setLayout(GridLayoutFactory.swtDefaults().numColumns(6).equalWidth(false).create());
+        
+        buildSearchTitels(localDialogArea1);
+        
+        final GridDataFactory gdfText = GridDataFactory.swtDefaults().align(SWT.FILL, SWT.CENTER)
+        .grab(true, false);
+        
+        final Button csNameButton = new Button(localDialogArea1, SWT.CHECK);
+        csNameButton.setLayoutData(new GridData(SWT.BEGINNING, SWT.CENTER, false, false));
+        csNameButton.setToolTipText("Case Sensitive");
+        final Text searchTextName = new Text(localDialogArea1, SWT.SINGLE | SWT.LEAD | SWT.BORDER
+                                             | SWT.SEARCH);
+        gdfText.applyTo(searchTextName);
+        searchTextName.setMessage("Name Filter");
+        
+        final Button csIONameButton = new Button(localDialogArea1, SWT.CHECK);
+        csIONameButton.setLayoutData(new GridData(SWT.BEGINNING, SWT.CENTER, false, false));
+        csIONameButton.setToolTipText("Case Sensitive");
+        final Text searchTextIOName =  new Text(localDialogArea1, SWT.SINGLE | SWT.LEAD | SWT.BORDER
+                                                | SWT.SEARCH);
+        gdfText.applyTo(searchTextIOName);
+        searchTextIOName.setMessage("IO Name Filter");
+        final TableColumnLayout tableColumnLayout = new TableColumnLayout();
+        
+        final Button csEASButton = new Button(localDialogArea1, SWT.CHECK);
+        csEASButton.setLayoutData(new GridData(SWT.BEGINNING, SWT.CENTER, false, false));
+        csEASButton.setToolTipText("Case Sensitive");
+        final Text searchTextAddressString =  new Text(localDialogArea1, SWT.SINGLE | SWT.LEAD
+                                                       | SWT.BORDER | SWT.SEARCH);
+        gdfText.applyTo(searchTextAddressString);
+        searchTextAddressString.setMessage("Epics Address Filter");
+        
+        final TableViewer resultTableView = buildSearchTable(localDialogArea1, tableColumnLayout);
+        
+        final NameViewerFilter nameViewerFilter = new NameViewerFilter();
+        resultTableView.addFilter(nameViewerFilter);
+        final IONameViewerFilter ioNameViewerFilter = new IONameViewerFilter();
+        resultTableView.addFilter(ioNameViewerFilter);
+        final EpicsAddressViewerFilter epicsAddressViewerFilter = new EpicsAddressViewerFilter();
+        resultTableView.addFilter(epicsAddressViewerFilter);
+        
+        csNameButton.addSelectionListener(new RefreshSelectionListener(csNameButton, nameViewerFilter, resultTableView));
+        FilterModifyListener listener = new FilterModifyListener(resultTableView, nameViewerFilter, searchTextName);
+        searchTextName.addModifyListener(listener);
+        
+        csIONameButton.addSelectionListener(new RefreshSelectionListener(csIONameButton, ioNameViewerFilter, resultTableView));
+        listener = new FilterModifyListener(resultTableView, ioNameViewerFilter, searchTextIOName);
+        searchTextIOName.addModifyListener(listener);
+        
+        csEASButton.addSelectionListener(new RefreshSelectionListener(csEASButton, epicsAddressViewerFilter, resultTableView));
+        listener = new FilterModifyListener(resultTableView,epicsAddressViewerFilter,searchTextAddressString);
+        searchTextAddressString.addModifyListener(listener);
+        
+        resultTableView.addSelectionChangedListener(new ISelectionChangedListener() {
+            @Override
+            public void selectionChanged(@Nonnull final SelectionChangedEvent event) {
+                final StructuredSelection selection = (StructuredSelection) event.getSelection();
+                setSearchNode((SearchNodeDBO) selection.getFirstElement());
+            }
+        });
+        
+        resultTableView.setInput(_load);
+        return localDialogArea1;
+    }
+    
+    @Override
+    protected final void okPressed() {
+        if(_searchNode!=null) {
+            try {
+                selectAbstractNodeFromSearchNode();
+                // CHECKSTYLE OFF: EmptyBlock
+            } catch (final PersistenceException e) {
+                // nothing to do. No Node to show
+            }
+            // CHECKSTYLE ON: EmptyBlock
+        }
+        super.okPressed();
     }
 }

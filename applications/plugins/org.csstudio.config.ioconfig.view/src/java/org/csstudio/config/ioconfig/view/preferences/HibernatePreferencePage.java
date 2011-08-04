@@ -11,6 +11,7 @@ import static org.csstudio.config.ioconfig.model.preference.PreferenceConstants.
 import static org.csstudio.config.ioconfig.model.preference.PreferenceConstants.HIBERNATE_CONNECTION_URL;
 import static org.csstudio.config.ioconfig.model.preference.PreferenceConstants.SHOW_SQL;
 
+import javax.annotation.CheckForNull;
 import javax.annotation.Nonnull;
 
 import org.csstudio.config.ioconfig.model.IOConfigActivator;
@@ -41,59 +42,70 @@ import org.eclipse.ui.preferences.ScopedPreferenceStore;
  * @since 24.04.2009
  */
 public class HibernatePreferencePage extends FieldEditorPreferencePage implements
-        IWorkbenchPreferencePage {
-
+IWorkbenchPreferencePage {
+    
+    /**
+     * @author hrickens
+     * @author $Author: hrickens $
+     * @version $Revision: 1.7 $
+     * @since 04.08.2011
+     */
     private final class ListEditorExtension extends ListEditor {
         private final String _titel;
         private final String _desc;
-
-        private ListEditorExtension(String name, String labelText, Composite parent, String titel, String desc) {
+        
+        private ListEditorExtension(@Nonnull final String name, @Nonnull final String labelText, @Nonnull final Composite parent, @Nonnull final String titel, @Nonnull final String desc) {
             super(name, labelText, parent);
             _titel = titel;
             _desc = desc;
         }
-
+        
         @Override
-        protected String[] parseString(String stringList) {
-            return stringList.split(",");
-        }
-
+        @Nonnull 
+        protected String createList(@Nonnull final String[] items) {
+            final StringBuilder sb = new StringBuilder();
+            for (final String item : items) {
+                sb.append(item).append(",");
+            }
+            return sb.toString();            
+            }
+        
         @Override
+        @CheckForNull
         protected String getNewInputObject() {
-            InputDialog inputDialog = new InputDialog(getFieldEditorParent().getShell(), 
-                    _titel, 
-                    _desc, 
-                    "", 
-                    null);
+            final InputDialog inputDialog = new InputDialog(getFieldEditorParent().getShell(),
+                                                            _titel,
+                                                            _desc,
+                                                            "",
+                                                            null);
             if (inputDialog.open() == Window.OK) {
                 return inputDialog.getValue();
             }
             return null;            }
-
+        
         @Override
-        protected String createList(@Nonnull String[] items) {
-            StringBuilder sb = new StringBuilder();
-            for(int i = 0; i < items.length;i++) {
-                sb.append(items[i]).append(",");
-            }
-            return sb.toString();            }
+        @Nonnull 
+        protected String[] parseString(@Nonnull final String stringList) {
+            return stringList.split(",");
+        }
     }
-
+    
     public HibernatePreferencePage() {
         super(GRID);
-        ScopedPreferenceStore prefStore = new ScopedPreferenceStore(new InstanceScope(), IOConfigActivator
-                .getDefault().getBundle().getSymbolicName());
+        final ScopedPreferenceStore prefStore = new ScopedPreferenceStore(new InstanceScope(), IOConfigActivator
+                                                                          .getDefault().getBundle().getSymbolicName());
         setPreferenceStore(prefStore);
         setDescription("Settings for the IO Configurator.");
     }
-
+    
     /**
      * Creates the field editors. Field editors are abstractions of the common GUI blocks needed to
      * manipulate various types of preferences. Each field editor knows how to save and restore
      * itself.
      */
+    @Override
     public void createFieldEditors() {
-        TabFolder tabs = new TabFolder(getFieldEditorParent(), SWT.NONE);
+        final TabFolder tabs = new TabFolder(getFieldEditorParent(), SWT.NONE);
         tabs.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true, 1, 1));
         
         makeFcilityTab(tabs);
@@ -101,36 +113,44 @@ public class HibernatePreferencePage extends FieldEditorPreferencePage implement
         makeHibernateDBTab(tabs);
     }
     
-    private void makeFcilityTab(TabFolder tabs) {
-        TabItem tabDb = new TabItem(tabs, SWT.NONE);
+    @Override
+    public void init(@Nonnull final IWorkbench workbench) {
+        // nothing to init
+    }
+    
+    @SuppressWarnings("unused")
+    private void makeFcilityTab(@Nonnull final TabFolder tabs) {
+        final TabItem tabDb = new TabItem(tabs, SWT.NONE);
         tabDb.setText("Facilty Settings");
-        Composite facComposite = new Composite(tabs, SWT.NONE);
+        final Composite facComposite = new Composite(tabs, SWT.NONE);
         facComposite.setLayout(new GridLayout(1, true));
         facComposite.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true, 1, 1));
         tabDb.setControl(facComposite);
         
         new Label(facComposite, SWT.NONE);
         new Label(facComposite, SWT.NONE);
-        Label descLabel = new Label(facComposite, SWT.NONE);
+        final Label descLabel = new Label(facComposite, SWT.NONE);
         descLabel.setLayoutData(new GridData(SWT.BEGINNING, SWT.CENTER, false, false));
         descLabel.setText("Settings for the choosen Facility.");
         new Label(facComposite, SWT.NONE);
         addField(new ListEditorExtension(DDB_FACILITIES, "Facilities:", facComposite,"Add Facility", "Add a new Facility:"));
-
+        
         
     }
-
-    private void makeHibernateDBTab(TabFolder tabs) {
+    
+    
+    @SuppressWarnings("unused")
+    private void makeHibernateDBTab(@Nonnull final TabFolder tabs) {
         // database settings
-        TabItem tabDb = new TabItem(tabs, SWT.NONE);
+        final TabItem tabDb = new TabItem(tabs, SWT.NONE);
         tabDb.setText("Database Settings");
-        Composite dbComposite = new Composite(tabs, SWT.NONE);
+        final Composite dbComposite = new Composite(tabs, SWT.NONE);
         dbComposite.setLayout(new GridLayout(1, true));
         dbComposite.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true, 1, 1));
         tabDb.setControl(dbComposite);
         
         new Label(dbComposite, SWT.NONE);
-        Label descLabel = new Label(dbComposite, SWT.NONE);
+        final Label descLabel = new Label(dbComposite, SWT.NONE);
         descLabel.setLayoutData(new GridData(SWT.BEGINNING, SWT.CENTER, false, false));
         descLabel.setText("Hibernate Settings for the IO Configurator to the Device Database");
         new Label(dbComposite, SWT.NONE);
@@ -140,42 +160,34 @@ public class HibernatePreferencePage extends FieldEditorPreferencePage implement
         editor.getTextControl(dbComposite).setEchoChar('*');
         addField(editor);
         addField(new StringFieldEditor(HIBERNATE_CONNECTION_DRIVER_CLASS,
-                "Hibernate &connection driver:", dbComposite));
+                                       "Hibernate &connection driver:", dbComposite));
         addField(new StringFieldEditor(DIALECT, "&Dialect:", dbComposite));
         editor = new MultiLineStringFieldEditor(HIBERNATE_CONNECTION_URL, "&URL:", dbComposite);
-        GridData layoutData = new GridData(SWT.FILL, SWT.FILL, false, true);
+        final GridData layoutData = new GridData(SWT.FILL, SWT.FILL, false, true);
         layoutData.widthHint = 360;
         editor.getTextControl(dbComposite).setLayoutData(layoutData);
         addField(editor);
         addField(new BooleanFieldEditor(SHOW_SQL, "&Show SQL", dbComposite));
     }
-
-
-    private void makeLogbookTab(TabFolder tabs) {
+    
+    @SuppressWarnings("unused")
+    private void makeLogbookTab(@Nonnull final TabFolder tabs) {
         // database settings
-        TabItem tabFileAdd = new TabItem(tabs, SWT.NONE);
+        final TabItem tabFileAdd = new TabItem(tabs, SWT.NONE);
         tabFileAdd.setText("eLogbook Settings");
-        Composite fileAddComposite = new Composite(tabs, SWT.NONE);
+        final Composite fileAddComposite = new Composite(tabs, SWT.NONE);
         fileAddComposite.setLayout(new GridLayout(1, true));
         fileAddComposite.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true, 1, 1));
         tabFileAdd.setControl(fileAddComposite);
         
         new Label(fileAddComposite, SWT.NONE);
         new Label(fileAddComposite, SWT.NONE);
-        Label descLabel = new Label(fileAddComposite, SWT.NONE);
+        final Label descLabel = new Label(fileAddComposite, SWT.NONE);
         descLabel.setLayoutData(new GridData(SWT.BEGINNING, SWT.CENTER, false, false));
         descLabel.setText("Settings for the eLogbook to add File into the DB");
         new Label(fileAddComposite, SWT.NONE);
         addField(new ListEditorExtension(DDB_LOGBOOK, "e&Logbook:", fileAddComposite,"Add eLogbook", "Add a new eLogbook:"));
         addField(new ListEditorExtension(DDB_LOGBOOK_MEANING, "&Meaning:", fileAddComposite, "Add Meaning","Add a new eLogbook meaning:"));
     }
-
-    /*
-     * (non-Javadoc)
-     * 
-     * @see org.eclipse.ui.IWorkbenchPreferencePage#init(org.eclipse.ui.IWorkbench)
-     */
-    public void init(IWorkbench workbench) {
-    }
-
+    
 }

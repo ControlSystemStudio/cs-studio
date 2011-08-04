@@ -26,16 +26,12 @@ package org.csstudio.config.ioconfig.view.internal.localization;
 import org.eclipse.osgi.util.NLS;
 
 /**
- * TODO (hrickens) : 
- * 
  * @author hrickens
  * @author $Author: hrickens $
  * @version $Revision: 1.7 $
  * @since 21.07.2011
  */
-public class Messages extends NLS {
-    private static final String BUNDLE_NAME =
-                                              "org.csstudio.config.ioconfig.view.internal.localization.messages"; //$NON-NLS-1$
+public final class Messages extends NLS {
     public static String ChannelConfigDialog_Count;
     public static String ChannelConfigDialog_AD;
     public static String ChannelConfigDialog_Add;
@@ -55,6 +51,7 @@ public class Messages extends NLS {
     public static String ChannelConfigDialog_Remove;
     public static String NodeEditor_Msg;
     public static String NodeEditor_Title;
+    private static final String BUNDLE_NAME = "org.csstudio.config.ioconfig.view.internal.localization.messages"; //$NON-NLS-1$
     static {
         // initialize resource bundle
         NLS.initializeMessages(BUNDLE_NAME, Messages.class);
