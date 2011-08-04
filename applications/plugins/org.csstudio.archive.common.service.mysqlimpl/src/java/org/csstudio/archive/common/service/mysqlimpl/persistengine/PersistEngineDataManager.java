@@ -95,7 +95,7 @@ public class PersistEngineDataManager {
         new IBatchQueueHandlerProvider() {
             @Override
             @Nonnull
-            public Collection<BatchQueueHandlerSupport<?>> getHandlers() {
+            public Collection<BatchQueueHandlerSupport> getHandlers() {
                 return BatchQueueHandlerSupport.getInstalledHandlers();
             }
         };

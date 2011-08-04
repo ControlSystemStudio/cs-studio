@@ -22,13 +22,20 @@
 package org.csstudio.archive.common.engine.types;
 
 import java.io.Serializable;
+import java.util.ArrayList;
+import java.util.EnumSet;
+import java.util.HashSet;
+import java.util.LinkedList;
+import java.util.Set;
+import java.util.Stack;
+import java.util.TreeSet;
+import java.util.Vector;
 
 import javax.annotation.Nonnull;
 
 import org.csstudio.archive.common.engine.model.ArchiveChannel;
 import org.csstudio.archive.common.engine.model.EngineModelException;
 import org.csstudio.archive.common.service.channel.IArchiveChannel;
-import org.csstudio.domain.desy.collection.ISerializableCollection;
 import org.csstudio.domain.desy.epics.types.EpicsEnum;
 import org.csstudio.domain.desy.epics.typesupport.EpicsIMetaDataTypeSupport;
 import org.csstudio.domain.desy.epics.typesupport.EpicsIValueTypeSupport;
@@ -37,6 +44,8 @@ import org.csstudio.domain.desy.typesupport.AbstractTypeSupport;
 import org.csstudio.domain.desy.typesupport.BaseTypeConversionSupport;
 import org.csstudio.domain.desy.typesupport.TypeSupportException;
 import org.epics.pvmanager.TypeSupport;
+
+import com.google.common.collect.Sets;
 
 
 /**
@@ -49,18 +58,35 @@ import org.epics.pvmanager.TypeSupport;
  * CHECKSTYLE OFF: AbstractClassName
  *                 This class is accessed statically, hence the name should be short and descriptive!
  */
+@SuppressWarnings("unchecked")
 public abstract class ArchiveEngineTypeSupport<V extends Serializable> extends AbstractTypeSupport<V> {
     // CHECKSTYLE ON : AbstractClassName
 
     private static final String[] ADDITIONAL_TYPE_PACKAGES =
-        new String[]{"java.lang", "org.csstudio.domain.desy.epics.types"};
+        new String[]{
+                     "org.csstudio.domain.desy.epics.types",
+                     };
+
+    private static final Set<Class<?>> BASIC_TYPES =
+        Sets.<Class<?>>newHashSet(Long.class,
+                                  Integer.class,
+                                  Short.class,
+                                  Byte.class,
+                                  Double.class,
+                                  Float.class,
+                                  String.class,
+                                  ArrayList.class,
+                                  LinkedList.class,
+                                  EnumSet.class,
+                                  HashSet.class,
+                                  TreeSet.class,
+                                  Stack.class,
+                                  Vector.class);
 
     private static boolean INSTALLED;
 
     /**
      * Constructor.
-     * @param type
-     * @param typeSupportFamily
      */
     public ArchiveEngineTypeSupport(@Nonnull final Class<V> type) {
         super(type, ArchiveEngineTypeSupport.class);
@@ -71,57 +97,32 @@ public abstract class ArchiveEngineTypeSupport<V extends Serializable> extends A
      */
     private static final class ConcreteArchiveEngineTypeSupport<V extends Serializable> extends ArchiveEngineTypeSupport<V> {
 
-        private final Class<V> _typeClass;
-
         /**
          * Constructor.
          */
         public ConcreteArchiveEngineTypeSupport(@Nonnull final Class<V> type) {
             super(type);
-            _typeClass = type;
         }
+
         /**
          * {@inheritDoc}
          */
         @Override
         @Nonnull
         protected ArchiveChannel<V, ISystemVariable<V>>
-            createArchiveChannel(@Nonnull final IArchiveChannel cfg) throws TypeSupportException {
+            createChannel(@Nonnull final IArchiveChannel cfg) throws TypeSupportException {
 
             ArchiveChannel<V, ISystemVariable<V>> channel;
             try {
                 channel = new ArchiveChannel<V, ISystemVariable<V>>(cfg.getName(),
                                                                     cfg.getId(),
-                                                                    _typeClass);
+                                                                    getType());
             } catch (final EngineModelException e) {
                 throw new TypeSupportException("Channel could not be instantiated.", e);
             }
             return channel;
         }
-        /**
-         * {@inheritDoc}
-         */
-        @SuppressWarnings("unchecked")
-        @Override
-        @Nonnull
-        protected ArchiveChannel<ISerializableCollection<V>, ISystemVariable<ISerializableCollection<V>>>
-            createMultiScalarArchiveChannel(@Nonnull final IArchiveChannel cfg) throws TypeSupportException {
-
-            ArchiveChannel<ISerializableCollection<V>, ISystemVariable<ISerializableCollection<V>>> channel;
-            try {
-                // FIXME (bknerr) : find solution for collection values - multiscalar wrapper?
-                channel =
-                    new ArchiveChannel<ISerializableCollection<V>, ISystemVariable<ISerializableCollection<V>>>(cfg.getName(),
-                                                                                                                cfg.getId(),
-                                                                                                                (Class<ISerializableCollection<V>>) _typeClass);
-            } catch (final EngineModelException e) {
-                throw new TypeSupportException("Channel could not be instantiated.", e);
-            }
-            return channel;
-        }
-
     }
-
 
     @SuppressWarnings("rawtypes")
     public static void install() {
@@ -131,6 +132,9 @@ public abstract class ArchiveEngineTypeSupport<V extends Serializable> extends A
         EpicsIValueTypeSupport.install();
         EpicsIMetaDataTypeSupport.install();
 
+        for (final Class<?> clazz : BASIC_TYPES) {
+            TypeSupport.addTypeSupport(new ConcreteArchiveEngineTypeSupport(clazz));
+        }
         TypeSupport.addTypeSupport(new ConcreteArchiveEngineTypeSupport<Long>(Long.class));
         TypeSupport.addTypeSupport(new ConcreteArchiveEngineTypeSupport<Integer>(Integer.class));
         TypeSupport.addTypeSupport(new ConcreteArchiveEngineTypeSupport<Short>(Short.class));
@@ -140,52 +144,32 @@ public abstract class ArchiveEngineTypeSupport<V extends Serializable> extends A
         TypeSupport.addTypeSupport(new ConcreteArchiveEngineTypeSupport<String>(String.class));
         TypeSupport.addTypeSupport(new ConcreteArchiveEngineTypeSupport<EpicsEnum>(EpicsEnum.class));
 
-        TypeSupport.addTypeSupport(new ConcreteArchiveEngineTypeSupport<ISerializableCollection>(ISerializableCollection.class));
+        TypeSupport.addTypeSupport(new ConcreteArchiveEngineTypeSupport<ArrayList>(ArrayList.class));
+        TypeSupport.addTypeSupport(new ConcreteArchiveEngineTypeSupport<LinkedList>(LinkedList.class));
 
         INSTALLED = true;
     }
 
-    /**
-     * @param channel_config
-     * @return
-     * @throws TypeSupportException
-     */
     @SuppressWarnings({ "unchecked", "rawtypes" })
     @Nonnull
     public static <V extends Serializable>
-    ArchiveChannel<V, ISystemVariable<V>> toArchiveChannel(@Nonnull final IArchiveChannel cfg) throws TypeSupportException {
+    ArchiveChannel<V, ISystemVariable<V>> createArchiveChannel(@Nonnull final IArchiveChannel cfg) throws TypeSupportException {
 
         final String dataType = cfg.getDataType();
-        Class<V> typeClass =
+        final Class<V> typeClass =
             BaseTypeConversionSupport.createBaseTypeClassFromString(dataType,
                                                                     ADDITIONAL_TYPE_PACKAGES);
-        boolean scalar = true;
-        if (typeClass == null) {
-            typeClass = BaseTypeConversionSupport.createTypeClassFromMultiScalarString(dataType,
-                                                                                       ADDITIONAL_TYPE_PACKAGES);
-            if (typeClass == null) {
-                throw new TypeSupportException("Data type " + dataType + " for channel " +
-                                               cfg.getName() + " is unknown.", null);
-            }
-            scalar = false;
-        }
         final ArchiveEngineTypeSupport<V> support =
             (ArchiveEngineTypeSupport<V>) findTypeSupportForOrThrowTSE(ArchiveEngineTypeSupport.class,
                                                                        typeClass);
-
-        if (scalar) {
-            return support.createArchiveChannel(cfg);
-        }
-        // take care, V is here Collection<V>, the correct cast has to be performed by the invoker
-        return (ArchiveChannel) support.createMultiScalarArchiveChannel(cfg);
-
+        return support.createChannel(cfg);
     }
 
     @Nonnull
     protected abstract ArchiveChannel<V, ISystemVariable<V>>
-    createArchiveChannel(@Nonnull final IArchiveChannel cfg) throws TypeSupportException;
+    createChannel(@Nonnull final IArchiveChannel cfg) throws TypeSupportException;
 
-    @Nonnull
-    protected abstract ArchiveChannel<ISerializableCollection<V>, ISystemVariable<ISerializableCollection<V>>>
-    createMultiScalarArchiveChannel(@Nonnull final IArchiveChannel cfg) throws TypeSupportException;
+//    @Nonnull
+//    protected abstract ArchiveChannel<Collection<V>, ISystemVariable<Collection<V>>>
+//    createMultiScalarArchiveChannel(@Nonnull final IArchiveChannel cfg) throws TypeSupportException;
 }

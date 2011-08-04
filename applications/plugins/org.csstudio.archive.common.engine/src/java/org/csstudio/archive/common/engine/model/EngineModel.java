@@ -419,7 +419,7 @@ public final class EngineModel {
         for (final IArchiveChannel channelCfg : channelCfgs) {
 
             final ArchiveChannel<Serializable, ISystemVariable<Serializable>> channel =
-                ArchiveEngineTypeSupport.toArchiveChannel(channelCfg);
+                ArchiveEngineTypeSupport.createArchiveChannel(channelCfg);
             channel.setServiceProvider(provider);
 
             @SuppressWarnings("unchecked")

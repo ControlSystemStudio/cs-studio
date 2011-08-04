@@ -66,25 +66,26 @@ public class PersistDataWorkerHeadlessTest {
 
     private static IBatchQueueHandlerProvider NO_HANDLER_PROVIDER =
         new IBatchQueueHandlerProvider() {
+            @SuppressWarnings("rawtypes")
             @Override
             @Nonnull
-            public Collection<BatchQueueHandlerSupport<?>> getHandlers() {
+            public Collection<BatchQueueHandlerSupport> getHandlers() {
                 return Collections.emptyList();
             }
         };
 
     private static IBatchQueueHandlerProvider HANDLER_WITH_EMPTY_QUEUES_PROVIDER =
         new IBatchQueueHandlerProvider() {
-            @SuppressWarnings({ "rawtypes", "unchecked" })
+            @SuppressWarnings("rawtypes")
             @Override
             @Nonnull
-            public Collection<BatchQueueHandlerSupport<?>> getHandlers() {
+            public Collection<BatchQueueHandlerSupport> getHandlers() {
                 final BatchQueueHandlerSupport mock1 = Mockito.mock(BatchQueueHandlerSupport.class);
                 Mockito.when(mock1.getQueue()).thenReturn(new LinkedBlockingQueue<Object>());
 
                 final BatchQueueHandlerSupport mock2 = Mockito.mock(BatchQueueHandlerSupport.class);
                 Mockito.when(mock2.getQueue()).thenReturn(new LinkedBlockingQueue<Object>());
-                return (Collection) Lists.newArrayList(mock1, mock2);
+                return Lists.newArrayList(mock1, mock2);
             }
         };
 
@@ -96,7 +97,7 @@ public class PersistDataWorkerHeadlessTest {
             @SuppressWarnings({ "unchecked", "synthetic-access" })
             @Override
             @Nonnull
-            public Collection<BatchQueueHandlerSupport<?>> getHandlers() {
+            public Collection<BatchQueueHandlerSupport> getHandlers() {
                 if (_handler == null) {
                     _handler = new FalseFillStmtHandler(IArchiveSample.class,
                                                         HANDLER.getDatabaseName(),

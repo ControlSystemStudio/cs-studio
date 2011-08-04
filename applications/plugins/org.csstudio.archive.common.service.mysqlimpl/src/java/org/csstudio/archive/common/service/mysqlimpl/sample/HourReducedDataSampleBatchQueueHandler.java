@@ -51,14 +51,4 @@ public class HourReducedDataSampleBatchQueueHandler extends
     protected String getTable() {
         return TAB_SAMPLE_H;
     }
-
-
-    /**
-     * {@inheritDoc}
-     */
-    @Override
-    @Nonnull
-    public Class<HourReducedDataSample> getType() {
-        return HourReducedDataSample.class;
-    }
 }

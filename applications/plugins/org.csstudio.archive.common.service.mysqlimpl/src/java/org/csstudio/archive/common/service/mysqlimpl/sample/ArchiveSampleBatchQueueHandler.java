@@ -123,14 +123,4 @@ public class ArchiveSampleBatchQueueHandler extends BatchQueueHandlerSupport<IAr
                                     });
         return Collections.singleton(sqlWithoutValues + Joiner.on(",").join(values) + ";");
     }
-
-    /**
-     * {@inheritDoc}
-     */
-    @Override
-    @Nonnull
-    public Class<IArchiveSample> getType() {
-        return IArchiveSample.class;
-    }
-
 }
