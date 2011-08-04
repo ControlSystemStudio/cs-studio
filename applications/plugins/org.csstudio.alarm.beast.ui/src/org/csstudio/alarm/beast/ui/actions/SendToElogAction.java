@@ -39,19 +39,13 @@ public class SendToElogAction extends SendToElogActionHelper
     @Override
     public void run()
     {
-        final StringBuilder selected_alarms = new StringBuilder();
-        for (AlarmTreeLeaf alarm : alarms)
-        {
-            selected_alarms.append(alarm.getVerboseDescription());
-            selected_alarms.append("\n\n"); //$NON-NLS-1$
-        }
-
+    	final String alarm_info = AlarmTextHelper.createAlarmInfoText(alarms);
         try
         {
             final ElogDialog dialog = new ElogDialog(shell,
                     Messages.SendToElogAction_Message,
                     Messages.SendToElogAction_InitialTitle,
-                    selected_alarms.toString(), null)
+                    alarm_info, null)
             {
                 @Override
                 public void makeElogEntry(final String logbook_name,

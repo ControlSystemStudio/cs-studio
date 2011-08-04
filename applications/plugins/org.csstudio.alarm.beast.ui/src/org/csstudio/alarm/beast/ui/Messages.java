@@ -80,7 +80,10 @@ public class Messages extends NLS
     public static String Config_Title;
     public static String ConfigureItem;
     public static String CurrentAlarmsFmt;
-    public static String Detail;
+    public static String DefaultEMailBodyStart;
+	public static String DefaultEMailSender;
+	public static String DefaultEMailTitle;
+	public static String Detail;
     public static String DuplicatePV;
     public static String DuplicatePVMesgFmt;
     public static String Duration;

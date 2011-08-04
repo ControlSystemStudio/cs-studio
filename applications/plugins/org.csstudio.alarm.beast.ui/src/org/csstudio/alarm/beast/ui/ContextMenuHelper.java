@@ -20,8 +20,10 @@ import org.csstudio.alarm.beast.ui.actions.CommandAction;
 import org.csstudio.alarm.beast.ui.actions.DurationAction;
 import org.csstudio.alarm.beast.ui.actions.GuidanceAction;
 import org.csstudio.alarm.beast.ui.actions.RelatedDisplayAction;
+import org.csstudio.alarm.beast.ui.actions.SendEMailAction;
 import org.csstudio.alarm.beast.ui.actions.SendToElogAction;
 import org.csstudio.apputil.ui.elog.SendToElogActionHelper;
+import org.csstudio.email.EMailSender;
 import org.eclipse.jface.action.IMenuManager;
 import org.eclipse.jface.viewers.Viewer;
 import org.eclipse.swt.widgets.Shell;
@@ -55,20 +57,23 @@ public class ContextMenuHelper
             final List<AlarmTreeItem> items,
             final boolean allow_write)
     {
-        // Determine how many PVs, with and w/o alarm we have
+        // Determine how many PVs, with and w/o alarm we have.
+    	// Alarm PVs
         final List<AlarmTreeLeaf> alarm_pvs = new ArrayList<AlarmTreeLeaf>();
+        // Items with active alarm
         final List<AlarmTreeItem> alarms = new ArrayList<AlarmTreeItem>();
+        // Items with ack'ed alarm
         final List<AlarmTreeItem> ack_alarms = new ArrayList<AlarmTreeItem>();
 
         for (AlarmTreeItem item : items)
         {
+            if (item instanceof AlarmTreeLeaf)
+                alarm_pvs.add((AlarmTreeLeaf) item);
             final SeverityLevel severity = item.getSeverity();
             if (severity.ordinal() > 0)
             {
                 if (severity.isActive())
                 {
-                    if (item instanceof AlarmTreeLeaf)
-                        alarm_pvs.add((AlarmTreeLeaf) item);
                     alarms.add(item);
                 }
                 else
@@ -94,8 +99,15 @@ public class ContextMenuHelper
         }
         // In case there are any PVs in alarm,
         // add action to acknowledge/un-acknowledge them
-        if (alarm_pvs.size() > 0  &&  SendToElogActionHelper.isElogAvailable())
-            manager.add(new SendToElogAction(shell, alarm_pvs));
+        if (alarm_pvs.size() > 0)
+        {
+        	// TODO Copy to clipboard
+        	if (SendToElogActionHelper.isElogAvailable())
+                manager.add(new SendToElogAction(shell, alarm_pvs));
+        	if (EMailSender.isEmailSupported())
+        		manager.add(new SendEMailAction(shell, alarm_pvs));
+        }
+        
         if (allow_write)
         {
             if (alarms.size() > 0)
