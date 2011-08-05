@@ -39,7 +39,6 @@ public class TimeComperator implements Comparator<EpicsRecordData> {
 
     @Override
     public int compare(EpicsRecordData o1, EpicsRecordData o2) {
-
         return Long.signum(o1.getTime() - o2.getTime());
     }
 }

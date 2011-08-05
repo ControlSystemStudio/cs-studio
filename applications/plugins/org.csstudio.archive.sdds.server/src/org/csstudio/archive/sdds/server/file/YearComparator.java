@@ -28,14 +28,12 @@ import java.util.Comparator;
 
 /**
  * @author Markus Moeller
- * @param <T>
  *
  */
-public class YearComparator implements Comparator<Integer>
-{
+public class YearComparator implements Comparator<Integer> {
+    
     @Override
-    public int compare(Integer o1, Integer o2)
-    {
+    public int compare(Integer o1, Integer o2) {
         return Integer.signum(o1 - o2);
     }
 }

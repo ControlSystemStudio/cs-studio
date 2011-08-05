@@ -52,7 +52,7 @@ public enum SDDSType {
     /**
      * 
      * @param typeName
-     * @return
+     * @return The SDDS type matching the given name
      */
     public static SDDSType getByTypeName(String typeName) {
         
@@ -71,7 +71,7 @@ public enum SDDSType {
     /**
      * 
      * @param ordinal
-     * @return
+     * @return The SDDS type with the given ordinal number.
      */
     public static SDDSType getByOrdinal(int ordinal) {
         
