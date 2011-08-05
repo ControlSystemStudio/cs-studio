@@ -72,6 +72,28 @@ public class DoubleArrayTimeCacheFromVDoubleArray implements DoubleArrayTimeCach
         }
         
     }
+    
+    private void deleteBefore(TimeStamp timeStamp) {
+        if (cache.isEmpty())
+            return;
+        
+        // This we want to keep as we need to draw the area
+        // from the timestamp to the first new value
+        TimeStamp firstEntryBeforeTimeStamp = cache.lowerKey(timeStamp);
+        if (firstEntryBeforeTimeStamp == null)
+            return;
+        
+        // This is the last entry we want to delete
+        TimeStamp lastToDelete = cache.lowerKey(firstEntryBeforeTimeStamp);
+        if (lastToDelete == null)
+            return;
+        
+        TimeStamp firstKey = cache.firstKey();
+        while (firstKey.compareTo(lastToDelete) <= 0) {
+            cache.remove(firstKey);
+            firstKey = cache.firstKey();
+        }
+    }
 
     @Override
     public DoubleArrayTimeCache.Data getData(TimeStamp begin, TimeStamp end) {
@@ -86,6 +108,7 @@ public class DoubleArrayTimeCacheFromVDoubleArray implements DoubleArrayTimeCach
         if (newBegin == null)
             newBegin = cache.firstKey();
         
+        deleteBefore(begin);
         return data(newBegin, end);
     }
     
@@ -129,6 +152,7 @@ public class DoubleArrayTimeCacheFromVDoubleArray implements DoubleArrayTimeCach
         if (newBegin == null)
             newBegin = cache.firstKey();
         
+        deleteBefore(beginUpdate);
         return Collections.singletonList(data(newBegin, endNew));
     }
 
