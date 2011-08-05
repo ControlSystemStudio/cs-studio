@@ -44,6 +44,12 @@ public class SourceRateExpressionImpl<R> extends SourceRateExpressionListImpl<R>
      * @param pvType the type of the pv
      */
     public SourceRateExpressionImpl(String pvName, Class<R> pvType) {
+        if (pvName == null)
+            throw new NullPointerException("Channel name can't be null");
+        
+        if (pvName.trim().isEmpty())
+            throw new IllegalArgumentException("Channel name can't be an empty String");
+        
         ValueCache<R> cache = new ValueCache<R>(pvType);
         caches = new HashMap<String, ValueCache>();
         caches.put(pvName, cache);

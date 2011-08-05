@@ -55,6 +55,7 @@ class SimulationChannelHandler<T> extends ChannelHandler<T> {
 
     @Override
     public void connect(ExceptionHandler handler) {
+        simulation.lastTime = TimeStamp.now();
         taskFuture = exec.scheduleWithFixedDelay(task, 0, 10, TimeUnit.MILLISECONDS);
     }
 
@@ -62,6 +63,7 @@ class SimulationChannelHandler<T> extends ChannelHandler<T> {
     public void disconnect(ExceptionHandler handler) {
         taskFuture.cancel(false);
         taskFuture = null;
+        simulation.lastTime = null;
     }
 
     @Override
