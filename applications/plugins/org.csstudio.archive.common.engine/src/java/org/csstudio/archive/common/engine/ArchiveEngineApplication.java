@@ -7,13 +7,6 @@
  ******************************************************************************/
 package org.csstudio.archive.common.engine;
 
-import gov.aps.jca.CAException;
-import gov.aps.jca.Context;
-import gov.aps.jca.JCALibrary;
-import gov.aps.jca.Monitor;
-
-import java.util.concurrent.Executors;
-
 import javax.annotation.CheckForNull;
 import javax.annotation.Nonnull;
 
@@ -33,8 +26,6 @@ import org.csstudio.domain.desy.time.StopWatch.RunningStopWatch;
 import org.csstudio.domain.desy.time.TimeInstant;
 import org.eclipse.equinox.app.IApplication;
 import org.eclipse.equinox.app.IApplicationContext;
-import org.epics.pvmanager.PVManager;
-import org.epics.pvmanager.jca.JCADataSource;
 import org.joda.time.Period;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -48,7 +39,7 @@ public class ArchiveEngineApplication implements IApplication {
     private static final Logger LOG = LoggerFactory.getLogger(ArchiveEngineApplication.class);
 
     /** HTTP Server port */
-    private int _port;
+    private int _httpPort;
 
     /** Request file */
     private String _engineName;
@@ -68,8 +59,8 @@ public class ArchiveEngineApplication implements IApplication {
         final ArgParser parser = new ArgParser();
         final BooleanOption helpOpt =
             new BooleanOption(parser, "-help", "Display Help");
-        final IntegerOption portOpt =
-            new IntegerOption(parser, "-port", "4812", "HTTP server port", 4812);
+        final IntegerOption httpPortOpt =
+            new IntegerOption(parser, "-http_port", "4812", "HTTP server port", 4812);
         final StringOption engineNameOpt =
             new StringOption(parser, "-engine", "demo_engine", "Engine config name", null);
         // Options handled by Eclipse,
@@ -97,7 +88,7 @@ public class ArchiveEngineApplication implements IApplication {
         }
 
         // Copy stuff from options into member vars.
-        _port = portOpt.get();
+        _httpPort = httpPortOpt.get();
         _engineName = engineNameOpt.get();
         return true;
     }
@@ -118,31 +109,28 @@ public class ArchiveEngineApplication implements IApplication {
         // Install the type supports for the engine
         ArchiveEngineTypeSupport.install();
 
-
-
-        try {
-            final Context jcaContext = JCALibrary.getInstance().createContext(JCALibrary.JNI_THREAD_SAFE);
-            PVManager.setDefaultDataSource(new JCADataSource(jcaContext, Monitor.LOG));
-            PVManager.setReadScannerExecutorService(Executors.newScheduledThreadPool(5));
-        } catch (final CAException e1) {
-            // TODO Auto-generated catch block
-            e1.printStackTrace();
-        }
-
-
+//
+//        try {
+//            final Context jcaContext = JCALibrary.getInstance().createContext(JCALibrary.JNI_THREAD_SAFE);
+//            PVManager.setDefaultDataSource(new JCADataSource(jcaContext, Monitor.LOG));
+//            PVManager.setReadScannerExecutorService(Executors.newScheduledThreadPool(5));
+//        } catch (final CAException e1) {
+//            // TODO Auto-generated catch block
+//            e1.printStackTrace();
+//        }
 
 
         LOG.info("DESY Archive Engine Version {}.", EngineModel.getVersion());
         _run = true;
         _model = new EngineModel(_engineName, provider);
-        final EngineHttpServer httpServer = startHttpServer(_model, _port);
+        final EngineHttpServer httpServer = startHttpServer(_model, _httpPort);
         if (httpServer == null) {
             return EXIT_OK;
         }
         try {
             while (_run) {
 
-                configureAndRunEngine(_model, _port);
+                configureAndRunEngine(_model, _httpPort);
 
                 LOG.info("ArchiveEngine ending");
 

@@ -41,6 +41,7 @@ import org.csstudio.archive.common.service.channel.IArchiveChannel;
 import org.csstudio.archive.common.service.channelgroup.ArchiveChannelGroupId;
 import org.csstudio.archive.common.service.controlsystem.IArchiveControlSystem;
 import org.csstudio.domain.desy.epics.types.EpicsEnum;
+import org.csstudio.domain.desy.system.ControlSystemType;
 import org.csstudio.domain.desy.time.TimeInstant;
 import org.csstudio.domain.desy.typesupport.AbstractTypeSupport;
 import org.csstudio.domain.desy.typesupport.BaseTypeConversionSupport;
@@ -317,8 +318,20 @@ public abstract class ArchiveTypeConversionSupport<T extends Serializable> exten
                                       time,
                                       cs);
         }
+
         final Class<Object> typeClass =
             BaseTypeConversionSupport.createBaseTypeClassFromString(datatype, ADDITIONAL_TYPE_PACKAGES);
+
+        if (cs.getType() == ControlSystemType.EPICS_V3 && Collection.class.isAssignableFrom(typeClass)) {
+            // Epics allows for a multi scalar type with LOPR and HOPR values? oh dear...
+            return new ArchiveChannel(id,
+                                      name,
+                                      datatype,
+                                      archiveChannelGroupId,
+                                      time,
+                                      cs);
+        }
+
         final ArchiveTypeConversionSupport<T> support =
             (ArchiveTypeConversionSupport<T>) findTypeSupportForOrThrowTSE(ArchiveTypeConversionSupport.class,
                                                                            typeClass);

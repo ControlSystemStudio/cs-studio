@@ -37,7 +37,7 @@ import org.junit.Test;
  * @author bknerr
  * @since 17.05.2011
  */
-public class StringsTest {
+public class StringsUnitTest {
 
     @Test
     public final void testTrim() {

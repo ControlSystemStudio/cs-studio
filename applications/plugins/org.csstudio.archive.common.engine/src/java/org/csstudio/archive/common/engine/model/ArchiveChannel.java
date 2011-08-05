@@ -9,12 +9,6 @@ package org.csstudio.archive.common.engine.model;
 
 import java.io.Serializable;
 
-import static org.epics.pvmanager.ExpressionLanguage.channel;
-import static org.epics.pvmanager.ExpressionLanguage.newValuesOf;
-import static org.epics.pvmanager.util.TimeDuration.ms;
-
-import java.util.List;
-
 import javax.annotation.CheckForNull;
 import javax.annotation.Nonnull;
 import javax.annotation.concurrent.GuardedBy;
@@ -28,9 +22,6 @@ import org.csstudio.domain.desy.system.ISystemVariable;
 import org.csstudio.utility.pv.PV;
 import org.csstudio.utility.pv.PVFactory;
 import org.csstudio.utility.pv.PVListener;
-import org.epics.pvmanager.PVManager;
-import org.epics.pvmanager.PVReader;
-import org.epics.pvmanager.PVReaderListener;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -114,16 +105,16 @@ public class ArchiveChannel<V extends Serializable, T extends ISystemVariable<V>
         _buffer = new SampleBuffer<V, T, IArchiveSample<V, T>>(name);
 
         try {
-            final PVReader<List<Object>> reader = PVManager.read(newValuesOf(channel(name))).every(ms(5));
-            reader.addPVReaderListener(new PVReaderListener() {
-                @Override
-                public void pvChanged() {
-                    // Do something with each value
-                    for (final Object newValue : reader.getValue()) {
-                        System.out.println(newValue);
-                    }
-                }
-            });
+//            final PVReader<List<Object>> reader = PVManager.read(newValuesOf(channel(name))).every(ms(5));
+//            reader.addPVReaderListener(new PVReaderListener() {
+//                @Override
+//                public void pvChanged() {
+//                    // Do something with each value
+//                    for (final Object newValue : reader.getValue()) {
+//                        System.out.println(newValue);
+//                    }
+//                }
+//            });
 
             _pv = PVFactory.createPV(name);
         } catch (final Exception e) {
@@ -141,7 +132,7 @@ public class ArchiveChannel<V extends Serializable, T extends ISystemVariable<V>
                             _buffer.add(sample);
                         }
                     };
-//        _pv.addListener(_listener);
+        _pv.addListener(_listener);
     }
 
 

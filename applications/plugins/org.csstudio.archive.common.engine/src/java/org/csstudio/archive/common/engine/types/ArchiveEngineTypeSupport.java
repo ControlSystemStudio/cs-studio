@@ -36,6 +36,7 @@ import javax.annotation.Nonnull;
 import org.csstudio.archive.common.engine.model.ArchiveChannel;
 import org.csstudio.archive.common.engine.model.EngineModelException;
 import org.csstudio.archive.common.service.channel.IArchiveChannel;
+import org.csstudio.domain.desy.epics.types.EpicsEnum;
 import org.csstudio.domain.desy.epics.typesupport.EpicsIMetaDataTypeSupport;
 import org.csstudio.domain.desy.epics.typesupport.EpicsIValueTypeSupport;
 import org.csstudio.domain.desy.system.ISystemVariable;
@@ -134,6 +135,7 @@ public abstract class ArchiveEngineTypeSupport<V extends Serializable> extends A
         for (final Class<?> clazz : BASIC_TYPES) {
             TypeSupport.addTypeSupport(new ConcreteArchiveEngineTypeSupport(clazz));
         }
+        TypeSupport.addTypeSupport(new ConcreteArchiveEngineTypeSupport<EpicsEnum>(EpicsEnum.class));
 
         INSTALLED = true;
     }
@@ -146,6 +148,7 @@ public abstract class ArchiveEngineTypeSupport<V extends Serializable> extends A
         final Class<V> typeClass =
             BaseTypeConversionSupport.createBaseTypeClassFromString(dataType,
                                                                     ADDITIONAL_TYPE_PACKAGES);
+
         final ArchiveEngineTypeSupport<V> support =
             (ArchiveEngineTypeSupport<V>) findTypeSupportForOrThrowTSE(ArchiveEngineTypeSupport.class,
                                                                        typeClass);

@@ -124,9 +124,8 @@ abstract class DesyArchivePVListener<V extends Serializable, T extends ISystemVa
                 if (sample.getValue() == null) {
                     LOG.warn("Value is null for channel id " + _channelName + "(" + _channelId + "). No sample created.");
                 } else {
-                    storeNewSample(sample);
+                    addSampleToBuffer(sample);
                 }
-
             }
 
         } catch (final TypeSupportException e) {
@@ -212,11 +211,6 @@ abstract class DesyArchivePVListener<V extends Serializable, T extends ISystemVa
        return data;
     }
 
-    protected boolean storeNewSample(@Nonnull final IArchiveSample<V, T> sample) {
-        addSampleToBuffer(sample);
-        return true;
-
-    }
     protected abstract void addSampleToBuffer(@Nonnull final IArchiveSample<V, T> sample);
 
 

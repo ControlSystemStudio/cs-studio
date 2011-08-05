@@ -41,8 +41,8 @@ public class WriteExecutor {
 
     private static final Logger LOG = LoggerFactory.getLogger(WriteExecutor.class);
 
-    /** Minimum write period [seconds] */
-    private static final long MIN_WRITE_PERIOD_MS = 5000;
+    /** Minimum write period [millis] */
+    private static final long MIN_WRITE_PERIOD_MS = 2000;
 
     private final ConcurrentMap<String, ArchiveChannel<Serializable, ISystemVariable<Serializable>>> _channelMap =
         Maps.newConcurrentMap();

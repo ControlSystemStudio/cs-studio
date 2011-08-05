@@ -33,10 +33,12 @@ INSERT INTO channel (id, name, description, datatype, group_id, last_sample_time
        VALUES (1, 'doubleChannel1', 'test double channel 1', 'Double', 1, unix_timestamp('2011-01-01 00:00:01')*1000000000, 1, '20.0', '10.0'),
               (2, 'doubleChannel2', 'test double channel 2', 'Double', 1, unix_timestamp('2010-01-01 01:02:03')*1000000000, 1, '25.0', '5.0'),
               (3, 'byteChannel1', 'test byte channel 1', 'Byte', 2, unix_timestamp('2011-05-01 00:00:01')*1000000000, 1, '127', '-128'),
-              (4, 'enumChannel1', 'test enum channel 1', 'EpicsEnum', 2, unix_timestamp('2010-01-01 01:02:03')*1000000000, 1, NULL, NULL);
+              (4, 'enumChannel1', 'test enum channel 1', 'EpicsEnum', 2, unix_timestamp('2010-01-01 01:02:03')*1000000000, 1, NULL, NULL),
+              (5, 'compressChannel', 'test compress channel 1', 'ArrayList<Double>', 2, unix_timestamp('2010-01-01 01:02:03')*1000000000, 1, '-10', '500');
               
 --
 -- Samples
 --        
 INSERT INTO sample (channel_id, time, value) 
-       VALUES (3, unix_timestamp('1970-01-01 00:00:02')*1000000000, '26');    
+       VALUES (3, unix_timestamp('1970-01-01 00:00:02')*1000000000, '26'),
+              (5, unix_timestamp('1970-01-01 00:00:02')*1000000000, '[1.0\\,6.0\\,0.0\\,5.0\\,10.0]');    

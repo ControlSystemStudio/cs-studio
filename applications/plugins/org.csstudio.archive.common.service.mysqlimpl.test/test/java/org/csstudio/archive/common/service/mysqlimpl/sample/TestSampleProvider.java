@@ -59,6 +59,7 @@ public final class TestSampleProvider {
     public static final ArchiveChannelId CHANNEL_ID_1ST = new ArchiveChannelId(1L);
     public static final ArchiveChannelId CHANNEL_ID_2ND = new ArchiveChannelId(2L);
     public static final ArchiveChannelId CHANNEL_ID_3RD = new ArchiveChannelId(3L);
+    public static final ArchiveChannelId CHANNEL_ID_5TH = new ArchiveChannelId(5L);
 
     static {
         START = TimeInstantBuilder.fromNow();
