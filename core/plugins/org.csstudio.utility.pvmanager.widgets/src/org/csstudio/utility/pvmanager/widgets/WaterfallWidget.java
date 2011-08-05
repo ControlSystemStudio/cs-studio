@@ -1,5 +1,6 @@
 package org.csstudio.utility.pvmanager.widgets;
 
+import static org.epics.pvmanager.ExpressionLanguage.*;
 import static org.epics.pvmanager.data.ExpressionLanguage.*;
 import static org.epics.pvmanager.extra.ExpressionLanguage.waterfallPlotOf;
 import static org.epics.pvmanager.extra.WaterfallPlotParameters.pixelDuration;
@@ -272,7 +273,7 @@ public class WaterfallWidget extends Composite {
 		
 		if (waveformPVName != null && !waveformPVName.trim().isEmpty()) {
 			int color = (getBackground().getRed() << 16) + (getBackground().getGreen() << 8) + getBackground().getBlue();
-			plot = waterfallPlotOf(vDoubleArray(waveformPVName)).with(parameters, WaterfallPlotParameters.backgroundColor(color));
+			plot = waterfallPlotOf(vDoubleArrayOf(channel(waveformPVName))).with(parameters, WaterfallPlotParameters.backgroundColor(color));
 			parameters = plot.getParameters();
 			pv = PVManager.read(plot)
 				.notifyOn(SWTUtil.swtThread()).every(hz(50));
