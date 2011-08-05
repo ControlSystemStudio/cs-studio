@@ -64,7 +64,7 @@ public class WaterfallView extends ViewPart {
 	
 	public void setPVName(String name) {
 		combo.setText(name);
-		//resolveAndSetPVName(name);
+		resolveAndSetPVName(name);
 	}
 	
 	private Combo combo;
