@@ -22,73 +22,43 @@
  *
  */
 
-package org.csstudio.archive.sdds.server.sdds;
+package org.csstudio.archive.sdds.server.file;
+
+import SDDS.java.SDDS.SDDSFile;
 
 /**
  * @author Markus Moeller
  *
  */
-public enum SddsDataType
+public class SddsUtil
 {
-    SDDS_UNDEFINED,
-    SDDS_DOUBLE,
-    SDDS_FLOAT,
-    SDDS_LONG,
-    SDDS_ULONG,
-    SDDS_SHORT,
-    SDDS_USHORT,
-    SDDS_STRING,
-    SDDS_CHARACTER,
-    SDDS_ANY_NUMERIC_TYPE,
-    SDDS_ANY_FLOATING_TYPE,
-    SDDS_ANY_INTEGER_TYPE;
+    /** No error */
+    public static final int SDDS_CHECK_OKAY = 0;
+    
+    /** No error */
+    public static final int SDDS_CHECK_OK = SDDS_CHECK_OKAY;
+    
+    /** Column, parameter, etc. does not exist */
+    public static final int SDDS_CHECK_NONEXISTENT = 1;
+    
+    /** Column, parameter, etc. has got wrong type */
+    public static final int SDDS_CHECK_WRONGTYPE = 2;
+    
+    /** The unit is not correct */
+    public static final int SDDS_CHECK_WRONGUNITS = 3;
     
     /**
      * 
-     * @return
-     */
-    public static int getSddsTypeCount()
-    {
-        return SDDS_CHARACTER.ordinal();
-    }
-    
-    /**
-     * 
+     * @param sddsFile
+     * @param columnNames
+     * @param columnUnits
      * @param type
      * @return
      */
-    public boolean isSddsIntegerType(SddsDataType type)
+    public static int checkColumn(SDDSFile sddsFile, String[] columnNames, String[] columnUnits, SddsDataType type)
     {
-        return ((type == SDDS_LONG) || (type == SDDS_ULONG) || (type == SDDS_SHORT) || (type == SDDS_USHORT));
-    }
-    
-    /**
-     * 
-     * @param type
-     * @return
-     */
-    public boolean isSddsFloatingType(SddsDataType type)
-    {
-        return ((type == SDDS_DOUBLE) || (type == SDDS_FLOAT));
-    }
-    
-    /**
-     * 
-     * @param type
-     * @return
-     */
-    public boolean isSddsNumericType(SddsDataType type)
-    {
-        return (isSddsIntegerType(type) || isSddsFloatingType(type));
-    }
-    
-    /**
-     * 
-     * @param type
-     * @return
-     */
-    public boolean isSddsValidType(SddsDataType type)
-    {
-        return ((type.ordinal() >= 1) && (type.ordinal() <= SddsDataType.getSddsTypeCount()));
+        int result = SDDS_CHECK_OK;
+        
+        return result;
     }
 }

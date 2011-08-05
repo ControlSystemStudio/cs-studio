@@ -27,7 +27,7 @@ package org.csstudio.archive.sdds.server.data;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
-import org.csstudio.archive.sdds.server.sdds.SDDSType;
+import org.csstudio.archive.sdds.server.file.SDDSType;
 import org.csstudio.archive.sdds.server.util.ArchiveSeverity;
 
 /**

@@ -28,8 +28,8 @@ import java.util.ArrayList;
 
 import org.csstudio.archive.sdds.server.command.header.DataRequestHeader;
 import org.csstudio.archive.sdds.server.conversion.ConversionExecutor;
-import org.csstudio.archive.sdds.server.sdds.DataPathNotFoundException;
-import org.csstudio.archive.sdds.server.sdds.SddsFileReader;
+import org.csstudio.archive.sdds.server.file.DataPathNotFoundException;
+import org.csstudio.archive.sdds.server.file.SddsFileReader;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

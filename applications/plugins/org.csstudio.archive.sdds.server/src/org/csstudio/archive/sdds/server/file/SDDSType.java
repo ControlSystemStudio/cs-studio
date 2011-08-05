@@ -22,7 +22,7 @@
  *
  */
 
-package org.csstudio.archive.sdds.server.sdds;
+package org.csstudio.archive.sdds.server.file;
 
 /**
  * @author Markus Moeller

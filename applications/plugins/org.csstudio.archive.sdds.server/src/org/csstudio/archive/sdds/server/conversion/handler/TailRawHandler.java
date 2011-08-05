@@ -30,7 +30,7 @@ import java.util.List;
 
 import org.csstudio.archive.sdds.server.command.header.DataRequestHeader;
 import org.csstudio.archive.sdds.server.data.EpicsRecordData;
-import org.csstudio.archive.sdds.server.sdds.SDDSType;
+import org.csstudio.archive.sdds.server.file.SDDSType;
 import org.csstudio.archive.sdds.server.util.DataException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
