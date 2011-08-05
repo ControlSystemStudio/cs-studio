@@ -23,9 +23,10 @@ import java.util.ArrayList;
  *  @see BooleanOption
  *  @see IntegerOption
  *  @see StringOption
-
+ *
  *  @author Kay Kasemir
  */
+@SuppressWarnings("nls")
 public class ArgParser
 {
     /** Allow extra params or consider that an error? */
@@ -57,6 +58,31 @@ public class ArgParser
         this.allow_extra_parameters = allow_extra_parameters;
     }
 
+    /** Add options handled by Eclipse
+     * 
+     *  <p>This adds the "pluginCustomization" and "data"
+     *  options.
+     *  The code that calls the parser will not use them,
+     *  but this way they show up in the help message
+     *  and can also be checked for spelling
+     *  (to avoid "plukinCustomisation")
+     */
+    public void addEclipseParameters()
+    {
+        new StringOption(this, "-pluginCustomization",
+        		"/path/to/my/settings.ini",
+                "Eclipse plugin defaults", null);
+        new StringOption(this, "-data",
+        		"/home/fred/Workspace",
+        		"Eclipse workspace location", null);
+        // NOTE:
+        // On OS X, the application will have a file
+        // WhateverAppName.app/Contents/Info.plist
+        // that includes a default option "-showlocation",
+        // which the parser will see but not understand.
+        // Solution for now: Remove that from Info.plist
+    }
+    
     /** Parse given list of arguments.
      *  <p>
      *  All arguments that start with "-" with be checked against the
@@ -68,7 +94,6 @@ public class ArgParser
      *  @param args Arguments
      *  @throws Exception if argument not handled
      */
-    @SuppressWarnings("nls")
     final public void parse(final String[] args) throws Exception
     {
         int pos = 0;
@@ -100,7 +125,6 @@ public class ArgParser
     }
 
     /** @return Help string that describes all the registered options */
-    @SuppressWarnings("nls")
     final public String getHelp()
     {
         final StringBuilder buf = new StringBuilder();
