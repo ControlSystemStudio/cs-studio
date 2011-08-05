@@ -234,7 +234,7 @@ public abstract class AbstractPolyModel extends AbstractShapeModel {
 				propertyID.equals(AbstractWidgetModel.PROP_YPOS) ||
 				propertyID.equals(AbstractWidgetModel.PROP_WIDTH) ||
 				propertyID.equals(AbstractWidgetModel.PROP_HEIGHT)){
-			int newValue = Integer.parseInt(value.toString());
+			int newValue = (int) Double.parseDouble(value.toString());
 			if (propertyID.equals(AbstractWidgetModel.PROP_XPOS)
 					&& (newValue != getPoints().getBounds().x)) {
 				setLocation(newValue, getLocation().y);

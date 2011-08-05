@@ -154,7 +154,7 @@
             defaultEntrypointId="org.csstudio.webopi.workbenchOPIRuntime"
             favicon="icons/OPIRunner.png"
             id="org.csstudio.webopi.branding.workbench"
-            servletName="WebOPI"
+            servletName="w"
             title="WebOPI">
       </branding>
       <branding
@@ -162,8 +162,16 @@
             defaultEntrypointId="org.csstudio.webopi.standaloneOPIRuntime"
             favicon="icons/OPIRunner.png"
             id="org.csstudio.webopi.branding.standalone"
-            servletName="WebOPI_S"
+            servletName="s"
             title="WebOPI Stanalone Mode">
+      </branding>
+      <branding
+            body="html/body.html"
+            defaultEntrypointId="org.csstudio.webopi.workbenchOPIRuntime"
+            favicon="icons/OPIRunner.png"
+            id="org.csstudio.webopi.branding.workbench"
+            servletName="m"
+            title="WebOPI Mobile">
       </branding>
    </extension>
    <extension

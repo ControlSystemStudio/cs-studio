@@ -30,8 +30,12 @@ public class SingleSourceHelperImpl extends SingleSourceHelper {
 			boolean upToDown) {
 		  org.eclipse.draw2d.geometry.Dimension titleSize = 
 				  FigureUtilities.getTextExtents(text,	font);
-		final int w = titleSize.height;
-		final int h = titleSize.width;
+		 int w = titleSize.height;
+		 int h = titleSize.width;
+		if(w<=0)
+			w = 1;
+		if(h<=0)
+			h = 1;
 	    BufferedImage image = new BufferedImage( w, h, BufferedImage.TYPE_INT_ARGB );
 	    Graphics2D gr2d = image.createGraphics();
 	    

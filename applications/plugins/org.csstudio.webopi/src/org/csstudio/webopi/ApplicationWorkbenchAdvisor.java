@@ -21,8 +21,8 @@ public class ApplicationWorkbenchAdvisor extends WorkbenchAdvisor {
 
 	public String getInitialWindowPerspectiveId() {
 		HttpServletRequest request = RWT.getRequest();
-		 String opiPath = request.getParameter( "mode" );
-		 if(opiPath!=null && opiPath.equals("standalone"))
+		 String opiPath = request.getParameter( "mode" ); //$NON-NLS-1$
+		 if(opiPath!=null && opiPath.equals("standalone")) //$NON-NLS-1$
 			 return StandaloneRuntimePerspective.ID;
 		return OPIRunnerPerspective.ID;
 	}

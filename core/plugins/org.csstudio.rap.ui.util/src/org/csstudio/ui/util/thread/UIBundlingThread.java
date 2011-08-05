@@ -69,10 +69,16 @@ public final class UIBundlingThread implements Runnable {
 	/**
 	 * Process the complete queue.
 	 */
-	private synchronized void processQueue() {
+	private void processQueue() {
+		Object[] taskArray;
+		synchronized (this) {
+			taskArray = tasksQueue.toArray();
+			tasksQueue.clear();
+		}
 		DisplayRunnable r;		
-		while( (r=tasksQueue.poll()) != null){	
+		for(Object o: taskArray){	
 			try {
+				r=(DisplayRunnable)o;
 				if(!r.display.isDisposed() && 
 						DisplayManager.getInstance().isDisplayAlive(r.display))
 					r.display.asyncExec(r.runnable);

@@ -1,7 +1,6 @@
 package org.csstudio.rap.core;
 
 import java.util.ArrayList;
-import java.util.Enumeration;
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
@@ -127,8 +126,8 @@ public class DisplayManager {
 	 * @throws Exception if the display has not been registered.
 	 */
 	public void addDisplayDisposeListener(Display display, Runnable runnable) throws Exception{
-		checkIfDisplayRegistered(display);
-		displayMap.get(display).addDisposeListener(runnable);			
+		if(checkIfDisplayRegistered(display))
+			displayMap.get(display).addDisposeListener(runnable);			
 	}
 	
 	/**Remove a display dispose listener.
@@ -137,13 +136,15 @@ public class DisplayManager {
 	 * @throws Exception
 	 */
 	public void removeDisplayDisposeListener(Display display, Runnable runnable) throws Exception{
-		checkIfDisplayRegistered(display);
-		displayMap.get(display).removeDisposeListener(runnable);
+		if(checkIfDisplayRegistered(display))
+			displayMap.get(display).removeDisposeListener(runnable);
 	}
 
-	private void checkIfDisplayRegistered(Display display) throws Exception {
+	private boolean checkIfDisplayRegistered(Display display) throws Exception {
 		if(!displayMap.containsKey(display))
-			throw new Exception("The display has not been registered yet!");
+			return false;
+		return true;
+//			throw new Exception("The display has not been registered yet!");
 	}
 
 	private void unRegisterDisplay(final Display display) {
@@ -151,20 +152,21 @@ public class DisplayManager {
 	}
 
 	private void markDisplayAlive(Display display) throws Exception {
-		checkIfDisplayRegistered(display);
-		displayMap.get(display).heartCount = beatCount;
+		if(checkIfDisplayRegistered(display))
+			displayMap.get(display).heartCount = beatCount;
 	}
 
 	public boolean isDisplayAlive(Display display) throws Exception {
-		checkIfDisplayRegistered(display);	
-		return displayMap.get(display).isLive;
+		if(checkIfDisplayRegistered(display))
+			return displayMap.get(display).isLive;
+		return false;
 	}
 
-	public void registerObject(Object obj){
+	public synchronized void registerObject(Object obj){
 		objectList.add(obj);
 	}
 	
-	public void unRegisterObject(Object obj){
+	public synchronized void unRegisterObject(Object obj){
 		objectList.remove(obj);
 	}
 	

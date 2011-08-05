@@ -35,7 +35,7 @@ protected void doGet( HttpServletRequest request,
     throws IOException
   {
     if( request.getPathInfo().equals( "/" ) ) {
-      response.sendRedirect( response.encodeRedirectURL( "WebOPI" ) ); //$NON-NLS-1$
+      response.sendRedirect( response.encodeRedirectURL( "w" ) ); //$NON-NLS-1$
     } else {
       response.sendError( HttpServletResponse.SC_NOT_FOUND );
     }

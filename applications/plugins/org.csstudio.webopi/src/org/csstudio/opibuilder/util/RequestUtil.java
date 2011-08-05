@@ -2,6 +2,7 @@ package org.csstudio.opibuilder.util;
 
 import javax.servlet.http.HttpServletRequest;
 
+import org.csstudio.opibuilder.OPIBuilderPlugin;
 import org.csstudio.opibuilder.persistence.URLPath;
 import org.csstudio.opibuilder.preferences.PreferencesHelper;
 import org.eclipse.core.runtime.IPath;
@@ -10,20 +11,24 @@ import org.eclipse.rwt.RWT;
 
 public class RequestUtil {
 	
+
 	public static boolean isStandaloneMode(){
     	HttpServletRequest request = RWT.getRequest();
-		String mode = request.getParameter( "mode" );
-		 if(mode!=null && mode.equals("standalone"))
+		String mode = request.getParameter( OPIBuilderPlugin.MODE_PARAMETER );
+		 if(mode!=null && mode.equals(OPIBuilderPlugin.STANDALONE))
 			 return true;
-		 mode=request.getParameter("startup");
-		 if(mode!=null && mode.equals("webopi_s"))
+		 mode=request.getParameter("startup"); //$NON-NLS-1$
+		 if(mode!=null && mode.equals("webopi_s")) //$NON-NLS-1$
 			 return true;	
 		 return false;
 	}
 	
+	/**
+	 * @return the opi path specified in URL. null if no opi parameter is specified.
+	 */
 	public static IPath getOPIPathFromRequest(){
 		HttpServletRequest request = RWT.getRequest();
-		 String opiPath = request.getParameter( "opi" );
+		 String opiPath = request.getParameter(OPIBuilderPlugin.OPI_PARAMETER ); //$NON-NLS-1$
 		IPath path = null;
 		if(opiPath != null && !opiPath.isEmpty()){
 			if(ResourceUtil.isURL(opiPath))
@@ -39,7 +44,7 @@ public class RequestUtil {
 				}
 			}
 		}else {
-			path = PreferencesHelper.getStartupOPI();
+			return null;
 		}
 		return path;
 	}

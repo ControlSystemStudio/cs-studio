@@ -15,7 +15,7 @@ public class ServerHeartBeatThread implements Runnable{
 	private static ServerHeartBeatThread instance;
 	
 	private ServerHeartBeatThread(){
-		thread = new Thread(this);
+		thread = new Thread(this, "CSS RAP Heart Beat");
 		thread.setDaemon(true);
 		thread.start();
 	}
