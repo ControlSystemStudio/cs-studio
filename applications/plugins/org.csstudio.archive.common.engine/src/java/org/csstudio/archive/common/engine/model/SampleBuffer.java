@@ -54,7 +54,7 @@ public class SampleBuffer<V extends Serializable,
     private final BlockingQueue<S> _samples;
 
     /** Statistics */
-    private final BufferStats _stats = new BufferStats();
+    private final SampleBufferStatistics _stats = new SampleBufferStatistics();
 
 
     /**
@@ -103,7 +103,7 @@ public class SampleBuffer<V extends Serializable,
 
     /** @return Buffer statistics. */
     @Nonnull
-    public BufferStats getBufferStats() {
+    public SampleBufferStatistics getBufferStats() {
         return _stats;
     }
 

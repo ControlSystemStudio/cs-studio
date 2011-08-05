@@ -15,7 +15,7 @@ import javax.servlet.http.HttpServletResponse;
 
 import org.csstudio.archive.common.engine.model.ArchiveChannel;
 import org.csstudio.archive.common.engine.model.ArchiveGroup;
-import org.csstudio.archive.common.engine.model.BufferStats;
+import org.csstudio.archive.common.engine.model.SampleBufferStatistics;
 import org.csstudio.archive.common.engine.model.EngineModel;
 
 /** Provide web page with basic info for all the groups.
@@ -73,7 +73,7 @@ class GroupsResponse extends AbstractResponse {
                     ++numOfConnectedChannels;
                 }
                 numOfReceivedSamples += channel.getReceivedValues();
-                final BufferStats stats = channel.getSampleBuffer().getBufferStats();
+                final SampleBufferStatistics stats = channel.getSampleBuffer().getBufferStats();
                 avgQueueLength += stats.getAverageSize();
                 maxQueueLength = Math.max(maxQueueLength, stats.getMaxSize());
             }
