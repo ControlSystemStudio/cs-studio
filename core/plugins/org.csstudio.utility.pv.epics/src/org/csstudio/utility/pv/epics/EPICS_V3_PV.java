@@ -608,10 +608,6 @@ public class EPICS_V3_PV extends PlatformObject
     @Override
     public void monitorChanged(final MonitorEvent ev)
     {
-        //INumericMetaData metaData = (INumericMetaData) DBR_Helper.decodeMetaData(ev.getDBR());
-
-        Activator.getLogger().log(Level.FINEST, "meta: {0}", new Object[] { ev.getDBR().getClass().getName() });
-
         final Logger log = Activator.getLogger();
         // This runs in a CA thread.
         // Ignore values that arrive after stop()
@@ -636,11 +632,16 @@ public class EPICS_V3_PV extends PlatformObject
         state = State.GotMonitor;
         try
         {
-            value =
-                DBR_Helper.decodeValue(plain, meta, ev.getDBR());
-            if (!connected) {
-                connected = true;
+            final DBR dbr = ev.getDBR();
+            if (dbr == null)
+            {
+                log.warning(name + " monitor with null dbr");
+                return;
             }
+			value =
+                DBR_Helper.decodeValue(plain, meta, dbr);
+            if (!connected)
+                connected = true;
             // Logging every received value is expensive and chatty.
             log.log(Level.FINEST, "{0} monitor: {1} ({2})",
                     new Object[] { name, value, value.getClass().getName() });
