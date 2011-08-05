@@ -46,12 +46,6 @@ import org.csstudio.domain.desy.typesupport.TypeSupportException;
 public abstract class BatchQueueHandlerSupport<T> extends AbstractTypeSupport<T> {
     // CHECKSTYLE ON : AbstractClassName
 
-//    /**
-//     * Is already stored in {@link org.epics.pvmanager.TypeSupport}, but that's not accessible from here.
-//     */
-//    private static final Map<Class<?>, BatchQueueHandlerSupport<?>> SUPPORT_MAP =
-//        Maps.newConcurrentMap();
-
     private final String _database;
     private final BlockingQueue<T> _queue;
 
@@ -78,15 +72,12 @@ public abstract class BatchQueueHandlerSupport<T> extends AbstractTypeSupport<T>
         final Class<T> type = handler.getType();
 
         AbstractTypeSupport.installIfNotExists(BatchQueueHandlerSupport.class, type, handler);
-//        final BatchQueueHandlerSupport<?> support =
-//            (BatchQueueHandlerSupport<?>) findTypeSupportFor(BatchQueueHandlerSupport.class, type);
-//        SUPPORT_MAP.put(type, support);
     }
 
-    @SuppressWarnings({ "rawtypes", "unchecked" })
+    @SuppressWarnings("rawtypes")
     @Nonnull
     public static Collection<BatchQueueHandlerSupport> getInstalledHandlers() {
-        return (Collection<BatchQueueHandlerSupport>) findTypeSupportsFor(BatchQueueHandlerSupport.class);
+        return typeSupportsFor(BatchQueueHandlerSupport.class);
     }
 
     public static <T> void addToQueue(@Nonnull final Collection<T> newEntries) throws TypeSupportException {

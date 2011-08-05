@@ -36,7 +36,6 @@ import javax.annotation.Nonnull;
 import org.csstudio.archive.common.engine.model.ArchiveChannel;
 import org.csstudio.archive.common.engine.model.EngineModelException;
 import org.csstudio.archive.common.service.channel.IArchiveChannel;
-import org.csstudio.domain.desy.epics.types.EpicsEnum;
 import org.csstudio.domain.desy.epics.typesupport.EpicsIMetaDataTypeSupport;
 import org.csstudio.domain.desy.epics.typesupport.EpicsIValueTypeSupport;
 import org.csstudio.domain.desy.system.ISystemVariable;
@@ -135,17 +134,6 @@ public abstract class ArchiveEngineTypeSupport<V extends Serializable> extends A
         for (final Class<?> clazz : BASIC_TYPES) {
             TypeSupport.addTypeSupport(new ConcreteArchiveEngineTypeSupport(clazz));
         }
-        TypeSupport.addTypeSupport(new ConcreteArchiveEngineTypeSupport<Long>(Long.class));
-        TypeSupport.addTypeSupport(new ConcreteArchiveEngineTypeSupport<Integer>(Integer.class));
-        TypeSupport.addTypeSupport(new ConcreteArchiveEngineTypeSupport<Short>(Short.class));
-        TypeSupport.addTypeSupport(new ConcreteArchiveEngineTypeSupport<Byte>(Byte.class));
-        TypeSupport.addTypeSupport(new ConcreteArchiveEngineTypeSupport<Double>(Double.class));
-        TypeSupport.addTypeSupport(new ConcreteArchiveEngineTypeSupport<Float>(Float.class));
-        TypeSupport.addTypeSupport(new ConcreteArchiveEngineTypeSupport<String>(String.class));
-        TypeSupport.addTypeSupport(new ConcreteArchiveEngineTypeSupport<EpicsEnum>(EpicsEnum.class));
-
-        TypeSupport.addTypeSupport(new ConcreteArchiveEngineTypeSupport<ArrayList>(ArrayList.class));
-        TypeSupport.addTypeSupport(new ConcreteArchiveEngineTypeSupport<LinkedList>(LinkedList.class));
 
         INSTALLED = true;
     }
@@ -167,8 +155,4 @@ public abstract class ArchiveEngineTypeSupport<V extends Serializable> extends A
     @Nonnull
     protected abstract ArchiveChannel<V, ISystemVariable<V>>
     createChannel(@Nonnull final IArchiveChannel cfg) throws TypeSupportException;
-
-//    @Nonnull
-//    protected abstract ArchiveChannel<Collection<V>, ISystemVariable<Collection<V>>>
-//    createMultiScalarArchiveChannel(@Nonnull final IArchiveChannel cfg) throws TypeSupportException;
 }
