@@ -48,6 +48,11 @@ public class WaterfallWidget extends Composite {
 	private Label errorImage;
 	private GridData gd_rangeWidget;
 	private boolean editable = true;
+	
+	public void openConfigurationDialog(int x, int y) {
+		WaterfallParametersDialog dialog = new WaterfallParametersDialog(getShell(), SWT.NORMAL);
+		dialog.open(WaterfallWidget.this, x, y);
+	}
 
 	/**
 	 * Creates a new widget.
@@ -98,10 +103,9 @@ public class WaterfallWidget extends Composite {
 			@Override
 			public void mouseUp(MouseEvent e) {
 				if (editable && e.button == 3) {
-					WaterfallParametersDialog dialog = new WaterfallParametersDialog(getShell(), SWT.NORMAL);
 					Point position = new Point(e.x, e.y);
 					position = getDisplay().map(WaterfallWidget.this, null, position);
-					dialog.open(WaterfallWidget.this, position.x, position.y);
+					openConfigurationDialog(position.x, position.y);
 				}
 			}
 		});
