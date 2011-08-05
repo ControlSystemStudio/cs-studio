@@ -44,6 +44,17 @@ public class ExpressionLanguage {
     public static SourceRateExpression<VDouble> vDoubleOf(SourceRateExpression<?> expression) {
         return new SourceRateExpressionImpl<VDouble>(expression, new ConverterVDoubleFunction(expression.getFunction()), expression.getName());
     }
+    
+    /**
+     * Expects a numeric array (VDoubleArray, VFloatArray, VIntArray, VShortArray
+     * or VByteArray) and converts it to a VDoubleArray.
+     * 
+     * @param expression an expression that returns a numeric array
+     * @return a new expression
+     */
+    public static SourceRateExpression<VDoubleArray> vDoubleArrayOf(SourceRateExpression<?> expression) {
+        return new SourceRateExpressionImpl<VDoubleArray>(expression, new ConverterVDoubleArrayFunction(expression.getFunction()), expression.getName());
+    }
 
     /**
      * A channel with the given name of type VDouble.
