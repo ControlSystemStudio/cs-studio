@@ -2,6 +2,7 @@ package org.csstudio.display.waterfall;
 
 import gov.bnl.channelfinder.api.Channel;
 import gov.bnl.channelfinder.api.ChannelFinderClient;
+import gov.bnl.channelfinder.api.ChannelUtil;
 
 import java.util.ArrayList;
 import java.util.Arrays;

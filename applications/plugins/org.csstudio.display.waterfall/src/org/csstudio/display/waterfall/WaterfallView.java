@@ -57,8 +57,8 @@ public class WaterfallView extends ViewPart {
 	public void saveState(final IMemento memento) {
 		super.saveState(memento);
 		// Save the currently selected variable
-		if (waterfallComposite.getWaveformPVName() != null) {
-			memento.putString(MEMENTO_PVNAME, waterfallComposite.getWaveformPVName());
+		if (combo.getText() != null) {
+			memento.putString(MEMENTO_PVNAME, combo.getText());
 		}
 	}
 	
