@@ -43,8 +43,7 @@ import com.google.common.collect.MapMaker;
  *  @author Bastian Knerr
  */
 public final class EngineModel {
-    private static final Logger LOG =
-        LoggerFactory.getLogger(EngineModel.class);
+    private static final Logger LOG = LoggerFactory.getLogger(EngineModel.class);
 
     /** Version code. See also webroot/version.html */
     private static String VERSION = "1.0.0";
@@ -98,7 +97,7 @@ public final class EngineModel {
     /**
      * Construct model that writes to archive
      * @param engineName
-     * @param provider
+     * @param provider provider for services
      */
     public EngineModel(@Nonnull final String engineName,
                        @Nonnull final IServiceProvider provider) {
@@ -108,8 +107,8 @@ public final class EngineModel {
         _groupMap = new MapMaker().concurrencyLevel(2).makeMap();
         _channelMap = new MapMaker().concurrencyLevel(2).makeMap();
 
-        _writePeriodInMS = 1000*ArchiveEnginePreference.WRITE_PERIOD.getValue();
-        _heartBeatPeriodInMS = 1000*ArchiveEnginePreference.HEARTBEAT_PERIOD.getValue();
+        _writePeriodInMS = 1000*ArchiveEnginePreference.WRITE_PERIOD_IN_S.getValue();
+        _heartBeatPeriodInMS = 1000*ArchiveEnginePreference.HEARTBEAT_PERIOD_IN_S.getValue();
     }
 
     /** @return Name (description) */

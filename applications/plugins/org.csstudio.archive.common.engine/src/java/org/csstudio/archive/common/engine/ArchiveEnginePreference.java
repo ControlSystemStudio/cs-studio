@@ -37,9 +37,9 @@ import org.csstudio.domain.desy.preferences.AbstractPreference;
  */
 public class ArchiveEnginePreference<T> extends AbstractPreference<T>{
 
-    public static final ArchiveEnginePreference<Long> WRITE_PERIOD =
-        new ArchiveEnginePreference<Long>("writePeriodInS", Long.valueOf(7));
-    public static final ArchiveEnginePreference<Long> HEARTBEAT_PERIOD =
+    public static final ArchiveEnginePreference<Long> WRITE_PERIOD_IN_S =
+        new ArchiveEnginePreference<Long>("writePeriodInS", Long.valueOf(3));
+    public static final ArchiveEnginePreference<Long> HEARTBEAT_PERIOD_IN_S =
         new ArchiveEnginePreference<Long>("heartBeatPeriodInS", Long.valueOf(1));
     public static final ArchiveEnginePreference<File> DATA_RESCUE_DIR =
         new ArchiveEnginePreference<File>("dataRescueDir", new File("./engineRescue"));
