@@ -62,6 +62,7 @@ org.csstudio.ui.preferences
 org.csstudio.utility.adlParser
 org.csstudio.utility.channel
 org.csstudio.utility.channel.adapters
+org.csstudio.utility.channel.widgets
 org.csstudio.utility.channelfinder
 org.csstudio.utility.channelfinder.ui
 org.csstudio.utility.clock
