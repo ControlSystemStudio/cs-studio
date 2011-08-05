@@ -21,6 +21,7 @@
  */
 package org.csstudio.archive.common.service.mysqlimpl.sample;
 
+import java.io.Serializable;
 import java.util.Collection;
 
 import javax.annotation.CheckForNull;
@@ -48,7 +49,7 @@ public interface IArchiveSampleDao {
      * @param samples the sample objects
      * @throws ArchiveSampleDaoException
      */
-    <V, T extends ISystemVariable<V>>
+    <V extends Serializable, T extends ISystemVariable<V>>
     void createSamples(@Nonnull final Collection<IArchiveSample<V, T>> samples) throws ArchiveDaoException;
 
 
@@ -60,7 +61,7 @@ public interface IArchiveSampleDao {
      * @return
      */
     @Nonnull
-    <V, T extends ISystemVariable<V>>
+    <V extends Serializable, T extends ISystemVariable<V>>
     Collection<IArchiveSample<V, T>> retrieveSamples(@Nullable DesyArchiveRequestType type,
                                                      @Nonnull IArchiveChannel channel,
                                                      @Nonnull TimeInstant s,
@@ -68,7 +69,7 @@ public interface IArchiveSampleDao {
 
 
     @CheckForNull
-    <V, T extends ISystemVariable<V>>
+    <V extends Serializable, T extends ISystemVariable<V>>
     IArchiveSample<V, T> retrieveLatestSampleBeforeTime(@Nonnull IArchiveChannel channel,
                                                         @Nonnull TimeInstant time) throws ArchiveDaoException;
 }

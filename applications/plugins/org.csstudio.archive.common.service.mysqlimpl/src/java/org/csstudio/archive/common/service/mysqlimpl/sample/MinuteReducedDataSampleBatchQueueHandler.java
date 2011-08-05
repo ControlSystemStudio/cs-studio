@@ -52,13 +52,4 @@ public class MinuteReducedDataSampleBatchQueueHandler extends
     protected String getTable() {
         return TAB_SAMPLE_M;
     }
-
-    /**
-     * {@inheritDoc}
-     */
-    @Override
-    @Nonnull
-    public Class<MinuteReducedDataSample> getType() {
-        return MinuteReducedDataSample.class;
-    }
 }

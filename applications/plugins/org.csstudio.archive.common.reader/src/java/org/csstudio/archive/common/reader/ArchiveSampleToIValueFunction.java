@@ -21,6 +21,8 @@
  */
 package org.csstudio.archive.common.reader;
 
+import java.io.Serializable;
+
 import javax.annotation.CheckForNull;
 import javax.annotation.Nonnull;
 
@@ -41,7 +43,7 @@ import com.google.common.base.Function;
  *
  * @param <V> the basic data type of the system variable
  */
-public final class ArchiveSampleToIValueFunction<V> implements
+public final class ArchiveSampleToIValueFunction<V extends Serializable> implements
         Function<IArchiveSample<V, IAlarmSystemVariable<V>>, IValue> {
 
     /**

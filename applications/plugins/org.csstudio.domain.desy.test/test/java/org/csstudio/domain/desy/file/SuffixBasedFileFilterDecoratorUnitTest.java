@@ -19,36 +19,42 @@
  * PROJECT IN THE FILE LICENSE.HTML. IF THE LICENSE IS NOT INCLUDED YOU MAY FIND A COPY
  * AT HTTP://WWW.DESY.DE/LEGAL/LICENSE.HTM
  */
-package org.csstudio.archive.common.service.mysqlimpl.sample;
+package org.csstudio.domain.desy.file;
 
-import static org.csstudio.archive.common.service.mysqlimpl.sample.ArchiveSampleDaoImpl.TAB_SAMPLE_H;
+import java.io.File;
+import java.io.IOException;
 
-import java.util.concurrent.LinkedBlockingQueue;
+import junit.framework.Assert;
 
-import javax.annotation.Nonnull;
-
+import org.junit.Rule;
+import org.junit.Test;
+import org.junit.rules.TemporaryFolder;
 
 /**
- * Batch queue handler for reduced data samples for hours.
+ * Test for {@link SuffixBasedFileFilterDecorator}.
  *
  * @author bknerr
- * @since 20.07.2011
+ * @since 28.04.2011
  */
-public class HourReducedDataSampleBatchQueueHandler extends
-                                                   AbstractReducedDataSampleBatchQueueHandler<HourReducedDataSample> {
-    /**
-     * Constructor.
-     */
-    public HourReducedDataSampleBatchQueueHandler(@Nonnull final String database) {
-        super(HourReducedDataSample.class, database, new LinkedBlockingQueue<HourReducedDataSample>());
-    }
+public class SuffixBasedFileFilterDecoratorUnitTest {
 
-    /**
-     * {@inheritDoc}
-     */
-    @Override
-    @Nonnull
-    protected String getTable() {
-        return TAB_SAMPLE_H;
+    // CHECKSTYLE OFF: VisibilityModifier
+    @Rule
+    public TemporaryFolder _tempFolder = new TemporaryFolder();
+    // CHECKSTYLE ON: VisibilityModifier
+
+    @Test
+    public void testFilter() throws IOException {
+        final File validFileDepth0 = _tempFolder.newFile("a.test");
+        Assert.assertTrue(validFileDepth0.exists());
+
+        final SuffixBasedFileFilterDecorator filter = new SuffixBasedFileFilterDecorator(".test", 1);
+        Assert.assertFalse(filter.apply(validFileDepth0));
+        Assert.assertFalse(filter.apply(validFileDepth0, 1));
+        Assert.assertTrue(filter.apply(validFileDepth0, 2));
+
+        final File dir = _tempFolder.newFolder("testDir");
+        Assert.assertTrue(filter.apply(dir));
+        Assert.assertTrue(filter.apply(dir, 2));
     }
 }

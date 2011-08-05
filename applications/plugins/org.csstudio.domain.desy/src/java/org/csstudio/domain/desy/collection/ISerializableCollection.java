@@ -19,36 +19,19 @@
  * PROJECT IN THE FILE LICENSE.HTML. IF THE LICENSE IS NOT INCLUDED YOU MAY FIND A COPY
  * AT HTTP://WWW.DESY.DE/LEGAL/LICENSE.HTM
  */
-package org.csstudio.archive.common.service.mysqlimpl.sample;
+package org.csstudio.domain.desy.collection;
 
-import static org.csstudio.archive.common.service.mysqlimpl.sample.ArchiveSampleDaoImpl.TAB_SAMPLE_H;
-
-import java.util.concurrent.LinkedBlockingQueue;
-
-import javax.annotation.Nonnull;
-
+import java.io.Serializable;
+import java.util.Collection;
 
 /**
- * Batch queue handler for reduced data samples for hours.
+ * Helper interface for collections that are completely serializable.
  *
  * @author bknerr
- * @since 20.07.2011
+ * @since 04.08.2011
+ * @param <T> the type of the elements in the collection
+ *
  */
-public class HourReducedDataSampleBatchQueueHandler extends
-                                                   AbstractReducedDataSampleBatchQueueHandler<HourReducedDataSample> {
-    /**
-     * Constructor.
-     */
-    public HourReducedDataSampleBatchQueueHandler(@Nonnull final String database) {
-        super(HourReducedDataSample.class, database, new LinkedBlockingQueue<HourReducedDataSample>());
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    @Override
-    @Nonnull
-    protected String getTable() {
-        return TAB_SAMPLE_H;
-    }
+public interface ISerializableCollection<T> extends Collection<T>, Serializable {
+    // EMPTY
 }

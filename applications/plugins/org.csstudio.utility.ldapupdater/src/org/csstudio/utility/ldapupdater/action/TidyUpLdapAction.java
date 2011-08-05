@@ -22,7 +22,6 @@
 package org.csstudio.utility.ldapupdater.action;
 
 import static org.csstudio.utility.ldap.treeconfiguration.LdapEpicsControlsConfiguration.IOC;
-import static org.csstudio.utility.ldapupdater.preferences.LdapUpdaterPreference.IOC_DBL_DUMP_PATH;
 
 import java.io.File;
 import java.util.Map;
@@ -38,6 +37,7 @@ import org.csstudio.utility.ldap.treeconfiguration.LdapEpicsControlsConfiguratio
 import org.csstudio.utility.ldapupdater.LdapUpdaterActivator;
 import org.csstudio.utility.ldapupdater.LdapUpdaterUtil;
 import org.csstudio.utility.ldapupdater.model.IOC;
+import org.csstudio.utility.ldapupdater.preferences.LdapUpdaterPreferencesService;
 import org.csstudio.utility.ldapupdater.service.ILdapUpdaterFileService;
 import org.csstudio.utility.ldapupdater.service.ILdapUpdaterService;
 import org.csstudio.utility.ldapupdater.service.LdapUpdaterServiceException;
@@ -63,62 +63,64 @@ public class TidyUpLdapAction implements IManagementCommand {
      */
     private static final LdapUpdaterUtil UPDATER = LdapUpdaterUtil.INSTANCE;
 
-    /**
+    /*
      * Singleton approach to make the service public to the action, a pain to test...
      */
-    private ILdapUpdaterService _service;
+    private ILdapUpdaterService _updaterService;
     private ILdapUpdaterFileService _fileService;
+    private LdapUpdaterPreferencesService _prefsService;
 
     /**
      * Constructor.
      */
     public TidyUpLdapAction() {
         try {
-            _service = LdapUpdaterActivator.getDefault().getLdapUpdaterService();
+            _updaterService = LdapUpdaterActivator.getDefault().getLdapUpdaterService();
             _fileService = LdapUpdaterActivator.getDefault().getLdapUpdaterFileService();
+            _prefsService = LdapUpdaterActivator.getDefault().getLdapUpdaterPreferencesService();
         } catch (final OsgiServiceUnavailableException e) {
             LOG.error("LDAP service is not available!");
             throw new RuntimeException("LDAP service is not available!", e);
         }
     }
 
-	/* (non-Javadoc)
-	 * @see org.csstudio.platform.management.IManagementCommand#execute(org.csstudio.platform.management.CommandParameters)
-	 */
-	@Override
-	@Nonnull
+    /* (non-Javadoc)
+     * @see org.csstudio.platform.management.IManagementCommand#execute(org.csstudio.platform.management.CommandParameters)
+     */
+    @Override
+    @Nonnull
     public final CommandResult execute(@Nonnull final CommandParameters parameters) {
-	        try {
-	            if (!UPDATER.isBusy()){
-	                UPDATER.setBusy(true);
-	                tidyUpLdapFromIOCFiles();
-	            } else{
-	                return CommandResult.createMessageResult("ldapUpdater is busy for max. 300 s (was probably started by timer). Try later!");
-	            }
-	        } catch (final Exception e) {
-	            LOG.error("Exception while running ldapUpdater", e);
-	            return CommandResult.createFailureResult("\"" + e.getCause() + "\"" + "-" + "Exception while running ldapUpdater");
-	        } finally {
-	            UPDATER.setBusy(false);
-	        }
-	        return CommandResult.createSuccessResult();
-	}
+            try {
+                if (!UPDATER.isBusy()){
+                    UPDATER.setBusy(true);
+                    tidyUpLdapFromIOCFiles();
+                } else{
+                    return CommandResult.createMessageResult("ldapUpdater is busy for max. 300 s (was probably started by timer). Try later!");
+                }
+            } catch (final Exception e) {
+                LOG.error("Exception while running ldapUpdater", e);
+                return CommandResult.createFailureResult("\"" + e.getCause() + "\"" + "-" + "Exception while running ldapUpdater");
+            } finally {
+                UPDATER.setBusy(false);
+            }
+            return CommandResult.createSuccessResult();
+    }
 
 
     private void tidyUpLdapFromIOCFiles() {
 
         final TimeInstant startTime = UPDATER.logHeader(TIDYUP_ACTION_NAME);
 
-        final File bootDirectory = IOC_DBL_DUMP_PATH.getValue();
+        final File bootDirectory = _prefsService.getIocDblDumpPath();
         try {
-            final ContentModel<LdapEpicsControlsConfiguration> model = _service.retrieveIOCs();
+            final ContentModel<LdapEpicsControlsConfiguration> model = _updaterService.retrieveIOCs();
             if (model.isEmpty()) {
                 LOG.warn("LDAP search result is empty. No IOCs found.");
                 return;
             }
             final Map<String, IOC> iocMapFromFS = _fileService.retrieveIocInformationFromBootDirectory(bootDirectory);
 
-            _service.tidyUpLDAPFromIOCList(model.getByType(IOC), iocMapFromFS);
+            _updaterService.tidyUpLDAPFromIOCList(model.getByType(IOC), iocMapFromFS);
 
         } catch (final LdapUpdaterServiceException e) {
             throw new RuntimeException("Retrieval of IOCs from LDAP failed!", e);

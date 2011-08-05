@@ -50,6 +50,8 @@ import com.google.common.collect.Collections2;
 /**
  * DBO specific batch strategy for high write throughput.
  *
+ * Remember that the values held in a {@link IArchiveSample} should be Serializable!
+ *
  * @author bknerr
  * @since 20.07.2011
  */
@@ -64,8 +66,7 @@ public class ArchiveSampleBatchQueueHandler extends BatchQueueHandlerSupport<IAr
      * Constructor.
      */
     public ArchiveSampleBatchQueueHandler(@Nonnull final String databaseName) {
-        super(IArchiveSample.class, databaseName, new LinkedBlockingQueue<IArchiveSample>());
-    }
+        super(IArchiveSample.class, databaseName, new LinkedBlockingQueue<IArchiveSample>());    }
 
     @Override
     @Nonnull
@@ -122,14 +123,4 @@ public class ArchiveSampleBatchQueueHandler extends BatchQueueHandlerSupport<IAr
                                     });
         return Collections.singleton(sqlWithoutValues + Joiner.on(",").join(values) + ";");
     }
-
-    /**
-     * {@inheritDoc}
-     */
-    @Override
-    @Nonnull
-    public Class<IArchiveSample> getType() {
-        return IArchiveSample.class;
-    }
-
 }

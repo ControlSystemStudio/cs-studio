@@ -25,6 +25,7 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.io.Serializable;
 import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -73,7 +74,7 @@ public class ArchiveEngineSampleRescuerUnitTest {
     private static final Logger RESCUE_LOG =
         LoggerFactory.getLogger("SerializedSamplesRescueLogger");
 
-    private List<IArchiveSample<Object, ISystemVariable<Object>>> _samples;
+    private List<IArchiveSample<Serializable, ISystemVariable<Serializable>>> _samples;
     private static File RESCUE_SAMPLES;
 
     @SuppressWarnings({ "unchecked", "rawtypes" })
@@ -110,8 +111,8 @@ public class ArchiveEngineSampleRescuerUnitTest {
                                                                                              TimeInstantBuilder.fromNow(),
                                                                                              EpicsAlarm.UNKNOWN),
                                                                      null);
-        final IArchiveSample<Collection<Double>, ISystemVariable<Collection<Double>>> sample4 =
-            new ArchiveSample<Collection<Double>, ISystemVariable<Collection<Double>>>(new ArchiveChannelId(3),
+        final IArchiveSample<ArrayList<Double>, ISystemVariable<ArrayList<Double>>> sample4 =
+            new ArchiveSample<ArrayList<Double>, ISystemVariable<ArrayList<Double>>>(new ArchiveChannelId(3),
                     new EpicsSystemVariable("rajesh",
                                             Lists.newArrayList(1.0, 2.0, 3.0, 4.0, 5.0),
                                             ControlSystem.EPICS_DEFAULT,
@@ -149,7 +150,7 @@ public class ArchiveEngineSampleRescuerUnitTest {
     private void assertResult(@Nonnull final Samples result) throws TypeSupportException {
         Assert.assertEquals(_samples.size(), result.getSampleCount());
 
-        final Iterator<IArchiveSample<Object, ISystemVariable<Object>>> iterator = _samples.iterator();
+        final Iterator<IArchiveSample<Serializable, ISystemVariable<Serializable>>> iterator = _samples.iterator();
 
         Assert.assertEquals(iterator.next().getValue(),
                             ArchiveTypeConversionSupport.fromArchiveString(Double.class, result.getSample(0).getData()));
@@ -160,9 +161,9 @@ public class ArchiveEngineSampleRescuerUnitTest {
 
 
         final Collection<Double> collResult =
-            ArchiveTypeConversionSupport.fromMultiScalarArchiveString(ArrayList.class,
-                                                                      Double.class,
-                                                                      result.getSample(3).getData());
+            ArchiveTypeConversionSupport.fromArchiveString(ArrayList.class,
+                                                           Double.class,
+                                                           result.getSample(3).getData());
         Assert.assertTrue(Iterables.size(collResult) == 5);
 
         final Iterator<Double> iter = collResult.iterator();
@@ -176,8 +177,8 @@ public class ArchiveEngineSampleRescuerUnitTest {
         final ArchiveSampleProtos.ArchiveSample.Builder builder =
             ArchiveSampleProtos.ArchiveSample.newBuilder();
 
-        for (final IArchiveSample<Object, ISystemVariable<Object>> sample : _samples) {
-            final ISystemVariable<Object> sysVar = sample.getSystemVariable();
+        for (final IArchiveSample<Serializable, ISystemVariable<Serializable>> sample : _samples) {
+            final ISystemVariable<Serializable> sysVar = sample.getSystemVariable();
             //builder.clear();
             final ArchiveSampleProtos.ArchiveSample gpbSample =
                 builder.setChannelId(sysVar.getName())

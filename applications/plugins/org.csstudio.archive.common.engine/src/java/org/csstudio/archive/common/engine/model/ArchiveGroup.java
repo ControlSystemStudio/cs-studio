@@ -151,8 +151,9 @@ public class ArchiveGroup {
         return getName();
     }
 
+    @SuppressWarnings({ "rawtypes", "unchecked" })
     @Nonnull
-    public Collection<ArchiveChannel<?, ?>>getChannels() {
-        return _channelMap.values();
+    public Collection<ArchiveChannel> getChannels() {
+        return (Collection) _channelMap.values();
     }
 }

@@ -19,41 +19,55 @@
  * PROJECT IN THE FILE LICENSE.HTML. IF THE LICENSE IS NOT INCLUDED YOU MAY FIND A COPY
  * AT HTTP://WWW.DESY.DE/LEGAL/LICENSE.HTM
  */
-package org.csstudio.utility.ldapupdater.files;
+package org.csstudio.domain.desy.file;
 
 import java.io.File;
 import java.io.IOException;
 
 import junit.framework.Assert;
 
-import org.csstudio.utility.ldapupdater.files.SuffixBasedFileFilter;
+import org.csstudio.domain.desy.time.TimeInstant;
+import org.csstudio.domain.desy.time.TimeInstant.TimeInstantBuilder;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.TemporaryFolder;
 
 /**
- * Test for {@link SuffixBasedFileFilter}. 
- * 
+ * Test for {@link LastModificationTimeFileFilterDecorator}.
+ *
  * @author bknerr
- * @since 28.04.2011
+ * @since 03.08.2011
  */
-public class SuffixBasedFileFilterUnitTest {
-    
+public class LastModificationTimeFileFilterDecoratorUnitTest {
+
+    // CHECKSTYLE OFF: VisibilityModifier
     @Rule
     public TemporaryFolder _tempFolder = new TemporaryFolder();
-    
+    // CHECKSTYLE ON: VisibilityModifier
+
     @Test
     public void testFilter() throws IOException {
-        File validFileDepth0 = _tempFolder.newFile("a.test");
-        Assert.assertTrue(validFileDepth0.exists());
-        
-        SuffixBasedFileFilter filter = new SuffixBasedFileFilter(".test", 1);
-        Assert.assertFalse(filter.apply(validFileDepth0));
-        Assert.assertFalse(filter.apply(validFileDepth0, 1));
-        Assert.assertTrue(filter.apply(validFileDepth0, 2));
-        
-        File dir = _tempFolder.newFolder("testDir");
-        Assert.assertTrue(filter.apply(dir));
-        Assert.assertTrue(filter.apply(dir, 2));
+        final File validFile = _tempFolder.newFile("a.test");
+        Assert.assertTrue(validFile.exists());
+
+        final TimeInstant lastModified =
+            TimeInstantBuilder.fromMillis(validFile.lastModified());
+
+        TimeInstant threshold = lastModified.plusMillis(10L);
+        LastModificationTimeFileFilterDecorator filter =
+            new LastModificationTimeFileFilterDecorator(threshold);
+        // filter if file is older than threshold
+        Assert.assertTrue(filter.apply(validFile));
+
+        threshold = lastModified.minusMillis(10L);
+        filter =
+            new LastModificationTimeFileFilterDecorator(threshold);
+        // don't filter if file is younger than threshold
+        Assert.assertFalse(filter.apply(validFile));
+
+        filter =
+            new LastModificationTimeFileFilterDecorator(lastModified);
+        // don't filter if file is exactly on threshold
+        Assert.assertFalse(filter.apply(validFile));
     }
 }

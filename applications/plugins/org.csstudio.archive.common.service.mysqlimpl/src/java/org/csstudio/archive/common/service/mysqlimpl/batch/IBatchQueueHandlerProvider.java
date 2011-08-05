@@ -33,6 +33,7 @@ import javax.annotation.Nonnull;
  * @since 22.07.2011
  */
 public interface IBatchQueueHandlerProvider {
+    @SuppressWarnings("rawtypes")
     @Nonnull
-    Collection<BatchQueueHandlerSupport<?>> getHandlers();
+    Collection<BatchQueueHandlerSupport> getHandlers();
 }

@@ -23,7 +23,6 @@
 package org.csstudio.utility.ldapupdater.action;
 
 import static org.csstudio.utility.ldap.treeconfiguration.LdapEpicsControlsConfiguration.IOC;
-import static org.csstudio.utility.ldapupdater.preferences.LdapUpdaterPreference.IOC_DBL_DUMP_PATH;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -46,10 +45,10 @@ import org.csstudio.utility.ldap.treeconfiguration.LdapEpicsControlsConfiguratio
 import org.csstudio.utility.ldap.treeconfiguration.LdapEpicsControlsFieldsAndAttributes;
 import org.csstudio.utility.ldapupdater.LdapUpdaterActivator;
 import org.csstudio.utility.ldapupdater.LdapUpdaterUtil;
-import org.csstudio.utility.ldapupdater.files.HistoryFileAccess;
 import org.csstudio.utility.ldapupdater.files.HistoryFileContentModel;
 import org.csstudio.utility.ldapupdater.mail.NotificationMailer;
 import org.csstudio.utility.ldapupdater.model.IOC;
+import org.csstudio.utility.ldapupdater.preferences.LdapUpdaterPreferencesService;
 import org.csstudio.utility.ldapupdater.service.ILdapUpdaterFileService;
 import org.csstudio.utility.ldapupdater.service.ILdapUpdaterService;
 import org.csstudio.utility.ldapupdater.service.LdapUpdaterServiceException;
@@ -81,22 +80,21 @@ public class UpdateLdapAction implements IManagementCommand {
      */
     private static final LdapUpdaterUtil UPDATER = LdapUpdaterUtil.INSTANCE;
 
-    /**
+    /*
      * Singleton approach to make the service public to the action, a pain to test...
      */
-    private ILdapUpdaterService _ldapService;
-    /**
-     * Singleton approach to make the service public to the action, a pain to test...
-     */
+    private ILdapUpdaterService _updaterService;
     private ILdapUpdaterFileService _fileService;
+    private LdapUpdaterPreferencesService _prefsService;
 
     /**
      * Constructor.
      */
     public UpdateLdapAction() {
         try {
-            _ldapService = LdapUpdaterActivator.getDefault().getLdapUpdaterService();
+            _updaterService = LdapUpdaterActivator.getDefault().getLdapUpdaterService();
             _fileService = LdapUpdaterActivator.getDefault().getLdapUpdaterFileService();
+            _prefsService = LdapUpdaterActivator.getDefault().getLdapUpdaterPreferencesService();
         } catch (final OsgiServiceUnavailableException e) {
             LOG.error("LDAP service is not available!");
             throw new RuntimeException("LDAP service is not available!", e);
@@ -135,7 +133,7 @@ public class UpdateLdapAction implements IManagementCommand {
 
         try {
             final ContentModel<LdapEpicsControlsConfiguration> model =
-                _ldapService.retrieveIOCs();
+                _updaterService.retrieveIOCs();
 
             if (model.isEmpty()) {
                 LOG.info("No IOCs found in LDAP.");
@@ -153,16 +151,19 @@ public class UpdateLdapAction implements IManagementCommand {
     private void updateIocsInLdap(@Nonnull final Map<String, INodeComponent<LdapEpicsControlsConfiguration>> iocsFromLdapBySimpleName)
                                   throws LdapUpdaterServiceException {
 
-            final HistoryFileAccess histFileReader = new HistoryFileAccess();
-            final HistoryFileContentModel historyFileModel = histFileReader.readFile();
+            final TimeInstant lastHeartBeat = _fileService.getAndUpdateLastHeartBeat();
 
-            validateHistoryFileEntriesVsLDAPEntries(iocsFromLdapBySimpleName, historyFileModel);
+//            final HistoryFileAccess histFileReader = new HistoryFileAccess(_prefsService);
+//            final HistoryFileContentModel historyFileModel = histFileReader.readFile();
+//
+//            validateHistoryFileEntriesVsLDAPEntries(iocsFromLdapBySimpleName, historyFileModel);
 
-            final File bootDirectory = IOC_DBL_DUMP_PATH.getValue();
+            // find IOC files newer than lastHeartBeat
+            final File bootDirectory = _prefsService.getIocDblDumpPath();
             final Map<String, IOC> iocsFromFSMap =
                     _fileService.retrieveIocInformationFromBootDirectory(bootDirectory);
 
-            _ldapService.updateLDAPFromIOCList(iocsFromLdapBySimpleName, iocsFromFSMap, historyFileModel);
+            _updaterService.updateLDAPFromIOCList(iocsFromLdapBySimpleName, iocsFromFSMap, lastHeartBeat);
     }
 
 

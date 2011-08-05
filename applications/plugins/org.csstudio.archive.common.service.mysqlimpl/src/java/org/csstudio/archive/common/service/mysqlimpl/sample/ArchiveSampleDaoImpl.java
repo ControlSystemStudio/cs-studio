@@ -21,6 +21,7 @@
  */
 package org.csstudio.archive.common.service.mysqlimpl.sample;
 
+import java.io.Serializable;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -134,7 +135,7 @@ public class ArchiveSampleDaoImpl extends AbstractArchiveDao implements IArchive
      * {@inheritDoc}
      */
     @Override
-    public <V, T extends ISystemVariable<V>>
+    public <V extends Serializable, T extends ISystemVariable<V>>
     void createSamples(@Nonnull final Collection<IArchiveSample<V, T>> samples) throws ArchiveDaoException {
 
         try {
@@ -200,7 +201,7 @@ public class ArchiveSampleDaoImpl extends AbstractArchiveDao implements IArchive
     }
 
     @Nonnull
-    private <V, T extends ISystemVariable<V>>
+    private <V extends Serializable, T extends ISystemVariable<V>>
     List<? extends AbstractReducedDataSample> generatePerMinuteSamples(@Nonnull final Collection<IArchiveSample<V, T>> samples,
                                                                        @Nonnull final Map<ArchiveChannelId, SampleMinMaxAggregator> aggregatorMap)
                                                                        throws TypeSupportException, ArchiveDaoException {
@@ -278,7 +279,7 @@ public class ArchiveSampleDaoImpl extends AbstractArchiveDao implements IArchive
             throw new ArchiveDaoException("Init sample aggregator failed. Channel with id " + channelId.intValue() +
                                           " does not exist.", null);
         }
-        final IArchiveSample<Object, ISystemVariable<Object>> sample =
+        final IArchiveSample<Serializable, ISystemVariable<Serializable>> sample =
             retrieveLatestSampleBeforeTime(channel, time);
         if (sample != null) {
             final Double lastWrittenValue =
@@ -316,7 +317,7 @@ public class ArchiveSampleDaoImpl extends AbstractArchiveDao implements IArchive
      */
     @Override
     @Nonnull
-    public <V, T extends ISystemVariable<V>>
+    public <V extends Serializable, T extends ISystemVariable<V>>
     Collection<IArchiveSample<V, T>> retrieveSamples(@Nullable final DesyArchiveRequestType type,
                                                      @Nonnull final IArchiveChannel channel,
                                                      @Nonnull final TimeInstant s,
@@ -348,7 +349,7 @@ public class ArchiveSampleDaoImpl extends AbstractArchiveDao implements IArchive
     }
 
     @Nonnull
-    private <V, T extends ISystemVariable<V>>
+    private <V extends Serializable, T extends ISystemVariable<V>>
     Collection<IArchiveSample<V, T>> createRetrievedSamplesContainer(@Nonnull final IArchiveChannel channel,
                                                                      @Nonnull final DesyArchiveRequestType reqType,
                                                                      @CheckForNull final ResultSet result)
@@ -404,7 +405,7 @@ public class ArchiveSampleDaoImpl extends AbstractArchiveDao implements IArchive
 
     @SuppressWarnings("unchecked")
     @Nonnull
-    private <V, T extends ISystemVariable<V>>
+    private <V extends Serializable, T extends ISystemVariable<V>>
     IArchiveMinMaxSample<V, T> createSampleFromQueryResult(@Nonnull final DesyArchiveRequestType type,
                                                            @Nonnull final IArchiveChannel channel,
                                                            @Nonnull final ResultSet result) throws SQLException,
@@ -476,7 +477,7 @@ public class ArchiveSampleDaoImpl extends AbstractArchiveDao implements IArchive
      */
     @Override
     @CheckForNull
-    public <V, T extends ISystemVariable<V>>
+    public <V extends Serializable, T extends ISystemVariable<V>>
     IArchiveSample<V, T> retrieveLatestSampleBeforeTime(@Nonnull final IArchiveChannel channel,
                                                         @Nonnull final TimeInstant time) throws ArchiveDaoException {
         PreparedStatement stmt = null;

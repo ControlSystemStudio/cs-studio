@@ -19,36 +19,48 @@
  * PROJECT IN THE FILE LICENSE.HTML. IF THE LICENSE IS NOT INCLUDED YOU MAY FIND A COPY
  * AT HTTP://WWW.DESY.DE/LEGAL/LICENSE.HTM
  */
-package org.csstudio.archive.common.service.mysqlimpl.sample;
-
-import static org.csstudio.archive.common.service.mysqlimpl.sample.ArchiveSampleDaoImpl.TAB_SAMPLE_H;
-
-import java.util.concurrent.LinkedBlockingQueue;
+package org.csstudio.utility.ldapupdater;
 
 import javax.annotation.Nonnull;
 
+import org.csstudio.domain.desy.service.osgi.OsgiServiceUnavailableException;
+import org.csstudio.utility.ldap.service.ILdapService;
+import org.csstudio.utility.ldapupdater.preferences.LdapUpdaterPreferencesService;
+import org.csstudio.utility.ldapupdater.service.ILdapUpdaterServicesProvider;
+import org.osgi.util.tracker.ServiceTracker;
 
 /**
- * Batch queue handler for reduced data samples for hours.
+ * Services provider for DI (is mockable in tests).
  *
  * @author bknerr
- * @since 20.07.2011
+ * @since 03.08.2011
  */
-public class HourReducedDataSampleBatchQueueHandler extends
-                                                   AbstractReducedDataSampleBatchQueueHandler<HourReducedDataSample> {
+final class LdapUpdaterServicesProvider implements ILdapUpdaterServicesProvider {
+
+    private final ServiceTracker _ldapServiceTracker;
+    private final LdapUpdaterPreferencesService _prefsService;
+
     /**
      * Constructor.
      */
-    public HourReducedDataSampleBatchQueueHandler(@Nonnull final String database) {
-        super(HourReducedDataSample.class, database, new LinkedBlockingQueue<HourReducedDataSample>());
+    public LdapUpdaterServicesProvider(@Nonnull final ServiceTracker ldapServiceTracker) {
+        _ldapServiceTracker = ldapServiceTracker;
+        _prefsService = new LdapUpdaterPreferencesService();
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     @Nonnull
-    protected String getTable() {
-        return TAB_SAMPLE_H;
+    public ILdapService getLdapService() throws OsgiServiceUnavailableException {
+        final ILdapService service =  (ILdapService) _ldapServiceTracker.getService();
+        if (service == null) {
+            throw new OsgiServiceUnavailableException("LDAP service could not be retrieved. Please try again later or check LDAP connection.");
+        }
+        return service;
+    }
+
+    @Override
+    @Nonnull
+    public LdapUpdaterPreferencesService getPreferencesService() {
+        return _prefsService;
     }
 }

@@ -25,8 +25,9 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.util.Iterator;
+import java.util.SortedSet;
 
-import org.csstudio.utility.ldapupdater.files.RecordsFileContentParser;
 import org.csstudio.utility.ldapupdater.model.Record;
 import org.junit.Assert;
 import org.junit.Rule;
@@ -34,56 +35,59 @@ import org.junit.Test;
 import org.junit.rules.TemporaryFolder;
 
 /**
- * Test for {@link RecordsFileContentParser}. 
- * 
+ * Test for {@link RecordsFileContentParser}.
+ *
  * @author bknerr
  * @since 28.04.2011
  */
 public class RecordsFileContentParserUnitTest {
-    
+    // CHECKSTYLE OFF: VisibilityModifier
     @Rule
     public TemporaryFolder _tempFolder = new TemporaryFolder();
+    // CHECKSTYLE ON: VisibilityModifier
 
     @Test(expected=FileNotFoundException.class)
     public void testNotExisting() throws IOException {
-        RecordsFileContentParser parser = new RecordsFileContentParser();
-        parser.parseFile(new File("notExists"));
+        RecordsFileContentParser.parse(new File("notExists"));
     }
 
     @Test(expected=IllegalArgumentException.class)
     public void testNotAFile() throws IOException {
-        File dir = _tempFolder.newFolder("iAmAFolder");
-
-        RecordsFileContentParser parser = new RecordsFileContentParser();
-        parser.parseFile(dir);
+        final File dir = _tempFolder.newFolder("iAmAFolder");
+        RecordsFileContentParser.parse(dir);
     }
-    
+
+
     @Test
     public void testEmptyFile() throws IOException {
-        File emptyFile= _tempFolder.newFile("empty");
-        RecordsFileContentParser parser = new RecordsFileContentParser();
-        parser.parseFile(emptyFile);
-        
-        Assert.assertTrue(parser.getRecords().isEmpty());
+        final File emptyFile= _tempFolder.newFile("empty");
+        final SortedSet<Record> records = RecordsFileContentParser.parse(emptyFile);
+
+        Assert.assertTrue(records.isEmpty());
     }
-    
+
     @Test
     public void testNonEmptyFile() throws IOException {
-        File nonEmptyFile= _tempFolder.newFile("notEmpty");
-        FileWriter writer = new FileWriter(nonEmptyFile);
-        writer.write("b\n");
-        writer.write("c\n");
-        writer.write("a\n");
+        final File nonEmptyFile= _tempFolder.newFile("notEmpty");
+        final FileWriter writer = new FileWriter(nonEmptyFile);
+        writer.write("b \n");
+        writer.write(" c\n");
+        writer.write("#lupsch\n");
+        writer.write("a\t\n");
+        writer.write("\t X \n");
         writer.write("B\n");
+        writer.write(" # fupsi\n");
         writer.close();
-        
-        RecordsFileContentParser parser = new RecordsFileContentParser();
-        parser.parseFile(nonEmptyFile);
-        for (Record r : parser.getRecords()) {
-            System.out.println(r.getName());
-        }
-        
-        Assert.assertEquals(4, parser.getRecords().size());
-        
+
+        final SortedSet<Record> records = RecordsFileContentParser.parse(nonEmptyFile);
+
+        Assert.assertEquals(5, records.size());
+
+        final Iterator<Record> iter = records.iterator();
+        Assert.assertEquals("a", iter.next().getName());
+        Assert.assertEquals("B", iter.next().getName());
+        Assert.assertEquals("b", iter.next().getName());
+        Assert.assertEquals("c", iter.next().getName());
+        Assert.assertEquals("X", iter.next().getName());
     }
 }

@@ -7,6 +7,7 @@
  ******************************************************************************/
 package org.csstudio.archive.common.engine.model;
 
+import java.io.Serializable;
 import java.net.MalformedURLException;
 import java.util.Collection;
 import java.util.concurrent.ConcurrentMap;
@@ -417,13 +418,13 @@ public final class EngineModel {
 
         for (final IArchiveChannel channelCfg : channelCfgs) {
 
-            final ArchiveChannel<Object, ISystemVariable<Object>> channel =
-                ArchiveEngineTypeSupport.toArchiveChannel(channelCfg);
+            final ArchiveChannel<Serializable, ISystemVariable<Serializable>> channel =
+                ArchiveEngineTypeSupport.createArchiveChannel(channelCfg);
             channel.setServiceProvider(provider);
 
             @SuppressWarnings("unchecked")
-            final ArchiveChannel<Object, ISystemVariable<Object>> presentChannel =
-                (ArchiveChannel<Object, ISystemVariable<Object>>) channelMap.putIfAbsent(channel.getName(), channel);
+            final ArchiveChannel<Serializable, ISystemVariable<Serializable>> presentChannel =
+                (ArchiveChannel<Serializable, ISystemVariable<Serializable>>) channelMap.putIfAbsent(channel.getName(), channel);
 
             if (presentChannel != null) {
                 writeExecutor.addChannel(presentChannel);

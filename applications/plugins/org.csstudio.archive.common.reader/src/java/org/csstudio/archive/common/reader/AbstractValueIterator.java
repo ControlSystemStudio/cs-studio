@@ -21,6 +21,7 @@
  */
 package org.csstudio.archive.common.reader;
 
+import java.io.Serializable;
 import java.util.Collection;
 import java.util.Iterator;
 
@@ -45,7 +46,7 @@ import org.csstudio.domain.desy.time.TimeInstant;
  * @since 22.06.2011
  * @param <V> the basic type of the samples
  */
-public abstract class AbstractValueIterator<V> implements ValueIterator {
+public abstract class AbstractValueIterator<V extends Serializable> implements ValueIterator {
 
     @SuppressWarnings("rawtypes")
     protected static final ArchiveSampleToIValueFunction ARCH_SAMPLE_2_IVALUE_FUNC =

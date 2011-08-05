@@ -21,14 +21,9 @@
  */
 package org.csstudio.archive.common.service.util;
 
-import java.util.Collection;
-
 import javax.annotation.Nonnull;
 
 import org.csstudio.domain.desy.typesupport.TypeSupportException;
-
-import com.google.common.base.Splitter;
-import com.google.common.collect.Lists;
 
 /**
  * TODO (bknerr) :
@@ -72,15 +67,5 @@ public class StringArchiveTypeConversionSupport extends ArchiveTypeConversionSup
     @Nonnull
     public String convertFromDouble(@Nonnull final Double value) {
         return value.toString();
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    @Override
-    @Nonnull
-    public Collection<String> convertFromArchiveStringToMultiScalar(@Nonnull final Class<?> collectionClass,
-                                                                    @Nonnull final String values) throws TypeSupportException {
-        return Lists.newArrayList(Splitter.on(ARCHIVE_COLLECTION_ELEM_SEP).split(values));
     }
 }

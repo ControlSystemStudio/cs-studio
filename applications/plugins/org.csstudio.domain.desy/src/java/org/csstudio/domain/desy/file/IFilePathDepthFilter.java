@@ -19,36 +19,21 @@
  * PROJECT IN THE FILE LICENSE.HTML. IF THE LICENSE IS NOT INCLUDED YOU MAY FIND A COPY
  * AT HTTP://WWW.DESY.DE/LEGAL/LICENSE.HTM
  */
-package org.csstudio.archive.common.service.mysqlimpl.sample;
+package org.csstudio.domain.desy.file;
 
-import static org.csstudio.archive.common.service.mysqlimpl.sample.ArchiveSampleDaoImpl.TAB_SAMPLE_H;
-
-import java.util.concurrent.LinkedBlockingQueue;
+import java.io.File;
 
 import javax.annotation.Nonnull;
 
+import com.google.common.base.Predicate;
 
 /**
- * Batch queue handler for reduced data samples for hours.
+ * Predicate for filtering file traversal according to current traversal depth in the dir tree.
  *
  * @author bknerr
- * @since 20.07.2011
+ * @since 03.08.2011
  */
-public class HourReducedDataSampleBatchQueueHandler extends
-                                                   AbstractReducedDataSampleBatchQueueHandler<HourReducedDataSample> {
-    /**
-     * Constructor.
-     */
-    public HourReducedDataSampleBatchQueueHandler(@Nonnull final String database) {
-        super(HourReducedDataSample.class, database, new LinkedBlockingQueue<HourReducedDataSample>());
-    }
+public interface IFilePathDepthFilter extends Predicate<File> {
 
-    /**
-     * {@inheritDoc}
-     */
-    @Override
-    @Nonnull
-    protected String getTable() {
-        return TAB_SAMPLE_H;
-    }
+    boolean apply(@Nonnull final File f, final int currentDepth);
 }

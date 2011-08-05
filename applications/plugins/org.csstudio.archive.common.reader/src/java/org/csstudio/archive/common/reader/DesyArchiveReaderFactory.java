@@ -21,6 +21,7 @@
  */
 package org.csstudio.archive.common.reader;
 
+import java.io.Serializable;
 import java.util.Collection;
 import java.util.regex.Pattern;
 
@@ -156,7 +157,7 @@ public final class DesyArchiveReaderFactory implements ArchiveReaderFactory {
 
             final TimeInstant s = BaseTypeConversionSupport.toTimeInstant(start);
             final TimeInstant e = BaseTypeConversionSupport.toTimeInstant(end);
-            return new DesyArchiveValueIterator<Object>(_provider, name, s, e, findRequestType("RAW"));
+            return new DesyArchiveValueIterator<Serializable>(_provider, name, s, e, findRequestType("RAW"));
         }
 
 
@@ -179,8 +180,8 @@ public final class DesyArchiveReaderFactory implements ArchiveReaderFactory {
                 BaseTypeConversionSupport.isDataTypeConvertibleToDouble(channel.getDataType(),
                                                                         "java.lang",
                                                                         "org.csstudio.domain.desy.epics.types")) {
-                final EquidistantTimeBinsIterator<Object> iter =
-                    new EquidistantTimeBinsIterator<Object>(_provider, name, s, e, findRequestType("AVG_PER_HOUR"), count);
+                final EquidistantTimeBinsIterator<Serializable> iter =
+                    new EquidistantTimeBinsIterator<Serializable>(_provider, name, s, e, findRequestType("AVG_PER_HOUR"), count);
                 return iter;
             }
             return EMPTY_ITER;

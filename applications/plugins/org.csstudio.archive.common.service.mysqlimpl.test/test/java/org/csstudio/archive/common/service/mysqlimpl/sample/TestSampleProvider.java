@@ -21,6 +21,7 @@
  */
 package org.csstudio.archive.common.service.mysqlimpl.sample;
 
+import java.io.Serializable;
 import java.util.LinkedList;
 
 import org.csstudio.archive.common.service.channel.ArchiveChannelId;
@@ -44,11 +45,11 @@ import com.google.common.collect.Lists;
 @SuppressWarnings({"unchecked", "rawtypes"})
 public final class TestSampleProvider {
 
-    public static final LinkedList<IArchiveSample<Object, ISystemVariable<Object>>> SAMPLES =
+    public static final LinkedList<IArchiveSample<Serializable, ISystemVariable<Serializable>>> SAMPLES =
         Lists.newLinkedList();
-    public static final LinkedList<IArchiveSample<Object, ISystemVariable<Object>>> SAMPLES_MIN =
+    public static final LinkedList<IArchiveSample<Serializable, ISystemVariable<Serializable>>> SAMPLES_MIN =
         Lists.newLinkedList();
-    public static final LinkedList<IArchiveSample<Object, ISystemVariable<Object>>> SAMPLES_HOUR =
+    public static final LinkedList<IArchiveSample<Serializable, ISystemVariable<Serializable>>> SAMPLES_HOUR =
         Lists.newLinkedList();
     // CHECKSTYLE OFF: |
     public static TimeInstant START;
