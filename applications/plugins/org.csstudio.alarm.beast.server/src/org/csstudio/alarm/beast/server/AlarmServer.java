@@ -74,16 +74,17 @@ public class AlarmServer
     /** Initialize
      *  @param talker Talker that'll be used to annunciate
      *  @param work_queue Work queue of the 'main' thread
+     *  @param root_name 
      *  @throws Exception on error
      */
-    public AlarmServer(final WorkQueue work_queue) throws Exception
+    public AlarmServer(final WorkQueue work_queue, final String root_name) throws Exception
     {
         this.work_queue = work_queue;
         rdb = new AlarmRDB(this, Preferences.getRDB_Url(),
         		Preferences.getRDB_User(),
         		Preferences.getRDB_Password(),
         		Preferences.getRDB_Schema(),
-        		Preferences.getAlarmTreeRoot());
+        		root_name);
         messenger = new ServerCommunicator(this, work_queue);
         readConfiguration();
     }
