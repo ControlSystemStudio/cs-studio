@@ -205,7 +205,7 @@ CREATE TABLE sample
 );
 
 -- Need index on channel_id and smpl_time?
-CREATE INDEX sample_id_time ON sample ( channel_id, smpl_time );
+CREATE INDEX sample_id_time ON sample ( channel_id, smpl_time, nanosecs );
 
 -- These inserts are in reverse time order to check retrieval
 INSERT INTO sample (channel_id, smpl_time,  nanosecs, severity_id, status_id, float_val)
@@ -227,6 +227,9 @@ CREATE TABLE  array_val
    float_val REAL NULL,
    FOREIGN KEY (channel_id) REFERENCES channel (channel_id) ON DELETE CASCADE
 );
+
+CREATE INDEX array_val_id_time ON sample ( channel_id, smpl_time, nanosecs );
+
 
 ------------------------
 -- Channel Meta data: Units etc. for numeric channels
