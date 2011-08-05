@@ -10,7 +10,8 @@ Require-Bundle: org.eclipse.ui,
  org.csstudio.utility.pvmanager.widgets,
  org.csstudio.ui.menu,
  org.csstudio.csdata,
- org.csstudio.ui.util
+ org.csstudio.ui.util,
+ org.csstudio.utility.channelfinder;resolution:=optional
 Bundle-ActivationPolicy: lazy
 Bundle-RequiredExecutionEnvironment: JavaSE-1.6
 Bundle-Vendor: Gabriele Carcassi <carcassi@bnl.gov>, Kunal Shroff <kshroff@bnl.gov> - BNL

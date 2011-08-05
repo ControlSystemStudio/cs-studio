@@ -1,5 +1,7 @@
 package org.csstudio.display.waterfall;
 
+import java.util.List;
+
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.ui.IMemento;
 import org.eclipse.ui.IViewSite;
@@ -55,18 +57,27 @@ public class WaterfallView extends ViewPart {
 	public void saveState(final IMemento memento) {
 		super.saveState(memento);
 		// Save the currently selected variable
-		if (waterfallComposite.getPvName() != null) {
-			memento.putString(MEMENTO_PVNAME, waterfallComposite.getPvName());
+		if (waterfallComposite.getWaveformPVName() != null) {
+			memento.putString(MEMENTO_PVNAME, waterfallComposite.getWaveformPVName());
 		}
 	}
 	
 	public void setPVName(String name) {
 		combo.setText(name);
-		waterfallComposite.setPvName(name);
+		//resolveAndSetPVName(name);
 	}
 	
 	private Combo combo;
 	private WaterfallWidget waterfallComposite;
+	
+	private void resolveAndSetPVName(String text) {
+		List<String> pv = ChannelResolver.resolveTag(text);
+		if (pv != null && !pv.isEmpty()) {
+			waterfallComposite.setScalarPVNames(pv);
+		} else {
+			waterfallComposite.setWaveformPVName(text);
+		}
+	}
 
 	@Override
 	public void createPartControl(Composite parent) {
@@ -100,7 +111,7 @@ public class WaterfallView extends ViewPart {
 				.getDialogSettings(), "WaterfallPVs", combo, 20, true) {
 			@Override
 			public void newSelection(final String pv_name) {
-				waterfallComposite.setPvName(pv_name);
+				resolveAndSetPVName(pv_name);
 			}
 		};
 		name_helper.loadSettings();
