@@ -79,6 +79,7 @@ public class Messages extends NLS
     public static String Config_Message;
     public static String Config_Title;
     public static String ConfigureItem;
+	public static String CopyToClipboard;
     public static String CurrentAlarmsFmt;
     public static String DefaultEMailBodyStart;
 	public static String DefaultEMailSender;

@@ -17,6 +17,7 @@ import org.csstudio.alarm.beast.client.AlarmTreeLeaf;
 import org.csstudio.alarm.beast.client.GDCDataStructure;
 import org.csstudio.alarm.beast.ui.actions.AcknowledgeAction;
 import org.csstudio.alarm.beast.ui.actions.CommandAction;
+import org.csstudio.alarm.beast.ui.actions.CopyToClipboardAction;
 import org.csstudio.alarm.beast.ui.actions.DurationAction;
 import org.csstudio.alarm.beast.ui.actions.GuidanceAction;
 import org.csstudio.alarm.beast.ui.actions.RelatedDisplayAction;
@@ -101,6 +102,7 @@ public class ContextMenuHelper
         // add action to acknowledge/un-acknowledge them
         if (alarm_pvs.size() > 0)
         {
+        	manager.add(new CopyToClipboardAction(alarm_pvs));
         	// TODO Copy to clipboard
         	if (SendToElogActionHelper.isElogAvailable())
                 manager.add(new SendToElogAction(shell, alarm_pvs));
