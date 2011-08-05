@@ -85,7 +85,7 @@ public class AlarmServer
         		Preferences.getRDB_Password(),
         		Preferences.getRDB_Schema(),
         		root_name);
-        messenger = new ServerCommunicator(this, work_queue);
+        messenger = new ServerCommunicator(this, work_queue, root_name);
         readConfiguration();
     }
 

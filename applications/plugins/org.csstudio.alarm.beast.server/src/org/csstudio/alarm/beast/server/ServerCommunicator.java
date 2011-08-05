@@ -44,6 +44,9 @@ public class ServerCommunicator extends JMSCommunicationWorkQueueThread
 
     /** Work queue in main application */
     final private Executor work_queue;
+    
+    /** Alarm tree root (config) name */
+    final private String root_name;
 
     /** Timer for sending idle messages */
     final private TimeoutTimer idle_timer;
@@ -76,12 +79,15 @@ public class ServerCommunicator extends JMSCommunicationWorkQueueThread
      *  and listens to 'client' topic messages
      *  @param server Alarm server
      *  @param work_queue
+     *  @param root_name 
      */
-    public ServerCommunicator(final AlarmServer server, final Executor work_queue) throws Exception
+    public ServerCommunicator(final AlarmServer server, final Executor work_queue,
+    		final String root_name) throws Exception
     {
         super(Preferences.getJMS_URL());
         this.server = server;
         this.work_queue = work_queue;
+        this.root_name = root_name;
         idle_timer = new TimeoutTimer(Preferences.getJMS_IdleTimeout()*1000)
         {
             @Override
@@ -98,11 +104,10 @@ public class ServerCommunicator extends JMSCommunicationWorkQueueThread
     @Override
     protected void createProducersAndConsumers() throws Exception
     {
-        final String config = Preferences.getAlarmTreeRoot();
-        server_producer = createProducer(Preferences.getJMS_AlarmServerTopic(config));
-        talk_producer = createProducer(Preferences.getJMS_TalkTopic(config));
+        server_producer = createProducer(Preferences.getJMS_AlarmServerTopic(root_name));
+        talk_producer = createProducer(Preferences.getJMS_TalkTopic(root_name));
         global_producer = createProducer(Preferences.getJMS_GlobalServerTopic());
-        client_consumer = createConsumer(Preferences.getJMS_AlarmClientTopic(config));
+        client_consumer = createConsumer(Preferences.getJMS_AlarmClientTopic(root_name));
         client_consumer.setMessageListener(new MessageListener()
         {
             @Override
