@@ -89,18 +89,46 @@ public abstract class TypeSupport<T> {
         // of all the implementations
         allCalcTypeSupports.get(typeSupportFamily).clear();
     }
+    
+    /**
+     * Checks whether the type is supported directly or through one of the
+     * supertypes.
+     * 
+     * @param type type to check support for
+     * @param typeSupportFamily the family in which to look for
+     * @param typeSupportFamily
+     * @return true if supported
+     * @throws RuntimeException if multiple conflicting support is found 
+     */
+    public static boolean isTypeSupported(Class<? extends TypeSupport> typeSupportFamily, Class<?> type) {
+        return findTypeSupportFor(typeSupportFamily, type) != null;
+    }
+    
+    /**
+     * Checks whether the type is supported on the same exact type.
+     * 
+     * @param type type to check support for
+     * @param typeSupportFamily the family in which to look for
+     * @return true if supported
+     */
+    public static boolean isTypeDirectlySupported(Class<? extends TypeSupport> typeSupportFamily, Class<?> type) {
+        return allTypeSupports.get(typeSupportFamily) != null &&
+                allTypeSupports.get(typeSupportFamily).get(type) != null;
+    }
 
     /**
      * Calculates and caches the type support for a particular class, so that
      * introspection does not occur at every call.
-     * 
-     * First the supertypes are recursively 
+     * <p>
+     * Find the supports for all supertypes. If multiple supports for different
+     * supertypes are found, and there isn't a most specific one (i.e. one
+     * that implements all the others) then an exception is thrown.
      *
      * @param <T> the type to retrieve support for
      * @param supportFamily the support family for which to find support
      * @param typeClass the class of the type
      * @return the support for the type or null
-     * @throws RuntimeException when no support could be identified 
+     * @throws RuntimeException if multiple conflicting support is found 
      */
     protected static <T> TypeSupport<T> findTypeSupportFor(final Class<? extends TypeSupport> supportFamily,
                                                              final Class<T> typeClass) {
@@ -109,7 +137,7 @@ public abstract class TypeSupport<T> {
         TypeSupportMap supportMap = allTypeSupports.get(supportFamily);
         
         if (supportMap == null || calcSupportMap == null) {
-            throw new RuntimeException("No " + supportFamily.getSimpleName() + " support found for " + typeClass , null);
+            return null;
         }
 
         // If we get the cached support for a specific type,
