@@ -19,7 +19,7 @@
  * PROJECT IN THE FILE LICENSE.HTML. IF THE LICENSE IS NOT INCLUDED YOU MAY FIND A COPY
  * AT HTTP://WWW.DESY.DE/LEGAL/LICENSE.HTM
  */
-package org.csstudio.domain.desy;
+package org.csstudio.domain.common.strings;
 
 import static org.junit.Assert.assertEquals;
 
@@ -28,6 +28,7 @@ import java.util.Iterator;
 
 import junit.framework.Assert;
 
+import org.csstudio.domain.common.strings.Strings;
 import org.junit.Test;
 
 /**
