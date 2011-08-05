@@ -52,11 +52,7 @@ public class Application implements IApplication
                     "HTTP server port", 4812);
         final StringOption engine_name_opt = new StringOption(parser,
                     "-engine", "demo_engine", "Engine config name", null);
-        // Options handled by Eclipse,
-        // but this way they show up in the help message
-        new StringOption(parser, "-pluginCustomization", "/path/to/mysettings.ini",
-                        "Eclipse plugin defaults", null);
-        new StringOption(parser, "-data", "/home/fred/Workspace", "Eclipse workspace location", null);
+        parser.addEclipseParameters();
         try
         {
             parser.parse(args);
