@@ -7,8 +7,12 @@
  ******************************************************************************/
 package org.csstudio.email;
 
+import java.io.File;
+
 import junit.framework.Assert;
 
+import org.csstudio.domain.common.resource.CssResourceLocator;
+import org.csstudio.domain.common.resource.CssResourceLocator.RepoDomain;
 import org.csstudio.testsuite.util.TestDataProvider;
 import org.junit.Test;
 
@@ -25,10 +29,10 @@ public class EMailSenderHeadlessTest
     public static org.csstudio.testsuite.util.TestDataProvider PROV = createTestDataProvider();
     private static TestDataProvider createTestDataProvider() {
         try {
-            return TestDataProvider.getInstance(Activator.ID);
+            return TestDataProvider.getInstance(EmailTestActivator.ID);
         } catch (final Exception e) {
             Assert.fail("Unexpected exception creating the test data provider for plugin " +
-                        Activator.ID + ".\n" + e.getMessage());
+                        EmailTestActivator.ID + ".\n" + e.getMessage());
         }
         return null;
     }
@@ -58,9 +62,17 @@ public class EMailSenderHeadlessTest
         final EMailSender mailer = new EMailSender(HOST, FROM, TO, "Test Subject");
 
         mailer.addText("Hello, this is a test");
-        mailer.attachText("./testfile.txt");
-        mailer.attachImage("./test.jpg");
-        mailer.attachText("./build.properties");
+
+        final File textFile = CssResourceLocator.locateResourceFile(RepoDomain.APPLICATIONS,
+                                                                    EmailTestActivator.ID,
+                                                                    "./testfile.txt");
+        mailer.attachText(textFile.getAbsolutePath());
+
+        final File imgFile = CssResourceLocator.locateResourceFile(RepoDomain.APPLICATIONS,
+                                                                   EmailTestActivator.ID,
+                                                                   "./test.jpg");
+        mailer.attachImage(imgFile.getAbsolutePath());
+
         mailer.close();
     }
 }

@@ -7,11 +7,11 @@
  ******************************************************************************/
 package org.csstudio.email;
 
-/** Not really Plugin Activator, just ID
+/** Not really Plugin EmailTestActivator, just ID
  *  @author Kay Kasemir
  */
 @SuppressWarnings("nls")
-public class Activator
+public class EmailTestActivator
 {
     /**
      * The id of this Java plug-in (value <code>{@value}</code> as defined in MANIFEST.MF.
