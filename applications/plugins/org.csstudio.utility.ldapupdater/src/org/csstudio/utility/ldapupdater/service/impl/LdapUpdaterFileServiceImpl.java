@@ -124,7 +124,9 @@ public class LdapUpdaterFileServiceImpl implements ILdapUpdaterFileService {
         if (!Strings.isNullOrEmpty(bootJoin)) {
             builder.append("\n\nMissing boot files:\n").append(bootJoin);
         }
-        NotificationMailer.sendMissingFilesNotification(builder.toString());
+        NotificationMailer.sendMissingFilesNotification(builder.toString(),
+                                                        _provider.getPreferencesService().getSmtpHostAddress(),
+                                                        _provider.getPreferencesService().getDefaultResponsiblePerson());
         return false;
     }
 

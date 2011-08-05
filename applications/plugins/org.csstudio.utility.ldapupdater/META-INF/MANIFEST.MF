@@ -22,6 +22,7 @@ Require-Bundle: org.eclipse.core.runtime;bundle-version="3.6.0",
  com.google.inject;bundle-version="2.0.0",
  com.google.common;bundle-version="0.9.0",
  javax.annotation;bundle-version="1.0.0",
+ javax.mail;bundle-version="1.4.4",
  org.joda.time;bundle-version="1.6.2",
  org.slf4j;bundle-version="1.6.1",
  org.slf4j-log4j12;bundle-version="1.6.1"

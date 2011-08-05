@@ -27,12 +27,13 @@ import static org.csstudio.utility.ldap.treeconfiguration.LdapEpicsControlsConfi
 import java.io.File;
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
 import javax.annotation.Nonnull;
+import javax.mail.internet.AddressException;
+import javax.mail.internet.InternetAddress;
 import javax.naming.NamingException;
 import javax.naming.directory.Attribute;
 
@@ -59,6 +60,7 @@ import org.slf4j.LoggerFactory;
 
 import com.google.common.base.Predicate;
 import com.google.common.collect.Collections2;
+import com.google.inject.internal.Maps;
 
 
 /**
@@ -167,6 +169,7 @@ public class UpdateLdapAction implements IManagementCommand {
     }
 
 
+    @SuppressWarnings("unused")
     private void validateHistoryFileEntriesVsLDAPEntries(@Nonnull final Map<String, INodeComponent<LdapEpicsControlsConfiguration>> iocsFromLdap,
                                                          @Nonnull final HistoryFileContentModel historyFileModel) {
 
@@ -202,34 +205,43 @@ public class UpdateLdapAction implements IManagementCommand {
     }
 
     private void handleIocEntriesInLdapNotPresentInHistoryFile(@Nonnull final Collection<INodeComponent<LdapEpicsControlsConfiguration>> iocsFromLdapNotInFile) {
-        final Map<String, List<String>> missingIOCsPerPerson = new HashMap<String, List<String>>();
+        final Map<InternetAddress, List<String>> missingIOCsPerPerson = Maps.newHashMap();
 
         for (final INodeComponent<LdapEpicsControlsConfiguration> ioc : iocsFromLdapNotInFile) {
             LOG.warn("IOC {} from LDAP is not present in history file!", ioc.getName());
-            getResponsiblePersonForIOC(ioc, missingIOCsPerPerson);
+            putIocIntoMap(ioc, missingIOCsPerPerson);
         }
 
-        NotificationMailer.sendMissingIOCsNotificationMails(missingIOCsPerPerson);
+        NotificationMailer.sendMissingIOCsNotificationMails(missingIOCsPerPerson,
+                                                            _prefsService.getSmtpHostAddress());
     }
 
     @Nonnull
-    private Map<String, List<String>> getResponsiblePersonForIOC(@Nonnull final INodeComponent<LdapEpicsControlsConfiguration> ioc,
-                                                                 @Nonnull final Map<String, List<String>> iocsPerPerson) {
+    private Map<InternetAddress, List<String>> putIocIntoMap(@Nonnull final INodeComponent<LdapEpicsControlsConfiguration> ioc,
+                                                             @Nonnull final Map<InternetAddress, List<String>> iocsPerPerson) {
         final Attribute personAttr = ioc.getAttribute(LdapEpicsControlsFieldsAndAttributes.ATTR_FIELD_RESPONSIBLE_PERSON);
-        String person = NotificationMailer.DEFAULT_RESPONSIBLE_PERSON;
+        InternetAddress person = _prefsService.getDefaultResponsiblePerson();
         try {
             if (personAttr != null && personAttr.get() != null) {
-                person = (String) personAttr.get();
+                person = new InternetAddress((String) personAttr.get());
             }
             if (!iocsPerPerson.containsKey(person)) {
                 iocsPerPerson.put(person, new ArrayList<String>());
             }
-            iocsPerPerson.get(person).add(ioc.getName());
         } catch (final NamingException e) {
             LOG.error("Attribute for {} in IOC {} could not be retrieved.",
                       LdapEpicsControlsFieldsAndAttributes.ATTR_FIELD_RESPONSIBLE_PERSON,
                       ioc.getName());
+        } catch (final AddressException e) {
+            LOG.error("Attribute for {} in IOC {} could not be transformed in valid type {}",
+                      new Object[] {
+                          LdapEpicsControlsFieldsAndAttributes.ATTR_FIELD_RESPONSIBLE_PERSON,
+                          ioc.getName(),
+                          InternetAddress.class.getSimpleName(),
+                      });
         }
+        iocsPerPerson.get(person).add(ioc.getName());
+
         return iocsPerPerson;
     }
 }

@@ -36,6 +36,7 @@ import java.util.Map.Entry;
 import java.util.Set;
 
 import javax.annotation.Nonnull;
+import javax.mail.internet.AddressException;
 import javax.naming.InvalidNameException;
 import javax.naming.NamingException;
 import javax.naming.directory.Attribute;
@@ -195,11 +196,17 @@ public final class LdapUpdaterServiceImpl implements ILdapUpdaterService {
                                                              recFromFile);
                 }
             }
-            NotificationMailer.sendUnallowedCharsNotification(iocFromLDAP, iocName, forbiddenRecords);
+            NotificationMailer.sendUnallowedCharsNotification(iocFromLDAP,
+                                                              _prefsService.getSmtpHostAddress(),
+                                                              _prefsService.getDefaultResponsiblePerson(),
+                                                              iocName,
+                                                              forbiddenRecords);
         } catch (final NamingException e) {
             throw new LdapUpdaterServiceException("LDAP name creation failed on updating records for IOC " + iocName, e);
         } catch (final LdapFacadeException e) {
             throw new LdapUpdaterServiceException("Creating new records failed on updating IOC " + iocName, e);
+        } catch (final AddressException e) {
+            throw new LdapUpdaterServiceException("Sending of notification email failed for " + iocName, e);
         }
 
         return new UpdateIOCResult(recordsFromFile.size(),
@@ -349,10 +356,7 @@ public final class LdapUpdaterServiceImpl implements ILdapUpdaterService {
                     iocsWithoutAttribute.add(iocFromLdap.toString());
                     continue;
                 }
-                if (ipAddress.toString().equals(ipAddressFromLdap)) {
-                    NotificationMailer.sendIpAddressNotUniqueNotification(ipAddress, iocFromLdap);
-                    _facade.modifyIpAddressAttribute(iocFromLdap.getLdapName(), null);
-                }
+                checkIpAddressAndNotify(ipAddress, iocFromLdap, ipAddressFromLdap);
             } catch (final NamingException e) {
                 throw new LdapUpdaterServiceException("Attribute creation for IP Address modification in LDAP failed.", e);
             } catch (final LdapFacadeException e) {
@@ -360,9 +364,23 @@ public final class LdapUpdaterServiceImpl implements ILdapUpdaterService {
             }
         }
         if (!iocsWithoutAttribute.isEmpty()) {
-            NotificationMailer.sendIpAddressNotSetInLDAP(iocsWithoutAttribute);
+            NotificationMailer.sendIpAddressNotSetInLDAP(_prefsService.getSmtpHostAddress(),
+                                                         iocsWithoutAttribute,
+                                                         _prefsService.getDefaultResponsiblePerson());
         }
 
+    }
+
+    private void checkIpAddressAndNotify(@Nonnull final IpAddress ipAddress,
+                                         @Nonnull final INodeComponent<LdapEpicsControlsConfiguration> iocFromLdap,
+                                         @Nonnull final String ipAddressFromLdap) throws LdapFacadeException {
+        if (ipAddress.toString().equals(ipAddressFromLdap)) {
+            NotificationMailer.sendIpAddressNotUniqueNotification(_prefsService.getSmtpHostAddress(),
+                                                                  ipAddress,
+                                                                  iocFromLdap,
+                                                                  _prefsService.getDefaultResponsiblePerson());
+            _facade.modifyIpAddressAttribute(iocFromLdap.getLdapName(), null);
+        }
     }
 
 

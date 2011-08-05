@@ -22,12 +22,16 @@
 package org.csstudio.utility.ldapupdater.preferences;
 
 import java.io.File;
+import java.io.UnsupportedEncodingException;
 
 import javax.annotation.Nonnull;
+import javax.mail.internet.InternetAddress;
 
 import org.csstudio.domain.desy.net.HostAddress;
 import org.csstudio.domain.desy.preferences.AbstractPreference;
 import org.csstudio.utility.ldapupdater.LdapUpdaterActivator;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * Constant definitions for archive service preferences (mimicked enum with inheritance).
@@ -46,29 +50,48 @@ public class LdapUpdaterPreferencesService {
      */
     private static final class LdapUpdaterPreference<T> extends AbstractPreference<T> {
 
-        public static final LdapUpdaterPreference<File> IOC_DBL_DUMP_PATH =
+        static final LdapUpdaterPreference<File> IOC_DBL_DUMP_PATH =
             new LdapUpdaterPreference<File>("iocDblDumpPath", new File("Y:\\directoryServer\\"));
 
-        public static final LdapUpdaterPreference<File> HEARTBEAT_FILEPATH =
+        static final LdapUpdaterPreference<File> HEARTBEAT_FILEPATH =
             new LdapUpdaterPreference<File>("heartbeatfile", new File("Y:\\scripts\\ldap-tests\\ldapupdater.heartbeat"));
 
-        public static final LdapUpdaterPreference<File> HISTORY_DAT_FILEPATH =
+        static final LdapUpdaterPreference<File> HISTORY_DAT_FILEPATH =
             new LdapUpdaterPreference<File>("ldapHistPath", new File("Y:\\scripts\\ldap-tests\\history.dat"));
 
-        public static final LdapUpdaterPreference<String> XMPP_USER =
+        static final LdapUpdaterPreference<String> XMPP_USER =
             new LdapUpdaterPreference<String>("xmppUser", "anonymous");
 
-        public static final LdapUpdaterPreference<String> XMPP_PASSWORD =
+        static final LdapUpdaterPreference<String> XMPP_PASSWORD =
             new LdapUpdaterPreference<String>("xmppPassword", "anonymous");
 
-        public static final LdapUpdaterPreference<HostAddress> XMPP_SERVER =
+        static final LdapUpdaterPreference<HostAddress> XMPP_SERVER =
             new LdapUpdaterPreference<HostAddress>("xmppServer", new HostAddress("krynfs.desy.de"));
 
-        public static final LdapUpdaterPreference<Long> LDAP_AUTO_START =
+        static final LdapUpdaterPreference<Long> LDAP_AUTO_START =
             new LdapUpdaterPreference<Long>("ldapAutoStart", Long.valueOf(46800));
 
-        public static final LdapUpdaterPreference<Long> LDAP_AUTO_INTERVAL =
+        static final LdapUpdaterPreference<Long> LDAP_AUTO_INTERVAL =
             new LdapUpdaterPreference<Long>("ldapAutoInterval", Long.valueOf(43200));
+
+        static final LdapUpdaterPreference<HostAddress> SMTP_HOST =
+            new LdapUpdaterPreference<HostAddress>("smtpHost", new HostAddress("smtp.desy.de"));
+
+        // CHECKSTYLE OFF: |
+        static LdapUpdaterPreference<InternetAddress> RESPONSIBLE_CONTACT;
+        // CHECKSTYLE ON: |
+        private static final Logger LOG =
+            LoggerFactory.getLogger(LdapUpdaterPreferencesService.LdapUpdaterPreference.class);
+        static {
+            try {
+                RESPONSIBLE_CONTACT =
+                    new LdapUpdaterPreference<InternetAddress>("defaultResponsibleContact",
+                                                               new InternetAddress("bastian.knerr@desy.de", "Bastian Knerr"));
+            } catch (final UnsupportedEncodingException e) {
+                LOG.warn("Default internet address for property '{}' could not be generated", RESPONSIBLE_CONTACT.getKeyAsString());
+            }
+
+        }
 
         /**
          * Constructor.
@@ -136,5 +159,13 @@ public class LdapUpdaterPreferencesService {
     @Nonnull
     public Long getLdapStartInterval() {
         return LdapUpdaterPreference.LDAP_AUTO_INTERVAL.getValue();
+    }
+    @Nonnull
+    public HostAddress getSmtpHostAddress() {
+        return LdapUpdaterPreference.SMTP_HOST.getValue();
+    }
+    @Nonnull
+    public InternetAddress getDefaultResponsiblePerson() {
+        return LdapUpdaterPreference.RESPONSIBLE_CONTACT.getValue();
     }
 }
