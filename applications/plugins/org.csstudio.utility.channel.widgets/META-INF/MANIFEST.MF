@@ -1,0 +1,14 @@
+Manifest-Version: 1.0
+Bundle-ManifestVersion: 2
+Bundle-Name: Widgets
+Bundle-SymbolicName: org.csstudio.utility.channel.widgets
+Bundle-Version: 1.0.0.qualifier
+Bundle-RequiredExecutionEnvironment: JavaSE-1.6
+Require-Bundle: org.eclipse.ui;bundle-version="3.7.0",
+ org.eclipse.core.runtime;bundle-version="3.7.0",
+ org.csstudio.utility.pvmanager;bundle-version="1.0.0",
+ org.csstudio.utility.pvmanager.ui;bundle-version="3.1.0",
+ org.csstudio.utility.pvmanager.widgets;bundle-version="3.1.0",
+ org.csstudio.ui.util;bundle-version="3.1.0",
+ org.csstudio.utility.channelfinder;bundle-version="1.1.0"
+Export-Package: org.csstudio.utility.channel.widgets
