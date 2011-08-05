@@ -1,5 +1,6 @@
 package org.csstudio.display.waterfall;
 
+import java.lang.reflect.Constructor;
 import java.util.List;
 
 import org.eclipse.swt.widgets.Composite;
@@ -71,12 +72,7 @@ public class WaterfallView extends ViewPart {
 	private WaterfallWidget waterfallComposite;
 	
 	private void resolveAndSetPVName(String text) {
-		List<String> pv = ChannelResolver.resolveTag(text);
-		if (pv != null && !pv.isEmpty()) {
-			waterfallComposite.setScalarPVNames(pv);
-		} else {
-			waterfallComposite.setWaveformPVName(text);
-		}
+		waterfallComposite.setInputText(text);
 	}
 
 	@Override
@@ -98,7 +94,7 @@ public class WaterfallView extends ViewPart {
 		fd_combo.right = new FormAttachment(100, -10);
 		combo.setLayoutData(fd_combo);
 		
-		waterfallComposite = new WaterfallWidget(parent, SWT.NONE);
+		waterfallComposite = createWaterfallWidget(parent);
 		FormData fd_waterfallComposite = new FormData();
 		fd_waterfallComposite.bottom = new FormAttachment(100, -10);
 		fd_waterfallComposite.left = new FormAttachment(0, 10);
@@ -119,6 +115,16 @@ public class WaterfallView extends ViewPart {
 		if (memento != null && memento.getString(MEMENTO_PVNAME) != null) {
 			setPVName(memento.getString(MEMENTO_PVNAME));
 		}
+	}
+
+	private WaterfallWidget createWaterfallWidget(Composite parent) {
+		try {
+			Class<?> clazz = Class.forName("org.csstudio.utility.channel.widgets.MultiChannelWaterfallWidget");
+			Constructor<?> constructor = clazz.getConstructor(Composite.class, Integer.TYPE);
+			return (WaterfallWidget) constructor.newInstance(parent, SWT.NONE);
+		} catch (Exception e) {
+		}
+		return new WaterfallWidget(parent, SWT.NONE);
 	}
 
 }

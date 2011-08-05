@@ -145,6 +145,14 @@ public class WaterfallWidget extends Composite {
 		parametersChanged();
 	}
 	
+	public void setInputText(String name) {
+		setWaveformPVName(name);
+	}
+	
+	public String getInputText() {
+		return getWaveformPVName();
+	}
+	
 	// The pv name for waveform
 	private String waveformPVName;
 	// The pv names for multiple channels
