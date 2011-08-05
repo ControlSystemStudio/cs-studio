@@ -60,7 +60,7 @@ public class EMailSenderHeadlessTest
         mailer.addText("Hello, this is a test");
         mailer.attachText("./testfile.txt");
         mailer.attachImage("./test.jpg");
-        mailer.attachText("./src/org/csstudio/email/EMailSender.java");
+        mailer.attachText("./build.properties");
         mailer.close();
     }
 }
