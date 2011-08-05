@@ -500,8 +500,8 @@ public class PVManagerProbe extends ViewPart {
 		setMeter(null, null);
 		setReadOnly(false);
 
-		// If name is blank, update status to waiting and qui
-		if ((pvName == null) || pvName.equals("")) { //$NON-NLS-1$
+		// If name is blank, update status to waiting and quit
+		if ((pvName.getName() == null) || pvName.getName().trim().isEmpty()) {
 			pvNameField.getCombo().setText(""); //$NON-NLS-1$
 			setStatus(Messages.Probe_statusWaitingForPV);
 		}
