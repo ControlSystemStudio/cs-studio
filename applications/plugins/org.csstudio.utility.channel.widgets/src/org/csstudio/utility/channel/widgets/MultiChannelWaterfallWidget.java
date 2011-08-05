@@ -21,15 +21,6 @@ public class MultiChannelWaterfallWidget extends WaterfallWidget {
 	}
 	
 	private String inputText;
-	private String sortProperty;
-	
-	public String getSortProperty() {
-		return sortProperty;
-	}
-	
-	public void setSortProperty(String sortProperty) {
-		this.sortProperty = sortProperty;
-	}
 	
 	@Override
 	public String getInputText() {
@@ -43,7 +34,17 @@ public class MultiChannelWaterfallWidget extends WaterfallWidget {
 		}
 		
 		this.inputText = inputText;
+		queryChannels();
+	}
+	
+	@Override
+	public void setSortProperty(String sortProperty) {
+		super.setSortProperty(sortProperty);
 		
+		queryChannels();
+	}
+	
+	private void queryChannels() {
 		List<String> channelNames = null;
 		try {
 			// Should be done in a background task
@@ -60,7 +61,7 @@ public class MultiChannelWaterfallWidget extends WaterfallWidget {
 						
 						public Double findProperty(Channel channel) {
 							for (Property property : channel.getProperties()) {
-								if (property.getName().equals(sortProperty)) {
+								if (property.getName().equals(getSortProperty())) {
 									return Double.parseDouble(property.getValue());
 								}
 							}

@@ -49,9 +49,19 @@ public class WaterfallWidget extends Composite {
 	private GridData gd_rangeWidget;
 	private boolean editable = true;
 	
+	private String sortProperty;
+	
+	public String getSortProperty() {
+		return sortProperty;
+	}
+	
+	public void setSortProperty(String sortProperty) {
+		this.sortProperty = sortProperty;
+	}
+	
 	public void openConfigurationDialog(int x, int y) {
 		WaterfallParametersDialog dialog = new WaterfallParametersDialog(getShell(), SWT.NORMAL);
-		dialog.open(WaterfallWidget.this, x, y);
+		dialog.open(this, x, y);
 	}
 
 	/**

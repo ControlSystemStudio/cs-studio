@@ -5,6 +5,8 @@ import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.widgets.Button;
+import org.eclipse.swt.events.ModifyEvent;
+import org.eclipse.swt.events.ModifyListener;
 import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
 import org.epics.pvmanager.extra.WaterfallPlotParameters;
@@ -18,17 +20,20 @@ import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Spinner;
 
 import static org.epics.pvmanager.extra.WaterfallPlotParameters.*;
+import org.eclipse.swt.widgets.Text;
+import org.eclipse.swt.layout.GridData;
 
 /**
  * Popup dialog used by the waterfall widget to modify the WaterfallWidget.
  * 
  * @author carcassi
  */
-class WaterfallParametersDialog extends Dialog {
+public class WaterfallParametersDialog extends Dialog {
 
 	private WaterfallPlotParameters oldParameters;
 	private boolean oldShowRange;
-	private Shell shell;
+	private String oldSortProperty;
+	protected Shell shell;
 	
 	private WaterfallWidget widget;
 	
@@ -39,6 +44,9 @@ class WaterfallParametersDialog extends Dialog {
 
 	private Spinner spPixelDuration;
 	private Button btnHideRange;
+	private Label lblProperty;
+	private Group grpChannels;
+	private Text propertyField;
 
 	/**
 	 * Create the dialog.
@@ -50,16 +58,15 @@ class WaterfallParametersDialog extends Dialog {
 		setText("SWT Dialog");
 		createContents();
 	}
-
-	/**
-	 * Open the dialog.
-	 * @return the result
-	 */
-	public void open(WaterfallWidget widget, int x, int y) {
+	
+	protected void saveInitialValues(WaterfallWidget widget) {
 		// Save widget and old status (in case of cancel)
 		this.widget = widget;
 		this.oldParameters = widget.getWaterfallPlotParameters();
 		this.oldShowRange = widget.isShowRange();
+		this.oldSortProperty = widget.getSortProperty();
+		if (this.oldSortProperty != null)
+			propertyField.setText(this.oldSortProperty);
 		
 		// Make all controls display the current parameters
 		// of the widget
@@ -81,6 +88,14 @@ class WaterfallParametersDialog extends Dialog {
 		spPixelDuration.setMaximum(10000);
 		spPixelDuration.setMinimum(1);
 		spPixelDuration.setSelection((int) (oldParameters.getPixelDuration().getNanoSec() / 1000000));
+	}
+
+	/**
+	 * Open the dialog.
+	 * @return the result
+	 */
+	public void open(WaterfallWidget widget, int x, int y) {
+		saveInitialValues(widget);
 		
 		// Open the dialog
 		shell.open();
@@ -102,7 +117,7 @@ class WaterfallParametersDialog extends Dialog {
 	 */
 	private void createContents() {
 		shell = new Shell(getParent(), SWT.APPLICATION_MODAL);
-		shell.setSize(271, 269);
+		shell.setSize(299, 327);
 		shell.setText(getText());
 		shell.setLayout(new FormLayout());
 		
@@ -118,6 +133,7 @@ class WaterfallParametersDialog extends Dialog {
 				// If click cancel, reset the old parameters
 				widget.setShowRange(oldShowRange);
 				widget.setWaterfallPlotParameters(oldParameters);
+				widget.setSortProperty(oldSortProperty);
 				shell.close();
 			}
 		});
@@ -138,7 +154,7 @@ class WaterfallParametersDialog extends Dialog {
 		shell.setDefaultButton(btnApply);
 		
 		Group grpRange = new Group(shell, SWT.NONE);
-		grpRange.setText("Range:");
+		grpRange.setText("Color range:");
 		grpRange.setLayout(new GridLayout(2, false));
 		FormData fd_grpRange = new FormData();
 		fd_grpRange.top = new FormAttachment(0, 10);
@@ -199,7 +215,6 @@ class WaterfallParametersDialog extends Dialog {
 		
 		Label lblResolution = new Label(shell, SWT.NONE);
 		FormData fd_lblResolution = new FormData();
-		fd_lblResolution.top = new FormAttachment(grpScroll, 9);
 		fd_lblResolution.left = new FormAttachment(grpRange, 0, SWT.LEFT);
 		lblResolution.setLayoutData(fd_lblResolution);
 		lblResolution.setText("Resolution:");
@@ -219,7 +234,7 @@ class WaterfallParametersDialog extends Dialog {
 		
 		Label lblMsPerPixel = new Label(shell, SWT.NONE);
 		FormData fd_lblMsPerPixel = new FormData();
-		fd_lblMsPerPixel.bottom = new FormAttachment(lblResolution, 0, SWT.BOTTOM);
+		fd_lblMsPerPixel.top = new FormAttachment(lblResolution, 0, SWT.TOP);
 		fd_lblMsPerPixel.left = new FormAttachment(spPixelDuration, 6);
 		lblMsPerPixel.setLayoutData(fd_lblMsPerPixel);
 		lblMsPerPixel.setText("ms per pixel");
@@ -230,6 +245,31 @@ class WaterfallParametersDialog extends Dialog {
 		fd_btnHideRange.left = new FormAttachment(grpRange, 0, SWT.LEFT);
 		btnHideRange.setLayoutData(fd_btnHideRange);
 		btnHideRange.setText("Hide range");
+		
+		grpChannels = new Group(shell, SWT.NONE);
+		fd_lblResolution.top = new FormAttachment(grpChannels, 6);
+		grpChannels.setText("Channels:");
+		grpChannels.setLayout(new GridLayout(2, false));
+		FormData fd_grpChannels = new FormData();
+		fd_grpChannels.bottom = new FormAttachment(grpScroll, 65, SWT.BOTTOM);
+		fd_grpChannels.top = new FormAttachment(grpScroll, 6);
+		fd_grpChannels.right = new FormAttachment(btnCancel, 0, SWT.RIGHT);
+		fd_grpChannels.left = new FormAttachment(0, 10);
+		grpChannels.setLayoutData(fd_grpChannels);
+		
+		lblProperty = new Label(grpChannels, SWT.NONE);
+		lblProperty.setLayoutData(new GridData(SWT.RIGHT, SWT.CENTER, false, false, 1, 1));
+		lblProperty.setText("Order by prop:");
+		
+		propertyField = new Text(grpChannels, SWT.BORDER);
+		propertyField.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false, 1, 1));
+		propertyField.addModifyListener(new ModifyListener() {
+			
+			@Override
+			public void modifyText(ModifyEvent e) {
+				widget.setSortProperty(propertyField.getText());
+			}
+		});
 		btnHideRange.addSelectionListener(new SelectionAdapter() {
 			@Override
 			public void widgetSelected(SelectionEvent e) {
