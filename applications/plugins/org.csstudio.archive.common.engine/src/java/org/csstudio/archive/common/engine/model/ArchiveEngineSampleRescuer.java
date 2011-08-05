@@ -81,10 +81,10 @@ final class ArchiveEngineSampleRescuer {
             RESCUE_LOG.info(gpbSamples.toString());
         } catch (final Throwable t) {
             EMAIL_LOG.info("Data rescue for samples failed. Samples lost: {}", _samplesToBeSerialized.size());
-            return DataRescueResult.failure("rescue/samples/samples.ser.*", TimeInstantBuilder.fromNow());
+            return DataRescueResult.failure("rescue/samples/samples.ser*", TimeInstantBuilder.fromNow());
         }
 
-        return DataRescueResult.success("foo", null);
+        return DataRescueResult.success("rescue/samples/samples.ser*", TimeInstantBuilder.fromNow());
     }
 
     @Nonnull
@@ -93,8 +93,9 @@ final class ArchiveEngineSampleRescuer {
             ArchiveSampleProtos.ArchiveSample.newBuilder();
 
         for (final IArchiveSample<Serializable, ISystemVariable<Serializable>> sample : _samplesToBeSerialized) {
+            builder.clear();
+
             final ISystemVariable<Serializable> sysVar = sample.getSystemVariable();
-            //builder.clear();
             final ArchiveSampleProtos.ArchiveSample gpbSample =
                 builder.setChannelId(sysVar.getName())
                        .setControlSystemId(sysVar.getOrigin().getId())
