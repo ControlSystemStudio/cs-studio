@@ -132,6 +132,8 @@ public class AlarmServer
         	alarm_tree.dump(System.out);
         }
 
+        System.out.println("Work queue size: " + work_queue.size());
+        
         // Log memory usage in MB
         final double free = Runtime.getRuntime().freeMemory() / (1024.0*1024.0);
         final double total = Runtime.getRuntime().totalMemory() / (1024.0*1024.0);

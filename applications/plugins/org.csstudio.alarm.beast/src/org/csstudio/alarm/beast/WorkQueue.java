@@ -33,6 +33,15 @@ public class WorkQueue implements Executor
     /** Thread that executes the queue. Set on first access */
     private Thread thread;
 
+    /** @return Number of currently queued commands on the work queue */
+    public int size()
+    {
+    	synchronized (tasks)
+        {
+        	return tasks.size();
+        }
+    }
+    
     /** Add a command to the queue
      *  @param command Command to be executed
      *  @see Executor#execute(Runnable)
