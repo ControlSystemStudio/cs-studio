@@ -36,6 +36,7 @@ import org.csstudio.archive.common.service.channel.IArchiveChannel;
 import org.csstudio.archive.common.service.channelgroup.ArchiveChannelGroupId;
 import org.csstudio.archive.common.service.mysqlimpl.dao.AbstractDaoTestSetup;
 import org.csstudio.archive.common.service.mysqlimpl.dao.ArchiveDaoException;
+import org.csstudio.archive.common.service.mysqlimpl.sample.TestSampleProvider;
 import org.csstudio.domain.desy.system.ControlSystem;
 import org.csstudio.domain.desy.time.TimeInstant.TimeInstantBuilder;
 import org.csstudio.domain.desy.types.Limits;
@@ -165,7 +166,7 @@ public class ArchiveChannelDaoUnitTest extends AbstractDaoTestSetup {
 
     @Test
     public <V extends Comparable<? super V>> void testUpdateDisplayRanges() throws ArchiveDaoException, InterruptedException, ArchiveConnectionException, SQLException {
-        final ArchiveChannelId id = new ArchiveChannelId(1L);
+        final ArchiveChannelId id = TestSampleProvider.CHANNEL_ID_1ST;
         DAO.updateDisplayRanges(id, Double.valueOf(-1.0), Double.valueOf(32.0));
 
         Thread.sleep(3000);

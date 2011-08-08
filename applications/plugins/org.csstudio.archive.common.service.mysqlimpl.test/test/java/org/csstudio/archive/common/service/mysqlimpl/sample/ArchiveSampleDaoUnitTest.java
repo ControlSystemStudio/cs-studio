@@ -60,6 +60,7 @@ public class ArchiveSampleDaoUnitTest extends AbstractDaoTestSetup {
         SAMPLE_DAO = new ArchiveSampleDaoImpl(HANDLER, PERSIST_MGR, CHANNEL_DAO);
     }
 
+    @SuppressWarnings("rawtypes")
     @Test
     public void retrieveSamples() throws ArchiveDaoException {
         IArchiveChannel channel = CHANNEL_DAO.retrieveChannelById(CHANNEL_ID_3RD);
