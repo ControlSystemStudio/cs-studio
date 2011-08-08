@@ -1,8 +1,9 @@
 package org.csstudio.diag.pvmanager.probe;
 
 import static org.csstudio.utility.pvmanager.ui.SWTUtil.swtThread;
-import static org.epics.pvmanager.ExpressionLanguage.*;
-import static org.epics.pvmanager.util.TimeDuration.*;
+import static org.epics.pvmanager.ExpressionLanguage.channel;
+import static org.epics.pvmanager.util.TimeDuration.hz;
+import static org.epics.pvmanager.util.TimeDuration.ms;
 
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -36,9 +37,7 @@ import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.part.ViewPart;
 import org.epics.pvmanager.PV;
 import org.epics.pvmanager.PVManager;
-import org.epics.pvmanager.PVReader;
 import org.epics.pvmanager.PVReaderListener;
-import org.epics.pvmanager.PVWriter;
 import org.epics.pvmanager.PVWriterListener;
 import org.epics.pvmanager.WriteFailException;
 import org.epics.pvmanager.data.Alarm;
@@ -66,16 +65,12 @@ public class PVManagerProbe extends ViewPart {
 	public static final String SINGLE_VIEW_ID = "org.csstudio.diag.pvmanager.probe.SingleView"; //$NON-NLS-1$
 	public static final String MULTIPLE_VIEW_ID = "org.csstudio.diag.pvmanager.probe.MultipleView"; //$NON-NLS-1$
 	private static int instance = 0;
-
-	// GUI
-	private Label alarmLabel;
 	private Label valueLabel;
 	private Label timestampLabel;
 	private Label statusLabel;
 	private Label newValueLabel;
 	private Label pvNameLabel;
 	private Label timestampField;
-	private Label alarmField;
 	private Label valueField;
 	private Label statusField;
 	private ComboViewer pvNameField;
@@ -84,7 +79,6 @@ public class PVManagerProbe extends ViewPart {
 	private Composite topBox;
 	private Composite bottomBox;
 	private Button showMeterButton;
-	private Button saveToIocButton;
 	private Button infoButton;
 	private GridData gd_valueField;
 	private GridData gd_timestampField;
@@ -112,8 +106,6 @@ public class PVManagerProbe extends ViewPart {
 
 	private Text newValueField;
 
-	private static final String SECURITY_ID = "operating"; //$NON-NLS-1$
-
 	/** Memento used to preserve the PV name. */
 	private IMemento memento = null;
 
@@ -123,11 +115,6 @@ public class PVManagerProbe extends ViewPart {
 	private static final String PV_TAG = "PVName"; //$NON-NLS-1$
 	/** Memento tag */
 	private static final String METER_TAG = "meter"; //$NON-NLS-1$
-
-	/**
-	 * Id of the save value command.
-	 */
-	private static final String SAVE_VALUE_COMMAND_ID = "org.csstudio.platform.ui.commands.saveValue"; //$NON-NLS-1$
 
 	@Override
 	public void init(final IViewSite site, final IMemento memento)
@@ -221,22 +208,6 @@ public class PVManagerProbe extends ViewPart {
 		gd_timestampField.grabExcessHorizontalSpace = true;
 		gd_timestampField.horizontalAlignment = SWT.FILL;
 		timestampField.setLayoutData(gd_timestampField);
-
-		saveToIocButton = new Button(bottomBox, SWT.PUSH);
-		saveToIocButton.setText(Messages.Probe_saveToIocButtonText);
-		saveToIocButton.setToolTipText(Messages.Probe_saveToIocButtonToolTipText);
-		gd = new GridData();
-		gd.horizontalAlignment = SWT.FILL;
-		saveToIocButton.setLayoutData(gd);
-		saveToIocButton.setEnabled(canExecute);
-
-		alarmLabel = new Label(bottomBox, SWT.NONE);
-		alarmLabel.setText(Messages.Probe_alarmLabelText);
-
-		alarmField = new Label(bottomBox, SWT.BORDER);
-		alarmField.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, false,
-				false, 1, 1));
-		alarmField.setText(""); //$NON-NLS-1$
 		new Label(bottomBox, SWT.NONE);
 
 		// New Row
@@ -333,13 +304,6 @@ public class PVManagerProbe extends ViewPart {
 			@Override
 			public void widgetDefaultSelected(final SelectionEvent e) {
 				pv.write(newValueField.getText());
-			}
-		});
-
-		saveToIocButton.addSelectionListener(new SelectionAdapter() {
-			@Override
-			public void widgetSelected(final SelectionEvent e) {
-				// saveToIoc();
 			}
 		});
 		// // Create a listener to enable/disable the Save to IOC button based
@@ -494,8 +458,7 @@ public class PVManagerProbe extends ViewPart {
 			pv = null;
 		}
 
-		setValue(null);
-		setAlarm(null);
+		setValue(null, null);
 		setTime(null);
 		setMeter(null, null);
 		setReadOnly(false);
@@ -525,8 +488,7 @@ public class PVManagerProbe extends ViewPart {
 			public void pvChanged() {
 				Object obj = pv.getValue();
 				setLastError(pv.lastException());
-				setValue(valueFormat.format(obj));
-				setAlarm(ValueUtil.alarmOf(obj));
+				setValue(valueFormat.format(obj), ValueUtil.alarmOf(obj));
 				setTime(ValueUtil.timeOf(obj));
 				setMeter(ValueUtil.numericValueOf(obj), ValueUtil.displayOf(obj));
 			}
@@ -603,17 +565,24 @@ public class PVManagerProbe extends ViewPart {
 	 * 
 	 * @param value a new value
 	 */
-	private void setValue(String value) {
-		if (value == null) {
-			valueField.setText(""); //$NON-NLS-1$
-			if (newValueField.isVisible() && !newValueField.isFocusControl()) {
-				newValueField.setText("");
-			}
-		} else {
-			valueField.setText(value);
-			if (newValueField.isVisible() && !newValueField.isFocusControl()) {
-				newValueField.setText(value);
-			}
+	private void setValue(String value, Alarm alarm) {
+		// Calculate alarm string
+		String alarmString = "";
+		if (alarm != null)
+			alarmString = alarmToString(alarm);
+		
+		// Calculate value string
+		String valueString = "";
+		if (value != null)
+			valueString = value;
+		
+		String mergedString = valueString;
+		if (!alarmString.isEmpty())
+			mergedString = mergedString + " " + alarmString;
+		
+		valueField.setText(mergedString);
+		if (newValueField.isVisible() && !newValueField.isFocusControl()) {
+			newValueField.setText(valueString);
 		}
 	}
 
@@ -622,12 +591,12 @@ public class PVManagerProbe extends ViewPart {
 	 * 
 	 * @param alarm a new alarm
 	 */
-	private void setAlarm(Alarm alarm) {
-		if (alarm == null) {
-			alarmField.setText(""); //$NON-NLS-1$
+	private String alarmToString(Alarm alarm) {
+		if (alarm == null || alarm.getAlarmSeverity().equals(AlarmSeverity.NONE)) {
+			return ""; //$NON-NLS-1$
 		} else {
-			alarmField.setText(alarm.getAlarmSeverity() + " - " //$NON-NLS-1$
-					+ alarm.getAlarmStatus());
+			return "[" + alarm.getAlarmSeverity() + " - " //$NON-NLS-1$
+					+ alarm.getAlarmStatus() + "]";
 		}
 	}
 
