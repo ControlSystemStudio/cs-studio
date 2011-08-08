@@ -9,7 +9,6 @@ import java.util.concurrent.ThreadFactory;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-
 import javax.swing.SwingUtilities;
 
 /**
@@ -18,13 +17,13 @@ import javax.swing.SwingUtilities;
  * @author carcassi
  */
 public class Executors {
-
+    
     private static final Logger log = Logger.getLogger(Executors.class.getName());
 
     /**
      * Executes tasks on the Swing Event Dispatch Thread using
      * SwingUtilities.invokeLater().
-     *
+     * 
      * @return an executor that posts events on the EDT
      */
     public static Executor swingEDT() {
@@ -33,7 +32,7 @@ public class Executors {
 
     /**
      * Executes tasks on the current thread.
-     *
+     * 
      * @return an object that runs tasks on the current thread
      */
     public static Executor localThread() {
@@ -43,7 +42,7 @@ public class Executors {
     private static Executor SWING_EXECUTOR = new Executor() {
 
         @Override
-        public void execute(final Runnable command) {
+        public void execute(Runnable command) {
             SwingUtilities.invokeLater(command);
         }
     };
@@ -51,59 +50,56 @@ public class Executors {
     private static Executor CURRENT_EXECUTOR = new Executor() {
 
         @Override
-        public void execute(final Runnable command) {
+        public void execute(Runnable command) {
             try {
                 command.run();
-            } catch (final Exception ex) {
+            } catch (Exception ex) {
                 log.log(Level.WARNING, "Exception on the timer thread caused by a ValueListener", ex);
-            } catch (final AssertionError ex) {
+            } catch (AssertionError ex) {
                 log.log(Level.WARNING, "Assertion failed on the timer thread", ex);
             }
         }
     };
-
-
+    
+    
     /**
      * A thread factory where each new thread starts with the given name. The
      * name of the thread will be poolname + number. This can be used instead
      * of {@link java.util.concurrent.Executors#defaultThreadFactory()},
      * which unfortunately
      * only use generic names for the thread, which makes it harder to debug.
-     *
+     * 
      * @param poolName name of the pool
      * @return a new factory
      */
-    public static ThreadFactory namedPool(final String poolName) {
+    public static ThreadFactory namedPool(String poolName) {
         return new DefaultThreadFactory(poolName);
     }
-
+    
     /**
-     * Taken from {@link java.util.concurrent.Executors#defaultThreadFactory() }.
+     * Taken from {@link Executors#defaultThreadFactory() }.
      */
     static class DefaultThreadFactory implements ThreadFactory {
         private final ThreadGroup group;
         private final AtomicInteger threadNumber = new AtomicInteger(1);
         private final String namePrefix;
 
-        DefaultThreadFactory(final String poolName) {
-            final SecurityManager s = System.getSecurityManager();
-            group = s != null? s.getThreadGroup() :
+        DefaultThreadFactory(String poolName) {
+            SecurityManager s = System.getSecurityManager();
+            group = (s != null)? s.getThreadGroup() :
                                  Thread.currentThread().getThreadGroup();
             namePrefix = poolName;
         }
 
-        @Override
-        public Thread newThread(final Runnable r) {
-            final Thread t = new Thread(group, r,
+        public Thread newThread(Runnable r) {
+            Thread t = new Thread(group, r,
                                   namePrefix + threadNumber.getAndIncrement(),
                                   0);
-            if (t.isDaemon()) {
+            if (t.isDaemon())
                 t.setDaemon(false);
-            }
-            if (t.getPriority() != Thread.NORM_PRIORITY) {
+            if (t.getPriority() != Thread.NORM_PRIORITY)
                 t.setPriority(Thread.NORM_PRIORITY);
-            }
             return t;
         }
-    }
+    }    
 }

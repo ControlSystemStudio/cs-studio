@@ -71,10 +71,18 @@ class Notifier<T> {
         }
     }
     
+    private volatile boolean notificationInFlight = false;
+    
     /**
      * Notifies the PVReader of a new value.
      */
     void notifyPv() {
+        // Don't even calculate if notification is in flight.
+        // This makes pvManager automatically throttle back if the consumer
+        // is slower than the producer.
+        if (notificationInFlight)
+            return;
+        
         // Calculate new value
         T newValue = null;
         boolean calculationSucceeded = false;
@@ -92,28 +100,33 @@ class Notifier<T> {
         // which is properly synchronized by the executor
         final T finalValue = newValue;
         final boolean finalCalculationSucceeded = calculationSucceeded;
+        notificationInFlight = true;
         notificationExecutor.execute(new Runnable() {
 
             @Override
             public void run() {
-                PVReaderImpl<T> pv = pvRef.get();
-                // Proceed with notification only if PVReader was not garbage
-                // collected
-                if (pv != null) {
-                // XXX Are we sure that we should skip notifications if values are null?
-                    if (finalCalculationSucceeded && finalValue != null) {
-                        Notification<T> notification =
-                                NotificationSupport.notification(pv.getValue(), finalValue);
-                        // Remember to notify anyway if an exception need to be notified
-                        if (notification.isNotificationNeeded() || pv.isLastExceptionToNotify()) {
-                            pv.setValue(notification.getNewValue());
-                        }
-                    } else {
-                        // Remember to notify anyway if an exception need to be notified
-                        if (pv.isLastExceptionToNotify()) {
-                            pv.firePvValueChanged();
+                try {
+                    PVReaderImpl<T> pv = pvRef.get();
+                    // Proceed with notification only if PVReader was not garbage
+                    // collected
+                    if (pv != null) {
+                    // XXX Are we sure that we should skip notifications if values are null?
+                        if (finalCalculationSucceeded && finalValue != null) {
+                            Notification<T> notification =
+                                    NotificationSupport.notification(pv.getValue(), finalValue);
+                            // Remember to notify anyway if an exception need to be notified
+                            if (notification.isNotificationNeeded() || pv.isLastExceptionToNotify()) {
+                                pv.setValue(notification.getNewValue());
+                            }
+                        } else {
+                            // Remember to notify anyway if an exception need to be notified
+                            if (pv.isLastExceptionToNotify()) {
+                                pv.firePvValueChanged();
+                            }
                         }
                     }
+                } finally {
+                    notificationInFlight = false;
                 }
             }
         });
