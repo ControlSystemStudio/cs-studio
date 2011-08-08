@@ -112,7 +112,7 @@ public class AbstNodeDBOUnitTest {
         final HibernateRepository repository = new HibernateRepository(new HibernateTestManager());
         Repository.injectIRepository(repository);
     }
-    
+
     @AfterClass
     public static void tearDownAfterClass() {
         Repository.close();
