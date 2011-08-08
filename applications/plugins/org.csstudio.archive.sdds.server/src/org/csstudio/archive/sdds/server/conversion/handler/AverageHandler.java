@@ -28,11 +28,9 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.GregorianCalendar;
 import java.util.List;
-
 import org.csstudio.archive.sdds.server.SddsServerActivator;
 import org.csstudio.archive.sdds.server.command.header.DataRequestHeader;
 import org.csstudio.archive.sdds.server.data.EpicsRecordData;
-import org.csstudio.archive.sdds.server.file.SDDSType;
 import org.csstudio.archive.sdds.server.internal.ServerPreferenceKey;
 import org.csstudio.archive.sdds.server.util.DataException;
 import org.eclipse.core.runtime.Platform;
@@ -103,7 +101,7 @@ public class AverageHandler extends AlgorithmHandler {
         	intervalEnd = (cal.getTimeInMillis() / 1000L);
         }
         
-        long deltaTime = (intervalEnd - intervalStart) / (long) resultLength;
+        long deltaTime = (intervalEnd - intervalStart) / resultLength;
         if(deltaTime == 0) {
             
             // Requested region very short --> only 1 point per sec
@@ -119,10 +117,10 @@ public class AverageHandler extends AlgorithmHandler {
             
             if(o.getTime() >= intervalStart) {
                 break;
-            } else {
-                if(o.isValueValid()) {
-                    avg = ((Float)o.getValue()).floatValue();
-                }
+            }
+            
+            if(o.isValueValid()) {
+             avg = ((Float)o.getValue()).floatValue();
             }
             
             index++;
@@ -191,7 +189,7 @@ public class AverageHandler extends AlgorithmHandler {
             }
             
             if (Float.isNaN(avg) == false) {
-				EpicsRecordData newData = new EpicsRecordData(curTime, 0L, 0L, new Double(String.valueOf(avg)), SDDSType.SDDS_DOUBLE);
+				EpicsRecordData newData = new EpicsRecordData(curTime, 0L, 0L, new Double(String.valueOf(avg)));
 				resultData.add(newData);
 				LOG.debug(newData.toString());
 				newData = null;

@@ -26,16 +26,14 @@ package org.csstudio.archive.sdds.server.data;
 
 import java.text.SimpleDateFormat;
 import java.util.Date;
-
 import org.csstudio.archive.sdds.server.file.SDDSType;
-import org.csstudio.archive.sdds.server.util.ArchiveSeverity;
 
 /**
  * @author Markus Moeller
  *
  */
-public class EpicsRecordData
-{
+public class EpicsRecordData {
+    
     /** */
     private long time;
     
@@ -60,51 +58,27 @@ public class EpicsRecordData
     public EpicsRecordData() {
         time = 0L;
         nanoSeconds = 0L;
-        status = 0L;
-        severity = 0L;
+        status = ArchiveStatus.UNDEFINED.getStatusValue();
+        severity = ArchiveSeverity.UNDEFINED.getSeverityValue();
         value = null;
         sddsType = SDDSType.NOT_SET;
-    }
-
-    /**
-     * @param t
-     * @param nanos
-     * @param stat
-     * @param val
-     * @param type
-     */
-    public EpicsRecordData(long t, long nanos, long stat, Object val, SDDSType type) {
-        
-        this.time = t;
-        this.nanoSeconds = nanos;
-        
-        if(stat != 0L) {
-            this.status = (stat & 0x00000000ffff0000L) >> 16;
-            this.severity = (stat & 0x000000000000ffffL);
-        } else {
-            this.status = 0L;
-            this.severity = 0L;
-        }
-        
-        this.value = val;
-        this.sddsType = type;
     }
 
     /**
      * 
      * @param t
      * @param nano
-     * @param stat
+     * @param statusAndSeverity
      * @param val
      */
-    public EpicsRecordData(long t, long nano, long stat, Object val) {
+    public EpicsRecordData(long t, long nano, long statusAndSeverity, Object val) {
         
         this.time = t;
         this.nanoSeconds = nano;
         
-        if(stat != 0L) {
-            this.status = (stat & 0x00000000ffff0000L) >> 16;
-            this.severity = (stat & 0x000000000000ffffL);
+        if(statusAndSeverity != 0L) {
+            this.status = (statusAndSeverity & 0x00000000ffff0000L) >> 16;
+            this.severity = (statusAndSeverity & 0x000000000000ffffL);
         } else {
             this.status = 0L;
             this.severity = 0L;

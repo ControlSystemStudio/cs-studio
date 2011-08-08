@@ -26,10 +26,8 @@ package org.csstudio.archive.sdds.server.conversion.handler;
 
 import java.util.ArrayList;
 import java.util.List;
-
 import org.csstudio.archive.sdds.server.command.header.DataRequestHeader;
 import org.csstudio.archive.sdds.server.data.EpicsRecordData;
-import org.csstudio.archive.sdds.server.file.SDDSType;
 import org.csstudio.archive.sdds.server.util.DataException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -76,8 +74,8 @@ public class NoFilterHandler extends AlgorithmHandler {
         for(int i = 0;i < data.length;i++) {
             if((data[i].getTime() >= intervalStart) && (data[i].getTime() <= intervalEnd)) {
                 newData.add(new EpicsRecordData(data[i].getTime(), data[i].getNanoSeconds(),
-                                                 data[i].getStatus(), new Double((Float)data[i].getValue()),
-                                                 SDDSType.SDDS_DOUBLE));
+                                                 data[i].getStatus(),
+                                                 new Double((Float)data[i].getValue())));
             }
         }
         

@@ -22,54 +22,54 @@
  *
  */
 
-package org.csstudio.archive.sdds.server.util;
+package org.csstudio.archive.sdds.server.data;
 
 /**
  * TODO (mmoeller) : 
  * 
  * @author mmoeller
  * @version 
- * @since 04.11.2010
+ * @since 05.10.2010
  */
-public enum ArchiveSeverity {
+public enum ArchiveStatus {
     
     NO_ALARM(0),
-    MINOR(1),
-    MAJOR(2),
-    INVALID(3),
-    ARCHIVE_DISABLED(3848),
-    REPEAT(3856),
-    ARCHIVE_OFF(3872),
-    DISCONNECTED(3904),
-    EST_REPEAT(3968),
+    READ_ALARM(1),
+    WRITE_ALARM(2),
+    HIHI_ALARM(3),
+    HIGH_ALARM(4),
+    LOLO_ALARM(5),
+    LOW_ALARM(6),
+    STATE_ALARM(7),
+    UDF_ALARM(17),
     UNDEFINED(9999);
     
     /** */
-    private long severityValue;
+    private long statusValue;
     
     /**
      * 
      * @param statusValue
      */
-    private ArchiveSeverity(long severityValue) {
-        this.severityValue = severityValue;
+    private ArchiveStatus(long value) {
+        this.statusValue = value;
     }
     
     /**
      * 
-     * @return
+     * @return The value of this status
      */
-    public long getSeverityValue() {
-        return this.severityValue;
+    public long getStatusValue() {
+        return this.statusValue;
     }
     
-    public static ArchiveSeverity getByArchiveValue(long v) {
+    public static ArchiveStatus getByArchiveValue(long v) {
         
-        ArchiveSeverity result = ArchiveSeverity.UNDEFINED;
+        ArchiveStatus result = ArchiveStatus.UNDEFINED;
         
-        for(ArchiveSeverity o : ArchiveSeverity.values()) {
+        for(ArchiveStatus o : ArchiveStatus.values()) {
             
-            if(o.getSeverityValue() == v) {
+            if(o.getStatusValue() == v) {
                 
                 result = o;
                 break;

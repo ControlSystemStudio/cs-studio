@@ -27,10 +27,8 @@ package org.csstudio.archive.sdds.server.conversion.handler;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
-
 import org.csstudio.archive.sdds.server.command.header.DataRequestHeader;
 import org.csstudio.archive.sdds.server.data.EpicsRecordData;
-import org.csstudio.archive.sdds.server.file.SDDSType;
 import org.csstudio.archive.sdds.server.util.DataException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -90,9 +88,10 @@ public class TailRawHandler extends AlgorithmHandler {
             
             if((data[dataIndex].getTime() >= intervalStart) && (data[dataIndex].getTime() <= intervalEnd)) {
                 
-                EpicsRecordData obj = new EpicsRecordData(data[dataIndex].getTime(), data[dataIndex].getNanoSeconds(),
-                        data[dataIndex].getStatus(), new Double((Float)data[dataIndex].getValue()),
-                        SDDSType.SDDS_DOUBLE);
+                EpicsRecordData obj = new EpicsRecordData(data[dataIndex].getTime(),
+                                                          data[dataIndex].getNanoSeconds(),
+                                                          data[dataIndex].getStatus(),
+                                                          new Double((Float)data[dataIndex].getValue()));
                 
                 newData.add(obj);
             }
