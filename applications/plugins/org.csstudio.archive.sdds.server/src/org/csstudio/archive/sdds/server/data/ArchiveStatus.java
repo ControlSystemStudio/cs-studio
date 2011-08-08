@@ -22,42 +22,59 @@
  *
  */
 
-package org.csstudio.archive.sdds.server.sdds;
-
-import SDDS.java.SDDS.SDDSFile;
+package org.csstudio.archive.sdds.server.data;
 
 /**
- * @author Markus Moeller
- *
+ * TODO (mmoeller) : 
+ * 
+ * @author mmoeller
+ * @version 
+ * @since 05.10.2010
  */
-public class SddsUtil
-{
-    /** No error */
-    public static final int SDDS_CHECK_OKAY = 0;
+public enum ArchiveStatus {
     
-    /** No error */
-    public static final int SDDS_CHECK_OK = SDDS_CHECK_OKAY;
+    NO_ALARM(0),
+    READ_ALARM(1),
+    WRITE_ALARM(2),
+    HIHI_ALARM(3),
+    HIGH_ALARM(4),
+    LOLO_ALARM(5),
+    LOW_ALARM(6),
+    STATE_ALARM(7),
+    UDF_ALARM(17),
+    UNDEFINED(9999);
     
-    /** Column, parameter, etc. does not exist */
-    public static final int SDDS_CHECK_NONEXISTENT = 1;
-    
-    /** Column, parameter, etc. has got wrong type */
-    public static final int SDDS_CHECK_WRONGTYPE = 2;
-    
-    /** The unit is not correct */
-    public static final int SDDS_CHECK_WRONGUNITS = 3;
+    /** */
+    private long statusValue;
     
     /**
      * 
-     * @param sddsFile
-     * @param columnNames
-     * @param columnUnits
-     * @param type
-     * @return
+     * @param statusValue
      */
-    public static int checkColumn(SDDSFile sddsFile, String[] columnNames, String[] columnUnits, SddsDataType type)
-    {
-        int result = SDDS_CHECK_OK;
+    private ArchiveStatus(long value) {
+        this.statusValue = value;
+    }
+    
+    /**
+     * 
+     * @return The value of this status
+     */
+    public long getStatusValue() {
+        return this.statusValue;
+    }
+    
+    public static ArchiveStatus getByArchiveValue(long v) {
+        
+        ArchiveStatus result = ArchiveStatus.UNDEFINED;
+        
+        for(ArchiveStatus o : ArchiveStatus.values()) {
+            
+            if(o.getStatusValue() == v) {
+                
+                result = o;
+                break;
+            }
+        }
         
         return result;
     }

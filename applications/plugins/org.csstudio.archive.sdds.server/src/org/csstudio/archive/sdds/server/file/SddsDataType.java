@@ -22,24 +22,73 @@
  *
  */
 
-package org.csstudio.archive.sdds.server.sdds;
-
-import java.util.Comparator;
-
-import org.csstudio.archive.sdds.server.data.EpicsRecordData;
+package org.csstudio.archive.sdds.server.file;
 
 /**
- * TODO (mmoeller) : 
- * 
- * @author mmoeller
- * @version 
- * @since 07.10.2010
+ * @author Markus Moeller
+ *
  */
-public class TimeComperator implements Comparator<EpicsRecordData> {
-
-    @Override
-    public int compare(EpicsRecordData o1, EpicsRecordData o2) {
-
-        return Long.signum(o1.getTime() - o2.getTime());
+public enum SddsDataType
+{
+    SDDS_UNDEFINED,
+    SDDS_DOUBLE,
+    SDDS_FLOAT,
+    SDDS_LONG,
+    SDDS_ULONG,
+    SDDS_SHORT,
+    SDDS_USHORT,
+    SDDS_STRING,
+    SDDS_CHARACTER,
+    SDDS_ANY_NUMERIC_TYPE,
+    SDDS_ANY_FLOATING_TYPE,
+    SDDS_ANY_INTEGER_TYPE;
+    
+    /**
+     * 
+     * @return
+     */
+    public static int getSddsTypeCount()
+    {
+        return SDDS_CHARACTER.ordinal();
+    }
+    
+    /**
+     * 
+     * @param type
+     * @return
+     */
+    public boolean isSddsIntegerType(SddsDataType type)
+    {
+        return ((type == SDDS_LONG) || (type == SDDS_ULONG) || (type == SDDS_SHORT) || (type == SDDS_USHORT));
+    }
+    
+    /**
+     * 
+     * @param type
+     * @return
+     */
+    public boolean isSddsFloatingType(SddsDataType type)
+    {
+        return ((type == SDDS_DOUBLE) || (type == SDDS_FLOAT));
+    }
+    
+    /**
+     * 
+     * @param type
+     * @return
+     */
+    public boolean isSddsNumericType(SddsDataType type)
+    {
+        return (isSddsIntegerType(type) || isSddsFloatingType(type));
+    }
+    
+    /**
+     * 
+     * @param type
+     * @return
+     */
+    public boolean isSddsValidType(SddsDataType type)
+    {
+        return ((type.ordinal() >= 1) && (type.ordinal() <= SddsDataType.getSddsTypeCount()));
     }
 }

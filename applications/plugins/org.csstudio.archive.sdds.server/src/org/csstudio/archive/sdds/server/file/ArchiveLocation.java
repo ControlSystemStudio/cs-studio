@@ -22,7 +22,7 @@
  *
  */
 
-package org.csstudio.archive.sdds.server.sdds;
+package org.csstudio.archive.sdds.server.file;
 
 import java.io.BufferedReader;
 import java.io.File;
@@ -65,7 +65,7 @@ public class ArchiveLocation
     /**
      * 
      * @param year
-     * @return
+     * @return The matching path
      */
     public String getPathByYear(int year)
     {
@@ -79,7 +79,7 @@ public class ArchiveLocation
     /**
      * 
      * @param startTime
-     * @return
+     * @return The matching path
      */
     public String getPath(long startTime)
     {
@@ -90,7 +90,7 @@ public class ArchiveLocation
     
     /**
      * 
-     * @return
+     * @return All matching paths
      */
     public String[] getAllPaths(long startTime, long endTime)
     {
@@ -144,7 +144,7 @@ public class ArchiveLocation
     /**
      * 
      * @param month
-     * @return
+     * @return The month as string
      */
     public String getMonthAsString(int month)
     {
@@ -153,7 +153,7 @@ public class ArchiveLocation
     
     /**
      * 
-     * @param path
+     * @param filePath - The name and path of the file that contains the SDDS file location list
      */
     public void loadLocationList(String filePath) throws DataPathNotFoundException {
         

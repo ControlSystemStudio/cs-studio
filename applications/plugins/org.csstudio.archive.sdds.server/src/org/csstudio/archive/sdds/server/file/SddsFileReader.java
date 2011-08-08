@@ -22,7 +22,7 @@
  *
  */
 
-package org.csstudio.archive.sdds.server.sdds;
+package org.csstudio.archive.sdds.server.file;
 
 import java.io.File;
 import java.util.ArrayList;
