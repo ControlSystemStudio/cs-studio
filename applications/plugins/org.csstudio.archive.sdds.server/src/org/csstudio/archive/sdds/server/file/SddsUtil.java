@@ -22,59 +22,42 @@
  *
  */
 
-package org.csstudio.archive.sdds.server.util;
+package org.csstudio.archive.sdds.server.file;
+
+import SDDS.java.SDDS.SDDSFile;
 
 /**
- * TODO (mmoeller) : 
- * 
- * @author mmoeller
- * @version 
- * @since 04.11.2010
+ * @author Markus Moeller
+ *
  */
-public enum ArchiveSeverity {
+public class SddsUtil
+{
+    /** No error */
+    public static final int SDDS_CHECK_OKAY = 0;
     
-    NO_ALARM(0),
-    MINOR(1),
-    MAJOR(2),
-    INVALID(3),
-    ARCHIVE_DISABLED(3848),
-    REPEAT(3856),
-    ARCHIVE_OFF(3872),
-    DISCONNECTED(3904),
-    EST_REPEAT(3968),
-    UNDEFINED(9999);
+    /** No error */
+    public static final int SDDS_CHECK_OK = SDDS_CHECK_OKAY;
     
-    /** */
-    private long severityValue;
+    /** Column, parameter, etc. does not exist */
+    public static final int SDDS_CHECK_NONEXISTENT = 1;
     
-    /**
-     * 
-     * @param statusValue
-     */
-    private ArchiveSeverity(long severityValue) {
-        this.severityValue = severityValue;
-    }
+    /** Column, parameter, etc. has got wrong type */
+    public static final int SDDS_CHECK_WRONGTYPE = 2;
+    
+    /** The unit is not correct */
+    public static final int SDDS_CHECK_WRONGUNITS = 3;
     
     /**
      * 
+     * @param sddsFile
+     * @param columnNames
+     * @param columnUnits
+     * @param type
      * @return
      */
-    public long getSeverityValue() {
-        return this.severityValue;
-    }
-    
-    public static ArchiveSeverity getByArchiveValue(long v) {
-        
-        ArchiveSeverity result = ArchiveSeverity.UNDEFINED;
-        
-        for(ArchiveSeverity o : ArchiveSeverity.values()) {
-            
-            if(o.getSeverityValue() == v) {
-                
-                result = o;
-                break;
-            }
-        }
+    public static int checkColumn(SDDSFile sddsFile, String[] columnNames, String[] columnUnits, SddsDataType type)
+    {
+        int result = SDDS_CHECK_OK;
         
         return result;
     }

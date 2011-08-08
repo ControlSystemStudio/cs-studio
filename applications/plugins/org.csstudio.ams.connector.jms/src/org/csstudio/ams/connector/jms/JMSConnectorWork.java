@@ -40,7 +40,7 @@ import org.eclipse.jface.preference.IPreferenceStore;
 
 public class JMSConnectorWork extends Thread implements AmsConstants
 {
-	private static final int TIMEOUT_AFTER_JMS_INIT = 100;
+	private static final int TIMEOUT_AFTER_JMS_INIT = 1;
 
 	private static final String AMS_SUBSCRIBER_JMS_ID = "amsSubscriberJms";
 

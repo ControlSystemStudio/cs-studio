@@ -1,6 +1,6 @@
 
 /* 
- * Copyright (c) 2010 Stiftung Deutsches Elektronen-Synchrotron, 
+ * Copyright (c) 2009 Stiftung Deutsches Elektronen-Synchrotron, 
  * Member of the Helmholtz Association, (DESY), HAMBURG, GERMANY.
  *
  * THIS SOFTWARE IS PROVIDED UNDER THIS LICENSE ON AN "../AS IS" BASIS. 
@@ -22,47 +22,77 @@
  *
  */
 
-package org.csstudio.archive.sdds.server.sdds;
+package org.csstudio.archive.sdds.server.file;
 
 /**
  * @author Markus Moeller
  *
  */
-public class DataPathNotFoundException extends Exception
-{
-    /** Generated serial version id */
-    private static final long serialVersionUID = 7818521951454992186L;
+public enum SDDSType {
+    
+    NOT_SET("Not set"),
+    SDDS_DOUBLE("Double"),
+    SDDS_FLOAT("Float"),
+    SDDS_LONG("Long"),
+    SDDS_SHORT("Short"),
+    SDDS_STRING("String"),
+    SDDS_CHARACTER("Character");
+    
+    /**  */
+    private String typeName;
+    
+    /**
+     * 
+     * @param name
+     */
+    private SDDSType(String name) {
+        typeName = name;
+    }
+    
+    /**
+     * 
+     * @param typeName
+     * @return The SDDS type matching the given name
+     */
+    public static SDDSType getByTypeName(String typeName) {
+        
+        SDDSType result = SDDSType.NOT_SET;
+        
+        for(SDDSType o : SDDSType.values()) {
+            if(o.toString().compareTo(typeName) == 0) {
+                result = o;
+                break;
+            }
+        }
+        
+        return result;
+    }
+    
+    /**
+     * 
+     * @param ordinal
+     * @return The SDDS type with the given ordinal number.
+     */
+    public static SDDSType getByOrdinal(int ordinal) {
+        
+        SDDSType result = SDDSType.NOT_SET;
+        
+        for(SDDSType o : SDDSType.values()) {
+            if(o.ordinal() == ordinal) {
+                result = o;
+                break;
+            }
+        }
+        
+        return result;
+    }
 
+    
     /**
      * 
      */
-    public DataPathNotFoundException()
-    {
-        super();
-    }
-
-    /**
-     * @param message
-     */
-    public DataPathNotFoundException(String message)
-    {
-        super(message);
-    }
-
-    /**
-     * @param cause
-     */
-    public DataPathNotFoundException(Throwable cause)
-    {
-        super(cause);
-    }
-
-    /**
-     * @param message
-     * @param cause
-     */
-    public DataPathNotFoundException(String message, Throwable cause)
-    {
-        super(message, cause);
+    @Override
+	public String toString() {
+        return typeName;
     }
 }
