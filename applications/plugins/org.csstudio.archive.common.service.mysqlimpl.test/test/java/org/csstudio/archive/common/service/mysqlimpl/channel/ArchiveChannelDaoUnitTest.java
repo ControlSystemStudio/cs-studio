@@ -92,7 +92,7 @@ public class ArchiveChannelDaoUnitTest extends AbstractDaoTestSetup {
         channels = DAO.retrieveChannelsByGroupId(new ArchiveChannelGroupId(2L));
         Assert.assertNotNull(channels);
         Assert.assertFalse(channels.isEmpty());
-        Assert.assertTrue(channels.size() == 2);
+        Assert.assertTrue(channels.size() == 3);
     }
 
     @Test
