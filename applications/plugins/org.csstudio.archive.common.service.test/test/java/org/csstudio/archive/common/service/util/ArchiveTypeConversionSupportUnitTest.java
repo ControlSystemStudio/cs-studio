@@ -157,7 +157,7 @@ public class ArchiveTypeConversionSupportUnitTest {
     public void testScalarStringArchiveStringConversion() {
         try {
             final String archiveString = ArchiveTypeConversionSupport.toArchiveString("test me");
-            Assert.assertTrue(archiveString.equals("test me"));
+            Assert.assertTrue("test me".equals(archiveString));
             final String sFromA = ArchiveTypeConversionSupport.fromArchiveString(String.class, archiveString);
             Assert.assertNotNull(sFromA);
             Assert.assertTrue(sFromA.equals(archiveString));
@@ -169,6 +169,7 @@ public class ArchiveTypeConversionSupportUnitTest {
     @Test
     public void testScalarEnumArchiveStringConversion() {
         try {
+            // CHECKSTYLE OFF : NestedBlocks
                 {
                     final EpicsEnum t = EpicsEnum.createFromRaw(3);
                     final String archiveString = ArchiveTypeConversionSupport.toArchiveString(t);
@@ -184,8 +185,8 @@ public class ArchiveTypeConversionSupportUnitTest {
                     final EpicsEnum tFromA = ArchiveTypeConversionSupport.fromArchiveString(EpicsEnum.class, archiveString);
                     Assert.assertNotNull(tFromA);
                     Assert.assertEquals("MyState", tFromA.getState());
-
                 }
+            // CHECKSTYLE ON : NestedBlocks
         } catch (final TypeSupportException e) {
             Assert.fail();
         }
