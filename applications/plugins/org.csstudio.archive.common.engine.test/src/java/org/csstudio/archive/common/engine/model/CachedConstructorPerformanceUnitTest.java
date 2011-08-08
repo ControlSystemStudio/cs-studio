@@ -23,6 +23,8 @@ package org.csstudio.archive.common.engine.model;
 
 import java.lang.reflect.Constructor;
 
+import javax.annotation.Nonnull;
+
 import org.csstudio.domain.desy.time.StopWatch;
 import org.csstudio.domain.desy.time.StopWatch.RunningStopWatch;
 import org.junit.Assert;
@@ -46,33 +48,39 @@ public class CachedConstructorPerformanceUnitTest {
      * @since 05.05.2011
      */
     public static class MyDBRType {
-        Class<TestDBRType> _class;
-        Constructor<TestDBRType> _ctor;
+        private final Class<TestDBRType> _class;
+        private Constructor<TestDBRType> _ctor;
 
-        MyDBRType(/* final String name, final int value, */final Class<TestDBRType> clazz) {
+        MyDBRType(@Nonnull /* final String name, final int value, */final Class<TestDBRType> clazz) {
             _class=clazz;
             try {
                 _ctor = _class.getConstructor( new Class[] {Integer.TYPE} );
+                // CHECKSTYLE OFF: |
             } catch( final Exception ex ) {
                 // Empty
+                // CHECKSTYLE ON: |
             }
         }
-        public TestDBRType newInstance( final int count ) {
+        @Nonnull
+        public TestDBRType newInstance(final int count) {
             try {
-              // CHECKSTYLE OFF
+              // CHECKSTYLE OFF: |
               return _ctor.newInstance( new Object[] {new Integer( count )} );
-              // CHECKSTYLE ON
-            } catch( final Exception ex ) {
+            } catch(final Exception ex ) {
                 // Empty
             }
+            // CHECKSTYLE ON: |
             return null;
         }
-        public TestDBRType newInstanceImproved( final int count ) {
+        @Nonnull
+        public TestDBRType newInstanceImproved(final int count) {
             try {
+                // CHECKSTYLE OFF: |
                 // better use valueOf when x is expected to be very often one out of 0,-1, 1, 2 (that is 'common' cases) -
                 return _ctor.newInstance( new Object[] {Integer.valueOf( count )} );
-            } catch( final Exception ex ) {
+            } catch(final Exception ex) {
                 // Empty
+                // CHECKSTYLE ON: |
             }
             return null;
         }
@@ -86,7 +94,7 @@ public class CachedConstructorPerformanceUnitTest {
      * @since 05.05.2011
      */
     public static final class TestDBRType {
-        int _count;
+        private final int _count;
         /**
          * Constructor.
          */
