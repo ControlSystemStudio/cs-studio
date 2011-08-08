@@ -202,7 +202,7 @@ public class DistributorWork extends Thread implements AmsConstants {
 						iErr = DistributorStart.STAT_ERR_JMSCON_EXT;
 				}
 
-				sleep(100);
+				sleep(1);
 
 				if (bInitedConDb && bInitedJmsInt && bInitedJmsExt) {
 					iErr = DistributorStart.STAT_OK;
