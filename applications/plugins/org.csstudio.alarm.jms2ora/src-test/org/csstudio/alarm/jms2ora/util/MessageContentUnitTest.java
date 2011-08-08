@@ -4,7 +4,7 @@ package org.csstudio.alarm.jms2ora.util;
 import org.junit.Test;
 import static org.junit.Assert.*;
 
-public class MessageContentTest
+public class MessageContentUnitTest
 {
     @Test
     public void testConstructor()
