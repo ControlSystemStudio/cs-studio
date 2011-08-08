@@ -35,7 +35,7 @@ import org.csstudio.domain.desy.time.TimeInstant.TimeInstantBuilder;
  */
 public class TimedTrigger implements TriggeringEventEvaluator {
 
-    private final int INTERVAL_IN_MS = 1000*60*15;
+    private static final int INTERVAL_IN_MS = 1000*60*15;
     private TimeInstant _timeOfLastEmail;
     private int _noOfEventsSinceLastEmail;
 

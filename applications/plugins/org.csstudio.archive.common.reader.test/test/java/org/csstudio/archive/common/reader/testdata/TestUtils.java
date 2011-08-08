@@ -57,7 +57,6 @@ import org.mockito.Mockito;
  */
 public final class TestUtils {
 
-
     public static final String CHANNEL_NAME_1 = "TEST_CHANNEL_1";
     public static final String CHANNEL_NAME_2 = "TEST_CHANNEL_2";
 
@@ -106,8 +105,15 @@ public final class TestUtils {
         CHANNEL_2_SAMPLES.add(createArchiveMinMaxDoubleSample(CHANNEL_NAME_2, TimeInstantBuilder.fromMillis(170L), 1.0));
     }
 
+    /**
+     * Constructor.
+     */
+    private TestUtils() {
+        // Empty
+    }
 
     @SuppressWarnings("rawtypes")
+    @Nonnull
     public static IArchiveMinMaxSample createArchiveMinMaxDoubleSample(@Nonnull final String channelName,
                                                                        @Nonnull final TimeInstant ts,
                                                                        @Nonnull final Double value) {
@@ -142,7 +148,7 @@ public final class TestUtils {
                                                                          @Nullable final IArchiveSample expLastSampleBefore) {
         final IArchiveServiceProvider provider =
             new IArchiveServiceProvider() {
-                @SuppressWarnings({ "unchecked" })
+                @SuppressWarnings("unchecked")
                 @Override
                 @Nonnull
                 public IArchiveReaderFacade getReaderFacade() throws OsgiServiceUnavailableException {
