@@ -25,11 +25,11 @@ import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
 import org.csstudio.domain.desy.service.osgi.OsgiServiceUnavailableException;
-import org.csstudio.utility.ldap.service.ILdapService;
 import org.csstudio.utility.ldap.service.LdapServiceTracker;
-import org.csstudio.utility.ldapupdater.service.ILdapServiceProvider;
+import org.csstudio.utility.ldapupdater.preferences.LdapUpdaterPreferencesService;
 import org.csstudio.utility.ldapupdater.service.ILdapUpdaterFileService;
 import org.csstudio.utility.ldapupdater.service.ILdapUpdaterService;
+import org.csstudio.utility.ldapupdater.service.ILdapUpdaterServicesProvider;
 import org.csstudio.utility.ldapupdater.service.impl.LdapUpdaterFileServiceImpl;
 import org.csstudio.utility.ldapupdater.service.impl.LdapUpdaterServiceImpl;
 import org.osgi.framework.BundleActivator;
@@ -59,7 +59,9 @@ public class LdapUpdaterActivator implements BundleActivator {
 
     private ServiceTracker _ldapServiceTracker;
 
-	private GenericServiceTracker<ISessionService> _genericServiceTracker;
+    private GenericServiceTracker<ISessionService> _genericServiceTracker;
+
+    private ILdapUpdaterServicesProvider _servicesProvider;
 
     private LdapUpdaterServiceImpl _ldapUpdaterService;
     private LdapUpdaterFileServiceImpl _ldapUpdaterFileService;
@@ -99,21 +101,10 @@ public class LdapUpdaterActivator implements BundleActivator {
             new GenericServiceTracker<ISessionService>(context, ISessionService.class);
         _genericServiceTracker.open();
 
-        final ILdapServiceProvider provider =
-            new ILdapServiceProvider() {
-                @Override
-                @Nonnull
-                public ILdapService getLdapService() throws OsgiServiceUnavailableException {
-                    @SuppressWarnings("synthetic-access")
-                    final ILdapService service =  (ILdapService) _ldapServiceTracker.getService();
-                    if (service == null) {
-                        throw new OsgiServiceUnavailableException("LDAP service could not be retrieved. Please try again later or check LDAP connection.");
-                    }
-                    return service;
-                }
-            };
 
-        final Injector injector = Guice.createInjector(new LdapUpdaterModule(provider));
+        _servicesProvider =
+            new LdapUpdaterServicesProvider(_ldapServiceTracker);
+        final Injector injector = Guice.createInjector(new LdapUpdaterModule(_servicesProvider));
         _ldapUpdaterFileService = injector.getInstance(LdapUpdaterFileServiceImpl.class);
         _ldapUpdaterService = injector.getInstance(LdapUpdaterServiceImpl.class);
     }
@@ -127,6 +118,7 @@ public class LdapUpdaterActivator implements BundleActivator {
     @Override
     public void stop(@Nullable final BundleContext context) throws Exception {
         _ldapServiceTracker.close();
+        _genericServiceTracker.close();
     }
 
 
@@ -135,28 +127,38 @@ public class LdapUpdaterActivator implements BundleActivator {
         return PLUGIN_ID;
     }
 
-	public void addSessionServiceListener(@Nonnull final IGenericServiceListener<ISessionService> sessionServiceListener) {
-		_genericServiceTracker.addServiceListener(sessionServiceListener);
-	}
+    public void addSessionServiceListener(@Nonnull final IGenericServiceListener<ISessionService> sessionServiceListener) {
+        _genericServiceTracker.addServiceListener(sessionServiceListener);
+    }
 
     /**
      * ANTI-PATTERN due to extension points. Cannot inject services in extension point classes.
      */
-	@Nonnull
+    @Nonnull
     public ILdapUpdaterService getLdapUpdaterService() throws OsgiServiceUnavailableException {
-	    if (_ldapUpdaterService == null) {
-	        throw new OsgiServiceUnavailableException("Service field has not been set. Hasnt' the framework called TreeModelActivator.start before?");
-	    }
+        if (_ldapUpdaterService == null) {
+            throw new OsgiServiceUnavailableException("Service field has not been set. Hasn't the framework called " + getClass().getSimpleName() + ".start before?");
+        }
         return _ldapUpdaterService;
     }
-	/**
-	 * ANTI-PATTERN due to extension points. Cannot inject services in extension point classes.
-	 */
-	@Nonnull
-	public ILdapUpdaterFileService getLdapUpdaterFileService() throws OsgiServiceUnavailableException {
-	    if (_ldapUpdaterFileService == null) {
-	        throw new OsgiServiceUnavailableException("Service field has not been set. Hasnt' the framework called TreeModelActivator.start before?");
-	    }
-	    return _ldapUpdaterFileService;
-	}
+    /**
+     * ANTI-PATTERN due to extension points. Cannot inject services in extension point classes.
+     */
+    @Nonnull
+    public ILdapUpdaterFileService getLdapUpdaterFileService() throws OsgiServiceUnavailableException {
+        if (_ldapUpdaterFileService == null) {
+            throw new OsgiServiceUnavailableException("Service field has not been set. Hasn't the framework called " + getClass().getSimpleName() + ".start before?");
+        }
+        return _ldapUpdaterFileService;
+    }
+    /**
+     * ANTI-PATTERN due to extension points. Cannot inject services in extension point classes.
+     */
+    @Nonnull
+    public LdapUpdaterPreferencesService getLdapUpdaterPreferencesService() {
+        if (_servicesProvider == null) {
+            throw new IllegalStateException("Services provider field has not been set. Hasn't the framework called " + getClass().getSimpleName() + ".start before?");
+        }
+        return _servicesProvider.getPreferencesService();
+    }
 }

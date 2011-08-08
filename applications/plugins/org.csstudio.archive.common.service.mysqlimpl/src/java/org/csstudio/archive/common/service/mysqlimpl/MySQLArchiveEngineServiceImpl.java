@@ -21,6 +21,7 @@
  */
 package org.csstudio.archive.common.service.mysqlimpl;
 
+import java.io.Serializable;
 import java.util.Collection;
 
 import javax.annotation.CheckForNull;
@@ -103,7 +104,7 @@ public class MySQLArchiveEngineServiceImpl implements IArchiveEngineFacade {
      * {@inheritDoc}
      */
     @Override
-    public <V, T extends ISystemVariable<V>>
+    public <V extends Serializable, T extends ISystemVariable<V>>
     boolean writeSamples(@Nonnull final Collection<IArchiveSample<V, T>> samples) throws ArchiveServiceException {
         try {
             _sampleDao.createSamples(samples);
@@ -207,7 +208,7 @@ public class MySQLArchiveEngineServiceImpl implements IArchiveEngineFacade {
      * {@inheritDoc}
      */
     @Override
-    public <V extends Comparable<? super V>>
+    public <V extends Comparable<? super V> & Serializable>
     void writeChannelDisplayRangeInfo(@Nonnull final ArchiveChannelId id,
                                       @Nonnull final V displayLow,
                                       @Nonnull final V displayHigh) throws ArchiveServiceException {

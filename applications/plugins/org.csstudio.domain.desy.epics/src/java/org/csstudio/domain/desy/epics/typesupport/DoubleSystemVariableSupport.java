@@ -107,17 +107,6 @@ final class DoubleSystemVariableSupport extends EpicsSystemVariableSupport<Doubl
                                                                                     @Nonnull final Collection<Double> values,
                                                                                     @Nonnull final ControlSystem system,
                                                                                     @Nonnull final TimeInstant timestamp) throws TypeSupportException {
-        try {
-            @SuppressWarnings("unchecked")
-            final Collection<Double> newCollection = (Collection<Double>) typeClass.newInstance();
-            for (final Double v : values) {
-                newCollection.add(v);
-            }
-            return new EpicsSystemVariable<Collection<Double>>(name, newCollection, system, timestamp, EpicsAlarm.UNKNOWN);
-        } catch (final InstantiationException e) {
-            throw new TypeSupportException("Collection type could not be instantiated from Class<?> object.", e);
-        } catch (final IllegalAccessException e) {
-            throw new TypeSupportException("Collection type could not be instantiated from Class<?> object.", e);
-        }
+        return new EpicsSystemVariable<Collection<Double>>(name, values, system, timestamp, EpicsAlarm.UNKNOWN);
     }
 }

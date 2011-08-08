@@ -39,16 +39,16 @@ import org.csstudio.utility.ldapupdater.LdapUpdaterServer;
  */
 public class ShutdownLdapUpdaterAction implements IManagementCommand {
 
-	/**
-	 * {@inheritDoc}
-	 */
-	@Override
-	@Nonnull
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    @Nonnull
     public final CommandResult execute(@Nonnull final CommandParameters parameters) {
-			final LdapUpdaterServer server = LdapUpdaterServer.getRunningServer();
-			if (server != null) {
-			    server.stop();
-			}
-			return CommandResult.createSuccessResult();
-		}
-	}
+            final LdapUpdaterServer server = LdapUpdaterServer.getRunningServer();
+            if (server != null) {
+                server.stop();
+            }
+            return CommandResult.createSuccessResult();
+        }
+    }

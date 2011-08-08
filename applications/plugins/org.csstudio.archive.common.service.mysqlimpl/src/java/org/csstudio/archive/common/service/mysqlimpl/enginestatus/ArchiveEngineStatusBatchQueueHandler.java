@@ -77,14 +77,6 @@ public final class ArchiveEngineStatusBatchQueueHandler extends BatchQueueHandle
      */
     @Override
     @Nonnull
-    public Class<IArchiveEngineStatus> getType() {
-        return IArchiveEngineStatus.class;
-    }
-    /**
-     * {@inheritDoc}
-     */
-    @Override
-    @Nonnull
     public Collection<String> convertToStatementString(@Nonnull final List<IArchiveEngineStatus> elements) {
         final String sqlStr = composeSqlString().replace(VAL_WILDCARDS, "");
         final Collection<String> values =

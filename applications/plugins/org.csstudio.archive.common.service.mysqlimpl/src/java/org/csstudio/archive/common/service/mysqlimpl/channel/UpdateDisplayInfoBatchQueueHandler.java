@@ -112,15 +112,6 @@ public class UpdateDisplayInfoBatchQueueHandler extends BatchQueueHandlerSupport
      */
     @Override
     @Nonnull
-    public Class<ArchiveChannelDisplayInfo> getType() {
-        return ArchiveChannelDisplayInfo.class;
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    @Override
-    @Nonnull
     public Collection<String> convertToStatementString(@Nonnull final List<ArchiveChannelDisplayInfo> elements) {
         final String sqlStr = composeSqlString();
         final Collection<String> statements =

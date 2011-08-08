@@ -13,7 +13,7 @@ import javax.servlet.http.HttpServletResponse;
 
 import org.csstudio.archive.common.engine.model.ArchiveChannel;
 import org.csstudio.archive.common.engine.model.ArchiveGroup;
-import org.csstudio.archive.common.engine.model.BufferStats;
+import org.csstudio.archive.common.engine.model.SampleBufferStatistics;
 import org.csstudio.archive.common.engine.model.EngineModel;
 import org.csstudio.archive.common.engine.model.SampleBuffer;
 import org.csstudio.domain.desy.system.ISystemVariable;
@@ -93,7 +93,7 @@ class GroupResponse extends AbstractResponse {
             final String connected = channel.isConnected() ? Messages.HTTP_YES :
                                                              HTMLWriter.makeRedText(Messages.HTTP_NO);
             final SampleBuffer<?, ?, ?> buffer = channel.getSampleBuffer();
-            final BufferStats stats = buffer.getBufferStats();
+            final SampleBufferStatistics stats = buffer.getBufferStats();
             final ISystemVariable<?> mostRecentSample = channel.getMostRecentSample();
 
             final String curVal = limitLength(getValueAsString(mostRecentSample), MAX_VALUE_DISPLAY);

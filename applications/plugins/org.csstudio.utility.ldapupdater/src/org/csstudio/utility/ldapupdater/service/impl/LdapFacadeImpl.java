@@ -44,7 +44,6 @@ import java.util.Set;
 
 import javax.annotation.CheckForNull;
 import javax.annotation.Nonnull;
-import javax.naming.InvalidNameException;
 import javax.naming.NamingException;
 import javax.naming.directory.Attributes;
 import javax.naming.directory.BasicAttribute;
@@ -67,7 +66,7 @@ import org.csstudio.utility.ldap.treeconfiguration.LdapFieldsAndAttributes;
 import org.csstudio.utility.ldapupdater.model.IOC;
 import org.csstudio.utility.ldapupdater.model.Record;
 import org.csstudio.utility.ldapupdater.service.ILdapFacade;
-import org.csstudio.utility.ldapupdater.service.ILdapServiceProvider;
+import org.csstudio.utility.ldapupdater.service.ILdapUpdaterServicesProvider;
 import org.csstudio.utility.ldapupdater.service.LdapFacadeException;
 import org.csstudio.utility.treemodel.ContentModel;
 import org.csstudio.utility.treemodel.CreateContentModelException;
@@ -91,13 +90,13 @@ public class LdapFacadeImpl implements ILdapFacade {
 
     private static final Logger LOG = LoggerFactory.getLogger(LdapFacadeImpl.class);
 
-    private final ILdapServiceProvider _serviceProvider;
+    private final ILdapUpdaterServicesProvider _serviceProvider;
 
     /**
      * Constructor.
      */
     @Inject
-    public LdapFacadeImpl(@Nonnull final ILdapServiceProvider provider) {
+    public LdapFacadeImpl(@Nonnull final ILdapUpdaterServicesProvider provider) {
         _serviceProvider = provider;
     }
     @Nonnull
@@ -256,8 +255,6 @@ public class LdapFacadeImpl implements ILdapFacade {
 
             removeLeafComponents(validRecords, model);
 
-        } catch (final InvalidNameException e) {
-            throw new LdapFacadeException("Invalid name exception on tidying IOC entries.", e);
         } catch (final OsgiServiceUnavailableException e) {
             throw new LdapFacadeException("Service unavailable on tidying IOC entries LDAP.", e);
         }
@@ -300,8 +297,7 @@ public class LdapFacadeImpl implements ILdapFacade {
 
     private void removeLeafComponents(@Nonnull final Set<Record> validRecords,
                                       @Nonnull final ContentModel<LdapEpicsControlsConfiguration> model)
-            throws InvalidNameException,
-                   OsgiServiceUnavailableException {
+            throws OsgiServiceUnavailableException {
 
         final Map<String, INodeComponent<LdapEpicsControlsConfiguration>> recordsInLdap =
             model.getChildrenByTypeAndSimpleName(RECORD);

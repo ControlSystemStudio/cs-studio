@@ -17,7 +17,7 @@ import org.csstudio.domain.desy.calc.AverageWithExponentialDecayCache;
  *  @author Bastian Knerr
  */
 @ThreadSafe
-public final class BufferStats {
+public final class SampleBufferStatistics {
     @GuardedBy("this")
     private int _maxSize;
 

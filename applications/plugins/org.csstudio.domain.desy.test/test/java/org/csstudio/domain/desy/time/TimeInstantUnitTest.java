@@ -154,20 +154,43 @@ public final class TimeInstantUnitTest {
         final TimeInstant t1 = TimeInstantBuilder.fromNanos(0L);
         t1.minusMillis(-1L);
     }
-    
+
     @Test
-    public void minusTest() {
+    public void minusSecondsTest() {
+        TimeInstant t = TimeInstantBuilder.fromSeconds(222L);
+        TimeInstant result = t.minusSeconds(200L);
+        Assert.assertTrue(result.getSeconds() == 22L);
+
+        t = TimeInstantBuilder.fromNanos(5123456789L);
+        result = t.minusSeconds(5L);
+        Assert.assertTrue(result.getSeconds() == 0L);
+        Assert.assertTrue(result.getFractalSecondsInNanos() == 123456789L);
+    }
+
+    @Test(expected=IllegalArgumentException.class)
+    public void invalidMinusSecondsTest() {
+        final TimeInstant t1 = TimeInstantBuilder.fromSeconds(10L);
+        t1.minusSeconds(12L);
+    }
+
+    @Test
+    public void minusMillisTest() {
         TimeInstant t = TimeInstantBuilder.fromMillis(222L);
         TimeInstant result = t.minusMillis(200L);
         Assert.assertTrue(result.getMillis() == 22L);
-        
+
         t = TimeInstantBuilder.fromNanos(123456789L);
         result = t.minusMillis(123L);
         Assert.assertTrue(result.getMillis() == 0L);
         Assert.assertTrue(result.getFractalSecondsInNanos() == 456789L);
     }
-    
-    
+
+    @Test(expected=IllegalArgumentException.class)
+    public void invalidMinusMillisTest() {
+        final TimeInstant t1 = TimeInstantBuilder.fromNanos(1L);
+        t1.minusMillis(2L);
+    }
+
     @Test(expected=IllegalArgumentException.class)
     public void invalidPlusTest1() {
         final TimeInstant t1 = TimeInstantBuilder.fromNanos(0L);
@@ -198,7 +221,7 @@ public final class TimeInstantUnitTest {
     @Test
     public void testFormats() {
         final TimeInstant now = TimeInstantBuilder.fromNow();
-        
+
         final String date = now.formatted(TimeInstant.STD_DATE_FMT);
         Assert.assertTrue(Pattern.matches("\\d\\d\\d\\d-\\d\\d-\\d\\d", date));
 

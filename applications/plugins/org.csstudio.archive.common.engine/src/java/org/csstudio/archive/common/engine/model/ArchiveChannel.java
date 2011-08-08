@@ -7,6 +7,8 @@
  ******************************************************************************/
 package org.csstudio.archive.common.engine.model;
 
+import java.io.Serializable;
+
 import javax.annotation.CheckForNull;
 import javax.annotation.Nonnull;
 import javax.annotation.concurrent.GuardedBy;
@@ -31,7 +33,7 @@ import org.slf4j.LoggerFactory;
  *  @param <T> the system variable for the basic value type
  */
 @SuppressWarnings("nls")
-public class ArchiveChannel<V, T extends ISystemVariable<V>> {
+public class ArchiveChannel<V extends Serializable, T extends ISystemVariable<V>> {
 
     private static final Logger LOG = LoggerFactory.getLogger(PVListener.class);
 
@@ -103,6 +105,17 @@ public class ArchiveChannel<V, T extends ISystemVariable<V>> {
         _buffer = new SampleBuffer<V, T, IArchiveSample<V, T>>(name);
 
         try {
+//            final PVReader<List<Object>> reader = PVManager.read(newValuesOf(channel(name))).every(ms(5));
+//            reader.addPVReaderListener(new PVReaderListener() {
+//                @Override
+//                public void pvChanged() {
+//                    // Do something with each value
+//                    for (final Object newValue : reader.getValue()) {
+//                        System.out.println(newValue);
+//                    }
+//                }
+//            });
+
             _pv = PVFactory.createPV(name);
         } catch (final Exception e) {
             throw new EngineModelException("Creation of pv failed for channel " + name, e);

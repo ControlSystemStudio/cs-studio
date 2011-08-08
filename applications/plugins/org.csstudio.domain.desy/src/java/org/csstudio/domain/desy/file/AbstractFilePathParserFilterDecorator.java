@@ -19,30 +19,53 @@
  * PROJECT IN THE FILE LICENSE.HTML. IF THE LICENSE IS NOT INCLUDED YOU MAY FIND A COPY
  * AT HTTP://WWW.DESY.DE/LEGAL/LICENSE.HTM
  */
-package org.csstudio.domain.desy.types;
+package org.csstudio.domain.desy.file;
 
-import org.csstudio.domain.desy.typesupport.BaseTypeConversionSupport;
-import org.csstudio.domain.desy.typesupport.TypeSupportException;
-import org.junit.Assert;
-import org.junit.Test;
+import java.io.File;
+
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 
 /**
+ * Abstract implementation of file path
+ *
  * @author bknerr
- * @since 27.01.2011
+ * @since 28.04.2011
  */
-public class BaseTypeConversionSupportUnitTest {
+public abstract class AbstractFilePathParserFilterDecorator implements IFilePathDepthFilter {
 
-    @Test
-    public void testCreateTypeClassFromStringFromBuddyPlugin() throws TypeSupportException {
+    /**
+     * The base filter (decorator) or <code>null</code>.
+     */
+    private final IFilePathDepthFilter _baseFilter;
 
-        Assert.assertNotNull(BaseTypeConversionSupport.createTypeClassFromString(String.class.getSimpleName(),
-                                                                                 "java.lang"));
+    /**
+     * Constructor.
+     */
+    public AbstractFilePathParserFilterDecorator() {
+        this(null);
     }
-    
-    @Test(expected=TypeSupportException.class)
-    public void testTypeSupportException() throws TypeSupportException {
-        Assert.assertNull(BaseTypeConversionSupport.createTypeClassFromString("Tralala",
-        "org.csstudio.domain.desy.epics.types"));
-        
+    /**
+     * Constructor.
+     */
+    public AbstractFilePathParserFilterDecorator(@Nullable final IFilePathDepthFilter baseFilter) {
+        _baseFilter = baseFilter;
+    }
+
+    /**
+     * Filter to include current depth of recursive traversal into filter decision.
+     *
+     * @param input the file or directory to filter
+     * @param currentDepth the current depth of the recursive traversal
+     * @return true if the file or directory should be filtered
+     */
+    @Override
+    public boolean apply(@Nonnull final File input,
+                         final int currentDepth) {
+        return false;
+    }
+
+    protected boolean baseFilterApply(@Nonnull final File input) {
+        return _baseFilter != null && _baseFilter.apply(input);
     }
 }

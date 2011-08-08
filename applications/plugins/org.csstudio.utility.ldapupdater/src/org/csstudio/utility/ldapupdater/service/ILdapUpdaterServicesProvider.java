@@ -18,15 +18,19 @@ import javax.annotation.Nonnull;
 
 import org.csstudio.domain.desy.service.osgi.OsgiServiceUnavailableException;
 import org.csstudio.utility.ldap.service.ILdapService;
+import org.csstudio.utility.ldapupdater.preferences.LdapUpdaterPreferencesService;
 
 /**
- * TODO (bknerr) :
+ * Provider pattern for dependency inversion.
  *
  * @author bknerr
  * @since 27.04.2011
  */
-public interface ILdapServiceProvider {
+public interface ILdapUpdaterServicesProvider {
 
     @Nonnull
     ILdapService getLdapService() throws OsgiServiceUnavailableException;
+
+    @Nonnull
+    LdapUpdaterPreferencesService getPreferencesService();
 }

@@ -33,6 +33,8 @@ import java.util.List;
 import java.util.Map;
 
 import javax.annotation.Nonnull;
+import javax.mail.internet.AddressException;
+import javax.mail.internet.InternetAddress;
 
 import org.csstudio.domain.desy.net.HostAddress;
 import org.eclipse.core.resources.IResource;
@@ -148,8 +150,7 @@ public abstract class AbstractPreference<T> {
                 try {
                     return new URL(prefs.getString(context, key, defaultValue.toString(), null));
                 } catch (final MalformedURLException e) {
-                    LoggerFactory.getLogger(AbstractPreference.class)
-                            .error("URL preference is not well formed.", e);
+                    LoggerFactory.getLogger(AbstractPreference.class).error("URL preference is not well formed.", e);
                     throw new IllegalArgumentException("URL preference not well-formed. "
                             + "That is not supposed to happen, since the defaultValue is by definition of type URL.");
                 }
@@ -166,6 +167,25 @@ public abstract class AbstractPreference<T> {
                                                        key,
                                                        defaultValue.getHostAddress(),
                                                        null));
+            }
+        });
+        TYPE_MAP.put(InternetAddress.class, new AbstractPrefStrategy<InternetAddress>() {
+            @Override
+            @Nonnull
+            public InternetAddress getResultByTypeStrategy(@Nonnull final IPreferencesService prefs,
+                                                           @Nonnull final String context,
+                                                           @Nonnull final String key,
+                                                           @Nonnull final InternetAddress defaultValue) {
+                try {
+                    return new InternetAddress(prefs.getString(context,
+                                                               key,
+                                                               defaultValue.getAddress(),
+                                                               null));
+                } catch (@Nonnull final AddressException e) {
+                    LoggerFactory.getLogger(AbstractPreference.class).error("InternetAddress preference is not well formed.", e);
+                    throw new IllegalArgumentException("Preference is not well-formed. "
+                                                       + "That is not supposed to happen, since the defaultValue is by definition of type " + InternetAddress.class.getSimpleName());
+                }
             }
         });
         TYPE_MAP.put(File.class, new AbstractPrefStrategy<File>() {

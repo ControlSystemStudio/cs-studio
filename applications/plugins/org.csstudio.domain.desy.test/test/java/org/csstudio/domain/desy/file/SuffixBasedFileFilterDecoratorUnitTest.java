@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2009 Stiftung Deutsches Elektronen-Synchrotron,
+ * Copyright (c) 2011 Stiftung Deutsches Elektronen-Synchrotron,
  * Member of the Helmholtz Association, (DESY), HAMBURG, GERMANY.
  *
  * THIS SOFTWARE IS PROVIDED UNDER THIS LICENSE ON AN "../AS IS" BASIS.
@@ -19,30 +19,42 @@
  * PROJECT IN THE FILE LICENSE.HTML. IF THE LICENSE IS NOT INCLUDED YOU MAY FIND A COPY
  * AT HTTP://WWW.DESY.DE/LEGAL/LICENSE.HTM
  */
+package org.csstudio.domain.desy.file;
 
-package org.csstudio.config.savevalue;
+import java.io.File;
+import java.io.IOException;
 
-import org.csstudio.config.savevalue.internal.changelog.ChangelogAppenderTest;
-import org.csstudio.config.savevalue.internal.changelog.ChangelogEntrySerializerEscapeTest;
-import org.csstudio.config.savevalue.internal.changelog.ChangelogEntrySerializerSplitAndUnescapeTest;
-import org.csstudio.config.savevalue.internal.changelog.ChangelogEntrySerializerTest;
-import org.csstudio.config.savevalue.internal.changelog.ChangelogReaderTest;
-import org.junit.runner.RunWith;
-import org.junit.runners.Suite;
-import org.junit.runners.Suite.SuiteClasses;
+import junit.framework.Assert;
 
+import org.junit.Rule;
+import org.junit.Test;
+import org.junit.rules.TemporaryFolder;
 
 /**
- * @author Joerg Rathlev
+ * Test for {@link SuffixBasedFileFilterDecorator}.
+ *
+ * @author bknerr
+ * @since 28.04.2011
  */
-@RunWith(Suite.class)
-@SuiteClasses({
-	ChangelogAppenderTest.class,
-	ChangelogEntrySerializerTest.class,
-	ChangelogEntrySerializerEscapeTest.class,
-	ChangelogEntrySerializerSplitAndUnescapeTest.class,
-	ChangelogReaderTest.class
-})
-public class AllTests {
-	// no code
+public class SuffixBasedFileFilterDecoratorUnitTest {
+
+    // CHECKSTYLE OFF: VisibilityModifier
+    @Rule
+    public TemporaryFolder _tempFolder = new TemporaryFolder();
+    // CHECKSTYLE ON: VisibilityModifier
+
+    @Test
+    public void testFilter() throws IOException {
+        final File validFileDepth0 = _tempFolder.newFile("a.test");
+        Assert.assertTrue(validFileDepth0.exists());
+
+        final SuffixBasedFileFilterDecorator filter = new SuffixBasedFileFilterDecorator(".test", 1);
+        Assert.assertFalse(filter.apply(validFileDepth0));
+        Assert.assertFalse(filter.apply(validFileDepth0, 1));
+        Assert.assertTrue(filter.apply(validFileDepth0, 2));
+
+        final File dir = _tempFolder.newFolder("testDir");
+        Assert.assertTrue(filter.apply(dir));
+        Assert.assertTrue(filter.apply(dir, 2));
+    }
 }

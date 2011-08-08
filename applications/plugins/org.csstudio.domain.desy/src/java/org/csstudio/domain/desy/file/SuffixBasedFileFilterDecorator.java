@@ -19,21 +19,21 @@
  * PROJECT IN THE FILE LICENSE.HTML. IF THE LICENSE IS NOT INCLUDED YOU MAY FIND A COPY
  * AT HTTP://WWW.DESY.DE/LEGAL/LICENSE.HTM
  */
-package org.csstudio.utility.ldapupdater.files;
+package org.csstudio.domain.desy.file;
 
 import java.io.File;
 
 import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 
-import org.csstudio.domain.desy.file.AbstractFilePathParserFilter;
 
 /**
- * Filters anything but files ending on the specified suffix.
+ * Filter decorator that checks for the files' suffix and their directory depth.
  *
  * @author bknerr
  * @since 28.04.2011
  */
-public class SuffixBasedFileFilter extends AbstractFilePathParserFilter {
+public class SuffixBasedFileFilterDecorator extends AbstractFilePathParserFilterDecorator {
 
     private final String _suffix;
     private final int _finalDepth;
@@ -41,8 +41,17 @@ public class SuffixBasedFileFilter extends AbstractFilePathParserFilter {
     /**
      * Constructor.
      */
-    public SuffixBasedFileFilter(@Nonnull final String fileNameSuffix,
+    public SuffixBasedFileFilterDecorator(@Nonnull final String fileNameSuffix,
                                           final int depth) {
+        this(null, fileNameSuffix, depth);
+    }
+    /**
+     * Constructor.
+     */
+    public SuffixBasedFileFilterDecorator(@Nullable final IFilePathDepthFilter baseFilter,
+                                          @Nonnull final String fileNameSuffix,
+                                          final int depth) {
+        super(baseFilter);
         _suffix = fileNameSuffix;
         _finalDepth = depth;
     }
@@ -72,6 +81,10 @@ public class SuffixBasedFileFilter extends AbstractFilePathParserFilter {
      */
     @Override
     public boolean apply(@Nonnull final File input) {
+        if (baseFilterApply(input)) {
+            return true;
+        }
+
         if (!input.isFile()) {
             return true;
         }
@@ -80,5 +93,4 @@ public class SuffixBasedFileFilter extends AbstractFilePathParserFilter {
         }
         return true;
     }
-
 }

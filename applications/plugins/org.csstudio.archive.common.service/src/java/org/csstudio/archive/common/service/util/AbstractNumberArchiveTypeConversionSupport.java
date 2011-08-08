@@ -21,17 +21,11 @@
  */
 package org.csstudio.archive.common.service.util;
 
-import java.util.Collection;
+import java.io.Serializable;
 
-import javax.annotation.CheckForNull;
 import javax.annotation.Nonnull;
 
 import org.csstudio.domain.desy.typesupport.TypeSupportException;
-
-import com.google.common.base.Function;
-import com.google.common.base.Predicates;
-import com.google.common.base.Splitter;
-import com.google.common.collect.Iterables;
 
 /**
  * Common type conversions for {@link Number} subtypes.
@@ -40,34 +34,7 @@ import com.google.common.collect.Iterables;
  * @since 10.12.2010
  * @param <N> the number subtype
  */
-public abstract class AbstractNumberArchiveTypeConversionSupport<N extends Number> extends ArchiveTypeConversionSupport<N> {
-
-    /**
-     * Number to string convertible function.
-     *
-     * @author bknerr
-     * @since 20.12.2010
-     */
-    private final class String2NumberFunction implements Function<String, N> {
-        /**
-         * Constructor.
-         */
-        public String2NumberFunction() {
-            // Empty
-        }
-
-        @Override
-        @CheckForNull
-        public N apply(@Nonnull final String from) {
-            try {
-                return convertFromArchiveString(from);
-            } catch (final TypeSupportException e) {
-                return null;
-            }
-        }
-    }
-    private final String2NumberFunction _string2NumberFunc = new String2NumberFunction();
-
+public abstract class AbstractNumberArchiveTypeConversionSupport<N extends Number & Serializable> extends ArchiveTypeConversionSupport<N> {
     /**
      * Constructor.
      * @param type
@@ -91,26 +58,5 @@ public abstract class AbstractNumberArchiveTypeConversionSupport<N extends Numbe
     @Nonnull
     public Boolean isOptimizableByAveraging() {
         return Boolean.TRUE;
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    @Override
-    @Nonnull
-    public Collection<N> convertFromArchiveStringToMultiScalar(@Nonnull final Class<?> collectionClass,
-                                                               @Nonnull final String archiveValues) throws TypeSupportException {
-
-        final String releasedStr = collectionRelease(archiveValues);
-        if (releasedStr == null) {
-            throw new TypeSupportException("Values representation does not adhere to multi scalar start and end delimiters.", null);
-        }
-        final Iterable<String> strings = Splitter.on(ARCHIVE_COLLECTION_ELEM_SEP).split(releasedStr);
-
-        final Iterable<N> typedValues = Iterables.filter(Iterables.transform(strings, _string2NumberFunc),
-                                                         Predicates.<N>notNull());
-        checkInputVsOutputSize(strings, typedValues);
-
-        return createCollectionFromIterable(collectionClass, typedValues);
     }
 }

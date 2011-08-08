@@ -101,12 +101,4 @@ public class ArchiveChannelStatusBatchQueueHandler extends BatchQueueHandlerSupp
                                     });
         return Collections.singleton(sqlWithoutValues + Joiner.on(",").join(valueList) + ";");
     }
-    /**
-     * {@inheritDoc}
-     */
-    @Override
-    @Nonnull
-    public Class<IArchiveChannelStatus> getType() {
-        return IArchiveChannelStatus.class;
-    }
 }

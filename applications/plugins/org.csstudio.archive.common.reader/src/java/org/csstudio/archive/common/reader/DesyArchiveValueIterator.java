@@ -21,6 +21,8 @@
  */
 package org.csstudio.archive.common.reader;
 
+import java.io.Serializable;
+
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
@@ -42,7 +44,7 @@ import org.slf4j.LoggerFactory;
  * @since 21.12.2010
  * @param <V> the base type of this channel
  */
-public class DesyArchiveValueIterator<V> extends AbstractValueIterator<V> {
+public class DesyArchiveValueIterator<V extends Serializable> extends AbstractValueIterator<V> {
 
     @SuppressWarnings("unused")
     private static final Logger LOG =
