@@ -93,6 +93,7 @@ public final class CssResourceLocator {
      * @return the file found under the composed base path + site specific string + file name
      * @throws FileNotFoundException if file does not exist
      */
+    @Nonnull
     public static File locateSiteSpecificResource(@Nonnull final String fileName)
                                                   throws FileNotFoundException {
         final String configRepoPath = System.getProperty(CONFIGURATION_REPO_PATH_KEY);
