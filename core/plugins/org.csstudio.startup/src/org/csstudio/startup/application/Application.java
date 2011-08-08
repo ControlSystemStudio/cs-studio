@@ -26,6 +26,8 @@ import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 import org.csstudio.startup.Plugin;
 import org.csstudio.startup.module.CSSStartupExtensionPoint;
@@ -101,6 +103,12 @@ public class Application implements IApplication {
 		{
 			return startApplication(context, display, openDocProcessor);
 		}
+		catch (Throwable ex)
+		{
+			Logger.getLogger(Plugin.ID).log(Level.SEVERE, "Application Main Loop Error", ex); //$NON-NLS-1$
+			if (ex instanceof Exception)
+				throw (Exception) ex;
+		}
 		finally
 		{
             // On OS X, when using Command-Q to quit, the display is already
@@ -110,6 +118,7 @@ public class Application implements IApplication {
             if (! display.isDisposed())
 		        display.close();
 		}
+		return EXIT_OK;
 	}
 
 	/** Show and tweak SWT debug options.

@@ -1,0 +1,23 @@
+<config name="demo">
+    <component name="Simulated">
+        <pv name="sim://ramp">
+            <description>Ramp</description>
+            <latching>true</latching>
+            <annunciating>true</annunciating>
+        </pv>
+    </component>
+    <component name="RFQ">
+        <component name="Vacuum">
+            <pv name="RFQ_Vac:Pump1:Pressure">
+                <description>Pump 1</description>
+                <latching>true</latching>
+                <annunciating>true</annunciating>
+            </pv>
+            <pv name="RFQ_Vac:Pump2:Pressure">
+                <description>Pump 2</description>
+                <latching>true</latching>
+                <annunciating>true</annunciating>
+            </pv>
+        </component>
+    </component>
+</config>

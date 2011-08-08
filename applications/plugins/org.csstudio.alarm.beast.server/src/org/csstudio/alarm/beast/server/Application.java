@@ -9,6 +9,9 @@ package org.csstudio.alarm.beast.server;
 
 import org.csstudio.alarm.beast.Preferences;
 import org.csstudio.alarm.beast.WorkQueue;
+import org.csstudio.apputil.args.ArgParser;
+import org.csstudio.apputil.args.BooleanOption;
+import org.csstudio.apputil.args.StringOption;
 import org.csstudio.logging.LogConfigurator;
 import org.eclipse.equinox.app.IApplication;
 import org.eclipse.equinox.app.IApplicationContext;
@@ -40,6 +43,31 @@ public class Application implements IApplication
     @Override
     public Object start(final IApplicationContext context) throws Exception
     {
+        // Create parser for arguments and run it.
+        final String args[] =
+            (String []) context.getArguments().get("application.args");
+
+        final ArgParser parser = new ArgParser();
+        final BooleanOption help_opt = new BooleanOption(parser,
+    		"-help", "Display Help");
+        final StringOption config_name = new StringOption(parser,
+    		"-root", "Alarm Configuration root", Preferences.getAlarmTreeRoot());
+    	parser.addEclipseParameters();
+        try
+        {
+            parser.parse(args);
+        }
+        catch (final Exception ex)
+        {
+        	System.out.println(ex.getMessage() + "\n" + parser.getHelp());
+        	return IApplication.EXIT_OK;
+        }
+        if (help_opt.get())
+        {
+            System.out.println(parser.getHelp());
+            return IApplication.EXIT_OK;
+        }
+        
         // Initialize logging
         LogConfigurator.configureFromPreferences();
 
@@ -47,20 +75,19 @@ public class Application implements IApplication
         final String version = (String)
             context.getBrandingBundle().getHeaders().get("Bundle-Version");
         final String app_info = context.getBrandingName() + " " + version;
-        final String config_name = Preferences.getAlarmTreeRoot();
         Activator.getLogger().info(app_info +
-            " started for '" + config_name + "' configuration");
+            " started for '" + config_name.get() + "' configuration");
         System.out.println(app_info);
-        System.out.println("Configuration Root: " + config_name);
-        System.out.println("JMS Server Topic:   " + Preferences.getJMS_AlarmServerTopic(config_name));
-        System.out.println("JMS Client Topic:   " + Preferences.getJMS_AlarmClientTopic(config_name));
-        System.out.println("JMS Talk Topic:     " + Preferences.getJMS_TalkTopic(config_name));
+        System.out.println("Configuration Root: " + config_name.get());
+        System.out.println("JMS Server Topic:   " + Preferences.getJMS_AlarmServerTopic(config_name.get()));
+        System.out.println("JMS Client Topic:   " + Preferences.getJMS_AlarmClientTopic(config_name.get()));
+        System.out.println("JMS Talk Topic:     " + Preferences.getJMS_TalkTopic(config_name.get()));
         System.out.println("JMS Global Topic:   " + Preferences.getJMS_GlobalServerTopic());
 
         final WorkQueue work_queue = new WorkQueue();
         try
         {
-            final AlarmServer alarm_server = new AlarmServer(work_queue);
+            final AlarmServer alarm_server = new AlarmServer(work_queue, config_name.get());
             alarm_server.start();
             while (run)
                 work_queue.perform_queued_commands(500);

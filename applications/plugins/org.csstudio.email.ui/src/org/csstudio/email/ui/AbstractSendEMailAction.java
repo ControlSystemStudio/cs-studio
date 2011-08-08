@@ -18,8 +18,15 @@ import org.eclipse.swt.widgets.Shell;
 abstract public class AbstractSendEMailAction extends Action
 {
     final protected Shell shell;
-    final private String from, subject, body;
+    final private String from, subject;
+    private String body;
     
+    /** Initialize with body, awaiting image
+     *  @param shell
+     *  @param from
+     *  @param subject
+     *  @param body
+     */
     public AbstractSendEMailAction(final Shell shell, final String from,
             final String subject,
             final String body)
@@ -32,14 +39,51 @@ abstract public class AbstractSendEMailAction extends Action
         this.body = body;
     }
 
+    /** Initialize with body, awaiting body and optional image
+     *  @param shell
+     *  @param from
+     *  @param subject
+     */
+    public AbstractSendEMailAction(final Shell shell, final String from,
+            final String subject)
+    {
+        super(Messages.SendEmail,
+              Activator.getImageDescriptor("icons/email.gif")); //$NON-NLS-1$
+        this.shell = shell;
+        this.from = from;
+        this.subject = subject;
+        this.body = null;
+    }
+
+    /** {@inheritDoc} */
     @Override
     public void run()
     {
+    	if (body == null)
+    		body = getBody();
+    	if (body == null)
+    		body = ""; //$NON-NLS-1$
         final String image_filename = getImage();
-        Dialog dlg = new EMailSenderDialog(shell, Preferences.getSMTP_Host(), from,
+        
+        final Dialog dlg;
+        if (image_filename == null)
+        	dlg = new EMailSenderDialog(shell, Preferences.getSMTP_Host(), from,
+                    Messages.DefaultDestination, subject, body);
+        else
+        	dlg = new EMailSenderDialog(shell, Preferences.getSMTP_Host(), from,
                 Messages.DefaultDestination, subject, body, image_filename);
         dlg.open();
     }
 
+    /** To override by implementations that use the constructor
+     *  without body parameter
+     *  @return Text for body of email
+     */
+    public String getBody()
+    {
+	    return null;
+    }
+
+	/** @return Image attachment. May return <code>null</code> for 'no image' */
     abstract protected String getImage();
 }

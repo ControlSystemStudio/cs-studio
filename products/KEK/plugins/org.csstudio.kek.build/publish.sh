@@ -1,6 +1,9 @@
 #!/bin/sh
 #
-# Script that triggers a build of "everything"
+# Script publishes sources
+#
+# Note: May have to remove a previously copied repository on the web server
+# before copying new files on top of existing ones.
 #
 # Runs on Windows with cygwin installed
 #

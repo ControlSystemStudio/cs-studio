@@ -66,11 +66,7 @@ public class Application implements IApplication
                 "Convert ALH config into XML config file");
         final StringOption file = new StringOption(parser, "-file",
                 "XML config file to import", "");
-        // Options handled by Eclipse,
-        // but this way they show up in the help message
-        new StringOption(parser, "-pluginCustomization",
-                        "Eclipse plugin defaults", null);
-        new StringOption(parser, "-data", "Eclipse workspace location", null);
+        parser.addEclipseParameters();
         try
         {
             parser.parse(args);

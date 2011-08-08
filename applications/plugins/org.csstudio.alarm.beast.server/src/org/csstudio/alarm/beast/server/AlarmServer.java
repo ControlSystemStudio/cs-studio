@@ -74,17 +74,18 @@ public class AlarmServer
     /** Initialize
      *  @param talker Talker that'll be used to annunciate
      *  @param work_queue Work queue of the 'main' thread
+     *  @param root_name 
      *  @throws Exception on error
      */
-    public AlarmServer(final WorkQueue work_queue) throws Exception
+    public AlarmServer(final WorkQueue work_queue, final String root_name) throws Exception
     {
         this.work_queue = work_queue;
         rdb = new AlarmRDB(this, Preferences.getRDB_Url(),
         		Preferences.getRDB_User(),
         		Preferences.getRDB_Password(),
         		Preferences.getRDB_Schema(),
-        		Preferences.getAlarmTreeRoot());
-        messenger = new ServerCommunicator(this, work_queue);
+        		root_name);
+        messenger = new ServerCommunicator(this, work_queue, root_name);
         readConfiguration();
     }
 
@@ -131,6 +132,8 @@ public class AlarmServer
         	alarm_tree.dump(System.out);
         }
 
+        System.out.println("Work queue size: " + work_queue.size());
+        
         // Log memory usage in MB
         final double free = Runtime.getRuntime().freeMemory() / (1024.0*1024.0);
         final double total = Runtime.getRuntime().totalMemory() / (1024.0*1024.0);

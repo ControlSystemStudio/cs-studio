@@ -28,7 +28,14 @@ public class SampleMode
     {
 	    this.monitor = monitor;
 	    this.delta = delta;
-	    this.period = period;
+	    // Enforce minimum sample period.
+	    // Must be >0 to avoid divide-by-0 and other errors
+	    // in engine sample buffer computation.
+	    // For now 0.1 is the fixed minimum
+	    if (period <= 0.0)
+	    	this.period = 0.1;
+	    else
+	    	this.period = period;
     }
 
 	/** @return <code>true</code> for monitored mode, otherwise scan */
