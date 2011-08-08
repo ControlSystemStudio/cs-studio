@@ -56,6 +56,7 @@ org.csstudio.swt.chart
 org.csstudio.swt.widgets
 org.csstudio.swt.widgets.rcp
 org.csstudio.swt.xygraph
+org.csstudio.swt.xygraph.rcp
 org.csstudio.testsuite
 org.csstudio.trends.databrowser2
 org.csstudio.ui.menu
