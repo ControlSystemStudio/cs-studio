@@ -49,6 +49,7 @@ org.csstudio.opibuilder.converter
 org.csstudio.opibuilder.examples
 org.csstudio.opibuilder.performanceTest
 org.csstudio.opibuilder.widgets
+org.csstudio.opibuilder.widgets.rcp
 org.csstudio.opi.intro
 org.csstudio.remote
 org.csstudio.swt.chart
