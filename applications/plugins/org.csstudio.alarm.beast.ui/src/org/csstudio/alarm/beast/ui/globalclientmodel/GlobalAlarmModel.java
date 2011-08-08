@@ -238,7 +238,7 @@ public class GlobalAlarmModel
             queued_updates = update_queue;
             update_queue = null;
         }
-        queued_updates.perform_queued_commands();
+        queued_updates.performQueuedCommands();
 
         // From now on, updates will be executed right away
         monitor.done();
