@@ -23,17 +23,17 @@
 package org.csstudio.utility.ldapupdater.action;
 
 import static org.csstudio.utility.ldap.treeconfiguration.LdapEpicsControlsConfiguration.IOC;
-import static org.csstudio.utility.ldapupdater.preferences.LdapUpdaterPreference.IOC_DBL_DUMP_PATH;
 
 import java.io.File;
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
 import javax.annotation.Nonnull;
+import javax.mail.internet.AddressException;
+import javax.mail.internet.InternetAddress;
 import javax.naming.NamingException;
 import javax.naming.directory.Attribute;
 
@@ -46,10 +46,10 @@ import org.csstudio.utility.ldap.treeconfiguration.LdapEpicsControlsConfiguratio
 import org.csstudio.utility.ldap.treeconfiguration.LdapEpicsControlsFieldsAndAttributes;
 import org.csstudio.utility.ldapupdater.LdapUpdaterActivator;
 import org.csstudio.utility.ldapupdater.LdapUpdaterUtil;
-import org.csstudio.utility.ldapupdater.files.HistoryFileAccess;
 import org.csstudio.utility.ldapupdater.files.HistoryFileContentModel;
 import org.csstudio.utility.ldapupdater.mail.NotificationMailer;
 import org.csstudio.utility.ldapupdater.model.IOC;
+import org.csstudio.utility.ldapupdater.preferences.LdapUpdaterPreferencesService;
 import org.csstudio.utility.ldapupdater.service.ILdapUpdaterFileService;
 import org.csstudio.utility.ldapupdater.service.ILdapUpdaterService;
 import org.csstudio.utility.ldapupdater.service.LdapUpdaterServiceException;
@@ -60,6 +60,7 @@ import org.slf4j.LoggerFactory;
 
 import com.google.common.base.Predicate;
 import com.google.common.collect.Collections2;
+import com.google.inject.internal.Maps;
 
 
 /**
@@ -81,22 +82,21 @@ public class UpdateLdapAction implements IManagementCommand {
      */
     private static final LdapUpdaterUtil UPDATER = LdapUpdaterUtil.INSTANCE;
 
-    /**
+    /*
      * Singleton approach to make the service public to the action, a pain to test...
      */
-    private ILdapUpdaterService _ldapService;
-    /**
-     * Singleton approach to make the service public to the action, a pain to test...
-     */
+    private ILdapUpdaterService _updaterService;
     private ILdapUpdaterFileService _fileService;
+    private LdapUpdaterPreferencesService _prefsService;
 
     /**
      * Constructor.
      */
     public UpdateLdapAction() {
         try {
-            _ldapService = LdapUpdaterActivator.getDefault().getLdapUpdaterService();
+            _updaterService = LdapUpdaterActivator.getDefault().getLdapUpdaterService();
             _fileService = LdapUpdaterActivator.getDefault().getLdapUpdaterFileService();
+            _prefsService = LdapUpdaterActivator.getDefault().getLdapUpdaterPreferencesService();
         } catch (final OsgiServiceUnavailableException e) {
             LOG.error("LDAP service is not available!");
             throw new RuntimeException("LDAP service is not available!", e);
@@ -135,7 +135,7 @@ public class UpdateLdapAction implements IManagementCommand {
 
         try {
             final ContentModel<LdapEpicsControlsConfiguration> model =
-                _ldapService.retrieveIOCs();
+                _updaterService.retrieveIOCs();
 
             if (model.isEmpty()) {
                 LOG.info("No IOCs found in LDAP.");
@@ -153,19 +153,23 @@ public class UpdateLdapAction implements IManagementCommand {
     private void updateIocsInLdap(@Nonnull final Map<String, INodeComponent<LdapEpicsControlsConfiguration>> iocsFromLdapBySimpleName)
                                   throws LdapUpdaterServiceException {
 
-            final HistoryFileAccess histFileReader = new HistoryFileAccess();
-            final HistoryFileContentModel historyFileModel = histFileReader.readFile();
+            final TimeInstant lastHeartBeat = _fileService.getAndUpdateLastHeartBeat();
 
-            validateHistoryFileEntriesVsLDAPEntries(iocsFromLdapBySimpleName, historyFileModel);
+//            final HistoryFileAccess histFileReader = new HistoryFileAccess(_prefsService);
+//            final HistoryFileContentModel historyFileModel = histFileReader.readFile();
+//
+//            validateHistoryFileEntriesVsLDAPEntries(iocsFromLdapBySimpleName, historyFileModel);
 
-            final File bootDirectory = IOC_DBL_DUMP_PATH.getValue();
+            // find IOC files newer than lastHeartBeat
+            final File bootDirectory = _prefsService.getIocDblDumpPath();
             final Map<String, IOC> iocsFromFSMap =
                     _fileService.retrieveIocInformationFromBootDirectory(bootDirectory);
 
-            _ldapService.updateLDAPFromIOCList(iocsFromLdapBySimpleName, iocsFromFSMap, historyFileModel);
+            _updaterService.updateLDAPFromIOCList(iocsFromLdapBySimpleName, iocsFromFSMap, lastHeartBeat);
     }
 
 
+    @SuppressWarnings("unused")
     private void validateHistoryFileEntriesVsLDAPEntries(@Nonnull final Map<String, INodeComponent<LdapEpicsControlsConfiguration>> iocsFromLdap,
                                                          @Nonnull final HistoryFileContentModel historyFileModel) {
 
@@ -201,34 +205,43 @@ public class UpdateLdapAction implements IManagementCommand {
     }
 
     private void handleIocEntriesInLdapNotPresentInHistoryFile(@Nonnull final Collection<INodeComponent<LdapEpicsControlsConfiguration>> iocsFromLdapNotInFile) {
-        final Map<String, List<String>> missingIOCsPerPerson = new HashMap<String, List<String>>();
+        final Map<InternetAddress, List<String>> missingIOCsPerPerson = Maps.newHashMap();
 
         for (final INodeComponent<LdapEpicsControlsConfiguration> ioc : iocsFromLdapNotInFile) {
             LOG.warn("IOC {} from LDAP is not present in history file!", ioc.getName());
-            getResponsiblePersonForIOC(ioc, missingIOCsPerPerson);
+            putIocIntoMap(ioc, missingIOCsPerPerson);
         }
 
-        NotificationMailer.sendMissingIOCsNotificationMails(missingIOCsPerPerson);
+        NotificationMailer.sendMissingIOCsNotificationMails(missingIOCsPerPerson,
+                                                            _prefsService.getSmtpHostAddress());
     }
 
     @Nonnull
-    private Map<String, List<String>> getResponsiblePersonForIOC(@Nonnull final INodeComponent<LdapEpicsControlsConfiguration> ioc,
-                                                                 @Nonnull final Map<String, List<String>> iocsPerPerson) {
+    private Map<InternetAddress, List<String>> putIocIntoMap(@Nonnull final INodeComponent<LdapEpicsControlsConfiguration> ioc,
+                                                             @Nonnull final Map<InternetAddress, List<String>> iocsPerPerson) {
         final Attribute personAttr = ioc.getAttribute(LdapEpicsControlsFieldsAndAttributes.ATTR_FIELD_RESPONSIBLE_PERSON);
-        String person = NotificationMailer.DEFAULT_RESPONSIBLE_PERSON;
+        InternetAddress person = _prefsService.getDefaultResponsiblePerson();
         try {
             if (personAttr != null && personAttr.get() != null) {
-                person = (String) personAttr.get();
+                person = new InternetAddress((String) personAttr.get());
             }
             if (!iocsPerPerson.containsKey(person)) {
                 iocsPerPerson.put(person, new ArrayList<String>());
             }
-            iocsPerPerson.get(person).add(ioc.getName());
         } catch (final NamingException e) {
             LOG.error("Attribute for {} in IOC {} could not be retrieved.",
                       LdapEpicsControlsFieldsAndAttributes.ATTR_FIELD_RESPONSIBLE_PERSON,
                       ioc.getName());
+        } catch (final AddressException e) {
+            LOG.error("Attribute for {} in IOC {} could not be transformed in valid type {}",
+                      new Object[] {
+                          LdapEpicsControlsFieldsAndAttributes.ATTR_FIELD_RESPONSIBLE_PERSON,
+                          ioc.getName(),
+                          InternetAddress.class.getSimpleName(),
+                      });
         }
+        iocsPerPerson.get(person).add(ioc.getName());
+
         return iocsPerPerson;
     }
 }

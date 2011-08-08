@@ -73,10 +73,4 @@ final class FalseFillStmtHandler extends
         _i++;
         return Collections.singleton(composeSqlString() + _i + ";");
     }
-
-    @Override
-    @Nonnull
-    public Class<IArchiveSample> getType() {
-        return IArchiveSample.class;
-    }
 }

@@ -26,7 +26,6 @@ import java.sql.PreparedStatement;
 import java.sql.SQLException;
 import java.util.Collection;
 import java.util.List;
-import java.util.Map;
 import java.util.concurrent.BlockingQueue;
 
 import javax.annotation.Nonnull;
@@ -34,8 +33,6 @@ import javax.annotation.Nonnull;
 import org.csstudio.archive.common.service.mysqlimpl.dao.ArchiveDaoException;
 import org.csstudio.domain.desy.typesupport.AbstractTypeSupport;
 import org.csstudio.domain.desy.typesupport.TypeSupportException;
-
-import com.google.common.collect.Maps;
 
 /**
  * Strategy for those statements that shall be batched.
@@ -49,13 +46,7 @@ import com.google.common.collect.Maps;
 public abstract class BatchQueueHandlerSupport<T> extends AbstractTypeSupport<T> {
     // CHECKSTYLE ON : AbstractClassName
 
-    /**
-     * Is already stored in {@link org.epics.pvmanager.TypeSupport}, but that's not accessible from here.
-     */
-    private static final Map<Class<?>, BatchQueueHandlerSupport<?>> SUPPORT_MAP =
-        Maps.newConcurrentMap();
-
-    private final String _database;
+    private String _database;
     private final BlockingQueue<T> _queue;
 
 
@@ -81,13 +72,12 @@ public abstract class BatchQueueHandlerSupport<T> extends AbstractTypeSupport<T>
         final Class<T> type = handler.getType();
 
         AbstractTypeSupport.installIfNotExists(BatchQueueHandlerSupport.class, type, handler);
-        final BatchQueueHandlerSupport<?> support =
-            (BatchQueueHandlerSupport<?>) findTypeSupportFor(BatchQueueHandlerSupport.class, type);
-        SUPPORT_MAP.put(type, support);
     }
+
+    @SuppressWarnings("rawtypes")
     @Nonnull
-    public static Collection<BatchQueueHandlerSupport<?>> getInstalledHandlers() {
-        return SUPPORT_MAP.values();
+    public static Collection<BatchQueueHandlerSupport> getInstalledHandlers() {
+        return typeSupportsFor(BatchQueueHandlerSupport.class);
     }
 
     public static <T> void addToQueue(@Nonnull final Collection<T> newEntries) throws TypeSupportException {
@@ -105,6 +95,11 @@ public abstract class BatchQueueHandlerSupport<T> extends AbstractTypeSupport<T>
     @Nonnull
     protected String getDatabase() {
         return _database;
+    }
+
+    @Nonnull
+    public void setDatabase(@Nonnull final String dbName) {
+        _database = dbName;
     }
 
     public void applyBatch(@Nonnull final PreparedStatement stmt, @Nonnull final T element) throws ArchiveDaoException {
@@ -134,7 +129,4 @@ public abstract class BatchQueueHandlerSupport<T> extends AbstractTypeSupport<T>
 
     @Nonnull
     public abstract Collection<String> convertToStatementString(@Nonnull final List<T> elements);
-
-    @Nonnull
-    public abstract Class<T> getType();
 }

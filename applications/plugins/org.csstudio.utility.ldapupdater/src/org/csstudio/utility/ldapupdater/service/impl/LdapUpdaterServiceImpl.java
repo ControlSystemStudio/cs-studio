@@ -36,6 +36,7 @@ import java.util.Map.Entry;
 import java.util.Set;
 
 import javax.annotation.Nonnull;
+import javax.mail.internet.AddressException;
 import javax.naming.InvalidNameException;
 import javax.naming.NamingException;
 import javax.naming.directory.Attribute;
@@ -50,10 +51,10 @@ import org.csstudio.utility.ldap.treeconfiguration.LdapEpicsControlsFieldsAndAtt
 import org.csstudio.utility.ldap.treeconfiguration.LdapFieldsAndAttributes;
 import org.csstudio.utility.ldapupdater.UpdaterLdapConstants;
 import org.csstudio.utility.ldapupdater.files.HistoryFileAccess;
-import org.csstudio.utility.ldapupdater.files.HistoryFileContentModel;
 import org.csstudio.utility.ldapupdater.mail.NotificationMailer;
 import org.csstudio.utility.ldapupdater.model.IOC;
 import org.csstudio.utility.ldapupdater.model.Record;
+import org.csstudio.utility.ldapupdater.preferences.LdapUpdaterPreferencesService;
 import org.csstudio.utility.ldapupdater.service.ILdapFacade;
 import org.csstudio.utility.ldapupdater.service.ILdapUpdaterFileService;
 import org.csstudio.utility.ldapupdater.service.ILdapUpdaterService;
@@ -125,31 +126,19 @@ public final class LdapUpdaterServiceImpl implements ILdapUpdaterService {
 
     private final ILdapFacade _facade;
     private final ILdapUpdaterFileService _fileService;
+    private final LdapUpdaterPreferencesService _prefsService;
 
     /**
      * Don't instantiate.
      */
     @Inject
     public LdapUpdaterServiceImpl(@Nonnull final ILdapFacade facade,
-                                  @Nonnull final ILdapUpdaterFileService fileService) {
+                                  @Nonnull final ILdapUpdaterFileService fileService,
+                                  @Nonnull final LdapUpdaterPreferencesService prefService) {
         _facade = facade;
         _fileService = fileService;
+        _prefsService = prefService;
     }
-
-
-    private boolean isIOCFileNewerThanHistoryEntry(@Nonnull final IOC ioc,
-                                                  @Nonnull final HistoryFileContentModel historyFileModel) {
-        final TimeInstant lastBootTime = ioc.getLastBootTime();
-        if (lastBootTime != null) {
-            final TimeInstant timeFromHistoryFile = historyFileModel.getTimeForRecord(ioc.getName());
-            if (timeFromHistoryFile != null) {
-                return lastBootTime.isAfter(timeFromHistoryFile);
-            }
-        }
-        return true;
-    }
-
-
 
     /**
      * {@inheritDoc}
@@ -207,11 +196,17 @@ public final class LdapUpdaterServiceImpl implements ILdapUpdaterService {
                                                              recFromFile);
                 }
             }
-            NotificationMailer.sendUnallowedCharsNotification(iocFromLDAP, iocName, forbiddenRecords);
+            NotificationMailer.sendUnallowedCharsNotification(iocFromLDAP,
+                                                              _prefsService.getSmtpHostAddress(),
+                                                              _prefsService.getDefaultResponsiblePerson(),
+                                                              iocName,
+                                                              forbiddenRecords);
         } catch (final NamingException e) {
             throw new LdapUpdaterServiceException("LDAP name creation failed on updating records for IOC " + iocName, e);
         } catch (final LdapFacadeException e) {
             throw new LdapUpdaterServiceException("Creating new records failed on updating IOC " + iocName, e);
+        } catch (final AddressException e) {
+            throw new LdapUpdaterServiceException("Sending of notification email failed for " + iocName, e);
         }
 
         return new UpdateIOCResult(recordsFromFile.size(),
@@ -238,10 +233,9 @@ public final class LdapUpdaterServiceImpl implements ILdapUpdaterService {
                 "\nProceed with next record.");
             }
             return 1;
-        } else {
-            LOG.warn("Record " + recordFromFSName + " could not be written. Unallowed characters!");
-            forbiddenRecords.append(recordFromFSName + "\n");
         }
+        LOG.warn("Record " + recordFromFSName + " could not be written. Unallowed characters!");
+        forbiddenRecords.append(recordFromFSName + "\n");
         return 0;
     }
 
@@ -264,21 +258,18 @@ public final class LdapUpdaterServiceImpl implements ILdapUpdaterService {
     @Override
     public void updateLDAPFromIOCList(@Nonnull final Map<String, INodeComponent<LdapEpicsControlsConfiguration>> iocMapFromLdap,
                                       @Nonnull final Map<String, IOC> iocMapFromFS,
-                                      @Nonnull final HistoryFileContentModel historyFileModel) throws LdapUpdaterServiceException {
+                                      @Nonnull final TimeInstant lastHeartBeat) throws LdapUpdaterServiceException {
 
         for (final Entry<String, IOC> entry : iocMapFromFS.entrySet()) {
 
             final String iocFromFSName = entry.getKey();
             final IOC iocFromFS = entry.getValue();
 
-            if (historyFileModel.contains(iocFromFSName)) {
-                if (!isIOCFileNewerThanHistoryEntry(iocFromFS, historyFileModel)) {
-                    LOG.debug("IOC file for " + iocFromFSName
-                              + " is not newer than history file time stamp.");
-                    continue;
-                }
-            } // else means 'new IOC file in directory'
-
+            if (iocFromFS.getLastBootTime().isBefore(lastHeartBeat)) {
+                LOG.debug("IOC file for " + iocFromFSName
+                          + " is not newer than history file time stamp.");
+                continue;
+            }
             createOrUpdateIocInLdap(iocMapFromLdap, iocFromFS);
         }
     }
@@ -299,11 +290,13 @@ public final class LdapUpdaterServiceImpl implements ILdapUpdaterService {
             throw new LdapUpdaterServiceException("Exception in LDAP facade on creating or updating IOC in LDAP.", e);
         }
 
-        final UpdateIOCResult updateResult = updateIocInLdapWithRecordsFromBootFile(recordMapFromLdap, iocFromLdap);
+        final UpdateIOCResult updateResult =
+            updateIocInLdapWithRecordsFromBootFile(recordMapFromLdap, iocFromLdap);
 
         // TODO (bknerr) : does only make sense when the update process has been stopped
         if (updateResult.hasNoError()) {
-            HistoryFileAccess.appendLineToHistfile(iocFromFS.getName(),
+            HistoryFileAccess.appendLineToHistfile(_prefsService.getHistoryDatFilePath(),
+                                                   iocFromFS.getName(),
                                                    updateResult.getNumOfRecsWritten(),
                                                    updateResult.getNumOfRecsInFile(),
                                                    updateResult.getNumOfRecsInLDAP() );
@@ -319,7 +312,10 @@ public final class LdapUpdaterServiceImpl implements ILdapUpdaterService {
         LOG.info("IOC " + iocName +
                  " (from file system) does not yet exist in LDAP - added to facility MISC.\n");
 
-        validateAndUpdateIpAddressAttribute(iocFromFS.getIpAddress(), iocMapFromLdap.values());
+        final IpAddress ipAddress = iocFromFS.getIpAddress();
+        if (ipAddress != null) {
+            validateAndUpdateIpAddressAttribute(ipAddress, iocMapFromLdap.values());
+        }
 
         final LdapName middleName = createLdapName(COMPONENT.getNodeTypeName(), LdapEpicsControlsFieldsAndAttributes.ECOM_EPICS_IOC_FIELD_VALUE,
                                                    FACILITY.getNodeTypeName(), UpdaterLdapConstants.FACILITY_MISC_FIELD_VALUE);
@@ -360,10 +356,7 @@ public final class LdapUpdaterServiceImpl implements ILdapUpdaterService {
                     iocsWithoutAttribute.add(iocFromLdap.toString());
                     continue;
                 }
-                if (ipAddress.toString().equals(ipAddressFromLdap)) {
-                    NotificationMailer.sendIpAddressNotUniqueNotification(ipAddress, iocFromLdap);
-                    _facade.modifyIpAddressAttribute(iocFromLdap.getLdapName(), null);
-                }
+                checkIpAddressAndNotify(ipAddress, iocFromLdap, ipAddressFromLdap);
             } catch (final NamingException e) {
                 throw new LdapUpdaterServiceException("Attribute creation for IP Address modification in LDAP failed.", e);
             } catch (final LdapFacadeException e) {
@@ -371,9 +364,23 @@ public final class LdapUpdaterServiceImpl implements ILdapUpdaterService {
             }
         }
         if (!iocsWithoutAttribute.isEmpty()) {
-            NotificationMailer.sendIpAddressNotSetInLDAP(iocsWithoutAttribute);
+            NotificationMailer.sendIpAddressNotSetInLDAP(_prefsService.getSmtpHostAddress(),
+                                                         iocsWithoutAttribute,
+                                                         _prefsService.getDefaultResponsiblePerson());
         }
 
+    }
+
+    private void checkIpAddressAndNotify(@Nonnull final IpAddress ipAddress,
+                                         @Nonnull final INodeComponent<LdapEpicsControlsConfiguration> iocFromLdap,
+                                         @Nonnull final String ipAddressFromLdap) throws LdapFacadeException {
+        if (ipAddress.toString().equals(ipAddressFromLdap)) {
+            NotificationMailer.sendIpAddressNotUniqueNotification(_prefsService.getSmtpHostAddress(),
+                                                                  ipAddress,
+                                                                  iocFromLdap,
+                                                                  _prefsService.getDefaultResponsiblePerson());
+            _facade.modifyIpAddressAttribute(iocFromLdap.getLdapName(), null);
+        }
     }
 
 

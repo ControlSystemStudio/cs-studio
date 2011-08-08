@@ -27,11 +27,12 @@ import java.util.Set;
 
 import javax.annotation.Nonnull;
 
+import org.csstudio.domain.desy.time.TimeInstant;
 import org.csstudio.utility.ldapupdater.model.IOC;
 import org.csstudio.utility.ldapupdater.model.Record;
 
 /**
- * TODO (bknerr) :
+ * Ldap Updater File service.
  *
  * @author bknerr
  * @since 29.04.2011
@@ -45,4 +46,12 @@ public interface ILdapUpdaterFileService {
     Map<String, IOC> retrieveIocInformationFromBootDirectory(@Nonnull final File bootDirectory)
                                                              throws LdapUpdaterServiceException;
 
+    /**
+     * Checks for the heartbeat file to exist and, if so, return the last modified timestamp (and
+     * touch the file to update the last modification timestamp.
+     * @return the timestamp of the last modificatio
+     * @throws LdapUpdaterServiceException
+     */
+    @Nonnull
+    TimeInstant getAndUpdateLastHeartBeat() throws LdapUpdaterServiceException;
 }

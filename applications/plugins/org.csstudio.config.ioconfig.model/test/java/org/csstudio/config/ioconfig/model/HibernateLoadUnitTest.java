@@ -70,7 +70,7 @@ public class HibernateLoadUnitTest {
         final List<FacilityDBO> load = Repository.load(FacilityDBO.class);
         assertNotNull(load);
         assertFalse(load.isEmpty());
-        testChildrens(new HashSet<AbstractNodeDBO>(load));
+        testChildren(new HashSet<AbstractNodeDBO>(load));
         List<DocumentDBO> loadDocument = Repository.loadDocument(false);
         assertNotNull(loadDocument);
         assertFalse(loadDocument.isEmpty());
@@ -85,11 +85,11 @@ public class HibernateLoadUnitTest {
     }
 
     @SuppressWarnings({ "rawtypes", "unchecked" })
-    private void testChildrens(@Nonnull final Set<AbstractNodeDBO> nodes) {
+    private void testChildren(@Nonnull final Set<AbstractNodeDBO> nodes) {
         for (AbstractNodeDBO node : nodes) {
             final Set<DocumentDBO> doc = node.getDocuments();
             assertNotNull(doc);
-            testChildrens(node.getChildren());
+            testChildren(node.getChildren());
         }
     }
 

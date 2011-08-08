@@ -21,6 +21,8 @@
  */
 package org.csstudio.archive.common.service.sample;
 
+import java.io.Serializable;
+
 import javax.annotation.CheckForNull;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -41,7 +43,8 @@ import org.csstudio.domain.desy.system.ISystemVariable;
  * @param <V> the data value type
  * @param <T> the css value type
  */
-public class ArchiveMinMaxSample<V, T extends ISystemVariable<V>>
+public class ArchiveMinMaxSample<V extends Serializable,
+                                 T extends ISystemVariable<V>>
                                 extends ArchiveSample<V, T>
                                 implements IArchiveMinMaxSample<V, T> {
 

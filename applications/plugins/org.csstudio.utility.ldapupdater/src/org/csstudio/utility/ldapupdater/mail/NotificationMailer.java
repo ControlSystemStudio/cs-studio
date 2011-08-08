@@ -21,28 +21,29 @@
  */
 package org.csstudio.utility.ldapupdater.mail;
 
-import static org.csstudio.utility.ldapupdater.preferences.LdapUpdaterPreference.IOC_DBL_DUMP_PATH;
-
 import java.io.IOException;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
-import java.util.Set;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
+import javax.mail.internet.AddressException;
+import javax.mail.internet.InternetAddress;
 import javax.naming.NamingException;
 import javax.naming.directory.Attribute;
 
+import org.csstudio.domain.desy.net.HostAddress;
 import org.csstudio.domain.desy.net.IpAddress;
 import org.csstudio.email.EMailSender;
-import org.csstudio.email.EmailUtils;
-import org.csstudio.platform.util.StringUtil;
 import org.csstudio.utility.ldap.treeconfiguration.LdapEpicsControlsConfiguration;
 import org.csstudio.utility.ldap.treeconfiguration.LdapEpicsControlsFieldsAndAttributes;
+import org.csstudio.utility.ldapupdater.LdapUpdaterActivator;
+import org.csstudio.utility.ldapupdater.preferences.LdapUpdaterPreferencesService;
 import org.csstudio.utility.treemodel.INodeComponent;
 
 import com.google.common.base.Joiner;
+import com.google.common.base.Strings;
 
 /**
  * Encapsulates LDAP Updater specific mail functionality.
@@ -50,11 +51,7 @@ import com.google.common.base.Joiner;
  * @author bknerr 24.03.2010
  */
 public final class NotificationMailer {
-    public static final String DEFAULT_RESPONSIBLE_PERSON = "bastian.knerr@desy.de";
-
-    private static final String HOST = "smtp.desy.de";
     private static final String FROM = "DontReply@LDAPUpdater";
-
 
     /**
      * Don't instantiate.
@@ -73,12 +70,12 @@ public final class NotificationMailer {
      * @return true if all mails could be sent
      */
     private static boolean sendMail(@Nonnull final NotificationType type,
-                                    @Nonnull final String receiverString,
-                                    @Nullable final String additionalBody) {
-        final Set<String> receivers = EmailUtils.extractEmailAddresses(receiverString);
+                                    @Nonnull final HostAddress host,
+                                    @Nullable final String additionalBody,
+                                    @Nonnull final InternetAddress...receivers) {
         try {
-            for (final String receiver : receivers) {
-                sendSingleMail(type, receiver, additionalBody);
+            for (final InternetAddress receiver : receivers) {
+                sendSingleMail(type, host, receiver, additionalBody);
             }
         } catch (final IOException e) {
             e.printStackTrace();
@@ -89,61 +86,80 @@ public final class NotificationMailer {
 
 
     private static void sendSingleMail(@Nonnull final NotificationType type,
-                                       @Nonnull final String receiver,
+                                       @Nonnull final HostAddress host,
+                                       @Nonnull final InternetAddress receiver,
                                        @Nullable final String additionalBody) throws IOException {
-        final EMailSender mailer = new EMailSender(HOST,
-                                             FROM,
-                                             receiver,
-                                             type.getSubject());
+        final EMailSender mailer = new EMailSender(host.getHostAddress(),
+                                                   FROM,
+                                                   receiver.getAddress(),
+                                                   type.getSubject());
 
         mailer.addText(type.getText() + (additionalBody != null ? additionalBody : ""));
         mailer.close();
     }
 
 
-    public static void sendMissingIOCsNotificationMails(@Nonnull final Map<String, List<String>> missingIOCsPerPerson) {
-        for (final Entry<String, List<String>> entry : missingIOCsPerPerson.entrySet()) {
+    public static void sendMissingIOCsNotificationMails(@Nonnull final Map<InternetAddress, List<String>> missingIOCsPerPerson,
+                                                        @Nonnull final HostAddress host) {
+        final LdapUpdaterPreferencesService prefs = LdapUpdaterActivator.getDefault().getLdapUpdaterPreferencesService();
+        for (final Entry<InternetAddress, List<String>> entry : missingIOCsPerPerson.entrySet()) {
             sendMail(NotificationType.UNKNOWN_IOCS_IN_LDAP,
-                                      entry.getKey(),
-                                      "\n(in directory " + IOC_DBL_DUMP_PATH.getValue() + ")" +
-                                      "\n\n" + entry.getValue());
+                     host,
+                     "\n(in directory " + prefs.getIocDblDumpPath() + ")\n\n" + entry.getValue(),
+                     entry.getKey());
         }
     }
 
     public static void sendUnallowedCharsNotification(@Nonnull final INodeComponent<LdapEpicsControlsConfiguration> iocFromLDAP,
+                                                      @Nonnull final HostAddress host,
+                                                      @Nonnull final InternetAddress defaultReceiver,
                                                       @Nonnull final String iocName,
-                                                      @Nonnull final StringBuilder forbiddenRecords) throws NamingException {
+                                                      @Nonnull final StringBuilder forbiddenRecords) throws NamingException, AddressException {
        if (forbiddenRecords.length() > 0) {
            final Attribute attr = iocFromLDAP.getAttribute(LdapEpicsControlsFieldsAndAttributes.ATTR_FIELD_RESPONSIBLE_PERSON);
-           String person;
-           if (attr != null && !StringUtil.hasLength((String) attr.get())) {
-               person = (String) attr.get();
-           } else {
-               person = DEFAULT_RESPONSIBLE_PERSON;
+           InternetAddress person = null;
+           if (attr != null) {
+               final String strAttr = (String) attr.get();
+               if (!Strings.isNullOrEmpty(strAttr)) {
+                   person = new InternetAddress(strAttr);
+               }
+           }
+           if (person == null) {
+               person = defaultReceiver;
            }
            sendMail(NotificationType.UNALLOWED_CHARS,
-                                     person,
-                                     "\nIn IOC " + iocName + ":\n\n" + forbiddenRecords.toString());
+                    host,
+                    "\nIn IOC " + iocName + ":\n\n" + forbiddenRecords.toString(),
+                    person);
        }
    }
 
-    public static void sendMissingFilesNotification(@Nonnull final String message) {
+    public static void sendMissingFilesNotification(@Nonnull final String message,
+                                                    @Nonnull final HostAddress host,
+                                                    @Nonnull final InternetAddress...receivers) {
         sendMail(NotificationType.BOOT_DIR_FILE_MISMATCH,
-                 DEFAULT_RESPONSIBLE_PERSON,
-                 message);
+                 host,
+                 message,
+                 receivers);
     }
 
-    public static void sendIpAddressNotUniqueNotification(@Nonnull final IpAddress ipAddress,
-                                                          @Nonnull final INodeComponent<LdapEpicsControlsConfiguration> iocFromLdap) {
+    public static void sendIpAddressNotUniqueNotification(@Nonnull final HostAddress host,
+                                                          @Nonnull final IpAddress ipAddress,
+                                                          @Nonnull final INodeComponent<LdapEpicsControlsConfiguration> iocFromLdap,
+                                                          @Nonnull final InternetAddress...receivers) {
         sendMail(NotificationType.IP_ADDRESS_NOT_UNIQUE,
-                 DEFAULT_RESPONSIBLE_PERSON,
+                 host,
                  "IP Address: " + ipAddress.toString() + "\n" +
-                 "Formerly used by (now removed): " + iocFromLdap.getLdapName().toString());
+                 "Formerly used by (now removed): " + iocFromLdap.getLdapName().toString(),
+                 receivers);
     }
 
-    public static void sendIpAddressNotSetInLDAP(@Nonnull final List<String> iocsWithoutAttribute) {
+    public static void sendIpAddressNotSetInLDAP(@Nonnull final HostAddress host,
+                                                 @Nonnull final List<String> iocsWithoutAttribute,
+                                                 @Nonnull final InternetAddress...receivers) {
         sendMail(NotificationType.IP_ADDRESS_NOT_SET_IN_LDAP,
-                 DEFAULT_RESPONSIBLE_PERSON,
-                 "IOCs without epicsAddress attribute in LDAP:\n" + Joiner.on("\n").join(iocsWithoutAttribute));
+                 host,
+                 "IOCs without epicsAddress attribute in LDAP:\n" + Joiner.on("\n").join(iocsWithoutAttribute),
+                 receivers);
     }
 }

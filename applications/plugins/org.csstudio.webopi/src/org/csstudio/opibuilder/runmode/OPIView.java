@@ -1,6 +1,7 @@
 package org.csstudio.opibuilder.runmode;
 
 import org.csstudio.opibuilder.model.DisplayModel;
+import org.csstudio.opibuilder.preferences.PreferencesHelper;
 import org.csstudio.opibuilder.util.RequestUtil;
 import org.eclipse.core.runtime.IAdaptable;
 import org.eclipse.core.runtime.IPath;
@@ -98,6 +99,8 @@ public class OPIView extends ViewPart implements IOPIRuntime {
 		if(getOPIInput() == null && openFromPerspective){
 			openFromPerspective = false;
 			IPath opiPath = RequestUtil.getOPIPathFromRequest();
+			if(opiPath == null)
+				opiPath = PreferencesHelper.getStartupOPI();
 			if(opiPath == null)
 				throw new RuntimeException(
 						"OPI file path or OPI Repository is not specified in URL or preferences.");

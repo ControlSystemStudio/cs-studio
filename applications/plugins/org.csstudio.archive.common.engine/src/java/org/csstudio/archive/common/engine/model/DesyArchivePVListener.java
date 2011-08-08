@@ -21,6 +21,8 @@
  */
 package org.csstudio.archive.common.engine.model;
 
+import java.io.Serializable;
+
 import javax.annotation.CheckForNull;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -57,7 +59,7 @@ import org.slf4j.LoggerFactory;
  * @param <T> the generic system variable type
  */
 //CHECKSTYLE OFF: AbstractClassName
-abstract class DesyArchivePVListener<V, T extends ISystemVariable<V>> implements PVListener {
+abstract class DesyArchivePVListener<V extends Serializable, T extends ISystemVariable<V>> implements PVListener {
 //CHECKSTYLE ON: AbstractClassName
 
     private static final Logger LOG = LoggerFactory
@@ -122,9 +124,8 @@ abstract class DesyArchivePVListener<V, T extends ISystemVariable<V>> implements
                 if (sample.getValue() == null) {
                     LOG.warn("Value is null for channel id " + _channelName + "(" + _channelId + "). No sample created.");
                 } else {
-                    storeNewSample(sample);
+                    addSampleToBuffer(sample);
                 }
-
             }
 
         } catch (final TypeSupportException e) {
@@ -133,6 +134,17 @@ abstract class DesyArchivePVListener<V, T extends ISystemVariable<V>> implements
         } catch (final Throwable t) {
             LOG.error("Unexpected exception in PVListener for: " + _channelName + "\n" + t.getMessage(), t);
         }
+    }
+
+    /**
+     * Interface to capture the type of a Comparable & Serializable object.
+     * Damn Java.
+     *
+     * @author bknerr
+     * @since 04.08.2011
+     */
+    private interface ICompSer extends Serializable, Comparable<Object> {
+        // EMPTY
     }
 
     @CheckForNull
@@ -150,7 +162,7 @@ abstract class DesyArchivePVListener<V, T extends ISystemVariable<V>> implements
         final IMetaData metaData = pv.getValue().getMetaData();
 
         if (metaData != null) {
-            return handleMetaDataInfo(metaData, id, typeClass);
+            return this.<ICompSer>handleMetaDataInfo(metaData, id, typeClass);
         }
         return null;
     }
@@ -172,7 +184,7 @@ abstract class DesyArchivePVListener<V, T extends ISystemVariable<V>> implements
 
     @SuppressWarnings("unchecked")
     @CheckForNull
-    private <W extends Comparable<? super W>>
+    private <W extends Comparable<? super W> & Serializable>
     EpicsMetaData handleMetaDataInfo(@Nonnull final IMetaData metaData,
                                      @Nonnull final ArchiveChannelId id,
                                      @Nonnull final Class<V> typeClass)
@@ -199,11 +211,6 @@ abstract class DesyArchivePVListener<V, T extends ISystemVariable<V>> implements
        return data;
     }
 
-    protected boolean storeNewSample(@Nonnull final IArchiveSample<V, T> sample) {
-        addSampleToBuffer(sample);
-        return true;
-
-    }
     protected abstract void addSampleToBuffer(@Nonnull final IArchiveSample<V, T> sample);
 
 

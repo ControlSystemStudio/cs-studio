@@ -21,6 +21,7 @@
  */
 package org.csstudio.archive.common.engine.model;
 
+import java.io.Serializable;
 import java.util.List;
 
 import javax.annotation.Nonnull;
@@ -53,18 +54,18 @@ final class ArchiveEngineSampleRescuer {
     private static final Logger RESCUE_LOG =
         LoggerFactory.getLogger("SerializedSamplesRescueLogger");
 
-    private final List<IArchiveSample<Object, ISystemVariable<Object>>> _samplesToBeSerialized;
+    private final List<IArchiveSample<Serializable, ISystemVariable<Serializable>>> _samplesToBeSerialized;
 
     /**
      * Constructor.
      */
-    private ArchiveEngineSampleRescuer(@Nonnull final List<IArchiveSample<Object, ISystemVariable<Object>>> samples) {
+    private ArchiveEngineSampleRescuer(@Nonnull final List<IArchiveSample<Serializable, ISystemVariable<Serializable>>> samples) {
         super();
         _samplesToBeSerialized = samples;
     }
 
     @Nonnull
-    public static ArchiveEngineSampleRescuer with(@Nonnull final List<IArchiveSample<Object, ISystemVariable<Object>>> samples) {
+    public static ArchiveEngineSampleRescuer with(@Nonnull final List<IArchiveSample<Serializable, ISystemVariable<Serializable>>> samples) {
         return new ArchiveEngineSampleRescuer(samples);
     }
 
@@ -80,10 +81,10 @@ final class ArchiveEngineSampleRescuer {
             RESCUE_LOG.info(gpbSamples.toString());
         } catch (final Throwable t) {
             EMAIL_LOG.info("Data rescue for samples failed. Samples lost: {}", _samplesToBeSerialized.size());
-            return DataRescueResult.failure("rescue/samples/samples.ser.*", TimeInstantBuilder.fromNow());
+            return DataRescueResult.failure("rescue/samples/samples.ser*", TimeInstantBuilder.fromNow());
         }
 
-        return DataRescueResult.success("foo", null);
+        return DataRescueResult.success("rescue/samples/samples.ser*", TimeInstantBuilder.fromNow());
     }
 
     @Nonnull
@@ -91,9 +92,10 @@ final class ArchiveEngineSampleRescuer {
         final ArchiveSampleProtos.ArchiveSample.Builder builder =
             ArchiveSampleProtos.ArchiveSample.newBuilder();
 
-        for (final IArchiveSample<Object, ISystemVariable<Object>> sample : _samplesToBeSerialized) {
-            final ISystemVariable<Object> sysVar = sample.getSystemVariable();
-            //builder.clear();
+        for (final IArchiveSample<Serializable, ISystemVariable<Serializable>> sample : _samplesToBeSerialized) {
+            builder.clear();
+
+            final ISystemVariable<Serializable> sysVar = sample.getSystemVariable();
             final ArchiveSampleProtos.ArchiveSample gpbSample =
                 builder.setChannelId(sysVar.getName())
                        .setControlSystemId(sysVar.getOrigin().getId())

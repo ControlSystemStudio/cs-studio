@@ -21,18 +21,10 @@
  */
 package org.csstudio.archive.common.service.util;
 
-import java.util.Collection;
-
-import javax.annotation.CheckForNull;
 import javax.annotation.Nonnull;
 
 import org.csstudio.domain.desy.epics.types.EpicsEnum;
 import org.csstudio.domain.desy.typesupport.TypeSupportException;
-
-import com.google.common.base.Function;
-import com.google.common.base.Predicates;
-import com.google.common.base.Splitter;
-import com.google.common.collect.Iterables;
 
 /**
  * TODO (bknerr) :
@@ -41,34 +33,6 @@ import com.google.common.collect.Iterables;
  * @since 15.12.2010
  */
 public class EnumArchiveTypeConversionSupport extends ArchiveTypeConversionSupport<EpicsEnum> {
-
-    /**
-     * Guava converter function
-     *
-     * @author bknerr
-     * @since 22.12.2010
-     */
-    private final class ArchiveString2EpicsEnumFunction implements
-            Function<String, EpicsEnum> {
-        /**
-         * Constructor.
-         */
-        public ArchiveString2EpicsEnumFunction() {
-            // Empty
-        }
-
-        @Override
-          @CheckForNull
-          public EpicsEnum apply(@Nonnull final String from) {
-              try {
-                  return convertFromArchiveString(from);
-              } catch (final TypeSupportException e) {
-                  return null;
-              }
-          }
-    }
-    private final ArchiveString2EpicsEnumFunction _archiveString2EpicsEnumFunc =
-        new ArchiveString2EpicsEnumFunction();
 
     /**
      * Constructor.
@@ -110,27 +74,5 @@ public class EnumArchiveTypeConversionSupport extends ArchiveTypeConversionSuppo
         } catch (final IllegalArgumentException e) {
             throw new TypeSupportException(value + " cannot be parsed into " + EpicsEnum.class.getSimpleName(), e);
         }
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    @Override
-    @Nonnull
-    public Collection<EpicsEnum> convertFromArchiveStringToMultiScalar(@Nonnull final Class<?> collectionClass,
-                                                                       @Nonnull final String values) throws TypeSupportException {
-        final String collectionRelease = collectionRelease(values);
-        if (collectionRelease == null) {
-            throw new TypeSupportException("Values from archive do not adhere to collection pattern:\n " +
-                                           values, null);
-        }
-        final Iterable<String> strings = Splitter.on(ARCHIVE_COLLECTION_ELEM_SEP).split(collectionRelease);
-        final Iterable<EpicsEnum> enums =
-            Iterables.filter(Iterables.transform(strings, _archiveString2EpicsEnumFunc),
-                             Predicates.<EpicsEnum>notNull());
-
-        checkInputVsOutputSize(strings, enums);
-
-        return createCollectionFromIterable(collectionClass, enums);
     }
 }

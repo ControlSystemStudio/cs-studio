@@ -52,7 +52,7 @@ import com.google.common.collect.Maps;
 public class BootFileContentParser extends AbstractLineBasedFileContentParser {
 
     private IpAddress _ipAddress;
-    private boolean _ipAddressFound = false;
+    private boolean _ipAddressFound;
     private final Map<String, IOC> _iocMap;
 
 
@@ -64,6 +64,7 @@ public class BootFileContentParser extends AbstractLineBasedFileContentParser {
     public BootFileContentParser(@Nonnull final File directory,
                                  @Nonnull final Collection<String> iocNames) throws IOException, ParseException {
         _iocMap = Maps.newHashMapWithExpectedSize(iocNames.size());
+
         for (final String iocName : iocNames) {
 
             final SortedSet<Record> records = getBootRecordsFromFile(directory, iocName);
@@ -104,16 +105,14 @@ public class BootFileContentParser extends AbstractLineBasedFileContentParser {
     @Nonnull
     private SortedSet<Record> getBootRecordsFromFile(@Nonnull final File directory,
                                                      @Nonnull final String iocName) throws IOException {
-        final RecordsFileContentParser parser = new RecordsFileContentParser();
-        parser.parseFile(new File(directory, iocName + UpdaterLdapConstants.RECORDS_FILE_SUFFIX));
-        return parser.getRecords();
+        return RecordsFileContentParser.parse(new File(directory, iocName + UpdaterLdapConstants.RECORDS_FILE_SUFFIX));
     }
 
     /**
      * {@inheritDoc}
      */
     @Override
-    protected void processLine(@Nonnull final String line) {
+    protected void parseLine(@Nonnull final String line) {
         if (isNotACommment(line)) {
 
             final Pattern pattern =
@@ -129,6 +128,6 @@ public class BootFileContentParser extends AbstractLineBasedFileContentParser {
     }
 
     private boolean isNotACommment(@Nonnull final String line) {
-        return !Pattern.matches("^/s*#.*", line);
+        return !Pattern.matches("^[ \\t]*#.*", line);
     }
 }

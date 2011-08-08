@@ -62,7 +62,7 @@ public final class HibernateManager extends AbstractHibernateManager {
     }
     
     @Override
-    protected void buildConifg() {
+    protected void buildConfig() {
         final String pluginId = IOConfigActivator.PLUGIN_ID;
         new InstanceScope().getNode(pluginId)
                 .addPreferenceChangeListener(new IPreferenceChangeListener() {

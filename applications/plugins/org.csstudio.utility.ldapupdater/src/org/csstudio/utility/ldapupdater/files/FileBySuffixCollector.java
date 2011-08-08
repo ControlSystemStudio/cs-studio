@@ -28,6 +28,7 @@ import java.util.Map;
 import javax.annotation.Nonnull;
 
 import org.csstudio.domain.desy.file.FilteredRecursiveFilePathParser;
+import org.csstudio.domain.desy.file.SuffixBasedFileFilterDecorator;
 
 import com.google.common.collect.Maps;
 
@@ -49,8 +50,9 @@ public class FileBySuffixCollector extends FilteredRecursiveFilePathParser {
      * Constructor.
      * @throws FileNotFoundException
      */
-    public FileBySuffixCollector(@Nonnull final File dir, @Nonnull final String suffix) throws FileNotFoundException {
-        super(new SuffixBasedFileFilter(suffix, 1));
+    public FileBySuffixCollector(@Nonnull final File dir,
+                                 @Nonnull final String suffix) throws FileNotFoundException {
+        super(new SuffixBasedFileFilterDecorator(suffix, 1));
         _suffix = suffix;
         startTraversal(dir, 1);
     }
@@ -60,7 +62,7 @@ public class FileBySuffixCollector extends FilteredRecursiveFilePathParser {
      */
     @Override
     protected void processFilteredFile(@Nonnull final File file,
-                                                final int currentDepth) {
+                                       final int currentDepth) {
         _fileMap.put(file.getName().replace(_suffix, ""), file);
     }
 

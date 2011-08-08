@@ -101,12 +101,7 @@ public class CachedConstructorPerformanceUnitTest {
     @Test
     public void testCachedConstructorPerformance() {
 
-
         final long cachedConstructorPerf = runCachedConstructorIterations();
-
-        final long improvedCachedConstructorPerf = runCachedImprovedConstructorIterations();
-        //System.out.println(cachedConstructorPerf*1.0/improvedCachedConstructorPerf + " times longer than cached constructor creation with Integer.valueOf.");
-        Assert.assertTrue(cachedConstructorPerf > improvedCachedConstructorPerf);
 
         final long normalPerf = runCompletelyNormalConstructorIterations();
 
@@ -115,8 +110,7 @@ public class CachedConstructorPerformanceUnitTest {
         Assert.assertTrue(cachedConstructorPerf > 5*normalPerf);
     }
 
-
-
+    @SuppressWarnings("unused")
     private long runCachedImprovedConstructorIterations() {
         long cachedConstructorPerf = 0;
 

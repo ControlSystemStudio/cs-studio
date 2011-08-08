@@ -19,8 +19,8 @@ import java.util.Set;
 
 import javax.annotation.Nonnull;
 
+import org.csstudio.domain.desy.time.TimeInstant;
 import org.csstudio.utility.ldap.treeconfiguration.LdapEpicsControlsConfiguration;
-import org.csstudio.utility.ldapupdater.files.HistoryFileContentModel;
 import org.csstudio.utility.ldapupdater.model.IOC;
 import org.csstudio.utility.ldapupdater.model.Record;
 import org.csstudio.utility.treemodel.ContentModel;
@@ -36,7 +36,7 @@ public interface ILdapUpdaterService {
 
     void updateLDAPFromIOCList(@Nonnull final Map<String, INodeComponent<LdapEpicsControlsConfiguration>> iocs,
                                @Nonnull final Map<String, IOC> iocMap,
-                               @Nonnull final HistoryFileContentModel historyFileModel) throws LdapUpdaterServiceException;
+                               @Nonnull final TimeInstant lastHeartBeat) throws LdapUpdaterServiceException;
 
     /**
      * Tidies LDAP conservatively.

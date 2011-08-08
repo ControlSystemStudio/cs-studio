@@ -24,7 +24,7 @@ package org.csstudio.utility.ldapupdater;
 import javax.annotation.Nonnull;
 
 import org.csstudio.utility.ldapupdater.service.ILdapFacade;
-import org.csstudio.utility.ldapupdater.service.ILdapServiceProvider;
+import org.csstudio.utility.ldapupdater.service.ILdapUpdaterServicesProvider;
 import org.csstudio.utility.ldapupdater.service.ILdapUpdaterFileService;
 import org.csstudio.utility.ldapupdater.service.ILdapUpdaterService;
 import org.csstudio.utility.ldapupdater.service.impl.LdapFacadeImpl;
@@ -40,12 +40,12 @@ import com.google.inject.AbstractModule;
  * @since 27.04.2011
  */
 public class LdapUpdaterModule extends AbstractModule {
-    private final ILdapServiceProvider _serviceProvider;
+    private final ILdapUpdaterServicesProvider _serviceProvider;
 
     /**
      * Constructor.
      */
-    public LdapUpdaterModule(@Nonnull final ILdapServiceProvider provider) {
+    public LdapUpdaterModule(@Nonnull final ILdapUpdaterServicesProvider provider) {
         _serviceProvider = provider;
     }
 
@@ -54,7 +54,7 @@ public class LdapUpdaterModule extends AbstractModule {
      */
     @Override
     protected void configure() {
-        bind(ILdapServiceProvider.class).toInstance(_serviceProvider);
+        bind(ILdapUpdaterServicesProvider.class).toInstance(_serviceProvider);
         bind(ILdapFacade.class).to(LdapFacadeImpl.class);
         bind(ILdapUpdaterService.class).to(LdapUpdaterServiceImpl.class);
         bind(ILdapUpdaterFileService.class).to(LdapUpdaterFileServiceImpl.class);

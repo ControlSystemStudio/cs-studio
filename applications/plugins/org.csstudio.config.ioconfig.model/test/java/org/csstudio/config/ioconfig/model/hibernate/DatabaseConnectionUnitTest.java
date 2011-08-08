@@ -43,7 +43,7 @@ public class DatabaseConnectionUnitTest {
     public void krykmantDBTestConnectionTest() throws Exception {
         final HibernateTestManager hibernateManager = new HibernateTestManager();
         Assert.assertNotNull(hibernateManager);
-        hibernateManager.buildConifg();
+        hibernateManager.buildConfig();
         final AnnotationConfiguration cfg = hibernateManager.getCfg();
         Assert.assertNotNull(cfg);
         final SessionFactory buildSessionFactory = cfg.buildSessionFactory();
@@ -59,7 +59,7 @@ public class DatabaseConnectionUnitTest {
     public void kryklogtDBTestConnectionTest() throws Exception {
         final HibernateTestManager hibernateManager = new HibernateTestManager();
         Assert.assertNotNull(hibernateManager);
-        hibernateManager.buildConifg();
+        hibernateManager.buildConfig();
         final AnnotationConfiguration cfg = hibernateManager.getCfg();
         Assert.assertNotNull(cfg);
         cfg.setProperty("hibernate.connection.username", "KRYKLOGT")

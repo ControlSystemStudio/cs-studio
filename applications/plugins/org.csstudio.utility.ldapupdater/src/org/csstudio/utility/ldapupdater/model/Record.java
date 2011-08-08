@@ -23,6 +23,7 @@ package org.csstudio.utility.ldapupdater.model;
 
 import java.io.Serializable;
 
+import javax.annotation.CheckForNull;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
@@ -40,18 +41,17 @@ public class Record implements Serializable {
 
     /**
      * Constructor.
-     * @param name .
      */
     public Record(@Nonnull final String name) {
-        this(name, "");
+        this(name, null);
     }
     /**
      * Constructor.
      * @param name .
      * @param desc description
      */
-    public Record(@Nonnull final String name, 
-                  @Nonnull final String desc) {
+    public Record(@Nonnull final String name,
+                  @Nullable final String desc) {
         _name = name;
         _description = desc;
     }
@@ -68,7 +68,7 @@ public class Record implements Serializable {
      * Getter.
      * @return the description
      */
-    @Nonnull
+    @CheckForNull
     public final String getDescription() {
         return _description;
     }
@@ -80,14 +80,12 @@ public class Record implements Serializable {
     @Override
     public final int hashCode() {
         final int prime = 31;
-        final int result = prime + ( (_name == null) ? 0 : _name.hashCode());
+        final int result = prime + ( _name == null ? 0 : _name.hashCode());
         return result;
     }
 
     /**
      * (@inheritDoc)
-     * @param obj the object to be compared
-     * @return true if the other object is of type record and its name equals this name
      */
     @Override
     public final boolean equals(@Nullable final Object obj) {
@@ -95,8 +93,12 @@ public class Record implements Serializable {
             return false;
         }
         final Record other = (Record) obj;
-        return _name.equals(other._name);
+        if (!_name.equals(other._name)) {
+            return false;
+        }
+        if (_description != null &&  _description.equals(other._description)) {
+            return true;
+        }
+        return other._description == null;
     }
-
-
 }

@@ -36,6 +36,7 @@ public class LdapUpdaterTask implements Runnable {
 
     private static final Logger LOG = LoggerFactory.getLogger(LdapUpdaterTask.class);
 
+
     /**
      * {@inheritDoc}
      */

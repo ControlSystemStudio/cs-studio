@@ -33,6 +33,7 @@
    <plugins>
       <plugin id="com.google.common"/>
       <plugin id="com.google.inject"/>
+      <plugin id="com.google.protobuf"/>
       <plugin id="com.ibm.icu"/>
       <plugin id="com.mysql.jdbc"/>
       <plugin id="javax.annotation"/>
@@ -47,7 +48,6 @@
       <plugin id="org.apache.tools.ant.junit"/>
       <plugin id="org.csstudio.apputil"/>
       <plugin id="org.csstudio.archive.common.engine"/>
-      <plugin id="org.csstudio.archive.common.engine.product.log4j" fragment="true"/>
       <plugin id="org.csstudio.archive.common.requesttype"/>
       <plugin id="org.csstudio.archive.common.service"/>
       <plugin id="org.csstudio.archive.common.service.mysqlimpl"/>

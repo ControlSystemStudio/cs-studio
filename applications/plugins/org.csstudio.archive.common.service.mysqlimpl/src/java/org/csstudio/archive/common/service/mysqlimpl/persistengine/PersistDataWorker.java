@@ -112,7 +112,7 @@ public class PersistDataWorker extends AbstractTimeMeasuredRunnable {
                     processBatchForStatement((BatchQueueHandlerSupport<T>) handler, stmt, rescueDataList);
                 }
             } catch (final SQLException e) {
-                LOG.error("Creation of batch statement failed for strategy " + handler.getType().getName(), e);
+                LOG.error("Creation of batch statement failed for strategy " + handler.getClass().getSimpleName(), e);
                 // FIXME (bknerr) : strategy for queues getting full, when to rescue data?
             } finally {
                 closeStatement(stmt);

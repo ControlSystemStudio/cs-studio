@@ -19,6 +19,18 @@ public class OPIBuilderPlugin extends AbstractUIPlugin {
 	// The plug-in ID
 	public static final String PLUGIN_ID = "org.csstudio.webopi"; //$NON-NLS-1$
 
+    public static final String MOBILE_SERVELET_NAME = "/m";//$NON-NLS-1$
+
+    public static final String MAIN_SERVELET_NAME = "/w";//$NON-NLS-1$
+
+    public static final String STANDALONE_SERVELET_NAME = "/s";//$NON-NLS-1$
+
+	public static final String OPI_PARAMETER = "opi"; //$NON-NLS-1$
+	
+	public static final String MODE_PARAMETER = "mode"; //$NON-NLS-1$
+
+	public static final String STANDALONE = "standalone"; //$NON-NLS-1$
+
 	// The shared instance
 	private static OPIBuilderPlugin plugin;
 	

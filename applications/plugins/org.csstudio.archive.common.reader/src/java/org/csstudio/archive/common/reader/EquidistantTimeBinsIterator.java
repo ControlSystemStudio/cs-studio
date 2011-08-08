@@ -21,6 +21,7 @@
  */
 package org.csstudio.archive.common.reader;
 
+import java.io.Serializable;
 import java.util.Iterator;
 import java.util.NoSuchElementException;
 
@@ -57,7 +58,7 @@ import org.joda.time.ReadableDuration;
  * @since Feb 24, 2011
  * @param <V> the base type of this channel
  */
-public class EquidistantTimeBinsIterator<V> extends AbstractValueIterator<V> {
+public class EquidistantTimeBinsIterator<V extends Serializable> extends AbstractValueIterator<V> {
 
     /**
      * Result container for method
@@ -66,7 +67,7 @@ public class EquidistantTimeBinsIterator<V> extends AbstractValueIterator<V> {
      * @author bknerr
      * @since Mar 16, 2011
      */
-    private static final class SampleAndWindow<V> {
+    private static final class SampleAndWindow<V extends Serializable> {
         private final IArchiveSample<V, ISystemVariable<V>>_sample;
         private final int _window;
         /**
@@ -101,7 +102,6 @@ public class EquidistantTimeBinsIterator<V> extends AbstractValueIterator<V> {
      * Constructor.
      * @throws ArchiveServiceException
      * @throws OsgiServiceUnavailableException
-     * @throws TypeSupportException
      */
     public EquidistantTimeBinsIterator(@Nonnull final IArchiveServiceProvider provider,
                                        @Nonnull final String channelName,
@@ -185,9 +185,11 @@ public class EquidistantTimeBinsIterator<V> extends AbstractValueIterator<V> {
         return new Duration((end.getMillis() - start.getMillis()) / bins);
     }
 
+
     @CheckForNull
-    private INumericMetaData retrieveMetaDataForChannel(@Nonnull final IArchiveServiceProvider provider,
-                                                        @Nonnull final String channelName) throws ArchiveServiceException, OsgiServiceUnavailableException {
+    private
+    INumericMetaData retrieveMetaDataForChannel(@Nonnull final IArchiveServiceProvider provider,
+                                                @Nonnull final String channelName) throws ArchiveServiceException, OsgiServiceUnavailableException {
         final IArchiveReaderFacade service = provider.getReaderFacade();
         final IArchiveChannel ch = service.getChannelByName(channelName);
         if (ch == null) {

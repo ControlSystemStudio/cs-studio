@@ -21,6 +21,7 @@
  */
 package org.csstudio.archive.common.service.mysqlimpl.sample;
 
+import java.io.Serializable;
 import java.util.LinkedList;
 
 import org.csstudio.archive.common.service.channel.ArchiveChannelId;
@@ -44,11 +45,11 @@ import com.google.common.collect.Lists;
 @SuppressWarnings({"unchecked", "rawtypes"})
 public final class TestSampleProvider {
 
-    public static final LinkedList<IArchiveSample<Object, ISystemVariable<Object>>> SAMPLES =
+    public static final LinkedList<IArchiveSample<Serializable, ISystemVariable<Serializable>>> SAMPLES =
         Lists.newLinkedList();
-    public static final LinkedList<IArchiveSample<Object, ISystemVariable<Object>>> SAMPLES_MIN =
+    public static final LinkedList<IArchiveSample<Serializable, ISystemVariable<Serializable>>> SAMPLES_MIN =
         Lists.newLinkedList();
-    public static final LinkedList<IArchiveSample<Object, ISystemVariable<Object>>> SAMPLES_HOUR =
+    public static final LinkedList<IArchiveSample<Serializable, ISystemVariable<Serializable>>> SAMPLES_HOUR =
         Lists.newLinkedList();
     // CHECKSTYLE OFF: |
     public static TimeInstant START;
@@ -58,6 +59,7 @@ public final class TestSampleProvider {
     public static final ArchiveChannelId CHANNEL_ID_1ST = new ArchiveChannelId(1L);
     public static final ArchiveChannelId CHANNEL_ID_2ND = new ArchiveChannelId(2L);
     public static final ArchiveChannelId CHANNEL_ID_3RD = new ArchiveChannelId(3L);
+    public static final ArchiveChannelId CHANNEL_ID_5TH = new ArchiveChannelId(5L);
 
     static {
         START = TimeInstantBuilder.fromNow();

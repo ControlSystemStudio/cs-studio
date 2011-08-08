@@ -7,6 +7,7 @@
  ******************************************************************************/
 package org.csstudio.archive.common.engine.model;
 
+import java.io.Serializable;
 import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.LinkedBlockingQueue;
 
@@ -34,7 +35,7 @@ import com.google.common.util.concurrent.ForwardingBlockingQueue;
  *  @param <T> the css value type atop the base value
  *  @param <S> the archive sample type atop the channel and the css value type
  */
-public class SampleBuffer<V,
+public class SampleBuffer<V extends Serializable,
                           T extends ISystemVariable<V>,
                           S extends IArchiveSample<V, T>> extends ForwardingBlockingQueue<S>
 {
@@ -53,7 +54,7 @@ public class SampleBuffer<V,
     private final BlockingQueue<S> _samples;
 
     /** Statistics */
-    private final BufferStats _stats = new BufferStats();
+    private final SampleBufferStatistics _stats = new SampleBufferStatistics();
 
 
     /**
@@ -102,7 +103,7 @@ public class SampleBuffer<V,
 
     /** @return Buffer statistics. */
     @Nonnull
-    public BufferStats getBufferStats() {
+    public SampleBufferStatistics getBufferStats() {
         return _stats;
     }
 
