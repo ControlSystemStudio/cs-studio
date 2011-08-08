@@ -9,6 +9,7 @@ package org.csstudio.alarm.beast;
 
 import static org.junit.Assert.*;
 
+import org.junit.Ignore;
 import org.junit.Test;
 
 /** Very simplistic WorkQueue JUnit test
@@ -83,7 +84,7 @@ public class WorkQueueUnitTest
             }
         });
         // Execute queued commands
-        queue.perform_queued_commands();
+        queue.performQueuedCommands();
         assertEquals("Hello", result);
 
         // Should be on the same thread
@@ -91,9 +92,106 @@ public class WorkQueueUnitTest
 
         // Empty queue means almost no delay
         final long start = System.currentTimeMillis();
-        queue.perform_queued_commands();
+        queue.performQueuedCommands();
         final long end = System.currentTimeMillis();
         final double seconds = (end-start)/1000.0;
         assertEquals(0.0, seconds, 0.01);
+    }
+    
+    @Test
+    public void testReplacableRunnable()
+    {
+        final WorkQueue queue = new WorkQueue();
+        assertEquals(0, queue.size());
+
+        // Add ordinary runnables that will be executed from queue
+        queue.execute(new Runnable()
+        {
+            @Override
+            public void run()
+            {
+                System.out.println("1");
+                result += "1";
+            }
+        });
+        assertEquals(1, queue.size());
+        queue.execute(new Runnable()
+        {
+            @Override
+            public void run()
+            {
+                System.out.println("2");
+                result += "2";
+            }
+        });
+        assertEquals(2, queue.size());
+        
+        // Add ReplacableRunnable for PV A, will be executed
+        String name = "A";
+        queue.executeReplacable(new ReplacableRunnable<String>(name)
+        {
+            @Override
+            public void run()
+            {
+                System.out.println("A1");
+                result += "A1";
+            }
+        });
+        assertEquals(3, queue.size());
+
+        // Add ReplacableRunnable for PV B, will be replaced
+        name = "B";
+        queue.executeReplacable(new ReplacableRunnable<String>(name)
+        {
+            @Override
+            public void run()
+            {
+                System.out.println("Should not see this");
+                result += "Should not see this";
+            }
+        });
+        assertEquals(4, queue.size());
+
+        // The replacement
+        queue.executeReplacable(new ReplacableRunnable<String>(name)
+        {
+            @Override
+            public void run()
+            {
+                System.out.println("B2");
+                result += "B2";
+            }
+        });
+        assertEquals(4, queue.size());
+    
+        // Execute queued commands
+        queue.performQueuedCommands();
+        assertEquals("12A1B2", result);
+    }
+
+    // Meant to run in JProfiler, used to
+    // determine queue performance
+    @Ignore
+    @Test
+    public void profileQueuePerformance()
+    {
+        final WorkQueue queue = new WorkQueue();
+
+        while (true)
+        {
+	        for (int dup=0; dup<5; ++dup)
+		        for (int i=0; i<100; ++i)
+		        {
+			        queue.executeReplacable(new ReplacableRunnable<String>("Test" + i)
+			        {
+			            @Override
+			            public void run()
+			            {
+			            	// NOP
+			            }
+			        });
+		        }
+	        queue.performQueuedCommands();
+        }
     }
 }

@@ -56,10 +56,29 @@ public class WorkQueue implements Executor
         }
     }
 
-    /** Perform queued commands, return when done.
+    /** Add a replaceable command to the queue.
+     * 
+     *  <p>If there is already a replaceable command
+     *  on the queue for the same object, it will
+     *  be replaced with this one.
+     *  
+     *  @param command Command to be executed
+     *  @see Executor#execute(Runnable)
+     */
+    public void executeReplacable(final ReplacableRunnable<?> command)
+    {
+        synchronized (tasks)
+        {
+            tasks.remove(command);
+            tasks.add(command);
+            tasks.notifyAll();
+        }
+    }
+
+	/** Perform queued commands, return when done.
      *  Returns 'immediately' if there are no queued commands.
      */
-    public void perform_queued_commands()
+    public void performQueuedCommands()
     {
         Runnable task;
         // Execute all tasks on queue
