@@ -46,7 +46,7 @@ import org.csstudio.domain.desy.typesupport.TypeSupportException;
 public abstract class BatchQueueHandlerSupport<T> extends AbstractTypeSupport<T> {
     // CHECKSTYLE ON : AbstractClassName
 
-    private final String _database;
+    private String _database;
     private final BlockingQueue<T> _queue;
 
 
@@ -95,6 +95,11 @@ public abstract class BatchQueueHandlerSupport<T> extends AbstractTypeSupport<T>
     @Nonnull
     protected String getDatabase() {
         return _database;
+    }
+
+    @Nonnull
+    public void setDatabase(@Nonnull final String dbName) {
+        _database = dbName;
     }
 
     public void applyBatch(@Nonnull final PreparedStatement stmt, @Nonnull final T element) throws ArchiveDaoException {

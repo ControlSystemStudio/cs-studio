@@ -29,6 +29,7 @@ import junit.framework.Assert;
 
 import org.csstudio.archive.common.service.ArchiveConnectionException;
 import org.csstudio.archive.common.service.mysqlimpl.MySQLArchivePreferenceService;
+import org.csstudio.archive.common.service.mysqlimpl.batch.BatchQueueHandlerSupport;
 import org.csstudio.archive.common.service.mysqlimpl.persistengine.PersistEngineDataManager;
 import org.junit.After;
 import org.junit.AfterClass;
@@ -76,6 +77,19 @@ public abstract class AbstractDaoTestSetup {
         Assert.assertNotNull(con);
 
         PERSIST_MGR = new PersistEngineDataManager(HANDLER, prefsMock);
+
+        /**
+         *  unfortunately, the lifecycle of the {@link org.csstudio.archive.common.service.mysqlimpl.MySqlServiceImplActivator}
+         *  cannot be controlled in JUnit Plugin tests. Hence, the daos will be instantiated by the activator
+         *  before the test and this method here runs. That means, the daos create their batch queue handlers
+         *  ({@link BatchQueueHandlerSupport#installIfNotExists}) with the database name from the production prefs,
+         *  which are statically registered as type
+         *  supports that cannot be overridden in the typesupport by a recreation of the daos. We have to set the queue handlers
+         *  parameters again - namely the database name.
+         */
+        for (final BatchQueueHandlerSupport<?> handler : BatchQueueHandlerSupport.getInstalledHandlers()) {
+            handler.setDatabase(prefsMock.getDatabaseName());
+        }
     }
 
 
