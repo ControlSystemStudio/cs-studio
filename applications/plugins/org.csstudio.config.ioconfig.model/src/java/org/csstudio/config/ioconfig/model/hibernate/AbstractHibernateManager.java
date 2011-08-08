@@ -103,7 +103,7 @@ public abstract class AbstractHibernateManager extends Observable implements IHi
         CLASSES.add(PV2IONameMatcherModelDBO.class);
     }
     
-    protected abstract void buildConifg();
+    protected abstract void buildConfig();
     
     @Override
     public final synchronized void closeSession() {
@@ -202,7 +202,7 @@ public abstract class AbstractHibernateManager extends Observable implements IHi
         if( _sessionFactoryDevDB != null && !_sessionFactoryDevDB.isClosed()) {
             return;
         }
-        buildConifg();
+        buildConfig();
         final SessionFactory buildSessionFactory = getCfg().buildSessionFactory();
         setSessionFactory(buildSessionFactory);
         notifyObservers();

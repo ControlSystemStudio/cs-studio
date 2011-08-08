@@ -47,7 +47,7 @@ public final class HibernateTestManager extends AbstractHibernateManager {
 
     
     @Override
-    protected void buildConifg() {
+    protected void buildConfig() {
         
         _cfg = new AnnotationConfiguration();
         for (Class<?> clazz : getClasses()) {
