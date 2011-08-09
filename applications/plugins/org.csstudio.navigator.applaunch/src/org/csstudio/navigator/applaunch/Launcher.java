@@ -9,17 +9,11 @@ package org.csstudio.navigator.applaunch;
 
 import java.io.File;
 
-import javax.xml.parsers.DocumentBuilder;
-import javax.xml.parsers.DocumentBuilderFactory;
-
-import org.csstudio.apputil.xml.DOMHelper;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.osgi.util.NLS;
 import org.eclipse.swt.program.Program;
 import org.eclipse.ui.IEditorLauncher;
-import org.w3c.dom.Document;
-import org.w3c.dom.Element;
 
 /** Launcher for an (external) application
  * 
@@ -27,7 +21,6 @@ import org.w3c.dom.Element;
  * 
  *  @author Kay Kasemir
  */
-@SuppressWarnings("nls")
 public class Launcher implements IEditorLauncher
 {
 	/** Invoked by Eclipse with the path to the launcher config
@@ -36,9 +29,17 @@ public class Launcher implements IEditorLauncher
 	@Override
 	public void open(final IPath path)
 	{
+		final File file = path.toFile();
+		
+		// Ignore empty files
+		// as they are created initially
+		// when adding a new file to the navigator
+		if (file.length() <= 0)
+			return;
 		try
 		{
-			launchConfig(path.toFile());
+			final LaunchConfig config = new LaunchConfig(file);
+			launchCommand(config.getCommand());
 		}
 		catch (Exception ex)
 		{
@@ -49,38 +50,6 @@ public class Launcher implements IEditorLauncher
 		}
 	}
 
-	/** Launch program
-	 *  @param file {@link File} with launch config
-	 *  @throws Exception on error in config file
-	 */
-	private void launchConfig(final File file) throws Exception
-    {
-		final DocumentBuilder builder =
-			DocumentBuilderFactory.newInstance().newDocumentBuilder();
-		launchConfig(builder.parse(file));
-    }
-
-	/** Launch program
-	 *  @param doc {@link Document} with launch config
-	 *  @throws Exception on error in config doc
-	 */
-    private void launchConfig(final Document doc) throws Exception
-    {
-        doc.getDocumentElement().normalize();
-        // Check if it's an <application/>.
-        doc.getDocumentElement().normalize();
-        final Element root_node = doc.getDocumentElement();
-        if (!root_node.getNodeName().equals("application"))
-            throw new Exception("Expecting <application>");
-        
-        final String command =
-        	DOMHelper.getSubelementString(root_node, "command");
-        if (command.isEmpty())
-        	throw new Exception("Missing <command>");
-        
-        launchCommand(command);
-    }
-
 	/** Execute a command
 	 *  @param command
 	 */
@@ -88,5 +57,13 @@ public class Launcher implements IEditorLauncher
     {
 		// Is that really all?
         Program.launch(command);
+        
+//        // More ideas from org.eclipse.ui.internal.misc.ExternalEditor 
+//        if (Util.isMac()) {
+//			Runtime.getRuntime().exec(
+//					new String[] { "open", "-a", programFileName, path });
+//		} else {
+//			Runtime.getRuntime().exec(
+//					new String[] { programFileName, path });
     }
 }
