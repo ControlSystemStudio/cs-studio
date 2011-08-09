@@ -292,7 +292,7 @@ public abstract class ArchiveTypeConversionSupport<T extends Serializable> exten
     public static <T> Boolean isDataTypeOptimizable(@Nonnull final Class<T> dataType) throws TypeSupportException {
         final ArchiveTypeConversionSupport<?> support =
             (ArchiveTypeConversionSupport<?>) findTypeSupportForOrThrowTSE(ArchiveTypeConversionSupport.class,
-                                                                 dataType);
+                                                                           dataType);
         return support.isOptimizableByAveraging();
     }
 
