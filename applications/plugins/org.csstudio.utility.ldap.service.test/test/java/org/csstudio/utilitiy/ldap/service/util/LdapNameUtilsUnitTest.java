@@ -21,18 +21,22 @@
  *
  * $Id$
  */
-package org.csstudio.utility.ldap;
+package org.csstudio.utilitiy.ldap.service.util;
 
 import static org.csstudio.utility.ldap.service.util.LdapUtils.createLdapName;
+import static org.csstudio.utility.ldap.treeconfiguration.LdapEpicsAlarmcfgConfiguration.FACILITY;
+import static org.csstudio.utility.ldap.treeconfiguration.LdapEpicsAlarmcfgConfiguration.RECORD;
+import static org.csstudio.utility.ldap.treeconfiguration.LdapEpicsAlarmcfgConfiguration.UNIT;
 import static org.csstudio.utility.ldap.treeconfiguration.LdapEpicsControlsConfiguration.COMPONENT;
-import static org.csstudio.utility.ldap.treeconfiguration.LdapEpicsControlsConfiguration.FACILITY;
 import static org.csstudio.utility.ldap.treeconfiguration.LdapEpicsControlsConfiguration.IOC;
-import static org.csstudio.utility.ldap.treeconfiguration.LdapEpicsControlsConfiguration.UNIT;
 import static org.csstudio.utility.ldap.treeconfiguration.LdapFieldsAndAttributes.ORGANIZATION_FIELD_NAME;
 import static org.junit.Assert.assertEquals;
 
+import java.util.Collections;
+
 import javax.naming.InvalidNameException;
 import javax.naming.ldap.LdapName;
+import javax.naming.ldap.Rdn;
 
 import junit.framework.Assert;
 
@@ -41,6 +45,8 @@ import org.csstudio.utility.ldap.service.util.LdapNameUtils.Direction;
 import org.csstudio.utility.ldap.treeconfiguration.LdapEpicsControlsFieldsAndAttributes;
 import org.junit.BeforeClass;
 import org.junit.Test;
+
+import com.google.common.collect.ImmutableList;
 
 /**
  * Test class for LdapNameUtils.
@@ -73,42 +79,42 @@ public class LdapNameUtilsUnitTest {
 
     @Test
     public void testBaseName0() {
-        LdapName name = createLdapName("leaf", "leafValue",
+        final LdapName name = createLdapName("leaf", "leafValue",
                                        "mid", "midvalue",
                                        "base", "baseValue");
         Assert.assertEquals(3, name.size());
-        LdapName baseName = LdapNameUtils.baseName(name);
+        final LdapName baseName = LdapNameUtils.baseName(name);
         Assert.assertEquals(2, baseName.size());
         Assert.assertEquals("mid=midvalue,base=baseValue", baseName.toString());
     }
     @Test
     public void testBaseName1() {
-        LdapName name = createLdapName("leaf", "leafValue",
+        final LdapName name = createLdapName("leaf", "leafValue",
                                        "base", "baseValue");
         Assert.assertEquals(2, name.size());
-        LdapName baseName = LdapNameUtils.baseName(name);
+        final LdapName baseName = LdapNameUtils.baseName(name);
         Assert.assertEquals(1, baseName.size());
         Assert.assertEquals("base=baseValue", baseName.toString());
     }
     @Test
     public void testBaseName2() {
-        
-        LdapName name = createLdapName("leaf", "leafValue");
+
+        final LdapName name = createLdapName("leaf", "leafValue");
         Assert.assertEquals(1, name.size());
-        LdapName baseName = LdapNameUtils.baseName(name);
+        final LdapName baseName = LdapNameUtils.baseName(name);
         Assert.assertEquals(0, baseName.size());
         Assert.assertEquals("", baseName.toString());
     }
     @Test
     public void testBaseName3() throws InvalidNameException {
-        
-        LdapName name = new LdapName("");
+
+        final LdapName name = new LdapName("");
         Assert.assertEquals(0, name.size());
-        LdapName baseName = LdapNameUtils.baseName(name);
+        final LdapName baseName = LdapNameUtils.baseName(name);
         Assert.assertEquals(0, baseName.size());
         Assert.assertEquals("", baseName.toString());
     }
-    
+
     @Test
     public void testSimpleNameOfSingleRdnName() throws Exception {
         final LdapName name = new LdapName("foo=bar");
@@ -176,5 +182,46 @@ public class LdapNameUtilsUnitTest {
             Assert.fail();
             e.printStackTrace();
         }
+    }
+
+    @Test
+    public void testObjectClassOfSingleRdnName() throws Exception {
+        final LdapName name = createLdapName(FACILITY.getNodeTypeName(), "foobar");
+        final Rdn rdn = name.getRdn(name.size() - 1);
+        assertEquals(FACILITY, FACILITY.getNodeTypeByNodeTypeName(rdn.getType()));
+    }
+
+    @Test
+    public void testObjectClassOfHierarchicalLdapName() throws Exception {
+        final LdapName name = createLdapName(RECORD.getNodeTypeName(), "foobar",
+                                              UNIT.getNodeTypeName(), "Test",
+                                              "dc", "example",
+                                              "dc","com");
+        final Rdn rdn = name.getRdn(name.size() - 1);
+        assertEquals(RECORD, RECORD.getNodeTypeByNodeTypeName(rdn.getType()));
+    }
+
+    @Test
+    public void testRemoveRdns2() throws InvalidNameException {
+
+        final LdapName name0 = LdapNameUtils.removeRdns(new LdapName(""), Collections.<Rdn>emptyList());
+        assertEquals(new LdapName(""), name0);
+
+        final LdapName name1 = LdapNameUtils.removeRdns(new LdapName("dc=com"), Collections.<Rdn>emptyList());
+        assertEquals(new LdapName("dc=com"), name1);
+
+        final LdapName name2 = LdapNameUtils.removeRdns(new LdapName("dc=com"), ImmutableList.of(new Rdn("dc", "com")));
+        assertEquals(new LdapName(""), name2);
+
+        final LdapName namex = createLdapName(RECORD.getNodeTypeName(), "foobar",
+                                              UNIT.getNodeTypeName(), "Test",
+                                              "dc", "example",
+                                              "dc","com");
+
+        final ImmutableList<Rdn> rdns = ImmutableList.of(new Rdn("dc", "example"), new Rdn(UNIT.getNodeTypeName(), "Test"));
+        final LdapName newName = LdapNameUtils.removeRdns(namex, rdns);
+
+        assertEquals(newName, createLdapName(RECORD.getNodeTypeName(), "foobar",
+                                             "dc","com"));
     }
 }

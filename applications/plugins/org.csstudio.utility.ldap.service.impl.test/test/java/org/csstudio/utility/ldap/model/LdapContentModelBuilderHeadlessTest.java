@@ -121,7 +121,7 @@ public class LdapContentModelBuilderHeadlessTest {
             }
         } catch (final CreateContentModelException e) {
             Assert.fail("Exception when reading model from search result.");
-        } catch (LdapServiceException e) {
+        } catch (final LdapServiceException e) {
             Assert.fail("Exception when reading model from search result.");
         }
     }
