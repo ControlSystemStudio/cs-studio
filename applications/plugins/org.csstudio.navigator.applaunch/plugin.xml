@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?eclipse version="3.4"?>
+<plugin>
+   <!-- Use XML files that start with <application>... as
+        launch config files.
+    -->
+   <extension point="org.eclipse.core.contenttype.contentTypes">
+      <content-type
+            base-type="org.eclipse.core.runtime.xml"
+            id="application"
+            name="Application"
+            priority="high">
+         <describer class="org.eclipse.core.runtime.content.XMLRootElementContentDescriber2">
+            <parameter name="element" value="application"/>
+         </describer>
+      </content-type>
+   </extension>
+
+   <!-- Ideally, I would like to be able to use any file extension,
+        including empty, so that a launch config file called "Emacs"
+        could start emacs.
+        But the editor and its icon are only associated by file extension,
+        so at least the org.eclipse.ui.editors extension must list
+        file extensions.
+    -->
+   <extension point="org.eclipse.ui.editors">
+      <editor id="org.csstudio.navigator.applaunch"
+            icon="icons/run.gif"
+            extensions="app,xml"
+            launcher="org.csstudio.navigator.applaunch.Launcher"
+            name="%LaunchApplication">
+         <contentTypeBinding contentTypeId="org.csstudio.navigator.applaunch.application"/>
+      </editor>
+   </extension>
+</plugin>
