@@ -42,7 +42,7 @@ public class WorkQueueUnitTest
                 result += "Goodbye";
             }
         });
-        queue.perform_queued_commands(1000);
+        queue.performQueuedCommands(1000);
         assertEquals("HelloGoodbye", result);
 
         // Should be on the same thread
@@ -165,13 +165,13 @@ public class WorkQueueUnitTest
         assertEquals(4, queue.size());
     
         // Execute queued commands
-        queue.performQueuedCommands();
+        queue.performQueuedCommands(10);
         assertEquals("12A1B2", result);
     }
 
     // Meant to run in JProfiler, used to
     // determine queue performance
-    @Ignore
+    // @Ignore
     @Test
     public void profileQueuePerformance()
     {
@@ -180,8 +180,9 @@ public class WorkQueueUnitTest
         while (true)
         {
 	        for (int dup=0; dup<5; ++dup)
-		        for (int i=0; i<100; ++i)
+		        for (int i=0; i<10; ++i)
 		        {
+//			        queue.execute(new Runnable()
 			        queue.executeReplacable(new ReplacableRunnable<String>("Test" + i)
 			        {
 			            @Override

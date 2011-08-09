@@ -90,7 +90,7 @@ public class Application implements IApplication
             final AlarmServer alarm_server = new AlarmServer(work_queue, config_name.get());
             alarm_server.start();
             while (run)
-                work_queue.perform_queued_commands(500);
+                work_queue.performQueuedCommands(500);
             alarm_server.stop();
         }
         catch (Throwable ex)
