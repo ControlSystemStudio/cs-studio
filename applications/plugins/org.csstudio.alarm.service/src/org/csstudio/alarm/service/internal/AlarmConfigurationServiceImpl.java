@@ -46,7 +46,6 @@ import org.csstudio.utility.ldap.service.ILdapContentModelBuilder;
 import org.csstudio.utility.ldap.service.ILdapSearchResult;
 import org.csstudio.utility.ldap.service.ILdapService;
 import org.csstudio.utility.ldap.service.LdapServiceException;
-import org.csstudio.utility.ldap.treeconfiguration.LdapEpicsAlarmCfgFieldsAndAttributes;
 import org.csstudio.utility.ldap.treeconfiguration.LdapEpicsAlarmcfgConfiguration;
 import org.csstudio.utility.treemodel.ContentModel;
 import org.csstudio.utility.treemodel.ContentModelExporter;
@@ -71,18 +70,13 @@ public class AlarmConfigurationServiceImpl implements IAlarmConfigurationService
     @Nonnull
     public ContentModel<LdapEpicsAlarmcfgConfiguration> retrieveInitialContentModel(@Nonnull final List<String> facilityNames) throws CreateContentModelException, LdapServiceException {
 
-        ContentModel<LdapEpicsAlarmcfgConfiguration> model;
-        try {
-            model = new ContentModel<LdapEpicsAlarmcfgConfiguration>(VIRTUAL_ROOT);
-        } catch (final InvalidNameException e) {
-            throw new CreateContentModelException("Error creating empty content model.", e);
-        }
+        final ContentModel<LdapEpicsAlarmcfgConfiguration> model = new ContentModel<LdapEpicsAlarmcfgConfiguration>(VIRTUAL_ROOT);
 
         final ILdapService ldapService = AlarmServiceActivator.getDefault().getLdapService();
         if (ldapService == null) {
             throw new CreateContentModelException("LDAP service is unavailable.", null);
         }
-        final ILdapContentModelBuilder<LdapEpicsAlarmcfgConfiguration> builder = 
+        final ILdapContentModelBuilder<LdapEpicsAlarmcfgConfiguration> builder =
             ldapService.getLdapContentModelBuilder(model);
 
         for (final String facility : facilityNames) {
