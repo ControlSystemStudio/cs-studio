@@ -7,8 +7,6 @@
 #  time source make.sh
 #
 # Kay Kasemir
-CYGDRIVE=/cygdrive/c
-
 source settings.sh
 
 # Fetch new copy of sources
