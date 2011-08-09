@@ -25,6 +25,7 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.List;
 import java.util.concurrent.BlockingQueue;
 
@@ -77,7 +78,11 @@ public abstract class BatchQueueHandlerSupport<T> extends AbstractTypeSupport<T>
     @SuppressWarnings("rawtypes")
     @Nonnull
     public static Collection<BatchQueueHandlerSupport> getInstalledHandlers() {
-        return typeSupportsFor(BatchQueueHandlerSupport.class);
+        final Collection<BatchQueueHandlerSupport> handlers = typeSupportsFor(BatchQueueHandlerSupport.class);
+        if (handlers != null) {
+            return handlers;
+        }
+        return Collections.emptyList();
     }
 
     public static <T> void addToQueue(@Nonnull final Collection<T> newEntries) throws TypeSupportException {
