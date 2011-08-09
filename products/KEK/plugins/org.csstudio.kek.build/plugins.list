@@ -41,6 +41,7 @@ org.csstudio.kek.product.office/**
 org.csstudio.logbook/**
 org.csstudio.logging.ui/**
 org.csstudio.logging/**
+org.csstudio.navigator.applaunch/**
 org.csstudio.openfile/**
 org.csstudio.opibuilder.adl2boy/**
 org.csstudio.opibuilder.converter/**
