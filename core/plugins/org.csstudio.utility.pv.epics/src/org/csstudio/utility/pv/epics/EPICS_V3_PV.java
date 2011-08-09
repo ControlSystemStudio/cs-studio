@@ -608,11 +608,6 @@ public class EPICS_V3_PV extends PlatformObject
     @Override
     public void monitorChanged(final MonitorEvent ev)
     {
-        //INumericMetaData metaData = (INumericMetaData) DBR_Helper.decodeMetaData(ev.getDBR());
-
-    	if(ev.getDBR() != null)
-    		Activator.getLogger().log(Level.FINEST, "meta: {0}", new Object[] { ev.getDBR().getClass().getName() });
-
         final Logger log = Activator.getLogger();
         // This runs in a CA thread.
         // Ignore values that arrive after stop()
