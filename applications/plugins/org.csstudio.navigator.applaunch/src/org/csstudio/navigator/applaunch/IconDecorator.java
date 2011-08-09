@@ -20,16 +20,14 @@ import org.eclipse.core.runtime.content.IContentType;
 import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.jface.viewers.ILabelDecorator;
 import org.eclipse.jface.viewers.ILabelProviderListener;
-import org.eclipse.jface.viewers.ILightweightLabelDecorator;
 import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.widgets.Display;
 
-/**
- * An example showing how to control when an element is decorated. This example
- * decorates only elements that are instances of IResource and whose attribute
- * is 'Read-only'.
- * 
- * @see ILightweightLabelDecorator
+/** Replace the default LaunchConfig icon with
+ *  one that is (optionally) specified within
+ *  the launch config file.
+ *  
+ *  @author Kay Kasemir
  */
 @SuppressWarnings("nls")
 public class IconDecorator implements ILabelDecorator
