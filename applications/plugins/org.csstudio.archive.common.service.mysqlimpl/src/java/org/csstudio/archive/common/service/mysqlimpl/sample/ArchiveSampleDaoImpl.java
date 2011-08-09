@@ -143,12 +143,17 @@ public class ArchiveSampleDaoImpl extends AbstractArchiveDao implements IArchive
 
             final List<? extends AbstractReducedDataSample> minuteSamples;
                 minuteSamples = generatePerMinuteSamples(samples, _reducedDataMapForMinutes);
+            if (minuteSamples.isEmpty()) {
+                return;
+            }
             getEngineMgr().submitToBatch(minuteSamples);
 
             final List<? extends AbstractReducedDataSample> hourSamples =
                 generatePerHourSamples(minuteSamples, _reducedDataMapForHours);
+            if (hourSamples.isEmpty()) {
+                return;
+            }
             getEngineMgr().submitToBatch(hourSamples);
-
         } catch (final TypeSupportException e) {
             throw new ArchiveDaoException("Type support for sample type could not be found.", e);
         }
@@ -304,7 +309,6 @@ public class ArchiveSampleDaoImpl extends AbstractArchiveDao implements IArchive
         if (timestamp.isBefore(dueTime)) {
             return false; // not yet due, don't write
         }
-
         final Double lastWrittenValue = agg.getAverageBeforeReset();
         if (lastWrittenValue != null && lastWrittenValue.compareTo(newVal) == 0) {
             return false; // hasn't changed much TODO (bknerr) : consider a sort of 'deadband' here, too
@@ -327,17 +331,14 @@ public class ArchiveSampleDaoImpl extends AbstractArchiveDao implements IArchive
         ResultSet result = null;
         try {
             DesyArchiveRequestType reqType = determineRequestType(type, channel.getDataType(), s, e);
-
             do {
                 stmt = createReadSamplesStatement(channel, s, e, reqType);
                 result = stmt.executeQuery();
-
                 if (result.next()) {
                     return createRetrievedSamplesContainer(channel, reqType, result);
                 } else if (type == null) { // type == null means use automatic lookup
                     reqType = reqType.getNextLowerOrderRequestType();
                 }
-
             } while (type == null && reqType != null); // no other request type of lower order
 
         } catch (final Exception ex) {
@@ -373,8 +374,7 @@ public class ArchiveSampleDaoImpl extends AbstractArchiveDao implements IArchive
                                                          @Nonnull final DesyArchiveRequestType reqType)
                                                          throws SQLException,
                                                                 ArchiveConnectionException {
-        PreparedStatement stmt;
-        stmt = dispatchRequestTypeToStatement(reqType);
+        final PreparedStatement stmt = dispatchRequestTypeToStatement(reqType);
         stmt.setInt(1, channel.getId().intValue());
         stmt.setLong(2, s.getNanos());
         stmt.setLong(3, e.getNanos());
@@ -383,7 +383,8 @@ public class ArchiveSampleDaoImpl extends AbstractArchiveDao implements IArchive
 
     @Nonnull
     private PreparedStatement dispatchRequestTypeToStatement(@Nonnull final DesyArchiveRequestType type)
-        throws SQLException, ArchiveConnectionException {
+                                                             throws SQLException,
+                                                                    ArchiveConnectionException {
 
         PreparedStatement stmt = null;
         switch (type) {
@@ -412,7 +413,6 @@ public class ArchiveSampleDaoImpl extends AbstractArchiveDao implements IArchive
                                                                                                    ArchiveDaoException,
                                                                                                    TypeSupportException {
         final String dataType = channel.getDataType();
-
         V value = null;
         V min = null;
         V max = null;
