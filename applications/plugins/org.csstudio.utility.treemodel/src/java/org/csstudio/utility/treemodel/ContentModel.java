@@ -50,7 +50,7 @@ import org.slf4j.LoggerFactory;
  */
 public final class ContentModel<T extends Enum<T> & ITreeNodeConfiguration<T>> {
 
-    
+
     private static final Logger LOG = LoggerFactory.getLogger(ContentModel.class);
     /**
      * A type object to give access to the type specific functionality of the tree components.
@@ -71,19 +71,13 @@ public final class ContentModel<T extends Enum<T> & ITreeNodeConfiguration<T>> {
     /**
      * Constructor.
      * @param virtualConfigurationRoot .
-     * @throws InvalidNameException
      */
-    public ContentModel(@Nonnull final T virtualConfigurationRoot) throws InvalidNameException {
+    public ContentModel(@Nonnull final T virtualConfigurationRoot) {
         _virtualConfigurationRoot = virtualConfigurationRoot;
         initFields(_virtualConfigurationRoot);
     }
 
-    /**
-     * @param objectClassRoot
-     * @param rootValue
-     * @throws InvalidNameException
-     */
-    private void initFields(@Nonnull final T objectClassRoot) throws InvalidNameException {
+    private void initFields(@Nonnull final T objectClassRoot) {
         _cacheByLdapName = new HashMap<String, INodeComponent<T>>();
 
         final Class<T> clazz = objectClassRoot.getDeclaringClass();

@@ -38,30 +38,30 @@ public class TreeModelActivator implements BundleActivator {
         INSTANCE = this; // Antipattern is required by the framework!
     }
 
-	/*
-	 * (non-Javadoc)
-	 * @see org.osgi.framework.BundleActivator#start(org.osgi.framework.BundleContext)
-	 */
-	@Override
+    /*
+     * (non-Javadoc)
+     * @see org.osgi.framework.BundleActivator#start(org.osgi.framework.BundleContext)
+     */
+    @Override
     public void start(@Nullable final BundleContext context) throws Exception {
-	    if (context != null) {
-	        _bundle = context.getBundle(); // for the test class
-	    }
-	}
+        if (context != null) {
+            _bundle = context.getBundle(); // for the test class
+        }
+    }
 
-	/*
-	 * (non-Javadoc)
-	 * @see org.osgi.framework.BundleActivator#stop(org.osgi.framework.BundleContext)
-	 */
-	@Override
+    /*
+     * (non-Javadoc)
+     * @see org.osgi.framework.BundleActivator#stop(org.osgi.framework.BundleContext)
+     */
+    @Override
     public void stop(@Nullable final BundleContext context) throws Exception {
-	    // EMPTY
-	}
+        // EMPTY
+    }
 
-	/**
-	 * The plugin id.
-	 * @return the id.
-	 */
+    /**
+     * The plugin id.
+     * @return the id.
+     */
     @Nonnull
     public String getPluginId() {
         return PLUGIN_ID;

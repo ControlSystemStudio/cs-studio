@@ -46,10 +46,10 @@ import org.junit.Test;
  */
 public class XmlFileContentModelBuilderHeadlessTest {
 
+    public static final String TEST_VALID_XML = "res-test/Test_Valid.xml";
     private static URL RESOURCE_VALID;
     private static URL RESOURCE_INVALID;
     private static URL RESOURCE_EMPTY;
-    public static final String TEST_VALID_XML = "res-test/Test_Valid.xml";
     private static final String TEST_EMPTY_XML = "res-test/Test_Empty.xml";
     private static final String TEST_INVALID_XML = "res-test/Test_InvalidStructure.xml";
 
@@ -68,7 +68,7 @@ public class XmlFileContentModelBuilderHeadlessTest {
     @Test
     public void testValid() {
         try {
-            _model = TreeModelTestUtils.buildContentModel(RESOURCE_VALID, 
+            _model = TreeModelTestUtils.buildContentModel(RESOURCE_VALID,
                                                           TestTreeConfiguration.VIRTUAL_ROOT);
         } catch (final CreateContentModelException e) {
             Assert.fail("Content model could not be created. " + e.getLocalizedMessage());
