@@ -20,6 +20,7 @@ import java.util.logging.Level;
 
 import org.csstudio.alarm.beast.AlarmTreePath;
 import org.csstudio.alarm.beast.Preferences;
+import org.csstudio.alarm.beast.ReplacableRunnable;
 import org.csstudio.alarm.beast.SeverityLevel;
 import org.csstudio.alarm.beast.TreeItem;
 import org.csstudio.alarm.beast.WorkQueue;
@@ -337,8 +338,13 @@ public class AlarmServer
     	messenger.sendStateUpdate(pv, current_severity, current_message,
     	        severity, message, value, timestamp);
         // Move the persistence of states into separate queue & thread
-        // so that it won't delay the alarm server from updating
-        work_queue.execute(new Runnable()
+        // so that it won't delay the alarm server from updating.
+    	
+    	// ReplacableRunnable:
+    	// If there is already an update request for this PV on the queue,
+    	// replace it with the new one because it's out of date and no
+    	// longer needs to be writting to the RDB anyway.
+        work_queue.executeReplacable(new ReplacableRunnable<AlarmPV>(pv)
         {
             @Override
             public void run()
