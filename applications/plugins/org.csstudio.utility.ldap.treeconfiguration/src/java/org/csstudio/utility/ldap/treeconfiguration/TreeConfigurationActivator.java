@@ -34,8 +34,8 @@ import org.osgi.framework.BundleActivator;
 import org.osgi.framework.BundleContext;
 
 /**
- * Activator. 
- * 
+ * Activator.
+ *
  * @author bknerr
  * @since 01.07.2011
  */
@@ -76,11 +76,11 @@ public class TreeConfigurationActivator implements BundleActivator {
     public void stop(@Nullable final BundleContext context) throws Exception {
         // EMPTY
     }
-    
+
     @Nonnull
     static String getResourceFromBundle(@Nonnull final String dtdFilePath) throws IOException {
         final Bundle bundle = Platform.getBundle(TreeConfigurationActivator.PLUGIN_ID);
-        File loc = FileLocator.getBundleFile(bundle);
+        final File loc = FileLocator.getBundleFile(bundle);
         return  new File(loc, dtdFilePath).toString();
     }
 }
