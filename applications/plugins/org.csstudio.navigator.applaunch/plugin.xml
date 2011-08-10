@@ -7,7 +7,7 @@
    <extension point="org.eclipse.core.contenttype.contentTypes">
       <content-type
             base-type="org.eclipse.core.runtime.xml"
-            file-extensions="app,xml"
+            file-extensions="app"
             id="application"
             name="Application"
             priority="high">
@@ -27,7 +27,7 @@
    <extension point="org.eclipse.ui.editors">
       <editor id="org.csstudio.navigator.applaunch"
             icon="icons/run.gif"
-            extensions="app,xml"
+            extensions="app"
             launcher="org.csstudio.navigator.applaunch.Launcher"
             name="%LaunchApplication">
          <contentTypeBinding contentTypeId="org.csstudio.navigator.applaunch.application"/>
@@ -77,5 +77,52 @@
             id="org.csstudio.navigator.applaunch.configwizard"
             name="Application Launch Configuration">
       </wizard>
+   </extension>
+   
+   <!-- Command to edit the config -->
+   <extension
+         point="org.eclipse.ui.commands">
+      <command
+            id="org.csstudio.navigator.applaunch.command.edit"
+            name="EditLaunchConfig">
+      </command>
+   </extension>
+   <extension
+         point="org.eclipse.ui.handlers">
+      <handler
+            class="org.csstudio.navigator.applaunch.EditLaunchConfiguration"
+            commandId="org.csstudio.navigator.applaunch.command.edit">
+      </handler>
+   </extension>
+   
+   <!-- Display command in context menu -->
+   <extension point="org.eclipse.ui.menus">
+      <menuContribution
+            allPopups="false"
+            locationURI="popup:org.eclipse.ui.popup.any?after=additions">
+         <command
+               commandId="org.csstudio.navigator.applaunch.command.edit"
+               icon="icons/run.gif"
+               label="%EditLaunchConfig"
+               style="push">
+            <!-- Tricky part: Display only for files
+                 that are app config files
+                 limited to 1 file
+              -->
+            <visibleWhen>
+              <with variable="activeMenuSelection">
+                <iterate>
+                  <adapt type="org.eclipse.core.resources.IFile">
+                    <test property="org.eclipse.core.resources.contentTypeId" 
+                           value="org.csstudio.navigator.applaunch.application"/>
+                  </adapt>
+                </iterate>
+               <and>
+                  <count value="1"/>
+               </and>
+              </with>
+            </visibleWhen>
+         </command>
+      </menuContribution>
    </extension>
 </plugin>
