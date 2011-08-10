@@ -70,8 +70,6 @@ public abstract class PreferencesTypeSupport<T> extends AbstractTypeSupport<T> {
         if (INSTALLED) {
             return;
         }
-        INSTALLED = true;
-
         TypeSupport.addTypeSupport(new PreferencesTypeSupport<Integer>(Integer.class) {
             @Override
             @Nonnull
@@ -206,6 +204,8 @@ public abstract class PreferencesTypeSupport<T> extends AbstractTypeSupport<T> {
                                             findMember.getFullPath();
             }
         });
+
+        INSTALLED = true;
     }
  // CHECKSTYLE ON : MethodLength
 
