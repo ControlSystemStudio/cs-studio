@@ -38,6 +38,7 @@ import org.csstudio.archive.common.service.mysqlimpl.batch.BatchQueueHandlerSupp
 import org.csstudio.archive.common.service.mysqlimpl.dao.ArchiveDaoException;
 import org.csstudio.archive.common.service.sample.ArchiveMultiScalarSample;
 import org.csstudio.archive.common.service.util.ArchiveTypeConversionSupport;
+import org.csstudio.domain.common.codec.BaseCodecUtil;
 import org.csstudio.domain.desy.typesupport.TypeSupportException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -47,7 +48,7 @@ import com.google.common.base.Joiner;
 import com.google.common.collect.Collections2;
 
 /**
- * TODO (bknerr) :
+ * {@link BatchQueueHandlerSupport} for samples for serializable collections.
  *
  * @author bknerr
  * @since 10.08.2011
@@ -115,11 +116,14 @@ public class CollectionDataSampleBatchQueueHandler extends BatchQueueHandlerSupp
                                        @Nonnull
                                        public String apply(@Nonnull final ArchiveMultiScalarSample input) {
                                            try {
+                                               final byte[] byteArray = ArchiveTypeConversionSupport.toByteArray(input.getValue());
+                                               final String hexStr = BaseCodecUtil.getHex(byteArray);
+
                                                final String value =
                                                    "(" +
                                                    Joiner.on(",").join(input.getChannelId().asString(),+
                                                                        input.getSystemVariable().getTimestamp().getNanos(),
-                                                                       "'" + ArchiveTypeConversionSupport.toArchiveString(input.getValue()) + "'") +
+                                                                       "x'" + hexStr + "'") +
                                                    ")";
                                                return value;
                                            } catch (final TypeSupportException e) {

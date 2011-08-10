@@ -23,92 +23,77 @@ package org.csstudio.archive.common.service.mysqlimpl.sample;
 
 import static org.csstudio.archive.common.service.mysqlimpl.sample.TestSampleProvider.CHANNEL_ID_5TH;
 import static org.csstudio.archive.common.service.mysqlimpl.sample.TestSampleProvider.SAMPLE_ARRAY_D;
-import static org.csstudio.archive.common.service.mysqlimpl.sample.TestSampleProvider.SAMPLE_D_VAL;
 import static org.csstudio.archive.common.service.mysqlimpl.sample.TestSampleProvider.START;
 
 import java.io.Serializable;
-import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.Collections;
 
-import org.csstudio.archive.common.service.ArchiveConnectionException;
-import org.csstudio.archive.common.service.channel.IArchiveChannel;
 import org.csstudio.archive.common.service.mysqlimpl.channel.ArchiveChannelDaoImpl;
 import org.csstudio.archive.common.service.mysqlimpl.channel.IArchiveChannelDao;
 import org.csstudio.archive.common.service.mysqlimpl.dao.AbstractDaoTestSetup;
 import org.csstudio.archive.common.service.mysqlimpl.dao.ArchiveDaoException;
+import org.csstudio.archive.common.service.mysqlimpl.requesttypes.DesyArchiveRequestType;
+import org.csstudio.archive.common.service.sample.ArchiveMultiScalarSample;
 import org.csstudio.archive.common.service.sample.IArchiveSample;
 import org.csstudio.domain.desy.system.ISystemVariable;
-import org.junit.AfterClass;
 import org.junit.Assert;
+import org.junit.BeforeClass;
 import org.junit.Test;
 
+import com.google.inject.internal.Lists;
+
 /**
- * Integration test for multi scalar samples in {@link ArchiveSampleDaoImpl}.
+ * Test for {@link CollectionDataSampleBatchQueueHandler}.
  *
  * @author bknerr
  * @since 10.08.2011
  */
-public class ArchiveMultiScalarSampleDaoCreateUnitTest extends AbstractDaoTestSetup {
+public class CollectionDataBatchQueueHandlerUnitTest extends AbstractDaoTestSetup {
 
-    private static IArchiveSampleDao SAMPLE_DAO;
     private static IArchiveChannelDao CHANNEL_DAO;
+    private static IArchiveSampleDao SAMPLE_DAO;
 
-    /**
-     * Constructor.
-     */
-    public ArchiveMultiScalarSampleDaoCreateUnitTest() {
-        super(false);
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    @Override
-    protected void beforeHook() throws ArchiveConnectionException, SQLException {
+    @BeforeClass
+    public static void setupDao() {
         CHANNEL_DAO = new ArchiveChannelDaoImpl(HANDLER, PERSIST_MGR);
         SAMPLE_DAO = new ArchiveSampleDaoImpl(HANDLER, PERSIST_MGR, CHANNEL_DAO);
     }
 
+    @SuppressWarnings("rawtypes")
     @Test
-    public void testCreateDoubleSample() throws ArchiveDaoException, InterruptedException, ArchiveConnectionException, SQLException {
-        SAMPLE_DAO.createSamples(Collections.singleton(SAMPLE_ARRAY_D));
+    public void testConvertStatementToString() throws ArchiveDaoException {
+        final CollectionDataSampleBatchQueueHandler handler = new CollectionDataSampleBatchQueueHandler("archive_test");
+        final Collection<String> stmtStrings =
+            handler.convertToStatementString(Lists.newArrayList((ArchiveMultiScalarSample) SAMPLE_ARRAY_D));
+        Assert.assertTrue(stmtStrings.size() == 1);
+        final String stmtStr = stmtStrings.iterator().next();
 
-        Thread.sleep(2500);
 
-        final IArchiveChannel channel = CHANNEL_DAO.retrieveChannelById(CHANNEL_ID_5TH);
-        final Collection<IArchiveSample<Serializable, ISystemVariable<Serializable>>> samples =
-            SAMPLE_DAO.retrieveSamples(null, channel, START.minusMillis(1L), START.plusMillis(1L));
-
-        Assert.assertTrue(samples.size() == 1);
-
-        final IArchiveSample<Serializable,ISystemVariable<Serializable>> sample =
-            samples.iterator().next();
-        Assert.assertEquals(CHANNEL_ID_5TH, sample.getChannelId());
-        Assert.assertTrue(sample.getValue() instanceof ArrayList);
-
-        @SuppressWarnings("rawtypes")
-        final ArrayList result = (ArrayList) sample.getValue();
-        Assert.assertEquals(SAMPLE_D_VAL.size(), result.size());
-        for (int i = 0; i < SAMPLE_D_VAL.size(); i++) {
-            Assert.assertEquals(SAMPLE_D_VAL.get(i), result.get(i));
+        try {
+            final Statement stmt = HANDLER.getConnection().createStatement();
+            stmt.executeUpdate(stmtStr);
+            stmt.close();
+        } catch (final Exception e) {
+            Assert.fail();
         }
 
-        undoCreateDoubleSamples();
-    }
+        final Collection<IArchiveSample<Serializable, ISystemVariable<Serializable>>> samples =
+            SAMPLE_DAO.retrieveSamples(DesyArchiveRequestType.RAW_MULTI_SCALAR,
+                                       CHANNEL_ID_5TH,
+                                       START.minusMillis(1L),
+                                       START.plusMillis(1L));
 
-    private static void undoCreateDoubleSamples() throws ArchiveConnectionException, SQLException {
-        final Statement stmt = HANDLER.getConnection().createStatement();
-        stmt.execute("DELETE FROM " + ArchiveSampleDaoImpl.TAB_SAMPLE_BLOB + " WHERE " +
-                     ArchiveSampleDaoImpl.COLUMN_CHANNEL_ID + "=" + CHANNEL_ID_5TH.asString() + " AND " +
-                     ArchiveSampleDaoImpl.COLUMN_TIME + " BETWEEN " + START.getNanos() + " AND " + START.plusMillis(1L).getNanos());
-        stmt.close();
-    }
 
-    @AfterClass
-    public static void teardown() throws ArchiveConnectionException, SQLException {
-        undoCreateDoubleSamples();
+        Assert.assertTrue(samples.size() == 1);
+        final IArchiveSample<Serializable,ISystemVariable<Serializable>> sample =
+            samples.iterator().next();
+        Assert.assertTrue(sample.getValue() instanceof ArrayList);
+
+        final ArrayList val = (ArrayList) sample.getValue();
+        for (int i = 0; i < SAMPLE_ARRAY_D.getValue().size(); i++) {
+            Assert.assertEquals(SAMPLE_ARRAY_D.getValue().get(i), val.get(i));
+        }
     }
 }

@@ -28,6 +28,7 @@ import javax.annotation.CheckForNull;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
+import org.csstudio.archive.common.service.channel.ArchiveChannelId;
 import org.csstudio.archive.common.service.channel.IArchiveChannel;
 import org.csstudio.archive.common.service.mysqlimpl.dao.ArchiveDaoException;
 import org.csstudio.archive.common.service.mysqlimpl.requesttypes.DesyArchiveRequestType;
@@ -43,7 +44,6 @@ import org.csstudio.domain.desy.time.TimeInstant;
  */
 public interface IArchiveSampleDao {
 
-
     /**
      * Inserts the collection of sample objects into the db.
      * @param samples the sample objects
@@ -55,21 +55,30 @@ public interface IArchiveSampleDao {
 
     /**
      * Retrieves the samples in the given time period according to the request type
-     * @param id
-     * @param s
-     * @param e
-     * @return
+     * @throws ArchiveSampleDaoException
      */
     @Nonnull
     <V extends Serializable, T extends ISystemVariable<V>>
     Collection<IArchiveSample<V, T>> retrieveSamples(@Nullable DesyArchiveRequestType type,
                                                      @Nonnull IArchiveChannel channel,
-                                                     @Nonnull TimeInstant s,
-                                                     @Nonnull TimeInstant e) throws ArchiveDaoException;
+                                                     @Nonnull TimeInstant start,
+                                                     @Nonnull TimeInstant end) throws ArchiveDaoException;
+    /**
+     * Retrieves the samples in the given time period according to the request type
+     * @throws ArchiveDaoException
+     */
+    @Nonnull
+    <V extends Serializable, T extends ISystemVariable<V>>
+    Collection<IArchiveSample<V, T>> retrieveSamples(@Nullable final DesyArchiveRequestType type,
+                                                     @Nonnull final ArchiveChannelId channelId,
+                                                     @Nonnull final TimeInstant start,
+                                                     @Nonnull final TimeInstant end) throws ArchiveDaoException;
 
 
     @CheckForNull
     <V extends Serializable, T extends ISystemVariable<V>>
     IArchiveSample<V, T> retrieveLatestSampleBeforeTime(@Nonnull IArchiveChannel channel,
                                                         @Nonnull TimeInstant time) throws ArchiveDaoException;
+
+
 }

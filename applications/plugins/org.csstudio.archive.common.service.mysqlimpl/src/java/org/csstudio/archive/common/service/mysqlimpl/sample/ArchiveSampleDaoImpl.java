@@ -323,18 +323,35 @@ public class ArchiveSampleDaoImpl extends AbstractArchiveDao implements IArchive
     @Nonnull
     public <V extends Serializable, T extends ISystemVariable<V>>
     Collection<IArchiveSample<V, T>> retrieveSamples(@Nullable final DesyArchiveRequestType type,
+                                                     @Nonnull final ArchiveChannelId channelId,
+                                                     @Nonnull final TimeInstant start,
+                                                     @Nonnull final TimeInstant end) throws ArchiveDaoException {
+        final IArchiveChannel channel = _channelDao.retrieveChannelById(channelId);
+        if (channel != null) {
+            return retrieveSamples(type, channel, start, end);
+        }
+        return Collections.emptyList();
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    @Nonnull
+    public <V extends Serializable, T extends ISystemVariable<V>>
+    Collection<IArchiveSample<V, T>> retrieveSamples(@Nullable final DesyArchiveRequestType type,
                                                      @Nonnull final IArchiveChannel channel,
-                                                     @Nonnull final TimeInstant s,
-                                                     @Nonnull final TimeInstant e) throws ArchiveDaoException {
+                                                     @Nonnull final TimeInstant start,
+                                                     @Nonnull final TimeInstant end) throws ArchiveDaoException {
 
         PreparedStatement stmt = null;
         ResultSet result = null;
         try {
-            DesyArchiveRequestType reqType = type != null ?
+            DesyArchiveRequestType reqType = type != null ? // if null = determine automatically
                                              type :
-                                             SampleRequestTypeUtil.determineRequestType(channel.getDataType(), s, e);
+                                             SampleRequestTypeUtil.determineRequestType(channel.getDataType(), start, end);
             do {
-                stmt = createReadSamplesStatement(channel, s, e, reqType);
+                stmt = createReadSamplesStatement(channel, start, end, reqType);
                 result = stmt.executeQuery();
                 if (result.next()) {
                     return createRetrievedSamplesContainer(channel, reqType, result);
@@ -424,6 +441,10 @@ public class ArchiveSampleDaoImpl extends AbstractArchiveDao implements IArchive
             case RAW : {
                 // (..., value)
                 value = ArchiveTypeConversionSupport.fromArchiveString(dataType, result.getString(COLUMN_VALUE));
+                break;
+            }
+            case RAW_MULTI_SCALAR : {
+                value = ArchiveTypeConversionSupport.fromByteArray(result.getBytes(COLUMN_VALUE));
                 break;
             }
             case AVG_PER_MINUTE :
