@@ -31,23 +31,19 @@ import org.csstudio.domain.desy.types.Limits;
 import org.csstudio.domain.desy.typesupport.TypeSupportException;
 
 /**
- * Conversion support for {@link Short}.
+ * Conversion support for {@link Number} & {@link Comparable} types.
  *
  * @author bknerr
- * @since 11.05.2011
+ * @since 10.08.2011
+ * @param <T> the comparable number type
  */
-final class ShortConversionSupport extends EpicsIMetaDataTypeSupport<Short> {
+public abstract class AbstractNumberIMetaDataTypeSupport<T extends Number & Comparable<T>> extends EpicsIMetaDataTypeSupport<T> {
 
     /**
      * Constructor.
      */
-    public ShortConversionSupport() {
-        super(Short.class);
-    }
-
-    @Nonnull
-    private Short toShort(final double d) {
-        return Short.valueOf(Double.valueOf(d).shortValue());
+    public AbstractNumberIMetaDataTypeSupport(@Nonnull final Class<T> type) {
+        super(type);
     }
 
     /**
@@ -56,14 +52,17 @@ final class ShortConversionSupport extends EpicsIMetaDataTypeSupport<Short> {
     @Override
     @Nonnull
     protected EpicsMetaData convertToMetaData(@Nonnull final IMetaData data) throws TypeSupportException {
-        final INumericMetaData numData = checkAndConvertToNumeric(data, Short.class);
-        final EpicsGraphicsData<Short> gr =
-            new EpicsGraphicsData<Short>(Limits.<Short>create(toShort(numData.getAlarmLow()),
-                                                            toShort(numData.getAlarmHigh())),
-                                        Limits.<Short>create(toShort(numData.getWarnLow()),
-                                                            toShort(numData.getWarnHigh())),
-                                        Limits.<Short>create(toShort(numData.getDisplayLow()),
-                                                            toShort(numData.getDisplayHigh())));
+        final INumericMetaData numData = checkAndConvertToNumeric(data, Byte.class);
+        final EpicsGraphicsData<T> gr =
+            new EpicsGraphicsData<T>(Limits.<T>create(toNumber(numData.getAlarmLow()),
+                                                            toNumber(numData.getAlarmHigh())),
+                                        Limits.<T>create(toNumber(numData.getWarnLow()),
+                                                            toNumber(numData.getWarnHigh())),
+                                        Limits.<T>create(toNumber(numData.getDisplayLow()),
+                                                            toNumber(numData.getDisplayHigh())));
         return EpicsMetaData.create(null, gr, null, null);
     }
+
+    @Nonnull
+    protected abstract T toNumber(final double d);
 }
