@@ -34,6 +34,13 @@ public class LaunchConfigWizardFilePage extends WizardNewFileCreationPage
     }
 
 	@Override
+    public boolean isPageComplete()
+    {
+		// Need at least ".app"
+	    return super.isPageComplete()  ||  getFileName().length() > 4;
+    }
+
+	@Override
 	protected InputStream getInitialContents()
 	{
 		return new ByteArrayInputStream(config.getXML().getBytes());

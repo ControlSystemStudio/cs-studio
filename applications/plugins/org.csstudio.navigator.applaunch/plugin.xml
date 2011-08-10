@@ -79,14 +79,14 @@
          point="org.eclipse.ui.newWizards">
       <category
             id="org.csstudio.navigator.applaunch"
-            name="Launcher">
+            name="%Launcher">
       </category>
       <wizard
             category="org.csstudio.navigator.applaunch"
             class="org.csstudio.navigator.applaunch.NewLaunchConfigWizard"
             icon="icons/run.gif"
             id="org.csstudio.navigator.applaunch.configwizard"
-            name="Application Launch Configuration">
+            name="%ApplicationLaunchConfig">
       </wizard>
    </extension>
    

@@ -27,10 +27,17 @@ public class LaunchConfigDialog extends Dialog
 	protected LaunchConfigDialog(final Shell shell, final LaunchConfig config)
     {
 	    super(shell);
-	    shell.setText(Messages.LaunchConfigTitle);
 	    gui = new LaunchConfigUI(config);
     }
-	
+
+	@Override
+    protected void configureShell(final Shell shell)
+    {
+	    super.configureShell(shell);
+	    shell.setText(Messages.LaunchConfigTitle);
+	    shell.setSize(400, 350);
+    }
+
 	/** Allow resize */
 	@Override
     protected boolean isResizable()

@@ -33,7 +33,7 @@ public class LaunchConfigWizardContentPage extends WizardPage
 		setControl(box);
     }
 	
-    /** @return LaunchConfig that the user selected */
+	/** @return LaunchConfig that the user selected */
     public LaunchConfig getConfig()
     {
     	return gui.getConfig();

@@ -8,6 +8,7 @@
 package org.csstudio.navigator.applaunch;
 
 import java.io.ByteArrayInputStream;
+import java.io.FileOutputStream;
 
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IResource;
@@ -50,12 +51,14 @@ public class Editor implements IEditorLauncher
 		// Update file
 		try
         {
-			final IFile file = (IFile) ResourcesPlugin.getWorkspace().getRoot().findMember(path);
-			file.setContents(
-	        	new ByteArrayInputStream(dlg.getConfig().getXML().getBytes()),
-	        	IResource.FORCE, null);
+			final FileOutputStream stream = new FileOutputStream(path.toFile());
+			stream.write(dlg.getConfig().getXML().getBytes());
+			stream.close();
+			
+			// Since we changed a file in the workspace, refresh it.
+			ResourcesPlugin.getWorkspace().getRoot().refreshLocal(IResource.DEPTH_INFINITE, null);
         }
-        catch (CoreException ex)
+        catch (Exception ex)
         {
         	MessageDialog.openError(shell,
         			Messages.Error,

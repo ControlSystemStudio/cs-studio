@@ -43,7 +43,8 @@ public class NewLaunchConfigWizard extends Wizard implements INewWizard
 	@Override
 	public boolean performFinish()
 	{
-		file_page.setConfig(config_page.getConfig());
+		final LaunchConfig config = config_page.getConfig();
+		file_page.setConfig(config);
 		final IFile file = file_page.createNewFile();
 		return file != null;
 	}
