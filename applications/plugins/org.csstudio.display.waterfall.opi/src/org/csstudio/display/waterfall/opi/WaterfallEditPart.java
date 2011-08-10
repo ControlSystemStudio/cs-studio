@@ -20,8 +20,7 @@ public class WaterfallEditPart extends AbstractWidgetEditPart {
 	protected IFigure doCreateFigure() {
 		WaterfallFigure figure = new WaterfallFigure((Composite) getViewer().getControl(), getWidgetModel().getParent());
 		figure.setRunMode(getExecutionMode() == ExecutionMode.RUN_MODE);
-		if (figure.isRunMode())
-			figure.getSWTWidget().setInputText(getWidgetModel().getPvName());
+		configure(figure.getSWTWidget(), getWidgetModel(), figure.isRunMode());
 		return figure;
 	}
 	
@@ -41,52 +40,30 @@ public class WaterfallEditPart extends AbstractWidgetEditPart {
 	private static boolean runMode(IFigure figure) {
 		return ((WaterfallFigure) figure).isRunMode();
 	}
+	
+	private static void configure(WaterfallWidget widget, WaterfallModel model, boolean runMode) {
+		if (runMode)
+			widget.setInputText(model.getInputText());
+		widget.setShowRange(model.isShowRange());
+	}
 
 	@Override
 	protected void registerPropertyChangeHandlers() {
 		// The handler when PV value changed.
-		IWidgetPropertyChangeHandler valueHandler = new IWidgetPropertyChangeHandler() {
+		IWidgetPropertyChangeHandler reconfigure = new IWidgetPropertyChangeHandler() {
 			public boolean handleChange(final Object oldValue,
 					final Object newValue,
 					final IFigure figure) {
-				if (runMode(figure)) {
-					widgetOf(figure).setInputText((String) newValue);
-				}
+				configure(widgetOf(figure), getWidgetModel(), runMode(figure));
 				return false;
 			}
 		};
-		setPropertyChangeHandler(WaterfallModel.PV_NAME, valueHandler);
-//		
-//		//The handler when max property value changed.
-//		IWidgetPropertyChangeHandler maxHandler = new IWidgetPropertyChangeHandler() {
-//			
-//			public boolean handleChange(Object oldValue, Object newValue, IFigure figure) {
-//				((SimpleBarGraphFigure) figure).setMax((Double)newValue);
-//				return false;
-//			}
-//		};
-//		setPropertyChangeHandler(SimpleBarGraphModel.PROP_MAX, maxHandler);
-//		
-//		//The handler when min property value changed.
-//		IWidgetPropertyChangeHandler minHandler = new IWidgetPropertyChangeHandler() {
-//			
-//			public boolean handleChange(Object oldValue, Object newValue, IFigure figure) {
-//				((SimpleBarGraphFigure) figure).setMin((Double)newValue);
-//				return false;
-//			}
-//		};
-//		setPropertyChangeHandler(SimpleBarGraphModel.PROP_MIN, minHandler);
-//		
+		setPropertyChangeHandler(WaterfallModel.INPUT_TEXT, reconfigure);
+		setPropertyChangeHandler(WaterfallModel.ADAPTIVE_RANGE, reconfigure);
+		setPropertyChangeHandler(WaterfallModel.PIXEL_DURATION, reconfigure);
+		setPropertyChangeHandler(WaterfallModel.SCROLL_DOWN, reconfigure);
+		setPropertyChangeHandler(WaterfallModel.SHOW_RANGE, reconfigure);
+		setPropertyChangeHandler(WaterfallModel.SORT_PROPERTY, reconfigure);
 	}
 	
-//	@Override
-//	public Object getValue() {
-//		return ((SimpleBarGraphFigure)getFigure()).getValue();
-//	}
-//
-//	@Override
-//	public void setValue(Object value) {
-//		if(value instanceof Double)
-//			((SimpleBarGraphFigure)getFigure()).setValue((Double)value);
-//	}
 }
