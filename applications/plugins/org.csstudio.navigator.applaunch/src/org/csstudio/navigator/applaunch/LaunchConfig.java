@@ -21,7 +21,7 @@ import org.w3c.dom.Element;
 
 /** Launch configuration
  * 
- *  <p>Parses the launch config XML file
+ *  <p>Can parse the launch config XML file
  *
  *  @author Kay Kasemir
  */
@@ -30,6 +30,13 @@ public class LaunchConfig
 {
 	private String command;
 	private String icon_name;
+
+	/** Initialize empty launch configuration */
+    public LaunchConfig()
+    {
+    	command = "";
+    	icon_name = "icon:run";
+    }
 	
 	/** Initialize
 	 *  @param file {@link File} with launch config 
@@ -68,13 +75,25 @@ public class LaunchConfig
         icon_name = DOMHelper.getSubelementString(root_node, "icon");
     }
 
-    /** @return Command */
+	/** @param command Command */
+	public void setCommand(final String command)
+    {
+    	this.command = command;
+    }
+
+	/** @return Command */
 	public String getCommand()
     {
     	return command;
     }
 
-    /** @return Icon name */
+	/** @param icon_name Icon name */
+    public void setIconName(final String icon_name)
+    {
+    	this.icon_name = icon_name;
+    }
+
+	/** @return Icon name */
 	public String getIconName()
     {
     	return icon_name;
@@ -91,5 +110,13 @@ public class LaunchConfig
 			return null;
 		return descr.createImage();
 	}
-
+	
+	public String getXML()
+	{
+		return
+		"<application>\n" +
+		"  <command>" + command + "</command>\n" +
+		"  <icon>" + icon_name + "</icon>\n" +
+		"</application>\n";
+	}
 }

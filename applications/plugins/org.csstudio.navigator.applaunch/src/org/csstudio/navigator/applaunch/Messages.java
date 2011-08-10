@@ -25,6 +25,7 @@ public class Messages extends NLS
 	public static String FileWizardDescr;
 	public static String IconLbl;
 	public static String LaunchConfigTitle;
+	public static String LaunchConfigUpdateErrorFmt;
 	static
 	{
 		// initialize resource bundle

@@ -19,8 +19,7 @@ import org.eclipse.jface.viewers.IStructuredSelection;
 @SuppressWarnings("nls")
 public class LaunchConfigWizardFilePage extends WizardNewFileCreationPage
 {
-    private String command = "";
-	private String icon_name = "icon:run";
+    private LaunchConfig config = new LaunchConfig();
 	
 	public LaunchConfigWizardFilePage(IStructuredSelection selection)
     {
@@ -29,25 +28,15 @@ public class LaunchConfigWizardFilePage extends WizardNewFileCreationPage
 		setDescription(Messages.FileWizardDescr);
     }
 
-	public void setCommand(final String command)
+	public void setConfig(final LaunchConfig config)
     {
-		this.command = command;
-    }
-
-	public void setIconName(final String icon_name)
-    {
-		this.icon_name = icon_name;
+		this.config = config;
     }
 
 	@Override
 	protected InputStream getInitialContents()
 	{
-		final String xml =
-			"<application>\n" +
-			"  <command>" + command + "</command>\n" +
-			"  <icon>" + icon_name + "</icon>\n" +
-			"</application>\n";
-		return new ByteArrayInputStream(xml.getBytes());
+		return new ByteArrayInputStream(config.getXML().getBytes());
 	}
 	
 	@Override

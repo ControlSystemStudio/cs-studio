@@ -43,9 +43,7 @@ public class NewLaunchConfigWizard extends Wizard implements INewWizard
 	@Override
 	public boolean performFinish()
 	{
-		file_page.setCommand(config_page.getCommand());
-		file_page.setIconName(config_page.getIconName());
-		
+		file_page.setConfig(config_page.getConfig());
 		final IFile file = file_page.createNewFile();
 		return file != null;
 	}
