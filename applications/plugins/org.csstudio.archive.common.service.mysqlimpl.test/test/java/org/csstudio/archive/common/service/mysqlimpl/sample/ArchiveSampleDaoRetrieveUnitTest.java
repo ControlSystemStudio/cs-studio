@@ -50,7 +50,7 @@ import org.junit.Test;
  * @author bknerr
  * @since 27.07.2011
  */
-public class ArchiveSampleDaoUnitTest extends AbstractDaoTestSetup {
+public class ArchiveSampleDaoRetrieveUnitTest extends AbstractDaoTestSetup {
     private static IArchiveSampleDao SAMPLE_DAO;
     private static IArchiveChannelDao CHANNEL_DAO;
 

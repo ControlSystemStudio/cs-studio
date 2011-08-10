@@ -66,7 +66,7 @@ import org.junit.Test;
  * @author bknerr
  * @since 28.07.2011
  */
-public class ArchiveSampleDaoCreateSamplesUnitTest extends AbstractDaoTestSetup {
+public class ArchiveSampleDaoCreateUnitTest extends AbstractDaoTestSetup {
 
     private static IArchiveSampleDao SAMPLE_DAO;
     private static IArchiveChannelDao CHANNEL_DAO;
@@ -74,7 +74,7 @@ public class ArchiveSampleDaoCreateSamplesUnitTest extends AbstractDaoTestSetup 
     /**
      * Constructor.
      */
-    public ArchiveSampleDaoCreateSamplesUnitTest() {
+    public ArchiveSampleDaoCreateUnitTest() {
         super(false);
     }
 
