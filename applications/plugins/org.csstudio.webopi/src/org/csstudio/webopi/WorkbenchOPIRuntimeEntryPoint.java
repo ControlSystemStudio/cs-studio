@@ -12,7 +12,7 @@ public class WorkbenchOPIRuntimeEntryPoint implements IEntryPoint {
 
 	public int createUI() {
 		Display display = PlatformUI.createDisplay();
-		DisplayManager.getInstance().registerDisplay(display);
+		DisplayManager.getInstance().registerDisplay(display, true);
 		WorkbenchAdvisor advisor = new ApplicationWorkbenchAdvisor();
 		return PlatformUI.createAndRunWorkbench( display, advisor );
 		
