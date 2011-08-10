@@ -21,8 +21,10 @@
  */
 package org.csstudio.platform.ui;
 
+import java.util.logging.Level;
+import java.util.logging.Logger;
+
 import org.csstudio.platform.CSSPlatformPlugin;
-import org.csstudio.platform.logging.CentralLogger;
 import org.eclipse.core.runtime.preferences.InstanceScope;
 import org.eclipse.jface.preference.IPreferenceStore;
 import org.eclipse.jface.resource.ImageDescriptor;
@@ -38,10 +40,14 @@ import org.osgi.framework.BundleContext;
  * @author Alexander Will
  */
 public class CSSPlatformUiPlugin extends AbstractCssUiPlugin {
+    
+    
 	/**
 	 * This _plugin's ID.
 	 */
 	public static final String ID = "org.csstudio.platform.ui"; //$NON-NLS-1$
+
+	private static final Logger LOG = Logger.getLogger(ID);
 
 	/**
 	 * The shared instance of this plugin class.
@@ -82,13 +88,12 @@ public class CSSPlatformUiPlugin extends AbstractCssUiPlugin {
 
 			_preferenceStore
 					.addPropertyChangeListener(new IPropertyChangeListener() {
-						public void propertyChange(
+						@Override
+                        public void propertyChange(
 								final PropertyChangeEvent event) {
-							CentralLogger.getInstance().info(this,
-									"Property [" + event.getProperty() //$NON-NLS-1$
-											+ "] changed from [" //$NON-NLS-1$
-											+ event.getOldValue() + "] to [" //$NON-NLS-1$
-											+ event.getNewValue() + "]"); //$NON-NLS-1$
+						    
+						    Object[] args = new Object[] {event.getProperty(), event.getOldValue(), event.getNewValue()};
+							LOG.log(Level.INFO,"Property [{}] changed from [{}] to [{}]", args); //$NON-NLS-1$
 						}
 					});
 		}

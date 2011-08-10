@@ -27,7 +27,6 @@ package org.csstudio.alarm.jms2ora;
 import java.util.Vector;
 import java.util.concurrent.ConcurrentLinkedQueue;
 import javax.jms.MapMessage;
-import org.apache.log4j.Logger;
 import org.csstudio.alarm.jms2ora.database.DatabaseLayer;
 import org.csstudio.alarm.jms2ora.preferences.PreferenceConstants;
 import org.csstudio.alarm.jms2ora.util.ApplicState;
@@ -35,10 +34,11 @@ import org.csstudio.alarm.jms2ora.util.MessageAcceptor;
 import org.csstudio.alarm.jms2ora.util.MessageContent;
 import org.csstudio.alarm.jms2ora.util.MessageContentCreator;
 import org.csstudio.alarm.jms2ora.util.MessageFileHandler;
-import org.csstudio.platform.logging.CentralLogger;
 import org.csstudio.platform.statistic.Collector;
 import org.eclipse.core.runtime.Platform;
 import org.eclipse.core.runtime.preferences.IPreferencesService;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * <code>StoreMessages</code> gets all messages from the topics <b>ALARM and LOG</b> and stores them into the
@@ -76,6 +76,9 @@ public class NewMessageProcessor extends Thread
     /** The object instance of this class */
     private static NewMessageProcessor instance = null;
     
+    /** The class logger */
+    private static final Logger LOG = LoggerFactory.getLogger(NewMessageProcessor.class);
+
     private MessageAcceptor messageAceptor;
     
     /** Queue for received messages */
@@ -102,9 +105,6 @@ public class NewMessageProcessor extends Thread
     /** Class that collects statistic informations. Query it via XMPP. */
     private Collector storedMessages = null;
 
-    /** The logger */
-    private Logger logger = null;
-    
     /** Array with JMS server URLs */
     private String[] urlList = null;
     
@@ -151,9 +151,7 @@ public class NewMessageProcessor extends Thread
      */    
     private NewMessageProcessor()
     {
-        // Create the logger
-        logger = CentralLogger.getInstance().getLogger(this);
-        
+        this.setName("MessageProcessor-Thread");
         messages = new ConcurrentLinkedQueue<MessageContent>();
         
         IPreferencesService prefs = Platform.getPreferencesService();
@@ -201,12 +199,12 @@ public class NewMessageProcessor extends Thread
             
             for(int i = 0;i < urlList.length;i++)
             {
-                logger.info("[" + urlList[i] + "]");
+                LOG.info("[" + urlList[i] + "]");
             }
             
             for(int i = 0;i < topicList.length;i++)
             {
-                logger.info("[" + topicList[i] + "]");
+                LOG.info("[" + topicList[i] + "]");
             }
             
             messageAceptor = new MessageAcceptor(urlList, topicList);
@@ -227,7 +225,7 @@ public class NewMessageProcessor extends Thread
 //                }
 //                catch(Exception e)
 //                {
-//                    logger.error("*** Exception *** : " + e.getMessage());
+//                    LOG.error("*** Exception *** : " + e.getMessage());
 //                    
 //                    initialized = false;
 //                }
@@ -256,13 +254,14 @@ public class NewMessageProcessor extends Thread
      *
      */
     
+    @Override
     public void run()
     {
         MessageContent content = null;
         int result;
         
-        logger.info("Started" + VersionInfo.getAll());        
-        logger.info("Waiting for messages...");
+        LOG.info("Started" + VersionInfo.getAll());        
+        LOG.info("Waiting for messages...");
         
         while(running)
         {
@@ -286,13 +285,13 @@ public class NewMessageProcessor extends Thread
                     // Store the message in a file, if it was not possible to write it to the DB.
                     MessageFileHandler.getInstance().writeMessageContentToFile(content);
                     
-                    logger.warn(infoText[result] + ": Could not store the message in the database. Message is written on disk.");
+                    LOG.warn(infoText[result] + ": Could not store the message in the database. Message is written on disk.");
                 }
                 else
                 {
                     if(result != PM_RETURN_OK)
                     {
-                        logger.info(infoText[result]);
+                        LOG.info(infoText[result]);
                         if(result == PM_RETURN_DISCARD)
                         {
                             discardedMessages.incrementValue();
@@ -305,11 +304,11 @@ public class NewMessageProcessor extends Thread
                     else
                     {
                         storedMessages.incrementValue();
-                        logger.debug(infoText[result]);
+                        LOG.debug(infoText[result]);
                     }
                 }
                 
-                logger.debug(createStatisticString());
+                LOG.debug(createStatisticString());
                 
                 // IMPORTANT: Refresh the current state, otherwise Jms2Ora will restart if many messages
                 // are stored in the queue and state switching does not happen while storing all
@@ -329,13 +328,13 @@ public class NewMessageProcessor extends Thread
                     }
                     catch(InterruptedException ie)
                     {
-                        logger.error("*** InterruptedException *** : executeMe(): wait(): " + ie.getMessage());
+                        LOG.error("*** InterruptedException *** : executeMe(): wait(): " + ie.getMessage());
                     
                         running = false;
                     }               
                 }
                 
-                logger.debug("Waked up...");
+                LOG.debug("Waked up...");
             }
         }
         
@@ -346,7 +345,7 @@ public class NewMessageProcessor extends Thread
         messageAceptor.closeAllReceivers();
         
         // Process the remaining messages
-        logger.info("Remaining messages: " + messages.size() + " -> Processing...");
+        LOG.info("Remaining messages: " + messages.size() + " -> Processing...");
         
         int writtenToDb = 0;
         int writtenToHd = 0;
@@ -373,12 +372,12 @@ public class NewMessageProcessor extends Thread
         
         stoppedClean = true;
         
-        logger.info("Remaining messages stored in the database: " + writtenToDb);
-        logger.info("Remaining messages stored on disk:         " + writtenToHd);
+        LOG.info("Remaining messages stored in the database: " + writtenToDb);
+        LOG.info("Remaining messages stored on disk:         " + writtenToHd);
         
         parent.setStatus(ApplicState.STOPPED);
 
-        logger.info("executeMe() : ** DONE **");
+        LOG.info("executeMe() : ** DONE **");
     }
 
     public boolean stoppedClean()
@@ -391,12 +390,12 @@ public class NewMessageProcessor extends Thread
         Vector<MapMessage> vmm;
         MessageContent content = null;
         
-        logger.debug("Looking for messages");
+        LOG.debug("Looking for messages");
         
         vmm = messageAceptor.getCurrentMessages();
         if(vmm != null)
         {
-            logger.debug("Found " + vmm.size() + " messages");
+            LOG.debug("Found " + vmm.size() + " messages");
             
             for(MapMessage m : vmm)
             {
@@ -411,7 +410,7 @@ public class NewMessageProcessor extends Thread
 //    {
 //        MessageContent content = null;
 //        
-//        logger.debug("onMessage(): " + message.toString());
+//        LOG.debug("onMessage(): " + message.toString());
 //        
 //        if(message instanceof MapMessage)
 //        {
@@ -426,7 +425,7 @@ public class NewMessageProcessor extends Thread
 //        }
 //        else
 //        {
-//            logger.info("Received a non MapMessage object. Discarded...");
+//            LOG.info("Received a non MapMessage object. Discarded...");
 //        }        
 //    }
 
@@ -451,14 +450,14 @@ public class NewMessageProcessor extends Thread
         msgId = dbLayer.createMessageEntry(typeId, content);
         if(msgId == RET_ERROR)
         {
-            logger.error("createMessageEntry(): No message entry created in database.");
+            LOG.error("createMessageEntry(): No message entry created in database.");
             
             return PM_ERROR_DB;
         }
         
         if(dbLayer.createMessageContentEntries(msgId, content) == false)
         {
-            logger.error("createMessageContentEntries(): No entry created in message_content. Delete message from database and store it to disk.");
+            LOG.error("createMessageContentEntries(): No entry created in message_content. Delete message from database and store it to disk.");
             
             dbLayer.deleteMessage(msgId);
             
@@ -502,15 +501,13 @@ public class NewMessageProcessor extends Thread
         {
             return messages.size();
         }
-        else
-        {
-            return 0;
-        }
+        
+        return 0;
     }
     
 //    public void closeAllReceivers()
 //    {
-//        logger.info("closeAllReceivers(): Closing all receivers.");
+//        LOG.info("closeAllReceivers(): Closing all receivers.");
 //        
 //        if(receivers != null)
 //        {

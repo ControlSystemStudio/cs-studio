@@ -1,0 +1,10 @@
+Manifest-Version: 1.0
+Bundle-ManifestVersion: 2
+Bundle-Name: Fragment
+Bundle-SymbolicName: org.csstudio.common.trendplotter.shell.fragment;singleton:=true
+Bundle-Version: 1.0.0.qualifier
+Bundle-Vendor: Jan Hatje <jan.hatje@desy.de> - DESY
+Fragment-Host: org.csstudio.common.trendplotter;bundle-version="3.0.0"
+Bundle-RequiredExecutionEnvironment: JavaSE-1.6
+Export-Package: org.csstudio.common.trendplotter
+Require-Bundle: org.csstudio.platform.ui;bundle-version="1.2.0"

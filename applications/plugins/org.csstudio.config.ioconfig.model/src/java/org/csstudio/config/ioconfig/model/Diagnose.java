@@ -42,13 +42,13 @@ public final class Diagnose {
     
     private static StringBuilder _DIAG_STRING = new StringBuilder();
     
-    private static int _COUNTER = 0;
+    private static int _COUNTER;
     
     private static long _OLD_TIME;
-
+    
     private static long _INIT_TIME;
-
-    private static int _NAMED_DB_CLASS_COUNTER = 0;
+    
+    private static int _NAMED_DB_CLASS_COUNTER;
     
     /**
      * Constructor.
@@ -57,29 +57,43 @@ public final class Diagnose {
         // Defualt Constructor
     }
     
-    public static synchronized void addNewLine(@Nonnull String line) {
-        long time = new Date().getTime();
-        long l = time-_OLD_TIME;
+    public static synchronized void addNewLine(@Nonnull final String line) {
+        final long time = new Date().getTime();
+        final long l = time-_OLD_TIME;
         _OLD_TIME = time;
         _DIAG_STRING.append(_COUNTER+": \t\t"+time+"\t"+l+"\t"+line+"\r\n");
         _COUNTER++;
     }
-
+    
     public static void clear() {
         _DIAG_STRING = new StringBuilder();
-        Date date = new Date();
+        final Date date = new Date();
         _DIAG_STRING.append("Start um "+date+"\r\n");
         _INIT_TIME = date.getTime();
         _OLD_TIME = date.getTime();
         _COUNTER = 0;
         _NAMED_DB_CLASS_COUNTER = 0;
     }
-
+    
+    public static void countNamedDBClass() {
+        _NAMED_DB_CLASS_COUNTER++;
+    }
+    
+    @Nonnull
+    public static String getCounts() {
+        return ""+_COUNTER;
+    }
+    
+    @Nonnull
+    public static String getString() {
+        return _DIAG_STRING.toString();
+    }
+    
     public static void print() {
-        Date date = new Date();
+        final Date date = new Date();
         FileWriter fw = null;
         try {
-            File createTempFile = File.createTempFile("Diag", "DDB.log");
+            final File createTempFile = File.createTempFile("Diag", "DDB.log");
             if(createTempFile.createNewFile()) {
                 fw = new FileWriter(createTempFile);
                 fw.write(_DIAG_STRING.toString());
@@ -87,7 +101,7 @@ public final class Diagnose {
                 _DIAG_STRING.append(createTempFile.getAbsolutePath()+"\r\n");
                 fw.close();
             }
-        } catch (IOException e) {
+        } catch (final IOException e) {
             e.printStackTrace();
             _DIAG_STRING.append(e.getLocalizedMessage());
         }
@@ -98,19 +112,4 @@ public final class Diagnose {
         System.out.println("Zeit ab Start "+(date.getTime()-_INIT_TIME));
         
     }
-
-    @Nonnull
-    public static String getString() {
-        return _DIAG_STRING.toString();
-    }
-
-    @Nonnull
-    public static String getCounts() {
-        return ""+_COUNTER;
-    }
-
-    public static void countNamedDBClass() {
-        _NAMED_DB_CLASS_COUNTER++;
-    }
-    
 }

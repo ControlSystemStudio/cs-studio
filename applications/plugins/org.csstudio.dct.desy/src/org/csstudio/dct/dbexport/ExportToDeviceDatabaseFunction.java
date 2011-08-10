@@ -11,12 +11,13 @@ import org.csstudio.dct.model.IRecord;
 import org.csstudio.dct.util.AliasResolutionException;
 import org.csstudio.dct.util.AliasResolutionUtil;
 import org.csstudio.dct.util.ResolutionUtil;
-import org.csstudio.platform.logging.CentralLogger;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.hibernate.HibernateException;
 import org.hibernate.Query;
 import org.hibernate.Session;
 import org.hibernate.Transaction;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * Record function that archives record information. Information ist stored in
@@ -26,6 +27,8 @@ import org.hibernate.Transaction;
  * 
  */
 public final class ExportToDeviceDatabaseFunction implements IRecordFunction {
+    
+    private static final Logger LOG = LoggerFactory.getLogger(ExportToDeviceDatabaseFunction.class);
 	private static final String ATTR_ARCHIVE = "archiveToDesyDeviceDb";
 
 	private static final Pattern FIND_IONAME_FUNCTION = Pattern.compile("^>ioname\\((.*)\\)$");
@@ -68,7 +71,7 @@ public final class ExportToDeviceDatabaseFunction implements IRecordFunction {
 					try {
 						archiveIoNames(r, session);
 					} catch (AliasResolutionException e) {
-						CentralLogger.getInstance().error(this, e);
+						LOG.error("", e);
 					}
 				}
 				monitor.internalWorked(1);
@@ -81,9 +84,9 @@ public final class ExportToDeviceDatabaseFunction implements IRecordFunction {
 				try {
 					tx.rollback();
 				} catch (HibernateException e1) {
-					CentralLogger.getInstance().error(this, "Error during transaction rollback.", e1);
+					LOG.error("Error during transaction rollback.", e1);
 				}
-				CentralLogger.getInstance().error(this, e);
+				LOG.error("", e);
 			}
 		}
 

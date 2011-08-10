@@ -1,3 +1,4 @@
+
 package org.csstudio.nams.configurator.beans;
 
 import java.util.LinkedList;
@@ -65,7 +66,8 @@ public class AlarmbearbeiterGruppenBean extends
 		return true;
 	}
 
-	public String getDisplayName() {
+	@Override
+    public String getDisplayName() {
 		return this.getName() == null ? Messages.AlarmbearbeiterGruppenBean_without_name : this.getName();
 	}
 
@@ -73,7 +75,8 @@ public class AlarmbearbeiterGruppenBean extends
 		return this.groupID;
 	}
 
-	public int getID() {
+	@Override
+    public int getID() {
 		return this.getGroupID();
 	}
 
@@ -127,7 +130,8 @@ public class AlarmbearbeiterGruppenBean extends
 				groupID);
 	}
 
-	public void setID(final int id) {
+	@Override
+    public void setID(final int id) {
 		this.setGroupID(id);
 	}
 
@@ -152,13 +156,13 @@ public class AlarmbearbeiterGruppenBean extends
 				timeOutSec);
 	}
 
-	public void setUsers(final List<User2GroupBean> users) {
+	public void setUsers(final List<User2GroupBean> u) {
 		final List<User2GroupBean> oldValue = this.users;
 		// this.users.clear();
 		// this.users.addAll(users);
-		this.users = users;
+		this.users = u;
 		this.pcs
-				.firePropertyChange(PropertyNames.users.name(), oldValue, users);
+				.firePropertyChange(PropertyNames.users.name(), oldValue, u);
 	}
 
 	@Override
@@ -180,7 +184,8 @@ public class AlarmbearbeiterGruppenBean extends
 		this.setUsers(newList);
 	}
 
-	public void setDisplayName(String name) {
+	@Override
+    public void setDisplayName(String name) {
 		this.setName(name);
 	}
 

@@ -35,7 +35,7 @@ import org.slf4j.LoggerFactory;
 /**
  * A line based file parser.
  * Reading in a file in a {@link BufferedReader} and processing the file line by line.
- * Implementors should override {@link AbstractLineBasedFileContentParser#processLine(String)}.
+ * Implementors should override {@link AbstractLineBasedFileContentParser#parseLine(String)}.
  *
  * @author bknerr
  * @since 28.04.2011
@@ -54,13 +54,14 @@ public abstract class AbstractLineBasedFileContentParser {
 
     /**
      * Parses a given file line by line, invoking
-     * {@link AbstractLineBasedFileContentParser#processLine(String)} on each one.
+     * {@link AbstractLineBasedFileContentParser#parseLine(String)} on each one.
      *
      * @param filePath
      * @throws IOException while parsing line by line
      * @throws IllegalArgumentException if filePath is not a file or could not be found
      */
     public void parseFile(@Nonnull final File filePath) throws IOException {
+
         if (!filePath.exists()) {
             throw new FileNotFoundException(filePath + "'s contents cannot be parsed per line, it doesn't exist!");
 
@@ -74,7 +75,7 @@ public abstract class AbstractLineBasedFileContentParser {
             br = new BufferedReader(new FileReader(filePath));
             String line;
             while ((line = br.readLine()) != null)   {
-                processLine(line);
+                parseLine(line);
             }
 
         } finally {
@@ -92,5 +93,5 @@ public abstract class AbstractLineBasedFileContentParser {
      * Invoked on parsing each line.
      * @param line the currently processed line of the file
      */
-    protected abstract void processLine(@Nonnull final String line);
+    protected abstract void parseLine(@Nonnull final String line);
 }

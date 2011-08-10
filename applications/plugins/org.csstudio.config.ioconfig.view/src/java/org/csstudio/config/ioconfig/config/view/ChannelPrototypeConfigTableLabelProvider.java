@@ -24,6 +24,7 @@
  */
 package org.csstudio.config.ioconfig.config.view;
 
+import javax.annotation.CheckForNull;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
@@ -39,32 +40,50 @@ import org.eclipse.swt.graphics.Image;
  * @since 18.12.2008
  */
 public class ChannelPrototypeConfigTableLabelProvider implements ITableLabelProvider {
-
+    
     /**
      * {@inheritDoc}
      */
     @Override
+    public void addListener(@Nullable final ILabelProviderListener listener) {
+        // don't use Listener
+    }
+    
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public void dispose() {
+        // not to dispose
+    }
+    
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    @CheckForNull
     public Image getColumnImage(@Nullable final Object element, final int columnIndex) {
         return null;
     }
-
+    
     /**
      * {@inheritDoc}
      */
     // CHECKSTYLE OFF: CyclomaticComplexity
-    @Override 
+    @Override
+    @CheckForNull
     public String getColumnText(@Nullable final Object element, final int columnIndex) {
         if (element instanceof ModuleChannelPrototypeDBO) {
-            ModuleChannelPrototypeDBO prototype = (ModuleChannelPrototypeDBO) element;
-
-            ChannelPrototypConfigColumn[] values = new ChannelPrototypConfigColumn[] {
-                    ChannelPrototypConfigColumn.OFFSET, ChannelPrototypConfigColumn.NAME,
-                    ChannelPrototypConfigColumn.TYPE, ChannelPrototypConfigColumn.SIZE,
-                    ChannelPrototypConfigColumn.STRUCT, ChannelPrototypConfigColumn.STATUS,
-                    ChannelPrototypConfigColumn.MIN, ChannelPrototypConfigColumn.MAX,
-                    ChannelPrototypConfigColumn.ORDER };
+            final ModuleChannelPrototypeDBO prototype = (ModuleChannelPrototypeDBO) element;
+            
+            final ChannelPrototypConfigColumn[] values = new ChannelPrototypConfigColumn[] {
+                                                                                            ChannelPrototypConfigColumn.OFFSET, ChannelPrototypConfigColumn.NAME,
+                                                                                            ChannelPrototypConfigColumn.TYPE, ChannelPrototypConfigColumn.SIZE,
+                                                                                            ChannelPrototypConfigColumn.STRUCT, ChannelPrototypConfigColumn.STATUS,
+                                                                                            ChannelPrototypConfigColumn.MIN, ChannelPrototypConfigColumn.MAX,
+                                                                                            ChannelPrototypConfigColumn.ORDER, };
             if (columnIndex < values.length) {
-                ChannelPrototypConfigColumn column = values[columnIndex];
+                final ChannelPrototypConfigColumn column = values[columnIndex];
                 switch (column) {
                     case OFFSET:
                         return Integer.toString(prototype.getOffset());
@@ -94,91 +113,7 @@ public class ChannelPrototypeConfigTableLabelProvider implements ITableLabelProv
         }
         return null;
     }
-
-    /**
-     * @param prototype
-     * @return
-     */
-    @Nonnull 
-    private String getOrder(@Nonnull ModuleChannelPrototypeDBO prototype) {
-        Integer byteOrdering = prototype.getByteOrdering();
-        if(byteOrdering==null||byteOrdering<1) {
-            return "";
-        }
-        return Integer.toString(byteOrdering);
-    }
-
-    /**
-     * @param prototype
-     * @return
-     */
-    @Nonnull 
-    private String getMaximum(@Nonnull ModuleChannelPrototypeDBO prototype) {
-        Integer maximum = prototype.getMaximum();
-        if(maximum==null) {
-            return "";
-        }
-        return maximum.toString();
-    }
-
-    /**
-     * @param prototype
-     * @return
-     */
-    @Nonnull 
-    private String getMinimum(@Nonnull ModuleChannelPrototypeDBO prototype) {
-        Integer minimum = prototype.getMinimum();
-        if(minimum==null) {
-            return "";
-        }
-        return minimum.toString();
-    }
-
-    /**
-     * @param prototype
-     * @return
-     */
-    @Nonnull 
-    private String getStruct(@Nonnull ModuleChannelPrototypeDBO prototype) {
-        if (prototype.isStructure()) {
-            return "yes";
-        }
-        return "no";
-    }
-
-    /**
-     * @param prototype
-     * @return
-     */
-    @Nonnull 
-    private String getIO(@Nonnull ModuleChannelPrototypeDBO prototype) {
-        if (prototype.isInput()) {
-            return "Input";
-        }
-        return "Output";
-    }
-
-    /**
-     * @param prototype
-     * @return
-     */
-    @Nonnull
-    private String getStatus(@Nonnull ModuleChannelPrototypeDBO prototype) {
-        if (prototype.getShift() < 0) {
-            return "";
-        }
-        return Integer.toString(prototype.getShift());
-    }
-    // CHECKSTYLE ON: CyclomaticComplexity
-
-    /**
-     * {@inheritDoc}
-     */
-    @Override
-    public void dispose() {
-        // not to dispose
-    }
-
+    
     /**
      * {@inheritDoc}
      */
@@ -186,20 +121,88 @@ public class ChannelPrototypeConfigTableLabelProvider implements ITableLabelProv
     public boolean isLabelProperty(@Nullable final Object element, @Nullable final String property) {
         return true;
     }
-
-    /**
-     * {@inheritDoc}
-     */
-    @Override
-    public void addListener(@Nullable final ILabelProviderListener listener) {
-        // don't use Listener
-    }
-
+    
     /**
      * {@inheritDoc}
      */
     @Override
     public void removeListener(@Nullable final ILabelProviderListener listener) {
         // don't use Listener
+    }
+    
+    /**
+     * @param prototype
+     * @return
+     */
+    @Nonnull
+    private String getIO(@Nonnull final ModuleChannelPrototypeDBO prototype) {
+        if (prototype.isInput()) {
+            return "Input";
+        }
+        return "Output";
+    }
+    
+    /**
+     * @param prototype
+     * @return
+     */
+    @Nonnull
+    private String getMaximum(@Nonnull final ModuleChannelPrototypeDBO prototype) {
+        final Integer maximum = prototype.getMaximum();
+        if(maximum==null) {
+            return "";
+        }
+        return maximum.toString();
+    }
+    
+    /**
+     * @param prototype
+     * @return
+     */
+    @Nonnull
+    private String getMinimum(@Nonnull final ModuleChannelPrototypeDBO prototype) {
+        final Integer minimum = prototype.getMinimum();
+        if(minimum==null) {
+            return "";
+        }
+        return minimum.toString();
+    }
+    
+    /**
+     * @param prototype
+     * @return
+     */
+    @Nonnull
+    private String getOrder(@Nonnull final ModuleChannelPrototypeDBO prototype) {
+        final Integer byteOrdering = prototype.getByteOrdering();
+        if(byteOrdering==null||byteOrdering<1) {
+            return "";
+        }
+        return Integer.toString(byteOrdering);
+    }
+    
+    /**
+     * @param prototype
+     * @return
+     */
+    @Nonnull
+    private String getStatus(@Nonnull final ModuleChannelPrototypeDBO prototype) {
+        if (prototype.getShift() < 0) {
+            return "";
+        }
+        return Integer.toString(prototype.getShift());
+    }
+    // CHECKSTYLE ON: CyclomaticComplexity
+    
+    /**
+     * @param prototype
+     * @return
+     */
+    @Nonnull
+    private String getStruct(@Nonnull final ModuleChannelPrototypeDBO prototype) {
+        if (prototype.isStructure()) {
+            return "yes";
+        }
+        return "no";
     }
 }

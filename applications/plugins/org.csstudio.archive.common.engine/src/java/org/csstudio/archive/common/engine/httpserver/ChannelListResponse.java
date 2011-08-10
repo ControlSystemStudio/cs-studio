@@ -66,17 +66,18 @@ class ChannelListResponse extends AbstractResponse {
 //            for (final ArchiveGroup group : channel.getGroups()) {
 //                groupNamesWithLinks.add(HTMLWriter.makeLink("group?name=" + group.getName(), group.getName()));
 //            }
-            html.tableLine(new String[]
-                                      {HTMLWriter.makeLink("channel?name=" + channel.getName(), channel.getName()),
-                                       //Joiner.on(", ").join(groupNamesWithLinks),
-                                       channel.isConnected() ? Messages.HTTP_YES :
-                                                               HTMLWriter.makeRedText(Messages.HTTP_NO),
-                                       channel.getInternalState(),
-                                       //channel.getMechanism(),
-//                                       channel.isEnabled() ? Messages.HTTP_Enabled :
-//                                                             HTMLWriter.makeRedText(Messages.HTTP_Disabled),
-                                       getValueAsString(channel.getMostRecentSample()),
-                                       getValueAsString(channel.getLastArchivedSample())});
+            html.tableLine(new String[]{
+                                        HTMLWriter.makeLink("channel?name=" + channel.getName(), channel.getName()),
+                                        //Joiner.on(", ").join(groupNamesWithLinks),
+                                        channel.isConnected() ? Messages.HTTP_YES :
+                                                                HTMLWriter.makeRedText(Messages.HTTP_NO),
+                                                                channel.getInternalState(),
+                                            //channel.getMechanism(),
+                                            //                                       channel.isEnabled() ? Messages.HTTP_Enabled :
+                                            //                                                             HTMLWriter.makeRedText(Messages.HTTP_Disabled),
+                                        getValueAsString(channel.getMostRecentSample()),
+                                        getValueAsString(channel.getLastArchivedSample()),
+                                       });
         }
         html.closeTable();
     }

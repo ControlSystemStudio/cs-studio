@@ -30,19 +30,23 @@ package org.csstudio.config.ioconfig.model.preference;
  * @version $Revision: 1.3 $
  * @since 24.04.2009
  */
-//CHECKSTYLE:OFF
-public class PreferenceConstants {
+public final class PreferenceConstants {
+    
+    public static final String DDB_FACILITIES = "ddbFacilities";
+    public static final String DDB_LOGBOOK = "ddbLogbook";
+    public static final String DDB_LOGBOOK_MEANING = "ddbLogbookMeaning";
+    public static final String DDB_USER_NAME = "ddbUserName";
+    public static final String DDB_PASSWORD = "ddbPassword";
+    public static final String HIBERNATE_CONNECTION_DRIVER_CLASS = "hibernateConnectionDriverClass";
+    public static final String HIBERNATE_CONNECTION_URL = "hibernateConnectionUrl";
+    public static final String DIALECT = "dialect";
+    public static final String SHOW_SQL = "showSql";
+    public static final String DDB_TIMEOUT= "ddb_connection_timeout";
 
-    public static String DDB_FACILITIES = "ddbFacilities";
-    public static String DDB_LOGBOOK = "ddbLogbook";
-    public static String DDB_LOGBOOK_MEANING = "ddbLogbookMeaning";
-    public static String DDB_USER_NAME = "ddbUserName";
-    public static String DDB_PASSWORD = "ddbPassword";
-    public static String HIBERNATE_CONNECTION_DRIVER_CLASS = "hibernateConnectionDriverClass";
-    public static String HIBERNATE_CONNECTION_URL = "hibernateConnectionUrl";
-    public static String DIALECT = "dialect";
-    public static String SHOW_SQL = "showSql";
-    public static String DDB_TIMEOUT= "ddb_connection_timeout";
-
+    /**
+     * Constructor.
+     */
+    private PreferenceConstants() {
+        // Constructor.
+    }
 }
-//CHECKSTYLE:ON

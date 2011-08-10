@@ -7,6 +7,7 @@
  ******************************************************************************/
 package org.csstudio.archive.common.engine.model;
 
+import java.io.Serializable;
 import java.net.MalformedURLException;
 import java.util.Collection;
 import java.util.concurrent.ConcurrentMap;
@@ -16,7 +17,6 @@ import javax.annotation.Nonnull;
 
 import org.csstudio.archive.common.engine.ArchiveEnginePreference;
 import org.csstudio.archive.common.engine.service.IServiceProvider;
-import org.csstudio.archive.common.engine.types.ArchiveEngineTypeSupport;
 import org.csstudio.archive.common.service.ArchiveServiceException;
 import org.csstudio.archive.common.service.IArchiveEngineFacade;
 import org.csstudio.archive.common.service.channel.IArchiveChannel;
@@ -30,6 +30,7 @@ import org.csstudio.domain.desy.service.osgi.OsgiServiceUnavailableException;
 import org.csstudio.domain.desy.system.ISystemVariable;
 import org.csstudio.domain.desy.time.TimeInstant;
 import org.csstudio.domain.desy.time.TimeInstant.TimeInstantBuilder;
+import org.csstudio.domain.desy.typesupport.BaseTypeConversionSupport;
 import org.csstudio.domain.desy.typesupport.TypeSupportException;
 import org.joda.time.Duration;
 import org.slf4j.Logger;
@@ -42,8 +43,12 @@ import com.google.common.collect.MapMaker;
  *  @author Bastian Knerr
  */
 public final class EngineModel {
-    private static final Logger LOG =
-        LoggerFactory.getLogger(EngineModel.class);
+    private static final Logger LOG = LoggerFactory.getLogger(EngineModel.class);
+
+    private static final String[] ADDITIONAL_TYPE_PACKAGES =
+        new String[]{
+                     "org.csstudio.domain.desy.epics.types",
+                     };
 
     /** Version code. See also webroot/version.html */
     private static String VERSION = "1.0.0";
@@ -85,7 +90,7 @@ public final class EngineModel {
     private volatile State _state = State.IDLE;
 
     /** Start time of the model */
-    private TimeInstant _startTime = null;
+    private TimeInstant _startTime;
 
     private final long _writePeriodInMS;
     private final long _heartBeatPeriodInMS;
@@ -97,7 +102,7 @@ public final class EngineModel {
     /**
      * Construct model that writes to archive
      * @param engineName
-     * @param provider
+     * @param provider provider for services
      */
     public EngineModel(@Nonnull final String engineName,
                        @Nonnull final IServiceProvider provider) {
@@ -107,8 +112,8 @@ public final class EngineModel {
         _groupMap = new MapMaker().concurrencyLevel(2).makeMap();
         _channelMap = new MapMaker().concurrencyLevel(2).makeMap();
 
-        _writePeriodInMS = 1000*ArchiveEnginePreference.WRITE_PERIOD.getValue();
-        _heartBeatPeriodInMS = 1000*ArchiveEnginePreference.HEARTBEAT_PERIOD.getValue();
+        _writePeriodInMS = 1000*ArchiveEnginePreference.WRITE_PERIOD_IN_S.getValue();
+        _heartBeatPeriodInMS = 1000*ArchiveEnginePreference.HEARTBEAT_PERIOD_IN_S.getValue();
     }
 
     /** @return Name (description) */
@@ -217,7 +222,7 @@ public final class EngineModel {
 
             final IArchiveEngineStatus engineStatus =
                 facade.getLatestEngineStatusInformation(engine.getId(),
-                                                        engine.getLastAliveTime());
+                                                        TimeInstantBuilder.fromNow());
 
             if (isNotFirstStart(engineStatus) && wasNotGracefullyShutdown(engineStatus)) {
                 facade.writeEngineStatusInformation(engine.getId(),
@@ -408,8 +413,8 @@ public final class EngineModel {
                                 @Nonnull final WriteExecutor writeExecutor,
                                 @Nonnull final ConcurrentMap<String, ArchiveChannel<?, ?>> channelMap)
                                 throws ArchiveServiceException,
-                                       TypeSupportException,
-                                       OsgiServiceUnavailableException {
+                                       OsgiServiceUnavailableException,
+                                       EngineModelException {
         final ArchiveGroup group = addGroup(groupCfg);
 
         final Collection<IArchiveChannel> channelCfgs =
@@ -417,16 +422,37 @@ public final class EngineModel {
 
         for (final IArchiveChannel channelCfg : channelCfgs) {
 
-            final ArchiveChannel<Object, ISystemVariable<Object>> channel =
-                ArchiveEngineTypeSupport.toArchiveChannel(channelCfg);
+            final ArchiveChannel<Serializable, ISystemVariable<Serializable>> channel = createArchiveChannel(channelCfg);
             channel.setServiceProvider(provider);
 
-            writeExecutor.addChannel(channel);
+            @SuppressWarnings("unchecked")
+            final ArchiveChannel<Serializable, ISystemVariable<Serializable>> presentChannel =
+                (ArchiveChannel<Serializable, ISystemVariable<Serializable>>) channelMap.putIfAbsent(channel.getName(), channel);
 
-            channelMap.putIfAbsent(channel.getName(), channel);
-
-            group.add(channel);
+            if (presentChannel != null) {
+                writeExecutor.addChannel(presentChannel);
+                group.add(presentChannel);
+            } else {
+                writeExecutor.addChannel(channel);
+                group.add(channel);
+            }
         }
+    }
+
+    @SuppressWarnings( { "rawtypes", "unchecked" } )
+    @Nonnull
+    private ArchiveChannel<Serializable, ISystemVariable<Serializable>>
+    createArchiveChannel(@Nonnull final IArchiveChannel cfg) throws EngineModelException {
+        final String dataType = cfg.getDataType();
+        Class<?> typeClass;
+        try {
+            typeClass = BaseTypeConversionSupport.createBaseTypeClassFromString(dataType,
+                                                                    ADDITIONAL_TYPE_PACKAGES);
+        } catch (final TypeSupportException e) {
+            throw new EngineModelException("Datatype " + dataType + " of channel " + cfg.getName() +
+                                           " could not be transformed into Class object", e);
+        }
+        return new ArchiveChannel(cfg.getName(), cfg.getId(), typeClass);
     }
 
     private void handleExceptions(@Nonnull final Exception inE) throws EngineModelException {

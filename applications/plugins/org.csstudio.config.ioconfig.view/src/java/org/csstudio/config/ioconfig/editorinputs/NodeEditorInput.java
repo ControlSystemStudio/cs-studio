@@ -38,11 +38,11 @@ import org.eclipse.ui.IPersistableElement;
  */
 public class NodeEditorInput implements IEditorInput {
 
-    private final AbstractNodeDBO _node;
+    private final AbstractNodeDBO<?,?> _node;
     private final boolean _nevv;
 
 
-    public NodeEditorInput(@Nonnull final AbstractNodeDBO node) {
+    public NodeEditorInput(@Nonnull final AbstractNodeDBO<?,?> node) {
         _node = node;
         _nevv = false;
     }
@@ -50,13 +50,13 @@ public class NodeEditorInput implements IEditorInput {
     /**
      * Constructor.
      */
-    public NodeEditorInput(@Nonnull final AbstractNodeDBO node, final boolean nevv) {
+    public NodeEditorInput(@Nonnull final AbstractNodeDBO<?,?> node, final boolean nevv) {
         _node = node;
         _nevv = nevv;
     }
 
     @Nonnull
-    public AbstractNodeDBO getNode() {
+    public AbstractNodeDBO<?,?> getNode() {
         return _node;
     }
 
@@ -72,6 +72,7 @@ public class NodeEditorInput implements IEditorInput {
      * (@inheritDoc)
      */
     @Override
+    @CheckForNull
     public ImageDescriptor getImageDescriptor() {
         return null;
     }
@@ -80,14 +81,20 @@ public class NodeEditorInput implements IEditorInput {
      * (@inheritDoc)
      */
     @Override
+    @Nonnull
     public String getName() {
-        return _node.getName();
+        String name = _node.getName();
+        if(name == null) {
+            name = _node.getNodeType().getName();
+        }
+        return name;
     }
 
     /**
      * (@inheritDoc)
      */
     @Override
+    @CheckForNull
     public IPersistableElement getPersistable() {
         return null;
     }
@@ -96,6 +103,7 @@ public class NodeEditorInput implements IEditorInput {
      * (@inheritDoc)
      */
     @Override
+    @Nonnull
     public String getToolTipText() {
         return "Test Tool Tip Text";
     }
@@ -104,6 +112,7 @@ public class NodeEditorInput implements IEditorInput {
      * (@inheritDoc)
      */
     @Override
+    @CheckForNull
     public Object getAdapter(@SuppressWarnings("rawtypes") @Nullable final Class adapter) {
         return null;
     }

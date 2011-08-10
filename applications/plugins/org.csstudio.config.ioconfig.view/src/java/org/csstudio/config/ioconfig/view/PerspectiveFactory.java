@@ -24,6 +24,8 @@
  */
 package org.csstudio.config.ioconfig.view;
 
+import javax.annotation.Nonnull;
+
 import org.eclipse.ui.IPageLayout;
 import org.eclipse.ui.IPerspectiveFactory;
 import org.eclipse.ui.console.IConsoleConstants;
@@ -39,7 +41,8 @@ public class PerspectiveFactory implements IPerspectiveFactory {
     /**
      * {@inheritDoc}
      */
-    public void createInitialLayout(final IPageLayout layout) {
+    @Override
+    public void createInitialLayout(@Nonnull final IPageLayout layout) {
         layout.setEditorAreaVisible(true);
 
 //        layout.addView(MainView.ID, IPageLayout.LEFT, 0.2f, IPageLayout.ID_EDITOR_AREA);

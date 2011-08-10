@@ -23,16 +23,17 @@ package org.csstudio.archive.common.service.mysqlimpl.dao;
 
 import java.net.MalformedURLException;
 import java.sql.Connection;
+import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 
 import javax.annotation.CheckForNull;
 import javax.annotation.Nonnull;
 
-import org.slf4j.Logger;
 import org.csstudio.archive.common.service.ArchiveConnectionException;
 import org.csstudio.archive.common.service.mysqlimpl.persistengine.PersistEngineDataManager;
 import org.csstudio.domain.desy.typesupport.TypeSupportException;
+import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 
@@ -81,17 +82,20 @@ public abstract class AbstractArchiveDao {
     }
 
     /**
-     * Tries to close the passed statement and logs the given message on closing error.
-     * @param stmt
-     * @param logMsg
+     * Tries to close the sql resources {@link ResultSet} and {@Statement}
      */
-    protected void closeStatement(@CheckForNull final Statement stmt, @Nonnull final String logMsg) {
-        if (stmt != null) {
-            try {
-                stmt.close();
-            } catch (final SQLException e) {
-                LOG.warn(logMsg);
+    protected void closeStatement(@CheckForNull final ResultSet rs,
+                                  @CheckForNull final Statement stmt,
+                                  @Nonnull final String logMsgForCloseError) {
+        try {
+            if (rs != null) {
+                rs.close();
             }
+            if (stmt != null) {
+                stmt.close();
+            }
+        } catch (final SQLException e) {
+            LOG.warn(logMsgForCloseError);
         }
     }
 

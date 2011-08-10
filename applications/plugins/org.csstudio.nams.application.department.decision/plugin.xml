@@ -28,10 +28,10 @@
          point="org.eclipse.core.runtime.products">
       <product
             application="org.csstudio.nams.application.department.decision.application"
-            name="AmsDepartmentDecision">
+            name="AmsDepartmentDecisionProduct">
          <property
                name="appName"
-               value="AmsDepartmentDecision">
+               value="AmsDepartmentDecisionProduct">
          </property>
       </product>
    </extension>

@@ -12,6 +12,7 @@ Require-Bundle: org.csstudio.domain.desy;bundle-version="1.0.0",
  javax.annotation;bundle-version="1.3.0",
  com.google.common
 Export-Package: org.csstudio.domain.desy.epics.alarm,
+ org.csstudio.domain.desy.epics.name,
  org.csstudio.domain.desy.epics.types,
  org.csstudio.domain.desy.epics.typesupport
 Bundle-Vendor: Desy <css-developer@desy.de>, Bastian Knerr

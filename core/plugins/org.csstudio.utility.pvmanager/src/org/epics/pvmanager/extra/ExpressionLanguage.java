@@ -1,5 +1,5 @@
 /*
- * Copyright 2010 Brookhaven National Laboratory
+ * Copyright 2010-11 Brookhaven National Laboratory
  * All rights reserved. Use is subject to license terms.
  */
 
@@ -8,8 +8,10 @@ package org.epics.pvmanager.extra;
 import org.epics.pvmanager.data.*;
 import java.util.List;
 import org.epics.pvmanager.BasicTypeSupport;
-import org.epics.pvmanager.DesiredRateExpression;
-import org.epics.pvmanager.SourceRateExpression;
+import org.epics.pvmanager.expression.DesiredRateExpression;
+import org.epics.pvmanager.expression.DesiredRateExpressionList;
+import org.epics.pvmanager.expression.SourceRateExpression;
+import org.epics.pvmanager.expression.SourceRateExpressionList;
 import static org.epics.pvmanager.ExpressionLanguage.*;
 
 /**
@@ -35,7 +37,18 @@ public class ExpressionLanguage {
      */
     public static WaterfallPlot waterfallPlotOf(SourceRateExpression<VDoubleArray> arrayPv) {
         DesiredRateExpression<List<VDoubleArray>> queue = newValuesOf(arrayPv);
-        return new WaterfallPlot(queue, "waterfallOf(" + arrayPv.getDefaultName() + ")");
+        return new WaterfallPlot(queue, "waterfallOf(" + arrayPv.getName() + ")");
+    }
+
+    /**
+     * Creates a waterfall plot from a series of scalar pvs.
+     * 
+     * @param expressions the expression to take the average of; can't be null
+     * @return an expression representing the average of the expression
+     */
+    public static WaterfallPlot waterfallPlotOf(SourceRateExpressionList<VDouble> vDoubles) {
+        DesiredRateExpressionList<List<VDouble>> queue = newValuesOf(vDoubles);
+        return new WaterfallPlot(queue, "waterfallOf");
     }
     
     /**

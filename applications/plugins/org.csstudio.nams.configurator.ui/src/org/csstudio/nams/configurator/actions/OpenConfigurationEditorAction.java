@@ -1,3 +1,4 @@
+
 package org.csstudio.nams.configurator.actions;
 
 import org.csstudio.nams.configurator.beans.IConfigurationBean;
@@ -15,8 +16,8 @@ public class OpenConfigurationEditorAction extends Action {
 
 	private final IConfigurationBean bean;
 
-	public OpenConfigurationEditorAction(final IConfigurationBean bean) {
-		this.bean = bean;
+	public OpenConfigurationEditorAction(final IConfigurationBean b) {
+		this.bean = b;
 	}
 
 	@Override
@@ -36,7 +37,5 @@ public class OpenConfigurationEditorAction extends Action {
 		} catch (final PartInitException e) {
 			e.printStackTrace();
 		}
-
 	}
-
 }

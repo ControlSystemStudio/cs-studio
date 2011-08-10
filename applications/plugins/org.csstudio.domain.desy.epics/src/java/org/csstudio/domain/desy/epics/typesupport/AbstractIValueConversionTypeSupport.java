@@ -44,7 +44,7 @@ import org.epics.pvmanager.TypeSupport;
 public abstract class AbstractIValueConversionTypeSupport<T extends IValue>
     extends EpicsIValueTypeSupport<T> {
 
-    private static boolean INSTALLED = false;
+    private static boolean INSTALLED;
 
     /**
      * Constructor.

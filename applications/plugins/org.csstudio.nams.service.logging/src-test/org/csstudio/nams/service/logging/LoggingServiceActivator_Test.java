@@ -4,7 +4,7 @@ import junit.framework.Assert;
 import junit.framework.TestCase;
 
 import org.csstudio.nams.common.activatorUtils.OSGiServiceOffers;
-import org.csstudio.nams.service.logging.declaration.Logger;
+import org.csstudio.nams.service.logging.declaration.ILogger;
 import org.junit.Test;
 
 public class LoggingServiceActivator_Test extends TestCase {
@@ -16,8 +16,8 @@ public class LoggingServiceActivator_Test extends TestCase {
 		final OSGiServiceOffers serviceOffers = activator.startBundle();
 
 		Assert.assertNotNull(serviceOffers);
-		final Object service = serviceOffers.get(Logger.class);
-		Assert.assertTrue(Logger.class.isAssignableFrom(service.getClass()));
+		final Object service = serviceOffers.get(ILogger.class);
+		Assert.assertTrue(ILogger.class.isAssignableFrom(service.getClass()));
 	}
 
 }

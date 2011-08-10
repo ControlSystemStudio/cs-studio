@@ -39,7 +39,7 @@ public interface INode {
     INode getParent();
 
     @Nonnull
-	Set<DocumentDBO> getDocuments();
+    Set<DocumentDBO> getDocuments();
 
     @Nonnull
     NodeType getNodeType();

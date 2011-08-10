@@ -19,7 +19,8 @@ Require-Bundle: org.eclipse.core.runtime,
  org.csstudio.platform.libs.easymock;bundle-version="1.0.0",
  org.remotercp.service.connection;bundle-version="1.0.0",
  org.eclipse.ecf.identity;bundle-version="3.1.100",
- org.csstudio.remote;bundle-version="1.0.0"
+ org.csstudio.remote;bundle-version="1.0.0",
+ org.junit;bundle-version="4.8.1"
 Eclipse-LazyStart: true
 Export-Package: org.csstudio.nams.application.department.decision;x-friends:="org.csstudio.nams.testUtils.testSuites",
  org.csstudio.nams.application.department.decision.office.decision;x-friends:="org.csstudio.nams.testUtils.testSuites"

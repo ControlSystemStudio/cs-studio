@@ -1,3 +1,4 @@
+
 /* 
  * Copyright (c) 2008 Stiftung Deutsches Elektronen-Synchrotron, 
  * Member of the Helmholtz Association, (DESY), HAMBURG, GERMANY.
@@ -19,7 +20,8 @@
  * PROJECT IN THE FILE LICENSE.HTML. IF THE LICENSE IS NOT INCLUDED YOU MAY FIND A COPY 
  * AT HTTP://WWW.DESY.DE/LEGAL/LICENSE.HTM
  */
- package org.csstudio.ams.filter;
+
+package org.csstudio.ams.filter;
 
 import java.sql.Connection;
 import java.sql.SQLException;
@@ -40,8 +42,8 @@ import org.csstudio.ams.dbAccess.configdb.HistoryDAO;
 import org.csstudio.ams.dbAccess.configdb.HistoryTObject;
 import org.csstudio.ams.dbAccess.configdb.MessageDAO;
 
-public class FilterConditionTimeBased implements IFilterCondition
-{
+public class FilterConditionTimeBased implements IFilterCondition {
+    
     private static final DateFormat df = DateFormat.getDateTimeInstance();
 
     public static final short OPERATOR_TEXT_EQUAL = 1;
@@ -65,10 +67,11 @@ public class FilterConditionTimeBased implements IFilterCondition
 	private int filterRef = -1;
 	private Connection conDb = null;
 	
-	public void init(Connection conDb, int filterConditionID, int filterRef) throws AMSException
+	@Override
+    public void init(Connection c, int filterConditionID, int fr) throws AMSException
 	{
-		this.filterRef = filterRef;
-		this.conDb = conDb;
+		this.filterRef = fr;
+		this.conDb = c;
 		
 		try
 		{
@@ -110,7 +113,8 @@ public class FilterConditionTimeBased implements IFilterCondition
 		return dateValue.compareTo(dateCompValue);
 	}
 	
-	public boolean match(MapMessage map)
+	@Override
+    public boolean match(MapMessage map)
 	{
 		String value = null;
 		String identifier = null;

@@ -21,14 +21,6 @@
  */
 package org.csstudio.archive.common.service.mysqlimpl.dao;
 
-import static org.csstudio.archive.common.service.mysqlimpl.MySQLArchiveServicePreference.DATABASE_NAME;
-import static org.csstudio.archive.common.service.mysqlimpl.MySQLArchiveServicePreference.FAILOVER_HOST;
-import static org.csstudio.archive.common.service.mysqlimpl.MySQLArchiveServicePreference.HOST;
-import static org.csstudio.archive.common.service.mysqlimpl.MySQLArchiveServicePreference.MAX_ALLOWED_PACKET_IN_KB;
-import static org.csstudio.archive.common.service.mysqlimpl.MySQLArchiveServicePreference.PASSWORD;
-import static org.csstudio.archive.common.service.mysqlimpl.MySQLArchiveServicePreference.PORT;
-import static org.csstudio.archive.common.service.mysqlimpl.MySQLArchiveServicePreference.USER;
-
 import java.sql.Connection;
 import java.sql.DatabaseMetaData;
 import java.sql.SQLException;
@@ -37,11 +29,13 @@ import javax.annotation.CheckForNull;
 import javax.annotation.Nonnull;
 
 import org.csstudio.archive.common.service.ArchiveConnectionException;
+import org.csstudio.archive.common.service.mysqlimpl.MySQLArchivePreferenceService;
 import org.csstudio.archive.common.service.mysqlimpl.persistengine.PersistDataWorker;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.google.common.base.Strings;
+import com.google.inject.Inject;
 import com.mysql.jdbc.jdbc2.optional.MysqlDataSource;
 
 /**
@@ -52,13 +46,13 @@ import com.mysql.jdbc.jdbc2.optional.MysqlDataSource;
  * @author bknerr
  * @since 11.11.2010
  */
-public enum ArchiveConnectionHandler {
-    INSTANCE;
-
-    private static final String ARCHIVE_CONNECTION_EXCEPTION_MSG = "Archive connection could not be established";
+public class ArchiveConnectionHandler {
 
     static final Logger LOG = LoggerFactory.getLogger(ArchiveConnectionHandler.class);
     static final Logger WORKER_LOG = LoggerFactory.getLogger(PersistDataWorker.class);
+
+    private static final String ARCHIVE_CONNECTION_EXCEPTION_MSG =
+        "Archive connection could not be established";
 
 
     /**
@@ -73,58 +67,35 @@ public enum ArchiveConnectionHandler {
         new ThreadLocal<Connection>();
 
     /**
-     * Prefs from plugin_customization.
-     */
-    private String _prefHost;
-    private String _prefFailoverHost;
-    private String _prefUser;
-    private String _prefPassword;
-    private Integer _prefPort;
-    private String _prefDatabaseName;
-    private Integer _prefMaxAllowedPacketSizeInKB;
-
-
-    /**
      * Constructor.
      */
-    private ArchiveConnectionHandler() {
-
-        loadAndCheckPreferences();
-        _dataSource = createDataSource();
-    }
-
-
-    private void loadAndCheckPreferences() {
-        _prefHost = HOST.getValue();
-        _prefFailoverHost = FAILOVER_HOST.getValue();
-        _prefPort = PORT.getValue();
-        _prefDatabaseName = DATABASE_NAME.getValue();
-        _prefUser = USER.getValue();
-        _prefPassword = PASSWORD.getValue();
-        _prefMaxAllowedPacketSizeInKB = MAX_ALLOWED_PACKET_IN_KB.getValue();
-
+    @Inject
+    public ArchiveConnectionHandler(@Nonnull final MySQLArchivePreferenceService prefs) {
+        _dataSource = createDataSource(prefs);
     }
 
     @Nonnull
-    private MysqlDataSource createDataSource() {
+    private MysqlDataSource createDataSource(@Nonnull final MySQLArchivePreferenceService prefs) {
 
         final MysqlDataSource ds = new MysqlDataSource();
-        String hosts = _prefHost;
-        if (!Strings.isNullOrEmpty(_prefFailoverHost)) {
-            hosts += "," + _prefFailoverHost;
+        String hosts = prefs.getHost();
+        final String failoverHost = prefs.getFailOverHost();
+        if (!Strings.isNullOrEmpty(failoverHost)) {
+            hosts += "," + failoverHost;
         }
         ds.setServerName(hosts);
-        ds.setPort(_prefPort);
-        ds.setDatabaseName(_prefDatabaseName);
-        ds.setUser(_prefUser);
-        ds.setPassword(_prefPassword);
+        ds.setPort(prefs.getPort());
+        ds.setDatabaseName(prefs.getDatabaseName());
+        ds.setUser(prefs.getUser());
+        ds.setPassword(prefs.getPassword());
         ds.setFailOverReadOnly(false);
-        ds.setMaxAllowedPacket(_prefMaxAllowedPacketSizeInKB*1024);
+        ds.setMaxAllowedPacket(prefs.getMaxAllowedPacketSizeInKB()*1024);
         ds.setUseTimezone(true);
+
+        ds.setRewriteBatchedStatements(true);
 
         return ds;
     }
-
 
     /**
      * Connects with the RDB instance for the given datasource.
@@ -136,7 +107,7 @@ public enum ArchiveConnectionHandler {
      * @throws ArchiveConnectionException
      */
     @Nonnull
-    public Connection connect(@Nonnull final MysqlDataSource ds) throws ArchiveConnectionException {
+    private Connection connect(@Nonnull final MysqlDataSource ds) throws ArchiveConnectionException {
 
         Connection connection = _archiveConnection.get();
         try {
@@ -166,7 +137,7 @@ public enum ArchiveConnectionHandler {
         } catch (final Exception e) {
             throw new ArchiveConnectionException(ARCHIVE_CONNECTION_EXCEPTION_MSG, e);
         }
-        if (connection == null || Strings.isNullOrEmpty(_prefDatabaseName)) {
+        if (connection == null || Strings.isNullOrEmpty(_dataSource.getDatabaseName())) {
             throw new ArchiveConnectionException("Connection could not be established or database name is not set.", null);
         }
         return connection;
@@ -199,17 +170,23 @@ public enum ArchiveConnectionHandler {
      */
     @Nonnull
     public Connection getConnection() throws ArchiveConnectionException {
-        final Connection connection = _archiveConnection.get();
+        Connection connection = _archiveConnection.get();
         if (connection == null) {
             // the calling thread has not yet a connection registered.
-            return connect(_dataSource);
+            connection = connect(_dataSource);
+            _archiveConnection.set(connection);
         }
         return connection;
     }
 
     @CheckForNull
     public String getDatabaseName() {
-        return _prefDatabaseName;
+        return _dataSource.getDatabaseName();
+    }
+
+    @Nonnull
+    public Integer getMaxAllowedPacketInBytes() {
+        return Integer.valueOf(_dataSource.getMaxAllowedPacket());
     }
 }
 

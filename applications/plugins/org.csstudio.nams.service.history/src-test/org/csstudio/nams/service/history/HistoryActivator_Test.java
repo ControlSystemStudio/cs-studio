@@ -6,7 +6,7 @@ import junit.framework.TestCase;
 import org.csstudio.nams.common.activatorUtils.OSGiServiceOffers;
 import org.csstudio.nams.service.history.declaration.HistoryService;
 import org.csstudio.nams.service.history.extensionPoint.HistoryServiceFactory;
-import org.csstudio.nams.service.logging.declaration.Logger;
+import org.csstudio.nams.service.logging.declaration.ILogger;
 import org.easymock.EasyMock;
 import org.junit.Test;
 
@@ -14,7 +14,7 @@ public class HistoryActivator_Test extends TestCase {
 
 	@Test
 	public void testStartBundle() throws Throwable {
-		final Logger logger = EasyMock.createNiceMock(Logger.class);
+		final ILogger logger = EasyMock.createNiceMock(ILogger.class);
 		final HistoryService historyService = EasyMock
 				.createMock(HistoryService.class);
 		final HistoryServiceFactory factory = EasyMock

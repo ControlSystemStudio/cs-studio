@@ -1,3 +1,4 @@
+
 /* 
  * Copyright (c) 2008 C1 WPS mbH, 
  * HAMBURG, GERMANY.
@@ -25,73 +26,81 @@
 
 package org.csstudio.nams.service.logging.impl;
 
-import org.csstudio.nams.service.logging.declaration.Logger;
-import org.csstudio.platform.logging.CentralLogger;
+import org.csstudio.nams.service.logging.declaration.ILogger;
+import org.slf4j.LoggerFactory;
 
 /**
- * This implementation simply redirects to the CSS' {@link CentralLogger}.
+ * This implementation simply creates a slf4 Logger for every method.
  * 
  * @author <a href="mailto:tr@c1-wps.de">Tobias Rathjen</a>, <a
  *         href="mailto:gs@c1-wps.de">Goesta Steen</a>, <a
  *         href="mailto:mz@c1-wps.de">Matthias Zeimer</a>
- * @version 0.1, 18.04.2008
+ * @author Markus Moeller
+ * @version 0.2, 06.07.2011
  */
-public class LoggerImpl implements Logger {
-
-	private final CentralLogger centralLogger;
+public class LoggerImpl implements ILogger {
 
 	public LoggerImpl() {
-		this.centralLogger = CentralLogger.getInstance();
+	    // Nothing to do
 	}
 
-	synchronized public void logDebugMessage(final Object caller,
+	@Override
+    synchronized public void logDebugMessage(final Object caller,
 			final String message) {
-		this.centralLogger.debug(caller, message);
+		LoggerFactory.getLogger(caller.getClass()).debug(message);
 	}
 
-	synchronized public void logDebugMessage(final Object caller,
+	@Override
+    synchronized public void logDebugMessage(final Object caller,
 			final String message, final Throwable throwable) {
-		this.centralLogger.debug(caller, message, throwable);
+	    LoggerFactory.getLogger(caller.getClass()).debug(message, throwable);
 	}
 
-	synchronized public void logErrorMessage(final Object caller,
+	@Override
+    synchronized public void logErrorMessage(final Object caller,
 			final String message) {
-		this.centralLogger.error(caller, message);
+	    LoggerFactory.getLogger(caller.getClass()).error(message);
 	}
 
-	synchronized public void logErrorMessage(final Object caller,
+	@Override
+    synchronized public void logErrorMessage(final Object caller,
 			final String message, final Throwable throwable) {
-		this.centralLogger.error(caller, message, throwable);
+	    LoggerFactory.getLogger(caller.getClass()).error(message, throwable);
 	}
 
-	synchronized public void logFatalMessage(final Object caller,
+	@Override
+    synchronized public void logFatalMessage(final Object caller,
 			final String message) {
-		this.centralLogger.fatal(caller, message);
+	    LoggerFactory.getLogger(caller.getClass()).error(message);
 	}
 
-	synchronized public void logFatalMessage(final Object caller,
+	@Override
+    synchronized public void logFatalMessage(final Object caller,
 			final String message, final Throwable throwable) {
-		this.centralLogger.fatal(caller, message, throwable);
+	    LoggerFactory.getLogger(caller.getClass()).error(message, throwable);
 	}
 
-	synchronized public void logInfoMessage(final Object caller,
+	@Override
+    synchronized public void logInfoMessage(final Object caller,
 			final String message) {
-		this.centralLogger.info(caller, message);
-		// System.out.println(caller.getClass().getCanonicalName() + message);
+	    LoggerFactory.getLogger(caller.getClass()).info(message);
 	}
 
-	synchronized public void logInfoMessage(final Object caller,
+	@Override
+    synchronized public void logInfoMessage(final Object caller,
 			final String message, final Throwable throwable) {
-		this.centralLogger.info(caller, message, throwable);
+	    LoggerFactory.getLogger(caller.getClass()).info(message, throwable);
 	}
 
-	synchronized public void logWarningMessage(final Object caller,
+	@Override
+    synchronized public void logWarningMessage(final Object caller,
 			final String message) {
-		this.centralLogger.warn(caller, message);
+	    LoggerFactory.getLogger(caller.getClass()).warn(message);
 	}
 
-	synchronized public void logWarningMessage(final Object caller,
+	@Override
+    synchronized public void logWarningMessage(final Object caller,
 			final String message, final Throwable throwable) {
-		this.centralLogger.warn(caller, message, throwable);
+	    LoggerFactory.getLogger(caller.getClass()).warn(message, throwable);
 	}
 }

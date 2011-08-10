@@ -21,6 +21,7 @@
  */
 package org.csstudio.archive.common.service.mysqlimpl.channel;
 
+import java.io.Serializable;
 import java.util.Collection;
 import java.util.regex.Pattern;
 
@@ -73,7 +74,7 @@ public interface IArchiveChannelDao {
     IArchiveChannel retrieveChannelById(@Nonnull final ArchiveChannelId id) throws ArchiveDaoException;
 
 
-    <V extends Comparable<? super V>>
+    <V extends Comparable<? super V> & Serializable>
     void updateDisplayRanges(@Nonnull final ArchiveChannelId id,
                              @Nonnull final V displayLow,
                              @Nonnull final V displayHigh) throws ArchiveDaoException;

@@ -25,16 +25,16 @@ package org.csstudio.config.ioconfig.editorparts;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.List;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
 import org.csstudio.config.ioconfig.config.view.helper.ConfigHelper;
 import org.csstudio.config.ioconfig.model.PersistenceException;
-import org.csstudio.config.ioconfig.model.Repository;
+import org.csstudio.config.ioconfig.model.hibernate.Repository;
 import org.csstudio.config.ioconfig.model.pbmodel.GSDFileDBO;
 import org.csstudio.config.ioconfig.view.DeviceDatabaseErrorDialog;
-import org.csstudio.platform.logging.CentralLogger;
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.viewers.TableViewer;
 import org.eclipse.swt.SWT;
@@ -43,6 +43,8 @@ import org.eclipse.swt.events.SelectionListener;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.FileDialog;
 import org.eclipse.swt.widgets.TabFolder;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * @author hrickens
@@ -51,79 +53,83 @@ import org.eclipse.swt.widgets.TabFolder;
  * @since 14.06.2010
  */
 public class GSDFileAddListener implements SelectionListener {
-	private final TabFolder _tabFolder;
-	private final TableViewer _tableViewer;
-	private final Composite _comp;
-	private final AbstractNodeEditor _abstractNodeEditor;
-
-	/**
-	 * Constructor.
-	 * @param abstractNodeEditor 
-	 * @param tabFolder
-	 * @param tableViewer
-	 * @param comp
-	 */
-	protected GSDFileAddListener(@Nonnull AbstractNodeEditor abstractNodeEditor,@Nonnull final TabFolder tabFolder,
-			@Nonnull final TableViewer tableViewer,
-			@Nonnull final Composite comp) {
-		_abstractNodeEditor = abstractNodeEditor;
-		_tabFolder = tabFolder;
-		_tableViewer = tableViewer;
-		_comp = comp;
-	}
-
-	private void doFileAdd() {
-		final FileDialog fd = new FileDialog(_comp.getShell(), SWT.MULTI);
-		fd.setFilterExtensions(new String[] {"*.gsd;*.gsg", "*.gs?" });
-		fd.setFilterNames(new String[] {"GS(GER)", "GS(ALL)" });
-		fd.setFilterPath("Z:\\Boeckmann\\GSD_Dateien\\");
-		if (fd.open() != null) {
-			final File path = new File(fd.getFilterPath());
-			for (final String fileName : fd.getFileNames()) {
-				if (fileNotContain(fileName)) {
-				    try {
-					final String text = ConfigHelper.file2String(new File(path, fileName));
-					final File file = new File(path, fileName);
-					final GSDFileDBO gsdFile = new GSDFileDBO(file.getName(), text.toString());
-					_abstractNodeEditor.getGsdFiles().add(gsdFile);
-					_tableViewer.setInput(_abstractNodeEditor.getGsdFiles());
+    
+    private static final Logger LOG = LoggerFactory.getLogger(GSDFileAddListener.class);
+    
+    private final TabFolder _tabFolder;
+    private final TableViewer _tableViewer;
+    private final Composite _comp;
+    private final AbstractNodeEditor<?> _abstractNodeEditor;
+    
+    /**
+     * Constructor.
+     * @param abstractNodeEditor
+     * @param tabFolder
+     * @param tableViewer
+     * @param comp
+     */
+    protected GSDFileAddListener(@Nonnull final AbstractNodeEditor<?> abstractNodeEditor,@Nonnull final TabFolder tabFolder,
+                                 @Nonnull final TableViewer tableViewer,
+                                 @Nonnull final Composite comp) {
+        _abstractNodeEditor = abstractNodeEditor;
+        _tabFolder = tabFolder;
+        _tableViewer = tableViewer;
+        _comp = comp;
+    }
+    
+    @Override
+    public void widgetDefaultSelected(@Nullable final SelectionEvent e) {
+        doFileAdd();
+    }
+    
+    @Override
+    public void widgetSelected(@Nullable final SelectionEvent e) {
+        doFileAdd();
+    }
+    
+    private void doFileAdd() {
+        final FileDialog fd = new FileDialog(_comp.getShell(), SWT.MULTI);
+        fd.setFilterExtensions(new String[] {"*.gsd;*.gsg", "*.gs?" });
+        fd.setFilterNames(new String[] {"GS(GER)", "GS(ALL)" });
+        fd.setFilterPath(".");
+        if (fd.open() != null) {
+            final File path = new File(fd.getFilterPath());
+            for (final String fileName : fd.getFileNames()) {
+                if (fileNotContain(fileName)) {
+                    try {
+                        final String text = ConfigHelper.file2String(new File(path, fileName));
+                        final File file = new File(path, fileName);
+                        final GSDFileDBO gsdFile = new GSDFileDBO(file.getName(), text.toString());
+                        _abstractNodeEditor.getGsdFiles().add(gsdFile);
+                        _tableViewer.setInput(_abstractNodeEditor.getGsdFiles());
                         Repository.save(gsdFile);
-                    } catch (PersistenceException e) {
+                    } catch (final PersistenceException e) {
                         DeviceDatabaseErrorDialog.open(null, "Can't safe GSD File! Database error", e);
-                        CentralLogger.getInstance().error(this, e);
-                    } catch (IOException e) {
+                        LOG.error("Can't safe GSD File! Database error", e);
+                    } catch (final IOException e) {
                         DeviceDatabaseErrorDialog.open(null, "Can't safe GSD File! File read error", e);
-                        CentralLogger.getInstance().error(this, e);
+                        LOG.error("Can't safe GSD File! File read error", e);
                     }
-				} else {
-					MessageDialog.openInformation(_tabFolder.getShell(),
-							"Double GSD File",
-							"File is already in the DB");
-				}
-			}
-		}
-	}
-
-	private boolean fileNotContain(@Nullable final String fileName) {
-		boolean add = true;
-		if ( _abstractNodeEditor.getGsdFiles() != null && !_abstractNodeEditor.getGsdFiles().isEmpty()) {
-			for (final GSDFileDBO file : _abstractNodeEditor.getGsdFiles()) {
-				add = !file.getName().equals(fileName);
-				if (!add) {
-					break;
-				}
-			}
-		}
-		return add;
-	}
-
-	@Override
-	public void widgetDefaultSelected(@Nullable final SelectionEvent e) {
-		doFileAdd();
-	}
-
-	@Override
-	public void widgetSelected(@Nullable final SelectionEvent e) {
-		doFileAdd();
-	}
+                } else {
+                    MessageDialog.openInformation(_tabFolder.getShell(),
+                                                  "Double GSD File",
+                    "File is already in the DB");
+                }
+            }
+        }
+    }
+    
+    private boolean fileNotContain(@Nullable final String fileName) {
+        boolean add = true;
+        final List<GSDFileDBO> gsdFiles = _abstractNodeEditor.getGsdFiles();
+        if ( gsdFiles != null && !gsdFiles.isEmpty()) {
+            for (final GSDFileDBO file : gsdFiles) {
+                add = !file.getName().equals(fileName);
+                if (!add) {
+                    break;
+                }
+            }
+        }
+        return add;
+    }
 }

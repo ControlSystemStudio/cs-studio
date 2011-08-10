@@ -1,0 +1,15 @@
+Manifest-Version: 1.0
+Bundle-ManifestVersion: 2
+Bundle-Name: Core of RAP applications in CSS
+Bundle-SymbolicName: org.csstudio.rap.core;singleton:=true
+Bundle-Version: 1.0.0.qualifier
+Bundle-Activator: org.csstudio.rap.core.RAPCorePlugin
+Require-Bundle: org.eclipse.core.runtime,
+ org.eclipse.rap.ui;bundle-version="1.4.0"
+Bundle-ActivationPolicy: lazy
+Bundle-RequiredExecutionEnvironment: JavaSE-1.6
+Bundle-Vendor: Xihui Chen<chenx1@ornl.gov> - SNS
+Export-Package: org.csstudio.rap.core,
+ org.csstudio.rap.preferences
+Import-Package: javax.servlet,
+ javax.servlet.http

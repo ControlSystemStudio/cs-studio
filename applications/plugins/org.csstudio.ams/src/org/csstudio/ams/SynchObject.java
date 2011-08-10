@@ -1,3 +1,4 @@
+
 /* 
  * Copyright (c) 2008 Stiftung Deutsches Elektronen-Synchrotron, 
  * Member of the Helmholtz Association, (DESY), HAMBURG, GERMANY.
@@ -19,15 +20,15 @@
  * PROJECT IN THE FILE LICENSE.HTML. IF THE LICENSE IS NOT INCLUDED YOU MAY FIND A COPY 
  * AT HTTP://WWW.DESY.DE/LEGAL/LICENSE.HTM
  */
- package org.csstudio.ams;
 
-public class SynchObject extends Object
-{
-	private int state = 0;
+package org.csstudio.ams;
+
+public class SynchObject extends Object {
+	
+    private int state = 0;
 	private long lSetTime = 0;
 	
-	public SynchObject(int iState, long lLastSetTime)
-	{
+	public SynchObject(int iState, long lLastSetTime) {
 		state = iState;
 		lSetTime = lLastSetTime;
 	}
@@ -41,8 +42,7 @@ public class SynchObject extends Object
 	 * 
 	 * @return lSetTime		long
 	 */
-	public long getTime()
-	{
+	public long getTime() {
 		return lSetTime;
 	}
 
@@ -55,8 +55,7 @@ public class SynchObject extends Object
 	 * 
 	 * @return state		int
 	 */
-	public int getStatus()
-	{
+	public int getStatus() {
 		return state;
 	}
 	
@@ -72,8 +71,7 @@ public class SynchObject extends Object
 	 * 
 	 * @return state		int
 	 */
-	public synchronized int getSynchStatus()
-	{
+	public synchronized int getSynchStatus() {
 		return state;
 	}
 
@@ -85,8 +83,7 @@ public class SynchObject extends Object
 	 * 
 	 * @param status		int
 	 */
-	public synchronized void setSynchStatus(int status)
-	{
+	public synchronized void setSynchStatus(int status) {
 		state = status;
 		lSetTime = System.currentTimeMillis();
 	}
@@ -106,13 +103,15 @@ public class SynchObject extends Object
 	 * @return <code>true</code> if <code>status</code> has changed an everything is o.k.,
      *   and <code>false</code> if <code>status</code> has not changed in the last specified seconds.
 	 */
-	public synchronized boolean hasStatusSet(SynchObject actObj, long intervalInSec, int errCode)
-	{
-		boolean bRet = true;
+	public synchronized boolean hasStatusSet(SynchObject actObj,
+	                                         long intervalInSec,
+	                                         int errCode) {
+		
+	    boolean bRet = true;
 		long lCurrentTime = System.currentTimeMillis();
 
-		if (lSetTime + (intervalInSec*1000) < lCurrentTime)						// if timeout 
-		{
+        // if timeout
+		if (lSetTime + (intervalInSec*1000) < lCurrentTime) {
 			state = errCode;
 			lSetTime = lCurrentTime;
 			bRet = false;

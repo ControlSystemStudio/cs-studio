@@ -15,22 +15,22 @@
       </application>
    </extension>
    <extension
-         id="AmsRemoteToolProduct"
-         point="org.eclipse.core.runtime.products">
-      <product
-            application="org.csstudio.ams.remotetool.AmsRemoteToolApplication"
-            name="AmsRemoteTool">
-         <property
-               name="appName"
-               value="AmsRemoteTool">
-         </property>
-      </product>
-   </extension>
-   <extension
          point="org.eclipse.core.runtime.preferences">
       <initializer
             class="org.csstudio.ams.remotetool.internal.PreferenceInitializer">
       </initializer>
+   </extension>
+   <extension
+         id="AmsRemoteToolProduct"
+         point="org.eclipse.core.runtime.products">
+      <product
+            application="org.csstudio.ams.remotetool.AmsRemoteToolApplication"
+            name="AmsRemoteToolProduct">
+         <property
+               name="appName"
+               value="AmsRemoteToolProduct">
+         </property>
+      </product>
    </extension>
 
 </plugin>

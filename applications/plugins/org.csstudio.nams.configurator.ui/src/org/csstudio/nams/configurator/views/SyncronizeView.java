@@ -1,9 +1,9 @@
+
 package org.csstudio.nams.configurator.views;
 
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.io.StringWriter;
-
 import org.csstudio.nams.configurator.Messages;
 import org.csstudio.nams.configurator.beans.IConfigurationBean;
 import org.csstudio.nams.configurator.editor.AbstractEditor;
@@ -25,7 +25,6 @@ import org.eclipse.swt.widgets.Text;
 import org.eclipse.ui.IEditorPart;
 import org.eclipse.ui.IWorkbenchPage;
 import org.eclipse.ui.part.ViewPart;
-import org.eclipse.ui.progress.IWorkbenchSiteProgressService;
 
 /**
  * View um die Synchronisation mit dem Hintergrundsystem auszuführen.
@@ -34,9 +33,9 @@ import org.eclipse.ui.progress.IWorkbenchSiteProgressService;
 public class SyncronizeView extends ViewPart implements
 		ConfigurationBeanServiceListener {
 
-	private static SynchronizeService synchronizeService = null;
+	private static SynchronizeService _synchronizeService = null;
 
-	private static ConfigurationBeanService beanService;
+	private static ConfigurationBeanService _beanService;
 
 	/**
 	 * Injiziert den {@link SynchronizeService} für diese View. Must be called
@@ -44,7 +43,7 @@ public class SyncronizeView extends ViewPart implements
 	 */
 	public static void staticInjectSynchronizeService(
 			final SynchronizeService synchronizeService) {
-		SyncronizeView.synchronizeService = synchronizeService;
+		SyncronizeView._synchronizeService = synchronizeService;
 	}
 
 	/**
@@ -52,7 +51,7 @@ public class SyncronizeView extends ViewPart implements
 	 * called before View is used.
 	 */
 	public static void staticInject(final ConfigurationBeanService beanService) {
-		SyncronizeView.beanService = beanService;
+		SyncronizeView._beanService = beanService;
 		if (instance != null) {
 			beanService.addConfigurationBeanServiceListener(instance);
 		}
@@ -67,19 +66,20 @@ public class SyncronizeView extends ViewPart implements
 	private Color buttonColor;
 
 	public SyncronizeView() {
-		if (SyncronizeView.synchronizeService == null) {
+		if (SyncronizeView._synchronizeService == null) {
 			throw new RuntimeException(
 					"View class is not probably initialised, missing: SynchronizeService!"); //$NON-NLS-1$
 		}
 		instance = this;
-		if (beanService != null) {
-			beanService.addConfigurationBeanServiceListener(this);
+		if (_beanService != null) {
+			_beanService.addConfigurationBeanServiceListener(this);
 		}
 	}
 
 	private void appendStatusText(final String text) {
 		Display.getDefault().asyncExec(new Runnable() {
-			public void run() {
+			@Override
+            public void run() {
 				SyncronizeView.this.statusText.append(text);
 			}
 		});
@@ -115,11 +115,13 @@ public class SyncronizeView extends ViewPart implements
 				false));
 		this.syncButton.setText(Messages.SyncronizeView_sync_button_text);
 		this.syncButton.addSelectionListener(new SelectionListener() {
-			public void widgetDefaultSelected(final SelectionEvent e) {
+			@Override
+            public void widgetDefaultSelected(final SelectionEvent e) {
 				// will never be called by a button.
 			}
 
-			public void widgetSelected(final SelectionEvent e) {
+			@Override
+            public void widgetSelected(final SelectionEvent e) {
 				final Button source = (Button) e.getSource();
 				if (source.getSelection()) {
 					SyncronizeView.this.statusText.setText(""); //$NON-NLS-1$
@@ -144,25 +146,28 @@ public class SyncronizeView extends ViewPart implements
 		this.appendStatusText(Messages.SyncronizeView_beginn_sync);
 
 		try {
-			SyncronizeView.synchronizeService
+			SyncronizeView._synchronizeService
 					.sychronizeAlarmSystem(new SynchronizeService.Callback() {
 						volatile Boolean result = null;
 
-						public void bereiteSynchronisationVor() {
+						@Override
+                        public void bereiteSynchronisationVor() {
 							SyncronizeView.this
 									.appendStatusText(Messages.SyncronizeView_prepare_sync);
 						}
 
 						private void buttonFreigben() {
 							Display.getDefault().asyncExec(new Runnable() {
-								public void run() {
+								@Override
+                                public void run() {
 									SyncronizeView.this.syncButton
 											.setSelection(false);
 								}
 							});
 						}
 
-						public void fehlerBeimVorbereitenDerSynchronisation(
+						@Override
+                        public void fehlerBeimVorbereitenDerSynchronisation(
 								final Throwable t) {
 							SyncronizeView.this
 									.appendStatusText(
@@ -171,11 +176,13 @@ public class SyncronizeView extends ViewPart implements
 							this.buttonFreigben();
 						}
 
-						public boolean pruefeObSynchronisationAusgefuehrtWerdenDarf() {
+						@Override
+                        public boolean pruefeObSynchronisationAusgefuehrtWerdenDarf() {
 							SyncronizeView.this
 									.appendStatusText(Messages.SyncronizeView_look_for_unsaved_changes);
 							Display.getDefault().asyncExec(new Runnable() {
-								public void run() {
+								@Override
+                                public void run() {
 									result = SyncronizeView.this
 											.lookForUnsavedChangesAndDecideAboutSynchrinsationProceeding();
 								}
@@ -188,12 +195,14 @@ public class SyncronizeView extends ViewPart implements
 							return this.result.booleanValue();
 						}
 
-						public void sendeNachrichtAnHintergrundSystem() {
+						@Override
+                        public void sendeNachrichtAnHintergrundSystem() {
 							SyncronizeView.this
 									.appendStatusText(Messages.SyncronizeView_send_sync_request);
 						}
 
-						public void sendenDerNachrichtAnHintergrundSystemFehlgeschalgen(
+						@Override
+                        public void sendenDerNachrichtAnHintergrundSystemFehlgeschalgen(
 								final Throwable t) {
 							SyncronizeView.this
 									.appendStatusText(
@@ -202,20 +211,23 @@ public class SyncronizeView extends ViewPart implements
 							this.buttonFreigben();
 						}
 
-						public void synchronisationAbgebrochen() {
+						@Override
+                        public void synchronisationAbgebrochen() {
 							SyncronizeView.this
 									.appendStatusText(Messages.SyncronizeView_sync_canceled);
 							this.buttonFreigben();
 						}
 
-						public void synchronisationsDurchHintergrundsystemsErfolgreich() {
+						@Override
+                        public void synchronisationsDurchHintergrundsystemsErfolgreich() {
 							SyncronizeView.this
 									.appendStatusText(Messages.SyncronizeView_sync_successfull);
 							this.buttonFreigben();
 							SyncronizeView.this.showBusy(false);
 						}
 
-						public void synchronisationsDurchHintergrundsystemsFehlgeschalgen(
+						@Override
+                        public void synchronisationsDurchHintergrundsystemsFehlgeschalgen(
 								final String fehlertext) {
 							SyncronizeView.this
 									.appendStatusText(Messages.SyncronizeView_backend_failure
@@ -223,7 +235,8 @@ public class SyncronizeView extends ViewPart implements
 							this.buttonFreigben();
 						}
 
-						public void wartetAufAntowrtDesHintergrundSystems() {
+						@Override
+                        public void wartetAufAntowrtDesHintergrundSystems() {
 							SyncronizeView.this
 									.appendStatusText(Messages.SyncronizeView_waiting_for_backend);
 						}
@@ -273,7 +286,8 @@ public class SyncronizeView extends ViewPart implements
 
 		if (busy) {
 			Display.getDefault().syncExec(new Runnable() {
-				public void run() {
+				@Override
+                public void run() {
 					syncButton.setBackground(Display.getDefault()
 							.getSystemColor(SWT.COLOR_RED));
 					syncButton
@@ -284,7 +298,8 @@ public class SyncronizeView extends ViewPart implements
 			});
 		} else {
 			Display.getDefault().syncExec(new Runnable() {
-				public void run() {
+				@Override
+                public void run() {
 					syncButton.setBackground(buttonColor);
 					syncButton
 							.setText(Messages.SyncronizeView_sync_button_text);
@@ -296,23 +311,26 @@ public class SyncronizeView extends ViewPart implements
 
 	@Override
 	public void setFocus() {
-
+	    // Nothing to do
 	}
 
-	public void onBeanDeleted(IConfigurationBean bean) {
+	@Override
+    public void onBeanDeleted(IConfigurationBean bean) {
 		this.showBusy(true);
 	}
 
-	public void onBeanInsert(IConfigurationBean bean) {
+	@Override
+    public void onBeanInsert(IConfigurationBean bean) {
 		this.showBusy(true);
 	}
 
-	public void onBeanUpdate(IConfigurationBean bean) {
+	@Override
+    public void onBeanUpdate(IConfigurationBean bean) {
 		this.showBusy(true);
 	}
 
-	public void onConfigurationReload() {
-
+	@Override
+    public void onConfigurationReload() {
+	    // Not used yet
 	}
-
 }

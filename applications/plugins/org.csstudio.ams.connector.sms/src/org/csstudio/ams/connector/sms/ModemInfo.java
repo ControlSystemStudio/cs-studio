@@ -27,8 +27,8 @@ package org.csstudio.ams.connector.sms;
  * @author Markus Moeller
  *
  */
-public class ModemInfo
-{
+public class ModemInfo {
+    
     /** Name of the modem / gateway */
     private String modemName;
     
@@ -41,8 +41,7 @@ public class ModemInfo
      * @param name
      * @param number
      */
-    public ModemInfo(String name, String number)
-    {
+    public ModemInfo(String name, String number) {
         phoneNumber = number;
         modemName = name;
     }
@@ -52,8 +51,7 @@ public class ModemInfo
      * 
      * @return The name of the modem.
      */
-    public String getModemName()
-    {
+    public String getModemName() {
         return modemName;
     }
     
@@ -62,8 +60,7 @@ public class ModemInfo
      * 
      * @return The phone number of the modem.
      */
-    public String getPhoneNumber()
-    {
+    public String getPhoneNumber() {
         return phoneNumber;
     }
 }

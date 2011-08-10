@@ -24,16 +24,18 @@
  */
 package org.csstudio.utility.adlconverter.utility.widgets;
 
-import org.csstudio.platform.logging.CentralLogger;
 import org.csstudio.sds.components.model.BargraphModel;
 import org.csstudio.sds.cosyrules.color.DefaultEpicsAlarmForeground;
 import org.csstudio.sds.internal.rules.ParameterDescriptor;
+import org.csstudio.sds.model.AbstractWidgetModel;
 import org.csstudio.sds.model.DynamicsDescriptor;
 import org.csstudio.utility.adlconverter.internationalization.Messages;
 import org.csstudio.utility.adlconverter.utility.ADLHelper;
 import org.csstudio.utility.adlconverter.utility.ADLWidget;
 import org.csstudio.utility.adlconverter.utility.FileLine;
 import org.csstudio.utility.adlconverter.utility.WrongADLFormatException;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * @author hrickens
@@ -42,6 +44,8 @@ import org.csstudio.utility.adlconverter.utility.WrongADLFormatException;
  * @since 19.09.2007
  */
 public class Bargraph extends Widget {
+    
+    private static final Logger LOG = LoggerFactory.getLogger(Bargraph.class);
 
     /**
      * @param bargraph The ADLWidget that describe the Bargraph.
@@ -49,6 +53,7 @@ public class Bargraph extends Widget {
      * @param storedBasicAttribute 
      * @throws WrongADLFormatException WrongADLFormatException Wrong ADL format or untreated parameter found.
      */
+    @SuppressWarnings("restriction")
     public Bargraph(final ADLWidget bargraph, ADLWidget storedBasicAttribute, ADLWidget storedDynamicAttribute) throws WrongADLFormatException {
         super(bargraph, storedBasicAttribute, storedDynamicAttribute);
         boolean barOnly = false;
@@ -76,7 +81,7 @@ public class Bargraph extends Widget {
                 String type = row[1].trim();
                 if(!type.equals("\"linear\"")){
                     //TODO: Barghraph-->scaleType (Not Supported from SDS)
-                    CentralLogger.getInstance().debug(this, Messages.Bargraph_Clrmod_Debug+fileLine);
+                    LOG.debug(Messages.Bargraph_Clrmod_Debug, fileLine);
                 }
             }else if(row[0].equals("showAlarmLimits")&&!barOnly){ //$NON-NLS-1$
                 if(!row[1].toLowerCase().equals("\"off\"")){ //$NON-NLS-1$
@@ -97,10 +102,10 @@ public class Bargraph extends Widget {
                 _widget.setPropertyValue(BargraphModel.PROP_SHOW_VALUES, false); 
                 scaleShowStatus=0; // No scale
 //              <property type="sds.integer" id="border.width" value="0" />
-                _widget.setPropertyValue(BargraphModel.PROP_BORDER_WIDTH, 0); 
+                _widget.setPropertyValue(AbstractWidgetModel.PROP_BORDER_WIDTH, 0); 
             }else if(row[0].equals("format")){ //$NON-NLS-1$
                 //TODO: Bargraph --> format
-                CentralLogger.getInstance().debug(this, Messages.Bargraph_Format_Debug+fileLine);
+                LOG.debug(Messages.Bargraph_Format_Debug, fileLine);
             }else if(row[0].equals("limitType")){ //$NON-NLS-1$
                 if(row[1].equals("\"from channel\"")){
                     final String[] typ = new String[]{"lolo","lo","hi","hihi"}; //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$
@@ -112,7 +117,7 @@ public class Bargraph extends Widget {
                     }
                 }else{
                     //TODO: Bargraph --> limitType
-                    CentralLogger.getInstance().debug(this, Messages.Bargraph_Limit_Type_Debug+fileLine);
+                    LOG.debug(Messages.Bargraph_Limit_Type_Debug, fileLine);
                 }
             }else if(row[0].equals("highLimit")){ //$NON-NLS-1$
                 String temp = row[1].replaceAll("\"",""); //$NON-NLS-1$ //$NON-NLS-2$
@@ -125,17 +130,17 @@ public class Bargraph extends Widget {
                 if(!type.equals("alarm")){
                     DynamicsDescriptor dynamicsDescriptor = new DynamicsDescriptor(DefaultEpicsAlarmForeground.TYPE_ID);
                     dynamicsDescriptor.addInputChannel(new ParameterDescriptor("$channel$"));
-                    _widget.setDynamicsDescriptor(BargraphModel.PROP_COLOR_FOREGROUND, dynamicsDescriptor);
+                    _widget.setDynamicsDescriptor(AbstractWidgetModel.PROP_COLOR_FOREGROUND, dynamicsDescriptor);
                 }else{
                     //  TODO: Bargraph --> clrmod
-                    CentralLogger.getInstance().debug(this, Messages.Bargraph_Clrmod_Debug+fileLine);
+                    LOG.debug(Messages.Bargraph_Clrmod_Debug, fileLine);
                 }
             }else if(row[0].equals("label")){ //$NON-NLS-1$
                 //TODO: Bargraph --> label
-                CentralLogger.getInstance().debug(this, Messages.Bargraph_Clrmod_Debug+fileLine);
+                LOG.debug(Messages.Bargraph_Clrmod_Debug, fileLine);
             }else if(row[0].equals("fillmod")){ //$NON-NLS-1$
                 //TODO: Bargraph --> fillmod
-                CentralLogger.getInstance().debug(this, Messages.Bargraph_Clrmod_Debug+fileLine);
+                LOG.debug(Messages.Bargraph_Clrmod_Debug, fileLine);
             }else{ //Bargraph have no Parameter                
                 throw new WrongADLFormatException(Messages.Bargraph_WrongADLFormatException_Parameter_Begin+fileLine);
             } 
@@ -186,7 +191,7 @@ public class Bargraph extends Widget {
         
         _widget.setDynamicsDescriptor(BargraphModel.PROP_FILLBACKGROUND_COLOR, dynamicsDescriptor);
         */
-        _widget.setDynamicsDescriptor(BargraphModel.PROP_COLOR_FOREGROUND, null);
+        _widget.setDynamicsDescriptor(AbstractWidgetModel.PROP_COLOR_FOREGROUND, null);
         _widget.setLayer("Bargraph"); //$NON-NLS-1$
 
         
@@ -197,6 +202,7 @@ public class Bargraph extends Widget {
      * @param value set value of Property.
      * @param color set the color of Property.
      */
+    @SuppressWarnings("restriction")
     private void makeLevel(final String id, final String value, final String color) {
 
 //      <property type="sds.double" id="loloLevel" value="0.2" />

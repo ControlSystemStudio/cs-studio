@@ -43,7 +43,8 @@ import org.csstudio.config.ioconfig.model.pbmodel.MasterDBO;
 import org.csstudio.config.ioconfig.model.pbmodel.ModuleDBO;
 import org.csstudio.config.ioconfig.model.pbmodel.ProfibusSubnetDBO;
 import org.csstudio.config.ioconfig.model.pbmodel.SlaveDBO;
-import org.csstudio.platform.logging.CentralLogger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * @author Rickens Helge
@@ -53,11 +54,12 @@ import org.csstudio.platform.logging.CentralLogger;
  */
 public class ProfibusStatisticGenerator {
     
+    private static final Logger LOG = LoggerFactory.getLogger(ProfibusStatisticGenerator.class);
+    private static final String LINE_END = "\r\n";
     private final StringBuilder _statistic;
     private final Map<GSDFileDBO, Integer> _gsdMasterFileMap;
     private final Map<GSDFileDBO, Integer> _gsdSlaveFileMap;
     private final Map<GSDModuleDBO, ModuleStatistcCounter> _gsdModuleMap;
-    private static final String LINE_END = "\r\n";
     
     /**
      * Constructor.
@@ -70,102 +72,9 @@ public class ProfibusStatisticGenerator {
     }
     
     /**
-     * @param facility
-     * @throws PersistenceException 
-     */
-    public void setFacility(@Nonnull FacilityDBO facility) throws PersistenceException {
-        _statistic.append("Statistik für ").append(facility.getName()).append(" vom ")
-                .append(new Date()).append(LINE_END);
-        Map<Short, IocDBO> childrenAsMap = facility.getChildrenAsMap();
-        int iocCounter = 0;
-        for (IocDBO node : childrenAsMap.values()) {
-            IocDBO ioc = (IocDBO) node;
-            iocCounter++;
-            iocStatisticCreator(ioc);
-        }
-        _statistic.append("Anzahl IOC = ").append(iocCounter).append(LINE_END);
-        int gsdFileCount = 0;
-        int gsdModuleCount = 0;
-        
-        for (GSDFileDBO gsdFileDBO : _gsdSlaveFileMap.keySet()) {
-            Integer count = _gsdSlaveFileMap.get(gsdFileDBO);
-            _statistic.append("GSD File: \"").append(String.format("%20s", gsdFileDBO.getName()))
-                    .append("\" wird ").append(String.format("%3d", count))
-                    .append(" mal verwendet").append(LINE_END);
-            gsdFileCount += count;
-        }
-        _statistic.append("GSD Files gesamt: ").append(gsdFileCount).append(LINE_END);
-        for (GSDModuleDBO gsdModuleDBO : _gsdModuleMap.keySet()) {
-            ModuleStatistcCounter msc = _gsdModuleMap.get(gsdModuleDBO);
-            _statistic
-                    .append(String.format("GSD Module: \"%40s\" wird %3d mal verwendet.\tAngeschlossen: %4d von %4d Kanälen.",
-                                          gsdModuleDBO.getName(),
-                                          msc.getModuleCount(),
-                                          msc.getUsedChannelsCount(),
-                                          msc.getTotalChannelsCount())).append(LINE_END);
-            gsdModuleCount += msc.getModuleCount();
-        }
-        _statistic.append("GSD Modules gesamt: ").append(gsdModuleCount).append(LINE_END);
-    }
-    
-    /**
-     * @param ioc
-     * @throws PersistenceException 
-     */
-    private void iocStatisticCreator(@Nonnull IocDBO ioc) throws PersistenceException {
-        Set<ProfibusSubnetDBO> subnets = ioc.getChildren();
-        for (ProfibusSubnetDBO subnet : subnets) {
-            subnetStatisticCreator(subnet);
-        }
-    }
-    
-    /**
-     * @param subnet
-     * @throws PersistenceException 
-     */
-    private void subnetStatisticCreator(@Nonnull ProfibusSubnetDBO subnet) throws PersistenceException {
-        Set<MasterDBO> masters = subnet.getProfibusDPMaster();
-        for (MasterDBO master : masters) {
-            masterStatisticCreator(master);
-        }
-    }
-    
-    /**
-     * @param master
-     * @throws PersistenceException 
-     */
-    private void masterStatisticCreator(@Nonnull MasterDBO master) throws PersistenceException {
-        Set<SlaveDBO> slaves = master.getChildren();
-        GSDFileDBO gsdFile = master.getGSDFile();
-        if(gsdFile != null) {
-            Integer masterCounter = _gsdMasterFileMap.get(gsdFile);
-            if(masterCounter == null) {
-                masterCounter = 0;
-            }
-            masterCounter++;
-            _gsdMasterFileMap.put(gsdFile, masterCounter);
-        }
-        for (SlaveDBO slave : slaves) {
-            slaveStatisticCreator(slave);
-        }
-    }
-    
-    /**
-     * @param slave
-     * @throws PersistenceException 
-     */
-    private void slaveStatisticCreator(@Nonnull SlaveDBO slave) throws PersistenceException {
-        Set<ModuleDBO> modules = slave.getChildren();
-        countGsdFile(slave.getGSDFile());
-        for (ModuleDBO module : modules) {
-            countGsdModule(module);
-        }
-    }
-    
-    /**
      * @param gsdFile
      */
-    private void countGsdFile(@Nullable GSDFileDBO gsdFile) {
+    private void countGsdFile(@Nullable final GSDFileDBO gsdFile) {
         Integer gsdFileCounter = _gsdSlaveFileMap.get(gsdFile);
         if(gsdFileCounter == null) {
             gsdFileCounter = 0;
@@ -176,10 +85,10 @@ public class ProfibusStatisticGenerator {
     
     /**
      * @param module
-     * @throws PersistenceException 
+     * @throws PersistenceException
      */
-    private void countGsdModule(@Nonnull ModuleDBO module) throws PersistenceException {
-        GSDModuleDBO gsdModule = module.getGSDModule();
+    private void countGsdModule(@Nonnull final ModuleDBO module) throws PersistenceException {
+        final GSDModuleDBO gsdModule = module.getGSDModule();
         ModuleStatistcCounter msc = _gsdModuleMap.get(gsdModule);
         if(msc == null) {
             msc = new ModuleStatistcCounter();
@@ -190,13 +99,106 @@ public class ProfibusStatisticGenerator {
     
     /**
      * @param txtFile
-     * @throws IOException 
+     * @throws IOException
      */
-    public void getStatisticFile(@Nonnull File path) throws IOException {
-        FileWriter writer = new FileWriter(path);
+    public void getStatisticFile(@Nonnull final File path) throws IOException {
+        final FileWriter writer = new FileWriter(path);
         writer.append(_statistic.toString());
-        CentralLogger.getInstance().info(this, "Write File:" + path.getAbsolutePath());
+        LOG.info("Write File: {}", path.getAbsolutePath());
         writer.close();
+    }
+    
+    /**
+     * @param ioc
+     * @throws PersistenceException
+     */
+    private void iocStatisticCreator(@Nonnull final IocDBO ioc) throws PersistenceException {
+        final Set<ProfibusSubnetDBO> subnets = ioc.getChildren();
+        for (final ProfibusSubnetDBO subnet : subnets) {
+            subnetStatisticCreator(subnet);
+        }
+    }
+    
+    /**
+     * @param master
+     * @throws PersistenceException
+     */
+    private void masterStatisticCreator(@Nonnull final MasterDBO master) throws PersistenceException {
+        final Set<SlaveDBO> slaves = master.getChildren();
+        final GSDFileDBO gsdFile = master.getGSDFile();
+        if(gsdFile != null) {
+            Integer masterCounter = _gsdMasterFileMap.get(gsdFile);
+            if(masterCounter == null) {
+                masterCounter = 0;
+            }
+            masterCounter++;
+            _gsdMasterFileMap.put(gsdFile, masterCounter);
+        }
+        for (final SlaveDBO slave : slaves) {
+            slaveStatisticCreator(slave);
+        }
+    }
+    
+    /**
+     * @param facility
+     * @throws PersistenceException
+     */
+    public void setFacility(@Nonnull final FacilityDBO facility) throws PersistenceException {
+        _statistic.append("Statistik für ").append(facility.getName()).append(" vom ")
+        .append(new Date()).append(LINE_END);
+        final Map<Short, IocDBO> childrenAsMap = facility.getChildrenAsMap();
+        int iocCounter = 0;
+        for (final IocDBO node : childrenAsMap.values()) {
+            final IocDBO ioc = node;
+            iocCounter++;
+            iocStatisticCreator(ioc);
+        }
+        _statistic.append("Anzahl IOC = ").append(iocCounter).append(LINE_END);
+        int gsdFileCount = 0;
+        int gsdModuleCount = 0;
+        
+        for (final GSDFileDBO gsdFileDBO : _gsdSlaveFileMap.keySet()) {
+            final Integer count = _gsdSlaveFileMap.get(gsdFileDBO);
+            _statistic.append("GSD File: \"").append(String.format("%20s", gsdFileDBO.getName()))
+            .append("\" wird ").append(String.format("%3d", count))
+            .append(" mal verwendet").append(LINE_END);
+            gsdFileCount += count;
+        }
+        _statistic.append("GSD Files gesamt: ").append(gsdFileCount).append(LINE_END);
+        for (final GSDModuleDBO gsdModuleDBO : _gsdModuleMap.keySet()) {
+            final ModuleStatistcCounter msc = _gsdModuleMap.get(gsdModuleDBO);
+            _statistic
+            .append(String.format("GSD Module: \"%40s\" wird %3d mal verwendet.\tAngeschlossen: %4d von %4d Kanälen.",
+                                  gsdModuleDBO.getName(),
+                                  msc.getModuleCount(),
+                                  msc.getUsedChannelsCount(),
+                                  msc.getTotalChannelsCount())).append(LINE_END);
+            gsdModuleCount += msc.getModuleCount();
+        }
+        _statistic.append("GSD Modules gesamt: ").append(gsdModuleCount).append(LINE_END);
+    }
+    
+    /**
+     * @param slave
+     * @throws PersistenceException
+     */
+    private void slaveStatisticCreator(@Nonnull final SlaveDBO slave) throws PersistenceException {
+        final Set<ModuleDBO> modules = slave.getChildren();
+        countGsdFile(slave.getGSDFile());
+        for (final ModuleDBO module : modules) {
+            countGsdModule(module);
+        }
+    }
+    
+    /**
+     * @param subnet
+     * @throws PersistenceException
+     */
+    private void subnetStatisticCreator(@Nonnull final ProfibusSubnetDBO subnet) throws PersistenceException {
+        final Set<MasterDBO> masters = subnet.getProfibusDPMaster();
+        for (final MasterDBO master : masters) {
+            masterStatisticCreator(master);
+        }
     }
     
 }

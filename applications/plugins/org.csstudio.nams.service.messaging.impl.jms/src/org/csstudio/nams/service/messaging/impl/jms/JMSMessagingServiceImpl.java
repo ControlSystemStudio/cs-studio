@@ -1,3 +1,4 @@
+
 package org.csstudio.nams.service.messaging.impl.jms;
 
 import javax.jms.JMSException;
@@ -9,7 +10,8 @@ import org.csstudio.nams.service.messaging.exceptions.MessagingException;
 
 public class JMSMessagingServiceImpl implements MessagingService {
 
-	public MessagingSession createNewMessagingSession(
+	@Override
+    public MessagingSession createNewMessagingSession(
 			final String environmentUniqueClientId, final String[] urls)
 			throws MessagingException, IllegalArgumentException {
 
@@ -29,5 +31,4 @@ public class JMSMessagingServiceImpl implements MessagingService {
 					e);
 		}
 	}
-
 }

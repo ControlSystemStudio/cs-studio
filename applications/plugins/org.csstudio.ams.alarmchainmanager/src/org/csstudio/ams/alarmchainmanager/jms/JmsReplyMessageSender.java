@@ -36,7 +36,7 @@ import javax.naming.InitialContext;
 import org.csstudio.ams.Log;
 
 /**
- * @author Markus Möller
+ * @author Markus Moeller
  *
  */
 public class JmsReplyMessageSender
@@ -59,12 +59,12 @@ public class JmsReplyMessageSender
     /**  */
     private boolean initalized = false;
     
-    public JmsReplyMessageSender(String clientId, String url, String connectionFactoryClass, String connectionFactory)
-    {
+    public JmsReplyMessageSender(String clientId, String url,
+                                 String connectionFactoryClass, String connectionFactory) {
+        
         Hashtable<String, String> properties = null;
         
-        try
-        {
+        try {
             properties = new Hashtable<String, String>();
             properties.put(Context.INITIAL_CONTEXT_FACTORY, connectionFactoryClass);
             properties.put(Context.PROVIDER_URL, url);
@@ -80,72 +80,52 @@ public class JmsReplyMessageSender
             amsSenderConnection.start();
             
             initalized = true;
-        }
-        catch(Exception e)
-        {
+        } catch(Exception e) {
             Log.log(this, Log.FATAL, "could not init internal Jms", e);
-            
             initalized = false;
         }
     }
     
-    public boolean isInitialized()
-    {
+    public boolean isInitialized() {
         return initalized;
     }
     
-    public void createProducer(String topic)
-    {
-        try
-        {
+    public void createProducer(String topic) {
+        try {
             amsPublisherReply = amsSenderSession.createProducer(amsSenderSession.createTopic(topic));
-        }
-        catch(JMSException jmse)
-        {
+        } catch(JMSException jmse) {
             Log.log(this, Log.FATAL, "Could not create publisher: " + jmse.getMessage());
             
             amsPublisherReply = null;
         }
     }
     
-    public boolean existsPublisher()
-    {
+    public boolean existsPublisher() {
         return (amsPublisherReply != null);
     }
     
-    public void sendMapMessage(MapMessage message) throws JMSException, NullPointerException
-    {
-        if(amsPublisherReply != null)
-        {
-            try
-            {
+    public void sendMapMessage(MapMessage message) throws JMSException, NullPointerException {
+        if(amsPublisherReply != null) {
+            try {
                 amsPublisherReply.send(message);
-            }
-            catch(JMSException jmse)
-            {
+            } catch(JMSException jmse) {
                 Log.log(this, Log.FATAL, "Could not send message: " + jmse.getMessage());
                 throw jmse;
             }
-        }
-        else
-        {
+        } else {
             throw new NullPointerException("JMS sender is not valid");
         }
     }
     
-    public MapMessage createMapMessage()
-    {
+    public MapMessage createMapMessage() {
+        
         MapMessage msg = null;
         
-        if(amsSenderSession != null)
-        {
-            try
-            {
+        if(amsSenderSession != null) {
+            try {
                 msg = amsSenderSession.createMapMessage();
-            }
-            catch(JMSException jmse)
-            {
-                msg = null;
+            } catch(JMSException jmse) {
+                // Can be ignored
             }
         }
         

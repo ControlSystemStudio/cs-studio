@@ -32,15 +32,14 @@ import org.csstudio.platform.management.IManagementCommand;
  * @author Markus Moeller
  *
  */
-public class GetState implements IManagementCommand
-{
+public class GetState implements IManagementCommand {
+    
     /* (non-Javadoc)
      * @see org.csstudio.platform.management.IManagementCommand#execute(org.csstudio.platform.management.CommandParameters)
      */
-    public CommandResult execute(CommandParameters parameters)
-    {
+    @Override
+    public CommandResult execute(CommandParameters parameters) {
         int state = SmsConnectorStart.getInstance().getStatus();
-        
         return CommandResult.createMessageResult(SmsConnectorStart.STATE_TEXT[state]);
     }
 }

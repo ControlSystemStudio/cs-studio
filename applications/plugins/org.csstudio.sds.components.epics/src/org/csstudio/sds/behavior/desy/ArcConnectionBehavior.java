@@ -19,7 +19,7 @@
 package org.csstudio.sds.behavior.desy;
 
 import org.csstudio.sds.components.model.ArcModel;
-import org.csstudio.sds.components.model.EllipseModel;
+import org.csstudio.sds.model.AbstractWidgetModel;
 import org.epics.css.dal.context.ConnectionState;
 import org.epics.css.dal.simple.AnyData;
 import org.epics.css.dal.simple.AnyDataChannel;
@@ -43,8 +43,8 @@ public class ArcConnectionBehavior extends AbstractDesyConnectionBehavior<ArcMod
      */
     public ArcConnectionBehavior() {
         // add Invisible Property Id here
-        addInvisiblePropertyId(EllipseModel.PROP_ACTIONDATA);
-        removeInvisiblePropertyId(EllipseModel.PROP_COLOR_BACKGROUND);
+        addInvisiblePropertyId(AbstractWidgetModel.PROP_ACTIONDATA);
+        removeInvisiblePropertyId(AbstractWidgetModel.PROP_COLOR_BACKGROUND);
     }
 
     /**
@@ -67,7 +67,7 @@ public class ArcConnectionBehavior extends AbstractDesyConnectionBehavior<ArcMod
         if(model.getFill()) {
             model.setPropertyValue(ArcModel.PROP_FILLCOLOR, determineColorBySeverity(anyData.getSeverity(),null));
         }else {
-            model.setPropertyValue(ArcModel.PROP_COLOR_FOREGROUND, determineColorBySeverity(anyData.getSeverity(),null));
+            model.setPropertyValue(AbstractWidgetModel.PROP_COLOR_FOREGROUND, determineColorBySeverity(anyData.getSeverity(),null));
         }
     }
 
@@ -78,11 +78,12 @@ public class ArcConnectionBehavior extends AbstractDesyConnectionBehavior<ArcMod
     protected void doProcessConnectionStateChange(final ArcModel widget, final AnyDataChannel anyDataChannel) {
         super.doProcessConnectionStateChange(widget, anyDataChannel);
         ConnectionState connectionState = anyDataChannel.getProperty().getConnectionState();
-        if(connectionState != ConnectionState.CONNECTED) {
+        if(!isConnected(anyDataChannel)) {
+            // TODO (hrickens) [09.06.2011]: Muss auch wieder zurückgesetzt werden
             widget.setColor(ArcModel.PROP_FILLCOLOR,determineBackgroundColor(connectionState));
         }
         if(!widget.getFill()) {
-            widget.setPropertyValue(ArcModel.PROP_TRANSPARENT, connectionState == ConnectionState.CONNECTED);
+            widget.setPropertyValue(ArcModel.PROP_TRANSPARENT, isConnected(anyDataChannel));
         }
     }
 
@@ -91,7 +92,6 @@ public class ArcConnectionBehavior extends AbstractDesyConnectionBehavior<ArcMod
         if (metaData != null) {
             _multi = 360 / (metaData.getDisplayHigh() - metaData.getDisplayLow());
         }
-
         // do noting
     }
 }

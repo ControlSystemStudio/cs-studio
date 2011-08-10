@@ -38,21 +38,19 @@ import javax.mail.internet.MimeMessage;
  * @author Markus Möller
  *
  */
-public class CommonMailer
-{
-    public static int sendMultiMail(String mailhost, String from, String to, String subject[], String text)
-    {
+public class CommonMailer {
+    
+    public static int sendMultiMail(String mailhost, String from,
+                                    String to, String subject[],
+                                    String text) {
         int result = 0;
         
-        if(to == null)
-        {
+        if(to == null) {
             return -1;
         }
         
-        for(String s : subject)
-        {
-            if(sendMail(mailhost, from, to, s, text) == false)
-            {
+        for(String s : subject) {
+            if(sendMail(mailhost, from, to, s, text) == false) {
                 // Increment the counter if it failed to send a mail
                 result++;
             }
@@ -61,19 +59,17 @@ public class CommonMailer
         return result;
     }
 
-    public static int sendMultiMail(String mailhost, String from, String[] to, String subject, String text)
-    {
+    public static int sendMultiMail(String mailhost, String from,
+                                    String[] to, String subject,
+                                    String text) {
         int result = 0;
         
-        if(to == null)
-        {
+        if(to == null) {
             return -1;
         }
         
-        for(String s : to)
-        {
-            if(sendMail(mailhost, from, s, subject, text) == false)
-            {
+        for(String s : to) {
+            if(sendMail(mailhost, from, s, subject, text) == false) {
                 // Increment the counter if it failed to send a mail
                 result++;
             }
@@ -82,29 +78,26 @@ public class CommonMailer
         return result;
     }
     
-    public static boolean sendMail(String mailhost, String from, String to, String subject)
-    {
+    public static boolean sendMail(String mailhost, String from, String to, String subject) {
         return sendMail(mailhost, from, to, subject, "");
     }
     
-    public static boolean sendMail(String mailhost, String from, String to, String subject, String text)
-    {
+    public static boolean sendMail(String mailhost, String from,
+                                   String to, String subject, String text) {
+        
         Message msg = null;
         Session session = null;
         boolean success = false;
         
-        if(to == null)
-        {
+        if(to == null) {
             return success; // False at this time
         }
         
-        if(subject == null)
-        {
+        if(subject == null) {
             return success; // False at this time
         }
         
-        try
-        {
+        try {
             Properties props = System.getProperties();
             props.put("mail.smtp.host", mailhost);
 
@@ -125,13 +118,9 @@ public class CommonMailer
             Transport.send(msg);
             
             success = true;
-        }
-        catch(AddressException ae)
-        {
+        } catch(AddressException ae) {
             success = false;
-        }
-        catch(MessagingException me)
-        {
+        } catch(MessagingException me) {
             success = false;
         }
         

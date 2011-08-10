@@ -33,12 +33,12 @@ import javax.annotation.Nonnull;
  * @since 17.02.2009
  */
 public class PersistenceException extends Exception {
-
+    
     /**
      * 
      */
     private static final long serialVersionUID = -7788496152990006052L;
-
+    
     /**
      * Constructor.
      */
@@ -46,16 +46,16 @@ public class PersistenceException extends Exception {
         super();
     }
     
-    public PersistenceException(@Nonnull String msg) {
+    public PersistenceException(@Nonnull final String msg) {
         super(msg);
     }
     
-    public PersistenceException(@Nonnull Throwable t) {
-        super(t);
+    public PersistenceException(@Nonnull final String msg, @Nonnull final Throwable t) {
+        super(msg, t);
     }
     
-    public PersistenceException(@Nonnull String msg, @Nonnull Throwable t) {
-        super(msg, t);
+    public PersistenceException(@Nonnull final Throwable t) {
+        super(t);
     }
     
     

@@ -30,6 +30,8 @@ import java.io.IOException;
 
 import org.csstudio.archive.sdds.server.util.IntegerValue;
 import org.csstudio.archive.sdds.server.util.RawData;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import de.desy.aapi.AapiServerError;
 
@@ -39,6 +41,8 @@ import de.desy.aapi.AapiServerError;
  */
 public class SkeletonList extends ServerCommand {
 
+    private static final Logger LOG = LoggerFactory.getLogger(SkeletonList.class);
+    
     /**
      * 
      */
@@ -58,7 +62,7 @@ public class SkeletonList extends ServerCommand {
             
         } catch(IOException ioe) {
             
-            logger.error("[*** IOException ***]: " + ioe.getMessage());
+            LOG.error("[*** IOException ***]: " + ioe.getMessage());
         }
     }
 }

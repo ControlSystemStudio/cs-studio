@@ -26,13 +26,11 @@ package org.csstudio.archive.sdds.server.conversion.handler;
 
 import java.util.ArrayList;
 import java.util.List;
-
-import org.apache.log4j.Logger;
 import org.csstudio.archive.sdds.server.command.header.DataRequestHeader;
 import org.csstudio.archive.sdds.server.data.EpicsRecordData;
-import org.csstudio.archive.sdds.server.sdds.SDDSType;
 import org.csstudio.archive.sdds.server.util.DataException;
-import org.csstudio.platform.logging.CentralLogger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * This class returns the real raw data. No filtering methods will be used and the number of samples will
@@ -45,15 +43,14 @@ import org.csstudio.platform.logging.CentralLogger;
 public class NoFilterHandler extends AlgorithmHandler {
     
     /** The logger for this class */
-    private Logger logger;
+    private static final Logger LOG = LoggerFactory.getLogger(NoFilterHandler.class);
 
     /**
      * The standard constructor
      */
     public NoFilterHandler(int maxSamples) {
         super(maxSamples);
-        logger = CentralLogger.getInstance().getLogger(this);
-        logger.info("NoFilterHandler created. Max. samples per request: " + maxSamples);
+        LOG.info("NoFilterHandler created. Max. samples per request: " + maxSamples);
     }
     
     /**
@@ -77,8 +74,8 @@ public class NoFilterHandler extends AlgorithmHandler {
         for(int i = 0;i < data.length;i++) {
             if((data[i].getTime() >= intervalStart) && (data[i].getTime() <= intervalEnd)) {
                 newData.add(new EpicsRecordData(data[i].getTime(), data[i].getNanoSeconds(),
-                                                 data[i].getStatus(), new Double((Float)data[i].getValue()),
-                                                 SDDSType.SDDS_DOUBLE));
+                                                 data[i].getStatus(),
+                                                 new Double((Float)data[i].getValue())));
             }
         }
         

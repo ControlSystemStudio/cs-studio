@@ -1,16 +1,23 @@
 /*
- * Copyright 2010 Brookhaven National Laboratory
+ * Copyright 2010-11 Brookhaven National Laboratory
  * All rights reserved. Use is subject to license terms.
  */
 
 package org.epics.pvmanager.data;
 
+import org.epics.pvmanager.expression.DesiredRateExpressionImpl;
 import java.util.ArrayList;
 import java.util.List;
-import org.epics.pvmanager.DesiredRateExpression;
+import org.epics.pvmanager.expression.ChannelExpression;
+import org.epics.pvmanager.expression.ChannelExpressionList;
+import org.epics.pvmanager.expression.DesiredRateExpression;
 import org.epics.pvmanager.Collector;
-import org.epics.pvmanager.SourceRateExpression;
+import org.epics.pvmanager.expression.SourceRateExpression;
 import org.epics.pvmanager.Function;
+import org.epics.pvmanager.expression.DesiredRateExpressionList;
+import org.epics.pvmanager.expression.DesiredRateExpressionListImpl;
+import org.epics.pvmanager.expression.SourceRateExpressionImpl;
+import org.epics.pvmanager.expression.SourceRateExpressionList;
 import org.epics.pvmanager.util.TimeDuration;
 import static org.epics.pvmanager.ExpressionLanguage.*;
 
@@ -26,6 +33,28 @@ public class ExpressionLanguage {
         // Add support for Epics types.
         DataTypeSupport.install();
     }
+    
+    /**
+     * Expects a numeric scalar (VDouble or VInt) and converts it to
+     * a VDouble.
+     * 
+     * @param expression an expression that returns a numeric scalar
+     * @return a new expression
+     */
+    public static SourceRateExpression<VDouble> vDoubleOf(SourceRateExpression<?> expression) {
+        return new SourceRateExpressionImpl<VDouble>(expression, new ConverterVDoubleFunction(expression.getFunction()), expression.getName());
+    }
+    
+    /**
+     * Expects a numeric array (VDoubleArray, VFloatArray, VIntArray, VShortArray
+     * or VByteArray) and converts it to a VDoubleArray.
+     * 
+     * @param expression an expression that returns a numeric array
+     * @return a new expression
+     */
+    public static SourceRateExpression<VDoubleArray> vDoubleArrayOf(SourceRateExpression<?> expression) {
+        return new SourceRateExpressionImpl<VDoubleArray>(expression, new ConverterVDoubleArrayFunction(expression.getFunction()), expression.getName());
+    }
 
     /**
      * A channel with the given name of type VDouble.
@@ -33,8 +62,8 @@ public class ExpressionLanguage {
      * @param name the channel name; can't be null
      * @return an expression representing the channel
      */
-    public static SourceRateExpression<VDouble> vDouble(String name) {
-        return new SourceRateExpression<VDouble>(name, VDouble.class);
+    public static ChannelExpression<VDouble, Double> vDouble(String name) {
+        return channel(name, VDouble.class, Double.class);
     }
 
     /**
@@ -43,8 +72,8 @@ public class ExpressionLanguage {
      * @param name the channel name; can't be null
      * @return an expression representing the channel
      */
-    public static SourceRateExpression<VFloatArray> vFloatArray(String name) {
-        return new SourceRateExpression<VFloatArray>(name, VFloatArray.class);
+    public static ChannelExpression<VFloatArray, float[]> vFloatArray(String name) {
+        return channel(name, VFloatArray.class, float[].class);
     }
 
     /**
@@ -53,8 +82,8 @@ public class ExpressionLanguage {
      * @param name the channel name; can't be null
      * @return an expression representing the channel
      */
-    public static SourceRateExpression<VDoubleArray> vDoubleArray(String name) {
-        return new SourceRateExpression<VDoubleArray>(name, VDoubleArray.class);
+    public static ChannelExpression<VDoubleArray, float[]> vDoubleArray(String name) {
+        return channel(name, VDoubleArray.class, float[].class);
     }
 
     /**
@@ -63,8 +92,8 @@ public class ExpressionLanguage {
      * @param name the channel name; can't be null
      * @return an expression representing the channel
      */
-    public static SourceRateExpression<VInt> vInt(String name) {
-        return new SourceRateExpression<VInt>(name, VInt.class);
+    public static ChannelExpression<VInt, Integer> vInt(String name) {
+        return channel(name, VInt.class, Integer.class);
     }
 
     /**
@@ -73,8 +102,8 @@ public class ExpressionLanguage {
      * @param name the channel name; can't be null
      * @return an expression representing the channel
      */
-    public static SourceRateExpression<VByteArray> vByteArray(String name) {
-        return new SourceRateExpression<VByteArray>(name, VByteArray.class);
+    public static ChannelExpression<VByteArray, byte[]> vByteArray(String name) {
+        return channel(name, VByteArray.class, byte[].class);
     }
 
     /**
@@ -83,8 +112,8 @@ public class ExpressionLanguage {
      * @param name the channel name; can't be null
      * @return an expression representing the channel
      */
-    public static SourceRateExpression<VShortArray> vShortArray(String name) {
-        return new SourceRateExpression<VShortArray>(name, VShortArray.class);
+    public static ChannelExpression<VShortArray, short[]> vShortArray(String name) {
+        return channel(name, VShortArray.class, short[].class);
     }
 
     /**
@@ -93,8 +122,8 @@ public class ExpressionLanguage {
      * @param name the channel name; can't be null
      * @return an expression representing the channel
      */
-    public static SourceRateExpression<VIntArray> vIntArray(String name) {
-        return new SourceRateExpression<VIntArray>(name, VIntArray.class);
+    public static ChannelExpression<VIntArray, int[]> vIntArray(String name) {
+        return channel(name, VIntArray.class, int[].class);
     }
 
     /**
@@ -103,8 +132,8 @@ public class ExpressionLanguage {
      * @param name the channel name; can't be null
      * @return an expression representing the channel
      */
-    public static SourceRateExpression<VString> vString(String name) {
-        return new SourceRateExpression<VString>(name, VString.class);
+    public static ChannelExpression<VString, String> vString(String name) {
+        return channel(name, VString.class, String.class);
     }
 
     /**
@@ -113,8 +142,8 @@ public class ExpressionLanguage {
      * @param name the channel name; can't be null
      * @return an expression representing the channel
      */
-    public static SourceRateExpression<VStringArray> vStringArray(String name) {
-        return new SourceRateExpression<VStringArray>(name, VStringArray.class);
+    public static ChannelExpression<VStringArray, String[]> vStringArray(String name) {
+        return channel(name, VStringArray.class, String[].class);
     }
 
     /**
@@ -123,8 +152,8 @@ public class ExpressionLanguage {
      * @param name the channel name; can't be null
      * @return an expression representing the channel
      */
-    public static SourceRateExpression<VEnum> vEnum(String name) {
-        return new SourceRateExpression<VEnum>(name, VEnum.class);
+    public static ChannelExpression<VEnum, Integer> vEnum(String name) {
+        return channel(name, VEnum.class, Integer.class);
     }
 
     /**
@@ -133,12 +162,8 @@ public class ExpressionLanguage {
      * @param names the channel names; can't be null
      * @return a list of expressions representing the channels
      */
-    public static List<SourceRateExpression<VDouble>> vDoubles(List<String> names) {
-        List<SourceRateExpression<VDouble>> expressions = new ArrayList<SourceRateExpression<VDouble>>();
-        for (String name : names) {
-            expressions.add(vDouble(name));
-        }
-        return expressions;
+    public static ChannelExpressionList<VDouble, Double> vDoubles(List<String> names) {
+        return channels(names, VDouble.class, Double.class);
     }
 
     /**
@@ -149,8 +174,8 @@ public class ExpressionLanguage {
     public static DesiredRateExpression<VDouble> averageOf(SourceRateExpression<VDouble> doublePv) {
         DesiredRateExpression<List<VDouble>> queue = newValuesOf(doublePv);
         Collector<VDouble> collector = (Collector<VDouble>) queue.getFunction();
-        return new DesiredRateExpression<VDouble>(queue,
-                new AverageAggregator(collector), "avg(" + doublePv.getDefaultName() + ")");
+        return new DesiredRateExpressionImpl<VDouble>(queue,
+                new AverageAggregator(collector), "avg(" + doublePv.getName() + ")");
     }
 
     /**
@@ -162,8 +187,8 @@ public class ExpressionLanguage {
     public static DesiredRateExpression<VStatistics> statisticsOf(SourceRateExpression<VDouble> doublePv) {
         DesiredRateExpression<List<VDouble>> queue = newValuesOf(doublePv);
         Collector<VDouble> collector = (Collector<VDouble>) queue.getFunction();
-        return new DesiredRateExpression<VStatistics>(queue,
-                new StatisticsDoubleAggregator(collector), "stats(" + doublePv.getDefaultName() + ")");
+        return new DesiredRateExpressionImpl<VStatistics>(queue,
+                new StatisticsDoubleAggregator(collector), "stats(" + doublePv.getName() + ")");
     }
 
     /**
@@ -173,10 +198,10 @@ public class ExpressionLanguage {
      * @param doubleExpressions a list of double expressions
      * @return a list of statistical expressions
      */
-    public static List<DesiredRateExpression<VStatistics>> statisticsOf(List<SourceRateExpression<VDouble>> doubleExpressions) {
-        List<DesiredRateExpression<VStatistics>> expressions = new ArrayList<DesiredRateExpression<VStatistics>>();
-        for (SourceRateExpression<VDouble> doubleExpression : doubleExpressions) {
-            expressions.add(statisticsOf(doubleExpression));
+    public static DesiredRateExpressionList<VStatistics> statisticsOf(SourceRateExpressionList<VDouble> doubleExpressions) {
+        DesiredRateExpressionList<VStatistics> expressions = new DesiredRateExpressionListImpl<VStatistics>();
+        for (SourceRateExpression<VDouble> doubleExpression : doubleExpressions.getSourceRateExpressions()) {
+            expressions.and(statisticsOf(doubleExpression));
         }
         return expressions;
     }
@@ -189,7 +214,7 @@ public class ExpressionLanguage {
      * @return an expression for the array
      */
     public static DesiredRateExpression<VMultiDouble>
-            synchronizedArrayOf(TimeDuration tolerance, List<SourceRateExpression<VDouble>> expressions) {
+            synchronizedArrayOf(TimeDuration tolerance, SourceRateExpressionList<VDouble> expressions) {
         return synchronizedArrayOf(tolerance, tolerance.multiplyBy(10), expressions);
     }
 
@@ -204,21 +229,21 @@ public class ExpressionLanguage {
      * @return an expression for the array
      */
     public static DesiredRateExpression<VMultiDouble>
-            synchronizedArrayOf(TimeDuration tolerance, TimeDuration cacheDepth, List<SourceRateExpression<VDouble>> expressions) {
+            synchronizedArrayOf(TimeDuration tolerance, TimeDuration cacheDepth, SourceRateExpressionList<VDouble> expressions) {
         if (cacheDepth.equals(TimeDuration.ms(0)))
             throw new IllegalArgumentException("Distance between samples must be non-zero");
         List<String> names = new ArrayList<String>();
-        List<DesiredRateExpression<?>> collectorExps = new ArrayList<DesiredRateExpression<?>>();
         List<Function<List<VDouble>>> collectors = new ArrayList<Function<List<VDouble>>>();
-        for (SourceRateExpression<VDouble> expression : expressions) {
+        DesiredRateExpressionList<List<VDouble>> desiredRateExpressions = new DesiredRateExpressionListImpl<List<VDouble>>();
+        for (SourceRateExpression<VDouble> expression : expressions.getSourceRateExpressions()) {
             DesiredRateExpression<List<VDouble>> collectorExp = timedCacheOf(expression, cacheDepth);
-            collectorExps.add(collectorExp);
+            desiredRateExpressions.and(collectorExp);
             collectors.add(collectorExp.getFunction());
-            names.add(expression.getDefaultName());
+            names.add(expression.getName());
         }
         SynchronizedVDoubleAggregator aggregator =
                 new SynchronizedVDoubleAggregator(names, collectors, tolerance);
-        return new DesiredRateExpression<VMultiDouble>(collectorExps,
+        return new DesiredRateExpressionImpl<VMultiDouble>(desiredRateExpressions,
                 (Function<VMultiDouble>) aggregator, "syncArray");
     }
 

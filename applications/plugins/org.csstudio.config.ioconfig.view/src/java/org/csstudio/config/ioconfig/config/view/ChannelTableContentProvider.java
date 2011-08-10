@@ -27,6 +27,7 @@ package org.csstudio.config.ioconfig.config.view;
 import java.util.List;
 import java.util.Set;
 
+import javax.annotation.CheckForNull;
 import javax.annotation.Nullable;
 
 import org.csstudio.config.ioconfig.model.pbmodel.ModuleChannelPrototypeDBO;
@@ -40,29 +41,30 @@ import org.eclipse.jface.viewers.Viewer;
  * @since 24.11.2008
  */
 public class ChannelTableContentProvider implements IStructuredContentProvider {
-
+    
     @Override
-    public Object[] getElements(@Nullable Object inputElement) {
+    public void dispose() {
+        // nothing to dispose
+    }
+    
+    @Override
+    @CheckForNull
+    public Object[] getElements(@Nullable final Object inputElement) {
         if (inputElement instanceof List) {
-            List<?> list =(List<?>) inputElement; 
+            final List<?> list =(List<?>) inputElement;
             return list.toArray();
         }else if (inputElement instanceof Set) {
-            Set<?> set = (Set<?>)inputElement;
+            final Set<?> set = (Set<?>)inputElement;
             return set.toArray();
         }else if (inputElement instanceof ModuleChannelPrototypeDBO[]) {
             return (ModuleChannelPrototypeDBO[])inputElement;
         }
         return null;
     }
-
+    
     @Override
-    public void dispose() {
-        // nothing to dispose
-    }
-
-    @Override
-    public void inputChanged(@Nullable Viewer viewer,@Nullable  Object oldInput,@Nullable Object newInput) {
+    public void inputChanged(@Nullable final Viewer viewer,@Nullable final  Object oldInput,@Nullable final Object newInput) {
         // Nothing to do.
     }
-
+    
 }

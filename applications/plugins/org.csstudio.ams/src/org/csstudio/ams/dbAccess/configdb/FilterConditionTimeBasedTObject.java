@@ -23,8 +23,6 @@
 
 package org.csstudio.ams.dbAccess.configdb;
 
-import java.io.Serializable;
-
 import org.csstudio.ams.dbAccess.TObject;
 
 /**
@@ -38,7 +36,7 @@ import org.csstudio.ams.dbAccess.TObject;
 	sTimePeriod			NUMBER(6),
 	sTimeBehavior		NUMBER(6)
  */
-public class FilterConditionTimeBasedTObject extends TObject implements Serializable
+public class FilterConditionTimeBasedTObject extends TObject
 {
 	private static final long serialVersionUID = 1900126496926324967L;
 	

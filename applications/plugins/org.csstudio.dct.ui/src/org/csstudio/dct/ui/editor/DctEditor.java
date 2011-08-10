@@ -25,8 +25,9 @@ import org.csstudio.dct.model.internal.ProjectFactory;
 import org.csstudio.dct.model.visitors.ProblemVisitor;
 import org.csstudio.dct.model.visitors.ProblemVisitor.MarkableError;
 import org.csstudio.dct.model.visitors.SearchVisitor;
+import org.csstudio.dct.ui.editor.highlighter.EpicsDBSyntaxHighlighterImpl;
+import org.csstudio.dct.ui.editor.highlighter.IEpicsDBSyntaxHighlighter;
 import org.csstudio.dct.ui.editor.outline.internal.OutlinePage;
-import org.csstudio.platform.logging.CentralLogger;
 import org.csstudio.platform.ui.util.CustomMediaFactory;
 import org.csstudio.platform.ui.util.LayoutUtil;
 import org.csstudio.platform.util.StringUtil;
@@ -39,6 +40,8 @@ import org.eclipse.core.runtime.NullProgressMonitor;
 import org.eclipse.gef.commands.CommandStack;
 import org.eclipse.gef.commands.CommandStackListener;
 import org.eclipse.jface.dialogs.MessageDialog;
+import org.eclipse.jface.layout.GridDataFactory;
+import org.eclipse.jface.layout.GridLayoutFactory;
 import org.eclipse.jface.viewers.ArrayContentProvider;
 import org.eclipse.jface.viewers.ComboViewer;
 import org.eclipse.jface.viewers.ISelectionChangedListener;
@@ -51,12 +54,18 @@ import org.eclipse.jface.viewers.TreeSelection;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.custom.CCombo;
 import org.eclipse.swt.custom.StackLayout;
+import org.eclipse.swt.custom.StyleRange;
 import org.eclipse.swt.custom.StyledText;
+import org.eclipse.swt.events.KeyAdapter;
+import org.eclipse.swt.events.KeyEvent;
 import org.eclipse.swt.events.ModifyEvent;
 import org.eclipse.swt.events.ModifyListener;
 import org.eclipse.swt.events.MouseAdapter;
 import org.eclipse.swt.events.MouseEvent;
-import org.eclipse.swt.layout.FillLayout;
+import org.eclipse.swt.events.SelectionEvent;
+import org.eclipse.swt.events.SelectionListener;
+import org.eclipse.swt.graphics.Color;
+import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Display;
@@ -71,6 +80,8 @@ import org.eclipse.ui.ide.IGotoMarker;
 import org.eclipse.ui.part.FileEditorInput;
 import org.eclipse.ui.part.MultiPageEditorPart;
 import org.eclipse.ui.views.contentoutline.IContentOutlinePage;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * The DCT Editor implementation.
@@ -79,6 +90,71 @@ import org.eclipse.ui.views.contentoutline.IContentOutlinePage;
  * 
  */
 public final class DctEditor extends MultiPageEditorPart implements CommandStackListener {
+    
+    /**
+     * @author hrickens
+     * @author $Author: hrickens $
+     * @version $Revision: 1.7 $
+     * @since 01.08.2011
+     */
+    private final class SearchListener implements SelectionListener {
+        private final Text _searchBox;
+
+        /**
+         * Constructor.
+         */
+        public SearchListener(Text searchBox) {
+            _searchBox = searchBox;
+        }
+        
+        public void widgetSelected(SelectionEvent e) {
+            search();
+        }
+        
+        private void search() {
+            searchAndMarkInPreview(_searchBox.getText(), true, isCaseSensetiv());
+        }
+        
+        public void widgetDefaultSelected(SelectionEvent e) {
+            search();
+        }
+    }
+
+
+    /**
+     * @author hrickens
+     * @author $Author: hrickens $
+     * @version $Revision: 1.7 $
+     * @since 01.08.2011
+     */
+    private final class SearchModifyListener implements ModifyListener {
+        private final Text _searchBox;
+        Color red = Display.getDefault().getSystemColor(SWT.COLOR_RED);
+        Color white = Display.getDefault().getSystemColor(SWT.COLOR_WHITE);
+        Color black = Display.getDefault().getSystemColor(SWT.COLOR_BLACK);
+        
+        /**
+         * Constructor.
+         */
+        private SearchModifyListener(final Text searchBox) {
+            _searchBox = searchBox;
+        }
+        
+        public void modifyText(ModifyEvent e) {
+            
+        	boolean found = searchAndMarkInPreview(_searchBox.getText(), false, isCaseSensetiv());
+        	if(found) {
+        	    _searchBox.setBackground(white);
+        	    _searchBox.setForeground(black);
+        	} else {
+        	    _searchBox.setForeground(white);
+        	    _searchBox.setBackground(red);
+        	}
+        }
+    }
+
+    private static final Logger LOG = LoggerFactory.getLogger(DctEditor.class);
+    
 	private Project project;
 	private final CommandStack commandStack;
 	private final ISelectionChangedListener outlineSelectionListener;
@@ -91,6 +167,10 @@ public final class DctEditor extends MultiPageEditorPart implements CommandStack
 	private Composite contentPanel;
 	private StyledText dbFilePreviewText;
 	private ExporterDescriptor exporterDescriptor;
+
+    private boolean _caseSensetiv;
+
+    private Text _searchBox;
 
 	/**
 	 * Constructor.
@@ -177,11 +257,16 @@ public final class DctEditor extends MultiPageEditorPart implements CommandStack
 
 		Composite c = new Composite(composite, SWT.NONE);
 		c.setLayoutData(LayoutUtil.createGridData());
-		FillLayout layout = new FillLayout();
-		layout.spacing=5;
-		c.setLayout(layout);
+		GridLayout gridLayout = GridLayoutFactory.swtDefaults().numColumns(5).create();
+//		FillLayout layout = new FillLayout();
+//		layout.spacing=5;
+//		c.setLayout(layout);
+		c.setLayout(gridLayout);
 
-		ComboViewer viewer = new ComboViewer(new CCombo(c, SWT.READ_ONLY | SWT.BORDER));
+		CCombo list = new CCombo(c, SWT.READ_ONLY | SWT.BORDER);
+		GridDataFactory swtDefaults = GridDataFactory.swtDefaults();
+		list.setLayoutData(swtDefaults.create());
+        ComboViewer viewer = new ComboViewer(list);
 		viewer.getCCombo().setEditable(false);
 		viewer.getCCombo().setVisibleItemCount(20);
 		viewer.setContentProvider(new ArrayContentProvider());
@@ -205,24 +290,45 @@ public final class DctEditor extends MultiPageEditorPart implements CommandStack
 				updatePreview();
 			}
 		});
-
-		final Text searchBox = new Text(c, SWT.None);
-		searchBox.addModifyListener(new ModifyListener() {
-			public void modifyText(ModifyEvent e) {
-				searchAndMarkInPreview(searchBox.getText(), false);
-			}
-		});
-
+		    
+		_searchBox = new Text(c, SWT.SEARCH);
+		_searchBox.setMessage("Search");
+		_searchBox.setLayoutData(GridDataFactory.fillDefaults().hint(200, 0).create());
+		_searchBox.addModifyListener(new SearchModifyListener(_searchBox));
+		_searchBox.addKeyListener(new KeyAdapter() {
+		    
+		    @Override
+            public void keyReleased(KeyEvent e) {
+		        if(e.keyCode==SWT.KEYPAD_CR||e.keyCode==SWT.CR||e.keyCode==SWT.F3) {
+		            searchAndMarkInPreview(_searchBox.getText(), true, isCaseSensetiv());
+		        }
+		    }
+        });
+            
+            
+		
 		Button searchButton = new Button(c, SWT.NONE);
-		searchButton.addMouseListener(new MouseAdapter() {
-			@Override
-			public void mouseUp(MouseEvent e) {
-				searchAndMarkInPreview(searchBox.getText(), true);
-			}
-		});
+		searchButton.setLayoutData(swtDefaults.create());
+		searchButton.addSelectionListener(new SearchListener(_searchBox));
 		searchButton.setText("Search");
+		
+		final Button caseSensetivButton = new Button(c, SWT.CHECK);
+        caseSensetivButton.setLayoutData(swtDefaults.create());
+        caseSensetivButton.setText("Case Sensetiv");
+        caseSensetivButton.addSelectionListener(new SelectionListener() {
+            
+            public void widgetSelected(SelectionEvent e) {
+                setCaseSensetiv(caseSensetivButton.getSelection());
+            }
+            
+            public void widgetDefaultSelected(SelectionEvent e) {
+                setCaseSensetiv(caseSensetivButton.getSelection());
+            }
+        });
+        
 
 		Button saveToFileButton = new Button(c, SWT.NONE);
+		saveToFileButton.setLayoutData(swtDefaults.grab(true, false).align(SWT.END, SWT.CENTER).create());
 		saveToFileButton.addMouseListener(new MouseAdapter() {
 			@Override
 			public void mouseUp(MouseEvent event) {
@@ -261,38 +367,75 @@ public final class DctEditor extends MultiPageEditorPart implements CommandStack
 		dbFilePreviewText.setLayoutData(LayoutUtil.createGridDataForFillingCell());
 		dbFilePreviewText.setEditable(false);
 		dbFilePreviewText.setFont(CustomMediaFactory.getInstance().getFont("Courier", 11, SWT.NORMAL));
-
+		dbFilePreviewText.addKeyListener(new KeyAdapter() {
+            
+            @Override
+            public void keyReleased(KeyEvent e) {
+                if(e.keyCode==SWT.F3) {
+                    searchAndMarkInPreview(_searchBox.getText(), true, isCaseSensetiv());
+                }
+            }
+        });
 		int index = addPage(composite);
 		setPageText(index, "Preview DB-File");
 	}
 
-	private void searchAndMarkInPreview(String criteria, boolean startFromCaret) {
-
-		if (criteria != null && criteria.length() > 0) {
+	protected boolean searchAndMarkInPreview(String criteria2, boolean startFromCaret, boolean caseSensitiv) {
+	    boolean found = true;
+		if (criteria2 != null && criteria2.length() > 0) {
 			int offset = startFromCaret?dbFilePreviewText.getCaretOffset() : 0;
-			String text = dbFilePreviewText.getText();
+			String text;
+			String criteria;
+			if(caseSensitiv) {
+			   text = dbFilePreviewText.getText();
+			   criteria = criteria2;
+			} else {
+			    text = dbFilePreviewText.getText().toLowerCase();
+			    criteria = criteria2.toLowerCase();
+			}
 			int index = text.substring(offset).indexOf(criteria);
 			
 			if(index>-1) {
 				int pos = offset + index;
 				dbFilePreviewText.setSelection(pos, pos + criteria.length());
+				found = true;
+			} else if(startFromCaret) {
+			    found = searchAndMarkInPreview(criteria, false, caseSensitiv);
 			} else {
-				searchAndMarkInPreview(criteria, false);
+			    found = false;
 			}
 		}
-
+	    return found;
 	}
+	
+	protected boolean isCaseSensetiv() {
+        return _caseSensetiv;
+    }
+	
+	protected void setCaseSensetiv(boolean caseSensetiv) {
+        _caseSensetiv = caseSensetiv;
+    }
 	/**
 	 * Updates the preview of the db file.
 	 */
 	private void updatePreview() {
 		if (exporterDescriptor != null) {
-			dbFilePreviewText.setText(exporterDescriptor.getExporter().export(getProject()));
+			String export = exporterDescriptor.getExporter().export(getProject());
+            StyleRange[] ranges = buildStyleRange(export);
+            dbFilePreviewText.setText(export);
+            dbFilePreviewText.setStyleRanges(ranges);
 		}
+		_searchBox.setFocus();
 
 	}
 
-	/**
+    private StyleRange[] buildStyleRange(String export) {
+        IEpicsDBSyntaxHighlighter highlighter = new EpicsDBSyntaxHighlighterImpl();
+        highlighter.append(export);
+        return highlighter.getStyleRange();
+    }
+
+    /**
 	 * Creates the pages of the multi-page editor.
 	 */
 	@Override
@@ -354,7 +497,7 @@ public final class DctEditor extends MultiPageEditorPart implements CommandStack
 			// .. load the file contents
 			project = DctActivator.getDefault().getPersistenceService().loadProject(file);
 		} catch (Exception e) {
-			CentralLogger.getInstance().error(this, e);
+			LOG.error("Error: ", e);
 			project = null;
 		}
 
@@ -396,7 +539,6 @@ public final class DctEditor extends MultiPageEditorPart implements CommandStack
 	 *{@inheritDoc}
 	 */
 	@Override
-    @SuppressWarnings("unchecked")
 	public Object getAdapter(Class adapter) {
 		Object result = null;
 
@@ -419,7 +561,7 @@ public final class DctEditor extends MultiPageEditorPart implements CommandStack
 							selectItemInOutline(id);
 						}
 					} catch (CoreException e) {
-						CentralLogger.getInstance().info(this, e);
+						LOG.info("Info: ", e);
 					}
 				}
 			};
@@ -466,7 +608,7 @@ public final class DctEditor extends MultiPageEditorPart implements CommandStack
 			ResourcesPlugin.getWorkspace().save(true, new NullProgressMonitor());
 			
 		} catch (CoreException e) {
-			CentralLogger.getInstance().info(this, e);
+			LOG.info("Info:", e);
 		}
 	}
 

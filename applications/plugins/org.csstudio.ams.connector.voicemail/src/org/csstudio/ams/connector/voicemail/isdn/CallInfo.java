@@ -29,8 +29,9 @@ import org.csstudio.ams.connector.voicemail.isdn.CallCenter.TextType;
  * @author Markus Moeller
  *
  */
-public class CallInfo
-{
+@SuppressWarnings("hiding")
+public class CallInfo {
+    
     private String chainIdAndPos;
     private String telephoneNumber;
     private String confirmationCode;
@@ -38,8 +39,7 @@ public class CallInfo
     private TextType textType;
     private boolean success;
     
-    public CallInfo()
-    {
+    public CallInfo() {
         chainIdAndPos = "";
         telephoneNumber = "";
         confirmationCode = "";
@@ -48,8 +48,7 @@ public class CallInfo
         success = false;
     }
 
-    public CallInfo(String telephoneNumber, TextType textType)
-    {
+    public CallInfo(String telephoneNumber, TextType textType) {
         this.telephoneNumber = telephoneNumber;
         this.textType = textType;
         chainIdAndPos = "";
@@ -58,8 +57,7 @@ public class CallInfo
         success = false;
     }
 
-    public CallInfo(String telephoneNumber, TextType textType, String chainIdAndPos)
-    {
+    public CallInfo(String telephoneNumber, TextType textType, String chainIdAndPos) {
         this.telephoneNumber = telephoneNumber;
         this.textType = textType;
         this.chainIdAndPos = chainIdAndPos;
@@ -68,68 +66,55 @@ public class CallInfo
         success = false;
     }
 
-    public String getChainIdAndPos()
-    {
+    public String getChainIdAndPos() {
         return chainIdAndPos;
     }
 
-    public void setChainIdAndPos(String chainIdAndPos)
-    {
+    public void setChainIdAndPos(String chainIdAndPos) {
         this.chainIdAndPos = chainIdAndPos;
     }
 
-    public String getTelephoneNumber()
-    {
+    public String getTelephoneNumber() {
         return telephoneNumber;
     }
 
-    public void setTelephoneNumber(String telephoneNumber)
-    {
+    public void setTelephoneNumber(String telephoneNumber) {
         this.telephoneNumber = telephoneNumber;
     }
 
-    public String getConfirmationCode()
-    {
+    public String getConfirmationCode() {
         return confirmationCode;
     }
 
-    public void setConfirmationCode(String confirmationCode)
-    {
+    public void setConfirmationCode(String confirmationCode) {
         this.confirmationCode = confirmationCode;
     }
 
-    public String getStatusCode()
-    {
+    public String getStatusCode() {
         return statusCode;
     }
 
-    public void setStatusCode(String statusCode)
-    {
+    public void setStatusCode(String statusCode) {
         this.statusCode = statusCode;
     }
 
-    public TextType getTextType()
-    {
+    public TextType getTextType() {
         return textType;
     }
 
-    public int getTextTypeAsNumber()
-    {
+    public int getTextTypeAsNumber() {
         return textType.ordinal();
     }
 
-    public void setTextType(TextType textType)
-    {
+    public void setTextType(TextType textType) {
         this.textType = textType;
     }
 
-    public boolean isSuccess()
-    {
+    public boolean isSuccess() {
         return success;
     }
 
-    public void setSuccess(boolean success)
-    {
+    public void setSuccess(boolean success) {
         this.success = success;
     }
 }

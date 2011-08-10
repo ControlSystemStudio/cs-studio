@@ -70,14 +70,18 @@ public class AlarmbearbeitergruppenEditor extends
 			implements IStructuredContentProvider {
 		private List<User2GroupBean> entries = new ArrayList<User2GroupBean>();
 
-		public void dispose() {
+		@Override
+        public void dispose() {
+		    // Nothing to do
 		}
 
-		public String getDisplayName() {
+		@Override
+        public String getDisplayName() {
 			return ""; //$NON-NLS-1$
 		}
 
-		public Object[] getElements(final Object inputElement) {
+		@Override
+        public Object[] getElements(final Object inputElement) {
 			return this.entries.toArray();
 		}
 
@@ -85,11 +89,13 @@ public class AlarmbearbeitergruppenEditor extends
 			return this.entries;
 		}
 
-		public int getID() {
+		@Override
+        public int getID() {
 			return 0;
 		}
 
-		public void inputChanged(final Viewer viewer, final Object oldInput,
+		@Override
+        public void inputChanged(final Viewer viewer, final Object oldInput,
 				final Object newInput) {
 			final List<User2GroupBean> oldList = (List<User2GroupBean>) oldInput;
 			final List<User2GroupBean> newList = (List<User2GroupBean>) newInput;
@@ -113,7 +119,8 @@ public class AlarmbearbeitergruppenEditor extends
 			this.pcs.firePropertyChange("entries", oldValue, entries); //$NON-NLS-1$
 		}
 
-		public void setID(final int id) {
+		@Override
+        public void setID(final int id) {
 		}
 
 		@Override
@@ -400,10 +407,14 @@ public class AlarmbearbeitergruppenEditor extends
 							}
 						}
 
-						public void mouseDown(final MouseEvent e) {
+						@Override
+                        public void mouseDown(final MouseEvent e) {
+						    // Nothing to do
 						}
 
-						public void mouseUp(final MouseEvent e) {
+						@Override
+                        public void mouseUp(final MouseEvent e) {
+						 // Nothing to do
 						}
 					});
 
@@ -433,10 +444,13 @@ public class AlarmbearbeitergruppenEditor extends
 								Messages.AlarmbearbeitergruppenEditor_move_to_top, true, 1);
 						upup.addMouseListener(new MouseListener() {
 
-							public void mouseDoubleClick(final MouseEvent e) {
+							@Override
+                            public void mouseDoubleClick(final MouseEvent e) {
+							 // Nothing to do
 							}
 
-							public void mouseDown(final MouseEvent e) {
+							@Override
+                            public void mouseDown(final MouseEvent e) {
 								final List<User2GroupBean> users = AlarmbearbeitergruppenEditor.this
 										.getWorkingCopyOfEditorInput()
 										.getUsers();
@@ -453,17 +467,22 @@ public class AlarmbearbeitergruppenEditor extends
 										.refresh();
 							}
 
-							public void mouseUp(final MouseEvent e) {
+							@Override
+                            public void mouseUp(final MouseEvent e) {
+							 // Nothing to do
 							}
 						});
 						final Button up = this.createButtonEntry(buttonsComp,
 								Messages.AlarmbearbeitergruppenEditor_move_up, true, 1);
 						up.addMouseListener(new MouseListener() {
 
-							public void mouseDoubleClick(final MouseEvent e) {
+							@Override
+                            public void mouseDoubleClick(final MouseEvent e) {
+							 // Nothing to do
 							}
 
-							public void mouseDown(final MouseEvent e) {
+							@Override
+                            public void mouseDown(final MouseEvent e) {
 								final List<User2GroupBean> users = AlarmbearbeitergruppenEditor.this
 										.getWorkingCopyOfEditorInput()
 										.getUsers();
@@ -485,7 +504,9 @@ public class AlarmbearbeitergruppenEditor extends
 										.refresh();
 							}
 
-							public void mouseUp(final MouseEvent e) {
+							@Override
+                            public void mouseUp(final MouseEvent e) {
+							 // Nothing to do
 							}
 
 						});
@@ -519,7 +540,9 @@ public class AlarmbearbeitergruppenEditor extends
 										.refresh();
 							}
 
-							public void mouseUp(final MouseEvent e) {
+							@Override
+                            public void mouseUp(final MouseEvent e) {
+							 // Nothing to do
 							}
 
 						});
@@ -527,10 +550,13 @@ public class AlarmbearbeitergruppenEditor extends
 								buttonsComp, Messages.AlarmbearbeitergruppenEditor_move_to_bottom, true, 1);
 						downdown.addMouseListener(new MouseListener() {
 
-							public void mouseDoubleClick(final MouseEvent e) {
+							@Override
+                            public void mouseDoubleClick(final MouseEvent e) {
+							 // Nothing to do
 							}
 
-							public void mouseDown(final MouseEvent e) {
+							@Override
+                            public void mouseDown(final MouseEvent e) {
 								final List<User2GroupBean> users = AlarmbearbeitergruppenEditor.this
 										.getWorkingCopyOfEditorInput()
 										.getUsers();
@@ -548,7 +574,9 @@ public class AlarmbearbeitergruppenEditor extends
 
 							}
 
-							public void mouseUp(final MouseEvent e) {
+							@Override
+                            public void mouseUp(final MouseEvent e) {
+							 // Nothing to do
 							}
 
 						});

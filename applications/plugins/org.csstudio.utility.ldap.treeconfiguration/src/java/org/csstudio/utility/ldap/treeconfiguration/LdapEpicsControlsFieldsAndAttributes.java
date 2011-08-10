@@ -29,8 +29,7 @@ package org.csstudio.utility.ldap.treeconfiguration;
  * @version $Revision: 1.7 $
  * @since 13.09.2010
  */
-public class LdapEpicsControlsFieldsAndAttributes {
-
+public final class LdapEpicsControlsFieldsAndAttributes {
 
     public static final String ECOM_EPICS_IOC_FIELD_VALUE = "EPICS-IOC";
 

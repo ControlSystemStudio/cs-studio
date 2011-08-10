@@ -1,3 +1,4 @@
+
 /* 
  * Copyright (c) 2008 Stiftung Deutsches Elektronen-Synchrotron, 
  * Member of the Helmholtz Association, (DESY), HAMBURG, GERMANY.
@@ -19,33 +20,36 @@
  * PROJECT IN THE FILE LICENSE.HTML. IF THE LICENSE IS NOT INCLUDED YOU MAY FIND A COPY 
  * AT HTTP://WWW.DESY.DE/LEGAL/LICENSE.HTM
  */
- package org.csstudio.ams;
 
-public class AMSException extends Exception
-{
-	private static final long serialVersionUID = -7794582610669246138L;
+package org.csstudio.ams;
+
+public class AMSException extends Exception {
+	
+    private static final long serialVersionUID = -7794582610669246138L;
 	
 	/**
 	 * Constructor of AMSException.
 	 * 
 	 * @param arg	String
 	 */
-	public AMSException(String arg)
-	{super(arg);}
+	public AMSException(String arg) {
+	    super(arg);
+	}
 	
 	/**
 	 * Constructor of AMSException.
 	 * 
 	 * @param arg	Throwable
 	 */
-	public AMSException(Throwable arg)
-	{super(arg);}
+	public AMSException(Throwable arg) {
+	    super(arg);
+	}
 
 	
 	/**
 	 * Constructor of AMSException with custom message and cause-exception.
 	 */
-	public AMSException(String msg, Throwable arg)
-	{super(msg, arg);}
-
+	public AMSException(String msg, Throwable arg) {
+	    super(msg, arg);
+	}
 }

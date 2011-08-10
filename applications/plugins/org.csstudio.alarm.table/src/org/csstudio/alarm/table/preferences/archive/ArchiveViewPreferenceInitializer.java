@@ -59,7 +59,7 @@ public class ArchiveViewPreferenceInitializer extends AbstractPreferenceInitiali
         store.setDefault(ArchiveViewPreferenceConstants.DATE_FORMAT,"yyyy-MM-dd HH:mm:ss.SSS"); //$NON-NLS-1$
 		store.setDefault(ArchiveViewPreferenceConstants.MAX_ANSWER_SIZE,"500"); //$NON-NLS-1$
 		store.setDefault(ArchiveViewPreferenceConstants.MAX_ANSWER_SIZE_EXPORT,"5000"); //$NON-NLS-1$
-		store.setDefault(ArchiveViewPreferenceConstants.STORED_FILTERS,"5000"); //$NON-NLS-1$
+		store.setDefault(ArchiveViewPreferenceConstants.STORED_FILTERS,""); //$NON-NLS-1$
 	}
 
 }

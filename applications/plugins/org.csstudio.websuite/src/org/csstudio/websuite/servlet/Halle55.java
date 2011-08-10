@@ -1,12 +1,18 @@
 
 package org.csstudio.websuite.servlet;
 
-import java.io.*;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.PrintWriter;
 import java.net.InetAddress;
-import javax.servlet.*;
-import javax.servlet.http.*;
-import org.apache.log4j.Logger;
-import org.csstudio.platform.logging.CentralLogger;
+
+import javax.servlet.ServletConfig;
+import javax.servlet.ServletException;
+import javax.servlet.http.HttpServlet;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+
 import org.csstudio.websuite.WebSuiteActivator;
 import org.csstudio.websuite.internal.PreferenceConstants;
 import org.csstudio.websuite.utils.LocalProperty;
@@ -15,6 +21,8 @@ import org.csstudio.websuite.utils.ValueReader;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.Platform;
 import org.eclipse.core.runtime.preferences.IPreferencesService;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * The eLogbook is storing logbook entries as well as images from screen dumps
@@ -51,8 +59,8 @@ public class Halle55 extends HttpServlet {
     private ValueReader valueReader;
 
     /** Private logger for this class */
-    private Logger logger;
-
+    private static final Logger LOG = LoggerFactory.getLogger(Halle55.class);
+    
     /** The URL of the EPICS web application */
     private String epicsWebApp;
     
@@ -76,7 +84,6 @@ public class Halle55 extends HttpServlet {
         
         super.init(config);
         
-        logger = CentralLogger.getInstance().getLogger(this);
         valueReader = new ValueReader();
         
         FILE_SEPARATOR = System.getProperty("file.separator");
@@ -208,7 +215,7 @@ public class Halle55 extends HttpServlet {
             InetAddress localhost = InetAddress.getLocalHost();
             localHostName = localhost.getHostName();
         } catch (Exception e) {
-            logger.error("Error reading local host name: " + e.getMessage());
+            LOG.error("Error reading local host name: ", e);
             localHostName = "Could not be defined";
         }
         
@@ -334,10 +341,10 @@ public class Halle55 extends HttpServlet {
             dataFile.write(list.getBytes());
             file = true;
         } catch(FileNotFoundException fnfe) {
-            logger.warn("Cannot write to the data file: " + fnfe.getMessage());
+            LOG.warn("Cannot write to the data file: ", fnfe);
             file = false;
         } catch(IOException ioe) {
-            logger.warn("Cannot write to the data file: " + ioe.getMessage());
+            LOG.warn("Cannot write to the data file: ", ioe);
             file = false;
         } finally {
             if(dataFile != null) {

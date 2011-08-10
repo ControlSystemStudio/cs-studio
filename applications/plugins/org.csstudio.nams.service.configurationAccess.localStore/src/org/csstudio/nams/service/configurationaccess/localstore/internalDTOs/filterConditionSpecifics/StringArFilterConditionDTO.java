@@ -1,3 +1,4 @@
+
 package org.csstudio.nams.service.configurationaccess.localstore.internalDTOs.filterConditionSpecifics;
 
 import java.util.ArrayList;
@@ -48,7 +49,8 @@ public class StringArFilterConditionDTO extends FilterConditionDTO implements
 	@Column(name = "sOperator")
 	private short operator;
 
-	public void deleteJoinLinkData(final Mapper mapper) throws Throwable {
+	@Override
+    public void deleteJoinLinkData(final Mapper mapper) throws Throwable {
 		List<StrgArFiltCondCompValDTO> allCompList = mapper
 				.loadAll(StrgArFiltCondCompValDTO.class,
 						false);
@@ -127,7 +129,8 @@ public class StringArFilterConditionDTO extends FilterConditionDTO implements
 		return result;
 	}
 
-	public void loadJoinData(final Mapper mapper) throws Throwable {
+	@Override
+    public void loadJoinData(final Mapper mapper) throws Throwable {
 		final List<StrgArFiltCondCompValDTO> alleVergleichswerte = mapper
 				.loadAll(StrgArFiltCondCompValDTO.class, true);
 
@@ -177,7 +180,8 @@ public class StringArFilterConditionDTO extends FilterConditionDTO implements
 		this.operator = op.databaseValue();
 	}
 
-	public void storeJoinLinkData(final Mapper mapper) throws Throwable {
+	@Override
+    public void storeJoinLinkData(final Mapper mapper) throws Throwable {
 		List<StrgArFiltCondCompValDTO> compList = new ArrayList<StrgArFiltCondCompValDTO>(
 				this.compareValues.size());
 

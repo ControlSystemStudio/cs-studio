@@ -21,7 +21,9 @@ package org.csstudio.sds.behavior.desy;
 import org.csstudio.sds.components.model.SimpleSliderModel;
 import org.csstudio.sds.cursorservice.CursorService;
 import org.csstudio.sds.model.AbstractWidgetModel;
+import org.epics.css.dal.context.ConnectionState;
 import org.epics.css.dal.simple.AnyData;
+import org.epics.css.dal.simple.AnyDataChannel;
 import org.epics.css.dal.simple.MetaData;
 
 /**
@@ -35,6 +37,8 @@ import org.epics.css.dal.simple.MetaData;
  */
 public class SimpleSliderConnectionBehavior extends AbstractDesyConnectionBehavior<SimpleSliderModel> {
 
+    private String _normalForegroundColor;
+
     /**
      * Constructor.
      */
@@ -43,6 +47,15 @@ public class SimpleSliderConnectionBehavior extends AbstractDesyConnectionBehavi
         addInvisiblePropertyId(SimpleSliderModel.PROP_MAX);
         addInvisiblePropertyId(SimpleSliderModel.PROP_MIN);
     }
+    
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    protected void doInitialize(SimpleSliderModel widget) {
+//        super.doInitialize(widget);
+        _normalForegroundColor = widget.getColor(AbstractWidgetModel.PROP_COLOR_FOREGROUND);
+    }
 
     @Override
     protected void doProcessValueChange(final SimpleSliderModel model, final AnyData anyData) {
@@ -50,6 +63,22 @@ public class SimpleSliderConnectionBehavior extends AbstractDesyConnectionBehavi
         // .. update slider value
         model.setPropertyValue(SimpleSliderModel.PROP_VALUE, anyData.doubleValue());
     }
+    
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    protected void doProcessConnectionStateChange(SimpleSliderModel widget,
+                                                  AnyDataChannel anyDataChannel) {
+        ConnectionState connectionState = anyDataChannel.getProperty().getConnectionState();
+        if ( isConnected(anyDataChannel)) {
+            widget.setPropertyValue(AbstractWidgetModel.PROP_COLOR_FOREGROUND, _normalForegroundColor);
+        } else {
+            widget.setPropertyValue(AbstractWidgetModel.PROP_COLOR_FOREGROUND,
+                                    determineBackgroundColor(connectionState));
+        }
+    }
+    
 
     @Override
     protected void doProcessMetaDataChange(final SimpleSliderModel widget, final MetaData meta) {

@@ -3,7 +3,8 @@ package org.csstudio.alarm.dbaccess.archivedb;
 import java.util.ArrayList;
 import java.util.GregorianCalendar;
 
-import org.csstudio.platform.logging.CentralLogger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * Filter for JMSMessages in DB archive. The filter is set by the user in
@@ -13,6 +14,8 @@ import org.csstudio.platform.logging.CentralLogger;
  *
  */
 public class Filter {
+
+    private static final Logger LOG = LoggerFactory.getLogger(Filter.class);
 
     /**
      * List of filter items. An item is e.g. 'SEVERITY == MAJOR' and the
@@ -125,7 +128,7 @@ public class Filter {
         ArrayList<FilterItem> filterSettingsAndAssociated = new ArrayList<FilterItem>();
         // if filter is null (user searches only for time period) set one
         // empty list of filter settings.
-        if ((_filterItems == null) || (_filterItems.size() == 0)) {
+        if (_filterItems == null || _filterItems.size() == 0) {
             filterSettingsAndAssociated = new ArrayList<FilterItem>();
             separatedFilterSettings.add(filterSettingsAndAssociated);
             return separatedFilterSettings;
@@ -137,8 +140,7 @@ public class Filter {
                     association = setting.getRelation();
                     filterSettingsAndAssociated.add(setting);
                 } else {
-                    CentralLogger.getInstance().error(this,
-                            "invalid filter configuration");
+                    LOG.error("invalid filter configuration");
                 }
                 continue;
             }
@@ -170,7 +172,7 @@ public class Filter {
     public Filter copy() {
         GregorianCalendar newFrom = null;
         GregorianCalendar newTo = null;
-        if ((_from != null) && (_to != null)) {
+        if (_from != null && _to != null) {
             newFrom = (GregorianCalendar) _from.clone();
             newTo = (GregorianCalendar) _to.clone();
         }
@@ -208,8 +210,8 @@ public class Filter {
      * Without time settings
 	 */
     public boolean compareWithoutTime(final Filter filter) {
-        if ((_filterName.equals(filter.getName()) == false) ||
-            (_filterItems.size() != filter.getFilterItems().size())) {
+        if (_filterName.equals(filter.getName()) == false ||
+            _filterItems.size() != filter.getFilterItems().size()) {
             return false;
         }
         for (final FilterItem localItem : _filterItems) {

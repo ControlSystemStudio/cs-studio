@@ -1,3 +1,4 @@
+
 package org.csstudio.nams.service.configurationaccess.localstore.internalDTOs;
 
 @Deprecated
@@ -7,14 +8,14 @@ public final class TopicConfigurationId {
 		return new TopicConfigurationId(id);
 	}
 
-	private final int id;
+	private final int _id;
 
 	private TopicConfigurationId(final int id) {
-		this.id = id;
+		this._id = id;
 		// TODO Auto-generated constructor stub
 	}
 
 	public int asDatabaseId() {
-		return this.id;
+		return this._id;
 	}
 }

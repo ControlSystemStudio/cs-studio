@@ -40,7 +40,7 @@ import org.eclipse.jface.preference.IPreferenceStore;
 
 public class JMSConnectorWork extends Thread implements AmsConstants
 {
-	private static final int TIMEOUT_AFTER_JMS_INIT = 100;
+	private static final int TIMEOUT_AFTER_JMS_INIT = 1;
 
 	private static final String AMS_SUBSCRIBER_JMS_ID = "amsSubscriberJms";
 
@@ -51,9 +51,8 @@ public class JMSConnectorWork extends Thread implements AmsConstants
     private boolean bStop = false;
     private boolean bStoppedClean = false;
 
-    public JMSConnectorWork(JMSConnectorStart jcs)
-    {
-		this.jcs = jcs;
+    public JMSConnectorWork(JMSConnectorStart app) {
+		this.jcs = app;
 	}
 
     /**
@@ -156,7 +155,8 @@ public class JMSConnectorWork extends Thread implements AmsConstants
 		return false;
 	}
 
-	public void run() {
+	@Override
+    public void run() {
 		boolean isJMSInitialized = false;
 		int iErr = JMSConnectorStart.STAT_OK;
 		Log.log(this, Log.INFO, "start jms connector work");

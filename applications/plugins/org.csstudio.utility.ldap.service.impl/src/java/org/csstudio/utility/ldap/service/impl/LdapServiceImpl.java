@@ -66,7 +66,6 @@ import org.csstudio.utility.treemodel.CreateContentModelException;
 import org.csstudio.utility.treemodel.INodeComponent;
 import org.csstudio.utility.treemodel.ISubtreeNodeComponent;
 import org.csstudio.utility.treemodel.ITreeNodeConfiguration;
-import org.eclipse.core.runtime.jobs.Job;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -82,7 +81,7 @@ import org.slf4j.LoggerFactory;
 public final class LdapServiceImpl implements ILdapService {
 
     static final Logger LOG = LoggerFactory.getLogger(LdapServiceImpl.class);
-    
+
     /**
      * DirContext Holder to prevent accidental direct access to DirContext field.
      *
@@ -160,7 +159,7 @@ public final class LdapServiceImpl implements ILdapService {
             setScope(params.getScope()).
             setJobCompletedCallBack(callBack).
             build();
-        
+
         return ldapr;
     }
 
@@ -257,7 +256,7 @@ public final class LdapServiceImpl implements ILdapService {
      * {@inheritDoc}}
      * @throws InvalidNameException
      * @throws CreateContentModelException
-     * @throws LdapServiceException 
+     * @throws LdapServiceException
      */
     @Override
     public <T extends Enum<T> & ITreeNodeConfiguration<T>>
@@ -273,7 +272,7 @@ public final class LdapServiceImpl implements ILdapService {
                                               SearchControls.SUBTREE_SCOPE);
 
         if (result == null || result.getAnswerSet().isEmpty()) {
-            LOG.debug("LDAP query returned empty or null result for component {}\nand filter {}", 
+            LOG.debug("LDAP query returned empty or null result for component {}\nand filter {}",
                       component.toString(), any(ATTR_FIELD_OBJECT_CLASS));
             return false;
         }
@@ -284,7 +283,8 @@ public final class LdapServiceImpl implements ILdapService {
         final ContentModel<T> model = builder.getModel();
 
         // retrieve component from model
-        INodeComponent<T> childByLdapName = model.getChildByLdapName(component.toString());
+        final INodeComponent<T> childByLdapName =
+            model.getChildByLdapName(component.toString());
         if (childByLdapName == null) {
             LOG.debug("Model does not contain entry for component {}", component.toString());
             return false;
@@ -406,23 +406,23 @@ public final class LdapServiceImpl implements ILdapService {
         }
         try {
             return context.getNameParser(new CompositeName());
-        } catch (NamingException e) {
+        } catch (final NamingException e) {
             throw new LdapServiceException("Parser couldn't be created from context.", e);
         }
     }
 
     @Override
     @Nonnull
-    public <T extends Enum<T> & ITreeNodeConfiguration<T>> 
+    public <T extends Enum<T> & ITreeNodeConfiguration<T>>
     ILdapContentModelBuilder<T> getLdapContentModelBuilder(@Nonnull final T objectClassRoot,
                                                            @Nonnull final ILdapSearchResult searchResult) throws LdapServiceException {
-        
+
         return new LdapContentModelBuilder<T>(objectClassRoot, searchResult, getLdapNameParser());
     }
-    
+
     @Override
     @Nonnull
-    public <T extends Enum<T> & ITreeNodeConfiguration<T>> 
+    public <T extends Enum<T> & ITreeNodeConfiguration<T>>
     ILdapContentModelBuilder<T> getLdapContentModelBuilder(@Nonnull final ContentModel<T> model) throws LdapServiceException {
         return new LdapContentModelBuilder<T>(model, getLdapNameParser());
     }
@@ -432,10 +432,10 @@ public final class LdapServiceImpl implements ILdapService {
      */
     @Override
     @Nonnull
-    public <T extends Enum<T> & ITreeNodeConfiguration<T>> 
-    ContentModel<T> getLdapContentModelForSearchResult(@Nonnull final T configurationRoot, 
+    public <T extends Enum<T> & ITreeNodeConfiguration<T>>
+    ContentModel<T> getLdapContentModelForSearchResult(@Nonnull final T configurationRoot,
                                                        @Nonnull final ILdapSearchResult result) throws CreateContentModelException, LdapServiceException {
-        LdapContentModelBuilder<T> builder = new LdapContentModelBuilder<T>(configurationRoot, result, getLdapNameParser());
+        final LdapContentModelBuilder<T> builder = new LdapContentModelBuilder<T>(configurationRoot, result, getLdapNameParser());
         builder.build();
         return builder.getModel();
     }
@@ -450,7 +450,7 @@ public final class LdapServiceImpl implements ILdapService {
         final String nameInNamespace = row.getNameInNamespace();
         try {
             return (LdapName) parser.parse(nameInNamespace);
-        } catch (NamingException e) {
+        } catch (final NamingException e) {
             throw new LdapServiceException(nameInNamespace + "could not be parsed.", e);
         }
     }

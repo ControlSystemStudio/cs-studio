@@ -37,29 +37,29 @@ public class PrmTextItem {
      * The text description of the index.
      */
     private final String _description;
-
+    
     private final Integer _index;
     
-    public PrmTextItem(@Nonnull String description, @Nonnull Integer index){
+    public PrmTextItem(@Nonnull final String description, @Nonnull final Integer index){
         _description = description;
         _index = index;
     }
     
-    @Nonnull 
-    public final String getText() {
-        return _description;
-    }
-    
-    @Nonnull 
+    @Nonnull
     public final Integer getIndex() {
         return _index;
     }
     
+    @Nonnull
+    public final String getText() {
+        return _description;
+    }
+    
     @Override
-    @Nonnull 
+    @Nonnull
     public String toString() {
         return getIndex()+" : "+getText();
     }
-
+    
     
 }

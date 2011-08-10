@@ -63,8 +63,9 @@ public class MySQLArchiveServiceImplModule extends AbstractModule {
      */
     @Override
     protected void configure() {
-        bind(ArchiveConnectionHandler.class).toInstance(ArchiveConnectionHandler.INSTANCE);
-        bind(PersistEngineDataManager.class).toInstance(PersistEngineDataManager.INSTANCE);
+        bind(MySQLArchivePreferenceService.class).in(Scopes.SINGLETON);
+        bind(ArchiveConnectionHandler.class).in(Scopes.SINGLETON);
+        bind(PersistEngineDataManager.class).in(Scopes.SINGLETON);
 
         bind(IArchiveEngineStatusDao.class).to(ArchiveEngineStatusDaoImpl.class).in(Scopes.SINGLETON);
         bind(IArchiveChannelDao.class).to(ArchiveChannelDaoImpl.class).in(Scopes.SINGLETON);

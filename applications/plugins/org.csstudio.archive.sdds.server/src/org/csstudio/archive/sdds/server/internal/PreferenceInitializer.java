@@ -24,7 +24,7 @@
 
 package org.csstudio.archive.sdds.server.internal;
 
-import org.csstudio.archive.sdds.server.Activator;
+import org.csstudio.archive.sdds.server.SddsServerActivator;
 import org.eclipse.core.runtime.preferences.AbstractPreferenceInitializer;
 import org.eclipse.core.runtime.preferences.DefaultScope;
 import org.eclipse.core.runtime.preferences.IEclipsePreferences;
@@ -41,7 +41,7 @@ public class PreferenceInitializer extends AbstractPreferenceInitializer {
     @Override
     public void initializeDefaultPreferences() {
         
-    	IEclipsePreferences node = new DefaultScope().getNode(Activator.PLUGIN_ID);
+    	IEclipsePreferences node = new DefaultScope().getNode(SddsServerActivator.PLUGIN_ID);
 
         // Use JMX instead of XMPP to stop the server
         node.put(ServerPreferenceKey.P_USE_JMX, "false");

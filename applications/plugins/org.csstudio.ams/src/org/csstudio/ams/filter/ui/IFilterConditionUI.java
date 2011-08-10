@@ -1,3 +1,4 @@
+
 /* 
  * Copyright (c) 2008 Stiftung Deutsches Elektronen-Synchrotron, 
  * Member of the Helmholtz Association, (DESY), HAMBURG, GERMANY.
@@ -19,18 +20,20 @@
  * PROJECT IN THE FILE LICENSE.HTML. IF THE LICENSE IS NOT INCLUDED YOU MAY FIND A COPY 
  * AT HTTP://WWW.DESY.DE/LEGAL/LICENSE.HTM
  */
- package org.csstudio.ams.filter.ui;
+
+package org.csstudio.ams.filter.ui;
 
 import java.sql.Connection;
 import org.csstudio.ams.AMSException;
 import org.eclipse.swt.widgets.Composite;
 
 public interface IFilterConditionUI {
-	/**
+	
+    /**
 	 * Returns the name of this filter condition to be shown in the filter
 	 * condition combo box.
 	 * 
-	 * @ensure §result != null
+	 * @ensure result != null
 	 */
 	String getDisplayName();
 

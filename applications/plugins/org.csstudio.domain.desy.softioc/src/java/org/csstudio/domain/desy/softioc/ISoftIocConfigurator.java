@@ -27,8 +27,8 @@ import java.util.Set;
 import javax.annotation.Nonnull;
 
 /**
- * TODO (bknerr) : 
- * 
+ * TODO (bknerr) :
+ *
  * @author bknerr
  * @since 27.05.2011
  */
@@ -39,10 +39,11 @@ public interface ISoftIocConfigurator {
 
     @Nonnull
     File getSoftIocCmdFile();
-    
+
     @Nonnull
     Set<File> getDbFileSet();
 
+    @Nonnull
     ISoftIocConfigurator with(@Nonnull File...dbFiles);
 
 }

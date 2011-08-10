@@ -26,6 +26,7 @@ import java.beans.IntrospectionException;
 import java.util.ArrayList;
 import java.util.EventListener;
 
+import org.csstudio.swt.widgets.figureparts.RapArrowButton;
 import org.csstudio.swt.widgets.introspection.DefaultWidgetIntrospector;
 import org.csstudio.swt.widgets.introspection.Introspectable;
 import org.eclipse.draw2d.ActionEvent;
@@ -130,7 +131,7 @@ public class ThumbWheelFigure extends Figure implements Introspectable{
 			setLayoutManager(layout);
 
 			label = new Label("0");
-			ArrowButton up = new ArrowButton(ArrowButton.NORTH);
+			ArrowButton up = new RapArrowButton(ArrowButton.NORTH);
 			up.setFiringMethod(ArrowButton.REPEAT_FIRING);
 			up.setPreferredSize(20, 20);
 			if (isDecimal) {
@@ -154,7 +155,7 @@ public class ThumbWheelFigure extends Figure implements Introspectable{
 			label.setPreferredSize(20, 10);
 			add(label);
 			setConstraint(label, BorderLayout.CENTER);
-			ArrowButton down = new ArrowButton(ArrowButton.SOUTH);
+			ArrowButton down = new RapArrowButton(ArrowButton.SOUTH);
 			down.setFiringMethod(ArrowButton.REPEAT_FIRING);
 			down.setPreferredSize(20, 20);
 			if (isDecimal) {

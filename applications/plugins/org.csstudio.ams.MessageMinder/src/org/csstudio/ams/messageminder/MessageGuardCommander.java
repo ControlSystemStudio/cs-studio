@@ -31,11 +31,9 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
-
 import javax.jms.JMSException;
 import javax.jms.MapMessage;
 import javax.jms.Message;
-
 import org.csstudio.ams.AmsActivator;
 import org.csstudio.ams.AmsConstants;
 import org.csstudio.ams.Log;
@@ -46,18 +44,18 @@ import org.csstudio.ams.internal.AmsPreferenceKey;
 import org.csstudio.ams.messageminder.preference.MessageMinderPreferenceKey;
 import org.csstudio.data.values.ITimestamp;
 import org.csstudio.data.values.TimestampFactory;
-import org.csstudio.platform.logging.CentralLogger;
 import org.csstudio.platform.statistic.Collector;
 import org.csstudio.platform.utility.jms.JmsRedundantProducer;
 import org.csstudio.platform.utility.jms.JmsRedundantProducer.ProducerId;
 import org.csstudio.platform.utility.jms.JmsRedundantReceiver;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
+import org.eclipse.core.runtime.Platform;
 import org.eclipse.core.runtime.Status;
 import org.eclipse.core.runtime.jobs.Job;
 import org.eclipse.core.runtime.preferences.DefaultScope;
 import org.eclipse.core.runtime.preferences.IEclipsePreferences;
-import org.eclipse.jface.preference.IPreferenceStore;
+import org.eclipse.core.runtime.preferences.IPreferencesService;
 
 //import org.osgi.service.prefs.BackingStoreException;
 
@@ -88,7 +86,7 @@ public class MessageGuardCommander extends Job {
                 }
                 catch(final InterruptedException e)
                 {
-                    CentralLogger.getInstance().warn(this, e);
+                    Log.log(this, Log.WARN, e);
                 }
 
                 Connection conDb = null;
@@ -98,7 +96,7 @@ public class MessageGuardCommander extends Job {
                     conDb = AmsConnectionFactory.getApplicationDB();
                     if (conDb == null)
                     {
-                        CentralLogger.getInstance().warn(this, "Could not init application database");
+                        Log.log(this, Log.WARN, "Could not init application database");
                     }
                     else
                     {
@@ -133,7 +131,7 @@ public class MessageGuardCommander extends Job {
                 }
                 catch(final SQLException e)
                 {
-                    CentralLogger.getInstance().warn(this,e);
+                    Log.log(this, Log.WARN,e);
                 }
                 finally
                 {
@@ -145,7 +143,7 @@ public class MessageGuardCommander extends Job {
                         }
                         catch(final SQLException e)
                         {
-                            CentralLogger.getInstance().warn(this,e);
+                            Log.log(this, Log.WARN,e);
                         }
                     }
                 }
@@ -244,16 +242,15 @@ public class MessageGuardCommander extends Job {
      *
      */
     private void connect() {
-        // IEclipsePreferences storeAct = new
-        // DefaultScope().getNode(Activator.PLUGIN_ID);
-        final IPreferenceStore storeAct = AmsActivator.getDefault().getPreferenceStore();
-
-        final boolean durable = Boolean.parseBoolean(storeAct
-                .getString(org.csstudio.ams.internal.AmsPreferenceKey.P_JMS_AMS_CREATE_DURABLE));
+        
+        final IPreferencesService storeAct = Platform.getPreferencesService();
+        final boolean durable = storeAct.getBoolean(AmsActivator.PLUGIN_ID,
+                                                   AmsPreferenceKey.P_JMS_AMS_CREATE_DURABLE,
+                                                   false, null);
 
         /**
-         * Nur fÃ¼r debug zwecke wird die P_JMS_AMS_PROVIDER_URL_2 geï¿½ndert. Der Code kann
-         * spï¿½ter wieder entfernt werden. TODO: delete debug code.
+         * Nur fuer debug zwecke wird die P_JMS_AMS_PROVIDER_URL_2 geaendert. Der Code kann
+         * spaeter wieder entfernt werden. TODO: delete debug code.
          *
          * storeAct.put(org.csstudio.ams.internal.SampleService. P_JMS_AMS_PROVIDER_URL_1,
          * "failover:(tcp://kryksrvjmsa.desy.de:50000)"); storeAct.put(org.csstudio
@@ -274,15 +271,15 @@ public class MessageGuardCommander extends Job {
         // storeAct.get(org.csstudio.ams.internal.SampleService.P_JMS_AMS_PROVIDER_URL_1,""),
         // storeAct.get(SampleService.P_JMS_AMS_PROVIDER_URL_2,""));
         _amsReceiver = new JmsRedundantReceiver("AmsMassageMinderWorkReceiverInternal", storeAct
-                .getString(AmsPreferenceKey.P_JMS_AMS_PROVIDER_URL_1), storeAct
-                .getString(AmsPreferenceKey.P_JMS_AMS_PROVIDER_URL_2));
+                .getString(AmsActivator.PLUGIN_ID, AmsPreferenceKey.P_JMS_AMS_PROVIDER_URL_1, "NONE", null), storeAct
+                .getString(AmsActivator.PLUGIN_ID, AmsPreferenceKey.P_JMS_AMS_PROVIDER_URL_2, "NONE", null));
         if (!_amsReceiver.isConnected()) {
             Log.log(this, Log.FATAL, "could not create amsReceiver");
         }
 
         final boolean result = _amsReceiver.createRedundantSubscriber("amsSubscriberMessageMinder",
-                storeAct.getString(AmsPreferenceKey.P_JMS_AMS_TOPIC_MESSAGEMINDER), storeAct
-                        .getString(AmsPreferenceKey.P_JMS_AMS_TSUB_MESSAGEMINDER), durable);
+                storeAct.getString(AmsActivator.PLUGIN_ID, AmsPreferenceKey.P_JMS_AMS_TOPIC_MESSAGEMINDER, "NONE", null), storeAct
+                        .getString(AmsActivator.PLUGIN_ID, AmsPreferenceKey.P_JMS_AMS_TSUB_MESSAGEMINDER, "NONE", null), durable);
 
         if (!result) {
             Log.log(this, Log.FATAL, "could not create amsSubscriberMessageMinder");
@@ -290,10 +287,10 @@ public class MessageGuardCommander extends Job {
 
         // --- JMS Producer Connect ---
         final String[] urls = new String[] { storeAct
-                .getString(AmsPreferenceKey.P_JMS_AMS_SENDER_PROVIDER_URL) };
+                .getString(AmsActivator.PLUGIN_ID, AmsPreferenceKey.P_JMS_AMS_SENDER_PROVIDER_URL, "NONE", null) };
         _amsProducer = new JmsRedundantProducer("AmsMassageMinderWorkProducerInternal", urls);
         // TODO: remove debug settings
-        _producerID = _amsProducer.createProducer(storeAct.getString(AmsPreferenceKey.P_JMS_AMS_TOPIC_DISTRIBUTOR));
+        _producerID = _amsProducer.createProducer(storeAct.getString(AmsActivator.PLUGIN_ID, AmsPreferenceKey.P_JMS_AMS_TOPIC_DISTRIBUTOR, "NONE", null));
 //        _producerID = _amsProducer.createProducer("MESSAGE_MINDER_TEST");
         // _producerID = _amsProducer.createProducer("T_HELGE_TEST_OUT");
 
@@ -320,7 +317,7 @@ public class MessageGuardCommander extends Job {
     private void patrol() {
         Message message = null;
         ITimestamp now;
-        CentralLogger.getInstance().info(this, "StartTime: " + TimestampFactory.now());
+        Log.log(this, Log.INFO, "StartTime: " + TimestampFactory.now());
         // int counter =0;
         while (_run) {
             now = TimestampFactory.now();
@@ -330,7 +327,7 @@ public class MessageGuardCommander extends Job {
                 // with
                 // acknowledging
                 // in openjms 3
-                // ADDED BY Markus MÃ¶ller, 2008-08-14
+                // ADDED BY Markus Moeller, 2008-08-14
                 this.acknowledge(message);
                 final ITimestamp before = TimestampFactory.now();
                 checkMsg(message, now);
@@ -367,7 +364,7 @@ public class MessageGuardCommander extends Job {
         if (message instanceof MapMessage) {
             final MapMessage mapMessage = (MapMessage) message;
             try {
-                CentralLogger.getInstance().info(this, "name: " + mapMessage.getString("NAME"));
+                Log.log(this, Log.INFO, "name: " + mapMessage.getString("NAME"));
                 final String command = mapMessage.getString(AMS_COMMAND_KEY_NAME);
                 if ((command != null)
                         && (command.equals(MSGVALUE_TCMD_RELOAD_CFG_START) || command
@@ -455,7 +452,7 @@ public class MessageGuardCommander extends Job {
                     }
                     catch(final SQLException e)
                     {
-                        CentralLogger.getInstance().warn(this, e);
+                        Log.log(this, Log.WARN, e);
                     }
                 }
             }
@@ -502,11 +499,11 @@ public class MessageGuardCommander extends Job {
      */
     private void sendCleanUpMessage(final MessageKey key, final ITimestamp lastDate,
             final int number) {
-        CentralLogger.getInstance().info(this, key.toString() + "\tlast unsend msg: " + lastDate.toString() + "\t and "
+        Log.log(this, Log.INFO, key.toString() + "\tlast unsend msg: " + lastDate.toString() + "\t and "
                 + number + " unsent msg.");
         // TODO write the sendCleanUpMessage.
-        // Soll eine Nachricht versenden die enthï¿½lt welche und wieviele
-        // nachrchten zurï¿½ck gehalten wurden.
+        // Soll eine Nachricht versenden die enthaelt welche und wieviele
+        // nachrchten zurueck gehalten wurden.
     }
 
     /**

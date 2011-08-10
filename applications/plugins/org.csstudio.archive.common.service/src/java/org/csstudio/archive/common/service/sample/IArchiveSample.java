@@ -36,7 +36,7 @@ import org.csstudio.domain.desy.system.ISystemVariable;
  * @param <V> the data value type
  * @param <T> the css value type with alarm information
  */
-public interface IArchiveSample<V, T extends ISystemVariable<V>> extends Serializable {
+public interface IArchiveSample<V extends Serializable, T extends ISystemVariable<V>> extends Serializable {
 
     @Nonnull
     ArchiveChannelId getChannelId();

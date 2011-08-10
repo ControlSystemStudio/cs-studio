@@ -28,10 +28,10 @@ import java.util.concurrent.ConcurrentLinkedQueue;
 import javax.jms.MapMessage;
 import javax.jms.Message;
 import javax.jms.MessageListener;
-import org.apache.log4j.Logger;
 import org.csstudio.alarm.jms2ora.VersionInfo;
-import org.csstudio.platform.logging.CentralLogger;
 import org.csstudio.platform.statistic.Collector;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * @author Markus Moeller
@@ -39,8 +39,8 @@ import org.csstudio.platform.statistic.Collector;
  */
 public class MessageAcceptor implements MessageListener {
     
-    /** The logger */
-    private Logger logger;
+    /** The class logger */
+    private static final Logger LOG = LoggerFactory.getLogger(MessageAcceptor.class);
 
     /** Class that collects statistic informations. Query it via XMPP. */
     private Collector receivedMessages;
@@ -56,8 +56,6 @@ public class MessageAcceptor implements MessageListener {
 
     public MessageAcceptor(String[] urlList, String[] topicList) {
         
-        // Create the logger
-        logger = CentralLogger.getInstance().getLogger(this);
         messages = new ConcurrentLinkedQueue<MapMessage>();
         receivers = new JmsMessageReceiver[urlList.length];
 
@@ -76,7 +74,7 @@ public class MessageAcceptor implements MessageListener {
                 receivers[i].startListener(this, VersionInfo.NAME + "@" + hostName + "_" + this.hashCode());
                 initialized = true;
             } catch(Exception e) {
-                logger.error("*** Exception *** : " + e.getMessage());
+                LOG.error("*** Exception *** : " + e.getMessage());
                 initialized = false;
             }
         }
@@ -86,7 +84,7 @@ public class MessageAcceptor implements MessageListener {
     
     public void closeAllReceivers() {
         
-        logger.info("closeAllReceivers(): Closing all receivers.");
+        LOG.info("closeAllReceivers(): Closing all receivers.");
         
         if(receivers != null) {
             for(int i = 0;i < receivers.length;i++) {
@@ -117,7 +115,7 @@ public class MessageAcceptor implements MessageListener {
             messages.add((MapMessage)message);
             receivedMessages.incrementValue();
         } else {
-            logger.info("Received a non MapMessage object. Discarded...");
+            LOG.info("Received a non MapMessage object. Discarded...");
         }        
     }
 }

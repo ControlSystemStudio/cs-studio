@@ -56,8 +56,8 @@ public class StatisticReceiver implements IResultReceiver {
 						(StatisticView) page.showView(StatisticView.VIEW_ID);
 					view.setMessage(stat, "", "", "");
 				} catch (PartInitException e) {
-					CentralLogger.getInstance().error(this,
-							"Failed to create Statistic View" , e);
+					CentralLogger.getInstance().error("Failed to create Statistic View",
+							e);
 					MessageDialog.openError(null, "Management Command",
 							"Failed to create Statistic View. "
 							+ e.getMessage());
