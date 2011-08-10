@@ -7,13 +7,10 @@
  ******************************************************************************/
 package org.csstudio.navigator.applaunch;
 
-import java.io.ByteArrayInputStream;
 import java.io.FileOutputStream;
 
-import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IResource;
 import org.eclipse.core.resources.ResourcesPlugin;
-import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.window.Window;
@@ -60,8 +57,7 @@ public class Editor implements IEditorLauncher
         }
         catch (Exception ex)
         {
-        	MessageDialog.openError(shell,
-        			Messages.Error,
+        	MessageDialog.openError(shell, Messages.Error,
         			NLS.bind(Messages.LaunchConfigUpdateErrorFmt,
         					ex.getMessage()));
         }
