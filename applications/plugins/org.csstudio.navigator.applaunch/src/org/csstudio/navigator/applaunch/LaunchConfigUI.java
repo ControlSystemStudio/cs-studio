@@ -30,6 +30,7 @@ public class LaunchConfigUI
 	final private static String[] icon_names = new String[]
 	{
 		"run",
+		"text", 
 		"console", 
 		"edit", 
 		"work", 
