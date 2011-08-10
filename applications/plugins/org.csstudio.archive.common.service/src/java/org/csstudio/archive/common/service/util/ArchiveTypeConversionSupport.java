@@ -138,8 +138,7 @@ public abstract class ArchiveTypeConversionSupport<T extends Serializable> exten
         } catch (final IOException e) {
             throw new TypeSupportException("To byte array conversion failed on serialisation.", e);
         }
-        final byte[] bytes = bos.toByteArray();
-        return bytes;
+        return bos.toByteArray();
     }
 
     @SuppressWarnings("unchecked")
@@ -263,6 +262,18 @@ public abstract class ArchiveTypeConversionSupport<T extends Serializable> exten
         return support.convertFromDouble(value);
     }
 
+    @Nonnull
+    public static Boolean isDataTypeSerializableCollection(@Nonnull final String dataType) throws TypeSupportException {
+        final Class<?> typeClass =
+            BaseTypeConversionSupport.createBaseTypeClassFromString(dataType,
+                                                                    ADDITIONAL_TYPE_PACKAGES);
+        if (typeClass == null) {
+            throw new TypeSupportException("Class object for data type " + dataType +
+                                           " could not be loaded from packages " +
+                                           Joiner.on(", ").join(ADDITIONAL_TYPE_PACKAGES), null);
+        }
+        return Collection.class.isAssignableFrom(typeClass) && Serializable.class.isAssignableFrom(typeClass);
+    }
 
     /**
      * Returns whether the given data type as contained in the archive db is optimizable by averaging.

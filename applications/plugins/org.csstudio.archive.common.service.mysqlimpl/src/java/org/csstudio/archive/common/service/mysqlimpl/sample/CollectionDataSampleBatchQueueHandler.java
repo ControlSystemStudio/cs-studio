@@ -24,7 +24,6 @@ package org.csstudio.archive.common.service.mysqlimpl.sample;
 import static org.csstudio.archive.common.service.mysqlimpl.sample.ArchiveSampleDaoImpl.COLUMN_CHANNEL_ID;
 import static org.csstudio.archive.common.service.mysqlimpl.sample.ArchiveSampleDaoImpl.COLUMN_TIME;
 import static org.csstudio.archive.common.service.mysqlimpl.sample.ArchiveSampleDaoImpl.COLUMN_VALUE;
-import static org.csstudio.archive.common.service.mysqlimpl.sample.ArchiveSampleDaoImpl.TAB_SAMPLE;
 
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
@@ -37,7 +36,7 @@ import javax.annotation.Nonnull;
 
 import org.csstudio.archive.common.service.mysqlimpl.batch.BatchQueueHandlerSupport;
 import org.csstudio.archive.common.service.mysqlimpl.dao.ArchiveDaoException;
-import org.csstudio.archive.common.service.sample.ArchiveSample;
+import org.csstudio.archive.common.service.sample.ArchiveMultiScalarSample;
 import org.csstudio.archive.common.service.util.ArchiveTypeConversionSupport;
 import org.csstudio.domain.desy.typesupport.TypeSupportException;
 import org.slf4j.Logger;
@@ -48,48 +47,43 @@ import com.google.common.base.Joiner;
 import com.google.common.collect.Collections2;
 
 /**
- * DBO specific batch strategy for high write throughput.
- *
- * Remember that the values held in a {@link ArchiveSample} should be Serializable!
+ * TODO (bknerr) :
  *
  * @author bknerr
- * @since 20.07.2011
+ * @since 10.08.2011
  */
 @SuppressWarnings("rawtypes")
-public class ArchiveSampleBatchQueueHandler extends BatchQueueHandlerSupport<ArchiveSample> {
+public class CollectionDataSampleBatchQueueHandler extends BatchQueueHandlerSupport<ArchiveMultiScalarSample> {
 
-    static final Logger LOG = LoggerFactory.getLogger(ArchiveSampleBatchQueueHandler.class);
+    public static final String TAB_SAMPLE_BLOB = "sample_blob";
+
+    static final Logger LOG = LoggerFactory.getLogger(CollectionDataSampleBatchQueueHandler.class);
 
     private static final String VAL_WILDCARDS = "(?, ?, ?)";
 
     /**
      * Constructor.
      */
-    public ArchiveSampleBatchQueueHandler(@Nonnull final String databaseName) {
-        super(ArchiveSample.class, databaseName, new LinkedBlockingQueue<ArchiveSample>());    }
-
-    @Override
-    @Nonnull
-    protected String composeSqlString() {
-        final String sql =
-            "INSERT INTO " + getDatabase() + "." + TAB_SAMPLE + " " +
-            "(" + Joiner.on(",").join(COLUMN_CHANNEL_ID, COLUMN_TIME, COLUMN_VALUE)+ ") " +
-            "VALUES " + VAL_WILDCARDS;
-        return sql;
+    public CollectionDataSampleBatchQueueHandler(@Nonnull final String databaseName) {
+        super(ArchiveMultiScalarSample.class, databaseName, new LinkedBlockingQueue<ArchiveMultiScalarSample>());
     }
+
     /**
      * {@inheritDoc}
      */
     @Override
-    @Nonnull
-    public void fillStatement(@Nonnull final PreparedStatement stmt,
-                              @Nonnull final ArchiveSample type) throws SQLException, ArchiveDaoException {
-        stmt.setInt(1, type.getChannelId().intValue());
-        stmt.setLong(2, type.getSystemVariable().getTimestamp().getNanos());
+    protected void fillStatement(@Nonnull final PreparedStatement stmt,
+                                 @Nonnull final ArchiveMultiScalarSample element) throws ArchiveDaoException,
+                                                                                         SQLException {
+        stmt.setInt(1, element.getChannelId().intValue());
+        stmt.setLong(2, element.getSystemVariable().getTimestamp().getNanos());
+
         try {
-            stmt.setString(3, ArchiveTypeConversionSupport.toArchiveString(type.getValue()));
+            final byte[] byteArray = ArchiveTypeConversionSupport.toByteArray(element.getValue());
+            stmt.setBytes(3, byteArray);
         } catch (final TypeSupportException e) {
-            throw new ArchiveDaoException("No type support found for " + type.getValue().getClass().getName(), e);
+            throw new ArchiveDaoException("Archive type support for byte array conversion failed for " +
+                                          element.getValue().getClass().getName(), e);
         }
     }
 
@@ -98,15 +92,28 @@ public class ArchiveSampleBatchQueueHandler extends BatchQueueHandlerSupport<Arc
      */
     @Override
     @Nonnull
-    public Collection<String> convertToStatementString(@Nonnull final List<ArchiveSample> elements) {
+    protected String composeSqlString() {
+        final String sql =
+            "INSERT INTO " + getDatabase() + "." + TAB_SAMPLE_BLOB + " " +
+            "(" + Joiner.on(",").join(COLUMN_CHANNEL_ID, COLUMN_TIME, COLUMN_VALUE)+ ") " +
+            "VALUES " + VAL_WILDCARDS;
+        return sql;
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    @Nonnull
+    public Collection<String> convertToStatementString(@Nonnull final List<ArchiveMultiScalarSample> elements) {
         final String sqlWithoutValues = composeSqlString().replace(VAL_WILDCARDS, "");
 
         final Collection<String> values =
             Collections2.transform(elements,
-                                   new Function<ArchiveSample, String>() {
+                                   new Function<ArchiveMultiScalarSample, String>() {
                                        @Override
                                        @Nonnull
-                                       public String apply(@Nonnull final ArchiveSample input) {
+                                       public String apply(@Nonnull final ArchiveMultiScalarSample input) {
                                            try {
                                                final String value =
                                                    "(" +
@@ -123,4 +130,5 @@ public class ArchiveSampleBatchQueueHandler extends BatchQueueHandlerSupport<Arc
                                     });
         return Collections.singleton(sqlWithoutValues + Joiner.on(",").join(values) + ";");
     }
+
 }

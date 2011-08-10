@@ -41,7 +41,7 @@ import org.csstudio.domain.desy.system.ISystemVariable;
  */
 public class ArchiveMultiScalarSample<V extends Serializable,
                                       C extends Serializable & Collection<V>,
-                                      T extends ISystemVariable<C>> extends ArchiveSample<C, T> {
+                                      T extends ISystemVariable<C>> extends ArchiveSample<C, T>{
 
     private static final long serialVersionUID = -2453137570581671787L;
 

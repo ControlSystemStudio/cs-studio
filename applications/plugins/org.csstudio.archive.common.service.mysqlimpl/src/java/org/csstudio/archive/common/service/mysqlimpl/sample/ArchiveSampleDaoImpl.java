@@ -78,6 +78,7 @@ public class ArchiveSampleDaoImpl extends AbstractArchiveDao implements IArchive
     public static final String TAB_SAMPLE = "sample";
     public static final String TAB_SAMPLE_M = "sample_m";
     public static final String TAB_SAMPLE_H = "sample_h";
+    public static final String TAB_SAMPLE_BLOB = "sample_blob";
 
     public static final String COLUMN_TIME = "time";
     public static final String COLUMN_CHANNEL_ID = "channel_id";
@@ -87,13 +88,11 @@ public class ArchiveSampleDaoImpl extends AbstractArchiveDao implements IArchive
     public static final String COLUMN_MAX = "max_val";
 
     private static final String ARCH_TABLE_PLACEHOLDER = "<arch.table>";
-
     private static final String RETRIEVAL_FAILED = "Sample retrieval from archive failed.";
 
     private static final String SELECT_RAW_PREFIX =
         "SELECT " + Joiner.on(",").join(COLUMN_CHANNEL_ID, COLUMN_TIME, COLUMN_VALUE) + " ";
-
-    private final String _selectSamplesStmt =
+    private final String _selectRawSamplesStmt =
         SELECT_RAW_PREFIX +
         "FROM " + getDatabaseName() + "." + ARCH_TABLE_PLACEHOLDER + " WHERE " + COLUMN_CHANNEL_ID + "=? " +
         "AND " + COLUMN_TIME + " BETWEEN ? AND ?";
@@ -127,6 +126,7 @@ public class ArchiveSampleDaoImpl extends AbstractArchiveDao implements IArchive
         EpicsSystemVariableSupport.install();
 
         BatchQueueHandlerSupport.installHandlerIfNotExists(new ArchiveSampleBatchQueueHandler(getDatabaseName()));
+        BatchQueueHandlerSupport.installHandlerIfNotExists(new CollectionDataSampleBatchQueueHandler(getDatabaseName()));
         BatchQueueHandlerSupport.installHandlerIfNotExists(new MinuteReducedDataSampleBatchQueueHandler(getDatabaseName()));
         BatchQueueHandlerSupport.installHandlerIfNotExists(new HourReducedDataSampleBatchQueueHandler(getDatabaseName()));
     }
@@ -330,7 +330,9 @@ public class ArchiveSampleDaoImpl extends AbstractArchiveDao implements IArchive
         PreparedStatement stmt = null;
         ResultSet result = null;
         try {
-            DesyArchiveRequestType reqType = determineRequestType(type, channel.getDataType(), s, e);
+            DesyArchiveRequestType reqType = type != null ?
+                                             type :
+                                             SampleRequestTypeUtil.determineRequestType(channel.getDataType(), s, e);
             do {
                 stmt = createReadSamplesStatement(channel, s, e, reqType);
                 result = stmt.executeQuery();
@@ -389,8 +391,10 @@ public class ArchiveSampleDaoImpl extends AbstractArchiveDao implements IArchive
         PreparedStatement stmt = null;
         switch (type) {
             case RAW :
-                System.out.println(_selectSamplesStmt.replaceFirst(ARCH_TABLE_PLACEHOLDER, TAB_SAMPLE));
-                stmt = getConnection().prepareStatement(_selectSamplesStmt.replaceFirst(ARCH_TABLE_PLACEHOLDER, TAB_SAMPLE));
+                stmt = getConnection().prepareStatement(_selectRawSamplesStmt.replaceFirst(ARCH_TABLE_PLACEHOLDER, TAB_SAMPLE));
+                break;
+            case RAW_MULTI_SCALAR :
+                stmt = getConnection().prepareStatement(_selectRawSamplesStmt.replaceFirst(ARCH_TABLE_PLACEHOLDER, TAB_SAMPLE_BLOB));
                 break;
             case AVG_PER_MINUTE :
                 stmt = getConnection().prepareStatement(_selectOptSamplesStmt.replaceFirst(ARCH_TABLE_PLACEHOLDER, TAB_SAMPLE_M));
@@ -416,7 +420,6 @@ public class ArchiveSampleDaoImpl extends AbstractArchiveDao implements IArchive
         V value = null;
         V min = null;
         V max = null;
-
         switch (type) {
             case RAW : {
                 // (..., value)
@@ -447,30 +450,6 @@ public class ArchiveSampleDaoImpl extends AbstractArchiveDao implements IArchive
         return sample;
     }
 
-
-    @Nonnull
-    private DesyArchiveRequestType determineRequestType(@CheckForNull final DesyArchiveRequestType type,
-                                                        @Nonnull final String dataType,
-                                                        @Nonnull final TimeInstant s,
-                                                        @Nonnull final TimeInstant e) throws TypeSupportException {
-
-        if (DesyArchiveRequestType.RAW.equals(type) || !ArchiveTypeConversionSupport.isDataTypeOptimizable(dataType)) {
-            return DesyArchiveRequestType.RAW;
-        } else if (type != null) {
-            return type;
-        } else {
-            DesyArchiveRequestType reqType;
-            final Duration d = new Duration(s.getInstant(), e.getInstant());
-            if (d.isLongerThan(Duration.standardDays(45))) {
-                reqType = DesyArchiveRequestType.AVG_PER_HOUR;
-            } else if (d.isLongerThan(Duration.standardDays(1))) {
-                reqType = DesyArchiveRequestType.AVG_PER_MINUTE;
-            } else {
-                reqType = DesyArchiveRequestType.RAW;
-            }
-            return reqType;
-        }
-    }
 
     /**
      * {@inheritDoc}
