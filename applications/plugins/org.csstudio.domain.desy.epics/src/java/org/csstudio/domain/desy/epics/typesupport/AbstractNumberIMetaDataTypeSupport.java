@@ -52,14 +52,14 @@ public abstract class AbstractNumberIMetaDataTypeSupport<T extends Number & Comp
     @Override
     @Nonnull
     protected EpicsMetaData convertToMetaData(@Nonnull final IMetaData data) throws TypeSupportException {
-        final INumericMetaData numData = checkAndConvertToNumeric(data, Byte.class);
+        final INumericMetaData numData = checkAndConvertToNumeric(data, getType());
         final EpicsGraphicsData<T> gr =
             new EpicsGraphicsData<T>(Limits.<T>create(toNumber(numData.getAlarmLow()),
-                                                            toNumber(numData.getAlarmHigh())),
-                                        Limits.<T>create(toNumber(numData.getWarnLow()),
-                                                            toNumber(numData.getWarnHigh())),
-                                        Limits.<T>create(toNumber(numData.getDisplayLow()),
-                                                            toNumber(numData.getDisplayHigh())));
+                                                      toNumber(numData.getAlarmHigh())),
+                                     Limits.<T>create(toNumber(numData.getWarnLow()),
+                                                      toNumber(numData.getWarnHigh())),
+                                     Limits.<T>create(toNumber(numData.getDisplayLow()),
+                                                      toNumber(numData.getDisplayHigh())));
         return EpicsMetaData.create(null, gr, null, null);
     }
 
