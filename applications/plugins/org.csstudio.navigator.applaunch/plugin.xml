@@ -64,4 +64,18 @@
    <extension point="org.eclipse.help.toc">
      <toc file="toc.xml" primary="true"/>
    </extension>
+   <extension
+         point="org.eclipse.ui.newWizards">
+      <category
+            id="org.csstudio.navigator.applaunch"
+            name="Launcher">
+      </category>
+      <wizard
+            category="org.csstudio.navigator.applaunch"
+            class="org.csstudio.navigator.applaunch.NewLaunchConfigWizard"
+            icon="icons/run.gif"
+            id="org.csstudio.navigator.applaunch.configwizard"
+            name="Application Launch Configuration">
+      </wizard>
+   </extension>
 </plugin>

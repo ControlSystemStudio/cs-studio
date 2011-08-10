@@ -17,7 +17,6 @@ import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.content.IContentDescription;
 import org.eclipse.core.runtime.content.IContentType;
-import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.jface.viewers.ILabelDecorator;
 import org.eclipse.jface.viewers.ILabelProviderListener;
 import org.eclipse.swt.graphics.Image;
@@ -88,7 +87,7 @@ public class IconDecorator implements ILabelDecorator
 			return false;
 		return "org.csstudio.navigator.applaunch.application".equals(type.getId());
 	}
-
+    
     @Override
     public Image decorateImage(final Image original, final Object element)
     {
@@ -108,26 +107,22 @@ public class IconDecorator implements ILabelDecorator
 			final String icon_name = config.getIconName();
 			if (icon_name.isEmpty())
 				return original;
-			
+			// Try cached image
 			Image image = icons.get(icon_name);
 			if (image == null)
-			{
+			{	// Create image
 				if (icon_name.startsWith("icon:"))
-				{
-					final ImageDescriptor descr = Activator.getImageDescriptor("icons/" + icon_name.substring(5) + ".gif");
-					if (descr == null)
-						return original;
-					image = descr.createImage();
-				}
+					image = LaunchConfig.getBuildinIcon(icon_name.substring(5));
 				else
-				{
-					// Resolve icon name within workspace
+				{	// Resolve icon name within workspace
 					final IResource icon_path =
 						ResourcesPlugin.getWorkspace().getRoot().findMember(icon_name);
 					if (icon_path != null)
 						image = new Image(Display.getCurrent(), icon_path.getLocation().toOSString());
 				}
-				icons.put(icon_name, image);
+				// Add to cache
+				if (image != null)
+					icons.put(icon_name, image);
 			}
 
 			if (image != null)

@@ -14,6 +14,8 @@ import java.io.InputStream;
 import javax.xml.parsers.DocumentBuilderFactory;
 
 import org.csstudio.apputil.xml.DOMHelper;
+import org.eclipse.jface.resource.ImageDescriptor;
+import org.eclipse.swt.graphics.Image;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 
@@ -77,4 +79,17 @@ public class LaunchConfig
     {
     	return icon_name;
     }
+
+	/** Obtain image for a build-in icon
+	 *  @param icon_name Basic icon name like "run"
+	 *  @return {@link Image}, to be disposed by caller
+	 */
+	public static Image getBuildinIcon(final String icon_name)
+	{
+		final ImageDescriptor descr = Activator.getImageDescriptor("icons/" + icon_name + ".gif");
+		if (descr == null)
+			return null;
+		return descr.createImage();
+	}
+
 }
