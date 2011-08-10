@@ -28,6 +28,7 @@ import org.epics.pvmanager.PVManager;
 import org.epics.pvmanager.PVReader;
 import org.epics.pvmanager.PVReaderListener;
 import org.epics.pvmanager.data.VImage;
+import org.epics.pvmanager.extra.ColorScheme;
 import org.epics.pvmanager.extra.WaterfallPlot;
 import org.epics.pvmanager.extra.WaterfallPlotParameters;
 import org.epics.pvmanager.util.TimeDuration;
@@ -336,8 +337,24 @@ public class WaterfallWidget extends Composite {
 	 * 
 	 * @return waterfall plot parameters
 	 */
-	public WaterfallPlotParameters getWaterfallPlotParameters() {
+	WaterfallPlotParameters getWaterfallPlotParameters() {
 		return parameters;
+	}
+	
+	public boolean isScrollDown() {
+		return parameters.isScrollDown();
+	}
+	
+	public boolean isAdaptiveRange() {
+		return parameters.isAdaptiveRange();
+	}
+	
+	public TimeDuration getPixelDuration() {
+		return parameters.getPixelDuration();
+	}
+	
+	public ColorScheme getColorScheme() {
+		return parameters.getColorScheme();
 	}
 	
 	/**
