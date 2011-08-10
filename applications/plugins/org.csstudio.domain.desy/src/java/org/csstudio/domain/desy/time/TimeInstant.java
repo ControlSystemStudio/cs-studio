@@ -26,6 +26,7 @@ import java.io.Serializable;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
+import org.joda.time.Duration;
 import org.joda.time.Instant;
 import org.joda.time.ReadableInstant;
 import org.joda.time.format.DateTimeFormat;
@@ -178,7 +179,9 @@ public final class TimeInstant implements Comparable<TimeInstant>, Serializable 
                 throw new IllegalArgumentException("Number of nanoseconds for TimeInstant must be non-negative.");
             }
 
-            return new TimeInstant(nanos/NANOS_PER_MILLIS, nanos%NANOS_PER_MILLIS);
+            final Instant instant = new Instant(nanos/NANOS_PER_MILLIS);
+            final long fracMillisInNanos = nanos%NANOS_PER_MILLIS;
+            return new TimeInstant(instant, fracMillisInNanos);
         }
     }
 
@@ -201,11 +204,11 @@ public final class TimeInstant implements Comparable<TimeInstant>, Serializable 
      * Constructor.
      * Relies on being properly called by the {@link TimeInstantBuilder}.
      * @param instant
-     * @param fracSecInNanos
+     * @param fracMillisInNanos
      */
-    private TimeInstant(@Nonnull final Instant instant, final long fracSecInNanos) {
+    TimeInstant(@Nonnull final Instant instant, final long fracMillisInNanos) {
         _instant = instant;
-        _fracMillisInNanos = fracSecInNanos;
+        _fracMillisInNanos = fracMillisInNanos;
     }
 
     public long getFractalMillisInNanos() {
@@ -307,6 +310,12 @@ public final class TimeInstant implements Comparable<TimeInstant>, Serializable 
         return false;
     }
 
+    @Nonnull
+    public TimeInstant plusDuration(@Nonnull final Duration duration) {
+        final Instant i = new Instant(getMillis()).plus(duration);
+        return new TimeInstant(i, _fracMillisInNanos);
+    }
+
     /**
      * Returns a new immutable time instant object.
      * @param millis nonnegative number of millis to add
@@ -385,7 +394,7 @@ public final class TimeInstant implements Comparable<TimeInstant>, Serializable 
             return this;
         }
         long addMillis = nanosPerSecond / NANOS_PER_MILLIS;
-        final long addFracMillisInNanos = NANOS_PER_SECOND % NANOS_PER_MILLIS;
+        final long addFracMillisInNanos = nanosPerSecond % NANOS_PER_MILLIS;
 
         long newNanos = _fracMillisInNanos + addFracMillisInNanos;
         if (newNanos > NANOS_PER_MILLIS) {
@@ -411,7 +420,7 @@ public final class TimeInstant implements Comparable<TimeInstant>, Serializable 
     @Override
     @Nonnull
     public String toString() {
-        return formatted() + "." + _fracMillisInNanos;
+        return formatted(STD_DATETIME_FMT_WITH_MILLIS) + String.format("%1$06d", _fracMillisInNanos);
     }
 
     /**
@@ -425,5 +434,4 @@ public final class TimeInstant implements Comparable<TimeInstant>, Serializable 
                                      @Nonnull final TimeInstant endTime) {
         return Math.abs(endTime.getMillis() - startTime.getMillis());
     }
-
 }
