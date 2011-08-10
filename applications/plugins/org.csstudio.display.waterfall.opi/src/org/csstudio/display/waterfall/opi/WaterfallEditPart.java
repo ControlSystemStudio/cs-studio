@@ -45,6 +45,11 @@ public class WaterfallEditPart extends AbstractWidgetEditPart {
 		if (runMode)
 			widget.setInputText(model.getInputText());
 		widget.setShowRange(model.isShowRange());
+		widget.setAdaptiveRange(model.isAdaptiveRange());
+		widget.setPixelDuration(model.getPixelDuration());
+		widget.setScrollDown(model.isScrollDown());
+		widget.setSortProperty(model.getSortProperty());
+		System.out.println("Update widget");
 	}
 
 	@Override
