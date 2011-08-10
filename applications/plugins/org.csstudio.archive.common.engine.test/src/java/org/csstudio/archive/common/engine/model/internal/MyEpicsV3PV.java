@@ -1,3 +1,4 @@
+// CHECKSTYLE OFF : |
 /*******************************************************************************
  * Copyright (c) 2010 Oak Ridge National Laboratory.
  * All rights reserved. This program and the accompanying materials
@@ -45,9 +46,7 @@ import org.eclipse.core.runtime.PlatformObject;
  */
 @SuppressWarnings("nls")
 public class MyEpicsV3PV extends PlatformObject
-            implements PV, ConnectionListener, MonitorListener
-{
-    // CHECKSTYLE:OFF
+            implements PV, ConnectionListener, MonitorListener {
 
     /** Use plain mode?
      *  @see #EPICS_V3_PV(String, boolean)
@@ -714,5 +713,5 @@ public class MyEpicsV3PV extends PlatformObject
     {
         return "EPICS_V3_PV '" + name + "'";
     }
-    // CHECKSTYLE:ON
 }
+// CHECKSTYLE ON : |

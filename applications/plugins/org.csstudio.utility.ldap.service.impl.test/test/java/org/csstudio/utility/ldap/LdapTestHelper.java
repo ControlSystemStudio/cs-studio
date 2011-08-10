@@ -42,14 +42,22 @@ import org.csstudio.utility.ldap.service.ILdapService;
  */
 public final class LdapTestHelper {
 
-    // CHECKSTYLE:OFF (Checkstyle bug - these constant fields shall be public) 
+    // (Checkstyle bug - these constant fields shall be public)
+    // CHECKSTYLE OFF : |
     public static TestDataProvider PROV = createTestDataProvider();
 
     public static Map<String, String> LDAP_TEST_PREFS = createLdapTestServicePrefs();
 
     public static ILdapService LDAP_SERVICE = createLdapTestConnection();
-    // CHECKSTYLE:ON
+    // CHECKSTYLE ON : |
 
+
+    /**
+     * Don't instantiate.
+     */
+    private LdapTestHelper() {
+        // EMPTY
+    }
 
     @Nonnull
     private static TestDataProvider createTestDataProvider() {
@@ -93,13 +101,5 @@ public final class LdapTestHelper {
         map.put(Context.SECURITY_PRINCIPAL, dn);
         map.put(Context.SECURITY_CREDENTIALS, pw);
         return map;
-    }
-
-
-    /**
-     * Don't instantiate.
-     */
-    private LdapTestHelper() {
-        // EMPTY
     }
 }

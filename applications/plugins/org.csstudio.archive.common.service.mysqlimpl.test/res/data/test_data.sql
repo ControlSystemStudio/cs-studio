@@ -41,4 +41,11 @@ INSERT INTO channel (id, name, description, datatype, group_id, last_sample_time
 --        
 INSERT INTO sample (channel_id, time, value) 
        VALUES (3, unix_timestamp('1970-01-01 00:00:02')*1000000000, '26'),
-              (5, unix_timestamp('1970-01-01 00:00:02')*1000000000, '[1.0\\,6.0\\,0.0\\,5.0\\,10.0]');    
+              (5, unix_timestamp('1970-01-01 00:00:02')*1000000000, '[1.0\\,6.0\\,0.0\\,5.0\\,10.0]');  
+
+--
+-- Samples Blob
+--        
+INSERT INTO sample_blob (channel_id, time, value) 
+       VALUES (5, unix_timestamp('1970-01-01 00:00:02')*1000000000, '[1.0\\,6.0\\,0.0\\,5.0\\,10.0]');  
+                

@@ -71,55 +71,61 @@ public class EpicsEnumUnitTest {
         Assert.assertEquals(Integer.valueOf(-13), fromString.getRaw());
     }
 
-    @Test
-    public void testCreationFromString() {
+    @Test(expected=IllegalStateException.class)
+    public void testCreationFromString1() {
         final EpicsEnum fromStateString = EpicsEnum.createFromString(STATE + "(0)" + SEP + "hallo");
         Assert.assertTrue(fromStateString.isState());
         Assert.assertFalse(fromStateString.isRaw());
         Assert.assertEquals(Integer.valueOf(0), fromStateString.getStateIndex());
         Assert.assertEquals("hallo", fromStateString.getState());
-        try {
-            fromStateString.getRaw();
-        } catch (final IllegalStateException e) {
-            // Great.
-        }
+
+        fromStateString.getRaw();
+    }
+
+    @Test(expected=IllegalStateException.class)
+    public void testCreationFromString2() {
 
         final EpicsEnum fromRawString = EpicsEnum.createFromString(RAW + SEP + "26");
         Assert.assertFalse(fromRawString.isState());
         Assert.assertTrue(fromRawString.isRaw());
         Assert.assertEquals(Integer.valueOf(26), fromRawString.getRaw());
-        try {
-            fromRawString.getState();
-        } catch (final IllegalStateException e) {
-            // Great.
-        }
-        try {
-            fromRawString.getStateIndex();
-        } catch (final IllegalStateException e) {
-            // Great.
-        }
 
+        fromRawString.getState();
     }
 
-    @Test
-    public void testCreationFromRaw() {
+    @Test(expected=IllegalStateException.class)
+    public void testCreationFromString3() {
+
+        final EpicsEnum fromRawString = EpicsEnum.createFromString(RAW + SEP + "26");
+        Assert.assertFalse(fromRawString.isState());
+        Assert.assertTrue(fromRawString.isRaw());
+        Assert.assertEquals(Integer.valueOf(26), fromRawString.getRaw());
+
+        fromRawString.getStateIndex();
+    }
+
+
+    @Test(expected=IllegalStateException.class)
+    public void testCreationFromRaw1() {
         final EpicsEnum fromRaw = EpicsEnum.createFromRaw(1);
         Assert.assertFalse(fromRaw.isState());
         Assert.assertTrue(fromRaw.isRaw());
         Assert.assertEquals(Integer.valueOf(1), fromRaw.getRaw());
-        try {
-            fromRaw.getState();
-        } catch (final IllegalStateException e) {
-            // Great.
-        }
-        try {
-            fromRaw.getStateIndex();
-        } catch (final IllegalStateException e) {
-            // Great.
-        }
+
         final String string = fromRaw.toString();
         Assert.assertEquals(fromRaw, EpicsEnum.createFromString(string));
 
+        fromRaw.getState();
+    }
+
+    @Test(expected=IllegalStateException.class)
+    public void testCreationFromRaw2() {
+        final EpicsEnum fromRaw = EpicsEnum.createFromRaw(1);
+        Assert.assertFalse(fromRaw.isState());
+        Assert.assertTrue(fromRaw.isRaw());
+        Assert.assertEquals(Integer.valueOf(1), fromRaw.getRaw());
+
+        fromRaw.getStateIndex();
     }
 
     @Test

@@ -28,7 +28,6 @@ import java.util.Iterator;
 
 import junit.framework.Assert;
 
-import org.csstudio.domain.common.strings.Strings;
 import org.junit.Test;
 
 /**

@@ -22,6 +22,7 @@
 package org.csstudio.archive.common.engine.model;
 
 import java.io.Serializable;
+import java.util.Collection;
 
 import javax.annotation.CheckForNull;
 import javax.annotation.Nonnull;
@@ -31,6 +32,7 @@ import org.csstudio.archive.common.engine.service.IServiceProvider;
 import org.csstudio.archive.common.service.ArchiveServiceException;
 import org.csstudio.archive.common.service.IArchiveEngineFacade;
 import org.csstudio.archive.common.service.channel.ArchiveChannelId;
+import org.csstudio.archive.common.service.sample.ArchiveMultiScalarSample;
 import org.csstudio.archive.common.service.sample.ArchiveSample;
 import org.csstudio.archive.common.service.sample.IArchiveSample;
 import org.csstudio.data.values.IMetaData;
@@ -62,8 +64,8 @@ import org.slf4j.LoggerFactory;
 abstract class DesyArchivePVListener<V extends Serializable, T extends ISystemVariable<V>> implements PVListener {
 //CHECKSTYLE ON: AbstractClassName
 
-    private static final Logger LOG = LoggerFactory
-            .getLogger(DesyArchivePVListener.class);
+//    private static final Logger LOG = LoggerFactory.getLogger(DesyArchivePVListener.class);
+    private static final Logger LOG = LoggerFactory.getLogger(DesyArchivePVListener.class.getName());
 
     private IServiceProvider _provider;
     private final String _channelName;
@@ -214,7 +216,7 @@ abstract class DesyArchivePVListener<V extends Serializable, T extends ISystemVa
     protected abstract void addSampleToBuffer(@Nonnull final IArchiveSample<V, T> sample);
 
 
-    @SuppressWarnings("unchecked")
+    @SuppressWarnings({ "unchecked", "rawtypes" })
     @CheckForNull
     private ArchiveSample<V, T> createSampleFromValue(@Nonnull final PV pv,
                                                       @Nonnull final String name,
@@ -223,8 +225,13 @@ abstract class DesyArchivePVListener<V extends Serializable, T extends ISystemVa
         final IValue value = pv.getValue();
         final EpicsSystemVariable<V> sv =
             (EpicsSystemVariable<V>) EpicsIValueTypeSupport.toSystemVariable(name, value, metaData);
-        final ArchiveSample<V, T> sample = new ArchiveSample<V, T>(id, (T) sv, sv.getAlarm());
 
+        ArchiveSample<V, T> sample;
+        if (Collection.class.isAssignableFrom(sv.getData().getClass())) {
+            sample = new ArchiveMultiScalarSample(id, sv, sv.getAlarm());
+        } else {
+            sample = new ArchiveSample<V, T>(id, (T) sv, sv.getAlarm());
+        }
         return sample;
     }
 

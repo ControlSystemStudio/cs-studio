@@ -78,14 +78,24 @@ public class PvMdelVsAdelHeadlessTest {
 
     private SoftIoc _softIoc;
 
+    /**
+     * A test listener.
+     *
+     * @author bknerr
+     * @since 08.08.2011
+     */
     private static final class TestListener implements PVListener {
-        public final List<Double> _values = Lists.newLinkedList();
+        private final List<Double> _values = Lists.newLinkedList();
 
         /**
          * Constructor.
          */
         public TestListener() {
             // Empty
+        }
+        @Nonnull
+        List<Double> getValues() {
+            return _values;
         }
         @Override
         public void pvValueUpdate(@Nonnull final PV pv) {
@@ -141,27 +151,28 @@ public class PvMdelVsAdelHeadlessTest {
                         @Nonnull final Double expDeadband) throws Exception {
         final PV pv = new MyEpicsPVFactory().createPV(pvName, monitorMode);
         final TestListener listener = addListenerAndRunPV(pv);
-        checkForUpdateSensitivity(listener._values, expDeadband);
+        checkForUpdateSensitivity(listener.getValues(), expDeadband);
     }
 
-    private TestListener addListenerAndRunPV(@Nonnull final PV pv) throws Exception, InterruptedException {
+    @Nonnull
+    private TestListener addListenerAndRunPV(@Nonnull final PV pv) throws Exception {
         final TestListener listener = new TestListener();
         pv.addListener(listener);
         pv.start();
         while(true) {
-            synchronized (listener._values) {
-                if (listener._values.size() >= 4) { // at least 4 values
+            synchronized (listener.getValues()) {
+                if (listener.getValues().size() >= 4) { // at least 4 values
                     break;
                 }
             }
-            Thread.sleep(100l);
+            Thread.sleep(100L);
         }
         pv.stop();
 
         return listener;
     }
 
-    private void checkForUpdateSensitivity(final List<Double> values, final double deadband) {
+    private void checkForUpdateSensitivity(@Nonnull final List<Double> values, final double deadband) {
         synchronized (values) {
             try {
                 Assert.assertTrue(values.size() > 2);

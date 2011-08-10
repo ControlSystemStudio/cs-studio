@@ -21,8 +21,6 @@
  */
  package org.csstudio.alarm.service.preferences;
 
-import static org.csstudio.utility.ldap.service.util.LdapNameUtils.removeQuotes;
-import static org.csstudio.utility.ldap.service.util.LdapNameUtils.simpleName;
 import static org.csstudio.utility.ldap.service.util.LdapUtils.any;
 import static org.csstudio.utility.ldap.service.util.LdapUtils.createLdapName;
 import static org.csstudio.utility.ldap.treeconfiguration.LdapEpicsAlarmcfgConfiguration.UNIT;
@@ -38,6 +36,7 @@ import javax.naming.directory.SearchResult;
 import org.csstudio.alarm.service.AlarmServiceActivator;
 import org.csstudio.utility.ldap.service.ILdapSearchResult;
 import org.csstudio.utility.ldap.service.ILdapService;
+import org.csstudio.utility.ldap.service.util.LdapNameUtils;
 import org.eclipse.jface.dialogs.Dialog;
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.swt.SWT;
@@ -57,80 +56,78 @@ import org.eclipse.swt.widgets.Shell;
  */
 public class AddMountPointDlg extends Dialog {
 
+    private List _mountPoints;
+    private String[] _result = new String[0];
+
     public AddMountPointDlg(@Nonnull final Shell parentShell) {
-		super(parentShell);
-	}
+        super(parentShell);
+    }
 
-	private List _mountPoints;
-	private String[] _result = new String[0];
 
-	@Nonnull
-	private String[] getSubDirs() {
-		final java.util.List<String> strcoll = new ArrayList<String>();
+    @Nonnull
+    private String[] getSubDirs() {
+        final java.util.List<String> strcoll = new ArrayList<String>();
 
-		final ILdapService service = AlarmServiceActivator.getDefault().getLdapService();
-		if (service == null) {
-		    MessageDialog.openError(getParentShell(), "LDAP Access", "LDAP service unavailable. Retry later.");
-		    return _result;
-		}
+        final ILdapService service = AlarmServiceActivator.getDefault().getLdapService();
+        if (service == null) {
+            MessageDialog.openError(getParentShell(), "LDAP Access", "LDAP service unavailable. Retry later.");
+            return _result;
+        }
 
-		final ILdapSearchResult result =
-		    service.retrieveSearchResultSynchronously(createLdapName(UNIT.getNodeTypeName(), UNIT.getUnitTypeValue()),
-		                                              any(ATTR_FIELD_OBJECT_CLASS),
-		                                              SearchControls.ONELEVEL_SCOPE);
+        final ILdapSearchResult result =
+            service.retrieveSearchResultSynchronously(createLdapName(UNIT.getNodeTypeName(), UNIT.getUnitTypeValue()),
+                                                      any(ATTR_FIELD_OBJECT_CLASS),
+                                                      SearchControls.ONELEVEL_SCOPE);
 
-		if (result == null || result.getAnswerSet().isEmpty())  {
-		    MessageDialog.openInformation(getParentShell(), "LDAP subdir retrieval", "No subdirs found in LDAP.");
-		    return _result;
-		}
-		String name, rname;
-		for (final SearchResult row : result.getAnswerSet()) {
-		    rname = row.getName();
-		    rname = removeQuotes(rname);
-		    name = simpleName(rname);
-		    strcoll.add(name);
-		}
-		return strcoll.toArray(new String[0]);
-	}
+        if (result == null || result.getAnswerSet().isEmpty())  {
+            MessageDialog.openInformation(getParentShell(), "LDAP subdir retrieval", "No subdirs found in LDAP.");
+            return _result;
+        }
+        for (final SearchResult row : result.getAnswerSet()) {
+            final String rname = row.getName();
+            strcoll.add(LdapNameUtils.simpleName(rname));
+        }
+        return strcoll.toArray(new String[0]);
+    }
 
-	@Override
-    protected void configureShell(@Nonnull final Shell newShell)	{
-	    super.configureShell(newShell);
-	    newShell.setText("Add new mount point");
-	}
+    @Override
+    protected void configureShell(@Nonnull final Shell newShell)    {
+        super.configureShell(newShell);
+        newShell.setText("Add new mount point");
+    }
 
-	@Override
-	@Nonnull
+    @Override
+    @Nonnull
     protected Control createDialogArea(@CheckForNull final Composite parent) {
-	    final Composite composite = (Composite)super.createDialogArea(parent);
-	    final GridLayout layout = new GridLayout();
-	    layout.numColumns = 1;
-	    composite.setLayout(layout);
-	    new Label(composite, 0).setText("Select mount point to add:");
+        final Composite composite = (Composite)super.createDialogArea(parent);
+        final GridLayout layout = new GridLayout();
+        layout.numColumns = 1;
+        composite.setLayout(layout);
+        new Label(composite, 0).setText("Select mount point to add:");
 
-	    _mountPoints = new List(composite, SWT.SINGLE | SWT.V_SCROLL);
-	    _mountPoints.setItems(getSubDirs());
-	    _mountPoints.setLayoutData(new GridData(256));
+        _mountPoints = new List(composite, SWT.SINGLE | SWT.V_SCROLL);
+        _mountPoints.setItems(getSubDirs());
+        _mountPoints.setLayoutData(new GridData(256));
 
-	    return composite;
-	}
+        return composite;
+    }
 
-	private void save()	{
-		_result = _mountPoints.getSelection();
-	}
+    private void save()    {
+        _result = _mountPoints.getSelection();
+    }
 
-	@Nonnull
-	public String getResult() {
-		if (_result[0] == null) {
+    @Nonnull
+    public String getResult() {
+        if (_result[0] == null) {
             return "";
         }
-		return _result[0];
-	}
+        return _result[0];
+    }
 
-	@Override
+    @Override
     protected void okPressed() {
-	    save();
-	    setReturnCode(0);
-	    super.close();
-	}
+        save();
+        setReturnCode(0);
+        super.close();
+    }
 }

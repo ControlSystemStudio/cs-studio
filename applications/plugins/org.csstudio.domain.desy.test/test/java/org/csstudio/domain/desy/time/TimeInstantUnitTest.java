@@ -24,6 +24,7 @@ package org.csstudio.domain.desy.time;
 import java.util.regex.Pattern;
 
 import org.csstudio.domain.desy.time.TimeInstant.TimeInstantBuilder;
+import org.joda.time.Duration;
 import org.junit.Assert;
 import org.junit.Test;
 
@@ -216,6 +217,14 @@ public final class TimeInstantUnitTest {
         final TimeInstant t4 = t3.plusNanosPerSecond(999000000);
         Assert.assertTrue(t4.isAfter(t3));
         Assert.assertEquals(1000L, t4.getMillis());
+
+        final TimeInstant t5 = t1.plusNanosPerSecond(1L);
+        Assert.assertTrue(t4.isAfter(t1));
+        Assert.assertEquals(TimeInstantBuilder.fromNanos(1L), t5);
+
+        final TimeInstant t6 = t1.plusMillis(123L).plusNanosPerSecond(456789L);
+        Assert.assertEquals(TimeInstantBuilder.fromNanos(123456789L), t6);
+        Assert.assertEquals(TimeInstantBuilder.fromNanos(123000000L).plusNanosPerSecond(456789L), t6);
     }
 
     @Test
@@ -239,7 +248,19 @@ public final class TimeInstantUnitTest {
 
         final String dateTimeFS = now.formatted(TimeInstant.STD_DATETIME_FMT_FOR_FS);
         Assert.assertTrue(Pattern.matches("\\d\\d\\d\\d-\\d\\d-\\d\\d_\\d\\dh\\d\\dm\\d\\ds", dateTimeFS));
+    }
 
+    @Test
+    public void testPlusDuration() {
+        final TimeInstant ti = TimeInstantBuilder.fromMillis(0L);
+        TimeInstant plusTi = ti.plusDuration(Duration.ZERO);
+        Assert.assertEquals(ti, plusTi);
 
+        plusTi = ti.plusDuration(Duration.standardSeconds(1L));
+        Assert.assertEquals(TimeInstantBuilder.fromSeconds(1L), plusTi);
+
+        plusTi = ti.plusDuration(Duration.standardHours(1L)).plusNanosPerSecond(123L);
+
+        Assert.assertEquals(TimeInstantBuilder.fromNanos(3600000000123L), plusTi);
     }
 }

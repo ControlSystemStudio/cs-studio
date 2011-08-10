@@ -26,6 +26,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.EnumSet;
 import java.util.HashSet;
+import java.util.LinkedHashSet;
 import java.util.LinkedList;
 import java.util.Set;
 import java.util.Stack;
@@ -58,12 +59,13 @@ abstract class CollectionTypeConversionSupport<T extends Serializable & Collecti
 
     private static final Set<Class<?>> BASIC_COLL_TYPES =
         Sets.<Class<?>>newHashSet(ArrayList.class,
-                                  LinkedList.class,
                                   EnumSet.class,
                                   HashSet.class,
-                                  TreeSet.class,
+                                  LinkedHashSet.class,
+                                  LinkedList.class,
                                   Stack.class,
-                                  Vector.class);
+                                  Vector.class,
+                                  TreeSet.class);
     /**
      * Concrete implementation for the different types.
      *

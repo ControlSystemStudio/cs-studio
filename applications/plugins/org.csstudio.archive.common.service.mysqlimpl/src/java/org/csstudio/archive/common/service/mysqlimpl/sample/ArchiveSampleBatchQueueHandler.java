@@ -37,7 +37,7 @@ import javax.annotation.Nonnull;
 
 import org.csstudio.archive.common.service.mysqlimpl.batch.BatchQueueHandlerSupport;
 import org.csstudio.archive.common.service.mysqlimpl.dao.ArchiveDaoException;
-import org.csstudio.archive.common.service.sample.IArchiveSample;
+import org.csstudio.archive.common.service.sample.ArchiveSample;
 import org.csstudio.archive.common.service.util.ArchiveTypeConversionSupport;
 import org.csstudio.domain.desy.typesupport.TypeSupportException;
 import org.slf4j.Logger;
@@ -50,13 +50,13 @@ import com.google.common.collect.Collections2;
 /**
  * DBO specific batch strategy for high write throughput.
  *
- * Remember that the values held in a {@link IArchiveSample} should be Serializable!
+ * Remember that the values held in a {@link ArchiveSample} should be Serializable!
  *
  * @author bknerr
  * @since 20.07.2011
  */
 @SuppressWarnings("rawtypes")
-public class ArchiveSampleBatchQueueHandler extends BatchQueueHandlerSupport<IArchiveSample> {
+public class ArchiveSampleBatchQueueHandler extends BatchQueueHandlerSupport<ArchiveSample> {
 
     static final Logger LOG = LoggerFactory.getLogger(ArchiveSampleBatchQueueHandler.class);
 
@@ -66,7 +66,7 @@ public class ArchiveSampleBatchQueueHandler extends BatchQueueHandlerSupport<IAr
      * Constructor.
      */
     public ArchiveSampleBatchQueueHandler(@Nonnull final String databaseName) {
-        super(IArchiveSample.class, databaseName, new LinkedBlockingQueue<IArchiveSample>());    }
+        super(ArchiveSample.class, databaseName, new LinkedBlockingQueue<ArchiveSample>());    }
 
     @Override
     @Nonnull
@@ -83,7 +83,7 @@ public class ArchiveSampleBatchQueueHandler extends BatchQueueHandlerSupport<IAr
     @Override
     @Nonnull
     public void fillStatement(@Nonnull final PreparedStatement stmt,
-                              @Nonnull final IArchiveSample type) throws SQLException, ArchiveDaoException {
+                              @Nonnull final ArchiveSample type) throws SQLException, ArchiveDaoException {
         stmt.setInt(1, type.getChannelId().intValue());
         stmt.setLong(2, type.getSystemVariable().getTimestamp().getNanos());
         try {
@@ -98,15 +98,15 @@ public class ArchiveSampleBatchQueueHandler extends BatchQueueHandlerSupport<IAr
      */
     @Override
     @Nonnull
-    public Collection<String> convertToStatementString(@Nonnull final List<IArchiveSample> elements) {
+    public Collection<String> convertToStatementString(@Nonnull final List<ArchiveSample> elements) {
         final String sqlWithoutValues = composeSqlString().replace(VAL_WILDCARDS, "");
 
         final Collection<String> values =
             Collections2.transform(elements,
-                                   new Function<IArchiveSample, String>() {
+                                   new Function<ArchiveSample, String>() {
                                        @Override
                                        @Nonnull
-                                       public String apply(@Nonnull final IArchiveSample input) {
+                                       public String apply(@Nonnull final ArchiveSample input) {
                                            try {
                                                final String value =
                                                    "(" +

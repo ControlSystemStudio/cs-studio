@@ -74,8 +74,8 @@ public class ArchiveEngineSampleRescuerUnitTest {
     private static final Logger RESCUE_LOG =
         LoggerFactory.getLogger("SerializedSamplesRescueLogger");
 
-    private List<IArchiveSample<Serializable, ISystemVariable<Serializable>>> _samples;
     private static File RESCUE_SAMPLES;
+    private List<IArchiveSample<Serializable, ISystemVariable<Serializable>>> _samples;
 
     @SuppressWarnings({ "unchecked", "rawtypes" })
     @Before
@@ -172,7 +172,7 @@ public class ArchiveEngineSampleRescuerUnitTest {
         }
     }
 
-
+    @Nonnull
     private Samples buildGPBSamples(@Nonnull final ArchiveSampleProtos.Samples.Builder gpbSamples) throws TypeSupportException {
         final ArchiveSampleProtos.ArchiveSample.Builder builder =
             ArchiveSampleProtos.ArchiveSample.newBuilder();
@@ -191,6 +191,7 @@ public class ArchiveEngineSampleRescuerUnitTest {
         return gpbSamples.build();
     }
 
+    @Nonnull
     private Samples readSamplesFromFile(@Nonnull final ArchiveSampleProtos.Samples.Builder gpbSamples) {
         gpbSamples.clear();
         gpbSamples.build();

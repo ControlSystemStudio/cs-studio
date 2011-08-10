@@ -22,9 +22,11 @@
 package org.csstudio.archive.common.service.mysqlimpl.sample;
 
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.LinkedList;
 
 import org.csstudio.archive.common.service.channel.ArchiveChannelId;
+import org.csstudio.archive.common.service.sample.ArchiveMultiScalarSample;
 import org.csstudio.archive.common.service.sample.ArchiveSample;
 import org.csstudio.archive.common.service.sample.IArchiveSample;
 import org.csstudio.domain.desy.epics.alarm.EpicsAlarm;
@@ -54,6 +56,9 @@ public final class TestSampleProvider {
     // CHECKSTYLE OFF: |
     public static TimeInstant START;
     public static TimeInstant END;
+
+    public static ArrayList<Double> SAMPLE_D_VAL;
+    public static IArchiveSample<ArrayList<Double>, ISystemVariable<ArrayList<Double>>> SAMPLE_ARRAY_D;
     // CHECKSTYLE ON: |
 
     public static final ArchiveChannelId CHANNEL_ID_1ST = new ArchiveChannelId(1L);
@@ -160,6 +165,20 @@ public final class TestSampleProvider {
                             EpicsAlarm.UNKNOWN),
                             EpicsAlarm.UNKNOWN);
         SAMPLES_HOUR.add(sample);
+
+
+        SAMPLE_D_VAL = Lists.newArrayList(5.0, 4.0);
+        SAMPLE_ARRAY_D =
+            new ArchiveMultiScalarSample<Double,
+                                         ArrayList<Double>,
+                                         ISystemVariable<ArrayList<Double>>>(
+                CHANNEL_ID_5TH,
+                new EpicsSystemVariable<ArrayList<Double>>("fuup",
+                                                           SAMPLE_D_VAL,
+                                                           ControlSystem.EPICS_DEFAULT,
+                                                           START,
+                                                           EpicsAlarm.UNKNOWN),
+                EpicsAlarm.UNKNOWN);
 
     }
 

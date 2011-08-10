@@ -41,7 +41,7 @@ import org.junit.runner.RunWith;
 
 /**
  * Test for {@link SoftIoc}.
- * 
+ *
  * @author bknerr
  * @since 27.05.2011
  */
@@ -50,33 +50,34 @@ import org.junit.runner.RunWith;
 public class SoftIocHeadlessTest {
 
     private SoftIoc _softIoc;
-    
+
     @Before
     public void setup() throws IOException, URISyntaxException {
-        
-        URL dbBundleResourceUrl = SoftIocHeadlessTest.class.getClassLoader().getResource("db/myTestDbFile.db");
-        URL dbFileUrl = FileLocator.toFileURL(dbBundleResourceUrl);
 
-        ISoftIocConfigurator cfg = new BasicSoftIocConfigurator().with(new File(dbFileUrl.getFile()));
+        final URL dbBundleResourceUrl = SoftIocHeadlessTest.class.getClassLoader().getResource("db/myTestDbFile.db");
+        final URL dbFileUrl = FileLocator.toFileURL(dbBundleResourceUrl);
+
+        final ISoftIocConfigurator cfg = new BasicSoftIocConfigurator().with(new File(dbFileUrl.getFile()));
         _softIoc = new SoftIoc(cfg);
         _softIoc.start();
     }
-    
+
     @Test
     public void testMonitorSoftIoc() throws IOException, URISyntaxException {
-        URL camExeUrl = FileLocator.toFileURL(SoftIocHeadlessTest.class.getClassLoader().getResource("win/camonitor.exe"));
-        
-        boolean killCaRepeater = !isCaRepeaterAlreadyRunning();
-        
+        final URL camExeUrl = FileLocator.toFileURL(SoftIocHeadlessTest.class.getClassLoader().getResource("win/camonitor.exe"));
+
+        final boolean killCaRepeater = !isCaRepeaterAlreadyRunning();
+
         Process cam = null;
         int noOfRuns = 0;
         try {
             cam = new ProcessBuilder(new File(camExeUrl.toURI()).toString(), "SoftIocTest:calc").start();
-            BufferedReader input = new BufferedReader(new InputStreamReader(cam.getInputStream()));
-            String line = null;
-            while((line=input.readLine()) != null && noOfRuns < 5) {
+            final BufferedReader input = new BufferedReader(new InputStreamReader(cam.getInputStream()));
+            String line = input.readLine();
+            while(line != null && noOfRuns < 5) {
                 Assert.assertTrue(line.startsWith("SoftIocTest:calc"));
                 noOfRuns++;
+                line = input.readLine();
             }
             input.close();
         } finally {
@@ -91,11 +92,11 @@ public class SoftIocHeadlessTest {
             }
         }
     }
-    
+
     private boolean isCaRepeaterAlreadyRunning() throws IOException {
-        Process taskList = new ProcessBuilder("tasklist.exe", "/fi", "IMAGENAME eq caRepeater.exe").start();
-        
-        BufferedReader input = new BufferedReader(new InputStreamReader(taskList.getInputStream()));
+        final Process taskList = new ProcessBuilder("tasklist.exe", "/fi", "IMAGENAME eq caRepeater.exe").start();
+
+        final BufferedReader input = new BufferedReader(new InputStreamReader(taskList.getInputStream()));
         boolean taskExists = false;
         String line;
         while((line=input.readLine()) != null) {

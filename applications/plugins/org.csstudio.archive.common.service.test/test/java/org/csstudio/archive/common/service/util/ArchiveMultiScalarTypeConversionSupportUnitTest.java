@@ -93,7 +93,7 @@ public class ArchiveMultiScalarTypeConversionSupportUnitTest {
         Assert.assertEquals(Double.valueOf(1.0), result.get(0));
         Assert.assertEquals(Double.valueOf(2.0), result.get(1));
 
-        start = new CopyOnWriteArrayList<Double>(new Double[]{ Double.valueOf(1.0), Double.valueOf(2.0)});
+        start = new CopyOnWriteArrayList<Double>(new Double[]{Double.valueOf(1.0), Double.valueOf(2.0)});
         byteArray = ArchiveTypeConversionSupport.toByteArray(start);
         final CopyOnWriteArrayList result2 = ArchiveTypeConversionSupport.fromByteArray(byteArray);
         Assert.assertEquals(Double.valueOf(1.0), result2.get(0));
@@ -140,8 +140,8 @@ public class ArchiveMultiScalarTypeConversionSupportUnitTest {
             final HashSet<Float> set = (HashSet<Float>) coll;
 
             final Iterator<Float> iterator = set.iterator();
-            Assert.assertTrue(iterator.next().equals(1.0F));
-            Assert.assertTrue(iterator.next().equals(2.0F));
+            Assert.assertTrue(Float.valueOf(1.0F).equals(iterator.next()));
+            Assert.assertTrue(Float.valueOf(2.0F).equals(iterator.next()));
         } catch (final TypeSupportException e) {
             Assert.fail();
         }

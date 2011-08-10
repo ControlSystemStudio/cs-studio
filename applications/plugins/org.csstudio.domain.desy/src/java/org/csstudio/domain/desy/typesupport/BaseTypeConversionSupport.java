@@ -58,25 +58,6 @@ public abstract class BaseTypeConversionSupport<T> extends AbstractTypeSupport<T
     private static final List<String> BASIC_TYPE_PACKAGES =
         Lists.newArrayList("java.lang", "java.util", "java.util.concurrent");
 
-//    /**
-//     * Helper enum to dispatch which group to match for Pattern {@link COLLECTION_PATTERN}.
-//     * The index is the parameter that is used in the {@link Matcher#group(int)}.
-//     *
-//     * @author bknerr
-//     * @since Mar 30, 2011
-//     */
-//    private enum TypeLiteralGroup {
-//        COLL(1),
-//        COLL_ELEM(2);
-//        private int _index;
-//        private TypeLiteralGroup(final int i) {
-//            _index = i;
-//        }
-//        public int getIndex() {
-//            return _index;
-//        }
-//    }
-
     private static boolean INSTALLED;
 
     /**

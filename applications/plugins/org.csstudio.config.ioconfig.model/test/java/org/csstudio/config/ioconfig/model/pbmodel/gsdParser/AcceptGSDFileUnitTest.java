@@ -6,13 +6,11 @@ package org.csstudio.config.ioconfig.model.pbmodel.gsdParser;
 
 import junit.framework.Assert;
 
-import org.junit.Ignore;
 import org.junit.Test;
 
 /**
  * @author hrickens
  */
-@Ignore
 public class AcceptGSDFileUnitTest {
 
     @Test

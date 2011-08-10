@@ -57,21 +57,60 @@ public abstract class EpicsIMetaDataTypeSupport<T> extends AbstractTypeSupport<T
         super(type, EpicsIMetaDataTypeSupport.class);
     }
 
+    // CHECKSTYLE OFF : MethodLength
     public static void install() {
         if (INSTALLED) {
             return;
         }
-        TypeSupport.addTypeSupport(new LongConversionSupport());
-        TypeSupport.addTypeSupport(new IntegerConversionSupport());
-        TypeSupport.addTypeSupport(new ShortConversionSupport());
-        TypeSupport.addTypeSupport(new ByteConversionSupport());
-        TypeSupport.addTypeSupport(new DoubleConversionSupport());
-        TypeSupport.addTypeSupport(new FloatConversionSupport());
+        TypeSupport.addTypeSupport(new AbstractNumberIMetaDataTypeSupport<Byte>(Byte.class) {
+            @Override
+            @Nonnull
+            protected Byte toNumber(final double d) {
+                return Byte.valueOf(Double.valueOf(d).byteValue());
+            }
+        });
+        TypeSupport.addTypeSupport(new AbstractNumberIMetaDataTypeSupport<Double>(Double.class) {
+            @Override
+            @Nonnull
+            protected Double toNumber(final double d) {
+                return Double.valueOf(d);
+            }
+        });
+        TypeSupport.addTypeSupport(new AbstractNumberIMetaDataTypeSupport<Float>(Float.class) {
+            @Override
+            @Nonnull
+            protected Float toNumber(final double d) {
+                return Float.valueOf(Double.valueOf(d).floatValue());
+            }
+        });
+        TypeSupport.addTypeSupport(new AbstractNumberIMetaDataTypeSupport<Integer>(Integer.class) {
+            @Override
+            @Nonnull
+            protected Integer toNumber(final double d) {
+                return Integer.valueOf(Double.valueOf(d).intValue());
+            }
+        });
+        TypeSupport.addTypeSupport(new AbstractNumberIMetaDataTypeSupport<Long>(Long.class) {
+            @Override
+            @Nonnull
+            protected Long toNumber(final double d) {
+                return Long.valueOf(Double.valueOf(d).longValue());
+            }
+        });
+        TypeSupport.addTypeSupport(new AbstractNumberIMetaDataTypeSupport<Short>(Short.class) {
+            @Override
+            @Nonnull
+            protected Short toNumber(final double d) {
+                return Short.valueOf(Double.valueOf(d).shortValue());
+            }
+        });
+
         TypeSupport.addTypeSupport(new EpicsEnumConversionSupport());
         TypeSupport.addTypeSupport(new CollectionConversionSupport());
 
         INSTALLED = true;
     }
+    // CHECKSTYLE ON : MethodLength
 
 
     @SuppressWarnings("unchecked")

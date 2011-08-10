@@ -104,31 +104,26 @@ public class XmlFileContentModelBuilder<T extends Enum<T> & ITreeNodeConfigurati
     }
     /**
      * @param doc the xml document model
-     * @param virtualConfRoot 
-     * @param root 
+     * @param virtualConfRoot
+     * @param root
      * @throws CreateContentModelException if Rdn or LdapName could not be constructed
      */
     @Nonnull
-    private ContentModel<T> createContentModelFromFile(@Nonnull final Document doc, 
-                                                       @Nonnull final T virtualConfRoot, 
+    private ContentModel<T> createContentModelFromFile(@Nonnull final Document doc,
+                                                       @Nonnull final T virtualConfRoot,
                                                        @Nonnull final T root)
         throws CreateContentModelException {
 
         final Element xmlRootElement = doc.getRootElement();
 
         ContentModel<T> model = null;
-        try {
-            final String elementName = xmlRootElement.getName();
+        final String elementName = xmlRootElement.getName();
 
-            if (!root.getNodeTypeName().equals(elementName)) {
-                throw new CreateContentModelException("Root element does not match node type name in enum " + root.name(), null);
-            }
-
-            model = new ContentModel<T>(virtualConfRoot);
-
-        } catch (final InvalidNameException e) {
-            throw new CreateContentModelException("Component model could not be constructed. Invalid LDAP name for root element.", e);
+        if (!root.getNodeTypeName().equals(elementName)) {
+            throw new CreateContentModelException("Root element does not match node type name in enum " + root.name(), null);
         }
+
+        model = new ContentModel<T>(virtualConfRoot);
 
         processElement(model, xmlRootElement, model.getVirtualRoot(), virtualConfRoot);
 
@@ -152,13 +147,13 @@ public class XmlFileContentModelBuilder<T extends Enum<T> & ITreeNodeConfigurati
      * Recursive
      * @param model
      * @param element
-     * @param virtualRoot 
+     * @param virtualRoot
      * @param iLdapTreeComponent
      * @throws CreateContentModelException if Rdn or LdapName could not be constructed
      */
     private void processElement(@Nonnull final ContentModel<T> model,
                                 @Nonnull final Element element,
-                                @Nonnull final ISubtreeNodeComponent<T> ldapParent, 
+                                @Nonnull final ISubtreeNodeComponent<T> ldapParent,
                                 @Nonnull final T virtualRoot) throws CreateContentModelException {
 
 
@@ -203,6 +198,7 @@ public class XmlFileContentModelBuilder<T extends Enum<T> & ITreeNodeConfigurati
     }
 
     @SuppressWarnings("unchecked")
+    @Nonnull
     private Attributes extractAttributes(@Nonnull final Element element,
                                          @Nonnull final ImmutableSet<String> attributes) {
 
