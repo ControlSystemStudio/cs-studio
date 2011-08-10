@@ -25,11 +25,22 @@
         file extensions.
     -->
    <extension point="org.eclipse.ui.editors">
-      <editor id="org.csstudio.navigator.applaunch"
-            icon="icons/run.gif"
+      <editor
+            default="true"
             extensions="app"
+            icon="icons/run.gif"
+            id="org.csstudio.navigator.applaunch.launch"
             launcher="org.csstudio.navigator.applaunch.Launcher"
             name="%LaunchApplication">
+         <contentTypeBinding contentTypeId="org.csstudio.navigator.applaunch.application"/>
+      </editor>
+
+      <editor
+            extensions="app"
+            icon="icons/edit.gif"
+            id="org.csstudio.navigator.applaunch.edit"
+            launcher="org.csstudio.navigator.applaunch.Editor"
+            name="%EditLaunchConfig">
          <contentTypeBinding contentTypeId="org.csstudio.navigator.applaunch.application"/>
       </editor>
    </extension>
@@ -79,23 +90,9 @@
       </wizard>
    </extension>
    
-   <!-- Command to edit the config -->
-   <extension
-         point="org.eclipse.ui.commands">
-      <command
-            id="org.csstudio.navigator.applaunch.command.edit"
-            name="EditLaunchConfig">
-      </command>
-   </extension>
-   <extension
-         point="org.eclipse.ui.handlers">
-      <handler
-            class="org.csstudio.navigator.applaunch.EditLaunchConfiguration"
-            commandId="org.csstudio.navigator.applaunch.command.edit">
-      </handler>
-   </extension>
-   
-   <!-- Display command in context menu -->
+   <!-- Alternatively, could have added a command for
+        editing the config from the context menu.
+        
    <extension point="org.eclipse.ui.menus">
       <menuContribution
             allPopups="false"
@@ -105,10 +102,6 @@
                icon="icons/run.gif"
                label="%EditLaunchConfig"
                style="push">
-            <!-- Tricky part: Display only for files
-                 that are app config files
-                 limited to 1 file
-              -->
             <visibleWhen>
               <with variable="activeMenuSelection">
                 <iterate>
@@ -125,4 +118,6 @@
          </command>
       </menuContribution>
    </extension>
+    -->
+   
 </plugin>

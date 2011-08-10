@@ -9,56 +9,49 @@ package org.csstudio.navigator.applaunch;
 
 import java.io.ByteArrayInputStream;
 
-import org.eclipse.core.commands.AbstractHandler;
-import org.eclipse.core.commands.ExecutionEvent;
-import org.eclipse.core.commands.ExecutionException;
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IResource;
+import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.CoreException;
+import org.eclipse.core.runtime.IPath;
 import org.eclipse.jface.dialogs.MessageDialog;
-import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.window.Window;
 import org.eclipse.osgi.util.NLS;
 import org.eclipse.swt.widgets.Shell;
+import org.eclipse.ui.IEditorLauncher;
 import org.eclipse.ui.PlatformUI;
-import org.eclipse.ui.handlers.HandlerUtil;
 
-/** Context menu command handler for editing a launch configuration
+/** Invoke configuration editor for {@link LaunchConfig}
  *  @author Kay Kasemir
  */
-public class EditLaunchConfiguration extends AbstractHandler
+public class Editor implements IEditorLauncher
 {
+	/** Invoked by Eclipse with the path to the launcher config
+	 *  {@inheritDoc}
+	 */
 	@Override
-    public Object execute(final ExecutionEvent event) throws ExecutionException
-    {
-		final IStructuredSelection selection =
-			(IStructuredSelection) HandlerUtil.getCurrentSelection(event);
-		if (selection.isEmpty())
-			return null;
-		final Object element = selection.getFirstElement();
-		if (! (element instanceof IFile))
-			return null;
-		final IFile file = (IFile) element;
-		
+	public void open(final IPath path)
+	{
 		LaunchConfig config;
 		try
 		{
-			config = new LaunchConfig(file.getContents());
+			config = new LaunchConfig(path.toFile());
 		}
 		catch (Exception ex)
 		{
 			config = new LaunchConfig();
 		}
-		
+
 		final Shell shell = PlatformUI.getWorkbench().getActiveWorkbenchWindow().getShell();
 		final LaunchConfigDialog dlg = new LaunchConfigDialog(shell, config);
 		if (dlg.open() != Window.OK)
-			return null;
+			return;
 		
 		// Update file
 		try
         {
-	        file.setContents(
+			final IFile file = (IFile) ResourcesPlugin.getWorkspace().getRoot().findMember(path);
+			file.setContents(
 	        	new ByteArrayInputStream(dlg.getConfig().getXML().getBytes()),
 	        	IResource.FORCE, null);
         }
@@ -69,7 +62,5 @@ public class EditLaunchConfiguration extends AbstractHandler
         			NLS.bind(Messages.LaunchConfigUpdateErrorFmt,
         					ex.getMessage()));
         }
-		
-	    return null;
-    }
+	}
 }
