@@ -1,4 +1,4 @@
-package org.csstudio.rap.preferences;
+package org.csstudio.rap.core.preferences;
 
 import org.eclipse.core.runtime.preferences.IEclipsePreferences;
 import org.eclipse.core.runtime.preferences.IScope;

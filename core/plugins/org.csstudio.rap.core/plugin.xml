@@ -4,9 +4,17 @@
      <extension
          point="org.eclipse.core.runtime.preferences">
       <scope
-            class="org.csstudio.rap.preferences.ServerPreferenceFactory"
+            class="org.csstudio.rap.core.preferences.ServerPreferenceFactory"
             name="server">
       </scope>
    </extension>
+     <extension
+           point="org.eclipse.rap.ui.entrypoint">
+        <entrypoint
+              class="org.csstudio.rap.core.debug.RAPDebugEntryPoint"
+              id="org.csstudio.rap.core.debug.entrypoint"
+              parameter="debug">
+        </entrypoint>
+     </extension>
 
 </plugin>

@@ -1,4 +1,4 @@
-package org.csstudio.rap.preferences;
+package org.csstudio.rap.core.preferences;
 
 import java.io.BufferedInputStream;
 import java.io.FileInputStream;
