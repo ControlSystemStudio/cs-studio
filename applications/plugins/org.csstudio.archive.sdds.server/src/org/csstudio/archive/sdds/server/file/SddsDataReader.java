@@ -63,10 +63,10 @@ public class SddsDataReader implements Runnable {
     /**
      * 
      * @param path
-     * @param startTime
-     * @param endTime
+     * @param timeStart
+     * @param timeEnd
      */
-    public SddsDataReader(String path, long startTime, long endTime) {
+    public SddsDataReader(String path, long timeStart, long timeEnd) {
         
         IPreferencesService pref = Platform.getPreferencesService();
 
@@ -74,8 +74,8 @@ public class SddsDataReader implements Runnable {
         boolean littleEndian = pref.getBoolean(SddsServerActivator.PLUGIN_ID, ServerPreferenceKey.P_SDDS_LITTLE_ENDIAN, false, null);
 
         filePath = path;
-        this.startTime = startTime;
-        this.endTime = endTime;
+        this.startTime = timeStart;
+        this.endTime = timeEnd;
         sddsFile = new SDDSFile();
         sampleParameter = new SampleParameter();
         sddsFile.setFileName(filePath);
@@ -86,7 +86,7 @@ public class SddsDataReader implements Runnable {
     
     /**
      * 
-     * @return
+     * @return EpicsRecordData
      */
     public EpicsRecordData[] getResultAsArray() {
         
@@ -104,7 +104,7 @@ public class SddsDataReader implements Runnable {
     
     /**
      * 
-     * @return
+     * @return TreeSet<EpicsRecordData>
      */
     //public Vector<EpicsRecordData> getResult() {
     public TreeSet<EpicsRecordData> getResult() {
@@ -114,7 +114,7 @@ public class SddsDataReader implements Runnable {
     /**
      * Returns the number of data sets.
      * 
-     * @return
+     * @return Number of results
      */
     public int getResultCount() {
         return data.size();
@@ -123,7 +123,7 @@ public class SddsDataReader implements Runnable {
     /**
      * Returns the object that holds the parameter values of the PV.
      * 
-     * @return
+     * @return SampleParameter
      */
     public SampleParameter getSampleCtrl() {
         return sampleParameter;

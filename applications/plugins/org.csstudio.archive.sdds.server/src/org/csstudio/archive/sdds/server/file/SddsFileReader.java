@@ -46,20 +46,20 @@ import org.slf4j.LoggerFactory;
  */
 public class SddsFileReader {
     
-    /** The path to the data files */
-    private final ArchiveLocation dataPath;
-    
     /** The logger for this class */
     private static final Logger LOG = LoggerFactory.getLogger(SddsFileReader.class);
+
+    /** The path to the data files */
+    private final ArchiveLocation dataPath;
     
     /**
      * Constructor that gets a string containing the path to the data files.
      * 
      * @throws DataPathNotFoundException 
      */
-    public SddsFileReader() throws DataPathNotFoundException {
+    public SddsFileReader(String dataSourceFile) throws DataPathNotFoundException {
         dataPath = new ArchiveLocation();
-        dataPath.loadLocationList("./archive_data_source.txt");
+        dataPath.loadLocationList(dataSourceFile);
     }
     
     /**

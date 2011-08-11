@@ -40,8 +40,8 @@ import org.csstudio.archive.sdds.server.util.TimeInterval;
  * @author Markus Moeller
  *
  */
-public class ArchiveLocation
-{
+public class ArchiveLocation {
+    
     /**
      * TODO: A job has to read in the data paths every xx hours!!!!!
      * 
@@ -56,8 +56,7 @@ public class ArchiveLocation
     /**
      * 
      */
-    public ArchiveLocation()
-    {
+    public ArchiveLocation() {
         dataPath = new TreeMap<Integer, String>(new YearComparator());
         FILE_SEPARATOR = System.getProperty("file.separator");
     }
@@ -67,12 +66,9 @@ public class ArchiveLocation
      * @param year
      * @return The matching path
      */
-    public String getPathByYear(int year)
-    {
+    public String getPathByYear(int year) {
         String result = null;
-        
         result = dataPath.get(year);
-        
         return result;
     }
     
@@ -81,10 +77,8 @@ public class ArchiveLocation
      * @param startTime
      * @return The matching path
      */
-    public String getPath(long startTime)
-    {
+    public String getPath(long startTime) {
         TimeInterval timeInterval = new TimeInterval(startTime, startTime);
-        
         return dataPath.get(timeInterval.getStartYear()) + timeInterval.getStartMonthAsString() + FILE_SEPARATOR;
     }
     
@@ -92,8 +86,8 @@ public class ArchiveLocation
      * 
      * @return All matching paths
      */
-    public String[] getAllPaths(long startTime, long endTime)
-    {
+    public String[] getAllPaths(long startTime, long endTime) {
+        
         Vector<String> result = new Vector<String>();
         TimeInterval timeInterval = new TimeInterval(startTime, endTime);
         String path = null;
@@ -103,34 +97,26 @@ public class ArchiveLocation
         
         int[] years = timeInterval.getYears();
         
-        if(years.length > 0)
-        {
+        if(years.length > 0) {
+            
             lastYear = years[years.length - 1];
             lastMonth = timeInterval.getEndMonth();
             
-            for(int y = years[0];y <= lastYear;y++)
-            {
-                if(y == years[0])
-                {
+            for(int y = years[0];y <= lastYear;y++) {
+                
+                if(y == years[0]) {
                     month = timeInterval.getStartMonth();
-                }
-                else
-                {
+                } else {
                     month = 1;
                 }
                 
-                if(y < lastYear)
-                {
-                    for(int m = month;m <= 12;m++)
-                    {
+                if(y < lastYear) {
+                    for(int m = month;m <= 12;m++) {
                         path = dataPath.get(y) + getMonthAsString(m) + FILE_SEPARATOR;
                         result.add(path);
                     }
-                }
-                else
-                {
-                    for(int m = month;m <= lastMonth;m++)
-                    {
+                } else {
+                    for(int m = month;m <= lastMonth;m++) {
                         path = dataPath.get(y) + getMonthAsString(m) + FILE_SEPARATOR;
                         result.add(path);
                     }
@@ -146,8 +132,7 @@ public class ArchiveLocation
      * @param month
      * @return The month as string
      */
-    public String getMonthAsString(int month)
-    {
+    public String getMonthAsString(int month) {
         return (month > 9) ? Integer.toString(month) : new String("0" + month);
     }
     
@@ -185,9 +170,9 @@ public class ArchiveLocation
                 }
             }
         } catch(FileNotFoundException fnfe) {
-            System.out.println("[*** FileNotFoundException ***]: " + fnfe.getMessage());
+            throw new DataPathNotFoundException("File with the location paths cannot be found: " + fnfe.getMessage());
         } catch(IOException ioe) {
-            System.out.println("[*** IOException ***]: " + ioe.getMessage());
+            throw new DataPathNotFoundException("Reading error: " + ioe.getMessage());
         } finally {
             if(br != null) {
             	try{br.close();}catch(Exception e){/* Can be ignored */}
