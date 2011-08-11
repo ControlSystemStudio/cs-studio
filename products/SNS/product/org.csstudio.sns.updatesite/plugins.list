@@ -86,6 +86,7 @@ org.csstudio.trends.databrowser2.opiwidget/**
 org.csstudio.ui.help/**
 org.csstudio.ui.menu/**
 org.csstudio.ui.menu.app/**
+org.csstudio.ui.menu.pvscript/**
 org.csstudio.ui.menu.web/**
 org.csstudio.ui.preferences/**
 org.csstudio.ui.util/**
