@@ -17,6 +17,7 @@ import org.csstudio.platform.workspace.WorkspaceInfo;
 import org.csstudio.sns.startuphelper.StartupHelper;
 import org.csstudio.startup.module.LoginExtPoint;
 import org.csstudio.startup.module.WorkspaceExtPoint;
+import org.csstudio.utility.product.StartupParameters;
 import org.eclipse.core.runtime.Platform;
 import org.eclipse.equinox.app.IApplication;
 import org.eclipse.equinox.app.IApplicationContext;

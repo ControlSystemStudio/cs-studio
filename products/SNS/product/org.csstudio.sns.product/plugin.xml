@@ -2,32 +2,6 @@
 <?eclipse version="3.2"?>
 <plugin>
    <extension
-         point="org.eclipse.help.toc">
-      <toc
-            file="toc.xml"
-            primary="true">
-      </toc>
-   </extension>
-   <extension
-         point="org.eclipse.core.runtime.applications"
-         id="application"
-		 name="SNS CSS">
-      <application>
-         <run
-               class="org.csstudio.startup.application.Application">
-         </run>
-      </application>
-   </extension>
-   <extension
-         point="org.eclipse.ui.perspectives">
-      <perspective
-            class="org.csstudio.sns.product.CSS_Perspective"
-            icon="icons/perspective.gif"
-            id="org.csstudio.sns.product.CSS_Perspective"
-            name="SNS Control System Studio">
-      </perspective>
-   </extension>
-   <extension
          id="product"
          point="org.eclipse.core.runtime.products">
       <product
@@ -74,6 +48,39 @@
             value="SNS CSS"/>
       </product>
    </extension>
+   <extension
+         point="org.eclipse.core.runtime.applications"
+         id="application"
+		 name="SNS CSS">
+      <application>
+         <run
+               class="org.csstudio.startup.application.Application">
+         </run>
+      </application>
+   </extension>
+
+   <extension point="org.csstudio.startup.module">
+      <startupParameters class="org.csstudio.utility.product.StartupParameters"/>
+      <workspace class="org.csstudio.sns.product.startupmodule.WorkspacePrompt"/>
+      <workbench class="org.csstudio.utility.product.Workbench"/>
+      <project class="org.csstudio.startup.module.defaults.DefaultProject"/>
+   </extension>
+   <extension
+         point="org.eclipse.help.toc">
+      <toc
+            file="toc.xml"
+            primary="true">
+      </toc>
+   </extension>
+   <extension
+         point="org.eclipse.ui.perspectives">
+      <perspective
+            class="org.csstudio.sns.product.CSS_Perspective"
+            icon="icons/perspective.gif"
+            id="org.csstudio.sns.product.CSS_Perspective"
+            name="SNS Control System Studio">
+      </perspective>
+   </extension>
 
    <extension
          point="org.eclipse.ui.intro">
@@ -92,13 +99,6 @@
             content="doc/whatsnew.xml"
             configId="org.eclipse.ui.intro.universalConfig">
       </configExtension>
-   </extension>
-
-   <extension point="org.csstudio.startup.module">
-      <startupParameters class="org.csstudio.sns.product.startupmodule.StartupParameters"/>
-      <workspace class="org.csstudio.sns.product.startupmodule.WorkspacePrompt"/>
-      <workbench class="org.csstudio.sns.product.startupmodule.Workbench"/>
-      <project class="org.csstudio.startup.module.defaults.DefaultProject"/>
    </extension>
    
 
