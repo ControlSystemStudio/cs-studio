@@ -72,15 +72,6 @@
             primary="true">
       </toc>
    </extension>
-   <extension
-         point="org.eclipse.ui.perspectives">
-      <perspective
-            class="org.csstudio.sns.product.CSS_Perspective"
-            icon="icons/perspective.gif"
-            id="org.csstudio.sns.product.CSS_Perspective"
-            name="SNS Control System Studio">
-      </perspective>
-   </extension>
 
    <extension
          point="org.eclipse.ui.intro">
