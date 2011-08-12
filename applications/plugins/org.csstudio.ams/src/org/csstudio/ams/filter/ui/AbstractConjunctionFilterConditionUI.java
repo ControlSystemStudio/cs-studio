@@ -1,3 +1,4 @@
+
 /* 
  * Copyright (c) 2008 Stiftung Deutsches Elektronen-Synchrotron, 
  * Member of the Helmholtz Association, (DESY), HAMBURG, GERMANY.
@@ -19,13 +20,13 @@
  * PROJECT IN THE FILE LICENSE.HTML. IF THE LICENSE IS NOT INCLUDED YOU MAY FIND A COPY 
  * AT HTTP://WWW.DESY.DE/LEGAL/LICENSE.HTM
  */
- package org.csstudio.ams.filter.ui;
+
+package org.csstudio.ams.filter.ui;
 
 import java.sql.Connection;
 import java.sql.SQLException;
 import java.util.LinkedList;
 import java.util.List;
-
 import org.csstudio.ams.AMSException;
 import org.csstudio.ams.CycleDetectionUtil;
 import org.csstudio.ams.Log;
@@ -37,7 +38,6 @@ import org.csstudio.ams.dbAccess.configdb.FilterConditionDAO;
 import org.csstudio.ams.dbAccess.configdb.FilterConditionProcessVariableTObject;
 import org.csstudio.ams.dbAccess.configdb.FilterConditionTObject;
 import org.csstudio.ams.filter.FilterConditionProcessVariable;
-import org.csstudio.platform.logging.CentralLogger;
 import org.eclipse.osgi.util.NLS;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.SelectionAdapter;
@@ -77,7 +77,8 @@ public abstract class AbstractConjunctionFilterConditionUI extends
 	/**
 	 * {@inheritDoc}
 	 */
-	public boolean check() {
+	@Override
+    public boolean check() {
 		List<String> errors = new LinkedList<String>();
 
 		ComboWidgetIdDataItem firstComboBoxItemUI = (ComboWidgetIdDataItem) getSelectedComboBoxItemUI(
@@ -106,7 +107,8 @@ public abstract class AbstractConjunctionFilterConditionUI extends
 	/**
 	 * {@inheritDoc}
 	 */
-	public void create(Connection conDb, int filterConditionID)
+	@Override
+    public void create(Connection conDb, int filterConditionID)
 			throws AMSException {
 		try {
 			assert check() : "Precondition violated: check()";
@@ -114,8 +116,7 @@ public abstract class AbstractConjunctionFilterConditionUI extends
 			snapshot = collectDataToBeSaved(filterConditionID);
 			CommonConjunctionFilterConditionDAO.insert(conDb, snapshot);
 		} catch (Exception ex) {
-			CentralLogger.getInstance().fatal(this,
-					"Fail to create new dataset", ex);
+			Log.log(this, Log.FATAL, "Fail to create new dataset", ex);
 			throw new AMSException("Fail to create new dataset", ex);
 		}
 	}
@@ -123,7 +124,8 @@ public abstract class AbstractConjunctionFilterConditionUI extends
 	/**
 	 * {@inheritDoc}
 	 */
-	public void createUI(Composite parent) {
+	@Override
+    public void createUI(Composite parent) {
 		if (localParent == null) {
 			localParent = new Composite(parent, SWT.NONE);
 
@@ -205,7 +207,8 @@ public abstract class AbstractConjunctionFilterConditionUI extends
 				if (!onCheck) {
 					if (firstId==secondId) {
 						Display.getDefault().asyncExec(new Runnable() {
-							public void run() {
+							@Override
+                            public void run() {
 								showMessageDialog(cboFirstFC.getShell(),
 										Messages.FilterConditionConjunctionUI_Warn_Conditions_Equal,
 										Messages.FilterConditionConjunctionUI_Warn_Dialog_Title,
@@ -214,7 +217,8 @@ public abstract class AbstractConjunctionFilterConditionUI extends
 						});
 					} else {
 						Display.getDefault().asyncExec(new Runnable() {
-							public void run() {
+							@Override
+                            public void run() {
 								showMessageDialog(cboFirstFC.getShell(),
 										Messages.FilterConditionConjunctionUI_No_Error_Dialog_Message,
 										Messages.FilterConditionConjunctionUI_No_Error_Dialog_Title,
@@ -225,7 +229,8 @@ public abstract class AbstractConjunctionFilterConditionUI extends
 				}
 			} else {
 				Display.getDefault().asyncExec(new Runnable() {
-					public void run() {
+					@Override
+                    public void run() {
 						String messageText = NLS.bind(Messages.FilterConditionConjunctionUI_Error_Cycle_Detected, CycleDetectionUtil.createCycleDetectionMessage(conDb, cycleReferencesToBeShownOnUI));
 						if (onCheck) {
 							messageText = Messages.FilterConditionConjunctionUI_Error_Not_Saved + messageText;
@@ -238,17 +243,6 @@ public abstract class AbstractConjunctionFilterConditionUI extends
 					}
 				});
 			}
-		} catch (final ClassNotFoundException e) {
-			valid = false;
-			Display.getDefault().asyncExec(new Runnable() {
-				public void run() {
-					showMessageDialog(
-							cboFirstFC.getShell(),
-							NLS.bind(Messages.FilterConditionConjunctionUI_Error_No_DB_Connection, e),
-							Messages.FilterConditionConjunctionUI_Error_Dialog_Title,
-							SWT.ICON_WARNING);	
-				}
-			});
 		} catch (final SQLException e) {
 			e.printStackTrace();
 			valid = false;
@@ -307,15 +301,14 @@ public abstract class AbstractConjunctionFilterConditionUI extends
 	/**
 	 * {@inheritDoc}
 	 */
-	public void delete(Connection conDb, int filterConditionID)
+	@Override
+    public void delete(Connection conDb, int filterConditionID)
 			throws AMSException {
 		try {
 			CommonConjunctionFilterConditionDAO
 					.remove(conDb, filterConditionID);
 		} catch (Exception ex) {
-			CentralLogger.getInstance().fatal(
-					this,
-					"Could not remove FilterCondition with reference: "
+			Log.log(this, Log.FATAL, "Could not remove FilterCondition with reference: "
 							+ filterConditionID, ex);
 			throw new AMSException(
 					"Could not remove FilterCondition with reference: "
@@ -326,7 +319,8 @@ public abstract class AbstractConjunctionFilterConditionUI extends
 	/**
 	 * {@inheritDoc}
 	 */
-	public void dispose() {
+	@Override
+    public void dispose() {
 		if (localParent != null && !localParent.isDisposed()) {
 			localParent.dispose();
 			localParent = null;
@@ -345,15 +339,15 @@ public abstract class AbstractConjunctionFilterConditionUI extends
 	/**
 	 * {@inheritDoc}
 	 */
-	public void load(Connection conDb, int filterConditionID)
+	@Override
+    public void load(Connection conDb, int filterConditionID)
 			throws AMSException {
 		snapshot = null;
 		try {
 			snapshot = CommonConjunctionFilterConditionDAO.select(conDb,
 					filterConditionID);
 		} catch (SQLException e) {
-			CentralLogger.getInstance().fatal(this,
-					"Can not load filter details!", e);
+			Log.log(this, Log.FATAL, "Can not load filter details!", e);
 			throw new AMSException("Can not load filter details!", e);
 		}
 
@@ -372,7 +366,8 @@ public abstract class AbstractConjunctionFilterConditionUI extends
 	/**
 	 * {@inheritDoc}
 	 */
-	public void reset() {
+	@Override
+    public void reset() {
 		setComboBoxValueUI(cboFirstFC.getDisplay(), cboFirstFC, -1);
 		setComboBoxValueUI(cboSecondFC.getDisplay(), cboSecondFC, -1);
 	}
@@ -403,7 +398,8 @@ public abstract class AbstractConjunctionFilterConditionUI extends
 	/**
 	 * {@inheritDoc}
 	 */
-	public void save(Connection conDb) throws AMSException {
+	@Override
+    public void save(Connection conDb) throws AMSException {
 		try {
 			assert check() : "Precondition violated: check()";
 
@@ -412,7 +408,7 @@ public abstract class AbstractConjunctionFilterConditionUI extends
 			CommonConjunctionFilterConditionDAO.update(conDb,
 					filterConfiguration);
 		} catch (Exception ex) {
-			CentralLogger.getInstance().fatal(this, "Fail to save dataset", ex);
+			Log.log(this, Log.FATAL, "Fail to save dataset", ex);
 			throw new AMSException("Fail to save dataset", ex);
 		}
 	}

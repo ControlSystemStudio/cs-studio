@@ -32,18 +32,20 @@ import org.csstudio.platform.management.IManagementCommand;
  * @author Markus Moeller
  *
  */
-public class Stop implements IManagementCommand
-{
+public class Stop implements IManagementCommand {
+    
     /* (non-Javadoc)
      * @see org.csstudio.platform.management.IManagementCommand#execute(org.csstudio.platform.management.CommandParameters)
      */
-    public CommandResult execute(CommandParameters parameters)
-    {
+    public CommandResult execute(CommandParameters parameters) {
         String param = (String)parameters.get("Password");
         String password = VoicemailConnectorStart.getInstance().getPassword();
 
-        if((param == null) && (password.length() > 0))
-        {
+        if(param == null) {
+            return CommandResult.createFailureResult("ERROR: [1] - Parameter not available.");
+        }
+
+        if(password.length() > 0) {
             return CommandResult.createFailureResult("ERROR: [1] - Parameter not available.");
         }
 

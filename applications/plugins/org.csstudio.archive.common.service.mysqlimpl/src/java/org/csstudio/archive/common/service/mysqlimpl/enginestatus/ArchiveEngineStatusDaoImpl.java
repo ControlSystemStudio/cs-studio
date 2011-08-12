@@ -21,11 +21,12 @@
  */
 package org.csstudio.archive.common.service.mysqlimpl.enginestatus;
 
+
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.sql.Timestamp;
 import java.util.Collection;
+import java.util.Collections;
 
 import javax.annotation.CheckForNull;
 import javax.annotation.Nonnull;
@@ -35,61 +36,28 @@ import org.csstudio.archive.common.service.enginestatus.ArchiveEngineStatus;
 import org.csstudio.archive.common.service.enginestatus.ArchiveEngineStatusId;
 import org.csstudio.archive.common.service.enginestatus.EngineMonitorStatus;
 import org.csstudio.archive.common.service.enginestatus.IArchiveEngineStatus;
+import org.csstudio.archive.common.service.mysqlimpl.batch.BatchQueueHandlerSupport;
 import org.csstudio.archive.common.service.mysqlimpl.dao.AbstractArchiveDao;
 import org.csstudio.archive.common.service.mysqlimpl.dao.ArchiveConnectionHandler;
 import org.csstudio.archive.common.service.mysqlimpl.dao.ArchiveDaoException;
 import org.csstudio.archive.common.service.mysqlimpl.persistengine.PersistEngineDataManager;
 import org.csstudio.domain.desy.time.TimeInstant;
 import org.csstudio.domain.desy.time.TimeInstant.TimeInstantBuilder;
+import org.csstudio.domain.desy.typesupport.TypeSupportException;
 
-import com.google.common.base.Function;
-import com.google.common.base.Joiner;
-import com.google.common.collect.Iterables;
 import com.google.inject.Inject;
 
 /**
- * TODO (bknerr) :
+ * Dao implementation using
  *
  * @author bknerr
  * @since 02.02.2011
  */
 public class ArchiveEngineStatusDaoImpl extends AbstractArchiveDao implements IArchiveEngineStatusDao {
 
-    /**
-     * Converter function to single sql VALUE, i.e. comma separated strings embraced by parentheses.
-     * TODO (bknerr) : extract to be used by all VALUE assemblers
-     *
-     * @author bknerr
-     * @since 03.02.2011
-     */
-    private static final class MonitorStates2SqlValue implements Function<IArchiveEngineStatus, String> {
-        /**
-         * Constructor.
-         */
-        public MonitorStates2SqlValue() {
-            // Empty
-        }
-
-        /**
-         * {@inheritDoc}
-         */
-        @Override
-        @Nonnull
-        public String apply(@Nonnull final IArchiveEngineStatus from) {
-
-            return "(" +
-                   Joiner.on(",").join(from.getEngineId().longValue(),
-                                       "'" + from.getStatus().name() + "'", // TODO (bknerr) : once we use hibernate...
-                                       "'" + from.getTimestamp().formatted() + "'",
-                                       "'" + from.getInfo() + "'") +
-                    ")";
-        }
-    }
-    private static final MonitorStates2SqlValue M2S_FUNC = new MonitorStates2SqlValue();
+    public static final String TAB = "engine_status";
 
     private static final String EXC_MSG = "Retrieval of engine status from archive failed.";
-
-    private static final String TAB = "engine_status";
 
     private final String _selectLatestEngineStatusInfoStmt =
         "SELECT id, engine_id, status, time, info FROM " + getDatabaseName() + "." + TAB +
@@ -104,11 +72,8 @@ public class ArchiveEngineStatusDaoImpl extends AbstractArchiveDao implements IA
     public ArchiveEngineStatusDaoImpl(@Nonnull final ArchiveConnectionHandler handler,
                                       @Nonnull final PersistEngineDataManager persister) {
         super(handler, persister);
-    }
 
-    @Nonnull
-    private String createMgmtEntryUpdateStmtPrefix(@Nonnull final String database) {
-        return "INSERT INTO " + database + "." + TAB + " (engine_id, status, time, info) VALUES ";
+        BatchQueueHandlerSupport.installHandlerIfNotExists(new ArchiveEngineStatusBatchQueueHandler(getDatabaseName()));
     }
 
     /**
@@ -116,12 +81,9 @@ public class ArchiveEngineStatusDaoImpl extends AbstractArchiveDao implements IA
      */
     @Override
     @CheckForNull
-    public IArchiveEngineStatus createMgmtEntry(@Nonnull final IArchiveEngineStatus entry) throws ArchiveDaoException {
-        final String sqlValue = M2S_FUNC.apply(entry);
-        final String stmtStr = createMgmtEntryUpdateStmtPrefix(getDatabaseName()) + sqlValue;
-
-        getEngineMgr().submitStatementToBatch(stmtStr);
-        return null;
+    public IArchiveEngineStatus createMgmtEntry(@Nonnull final IArchiveEngineStatus status) throws ArchiveDaoException {
+        createMgmtEntries(Collections.singleton(status));
+        return status;
     }
 
     /**
@@ -129,11 +91,11 @@ public class ArchiveEngineStatusDaoImpl extends AbstractArchiveDao implements IA
      */
     @Override
     public boolean createMgmtEntries(@Nonnull final Collection<IArchiveEngineStatus> monitorStates) throws ArchiveDaoException {
-
-        final String values = Joiner.on(",").join(Iterables.transform(monitorStates, M2S_FUNC));
-        final String stmtStr = createMgmtEntryUpdateStmtPrefix(getDatabaseName()) + values;
-
-        getEngineMgr().submitStatementToBatch(stmtStr);
+        try {
+            getEngineMgr().submitToBatch(monitorStates);
+        } catch (final TypeSupportException e) {
+            throw new ArchiveDaoException("Batch type support missing for " + IArchiveEngineStatus.class.getName(), e);
+        }
         return true;
     }
 
@@ -146,8 +108,7 @@ public class ArchiveEngineStatusDaoImpl extends AbstractArchiveDao implements IA
                                                          @Nonnull final TimeInstant latestAliveTime) throws ArchiveDaoException {
         try {
             final PreparedStatement stmt = getConnection().prepareStatement(_selectLatestEngineStatusInfoStmt);
-            // time < now
-            stmt.setTimestamp(1, new Timestamp(TimeInstantBuilder.fromNow().getMillis()));
+            stmt.setLong(1, latestAliveTime.getNanos());
             stmt.setInt(2, id.intValue());
 
             final ResultSet resultSet = stmt.executeQuery();
@@ -167,14 +128,14 @@ public class ArchiveEngineStatusDaoImpl extends AbstractArchiveDao implements IA
         final int idVal = resultSet.getInt("id");
         final int engineId = resultSet.getInt("engine_id");
         final String status = resultSet.getString("status");
-        final Timestamp time = resultSet.getTimestamp("time");
+        final long time = resultSet.getLong("time");
         final String info = resultSet.getString("info");
 
         return new ArchiveEngineStatus(new ArchiveEngineStatusId(idVal),
-                                new ArchiveEngineId(engineId),
-                                EngineMonitorStatus.valueOf(status),
-                                TimeInstantBuilder.fromMillis(time.getTime()),
-                                info);
+                                       new ArchiveEngineId(engineId),
+                                       EngineMonitorStatus.valueOf(status),
+                                       TimeInstantBuilder.fromNanos(time),
+                                       info);
     }
 
 }

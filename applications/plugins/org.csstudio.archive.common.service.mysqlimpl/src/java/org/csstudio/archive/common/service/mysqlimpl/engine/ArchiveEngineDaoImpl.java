@@ -26,12 +26,10 @@ import java.net.URL;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.sql.Timestamp;
 
 import javax.annotation.CheckForNull;
 import javax.annotation.Nonnull;
 
-import org.slf4j.Logger;
 import org.csstudio.archive.common.service.engine.ArchiveEngine;
 import org.csstudio.archive.common.service.engine.ArchiveEngineId;
 import org.csstudio.archive.common.service.engine.IArchiveEngine;
@@ -41,6 +39,7 @@ import org.csstudio.archive.common.service.mysqlimpl.dao.ArchiveDaoException;
 import org.csstudio.archive.common.service.mysqlimpl.persistengine.PersistEngineDataManager;
 import org.csstudio.domain.desy.time.TimeInstant;
 import org.csstudio.domain.desy.time.TimeInstant.TimeInstantBuilder;
+import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.google.inject.Inject;
@@ -119,13 +118,14 @@ public class ArchiveEngineDaoImpl extends AbstractArchiveDao implements IArchive
     private IArchiveEngine retrieveEngineByStmt(@Nonnull final PreparedStatement statement)
                                                 throws SQLException,
                                                        MalformedURLException {
+        ResultSet result = null;
         try {
-            final ResultSet result = statement.executeQuery();
+            result = statement.executeQuery();
             if (result.next()) {
                 return createArchiveEngineFromResult(result);
             }
         } finally {
-            closeStatement(statement, "Closing of statement " + statement.toString() + " failed.");
+            closeStatement(result, statement, "Closing of statement " + statement.toString() + " failed.");
         }
         return null;
     }
@@ -137,10 +137,10 @@ public class ArchiveEngineDaoImpl extends AbstractArchiveDao implements IArchive
         // id, url, alive
         final int id = result.getInt("id");
         final String url = result.getString("url");
-        final Timestamp time = result.getTimestamp("alive");
+        final long nanosSinceEpoch = result.getLong("alive");
         return new ArchiveEngine(new ArchiveEngineId(id),
                                  new URL(url),
-                                 TimeInstantBuilder.fromMillis(time.getTime()));
+                                 TimeInstantBuilder.fromNanos(nanosSinceEpoch));
     }
 
     /**
@@ -152,7 +152,8 @@ public class ArchiveEngineDaoImpl extends AbstractArchiveDao implements IArchive
         PreparedStatement statement = null;
         try {
             statement = getConnection().prepareStatement(_updateEngineIsAliveStmt);
-            statement.setTimestamp(1, new Timestamp(lastTimeAlive.getMillis()));
+            final long nanosSinceEpoch = lastTimeAlive.getNanos();
+            statement.setLong(1, nanosSinceEpoch);
             statement.setInt(2, id.intValue());
 
             statement.executeUpdate();
@@ -160,7 +161,7 @@ public class ArchiveEngineDaoImpl extends AbstractArchiveDao implements IArchive
         } catch (final Exception e) {
             handleExceptions(EXC_MSG, e);
         } finally {
-            closeStatement(statement, "Closing of statement " + _selectEngineByNameStmt + " failed.");
+            closeStatement(null, statement, "Closing of statement " + _selectEngineByNameStmt + " failed.");
         }
     }
 }

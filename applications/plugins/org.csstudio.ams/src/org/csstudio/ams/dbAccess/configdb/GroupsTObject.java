@@ -31,9 +31,10 @@ import org.csstudio.ams.dbAccess.ItemInterface;
 	sType		NUMBER(6),
 	PRIMARY KEY (iGroupId)
 */
-public class GroupsTObject implements ItemInterface
-{
-	private int 	groupID;
+@SuppressWarnings("hiding")
+public class GroupsTObject implements ItemInterface {
+	
+    private int 	groupID;
 	private String 	name;
 	private short 	type;
 	
@@ -42,15 +43,14 @@ public class GroupsTObject implements ItemInterface
 		this.groupID = -1;
 	}
 	
-	public GroupsTObject(int groupID, String name, short type)
-	{
+	public GroupsTObject(int groupID, String name, short type) {
 		this.groupID = groupID;
 		this.name = name;
 		this.type = type;
 	}
 
-	public int getID()
-	{
+	@Override
+    public int getID() {
 		return groupID;
 	}
 

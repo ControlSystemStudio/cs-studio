@@ -32,54 +32,54 @@ import org.osgi.framework.BundleContext;
  */
 public class TestSuiteActivator extends Plugin {
 
-	/**
-	 *  The plug-in ID
-	 */
-	public static final String PLUGIN_ID = "org.csstudio.testsuite";
+    /**
+     *  The plug-in ID
+     */
+    public static final String PLUGIN_ID = "org.csstudio.testsuite";
 
     /**
      *  The shared instance
      */
     private static TestSuiteActivator INSTANCE;
 
-	private BundleContext _context;
+    private BundleContext _context;
 
-	/**
-	 * The constructor
-	 */
-	public TestSuiteActivator() {
+    /**
+     * The constructor
+     */
+    public TestSuiteActivator() {
         if (INSTANCE != null) {
             throw new IllegalStateException("Activator " + PLUGIN_ID + " does already exist.");
         }
         INSTANCE = this; // Antipattern is required by the framework!
-	}
+    }
 
-	/**
-	 * {@inheritDoc}
-	 */
-	@Override
+    /**
+     * {@inheritDoc}
+     */
+    @Override
     public void start(@Nonnull final BundleContext context) throws Exception {
-		super.start(context);
-		_context = context;
-	}
+        super.start(context);
+        _context = context;
+    }
 
-	/**
-	 * {@inheritDoc}
-	 */
-	@Override
+    /**
+     * {@inheritDoc}
+     */
+    @Override
     public void stop(@Nonnull final BundleContext context) throws Exception {
-		super.stop(context);
-	}
+        super.stop(context);
+    }
 
-	@Nonnull
-	public Bundle[] getBundles() {
-		final Bundle[] bundles = _context.getBundles();
-		return bundles == null ? new Bundle[0] : bundles;
-	}
+    @Nonnull
+    public Bundle[] getBundles() {
+        final Bundle[] bundles = _context.getBundles();
+        return bundles == null ? new Bundle[0] : bundles;
+    }
 
-	@Nonnull
-	public static TestSuiteActivator getInstance() {
-		return INSTANCE;
-	}
+    @Nonnull
+    public static TestSuiteActivator getInstance() {
+        return INSTANCE;
+    }
 
 }

@@ -1,3 +1,4 @@
+
 /* 
  * Copyright (c) 2008 C1 WPS mbH, 
  * HAMBURG, GERMANY.
@@ -22,6 +23,7 @@
  * MAY FIND A COPY AT
  * {@link http://www.eclipse.org/org/documents/epl-v10.html}.
  */
+
 package org.csstudio.nams.common.material.regelwerk;
 
 import org.csstudio.nams.common.fachwert.Millisekunden;
@@ -59,11 +61,13 @@ public class StandardRegelwerk implements Regelwerk {
 	 * 
 	 * @see de.c1wps.desy.ams.allgemeines.regelwerk.Regelwerk#gibNeueLeerePruefliste()
 	 */
-	public Pruefliste gibNeueLeerePruefliste() {
+	@Override
+    public Pruefliste gibNeueLeerePruefliste() {
 		return new Pruefliste(this.gibRegelwerkskennung(), this.hauptRegel);
 	}
 
-	public Regelwerkskennung gibRegelwerkskennung() {
+	@Override
+    public Regelwerkskennung gibRegelwerkskennung() {
 		return this.regelwerkskennung;
 	}
 
@@ -73,7 +77,8 @@ public class StandardRegelwerk implements Regelwerk {
 	 * @param alarmNachricht
 	 * @param pruefliste
 	 */
-	public void pruefeNachrichtAufBestaetigungsUndAufhebungsNachricht(
+	@Override
+    public void pruefeNachrichtAufBestaetigungsUndAufhebungsNachricht(
 			final AlarmNachricht alarmNachricht, final Pruefliste pruefliste) {
 		if (this.hauptRegel != null) {
 			this.hauptRegel
@@ -92,7 +97,8 @@ public class StandardRegelwerk implements Regelwerk {
 	/**
 	 * {@inheritDoc}
 	 */
-	public void pruefeNachrichtAufTimeOuts(final Pruefliste pruefliste,
+	@Override
+    public void pruefeNachrichtAufTimeOuts(final Pruefliste pruefliste,
 			final Millisekunden msSeitLetzterPruefung) {
 		pruefliste.msGewartet(msSeitLetzterPruefung);
 		if (this.hauptRegel != null) {
@@ -108,7 +114,8 @@ public class StandardRegelwerk implements Regelwerk {
 	// hauptRegel.setHistoryService(historyService);
 	// }
 
-	public void pruefeNachrichtErstmalig(final AlarmNachricht alarmNachricht,
+	@Override
+    public void pruefeNachrichtErstmalig(final AlarmNachricht alarmNachricht,
 			final Pruefliste pruefliste) {
 		if (this.hauptRegel != null) {
 			final Millisekunden zeitBisZurNaechstenAuswertung = this.hauptRegel

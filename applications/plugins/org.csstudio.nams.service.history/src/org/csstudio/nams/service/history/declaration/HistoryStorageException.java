@@ -1,3 +1,4 @@
+
 package org.csstudio.nams.service.history.declaration;
 
 public class HistoryStorageException extends RuntimeException {

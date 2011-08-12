@@ -35,10 +35,11 @@ import org.slf4j.LoggerFactory;
  *  @author Kay Kasemir
  */
 public class ArchiveEngineApplication implements IApplication {
+
     private static final Logger LOG = LoggerFactory.getLogger(ArchiveEngineApplication.class);
 
     /** HTTP Server port */
-    private int _port;
+    private int _httpPort;
 
     /** Request file */
     private String _engineName;
@@ -58,8 +59,8 @@ public class ArchiveEngineApplication implements IApplication {
         final ArgParser parser = new ArgParser();
         final BooleanOption helpOpt =
             new BooleanOption(parser, "-help", "Display Help");
-        final IntegerOption portOpt =
-            new IntegerOption(parser, "-port", "4812", "HTTP server port", 4812);
+        final IntegerOption httpPortOpt =
+            new IntegerOption(parser, "-http_port", "4812", "HTTP server port", 4812);
         final StringOption engineNameOpt =
             new StringOption(parser, "-engine", "demo_engine", "Engine config name", null);
         // Options handled by Eclipse,
@@ -87,7 +88,7 @@ public class ArchiveEngineApplication implements IApplication {
         }
 
         // Copy stuff from options into member vars.
-        _port = portOpt.get();
+        _httpPort = httpPortOpt.get();
         _engineName = engineNameOpt.get();
         return true;
     }
@@ -108,17 +109,28 @@ public class ArchiveEngineApplication implements IApplication {
         // Install the type supports for the engine
         ArchiveEngineTypeSupport.install();
 
+//
+//        try {
+//            final Context jcaContext = JCALibrary.getInstance().createContext(JCALibrary.JNI_THREAD_SAFE);
+//            PVManager.setDefaultDataSource(new JCADataSource(jcaContext, Monitor.LOG));
+//            PVManager.setReadScannerExecutorService(Executors.newScheduledThreadPool(5));
+//        } catch (final CAException e1) {
+//            // TODO Auto-generated catch block
+//            e1.printStackTrace();
+//        }
+
+
         LOG.info("DESY Archive Engine Version {}.", EngineModel.getVersion());
         _run = true;
         _model = new EngineModel(_engineName, provider);
-        final EngineHttpServer httpServer = startHttpServer(_model, _port);
+        final EngineHttpServer httpServer = startHttpServer(_model, _httpPort);
         if (httpServer == null) {
             return EXIT_OK;
         }
         try {
             while (_run) {
 
-                configureAndRunEngine(_model, _port);
+                configureAndRunEngine(_model, _httpPort);
 
                 LOG.info("ArchiveEngine ending");
 

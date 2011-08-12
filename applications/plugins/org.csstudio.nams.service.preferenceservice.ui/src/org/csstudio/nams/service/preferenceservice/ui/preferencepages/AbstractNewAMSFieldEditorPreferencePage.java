@@ -1,3 +1,4 @@
+
 package org.csstudio.nams.service.preferenceservice.ui.preferencepages;
 
 import org.csstudio.nams.service.configurationaccess.localstore.declaration.DatabaseType;
@@ -34,7 +35,8 @@ public abstract class AbstractNewAMSFieldEditorPreferencePage extends
 				.setPreferenceStore(AbstractNewAMSFieldEditorPreferencePage.preferenceStore);
 	}
 
-	public void init(IWorkbench workbench) {
+	@Override
+    public void init(IWorkbench workbench) {
 		// By default nothing to do.
 	}
 

@@ -33,6 +33,9 @@ import javax.naming.InvalidNameException;
 import javax.naming.ldap.LdapName;
 import javax.naming.ldap.Rdn;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 
 /**
  * Utility functions for working with names from an LDAP directory.
@@ -42,6 +45,7 @@ import javax.naming.ldap.Rdn;
  */
 public final class LdapNameUtils {
 
+    private static final Logger LOG = LoggerFactory.getLogger(LdapNameUtils.class);
     /**
      * Constructor.
      */
@@ -50,46 +54,24 @@ public final class LdapNameUtils {
     }
 
     /**
-     * Removes double quotes from a string.
-     *
-     * @param toClean
-     *            the string to be cleaned.
-     * @return the cleaned string.
-     * @deprecated This method is a hack to work with JNDI composite names, but
-     *             it only works for names which do not contain any special
-     *             characters that need escaping. Use JNDI correctly instead.
-     */
-    @Deprecated
-    public static String removeQuotes(final String toClean) {
-        final StringBuffer tc = new StringBuffer(toClean);
-        final String grr = "\"";
-        int pos = tc.indexOf(grr);
-        while (pos>-1){
-            tc.deleteCharAt(pos);
-            pos = tc.indexOf(grr);
-        }
-        return tc.toString();
-    }
-
-    /**
-     * Returns the simple name of the given name.
+     * Returns the simple name of an object identified by the given LDAP name.
+     * The simple name is the value of the least significant Rdn.
+     * Returns <code>null</code> if simple name parsing failed.
      *
      * @param name
-     *            the name.
+     *            the LDAP name.
      * @return the simple name.
-     * @deprecated This method only works for names which do not contain any
-     *             special characters that need escaping. Use
-     *             {@link #simpleName(LdapName)} instead.
      */
-    @Deprecated
-    public static String simpleName(final String name){
-        final int pos1 = name.indexOf("=");
-        int pos2= name.indexOf(",");
-        if (pos2 ==-1 ) {
-            //if comma is not present, we must take last character
-            pos2=name.length();
+    @CheckForNull
+    public static String simpleName(@Nonnull final String name) {
+        LdapName ldapName;
+        try {
+            ldapName = new LdapName(name);
+            return LdapNameUtils.simpleName(ldapName);
+        } catch (final InvalidNameException e) {
+            LOG.warn("LDAP Name cannot be parsed for simple name. String '{}' is not a valid LdapName form", name);
         }
-        return name.substring(pos1+1,pos2);
+        return null;
     }
 
     /**
@@ -209,8 +191,8 @@ public final class LdapNameUtils {
         }
         return fullName;
     }
-    
-    
+
+
     /**
      * Filters for forbidden substrings {@link LdapUtils}.
      * @param recordName the name to filter

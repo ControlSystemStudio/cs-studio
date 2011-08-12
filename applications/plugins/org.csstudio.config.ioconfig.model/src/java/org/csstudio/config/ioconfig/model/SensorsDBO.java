@@ -46,29 +46,16 @@ public class SensorsDBO {
     private String _selection;
     private String _sensorID;
 
-    /**
-     *
-     * @return the Node key ID.
-     */
     @Id
     @GeneratedValue
     public int getId() {
         return _id;
     }
 
-    /**
-     *
-     * @param id
-     *            set the Node key ID.
-     */
     public void setId(final int id) {
         this._id = id;
     }
 
-    /**
-     *
-     * @return the IO Name of this Channel.
-     */
     @Nonnull 
     public String getIoName() {
         return _ioName;

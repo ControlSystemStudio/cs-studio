@@ -23,7 +23,6 @@ package org.csstudio.utility.ldap.treeconfiguration;
 
 import static org.csstudio.utility.ldap.treeconfiguration.LdapFieldsAndAttributes.ORGANIZATION_UNIT_FIELD_NAME;
 
-import java.io.File;
 import java.io.IOException;
 import java.util.EnumSet;
 import java.util.Map;
@@ -31,11 +30,6 @@ import java.util.Set;
 
 import javax.annotation.CheckForNull;
 import javax.annotation.Nonnull;
-
-import org.eclipse.core.runtime.FileLocator;
-import org.eclipse.core.runtime.Platform;
-import org.osgi.framework.Bundle;
-
 
 import com.google.common.collect.ImmutableSet;
 import com.google.common.collect.Maps;

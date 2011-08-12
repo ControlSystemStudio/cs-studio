@@ -21,6 +21,7 @@
  */
 package org.csstudio.archive.common.service.mysqlimpl;
 
+import java.io.Serializable;
 import java.util.Collection;
 import java.util.EnumSet;
 import java.util.regex.Pattern;
@@ -38,10 +39,8 @@ import org.csstudio.archive.common.service.mysqlimpl.channel.IArchiveChannelDao;
 import org.csstudio.archive.common.service.mysqlimpl.dao.ArchiveDaoException;
 import org.csstudio.archive.common.service.mysqlimpl.requesttypes.DesyArchiveRequestType;
 import org.csstudio.archive.common.service.mysqlimpl.sample.IArchiveSampleDao;
-import org.csstudio.archive.common.service.mysqlimpl.types.ArchiveTypeConversionSupport;
 import org.csstudio.archive.common.service.sample.IArchiveSample;
 import org.csstudio.domain.desy.epics.typesupport.EpicsSystemVariableSupport;
-import org.csstudio.domain.desy.system.IAlarmSystemVariable;
 import org.csstudio.domain.desy.system.ISystemVariable;
 import org.csstudio.domain.desy.time.TimeInstant;
 import org.csstudio.domain.desy.types.Limits;
@@ -80,7 +79,6 @@ public class MySQLArchiveReaderServiceImpl implements IArchiveReaderFacade {
         _channelDao = channelDao;
         _sampleDao = sampleDao;
 
-        ArchiveTypeConversionSupport.install();
         EpicsSystemVariableSupport.install();
     }
 
@@ -110,7 +108,7 @@ public class MySQLArchiveReaderServiceImpl implements IArchiveReaderFacade {
      */
     @Override
     @Nonnull
-    public <V, T extends IAlarmSystemVariable<V>>
+    public <V extends Serializable, T extends ISystemVariable<V>>
     Collection<IArchiveSample<V, T>> readSamples(@Nonnull final String channelName,
                                                  @Nonnull final TimeInstant start,
                                                  @Nonnull final TimeInstant end) throws ArchiveServiceException {
@@ -122,7 +120,7 @@ public class MySQLArchiveReaderServiceImpl implements IArchiveReaderFacade {
      */
     @Override
     @Nonnull
-    public <V, T extends ISystemVariable<V>>
+    public <V extends Serializable, T extends ISystemVariable<V>>
     Collection<IArchiveSample<V, T>> readSamples(@Nonnull final String channelName,
                                                  @Nonnull final TimeInstant start,
                                                  @Nonnull final TimeInstant end,
@@ -152,7 +150,7 @@ public class MySQLArchiveReaderServiceImpl implements IArchiveReaderFacade {
      */
     @Override
     @CheckForNull
-    public <V, T extends ISystemVariable<V>>
+    public <V extends Serializable, T extends ISystemVariable<V>>
     IArchiveSample<V, T> readLastSampleBefore(@Nonnull final String channelName,
                                               @Nonnull final TimeInstant time) throws ArchiveServiceException {
         try {

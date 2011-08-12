@@ -72,16 +72,16 @@ drop table AMS_User;
 create table AMS_User
 (
 	iUserId 		NUMBER(11) NOT NULL,
-	iGroupRef		NUMBER(11) default -1 NOT NULL, /* FK AMS_Groups.iGroupId				*/
+	iGroupRef		NUMBER(11) default -1 NOT NULL, /* FK AMS_Groups.iGroupId */
 	cUserName 		VARCHAR2(128),
-	cEmail 			VARCHAR2(128),			/* f�r MAIL 						*/
-	cMobilePhone		VARCHAR2(64),			/* f�r SMS 						*/
-	cPhone			VARCHAR2(64),			/* f�r VM 						*/
-	cStatusCode		VARCHAR2(32),			/* Identifz. f�r Remote An- und Abmelden 		*/
-	cConfirmCode		VARCHAR2(32),			/* Best�tigungscode der Antwort 			*/
-	sActive			NUMBER(6),			/* 0 - Inactive, 1 - Active				*/
-	sPreferredAlarmingTypeRR	NUMBER(6),		/* ReplyRequired: 1 - SMS, 2 - VM, 3 - MAIL 		*/
-	/*sPreferredAlarmingType	NUMBER(6),		Without Reply: 1 - SMS, 2 - VM, 3 - MAIL 		*/
+	cEmail 			VARCHAR2(128),           /* fuer MAIL */
+	cMobilePhone	VARCHAR2(64),            /* fuer SMS 						*/
+	cPhone			VARCHAR2(64),			 /* fuer VM 						*/
+	cStatusCode		VARCHAR2(32),			 /* Identifz. fuer Remote An- und Abmelden 		*/
+	cConfirmCode	VARCHAR2(32),            /* Bestaetigungscode der Antwort 			*/
+	sActive			NUMBER(6),               /* 0 - Inactive, 1 - Active				*/
+	sPreferredAlarmingTypeRR	NUMBER(6),   /* ReplyRequired: 1 - SMS, 2 - VM, 3 - MAIL 		*/
+	/* sPreferredAlarmingType	NUMBER(6),		Without Reply: 1 - SMS, 2 - VM, 3 - MAIL 		*/
 	PRIMARY KEY (iUserId)						
 );
 
@@ -91,7 +91,7 @@ create table AMS_UserGroup
 	iUserGroupId		NUMBER(11) NOT NULL,		
 	iGroupRef		NUMBER(11) default -1 NOT NULL,	/* FK AMS_Groups.iGroupId				*/
 	cUserGroupName		VARCHAR2(128),
-	sMinGroupMember		NUMBER(6),			/* Anzahl minimale aktive Benutzer f�r die Alarmbearbeitung */
+	sMinGroupMember		NUMBER(6),			/* Anzahl minimale aktive Benutzer fuer die Alarmbearbeitung */
 	iTimeOutSec		NUMBER(11),			/* Timeout pro Benachrichtigungsversuch 		*/
 	sActive			NUMBER(6),			/* 0 - Inactive, 1 - Active				*/
 	PRIMARY KEY (iUserGroupId)						
@@ -103,9 +103,9 @@ create table AMS_UserGroup_User
 	iUserGroupRef		NUMBER(11) NOT NULL,
 	iUserRef		NUMBER(11) NOT NULL,
 	iPos			NUMBER(11) NOT NULL,		/* Benchrichtigungsreihenfolge 				*/
-	sActive			NUMBER(6),			/* Gruppenzugeh�rigkeit aktiv?(0 - Inactive, 1 - Active) */
+	sActive			NUMBER(6),			/* Gruppenzugehoerigkeit aktiv?(0 - Inactive, 1 - Active) */
 	cActiveReason		VARCHAR2(128),			/* Grund/Ursache der An/Abmeldung			*/
-	tTimeChange		NUMBER(14),			/* Zeitstempel der letzten �nderung des Datensatzes	*/
+	tTimeChange		NUMBER(14),			/* Zeitstempel der letzten Aenderung des Datensatzes	*/
 	PRIMARY KEY(iUserGroupRef,iUserRef)					
 );
 
@@ -246,7 +246,7 @@ create table AMS_FilterAction
 (			
 	iFilterActionID		NUMBER(11) NOT NULL,
 	iFilterActionTypeRef	NUMBER(11) NOT NULL,		/*FK AMS_FilterActionType.iFilterActionTypeID 		*/
-	iReceiverRef		NUMBER(11),			/* abh�ngig von iFilterActionTypeID User oder UserGroup */
+	iReceiverRef		NUMBER(11),			/* abhaengig von iFilterActionTypeID User oder UserGroup */
 	cMessage		VARCHAR2(1024),			/* Aktionsmessage mit Platzhalter der 17 Messagewerte, z.B. %HOST% */
 	PRIMARY KEY(iFilterActionID)
 );
@@ -256,11 +256,11 @@ create table AMS_Filter_FilterAction
 (
 	iFilterRef		NUMBER(11) NOT NULL,
 	iFilterActionRef	NUMBER(11) NOT NULL,
-	iPos			NUMBER(11) NOT NULL		/* Reihenfolge f�r die GUI, werden parallel ausgef�hrt */
+	iPos			NUMBER(11) NOT NULL		/* Reihenfolge fuer die GUI, werden parallel ausgefuehrt */
 );
 
 
-/* nur f�r die Oberfl�che => wird nicht repliziert */
+/* nur fuer die Oberflaeche => wird nicht repliziert */
 
 drop table AMS_Groups;
 create table AMS_Groups						/* logische GUI Baumstruktur 				*/
@@ -320,11 +320,11 @@ create table AMS_User_Syn
 	iUserId 		NUMBER(11) NOT NULL,
 	iGroupRef		NUMBER(11) default -1 NOT NULL, /* FK AMS_Groups.iGroupId				*/
 	cUserName 		VARCHAR2(128),
-	cEmail 			VARCHAR2(128),			/* f�r MAIL 						*/
-	cMobilePhone		VARCHAR2(64),			/* f�r SMS 						*/
-	cPhone			VARCHAR2(64),			/* f�r VM 						*/
-	cStatusCode		VARCHAR2(32),			/* Identifz. f�r Remote An- und Abmelden 		*/
-	cConfirmCode		VARCHAR2(32),			/* Best�tigungscode der Antwort 			*/
+	cEmail 			VARCHAR2(128),			/* fuer MAIL 						*/
+	cMobilePhone		VARCHAR2(64),			/* fuer SMS 						*/
+	cPhone			VARCHAR2(64),			/* fuer VM 						*/
+	cStatusCode		VARCHAR2(32),			/* Identifz. fuer Remote An- und Abmelden 		*/
+	cConfirmCode		VARCHAR2(32),			/* Bestaetigungscode der Antwort 			*/
 	sActive			NUMBER(6),			/* 0 - Inactive, 1 - Active				*/
 	sPreferredAlarmingTypeRR	NUMBER(6),		/* ReplyRequired: 1 - SMS, 2 - VM, 3 - MAIL 		*/
 	/*sPreferredAlarmingType	NUMBER(6),		Without Reply: 1 - SMS, 2 - VM, 3 - MAIL 		*/
@@ -337,9 +337,9 @@ create table AMS_UserGroup_User_Syn
 	iUserGroupRef		NUMBER(11) NOT NULL,
 	iUserRef		NUMBER(11) NOT NULL,
 	iPos			NUMBER(11) NOT NULL,		/* Benchrichtigungsreihenfolge 				*/
-	sActive			NUMBER(6),			/* Gruppenzugeh�rigkeit aktiv?(0 - Inactive, 1 - Active) */
+	sActive			NUMBER(6),			/* Gruppenzugehörigkeit aktiv?(0 - Inactive, 1 - Active) */
 	cActiveReason		VARCHAR2(128),			/* Grund/Ursache der An/Abmeldung			*/
-	tTimeChange		NUMBER(14),			/* Zeitstempel der letzten �nderung des Datensatzes	*/
+	tTimeChange		NUMBER(14),			/* Zeitstempel der letzten Aenderung des Datensatzes	*/
 	PRIMARY KEY(iUserGroupRef,iUserRef)					
 );
 
@@ -479,7 +479,7 @@ create table AMS_FilterAction_Syn
 (			
 	iFilterActionID		NUMBER(11) NOT NULL,
 	iFilterActionTypeRef	NUMBER(11) NOT NULL,		/*FK AMS_FilterActionType.iFilterActionTypeID 		*/
-	iReceiverRef		NUMBER(11),			/* abh�ngig von iFilterActionTypeID User oder UserGroup */
+	iReceiverRef		NUMBER(11),			/* abhaengig von iFilterActionTypeID User oder UserGroup */
 	cMessage		VARCHAR2(1024),			/* Aktionsmessage mit Platzhalter der 17 Messagewerte, z.B. %HOST% */
 	PRIMARY KEY(iFilterActionID)
 );
@@ -489,7 +489,7 @@ create table AMS_Filter_FilterAction_Syn
 (
 	iFilterRef		NUMBER(11) NOT NULL,
 	iFilterActionRef	NUMBER(11) NOT NULL,
-	iPos			NUMBER(11) NOT NULL		/* Reihenfolge f�r die GUI, werden parallel ausgef�hrt */
+	iPos			NUMBER(11) NOT NULL		/* Reihenfolge fuer die GUI, werden parallel ausgefuehrt */
 );
 
 drop table AMS_UserGroup_Syn;
@@ -498,7 +498,7 @@ create table AMS_UserGroup_Syn
 	iUserGroupId		NUMBER(11) NOT NULL,		
 	iGroupRef		NUMBER(11) default -1 NOT NULL,	/* FK AMS_Groups.iGroupId				*/
 	cUserGroupName		VARCHAR2(128),
-	sMinGroupMember		NUMBER(6),			/* Anzahl minimale aktive Benutzer f�r die Alarmbearbeitung */
+	sMinGroupMember		NUMBER(6),			/* Anzahl minimale aktive Benutzer fuer die Alarmbearbeitung */
 	iTimeOutSec		NUMBER(11),			/* Timeout pro Benachrichtigungsversuch 		*/
 	sActive			NUMBER(6),			/* 0 - Inactive, 1 - Active				*/
 	PRIMARY KEY (iUserGroupId)						

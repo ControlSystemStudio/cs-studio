@@ -31,12 +31,12 @@ import org.csstudio.domain.desy.common.id.Id;
  */
 public class ArchiveControlSystemId extends Id<ArchiveControlSystemId> {
 
-    private static final long serialVersionUID = 1771548850977602836L;
-
     /**
      * Serves as "not set"-Id to avoid untyped <code>null</code> ids.
      */
     public static final ArchiveControlSystemId NONE = new ArchiveControlSystemId(-1L);
+
+    private static final long serialVersionUID = 1771548850977602836L;
 
     /**
      * Constructor.

@@ -24,7 +24,7 @@
 
 package org.csstudio.archive.sdds.server.management;
 
-import org.csstudio.archive.sdds.server.Activator;
+import org.csstudio.archive.sdds.server.SddsServerActivator;
 import org.csstudio.archive.sdds.server.RemotelyStoppable;
 import org.csstudio.platform.management.CommandParameters;
 import org.csstudio.platform.management.CommandResult;
@@ -51,7 +51,7 @@ public class Restart implements IManagementCommand
         if(restartMe != null)
         {
             restartMe.stopApplication(true);
-            result = CommandResult.createMessageResult(Activator.PLUGIN_ID + " is restarting now.");
+            result = CommandResult.createMessageResult(SddsServerActivator.PLUGIN_ID + " is restarting now.");
         }
         else
         {

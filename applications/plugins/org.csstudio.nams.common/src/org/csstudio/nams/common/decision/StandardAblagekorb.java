@@ -1,3 +1,4 @@
+
 /* 
  * Copyright (c) 2008 C1 WPS mbH, 
  * HAMBURG, GERMANY.
@@ -22,6 +23,7 @@
  * MAY FIND A COPY AT
  * {@link http://www.eclipse.org/org/documents/epl-v10.html}.
  */
+
 package org.csstudio.nams.common.decision;
 
 import java.util.Iterator;
@@ -45,7 +47,8 @@ public class StandardAblagekorb<T extends Ablagefaehig> implements
 	 *            Das neue Dokuement,
 	 * @throws InterruptedException
 	 */
-	public void ablegen(final T dokument) throws InterruptedException {
+	@Override
+    public void ablegen(final T dokument) throws InterruptedException {
 		this.inhalt.put(dokument);
 	}
 
@@ -61,7 +64,8 @@ public class StandardAblagekorb<T extends Ablagefaehig> implements
 	 *             Falls der Thread beim warten auf ein Element unterbrochen
 	 *             wird.
 	 */
-	public T entnehmeAeltestenEingang() throws InterruptedException {
+	@Override
+    public T entnehmeAeltestenEingang() throws InterruptedException {
 		return this.inhalt.take();
 	}
 
@@ -69,7 +73,8 @@ public class StandardAblagekorb<T extends Ablagefaehig> implements
 		return this.inhalt.contains(element);
 	}
 
-	public Iterator<T> iterator() {
+	@Override
+    public Iterator<T> iterator() {
 		return this.inhalt.iterator();
 	}
 }

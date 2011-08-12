@@ -63,12 +63,12 @@ public class XmlSlave {
      *
      * @param slave
      *            The Profibus slave.
-     * @throws PersistenceException 
+     * @throws PersistenceException
      */
     public XmlSlave(@Nonnull final SlaveDBO slave) throws PersistenceException {
         _slaveElement = new Element("SLAVE");
         _slaveElement.setAttribute("fdl_add", Integer.toString(slave.getFdlAddress()));
-        Comparator<ModuleDBO> comparator = new Comparator<ModuleDBO>() {
+        final Comparator<ModuleDBO> comparator = new Comparator<ModuleDBO>() {
             
             @Override
             public int compare(@Nonnull final ModuleDBO o1, @Nonnull final ModuleDBO o2) {
@@ -81,20 +81,123 @@ public class XmlSlave {
         Element e2;
         try {
             e2 = setSlavePrmData(slave);
-            Element e3 = setSlaveCfgData();
-            Element e4 = setSlaveAatData();
-            Element e5 = setSlaveUserData();
-            int prmLen = Integer.parseInt(e2.getAttributeValue("prm_data_len"));
-            int cfgLen = Integer.parseInt(e3.getAttributeValue("cfg_data_len"));
-            Element e1 = setSlaveParaSet(slave, prmLen, cfgLen, 2, 2);
+            final Element e3 = setSlaveCfgData();
+            final Element e4 = setSlaveAatData();
+            final Element e5 = setSlaveUserData();
+            final int prmLen = Integer.parseInt(e2.getAttributeValue("prm_data_len"));
+            final int cfgLen = Integer.parseInt(e3.getAttributeValue("cfg_data_len"));
+            final Element e1 = setSlaveParaSet(slave, prmLen, cfgLen, 2, 2);
             _slaveElement.addContent(e1);
             _slaveElement.addContent(e2);
             _slaveElement.addContent(e3);
             _slaveElement.addContent(e4);
             _slaveElement.addContent(e5);
-        } catch (IOException e) {
+        } catch (final IOException e) {
             throw new PersistenceException(e);
         }
+    }
+    
+    /**
+     * @param prmDataSB
+     */
+    private void addSlavePrmDataFromModules(@Nonnull final StringBuilder prmDataSB) {
+        for (final ModuleDBO module : _modules) {
+            List<Integer> modiExtUserPrmDataConstDef = null;
+            String modiExtUserPrmDataConst = module.getConfigurationData();
+            final GsdModuleModel2 gsdModuleModel2 = module.getGsdModuleModel2();
+            if(gsdModuleModel2 != null) {
+                modiExtUserPrmDataConstDef = gsdModuleModel2.getExtUserPrmDataConst();
+            }
+            if( modiExtUserPrmDataConst == null || modiExtUserPrmDataConst.length() < 1) {
+                continue; // Do Nothing
+            } else if( modiExtUserPrmDataConstDef != null
+                    && modiExtUserPrmDataConstDef.size() > modiExtUserPrmDataConst.split(",").length) {
+                modiExtUserPrmDataConst = GsdFileParser
+                .intList2HexString(modiExtUserPrmDataConstDef);
+                prmDataSB.append(',');
+                prmDataSB.append(modiExtUserPrmDataConst);
+            } else {
+                prmDataSB.append(',');
+                prmDataSB.append(modiExtUserPrmDataConst);
+            }
+        }
+    }
+    
+    /**
+     *
+     * @return the Slave {@link Element}
+     */
+    @Nonnull
+    public final Element getSlave() {
+        return _slaveElement;
+    }
+    
+    /**
+     * Set all SlaveAatData parameter.
+     *
+     * @param slave
+     *            The Profibus Slave.
+     * @return The XML Slave aat Data Element.
+     * @throws IOException
+     */
+    @Nonnull
+    private Element setSlaveAatData() throws IOException {
+        final Element slaveAatData = new Element("SLAVE_AAT_DATA");
+        String aat = "0,8";
+        int offset = 0;
+        for (final ModuleDBO module : _modules) {
+            final GsdModuleModel2 gsdModuleModel2 = module.getGsdModuleModel2();
+            if(gsdModuleModel2 != null) {
+                final List<Integer> values = gsdModuleModel2.getValue();
+                for (final Integer value : values) {
+                    final SlaveCfgData slaveCfgData = new SlaveCfgData(value);
+                    int leng = 0;
+                    if(slaveCfgData.isInput()) {
+                        leng = slaveCfgData.getByteLength();
+                        aat = aat.concat(Integer.toString(leng));
+                    }
+                    
+                    // TODO (hrickens) [05.07.2011]: Das ist dochz ziemlich sicher falsch! Sollte eins nicht Output sein?
+                    if(slaveCfgData.isInput()) {
+                        leng += slaveCfgData.getByteLength();
+                        aat = aat.concat(Integer.toString(leng));
+                    }
+                    offset += leng;
+                }
+            }
+        }
+        final int slaveAatLen = 2;
+        slaveAatData.setAttribute("slave_aat_len", Integer.toString(slaveAatLen));
+        // Wird bei Desy MKs2 nicht verwendet.
+        slaveAatData.setText("");
+        return slaveAatData;
+    }
+    
+    /**
+     * Set all slave_cfg_data parameter.
+     *
+     * @param slave
+     *            The Profibus Slave.
+     * @return The XML Slave Cfg Data Element.
+     * @throws IOException
+     */
+    @Nonnull
+    private Element setSlaveCfgData() throws IOException {
+        final Element slaveCfgData = new Element("SLAVE_CFG_DATA");
+        String cfgData = "";
+        for (final ModuleDBO module : _modules) {
+            final GsdModuleModel2 gsdModuleModel2 = module.getGsdModuleModel2();
+            if(gsdModuleModel2 != null) {
+                cfgData = cfgData.concat(gsdModuleModel2.getValueAsString() + ",").trim();
+            }
+        }
+        if(cfgData.endsWith(",")) {
+            cfgData = cfgData.substring(0, cfgData.length() - 1);
+        }
+        final int cfgDataLen = cfgData.split(",").length + 2;
+        slaveCfgData.setAttribute("cfg_data_len", Integer.toString(cfgDataLen));
+        slaveCfgData.setText(cfgData);
+        return slaveCfgData;
     }
     
     /**
@@ -118,8 +221,8 @@ public class XmlSlave {
                                     final int cfgDataLen,
                                     final int slaveAatLen,
                                     final int slaveUserDataLen) {
-        Element slaveParaSet = new Element("SLAVE_PARA_SET");
-        int slaveParaLen = 16 + prmDataLen + cfgDataLen + slaveAatLen + slaveUserDataLen;
+        final Element slaveParaSet = new Element("SLAVE_PARA_SET");
+        final int slaveParaLen = 16 + prmDataLen + cfgDataLen + slaveAatLen + slaveUserDataLen;
         slaveParaSet.setAttribute("slave_para_len", Integer.toString(slaveParaLen));
         slaveParaSet.setAttribute("sl_flag", Integer.toString(slave.getSlaveFlag()));
         slaveParaSet.setAttribute("slave_type", Integer.toString(slave.getSlaveType()));
@@ -133,18 +236,18 @@ public class XmlSlave {
      * @param slave
      *            The Profibus Slave.
      * @return The XML Slave Prm Data Element.
-     * @throws IOException 
+     * @throws IOException
      */
     @Nonnull
     private Element setSlavePrmData(@Nonnull final SlaveDBO slave) throws IOException {
-        Element slavePrmData = new Element("SLAVE_PRM_DATA");
-        GSDFileDBO gsdFile = slave.getGSDFile();
+        final Element slavePrmData = new Element("SLAVE_PRM_DATA");
+        final GSDFileDBO gsdFile = slave.getGSDFile();
         if(gsdFile != null) {
-            ParsedGsdFileModel slaveData = gsdFile.getParsedGsdFileModel();
-            StringBuilder prmDataSB = new StringBuilder();
+            final ParsedGsdFileModel slaveData = gsdFile.getParsedGsdFileModel();
+            final StringBuilder prmDataSB = new StringBuilder();
             prmDataSB.append(slave.getPrmUserData());
             addSlavePrmDataFromModules(prmDataSB);
-            int prmDataLen = 9 + prmDataSB.toString().split(",").length;
+            final int prmDataLen = 9 + prmDataSB.toString().split(",").length;
             slavePrmData.setAttribute("prm_data_len", Integer.toString(prmDataLen));
             slavePrmData.setAttribute("station_status", Integer.toString(slave.getStationStatus()));
             slavePrmData.setAttribute("watchdog_fact_1", Integer.toString(slave.getWdFact1()));
@@ -167,95 +270,6 @@ public class XmlSlave {
         }
         return slavePrmData;
     }
-
-    /**
-     * @param prmDataSB
-     */
-    private void addSlavePrmDataFromModules(@Nonnull StringBuilder prmDataSB) {
-        for (ModuleDBO module : _modules) {
-            List<Integer> modiExtUserPrmDataConstDef = null;
-            String modiExtUserPrmDataConst = module.getConfigurationData();
-            GsdModuleModel2 gsdModuleModel2 = module.getGsdModuleModel2();
-            if(gsdModuleModel2 != null) {
-                modiExtUserPrmDataConstDef = gsdModuleModel2.getExtUserPrmDataConst();
-            }
-            if( (modiExtUserPrmDataConst == null) || (modiExtUserPrmDataConst.length() < 1)) {
-                continue; // Do Nothing
-            } else if( (modiExtUserPrmDataConstDef != null)
-                    && (modiExtUserPrmDataConstDef.size() > modiExtUserPrmDataConst.split(",").length)) {
-                modiExtUserPrmDataConst = GsdFileParser
-                        .intList2HexString(modiExtUserPrmDataConstDef);
-                prmDataSB.append(',');
-                prmDataSB.append(modiExtUserPrmDataConst);
-            } else {
-                prmDataSB.append(',');
-                prmDataSB.append(modiExtUserPrmDataConst);
-            }
-        }
-    }
-    
-    /**
-     * Set all slave_cfg_data parameter.
-     *
-     * @param slave
-     *            The Profibus Slave.
-     * @return The XML Slave Cfg Data Element.
-     * @throws IOException 
-     */
-    @Nonnull
-    private Element setSlaveCfgData() throws IOException {
-        Element slaveCfgData = new Element("SLAVE_CFG_DATA");
-        String cfgData = "";
-        for (ModuleDBO module : _modules) {
-            GsdModuleModel2 gsdModuleModel2 = module.getGsdModuleModel2();
-            if(gsdModuleModel2 != null) {
-                cfgData = cfgData.concat(gsdModuleModel2.getValueAsString() + ",").trim();
-            }
-        }
-        if(cfgData.endsWith(",")) {
-            cfgData = cfgData.substring(0, cfgData.length() - 1);
-        }
-        int cfgDataLen = cfgData.split(",").length + 2;
-        slaveCfgData.setAttribute("cfg_data_len", Integer.toString(cfgDataLen));
-        slaveCfgData.setText(cfgData);
-        return slaveCfgData;
-    }
-    
-    /**
-     * Set all SlaveAatData parameter.
-     *
-     * @param slave
-     *            The Profibus Slave.
-     * @return The XML Slave aat Data Element.
-     * @throws IOException 
-     */
-    @Nonnull
-    private Element setSlaveAatData() throws IOException {
-        Element slaveAatData = new Element("SLAVE_AAT_DATA");
-        String aat = "0,8";
-        int offset = 0;
-        for (ModuleDBO module : _modules) {
-            GsdModuleModel2 gsdModuleModel2 = module.getGsdModuleModel2();
-            if(gsdModuleModel2 != null) {
-                SlaveCfgData slaveCfgData = new SlaveCfgData(gsdModuleModel2.getValue());
-                int leng = 0;
-                if(slaveCfgData.isInput()) {
-                    leng = slaveCfgData.getWordSize() * slaveCfgData.getSize();
-                    aat = aat.concat(Integer.toString(leng));
-                }
-                if(slaveCfgData.isInput()) {
-                    leng += slaveCfgData.getWordSize() * slaveCfgData.getSize();
-                    aat = aat.concat(Integer.toString(leng));
-                }
-                offset += leng;
-            }
-        }
-        int slaveAatLen = 2;
-        slaveAatData.setAttribute("slave_aat_len", Integer.toString(slaveAatLen));
-        // Wird bei Desy MKs2 nicht verwendet.
-        slaveAatData.setText("");
-        return slaveAatData;
-    }
     
     /**
      * Set all slave_user_data parameter.
@@ -266,21 +280,12 @@ public class XmlSlave {
      */
     @Nonnull
     private Element setSlaveUserData() {
-        Element slaveUserData = new Element("SLAVE_USER_DATA");
-        int slaveUserDataLen = 2;
+        final Element slaveUserData = new Element("SLAVE_USER_DATA");
+        final int slaveUserDataLen = 2;
         slaveUserData.setAttribute("slave_user_data_len", Integer.toString(slaveUserDataLen));
         // Wird bei Desy MKs2 nicht verwendet.
         slaveUserData.setText("");
         return slaveUserData;
-    }
-    
-    /**
-     *
-     * @return the Slave {@link Element}
-     */
-    @Nonnull
-    public final Element getSlave() {
-        return _slaveElement;
     }
     
 }

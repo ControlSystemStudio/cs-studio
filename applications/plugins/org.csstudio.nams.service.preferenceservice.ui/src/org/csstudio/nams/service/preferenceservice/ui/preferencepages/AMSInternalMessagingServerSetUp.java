@@ -1,3 +1,4 @@
+
 package org.csstudio.nams.service.preferenceservice.ui.preferencepages;
 
 import org.csstudio.nams.service.preferenceservice.declaration.PreferenceServiceJMSKeys;
@@ -30,5 +31,4 @@ public class AMSInternalMessagingServerSetUp extends
 		this.addField(PreferenceServiceJMSKeys.P_JMS_AMS_PROVIDER_URL_2);
 		this.addField(PreferenceServiceJMSKeys.P_JMS_AMS_SENDER_PROVIDER_URL);
 	}
-
 }

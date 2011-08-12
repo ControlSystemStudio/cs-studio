@@ -38,15 +38,15 @@ import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.Enumeration;
 import java.util.Hashtable;
-import org.apache.log4j.Logger;
 import org.csstudio.alarm.jms2ora.Jms2OraPlugin;
 import org.csstudio.alarm.jms2ora.preferences.PreferenceConstants;
 import org.csstudio.alarm.jms2ora.util.MessageContent;
-import org.csstudio.platform.logging.CentralLogger;
 import org.csstudio.platform.utility.rdb.RDBUtil;
 import org.csstudio.platform.utility.rdb.RDBUtil.Dialect;
 import org.eclipse.core.runtime.Platform;
 import org.eclipse.core.runtime.preferences.IPreferencesService;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  *  @author Markus Moeller
@@ -54,6 +54,9 @@ import org.eclipse.core.runtime.preferences.IPreferencesService;
  */
 public class DatabaseLayer
 {
+    /** The class logger */
+    private static final Logger LOG = LoggerFactory.getLogger(DatabaseLayer.class);
+
     /** Database service */
     private RDBUtil dbService = null;
     
@@ -78,9 +81,6 @@ public class DatabaseLayer
      */
     private Hashtable<String, Integer> messageCol = null;
     
-    /** Logger */
-    private Logger logger = null;
-
     public DatabaseLayer(String url, String user, String password) {
         
         IPreferencesService prefs = Platform.getPreferencesService();
@@ -91,8 +91,6 @@ public class DatabaseLayer
         
         objectDir = prefs.getString(Jms2OraPlugin.PLUGIN_ID, PreferenceConstants.META_DATA_DIRECTORY, "columns/", null);
         objectDir = temp + objectDir;
-        
-        logger = CentralLogger.getInstance().getLogger(this);
         
         this.url = url;
         this.password = password;
@@ -118,7 +116,7 @@ public class DatabaseLayer
         
         if(!connect())
         {
-            logger.error("Cannot read the table column names.");
+            LOG.error("Cannot read the table column names.");
             
             return;
         }
@@ -146,8 +144,8 @@ public class DatabaseLayer
         }
         catch(Exception e)
         {
-            logger.error("*** Exception *** : Cannot read the table column names: " + e.getMessage());
-            logger.error("Using stored column names.");
+            LOG.error("*** Exception *** : Cannot read the table column names: " + e.getMessage());
+            LOG.error("Using stored column names.");
             
             readColumnNames();
         }
@@ -164,14 +162,14 @@ public class DatabaseLayer
 
         if(messageCol.isEmpty())
         {
-            logger.info("Column list is empty.");
+            LOG.info("Column list is empty.");
             
             return;
         }
 
         if(existsObjectFolder == false)
         {
-            logger.warn("Object folder '" + objectDir + "' does not exist. Columns cannot be stored.");
+            LOG.warn("Object folder '" + objectDir + "' does not exist. Columns cannot be stored.");
             
             return;
         }
@@ -187,11 +185,11 @@ public class DatabaseLayer
         }
         catch(FileNotFoundException fnfe)
         {
-            logger.error("FileNotFoundException : " + fnfe.getMessage());
+            LOG.error("FileNotFoundException : " + fnfe.getMessage());
         }
         catch(IOException ioe)
         {
-            logger.error("IOException : " + ioe.getMessage());
+            LOG.error("IOException : " + ioe.getMessage());
         }
         finally
         {
@@ -220,17 +218,17 @@ public class DatabaseLayer
         }
         catch(FileNotFoundException fnfe)
         {
-            logger.error("FileNotFoundException : " + fnfe.getMessage());
+            LOG.error("FileNotFoundException : " + fnfe.getMessage());
             content = null;
         }
         catch(IOException ioe)
         {
-            logger.error("IOException : " + ioe.getMessage());
+            LOG.error("IOException : " + ioe.getMessage());
             content = null;
         }
         catch (ClassNotFoundException e)
         {
-            logger.error("ClassNotFoundException : " + e.getMessage());
+            LOG.error("ClassNotFoundException : " + e.getMessage());
             content = null;
         }
         finally
@@ -260,7 +258,7 @@ public class DatabaseLayer
         }
         catch(Exception e)
         {
-            logger.error("*** Exception *** : connect(): " + e.getMessage());
+            LOG.error("*** Exception *** : connect(): " + e.getMessage());
             
             return false;
         }
@@ -302,7 +300,7 @@ public class DatabaseLayer
         }
         catch(Exception e)
         {
-            logger.error("*** Exception *** : isConnected(): " + e.getMessage());
+            LOG.error("*** Exception *** : isConnected(): " + e.getMessage());
             
             result = false;
         }
@@ -394,7 +392,7 @@ public class DatabaseLayer
             }
             catch(Exception e)
             {
-                logger.error("*** Exception ***: createMessageEntry(): " + e.getMessage());
+                LOG.error("*** Exception ***: createMessageEntry(): " + e.getMessage());
                 
                 msgId = -1;
                 if(pst!=null){try{pst.close();}catch(SQLException sqle){}pst=null;}
@@ -477,7 +475,7 @@ public class DatabaseLayer
             }
             catch(Exception e)
             {
-                logger.error("*** Exception ***: createMessageContentEntries(): Write known messages: " + e.getMessage());
+                LOG.error("*** Exception ***: createMessageContentEntries(): Write known messages: " + e.getMessage());
 
                 result = false;
                 if(pst!=null){try{pst.close();}catch(SQLException sqle){}pst=null;}
@@ -515,7 +513,7 @@ public class DatabaseLayer
                     }
                     catch(SQLException sqle)
                     {
-                        logger.error("*** SQLException ***: createMessageContentEntries(): Write unknown properties: " + sqle.getMessage());
+                        LOG.error("*** SQLException ***: createMessageContentEntries(): Write unknown properties: " + sqle.getMessage());
 
                         result = false;
                         if(pst!=null){try{pst.close();}catch(SQLException e){}pst=null;}
@@ -545,13 +543,13 @@ public class DatabaseLayer
             boolean result = folder.mkdir();
             if(result)
             {
-                logger.info("Folder " + objectDir + " was created.");
+                LOG.info("Folder " + objectDir + " was created.");
                 
                 existsObjectFolder = true;
             }
             else
             {
-                logger.warn("Folder " + objectDir + " was NOT created.");
+                LOG.warn("Folder " + objectDir + " was NOT created.");
                 
                 existsObjectFolder = false;
             }
@@ -589,7 +587,7 @@ public class DatabaseLayer
         }
         catch(Exception e)
         {
-            logger.error("*** Exception *** : getMessageProperties(): " + e.getMessage());
+            LOG.error("*** Exception *** : getMessageProperties(): " + e.getMessage());
             
             msgProperty.clear();
         }
@@ -640,7 +638,7 @@ public class DatabaseLayer
         }
         catch(Exception e)
         {
-            logger.error("*** Exception *** : getMaxNumberofValueBytes(): " + e.getMessage());
+            LOG.error("*** Exception *** : getMaxNumberofValueBytes(): " + e.getMessage());
             
             result = 0;
         }
@@ -675,7 +673,7 @@ public class DatabaseLayer
         }
         catch(Exception e)
         {
-            logger.error("*** Exception *** : getNextId(): " + e.getMessage());
+            LOG.error("*** Exception *** : getNextId(): " + e.getMessage());
             result = -1;
         }
         finally
@@ -716,7 +714,7 @@ public class DatabaseLayer
         }
         catch(Exception e)
         {
-            logger.error("*** Exception *** : deleteMessage(): " + e.getMessage());
+            LOG.error("*** Exception *** : deleteMessage(): " + e.getMessage());
         }
 
         close();

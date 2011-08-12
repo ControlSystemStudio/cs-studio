@@ -2,6 +2,7 @@ package org.csstudio.utility.pvamanger.widgets.test;
 
 import static org.epics.pvmanager.data.ExpressionLanguage.vDoubleArray;
 import static org.epics.pvmanager.extra.ExpressionLanguage.waterfallPlotOf;
+import static org.epics.pvmanager.util.TimeDuration.*;
 
 import org.csstudio.utility.pvmanager.ui.SWTUtil;
 import org.csstudio.utility.pvmanager.widgets.VImageDisplay;
@@ -14,9 +15,9 @@ import org.eclipse.swt.SWT;
 import org.eclipse.swt.layout.FillLayout;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.ui.part.ViewPart;
-import org.epics.pvmanager.PV;
 import org.epics.pvmanager.PVManager;
-import org.epics.pvmanager.PVValueChangeListener;
+import org.epics.pvmanager.PVReader;
+import org.epics.pvmanager.PVReaderListener;
 import org.epics.pvmanager.data.VImage;
 
 import com.swtdesigner.ResourceManager;
@@ -26,7 +27,7 @@ public class VImageDisplayDemo extends ViewPart {
 
 	public static final String ID = "org.csstudio.utility.pvamanger.widgets.test.VImageDisplayDemo"; //$NON-NLS-1$
 
-	private PV<VImage> pv;
+	private PVReader<VImage> pv;
 	private Action horizontalStretch;
 	
 	VImageDisplay topLeft;
@@ -114,11 +115,11 @@ public class VImageDisplayDemo extends ViewPart {
 			pv.close();
 		}
 		pv = PVManager.read(waterfallPlotOf(vDoubleArray("sim://gaussianWaveform(1, 50, 0.1)")))
-		.andNotify(SWTUtil.onSWTThread()).atHz(50);
-		pv.addPVValueChangeListener(new PVValueChangeListener() {
+		.notifyOn(SWTUtil.swtThread()).every(hz(50));
+		pv.addPVReaderListener(new PVReaderListener() {
 			
 			@Override
-			public void pvValueChanged() {
+			public void pvChanged() {
 				topLeft.setVImage(pv.getValue());
 				top.setVImage(pv.getValue());
 				topRight.setVImage(pv.getValue());

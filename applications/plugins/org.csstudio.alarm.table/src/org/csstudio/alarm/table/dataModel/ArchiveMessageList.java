@@ -32,7 +32,8 @@ import java.util.Vector;
 import javax.annotation.Nonnull;
 
 import org.csstudio.alarm.service.declaration.AlarmMessageKey;
-import org.csstudio.platform.logging.CentralLogger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * List of JMSMessages. The Viewers (LabelProviders) of the list registers as
@@ -43,6 +44,8 @@ import org.csstudio.platform.logging.CentralLogger;
  */
 public class ArchiveMessageList extends AbstractMessageList {
 
+    private static final Logger LOG = LoggerFactory.getLogger(ArchiveMessageList.class);
+    
     private static final String DATE_FORMAT = "yyyy-MM-dd HH:mm:ss.SSS";
     protected Vector<BasicMessage> _messages = new Vector<BasicMessage>();
 
@@ -119,7 +122,7 @@ public class ArchiveMessageList extends AbstractMessageList {
                     previousMessageTime.setTime(currentMessageTime.getTime());
                 }
             } catch (final ParseException e) {
-                CentralLogger.getInstance().warn(this, "cannot parse date string");
+                LOG.warn("cannot parse date string");
             }
         }
         previousMessageTime.setTimeInMillis(previousMessageTime.getTimeInMillis() - 1000);

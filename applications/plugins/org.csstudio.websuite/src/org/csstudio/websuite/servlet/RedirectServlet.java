@@ -35,8 +35,8 @@ import javax.servlet.http.HttpServletResponse;
  * @author Markus Moeller
  *
  */
-public class RedirectServlet extends HttpServlet
-{
+public class RedirectServlet extends HttpServlet {
+    
     /** Generated serial version id */
     private static final long serialVersionUID = 1014881940216245396L;
 
@@ -44,20 +44,19 @@ public class RedirectServlet extends HttpServlet
      * 
      */
     @Override
-	public void init(ServletConfig config) throws ServletException
-    {
+	public void init(ServletConfig config) throws ServletException {
         super.init(config);
     }
     
     @Override
-	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException
-    {
+	protected void doGet(HttpServletRequest request, HttpServletResponse response)
+    throws ServletException, IOException {
         response.sendRedirect(response.encodeRedirectURL("Info"));
     }
     
     @Override
-	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException
-    {
+	protected void doPost(HttpServletRequest request, HttpServletResponse response)
+    throws ServletException, IOException {
         response.sendRedirect(response.encodeRedirectURL("Info"));
     }
 }

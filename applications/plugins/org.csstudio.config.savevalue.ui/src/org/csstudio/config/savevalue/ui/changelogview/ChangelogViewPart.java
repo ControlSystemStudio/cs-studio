@@ -35,7 +35,6 @@ import java.util.List;
 
 import javax.naming.directory.SearchControls;
 
-import org.apache.log4j.Logger;
 import org.csstudio.config.savevalue.service.ChangelogDeletionService;
 import org.csstudio.config.savevalue.service.ChangelogEntry;
 import org.csstudio.config.savevalue.service.ChangelogService;
@@ -44,7 +43,6 @@ import org.csstudio.config.savevalue.ui.Activator;
 import org.csstudio.config.savevalue.ui.Messages;
 import org.csstudio.config.savevalue.ui.RemoteMethodCallJob;
 import org.csstudio.config.savevalue.ui.SaveValueDialog;
-import org.csstudio.platform.logging.CentralLogger;
 import org.csstudio.utility.ldap.service.ILdapContentModelBuilder;
 import org.csstudio.utility.ldap.service.ILdapSearchResult;
 import org.csstudio.utility.ldap.service.ILdapService;
@@ -86,6 +84,8 @@ import org.eclipse.ui.IWorkbenchActionConstants;
 import org.eclipse.ui.actions.BaseSelectionListenerAction;
 import org.eclipse.ui.part.ViewPart;
 import org.eclipse.ui.progress.IWorkbenchSiteProgressService;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 
 /**
@@ -110,7 +110,8 @@ public class ChangelogViewPart extends ViewPart {
 		/**
 		 * {@inheritDoc}
 		 */
-		public boolean canModify(final Object element, final String property) {
+		@Override
+        public boolean canModify(final Object element, final String property) {
 			// only the "value" column is modifiable
 			return VALUE_PROPERTY.equals(property);
 		}
@@ -118,7 +119,8 @@ public class ChangelogViewPart extends ViewPart {
 		/**
 		 * {@inheritDoc}
 		 */
-		public Object getValue(final Object element, final String property) {
+		@Override
+        public Object getValue(final Object element, final String property) {
 			if (VALUE_PROPERTY.equals(property)) {
 				return ((ChangelogEntry) element).getValue();
 			}
@@ -128,7 +130,8 @@ public class ChangelogViewPart extends ViewPart {
 		/**
 		 * {@inheritDoc}
 		 */
-		public void modify(Object element, final String property, final Object value) {
+		@Override
+        public void modify(Object element, final String property, final Object value) {
 			// element may be Item, see ICellModifier#modify method comment
 			if (element instanceof Item) {
 				element = ((Item) element).getData();
@@ -186,7 +189,8 @@ public class ChangelogViewPart extends ViewPart {
 								deletionService.deleteEntries(ioc, pvName);
 
 								Display.getDefault().asyncExec(new Runnable() {
-									public void run() {
+									@Override
+                                    public void run() {
 										startChangelogRequest();
 									}
 								});
@@ -233,8 +237,8 @@ public class ChangelogViewPart extends ViewPart {
 	/**
 	 * The logger.
 	 */
-	private static final Logger LOG = CentralLogger.getInstance().getLogger(ChangelogViewPart.class);
-
+	private static final Logger LOG = LoggerFactory.getLogger(ChangelogViewPart.class);
+	
 	/**
 	 * The table viewer for the changelog entries.
 	 */
@@ -415,7 +419,8 @@ public class ChangelogViewPart extends ViewPart {
 							.lookup("SaveValue.changelog"); //$NON-NLS-1$
 					final ChangelogEntry[] entries = cs.readChangelog(ioc);
 					Display.getDefault().asyncExec(new Runnable() {
-						public void run() {
+						@Override
+                        public void run() {
 							_table.setInput(entries);
 
 							// if the list of entries is empty, we also

@@ -26,6 +26,7 @@ import java.io.Serializable;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
+import org.joda.time.Duration;
 import org.joda.time.Instant;
 import org.joda.time.ReadableInstant;
 import org.joda.time.format.DateTimeFormat;
@@ -53,7 +54,6 @@ import org.joda.time.format.PeriodFormatterBuilder;
  */
 public final class TimeInstant implements Comparable<TimeInstant>, Serializable {
 
-    private static final long serialVersionUID = 3157468437971986526L;
 
     public static final DateTimeFormatter STD_DATE_FMT =
         DateTimeFormat.forPattern("yyyy-MM-dd");
@@ -98,12 +98,14 @@ public final class TimeInstant implements Comparable<TimeInstant>, Serializable 
         new PeriodFormatterBuilder().append(STD_DURATION_FMT)
                                     .appendMillis().toFormatter();
 
-    private static final int NANOS_PER_SECOND = 1000000000;
-    private static final int NANOS_PER_MILLIS = 1000000;
-    private static final int MILLIS_PER_SECOND = 1000;
+
+    public static final int NANOS_PER_SECOND = 1000000000;
+    public static final int NANOS_PER_MILLIS = 1000000;
+    public static final int MILLIS_PER_SECOND = 1000;
 
     public static final Long MAX_SECONDS = Long.MAX_VALUE / MILLIS_PER_SECOND - 1;
 
+    private static final long serialVersionUID = 3157468437971986526L;
 
     /**
      * The wrapped immutable joda time instant.
@@ -177,7 +179,9 @@ public final class TimeInstant implements Comparable<TimeInstant>, Serializable 
                 throw new IllegalArgumentException("Number of nanoseconds for TimeInstant must be non-negative.");
             }
 
-            return new TimeInstant(nanos/NANOS_PER_MILLIS, nanos%NANOS_PER_MILLIS);
+            final Instant instant = new Instant(nanos/NANOS_PER_MILLIS);
+            final long fracMillisInNanos = nanos%NANOS_PER_MILLIS;
+            return new TimeInstant(instant, fracMillisInNanos);
         }
     }
 
@@ -200,11 +204,11 @@ public final class TimeInstant implements Comparable<TimeInstant>, Serializable 
      * Constructor.
      * Relies on being properly called by the {@link TimeInstantBuilder}.
      * @param instant
-     * @param fracSecInNanos
+     * @param fracMillisInNanos
      */
-    private TimeInstant(@Nonnull final Instant instant, final long fracSecInNanos) {
+    TimeInstant(@Nonnull final Instant instant, final long fracMillisInNanos) {
         _instant = instant;
-        _fracMillisInNanos = fracSecInNanos;
+        _fracMillisInNanos = fracMillisInNanos;
     }
 
     public long getFractalMillisInNanos() {
@@ -306,11 +310,17 @@ public final class TimeInstant implements Comparable<TimeInstant>, Serializable 
         return false;
     }
 
+    @Nonnull
+    public TimeInstant plusDuration(@Nonnull final Duration duration) {
+        final Instant i = new Instant(getMillis()).plus(duration);
+        return new TimeInstant(i, _fracMillisInNanos);
+    }
+
     /**
      * Returns a new immutable time instant object.
-     * @param millis the number of millis to add (or to subtract if negative
+     * @param millis nonnegative number of millis to add
      * @return a new time instant object
-     * @throws IllegalArgumentException when millis is negative and
+     * @throws IllegalArgumentException when millis is negative
      */
     @Nonnull
     public TimeInstant plusMillis(final long millis) {
@@ -324,11 +334,56 @@ public final class TimeInstant implements Comparable<TimeInstant>, Serializable 
         return new TimeInstant(i, _fracMillisInNanos);
     }
 
+
+    /**
+     * Returns a new immutable time instant object.
+     * @param millis nonnegative number of millis to subtract
+     * @return a new time instant object
+     * @throws IllegalArgumentException when computed time difference would cause instant before epoch
+     */
+    @Nonnull
+    public TimeInstant minusMillis(final long millis) {
+        if (millis < 0) {
+            throw new IllegalArgumentException("Millis may not be negative, use plusMillis.");
+        }
+        if (millis == 0) {
+            return this;
+        }
+        final long diff = getMillis() - millis;
+        if (diff < 0L) {
+            throw new IllegalArgumentException("Time instant would become negative, meaning before epoch.");
+        }
+        final Instant i = new Instant(diff);
+        return new TimeInstant(i, _fracMillisInNanos);
+    }
+
+    /**
+     * Returns a new immutable time instant object.
+     * @param seconds nonnegative number of seconds to subtract
+     * @return a new time instant object
+     * @throws IllegalArgumentException when computed time difference would cause instant before epoch
+     */
+    @Nonnull
+    public TimeInstant minusSeconds(@Nonnull final Long intervalInS) {
+        if (intervalInS < 0) {
+            throw new IllegalArgumentException("Millis may not be negative, use plusMillis.");
+        }
+        if (intervalInS == 0) {
+            return this;
+        }
+        final long diffMS = getMillis() - intervalInS*MILLIS_PER_SECOND;
+        if (diffMS < 0L) {
+            throw new IllegalArgumentException("Time instant would become negative, meaning before epoch.");
+        }
+        final Instant i = new Instant(diffMS);
+        return new TimeInstant(i, _fracMillisInNanos);
+    }
+
     /**
      * Returns a new immutable time instant object.
      * @param nanosPerSecond
      * @return the newly constructed time instant
-     * @throws IllegalArgumentException when millis
+     * @throws IllegalArgumentException when nanosPerSecond are negative or greater than {@TimeInstant#NANOS_PER_SECOND}.
      */
     @Nonnull
     public TimeInstant plusNanosPerSecond(final long nanosPerSecond) {
@@ -339,7 +394,7 @@ public final class TimeInstant implements Comparable<TimeInstant>, Serializable 
             return this;
         }
         long addMillis = nanosPerSecond / NANOS_PER_MILLIS;
-        final long addFracMillisInNanos = NANOS_PER_SECOND % NANOS_PER_MILLIS;
+        final long addFracMillisInNanos = nanosPerSecond % NANOS_PER_MILLIS;
 
         long newNanos = _fracMillisInNanos + addFracMillisInNanos;
         if (newNanos > NANOS_PER_MILLIS) {
@@ -365,7 +420,7 @@ public final class TimeInstant implements Comparable<TimeInstant>, Serializable 
     @Override
     @Nonnull
     public String toString() {
-        return formatted() + "." + _fracMillisInNanos;
+        return formatted(STD_DATETIME_FMT_WITH_MILLIS) + String.format("%1$06d", _fracMillisInNanos);
     }
 
     /**

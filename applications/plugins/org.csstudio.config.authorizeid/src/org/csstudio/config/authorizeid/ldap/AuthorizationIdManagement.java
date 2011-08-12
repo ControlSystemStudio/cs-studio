@@ -7,8 +7,9 @@ import javax.naming.directory.BasicAttributes;
 import javax.naming.ldap.LdapName;
 
 import org.csstudio.config.authorizeid.AuthorizeIdActivator;
-import org.csstudio.platform.logging.CentralLogger;
 import org.csstudio.utility.ldap.service.ILdapService;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * {@code AuthorizationIdManagement} manages AuthorizationId groups (eain). It can create and
@@ -17,10 +18,11 @@ import org.csstudio.utility.ldap.service.ILdapService;
  */
 public class AuthorizationIdManagement {
 
+    
 	/**
 	 * The logger that is used by this class.
 	 */
-	private static final CentralLogger LOG = CentralLogger.getInstance();
+    private static final Logger LOG = LoggerFactory.getLogger(AuthorizationIdManagement.class);
 
 	/**
 	 * Inserts new directory to LDAP.
@@ -38,7 +40,7 @@ public class AuthorizationIdManagement {
 		    throw new ServiceUnavailableException("LDAP service not available. Insertion of new data failed.");
 		}
 		if (!service.createComponent(new LdapName(_fullname), attrs)) {
-		    LOG.error(AuthorizationIdManagement.class, "An eain with name \""+ _name +"\" already exists" +
+		    LOG.error("An eain with name \""+ _name +"\" already exists" +
 		              " in group \""+ _group +"\".");
 		}
 	}

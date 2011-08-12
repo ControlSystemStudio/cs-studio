@@ -23,14 +23,18 @@ package org.csstudio.utility.casnooper;
 
 import org.csstudio.auth.security.Credentials;
 import org.csstudio.auth.security.ILoginCallbackHandler;
-import org.csstudio.platform.logging.CentralLogger;
 import org.csstudio.utility.casnooper.preferences.PreferenceConstants;
 import org.eclipse.core.runtime.Platform;
 import org.eclipse.core.runtime.preferences.IPreferencesService;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class LoginCallbackHandler1 implements ILoginCallbackHandler {
 
-	public Credentials getCredentials() {
+    private static final Logger LOG = LoggerFactory.getLogger(LoginCallbackHandler1.class);
+    
+	@Override
+    public Credentials getCredentials() {
 		
 //		//get properties from xml store.
 //		XMLStore store = XMLStore.getInstance();
@@ -48,8 +52,9 @@ public class LoginCallbackHandler1 implements ILoginCallbackHandler {
 		return new Credentials(xmppUserName, xmppPassword);
 	}
 
-	public void signalFailedLoginAttempt() {
-		CentralLogger.getInstance().error(this, "XMPP login failed");
+	@Override
+    public void signalFailedLoginAttempt() {
+		LOG.error("XMPP login failed");
 	}
 
 }

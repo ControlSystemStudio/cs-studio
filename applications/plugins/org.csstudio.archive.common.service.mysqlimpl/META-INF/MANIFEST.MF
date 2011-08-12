@@ -7,18 +7,18 @@ Bundle-Activator: org.csstudio.archive.common.service.mysqlimpl.MySqlServiceImpl
 Bundle-ActivationPolicy: lazy
 Bundle-RequiredExecutionEnvironment: JavaSE-1.6
 Import-Package: org.osgi.framework;version="1.3.0"
-Require-Bundle: org.csstudio.domain.desy;bundle-version="1.0.0",
+Require-Bundle: org.csstudio.domain.common;bundle-version="1.0.0",
+ org.csstudio.domain.desy;bundle-version="1.0.0",
  org.csstudio.domain.desy.epics;bundle-version="1.0.0",
  org.csstudio.archive.common.service;bundle-version="1.0.0",
  org.csstudio.archive.common.requesttype;bundle-version="1.0.0",
  org.csstudio.utility.pvmanager;bundle-version="0.4.0",
  org.csstudio.email;bundle-version="1.0.0",
- com.google.common,
+ com.google.common;bundle-version="0.9.0",
  com.google.inject;bundle-version="2.0.0",
+ com.mysql.jdbc;bundle-version="5.1.14",
  javax.annotation;bundle-version="1.3.0",
- org.csstudio.platform.libs.jdbc.mysql;bundle-version="5.1.14",
  org.joda.time;bundle-version="1.6.2",
- org.slf4j;bundle-version="1.6.1",
- org.slf4j-log4j12;bundle-version="1.6.1"
+ org.slf4j;bundle-version="1.6.1"
 Bundle-Vendor: Desy <css-developer@desy.de>, Bastian Knerr
 Bundle-ClassPath: .

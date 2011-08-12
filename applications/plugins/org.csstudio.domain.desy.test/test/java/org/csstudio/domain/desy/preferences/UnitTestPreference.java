@@ -32,12 +32,6 @@ import javax.annotation.Nonnull;
  */
 final class UnitTestPreference<T> extends AbstractPreference<T> {
 
-    /**
-     * For test purposes
-     */
-    @SuppressWarnings("unused")
-    private final Integer _notTestPreference = Integer.valueOf(0);
-
     public static final UnitTestPreference<String> STRING_PREF =
         new UnitTestPreference<String>("Unit_String_Pref", "Some string");
 
@@ -73,7 +67,7 @@ final class UnitTestPreference<T> extends AbstractPreference<T> {
      * public final TestPreference<Boolean> NOT_STATIC =
      *     new TestPreference<Boolean>("NOT_STATIC", true);
      */
-    private UnitTestPreference(@Nonnull final String keyAsString, 
+    UnitTestPreference(@Nonnull final String keyAsString, 
                            @Nonnull final T defaultValue) {
         super(keyAsString, defaultValue);
     }

@@ -7,7 +7,7 @@ Bundle-Activator: org.csstudio.dal.DalPlugin
 Bundle-Localization: plugin
 Require-Bundle: org.eclipse.core.runtime,
  org.junit4,
- org.csstudio.platform.libs.log4j
+ org.apache.log4j
 Eclipse-LazyStart: true
 Eclipse-BuddyPolicy: registered
 Bundle-ClassPath: .,

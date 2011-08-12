@@ -7,39 +7,41 @@ import oracle.jdbc.OracleResultSet;
 import oracle.jdbc.OracleStatement;
 
 import org.csstudio.alarm.dbaccess.archivedb.IMessageTypes;
-import org.csstudio.platform.logging.CentralLogger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class MessageTypes implements IMessageTypes {
+
+    private static final Logger LOG = LoggerFactory.getLogger(MessageTypes.class);
 
     private ArrayList<String[]> _propertyIdMapping;
 
     public MessageTypes() {
-        CentralLogger.getInstance().debug(this,
-                "Read Property ID mapping from table msg_property_type");
-        String sql = "select * from msg_property_type mpt order by id";
+        LOG.debug("Read Property ID mapping from table msg_property_type");
+        final String sql = "select * from msg_property_type mpt order by id";
         DBConnectionHandler connectioHandler = new DBConnectionHandler();
         try {
-            Connection _databaseConnection = connectioHandler.getConnection();
-            OracleStatement stmt = (OracleStatement) _databaseConnection
+            final Connection _databaseConnection = connectioHandler.getConnection();
+            final OracleStatement stmt = (OracleStatement) _databaseConnection
                     .createStatement();
 
             stmt.execute(sql);
 
-            OracleResultSet rset = (OracleResultSet) stmt.getResultSet();
+            final OracleResultSet rset = (OracleResultSet) stmt.getResultSet();
             _propertyIdMapping = new ArrayList<String[]>();
             while (rset.next()) {
-                String id = rset.getString("ID");
-                String name = rset.getString(2);
+                final String id = rset.getString("ID");
+                final String name = rset.getString(2);
                 _propertyIdMapping.add(new String[] { id, name });
             }
-        } catch (Exception e) {
-            CentralLogger.getInstance().debug(this, "SQL Exception " + e.getMessage());
+        } catch (final Exception e) {
+            LOG.debug("SQL Exception ", e);
         }
         if(connectioHandler != null) {
             try {
 				connectioHandler.closeConnection();
-			} catch (Exception e) {
-				CentralLogger.getInstance().error(this, "Unknown error, set connector = null" + e.toString());
+			} catch (final Exception e) {
+				LOG.error("Unknown error, set connector = null", e);
 			}
             connectioHandler = null;
         }

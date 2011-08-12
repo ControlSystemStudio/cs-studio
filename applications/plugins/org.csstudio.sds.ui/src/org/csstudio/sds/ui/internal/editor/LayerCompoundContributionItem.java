@@ -66,7 +66,7 @@ public final class LayerCompoundContributionItem extends CompoundContributionIte
 	protected IContributionItem[] getContributionItems() {
 		IContributionItem[] items = new IContributionItem[_layerManager.getLayerSupport().getLayers().size()];
 		for (int i=0;i<_layerManager.getLayerSupport().getLayers().size();i++) {
-			MoveToLayerAction moveToLayerAction = new MoveToLayerAction(_displayEditor, _layerManager.getLayerSupport().getLayers().get(i).getId());
+			MoveToLayerAction moveToLayerAction = new MoveToLayerAction(_displayEditor, _layerManager.getLayerSupport().getLayers().get(i).getDescription());
 			moveToLayerAction.update();
 			items[i] = new ActionContributionItem(moveToLayerAction);
 		}

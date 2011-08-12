@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?eclipse version="3.2"?>
+<plugin>
+   <extension
+         point="org.eclipse.ui.views">
+      <view
+            class="org.csstudio.utility.pvmanager.ui.toolbox.ToolboxView"
+            icon="icons/toolbox.png"
+            id="org.csstudio.utility.pvmanager.ui.toolbox.ToolboxView"
+            name="PVManager Toolbox">
+      </view>
+   </extension>
+   <extension
+         point="org.eclipse.ui.menus">
+      <menuContribution
+            allPopups="false"
+            locationURI="menu:debugging">
+         <command
+               commandId="org.eclipse.ui.views.showView"
+               icon="icons/toolbox.png"
+               label="PVManager Toolbox"
+               style="push"
+               tooltip="Show open channels in PVManager">
+            <parameter
+                  name="org.eclipse.ui.views.showView.viewId"
+                  value="org.csstudio.utility.pvmanager.ui.toolbox.ToolboxView">
+            </parameter>
+         </command>
+      </menuContribution>
+   </extension>
+</plugin>

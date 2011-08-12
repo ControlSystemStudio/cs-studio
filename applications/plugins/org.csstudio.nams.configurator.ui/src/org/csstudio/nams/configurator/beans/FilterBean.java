@@ -1,3 +1,4 @@
+
 package org.csstudio.nams.configurator.beans;
 
 import java.util.Collections;
@@ -102,7 +103,8 @@ public class FilterBean extends AbstractConfigurationBean<FilterBean> {
 		return this.defaultMessage;
 	}
 
-	public String getDisplayName() {
+	@Override
+    public String getDisplayName() {
 		return this.getName() != null ? this.getName() : Messages.FilterBean_without_name;
 	}
 
@@ -110,7 +112,8 @@ public class FilterBean extends AbstractConfigurationBean<FilterBean> {
 		return this.filterID;
 	}
 
-	public int getID() {
+	@Override
+    public int getID() {
 		return this.getFilterID();
 	}
 
@@ -160,7 +163,8 @@ public class FilterBean extends AbstractConfigurationBean<FilterBean> {
 				this.getFilterID());
 	}
 
-	public void setID(final int id) {
+	@Override
+    public void setID(final int id) {
 		this.setFilterID(id);
 	}
 
@@ -221,7 +225,8 @@ public class FilterBean extends AbstractConfigurationBean<FilterBean> {
 		}
 	}
 
-	public void setDisplayName(String name) {
+	@Override
+    public void setDisplayName(String name) {
 		this.setName(name);
 	}
 }

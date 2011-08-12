@@ -29,7 +29,7 @@ import javax.annotation.CheckForNull;
 import javax.annotation.Nonnull;
 
 /**
- * The class represents one module of a GSD file. 
+ * The class represents one module of a GSD file.
  * 
  * @author hrickens
  * @author $Author: bknerr $
@@ -37,58 +37,58 @@ import javax.annotation.Nonnull;
  * @since 28.03.2011
  */
 public class GsdModuleModel2 extends AbstractGsdPropertyModel {
-
+    
     private final String _name;
     private final List<Integer> _value;
     private int _moduleNo;
     private ParsedGsdFileModel _parent;
-
+    
     /**
      * Constructor.
      * @param line
      */
-    public GsdModuleModel2(@Nonnull String name, @Nonnull List<Integer> value) {
+    public GsdModuleModel2(@Nonnull final String name, @Nonnull final List<Integer> value) {
         _name = name;
         _value = value;
     }
-
+    
+    @Override
+    @CheckForNull
+    public ExtUserPrmData getExtUserPrmData(@Nonnull final Integer index) {
+        return getParent().getExtUserPrmData(index);
+    }
+    
     @Nonnull
     public Integer getModuleNumber() {
         return _moduleNo;
     }
-
+    
     @Nonnull
     public String getName() {
         return _name;
     }
-
+    
+    @Nonnull
+    public ParsedGsdFileModel getParent() {
+        return _parent;
+    }
+    
     @Nonnull
     public List<Integer> getValue() {
         return _value;
     }
-
+    
     @Nonnull
     public String getValueAsString() {
         return GsdFileParser.intList2HexString(_value);
     }
     
-    public void setModuleNumber(int moduleNo) {
+    public void setModuleNumber(final int moduleNo) {
         _moduleNo = moduleNo;
     }
-
-    public void setParent(@Nonnull ParsedGsdFileModel parent) {
+    
+    public void setParent(@Nonnull final ParsedGsdFileModel parent) {
         _parent = parent;
-    }
-
-    @Nonnull
-    public ParsedGsdFileModel getParent() {
-        return _parent;
-    }
-
-    @Override
-    @CheckForNull
-    public ExtUserPrmData getExtUserPrmData(@Nonnull Integer index) {
-        return getParent().getExtUserPrmData(index);
     }
     
     @Override

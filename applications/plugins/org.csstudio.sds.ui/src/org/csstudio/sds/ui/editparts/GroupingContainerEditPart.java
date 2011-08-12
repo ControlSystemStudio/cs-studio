@@ -111,4 +111,8 @@ public final class GroupingContainerEditPart extends AbstractContainerEditPart {
 		return groupingContainerFigure;
 	}
 
+	@Override
+	public boolean isSelectable() {
+		return getSelected() != SELECTED_NONE || ! (getParent() instanceof GroupingContainerEditPart) || getParent().getSelected() != SELECTED_NONE;
+	}
 }

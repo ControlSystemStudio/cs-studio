@@ -35,15 +35,6 @@ import javax.annotation.Nonnull;
  */
 public final class Ranges {
     
-  /** The min value for a U8 / U16 or U32 type.*/
-  static final short  MIN=0;
-  /** The max value for a U8 type.             */
-  static final short  MAX_U8=255;
-  /** The max value for a U16 type.            */
-  static final int    MAX_U16=65535;
-  /** The max value for a U32 type.            */
-  static final long   MAX_U32=(long)Math.pow(2, 32);
-
     /**
      * 
      * @author hrickens
@@ -76,23 +67,7 @@ public final class Ranges {
             this._max = max;
             _default = def;
         }
-
-        /**
-         * 
-         * @return the minimum Value.
-         */
-        public final long getMin() {
-            return _min;
-        }
-
-        /**
-         * 
-         * @return the maximum Value.
-         */
-        public final long getMax() {
-            return _max;
-        }
-
+        
         /**
          * 
          * @return the default Value.
@@ -100,61 +75,91 @@ public final class Ranges {
         public final long getDefault() {
             return _default;
         }
+        
+        /**
+         * 
+         * @return the maximum Value.
+         */
+        public final long getMax() {
+            return _max;
+        }
+        
+        /**
+         * 
+         * @return the minimum Value.
+         */
+        public final long getMin() {
+            return _min;
+        }
     }
     
     /**
      *  The Value for Tslot_Init. (OK)
      */
     public static final Value TSLOT_INIT = getRangeValue(37+15, 16383, 300);
-    /** 
+    /**
      * The Value for maxTsdr. (OK)
      */
     /**TODO: Der max Wert von_maxTsdr stimmt nicht. fehlen hinweise auf dier größe von t_Bit.*/
     public static final Value MAX_TSDR = getRangeValue(37, Long.MAX_VALUE,150);
 
     /**
-     *  The  Value for minTsdr. (OK)
-     */
-    /**TODO: Der max Wert von_minTsdr stimmt nicht. fehlen hinweise auf die größe von maxTsdr.*/
-    public static final Value MIN_TSDR = getRangeValue(11, MAX_U16,11);
-
-    /**
      *  The Value for tset. (OK)
      */
     public static final Value TSET = getRangeValue(1, 494,1);
     
-    /** The Value for tqui. (OK)*/
-    public static final Value TQUI = getRangeValue(0, MAX_U8,0);
-
     /** The Value for GAP. (OK)*/
     public static final Value GAP_RANGE = getRangeValue(1, 100,1);
-
+    
     /** The retray limit for the Profibus. (Max Different 8 or 15)*/
     public static final Value RETRAY_LIMIT = getRangeValue(1, 15,1);
-
+    
     /** The Target Rotation Time for the Profibus. (OK)*/
     public static final Value TTR = getRangeValue(0, 16777960,750000);
-
+    
     /** The minimum Watchdog time for the Profibus. (OK)*/
     public static final Value WATCHDOG = getRangeValue(0, 65535,1000);
 
+    
+    /** The min value for a U8 / U16 or U32 type.*/
+    static final short  MIN=0;
+    /** The max value for a U8 type.             */
+    static final short  MAX_U8=255;
+    /** The max value for a U16 type.            */
+    static final int    MAX_U16=65535;
+    /** The max value for a U32 type.            */
+    static final long   MAX_U32=(long)Math.pow(2, 32);
+    
+    //CHECKSTLYE OFF: DeclarationOrder
     /**
-     * Default Constructor. 
+     *  The  Value for minTsdr. (OK)
+     */
+    /**TODO: Der max Wert von_minTsdr stimmt nicht. fehlen hinweise auf die größe von maxTsdr.*/
+    public static final Value MIN_TSDR = getRangeValue(11, MAX_U16,11);
+    
+    /** The Value for tqui. (OK)*/
+    public static final Value TQUI = getRangeValue(0, MAX_U8,0);
+    //CHECKSTLYE ON: DeclarationOrder
+    
+    /**
+     * Default Constructor.
      */
     private Ranges() {
-        // Default Constructor. 
+        // Default Constructor.
     }
-    
+
     /**
      * 
      * @param min limit
      * @param max limit
      * @param def default Value.
-     * @return return a Range Value with min / max limits 
+     * @return return a Range Value with min / max limits
      */
     @Nonnull
     public static Value getRangeValue(final long min, final long max, final long def){
-        return new Value(min, max, def); 
+        return new Value(min, max, def);
     }
-   
+    
+    
+    
 }

@@ -1,6 +1,8 @@
+
 /**
  * 
  */
+
 package org.csstudio.nams.service.configurationaccess.localstore.internalDTOs;
 
 public enum PreferedAlarmType {

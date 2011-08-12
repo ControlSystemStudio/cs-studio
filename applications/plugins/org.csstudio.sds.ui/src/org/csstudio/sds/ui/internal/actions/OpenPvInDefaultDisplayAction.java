@@ -27,13 +27,9 @@ import java.util.Map;
 import org.csstudio.platform.logging.CentralLogger;
 import org.csstudio.platform.model.IProcessVariable;
 import org.csstudio.platform.ui.internal.dataexchange.ProcessVariablePopupAction;
-import org.csstudio.sds.SdsPlugin;
-import org.csstudio.sds.internal.preferences.PreferenceConstants;
+import org.csstudio.sds.ui.internal.preferences.DefaultDisplayPreference;
 import org.csstudio.sds.ui.runmode.RunModeService;
 import org.eclipse.core.runtime.IPath;
-import org.eclipse.core.runtime.Path;
-import org.eclipse.core.runtime.Platform;
-import org.eclipse.core.runtime.preferences.IPreferencesService;
 
 /**
  * Action to open a process variable in the default CSS display. The default
@@ -50,15 +46,10 @@ public class OpenPvInDefaultDisplayAction extends ProcessVariablePopupAction {
 	 */
 	@Override
 	public void handlePVs(IProcessVariable[] pv_names) {
-		IPreferencesService prefs = Platform.getPreferencesService();
-		String defaultDisplay = prefs.getString(SdsPlugin.PLUGIN_ID,
-				PreferenceConstants.PROP_DEFAULT_DISPLAY_FILE, "", null);
-		boolean openAsShell = prefs.getBoolean(SdsPlugin.PLUGIN_ID,
-				PreferenceConstants.PROP_DEFAULT_DISPLAY_OPEN_AS_SHELL, true, null);
-		String alias = prefs.getString(SdsPlugin.PLUGIN_ID,
-				PreferenceConstants.PROP_DEFAULT_DISPLAY_ALIAS, "channel", null);
+		IPath displayPath = DefaultDisplayPreference.DEFAULT_DISPLAY_PATH.getValue();
+		boolean openAsShell = DefaultDisplayPreference.OPEN_AS_SHELL.getValue();
+		String alias = DefaultDisplayPreference.DEFAULT_DISPLAY_ALIAS.getValue();
 
-		IPath displayPath = new Path(defaultDisplay);
 		RunModeService runner = RunModeService.getInstance();
 		for (IProcessVariable pv : pv_names) {
 			Map<String, String> aliases = new HashMap<String, String>();

@@ -39,19 +39,25 @@ public abstract class AbstractTypeSupport<T> extends TypeSupport<T> {
      * Constructor.
      */
     protected AbstractTypeSupport(@Nonnull final Class<T> type,
-                               @SuppressWarnings("rawtypes") @Nonnull final Class<? extends TypeSupport> typeSupportFamily) {
-        super(type, typeSupportFamily);
+                               @SuppressWarnings("rawtypes") @Nonnull final Class<? extends TypeSupport> family) {
+        super(type, family);
     }
 
     @Nonnull
-    protected static <T> TypeSupport<T> findTypeSupportForOrThrowTSE(@SuppressWarnings("rawtypes") @Nonnull final Class<? extends TypeSupport> supportFamily,
-                                                                     @Nonnull final Class<T> typeClass)
+    protected static <T> TypeSupport<T> findTypeSupportForOrThrowTSE(@SuppressWarnings("rawtypes") @Nonnull final Class<? extends TypeSupport> family,
+                                                                     @Nonnull final Class<T> type)
                                                                      throws TypeSupportException {
-        final TypeSupport<T> support = findTypeSupportFor(supportFamily, typeClass);
-        if (support == null) {
-            throw new TypeSupportException("Type support for " + typeClass.getName() + " not present in family " + supportFamily.getName(), null);
+        if (!isTypeSupported(family, type)) {
+            throw new TypeSupportException("Type support for " + type.getName() + " not present in family " + family.getName(), null);
         }
-        return support;
+        return findTypeSupportFor(family, type);
     }
 
+    public static <T> void installIfNotExists(@SuppressWarnings("rawtypes") @Nonnull final Class<? extends TypeSupport> family,
+                                              @Nonnull final Class<T> type,
+                                              @Nonnull final AbstractTypeSupport<T> support) {
+        if (!isTypeDirectlySupported(family, type)) {
+            addTypeSupport(support);
+        }
+    }
 }

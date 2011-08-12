@@ -42,8 +42,8 @@ import org.csstudio.tine2jms.AlarmMessage;
  * @author Markus Moeller
  *
  */
-public class JmsProducer
-{
+public class JmsProducer {
+    
     private Context context = null;
     private ConnectionFactory factory = null;
     private Connection connection = null;
@@ -55,16 +55,17 @@ public class JmsProducer
     
     private SimpleDateFormat dateFormat = null;
     
-    public JmsProducer(String clientId, String providerURL, String topicName) throws JmsProducerException
-    {
+    public JmsProducer(String clientId, String providerURL, String topicName)
+    throws JmsProducerException {
+        
         dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss.SSS");
         
         Hashtable<String, String> properties = new Hashtable<String, String>();
         properties.put(Context.INITIAL_CONTEXT_FACTORY, "org.apache.activemq.jndi.ActiveMQInitialContextFactory");
         properties.put(Context.PROVIDER_URL, providerURL);
         
-        try
-        {
+        try {
+            
             context = new InitialContext(properties);
             factory = (ConnectionFactory)context.lookup("ConnectionFactory");
             
@@ -80,31 +81,23 @@ public class JmsProducer
             this.topicName = topicName;
             
             producer = session.createProducer(topic);
-        }
-        catch(JMSException jmse)
-        {
+            
+        } catch(JMSException jmse) {
             throw new JmsProducerException(jmse.getMessage(), jmse);
-        }
-        catch(NamingException ne)
-        {
+        } catch(NamingException ne) {
             throw new JmsProducerException(ne.getMessage(), ne);
         }
     }
     
-    public synchronized void sendMessage(MapMessage message) throws JmsProducerException
-    {
-        try
-        {
+    public synchronized void sendMessage(MapMessage message) throws JmsProducerException {
+        try {
             producer.send(message);
-        }
-        catch (JMSException jmse)
-        {
+        } catch (JMSException jmse) {
             throw new JmsProducerException(jmse.getMessage(), jmse);
         }
     }
 
-    public void closeAll()
-    {
+    public void closeAll() {
         if (producer != null){try{producer.close();}
         catch(JMSException e){}producer=null;}
         topic = null;
@@ -119,8 +112,7 @@ public class JmsProducer
         catch(NamingException e){}context=null;}
     }
 
-    public synchronized MapMessage createMapMessages(AlarmMessage alarm) throws JMSException
-    {
+    public synchronized MapMessage createMapMessages(AlarmMessage alarm) throws JMSException {
         MapMessage msg = session.createMapMessage();
 
         Date date = new Date(alarm.getAlarmMessage().getTimeStamp());
@@ -138,13 +130,11 @@ public class JmsProducer
         return msg;
     }
 
-    public String getTopicName()
-    {
+    public String getTopicName() {
         return topicName;
     }
 
-    public String getClientId()
-    {
+    public String getClientId() {
         return clientId;
     }
 }

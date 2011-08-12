@@ -19,6 +19,8 @@
 package org.csstudio.sds.behavior.desy;
 
 import org.csstudio.sds.components.model.SwitchModel;
+import org.epics.css.dal.simple.AnyData;
+import org.epics.css.dal.simple.AnyDataChannel;
 import org.epics.css.dal.simple.MetaData;
 
 /**
@@ -32,14 +34,46 @@ import org.epics.css.dal.simple.MetaData;
  */
 public class SwitchAlarmBehavior extends AbstractDesyAlarmBehavior<SwitchModel> {
 
+    private boolean _defTransparent;
+
     /**
      * Constructor.
      */
     public SwitchAlarmBehavior() {
         // add Invisible P0roperty Id here
         // addInvisiblePropertyId
+        addInvisiblePropertyId(SwitchModel.PROP_STATE);
     }
 
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    protected void doInitialize(SwitchModel widget) {
+        _defTransparent = widget.getBooleanProperty(SwitchModel.PROP_TRANSPARENT);
+    }
+    
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    protected void doProcessValueChange(SwitchModel model, AnyData anyData) {
+        super.doProcessValueChange(model, anyData);
+        long value = anyData.longValue();
+        model.setPropertyValue(SwitchModel.PROP_STATE, value);
+    }
+    
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    protected void doProcessConnectionStateChange(SwitchModel widget, AnyDataChannel anyDataChannel) {
+        super.doProcessConnectionStateChange(widget, anyDataChannel);
+        boolean isTransparent = isConnected(anyDataChannel)&&_defTransparent;
+        widget.setPropertyValue(SwitchModel.PROP_TRANSPARENT, isTransparent);
+
+    }
+    
     @Override
     protected void doProcessMetaDataChange(final SwitchModel widget, final MetaData metaData) {
         // do nothing

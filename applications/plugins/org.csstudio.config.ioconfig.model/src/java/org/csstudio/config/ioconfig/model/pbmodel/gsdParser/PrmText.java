@@ -31,7 +31,7 @@ import javax.annotation.CheckForNull;
 import javax.annotation.Nonnull;
 
 /**
- * The class represents one PrmText of a GSD file.  
+ * The class represents one PrmText of a GSD file.
  * 
  * @author hrickens
  * @author $Author: bknerr $
@@ -46,41 +46,41 @@ public class PrmText {
     /**
      * Constructor.
      */
-    public PrmText(int index) {
+    public PrmText(final int index) {
         _index = index;
     }
-
-    /**
-     * @param prmItemKeyValue
-     */
-    public void setPrmTextItem(@Nonnull KeyValuePair prmItemKeyValue) {
-        Integer index = prmItemKeyValue.getIndex();
-        if(index!=null) {
-            _prmTextItemMap.put(index, new PrmTextItem(prmItemKeyValue.getValue(), index));
-        }
-        
+    
+    public int getIndex() {
+        return _index;
     }
     
     @CheckForNull
-    public PrmTextItem getPrmTextItem(@Nonnull Integer index) {
+    public PrmTextItem getPrmTextItem(@Nonnull final Integer index) {
         return _prmTextItemMap.get(index);
-    }
-
-    public int getIndex() {
-        return _index;
     }
     
     @Nonnull
     public Collection<PrmTextItem> getPrmTextItems(){
         return _prmTextItemMap.values();
     }
-
+    
     /**
      * @return
      */
     public boolean isEmpty() {
         return _prmTextItemMap.isEmpty();
     }
-
+    
+    /**
+     * @param prmItemKeyValue
+     */
+    public void setPrmTextItem(@Nonnull final KeyValuePair prmItemKeyValue) {
+        final Integer index = prmItemKeyValue.getIndex();
+        if(index!=null) {
+            _prmTextItemMap.put(index, new PrmTextItem(prmItemKeyValue.getValue(), index));
+        }
+        
+    }
+    
     
 }

@@ -1,3 +1,4 @@
+
 /* 
  * Copyright (c) 2008 Stiftung Deutsches Elektronen-Synchrotron, 
  * Member of the Helmholtz Association, (DESY), HAMBURG, GERMANY.
@@ -19,20 +20,21 @@
  * PROJECT IN THE FILE LICENSE.HTML. IF THE LICENSE IS NOT INCLUDED YOU MAY FIND A COPY 
  * AT HTTP://WWW.DESY.DE/LEGAL/LICENSE.HTM
  */
- package org.csstudio.ams.connector.voicemail;
+
+package org.csstudio.ams.connector.voicemail;
 
 import java.nio.ByteBuffer;
 
-public class ReplyAlarm extends Telegram
-{
-	private String originator;	//32
+public class ReplyAlarm extends Telegram {
+	
+    private String originator;	//32
 	private int chainIdAndPos;	//4
 	private String confirmCode;	//32
 	
 	public ReplyAlarm(int telegramCnt, 
-					  ByteBuffer bbUserData)
-	{
-		super(Telegram.TELID_ALARM_REPLY, telegramCnt);
+					  ByteBuffer bbUserData) {
+		
+	    super(Telegram.TELID_ALARM_REPLY, telegramCnt);
 		telegramLen = 12 + 32 + 4 + 32;
 
 		//bUseData
@@ -47,8 +49,8 @@ public class ReplyAlarm extends Telegram
 		this.confirmCode = new String(baTmp).trim();
 	}
 
-	public byte[] getWriteBytes()
-	{
+	@Override
+    public byte[] getWriteBytes() {
 		return null;
 	}
 
@@ -63,5 +65,4 @@ public class ReplyAlarm extends Telegram
 	public String getOriginator() {
 		return originator;
 	}
-
 }

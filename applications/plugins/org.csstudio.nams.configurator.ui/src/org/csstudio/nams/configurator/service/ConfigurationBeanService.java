@@ -1,3 +1,4 @@
+
 package org.csstudio.nams.configurator.service;
 
 import org.csstudio.nams.common.fachwert.RubrikTypeEnum;

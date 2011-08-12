@@ -21,6 +21,7 @@
  */
 package org.csstudio.archive.common.service;
 
+import java.io.Serializable;
 import java.util.Collection;
 
 import javax.annotation.CheckForNull;
@@ -86,7 +87,7 @@ public interface IArchiveEngineFacade {
      * @return true, if the samples have been persisted
      * @throws ArchiveServiceException
      */
-    <V, T extends ISystemVariable<V>>
+    <V extends Serializable, T extends ISystemVariable<V>>
     boolean writeSamples(@Nonnull final Collection<IArchiveSample<V, T>> samples)
                          throws ArchiveServiceException;
 
@@ -122,7 +123,7 @@ public interface IArchiveEngineFacade {
      * @param displayLow
      * @param displayHigh
      */
-    <V extends Comparable<? super V>>
+    <V extends Comparable<? super V> & Serializable>
     void writeChannelDisplayRangeInfo(@Nonnull final ArchiveChannelId id,
                                       @Nonnull final V displayLow,
                                       @Nonnull final V displayHigh) throws ArchiveServiceException;

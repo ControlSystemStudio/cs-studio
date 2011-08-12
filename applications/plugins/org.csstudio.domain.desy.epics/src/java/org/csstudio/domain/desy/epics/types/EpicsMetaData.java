@@ -42,38 +42,19 @@ import com.google.common.collect.Lists;
  */
 public final class EpicsMetaData {
 
+    /**
+     * Null object/flyweight pattern (there are a lot of channels in which states array is empty for
+     * enum types or display ranges, or alarms are not present.
+     */
+    private static final EpicsMetaData EMPTY_DATA =
+        new EpicsMetaData(null, null, null, null);
+
     private final EpicsGraphicsData<? extends Comparable<?>> _graphicsData;
     private final IControlLimits<? extends Comparable<?>> _ctrlLimits;
     private final Short _precision;
     private final EpicsAlarm _alarm;
     private final ImmutableList<EpicsEnum> _states;
 
-    /**
-     * Null object/flyweight pattern (there are a lot of channels in which states array is empty for
-     * enum types or display ranges, or alarms are  not present.
-     */
-    private static final EpicsMetaData EMPTY_DATA =
-        new EpicsMetaData(null, null, null, null);
-
-
-    @Nonnull
-    public static EpicsMetaData create(@Nonnull final String[] states) {
-        if (states.length == 0) {
-            return EMPTY_DATA;
-        }
-        return new EpicsMetaData(states);
-    }
-
-    @Nonnull
-    public static EpicsMetaData create(@Nullable final EpicsAlarm alarm,
-                                @Nullable final EpicsGraphicsData<? extends Comparable<?>> gr,
-                                @Nullable final IControlLimits<? extends Comparable<?>> ctrl,
-                                @Nullable final Short precision) {
-        if (alarm == null && gr == null && ctrl == null && precision == null) {
-            return EMPTY_DATA;
-        }
-        return new EpicsMetaData(alarm, gr, ctrl, precision);
-    }
 
 
     /**
@@ -92,9 +73,9 @@ public final class EpicsMetaData {
      * Constructor.
      */
     private EpicsMetaData(@Nullable final EpicsAlarm alarm,
-                         @Nullable final EpicsGraphicsData<? extends Comparable<?>> gr,
-                         @Nullable final IControlLimits<? extends Comparable<?>> ctrl,
-                         @Nullable final Short precision) {
+                          @Nullable final EpicsGraphicsData<? extends Comparable<?>> gr,
+                          @Nullable final IControlLimits<? extends Comparable<?>> ctrl,
+                          @Nullable final Short precision) {
         _alarm = alarm;
         _graphicsData = gr;
         _ctrlLimits = ctrl;
@@ -109,6 +90,25 @@ public final class EpicsMetaData {
     }
 
     @Nonnull
+    public static EpicsMetaData create(@Nonnull final String[] states) {
+        if (states.length == 0) {
+            return EMPTY_DATA;
+        }
+        return new EpicsMetaData(states);
+    }
+
+    @Nonnull
+    public static EpicsMetaData create(@Nullable final EpicsAlarm alarm,
+                                       @Nullable final EpicsGraphicsData<? extends Comparable<?>> gr,
+                                       @Nullable final IControlLimits<? extends Comparable<?>> ctrl,
+                                       @Nullable final Short precision) {
+        if (alarm == null && gr == null && ctrl == null && precision == null) {
+            return EMPTY_DATA;
+        }
+        return new EpicsMetaData(alarm, gr, ctrl, precision);
+    }
+
+    @Nonnull
     private ImmutableList<EpicsEnum> initStateList(@Nonnull final String[] states) {
         if (states.length == 0) {
             // throw new IllegalArgumentException("States array for enumerated values is empty.");
@@ -116,11 +116,12 @@ public final class EpicsMetaData {
         }
         final List<EpicsEnum> enumList = Lists.newArrayListWithExpectedSize(states.length);
         int i = 0;
-        for (String state : states) {
+        for (final String state : states) {
             if (Strings.isNullOrEmpty(state)) {
-                state = EpicsEnum.UNSET_STATE;
+                enumList.add(EpicsEnum.createFromState(EpicsEnum.UNSET_STATE, i));
+            } else {
+                enumList.add(EpicsEnum.createFromState(state, i));
             }
-            enumList.add(EpicsEnum.createFromState(state, i));
             i++;
         }
         return ImmutableList.copyOf(enumList);

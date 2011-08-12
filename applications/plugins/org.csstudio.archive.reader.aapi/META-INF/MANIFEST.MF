@@ -7,7 +7,7 @@ Bundle-Vendor: Desy, Jan Hatje <jan.hatje@desy.de>
 Require-Bundle: org.eclipse.core.runtime,
  org.csstudio.archive.reader,
  org.junit,
- org.csstudio.platform.libs.log4j;bundle-version="1.2.16"
+ org.apache.log4j;bundle-version="1.2.16"
 Bundle-RequiredExecutionEnvironment: JavaSE-1.6
 Bundle-ActivationPolicy: lazy
 Bundle-ClassPath: .,

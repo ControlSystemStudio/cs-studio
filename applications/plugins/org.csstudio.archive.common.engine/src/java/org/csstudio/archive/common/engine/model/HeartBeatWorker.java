@@ -61,7 +61,6 @@ public class HeartBeatWorker implements Runnable {
      */
     @Override
     public void run() {
-        //LOG.info("RUN: Heartbeat at " + TimeInstantBuilder.fromNow().formatted());
         try {
             updateEngineHeartBeat(_provider, _engineId);
         } catch (final ArchiveServiceException e) {

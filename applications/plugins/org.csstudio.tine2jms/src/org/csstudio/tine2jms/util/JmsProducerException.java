@@ -27,28 +27,24 @@ package org.csstudio.tine2jms.util;
  * @author Markus Moeller
  *
  */
-public class JmsProducerException extends Exception
-{
+public class JmsProducerException extends Exception {
+    
     /** Generated serial version id */
     private static final long serialVersionUID = -8552462959721451366L;
 
-    public JmsProducerException()
-    {
+    public JmsProducerException() {
         super();
     }
     
-    public JmsProducerException(final String message)
-    {
+    public JmsProducerException(final String message) {
         super(message);
     }
 
-    public JmsProducerException(final String message, final Throwable cause)
-    {
+    public JmsProducerException(final String message, final Throwable cause) {
         super(message, cause);
     }
 
-    public JmsProducerException(final Throwable cause)
-    {
+    public JmsProducerException(final Throwable cause) {
         super(cause);
     }
 }

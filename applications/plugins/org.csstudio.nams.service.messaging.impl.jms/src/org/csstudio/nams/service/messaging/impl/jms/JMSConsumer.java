@@ -1,3 +1,4 @@
+
 package org.csstudio.nams.service.messaging.impl.jms;
 
 import java.util.Enumeration;
@@ -17,7 +18,7 @@ import org.csstudio.nams.common.fachwert.MessageKeyEnum;
 import org.csstudio.nams.common.material.AlarmNachricht;
 import org.csstudio.nams.common.material.SyncronisationsAufforderungsSystemNachchricht;
 import org.csstudio.nams.common.material.SyncronisationsBestaetigungSystemNachricht;
-import org.csstudio.nams.service.logging.declaration.Logger;
+import org.csstudio.nams.service.logging.declaration.ILogger;
 import org.csstudio.nams.service.messaging.declaration.Consumer;
 import org.csstudio.nams.service.messaging.declaration.DefaultNAMSMessage;
 import org.csstudio.nams.service.messaging.declaration.NAMSMessage;
@@ -33,12 +34,12 @@ class JMSConsumer implements Consumer {
 		private volatile boolean arbeitFortsetzen = true;
 		private MessageConsumer consumer;
 
-		private final Logger logger;
+		private final ILogger logger;
 
 		public WorkThread(final LinkedBlockingQueue<Message> messageQueue,
 				final Session session, final String source,
 				final String clientId, final PostfachArt art,
-				final Logger logger) throws JMSException {
+				final ILogger logger) throws JMSException {
 			super("JMSConsumer#WorkThread-" + (++WorkThread.instanceCount));
 			this.messageQueue = messageQueue;
 			this.logger = logger;
@@ -72,6 +73,7 @@ class JMSConsumer implements Consumer {
 			try {
 				this.consumer.close();
 			} catch (final JMSException e) {
+			    // Can be ignored
 			}
 			this.logger.logDebugMessage(this, "Consumer WorkThread stoped");
 		}
@@ -117,9 +119,9 @@ class JMSConsumer implements Consumer {
 		}
 	}
 
-	private static Logger injectedLogger;
+	private static ILogger injectedLogger;
 
-	public static void staticInjectLogger(final Logger logger) {
+	public static void staticInjectLogger(final ILogger logger) {
 		JMSConsumer.injectedLogger = logger;
 	}
 
@@ -127,7 +129,7 @@ class JMSConsumer implements Consumer {
 	private final WorkThread[] workers;
 	private final LinkedBlockingQueue<Message> messageQueue;
 
-	private final Logger logger;
+	private final ILogger logger;
 
 	public JMSConsumer(final String clientId, final String messageSourceName,
 			final PostfachArt art, final Session[] sessions)
@@ -155,7 +157,8 @@ class JMSConsumer implements Consumer {
 		}
 	}
 
-	public void close() {
+	@Override
+    public void close() {
 		for (final WorkThread worker : this.workers) {
 			if (worker != null) {
 				worker.close();
@@ -165,11 +168,13 @@ class JMSConsumer implements Consumer {
 		this.logger.logDebugMessage(this, "Consumer closed");
 	}
 
-	public boolean isClosed() {
+	@Override
+    public boolean isClosed() {
 		return this.isClosed;
 	}
 
-	public NAMSMessage receiveMessage() throws MessagingException {
+	@Override
+    public NAMSMessage receiveMessage() throws MessagingException {
 		NAMSMessage result = null;
 		try {
 			final Message message = this.messageQueue.take();
@@ -207,7 +212,8 @@ class JMSConsumer implements Consumer {
 					}
 
 					final AcknowledgeHandler ackHandler = new AcknowledgeHandler() {
-						public void acknowledge() throws Throwable {
+						@Override
+                        public void acknowledge() throws Throwable {
 							mapMessage.acknowledge();
 							JMSConsumer.this.logger.logDebugMessage(this,
 									"JMSConsumer.ackHandler.acknowledge() called for message "
@@ -254,7 +260,8 @@ class JMSConsumer implements Consumer {
 						"unknown Message type received: "
 								+ unknownMessage.toString());
 				result = new DefaultNAMSMessage(new AcknowledgeHandler() {
-					public void acknowledge() throws Throwable {
+					@Override
+                    public void acknowledge() throws Throwable {
 						unknownMessage.acknowledge();
 						JMSConsumer.this.logger.logDebugMessage(this,
 								"JMSConsumer.ackHandler.acknowledge() called for message "

@@ -1,12 +1,16 @@
+
 /**
  * 
  */
+
 package org.csstudio.nams.common.activatorUtils;
 
 import java.lang.annotation.Annotation;
 
+@SuppressWarnings("hiding")
 class RequestedParam {
-	public static enum RequestType {
+	
+    public static enum RequestType {
 		OSGiServiceRequest, ExecuteableExtensionRequest
 	}
 

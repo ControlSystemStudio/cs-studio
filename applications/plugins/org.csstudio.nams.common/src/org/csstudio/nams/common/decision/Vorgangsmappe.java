@@ -1,3 +1,4 @@
+
 /* 
  * Copyright (c) 2008 C1 WPS mbH, 
  * HAMBURG, GERMANY.
@@ -22,6 +23,7 @@
  * MAY FIND A COPY AT
  * {@link http://www.eclipse.org/org/documents/epl-v10.html}.
  */
+
 package org.csstudio.nams.common.decision;
 
 import org.csstudio.nams.common.contract.Contract;
@@ -46,12 +48,12 @@ public class Vorgangsmappe implements Ablagefaehig {
 	// this.kennung = null;
 	// }
 
-	public Vorgangsmappe(final Vorgangsmappenkennung kennung,
+	public Vorgangsmappe(final Vorgangsmappenkennung k,
 			final AlarmNachricht nachricht) {
 		Contract.requireNotNull("nachricht", nachricht);
 
 		this.alarmNachricht = nachricht;
-		this.kennung = kennung;
+		this.kennung = k;
 	}
 
 	public void abgeschlossenDurchTimeOut() {
@@ -127,8 +129,8 @@ public class Vorgangsmappe implements Ablagefaehig {
 		this.abgeschlossenDurchMappenkennung = mappenkennung;
 	}
 
-	public void setzePruefliste(final Pruefliste pruefliste) {
-		this.pruefliste = pruefliste;
+	public void setzePruefliste(final Pruefliste liste) {
+		this.pruefliste = liste;
 	}
 
 	@Override

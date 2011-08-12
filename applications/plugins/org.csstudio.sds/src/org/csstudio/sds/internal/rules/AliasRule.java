@@ -47,7 +47,7 @@ public class AliasRule implements IRule {
             Object object = arguments[0];
             if(object instanceof String) {
                 String channel = (String) object;
-                channel = channel.split("[ .]")[0];
+                channel = channel.split("[ .\\[]")[0];
                 aliasMap.put("channel", channel);
             }
         }
@@ -59,7 +59,8 @@ public class AliasRule implements IRule {
      */
     @Override
     public String getDescription() {
-        return "Säubert eine String das nur der Channel übrig bleibt. Der channel wird dem Alias $channel$ zugewiesen.";
+        return "Säubert eine String das nur der Channel übrig bleibt. Der channel wird dem Alias $channel$ zugewiesen." +
+        		"\nDer Channel muß an erster Stelle stehen. Getrennt wird durch ' ','.','['";
     }
     
 }

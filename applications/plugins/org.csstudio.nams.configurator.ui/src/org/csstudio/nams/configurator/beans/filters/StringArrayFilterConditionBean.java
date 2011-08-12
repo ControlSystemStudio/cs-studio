@@ -1,11 +1,10 @@
+
 package org.csstudio.nams.configurator.beans.filters;
 
 import java.util.LinkedList;
 import java.util.List;
-
 import org.csstudio.nams.common.fachwert.MessageKeyEnum;
 import org.csstudio.nams.common.material.regelwerk.StringRegelOperator;
-import org.csstudio.nams.configurator.Messages;
 import org.csstudio.nams.configurator.beans.AbstractConfigurationBean;
 
 public class StringArrayFilterConditionBean extends
@@ -61,12 +60,14 @@ public class StringArrayFilterConditionBean extends
 		return new LinkedList<String>(this.compareValues);
 	}
 
-	public String getDisplayName() {
+	@Override
+    public String getDisplayName() {
 		return this.compareValues.toString() + " " + this.keyValue + " " //$NON-NLS-1$ //$NON-NLS-2$
 				+ this.operator;
 	}
 
-	public int getID() {
+	@Override
+    public int getID() {
 		return 0;
 	}
 
@@ -100,7 +101,9 @@ public class StringArrayFilterConditionBean extends
 				oldValue, this.compareValues);
 	}
 
-	public void setID(final int id) {
+	@Override
+    public void setID(final int id) {
+	    // Nothing to do
 	}
 
 	public void setKeyValue(final MessageKeyEnum keyValue) {
@@ -124,8 +127,8 @@ public class StringArrayFilterConditionBean extends
 		this.setOperator(bean.getOperator());
 	}
 
-	public void setDisplayName(String name) {
+	@Override
+    public void setDisplayName(String name) {
 		// nothing to do here		
 	}
-
 }

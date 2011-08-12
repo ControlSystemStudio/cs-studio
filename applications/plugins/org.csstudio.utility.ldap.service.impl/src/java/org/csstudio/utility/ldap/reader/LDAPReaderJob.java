@@ -68,9 +68,9 @@ public final class LDAPReaderJob extends Job implements ILdapReaderJob {
      */
     public static class Builder {
 
-        final LdapSearchParams _searchParams;
-        ILdapSearchResult _searchResult;
-        ILdapReadCompletedCallback _callBack;
+        private final LdapSearchParams _searchParams;
+        private ILdapSearchResult _searchResult;
+        private ILdapReadCompletedCallback _callBack;
 
         /**
          * Constructor with required parameters.
@@ -117,6 +117,7 @@ public final class LDAPReaderJob extends Job implements ILdapReaderJob {
     }
 
 
+    @SuppressWarnings("synthetic-access")
     LDAPReaderJob(@Nonnull final Builder builder){
         super("LDAPReader");
         _searchParams = builder._searchParams;

@@ -12,6 +12,6 @@ Require-Bundle: org.eclipse.core.runtime,
  org.csstudio.utility.ldap.service;bundle-version="1.0.0",
  javax.annotation;bundle-version="1.3.0",
  com.google.common,
- org.csstudio.platform.libs.log4j;bundle-version="1.2.16"
+ org.slf4j;bundle-version="1.6.1"
 Bundle-ActivationPolicy: lazy
 Bundle-RequiredExecutionEnvironment: JavaSE-1.6

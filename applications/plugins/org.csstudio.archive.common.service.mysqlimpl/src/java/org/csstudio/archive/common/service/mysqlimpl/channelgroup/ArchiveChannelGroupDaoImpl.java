@@ -73,11 +73,12 @@ public class ArchiveChannelGroupDaoImpl extends AbstractArchiveDao implements IA
 
         final List<IArchiveChannelGroup> groups = Lists.newArrayList();
         PreparedStatement stmt = null;
+        ResultSet result = null;
         try {
             stmt =  getConnection().prepareStatement(_selectChannelGroupByEngineIdStmt);
             stmt.setInt(1, engId.intValue());
 
-            final ResultSet result = stmt.executeQuery();
+            result = stmt.executeQuery();
 
             while (result.next()) {
                 // id, name, enabling_channel_id
@@ -91,7 +92,7 @@ public class ArchiveChannelGroupDaoImpl extends AbstractArchiveDao implements IA
         } catch (final Exception e) {
             handleExceptions(EXC_MSG, e);
         } finally {
-            closeStatement(stmt, "Closing of statement " + _selectChannelGroupByEngineIdStmt + " failed.");
+            closeStatement(result, stmt, "Closing of statement " + _selectChannelGroupByEngineIdStmt + " failed.");
         }
         return groups;
     }

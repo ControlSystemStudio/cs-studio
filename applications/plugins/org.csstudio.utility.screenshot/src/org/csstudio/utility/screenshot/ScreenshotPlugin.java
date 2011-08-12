@@ -1,4 +1,3 @@
-
 /* 
  * Copyright (c) 2007 Stiftung Deutsches Elektronen-Synchrotron, 
  * Member of the Helmholtz Association, (DESY), HAMBURG, GERMANY.
@@ -25,7 +24,7 @@ package org.csstudio.utility.screenshot;
 
 import java.io.IOException;
 import java.net.URL;
-import org.csstudio.platform.logging.CentralLogger;
+
 import org.csstudio.platform.ui.AbstractCssUiPlugin;
 import org.eclipse.core.runtime.FileLocator;
 import org.eclipse.jface.resource.ImageDescriptor;
@@ -35,28 +34,32 @@ import org.eclipse.ui.IWorkbench;
 import org.eclipse.ui.IWorkbenchWindow;
 import org.eclipse.ui.PlatformUI;
 import org.osgi.framework.BundleContext;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * The activator class controls the plug-in life cycle
  */
 public class ScreenshotPlugin extends AbstractCssUiPlugin // implements IStartup
 {
-
+    
+    private static final Logger LOG = LoggerFactory.getLogger(ScreenshotPlugin.class);
+    
     /** The plug-in ID */
     public static final String PLUGIN_ID = "org.csstudio.utility.screenshot";
-
+    
     /** The shared instance */
     private static ScreenshotPlugin plugin;
     
     /** */
     private final String NAME = "Screenshot";
-
+    
     /** */
     private final String VERSION = " 0.6.0";
     
     /** */
     private IWorkbenchWindow window = null;
-
+    
     /** */
     private MailEntry mailEntry = null;
     
@@ -66,18 +69,16 @@ public class ScreenshotPlugin extends AbstractCssUiPlugin // implements IStartup
     /**
      * The constructor
      */
-    public ScreenshotPlugin()
-    {
+    public ScreenshotPlugin() {
         plugin = this;
     }
-
+    
     /**
      * Returns the shared instance
      *
      * @return the shared instance
      */
-    public static ScreenshotPlugin getDefault()
-    {
+    public static ScreenshotPlugin getDefault() {
         return plugin;
     }
     
@@ -88,63 +89,53 @@ public class ScreenshotPlugin extends AbstractCssUiPlugin // implements IStartup
      * @param path the path
      * @return the image descriptor
      */
-    public static ImageDescriptor getImageDescriptor(String path)
-    {
+    public static ImageDescriptor getImageDescriptor(String path) {
         return imageDescriptorFromPlugin(PLUGIN_ID, path);
     }
-
-    public static String getInstalledFilePath(String filepath)
-    {
+    
+    public static String getInstalledFilePath(String filepath) {
         String path = null;
         
         URL pluginURL = getDefault().getBundle().getEntry(filepath);
-
-        try
-        {
+        
+        try {
             URL resolvedURL = FileLocator.resolve(pluginURL);
             
             path = resolvedURL.getPath();
             
-            if(System.getProperty("os.name").toLowerCase().contains("windows"))
-            { 
-                if(path.matches("/\\w:/.*"))
-                { 
-                    path = path.substring(1); 
-                } 
-            }     
-        }
-        catch(IOException ioe)
-        {
-            CentralLogger.getInstance().error(ScreenshotPlugin.getDefault(), " *** IOException *** : " + ioe.getMessage());
+            if(System.getProperty("os.name").toLowerCase().contains("windows")) {
+                if(path.matches("/\\w:/.*")) {
+                    path = path.substring(1);
+                }
+            }
+        } catch (IOException ioe) {
+            LOG.error(" *** IOException *** : ", ioe);
             
             path = null;
         }
         
         return path;
     }
-
+    
     @Override
-    protected void doStart(BundleContext context) throws Exception
-    {
+    protected void doStart(BundleContext context) throws Exception {
         IWorkbench workbench = PlatformUI.getWorkbench();
-
+        
         window = workbench.getActiveWorkbenchWindow(); //.getWorkbenchWindows()[0];
-                
-        display = window.getShell().getDisplay();       
+        
+        display = window.getShell().getDisplay();
     }
-
+    
     @Override
-    protected void doStop(BundleContext context) throws Exception
-    {
+    protected void doStop(BundleContext context) throws Exception {
         plugin = null;
     }
-
+    
     @Override
-    public String getPluginId()
-    {
+    public String getPluginId() {
         return PLUGIN_ID;
     }
-
+    
     /*
     public void earlyStartup()
     {   
@@ -156,34 +147,28 @@ public class ScreenshotPlugin extends AbstractCssUiPlugin // implements IStartup
         display = window.getShell().getDisplay();        
     }    
     */
-            
-    public Display getDisplay()
-    {
+
+    public Display getDisplay() {
         return display;
     }
     
-    public String getNameAndVersion()
-    {
+    public String getNameAndVersion() {
         return NAME + VERSION;
     }
-
-    public MailEntry getMailEntry()
-    {
+    
+    public MailEntry getMailEntry() {
         return mailEntry;
     }
     
-    public void setMailEntry(MailEntry me)
-    {
+    public void setMailEntry(MailEntry me) {
         mailEntry = me;
     }
-
-    public boolean isMailEntryAvailable()
-    {
+    
+    public boolean isMailEntryAvailable() {
         return (mailEntry != null);
     }
     
-    public Shell getShell()
-    {
+    public Shell getShell() {
         return window.getShell();
     }
 }

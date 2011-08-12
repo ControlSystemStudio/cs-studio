@@ -26,12 +26,15 @@ import org.slf4j.LoggerFactory;
  */
 @SuppressWarnings("nls")
 abstract class AbstractResponse extends HttpServlet {
+
+    private static final Logger LOG = LoggerFactory.getLogger(AbstractResponse.class);
+
     /** Required by Serializable */
     private static final long serialVersionUID = 1L;
+
     /** Model from which to serve info */
     private final EngineModel _model;
 
-    private static final Logger LOG = LoggerFactory.getLogger(AbstractResponse.class);
 
 
     /** Construct <code>HttpServlet</code>

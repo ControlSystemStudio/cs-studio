@@ -1,3 +1,4 @@
+
 // SMSLib for Java
 // An open-source API Library for sending and receiving SMS via a GSM modem.
 // Copyright (C) 2002-2007, Thanasis Delenikas, Athens/GREECE
@@ -22,7 +23,8 @@
 package org.csstudio.ams.connector.sms.softmodem;
 
 /**
- * This class contains some information about the GSM modem/phone as well as some simple statistics (total inbound/outbound messages).
+ * This class contains some information about the GSM modem/phone
+ * as well as some simple statistics (total inbound/outbound messages).
  */
 public class CSoftwareDeviceInfo
 {

@@ -14,12 +14,6 @@ package org.csstudio.archive.common.engine.httpserver;
  *  @author Kay Kasemir
  */
 public final class Messages {
-    /**
-     * Constructor.
-     */
-    private Messages() {
-        // Dont instantiate
-    }
 
     public static final String HTTP_YES = "Yes";
     public static final String HTTP_NO = "No";
@@ -60,4 +54,10 @@ public final class Messages {
     public static final String HTTP_WRITE_ERROR = "Write Error";
     public static final String HTTP_WRITE_PERIOD = "Write Period";
     public static final String HTTP_WRITE_STATE = "Write State";
+    /**
+     * Constructor.
+     */
+    private Messages() {
+        // Dont instantiate
+    }
 }
