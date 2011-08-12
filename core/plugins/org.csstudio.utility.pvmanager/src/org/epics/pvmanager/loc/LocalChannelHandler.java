@@ -20,14 +20,23 @@ import org.epics.pvmanager.util.TimeStamp;
  * @author carcassi
  */
 class LocalChannelHandler extends ChannelHandler<Object> {
+    
+    private final Object initialValue;
 
     LocalChannelHandler(String channelName) {
         super(channelName);
+        initialValue = null;
+    }
+
+    LocalChannelHandler(String channelName, Object initialValue) {
+        super(channelName);
+        this.initialValue = wrapValue(initialValue);
     }
 
     @Override
     public void connect(ExceptionHandler handler) {
-        // Nothing to be done
+        if (initialValue != null)
+            processValue(initialValue);
     }
 
     @Override
@@ -58,20 +67,25 @@ class LocalChannelHandler extends ChannelHandler<Object> {
         // Override for test visibility purposes
         super.removeWrite(exceptionHandler);
     }
+    
+    private Object wrapValue(Object value) {
+        if (value instanceof Number) {
+            // Special support for numbers
+            return ValueFactory.newVDouble(((Number) value).doubleValue(),
+                    AlarmSeverity.NONE, AlarmStatus.NONE, TimeStamp.now(), null, null, null,
+                    null, null, null, null, null, null, null, null);
+        } else if (value instanceof String) {
+            // Special support for strings
+            return ValueFactory.newVString(((String) value),
+                    AlarmSeverity.NONE, AlarmStatus.NONE, TimeStamp.now(), null);
+        }
+        return value;
+    }
 
     @Override
     public void write(Object newValue, ChannelWriteCallback callback) {
         try {
-            if (newValue instanceof Number) {
-                // Special support for numbers
-                newValue = ValueFactory.newVDouble(((Number) newValue).doubleValue(),
-                        AlarmSeverity.NONE, AlarmStatus.NONE, TimeStamp.now(), null, null, null,
-                        null, null, null, null, null, null, null, null);
-            } else if (newValue instanceof String) {
-                // Special support for strings
-                newValue = ValueFactory.newVString(((String) newValue),
-                        AlarmSeverity.NONE, AlarmStatus.NONE, TimeStamp.now(), null);
-            }
+            newValue = wrapValue(newValue);
             processValue(newValue);
             callback.channelWritten(null);
         } catch (Exception ex) {
