@@ -5,9 +5,11 @@
 
 package org.epics.pvmanager.loc;
 
+import java.util.List;
 import org.epics.pvmanager.ChannelHandler;
 import org.epics.pvmanager.DataSource;
 import org.epics.pvmanager.data.DataTypeSupport;
+import org.epics.pvmanager.util.FunctionParser;
 
 /**
  * Data source for locally written data. Each instance of this
@@ -29,9 +31,26 @@ public final class LocalDataSource extends DataSource {
         super(true);
     }
 
+    private final String CHANNEL_SYNTAX_ERROR_MESSAGE = 
+            "Syntax for local channel must be either name, name(Double) or name(String) (e.g \"foo\", \"foo(2.0)\" or \"foo(\"bar\")";
+    
     @Override
     protected ChannelHandler<?> createChannel(String channelName) {
-        return new LocalChannelHandler(channelName);
+        // Parse the channel name
+        List<Object> parsedTokens = FunctionParser.parseFunction(channelName);
+        if (parsedTokens == null || parsedTokens.size() > 2)
+            throw new IllegalArgumentException(CHANNEL_SYNTAX_ERROR_MESSAGE);
+        
+        // If the channel was already created, return it (no matter what the argument is)
+        ChannelHandler<?> handler = getChannels().get(parsedTokens.get(0).toString());
+        if (handler != null)
+            return handler;
+        
+        if (parsedTokens.size() == 1) {
+            return new LocalChannelHandler(parsedTokens.get(0).toString(), 0.0);
+        } else {
+            return new LocalChannelHandler(parsedTokens.get(0).toString(), parsedTokens.get(1));
+        }
     }
 
 }

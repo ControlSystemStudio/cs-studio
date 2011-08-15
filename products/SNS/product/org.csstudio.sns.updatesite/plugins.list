@@ -50,6 +50,7 @@ org.csstudio.logbook.sns/**
 org.csstudio.logbook.ui/**
 org.csstudio.logging/**
 org.csstudio.logging.ui/**
+org.csstudio.navigator.applaunch/**
 org.csstudio.openfile/**
 org.csstudio.opibuilder/**
 org.csstudio.opibuilder.adl2boy/**
@@ -84,6 +85,7 @@ org.csstudio.trends.databrowser2.opiwidget/**
 org.csstudio.ui.help/**
 org.csstudio.ui.menu/**
 org.csstudio.ui.menu.app/**
+org.csstudio.ui.menu.pvscript/**
 org.csstudio.ui.menu.web/**
 org.csstudio.ui.preferences/**
 org.csstudio.ui.util/**

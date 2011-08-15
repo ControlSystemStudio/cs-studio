@@ -39,6 +39,7 @@ import org.epics.pvmanager.PV;
 import org.epics.pvmanager.PVManager;
 import org.epics.pvmanager.PVReaderListener;
 import org.epics.pvmanager.PVWriterListener;
+import org.epics.pvmanager.TimeoutException;
 import org.epics.pvmanager.WriteFailException;
 import org.epics.pvmanager.data.Alarm;
 import org.epics.pvmanager.data.AlarmSeverity;
@@ -554,8 +555,11 @@ public class PVManagerProbe extends ViewPart {
 	 */
 	private void setLastError(Exception ex) {
 		if (ex == null) {
+			// If no exception, then everything is peachy
 			statusField.setText(Messages.Probe_statusConnected);
-		} else {
+		} else if (!(ex instanceof TimeoutException) || Messages.Probe_statusSearching.equals(statusField.getText())) {
+			// If it's an error always display message, but if it's
+			// a timeout display only if there was no previous message
 			statusField.setText(ex.getMessage());
 		}
 	}

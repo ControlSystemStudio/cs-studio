@@ -84,12 +84,22 @@ public enum ConnectionState {
      *         if not avail.
      */
     public static ConnectionState translate(org.epics.css.dal.context.ConnectionState dalState) {
+        
         ConnectionState result = UNKNOWN;
         
         for (ConnectionState s : values()) {
             if(s.getDalState() == dalState) {
                 result = s;
             }
+        }
+        
+        // TODO:
+        // If the incomming state is org.epics.css.dal.context.ConnectionState.OPERATIONAL,
+        // the result value is always UNKNOWN
+        // because the old ConnectionState enum does not contain such a state.
+        // This causes always an error in the application DepartmentDecision (NAMS)
+        if ((result == UNKNOWN) && (dalState == org.epics.css.dal.context.ConnectionState.OPERATIONAL)) {
+            result = ConnectionState.CONNECTED;
         }
         
         return result;

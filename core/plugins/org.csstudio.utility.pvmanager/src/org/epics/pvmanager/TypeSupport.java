@@ -6,8 +6,8 @@
 package org.epics.pvmanager;
 
 import java.util.Collection;
+import java.util.Collections;
 import java.util.HashSet;
-import java.util.Iterator;
 import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
@@ -156,8 +156,11 @@ public abstract class TypeSupport<T> {
     }
     
     protected static <T extends TypeSupport<?>> Collection<T> typeSupportsFor(final Class<T> supportFamily) {
+        TypeSupportMap map = allTypeSupports.get(supportFamily);
+        if (map == null)
+            return Collections.emptyList();
         @SuppressWarnings("unchecked")
-        Collection<T> supports = (Collection<T>) (Collection) allTypeSupports.get(supportFamily).values();
+        Collection<T> supports = (Collection<T>) (Collection) map.values();
         return supports;
     }
 

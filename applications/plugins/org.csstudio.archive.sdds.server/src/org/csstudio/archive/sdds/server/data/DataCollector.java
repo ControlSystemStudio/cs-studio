@@ -56,7 +56,7 @@ public class DataCollector {
         conversionExecutor = new ConversionExecutor();
         
         try {
-            sddsReader = new SddsFileReader();
+            sddsReader = new SddsFileReader("./sdds_data_location.txt");
         } catch(DataPathNotFoundException dpnfe) {
             LOG.error("[*** DataPathNotFoundException ***]: {}", dpnfe);
             throw new DataCollectorException("DataCollector: Cannot instantiate the class SddsFileReader: " + dpnfe.getMessage());
@@ -66,9 +66,8 @@ public class DataCollector {
     /**
      * 
      * @param recordName
-     * @param startTime
-     * @param endTime
-     * @return
+     * @param header
+     * @return The read data
      */
     public RecordDataCollection readData(String recordName, DataRequestHeader header) {
         

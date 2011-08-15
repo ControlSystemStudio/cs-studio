@@ -2,7 +2,7 @@
 <feature
       id="org.csstudio.sns.feature.applications"
       label="Generic CSS Applications"
-      version="3.0.0.qualifier"
+      version="3.0.1.qualifier"
       provider-name="Kay Kasemir &lt;kasemirk@ornl.gov&gt;, Xihui Chen &lt;chenx1@ornl.gov&gt; - SNS">
 
    <description>
@@ -77,7 +77,7 @@ For details, see http://www.eclipse.org/legal/epl-v10.html
       <import plugin="org.csstudio.apputil.ui" version="1.1.7" match="greaterOrEqual"/>
       <import plugin="org.csstudio.opibuilder" version="1.0.6" match="greaterOrEqual"/>
       <import plugin="org.csstudio.opibuilder.widgets" version="1.0.5" match="greaterOrEqual"/>
-      <import plugin="org.csstudio.trends.databrowser2" version="3.0.0" match="greaterOrEqual"/>
+      <import plugin="org.csstudio.trends.databrowser2" version="3.0.1" match="greaterOrEqual"/>
       <import plugin="org.csstudio.swt.xygraph" version="1.1.1" match="greaterOrEqual"/>
    </requires>
 

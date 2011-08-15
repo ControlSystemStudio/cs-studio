@@ -7,23 +7,11 @@
  ******************************************************************************/
 package org.csstudio.sns.product;
 
-import java.util.logging.Logger;
-
-import org.eclipse.ui.plugin.AbstractUIPlugin;
-
-/** Plugin activator
+/** Plugin info
  *  @author Kay Kasemir
  */
-public class Activator extends AbstractUIPlugin
+public class Activator
 {
     /** Plugin ID, defined in MANIFEST.MF */
     final public static String PLUGIN_ID = "org.csstudio.sns.product"; //$NON-NLS-1$
-
-    final private static Logger logger = Logger.getLogger(PLUGIN_ID);
-
-    /** @return Logger for plugin ID */
-    public static Logger getLogger()
-    {
-        return logger;
-    }
 }
