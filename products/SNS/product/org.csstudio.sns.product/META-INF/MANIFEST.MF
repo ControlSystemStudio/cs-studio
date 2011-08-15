@@ -24,7 +24,6 @@ Require-Bundle: org.eclipse.core.runtime,
  org.csstudio.sns.startuphelper;bundle-version="3.0.0"
 Bundle-Vendor: Kay Kasemir <kasemirk@ornl.gov>, Xihui Chen <chenx1@ornl.gov> - SNS
 Bundle-ActivationPolicy: lazy
-Bundle-Activator: org.csstudio.sns.product.Activator
 Eclipse-PlatformFilter: (| (osgi.ws=win32)(osgi.ws=cocoa)(osgi.ws=gtk))
 Bundle-Description: CSS for SNS users (Office, control rooms)
 Bundle-RequiredExecutionEnvironment: JavaSE-1.6
