@@ -6,7 +6,7 @@ export VERSION=3.0.0
 export TOP=/Kram/MerurialRepos/cs-studio-3.0.0
 
 export ECLIPSE_BASE=/Kram/Eclipse/3_6_2/rcp
-export WORKSPACE=/Kram/Eclipse/Workspace
+export WORKSPACE=/Kram/Eclipse/Workspace3.0
 
 # Mac OS X window system
 OSWIN=cocoa
