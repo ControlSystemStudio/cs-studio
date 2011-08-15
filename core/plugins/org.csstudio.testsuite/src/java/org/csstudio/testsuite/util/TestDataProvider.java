@@ -24,7 +24,6 @@
 package org.csstudio.testsuite.util;
 
 import java.io.File;
-import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.InetAddress;
@@ -65,6 +64,7 @@ import com.google.common.base.Strings;
  */
 public final class TestDataProvider {
 
+
     public static final TestDataProvider EMPTY_PROVIDER = new TestDataProvider();
 
     private static final Logger LOG = LoggerFactory.getLogger(TestDataProvider.class);
@@ -77,6 +77,7 @@ public final class TestDataProvider {
 
     private static final String SENSITIVE_FILE_KEY = "sensitiveConfigFilePath";
 
+    private static final String EMPTY_PROVIDER_PLUGIN = "<emptyProvider>";
 
     private static TestDataProvider INSTANCE;
     private static Properties PROPERTIES = new Properties();
@@ -86,7 +87,7 @@ public final class TestDataProvider {
      * Constructor.
      */
     private TestDataProvider() {
-        _pluginId = "<emptyProvider>";
+        _pluginId = EMPTY_PROVIDER_PLUGIN;
     }
 
     /**
@@ -100,7 +101,6 @@ public final class TestDataProvider {
         throws IOException, BundleException {
 
         findAndLoadGeneralProperties(pluginId);
-
         findAndLoadGeneralSecretProperties(pluginId);
 
         findAndLoadHostSpecificProperties();
@@ -110,7 +110,9 @@ public final class TestDataProvider {
                                                      throws IOException, BundleException {
         final String testConfigFileName = createSiteSpecificName();
         final URL resource = locateResource(pluginId, testConfigFileName);
-        openStreamAndLoadProps(resource);
+        if (resource != null) {
+            openStreamAndLoadProps(resource);
+        }
     }
 
     private static void findAndLoadGeneralSecretProperties(@Nonnull final String pluginId)
@@ -118,7 +120,9 @@ public final class TestDataProvider {
         final String secretFile = findSensitiveDataFile();
         if (secretFile != null) {
             final URL resource = locateResource(pluginId, secretFile);
-            openStreamAndLoadProps(resource);
+            if (resource != null) {
+                openStreamAndLoadProps(resource);
+            }
         }
     }
 
@@ -157,10 +161,9 @@ public final class TestDataProvider {
         return null;
     }
 
-    @Nonnull
+    @CheckForNull
     private static URL locateResource(@Nonnull final String pluginId,
                                       @Nonnull final String testConfigFileName) throws MalformedURLException,
-                                                                                       FileNotFoundException,
                                                                                        BundleException {
         Bundle bundle = Platform.getBundle(pluginId);
         URL resource = null;
@@ -176,9 +179,9 @@ public final class TestDataProvider {
         }
 
         if (resource == null) {
-            throw new FileNotFoundException("Test configuration file for plugin " + pluginId +
-                                            " and file name " + testConfigFileName +
-            " does not exist");
+            LOG.warn("Test configuration file for plugin " + pluginId +
+                     " and file name " + testConfigFileName +
+                     " does not exist");
         }
         return resource;
     }
