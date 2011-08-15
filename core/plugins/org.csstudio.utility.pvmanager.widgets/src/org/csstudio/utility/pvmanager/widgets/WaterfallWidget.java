@@ -3,7 +3,7 @@ package org.csstudio.utility.pvmanager.widgets;
 import static org.epics.pvmanager.ExpressionLanguage.*;
 import static org.epics.pvmanager.data.ExpressionLanguage.*;
 import static org.epics.pvmanager.extra.ExpressionLanguage.waterfallPlotOf;
-import static org.epics.pvmanager.extra.WaterfallPlotParameters.pixelDuration;
+import static org.epics.pvmanager.extra.WaterfallPlotParameters.*;
 import static org.epics.pvmanager.util.TimeDuration.*;
 
 import java.util.List;
@@ -28,6 +28,7 @@ import org.epics.pvmanager.PVManager;
 import org.epics.pvmanager.PVReader;
 import org.epics.pvmanager.PVReaderListener;
 import org.epics.pvmanager.data.VImage;
+import org.epics.pvmanager.extra.ColorScheme;
 import org.epics.pvmanager.extra.WaterfallPlot;
 import org.epics.pvmanager.extra.WaterfallPlotParameters;
 import org.epics.pvmanager.util.TimeDuration;
@@ -336,8 +337,40 @@ public class WaterfallWidget extends Composite {
 	 * 
 	 * @return waterfall plot parameters
 	 */
-	public WaterfallPlotParameters getWaterfallPlotParameters() {
+	WaterfallPlotParameters getWaterfallPlotParameters() {
 		return parameters;
+	}
+	
+	public boolean isScrollDown() {
+		return parameters.isScrollDown();
+	}
+	
+	public void setScrollDown(boolean scrollDown) {
+		setWaterfallPlotParameters(parameters.with(scrollDown(scrollDown)));
+	}
+	
+	public boolean isAdaptiveRange() {
+		return parameters.isAdaptiveRange();
+	}
+	
+	public void setAdaptiveRange(boolean adaptiveRange) {
+		setWaterfallPlotParameters(parameters.with(adaptiveRange(adaptiveRange)));
+	}
+	
+	public TimeDuration getPixelDuration() {
+		return parameters.getPixelDuration();
+	}
+	
+	public void setPixelDuration(TimeDuration pixelDuration) {
+		setWaterfallPlotParameters(parameters.with(pixelDuration(pixelDuration)));
+	}
+	
+	public ColorScheme getColorScheme() {
+		return parameters.getColorScheme();
+	}
+	
+	public void setColorScheme(ColorScheme colorScheme) {
+		setWaterfallPlotParameters(parameters.with(colorScheme(colorScheme)));
 	}
 	
 	/**

@@ -12,6 +12,7 @@ import org.epics.pvmanager.expression.DesiredRateExpression;
 import org.epics.pvmanager.expression.DesiredRateExpressionImpl;
 import org.epics.pvmanager.ExceptionHandler;
 import org.epics.pvmanager.PVManager;
+import org.epics.pvmanager.expression.DesiredRateExpressionListImpl;
 
 /**
  * A expression that returns the result of a dynamically managed group.
@@ -30,7 +31,7 @@ public class DynamicGroup extends DesiredRateExpressionImpl<List<Object>> {
      * Creates a new group.
      */
     public DynamicGroup() {
-        super((DesiredRateExpression<?>) null, new DynamicGroupFunction(), "dynamic group");
+        super(new DesiredRateExpressionListImpl<Object>(), new DynamicGroupFunction(), "dynamic group");
     }
 
     DynamicGroupFunction getGroup() {

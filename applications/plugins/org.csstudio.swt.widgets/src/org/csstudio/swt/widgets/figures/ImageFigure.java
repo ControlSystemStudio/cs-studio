@@ -510,7 +510,7 @@ public final class ImageFigure extends Figure implements Introspectable {
 	 *            The amount of pixels
 	 */
 	public synchronized void setBottomCrop(final int newval) {
-		if (bottomCrop == newval || (newval + topCrop) >= imgHeight
+		if (bottomCrop == newval //|| (newval + topCrop) >= imgHeight
 				|| newval < 0 || (newval + topCrop) < 0)
 			return;
 		bottomCrop = newval;
@@ -550,7 +550,7 @@ public final class ImageFigure extends Figure implements Introspectable {
 	 *            The amount of pixels
 	 */
 	public synchronized void setLeftCrop(final int newval) {
-		if (leftCrop == newval || newval < 0 || (newval + rightCrop) > imgWidth
+		if (leftCrop == newval || newval < 0 //|| (newval + rightCrop) > imgWidth //image may not be loaded when this is set
 				|| (newval + rightCrop) < 0)
 			return;
 		leftCrop = newval;
@@ -564,7 +564,7 @@ public final class ImageFigure extends Figure implements Introspectable {
 	 *            The amount of pixels
 	 */
 	public synchronized void setRightCrop(final int newval) {
-		if (rightCrop == newval || newval < 0 || (newval + leftCrop) > imgWidth
+		if (rightCrop == newval || newval < 0 //|| (newval + leftCrop) > imgWidth
 				|| (newval + leftCrop) < 0)
 			return;
 		rightCrop = newval;
@@ -612,7 +612,7 @@ public final class ImageFigure extends Figure implements Introspectable {
 	 */
 	public synchronized void setTopCrop(final int newval) {
 		if (topCrop == newval || newval < 0
-				|| (newval + bottomCrop) > imgHeight
+//				|| (newval + bottomCrop) > imgHeight
 				|| (newval + bottomCrop) < 0)
 			return;
 		topCrop = newval;

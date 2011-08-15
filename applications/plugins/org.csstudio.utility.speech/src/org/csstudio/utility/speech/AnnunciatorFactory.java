@@ -33,6 +33,12 @@ public class AnnunciatorFactory
             return new FreeTTS_JSAPI_Annunciator();
         if ("FreeTTS".equalsIgnoreCase(type))
             return new FreeTTSAnnunciator();
+        if ("UDP".equalsIgnoreCase(type))
+        {
+        	final String host = prefs.getString(Plugin.ID, "host", "", null);
+        	final int port = prefs.getInt(Plugin.ID, "port", 6543, null);
+        	return new UDPAnnunciator(host, port);
+        }
 
         return new ExternalAnnunciator();
     }

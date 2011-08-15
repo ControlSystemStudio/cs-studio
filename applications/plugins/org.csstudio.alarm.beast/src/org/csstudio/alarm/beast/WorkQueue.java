@@ -7,6 +7,9 @@
  ******************************************************************************/
 package org.csstudio.alarm.beast;
 
+import java.util.Iterator;
+import java.util.LinkedHashMap;
+import java.util.LinkedHashSet;
 import java.util.LinkedList;
 import java.util.Queue;
 import java.util.concurrent.Executor;
@@ -28,7 +31,35 @@ import java.util.logging.Level;
 public class WorkQueue implements Executor
 {
     /** Task queue */
-    final Queue<Runnable> tasks = new LinkedList<Runnable>();
+	final Queue<Runnable> tasks = new LinkedList<Runnable>();
+	
+	// Compared these data structures for 'tasks':
+	//
+	// final Queue<Runnable> tasks = new LinkedList<Runnable>();
+	// final LinkedHashMap<Object, Runnable> tasks = new LinkedHashMap<Object, Runnable>();
+	//
+	// Considered LinkedHashSet, but didn't work:
+	// Inserting a 'new' ReplacableRunnable would simply keep
+	// an older entry, not update it.
+
+	// JProfile results for 100 tasks, replaced 4 times:
+	//
+	//                     LinkedList  LinkedHashMap
+	// execute                 4us         10us
+	// executeReplacable      44us         10us
+	// getOldestRunnable       1us         12us
+	//
+	// Linked list is obviously slower when asked to replaced an existing
+	// runnable for the same object because of the linear lookup.
+	// But how long is the list going to be?
+	// Usually only a few noisy PVs, so maybe just 2 or 3 entries
+	// that keep getting replaced.
+	// If the test is run with only 10 tasks in the queue,
+	// executeReplacable for the LinkedList takes only 11us,
+	// i.e. similar to LinkedHashMap
+	//
+	// -> Simple linked list is probably good enough for the
+	// common use case, plus uses less memory.
 
     /** Thread that executes the queue. Set on first access */
     private Thread thread;
@@ -51,22 +82,67 @@ public class WorkQueue implements Executor
     {
         synchronized (tasks)
         {
-            tasks.add(command);
+        	// Hash: Use dummy key to add a new element
+            // tasks.put(new Object(), command);
+        	
+        	// Queue:
+        	tasks.add(command);
+        	
             tasks.notifyAll();
         }
     }
 
-    /** Perform queued commands, return when done.
-     *  Returns 'immediately' if there are no queued commands.
+    /** Add a replaceable command to the queue.
+     * 
+     *  <p>If there is already a replaceable command
+     *  on the queue for the same object, it will
+     *  be replaced with this one.
+     *  
+     *  @param command Command to be executed
+     *  @see Executor#execute(Runnable)
      */
-    public void perform_queued_commands()
+    public void executeReplacable(final ReplacableRunnable<?> command)
     {
-        Runnable task;
-        // Execute all tasks on queue
+        synchronized (tasks)
+        {	// Hash: Adding a ReplacableRunnable will
+        	// use that class's equals() to replace
+        	// an existing entry for the same object
+        	// tasks.put(command, command);
+        	
+        	// List: Replace old, then add new
+        	tasks.remove(command);
+        	tasks.add(command);
+        	
+            tasks.notifyAll();
+        }
+    }
+
+    /** @return Oldest runnable in the queue or <code>null</code> */
+    private Runnable getOldestRunnable()
+    {
         synchronized (tasks)
         {
-            task = tasks.poll();
+        	// Hash: Need iterator to get oldest
+        	//final Iterator<Runnable> iter = tasks.values().iterator();
+        	//if (iter.hasNext())
+        	//{
+        	//	final Runnable result = iter.next();
+        	//	iter.remove();
+			//	return result;
+        	//}
+        	//return null;
+        	
+        	// Queue was designed for this
+        	return tasks.poll();
         }
+    }
+	/** Perform queued commands, return when done.
+     *  Returns 'immediately' if there are no queued commands.
+     */
+    public void performQueuedCommands()
+    {
+        // Execute all tasks on queue
+        Runnable task = getOldestRunnable();
         while (task != null)
         {
             try
@@ -77,10 +153,7 @@ public class WorkQueue implements Executor
             {
                 Activator.getLogger().log(Level.SEVERE, "Work Queue Exception", ex);
             }
-            synchronized (tasks)
-            {
-                task = tasks.poll();
-            }
+            task = getOldestRunnable();
         }
     }
 
@@ -91,14 +164,16 @@ public class WorkQueue implements Executor
      *
      *  @param millisecs Time to wait
      */
-    public void perform_queued_commands(final int millisecs)
+    public void performQueuedCommands(final int millisecs)
     {
         assertOnThread();
         Runnable task;
         // Wait in case there aren't any tasks in the queue
+        // Do this while sync'ed to not miss
+        // a notify.
         synchronized (tasks)
         {
-            task = tasks.poll();
+        	task = getOldestRunnable();
             if (task == null)
             {
                 try
@@ -109,7 +184,7 @@ public class WorkQueue implements Executor
                 {
                     return;
                 }
-                task = tasks.poll();
+                task = getOldestRunnable();
             }
         }
         // Execute all tasks on queue
@@ -123,10 +198,7 @@ public class WorkQueue implements Executor
             {
                 Activator.getLogger().log(Level.SEVERE, "Work Queue Exception", ex);
             }
-            synchronized (tasks)
-            {
-                task = tasks.poll();
-            }
+            task = getOldestRunnable();
         }
     }
 

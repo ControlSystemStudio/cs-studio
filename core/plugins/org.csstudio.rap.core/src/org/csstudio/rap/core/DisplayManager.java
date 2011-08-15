@@ -77,39 +77,53 @@ public class DisplayManager {
 	}
 
 	/**
-	 * Register the display so it can be managed by RAP Core. It must be called
-	 * after shell was created. The manager will automatically unregister the display
+	 * Register the display so it can be managed by RAP Core. If enableCallback is true, 
+	 * it must be called after the shell was created.
+	 * The manager will automatically unregister the display
 	 * if it is not alive.
 	 * 
 	 * @param display
+	 * @param enableCallback true if callback should be activated.
 	 */
-	public void registerDisplay(Display display) {
+	public void registerDisplay(Display display, boolean enableCallback) {
 		if(displayMap.containsKey(display))
 			return;
 		HttpServletRequest request = RWT.getRequest();
 		displayMap.put(display, new DisplayResource(beatCount, true, 
 				request.getRemoteHost() + " : " + request.getHeader("User-Agent"))); //$NON-NLS-1$ //$NON-NLS-2$
 		
-		display.asyncExec(new Runnable() {
-			
-			@Override
-			public void run() {
-				String callbackID = generateNewUICallbackID();
-				UICallBack.deactivate(callbackID);
-				UICallBack.activate(callbackID);				
-			}
-		});		
+		if(enableCallback){
+			display.asyncExec(new Runnable() {
+				
+				@Override
+				public void run() {
+					String callbackID = generateNewUICallbackID();
+					UICallBack.deactivate(callbackID);
+					UICallBack.activate(callbackID);				
+				}
+			});		
+		}
 		StringBuilder sb = new StringBuilder("DisplayManger: "); //$NON-NLS-1$
 		sb.append(display + " on " + request.getRemoteHost());
 		sb.append(" is registered. Number of display: ");
-		sb.append(displayMap.size());
+		sb.append(displayMap.size());		
+		RAPCorePlugin.getLogger().log(Level.INFO, sb.toString());		
+	}	
+	
+	
+	public String getDebugInfo(){
+		StringBuilder sb = new StringBuilder("CSS RAP Debug Info: "); //$NON-NLS-1$
+		sb.append("\nTotal Memory: " + Runtime.getRuntime().totalMemory()/1048576 + "MB");
+		sb.append("\nFree Memory: " + Runtime.getRuntime().freeMemory()/1048576 + "MB");
+		sb.append("\nMax Memory: " + Runtime.getRuntime().maxMemory()/1048576 + "MB");
+		sb.append("\nNumber of display: " + displayMap.size());
+		sb.append("\nNumber of widgets: " + objectList.size());		
 		for(Entry<Display, DisplayResource> entry : displayMap.entrySet()){
 			sb.append("\n");
 			sb.append("Client: ");
 			sb.append(entry.getValue().remoteHost);
 		}
-		RAPCorePlugin.getLogger().log(Level.INFO, sb.toString());
-		
+		return sb.toString();
 	}
 	
 	private String generateNewUICallbackID(){
@@ -140,7 +154,7 @@ public class DisplayManager {
 			displayMap.get(display).removeDisposeListener(runnable);
 	}
 
-	private boolean checkIfDisplayRegistered(Display display) throws Exception {
+	private boolean checkIfDisplayRegistered(Display display) {
 		if(!displayMap.containsKey(display))
 			return false;
 		return true;
@@ -156,7 +170,7 @@ public class DisplayManager {
 			displayMap.get(display).heartCount = beatCount;
 	}
 
-	public boolean isDisplayAlive(Display display) throws Exception {
+	public boolean isDisplayAlive(Display display){
 		if(checkIfDisplayRegistered(display))
 			return displayMap.get(display).isLive;
 		return false;

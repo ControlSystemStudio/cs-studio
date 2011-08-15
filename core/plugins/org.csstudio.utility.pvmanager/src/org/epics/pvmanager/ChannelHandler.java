@@ -140,8 +140,8 @@ public abstract class ChannelHandler<EType> {
      * @param handler to be notified in case of errors
      */
     protected synchronized void addWriter(ExceptionHandler handler) {
-        guardedConnect(handler);
         writeUsageCounter++;
+        guardedConnect(handler);
     }
 
     /**

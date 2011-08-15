@@ -9,7 +9,6 @@ package org.csstudio.alarm.beast.server;
 
 import java.net.InetAddress;
 import java.text.SimpleDateFormat;
-import java.util.concurrent.Executor;
 import java.util.logging.Level;
 
 import javax.jms.MapMessage;
@@ -23,6 +22,7 @@ import org.csstudio.alarm.beast.JMSCommunicationWorkQueueThread;
 import org.csstudio.alarm.beast.Preferences;
 import org.csstudio.alarm.beast.SeverityLevel;
 import org.csstudio.alarm.beast.TimeoutTimer;
+import org.csstudio.alarm.beast.WorkQueue;
 import org.csstudio.data.values.ITimestamp;
 import org.csstudio.logging.JMSLogMessage;
 
@@ -43,7 +43,7 @@ public class ServerCommunicator extends JMSCommunicationWorkQueueThread
     final private AlarmServer server;
 
     /** Work queue in main application */
-    final private Executor work_queue;
+    final private WorkQueue work_queue;
     
     /** Alarm tree root (config) name */
     final private String root_name;
@@ -81,7 +81,7 @@ public class ServerCommunicator extends JMSCommunicationWorkQueueThread
      *  @param work_queue
      *  @param root_name 
      */
-    public ServerCommunicator(final AlarmServer server, final Executor work_queue,
+    public ServerCommunicator(final AlarmServer server, final WorkQueue work_queue,
     		final String root_name) throws Exception
     {
         super(Preferences.getJMS_URL());

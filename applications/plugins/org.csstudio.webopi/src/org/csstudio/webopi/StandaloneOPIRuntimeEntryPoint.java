@@ -10,7 +10,7 @@ public class StandaloneOPIRuntimeEntryPoint implements IEntryPoint {
 
 	public int createUI() {
 		Display display = PlatformUI.createDisplay();
-		DisplayManager.getInstance().registerDisplay(display);
+		DisplayManager.getInstance().registerDisplay(display, true);
 		WorkbenchAdvisor advisor = new StandaloneApplicationWorkbenchAdvisor();
 		return PlatformUI.createAndRunWorkbench( display, advisor );
 	}

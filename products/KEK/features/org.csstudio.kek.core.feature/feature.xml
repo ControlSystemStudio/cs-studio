@@ -32,11 +32,11 @@ For details, see http://www.eclipse.org/legal/epl-v10.html
       <import plugin="org.eclipse.core.filesystem" version="1.3.0" match="greaterOrEqual"/>
       <import plugin="org.eclipse.core.resources"/>
       <import plugin="org.csstudio.openfile" version="3.0.0" match="greaterOrEqual"/>
-      <import plugin="org.junit4"/>
-      <import plugin="org.eclipse.equinox.security" version="1.0.0" match="greaterOrEqual"/>
       <import plugin="org.csstudio.java" version="3.0.0" match="greaterOrEqual"/>
+      <import plugin="org.junit4"/>
       <import plugin="org.eclipse.jface"/>
       <import plugin="org.eclipse.help" version="3.4.1" match="greaterOrEqual"/>
+      <import plugin="org.eclipse.equinox.security" version="1.0.0" match="greaterOrEqual"/>
       <import plugin="org.csstudio.apputil" version="3.0.0" match="greaterOrEqual"/>
       <import plugin="org.eclipse.ui" version="3.6.0" match="greaterOrEqual"/>
       <import plugin="org.csstudio.csdata" version="3.0.0" match="greaterOrEqual"/>
@@ -97,6 +97,7 @@ For details, see http://www.eclipse.org/legal/epl-v10.html
       <import plugin="org.eclipse.draw2d"/>
       <import plugin="org.eclipse.draw2d" version="3.4.0" match="greaterOrEqual"/>
       <import plugin="org.eclipse.help" version="3.5.0" match="greaterOrEqual"/>
+      <import plugin="org.csstudio.apputil" version="3.0.1" match="greaterOrEqual"/>
    </requires>
 
    <plugin
@@ -429,6 +430,13 @@ For details, see http://www.eclipse.org/legal/epl-v10.html
 
    <plugin
          id="org.csstudio.ui.menu.pvscript"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"
+         unpack="false"/>
+
+   <plugin
+         id="org.csstudio.navigator.applaunch"
          download-size="0"
          install-size="0"
          version="0.0.0"

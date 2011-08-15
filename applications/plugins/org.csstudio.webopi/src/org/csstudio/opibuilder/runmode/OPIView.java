@@ -1,11 +1,13 @@
 package org.csstudio.opibuilder.runmode;
 
+import org.csstudio.opibuilder.OPIBuilderPlugin;
 import org.csstudio.opibuilder.model.DisplayModel;
 import org.csstudio.opibuilder.preferences.PreferencesHelper;
 import org.csstudio.opibuilder.util.RequestUtil;
 import org.eclipse.core.runtime.IAdaptable;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.osgi.util.NLS;
+import org.eclipse.rwt.RWT;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.ui.IActionBars;
 import org.eclipse.ui.IEditorInput;
@@ -98,9 +100,14 @@ public class OPIView extends ViewPart implements IOPIRuntime {
 	public void createPartControl(Composite parent) {
 		if(getOPIInput() == null && openFromPerspective){
 			openFromPerspective = false;
-			IPath opiPath = RequestUtil.getOPIPathFromRequest();
-			if(opiPath == null)
-				opiPath = PreferencesHelper.getStartupOPI();
+			IPath opiPath = RequestUtil.getOPIPathFromRequest();			
+			if(opiPath == null){
+				String s = RWT.getRequest().getServletPath();
+				if(s.equals(OPIBuilderPlugin.MOBILE_S_SERVELET_NAME)) //$NON-NLS-1$
+					opiPath = PreferencesHelper.getMobileStartupOPI();
+				else
+					opiPath = PreferencesHelper.getStartupOPI();
+			}
 			if(opiPath == null)
 				throw new RuntimeException(
 						"OPI file path or OPI Repository is not specified in URL or preferences.");

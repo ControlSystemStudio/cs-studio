@@ -138,7 +138,7 @@ public class SmsConnectorWork extends Thread implements AmsConstants {
                     }
                 }
 
-                sleep(100);
+                sleep(1);
 
                 if(bInitedModem && bInitedJms)
                 {

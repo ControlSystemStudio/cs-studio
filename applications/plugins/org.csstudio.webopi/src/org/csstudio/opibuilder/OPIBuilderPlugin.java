@@ -2,7 +2,7 @@ package org.csstudio.opibuilder;
 
 import java.util.logging.Logger;
 
-import org.csstudio.rap.preferences.ServerScope;
+import org.csstudio.rap.core.preferences.ServerScope;
 import org.eclipse.core.runtime.Platform;
 import org.eclipse.core.runtime.preferences.ConfigurationScope;
 import org.eclipse.core.runtime.preferences.DefaultScope;
@@ -20,6 +20,8 @@ public class OPIBuilderPlugin extends AbstractUIPlugin {
 	public static final String PLUGIN_ID = "org.csstudio.webopi"; //$NON-NLS-1$
 
     public static final String MOBILE_SERVELET_NAME = "/m";//$NON-NLS-1$
+    
+    public static final String MOBILE_S_SERVELET_NAME = "/ms";//$NON-NLS-1$
 
     public static final String MAIN_SERVELET_NAME = "/w";//$NON-NLS-1$
 

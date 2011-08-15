@@ -8,7 +8,6 @@
 # Runs on Windows with cygwin installed
 #
 # Kay Kasemir
-CYGDRIVE=/cygdrive/c
 
 source settings.sh
 

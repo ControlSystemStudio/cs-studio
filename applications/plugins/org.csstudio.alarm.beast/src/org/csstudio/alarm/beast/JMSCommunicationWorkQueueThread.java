@@ -46,6 +46,6 @@ abstract public class JMSCommunicationWorkQueueThread extends JMSCommunicationTh
     @Override
     protected void communicate(final Session session) throws Exception
     {
-        queue.perform_queued_commands(WORKER_DELAY);
+        queue.performQueuedCommands(WORKER_DELAY);
     }
 }

@@ -36,8 +36,8 @@ http://sourceforge.net/apps/trac/cs-studio/wiki
       startupMessageRect="20,200,340,20"
       startupForegroundColor="FFFFFF" />
    <launcher name="css">
-      <linux icon="/org.csstudio.utility.product/icons/icons/css48.xpm"/>
-      <macosx icon="/org.csstudio.utility.product/icons/icons/css.icns"/>
+      <linux icon="/org.csstudio.utility.product/icons/css48.xpm"/>
+      <macosx icon="/org.csstudio.utility.product/icons/css.icns"/>
       <solaris/>
       <win useIco="true">
          <ico path="/org.csstudio.utility.product/icons/css.ico"/>
@@ -46,9 +46,6 @@ http://sourceforge.net/apps/trac/cs-studio/wiki
    </launcher>
 
    <vm>
-      <linux include="false">org.eclipse.jdt.launching.JRE_CONTAINER/org.eclipse.jdt.internal.debug.ui.launcher.StandardVMType/JavaSE-1.6</linux>
-      <macos include="false">org.eclipse.jdt.launching.JRE_CONTAINER/org.eclipse.jdt.internal.debug.ui.launcher.StandardVMType/JavaSE-1.6</macos>
-      <solaris include="false">org.eclipse.jdt.launching.JRE_CONTAINER/org.eclipse.jdt.internal.debug.ui.launcher.StandardVMType/JavaSE-1.6</solaris>
    </vm>
 
    <plugins>

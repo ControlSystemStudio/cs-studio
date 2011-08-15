@@ -204,7 +204,7 @@ class AlarmClientCommunicator extends JMSCommunicationWorkQueueThread
         if (use_queue)
             return;
         // Queuing turned off -> Dispatched what has accumulated until now
-        queue.perform_queued_commands();
+        queue.performQueuedCommands();
     }
 
     /** Create message initialized with basic alarm & application info
