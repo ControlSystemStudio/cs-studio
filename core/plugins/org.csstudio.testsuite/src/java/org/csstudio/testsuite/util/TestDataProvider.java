@@ -102,7 +102,6 @@ public final class TestDataProvider {
 
         findAndLoadGeneralProperties(pluginId);
         findAndLoadGeneralSecretProperties(pluginId);
-
         findAndLoadHostSpecificProperties();
     }
 
@@ -172,7 +171,7 @@ public final class TestDataProvider {
 
             final String curDir = System.getProperty("user.dir");
             final File configFile = new File(curDir + File.separator + testConfigFileName);
-            resource = configFile.toURI().toURL();
+            resource = configFile.exists() ? configFile.toURI().toURL() : null;
         }  else {
             bundle = whenFragmentReturnHostBundle(bundle);
             resource = bundle.getResource(testConfigFileName);
