@@ -1,4 +1,3 @@
-org.apache.log4j/**
 org.csstudio.alarm.beast/**
 org.csstudio.alarm.beast.annunciator/**
 org.csstudio.alarm.beast.configtool/**
@@ -94,6 +93,7 @@ org.csstudio.utility.clock/**
 org.csstudio.utility.eliza/**
 org.csstudio.utility.httpd/**
 org.csstudio.utility.jmssendcmd/**
+org.csstudio.utility.product/**
 org.csstudio.utility.pv/**
 org.csstudio.utility.pv.epics/**
 org.csstudio.utility.pv.simu/**
