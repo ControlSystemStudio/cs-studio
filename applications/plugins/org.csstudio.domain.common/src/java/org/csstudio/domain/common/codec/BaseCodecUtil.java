@@ -38,6 +38,12 @@ public final class BaseCodecUtil {
         // EMPTY
     }
 
+    /**
+     * Converts a byte array to a string representation in hexadecimal.
+     * Example (byte)255 - "FF", (byte)0 - 00, (byte)16 - "11", (byte)65 - "41"
+     * @param bytes
+     * @return the hex representation of the byte array
+     */
     @Nonnull
     public static String getHex(@Nonnull final byte[] bytes) {
         final StringBuilder hex = new StringBuilder(2 * bytes.length);
