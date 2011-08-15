@@ -37,10 +37,7 @@ import org.csstudio.domain.desy.time.TimeInstant;
  * processing of an IOC file.
  *
  * @author bknerr
- * @deprecated 'Last modification' information shall be replaced by a time stamp per IOC sticky in
- * the LDAP persistence layer.
  */
-@Deprecated
 public final class HistoryFileContentModel {
 
     private final Map<String, TimeInstant> _historyMap = new HashMap<String, TimeInstant>();
