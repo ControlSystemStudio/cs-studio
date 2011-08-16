@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <?pde version="3.5"?>
 
-<product name="ldapUpdater" uid="ldapupdaterId" id="org.csstudio.utility.ldapupdater.product" application="org.csstudio.utility.ldapupdater.application" version="1.0.0.qualifier" useFeatures="false" includeLaunchers="true">
+<product name="DesyLdapUpdater" uid="ldapupdaterId" id="org.csstudio.utility.ldapupdater.product" application="org.csstudio.utility.ldapupdater.application" version="1.0.0.qualifier" useFeatures="false" includeLaunchers="true">
 
    <configIni use="default">
    </configIni>
@@ -16,7 +16,7 @@
 
    <windowImages/>
 
-   <launcher name="DesyLdapUpdater">
+   <launcher name="ldapUpdater">
       <solaris/>
       <win useIco="false">
          <bmp/>
