@@ -8,9 +8,9 @@
         -->
 	  <topic label="Basic Usage" href="html/index.html#id452571"/>
 	  <topic label="Creating a new Application Launcher Configuration File" href="html/ch01s02.html"/>
-	  <topic label="Editing an Application Launcher Configuration File" href="html/ch01s03.html"/>
-	  <topic label="Application Launcher Configuration File Details" href="html/ch01s04.html"/>
-  
+	  <topic label="Examples for commands to launch" href="html/ch01s03.html"/>
+	  <topic label="Editing an Application Launcher Configuration File" href="html/ch01s04.html"/>
+	  <topic label="Application Launcher Configuration File Details" href="html/ch01s05.html"/>  
   </topic>
 </toc>
 
