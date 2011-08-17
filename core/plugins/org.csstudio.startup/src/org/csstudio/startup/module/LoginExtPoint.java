@@ -22,8 +22,8 @@ import org.eclipse.swt.widgets.Display;
 @SuppressWarnings("nls")
 public interface LoginExtPoint extends CSSStartupExtensionPoint {
 	
-	/** The name of this extension point */
-	public static final String NAME = "org.csstudio.startup.login";
+	/** The name of this extension point element */
+	public static final String NAME = "login";
 	
 	/** The tag under which the username should be stored in the parameters map */
 	public static final String USERNAME = "css.username";

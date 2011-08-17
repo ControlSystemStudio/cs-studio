@@ -20,8 +20,8 @@ import java.util.Map;
  */
 public interface ShutDownExtPoint extends CSSStartupExtensionPoint {
 
-	/** The name of this extension point */
-	public static final String NAME = "org.csstudio.startup.module.shutdown"; //$NON-NLS-1$
+	/** The name of this extension point element */
+	public static final String NAME = "shutdown"; //$NON-NLS-1$
 	
 	/**
 	 * Is called just before the workbench is closed. The implementation should 

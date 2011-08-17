@@ -22,8 +22,8 @@ import org.eclipse.swt.widgets.Display;
  */
 public interface StartupParametersExtPoint extends CSSStartupExtensionPoint {
 	
-	/** The name of the extension point */
-	public static final String NAME = "org.csstudio.startup.module.startupParameters"; //$NON-NLS-1$
+	/** The name of the extension point element */
+	public static final String NAME = "startupParameters"; //$NON-NLS-1$
 	
 	/** The tag which defines the exit code. */ 
 	public static final String EXIT_CODE = "css.exit"; //$NON-NLS-1$

@@ -21,8 +21,8 @@ import org.eclipse.swt.widgets.Display;
  */
 public interface ProjectExtPoint extends CSSStartupExtensionPoint {
 
-	/** The name of this extension point */
-	public static final String NAME = "org.csstudio.startup.module.project"; //$NON-NLS-1$
+	/** The name of this extension point element */
+	public static final String NAME = "project"; //$NON-NLS-1$
 	
 	/** The tag under which the opened projects should be stored in the parameters */
 	public static final String PROJECTS = "css.projects"; //$NON-NLS-1$

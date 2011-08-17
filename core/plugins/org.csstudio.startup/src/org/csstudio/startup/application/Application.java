@@ -25,6 +25,7 @@ import java.lang.reflect.Array;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -84,7 +85,7 @@ public class Application implements IApplication {
 	                      new HashMap<Class<? extends CSSStartupExtensionPoint>, CSSStartupExtensionPoint[]>(8);
 
     /** {@inheritDoc} */
-    public Object start(IApplicationContext context) throws Exception
+    public Object start(final IApplicationContext context) throws Exception
 	{
     	// Create the display
 	    final Display display = PlatformUI.createDisplay();
@@ -94,7 +95,7 @@ public class Application implements IApplication {
 			return EXIT_OK;
 		}
 
-        OpenDocumentEventProcessor openDocProcessor
+        final OpenDocumentEventProcessor openDocProcessor
         	= new OpenDocumentEventProcessor(display);
 
 		handleDisplayDebugging(display);
@@ -485,31 +486,37 @@ public class Application implements IApplication {
 
 	/**
 	 * Gathers the loaded extension points which match the parameter criteria.
-	 * <p>
-	 * The "name" of the extenstion point isn't actually used:
-	 * Any configuration parameter where the type matches the requested "type"
-	 * will be returned.
 	 *
 	 * @param <T> the type of the extension point requested
 	 * @param type the interface/implementation that defines this type
-	 * @param name the name of the extension point
-	 * @return the array of extension points
+	 * @param name the name of the extension point element ("locale", "project", "startupParameters", ...)
+	 * @return the array of extension points for that element that have the correct type
 	 */
 	@SuppressWarnings({ "unchecked", "nls" })
 	protected <T extends CSSStartupExtensionPoint> T[] getExtensionPoints(
-            Class<T> type, String name)
+            final Class<T> type, final String name)
     {
-        CSSStartupExtensionPoint[] points = configurationElements.get(type);
-        if (points != null)
+		// Check cache
+		final CSSStartupExtensionPoint[] points = configurationElements.get(type);
+		if (points != null)
             return (T[]) points;
-        IConfigurationElement[] config = Platform.getExtensionRegistry()
+		
+		// Query registry
+        final IConfigurationElement[] config = Platform.getExtensionRegistry()
                 .getConfigurationElementsFor(CSSStartupExtensionPoint.NAME);
-        ArrayList<T> list = new ArrayList<T>();
+        final List<T> list = new ArrayList<T>();
         for (IConfigurationElement e : config)
         {
+        	// Only use extensions for the requested element
+        	if (! name.equals(e.getName()))
+        		continue;
             try
             {
-                Object o = e.createExecutableExtension("class");
+            	final Object o = e.createExecutableExtension("class");
+            	// Check for correct type
+            	// (somewhat redundant because schema description
+            	//  already requires types for the various elements
+            	//  of the extension point)
                 if (type.isAssignableFrom(o.getClass()))
                 {
                     list.add((T) o);
@@ -521,9 +528,11 @@ public class Application implements IApplication {
                         + " extension points.", ex);
             }
         }
-        T[] array = (T[]) Array.newInstance(type, list.size());
+        final T[] array = (T[]) Array.newInstance(type, list.size());
+        list.toArray(array);
+        // Add to cache
         configurationElements.put(type, array);
-        return list.toArray(array);
+        return array;
     }
 
 	/**

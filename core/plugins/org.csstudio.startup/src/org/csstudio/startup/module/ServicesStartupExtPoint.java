@@ -21,8 +21,8 @@ import org.eclipse.swt.widgets.Display;
  */
 public interface ServicesStartupExtPoint extends CSSStartupExtensionPoint {
 
-	/** The name of this extension point */
-	public static final String NAME = "org.csstudio.startup.module.services"; //$NON-NLS-1$
+	/** The name of this extension point element */
+	public static final String NAME = "services"; //$NON-NLS-1$
 	
 	/**
 	 * Starts all services that need to be started. In principle this method should
