@@ -198,7 +198,7 @@ public class ArchiveEngineApplication implements IApplication {
         final long millis = watch.getElapsedTimeInMillis();
         LOG.info("Read configuration: {} channels in {}.",
                  model.getChannels().size(),
-                 TimeInstant.STD_DURATION_WITH_MILLIES_FMT.print(Period.millis((int) millis)));
+                 TimeInstant.STD_DURATION_WITH_MILLIS_FMT.print(Period.millis((int) millis)));
     }
 
     /**
