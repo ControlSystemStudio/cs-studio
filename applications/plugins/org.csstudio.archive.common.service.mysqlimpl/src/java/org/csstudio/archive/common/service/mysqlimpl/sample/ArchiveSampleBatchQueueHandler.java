@@ -74,7 +74,7 @@ public class ArchiveSampleBatchQueueHandler extends BatchQueueHandlerSupport<Arc
         final String sql =
             "INSERT INTO " + getDatabase() + "." + TAB_SAMPLE + " " +
             "(" + Joiner.on(",").join(COLUMN_CHANNEL_ID, COLUMN_TIME, COLUMN_VALUE)+ ") " +
-            "VALUES " + VAL_WILDCARDS;
+            "VALUES " + VAL_WILDCARDS + " ON DUPLICATE KEY UPDATE " + COLUMN_TIME + "=" + COLUMN_TIME + "+1";
         return sql;
     }
     /**

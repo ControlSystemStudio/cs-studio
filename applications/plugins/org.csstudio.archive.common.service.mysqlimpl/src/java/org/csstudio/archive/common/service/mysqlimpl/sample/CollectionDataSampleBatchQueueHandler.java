@@ -97,7 +97,7 @@ public class CollectionDataSampleBatchQueueHandler extends BatchQueueHandlerSupp
         final String sql =
             "INSERT INTO " + getDatabase() + "." + TAB_SAMPLE_BLOB + " " +
             "(" + Joiner.on(",").join(COLUMN_CHANNEL_ID, COLUMN_TIME, COLUMN_VALUE)+ ") " +
-            "VALUES " + VAL_WILDCARDS;
+            "VALUES " + VAL_WILDCARDS + " ON DUPLICATE KEY UPDATE " + COLUMN_TIME + "=" + COLUMN_TIME + "+1";
         return sql;
     }
 

@@ -70,7 +70,8 @@ public abstract class AbstractReducedDataSampleBatchQueueHandler<T extends Abstr
     protected String composeSqlString() {
         final String sql =
             "INSERT INTO " + getDatabase() + "." + getTable() +
-            " (" + Joiner.on(",").join(COLUMN_CHANNEL_ID, COLUMN_TIME, COLUMN_AVG, COLUMN_MIN, COLUMN_MAX) + ") VALUES " + VAL_WILDCARDS;
+            " (" + Joiner.on(",").join(COLUMN_CHANNEL_ID, COLUMN_TIME, COLUMN_AVG, COLUMN_MIN, COLUMN_MAX) +
+            ") VALUES " + VAL_WILDCARDS + " ON DUPLICATE KEY UPDATE " + COLUMN_TIME + "=" + COLUMN_TIME + "+1";
         return sql;
     }
 

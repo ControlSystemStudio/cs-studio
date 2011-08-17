@@ -62,7 +62,7 @@ import com.google.common.base.Predicate;
 import com.google.common.base.Strings;
 import com.google.common.collect.Collections2;
 import com.google.common.collect.Lists;
-import com.google.common.collect.Maps;
+import com.google.common.collect.MapMaker;
 import com.google.common.collect.Sets;
 import com.google.inject.Inject;
 
@@ -83,9 +83,10 @@ public class ArchiveChannelDaoImpl extends AbstractArchiveDao implements IArchiv
     /**
      * Archive channel configuration cache.
      */
-    private final Map<String, IArchiveChannel> _channelCacheByName = Maps.newHashMap();
-    private final Map<ArchiveChannelId, IArchiveChannel> _channelCacheById = Maps.newHashMap();
-
+    private final Map<String, IArchiveChannel> _channelCacheByName =
+        new MapMaker().concurrencyLevel(2).weakKeys().makeMap();
+    private final Map<ArchiveChannelId, IArchiveChannel> _channelCacheById =
+        new MapMaker().concurrencyLevel(2).weakKeys().makeMap();
 
     private final String _selectChannelPrefix =
         "SELECT " + TAB + ".id, " + TAB + ".name, " + TAB + ".datatype, " + TAB + ".group_id, " + TAB + ".last_sample_time, " +
