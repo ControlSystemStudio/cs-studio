@@ -151,7 +151,7 @@ class MainResponse extends AbstractResponse {
         String printDur = "NONE";
         if (avgWriteDuration != null) {
             printDur =
-                TimeInstant.STD_DURATION_WITH_MILLIES_FMT.print(avgWriteDuration.toPeriod());
+                TimeInstant.STD_DURATION_WITH_MILLIS_FMT.print(avgWriteDuration.toPeriod());
             if (Strings.isNullOrEmpty(printDur)) {
                 printDur = "<1";
             }
