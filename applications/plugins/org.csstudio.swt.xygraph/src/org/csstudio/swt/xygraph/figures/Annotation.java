@@ -606,6 +606,16 @@ public class Annotation extends Figure implements IAxisListener, IDataProviderLi
 		return name;
 	}
 
+	/** @return X value, i.e. value of this annotation on the X Axis */
+	public double getXValue() {
+		return xValue;
+	}
+
+	/** @return Y value, i.e. value of this annotation on the Y Axis */
+	public double getYValue() {
+		return yValue;
+	}
+	
 	/**
 	 * @return the cursorLineStyle
 	 */
