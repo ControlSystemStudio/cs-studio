@@ -11,6 +11,7 @@ import java.io.InputStream;
 import java.io.OutputStream;
 import java.io.PrintWriter;
 import java.util.ArrayList;
+import java.util.List;
 import java.util.Timer;
 import java.util.logging.Level;
 
@@ -145,7 +146,7 @@ public class Model
     private RGB background = new RGB(255, 255, 255);
 
     /** Annotations */
-	private AnnotationInfo[] annotations;
+	private AnnotationInfo[] annotations = new AnnotationInfo[0];
 
     /** How should plot rescale when archived data arrives? */
     private ArchiveRescale archive_rescale = Preferences.getArchiveRescale();
@@ -844,6 +845,31 @@ public class Model
             }
         }
 
+        // Load Annotations
+        list = DOMHelper.findFirstElementNode(root_node.getFirstChild(), TAG_ANNOTATIONS);
+        if (list != null)
+        {
+            // Load PV items
+            Element item = DOMHelper.findFirstElementNode(
+                    list.getFirstChild(), TAG_ANNOTATION);
+            final List<AnnotationInfo> infos = new ArrayList<AnnotationInfo>();
+            try
+            {
+	            while (item != null)
+	            {
+	            	final AnnotationInfo annotation = AnnotationInfo.fromDocument(item);
+	            	infos.add(annotation);
+	                item = DOMHelper.findNextElementNode(item, TAG_ANNOTATION);
+	            }
+            }
+            catch (Throwable ex)
+            {
+            	Activator.getLogger().log(Level.INFO, "XML error in Annotation", ex);
+            }
+            // Add to document
+            annotations = infos.toArray(new AnnotationInfo[infos.size()]);
+        }
+        
         // Backwards compatibility with previous data browser which
         // used global buffer size for all PVs
         final int buffer_size = DOMHelper.getSubelementInt(root_node, Model.TAG_LIVE_SAMPLE_BUFFER_SIZE, -1);

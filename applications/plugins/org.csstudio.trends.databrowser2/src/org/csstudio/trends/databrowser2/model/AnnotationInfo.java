@@ -8,10 +8,15 @@
 package org.csstudio.trends.databrowser2.model;
 
 import java.io.PrintWriter;
+import java.util.Calendar;
 
+import org.csstudio.apputil.time.AbsoluteTimeParser;
+import org.csstudio.apputil.xml.DOMHelper;
 import org.csstudio.apputil.xml.XMLWriter;
 import org.csstudio.data.values.ITimestamp;
+import org.csstudio.data.values.TimestampFactory;
 import org.csstudio.trends.databrowser2.ui.Plot;
+import org.w3c.dom.Element;
 
 /** Information about a Plot Annotation
  * 
@@ -44,6 +49,31 @@ public class AnnotationInfo
 		this.title = title;
     }
 
+	/** @return Time stamp */
+	public ITimestamp getTimestamp()
+	{
+		return timestamp;
+	}
+
+	/** @return Title */
+    public double getValue()
+    {
+        return value;
+    }
+
+    /** @return Title */
+    public String getTitle()
+    {
+        return title;
+    }
+
+	/** @return Axis index */
+    public int getAxis()
+    {
+        return axis;
+    }
+
+    
 	@Override
 	public String toString()
 	{
@@ -66,5 +96,22 @@ public class AnnotationInfo
         XMLWriter.XML(writer, 3, Model.TAG_AXIS, axis);
         XMLWriter.end(writer, 2, Model.TAG_ANNOTATION);
         writer.println();
+    }
+
+    /** Create {@link AnnotationInfo} from XML document
+     *  @param node XML node with item configuration
+     *  @return PVItem
+     *  @throws Exception on error
+     */
+	public static AnnotationInfo fromDocument(final Element node) throws Exception
+    {
+        final String timetext = DOMHelper.getSubelementString(node, Model.TAG_TIME, TimestampFactory.now().toString());
+        final Calendar calendar = AbsoluteTimeParser.parse(timetext);
+        final ITimestamp timestamp = TimestampFactory.fromCalendar(calendar);
+        final double value = DOMHelper.getSubelementDouble(node, Model.TAG_VALUE, 0.0);
+        final int axis = DOMHelper.getSubelementInt(node, Model.TAG_AXIS, 0);
+		final String title = DOMHelper.getSubelementString(node, Model.TAG_NAME, "Annotation");
+        
+        return new AnnotationInfo(timestamp, value, axis, title);
     }
 }
