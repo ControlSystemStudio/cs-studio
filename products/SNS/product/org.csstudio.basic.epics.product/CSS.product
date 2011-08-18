@@ -24,6 +24,8 @@ See http://ics-web.sns.ornl.gov/css
    </configIni>
 
    <launcherArgs>
+      <programArgs>--launcher.defaultAction
+openFile</programArgs>
       <vmArgs>-Xmx256m
 -Dorg.apache.commons.logging.Log=org.apache.commons.logging.impl.SimpleLog
 -Dorg.apache.commons.logging.simplelog.defaultlog=fatal</vmArgs>
