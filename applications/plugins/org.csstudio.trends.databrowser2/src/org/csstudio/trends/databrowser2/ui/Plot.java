@@ -11,6 +11,8 @@ import java.util.List;
 
 import org.csstudio.csdata.ProcessVariable;
 import org.csstudio.data.values.ITimestamp;
+import org.csstudio.data.values.TimestampFactory;
+import org.csstudio.swt.xygraph.figures.Annotation;
 import org.csstudio.swt.xygraph.figures.Axis;
 import org.csstudio.swt.xygraph.figures.IAxisListener;
 import org.csstudio.swt.xygraph.figures.ToolbarArmedXYGraph;
@@ -23,6 +25,7 @@ import org.csstudio.swt.xygraph.linearscale.Range;
 import org.csstudio.swt.xygraph.undo.OperationsManager;
 import org.csstudio.swt.xygraph.util.XYGraphMediaFactory;
 import org.csstudio.trends.databrowser2.Messages;
+import org.csstudio.trends.databrowser2.model.AnnotationInfo;
 import org.csstudio.trends.databrowser2.model.ArchiveDataSource;
 import org.csstudio.trends.databrowser2.model.AxisConfig;
 import org.csstudio.trends.databrowser2.model.ChannelInfo;
@@ -534,8 +537,31 @@ public class Plot
         xygraph.getPlotArea().setBackgroundColor(media_registry.getColor(color));
     }
 
+    // To decouple the code from the plot library, this would not be necessary...
+    /** @return Get the {@link XYGraph} used by the plot */
     public XYGraph getXYGraph()
     {
         return xygraph;
     }
+
+    /** @return Information about current annotations */
+	public AnnotationInfo[] getAnnotations()
+	{
+		final List<Annotation> annotations = xygraph.getPlotArea().getAnnotationList();
+		final AnnotationInfo[] infos = new AnnotationInfo[annotations.size()];
+		for (int i=0; i<infos.length; ++i)
+		{
+			final Annotation annotation = annotations.get(i);
+			final String title = annotation.getName();
+			final Axis axis = annotation.getYAxis();
+			final List<Axis> yaxes = xygraph.getYAxisList();
+			final int y = yaxes.indexOf(axis);
+			// Axis uses millisecs, timestamp uses fractional seconds
+			final ITimestamp timestamp = TimestampFactory.fromDouble(annotation.getXValue()/1000.0);
+			final double value = annotation.getYValue();
+			
+			infos[i] = new AnnotationInfo(timestamp, value, y, title);
+		}
+		return infos;
+	}
 }
