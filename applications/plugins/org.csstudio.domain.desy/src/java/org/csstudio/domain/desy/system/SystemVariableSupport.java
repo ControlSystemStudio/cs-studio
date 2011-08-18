@@ -27,6 +27,7 @@ import javax.annotation.CheckForNull;
 import javax.annotation.Nonnull;
 
 import org.csstudio.data.values.IValue;
+import org.csstudio.domain.desy.alarm.IAlarm;
 import org.csstudio.domain.desy.time.TimeInstant;
 import org.csstudio.domain.desy.typesupport.AbstractTypeSupport;
 import org.csstudio.domain.desy.typesupport.TypeSupportException;
@@ -60,6 +61,35 @@ public abstract class SystemVariableSupport<T> extends AbstractTypeSupport<T> {
 
         SYSTEM_DISCRIMINATOR.put(getControlSystemType(), typeSupportFamily);
     }
+    /**
+     * Creates a system and value type specific variable from the given values.
+     * Dispatches the value creation to the suitable type support family by the control system
+     * type.
+     *
+     * @param name the variable's name
+     * @param value the value of the variable
+     * @param system the control system (serves as discriminator to spawn the correct type family)
+     * @param time the timestamp
+     * @param alarm the alarm
+     * @return the system and value type specific variable.
+     * @throws TypeSupportException
+     */
+    @SuppressWarnings("unchecked")
+    @Nonnull
+    public static <T> IAlarmSystemVariable<T> create(@Nonnull final String name,
+                                                     @Nonnull final T value,
+                                                     @Nonnull final ControlSystem system,
+                                                     @Nonnull final TimeInstant time,
+                                                     @Nonnull final IAlarm alarm) throws TypeSupportException {
+        final Class<? extends SystemVariableSupport<?>> familyClass = SYSTEM_DISCRIMINATOR.get(system.getType());
+        if (familyClass != null) {
+            final Class<T> typeClass = (Class<T>) value.getClass();
+            final SystemVariableSupport<T> support =
+                (SystemVariableSupport<T>) findTypeSupportForOrThrowTSE(familyClass, typeClass);
+            return (IAlarmSystemVariable<T>) support.createVariable(name, value, system, time, alarm);
+        }
+        throw new TypeSupportException("System variable support for system " + system.getType() + " unknown.", null);
+    }
 
     /**
      * Creates a system and value type specific variable from the given values.
@@ -73,27 +103,19 @@ public abstract class SystemVariableSupport<T> extends AbstractTypeSupport<T> {
      * @return the system and value type specific variable.
      * @throws TypeSupportException
      */
-    @SuppressWarnings("unchecked")
     @Nonnull
     public static <T> ISystemVariable<T> create(@Nonnull final String name,
                                                 @Nonnull final T value,
                                                 @Nonnull final ControlSystem system,
                                                 @Nonnull final TimeInstant time) throws TypeSupportException {
-
-        final Class<? extends SystemVariableSupport<?>> familyClass = SYSTEM_DISCRIMINATOR.get(system.getType());
-        if (familyClass != null) {
-            final Class<T> typeClass = (Class<T>) value.getClass();
-            final SystemVariableSupport<T> support =
-                (SystemVariableSupport<T>) findTypeSupportForOrThrowTSE(familyClass, typeClass);
-            return support.createVariable(name, value, system, time);
-        }
-        throw new TypeSupportException("System variable support for system " + system.getType() + " unknown.", null);
+        return create(name, value, system, time, null);
     }
     @Nonnull
     protected abstract ISystemVariable<T> createVariable(@Nonnull final String name,
                                                          @Nonnull final T value,
                                                          @Nonnull final ControlSystem system,
-                                                         @Nonnull final TimeInstant timestamp) throws TypeSupportException;
+                                                         @Nonnull final TimeInstant timestamp,
+                                                         @CheckForNull final IAlarm alarm) throws TypeSupportException;
     @Nonnull
     protected abstract ControlSystemType getControlSystemType();
 

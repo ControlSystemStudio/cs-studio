@@ -20,7 +20,8 @@ import org.csstudio.archive.common.engine.model.EngineModel;
 import org.csstudio.archive.common.engine.model.EngineModelException;
 import org.csstudio.archive.common.engine.service.IServiceProvider;
 import org.csstudio.archive.common.engine.service.ServiceProvider;
-import org.csstudio.archive.common.engine.types.ArchiveEngineTypeSupport;
+import org.csstudio.domain.desy.epics.typesupport.EpicsIMetaDataTypeSupport;
+import org.csstudio.domain.desy.epics.typesupport.EpicsIValueTypeSupport;
 import org.csstudio.domain.desy.time.StopWatch;
 import org.csstudio.domain.desy.time.StopWatch.RunningStopWatch;
 import org.csstudio.domain.desy.time.TimeInstant;
@@ -106,8 +107,10 @@ public class ArchiveEngineApplication implements IApplication {
         if (!getSettings(args)) {
             return EXIT_OK;
         }
+        EpicsIMetaDataTypeSupport.install();
+        EpicsIValueTypeSupport.install();
         // Install the type supports for the engine
-        ArchiveEngineTypeSupport.install();
+        //ArchiveEngineTypeSupport.install();
 
 //
 //        try {

@@ -171,7 +171,7 @@ public final class EpicsEnum implements Serializable {
         if (isState()) {
             return _state;
         }
-        throw new IllegalStateException("This " + getClass().getSimpleName() + " object holds a state, not a raw value.");
+        throw new IllegalStateException("This " + getClass().getSimpleName() + " object holds a raw value, not a state.");
     }
 
     @Nonnull

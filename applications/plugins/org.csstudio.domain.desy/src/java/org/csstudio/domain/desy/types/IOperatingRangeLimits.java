@@ -31,10 +31,10 @@ import javax.annotation.Nonnull;
  *
  * @param <T> the basic value type for which the limits apply
  */
-public interface IDisplayLimits<T extends Comparable<? super T>> {
+public interface IOperatingRangeLimits<T extends Comparable<? super T>> {
 
     @Nonnull
-    T getDisplayHigh();
+    T getHighOperatingRange();
     @Nonnull
-    T getDisplayLow();
+    T getLowOperatingRange();
 }

@@ -99,7 +99,7 @@ public class ArchiveSampleBatchQueueHandler extends BatchQueueHandlerSupport<Arc
     @Override
     @Nonnull
     public Collection<String> convertToStatementString(@Nonnull final List<ArchiveSample> elements) {
-        final String sqlWithoutValues = composeSqlString().replace(VAL_WILDCARDS, "");
+        final String sqlWithoutValues = composeSqlString();
 
         final Collection<String> values =
             Collections2.transform(elements,
@@ -121,6 +121,6 @@ public class ArchiveSampleBatchQueueHandler extends BatchQueueHandlerSupport<Arc
                                            return null;
                                        }
                                     });
-        return Collections.singleton(sqlWithoutValues + Joiner.on(",").join(values) + ";");
+        return Collections.singleton(sqlWithoutValues.replace(VAL_WILDCARDS, Joiner.on(",").join(values)) + ";");
     }
 }

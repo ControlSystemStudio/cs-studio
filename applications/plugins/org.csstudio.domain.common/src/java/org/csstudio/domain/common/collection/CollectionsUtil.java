@@ -45,7 +45,7 @@ public final class CollectionsUtil {
      * Creates a string representation according to the {@link java.util.AbstractCollection#toString()}
      * method, but with a limited length param.
      * Such that, if limit is >= the collection's size the original representation is returned,
-     * otherwise the collection's representation is ends after the limit-th element with
+     * otherwise the collection's representation ends after the limit-th element with
      * ",...]".
      *
      * @param <E> the type of the elements in the collection

@@ -36,60 +36,58 @@ import org.csstudio.domain.desy.typesupport.TypeSupportException;
 
 import com.google.common.base.Function;
 import com.google.common.collect.Collections2;
-import com.google.common.primitives.Doubles;
+import com.google.common.primitives.Longs;
 
 /**
- * System variable support for {@link Float};
- *
  * @author bknerr
- * @since 11.05.2011
+ * @since 22.12.2010
  */
-final class FloatSystemVariableSupport extends EpicsSystemVariableSupport<Float> {
+final class ShortSystemVariableSupport extends EpicsSystemVariableSupport<Short> {
     /**
      * Constructor.
      */
-    public FloatSystemVariableSupport() {
-        super(Float.class);
+    public ShortSystemVariableSupport() {
+        super(Short.class);
     }
 
     @Override
     @Nonnull
-    protected IValue convertEpicsSystemVariableToIValue(@Nonnull final EpicsSystemVariable<Float> sysVar) {
-        return ValueFactory.createDoubleValue(BaseTypeConversionSupport.toTimestamp(sysVar.getTimestamp()),
-                                              EpicsIValueTypeSupport.toSeverity(sysVar.getAlarm().getSeverity()),
-                                              sysVar.getAlarm().getStatus().toString(),
-                                              null,
-                                              null,
-                                              new double[] {sysVar.getData().doubleValue()});
+    protected IValue convertEpicsSystemVariableToIValue(@Nonnull final EpicsSystemVariable<Short> sysVar) {
+        return ValueFactory.createLongValue(BaseTypeConversionSupport.toTimestamp(sysVar.getTimestamp()),
+                                            EpicsIValueTypeSupport.toSeverity(sysVar.getAlarm().getSeverity()),
+                                            sysVar.getAlarm().getStatus().toString(),
+                                            null,
+                                            null,
+                                            new long[] {sysVar.getData().longValue()});
     }
 
     @Override
     @Nonnull
-    protected IValue convertCollectionToIValue(@Nonnull final Collection<Float> data,
+    protected IValue convertCollectionToIValue(@Nonnull final Collection<Short> data,
                                                @Nonnull final EpicsAlarm alarm,
                                                @Nonnull final TimeInstant timestamp) {
-        final Collection<Double> doubles =
+        final Collection<Long> longs =
             Collections2.transform(data,
-                                   new Function<Float, Double> () {
-                                       @Override
-                                       @Nonnull
-                                       public Double apply(@Nonnull final Float from) {
-                                           return Double.valueOf(from);
-                                       }
-                                   });
-        return ValueFactory.createDoubleValue(BaseTypeConversionSupport.toTimestamp(timestamp),
-                                              EpicsIValueTypeSupport.toSeverity(alarm.getSeverity()),
-                                              alarm.getStatus().toString(),
-                                              null,
-                                              null,
-                                              Doubles.toArray(doubles));
+                                   new Function<Short, Long> () {
+                @Override
+                @Nonnull
+                public Long apply(@Nonnull final Short from) {
+                    return Long.valueOf(from);
+                }
+            });
+        return ValueFactory.createLongValue(BaseTypeConversionSupport.toTimestamp(timestamp),
+                                            EpicsIValueTypeSupport.toSeverity(alarm.getSeverity()),
+                                            alarm.getStatus().toString(),
+                                            null,
+                                            null,
+                                            Longs.toArray(longs));
     }
 
     @Override
     @Nonnull
-    protected IValue convertToIMinMaxDoubleValue(@Nonnull final IAlarmSystemVariable<Float> sysVar,
-                                                 @Nonnull final Float min,
-                                                 @Nonnull final Float max) throws TypeSupportException {
+    protected IValue convertToIMinMaxDoubleValue(@Nonnull final IAlarmSystemVariable<Short> sysVar,
+                                                 @Nonnull final Short min,
+                                                 @Nonnull final Short max) throws TypeSupportException {
         return createMinMaxDoubleValueFromNumber(sysVar.getTimestamp(),
                                                  (EpicsAlarm) sysVar.getAlarm(),
                                                  sysVar.getData(),
@@ -102,18 +100,18 @@ final class FloatSystemVariableSupport extends EpicsSystemVariableSupport<Float>
 //     */
 //    @Override
 //    @Nonnull
-//    protected EpicsSystemVariable<Collection<Float>> createCollectionEpicsVariable(@Nonnull final String name,
-//                                                                                   @Nonnull final Class<?> typeClass,
-//                                                                                   @Nonnull final Collection<Float> values,
-//                                                                                   @Nonnull final ControlSystem system,
-//                                                                                   @Nonnull final TimeInstant timestamp) throws TypeSupportException {
+//    protected EpicsSystemVariable<Collection<Short>> createCollectionEpicsVariable(@Nonnull final String name,
+//                                                                                  @Nonnull final Class<?> typeClass,
+//                                                                                  @Nonnull final Collection<Short> values,
+//                                                                                  @Nonnull final ControlSystem system,
+//                                                                                  @Nonnull final TimeInstant timestamp) throws TypeSupportException {
 //        try {
 //            @SuppressWarnings("unchecked")
-//            final Collection<Float> newCollection = (Collection<Float>) typeClass.newInstance();
-//            for (final Float v : values) {
+//            final Collection<Short> newCollection = (Collection<Short>) typeClass.newInstance();
+//            for (final Short v : values) {
 //                newCollection.add(v);
 //            }
-//            return new EpicsSystemVariable<Collection<Float>>(name, newCollection, system, timestamp, EpicsAlarm.UNKNOWN);
+//            return new EpicsSystemVariable<Collection<Short>>(name, newCollection, system, timestamp, EpicsAlarm.UNKNOWN);
 //        } catch (final InstantiationException e) {
 //            throw new TypeSupportException("Collection type could not be instantiated from Class<?> object.", e);
 //        } catch (final IllegalAccessException e) {

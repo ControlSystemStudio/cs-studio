@@ -30,10 +30,8 @@ import org.csstudio.data.values.ValueFactory;
 import org.csstudio.domain.desy.epics.alarm.EpicsAlarm;
 import org.csstudio.domain.desy.epics.types.EpicsEnum;
 import org.csstudio.domain.desy.epics.types.EpicsSystemVariable;
-import org.csstudio.domain.desy.system.ControlSystem;
 import org.csstudio.domain.desy.time.TimeInstant;
 import org.csstudio.domain.desy.typesupport.BaseTypeConversionSupport;
-import org.csstudio.domain.desy.typesupport.TypeSupportException;
 
 import com.google.common.base.Function;
 import com.google.common.collect.Collections2;
@@ -107,39 +105,27 @@ final class EpicsEnumSystemVariableSupport extends EpicsSystemVariableSupport<Ep
                                                   Ints.toArray(ints));
     }
 
-    /**
-     * {@inheritDoc}
-     */
-    @Override
-    @Nonnull
-    protected EpicsSystemVariable<EpicsEnum> createEpicsVariable(@Nonnull final String name,
-                                                                 @Nonnull final EpicsEnum value,
-                                                                 @Nonnull final ControlSystem system,
-                                                                 @Nonnull final TimeInstant timestamp) {
-        return new EpicsSystemVariable<EpicsEnum>(name, value, system, timestamp, EpicsAlarm.UNKNOWN);
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    @Override
-    @Nonnull
-    protected EpicsSystemVariable<Collection<EpicsEnum>> createCollectionEpicsVariable(@Nonnull final String name,
-                                                                                       @Nonnull final Class<?> typeClass,
-                                                                                       @Nonnull final Collection<EpicsEnum> values,
-                                                                                       @Nonnull final ControlSystem system,
-                                                                                       @Nonnull final TimeInstant timestamp) throws TypeSupportException {
-        try {
-            @SuppressWarnings("unchecked")
-            final Collection<EpicsEnum> newCollection = (Collection<EpicsEnum>) typeClass.newInstance();
-            for (final EpicsEnum epicsEnum : values) {
-                newCollection.add(epicsEnum);
-            }
-            return new EpicsSystemVariable<Collection<EpicsEnum>>(name, newCollection, system, timestamp, EpicsAlarm.UNKNOWN);
-        } catch (final InstantiationException e) {
-            throw new TypeSupportException("Collection type could not be instantiated from Class<?> object.", e);
-        } catch (final IllegalAccessException e) {
-            throw new TypeSupportException("Collection type could not be instantiated from Class<?> object.", e);
-        }
-    }
+//    /**
+//     * {@inheritDoc}
+//     */
+//    @Override
+//    @Nonnull
+//    protected EpicsSystemVariable<Collection<EpicsEnum>> createCollectionEpicsVariable(@Nonnull final String name,
+//                                                                                       @Nonnull final Class<?> typeClass,
+//                                                                                       @Nonnull final Collection<EpicsEnum> values,
+//                                                                                       @Nonnull final ControlSystem system,
+//                                                                                       @Nonnull final TimeInstant timestamp) throws TypeSupportException {
+//        try {
+//            @SuppressWarnings("unchecked")
+//            final Collection<EpicsEnum> newCollection = (Collection<EpicsEnum>) typeClass.newInstance();
+//            for (final EpicsEnum epicsEnum : values) {
+//                newCollection.add(epicsEnum);
+//            }
+//            return new EpicsSystemVariable<Collection<EpicsEnum>>(name, newCollection, system, timestamp, EpicsAlarm.UNKNOWN);
+//        } catch (final InstantiationException e) {
+//            throw new TypeSupportException("Collection type could not be instantiated from Class<?> object.", e);
+//        } catch (final IllegalAccessException e) {
+//            throw new TypeSupportException("Collection type could not be instantiated from Class<?> object.", e);
+//        }
+//    }
 }

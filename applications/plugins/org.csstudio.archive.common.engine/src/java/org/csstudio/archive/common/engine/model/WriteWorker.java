@@ -61,7 +61,11 @@ final class WriteWorker extends AbstractTimeMeasuredRunnable {
         LoggerFactory.getLogger("ErrorPerEmailLogger");
 
     private final String _name;
-    private final Collection<ArchiveChannel<Serializable, ISystemVariable<Serializable>>> _channels;
+    private final Collection<ArchiveChannel<Serializable, ISystemVariable<Serializable>>> _scalarChannels =
+        Lists.newLinkedList();
+    private final Collection<ArchiveChannel<Serializable, ISystemVariable<Serializable>>> _multiScalarChannels =
+        Lists.newLinkedList();
+
 
     private final long _periodInMS;
     /** Average number of values per write run */
@@ -80,7 +84,14 @@ final class WriteWorker extends AbstractTimeMeasuredRunnable {
                        final long periodInMS) {
         _provider = provider;
         _name = name;
-        _channels = channels;
+        for (final ArchiveChannel<Serializable, ISystemVariable<Serializable>> channel : channels) {
+            if (channel.isMultiScalar()) {
+                _multiScalarChannels.add(channel);
+            } else {
+                _scalarChannels.add(channel);
+            }
+        }
+
         _periodInMS = periodInMS;
 
         WORKER_LOG.info("{} created with period {}ms", _name, periodInMS);
@@ -96,9 +107,14 @@ final class WriteWorker extends AbstractTimeMeasuredRunnable {
 
             List<IArchiveSample<Serializable, ISystemVariable<Serializable>>> samples = Collections.emptyList();
 
-            samples = collectSamplesFromBuffers(_channels);
+            // TODO (bknerr) : To make this distinction here is clearly a break of encapsulation and separation of concern
+            // The split of the archive samples into scalar and multiscalar samples (of the same supertype) should only be
+            // done in the service... take care of it when the frontend is replaced by pvmanager!
+            samples = collectSamplesFromBuffers(_scalarChannels);
+            long written = writeSamples(_provider,  samples);
 
-            final long written = writeSamples(_provider,  samples);
+            samples = collectSamplesFromBuffers(_multiScalarChannels);
+            written += writeSamples(_provider,  samples);
 
             _lastWriteTime = TimeInstantBuilder.fromNow();
             _avgWriteCount.accumulate(Double.valueOf(written));
@@ -133,9 +149,11 @@ final class WriteWorker extends AbstractTimeMeasuredRunnable {
     private LinkedList<IArchiveSample<Serializable, ISystemVariable<Serializable>>>
     collectSamplesFromBuffers(@Nonnull final Collection<ArchiveChannel<Serializable, ISystemVariable<Serializable>>> channels) {
 
-        final LinkedList<IArchiveSample<Serializable, ISystemVariable<Serializable>>> allSamples = Lists.newLinkedList();
+        final LinkedList<IArchiveSample<Serializable, ISystemVariable<Serializable>>> allSamples =
+            Lists.newLinkedList();
 
         for (final ArchiveChannel<Serializable, ISystemVariable<Serializable>> channel : channels) {
+
             final SampleBuffer<Serializable, ISystemVariable<Serializable>, IArchiveSample<Serializable, ISystemVariable<Serializable>>> buffer =
                 channel.getSampleBuffer();
 

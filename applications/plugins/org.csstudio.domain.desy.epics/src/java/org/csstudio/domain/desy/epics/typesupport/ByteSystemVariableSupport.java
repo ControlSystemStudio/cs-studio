@@ -29,7 +29,6 @@ import org.csstudio.data.values.IValue;
 import org.csstudio.data.values.ValueFactory;
 import org.csstudio.domain.desy.epics.alarm.EpicsAlarm;
 import org.csstudio.domain.desy.epics.types.EpicsSystemVariable;
-import org.csstudio.domain.desy.system.ControlSystem;
 import org.csstudio.domain.desy.system.IAlarmSystemVariable;
 import org.csstudio.domain.desy.time.TimeInstant;
 import org.csstudio.domain.desy.typesupport.BaseTypeConversionSupport;
@@ -69,11 +68,11 @@ final class ByteSystemVariableSupport extends EpicsSystemVariableSupport<Byte> {
                 }
             });
         return ValueFactory.createLongValue(BaseTypeConversionSupport.toTimestamp(timestamp),
-                                              EpicsIValueTypeSupport.toSeverity(alarm.getSeverity()),
-                                              alarm.getStatus().toString(),
-                                              null,
-                                              null,
-                                              Longs.toArray(longs));
+                                            EpicsIValueTypeSupport.toSeverity(alarm.getSeverity()),
+                                            alarm.getStatus().toString(),
+                                            null,
+                                            null,
+                                            Longs.toArray(longs));
     }
 
     @Override
@@ -85,42 +84,30 @@ final class ByteSystemVariableSupport extends EpicsSystemVariableSupport<Byte> {
                                                  (EpicsAlarm) sysVar.getAlarm(),
                                                  sysVar.getData(), min, max);
     }
-
-    /**
-     * {@inheritDoc}
-     */
-    @Override
-    @Nonnull
-    protected EpicsSystemVariable<Byte> createEpicsVariable(@Nonnull final String name,
-                                                            @Nonnull final Byte value,
-                                                            @Nonnull final ControlSystem system,
-                                                            @Nonnull final TimeInstant timestamp) {
-        return new EpicsSystemVariable<Byte>(name, value, system, timestamp, EpicsAlarm.UNKNOWN);
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    @Override
-    @Nonnull
-    protected EpicsSystemVariable<Collection<Byte>> createCollectionEpicsVariable(@Nonnull final String name,
-                                                                                  @Nonnull final Class<?> typeClass,
-                                                                                  @Nonnull final Collection<Byte> values,
-                                                                                  @Nonnull final ControlSystem system,
-                                                                                  @Nonnull final TimeInstant timestamp) throws TypeSupportException {
-        try {
-            @SuppressWarnings("unchecked")
-            final Collection<Byte> newCollection = (Collection<Byte>) typeClass.newInstance();
-            for (final Byte b : values) {
-                newCollection.add(b);
-            }
-            return new EpicsSystemVariable<Collection<Byte>>(name, newCollection, system, timestamp, EpicsAlarm.UNKNOWN);
-        } catch (final InstantiationException e) {
-            throw new TypeSupportException("Collection type could not be instantiated from Class<?> object.", e);
-        } catch (final IllegalAccessException e) {
-            throw new TypeSupportException("Collection type could not be instantiated from Class<?> object.", e);
-        }
-    }
+//
+//    /**
+//     * {@inheritDoc}
+//     */
+//    @Override
+//    @Nonnull
+//    protected EpicsSystemVariable<Collection<Byte>> createCollectionEpicsVariable(@Nonnull final String name,
+//                                                                                  @Nonnull final Class<?> typeClass,
+//                                                                                  @Nonnull final Collection<Byte> values,
+//                                                                                  @Nonnull final ControlSystem system,
+//                                                                                  @Nonnull final TimeInstant timestamp) throws TypeSupportException {
+//        try {
+//            @SuppressWarnings("unchecked")
+//            final Collection<Byte> newCollection = (Collection<Byte>) typeClass.newInstance();
+//            for (final Byte b : values) {
+//                newCollection.add(b);
+//            }
+//            return new EpicsSystemVariable<Collection<Byte>>(name, newCollection, system, timestamp, EpicsAlarm.UNKNOWN);
+//        } catch (final InstantiationException e) {
+//            throw new TypeSupportException("Collection type could not be instantiated from Class<?> object.", e);
+//        } catch (final IllegalAccessException e) {
+//            throw new TypeSupportException("Collection type could not be instantiated from Class<?> object.", e);
+//        }
+//    }
 
 
 

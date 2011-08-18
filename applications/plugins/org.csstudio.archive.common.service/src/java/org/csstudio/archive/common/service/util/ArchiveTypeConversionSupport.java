@@ -99,6 +99,7 @@ public abstract class ArchiveTypeConversionSupport<T extends Serializable> exten
         }
         BaseTypeConversionSupport.install();
 
+        TypeSupport.addTypeSupport(new ShortArchiveTypeConversionSupport());
         TypeSupport.addTypeSupport(new DoubleArchiveTypeConversionSupport());
         TypeSupport.addTypeSupport(new FloatArchiveTypeConversionSupport());
         TypeSupport.addTypeSupport(new IntegerArchiveTypeConversionSupport());

@@ -27,11 +27,8 @@ import javax.annotation.Nonnull;
 
 import org.csstudio.data.values.IEnumeratedMetaData;
 import org.csstudio.data.values.IMetaData;
-import org.csstudio.data.values.INumericMetaData;
 import org.csstudio.domain.desy.epics.types.EpicsEnum;
-import org.csstudio.domain.desy.epics.types.EpicsGraphicsData;
 import org.csstudio.domain.desy.epics.types.EpicsMetaData;
-import org.csstudio.domain.desy.types.Limits;
 import org.csstudio.domain.desy.typesupport.TypeSupportException;
 
 /**
@@ -42,7 +39,6 @@ import org.csstudio.domain.desy.typesupport.TypeSupportException;
  */
 @SuppressWarnings("rawtypes")
 public class CollectionConversionSupport extends EpicsIMetaDataTypeSupport<Collection> {
-
     /**
      * Constructor.
      */
@@ -62,22 +58,15 @@ public class CollectionConversionSupport extends EpicsIMetaDataTypeSupport<Colle
     @Nonnull
     protected EpicsMetaData convertToMetaData(@Nonnull final IMetaData meta) throws TypeSupportException {
 
-
         try {
-            final INumericMetaData numMeta = checkAndConvertToNumeric(meta, Double.class);
-            final EpicsGraphicsData<Double> gr =
-                new EpicsGraphicsData<Double>(Limits.<Double>create(numMeta.getAlarmLow(),
-                                                                    numMeta.getAlarmHigh()),
-                                            Limits.<Double>create(numMeta.getWarnLow(),
-                                                                  numMeta.getWarnHigh()),
-                                            Limits.<Double>create(numMeta.getDisplayLow(),
-                                                                  numMeta.getDisplayHigh()));
-            return EpicsMetaData.create(null, gr, null, null);
-        // CHECKSTYLE OFF: EmptyBlock
+            final AbstractNumberIMetaDataTypeSupport<Double> support =
+                (AbstractNumberIMetaDataTypeSupport<Double>) findTypeSupportFor(AbstractNumberIMetaDataTypeSupport.class, Double.class);
+            return support.convertToMetaData(meta);
+            // CHECKSTYLE OFF: EmptyBlock
         } catch (final TypeSupportException e) {
             // Ignore
+            // CHECKSTYLE ON: EmptyBlock
         }
-        // CHECKSTYLE ON: EmptyBlock
 
         final IEnumeratedMetaData enumData = checkAndConvertToEnumerated(meta, EpicsEnum.class);
         final String[] states = enumData.getStates();

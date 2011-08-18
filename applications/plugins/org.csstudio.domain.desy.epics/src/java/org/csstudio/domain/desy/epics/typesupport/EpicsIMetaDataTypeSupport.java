@@ -45,7 +45,6 @@ import org.epics.pvmanager.TypeSupport;
  */
 public abstract class EpicsIMetaDataTypeSupport<T> extends AbstractTypeSupport<T> {
  // CHECKSTYLE ON : AbstractClassName
-
     private static boolean INSTALLED;
 
     /**

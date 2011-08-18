@@ -99,7 +99,7 @@ public abstract class AbstractReducedDataSampleBatchQueueHandler<T extends Abstr
     @Override
     @Nonnull
     public Collection<String> convertToStatementString(@Nonnull final List<T> elements) {
-        final String sqlWithoutValues = composeSqlString().replace(VAL_WILDCARDS, "");
+        final String sqlWithoutValues = composeSqlString();
 
         final Collection<String> values =
             Collections2.transform(elements,
@@ -118,7 +118,7 @@ public abstract class AbstractReducedDataSampleBatchQueueHandler<T extends Abstr
                                            return result;
                                        }
                                     });
-        return Collections.singleton(sqlWithoutValues + Joiner.on(",").join(values) + ";");
+        return Collections.singleton(sqlWithoutValues.replace(VAL_WILDCARDS, Joiner.on(",").join(values)) + ";");
     }
 
 

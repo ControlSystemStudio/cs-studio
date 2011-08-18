@@ -27,11 +27,13 @@ import javax.annotation.Nonnull;
 
 import org.csstudio.data.values.IValue;
 import org.csstudio.data.values.ValueFactory;
+import org.csstudio.domain.desy.alarm.IAlarm;
 import org.csstudio.domain.desy.epics.alarm.EpicsAlarm;
 import org.csstudio.domain.desy.epics.types.EpicsSystemVariable;
 import org.csstudio.domain.desy.system.ControlSystem;
 import org.csstudio.domain.desy.system.ControlSystemType;
 import org.csstudio.domain.desy.system.IAlarmSystemVariable;
+import org.csstudio.domain.desy.system.ISystemVariable;
 import org.csstudio.domain.desy.system.SystemVariableSupport;
 import org.csstudio.domain.desy.time.TimeInstant;
 import org.csstudio.domain.desy.typesupport.BaseTypeConversionSupport;
@@ -119,50 +121,53 @@ public abstract class EpicsSystemVariableSupport<T> extends SystemVariableSuppor
         return support.convertCollectionToIValue(data, alarm, timestamp);
     }
 
-
+    /**
+     * {@inheritDoc}
+     */
+    @SuppressWarnings({ "rawtypes", "unchecked" })
     @Override
     @Nonnull
-    protected EpicsSystemVariable<T> createVariable(@Nonnull final String name,
-                                                    @Nonnull final T value,
-                                                    @Nonnull final ControlSystem system,
-                                                    @Nonnull final TimeInstant timestamp) throws TypeSupportException {
-        @SuppressWarnings("unchecked")
-        final Class<T> typeClass = (Class<T>) value.getClass();
-        final EpicsSystemVariableSupport<T> support =
-            (EpicsSystemVariableSupport<T>) findTypeSupportForOrThrowTSE(EpicsSystemVariableSupport.class, typeClass);
-        return support.createEpicsVariable(name, value, system, timestamp);
+    protected ISystemVariable<T> createVariable(@Nonnull final String name,
+                                                @Nonnull final T value,
+                                                @Nonnull final ControlSystem system,
+                                                @Nonnull final TimeInstant timestamp,
+                                                @Nonnull final IAlarm alarm) throws TypeSupportException {
+        return new EpicsSystemVariable(name, value, system, timestamp, (EpicsAlarm) alarm);
     }
 
-
-    @Nonnull
-    protected EpicsSystemVariable<?>
-    createEpicsVariableFromCollection(@Nonnull final String name,
-                                      @Nonnull final Class<?> typeClass,
-                                      @Nonnull final Collection<T> data,
-                                      @Nonnull final ControlSystem system,
-                                      @Nonnull final TimeInstant timestamp) throws TypeSupportException {
-        @SuppressWarnings("unchecked")
-        final EpicsSystemVariableSupport<T> support =
-            (EpicsSystemVariableSupport<T>) findTypeSupportForOrThrowTSE(EpicsSystemVariableSupport.class, typeClass);
-        return support.createCollectionEpicsVariable(name, typeClass, data, system, timestamp);
+    /**
+     * Checks whether system is an EPICS V3 control system type and the alarm is instance of
+     * {@link EpicsAlarm}.
+     */
+    public static boolean checkForEpicsParameter(@Nonnull final ControlSystem system,
+                                                 @Nonnull final IAlarm alarm) {
+        if (system.getType() != ControlSystemType.EPICS_V3 ||
+            !(alarm instanceof EpicsAlarm)) {
+            return false;
+        }
+        return true;
     }
 
-
-
-    @Nonnull
-    protected abstract EpicsSystemVariable<T>
-    createEpicsVariable(@Nonnull final String name,
-                        @Nonnull final T value,
-                        @Nonnull final ControlSystem system,
-                        @Nonnull final TimeInstant timestamp) throws TypeSupportException;
-
-    @Nonnull
-    protected abstract EpicsSystemVariable<Collection<T>>
-    createCollectionEpicsVariable(@Nonnull final String name,
-                                  @Nonnull final Class<?> typeClass,
-                                  @Nonnull final Collection<T> data,
-                                  @Nonnull final ControlSystem system,
-                                  @Nonnull final TimeInstant timestamp) throws TypeSupportException;
+//    @Nonnull
+//    protected EpicsSystemVariable<?>
+//    createEpicsVariableFromCollection(@Nonnull final String name,
+//                                      @Nonnull final Class<?> typeClass,
+//                                      @Nonnull final Collection<T> data,
+//                                      @Nonnull final ControlSystem system,
+//                                      @Nonnull final TimeInstant timestamp) throws TypeSupportException {
+//        @SuppressWarnings("unchecked")
+//        final EpicsSystemVariableSupport<T> support =
+//            (EpicsSystemVariableSupport<T>) findTypeSupportForOrThrowTSE(EpicsSystemVariableSupport.class, typeClass);
+//        return support.createCollectionEpicsVariable(name, typeClass, data, system, timestamp);
+//    }
+//
+//    @Nonnull
+//    protected abstract EpicsSystemVariable<Collection<T>>
+//    createCollectionEpicsVariable(@Nonnull final String name,
+//                                  @Nonnull final Class<?> typeClass,
+//                                  @Nonnull final Collection<T> data,
+//                                  @Nonnull final ControlSystem system,
+//                                  @Nonnull final TimeInstant timestamp) throws TypeSupportException;
 
     /**
      * {@inheritDoc}

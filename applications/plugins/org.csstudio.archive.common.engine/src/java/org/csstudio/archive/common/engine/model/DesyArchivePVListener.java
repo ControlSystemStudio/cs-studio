@@ -44,6 +44,7 @@ import org.csstudio.domain.desy.epics.types.EpicsSystemVariable;
 import org.csstudio.domain.desy.epics.typesupport.EpicsIMetaDataTypeSupport;
 import org.csstudio.domain.desy.epics.typesupport.EpicsIValueTypeSupport;
 import org.csstudio.domain.desy.service.osgi.OsgiServiceUnavailableException;
+import org.csstudio.domain.desy.system.ControlSystem;
 import org.csstudio.domain.desy.system.ISystemVariable;
 import org.csstudio.domain.desy.time.TimeInstant.TimeInstantBuilder;
 import org.csstudio.domain.desy.typesupport.TypeSupportException;
@@ -57,20 +58,21 @@ import org.slf4j.LoggerFactory;
  *
  * @author bknerr
  * @since Mar 23, 2011
- * @param <V> the basic type of the variable's value
+ * @param <V> the basic element type of the variable's value collection
  * @param <T> the generic system variable type
  */
 //CHECKSTYLE OFF: AbstractClassName
-abstract class DesyArchivePVListener<V extends Serializable, T extends ISystemVariable<V>> implements PVListener {
+abstract class DesyArchivePVListener<V extends Serializable,
+                                     T extends ISystemVariable<V>> implements PVListener {
 //CHECKSTYLE ON: AbstractClassName
 
-//    private static final Logger LOG = LoggerFactory.getLogger(DesyArchivePVListener.class);
-    private static final Logger LOG = LoggerFactory.getLogger(DesyArchivePVListener.class.getName());
+    private static final Logger LOG = LoggerFactory.getLogger(DesyArchivePVListener.class);
 
     private IServiceProvider _provider;
     private final String _channelName;
     private final ArchiveChannelId _channelId;
-    private final Class<V> _typeClass;
+    private final Class<V> _elemClass;
+    private final Class<Collection<V>> _collClass;
     private volatile boolean _connected;
 
     private EpicsMetaData _metaData;
@@ -86,11 +88,13 @@ abstract class DesyArchivePVListener<V extends Serializable, T extends ISystemVa
     DesyArchivePVListener(@Nonnull final IServiceProvider provider,
                           @Nonnull final String name,
                           @Nonnull final ArchiveChannelId id,
-                          @Nonnull final Class<V> clazz) {
+                          @Nullable final Class<Collection<V>> collClazz,
+                          @Nonnull final Class<V> elemClazz) {
         _provider = provider;
         _channelName = name;
         _channelId = id;
-        _typeClass = clazz;
+        _collClass = collClazz;
+        _elemClass = elemClazz;
         _connected = false;
     }
 
@@ -116,15 +120,20 @@ abstract class DesyArchivePVListener<V extends Serializable, T extends ISystemVa
             if (!_connected) {
                 _metaData = handleOnConnectionInformation(pv,
                                                           _channelId,
-                                                          _typeClass,
+                                                          _elemClass,
                                                           _startInfo == null ? pv.getStateInfo() : _startInfo);
                 _connected = true;
             }
-            final ArchiveSample<V, T> sample = createSampleFromValue(pv, _channelName, _channelId, _metaData);
+            final ArchiveSample<V, T> sample = createSampleFromValue(pv,
+                                                                     _channelName,
+                                                                     _channelId,
+                                                                     _metaData,
+                                                                     _collClass,
+                                                                     _elemClass);
 
             if (sample != null) {
                 if (sample.getValue() == null) {
-                    LOG.warn("Value is null for channel id " + _channelName + "(" + _channelId + "). No sample created.");
+                    LOG.warn("Value is null for channel id {} ({}). No sample created.", _channelName, _channelId);
                 } else {
                     addSampleToBuffer(sample);
                 }
@@ -134,7 +143,7 @@ abstract class DesyArchivePVListener<V extends Serializable, T extends ISystemVa
             LOG.error("Handling of newly received IValue failed. Could not be converted to ISystemVariable", e);
             return;
         } catch (final Throwable t) {
-            LOG.error("Unexpected exception in PVListener for: " + _channelName + "\n" + t.getMessage(), t);
+            LOG.error("Unexpected exception in PVListener for: {}:\n{}", _channelName, t.getMessage());
         }
     }
 
@@ -152,7 +161,7 @@ abstract class DesyArchivePVListener<V extends Serializable, T extends ISystemVa
     @CheckForNull
     private EpicsMetaData handleOnConnectionInformation(@Nonnull final PV pv,
                                                         @Nonnull final ArchiveChannelId id,
-                                                        @Nonnull final Class<V> typeClass,
+                                                        @Nonnull final Class<V> elemClass,
                                                         @Nonnull final String info)
                                                         throws EngineModelException,
                                                                TypeSupportException {
@@ -164,7 +173,7 @@ abstract class DesyArchivePVListener<V extends Serializable, T extends ISystemVa
         final IMetaData metaData = pv.getValue().getMetaData();
 
         if (metaData != null) {
-            return this.<ICompSer>handleMetaDataInfo(metaData, id, typeClass);
+            return this.<ICompSer>handleMetaDataInfo(metaData, id, elemClass);
         }
         return null;
     }
@@ -193,16 +202,15 @@ abstract class DesyArchivePVListener<V extends Serializable, T extends ISystemVa
                                      throws TypeSupportException, EngineModelException {
 
         // FIXME (bknerr) : get rid of this IValue IMetaData shit
-       final EpicsMetaData data = EpicsIMetaDataTypeSupport.toMetaData(metaData,
-                                                                       typeClass);
+       final EpicsMetaData data = EpicsIMetaDataTypeSupport.toMetaData(metaData, typeClass);
        if (metaData instanceof INumericMetaData) {
             try {
                 final IArchiveEngineFacade service = _provider.getEngineFacade();
                 final EpicsGraphicsData<W> graphicsData = (EpicsGraphicsData<W>) data.getGrData();
                 if (graphicsData != null) {
                     service.writeChannelDisplayRangeInfo(id,
-                                                         graphicsData.getDisplayLow(),
-                                                         graphicsData.getDisplayHigh());
+                                                         graphicsData.getLowOperatingRange(),
+                                                         graphicsData.getHighOperatingRange());
                 }
             } catch (final OsgiServiceUnavailableException e) {
                 throw new EngineModelException("Service unavailable on updating display range info.", e);
@@ -215,23 +223,32 @@ abstract class DesyArchivePVListener<V extends Serializable, T extends ISystemVa
 
     protected abstract void addSampleToBuffer(@Nonnull final IArchiveSample<V, T> sample);
 
-
     @SuppressWarnings({ "unchecked", "rawtypes" })
     @CheckForNull
     private ArchiveSample<V, T> createSampleFromValue(@Nonnull final PV pv,
                                                       @Nonnull final String name,
                                                       @Nonnull final ArchiveChannelId id,
-                                                      @Nullable final EpicsMetaData metaData) throws TypeSupportException {
+                                                      @Nullable final EpicsMetaData metaData,
+                                                      @CheckForNull final Class<Collection<V>> collClass,
+                                                      @Nonnull final Class<V> elemClass) throws TypeSupportException {
         final IValue value = pv.getValue();
+
+        // step via sys var is not really necessary here, but once we got rid of IValue, it becomes clear
         final EpicsSystemVariable<V> sv =
-            (EpicsSystemVariable<V>) EpicsIValueTypeSupport.toSystemVariable(name, value, metaData);
+            (EpicsSystemVariable<V>) EpicsIValueTypeSupport.toSystemVariable(name,
+                                                                             value,
+                                                                             metaData,
+                                                                             ControlSystem.EPICS_DEFAULT,
+                                                                             collClass,
+                                                                             elemClass);
 
         ArchiveSample<V, T> sample;
         if (Collection.class.isAssignableFrom(sv.getData().getClass())) {
             sample = new ArchiveMultiScalarSample(id, sv, sv.getAlarm());
         } else {
-            sample = new ArchiveSample<V, T>(id, (T) sv, sv.getAlarm());
+            sample = new ArchiveSample(id, sv, sv.getAlarm());
         }
+
         return sample;
     }
 
