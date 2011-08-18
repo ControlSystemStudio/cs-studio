@@ -364,6 +364,22 @@ public class Annotation extends Figure implements IAxisListener, IDataProviderLi
 		updateInfoLableText(true);
 	}
 
+	/** Set the position of the annotation based on plot values
+	 *  @param x Position as value on the X axis
+	 *  @param y Position as value on the Y axis
+	 *  @see #setCurrentPosition(Point, boolean) for setting the position based on screen coordinates
+	 */
+	public void setValues(final double x, final double y)
+	{
+		xValue = x;
+		yValue = y;
+
+		currentPosition = new Point(xAxis.getValuePosition(xValue, false),
+				yAxis.getValuePosition(yValue, false));	
+		
+		updateInfoLableText(true);
+	}
+	
 	/**
 	 * 
 	 */
