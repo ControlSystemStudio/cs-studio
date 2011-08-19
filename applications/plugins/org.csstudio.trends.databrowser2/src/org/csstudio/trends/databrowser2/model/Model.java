@@ -11,9 +11,9 @@ import java.io.InputStream;
 import java.io.OutputStream;
 import java.io.PrintWriter;
 import java.util.ArrayList;
+import java.util.List;
 import java.util.Timer;
 import java.util.logging.Level;
-import java.util.logging.Logger;
 
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
@@ -82,6 +82,11 @@ public class Model
     final public static String TAG_ARCHIVE_RESCALE = "archive_rescale";
     final public static String TAG_REQUEST = "request";
     final public static String TAG_VISIBLE = "visible";
+    final public static String TAG_ANNOTATIONS = "annotations";
+    final public static String TAG_ANNOTATION = "annotation";
+    final public static String TAG_TIME = "time";
+    final public static String TAG_VALUE = "value";
+    
 
     /** Default colors for newly added item, used over when reaching the end.
      *  <p>
@@ -103,7 +108,7 @@ public class Model
         new RGB(114,  40,   3), // brown
         new RGB(219, 128,   4), // orange
     };
-    
+
     /** Macros */
     private IMacroTableProvider macros = null;
     
@@ -139,6 +144,9 @@ public class Model
 
     /** Background color */
     private RGB background = new RGB(255, 255, 255);
+
+    /** Annotations */
+	private AnnotationInfo[] annotations = new AnnotationInfo[0];
 
     /** How should plot rescale when archived data arrives? */
     private ArchiveRescale archive_rescale = Preferences.getArchiveRescale();
@@ -546,7 +554,19 @@ public class Model
             listener.changedColors();
     }
 
-    /** Start all items: Connect PVs, initiate scanning, ...
+    /** @param annotations Annotations to keep in model */
+    public void setAnnotations(AnnotationInfo[] annotations)
+    {
+    	this.annotations = annotations;
+    }
+
+    /** @return Annotation infos of model */
+	public AnnotationInfo[] getAnnotations()
+    {
+    	return annotations;
+    }
+
+	/** Start all items: Connect PVs, initiate scanning, ...
      *  @throws Exception on error
      */
     public void start() throws Exception
@@ -724,9 +744,11 @@ public class Model
             XMLWriter.XML(writer, 1, TAG_START, getStartTime());
             XMLWriter.XML(writer, 1, TAG_END, getEndTime());
         }
+        
         // Misc.
         writeColor(writer, 1, TAG_BACKGROUND, background);
         XMLWriter.XML(writer, 1, TAG_ARCHIVE_RESCALE, archive_rescale.name());
+        
         // Value axes
         XMLWriter.start(writer, 1, TAG_AXES);
         writer.println();
@@ -734,6 +756,15 @@ public class Model
             axis.write(writer);
         XMLWriter.end(writer, 1, TAG_AXES);
         writer.println();
+        
+        // Annotations
+        XMLWriter.start(writer, 1, TAG_ANNOTATIONS);
+        writer.println();
+        for (AnnotationInfo annotation : annotations)
+        	annotation.write(writer);
+        XMLWriter.end(writer, 1, TAG_ANNOTATIONS);
+        writer.println();
+        
         // PVs (Formulas)
         XMLWriter.start(writer, 1, TAG_PVLIST);
         writer.println();
@@ -814,6 +845,31 @@ public class Model
             }
         }
 
+        // Load Annotations
+        list = DOMHelper.findFirstElementNode(root_node.getFirstChild(), TAG_ANNOTATIONS);
+        if (list != null)
+        {
+            // Load PV items
+            Element item = DOMHelper.findFirstElementNode(
+                    list.getFirstChild(), TAG_ANNOTATION);
+            final List<AnnotationInfo> infos = new ArrayList<AnnotationInfo>();
+            try
+            {
+	            while (item != null)
+	            {
+	            	final AnnotationInfo annotation = AnnotationInfo.fromDocument(item);
+	            	infos.add(annotation);
+	                item = DOMHelper.findNextElementNode(item, TAG_ANNOTATION);
+	            }
+            }
+            catch (Throwable ex)
+            {
+            	Activator.getLogger().log(Level.INFO, "XML error in Annotation", ex);
+            }
+            // Add to document
+            annotations = infos.toArray(new AnnotationInfo[infos.size()]);
+        }
+        
         // Backwards compatibility with previous data browser which
         // used global buffer size for all PVs
         final int buffer_size = DOMHelper.getSubelementInt(root_node, Model.TAG_LIVE_SAMPLE_BUFFER_SIZE, -1);

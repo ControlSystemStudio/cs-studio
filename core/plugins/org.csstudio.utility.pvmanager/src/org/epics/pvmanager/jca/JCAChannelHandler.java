@@ -5,6 +5,7 @@
 package org.epics.pvmanager.jca;
 
 import gov.aps.jca.CAException;
+import gov.aps.jca.CAStatus;
 import gov.aps.jca.Channel;
 import gov.aps.jca.Context;
 import gov.aps.jca.Monitor;
@@ -157,16 +158,32 @@ public class JCAChannelHandler extends ChannelHandler<MonitorEvent> {
 
                 @Override
                 public void putCompleted(PutEvent ev) {
-                    callback.channelWritten(null);
+                    if (ev.getStatus().isSuccessful()) {
+                        callback.channelWritten(null);
+                    } else {
+                        callback.channelWritten(new Exception(ev.toString()));
+                    }
                 }
             };
             if (newValue instanceof String) {
-                channel.put(Double.parseDouble(newValue.toString()), listener);
+                channel.put(newValue.toString(), listener);
+            } else if (newValue instanceof byte[]) {
+                channel.put((byte[]) newValue, listener);
+            } else if (newValue instanceof short[]) {
+                channel.put((short[]) newValue, listener);
+            } else if (newValue instanceof int[]) {
+                channel.put((int[]) newValue, listener);
+            } else if (newValue instanceof float[]) {
+                channel.put((float[]) newValue, listener);
+            } else if (newValue instanceof double[]) {
+                channel.put((double[]) newValue, listener);
             } else if (newValue instanceof Byte || newValue instanceof Short
                     || newValue instanceof Integer || newValue instanceof Long) {
                 channel.put(((Number) newValue).longValue(), listener);
             } else if (newValue instanceof Float || newValue instanceof Double) {
                 channel.put(((Number) newValue).doubleValue(), listener);
+            } else {
+                throw new RuntimeException("Unsupported type for CA: " + newValue.getClass());
             }
             context.flushIO();
         } catch (CAException ex) {

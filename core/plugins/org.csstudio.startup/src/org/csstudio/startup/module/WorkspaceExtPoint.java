@@ -22,8 +22,8 @@ import org.eclipse.swt.widgets.Display;
  */
 public interface WorkspaceExtPoint extends CSSStartupExtensionPoint {
 
-	/** The name of this extension point */
-	public static final String NAME = "org.csstudio.startup.module.workspace"; //$NON-NLS-1$
+	/** The name of this extension point element */
+	public static final String NAME = "workspace"; //$NON-NLS-1$
 	
 	/** The tag under which the workspace URL should be stored in the parameters */
 	public static final String WORKSPACE = "css.workspace"; //$NON-NLS-1$

@@ -5,7 +5,7 @@
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-v10.html
  ******************************************************************************/
-package org.csstudio.sns.product.startupmodule;
+package org.csstudio.sns.startuphelper;
 
 import java.io.File;
 import java.io.IOException;

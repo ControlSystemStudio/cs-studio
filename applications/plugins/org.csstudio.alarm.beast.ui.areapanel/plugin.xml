@@ -20,7 +20,7 @@
          point="org.eclipse.ui.menus">
       <menuContribution
             allPopups="false"
-            locationURI="menu:alarm">
+            locationURI="menu:alarm?before=org.csstudio.alarm.beast.alarmtable">
          <command
                commandId="org.eclipse.ui.views.showView"
                icon="icons/areapanel.png"

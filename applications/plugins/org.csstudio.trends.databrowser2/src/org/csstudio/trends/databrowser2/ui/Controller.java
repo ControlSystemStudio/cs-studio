@@ -8,6 +8,7 @@
 package org.csstudio.trends.databrowser2.ui;
 
 import java.util.ArrayList;
+import java.util.List;
 import java.util.Timer;
 import java.util.TimerTask;
 import java.util.logging.Level;
@@ -16,11 +17,15 @@ import org.csstudio.apputil.ui.dialog.ErrorDetailDialog;
 import org.csstudio.csdata.ProcessVariable;
 import org.csstudio.data.values.ITimestamp;
 import org.csstudio.data.values.TimestampFactory;
+import org.csstudio.swt.xygraph.figures.Annotation;
+import org.csstudio.swt.xygraph.figures.Axis;
+import org.csstudio.swt.xygraph.figures.XYGraph;
 import org.csstudio.swt.xygraph.undo.OperationsManager;
 import org.csstudio.trends.databrowser2.Activator;
 import org.csstudio.trends.databrowser2.Messages;
 import org.csstudio.trends.databrowser2.archive.ArchiveFetchJob;
 import org.csstudio.trends.databrowser2.archive.ArchiveFetchJobListener;
+import org.csstudio.trends.databrowser2.model.AnnotationInfo;
 import org.csstudio.trends.databrowser2.model.ArchiveDataSource;
 import org.csstudio.trends.databrowser2.model.ArchiveRescale;
 import org.csstudio.trends.databrowser2.model.AxisConfig;
@@ -146,6 +151,7 @@ public class Controller implements ArchiveFetchJobListener
         }
         checkAutoscaleAxes();
         createPlotTraces();
+        createAnnotations();
 
         // Listen to user input from Plot UI, update model
         plot.addListener(new PlotListener()
@@ -524,7 +530,26 @@ public class Controller implements ArchiveFetchJobListener
         }
     }
 
-    /** Scroll the plot to 'now' */
+    /** Add annotations from model to plot */
+    private void createAnnotations()
+    {
+		final XYGraph graph = plot.getXYGraph();
+    	final List<Axis> yaxes = graph.getYAxisList();
+    	final AnnotationInfo[] annotations = model.getAnnotations();
+        for (AnnotationInfo info : annotations)
+        {
+			final int axis_index = info.getAxis();
+			if (axis_index < 0  ||  axis_index >= yaxes.size())
+				continue;
+			final Axis axis = yaxes.get(axis_index);
+        	final Annotation annotation = new Annotation(info.getTitle(), graph.primaryXAxis, axis);
+        	annotation.setValues(info.getTimestamp().toDouble() * 1000.0,
+        			info.getValue());
+			graph.addAnnotation(annotation);
+        }
+    }
+
+	/** Scroll the plot to 'now' */
     protected void performScroll()
     {
         if (! model.isScrollEnabled())

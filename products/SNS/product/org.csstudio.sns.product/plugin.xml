@@ -59,9 +59,15 @@
       </application>
    </extension>
 
+   <!-- Note that the classes listed in here should be in plugins
+        that can be loaded without locking the workspace.
+        This means the plugins loaded for these classes
+        should not use preferences or anything else that
+        triggers initialization of the workspace
+     -->
    <extension point="org.csstudio.startup.module">
       <startupParameters class="org.csstudio.utility.product.StartupParameters"/>
-      <workspace class="org.csstudio.sns.product.startupmodule.WorkspacePrompt"/>
+      <workspace class="org.csstudio.sns.startuphelper.WorkspacePrompt"/>
       <workbench class="org.csstudio.utility.product.Workbench"/>
       <project class="org.csstudio.startup.module.defaults.DefaultProject"/>
    </extension>

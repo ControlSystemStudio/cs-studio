@@ -21,8 +21,8 @@ import org.eclipse.swt.widgets.Display;
  */
 public interface WorkbenchExtPoint extends CSSStartupExtensionPoint {
 
-	/** The name of this extension point */
-	public static final String NAME = "org.csstudio.startup.module.workbench"; //$NON-NLS-1$
+	/** The name of this extension point element */
+	public static final String NAME = "workbench"; //$NON-NLS-1$
 	
 	/**
 	 * Is called just before the workbench is started. This method can run additional

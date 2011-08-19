@@ -9,6 +9,7 @@ package org.csstudio.trends.databrowser2.ui;
 
 import org.csstudio.apputil.macros.MacroTable;
 import org.csstudio.data.values.ITimestamp;
+import org.csstudio.trends.databrowser2.model.AnnotationInfo;
 import org.csstudio.trends.databrowser2.model.ArchiveDataSource;
 import org.csstudio.trends.databrowser2.model.FormulaInput;
 import org.csstudio.trends.databrowser2.model.FormulaItem;
@@ -156,6 +157,10 @@ public class ControllerDemo
                 }
             }
         }
+        
+        final AnnotationInfo[] annotations = plot.getAnnotations();
+        model.setAnnotations(annotations);
+        model.write(System.out);
     }
 
     @Test

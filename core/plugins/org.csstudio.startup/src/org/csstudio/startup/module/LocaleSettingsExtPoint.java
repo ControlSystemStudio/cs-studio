@@ -18,8 +18,8 @@ import org.eclipse.equinox.app.IApplicationContext;
  */
 public interface LocaleSettingsExtPoint extends CSSStartupExtensionPoint
 {
-	/** The name of this extension point */
-	public static final String NAME = "org.csstudio.startup.locale"; //$NON-NLS-1$
+	/** The name of this extension point element */
+	public static final String NAME = "locale"; //$NON-NLS-1$
 	
 	/**
 	 * Applies the locale settings. The locale settings can be gathered from any
