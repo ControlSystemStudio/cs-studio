@@ -7,12 +7,12 @@
  ******************************************************************************/
 package org.csstudio.common.trendplotter.model;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import javax.annotation.Nonnull;
 
 import org.csstudio.archive.common.service.ArchiveServiceException;
+import org.csstudio.archive.reader.ArchiveReader;
 import org.csstudio.common.trendplotter.Messages;
 import org.csstudio.data.values.IValue;
 import org.csstudio.domain.desy.service.osgi.OsgiServiceUnavailableException;
@@ -36,19 +36,19 @@ public class PVSamples extends PlotSamples
 {
     @SuppressWarnings("unused")
     private static final Logger LOG = LoggerFactory.getLogger(PVSamples.class);
-    
+
     /** Historic samples */
     final private HistoricSamples history;
 
     /** Live samples. Should start after end of historic samples */
     final private LiveSamples live;
-    
+
     boolean show_deadband = false;
 
     /**
      * Constructor.
      */
-    public PVSamples(@Nonnull final RequestType request_type) 
+    public PVSamples(@Nonnull final RequestType request_type)
     {
         updateRequestType(request_type);
         history = new HistoricSamples(request_type);
@@ -76,11 +76,13 @@ public class PVSamples extends PlotSamples
     synchronized public int getSize()
     {
         final int raw = getRawSize();
-        if (raw <= 0)
+        if (raw <= 0) {
             return raw;
+        }
         final PlotSample last = getSample(raw-1);
-        if (! last.getValue().getSeverity().hasValue())
+        if (! last.getValue().getSeverity().hasValue()) {
             return raw;
+        }
         // Last sample is valid, so it should still apply 'now'
         return raw+1;
     }
@@ -100,8 +102,9 @@ public class PVSamples extends PlotSamples
     synchronized public PlotSample getSample(final int index)
     {
         final int raw_count = getRawSize();
-        if (index < raw_count)
+        if (index < raw_count) {
             return getRawSample(index);
+        }
         // Last sample is valid, so it should still apply 'now'
         final PlotSample sample = getRawSample(raw_count-1);
         return ValueButcher.changeTimestampToNow(sample);
@@ -114,8 +117,9 @@ public class PVSamples extends PlotSamples
     private PlotSample getRawSample(final int index)
     {
         final int num_old = history.getSize();
-        if (index < num_old)
+        if (index < num_old) {
             return history.getSample(index);
+        }
         return live.getSample(index - num_old);
     }
 
@@ -125,10 +129,12 @@ public class PVSamples extends PlotSamples
     {
         final Range old_range = history.getXDataMinMax();
         final Range new_range = live.getXDataMinMax();
-        if (old_range == null)
+        if (old_range == null) {
             return new_range;
-        if (new_range == null)
+        }
+        if (new_range == null) {
             return old_range;
+        }
         // Both are not-null
         return new Range(old_range.getLower(), new_range.getUpper());
     }
@@ -139,10 +145,12 @@ public class PVSamples extends PlotSamples
     {
         final Range old_range = history.getYDataMinMax();
         final Range new_range = live.getYDataMinMax();
-        if (old_range == null)
+        if (old_range == null) {
             return new_range;
-        if (new_range == null)
+        }
+        if (new_range == null) {
             return old_range;
+        }
         // Both are not-null
         final double min = Math.min(old_range.getLower(), new_range.getLower());
         final double max = Math.max(old_range.getUpper(), new_range.getUpper());
@@ -175,18 +183,18 @@ public class PVSamples extends PlotSamples
 
     /** Add data retrieved from an archive to the 'historic' section
      *  @param source Source of the samples
-     * @param server_name 
+     * @param server_name
      *  @param result Historic data
-     * @throws ArchiveServiceException 
-     * @throws OsgiServiceUnavailableException 
+     * @throws ArchiveServiceException
+     * @throws OsgiServiceUnavailableException
      */
     synchronized public void mergeArchivedData(final String channel_name,
-                                               final String server_name, 
-                                               final List<IValue> result) 
-                                               throws OsgiServiceUnavailableException, 
+                                               final ArchiveReader reader,
+                                               final List<IValue> result)
+                                               throws OsgiServiceUnavailableException,
                                                       ArchiveServiceException
     {
-        history.mergeArchivedData(channel_name, server_name, result);
+        history.mergeArchivedData(channel_name, reader, result);
     }
 
     /** Add another 'live' sample
@@ -194,8 +202,9 @@ public class PVSamples extends PlotSamples
      */
     synchronized public void addLiveSample(IValue value)
     {
-        if (! value.getTime().isValid())
+        if (! value.getTime().isValid()) {
             value = ValueButcher.changeTimestampToNow(value);
+        }
         addLiveSample(new PlotSample(Messages.LiveData, value));
     }
 
@@ -237,11 +246,11 @@ public class PVSamples extends PlotSamples
         }
         return buf.toString();
     }
-    
-    synchronized public void setLiveSamplesDeadband(Number deadband) {
+
+    synchronized public void setLiveSamplesDeadband(final Number deadband) {
         live.setDeadband(deadband);
     }
-    synchronized public void setHistorySamplesDeadband(Number deadband) {
+    synchronized public void setHistorySamplesDeadband(final Number deadband) {
         history.setDeadband(deadband);
     }
 }

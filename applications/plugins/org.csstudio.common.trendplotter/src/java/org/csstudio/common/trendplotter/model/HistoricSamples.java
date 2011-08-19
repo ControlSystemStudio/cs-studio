@@ -19,6 +19,7 @@ import javax.annotation.Nonnull;
 import org.csstudio.archive.common.service.ArchiveServiceException;
 import org.csstudio.archive.common.service.IArchiveReaderFacade;
 import org.csstudio.archive.common.service.sample.IArchiveSample;
+import org.csstudio.archive.reader.ArchiveReader;
 import org.csstudio.common.trendplotter.Activator;
 import org.csstudio.data.values.ITimestamp;
 import org.csstudio.data.values.IValue;
@@ -143,7 +144,7 @@ public class HistoricSamples extends PlotSamples
      * @throws OsgiServiceUnavailableException
      */
     synchronized public void mergeArchivedData(final String channel_name,
-                                               final String source,
+                                               final ArchiveReader source,
                                                final List<IValue> result)
                                                throws OsgiServiceUnavailableException,
                                                       ArchiveServiceException
@@ -155,9 +156,9 @@ public class HistoricSamples extends PlotSamples
         // Turn IValues into PlotSamples
         final PlotSample new_samples[] = new PlotSample[result.size()];
         for (int i=0; i<new_samples.length; ++i) {
-            new_samples[i] = new PlotSample(source, result.get(i));
+            new_samples[i] = new PlotSample(source.getServerName(), result.get(i));
         }
-        if (hasSourceDeadbandInfo(source)) {
+        if (isArchiveServiceforADELPresent()) {
             findAndSetArchiveDeadBandForNewSamples(channel_name, new_samples);
         }
 
@@ -172,11 +173,18 @@ public class HistoricSamples extends PlotSamples
         adel_info_complete = false;
     }
 
-
-    private boolean hasSourceDeadbandInfo(final String source) {
-        // TODO (bknerr) : Well that whole thing should be refactored
-        return true;
-    }
+    /**
+     * In case the service is present, ADEL info can be retrieved otherwise not
+     * @return if there is a service offering ADEL info
+     */
+    private boolean isArchiveServiceforADELPresent() {
+        try {
+            Activator.getDefault().getArchiveReaderService();
+        } catch (final OsgiServiceUnavailableException e) {
+            return false;
+        }
+         return true;
+     }
 
 
     /** Delete all orgSamples */
@@ -210,9 +218,10 @@ public class HistoricSamples extends PlotSamples
                                                         throws OsgiServiceUnavailableException,
                                                                ArchiveServiceException {
         if (new_samples.length > 0) {
-          final Collection<IArchiveSample<Serializable, IAlarmSystemVariable<Serializable>>> adels = retrieveAdelSamples(channel_name,
-                                                                                                       new_samples[0],
-                                                                                                       new_samples[new_samples.length - 1]);
+          final Collection<IArchiveSample<Serializable, IAlarmSystemVariable<Serializable>>> adels =
+              retrieveAdelSamples(channel_name,
+                                  new_samples[0].getTime(),
+                                  new_samples[new_samples.length - 1].getTime());
           if (!adels.isEmpty()) {
               final Iterator<IArchiveSample<Serializable, IAlarmSystemVariable<Serializable>>> iter = adels.iterator();
               final IArchiveSample<Serializable, IAlarmSystemVariable<Serializable>> curAdel = iter.next();
@@ -263,27 +272,27 @@ public class HistoricSamples extends PlotSamples
         sample.setDeadband((Number) curAdel.getValue());
     }
 
-    private Collection<IArchiveSample<Serializable, IAlarmSystemVariable<Serializable>>> retrieveAdelSamples(final String channel_name,
-                                                                                                 final PlotSample first,
-                                                                                                 final PlotSample last)
-                                                                                                 throws OsgiServiceUnavailableException,
-                                                                                                        ArchiveServiceException
-    {
+    private Collection<IArchiveSample<Serializable, IAlarmSystemVariable<Serializable>>>
+    retrieveAdelSamples(final String channel_name,
+                        final ITimestamp start,
+                        final ITimestamp end)
+                        throws OsgiServiceUnavailableException, ArchiveServiceException
+                        {
         final IArchiveReaderFacade service = Activator.getDefault().getArchiveReaderService();
-        final TimeInstant start = BaseTypeConversionSupport.toTimeInstant(first.getTime());
-        final TimeInstant end = BaseTypeConversionSupport.toTimeInstant(last.getTime());
+        final TimeInstant s = BaseTypeConversionSupport.toTimeInstant(start);
+        final TimeInstant e = BaseTypeConversionSupport.toTimeInstant(end);
 
         final String adelChannelName =
             EpicsNameSupport.parseBaseName(channel_name) +
             EpicsChannelName.FIELD_SEP +
             RecordField.ADEL.getFieldName();
 
-        final IArchiveSample lastBefore = service.readLastSampleBefore(adelChannelName, start);
+        final IArchiveSample lastBefore = service.readLastSampleBefore(adelChannelName, s);
 
         final Collection samples =
             service.readSamples(adelChannelName,
-                                start,
-                                end);
+                                s,
+                                e);
         final LinkedList<IArchiveSample<Serializable, IAlarmSystemVariable<Serializable>>> allSamples = Lists.newLinkedList(samples);
         allSamples.addFirst(lastBefore);
         return allSamples;

@@ -15,6 +15,7 @@ import static org.junit.Assert.fail;
 import java.util.ArrayList;
 import java.util.Timer;
 
+import org.csstudio.archive.reader.ArchiveReader;
 import org.csstudio.data.values.IMinMaxDoubleValue;
 import org.csstudio.data.values.IValue;
 import org.csstudio.data.values.TimestampFactory;
@@ -23,6 +24,7 @@ import org.csstudio.swt.xygraph.dataprovider.IDataProvider;
 import org.csstudio.utility.pv.PV;
 import org.csstudio.utility.pv.PVFactory;
 import org.junit.Test;
+import org.mockito.Mockito;
 
 /** [Headless] JUnit Plug-In test of the FormulaItem
  *  @author Kay Kasemir
@@ -168,7 +170,9 @@ public class FormulaItemHeadlessTest
                         IValue.Quality.Interpolated,
                         new double[] { i }, i-1, i+1));
         }
-        pvs[0].mergeArchivedSamples("Test", data);
+        final ArchiveReader readerMock = Mockito.mock(ArchiveReader.class);
+        Mockito.when(readerMock.getServerName()).thenReturn("Testserver");
+        pvs[0].mergeArchivedSamples(readerMock, data);
 
 
         PlotSamples samples = pvs[0].getSamples();

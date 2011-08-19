@@ -189,16 +189,17 @@ public final class DesyArchiveReaderFactory implements ArchiveReaderFactory {
 
         @Override
         public void cancel() {
-            // TODO Auto-generated method stub
+            // TODO (bknerr): what to do here ?
         }
 
         @Override
         public void close() {
-            // TODO Auto-generated method stub
+            // TODO (bknerr): what to do here ?
         }
 
         /**
-         * Helper method
+         * FIXME (bknerr) : get rid of helper, propagate the service side request types to the user
+         * interface.
          * @return
          * @throws OsgiServiceUnavailableException
          */

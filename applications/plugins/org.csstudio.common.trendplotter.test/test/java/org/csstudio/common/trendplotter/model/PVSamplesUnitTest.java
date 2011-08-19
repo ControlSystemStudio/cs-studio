@@ -14,12 +14,14 @@ import static org.junit.Assert.assertTrue;
 import java.util.ArrayList;
 
 import org.csstudio.archive.common.service.ArchiveServiceException;
+import org.csstudio.archive.reader.ArchiveReader;
 import org.csstudio.data.values.ITimestamp;
 import org.csstudio.data.values.IValue;
 import org.csstudio.data.values.TimestampFactory;
 import org.csstudio.data.values.ValueFactory;
 import org.csstudio.domain.desy.service.osgi.OsgiServiceUnavailableException;
 import org.junit.Test;
+import org.mockito.Mockito;
 
 /** JUnit test for PVSamples
  *  @author Kay Kasemir
@@ -30,6 +32,9 @@ public class PVSamplesUnitTest
     @Test
     public void testPVSamples() throws OsgiServiceUnavailableException, ArchiveServiceException
     {
+        final ArchiveReader readerMock = Mockito.mock(ArchiveReader.class);
+        Mockito.when(readerMock.getServerName()).thenReturn("Testserver");
+
         // Start w/ empty PVSamples
         final PVSamples samples = new PVSamples(null);
         assertEquals(0, samples.getSize());
@@ -38,9 +43,10 @@ public class PVSamplesUnitTest
 
         // Add 'historic' samples
         final ArrayList<IValue> history = new ArrayList<IValue>();
-        for (int i=0; i<10; ++i)
+        for (int i=0; i<10; ++i) {
             history.add(TestSampleBuilder.makeValue(i));
-        samples.mergeArchivedData("TestChannel", "Test", history);
+        }
+        samples.mergeArchivedData("TestChannel", null, history);
         // PVSamples include continuation until 'now'
         System.out.println(samples.toString());
         assertEquals(history.size()+1, samples.getSize());
@@ -61,9 +67,10 @@ public class PVSamplesUnitTest
         // Check if the history.setBorderTime() update works
         // Create 'history' data from 0 to 20.
         history.clear();
-        for (int i=0; i<21; ++i)
+        for (int i=0; i<21; ++i) {
             history.add(TestSampleBuilder.makeValue(i));
-        samples.mergeArchivedData("TestChannel", "Test", history);
+        }
+        samples.mergeArchivedData("TestChannel", readerMock, history);
 
         // Since 'live' data starts at 11, history is only visible up to there,
         // i.e. 0..10 = 11 in history plus 3 'live' samples
