@@ -381,12 +381,11 @@ public class GUI implements AlarmClientModelListener
                 // triggers a refresh.
                 // What seems to work is the combination of manual setRedraw(false, true)
                 // and a tree_viewer.refresh().
-                
-                // TODO Check if fixed now that content provider calls  setChildCount
-//                tree.setRedraw(false);
+                // On Windows (7), Linux and OS X (carbon)) just setInput is sufficient.
+                tree.setRedraw(false);
                 tree_viewer.setInput(config);
-//                tree_viewer.refresh();
-//                tree.setRedraw(true);
+                tree_viewer.refresh();
+                tree.setRedraw(true);
             }
         });
     }
