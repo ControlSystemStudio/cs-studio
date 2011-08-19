@@ -67,6 +67,7 @@ abstract class DesyArchivePVListener<V extends Serializable,
 //CHECKSTYLE ON: AbstractClassName
 
     private static final Logger LOG = LoggerFactory.getLogger(DesyArchivePVListener.class);
+    private static final Logger STRANGE_LOG = LoggerFactory.getLogger("StrangeThingsLogger");
 
     private IServiceProvider _provider;
     private final String _channelName;
@@ -232,6 +233,10 @@ abstract class DesyArchivePVListener<V extends Serializable,
                                                       @CheckForNull final Class<Collection<V>> collClass,
                                                       @Nonnull final Class<V> elemClass) throws TypeSupportException {
         final IValue value = pv.getValue();
+        if (!value.getTime().isValid()) {
+            STRANGE_LOG.warn("Invalid time stamp for: " + name);
+            return null;
+        }
 
         // step via sys var is not really necessary here, but once we got rid of IValue, it becomes clear
         final EpicsSystemVariable<V> sv =
