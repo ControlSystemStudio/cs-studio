@@ -389,9 +389,34 @@ public class PlotArea extends Figure {
 			switch (zoomType)
 			{
 			case RUBBERBAND_ZOOM:
+		        for(Axis axis : xyGraph.getXAxisList())
+		        {
+		            final double t1 = axis.getPositionValue(start.x, false);
+		            final double t2 = axis.getPositionValue(end.x, false);
+		            axis.setRange(t1, t2);
+		        }
+		        for(Axis axis : xyGraph.getYAxisList())
+		        {
+		            final double t1 = axis.getPositionValue(start.y, false);
+		            final double t2 = axis.getPositionValue(end.y, false);
+		            axis.setRange(t1, t2);
+		        }
+		        break;
 			case HORIZONTAL_ZOOM:
+		        for(Axis axis : xyGraph.getXAxisList())
+		        {
+		            final double t1 = axis.getPositionValue(start.x, false);
+		            final double t2 = axis.getPositionValue(end.x, false);
+		            axis.setRange(t1, t2);
+		        }
+		        break;
 			case VERTICAL_ZOOM:
-				performStartEndZoom();
+		        for(Axis axis : xyGraph.getYAxisList())
+		        {
+		            final double t1 = axis.getPositionValue(start.y, false);
+		            final double t2 = axis.getPositionValue(end.y, false);
+		            axis.setRange(t1, t2);
+		        }
 				break;
 			case PANNING:
 				pan();
@@ -437,25 +462,6 @@ public class PlotArea extends Figure {
 	            axis.pan(yAxisStartRangeList.get(i),
 	                     axis.getPositionValue(start.y, false),
 	                     axis.getPositionValue(end.y, false));
-	        }
-	    }
-
-	    /** Perform rubberband or horiz/vertical zoom based on
-	     *  mouse pointer start/end coordinates
-	     */
-	    private void performStartEndZoom()
-	    {
-	        for(Axis axis : xyGraph.getXAxisList())
-	        {
-	            final double t1 = axis.getPositionValue(start.x, false);
-	            final double t2 = axis.getPositionValue(end.x, false);
-	            axis.setRange(t1, t2);
-	        }
-	        for(Axis axis : xyGraph.getYAxisList())
-	        {
-	            final double t1 = axis.getPositionValue(start.y, false);
-	            final double t2 = axis.getPositionValue(end.y, false);
-	            axis.setRange(t1, t2);
 	        }
 	    }
 
