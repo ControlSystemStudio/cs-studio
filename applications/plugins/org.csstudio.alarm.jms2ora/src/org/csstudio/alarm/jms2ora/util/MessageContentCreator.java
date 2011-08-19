@@ -35,8 +35,10 @@ import javax.jms.JMSException;
 import javax.jms.MapMessage;
 import org.slf4j.Logger;
 import org.csstudio.alarm.jms2ora.Jms2OraPlugin;
-import org.csstudio.alarm.jms2ora.database.DatabaseLayer;
 import org.csstudio.alarm.jms2ora.preferences.PreferenceConstants;
+import org.csstudio.alarm.jms2ora.service.IMetaDataReader;
+import org.csstudio.alarm.jms2ora.service.MessageContent;
+import org.csstudio.domain.desy.service.osgi.OsgiServiceUnavailableException;
 import org.eclipse.core.runtime.Platform;
 import org.eclipse.core.runtime.preferences.IPreferencesService;
 import org.slf4j.LoggerFactory;
@@ -58,9 +60,9 @@ public class MessageContentCreator {
 
     /** Hashtable with message properties. Key -> name, value -> database table id  */
     private Hashtable<String, Long> msgProperty;
-        
-    /** Object for database handling */
-    private DatabaseLayer dbLayer;
+    
+    /** Service for reading the meta data of the database tables */
+    private IMetaDataReader metaDataService;
     
     /** Filter to avoid message storms */
     private MessageFilter messageFilter;
@@ -75,16 +77,20 @@ public class MessageContentCreator {
     private final String formatTwoDigits = "\\d{4}-\\d{2}-\\d{2} \\d{2}:\\d{2}:\\d{2}\\.\\d{2}";
     private final String formatOneDigit = "\\d{4}-\\d{2}-\\d{2} \\d{2}:\\d{2}:\\d{2}\\.\\d{1}";
 
-    public MessageContentCreator(String dbUrl, String dbUser, String dbPassword) {
+    public MessageContentCreator() {
         
         IPreferencesService prefs = Platform.getPreferencesService();
 
-        dbLayer = new DatabaseLayer(dbUrl, dbUser, dbPassword);
+        try {
+            metaDataService = Jms2OraPlugin.getDefault().getMetaDataReaderService();
+        } catch (OsgiServiceUnavailableException mace) {
+            LOG.error("[*** MessageArchiveConnectionException ***]: {}", mace.getMessage());
+        }
         
         readMessageProperties();
 
-        valueLength = dbLayer.getMaxNumberofValueBytes();
-        if(valueLength == 0) {
+        valueLength = metaDataService.getValueLength();
+        if(valueLength == -1) {
             valueLength = prefs.getInt(Jms2OraPlugin.PLUGIN_ID, PreferenceConstants.DEFAULT_VALUE_PRECISION, 300, null);
             LOG.warn("Cannot read the precision of the table column 'value'. Assume " + valueLength + " bytes");
         }
@@ -454,8 +460,6 @@ public class MessageContentCreator {
         
         boolean result = false;
                 
-        LOG.debug("Entering MessageContentCreator.readMessageProperties(): Reading message properties.");
-        
         // Delete old hash table, if there are any
         if(msgProperty != null) {
             msgProperty.clear();
@@ -464,14 +468,12 @@ public class MessageContentCreator {
 
         msgProperty = new Hashtable<String, Long>();
 
-        msgProperty = dbLayer.getMessageProperties();
+        msgProperty = metaDataService.getMessageProperties();
         if(msgProperty.isEmpty()) {
             result = false;
         } else {
             result = true;
         }
-        
-        LOG.debug("Leaving MessageContentCreator.readMessageProperties()");
 
         return result;
     }    

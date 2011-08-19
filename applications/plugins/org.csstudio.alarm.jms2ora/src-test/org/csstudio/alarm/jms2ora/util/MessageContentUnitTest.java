@@ -1,6 +1,7 @@
 
 package org.csstudio.alarm.jms2ora.util;
 
+import org.csstudio.alarm.jms2ora.service.MessageContent;
 import org.junit.Test;
 import static org.junit.Assert.*;
 

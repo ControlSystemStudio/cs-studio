@@ -25,20 +25,13 @@
 package org.csstudio.alarm.jms2ora;
 
 import java.util.concurrent.ConcurrentLinkedQueue;
-import javax.jms.MapMessage;
-import javax.jms.Message;
-import javax.jms.MessageListener;
 import org.csstudio.alarm.jms2ora.database.DatabaseLayer;
-import org.csstudio.alarm.jms2ora.preferences.PreferenceConstants;
-import org.csstudio.alarm.jms2ora.util.ApplicState;
-import org.csstudio.alarm.jms2ora.util.Hostname;
-import org.csstudio.alarm.jms2ora.util.MessageContent;
-import org.csstudio.alarm.jms2ora.util.MessageContentCreator;
-import org.csstudio.alarm.jms2ora.util.JmsMessageReceiver;
+import org.csstudio.alarm.jms2ora.service.IMessageWriter;
+import org.csstudio.alarm.jms2ora.service.MessageContent;
+import org.csstudio.alarm.jms2ora.util.MessageAcceptor;
 import org.csstudio.alarm.jms2ora.util.MessageFileHandler;
-import org.csstudio.platform.statistic.Collector;
-import org.eclipse.core.runtime.Platform;
-import org.eclipse.core.runtime.preferences.IPreferencesService;
+import org.csstudio.alarm.jms2ora.util.StatisticCollector;
+import org.csstudio.domain.desy.service.osgi.OsgiServiceUnavailableException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -73,10 +66,7 @@ import org.slf4j.LoggerFactory;
  *          - Die Properties der Datenbanktabellen
  */
 
-public class MessageProcessor extends Thread implements MessageListener {
-    
-    /** The object instance of this class */
-    private static MessageProcessor instance = null;
+public class MessageProcessor extends Thread {
     
     /** The class logger */
     private static final Logger LOG = LoggerFactory.getLogger(MessageProcessor.class);
@@ -84,32 +74,17 @@ public class MessageProcessor extends Thread implements MessageListener {
     /** Queue for received messages */
     private ConcurrentLinkedQueue<MessageContent> messages;
     
+    /** The Database writer service */
+    private IMessageWriter writerService;
+
+    /** Object that gets all JMS messages */
+    private MessageAcceptor messageAcceptor;
+    
     /** Object for database handling */
     private DatabaseLayer dbLayer;
     
-    /** Object that creates the MessageContent objects */
-    private MessageContentCreator contentCreator;
-    
-    /** Array of message receivers */
-    private JmsMessageReceiver[] receivers;
-            
-    /** Class that collects statistic informations. Query it via XMPP. */
-    private Collector receivedMessages;
-    
-    /** Class that collects statistic informations. Query it via XMPP. */
-    private Collector filteredMessages;
-
-    /** Class that collects statistic informations. Query it via XMPP. */
-    private Collector discardedMessages;
-
-    /** Class that collects statistic informations. Query it via XMPP. */
-    private Collector storedMessages;
-
-    /** Array with JMS server URLs */
-    private String[] urlList;
-    
-    /** Array with topic names */
-    private String[] topicList;
+    /** A container for all Collector objects */
+    private StatisticCollector collector;
     
     /** Indicates if the application was initialized or not */
     private boolean initialized;
@@ -120,8 +95,6 @@ public class MessageProcessor extends Thread implements MessageListener {
     /** Indicates whether or not this thread stopped clean */
     private boolean stoppedClean;
     
-    private Jms2OraApplication parent;
-    
     /** Time to sleep in ms */
     private static long SLEEPING_TIME = 15000 ;
 
@@ -129,98 +102,33 @@ public class MessageProcessor extends Thread implements MessageListener {
     public static final int CONSOLE = 1;
     
     /**
-     * A nice private constructor...
-     *
+     * The constructor
+     * 
+     * Oh, really
      */    
-    private MessageProcessor() {
+    public MessageProcessor() throws ServiceNotAvailableException {
         
         this.setName("MessageProcessor-Thread");
         
         messages = new ConcurrentLinkedQueue<MessageContent>();
+        messageAcceptor = new MessageAcceptor(collector);
         
-        IPreferencesService prefs = Platform.getPreferencesService();
-        String url = prefs.getString(Jms2OraPlugin.PLUGIN_ID, PreferenceConstants.DATABASE_URL, "", null);
-        String user = prefs.getString(Jms2OraPlugin.PLUGIN_ID, PreferenceConstants.DATABASE_USER, "", null);
-        String password = prefs.getString(Jms2OraPlugin.PLUGIN_ID, PreferenceConstants.DATABASE_PASSWORD, "", null);
-
-        dbLayer = new DatabaseLayer(url, user, password);
-
-        // Instantiate MessageContentCreator that uses its own database layer
-        // IMPORTANT: Do not let it use the database layer created above
-        contentCreator = new MessageContentCreator(url, user, password);
-        
-        receivedMessages = new Collector();
-        receivedMessages.setApplication(VersionInfo.NAME);
-        receivedMessages.setDescriptor("Received messages");
-        receivedMessages.setContinuousPrint(false);
-        receivedMessages.setContinuousPrintCount(1000.0);
-        
-        filteredMessages = new Collector();
-        filteredMessages.setApplication(VersionInfo.NAME);
-        filteredMessages.setDescriptor("Filtered messages");
-        filteredMessages.setContinuousPrint(false);
-        filteredMessages.setContinuousPrintCount(1000.0);
-        
-        discardedMessages = new Collector();
-        discardedMessages.setApplication(VersionInfo.NAME);
-        discardedMessages.setDescriptor("Discarded messages");
-        discardedMessages.setContinuousPrint(false);
-        discardedMessages.setContinuousPrintCount(1000.0);
-        
-        storedMessages = new Collector();
-        storedMessages.setApplication(VersionInfo.NAME);
-        storedMessages.setDescriptor("Stored messages");
-        storedMessages.setContinuousPrint(false);
-        storedMessages.setContinuousPrintCount(1000.0);
-        
-        String urls = prefs.getString(Jms2OraPlugin.PLUGIN_ID, PreferenceConstants.JMS_PROVIDER_URLS, "", null);
-        String topics = prefs.getString(Jms2OraPlugin.PLUGIN_ID, PreferenceConstants.JMS_TOPIC_NAMES, "", null);
-        
+        try {
+            writerService = Jms2OraPlugin.getDefault().getMessageWriterService();
+            if (writerService.isServiceReady()) {
+                LOG.info("Message writer service available.");
+            } else {
+                LOG.error("Message writer service is NOT available.");
+                throw new ServiceNotAvailableException("Database writer service not available.");
+            }
+        } catch (OsgiServiceUnavailableException e) {
+            LOG.error(e.getMessage());
+            throw new ServiceNotAvailableException("Database writer service notavailable: " + e.getMessage());
+        }
+                
         running = true;
         stoppedClean = false;
-        
-        if((urls.length() > 0) && (topics.length() > 0)) {
-            
-            urlList = urls.split(",");
-            topicList = topics.split(",");
-            
-            for(int i = 0;i < urlList.length;i++) {
-                LOG.info("[" + urlList[i] + "]");
-            }
-            
-            for(int i = 0;i < topicList.length;i++) {
-                LOG.info("[" + topicList[i] + "]");
-            }
-            
-            receivers = new JmsMessageReceiver[urlList.length];
-            
-            String hostName = Hostname.getInstance().getHostname();
-            
-            for(int i = 0;i < urlList.length;i++) {
-                
-                try {
-                    receivers[i] = new JmsMessageReceiver("org.apache.activemq.jndi.ActiveMQInitialContextFactory", urlList[i], topicList);
-                    receivers[i].startListener(this, VersionInfo.NAME + "@" + hostName + "_" + this.hashCode());
-                    initialized = true;
-                } catch(Exception e) {
-                    LOG.error("*** Exception *** : " + e.getMessage());
-                    initialized = false;
-                }
-            }
-            
-            initialized = (initialized == true) ? true : false;
-        } else {
-            initialized = false;
-        }
-    }
-
-    public static synchronized MessageProcessor getInstance() {
-        
-        if(instance == null) {
-            instance = new MessageProcessor();
-        }
-        
-        return instance;
+        initialized = false;
     }
     
     /**
@@ -239,8 +147,6 @@ public class MessageProcessor extends Thread implements MessageListener {
         
         while(running) {
             
-            parent.setStatus(ApplicState.WORKING);
-
             while(!messages.isEmpty() && running) {
                 
                 content = messages.poll();
@@ -258,34 +164,27 @@ public class MessageProcessor extends Thread implements MessageListener {
                         
                         LOG.info(result.getErrorMessage());
                         if(result == ReturnValue.PM_RETURN_DISCARD) {
-                            discardedMessages.incrementValue();
+                            collector.incrementDiscardedMessages();
                         } else if(result == ReturnValue.PM_RETURN_EMPTY) {
-                            filteredMessages.incrementValue();
+                            collector.incrementFilteredMessages();
                         }
                     } else {
-                        storedMessages.incrementValue();
+                        collector.incrementStoredMessages();
                         LOG.debug(result.getErrorMessage());
                     }
                 }
                 
                 // LOG.debug(statistic.toString());
                 LOG.debug(createStatisticString());
-                
-                // IMPORTANT: Refresh the current state, otherwise Jms2Ora will restart if many messages
-                // are stored in the queue and state switching does not happen while storing all
-                // the messages.
-                parent.setStatus(ApplicState.WORKING);
             }
 
             if(running) {
                 
-                parent.setStatus(ApplicState.SLEEPING);
-                
-                synchronized(this) {
+                synchronized (this) {
                     try {
                         wait(SLEEPING_TIME);
                     } catch(InterruptedException ie) {
-                        LOG.error("*** InterruptedException *** : executeMe(): wait(): " + ie.getMessage());
+                        LOG.error("[*** InterruptedException ***]: run(): wait(): " + ie.getMessage());
                         running = false;
                     }               
                 }
@@ -294,9 +193,7 @@ public class MessageProcessor extends Thread implements MessageListener {
             }
         }
         
-        parent.setStatus(ApplicState.LEAVING);
-        
-        closeAllReceivers();
+        messageAcceptor.closeAllReceivers();
         
         // Process the remaining messages
         LOG.info("Remaining messages: " + messages.size() + " -> Processing...");
@@ -324,44 +221,20 @@ public class MessageProcessor extends Thread implements MessageListener {
             content = null;
         }
         
+//        if (writerService != null) {
+//            writerService.close();
+//        }
+
         stoppedClean = true;
         
         LOG.info("Remaining messages stored in the database: " + writtenToDb);
         LOG.info("Remaining messages stored on disk:         " + writtenToHd);
-        
-        parent.setStatus(ApplicState.STOPPED);
-
-        LOG.info("Leaving method executeMe().");
     }
 
     public boolean stoppedClean() {
         return stoppedClean;
     }
     
-    public void onMessage(Message message) {
-        
-        MessageContent content = null;
-        
-        LOG.debug("onMessage(): " + message.toString());
-        
-        if(message instanceof MapMessage) {
-
-            MapMessage mapMessage = (MapMessage)message;
-            LOG.debug("onMessage(): ", mapMessage.toString());
-            content = contentCreator.convertMapMessage((MapMessage)message);
-            messages.add(content);
-            receivedMessages.incrementValue();
-            mapMessage = null;
-            
-            synchronized(this) {
-                notify();
-            }
-        } else {
-            LOG.warn("Received a non MapMessage object: ", message.toString());
-            LOG.warn("Discarding invalid message.");
-        }        
-    }
-
     public ReturnValue processMessage(MessageContent content) {
         
         long typeId = 0;
@@ -375,7 +248,9 @@ public class MessageProcessor extends Thread implements MessageListener {
         if(!content.hasContent()) {
             return ReturnValue.PM_RETURN_EMPTY;
         }
-                
+        
+        writerService.writeMessage(messageAcceptor.getCurrentMessages());
+        
         // Create an entry in the table MESSAGE
         // TODO: typeId is always 0!!! We do not use it anymore. Delete the column in a future version.
         msgId = dbLayer.createMessageEntry(typeId, content);
@@ -418,34 +293,16 @@ public class MessageProcessor extends Thread implements MessageListener {
         return initialized;
     }
         
-    public int getNumberOfQueuedMessages() {
-        
+    public int getMessageQueueSize() {
+        int result = 0;
         if(messages != null) {
-            return messages.size();
+            result = messages.size();
         }
-        
-        return 0;
-    }
-    
-    public void closeAllReceivers() {
-        
-        LOG.info("closeAllReceivers(): Closing all receivers.");
-        
-        if(receivers != null) {
-            for(int i = 0;i < receivers.length;i++) {
-                receivers[i].stopListening();
-            }
-        }
-    }
-    
-    public void setParent(Jms2OraApplication p) {
-        this.parent = p;
+        return result;
     }
     
     public synchronized void stopWorking() {
-        contentCreator.stopWorking();
         running = false;
-        
         this.notify();
     }
     
@@ -454,43 +311,11 @@ public class MessageProcessor extends Thread implements MessageListener {
         StringBuffer result = new StringBuffer();
         
         result.append("Statistic:\n\n");
-        result.append("Received Messages:  " + receivedMessages.getActualValue().getValue() + "\n");
-        result.append("Stored Messages:    " + storedMessages.getActualValue().getValue() + "\n");
-        result.append("Discarded Messages: " + discardedMessages.getActualValue().getValue() + "\n");
-        result.append("Filtered Messages:     " + filteredMessages.getActualValue().getValue() + "\n");
+        result.append("Received Messages:  " + collector.getReceivedMessageCount() + "\n");
+        result.append("Stored Messages:    " + collector.getStoredMessagesCount() + "\n");
+        result.append("Discarded Messages: " + collector.getDiscardedMessagesCount() + "\n");
+        result.append("Filtered Messages:  " + collector.getFilteredMessagesCount() + "\n");
         
         return result.toString();
-    }
-    
-    /**
-     * 
-     * @return Number of received messages
-     */
-    public Collector getReceivedMessagesCollector() {
-        return receivedMessages;
-    }
-    
-    /**
-     * 
-     * @return Number of filtered messages
-     */
-    public Collector getFilteredMessagesCollector() {
-        return filteredMessages;
-    }
-
-    /**
-     * 
-     * @return Number of discarded messages
-     */
-    public Collector getDiscardedMessagesCollector() {
-        return discardedMessages;
-    }
-
-    /**
-     * 
-     * @return Number of stored messages
-     */
-    public Collector getStoredMessagesCollector() {
-        return storedMessages;
     }
 }

@@ -36,6 +36,7 @@ import java.text.SimpleDateFormat;
 import java.util.GregorianCalendar;
 import org.csstudio.alarm.jms2ora.Jms2OraPlugin;
 import org.csstudio.alarm.jms2ora.preferences.PreferenceConstants;
+import org.csstudio.alarm.jms2ora.service.MessageContent;
 import org.eclipse.core.runtime.Platform;
 import org.eclipse.core.runtime.preferences.IPreferencesService;
 import org.slf4j.Logger;

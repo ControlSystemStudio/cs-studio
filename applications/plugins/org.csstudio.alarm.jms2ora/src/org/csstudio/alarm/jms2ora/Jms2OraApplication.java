@@ -26,10 +26,8 @@ package org.csstudio.alarm.jms2ora;
 
 import java.io.File;
 import org.csstudio.alarm.jms2ora.preferences.PreferenceConstants;
-import org.csstudio.alarm.jms2ora.util.ApplicState;
 import org.csstudio.alarm.jms2ora.util.CommandLine;
 import org.csstudio.alarm.jms2ora.util.Hostname;
-import org.csstudio.alarm.jms2ora.util.SynchObject;
 import org.eclipse.core.runtime.Platform;
 import org.eclipse.core.runtime.preferences.IPreferencesService;
 import org.eclipse.equinox.app.IApplication;
@@ -46,7 +44,7 @@ import org.slf4j.LoggerFactory;
  *
  */
 
-public class Jms2OraApplication implements IApplication, Stoppable,
+public class Jms2OraApplication implements IApplication, Stoppable, RemotelyAccesible,
                                            IGenericServiceListener<ISessionService> {
     
     private static Jms2OraApplication instance = null;
@@ -58,8 +56,8 @@ public class Jms2OraApplication implements IApplication, Stoppable,
     private MessageProcessor messageProcessor;
     
     /**  */
-    private SynchObject sync;
-    
+    private Object lock;
+
     /** Object that holds the credentials for XMPP login */
     private XmppInfo xmppInfo;
     
@@ -69,9 +67,6 @@ public class Jms2OraApplication implements IApplication, Stoppable,
     /** Name of the folder that holds the stored message content */
     private String objectDir;
 
-    /** Last state */
-    private int lastState = 0;
-    
     /** Flag that indicates whether or not the application is/should running */
     private boolean running;
     
@@ -96,7 +91,7 @@ public class Jms2OraApplication implements IApplication, Stoppable,
 
         createObjectFolder();
     
-        sync = new SynchObject(ApplicState.INIT, System.currentTimeMillis());
+        lock = new Object();
         xmppInfo = null;
         xmppService = null;
         running = true;
@@ -111,10 +106,8 @@ public class Jms2OraApplication implements IApplication, Stoppable,
         
         CommandLine cmd = null;
         String[] args = null;
-        String stateText = null;
         String host = null;
         String user = null;
-        int currentState = 0;
 
         args = (String[])context.getArguments().get(IApplicationContext.APPLICATION_ARGS);
         
@@ -180,90 +173,34 @@ public class Jms2OraApplication implements IApplication, Stoppable,
             return IApplication.EXIT_OK;
         }
 
-        Jms2OraPlugin.getDefault().addSessionServiceListener(this);
-
-        context.applicationRunning();
-        
         // Create an object from this class
-        messageProcessor = MessageProcessor.getInstance();
-        messageProcessor.setParent(this);
+        messageProcessor = new MessageProcessor();
         messageProcessor.start();
 
-        sync.setSynchStatus(ApplicState.OK);
-        stateText = "ok";
+        Jms2OraPlugin.getDefault().addSessionServiceListener(this);
         
-        while(running) {
-            
-            synchronized(this) {
+        context.applicationRunning();
+        
+
+        while (running) {
+            synchronized (lock) {
                 try {
-                    this.wait(SLEEPING_TIME);
+                    lock.wait(SLEEPING_TIME);
                 } catch(InterruptedException ie) { /* Can be ignored */}
             }
             
-            SynchObject actSynch = new SynchObject(ApplicState.INIT, 0);
-            if(!sync.hasStatusSet(actSynch, 300, ApplicState.TIMEOUT)) {
-                LOG.error("TIMEOUT: State has not changed the last 5 minute(s).");
-            }
-
-            currentState = actSynch.getStatus();
-            if(currentState != lastState) {
-                
-                switch(currentState) {
-                    
-                    case ApplicState.INIT:
-                        stateText = "init";
-                        break;
-                        
-                    case ApplicState.OK:
-                        stateText = "ok";
-                        break;
-                        
-                    case ApplicState.WORKING:
-                        stateText = "working";
-                        break;
-
-                    case ApplicState.SLEEPING:
-                        stateText = "sleeping";
-                        break;
-
-                    case ApplicState.LEAVING:
-                        stateText = "leaving";
-                        break;
-
-                    case ApplicState.ERROR:
-                        stateText = "error";                        
-                        running = false;                        
-                        break;
-                        
-                    case ApplicState.FATAL:
-                        stateText = "fatal";
-                        running = false;                        
-                        break;
-                    
-                    case ApplicState.TIMEOUT:
-                        stateText = "timeout";
-                        running = false;                        
-                        break;
-                }
-                
-                LOG.debug("set state to " + stateText + "(" + currentState + ")");
-                lastState = currentState;               
-            }
-            
-            LOG.debug("Current state: " + stateText + "(" + currentState + ")");
+            // TODO: Check the worker...
+            LOG.debug("TODO: Check the worker...");
         }
-
+        
         if(messageProcessor != null) {
             
             // Clean stop of the working thread
             messageProcessor.stopWorking();
-            
-            do {
                 
-                try {
-                    messageProcessor.join(WAITFORTHREAD);
-                } catch(InterruptedException ie) { /* Can be ignored */ }
-            } while(sync.getSynchStatus() == ApplicState.LEAVING);
+            try {
+                messageProcessor.join(WAITFORTHREAD);
+            } catch(InterruptedException ie) { /* Can be ignored */ }
             
             if(messageProcessor.stoppedClean()) {
                 LOG.info("Restart/Exit: Thread stopped clean.");
@@ -308,14 +245,6 @@ public class Jms2OraApplication implements IApplication, Stoppable,
     	// Nothing to do here
     }
         
-    public int getState() {
-        return sync.getSynchStatus();
-    }
-    
-    public void setStatus(int status) {
-        sync.setSynchStatus(status);
-    }
-
     public void stopWorking() {
         
         running = false;
@@ -323,8 +252,8 @@ public class Jms2OraApplication implements IApplication, Stoppable,
         
         LOG.info("The application will shutdown...");
         
-        synchronized(this) {
-            notify();
+        synchronized(lock) {
+            lock.notify();
         }
     }
 
@@ -335,8 +264,8 @@ public class Jms2OraApplication implements IApplication, Stoppable,
         
         LOG.info("The application will restart...");
         
-        synchronized(this) {
-            notify();
+        synchronized(lock) {
+            lock.notify();
         }
     }
 
@@ -347,11 +276,18 @@ public class Jms2OraApplication implements IApplication, Stoppable,
         
         LOG.info("The application will shutdown...");
         
-        synchronized(this) {
-            notify();
+        synchronized(lock) {
+            lock.notify();
         }
     }
     
+    /**
+     * {@inheritDoc}
+     */
+    public int getMessageQueueSize() {
+        return messageProcessor.getMessageQueueSize();
+    }
+
     private void createObjectFolder() {
         
         File folder = new File(objectDir);
