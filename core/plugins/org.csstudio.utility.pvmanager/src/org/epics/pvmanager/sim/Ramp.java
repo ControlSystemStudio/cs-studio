@@ -54,6 +54,25 @@ public class Ramp extends SimFunction<VDouble> {
                 min + range * 0.8, min + range * 0.9, max, min, max);
     }
 
+    /**
+     * Creates a ramp shaped signal between min and max, incrementing 1
+     * every interval seconds.
+     *
+     * @param min minimum value
+     * @param max maximum value
+     * @param interval interval between samples in seconds
+     */
+    public Ramp(Double min, Double max, Double interval) {
+        this(min, max, 1.0, interval);
+    }
+    
+    /**
+     * Creates a ramp shaped signal between -5 and +5, incrementing 1 every second.
+     */
+    public Ramp() {
+        this (-5.0, 5.0, 1.0);
+    }
+
     @Override
     VDouble nextValue() {
         currentValue = currentValue + step;

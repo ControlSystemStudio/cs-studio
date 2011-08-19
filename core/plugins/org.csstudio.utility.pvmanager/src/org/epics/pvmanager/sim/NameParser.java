@@ -125,7 +125,7 @@ class NameParser {
         } catch (IllegalArgumentException ex) {
             throw new RuntimeException("Wrong parameter type for function " + parameters.get(0));
         } catch (InvocationTargetException ex) {
-            throw new RuntimeException("Constructor for " + parameters.get(0) + " failed", ex);
+            throw new RuntimeException(ex.getCause().getMessage(), ex);
         }
     }
 }
