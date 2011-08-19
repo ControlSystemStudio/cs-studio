@@ -23,73 +23,71 @@
 
 package org.csstudio.ams.connector.voicemail.isdn;
 
-import java.util.Date;
-
-import org.csstudio.platform.logging.CentralLogger;
+import org.csstudio.ams.Log;
 
 /**
  * @author Markus Moeller
  *
  */
-public class CallCenter
-{
-    private CapiReceiver receiver = null;
-    private CapiCaller caller = null;
-    private CentralLogger logger = null;
+public class CallCenter {
     
+    /** The receiver of a call */
+    private CapiReceiver receiver;
+    
+    /** The class that makes a call */
+    private CapiCaller caller;
+    
+    /** Flag that indicates if the CallCenter is initialized and active */
+    private boolean active;
+    
+    /** Number of retries for a call */
     private final int RETRY = 3;
     
-    public CallCenter() throws CallCenterException
-    {
-        logger = CentralLogger.getInstance();
-        
-        try
-        {
+    public CallCenter() throws CallCenterException {
+        try {
             receiver = new CapiReceiver();
             receiver.start();
-            
             caller = new CapiCaller();
-        }
-        catch(CapiReceiverException cre)
-        {
+            active = true;
+        } catch(CapiReceiverException cre) {
+            active = false;
             throw new CallCenterException(cre);
-        }
-        catch(CapiCallerException cce)
-        {
+        } catch(CapiCallerException cce) {
+            active = false;
             throw new CallCenterException(cce);
         }
     }
     
-    public void makeCall(String telephoneNumber, String message, String textType, String chainIdAndPos, String waitUntil) throws CallCenterException
-    {
+    public boolean isActive() {
+        return active;
+    }
+    
+    public void makeCall(String telephoneNumber,
+                         String message,
+                         String textType,
+                         String chainIdAndPos,
+                         String waitUntil) throws CallCenterException {
+        
         CallInfo callInfo;
         long waitTime = 0;
         int type;
         int callCount = 0;
         
-        try
-        {
+        try {
             type = Integer.parseInt(textType);
-        }
-        catch(NumberFormatException nfe)
-        {
+        } catch(NumberFormatException nfe) {
             type = 0;
-            logger.warn(this, "Text type is invalid: " + textType);
+            Log.log(this, Log.ERROR, "Text type is invalid: " + textType);
             throw new CallCenterException("Text type is invalid: " + textType);
         }
 
-        if(waitUntil != null)
-        {
-            if(waitUntil.trim().length() > 0)
-            {
-                try
-                {
+        if(waitUntil != null) {
+            if(waitUntil.trim().length() > 0) {
+                try {
                     waitTime = Long.parseLong(waitUntil);
-                }
-                catch(NumberFormatException nfe)
-                {
+                } catch(NumberFormatException nfe) {
                     waitTime = 0;
-                    logger.warn(this, "Wait time is invalid: " + waitUntil);
+                    Log.log(this, Log.WARN, "Wait time is invalid: " + waitUntil);
                     
                     // Throw only an exception if the alarm needs to be confirmed
                     if(CallCenter.TextType.TEXTTYPE_ALARM_WCONFIRM.ordinal() == type)
@@ -100,22 +98,17 @@ public class CallCenter
             }
         }
         
-        switch(type)
-        {
+        switch(type) {
+            
             case 1: // TEXTTYPE_ALARM_WOCONFIRM
                 
-                try
-                {
-                    do
-                    {
+                try {
+                    do {
                         callInfo = null;
                         callInfo = caller.makeCallWithoutReply(telephoneNumber, message);
                         callCount++;
-                    }
-                    while((!callInfo.isSuccess()) && (callCount < RETRY));
-                }
-                catch(CapiCallerException cce)
-                {
+                    } while((!callInfo.isSuccess()) && (callCount < RETRY));
+                } catch(CapiCallerException cce) {
                     throw new CallCenterException(cce);
                 }
 
@@ -123,22 +116,17 @@ public class CallCenter
                 
             case 2: // TEXTTYPE_ALARM_WCONFIRM
 
-                try
-                {
-                    do
-                    {
+                try {
+                    do {
                         callInfo = null;
                         callInfo = caller.makeCallWithReply(telephoneNumber, message, chainIdAndPos);
                         callCount++;
-                    }
-                    while((!callInfo.isSuccess()) && (System.currentTimeMillis() < waitTime));
-                }
-                catch(CapiCallerException cce)
-                {
+                    } while((!callInfo.isSuccess()) && (System.currentTimeMillis() < waitTime));
+                } catch(CapiCallerException cce) {
                     throw new CallCenterException(cce);
                 }
                 
-                logger.debug(this, "Confirmation code: " + callInfo.getConfirmationCode());
+                Log.log(this, Log.DEBUG, "Confirmation code: " + callInfo.getConfirmationCode());
                
                 break;
                 
@@ -149,8 +137,18 @@ public class CallCenter
         }
     }
     
-    public enum TextType
-    {
+    public void closeCallCenter() {
+        
+        if (receiver != null) {
+            receiver.close();
+        }
+        
+        if (caller != null) {
+            caller.close();
+        }
+    }
+    
+    public enum TextType {
         INVALID, TEXTTYPE_ALARM_WOCONFIRM, TEXTTYPE_ALARM_WCONFIRM, TEXTTYPE_ALARMCONFIRM_OK,
         TEXTTYPE_ALARMCONFIRM_NOK, TEXTTYPE_STATUSCHANGE_OK, TEXTTYPE_STATUSCHANGE_NOK
     }

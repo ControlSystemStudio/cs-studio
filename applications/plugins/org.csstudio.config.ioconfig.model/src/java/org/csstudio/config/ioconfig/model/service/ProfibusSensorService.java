@@ -30,8 +30,8 @@ import java.util.List;
 import javax.annotation.Nonnull;
 
 import org.csstudio.config.ioconfig.model.PersistenceException;
-import org.csstudio.config.ioconfig.model.Repository;
 import org.csstudio.config.ioconfig.model.SensorsDBO;
+import org.csstudio.config.ioconfig.model.hibernate.Repository;
 import org.csstudio.dct.ISensorIdService;
 
 /**
@@ -41,37 +41,37 @@ import org.csstudio.dct.ISensorIdService;
  * @since 06.07.2009
  */
 public class ProfibusSensorService implements ISensorIdService {
-
+    
     @Override
-    @Nonnull 
-    public String getSensorId(@Nonnull String ioName, @Nonnull String selection) {
+    @Nonnull
+    public String getSensorId(@Nonnull final String ioName, @Nonnull final String selection) {
         SensorsDBO loadSensors;
         try {
             loadSensors = Repository.loadSensor(ioName, selection);
-        } catch (PersistenceException e) {
+        } catch (final PersistenceException e) {
             return "$$$ Database not accessible $$$";
         }
         if(loadSensors==null) {
-//            return null;
+            //            return null;
             return "$$$ NO Sensors ID found for IOName "+ioName+" $$$";
         }
         return loadSensors.getSensorID();
     }
-
-    @Nonnull 
-    public List<String> getSensorIds(@Nonnull String ioName) {
+    
+    @Nonnull
+    public List<String> getSensorIds(@Nonnull final String ioName) {
         List<SensorsDBO> loadSensors;
-        List<String> sensorsIds = new ArrayList<String>();
+        final List<String> sensorsIds = new ArrayList<String>();
         try {
             loadSensors = Repository.loadSensors(ioName);
-            for (SensorsDBO sensors : loadSensors) {
+            for (final SensorsDBO sensors : loadSensors) {
                 sensorsIds.add(sensors.getSensorID());
             }
-        } catch (PersistenceException e) {
+        } catch (final PersistenceException e) {
             sensorsIds.add("$$$ Database not accessible $$$");
             
         }
         return sensorsIds;
     }
-
+    
 }

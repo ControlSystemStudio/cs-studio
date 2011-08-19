@@ -21,6 +21,7 @@
  */
 package org.csstudio.archive.common.service.mysqlimpl;
 
+import java.io.Serializable;
 import java.util.Collection;
 
 import javax.annotation.CheckForNull;
@@ -46,9 +47,7 @@ import org.csstudio.archive.common.service.mysqlimpl.dao.ArchiveDaoException;
 import org.csstudio.archive.common.service.mysqlimpl.engine.IArchiveEngineDao;
 import org.csstudio.archive.common.service.mysqlimpl.enginestatus.IArchiveEngineStatusDao;
 import org.csstudio.archive.common.service.mysqlimpl.sample.IArchiveSampleDao;
-import org.csstudio.archive.common.service.mysqlimpl.types.ArchiveTypeConversionSupport;
 import org.csstudio.archive.common.service.sample.IArchiveSample;
-import org.csstudio.domain.desy.epics.typesupport.EpicsSystemVariableSupport;
 import org.csstudio.domain.desy.system.ISystemVariable;
 import org.csstudio.domain.desy.time.TimeInstant;
 import org.slf4j.Logger;
@@ -98,9 +97,6 @@ public class MySQLArchiveEngineServiceImpl implements IArchiveEngineFacade {
         _channelDao = channelDao;
         _channelGroupDao = channelGroupDao;
         _channelStatusDao = channelStatusDao;
-
-        ArchiveTypeConversionSupport.install();
-        EpicsSystemVariableSupport.install();
     }
 
 
@@ -108,7 +104,7 @@ public class MySQLArchiveEngineServiceImpl implements IArchiveEngineFacade {
      * {@inheritDoc}
      */
     @Override
-    public <V, T extends ISystemVariable<V>>
+    public <V extends Serializable, T extends ISystemVariable<V>>
     boolean writeSamples(@Nonnull final Collection<IArchiveSample<V, T>> samples) throws ArchiveServiceException {
         try {
             _sampleDao.createSamples(samples);
@@ -212,7 +208,7 @@ public class MySQLArchiveEngineServiceImpl implements IArchiveEngineFacade {
      * {@inheritDoc}
      */
     @Override
-    public <V extends Comparable<? super V>>
+    public <V extends Comparable<? super V> & Serializable>
     void writeChannelDisplayRangeInfo(@Nonnull final ArchiveChannelId id,
                                       @Nonnull final V displayLow,
                                       @Nonnull final V displayHigh) throws ArchiveServiceException {

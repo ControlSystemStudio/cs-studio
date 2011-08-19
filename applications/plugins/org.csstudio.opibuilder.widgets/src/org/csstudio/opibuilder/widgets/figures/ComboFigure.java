@@ -10,6 +10,7 @@ package org.csstudio.opibuilder.widgets.figures;
 
 import org.csstudio.opibuilder.model.AbstractContainerModel;
 import org.csstudio.ui.util.CustomMediaFactory;
+import org.csstudio.ui.util.thread.UIBundlingThread;
 import org.eclipse.draw2d.Graphics;
 import org.eclipse.draw2d.PositionConstants;
 import org.eclipse.draw2d.Triangle;
@@ -41,6 +42,7 @@ public class ComboFigure extends AbstractSWTWidgetFigure {
 		super(composite, parentModel);
 		combo = new Combo(composite, SWT.DROP_DOWN | SWT.READ_ONLY);
 		combo.setVisible(false);
+		combo.moveAbove(null);
 		selector = new Triangle();	
 		selector.setDirection(PositionConstants.SOUTH);
 		selector.setFill(true);
@@ -110,9 +112,18 @@ public class ComboFigure extends AbstractSWTWidgetFigure {
 	@Override
 	public void dispose() {
 		super.dispose();
-		combo.setMenu(null);
-		combo.dispose();
-		combo = null;
+		UIBundlingThread.getInstance().addRunnable(
+				combo.getDisplay(), new Runnable() {
+			
+			public void run() {
+				if(!combo.isDisposed()){
+					combo.setMenu(null);
+					combo.dispose();
+					combo = null;			
+				}
+			}
+		});
+		
 	}
 	
 }

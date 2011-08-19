@@ -1,3 +1,4 @@
+
 /* 
  * Copyright (c) 2008 Stiftung Deutsches Elektronen-Synchrotron, 
  * Member of the Helmholtz Association, (DESY), HAMBURG, GERMANY.
@@ -19,7 +20,8 @@
  * PROJECT IN THE FILE LICENSE.HTML. IF THE LICENSE IS NOT INCLUDED YOU MAY FIND A COPY 
  * AT HTTP://WWW.DESY.DE/LEGAL/LICENSE.HTM
  */
- package org.csstudio.ams.filter.ui;
+
+package org.csstudio.ams.filter.ui;
 
 import java.sql.Connection;
 import java.text.DateFormat;
@@ -58,9 +60,9 @@ import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.swt.widgets.Text;
 
-public class FilterConditionStringUI extends FilterConditionUI
-{
-	private DateFormat storeTimeFormat = DateFormat.getTimeInstance(DateFormat.SHORT, Locale.US);
+public class FilterConditionStringUI extends FilterConditionUI {
+	
+    private DateFormat storeTimeFormat = DateFormat.getTimeInstance(DateFormat.SHORT, Locale.US);
 	private DateFormat showTimeFormat = DateFormat.getTimeInstance(DateFormat.SHORT);
 	private NumberFormat storeNumberFormat = NumberFormat.getInstance( Locale.US);
 	private NumberFormat showNumberFormat = NumberFormat.getInstance();
@@ -77,13 +79,12 @@ public class FilterConditionStringUI extends FilterConditionUI
 	private FilterConditionStringTObject condition = null;
 	private FilterConditionStringTObject conditionOrg = null;
 	
-	public FilterConditionStringUI()
-	{
+	public FilterConditionStringUI() {
 		super();
 	}
 	
-	public String getDisplayName()
-	{
+	@Override
+    public String getDisplayName() {
 		return Messages.FilterConditionStringBasedUI_DisplayName;
 	}
 
@@ -142,9 +143,8 @@ public class FilterConditionStringUI extends FilterConditionUI
 			{
 				condition.setCompValue(storeNumberFormat.format(showNumberFormat
 						.parse(condition.getCompValue())));
-			}
-			catch(Exception ex)
-			{
+			} catch(Exception ex) {
+			    // Can be ignored
 			}
 			break;
 		}
@@ -154,16 +154,16 @@ public class FilterConditionStringUI extends FilterConditionUI
 			{
 				condition.setCompValue(storeTimeFormat.format(showTimeFormat
 						.parse(condition.getCompValue())));
-			}
-			catch(Exception ex)
-			{
+			} catch(Exception ex) {
+			    // Can be ignored
 			}
 			break;
 		}
 		}
 	}
 	
-	public void reset()
+	@Override
+    public void reset()
 	{
 		cboKeyValue.deselectAll();
 		cboKeyValueType.deselectAll();
@@ -203,7 +203,8 @@ public class FilterConditionStringUI extends FilterConditionUI
 		
 		cboKeyValueType.addSelectionListener(new SelectionAdapter()
 		{
-			public void widgetSelected(SelectionEvent e) 
+			@Override
+            public void widgetSelected(SelectionEvent e) 
 			{
 				actOnKeyValueTypeChanged();
 			}
@@ -321,7 +322,8 @@ public class FilterConditionStringUI extends FilterConditionUI
 		}
 	}
 	
-	public void createUI(Composite parent)
+	@Override
+    public void createUI(Composite parent)
 	{		
 		if(composite == null)
 		{
@@ -333,13 +335,15 @@ public class FilterConditionStringUI extends FilterConditionUI
 		}
 	}
 	
-	public void dispose()
+	@Override
+    public void dispose()
 	{
 		if(composite != null)
 			composite.dispose();
 	}
 	
-	public boolean check()
+	@Override
+    public boolean check()
 	{
 		String  text = null;
 		
@@ -409,7 +413,8 @@ public class FilterConditionStringUI extends FilterConditionUI
 		return false;
 	}
 	
-	public boolean isChanged()
+	@Override
+    public boolean isChanged()
 	{
 		FilterConditionStringTObject newElement = new FilterConditionStringTObject();
 		get(newElement);	
@@ -420,7 +425,8 @@ public class FilterConditionStringUI extends FilterConditionUI
 		return !newElement.equals(conditionOrg);
 	}
 
-	public void create(Connection conDb, int iFilterConditionID) throws AMSException 
+	@Override
+    public void create(Connection conDb, int iFilterConditionID) throws AMSException 
 	{
 		try
 		{
@@ -435,7 +441,8 @@ public class FilterConditionStringUI extends FilterConditionUI
 		}
 	}
 
-	public void delete(Connection conDb, int iFilterConditionID) throws AMSException 
+	@Override
+    public void delete(Connection conDb, int iFilterConditionID) throws AMSException 
 	{
 		try
 		{	
@@ -447,7 +454,8 @@ public class FilterConditionStringUI extends FilterConditionUI
 		}
 	}
 
-	public void load(Connection conDb, int iFilterConditionID) throws AMSException 
+	@Override
+    public void load(Connection conDb, int iFilterConditionID) throws AMSException 
 	{
 		try
 		{	
@@ -459,7 +467,8 @@ public class FilterConditionStringUI extends FilterConditionUI
 		}
 	}
 
-	public void save(Connection conDb) throws AMSException 
+	@Override
+    public void save(Connection conDb) throws AMSException 
 	{
 		try
 		{
@@ -503,7 +512,8 @@ public class FilterConditionStringUI extends FilterConditionUI
 			this.validChars = validChars;
 		}
 		
-		public void verifyText(VerifyEvent e)
+		@Override
+        public void verifyText(VerifyEvent e)
 		{
 			switch(e.keyCode)
 			{

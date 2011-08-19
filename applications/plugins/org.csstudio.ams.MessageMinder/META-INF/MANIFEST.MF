@@ -5,10 +5,9 @@ Bundle-SymbolicName: org.csstudio.ams.MessageMinder;singleton:=true
 Bundle-Version: 1.1.0
 Bundle-Activator: org.csstudio.ams.messageminder.MessageMinderActivator
 Bundle-ActivationPolicy: lazy
-Bundle-RequiredExecutionEnvironment: J2SE-1.5
+Bundle-RequiredExecutionEnvironment: JavaSE-1.6
 Require-Bundle: org.eclipse.core.runtime,
- org.eclipse.ui,
- org.csstudio.platform.ui,
+ org.csstudio.platform;bundle-version="1.2.0",
  org.csstudio.ams,
  org.csstudio.platform.utility.jms,
  org.remotercp.common;bundle-version="1.0.0",

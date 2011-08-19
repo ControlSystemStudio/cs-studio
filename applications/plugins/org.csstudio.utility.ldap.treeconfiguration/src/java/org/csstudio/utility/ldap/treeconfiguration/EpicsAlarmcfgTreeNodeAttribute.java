@@ -38,63 +38,63 @@ import com.google.common.collect.ImmutableSet.Builder;
  */
 public enum EpicsAlarmcfgTreeNodeAttribute {
 
-	CSS_ALARM_DISPLAY("epicsCssAlarmDisplay",
-	                  "The CSS alarm display.",
-	                  URL.class),
-	CSS_DISPLAY("epicsCssDisplay",
-	            "The CSS display.",
+    CSS_ALARM_DISPLAY("epicsCssAlarmDisplay",
+                      "The CSS alarm display.",
+                      URL.class),
+    CSS_DISPLAY("epicsCssDisplay",
+                "The CSS display.",
                 URL.class),
-	CSS_STRIP_CHART("epicsCssStripChart",
-	                "The CSS strip chart.",
+    CSS_STRIP_CHART("epicsCssStripChart",
+                    "The CSS strip chart.",
                     URL.class),
-	HELP_GUIDANCE("epicsHelpGuidance",
-	              "A short description of the object.",
+    HELP_GUIDANCE("epicsHelpGuidance",
+                  "A short description of the object.",
                   String.class),
-	HELP_PAGE("epicsHelpPage",
-	          "The help page. This should be the URL of a web page.",
+    HELP_PAGE("epicsHelpPage",
+              "The help page. This should be the URL of a web page.",
               URL.class);
 
 
-	private static ImmutableSet<String> LDAP_ATTRIBUTES;
+    private static ImmutableSet<String> LDAP_ATTRIBUTES;
 
     static {
-	    final Builder<String> builder = ImmutableSet.builder();
-	    for (final EpicsAlarmcfgTreeNodeAttribute id : values()) {
-	        builder.add(id.getLdapAttribute());
-	    }
-	    LDAP_ATTRIBUTES = builder.build();
-	}
+        final Builder<String> builder = ImmutableSet.builder();
+        for (final EpicsAlarmcfgTreeNodeAttribute id : values()) {
+            builder.add(id.getLdapAttribute());
+        }
+        LDAP_ATTRIBUTES = builder.build();
+    }
 
-	private final String _ldapAttribute;
+    private final String _ldapAttribute;
 
-	private final String _description;
+    private final String _description;
 
-	private final Class<?> _propertyClass;
+    private final Class<?> _propertyClass;
 
-	/**
-	 * Constructor.
-	 * @param ldapAttribute the name as it is defined as attribute in LDAP
-	 */
-	private EpicsAlarmcfgTreeNodeAttribute(@Nonnull final String ldapAttribute,
-	                                       @Nonnull final String description,
-	                                       @Nonnull final Class<?> clazz) {
-	    _ldapAttribute = ldapAttribute;
-	    _description = description;
-	    _propertyClass = clazz;
+    /**
+     * Constructor.
+     * @param ldapAttribute the name as it is defined as attribute in LDAP
+     */
+    private EpicsAlarmcfgTreeNodeAttribute(@Nonnull final String ldapAttribute,
+                                           @Nonnull final String description,
+                                           @Nonnull final Class<?> clazz) {
+        _ldapAttribute = ldapAttribute;
+        _description = description;
+        _propertyClass = clazz;
 
     }
 
-	@Nonnull
-	public String getLdapAttribute() {
-	    return _ldapAttribute;
-	}
+    @Nonnull
+    public String getLdapAttribute() {
+        return _ldapAttribute;
+    }
 
     /**
      * Compares the given string for the LDAP attribute with the field of the enum objects.
      * @return returns the enum object with the first match of its attribute
      */
-	@CheckForNull
-	public static EpicsAlarmcfgTreeNodeAttribute getIdByLdapAttribute(@Nonnull final String attribute) {
+    @CheckForNull
+    public static EpicsAlarmcfgTreeNodeAttribute getIdByLdapAttribute(@Nonnull final String attribute) {
         for (final EpicsAlarmcfgTreeNodeAttribute id : values()) {
             if (id.getLdapAttribute().equals(attribute)) {
                 return id;
@@ -107,7 +107,7 @@ public enum EpicsAlarmcfgTreeNodeAttribute {
      * @return an immutable collection of the LDAP attributes of an alarm tree node
      */
     @Nonnull
-	public static ImmutableSet<String> getLdapAttributes() {
+    public static ImmutableSet<String> getLdapAttributes() {
         return LDAP_ATTRIBUTES;
     }
 

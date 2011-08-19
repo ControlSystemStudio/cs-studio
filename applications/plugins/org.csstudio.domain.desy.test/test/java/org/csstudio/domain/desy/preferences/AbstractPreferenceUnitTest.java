@@ -27,8 +27,6 @@ import static org.junit.Assert.assertEquals;
 
 import java.util.List;
 
-import javax.annotation.Nonnull;
-
 import junit.framework.Assert;
 
 import org.junit.Test;
@@ -41,9 +39,10 @@ import org.junit.Test;
  * @version $Revision$
  * @since 14.06.2010
  */
-// CHECKSTYLE:OFF The class to test is abstract, but not its test...
+// CHECKSTYLE OFF: AbstractClassName
 public class AbstractPreferenceUnitTest {
-// CHECKSTYLE:ON
+// CHECKSTYLE ON: AbstractClassName
+
 
     @Test
     public void testPreferencesDefaults() {
@@ -78,13 +77,13 @@ public class AbstractPreferenceUnitTest {
         assertEquals("true", UnitTestPreference.BOOLEAN_PREF.getDefaultAsString());
         assertEquals("Unit_Boolean_Pref", UnitTestPreference.BOOLEAN_PREF.getKeyAsString());
     }
-    
+
 
     @Test
     public void testGetAllPreferences() {
         final List<AbstractPreference<?>> prefs = UnitTestPreference.BOOLEAN_PREF.getAllPreferences();
 
-        Assert.assertEquals(6, prefs.size());
+        Assert.assertEquals(7, prefs.size());
     }
 
     @Test(expected=IllegalArgumentException.class)
@@ -95,76 +94,4 @@ public class AbstractPreferenceUnitTest {
                                              .addValidator(new MinMaxPreferenceValidator<Double>(0.0, 100.0));
 
     }
-
-    /**
-     * Test Helper class.  
-     * 
-     * @author bknerr
-     * @since 20.04.2011
-     * @param <T> the preference type
-     */
-    private static final class UnitTestPreference<T> extends AbstractPreference<T> {
-
-        /**
-         * For test purposes
-         */
-        @SuppressWarnings("unused")
-        private final Integer _notUnitTestPreference = Integer.valueOf(0);
-
-        public static final UnitTestPreference<String> STRING_PREF =
-            new UnitTestPreference<String>("Unit_String_Pref", "Some string");
-
-        public static final UnitTestPreference<Integer> INT_PREF =
-            new UnitTestPreference<Integer>("Unit_Int_Pref", 1234);
-
-        public static final UnitTestPreference<Long> LONG_PREF =
-            new UnitTestPreference<Long>("Unit_Long_Pref", 1234L);
-
-        public static final UnitTestPreference<Float> FLOAT_PREF =
-            new UnitTestPreference<Float>("Unit_Float_Pref", 12.34f);
-
-        public static final UnitTestPreference<Double> DOUBLE_PREF =
-            new UnitTestPreference<Double>("Unit_Double_Pref", 12.34);
-
-        public static final UnitTestPreference<Boolean> BOOLEAN_PREF =
-            new UnitTestPreference<Boolean>("Unit_Boolean_Pref", true);
-
-        /**
-         * For test purposes
-         */
-        @SuppressWarnings("unused")
-        public static final Integer STATIC_NOT_TESTPREFERENCE = new Integer(0);
-
-
-
-        /**
-         * The following two lines of a non static instance field of type <itself> enable an
-         * infinite recursion while constructing the object => stack overflow.
-         *
-         * public final UnitTestPreference<Boolean> NOT_STATIC =
-         *     new UnitTestPreference<Boolean>("NOT_STATIC", true);
-         */
-        UnitTestPreference(@Nonnull final String keyAsString, 
-                           @Nonnull final T defaultValue) {
-            super(keyAsString, defaultValue);
-        }
-
-        @Override
-        @Nonnull 
-        public String getPluginID() {
-            return "QualifierForTest";
-        }
-
-        /**
-         * {@inheritDoc}
-         */
-        @SuppressWarnings("unchecked")
-        @Override
-        @Nonnull 
-        protected Class<? extends AbstractPreference<T>> getClassType() {
-            return (Class<? extends AbstractPreference<T>>) UnitTestPreference.class;
-        }
-
-    }
-
 }

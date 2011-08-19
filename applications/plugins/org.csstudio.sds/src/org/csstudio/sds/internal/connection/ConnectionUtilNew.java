@@ -107,16 +107,16 @@ public final class ConnectionUtilNew {
 						    // TODO 30.10.2010 (hrickens) workaround until Enum data type is introduced
 						    switch (valueType) {
                                 case STRING:
-                                    cparam = new ConnectionParameters(translate(processVariable), String.class);
+                                    cparam = new ConnectionParameters(translateWithoutCharacteristic(processVariable), String.class);
                                     break;
                                 case LONG:
-                                    cparam = new ConnectionParameters(translate(processVariable), Long.class);
+                                    cparam = new ConnectionParameters(translateWithoutCharacteristic(processVariable), Long.class);
                                     break;
                                 case DOUBLE:
-                                    cparam = new ConnectionParameters(translate(processVariable), Double.class);
+                                    cparam = new ConnectionParameters(translateWithoutCharacteristic(processVariable), Double.class);
                                     break;
                                 default:
-                                    cparam = new ConnectionParameters(translate(processVariable));
+                                    cparam = new ConnectionParameters(translateWithoutCharacteristic(processVariable));
                                     break;
                             }
 
@@ -274,7 +274,7 @@ public final class ConnectionUtilNew {
 //	}
 
 	
-	static final RemoteInfo translate(final IProcessVariableAddress pv) {
+	static final RemoteInfo translateWithoutCharacteristic(final IProcessVariableAddress pv) {
 	    String cs = "";
 	    final String responsibleDalPlugId = pv.getControlSystem().getResponsibleDalPlugId();
         if((responsibleDalPlugId!=null) && !StringUtil.isBlank(responsibleDalPlugId)) {
@@ -282,10 +282,6 @@ public final class ConnectionUtilNew {
 				+ responsibleDalPlugId;
 	    }
 		final String property = pv.getProperty();
-//		The characteristic has to be hardcoded null, otherwise there are no dynamic actions.
-//		(e.g. Action Button in Display Rufbereitschaft has no actions)
-//		String characteristic = pv.getCharacteristic();
-//		return new RemoteInfo(cs, property, characteristic, null);
 		return new RemoteInfo(cs, property, null, null);
 	}
 

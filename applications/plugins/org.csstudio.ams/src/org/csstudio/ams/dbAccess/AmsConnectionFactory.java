@@ -26,9 +26,7 @@ package org.csstudio.ams.dbAccess;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
-
 import oracle.jdbc.driver.OracleDriver;
-
 import org.apache.derby.jdbc.ClientDriver;
 import org.csstudio.ams.AmsActivator;
 import org.csstudio.ams.Log;
@@ -36,68 +34,69 @@ import org.csstudio.ams.internal.AmsPreferenceKey;
 import org.csstudio.platform.util.StringUtil;
 import org.eclipse.jface.preference.IPreferenceStore;
 import org.hsqldb.jdbcDriver;
+import com.mysql.jdbc.Driver;
 
 public class AmsConnectionFactory
 {
-	public static Connection getConfigurationDB() throws ClassNotFoundException, SQLException
-	{
-		final IPreferenceStore store = AmsActivator.getDefault().getPreferenceStore();
+    public static Connection getConfigurationDB() throws SQLException {
+        
+        final IPreferenceStore store = AmsActivator.getDefault().getPreferenceStore();
+        final String dbType = store.getString(AmsPreferenceKey.P_CONFIG_DATABASE_TYPE);
+        final String dbCon = store.getString(AmsPreferenceKey.P_CONFIG_DATABASE_CONNECTION);
+        final String user = store.getString(AmsPreferenceKey.P_CONFIG_DATABASE_USER);
+        final String pwd = store.getString(AmsPreferenceKey.P_CONFIG_DATABASE_PASSWORD);
 
-		final String dbType = store.getString(AmsPreferenceKey.P_CONFIG_DATABASE_TYPE);
-		final String dbCon = store.getString(AmsPreferenceKey.P_CONFIG_DATABASE_CONNECTION);
-		final String user = store.getString(AmsPreferenceKey.P_CONFIG_DATABASE_USER);
-		final String pwd = store.getString(AmsPreferenceKey.P_CONFIG_DATABASE_PASSWORD);
-
-        //DriverManager.setLogWriter(new java.io.PrintWriter(System.out));
-        if(dbType.toUpperCase().indexOf("ORACLE") > -1)
-        {
+        if(dbType.toUpperCase().indexOf("ORACLE") > -1) {
             DriverManager.registerDriver(new OracleDriver());
-        }
-        else if(dbType.toUpperCase().indexOf("HSQL") > -1)
-        {
+        } else if(dbType.toUpperCase().indexOf("HSQL") > -1) {
             DriverManager.registerDriver(new jdbcDriver());
+        } else if(dbType.toUpperCase().indexOf("MYSQL") > -1) {
+            DriverManager.registerDriver(new Driver());
         }
 
         Log.log(Log.INFO, "try getConfigurationDB for DB " + dbType);
-		Log.log(Log.INFO, "try getConfigurationDB to " + dbCon);
-		Log.log(Log.INFO, "try getConfigurationDB user " + user);
+        Log.log(Log.INFO, "try getConfigurationDB to " + dbCon);
+        Log.log(Log.INFO, "try getConfigurationDB user " + user);
 
-		return DriverManager.getConnection(dbCon, user, pwd);
-	}
+        return DriverManager.getConnection(dbCon, user, pwd);
+    }
 
-	public static Connection getApplicationDB() throws SQLException
-	{
-		//DriverManager.setLogWriter(new java.io.PrintWriter(System.out));
-		DriverManager.registerDriver(new ClientDriver());
+    public static Connection getApplicationDB() throws SQLException {
+        
+        final IPreferenceStore store = AmsActivator.getDefault().getPreferenceStore();
+        String dbType = store.getString(AmsPreferenceKey.P_APP_DATABASE_TYPE);
+        if(StringUtil.isBlank(dbType)) {
+            dbType = "DERBY";
+        }
+        
+        if(dbType.toUpperCase().indexOf("DERBY") > -1) {
+            DriverManager.registerDriver(new ClientDriver());
+        } else if(dbType.toUpperCase().indexOf("MYSQL") > -1) {
+            DriverManager.registerDriver(new Driver());
+        }
 
-		final IPreferenceStore store = AmsActivator.getDefault().getPreferenceStore();
-
-		String user = store.getString(AmsPreferenceKey.P_APP_DATABASE_USER);
-		if (StringUtil.isBlank(user)) {
+        String user = store.getString(AmsPreferenceKey.P_APP_DATABASE_USER);
+        if (StringUtil.isBlank(user)) {
             user = null;
         }
 
-		String pwd = store.getString(AmsPreferenceKey.P_APP_DATABASE_PASSWORD);
-		if (StringUtil.isBlank(pwd)) {
+        String pwd = store.getString(AmsPreferenceKey.P_APP_DATABASE_PASSWORD);
+        if (StringUtil.isBlank(pwd)) {
             pwd = null;
         }
 
-		return DriverManager.getConnection(store.getString(AmsPreferenceKey.P_APP_DATABASE_CONNECTION),
-				user,
-				pwd);
-	}
+        return DriverManager.getConnection(store.getString(AmsPreferenceKey.P_APP_DATABASE_CONNECTION),
+                user,
+                pwd);
+    }
 
-	public static void closeConnection(final Connection conDb)
-	{
-		try
-		{
-			if (conDb != null) {
+    public static void closeConnection(final Connection conDb) {
+        try {
+            if (conDb != null) {
                 conDb.close();
             }
-		}
-		catch(final Exception ex)
-		{
-			Log.log(Log.WARN, ex);
-		}
-	}
+        } catch(final Exception ex) {
+            Log.log(Log.WARN, ex);
+        }
+    }
 }

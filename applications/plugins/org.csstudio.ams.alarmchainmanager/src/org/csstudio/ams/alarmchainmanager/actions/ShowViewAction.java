@@ -1,3 +1,4 @@
+
 /* 
  * Copyright (c) 2008 Stiftung Deutsches Elektronen-Synchrotron, 
  * Member of the Helmholtz Association, (DESY), HAMBURG, GERMANY.
@@ -35,7 +36,7 @@ import org.eclipse.ui.IWorkbenchWindowActionDelegate;
 import org.eclipse.ui.PlatformUI;
 
 /**
- * @author Markus Möller
+ * @author Markus Moeller
  *
  */
 public class ShowViewAction implements IWorkbenchWindowActionDelegate
@@ -44,35 +45,30 @@ public class ShowViewAction implements IWorkbenchWindowActionDelegate
     /* (non-Javadoc)
      * @see org.eclipse.ui.IWorkbenchWindowActionDelegate#dispose()
      */
-    public void dispose()
-    {
+    @Override
+    public void dispose() {
         // TODO Auto-generated method stub
-
     }
 
     /* (non-Javadoc)
      * @see org.eclipse.ui.IWorkbenchWindowActionDelegate#init(org.eclipse.ui.IWorkbenchWindow)
      */
-    public void init(IWorkbenchWindow window)
-    {
+    @Override
+    public void init(IWorkbenchWindow window) {
         // TODO Auto-generated method stub
-
     }
 
     /* (non-Javadoc)
      * @see org.eclipse.ui.IActionDelegate#run(org.eclipse.jface.action.IAction)
      */
-    public void run(IAction action)
-    {
-        try
-        {
+    @Override
+    public void run(IAction action) {
+        try {
             IWorkbench workbench = PlatformUI.getWorkbench();
             IWorkbenchWindow window = workbench.getActiveWorkbenchWindow();
             IWorkbenchPage page = window.getActivePage();
             page.showView(AlarmChainManagerView.ID);
-        }
-        catch (Exception e)
-        {
+        } catch (Exception e) {
             e.printStackTrace();
         }
     }
@@ -80,9 +76,8 @@ public class ShowViewAction implements IWorkbenchWindowActionDelegate
     /* (non-Javadoc)
      * @see org.eclipse.ui.IActionDelegate#selectionChanged(org.eclipse.jface.action.IAction, org.eclipse.jface.viewers.ISelection)
      */
-    public void selectionChanged(IAction action, ISelection selection)
-    {
+    @Override
+    public void selectionChanged(IAction action, ISelection selection) {
         // TODO Auto-generated method stub
-
     }
 }

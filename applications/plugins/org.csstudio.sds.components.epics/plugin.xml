@@ -97,12 +97,6 @@
             widgetTypeId="org.csstudio.sds.components.SimpleSlider">
       </behavior>
       <behavior
-            class="org.csstudio.sds.behavior.desy.TextinputAlarmBehavior"
-            description="DESY Alarm+Con Textinput"
-            id="behavior.desy.textinput.alarmdefault"
-            widgetTypeId="org.csstudio.sds.components.Textinput">
-      </behavior>
-      <behavior
             class="org.csstudio.sds.behavior.desy.TextinputConnectionBehavior"
             description="DESY Connection Textinput"
             id="behavior.desy.textinput.connectiondefault"

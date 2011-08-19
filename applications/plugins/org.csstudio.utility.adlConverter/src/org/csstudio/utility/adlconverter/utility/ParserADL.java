@@ -27,7 +27,8 @@ import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
 
-import org.csstudio.platform.logging.CentralLogger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * 
@@ -41,10 +42,14 @@ import org.csstudio.platform.logging.CentralLogger;
  */
 public final class ParserADL {
 
+    private static final Logger LOG = LoggerFactory.getLogger(ParserADL.class);
+    
     /**
      * Default Constructor.
      */
-    private ParserADL(){}
+    private ParserADL(){
+        // Default Constructor.
+    }
     
     /**
      * Main method of class ParserADL.<br/>
@@ -105,16 +110,16 @@ public final class ParserADL {
                 }
             }
         } catch (final FileNotFoundException e) {
-            CentralLogger.getInstance().error(ParserADL.class, e);
+            LOG.error("File not found: ", e);
         } catch (final IOException e) {
-            CentralLogger.getInstance().error(ParserADL.class, e);
+            LOG.error("File read error: ", e);
         } finally{
             try {
                 if(buffRead!=null){
                     buffRead.close();
                 }
             } catch (final IOException e) {
-                CentralLogger.getInstance().error(ParserADL.class,e);
+                LOG.error("file close error: ",e);
             }
         }
         return root;

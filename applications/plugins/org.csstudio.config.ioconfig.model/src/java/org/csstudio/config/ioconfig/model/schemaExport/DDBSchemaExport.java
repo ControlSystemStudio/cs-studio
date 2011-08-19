@@ -60,7 +60,6 @@ import org.hibernate.tool.hbm2ddl.SchemaExport;
  * @since 17.05.2011
  */
 public final class DDBSchemaExport {
-
     
     /**
      * Constructor.
@@ -70,19 +69,11 @@ public final class DDBSchemaExport {
     }
     
     /**
-     * @param args
-     */
-    public static void main(@Nullable String[] args) {
-        AnnotationConfiguration config = buildConfig();
-        new SchemaExport(config).setOutputFile("DDB_DDL.sql").create(true, false);
-    }
-
-    /**
      * @return
      */
     @Nonnull
     private static AnnotationConfiguration buildConfig() {
-        ArrayList<Class<?>> classes = new ArrayList<Class<?>>();
+        final ArrayList<Class<?>> classes = new ArrayList<Class<?>>();
         classes.add(NodeImageDBO.class);
         classes.add(ChannelDBO.class);
         classes.add(ChannelStructureDBO.class);
@@ -101,27 +92,36 @@ public final class DDBSchemaExport {
         classes.add(SensorsDBO.class);
         classes.add(PV2IONameMatcherModelDBO.class);
         
-        AnnotationConfiguration cfg = new AnnotationConfiguration();
-        for (Class<?> clazz : classes) {
+        final AnnotationConfiguration cfg = new AnnotationConfiguration();
+        for (final Class<?> clazz : classes) {
             cfg.addAnnotatedClass(clazz);
         }
         cfg.setProperty("org.hibernate.cfg.Environment.MAX_FETCH_DEPTH", "0")
-            .setProperty("hibernate.connection.driver_class","oracle.jdbc.driver.OracleDriver")
-            .setProperty("hibernate.dialect", "org.hibernate.dialect.Oracle10gDialect")
-            .setProperty("hibernate.order_updates", "false")
-            .setProperty("hibernate.connection.url","jdbc:oracle:thin:@localhost:1521:XE")
-            .setProperty("hibernate.connection.username","KRYKMAN")
-            .setProperty("hibernate.connection.password","KRYKMAN")
-            .setProperty("hibernate.show_sql", "false")
-            .setProperty("transaction.factory_class",
-                        "org.hibernate.transaction.JDBCTransactionFactory")
-            .setProperty("hibernate.cache.provider_class",
-                        "org.hibernate.cache.HashtableCacheProvider")
-            .setProperty("hibernate.cache.use_minimal_puts", "true")
-            .setProperty("hibernate.cache.use_query_cache", "true")
-            .setProperty("hibernate.cache.use_second_level_cache", "true")
-            .setProperty("hibernate.hbm2ddl.auto", "update");
+        .setProperty("hibernate.connection.driver_class","oracle.jdbc.driver.OracleDriver")
+        .setProperty("hibernate.dialect", "org.hibernate.dialect.Oracle10gDialect")
+        .setProperty("hibernate.order_updates", "false")
+        .setProperty("hibernate.connection.url","jdbc:oracle:thin:@localhost:1521:XE")
+        .setProperty("hibernate.connection.username","KRYKMAN")
+        .setProperty("hibernate.connection.password","KRYKMAN")
+        .setProperty("hibernate.show_sql", "false")
+        .setProperty("transaction.factory_class",
+        "org.hibernate.transaction.JDBCTransactionFactory")
+        .setProperty("hibernate.cache.provider_class",
+        "org.hibernate.cache.HashtableCacheProvider")
+        .setProperty("hibernate.cache.use_minimal_puts", "true")
+        .setProperty("hibernate.cache.use_query_cache", "true")
+        .setProperty("hibernate.cache.use_second_level_cache", "true")
+        .setProperty("hibernate.hbm2ddl.auto", "update");
         return cfg;
     }
+    
+    /**
+     * @param args
+     */
+    public static void main(@Nullable final String[] args) {
+        final AnnotationConfiguration config = buildConfig();
+        new SchemaExport(config).setOutputFile("DDB_DDL.sql").create(true, false);
+    }
+    
     
 }

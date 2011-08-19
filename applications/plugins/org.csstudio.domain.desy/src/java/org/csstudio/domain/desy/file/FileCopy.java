@@ -42,6 +42,10 @@ import javax.annotation.Nonnull;
 public final class FileCopy {
 
 
+    private FileCopy() {
+        // Don't instantiate
+    }
+
     public static void copy(@Nonnull final File source,
                             @Nonnull final File destination) throws IOException {
         if (source.isDirectory()) {
@@ -113,7 +117,4 @@ public final class FileCopy {
         }
     }
 
-    private FileCopy() {
-        // Don't instantiate
-    }
 }

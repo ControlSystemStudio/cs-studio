@@ -24,18 +24,8 @@
 package org.csstudio.ams.connector.sms;
 
 import java.net.InetAddress;
-import java.util.Hashtable;
-
-import javax.jms.Connection;
-import javax.jms.ConnectionFactory;
 import javax.jms.JMSException;
 import javax.jms.MapMessage;
-import javax.jms.MessageProducer;
-import javax.jms.Session;
-import javax.naming.Context;
-import javax.naming.InitialContext;
-import javax.naming.NamingException;
-
 import org.csstudio.ams.AmsActivator;
 import org.csstudio.ams.AmsConstants;
 import org.csstudio.ams.Log;
@@ -43,7 +33,7 @@ import org.csstudio.ams.SynchObject;
 import org.csstudio.ams.Utils;
 import org.csstudio.ams.connector.sms.internal.SmsConnectorPreferenceKey;
 import org.csstudio.ams.internal.AmsPreferenceKey;
-import org.csstudio.platform.logging.CentralLogger;
+import org.csstudio.platform.utility.jms.JmsSimpleProducer;
 import org.eclipse.core.runtime.Platform;
 import org.eclipse.core.runtime.preferences.IPreferencesService;
 import org.eclipse.equinox.app.IApplication;
@@ -52,8 +42,9 @@ import org.eclipse.jface.preference.IPreferenceStore;
 import org.remotercp.common.tracker.IGenericServiceListener;
 import org.remotercp.service.connection.session.ISessionService;
 
-public class SmsConnectorStart implements IApplication, IGenericServiceListener<ISessionService> 
-{
+public class SmsConnectorStart implements IApplication,
+                                          IGenericServiceListener<ISessionService> {
+    
     public final static int STAT_INIT = 0;
     public final static int STAT_OK = 1;
     public final static int STAT_ERR_MODEM = 2;
@@ -72,25 +63,24 @@ public class SmsConnectorStart implements IApplication, IGenericServiceListener<
 
     private static SmsConnectorStart _me;
 
-    private Context extContext = null;
-    private ConnectionFactory extFactory = null;
-    private Connection extConnection = null;
-    private Session extSession = null;
+    private ISessionService xmppService;
     
-    private MessageProducer extPublisherStatusChange = null;
+    private JmsSimpleProducer extPublisherStatusChange;
     
-    private SynchObject sObj = null;
+    private SynchObject sObj;
     private String managementPassword; 
     private int lastStatus = 0;
     
-    private boolean bStop = false;
-    private boolean restart = false;
+    private boolean bStop;
+    private boolean restart;
     
-    public SmsConnectorStart()
-    {
+    public SmsConnectorStart() {
+        
         _me = this;
         sObj = new SynchObject(STAT_INIT, System.currentTimeMillis());
         bStop = false;
+        restart = false;
+        xmppService = null;
         
         IPreferencesService pref = Platform.getPreferencesService();
         managementPassword = pref.getString(AmsActivator.PLUGIN_ID, AmsPreferenceKey.P_AMS_MANAGEMENT_PASSWORD, "", null);
@@ -99,8 +89,9 @@ public class SmsConnectorStart implements IApplication, IGenericServiceListener<
         }
     }
 
-    public Object start(IApplicationContext context) throws Exception
-    {
+    @Override
+    public Object start(IApplicationContext context) throws Exception {
+        
         SmsConnectorWork scw = null;
         boolean bInitedJms = false;
 
@@ -109,21 +100,21 @@ public class SmsConnectorStart implements IApplication, IGenericServiceListener<
         
         SmsConnectorPreferenceKey.showPreferences();
 
+        SmsConnectorPlugin.getDefault().addSessionServiceListener(this);
+        
         // use synchronized method
         lastStatus = getStatus();
 
-        while(bStop == false)
-        {
-            try
-            {
-                if (scw == null)
-                {
+        while(bStop == false) {
+            
+            try {
+                
+                if (scw == null) {
                     scw = new SmsConnectorWork(this);
                     scw.start();
                 }
                 
-                if (!bInitedJms)
-                {
+                if (!bInitedJms) {
                     bInitedJms = initJms();
                 }
         
@@ -136,27 +127,25 @@ public class SmsConnectorStart implements IApplication, IGenericServiceListener<
                 // If the current status signals a modem error
                 // THEN
                 // Do a automatic restart
-                if(!sObj.hasStatusSet(actSynch, 180, STAT_ERR_UNDEFINED) || sObj.getSynchStatus() == STAT_ERR_MODEM)
-                {
+                if(!sObj.hasStatusSet(actSynch, 180, STAT_ERR_UNDEFINED)
+                        || sObj.getSynchStatus() == STAT_ERR_MODEM) {
+                    
                     // every 2 minutes if blocked
                     Log.log(this, Log.FATAL, "TIMEOUT: status has not changed the last 3 minutes.");
                     
                     scw.stopWorking();
                     
-                    try
-                    {
+                    try {
                         scw.join(WAITFORTHREAD);
+                    } catch(InterruptedException ie) {
+                        // Can be ignored
                     }
-                    catch(InterruptedException ie) { }
 
-                    if(scw.stoppedClean())
-                    {
+                    if(scw.stoppedClean()) {
                         Log.log(this, Log.FATAL, "ERROR: Thread stopped clean.");
                         
                         scw = null;
-                    }
-                    else
-                    {
+                    } else {
                         Log.log(this, Log.FATAL, "ERROR: Thread did NOT stop clean.");
                         scw.closeJms();
                         scw = null;
@@ -170,10 +159,11 @@ public class SmsConnectorStart implements IApplication, IGenericServiceListener<
                 }
                 
                 String statustext = "unknown";
-                if(actSynch.getStatus() != lastStatus) // if status value changed
-                {
-                    switch(actSynch.getStatus())
-                    {
+                // if status value changed
+                if(actSynch.getStatus() != lastStatus) {
+                    
+                    switch(actSynch.getStatus()) {
+                        
                         case STAT_INIT:
                             statustext = "init";
                             break;
@@ -204,44 +194,35 @@ public class SmsConnectorStart implements IApplication, IGenericServiceListener<
                     
                     lastStatus = actSynch.getStatus();
                     
-                    if(bInitedJms)
-                    {
-                        if(!sendStatusChange(actSynch.getStatus(), statustext, actSynch.getTime()))
-                        {
+                    if(bInitedJms) {
+                        if(!sendStatusChange(actSynch.getStatus(), statustext, actSynch.getTime())) {
                             closeJms();
                             bInitedJms = false;
                         }
                     }
                 }
-            }
-            catch(Exception e)
-            {
+            } catch(Exception e) {
                 Log.log(this, Log.FATAL, e);
-                
                 closeJms();
                 bInitedJms = false;
             }
         }
 
-        if(scw != null)
-        {
+        if(scw != null) {
+            
             // Clean stop of the working thread
             scw.stopWorking();
             
-            try
-            {
+            try {
                 scw.join(WAITFORTHREAD);
+            } catch(InterruptedException ie) {
+                // Can be ignored
             }
-            catch(InterruptedException ie) { }
     
-            if(scw.stoppedClean())
-            {
+            if(scw.stoppedClean()) {
                 Log.log(this, Log.FATAL, "Restart/Exit: Thread stopped clean.");
-                
                 scw = null;
-            }
-            else
-            {
+            } else {
                 Log.log(this, Log.FATAL, "Restart/Exit: Thread did NOT stop clean.");
                 scw.closeModem();
                 scw.closeJms();
@@ -250,31 +231,35 @@ public class SmsConnectorStart implements IApplication, IGenericServiceListener<
             }
         }
         
+        if (xmppService != null) {
+            xmppService.disconnect();
+        }
+        
         Log.log(this, Log.INFO, "Leaving start()");
         
-        if(restart)
-            return EXIT_RESTART;
-        else
-            return EXIT_OK;
+        Integer exitCode = IApplication.EXIT_OK;
+        if(restart) {
+            exitCode = IApplication.EXIT_RESTART;
+        }
+        
+        return exitCode;
     }
 
     
-    public void stop()
-    {
+    @Override
+    public void stop() {
         Log.log(Log.INFO, "method: stop()");
         return;
     }
 
-    public static SmsConnectorStart getInstance()
-    {
+    public static SmsConnectorStart getInstance() {
         return _me;
     }
     
     /**
      * Sets the restart flag to force a restart.
      */
-    public synchronized void setRestart()
-    {
+    public synchronized void setRestart() {
         restart = true;
         bStop = true;
     }
@@ -282,148 +267,104 @@ public class SmsConnectorStart implements IApplication, IGenericServiceListener<
     /**
      * Sets the shutdown flag to force a shutdown.
      */
-    public synchronized void setShutdown()
-    {
+    public synchronized void setShutdown() {
         restart = false;
         bStop = true;
     }
 
     /**
      * 
-     * @return
+     * @return Password for remote management
      */
-    public synchronized String getPassword()
-    {
+    public synchronized String getPassword() {
         return managementPassword;
     }
 
-    public int getStatus()
-    {
+    public int getStatus() {
         return sObj.getSynchStatus();
     }
     
-    public void setStatus(int status)
-    {
+    public void setStatus(int status) {
         sObj.setSynchStatus(status);                                            // set always, to update time
     }
     
-    private boolean initJms()
-    {
-        try
-        {
+    private boolean initJms() {
+        
+        try {
+            
             IPreferenceStore storeAct = AmsActivator.getDefault().getPreferenceStore();
-            Hashtable<String, String> properties = new Hashtable<String, String>();
-            properties.put(Context.INITIAL_CONTEXT_FACTORY, 
-                    storeAct.getString(org.csstudio.ams.internal.AmsPreferenceKey.P_JMS_EXTERN_CONNECTION_FACTORY_CLASS));
-            properties.put(Context.PROVIDER_URL, 
-                    storeAct.getString(org.csstudio.ams.internal.AmsPreferenceKey.P_JMS_EXTERN_SENDER_PROVIDER_URL));
-            extContext = new InitialContext(properties);
+            String factoryClass = storeAct.getString(AmsPreferenceKey.P_JMS_EXTERN_CONNECTION_FACTORY_CLASS);
+            String url = storeAct.getString(AmsPreferenceKey.P_JMS_EXTERN_SENDER_PROVIDER_URL);
+            String topic = storeAct.getString(AmsPreferenceKey.P_JMS_EXT_TOPIC_STATUSCHANGE);
             
-            extFactory = (ConnectionFactory) extContext.lookup(
-                    storeAct.getString(org.csstudio.ams.internal.AmsPreferenceKey.P_JMS_EXTERN_CONNECTION_FACTORY));
-            extConnection = extFactory.createConnection();
-            
-            // ADDED BY: Markus M�ller, 25.05.2007
-            extConnection.setClientID("SmsConnectorStartSenderExternal");
-            
-            extSession = extConnection.createSession(false, Session.CLIENT_ACKNOWLEDGE);
-            
-            // CHANGED BY: Markus M�ller, 25.05.2007
-            /*
-            extPublisherStatusChange = extSession.createProducer((Topic)extContext.lookup(
-                    storeAct.getString(org.csstudio.ams.internal.SampleService.P_JMS_EXT_TOPIC_STATUSCHANGE)));
-            */
-            
-            extPublisherStatusChange = extSession.createProducer(extSession.createTopic(
-                    storeAct.getString(org.csstudio.ams.internal.AmsPreferenceKey.P_JMS_EXT_TOPIC_STATUSCHANGE)));
-            if (extPublisherStatusChange == null)
-            {
+            extPublisherStatusChange = new JmsSimpleProducer("SmsConnectorStartSenderExternal", url, factoryClass, topic);
+            if (extPublisherStatusChange.isConnected() == false) {
                 Log.log(this, Log.FATAL, "could not create extPublisherStatusChange");
                 return false;
             }
-
-            extConnection.start();
-
-            return true;
+        } catch(Exception e) {
+            Log.log(this, Log.FATAL, "Could not init external Jms: " + e.getMessage());
         }
-        catch(Exception e)
-        {
-            Log.log(this, Log.FATAL, "could not init external Jms", e);
-        }
-        return false;
+        
+        return extPublisherStatusChange.isConnected();
     }
 
-    private void closeJms()
-    {
-        Log.log(this, Log.INFO, "exiting external jms communication");
+    private void closeJms() {
+        
+        Log.log(this, Log.INFO, "Exiting external JMS communication");
         
         if (extPublisherStatusChange != null){
-            try{extPublisherStatusChange.close();extPublisherStatusChange=null;}
-        catch (JMSException e){Log.log(this, Log.WARN, e);}}    
-        if (extSession != null){try{extSession.close();extSession=null;}
-        catch (JMSException e){Log.log(this, Log.WARN, e);}}
-        if (extConnection != null){try{extConnection.stop();}
-        catch (JMSException e){Log.log(this, Log.WARN, e);}}
-        if (extConnection != null){try{extConnection.close();extConnection=null;}
-        catch (JMSException e){Log.log(this, Log.WARN, e);}}
-        if (extContext != null){try{extContext.close();extContext=null;}
-        catch (NamingException e){Log.log(this, Log.WARN, e);}}
-
-        Log.log(this, Log.INFO, "jms external communication closed");
+            extPublisherStatusChange.closeAll();
+        }
+        
+        Log.log(this, Log.INFO, "JMS external communication closed");
     }
     
-    private boolean sendStatusChange(int status, String strStat, long lSetTime) throws Exception
-    {
-        MapMessage mapMsg = null;
-        try
-        {
-            mapMsg = extSession.createMapMessage();
-        }
-        catch(Exception e)
-        {
-            Log.log(this, Log.FATAL, "could not createMapMessage", e);
-        }
-        if (mapMsg == null)
-            return false;
+    private boolean sendStatusChange(int status, String strStat, long lSetTime) throws Exception {
+        
+        boolean success = false;
+        
+        try {
+            
+            MapMessage mapMsg = extPublisherStatusChange.createMapMessage();
 
-        mapMsg.setString(AmsConstants.MSGPROP_CHECK_TYPE, "PStatus");
-        mapMsg.setString(AmsConstants.MSGPROP_CHECK_PURL, InetAddress.getLocalHost().getHostAddress());
-        mapMsg.setString(AmsConstants.MSGPROP_CHECK_PLUGINID, SmsConnectorPlugin.PLUGIN_ID);
-        mapMsg.setString(AmsConstants.MSGPROP_CHECK_STATUSTIME, Utils.longTimeToUTCString(lSetTime));
-        mapMsg.setString(AmsConstants.MSGPROP_CHECK_STATUS, String.valueOf(status));
-        mapMsg.setString(AmsConstants.MSGPROP_CHECK_TEXT, strStat);
+            mapMsg.setString(AmsConstants.MSGPROP_CHECK_TYPE, "PStatus");
+            mapMsg.setString(AmsConstants.MSGPROP_CHECK_PURL, InetAddress.getLocalHost().getHostAddress());
+            mapMsg.setString(AmsConstants.MSGPROP_CHECK_PLUGINID, SmsConnectorPlugin.PLUGIN_ID);
+            mapMsg.setString(AmsConstants.MSGPROP_CHECK_STATUSTIME, Utils.longTimeToUTCString(lSetTime));
+            mapMsg.setString(AmsConstants.MSGPROP_CHECK_STATUS, String.valueOf(status));
+            mapMsg.setString(AmsConstants.MSGPROP_CHECK_TEXT, strStat);
 
-        Log.log(this, Log.DEBUG, "StatusChange - start external jms send. MessageProperties= " + Utils.getMessageString(mapMsg));
+            Log.log(this, Log.DEBUG, "StatusChange - start external jms send. MessageProperties= " + Utils.getMessageString(mapMsg));
 
-        try
-        {
-            extPublisherStatusChange.send(mapMsg);
-        }
-        catch(Exception e)
-        {
-            Log.log(this, Log.FATAL, "could not send to external jms", e);
-            return false;
+            success = extPublisherStatusChange.sendMessage(mapMsg);
+            Log.log(this, Log.DEBUG, "Send external jms message done");
+            
+        } catch (JMSException jmse) {
+            Log.log(this, Log.FATAL, "Could not create or send MapMessage: " + jmse.getMessage());
         }
 
-        Log.log(this, Log.DEBUG, "send external jms message done");
-
-        return true;
+        return success;
     }
     
+    @Override
     public void bindService(ISessionService sessionService) {
-    	IPreferencesService pref = Platform.getPreferencesService();
+    	
+        IPreferencesService pref = Platform.getPreferencesService();
     	String xmppServer = pref.getString(SmsConnectorPlugin.PLUGIN_ID, SmsConnectorPreferenceKey.P_XMPP_SERVER, "krynfs.desy.de", null);
         String xmppUser = pref.getString(SmsConnectorPlugin.PLUGIN_ID, SmsConnectorPreferenceKey.P_XMPP_USER, "anonymous", null);
         String xmppPassword = pref.getString(SmsConnectorPlugin.PLUGIN_ID, SmsConnectorPreferenceKey.P_XMPP_PASSWORD, "anonymous", null);
     	
     	try {
 			sessionService.connect(xmppUser, xmppPassword, xmppServer);
+			xmppService = sessionService;
 		} catch (Exception e) {
-			CentralLogger.getInstance().warn(this,
-					"XMPP connection is not available, " + e.toString());
+			Log.log(this, Log.WARN, "XXMPP connection is not available: " + e.getMessage());
+			xmppService = null;
 		}
     }
     
+    @Override
     public void unbindService(ISessionService service) {
     	service.disconnect();
     }

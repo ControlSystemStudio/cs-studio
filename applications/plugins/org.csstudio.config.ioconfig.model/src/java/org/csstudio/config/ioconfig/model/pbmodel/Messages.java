@@ -46,10 +46,10 @@ public final class Messages {
     }
 
     @CheckForNull
-    public static String getString(@Nonnull String key) {
+    public static String getString(@Nonnull final String key) {
         try {
             return RESOURCE_BUNDLE.getString(key);
-        } catch (MissingResourceException e) {
+        } catch (final MissingResourceException e) {
             return '!' + key + '!';
         }
     }

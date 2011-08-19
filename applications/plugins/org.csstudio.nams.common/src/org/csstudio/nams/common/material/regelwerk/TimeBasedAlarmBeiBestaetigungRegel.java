@@ -1,3 +1,4 @@
+
 package org.csstudio.nams.common.material.regelwerk;
 
 import org.csstudio.nams.common.fachwert.Millisekunden;
@@ -26,7 +27,8 @@ public class TimeBasedAlarmBeiBestaetigungRegel extends
 		super(ausloesungsregel, bestaetigungsregel, timeOut);
 	}
 
-	public void pruefeNachrichtAufBestaetigungsUndAufhebungsNachricht(
+	@Override
+    public void pruefeNachrichtAufBestaetigungsUndAufhebungsNachricht(
 			final AlarmNachricht nachricht, final Pruefliste bisherigesErgebnis) {
 		if (!bisherigesErgebnis.gibErgebnisFuerRegel(this).istEntschieden()) {
 			this.bestaetigungsregel.pruefeNachrichtErstmalig(nachricht,
@@ -42,7 +44,8 @@ public class TimeBasedAlarmBeiBestaetigungRegel extends
 		}
 	}
 
-	public Millisekunden pruefeNachrichtAufTimeOuts(
+	@Override
+    public Millisekunden pruefeNachrichtAufTimeOuts(
 			final Pruefliste bisherigesErgebnis,
 			final Millisekunden verstricheneZeit) {
 		if (!bisherigesErgebnis.gibErgebnisFuerRegel(this).istEntschieden()) {

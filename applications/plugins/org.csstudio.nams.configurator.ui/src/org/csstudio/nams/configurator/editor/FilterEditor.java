@@ -1,3 +1,4 @@
+
 package org.csstudio.nams.configurator.editor;
 
 import java.util.Iterator;
@@ -78,23 +79,23 @@ public class FilterEditor extends AbstractEditor<FilterBean> {
 
 	private class NewJunctorAction extends Action implements
 			ISelectionChangedListener {
-		private JunctorConditionForFilterTreeBean selectedBean;
-		private final JunctorConditionType type;
+		private JunctorConditionForFilterTreeBean _selectedBean;
+		private final JunctorConditionType _type;
 
 		private NewJunctorAction(final JunctorConditionType type) {
-			this.type = type;
+			this._type = type;
 		}
 
 		@Override
 		public String getText() {
-			return Messages.FilterEditor_add + this.type.name();
+			return Messages.FilterEditor_add + this._type.name();
 		}
 
 		@Override
 		public void run() {
 			final JunctorConditionForFilterTreeBean node = new JunctorConditionForFilterTreeBean();
-			node.setJunctorConditionType(this.type);
-			final boolean added = this.selectedBean.addOperand(node);
+			node.setJunctorConditionType(this._type);
+			final boolean added = this._selectedBean.addOperand(node);
 			FilterEditor.this.filterConditionsTreeViewer.refresh();
 			if (added) {
 				FilterEditor.this.filterConditionsTreeViewer.expandToLevel(
@@ -105,18 +106,19 @@ public class FilterEditor extends AbstractEditor<FilterBean> {
 			}
 		}
 
-		public void selectionChanged(final SelectionChangedEvent event) {
+		@Override
+        public void selectionChanged(final SelectionChangedEvent event) {
 			final IStructuredSelection selection = (IStructuredSelection) event
 					.getSelection();
 			final Object element = selection.getFirstElement();
-			this.selectedBean = null;
+			this._selectedBean = null;
 			if (element instanceof JunctorConditionForFilterTreeBean) {
-				this.selectedBean = (JunctorConditionForFilterTreeBean) element;
+				this._selectedBean = (JunctorConditionForFilterTreeBean) element;
 				this.setEnabled(true);
 			} else if (element instanceof NotConditionForFilterTreeBean) {
 				final NotConditionForFilterTreeBean notBean = (NotConditionForFilterTreeBean) element;
 				if (notBean.getFilterbedingungBean() instanceof JunctorConditionForFilterTreeBean) {
-					this.selectedBean = (JunctorConditionForFilterTreeBean) notBean
+					this._selectedBean = (JunctorConditionForFilterTreeBean) notBean
 							.getFilterbedingungBean();
 					this.setEnabled(true);
 				} else {
@@ -173,7 +175,8 @@ public class FilterEditor extends AbstractEditor<FilterBean> {
 
 		}
 
-		public void selectionChanged(final SelectionChangedEvent event) {
+		@Override
+        public void selectionChanged(final SelectionChangedEvent event) {
 			final IStructuredSelection selection = (IStructuredSelection) event
 					.getSelection();
 			final Object element = selection.getFirstElement();
@@ -247,13 +250,18 @@ public class FilterEditor extends AbstractEditor<FilterBean> {
 				Messages.FilterEditor_add_template, true, 2);
 		addTemplateButton.addMouseListener(new MouseListener() {
 
-			public void mouseDoubleClick(final MouseEvent e) {
+			@Override
+            public void mouseDoubleClick(final MouseEvent e) {
+			    // Not used yet
 			}
 
-			public void mouseDown(final MouseEvent e) {
+			@Override
+            public void mouseDown(final MouseEvent e) {
+			    // Not used yet
 			}
 
-			public void mouseUp(final MouseEvent e) {
+			@Override
+            public void mouseUp(final MouseEvent e) {
 				FilterEditor.this._defaultMessageTextEntry
 						.append(templateContent[templateComboViewer.getCombo()
 								.getSelectionIndex()]);
@@ -315,7 +323,8 @@ public class FilterEditor extends AbstractEditor<FilterBean> {
 
 				filterTree.addMouseListener(new MouseListener() {
 
-					public void mouseDoubleClick(final MouseEvent e) {
+					@Override
+                    public void mouseDoubleClick(final MouseEvent e) {
 						try {
 							ConfigurationEditorInput editorInput;
 							final IStructuredSelection selection = (IStructuredSelection) FilterEditor.this.filterConditionsTreeViewer
@@ -349,9 +358,11 @@ public class FilterEditor extends AbstractEditor<FilterBean> {
 					}
 
 					public void mouseDown(final MouseEvent e) {
+					    // Not used yet
 					}
 
 					public void mouseUp(final MouseEvent e) {
+					    // Not used yet
 					}
 				});
 
@@ -363,10 +374,13 @@ public class FilterEditor extends AbstractEditor<FilterBean> {
 			button.setText(Messages.FilterEditor_remove_filtercondition);
 			button.addMouseListener(new MouseListener() {
 
-				public void mouseDoubleClick(final MouseEvent e) {
+				@Override
+                public void mouseDoubleClick(final MouseEvent e) {
+				    // Not used yet
 				}
 
-				@SuppressWarnings("unchecked") //$NON-NLS-1$
+				@Override
+                @SuppressWarnings("unchecked") //$NON-NLS-1$
 				public void mouseDown(final MouseEvent e) {
 					final TreeSelection selection = (TreeSelection) FilterEditor.this.filterConditionsTreeViewer
 							.getSelection();
@@ -394,7 +408,9 @@ public class FilterEditor extends AbstractEditor<FilterBean> {
 
 				}
 
-				public void mouseUp(final MouseEvent e) {
+				@Override
+                public void mouseUp(final MouseEvent e) {
+				    // Not used yet
 				}
 			});
 		}
@@ -441,6 +457,7 @@ public class FilterEditor extends AbstractEditor<FilterBean> {
 
 	@Override
 	protected void doInit(final IEditorSite site, final IEditorInput input) {
+	    // Not used yet
 	}
 
 	@Override
@@ -660,10 +677,14 @@ public class FilterEditor extends AbstractEditor<FilterBean> {
 		Button deleteButton = new Button(buttonComposite, SWT.PUSH);
 		deleteButton.setText(Messages.FilterEditor_remove_action);
 		deleteButton.addMouseListener(new MouseListener() {
-			public void mouseDoubleClick(MouseEvent e) {
+			
+		    @Override
+            public void mouseDoubleClick(MouseEvent e) {
+		        // Not used yet
 			}
 
-			public void mouseDown(MouseEvent e) {
+			@Override
+            public void mouseDown(MouseEvent e) {
 				FilterBean bean = FilterEditor.this
 						.getWorkingCopyOfEditorInput();
 				FilterAction action = (FilterAction) ((StructuredSelection) FilterEditor.this.actionTableViewer
@@ -674,17 +695,23 @@ public class FilterEditor extends AbstractEditor<FilterBean> {
 				FilterEditor.this.firePropertyChange(IEditorPart.PROP_DIRTY);
 			}
 
-			public void mouseUp(MouseEvent e) {
+			@Override
+            public void mouseUp(MouseEvent e) {
+			    // Not used yet
 			}
 		});
 		// up
 		Button upButton = new Button(buttonComposite, SWT.PUSH);
 		upButton.setText(Messages.FilterEditor_move_action_up);
 		upButton.addMouseListener(new MouseListener() {
-			public void mouseDoubleClick(MouseEvent e) {
+			
+		    @Override
+            public void mouseDoubleClick(MouseEvent e) {
+			    // Not used yet
 			}
 
-			public void mouseDown(MouseEvent e) {
+			@Override
+            public void mouseDown(MouseEvent e) {
 				FilterBean bean = FilterEditor.this
 						.getWorkingCopyOfEditorInput();
 				FilterAction action = (FilterAction) ((StructuredSelection) FilterEditor.this.actionTableViewer
@@ -695,17 +722,23 @@ public class FilterEditor extends AbstractEditor<FilterBean> {
 				FilterEditor.this.firePropertyChange(IEditorPart.PROP_DIRTY);
 			}
 
-			public void mouseUp(MouseEvent e) {
+			@Override
+            public void mouseUp(MouseEvent e) {
+			    // Not used yet
 			}
 		});
 		// down
 		Button downButton = new Button(buttonComposite, SWT.PUSH);
 		downButton.setText(Messages.FilterEditor_move_action_down);
 		downButton.addMouseListener(new MouseListener() {
-			public void mouseDoubleClick(MouseEvent e) {
+			
+		    @Override
+            public void mouseDoubleClick(MouseEvent e) {
+			    // Not used yet
 			}
 
-			public void mouseDown(MouseEvent e) {
+			@Override
+            public void mouseDown(MouseEvent e) {
 				FilterBean bean = FilterEditor.this
 						.getWorkingCopyOfEditorInput();
 				FilterAction action = (FilterAction) ((StructuredSelection) FilterEditor.this.actionTableViewer
@@ -716,7 +749,9 @@ public class FilterEditor extends AbstractEditor<FilterBean> {
 				FilterEditor.this.firePropertyChange(IEditorPart.PROP_DIRTY);
 			}
 
-			public void mouseUp(MouseEvent e) {
+			@Override
+            public void mouseUp(MouseEvent e) {
+			    // Not used yet
 			}
 		});
 				

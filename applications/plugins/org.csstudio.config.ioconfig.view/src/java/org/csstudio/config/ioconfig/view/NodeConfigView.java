@@ -24,6 +24,8 @@
  */
 package org.csstudio.config.ioconfig.view;
 
+import javax.annotation.Nonnull;
+
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.custom.ScrolledComposite;
 import org.eclipse.swt.layout.FillLayout;
@@ -38,33 +40,38 @@ import org.eclipse.ui.part.ViewPart;
  * @since 24.02.2009
  */
 public class NodeConfigView extends ViewPart {
-   
+    
     public static final String ID = "org.csstudio.config.ioconfig.view.NodeConfigView";
     private Composite _configComposite;
-	private ScrolledComposite _scroll;
+    private ScrolledComposite _scroll;
     
     /**
      * Create the View Part.
      * @param parent the parent Composite.
      */
     @Override
-    public final void createPartControl(Composite parent) {
-    	_scroll = new ScrolledComposite(parent, SWT.H_SCROLL | SWT.V_SCROLL |SWT.NONE);
-    	_scroll.setExpandHorizontal(true);
-    	_scroll.setExpandVertical(true);
-    	setMinSize(200,350);
-
+    public final void createPartControl(@Nonnull final Composite parent) {
+        _scroll = new ScrolledComposite(parent, SWT.H_SCROLL | SWT.V_SCROLL |SWT.NONE);
+        _scroll.setExpandHorizontal(true);
+        _scroll.setExpandVertical(true);
+        setMinSize(200,350);
+        
         _configComposite = new Composite(_scroll, SWT.NONE);
         _configComposite.setLayout(new FillLayout());
         _configComposite.setBackground(Display.getCurrent().getSystemColor(SWT.COLOR_INFO_BACKGROUND));
         _scroll.setContent(_configComposite);
     }
-
-    public void setMinSize(int w, int h) {
-    	_scroll.setMinSize(w, h);
-	}
-
-	/**
+    
+    /**
+     * 
+     * @return the Node config Composite.
+     */
+    @Nonnull
+    public final Composite getComposite(){
+        return _configComposite;
+    }
+    
+    /**
      * Composite get Focus.
      */
     @Override
@@ -72,17 +79,13 @@ public class NodeConfigView extends ViewPart {
         _configComposite.setFocus();
     }
     
-    /**
-     * 
-     * @return the Node config Composite.
-     */
-    public final Composite getComposite(){
-        return _configComposite;
+    public void setMinSize(final int w, final int h) {
+        _scroll.setMinSize(w, h);
     }
     
     @Override
-    protected void setPartName(String partName) {
+    protected void setPartName(@Nonnull final String partName) {
         super.setPartName(partName);
     }
-
+    
 }

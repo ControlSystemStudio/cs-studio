@@ -1,5 +1,8 @@
 package org.csstudio.display.waterfall;
 
+import java.lang.reflect.Constructor;
+import java.util.List;
+
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.ui.IMemento;
 import org.eclipse.ui.IViewSite;
@@ -55,18 +58,22 @@ public class WaterfallView extends ViewPart {
 	public void saveState(final IMemento memento) {
 		super.saveState(memento);
 		// Save the currently selected variable
-		if (waterfallComposite.getPvName() != null) {
-			memento.putString(MEMENTO_PVNAME, waterfallComposite.getPvName());
+		if (combo.getText() != null) {
+			memento.putString(MEMENTO_PVNAME, combo.getText());
 		}
 	}
 	
 	public void setPVName(String name) {
 		combo.setText(name);
-		waterfallComposite.setPvName(name);
+		resolveAndSetPVName(name);
 	}
 	
 	private Combo combo;
 	private WaterfallWidget waterfallComposite;
+	
+	private void resolveAndSetPVName(String text) {
+		waterfallComposite.setInputText(text);
+	}
 
 	@Override
 	public void createPartControl(Composite parent) {
@@ -87,7 +94,7 @@ public class WaterfallView extends ViewPart {
 		fd_combo.right = new FormAttachment(100, -10);
 		combo.setLayoutData(fd_combo);
 		
-		waterfallComposite = new WaterfallWidget(parent, SWT.NONE);
+		waterfallComposite = createWaterfallWidget(parent);
 		FormData fd_waterfallComposite = new FormData();
 		fd_waterfallComposite.bottom = new FormAttachment(100, -10);
 		fd_waterfallComposite.left = new FormAttachment(0, 10);
@@ -100,7 +107,7 @@ public class WaterfallView extends ViewPart {
 				.getDialogSettings(), "WaterfallPVs", combo, 20, true) {
 			@Override
 			public void newSelection(final String pv_name) {
-				waterfallComposite.setPvName(pv_name);
+				resolveAndSetPVName(pv_name);
 			}
 		};
 		name_helper.loadSettings();
@@ -109,4 +116,15 @@ public class WaterfallView extends ViewPart {
 			setPVName(memento.getString(MEMENTO_PVNAME));
 		}
 	}
+
+	private WaterfallWidget createWaterfallWidget(Composite parent) {
+		try {
+			Class<?> clazz = Class.forName("org.csstudio.utility.channel.widgets.MultiChannelWaterfallWidget");
+			Constructor<?> constructor = clazz.getConstructor(Composite.class, Integer.TYPE);
+			return (WaterfallWidget) constructor.newInstance(parent, SWT.NONE);
+		} catch (Exception e) {
+		}
+		return new WaterfallWidget(parent, SWT.NONE);
+	}
+
 }

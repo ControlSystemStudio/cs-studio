@@ -25,14 +25,15 @@ package org.csstudio.ams.messageminder.preference;
 
 import org.csstudio.ams.Log;
 import org.csstudio.ams.messageminder.MessageMinderActivator;
-import org.eclipse.jface.preference.IPreferenceStore;
+import org.eclipse.core.runtime.Platform;
+import org.eclipse.core.runtime.preferences.IPreferencesService;
 
 /**
  * Constant definitions for plug-in preferences.
  */
-public class MessageMinderPreferenceKey
-{
-	public static final String P_LONG_TIME2CLEAN = "time2Clean";
+public class MessageMinderPreferenceKey {
+	
+    public static final String P_LONG_TIME2CLEAN = "time2Clean";
 	public static final String P_LONG_TO_OLD_TIME = "toOldTime";
 	public static final String P_LONG_PERIOD = "period";
 	public static final String P_INT_MAX_YOUNG_MASSAGES = "maxYoungMessages";
@@ -41,17 +42,17 @@ public class MessageMinderPreferenceKey
 	public static final String P_STRING_XMPP_USER_NAME = "xmppUser";
     public static final String P_STRING_XMPP_PASSWORD = "xmppPassword";
     
-    public static final void showPreferences()
-    {
-    	IPreferenceStore store = MessageMinderActivator.getDefault().getPreferenceStore();
+    public static final void showPreferences() {
+    	
+        IPreferencesService store = Platform.getPreferencesService();
 
-    	Log.log(Log.INFO, P_LONG_TIME2CLEAN + ":" + store.getLong(MessageMinderPreferenceKey.P_LONG_TIME2CLEAN));
-    	Log.log(Log.INFO, P_LONG_TO_OLD_TIME + ":" + store.getLong(MessageMinderPreferenceKey.P_LONG_TO_OLD_TIME));
-    	Log.log(Log.INFO, P_LONG_PERIOD + ":" + store.getLong(MessageMinderPreferenceKey.P_LONG_PERIOD));
-    	Log.log(Log.INFO, P_INT_MAX_YOUNG_MASSAGES + ":" + store.getInt(MessageMinderPreferenceKey.P_INT_MAX_YOUNG_MASSAGES));
-    	Log.log(Log.INFO, P_STRING_KEY_WORDS + ":" + store.getString(MessageMinderPreferenceKey.P_STRING_KEY_WORDS));
-    	Log.log(Log.INFO, P_STRING_XMPP_SERVER + ":" + store.getString(MessageMinderPreferenceKey.P_STRING_XMPP_SERVER));
-    	Log.log(Log.INFO, P_STRING_XMPP_USER_NAME + ":" + store.getString(MessageMinderPreferenceKey.P_STRING_XMPP_USER_NAME));
-    	Log.log(Log.INFO, P_STRING_XMPP_PASSWORD + ":" + store.getString(MessageMinderPreferenceKey.P_STRING_XMPP_PASSWORD));
+    	Log.log(Log.INFO, P_LONG_TIME2CLEAN + ":" + store.getLong(MessageMinderActivator.PLUGIN_ID, MessageMinderPreferenceKey.P_LONG_TIME2CLEAN, -1, null));
+    	Log.log(Log.INFO, P_LONG_TO_OLD_TIME + ":" + store.getLong(MessageMinderActivator.PLUGIN_ID, MessageMinderPreferenceKey.P_LONG_TO_OLD_TIME, -1 , null));
+    	Log.log(Log.INFO, P_LONG_PERIOD + ":" + store.getLong(MessageMinderActivator.PLUGIN_ID, MessageMinderPreferenceKey.P_LONG_PERIOD, -1, null));
+    	Log.log(Log.INFO, P_INT_MAX_YOUNG_MASSAGES + ":" + store.getInt(MessageMinderActivator.PLUGIN_ID, MessageMinderPreferenceKey.P_INT_MAX_YOUNG_MASSAGES, -1, null));
+    	Log.log(Log.INFO, P_STRING_KEY_WORDS + ":" + store.getString(MessageMinderActivator.PLUGIN_ID, MessageMinderPreferenceKey.P_STRING_KEY_WORDS, "NONE", null));
+    	Log.log(Log.INFO, P_STRING_XMPP_SERVER + ":" + store.getString(MessageMinderActivator.PLUGIN_ID, MessageMinderPreferenceKey.P_STRING_XMPP_SERVER, "NONE", null));
+    	Log.log(Log.INFO, P_STRING_XMPP_USER_NAME + ":" + store.getString(MessageMinderActivator.PLUGIN_ID, MessageMinderPreferenceKey.P_STRING_XMPP_USER_NAME, "NONE", null));
+    	Log.log(Log.INFO, P_STRING_XMPP_PASSWORD + ":" + store.getString(MessageMinderActivator.PLUGIN_ID, MessageMinderPreferenceKey.P_STRING_XMPP_PASSWORD, "NONE", null));
     }
 }

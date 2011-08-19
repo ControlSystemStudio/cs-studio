@@ -1,0 +1,8 @@
+Manifest-Version: 1.0
+Bundle-ManifestVersion: 2
+Bundle-Name: RAP related Implementation for XYGraph
+Bundle-SymbolicName: org.csstudio.swt.xygraph.rap
+Bundle-Version: 1.0.0.qualifier
+Bundle-Vendor: Xihui Chen
+Fragment-Host: org.csstudio.swt.xygraph;bundle-version="1.1.3"
+Bundle-RequiredExecutionEnvironment: J2SE-1.5

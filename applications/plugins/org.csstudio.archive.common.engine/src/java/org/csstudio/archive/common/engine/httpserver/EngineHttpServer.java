@@ -99,7 +99,7 @@ public class EngineHttpServer {
         // Create a custom HttpService
         // avoid the auto-started instance
         final Dictionary<String, Object> dictionary = new Hashtable<String, Object>();
-        dictionary.put("http.port", new Integer(port));
+        dictionary.put("http.port", Integer.valueOf(port));
         dictionary.put("other.info", _pid);
 
         JettyConfigurator.startServer(_pid, dictionary);

@@ -52,11 +52,6 @@ public class ArchiveChannel implements IArchiveChannel {
 
     /**
      * Constructor.
-     * @param id
-     * @param name
-     * @param type
-     * @param grpId
-     * @param ltstTimestamp
      */
     public ArchiveChannel(@Nonnull final ArchiveChannelId id,
                           @Nonnull final String name,

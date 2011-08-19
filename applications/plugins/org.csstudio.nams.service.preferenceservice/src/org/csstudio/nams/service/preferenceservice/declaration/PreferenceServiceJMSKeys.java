@@ -251,7 +251,8 @@ public enum PreferenceServiceJMSKeys implements HoldsAPreferenceId
 				: Messages.PreferenceServiceJMSKeys_fallback_message_on_missing_label);
 	}
 
-	public String getDescription() {
+	@Override
+    public String getDescription() {
 		return this._description;
 	}
 
@@ -259,8 +260,8 @@ public enum PreferenceServiceJMSKeys implements HoldsAPreferenceId
 		return this._key;
 	}
 
-	public String getPreferenceStoreId() {
+	@Override
+    public String getPreferenceStoreId() {
 		return this._key;
 	}
-
 }

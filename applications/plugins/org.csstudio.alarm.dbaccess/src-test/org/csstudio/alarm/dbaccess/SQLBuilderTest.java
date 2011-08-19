@@ -108,8 +108,8 @@ public class SQLBuilderTest {
 	@Test
 	public void testComposeSQLStmtFor2FilterItems() throws SQLException {
 	    final List<FilterItem> twoSimpleFilterItems = new ArrayList<FilterItem>();
-	    twoSimpleFilterItems.add(_severityItem);
-	    twoSimpleFilterItems.add(_typeItem);
+	    twoSimpleFilterItems.add(new FilterItem(_severityItem));
+	    twoSimpleFilterItems.add(new FilterItem(_typeItem));
 
 	    final SQLBuilder b = new SQLBuilder(HANDLER_MOCK);
 	    Mockito.when(_metaMock.getColumnCount()).thenReturn(Integer.valueOf(2));
@@ -126,11 +126,13 @@ public class SQLBuilderTest {
             COMMON_TODATE_INTERVAL_CLAUSE +
             COMMON_ROWNUM_LT_CLAUSE +
             COMMON_ORDER_BY_CLAUSE;
-
 	    Assert.assertEquals(TWO_SIMPLE_FILTER_ITEMS, erg);
 
-
 	    b.setMaxRowNum(-1);
+	    twoSimpleFilterItems.clear();
+	    twoSimpleFilterItems.add(new FilterItem(_severityItem));
+	    twoSimpleFilterItems.add(new FilterItem(_typeItem));
+
 	    erg = b.composeSQLStmtForFilter(twoSimpleFilterItems);
 
 
@@ -141,15 +143,14 @@ public class SQLBuilderTest {
 	        " and upper(m.TYPE) LIKE upper(?)" +
 	        COMMON_TODATE_INTERVAL_CLAUSE +
 	        COMMON_ORDER_BY_CLAUSE;
-
 	    Assert.assertEquals(TWO_SIMPLE_FILTER_ITEMS_NO_ROW, erg);
 	}
 	@Test
 	public void testComposeSQLStmtFor2SubQueryFilterItems() throws SQLException {
 	    final List<FilterItem> twoSubqueryFilterItems = new ArrayList<FilterItem>();
 
-	    twoSubqueryFilterItems.add(_hostItem);
-	    twoSubqueryFilterItems.add(_facilityItem);
+	    twoSubqueryFilterItems.add(new FilterItem(_hostItem));
+	    twoSubqueryFilterItems.add(new FilterItem(_facilityItem));
 
 	    final SQLBuilder b = new SQLBuilder(HANDLER_MOCK);
 	    Mockito.when(_metaMock.getColumnCount()).thenReturn(Integer.valueOf(0));
@@ -183,10 +184,10 @@ public class SQLBuilderTest {
 	@Test
 	public void testComposeSQLStmtFor4FilterItemsBothTypes() throws SQLException {
 	    final List<FilterItem> fourFilterItemsBothTypes = new ArrayList<FilterItem>();
-	    fourFilterItemsBothTypes.add(_hostItem);
-	    fourFilterItemsBothTypes.add(_severityItem);
-	    fourFilterItemsBothTypes.add(_facilityItem);
-	    fourFilterItemsBothTypes.add(_typeItem);
+	    fourFilterItemsBothTypes.add(new FilterItem(_hostItem));
+	    fourFilterItemsBothTypes.add(new FilterItem(_severityItem));
+	    fourFilterItemsBothTypes.add(new FilterItem(_facilityItem));
+	    fourFilterItemsBothTypes.add(new FilterItem(_typeItem));
 
 	    final SQLBuilder b = new SQLBuilder(HANDLER_MOCK);
 	    Mockito.when(_metaMock.getColumnCount()).thenReturn(Integer.valueOf(2));
@@ -209,6 +210,11 @@ public class SQLBuilderTest {
 	    Assert.assertEquals(FOUR_FILTER_ITEMS_BOTH_TYPES, erg);
 
 	    b.setMaxRowNum(-1);
+	    fourFilterItemsBothTypes.clear();
+	    fourFilterItemsBothTypes.add(new FilterItem(_hostItem));
+	    fourFilterItemsBothTypes.add(new FilterItem(_severityItem));
+	    fourFilterItemsBothTypes.add(new FilterItem(_facilityItem));
+	    fourFilterItemsBothTypes.add(new FilterItem(_typeItem));
 	    erg = b.composeSQLStmtForFilter(fourFilterItemsBothTypes);
 
 	    final String FOUR_FILTER_ITEMS_BOTH_TYPES_NO_ROW =
@@ -228,10 +234,10 @@ public class SQLBuilderTest {
 	@Test
 	public void testComposeSQLStmtFor4FilterItemsBothTypesCount() throws SQLException {
 	    final List<FilterItem> fourFilterItemsBothTypesCount = new ArrayList<FilterItem>();
-	    fourFilterItemsBothTypesCount.add(_hostItem);
-	    fourFilterItemsBothTypesCount.add(_severityItem);
-	    fourFilterItemsBothTypesCount.add(_facilityItem);
-	    fourFilterItemsBothTypesCount.add(_typeItem);
+	    fourFilterItemsBothTypesCount.add(new FilterItem(_hostItem));
+	    fourFilterItemsBothTypesCount.add(new FilterItem(_severityItem));
+	    fourFilterItemsBothTypesCount.add(new FilterItem(_facilityItem));
+	    fourFilterItemsBothTypesCount.add(new FilterItem(_typeItem));
 
 	    final SQLBuilder b = new SQLBuilder(HANDLER_MOCK);
 	    Mockito.when(_metaMock.getColumnCount()).thenReturn(Integer.valueOf(2));

@@ -14,8 +14,9 @@ Require-Bundle: org.eclipse.ui,
  org.eclipse.jface.text;visibility:=reexport,
  de.desy.language.editor.core;visibility:=reexport,
  de.desy.language.libraries;bundle-version="1.3.0"
-Eclipse-LazyStart: true
+Bundle-ActivationPolicy: lazy
 Export-Package: de.desy.language.editor.ui.editor,
  de.desy.language.editor.ui.editor.highlighting,
  de.desy.language.editor.ui.editor.highlighting.predefinedRules,
  de.desy.language.editor.ui.eventing
+Bundle-RequiredExecutionEnvironment: J2SE-1.5

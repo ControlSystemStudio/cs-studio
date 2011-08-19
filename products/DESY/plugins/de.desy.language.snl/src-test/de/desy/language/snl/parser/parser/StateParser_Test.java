@@ -1,13 +1,12 @@
 package de.desy.language.snl.parser.parser;
 
 import junit.framework.Assert;
-import junit.framework.TestCase;
 
 import org.junit.Test;
 
 import de.desy.language.snl.parser.nodes.StateNode;
 
-public class StateParser_Test extends TestCase {
+public class StateParser_Test {
 
 	private final String _source = "/*HAllo*/\nprogram sncExample;"
 			+ "double v;" + "assign v to \"{user}:aiExample\";"
@@ -73,4 +72,11 @@ public class StateParser_Test extends TestCase {
 		}
 	}
 
+	@Test(timeout=1000)
+	public void testBUG2136() {
+	    final StateParser parser = new StateParser();
+	
+	    parser.findNext("state init ");
+	    Assert.assertFalse(parser.hasFoundElement());
+	}
 }

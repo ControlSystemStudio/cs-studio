@@ -9,13 +9,9 @@ import org.csstudio.dct.model.IRecord;
 import org.csstudio.dct.nameresolution.FieldFunctionContentProposal;
 import org.csstudio.dct.nameresolution.IFieldFunction;
 import org.csstudio.dct.nameresolution.RecordFinder;
-import org.csstudio.dct.util.AliasResolutionException;
 import org.csstudio.dct.util.AliasResolutionUtil;
-import org.csstudio.dct.util.ResolutionUtil;
-import org.csstudio.platform.logging.CentralLogger;
 import org.csstudio.platform.util.StringUtil;
 import org.eclipse.core.runtime.Platform;
-import org.eclipse.core.runtime.preferences.IPreferencesService;
 import org.eclipse.jface.fieldassist.IContentProposal;
 
 /**
@@ -62,9 +58,15 @@ public final class DataLinkFieldFunction implements IFieldFunction {
 
 		switch (parameterIndex) {
 		case 0:
+		    String para = "";
+		    if(knowParameters.length>0) {
+		        para = knowParameters[0]==null?"":knowParameters[0];
+		    }
 			for (IRecord r : record.getContainer().getRecords()) {
 				String name = AliasResolutionUtil.getNameFromHierarchy(r);
-				result.add(new FieldFunctionContentProposal(name, name, "Reference to record [" + name + "]", name.length()));
+				if(name.startsWith(para)) {
+				    result.add(new FieldFunctionContentProposal(name, name, "Reference to record [" + name + "]", name.length()));
+				}
 			}
 			break;
 		case 1:

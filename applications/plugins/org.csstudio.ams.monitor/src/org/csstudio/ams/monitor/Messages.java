@@ -1,3 +1,4 @@
+
 /* 
  * Copyright (c) 2008 Stiftung Deutsches Elektronen-Synchrotron, 
  * Member of the Helmholtz Association, (DESY), HAMBURG, GERMANY.
@@ -19,7 +20,8 @@
  * PROJECT IN THE FILE LICENSE.HTML. IF THE LICENSE IS NOT INCLUDED YOU MAY FIND A COPY 
  * AT HTTP://WWW.DESY.DE/LEGAL/LICENSE.HTM
  */
- package org.csstudio.ams.monitor;
+
+package org.csstudio.ams.monitor;
 
 import java.util.MissingResourceException;
 import java.util.ResourceBundle;
@@ -81,6 +83,7 @@ public class Messages extends NLS
 	 * This method does nothing. 
 	 */
 	private Messages() {
+	    // Avoid instantiation
 	}
 	
 	/**

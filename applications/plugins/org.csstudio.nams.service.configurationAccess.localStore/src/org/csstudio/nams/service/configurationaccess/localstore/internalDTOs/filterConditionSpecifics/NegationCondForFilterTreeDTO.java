@@ -1,3 +1,4 @@
+
 package org.csstudio.nams.service.configurationaccess.localstore.internalDTOs.filterConditionSpecifics;
 
 import javax.persistence.Column;
@@ -44,7 +45,8 @@ public class NegationCondForFilterTreeDTO extends FilterConditionDTO
 				.setCDesc("The type NegationConditionForFilterTreeDTO is not to be used directly! It is used internally on filters.");
 	}
 
-	public void deleteJoinLinkData(final Mapper mapper) throws Throwable {
+	@Override
+    public void deleteJoinLinkData(final Mapper mapper) throws Throwable {
 		if (this.negatedFilterCondition instanceof HasManuallyJoinedElements) {
 			if ((this.negatedFilterCondition instanceof JunctorCondForFilterTreeDTO)
 					|| (this.negatedFilterCondition instanceof NegationCondForFilterTreeDTO)) {
@@ -112,7 +114,8 @@ public class NegationCondForFilterTreeDTO extends FilterConditionDTO
 		return result;
 	}
 
-	@SuppressWarnings("unchecked")
+	@Override
+    @SuppressWarnings("unchecked")
 	public void loadJoinData(final Mapper mapper) throws Throwable {
 		if (this.getIFilterConditionID() == this.getINegatedFCRef()) {
 			throw new InconsistentConfigurationException(
@@ -134,7 +137,8 @@ public class NegationCondForFilterTreeDTO extends FilterConditionDTO
 		this.iNegatedFCRef = negatedFilterCondition.getIFilterConditionID();
 	}
 
-	public void storeJoinLinkData(final Mapper mapper) throws Throwable {
+	@Override
+    public void storeJoinLinkData(final Mapper mapper) throws Throwable {
 		if (this.negatedFilterCondition instanceof HasManuallyJoinedElements) {
 			if ((this.negatedFilterCondition instanceof JunctorCondForFilterTreeDTO)
 					|| (this.negatedFilterCondition instanceof NegationCondForFilterTreeDTO)) {

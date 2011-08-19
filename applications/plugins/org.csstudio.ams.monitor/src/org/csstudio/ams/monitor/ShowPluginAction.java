@@ -1,3 +1,4 @@
+
 /* 
  * Copyright (c) 2008 Stiftung Deutsches Elektronen-Synchrotron, 
  * Member of the Helmholtz Association, (DESY), HAMBURG, GERMANY.
@@ -19,7 +20,8 @@
  * PROJECT IN THE FILE LICENSE.HTML. IF THE LICENSE IS NOT INCLUDED YOU MAY FIND A COPY 
  * AT HTTP://WWW.DESY.DE/LEGAL/LICENSE.HTM
  */
- package org.csstudio.ams.monitor;
+
+package org.csstudio.ams.monitor;
 
 import org.csstudio.ams.monitor.views.AMSMonitorView;
 import org.eclipse.jface.action.IAction;
@@ -33,29 +35,28 @@ import org.eclipse.ui.PlatformUI;
 /** Action connected to workbench menu action set for showing the view.
  *  @author Kay Kasemir
  */
-public class ShowPluginAction implements IWorkbenchWindowActionDelegate
-{
-	public void dispose()
-	{}
-	public void init(IWorkbenchWindow window)
-	{}
+public class ShowPluginAction implements IWorkbenchWindowActionDelegate {
+	
+    public void dispose() {
+	    // Nothing to do
+	}
+	
+	public void init(IWorkbenchWindow window) {
+	    // Nothing to do
+	}
 
-	public void selectionChanged(IAction action, ISelection selection)
-	{}
+	public void selectionChanged(IAction action, ISelection selection) {
+	    // Nothing to do
+	}
 
-	public void run(IAction action)
-	{
-	    try
-	    {
+	public void run(IAction action) {
+	    try {
 	        IWorkbench workbench = PlatformUI.getWorkbench();
 	        IWorkbenchWindow window = workbench.getActiveWorkbenchWindow();
 	        IWorkbenchPage page = window.getActivePage();
 	        page.showView(AMSMonitorView.ID);
-	    }
-	    catch (Exception e)
-	    {
+	    } catch (Exception e) {
 	        e.printStackTrace();
 	    }
 	}
-
 }

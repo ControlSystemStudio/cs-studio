@@ -18,7 +18,7 @@ import org.csstudio.opibuilder.properties.PVValueProperty;
 import org.csstudio.opibuilder.properties.StringProperty;
 import org.csstudio.opibuilder.properties.WidgetPropertyCategory;
 import org.csstudio.opibuilder.util.MediaService;
-import org.csstudio.opibuilder.widgets.properties.ColorMapProperty;
+import org.csstudio.opibuilder.widgets.util.SingleSourceHelper;
 import org.csstudio.swt.widgets.datadefinition.ColorMap;
 import org.csstudio.swt.widgets.datadefinition.ColorMap.PredefinedColorMap;
 import org.eclipse.swt.SWT;
@@ -185,7 +185,7 @@ public class IntensityGraphModel extends AbstractPVWidgetModel {
 		addProperty(new IntegerProperty(PROP_DATA_HEIGHT, "Data Height", 
 				WidgetPropertyCategory.Behavior, 0));
 		
-		addProperty(new ColorMapProperty(PROP_COLOR_MAP, "Color Map", 
+		addProperty(SingleSourceHelper.createColorMapProperty(PROP_COLOR_MAP, "Color Map", 
 				WidgetPropertyCategory.Display, new ColorMap(PredefinedColorMap.JET, true, true)));
 		
 		addProperty(new BooleanProperty(PROP_SHOW_RAMP, "Show Ramp",

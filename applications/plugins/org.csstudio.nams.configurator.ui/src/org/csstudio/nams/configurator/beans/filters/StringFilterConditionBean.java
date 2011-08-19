@@ -1,8 +1,8 @@
+
 package org.csstudio.nams.configurator.beans.filters;
 
 import org.csstudio.nams.common.fachwert.MessageKeyEnum;
 import org.csstudio.nams.common.material.regelwerk.StringRegelOperator;
-import org.csstudio.nams.configurator.Messages;
 import org.csstudio.nams.configurator.beans.AbstractConfigurationBean;
 
 public class StringFilterConditionBean extends
@@ -19,6 +19,7 @@ public class StringFilterConditionBean extends
 	private String compValue = ""; //$NON-NLS-1$
 
 	public StringFilterConditionBean() {
+	    // Nothing to do
 	}
 
 	public StringFilterConditionBean(final MessageKeyEnum keyValue,
@@ -69,12 +70,14 @@ public class StringFilterConditionBean extends
 		return this.compValue;
 	}
 
-	public String getDisplayName() {
+	@Override
+    public String getDisplayName() {
 		return this.keyValue + " " + this.operator.toString() + " " //$NON-NLS-1$ //$NON-NLS-2$
 				+ this.compValue;
 	}
 
-	public int getID() {
+	@Override
+    public int getID() {
 		return 0;
 	}
 
@@ -106,7 +109,9 @@ public class StringFilterConditionBean extends
 				this.compValue);
 	}
 
-	public void setID(final int id) {
+	@Override
+    public void setID(final int id) {
+	    // Nothing to do
 	}
 
 	public void setKeyValue(final MessageKeyEnum keyValue) {
@@ -130,8 +135,8 @@ public class StringFilterConditionBean extends
 		this.setOperator(bean.getOperator());
 	}
 
-	public void setDisplayName(String name) {
-		// nothing to do here		
+	@Override
+    public void setDisplayName(String name) {
+		// Nothing to do here		
 	}
-
 }

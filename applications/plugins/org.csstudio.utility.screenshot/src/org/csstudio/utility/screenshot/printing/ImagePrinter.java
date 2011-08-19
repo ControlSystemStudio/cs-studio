@@ -1,4 +1,3 @@
-
 /* 
  * Copyright (c) 2007 Stiftung Deutsches Elektronen-Synchrotron, 
  * Member of the Helmholtz Association, (DESY), HAMBURG, GERMANY.
@@ -23,7 +22,6 @@
 
 package org.csstudio.utility.screenshot.printing;
 
-import org.csstudio.platform.logging.CentralLogger;
 import org.csstudio.utility.screenshot.internal.localization.ScreenshotMessages;
 import org.eclipse.swt.graphics.GC;
 import org.eclipse.swt.graphics.Image;
@@ -36,40 +34,37 @@ import org.eclipse.swt.printing.PrintDialog;
 import org.eclipse.swt.printing.Printer;
 import org.eclipse.swt.printing.PrinterData;
 import org.eclipse.swt.widgets.Shell;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
-public class ImagePrinter implements Runnable
-{
-    private Shell   shell   = null;
-    private Image   image   = null;
-    private boolean invert  = false;
+public class ImagePrinter implements Runnable {
     
-    public ImagePrinter(Shell s, Image i, boolean inv)
-    {
+    private static final Logger LOG = LoggerFactory.getLogger(ImagePrinter.class);
+    
+    private Shell shell = null;
+    private Image image = null;
+    private boolean invert = false;
+    
+    public ImagePrinter(Shell s, Image i, boolean inv) {
         shell = s;
         image = i;
         invert = inv;
     }
     
-    public void run()
-    {
+    public void run() {
         PrintDialog dialog = new PrintDialog(shell);
         PrinterData pd = dialog.open();
         
-        if(pd != null)
-        {
+        if(pd != null) {
             Printer printer = new Printer(pd);
             
             String jobName = ScreenshotMessages.getString("ScreenshotPlugin.Screenshot");
             
-            if(printer.startJob(jobName))
-            {
-                if(printImage(printer))
-                {
-                    CentralLogger.getInstance().info(this, " OK - Printing");
-                }
-                else
-                {
-                    CentralLogger.getInstance().error(this, " FEHLER - Printing");
+            if(printer.startJob(jobName)) {
+                if(printImage(printer)) {
+                    LOG.info(" OK - Printing");
+                } else {
+                    LOG.error(" FEHLER - Printing");
                 }
                 
                 printer.endJob();
@@ -78,74 +73,73 @@ public class ImagePrinter implements Runnable
             printer.dispose();
         }
     }
-
-    private boolean printImage(Printer printer)
-    {
-        Rectangle   bounds  = image.getBounds();
-        Rectangle   area    = printer.getClientArea();
-        Point       dpi     = printer.getDPI();
-        int         xScale  = dpi.x / 96;
-        int         yScale  = dpi.y / 96;
-        int         width   = bounds.width * xScale;
-        int         height  = bounds.height * yScale;
-        int         pWidth  = area.width - (5 * dpi.x) / 4;
-        int         pHeight = area.height - (5 * dpi.x) / 4;
-        float       factor  = Math.min(1.0F, Math.min((float)pWidth / (float)width, (float)pHeight / (float)height));
-        int         aWidth  = (int)(factor * (float)width);
-        int         aHeight = (int)(factor * (float)height);
-        int         xoff    = (area.width - aWidth) / 2;
-        int         yoff    = (area.height - aHeight) / 2;
-        boolean     success = true;
-
-        if(invert)
-        { 
-            image = invertImage(image);            
+    
+    private boolean printImage(Printer printer) {
+        Rectangle bounds = image.getBounds();
+        Rectangle area = printer.getClientArea();
+        Point dpi = printer.getDPI();
+        int xScale = dpi.x / 96;
+        int yScale = dpi.y / 96;
+        int width = bounds.width * xScale;
+        int height = bounds.height * yScale;
+        int pWidth = area.width - (5 * dpi.x) / 4;
+        int pHeight = area.height - (5 * dpi.x) / 4;
+        float factor = Math.min(1.0F,
+                                Math.min((float) pWidth / (float) width, (float) pHeight
+                                        / (float) height));
+        int aWidth = (int) (factor * (float) width);
+        int aHeight = (int) (factor * (float) height);
+        int xoff = (area.width - aWidth) / 2;
+        int yoff = (area.height - aHeight) / 2;
+        boolean success = true;
+        
+        if(invert) {
+            image = invertImage(image);
         }
         
-        if(printer.startPage())
-        {
+        if(printer.startPage()) {
             GC gc = new GC(printer);
             
-            gc.drawImage(image, bounds.x, bounds.y, bounds.width, bounds.height, xoff, yoff, aWidth, aHeight);
+            gc.drawImage(image,
+                         bounds.x,
+                         bounds.y,
+                         bounds.width,
+                         bounds.height,
+                         xoff,
+                         yoff,
+                         aWidth,
+                         aHeight);
             
             gc.dispose();
-
-            printer.endPage();            
-        }
-        else
-        {
+            
+            printer.endPage();
+        } else {
             success = false;
         }
-
+        
         image.dispose();
         
         return success;
     }
     
-    private Image invertImage(Image img)
-    {
+    private Image invertImage(Image img) {
         Image inverted = null;
         
         ImageData imageData = img.getImageData();
-
+        
         byte[] data = imageData.data;
         
-        if(imageData.palette.isDirect)
-        {
+        if(imageData.palette.isDirect) {
             
-            for(int i = 0;i < data.length;i++)
-            {
+            for (int i = 0; i < data.length; i++) {
                 imageData.data[i] ^= -1;
             }
             
             inverted = new Image(shell.getDisplay(), imageData);
-        }
-        else
-        {
+        } else {
             RGB[] rgbs = imageData.palette.getRGBs();
             
-            for(int i = 0;i < rgbs.length;i++)
-            {
+            for (int i = 0; i < rgbs.length; i++) {
                 rgbs[i].blue ^= -1;
                 rgbs[i].green ^= -1;
                 rgbs[i].red ^= -1;
@@ -154,7 +148,7 @@ public class ImagePrinter implements Runnable
             PaletteData pd = new PaletteData(rgbs);
             ImageData id = new ImageData(imageData.width, imageData.height, imageData.depth, pd);
             id.data = data;
-
+            
             inverted = new Image(shell.getDisplay(), id);
         }
         

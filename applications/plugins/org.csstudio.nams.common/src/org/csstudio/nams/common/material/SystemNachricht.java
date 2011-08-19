@@ -1,3 +1,4 @@
+
 package org.csstudio.nams.common.material;
 
 /**
@@ -30,5 +31,4 @@ public interface SystemNachricht {
 	// {
 	// return map.get(MSGPROP_COMMAND).equals(MSGVALUE_TCMD_RELOAD_CFG_END);
 	// }
-
 }

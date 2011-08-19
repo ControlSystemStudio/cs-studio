@@ -365,7 +365,8 @@ public abstract class AbstractBaseEditPart extends AbstractGraphicalEditPart
 		if (!(model instanceof DisplayModel)) {
 			_motionListener = new MouseMotionListener.Stub() {
 
-				public void mouseEntered(final MouseEvent me) {
+				@Override
+                public void mouseEntered(final MouseEvent me) {
 					// initialize cursor states
 					CursorService.getInstance().applyCursor(getCastedModel());
 
@@ -408,7 +409,8 @@ public abstract class AbstractBaseEditPart extends AbstractGraphicalEditPart
 	 */
 	private void registerStandardPropertyChangeHandlers() {
 		IWidgetPropertyChangeHandler visibilityHandler = new IWidgetPropertyChangeHandler() {
-			public boolean handleChange(final Object oldValue,
+			@Override
+            public boolean handleChange(final Object oldValue,
 					final Object newValue, final IFigure refreshableFigure) {
 				boolean visible = (Boolean) newValue;
 				final IFigure figure = getFigure();
@@ -436,7 +438,8 @@ public abstract class AbstractBaseEditPart extends AbstractGraphicalEditPart
 				visibilityHandler);
 
 		IWidgetPropertyChangeHandler fullRefreshHandler = new IWidgetPropertyChangeHandler() {
-			public boolean handleChange(final Object oldValue,
+			@Override
+            public boolean handleChange(final Object oldValue,
 					final Object newValue, final IFigure refreshableFigure) {
 				AbstractBaseEditPart.this.doRefreshVisuals(refreshableFigure);
 				return true;
@@ -471,7 +474,8 @@ public abstract class AbstractBaseEditPart extends AbstractGraphicalEditPart
 				});
 
 		IWidgetPropertyChangeHandler borderWidthHandler = new IWidgetPropertyChangeHandler() {
-			public boolean handleChange(final Object oldValue,
+			@Override
+            public boolean handleChange(final Object oldValue,
 					final Object newValue, final IFigure figure) {
 				if (figure instanceof IAdaptable) {
 					IBorderEquippedWidget borderEquippedWidgetAdapter = (IBorderEquippedWidget) ((IAdaptable) figure)
@@ -507,7 +511,8 @@ public abstract class AbstractBaseEditPart extends AbstractGraphicalEditPart
 				});
 
 		IWidgetPropertyChangeHandler borderStyleHandler = new IWidgetPropertyChangeHandler() {
-			public boolean handleChange(final Object oldValue,
+			@Override
+            public boolean handleChange(final Object oldValue,
 					final Object newValue, final IFigure figure) {
 				if (figure instanceof IAdaptable) {
 					IBorderEquippedWidget borderEquippedWidgetAdapter = (IBorderEquippedWidget) ((IAdaptable) figure)
@@ -525,7 +530,8 @@ public abstract class AbstractBaseEditPart extends AbstractGraphicalEditPart
 				borderStyleHandler);
 		// enabled
 		IWidgetPropertyChangeHandler enableHandler = new IWidgetPropertyChangeHandler() {
-			public boolean handleChange(final Object oldValue,
+			@Override
+            public boolean handleChange(final Object oldValue,
 					final Object newValue, final IFigure figure) {
 
 				if (getExecutionMode().equals(ExecutionMode.RUN_MODE)) {
@@ -542,7 +548,8 @@ public abstract class AbstractBaseEditPart extends AbstractGraphicalEditPart
 				enableHandler);
 		// layer
 		IWidgetPropertyChangeHandler layerHandler = new IWidgetPropertyChangeHandler() {
-			public boolean handleChange(final Object oldValue,
+			@Override
+            public boolean handleChange(final Object oldValue,
 					final Object newValue, final IFigure refreshableFigure) {
 				if (getParent() instanceof AbstractContainerEditPart) {
 					String oldLayerName = getLayerName(oldValue);
@@ -558,7 +565,8 @@ public abstract class AbstractBaseEditPart extends AbstractGraphicalEditPart
 		setPropertyChangeHandler(AbstractWidgetModel.PROP_LAYER, layerHandler);
 
 		IWidgetPropertyChangeHandler primaryPVHandler = new IWidgetPropertyChangeHandler() {
-			public boolean handleChange(final Object oldValue,
+			@Override
+            public boolean handleChange(final Object oldValue,
 					final Object newValue, final IFigure refreshableFigure) {
 				String pv = getCastedModel().getPrimaryPV();
 				Map<String, String> aliases = getCastedModel().getAliases();
@@ -591,7 +599,8 @@ public abstract class AbstractBaseEditPart extends AbstractGraphicalEditPart
 
 		// cursor
 		IWidgetPropertyChangeHandler actionDataHandler = new IWidgetPropertyChangeHandler() {
-			public boolean handleChange(final Object oldValue,
+			@Override
+            public boolean handleChange(final Object oldValue,
 					final Object newValue, final IFigure refreshableFigure) {
 
 				if (newValue != null) {
@@ -606,7 +615,8 @@ public abstract class AbstractBaseEditPart extends AbstractGraphicalEditPart
 
 		// crossed
 		IWidgetPropertyChangeHandler crossedHandler = new IWidgetPropertyChangeHandler() {
-			public boolean handleChange(final Object oldValue,
+			@Override
+            public boolean handleChange(final Object oldValue,
 					final Object newValue, final IFigure refreshableFigure) {
 				if (refreshableFigure instanceof IAdaptable) {
 					ICrossedFigure crossedFigure = (ICrossedFigure) ((IAdaptable) refreshableFigure)
@@ -621,7 +631,8 @@ public abstract class AbstractBaseEditPart extends AbstractGraphicalEditPart
 				crossedHandler);
 		// rhombus
 		IWidgetPropertyChangeHandler rhombusHandler = new IWidgetPropertyChangeHandler() {
-			public boolean handleChange(final Object oldValue,
+			@Override
+            public boolean handleChange(final Object oldValue,
 					final Object newValue, final IFigure refreshableFigure) {
 				if (refreshableFigure instanceof IAdaptable) {
 					IRhombusEquippedWidget rhombusEquippedWidgetAdapter = (IRhombusEquippedWidget) ((IAdaptable) refreshableFigure)
@@ -728,21 +739,24 @@ public abstract class AbstractBaseEditPart extends AbstractGraphicalEditPart
 	/**
 	 * {@inheritDoc}
 	 */
-	public final ConnectionAnchor getSourceConnectionAnchor(final Request arg0) {
+	@Override
+    public final ConnectionAnchor getSourceConnectionAnchor(final Request arg0) {
 		return createConnectionAnchor();
 	}
 
 	/**
 	 * {@inheritDoc}
 	 */
-	public final ConnectionAnchor getTargetConnectionAnchor(final Request arg0) {
+	@Override
+    public final ConnectionAnchor getTargetConnectionAnchor(final Request arg0) {
 		return createConnectionAnchor();
 	}
 
 	/**
 	 * {@inheritDoc}
 	 */
-	public final ConnectionAnchor getSourceConnectionAnchor(
+	@Override
+    public final ConnectionAnchor getSourceConnectionAnchor(
 			final ConnectionEditPart arg0) {
 		return new ChopboxAnchor(getFigure());
 	}
@@ -750,7 +764,8 @@ public abstract class AbstractBaseEditPart extends AbstractGraphicalEditPart
 	/**
 	 * {@inheritDoc}
 	 */
-	public final ConnectionAnchor getTargetConnectionAnchor(
+	@Override
+    public final ConnectionAnchor getTargetConnectionAnchor(
 			final ConnectionEditPart arg0) {
 
 		return new ChopboxAnchor(getFigure());
@@ -781,7 +796,8 @@ public abstract class AbstractBaseEditPart extends AbstractGraphicalEditPart
 	/**
 	 * {@inheritDoc}
 	 */
-	public synchronized void propertyChange(final PropertyChangeEvent evt) {
+	@Override
+    public synchronized void propertyChange(final PropertyChangeEvent evt) {
 		String prop = evt.getPropertyName();
 
 		if (prop.equals(AbstractWidgetModel.PROP_LIVE)) {
@@ -812,7 +828,8 @@ public abstract class AbstractBaseEditPart extends AbstractGraphicalEditPart
 
 	private void disconnectFromControlSystem() {
 		Runnable r = new Runnable() {
-			public void run() {
+			@Override
+            public void run() {
 				try {
 					_semaphore.acquire();
 
@@ -841,7 +858,8 @@ public abstract class AbstractBaseEditPart extends AbstractGraphicalEditPart
 
 		Runnable r = new Runnable() {
 
-			public void run() {
+			@Override
+            public void run() {
 				try {
 					_semaphore.acquire();
 
@@ -915,35 +933,46 @@ public abstract class AbstractBaseEditPart extends AbstractGraphicalEditPart
 	 * {@inheritDoc}
 	 */
 
-	public List<IProcessVariableAddress> getProcessVariableAdresses() {
+	@Override
+    public List<IProcessVariableAddress> getProcessVariableAdresses() {
 		return getCastedModel().getAllPvAdresses();
 	}
 
 	/**
 	 * {@inheritDoc}
 	 */
-	public String getName() {
-		return getCastedModel().getMainPvAdress().getProperty();
+	@Override
+    public String getName() {
+	    try {
+	        AbstractWidgetModel castedModel = getCastedModel();
+            String property = castedModel.getMainPvAdress().getProperty();
+	        return property;
+	    } catch (Exception e) {
+	        return "";
+        }
 	}
 
 	/**
 	 * {@inheritDoc}
 	 */
-	public String getTypeId() {
+	@Override
+    public String getTypeId() {
 		return IProcessVariable.TYPE_ID;
 	}
 
 	/**
 	 * {@inheritDoc}
 	 */
-	public IProcessVariableAddress getPVAdress() {
+	@Override
+    public IProcessVariableAddress getPVAdress() {
 		return getCastedModel().getMainPvAdress();
 	}
 
 	/**
 	 * {@inheritDoc}
 	 */
-	public void register(final ConnectionParameters parameters,
+	@Override
+    public void register(final ConnectionParameters parameters,
 			final ChannelListener listener) {
 		try {
 			SimpleDALBroker broker = getBroker();
@@ -961,7 +990,8 @@ public abstract class AbstractBaseEditPart extends AbstractGraphicalEditPart
 	/**
 	 *{@inheritDoc}
 	 */
-	public void register(final WidgetProperty property,
+	@Override
+    public void register(final WidgetProperty property,
 			final org.csstudio.sds.model.IPropertyChangeListener listener) {
 		property.addPropertyChangeListener(listener);
 		_outChannelListeners.put(property, listener);
@@ -1064,7 +1094,8 @@ public abstract class AbstractBaseEditPart extends AbstractGraphicalEditPart
 	}
 
 	class PreferencesListener implements IPropertyChangeListener {
-		public void propertyChange(
+		@Override
+        public void propertyChange(
 				final org.eclipse.jface.util.PropertyChangeEvent event) {
 			// .. handle preference that switches write access permissions for
 			// all open displays
@@ -1089,7 +1120,8 @@ public abstract class AbstractBaseEditPart extends AbstractGraphicalEditPart
 	public abstract class ColorChangeHandler<F extends IFigure> implements
 			IWidgetPropertyChangeHandler {
 
-		@SuppressWarnings("unchecked")
+		@Override
+        @SuppressWarnings("unchecked")
 		public boolean handleChange(final Object oldValue,
 				final Object newValue, final IFigure refreshableFigure) {
 			assert newValue != null;
@@ -1118,7 +1150,8 @@ public abstract class AbstractBaseEditPart extends AbstractGraphicalEditPart
 	public abstract class FontChangeHandler<F extends IFigure> implements
 			IWidgetPropertyChangeHandler {
 
-		@SuppressWarnings("unchecked")
+		@Override
+        @SuppressWarnings("unchecked")
 		public boolean handleChange(final Object oldValue,
 				final Object newValue, final IFigure refreshableFigure) {
 			assert newValue instanceof String;

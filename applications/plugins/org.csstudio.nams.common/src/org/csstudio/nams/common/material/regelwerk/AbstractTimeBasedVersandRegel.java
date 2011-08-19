@@ -1,3 +1,4 @@
+
 package org.csstudio.nams.common.material.regelwerk;
 
 import org.csstudio.nams.common.fachwert.Millisekunden;
@@ -21,7 +22,8 @@ public abstract class AbstractTimeBasedVersandRegel implements VersandRegel {
 				ausloesungsregel);
 	}
 
-	public Millisekunden pruefeNachrichtErstmalig(
+	@Override
+    public Millisekunden pruefeNachrichtErstmalig(
 			final AlarmNachricht nachricht, final Pruefliste ergebnisListe) {
 		this.ausloesungsregel.pruefeNachrichtErstmalig(nachricht,
 				this.internePruefliste);

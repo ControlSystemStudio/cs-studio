@@ -110,7 +110,7 @@ public class XYGraphModel extends AbstractPVWidgetModel {
 	
 	public final static String[] TIME_FORMAT_ARRAY = new String[]{
 		"None", "yyyy-MM-dd\nHH:mm:ss",  "yyyy-MM-dd\nHH:mm:ss.SSS", "HH:mm:ss", "HH:mm:ss.SSS", "HH:mm", 
-		"yyyy-MM-dd", "MMMMM d"};
+		"yyyy-MM-dd", "MMMMM d", "Auto"};
 	
 	
 	/** The ID of the title property. */

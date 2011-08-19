@@ -33,13 +33,13 @@ import java.util.Hashtable;
 import java.util.Vector;
 import javax.jms.JMSException;
 import javax.jms.MapMessage;
-import org.apache.log4j.Logger;
+import org.slf4j.Logger;
 import org.csstudio.alarm.jms2ora.Jms2OraPlugin;
 import org.csstudio.alarm.jms2ora.database.DatabaseLayer;
 import org.csstudio.alarm.jms2ora.preferences.PreferenceConstants;
-import org.csstudio.platform.logging.CentralLogger;
 import org.eclipse.core.runtime.Platform;
 import org.eclipse.core.runtime.preferences.IPreferencesService;
+import org.slf4j.LoggerFactory;
 
 /**
  *  @author Markus Moeller
@@ -47,6 +47,9 @@ import org.eclipse.core.runtime.preferences.IPreferencesService;
  */
 public class MessageContentCreator {
     
+    /** the class logger */
+    private static final Logger LOG = LoggerFactory.getLogger(MessageContentCreator.class);
+
     /** Vector object contains names of message types that should be discarded */
     private Vector<String> discardTypes;
     
@@ -55,10 +58,7 @@ public class MessageContentCreator {
 
     /** Hashtable with message properties. Key -> name, value -> database table id  */
     private Hashtable<String, Long> msgProperty;
-    
-    /** The logger */
-    private Logger logger;
-    
+        
     /** Object for database handling */
     private DatabaseLayer dbLayer;
     
@@ -80,14 +80,13 @@ public class MessageContentCreator {
         IPreferencesService prefs = Platform.getPreferencesService();
 
         dbLayer = new DatabaseLayer(dbUrl, dbUser, dbPassword);
-        logger = CentralLogger.getInstance().getLogger(this);
         
         readMessageProperties();
 
         valueLength = dbLayer.getMaxNumberofValueBytes();
         if(valueLength == 0) {
             valueLength = prefs.getInt(Jms2OraPlugin.PLUGIN_ID, PreferenceConstants.DEFAULT_VALUE_PRECISION, 300, null);
-            logger.warn("Cannot read the precision of the table column 'value'. Assume " + valueLength + " bytes");
+            LOG.warn("Cannot read the precision of the table column 'value'. Assume " + valueLength + " bytes");
         }
         
         initDiscardTypes();
@@ -98,7 +97,7 @@ public class MessageContentCreator {
         String temp = prefs.getString(Jms2OraPlugin.PLUGIN_ID, PreferenceConstants.STORE_EMPTY_VALUES,
                                       "false", null);
         storeEmptyValues = Boolean.parseBoolean(temp);
-        logger.info("Empty values will be stored: " + storeEmptyValues);
+        LOG.info("Empty values will be stored: " + storeEmptyValues);
     }
     
     private void initDiscardTypes() {
@@ -165,14 +164,14 @@ public class MessageContentCreator {
         boolean reload = false;
         boolean wrongFormat = false;
 
-        logger.debug("Enter MessageContentCreator.convertMapMessage()");
+        LOG.debug("Enter MessageContentCreator.convertMapMessage()");
         
         // Create a new MessageContent object for the content of the message
         msgContent = new MessageContent();
 
         if(mmsg == null) {
             
-            logger.debug("Leaving MessageContentCreator.convertMapMessage()");
+            LOG.debug("Leaving MessageContentCreator.convertMapMessage()");
             return msgContent;
         }
         
@@ -194,7 +193,7 @@ public class MessageContentCreator {
             type = "unknown";
         }
         
-        logger.debug("Message type: " + type);
+        LOG.debug("Message type: " + type);
         
         // Discard messages with the type 'simulator'
         if(!discardTypes.isEmpty()) {
@@ -203,7 +202,7 @@ public class MessageContentCreator {
                 
                 msgContent.setDiscard(true);
                 
-                logger.debug("Leaving MessageContentCreator.convertMapMessage()");
+                LOG.debug("Leaving MessageContentCreator.convertMapMessage()");
 
                 // Return an object without content
                 // Call hasContent() to check whether or not content is available
@@ -226,7 +225,7 @@ public class MessageContentCreator {
             propName = "";
         }
 
-        logger.debug("Property NAME: " + propName);
+        LOG.debug("Property NAME: " + propName);
 
         // Discard messages that contains the names of the defined list
         if(!discardNames.isEmpty()) {
@@ -235,7 +234,7 @@ public class MessageContentCreator {
                 
                 msgContent.setDiscard(true);
                 
-                logger.debug("Leaving MessageContentCreator.convertMapMessage()");
+                LOG.debug("Leaving MessageContentCreator.convertMapMessage()");
 
                 // Return an object without content
                 // Call hasContent() to check whether or not content is available
@@ -257,7 +256,7 @@ public class MessageContentCreator {
                 // If there is something wrong with the format...
                 if(temp == null) {
                     
-                    logger.info("Property EVENTTIME contains invalid format: " + et);
+                    LOG.info("Property EVENTTIME contains invalid format: " + et);
                     wrongFormat = true;
                     
                     // ... create a new date string
@@ -285,7 +284,6 @@ public class MessageContentCreator {
         } catch(JMSException jmse) {
             // Put the exception message into the message content
             msgContent.put(msgProperty.get("TEXT"), "TEXT", "[JMSException] " + jmse.getMessage());
-            lst = null;
         }
         
         // Copy the content of the message into the MessageContent object
@@ -336,7 +334,7 @@ public class MessageContentCreator {
                                     prepareAndSetUnknownProperty(msgContent, name, temp);
                                 }
                             } else {
-                                logger.error("Cannot read the message properties. Use the old set of properties.");
+                                LOG.error("Cannot read the message properties. Use the old set of properties.");
                                 prepareAndSetUnknownProperty(msgContent, name, temp);
                             }
                         } else {
@@ -347,19 +345,19 @@ public class MessageContentCreator {
             }
             
             if(wrongFormat) {
-                logger.info(msgContent.toPrintableString());
+                LOG.info(msgContent.toPrintableString());
                 wrongFormat = false;
             }
         }
         
         if(messageFilter.shouldBeBlocked(msgContent)) {
-            logger.debug("Block it!");
+            LOG.debug("Block it!");
             msgContent.deleteContent();
         } else {
-            logger.debug("Process it!");
+            LOG.debug("Process it!");
         }
 
-        logger.debug("Leaving MessageContentCreator.convertMapMessage()");
+        LOG.debug("Leaving MessageContentCreator.convertMapMessage()");
 
         return msgContent;
     }
@@ -431,14 +429,14 @@ public class MessageContentCreator {
             try {
                 r = convertDateString(dateString, "yyyy-MM-dd HH:mm:ss.SS", "yyyy-MM-dd HH:mm:ss.SSS");
             } catch(ParseException pe) {
-                r = null;
+                // Can be ignored
             }
         } else if(dateString.matches(formatOneDigit)) {
             
             try {
                 r = convertDateString(dateString, "yyyy-MM-dd HH:mm:ss.S", "yyyy-MM-dd HH:mm:ss.SSS");
             } catch(ParseException pe) {
-                r = null;
+             // Can be ignored
             }            
         }
         
@@ -456,7 +454,7 @@ public class MessageContentCreator {
         
         boolean result = false;
                 
-        logger.debug("Entering MessageContentCreator.readMessageProperties(): Reading message properties.");
+        LOG.debug("Entering MessageContentCreator.readMessageProperties(): Reading message properties.");
         
         // Delete old hash table, if there are any
         if(msgProperty != null) {
@@ -473,7 +471,7 @@ public class MessageContentCreator {
             result = true;
         }
         
-        logger.debug("Leaving MessageContentCreator.readMessageProperties()");
+        LOG.debug("Leaving MessageContentCreator.readMessageProperties()");
 
         return result;
     }    

@@ -23,37 +23,32 @@
 
 package org.csstudio.ams.connector.voicemail;
 
-public class Fifo
-{
+public class Fifo {
+    
     private java.util.LinkedList<Object> fifo;
     
-    public Fifo()
-    {
+    public Fifo() {
         fifo = new java.util.LinkedList<Object>();
     }
     
-    public synchronized boolean empty()
-    {
+    public synchronized boolean empty() {
         return fifo.size() == 0;
     }
     
-    public synchronized int getSize()
-    {
+    public synchronized int getSize() {
         return fifo.size();
     }
     
-    public synchronized void pushback(Object o)
-    {
+    public synchronized void pushback(Object o) {
         fifo.addLast(o);
     }
     
-    public synchronized void pushfront(Object o)
-    {
+    public synchronized void pushfront(Object o) {
         fifo.addFirst(o);
     }
     
-    public synchronized Object fetch() throws Exception
-    {
+    public synchronized Object fetch() throws Exception {
+        
         if(fifo.size() == 0)
             throw new Exception("FIFO is empty");
 

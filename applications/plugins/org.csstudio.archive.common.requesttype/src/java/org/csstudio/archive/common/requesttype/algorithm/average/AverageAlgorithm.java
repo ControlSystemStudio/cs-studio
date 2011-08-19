@@ -1,4 +1,3 @@
-
 /*
  * Copyright (c) 2011 Stiftung Deutsches Elektronen-Synchrotron,
  * Member of the Helmholtz Association, (DESY), HAMBURG, GERMANY.
@@ -21,19 +20,18 @@
  * AT HTTP://WWW.DESY.DE/LEGAL/LICENSE.HTM
  *
  */
-
 package org.csstudio.archive.common.requesttype.algorithm.average;
 
 
 /**
- * TODO (Markus Moeller) : 
- * 
+ * TODO (Markus Moeller) :
+ *
  * @author Markus Moeller
  * @since 29.03.2011
  */
 public class AverageAlgorithm {
-	
-	public void readSamples() {
-		System.out.println("Useless");
-	}
+
+    public void readSamples() {
+        System.out.println("Useless");
+    }
 }

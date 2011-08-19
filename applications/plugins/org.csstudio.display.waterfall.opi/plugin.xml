@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?eclipse version="3.4"?>
+<plugin>
+   <extension
+         point="org.csstudio.opibuilder.widget">
+      <widget
+            category="Multichannels"
+            editpart_class="org.csstudio.display.waterfall.opi.WaterfallEditPart"
+            icon="icons/water.png"
+            model_class="org.csstudio.display.waterfall.opi.WaterfallModel"
+            name="Waterfall"
+            typeId="org.csstudio.display.waterfall.opi.Waterfall">
+      </widget>
+   </extension>
+
+</plugin>

@@ -5,11 +5,9 @@ import java.beans.PropertyChangeListener;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 
 import org.csstudio.dct.model.IRecord;
 import org.csstudio.dct.ui.UiExecutionService;
@@ -20,7 +18,6 @@ import org.csstudio.dct.ui.graphicalviewer.view.RecordFigure;
 import org.csstudio.dct.util.AliasResolutionException;
 import org.csstudio.dct.util.AliasResolutionUtil;
 import org.csstudio.dct.util.ResolutionUtil;
-import org.csstudio.platform.logging.CentralLogger;
 import org.csstudio.platform.model.pvs.IProcessVariableAddress;
 import org.csstudio.platform.model.pvs.ProcessVariableAdressFactory;
 import org.csstudio.platform.model.pvs.ValueType;
@@ -40,6 +37,8 @@ import org.eclipse.gef.editparts.AbstractGraphicalEditPart;
 import org.eclipse.swt.graphics.Color;
 import org.eclipse.swt.graphics.RGB;
 import org.epics.css.dal.Timestamp;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * Controller for {@link RecordNode}.
@@ -49,6 +48,8 @@ import org.epics.css.dal.Timestamp;
  */
 public class RecordNodeEditPart extends AbstractGraphicalEditPart implements NodeEditPart, PropertyChangeListener, IProcessVariableValueListener {
 
+    private static final Logger LOG = LoggerFactory.getLogger(RecordNodeEditPart.class);
+    
 	private ConnectionAnchor anchorRight, anchorLeft, anchorTop, anchorBottom;
 
 	private ChopboxAnchor anchorCenter;
@@ -111,7 +112,7 @@ public class RecordNodeEditPart extends AbstractGraphicalEditPart implements Nod
 				figure.setRecordInformation(infos);
 
 			} catch (AliasResolutionException e) {
-				CentralLogger.getInstance().error(this, e.getMessage());
+				LOG.error("Error: ", e);
 			}
 		}
 

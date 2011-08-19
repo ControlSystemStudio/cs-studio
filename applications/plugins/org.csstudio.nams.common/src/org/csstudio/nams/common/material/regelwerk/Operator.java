@@ -60,7 +60,8 @@ public enum Operator implements HoldsAnDatabaseId {
 	 * <strong>Pay attention:</strong> Please do never use this method outside
 	 * the DAOs!
 	 */
-	public short asDatabaseId() {
+	@Override
+    public short asDatabaseId() {
 		return this._dbid;
 	}
 }

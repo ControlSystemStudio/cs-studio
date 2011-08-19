@@ -33,21 +33,19 @@ import org.csstudio.websuite.RemotlyAccessible;
  * @author Markus Moeller
  *
  */
-public class MessageCounter implements IManagementCommand
-{
+public class MessageCounter implements IManagementCommand {
+    
     private static RemotlyAccessible objectToBeManaged = null;
 
     /* (non-Javadoc)
      * @see org.csstudio.platform.management.IManagementCommand#execute(org.csstudio.platform.management.CommandParameters)
      */
     @Override
-    public CommandResult execute(CommandParameters parameters)
-    {
+    public CommandResult execute(CommandParameters parameters) {
         return CommandResult.createMessageResult(Integer.toString(objectToBeManaged.getMessageCount()));
     }
     
-    public static void staticInject(RemotlyAccessible obj)
-    {
+    public static void staticInject(RemotlyAccessible obj) {
         objectToBeManaged = obj;
     }
 }

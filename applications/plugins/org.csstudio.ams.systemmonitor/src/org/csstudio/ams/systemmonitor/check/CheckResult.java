@@ -28,7 +28,10 @@ package org.csstudio.ams.systemmonitor.check;
  * @author Markus Moeller
  *
  */
-public enum CheckResult
-{
-    NONE, OK, TIMEOUT, WARN, ERROR
+public enum CheckResult {
+    NONE,
+    OK,
+    TIMEOUT,
+    WARN,
+    ERROR
 }

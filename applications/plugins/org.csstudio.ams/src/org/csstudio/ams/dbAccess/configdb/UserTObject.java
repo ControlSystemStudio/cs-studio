@@ -40,9 +40,10 @@ import org.csstudio.ams.dbAccess.TObject;
 	// sPreferredAlarmingType	NUMBER(6),
 	PRIMARY KEY (iUserId)						
 */
-public class UserTObject extends TObject implements ItemInterface
-{
-	private static final long serialVersionUID = -4695576106821896973L;
+@SuppressWarnings("hiding")
+public class UserTObject extends TObject implements ItemInterface {
+	
+    private static final long serialVersionUID = -4695576106821896973L;
 	
 	private int 	userID;// PRIMARY KEY
 	private int 	groupRef;
@@ -61,9 +62,12 @@ public class UserTObject extends TObject implements ItemInterface
 		this.groupRef = -1;
 	}
 	
-	public UserTObject(int userID, int groupRef, String name, String email, String mobilePhone, String phone, String statusCode, String confirmCode, short isActive, short prefAlarmingTypeRR)
-	{
-		this.userID = userID;
+	public UserTObject(int userID, int groupRef, String name,
+	                   String email, String mobilePhone, String phone,
+	                   String statusCode, String confirmCode, short isActive,
+	                   short prefAlarmingTypeRR) {
+		
+	    this.userID = userID;
 		this.groupRef = groupRef;
 		this.name = name;
 		this.email = email;
@@ -75,19 +79,19 @@ public class UserTObject extends TObject implements ItemInterface
 		this.prefAlarmingTypeRR = prefAlarmingTypeRR;
 	}
 	
-	public UserKey getKey()
-	{
+	public UserKey getKey() {
 		return new UserKey(userID, name, groupRef);
 	}
 
-	public int getID()
-	{
+	@Override
+    public int getID() {
 		return userID;
 	}
 	
-	public boolean equals(Object obj)
-	{
-		if(!(obj instanceof UserTObject))
+	@Override
+    public boolean equals(Object obj) {
+		
+	    if(!(obj instanceof UserTObject))
 			return false;
 		
 		UserTObject compare = (UserTObject)obj;

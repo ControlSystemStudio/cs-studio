@@ -23,8 +23,10 @@
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
-import org.csstudio.platform.logging.CentralLogger;
+import org.csstudio.platform.ui.CSSPlatformUiPlugin;
 import org.eclipse.core.resources.IContainer;
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.IResource;
@@ -44,6 +46,8 @@ import org.eclipse.jface.viewers.Viewer;
  */
 final class WorkspaceResourceContentProvider implements
 		ITreeContentProvider {
+    
+    private static final Logger LOG = Logger.getLogger(CSSPlatformUiPlugin.ID);
 	/**
 	 * Flag that signals if closed projects should be included as well.
 	 */
@@ -77,13 +81,15 @@ final class WorkspaceResourceContentProvider implements
 	 * The visual part that is using this content provider is about to be
 	 * disposed. Deallocate all allocated SWT resources.
 	 */
-	public void dispose() {
+	@Override
+    public void dispose() {
 	}
 
 	/**
 	 * {@inheritDoc}
 	 */
-	@SuppressWarnings("unchecked")
+	@Override
+    @SuppressWarnings("unchecked")
 	public Object[] getChildren(final Object element) {
 		if (element instanceof IWorkspace) {
 			// check if closed projects should be shown
@@ -113,7 +119,7 @@ final class WorkspaceResourceContentProvider implements
 					}
 					return children.toArray();
 				} catch (CoreException e) {
-					CentralLogger.getInstance().error(this, e);
+					LOG.log(Level.FINE,"", e);
 				}
 			}
 		}
@@ -150,14 +156,16 @@ final class WorkspaceResourceContentProvider implements
 	/**
 	 * {@inheritDoc}
 	 */
-	public Object[] getElements(final Object element) {
+	@Override
+    public Object[] getElements(final Object element) {
 		return getChildren(element);
 	}
 
 	/**
 	 * {@inheritDoc}
 	 */
-	public Object getParent(final Object element) {
+	@Override
+    public Object getParent(final Object element) {
 		if (element instanceof IResource) {
 			return ((IResource) element).getParent();
 		}
@@ -167,14 +175,16 @@ final class WorkspaceResourceContentProvider implements
 	/**
 	 * {@inheritDoc}
 	 */
-	public boolean hasChildren(final Object element) {
+	@Override
+    public boolean hasChildren(final Object element) {
 		return getChildren(element).length > 0;
 	}
 
 	/**
 	 * {@inheritDoc}
 	 */
-	public void inputChanged(final Viewer viewer, final Object oldInput,
+	@Override
+    public void inputChanged(final Viewer viewer, final Object oldInput,
 			final Object newInput) {
 	}
 

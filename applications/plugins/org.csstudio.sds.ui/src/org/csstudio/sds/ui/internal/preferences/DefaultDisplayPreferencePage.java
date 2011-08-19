@@ -19,59 +19,74 @@
  * PROJECT IN THE FILE LICENSE.HTML. IF THE LICENSE IS NOT INCLUDED YOU MAY FIND A COPY 
  * AT HTTP://WWW.DESY.DE/LEGAL/LICENSE.HTM
  */
- package org.csstudio.sds.ui.internal.preferences;
+package org.csstudio.sds.ui.internal.preferences;
 
-import org.csstudio.sds.internal.preferences.PreferenceConstants;
-import org.csstudio.sds.ui.SdsUiPlugin;
+import org.csstudio.domain.desy.ui.FieldEditors.WorkspaceFileFieldEditor;
+import org.eclipse.core.resources.IFile;
+import org.eclipse.core.runtime.preferences.InstanceScope;
 import org.eclipse.jface.preference.BooleanFieldEditor;
 import org.eclipse.jface.preference.FieldEditorPreferencePage;
-import org.eclipse.jface.preference.IPreferenceStore;
 import org.eclipse.jface.preference.StringFieldEditor;
+import org.eclipse.jface.viewers.Viewer;
+import org.eclipse.jface.viewers.ViewerFilter;
 import org.eclipse.ui.IWorkbench;
 import org.eclipse.ui.IWorkbenchPreferencePage;
+import org.eclipse.ui.preferences.ScopedPreferenceStore;
 
 /**
  * The preference page for the default display settings.
  * 
  * @author Joerg Rathlev
  */
-public final class DefaultDisplayPreferencePage extends
-		FieldEditorPreferencePage implements IWorkbenchPreferencePage {
+public final class DefaultDisplayPreferencePage extends FieldEditorPreferencePage implements
+        IWorkbenchPreferencePage {
+    
+    /**
+     * Creates this preference page.
+     */
+    public DefaultDisplayPreferencePage() {
+        super(GRID);
+    }
+    
+    @Override
+    protected void createFieldEditors() {
+        WorkspaceFileFieldEditor displayPathFieldEditor = new WorkspaceFileFieldEditor(DefaultDisplayPreference.DEFAULT_DISPLAY_PATH
+                                                                                                         .getKeyAsString(),
+                                                                                                 "Default display file",
+                                                                                                 getFieldEditorParent());
+        displayPathFieldEditor.setFilter(new ViewerFilter() {
+            
+            @Override
+            public boolean select(Viewer viewer, Object parentElement, Object element) {
+                if (element instanceof IFile) {
+                    IFile file = (IFile) element;
+                    if (file != null && file.getFileExtension() != null) {
+                        return file.getFileExtension().toLowerCase().equals("css-sds");
+                    }
+                    return false;
+                }
+                return true;
+            }
+        });
+        addField(displayPathFieldEditor);
+        
+        addField(new StringFieldEditor(DefaultDisplayPreference.DEFAULT_DISPLAY_ALIAS.getKeyAsString(),
+                                       "Alias:",
+                                       getFieldEditorParent()));
+        addField(new BooleanFieldEditor(DefaultDisplayPreference.OPEN_AS_SHELL.getKeyAsString(),
+                                        "Open as shell",
+                                        getFieldEditorParent()));
+    }
 
-	/**
-	 * Creates this preference page.
-	 */
-	public DefaultDisplayPreferencePage() {
-		super(GRID);
-		setDescription("Set up the default display in which process variables can be opened.");
-	}
-	
-	@Override
-	protected void createFieldEditors() {
-		addField(new StringFieldEditor(
-				PreferenceConstants.PROP_DEFAULT_DISPLAY_FILE,
-				"Default display file:", getFieldEditorParent()));
-		addField(new StringFieldEditor(
-				PreferenceConstants.PROP_DEFAULT_DISPLAY_ALIAS,
-				"Alias:", getFieldEditorParent()));
-		addField(new BooleanFieldEditor(
-				PreferenceConstants.PROP_DEFAULT_DISPLAY_OPEN_AS_SHELL,
-				"Open as shell", getFieldEditorParent()));
-	}
-
-	/**
-	 * {@inheritDoc}
-	 */
-	@Override
-	protected IPreferenceStore doGetPreferenceStore() {
-		return SdsUiPlugin.getCorePreferenceStore();
-	}
-
-	/**
-	 * {@inheritDoc}
-	 */
-	public void init(IWorkbench workbench) {
-		// nothing to do
-	}
-
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public void init(IWorkbench workbench) {
+        setPreferenceStore(new ScopedPreferenceStore(new InstanceScope(),
+                                                 DefaultDisplayPreference.DEFAULT_DISPLAY_PATH
+                                                 .getPluginID()));
+        setDescription("Set up the default display in which process variables can be opened.");
+    }
+    
 }

@@ -32,6 +32,7 @@ import java.io.File;
 import java.io.IOException;
 import java.util.Date;
 import java.util.Properties;
+
 import javax.activation.DataHandler;
 import javax.activation.DataSource;
 import javax.activation.FileDataSource;
@@ -44,7 +45,7 @@ import javax.mail.internet.InternetAddress;
 import javax.mail.internet.MimeBodyPart;
 import javax.mail.internet.MimeMessage;
 import javax.mail.internet.MimeMultipart;
-import org.csstudio.platform.logging.CentralLogger;
+
 import org.csstudio.utility.screenshot.IImageWorker;
 import org.csstudio.utility.screenshot.ScreenshotPlugin;
 import org.csstudio.utility.screenshot.dialog.MailSenderDialog;
@@ -59,6 +60,8 @@ import org.eclipse.swt.graphics.ImageData;
 import org.eclipse.swt.graphics.PaletteData;
 import org.eclipse.swt.graphics.RGB;
 import org.eclipse.swt.widgets.Shell;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * @author Markus Moeller
@@ -66,6 +69,8 @@ import org.eclipse.swt.widgets.Shell;
  */
 
 public class MailImageWorker implements IImageWorker {
+    
+    private static final Logger LOG = LoggerFactory.getLogger(MailImageWorker.class);
     
 	/** The string that is used to build the screenshot plugin menu */
 	private final String MENU_ITEM_ENTRY = "eMail";
@@ -102,7 +107,7 @@ public class MailImageWorker implements IImageWorker {
                 workspaceLocation = workspaceLocation + "/";
             }
         } catch(IllegalStateException ise) {
-            CentralLogger.getInstance().warn(this, "Workspace location could not be found. Using working directory '.'");
+            LOG.warn("Workspace location could not be found. Using working directory '.'");
             workspaceLocation = "./";
         }
         

@@ -23,13 +23,12 @@ import java.util.List;
 import javax.annotation.CheckForNull;
 import javax.annotation.Nonnull;
 
-import org.apache.log4j.Logger;
 import org.csstudio.alarm.service.declaration.IAlarmListener;
 import org.csstudio.alarm.service.declaration.IAlarmMessage;
-import org.csstudio.alarm.table.JmsLogsPlugin;
-import org.csstudio.alarm.table.dataModel.BasicMessage;
 import org.csstudio.alarm.table.dataModel.AbstractMessageList;
-import org.csstudio.platform.logging.CentralLogger;
+import org.csstudio.alarm.table.dataModel.BasicMessage;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * Listens for alarm messages and adds incoming messages to the internally hold message list.
@@ -39,7 +38,7 @@ import org.csstudio.platform.logging.CentralLogger;
  */
 public class AlarmListener implements IAlarmTableListener {
 
-    private static final Logger LOG = CentralLogger.getInstance().getLogger(AlarmListener.class);
+    private static final Logger LOG = LoggerFactory.getLogger(AlarmListener.class);
 
     /**
      * This is the destination for the messages
@@ -61,6 +60,7 @@ public class AlarmListener implements IAlarmTableListener {
     /**
      * Stops this listener. Once stopped, the listener cannot be restarted.
      */
+    @Override
     public void stop() {
         // Nothing to do
     }
@@ -69,6 +69,7 @@ public class AlarmListener implements IAlarmTableListener {
      * Called when a message is received. The message is interpreted as an alarm message. If the
      * message contains valid information, the respective updates of the alarm tree are triggered.
      */
+    @Override
     public void onMessage(@CheckForNull final IAlarmMessage message) {
 //        LOG.debug("received: " + message);
         if (message == null) {

@@ -19,8 +19,7 @@ function windowTitle()
     }
 }
 </SCRIPT>
-<NOSCRIPT>
-</NOSCRIPT>
+
 
 </HEAD>
 
@@ -131,10 +130,35 @@ The utility class to facilitate Javascript programming.
 <TH ALIGN="left" COLSPAN="2"><FONT SIZE="+2">
 <B>Method Summary</B></FONT></TH>
 </TR>
+
 <TR BGCOLOR="white" CLASS="TableRowColor">
 <TD ALIGN="right" VALIGN="top" WIDTH="1%"><FONT SIZE="-1">
 <CODE>static&nbsp;void</CODE></FONT></TD>
-<TD><CODE><B><A HREF="../../../../org/csstudio/opibuilder/scriptUtil/ScriptUtil.html#makeElogEntry(java.lang.String)">makeElogEntry</A></B>(java.lang.String&nbsp;filePath)</CODE>
+<TD><CODE><B><A HREF="#compactMode()">compactMode</A></B>()</CODE>
+
+<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Enter or exit compact mode.</TD>
+</TR>
+<TR BGCOLOR="white" CLASS="TableRowColor">
+<TD ALIGN="right" VALIGN="top" WIDTH="1%"><FONT SIZE="-1">
+<CODE>static&nbsp;void</CODE></FONT></TD>
+<TD><CODE><B><A HREF="#executeEclipseCommand(java.lang.String)">executeEclipseCommand</A></B>(java.lang.String&nbsp;commandId)</CODE>
+
+<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Execute an Eclipse command.</TD>
+</TR>
+<TR BGCOLOR="white" CLASS="TableRowColor">
+<TD ALIGN="right" VALIGN="top" WIDTH="1%"><FONT SIZE="-1">
+<CODE>static&nbsp;void</CODE></FONT></TD>
+<TD><CODE><B><A HREF="#fullScreen()">fullScreen</A></B>()</CODE>
+
+<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Enter or exit full screen.</TD>
+</TR>
+<TR BGCOLOR="white" CLASS="TableRowColor">
+<TD ALIGN="right" VALIGN="top" WIDTH="1%"><FONT SIZE="-1">
+<CODE>static&nbsp;void</CODE></FONT></TD>
+<TD><CODE><B><A HREF="#makeElogEntry(java.lang.String)">makeElogEntry</A></B>(java.lang.String&nbsp;filePath)</CODE>
 
 <BR>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Pop up an Elog dialog to make an Elog entry.</TD>
@@ -142,7 +166,7 @@ The utility class to facilitate Javascript programming.
 <TR BGCOLOR="white" CLASS="TableRowColor">
 <TD ALIGN="right" VALIGN="top" WIDTH="1%"><FONT SIZE="-1">
 <CODE>static&nbsp;void</CODE></FONT></TD>
-<TD><CODE><B><A HREF="../../../../org/csstudio/opibuilder/scriptUtil/ScriptUtil.html#openOPI(org.csstudio.opibuilder.editparts.AbstractBaseEditPart, java.lang.String, boolean, org.csstudio.opibuilder.util.MacrosInput)">openOPI</A></B>(org.csstudio.opibuilder.editparts.AbstractBaseEditPart&nbsp;widgetController,
+<TD><CODE><B><A HREF="#openOPI(org.csstudio.opibuilder.editparts.AbstractBaseEditPart, java.lang.String, boolean, org.csstudio.opibuilder.util.MacrosInput)">openOPI</A></B>(org.csstudio.opibuilder.editparts.AbstractBaseEditPart&nbsp;widgetController,
         java.lang.String&nbsp;relative_path,
         boolean&nbsp;newWindow,
         org.csstudio.opibuilder.util.MacrosInput&nbsp;macrosInput)</CODE>
@@ -219,6 +243,46 @@ public static final void <B>makeElogEntry</B>(java.lang.String&nbsp;filePath)</P
  or a workspace file path. File types that the logbook support depend on 
  implementation but should include *.gif, *.jpg: File will be attached 
  as image.</DL>
+</DD>
+</DL>
+<HR>
+
+
+<A NAME="executeEclipseCommand(java.lang.String)"><!-- --></A><H3>
+executeEclipseCommand</H3>
+<PRE>
+public static void <B>executeEclipseCommand</B>(java.lang.String&nbsp;commandId)</PRE>
+<DL>
+<DD>Execute an Eclipse command.
+<P>
+<DD><DL>
+<DT><B>Parameters:</B><DD><CODE>commandId</CODE> - the command id.</DL>
+</DD>
+</DL>
+<HR>
+
+<A NAME="compactMode()"><!-- --></A><H3>
+compactMode</H3>
+<PRE>
+public static void <B>compactMode</B>()</PRE>
+<DL>
+<DD>Enter or exit compact mode.
+<P>
+<DD><DL>
+</DL>
+</DD>
+</DL>
+<HR>
+
+<A NAME="fullScreen()"><!-- --></A><H3>
+fullScreen</H3>
+<PRE>
+public static void <B>fullScreen</B>()</PRE>
+<DL>
+<DD>Enter or exit full screen.
+<P>
+<DD><DL>
+</DL>
 </DD>
 </DL>
 <!-- ========= END OF CLASS DATA ========= -->

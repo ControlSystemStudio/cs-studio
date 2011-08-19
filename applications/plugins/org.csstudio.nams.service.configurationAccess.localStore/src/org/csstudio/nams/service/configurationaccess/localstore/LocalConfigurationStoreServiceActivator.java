@@ -1,3 +1,4 @@
+
 package org.csstudio.nams.service.configurationaccess.localstore;
 
 import org.csstudio.nams.common.activatorUtils.AbstractBundleActivator;
@@ -8,7 +9,7 @@ import org.csstudio.nams.common.activatorUtils.OSGiServiceOffers;
 import org.csstudio.nams.common.activatorUtils.Required;
 import org.csstudio.nams.service.configurationaccess.localstore.declaration.Configuration;
 import org.csstudio.nams.service.configurationaccess.localstore.declaration.ConfigurationServiceFactory;
-import org.csstudio.nams.service.logging.declaration.Logger;
+import org.csstudio.nams.service.logging.declaration.ILogger;
 import org.osgi.framework.BundleActivator;
 
 /**
@@ -24,7 +25,7 @@ public class LocalConfigurationStoreServiceActivator extends
 	@OSGiBundleActivationMethod
 	public OSGiServiceOffers startBundle(@OSGiService
 	@Required
-	final Logger logger) throws Exception {
+	final ILogger logger) throws Exception {
 
 		/*- XXX Needed for HSQL-Mode.
 		Class.forName("org.hsqldb.jdbcDriver");*/

@@ -37,7 +37,8 @@ import org.csstudio.config.savevalue.service.ChangelogDeletionService;
 import org.csstudio.config.savevalue.service.ChangelogEntry;
 import org.csstudio.config.savevalue.service.ChangelogService;
 import org.csstudio.config.savevalue.service.SaveValueServiceException;
-import org.csstudio.platform.logging.CentralLogger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * Implementation of the changelog service.
@@ -49,14 +50,15 @@ public class ChangelogServiceImpl implements ChangelogService, ChangelogDeletion
 	/**
 	 * The logger.
 	 */
-	private final CentralLogger _log = CentralLogger.getInstance();
-
+    private static final Logger LOG = LoggerFactory.getLogger(ChangelogServiceImpl.class);
+    
 	/**
 	 * {@inheritDoc}
 	 */
-	public final ChangelogEntry[] readChangelog(final String iocName)
+	@Override
+    public final ChangelogEntry[] readChangelog(final String iocName)
 			throws SaveValueServiceException, RemoteException {
-		_log.debug(this, "Reading changelog for: " + iocName);
+		LOG.debug("Reading changelog for: {}", iocName);
 		IocFiles files = new IocFiles(iocName);
 		ChangelogEntry[] entries = readChangelog(files.getChangelog());
 		return entries;
@@ -82,18 +84,17 @@ public class ChangelogServiceImpl implements ChangelogService, ChangelogDeletion
 						new ChangelogEntry[entries.size()]);
 
 			} catch (FileNotFoundException e) {
-				_log.error(this,
-						"File exists but could not be opened: " + changelog, e);
+				LOG.error("File exists but could not be opened: {}",changelog, e);
 				throw new SaveValueServiceException("Could not open changelog file", e);
 			} catch (IOException e) {
-				_log.error(this, "Error reading changelog file", e);
+				LOG.error("Error reading changelog file", e);
 				throw new SaveValueServiceException("Error reading changelog file: " + e.getMessage(), e);
 			} finally {
 				if (reader != null) {
 					try {
 						reader.close();
 					} catch (IOException e) {
-						_log.warn(this, "Error closing changelog file", e);
+						LOG.warn("Error closing changelog file", e);
 					}
 				}
 			}
@@ -105,9 +106,10 @@ public class ChangelogServiceImpl implements ChangelogService, ChangelogDeletion
 	/**
 	 * {@inheritDoc}
 	 */
-	public void deleteEntries(final String iocName, final String pvName)
+	@Override
+    public void deleteEntries(final String iocName, final String pvName)
 			throws SaveValueServiceException, RemoteException {
-		_log.debug(this, "deleteEntries called with iocName=" + iocName + ", pvName=" + pvName);
+		LOG.debug("deleteEntries called with iocName={}, pvName={}",iocName, pvName);
 		IocFiles files = new IocFiles(iocName);
 		File changelogFile = files.getChangelog();
 		deleteEntries(changelogFile, pvName);
@@ -129,7 +131,7 @@ public class ChangelogServiceImpl implements ChangelogService, ChangelogDeletion
 				filter(entries, pvName);
 				overwriteChangelog(changelog, entries);
 			} catch (IOException e) {
-				_log.error(this, "Error accessing changelog file", e);
+				LOG.error("Error accessing changelog file", e);
 				throw new SaveValueServiceException(
 						"Error accessing changelog file", e);
 			}
@@ -160,7 +162,7 @@ public class ChangelogServiceImpl implements ChangelogService, ChangelogDeletion
 				try {
 					appender.close();
 				} catch (IOException e) {
-					_log.warn(this, "Error closing changelog file", e);
+					LOG.warn("Error closing changelog file", e);
 				}
 			}
 		}

@@ -1,21 +1,21 @@
 
 /*
 Alte Tabellennamen - NICHT MEHR VERWENDEN
-drop table AMSFilterNegationCond4Filter;
---create table AMSFilterNegationCond4Filter (
+DROP TABLE IF EXISTS AMSFilterNegationCond4Filter;
+--CREATE TABLE AMSFilterNegationCond4Filter (
 --    iFilterConditionRef			BIGINT NOT NULL,
 --    iNegatedFCRef               BIGINT NOT NULL
 --);
 
---drop table AMSFilterCondConj4FilterCommon;
---create table AMSFilterCondConj4FilterCommon (
+--DROP TABLE IF EXISTS AMSFilterCondConj4FilterCommon;
+--CREATE TABLE AMSFilterCondConj4FilterCommon (
 --   iFilterConditionRef			BIGINT NOT NULL,
 --   Operator                     VARCHAR(3) NOT NULL, 
 --   CONSTRAINT AMSFilterCondConj4FilterCommon CHECK (Operator IN ('AND', 'OR'))
 --);
 
-drop table AMSFilterCondConj4FilterFCJoin;
-create table AMSFilterCondConj4FilterFCJoin (
+DROP TABLE IF EXISTS AMSFilterCondConj4FilterFCJoin;
+CREATE TABLE AMSFilterCondConj4FilterFCJoin (
    iFilterConditionID           BIGINT NOT NULL,
    iFilterConditionRef			BIGINT NOT NULL
  );
@@ -24,42 +24,42 @@ Alte Tabellennamen - NICHT MEHR VERWENDEN -- ENDE
 
 /* NAMS HSqlDb */
 
-DROP TABLE AMS_FilterCond_Junction;
+DROP TABLE IF EXISTS AMS_FilterCond_Junction;
 CREATE TABLE AMS_FilterCond_Junction
 (
    iFilterConditionRef BIGINT NOT NULL,
    Operator VARCHAR(3) NOT NULL
 );
 
-DROP TABLE AMS_FilterCond_Junction_Syn;
+DROP TABLE IF EXISTS AMS_FilterCond_Junction_Syn;
 CREATE TABLE AMS_FilterCond_Junction_Syn
 (
    iFilterConditionRef BIGINT NOT NULL,
    Operator VARCHAR(3) NOT NULL
 );
 
-DROP TABLE AMS_FilterCond_FilterCond;
+DROP TABLE IF EXISTS AMS_FilterCond_FilterCond;
 CREATE TABLE AMS_FilterCond_FilterCond
 (
    iFilterConditionId BIGINT NOT NULL,
    iFilterConditionRef BIGINT NOT NULL
 );
 
-DROP TABLE AMS_FilterCond_FilterCond_Syn;
+DROP TABLE IF EXISTS AMS_FilterCond_FilterCond_Syn;
 CREATE TABLE AMS_FilterCond_FilterCond_Syn
 (
    iFilterConditionId BIGINT NOT NULL,
    iFilterConditionRef BIGINT NOT NULL
 );
 
-DROP TABLE AMS_FilterCond_Negation;
+DROP TABLE IF EXISTS AMS_FilterCond_Negation;
 CREATE TABLE AMS_FilterCond_Negation
 (
    iFilterConditionRef BIGINT NOT NULL,
    iNegatedFCRef BIGINT NOT NULL
 );
 
-DROP TABLE AMS_FilterCond_Negation_Syn;
+DROP TABLE IF EXISTS AMS_FilterCond_Negation_Syn;
 CREATE TABLE AMS_FilterCond_Negation_Syn
 (
    iFilterConditionRef BIGINT NOT NULL,
@@ -68,8 +68,8 @@ CREATE TABLE AMS_FilterCond_Negation_Syn
 
 /* Create HSqlDb AMS */
 
-drop table AMS_User;
-create table AMS_User
+DROP TABLE IF EXISTS AMS_User;
+CREATE TABLE AMS_User
 (
 	iUserId 		BIGINT NOT NULL,
 	iGroupRef		BIGINT default -1 NOT NULL, /* FK AMS_Groups.iGroupId				*/
@@ -85,8 +85,8 @@ create table AMS_User
 	PRIMARY KEY (iUserId)						
 );
 
-drop table AMS_UserGroup;
-create table AMS_UserGroup 
+DROP TABLE IF EXISTS AMS_UserGroup;
+CREATE TABLE AMS_UserGroup 
 (
 	iUserGroupId		BIGINT NOT NULL,		
 	iGroupRef		BIGINT default -1 NOT NULL,	/* FK AMS_Groups.iGroupId				*/
@@ -97,8 +97,8 @@ create table AMS_UserGroup
 	PRIMARY KEY (iUserGroupId)						
 );
 
-drop table AMS_UserGroup_User;
-create table AMS_UserGroup_User
+DROP TABLE IF EXISTS AMS_UserGroup_User;
+CREATE TABLE AMS_UserGroup_User
 (
 	iUserGroupRef		BIGINT NOT NULL,
 	iUserRef		BIGINT NOT NULL,
@@ -110,8 +110,8 @@ create table AMS_UserGroup_User
 );
 
 
-drop table AMS_FilterConditionType;
-create table AMS_FilterConditionType				/* Stringbed., Zeitbed., Array, System 	*/
+DROP TABLE IF EXISTS AMS_FilterConditionType;
+CREATE TABLE AMS_FilterConditionType				/* Stringbed., Zeitbed., Array, System 	*/
 (
 	iFilterConditionTypeID	BIGINT,
 	cName			VARCHAR(128),
@@ -120,8 +120,8 @@ create table AMS_FilterConditionType				/* Stringbed., Zeitbed., Array, System 	
 	PRIMARY KEY(iFilterConditionTypeID) 
 );
 
-drop table AMS_FilterCondition;
-create table AMS_FilterCondition
+DROP TABLE IF EXISTS AMS_FilterCondition;
+CREATE TABLE AMS_FilterCondition
 (
 	iFilterConditionID	BIGINT NOT NULL,
 	iGroupRef		BIGINT default -1 NOT NULL,	/*FK AMS_Groups.iGroupId				*/
@@ -131,8 +131,8 @@ create table AMS_FilterCondition
 	PRIMARY KEY(iFilterConditionID)
 );
 
-drop table AMS_FilterCondition_String;
-create table AMS_FilterCondition_String
+DROP TABLE IF EXISTS AMS_FilterCondition_String;
+CREATE TABLE AMS_FilterCondition_String
 (
 	iFilterConditionRef	BIGINT NOT NULL,
 	cKeyValue		VARCHAR(16),
@@ -140,24 +140,24 @@ create table AMS_FilterCondition_String
 	cCompValue		VARCHAR(128)
 );
 
-drop table AMS_FilterCond_ArrStr;
-create table AMS_FilterCond_ArrStr
+DROP TABLE IF EXISTS AMS_FilterCond_ArrStr;
+CREATE TABLE AMS_FilterCond_ArrStr
 (
 	iFilterConditionRef	BIGINT NOT NULL,
 	cKeyValue		VARCHAR(16),
 	sOperator		INTEGER
 );
 
-drop table AMS_FilterCond_ArrStrVal;
-create table AMS_FilterCond_ArrStrVal
+DROP TABLE IF EXISTS AMS_FilterCond_ArrStrVal;
+CREATE TABLE AMS_FilterCond_ArrStrVal
 (
 	iFilterConditionRef	BIGINT NOT NULL,
 	cCompValue		VARCHAR(128)
 );
 
 
-drop table AMS_FilterCond_TimeBased;
-create table AMS_FilterCond_TimeBased
+DROP TABLE IF EXISTS AMS_FilterCond_TimeBased;
+CREATE TABLE AMS_FilterCond_TimeBased
 (
 	iFilterConditionRef	BIGINT NOT NULL,
 	cStartKeyValue		VARCHAR(16),
@@ -170,8 +170,8 @@ create table AMS_FilterCond_TimeBased
 	sTimeBehavior		INTEGER
 );
 
-drop table AMS_FilterCondition_PV;
-create table AMS_FilterCondition_PV
+DROP TABLE IF EXISTS AMS_FilterCondition_PV;
+CREATE TABLE AMS_FilterCondition_PV
 (
 	iFilterConditionRef	BIGINT NOT NULL,
 	cPvChannelName		VARCHAR(128),
@@ -180,8 +180,8 @@ create table AMS_FilterCondition_PV
 	cCompValue			VARCHAR(128)
 );
 
-drop table AMS_FilterCond_Conj_Common;
-create table AMS_FilterCond_Conj_Common
+DROP TABLE IF EXISTS AMS_FilterCond_Conj_Common;
+CREATE TABLE AMS_FilterCond_Conj_Common
 (
 	iFilterConditionRef			BIGINT NOT NULL,
 	iFirstFilterConditionRef	BIGINT NOT NULL,
@@ -189,8 +189,8 @@ create table AMS_FilterCond_Conj_Common
 	iOperand                    INTEGER
 );
 
-drop table AMS_Filter;
-create table AMS_Filter
+DROP TABLE IF EXISTS AMS_Filter;
+CREATE TABLE AMS_Filter
 (
 	iFilterID		BIGINT,
 	iGroupRef		BIGINT default -1 NOT NULL, /*FK AMS_Groups.iGroupId				*/
@@ -199,8 +199,8 @@ create table AMS_Filter
 	PRIMARY KEY (iFilterID)
 );
 
-drop table AMS_Filter_FilterCondition;
-create table AMS_Filter_FilterCondition
+DROP TABLE IF EXISTS AMS_Filter_FilterCondition;
+CREATE TABLE AMS_Filter_FilterCondition
 (
 	iFilterRef			BIGINT,
 	iFilterConditionRef	BIGINT,
@@ -208,8 +208,8 @@ create table AMS_Filter_FilterCondition
 	PRIMARY KEY (iFilterRef,iFilterConditionRef)
 );
 
-drop table AMS_Topic;
-create table AMS_Topic
+DROP TABLE IF EXISTS AMS_Topic;
+CREATE TABLE AMS_Topic
 (
 	iTopicId 		BIGINT NOT NULL,
 	iGroupRef		BIGINT default -1 NOT NULL, -- FK AMS_Groups.iGroupId
@@ -219,8 +219,8 @@ create table AMS_Topic
 	PRIMARY KEY (iTopicId)						
 );
 
-drop table AMS_FilterActionType;			
-create table AMS_FilterActionType				/* 1-9 definiert, 100 - freie Topics 			*/
+DROP TABLE IF EXISTS AMS_FilterActionType;			
+CREATE TABLE AMS_FilterActionType				/* 1-9 definiert, 100 - freie Topics 			*/
 (			
 	iFilterActionTypeID	BIGINT NOT NULL,    	/* 0, 1 - SMS, 2 - SMS G, 3 - SMS G R, 4 - VM, 5 - VM G, 6 - VM G R, 7 - MAIL, 8 - MAIL G, 9 - MAIL G R */
 	cName			VARCHAR(128),
@@ -228,8 +228,8 @@ create table AMS_FilterActionType				/* 1-9 definiert, 100 - freie Topics 			*/
 	PRIMARY KEY(iFilterActionTypeID)
 );
 
-drop table AMS_FilterAction;
-create table AMS_FilterAction
+DROP TABLE IF EXISTS AMS_FilterAction;
+CREATE TABLE AMS_FilterAction
 (			
 	iFilterActionID		BIGINT NOT NULL,
 	iFilterActionTypeRef	BIGINT NOT NULL,		/*FK AMS_FilterActionType.iFilterActionTypeID 		*/
@@ -238,8 +238,8 @@ create table AMS_FilterAction
 	PRIMARY KEY(iFilterActionID)
 );
 
-drop table AMS_Filter_FilterAction;
-create table AMS_Filter_FilterAction
+DROP TABLE IF EXISTS AMS_Filter_FilterAction;
+CREATE TABLE AMS_Filter_FilterAction
 (
 	iFilterRef		BIGINT NOT NULL,
 	iFilterActionRef	BIGINT NOT NULL,
@@ -249,8 +249,8 @@ create table AMS_Filter_FilterAction
 
 /* nur f?r die Oberfl?che => wird nicht repliziert */
 
-drop table AMS_Groups;
-create table AMS_Groups						/* logische GUI Baumstruktur 				*/
+DROP TABLE IF EXISTS AMS_Groups;
+CREATE TABLE AMS_Groups						/* logische GUI Baumstruktur 				*/
 (
 	iGroupId		BIGINT NOT NULL,		
 	cGroupName		VARCHAR(128),
@@ -258,8 +258,8 @@ create table AMS_Groups						/* logische GUI Baumstruktur 				*/
 	PRIMARY KEY (iGroupId)
 );
 
-drop table AMS_DefMessageText;
-create table AMS_DefMessageText
+DROP TABLE IF EXISTS AMS_DefMessageText;
+CREATE TABLE AMS_DefMessageText
 (
 	iDefMessageTextID	BIGINT	NOT NULL,
 	cName			VARCHAR(128) 	NOT NULL,
@@ -268,8 +268,8 @@ create table AMS_DefMessageText
 );
 
 
-drop table AMS_Flag;
-create table AMS_Flag
+DROP TABLE IF EXISTS AMS_Flag;
+CREATE TABLE AMS_Flag
 (
 	cFlagName		VARCHAR(32)	NOT NULL,
 	sFlagValue		INTEGER	NOT NULL,
@@ -279,29 +279,29 @@ create table AMS_Flag
 /* Create HSqlDb AMS Sync */
 
 /*
-drop table AMS_User_Syn;
-drop table AMS_UserGroup_User_Syn;
-drop table AMS_FilterConditionType_Syn;
-drop table AMS_FilterCondition_Syn;
-drop table AMS_FilterCondition_String_Syn;
-drop table AMS_FilterCondition_PV_Syn;
+DROP TABLE IF EXISTS AMS_User_Syn;
+DROP TABLE IF EXISTS AMS_UserGroup_User_Syn;
+DROP TABLE IF EXISTS AMS_FilterConditionType_Syn;
+DROP TABLE IF EXISTS AMS_FilterCondition_Syn;
+DROP TABLE IF EXISTS AMS_FilterCondition_String_Syn;
+DROP TABLE IF EXISTS AMS_FilterCondition_PV_Syn;
 
-drop table AMS_FilterCond_ArrStr_Syn;
-drop table AMS_FilterCond_ArrStrVal_Syn;
-drop table AMS_FilterCond_TimeBased_Syn;
-drop table AMS_Filter_Syn;
-drop table AMS_Filter_FilterCondition_Syn;
+DROP TABLE IF EXISTS AMS_FilterCond_ArrStr_Syn;
+DROP TABLE IF EXISTS AMS_FilterCond_ArrStrVal_Syn;
+DROP TABLE IF EXISTS AMS_FilterCond_TimeBased_Syn;
+DROP TABLE IF EXISTS AMS_Filter_Syn;
+DROP TABLE IF EXISTS AMS_Filter_FilterCondition_Syn;
 
-drop table AMS_Topic_Syn;
-drop table AMS_FilterActionType_Syn;
-drop table AMS_FilterAction_Syn;
-drop table AMS_Filter_FilterAction_Syn;
-drop table AMS_UserGroup_Syn;
+DROP TABLE IF EXISTS AMS_Topic_Syn;
+DROP TABLE IF EXISTS AMS_FilterActionType_Syn;
+DROP TABLE IF EXISTS AMS_FilterAction_Syn;
+DROP TABLE IF EXISTS AMS_Filter_FilterAction_Syn;
+DROP TABLE IF EXISTS AMS_UserGroup_Syn;
 */
 
 
-drop table AMS_User_Syn;
-create table AMS_User_Syn
+DROP TABLE IF EXISTS AMS_User_Syn;
+CREATE TABLE AMS_User_Syn
 (
 	iUserId 		BIGINT NOT NULL,
 	iGroupRef		BIGINT default -1 NOT NULL, /* FK AMS_Groups.iGroupId				*/
@@ -317,8 +317,8 @@ create table AMS_User_Syn
 	PRIMARY KEY (iUserId)						
 );
 
-drop table AMS_UserGroup_User_Syn;
-create table AMS_UserGroup_User_Syn
+DROP TABLE IF EXISTS AMS_UserGroup_User_Syn;
+CREATE TABLE AMS_UserGroup_User_Syn
 (
 	iUserGroupRef		BIGINT NOT NULL,
 	iUserRef		BIGINT NOT NULL,
@@ -329,8 +329,8 @@ create table AMS_UserGroup_User_Syn
 	PRIMARY KEY(iUserGroupRef,iUserRef)					
 );
 
-drop table AMS_FilterConditionType_Syn;
-create table AMS_FilterConditionType_Syn			/* Stringbed., Zeitbed., Array, System 	*/
+DROP TABLE IF EXISTS AMS_FilterConditionType_Syn;
+CREATE TABLE AMS_FilterConditionType_Syn			/* Stringbed., Zeitbed., Array, System 	*/
 (
 	iFilterConditionTypeID	BIGINT,
 	cName			VARCHAR(128),
@@ -339,8 +339,8 @@ create table AMS_FilterConditionType_Syn			/* Stringbed., Zeitbed., Array, Syste
 	PRIMARY KEY(iFilterConditionTypeID) 
 );
 
-drop table AMS_FilterCondition_Syn;
-create table AMS_FilterCondition_Syn
+DROP TABLE IF EXISTS AMS_FilterCondition_Syn;
+CREATE TABLE AMS_FilterCondition_Syn
 (
 	iFilterConditionID	BIGINT NOT NULL,
 	iGroupRef		BIGINT default -1 NOT NULL,	/*FK AMS_Groups.iGroupId				*/
@@ -350,8 +350,8 @@ create table AMS_FilterCondition_Syn
 	PRIMARY KEY(iFilterConditionID)
 );
 
-drop table AMS_FilterCondition_String_Syn;
-create table AMS_FilterCondition_String_Syn
+DROP TABLE IF EXISTS AMS_FilterCondition_String_Syn;
+CREATE TABLE AMS_FilterCondition_String_Syn
 (
 	iFilterConditionRef	BIGINT NOT NULL,
 	cKeyValue		VARCHAR(16),
@@ -359,24 +359,24 @@ create table AMS_FilterCondition_String_Syn
 	cCompValue		VARCHAR(128)
 );
 
-drop table AMS_FilterCond_ArrStr_Syn;
-create table AMS_FilterCond_ArrStr_Syn
+DROP TABLE IF EXISTS AMS_FilterCond_ArrStr_Syn;
+CREATE TABLE AMS_FilterCond_ArrStr_Syn
 (
 	iFilterConditionRef	BIGINT NOT NULL,
 	cKeyValue		VARCHAR(16),
 	sOperator		INTEGER
 );
 
-drop table AMS_FilterCond_ArrStrVal_Syn;
-create table AMS_FilterCond_ArrStrVal_Syn
+DROP TABLE IF EXISTS AMS_FilterCond_ArrStrVal_Syn;
+CREATE TABLE AMS_FilterCond_ArrStrVal_Syn
 (
 	iFilterConditionRef	BIGINT NOT NULL,
 	cCompValue		VARCHAR(128)
 );
 
 
-drop table AMS_FilterCond_TimeBased_Syn;
-create table AMS_FilterCond_TimeBased_Syn
+DROP TABLE IF EXISTS AMS_FilterCond_TimeBased_Syn;
+CREATE TABLE AMS_FilterCond_TimeBased_Syn
 (
 	iFilterConditionRef	BIGINT NOT NULL,
 	cStartKeyValue		VARCHAR(16),
@@ -389,8 +389,8 @@ create table AMS_FilterCond_TimeBased_Syn
 	sTimeBehavior		INTEGER
 );
 
-drop table AMS_FilterCondition_PV_Syn;
-create table AMS_FilterCondition_PV_Syn
+DROP TABLE IF EXISTS AMS_FilterCondition_PV_Syn;
+CREATE TABLE AMS_FilterCondition_PV_Syn
 (
 	iFilterConditionRef	BIGINT NOT NULL,
 	cPvChannelName		VARCHAR(128),
@@ -399,8 +399,8 @@ create table AMS_FilterCondition_PV_Syn
 	cCompValue			VARCHAR(128)
 );
 
-drop table AMS_FilterCond_Conj_Common_Syn;
-create table AMS_FilterCond_Conj_Common_Syn
+DROP TABLE IF EXISTS AMS_FilterCond_Conj_Common_Syn;
+CREATE TABLE AMS_FilterCond_Conj_Common_Syn
 (
 	iFilterConditionRef			BIGINT NOT NULL,
 	iFirstFilterConditionRef	BIGINT NOT NULL,
@@ -408,8 +408,8 @@ create table AMS_FilterCond_Conj_Common_Syn
 	iOperand					INTEGER default 0
 );
 
-drop table AMS_Filter_Syn;
-create table AMS_Filter_Syn
+DROP TABLE IF EXISTS AMS_Filter_Syn;
+CREATE TABLE AMS_Filter_Syn
 (
 	iFilterID		BIGINT,
 	iGroupRef		BIGINT default -1 NOT NULL, /*FK AMS_Groups.iGroupId				*/
@@ -418,8 +418,8 @@ create table AMS_Filter_Syn
 	PRIMARY KEY (iFilterID)
 );
 
-drop table AMS_Filter_FilterCondition_Syn;
-create table AMS_Filter_FilterCondition_Syn
+DROP TABLE IF EXISTS AMS_Filter_FilterCondition_Syn;
+CREATE TABLE AMS_Filter_FilterCondition_Syn
 (
 	iFilterRef		BIGINT,
 	iFilterConditionRef	BIGINT,
@@ -427,8 +427,8 @@ create table AMS_Filter_FilterCondition_Syn
 	PRIMARY KEY (iFilterRef,iFilterConditionRef)
 );
 
-drop table AMS_Topic_Syn;
-create table AMS_Topic_Syn
+DROP TABLE IF EXISTS AMS_Topic_Syn;
+CREATE TABLE AMS_Topic_Syn
 (
 	iTopicId 		BIGINT NOT NULL,
 	iGroupRef		BIGINT default -1 NOT NULL, -- FK AMS_Groups.iGroupId
@@ -438,8 +438,8 @@ create table AMS_Topic_Syn
 	PRIMARY KEY (iTopicId)						
 );
 
-drop table AMS_FilterActionType_Syn;
-create table AMS_FilterActionType_Syn				/* 1-9 definiert, 100 - freie Topics 			*/
+DROP TABLE IF EXISTS AMS_FilterActionType_Syn;
+CREATE TABLE AMS_FilterActionType_Syn				/* 1-9 definiert, 100 - freie Topics 			*/
 (			
 	iFilterActionTypeID	BIGINT NOT NULL,    	/* 0, 1 - SMS, 2 - SMS G, 3 - SMS G R, 4 - VM, 5 - VM G, 6 - VM G R, 7 - MAIL, 8 - MAIL G, 9 - MAIL G R */
 	cName			VARCHAR(128),
@@ -447,8 +447,8 @@ create table AMS_FilterActionType_Syn				/* 1-9 definiert, 100 - freie Topics 		
 	PRIMARY KEY(iFilterActionTypeID)
 );
 
-drop table AMS_FilterAction_Syn;
-create table AMS_FilterAction_Syn
+DROP TABLE IF EXISTS AMS_FilterAction_Syn;
+CREATE TABLE AMS_FilterAction_Syn
 (			
 	iFilterActionID		BIGINT NOT NULL,
 	iFilterActionTypeRef	BIGINT NOT NULL,		/*FK AMS_FilterActionType.iFilterActionTypeID 		*/
@@ -457,16 +457,16 @@ create table AMS_FilterAction_Syn
 	PRIMARY KEY(iFilterActionID)
 );
 
-drop table AMS_Filter_FilterAction_Syn;
-create table AMS_Filter_FilterAction_Syn
+DROP TABLE IF EXISTS AMS_Filter_FilterAction_Syn;
+CREATE TABLE AMS_Filter_FilterAction_Syn
 (
 	iFilterRef		BIGINT NOT NULL,
 	iFilterActionRef	BIGINT NOT NULL,
 	iPos			BIGINT NOT NULL		/* Reihenfolge f?r die GUI, werden parallel ausgef?hrt */
 );
 
-drop table AMS_UserGroup_Syn;
-create table AMS_UserGroup_Syn
+DROP TABLE IF EXISTS AMS_UserGroup_Syn;
+CREATE TABLE AMS_UserGroup_Syn
 (
 	iUserGroupId		BIGINT NOT NULL,		
 	iGroupRef		BIGINT default -1 NOT NULL,	/* FK AMS_Groups.iGroupId				*/
@@ -529,4 +529,3 @@ insert into AMS_FilterActionType (iFilterActionTypeID,cName,iTopicRef) values (1
 
 insert into AMS_Flag (cFlagName, sFlagValue) values ('BupState', 0);
 
-commit;

@@ -21,6 +21,8 @@
  */
 package org.csstudio.archive.common.service.sample;
 
+import java.io.Serializable;
+
 import javax.annotation.CheckForNull;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -37,8 +39,9 @@ import org.csstudio.domain.desy.system.ISystemVariable;
  * @param <V> the data value type
  * @param <T> the css value type with alarm information
  */
-public class ArchiveSample<V,
-                           T extends ISystemVariable<V>> implements IArchiveSample<V, T> {
+public class ArchiveSample<V extends Serializable,
+                           T extends ISystemVariable<V>>
+                          implements IArchiveSample<V, T> {
 
     private static final long serialVersionUID = -2244316283884247177L;
 
@@ -71,8 +74,8 @@ public class ArchiveSample<V,
      */
     @Override
     @Nonnull
-    public T getSystemVariable() {
-        return _sysVar;
+    public V getValue() {
+        return _sysVar.getData();
     }
 
     /**
@@ -80,8 +83,8 @@ public class ArchiveSample<V,
      */
     @Override
     @Nonnull
-    public V getValue() {
-        return _sysVar.getData();
+    public T getSystemVariable() {
+        return _sysVar;
     }
 
     @CheckForNull
