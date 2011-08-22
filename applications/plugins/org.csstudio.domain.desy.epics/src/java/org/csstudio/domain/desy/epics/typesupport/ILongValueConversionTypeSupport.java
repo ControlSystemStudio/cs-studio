@@ -62,7 +62,7 @@ final class ILongValueConversionTypeSupport extends
 
         final Collection coll = instantiateCollection(collClass);
         for (final long val : values) {
-            coll.add(support.fromLongValue(Long.valueOf(val)));
+            coll.add(support.fromLongValue(val));
         }
         return coll;
     }

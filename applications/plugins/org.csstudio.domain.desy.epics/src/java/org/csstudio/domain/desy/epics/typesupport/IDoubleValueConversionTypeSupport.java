@@ -63,7 +63,7 @@ final class IDoubleValueConversionTypeSupport extends
 
         final Collection coll = instantiateCollection(collClass);
         for (final double val : values) {
-            coll.add(support.fromDoubleValue(Double.valueOf(val)));
+            coll.add(support.fromDoubleValue(val));
         }
         return coll;
     }

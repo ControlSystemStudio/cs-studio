@@ -55,9 +55,10 @@ final class IStringValueConversionTypeSupport extends
         if (values == null) {
             throw new TypeSupportException("IValue values array is null! Conversion failed.", null);
         }
-        final AbstractIValueDataToTargetTypeSupport<?> support = checkForPlausibilityAndGetSupport(elemClass,
-                                                                                     collClass,
-                                                                                     values.length);
+        final AbstractIValueDataToTargetTypeSupport<?> support =
+            checkForPlausibilityAndGetSupport(elemClass,
+                                              collClass,
+                                              values.length);
 
         if (values.length == 1) {
             return support.fromStringValue(values[0]);
