@@ -19,7 +19,7 @@
  * PROJECT IN THE FILE LICENSE.HTML. IF THE LICENSE IS NOT INCLUDED YOU MAY FIND A COPY
  * AT HTTP://WWW.DESY.DE/LEGAL/LICENSE.HTM
  */
-package org.csstudio.domain.desy.file;
+package org.csstudio.domain.common.file;
 
 import java.io.File;
 import java.io.FileFilter;
@@ -32,9 +32,10 @@ import java.io.OutputStream;
 import javax.annotation.Nonnull;
 
 /**
- * File copy helper. <br/>
- * Actually not bad but better use: {@link com.google.common.io.Files}...
- * Just found it too late.
+ * File copy. <br/>
+ * Actually, it is better to use use: {@link com.google.common.io.Files}. But for those not in
+ * favour of google codes, here we are.
+ * Java 7 brings cure anyway with the NIO API (we had just to wait 11 years).
  *
  * @author bknerr
  * @since 30.05.2011
