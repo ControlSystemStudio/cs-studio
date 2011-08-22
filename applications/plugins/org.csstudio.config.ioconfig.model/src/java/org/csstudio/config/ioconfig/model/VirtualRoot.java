@@ -78,7 +78,7 @@ public final class VirtualRoot extends AbstractNodeDBO<VirtualRoot, FacilityDBO>
     @Override
     @Nonnull
     public FacilityDBO createChild() throws PersistenceException {
-        return new FacilityDBO(INSTANCE);
+        return new FacilityDBO();
     }
     
     /**

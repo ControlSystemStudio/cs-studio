@@ -49,10 +49,6 @@ public class FacilityDBO extends AbstractNodeDBO<VirtualRoot, IocDBO> {
         // Empty.
     }
 
-    public FacilityDBO(@Nonnull final VirtualRoot parent) throws PersistenceException {
-        super(parent);
-    }
-
     /**
      * {@inheritDoc}
      */
