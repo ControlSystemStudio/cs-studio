@@ -8,5 +8,10 @@
             id="org.csstudio.utility.pvamanger.widgets.test.VImageDisplayDemo"
             name="VImageDisplay Demo">
       </view>
+      <view
+            class="org.csstudio.utility.pvamanger.widgets.test.VTableDisplayDemo"
+            id="org.csstudio.utility.pvamanger.widgets.test.VTableDisplayDemo"
+            name="VTableDisplay Demo">
+      </view>
    </extension>
 </plugin>
