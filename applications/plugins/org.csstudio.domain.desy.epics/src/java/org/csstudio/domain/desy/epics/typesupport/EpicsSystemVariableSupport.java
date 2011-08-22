@@ -148,27 +148,6 @@ public abstract class EpicsSystemVariableSupport<T> extends SystemVariableSuppor
         return true;
     }
 
-//    @Nonnull
-//    protected EpicsSystemVariable<?>
-//    createEpicsVariableFromCollection(@Nonnull final String name,
-//                                      @Nonnull final Class<?> typeClass,
-//                                      @Nonnull final Collection<T> data,
-//                                      @Nonnull final ControlSystem system,
-//                                      @Nonnull final TimeInstant timestamp) throws TypeSupportException {
-//        @SuppressWarnings("unchecked")
-//        final EpicsSystemVariableSupport<T> support =
-//            (EpicsSystemVariableSupport<T>) findTypeSupportForOrThrowTSE(EpicsSystemVariableSupport.class, typeClass);
-//        return support.createCollectionEpicsVariable(name, typeClass, data, system, timestamp);
-//    }
-//
-//    @Nonnull
-//    protected abstract EpicsSystemVariable<Collection<T>>
-//    createCollectionEpicsVariable(@Nonnull final String name,
-//                                  @Nonnull final Class<?> typeClass,
-//                                  @Nonnull final Collection<T> data,
-//                                  @Nonnull final ControlSystem system,
-//                                  @Nonnull final TimeInstant timestamp) throws TypeSupportException;
-
     /**
      * {@inheritDoc}
      */
