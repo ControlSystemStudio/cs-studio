@@ -21,13 +21,12 @@
  */
 package org.csstudio.domain.desy.epics.typesupport;
 
+import java.util.Collection;
+
 import javax.annotation.CheckForNull;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
-import org.csstudio.data.values.IEnumeratedMetaData;
-import org.csstudio.data.values.IMetaData;
-import org.csstudio.data.values.INumericMetaData;
 import org.csstudio.data.values.ISeverity;
 import org.csstudio.data.values.IValue;
 import org.csstudio.data.values.ValueFactory;
@@ -37,8 +36,13 @@ import org.csstudio.domain.desy.epics.alarm.EpicsAlarmStatus;
 import org.csstudio.domain.desy.epics.types.EpicsEnum;
 import org.csstudio.domain.desy.epics.types.EpicsMetaData;
 import org.csstudio.domain.desy.epics.types.EpicsSystemVariable;
+import org.csstudio.domain.desy.system.ControlSystem;
+import org.csstudio.domain.desy.system.SystemVariableSupport;
+import org.csstudio.domain.desy.time.TimeInstant;
 import org.csstudio.domain.desy.typesupport.AbstractTypeSupport;
+import org.csstudio.domain.desy.typesupport.BaseTypeConversionSupport;
 import org.csstudio.domain.desy.typesupport.TypeSupportException;
+import org.epics.pvmanager.TypeSupport;
 
 
 /**
@@ -53,6 +57,7 @@ import org.csstudio.domain.desy.typesupport.TypeSupportException;
 public abstract class EpicsIValueTypeSupport<T> extends AbstractTypeSupport<T> {
 // CHECKSTYLE ON : AbstractClassName
 
+    private static boolean INSTALLED;
     /**
      * Constructor for a new EpicsIValue support.
      *
@@ -62,42 +67,160 @@ public abstract class EpicsIValueTypeSupport<T> extends AbstractTypeSupport<T> {
         super(type, EpicsIValueTypeSupport.class);
     }
 
+    // CHECKSTYLE OFF : MethodLength
     public static void install() {
-        AbstractIValueConversionTypeSupport.install();
-    }
-
-    @Nonnull
-    public static <T extends IValue>
-    EpicsSystemVariable<?> toSystemVariable(@Nonnull final String name,
-                                            @Nonnull final T value) throws TypeSupportException {
-        final IMetaData meta = value.getMetaData();
-        if (meta != null) {
-            Class<?> clazz = null;
-            if (meta instanceof INumericMetaData) {
-                clazz = Double.class; // unfortunately, any other type has been swallowed.
-            } else if (meta instanceof IEnumeratedMetaData) {
-                clazz = EpicsEnum.class;
-            }
-            if (clazz != null) {
-                final EpicsMetaData epicsMetaData = EpicsIMetaDataTypeSupport.toMetaData(meta, clazz);
-                return toSystemVariable(name, value, epicsMetaData);
-            }
+        // CHECKSTYLE ON : MethodLength
+        if (INSTALLED) {
+            return;
         }
-        return toSystemVariable(name, value, null);
+        TypeSupport.addTypeSupport(new IDoubleValueConversionTypeSupport());
+        TypeSupport.addTypeSupport(new IEnumeratedValueConversionTypeSupport());
+        TypeSupport.addTypeSupport(new ILongValueConversionTypeSupport());
+        TypeSupport.addTypeSupport(new IStringValueConversionTypeSupport());
+
+        TypeSupport.addTypeSupport(new AbstractIValueDataToTargetTypeSupport<Byte>(Byte.class) {
+            @Override
+            @Nonnull
+            protected Byte fromLongValue(@Nonnull final Long val) {
+                return val.byteValue();
+            }
+            @Override
+            @Nonnull
+            protected Byte fromDoubleValue(@Nonnull final Double val) {
+                return val.byteValue();
+            }
+        });
+        TypeSupport.addTypeSupport(new AbstractIValueDataToTargetTypeSupport<Short>(Short.class) {
+            @Override
+            @Nonnull
+            protected Short fromLongValue(@Nonnull final Long val) {
+                return val.shortValue();
+            }
+            @Override
+            @Nonnull
+            protected Short fromDoubleValue(@Nonnull final Double val) {
+                return val.shortValue();
+            }
+        });
+        TypeSupport.addTypeSupport(new AbstractIValueDataToTargetTypeSupport<Float>(Float.class) {
+            @Override
+            @Nonnull
+            protected Float fromLongValue(@Nonnull final Long val) {
+                return val.floatValue();
+            }
+            @Override
+            @Nonnull
+            protected Float fromDoubleValue(@Nonnull final Double val) {
+                return val.floatValue();
+            }
+        });
+        TypeSupport.addTypeSupport(new AbstractIValueDataToTargetTypeSupport<Integer>(Integer.class) {
+            @Override
+            @Nonnull
+            protected Integer fromLongValue(@Nonnull final Long val) {
+                return val.intValue();
+            }
+            @Override
+            @Nonnull
+            protected Integer fromDoubleValue(@Nonnull final Double val) {
+                return val.intValue();
+            }
+        });
+        TypeSupport.addTypeSupport(new AbstractIValueDataToTargetTypeSupport<Double>(Double.class) {
+            @Override
+            @Nonnull
+            protected Double fromLongValue(@Nonnull final Long val) {
+                return val.doubleValue();
+            }
+            @Override
+            @Nonnull
+            protected Double fromDoubleValue(@Nonnull final Double val) {
+                return val;
+            }
+        });
+        TypeSupport.addTypeSupport(new AbstractIValueDataToTargetTypeSupport<Long>(Long.class) {
+            @Override
+            @Nonnull
+            protected Long fromLongValue(@Nonnull final Long val) {
+                return val;
+            }
+            @Override
+            @Nonnull
+            protected Long fromDoubleValue(@Nonnull final Double val) {
+                return val.longValue();
+            }
+        });
+        TypeSupport.addTypeSupport(new AbstractIValueDataToTargetTypeSupport<String>(String.class) {
+            @Override
+            @Nonnull
+            protected String fromStringValue(@Nonnull final String val) {
+                return val;
+            }
+        });
+        TypeSupport.addTypeSupport(new AbstractIValueDataToTargetTypeSupport<EpicsEnum>(EpicsEnum.class) {
+            @Override
+            @Nonnull
+            protected EpicsEnum fromEnumValue(final int index,
+                                              @CheckForNull final EpicsMetaData meta) {
+                if (meta == null || meta.getStates() == null ||
+                    meta.getStates().isEmpty() || index < 0 || index >= meta.getStates().size()) {
+                    return EpicsEnum.createFromRaw(index);
+                }
+                return meta.getStates().get(index);
+            }
+        });
+
+        INSTALLED = true;
     }
 
-    @SuppressWarnings("unchecked")
     @Nonnull
     public static <T extends IValue>
     EpicsSystemVariable<?> toSystemVariable(@Nonnull final String name,
                                             @Nonnull final T value,
-                                            @Nullable final EpicsMetaData metaData) throws TypeSupportException {
+                                            @Nonnull final ControlSystem cs,
+                                            @Nonnull final Class<?> elemClass) throws TypeSupportException {
+        return toSystemVariable(name, value, cs, null, elemClass);
+    }
+    @SuppressWarnings("rawtypes")
+    @Nonnull
+    public static <T extends IValue>
+    EpicsSystemVariable<?> toSystemVariable(@Nonnull final String name,
+                                            @Nonnull final T value,
+                                            @Nonnull final ControlSystem cs,
+                                            @CheckForNull final Class<? extends Collection> collClass,
+                                            @Nonnull final Class<?> elemClass) throws TypeSupportException {
+        EpicsMetaData meta = null;
+        if (value.getMetaData() != null) {
+            meta = EpicsIMetaDataTypeSupport.toMetaData(value.getMetaData(), elemClass);
+        }
+        return toSystemVariable(name, value, meta, cs, collClass, elemClass);
+    }
+    @SuppressWarnings({ "unchecked", "rawtypes" })
+    @Nonnull
+    public static <T extends IValue>
+    EpicsSystemVariable<?> toSystemVariable(@Nonnull final String name,
+                                            @Nonnull final T value,
+                                            @CheckForNull final EpicsMetaData meta,
+                                            @Nonnull final ControlSystem cs,
+                                            @CheckForNull final Class<? extends Collection> collClass,
+                                            @Nonnull final Class<?> elemClass) throws TypeSupportException {
         final Class<T> typeClass = (Class<T>) value.getClass();
         final AbstractIValueConversionTypeSupport<T> support =
             (AbstractIValueConversionTypeSupport<T>) findTypeSupportForOrThrowTSE(EpicsIValueTypeSupport.class,
                                                                                   typeClass);
-        return support.convertToSystemVariable(name, value, metaData);
+
+        final EpicsAlarm alarm = toEpicsAlarm(value.getSeverity(), value.getStatus());
+        final TimeInstant time = BaseTypeConversionSupport.toTimeInstant(value.getTime());
+
+        final Object data = support.toData(value, elemClass, collClass, meta);
+        return (EpicsSystemVariable<?>) SystemVariableSupport.create(name, data, cs, time, alarm);
     }
+
+    @Nonnull
+    protected abstract Object toData(@Nonnull final T value,
+                                     @Nonnull final Class<?> elemClass,
+                                     @SuppressWarnings("rawtypes") @Nonnull final Class<? extends Collection> collClass,
+                                     @CheckForNull final EpicsMetaData meta) throws TypeSupportException;
 
     /**
      * Converts the parameters into a type safe enum class for EPICS alarms.
@@ -114,8 +237,9 @@ public abstract class EpicsIValueTypeSupport<T> extends AbstractTypeSupport<T> {
     @Nonnull
     public static EpicsAlarm toEpicsAlarm(@CheckForNull final ISeverity sev,
                                           @Nullable final String status) {
-        final EpicsAlarmSeverity severity = toEpicsSeverity(sev);
-        return new EpicsAlarm(severity, EpicsAlarmStatus.parseStatus(status));
+        final EpicsAlarmSeverity epicsSeverity = toEpicsSeverity(sev);
+        final EpicsAlarmStatus epicsStatus = EpicsAlarmStatus.parseStatus(status);
+        return new EpicsAlarm(epicsSeverity, epicsStatus);
     }
 
     @Nonnull
@@ -146,7 +270,7 @@ public abstract class EpicsIValueTypeSupport<T> extends AbstractTypeSupport<T> {
             case MAJOR :    return ValueFactory.createMajorSeverity();
             case INVALID :  return ValueFactory.createInvalidSeverity();
             default:
-                throw new IllegalArgumentException("This severity has been defined.");
+                throw new IllegalArgumentException("This severity has not been defined.");
         }
     }
 }

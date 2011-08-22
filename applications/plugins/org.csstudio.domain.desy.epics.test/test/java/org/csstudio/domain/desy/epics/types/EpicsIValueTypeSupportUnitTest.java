@@ -21,13 +21,19 @@
  */
 package org.csstudio.domain.desy.epics.types;
 
+import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.Iterator;
 import java.util.List;
+import java.util.Set;
 
 import org.csstudio.data.values.IEnumeratedValue;
 import org.csstudio.data.values.TimestampFactory;
 import org.csstudio.data.values.ValueFactory;
 import org.csstudio.domain.desy.epics.typesupport.EpicsIMetaDataTypeSupport;
 import org.csstudio.domain.desy.epics.typesupport.EpicsIValueTypeSupport;
+import org.csstudio.domain.desy.epics.typesupport.EpicsSystemVariableSupport;
+import org.csstudio.domain.desy.system.ControlSystem;
 import org.csstudio.domain.desy.typesupport.TypeSupportException;
 import org.junit.Assert;
 import org.junit.Before;
@@ -45,6 +51,7 @@ public class EpicsIValueTypeSupportUnitTest {
     public void setup() {
         EpicsIValueTypeSupport.install();
         EpicsIMetaDataTypeSupport.install();
+        EpicsSystemVariableSupport.install();
     }
 
 
@@ -58,7 +65,10 @@ public class EpicsIValueTypeSupportUnitTest {
                                                                                                                        "HIHI",
                                                                                                                        null,
                                                                                                                        null,
-                                                                                                                       null));
+                                                                                                                       null),
+                                                                                        ControlSystem.EPICS_DEFAULT,
+                                                                                        ArrayList.class,
+                                                                                        Double.class);
     }
 
     @Test
@@ -67,12 +77,15 @@ public class EpicsIValueTypeSupportUnitTest {
             @SuppressWarnings("unchecked")
             final EpicsSystemVariable<List<Double>> cssV =
                 (EpicsSystemVariable<List<Double>>) EpicsIValueTypeSupport.toSystemVariable("foo",
-                                                    ValueFactory.createDoubleValue(TimestampFactory.now(),
-                                                                      ValueFactory.createMinorSeverity(),
-                                                                      "HIHI",
-                                                                      null,
-                                                                      null,
-                                                                      new double[]{1.0, 2.0}));
+                                                                                            ValueFactory.createDoubleValue(TimestampFactory.now(),
+                                                                                                              ValueFactory.createMinorSeverity(),
+                                                                                                              "HIHI",
+                                                                                                              null,
+                                                                                                              null,
+                                                                                                              new double[]{1.0, 2.0}),
+                                                                                            ControlSystem.EPICS_DEFAULT,
+                                                                                            ArrayList.class,
+                                                                                            Double.class);
             Assert.assertNotNull(cssV);
             Assert.assertEquals(2, cssV.getData().size());
             Assert.assertEquals(Double.valueOf(1.0), cssV.getData().get(0));
@@ -86,18 +99,22 @@ public class EpicsIValueTypeSupportUnitTest {
     public void testLongValue2SystemVariableConversion() {
         try {
             @SuppressWarnings("unchecked")
-            final EpicsSystemVariable<List<Long>> cssV =
-                (EpicsSystemVariable<List<Long>>) EpicsIValueTypeSupport.toSystemVariable("foo",
+            final EpicsSystemVariable<Set<Long>> cssV =
+                (EpicsSystemVariable<Set<Long>>) EpicsIValueTypeSupport.toSystemVariable("foo",
                                                     ValueFactory.createLongValue(TimestampFactory.now(),
                                                                     ValueFactory.createMinorSeverity(),
                                                                     "HIHI",
                                                                     null,
                                                                     null,
-                                                                    new long[]{1L, 2L}));
+                                                                    new long[]{1L, 2L}),
+                                                                    ControlSystem.EPICS_DEFAULT,
+                                                                    HashSet.class,
+                                                                    Long.class);
             Assert.assertNotNull(cssV);
             Assert.assertEquals(2, cssV.getData().size());
-            Assert.assertEquals(Long.valueOf(1L), cssV.getData().get(0));
-            Assert.assertEquals(Long.valueOf(2L), cssV.getData().get(1));
+            final Iterator<Long> iter = cssV.getData().iterator();
+            Assert.assertEquals(Long.valueOf(1L), iter.next());
+            Assert.assertEquals(Long.valueOf(2L), iter.next());
         } catch (final TypeSupportException e) {
             Assert.fail();
         }
@@ -114,8 +131,8 @@ public class EpicsIValueTypeSupportUnitTest {
                                                                              new int[]{2});
 
             @SuppressWarnings("unchecked")
-            final EpicsSystemVariable<EpicsEnum> cssV = 
-                (EpicsSystemVariable<EpicsEnum>) EpicsIValueTypeSupport.toSystemVariable("foo", eVal);
+            final EpicsSystemVariable<EpicsEnum> cssV =
+                (EpicsSystemVariable<EpicsEnum>) EpicsIValueTypeSupport.toSystemVariable("foo", eVal, ControlSystem.EPICS_DEFAULT, EpicsEnum.class);
             Assert.assertNotNull(cssV);
             Assert.assertEquals("part", cssV.getData().getState());
             Assert.assertEquals(Integer.valueOf(2), cssV.getData().getStateIndex());
@@ -134,7 +151,10 @@ public class EpicsIValueTypeSupportUnitTest {
                                                                       ValueFactory.createMinorSeverity(),
                                                                       "HIHI",
                                                                       null,
-                                                                      new String[]{"small", "black"}));
+                                                                      new String[]{"small", "black"}),
+                                                                      ControlSystem.EPICS_DEFAULT,
+                                                                      ArrayList.class,
+                                                                      String.class);
             final List<String> cssV = sysVar.getData();
             Assert.assertNotNull(cssV);
             Assert.assertEquals(2, cssV.size());

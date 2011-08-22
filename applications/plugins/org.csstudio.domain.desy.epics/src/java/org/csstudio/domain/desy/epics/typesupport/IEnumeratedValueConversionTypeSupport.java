@@ -21,17 +21,13 @@
  */
 package org.csstudio.domain.desy.epics.typesupport;
 
+import java.util.Collection;
+
+import javax.annotation.CheckForNull;
 import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
 
 import org.csstudio.data.values.IEnumeratedValue;
-import org.csstudio.domain.desy.epics.alarm.EpicsAlarm;
-import org.csstudio.domain.desy.epics.types.EpicsEnum;
 import org.csstudio.domain.desy.epics.types.EpicsMetaData;
-import org.csstudio.domain.desy.epics.types.EpicsSystemVariable;
-import org.csstudio.domain.desy.system.ControlSystem;
-import org.csstudio.domain.desy.time.TimeInstant;
-import org.csstudio.domain.desy.typesupport.BaseTypeConversionSupport;
 import org.csstudio.domain.desy.typesupport.TypeSupportException;
 
 /**
@@ -47,53 +43,38 @@ final class IEnumeratedValueConversionTypeSupport extends
         super(IEnumeratedValue.class);
     }
 
-    /**
-     * {@inheritDoc}
-     *
-     * Kay's enumerated values have to have only a single value element corresponding to the set
-     * enumerated value string. We want to archive the string, which yields the information, not the
-     * index which doesn't speak for itself or might be changed in the system later on. Otherwise,
-     * value is the RAW value, not the index. But that is not recognizable from this layer.
-     */
+    @SuppressWarnings({ "unchecked", "rawtypes" })
     @Override
     @Nonnull
-    protected EpicsSystemVariable<EpicsEnum> convertToSystemVariable(@Nonnull final String name,
-                                                                     @Nonnull final IEnumeratedValue value,
-                                                                     @Nullable final EpicsMetaData metaData) throws TypeSupportException {
-        // This is a nice example for what happens when physicists 'design' programs.
+    protected Object toData(@Nonnull final IEnumeratedValue value,
+                            @Nonnull final Class<?> elemClass,
+                            @Nonnull final Class<? extends Collection> collClass,
+                            @CheckForNull final EpicsMetaData meta) throws TypeSupportException {
         final int[] values = value.getValues();
-        if (values == null || values.length <= 0) {
-            throw new TypeSupportException("EnumeratedValue conversion failed, since IEnumeratedValue hasn't any values!", null);
+        if (values == null) {
+            throw new TypeSupportException("IValue values array is null! Conversion failed.", null);
+        }
+        final AbstractIValueDataToTargetTypeSupport<?> support = checkForPlausibilityAndGetSupport(elemClass,
+                                                                                     collClass,
+                                                                                     values.length);
+        if (values.length == 1) {
+            return support.fromEnumValue(values[0], meta);
         }
 
-        final EpicsEnum enumState = createEpicsEnum(metaData, values[0]);
-
-        final EpicsAlarm alarm = EpicsIValueTypeSupport.toEpicsAlarm(value.getSeverity(), value.getStatus());
-        final TimeInstant timestamp = BaseTypeConversionSupport.toTimeInstant(value.getTime());
-
-        return new EpicsSystemVariable<EpicsEnum>(name,
-                                                  enumState,
-                                                  ControlSystem.EPICS_DEFAULT,
-                                                  timestamp,
-                                                  alarm);
+        final Collection coll = instantiateCollection(collClass);
+        for (final int val : values) {
+            coll.add(support.fromEnumValue(val, meta));
+        }
+        return coll;
     }
 
+    @SuppressWarnings("rawtypes")
+    @Override
     @Nonnull
-    private EpicsEnum createEpicsEnum(@Nonnull final EpicsMetaData metaData,
-                                      final int index) {
-        EpicsEnum enumState;
-        if (metaData != null && !metaData.getStates().isEmpty()) {
-            try {
-                enumState = metaData.getOrCreateState(index);
-            } catch (final IndexOutOfBoundsException e) {
-                // possible, when the record is specified as DTYP='Soft Channel', then the raw value is copied into VAL
-                // bypassing the record's 'bitpattern->state' mapping table.
-                enumState = EpicsEnum.createFromRaw(index);
-            }
-        } else {
-            enumState = EpicsEnum.createFromRaw(index);
-        }
-        return enumState;
+    protected Object toData(@Nonnull final IEnumeratedValue value,
+                            @Nonnull final Class<?> elemClass,
+                            @Nonnull final Class<? extends Collection> collClass) throws TypeSupportException {
+        return toData(value, elemClass, collClass, null);
     }
 
 }

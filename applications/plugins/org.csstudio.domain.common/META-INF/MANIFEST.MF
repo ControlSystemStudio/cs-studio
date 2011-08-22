@@ -9,5 +9,6 @@ Require-Bundle: com.google.common;bundle-version="0.9.0",
  javax.annotation;bundle-version="1.3.0"
 Export-Package: org.csstudio.domain.common,
  org.csstudio.domain.common.codec,
+ org.csstudio.domain.common.collection,
  org.csstudio.domain.common.resource,
  org.csstudio.domain.common.strings

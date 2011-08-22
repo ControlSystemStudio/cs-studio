@@ -48,7 +48,6 @@ import org.csstudio.data.values.ValueFactory;
 import org.csstudio.domain.desy.epics.typesupport.EpicsIMetaDataTypeSupport;
 import org.csstudio.domain.desy.epics.typesupport.EpicsIValueTypeSupport;
 import org.csstudio.domain.desy.service.osgi.OsgiServiceUnavailableException;
-import org.csstudio.domain.desy.system.ISystemVariable;
 import org.csstudio.domain.desy.time.TimeInstant;
 import org.csstudio.utility.pv.PV;
 import org.junit.Before;
@@ -116,19 +115,18 @@ public class DesyArchivePVListenerUnitTest {
         when(_collDoublePv.getValue()).thenReturn(val2);
     }
 
+    @SuppressWarnings({ "unchecked", "rawtypes" })
     @Test
     public void testDoubleSample() throws ArchiveServiceException {
-
-
-
-        final DesyArchivePVListener<Double, ISystemVariable<Double>> listener =
-            new DesyArchivePVListener<Double, ISystemVariable<Double>>(_provider,
-                                                                       _channelName,
-                                                                       _channelId,
-                                                                       Double.class) {
+        final DesyArchivePVListener listener =
+            new DesyArchivePVListener(_provider,
+                                      _channelName,
+                                      _channelId,
+                                      null,
+                                      Double.class) {
             @SuppressWarnings("synthetic-access")
             @Override
-            protected void addSampleToBuffer(@Nonnull final IArchiveSample<Double, ISystemVariable<Double>> sample) {
+            protected void addSampleToBuffer(@Nonnull final IArchiveSample sample) {
                 Assert.assertTrue(sample instanceof ArchiveSample);
                 Assert.assertEquals(_channelId, sample.getChannelId());
                 Assert.assertEquals(_channelName, sample.getSystemVariable().getName());
@@ -145,22 +143,22 @@ public class DesyArchivePVListenerUnitTest {
         verify(_facade, times(1)).writeChannelStatusInfo(eq(_channelId), eq(false), eq("Startup"), any(TimeInstant.class));
     }
 
+    @SuppressWarnings({ "rawtypes", "unchecked" })
     @Test
     public void testCollectionDoubleSample() throws ArchiveServiceException {
-        @SuppressWarnings("rawtypes")
-        final DesyArchivePVListener<ArrayList, ISystemVariable<ArrayList>> listener =
-            new DesyArchivePVListener<ArrayList, ISystemVariable<ArrayList>>(_provider,
+        final DesyArchivePVListener listener =
+            new DesyArchivePVListener(_provider,
                                                                              _channelName,
                                                                              _channelId,
-                                                                             ArrayList.class) {
+                                                                             ArrayList.class,
+                                                                             Double.class) {
             @SuppressWarnings("synthetic-access")
             @Override
-            protected void addSampleToBuffer(@Nonnull final IArchiveSample<ArrayList, ISystemVariable<ArrayList>> sample) {
+            protected void addSampleToBuffer(@Nonnull final IArchiveSample sample) {
                 Assert.assertTrue(sample instanceof ArchiveMultiScalarSample);
                 Assert.assertEquals(_channelId, sample.getChannelId());
                 Assert.assertEquals(_channelName, sample.getSystemVariable().getName());
-                @SuppressWarnings("unchecked")
-                final List<Double> value = sample.getValue();
+                final List<Double> value = (List<Double>) sample.getValue();
                 Assert.assertEquals(_sndSampleVal.length, value.size());
                 for (int i = 0; i < value.size(); i++) {
                     Assert.assertEquals(_sndSampleVal[i], value.get(i));

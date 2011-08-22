@@ -28,7 +28,6 @@ import java.nio.charset.Charset;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import javax.annotation.CheckForNull;
 import javax.annotation.Nonnull;
 
 import org.csstudio.domain.desy.time.TimeInstant;
@@ -48,12 +47,9 @@ import com.google.common.io.LineProcessor;
  * @author $Author$
  * @version $Revision$
  * @since 13.04.2010
- *
- * @deprecated 'Last modification' information shall be replaced by a time stamp per IOC sticky in
- * the LDAP persistence layer.
  */
-@Deprecated
-public class HistoryFileAccess {
+
+public final class HistoryFileAccess {
 
     /**
      * Line Processor for the history file.
@@ -61,6 +57,7 @@ public class HistoryFileAccess {
      * @author bknerr
      * @since 03.08.2011
      */
+    @SuppressWarnings("unused")
     private final class HistoryFileLineProcessor implements LineProcessor<HistoryFileContentModel> {
         private final Logger _log = LoggerFactory
                 .getLogger(HistoryFileAccess.HistoryFileLineProcessor.class);
@@ -105,37 +102,36 @@ public class HistoryFileAccess {
     }
 
     private static final Logger LOG = LoggerFactory.getLogger(HistoryFileAccess.class);
-    private final LdapUpdaterPreferencesService _prefsService;
 
     /**
      * Constructor.
      */
-    public HistoryFileAccess (@Nonnull final LdapUpdaterPreferencesService prefsService) {
-        _prefsService = prefsService;
+    private HistoryFileAccess () {
+        //EMPTY
     }
 
     /**
      * Reads the history file and extracts the time stamp information
      * @return a model of the file contents
      */
-    @CheckForNull
-    public HistoryFileContentModel readFile() {
-
-        final File file = _prefsService.getHistoryDatFilePath();
-        HistoryFileContentModel model = null;
-        try {
-            model = Files.readLines(file,
-                                    Charset.defaultCharset(),
-                                    new HistoryFileLineProcessor(_prefsService));
-            LOG.info("IOC names in history-file : {}",  model.getEntrySet().size());
-
-        } catch (final IOException e) {
-            LOG.error ("I/O-Exception while handling {}", file.getAbsolutePath() );
-        }
-
-        return model;
-
-    }
+//    @CheckForNull
+//    public HistoryFileContentModel readFile() {
+//
+//        final File file = _prefsService.getHistoryDatFilePath();
+//        HistoryFileContentModel model = null;
+//        try {
+//            model = Files.readLines(file,
+//                                    Charset.defaultCharset(),
+//                                    new HistoryFileLineProcessor(_prefsService));
+//            LOG.info("IOC names in history-file : {}",  model.getEntrySet().size());
+//
+//        } catch (final IOException e) {
+//            LOG.error ("I/O-Exception while handling {}", file.getAbsolutePath() );
+//        }
+//
+//        return model;
+//
+//    }
 
     @Nonnull HistoryFileContentModel updateRecordTimeStampsInModel(@Nonnull final String record,
                                                                   @Nonnull final TimeInstant timeInstant,

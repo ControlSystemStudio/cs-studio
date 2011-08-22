@@ -43,7 +43,7 @@ public class SystemTimeProvider implements ICurrentTimeProvider {
      */
     @Override
     public long getCurrentTimeInMillis() {
-        return (long) (getCurrentTimeInNanos() / 1.0e6);
+        return (long) (getCurrentTimeInNanos() / 1e6);
     }
 
 }

@@ -232,7 +232,6 @@ public final class EngineModel {
 
                 checkAndUpdateChannelsStatus(facade, engine, channels);
             }
-
             facade.writeEngineStatusInformation(engine.getId(),
                                                 EngineMonitorStatus.ON,
                                                 TimeInstantBuilder.fromNow(),
@@ -243,7 +242,6 @@ public final class EngineModel {
         }
     }
 
-
     private boolean wasNotGracefullyShutdown(@Nonnull final IArchiveEngineStatus engineStatus) {
         return !EngineMonitorStatus.OFF.equals(engineStatus.getStatus());
     }
@@ -252,7 +250,6 @@ public final class EngineModel {
     private boolean isNotFirstStart(@CheckForNull final IArchiveEngineStatus engineStatus) {
         return engineStatus != null;
     }
-
 
     private void checkAndUpdateChannelsStatus(@Nonnull final IArchiveEngineFacade facade,
                                               @Nonnull final IArchiveEngine engine,
@@ -271,7 +268,6 @@ public final class EngineModel {
         }
     }
 
-
     private void startChannelGroups(@Nonnull final Collection<ArchiveGroup> groups) throws EngineModelException {
         for (final ArchiveGroup group : groups) {
             group.start(ArchiveEngineStatus.ENGINE_START);
@@ -280,7 +276,6 @@ public final class EngineModel {
             }
         }
     }
-
 
     /** @return Timestamp of end of last write run */
     @CheckForNull
@@ -444,15 +439,23 @@ public final class EngineModel {
     private ArchiveChannel<Serializable, ISystemVariable<Serializable>>
     createArchiveChannel(@Nonnull final IArchiveChannel cfg) throws EngineModelException {
         final String dataType = cfg.getDataType();
-        Class<?> typeClass;
         try {
-            typeClass = BaseTypeConversionSupport.createBaseTypeClassFromString(dataType,
-                                                                    ADDITIONAL_TYPE_PACKAGES);
+            final Class<?> typeClass =
+                BaseTypeConversionSupport.createBaseTypeClassFromString(dataType,
+                                                                        ADDITIONAL_TYPE_PACKAGES);
+
+            if (!Collection.class.isAssignableFrom(typeClass)) {
+                return new ArchiveChannel(cfg.getName(), cfg.getId(), typeClass);
+            }
+            final String elemType =
+                BaseTypeConversionSupport.parseForFirstNestedGenericType(dataType);
+            final Class<?> elemClass = BaseTypeConversionSupport.createBaseTypeClassFromString(elemType,
+                                                                                               ADDITIONAL_TYPE_PACKAGES);
+            return new ArchiveChannel(cfg.getName(), cfg.getId(), typeClass, elemClass);
         } catch (final TypeSupportException e) {
             throw new EngineModelException("Datatype " + dataType + " of channel " + cfg.getName() +
                                            " could not be transformed into Class object", e);
         }
-        return new ArchiveChannel(cfg.getName(), cfg.getId(), typeClass);
     }
 
     private void handleExceptions(@Nonnull final Exception inE) throws EngineModelException {

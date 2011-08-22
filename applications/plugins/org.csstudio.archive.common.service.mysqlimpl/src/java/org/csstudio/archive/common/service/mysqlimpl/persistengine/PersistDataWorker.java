@@ -57,6 +57,11 @@ public class PersistDataWorker extends AbstractTimeMeasuredRunnable {
 
     private static final Logger LOG =
             LoggerFactory.getLogger(PersistDataWorker.class);
+    /**
+     * See configuration of this logger - if log4j is used - see log4j.properties
+     */
+    private static final Logger EMAIL_LOG =
+        LoggerFactory.getLogger("ErrorPerEmailLogger");
 
     private final PersistEngineDataManager _mgr;
 
@@ -96,6 +101,10 @@ public class PersistDataWorker extends AbstractTimeMeasuredRunnable {
         } catch (final ArchiveConnectionException e) {
             LOG.error("Connection to archive failed", e);
             // FIXME (bknerr) : strategy for queues getting full, when to rescue data?
+        } catch (final Throwable t) {
+            LOG.error("Unknown throwable in thread {}.", _name);
+            t.printStackTrace();
+            EMAIL_LOG.info("Unknown throwable in thread {}. See event.log for more info.", _name);
         }
     }
 

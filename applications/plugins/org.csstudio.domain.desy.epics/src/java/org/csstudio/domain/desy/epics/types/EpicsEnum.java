@@ -87,8 +87,8 @@ public final class EpicsEnum implements Serializable {
     public static final Pattern EPICS_ENUM_RAW_REGEX =
         Pattern.compile(RAW + SEP + "([-+]?[0-9]*([eE][-+]?[0-9]+)?)");
 
-    public static final String UNKNOWN_STATE = "STATE(0):UNKNOWN";
-    public static final String UNSET_STATE = "STATE(0):UNSET";
+    public static final String UNKNOWN_STATE_STR = "UNKNOWN";
+    public static final String UNSET_STATE_STR = "UNSET";
 
     private static final long serialVersionUID = -3340079923729173798L;
 
@@ -171,7 +171,7 @@ public final class EpicsEnum implements Serializable {
         if (isState()) {
             return _state;
         }
-        throw new IllegalStateException("This " + getClass().getSimpleName() + " object holds a state, not a raw value.");
+        throw new IllegalStateException("This " + getClass().getSimpleName() + " object holds a raw value, not a state.");
     }
 
     @Nonnull

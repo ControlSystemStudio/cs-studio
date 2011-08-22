@@ -38,7 +38,7 @@ import org.csstudio.archive.common.service.mysqlimpl.dao.ArchiveDaoException;
 import org.csstudio.archive.common.service.mysqlimpl.persistengine.PersistEngineDataManager;
 import org.csstudio.domain.desy.system.ControlSystemType;
 
-import com.google.common.collect.Maps;
+import com.google.common.collect.MapMaker;
 import com.google.inject.Inject;
 
 /**
@@ -56,7 +56,8 @@ public class ArchiveControlSystemDaoImpl extends AbstractArchiveDao implements I
     private final String _selectCSByIdStmt = "SELECT id, name, type FROM " + getDatabaseName() +
                                              "." + TAB + " WHERE id=?";
 
-    private final Map<ArchiveControlSystemId, IArchiveControlSystem> _cacheById = Maps.newHashMap();
+    private final Map<ArchiveControlSystemId, IArchiveControlSystem> _cacheById =
+        new MapMaker().concurrencyLevel(2).weakKeys().makeMap();
 
     /**
      * Constructor.

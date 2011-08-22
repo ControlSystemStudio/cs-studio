@@ -97,7 +97,7 @@ public class CollectionDataSampleBatchQueueHandler extends BatchQueueHandlerSupp
         final String sql =
             "INSERT INTO " + getDatabase() + "." + TAB_SAMPLE_BLOB + " " +
             "(" + Joiner.on(",").join(COLUMN_CHANNEL_ID, COLUMN_TIME, COLUMN_VALUE)+ ") " +
-            "VALUES " + VAL_WILDCARDS;
+            "VALUES " + VAL_WILDCARDS + " ON DUPLICATE KEY UPDATE " + COLUMN_TIME + "=" + COLUMN_TIME + "+1";
         return sql;
     }
 
@@ -107,7 +107,7 @@ public class CollectionDataSampleBatchQueueHandler extends BatchQueueHandlerSupp
     @Override
     @Nonnull
     public Collection<String> convertToStatementString(@Nonnull final List<ArchiveMultiScalarSample> elements) {
-        final String sqlWithoutValues = composeSqlString().replace(VAL_WILDCARDS, "");
+        final String sqlWithoutValues = composeSqlString();
 
         final Collection<String> values =
             Collections2.transform(elements,
@@ -132,7 +132,7 @@ public class CollectionDataSampleBatchQueueHandler extends BatchQueueHandlerSupp
                                            return null;
                                        }
                                     });
-        return Collections.singleton(sqlWithoutValues + Joiner.on(",").join(values) + ";");
+        return Collections.singleton(sqlWithoutValues.replace(VAL_WILDCARDS, Joiner.on(",").join(values)) + ";");
     }
 
 }

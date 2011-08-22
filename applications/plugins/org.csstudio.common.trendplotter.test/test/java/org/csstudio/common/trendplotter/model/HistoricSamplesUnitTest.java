@@ -12,11 +12,13 @@ import static org.junit.Assert.assertEquals;
 import java.util.ArrayList;
 
 import org.csstudio.archive.common.service.ArchiveServiceException;
+import org.csstudio.archive.reader.ArchiveReader;
 import org.csstudio.data.values.IValue;
 import org.csstudio.data.values.TimestampFactory;
 import org.csstudio.domain.desy.service.osgi.OsgiServiceUnavailableException;
 import org.csstudio.swt.xygraph.linearscale.Range;
 import org.junit.Test;
+import org.mockito.Mockito;
 
 /** JUnit test of HistoricSamples
  *  @author Kay Kasemir
@@ -29,6 +31,9 @@ public class HistoricSamplesUnitTest
     @Test
     public void addArchivedData() throws OsgiServiceUnavailableException, ArchiveServiceException
     {
+        final ArchiveReader readerMock = Mockito.mock(ArchiveReader.class);
+        Mockito.when(readerMock.getServerName()).thenReturn("Testserver");
+
         final HistoricSamples history = new HistoricSamples(RequestType.RAW);
         final int N = 10;
         // Initial data, time 10..19
@@ -37,8 +42,7 @@ public class HistoricSamplesUnitTest
             samples.add(TestSampleBuilder.makeValue(N+i));
         }
 
-        final String source = "Test";
-        history.mergeArchivedData("TestChannel", source, samples);
+        history.mergeArchivedData("TestChannel", readerMock, samples);
         //System.out.println(history);
 
         assertEquals(N, history.getSize());
@@ -62,7 +66,7 @@ public class HistoricSamplesUnitTest
         for (int i=0; i<N; ++i) {
             samples.set(i, TestSampleBuilder.makeValue(i));
         }
-        history.mergeArchivedData("TestChannel", source, samples);
+        history.mergeArchivedData("TestChannel", readerMock, samples);
         assertEquals(2*N, history.getSize());
         //System.out.println(history);
         range = history.getYDataMinMax();

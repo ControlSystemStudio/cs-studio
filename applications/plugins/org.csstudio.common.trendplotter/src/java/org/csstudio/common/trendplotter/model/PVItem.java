@@ -18,9 +18,7 @@ import javax.annotation.Nonnull;
 import org.csstudio.apputil.xml.DOMHelper;
 import org.csstudio.apputil.xml.XMLWriter;
 import org.csstudio.archive.common.service.ArchiveServiceException;
-import org.csstudio.archive.common.service.IArchiveReaderFacade;
-import org.csstudio.archive.common.service.channel.IArchiveChannel;
-import org.csstudio.common.trendplotter.Activator;
+import org.csstudio.archive.reader.ArchiveReader;
 import org.csstudio.common.trendplotter.Messages;
 import org.csstudio.common.trendplotter.preferences.Preferences;
 import org.csstudio.data.values.IDoubleValue;
@@ -52,7 +50,7 @@ import org.w3c.dom.Element;
 public class PVItem extends ModelItem implements PVListener
 {
     private static final Logger LOG = LoggerFactory.getLogger(PVItem.class);
-    
+
     /** Historic and 'live' samples for this PV */
     final private PVSamples samples;
 
@@ -78,7 +76,7 @@ public class PVItem extends ModelItem implements PVListener
 
     /** Archive data request type */
     private RequestType request_type = RequestType.OPTIMIZED;
-    
+
     /** Internal flag to store the 'on first connection/value update' info */
     private boolean first_pv_update = true;
 
@@ -101,17 +99,20 @@ public class PVItem extends ModelItem implements PVListener
     @Override
     public boolean setName(final String new_name) throws Exception
     {
-        if (! super.setName(new_name))
+        if (! super.setName(new_name)) {
             return false;
+        }
         // Stop PV, clear samples
         final boolean running = pv.isRunning();
-        if (running)
+        if (running) {
             stop();
+        }
         samples.clear();
         // Create new PV, maybe start it
         pv = PVFactory.createPV(getName());
-        if (running)
+        if (running) {
             start(scan_timer);
+        }
         return true;
     }
 
@@ -130,14 +131,17 @@ public class PVItem extends ModelItem implements PVListener
     public void setScanPeriod(double period) throws Exception
     {
         // Don't 'scan' faster than 1 Hz. Instead switch to on-change.
-        if (period < 0.1)
+        if (period < 0.1) {
             period = 0.0;
+        }
         final boolean running = pv.isRunning();
-        if (running)
+        if (running) {
             stop();
+        }
         this.period = period;
-        if (running)
+        if (running) {
             start(scan_timer);
+        }
         fireItemLookChanged();
     }
 
@@ -161,15 +165,16 @@ public class PVItem extends ModelItem implements PVListener
     /** @return Archive data sources for this item */
     public ArchiveDataSource[] getArchiveDataSources()
     {
-        return (ArchiveDataSource[]) archives.toArray(new ArchiveDataSource[archives.size()]);
+        return archives.toArray(new ArchiveDataSource[archives.size()]);
     }
 
     /** Replace archives with settings from preferences */
     public void useDefaultArchiveDataSources()
     {
         archives.clear();
-        for (ArchiveDataSource arch : Preferences.getArchives())
+        for (final ArchiveDataSource arch : Preferences.getArchives()) {
             archives.add(arch);
+        }
         fireItemDataConfigChanged();
     }
 
@@ -178,9 +183,11 @@ public class PVItem extends ModelItem implements PVListener
      */
     public boolean hasArchiveDataSource(final ArchiveDataSource archive)
     {
-        for (ArchiveDataSource arch : archives)
-            if (arch.equals(archive))
+        for (final ArchiveDataSource arch : archives) {
+            if (arch.equals(archive)) {
                 return true;
+            }
+        }
         return false;
     }
 
@@ -190,8 +197,9 @@ public class PVItem extends ModelItem implements PVListener
     @SuppressWarnings("nls")
     public void addArchiveDataSource(final ArchiveDataSource archive)
     {
-        if (hasArchiveDataSource(archive))
+        if (hasArchiveDataSource(archive)) {
             throw new Error("Duplicate archive " + archive);
+        }
         archives.add(archive);
         fireItemDataConfigChanged();
     }
@@ -200,32 +208,38 @@ public class PVItem extends ModelItem implements PVListener
     public void addArchiveDataSource(final ArchiveDataSource archs[])
     {
         boolean change = false;
-        for (ArchiveDataSource archive : archs)
+        for (final ArchiveDataSource archive : archs) {
             if (! archives.contains(archive))
             {
                 change = true;
                 archives.add(archive);
             }
-        if (change)
+        }
+        if (change) {
             fireItemDataConfigChanged();
+        }
     }
 
     /** @param archive Archive to remove as a source from this item. */
     public void removeArchiveDataSource(final ArchiveDataSource archive)
     {
-        if (archives.remove(archive))
+        if (archives.remove(archive)) {
             fireItemDataConfigChanged();
+        }
     }
 
     /** @param archive Archives to remove as a source from this item. Ignored when not used. */
     public void removeArchiveDataSource(final ArchiveDataSource archs[])
     {
         boolean change = false;
-        for (ArchiveDataSource archive : archs)
-            if (archives.remove(archive))
+        for (final ArchiveDataSource archive : archs) {
+            if (archives.remove(archive)) {
                 change = true;
-        if (change)
+            }
+        }
+        if (change) {
             fireItemDataConfigChanged();
+        }
     }
 
     /** Replace existing archive data sources with given archives
@@ -237,19 +251,22 @@ public class PVItem extends ModelItem implements PVListener
         if (archs.length == archives.size())
         {
             boolean same = true;
-            for (int i=0; i<archs.length; ++i)
+            for (int i=0; i<archs.length; ++i) {
                 if (! archs[i].equals(archives.get(i)))
                 {
                     same = false;
                     break;
                 }
-            if (same)
+            }
+            if (same) {
                 return;
+            }
         }
         // Different archives
         archives.clear();
-        for (ArchiveDataSource arch : archs)
+        for (final ArchiveDataSource arch : archs) {
             archives.add(arch);
+        }
         fireItemDataConfigChanged();
     }
 
@@ -262,20 +279,22 @@ public class PVItem extends ModelItem implements PVListener
     /** @param request_type New request type */
     public void setRequestType(final RequestType request_type)
     {
-        if (this.request_type == request_type )
+        if (this.request_type == request_type ) {
             return;
+        }
         this.request_type = request_type;
-        
+
         samples.updateRequestType(request_type);
-        
+
         fireItemDataConfigChanged();
     }
 
     /** Notify listeners */
     private void fireItemDataConfigChanged()
     {
-        if (model != null)
+        if (model != null) {
             model.fireItemDataConfigChanged(this);
+        }
     }
 
     /** Connect control system PV, start scanning, ...
@@ -284,18 +303,20 @@ public class PVItem extends ModelItem implements PVListener
     @SuppressWarnings("nls")
     public void start(final Timer timer) throws Exception
     {
-        if (pv.isRunning())
+        if (pv.isRunning()) {
             throw new RuntimeException("Already started " + getName());
-        
+        }
+
         pv_deadband = createAndStartMdelPV(samples);
         //has_deadband = retrieveDeadbandExistenceInfoFor(name);
-       
+
         this.scan_timer = timer;
         pv.addListener(this);
         pv.start();
         // Log every received value?
-        if (period <= 0.0)
+        if (period <= 0.0) {
             return;
+        }
         // Start scanner for periodic log
         scanner = new TimerTask()
         {
@@ -314,8 +335,9 @@ public class PVItem extends ModelItem implements PVListener
     @SuppressWarnings("nls")
     public void stop()
     {
-        if (!pv.isRunning())
+        if (!pv.isRunning()) {
             throw new RuntimeException("Not running " + getName());
+        }
         if (scanner != null)
         {
             scanner.cancel();
@@ -323,7 +345,7 @@ public class PVItem extends ModelItem implements PVListener
         }
         pv.removeListener(this);
         pv.stop();
-        
+
         if (pv_deadband != null && pv_deadband.isRunning()) {
             pv_deadband.stop();
         }
@@ -342,8 +364,9 @@ public class PVItem extends ModelItem implements PVListener
     {
         current_value = null;
         // In 'monitor' mode, mark in live sample buffer
-        if (period <= 0)
+        if (period <= 0) {
             logDisconnected();
+        }
     }
 
 
@@ -352,10 +375,10 @@ public class PVItem extends ModelItem implements PVListener
             first_pv_update = false;
             if (value.getMetaData() instanceof INumericMetaData) {
 
-                INumericMetaData meta = (INumericMetaData) value.getMetaData();
+                final INumericMetaData meta = (INumericMetaData) value.getMetaData();
                 final double displayHigh = meta.getDisplayHigh();
                 final double displayLow = meta.getDisplayLow();
-                // Call into the ui thread 
+                // Call into the ui thread
                 Display.getDefault().asyncExec(new Runnable() {
                     @Override
                     public void run() {
@@ -365,19 +388,19 @@ public class PVItem extends ModelItem implements PVListener
             }
         }
     }
-    
+
     // PVListener
     @Override
     @SuppressWarnings("nls")
     public void pvValueUpdate(final PV new_pv)
     {
         final IValue value = new_pv.getValue();
-        
+
         onConnect(value);
 
         // Cache most recent for 'scanned' operation
         current_value = value;
-        
+
         // In 'monitor' mode, add to live sample buffer
         if (period <= 0)
         {
@@ -412,25 +435,26 @@ public class PVItem extends ModelItem implements PVListener
                 final String last =
                     samples.getSample(size - 1).getValue().getStatus();
                 // Does last sample already have 'disconnected' status?
-                if (last != null && last.equals(Messages.Model_Disconnected))
+                if (last != null && last.equals(Messages.Model_Disconnected)) {
                     return;
+                }
             }
             samples.addLiveSample(new PlotSample(Messages.LiveData, Messages.Model_Disconnected));
         }
     }
 
     /** Add data retrieved from an archive to the 'historic' section
-     *  @param server_name Archive server that provided these samples
+     *  @param reader Archive server that provided these samples
      *  @param result Historic data
-     * @throws ArchiveServiceException 
-     * @throws OsgiServiceUnavailableException 
+     * @throws ArchiveServiceException
+     * @throws OsgiServiceUnavailableException
      */
-    synchronized public void mergeArchivedSamples(final String server_name,
-                                                  final List<IValue> result) 
-                                                  throws OsgiServiceUnavailableException, 
+    synchronized public void mergeArchivedSamples(final ArchiveReader reader,
+                                                  final List<IValue> result)
+                                                  throws OsgiServiceUnavailableException,
                                                          ArchiveServiceException
     {
-        samples.mergeArchivedData(getName(), server_name, result);
+        samples.mergeArchivedData(getName(), reader, result);
     }
 
     /** Write XML formatted PV configuration
@@ -445,7 +469,7 @@ public class PVItem extends ModelItem implements PVListener
         XMLWriter.XML(writer, 3, Model.TAG_PERIOD, getScanPeriod());
         XMLWriter.XML(writer, 3, Model.TAG_LIVE_SAMPLE_BUFFER_SIZE, getLiveCapacity());
         XMLWriter.XML(writer, 3, Model.TAG_REQUEST, getRequestType().name());
-        for (ArchiveDataSource archive : archives)
+        for (final ArchiveDataSource archive : archives)
         {
             XMLWriter.start(writer, 3, Model.TAG_ARCHIVE);
             writer.println();
@@ -477,11 +501,11 @@ public class PVItem extends ModelItem implements PVListener
         final String req_txt = DOMHelper.getSubelementString(node, Model.TAG_REQUEST, RequestType.OPTIMIZED.name());
         try
         {
-            
+
             final RequestType request = RequestType.valueOf(req_txt);
             item.setRequestType(request);
         }
-        catch (Throwable ex)
+        catch (final Throwable ex)
         {
             // Ignore
         }
@@ -503,39 +527,39 @@ public class PVItem extends ModelItem implements PVListener
     /**
      * Only returns true if the {@link RecordField#ADEL} channel has been registered AND
      * the this{@link #show_deadband()} is set to true.
-     * @param samples2 
+     * @param samples2
      */
-//    public Boolean getShowDeadband() 
+//    public Boolean getShowDeadband()
 //    {
 //        return has_deadband && show_deadband;
 //    }
-    
-//    public Boolean hasDeadband() 
+
+//    public Boolean hasDeadband()
 //    {
 //        return has_deadband;
 //    }
-    
-//    public void toggleShowDeadband() throws Exception 
+
+//    public void toggleShowDeadband() throws Exception
 //    {
 //        show_deadband = !show_deadband;
 //        if (show_deadband && pv_deadband == null) {
 //            createAndStartMdelPV();
 //        }
-//        
+//
 //        samples.toggleShowDeadband(super.toString());
 //    }
 
-    private PV createAndStartMdelPV(final PVSamples pv_samples) throws Exception 
+    private PV createAndStartMdelPV(final PVSamples pv_samples) throws Exception
     {
-        String mdelChannelName = EpicsNameSupport.parseBaseName(super.toString()) + 
+        final String mdelChannelName = EpicsNameSupport.parseBaseName(super.toString()) +
                                  EpicsChannelName.FIELD_SEP +
                                  RecordField.MDEL.getFieldName();
-        PV mdel_pv = PVFactory.createPV(mdelChannelName);
+        final PV mdel_pv = PVFactory.createPV(mdelChannelName);
         mdel_pv.addListener(new PVListener() {
-            
+
             @Override
-            public void pvValueUpdate(PV newPV) {
-                IValue mdelValue = newPV.getValue();
+            public void pvValueUpdate(final PV newPV) {
+                final IValue mdelValue = newPV.getValue();
                 Number mdel;
                 if (mdelValue instanceof IDoubleValue) {
                     mdel = Double.valueOf(((IDoubleValue) mdelValue).getValue());
@@ -547,7 +571,7 @@ public class PVItem extends ModelItem implements PVListener
                 pv_samples.setLiveSamplesDeadband(mdel);
             }
             @Override
-            public void pvDisconnected(PV newPV) {
+            public void pvDisconnected(final PV newPV) {
                 pv_samples.setLiveSamplesDeadband(null);
             }
         });

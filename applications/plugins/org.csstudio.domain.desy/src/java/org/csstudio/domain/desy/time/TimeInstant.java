@@ -94,7 +94,7 @@ public final class TimeInstant implements Comparable<TimeInstant>, Serializable 
                                     .appendSuffix(":")
                                     .appendSeconds()
                                     .toFormatter();
-    public static final PeriodFormatter STD_DURATION_WITH_MILLIES_FMT =
+    public static final PeriodFormatter STD_DURATION_WITH_MILLIS_FMT =
         new PeriodFormatterBuilder().append(STD_DURATION_FMT)
                                     .appendMillis().toFormatter();
 

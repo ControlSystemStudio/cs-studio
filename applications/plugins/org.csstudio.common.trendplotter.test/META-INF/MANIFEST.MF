@@ -8,4 +8,5 @@ Bundle-RequiredExecutionEnvironment: JavaSE-1.6
 Bundle-Vendor: Kay Kasemir <kasemirk@ornl.gov> - SNS, Bastian Knerr <bastian.knerr@desy.de> - DESY
 Require-Bundle: org.junit;bundle-version="4.8.1",
  org.apache.log4j;bundle-version="1.2.16",
- org.slf4j-log4j12;bundle-version="1.6.1"
+ org.slf4j-log4j12;bundle-version="1.6.1",
+ org.mockito;bundle-version="1.8.5"

@@ -30,6 +30,8 @@ import javax.annotation.Nullable;
 import org.csstudio.archive.common.service.channel.ArchiveChannelId;
 import org.csstudio.domain.desy.alarm.IAlarm;
 import org.csstudio.domain.desy.system.ISystemVariable;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * Data transfer object for sample.
@@ -44,6 +46,7 @@ public class ArchiveSample<V extends Serializable,
                           implements IArchiveSample<V, T> {
 
     private static final long serialVersionUID = -2244316283884247177L;
+    private static final Logger LOG = LoggerFactory.getLogger(ArchiveSample.class);
 
     private final ArchiveChannelId _channelId;
     private final T _sysVar;
@@ -53,10 +56,15 @@ public class ArchiveSample<V extends Serializable,
      * Constructor.
      */
     public ArchiveSample(@Nonnull final ArchiveChannelId channelId,
-                         @Nonnull final T data,
+                         @Nonnull final T sysVar,
                          @Nullable final IAlarm alarm) {
+        if (sysVar.getTimestamp().getNanos() == 0L) {
+            LOG.warn("Timestamp for sample of channel {} is 0! Invalid for archive samples.", sysVar.getName());
+            throw new IllegalStateException("Invalid sample timestamp");
+        }
+
         _channelId = channelId;
-        _sysVar = data;
+        _sysVar = sysVar;
         _alarm = alarm;
     }
 

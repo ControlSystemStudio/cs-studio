@@ -28,7 +28,7 @@ import java.sql.SQLException;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
-import java.util.Map;
+import java.util.concurrent.ConcurrentMap;
 
 import javax.annotation.CheckForNull;
 import javax.annotation.Nonnull;
@@ -64,7 +64,7 @@ import org.joda.time.Minutes;
 
 import com.google.common.base.Joiner;
 import com.google.common.collect.Lists;
-import com.google.common.collect.Maps;
+import com.google.common.collect.MapMaker;
 import com.google.inject.Inject;
 
 /**
@@ -105,10 +105,10 @@ public class ArchiveSampleDaoImpl extends AbstractArchiveDao implements IArchive
         "FROM " + getDatabaseName() + "." + TAB_SAMPLE + " WHERE " + COLUMN_CHANNEL_ID + "=? " +
         "AND " + COLUMN_TIME + "<? ORDER BY " + COLUMN_TIME + " DESC LIMIT 1";
 
-    private final Map<ArchiveChannelId, SampleMinMaxAggregator> _reducedDataMapForMinutes =
-        Maps.newConcurrentMap();
-    private final Map<ArchiveChannelId, SampleMinMaxAggregator> _reducedDataMapForHours =
-        Maps.newConcurrentMap();
+    private final ConcurrentMap<ArchiveChannelId, SampleMinMaxAggregator> _reducedDataMapForMinutes =
+        new MapMaker().concurrencyLevel(2).weakKeys().makeMap();
+    private final ConcurrentMap<ArchiveChannelId, SampleMinMaxAggregator> _reducedDataMapForHours =
+        new MapMaker().concurrencyLevel(2).weakKeys().makeMap();
 
     private final IArchiveChannelDao _channelDao;
 
@@ -124,7 +124,6 @@ public class ArchiveSampleDaoImpl extends AbstractArchiveDao implements IArchive
 
         ArchiveTypeConversionSupport.install();
         EpicsSystemVariableSupport.install();
-
         BatchQueueHandlerSupport.installHandlerIfNotExists(new ArchiveSampleBatchQueueHandler(getDatabaseName()));
         BatchQueueHandlerSupport.installHandlerIfNotExists(new CollectionDataSampleBatchQueueHandler(getDatabaseName()));
         BatchQueueHandlerSupport.installHandlerIfNotExists(new MinuteReducedDataSampleBatchQueueHandler(getDatabaseName()));
@@ -162,7 +161,7 @@ public class ArchiveSampleDaoImpl extends AbstractArchiveDao implements IArchive
     @Nonnull
     private List<? extends AbstractReducedDataSample>
     generatePerHourSamples(@Nonnull final Collection<? extends AbstractReducedDataSample> samples,
-                           @Nonnull final Map<ArchiveChannelId, SampleMinMaxAggregator> aggregatorMap) throws ArchiveDaoException {
+                           @Nonnull final ConcurrentMap<ArchiveChannelId, SampleMinMaxAggregator> aggregatorMap) throws ArchiveDaoException {
 
         if (samples.isEmpty()) {
             return Collections.emptyList();
@@ -183,7 +182,6 @@ public class ArchiveSampleDaoImpl extends AbstractArchiveDao implements IArchive
                                                                                minValue,
                                                                                maxValue,
                                                                                time);
-
             processHourSampleOnTimeCondition(hourSamples, channelId, newValue, time, agg);
         }
         return hourSamples;
@@ -208,7 +206,7 @@ public class ArchiveSampleDaoImpl extends AbstractArchiveDao implements IArchive
     @Nonnull
     private <V extends Serializable, T extends ISystemVariable<V>>
     List<? extends AbstractReducedDataSample> generatePerMinuteSamples(@Nonnull final Collection<IArchiveSample<V, T>> samples,
-                                                                       @Nonnull final Map<ArchiveChannelId, SampleMinMaxAggregator> aggregatorMap)
+                                                                       @Nonnull final ConcurrentMap<ArchiveChannelId, SampleMinMaxAggregator> aggregatorMap)
                                                                        throws TypeSupportException, ArchiveDaoException {
         if (samples.isEmpty()) {
             return Collections.emptyList();
@@ -261,16 +259,18 @@ public class ArchiveSampleDaoImpl extends AbstractArchiveDao implements IArchive
 
     @Nonnull
     private SampleMinMaxAggregator retrieveAndInitializeAggregator(@Nonnull final ArchiveChannelId channelId,
-                                                                   @Nonnull final Map<ArchiveChannelId, SampleMinMaxAggregator> aggMap,
+                                                                   @Nonnull final ConcurrentMap<ArchiveChannelId, SampleMinMaxAggregator> aggMap,
                                                                    @Nonnull final Double value,
                                                                    @Nonnull final Double min,
                                                                    @Nonnull final Double max,
                                                                    @Nonnull final TimeInstant time) throws ArchiveDaoException {
+
+
         SampleMinMaxAggregator aggregator = aggMap.get(channelId);
         if (aggregator == null) {
             aggregator = new SampleMinMaxAggregator();
-            initAggregatorToLastKnownSample(channelId, time, aggregator);
             aggMap.put(channelId, aggregator);
+            initAggregatorToLastKnownSample(channelId, time, aggregator);
         }
         aggregator.aggregate(value, min, max, time);
         return aggregator;

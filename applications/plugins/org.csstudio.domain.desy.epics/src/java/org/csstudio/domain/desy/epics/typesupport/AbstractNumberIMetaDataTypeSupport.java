@@ -29,6 +29,8 @@ import org.csstudio.domain.desy.epics.types.EpicsGraphicsData;
 import org.csstudio.domain.desy.epics.types.EpicsMetaData;
 import org.csstudio.domain.desy.types.Limits;
 import org.csstudio.domain.desy.typesupport.TypeSupportException;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * Conversion support for {@link Number} & {@link Comparable} types.
@@ -39,6 +41,7 @@ import org.csstudio.domain.desy.typesupport.TypeSupportException;
  */
 public abstract class AbstractNumberIMetaDataTypeSupport<T extends Number & Comparable<T>> extends EpicsIMetaDataTypeSupport<T> {
 
+    private static final Logger LOG = LoggerFactory.getLogger(AbstractNumberIMetaDataTypeSupport.class);
     /**
      * Constructor.
      */
@@ -52,17 +55,31 @@ public abstract class AbstractNumberIMetaDataTypeSupport<T extends Number & Comp
     @Override
     @Nonnull
     protected EpicsMetaData convertToMetaData(@Nonnull final IMetaData data) throws TypeSupportException {
-        final INumericMetaData numData = checkAndConvertToNumeric(data, getType());
+        final INumericMetaData numMeta = checkAndConvertToNumeric(data, getType());
+        final Limits<T> alarmLims = createLimits(toNumber(numMeta.getAlarmHigh()),
+                                                 toNumber(numMeta.getAlarmLow()));
+        final Limits<T> warnLims = createLimits(toNumber(numMeta.getWarnHigh()),
+                                                toNumber(numMeta.getWarnLow()));
+        final Limits<T> oprLims = createLimits(toNumber(numMeta.getDisplayHigh()),
+                                               toNumber(numMeta.getDisplayLow()));
         final EpicsGraphicsData<T> gr =
-            new EpicsGraphicsData<T>(Limits.<T>create(toNumber(numData.getAlarmLow()),
-                                                      toNumber(numData.getAlarmHigh())),
-                                     Limits.<T>create(toNumber(numData.getWarnLow()),
-                                                      toNumber(numData.getWarnHigh())),
-                                     Limits.<T>create(toNumber(numData.getDisplayLow()),
-                                                      toNumber(numData.getDisplayHigh())));
+            new EpicsGraphicsData<T>(alarmLims, warnLims, oprLims);
         return EpicsMetaData.create(null, gr, null, null);
+
     }
 
     @Nonnull
     protected abstract T toNumber(final double d);
+
+
+    @Nonnull
+    private Limits<T> createLimits(@Nonnull final T high,
+                                   @Nonnull final T low) {
+        try {
+            return Limits.<T>create(low, high);
+        } catch (final IllegalArgumentException e) {
+            LOG.warn("Limits info invalid in meta data. Set limits to zero.", e);
+        }
+        return Limits.<T>create(toNumber(0.0), toNumber(0.0));
+    }
 }

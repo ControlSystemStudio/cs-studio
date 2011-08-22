@@ -11,6 +11,7 @@ import java.io.Serializable;
 
 import javax.annotation.CheckForNull;
 import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import javax.annotation.concurrent.GuardedBy;
 
 import org.csstudio.archive.common.engine.service.IServiceProvider;
@@ -47,7 +48,6 @@ public class ArchiveChannel<V extends Serializable, T extends ISystemVariable<V>
 
     /** Control system PV */
     private final PV _pv;
-
 
     /** Buffer of received samples, periodically written */
     private final SampleBuffer<V, T, IArchiveSample<V, T>> _buffer;
@@ -91,7 +91,12 @@ public class ArchiveChannel<V extends Serializable, T extends ISystemVariable<V>
         }
     };
 
-    private final DesyArchivePVListener<V, T> _listener;
+    @SuppressWarnings("unused")
+    private final Class<V> _typeClazz;
+    private final Class<V> _collClazz;
+
+    @SuppressWarnings("rawtypes")
+    private final DesyArchivePVListener _listener;
 
     /**
      * Constructor
@@ -99,39 +104,42 @@ public class ArchiveChannel<V extends Serializable, T extends ISystemVariable<V>
      */
     public ArchiveChannel(@Nonnull final String name,
                           @Nonnull final ArchiveChannelId id,
-                          @Nonnull final Class<V> clazz) throws EngineModelException {
+                          @Nonnull final Class<V> typeClazz) throws EngineModelException {
+        this(name, id, null, typeClazz);
+    }
+
+
+    /**
+     * Constructor.
+     */
+    @SuppressWarnings({ "unchecked", "rawtypes" })
+    public ArchiveChannel(@Nonnull final String name,
+                          @Nonnull final ArchiveChannelId id,
+                          @Nullable final Class<V> collClazz,
+                          @Nonnull final Class<V> elemClazz) throws EngineModelException {
         _name = name;
         _id = id;
         _buffer = new SampleBuffer<V, T, IArchiveSample<V, T>>(name);
+        _typeClazz = elemClazz;
+        _collClazz = collClazz;
 
         try {
-//            final PVReader<List<Object>> reader = PVManager.read(newValuesOf(channel(name))).every(ms(5));
-//            reader.addPVReaderListener(new PVReaderListener() {
-//                @Override
-//                public void pvChanged() {
-//                    // Do something with each value
-//                    for (final Object newValue : reader.getValue()) {
-//                        System.out.println(newValue);
-//                    }
-//                }
-//            });
-
             _pv = PVFactory.createPV(name);
         } catch (final Exception e) {
             throw new EngineModelException("Creation of pv failed for channel " + name, e);
         }
 
-        _listener = new DesyArchivePVListener<V, T>(_provider, name, _id, clazz) {
-                        @SuppressWarnings("synthetic-access")
-                        @Override
-                        protected void addSampleToBuffer(@Nonnull final IArchiveSample<V, T> sample) {
-                            synchronized (this) {
-                                _receivedSampleCount++;
-                                _mostRecentSysVar = sample.getSystemVariable();
-                            }
-                            _buffer.add(sample);
-                        }
-                    };
+        _listener = new DesyArchivePVListener(_provider, name, _id, collClazz, elemClazz) {
+            @SuppressWarnings("synthetic-access")
+            @Override
+            protected void addSampleToBuffer(@Nonnull final IArchiveSample sample) {
+                synchronized (this) {
+                    _receivedSampleCount++;
+                    _mostRecentSysVar = (T) sample.getSystemVariable();
+                }
+                _buffer.add(sample);
+            }
+        };
         _pv.addListener(_listener);
     }
 
@@ -240,5 +248,9 @@ public class ArchiveChannel<V extends Serializable, T extends ISystemVariable<V>
     public void setServiceProvider(@Nonnull final IServiceProvider provider) {
         _provider = provider;
         _listener.setProvider(provider);
+    }
+
+    public boolean isMultiScalar() {
+        return _collClazz != null;
     }
 }

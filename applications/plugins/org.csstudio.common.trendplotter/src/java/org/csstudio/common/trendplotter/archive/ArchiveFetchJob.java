@@ -73,7 +73,7 @@ public class ArchiveFetchJob extends Job
         /** Construct */
         public WorkerThread()
         {
-            super("ArchiveFetchJobWorker" + (++worker_instance)); //$NON-NLS-1$
+            super("ArchiveFetchJobWorker" + ++worker_instance); //$NON-NLS-1$
         }
 
         /** @return Message that somehow indicates progress */
@@ -88,8 +88,9 @@ public class ArchiveFetchJob extends Job
             cancelled = true;
             synchronized (this)
             {
-                if (reader != null)
+                if (reader != null) {
                     reader.cancel();
+                }
             }
         }
 
@@ -127,7 +128,7 @@ public class ArchiveFetchJob extends Job
                     {
                         reader = ArchiveRepository.getInstance().getArchiveReader(url);
                     }
-                    
+
                     final ValueIterator value_iter;
                     if (item.getRequestType() == RequestType.RAW) {
                         value_iter = reader.getRawValues(archive.getKey(), item.getName(), start, end);
@@ -137,34 +138,38 @@ public class ArchiveFetchJob extends Job
                     }
                     // Get samples into array
                     final ArrayList<IValue> result = new ArrayList<IValue>();
-                    
+
                     while (value_iter.hasNext()) {
                         result.add(value_iter.next());
                     }
-                    
-                    item.mergeArchivedSamples(reader.getServerName(), result);
-                    if (cancelled)
+
+                    item.mergeArchivedSamples(reader, result);
+                    if (cancelled) {
                         break;
+                    }
                     value_iter.close();
                 }
-                catch (Exception ex)
+                catch (final Exception ex)
                 {   // Tell listener unless it's the result of a 'cancel'?
-                    if (! cancelled)
+                    if (! cancelled) {
                         listener.archiveFetchFailed(ArchiveFetchJob.this, archive, ex);
+                    }
                     break;
                 }
                 finally
                 {
                     synchronized (this)
                     {
-                        if (reader != null)
+                        if (reader != null) {
                             reader.close();
+                        }
                         reader = null;
                     }
                 }
             }
-            if (!cancelled)
+            if (!cancelled) {
                 listener.fetchCompleted(ArchiveFetchJob.this);
+            }
             Activator.getLogger().log(Level.FINE, "Ended {0}", ArchiveFetchJob.this); //$NON-NLS-1$
             done = true;
         }
@@ -183,7 +188,7 @@ public class ArchiveFetchJob extends Job
      *  @param end
      *  @param listener
      */
-    public ArchiveFetchJob(PVItem item, final ITimestamp start,
+    public ArchiveFetchJob(final PVItem item, final ITimestamp start,
             final ITimestamp end, final ArchiveFetchJobListener listener)
     {
         super(NLS.bind(Messages.ArchiveFetchJobFmt,
@@ -204,10 +209,11 @@ public class ArchiveFetchJob extends Job
     @Override
     protected IStatus run(final IProgressMonitor monitor)
     {
-        if (item == null)
+        if (item == null) {
             return Status.OK_STATUS;
+        }
         // System.out.println("Start: " + this);
-        BenchmarkTimer timer = new BenchmarkTimer();
+        final BenchmarkTimer timer = new BenchmarkTimer();
 
         monitor.beginTask(Messages.ArchiveFetchStart, IProgressMonitor.UNKNOWN);
         final WorkerThread worker = new WorkerThread();
@@ -220,19 +226,21 @@ public class ArchiveFetchJob extends Job
             {
                 Thread.sleep(POLL_PERIOD_MS);
             }
-            catch (InterruptedException ex)
+            catch (final InterruptedException ex)
             {
                 // Ignore
             }
-            if (worker.isDone())
+            if (worker.isDone()) {
                 break;
+            }
             final String info = NLS.bind(Messages.ArchiveFetchProgressFmt,
                     worker.getMessage(), ++seconds);
             monitor.subTask(info);
             // Try to cancel the worker in response to user's cancel request.
             // Continues to cancel the worker until isDone()
-            if (monitor.isCanceled())
+            if (monitor.isCanceled()) {
                 worker.cancel();
+            }
         }
         monitor.done();
 

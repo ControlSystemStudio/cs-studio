@@ -70,7 +70,8 @@ public abstract class AbstractReducedDataSampleBatchQueueHandler<T extends Abstr
     protected String composeSqlString() {
         final String sql =
             "INSERT INTO " + getDatabase() + "." + getTable() +
-            " (" + Joiner.on(",").join(COLUMN_CHANNEL_ID, COLUMN_TIME, COLUMN_AVG, COLUMN_MIN, COLUMN_MAX) + ") VALUES " + VAL_WILDCARDS;
+            " (" + Joiner.on(",").join(COLUMN_CHANNEL_ID, COLUMN_TIME, COLUMN_AVG, COLUMN_MIN, COLUMN_MAX) +
+            ") VALUES " + VAL_WILDCARDS + " ON DUPLICATE KEY UPDATE " + COLUMN_TIME + "=" + COLUMN_TIME + "+1";
         return sql;
     }
 
@@ -98,7 +99,7 @@ public abstract class AbstractReducedDataSampleBatchQueueHandler<T extends Abstr
     @Override
     @Nonnull
     public Collection<String> convertToStatementString(@Nonnull final List<T> elements) {
-        final String sqlWithoutValues = composeSqlString().replace(VAL_WILDCARDS, "");
+        final String sqlWithoutValues = composeSqlString();
 
         final Collection<String> values =
             Collections2.transform(elements,
@@ -117,7 +118,7 @@ public abstract class AbstractReducedDataSampleBatchQueueHandler<T extends Abstr
                                            return result;
                                        }
                                     });
-        return Collections.singleton(sqlWithoutValues + Joiner.on(",").join(values) + ";");
+        return Collections.singleton(sqlWithoutValues.replace(VAL_WILDCARDS, Joiner.on(",").join(values)) + ";");
     }
 
 

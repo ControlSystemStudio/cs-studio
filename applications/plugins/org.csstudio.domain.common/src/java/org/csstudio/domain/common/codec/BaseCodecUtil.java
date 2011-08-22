@@ -30,7 +30,7 @@ import javax.annotation.Nonnull;
  * @since 10.08.2011
  */
 public final class BaseCodecUtil {
-    private static final String HEXES = "0123456789ABCDEF";
+    private static final String HEX_TABLE = "0123456789ABCDEF";
     /**
      * Constructor.
      */
@@ -38,11 +38,17 @@ public final class BaseCodecUtil {
         // EMPTY
     }
 
+    /**
+     * Converts a byte array to a string representation in hexadecimal.
+     * Example (byte)255 - "FF", (byte)0 - 00, (byte)16 - "11", (byte)65 - "41"
+     * @param bytes
+     * @return the hex representation of the byte array
+     */
     @Nonnull
-    public static String getHex(@Nonnull final byte[] raw) {
-        final StringBuilder hex = new StringBuilder(2 * raw.length);
-        for (final byte b : raw) {
-            hex.append(HEXES.charAt((b & 0xF0) >> 4)).append(HEXES.charAt((b & 0x0F)));
+    public static String getHex(@Nonnull final byte[] bytes) {
+        final StringBuilder hex = new StringBuilder(2 * bytes.length);
+        for (final byte b : bytes) {
+            hex.append(HEX_TABLE.charAt((b & 0xF0) >> 4)).append(HEX_TABLE.charAt((b & 0x0F)));
         }
         return hex.toString();
     }

@@ -22,14 +22,14 @@
 package org.csstudio.domain.desy.epics.typesupport;
 
 
+import java.util.Collection;
+
+import javax.annotation.CheckForNull;
 import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
 
 import org.csstudio.data.values.IValue;
 import org.csstudio.domain.desy.epics.types.EpicsMetaData;
-import org.csstudio.domain.desy.epics.types.EpicsSystemVariable;
 import org.csstudio.domain.desy.typesupport.TypeSupportException;
-import org.epics.pvmanager.TypeSupport;
 
 
 
@@ -41,10 +41,9 @@ import org.epics.pvmanager.TypeSupport;
  * @since 02.12.2010
  * @param <T> the type of the system variable
  */
+@SuppressWarnings("rawtypes")
 public abstract class AbstractIValueConversionTypeSupport<T extends IValue>
     extends EpicsIValueTypeSupport<T> {
-
-    private static boolean INSTALLED;
 
     /**
      * Constructor.
@@ -53,20 +52,47 @@ public abstract class AbstractIValueConversionTypeSupport<T extends IValue>
         super(clazz);
     }
 
-    public static void install() {
-        if (INSTALLED) {
-            return;
-        }
-        TypeSupport.addTypeSupport(new IDoubleValueConversionTypeSupport());
-        TypeSupport.addTypeSupport(new IEnumeratedValueConversionTypeSupport());
-        TypeSupport.addTypeSupport(new ILongValueConversionTypeSupport());
-        TypeSupport.addTypeSupport(new IStringValueConversionTypeSupport());
-
-        INSTALLED = true;
+    @Override
+    @Nonnull
+    protected Object toData(@Nonnull final T value,
+                            @Nonnull final Class<?> elemClass,
+                            @Nonnull final Class<? extends Collection> collClass,
+                            @CheckForNull final EpicsMetaData meta) throws TypeSupportException {
+        return toData(value, elemClass, collClass);
     }
 
     @Nonnull
-    protected abstract EpicsSystemVariable<?> convertToSystemVariable(@Nonnull final String name,
-                                                                      @Nonnull final T value,
-                                                                      @Nullable final EpicsMetaData metaData) throws TypeSupportException;
+    protected abstract Object toData(@Nonnull final T value,
+                                     @Nonnull final Class<?> elemClass,
+                                     @Nonnull final Class<? extends Collection> collClass) throws TypeSupportException;
+
+    @Nonnull
+    protected Collection instantiateCollection(@Nonnull final Class<? extends Collection> collClass) throws TypeSupportException {
+        final Collection coll;
+        try {
+            coll = collClass.newInstance();
+        } catch (final InstantiationException e) {
+            throw new TypeSupportException("Target collection " + collClass.getName() +  " could not be instantiated. Conversion failed.", e);
+        } catch (final IllegalAccessException e) {
+            throw new TypeSupportException("Target collection " + collClass.getName() +  " could not be instantiated. Conversion failed.", e);
+        }
+        return coll;
+    }
+
+    @Nonnull
+    protected AbstractIValueDataToTargetTypeSupport<?> checkForPlausibilityAndGetSupport(@Nonnull final Class<?> elemClass,
+                                                                                         @Nonnull final Class<? extends Collection> collClass,
+                                                                                         final int valuesLength) throws TypeSupportException {
+        checkForPlausibility(collClass, valuesLength);
+        final AbstractIValueDataToTargetTypeSupport<?> support =
+            (AbstractIValueDataToTargetTypeSupport<?>) findTypeSupportFor(AbstractIValueDataToTargetTypeSupport.class, elemClass);
+        return support;
+    }
+
+    protected void checkForPlausibility(@Nonnull final Class<? extends Collection> collClass,
+                                        final int valuesLength) throws TypeSupportException {
+        if (valuesLength > 1 && collClass == null) {
+            throw new TypeSupportException("More than one value in IXXXValue but target collection type not specified. Conversion failed.", null);
+        }
+    }
 }

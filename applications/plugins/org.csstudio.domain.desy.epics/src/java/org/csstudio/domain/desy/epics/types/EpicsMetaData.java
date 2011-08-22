@@ -118,7 +118,7 @@ public final class EpicsMetaData {
         int i = 0;
         for (final String state : states) {
             if (Strings.isNullOrEmpty(state)) {
-                enumList.add(EpicsEnum.createFromState(EpicsEnum.UNSET_STATE, i));
+                enumList.add(EpicsEnum.createFromState(EpicsEnum.UNSET_STATE_STR, i));
             } else {
                 enumList.add(EpicsEnum.createFromState(state, i));
             }

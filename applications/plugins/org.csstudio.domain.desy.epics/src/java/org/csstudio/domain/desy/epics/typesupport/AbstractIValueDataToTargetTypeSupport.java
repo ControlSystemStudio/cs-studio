@@ -17,53 +17,50 @@
  * THE FULL LICENSE SPECIFYING FOR THE SOFTWARE THE REDISTRIBUTION, MODIFICATION,
  * USAGE AND OTHER RIGHTS AND OBLIGATIONS IS INCLUDED WITH THE DISTRIBUTION OF THIS
  * PROJECT IN THE FILE LICENSE.HTML. IF THE LICENSE IS NOT INCLUDED YOU MAY FIND A COPY
- * AT HTTP://WWW.DESY.DE/LEGAL/LICENSE.HTM
+ * AT HTP://WWW.DESY.DE/LEGAL/LICENSE.HTM
  */
 package org.csstudio.domain.desy.epics.typesupport;
 
-import java.util.Collection;
-
+import javax.annotation.CheckForNull;
 import javax.annotation.Nonnull;
 
-import org.csstudio.data.values.ILongValue;
+import org.csstudio.domain.desy.epics.types.EpicsMetaData;
+import org.csstudio.domain.desy.typesupport.AbstractTypeSupport;
 import org.csstudio.domain.desy.typesupport.TypeSupportException;
 
 /**
- * ILongValue conversion support.
+ * Type support to convert the stupid IValue 'values' data to a target type.
  *
  * @author bknerr
- * @since 15.12.2010
+ * @since 18.08.2011
+ * @param <T> the target type to convert the IValue.values into
  */
-final class ILongValueConversionTypeSupport extends
-        AbstractIValueConversionTypeSupport<ILongValue> {
+@SuppressWarnings("unused")
+public abstract class AbstractIValueDataToTargetTypeSupport<T> extends AbstractTypeSupport<T> {
     /**
      * Constructor.
      */
-    public ILongValueConversionTypeSupport() {
-        super(ILongValue.class);
+    protected AbstractIValueDataToTargetTypeSupport(@Nonnull final Class<T> type) {
+        super(type, AbstractIValueDataToTargetTypeSupport.class);
     }
-
-    @SuppressWarnings({ "unchecked", "rawtypes" })
-    @Override
     @Nonnull
-    protected Object toData(@Nonnull final ILongValue value,
-                            @Nonnull final Class<?> elemClass,
-                            @Nonnull final Class<? extends Collection> collClass) throws TypeSupportException {
-        final long[] values = value.getValues();
-        if (values == null) {
-            throw new TypeSupportException("IValue values array is null! Conversion failed.", null);
-        }
-        final AbstractIValueDataToTargetTypeSupport<?> support = checkForPlausibilityAndGetSupport(elemClass,
-                                                                                     collClass,
-                                                                                     values.length);
-        if (values.length == 1) {
-            return support.fromLongValue(values[0]);
-        }
-
-        final Collection coll = instantiateCollection(collClass);
-        for (final long val : values) {
-            coll.add(support.fromLongValue(Long.valueOf(val)));
-        }
-        return coll;
+    protected T fromStringValue(@Nonnull final String val) throws TypeSupportException {
+        return throwTSE("String to " + getType() + " not supported.");
+    }
+    @Nonnull
+    protected T fromLongValue(@Nonnull final Long val) throws TypeSupportException {
+        return throwTSE("Long to " + getType() + " not supported.");
+    }
+    @Nonnull
+    protected T fromEnumValue(final int index, @CheckForNull final EpicsMetaData meta) throws TypeSupportException {
+        return throwTSE("IEnumValue to " + getType() + " not supported.");
+    }
+    @Nonnull
+    protected T fromDoubleValue(@Nonnull final Double val) throws TypeSupportException {
+        return throwTSE("Double to " + getType() + " not supported.");
+    }
+    @Nonnull
+    private T throwTSE(@Nonnull final String msg) throws TypeSupportException {
+        throw new TypeSupportException("Conversion from " + msg, null);
     }
 }
