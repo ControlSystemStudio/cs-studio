@@ -1,4 +1,4 @@
-package org.csstudio.utility.channel.widgets;
+package org.csstudio.channel.widgets;
 
 import gov.bnl.channelfinder.api.Channel;
 import gov.bnl.channelfinder.api.ChannelFinderClient;

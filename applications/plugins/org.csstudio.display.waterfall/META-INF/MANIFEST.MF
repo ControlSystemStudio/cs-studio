@@ -12,7 +12,7 @@ Require-Bundle: org.eclipse.ui,
  org.csstudio.csdata,
  org.csstudio.ui.util,
  org.csstudio.utility.channelfinder;resolution:=optional,
- org.csstudio.utility.channel.widgets;resolution:=optional
+ org.csstudio.channel.widgets;resolution:=optional
 Bundle-ActivationPolicy: lazy
 Bundle-RequiredExecutionEnvironment: JavaSE-1.6
 Bundle-Vendor: Gabriele Carcassi <carcassi@bnl.gov>, Kunal Shroff <kshroff@bnl.gov> - BNL
