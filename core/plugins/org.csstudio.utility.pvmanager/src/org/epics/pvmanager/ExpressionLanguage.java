@@ -44,6 +44,22 @@ public class ExpressionLanguage {
     }
     
     private ExpressionLanguage() {}
+    
+    /**
+     * Creates a constant expression that always return that object.
+     * This is useful to test expressions or to introduce data that is available
+     * at connection time at that will not change.
+     * 
+     * @param <T> type of the value
+     * @param value the actual value
+     * @return an expression that is always going to return the given value
+     */
+    public static <T> DesiredRateExpression<T> constant(T value) {
+        @SuppressWarnings("unchecked")
+        ValueCache<T> cache = (ValueCache<T>) new ValueCache(value.getClass());
+        cache.setValue(value);
+        return new DesiredRateExpressionImpl<T>(new DesiredRateExpressionListImpl<T>(), cache, value.toString());
+    }
 
     /**
      * A channel with the given name of any type. This expression can be
