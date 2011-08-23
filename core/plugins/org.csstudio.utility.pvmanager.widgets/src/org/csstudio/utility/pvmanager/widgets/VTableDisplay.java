@@ -78,6 +78,7 @@ public class VTableDisplay extends Composite {
 			table.getColumn(i).setText(vTable.getColumnName(i));
 			layout.setColumnData(table.getColumn(i), new ColumnWeightData(1, 30));
 		}
+		tableContainer.layout();
 		
 	}
 
