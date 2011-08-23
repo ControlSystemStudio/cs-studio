@@ -247,7 +247,10 @@ public class XmlSlave {
             final StringBuilder prmDataSB = new StringBuilder();
             prmDataSB.append(slave.getPrmUserData());
             addSlavePrmDataFromModules(prmDataSB);
-            final int prmDataLen = 9 + prmDataSB.toString().split(",").length;
+            int prmDataLen = 9;
+            if(prmDataSB.length()>0) {
+                prmDataLen += prmDataSB.toString().split(",").length;
+            }
             slavePrmData.setAttribute("prm_data_len", Integer.toString(prmDataLen));
             slavePrmData.setAttribute("station_status", Integer.toString(slave.getStationStatus()));
             slavePrmData.setAttribute("watchdog_fact_1", Integer.toString(slave.getWdFact1()));
