@@ -54,7 +54,7 @@ public class VTableDisplayDemo extends ViewPart {
 		List<String> names = Arrays.asList("One", "Ten", "Hundred");
 		List<String> ramps = Arrays.asList("sim://ramp(0,1,0.1,1)", "sim://ramp(0,10,0.1,0.75)", "sim://ramp(0,100,0.1,0.5)");
 		List<String> sines = Arrays.asList("sim://sine(0,1,1)", "sim://sine(0,10,0.75)", "sim://sine(0,100,0.5)");
-		pv = PVManager.read(vTable(column("ames", vStringConstants(names)),
+		pv = PVManager.read(vTable(column("Names", vStringConstants(names)),
 				column("Ramps", latestValueOf(vDoubles(ramps))),
 				column("Sines", latestValueOf(vDoubles(sines))))).notifyOn(SWTUtil.swtThread()).every(ms(250));
 		pv.addPVReaderListener(new PVReaderListener() {
