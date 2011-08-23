@@ -43,6 +43,7 @@ public final class DataTypeSupport {
         TypeSupport.addTypeSupport(NotificationSupport.immutableTypeSupport(Array.class));
         TypeSupport.addTypeSupport(NotificationSupport.immutableTypeSupport(Statistics.class));
         TypeSupport.addTypeSupport(NotificationSupport.immutableTypeSupport(VImage.class));
+        TypeSupport.addTypeSupport(NotificationSupport.immutableTypeSupport(VTable.class));
 
         installed = true;
     }
