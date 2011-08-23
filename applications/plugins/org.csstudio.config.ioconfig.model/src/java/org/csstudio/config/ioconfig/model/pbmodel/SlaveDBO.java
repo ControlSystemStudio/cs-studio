@@ -436,9 +436,9 @@ public class SlaveDBO extends AbstractNodeDBO<MasterDBO, ModuleDBO> {
     }
     
     public void setPrmUserData(@Nonnull final String prmUserData) {
-        if(prmUserData != null) {
+        _prmUserDataList = new ArrayList<Integer>();
+        if(prmUserData != null&&!prmUserData.trim().isEmpty()) {
             final String[] split = prmUserData.split(",");
-            _prmUserDataList = new ArrayList<Integer>();
             for (final String value : split) {
                 _prmUserDataList.add(GsdFileParser.gsdValue2Int(value));
             }

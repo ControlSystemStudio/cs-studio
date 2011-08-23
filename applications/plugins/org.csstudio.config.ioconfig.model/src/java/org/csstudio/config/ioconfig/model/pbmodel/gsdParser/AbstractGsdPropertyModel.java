@@ -73,10 +73,9 @@ public abstract class AbstractGsdPropertyModel {
         if (!_gsdExtUserPrmDataConstMap.isEmpty()) {
             for (int i = 0; i <= _gsdExtUserPrmDataConstMap.lastKey(); i++) {
                 Integer value = _gsdExtUserPrmDataConstMap.get(i);
-                if (value == null) {
-                    value = 0;
+                if (value != null) {
+                    valueList.add(value);
                 }
-                valueList.add(value);
             }
         }
         return valueList;
