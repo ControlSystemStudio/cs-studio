@@ -1,4 +1,4 @@
-package org.csstudio.display.waterfall.opi;
+package org.csstudio.channel.opiwidget;
 
 import org.osgi.framework.BundleActivator;
 import org.osgi.framework.BundleContext;

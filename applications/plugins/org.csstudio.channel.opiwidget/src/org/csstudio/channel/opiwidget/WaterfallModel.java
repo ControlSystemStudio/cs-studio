@@ -1,4 +1,4 @@
-package org.csstudio.display.waterfall.opi;
+package org.csstudio.channel.opiwidget;
 
 import org.csstudio.opibuilder.model.AbstractWidgetModel;
 import org.csstudio.opibuilder.properties.BooleanProperty;
@@ -10,7 +10,7 @@ import org.epics.pvmanager.util.TimeDuration;
 
 public class WaterfallModel extends AbstractWidgetModel {
 	
-	public final String ID = "org.csstudio.display.waterfall.opi.Waterfall"; //$NON-NLS-1$
+	public final String ID = "org.csstudio.channel.opiwidget.Waterfall"; //$NON-NLS-1$
 	
 	public static final String INPUT_TEXT = "inputText"; //$NON-NLS-1$	
 	public static final String SORT_PROPERTY = "sortProperty"; //$NON-NLS-1$	

@@ -1,14 +1,10 @@
-package org.csstudio.display.waterfall.opi;
+package org.csstudio.channel.opiwidget;
 
 import org.csstudio.opibuilder.editparts.AbstractWidgetEditPart;
 import org.csstudio.opibuilder.editparts.ExecutionMode;
 import org.csstudio.opibuilder.properties.IWidgetPropertyChangeHandler;
-import org.csstudio.opibuilder.widgets.figures.ComboFigure;
-import org.csstudio.ui.util.CustomMediaFactory;
 import org.csstudio.utility.pvmanager.widgets.WaterfallWidget;
 import org.eclipse.draw2d.IFigure;
-import org.eclipse.swt.graphics.Color;
-import org.eclipse.swt.graphics.RGB;
 import org.eclipse.swt.widgets.Composite;
 
 public class WaterfallEditPart extends AbstractWidgetEditPart {

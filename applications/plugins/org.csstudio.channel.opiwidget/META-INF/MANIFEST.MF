@@ -1,9 +1,9 @@
 Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: Waterfall widget for BOY
-Bundle-SymbolicName: org.csstudio.display.waterfall.opi;singleton:=true
+Bundle-SymbolicName: org.csstudio.channel.opiwidget;singleton:=true
 Bundle-Version: 1.0.0.qualifier
-Bundle-Activator: org.csstudio.display.waterfall.opi.Activator
+Bundle-Activator: org.csstudio.channel.opiwidget.Activator
 Require-Bundle: org.eclipse.core.runtime,
  org.csstudio.opibuilder;bundle-version="1.2.0",
  org.csstudio.opibuilder.widgets;bundle-version="1.2.0",
