@@ -41,21 +41,25 @@ import org.slf4j.LoggerFactory;
  */
 final class ShutdownWorkerThread extends Thread {
 
-    private final Logger shutdownLog =
+    private final Logger _shutdownLog =
             LoggerFactory.getLogger(ShutdownWorkerThread.class);
 
     private final PersistEngineDataManager _persistEngineDataManager;
     private final IBatchQueueHandlerProvider _handlerProvider;
+    private final Integer _prefTermTimeMS;
 
 
 
     /**
      * Constructor.
+     * @param prefTermTimeInMS
      */
     public ShutdownWorkerThread(@Nonnull final PersistEngineDataManager mgr,
-                                @Nonnull final IBatchQueueHandlerProvider provider) {
+                                @Nonnull final IBatchQueueHandlerProvider provider,
+                                @Nonnull final Integer prefTermTimeInMS) {
         _persistEngineDataManager = mgr;
         _handlerProvider = provider;
+        _prefTermTimeMS = prefTermTimeInMS;
     }
 
     /**
@@ -70,16 +74,19 @@ final class ShutdownWorkerThread extends Thread {
                                                _handlerProvider));
         executor.shutdown();
         try {
-            if (!executor.awaitTermination(10000, TimeUnit.MILLISECONDS)) {
-                shutdownLog.warn("Executor for PersistDataWorkers did not terminate in the specified period. Try to rescue data.");
+            _shutdownLog.info("Await termination for {}ms", _prefTermTimeMS);
+            if (!executor.awaitTermination(_prefTermTimeMS, TimeUnit.MILLISECONDS)) {
+                _shutdownLog.warn("Executor for PersistDataWorkers did not terminate in the specified period. Try to rescue data.");
                 for (final BatchQueueHandlerSupport<?> handler : _handlerProvider.getHandlers()) {
                     rescueQueueContent(handler);
                 }
             }
         } catch (final InterruptedException e) {
             Thread.currentThread().interrupt();
+        } finally {
+            _shutdownLog.info("Shutdown now.");
+            executor.shutdownNow();
         }
-        executor.shutdownNow();
     }
 
     private <T> void rescueQueueContent(@Nonnull final BatchQueueHandlerSupport<T> handler) {

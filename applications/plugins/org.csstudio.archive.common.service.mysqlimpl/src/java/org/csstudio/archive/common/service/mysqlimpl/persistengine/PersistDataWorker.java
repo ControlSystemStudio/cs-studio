@@ -93,7 +93,7 @@ public class PersistDataWorker extends AbstractTimeMeasuredRunnable {
      */
     @Override
     public void measuredRun() {
-        LOG.info("RUN: " + _name);
+        //LOG.info("RUN: " + _name);
 
         try {
             final Connection connection = _mgr.getConnectionHandler().getConnection();
@@ -117,10 +117,10 @@ public class PersistDataWorker extends AbstractTimeMeasuredRunnable {
             PreparedStatement stmt = null;
             try {
                 if (!handler.getQueue().isEmpty()) {
-                    LOG.info("Start for {} in {}", handler.getHandlerType().getSimpleName(), _name);
+                    LOG.debug("Start for {} in {}", handler.getHandlerType().getSimpleName(), _name);
                     stmt = handler.createNewStatement(connection);
                     processBatchForStatement((BatchQueueHandlerSupport<T>) handler, stmt, rescueDataList);
-                    LOG.info("End for {}", handler.getHandlerType().getSimpleName());
+                    LOG.debug("End for {}", handler.getHandlerType().getSimpleName());
                 }
             } catch (final SQLException e) {
                 LOG.error("Creation of batch statement failed for strategy " + handler.getClass().getSimpleName(), e);

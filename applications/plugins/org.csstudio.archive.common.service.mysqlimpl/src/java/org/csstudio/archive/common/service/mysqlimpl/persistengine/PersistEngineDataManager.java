@@ -85,9 +85,7 @@ public class PersistEngineDataManager {
     private final AtomicInteger _workerId = new AtomicInteger(0);
 
     private final Integer _prefPeriodInMS;
-//    private final File _prefRescueDir;
-//    private final String _prefSmtpHost;
-//    private final String _prefEmailAddress;
+    private final Integer _prefTermTimeInMS;
 
     private final ArchiveConnectionHandler _connectionHandler;
 
@@ -110,11 +108,9 @@ public class PersistEngineDataManager {
         _connectionHandler = connectionHandler;
 
         _prefPeriodInMS = prefs.getPeriodInMS();
-//        _prefRescueDir = prefs.getDataRescueDir();
-//        _prefSmtpHost = prefs.getSmtpHost();
-//        _prefEmailAddress = prefs.getEmailAddress();
+        _prefTermTimeInMS = prefs.getTerminationTimeInMS();
 
-        addGracefulShutdownHook(_handlerProvider);
+        addGracefulShutdownHook(_handlerProvider, _prefTermTimeInMS);
     }
 
     private void submitNewPersistDataWorker(@Nonnull final ScheduledThreadPoolExecutor executor,
@@ -137,13 +133,15 @@ public class PersistEngineDataManager {
      * This shutdown hook is only added when the sys property context is not set to "CI",
      * meaning continuous integration. This is a flaw as the production code should be unaware
      * of its run context, but we couldn't think of another option.
+     * @param prefTermTimeInMS
      */
-    private void addGracefulShutdownHook(@Nonnull final IBatchQueueHandlerProvider provider) {
+    private void addGracefulShutdownHook(@Nonnull final IBatchQueueHandlerProvider provider,
+                                         @Nonnull final Integer prefTermTimeInMS) {
         if (DesyRunContext.isProductionContext()) {
             /**
              * Add shutdown hook.
              */
-            Runtime.getRuntime().addShutdownHook(new ShutdownWorkerThread(this, provider));
+            Runtime.getRuntime().addShutdownHook(new ShutdownWorkerThread(this, provider, prefTermTimeInMS));
         }
     }
 
