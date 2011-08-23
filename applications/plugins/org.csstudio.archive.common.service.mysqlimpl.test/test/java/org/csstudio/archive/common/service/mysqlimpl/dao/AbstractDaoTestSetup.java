@@ -83,9 +83,8 @@ public abstract class AbstractDaoTestSetup {
          *  cannot be controlled in JUnit Plugin tests. Hence, the daos will be instantiated by the activator
          *  before the test and this method here runs. That means, the daos create their batch queue handlers
          *  ({@link BatchQueueHandlerSupport#installIfNotExists}) with the database name from the production prefs,
-         *  which are statically registered as type
-         *  supports that cannot be overridden in the typesupport by a recreation of the daos. We have to set the queue handlers
-         *  parameters again - namely the database name.
+         *  which are statically registered as type supports that cannot be overridden in the typesupport by a recreation of
+         *  the daos. We have to set the queue handlers parameters again - namely the database name.
          */
         for (final BatchQueueHandlerSupport<?> handler : BatchQueueHandlerSupport.getInstalledHandlers()) {
             handler.setDatabase(prefsMock.getDatabaseName());

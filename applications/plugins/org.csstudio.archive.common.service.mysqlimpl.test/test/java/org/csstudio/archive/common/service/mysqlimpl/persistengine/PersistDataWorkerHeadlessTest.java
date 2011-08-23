@@ -27,6 +27,7 @@ import java.nio.charset.Charset;
 import java.sql.Connection;
 import java.util.Collection;
 import java.util.Collections;
+import java.util.concurrent.ConcurrentLinkedQueue;
 import java.util.concurrent.LinkedBlockingQueue;
 
 import javax.annotation.Nonnull;
@@ -101,7 +102,7 @@ public class PersistDataWorkerHeadlessTest {
                 if (_handler == null) {
                     _handler = new FalseFillStmtHandler(IArchiveSample.class,
                                                         HANDLER.getDatabaseName(),
-                                                        new LinkedBlockingQueue<IArchiveSample>(TestSampleProvider.SAMPLES_MIN));
+                                                        new ConcurrentLinkedQueue<IArchiveSample>(TestSampleProvider.SAMPLES_MIN));
                 }
                 return (Collection) Lists.newArrayList(_handler);
             }

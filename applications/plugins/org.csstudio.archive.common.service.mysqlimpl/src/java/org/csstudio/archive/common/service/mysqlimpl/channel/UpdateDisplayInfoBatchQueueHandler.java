@@ -24,8 +24,7 @@ package org.csstudio.archive.common.service.mysqlimpl.channel;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
 import java.util.Collection;
-import java.util.List;
-import java.util.concurrent.LinkedBlockingQueue;
+import java.util.concurrent.ConcurrentLinkedQueue;
 
 import javax.annotation.Nonnull;
 
@@ -83,16 +82,14 @@ public class UpdateDisplayInfoBatchQueueHandler extends BatchQueueHandlerSupport
      * Constructor.
      */
     public UpdateDisplayInfoBatchQueueHandler(@Nonnull final String databaseName) {
-        super(ArchiveChannelDisplayInfo.class, databaseName, new LinkedBlockingQueue<ArchiveChannelDisplayInfo>());
+        super(ArchiveChannelDisplayInfo.class,
+              createSqlStatementString(databaseName),
+              new ConcurrentLinkedQueue<ArchiveChannelDisplayInfo>());
     }
 
-    /**
-     * {@inheritDoc}
-     */
-    @Override
     @Nonnull
-    protected String composeSqlString() {
-        return "UPDATE " + getDatabase() + "." + ArchiveChannelDaoImpl.TAB +
+    private static String createSqlStatementString(@Nonnull final String database) {
+        return "UPDATE " + database + "." + ArchiveChannelDaoImpl.TAB +
                " SET display_high=?, display_low=? WHERE id=?";
     }
 
@@ -112,8 +109,8 @@ public class UpdateDisplayInfoBatchQueueHandler extends BatchQueueHandlerSupport
      */
     @Override
     @Nonnull
-    public Collection<String> convertToStatementString(@Nonnull final List<ArchiveChannelDisplayInfo> elements) {
-        final String sqlStr = composeSqlString();
+    public Collection<String> convertToStatementString(@Nonnull final Collection<ArchiveChannelDisplayInfo> elements) {
+        final String sqlStr = getSqlStatementString();
         final Collection<String> statements =
             Collections2.transform(elements,
                                    new Function<ArchiveChannelDisplayInfo, String>() {

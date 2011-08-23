@@ -28,9 +28,7 @@ import static org.csstudio.archive.common.service.mysqlimpl.sample.ArchiveSample
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
 import java.util.Collection;
-import java.util.Collections;
-import java.util.List;
-import java.util.concurrent.LinkedBlockingQueue;
+import java.util.concurrent.ConcurrentLinkedQueue;
 
 import javax.annotation.Nonnull;
 
@@ -60,13 +58,15 @@ public class CollectionDataSampleBatchQueueHandler extends BatchQueueHandlerSupp
 
     static final Logger LOG = LoggerFactory.getLogger(CollectionDataSampleBatchQueueHandler.class);
 
-    private static final String VAL_WILDCARDS = "(?, ?, ?)";
+    private static final String VALUES_AND_UPDATE = "(?, ?, ?) ON DUPLICATE KEY UPDATE " + COLUMN_VALUE + "=?";
 
     /**
      * Constructor.
      */
     public CollectionDataSampleBatchQueueHandler(@Nonnull final String databaseName) {
-        super(ArchiveMultiScalarSample.class, databaseName, new LinkedBlockingQueue<ArchiveMultiScalarSample>());
+        super(ArchiveMultiScalarSample.class,
+              createSqlStatementString(databaseName),
+              new ConcurrentLinkedQueue<ArchiveMultiScalarSample>());
     }
 
     /**
@@ -82,22 +82,19 @@ public class CollectionDataSampleBatchQueueHandler extends BatchQueueHandlerSupp
         try {
             final byte[] byteArray = ArchiveTypeConversionSupport.toByteArray(element.getValue());
             stmt.setBytes(3, byteArray);
+            stmt.setBytes(4, byteArray);
         } catch (final TypeSupportException e) {
             throw new ArchiveDaoException("Archive type support for byte array conversion failed for " +
                                           element.getValue().getClass().getName(), e);
         }
     }
 
-    /**
-     * {@inheritDoc}
-     */
-    @Override
     @Nonnull
-    protected String composeSqlString() {
+    private static String createSqlStatementString(@Nonnull final String database) {
         final String sql =
-            "INSERT INTO " + getDatabase() + "." + TAB_SAMPLE_BLOB + " " +
+            "INSERT INTO " + database + "." + TAB_SAMPLE_BLOB + " " +
             "(" + Joiner.on(",").join(COLUMN_CHANNEL_ID, COLUMN_TIME, COLUMN_VALUE)+ ") " +
-            "VALUES " + VAL_WILDCARDS + " ON DUPLICATE KEY UPDATE " + COLUMN_TIME + "=" + COLUMN_TIME + "+1";
+            "VALUES " + VALUES_AND_UPDATE;
         return sql;
     }
 
@@ -106,10 +103,10 @@ public class CollectionDataSampleBatchQueueHandler extends BatchQueueHandlerSupp
      */
     @Override
     @Nonnull
-    public Collection<String> convertToStatementString(@Nonnull final List<ArchiveMultiScalarSample> elements) {
-        final String sqlWithoutValues = composeSqlString();
+    public Collection<String> convertToStatementString(@Nonnull final Collection<ArchiveMultiScalarSample> elements) {
+        final String sqlWithoutValues = getSqlStatementString().replace(VALUES_AND_UPDATE, "");
 
-        final Collection<String> values =
+        final Collection<String> sqlStatementStrings =
             Collections2.transform(elements,
                                    new Function<ArchiveMultiScalarSample, String>() {
                                        @Override
@@ -119,12 +116,12 @@ public class CollectionDataSampleBatchQueueHandler extends BatchQueueHandlerSupp
                                                final byte[] byteArray = ArchiveTypeConversionSupport.toByteArray(input.getValue());
                                                final String hexStr = BaseCodecUtil.getHex(byteArray);
 
-                                               final String value =
+                                               final String value = sqlWithoutValues +
                                                    "(" +
                                                    Joiner.on(",").join(input.getChannelId().asString(),+
                                                                        input.getSystemVariable().getTimestamp().getNanos(),
                                                                        "x'" + hexStr + "'") +
-                                                   ")";
+                                                   ");";
                                                return value;
                                            } catch (final TypeSupportException e) {
                                                LOG.error("Type support missing for " + input.getValue().getClass().getName(), e);
@@ -132,7 +129,7 @@ public class CollectionDataSampleBatchQueueHandler extends BatchQueueHandlerSupp
                                            return null;
                                        }
                                     });
-        return Collections.singleton(sqlWithoutValues.replace(VAL_WILDCARDS, Joiner.on(",").join(values)) + ";");
+        return sqlStatementStrings;
     }
 
 }

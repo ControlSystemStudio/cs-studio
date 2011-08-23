@@ -31,8 +31,7 @@ import java.sql.PreparedStatement;
 import java.sql.SQLException;
 import java.util.Collection;
 import java.util.Collections;
-import java.util.List;
-import java.util.concurrent.BlockingQueue;
+import java.util.Queue;
 
 import javax.annotation.Nonnull;
 
@@ -51,32 +50,29 @@ import com.google.common.collect.Collections2;
  * @param <T> the type of the entity used to fill the statement's batch
  */
 public abstract class AbstractReducedDataSampleBatchQueueHandler<T extends AbstractReducedDataSample> extends BatchQueueHandlerSupport<T> {
-    private static final String VAL_WILDCARDS = "(?, ?, ?, ?, ?)";
+    protected static final String VALUES_AND_UPDATE =
+        "(?, ?, ?, ?, ?) ON DUPLICATE KEY UPDATE " + COLUMN_AVG + "=?, " +
+                                                     COLUMN_MIN + "=?, " +
+                                                     COLUMN_MAX + "=?";
 
     /**
      * Constructor.
      */
     public AbstractReducedDataSampleBatchQueueHandler(@Nonnull final Class<T> typeClass,
-                                                      @Nonnull final String database,
-                                                      @Nonnull final BlockingQueue<T> queue) {
-        super(typeClass, database, queue);
+                                                      @Nonnull final String sqlStmtString,
+                                                      @Nonnull final Queue<T> queue) {
+        super(typeClass, sqlStmtString, queue);
     }
 
-    /**
-     * {@inheritDoc}
-     */
-    @Override
     @Nonnull
-    protected String composeSqlString() {
+    protected static String createSqlStatementString(@Nonnull final String database,
+                                                     @Nonnull final String table) {
         final String sql =
-            "INSERT INTO " + getDatabase() + "." + getTable() +
+            "INSERT INTO " + database + "." + table +
             " (" + Joiner.on(",").join(COLUMN_CHANNEL_ID, COLUMN_TIME, COLUMN_AVG, COLUMN_MIN, COLUMN_MAX) +
-            ") VALUES " + VAL_WILDCARDS + " ON DUPLICATE KEY UPDATE " + COLUMN_TIME + "=" + COLUMN_TIME + "+1";
+            ") VALUES " + VALUES_AND_UPDATE;
         return sql;
     }
-
-    @Nonnull
-    protected abstract String getTable();
 
     /**
      * {@inheritDoc}
@@ -88,9 +84,14 @@ public abstract class AbstractReducedDataSampleBatchQueueHandler<T extends Abstr
                                         SQLException {
         stmt.setInt(1, element.getChannelId().intValue());
         stmt.setLong(2, element.getTimestamp().getNanos());
+
         stmt.setDouble(3, element.getAvg());
         stmt.setDouble(4, element.getMin());
         stmt.setDouble(5, element.getMax());
+
+        stmt.setDouble(6, element.getAvg());
+        stmt.setDouble(7, element.getMin());
+        stmt.setDouble(8, element.getMax());
     }
 
     /**
@@ -98,8 +99,8 @@ public abstract class AbstractReducedDataSampleBatchQueueHandler<T extends Abstr
      */
     @Override
     @Nonnull
-    public Collection<String> convertToStatementString(@Nonnull final List<T> elements) {
-        final String sqlWithoutValues = composeSqlString();
+    public Collection<String> convertToStatementString(@Nonnull final Collection<T> elements) {
+        final String sqlWithoutValues = getSqlStatementString().replace(VALUES_AND_UPDATE, "");
 
         final Collection<String> values =
             Collections2.transform(elements,
@@ -118,7 +119,7 @@ public abstract class AbstractReducedDataSampleBatchQueueHandler<T extends Abstr
                                            return result;
                                        }
                                     });
-        return Collections.singleton(sqlWithoutValues.replace(VAL_WILDCARDS, Joiner.on(",").join(values)) + ";");
+        return Collections.singleton(sqlWithoutValues + Joiner.on(",").join(values) + ";");
     }
 
 

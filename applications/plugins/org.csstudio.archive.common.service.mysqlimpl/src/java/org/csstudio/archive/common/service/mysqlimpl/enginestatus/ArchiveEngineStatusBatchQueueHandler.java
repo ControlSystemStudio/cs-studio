@@ -25,8 +25,7 @@ import java.sql.PreparedStatement;
 import java.sql.SQLException;
 import java.util.Collection;
 import java.util.Collections;
-import java.util.List;
-import java.util.concurrent.LinkedBlockingQueue;
+import java.util.concurrent.ConcurrentLinkedQueue;
 
 import javax.annotation.Nonnull;
 
@@ -49,16 +48,14 @@ public final class ArchiveEngineStatusBatchQueueHandler extends BatchQueueHandle
      * Constructor.
      */
     public ArchiveEngineStatusBatchQueueHandler(@Nonnull final String databaseName) {
-        super(IArchiveEngineStatus.class, databaseName, new LinkedBlockingQueue<IArchiveEngineStatus>());
+        super(IArchiveEngineStatus.class,
+              createSqlStatementString(databaseName),
+              new ConcurrentLinkedQueue<IArchiveEngineStatus>());
     }
 
-    /**
-     * {@inheritDoc}
-     */
-    @Override
     @Nonnull
-    protected String composeSqlString() {
-        return "INSERT INTO " + getDatabase() + "." + ArchiveEngineStatusDaoImpl.TAB +
+    protected static String createSqlStatementString(@Nonnull final String database) {
+        return "INSERT INTO " + database + "." + ArchiveEngineStatusDaoImpl.TAB +
                " (engine_id, status, time, info) VALUES " + VAL_WILDCARDS;
     }
     /**
@@ -77,8 +74,8 @@ public final class ArchiveEngineStatusBatchQueueHandler extends BatchQueueHandle
      */
     @Override
     @Nonnull
-    public Collection<String> convertToStatementString(@Nonnull final List<IArchiveEngineStatus> elements) {
-        final String sqlStr = composeSqlString().replace(VAL_WILDCARDS, "");
+    public Collection<String> convertToStatementString(@Nonnull final Collection<IArchiveEngineStatus> elements) {
+        final String sqlStr = getSqlStatementString().replace(VAL_WILDCARDS, "");
         final Collection<String> values =
             Collections2.transform(elements,
                                    new Function<IArchiveEngineStatus, String>() {
