@@ -1,7 +1,7 @@
 package org.csstudio.utility.pvamanger.widgets.test;
 
-import static org.epics.pvmanager.data.ExpressionLanguage.vDoubleArray;
-import static org.epics.pvmanager.extra.ExpressionLanguage.waterfallPlotOf;
+import static org.epics.pvmanager.data.ExpressionLanguage.*;
+import static org.epics.pvmanager.ExpressionLanguage.*;
 import static org.epics.pvmanager.util.TimeDuration.*;
 
 import java.util.Arrays;
@@ -36,6 +36,7 @@ public class VTableDisplayDemo extends ViewPart {
 
 	
 	private VTableDisplay table;
+	private PVReader<VTable> pv;
 
 	
 	public VTableDisplayDemo() {
@@ -49,31 +50,18 @@ public class VTableDisplayDemo extends ViewPart {
 	public void createPartControl(Composite parent) {
 		parent.setLayout(new FillLayout(SWT.HORIZONTAL));
 		table = new VTableDisplay(parent);
-		table.setVTable(new VTable() {
-			
-			private List<Class<?>> classes = Arrays.<Class<?>>asList(String.class, Double.TYPE, Integer.TYPE);
-			private List<String> names = Arrays.asList("Name", "Value", "Count");
-			private List<Object> data = Arrays.<Object>asList(new String[] {"One", "Two", "Three"},
-					new double[] {1.0, 2.0, 3.0}, new int[] {1, 2, 3});
-			
-			@Override
-			public Class<?> getColumnType(int column) {
-				return classes.get(column);
-			}
+
+		List<String> names = Arrays.asList("One", "Ten", "Hundred");
+		List<String> ramps = Arrays.asList("sim://ramp(0,1,0.1,1)", "sim://ramp(0,10,0.1,0.75)", "sim://ramp(0,100,0.1,0.5)");
+		List<String> sines = Arrays.asList("sim://sine(0,1,1)", "sim://sine(0,10,0.75)", "sim://sine(0,100,0.5)");
+		pv = PVManager.read(vTable(column("ames", vStringConstants(names)),
+				column("Ramps", latestValueOf(vDoubles(ramps))),
+				column("Sines", latestValueOf(vDoubles(sines))))).notifyOn(SWTUtil.swtThread()).every(ms(250));
+		pv.addPVReaderListener(new PVReaderListener() {
 			
 			@Override
-			public String getColumnName(int column) {
-				return names.get(column);
-			}
-			
-			@Override
-			public int getColumnCount() {
-				return classes.size();
-			}
-			
-			@Override
-			public Object getColumnArray(int column) {
-				return data.get(column);
+			public void pvChanged() {
+				table.setVTable(pv.getValue());
 			}
 		});
 
@@ -111,10 +99,12 @@ public class VTableDisplayDemo extends ViewPart {
 	public void setFocus() {
 		// Set the focus
 	}
-//	
-//	@Override
-//	public void dispose() {
-//		super.dispose();
-//		pv.close();
-//	}
+	
+	@Override
+	public void dispose() {
+		super.dispose();
+		if (pv != null) {
+			pv.close();
+		}
+	}
 }
