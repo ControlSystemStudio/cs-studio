@@ -91,7 +91,6 @@ public class ArchiveChannel<V extends Serializable, T extends ISystemVariable<V>
         }
     };
 
-    @SuppressWarnings("unused")
     private final Class<V> _typeClazz;
     private final Class<V> _collClazz;
 
@@ -104,8 +103,9 @@ public class ArchiveChannel<V extends Serializable, T extends ISystemVariable<V>
      */
     public ArchiveChannel(@Nonnull final String name,
                           @Nonnull final ArchiveChannelId id,
-                          @Nonnull final Class<V> typeClazz) throws EngineModelException {
-        this(name, id, null, typeClazz);
+                          @Nonnull final Class<V> typeClazz,
+                          @Nonnull final IServiceProvider provider) throws EngineModelException {
+        this(name, id, null, typeClazz, provider);
     }
 
 
@@ -116,12 +116,14 @@ public class ArchiveChannel<V extends Serializable, T extends ISystemVariable<V>
     public ArchiveChannel(@Nonnull final String name,
                           @Nonnull final ArchiveChannelId id,
                           @Nullable final Class<V> collClazz,
-                          @Nonnull final Class<V> elemClazz) throws EngineModelException {
+                          @Nonnull final Class<V> typeClazz,
+                          @Nonnull final IServiceProvider provider) throws EngineModelException {
         _name = name;
         _id = id;
         _buffer = new SampleBuffer<V, T, IArchiveSample<V, T>>(name);
-        _typeClazz = elemClazz;
+        _typeClazz = typeClazz;
         _collClazz = collClazz;
+        _provider = provider;
 
         try {
             _pv = PVFactory.createPV(name);
@@ -129,15 +131,15 @@ public class ArchiveChannel<V extends Serializable, T extends ISystemVariable<V>
             throw new EngineModelException("Creation of pv failed for channel " + name, e);
         }
 
-        _listener = new DesyArchivePVListener(_provider, name, _id, collClazz, elemClazz) {
+        _listener = new DesyArchivePVListener(_provider, _name, _id, _collClazz, _typeClazz) {
             @SuppressWarnings("synthetic-access")
             @Override
-            protected void addSampleToBuffer(@Nonnull final IArchiveSample sample) {
+            protected boolean addSampleToBuffer(@Nonnull final IArchiveSample sample) {
                 synchronized (this) {
                     _receivedSampleCount++;
                     _mostRecentSysVar = (T) sample.getSystemVariable();
                 }
-                _buffer.add(sample);
+                return _buffer.add(sample);
             }
         };
         _pv.addListener(_listener);
@@ -238,16 +240,6 @@ public class ArchiveChannel<V extends Serializable, T extends ISystemVariable<V>
     @Nonnull
     public String toString() {
         return "Channel " + getName() + ", " + getMechanism();
-    }
-
-    @Deprecated
-    public boolean isEnabled() {
-        return true;
-    }
-
-    public void setServiceProvider(@Nonnull final IServiceProvider provider) {
-        _provider = provider;
-        _listener.setProvider(provider);
     }
 
     public boolean isMultiScalar() {

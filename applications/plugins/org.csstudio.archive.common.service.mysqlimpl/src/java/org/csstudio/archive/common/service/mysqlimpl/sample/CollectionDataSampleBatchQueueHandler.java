@@ -58,7 +58,7 @@ public class CollectionDataSampleBatchQueueHandler extends BatchQueueHandlerSupp
 
     static final Logger LOG = LoggerFactory.getLogger(CollectionDataSampleBatchQueueHandler.class);
 
-    private static final String VALUES_AND_UPDATE = "(?, ?, ?) ON DUPLICATE KEY UPDATE " + COLUMN_VALUE + "=?";
+    private static final String VALUES_WILDCARD = "(?, ?, ?)";
 
     /**
      * Constructor.
@@ -67,6 +67,15 @@ public class CollectionDataSampleBatchQueueHandler extends BatchQueueHandlerSupp
         super(ArchiveMultiScalarSample.class,
               createSqlStatementString(databaseName),
               new ConcurrentLinkedQueue<ArchiveMultiScalarSample>());
+    }
+
+    @Nonnull
+    private static String createSqlStatementString(@Nonnull final String database) {
+        final String sql =
+            "INSERT IGNORE INTO " + database + "." + TAB_SAMPLE_BLOB + " " +
+            "(" + Joiner.on(",").join(COLUMN_CHANNEL_ID, COLUMN_TIME, COLUMN_VALUE)+ ") " +
+            "VALUES " + VALUES_WILDCARD;
+        return sql;
     }
 
     /**
@@ -82,20 +91,10 @@ public class CollectionDataSampleBatchQueueHandler extends BatchQueueHandlerSupp
         try {
             final byte[] byteArray = ArchiveTypeConversionSupport.toByteArray(element.getValue());
             stmt.setBytes(3, byteArray);
-            stmt.setBytes(4, byteArray);
         } catch (final TypeSupportException e) {
             throw new ArchiveDaoException("Archive type support for byte array conversion failed for " +
                                           element.getValue().getClass().getName(), e);
         }
-    }
-
-    @Nonnull
-    private static String createSqlStatementString(@Nonnull final String database) {
-        final String sql =
-            "INSERT INTO " + database + "." + TAB_SAMPLE_BLOB + " " +
-            "(" + Joiner.on(",").join(COLUMN_CHANNEL_ID, COLUMN_TIME, COLUMN_VALUE)+ ") " +
-            "VALUES " + VALUES_AND_UPDATE;
-        return sql;
     }
 
     /**
@@ -104,7 +103,7 @@ public class CollectionDataSampleBatchQueueHandler extends BatchQueueHandlerSupp
     @Override
     @Nonnull
     public Collection<String> convertToStatementString(@Nonnull final Collection<ArchiveMultiScalarSample> elements) {
-        final String sqlWithoutValues = getSqlStatementString().replace(VALUES_AND_UPDATE, "");
+        final String sqlWithoutValues = getSqlStatementString().replace(VALUES_WILDCARD, "");
 
         final Collection<String> sqlStatementStrings =
             Collections2.transform(elements,

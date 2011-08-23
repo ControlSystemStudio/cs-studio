@@ -49,12 +49,14 @@ public class ArchiveChannelStatusBatchQueueHandler extends BatchQueueHandlerSupp
      * Constructor.
      */
     public ArchiveChannelStatusBatchQueueHandler(@Nonnull final String databaseName) {
-        super(IArchiveChannelStatus.class, createSqlStatementString(databaseName), new ConcurrentLinkedQueue<IArchiveChannelStatus>());
+        super(IArchiveChannelStatus.class,
+              createSqlStatementString(databaseName),
+              new ConcurrentLinkedQueue<IArchiveChannelStatus>());
     }
 
     @Nonnull
     private static String createSqlStatementString(@Nonnull final String database) {
-        return "INSERT INTO " + database + "." + ArchiveChannelStatusDaoImpl.TAB +
+        return "INSERT IGNORE INTO " + database + "." + ArchiveChannelStatusDaoImpl.TAB +
                " (channel_id, connected, info, time) VALUES " + VAL_WILDCARDS;
     }
 

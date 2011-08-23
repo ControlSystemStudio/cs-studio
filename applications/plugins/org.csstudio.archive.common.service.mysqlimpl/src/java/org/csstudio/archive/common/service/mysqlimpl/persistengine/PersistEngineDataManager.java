@@ -117,14 +117,13 @@ public class PersistEngineDataManager {
         addGracefulShutdownHook(_handlerProvider);
     }
 
-    @Nonnull
-    private PersistDataWorker submitNewPersistDataWorker(@Nonnull final ScheduledThreadPoolExecutor executor,
-                                                         @Nonnull final Integer prefPeriodInMS,
-                                                         @Nonnull final IBatchQueueHandlerProvider handlerProvider,
-                                                         @Nonnull final AtomicInteger workerId,
-                                                         @Nonnull final SortedSet<PersistDataWorker> submittedWorkers) {
+    private void submitNewPersistDataWorker(@Nonnull final ScheduledThreadPoolExecutor executor,
+                                            @Nonnull final Integer prefPeriodInMS,
+                                            @Nonnull final IBatchQueueHandlerProvider handlerProvider,
+                                            @Nonnull final AtomicInteger workerId,
+                                            @Nonnull final SortedSet<PersistDataWorker> submittedWorkers) {
         final PersistDataWorker newWorker = new PersistDataWorker(this,
-                                                                  "PERIODIC MySQL Archive Worker: " + workerId.getAndIncrement(),
+                                                                  "PERIODIC Worker: " + workerId.getAndIncrement(),
                                                                   prefPeriodInMS,
                                                                   handlerProvider);
         executor.scheduleAtFixedRate(newWorker,
@@ -132,8 +131,6 @@ public class PersistEngineDataManager {
                                      newWorker.getPeriodInMS(),
                                      TimeUnit.MILLISECONDS);
         submittedWorkers.add(newWorker);
-
-        return newWorker;
     }
 
     /**
@@ -146,8 +143,7 @@ public class PersistEngineDataManager {
             /**
              * Add shutdown hook.
              */
-            Runtime.getRuntime().addShutdownHook(new ShutdownWorkerThread(this,
-                                                                          provider));
+            Runtime.getRuntime().addShutdownHook(new ShutdownWorkerThread(this, provider));
         }
     }
 

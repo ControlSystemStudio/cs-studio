@@ -246,7 +246,6 @@ public final class EngineModel {
         return !EngineMonitorStatus.OFF.equals(engineStatus.getStatus());
     }
 
-
     private boolean isNotFirstStart(@CheckForNull final IArchiveEngineStatus engineStatus) {
         return engineStatus != null;
     }
@@ -416,9 +415,8 @@ public final class EngineModel {
             provider.getEngineFacade().getChannelsByGroupId(groupCfg.getId());
 
         for (final IArchiveChannel channelCfg : channelCfgs) {
-
-            final ArchiveChannel<Serializable, ISystemVariable<Serializable>> channel = createArchiveChannel(channelCfg);
-            channel.setServiceProvider(provider);
+            final ArchiveChannel<Serializable, ISystemVariable<Serializable>> channel =
+                createArchiveChannel(channelCfg, provider);
 
             @SuppressWarnings("unchecked")
             final ArchiveChannel<Serializable, ISystemVariable<Serializable>> presentChannel =
@@ -437,7 +435,8 @@ public final class EngineModel {
     @SuppressWarnings( { "rawtypes", "unchecked" } )
     @Nonnull
     private ArchiveChannel<Serializable, ISystemVariable<Serializable>>
-    createArchiveChannel(@Nonnull final IArchiveChannel cfg) throws EngineModelException {
+    createArchiveChannel(@Nonnull final IArchiveChannel cfg,
+                         @Nonnull final IServiceProvider provider) throws EngineModelException {
         final String dataType = cfg.getDataType();
         try {
             final Class<?> typeClass =
@@ -445,13 +444,14 @@ public final class EngineModel {
                                                                         ADDITIONAL_TYPE_PACKAGES);
 
             if (!Collection.class.isAssignableFrom(typeClass)) {
-                return new ArchiveChannel(cfg.getName(), cfg.getId(), typeClass);
+                return new ArchiveChannel(cfg.getName(), cfg.getId(), typeClass, provider);
             }
             final String elemType =
                 BaseTypeConversionSupport.parseForFirstNestedGenericType(dataType);
             final Class<?> elemClass = BaseTypeConversionSupport.createBaseTypeClassFromString(elemType,
                                                                                                ADDITIONAL_TYPE_PACKAGES);
-            return new ArchiveChannel(cfg.getName(), cfg.getId(), typeClass, elemClass);
+            return new ArchiveChannel(cfg.getName(), cfg.getId(), typeClass, elemClass,  provider);
+
         } catch (final TypeSupportException e) {
             throw new EngineModelException("Datatype " + dataType + " of channel " + cfg.getName() +
                                            " could not be transformed into Class object", e);
@@ -495,5 +495,4 @@ public final class EngineModel {
     public static String getVersion() {
         return VERSION;
     }
-
 }

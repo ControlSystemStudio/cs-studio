@@ -115,6 +115,7 @@ final class WriteWorker extends AbstractTimeMeasuredRunnable {
 
             samples = collectSamplesFromBuffers(_multiScalarChannels);
             written += writeSamples(_provider,  samples);
+            WORKER_LOG.info("WriteWorker: {}", written);
 
             _lastWriteTime = TimeInstantBuilder.fromNow();
             _avgWriteCount.accumulate(Double.valueOf(written));

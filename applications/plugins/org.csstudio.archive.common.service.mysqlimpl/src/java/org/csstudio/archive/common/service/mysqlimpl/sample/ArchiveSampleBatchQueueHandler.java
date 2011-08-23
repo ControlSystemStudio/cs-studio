@@ -59,22 +59,23 @@ public class ArchiveSampleBatchQueueHandler extends BatchQueueHandlerSupport<Arc
 
     static final Logger LOG = LoggerFactory.getLogger(ArchiveSampleBatchQueueHandler.class);
 
-    private static final String VALUES_AND_UPDATE =
-        "(?, ?, ?) ON DUPLICATE KEY UPDATE " + COLUMN_VALUE + "=?";
+    private static final String VALUES_WILDCARD = "(?, ?, ?)";
 
     /**
      * Constructor.
      */
     public ArchiveSampleBatchQueueHandler(@Nonnull final String databaseName) {
-        super(ArchiveSample.class, createSqlStatement(databaseName), new ConcurrentLinkedQueue<ArchiveSample>());
+        super(ArchiveSample.class,
+              createSqlStatement(databaseName),
+              new ConcurrentLinkedQueue<ArchiveSample>());
 
     }
 
     @Nonnull
     private static String createSqlStatement(@Nonnull final String databaseName) {
-        return "INSERT INTO " + databaseName + "." + TAB_SAMPLE + " " +
+        return "INSERT IGNORE INTO " + databaseName + "." + TAB_SAMPLE + " " +
                 "(" + Joiner.on(",").join(COLUMN_CHANNEL_ID, COLUMN_TIME, COLUMN_VALUE)+ ") " +
-                "VALUES " + VALUES_AND_UPDATE;
+                "VALUES " + VALUES_WILDCARD;
     }
 
 
@@ -90,7 +91,6 @@ public class ArchiveSampleBatchQueueHandler extends BatchQueueHandlerSupport<Arc
         try {
             final String archiveString = ArchiveTypeConversionSupport.toArchiveString(type.getValue());
             stmt.setString(3, archiveString);
-            stmt.setString(4, archiveString);
         } catch (final TypeSupportException e) {
             throw new ArchiveDaoException("No type support found for " + type.getValue().getClass().getName(), e);
         }
@@ -124,6 +124,6 @@ public class ArchiveSampleBatchQueueHandler extends BatchQueueHandlerSupport<Arc
                                            return null;
                                        }
                                     });
-        return Collections.singleton(sqlWithoutValues.replace(VALUES_AND_UPDATE, Joiner.on(",").join(values)) + ";");
+        return Collections.singleton(sqlWithoutValues.replace(VALUES_WILDCARD, Joiner.on(",").join(values)) + ";");
     }
 }

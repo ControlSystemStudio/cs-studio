@@ -28,7 +28,7 @@ import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.Collection;
 import java.util.List;
-import java.util.concurrent.BlockingQueue;
+import java.util.Queue;
 
 import javax.annotation.CheckForNull;
 import javax.annotation.Nonnull;
@@ -38,7 +38,8 @@ import org.csstudio.archive.common.service.mysqlimpl.batch.BatchQueueHandlerSupp
 import org.csstudio.archive.common.service.mysqlimpl.batch.IBatchQueueHandlerProvider;
 import org.csstudio.archive.common.service.mysqlimpl.dao.ArchiveDaoException;
 import org.csstudio.domain.desy.task.AbstractTimeMeasuredRunnable;
-import org.csstudio.domain.desy.time.TimeInstant.TimeInstantBuilder;
+import org.csstudio.domain.desy.time.StopWatch;
+import org.csstudio.domain.desy.time.StopWatch.RunningStopWatch;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -92,7 +93,7 @@ public class PersistDataWorker extends AbstractTimeMeasuredRunnable {
      */
     @Override
     public void measuredRun() {
-        LOG.info("RUN: " + _name + " at " + TimeInstantBuilder.fromNow().formatted());
+        LOG.info("RUN: " + _name);
 
         try {
             final Connection connection = _mgr.getConnectionHandler().getConnection();
@@ -113,12 +114,13 @@ public class PersistDataWorker extends AbstractTimeMeasuredRunnable {
                                             @Nonnull final IBatchQueueHandlerProvider handlerProvider,
                                             @Nonnull final List<T> rescueDataList) {
         for (final BatchQueueHandlerSupport<?> handler : handlerProvider.getHandlers()) {
-
             PreparedStatement stmt = null;
             try {
                 if (!handler.getQueue().isEmpty()) {
+                    LOG.info("Start for {} in {}", handler.getHandlerType().getSimpleName(), _name);
                     stmt = handler.createNewStatement(connection);
                     processBatchForStatement((BatchQueueHandlerSupport<T>) handler, stmt, rescueDataList);
+                    LOG.info("End for {}", handler.getHandlerType().getSimpleName());
                 }
             } catch (final SQLException e) {
                 LOG.error("Creation of batch statement failed for strategy " + handler.getClass().getSimpleName(), e);
@@ -132,16 +134,17 @@ public class PersistDataWorker extends AbstractTimeMeasuredRunnable {
     private <T> void processBatchForStatement(@Nonnull final BatchQueueHandlerSupport<T> handler,
                                               @Nonnull final PreparedStatement stmt,
                                               @Nonnull final List<T> rescueDataList) {
-        final BlockingQueue<T> queue = handler.getQueue();
-
-        boolean hasExecutedBatch = false;
+        final Queue<T> queue = handler.getQueue();
         T element;
-        while ((element = queue.poll()) != null) {
-            addElementToBatchAndRescueList(handler, stmt, element, rescueDataList);
-            hasExecutedBatch = executeBatchAndClearListOnCondition(handler, stmt, rescueDataList, 1000);
-        }
-        if (!hasExecutedBatch) {
-            executeBatchAndClearListOnCondition(handler, stmt, rescueDataList, 1);
+        while (true) {
+            element = queue.poll();
+            if (element != null) {
+                addElementToBatchAndRescueList(handler, stmt, element, rescueDataList);
+                executeBatchAndClearListOnCondition(handler, stmt, rescueDataList, 1000);
+            } else {
+                executeBatchAndClearListOnCondition(handler, stmt, rescueDataList, 1);
+                break;
+            }
         }
     }
 
@@ -162,10 +165,14 @@ public class PersistDataWorker extends AbstractTimeMeasuredRunnable {
                                                             @Nonnull final PreparedStatement stmt,
                                                             @Nonnull final List<T> rescueDataList,
                                                             final int minBatchSize) {
-        if (rescueDataList.size() >= minBatchSize) {
-            LOG.info("Execute batched stmt - num: " + rescueDataList.size());
+        final int size = rescueDataList.size();
+        if (size >= minBatchSize) {
+            LOG.info("{} for {}", new Object[]{size, handler.getHandlerType().getSimpleName()});
             try {
+                final RunningStopWatch start = StopWatch.start();
                 stmt.executeBatch();
+                LOG.info("took for {}: {}ms", size, start.getElapsedTimeInMillis());
+
             } catch (final Throwable t) {
                 handleThrowable(t, handler, rescueDataList);
             } finally {

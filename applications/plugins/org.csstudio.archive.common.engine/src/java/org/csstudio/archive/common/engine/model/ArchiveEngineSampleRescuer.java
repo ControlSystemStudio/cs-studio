@@ -22,7 +22,7 @@
 package org.csstudio.archive.common.engine.model;
 
 import java.io.Serializable;
-import java.util.List;
+import java.util.Collection;
 
 import javax.annotation.Nonnull;
 
@@ -54,18 +54,18 @@ final class ArchiveEngineSampleRescuer {
     private static final Logger RESCUE_LOG =
         LoggerFactory.getLogger("SerializedSamplesRescueLogger");
 
-    private final List<IArchiveSample<Serializable, ISystemVariable<Serializable>>> _samplesToBeSerialized;
+    private final Collection<IArchiveSample<Serializable, ISystemVariable<Serializable>>> _samplesToBeSerialized;
 
     /**
      * Constructor.
      */
-    private ArchiveEngineSampleRescuer(@Nonnull final List<IArchiveSample<Serializable, ISystemVariable<Serializable>>> samples) {
+    private ArchiveEngineSampleRescuer(@Nonnull final Collection<IArchiveSample<Serializable, ISystemVariable<Serializable>>> samples) {
         super();
         _samplesToBeSerialized = samples;
     }
 
     @Nonnull
-    public static ArchiveEngineSampleRescuer with(@Nonnull final List<IArchiveSample<Serializable, ISystemVariable<Serializable>>> samples) {
+    public static ArchiveEngineSampleRescuer with(@Nonnull final Collection<IArchiveSample<Serializable, ISystemVariable<Serializable>>> samples) {
         return new ArchiveEngineSampleRescuer(samples);
     }
 

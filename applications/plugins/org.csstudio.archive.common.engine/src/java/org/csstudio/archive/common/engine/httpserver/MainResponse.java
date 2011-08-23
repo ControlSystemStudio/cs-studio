@@ -112,15 +112,15 @@ class MainResponse extends AbstractResponse {
                 numOfConnectedChannels += channel.isConnected() ? 1 : 0;
             }
         }
-        html.tableLine(new String[] {Messages.HTTP_COLUMN_GROUPCOUNT,
+        html.tableLine(new String[] {numOf(Messages.HTTP_COLUMN_GROUPCOUNT),
                                      String.valueOf(getModel().getGroups().size()),
                                      });
-        html.tableLine(new String[] {Messages.HTTP_COLUMN_CHANNEL_COUNT,
+        html.tableLine(new String[] {numOf(Messages.HTTP_COLUMN_CHANNELS),
                                      String.valueOf(numOfChannels),
                                      });
         final int numOfDisconnectedChannels = numOfChannels - numOfConnectedChannels;
         if (numOfDisconnectedChannels > 0) {
-            html.tableLine(new String[] {Messages.HTTP_NO,
+            html.tableLine(new String[] {numOf(Messages.HTTP_NOT_CONNECTED),
                                          HTMLWriter.makeRedText(String.valueOf(numOfDisconnectedChannels)),
                                          });
         }
@@ -143,7 +143,7 @@ class MainResponse extends AbstractResponse {
                                                               });
 
         final Double avgWriteCount = getModel().getAvgWriteCount();
-        html.tableLine(new String[] {Messages.HTTP_WRITE_COUNT,
+        html.tableLine(new String[] {numOf(Messages.HTTP_AVG_WRITE),
                                      (avgWriteCount != null ? String.format("%.1f", avgWriteCount):
                                                               "NO") + " samples",
                                                               });

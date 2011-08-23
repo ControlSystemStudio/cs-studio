@@ -50,10 +50,7 @@ import com.google.common.collect.Collections2;
  * @param <T> the type of the entity used to fill the statement's batch
  */
 public abstract class AbstractReducedDataSampleBatchQueueHandler<T extends AbstractReducedDataSample> extends BatchQueueHandlerSupport<T> {
-    protected static final String VALUES_AND_UPDATE =
-        "(?, ?, ?, ?, ?) ON DUPLICATE KEY UPDATE " + COLUMN_AVG + "=?, " +
-                                                     COLUMN_MIN + "=?, " +
-                                                     COLUMN_MAX + "=?";
+    protected static final String VALUES_WILDCARD = "(?, ?, ?, ?, ?)";
 
     /**
      * Constructor.
@@ -68,9 +65,9 @@ public abstract class AbstractReducedDataSampleBatchQueueHandler<T extends Abstr
     protected static String createSqlStatementString(@Nonnull final String database,
                                                      @Nonnull final String table) {
         final String sql =
-            "INSERT INTO " + database + "." + table +
+            "INSERT IGNORE INTO " + database + "." + table +
             " (" + Joiner.on(",").join(COLUMN_CHANNEL_ID, COLUMN_TIME, COLUMN_AVG, COLUMN_MIN, COLUMN_MAX) +
-            ") VALUES " + VALUES_AND_UPDATE;
+            ") VALUES " + VALUES_WILDCARD;
         return sql;
     }
 
@@ -88,10 +85,6 @@ public abstract class AbstractReducedDataSampleBatchQueueHandler<T extends Abstr
         stmt.setDouble(3, element.getAvg());
         stmt.setDouble(4, element.getMin());
         stmt.setDouble(5, element.getMax());
-
-        stmt.setDouble(6, element.getAvg());
-        stmt.setDouble(7, element.getMin());
-        stmt.setDouble(8, element.getMax());
     }
 
     /**
@@ -100,7 +93,7 @@ public abstract class AbstractReducedDataSampleBatchQueueHandler<T extends Abstr
     @Override
     @Nonnull
     public Collection<String> convertToStatementString(@Nonnull final Collection<T> elements) {
-        final String sqlWithoutValues = getSqlStatementString().replace(VALUES_AND_UPDATE, "");
+        final String sqlWithoutValues = getSqlStatementString().replace(VALUES_WILDCARD, "");
 
         final Collection<String> values =
             Collections2.transform(elements,

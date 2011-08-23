@@ -22,7 +22,6 @@
 package org.csstudio.archive.common.service.mysqlimpl.persistengine;
 
 import java.util.Collection;
-import java.util.List;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
@@ -33,8 +32,6 @@ import org.csstudio.archive.common.service.mysqlimpl.batch.BatchQueueHandlerSupp
 import org.csstudio.archive.common.service.mysqlimpl.batch.IBatchQueueHandlerProvider;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
-import com.google.common.collect.Lists;
 
 /**
  * Thread to hold the shutdown worker on stopping the engine.
@@ -68,12 +65,12 @@ final class ShutdownWorkerThread extends Thread {
     public void run() {
         final ExecutorService executor = Executors.newSingleThreadExecutor();
         executor.execute(new PersistDataWorker(_persistEngineDataManager,
-                                               "SHUTDOWN MySQL Archive Worker",
+                                               "SHUTDOWN Worker",
                                                Integer.valueOf(0),
                                                _handlerProvider));
         executor.shutdown();
         try {
-            if (!executor.awaitTermination(3000, TimeUnit.MILLISECONDS)) {
+            if (!executor.awaitTermination(10000, TimeUnit.MILLISECONDS)) {
                 shutdownLog.warn("Executor for PersistDataWorkers did not terminate in the specified period. Try to rescue data.");
                 for (final BatchQueueHandlerSupport<?> handler : _handlerProvider.getHandlers()) {
                     rescueQueueContent(handler);
@@ -86,9 +83,7 @@ final class ShutdownWorkerThread extends Thread {
     }
 
     private <T> void rescueQueueContent(@Nonnull final BatchQueueHandlerSupport<T> handler) {
-        final List<T> elements = Lists.newLinkedList();
-        handler.getQueue().drainTo(elements);
-        final Collection<String> statements = handler.convertToStatementString(elements);
+        final Collection<String> statements = handler.convertToStatementString(handler.getQueue());
         _persistEngineDataManager.rescueDataToFileSystem(statements);
     }
 }
