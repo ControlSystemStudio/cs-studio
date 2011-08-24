@@ -365,7 +365,7 @@ public final class EngineModel {
                 return;
             }
 
-            _engine = findEngineConfByName(port, _provider);
+            _engine = findEngineConfByName(_name, port, _provider);
 
             _writeExecutor = new WriteExecutor(_provider, _engine.getId());
 
@@ -384,20 +384,21 @@ public final class EngineModel {
     }
 
     @Nonnull
-    private IArchiveEngine findEngineConfByName(final int port,
+    private IArchiveEngine findEngineConfByName(@Nonnull final String name,
+                                                final int port,
                                                 @Nonnull final IServiceProvider provider)
                                                 throws ArchiveServiceException,
                                                        MalformedURLException,
                                                        EngineModelException,
                                                        OsgiServiceUnavailableException {
-        final IArchiveEngine engine = provider.getEngineFacade().findEngine(_name);
+        final IArchiveEngine engine = provider.getEngineFacade().findEngine(name);
         if (engine == null) {
-            throw new EngineModelException("Unknown engine '" + _name + "'.", null);
+            throw new EngineModelException("Unknown engine '" + name + "'.", null);
         }
         // Is the configuration consistent?
         if (engine.getUrl().getPort() != port) {
-            throw new EngineModelException("Engine " + _name + " running on port " + port +
-                                           " while configuration requires " + _engine.getUrl().toString(), null);
+            throw new EngineModelException("Engine " + name + " running on port " + port +
+                                           " while configuration requires " + engine.getUrl().toString(), null);
         }
         return engine;
     }
