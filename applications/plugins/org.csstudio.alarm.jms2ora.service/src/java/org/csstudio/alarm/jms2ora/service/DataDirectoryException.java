@@ -24,23 +24,47 @@
 
 package org.csstudio.alarm.jms2ora.service;
 
-import java.util.Vector;
-
 /**
  * TODO (mmoeller) : 
  * 
  * @author mmoeller
  * @version 1.0
- * @since 18.08.2011
+ * @since 24.08.2011
  */
-public interface IMessageWriter {
+public class DataDirectoryException extends ServiceException {
     
-    /** Writes the message to the database */
-    boolean writeMessage(Vector<MessageContent> messages);
+    /** Default serial version id */
+    private static final long serialVersionUID = 1L;
+
+    /**
+     * Constructor.
+     */
+    public DataDirectoryException() {
+        super();
+    }
     
     /**
-     * Flag that indicates if the service is usable.
-     * It returns false, if the Oracle driver cannot be registered.
+     * Constructor.
+     * @param message
      */
-    boolean isServiceReady();
+    public DataDirectoryException(String message) {
+        super(message);
+    }
+    
+    /**
+     * Constructor.
+     * @param cause
+     */
+    public DataDirectoryException(Throwable cause) {
+        super(cause);
+    }
+    
+    /**
+     * Constructor.
+     * @param message
+     * @param cause
+     */
+    public DataDirectoryException(String message, Throwable cause) {
+        super(message, cause);
+    }
 }

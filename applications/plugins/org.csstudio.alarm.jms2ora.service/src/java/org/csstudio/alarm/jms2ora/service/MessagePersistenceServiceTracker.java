@@ -24,23 +24,23 @@
 
 package org.csstudio.alarm.jms2ora.service;
 
-import java.util.Vector;
+import org.osgi.framework.BundleContext;
+import org.osgi.util.tracker.ServiceTracker;
 
 /**
  * TODO (mmoeller) : 
  * 
  * @author mmoeller
  * @version 1.0
- * @since 18.08.2011
+ * @since 22.08.2011
  */
-public interface IMessageWriter {
-    
-    /** Writes the message to the database */
-    boolean writeMessage(Vector<MessageContent> messages);
-    
+public class MessagePersistenceServiceTracker extends ServiceTracker {
+
     /**
-     * Flag that indicates if the service is usable.
-     * It returns false, if the Oracle driver cannot be registered.
+     * Constructor.
+     * @param bundleContext
      */
-    boolean isServiceReady();
+    public MessagePersistenceServiceTracker(BundleContext bundleContext) {
+        super(bundleContext, IPersistenceHandler.class.getName(), null);
+    }    
 }

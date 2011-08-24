@@ -24,23 +24,54 @@
 
 package org.csstudio.alarm.jms2ora.service;
 
-import java.util.Vector;
+import java.io.File;
 
 /**
- * TODO (mmoeller) : 
  * 
  * @author mmoeller
  * @version 1.0
- * @since 18.08.2011
+ * @since 23.08.2011
  */
-public interface IMessageWriter {
+public class DataDirectory {
     
-    /** Writes the message to the database */
-    boolean writeMessage(Vector<MessageContent> messages);
+    /** The path of the data directory for the serialized messages */
+    private String dataDirectory;
     
     /**
-     * Flag that indicates if the service is usable.
-     * It returns false, if the Oracle driver cannot be registered.
+     * Constructor.
+     * 
+     * @param dataDir - The path of the data directory for the serialized messages
      */
-    boolean isServiceReady();
+    public DataDirectory(String dataDir) {
+        
+        dataDirectory = null;
+        File file = new File(dataDir);
+        if (file.exists() == false) {
+            boolean success = file.mkdirs();
+            if (success) {
+                dataDirectory = file.getAbsolutePath();
+                if (dataDirectory.endsWith(File.pathSeparator) == false) {
+                    dataDirectory = dataDirectory + File.pathSeparator;
+                }
+            }
+        }
+    }
+
+    public File getDataDirectory() throws DataDirectoryException {
+        if (dataDirectory == null) {
+            throw new DataDirectoryException("The data directory does not exist.");
+        }
+        return new File(dataDirectory);
+    }
+    
+    public String getDataDirectoryAsString() throws DataDirectoryException {
+        if (dataDirectory == null) {
+            throw new DataDirectoryException("The data directory does not exist.");
+        }
+        return dataDirectory;
+    }
+
+    public boolean existsDataDirectory() throws DataDirectoryException {
+        return getDataDirectory().exists();
+    }
 }

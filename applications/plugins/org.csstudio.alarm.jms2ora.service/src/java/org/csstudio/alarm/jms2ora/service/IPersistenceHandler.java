@@ -31,16 +31,43 @@ import java.util.Vector;
  * 
  * @author mmoeller
  * @version 1.0
- * @since 18.08.2011
+ * @since 22.08.2011
  */
-public interface IMessageWriter {
-    
-    /** Writes the message to the database */
-    boolean writeMessage(Vector<MessageContent> messages);
+public interface IPersistenceHandler {
     
     /**
-     * Flag that indicates if the service is usable.
-     * It returns false, if the Oracle driver cannot be registered.
+     * Deletes all serialized messages.
+     * 
+     * @return The number of deleted files
      */
-    boolean isServiceReady();
+    int deleteAllMessageFiles();
+    
+    /**
+     * Returns the number of serialized messages.
+     * 
+     * @return The number of all message files
+     */
+    int getNumberOfMessageFiles();
+    
+    /**
+     * Writes the message content
+     * 
+     * @param content
+     */
+    void writeMessageContent(MessageContent content);
+    
+    /**
+     * Writes the message content
+     * 
+     * @param messages - The vector containing all messages that have to be written
+     */
+    void writeMessages(Vector<MessageContent> messages);
+    
+    /**
+     * Reads the serialized message and deletes it on in the persistence layer
+     * 
+     * @param name
+     * @return The MessageContent object
+     */
+    MessageContent readMessageContent(String name);
 }
