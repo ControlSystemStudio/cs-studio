@@ -174,14 +174,12 @@ public class PVTableByPropertyView extends ViewPart {
 			
 			@Override
 			public void widgetSelected(SelectionEvent e) {
-				System.out.println (e.widget + " - Default Selection");
 				tableWidget.setColumnProperty(columnProperty.getItem(columnProperty.getSelectionIndex()));
 				
 			}
 			
 			@Override
 			public void widgetDefaultSelected(SelectionEvent e) {
-				System.out.println (e.widget + " - Default Selection");
 				tableWidget.setColumnProperty(columnProperty.getItem(columnProperty.getSelectionIndex()));
 				
 			}
