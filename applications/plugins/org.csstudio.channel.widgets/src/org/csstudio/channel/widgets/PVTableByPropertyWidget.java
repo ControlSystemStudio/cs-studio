@@ -137,13 +137,13 @@ public class PVTableByPropertyWidget extends Composite {
 			for (Property prop : channel.getProperties()) {
 				if (prop.getName().equals(rowProperty)) {
 					String value = prop.getValue();
-					if (!possibleRows.contains(value)) {
+					if (value != null && !possibleRows.contains(value)) {
 						possibleRows.add(value);
 					}
 				}
 				if (prop.getName().equals(columnProperty)) {
 					String value = prop.getValue();
-					if (!possibleColumns.contains(value)) {
+					if (value != null && !possibleColumns.contains(value)) {
 						possibleColumns.add(value);
 					}
 				}
@@ -185,8 +185,6 @@ public class PVTableByPropertyWidget extends Composite {
 		columnNames = possibleColumns;
 		rowNames = possibleRows;
 		cellPvs = cells;
-		
-		System.out.println("Computed: " + columnNames + " " + rowNames + " " + cellPvs);
 		
 		reconnect();
 	}

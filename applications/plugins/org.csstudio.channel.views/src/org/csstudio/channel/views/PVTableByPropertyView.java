@@ -83,11 +83,11 @@ public class PVTableByPropertyView extends ViewPart {
 	private Composite parent;
 	
 	private void changeQuery(String text) {
+		tableWidget.setColumnProperty(null);
+		tableWidget.setRowProperty(null);
 		tableWidget.setChannelQuery(text);
 		if (tableWidget.getChannels() != null) {
 			Collection<String> propertyNames = ChannelUtil.getPropertyNames(tableWidget.getChannels());
-			System.out.println(tableWidget.getChannels());
-			System.out.println(propertyNames);
 			rowProperty.setItems(propertyNames.toArray(new String[propertyNames.size()]));
 			columnProperty.setItems(propertyNames.toArray(new String[propertyNames.size()]));
 			parent.layout();
@@ -146,14 +146,12 @@ public class PVTableByPropertyView extends ViewPart {
 			
 			@Override
 			public void widgetSelected(SelectionEvent e) {
-				System.out.println (e.widget + " - Default Selection");
 				tableWidget.setRowProperty(rowProperty.getItem(rowProperty.getSelectionIndex()));
 				
 			}
 			
 			@Override
 			public void widgetDefaultSelected(SelectionEvent e) {
-				System.out.println (e.widget + " - Default Selection");
 				tableWidget.setRowProperty(rowProperty.getItem(rowProperty.getSelectionIndex()));
 				
 			}
