@@ -25,19 +25,23 @@ package org.csstudio.ams.connector.jms;
 
 import java.net.InetAddress;
 import java.util.Hashtable;
+
 import javax.jms.Connection;
 import javax.jms.ConnectionFactory;
 import javax.jms.JMSException;
 import javax.jms.MapMessage;
+import javax.jms.MessageConsumer;
 import javax.jms.MessageProducer;
 import javax.jms.Session;
+import javax.jms.Topic;
 import javax.naming.Context;
 import javax.naming.InitialContext;
 import javax.naming.NamingException;
+
+import org.apache.activemq.ActiveMQConnectionFactory;
 import org.csstudio.ams.AmsActivator;
 import org.csstudio.ams.AmsConstants;
 import org.csstudio.ams.Log;
-import org.csstudio.ams.SynchObject;
 import org.csstudio.ams.Utils;
 import org.csstudio.ams.connector.jms.preferences.JmsConnectorPreferenceKey;
 import org.csstudio.ams.internal.AmsPreferenceKey;
@@ -51,16 +55,6 @@ import org.remotercp.service.connection.session.ISessionService;
 
 public class JMSConnectorStart implements IApplication, IGenericServiceListener<ISessionService>
 {
-    public final static int STAT_INIT = 0;
-    public final static int STAT_OK = 1;
-    public final static int STAT_ERR_JMS_SEND = 3;
-    // jms communication to ams internal jms partners
-    public final static int STAT_ERR_JMS_CONNECTION_FAILED = 4;
-    public final static int STAT_ERR_UNKNOWN = 5;
-
-    public final static long WAITFORTHREAD = 10000;
-    public final static boolean CREATE_DURABLE = true;
-
     private static JMSConnectorStart _instance = null;
 
     private Context extContext = null;
@@ -72,18 +66,15 @@ public class JMSConnectorStart implements IApplication, IGenericServiceListener<
     
     private ISessionService xmppService;
     
-    private SynchObject sObj;
     private String managementPassword; 
-    private int lastStatus = 0;
     
-    private boolean bStop;
+    private boolean stopped;
     private boolean restart;
 
     public JMSConnectorStart()
     {
         _instance = this;
         xmppService = null;
-        sObj = new SynchObject(STAT_INIT, System.currentTimeMillis());
         
         IPreferencesService pref = Platform.getPreferencesService();
         managementPassword = pref.getString(AmsActivator.PLUGIN_ID, AmsPreferenceKey.P_AMS_MANAGEMENT_PASSWORD, "", null);
@@ -102,12 +93,14 @@ public class JMSConnectorStart implements IApplication, IGenericServiceListener<
     
     public synchronized void setRestart() {
         restart = true;
-        bStop = true;
+        stopped = true;
+        notify();
     }
 
     public synchronized void setShutdown() {
         restart = false;
-        bStop = true;
+        stopped = true;
+        notify();
     }
 
     /**
@@ -118,9 +111,6 @@ public class JMSConnectorStart implements IApplication, IGenericServiceListener<
         return managementPassword;
     }
 
-    /**
-     * 
-     */
     public Object start(IApplicationContext context) throws Exception
     {
         Log.log(this, Log.INFO, "start");
@@ -129,98 +119,52 @@ public class JMSConnectorStart implements IApplication, IGenericServiceListener<
         
         JMSConnectorPlugin.getDefault().addSessionServiceListener(this);
         
-        JMSConnectorWork ecw = null;
-        boolean bInitedJms = false;
-        lastStatus = getStatus(); // use synchronized method
-
-        bStop = false;
-        restart = false;
+        if (!initJms()) {
+            Log.log(Log.FATAL, "Could not create external JMS connection for status messages, trying to restart.");
+            return IApplication.EXIT_RESTART;
+        }
         
-        while(bStop == false)
-        {
-            try
-            {
-                if (ecw == null)
-                {
-                    ecw = new JMSConnectorWork(this);
-                    ecw.start();
-                }
-                
-                if (!bInitedJms)
-                {
-                    bInitedJms = initJms();
-                }
+        // TODO is this still required?
+        sendStatusChange(1, "ok", System.currentTimeMillis());
         
-                Log.log(this, Log.DEBUG, "run");
-                Thread.sleep(1000);
-                
-                SynchObject actSynch = new SynchObject(0, 0);
-                if (!sObj.hasStatusSet(actSynch, 300, STAT_ERR_UNKNOWN))        // if status has not changed in the last 5 minutes
-                {                                                               // every 5 minutes if blocked
-                    Log.log(this, Log.FATAL, "TIMEOUT: status has not changed the last 5 minutes.");
-                }
-
-                String statustext = "unknown";
-                if (actSynch.getStatus() != lastStatus)                         // if status value changed
-                {
-                    switch (actSynch.getStatus())
-                    {
-                        case STAT_INIT:
-                            statustext = "init";
-                            break;
-                        case STAT_OK:
-                            statustext = "ok";
-                            break;
-                        case STAT_ERR_JMS_SEND:
-                            statustext = "err_jms";
-                            break;
-                        case STAT_ERR_JMS_CONNECTION_FAILED:
-                            statustext = "err_jms";
-                            break;
-                    }
-                    Log.log(this, Log.INFO, "set status to " + statustext + "(" + actSynch.getStatus() + ")");
-                    lastStatus = actSynch.getStatus();
-                    if (bInitedJms)
-                    {
-                        if (!sendStatusChange(actSynch.getStatus(), statustext, actSynch.getTime()))
-                        {
-                            closeJms();
-                            bInitedJms = false;
-                        }
-                    }
-                }
-            }
-            catch(Exception e)
-            {
-                Log.log(this, Log.FATAL, e);
-                
-                closeJms();
-                bInitedJms = false;
+        IPreferenceStore prefs = AmsActivator.getDefault().getPreferenceStore();
+        
+        ConnectionFactory senderConnectionFactory = new ActiveMQConnectionFactory(prefs.getString(AmsPreferenceKey.P_JMS_AMS_SENDER_PROVIDER_URL));
+        Connection senderConnection = senderConnectionFactory.createConnection();
+        senderConnection.start();
+        String[] receiverURLs = new String[] {
+                prefs.getString(AmsPreferenceKey.P_JMS_AMS_PROVIDER_URL_1),
+                prefs.getString(AmsPreferenceKey.P_JMS_AMS_PROVIDER_URL_2)
+            };
+        Connection[] receiverConnections = new Connection[receiverURLs.length];
+        for (int i = 0; i < receiverURLs.length; i++) {
+            ConnectionFactory connectionFactory = new ActiveMQConnectionFactory(receiverURLs[i]);
+            Connection connection = connectionFactory.createConnection();
+            Session receiverSession = connection.createSession(false, Session.AUTO_ACKNOWLEDGE);
+            Topic receiveTopic = receiverSession.createTopic(prefs.getString(AmsPreferenceKey.P_JMS_AMS_TOPIC_JMS_CONNECTOR));
+            MessageConsumer consumer = receiverSession.createConsumer(receiveTopic);
+            
+            // Create a new sender session for each worker because each worker will be called in its own listener thread
+            Session senderSession = senderConnection.createSession(false, Session.AUTO_ACKNOWLEDGE);
+            
+            consumer.setMessageListener(new JMSConnectorWorker(senderSession));
+            connection.start();
+        }
+        
+        synchronized (this) {
+            while (!stopped) {
+                this.wait();
             }
         }
+        
+        for (int i = 0; i < receiverConnections.length; i++) {
+            receiverConnections[i].close();
+        }
+        senderConnection.close();
+        
+        closeJms();
 
         Log.log(this, Log.INFO, "JMSConnectorStart is exiting now");
-        
-        if(ecw != null)
-        {
-            // Clean stop of the working thread
-            ecw.stopWorking();
-            
-            try {
-                ecw.join(WAITFORTHREAD);
-            } catch(InterruptedException ie) {
-                // Can be ignored
-            }
-    
-            if(ecw.stoppedClean()) {
-                Log.log(this, Log.FATAL, "Restart/Exit: Thread stopped clean.");
-                ecw = null;
-            } else {
-                Log.log(this, Log.FATAL, "Restart/Exit: Thread did NOT stop clean.");
-                ecw.closeJms();
-                ecw = null;
-            }
-        }
         
         if (xmppService != null) {
             xmppService.disconnect();
@@ -232,16 +176,6 @@ public class JMSConnectorStart implements IApplication, IGenericServiceListener<
         }
         
         return exitCode;
-    }
-    
-    public int getStatus()
-    {
-        return sObj.getSynchStatus();
-    }
-    
-    public void setStatus(int status)
-    {
-        sObj.setSynchStatus(status);                                            // set always, to update time
     }
     
     private boolean initJms()
