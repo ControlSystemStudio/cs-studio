@@ -82,6 +82,11 @@ public class VTableAggregationFunction extends Function<VTable> {
                 columnValues.add(value);
             }
             
+            // If no type is found, the column will be empty.
+            // Default to an array of Strings
+            if (columnType == null)
+                columnType = String.class;
+            
             // Prepare column array
             Object array = java.lang.reflect.Array.newInstance(columnType, columnValues.size());
             for (int i = 0; i < columnValues.size(); i++) {
