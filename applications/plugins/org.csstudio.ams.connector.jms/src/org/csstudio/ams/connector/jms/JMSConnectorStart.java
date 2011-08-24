@@ -119,14 +119,6 @@ public class JMSConnectorStart implements IApplication, IGenericServiceListener<
         
         JMSConnectorPlugin.getDefault().addSessionServiceListener(this);
         
-        if (!initJms()) {
-            Log.log(Log.FATAL, "Could not create external JMS connection for status messages, trying to restart.");
-            return IApplication.EXIT_RESTART;
-        }
-        
-        // TODO is this still required?
-        sendStatusChange(1, "ok", System.currentTimeMillis());
-        
         IPreferenceStore prefs = AmsActivator.getDefault().getPreferenceStore();
         
         ConnectionFactory senderConnectionFactory = new ActiveMQConnectionFactory(prefs.getString(AmsPreferenceKey.P_JMS_AMS_SENDER_PROVIDER_URL));
@@ -161,8 +153,6 @@ public class JMSConnectorStart implements IApplication, IGenericServiceListener<
             receiverConnections[i].close();
         }
         senderConnection.close();
-        
-        closeJms();
 
         Log.log(this, Log.INFO, "JMSConnectorStart is exiting now");
         
@@ -176,108 +166,6 @@ public class JMSConnectorStart implements IApplication, IGenericServiceListener<
         }
         
         return exitCode;
-    }
-    
-    private boolean initJms()
-    {
-        try
-        {
-            IPreferenceStore storeAct = AmsActivator.getDefault().getPreferenceStore();
-            Hashtable<String, String> properties = new Hashtable<String, String>();
-            properties.put(Context.INITIAL_CONTEXT_FACTORY, 
-                    storeAct.getString(org.csstudio.ams.internal.AmsPreferenceKey.P_JMS_EXTERN_CONNECTION_FACTORY_CLASS));
-            properties.put(Context.PROVIDER_URL, 
-                    storeAct.getString(org.csstudio.ams.internal.AmsPreferenceKey.P_JMS_EXTERN_SENDER_PROVIDER_URL));
-            extContext = new InitialContext(properties);
-            
-            extFactory = (ConnectionFactory) extContext.lookup(
-                    storeAct.getString(org.csstudio.ams.internal.AmsPreferenceKey.P_JMS_EXTERN_CONNECTION_FACTORY));
-            extConnection = extFactory.createConnection();
-            
-            // ADDED BY: Markus Moeller, 25.05.2007
-            extConnection.setClientID("JMSConnectorStartSenderExternal");
-            
-            extSession = extConnection.createSession(false, Session.CLIENT_ACKNOWLEDGE);
-            
-            // CHANGED BY: Markus Moeller, 25.05.2007
-            /*
-            extPublisherStatusChange = extSession.createProducer((Topic)extContext.lookup(
-                    storeAct.getString(org.csstudio.ams.internal.SampleService.P_JMS_EXT_TOPIC_STATUSCHANGE)));
-            */
-            
-            extPublisherStatusChange = extSession.createProducer(extSession.createTopic(
-                    storeAct.getString(org.csstudio.ams.internal.AmsPreferenceKey.P_JMS_EXT_TOPIC_STATUSCHANGE)));
-            if (extPublisherStatusChange == null) {
-                Log.log(this, Log.FATAL, "could not create extPublisherStatusChange");
-                return false;
-            }
-
-            extConnection.start();
-
-            return true;
-        }
-        catch(Exception e)
-        {
-            Log.log(this, Log.FATAL, "could not init external Jms", e);
-        }
-        return false;
-    }
-
-    private void closeJms() {
-        
-        Log.log(this, Log.INFO, "exiting external jms communication");
-        
-        if (extPublisherStatusChange != null){
-            try{extPublisherStatusChange.close();extPublisherStatusChange=null;}
-        catch (JMSException e){Log.log(this, Log.WARN, e);}}    
-        if (extSession != null){try{extSession.close();extSession=null;}
-        catch (JMSException e){Log.log(this, Log.WARN, e);}}
-        if (extConnection != null){try{extConnection.stop();}
-        catch (JMSException e){Log.log(this, Log.WARN, e);}}
-        if (extConnection != null){try{extConnection.close();extConnection=null;}
-        catch (JMSException e){Log.log(this, Log.WARN, e);}}
-        if (extContext != null){try{extContext.close();extContext=null;}
-        catch (NamingException e){Log.log(this, Log.WARN, e);}}
-
-        Log.log(this, Log.INFO, "jms external communication closed");
-    }
-    
-    private boolean sendStatusChange(int status, String strStat, long lSetTime) throws Exception
-    {
-        MapMessage mapMsg = null;
-        try
-        {
-            mapMsg = extSession.createMapMessage();
-        }
-        catch(Exception e)
-        {
-            Log.log(this, Log.FATAL, "could not createMapMessage", e);
-        }
-        if (mapMsg == null)
-            return false;
-
-        mapMsg.setString(AmsConstants.MSGPROP_CHECK_TYPE, "PStatus");
-        mapMsg.setString(AmsConstants.MSGPROP_CHECK_PURL, InetAddress.getLocalHost().getHostAddress());
-        mapMsg.setString(AmsConstants.MSGPROP_CHECK_PLUGINID, JMSConnectorPlugin.PLUGIN_ID);
-        mapMsg.setString(AmsConstants.MSGPROP_CHECK_STATUSTIME, Utils.longTimeToUTCString(lSetTime));
-        mapMsg.setString(AmsConstants.MSGPROP_CHECK_STATUS, String.valueOf(status));
-        mapMsg.setString(AmsConstants.MSGPROP_CHECK_TEXT, strStat);
-
-        Log.log(this, Log.INFO, "StatusChange - start external jms send. MessageProperties= " + Utils.getMessageString(mapMsg));
-
-        try
-        {
-            extPublisherStatusChange.send(mapMsg);
-        }
-        catch(Exception e)
-        {
-            Log.log(this, Log.FATAL, "could not send to external jms", e);
-            return false;
-        }
-
-        Log.log(this, Log.INFO, "send external jms message done");
-
-        return true;
     }
     
     public void bindService(ISessionService sessionService) {
