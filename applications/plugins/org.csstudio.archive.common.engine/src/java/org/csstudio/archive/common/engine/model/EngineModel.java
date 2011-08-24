@@ -139,7 +139,8 @@ public final class EngineModel {
     @Nonnull
     private ArchiveGroup addGroup(@Nonnull final IArchiveChannelGroup groupCfg) {
         final String groupName = groupCfg.getName();
-        return _groupMap.putIfAbsent(groupName, new ArchiveGroup(groupName));
+        _groupMap.putIfAbsent(groupName, new ArchiveGroup(groupName));
+        return _groupMap.get(groupName);
     }
 
     /** @return Group by that name or <code>null</code> if not found */
