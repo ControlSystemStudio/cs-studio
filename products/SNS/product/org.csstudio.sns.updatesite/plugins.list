@@ -74,6 +74,7 @@ org.csstudio.sns.dummyAuthorization/**
 org.csstudio.sns.jms2rdb/**
 org.csstudio.sns.ldapAuthorization/**
 org.csstudio.sns.ldapAuthorization.ui/**
+org.csstudio.sns.mpsbypasses/**
 org.csstudio.sns.passwordprovider/**
 org.csstudio.sns.product/**
 org.csstudio.sns.startuphelper/**
