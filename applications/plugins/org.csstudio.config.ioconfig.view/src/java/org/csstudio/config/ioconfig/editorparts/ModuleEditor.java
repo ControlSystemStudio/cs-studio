@@ -26,6 +26,7 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
+import java.util.Map.Entry;
 import java.util.Set;
 
 import javax.annotation.CheckForNull;
@@ -325,6 +326,10 @@ public class ModuleEditor extends AbstractGsdNodeEditor<ModuleDBO> {
     private final ArrayList<Object> _prmTextCV = new ArrayList<Object>();
     
     private Group _currentUserParamDataGroup;
+
+    private Text _ioNamesText;
+
+    private Text _channelNameText;
     
     /**
      * {@inheritDoc}
@@ -339,10 +344,61 @@ public class ModuleEditor extends AbstractGsdNodeEditor<ModuleDBO> {
             _module.setModuleNumber(-1);
         }
         setSavebuttonEnabled(null, getNode().isPersistent());
+        ioNames("IO-Names");
         moduels("Module");
         selecttTabFolder(0);
     }
     
+    /**
+     * @param string
+     */
+    private void ioNames(@Nonnull final String head) {
+        final Composite comp = getNewTabItem(head, 2);
+        comp.setLayout(new GridLayout(2, false));
+        _channelNameText = new Text(comp, SWT.MULTI | SWT.WRAP | SWT.V_SCROLL | SWT.BORDER | SWT.READ_ONLY);
+        _channelNameText.setLayoutData(new GridData(SWT.BEGINNING, SWT.FILL, false, true));
+        
+        _ioNamesText = new Text(comp, SWT.MULTI | SWT.WRAP | SWT.V_SCROLL | SWT.BORDER | SWT.READ_ONLY);
+        _ioNamesText.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true));
+        
+        try {
+            setIONamesText();
+        } catch (final PersistenceException e) {
+            DeviceDatabaseErrorDialog.open(null, "Can't read from Database", e);
+            LOG.error("Can't read from Database", e);
+        }
+        
+    }
+
+    /**
+     * @throws PersistenceException 
+     * 
+     */
+    private void setIONamesText() throws PersistenceException {
+        final StringBuilder ioNamesSB = new StringBuilder();
+        final StringBuilder channelNamesSB = new StringBuilder();
+        final Set<Entry<Short, ChannelStructureDBO>> channelStructureEntrySet = getNode().getChildrenAsMap().entrySet();
+        for (Entry<Short, ChannelStructureDBO> channelStructureEntry : channelStructureEntrySet) {
+            final Set<Entry<Short, ChannelDBO>> channelEntrySet = channelStructureEntry.getValue().getChildrenAsMap().entrySet();
+            for (Entry<Short, ChannelDBO> channelEntry : channelEntrySet) {
+                String channelName = channelEntry.getValue().getName();
+                if (channelName==null) {
+                    channelName="";
+                }
+                channelNamesSB.append(channelName);
+                channelNamesSB.append("\n");
+                String ioName = channelEntry.getValue().getIoName();
+                if (ioName==null) {
+                    ioName="";
+                }
+                ioNamesSB.append(ioName);
+                ioNamesSB.append("\n");
+            }
+        }
+        _channelNameText.setText(channelNamesSB.toString());
+        _ioNamesText.setText(ioNamesSB.toString());
+    }
+
     /**
      * @param head
      *            the tabItemName
