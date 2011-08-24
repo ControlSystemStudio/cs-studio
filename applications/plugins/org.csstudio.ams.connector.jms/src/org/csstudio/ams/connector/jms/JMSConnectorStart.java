@@ -23,26 +23,17 @@
 
 package org.csstudio.ams.connector.jms;
 
-import java.net.InetAddress;
-import java.util.Hashtable;
-
 import javax.jms.Connection;
 import javax.jms.ConnectionFactory;
-import javax.jms.JMSException;
-import javax.jms.MapMessage;
 import javax.jms.MessageConsumer;
 import javax.jms.MessageProducer;
 import javax.jms.Session;
 import javax.jms.Topic;
 import javax.naming.Context;
-import javax.naming.InitialContext;
-import javax.naming.NamingException;
 
 import org.apache.activemq.ActiveMQConnectionFactory;
 import org.csstudio.ams.AmsActivator;
-import org.csstudio.ams.AmsConstants;
 import org.csstudio.ams.Log;
-import org.csstudio.ams.Utils;
 import org.csstudio.ams.connector.jms.preferences.JmsConnectorPreferenceKey;
 import org.csstudio.ams.internal.AmsPreferenceKey;
 import org.eclipse.core.runtime.Platform;
@@ -113,7 +104,7 @@ public class JMSConnectorStart implements IApplication, IGenericServiceListener<
 
     public Object start(IApplicationContext context) throws Exception
     {
-        Log.log(this, Log.INFO, "start");
+        Log.log(this, Log.INFO, "Starting JMS Connector...");
         
         JmsConnectorPreferenceKey.showPreferences();
         
@@ -142,6 +133,7 @@ public class JMSConnectorStart implements IApplication, IGenericServiceListener<
             consumer.setMessageListener(new JMSConnectorWorker(senderSession));
             connection.start();
         }
+        Log.log(this, Log.INFO, "JMS Connector started");
         
         synchronized (this) {
             while (!stopped) {
