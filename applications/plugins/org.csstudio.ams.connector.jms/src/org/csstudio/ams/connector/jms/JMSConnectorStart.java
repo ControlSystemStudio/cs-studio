@@ -26,10 +26,8 @@ package org.csstudio.ams.connector.jms;
 import javax.jms.Connection;
 import javax.jms.ConnectionFactory;
 import javax.jms.MessageConsumer;
-import javax.jms.MessageProducer;
 import javax.jms.Session;
 import javax.jms.Topic;
-import javax.naming.Context;
 
 import org.apache.activemq.ActiveMQConnectionFactory;
 import org.csstudio.ams.AmsActivator;
@@ -48,13 +46,6 @@ public class JMSConnectorStart implements IApplication, IGenericServiceListener<
 {
     private static JMSConnectorStart _instance = null;
 
-    private Context extContext = null;
-    private ConnectionFactory extFactory = null;
-    private Connection extConnection = null;
-    private Session extSession = null;
-    
-    private MessageProducer extPublisherStatusChange = null;
-    
     private ISessionService xmppService;
     
     private String managementPassword; 
