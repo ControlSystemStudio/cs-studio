@@ -17,6 +17,7 @@ import org.csstudio.archive.common.engine.httpserver.EngineHttpServer;
 import org.csstudio.archive.common.engine.httpserver.EngineHttpServerException;
 import org.csstudio.archive.common.engine.model.EngineModel;
 import org.csstudio.archive.common.engine.model.EngineModelException;
+import org.csstudio.archive.common.engine.model.EngineState;
 import org.csstudio.archive.common.engine.service.IServiceProvider;
 import org.csstudio.archive.common.engine.service.ServiceProvider;
 import org.csstudio.domain.desy.epics.typesupport.EpicsIMetaDataTypeSupport;
@@ -103,19 +104,18 @@ public class ArchiveEngineApplication implements IApplication {
         EpicsIMetaDataTypeSupport.install();
         EpicsIValueTypeSupport.install();
 
-        LOG.info("DESY Archive Engine Version {}.", ArchiveEnginePreference.VERSION.getValue());
+        LOG.info("DESY Archive Engine Version {}.", provider.getPreferencesService().getVersion());
         EngineHttpServer httpServer = null;
         try {
             _run = true;
             _model = new EngineModel(_engineName, provider);
 
-            httpServer = startHttpServer(_model, _model.getHttpPort());
+            httpServer = startHttpServer(_model, provider);
             if (httpServer == null) {
                 return EXIT_OK;
             }
             while (_run) {
                 configureAndRunEngine(_model);
-                LOG.info("ArchiveEngine ending");
                 stopEngineAndClearConfiguration(_model);
             }
         } catch (final EngineModelException e) {
@@ -128,6 +128,7 @@ public class ArchiveEngineApplication implements IApplication {
     }
 
     private void stopEngineAndClearConfiguration(@Nonnull final EngineModel model) throws EngineModelException {
+        LOG.info("Stopping engine.");
         model.stop();
         model.clearConfiguration();
     }
@@ -165,11 +166,11 @@ public class ArchiveEngineApplication implements IApplication {
 
         while (true) {
             Thread.sleep(1000);
-            if (model.getState() == EngineModel.State.SHUTDOWN_REQUESTED) {
+            if (model.getState() == EngineState.SHUTDOWN_REQUESTED) {
                 _run = false;
                 break;
             }
-            if (model.getState() == EngineModel.State.RESTART_REQUESTED) {
+            if (model.getState() == EngineState.RESTART_REQUESTED) {
                 break;
             }
         }
@@ -197,13 +198,13 @@ public class ArchiveEngineApplication implements IApplication {
 
     @CheckForNull
     private EngineHttpServer startHttpServer(@Nonnull final EngineModel model,
-                                             final int port) {
+                                             @Nonnull final IServiceProvider provider) {
         EngineHttpServer httpServer = null;
         try {
             // Setup takes some time, but engine server should already respond.
-            httpServer = new EngineHttpServer(model, port);
+            httpServer = new EngineHttpServer(model, provider, model.getHttpPort());
         } catch (final EngineHttpServerException e) {
-            LOG.error("Cannot start HTTP server on port {}: {}", port, e.getMessage());
+            LOG.error("Cannot start HTTP server on port {}: {}", provider, e.getMessage());
         }
         return httpServer;
     }

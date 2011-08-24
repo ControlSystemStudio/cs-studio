@@ -8,14 +8,15 @@
 package org.csstudio.archive.common.engine.model;
 
 import java.io.Serializable;
+import java.net.InetAddress;
 import java.net.MalformedURLException;
+import java.net.UnknownHostException;
 import java.util.Collection;
 import java.util.concurrent.ConcurrentMap;
 
 import javax.annotation.CheckForNull;
 import javax.annotation.Nonnull;
 
-import org.csstudio.archive.common.engine.ArchiveEnginePreference;
 import org.csstudio.archive.common.engine.service.IServiceProvider;
 import org.csstudio.archive.common.service.ArchiveServiceException;
 import org.csstudio.archive.common.service.IArchiveEngineFacade;
@@ -56,35 +57,14 @@ public final class EngineModel {
     /** Thread that writes to the <code>archive</code> */
     private WriteExecutor _writeExecutor;
 
-    /**
-     * All channels
-     */
+    /**  All channels */
     private final ConcurrentMap<String, ArchiveChannel<?, ?>> _channelMap;
 
-    /** Groups of archived channels
-     *  <p>
-     *  @see channels about thread safety
-     */
+    /** Groups of archived channels */
     private final ConcurrentMap<String, ArchiveGroup> _groupMap;
 
-    /** Engine states */
-    public enum State {
-        /** Initial model state before it has been configured */
-        IDLE,
-        /** Configured model state before <code>start()</code> */
-        CONFIGURED,
-        /** Running model, state after <code>start()</code> */
-        RUNNING,
-        /** State after <code>requestStop()</code>; still running. */
-        SHUTDOWN_REQUESTED,
-        /** State after <code>requestRestart()</code>; still running. */
-        RESTART_REQUESTED,
-        /** State while in <code>stop()</code>; will then be IDLE again. */
-        STOPPING
-    }
-
-    /** Engine state */
-    private volatile State _state = State.IDLE;
+    /** Engine start state */
+    private volatile EngineState _state = EngineState.IDLE;
 
     /** Start time of the model */
     private TimeInstant _startTime;
@@ -100,6 +80,7 @@ public final class EngineModel {
      * @param engineName
      * @param provider provider for services
      * @throws EngineModelException
+     * @throws UnknownHostException
      */
     public EngineModel(@Nonnull final String engineName,
                        @Nonnull final IServiceProvider provider) throws EngineModelException {
@@ -109,13 +90,24 @@ public final class EngineModel {
         _groupMap = new MapMaker().concurrencyLevel(2).makeMap();
         _channelMap = new MapMaker().concurrencyLevel(2).makeMap();
 
-        _writePeriodInMS = 1000*ArchiveEnginePreference.WRITE_PERIOD_IN_S.getValue();
-        _heartBeatPeriodInMS = 1000*ArchiveEnginePreference.HEARTBEAT_PERIOD_IN_S.getValue();
+        _writePeriodInMS = 1000*provider.getPreferencesService().getWritePeriodInS();
+        _heartBeatPeriodInMS = 1000*provider.getPreferencesService().getHeartBeatPeriodInS();
 
         _engine = findEngineConfByName(_name, _provider);
+        logHttpHostAndPort();
     }
 
-    /** @return Name (description) */
+    private void logHttpHostAndPort() {
+        String hostName = null;
+        try {
+            hostName = InetAddress.getLocalHost().getCanonicalHostName();
+        } catch (final UnknownHostException e) {
+            hostName = "localhost";
+        }
+        LOG.info("Http server on host {} and port: {}", hostName, _engine.getUrl().getPort());
+    }
+
+    /** @return Engine name (descriptive) */
     @Nonnull
     public String getName() {
         return _name;
@@ -128,7 +120,7 @@ public final class EngineModel {
 
     /** @return Current model state */
     @Nonnull
-    public State getState() {
+    public EngineState getState() {
         return _state;
     }
 
@@ -147,8 +139,7 @@ public final class EngineModel {
     @Nonnull
     private ArchiveGroup addGroup(@Nonnull final IArchiveChannelGroup groupCfg) {
         final String groupName = groupCfg.getName();
-        _groupMap.putIfAbsent(groupName, new ArchiveGroup(groupName));
-        return _groupMap.get(groupName);
+        return _groupMap.putIfAbsent(groupName, new ArchiveGroup(groupName));
     }
 
     /** @return Group by that name or <code>null</code> if not found */
@@ -168,7 +159,7 @@ public final class EngineModel {
         return _channelMap.get(name);
     }
 
-    /** @return Channel by that name or <code>null</code> if not found */
+    /** @return All channels */
     @Nonnull
     public Collection<ArchiveChannel<?, ?>> getChannels() {
         return _channelMap.values();
@@ -179,7 +170,7 @@ public final class EngineModel {
      * @throws EngineModelException
      */
     public void start() throws EngineModelException {
-        if (_state != State.CONFIGURED) {
+        if (_state != EngineState.CONFIGURED) {
             throw new IllegalStateException("Engine has not been configured before start.", null);
         }
         if (_engine == null || _writeExecutor == null) {
@@ -187,27 +178,23 @@ public final class EngineModel {
         }
 
         checkAndUpdateLastShutdownStatus(_provider, _engine, _channelMap.values());
-
         _startTime = TimeInstantBuilder.fromNow();
-
-        _state = State.RUNNING;
-
+        _state = EngineState.RUNNING;
         _writeExecutor.start(_heartBeatPeriodInMS, _writePeriodInMS);
-
         startChannelGroups(_groupMap.values());
     }
 
 
     /**
-     * Retrieves the last archiver status from the archive.
-     *
-     * If it was a graceful shutdown, anything's fine.
-     *
+     * Retrieves the last archiver status from the archive.<br/>
+     * If it was a graceful shutdown, anything's fine.<br/>
      * Otherwise:
-     * 1) update the engine_status table by an 'engine OFF' info with the timestamp of the
-     * last engine.alive value.
-     * 2) update the channel_status table for all channels of this engine that have status
-     * 'connected' with a new row disconnected and the timestamp of the last engine.alive value.
+     * <ol>
+     * <li> update the engine_status table by an 'engine OFF' info with the timestamp of the
+     * last engine.alive value. </li>
+     * <li> update the channel_status table for all channels of this engine that have status
+     * 'connected' with a new row disconnected and the timestamp of the last engine.alive value.</li>
+     * </ol>
      * @param collection
      *
      * @throws EngineModelException
@@ -269,13 +256,13 @@ public final class EngineModel {
     private void startChannelGroups(@Nonnull final Collection<ArchiveGroup> groups) throws EngineModelException {
         for (final ArchiveGroup group : groups) {
             group.start(ArchiveEngineStatus.ENGINE_START);
-            if (getState() == State.SHUTDOWN_REQUESTED) {
+            if (getState() == EngineState.SHUTDOWN_REQUESTED) {
                 break;
             }
         }
     }
 
-    /** @return Timestamp of end of last write run */
+    /** @return Timestamp of end of last write run or <code>null</code> if not started before */
     @CheckForNull
     public TimeInstant getLastWriteTime() {
         return _writeExecutor.getLastWriteTime();
@@ -293,20 +280,18 @@ public final class EngineModel {
         return _writeExecutor.getAvgWriteDurationInMS();
     }
 
-    /** Ask the model to stop.
-     *  Merely updates the model state.
+    /** Setting the model state to shutdown.
      *  @see #getState()
      */
     public void requestStop() {
-        _state = State.SHUTDOWN_REQUESTED;
+        _state = EngineState.SHUTDOWN_REQUESTED;
     }
 
-    /** Ask the model to restart.
-     *  Merely updates the model state.
+    /** Setting the model state to restart.
      *  @see #getState()
      */
     public void requestRestart() {
-        _state = State.RESTART_REQUESTED;
+        _state = EngineState.RESTART_REQUESTED;
     }
 
     /** Reset engine statistics */
@@ -325,10 +310,10 @@ public final class EngineModel {
      */
     @SuppressWarnings("nls")
     public void stop() throws EngineModelException {
-        if (_state == State.STOPPING || _state == State.IDLE) {
+        if (_state == EngineState.STOPPING || _state == EngineState.IDLE) {
             return;
         }
-        _state = State.STOPPING;
+        _state = EngineState.STOPPING;
 
         // Disconnect from network
         LOG.info("Stopping archive groups");
@@ -348,7 +333,7 @@ public final class EngineModel {
         LOG.info("Shutting down writer");
         _writeExecutor.shutdown();
 
-        _state = State.CONFIGURED;
+        _state = EngineState.CONFIGURED;
     }
 
 
@@ -359,8 +344,8 @@ public final class EngineModel {
     @SuppressWarnings("nls")
     public void readConfig() throws EngineModelException {
         try {
-            if (_state != State.IDLE) {
-                LOG.error("Read configuration while state " + _state + ". Should be " + State.IDLE);
+            if (_state != EngineState.IDLE) {
+                LOG.error("Read configuration while state " + _state + ". Should be " + EngineState.IDLE);
                 return;
             }
             if (_engine == null) { // to be reconfigured
@@ -380,7 +365,7 @@ public final class EngineModel {
         } catch (final Exception e) {
             handleExceptions(e);
         }
-        _state = State.CONFIGURED;
+        _state = EngineState.CONFIGURED;
     }
 
     @Nonnull
@@ -477,17 +462,16 @@ public final class EngineModel {
     }
 
     public void clearConfiguration() {
-        if (_state != State.IDLE && _state != State.CONFIGURED) {
+        if (_state != EngineState.IDLE && _state != EngineState.CONFIGURED) {
             throw new IllegalStateException("Clearing configuration only allowed in " +
-                                            State.IDLE.name() + " or " + State.CONFIGURED.name() + " state.");
+                                            EngineState.IDLE.name() + " or " + EngineState.CONFIGURED.name() + " state.");
         }
         _engine = null;
         _groupMap.clear();
         _channelMap.clear();
-
         _startTime = null;
 
-        _state = State.IDLE;
+        _state = EngineState.IDLE;
     }
 
     @CheckForNull

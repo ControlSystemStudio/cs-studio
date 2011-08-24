@@ -31,7 +31,7 @@ public final class Messages {
     public static final String HTTP_DISCONNECTED_TITLE = "Disconnected Channels";
     public static final String HTTP_ENABLED = "Enabled";
     public static final String HTTP_HOST = "HTTP Server";
-    public static final String HTTP_INTERNAL_STATE = "Internal State";
+    public static final String HTTP_INTERNAL_STATE = "Internal EngineState";
     public static final String HTTP_CURRENT_VALUE = "Current Value";
     public static final String HTTP_LAST_ARCHIVED_VALUE = "Last Archived Value";
     public static final String HTTP_LAST_WRITETIME = "Last Written";
@@ -42,7 +42,7 @@ public final class Messages {
     public static final String HTTP_COLUMN_QUEUEMAX = "Queue Max.";
     public static final String HTTP_COLUMN_RECEIVEDVALUES = "Received Values";
     public static final String HTTP_STARTTIME = "Start Time (UTC)";
-    public static final String HTTP_STATE = "State";
+    public static final String HTTP_STATE = "EngineState";
     public static final String HTTP_STATUS = "Status";
     public static final String HTTP_SUMMARY = "Summary";
     public static final String HTTP_ROW_TOTAL = "Total";
@@ -54,7 +54,7 @@ public final class Messages {
     public static final String HTTP_WRITE_DURATION = "Average Write Duration";
     public static final String HTTP_WRITE_ERROR = "Write Error";
     public static final String HTTP_WRITE_PERIOD = "Write Period";
-    public static final String HTTP_WRITE_STATE = "Write State";
+    public static final String HTTP_WRITE_STATE = "Write EngineState";
     /**
      * Constructor.
      */

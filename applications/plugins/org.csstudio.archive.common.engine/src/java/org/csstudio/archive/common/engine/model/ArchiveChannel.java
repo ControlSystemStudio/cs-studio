@@ -15,10 +15,8 @@ import javax.annotation.Nullable;
 import javax.annotation.concurrent.GuardedBy;
 
 import org.csstudio.archive.common.engine.service.IServiceProvider;
-import org.csstudio.archive.common.service.IArchiveEngineFacade;
 import org.csstudio.archive.common.service.channel.ArchiveChannelId;
 import org.csstudio.archive.common.service.sample.IArchiveSample;
-import org.csstudio.domain.desy.service.osgi.OsgiServiceUnavailableException;
 import org.csstudio.domain.desy.system.ISystemVariable;
 import org.csstudio.utility.pv.PV;
 import org.csstudio.utility.pv.PVFactory;
@@ -83,13 +81,7 @@ public class ArchiveChannel<V extends Serializable, T extends ISystemVariable<V>
      */
     private long _receivedSampleCount;
 
-    private IServiceProvider _provider = new IServiceProvider() {
-        @Override
-        @Nonnull
-        public IArchiveEngineFacade getEngineFacade() throws OsgiServiceUnavailableException {
-            throw new OsgiServiceUnavailableException("This is a stub. The service provider for this channel has not been set to a real implementation.");
-        }
-    };
+    private final IServiceProvider _provider;
 
     private final Class<V> _typeClazz;
     private final Class<V> _collClazz;

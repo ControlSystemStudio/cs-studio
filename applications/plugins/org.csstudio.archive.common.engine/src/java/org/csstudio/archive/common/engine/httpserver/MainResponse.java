@@ -14,7 +14,6 @@ import javax.annotation.Nonnull;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import org.csstudio.archive.common.engine.ArchiveEnginePreference;
 import org.csstudio.archive.common.engine.model.ArchiveChannel;
 import org.csstudio.archive.common.engine.model.ArchiveGroup;
 import org.csstudio.archive.common.engine.model.EngineModel;
@@ -42,20 +41,26 @@ class MainResponse extends AbstractResponse {
     /** Bytes in a MegaByte */
     private static final double MB = 1024.0*1024.0;
 
-    private static String HOST;
+    private final String _host;
+    private final String _version;
 
-    MainResponse(@Nonnull final EngineModel model) {
+    MainResponse(@Nonnull final EngineModel model,
+                 @Nonnull final String version) {
         super(model);
+        _version = version;
+        _host = findHostName();
+    }
 
-        if (HOST == null) {
-            try {
-                final InetAddress localhost = InetAddress.getLocalHost();
-                HOST = localhost.getHostName();
-            } catch (final UnknownHostException ex) {
-                LOG.warn("Host IP address unknown for localhost, fall back to 'localhost' as host identifier.");
-                HOST = "localhost";
-            }
+    @Nonnull
+    private String findHostName() {
+        String host = null;
+        try {
+            host = InetAddress.getLocalHost().getCanonicalHostName();
+        } catch (final UnknownHostException ex) {
+            LOG.warn("Host name could not be resolved, fall back to 'localhost'.");
+            host = "localhost";
         }
+        return host;
     }
 
     @Override
@@ -83,9 +88,9 @@ class MainResponse extends AbstractResponse {
 
     private void createProgramInfoRows(@Nonnull final HttpServletRequest req,
                                        @Nonnull final HTMLWriter html) {
-        html.tableLine(new String[] {Messages.HTTP_VERSION, ArchiveEnginePreference.VERSION.getValue()});
+        html.tableLine(new String[] {Messages.HTTP_VERSION, _version});
         html.tableLine(new String[] {Messages.HTTP_DESCRIPTION, getModel().getName()});
-        html.tableLine(new String[] {Messages.HTTP_HOST, HOST + ":" + req.getLocalPort()});
+        html.tableLine(new String[] {Messages.HTTP_HOST, _host + ":" + req.getLocalPort()});
         html.tableLine(new String[] {Messages.HTTP_STATE, getModel().getState().name()});
 
         final TimeInstant start = getModel().getStartTime();

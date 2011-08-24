@@ -15,6 +15,7 @@ import javax.servlet.ServletException;
 
 import org.csstudio.archive.common.engine.ArchiveEngineActivator;
 import org.csstudio.archive.common.engine.model.EngineModel;
+import org.csstudio.archive.common.engine.service.IServiceProvider;
 import org.eclipse.equinox.http.jetty.JettyConfigurator;
 import org.osgi.framework.BundleContext;
 import org.osgi.framework.InvalidSyntaxException;
@@ -32,8 +33,7 @@ import org.slf4j.LoggerFactory;
 public class EngineHttpServer {
     private static final String EX_MSG = "Engine HTTP server could not be instantiated.";
 
-    private static final Logger LOG =
-        LoggerFactory.getLogger(EngineHttpServer.class);
+    private static final Logger LOG = LoggerFactory.getLogger(EngineHttpServer.class);
 
     private String _pid;
 
@@ -41,14 +41,15 @@ public class EngineHttpServer {
 
     /** Construct and start the server
      *  @param model Model to serve
-     *  @param port TCP port
+     *  @param provider TCP port
      * @throws EngineHttpServerException
      * @throws InvalidSyntaxException
      * @throws
      *  @throws Exception on error
      */
     public EngineHttpServer(@Nonnull final EngineModel model,
-                            final int port) throws EngineHttpServerException {
+                            @Nonnull final IServiceProvider provider,
+                            @Nonnull final Integer port) throws EngineHttpServerException {
         final BundleContext context =
             ArchiveEngineActivator.getDefault().getBundle().getBundleContext();
         HttpService httpService;
@@ -58,7 +59,7 @@ public class EngineHttpServer {
             final HttpContext httpContext = httpService.createDefaultHttpContext();
             httpService.registerResources("/", "/webroot", httpContext);
 
-            httpService.registerServlet("/main", new MainResponse(model), null, httpContext);
+            httpService.registerServlet("/main", new MainResponse(model, provider.getPreferencesService().getVersion()), null, httpContext);
             httpService.registerServlet("/groups", new GroupsResponse(model), null, httpContext);
             httpService.registerServlet("/disconnected", new DisconnectedResponse(model), null, httpContext);
             httpService.registerServlet("/group", new GroupResponse(model), null, httpContext);
@@ -79,7 +80,7 @@ public class EngineHttpServer {
         } catch (final Exception e) {
             throw new EngineHttpServerException(EX_MSG, e);
         }
-        LOG.info("Engine HTTP Server port " + port);
+        LOG.info("Engine HTTP Server port {}", port);
     }
 
     /** Stop the server */
