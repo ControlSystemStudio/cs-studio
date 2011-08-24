@@ -67,6 +67,8 @@ public class BypassModel implements BypassListener
 	/** Connect to PVs, ... */
     public synchronized void start() throws Exception
     {
+    	if (running)
+    		throw new Exception("Already running");
     	for (Bypass bypass : mode_bypasses)
     		bypass.start();
     	running = true;
@@ -250,7 +252,7 @@ public class BypassModel implements BypassListener
 		
 		// Notify listeners
 		for (BypassModelListener listener : listeners)
-			listener.modelLoaded(this, null);
+			listener.bypassesChanged();
     }
 	
 	/** @return Currently active bypass state filter
