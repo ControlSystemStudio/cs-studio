@@ -14,6 +14,7 @@ import javax.annotation.Nonnull;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import org.csstudio.archive.common.engine.ArchiveEnginePreference;
 import org.csstudio.archive.common.engine.model.ArchiveChannel;
 import org.csstudio.archive.common.engine.model.ArchiveGroup;
 import org.csstudio.archive.common.engine.model.EngineModel;
@@ -82,7 +83,7 @@ class MainResponse extends AbstractResponse {
 
     private void createProgramInfoRows(@Nonnull final HttpServletRequest req,
                                        @Nonnull final HTMLWriter html) {
-        html.tableLine(new String[] {Messages.HTTP_VERSION, EngineModel.getVersion()});
+        html.tableLine(new String[] {Messages.HTTP_VERSION, ArchiveEnginePreference.VERSION.getValue()});
         html.tableLine(new String[] {Messages.HTTP_DESCRIPTION, getModel().getName()});
         html.tableLine(new String[] {Messages.HTTP_HOST, HOST + ":" + req.getLocalPort()});
         html.tableLine(new String[] {Messages.HTTP_STATE, getModel().getState().name()});

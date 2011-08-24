@@ -50,9 +50,6 @@ public final class EngineModel {
                      "org.csstudio.domain.desy.epics.types",
                      };
 
-    /** Version code. See also webroot/version.html */
-    private static String VERSION = "1.0.0";
-
     /** Name of this model */
     private final String _name;
 
@@ -95,17 +92,17 @@ public final class EngineModel {
     private final long _writePeriodInMS;
     private final long _heartBeatPeriodInMS;
 
-    private IArchiveEngine _engine;
-
     private final IServiceProvider _provider;
+    private IArchiveEngine _engine;
 
     /**
      * Construct model that writes to archive
      * @param engineName
      * @param provider provider for services
+     * @throws EngineModelException
      */
     public EngineModel(@Nonnull final String engineName,
-                       @Nonnull final IServiceProvider provider) {
+                       @Nonnull final IServiceProvider provider) throws EngineModelException {
         _name = engineName;
         _provider = provider;
 
@@ -114,6 +111,8 @@ public final class EngineModel {
 
         _writePeriodInMS = 1000*ArchiveEnginePreference.WRITE_PERIOD_IN_S.getValue();
         _heartBeatPeriodInMS = 1000*ArchiveEnginePreference.HEARTBEAT_PERIOD_IN_S.getValue();
+
+        _engine = findEngineConfByName(_name, _provider);
     }
 
     /** @return Name (description) */
@@ -358,14 +357,15 @@ public final class EngineModel {
      * @throws EngineModelException
      */
     @SuppressWarnings("nls")
-    public void readConfig(final int port) throws EngineModelException {
+    public void readConfig() throws EngineModelException {
         try {
             if (_state != State.IDLE) {
                 LOG.error("Read configuration while state " + _state + ". Should be " + State.IDLE);
                 return;
             }
-
-            _engine = findEngineConfByName(_name, port, _provider);
+            if (_engine == null) { // to be reconfigured
+                _engine = findEngineConfByName(_name, _provider);
+            }
 
             _writeExecutor = new WriteExecutor(_provider, _engine.getId());
 
@@ -385,20 +385,18 @@ public final class EngineModel {
 
     @Nonnull
     private IArchiveEngine findEngineConfByName(@Nonnull final String name,
-                                                final int port,
                                                 @Nonnull final IServiceProvider provider)
-                                                throws ArchiveServiceException,
-                                                       MalformedURLException,
-                                                       EngineModelException,
-                                                       OsgiServiceUnavailableException {
-        final IArchiveEngine engine = provider.getEngineFacade().findEngine(name);
+                                                throws EngineModelException {
+        IArchiveEngine engine = null;
+        try {
+            engine = provider.getEngineFacade().findEngine(name);
+        } catch (final OsgiServiceUnavailableException e) {
+            throw new EngineModelException("Engine could not be retrieved. OSGi service unavailable.", e);
+        } catch (final ArchiveServiceException e) {
+            throw new EngineModelException("Engine could not be retrieved. Internal archive service exception.", e);
+        }
         if (engine == null) {
             throw new EngineModelException("Unknown engine '" + name + "'.", null);
-        }
-        // Is the configuration consistent?
-        if (engine.getUrl().getPort() != port) {
-            throw new EngineModelException("Engine " + name + " running on port " + port +
-                                           " while configuration requires " + engine.getUrl().toString(), null);
         }
         return engine;
     }
@@ -492,8 +490,11 @@ public final class EngineModel {
         _state = State.IDLE;
     }
 
-    @Nonnull
-    public static String getVersion() {
-        return VERSION;
+    @CheckForNull
+    public Integer getHttpPort() {
+        if (_engine != null) {
+            return _engine.getUrl().getPort();
+        }
+        return null;
     }
 }
