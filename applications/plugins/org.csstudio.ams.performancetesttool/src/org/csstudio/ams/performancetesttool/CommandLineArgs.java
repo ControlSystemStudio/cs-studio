@@ -26,4 +26,7 @@ class CommandLineArgs {
     
     @Parameter(names = "-rate", description = "Limit the send rate of messages to less than this number of messages per second. (0..1000, 0 = unlimited)")
     public int rate = 0;
+    
+    @Parameter(names = "-receive", description = "Name of topic to receive messages from. Only valid for -component jmsconnector or no test of complete AMS.")
+    public List<String> receiveFromTopics = new ArrayList<String>();
 }

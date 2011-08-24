@@ -1,8 +1,8 @@
 package org.csstudio.ams.performancetesttool;
 
 
+import java.io.File;
 import java.util.ArrayList;
-import java.util.Hashtable;
 import java.util.List;
 
 import javax.jms.Connection;
@@ -70,7 +70,6 @@ public class AMSPerformanceTest {
     private long[] sendTimes;
     private ReceiveTimeLogger listener;
     private String sendTopic;
-    private String receiveTopic;
     private int delay;
 
     public AMSPerformanceTest(CommandLineArgs options) {
@@ -82,19 +81,29 @@ public class AMSPerformanceTest {
         
         if (options.component == null) {
             sendTopic = "ALARM";
-            receiveTopic = "JMS_Connector_Test";
+            if (options.receiveFromTopics.size() == 0) {
+                options.receiveFromTopics.add("JMS_Connector_Test");
+            }
         } else if (options.component.equals("decision")) {
             sendTopic = "ALARM";
-            receiveTopic = "T_AMS_MESSAGEMINDER";
+            if (options.receiveFromTopics.size() == 0) {
+                options.receiveFromTopics.add("T_AMS_MESSAGEMINDER");
+            }
         } else if (options.component.equals("minder")) {
             sendTopic = "T_AMS_MESSAGEMINDER";
-            receiveTopic = "T_AMS_DISTRIBUTE";
+            if (options.receiveFromTopics.size() == 0) {
+                options.receiveFromTopics.add("T_AMS_DISTRIBUTE");
+            }
         } else if (options.component.equals("distributor")) {
             sendTopic = "T_AMS_DISTRIBUTE";
-            receiveTopic = "T_AMS_CON_JMS";
+            if (options.receiveFromTopics.size() == 0) {
+                options.receiveFromTopics.add("T_AMS_CON_JMS");
+            }
         } else if (options.component.equals("jmsconnector")) {
             sendTopic = "T_AMS_CON_JMS";
-            receiveTopic = "JMS_Connector_Test";
+            if (options.receiveFromTopics.size() == 0) {
+                options.receiveFromTopics.add("JMS_Connector_Test");
+            }
         } else {
             throw new RuntimeException("Invalid parameter: -component " + options.component);
         }
@@ -147,17 +156,14 @@ public class AMSPerformanceTest {
     }
 
     private void sendMessages() throws JMSException {
-        MapMessagePropertiesReader mmpr = new MapMessagePropertiesReader(options.templateFile);
-        Hashtable<String, String> fields = mmpr.getMessageProperties();
+        MapMessageTemplate messageTemplate = new MapMessageTemplate(new File(options.templateFile));
         Session senderSession = connections.get(0).createSession(false, Session.AUTO_ACKNOWLEDGE);
         Topic topic = senderSession.createTopic(sendTopic);
         MessageProducer producer = senderSession.createProducer(topic);
         producer.setDeliveryMode(options.nonpersistant ? DeliveryMode.NON_PERSISTENT : DeliveryMode.PERSISTENT);
         for (int i = 0; i < options.count; i++) {
             MapMessage message = senderSession.createMapMessage();
-            for (String key : fields.keySet()) {
-                message.setString(key, fields.get(key));
-            }
+            messageTemplate.applyTo(message);
             message.setString("NUMBER", String.valueOf(i));
             sendTimes[i] = System.nanoTime();
             producer.send(message);
@@ -204,9 +210,11 @@ public class AMSPerformanceTest {
             for (Connection c : connections) {
                 final Session session = c.createSession(false, Session.AUTO_ACKNOWLEDGE);
                 listenerSessions.add(session);
-                Topic topic = session.createTopic(receiveTopic);
-                MessageConsumer consumer = session.createConsumer(topic);
-                consumer.setMessageListener(listener);
+                for (String topicName : options.receiveFromTopics) {
+                    Topic topic = session.createTopic(topicName);
+                    MessageConsumer consumer = session.createConsumer(topic);
+                    consumer.setMessageListener(listener);
+                }
             }
         } catch (JMSException e) {
             throw new RuntimeException("JMS error during listener registration", e);
