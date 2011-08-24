@@ -397,7 +397,19 @@ public class BypassModel implements BypassListener
     public void bypassChanged(final Bypass bypass)
     {
 		updateCounts();
-		for (BypassModelListener listener : listeners)
-			listener.bypassChanged(bypass);
+		if (state_filter == BypassState.All)
+		{	// Update single bypass
+			for (BypassModelListener listener : listeners)
+				listener.bypassChanged(bypass);
+		}
+		else
+		{	// We're not displaying all bypasses,
+			// so need to filter
+			filter();
+			// .. and that might have changed what we see,
+			// so trigger full update
+			for (BypassModelListener listener : listeners)
+				listener.bypassesChanged();
+		}
     }
 }

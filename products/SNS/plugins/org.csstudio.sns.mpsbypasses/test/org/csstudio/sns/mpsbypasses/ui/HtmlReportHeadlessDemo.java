@@ -48,6 +48,12 @@ public class HtmlReportHeadlessDemo implements BypassModelListener
     public void bypassChanged(final Bypass bypass)
     {
 	    // Ignore
+    }	
+	
+	@Override
+    public void bypassesChanged()
+    {
+	    // Ignore
     }
 
 	@Override

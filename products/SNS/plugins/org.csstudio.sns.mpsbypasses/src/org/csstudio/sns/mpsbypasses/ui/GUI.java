@@ -586,7 +586,9 @@ public class GUI implements BypassModelListener, MachineModeListener, BeamModeLi
 		});
     }
 
-	/** {@inheritDoc} */
+	/** Update display for one bypass and counts
+	 * {@inheritDoc}
+	 */
 	@Override
     public void bypassChanged(final Bypass bypass)
     {
@@ -605,7 +607,30 @@ public class GUI implements BypassModelListener, MachineModeListener, BeamModeLi
             }
 		});
     }
-
+	
+	/** Refresh table
+	 *  {@inheritDoc}
+	 */
+	@Override
+    public void bypassesChanged()
+    {
+		final Table table = bypass_table.getTable();
+		if (table.isDisposed())
+			return;
+		table.getDisplay().asyncExec(new Runnable()
+		{
+			@Override
+            public void run()
+            {
+				if (table.isDisposed())
+					return;
+				bypass_table.setInput(model.getBypasses());
+				displayCount(txt_total, model.getTotal());
+				displayCounts();
+            }
+		});
+    }
+	
 	/** Display the model's counts
 	 *  (except for 'total' which doesn't change)
 	 */
@@ -676,7 +701,5 @@ public class GUI implements BypassModelListener, MachineModeListener, BeamModeLi
 			text.setText("  ?  ");
 		else
 			text.setText(obj.toString());
-    }
-	
-	
+    }	
 }

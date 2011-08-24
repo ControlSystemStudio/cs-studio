@@ -54,6 +54,12 @@ public class BypassModelHeadlessTest implements BypassModelListener
     }
 
 	@Override
+    public void bypassesChanged()
+    {
+	    // Ignore
+    }
+
+	@Override
     public void bypassChanged(final Bypass bypass)
     {
 		updates.incrementAndGet();

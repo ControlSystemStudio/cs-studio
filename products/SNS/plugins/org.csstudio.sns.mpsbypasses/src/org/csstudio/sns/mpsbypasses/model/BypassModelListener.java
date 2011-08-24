@@ -14,4 +14,10 @@ public interface BypassModelListener extends BypassListener
 	 *  @see BypassModel#selectMachineMode(MachineMode)
 	 */
 	void modelLoaded(final BypassModel model, Exception error);
+
+	/** Invoked when bypass counts have changed:
+	 *  A previously filtered bypass because visible
+	 *  or vice versa, so an overall refresh is needed.
+	 */
+	void bypassesChanged();
 }
