@@ -17,6 +17,7 @@ import java.util.Iterator;
 import java.util.List;
 
 import org.csstudio.utility.pvmanager.ui.SWTUtil;
+import org.csstudio.utility.pvmanager.widgets.ErrorBar;
 import org.csstudio.utility.pvmanager.widgets.VTableDisplay;
 import org.csstudio.utility.pvmanager.widgets.WaterfallWidget;
 import org.eclipse.swt.SWT;
@@ -28,15 +29,34 @@ import org.epics.pvmanager.PVReaderListener;
 import org.epics.pvmanager.data.VTable;
 import org.epics.pvmanager.data.VTableColumn;
 import org.epics.pvmanager.expression.DesiredRateExpressionList;
+import org.eclipse.swt.layout.FormLayout;
+import org.eclipse.swt.layout.FormData;
+import org.eclipse.swt.layout.FormAttachment;
+import org.eclipse.swt.layout.GridLayout;
+import org.eclipse.swt.layout.GridData;
+import org.eclipse.swt.custom.StackLayout;
 
 public class PVTableByPropertyWidget extends Composite {
 	
 	private VTableDisplay table;
+	private ErrorBar errorBar;
 
 	public PVTableByPropertyWidget(Composite parent, int style) {
 		super(parent, style);
-		this.setLayout(new FillLayout(SWT.HORIZONTAL | SWT.VERTICAL));
+		GridLayout gridLayout = new GridLayout(1, false);
+		gridLayout.verticalSpacing = 0;
+		gridLayout.marginWidth = 0;
+		gridLayout.marginHeight = 0;
+		setLayout(gridLayout);
 		table = new VTableDisplay(this);
+		table.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true, 1, 1));
+		
+		errorBar = new ErrorBar(this, SWT.NONE);
+		errorBar.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, false, false, 1, 1));
+	}
+	
+	private void setLastException(Exception ex) {
+		errorBar.setException(ex);
 	}
 	
 	private String channelQuery;
@@ -54,6 +74,7 @@ public class PVTableByPropertyWidget extends Composite {
 		public void pvChanged() {
 			if (!table.isDisposed()) {
 				table.setVTable(pv.getValue());
+				setLastException(pv.lastException());
 			}
 		}
 	};
@@ -120,7 +141,6 @@ public class PVTableByPropertyWidget extends Composite {
 			// Should be done in a background task
 			channels = ChannelFinderClient.getInstance().findChannelsByTag(channelQuery);
 		} catch (Exception e) {
-			System.out.println(e);
 		}
 	}
 	
@@ -188,5 +208,4 @@ public class PVTableByPropertyWidget extends Composite {
 		
 		reconnect();
 	}
-
 }
