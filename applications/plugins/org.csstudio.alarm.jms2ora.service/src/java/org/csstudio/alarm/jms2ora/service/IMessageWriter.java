@@ -35,6 +35,11 @@ import java.util.Vector;
  */
 public interface IMessageWriter {
     
+    /**
+     * Closes the reader.
+     */
+    void close();
+    
     /** Writes the message to the database */
     boolean writeMessage(Vector<MessageContent> messages);
     

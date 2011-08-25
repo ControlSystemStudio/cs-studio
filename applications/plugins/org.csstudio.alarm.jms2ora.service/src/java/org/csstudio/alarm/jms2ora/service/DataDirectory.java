@@ -50,9 +50,14 @@ public class DataDirectory {
             boolean success = file.mkdirs();
             if (success) {
                 dataDirectory = file.getAbsolutePath();
-                if (dataDirectory.endsWith(File.pathSeparator) == false) {
-                    dataDirectory = dataDirectory + File.pathSeparator;
+                if (dataDirectory.endsWith(File.separator) == false) {
+                    dataDirectory = dataDirectory + File.separator;
                 }
+            }
+        } else {
+            dataDirectory = file.getAbsolutePath();
+            if (dataDirectory.endsWith(File.separator) == false) {
+                dataDirectory = dataDirectory + File.separator;
             }
         }
     }
@@ -71,7 +76,16 @@ public class DataDirectory {
         return dataDirectory;
     }
 
-    public boolean existsDataDirectory() throws DataDirectoryException {
-        return getDataDirectory().exists();
+    public boolean existsDataDirectory() {
+        
+        boolean exists;
+        
+        try {
+            exists = getDataDirectory().exists();
+        } catch (DataDirectoryException dde) {
+            exists = false;
+        }
+        
+        return exists;
     }
 }
