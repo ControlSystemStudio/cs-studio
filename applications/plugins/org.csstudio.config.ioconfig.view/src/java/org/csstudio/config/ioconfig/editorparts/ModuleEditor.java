@@ -23,6 +23,7 @@ package org.csstudio.config.ioconfig.editorparts;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
@@ -360,7 +361,7 @@ public class ModuleEditor extends AbstractGsdNodeEditor<ModuleDBO> {
         _channelNameText = new Text(comp, SWT.MULTI | SWT.WRAP | SWT.BORDER | SWT.READ_ONLY);
         _channelNameText.setLayoutData(new GridData(SWT.BEGINNING, SWT.FILL, false, true));
         
-        _ioNamesText = new Text(comp, SWT.MULTI | SWT.WRAP | SWT.V_SCROLL | SWT.BORDER | SWT.READ_ONLY);
+        _ioNamesText = new Text(comp, SWT.MULTI | SWT.WRAP | SWT.V_SCROLL | SWT.BORDER);
         _ioNamesText.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true));
         
         _channelNameText.addPaintListener(new PaintListener() {
@@ -377,13 +378,20 @@ public class ModuleEditor extends AbstractGsdNodeEditor<ModuleDBO> {
                 _channelNameText.setTopIndex(_ioNamesText.getTopIndex());
             }
         });
-        
         try {
             setIONamesText();
         } catch (final PersistenceException e) {
             DeviceDatabaseErrorDialog.open(null, "Can't read from Database", e);
             LOG.error("Can't read from Database", e);
         }
+        _ioNamesText.addModifyListener(new ModifyListener() {
+            
+            @Override
+            public void modifyText(@Nonnull final ModifyEvent e) {
+                setSavebuttonEnabled("IONames", !_ioNamesText.getText().equals(_ioNamesText.getData()));
+            }
+        });
+        
         
     }
 
@@ -413,7 +421,9 @@ public class ModuleEditor extends AbstractGsdNodeEditor<ModuleDBO> {
             }
         }
         _channelNameText.setText(channelNamesSB.toString());
+        _channelNameText.setData(channelNamesSB.toString());
         _ioNamesText.setText(ioNamesSB.toString());
+        _ioNamesText.setData(ioNamesSB.toString());
     }
 
     /**
@@ -694,13 +704,19 @@ public class ModuleEditor extends AbstractGsdNodeEditor<ModuleDBO> {
     }
     
     private void updateChannels() throws PersistenceException {
-        final Set<ChannelStructureDBO> channelStructs = _module.getChildren();
+        int i = 0;
+        final String[] split = _ioNamesText.getText().split("\n");
+        final Collection<ChannelStructureDBO> channelStructs = _module.getChildrenAsMap().values();
         for (ChannelStructureDBO channelStructure : channelStructs) {
-            final Set<ChannelDBO> channels = channelStructure.getChildren();
+            final Collection<ChannelDBO> channels = channelStructure.getChildrenAsMap().values();
             for (ChannelDBO channel : channels) {
+                if(i<split.length) {
+                    channel.setIoName(split[i++].trim());
+                }
                 channel.assembleEpicsAddressString();
             }
         }
+        _ioNamesText.setData(_ioNamesText.getText());
     }
     
     /**
@@ -712,6 +728,8 @@ public class ModuleEditor extends AbstractGsdNodeEditor<ModuleDBO> {
         cancelNameWidget();
         cancelIndexSpinner();
         cancelGsdModuleModel();
+        _channelNameText.setText((String) _channelNameText.getData());
+        _ioNamesText.setText((String) _ioNamesText.getData());
         for (Object prmTextObject : _prmTextCV) {
             if(prmTextObject instanceof ComboViewer) {
                 cancelComboViewer(prmTextObject);
@@ -904,5 +922,4 @@ public class ModuleEditor extends AbstractGsdNodeEditor<ModuleDBO> {
         }
         return null;
     }
-    
 }
