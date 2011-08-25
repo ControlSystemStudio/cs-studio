@@ -36,4 +36,5 @@ public class PreferenceConstants {
     public static final String DATABASE_URL = "databaseUrl";
     public static final String DATABASE_USER = "databaseUser";
     public static final String DATABASE_PASSWORD = "databasePassword";
+    public static final String META_DATA_DIRECTORY = "metaDataDirectory";
 }

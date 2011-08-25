@@ -54,14 +54,14 @@ public class Activator implements BundleActivator {
 		
 	    Activator.context = bundleContext;
 		
-		// 1. Service: OracleMessageWriterService
+	    // 1. Service: OracleMetaDataReaderService
+	    bundleContext.registerService(IMetaDataReader.class.getName(),
+	                                  new OracleMetaDataReaderService(),
+	                                  null);
+
+	    // 2. Service: OracleMessageWriterService
 		bundleContext.registerService(IMessageWriter.class.getName(),
 		                              new OracleMessageWriterService(),
-		                              null);
-
-		// 2. Service: OracleMetaDataReaderService
-		bundleContext.registerService(IMetaDataReader.class.getName(),
-		                              new OracleMetaDataReaderService(),
 		                              null);
 	}
 

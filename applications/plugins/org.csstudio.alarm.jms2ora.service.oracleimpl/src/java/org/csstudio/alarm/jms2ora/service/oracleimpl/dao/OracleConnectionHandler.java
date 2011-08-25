@@ -63,12 +63,15 @@ public class OracleConnectionHandler {
     
     /**  */
     private final ThreadLocal<Connection> connection;
+    
+    private boolean _autoCommit;
 
     /**
      * Constructor.
      */
-    public OracleConnectionHandler() {
+    public OracleConnectionHandler(boolean autoCommit) {
         
+        _autoCommit = autoCommit;
         connection = new ThreadLocal<Connection>();
         connection.set(null);
         
@@ -124,6 +127,7 @@ public class OracleConnectionHandler {
         
         try {
             con = dataSource.getConnection();
+            con.setAutoCommit(_autoCommit);
             connection.set(con);
         } catch (SQLException sqle) {
             connection.set(null);

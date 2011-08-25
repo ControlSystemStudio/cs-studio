@@ -24,14 +24,28 @@
 
 package org.csstudio.alarm.jms2ora.service.oracleimpl.dao;
 
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.ResultSetMetaData;
+import java.sql.Statement;
 import java.util.Hashtable;
+import org.csstudio.alarm.jms2ora.service.DataDirectory;
+import org.csstudio.alarm.jms2ora.service.DataDirectoryException;
+import org.csstudio.alarm.jms2ora.service.oracleimpl.Activator;
+import org.csstudio.alarm.jms2ora.service.oracleimpl.internal.PreferenceConstants;
+import org.eclipse.core.runtime.Platform;
+import org.eclipse.core.runtime.preferences.IPreferencesService;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
- * TODO (mmoeller) : 
  * 
  * @author mmoeller
  * @version 1.0
@@ -39,14 +53,37 @@ import java.util.Hashtable;
  */
 public class MetaDataDao implements MessageArchiveDao {
     
+    /** The logger of this class */
+    private Logger LOG = LoggerFactory.getLogger(MetaDataDao.class);
+    
     /** The connection handler */
     private OracleConnectionHandler connectionHandler;
     
+    /** The object that holds the paths to the data directories */
+    private DataDirectory dataDirectories;
+    
+    /**
+     *  Contains the names of the columns of the table MESSAGE. The key is the name of column and the value
+     *  is the precision.
+     */
+    private Hashtable<String, Integer> messageCol;
+
     /**
      * Constructor. Oh, really!
      */
     public MetaDataDao() {
-        connectionHandler = new OracleConnectionHandler();
+
+        connectionHandler = new OracleConnectionHandler(false);
+        
+        IPreferencesService prefs = Platform.getPreferencesService();
+        String metaDataDir = prefs.getString(Activator.getPluginId(),
+                                             PreferenceConstants.META_DATA_DIRECTORY,
+                                             "./var/columns",
+                                             null);
+        dataDirectories = new DataDirectory(metaDataDir);
+        messageCol = new Hashtable<String, Integer>();
+        
+        readTableColumns();
     }
     
     @Override
@@ -90,7 +127,20 @@ public class MetaDataDao implements MessageArchiveDao {
         return result;
     }
     
-    public Hashtable<String, Long> getMessageProperties() {
+    /**
+     * 
+     * @return Hashtable containg the VARCHAR2 types and precision of table 'MESSAGE'
+     */
+    public Hashtable<String, Integer> getMessageProperties() {
+        
+        if (messageCol.isEmpty()) {
+            this.readTableColumns();
+        }
+        
+        return messageCol;
+    }
+    
+    public Hashtable<String, Long> getMessageContentProperties() {
         
         PreparedStatement pst = null;
         ResultSet rsProperty = null;
@@ -120,5 +170,112 @@ public class MetaDataDao implements MessageArchiveDao {
         }
         
         return msgProperty;
+    }
+    
+    private void saveColumnNames() {
+        
+        FileOutputStream fos = null;
+        ObjectOutputStream oos = null;
+
+        if(messageCol.isEmpty()) {
+            LOG.info("Column list is empty.");
+            return;
+        }
+
+        if(dataDirectories.existsDataDirectory() == false) {
+            LOG.warn("Object folder does not exist. Columns cannot be stored.");
+            return;
+        }
+        
+        try {
+            fos = new FileOutputStream(dataDirectories.getDataDirectoryAsString() + "ColumnNames.ser");
+            oos = new ObjectOutputStream(fos);
+            
+            // Write the MessageContent object to disk
+            oos.writeObject(messageCol);
+            oos.flush();
+        } catch(FileNotFoundException fnfe) {
+            LOG.error("FileNotFoundException : " + fnfe.getMessage());
+        } catch(IOException ioe) {
+            LOG.error("IOException : " + ioe.getMessage());
+        } catch (DataDirectoryException dde) {
+            LOG.error("DataDirectoryException : " + dde.getMessage());
+        } finally {
+            if(oos != null){try{oos.close();}catch(IOException ioe){/*Ignore me*/}}
+            if(fos != null){try{fos.close();}catch(IOException ioe){/*Ignore me*/}}
+            
+            oos = null;
+            fos = null;            
+        }
+    }
+    
+    /**
+     * 
+     */
+    private void readTableColumns() {
+        
+        ResultSetMetaData meta = null;
+        ResultSet rs = null;
+        Statement st = null;
+        String name = null;
+        int prec = 0;
+        int count = 0;
+        
+        messageCol.clear();
+        
+        Connection connection;        
+        try {
+            
+            connection = connectionHandler.getConnection();
+            st = connection.createStatement(ResultSet.TYPE_SCROLL_INSENSITIVE, ResultSet.CONCUR_READ_ONLY);
+            rs = st.executeQuery("SELECT * FROM message WHERE id = 1");
+            
+            meta = rs.getMetaData();
+            count = meta.getColumnCount();
+            
+            for(int i = 1;i <= count;i++) {
+                name = meta.getColumnName(i);
+                prec = meta.getPrecision(i);
+                
+                if((name.compareToIgnoreCase("id") != 0) 
+                    && (name.compareToIgnoreCase("datum") != 0)
+                    && (name.compareToIgnoreCase("msg_type_id") != 0)) {
+                    messageCol.put(name, new Integer(prec));
+                }
+            }
+            
+            saveColumnNames();
+            
+        } catch(Exception e) {
+            LOG.error("[*** Exception ***]: Cannot read the table column names: " + e.getMessage());
+            LOG.error("Using stored column names.");
+            readColumnNames();
+        } finally {
+            close();
+        }
+    }
+    
+    @SuppressWarnings("unchecked")
+    private void readColumnNames() {
+        
+        FileInputStream fis = null;
+        ObjectInputStream ois = null;
+
+        try {
+            fis = new FileInputStream(dataDirectories.getDataDirectoryAsString() + "ColumnNames.ser");
+            ois = new ObjectInputStream(fis);
+            
+            // Write the MessageContent object to disk
+            messageCol = (Hashtable<String, Integer>)ois.readObject();            
+        } catch(Exception e) {
+            LOG.error("[*** " + e.getClass().getSimpleName() + " ***]: " + e.getMessage());
+            messageCol = new Hashtable<String, Integer>();
+        } finally {
+            if(ois != null){try{ois.close();}catch(IOException ioe){/*Ignore me*/}}
+            if(fis != null){try{fis.close();}catch(IOException ioe){/*Ignore me*/}}
+            
+            ois = null;
+            fis = null;            
+        }
     }
 }

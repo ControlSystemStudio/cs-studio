@@ -28,8 +28,6 @@ import java.util.Vector;
 import org.csstudio.alarm.jms2ora.service.IMessageWriter;
 import org.csstudio.alarm.jms2ora.service.MessageContent;
 import org.csstudio.alarm.jms2ora.service.oracleimpl.dao.MessageDao;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 /**
  * TODO (mmoeller) : 
@@ -40,15 +38,11 @@ import org.slf4j.LoggerFactory;
  */
 public class OracleMessageWriterService implements IMessageWriter {
     
-    /** The class logger */
-    private static Logger LOG = LoggerFactory.getLogger(OracleMessageWriterService.class);
-    
     private MessageDao messageDao;
     
     private boolean serviceReady;
-    
+
     public OracleMessageWriterService() {
-        
         messageDao = new MessageDao();
         serviceReady = true;
     }
@@ -57,12 +51,22 @@ public class OracleMessageWriterService implements IMessageWriter {
      * {@inheritDoc}
      */
     @Override
-    public boolean writeMessage(Vector<MessageContent> message) {
-        return true;
+    public boolean writeMessage(Vector<MessageContent> messages) {
+        return messageDao.writeMessages(messages);
     }
 
     @Override
     public boolean isServiceReady() {
         return serviceReady;
     }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public void close() {
+        if (messageDao != null) {
+            messageDao.close();
+        }
+    }    
 }

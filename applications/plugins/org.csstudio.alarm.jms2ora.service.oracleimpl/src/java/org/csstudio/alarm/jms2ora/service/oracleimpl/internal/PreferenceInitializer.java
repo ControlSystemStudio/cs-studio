@@ -22,62 +22,31 @@
  *
  */
 
-package org.csstudio.alarm.jms2ora.service.oracleimpl;
+package org.csstudio.alarm.jms2ora.service.oracleimpl.internal;
 
-import java.util.Hashtable;
-import org.csstudio.alarm.jms2ora.service.IMetaDataReader;
-import org.csstudio.alarm.jms2ora.service.oracleimpl.dao.MetaDataDao;
+import org.csstudio.alarm.jms2ora.service.oracleimpl.Activator;
+import org.eclipse.core.runtime.preferences.AbstractPreferenceInitializer;
+import org.eclipse.core.runtime.preferences.DefaultScope;
+import org.eclipse.core.runtime.preferences.IEclipsePreferences;
 
 /**
  * TODO (mmoeller) : 
  * 
  * @author mmoeller
  * @version 1.0
- * @since 19.08.2011
+ * @since 22.08.2011
  */
-public class OracleMetaDataReaderService implements IMetaDataReader {
-
-    /** The DAO for retrieving the meta data */
-    private MetaDataDao metaDataDao;
-    
-    /**
-     * Constructor.
-     */
-    public OracleMetaDataReaderService() {
-        metaDataDao = new MetaDataDao();
-    }
+public class PreferenceInitializer extends AbstractPreferenceInitializer {
     
     /**
      * {@inheritDoc}
      */
     @Override
-    public int getValueLength() {
-        return metaDataDao.getValueLength();
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    @Override
-    public Hashtable<String, Long> getMessageContentProperties() {
-        return metaDataDao.getMessageContentProperties();
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    @Override
-    public Hashtable<String, Integer> getMessageProperties() {
-        return metaDataDao.getMessageProperties();
-    }
-    
-    /**
-     * Closes the reader.
-     */
-    @Override
-    public void close() {
-        if (metaDataDao != null) {
-            metaDataDao.close();
-        }
+    public void initializeDefaultPreferences() {
+        IEclipsePreferences prefs = new DefaultScope().getNode(Activator.getPluginId());
+        prefs.put(PreferenceConstants.DATABASE_URL, "");
+        prefs.put(PreferenceConstants.DATABASE_USER , "");
+        prefs.put(PreferenceConstants.DATABASE_PASSWORD, "");
+        prefs.put(PreferenceConstants.META_DATA_DIRECTORY , "./var/columns");
     }
 }
