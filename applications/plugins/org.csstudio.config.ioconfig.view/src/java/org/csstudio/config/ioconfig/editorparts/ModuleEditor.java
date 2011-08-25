@@ -63,6 +63,8 @@ import org.eclipse.swt.events.ControlAdapter;
 import org.eclipse.swt.events.ControlEvent;
 import org.eclipse.swt.events.ModifyEvent;
 import org.eclipse.swt.events.ModifyListener;
+import org.eclipse.swt.events.PaintEvent;
+import org.eclipse.swt.events.PaintListener;
 import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.events.SelectionListener;
 import org.eclipse.swt.graphics.Rectangle;
@@ -355,11 +357,26 @@ public class ModuleEditor extends AbstractGsdNodeEditor<ModuleDBO> {
     private void ioNames(@Nonnull final String head) {
         final Composite comp = getNewTabItem(head, 2);
         comp.setLayout(new GridLayout(2, false));
-        _channelNameText = new Text(comp, SWT.MULTI | SWT.WRAP | SWT.V_SCROLL | SWT.BORDER | SWT.READ_ONLY);
+        _channelNameText = new Text(comp, SWT.MULTI | SWT.WRAP | SWT.BORDER | SWT.READ_ONLY);
         _channelNameText.setLayoutData(new GridData(SWT.BEGINNING, SWT.FILL, false, true));
         
         _ioNamesText = new Text(comp, SWT.MULTI | SWT.WRAP | SWT.V_SCROLL | SWT.BORDER | SWT.READ_ONLY);
         _ioNamesText.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true));
+        
+        _channelNameText.addPaintListener(new PaintListener() {
+            
+            @Override
+            public void paintControl(@Nonnull final PaintEvent e) {
+                _ioNamesText.setTopIndex(_channelNameText.getTopIndex());
+            }
+        });
+        _ioNamesText.addPaintListener(new PaintListener() {
+            
+            @Override
+            public void paintControl(@Nonnull final PaintEvent e) {
+                _channelNameText.setTopIndex(_ioNamesText.getTopIndex());
+            }
+        });
         
         try {
             setIONamesText();
