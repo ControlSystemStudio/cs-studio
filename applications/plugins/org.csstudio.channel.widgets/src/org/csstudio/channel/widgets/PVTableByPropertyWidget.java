@@ -98,8 +98,11 @@ public class PVTableByPropertyWidget extends Composite {
 			List<String> columnPvs = cellPvs.get(nColumn);
 			columns[nColumn + 1] = column(name, latestValueOf(channels(columnPvs)));
 		}
-		pv = PVManager.read(vTable(columns)).notifyOn(SWTUtil.swtThread()).every(ms(200));
+		// Increasing the notification rate will make the tooltips not work,
+		// so it's limited to 500 ms.
+		pv = PVManager.read(vTable(columns)).notifyOn(SWTUtil.swtThread()).every(ms(500));
 		pv.addPVReaderListener(listener);
+		table.setCellLabelProvider(new PVTableByPropertyCellLabelProvider(cellPvs));
 	}
 	
 	public String getChannelQuery() {

@@ -1,12 +1,16 @@
 package org.csstudio.utility.pvmanager.widgets;
 
 import org.eclipse.jface.layout.TableColumnLayout;
+import org.eclipse.jface.viewers.CellLabelProvider;
+import org.eclipse.jface.viewers.ColumnViewerToolTipSupport;
 import org.eclipse.jface.viewers.ColumnWeightData;
 import org.eclipse.jface.viewers.TableViewer;
 import org.eclipse.jface.viewers.TableViewerColumn;
+import org.eclipse.jface.window.ToolTip;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Table;
+import org.eclipse.swt.widgets.TableColumn;
 import org.epics.pvmanager.data.VTable;
 import org.eclipse.swt.layout.FillLayout;
 
@@ -19,6 +23,7 @@ public class VTableDisplay extends Composite {
 	TableViewer tableViewer;
 	private Table table;
 	private Composite tableContainer;
+	private VTableCellLabelProvider cellLabelProvider;
 
 	/**
 	 * Creates a new display.
@@ -37,6 +42,8 @@ public class VTableDisplay extends Composite {
 		table.setHeaderVisible(true);
 		table.setLinesVisible(true);
 		tableViewer.setContentProvider(new VTableContentProvider());
+		tableViewer.setLabelProvider(getCellLabelProvider());
+        VTableToolTipSupport.enableFor(tableViewer,ToolTip.NO_RECREATE);
 	}
 	
 	// The current table being displayed
@@ -55,6 +62,21 @@ public class VTableDisplay extends Composite {
 		}
 	}
 	
+	public VTableCellLabelProvider getCellLabelProvider() {
+		if (cellLabelProvider == null)
+			cellLabelProvider = new VTableCellLabelProvider();
+		return cellLabelProvider;
+	}
+	
+	public void setCellLabelProvider(VTableCellLabelProvider cellLabelProvider) {
+		this.cellLabelProvider = cellLabelProvider;
+		for (TableColumn column: table.getColumns()) {
+			column.dispose();
+		}
+		tableViewer.setLabelProvider(cellLabelProvider);
+		refreshColumns();
+	}
+	
 	private void refreshColumns() {
 		int requiredCount = 0;
 		if (vTable != null)
@@ -69,7 +91,7 @@ public class VTableDisplay extends Composite {
 		
 		while (table.getColumnCount() < requiredCount) {
 			TableViewerColumn newViewerColumn = new TableViewerColumn(tableViewer, SWT.NONE);
-			newViewerColumn.setLabelProvider(new VTableCellLabelProvider());
+			newViewerColumn.setLabelProvider(getCellLabelProvider());
 		}
 		
 		TableColumnLayout layout = new TableColumnLayout();
