@@ -170,19 +170,16 @@ public class MessageContentCreator {
         boolean reload = false;
         boolean wrongFormat = false;
 
-        LOG.debug("Enter MessageContentCreator.convertMapMessage()");
-        
         // Create a new MessageContent object for the content of the message
         msgContent = new MessageContent();
 
         if(mmsg == null) {
-            
-            LOG.debug("Leaving MessageContentCreator.convertMapMessage()");
             return msgContent;
         }
         
-        // ACHTUNG: Die Message ist für den Client READ-ONLY!!! Jeder Versuch in die Message zu schreiben
-        //          löst eine Exception aus.
+        // ACHTUNG: Die Message ist fuer den Client READ-ONLY!!!
+        //          Jeder Versuch in die Message zu schreiben
+        //          loest eine Exception aus.
 
         // First get the message type
         try {
@@ -208,8 +205,6 @@ public class MessageContentCreator {
                 
                 msgContent.setDiscard(true);
                 
-                LOG.debug("Leaving MessageContentCreator.convertMapMessage()");
-
                 // Return an object without content
                 // Call hasContent() to check whether or not content is available
                 return msgContent;
@@ -231,8 +226,6 @@ public class MessageContentCreator {
             propName = "";
         }
 
-        LOG.debug("Property NAME: " + propName);
-
         // Discard messages that contains the names of the defined list
         if(!discardNames.isEmpty()) {
             
@@ -240,8 +233,6 @@ public class MessageContentCreator {
                 
                 msgContent.setDiscard(true);
                 
-                LOG.debug("Leaving MessageContentCreator.convertMapMessage()");
-
                 // Return an object without content
                 // Call hasContent() to check whether or not content is available
                 return msgContent;
@@ -363,8 +354,6 @@ public class MessageContentCreator {
             LOG.debug("Process it!");
         }
 
-        LOG.debug("Leaving MessageContentCreator.convertMapMessage()");
-
         return msgContent;
     }
     
@@ -468,7 +457,7 @@ public class MessageContentCreator {
 
         msgProperty = new Hashtable<String, Long>();
 
-        msgProperty = metaDataService.getMessageProperties();
+        msgProperty = metaDataService.getMessageContentProperties();
         if(msgProperty.isEmpty()) {
             result = false;
         } else {

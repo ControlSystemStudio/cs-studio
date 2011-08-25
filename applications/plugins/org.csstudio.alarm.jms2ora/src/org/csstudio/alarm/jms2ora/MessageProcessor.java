@@ -24,12 +24,12 @@
 
 package org.csstudio.alarm.jms2ora;
 
-import java.util.concurrent.ConcurrentLinkedQueue;
+import java.util.Vector;
 import org.csstudio.alarm.jms2ora.database.DatabaseLayer;
 import org.csstudio.alarm.jms2ora.service.IMessageWriter;
+import org.csstudio.alarm.jms2ora.service.IPersistenceHandler;
 import org.csstudio.alarm.jms2ora.service.MessageContent;
 import org.csstudio.alarm.jms2ora.util.MessageAcceptor;
-import org.csstudio.alarm.jms2ora.util.MessageFileHandler;
 import org.csstudio.alarm.jms2ora.util.StatisticCollector;
 import org.csstudio.domain.desy.service.osgi.OsgiServiceUnavailableException;
 import org.slf4j.Logger;
@@ -71,11 +71,11 @@ public class MessageProcessor extends Thread {
     /** The class logger */
     private static final Logger LOG = LoggerFactory.getLogger(MessageProcessor.class);
 
-    /** Queue for received messages */
-    private ConcurrentLinkedQueue<MessageContent> messages;
-    
     /** The Database writer service */
     private IMessageWriter writerService;
+
+    /** The Persistence writer service */
+    private IPersistenceHandler persistenceService;
 
     /** Object that gets all JMS messages */
     private MessageAcceptor messageAcceptor;
@@ -109,8 +109,8 @@ public class MessageProcessor extends Thread {
     public MessageProcessor() throws ServiceNotAvailableException {
         
         this.setName("MessageProcessor-Thread");
+        collector = new StatisticCollector();
         
-        messages = new ConcurrentLinkedQueue<MessageContent>();
         messageAcceptor = new MessageAcceptor(collector);
         
         try {
@@ -123,59 +123,49 @@ public class MessageProcessor extends Thread {
             }
         } catch (OsgiServiceUnavailableException e) {
             LOG.error(e.getMessage());
-            throw new ServiceNotAvailableException("Database writer service notavailable: " + e.getMessage());
+            throw new ServiceNotAvailableException("Database writer service not available: " + e.getMessage());
         }
-                
+        
+        try {
+            persistenceService = Jms2OraPlugin.getDefault().getPersistenceWriterService();
+        } catch (OsgiServiceUnavailableException e) {
+            LOG.error(e.getMessage());
+            throw new ServiceNotAvailableException("Persistence writer service not available: " + e.getMessage());
+        }
+        
         running = true;
         stoppedClean = false;
         initialized = false;
     }
     
     /**
-     * <code>executeMe</code> is the main method of the class StoreMessages.
-     *
+     * {@inheritDoc}
      */
-    
     @Override
     public void run() {
         
-        MessageContent content = null;
-        ReturnValue result;
+        Vector<MessageContent> storeMe;
+        boolean success;
         
         LOG.info("Started " + VersionInfo.getAll());        
         LOG.info("Waiting for messages...");
         
         while(running) {
             
-            while(!messages.isEmpty() && running) {
+            if ((messageAcceptor.getQueueSize() > 0) && running) {
                 
-                content = messages.poll();
-                result = processMessage(content);
-                if((result != ReturnValue.PM_RETURN_OK)
-                        && (result != ReturnValue.PM_RETURN_DISCARD)
-                        && (result != ReturnValue.PM_RETURN_EMPTY)) {                    
-                    
+                storeMe = messageAcceptor.getCurrentMessages();
+                success = writerService.writeMessage(storeMe);
+                
+                if(!success) {
                     // Store the message in a file, if it was not possible to write it to the DB.
-                    MessageFileHandler.getInstance().writeMessageContentToFile(content);
-                    LOG.warn(result.getErrorMessage() + ": Could not store the message in the database. Message is written on disk.");
-                } else {
-                    
-                    if(result != ReturnValue.PM_RETURN_OK) {
-                        
-                        LOG.info(result.getErrorMessage());
-                        if(result == ReturnValue.PM_RETURN_DISCARD) {
-                            collector.incrementDiscardedMessages();
-                        } else if(result == ReturnValue.PM_RETURN_EMPTY) {
-                            collector.incrementFilteredMessages();
-                        }
-                    } else {
-                        collector.incrementStoredMessages();
-                        LOG.debug(result.getErrorMessage());
-                    }
+                    persistenceService.writeMessages(storeMe);
+                    LOG.warn("Could not store the message in the database. Message is written on disk.");
                 }
-                
-                // LOG.debug(statistic.toString());
-                LOG.debug(createStatisticString());
+                    
+                if (LOG.isDebugEnabled()) {
+                    LOG.debug(createStatisticString());
+                }
             }
 
             if(running) {
@@ -196,34 +186,30 @@ public class MessageProcessor extends Thread {
         messageAcceptor.closeAllReceivers();
         
         // Process the remaining messages
-        LOG.info("Remaining messages: " + messages.size() + " -> Processing...");
+        LOG.info("Remaining messages: " + messageAcceptor.getQueueSize() + " -> Processing...");
         
         int writtenToDb = 0;
         int writtenToHd = 0;
         
-        while(!messages.isEmpty()) {
+        if (messageAcceptor.getQueueSize() > 0) {
             
-            content = messages.poll();
-            
-            result = processMessage(content);
-            if((result != ReturnValue.PM_RETURN_OK)
-                    && (result != ReturnValue.PM_RETURN_DISCARD)
-                    && (result != ReturnValue.PM_RETURN_EMPTY)) {                    
+            storeMe = messageAcceptor.getCurrentMessages();
+            success = writerService.writeMessage(storeMe);
+            if(!success) {
                 
                 // Store the message in a file, if it was not possible to write it to the DB.
-                MessageFileHandler.getInstance().writeMessageContentToFile(content);
+                persistenceService.writeMessages(storeMe);
                 
                 writtenToHd++;
+                
             } else {
                 writtenToDb++;
             }
-            
-            content = null;
         }
         
-//        if (writerService != null) {
-//            writerService.close();
-//        }
+        if (writerService != null) {
+            writerService.close();
+        }
 
         stoppedClean = true;
         
@@ -288,17 +274,12 @@ public class MessageProcessor extends Thread {
      * 
      * @return true, if the initialization was successfull ; false, if it was not
      */
-    
     public boolean isInitialized() {
         return initialized;
     }
         
     public int getMessageQueueSize() {
-        int result = 0;
-        if(messages != null) {
-            result = messages.size();
-        }
-        return result;
+        return messageAcceptor.getQueueSize();
     }
     
     public synchronized void stopWorking() {

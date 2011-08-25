@@ -24,7 +24,6 @@
 
 package org.csstudio.alarm.jms2ora;
 
-import java.io.File;
 import org.csstudio.alarm.jms2ora.preferences.PreferenceConstants;
 import org.csstudio.alarm.jms2ora.util.CommandLine;
 import org.csstudio.alarm.jms2ora.util.Hostname;
@@ -47,8 +46,6 @@ import org.slf4j.LoggerFactory;
 public class Jms2OraApplication implements IApplication, Stoppable, RemotelyAccesible,
                                            IGenericServiceListener<ISessionService> {
     
-    private static Jms2OraApplication instance = null;
-    
     /** The class logger */
     private static final Logger LOG = LoggerFactory.getLogger(Jms2OraApplication.class);
 
@@ -65,7 +62,7 @@ public class Jms2OraApplication implements IApplication, Stoppable, RemotelyAcce
     private ISessionService xmppService;
     
     /** Name of the folder that holds the stored message content */
-    private String objectDir;
+    //private String objectDir;
 
     /** Flag that indicates whether or not the application is/should running */
     private boolean running;
@@ -80,26 +77,11 @@ public class Jms2OraApplication implements IApplication, Stoppable, RemotelyAcce
     private long WAITFORTHREAD = 20000 ;
 
     public Jms2OraApplication() {
-        
-        instance = this;
-
-        IPreferencesService prefs = Platform.getPreferencesService();
-        objectDir = prefs.getString(Jms2OraPlugin.PLUGIN_ID, PreferenceConstants.STORAGE_DIRECTORY, "./var/", null);
-        if(objectDir.endsWith("/") == false) {
-            objectDir += "/";
-        }
-
-        createObjectFolder();
-    
         lock = new Object();
         xmppInfo = null;
         xmppService = null;
         running = true;
         shutdown = false;
-    }
-    
-    public static Jms2OraApplication getInstance() {
-        return instance;
     }
     
     public Object start(IApplicationContext context) throws Exception {
@@ -286,20 +268,5 @@ public class Jms2OraApplication implements IApplication, Stoppable, RemotelyAcce
      */
     public int getMessageQueueSize() {
         return messageProcessor.getMessageQueueSize();
-    }
-
-    private void createObjectFolder() {
-        
-        File folder = new File(objectDir);
-                
-        if(!folder.exists()) {
-            
-            boolean result = folder.mkdir();
-            if(result) {
-                LOG.info("Folder " + objectDir + " was created.");                
-            } else {
-                LOG.warn("Folder " + objectDir + " was NOT created.");
-            }
-        }
     }
 }

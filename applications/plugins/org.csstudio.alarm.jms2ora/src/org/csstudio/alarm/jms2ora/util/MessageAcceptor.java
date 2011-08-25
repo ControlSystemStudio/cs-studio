@@ -65,14 +65,19 @@ public class MessageAcceptor implements MessageListener {
         
         messages = new ConcurrentLinkedQueue<MessageContent>();
 
-        // Instantiate MessageContentCreator that uses its own database layer
-        // IMPORTANT: Do not let it use the database layer created above
         contentCreator = new MessageContentCreator();
         collector = stat;
 
         IPreferencesService prefs = Platform.getPreferencesService();
-        String urls = prefs.getString(Jms2OraPlugin.PLUGIN_ID, PreferenceConstants.JMS_PROVIDER_URLS, "", null);
-        String topics = prefs.getString(Jms2OraPlugin.PLUGIN_ID, PreferenceConstants.JMS_TOPIC_NAMES, "", null);
+        String urls = prefs.getString(Jms2OraPlugin.PLUGIN_ID,
+                                      PreferenceConstants.JMS_PROVIDER_URLS,
+                                      "", null);
+        String topics = prefs.getString(Jms2OraPlugin.PLUGIN_ID,
+                                        PreferenceConstants.JMS_TOPIC_NAMES,
+                                        "", null);
+        String factoryClass = prefs.getString(Jms2OraPlugin.PLUGIN_ID,
+                                              PreferenceConstants.JMS_CONTEXT_FACTORY_CLASS,
+                                              "", null);
 
         String[] urlList = this.getUrlList(urls);
         String[] topicList = this.getTopicList(topics);
@@ -84,7 +89,7 @@ public class MessageAcceptor implements MessageListener {
         for(int i = 0;i < urlList.length;i++) {
             
             try {
-                receivers[i] = new JmsMessageReceiver("org.apache.activemq.jndi.ActiveMQInitialContextFactory", urlList[i], topicList);
+                receivers[i] = new JmsMessageReceiver(factoryClass, urlList[i], topicList);
                 receivers[i].startListener(this, VersionInfo.NAME + "@" + hostName + "_" + this.hashCode());
                 initialized = true;
             } catch(Exception e) {
@@ -107,6 +112,14 @@ public class MessageAcceptor implements MessageListener {
         }
     }
 
+    /**
+     * Returns the number of messages in the message queue
+     * @return - Number of messages in queue
+     */
+    public synchronized int getQueueSize() {
+        return messages.size();
+    }
+    
     public synchronized Vector<MessageContent> getCurrentMessages() {
         
         Vector<MessageContent> result = null;
@@ -130,11 +143,23 @@ public class MessageAcceptor implements MessageListener {
         if(message instanceof MapMessage) {
 
             MapMessage mapMessage = (MapMessage)message;
-            LOG.debug("onMessage(): {}", mapMessage.toString());
+            
+            if (LOG.isDebugEnabled()) {
+                LOG.debug("onMessage(): {}", mapMessage.toString());
+            }
+            
             content = contentCreator.convertMapMessage((MapMessage)message);
-            messages.add(content);
+            if(content.discard() || !content.hasContent()) {
+                if (LOG.isDebugEnabled()) {
+                    LOG.debug("Message discarded or does not have any content: {}", mapMessage.toString());
+                }
+            } else {
+                messages.add(content);
+            }
+
             collector.incrementReceivedMessages();
             mapMessage = null;
+            
         } else {
             LOG.warn("Received a non MapMessage object: ", message.toString());
             LOG.warn("Discarding invalid message.");

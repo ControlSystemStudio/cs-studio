@@ -46,6 +46,7 @@ import org.slf4j.LoggerFactory;
  * 
  * @author  Markus Moeller
  * @version 2.0
+ * @deprecated
  */
 
 public class MessageFileHandler implements FilenameFilter {

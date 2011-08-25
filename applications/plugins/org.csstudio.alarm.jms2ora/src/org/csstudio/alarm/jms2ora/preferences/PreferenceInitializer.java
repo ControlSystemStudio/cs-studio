@@ -49,12 +49,7 @@ public class PreferenceInitializer extends AbstractPreferenceInitializer {
         prefs.put(PreferenceConstants.JMS_PROVIDER_URLS, "");
         prefs.put(PreferenceConstants.JMS_PRODUCER_URL, "");
         prefs.put(PreferenceConstants.JMS_TOPIC_NAMES , "");
-        prefs.put(PreferenceConstants.DATABASE_URL, "");
-        prefs.put(PreferenceConstants.DATABASE_USER , "");
-        prefs.put(PreferenceConstants.DATABASE_PASSWORD, "");
-        prefs.put(PreferenceConstants.STORAGE_DIRECTORY, "./var/");
-        prefs.put(PreferenceConstants.MESSAGE_DIRECTORY, "nirvana/");
-        prefs.put(PreferenceConstants.META_DATA_DIRECTORY, "columns/");
+        prefs.put(PreferenceConstants.JMS_CONTEXT_FACTORY_CLASS , "");
         prefs.put(PreferenceConstants.DISCARD_TYPES , "");
         prefs.put(PreferenceConstants.DISCARD_NAMES, "");
         prefs.put(PreferenceConstants.DEFAULT_VALUE_PRECISION , "");
