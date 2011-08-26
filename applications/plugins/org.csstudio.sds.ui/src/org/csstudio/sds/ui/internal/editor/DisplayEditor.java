@@ -68,6 +68,7 @@ import org.csstudio.sds.ui.internal.actions.RemoveGroupAction;
 import org.csstudio.sds.ui.internal.actions.StepBackAction;
 import org.csstudio.sds.ui.internal.actions.StepFrontAction;
 import org.csstudio.sds.ui.internal.commands.AssociableCommandListener;
+import org.csstudio.sds.ui.internal.editor.outline.ThumbnailViewOutlinePage;
 import org.csstudio.sds.ui.internal.editparts.WidgetEditPartFactory;
 import org.csstudio.sds.ui.internal.layers.ILayerManager;
 import org.csstudio.sds.ui.internal.properties.view.IPropertySheetPage;
@@ -136,6 +137,7 @@ import org.eclipse.ui.actions.ActionFactory;
 import org.eclipse.ui.ide.FileStoreEditorInput;
 import org.eclipse.ui.internal.help.WorkbenchHelpSystem;
 import org.eclipse.ui.part.FileEditorInput;
+import org.eclipse.ui.views.contentoutline.IContentOutlinePage;
 import org.eclipse.ui.views.properties.tabbed.ITabbedPropertySheetPageContributor;
 import org.eclipse.ui.views.properties.tabbed.TabbedPropertySheetPage;
 
@@ -184,6 +186,8 @@ public final class DisplayEditor extends GraphicalEditorWithFlyoutPalette implem
      * The RulerComposite for the GraphicalViewer.
      */
     private RulerComposite _rulerComposite;
+    
+    private IContentOutlinePage _outlinePage;
     
     private static KeyListenerAdapter keyAdapter = new KeyListenerAdapter();
     
@@ -1056,6 +1060,12 @@ public final class DisplayEditor extends GraphicalEditorWithFlyoutPalette implem
                     return DisplayEditor.this.getCommandStack();
                 }
             };
+        } else if (adapter == IContentOutlinePage.class) {
+            if (_outlinePage == null) {
+                _outlinePage = new ThumbnailViewOutlinePage(getGraphicalViewer());
+            }
+            
+            return _outlinePage;
         }
         
         return super.getAdapter(adapter);
