@@ -180,11 +180,13 @@ public final class EngineModel {
         if (_engine == null || _writeExecutor == null) {
             throw new IllegalStateException("Engine or executor are null although engine is configured.", null);
         }
-
-        checkAndUpdateLastShutdownStatus(_provider, _engine, _channelMap.values());
         _startTime = TimeInstantBuilder.fromNow();
         _state = EngineState.RUNNING;
+
+        checkAndUpdateLastShutdownStatus(_provider, _engine, _channelMap.values());
+
         _writeExecutor.start(_heartBeatPeriodInMS, _writePeriodInMS);
+
         startChannelGroups(_groupMap.values());
     }
 
@@ -329,12 +331,10 @@ public final class EngineModel {
         }
         _state = EngineState.STOPPING;
 
-        // Disconnect from network
         LOG.info("Stopping archive groups");
         for (final ArchiveGroup group : _groupMap.values()) {
             group.stop(ArchiveEngineStatus.ENGINE_STOP);
         }
-
         try {
             _provider.getEngineFacade().writeEngineStatusInformation(_engine.getId(),
                                                                      EngineMonitorStatus.OFF,
@@ -347,7 +347,7 @@ public final class EngineModel {
         LOG.info("Shutting down writer");
         _writeExecutor.shutdown();
 
-        _state = EngineState.CONFIGURED;
+        _state = EngineState.IDLE;
     }
 
 
@@ -362,7 +362,7 @@ public final class EngineModel {
                 LOG.error("Read configuration while state " + _state + ". Should be " + EngineState.IDLE);
                 return;
             }
-            if (_engine == null) { // to be reconfigured
+            if (_engine == null) { // has been stopped before, then to be reconfigured
                 _engine = findEngineConfByName(_name, _provider);
             }
 
@@ -476,7 +476,7 @@ public final class EngineModel {
     }
 
     public void clearConfiguration() {
-        if (_state != EngineState.IDLE && _state != EngineState.CONFIGURED) {
+        if (!(_state == EngineState.IDLE || _state == EngineState.CONFIGURED)) {
             throw new IllegalStateException("Clearing configuration only allowed in " +
                                             EngineState.IDLE.name() + " or " + EngineState.CONFIGURED.name() + " state.");
         }
