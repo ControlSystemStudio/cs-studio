@@ -3,6 +3,7 @@ package org.csstudio.utility.pvmanager.ui.toolbox;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.Map;
 
 import org.eclipse.jface.action.ActionContributionItem;
 import org.eclipse.jface.action.IMenuCreator;
@@ -35,20 +36,26 @@ import org.eclipse.jface.viewers.ViewerCell;
 import org.eclipse.jface.layout.TableColumnLayout;
 import org.epics.pvmanager.ChannelHandler;
 import org.epics.pvmanager.CompositeDataSource;
+import org.epics.pvmanager.DataSource;
 import org.epics.pvmanager.PVManager;
 import org.epics.pvmanager.data.SimpleValueFormat;
 import org.epics.pvmanager.data.ValueFormat;
 import org.eclipse.swt.layout.FillLayout;
 import org.eclipse.jface.action.Action;
 import org.eclipse.wb.swt.ResourceManager;
+import org.eclipse.swt.layout.FormLayout;
+import org.eclipse.swt.layout.FormData;
+import org.eclipse.swt.layout.FormAttachment;
 
 public class ToolboxView extends ViewPart {
 
 	public static final String ID = "org.csstudio.utility.pvmanager.ui.debug.ChannelListView"; //$NON-NLS-1$
 	private Table table;
 	private Action selectDataSourceAction;
-	TableViewer tableViewer;
+	private TableViewer tableViewer;
 	private Action refreshAction;
+	private Table summaryTable;
+	private TableViewer summaryTableViewer;
 
 	public ToolboxView() {
 	}
@@ -59,7 +66,12 @@ public class ToolboxView extends ViewPart {
 	 */
 	@Override
 	public void createPartControl(Composite parent) {
+		parent.setLayout(new FormLayout());
 		Composite container = new Composite(parent, SWT.NONE);
+		FormData fd_container = new FormData();
+		fd_container.bottom = new FormAttachment(100, -10);
+		fd_container.left = new FormAttachment(0, 10);
+		container.setLayoutData(fd_container);
 		//container.setLayout(new FillLayout(SWT.HORIZONTAL));
 		
 		tableViewer = new TableViewer(container, SWT.BORDER | SWT.FULL_SELECTION);
@@ -161,7 +173,64 @@ public class ToolboxView extends ViewPart {
 		layout.setColumnData(readUsageViewerColumn.getColumn(), new ColumnWeightData(0, 30));
 		layout.setColumnData(writeUsageViewerColumn.getColumn(), new ColumnWeightData(0, 30));
 		
+		Composite summaryContainer = new Composite(parent, SWT.NONE);
+		fd_container.right = new FormAttachment(summaryContainer, 0, SWT.RIGHT);
+		fd_container.top = new FormAttachment(summaryContainer, 6);
+		FormData fd_summaryContainer = new FormData();
+		fd_summaryContainer.bottom = new FormAttachment(0, 153);
+		fd_summaryContainer.right = new FormAttachment(100, -10);
+		fd_summaryContainer.left = new FormAttachment(0, 10);
+		fd_summaryContainer.top = new FormAttachment(0, 10);
+		summaryContainer.setLayoutData(fd_summaryContainer);
+		summaryTableViewer = new TableViewer(summaryContainer, SWT.BORDER | SWT.FULL_SELECTION);
+		summaryTable = summaryTableViewer.getTable();
+		summaryTable.setHeaderVisible(true);
+		summaryTable.setLinesVisible(true);
+		summaryTableViewer.setContentProvider(new DataSourceSummaryContentProvider());
+
+		
+		// DataSource Name column
+		TableViewerColumn dataSourceNameViewerColumn = new TableViewerColumn(
+				summaryTableViewer, SWT.NONE);
+		dataSourceNameViewerColumn.setLabelProvider(new CellLabelProvider() {
+			
+			@Override
+			public void update(ViewerCell cell) {
+				DataSource source = (DataSource) cell.getElement();
+				CompositeDataSource composite = (CompositeDataSource) PVManager.getDefaultDataSource();
+				String name = "";
+				for (Map.Entry<String, DataSource> entry : composite.getDataSources().entrySet()) {
+					if (entry.getValue() == source)
+						name = entry.getKey();
+				}
+				cell.setText(name);
+			}
+		});
+		TableColumn dataSourceNameColumn = dataSourceNameViewerColumn.getColumn();
+		dataSourceNameColumn.setText("Data Source");
+		
+		// Total usage count column
+		TableViewerColumn totalChannelsViewerColumn = new TableViewerColumn(
+				summaryTableViewer, SWT.NONE);
+		totalChannelsViewerColumn.setLabelProvider(new CellLabelProvider() {
+			
+			@Override
+			public void update(ViewerCell cell) {
+				DataSource source = (DataSource) cell.getElement();
+				cell.setText(Integer.toString(source.getChannels().size()));
+			}
+		});
+		TableColumn totalChannelsUsageColumn = totalChannelsViewerColumn.getColumn();
+		totalChannelsUsageColumn.setText("TC");
+		totalChannelsUsageColumn.setToolTipText("Total channels (Open or closed)");
+		
+		TableColumnLayout summaryLayout = new TableColumnLayout();
+		summaryContainer.setLayout(summaryLayout);
+		summaryLayout.setColumnData(dataSourceNameViewerColumn.getColumn(), new ColumnWeightData(10));
+		summaryLayout.setColumnData(totalChannelsViewerColumn.getColumn(), new ColumnWeightData(0, 80));
+		
 		tableViewer.setInput(DataSourceContentProvider.ALL);
+		summaryTableViewer.setInput(DataSourceContentProvider.ALL);
 
 		createActions();
 		initializeToolBar();
@@ -242,6 +311,7 @@ public class ToolboxView extends ViewPart {
 			refreshAction = new Action("Refresh data") {				@Override
 				public void run() {
 					tableViewer.refresh();
+					summaryTableViewer.refresh();
 				}
 			};
 			refreshAction.setToolTipText("Refresh data");
