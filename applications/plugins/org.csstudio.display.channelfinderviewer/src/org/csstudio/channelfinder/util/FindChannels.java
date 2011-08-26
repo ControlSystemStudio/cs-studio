@@ -8,7 +8,7 @@ import java.util.Hashtable;
 import java.util.Map;
 import java.util.logging.Logger;
 
-import org.csstudio.channelfinder.views.ChannelFinderView;
+import org.csstudio.channelfinder.views.ChannelsView;
 import org.csstudio.utility.channelfinder.CFClientManager;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
@@ -18,12 +18,12 @@ import org.eclipse.ui.PlatformUI;
 
 public class FindChannels extends Job {
 	private String searchPattern;
-	private ChannelFinderView channelFinderView;
+	private ChannelsView channelFinderView;
 	private static Logger logger = Logger
 			.getLogger("org.csstudio.channelfinder.views.FindChannels");
 
 	public FindChannels(String name, String pattern,
-			ChannelFinderView channelFinderView) {
+			ChannelsView channelFinderView) {
 		super(name);
 		this.searchPattern = pattern;
 		this.channelFinderView = channelFinderView;

@@ -47,12 +47,12 @@ import com.swtdesigner.TableViewerColumnSorter;
  * 
  */
 
-public class ChannelFinderView extends ViewPart {
+public class ChannelsView extends ViewPart {
 
 	/**
 	 * The ID of the view as specified by the extension.
 	 */
-	public static final String ID = "org.csstudio.channelfinder.views.ChannelfinderView";
+	public static final String ID = "org.csstudio.channelfinder.views.ChannelsView";
 	private static Logger logger = Logger.getLogger(ID);
 
 	private static int instance;
@@ -79,7 +79,7 @@ public class ChannelFinderView extends ViewPart {
 	/**
 	 * The constructor.
 	 */
-	public ChannelFinderView() {
+	public ChannelsView() {
 	}
 
 	/**
