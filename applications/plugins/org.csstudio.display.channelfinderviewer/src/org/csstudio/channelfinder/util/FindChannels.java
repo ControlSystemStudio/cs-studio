@@ -1,7 +1,6 @@
 package org.csstudio.channelfinder.util;
 
 import gov.bnl.channelfinder.api.Channel;
-import gov.bnl.channelfinder.api.ChannelFinderClient;
 
 import java.util.Collection;
 import java.util.HashSet;
@@ -10,6 +9,7 @@ import java.util.Map;
 import java.util.logging.Logger;
 
 import org.csstudio.channelfinder.views.ChannelFinderView;
+import org.csstudio.utility.channelfinder.CFClientManager;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
@@ -19,7 +19,8 @@ import org.eclipse.ui.PlatformUI;
 public class FindChannels extends Job {
 	private String searchPattern;
 	private ChannelFinderView channelFinderView;
-	private static Logger logger = Logger.getLogger("org.csstudio.channelfinder.views.FindChannels");
+	private static Logger logger = Logger
+			.getLogger("org.csstudio.channelfinder.views.FindChannels");
 
 	public FindChannels(String name, String pattern,
 			ChannelFinderView channelFinderView) {
@@ -33,10 +34,8 @@ public class FindChannels extends Job {
 		monitor.beginTask("Seaching channels ", IProgressMonitor.UNKNOWN);
 		final Collection<Channel> channels = new HashSet<Channel>();
 		try {
-			if(searchPattern.startsWith("sim://"))
-				channels.addAll(GenerateTestChannels.getChannels(Integer.valueOf(searchPattern.split("sim://")[1])));
-			else
-				channels.addAll(ChannelFinderClient.getInstance().findChannels(buildSearchMap(searchPattern)));
+			channels.addAll(CFClientManager.getClient().find(
+					buildSearchMap(searchPattern)));
 			PlatformUI.getWorkbench().getDisplay().asyncExec(new Runnable() {
 				@Override
 				public void run() {
@@ -46,8 +45,8 @@ public class FindChannels extends Job {
 				}
 			});
 		} catch (Exception e) {
-			logger.severe("Failed to find channels from channelfinder:"+ e.getMessage());
-			
+			logger.severe("Failed to find channels from channelfinder:"
+					+ e.getMessage());
 		}
 		monitor.done();
 		return Status.OK_STATUS;
