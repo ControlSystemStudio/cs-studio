@@ -10,5 +10,20 @@
             restorable="true">
       </view>
    </extension>
-
+   <extension
+         point="org.eclipse.ui.menus">
+      <menuContribution
+            allPopups="false"
+            locationURI="menu:display">
+         <command
+               commandId="org.eclipse.ui.views.showView"
+               label="PVTable by Property"
+               style="push">
+            <parameter
+                  name="org.eclipse.ui.views.showView.viewId"
+                  value="org.csstudio.channel.views.PVTableByPropertyView">
+            </parameter>
+         </command>
+      </menuContribution>
+    </extension>
 </plugin>
