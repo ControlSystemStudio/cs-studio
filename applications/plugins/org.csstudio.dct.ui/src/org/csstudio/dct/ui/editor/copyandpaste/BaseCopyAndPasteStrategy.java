@@ -1,12 +1,6 @@
 package org.csstudio.dct.ui.editor.copyandpaste;
 
-import java.io.Serializable;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.List;
 import java.util.Map;
-import java.util.Set;
 import java.util.UUID;
 
 import org.csstudio.dct.model.IContainer;
@@ -16,23 +10,17 @@ import org.csstudio.dct.model.IInstance;
 import org.csstudio.dct.model.IProject;
 import org.csstudio.dct.model.IPrototype;
 import org.csstudio.dct.model.IRecord;
-import org.csstudio.dct.model.commands.AddInstanceCommand;
 import org.csstudio.dct.model.commands.AddParameterCommand;
 import org.csstudio.dct.model.commands.AddPrototypeCommand;
 import org.csstudio.dct.model.commands.AddRecordCommand;
 import org.csstudio.dct.model.commands.ChangeBeanPropertyCommand;
 import org.csstudio.dct.model.commands.ChangeFieldValueCommand;
-import org.csstudio.dct.model.commands.ChangeParameterValueCommand;
 import org.csstudio.dct.model.commands.CloneInstanceCommand;
-import org.csstudio.dct.model.commands.SynchronizeRecordsCommand;
-import org.csstudio.dct.model.internal.Instance;
 import org.csstudio.dct.model.internal.Parameter;
 import org.csstudio.dct.model.internal.Prototype;
 import org.csstudio.dct.model.internal.RecordFactory;
 import org.csstudio.dct.model.visitors.SearchVisitor;
-import org.eclipse.gef.commands.Command;
 import org.eclipse.gef.commands.CompoundCommand;
-import org.eclipse.osgi.internal.baseadaptor.BaseClassLoadingHook;
 
 /**
  * Base Copy & Paste strategy for instances and prototypes.
@@ -132,6 +120,11 @@ public abstract class BaseCopyAndPasteStrategy implements ICopyAndPasteStrategy 
 			for (IRecord r : prototype2Copy.getRecords()) {
 				IRecord record = RecordFactory.createRecord(project, r.getType(), r.getName(), UUID.randomUUID());
 
+				commandChain.add(new ChangeBeanPropertyCommand(record, "epicsName", r.getEpicsName()));
+                commandChain.add(new ChangeBeanPropertyCommand(record, "disabled", r.getDisabled()));
+                commandChain.add(new ChangeBeanPropertyCommand(record, "name", r.getName()));
+
+				
 				commandChain.add(new AddRecordCommand(prototype, record));
 
 				for (String key : r.getFields().keySet()) {
