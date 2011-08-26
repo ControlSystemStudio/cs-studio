@@ -221,7 +221,7 @@ public class ArchiveChannelDaoImpl extends AbstractArchiveDao implements IArchiv
         Connection conn = null;
         PreparedStatement stmt = null;
         try {
-            conn = getPermanentConnection();
+            conn = getThreadLocalConnection();
             stmt = conn.prepareStatement(_selectChannelByIdStmt);
             stmt.setInt(1, id.intValue());
 
@@ -242,7 +242,7 @@ public class ArchiveChannelDaoImpl extends AbstractArchiveDao implements IArchiv
 
         final Set<IArchiveChannel> foundChannels = Sets.newHashSetWithExpectedSize(names.size());
         for (final String name : names) {
-            final PreparedStatement stmt = getPermanentConnection().prepareStatement(_selectChannelByNameStmt);
+            final PreparedStatement stmt = getThreadLocalConnection().prepareStatement(_selectChannelByNameStmt);
             stmt.setString(1, name);
             final IArchiveChannel channel = retrieveUncachedChannelBy(stmt);
             if (channel != null) {
@@ -285,7 +285,7 @@ public class ArchiveChannelDaoImpl extends AbstractArchiveDao implements IArchiv
         PreparedStatement stmt = null;
         ResultSet result = null;
         try {
-            conn = getPermanentConnection();
+            conn = getThreadLocalConnection();
             stmt = conn.prepareStatement(_selectChannelsByGroupId);
             stmt.setInt(1, groupId.intValue());
 
@@ -401,7 +401,7 @@ public class ArchiveChannelDaoImpl extends AbstractArchiveDao implements IArchiv
             PreparedStatement stmt = null;
             ResultSet result = null;
             try {
-                conn = getPermanentConnection();
+                conn = getThreadLocalConnection();
                 stmt = conn.prepareStatement(_selectMatchingChannelsStmt);
                 stmt.setString(1, pattern.toString());
 
@@ -440,7 +440,7 @@ public class ArchiveChannelDaoImpl extends AbstractArchiveDao implements IArchiv
         PreparedStatement stmt = null;
         ResultSet result = null;
         try {
-            conn = getPermanentConnection();
+            conn = getThreadLocalConnection();
             stmt = conn.prepareStatement(_selectCountAllChannelsStmt);
             result = stmt.executeQuery();
             if (result.next()) {

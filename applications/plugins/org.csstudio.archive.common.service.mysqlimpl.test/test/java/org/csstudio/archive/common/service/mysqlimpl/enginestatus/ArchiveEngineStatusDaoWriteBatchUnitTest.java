@@ -115,7 +115,7 @@ public class ArchiveEngineStatusDaoWriteBatchUnitTest extends AbstractDaoTestSet
     }
 
     private void assertMgmtEntryBatches() throws ArchiveConnectionException, SQLException {
-        final Connection connection = HANDLER.getConnection();
+        final Connection connection = HANDLER.createConnection();
         final Statement stmt = connection.createStatement();
         final ResultSet resultSet =
             stmt.executeQuery("SELECT count(*) FROM " + HANDLER.getDatabaseName() + "." + ArchiveEngineStatusDaoImpl.TAB +
@@ -165,10 +165,11 @@ public class ArchiveEngineStatusDaoWriteBatchUnitTest extends AbstractDaoTestSet
                                                                    @Nonnull final String info)
                                                                    throws ArchiveConnectionException,
                                                                           SQLException {
-        final Connection connection = HANDLER.getConnection();
+        final Connection connection = HANDLER.createConnection();
         final Statement stmt = connection.createStatement();
         stmt.execute("DELETE FROM " + HANDLER.getDatabaseName() + "." + ArchiveEngineStatusDaoImpl.TAB +
                      " WHERE engine_id=" + id.asString() + " AND info='" + info + "'");
         stmt.close();
+        connection.close();
     }
 }

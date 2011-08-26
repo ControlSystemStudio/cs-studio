@@ -24,7 +24,6 @@ package org.csstudio.archive.common.service.mysqlimpl.persistengine;
 import java.io.File;
 import java.io.IOException;
 import java.nio.charset.Charset;
-import java.sql.Connection;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.concurrent.ConcurrentLinkedQueue;
@@ -36,7 +35,6 @@ import junit.framework.Assert;
 
 import org.apache.log4j.LogManager;
 import org.apache.log4j.PropertyConfigurator;
-import org.csstudio.archive.common.service.ArchiveConnectionException;
 import org.csstudio.archive.common.service.mysqlimpl.MySQLArchivePreferenceService;
 import org.csstudio.archive.common.service.mysqlimpl.batch.BatchQueueHandlerSupport;
 import org.csstudio.archive.common.service.mysqlimpl.batch.IBatchQueueHandlerProvider;
@@ -113,7 +111,7 @@ public class PersistDataWorkerHeadlessTest {
 
 
     @BeforeClass
-    public static void setup() throws ArchiveConnectionException {
+    public static void setup() {
         LogManager.resetConfiguration(); // might already be read from another .log4j fragment (on default eclipse includes all fragments)
         PropertyConfigurator.configure("../../../products/DESY/plugins/org.csstudio.archive.common.engine.product.log4j/log4j.properties");
 
@@ -125,9 +123,6 @@ public class PersistDataWorkerHeadlessTest {
         final MySQLArchivePreferenceService prefsMock = ArchiveDaoTestHelper.createPrefServiceMock();
 
         HANDLER = new ArchiveConnectionHandler(prefsMock);
-
-        final Connection con = HANDLER.getConnection();
-        Assert.assertNotNull(con);
 
         PERSIST_MGR = new PersistEngineDataManager(HANDLER, prefsMock);
     }

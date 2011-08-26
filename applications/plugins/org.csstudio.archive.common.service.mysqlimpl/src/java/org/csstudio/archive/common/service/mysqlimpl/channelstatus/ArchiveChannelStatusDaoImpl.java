@@ -21,12 +21,14 @@
  */
 package org.csstudio.archive.common.service.mysqlimpl.channelstatus;
 
+import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.Collection;
 import java.util.Collections;
+import java.util.List;
 
-import javax.annotation.CheckForNull;
 import javax.annotation.Nonnull;
 
 import org.csstudio.archive.common.service.channel.ArchiveChannelId;
@@ -41,6 +43,7 @@ import org.csstudio.archive.common.service.mysqlimpl.persistengine.PersistEngine
 import org.csstudio.domain.desy.time.TimeInstant.TimeInstantBuilder;
 import org.csstudio.domain.desy.typesupport.TypeSupportException;
 
+import com.google.common.collect.Lists;
 import com.google.inject.Inject;
 
 /**
@@ -77,27 +80,62 @@ public class ArchiveChannelStatusDaoImpl extends AbstractArchiveDao implements I
         }
     }
 
+//    /**
+//     * {@inheritDoc}
+//     */
+//    @Override
+//    @CheckForNull
+//    public IArchiveChannelStatus retrieveLatestStatusByChannelId(@Nonnull final ArchiveChannelId id)
+//    throws ArchiveDaoException {
+//        Connection conn = null;
+//        PreparedStatement stmt = null;
+//        final ResultSet resultSet = null;
+//        try {
+//            conn= getConnection();
+//            stmt = conn.prepareStatement(_selectLatestChannelStatusStmt);
+//
+//        } catch (final Exception e) {
+//            handleExceptions(EXC_MSG, e);
+//        } finally {
+//            closeSqlResources(resultSet, stmt, conn, _selectLatestChannelStatusStmt);
+//        }
+//        return null;
+//
+//    }
 
     /**
      * {@inheritDoc}
      */
     @Override
-    @CheckForNull
-    public IArchiveChannelStatus retrieveLatestStatusByChannelId(@Nonnull final ArchiveChannelId id)
-                                                                 throws ArchiveDaoException {
+    @Nonnull
+    public Collection<IArchiveChannelStatus>
+    retrieveLatestStatusByChannelIds(@Nonnull final Collection<ArchiveChannelId> ids)
+    throws ArchiveDaoException {
+        Connection conn = null;
+        PreparedStatement stmt = null;
+        ResultSet rs = null;
         try {
-            final PreparedStatement stmt = getConnection().prepareStatement(_selectLatestChannelStatusStmt);
-            // channel_id=?
-            stmt.setInt(1, id.intValue());
-            final ResultSet resultSet = stmt.executeQuery();
-            if (resultSet.next()) {
-                return createChannelStatusFromResult(resultSet);
+            conn= getThreadLocalConnection();
+            stmt = conn.prepareStatement(_selectLatestChannelStatusStmt);
+
+            final List<IArchiveChannelStatus> resultList = Lists.newArrayListWithExpectedSize(ids.size());
+            for (final ArchiveChannelId id : ids) {
+                stmt.setInt(1, id.intValue()); // channel_id=?
+
+                rs = stmt.executeQuery();
+                if (rs.next()) {
+                    resultList.add(createChannelStatusFromResult(rs));
+                }
+                closeSqlResources(rs, null, _selectLatestChannelStatusStmt);
             }
         } catch (final Exception e) {
             handleExceptions(EXC_MSG, e);
+        } finally {
+            closeSqlResources(null, stmt, _selectLatestChannelStatusStmt);
         }
         return null;
     }
+
 
     @Nonnull
     private IArchiveChannelStatus createChannelStatusFromResult(@Nonnull final ResultSet resultSet)
@@ -115,5 +153,4 @@ public class ArchiveChannelStatusDaoImpl extends AbstractArchiveDao implements I
                                         info,
                                         TimeInstantBuilder.fromNanos(time));
     }
-
 }

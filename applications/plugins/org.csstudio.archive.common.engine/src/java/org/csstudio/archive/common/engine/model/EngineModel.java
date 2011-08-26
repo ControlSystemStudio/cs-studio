@@ -20,6 +20,7 @@ import javax.annotation.Nonnull;
 import org.csstudio.archive.common.engine.service.IServiceProvider;
 import org.csstudio.archive.common.service.ArchiveServiceException;
 import org.csstudio.archive.common.service.IArchiveEngineFacade;
+import org.csstudio.archive.common.service.channel.ArchiveChannelId;
 import org.csstudio.archive.common.service.channel.IArchiveChannel;
 import org.csstudio.archive.common.service.channelgroup.IArchiveChannelGroup;
 import org.csstudio.archive.common.service.channelstatus.IArchiveChannelStatus;
@@ -37,6 +38,8 @@ import org.joda.time.Duration;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.google.common.base.Function;
+import com.google.common.collect.Collections2;
 import com.google.common.collect.MapMaker;
 
 /** Data model of the archive engine.
@@ -241,16 +244,26 @@ public final class EngineModel {
                                               @Nonnull final IArchiveEngine engine,
                                               @Nonnull final Collection<ArchiveChannel<?, ?>> channels)
                                               throws ArchiveServiceException {
-        for (final ArchiveChannel<?, ?> channel : channels) {
-            final IArchiveChannelStatus status =
-                facade.getChannelStatusByChannelName(channel.getName());
 
-            if (status!= null && status.isConnected()) { // still connected?
-                facade.writeChannelStatusInfo(status.getChannelId(),
+        @SuppressWarnings("rawtypes")
+        final Collection<IArchiveChannelStatus> status =
+            facade.getLatestChannelsStatusBy(Collections2.transform(channels,
+                                                              new Function<ArchiveChannel, ArchiveChannelId>() {
+                                                                  @Override
+                                                                  @Nonnull
+                                                                  public ArchiveChannelId apply(@Nonnull final ArchiveChannel input) {
+                                                                      return input.getId();
+                                                                  }
+                                                              }));
+
+        for (final IArchiveChannelStatus statuus : status) {
+            if (statuus != null && statuus.isConnected()) { // still connected?
+                facade.writeChannelStatusInfo(statuus.getChannelId(),
                                               false,
                                               "Ungraceful engine shutdown",
                                               engine.getLastAliveTime());
             }
+
         }
     }
 

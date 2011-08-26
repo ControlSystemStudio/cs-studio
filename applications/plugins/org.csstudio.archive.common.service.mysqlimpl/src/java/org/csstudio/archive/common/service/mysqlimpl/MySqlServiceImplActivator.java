@@ -115,7 +115,7 @@ public class MySqlServiceImplActivator implements BundleActivator {
         // Services are automatically unregistered
 
         if (_connectionHandler != null) {
-            _connectionHandler.disconnect();
+            _connectionHandler.close();
         }
     }
 }

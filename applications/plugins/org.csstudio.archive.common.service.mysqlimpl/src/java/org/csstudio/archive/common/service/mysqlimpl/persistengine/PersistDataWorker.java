@@ -51,6 +51,8 @@ import com.google.common.collect.Lists;
  * Intended to be scheduled periodically and if necessary on demand
  * (when the queue is getting big or the contained statements reach the max allowed packet size).
  *
+ * Gets a connection and does not close it! As this worker is expected to use it very very often.
+ *
  * @author bknerr
  * @since 08.02.2011
  */
@@ -93,15 +95,14 @@ public class PersistDataWorker extends AbstractTimeMeasuredRunnable {
      */
     @Override
     public void measuredRun() {
-        //LOG.info("RUN: " + _name);
-
         try {
-            final Connection connection = _mgr.getConnectionHandler().getConnection();
+            final Connection connection = _mgr.getConnectionHandler().getThreadLocalConnection();
 
             processBatchHandlerMap(connection, _handlerProvider, _rescueDataList);
+
         } catch (final ArchiveConnectionException e) {
             LOG.error("Connection to archive failed", e);
-            // FIXME (bknerr) : strategy for queues getting full, when to rescue data?
+            // FIXME (bknerr) : strategy for queues getting full, when to rescue data? How to check for failover?
         } catch (final Throwable t) {
             LOG.error("Unknown throwable in thread {}.", _name);
             t.printStackTrace();

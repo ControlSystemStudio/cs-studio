@@ -61,13 +61,23 @@ public abstract class AbstractArchiveDao {
     }
 
     /**
-     * Returns the current connection for the dao implementation and its subclasses.
+     * Returns a new connection for the dao implementation and its subclasses.
      * @return the connection
      * @throws ArchiveConnectionException
      */
     @Nonnull
-    protected Connection getConnection() throws ArchiveConnectionException {
-        return _connectionHandler.getConnection();
+    protected Connection createConnection() throws ArchiveConnectionException {
+        return _connectionHandler.createConnection();
+    }
+    /**
+     * Returns the thread current connection for the dao implementation and its subclasses.
+     * Don't close!
+     * @return the connection
+     * @throws ArchiveConnectionException
+     */
+    @Nonnull
+    protected Connection getThreadLocalConnection() throws ArchiveConnectionException {
+        return _connectionHandler.getThreadLocalConnection();
     }
 
     @Nonnull
@@ -82,11 +92,20 @@ public abstract class AbstractArchiveDao {
     }
 
     /**
-     * Tries to close the sql resources {@link ResultSet} and {@Statement}
+     * Tries to close the sql resources {@link Connection}, {@link ResultSet}, and {@Statement}
      */
-    protected void closeStatement(@CheckForNull final ResultSet rs,
-                                  @CheckForNull final Statement stmt,
-                                  @Nonnull final String logMsgForCloseError) {
+    protected void closeSqlResources(@CheckForNull final ResultSet rs,
+                                     @CheckForNull final Statement stmt,
+                                     @Nonnull final String logMsgForCloseError) {
+        closeSqlResources(rs, stmt, null, logMsgForCloseError);
+    }
+    /**
+     * Tries to close the sql resources {@link Connection}, {@link ResultSet}, and {@Statement}
+     */
+    protected void closeSqlResources(@CheckForNull final ResultSet rs,
+                                     @CheckForNull final Statement stmt,
+                                     @CheckForNull final Connection conn,
+                                     @Nonnull final String logMsgForCloseError) {
         try {
             if (rs != null) {
                 rs.close();
@@ -94,8 +113,11 @@ public abstract class AbstractArchiveDao {
             if (stmt != null) {
                 stmt.close();
             }
+            if (conn != null) {
+                conn.close();
+            }
         } catch (final SQLException e) {
-            LOG.warn(logMsgForCloseError);
+            LOG.warn("Closing of SQL resources failed (ResultSet|Statement|Connection) for: {}", logMsgForCloseError);
         }
     }
 

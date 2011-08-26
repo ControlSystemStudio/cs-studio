@@ -23,6 +23,7 @@ package org.csstudio.archive.common.service.mysqlimpl.engine;
 
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -87,12 +88,18 @@ public class ArchiveEngineDaoImpl extends AbstractArchiveDao implements IArchive
     @Override
     @CheckForNull
     public IArchiveEngine retrieveEngineById(@Nonnull final ArchiveEngineId id) throws ArchiveDaoException {
+        Connection conn = null;
+        PreparedStatement stmt = null;
         try {
-            final PreparedStatement statement = getConnection().prepareStatement(_selectEngineByIdStmt);
-            statement.setInt(1, id.intValue());
-            return retrieveEngineByStmt(statement);
+            conn = getThreadLocalConnection();
+            stmt = conn.prepareStatement(_selectEngineByIdStmt);
+            stmt.setInt(1, id.intValue());
+
+            return retrieveEngineByStmt(stmt);
         } catch (final Exception e) {
             handleExceptions(EXC_MSG, e);
+        } finally {
+            closeSqlResources(null, stmt, _selectEngineByIdStmt);
         }
         return null;
     }
@@ -104,12 +111,17 @@ public class ArchiveEngineDaoImpl extends AbstractArchiveDao implements IArchive
     @CheckForNull
     public IArchiveEngine retrieveEngineByName(@Nonnull final String name) throws ArchiveDaoException {
 
+        Connection conn = null;
+        PreparedStatement stmt = null;
         try {
-            final PreparedStatement statement = getConnection().prepareStatement(_selectEngineByNameStmt);
-            statement.setString(1, name);
-            return retrieveEngineByStmt(statement);
+            conn = getThreadLocalConnection();
+            stmt = conn.prepareStatement(_selectEngineByNameStmt);
+            stmt.setString(1, name);
+            return retrieveEngineByStmt(stmt);
         } catch (final Exception e) {
             handleExceptions(EXC_MSG, e);
+        } finally {
+            closeSqlResources(null, stmt, _selectEngineByNameStmt);
         }
         return null;
     }
@@ -125,7 +137,7 @@ public class ArchiveEngineDaoImpl extends AbstractArchiveDao implements IArchive
                 return createArchiveEngineFromResult(result);
             }
         } finally {
-            closeStatement(result, statement, "Closing of statement " + statement.toString() + " failed.");
+            closeSqlResources(result, null, "ResultSet by engine retrieval.");
         }
         return null;
     }
@@ -149,9 +161,12 @@ public class ArchiveEngineDaoImpl extends AbstractArchiveDao implements IArchive
     @Override
     public void updateEngineAlive(@Nonnull final ArchiveEngineId id,
                                   @Nonnull final TimeInstant lastTimeAlive) throws ArchiveDaoException {
+        Connection conn = null;
         PreparedStatement statement = null;
         try {
-            statement = getConnection().prepareStatement(_updateEngineIsAliveStmt);
+            conn = getThreadLocalConnection();
+            statement = conn.prepareStatement(_updateEngineIsAliveStmt);
+
             final long nanosSinceEpoch = lastTimeAlive.getNanos();
             statement.setLong(1, nanosSinceEpoch);
             statement.setInt(2, id.intValue());
@@ -161,7 +176,7 @@ public class ArchiveEngineDaoImpl extends AbstractArchiveDao implements IArchive
         } catch (final Exception e) {
             handleExceptions(EXC_MSG, e);
         } finally {
-            closeStatement(null, statement, "Closing of statement " + _selectEngineByNameStmt + " failed.");
+            closeSqlResources(null, statement, _selectEngineByNameStmt);
         }
     }
 }

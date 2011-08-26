@@ -25,8 +25,6 @@ import java.sql.Connection;
 import java.sql.SQLException;
 import java.sql.Savepoint;
 
-import junit.framework.Assert;
-
 import org.csstudio.archive.common.service.ArchiveConnectionException;
 import org.csstudio.archive.common.service.mysqlimpl.MySQLArchivePreferenceService;
 import org.csstudio.archive.common.service.mysqlimpl.batch.BatchQueueHandlerSupport;
@@ -49,6 +47,7 @@ public abstract class AbstractDaoTestSetup {
     protected static PersistEngineDataManager PERSIST_MGR;
     // CHECKSTYLE ON: |
 
+    private Connection _connection;
     private Savepoint _savepoint;
     private boolean _autoCommit;
     private final boolean _withRollback;
@@ -67,14 +66,11 @@ public abstract class AbstractDaoTestSetup {
     }
 
     @BeforeClass
-    public static void beforeClass() throws ArchiveConnectionException {
+    public static void beforeClass() {
 
         final MySQLArchivePreferenceService prefsMock = ArchiveDaoTestHelper.createPrefServiceMock();
 
         HANDLER = new ArchiveConnectionHandler(prefsMock);
-
-        final Connection con = HANDLER.getConnection();
-        Assert.assertNotNull(con);
 
         PERSIST_MGR = new PersistEngineDataManager(HANDLER, prefsMock);
 
@@ -107,11 +103,11 @@ public abstract class AbstractDaoTestSetup {
     }
 
     private void setSavePoint() throws ArchiveConnectionException, SQLException {
-        final Connection con = HANDLER.getConnection();
-        _autoCommit = con.getAutoCommit();
+        _connection = HANDLER.createConnection();
+        _autoCommit = _connection.getAutoCommit();
 
-        con.setAutoCommit(false);
-        _savepoint = con.setSavepoint();
+        _connection.setAutoCommit(false);
+        _savepoint = _connection.setSavepoint();
     }
 
     /**
@@ -142,9 +138,9 @@ public abstract class AbstractDaoTestSetup {
     }
 
     private void rollback() throws ArchiveConnectionException, SQLException {
-        final Connection con = HANDLER.getConnection();
-        con.rollback(_savepoint);
-        con.setAutoCommit(_autoCommit);
+        _connection = HANDLER.createConnection();
+        _connection.rollback(_savepoint);
+        _connection.setAutoCommit(_autoCommit);
     }
 
     /**

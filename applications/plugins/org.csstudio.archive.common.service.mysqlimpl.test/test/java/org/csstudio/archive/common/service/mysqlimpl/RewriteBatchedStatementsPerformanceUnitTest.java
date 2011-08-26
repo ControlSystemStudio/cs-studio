@@ -48,7 +48,7 @@ public class RewriteBatchedStatementsPerformanceUnitTest extends AbstractDaoTest
         super.beforeHook();
 
         final PreparedStatement stmt =
-            HANDLER.getConnection().prepareStatement("CREATE TEMPORARY TABLE IF NOT EXISTS batchedTest (id INT(10) UNSIGNED NOT NULL, time BIGINT NOT NULL, value VARCHAR(32000) NOT NULL, PRIMARY KEY(id)) ENGINE=InnoDB AUTO_INCREMENT=1");
+            HANDLER.createConnection().prepareStatement("CREATE TEMPORARY TABLE IF NOT EXISTS batchedTest (id INT(10) UNSIGNED NOT NULL, time BIGINT NOT NULL, value VARCHAR(32000) NOT NULL, PRIMARY KEY(id)) ENGINE=InnoDB AUTO_INCREMENT=1");
         stmt.execute();
         stmt.close();
     }
@@ -76,7 +76,7 @@ public class RewriteBatchedStatementsPerformanceUnitTest extends AbstractDaoTest
 
         watch.restart();
         final PreparedStatement stmt =
-            HANDLER.getConnection().prepareStatement(builder.toString());
+            HANDLER.createConnection().prepareStatement(builder.toString());
 
         stmt.execute();
         stmt.close();
@@ -91,7 +91,7 @@ public class RewriteBatchedStatementsPerformanceUnitTest extends AbstractDaoTest
         final RunningStopWatch watch = StopWatch.start();
 
         final PreparedStatement stmt =
-            HANDLER.getConnection().prepareStatement("INSERT INTO batchedTest (id, time, value) VALUES (?, ?, ?)");
+            HANDLER.createConnection().prepareStatement("INSERT INTO batchedTest (id, time, value) VALUES (?, ?, ?)");
 
         for (int i = (int) numOfInserts; i < 2*numOfInserts; i++) {
             stmt.setInt(1, i);
@@ -120,7 +120,7 @@ public class RewriteBatchedStatementsPerformanceUnitTest extends AbstractDaoTest
     @Override
     protected void afterHook() throws ArchiveConnectionException, SQLException {
         final PreparedStatement stmt =
-            HANDLER.getConnection().prepareStatement("DROP TEMPORARY TABLE IF EXISTS batchedTest");
+            HANDLER.createConnection().prepareStatement("DROP TEMPORARY TABLE IF EXISTS batchedTest");
         stmt.execute();
         stmt.close();
 

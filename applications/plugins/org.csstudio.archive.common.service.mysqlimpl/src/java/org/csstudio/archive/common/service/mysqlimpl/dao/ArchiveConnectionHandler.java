@@ -61,7 +61,7 @@ public class ArchiveConnectionHandler {
     private final MysqlDataSource _dataSource;
 
     /**
-     * Any thread owns a connection.
+     * Each thread owns a connection, some of which may not close it.
      */
     private final ThreadLocal<Connection> _archiveConnection =
         new ThreadLocal<Connection>();
@@ -123,12 +123,9 @@ public class ArchiveConnectionHandler {
             if (connection != null) {
                 final DatabaseMetaData meta = connection.getMetaData();
                 if (meta != null) {
-                    // Constructor call -> LOG.debug not possible, not yet initialised
-                    LoggerFactory.getLogger(ArchiveConnectionHandler.class).debug("MySQL connection:\n" +
-                              meta.getDatabaseProductName() + " " + meta.getDatabaseProductVersion());
+                    LOG.debug("MySQL connection:\n{} {}", meta.getDatabaseProductName(), meta.getDatabaseProductVersion());
                 } else {
-                    // Constructor call -> LOG.debug not possible, not yet initialised
-                    LoggerFactory.getLogger(ArchiveConnectionHandler.class).debug("No meta data for MySQL connection");
+                    LOG.debug("No meta data for MySQL connection");
                 }
                 // set to true to enable failover to other host
                 connection.setAutoCommit(true);
@@ -144,40 +141,56 @@ public class ArchiveConnectionHandler {
     }
 
     /**
-     * Disconnects the connection for the owning thread.
-     * @throws ArchiveConnectionException
+     * Closes the connection for the owning thread.
+     * @throws SQLException
      */
-    public void disconnect() throws ArchiveConnectionException {
+    public void close() throws SQLException {
         final Connection connection = _archiveConnection.get();
         if (connection != null) {
-            try {
-                connection.close();
-                _archiveConnection.set(null);
-            } catch (final SQLException e) {
-                throw new ArchiveConnectionException("Archive disconnection failed!", e);
-            }
+            connection.close();
+            _archiveConnection.set(null);
         }
     }
 
 
     /**
-     * Returns the current connection for the owning thread.
-     * This method is invoked by the dedicated daos to retrieve their connection.
+     * Creates a new connection.
+     * The invoker has to take care that this connection is closed after operation.
      * A connection's datasource is configured via the plugin_customization.ini
      *
      * @return the connection
      * @throws ArchiveConnectionException
      */
     @Nonnull
-    public Connection getConnection() throws ArchiveConnectionException {
+    public Connection createConnection() throws ArchiveConnectionException {
+        return connect(_dataSource);
+    }
+
+    /**
+     * Returns the current connection for the owning thread (creates a new one if not yet existing).
+     * Intended for threads that make high usage of connections.
+     * This method is invoked by the dedicated daos to retrieve their 'existing' connection.
+     * A connection's datasource is configured via the plugin_customization.ini
+     *
+     * @return the connection
+     * @throws ArchiveConnectionException
+     */
+    @Nonnull
+    public Connection getThreadLocalConnection() throws ArchiveConnectionException {
         Connection connection = _archiveConnection.get();
-        if (connection == null) {
-            // the calling thread has not yet a connection registered.
-            connection = connect(_dataSource);
-            _archiveConnection.set(connection);
+        try {
+            if (connection == null || connection.isClosed()) {
+                // the calling thread has not yet a connection registered.
+                connection = createConnection();
+                _archiveConnection.set(connection);
+            }
+        } catch (final SQLException e) {
+            LOG.warn("Thread current 'permanent' connection has been closed. A new one for this {} is created", Thread.currentThread().getName());
         }
         return connection;
+
     }
+
 
     @CheckForNull
     public String getDatabaseName() {

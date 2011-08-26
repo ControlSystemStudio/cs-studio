@@ -22,6 +22,7 @@
 package org.csstudio.archive.common.service.mysqlimpl.enginestatus;
 
 
+import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -106,17 +107,25 @@ public class ArchiveEngineStatusDaoImpl extends AbstractArchiveDao implements IA
     @Nonnull
     public IArchiveEngineStatus retrieveLastEngineStatus(@Nonnull final ArchiveEngineId id,
                                                          @Nonnull final TimeInstant latestAliveTime) throws ArchiveDaoException {
+
+        Connection conn = null;
+        PreparedStatement stmt = null;
+        ResultSet resultSet = null;
         try {
-            final PreparedStatement stmt = getConnection().prepareStatement(_selectLatestEngineStatusInfoStmt);
+            conn = getThreadLocalConnection();
+            stmt = conn.prepareStatement(_selectLatestEngineStatusInfoStmt);
+
             stmt.setLong(1, latestAliveTime.getNanos());
             stmt.setInt(2, id.intValue());
 
-            final ResultSet resultSet = stmt.executeQuery();
+            resultSet = stmt.executeQuery();
             if (resultSet.next()) {
                 return createIArchiverMgmtEntryFromResult(resultSet);
             }
         } catch (final Exception e) {
             handleExceptions(EXC_MSG, e);
+        } finally {
+            closeSqlResources(resultSet, stmt, _selectLatestEngineStatusInfoStmt);
         }
         return null;
     }

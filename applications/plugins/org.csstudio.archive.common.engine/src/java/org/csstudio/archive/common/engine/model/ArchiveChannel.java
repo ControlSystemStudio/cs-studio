@@ -237,4 +237,9 @@ public class ArchiveChannel<V extends Serializable, T extends ISystemVariable<V>
     public boolean isMultiScalar() {
         return _collClazz != null;
     }
+
+    @Nonnull
+    public ArchiveChannelId getId() {
+        return _id;
+    }
 }
