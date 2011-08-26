@@ -33,14 +33,14 @@
    </requires>
 
    <plugin
-         id="org.csstudio.display.channelfinderviewer"
+         id="org.csstudio.display.channelfinderviewer.intro"
          download-size="0"
          install-size="0"
          version="0.0.0"
          unpack="false"/>
 
    <plugin
-         id="org.csstudio.display.channelfinderviewer.intro"
+         id="gov.bnl.channelfinder.api"
          download-size="0"
          install-size="0"
          version="0.0.0"

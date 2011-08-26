@@ -38,11 +38,11 @@
          <command
                commandId="org.eclipse.ui.views.showView"
                icon="icons/channelFinder.png"
-               label="Channel Finder"
+               label="Channel Viewer"
                style="push">
             <parameter
                   name="org.eclipse.ui.views.showView.viewId"
-                  value="org.csstudio.channelfinder.views.ChannelfinderView">
+                  value="org.csstudio.channelfinder.views.ChannelsView">
             </parameter>
          </command>
       </menuContribution>

@@ -1,7 +1,7 @@
 Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: Channelfinder
-Bundle-SymbolicName: org.csstudio.display.channelfinderviewer;singleton:=true
+Bundle-SymbolicName: org.csstudio.display.channelviewer;singleton:=true
 Bundle-Version: 3.0.0.qualifier
 Bundle-Activator: org.csstudio.channelfinder.Activator
 Bundle-ActivationPolicy: lazy

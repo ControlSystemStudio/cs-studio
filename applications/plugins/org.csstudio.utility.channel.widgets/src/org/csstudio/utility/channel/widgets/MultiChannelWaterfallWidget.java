@@ -11,6 +11,7 @@ import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
 
+import org.csstudio.utility.channelfinder.CFClientManager;
 import org.csstudio.utility.pvmanager.widgets.WaterfallWidget;
 import org.eclipse.swt.widgets.Composite;
 
@@ -48,7 +49,7 @@ public class MultiChannelWaterfallWidget extends WaterfallWidget {
 		List<String> channelNames = null;
 		try {
 			// Should be done in a background task
-			Collection<Channel> channels = ChannelFinderClient.getInstance().findChannelsByTag(inputText);
+			Collection<Channel> channels = CFClientManager.getClient().findByTag(inputText);
 			if (channels != null && !channels.isEmpty()) {
 				// Sort if you can
 				try {
