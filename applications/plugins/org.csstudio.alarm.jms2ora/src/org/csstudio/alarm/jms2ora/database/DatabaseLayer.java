@@ -40,7 +40,7 @@ import java.util.Enumeration;
 import java.util.Hashtable;
 import org.csstudio.alarm.jms2ora.Jms2OraPlugin;
 import org.csstudio.alarm.jms2ora.preferences.PreferenceConstants;
-import org.csstudio.alarm.jms2ora.util.MessageContent;
+import org.csstudio.alarm.jms2ora.service.MessageContent;
 import org.csstudio.platform.utility.rdb.RDBUtil;
 import org.csstudio.platform.utility.rdb.RDBUtil.Dialect;
 import org.eclipse.core.runtime.Platform;

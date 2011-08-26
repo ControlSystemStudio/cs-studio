@@ -166,6 +166,7 @@ public class ChannelDBO extends AbstractNodeDBO<ChannelStructureDBO, VirtualLeaf
             ioName = " ";
         }
         copy.setIoName(ioName);
+        copy.setDescription(getDescription());
         return copy;
     }
     

@@ -19,8 +19,9 @@ CREATE TABLE message
     id                             NUMBER NOT NULL,
     msg_type_id                    NUMBER,
     datum                          TIMESTAMP(6),
-    name VARCHAR2(300),
-    severity VARCHAR2(300),
+    name                           VARCHAR2(300),
+    type                           VARCHAR2(300),
+    severity                       VARCHAR2(300),
     CONSTRAINT MESSAGE_PK PRIMARY KEY (id) USING INDEX
 );
 

@@ -50,20 +50,6 @@ public class JmsMessageReceiver {
     private Topic destination = null;
     private String[] topics = null;
 
-	/*
-    public MessageReceiver() throws NamingException
-    {
-        properties = new Hashtable<String, String>();
-        properties.put(Context.INITIAL_CONTEXT_FACTORY,
-        		JmsPlugin.getDefault().getPluginPreferences().getString(PreferenceConstants.INITIAL_CONTEXT_FACTORY));
-        properties.put(Context.PROVIDER_URL,
-        		JmsPlugin.getDefault().getPluginPreferences().getString(PreferenceConstants.URL));
-        context = new InitialContext(properties);
-        // destination = (Topic) context.lookup(JmsPlugin.getDefault().getPluginPreferences().getString(PreferenceConstants.QUEUE).split(",")[0]);
-        queues = JmsPlugin.getDefault().getPluginPreferences().getString(PreferenceConstants.QUEUE).split(",");
-    }
-    */
-    
     public JmsMessageReceiver(String initialContextFactory, String providerURL, String[] topicArray)
     throws NamingException {
         
