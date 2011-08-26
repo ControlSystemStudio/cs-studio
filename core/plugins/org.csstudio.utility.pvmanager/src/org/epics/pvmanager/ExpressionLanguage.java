@@ -19,7 +19,6 @@ import org.epics.pvmanager.util.TimeDuration;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
-import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import org.epics.pvmanager.expression.DesiredRateExpressionListImpl;
@@ -44,27 +43,51 @@ public class ExpressionLanguage {
     }
     
     private ExpressionLanguage() {}
+    
+    /**
+     * Creates a constant expression that always return that object.
+     * This is useful to test expressions or to introduce data that is available
+     * at connection time at that will not change.
+     * 
+     * @param <T> type of the value
+     * @param value the actual value
+     * @return an expression that is always going to return the given value
+     */
+    public static <T> DesiredRateExpression<T> constant(T value) {
+        Class<?> clazz = Object.class;
+        if (value != null)
+            clazz = value.getClass();
+        @SuppressWarnings("unchecked")
+        ValueCache<T> cache = (ValueCache<T>) new ValueCache(clazz);
+        if (value != null)
+            cache.setValue(value);
+        return new DesiredRateExpressionImpl<T>(new DesiredRateExpressionListImpl<T>(), cache, value.toString());
+    }
 
     /**
      * A channel with the given name of any type. This expression can be
      * used both in a read and a write expression.
      *
-     * @param name the channel name; can't be null
+     * @param name the channel name
      * @return an expression representing the channel
      */
     public static ChannelExpression<Object, Object> channel(String name) {
-        return new ChannelExpression<Object, Object>(name, Object.class, Object.class);
+        return channel(name, Object.class, Object.class);
     }
 
     /**
      * A channel with the given name and type. This expression can be
      * used both in a read and a write expression.
      *
-     * @param name the channel name; can't be null
+     * @param name the channel name
      * @return an expression representing the channel
      */
     public static <R, W> ChannelExpression<R, W> channel(String name, Class<R> readType, Class<W> writeType) {
-        return new ChannelExpression<R, W>(name, readType, writeType);
+        if (name == null) {
+            return new ChannelExpression<R, W>(readType, writeType);
+        } else {
+            return new ChannelExpression<R, W>(name, readType, writeType);
+        }
     }
 
     /**
@@ -75,7 +98,7 @@ public class ExpressionLanguage {
      * @return an list of expressions representing the channels
      */
     public static ChannelExpressionList<Object, Object> channels(String... names) {
-        return new ChannelExpressionList<Object, Object>(Arrays.asList(names), Object.class, Object.class);
+        return channels(Arrays.asList(names), Object.class, Object.class);
     }
 
     /**
@@ -85,7 +108,7 @@ public class ExpressionLanguage {
      * @param names the channel names; can't be null
      * @return an list of expressions representing the channels
      */
-    public static <R, W> ChannelExpressionList<R, W> channels(List<String> names, Class<R> readType, Class<W> writeType) {
+    public static <R, W> ChannelExpressionList<R, W> channels(Collection<String> names, Class<R> readType, Class<W> writeType) {
         return new ChannelExpressionList<R, W>(names, readType, writeType);
     }
 
@@ -97,7 +120,7 @@ public class ExpressionLanguage {
      * @return an list of expressions representing the channels
      */
     public static ChannelExpressionList<Object, Object> channels(Collection<String> names) {
-        return new ChannelExpressionList<Object, Object>(names, Object.class, Object.class);
+        return channels(names, Object.class, Object.class);
     }
 
     /**

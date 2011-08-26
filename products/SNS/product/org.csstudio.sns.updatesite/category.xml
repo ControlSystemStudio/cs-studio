@@ -15,10 +15,10 @@
    <feature url="features/org.csstudio.sns.feature.repository_3.0.0.qualifier.jar" id="org.csstudio.sns.feature.repository" version="3.0.0.qualifier">
       <category name="css_infrastructure"/>
    </feature>
-   <feature url="features/org.csstudio.sns.feature.applications_3.0.1.qualifier.jar" id="org.csstudio.sns.feature.applications" version="3.0.1.qualifier">
+   <feature url="features/org.csstudio.sns.feature.applications_3.0.2.qualifier.jar" id="org.csstudio.sns.feature.applications" version="3.0.2.qualifier">
       <category name="css_applications"/>
    </feature>
-   <feature url="features/org.csstudio.sns.feature.snsapps_3.0.1.qualifier.jar" id="org.csstudio.sns.feature.snsapps" version="3.0.1.qualifier">
+   <feature url="features/org.csstudio.sns.feature.snsapps_3.0.2.qualifier.jar" id="org.csstudio.sns.feature.snsapps" version="3.0.2.qualifier">
       <category name="css_applications"/>
    </feature>
    <feature url="features/org.csstudio.sns.feature.optional_3.0.1.qualifier.jar" id="org.csstudio.sns.feature.optional" version="3.0.1.qualifier">
@@ -30,7 +30,7 @@
    <feature url="features/org.csstudio.alarm.beast.ui.feature_3.0.1.qualifier.jar" id="org.csstudio.alarm.beast.ui.feature" version="3.0.1.qualifier">
       <category name="css_applications"/>
    </feature>
-   <feature url="features/org.csstudio.trends.databrowser2.feature_3.0.1.qualifier.jar" id="org.csstudio.trends.databrowser2.feature" version="3.0.1.qualifier">
+   <feature url="features/org.csstudio.trends.databrowser2.feature_3.0.2.qualifier.jar" id="org.csstudio.trends.databrowser2.feature" version="3.0.2.qualifier">
       <category name="css_applications"/>
    </feature>
    <category-def name="css_infrastructure" label="CSS Infrastructure"/>

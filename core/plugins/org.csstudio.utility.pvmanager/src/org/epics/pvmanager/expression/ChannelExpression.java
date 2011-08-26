@@ -5,6 +5,7 @@
 package org.epics.pvmanager.expression;
 
 import java.util.Arrays;
+import org.epics.pvmanager.ValueCache;
 import org.epics.pvmanager.WriteCache;
 
 /**
@@ -30,6 +31,17 @@ public class ChannelExpression<R, W> extends SourceRateReadWriteExpressionImpl<R
         if (channelName == null) {
             throw new NullPointerException("Channel name can't be null");
         }
+    }
+    
+    /**
+     * Constructor for the null channel.
+     * 
+     * @param readClass type of the read payload
+     * @param writeClass type of the write payload
+     */
+    public ChannelExpression(Class<R> readClass, Class<W> writeClass) {
+        super(new SourceRateExpressionImpl<R>(new SourceRateExpressionListImpl<Object>(), new ValueCache<R>(readClass), "null"),
+                new WriteExpressionImpl<W>(new WriteExpressionListImpl<Object>(), new WriteCache<W>(), "null"));
     }
     
     /**

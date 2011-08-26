@@ -16,9 +16,11 @@ import org.epics.pvmanager.expression.SourceRateExpression;
 import org.epics.pvmanager.Function;
 import org.epics.pvmanager.expression.DesiredRateExpressionList;
 import org.epics.pvmanager.expression.DesiredRateExpressionListImpl;
+import org.epics.pvmanager.expression.Expressions;
 import org.epics.pvmanager.expression.SourceRateExpressionImpl;
 import org.epics.pvmanager.expression.SourceRateExpressionList;
 import org.epics.pvmanager.util.TimeDuration;
+import org.epics.pvmanager.util.TimeStamp;
 import static org.epics.pvmanager.ExpressionLanguage.*;
 
 /**
@@ -167,6 +169,39 @@ public class ExpressionLanguage {
     }
 
     /**
+     * A list of constant expressions of type VDouble.
+     */
+    public static DesiredRateExpressionList<VDouble> vDoubleConstants(List<Double> values) {
+        DesiredRateExpressionList<VDouble> list = new DesiredRateExpressionListImpl<VDouble>();
+        for (Double value : values) {
+            list.and(constant(ValueFactory.newVDouble(value, AlarmSeverity.NONE, AlarmStatus.NONE, TimeStamp.now(), null, null, null, null, null, null, null, null, null, null, null)));
+        }
+        return list;
+    }
+
+    /**
+     * A list of constant expressions of type VDouble.
+     */
+    public static DesiredRateExpressionList<VInt> vIntConstants(List<Integer> values) {
+        DesiredRateExpressionList<VInt> list = new DesiredRateExpressionListImpl<VInt>();
+        for (Integer value : values) {
+            list.and(constant(ValueFactory.newVInt(value, AlarmSeverity.NONE, AlarmStatus.NONE, TimeStamp.now(), null, null, null, null, null, null, null, null, null, null, null)));
+        }
+        return list;
+    }
+
+    /**
+     * A list of constant expressions of type VString.
+     */
+    public static DesiredRateExpressionList<VString> vStringConstants(List<String> values) {
+        DesiredRateExpressionList<VString> list = new DesiredRateExpressionListImpl<VString>();
+        for (String value : values) {
+            list.and(constant(ValueFactory.newVString(value, AlarmSeverity.NONE, AlarmStatus.NONE, TimeStamp.now(), null)));
+        }
+        return list;
+    }
+
+    /**
      * Aggregates the sample at the scan rate and takes the average.
      * @param doublePv the expression to take the average of; can't be null
      * @return an expression representing the average of the expression
@@ -247,4 +282,32 @@ public class ExpressionLanguage {
                 (Function<VMultiDouble>) aggregator, "syncArray");
     }
 
+    /**
+     * A column for an aggregated vTable.
+     * 
+     * @param name the name of the column
+     * @param values the value of the column
+     * @return the column
+     */
+    public static VTableColumn column(String name, DesiredRateExpressionList<?> values) {
+        return new VTableColumn(name, values);
+    }
+    
+    /**
+     * Creates a vTable by aggregating different values from different pvs.
+     * 
+     * @param columns columns of the table
+     * @return an expression for the table
+     */
+    public static DesiredRateExpression<VTable> vTable(VTableColumn... columns) {
+        DesiredRateExpressionListImpl<Object> list = new DesiredRateExpressionListImpl<Object>();
+        List<List<Function<?>>> functions = new ArrayList<List<Function<?>>>();
+        List<String> names = new ArrayList<String>();
+        for (VTableColumn column : columns) {
+            functions.add(Expressions.functionsOf(column.getValueExpressions()));
+            list.and(column.getValueExpressions());
+            names.add(column.getName());
+        }
+        return new DesiredRateExpressionImpl<VTable>(list, new VTableAggregationFunction(functions, names), "table");
+    }
 }

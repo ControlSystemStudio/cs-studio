@@ -2,7 +2,7 @@
 #
 # Kay Kasemir
 
-export VERSION=3.0.1
+export VERSION=3.0.2
 export TOP=/Kram/MerurialRepos/cs-studio-3.0.0
 
 export ECLIPSE_BASE=/Kram/Eclipse/3_6_2/rcp
