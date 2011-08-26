@@ -4,12 +4,20 @@
    <extension
          point="org.csstudio.opibuilder.widget">
       <widget
-            category="Multichannels"
+            category="Multi-channel"
             editpart_class="org.csstudio.channel.opiwidgets.WaterfallEditPart"
             icon="icons/water.png"
             model_class="org.csstudio.channel.opiwidgets.WaterfallModel"
             name="Waterfall"
             typeId="org.csstudio.channel.opiwidgets.Waterfall">
+      </widget>
+      <widget
+            category="Multi-channel"
+            editpart_class="org.csstudio.channel.opiwidgets.PVTableByPropertyEditPart"
+            icon="icons/water.png"
+            model_class="org.csstudio.channel.opiwidgets.PVTableByPropertyModel"
+            name="PVTable by Property"
+            typeId="org.csstudio.channel.opiwidgets.PVTableByProperty">
       </widget>
    </extension>
 
