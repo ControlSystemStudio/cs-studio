@@ -1,40 +1,34 @@
 package org.csstudio.channel.widgets;
 
-import static org.epics.pvmanager.ExpressionLanguage.*;
-import static org.epics.pvmanager.data.ExpressionLanguage.*;
-import static org.epics.pvmanager.util.TimeDuration.*;
-
+import static org.epics.pvmanager.ExpressionLanguage.channels;
+import static org.epics.pvmanager.ExpressionLanguage.latestValueOf;
+import static org.epics.pvmanager.data.ExpressionLanguage.column;
+import static org.epics.pvmanager.data.ExpressionLanguage.vStringConstants;
+import static org.epics.pvmanager.data.ExpressionLanguage.vTable;
+import static org.epics.pvmanager.util.TimeDuration.ms;
 import gov.bnl.channelfinder.api.Channel;
 import gov.bnl.channelfinder.api.ChannelFinderClient;
-import gov.bnl.channelfinder.api.ChannelUtil;
 import gov.bnl.channelfinder.api.Property;
 
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
-import java.util.Comparator;
-import java.util.Iterator;
 import java.util.List;
 
 import org.csstudio.utility.pvmanager.ui.SWTUtil;
 import org.csstudio.utility.pvmanager.widgets.ErrorBar;
 import org.csstudio.utility.pvmanager.widgets.VTableDisplay;
-import org.csstudio.utility.pvmanager.widgets.WaterfallWidget;
 import org.eclipse.swt.SWT;
-import org.eclipse.swt.layout.FillLayout;
+import org.eclipse.swt.events.DisposeEvent;
+import org.eclipse.swt.events.DisposeListener;
+import org.eclipse.swt.layout.GridData;
+import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Composite;
 import org.epics.pvmanager.PVManager;
 import org.epics.pvmanager.PVReader;
 import org.epics.pvmanager.PVReaderListener;
 import org.epics.pvmanager.data.VTable;
 import org.epics.pvmanager.data.VTableColumn;
-import org.epics.pvmanager.expression.DesiredRateExpressionList;
-import org.eclipse.swt.layout.FormLayout;
-import org.eclipse.swt.layout.FormData;
-import org.eclipse.swt.layout.FormAttachment;
-import org.eclipse.swt.layout.GridLayout;
-import org.eclipse.swt.layout.GridData;
-import org.eclipse.swt.custom.StackLayout;
 
 public class PVTableByPropertyWidget extends Composite {
 	
@@ -43,6 +37,19 @@ public class PVTableByPropertyWidget extends Composite {
 
 	public PVTableByPropertyWidget(Composite parent, int style) {
 		super(parent, style);
+		
+		// Close PV on dispose
+		addDisposeListener(new DisposeListener() {
+			
+			@Override
+			public void widgetDisposed(DisposeEvent e) {
+				if (pv != null) {
+					pv.close();
+					pv = null;
+				}
+			}
+		});
+		
 		GridLayout gridLayout = new GridLayout(1, false);
 		gridLayout.verticalSpacing = 0;
 		gridLayout.marginWidth = 0;
@@ -103,6 +110,8 @@ public class PVTableByPropertyWidget extends Composite {
 		pv = PVManager.read(vTable(columns)).notifyOn(SWTUtil.swtThread()).every(ms(500));
 		pv.addPVReaderListener(listener);
 		table.setCellLabelProvider(new PVTableByPropertyCellLabelProvider(cellPvs));
+		System.out.println("PVStarted " + cellPvs);
+		System.out.println("   " + channelQuery + " " + rowProperty + " " + columnProperty);
 	}
 	
 	public String getChannelQuery() {
