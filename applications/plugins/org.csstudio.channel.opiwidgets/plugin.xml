@@ -5,11 +5,11 @@
          point="org.csstudio.opibuilder.widget">
       <widget
             category="Multichannels"
-            editpart_class="org.csstudio.channel.opiwidget.WaterfallEditPart"
+            editpart_class="org.csstudio.channel.opiwidgets.WaterfallEditPart"
             icon="icons/water.png"
-            model_class="org.csstudio.channel.opiwidget.WaterfallModel"
+            model_class="org.csstudio.channel.opiwidgets.WaterfallModel"
             name="Waterfall"
-            typeId="org.csstudio.channel.opiwidget.Waterfall">
+            typeId="org.csstudio.channel.opiwidgets.Waterfall">
       </widget>
    </extension>
 

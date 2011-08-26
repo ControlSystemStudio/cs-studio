@@ -1,4 +1,4 @@
-package org.csstudio.channel.opiwidget;
+package org.csstudio.channel.opiwidgets;
 
 import org.osgi.framework.BundleActivator;
 import org.osgi.framework.BundleContext;

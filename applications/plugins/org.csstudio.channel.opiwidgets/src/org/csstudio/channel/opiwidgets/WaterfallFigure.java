@@ -1,4 +1,4 @@
-package org.csstudio.channel.opiwidget;
+package org.csstudio.channel.opiwidgets;
 
 import java.lang.reflect.Constructor;
 
