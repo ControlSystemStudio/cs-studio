@@ -316,7 +316,7 @@ public class TabFigure extends Figure implements Introspectable{
 		if(image != null){
 			image.dispose();
 			image = null;
-			label.setIcon(null);
+//			label.setIcon(null);
 		}
 		
 	}
