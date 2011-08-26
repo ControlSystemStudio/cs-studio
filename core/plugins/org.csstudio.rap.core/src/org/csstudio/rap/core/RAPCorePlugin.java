@@ -1,5 +1,7 @@
 package org.csstudio.rap.core;
 
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
 import java.util.logging.Logger;
 
 import org.eclipse.ui.plugin.AbstractUIPlugin;
@@ -19,6 +21,8 @@ public class RAPCorePlugin extends AbstractUIPlugin {
 	private ServerHeartBeatThread serverHeartBeatThread;
 
 	final private static Logger logger = Logger.getLogger(PLUGIN_ID);
+	private static String startupTime;
+
 	
 	/**
 	 * The constructor
@@ -34,6 +38,9 @@ public class RAPCorePlugin extends AbstractUIPlugin {
 		super.start(context);
 		plugin = this;
 		serverHeartBeatThread = ServerHeartBeatThread.getInstance();
+		Calendar cal = Calendar.getInstance();
+		SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss"); //$NON-NLS-1$
+		startupTime = sdf.format(cal.getTime());
 	}
 
 	/*
@@ -63,6 +70,10 @@ public class RAPCorePlugin extends AbstractUIPlugin {
 	public static Logger getLogger()
 	{
 	    return logger;
+	}
+	
+	public static String getStartupTime() {
+		return startupTime;
 	}
 
 }
