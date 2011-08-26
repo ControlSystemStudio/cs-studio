@@ -56,8 +56,8 @@ public class RemoveTagsJob extends Job {
 					.hasNext();) {
 				String tagName = iterator.next();
 				monitor.subTask("Removing tag " + tagName);
-				ChannelFinderClient.getInstance().remove(tag(tagName),
-						getCSSChannelNames(channels));
+//				ChannelFinderClient.getInstance().remove(tag(tagName),
+//						getCSSChannelNames(channels));
 				monitor.worked(1);
 			}
 		} catch (ChannelFinderException e) {

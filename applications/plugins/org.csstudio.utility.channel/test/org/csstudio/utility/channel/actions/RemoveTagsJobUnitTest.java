@@ -16,10 +16,11 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.logging.Logger;
 
+import org.csstudio.utility.channelfinder.CFClientManager;
 import org.eclipse.core.runtime.Status;
 import org.eclipse.core.runtime.jobs.Job;
-import org.junit.AfterClass;
-import org.junit.BeforeClass;
+import org.junit.After;
+import org.junit.Before;
 import org.junit.Test;
 
 /**
@@ -38,17 +39,16 @@ public class RemoveTagsJobUnitTest {
 	/**
 	 * @throws java.lang.Exception
 	 */
-	@BeforeClass
+	@Before
 	public void setUp() throws Exception {
-//		final TestProperties settings = new TestProperties();
 		try {
-			client = ChannelFinderClient.getInstance();
+			client = CFClientManager.getClient();
 			tag = tag("cssUnitTestTag", "tagOwner");
 			ch1 = channel("cssUnitTestChannel1").owner("css").with(tag);
 			ch2 = channel("cssUnitTestChannel1").owner("css").with(tag);
-			client.add(tag);
-			client.add(ch1);
-			client.add(ch2);
+			client.set(tag);
+			client.set(ch1);
+			client.set(ch2);
 		} catch (Exception e) {
 			logger.info("Failed to create the channelfinder client"
 					+ e.getMessage());
@@ -77,17 +77,17 @@ public class RemoveTagsJobUnitTest {
 			chs.add(ch1.build());
 			chs.add(ch2.build());
 			assertNull("Failed to Add tags: ",
-					client.findChannelsByTag("cssUnitTestTag"));
+					client.findByTag("cssUnitTestTag"));
 		}
 	}
 
 	/**
 	 * @throws java.lang.Exception
 	 */
-	@AfterClass
+	@After
 	public void tearDown() throws Exception {
-		client.remove(channel("cssUnitTestChannel1").owner("css"));
-		client.remove(channel("cssUnitTestChannel1").owner("css"));
+		client.deleteChannel("cssUnitTestChannel1");
+		client.deleteChannel("cssUnitTestChannel1");
 		client.deleteTag("cssUnitTestTag");
 	}
 
