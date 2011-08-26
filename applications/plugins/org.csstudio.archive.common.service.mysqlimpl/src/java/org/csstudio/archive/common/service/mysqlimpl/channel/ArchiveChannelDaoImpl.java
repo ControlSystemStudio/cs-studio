@@ -22,6 +22,7 @@
 package org.csstudio.archive.common.service.mysqlimpl.channel;
 
 import java.io.Serializable;
+import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -38,6 +39,7 @@ import javax.annotation.Nonnull;
 
 import org.csstudio.archive.common.service.ArchiveConnectionException;
 import org.csstudio.archive.common.service.channel.ArchiveChannelId;
+import org.csstudio.archive.common.service.channel.ArchiveLimitsChannel;
 import org.csstudio.archive.common.service.channel.IArchiveChannel;
 import org.csstudio.archive.common.service.channelgroup.ArchiveChannelGroupId;
 import org.csstudio.archive.common.service.controlsystem.ArchiveControlSystem;
@@ -87,6 +89,7 @@ public class ArchiveChannelDaoImpl extends AbstractArchiveDao implements IArchiv
         new MapMaker().concurrencyLevel(2).weakKeys().makeMap();
     private final Map<ArchiveChannelId, IArchiveChannel> _channelCacheById =
         new MapMaker().concurrencyLevel(2).weakKeys().makeMap();
+
 
     private final String _selectChannelPrefix =
         "SELECT " + TAB + ".id, " + TAB + ".name, " + TAB + ".datatype, " + TAB + ".group_id, " + TAB + ".last_sample_time, " +
@@ -215,12 +218,18 @@ public class ArchiveChannelDaoImpl extends AbstractArchiveDao implements IArchiv
         if (channel != null) {
             return channel;
         }
+        Connection conn = null;
+        PreparedStatement stmt = null;
         try {
-            final PreparedStatement stmt = getConnection().prepareStatement(_selectChannelByIdStmt);
+            conn = getPermanentConnection();
+            stmt = conn.prepareStatement(_selectChannelByIdStmt);
             stmt.setInt(1, id.intValue());
+
             return retrieveUncachedChannelBy(stmt);
         } catch (final Exception e) {
             handleExceptions(EXC_MSG, e);
+        } finally {
+            closeSqlResources(null, stmt, _selectChannelByIdStmt);
         }
         return null;
     }
@@ -233,7 +242,7 @@ public class ArchiveChannelDaoImpl extends AbstractArchiveDao implements IArchiv
 
         final Set<IArchiveChannel> foundChannels = Sets.newHashSetWithExpectedSize(names.size());
         for (final String name : names) {
-            final PreparedStatement stmt = getConnection().prepareStatement(_selectChannelByNameStmt);
+            final PreparedStatement stmt = getPermanentConnection().prepareStatement(_selectChannelByNameStmt);
             stmt.setString(1, name);
             final IArchiveChannel channel = retrieveUncachedChannelBy(stmt);
             if (channel != null) {
@@ -254,7 +263,7 @@ public class ArchiveChannelDaoImpl extends AbstractArchiveDao implements IArchiv
                 return readChannelFromResultIntoCache(result);
             }
         } finally {
-            closeStatement(result, stmt, "Closing of result set or statement resources failed: " + stmt.toString());
+            closeSqlResources(result, null, "in ResultSet by retrieval of yet uncached channel.");
         }
         return null;
     }
@@ -272,10 +281,12 @@ public class ArchiveChannelDaoImpl extends AbstractArchiveDao implements IArchiv
             return new ArrayList<IArchiveChannel>(filteredList);
         }
         // Nothing yet in the cache? Ask the database:
+        Connection conn = null;
         PreparedStatement stmt = null;
         ResultSet result = null;
         try {
-            stmt = getConnection().prepareStatement(_selectChannelsByGroupId);
+            conn = getPermanentConnection();
+            stmt = conn.prepareStatement(_selectChannelsByGroupId);
             stmt.setInt(1, groupId.intValue());
 
             final List<IArchiveChannel> channels = Lists.newArrayList();
@@ -288,7 +299,7 @@ public class ArchiveChannelDaoImpl extends AbstractArchiveDao implements IArchiv
         } catch (final Exception e) {
             handleExceptions(EXC_MSG, e);
         } finally {
-            closeStatement(result, stmt, "Closing of statement " + _selectChannelsByGroupId + " failed.");
+            closeSqlResources(result, stmt, _selectChannelsByGroupId);
         }
         return Collections.emptyList();
     }
@@ -319,12 +330,25 @@ public class ArchiveChannelDaoImpl extends AbstractArchiveDao implements IArchiv
                                               ArchiveTypeConversionSupport.toArchiveString(displayHigh),
                                               ArchiveTypeConversionSupport.toArchiveString(displayLow));
             getEngineMgr().submitToBatch(Collections.singleton(info));
-            clearCache(id);
+            updateCache(id, displayLow, displayHigh);
         } catch (final TypeSupportException e) {
             throw new ArchiveDaoException("Update display failed. No type support found for " + displayLow.getClass().getName(), e);
         }
     }
 
+    private <V extends Comparable<? super V> & Serializable>
+    void updateCache(@Nonnull final ArchiveChannelId id, @Nonnull final V low, @Nonnull final V high) {
+        final IArchiveChannel channel = _channelCacheById.get(id);
+        if (channel != null) {
+            final IArchiveChannel updatedChannel =
+                new ArchiveLimitsChannel<V>(channel, low, high);
+            _channelCacheById.put(updatedChannel.getId(), updatedChannel);
+            _channelCacheByName.put(updatedChannel.getName(), updatedChannel);
+        }
+
+    }
+
+    @SuppressWarnings("unused")
     private void clearCache(@Nonnull final ArchiveChannelId id) {
         final IArchiveChannel channel = _channelCacheById.get(id);
         removeFromCaches(channel);
@@ -373,10 +397,12 @@ public class ArchiveChannelDaoImpl extends AbstractArchiveDao implements IArchiv
         final int numOfChannels = retrieveNumberOfChannels();
         if (_channelCacheByName.size() < numOfChannels) {
 
+            Connection conn = null;
             PreparedStatement stmt = null;
             ResultSet result = null;
             try {
-                stmt = getConnection().prepareStatement(_selectMatchingChannelsStmt);
+                conn = getPermanentConnection();
+                stmt = conn.prepareStatement(_selectMatchingChannelsStmt);
                 stmt.setString(1, pattern.toString());
 
                 result = stmt.executeQuery();
@@ -386,7 +412,7 @@ public class ArchiveChannelDaoImpl extends AbstractArchiveDao implements IArchiv
             } catch (final Exception e) {
                 handleExceptions(EXC_MSG + ": Number of channels could not be determined.", e);
             } finally {
-                closeStatement(result, stmt, "Closing of statement: '" + _selectMatchingChannelsStmt + "' failed.");
+                closeSqlResources(result, stmt, _selectMatchingChannelsStmt);
             }
         }
         return createMatchingChannelsCollection(_channelCacheByName, pattern);
@@ -410,11 +436,12 @@ public class ArchiveChannelDaoImpl extends AbstractArchiveDao implements IArchiv
 
 
     private int retrieveNumberOfChannels() throws ArchiveDaoException {
-
+        Connection conn = null;
         PreparedStatement stmt = null;
         ResultSet result = null;
         try {
-            stmt = getConnection().prepareStatement(_selectCountAllChannelsStmt);
+            conn = getPermanentConnection();
+            stmt = conn.prepareStatement(_selectCountAllChannelsStmt);
             result = stmt.executeQuery();
             if (result.next()) {
                 return result.getInt(1);
@@ -422,7 +449,7 @@ public class ArchiveChannelDaoImpl extends AbstractArchiveDao implements IArchiv
         } catch (final Exception e) {
             handleExceptions(EXC_MSG + ": Number of channels could not be determined.", e);
         } finally {
-            closeStatement(result, stmt, "Closing of statement " + _selectCountAllChannelsStmt + " failed.");
+            closeSqlResources(result, stmt,  _selectCountAllChannelsStmt);
         }
         return 0;
     }
