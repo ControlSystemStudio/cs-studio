@@ -1,15 +1,15 @@
 /**
  * 
  */
-package org.csstudio.channelfinder.views;
+package org.csstudio.channelviewer.views;
 
 import gov.bnl.channelfinder.api.Channel;
 import gov.bnl.channelfinder.api.Property;
 
 import java.util.Collection;
 
-import org.csstudio.channelfinder.util.AlphanumComparator;
-import org.csstudio.channelfinder.util.ChannelUtilities;
+import org.csstudio.channelviewer.util.AlphanumComparator;
+import org.csstudio.channelviewer.util.ChannelUtilities;
 import org.eclipse.jface.viewers.TableViewerColumn;
 import org.eclipse.jface.viewers.Viewer;
 

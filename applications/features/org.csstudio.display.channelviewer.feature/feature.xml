@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <feature
-      id="org.csstudio.display.channelfinderviewer.feature"
+      id="org.csstudio.display.channelviewer.feature"
       label="Channelfinder Viewer Feature"
       version="0.2.0.qualifier"
       provider-name="Kunal Shroff &lt;kshroff@bnl.gov&gt;, Gabriele Carcassi &lt;carcassi@bnl.gov&gt; - BNL">
@@ -33,14 +33,14 @@
    </requires>
 
    <plugin
-         id="org.csstudio.display.channelfinderviewer.intro"
+         id="org.csstudio.display.channelviewer.intro"
          download-size="0"
          install-size="0"
          version="0.0.0"
          unpack="false"/>
 
    <plugin
-         id="gov.bnl.channelfinder.api"
+         id="org.csstudio.display.channelviewer"
          download-size="0"
          install-size="0"
          version="0.0.0"

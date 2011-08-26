@@ -1,4 +1,4 @@
-package org.csstudio.channelfinder.util;
+package org.csstudio.channelviewer.util;
 
 import static gov.bnl.channelfinder.api.Channel.Builder.channel;
 import static gov.bnl.channelfinder.api.Property.Builder.property;

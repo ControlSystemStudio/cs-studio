@@ -1,12 +1,12 @@
 /**
  * 
  */
-package org.csstudio.channelfinder.views;
+package org.csstudio.channelviewer.views;
 
 import gov.bnl.channelfinder.api.Channel;
 import gov.bnl.channelfinder.api.Property;
 
-import org.csstudio.channelfinder.util.ChannelUtilities;
+import org.csstudio.channelviewer.util.ChannelUtilities;
 import org.eclipse.jface.viewers.CellLabelProvider;
 import org.eclipse.jface.viewers.ViewerCell;
 

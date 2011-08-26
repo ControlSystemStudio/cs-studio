@@ -22,7 +22,7 @@
  *
  */
 
-package org.csstudio.channelfinder.util;
+package org.csstudio.channelviewer.util;
 
 import java.util.Comparator;
 

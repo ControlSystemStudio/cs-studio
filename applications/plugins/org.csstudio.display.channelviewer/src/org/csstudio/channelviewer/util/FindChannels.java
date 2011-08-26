@@ -1,4 +1,4 @@
-package org.csstudio.channelfinder.util;
+package org.csstudio.channelviewer.util;
 
 import gov.bnl.channelfinder.api.Channel;
 
@@ -8,7 +8,7 @@ import java.util.Hashtable;
 import java.util.Map;
 import java.util.logging.Logger;
 
-import org.csstudio.channelfinder.views.ChannelsView;
+import org.csstudio.channelviewer.views.ChannelsView;
 import org.csstudio.utility.channelfinder.CFClientManager;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;

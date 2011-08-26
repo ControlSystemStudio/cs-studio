@@ -1,4 +1,4 @@
-package org.csstudio.channelfinder.views;
+package org.csstudio.channelviewer.views;
 
 import gov.bnl.channelfinder.api.Channel;
 import gov.bnl.channelfinder.api.ChannelUtil;
@@ -7,7 +7,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.logging.Logger;
 
-import org.csstudio.channelfinder.util.FindChannels;
+import org.csstudio.channelviewer.util.FindChannels;
 import org.eclipse.core.runtime.jobs.Job;
 import org.eclipse.jface.action.IMenuListener;
 import org.eclipse.jface.action.IMenuManager;

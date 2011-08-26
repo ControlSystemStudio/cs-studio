@@ -1,9 +1,10 @@
-package org.csstudio.channelfinder.util;
+package org.csstudio.channelviewer.util;
 
 import static org.junit.Assert.assertTrue;
 
 import java.util.Map;
 
+import org.csstudio.channelviewer.util.FindChannels;
 import org.junit.Test;
 
 

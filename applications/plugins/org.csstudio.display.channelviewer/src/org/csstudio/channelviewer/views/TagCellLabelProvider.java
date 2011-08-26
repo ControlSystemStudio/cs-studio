@@ -1,7 +1,7 @@
 /**
  * 
  */
-package org.csstudio.channelfinder.views;
+package org.csstudio.channelviewer.views;
 
 import static gov.bnl.channelfinder.api.Tag.Builder.tag;
 import gov.bnl.channelfinder.api.Channel;

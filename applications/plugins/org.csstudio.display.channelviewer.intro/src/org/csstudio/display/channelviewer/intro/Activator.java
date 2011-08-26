@@ -1,4 +1,4 @@
-package org.csstudio.display.channelfinderviewer.intro;
+package org.csstudio.display.channelviewer.intro;
 
 import org.osgi.framework.BundleActivator;
 import org.osgi.framework.BundleContext;
