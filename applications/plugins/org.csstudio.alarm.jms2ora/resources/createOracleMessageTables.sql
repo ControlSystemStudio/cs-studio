@@ -24,8 +24,9 @@ CREATE TABLE message
     id                             NUMBER NOT NULL,
     msg_type_id                    NUMBER,
     datum                          TIMESTAMP(6),
-    name VARCHAR2(300),
-    severity VARCHAR2(300),
+    name                           VARCHAR2(300),
+    type                           VARCHAR2(300),
+    severity                       VARCHAR2(300),
     CHECK ("ID" IS NOT NULL) DISABLE NOVALIDATE,
     CONSTRAINT MESSAGE_PK PRIMARY KEY (id) USING INDEX,
     CONSTRAINT message_msg_type_fk1 FOREIGN KEY (msg_type_id) REFERENCES msg_type(id)

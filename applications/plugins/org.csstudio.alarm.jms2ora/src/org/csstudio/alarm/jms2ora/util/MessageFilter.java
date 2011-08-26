@@ -25,6 +25,7 @@ package org.csstudio.alarm.jms2ora.util;
 
 import org.csstudio.alarm.jms2ora.Jms2OraPlugin;
 import org.csstudio.alarm.jms2ora.preferences.PreferenceConstants;
+import org.csstudio.alarm.jms2ora.service.MessageContent;
 import org.eclipse.core.runtime.Platform;
 import org.eclipse.core.runtime.preferences.IPreferencesService;
 import org.slf4j.Logger;
@@ -114,10 +115,6 @@ public class MessageFilter {
      */
     public class WatchDog extends Thread {
         
-        /** the class logger */
-        // private Logger logger = LoggerFactory.getLogger(MessageStorage.class);
-
-
         public WatchDog() {
             MessageFilter.getLogger().info("WatchDog initialized");
         }

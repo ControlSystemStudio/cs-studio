@@ -27,6 +27,8 @@ import java.util.Enumeration;
 import java.util.Hashtable;
 import java.util.Vector;
 
+import org.csstudio.alarm.jms2ora.service.MessageContent;
+
 /**
  * @author Markus Moeller
  *

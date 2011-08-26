@@ -24,6 +24,13 @@
 
 package org.csstudio.alarm.jms2ora;
 
+import org.csstudio.alarm.jms2ora.service.IMessageWriter;
+import org.csstudio.alarm.jms2ora.service.IMetaDataReader;
+import org.csstudio.alarm.jms2ora.service.IPersistenceHandler;
+import org.csstudio.alarm.jms2ora.service.MessagePersistenceServiceTracker;
+import org.csstudio.alarm.jms2ora.service.MessageWriterServiceTracker;
+import org.csstudio.alarm.jms2ora.service.MetaDataReaderServiceTracker;
+import org.csstudio.domain.desy.service.osgi.OsgiServiceUnavailableException;
 import org.osgi.framework.BundleActivator;
 import org.osgi.framework.BundleContext;
 import org.remotercp.common.tracker.GenericServiceTracker;
@@ -37,20 +44,33 @@ import org.slf4j.LoggerFactory;
  */
 public class Jms2OraPlugin implements BundleActivator {
     
-    /** The shared instance */
-    private static Jms2OraPlugin plugin;
-
+    /** The plug-in ID */
+    public static final String PLUGIN_ID = "org.csstudio.alarm.jms2ora";
+    
     /** The class logger */
     private static final Logger LOG = LoggerFactory.getLogger(Jms2OraPlugin.class);
+    
+    /** The shared instance */
+    private static Jms2OraPlugin plugin;
 
     /** The BundleContext instance */
     private BundleContext bundleContext;
 
-    /** The plug-in ID */
-    public static final String PLUGIN_ID = "org.csstudio.alarm.jms2ora";
-
+    /** Service tracker for the XMPP login */
     private GenericServiceTracker<ISessionService> _genericServiceTracker;
     
+    /** Service tracker for the database writer service */
+    private MessageWriterServiceTracker writerServiceTracker;
+    
+    /** Service tracker for the meta data reader service */
+    private MetaDataReaderServiceTracker metaDataServiceTracker;
+    
+    /** Service tracker for the persistence writer service */
+    private MessagePersistenceServiceTracker persistenceServiceTracker;
+    
+    /**
+     * {@inheritDoc}
+     */
     public void start(BundleContext context) throws Exception {
         
         LOG.info("Jms2Ora is starting.");
@@ -61,11 +81,27 @@ public class Jms2OraPlugin implements BundleActivator {
         _genericServiceTracker = new GenericServiceTracker<ISessionService>(
                 context, ISessionService.class);
         _genericServiceTracker.open();
+        
+        metaDataServiceTracker = new MetaDataReaderServiceTracker(context);
+        metaDataServiceTracker.open();
+        
+        persistenceServiceTracker = new MessagePersistenceServiceTracker(context);
+        persistenceServiceTracker.open();
+
+        writerServiceTracker = new MessageWriterServiceTracker(context);
+        writerServiceTracker.open();
     }
 
+    /**
+     * {@inheritDoc}
+     */
     public void stop(BundleContext context) throws Exception {
         plugin = null;
         bundleContext = null;
+        persistenceServiceTracker.close();
+        metaDataServiceTracker.close();
+        writerServiceTracker.close();
+        _genericServiceTracker.close();
     }
 
     /**
@@ -86,12 +122,67 @@ public class Jms2OraPlugin implements BundleActivator {
 		return plugin;
 	}
 
+	/**
+	 * Returns the plugin id
+	 * 
+	 * @return The plugin id
+	 */
     public String getPluginId() {
         return PLUGIN_ID;
     }
     
+    /**
+     * Adds a service listener for the XMPP service
+     * 
+     * @param sessionServiceListener
+     */
 	public void addSessionServiceListener(
 			IGenericServiceListener<ISessionService> sessionServiceListener) {
 		_genericServiceTracker.addServiceListener(sessionServiceListener);
 	}
+	
+	/**
+	 * 
+	 * @return The message writer service
+	 * @throws OsgiServiceUnavailableException
+	 */
+	public IMessageWriter getMessageWriterService() throws OsgiServiceUnavailableException {
+	    
+	    IMessageWriter service = (IMessageWriter) writerServiceTracker.getService();
+        if (service == null) {
+            throw new OsgiServiceUnavailableException("Message writer service unavailable.");
+        }
+
+	    return service;
+	}
+	
+	/**
+	 * 
+	 * @return The meta data reader service
+	 * @throws OsgiServiceUnavailableException
+	 */
+    public IMetaDataReader getMetaDataReaderService() throws OsgiServiceUnavailableException {
+	        
+        IMetaDataReader service = (IMetaDataReader) metaDataServiceTracker.getService();
+        if (service == null) {
+            throw new OsgiServiceUnavailableException("Meta data reader service unavailable.");
+        }
+
+        return service;
+	}
+    
+    /**
+     * 
+     * @return The persistence writer service
+     * @throws OsgiServiceUnavailableException
+     */
+    public IPersistenceHandler getPersistenceWriterService() throws OsgiServiceUnavailableException {
+        
+        IPersistenceHandler service = (IPersistenceHandler) persistenceServiceTracker.getService();
+        if (service == null) {
+            throw new OsgiServiceUnavailableException("Persistence writer service unavailable.");
+        }
+
+        return service;
+    }
 }

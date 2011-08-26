@@ -22,7 +22,7 @@
  *
  */
 
-package org.csstudio.alarm.jms2ora.util;
+package org.csstudio.alarm.jms2ora.service;
 
 import java.io.Serializable;
 import java.util.Enumeration;
@@ -123,8 +123,8 @@ public class MessageContent implements Serializable {
         return this.unknownId;
     }
     
-    public void setDiscard(boolean discard) {
-        this.discard = discard;
+    public void setDiscard(boolean isDiscarded) {
+        this.discard = isDiscarded;
     }
     
     public boolean discard() {
