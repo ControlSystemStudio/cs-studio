@@ -175,26 +175,25 @@ public class MessageDao implements MessageArchiveDao {
                 messageStatement.addBatch();
                 
                 // Table 'MESSAGE_CONTENT'
-                contentStatement.clearParameters();
                 
                 Enumeration<?> lst = o.keys();
                 while(lst.hasMoreElements()) {
                     
+                    contentStatement.clearParameters();
+
                     long propertyId = (Long) lst.nextElement();
                     String value = o.getPropertyValue(propertyId);
     
                     // Replace a single ' with '' (then the entry could be stored into the database)
                     value = value.replace("'", "''");
                     
-                    contentStatement.setLong(1, contentId);
+                    contentStatement.setLong(1, contentId++);
                     contentStatement.setLong(2, messageId);
                     contentStatement.setLong(3, propertyId);
                     contentStatement.setString(4, value);
-                    
-                    contentId++;
+
+                    contentStatement.addBatch();
                 }
-                
-                contentStatement.addBatch();
                 
                 messageId++;
             }
