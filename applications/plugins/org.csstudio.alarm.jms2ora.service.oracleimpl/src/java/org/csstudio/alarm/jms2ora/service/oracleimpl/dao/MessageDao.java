@@ -169,7 +169,7 @@ public class MessageDao implements MessageArchiveDao {
                 messageStatement.setString(3, o.getPropertyValue("EVENTTIME"));
 
                 for (int i = 0;i < n;i++) {
-                    messageStatement.setString((i + 4), keys[i]);
+                    messageStatement.setString((i + 4), o.getPropertyValue(keys[i]));
                 }
                 
                 messageStatement.addBatch();
