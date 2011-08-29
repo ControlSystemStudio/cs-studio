@@ -206,8 +206,7 @@ public class LdapUpdaterFileServiceImpl implements ILdapUpdaterFileService {
     public TimeInstant getAndUpdateLastHeartBeat() throws LdapUpdaterServiceException {
         final File heartBeatFile = _provider.getPreferencesService().getHeartBeatFile();
         try {
-            if (!heartBeatFile.exists()) {
-                heartBeatFile.createNewFile();
+            if (heartBeatFile.createNewFile()) {
                 final Long intervalInS = _provider.getPreferencesService().getLdapStartInterval();
                 return TimeInstantBuilder.fromMillis(heartBeatFile.lastModified()).minusSeconds(intervalInS);
             }

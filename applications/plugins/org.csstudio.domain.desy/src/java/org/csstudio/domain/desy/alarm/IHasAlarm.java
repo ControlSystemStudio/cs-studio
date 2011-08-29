@@ -21,7 +21,7 @@
  */
 package org.csstudio.domain.desy.alarm;
 
-import javax.annotation.CheckForNull;
+import javax.annotation.Nonnull;
 
 
 /**
@@ -41,7 +41,7 @@ public interface IHasAlarm {
     /**
      * Returns the alarm or <code>null</code>.
      */
-    @CheckForNull
+    @Nonnull
     IAlarm getAlarm();
 
 }

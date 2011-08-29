@@ -299,8 +299,6 @@ public final class LdapServiceImpl implements ILdapService {
         // perform the removal of the component itself
         removeLeafComponent(component);
         return true;
-
-        
     }
 
     /**
@@ -434,7 +432,7 @@ public final class LdapServiceImpl implements ILdapService {
      * {@inheritDoc}
      */
     @Override
-    @Nonnull
+    @CheckForNull
     public <T extends Enum<T> & ITreeNodeConfiguration<T>>
     ContentModel<T> getLdapContentModelForSearchResult(@Nonnull final T configurationRoot,
                                                        @Nonnull final ILdapSearchResult result) throws CreateContentModelException, LdapServiceException {
