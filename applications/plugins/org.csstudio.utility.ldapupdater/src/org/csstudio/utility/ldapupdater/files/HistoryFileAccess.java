@@ -166,11 +166,9 @@ public final class HistoryFileAccess {
                                               String.valueOf(numOfRecordsWritten + "/" + numOfRecordsInFile),
                                               String.valueOf(numOfRecordsInLDAP),
                                               System.getProperty("line.separator"));
-            if (!historyFilePath.exists()) {
-                historyFilePath.createNewFile();
+            if(historyFilePath.createNewFile()) {
+                Files.append(line, historyFilePath, Charset.defaultCharset());
             }
-            Files.append(line, historyFilePath, Charset.defaultCharset());
-
         } catch (final IOException e) {
             LOG.error("I/O-Exception while trying to append a line to {}", historyFilePath.getAbsoluteFile());
         }

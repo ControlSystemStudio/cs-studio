@@ -263,7 +263,8 @@ public final class LdapServiceImpl implements ILdapService {
         boolean removeComponent(@Nonnull final T configurationRoot,
                                 @Nonnull final LdapName component) throws InvalidNameException, CreateContentModelException, LdapServiceException {
 
-        LOG.debug("Remove entry incl. subtree:\n{}", component.toString());
+        final String ldapNameString = component.toString();
+        LOG.debug("Remove entry incl. subtree:\n{}", ldapNameString);
 
         // get complete subtree of 'oldLdapName' and create model
         final LdapSearchResult result =
@@ -273,7 +274,7 @@ public final class LdapServiceImpl implements ILdapService {
 
         if (result == null || result.getAnswerSet().isEmpty()) {
             LOG.debug("LDAP query returned empty or null result for component {}\nand filter {}",
-                      component.toString(), any(ATTR_FIELD_OBJECT_CLASS));
+                      ldapNameString, any(ATTR_FIELD_OBJECT_CLASS));
             return false;
         }
 
@@ -281,23 +282,25 @@ public final class LdapServiceImpl implements ILdapService {
             new LdapContentModelBuilder<T>(configurationRoot, result, getLdapNameParser());
         builder.build();
         final ContentModel<T> model = builder.getModel();
-
-        // retrieve component from model
-        final INodeComponent<T> childByLdapName =
-            model.getChildByLdapName(component.toString());
-        if (childByLdapName == null) {
-            LOG.debug("Model does not contain entry for component {}", component.toString());
+        
+        if (model == null) {
             return false;
         }
-
+        // retrieve component from model
+        final INodeComponent<T> childByLdapName = model.getChildByLdapName(ldapNameString);
+        if (childByLdapName == null) {
+            LOG.debug("Model does not contain entry for component {}", ldapNameString);
+            return false;
+        }
         // perform the removal of the subtree
         copyAndRemoveTreeComponent(null,
                                    (ISubtreeNodeComponent<T>) childByLdapName,
                                    false);
         // perform the removal of the component itself
         removeLeafComponent(component);
-
         return true;
+
+        
     }
 
     /**
