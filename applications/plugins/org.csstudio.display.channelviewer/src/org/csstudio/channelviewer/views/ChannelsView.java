@@ -315,8 +315,6 @@ public class ChannelsView extends ViewPart {
 			}
 		});
 		query.execute();
-		// Job job = new FindChannels("search", text, this);
-		// job.schedule();
 	}
 
 	/**
@@ -371,7 +369,42 @@ public class ChannelsView extends ViewPart {
 			tblclmnNumericprop.setText(tagName);
 			tblclmnNumericprop.setWidth(100);
 		}
-
+		// calculate column size since adding removing colums does not trigger a control resize event.
+		Rectangle area = table.getClientArea();
+		Point size = table.computeSize(SWT.DEFAULT, SWT.DEFAULT);
+		ScrollBar vBar = table.getVerticalBar();
+		int width = area.width - table.computeTrim(0, 0, 0, 0).width
+				- vBar.getSize().x;
+		if (size.y > area.height + table.getHeaderHeight()) {
+			// Subtract the scrollbar width from the total column width
+			// if a vertical scrollbar will be required
+			Point vBarSize = vBar.getSize();
+			width -= vBarSize.x;
+		}
+		Point oldSize = table.getSize();
+		TableColumn[] columns;
+		if (oldSize.x > area.width) {
+			// table is getting smaller so make the columns
+			// smaller first and then resize the table to
+			// match the client area width
+			columns = table.getColumns();
+			int newWidth = area.width / columns.length >= 100 ? area.width
+					/ columns.length : 100;
+			for (TableColumn tableColumn : columns) {
+				tableColumn.setWidth(newWidth);
+			}
+		} else {
+			// table is getting bigger so make the table
+			// bigger first and then make the columns wider
+			// to match the client area width
+			columns = table.getColumns();
+			int newWidth = area.width / columns.length >= 100 ? area.width
+					/ columns.length : 100;
+			for (TableColumn tableColumn : columns) {
+				tableColumn.setWidth(newWidth);
+			}
+		}
 		tableViewer.refresh();
+		// table.notifyListeners(0, //new Event()));
 	}
 }
