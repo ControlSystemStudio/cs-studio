@@ -18,13 +18,10 @@ import java.util.concurrent.Executors;
 
 import org.csstudio.utility.channelfinder.Activator;
 import org.csstudio.utility.channelfinder.CFClientManager;
-import org.eclipse.core.runtime.Platform;
 import org.eclipse.core.runtime.Status;
 import org.eclipse.core.runtime.jobs.Job;
-import org.eclipse.core.runtime.preferences.IPreferencesService;
 import org.eclipse.jface.action.IAction;
 import org.eclipse.jface.dialogs.ErrorDialog;
-import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.window.Window;
@@ -38,7 +35,6 @@ public class AddTagAction implements IObjectActionDelegate {
 
 	private Shell shell;
 	private Collection<Channel> channels;
-	final private IPreferencesService prefs;
 
 	/**
 	 * Constructor for AddTagAction.
@@ -48,7 +44,6 @@ public class AddTagAction implements IObjectActionDelegate {
 	public AddTagAction() {
 		super();
 		this.channels = new HashSet<Channel>();
-		this.prefs = Platform.getPreferencesService();
 	}
 
 	/**
@@ -66,7 +61,6 @@ public class AddTagAction implements IObjectActionDelegate {
 	public void run(IAction action) {
 		Collection<String> existingTagNames = null;
 		GetAllTags getAllTags = new GetAllTags();
-		System.out.println(Thread.currentThread().getName());
 		getAllTags.addExceptionListener(new ExceptionListener() {
 
 			@Override
@@ -77,11 +71,11 @@ public class AddTagAction implements IObjectActionDelegate {
 
 							@Override
 							public void run() {
-								Status status = new Status(
-										Status.ERROR,
+								Status status = new Status(Status.ERROR,
 										Activator.PLUGIN_ID,
-										((ChannelFinderException) exception).getMessage(),
-										exception.getCause());
+										((ChannelFinderException) exception)
+												.getMessage(), exception
+												.getCause());
 								ErrorDialog.openError(shell,
 										"Error retrieving all the tag names.",
 										exception.getMessage(), status);
@@ -99,23 +93,19 @@ public class AddTagAction implements IObjectActionDelegate {
 		AddTagDialog dialog = new AddTagDialog(shell, existingTagNames);
 		dialog.setBlockOnOpen(true);
 		if (dialog.open() == Window.OK) {
-			System.out.println(dialog.getValue());
 			String tagName = dialog.getValue();
 			Tag.Builder tag = tag(tagName);
 			if (existingTagNames.contains(tagName)) {
-				System.out.println("using an existing tag.");
 			} else if (tagName != null && !tagName.equals("")) {
-				System.out.println("new Tag");
-				if (!MessageDialog
-						.openConfirm(
-								shell,
-								"Confirm Tag Creation",
-								"Tag: "
-										+ tagName
-										+ " does not exist, would you like to create a new one?"))
-					return;
-				Job create = new CreateTagJob("Create Tag", tag(tagName, null));
-				create.schedule();
+				CreateTagDialog createTagDialog = new CreateTagDialog(shell,
+						tagName);
+				createTagDialog.setBlockOnOpen(true);
+				if (createTagDialog.open() == Window.OK) {
+					Job create = new CreateTagJob("Create Tag", tag(
+							createTagDialog.getTagName(),
+							createTagDialog.getTagOwner()));
+					create.schedule();
+				}
 			}
 			Job job = new AddTag2ChannelsJob("AddTags", channels, tag);
 			job.schedule();
