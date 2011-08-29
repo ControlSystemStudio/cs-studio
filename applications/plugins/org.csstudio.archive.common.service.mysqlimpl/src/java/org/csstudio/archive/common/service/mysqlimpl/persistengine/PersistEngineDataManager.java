@@ -158,36 +158,41 @@ public class PersistEngineDataManager {
         if (noWorkerPresentYet()) {
             return true;
         }
+//
+//
+//
+//        if (isMaxPoolSizeNotReached()) {
+//            submitNewPersistDataWorker(_executor,
+//                                       _prefPeriodInMS,
+//                                       _handlerProvider,
+//                                       _workerId,
+//                                       _submittedWorkers);
+//        } else {
+//            lowerPeriodOfExistingWorker(_executor,
+//                                        _prefPeriodInMS,
+//                                        _handlerProvider,
+//                                        _workerId,
+//                                        _submittedWorkers);
+//        }
 
         return false;
-
-//        if (doesSqlQueueLengthExceedMaxAllowedPacketSize()) {
-//            if (poolSizeExhausted()) {
-//                final Iterator<PersistDataWorker> it = _submittedWorkers.iterator();
-//                final PersistDataWorker oldestWorker = it.next();
-//                final long period = oldestWorker.getPeriodInMS();
-//                if (isPeriodAlreadySetToMinimum(period)) {
-//                    handlePoolExhaustionWithMinimumPeriodCornerCase();
-//                    return false;
-//                }
-//                lowerPeriodAndRemoveOldestWorker(it, oldestWorker);
-//            }
-//            return true;
-//        }
-//        return false;
     }
 
     private boolean noWorkerPresentYet() {
         return _executor.getPoolSize() <= 0;
     }
 
-//    private boolean doesSqlQueueLengthExceedMaxAllowedPacketSize() {
-//        return _sqlStatementBatch.sizeInBytes() > _prefMaxAllowedPacketInBytes;
+//    private boolean isMaxPoolSizeNotReached() {
+//        return _executor.getPoolSize() < _executor.getCorePoolSize();
 //    }
+//    private void lowerPeriodOfExistingWorker(ScheduledThreadPoolExecutor executor,
+//                                             Integer prefPeriodInMS,
+//                                             IBatchQueueHandlerProvider handlerProvider,
+//                                             AtomicInteger workerId,
+//                                             SortedSet<PersistDataWorker> submittedWorkers) {
 //
-//    private boolean poolSizeExhausted() {
-//        return _executor.getPoolSize() >= _executor.getCorePoolSize();
 //    }
+
 //
 //    private boolean isPeriodAlreadySetToMinimum(final long period) {
 //        return Long.valueOf(period).intValue() <= 2000;

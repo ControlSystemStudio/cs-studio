@@ -117,7 +117,6 @@ public abstract class AbstractDaoTestSetup {
      * @throws SQLException
      * @throws ArchiveConnectionException
      */
-    @SuppressWarnings("unused")
     protected void beforeHook() throws ArchiveConnectionException, SQLException {
         // Empty on purpose
     }
@@ -150,7 +149,6 @@ public abstract class AbstractDaoTestSetup {
      * @throws SQLException
      * @throws ArchiveConnectionException
      */
-    @SuppressWarnings("unused")
     protected void afterHook() throws ArchiveConnectionException, SQLException {
         // Empty on purpose
     }
