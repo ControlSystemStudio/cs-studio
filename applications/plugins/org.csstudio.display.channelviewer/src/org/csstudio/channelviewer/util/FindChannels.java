@@ -1,6 +1,7 @@
 package org.csstudio.channelviewer.util;
 
 import gov.bnl.channelfinder.api.Channel;
+import gov.bnl.channelfinder.api.ChannelFinderException;
 
 import java.util.Collection;
 import java.util.HashSet;
@@ -9,11 +10,13 @@ import java.util.Map;
 import java.util.logging.Logger;
 
 import org.csstudio.channelviewer.views.ChannelsView;
+import org.csstudio.utility.channelfinder.Activator;
 import org.csstudio.utility.channelfinder.CFClientManager;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
 import org.eclipse.core.runtime.jobs.Job;
+import org.eclipse.jface.dialogs.ErrorDialog;
 import org.eclipse.ui.PlatformUI;
 
 public class FindChannels extends Job {
@@ -44,9 +47,12 @@ public class FindChannels extends Job {
 					channelFinderView.updateList(channels);
 				}
 			});
-		} catch (Exception e) {
+		} catch (ChannelFinderException e) {
+			Status status = new Status(Status.ERROR, Activator.PLUGIN_ID, e
+					.getStatus().getStatusCode(), e.getMessage(), e);
 			logger.severe("Failed to find channels from channelfinder:"
 					+ e.getMessage());
+			return status;
 		}
 		monitor.done();
 		return Status.OK_STATUS;

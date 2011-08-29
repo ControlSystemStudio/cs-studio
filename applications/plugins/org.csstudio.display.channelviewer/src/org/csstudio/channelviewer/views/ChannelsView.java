@@ -1,6 +1,7 @@
 package org.csstudio.channelviewer.views;
 
 import gov.bnl.channelfinder.api.Channel;
+import gov.bnl.channelfinder.api.ChannelFinderException;
 import gov.bnl.channelfinder.api.ChannelUtil;
 
 import java.util.ArrayList;
@@ -8,11 +9,17 @@ import java.util.Collection;
 import java.util.logging.Logger;
 
 import org.csstudio.channelviewer.util.FindChannels;
+import org.csstudio.utility.channelfinder.Activator;
+import org.csstudio.utility.channelfinder.ChannelQuery;
+import org.csstudio.utility.channelfinder.ChannelQueryListener;
+import org.csstudio.utility.channelfinder.ChannelQuery.Builder;
+import org.eclipse.core.runtime.Status;
 import org.eclipse.core.runtime.jobs.Job;
 import org.eclipse.jface.action.IMenuListener;
 import org.eclipse.jface.action.IMenuManager;
 import org.eclipse.jface.action.MenuManager;
 import org.eclipse.jface.action.Separator;
+import org.eclipse.jface.dialogs.ErrorDialog;
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.viewers.CellLabelProvider;
 import org.eclipse.jface.viewers.TableViewer;
@@ -39,6 +46,7 @@ import org.eclipse.swt.widgets.Table;
 import org.eclipse.swt.widgets.TableColumn;
 import org.eclipse.swt.widgets.Text;
 import org.eclipse.ui.IWorkbenchActionConstants;
+import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.part.ViewPart;
 
 import com.swtdesigner.TableViewerColumnSorter;
@@ -53,7 +61,7 @@ public class ChannelsView extends ViewPart {
 	 * The ID of the view as specified by the extension.
 	 */
 	public static final String ID = "org.csstudio.channelfinder.views.ChannelsView";
-	private static Logger logger = Logger.getLogger(ID);
+	private static Logger log = Logger.getLogger(ID);
 
 	private static int instance;
 	private Text text;
@@ -230,9 +238,9 @@ public class ChannelsView extends ViewPart {
 		text.addSelectionListener(new SelectionAdapter() {
 			public void widgetDefaultSelected(SelectionEvent e) {
 				if (e.detail == SWT.CANCEL) {
-					System.out.println("Search cancelled");
+					log.info("Search cancelled");
 				} else {
-					System.out.println("Searching for: " + text.getText());
+					log.info("Searching for: " + text.getText());
 					search(text.getText());
 				}
 			}
@@ -266,9 +274,49 @@ public class ChannelsView extends ViewPart {
 					"Are you sure you want to search for all channels?"))
 				return;
 		}
+		final ChannelQuery query = Builder.query(text).create();
+		final ChannelsView view = this;
+		query.addChannelQueryListener(new ChannelQueryListener() {
 
-		Job job = new FindChannels("search", text, this);
-		job.schedule();
+			@Override
+			public void getQueryResult() {
+				PlatformUI.getWorkbench().getDisplay()
+						.asyncExec(new Runnable() {
+							@Override
+							public void run() {
+								Exception e = query.getLastException();
+								if (e == null) {
+									view.updateList(query.getResult());
+								} else if (e instanceof ChannelFinderException) {
+									e.printStackTrace();
+									Status status = new Status(Status.ERROR,
+											Activator.PLUGIN_ID,
+											((ChannelFinderException) e)
+													.getStatus()
+													.getStatusCode(), e
+													.getMessage(), e.getCause());
+									ErrorDialog.openError(view.getSite()
+											.getShell(),
+											"Error retrieving channels", e
+													.getMessage(), status);
+								} else {
+									e.printStackTrace();
+									Status status = new Status(Status.ERROR,
+											Activator.PLUGIN_ID,
+											e.getMessage(), e);
+									ErrorDialog.openError(view.getSite()
+											.getShell(),
+											"Error retrieving channels", e
+													.getMessage(), status);
+
+								}
+							}
+						});
+			}
+		});
+		query.execute();
+		// Job job = new FindChannels("search", text, this);
+		// job.schedule();
 	}
 
 	/**
