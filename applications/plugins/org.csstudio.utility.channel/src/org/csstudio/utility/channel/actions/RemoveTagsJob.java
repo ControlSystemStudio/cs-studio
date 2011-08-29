@@ -12,6 +12,7 @@ import gov.bnl.channelfinder.api.ChannelFinderException;
 import java.util.Collection;
 import java.util.Iterator;
 
+import org.csstudio.utility.channelfinder.Activator;
 import org.csstudio.utility.channelfinder.CFClientManager;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
@@ -65,7 +66,9 @@ public class RemoveTagsJob extends Job {
 				monitor.worked(1);
 			}
 		} catch (ChannelFinderException e) {
-			e.printStackTrace();
+			return new Status(Status.ERROR, Activator.PLUGIN_ID,
+					((ChannelFinderException) e).getCause().getMessage(),
+					e.getCause());
 		}
 		monitor.done();
 		return Status.OK_STATUS;
