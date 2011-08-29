@@ -48,28 +48,20 @@ public class EngineHttpServer {
      *  @throws Exception on error
      */
     public EngineHttpServer(@Nonnull final EngineModel model,
-                            @Nonnull final IServiceProvider provider,
-                            @Nonnull final Integer port) throws EngineHttpServerException {
+                            @Nonnull final IServiceProvider provider) throws EngineHttpServerException {
         final BundleContext context =
             ArchiveEngineActivator.getDefault().getBundle().getBundleContext();
         HttpService httpService;
         try {
+            final Integer port = model.getHttpPort();
+            if (port == null) {
+                throw new EngineHttpServerException("Port is not present in model. HTTP server couldn't be started.", null);
+            }
             httpService = createHttpService(context, port);
 
-            final HttpContext httpContext = httpService.createDefaultHttpContext();
-            httpService.registerResources("/", "/webroot", httpContext);
+            createContextAndRegisterServlets(model, provider, httpService);
 
-            httpService.registerServlet("/main", new MainResponse(model, provider.getPreferencesService().getVersion()), null, httpContext);
-            httpService.registerServlet("/groups", new GroupsResponse(model), null, httpContext);
-            httpService.registerServlet("/disconnected", new DisconnectedResponse(model), null, httpContext);
-            httpService.registerServlet("/group", new GroupResponse(model), null, httpContext);
-            httpService.registerServlet("/channel", new ChannelResponse(model), null, httpContext);
-            httpService.registerServlet("/channels", new ChannelListResponse(model), null, httpContext);
-            httpService.registerServlet("/environment", new EnvironmentResponse(model), null, httpContext);
-            httpService.registerServlet("/restart", new RestartResponse(model), null, httpContext);
-            httpService.registerServlet("/reset", new ResetResponse(model), null, httpContext);
-            httpService.registerServlet("/stop", new StopResponse(model), null, httpContext);
-            httpService.registerServlet("/debug", new DebugResponse(model), null, httpContext);
+            LOG.info("Engine HTTP Server port: {}", port);
 
         } catch (final InvalidSyntaxException e) {
             throw new EngineHttpServerException(EX_MSG, e);
@@ -80,7 +72,25 @@ public class EngineHttpServer {
         } catch (final Exception e) {
             throw new EngineHttpServerException(EX_MSG, e);
         }
-        LOG.info("Engine HTTP Server port {}", port);
+    }
+
+    private void createContextAndRegisterServlets(@Nonnull final EngineModel model,
+                                                  @Nonnull final IServiceProvider provider,
+                                                  @Nonnull final HttpService httpService) throws NamespaceException, ServletException {
+        final HttpContext httpContext = httpService.createDefaultHttpContext();
+        httpService.registerResources("/", "/webroot", httpContext);
+
+        httpService.registerServlet("/main", new MainResponse(model, provider.getPreferencesService().getVersion()), null, httpContext);
+        httpService.registerServlet("/groups", new GroupsResponse(model), null, httpContext);
+        httpService.registerServlet("/disconnected", new DisconnectedResponse(model), null, httpContext);
+        httpService.registerServlet("/group", new GroupResponse(model), null, httpContext);
+        httpService.registerServlet("/channel", new ChannelResponse(model), null, httpContext);
+        httpService.registerServlet("/channels", new ChannelListResponse(model), null, httpContext);
+        httpService.registerServlet("/environment", new EnvironmentResponse(model), null, httpContext);
+        httpService.registerServlet("/restart", new RestartResponse(model), null, httpContext);
+        httpService.registerServlet("/reset", new ResetResponse(model), null, httpContext);
+        httpService.registerServlet("/stop", new StopResponse(model), null, httpContext);
+        httpService.registerServlet("/debug", new DebugResponse(model), null, httpContext);
     }
 
     /** Stop the server */

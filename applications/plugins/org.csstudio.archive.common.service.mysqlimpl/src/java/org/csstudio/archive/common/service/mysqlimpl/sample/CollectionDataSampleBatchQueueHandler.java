@@ -125,7 +125,7 @@ public class CollectionDataSampleBatchQueueHandler extends BatchQueueHandlerSupp
                                            } catch (final TypeSupportException e) {
                                                LOG.error("Type support missing for " + input.getValue().getClass().getName(), e);
                                            }
-                                           return null;
+                                           return "";
                                        }
                                     });
         return sqlStatementStrings;

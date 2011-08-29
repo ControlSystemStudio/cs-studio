@@ -32,6 +32,7 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.concurrent.ConcurrentLinkedQueue;
 
+import javax.annotation.CheckForNull;
 import javax.annotation.Nonnull;
 
 import org.csstudio.archive.common.service.mysqlimpl.batch.BatchQueueHandlerSupport;
@@ -108,7 +109,7 @@ public class ArchiveSampleBatchQueueHandler extends BatchQueueHandlerSupport<Arc
             Collections2.transform(elements,
                                    new Function<ArchiveSample, String>() {
                                        @Override
-                                       @Nonnull
+                                       @CheckForNull
                                        public String apply(@Nonnull final ArchiveSample input) {
                                            try {
                                                final String value =
@@ -124,6 +125,6 @@ public class ArchiveSampleBatchQueueHandler extends BatchQueueHandlerSupport<Arc
                                            return null;
                                        }
                                     });
-        return Collections.singleton(sqlWithoutValues.replace(VALUES_WILDCARD, Joiner.on(",").join(values)) + ";");
+        return Collections.singleton(sqlWithoutValues.replace(VALUES_WILDCARD, Joiner.on(",").skipNulls().join(values)) + ";");
     }
 }

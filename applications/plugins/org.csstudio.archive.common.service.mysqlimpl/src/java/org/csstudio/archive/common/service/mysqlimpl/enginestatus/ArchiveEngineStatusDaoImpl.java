@@ -104,7 +104,7 @@ public class ArchiveEngineStatusDaoImpl extends AbstractArchiveDao implements IA
      * {@inheritDoc}
      */
     @Override
-    @Nonnull
+    @CheckForNull
     public IArchiveEngineStatus retrieveLastEngineStatus(@Nonnull final ArchiveEngineId id,
                                                          @Nonnull final TimeInstant latestAliveTime) throws ArchiveDaoException {
 

@@ -25,7 +25,6 @@ import java.sql.Connection;
 import java.sql.DatabaseMetaData;
 import java.sql.SQLException;
 
-import javax.annotation.CheckForNull;
 import javax.annotation.Nonnull;
 
 import org.csstudio.archive.common.service.ArchiveConnectionException;
@@ -191,8 +190,7 @@ public class ArchiveConnectionHandler {
 
     }
 
-
-    @CheckForNull
+    @Nonnull
     public String getDatabaseName() {
         return _dataSource.getDatabaseName();
     }

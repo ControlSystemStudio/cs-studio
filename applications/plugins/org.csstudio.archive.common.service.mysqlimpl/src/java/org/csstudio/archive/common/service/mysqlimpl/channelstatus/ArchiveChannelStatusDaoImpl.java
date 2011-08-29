@@ -128,12 +128,13 @@ public class ArchiveChannelStatusDaoImpl extends AbstractArchiveDao implements I
                 }
                 closeSqlResources(rs, null, _selectLatestChannelStatusStmt);
             }
+            return resultList;
         } catch (final Exception e) {
             handleExceptions(EXC_MSG, e);
         } finally {
             closeSqlResources(null, stmt, _selectLatestChannelStatusStmt);
         }
-        return null;
+        return Collections.emptyList();
     }
 
 
