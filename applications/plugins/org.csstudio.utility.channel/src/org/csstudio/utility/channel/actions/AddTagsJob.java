@@ -6,6 +6,7 @@ import gov.bnl.channelfinder.api.Tag;
 
 import java.util.Collection;
 
+import org.csstudio.utility.channelfinder.CFClientManager;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
@@ -33,8 +34,7 @@ public class AddTagsJob extends Job {
 	@Override
 	protected IStatus run(IProgressMonitor monitor) {
 		monitor.beginTask("Adding Tags to channels", IProgressMonitor.UNKNOWN);
-//		System.out.println("adding "+tag.getName()+" to "+channels.getChannelNames());
-//		ChannelFinderClient.getInstance().add(tag, getCSSChannelNames(channels));
+		CFClientManager.getClient().update(tag, getCSSChannelNames(channels));
 		monitor.done();
         return Status.OK_STATUS;
 	}
