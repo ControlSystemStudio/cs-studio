@@ -13,14 +13,18 @@
          </run>
       </application>
    </extension>
+     
    <extension
-         point="org.eclipse.ui.perspectives">
-      <perspective
-            class="org.csstudio.basic.epics.BasicPerspective"
-            icon="icons/css16.png"
-            id="org.csstudio.basic.epics.BasicPerspective"
-            name="Control System Studio">
-      </perspective>
+         point="org.csstudio.startup.module">
+      <startupParameters
+            class="org.csstudio.utility.product.StartupParameters">
+      </startupParameters>
+      <project
+            class="org.csstudio.startup.module.defaults.DefaultProject">
+      </project>
+      <workbench
+            class="org.csstudio.utility.product.Workbench">
+      </workbench>
    </extension>
    <extension
          id="product"
@@ -99,16 +103,6 @@
             file="toc.xml"
             primary="true">
       </toc>
-   </extension>
-     
-   <extension
-         point="org.csstudio.startup.module">
-      <workbench
-            class="org.csstudio.basic.epics.BasicWorkbenchExt">
-      </workbench>
-      <project
-            class="org.csstudio.startup.module.defaults.DefaultProject">
-      </project>
    </extension>
    
 </plugin>
