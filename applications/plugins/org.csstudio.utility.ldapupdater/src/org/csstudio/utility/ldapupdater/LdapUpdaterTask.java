@@ -21,7 +21,11 @@
  */
 package org.csstudio.utility.ldapupdater;
 
+import javax.annotation.Nonnull;
+
 import org.csstudio.utility.ldapupdater.action.UpdateLdapAction;
+import org.csstudio.utility.ldapupdater.mail.NotificationMailer;
+import org.csstudio.utility.ldapupdater.preferences.LdapUpdaterPreferencesService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -36,6 +40,15 @@ public class LdapUpdaterTask implements Runnable {
 
     private static final Logger LOG = LoggerFactory.getLogger(LdapUpdaterTask.class);
 
+    private final LdapUpdaterPreferencesService _prefsService;
+
+    /**
+     * Constructor.
+     */
+    public LdapUpdaterTask(@Nonnull final LdapUpdaterPreferencesService prefsService) {
+        _prefsService = prefsService;
+    }
+
 
     /**
      * {@inheritDoc}
@@ -47,6 +60,9 @@ public class LdapUpdaterTask implements Runnable {
             new UpdateLdapAction().updateLdapFromIOCFiles();
         } catch (final Throwable t) {
             LOG.error("Throwable in LDAP Updater.", t);
+            NotificationMailer.sendUnknownErrorMessage(_prefsService.getSmtpHostAddress(),
+                                                       "Message:\n" + t.getMessage() + "\n\nCause:\n" + t.getCause(),
+                                                       _prefsService.getDefaultResponsiblePerson());
         }
     }
 }

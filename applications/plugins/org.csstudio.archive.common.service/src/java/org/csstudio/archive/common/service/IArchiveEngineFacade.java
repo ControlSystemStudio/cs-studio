@@ -151,7 +151,15 @@ public interface IArchiveEngineFacade {
      * @return
      */
     @CheckForNull
-    IArchiveChannelStatus getChannelStatusByChannelName(@Nonnull final String name)
+    IArchiveChannelStatus getLatestChannelStatusByChannelName(@Nonnull final String name)
                                                         throws ArchiveServiceException;
+
+    /**
+     * @param channels
+     * @return
+     * @throws ArchiveServiceException
+     */
+    @Nonnull
+    Collection<IArchiveChannelStatus> getLatestChannelsStatusBy(@Nonnull final Collection<ArchiveChannelId> channels) throws ArchiveServiceException;
 
 }

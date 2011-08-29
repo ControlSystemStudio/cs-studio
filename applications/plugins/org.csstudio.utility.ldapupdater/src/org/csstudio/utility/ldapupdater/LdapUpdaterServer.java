@@ -28,7 +28,6 @@ import java.util.concurrent.ScheduledFuture;
 import java.util.concurrent.TimeUnit;
 
 import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
 
 import org.csstudio.domain.desy.net.HostAddress;
 import org.csstudio.domain.desy.time.TimeInstant;
@@ -97,9 +96,8 @@ public class LdapUpdaterServer implements IApplication,
      */
     @Override
     @Nonnull
-    public final Object start(@Nullable final IApplicationContext context)
+    public final Object start(@Nonnull final IApplicationContext context)
     throws Exception {
-
 
         final long startTimeSec = _prefsService.getLdapAutoStart();
         final long intervalSec = _prefsService.getLdapStartInterval();
@@ -113,7 +111,7 @@ public class LdapUpdaterServer implements IApplication,
         logStartAndPeriod(startTimeSec, intervalSec);
 
         final ScheduledFuture<?> taskHandle =
-            _updaterExecutor.scheduleAtFixedRate(new LdapUpdaterTask(),
+            _updaterExecutor.scheduleAtFixedRate(new LdapUpdaterTask(_prefsService),
                                                  delayInS,
                                                  intervalSec,
                                                  TimeUnit.SECONDS);

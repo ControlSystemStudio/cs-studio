@@ -80,7 +80,7 @@ public interface ILdapService {
     <T extends Enum<T> & ITreeNodeConfiguration<T>> ILdapContentModelBuilder<T>
         getLdapContentModelBuilder(@Nonnull final ContentModel<T> model) throws LdapServiceException;
 
-    @Nonnull
+    @CheckForNull
     <T extends Enum<T> & ITreeNodeConfiguration<T>>
     ContentModel<T> getLdapContentModelForSearchResult(@Nonnull final T configurationRoot,
                                                        @Nonnull final ILdapSearchResult result) throws CreateContentModelException, LdapServiceException;

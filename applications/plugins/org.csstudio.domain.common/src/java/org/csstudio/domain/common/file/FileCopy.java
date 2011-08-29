@@ -29,6 +29,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 
+import javax.annotation.CheckForNull;
 import javax.annotation.Nonnull;
 
 /**
@@ -72,13 +73,13 @@ public final class FileCopy {
      */
     public static void copyDirectory(@Nonnull final File source,
                                      @Nonnull final File destination,
-                                     @Nonnull final FileFilter filter) throws IOException {
+                                     @CheckForNull final FileFilter filter) throws IOException {
         final File nextDirectory = new File(destination, source.getName());
         if (!nextDirectory.exists() && !nextDirectory.mkdirs()) {// create the directory if necessary...
             throw new IOException("Destination dir could not be created.");
         }
         if (source.isDirectory()) {
-            for (final File file : source.listFiles(filter)) {
+            for (final File file : (filter != null ? source.listFiles(filter) : source.listFiles())) {
                 if (file.isDirectory()) {
                     copyDirectory(file, nextDirectory, filter);
                 } else {

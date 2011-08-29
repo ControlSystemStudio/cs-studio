@@ -114,7 +114,7 @@ public class WriteExecutor {
                                                         _channelMap.values(),
                                                         writePeriodInMS);
         _writeSamplesExecutor.scheduleAtFixedRate(writeWorker,
-                                                  500L,
+                                                  0L,
                                                   writePeriodInMS,
                                                   TimeUnit.MILLISECONDS);
         return writeWorker;

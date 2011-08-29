@@ -26,8 +26,7 @@ import java.sql.PreparedStatement;
 import java.sql.SQLException;
 import java.util.Collection;
 import java.util.Collections;
-import java.util.List;
-import java.util.concurrent.BlockingQueue;
+import java.util.Queue;
 
 import javax.annotation.Nonnull;
 
@@ -47,19 +46,19 @@ import org.csstudio.domain.desy.typesupport.TypeSupportException;
 public abstract class BatchQueueHandlerSupport<T> extends AbstractTypeSupport<T> {
     // CHECKSTYLE ON : AbstractClassName
 
-    private String _database;
-    private final BlockingQueue<T> _queue;
+    private String _sqlStmtString;
+    private final Queue<T> _queue;
 
 
     /**
      * Constructor.
      */
     public BatchQueueHandlerSupport(@Nonnull final Class<T> typeClass,
-                                    @Nonnull final String database,
-                                    @Nonnull final BlockingQueue<T> queue) {
+                                    @Nonnull final String sqlStmtString,
+                                    @Nonnull final Queue<T> queue) {
         super(typeClass, BatchQueueHandlerSupport.class);
 
-        _database = database;
+        _sqlStmtString = sqlStmtString;
         _queue = queue;
     }
 
@@ -93,18 +92,13 @@ public abstract class BatchQueueHandlerSupport<T> extends AbstractTypeSupport<T>
         final Class<T> type = (Class<T>) newEntries.iterator().next().getClass();
         final BatchQueueHandlerSupport<T> support = (BatchQueueHandlerSupport<T>) findTypeSupportForOrThrowTSE(BatchQueueHandlerSupport.class, type);
 
-        final BlockingQueue<T> queue = support.getQueue();
+        final Queue<T> queue = support.getQueue();
         queue.addAll(newEntries);
     }
 
     @Nonnull
-    protected String getDatabase() {
-        return _database;
-    }
-
-    @Nonnull
-    public void setDatabase(@Nonnull final String dbName) {
-        _database = dbName;
+    public String getSqlStatementString() {
+        return _sqlStmtString;
     }
 
     public void applyBatch(@Nonnull final PreparedStatement stmt, @Nonnull final T element) throws ArchiveDaoException {
@@ -121,17 +115,31 @@ public abstract class BatchQueueHandlerSupport<T> extends AbstractTypeSupport<T>
 
     @Nonnull
     public PreparedStatement createNewStatement(@Nonnull final Connection connection) throws SQLException {
-        final String sql = composeSqlString();
+        final String sql = getSqlStatementString();
         return connection.prepareStatement(sql);
     }
-    @Nonnull
-    protected abstract String composeSqlString();
 
     @Nonnull
-    public BlockingQueue<T> getQueue() {
+    public Queue<T> getQueue() {
         return _queue;
     }
 
     @Nonnull
-    public abstract Collection<String> convertToStatementString(@Nonnull final List<T> elements);
+    public abstract Collection<String> convertToStatementString(@Nonnull final Collection<T> elements);
+
+    @Nonnull
+    public Class<T> getHandlerType() {
+        return getType();
+    }
+
+    /**
+     * For test purposes only, see calling method. This is a code smell, definitely, but unfortunately
+     * it is not easily posssible to intercept the life cycle mgmt of classes by the eclipse rcp framework.
+     * For more details see the caller of this method.
+     */
+    public void setDatabase(@Nonnull final String databaseName) {
+        _sqlStmtString = _sqlStmtString.replaceFirst("^INSERT INTO [^\\.]*", "INSERT INTO " + databaseName);
+        _sqlStmtString = _sqlStmtString.replaceFirst("^UPDATE [^\\.]*", "UPDATE " + databaseName);
+
+    }
 }

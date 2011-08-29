@@ -47,6 +47,7 @@ import org.csstudio.utility.ldap.treeconfiguration.LdapEpicsControlsConfiguratio
 import org.csstudio.utility.treemodel.ContentModel;
 import org.csstudio.utility.treemodel.CreateContentModelException;
 import org.csstudio.utility.treemodel.INodeComponent;
+import org.csstudio.utility.treemodel.ISubtreeNodeComponent;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
@@ -156,18 +157,22 @@ public class LdapContentModelBuilderHeadlessTest {
     public void testBothNameCaches() {
 
         INodeComponent<LdapEpicsControlsConfiguration> comp = MODEL_TWO.getByTypeAndSimpleName(IOC, ECON_1);
+        Assert.assertNotNull(comp);
 
         Assert.assertEquals(createLdapName(IOC.getNodeTypeName(), ECON_1,
                                            COMPONENT.getNodeTypeName(), ECOM_1,
                                            FACILITY.getNodeTypeName(), EFAN_NAME,
                                            UNIT.getNodeTypeName(), UNIT.getUnitTypeValue()), comp.getLdapName());
 
+        final ISubtreeNodeComponent<LdapEpicsControlsConfiguration> parent = comp.getParent();
+        Assert.assertNotNull(parent);
         Assert.assertEquals(createLdapName(COMPONENT.getNodeTypeName(), ECOM_1,
                                            FACILITY.getNodeTypeName(), EFAN_NAME,
-                                           UNIT.getNodeTypeName(), UNIT.getUnitTypeValue()), comp.getParent().getLdapName());
+                                           UNIT.getNodeTypeName(), UNIT.getUnitTypeValue()), parent.getLdapName());
 
 
         comp = MODEL_TWO.getByTypeAndSimpleName(LdapEpicsControlsConfiguration.RECORD, EREN_1111);
+        Assert.assertNotNull(comp);
 
         Assert.assertEquals(createLdapName(RECORD.getNodeTypeName(), EREN_1111,
                                            IOC.getNodeTypeName(), ECON_1,
@@ -178,7 +183,7 @@ public class LdapContentModelBuilderHeadlessTest {
         Assert.assertEquals(createLdapName(IOC.getNodeTypeName(), ECON_1,
                                            COMPONENT.getNodeTypeName(), ECOM_1,
                                            FACILITY.getNodeTypeName(), EFAN_NAME,
-                                           UNIT.getNodeTypeName(), UNIT.getUnitTypeValue()), comp.getParent().getLdapName());
+                                           UNIT.getNodeTypeName(), UNIT.getUnitTypeValue()), parent.getLdapName());
 
     }
 }

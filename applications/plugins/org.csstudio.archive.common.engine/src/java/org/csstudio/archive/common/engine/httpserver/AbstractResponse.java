@@ -37,13 +37,16 @@ abstract class AbstractResponse extends HttpServlet {
     /** Model from which to serve info */
     private final EngineModel _model;
 
-
-
     /** Construct <code>HttpServlet</code>
      *  @param title Page title
      */
     protected AbstractResponse(@Nonnull final EngineModel model) {
         this._model = model;
+    }
+
+    @Nonnull
+    protected static String numOf(@Nonnull final String org) {
+        return "#" + org;
     }
 
     @Nonnull
