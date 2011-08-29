@@ -7,7 +7,7 @@
    </configIni>
 
    <launcherArgs>
-      <programArgs>-consoleLog -engine TestEngine -port 4811</programArgs>
+      <programArgs>-consoleLog</programArgs>
       <programArgsSol>-pluginCustomization plugin_customization_solaris.ini</programArgsSol>
       <programArgsWin>-pluginCustomization plugin_customization.ini</programArgsWin>
       <vmArgs>-Djava.awt.headless=true -Xms64m -Xmx256m</vmArgs>
@@ -16,7 +16,7 @@
 
    <windowImages/>
 
-   <launcher name="DesyArchiveEngine">
+   <launcher name="mysql-archiver">
       <solaris/>
       <win useIco="false">
          <bmp/>
