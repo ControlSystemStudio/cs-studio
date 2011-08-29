@@ -11,6 +11,16 @@
 #  mysqldump -u username -p -l alarm >alarm_snapshot.sql
 #  mysql -u username -p alarm <alarm_snapshot.sql
 
+
+# ----------------------
+
+DROP DATABASE IF EXISTS ALARM;
+
+CREATE DATABASE ALARM;
+
+USE ALARM;
+
+
 --
 -- TABLE: ALARM.ALARM_TREE 
 --
