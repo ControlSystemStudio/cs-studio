@@ -39,4 +39,11 @@
             primary="true">
       </toc>
    </extension>
+   <extension
+         point="org.eclipse.ui.elementFactories">
+      <factory
+            class="org.csstudio.sns.mpsbypasses.ui.BypassEditorInput"
+            id="org.csstudio.sns.mpsbypasses.editorfactory">
+      </factory>
+   </extension>
 </plugin>
