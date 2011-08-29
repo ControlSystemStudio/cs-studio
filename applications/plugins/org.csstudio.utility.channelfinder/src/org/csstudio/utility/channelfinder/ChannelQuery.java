@@ -82,6 +82,9 @@ public class ChannelQuery {
 		return this.result;		
 	}
 	
+	public Collection<Channel> getLastValidResult(){
+		return this.lastValidResult;
+	}
 	
 	public Exception getLastException(){
 		return this.lastException.getAndSet(null);		
