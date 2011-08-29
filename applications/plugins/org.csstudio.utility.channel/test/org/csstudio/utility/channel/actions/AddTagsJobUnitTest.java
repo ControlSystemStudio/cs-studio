@@ -58,7 +58,7 @@ public class AddTagsJobUnitTest {
 		Collection<Channel> channels = new ArrayList<Channel>();
 		channels.add(ch1.build());
 		channels.add(ch2.build());
-		Job job = new AddTagsJob("addTags", channels, tag("cssUnitTestTag",
+		Job job = new AddTag2ChannelsJob("addTags", channels, tag("cssUnitTestTag",
 				"tagOwner"));
 		job.schedule();
 		try {

@@ -2,10 +2,14 @@ package org.csstudio.utility.channel.actions;
 
 import gov.bnl.channelfinder.api.Channel;
 import gov.bnl.channelfinder.api.ChannelFinderClient;
+import gov.bnl.channelfinder.api.ChannelFinderException;
 import gov.bnl.channelfinder.api.Tag;
 
 import java.util.Collection;
 
+import javax.print.attribute.standard.Severity;
+
+import org.csstudio.utility.channelfinder.Activator;
 import org.csstudio.utility.channelfinder.CFClientManager;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
@@ -13,7 +17,7 @@ import org.eclipse.core.runtime.Status;
 import org.eclipse.core.runtime.jobs.Job;
 import static org.csstudio.utility.channel.CSSChannelUtils.*;
 
-public class AddTagsJob extends Job {
+public class AddTag2ChannelsJob extends Job {
 
 	private Tag.Builder tag;
 	private Collection<Channel> channels;
@@ -25,7 +29,7 @@ public class AddTagsJob extends Job {
 	 * @param channels - collection of channels to which the tag is to be added
 	 * @param tag - builder of the the tag to be added
 	 */
-	public AddTagsJob(String name, Collection<Channel> channels, Tag.Builder tag) {
+	public AddTag2ChannelsJob(String name, Collection<Channel> channels, Tag.Builder tag) {
 		super(name);
 		this.channels = channels;
 		this.tag = tag;
@@ -33,8 +37,17 @@ public class AddTagsJob extends Job {
 
 	@Override
 	protected IStatus run(IProgressMonitor monitor) {
-		monitor.beginTask("Adding Tags to channels", IProgressMonitor.UNKNOWN);
-		CFClientManager.getClient().update(tag, getCSSChannelNames(channels));
+		monitor.beginTask("Adding Tags to channels", IProgressMonitor.UNKNOWN);		
+		try {
+			CFClientManager.getClient().update(tag, getCSSChannelNames(channels));
+		} catch (ChannelFinderException e) {
+			return new Status(Status.ERROR,
+					Activator.PLUGIN_ID,
+					((ChannelFinderException) e)
+							.getStatus()
+							.getStatusCode(), e
+							.getMessage(), e.getCause());
+		}		
 		monitor.done();
         return Status.OK_STATUS;
 	}
