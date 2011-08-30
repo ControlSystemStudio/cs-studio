@@ -82,7 +82,9 @@ public class FileCopyUnitTest {
         final File tmpSource = _testFolder.newFolder("source.folder");
 
         final File tmpSubFolderSource = new File(tmpSource, "subfolder");
-        tmpSubFolderSource.mkdir();
+        if(!tmpSubFolderSource.mkdir()) {
+            Assert.fail("tmp folder creation failed");
+        }
 
         final File tmpTargetFolder = _testFolder.newFolder("target.folder");
 
@@ -117,14 +119,26 @@ public class FileCopyUnitTest {
         if (!file.isFile()) {
             throw new IllegalArgumentException("File " + file.getName() + " cannot be read into string (is it a directory?).");
         }
-        final FileInputStream fin =  new FileInputStream(file);
-        final BufferedReader myInput = new BufferedReader(new InputStreamReader(fin));
-        final StringBuilder sb = new StringBuilder();
-        String line = null;
-        while ((line = myInput.readLine()) != null) {
-                   sb.append(line).append("\n");
+
+        FileInputStream fin = null;
+        BufferedReader myInput = null;
+        try {
+            fin =  new FileInputStream(file);
+            myInput = new BufferedReader(new InputStreamReader(fin));
+            final StringBuilder sb = new StringBuilder();
+            String line = null;
+            while ((line = myInput.readLine()) != null) {
+                       sb.append(line).append("\n");
+            }
+            return sb.toString();
+        } finally {
+            if (fin != null) {
+                fin.close();
+            }
+            if (myInput != null) {
+                myInput.close();
+            }
         }
-        return sb.toString();
     }
 
 }

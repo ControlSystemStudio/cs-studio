@@ -21,8 +21,6 @@
  */
 package org.csstudio.archive.common.service.mysqlimpl;
 
-import java.io.File;
-
 import javax.annotation.Nonnull;
 
 import org.csstudio.domain.desy.preferences.AbstractPreference;
@@ -50,6 +48,8 @@ public class MySQLArchivePreferenceService {
         public static final Integer MAX_PACKET_SIZE_KB = 65536;
         public static final int MIN_PERIOD_MS = 2000;
         public static final int MAX_PERIOD_MS = 60000;
+        public static final int MIN_TERM_TIME_MS = 10000;
+        public static final int MAX_TERM_TIME_MS = 100000;
 
         public static final MySQLArchiveServicePreference<String> HOST =
             new MySQLArchiveServicePreference<String>("host", "NOT PUBLIC");
@@ -60,6 +60,10 @@ public class MySQLArchivePreferenceService {
         public static final MySQLArchiveServicePreference<Integer> PERIOD_IN_MS =
             new MySQLArchiveServicePreference<Integer>("periodInMS", 5000)
                 .with(new MinMaxPreferenceValidator<Integer>(MIN_PERIOD_MS, MAX_PERIOD_MS));
+
+        public static final MySQLArchiveServicePreference<Integer> TERM_TIME_IN_MS =
+            new MySQLArchiveServicePreference<Integer>("terminationTimeInMS", 25000)
+            .with(new MinMaxPreferenceValidator<Integer>(MIN_TERM_TIME_MS, MAX_TERM_TIME_MS));
 
         public static final MySQLArchiveServicePreference<Integer> PORT =
             new MySQLArchiveServicePreference<Integer>("port", 3306);
@@ -77,14 +81,14 @@ public class MySQLArchivePreferenceService {
             new MySQLArchiveServicePreference<Integer>("maxAllowedPacketInKB", 32768)
                 .with(new MinMaxPreferenceValidator<Integer>(MIN_PACKET_SIZE_KB, MAX_PACKET_SIZE_KB));
 
-        public static final MySQLArchiveServicePreference<String> SMTP_HOST =
-            new MySQLArchiveServicePreference<String>("mailhost", "NOT PUBLIC");
-
-        public static final MySQLArchiveServicePreference<File> DATA_RESCUE_DIR =
-            new MySQLArchiveServicePreference<File>("dataRescueDir", new File("C:\\temp\\persistDataRescue"));
-
-        public static final MySQLArchiveServicePreference<String> EMAIL_ADDRESS =
-            new MySQLArchiveServicePreference<String>("emailAddress", "NOT PUBLIC");
+//        public static final MySQLArchiveServicePreference<String> SMTP_HOST =
+//            new MySQLArchiveServicePreference<String>("mailhost", "NOT PUBLIC");
+//
+//        public static final MySQLArchiveServicePreference<File> DATA_RESCUE_DIR =
+//            new MySQLArchiveServicePreference<File>("dataRescueDir", new File("C:\\temp\\persistDataRescue"));
+//
+//        public static final MySQLArchiveServicePreference<String> EMAIL_ADDRESS =
+//            new MySQLArchiveServicePreference<String>("emailAddress", "NOT PUBLIC");
 
 
         /**
@@ -136,18 +140,18 @@ public class MySQLArchivePreferenceService {
     public String getFailOverHost() {
         return MySQLArchiveServicePreference.FAILOVER_HOST.getValue();
     }
-    @Nonnull
-    public File getDataRescueDir() {
-        return MySQLArchiveServicePreference.DATA_RESCUE_DIR.getValue();
-    }
+//    @Nonnull
+//    public File getDataRescueDir() {
+//        return MySQLArchiveServicePreference.DATA_RESCUE_DIR.getValue();
+//    }
     @Nonnull
     public String getDatabaseName() {
         return MySQLArchiveServicePreference.DATABASE_NAME.getValue();
     }
-    @Nonnull
-    public String getEmailAddress() {
-        return MySQLArchiveServicePreference.EMAIL_ADDRESS.getValue();
-    }
+//    @Nonnull
+//    public String getEmailAddress() {
+//        return MySQLArchiveServicePreference.EMAIL_ADDRESS.getValue();
+//    }
     @Nonnull
     public Integer getMaxAllowedPacketSizeInKB() {
         return MySQLArchiveServicePreference.MAX_ALLOWED_PACKET_IN_KB.getValue();
@@ -160,10 +164,10 @@ public class MySQLArchivePreferenceService {
     public String getPassword() {
         return MySQLArchiveServicePreference.PASSWORD.getValue();
     }
-    @Nonnull
-    public String getSmtpHost() {
-        return MySQLArchiveServicePreference.SMTP_HOST.getValue();
-    }
+//    @Nonnull
+//    public String getSmtpHost() {
+//        return MySQLArchiveServicePreference.SMTP_HOST.getValue();
+//    }
     @Nonnull
     public String getUser() {
         return MySQLArchiveServicePreference.USER.getValue();
@@ -171,5 +175,9 @@ public class MySQLArchivePreferenceService {
     @Nonnull
     public Integer getPort() {
         return MySQLArchiveServicePreference.PORT.getValue();
+    }
+    @Nonnull
+    public Integer getTerminationTimeInMS() {
+        return MySQLArchiveServicePreference.TERM_TIME_IN_MS.getValue();
     }
 }

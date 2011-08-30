@@ -90,4 +90,8 @@ public class ArchiveEngineActivator extends Plugin {
         return service;
     }
 
+    @Nonnull
+    public ArchiveEnginePreferencesService getPreferencesService() {
+        return new ArchiveEnginePreferencesService();
+    }
 }

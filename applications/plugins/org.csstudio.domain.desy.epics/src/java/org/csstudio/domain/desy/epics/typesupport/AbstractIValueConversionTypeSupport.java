@@ -56,7 +56,7 @@ public abstract class AbstractIValueConversionTypeSupport<T extends IValue>
     @Nonnull
     protected Object toData(@Nonnull final T value,
                             @Nonnull final Class<?> elemClass,
-                            @Nonnull final Class<? extends Collection> collClass,
+                            @CheckForNull final Class<? extends Collection> collClass,
                             @CheckForNull final EpicsMetaData meta) throws TypeSupportException {
         return toData(value, elemClass, collClass);
     }
@@ -64,7 +64,7 @@ public abstract class AbstractIValueConversionTypeSupport<T extends IValue>
     @Nonnull
     protected abstract Object toData(@Nonnull final T value,
                                      @Nonnull final Class<?> elemClass,
-                                     @Nonnull final Class<? extends Collection> collClass) throws TypeSupportException;
+                                     @CheckForNull final Class<? extends Collection> collClass) throws TypeSupportException;
 
     @Nonnull
     protected Collection instantiateCollection(@Nonnull final Class<? extends Collection> collClass) throws TypeSupportException {
@@ -81,7 +81,7 @@ public abstract class AbstractIValueConversionTypeSupport<T extends IValue>
 
     @Nonnull
     protected AbstractIValueDataToTargetTypeSupport<?> checkForPlausibilityAndGetSupport(@Nonnull final Class<?> elemClass,
-                                                                                         @Nonnull final Class<? extends Collection> collClass,
+                                                                                         @CheckForNull final Class<? extends Collection> collClass,
                                                                                          final int valuesLength) throws TypeSupportException {
         checkForPlausibility(collClass, valuesLength);
         final AbstractIValueDataToTargetTypeSupport<?> support =
@@ -89,7 +89,7 @@ public abstract class AbstractIValueConversionTypeSupport<T extends IValue>
         return support;
     }
 
-    protected void checkForPlausibility(@Nonnull final Class<? extends Collection> collClass,
+    protected void checkForPlausibility(@CheckForNull final Class<? extends Collection> collClass,
                                         final int valuesLength) throws TypeSupportException {
         if (valuesLength > 1 && collClass == null) {
             throw new TypeSupportException("More than one value in IXXXValue but target collection type not specified. Conversion failed.", null);

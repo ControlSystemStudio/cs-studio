@@ -24,8 +24,8 @@ package org.csstudio.domain.desy.preferences;
 import javax.annotation.Nonnull;
 
 /**
- * Test Helper class.  
- * 
+ * Test Helper class.
+ *
  * @author bknerr
  * @since 20.04.2011
  * @param <T> the preference type
@@ -48,7 +48,7 @@ final class UnitTestPreference<T> extends AbstractPreference<T> {
         new UnitTestPreference<Double>("Unit_Double_Pref", 12.34);
 
     public static final UnitTestPreference<Double> DOUBLE_PREF_WITH_VAL =
-        (UnitTestPreference<Double>) new UnitTestPreference<Double>("Unit_Double_Pref", 
+        (UnitTestPreference<Double>) new UnitTestPreference<Double>("Unit_Double_Pref",
                                12.34).addValidator(new MinMaxPreferenceValidator<Double>(0.0, 100.0));
 
     public static final UnitTestPreference<Boolean> BOOLEAN_PREF =
@@ -57,7 +57,7 @@ final class UnitTestPreference<T> extends AbstractPreference<T> {
     /**
      * For test purposes
      */
-    public static final Integer STATIC_NOT_TESTPREFERENCE = new Integer(0);
+    public static final Integer STATIC_NOT_TESTPREFERENCE = Integer.valueOf(0);
 
 
     /**
@@ -67,13 +67,13 @@ final class UnitTestPreference<T> extends AbstractPreference<T> {
      * public final TestPreference<Boolean> NOT_STATIC =
      *     new TestPreference<Boolean>("NOT_STATIC", true);
      */
-    UnitTestPreference(@Nonnull final String keyAsString, 
+    UnitTestPreference(@Nonnull final String keyAsString,
                            @Nonnull final T defaultValue) {
         super(keyAsString, defaultValue);
     }
 
     @Override
-    @Nonnull 
+    @Nonnull
     public String getPluginID() {
         return "QualifierForTest";
     }
@@ -83,7 +83,7 @@ final class UnitTestPreference<T> extends AbstractPreference<T> {
      */
     @SuppressWarnings("unchecked")
     @Override
-    @Nonnull 
+    @Nonnull
     protected Class<? extends AbstractPreference<T>> getClassType() {
         return (Class<? extends AbstractPreference<T>>) UnitTestPreference.class;
     }

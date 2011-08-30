@@ -25,17 +25,17 @@ import java.util.Map;
 import javax.annotation.CheckForNull;
 import javax.annotation.Nonnull;
 
-import org.apache.log4j.Logger;
 import org.csstudio.alarm.service.declaration.AlarmMessageKey;
 import org.csstudio.alarm.service.declaration.IAlarmMessage;
 import org.csstudio.domain.desy.epics.alarm.EpicsAlarmSeverity;
-import org.csstudio.platform.logging.CentralLogger;
 import org.epics.css.dal.DynamicValueCondition;
 import org.epics.css.dal.SimpleProperty;
 import org.epics.css.dal.Timestamp;
 import org.epics.css.dal.simple.AnyData;
 import org.epics.css.dal.simple.MetaData;
 import org.epics.css.dal.simple.Severity;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * DAL based implementation of the message abstraction of the AlarmService
@@ -49,8 +49,7 @@ import org.epics.css.dal.simple.Severity;
 public final class AlarmMessageDALImpl implements IAlarmMessage {
     private static final String NOT_AVAILABLE = "n.a.";
 
-    private static final Logger LOG = CentralLogger.getInstance()
-            .getLogger(AlarmMessageDALImpl.class);
+    private static final Logger LOG = LoggerFactory.getLogger(AlarmMessageDALImpl.class);
 
     private static final String ERROR_MESSAGE = "Error analyzing DAL message";
     /**
@@ -226,7 +225,7 @@ public final class AlarmMessageDALImpl implements IAlarmMessage {
 
     @Nonnull
     private String retrieveStatusAsString() {
-        Severity severity = _anyData.getSeverity();
+        final Severity severity = _anyData.getSeverity();
         return severity == null ? NOT_AVAILABLE : severity.descriptionToString();
     }
     @Nonnull

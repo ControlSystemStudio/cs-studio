@@ -1,4 +1,3 @@
-// CHECKSTYLE:OFF
 /*
  * Copyright (c) 2010 Stiftung Deutsches Elektronen-Synchrotron, Member of the Helmholtz
  * Association, (DESY), HAMBURG, GERMANY.
@@ -26,7 +25,6 @@ import java.util.List;
 
 import javax.annotation.Nonnull;
 
-import org.apache.log4j.Level;
 import org.csstudio.alarm.service.declaration.IAlarmInitItem;
 import org.csstudio.alarm.service.declaration.IAlarmMessage;
 import org.csstudio.alarm.service.declaration.IAlarmService;
@@ -41,35 +39,35 @@ import org.junit.Test;
  * Test for retrieval of the initial alarm state of not existing pvs.
  */
 public class AlarmServiceJMSImplUnitTest {
-    
+
 //    private static final String IP_DESY_PRODUCTION = "131.169.115.234 131.169.115.236";
 //    private static final String IP_DESY_KRYKPCGASTA = "131.169.109.56";
 //    private static final String IP_DESY_MKSHERAZK = "131.169.115.247";
     private static final String LOCALHOST = "127.0.0.1";
     private static final String EPICS_CHANNEL_ADDRESS = LOCALHOST;
-    
+
     @Before
     public void setupEnvironment() throws Exception {
         System.setProperty("com.cosylab.epics.caj.CAJContext.addr_list", EPICS_CHANNEL_ADDRESS);
-        
+
         // do not multicast
         System.setProperty("com.cosylab.epics.caj.CAJContext.auto_addr_list", "NO");
-        
+
         // use common executor
         System.setProperty("EPICSPlug.property.use_common_executor", "TRUE");
-        
+
         // Channel access answers after 100msec, so we will only wait twice as long
         // System.setProperty(Plugs.INITIAL_CONNECTION_TIMEOUT, "200"); // This is default
-        
-        Plugs.getLogger().setLevel(Level.OFF);
-        
+
+        //Plugs.getLogger().setLevel(Level.OFF);
+
         // EPICS plug
         System.setProperty(Plugs.PLUGS, "EPICS");
         System.setProperty(Plugs.PLUGS_DEFAULT, "EPICS");
         System.setProperty(Plugs.PLUG_PROPERTY_FACTORY_CLASS + "EPICS",
                            "org.epics.css.dal.epics.PropertyFactoryImpl");
     }
-    
+
     /**
      * This test retrieves a lot of not-existing pvs and checks that they all have been reported as such.
      */
@@ -77,17 +75,17 @@ public class AlarmServiceJMSImplUnitTest {
     @Test
     public void testRetrieveInitialState() throws Exception {
         boolean failed = false;
-        
-        IAlarmService service = new TestAlarmServiceJMSImpl();
-        List<IAlarmInitItem> initItems = new ArrayList<IAlarmInitItem>();
+
+        final IAlarmService service = new TestAlarmServiceJMSImpl();
+        final List<IAlarmInitItem> initItems = new ArrayList<IAlarmInitItem>();
         addInitItems1(initItems);
         addInitItemsSpecial(initItems);
         addInitItems3(initItems);
         service.retrieveInitialState(initItems);
-        
-        for (IAlarmInitItem item : initItems) {
-            boolean wasInitialized = ((TestInitItem) item)._wasInitialized;
-            boolean wasNotFound = ((TestInitItem) item)._wasNotFound;
+
+        for (final IAlarmInitItem item : initItems) {
+            final boolean wasInitialized = ((TestInitItem) item)._wasInitialized;
+            final boolean wasNotFound = ((TestInitItem) item)._wasNotFound;
             if (!wasInitialized && !wasNotFound) {
                 System.err.println(item.getPVName() + " was not processed");
                 failed = true;
@@ -95,14 +93,14 @@ public class AlarmServiceJMSImplUnitTest {
         }
         Assert.assertFalse(failed);
     }
-    
+
     private void addInitItemsSpecial(@Nonnull final List<IAlarmInitItem> initItems) {
         initItems.add(new TestInitItem("42G852H_bi"));
         initItems.add(new TestInitItem("42UZV852_dlog"));
         initItems.add(new TestInitItem("42G852L_bi"));
         initItems.add(new TestInitItem("42Y801_bo"));
     }
-    
+
     private void addInitItems1(@Nonnull final List<IAlarmInitItem> initItems) {
         initItems.add(new TestInitItem("51FI331_ai"));
         initItems.add(new TestInitItem("51FI331_calc"));
@@ -1564,7 +1562,7 @@ public class AlarmServiceJMSImplUnitTest {
         initItems.add(new TestInitItem("42UZV852_dlog"));
         initItems.add(new TestInitItem("42G852L_bi"));
     }
-    
+
     private void addInitItems3(@Nonnull final List<IAlarmInitItem> initItems) {
         initItems.add(new TestInitItem("42G880H_bi"));
         initItems.add(new TestInitItem("42FS870_bi"));
@@ -1883,61 +1881,61 @@ public class AlarmServiceJMSImplUnitTest {
         initItems.add(new TestInitItem("35CV215_ai_h"));
         initItems.add(new TestInitItem("35T215_bi"));
         initItems.add(new TestInitItem("35A215_mbbi"));
-        
+
     }
-    
+
     /**
      * init item representing a real pv
      */
     private static class TestInitItem implements IAlarmInitItem {
-        
+
         private final String _pvName;
         public boolean _wasInitialized = false;
         public boolean _wasNotFound = false;
-        
+
         public TestInitItem(@Nonnull final String pvName) {
             _pvName = pvName;
         }
-        
+
         @Override
         public String getPVName() {
             return _pvName;
         }
-        
+
         @Override
-        public void init(IAlarmMessage alarmMessage) {
+        public void init(final IAlarmMessage alarmMessage) {
             //            System.err.println("pv " + _pvName + ": init");
             _wasInitialized = true;
         }
-        
+
         @Override
-        public void notFound(String pvName) {
+        public void notFound(final String pvName) {
             //            System.err.println("pv " + _pvName + ": notFound");
             _wasNotFound = true;
         }
-        
+
     }
-    
+
     /**
      * Overrides the creation of the service under test to simplify unit testing.
      */
     private static class TestAlarmServiceJMSImpl extends AlarmServiceJMSImpl {
-        
+
         @Override
         protected int getPvChunkSize() {
             return 100;
         }
-        
+
         @Override
         protected int getPvChunkWaitMsec() {
             return 500;
         }
-        
+
         @Override
         protected int getPvRegisterWaitMsec() {
             return 0;
         }
-        
+
         @Override
         protected SimpleDALBroker newSimpleDALBroker() {
             return SimpleDALBroker.newInstance(new DefaultApplicationContext("test"));

@@ -83,18 +83,6 @@ public class SampleBuffer<V extends Serializable,
         SampleBuffer.ERROR = error;
     }
 
-    /**
-     * Add a sample to the queue, maybe dropping older samples
-     */
-    @Override
-    @SuppressWarnings("nls")
-    public boolean add(@Nonnull final S value) {
-        if (!super.offer(value)) {
-            // FIXME (bknerr) : data rescue if adding to sample buffer failed.
-            return false;
-        }
-        return true;
-    }
 
     /** Update stats with current values */
     void updateStats() {
@@ -112,7 +100,6 @@ public class SampleBuffer<V extends Serializable,
         _stats.reset();
     }
 
-    @SuppressWarnings("nls")
     @Override
     @Nonnull
     public String toString() {
@@ -131,5 +118,14 @@ public class SampleBuffer<V extends Serializable,
     @Nonnull
     protected BlockingQueue<S> delegate() {
         return _samples;
+    }
+
+    /**
+     * {@inheritDoc}
+     * Offers a sample to the wrapped queue.
+     */
+    @Override
+    public boolean add(@Nonnull final S value) {
+        return delegate().offer(value);
     }
 }

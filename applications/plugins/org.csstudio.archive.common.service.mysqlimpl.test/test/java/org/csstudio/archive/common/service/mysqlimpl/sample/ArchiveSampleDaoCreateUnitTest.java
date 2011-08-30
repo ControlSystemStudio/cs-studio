@@ -208,12 +208,13 @@ public class ArchiveSampleDaoCreateUnitTest extends AbstractDaoTestSetup {
                                                        @Nonnull final ArchiveChannelId channelId,
                                                        @Nonnull final TimeInstant start,
                                                        @Nonnull final TimeInstant end) throws SQLException, ArchiveConnectionException {
-        final Connection connection = HANDLER.getConnection();
+        final Connection connection = HANDLER.createConnection();
         final Statement stmt = connection.createStatement();
         stmt.execute("DELETE FROM " + table + " " +
                      "WHERE " + COLUMN_TIME + " between " + start.minusMillis(1L).getNanos() + " AND " + end.plusMillis(1L).getNanos() + " " +
                      "AND " + COLUMN_CHANNEL_ID + "=" + channelId.asString());
         stmt.close();
+        connection.close();
     }
 
     @AfterClass

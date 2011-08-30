@@ -29,47 +29,40 @@ import org.junit.Test;
  * @author bknerr
  * @since 26.04.2011
  */
+@SuppressWarnings("unused")
 public class IpAddressTest {
 
     @Test(expected=IllegalArgumentException.class)
     public void testInvalidIpAddress1() {
-        @SuppressWarnings("unused")
-        final IpAddress a = new IpAddress("");
+        new IpAddress("");
     }
     @Test(expected=IllegalArgumentException.class)
     public void testInvalidIpAddress2() {
-        @SuppressWarnings("unused")
-        final IpAddress a = new IpAddress("foo");
+        new IpAddress("foo");
     }
     @Test(expected=IllegalArgumentException.class)
     public void testInvalidIpAddress3() {
-        @SuppressWarnings("unused")
-        final IpAddress a = new IpAddress("-1.0.0.0");
+        new IpAddress("-1.0.0.0");
     }
     @Test(expected=IllegalArgumentException.class)
     public void testInvalidIpAddress4() {
-        @SuppressWarnings("unused")
-        final IpAddress a = new IpAddress("256.0.0.0");
+        new IpAddress("256.0.0.0");
     }
     @Test(expected=IllegalArgumentException.class)
     public void testInvalidIpAddress5() {
-        @SuppressWarnings("unused")
-        final IpAddress a = new IpAddress("1.0.0.256");
+        new IpAddress("1.0.0.256");
     }
 
     @Test
     public void testValidIpAddress1() {
-        @SuppressWarnings("unused")
-        final IpAddress a = new IpAddress("0.0.0.0");
+        new IpAddress("0.0.0.0");
     }
     @Test
     public void testValidIpAddress2() {
-        @SuppressWarnings("unused")
-        final IpAddress a = new IpAddress("22.33.44.55");
+        new IpAddress("22.33.44.55");
     }
     @Test
     public void testValidIpAddress3() {
-        @SuppressWarnings("unused")
-        final IpAddress a = new IpAddress("255.255.255.255");
+        new IpAddress("255.255.255.255");
     }
 }

@@ -26,6 +26,7 @@ import static org.csstudio.archive.common.service.mysqlimpl.sample.TestSamplePro
 import static org.csstudio.archive.common.service.mysqlimpl.sample.TestSampleProvider.START;
 
 import java.io.Serializable;
+import java.sql.Connection;
 import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -72,9 +73,11 @@ public class CollectionDataBatchQueueHandlerUnitTest extends AbstractDaoTestSetu
 
 
         try {
-            final Statement stmt = HANDLER.getConnection().createStatement();
+            final Connection connection = HANDLER.createConnection();
+            final Statement stmt = connection.createStatement();
             stmt.executeUpdate(stmtStr);
             stmt.close();
+            connection.close();
         } catch (final Exception e) {
             Assert.fail();
         }

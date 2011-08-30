@@ -25,6 +25,7 @@ import java.util.Map;
 
 import javax.annotation.CheckForNull;
 import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 
 import org.csstudio.data.values.IValue;
 import org.csstudio.domain.desy.alarm.IAlarm;
@@ -80,7 +81,7 @@ public abstract class SystemVariableSupport<T> extends AbstractTypeSupport<T> {
                                                      @Nonnull final T value,
                                                      @Nonnull final ControlSystem system,
                                                      @Nonnull final TimeInstant time,
-                                                     @Nonnull final IAlarm alarm) throws TypeSupportException {
+                                                     @Nullable final IAlarm alarm) throws TypeSupportException {
         final Class<? extends SystemVariableSupport<?>> familyClass = SYSTEM_DISCRIMINATOR.get(system.getType());
         if (familyClass != null) {
             final Class<T> typeClass = (Class<T>) value.getClass();

@@ -15,8 +15,8 @@ import javax.servlet.http.HttpServletResponse;
 
 import org.csstudio.archive.common.engine.model.ArchiveChannel;
 import org.csstudio.archive.common.engine.model.ArchiveGroup;
-import org.csstudio.archive.common.engine.model.SampleBufferStatistics;
 import org.csstudio.archive.common.engine.model.EngineModel;
+import org.csstudio.archive.common.engine.model.SampleBufferStatistics;
 
 /** Provide web page with basic info for all the groups.
  *  @author Kay Kasemir
@@ -43,9 +43,9 @@ class GroupsResponse extends AbstractResponse {
 
     private void openTableWithHeader(@Nonnull final HTMLWriter html) {
         html.openTable(1, new String[] {Messages.HTTP_COLUMN_GROUP,
-                                        Messages.HTTP_COLUMN_CHANNEL_COUNT,
-                                        Messages.HTTP_COLUMN_CONNECTED,
-                                        Messages.HTTP_COLUMN_RECEIVEDVALUES,
+                                        numOf(Messages.HTTP_COLUMN_CHANNELS),
+                                        numOf(Messages.HTTP_COLUMN_CONNECTED),
+                                        numOf(Messages.HTTP_COLUMN_RECEIVEDVALUES),
                                         Messages.HTTP_COLUMN_QUEUEAVG,
                                         Messages.HTTP_COLUMN_QUEUEMAX,
                                         });

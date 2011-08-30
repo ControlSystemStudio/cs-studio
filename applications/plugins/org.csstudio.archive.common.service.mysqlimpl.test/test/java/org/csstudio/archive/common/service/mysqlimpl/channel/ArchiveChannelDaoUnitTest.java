@@ -183,7 +183,7 @@ public class ArchiveChannelDaoUnitTest extends AbstractDaoTestSetup {
 
     @AfterClass
     public static void undoUpdateDisplayRanges() throws SQLException, ArchiveConnectionException {
-        final Statement stmt = HANDLER.getConnection().createStatement();
+        final Statement stmt = HANDLER.createConnection().createStatement();
         stmt.execute("UPDATE channel SET display_high='20.0', display_low='10.0' WHERE id=1");
         stmt.close();
     }
