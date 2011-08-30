@@ -23,13 +23,11 @@ package org.csstudio.archive.common.service.mysqlimpl.enginestatus;
 
 import java.sql.Connection;
 import java.sql.ResultSet;
-import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.Collection;
 
 import javax.annotation.Nonnull;
 
-import org.csstudio.archive.common.service.ArchiveConnectionException;
 import org.csstudio.archive.common.service.engine.ArchiveEngineId;
 import org.csstudio.archive.common.service.enginestatus.ArchiveEngineStatus;
 import org.csstudio.archive.common.service.enginestatus.EngineMonitorStatus;
@@ -90,10 +88,12 @@ public class ArchiveEngineStatusDaoWriteBatchUnitTest extends AbstractDaoTestSet
         Assert.assertEquals(ENGINE_SINGLE_ID, status.getEngineId());
         Assert.assertEquals(on, status.getStatus());
         Assert.assertEquals(SINGLE_INSERT_INFO, status.getInfo());
+
+        undoTestEngineStatusSubmissionModification(ENGINE_SINGLE_ID, SINGLE_INSERT_INFO);
     }
 
     @Test
-    public void testEngineStatusSubmissionLargeBatch() throws ArchiveDaoException, InterruptedException, SQLException, ArchiveConnectionException {
+    public void testEngineStatusSubmissionLargeBatch() throws ArchiveDaoException, InterruptedException {
         final TimeInstant now = TimeInstantBuilder.fromNow();
 
         final Collection<IArchiveEngineStatus> first = Lists.newLinkedList();
@@ -106,32 +106,40 @@ public class ArchiveEngineStatusDaoWriteBatchUnitTest extends AbstractDaoTestSet
         DAO.createMgmtEntries(second);
         Thread.sleep(500);
         DAO.createMgmtEntries(third);
-        Thread.sleep(2500);
-
-        final IArchiveEngineStatus status = DAO.retrieveLastEngineStatus(ENGINE_BATCH_ID, now.plusMillis(7000000L));
+        Thread.sleep(5500);
+        final IArchiveEngineStatus status = DAO.retrieveLastEngineStatus(ENGINE_BATCH_ID, lastOne.plusMillis(1L));
 
         assertLastMgmtEntry(lastOne, status);
         assertMgmtEntryBatches();
+
+        undoTestEngineStatusSubmissionModification(ENGINE_BATCH_ID, BATCH_INSERT_INFO);
     }
 
-    private void assertMgmtEntryBatches() throws ArchiveConnectionException, SQLException {
-        final Connection connection = HANDLER.createConnection();
-        final Statement stmt = connection.createStatement();
-        final ResultSet resultSet =
-            stmt.executeQuery("SELECT count(*) FROM " + HANDLER.getDatabaseName() + "." + ArchiveEngineStatusDaoImpl.TAB +
-                              " WHERE engine_id=" + ENGINE_BATCH_ID.asString() + " AND info='" + BATCH_INSERT_INFO + "'");
-        Assert.assertNotNull(resultSet);
-        Assert.assertTrue(resultSet.next());
-        final int count = resultSet.getInt(1);
-        Assert.assertTrue(count == 6001);
-        stmt.close();
+    private void assertMgmtEntryBatches() {
+        try {
+            final Connection connection = HANDLER.createConnection();
+            final Statement stmt = connection.createStatement();
+            final ResultSet resultSet =
+                stmt.executeQuery("SELECT count(*) FROM " + HANDLER.getDatabaseName() + "." + ArchiveEngineStatusDaoImpl.TAB +
+                                  " WHERE engine_id=" + ENGINE_BATCH_ID.asString() + " AND info='" + BATCH_INSERT_INFO + "'");
+
+            Assert.assertNotNull(resultSet);
+            Assert.assertTrue(resultSet.next());
+            final int count = resultSet.getInt(1);
+            Assert.assertTrue(count == 6001);
+
+            resultSet.close();
+            stmt.close();
+            connection.close();
+        } catch (final Throwable t) {
+            Assert.fail(t.getMessage() + " " + t.getCause());
+        }
     }
 
 
     private void assertLastMgmtEntry(@Nonnull final TimeInstant lastOne,
                                      @Nonnull final IArchiveEngineStatus status) {
         Assert.assertNotNull(status);
-        Assert.assertEquals(ENGINE_BATCH_ID, status.getEngineId());
         Assert.assertEquals(ENGINE_BATCH_ID, status.getEngineId());
         Assert.assertTrue(lastOne.equals(status.getTimestamp()));
         Assert.assertEquals(BATCH_INSERT_INFO, status.getInfo());
@@ -145,31 +153,32 @@ public class ArchiveEngineStatusDaoWriteBatchUnitTest extends AbstractDaoTestSet
         for (int i = 0; i < 2000; i++) {
             final EngineMonitorStatus st = i%2 > 0 ? EngineMonitorStatus.ON : EngineMonitorStatus.OFF;
 
-            first.add(new ArchiveEngineStatus(ENGINE_BATCH_ID, st, now.plusMillis(i*1000), BATCH_INSERT_INFO));
+            first.add(new ArchiveEngineStatus(ENGINE_BATCH_ID, st,  now.plusMillis(i*1000), BATCH_INSERT_INFO));
             second.add(new ArchiveEngineStatus(ENGINE_BATCH_ID, st, now.plusMillis(i*1000 + 2000000), BATCH_INSERT_INFO));
-            third.add(new ArchiveEngineStatus(ENGINE_BATCH_ID, st, now.plusMillis(i*1000 + 4000000), BATCH_INSERT_INFO));
+            third.add(new ArchiveEngineStatus(ENGINE_BATCH_ID, st,  now.plusMillis(i*1000 + 4000000), BATCH_INSERT_INFO));
         }
-        final TimeInstant lastOne = now.plusMillis(6000001L);
+        final TimeInstant lastOne = now.plusMillis(2000*1000 + 4000000);
         third.add(new ArchiveEngineStatus(ENGINE_BATCH_ID, EngineMonitorStatus.ON, lastOne, BATCH_INSERT_INFO));
         return lastOne;
     }
 
     @AfterClass
-    public static void teardown() throws SQLException, ArchiveConnectionException {
-
+    public static void teardown() {
         undoTestEngineStatusSubmissionModification(ENGINE_BATCH_ID, BATCH_INSERT_INFO);
         undoTestEngineStatusSubmissionModification(ENGINE_SINGLE_ID, SINGLE_INSERT_INFO);
     }
 
     private static void undoTestEngineStatusSubmissionModification(@Nonnull final ArchiveEngineId id,
-                                                                   @Nonnull final String info)
-                                                                   throws ArchiveConnectionException,
-                                                                          SQLException {
-        final Connection connection = HANDLER.createConnection();
-        final Statement stmt = connection.createStatement();
-        stmt.execute("DELETE FROM " + HANDLER.getDatabaseName() + "." + ArchiveEngineStatusDaoImpl.TAB +
-                     " WHERE engine_id=" + id.asString() + " AND info='" + info + "'");
-        stmt.close();
-        connection.close();
+                                                                   @Nonnull final String info) {
+        try {
+            final Connection connection = HANDLER.createConnection();
+            final Statement stmt = connection.createStatement();
+            stmt.execute("DELETE FROM " + HANDLER.getDatabaseName() + "." + ArchiveEngineStatusDaoImpl.TAB +
+                         " WHERE engine_id=" + id.asString() + " AND info='" + info + "'");
+            stmt.close();
+            connection.close();
+        } catch (final Throwable t) {
+            Assert.fail(t.getMessage());
+        }
     }
 }

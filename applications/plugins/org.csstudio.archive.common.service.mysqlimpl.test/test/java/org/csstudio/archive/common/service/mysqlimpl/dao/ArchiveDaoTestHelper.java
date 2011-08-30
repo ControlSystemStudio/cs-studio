@@ -59,16 +59,13 @@ public final class ArchiveDaoTestHelper {
 
         final MySQLArchivePreferenceService mock = Mockito.mock(MySQLArchivePreferenceService.class);
         Mockito.when(mock.getDatabaseName()).thenReturn(String.valueOf(PROV.getHostProperty("mysqlArchiveDatabase")));
-        //Mockito.when(mock.getDataRescueDir()).thenReturn(new File("D:/temp/rescue"));
-        //Mockito.when(mock.getEmailAddress()).thenReturn(String.valueOf(PROV.getHostProperty("mysqlArchiverEmail")));
         Mockito.when(mock.getFailOverHost()).thenReturn("");
         Mockito.when(mock.getHost()).thenReturn(String.valueOf(PROV.getHostProperty("mysqlHost")));
-        Mockito.when(mock.getMaxAllowedPacketSizeInKB()).thenReturn(Integer.valueOf(1024));
+        Mockito.when(mock.getMaxAllowedPacketSizeInKB()).thenReturn(Integer.valueOf(65536));
         Mockito.when(mock.getPassword()).thenReturn(String.valueOf(PROV.getHostProperty("mysqlArchivePassword")));
         Mockito.when(mock.getPeriodInMS()).thenReturn(Integer.valueOf(2000));
         Mockito.when(mock.getTerminationTimeInMS()).thenReturn(Integer.valueOf(25000));
         Mockito.when(mock.getPort()).thenReturn(Integer.valueOf((String) PROV.getHostProperty("mysqlPort")));
-        //Mockito.when(mock.getSmtpHost()).thenReturn("smtp.desy.de");
         Mockito.when(mock.getUser()).thenReturn(String.valueOf(PROV.getHostProperty("mysqlArchiveUser")));
 
         return mock;
