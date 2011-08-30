@@ -25,33 +25,34 @@
 package org.csstudio.alarm.jms2ora.service.oracleimpl;
 
 import java.util.Vector;
-import org.csstudio.alarm.jms2ora.service.IMessageWriter;
+
 import org.csstudio.alarm.jms2ora.service.ArchiveMessage;
+import org.csstudio.alarm.jms2ora.service.IMessageWriter;
 import org.csstudio.alarm.jms2ora.service.oracleimpl.dao.MessageDao;
 
 /**
- * TODO (mmoeller) : 
- * 
+ * TODO (mmoeller) :
+ *
  * @author mmoeller
  * @version 1.0
  * @since 18.08.2011
  */
 public class OracleMessageWriterService implements IMessageWriter {
-    
-    private MessageDao messageDao;
-    
-    private boolean serviceReady;
+
+    private final MessageDao messageDao;
+
+    private final boolean serviceReady;
 
     public OracleMessageWriterService() {
         messageDao = new MessageDao();
         serviceReady = true;
     }
-    
+
     /**
      * {@inheritDoc}
      */
     @Override
-    public boolean writeMessage(Vector<ArchiveMessage> messages) {
+    public boolean writeMessage(final Vector<ArchiveMessage> messages) {
         return messageDao.writeMessages(messages);
     }
 
@@ -68,5 +69,5 @@ public class OracleMessageWriterService implements IMessageWriter {
         if (messageDao != null) {
             messageDao.close();
         }
-    }    
+    }
 }

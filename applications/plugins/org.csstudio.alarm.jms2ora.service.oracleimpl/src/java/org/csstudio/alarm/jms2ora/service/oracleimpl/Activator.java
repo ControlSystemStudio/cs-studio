@@ -33,7 +33,7 @@ public class Activator implements BundleActivator {
 
     /** The static id of this plugin */
     private static String PLUGIN_ID = "org.csstudio.alarm.jms2ora.service.oracleimpl";
-	
+
     /** The static plugin context */
     private static BundleContext context;
 
@@ -44,16 +44,16 @@ public class Activator implements BundleActivator {
 	public static String getPluginId() {
 	    return PLUGIN_ID;
 	}
-	
+
 	/*
 	 * (non-Javadoc)
 	 * @see org.osgi.framework.BundleActivator#start(org.osgi.framework.BundleContext)
 	 */
 	@Override
-    public void start(BundleContext bundleContext) throws Exception {
-		
+    public void start(final BundleContext bundleContext) throws Exception {
+
 	    Activator.context = bundleContext;
-		
+
 	    // 1. Service: OracleMetaDataReaderService
 	    bundleContext.registerService(IMetaDataReader.class.getName(),
 	                                  new OracleMetaDataReaderService(),
@@ -70,7 +70,7 @@ public class Activator implements BundleActivator {
 	 * @see org.osgi.framework.BundleActivator#stop(org.osgi.framework.BundleContext)
 	 */
 	@Override
-    public void stop(BundleContext bundleContext) throws Exception {
+    public void stop(final BundleContext bundleContext) throws Exception {
 		Activator.context = null;
 		// The services will be unregistered automatically
 	}

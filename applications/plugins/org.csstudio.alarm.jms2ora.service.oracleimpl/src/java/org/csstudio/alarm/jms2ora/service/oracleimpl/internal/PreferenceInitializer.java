@@ -30,20 +30,20 @@ import org.eclipse.core.runtime.preferences.DefaultScope;
 import org.eclipse.core.runtime.preferences.IEclipsePreferences;
 
 /**
- * TODO (mmoeller) : 
- * 
+ * TODO (mmoeller) :
+ *
  * @author mmoeller
  * @version 1.0
  * @since 22.08.2011
  */
 public class PreferenceInitializer extends AbstractPreferenceInitializer {
-    
+
     /**
      * {@inheritDoc}
      */
     @Override
     public void initializeDefaultPreferences() {
-        IEclipsePreferences prefs = new DefaultScope().getNode(Activator.getPluginId());
+        final IEclipsePreferences prefs = new DefaultScope().getNode(Activator.getPluginId());
         prefs.put(PreferenceConstants.DATABASE_URL, "");
         prefs.put(PreferenceConstants.DATABASE_USER , "");
         prefs.put(PreferenceConstants.DATABASE_PASSWORD, "");

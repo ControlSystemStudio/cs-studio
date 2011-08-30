@@ -25,12 +25,12 @@
 package org.csstudio.alarm.jms2ora.service.oracleimpl.dao;
 
 /**
- * TODO (mmoeller) : 
- * 
+ * TODO (mmoeller) :
+ *
  * @author mmoeller
  * @version 1.0
  * @since 19.08.2011
  */
-public interface MessageArchiveDao {
+public interface IMessageArchiveDao {
     void close();
 }

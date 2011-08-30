@@ -25,12 +25,13 @@
 package org.csstudio.alarm.jms2ora.service.oracleimpl;
 
 import java.util.Hashtable;
+
 import org.csstudio.alarm.jms2ora.service.IMetaDataReader;
 import org.csstudio.alarm.jms2ora.service.oracleimpl.dao.MetaDataDao;
 
 /**
- * TODO (mmoeller) : 
- * 
+ * TODO (mmoeller) :
+ *
  * @author mmoeller
  * @version 1.0
  * @since 19.08.2011
@@ -38,15 +39,15 @@ import org.csstudio.alarm.jms2ora.service.oracleimpl.dao.MetaDataDao;
 public class OracleMetaDataReaderService implements IMetaDataReader {
 
     /** The DAO for retrieving the meta data */
-    private MetaDataDao metaDataDao;
-    
+    private final MetaDataDao metaDataDao;
+
     /**
      * Constructor.
      */
     public OracleMetaDataReaderService() {
         metaDataDao = new MetaDataDao();
     }
-    
+
     /**
      * {@inheritDoc}
      */
@@ -70,7 +71,7 @@ public class OracleMetaDataReaderService implements IMetaDataReader {
     public Hashtable<String, Integer> getMessageProperties() {
         return metaDataDao.getMessageProperties();
     }
-    
+
     /**
      * Closes the reader.
      */
