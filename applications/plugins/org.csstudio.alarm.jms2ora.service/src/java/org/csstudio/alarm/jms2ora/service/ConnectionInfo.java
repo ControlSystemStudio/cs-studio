@@ -25,21 +25,21 @@
 package org.csstudio.alarm.jms2ora.service;
 
 /**
- * TODO (mmoeller) : 
- * 
+ * TODO (mmoeller) :
+ *
  * @author mmoeller
  * @version 1.0
  * @since 18.08.2011
  */
 public class ConnectionInfo {
-    
+
     private String _userName;
-    
+
     private String _password;
-    
+
     private String _dbUrl;
 
-    public ConnectionInfo(String userName, String password, String dbUrl) {
+    public ConnectionInfo(final String userName, final String password, final String dbUrl) {
         this._userName = userName;
         this._password = password;
         this._dbUrl = dbUrl;
@@ -49,7 +49,7 @@ public class ConnectionInfo {
         return _userName;
     }
 
-    public void setUserName(String userName) {
+    public void setUserName(final String userName) {
         this._userName = userName;
     }
 
@@ -57,7 +57,7 @@ public class ConnectionInfo {
         return _password;
     }
 
-    public void setPassword(String password) {
+    public void setPassword(final String password) {
         this._password = password;
     }
 
@@ -65,7 +65,7 @@ public class ConnectionInfo {
         return _dbUrl;
     }
 
-    public void setDbUrl(String dbUrl) {
+    public void setDbUrl(final String dbUrl) {
         this._dbUrl = dbUrl;
     }
 }

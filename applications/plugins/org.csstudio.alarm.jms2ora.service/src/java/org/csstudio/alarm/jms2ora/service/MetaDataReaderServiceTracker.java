@@ -28,20 +28,20 @@ import org.osgi.framework.BundleContext;
 import org.osgi.util.tracker.ServiceTracker;
 
 /**
- * TODO (mmoeller) : 
- * 
+ * TODO (mmoeller) :
+ *
  * @author mmoeller
  * @version 1.0
  * @since 19.08.2011
  */
 public class MetaDataReaderServiceTracker extends ServiceTracker {
-    
+
     /**
      * Constructor.
      *
      * @param bundleContext
      */
-    public MetaDataReaderServiceTracker(BundleContext bundleContext) {
+    public MetaDataReaderServiceTracker(final BundleContext bundleContext) {
         super(bundleContext, IMetaDataReader.class.getName(), null);
-    }    
+    }
 }

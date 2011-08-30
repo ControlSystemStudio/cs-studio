@@ -25,14 +25,14 @@
 package org.csstudio.alarm.jms2ora.service;
 
 /**
- * TODO (mmoeller) : 
- * 
+ * TODO (mmoeller) :
+ *
  * @author mmoeller
  * @version 1.0
  * @since 24.08.2011
  */
 public class DataDirectoryException extends ServiceException {
-    
+
     /** Default serial version id */
     private static final long serialVersionUID = 1L;
 
@@ -42,29 +42,29 @@ public class DataDirectoryException extends ServiceException {
     public DataDirectoryException() {
         super();
     }
-    
+
     /**
      * Constructor.
      * @param message
      */
-    public DataDirectoryException(String message) {
+    public DataDirectoryException(final String message) {
         super(message);
     }
-    
+
     /**
      * Constructor.
      * @param cause
      */
-    public DataDirectoryException(Throwable cause) {
+    public DataDirectoryException(final Throwable cause) {
         super(cause);
     }
-    
+
     /**
      * Constructor.
      * @param message
      * @param cause
      */
-    public DataDirectoryException(String message, Throwable cause) {
+    public DataDirectoryException(final String message, final Throwable cause) {
         super(message, cause);
     }
 }

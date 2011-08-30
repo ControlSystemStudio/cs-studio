@@ -27,45 +27,45 @@ package org.csstudio.alarm.jms2ora.service;
 import java.util.Vector;
 
 /**
- * TODO (mmoeller) : 
- * 
+ * TODO (mmoeller) :
+ *
  * @author mmoeller
  * @version 1.0
  * @since 22.08.2011
  */
 public interface IPersistenceHandler {
-    
+
     /**
      * Deletes all serialized messages.
-     * 
+     *
      * @return The number of deleted files
      */
     int deleteAllMessageFiles();
-    
+
     /**
      * Returns the number of serialized messages.
-     * 
+     *
      * @return The number of all message files
      */
     int getNumberOfMessageFiles();
-    
+
     /**
      * Writes the message content
-     * 
+     *
      * @param content
      */
     void writeMessageContent(ArchiveMessage content);
-    
+
     /**
      * Writes the message content
-     * 
+     *
      * @param messages - The vector containing all messages that have to be written
      */
     void writeMessages(Vector<ArchiveMessage> messages);
-    
+
     /**
      * Reads the serialized message and deletes it on in the persistence layer
-     * 
+     *
      * @param name
      * @return The MessageContent object
      */

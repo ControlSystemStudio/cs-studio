@@ -27,27 +27,27 @@ package org.csstudio.alarm.jms2ora.service;
 import java.io.File;
 
 /**
- * 
+ *
  * @author mmoeller
  * @version 1.0
  * @since 23.08.2011
  */
 public class DataDirectory {
-    
+
     /** The path of the data directory for the serialized messages */
     private String dataDirectory;
-    
+
     /**
      * Constructor.
-     * 
+     *
      * @param dataDir - The path of the data directory for the serialized messages
      */
-    public DataDirectory(String dataDir) {
-        
+    public DataDirectory(final String dataDir) {
+
         dataDirectory = null;
-        File file = new File(dataDir);
+        final File file = new File(dataDir);
         if (file.exists() == false) {
-            boolean success = file.mkdirs();
+            final boolean success = file.mkdirs();
             if (success) {
                 dataDirectory = file.getAbsolutePath();
                 if (dataDirectory.endsWith(File.separator) == false) {
@@ -68,7 +68,7 @@ public class DataDirectory {
         }
         return new File(dataDirectory);
     }
-    
+
     public String getDataDirectoryAsString() throws DataDirectoryException {
         if (dataDirectory == null) {
             throw new DataDirectoryException("The data directory does not exist.");
@@ -77,15 +77,15 @@ public class DataDirectory {
     }
 
     public boolean existsDataDirectory() {
-        
+
         boolean exists;
-        
+
         try {
             exists = getDataDirectory().exists();
-        } catch (DataDirectoryException dde) {
+        } catch (final DataDirectoryException dde) {
             exists = false;
         }
-        
+
         return exists;
     }
 }
