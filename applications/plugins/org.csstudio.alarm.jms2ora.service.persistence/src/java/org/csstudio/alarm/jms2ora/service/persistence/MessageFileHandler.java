@@ -36,7 +36,7 @@ import java.text.SimpleDateFormat;
 import java.util.GregorianCalendar;
 import org.csstudio.alarm.jms2ora.service.DataDirectory;
 import org.csstudio.alarm.jms2ora.service.DataDirectoryException;
-import org.csstudio.alarm.jms2ora.service.MessageContent;
+import org.csstudio.alarm.jms2ora.service.ArchiveMessage;
 import org.csstudio.alarm.jms2ora.service.persistence.internal.PreferenceConstants;
 import org.eclipse.core.runtime.Platform;
 import org.eclipse.core.runtime.preferences.IPreferencesService;
@@ -174,7 +174,7 @@ public class MessageFileHandler implements FilenameFilter {
      */
     public String[] getMessageFileContent() {
         
-        MessageContent content = null;
+        ArchiveMessage content = null;
         String[] result  = null;
         String[] name = null;
         
@@ -255,7 +255,7 @@ public class MessageFileHandler implements FilenameFilter {
      * 
      * @param content - The MessageContent object that have to be stored on disk.
      */
-    public void writeMessageContentToFile(MessageContent content) {
+    public void writeMessageContentToFile(ArchiveMessage content) {
         
         if(!content.hasContent()) {
             LOG.info("Message does not contain content.");
@@ -291,9 +291,9 @@ public class MessageFileHandler implements FilenameFilter {
         }
     }
     
-    public MessageContent readMessageContent(String fileName) {
+    public ArchiveMessage readMessageContent(String fileName) {
         
-        MessageContent content = null;
+        ArchiveMessage content = null;
         FileInputStream fis = null;
         ObjectInputStream ois = null;
 
@@ -302,7 +302,7 @@ public class MessageFileHandler implements FilenameFilter {
             ois = new ObjectInputStream(fis);
             
             // Write the MessageContent object to disk
-            content = (MessageContent)ois.readObject();            
+            content = (ArchiveMessage)ois.readObject();            
         } catch(FileNotFoundException fnfe) {
             LOG.error("FileNotFoundException : " + fnfe.getMessage());
         } catch(IOException ioe) {

@@ -27,7 +27,7 @@ package org.csstudio.alarm.jms2ora.service.persistence;
 import java.util.Vector;
 
 import org.csstudio.alarm.jms2ora.service.IPersistenceHandler;
-import org.csstudio.alarm.jms2ora.service.MessageContent;
+import org.csstudio.alarm.jms2ora.service.ArchiveMessage;
 
 /**
  * TODO (mmoeller) : The methods should throw an exception
@@ -68,7 +68,7 @@ public class MessageFilePersistenceService implements IPersistenceHandler {
      * {@inheritDoc}
      */
     @Override
-    public void writeMessageContent(MessageContent content) {
+    public void writeMessageContent(ArchiveMessage content) {
         fileHandler.writeMessageContentToFile(content);
     }
     
@@ -76,7 +76,7 @@ public class MessageFilePersistenceService implements IPersistenceHandler {
      * {@inheritDoc}
      */
     @Override
-    public void writeMessages(Vector<MessageContent> messages) {
+    public void writeMessages(Vector<ArchiveMessage> messages) {
         // TODO Auto-generated method stub
         
     }
@@ -85,7 +85,7 @@ public class MessageFilePersistenceService implements IPersistenceHandler {
      * {@inheritDoc}
      */
     @Override
-    public MessageContent readMessageContent(String name) {
+    public ArchiveMessage readMessageContent(String name) {
         return fileHandler.readMessageContent(name);
     }
 }
