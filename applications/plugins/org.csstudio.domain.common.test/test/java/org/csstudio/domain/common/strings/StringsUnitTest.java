@@ -181,7 +181,6 @@ public class StringsUnitTest {
 
     @Test
     public final void testSizeInBytes() {
-        Assert.assertEquals(0, Strings.getSizeInBytes(null));
         Assert.assertEquals(0, Strings.getSizeInBytes(""));
 
         final String normal1 = "Wir koennen spueren, wie wir die Form verlieren.";

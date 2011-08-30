@@ -23,11 +23,26 @@ There are two types of macros:
 </p>
 <h3>
 Predefined Symbol Macro</h3>
-<p>It could be defined in the preference page of BOY
- (open it from menu: <b>CSS->Preferences...->CSS Applications->Display->BOY</b>) or 
- the <b>Macros</b> property of container widgets: Display, Grouping Container and Linking Container.
- <br>For example: If there is a macro "1=one", the text "$(1)_two_three" will be replaced to "one_two_three" in run mode.
- <p><b><font color="red">Attention</font></b>: Macro name only allows letters and numbers (should not start with number).
+
+<p>Symbol Macros can be defined in several places as listed below. 
+ If a same macro is defined in multiple places and 
+ the option <code>Include macros from parent</code> in Macros property is selected,
+ it will be overriden in the order as below. 
+ For example, macros defined in Display's Macro property will override the macros defined in Open OPI Actions, 
+ and macros defined in Open OPI Actions will override the macros defined in BOY Preferences.
+</p>
+
+<ol>
+<li>BOY Runtime Preferences<br> BOY runtime preference can be opened from menu: 
+<code>CSS->Preferences...->CSS Applications->Display->BOY->OPI Runtime</code></li>
+<li>Open OPI Actions<br>It includes open OPI from actions, open OPI from command line and 
+open OPI from top OPIs button.</li>
+<li>Display<br> Defined in the <code>Macros</code> property of Display.</li>
+<li>Contianer<br>Defined in the <code>Macros</code> property of container widget, such as
+ Grouping Container, Linking Container and Tabbed Container.</li>
+</ol>
+
+<p><b><font color="red">Attention</font></b>: Macro name only allows letters and numbers (should not start with number).
    
 </p> 
 <h3>Widget Property Value Macro</h3>
@@ -36,8 +51,8 @@ Predefined Symbol Macro</h3>
 </p>
 <p><img src="img/tooltip.png"></p>
   
-<h3>System Macro</h3>
-<p>These macros are predefined in code. Here are two macros available: </p>
+<h3>System Macros</h3>
+<p>These macros are predefined in BOY. They can be overriden by Symbol Macros. Here are two macros available: </p>
 <ul>
 	<li><code>$(DID)</code>: The unique ID for each display. Even if there are
 	 multiple displays refering tho the same OPI file,  each display still has an unique ID.

@@ -55,8 +55,8 @@ public class IOC implements Serializable {
      * The name of this IOC.
      */
     private final String _name;
-    
-    private IpAddress _ipAddress;
+
+    private final IpAddress _ipAddress;
 
     /**
      * The group of this IOC.
@@ -81,7 +81,7 @@ public class IOC implements Serializable {
     /**
      * Constructor.
      */
-    public IOC(@Nonnull final String name, 
+    public IOC(@Nonnull final String name,
                @Nonnull final TimeInstant lastBootTime,
                @Nonnull final IpAddress ipAddress,
                @Nonnull final SortedSet<Record> records) {
@@ -90,12 +90,12 @@ public class IOC implements Serializable {
         _lastBootTime = lastBootTime;
         _ipAddress = ipAddress;
         _responsible = DEFAULT_RESPONSIBLE_PERSON;
-        for (Record record : records) {
+        for (final Record record : records) {
             _records.put(record.getName(), record);
         }
     }
 
-    @CheckForNull
+    @Nonnull
     public TimeInstant getLastBootTime() {
         return _lastBootTime;
     }
@@ -171,7 +171,7 @@ public class IOC implements Serializable {
         return _responsible;
     }
 
-    @CheckForNull
+    @Nonnull
     public IpAddress getIpAddress() {
         return _ipAddress;
     }

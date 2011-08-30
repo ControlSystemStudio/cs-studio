@@ -165,10 +165,13 @@ public class LdapFacadeImpl implements ILdapFacade {
                     getLdapService().retrieveSearchResultSynchronously(query,
                                                                        any(RECORD.getNodeTypeName()),
                                                                        SearchControls.ONELEVEL_SCOPE);
-                final ContentModel<LdapEpicsControlsConfiguration> model =
-                        getLdapService().getLdapContentModelForSearchResult(LdapEpicsControlsConfiguration.VIRTUAL_ROOT, result);
-                return model.getChildrenByTypeAndSimpleName(RECORD);
-
+                if (result != null) {
+                    final ContentModel<LdapEpicsControlsConfiguration> model =
+                            getLdapService().getLdapContentModelForSearchResult(LdapEpicsControlsConfiguration.VIRTUAL_ROOT, result);
+                    if (model != null) {
+                        return model.getChildrenByTypeAndSimpleName(RECORD);
+                    }
+                }
             } catch (final OsgiServiceUnavailableException e) {
                 throw new LdapFacadeException("Service unavailable on retrieving LDAP records for IOC " + fullIocName, e);
             } catch (final CreateContentModelException e) {
@@ -195,10 +198,12 @@ public class LdapFacadeImpl implements ILdapFacade {
                                               UNIT.getNodeTypeName(), UNIT.getUnitTypeValue());
 
         try {
-             final ILdapSearchResult result = getLdapService().retrieveSearchResultSynchronously(query,
-                                                                      any(RECORD.getNodeTypeName()),
-                                                                      SearchControls.ONELEVEL_SCOPE);
-             return getLdapService().getLdapContentModelForSearchResult(VIRTUAL_ROOT, result);
+             final ILdapSearchResult result =
+                 getLdapService().retrieveSearchResultSynchronously(query,
+                                                                    any(RECORD.getNodeTypeName()),
+                                                                    SearchControls.ONELEVEL_SCOPE);
+             return result != null ? getLdapService().getLdapContentModelForSearchResult(VIRTUAL_ROOT, result) :
+                                     null;
 
         } catch (final OsgiServiceUnavailableException e) {
             throw new LdapFacadeException("Service unavailable on retrieving LDAP records for IOC", e);
@@ -220,7 +225,9 @@ public class LdapFacadeImpl implements ILdapFacade {
         try {
 
             final ContentModel<LdapEpicsControlsConfiguration> model = retrieveRecordsForIOC(iocName, facilityName);
-
+            if (model == null) {
+                throw new LdapFacadeException("Retrieval of " + facilityName + ":" + iocName + " failed on removal from LDAP.", null);
+            }
             final Collection<INodeComponent<LdapEpicsControlsConfiguration>> records =
                 model.getChildrenByTypeAndLdapName(RECORD).values();
             for (final INodeComponent<LdapEpicsControlsConfiguration> record : records) {
@@ -248,7 +255,7 @@ public class LdapFacadeImpl implements ILdapFacade {
         try {
             final ContentModel<LdapEpicsControlsConfiguration> model = retrieveRecordsForIOC(iocName, facilityName);
 
-            if (model.isEmpty()) {
+            if (model == null  || model.isEmpty()) {
                 LOG.info("Empty content model for this searchRestult - no tidying possible.");
                 return;
             }
@@ -318,7 +325,7 @@ public class LdapFacadeImpl implements ILdapFacade {
      * {@inheritDoc}
      */
     @Override
-    @Nonnull
+    @CheckForNull
     public ContentModel<LdapEpicsControlsConfiguration> retrieveIOCs() throws LdapFacadeException {
 
         try {
@@ -326,10 +333,12 @@ public class LdapFacadeImpl implements ILdapFacade {
                 getLdapService().retrieveSearchResultSynchronously(LdapUtils.createLdapName(UNIT.getNodeTypeName(), UNIT.getUnitTypeValue()),
                                                                    any(IOC.getNodeTypeName()),
                                                                    SearchControls.SUBTREE_SCOPE);
+            if (result == null) {
+                return null;
+            }
             final ContentModel<LdapEpicsControlsConfiguration> model =
                     getLdapService().getLdapContentModelForSearchResult(VIRTUAL_ROOT, result);
-            return model;
-
+            return model != null ? model : null;
         } catch (final CreateContentModelException e) {
             throw new LdapFacadeException("Content model could not be created to retrieve IOCs.", e);
         } catch (final OsgiServiceUnavailableException e) {
@@ -355,12 +364,12 @@ public class LdapFacadeImpl implements ILdapFacade {
                         getLdapService().retrieveSearchResultSynchronously(query,
                                                                            LdapUtils.equ(IOC.getNodeTypeName(), iocSimpleName),
                                                                            SearchControls.ONELEVEL_SCOPE);
+                    if (result != null) {
+                        final ContentModel<LdapEpicsControlsConfiguration> model =
+                            getLdapService().getLdapContentModelForSearchResult(LdapEpicsControlsConfiguration.VIRTUAL_ROOT, result);
 
-                    final ContentModel<LdapEpicsControlsConfiguration> model =
-                        getLdapService().getLdapContentModelForSearchResult(LdapEpicsControlsConfiguration.VIRTUAL_ROOT, result);
-
-                    return model.getByTypeAndLdapName(IOC, iocLdapName);
-
+                        return model != null ? model.getByTypeAndLdapName(IOC, iocLdapName) : null;
+                    }
                 } catch (final OsgiServiceUnavailableException e) {
                     throw new LdapFacadeException("Service unavailable on retrieving LDAP records for IOC", e);
                 } catch (final CreateContentModelException e) {

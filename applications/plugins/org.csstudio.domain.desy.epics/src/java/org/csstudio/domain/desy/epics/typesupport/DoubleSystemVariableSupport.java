@@ -83,17 +83,4 @@ final class DoubleSystemVariableSupport extends EpicsSystemVariableSupport<Doubl
                                                  min,
                                                  max);
     }
-
-//    /**
-//     * {@inheritDoc}
-//     */
-//    @Override
-//    @Nonnull
-//    protected EpicsSystemVariable<Collection<Double>> createCollectionEpicsVariable(@Nonnull final String name,
-//                                                                                    @Nonnull final Class<?> typeClass,
-//                                                                                    @Nonnull final Collection<Double> values,
-//                                                                                    @Nonnull final ControlSystem system,
-//                                                                                    @Nonnull final TimeInstant timestamp) throws TypeSupportException {
-//        return new EpicsSystemVariable<Collection<Double>>(name, values, system, timestamp, EpicsAlarm.UNKNOWN);
-//    }
 }

@@ -92,7 +92,7 @@ public class LdapUpdaterActivator implements BundleActivator {
      * {@inheritDoc}
      */
     @Override
-    public void start(@Nullable final BundleContext context) throws Exception {
+    public void start(@Nonnull final BundleContext context) throws Exception {
 
         _ldapServiceTracker = new LdapServiceTracker(context);
         _ldapServiceTracker.open();

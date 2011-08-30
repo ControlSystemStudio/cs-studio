@@ -104,7 +104,7 @@ public class LdapServiceImplHeadlessTest {
     private static ILdapService LDAP_SERVICE;
 
     private static Random RANDOM = new Random(System.currentTimeMillis());
-    private static String EFAN_NAME = "Test" + String.valueOf(Math.abs(RANDOM.nextInt())) + "Efan1";
+    private static String EFAN_NAME = "Test" + String.valueOf(RANDOM.nextInt()) + "Efan1";
 
 
     @BeforeClass
@@ -134,6 +134,7 @@ public class LdapServiceImplHeadlessTest {
             Assert.assertNotNull(builder);
             builder.build();
             final ContentModel<LdapEpicsControlsConfiguration> model = builder.getModel();
+            Assert.assertNotNull(model);
             final Map<String, INodeComponent<LdapEpicsControlsConfiguration>> records =
                 model.getByType(RECORD);
             Assert.assertEquals(4, records.size());

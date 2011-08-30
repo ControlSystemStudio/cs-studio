@@ -29,8 +29,8 @@ import java.util.Date;
 import javax.annotation.CheckForNull;
 import javax.annotation.Nullable;
 
-import org.apache.log4j.Logger;
-import org.csstudio.platform.logging.CentralLogger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * Utility methods for parsing timestamps in alarm messages.
@@ -39,7 +39,10 @@ import org.csstudio.platform.logging.CentralLogger;
  */
 public final class EventtimeUtil {
 
-    private static final Logger LOG = CentralLogger.getInstance().getLogger(EventtimeUtil.class);
+    private static final Logger LOG = LoggerFactory.getLogger(EventtimeUtil.class);
+
+    private static final SimpleDateFormat FORMAT =
+        new SimpleDateFormat("yyyy-MM-dd HH:mm:ss.SSS");
 
     /**
      * Constructor.
@@ -47,9 +50,6 @@ public final class EventtimeUtil {
     private EventtimeUtil() {
         // Empty
     }
-
-	private static final SimpleDateFormat FORMAT =
-		new SimpleDateFormat("yyyy-MM-dd HH:mm:ss.SSS");
 
     /**
      * Parses am eventtime timestamp into a Date object. If the string cannot be

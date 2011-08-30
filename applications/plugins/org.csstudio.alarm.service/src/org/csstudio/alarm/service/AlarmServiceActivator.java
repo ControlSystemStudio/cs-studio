@@ -24,18 +24,18 @@ import javax.annotation.CheckForNull;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
-import org.apache.log4j.Logger;
 import org.csstudio.alarm.service.declaration.AlarmPreference;
 import org.csstudio.alarm.service.declaration.IAlarmConfigurationService;
 import org.csstudio.alarm.service.declaration.IAlarmService;
 import org.csstudio.alarm.service.internal.AlarmConfigurationServiceImpl;
 import org.csstudio.alarm.service.internal.AlarmServiceDALImpl;
 import org.csstudio.alarm.service.internal.AlarmServiceJMSImpl;
-import org.csstudio.platform.logging.CentralLogger;
 import org.csstudio.platform.ui.AbstractCssUiPlugin;
 import org.csstudio.utility.ldap.service.ILdapService;
 import org.csstudio.utility.ldap.service.LdapServiceTracker;
 import org.osgi.framework.BundleContext;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * The activator decides which implementation is used for the alarm service.
@@ -46,11 +46,11 @@ import org.osgi.framework.BundleContext;
  * @since 26.04.2010
  */
 public class AlarmServiceActivator extends AbstractCssUiPlugin {
-    private static final Logger LOG =
-        CentralLogger.getInstance().getLogger(AlarmServiceActivator.class);
 
     // The plug-in ID
     public static final String PLUGIN_ID = "org.csstudio.alarm.service"; //$NON-NLS-1$
+
+    private static final Logger LOG = LoggerFactory.getLogger(AlarmServiceActivator.class);
 
     // The shared instance.
     private static AlarmServiceActivator PLUGIN;

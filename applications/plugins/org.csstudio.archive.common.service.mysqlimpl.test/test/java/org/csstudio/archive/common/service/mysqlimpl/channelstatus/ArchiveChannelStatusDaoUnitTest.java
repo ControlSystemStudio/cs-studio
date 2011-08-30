@@ -24,6 +24,8 @@ package org.csstudio.archive.common.service.mysqlimpl.channelstatus;
 import java.sql.Connection;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.util.Collection;
+import java.util.Collections;
 
 import junit.framework.Assert;
 
@@ -85,9 +87,11 @@ public class ArchiveChannelStatusDaoUnitTest extends AbstractDaoTestSetup {
 
         Thread.sleep(2500);
 
-        final IArchiveChannelStatus result = DAO.retrieveLatestStatusByChannelId(CHANNEL_ID);
+        final Collection<IArchiveChannelStatus> coll =
+            DAO.retrieveLatestStatusByChannelIds(Collections.singleton(CHANNEL_ID));
 
-        Assert.assertNotNull(result);
+        Assert.assertTrue(coll.size() == 1);
+        final IArchiveChannelStatus result = coll.iterator().next();
         Assert.assertEquals(result.getChannelId(), CHANNEL_ID);
         Assert.assertEquals(sndInfo, result.getInfo());
         Assert.assertEquals(sndTime, result.getTime());
@@ -103,7 +107,7 @@ public class ArchiveChannelStatusDaoUnitTest extends AbstractDaoTestSetup {
 
     private static void undoCreateAndRetrieveStatus() throws ArchiveConnectionException,
                                                              SQLException {
-        final Connection connection = HANDLER.getConnection();
+        final Connection connection = HANDLER.createConnection();
         final Statement stmt = connection.createStatement();
         stmt.execute("DELETE FROM " + HANDLER.getDatabaseName() + "." + ArchiveChannelStatusDaoImpl.TAB +
                      " WHERE channel_id=" + CHANNEL_ID.asString() + " AND time>" + NOW.getNanos());

@@ -235,8 +235,9 @@ public abstract class AbstractBaseSection<E extends WidgetProperty> extends Abst
         super.setInput(part, selection);
         
         // .. get the command stack of the active editor
-        commandStack = ((DisplayEditor) part).getCommandStack();
-        
+        if (part instanceof DisplayEditor) {
+            commandStack = ((DisplayEditor) part).getCommandStack();
+        }
         // .. remove property change listener from previous property
         if (mainWidgetProperty != null) {
             mainWidgetProperty.removePropertyChangeListener(this);

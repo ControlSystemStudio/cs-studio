@@ -44,6 +44,8 @@ import org.csstudio.domain.desy.typesupport.BaseTypeConversionSupport;
 import org.csstudio.domain.desy.typesupport.TypeSupportException;
 import org.epics.pvmanager.TypeSupport;
 
+import com.google.common.collect.ImmutableList;
+
 
 /**
  * Conversion for epics and epics related types.
@@ -162,8 +164,11 @@ public abstract class EpicsIValueTypeSupport<T> extends AbstractTypeSupport<T> {
             @Nonnull
             protected EpicsEnum fromEnumValue(final int index,
                                               @CheckForNull final EpicsMetaData meta) {
-                if (meta == null || meta.getStates() == null ||
-                    meta.getStates().isEmpty() || index < 0 || index >= meta.getStates().size()) {
+                if (meta == null) {
+                    return EpicsEnum.createFromRaw(index);
+                }
+                final ImmutableList<EpicsEnum> states = meta.getStates();
+                if (states.isEmpty() || index < 0 || index >= states.size()) {
                     return EpicsEnum.createFromRaw(index);
                 }
                 return meta.getStates().get(index);

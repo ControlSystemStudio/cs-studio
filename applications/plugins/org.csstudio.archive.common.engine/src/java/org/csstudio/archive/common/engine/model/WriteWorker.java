@@ -103,7 +103,7 @@ final class WriteWorker extends AbstractTimeMeasuredRunnable {
     @Override
     public void measuredRun() {
         try {
-            //WORKER_LOG.info("WRITE TO SERVICE: {} at {}", _name, TimeInstantBuilder.fromNow().formatted());
+            WORKER_LOG.info("WRITER RUN: {}", _name);
 
             List<IArchiveSample<Serializable, ISystemVariable<Serializable>>> samples = Collections.emptyList();
 
@@ -115,6 +115,7 @@ final class WriteWorker extends AbstractTimeMeasuredRunnable {
 
             samples = collectSamplesFromBuffers(_multiScalarChannels);
             written += writeSamples(_provider,  samples);
+            WORKER_LOG.info("WRITER WRITTEN: {}", written);
 
             _lastWriteTime = TimeInstantBuilder.fromNow();
             _avgWriteCount.accumulate(Double.valueOf(written));

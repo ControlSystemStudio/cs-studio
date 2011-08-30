@@ -46,6 +46,7 @@ public abstract class AbstractTimeMeasuredRunnable implements Runnable {
 
     private final RunningStopWatch _stopWatch;
     private long _lastElapsedRunTimeInNanos;
+    private long _peakRunTimeInNanos;
 
     /**
      * Constructor.
@@ -70,9 +71,9 @@ public abstract class AbstractTimeMeasuredRunnable implements Runnable {
 
         measuredRun();
 
-
         _lastElapsedRunTimeInNanos = _stopWatch.getElapsedTimeInNS();
         _avgRunDurationInNanos.accumulate(Double.valueOf(_lastElapsedRunTimeInNanos));
+        _peakRunTimeInNanos = Math.max(_lastElapsedRunTimeInNanos, _peakRunTimeInNanos);
     }
 
     protected abstract void measuredRun();
@@ -88,6 +89,9 @@ public abstract class AbstractTimeMeasuredRunnable implements Runnable {
 
     public long getAverageRunTimeInNanos() {
         return getAccumulatedValue();
+    }
+    public long getPeakRunTimeInMillis() {
+        return _peakRunTimeInNanos / 1000000L;
     }
 
     public long getNumberOfRuns() {

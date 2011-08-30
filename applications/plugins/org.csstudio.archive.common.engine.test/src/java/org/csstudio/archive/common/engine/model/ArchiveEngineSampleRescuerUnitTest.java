@@ -51,7 +51,7 @@ import org.csstudio.domain.desy.time.TimeInstant.TimeInstantBuilder;
 import org.csstudio.domain.desy.typesupport.TypeSupportException;
 import org.junit.AfterClass;
 import org.junit.Assert;
-import org.junit.Before;
+import org.junit.BeforeClass;
 import org.junit.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -75,11 +75,11 @@ public class ArchiveEngineSampleRescuerUnitTest {
         LoggerFactory.getLogger("SerializedSamplesRescueLogger");
 
     private static File RESCUE_SAMPLES;
-    private List<IArchiveSample<Serializable, ISystemVariable<Serializable>>> _samples;
+    private static List<IArchiveSample<Serializable, ISystemVariable<Serializable>>> SAMPLES;
 
     @SuppressWarnings({ "unchecked", "rawtypes" })
-    @Before
-    public void setup() {
+    @BeforeClass
+    public static void setup() {
         LogManager.resetConfiguration();
         PropertyConfigurator.configure("../../../products/DESY/plugins/org.csstudio.archive.common.engine.product.log4j/log4j.properties");
         RESCUE_SAMPLES = new File("rescue/samples/samples.gpb");
@@ -120,11 +120,11 @@ public class ArchiveEngineSampleRescuerUnitTest {
                                             EpicsAlarm.UNKNOWN),
                                             null);
 
-        _samples = new ArrayList();
-        _samples.add((IArchiveSample) sample1);
-        _samples.add((IArchiveSample) sample2);
-        _samples.add((IArchiveSample) sample3);
-        _samples.add((IArchiveSample) sample4);
+        SAMPLES = new ArrayList();
+        SAMPLES.add((IArchiveSample) sample1);
+        SAMPLES.add((IArchiveSample) sample2);
+        SAMPLES.add((IArchiveSample) sample3);
+        SAMPLES.add((IArchiveSample) sample4);
 
     }
 
@@ -148,9 +148,9 @@ public class ArchiveEngineSampleRescuerUnitTest {
 
     @SuppressWarnings("unchecked")
     private void assertResult(@Nonnull final Samples result) throws TypeSupportException {
-        Assert.assertEquals(_samples.size(), result.getSampleCount());
+        Assert.assertEquals(SAMPLES.size(), result.getSampleCount());
 
-        final Iterator<IArchiveSample<Serializable, ISystemVariable<Serializable>>> iterator = _samples.iterator();
+        final Iterator<IArchiveSample<Serializable, ISystemVariable<Serializable>>> iterator = SAMPLES.iterator();
 
         Assert.assertEquals(iterator.next().getValue(),
                             ArchiveTypeConversionSupport.fromArchiveString(Double.class, result.getSample(0).getData()));
@@ -177,7 +177,7 @@ public class ArchiveEngineSampleRescuerUnitTest {
         final ArchiveSampleProtos.ArchiveSample.Builder builder =
             ArchiveSampleProtos.ArchiveSample.newBuilder();
 
-        for (final IArchiveSample<Serializable, ISystemVariable<Serializable>> sample : _samples) {
+        for (final IArchiveSample<Serializable, ISystemVariable<Serializable>> sample : SAMPLES) {
             final ISystemVariable<Serializable> sysVar = sample.getSystemVariable();
             //builder.clear();
             final ArchiveSampleProtos.ArchiveSample gpbSample =
