@@ -110,8 +110,6 @@ public class PVTableByPropertyWidget extends Composite {
 		pv = PVManager.read(vTable(columns)).notifyOn(SWTUtil.swtThread()).every(ms(500));
 		pv.addPVReaderListener(listener);
 		table.setCellLabelProvider(new PVTableByPropertyCellLabelProvider(cellPvs));
-		System.out.println("PVStarted " + cellPvs);
-		System.out.println("   " + channelQuery + " " + rowProperty + " " + columnProperty);
 	}
 	
 	public String getChannelQuery() {
