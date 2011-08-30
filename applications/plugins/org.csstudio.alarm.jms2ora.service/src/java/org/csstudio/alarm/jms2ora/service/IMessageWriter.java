@@ -41,7 +41,7 @@ public interface IMessageWriter {
     void close();
     
     /** Writes the message to the database */
-    boolean writeMessage(Vector<MessageContent> messages);
+    boolean writeMessage(Vector<ArchiveMessage> messages);
     
     /**
      * Flag that indicates if the service is usable.

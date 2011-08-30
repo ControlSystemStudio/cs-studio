@@ -33,7 +33,7 @@ import java.util.Vector;
  *  @author Markus Moeller
  *
  */
-public class MessageContent implements Serializable {
+public class ArchiveMessage implements Serializable {
     
     /** Serial version id */
     private static final long serialVersionUID = -5582704742047919825L;
@@ -53,7 +53,7 @@ public class MessageContent implements Serializable {
     /** Flag, that indicates whether or not the message should be discarded */
     private boolean discard = false;
     
-    public MessageContent() {
+    public ArchiveMessage() {
         msgIdContent = new Hashtable<Long, String>();
         msgNameContent = new Hashtable<String, String>();
         unknownContent = new Vector<String>();
@@ -192,7 +192,7 @@ public class MessageContent implements Serializable {
         return result;
     }
 
-    public boolean isEqual(MessageContent mc) {
+    public boolean isEqual(ArchiveMessage mc) {
         
         boolean result;
         String temp;

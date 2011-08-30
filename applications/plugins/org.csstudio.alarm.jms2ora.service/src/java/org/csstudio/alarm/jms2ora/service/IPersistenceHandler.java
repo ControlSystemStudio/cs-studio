@@ -54,14 +54,14 @@ public interface IPersistenceHandler {
      * 
      * @param content
      */
-    void writeMessageContent(MessageContent content);
+    void writeMessageContent(ArchiveMessage content);
     
     /**
      * Writes the message content
      * 
      * @param messages - The vector containing all messages that have to be written
      */
-    void writeMessages(Vector<MessageContent> messages);
+    void writeMessages(Vector<ArchiveMessage> messages);
     
     /**
      * Reads the serialized message and deletes it on in the persistence layer
@@ -69,5 +69,5 @@ public interface IPersistenceHandler {
      * @param name
      * @return The MessageContent object
      */
-    MessageContent readMessageContent(String name);
+    ArchiveMessage readMessageContent(String name);
 }
