@@ -80,7 +80,7 @@ public class ArchiveSampleDaoRetrieveUnitTest extends AbstractDaoTestSetup {
         channel = CHANNEL_DAO.retrieveChannelById(CHANNEL_ID_5TH);
         samples = SAMPLE_DAO.retrieveSamples(DesyArchiveRequestType.RAW_MULTI_SCALAR, channel, TimeInstantBuilder.fromNanos(1L), START);
         Assert.assertNotNull(samples);
-        Assert.assertEquals(1, samples.size());
+        Assert.assertEquals(2, samples.size());
         final Serializable value = samples.iterator().next().getValue();
         Assert.assertTrue(value instanceof ArrayList);
         Assert.assertTrue(((ArrayList) value).size() == 2);

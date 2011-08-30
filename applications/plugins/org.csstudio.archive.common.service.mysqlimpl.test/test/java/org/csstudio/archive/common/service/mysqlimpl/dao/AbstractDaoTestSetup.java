@@ -103,7 +103,7 @@ public abstract class AbstractDaoTestSetup {
     }
 
     private void setSavePoint() throws ArchiveConnectionException, SQLException {
-        _connection = HANDLER.createConnection();
+        _connection = HANDLER.getThreadLocalConnection();
         _autoCommit = _connection.getAutoCommit();
 
         _connection.setAutoCommit(false);
@@ -138,8 +138,10 @@ public abstract class AbstractDaoTestSetup {
     }
 
     private void rollback() throws SQLException {
-        _connection.rollback(_savepoint);
-        _connection.setAutoCommit(_autoCommit);
+        if (_connection != null) {
+            _connection.rollback(_savepoint);
+            _connection.setAutoCommit(_autoCommit);
+        }
     }
 
     /**

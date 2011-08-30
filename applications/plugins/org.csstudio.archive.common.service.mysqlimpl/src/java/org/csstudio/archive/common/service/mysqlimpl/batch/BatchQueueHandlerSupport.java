@@ -134,11 +134,11 @@ public abstract class BatchQueueHandlerSupport<T> extends AbstractTypeSupport<T>
 
     /**
      * For test purposes only, see calling method. This is a code smell, definitely, but unfortunately
-     * it is not easily posssible to intercept the life cycle mgmt of classes by the eclipse rcp framework.
+     * it is not easily possible to intercept the life cycle mgmt of classes by the eclipse rcp framework.
      * For more details see the caller of this method.
      */
     public void setDatabase(@Nonnull final String databaseName) {
-        _sqlStmtString = _sqlStmtString.replaceFirst("^INSERT INTO [^\\.]*", "INSERT INTO " + databaseName);
+        _sqlStmtString = _sqlStmtString.replaceFirst("^INSERT IGNORE INTO [^\\.]*", "INSERT IGNORE INTO " + databaseName);
         _sqlStmtString = _sqlStmtString.replaceFirst("^UPDATE [^\\.]*", "UPDATE " + databaseName);
 
     }
