@@ -5,6 +5,7 @@
          point="org.eclipse.ui.views">
       <view
             class="org.csstudio.channel.views.PVTableByPropertyView"
+            icon="platform:/plugin/org.csstudio.channel.widgets/icons/table-property-16.png"
             id="org.csstudio.channel.views.PVTableByPropertyView"
             name="PVTable by Property"
             restorable="true">
@@ -17,6 +18,7 @@
             locationURI="menu:display">
          <command
                commandId="org.eclipse.ui.views.showView"
+               icon="platform:/plugin/org.csstudio.channel.widgets/icons/table-property-16.png"
                label="PVTable by Property"
                style="push">
             <parameter
