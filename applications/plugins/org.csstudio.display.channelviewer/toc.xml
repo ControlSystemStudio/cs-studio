@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <?NLS TYPE="org.eclipse.help.toc"?>
 
-<toc label="ChannelFinder Viewer" link_to="../org.csstudio.ui.help/tocApps.xml#display">
-<topic label="ChannelFinder Viewer"  href="html/cfviewer.html">
+<toc label="Channel Viewer" link_to="../org.csstudio.ui.help/tocApps.xml#display">
+<topic label="Channel Viewer"  href="html/channelViewer.html">
     
 </topic>
 </toc>
