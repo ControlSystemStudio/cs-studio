@@ -239,6 +239,14 @@ public class Channel {
 	}
 
 	/**
+	 * Returns a collection of all the names of the tags present on this channel.
+	 * @return Collection of TagNames.
+	 */
+	public Collection<String> getTagNames(){
+		return tags.keySet();
+	}
+	
+	/**
 	 * Returns a list of all the {@link Property}s associated with this channel.
 	 * 
 	 * @return A list of {@link Property} or null if no properties present.
@@ -260,6 +268,14 @@ public class Channel {
 		return properties.get(propertyName);
 	}
 
+	/**
+	 * Returns a Collection of names of all the properties associated with this channel.
+	 * @return A Collection of propertyNames.
+	 */
+	public Collection<String> getPropertyNames(){
+		return properties.keySet();
+	}
+	
 	/*
 	 * (non-Javadoc)
 	 * 
