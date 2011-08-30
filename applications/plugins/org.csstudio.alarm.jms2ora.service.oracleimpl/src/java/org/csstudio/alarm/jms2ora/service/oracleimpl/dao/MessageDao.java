@@ -34,7 +34,7 @@ import java.util.Hashtable;
 import java.util.Vector;
 import org.csstudio.alarm.jms2ora.service.IMetaDataReader;
 import org.csstudio.alarm.jms2ora.service.MessageArchiveConnectionException;
-import org.csstudio.alarm.jms2ora.service.MessageContent;
+import org.csstudio.alarm.jms2ora.service.ArchiveMessage;
 import org.csstudio.alarm.jms2ora.service.MetaDataReaderServiceTracker;
 import org.csstudio.alarm.jms2ora.service.oracleimpl.Activator;
 import org.slf4j.Logger;
@@ -101,7 +101,7 @@ public class MessageDao implements MessageArchiveDao {
         metaDataServiceTracker.close();
     }
 
-    public synchronized boolean writeMessages(Vector<MessageContent> messages) {
+    public synchronized boolean writeMessages(Vector<ArchiveMessage> messages) {
         
         if (messages.isEmpty()) {
             return true;
@@ -159,7 +159,7 @@ public class MessageDao implements MessageArchiveDao {
             messageStatement = con.prepareStatement(sql);
             contentStatement = con.prepareStatement(INSERT_CONTENT_SQL);
             
-            for (MessageContent o : messages) {                
+            for (ArchiveMessage o : messages) {                
                 
                 // Table 'MESSAGE'
                 messageStatement.clearParameters();

@@ -26,7 +26,7 @@ package org.csstudio.alarm.jms2ora.service.oracleimpl;
 
 import java.util.Vector;
 import org.csstudio.alarm.jms2ora.service.IMessageWriter;
-import org.csstudio.alarm.jms2ora.service.MessageContent;
+import org.csstudio.alarm.jms2ora.service.ArchiveMessage;
 import org.csstudio.alarm.jms2ora.service.oracleimpl.dao.MessageDao;
 
 /**
@@ -51,7 +51,7 @@ public class OracleMessageWriterService implements IMessageWriter {
      * {@inheritDoc}
      */
     @Override
-    public boolean writeMessage(Vector<MessageContent> messages) {
+    public boolean writeMessage(Vector<ArchiveMessage> messages) {
         return messageDao.writeMessages(messages);
     }
 
