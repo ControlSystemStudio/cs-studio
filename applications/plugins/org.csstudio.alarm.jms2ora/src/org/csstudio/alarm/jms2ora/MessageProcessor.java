@@ -25,13 +25,14 @@
 package org.csstudio.alarm.jms2ora;
 
 import java.util.Vector;
-import org.csstudio.alarm.jms2ora.database.DatabaseLayer;
+import java.util.concurrent.ConcurrentLinkedQueue;
 import org.csstudio.alarm.jms2ora.service.IMessageWriter;
 import org.csstudio.alarm.jms2ora.service.IPersistenceHandler;
-import org.csstudio.alarm.jms2ora.service.MessageContent;
-import org.csstudio.alarm.jms2ora.util.MessageAcceptor;
+import org.csstudio.alarm.jms2ora.service.ArchiveMessage;
+import org.csstudio.alarm.jms2ora.util.MessageConverter;
 import org.csstudio.alarm.jms2ora.util.StatisticCollector;
 import org.csstudio.domain.desy.service.osgi.OsgiServiceUnavailableException;
+import org.joda.time.LocalTime;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -66,7 +67,7 @@ import org.slf4j.LoggerFactory;
  *          - Die Properties der Datenbanktabellen
  */
 
-public class MessageProcessor extends Thread {
+public class MessageProcessor extends Thread implements IMessageProcessor {
     
     /** The class logger */
     private static final Logger LOG = LoggerFactory.getLogger(MessageProcessor.class);
@@ -77,14 +78,16 @@ public class MessageProcessor extends Thread {
     /** The Persistence writer service */
     private IPersistenceHandler persistenceService;
 
-    /** Object that gets all JMS messages */
-    private MessageAcceptor messageAcceptor;
-    
-    /** Object for database handling */
-    private DatabaseLayer dbLayer;
-    
+    /** Queue for processed messages */
+    private ConcurrentLinkedQueue<ArchiveMessage> archiveMessages;
+
     /** A container for all Collector objects */
     private StatisticCollector collector;
+    
+    private MessageConverter messageConverter;
+    
+    /** The object holds the last processing time of the messages */
+    private LocalTime nextProcessingTime;
     
     /** Indicates if the application was initialized or not */
     private boolean initialized;
@@ -108,10 +111,13 @@ public class MessageProcessor extends Thread {
      */    
     public MessageProcessor() throws ServiceNotAvailableException {
         
-        this.setName("MessageProcessor-Thread");
         collector = new StatisticCollector();
+        messageConverter = new MessageConverter(this, collector);
         
-        messageAcceptor = new MessageAcceptor(collector);
+        nextProcessingTime = new LocalTime();
+        nextProcessingTime = nextProcessingTime.plusMinutes(5);
+        
+        archiveMessages = new ConcurrentLinkedQueue<ArchiveMessage>();
         
         try {
             writerService = Jms2OraPlugin.getDefault().getMessageWriterService();
@@ -136,28 +142,41 @@ public class MessageProcessor extends Thread {
         running = true;
         stoppedClean = false;
         initialized = false;
+        
+        this.setName("MessageProcessor-Thread");
     }
     
     /**
      * {@inheritDoc}
      */
     @Override
+    public synchronized void putArchiveMessage(ArchiveMessage m) {
+        archiveMessages.add(m);
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
     public void run() {
         
-        Vector<MessageContent> storeMe;
+        Vector<ArchiveMessage> storeMe;
         boolean success;
-        
+
         LOG.info("Started " + VersionInfo.getAll());        
         LOG.info("Waiting for messages...");
         
         while(running) {
             
-            if ((messageAcceptor.getQueueSize() > 0) && running) {
+            LocalTime now = new LocalTime();
+            
+            if ((now.isAfter(nextProcessingTime) || archiveMessages.size() >= 1000) && running) {
                 
-                storeMe = messageAcceptor.getCurrentMessages();
+                storeMe = this.getMessagesToArchive();
+                
                 success = writerService.writeMessage(storeMe);
-                
                 if(!success) {
+                    
                     // Store the message in a file, if it was not possible to write it to the DB.
                     persistenceService.writeMessages(storeMe);
                     LOG.warn("Could not store the message in the database. Message is written on disk.");
@@ -166,6 +185,8 @@ public class MessageProcessor extends Thread {
                 if (LOG.isDebugEnabled()) {
                     LOG.debug(createStatisticString());
                 }
+                
+                nextProcessingTime = nextProcessingTime.plusMinutes(5);
             }
 
             if(running) {
@@ -183,22 +204,21 @@ public class MessageProcessor extends Thread {
             }
         }
         
-        messageAcceptor.closeAllReceivers();
-        
         // Process the remaining messages
-        LOG.info("Remaining messages: " + messageAcceptor.getQueueSize() + " -> Processing...");
+        LOG.info("Remaining messages: " + this.getCompleteQueueSize() + " -> Processing...");
         
         int writtenToDb = 0;
         int writtenToHd = 0;
         
-        if (messageAcceptor.getQueueSize() > 0) {
+        if (true/* TODO: messageAcceptor.getQueueSize() > 0*/) {
             
-            storeMe = messageAcceptor.getCurrentMessages();
-            success = writerService.writeMessage(storeMe);
+         // TODO: storeMe = messageAcceptor.getCurrentMessages();
+         // TODO: success = writerService.writeMessage(storeMe);
+            success = true;
             if(!success) {
                 
                 // Store the message in a file, if it was not possible to write it to the DB.
-                persistenceService.writeMessages(storeMe);
+                // TODO: persistenceService.writeMessages(storeMe);
                 
                 writtenToHd++;
                 
@@ -221,42 +241,27 @@ public class MessageProcessor extends Thread {
         return stoppedClean;
     }
     
-    public ReturnValue processMessage(MessageContent content) {
+    public ReturnValue processMessages() {
         
-        long typeId = 0;
-        long msgId = 0;
         ReturnValue result = ReturnValue.PM_RETURN_OK;
 
-        if(content.discard()) {
-            return ReturnValue.PM_RETURN_DISCARD;
-        }
-
-        if(!content.hasContent()) {
-            return ReturnValue.PM_RETURN_EMPTY;
-        }
-        
-        writerService.writeMessage(messageAcceptor.getCurrentMessages());
-        
-        // Create an entry in the table MESSAGE
-        // TODO: typeId is always 0!!! We do not use it anymore. Delete the column in a future version.
-        msgId = dbLayer.createMessageEntry(typeId, content);
-        if(msgId == RET_ERROR) {
-            LOG.error("createMessageEntry(): No message entry created in database.");
-            return ReturnValue.PM_ERROR_DB;
-        }
-        
-        if(dbLayer.createMessageContentEntries(msgId, content) == false) {
-            
-            LOG.error("createMessageContentEntries(): No entry created in message_content. Delete message from database and store it to disk.");
-            dbLayer.deleteMessage(msgId);
-            result = ReturnValue.PM_ERROR_DB;
-        } else {
-            result = ReturnValue.PM_RETURN_OK;
-        }
+        //writerService.writeMessage(archiveMessages.);
         
         return result;
     }
-    
+
+    /**
+     * 
+     * @return Vector object that contains the messages in the queue
+     */
+    public Vector<ArchiveMessage> getMessagesToArchive() {
+        Vector<ArchiveMessage> result = null;
+        if (archiveMessages.isEmpty() == false) {
+            result = new Vector<ArchiveMessage>(archiveMessages);
+            archiveMessages.removeAll(result);
+        }
+        return result;
+    }
 
     public String createDatabaseNameFromRecord(String record) {
         
@@ -277,9 +282,22 @@ public class MessageProcessor extends Thread {
     public boolean isInitialized() {
         return initialized;
     }
-        
-    public int getMessageQueueSize() {
-        return messageAcceptor.getQueueSize();
+    
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public int getArchiveMessageQueueSize() {
+        return archiveMessages.size();
+    }
+
+    /**
+     * Returns the sum of the RawMessage queue size and the ArchiveMessage queue size.
+     * 
+     * @return The sum of both message queues
+     */
+    public int getCompleteQueueSize() {
+        return (messageConverter.getQueueSize() + archiveMessages.size());
     }
     
     public synchronized void stopWorking() {

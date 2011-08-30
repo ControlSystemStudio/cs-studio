@@ -40,7 +40,7 @@ import java.util.Enumeration;
 import java.util.Hashtable;
 import org.csstudio.alarm.jms2ora.Jms2OraPlugin;
 import org.csstudio.alarm.jms2ora.preferences.PreferenceConstants;
-import org.csstudio.alarm.jms2ora.service.MessageContent;
+import org.csstudio.alarm.jms2ora.service.ArchiveMessage;
 import org.csstudio.platform.utility.rdb.RDBUtil;
 import org.csstudio.platform.utility.rdb.RDBUtil.Dialect;
 import org.eclipse.core.runtime.Platform;
@@ -318,7 +318,7 @@ public class DatabaseLayer
      * @return The ID of the new entry or -1 if it fails.
      */
     
-    public synchronized long createMessageEntry(long typeId, MessageContent content)
+    public synchronized long createMessageEntry(long typeId, ArchiveMessage content)
     {
         PreparedStatement pst = null;
         String sql = null;
@@ -415,7 +415,7 @@ public class DatabaseLayer
      * 
      */
     
-    public synchronized boolean createMessageContentEntries(long msgId, MessageContent msgContent)
+    public synchronized boolean createMessageContentEntries(long msgId, ArchiveMessage msgContent)
     {
         Enumeration<?> lst = null;
         PreparedStatement pst = null;

@@ -84,6 +84,10 @@ public class Jms2OraApplication implements IApplication, Stoppable, RemotelyAcce
         shutdown = false;
     }
     
+    /**
+     * {@inheritDoc}
+     */
+    @Override
     public Object start(IApplicationContext context) throws Exception {
         
         CommandLine cmd = null;
@@ -209,6 +213,10 @@ public class Jms2OraApplication implements IApplication, Stoppable, RemotelyAcce
         return exitCode;
     }
     
+    /**
+     * {@inheritDoc}
+     */
+    @Override
     public void bindService(ISessionService sessionService) {
         
     	if (xmppInfo == null) {
@@ -223,10 +231,19 @@ public class Jms2OraApplication implements IApplication, Stoppable, RemotelyAcce
 		}
     }
     
+    
+    /**
+     * {@inheritDoc}
+     */
+    @Override
     public void unbindService(ISessionService service) {
     	// Nothing to do here
     }
         
+    /**
+     * {@inheritDoc}
+     */
+    @Override
     public void stopWorking() {
         
         running = false;
@@ -239,6 +256,10 @@ public class Jms2OraApplication implements IApplication, Stoppable, RemotelyAcce
         }
     }
 
+    /**
+     * {@inheritDoc}
+     */
+    @Override
     public void setRestart() {
         
         running = false;
@@ -251,6 +272,10 @@ public class Jms2OraApplication implements IApplication, Stoppable, RemotelyAcce
         }
     }
 
+    /**
+     * {@inheritDoc}
+     */
+    @Override
     public void stop() {
         
         running = false;
@@ -266,7 +291,8 @@ public class Jms2OraApplication implements IApplication, Stoppable, RemotelyAcce
     /**
      * {@inheritDoc}
      */
+    @Override
     public int getMessageQueueSize() {
-        return messageProcessor.getMessageQueueSize();
+        return messageProcessor.getCompleteQueueSize();
     }
 }
