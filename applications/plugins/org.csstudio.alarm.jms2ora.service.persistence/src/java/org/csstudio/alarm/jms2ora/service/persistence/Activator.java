@@ -28,6 +28,13 @@ import org.csstudio.alarm.jms2ora.service.IPersistenceHandler;
 import org.osgi.framework.BundleActivator;
 import org.osgi.framework.BundleContext;
 
+/**
+ *
+ * TODO (mmoeller) :
+ *
+ * @author mmoeller
+ * @since 30.08.2011
+ */
 public class Activator implements BundleActivator {
 
     /** The static id of this plugin */
@@ -44,14 +51,14 @@ public class Activator implements BundleActivator {
         return PLUGIN_ID;
     }
 
-	/*
-	 * (non-Javadoc)
-	 * @see org.osgi.framework.BundleActivator#start(org.osgi.framework.BundleContext)
-	 */
-	@Override
-    public void start(BundleContext bundleContext) throws Exception {
+    /*
+     * (non-Javadoc)
+     * @see org.osgi.framework.BundleActivator#start(org.osgi.framework.BundleContext)
+     */
+    @Override
+    public void start(final BundleContext bundleContext) throws Exception {
 		Activator.context = bundleContext;
-		
+
 	      // Service: MessageFileHandler
         bundleContext.registerService(IPersistenceHandler.class.getName(),
                                       new MessageFilePersistenceService(),
@@ -63,7 +70,7 @@ public class Activator implements BundleActivator {
 	 * @see org.osgi.framework.BundleActivator#stop(org.osgi.framework.BundleContext)
 	 */
 	@Override
-    public void stop(BundleContext bundleContext) throws Exception {
+    public void stop(final BundleContext bundleContext) throws Exception {
 		Activator.context = null;
 		// The services will be unregistered automatically
 	}

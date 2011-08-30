@@ -21,9 +21,7 @@
  */
 package org.csstudio.domain.desy.system;
 
-import javax.annotation.CheckForNull;
 import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
 
 import org.csstudio.domain.desy.alarm.IAlarm;
 import org.csstudio.domain.desy.time.TimeInstant;
@@ -51,11 +49,11 @@ public abstract class AbstractAlarmSystemVariable<T, A extends IAlarm>
                                        @Nonnull final T data,
                                        @Nonnull final ControlSystem origin,
                                        @Nonnull final TimeInstant time,
-                                       @Nullable final A alarm) {
+                                       @Nonnull final A alarm) {
         super(name, data, origin, time);
         _alarm = alarm;
         // plausibility check
-        if (alarm != null && !origin.getType().equals(alarm.getControlSystemType())) {
+        if (!origin.getType().equals(alarm.getControlSystemType())) {
             throw new IllegalArgumentException("Control system type and alarm type do not match.");
         }
     }
@@ -64,7 +62,7 @@ public abstract class AbstractAlarmSystemVariable<T, A extends IAlarm>
      * {@inheritDoc}
      */
     @Override
-    @CheckForNull
+    @Nonnull
     public A getAlarm() {
         return _alarm;
     }

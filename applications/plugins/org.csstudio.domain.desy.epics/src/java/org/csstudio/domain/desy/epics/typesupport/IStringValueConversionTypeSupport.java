@@ -22,6 +22,7 @@
 package org.csstudio.domain.desy.epics.typesupport;
 import java.util.Collection;
 
+import javax.annotation.CheckForNull;
 import javax.annotation.Nonnull;
 
 import org.csstudio.data.values.IStringValue;
@@ -50,14 +51,15 @@ final class IStringValueConversionTypeSupport extends
     @Nonnull
     protected Object toData(@Nonnull final IStringValue value,
                             @Nonnull final Class<?> elemClass,
-                            @Nonnull final Class<? extends Collection> collClass) throws TypeSupportException {
+                            @CheckForNull final Class<? extends Collection> collClass) throws TypeSupportException {
         final String[] values = value.getValues();
         if (values == null) {
             throw new TypeSupportException("IValue values array is null! Conversion failed.", null);
         }
-        final AbstractIValueDataToTargetTypeSupport<?> support = checkForPlausibilityAndGetSupport(elemClass,
-                                                                                     collClass,
-                                                                                     values.length);
+        final AbstractIValueDataToTargetTypeSupport<?> support =
+            checkForPlausibilityAndGetSupport(elemClass,
+                                              collClass,
+                                              values.length);
 
         if (values.length == 1) {
             return support.fromStringValue(values[0]);

@@ -74,6 +74,30 @@ public class GUI implements BypassModelListener, MachineModeListener, BeamModeLi
 
 	private MachineModeMonitor machine_mode_monitor;
 	private BeamModeMonitor beam_mode_monitor;
+	
+	/** Throttle to reduce number of full table updates */
+	private GUIUpdateThrottle full_table_update = new GUIUpdateThrottle(200, 2000)
+	{
+		@Override
+		protected void fire()
+		{
+			final Table table = bypass_table.getTable();
+			if (table.isDisposed())
+				return;
+			table.getDisplay().asyncExec(new Runnable()
+			{
+				@Override
+	            public void run()
+	            {
+					if (table.isDisposed())
+						return;
+					bypass_table.setInput(model.getBypasses());
+					displayCount(txt_total, model.getTotal());
+					displayCounts();
+	            }
+			});
+		}
+	};
 
 	
 	/** Initialize
@@ -95,12 +119,15 @@ public class GUI implements BypassModelListener, MachineModeListener, BeamModeLi
 		
 		beam_mode_monitor = new BeamModeMonitor(this);
 		beam_mode_monitor.start();
+
+		full_table_update.start();
 		
 		parent.addDisposeListener(new DisposeListener()
 		{
 			@Override
 			public void widgetDisposed(DisposeEvent e)
 			{
+				full_table_update.dispose();
 				machine_mode_monitor.stop();
 				beam_mode_monitor.stop();
 			}
@@ -108,6 +135,7 @@ public class GUI implements BypassModelListener, MachineModeListener, BeamModeLi
 		
 		hookActions();
 		createContextMenu();
+		
     }
 
 	/** Connect actions to user input */
@@ -614,21 +642,7 @@ public class GUI implements BypassModelListener, MachineModeListener, BeamModeLi
 	@Override
     public void bypassesChanged()
     {
-		final Table table = bypass_table.getTable();
-		if (table.isDisposed())
-			return;
-		table.getDisplay().asyncExec(new Runnable()
-		{
-			@Override
-            public void run()
-            {
-				if (table.isDisposed())
-					return;
-				bypass_table.setInput(model.getBypasses());
-				displayCount(txt_total, model.getTotal());
-				displayCounts();
-            }
-		});
+		full_table_update.trigger();
     }
 	
 	/** Display the model's counts

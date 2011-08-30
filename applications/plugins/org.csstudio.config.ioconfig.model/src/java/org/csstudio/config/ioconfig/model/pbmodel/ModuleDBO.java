@@ -453,7 +453,7 @@ INodeWithPrototype {
         setModuleNumber(newModuleNumber);
         final GSDModuleDBO gsdModule = getGSDModule();
         if(gsdModule == null) { // Unknown Module (--> Config the Epics Part)
-            throw new IllegalArgumentException("Module has no GSD Module");
+            throw new IllegalArgumentException("Module has no GSD Module (moduleNumber = "+newModuleNumber+")");
         }
         createChannels(newModuleNumber, this, gsdModule, createdBy);
     }

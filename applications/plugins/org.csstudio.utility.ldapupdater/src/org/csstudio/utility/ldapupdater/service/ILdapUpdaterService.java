@@ -17,6 +17,7 @@ package org.csstudio.utility.ldapupdater.service;
 import java.util.Map;
 import java.util.Set;
 
+import javax.annotation.CheckForNull;
 import javax.annotation.Nonnull;
 
 import org.csstudio.domain.desy.time.TimeInstant;
@@ -50,7 +51,7 @@ public interface ILdapUpdaterService {
                                @Nonnull final Map<String, IOC> iocMapFromFS)
                                throws LdapUpdaterServiceException;
 
-    @Nonnull
+    @CheckForNull
     ContentModel<LdapEpicsControlsConfiguration> retrieveIOCs() throws LdapUpdaterServiceException;
 
 

@@ -30,19 +30,19 @@ import org.eclipse.core.runtime.preferences.DefaultScope;
 import org.eclipse.core.runtime.preferences.IEclipsePreferences;
 
 /**
- * 
+ *
  * @author mmoeller
  * @version 1.0
  * @since 24.08.2011
  */
 public class PreferenceInitializer extends AbstractPreferenceInitializer {
-    
+
     /**
      * {@inheritDoc}
      */
     @Override
     public void initializeDefaultPreferences() {
-        IEclipsePreferences prefs = new DefaultScope().getNode(Activator.getPluginId());
+        final IEclipsePreferences prefs = new DefaultScope().getNode(Activator.getPluginId());
         prefs.put(PreferenceConstants.MESSAGE_DIRECTORY, "./var/nirvana");
     }
 }

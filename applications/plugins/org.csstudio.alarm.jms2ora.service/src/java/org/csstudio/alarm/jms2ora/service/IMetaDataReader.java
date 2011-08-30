@@ -27,36 +27,36 @@ package org.csstudio.alarm.jms2ora.service;
 import java.util.Hashtable;
 
 /**
- * TODO (mmoeller) : 
- * 
+ * TODO (mmoeller) :
+ *
  * @author mmoeller
  * @version 1.0
  * @since 19.08.2011
  */
 public interface IMetaDataReader {
-    
+
     /**
      * Closes the reader.
      */
     void close();
-    
+
     /**
      * Returns the number of max. characters for column 'value'.
-     * 
+     *
      * @return Max. number of characters, -1 if an error occurs
      */
     int getValueLength();
-    
+
     /**
      * Returns the content of the table 'MSG_PROPERTY_TYPE'.
-     * 
+     *
      * @return Hashtable containing the content of table 'MSG_PROPERTY_TYPE'
      */
     Hashtable<String, Long> getMessageContentProperties();
-    
+
     /**
      * Returns the column names and precision of type VARCHAR2 of the table 'MESSAGE'.
-     * 
+     *
      * @return Hashtable containing the column names and precision of type VARCHAR2 of table 'MESSAGE'
      */
     Hashtable<String, Integer> getMessageProperties();

@@ -31,13 +31,11 @@ import java.util.Enumeration;
 import java.util.GregorianCalendar;
 import java.util.Hashtable;
 import java.util.Vector;
-import javax.jms.JMSException;
-import javax.jms.MapMessage;
 import org.slf4j.Logger;
 import org.csstudio.alarm.jms2ora.Jms2OraPlugin;
 import org.csstudio.alarm.jms2ora.preferences.PreferenceConstants;
 import org.csstudio.alarm.jms2ora.service.IMetaDataReader;
-import org.csstudio.alarm.jms2ora.service.MessageContent;
+import org.csstudio.alarm.jms2ora.service.ArchiveMessage;
 import org.csstudio.domain.desy.service.osgi.OsgiServiceUnavailableException;
 import org.eclipse.core.runtime.Platform;
 import org.eclipse.core.runtime.preferences.IPreferencesService;
@@ -158,11 +156,32 @@ public class MessageContentCreator {
         messageFilter.stopWorking();
     }
     
-    public synchronized MessageContent convertMapMessage(MapMessage mmsg) {
+    /**
+     * 
+     * @param rawMsg
+     * @return Vector object that contains all messages that have to be stored.
+     */
+    public synchronized Vector<ArchiveMessage> convertRawMessages(Vector<RawMessage> rawMsg) {
         
-        MessageContent msgContent = null;
-        Enumeration<?> lst = null;
-        String name = null;
+        Vector<ArchiveMessage> result = new Vector<ArchiveMessage>();
+        
+        for (RawMessage m : rawMsg) {
+            ArchiveMessage am = this.convertRawMessage(m);
+            if(am.discard() || !am.hasContent()) {
+                if (LOG.isDebugEnabled()) {
+                    LOG.debug("Message discarded or does not have any content: {}", am.toString());
+                }
+            } else {
+                result.add(am);
+            }
+        }
+        
+        return result;
+    }
+    
+    public synchronized ArchiveMessage convertRawMessage(RawMessage rawMsg) {
+        
+        ArchiveMessage msgContent = null;
         String type = null;
         String propName = null;
         String et = null;
@@ -171,9 +190,9 @@ public class MessageContentCreator {
         boolean wrongFormat = false;
 
         // Create a new MessageContent object for the content of the message
-        msgContent = new MessageContent();
+        msgContent = new ArchiveMessage();
 
-        if(mmsg == null) {
+        if(rawMsg == null) {
             return msgContent;
         }
         
@@ -182,18 +201,13 @@ public class MessageContentCreator {
         //          loest eine Exception aus.
 
         // First get the message type
-        try {
-            
-            // Does the message contain the key TYPE?
-            if(mmsg.itemExists("TYPE")) {
-                // Get the value of the item TYPE
-                type = mmsg.getString("TYPE").toLowerCase();                
-            } else {
-                // The message does not contain the item TYPE. We set it to UNKNOWN
-                type = "unknown";                
-            }
-        } catch(JMSException jmse) {
-            type = "unknown";
+        // Does the message contain the key TYPE?
+        if(rawMsg.itemExists("TYPE")) {
+            // Get the value of the item TYPE
+            type = rawMsg.getValue("TYPE").toLowerCase();                
+        } else {
+            // The message does not contain the item TYPE. We set it to UNKNOWN
+            type = "unknown";                
         }
         
         LOG.debug("Message type: " + type);
@@ -212,18 +226,13 @@ public class MessageContentCreator {
         }
         
         // Get the property 'NAME'
-        try {
-            
-            // Does the message contain the key TYPE?
-            if(mmsg.itemExists("NAME")) {
-                // Get the value of the item TYPE
-                propName = mmsg.getString("NAME");                
-            } else {
-                // The message does not contain the item NAME.
-                propName = "";                
-            }
-        } catch(JMSException jmse) {
-            propName = "";
+        // Does the message contain the key TYPE?
+        if(rawMsg.itemExists("NAME")) {
+            // Get the value of the item TYPE
+            propName = rawMsg.getValue("NAME");                
+        } else {
+            // The message does not contain the item NAME.
+            propName = "";                
         }
 
         // Discard messages that contains the names of the defined list
@@ -240,34 +249,29 @@ public class MessageContentCreator {
         }
 
         // Now get the event time
-        try {
+        if(rawMsg.itemExists("EVENTTIME")) {
             
-            if(mmsg.itemExists("EVENTTIME")) {
-                
-                // Yes. Get it
-                et = mmsg.getString("EVENTTIME");
+            // Yes. Get it
+            et = rawMsg.getValue("EVENTTIME");
 
-                // Check the date format
-                temp = checkDateString(et);
+            // Check the date format
+            temp = checkDateString(et);
+            
+            // If there is something wrong with the format...
+            if(temp == null) {
                 
-                // If there is something wrong with the format...
-                if(temp == null) {
-                    
-                    LOG.info("Property EVENTTIME contains invalid format: " + et);
-                    wrongFormat = true;
-                    
-                    // ... create a new date string
-                    et = getDateAndTimeString("yyyy-MM-dd HH:mm:ss.SSS");
-                } else {
-                    // ... otherwise 'temp' contains a valid date string
-                    et = temp;
-                }
-            } else {
-                // Get the current date and time
-                // Format: 2006.07.26 12:49:12.345
+                LOG.info("Property EVENTTIME contains invalid format: " + et);
+                wrongFormat = true;
+                
+                // ... create a new date string
                 et = getDateAndTimeString("yyyy-MM-dd HH:mm:ss.SSS");
+            } else {
+                // ... otherwise 'temp' contains a valid date string
+                et = temp;
             }
-        } catch(JMSException jmse) {
+        } else {
+            // Get the current date and time
+            // Format: 2006.07.26 12:49:12.345
             et = getDateAndTimeString("yyyy-MM-dd HH:mm:ss.SSS");
         }
         
@@ -276,26 +280,16 @@ public class MessageContentCreator {
         msgContent.put(msgProperty.get("EVENTTIME"), "EVENTTIME", et);
         msgContent.put(msgProperty.get("NAME"), "NAME", propName);
         
-        try {
-            lst = mmsg.getMapNames();
-        } catch(JMSException jmse) {
-            // Put the exception message into the message content
-            msgContent.put(msgProperty.get("TEXT"), "TEXT", "[JMSException] " + jmse.getMessage());
-        }
+        Enumeration<String> lst = rawMsg.getMapNames();
         
         // Copy the content of the message into the MessageContent object
         if(lst != null) {
             while(lst.hasMoreElements())
             {
-                name = (String)lst.nextElement();
+                String name = lst.nextElement();
                 
                 // Get the value(String) and check its length
-                try {
-                    temp = mmsg.getString(name);
-                    //temp = temp.trim();
-                } catch(JMSException jmse) {
-                    temp = "[JMSException] Cannot read the element: " + jmse.getMessage();
-                }
+                temp = rawMsg.getValue(name);
                 
                 if((temp.length() == 0) && storeEmptyValues == false) {
                     continue;
@@ -357,7 +351,7 @@ public class MessageContentCreator {
         return msgContent;
     }
     
-    private void prepareAndSetUnknownProperty(MessageContent msgContent, String name, String value) {
+    private void prepareAndSetUnknownProperty(ArchiveMessage msgContent, String name, String value) {
         
         String temp = "[" + name + "] [" + value + "]";
         if(temp.length() > valueLength) {

@@ -27,22 +27,22 @@ package org.csstudio.alarm.jms2ora.service;
 import java.util.Vector;
 
 /**
- * TODO (mmoeller) : 
- * 
+ * TODO (mmoeller) :
+ *
  * @author mmoeller
  * @version 1.0
  * @since 18.08.2011
  */
 public interface IMessageWriter {
-    
+
     /**
      * Closes the reader.
      */
     void close();
-    
+
     /** Writes the message to the database */
-    boolean writeMessage(Vector<MessageContent> messages);
-    
+    boolean writeMessage(Vector<ArchiveMessage> messages);
+
     /**
      * Flag that indicates if the service is usable.
      * It returns false, if the Oracle driver cannot be registered.

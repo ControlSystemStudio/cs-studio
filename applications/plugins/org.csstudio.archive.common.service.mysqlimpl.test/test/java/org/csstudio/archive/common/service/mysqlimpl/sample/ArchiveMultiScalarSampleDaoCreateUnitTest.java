@@ -27,6 +27,7 @@ import static org.csstudio.archive.common.service.mysqlimpl.sample.TestSamplePro
 import static org.csstudio.archive.common.service.mysqlimpl.sample.TestSampleProvider.START;
 
 import java.io.Serializable;
+import java.sql.Connection;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.ArrayList;
@@ -100,11 +101,14 @@ public class ArchiveMultiScalarSampleDaoCreateUnitTest extends AbstractDaoTestSe
     }
 
     private static void undoCreateDoubleSamples() throws ArchiveConnectionException, SQLException {
-        final Statement stmt = HANDLER.getConnection().createStatement();
+        final Connection connection = HANDLER.createConnection();
+        final Statement stmt = connection.createStatement();
         stmt.execute("DELETE FROM " + ArchiveSampleDaoImpl.TAB_SAMPLE_BLOB + " WHERE " +
                      ArchiveSampleDaoImpl.COLUMN_CHANNEL_ID + "=" + CHANNEL_ID_5TH.asString() + " AND " +
-                     ArchiveSampleDaoImpl.COLUMN_TIME + " BETWEEN " + START.getNanos() + " AND " + START.plusMillis(1L).getNanos());
+                     ArchiveSampleDaoImpl.COLUMN_TIME +
+                     " BETWEEN " + START.minusMillis(1L).getNanos() + " AND " + START.plusMillis(1L).getNanos());
         stmt.close();
+        connection.close();
     }
 
     @AfterClass

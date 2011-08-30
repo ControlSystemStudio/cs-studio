@@ -25,16 +25,20 @@
 package org.csstudio.alarm.jms2ora.service.oracleimpl.internal;
 
 /**
- * TODO (mmoeller) : 
- * 
+ * TODO (mmoeller) :
+ *
  * @author mmoeller
  * @version 1.0
  * @since 18.08.2011
  */
-public class PreferenceConstants {
-    
+public final class PreferenceConstants {
+
     public static final String DATABASE_URL = "databaseUrl";
     public static final String DATABASE_USER = "databaseUser";
     public static final String DATABASE_PASSWORD = "databasePassword";
     public static final String META_DATA_DIRECTORY = "metaDataDirectory";
+
+    private PreferenceConstants() {
+        // Avoid instantiation
+    }
 }

@@ -39,7 +39,7 @@ public class TimeMeasuredRunnableTest {
      * @author bknerr
      * @since 11.05.2011
      */
-    private final class TestTimeProviderImplementation implements ICurrentTimeProvider {
+    private static final class TestTimeProviderImplementation implements ICurrentTimeProvider {
         private int _index;
         private final int[] _time = new int[] {0,  // init runnable's internal stop watch
                                                0,  // start first run
@@ -99,7 +99,7 @@ public class TimeMeasuredRunnableTest {
         Assert.assertTrue(secondRunTimeInNanos == 10*1e6);
         {
             final long averageRunTimeInNanos = worker.getAverageRunTimeInNanos();
-            final long avg = (long) (20*0.8+10*0.2);
+            final long avg = (long) (20*0.8 + 10*0.2);
             Assert.assertTrue(averageRunTimeInNanos == avg*1e6);
             final long averageRunTimeInMillis = worker.getAverageRunTimeInMillis();
             Assert.assertTrue(averageRunTimeInMillis == avg);

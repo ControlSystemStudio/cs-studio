@@ -23,6 +23,7 @@ package org.csstudio.utility.ldap.reader;
 
 import javax.annotation.CheckForNull;
 import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import javax.naming.ldap.LdapName;
 
 import org.csstudio.utility.ldap.LdapServiceImplActivator;
@@ -101,7 +102,7 @@ public final class LDAPReaderJob extends Job implements ILdapReaderJob {
          * @return the builder for chaining
          */
         @Nonnull
-        public Builder setJobCompletedCallBack(@Nonnull final ILdapReadCompletedCallback callBack) {
+        public Builder setJobCompletedCallBack(@Nullable final ILdapReadCompletedCallback callBack) {
             _callBack = callBack;
             return this;
         }

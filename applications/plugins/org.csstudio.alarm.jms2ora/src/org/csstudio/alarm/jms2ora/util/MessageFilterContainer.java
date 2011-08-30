@@ -27,7 +27,7 @@ import java.util.Enumeration;
 import java.util.Hashtable;
 import java.util.Vector;
 
-import org.csstudio.alarm.jms2ora.service.MessageContent;
+import org.csstudio.alarm.jms2ora.service.ArchiveMessage;
 
 /**
  * @author Markus Moeller
@@ -76,7 +76,7 @@ public class MessageFilterContainer
      * @param mc MessageContent object that should be stored in the message container of the filter
      * @return True if the message should be blocked, false otherwise
      */
-    public boolean addMessageContent(MessageContent mc)
+    public boolean addMessageContent(ArchiveMessage mc)
     {
         String data = null;
         boolean blockIt = false;
@@ -146,7 +146,7 @@ public class MessageFilterContainer
      * @param mc
      * @return
      */
-    public boolean containsMessageContent(MessageContent mc)
+    public boolean containsMessageContent(ArchiveMessage mc)
     {
         String data = null;
         

@@ -21,7 +21,6 @@
  */
 package org.csstudio.archive.common.service.engine;
 
-import java.net.MalformedURLException;
 import java.net.URL;
 
 import javax.annotation.Nonnull;
@@ -40,10 +39,9 @@ public interface IArchiveEngine extends IIdentifiable<ArchiveEngineId>{
     /**
      * Returns the engine URL.
      * @return the URL
-     * @throws MalformedURLException
      */
     @Nonnull
-    URL getUrl() throws MalformedURLException;
+    URL getUrl();
 
     /**
      * @return

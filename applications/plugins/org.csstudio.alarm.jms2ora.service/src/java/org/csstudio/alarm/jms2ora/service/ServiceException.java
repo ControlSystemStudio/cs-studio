@@ -25,14 +25,14 @@
 package org.csstudio.alarm.jms2ora.service;
 
 /**
- * TODO (mmoeller) : 
- * 
+ * TODO (mmoeller) :
+ *
  * @author mmoeller
  * @version 1.0
  * @since 19.08.2011
  */
 public class ServiceException extends Exception {
-    
+
     /** Default serial version id */
     private static final long serialVersionUID = 1L;
 
@@ -42,29 +42,29 @@ public class ServiceException extends Exception {
     public ServiceException() {
         super();
     }
-    
+
     /**
      * Constructor.
      * @param message
      */
-    public ServiceException(String message) {
+    public ServiceException(final String message) {
         super(message);
     }
-    
+
     /**
      * Constructor.
      * @param cause
      */
-    public ServiceException(Throwable cause) {
+    public ServiceException(final Throwable cause) {
         super(cause);
     }
-    
+
     /**
      * Constructor.
      * @param message
      * @param cause
      */
-    public ServiceException(String message, Throwable cause) {
+    public ServiceException(final String message, final Throwable cause) {
         super(message, cause);
     }
 }

@@ -126,11 +126,12 @@ public class DesyArchivePVListenerUnitTest {
                                       Double.class) {
             @SuppressWarnings("synthetic-access")
             @Override
-            protected void addSampleToBuffer(@Nonnull final IArchiveSample sample) {
+            protected boolean addSampleToBuffer(@Nonnull final IArchiveSample sample) {
                 Assert.assertTrue(sample instanceof ArchiveSample);
                 Assert.assertEquals(_channelId, sample.getChannelId());
                 Assert.assertEquals(_channelName, sample.getSystemVariable().getName());
                 Assert.assertEquals(_fstSampleVal, sample.getValue());
+                return true;
             }
         };
         listener.pvValueUpdate(_doublePv);
@@ -154,7 +155,7 @@ public class DesyArchivePVListenerUnitTest {
                                                                              Double.class) {
             @SuppressWarnings("synthetic-access")
             @Override
-            protected void addSampleToBuffer(@Nonnull final IArchiveSample sample) {
+            protected boolean addSampleToBuffer(@Nonnull final IArchiveSample sample) {
                 Assert.assertTrue(sample instanceof ArchiveMultiScalarSample);
                 Assert.assertEquals(_channelId, sample.getChannelId());
                 Assert.assertEquals(_channelName, sample.getSystemVariable().getName());
@@ -163,6 +164,7 @@ public class DesyArchivePVListenerUnitTest {
                 for (int i = 0; i < value.size(); i++) {
                     Assert.assertEquals(_sndSampleVal[i], value.get(i));
                 }
+                return true;
             }
         };
         listener.pvValueUpdate(_collDoublePv);

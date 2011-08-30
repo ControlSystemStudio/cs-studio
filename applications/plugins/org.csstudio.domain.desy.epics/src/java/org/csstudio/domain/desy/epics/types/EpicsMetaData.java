@@ -152,7 +152,7 @@ public final class EpicsMetaData {
      * of the array which was used to construct this object.
      * @return an immutable copy of the states.
      */
-    @CheckForNull
+    @Nonnull
     public ImmutableList<EpicsEnum> getStates() {
         return _states;
     }

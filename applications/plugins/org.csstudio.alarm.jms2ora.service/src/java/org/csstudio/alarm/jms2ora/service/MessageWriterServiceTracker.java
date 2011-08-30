@@ -28,19 +28,19 @@ import org.osgi.framework.BundleContext;
 import org.osgi.util.tracker.ServiceTracker;
 
 /**
- * TODO (mmoeller) : 
- * 
+ * TODO (mmoeller) :
+ *
  * @author mmoeller
  * @version 1.0
  * @since 18.08.2011
  */
 public class MessageWriterServiceTracker extends ServiceTracker {
-    
+
     /**
      * Constructor.
      * @param bundleContext
      */
-    public MessageWriterServiceTracker(BundleContext bundleContext) {
+    public MessageWriterServiceTracker(final BundleContext bundleContext) {
         super(bundleContext, IMessageWriter.class.getName(), null);
-    }    
+    }
 }

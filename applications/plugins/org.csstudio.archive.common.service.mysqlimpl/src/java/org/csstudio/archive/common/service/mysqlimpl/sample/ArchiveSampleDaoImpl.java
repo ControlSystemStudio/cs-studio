@@ -22,6 +22,7 @@
 package org.csstudio.archive.common.service.mysqlimpl.sample;
 
 import java.io.Serializable;
+import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -34,7 +35,6 @@ import javax.annotation.CheckForNull;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
-import org.csstudio.archive.common.service.ArchiveConnectionException;
 import org.csstudio.archive.common.service.channel.ArchiveChannelId;
 import org.csstudio.archive.common.service.channel.IArchiveChannel;
 import org.csstudio.archive.common.service.controlsystem.IArchiveControlSystem;
@@ -121,7 +121,6 @@ public class ArchiveSampleDaoImpl extends AbstractArchiveDao implements IArchive
                                 @Nonnull final IArchiveChannelDao channelDao) {
         super(handler, persister);
         _channelDao = channelDao;
-
         ArchiveTypeConversionSupport.install();
         EpicsSystemVariableSupport.install();
         BatchQueueHandlerSupport.installHandlerIfNotExists(new ArchiveSampleBatchQueueHandler(getDatabaseName()));
@@ -311,7 +310,7 @@ public class ArchiveSampleDaoImpl extends AbstractArchiveDao implements IArchive
         }
         final Double lastWrittenValue = agg.getAverageBeforeReset();
         if (lastWrittenValue != null && lastWrittenValue.compareTo(newVal) == 0) {
-            return false; // hasn't changed much TODO (bknerr) : consider a sort of 'deadband' here, too
+            return false; // hasn't changed much TODO (bknerr) : consider a sort of sensitivity here
         }
         return true;
     }
@@ -343,15 +342,16 @@ public class ArchiveSampleDaoImpl extends AbstractArchiveDao implements IArchive
                                                      @Nonnull final IArchiveChannel channel,
                                                      @Nonnull final TimeInstant start,
                                                      @Nonnull final TimeInstant end) throws ArchiveDaoException {
-
+        Connection conn = null;
         PreparedStatement stmt = null;
         ResultSet result = null;
         try {
             DesyArchiveRequestType reqType = type != null ? // if null = determine automatically
                                              type :
                                              SampleRequestTypeUtil.determineRequestType(channel.getDataType(), start, end);
+            conn = getThreadLocalConnection();
             do {
-                stmt = createReadSamplesStatement(channel, start, end, reqType);
+                stmt = createReadSamplesStatement(conn, channel, start, end, reqType);
                 result = stmt.executeQuery();
                 if (result.next()) {
                     return createRetrievedSamplesContainer(channel, reqType, result);
@@ -363,7 +363,7 @@ public class ArchiveSampleDaoImpl extends AbstractArchiveDao implements IArchive
         } catch (final Exception ex) {
             handleExceptions(RETRIEVAL_FAILED, ex);
         } finally {
-            closeStatement(result, stmt, "Closing of statement failed.");
+            closeSqlResources(result, stmt, "Samples retrieval for " + channel.getName());
         }
         return Collections.emptyList();
     }
@@ -387,13 +387,13 @@ public class ArchiveSampleDaoImpl extends AbstractArchiveDao implements IArchive
     }
 
     @Nonnull
-    private PreparedStatement createReadSamplesStatement(@Nonnull final IArchiveChannel channel,
+    private PreparedStatement createReadSamplesStatement(@Nonnull final Connection conn,
+                                                         @Nonnull final IArchiveChannel channel,
                                                          @Nonnull final TimeInstant s,
                                                          @Nonnull final TimeInstant e,
                                                          @Nonnull final DesyArchiveRequestType reqType)
-                                                         throws SQLException,
-                                                                ArchiveConnectionException {
-        final PreparedStatement stmt = dispatchRequestTypeToStatement(reqType);
+                                                         throws SQLException {
+        final PreparedStatement stmt = dispatchRequestTypeToStatement(conn, reqType);
         stmt.setInt(1, channel.getId().intValue());
         stmt.setLong(2, s.getNanos());
         stmt.setLong(3, e.getNanos());
@@ -401,23 +401,23 @@ public class ArchiveSampleDaoImpl extends AbstractArchiveDao implements IArchive
     }
 
     @Nonnull
-    private PreparedStatement dispatchRequestTypeToStatement(@Nonnull final DesyArchiveRequestType type)
-                                                             throws SQLException,
-                                                                    ArchiveConnectionException {
+    private PreparedStatement dispatchRequestTypeToStatement(@Nonnull final Connection conn,
+                                                             @Nonnull final DesyArchiveRequestType type)
+                                                             throws SQLException {
 
         PreparedStatement stmt = null;
         switch (type) {
             case RAW :
-                stmt = getConnection().prepareStatement(_selectRawSamplesStmt.replaceFirst(ARCH_TABLE_PLACEHOLDER, TAB_SAMPLE));
+                stmt = conn.prepareStatement(_selectRawSamplesStmt.replaceFirst(ARCH_TABLE_PLACEHOLDER, TAB_SAMPLE));
                 break;
             case RAW_MULTI_SCALAR :
-                stmt = getConnection().prepareStatement(_selectRawSamplesStmt.replaceFirst(ARCH_TABLE_PLACEHOLDER, TAB_SAMPLE_BLOB));
+                stmt = conn.prepareStatement(_selectRawSamplesStmt.replaceFirst(ARCH_TABLE_PLACEHOLDER, TAB_SAMPLE_BLOB));
                 break;
             case AVG_PER_MINUTE :
-                stmt = getConnection().prepareStatement(_selectOptSamplesStmt.replaceFirst(ARCH_TABLE_PLACEHOLDER, TAB_SAMPLE_M));
+                stmt = conn.prepareStatement(_selectOptSamplesStmt.replaceFirst(ARCH_TABLE_PLACEHOLDER, TAB_SAMPLE_M));
                 break;
             case AVG_PER_HOUR :
-                stmt = getConnection().prepareStatement(_selectOptSamplesStmt.replaceFirst(ARCH_TABLE_PLACEHOLDER, TAB_SAMPLE_H));
+                stmt = conn.prepareStatement(_selectOptSamplesStmt.replaceFirst(ARCH_TABLE_PLACEHOLDER, TAB_SAMPLE_H));
                 break;
             default :
         }
@@ -438,18 +438,16 @@ public class ArchiveSampleDaoImpl extends AbstractArchiveDao implements IArchive
         V min = null;
         V max = null;
         switch (type) {
-            case RAW : {
-                // (..., value)
+            case RAW : { // (..., value)
                 value = ArchiveTypeConversionSupport.fromArchiveString(dataType, result.getString(COLUMN_VALUE));
                 break;
             }
-            case RAW_MULTI_SCALAR : {
+            case RAW_MULTI_SCALAR : { // (..., value)
                 value = ArchiveTypeConversionSupport.fromByteArray(result.getBytes(COLUMN_VALUE));
                 break;
             }
             case AVG_PER_MINUTE :
-            case AVG_PER_HOUR : {
-                // (..., avg_val, min_val, max_val)
+            case AVG_PER_HOUR : { // (..., avg_val, min_val, max_val)
                 value = ArchiveTypeConversionSupport.fromDouble(dataType, result.getDouble(COLUMN_AVG));
                 min = ArchiveTypeConversionSupport.fromDouble(dataType, result.getDouble(COLUMN_MIN));
                 max = ArchiveTypeConversionSupport.fromDouble(dataType, result.getDouble(COLUMN_MAX));
@@ -471,7 +469,6 @@ public class ArchiveSampleDaoImpl extends AbstractArchiveDao implements IArchive
         return sample;
     }
 
-
     /**
      * {@inheritDoc}
      */
@@ -480,10 +477,12 @@ public class ArchiveSampleDaoImpl extends AbstractArchiveDao implements IArchive
     public <V extends Serializable, T extends ISystemVariable<V>>
     IArchiveSample<V, T> retrieveLatestSampleBeforeTime(@Nonnull final IArchiveChannel channel,
                                                         @Nonnull final TimeInstant time) throws ArchiveDaoException {
+        Connection conn = null;
         PreparedStatement stmt = null;
         ResultSet result  = null;
         try {
-            stmt = getConnection().prepareStatement(_selectLatestSampleBeforeTimeStmt);
+            conn = getThreadLocalConnection();
+            stmt = conn.prepareStatement(_selectLatestSampleBeforeTimeStmt);
             stmt.setInt(1, channel.getId().intValue());
             stmt.setLong(2, time.getNanos());
             result = stmt.executeQuery();
@@ -493,7 +492,7 @@ public class ArchiveSampleDaoImpl extends AbstractArchiveDao implements IArchive
         } catch(final Exception e) {
             handleExceptions(RETRIEVAL_FAILED, e);
         } finally {
-            closeStatement(result, stmt, "Closing of statement failed.");
+            closeSqlResources(result, stmt, _selectLatestSampleBeforeTimeStmt);
         }
         return null;
     }

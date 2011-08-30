@@ -23,15 +23,13 @@
 
 package org.csstudio.alarm.jms2ora.util;
 
-import java.util.Vector;
-import java.util.concurrent.ConcurrentLinkedQueue;
 import javax.jms.MapMessage;
 import javax.jms.Message;
 import javax.jms.MessageListener;
+import org.csstudio.alarm.jms2ora.IMessageConverter;
 import org.csstudio.alarm.jms2ora.Jms2OraPlugin;
 import org.csstudio.alarm.jms2ora.VersionInfo;
 import org.csstudio.alarm.jms2ora.preferences.PreferenceConstants;
-import org.csstudio.alarm.jms2ora.service.MessageContent;
 import org.eclipse.core.runtime.Platform;
 import org.eclipse.core.runtime.preferences.IPreferencesService;
 import org.slf4j.Logger;
@@ -46,14 +44,11 @@ public class MessageAcceptor implements MessageListener {
     /** The class logger */
     private static final Logger LOG = LoggerFactory.getLogger(MessageAcceptor.class);
 
-    /** Object that creates the MessageContent objects */
-    private MessageContentCreator contentCreator;
-
     /** Class that collects statistic informations. Query it via XMPP. */
     private StatisticCollector collector;
 
-    /** Queue for received messages */
-    private ConcurrentLinkedQueue<MessageContent> messages;
+    /** The class converts the RAWMessage objects to ArchiveMessage objects */
+    private IMessageConverter messageConverter;
 
     /** Array of message receivers */
     private JmsMessageReceiver[] receivers;
@@ -61,11 +56,9 @@ public class MessageAcceptor implements MessageListener {
     /** Indicates if the application was initialized or not */
     private boolean initialized;
 
-    public MessageAcceptor(StatisticCollector stat) {
+    public MessageAcceptor(IMessageConverter converter, StatisticCollector stat) {
         
-        messages = new ConcurrentLinkedQueue<MessageContent>();
-
-        contentCreator = new MessageContentCreator();
+        messageConverter = converter;
         collector = stat;
 
         IPreferencesService prefs = Platform.getPreferencesService();
@@ -112,60 +105,40 @@ public class MessageAcceptor implements MessageListener {
         }
     }
 
-    /**
-     * Returns the number of messages in the message queue
-     * @return - Number of messages in queue
-     */
-    public synchronized int getQueueSize() {
-        return messages.size();
-    }
-    
-    public synchronized Vector<MessageContent> getCurrentMessages() {
-        
-        Vector<MessageContent> result = null;
-        
-        if(messages.isEmpty() == false) {
-            result = new Vector<MessageContent>(messages);
-            messages.removeAll(result);
-        }
-        
-        return result;
-    }
-    
     public boolean isInitialized() {
         return initialized;
     }
     
+    /**
+     * {@inheritDoc}
+     */
+    @Override
     public void onMessage(Message message) {
-        
-        MessageContent content = null;
         
         if(message instanceof MapMessage) {
 
-            MapMessage mapMessage = (MapMessage)message;
+            RawMessage rm = new RawMessage((MapMessage) message);
+            
+            messageConverter.putRawMessage(rm);
             
             if (LOG.isDebugEnabled()) {
-                LOG.debug("onMessage(): {}", mapMessage.toString());
+                LOG.debug("onMessage(): {}", message.toString());
             }
             
-            content = contentCreator.convertMapMessage((MapMessage)message);
-            if(content.discard() || !content.hasContent()) {
-                if (LOG.isDebugEnabled()) {
-                    LOG.debug("Message discarded or does not have any content: {}", mapMessage.toString());
-                }
-            } else {
-                messages.add(content);
-            }
-
             collector.incrementReceivedMessages();
-            mapMessage = null;
             
         } else {
-            LOG.warn("Received a non MapMessage object: ", message.toString());
+            LOG.warn("Received a non MapMessage object: {}", message.toString());
             LOG.warn("Discarding invalid message.");
         }        
     }
     
+    /**
+     * Returns a String array containing the URL's
+     * 
+     * @param urls - Comma seperated list of JMS URL's
+     * @return Array of String
+     */
     private String[] getUrlList(String urls) {
         
         String[] result = null;
@@ -182,6 +155,12 @@ public class MessageAcceptor implements MessageListener {
         return result;
     }
     
+    /**
+     * Returns a String array containing the topic names
+     * 
+     * @param topics - Comma seperated list of topic names
+     * @return Array of String
+     */
     private String[] getTopicList(String topics) {
         
         String[] result = null;

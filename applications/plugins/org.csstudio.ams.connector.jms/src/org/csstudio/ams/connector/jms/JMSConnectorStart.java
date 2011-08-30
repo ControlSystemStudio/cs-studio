@@ -114,6 +114,7 @@ public class JMSConnectorStart implements IApplication, IGenericServiceListener<
         for (int i = 0; i < receiverURLs.length; i++) {
             ConnectionFactory connectionFactory = new ActiveMQConnectionFactory(receiverURLs[i]);
             Connection connection = connectionFactory.createConnection();
+            receiverConnections[i] = connection;
             Session receiverSession = connection.createSession(false, Session.AUTO_ACKNOWLEDGE);
             Topic receiveTopic = receiverSession.createTopic(prefs.getString(AmsPreferenceKey.P_JMS_AMS_TOPIC_JMS_CONNECTOR));
             MessageConsumer consumer = receiverSession.createConsumer(receiveTopic);

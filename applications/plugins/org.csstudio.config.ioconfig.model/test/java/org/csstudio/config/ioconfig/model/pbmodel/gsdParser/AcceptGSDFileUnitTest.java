@@ -75,6 +75,12 @@ public class AcceptGSDFileUnitTest {
         Assert.assertNotNull(model);
         model = null;
     }
+    @Test
+    public void gSDTestFilesiem80d1() throws Exception {
+        AbstractGsdPropertyModel model = GSDTestFiles.siem80d1.getFileAsGSDFileDBO().getParsedGsdFileModel();
+        Assert.assertNotNull(model);
+        model = null;
+    }
 
     @Test
     public void gSDTestFileSOFTB203() throws Exception {

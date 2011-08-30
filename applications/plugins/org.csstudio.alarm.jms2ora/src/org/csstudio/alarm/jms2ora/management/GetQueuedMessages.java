@@ -36,9 +36,10 @@ public class GetQueuedMessages implements IManagementCommand {
     
     private static RemotelyAccesible object = null;
     
-    /* (non-Javadoc)
-     * @see org.csstudio.platform.management.IManagementCommand#execute(org.csstudio.platform.management.CommandParameters)
+    /**
+     * {@inheritDoc}
      */
+    @Override
     public CommandResult execute(CommandParameters parameters) {
         
         if (object != null) {

@@ -25,8 +25,7 @@ import java.sql.PreparedStatement;
 import java.sql.SQLException;
 import java.util.Collection;
 import java.util.Collections;
-import java.util.List;
-import java.util.concurrent.LinkedBlockingQueue;
+import java.util.concurrent.ConcurrentLinkedQueue;
 
 import javax.annotation.Nonnull;
 
@@ -50,16 +49,14 @@ public class ArchiveChannelStatusBatchQueueHandler extends BatchQueueHandlerSupp
      * Constructor.
      */
     public ArchiveChannelStatusBatchQueueHandler(@Nonnull final String databaseName) {
-        super(IArchiveChannelStatus.class, databaseName, new LinkedBlockingQueue<IArchiveChannelStatus>());
+        super(IArchiveChannelStatus.class,
+              createSqlStatementString(databaseName),
+              new ConcurrentLinkedQueue<IArchiveChannelStatus>());
     }
 
-    /**
-     * {@inheritDoc}
-     */
-    @Override
     @Nonnull
-    protected String composeSqlString() {
-        return "INSERT INTO " + getDatabase() + "." + ArchiveChannelStatusDaoImpl.TAB +
+    private static String createSqlStatementString(@Nonnull final String database) {
+        return "INSERT IGNORE INTO " + database + "." + ArchiveChannelStatusDaoImpl.TAB +
                " (channel_id, connected, info, time) VALUES " + VAL_WILDCARDS;
     }
 
@@ -80,8 +77,8 @@ public class ArchiveChannelStatusBatchQueueHandler extends BatchQueueHandlerSupp
      */
     @Override
     @Nonnull
-    public Collection<String> convertToStatementString(@Nonnull final List<IArchiveChannelStatus> elements) {
-        final String sqlWithoutValues = composeSqlString().replace(VAL_WILDCARDS, "");
+    public Collection<String> convertToStatementString(@Nonnull final Collection<IArchiveChannelStatus> elements) {
+        final String sqlWithoutValues = getSqlStatementString().replace(VAL_WILDCARDS, "");
 
         final Collection<String> valueList =
             Collections2.transform(elements,

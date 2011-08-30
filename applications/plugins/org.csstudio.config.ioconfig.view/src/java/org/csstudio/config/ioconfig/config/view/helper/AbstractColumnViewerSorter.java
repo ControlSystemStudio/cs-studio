@@ -39,7 +39,6 @@ abstract class AbstractColumnViewerSorter extends ViewerComparator {
     }
     
     public void setSorter(@Nonnull final AbstractColumnViewerSorter sorter, @Nonnull final SORT_DIRECTION direction) {
-        System.out.println(direction.name());
         sorter.setDirection(direction);
         _column.getColumn().getParent().setSortDirection(direction.getSwtDirection());
         switch (direction) {

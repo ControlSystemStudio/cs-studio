@@ -26,28 +26,28 @@ package org.csstudio.alarm.jms2ora.service.persistence;
 
 import java.util.Vector;
 
+import org.csstudio.alarm.jms2ora.service.ArchiveMessage;
 import org.csstudio.alarm.jms2ora.service.IPersistenceHandler;
-import org.csstudio.alarm.jms2ora.service.MessageContent;
 
 /**
  * TODO (mmoeller) : The methods should throw an exception
- * 
+ *
  * @author mmoeller
  * @version 1.0
  * @since 22.08.2011
  */
 public class MessageFilePersistenceService implements IPersistenceHandler {
-    
+
     /** The class that handles the file access for persistence storage */
-    private MessageFileHandler fileHandler;
-    
+    private final MessageFileHandler fileHandler;
+
     /**
      * Constructor. Oh, really?
      */
     public MessageFilePersistenceService() {
         fileHandler = new MessageFileHandler();
     }
-    
+
     /**
      * {@inheritDoc}
      */
@@ -55,7 +55,7 @@ public class MessageFilePersistenceService implements IPersistenceHandler {
     public int deleteAllMessageFiles() {
         return fileHandler.deleteAllMessageFiles();
     }
-    
+
     /**
      * {@inheritDoc}
      */
@@ -63,29 +63,29 @@ public class MessageFilePersistenceService implements IPersistenceHandler {
     public int getNumberOfMessageFiles() {
         return fileHandler.getMessageFilesNumber();
     }
-    
+
     /**
      * {@inheritDoc}
      */
     @Override
-    public void writeMessageContent(MessageContent content) {
+    public void writeMessageContent(final ArchiveMessage content) {
         fileHandler.writeMessageContentToFile(content);
     }
-    
+
     /**
      * {@inheritDoc}
      */
     @Override
-    public void writeMessages(Vector<MessageContent> messages) {
+    public void writeMessages(final Vector<ArchiveMessage> messages) {
         // TODO Auto-generated method stub
-        
+
     }
-    
+
     /**
      * {@inheritDoc}
      */
     @Override
-    public MessageContent readMessageContent(String name) {
+    public ArchiveMessage readMessageContent(final String name) {
         return fileHandler.readMessageContent(name);
     }
 }

@@ -28,8 +28,8 @@ import org.osgi.framework.BundleContext;
 import org.osgi.util.tracker.ServiceTracker;
 
 /**
- * TODO (mmoeller) : 
- * 
+ * TODO (mmoeller) :
+ *
  * @author mmoeller
  * @version 1.0
  * @since 22.08.2011
@@ -40,7 +40,7 @@ public class MessagePersistenceServiceTracker extends ServiceTracker {
      * Constructor.
      * @param bundleContext
      */
-    public MessagePersistenceServiceTracker(BundleContext bundleContext) {
+    public MessagePersistenceServiceTracker(final BundleContext bundleContext) {
         super(bundleContext, IPersistenceHandler.class.getName(), null);
-    }    
+    }
 }

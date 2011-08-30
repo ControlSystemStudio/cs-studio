@@ -21,6 +21,7 @@
  */
 package org.csstudio.archive.common.service.mysqlimpl.controlsystem;
 
+import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -78,10 +79,12 @@ public class ArchiveControlSystemDaoImpl extends AbstractArchiveDao implements I
         if (cs != null) {
             return cs;
         }
+        Connection conn = null;
         PreparedStatement stmt = null;
         ResultSet result = null;
         try {
-            stmt = getConnection().prepareStatement(_selectCSByIdStmt);
+            conn = getThreadLocalConnection();
+            stmt = conn.prepareStatement(_selectCSByIdStmt);
             stmt.setLong(1, id.longValue());
             result = stmt.executeQuery();
             if (result.next()) {
@@ -92,7 +95,7 @@ public class ArchiveControlSystemDaoImpl extends AbstractArchiveDao implements I
         } catch (final Exception e) {
             handleExceptions(RETRIEVAL_FAILED, e);
         } finally {
-            closeStatement(result, stmt, "Closing of statement " + _selectCSByIdStmt + " failed.");
+            closeSqlResources(result, stmt, _selectCSByIdStmt);
         }
         return null;
     }

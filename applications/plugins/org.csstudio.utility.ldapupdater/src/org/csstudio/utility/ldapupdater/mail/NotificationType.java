@@ -49,9 +49,12 @@ public enum NotificationType {
                          "The LDAP contains IOC entries, for which a corresponding IOC file could not be identified:"),
 
     IP_ADDRESS_NOT_SET_IN_LDAP("LDAP attribute " + LdapFieldsAndAttributes.ATTR_VAL_IOC_IP_ADDRESS + " not correctly set.",
-                               "LDAP contains IOCs for which the attribute is missing.");
+                               "LDAP contains IOCs for which the attribute is missing."),
 
-    private static final String SUBJECT_PREFIX = "[LDAP Updater]";
+    UNKNOWN_ERROR ("Unknown Throwable!",
+                   "");
+
+    private static final String SUBJECT_PREFIX = "[LDAP Updater]: ";
 
     private final String _subject;
     private final String _text;
@@ -71,7 +74,7 @@ public enum NotificationType {
      */
     @Nonnull
     public String getSubject() {
-        return SUBJECT_PREFIX + " " + _subject;
+        return SUBJECT_PREFIX + _subject;
     }
 
     /**

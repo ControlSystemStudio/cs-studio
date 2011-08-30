@@ -25,7 +25,7 @@ package org.csstudio.alarm.jms2ora.util;
 
 import org.csstudio.alarm.jms2ora.Jms2OraPlugin;
 import org.csstudio.alarm.jms2ora.preferences.PreferenceConstants;
-import org.csstudio.alarm.jms2ora.service.MessageContent;
+import org.csstudio.alarm.jms2ora.service.ArchiveMessage;
 import org.eclipse.core.runtime.Platform;
 import org.eclipse.core.runtime.preferences.IPreferencesService;
 import org.slf4j.Logger;
@@ -81,7 +81,7 @@ public class MessageFilter {
         return instance;
     }
     
-    public synchronized boolean shouldBeBlocked(MessageContent mc) {
+    public synchronized boolean shouldBeBlocked(ArchiveMessage mc) {
         boolean blockIt = false;
         
         blockIt = messageContainer.addMessageContent(mc);

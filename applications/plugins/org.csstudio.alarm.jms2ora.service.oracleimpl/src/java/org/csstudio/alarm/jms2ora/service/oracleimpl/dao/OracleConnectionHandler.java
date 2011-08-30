@@ -29,6 +29,10 @@ import java.sql.Driver;
 import java.sql.DriverManager;
 import java.sql.SQLException;
 import java.util.Enumeration;
+
+import oracle.jdbc.OracleDriver;
+import oracle.jdbc.pool.OracleDataSource;
+
 import org.csstudio.alarm.jms2ora.service.ConnectionInfo;
 import org.csstudio.alarm.jms2ora.service.MessageArchiveConnectionException;
 import org.csstudio.alarm.jms2ora.service.oracleimpl.Activator;
@@ -37,67 +41,65 @@ import org.eclipse.core.runtime.Platform;
 import org.eclipse.core.runtime.preferences.IPreferencesService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import oracle.jdbc.OracleDriver;
-import oracle.jdbc.pool.OracleDataSource;
 
 /**
- * TODO (mmoeller) : 
- * 
+ * TODO (mmoeller) :
+ *
  * @author mmoeller
  * @version 1.0
  * @since 19.08.2011
  */
 public class OracleConnectionHandler {
-    
+
     /** The class logger */
     private static Logger LOG = LoggerFactory.getLogger(OracleConnectionHandler.class);
-    
+
     /**  */
-    private ConnectionInfo conInfo;
+    private final ConnectionInfo conInfo;
 
     /**  */
     private OracleDataSource dataSource;
-    
+
     /**  */
     private OracleDriver driver;
-    
+
     /**  */
     private final ThreadLocal<Connection> connection;
-    
-    private boolean _autoCommit;
+
+    private final boolean _autoCommit;
 
     /**
      * Constructor.
      */
-    public OracleConnectionHandler(boolean autoCommit) {
-        
+    public OracleConnectionHandler(final boolean autoCommit) {
+
         _autoCommit = autoCommit;
         connection = new ThreadLocal<Connection>();
         connection.set(null);
-        
+
         boolean driverFound = false;
-        
-        Enumeration<Driver> drivers = DriverManager.getDrivers();
+
+        final Enumeration<Driver> drivers = DriverManager.getDrivers();
         while (drivers.hasMoreElements()) {
-            String clazz = drivers.nextElement().getClass().getName();
+            final String clazz = drivers.nextElement().getClass().getName();
             if (clazz.contains("OracleDriver")) {
                 driverFound = true;
             }
         }
-        
+
         if (driverFound == false) {
             try {
                 driver = new OracleDriver();
                 DriverManager.registerDriver(driver);
-            } catch (SQLException sqle) {
+            } catch (final SQLException sqle) {
                 LOG.error("Cannot register OracleDriver.");
             }
         }
 
-        IPreferencesService prefs = Platform.getPreferencesService();
-        String dbUrl = prefs.getString(Activator.getPluginId(), PreferenceConstants.DATABASE_URL, "", null);
-        String userName = prefs.getString(Activator.getPluginId(), PreferenceConstants.DATABASE_USER, "", null);
-        String password = prefs.getString(Activator.getPluginId(), PreferenceConstants.DATABASE_PASSWORD, "", null);
+        final IPreferencesService prefs = Platform.getPreferencesService();
+        final String dbUrl = prefs.getString(Activator.getPluginId(), PreferenceConstants.DATABASE_URL, "", null);
+        final String userName = prefs.getString(Activator.getPluginId(), PreferenceConstants.DATABASE_USER, "", null);
+        final String password = prefs.getString(Activator.getPluginId(), PreferenceConstants.DATABASE_PASSWORD, "", null);
 
         conInfo = new ConnectionInfo(userName, password, dbUrl);
 
@@ -106,65 +108,65 @@ public class OracleConnectionHandler {
             dataSource.setUser(userName);
             dataSource.setPassword(password);
             dataSource.setURL(dbUrl);
-        } catch (SQLException sqle) {
+        } catch (final SQLException sqle) {
             LOG.error("[*** SQLException ***]: {}", sqle.getMessage());
         }
     }
 
     private void connect() throws MessageArchiveConnectionException {
-        
+
         Connection con = connection.get();
-        
+
         if (con != null) {
             try {
                 con.close();
-            } catch (SQLException sqle) {
+            } catch (final SQLException sqle) {
                 LOG.warn("[*** SQLException ***]: {}", sqle.getMessage());
             }
-            
+
             connection.set(null);
         }
-        
+
         try {
             con = dataSource.getConnection();
             con.setAutoCommit(_autoCommit);
             connection.set(con);
-        } catch (SQLException sqle) {
+        } catch (final SQLException sqle) {
             connection.set(null);
             LOG.error("[*** SQLException ***]: {}", sqle.getMessage());
             throw new MessageArchiveConnectionException(sqle.getMessage());
         }
     }
-    
+
     public void disconnect() {
-        
-        Connection con = connection.get();
-        
+
+        final Connection con = connection.get();
+
         if (con != null) {
             try {
                 con.close();
-            } catch (SQLException sqle) {
+            } catch (final SQLException sqle) {
                 LOG.warn("[*** SQLException ***]: {}", sqle.getMessage());
             }
-            
+
             connection.set(null);
         }
     }
-    
+
     public Connection getConnection() throws MessageArchiveConnectionException {
-        
+
         Connection con = connection.get();
         if (con == null) {
             connect();
             con = connection.get();
         }
-        
+
         return con;
     }
 
     /**
      * Returns the ConnectionInfo object that contains the user name, the password and the database URL
-     * 
+     *
      * @return ConnectionInfo
      */
     public ConnectionInfo getConnectionInfo() {

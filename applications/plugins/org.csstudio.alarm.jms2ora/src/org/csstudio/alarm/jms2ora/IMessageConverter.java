@@ -22,15 +22,23 @@
  *
  */
 
-package org.csstudio.alarm.jms2ora.service.oracleimpl.dao;
+package org.csstudio.alarm.jms2ora;
+
+import org.csstudio.alarm.jms2ora.util.RawMessage;
 
 /**
  * TODO (mmoeller) : 
  * 
  * @author mmoeller
  * @version 1.0
- * @since 19.08.2011
+ * @since 29.08.2011
  */
-public interface MessageArchiveDao {
-    void close();
+public interface IMessageConverter {
+    
+    /**
+     * The method delivers a raw message.
+     * 
+     * @param m - The raw message. It is just a copy of the JMS MapMessage.
+     */
+    void putRawMessage(RawMessage m);
 }
