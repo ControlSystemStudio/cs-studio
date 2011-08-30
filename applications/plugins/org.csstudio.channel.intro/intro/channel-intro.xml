@@ -2,7 +2,7 @@
 <introContent>
   	<extensionContent id="org.csstudio.channel.intro" style="channel-intro.css" name="PVTable by Property intro Extension" path="tutorials/@">
 		<group style-id="content-group" id="org.csstudio.channel.intro-group" label="Channel widgets/views">
-       		<link label="PVTable by Property" url="http://sourceforge.net/apps/trac/cs-studio/wiki/" 
+       		<link label="PVTable by Property" url="http://org.eclipse.ui.intro/showHelpTopic?id=/org.csstudio.channel.widgets/html/pvtable-by-property.html" 
        		id="pvtablebyproperty-link" style-id="content-link">
           		<text>A table created using properties and channels from ChannelFinder.</text>
        		</link>
