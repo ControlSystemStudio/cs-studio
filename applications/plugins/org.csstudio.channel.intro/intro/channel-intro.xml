@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<introContent>
+  	<extensionContent id="org.csstudio.channel.intro" style="channel-intro.css" name="PVTable by Property intro Extension" path="tutorials/@">
+		<group style-id="content-group" id="org.csstudio.channel.intro-group" label="Channel widgets/views">
+       		<link label="PVTable by Property" url="http://sourceforge.net/apps/trac/cs-studio/wiki/" 
+       		id="pvtablebyproperty-link" style-id="content-link">
+          		<text>A table created using properties and channels from ChannelFinder.</text>
+       		</link>
+       	</group>
+  	</extensionContent>
+</introContent>
