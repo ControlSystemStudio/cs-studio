@@ -105,7 +105,8 @@ public class ArchiveMultiScalarSampleDaoCreateUnitTest extends AbstractDaoTestSe
         final Statement stmt = connection.createStatement();
         stmt.execute("DELETE FROM " + ArchiveSampleDaoImpl.TAB_SAMPLE_BLOB + " WHERE " +
                      ArchiveSampleDaoImpl.COLUMN_CHANNEL_ID + "=" + CHANNEL_ID_5TH.asString() + " AND " +
-                     ArchiveSampleDaoImpl.COLUMN_TIME + " BETWEEN " + START.getNanos() + " AND " + START.plusMillis(1L).getNanos());
+                     ArchiveSampleDaoImpl.COLUMN_TIME +
+                     " BETWEEN " + START.minusMillis(1L).getNanos() + " AND " + START.plusMillis(1L).getNanos());
         stmt.close();
         connection.close();
     }
