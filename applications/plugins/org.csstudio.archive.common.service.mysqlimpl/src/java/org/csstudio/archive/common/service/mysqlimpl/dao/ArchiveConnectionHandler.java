@@ -108,12 +108,8 @@ public class ArchiveConnectionHandler {
     @Nonnull
     private Connection connect(@Nonnull final MysqlDataSource ds) throws ArchiveConnectionException {
 
-        Connection connection = _archiveConnection.get();
+        Connection connection = null;
         try {
-            if (connection != null) { // close existing connection
-                _archiveConnection.set(null);
-                connection.close();
-            }
             // Get class loader to find the driver
             Class.forName("com.mysql.jdbc.Driver").newInstance();
 
@@ -128,7 +124,6 @@ public class ArchiveConnectionHandler {
                 }
                 // set to true to enable failover to other host
                 connection.setAutoCommit(true);
-                _archiveConnection.set(connection);
             }
         } catch (final Exception e) {
             throw new ArchiveConnectionException(ARCHIVE_CONNECTION_EXCEPTION_MSG, e);
@@ -176,17 +171,16 @@ public class ArchiveConnectionHandler {
      */
     @Nonnull
     public Connection getThreadLocalConnection() throws ArchiveConnectionException {
-        Connection connection = _archiveConnection.get();
+        final Connection connection = _archiveConnection.get();
         try {
             if (connection == null || connection.isClosed()) {
                 // the calling thread has not yet a connection registered.
-                connection = createConnection();
-                _archiveConnection.set(connection);
+                _archiveConnection.set(createConnection());
             }
         } catch (final SQLException e) {
             LOG.warn("Thread current 'permanent' connection has been closed. A new one for this {} is created", Thread.currentThread().getName());
         }
-        return connection;
+        return  _archiveConnection.get();
 
     }
 
