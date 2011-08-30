@@ -164,7 +164,7 @@ public class LdapContentModelBuilderHeadlessTest {
                                            FACILITY.getNodeTypeName(), EFAN_NAME,
                                            UNIT.getNodeTypeName(), UNIT.getUnitTypeValue()), comp.getLdapName());
 
-        final ISubtreeNodeComponent<LdapEpicsControlsConfiguration> parent = comp.getParent();
+        ISubtreeNodeComponent<LdapEpicsControlsConfiguration> parent = comp.getParent();
         Assert.assertNotNull(parent);
         Assert.assertEquals(createLdapName(COMPONENT.getNodeTypeName(), ECOM_1,
                                            FACILITY.getNodeTypeName(), EFAN_NAME,
@@ -180,6 +180,7 @@ public class LdapContentModelBuilderHeadlessTest {
                                            FACILITY.getNodeTypeName(), EFAN_NAME,
                                            UNIT.getNodeTypeName(), UNIT.getUnitTypeValue()), comp.getLdapName());
 
+        parent = comp.getParent();
         Assert.assertEquals(createLdapName(IOC.getNodeTypeName(), ECON_1,
                                            COMPONENT.getNodeTypeName(), ECOM_1,
                                            FACILITY.getNodeTypeName(), EFAN_NAME,
