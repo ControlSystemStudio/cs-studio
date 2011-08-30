@@ -12,7 +12,9 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.Timestamp;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
+import java.util.logging.Level;
 
 import org.csstudio.alarm.beast.SQL;
 import org.csstudio.alarm.beast.SeverityLevel;
@@ -336,7 +338,15 @@ public class AlarmRDB
         updateStateStatement.setInt(3, severity_id);
         updateStateStatement.setInt(4, message_id);
         updateStateStatement.setString(5, value);
-        updateStateStatement.setTimestamp(6, timestamp.toSQLTimestamp());
+        Timestamp sql_time = timestamp.toSQLTimestamp();
+        if (sql_time.getTime() == 0)
+        {	// MySQL will throw Data Truncation exception on 0 time stamps
+        	sql_time = new Timestamp(new Date().getTime());
+        	Activator.getLogger().log(Level.INFO,
+        			"State update for {0} corrects time stamp {1} to now",
+        			new Object[] { pv.getPathName(), timestamp });
+        }
+		updateStateStatement.setTimestamp(6, sql_time);
         updateStateStatement.setInt(7, pv.getID());
         updateStateStatement.execute();
         connection.commit();
