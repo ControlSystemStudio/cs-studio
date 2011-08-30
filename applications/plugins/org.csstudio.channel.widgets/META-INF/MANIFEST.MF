@@ -1,7 +1,7 @@
 Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: Widgets based on ChannelFinder
-Bundle-SymbolicName: org.csstudio.channel.widgets
+Bundle-SymbolicName: org.csstudio.channel.widgets;singleton:=true
 Bundle-Version: 1.0.0.qualifier
 Bundle-RequiredExecutionEnvironment: JavaSE-1.6
 Bundle-Description: Set of widgets implemented on top of ChannelFinder
@@ -11,6 +11,7 @@ Require-Bundle: org.eclipse.ui,
  org.csstudio.utility.pvmanager.ui;bundle-version="3.1.0",
  org.csstudio.utility.pvmanager.widgets;bundle-version="3.1.0",
  org.csstudio.ui.util;bundle-version="3.1.0",
- org.csstudio.utility.channelfinder;bundle-version="1.1.0"
+ org.csstudio.utility.channelfinder;bundle-version="1.1.0",
+ org.eclipse.help
 Export-Package: org.csstudio.channel.widgets
 Bundle-Vendor: Gabriele Carcassi <carcassi@bnl.gov>, Kunal Shroff <kshroff@bnl.gov> - BNL
