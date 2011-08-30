@@ -7,7 +7,7 @@
    </configIni>
 
    <launcherArgs>
-      <programArgs>-consoleLog</programArgs>
+      <programArgs>-consoleLog -engine KryoEngineAll</programArgs>
       <programArgsSol>-pluginCustomization plugin_customization_solaris.ini</programArgsSol>
       <programArgsWin>-pluginCustomization plugin_customization.ini</programArgsWin>
       <vmArgs>-Djava.awt.headless=true -Xms64m -Xmx256m</vmArgs>
