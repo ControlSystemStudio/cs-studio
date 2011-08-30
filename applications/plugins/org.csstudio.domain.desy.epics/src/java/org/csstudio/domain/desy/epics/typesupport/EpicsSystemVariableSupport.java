@@ -23,6 +23,7 @@ package org.csstudio.domain.desy.epics.typesupport;
 
 import java.util.Collection;
 
+import javax.annotation.CheckForNull;
 import javax.annotation.Nonnull;
 
 import org.csstudio.data.values.IValue;
@@ -131,7 +132,10 @@ public abstract class EpicsSystemVariableSupport<T> extends SystemVariableSuppor
                                                 @Nonnull final T value,
                                                 @Nonnull final ControlSystem system,
                                                 @Nonnull final TimeInstant timestamp,
-                                                @Nonnull final IAlarm alarm) throws TypeSupportException {
+                                                @CheckForNull final IAlarm alarm) throws TypeSupportException {
+        if (alarm == null || !(alarm instanceof EpicsAlarm)) {
+            return new EpicsSystemVariable(name, value, system, timestamp, EpicsAlarm.UNKNOWN);
+        }
         return new EpicsSystemVariable(name, value, system, timestamp, (EpicsAlarm) alarm);
     }
 
