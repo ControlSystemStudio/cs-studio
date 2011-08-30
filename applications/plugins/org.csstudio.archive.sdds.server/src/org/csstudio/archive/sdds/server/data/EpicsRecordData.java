@@ -26,16 +26,14 @@ package org.csstudio.archive.sdds.server.data;
 
 import java.text.SimpleDateFormat;
 import java.util.Date;
-
-import org.csstudio.archive.sdds.server.sdds.SDDSType;
-import org.csstudio.archive.sdds.server.util.ArchiveSeverity;
+import org.csstudio.archive.sdds.server.file.SDDSType;
 
 /**
  * @author Markus Moeller
  *
  */
-public class EpicsRecordData
-{
+public class EpicsRecordData {
+    
     /** */
     private long time;
     
@@ -58,60 +56,37 @@ public class EpicsRecordData
      * 
      */
     public EpicsRecordData() {
-        time = 0;
-        nanoSeconds = 0;
-        status = 0;
+        time = 0L;
+        nanoSeconds = 0L;
+        status = ArchiveStatus.UNDEFINED.getStatusValue();
+        severity = ArchiveSeverity.UNDEFINED.getSeverityValue();
         value = null;
         sddsType = SDDSType.NOT_SET;
     }
 
     /**
-     * @param time
-     * @param nanoSeconds
-     * @param status
-     * @param value
-     * @param sddsType
-     */
-    public EpicsRecordData(long time, long nanoSeconds, long status, Object value, SDDSType sddsType) {
-        
-        this.time = time;
-        this.nanoSeconds = nanoSeconds;
-        
-        if(status != 0) {
-            this.status = (status & 0x00000000ffff0000L) >> 16;
-            this.severity = (status & 0x000000000000ffffL);
-        } else {
-            this.status = 0;
-            this.severity = 0;
-        }
-        
-        this.value = value;
-        this.sddsType = sddsType;
-    }
-
-    /**
      * 
-     * @param time
-     * @param nanoSeconds
-     * @param status
-     * @param value
+     * @param t
+     * @param nano
+     * @param statusAndSeverity
+     * @param val
      */
-    public EpicsRecordData(long time, long nanoSeconds, long status, Object value) {
+    public EpicsRecordData(long t, long nano, long statusAndSeverity, Object val) {
         
-        this.time = time;
-        this.nanoSeconds = nanoSeconds;
+        this.time = t;
+        this.nanoSeconds = nano;
         
-        if(status != 0) {
-            this.status = (status & 0x00000000ffff0000L) >> 16;
-            this.severity = (status & 0x000000000000ffffL);
+        if(statusAndSeverity != 0L) {
+            this.status = (statusAndSeverity & 0x00000000ffff0000L) >> 16;
+            this.severity = (statusAndSeverity & 0x000000000000ffffL);
         } else {
-            this.status = 0;
-            this.severity = 0;
+            this.status = 0L;
+            this.severity = 0L;
         }
         
-        this.value = value;
-        if(value != null) {
-            this.sddsType = SDDSType.getByTypeName(value.getClass().getSimpleName());
+        this.value = val;
+        if(val != null) {
+            this.sddsType = SDDSType.getByTypeName(val.getClass().getSimpleName());
         } else {
             this.value = Double.NaN;
             this.sddsType = SDDSType.SDDS_DOUBLE;
@@ -122,7 +97,7 @@ public class EpicsRecordData
      * Returns true, if the value is valid. It is valid if the severity is OK, MINOR, MAJOR, REPEAT or
      * Est. Repeat.
      * 
-     * @return
+     * @return True if the value of this record is valid
      */
     public boolean isValueValid() {
         
@@ -140,7 +115,7 @@ public class EpicsRecordData
     
     /**
      * 
-     * @return
+     * @return The time stamp
      */
     public long getTime() {
         return time;
@@ -148,15 +123,15 @@ public class EpicsRecordData
 
     /**
      * 
-     * @param time
+     * @param t
      */
-    public void setTime(long time) {
-        this.time = time;
+    public void setTime(long t) {
+        this.time = t;
     }
 
     /**
      * 
-     * @return
+     * @return The nano second part of the time stamp
      */
     public long getNanoSeconds() {
         return nanoSeconds;
@@ -164,15 +139,15 @@ public class EpicsRecordData
 
     /**
      * 
-     * @param nanoSeconds
+     * @param nanos
      */
-    public void setNanoSeconds(long nanoSeconds) {
-        this.nanoSeconds = nanoSeconds;
+    public void setNanoSeconds(long nanos) {
+        this.nanoSeconds = nanos;
     }
 
     /**
      * 
-     * @return
+     * @return The status and severity as one long value
      */
     public long getStatusAndSeverity()  {
         return ((status << 16) | severity);
@@ -180,7 +155,7 @@ public class EpicsRecordData
     
     /**
      * 
-     * @return
+     * @return The status of the record
      */
     public long getStatus() {
         return status;
@@ -188,15 +163,15 @@ public class EpicsRecordData
 
     /**
      * 
-     * @param status
+     * @param stat
      */
-    public void setStatus(int status) {
-        this.status = status;
+    public void setStatus(int stat) {
+        this.status = stat;
     }
 
     /**
      * 
-     * @return
+     * @return The severity
      */
     public long getSeverity() {
         return severity;
@@ -204,15 +179,15 @@ public class EpicsRecordData
 
     /**
      * 
-     * @param status
+     * @param sevr
      */
-    public void setSeverity(int severity) {
-        this.severity = severity;
+    public void setSeverity(int sevr) {
+        this.severity = sevr;
     }
 
     /**
      * 
-     * @return
+     * @return The value of this record
      */
     public Object getValue() {
         return value;
@@ -220,15 +195,15 @@ public class EpicsRecordData
 
     /**
      * 
-     * @param value
+     * @param v
      */
-    public void setValue(Object value) {
-        this.value = value;
+    public void setValue(Object v) {
+        this.value = v;
     }
 
     /**
      * 
-     * @return
+     * @return The SDDS type
      */
     public SDDSType getSddsType() {
         return sddsType;
@@ -236,10 +211,10 @@ public class EpicsRecordData
 
     /**
      * 
-     * @param sddsType
+     * @param type
      */
-    public void setSddsType(SDDSType sddsType) {
-        this.sddsType = sddsType;
+    public void setSddsType(SDDSType type) {
+        this.sddsType = type;
     }
     
     /**

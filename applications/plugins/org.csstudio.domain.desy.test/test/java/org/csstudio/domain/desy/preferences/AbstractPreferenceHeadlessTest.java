@@ -37,9 +37,9 @@ import org.junit.Test;
  * @version $Revision$
  * @since 14.06.2010
  */
-// CHECKSTYLE:OFF The class to test is abstract, but not its test...
+// CHECKSTYLE OFF: AbstractClassName
 public class AbstractPreferenceHeadlessTest {
-// CHECKSTYLE:ON
+// CHECKSTYLE ON: AbstractClassName
 
     @Test
     public void testPreferencesService() {
@@ -63,25 +63,25 @@ public class AbstractPreferenceHeadlessTest {
         assertEquals(true, HeadlessTestPreference.BOOLEAN_PREF.getDefaultValue());
         assertEquals("true", HeadlessTestPreference.BOOLEAN_PREF.getDefaultAsString());
     }
-    
+
     @Test
     public void testPreferencesServiceWithValidatedPrefs() {
         // Here the use of the preferences service is tested.
-        
+
         // As an example the string-, double- and boolean-based preferences get different values
         final IEclipsePreferences prefs = new DefaultScope().getNode(HeadlessTestPreference.STRING_PREF.getPluginID());
         prefs.put(HeadlessTestPreference.DOUBLE_PREF_WITH_VAL.getKeyAsString(), "50.0"); // Within bounds
         assertEquals(Double.valueOf(50.0), HeadlessTestPreference.DOUBLE_PREF_WITH_VAL.getValue());
-        
+
         prefs.put(HeadlessTestPreference.DOUBLE_PREF_WITH_VAL.getKeyAsString(), "0.0"); // within bounds
         assertEquals(Double.valueOf(0.0), HeadlessTestPreference.DOUBLE_PREF_WITH_VAL.getValue());
-        
+
         prefs.put(HeadlessTestPreference.DOUBLE_PREF_WITH_VAL.getKeyAsString(), "100.0"); // within bounds
         assertEquals(Double.valueOf(100.0), HeadlessTestPreference.DOUBLE_PREF_WITH_VAL.getValue());
-        
+
         prefs.put(HeadlessTestPreference.DOUBLE_PREF_WITH_VAL.getKeyAsString(), "101.0"); // out of bounds
         assertEquals(Double.valueOf(12.34), HeadlessTestPreference.DOUBLE_PREF_WITH_VAL.getValue());
-        
+
         prefs.put(HeadlessTestPreference.DOUBLE_PREF_WITH_VAL.getKeyAsString(), "-1.0"); // out of bounds
         assertEquals(Double.valueOf(12.34), HeadlessTestPreference.DOUBLE_PREF_WITH_VAL.getValue());
     }

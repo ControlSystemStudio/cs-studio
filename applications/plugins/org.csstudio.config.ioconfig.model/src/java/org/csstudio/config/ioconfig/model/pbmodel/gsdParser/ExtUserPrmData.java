@@ -31,8 +31,8 @@ import javax.annotation.CheckForNull;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
-import org.apache.log4j.Logger;
-import org.csstudio.platform.logging.CentralLogger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * @author hrickens
@@ -42,7 +42,7 @@ import org.csstudio.platform.logging.CentralLogger;
  */
 public class ExtUserPrmData {
     
-    private static final Logger LOG = CentralLogger.getInstance().getLogger(ExtUserPrmData.class);
+    private static final Logger LOG = LoggerFactory.getLogger(ExtUserPrmData.class);
     
     /**
      * The Parent GSD Slave Model.
@@ -79,7 +79,7 @@ public class ExtUserPrmData {
      */
     private Integer _prmTextRef;
     private SortedSet<Integer> _values;
-
+    
     private boolean _range;
     
     /**
@@ -99,34 +99,25 @@ public class ExtUserPrmData {
     }
     
     /**
-     *
-     * @return The ref index of this ext user prm data.
+     * @param tmpLine
      */
-    @Nonnull
-    public final Integer getIndex() {
-        return _index;
-    }
-    
-    /**
-     *
-     * @return The Name/Desc of this ext user prm data.
-     */
-    @Nonnull
-    public final String getText() {
-        return _text;
-    }
-    
-    /**
-     *
-     * @param text
-     *            Set the Name/Desc of this ext user prm data.
-     */
-    public final void setText(@Nonnull final String text) {
-        if ((text != null) && !text.isEmpty()) {
-            _text = text.split(";")[0].trim();
+    public void buildDataTypeParameter(@Nonnull final String dataTypeParameter) {
+        final String[] dataTypeParameterParts = dataTypeParameter.split(";")[0].split("[ ]");
+        if (dataTypeParameterParts.length == 3) {
+            setDataType(dataTypeParameterParts[0]);
+            setDefault(dataTypeParameterParts[1]);
+            if (dataTypeParameterParts[2].contains("-")) {
+                final String[] minMax = dataTypeParameterParts[2].split("-");
+                setValueRange(minMax[0].trim(), minMax[1].trim());
+            } else if(dataTypeParameterParts[2].contains(",")){
+                setValues(dataTypeParameterParts[2].split(","));
+            } else {
+                LOG.error("Unkown DataType Values: {}", dataTypeParameter);
+            }
         } else {
-            _text = "";
+            LOG.error("Unkown DataType!");
         }
+        
     }
     
     /**
@@ -141,6 +132,111 @@ public class ExtUserPrmData {
             _dataType = "";
         }
         return _dataType;
+    }
+    
+    /**
+     *
+     * @return the default value.
+     */
+    public final int getDefault() {
+        return _default;
+    }
+    
+    /**
+     *
+     * @return The ref index of this ext user prm data.
+     */
+    @Nonnull
+    public final Integer getIndex() {
+        return _index;
+    }
+    
+    /**
+     *
+     * @return The highest bit to manipulate.
+     */
+    public final int getMaxBit() {
+        return _maxBit;
+    }
+    
+    /**
+     * @return maximum Value;
+     */
+    public final int getMaxValue() {
+        Integer max = 0;
+        if(_values != null) {
+            max = _values.last();
+        }
+        return max;
+        
+    }
+    
+    /**
+     *
+     * @return The lowest bit to manipulate.
+     */
+    public final int getMinBit() {
+        return _minBit;
+    }
+    
+    /**
+     * @return minimum Value;
+     */
+    public final int getMinValue() {
+        Integer min = 0;
+        if(_values != null) {
+            min = _values.first();
+        }
+        return min;
+    }
+    
+    /**
+     *
+     * @return The Parameter Text Map.
+     */
+    @CheckForNull
+    public final PrmText getPrmText() {
+        PrmText prmText = null;
+        final Integer prmTextRef = getPrmTextRef();
+        if(prmTextRef!=null) {
+            prmText = _gsdFileModel.getPrmTextMap().get(prmTextRef);
+        }
+        return prmText;
+    }
+    
+    /**
+     * @return The Parameter Text Reference.
+     */
+    @Nonnull
+    public final Integer getPrmTextRef() {
+        return _prmTextRef;
+    }
+    
+    /**
+     *
+     * @return The Name/Desc of this ext user prm data.
+     */
+    @Nonnull
+    public final String getText() {
+        return _text;
+    }
+    
+    @Nonnull
+    public SortedSet<Integer> getValues() {
+        TreeSet<Integer> values;
+        if(_range) {
+            values = new TreeSet<Integer>();
+            for (int i = _values.first(); i < _values.last(); i++) {
+                values.add(i);
+            }
+        } else {
+            values = new TreeSet<Integer>(_values);
+        }
+        return values;
+    }
+    
+    public boolean isValuesRanged() {
+        return _range;
     }
     
     /**
@@ -169,40 +265,10 @@ public class ExtUserPrmData {
             setMinBit("0");
             setMaxBit("15");
         } else {
-            LOG.error("Unkown DataType: " + dataType);
+            LOG.error("Unkown DataType: {}", dataType);
         }
         
         _dataType = dataType;
-    }
-    
-    /**
-     * @param tmpLine
-     */
-    public void buildDataTypeParameter(@Nonnull String dataTypeParameter) {
-        String[] dataTypeParameterParts = dataTypeParameter.split(";")[0].split("[ ]");
-        if (dataTypeParameterParts.length == 3) {
-            setDataType(dataTypeParameterParts[0]);
-            setDefault(dataTypeParameterParts[1]);
-            if (dataTypeParameterParts[2].contains("-")) {
-                String[] minMax = dataTypeParameterParts[2].split("-");
-                setValueRange(minMax[0].trim(), minMax[1].trim());
-            } else if(dataTypeParameterParts[2].contains(",")){
-                setValues(dataTypeParameterParts[2].split(","));
-            } else {
-                LOG.error("Unkown DataType Values: " + dataTypeParameter);
-            }
-        } else {
-            LOG.error("Unkown DataType!");
-        }
-        
-    }
-    
-    /**
-     *
-     * @return the default value.
-     */
-    public final int getDefault() {
-        return _default;
     }
     
     /**
@@ -214,38 +280,9 @@ public class ExtUserPrmData {
     public final void setDefault(@Nonnull final String def) {
         try {
             _default = Integer.parseInt(def);
-        } catch (NumberFormatException nfe) {
+        } catch (final NumberFormatException nfe) {
             _default = 0;
         }
-    }
-    
-    /**
-     *
-     * @return The lowest bit to manipulate.
-     */
-    public final int getMinBit() {
-        return _minBit;
-    }
-    
-    /**
-     *
-     * @param minBit
-     *            Set the lowest bit to manipulate.
-     */
-    public final void setMinBit(@Nonnull final String minBit) {
-        try {
-            _minBit = Integer.parseInt(minBit);
-        } catch (NumberFormatException nfe) {
-            _minBit = 0;
-        }
-    }
-    
-    /**
-     *
-     * @return The highest bit to manipulate.
-     */
-    public final int getMaxBit() {
-        return _maxBit;
     }
     
     /**
@@ -256,79 +293,22 @@ public class ExtUserPrmData {
     public final void setMaxBit(@Nonnull final String maxBit) {
         try {
             _maxBit = Integer.parseInt(maxBit);
-        } catch (NumberFormatException nfe) {
+        } catch (final NumberFormatException nfe) {
             _maxBit = 0;
         }
     }
     
     /**
-     * @return minimum Value;
+     *
+     * @param minBit
+     *            Set the lowest bit to manipulate.
      */
-    public final int getMinValue() {
-        Integer min = 0;
-        if(_values != null) {
-            min = _values.first();
-        }
-        return min;
-    }
-    
-    @Nonnull
-    public SortedSet<Integer> getValues() {
-        TreeSet<Integer> values;
-        if(_range) {
-             values = new TreeSet<Integer>();
-             for (int i = _values.first(); i < _values.last(); i++) {
-                 values.add(i);
-            }
-        } else {
-            values = new TreeSet<Integer>(_values);
-        }
-        return values;
-    }
-    
-    public boolean isValuesRanged() {
-        return _range;
-    }
-    
-    /**
-     * @param minValue
-     *            Set the minimum Value.
-     * @param maxValue
-     *            Set the maximum Value.
-     */
-    public final void setValueRange(@Nonnull final String minValue, @Nonnull final String maxValue) {
-        _values = new TreeSet<Integer>();
-        _range = true;
+    public final void setMinBit(@Nonnull final String minBit) {
         try {
-            _values.add(GsdFileParser.gsdValue2Int(minValue));
-        } catch (NumberFormatException nfe) {
-            _values.add(0);
+            _minBit = Integer.parseInt(minBit);
+        } catch (final NumberFormatException nfe) {
+            _minBit = 0;
         }
-        try {
-            _values.add(GsdFileParser.gsdValue2Int(maxValue));
-        } catch (NumberFormatException nfe) {
-            _values.add(0);
-        }
-    }
-    
-    /**
-     * @return maximum Value;
-     */
-    public final int getMaxValue() {
-        Integer max = 0;
-        if(_values != null) {
-            max = _values.last();
-        }
-        return max;
-
-    }
-    
-    /**
-     * @return The Parameter Text Reference.
-     */
-    @Nonnull
-    public final Integer getPrmTextRef() {
-        return _prmTextRef;
     }
     
     /**
@@ -342,16 +322,46 @@ public class ExtUserPrmData {
     
     /**
      *
-     * @return The Parameter Text Map.
+     * @param text
+     *            Set the Name/Desc of this ext user prm data.
      */
-    @CheckForNull
-    public final PrmText getPrmText() {
-            PrmText prmText = null;
-            Integer prmTextRef = getPrmTextRef();
-            if(prmTextRef!=null) {
-                prmText = _gsdFileModel.getPrmTextMap().get(prmTextRef);
+    public final void setText(@Nonnull final String text) {
+        if (text != null && !text.isEmpty()) {
+            _text = text.split(";")[0].trim();
+        } else {
+            _text = "";
+        }
+    }
+    
+    /**
+     * @param minValue
+     *            Set the minimum Value.
+     * @param maxValue
+     *            Set the maximum Value.
+     */
+    public final void setValueRange(@Nonnull final String minValue, @Nonnull final String maxValue) {
+        _values = new TreeSet<Integer>();
+        _range = true;
+        try {
+            _values.add(GsdFileParser.gsdValue2Int(minValue));
+        } catch (final NumberFormatException nfe) {
+            _values.add(0);
+        }
+        try {
+            _values.add(GsdFileParser.gsdValue2Int(maxValue));
+        } catch (final NumberFormatException nfe) {
+            _values.add(0);
+        }
+    }
+    
+    public void setValues(@Nullable final String[] values) {
+        if (values != null) {
+            _range = false;
+            _values = new TreeSet<Integer>();
+            for (final String value: values) {
+                _values.add(GsdFileParser.gsdValue2Int(value));
             }
-            return prmText;
+        }
     }
     
     /**
@@ -361,16 +371,6 @@ public class ExtUserPrmData {
     @Nonnull
     public final String toString() {
         return getIndex() + " : " + getText() + "(" + getDataType() + ")";
-    }
-    
-    public void setValues(@Nullable String[] values) {
-        if (values != null) {
-            _range = false;
-            _values = new TreeSet<Integer>();
-            for (String value: values) {
-                _values.add(GsdFileParser.gsdValue2Int(value));
-            }
-        }
     }
     
 }

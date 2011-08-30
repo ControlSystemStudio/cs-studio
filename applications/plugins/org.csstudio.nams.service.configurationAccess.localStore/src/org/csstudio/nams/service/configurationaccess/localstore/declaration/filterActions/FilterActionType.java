@@ -1,3 +1,4 @@
+
 package org.csstudio.nams.service.configurationaccess.localstore.declaration.filterActions;
 
 import org.csstudio.nams.common.material.regelwerk.HoldsAnDatabaseId;

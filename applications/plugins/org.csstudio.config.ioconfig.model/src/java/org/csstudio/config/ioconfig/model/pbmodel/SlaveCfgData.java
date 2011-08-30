@@ -24,9 +24,12 @@
  */
 package org.csstudio.config.ioconfig.model.pbmodel;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import javax.annotation.Nonnull;
+
+import org.csstudio.config.ioconfig.model.pbmodel.gsdParser.GsdFileParser;
 
 /**
  * @author hrickens
@@ -35,7 +38,7 @@ import javax.annotation.Nonnull;
  * @since 16.10.2008
  */
 public class SlaveCfgData {
-
+    
     /**
      * Have a Input Data.
      */
@@ -53,162 +56,36 @@ public class SlaveCfgData {
      * If false the data can used by byte/word.<br>
      */
     private boolean _consistency;
-
+    
     private int _size;
-
-    /**
-     * Default Constructor.
-     * 
-     * @param para
-     *            The Slave Config Data Value.<br>
-     *            As Hex Value with the prefix 0x or<br>
-     *            as Dec Value without prefix.
-     */
-    public SlaveCfgData(@Nonnull final List<Integer> slaveCfgData) {
-        /*
-         * Bit 0-3: is size + 1 Bit 4: input Bit 5: output Bit 6: 0:byte, 1: word Bit 7: Consistenz
-         * 0:byte, 1: Module
-         */
-        int parameter0;
-        if (slaveCfgData.size() > 0) {
-            parameter0 = slaveCfgData.get(0);
-            // Test Simple oder Special Header
-            if ((parameter0 & 0x30) == 0) {
-                int parameter1;
-                if (slaveCfgData.size() > 1) {
-                    parameter1 = slaveCfgData.get(1);
-                    setParameter(parameter0, parameter1);
-                }
-            } else {
-                setParameter(parameter0);
-            }
-        }
-    }
-
-    /**
-     * Default Constructor.
-     * 
-     * @param slaveCfgData
-     *            The Slave Config Data Value.<br>
-     *            As integer value.
-     */
-    public SlaveCfgData(final int slaveCfgData) {
-        setParameter(slaveCfgData);
-    }
-
-    /**
-     * Set the Parameter from Compact Format.
-     * @param parameter
-     *            The Slave Config Data Value.<br>
-     */
-    private void setParameter(final int parameter) {
-        setInput((parameter & 16) == 16);
-        setOutput((parameter & 32) == 32);
-        setWordSize((parameter & 64) == 64);
-        setConsistency((parameter & 128) == 128);
-        setSize((parameter & 15) + 1);
-    }
-
-    /**
-     * Set the Parameter from Special Format.
-     * @param parameter
-     *            The Slave Config Data Value.<br>
-     */
-    private void setParameter(int parameter, int parameter2) {
-        setInput((parameter & 64) == 64);
-        setOutput((parameter & 128) == 128);
-        setWordSize((parameter2 & 64) == 64);
-        setConsistency((parameter2 & 128) == 128);
-        setSize((parameter2 & 63) + 1);
-    }
-
-    /**
-     * @param size
-     */
-    private void setSize(int size) {
-        _size = size;
-    }
-
-    /**
-     * @return true when it have Input Data.
-     */
-    public final boolean isInput() {
-        return _input;
-    }
-
+    
+    private final List<Integer> _parameter = new ArrayList<Integer>();
+    
     /**
      * 
-     * @param input
-     *            Set true have it Input Data.
+     * Constructor for Compact Format
      */
-    private void setInput(final boolean input) {
-        _input = input;
+    public SlaveCfgData(@Nonnull final int parameter) {
+        setCompactFormat(parameter);
+        _parameter.add(parameter);
     }
-
-    /**
-     * @return true when it have Output Data.
-     */
-    public final boolean isOutput() {
-        return _output;
-    }
-
+    
     /**
      * 
-     * @param output
-     *            Set true have it Output Data.
+     * Constructor for Special Format
      */
-    private void setOutput(final boolean output) {
-        _output = output;
+    public SlaveCfgData(@Nonnull final int parameter0, final int parameter1) {
+        setSpecialFormat(parameter0, parameter1);
+        _parameter.add(parameter0);
+        _parameter.add(parameter1);
     }
-
-    /**
-     * @return true when the size is Word and false when Byte.
-     */
-    public final boolean isWordSize() {
-        return _wordSize;
+    
+    
+    public int getByteLength() {
+        return getWordSize() * getSize();
     }
-
-    /**
-     * 
-     * @return The Size as Bit number.
-     */
-    public final int getWordSize() {
-        if (_wordSize) {
-            return 16;
-        }
-        return 8;
-    }
-
-    /**
-     * 
-     * @param wordSize
-     *            Set true if Data size is word.
-     */
-    private void setWordSize(final boolean wordSize) {
-        _wordSize = wordSize;
-    }
-
-    /**
-     * Modules in Compact format can have a length up to 16 byte or 16 words. With the consistency
-     * the dp-Master have a note to data used. Must the dp-Master interpreted all byte or words
-     * together for this module or can the interpreted split to one byte or word. It is task of the
-     * master to guarantee the demanded consistency.<br>
-     * 
-     * @return true use Data consistency (Module Mode) and false when can split the Data (Byte
-     *         Mode).
-     */
-    public final boolean isConsistency() {
-        return _consistency;
-    }
-
-    /**
-     * @param consistency
-     *            Set the consistency.
-     */
-    private void setConsistency(final boolean consistency) {
-        _consistency = consistency;
-    }
-
+    
+    
     /**
      * 
      * @return the complete Number of Data (cumulative In.- and Output).
@@ -223,22 +100,135 @@ public class SlaveCfgData {
         }
         return number;
     }
-
+    
+    @Nonnull
+    public String getParameterAsHexString() {
+        return GsdFileParser.intList2HexString(_parameter);
+    }
+    
     /**
      * @return
      */
     public int getSize() {
         return _size;
     }
-
+    
     /**
-     * Change The Settings.
      * 
-     * @param slaveCfgData
-     *            Set the new slaveCfgData.
+     * @return The Size as Bit number.
      */
-    public final void changeSlaveCfgData(final int slaveCfgData) {
-        setParameter(slaveCfgData);
+    public final int getWordSize() {
+        if (_wordSize) {
+            return 16;
+        }
+        return 8;
     }
-
+    
+    /**
+     * Modules in Compact format can have a length up to 16 byte or 16 words. With the consistency
+     * the dp-Master have a note to data used. Must the dp-Master interpreted all byte or words
+     * together for this module or can the interpreted split to one byte or word. It is task of the
+     * master to guarantee the demanded consistency.<br>
+     * 
+     * @return true use Data consistency (Module Mode) and false when can split the Data (Byte
+     *         Mode).
+     */
+    public final boolean isConsistency() {
+        return _consistency;
+    }
+    
+    /**
+     * @return true when it have Input Data.
+     */
+    public final boolean isInput() {
+        return _input;
+    }
+    
+    /**
+     * @return true when it have Output Data.
+     */
+    public final boolean isOutput() {
+        return _output;
+    }
+    
+    /**
+     * @return true when the size is Word and false when Byte.
+     */
+    public final boolean isWordSize() {
+        return _wordSize;
+    }
+    
+    /**
+     * Set the Parameter from Compact Format.
+     * 
+     * Bit 0-3: is size + 1 Bit 4: input Bit 5: output Bit 6: 0:byte, 1: word Bit 7: Consistenz
+     * 0:byte, 1: Module
+     * 
+     * @param parameter
+     *            The Slave Config Data Value.<br>
+     */
+    private void setCompactFormat(final int parameter) {
+        /*
+         */
+        setInput((parameter & 16) == 16);
+        setOutput((parameter & 32) == 32);
+        setWordSize((parameter & 64) == 64);
+        setConsistency((parameter & 128) == 128);
+        setSize((parameter & 15) + 1);
+    }
+    
+    /**
+     * @param consistency
+     *            Set the consistency.
+     */
+    private void setConsistency(final boolean consistency) {
+        _consistency = consistency;
+    }
+    
+    /**
+     * 
+     * @param input
+     *            Set true have it Input Data.
+     */
+    private void setInput(final boolean input) {
+        _input = input;
+    }
+    
+    /**
+     * 
+     * @param output
+     *            Set true have it Output Data.
+     */
+    private void setOutput(final boolean output) {
+        _output = output;
+    }
+    
+    /**
+     * @param size
+     */
+    private void setSize(final int size) {
+        _size = size;
+    }
+    
+    /**
+     * Set the Parameter from Special Format.
+     * @param parameter
+     *            The Slave Config Data Value.<br>
+     */
+    private void setSpecialFormat(final int parameter, final int parameter2) {
+        setInput((parameter & 64) == 64);
+        setOutput((parameter & 128) == 128);
+        setWordSize((parameter2 & 64) == 64);
+        setConsistency((parameter2 & 128) == 128);
+        setSize((parameter2 & 63) + 1);
+    }
+    
+    /**
+     * 
+     * @param wordSize
+     *            Set true if Data size is word.
+     */
+    private void setWordSize(final boolean wordSize) {
+        _wordSize = wordSize;
+    }
 }

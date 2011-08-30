@@ -34,17 +34,19 @@ import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.text.SimpleDateFormat;
 import java.util.GregorianCalendar;
-import org.apache.log4j.Logger;
 import org.csstudio.alarm.jms2ora.Jms2OraPlugin;
 import org.csstudio.alarm.jms2ora.preferences.PreferenceConstants;
-import org.csstudio.platform.logging.CentralLogger;
+import org.csstudio.alarm.jms2ora.service.ArchiveMessage;
 import org.eclipse.core.runtime.Platform;
 import org.eclipse.core.runtime.preferences.IPreferencesService;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * 
  * @author  Markus Moeller
  * @version 2.0
+ * @deprecated
  */
 
 public class MessageFileHandler implements FilenameFilter {
@@ -52,8 +54,8 @@ public class MessageFileHandler implements FilenameFilter {
     /** Static instance reference */
     private static MessageFileHandler instance = null;
     
-    /** Logger of this class */
-    private Logger logger;
+    /** the class logger */
+    private static final Logger LOG = LoggerFactory.getLogger(MessageFileHandler.class);
 
     /** True if the folder 'nirvana' exists. This folder holds the stored message object content. */
     private boolean existsObjectFolder;
@@ -75,14 +77,12 @@ public class MessageFileHandler implements FilenameFilter {
         objectDir = prefs.getString(Jms2OraPlugin.PLUGIN_ID, PreferenceConstants.MESSAGE_DIRECTORY, "nirvana/", null);
         objectDir = temp + objectDir;
         
-        logger = CentralLogger.getInstance().getLogger(this);
-        
         createObjectFolder();
     }
 
     /**
      * 
-     * @return
+     * @return The instance of this class
      */
     public static synchronized MessageFileHandler getInstance() {
         
@@ -194,7 +194,7 @@ public class MessageFileHandler implements FilenameFilter {
      */
     public String[] getMessageFileContent() {
         
-        MessageContent content = null;
+        ArchiveMessage content = null;
         String[] result  = null;
         String[] name = null;
         
@@ -274,10 +274,10 @@ public class MessageFileHandler implements FilenameFilter {
             
             boolean result = folder.mkdir();
             if(result) {
-                logger.info("Folder " + objectDir + " was created.");
+                LOG.info("Folder " + objectDir + " was created.");
                 existsObjectFolder = true;
             } else {
-                logger.warn("Folder " + objectDir + " was NOT created.");
+                LOG.warn("Folder " + objectDir + " was NOT created.");
                 existsObjectFolder = false;
             }
         }
@@ -289,7 +289,7 @@ public class MessageFileHandler implements FilenameFilter {
      * @param content - The MessageContent object that have to be stored on disk.
      */
 
-    public void writeMessageContentToFile(MessageContent content) {
+    public void writeMessageContentToFile(ArchiveMessage content) {
         
         SimpleDateFormat dfm = new SimpleDateFormat("yyyyMMdd_HHmmssSSS");
         GregorianCalendar cal = null;
@@ -298,12 +298,12 @@ public class MessageFileHandler implements FilenameFilter {
         String fn = null;
 
         if(!content.hasContent()) {
-            logger.info("Message does not contain content.");
+            LOG.info("Message does not contain content.");
             return;
         }
 
         if(existsObjectFolder == false) {
-            logger.warn("Object folder '" + objectDir + "' does not exist. Message cannot be stored.");
+            LOG.warn("Object folder '" + objectDir + "' does not exist. Message cannot be stored.");
             return;
         }
         
@@ -317,9 +317,9 @@ public class MessageFileHandler implements FilenameFilter {
             // Write the MessageContent object to disk
             oos.writeObject(content);            
         } catch(FileNotFoundException fnfe) {
-            logger.error("FileNotFoundException : " + fnfe.getMessage());
+            LOG.error("FileNotFoundException : " + fnfe.getMessage());
         } catch(IOException ioe) {
-            logger.error("IOException : " + ioe.getMessage());
+            LOG.error("IOException : " + ioe.getMessage());
         } finally {
             if(oos != null){try{oos.close();}catch(IOException ioe){/* Can be ignored */}}
             if(fos != null){try{fos.close();}catch(IOException ioe){/* Can be ignored */}}
@@ -329,9 +329,9 @@ public class MessageFileHandler implements FilenameFilter {
         }
     }
     
-    private MessageContent readMessageContent(String fileName) {
+    private ArchiveMessage readMessageContent(String fileName) {
         
-        MessageContent content = null;
+        ArchiveMessage content = null;
         FileInputStream fis = null;
         ObjectInputStream ois = null;
 
@@ -340,16 +340,13 @@ public class MessageFileHandler implements FilenameFilter {
             ois = new ObjectInputStream(fis);
             
             // Write the MessageContent object to disk
-            content = (MessageContent)ois.readObject();            
+            content = (ArchiveMessage)ois.readObject();            
         } catch(FileNotFoundException fnfe) {
-            logger.error("FileNotFoundException : " + fnfe.getMessage());
-            content = null;
+            LOG.error("FileNotFoundException : " + fnfe.getMessage());
         } catch(IOException ioe) {
-            logger.error("IOException : " + ioe.getMessage());
-            content = null;
+            LOG.error("IOException : " + ioe.getMessage());
         } catch (ClassNotFoundException e) {
-            logger.error("ClassNotFoundException : " + e.getMessage());
-            content = null;
+            LOG.error("ClassNotFoundException : " + e.getMessage());
         } finally {
             if(ois != null){try{ois.close();}catch(IOException ioe){/* Can be ignored */}}
             if(fis != null){try{fis.close();}catch(IOException ioe){/* Can be ignored */}}

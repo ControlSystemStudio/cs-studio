@@ -11,13 +11,14 @@ import org.csstudio.dct.model.IPrototype;
 import org.csstudio.dct.model.IRecord;
 import org.csstudio.dct.model.IVisitor;
 import org.csstudio.dct.model.internal.Project;
-import org.csstudio.platform.logging.CentralLogger;
 import org.csstudio.platform.util.StringUtil;
 import org.eclipse.core.resources.IMarker;
 import org.eclipse.core.resources.IResource;
 import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.ui.IActionFilter;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * Implementation of a {@link IActionFilter} adapter for {@link IElement}
@@ -27,6 +28,9 @@ import org.eclipse.ui.IActionFilter;
  * 
  */
 public final class ActionFilterAdapter implements IActionFilter {
+    
+    private static final Logger LOG = LoggerFactory.getLogger(ActionFilterAdapter.class);
+    
 	private static final String ATTR_ERROR = "error";
 
 	/**
@@ -53,7 +57,7 @@ public final class ActionFilterAdapter implements IActionFilter {
 	 */
 	static final class FindErrorMarkerVisitor implements IVisitor {
 		private boolean errorFound;
-		private Set<UUID> nodesWithErrors;
+		private final Set<UUID> nodesWithErrors;
 
 		public FindErrorMarkerVisitor() {
 			errorFound = false;
@@ -69,7 +73,7 @@ public final class ActionFilterAdapter implements IActionFilter {
 				}
 			} catch (CoreException e) {
 				// 
-				CentralLogger.getInstance().warn(null, e);
+				LOG.warn("Warn", e);
 			}
 
 		}

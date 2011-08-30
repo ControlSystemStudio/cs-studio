@@ -8,6 +8,7 @@
 package org.csstudio.archive.common.engine.httpserver;
 
 import java.io.IOException;
+import java.util.Collection;
 
 import javax.annotation.CheckForNull;
 import javax.annotation.Nonnull;
@@ -17,6 +18,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import org.csstudio.archive.common.engine.model.EngineModel;
+import org.csstudio.domain.common.collection.CollectionsUtil;
 import org.csstudio.domain.desy.system.ISystemVariable;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -26,19 +28,25 @@ import org.slf4j.LoggerFactory;
  */
 @SuppressWarnings("nls")
 abstract class AbstractResponse extends HttpServlet {
-    /** Required by Serializable */
-    private static final long serialVersionUID = 1L;
-    /** Model from which to serve info */
-    private final EngineModel _model;
 
     private static final Logger LOG = LoggerFactory.getLogger(AbstractResponse.class);
 
+    /** Required by Serializable */
+    private static final long serialVersionUID = 1L;
+
+    /** Model from which to serve info */
+    private final EngineModel _model;
 
     /** Construct <code>HttpServlet</code>
      *  @param title Page title
      */
     protected AbstractResponse(@Nonnull final EngineModel model) {
         this._model = model;
+    }
+
+    @Nonnull
+    protected static String numOf(@Nonnull final String org) {
+        return "#" + org;
     }
 
     @Nonnull
@@ -73,10 +81,14 @@ abstract class AbstractResponse extends HttpServlet {
                                          @Nonnull final HttpServletResponse resp)
        throws Exception;
 
+
     @Nonnull
     protected String getValueAsString(@CheckForNull final ISystemVariable<?> var) {
         if (var == null) {
             return "null";
+        }
+        if (Collection.class.isAssignableFrom(var.getData().getClass())) {
+            return CollectionsUtil.toLimitLengthString((Collection<?>) var.getData(), 10);
         }
         return var.getData().toString();
     }

@@ -47,7 +47,6 @@ import org.csstudio.utility.ldap.service.ILdapSearchResult;
 import org.csstudio.utility.ldap.service.ILdapService;
 import org.csstudio.utility.nameSpaceSearch.Activator;
 import org.csstudio.utility.nameSpaceSearch.Messages;
-import org.eclipse.core.runtime.jobs.Job;
 import org.eclipse.jface.action.IMenuListener;
 import org.eclipse.jface.action.IMenuManager;
 import org.eclipse.jface.action.MenuManager;
@@ -112,7 +111,6 @@ public class MainView extends ViewPart {
 	private Label _workIcon;
 	ILdapReaderJob _readerJob;
 	private Display _disp;
-	private ILdapSearchResult _ldapSearchResult;
 	/**
 	 * The search Button.
 	 */
@@ -466,13 +464,13 @@ public class MainView extends ViewPart {
 					}
 					if (j == 0) {
 						temp = temp
-								.concat(" (" + _ldapSearchResult.getAnswerSet().size() + ")"); //$NON-NLS-1$ //$NON-NLS-2$
+								.concat(" (" + searchResult.getAnswerSet().size() + ")"); //$NON-NLS-1$ //$NON-NLS-2$
 					}
 					tc.setText(temp);
 				} else if (i == 0 && j == 0) {
 					String tmp = getResultTableView().getTable().getColumn(j)
 							.getText();
-					tmp = tmp.substring(0, tmp.lastIndexOf("(") + 1) + _ldapSearchResult.getAnswerSet().size() + ")"; //$NON-NLS-1$ //$NON-NLS-2$
+					tmp = tmp.substring(0, tmp.lastIndexOf("(") + 1) + searchResult.getAnswerSet().size() + ")"; //$NON-NLS-1$ //$NON-NLS-2$
 					getResultTableView().getTable().getColumn(j).setText(tmp);
 				}
 				path += "," + elements[j];

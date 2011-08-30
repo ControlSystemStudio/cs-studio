@@ -1,3 +1,4 @@
+
 package org.csstudio.nams.service.configurationaccess.localstore;
 
 import java.util.HashMap;
@@ -52,24 +53,24 @@ public class ConfigurationServiceFactoryImpl implements
 		ConfigurationServiceFactory {
 
 	private class ConnectionData {
-		private final String connectionDriver;
-		private final String connectionURL;
-		private final String dialect;
-		private final String username;
-		private final String password;
-		private final DatabaseType databaseType;
+		private final String _connectionDriver;
+		private final String _connectionURL;
+		private final String _dialect;
+		private final String _username;
+		private final String _password;
+		private final DatabaseType _databaseType;
 
 		public ConnectionData(final String connectionDriver,
 				final String connectionURL, final String dialect,
 				final String username, final String password,
 				final DatabaseType databaseType) {
 			super();
-			this.connectionDriver = connectionDriver;
-			this.connectionURL = connectionURL;
-			this.dialect = dialect;
-			this.username = username;
-			this.password = password;
-			this.databaseType = databaseType;
+			this._connectionDriver = connectionDriver;
+			this._connectionURL = connectionURL;
+			this._dialect = dialect;
+			this._username = username;
+			this._password = password;
+			this._databaseType = databaseType;
 		}
 
 		@Override
@@ -84,73 +85,73 @@ public class ConfigurationServiceFactoryImpl implements
 				return false;
 			}
 			final ConnectionData other = (ConnectionData) obj;
-			if (this.connectionDriver == null) {
-				if (other.connectionDriver != null) {
+			if (this._connectionDriver == null) {
+				if (other._connectionDriver != null) {
 					return false;
 				}
-			} else if (!this.connectionDriver.equals(other.connectionDriver)) {
+			} else if (!this._connectionDriver.equals(other._connectionDriver)) {
 				return false;
 			}
-			if (this.connectionURL == null) {
-				if (other.connectionURL != null) {
+			if (this._connectionURL == null) {
+				if (other._connectionURL != null) {
 					return false;
 				}
-			} else if (!this.connectionURL.equals(other.connectionURL)) {
+			} else if (!this._connectionURL.equals(other._connectionURL)) {
 				return false;
 			}
-			if (this.databaseType == null) {
-				if (other.databaseType != null) {
+			if (this._databaseType == null) {
+				if (other._databaseType != null) {
 					return false;
 				}
-			} else if (!this.databaseType.equals(other.databaseType)) {
+			} else if (!this._databaseType.equals(other._databaseType)) {
 				return false;
 			}
-			if (this.dialect == null) {
-				if (other.dialect != null) {
+			if (this._dialect == null) {
+				if (other._dialect != null) {
 					return false;
 				}
-			} else if (!this.dialect.equals(other.dialect)) {
+			} else if (!this._dialect.equals(other._dialect)) {
 				return false;
 			}
-			if (this.password == null) {
-				if (other.password != null) {
+			if (this._password == null) {
+				if (other._password != null) {
 					return false;
 				}
-			} else if (!this.password.equals(other.password)) {
+			} else if (!this._password.equals(other._password)) {
 				return false;
 			}
-			if (this.username == null) {
-				if (other.username != null) {
+			if (this._username == null) {
+				if (other._username != null) {
 					return false;
 				}
-			} else if (!this.username.equals(other.username)) {
+			} else if (!this._username.equals(other._username)) {
 				return false;
 			}
 			return true;
 		}
 
 		public String getConnectionDriver() {
-			return this.connectionDriver;
+			return this._connectionDriver;
 		}
 
 		public String getConnectionURL() {
-			return this.connectionURL;
+			return this._connectionURL;
 		}
 
 		public DatabaseType getDatabaseType() {
-			return this.databaseType;
+			return this._databaseType;
 		}
 
 		public String getDialect() {
-			return this.dialect;
+			return this._dialect;
 		}
 
 		public String getPassword() {
-			return this.password;
+			return this._password;
 		}
 
 		public String getUsername() {
-			return this.username;
+			return this._username;
 		}
 
 		@Override
@@ -159,22 +160,22 @@ public class ConfigurationServiceFactoryImpl implements
 			int result = 1;
 			result = prime
 					* result
-					+ ((this.connectionDriver == null) ? 0
-							: this.connectionDriver.hashCode());
+					+ ((this._connectionDriver == null) ? 0
+							: this._connectionDriver.hashCode());
 			result = prime
 					* result
-					+ ((this.connectionURL == null) ? 0 : this.connectionURL
+					+ ((this._connectionURL == null) ? 0 : this._connectionURL
 							.hashCode());
 			result = prime
 					* result
-					+ ((this.databaseType == null) ? 0 : this.databaseType
+					+ ((this._databaseType == null) ? 0 : this._databaseType
 							.hashCode());
 			result = prime * result
-					+ ((this.dialect == null) ? 0 : this.dialect.hashCode());
+					+ ((this._dialect == null) ? 0 : this._dialect.hashCode());
 			result = prime * result
-					+ ((this.password == null) ? 0 : this.password.hashCode());
+					+ ((this._password == null) ? 0 : this._password.hashCode());
 			result = prime * result
-					+ ((this.username == null) ? 0 : this.username.hashCode());
+					+ ((this._username == null) ? 0 : this._username.hashCode());
 			return result;
 		}
 
@@ -184,11 +185,11 @@ public class ConfigurationServiceFactoryImpl implements
 	private final List<SessionFactory> sessionFactoryList = new LinkedList<SessionFactory>();
 
 	// private List<Session> sessionList = new LinkedList<Session>();
-	private final org.csstudio.nams.service.logging.declaration.Logger logger;
+	private final org.csstudio.nams.service.logging.declaration.ILogger _logger;
 
 	public ConfigurationServiceFactoryImpl(
-			final org.csstudio.nams.service.logging.declaration.Logger logger) {
-		this.logger = logger;
+			final org.csstudio.nams.service.logging.declaration.ILogger logger) {
+		this._logger = logger;
 	}
 
 	// TODO Add custom connection provider
@@ -221,7 +222,8 @@ public class ConfigurationServiceFactoryImpl implements
 		this.services.clear();
 	}
 
-	public LocalStoreConfigurationService getConfigurationService(
+	@Override
+    public LocalStoreConfigurationService getConfigurationService(
 			final String connectionURL, final DatabaseType dbType,
 			final String username, final String password) {
 		Contract.requireNotNull("dbType", dbType);
@@ -249,7 +251,7 @@ public class ConfigurationServiceFactoryImpl implements
 			// Session session = sessionFactory.openSession();
 			// session.setFlushMode(FlushMode.COMMIT);
 			service = new LocalStoreConfigurationServiceImpl(sessionFactory,
-					this.logger);
+					this._logger);
 			this.sessionFactoryList.add(sessionFactory);
 			// sessionList.add(session);
 			this.services.put(connectionData, service);
@@ -333,15 +335,15 @@ public class ConfigurationServiceFactoryImpl implements
 						"class");
 
 		if (connectionData.getDatabaseType().equals(
-				DatabaseType.HSQL_1_8_0_FOR_TEST)) {
+				DatabaseType.HSQL_1_8_0_10_FOR_TEST)) {
 			try {
-				Class.forName(DatabaseType.HSQL_1_8_0_FOR_TEST.getDriverName())
+				Class.forName(DatabaseType.HSQL_1_8_0_10_FOR_TEST.getDriverName())
 						.newInstance();
 				final SchemaUpdate schemaUpdate = new SchemaUpdate(
 						configuration);
 				schemaUpdate.execute(false, true);
 			} catch (final Throwable t) {
-				logger.logErrorMessage(this, "Failed to load HSQL-Driver for testing purposes", t);
+				_logger.logErrorMessage(this, "Failed to load HSQL-Driver for testing purposes", t);
 			}
 		}
 

@@ -121,6 +121,6 @@ public final class PointListHelper {
 		result = scaleToSize(result, targetBounds.width, targetBounds.height);
 
 		return result;
-
 	}
+	
 }

@@ -23,7 +23,7 @@
 
 package org.csstudio.alarm.jms2ora.management;
 
-import org.csstudio.alarm.jms2ora.MessageProcessor;
+import org.csstudio.alarm.jms2ora.RemotelyAccesible;
 import org.csstudio.platform.management.CommandParameters;
 import org.csstudio.platform.management.CommandResult;
 import org.csstudio.platform.management.IManagementCommand;
@@ -34,10 +34,22 @@ import org.csstudio.platform.management.IManagementCommand;
  */
 public class GetQueuedMessages implements IManagementCommand {
     
-    /* (non-Javadoc)
-     * @see org.csstudio.platform.management.IManagementCommand#execute(org.csstudio.platform.management.CommandParameters)
+    private static RemotelyAccesible object = null;
+    
+    /**
+     * {@inheritDoc}
      */
+    @Override
     public CommandResult execute(CommandParameters parameters) {
-        return CommandResult.createMessageResult(Integer.toString(MessageProcessor.getInstance().getNumberOfQueuedMessages()));
+        
+        if (object != null) {
+            return CommandResult.createMessageResult(Integer.toString(object.getMessageQueueSize()));
+        }
+        
+        return CommandResult.createFailureResult("\nERROR: Cannot get the number of queue messages. The object reference is null.");
+    }
+    
+    public static void staticInject(RemotelyAccesible o) {
+        object = o;
     }
 }

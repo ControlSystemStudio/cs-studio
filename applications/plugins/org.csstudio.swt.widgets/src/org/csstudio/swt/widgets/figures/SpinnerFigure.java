@@ -14,6 +14,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.csstudio.swt.widgets.datadefinition.IManualValueChangeListener;
+import org.csstudio.swt.widgets.figureparts.RapArrowButton;
 import org.csstudio.swt.widgets.introspection.DefaultWidgetIntrospector;
 import org.csstudio.swt.widgets.introspection.Introspectable;
 import org.eclipse.draw2d.ActionEvent;
@@ -148,7 +149,7 @@ public class SpinnerFigure extends Figure implements Introspectable {
 		ButtonBorder buttonBorder = new ButtonBorder(new ButtonScheme(new Color[]{ColorConstants.buttonLightest},
 				new Color[]{ColorConstants.buttonDarkest}));
 		
-		buttonUp = new ArrowButton();
+		buttonUp = new RapArrowButton();
 		buttonUp.setBorder(buttonBorder);
 		buttonUp.setDirection(Orientable.NORTH);
 		buttonUp.setFiringMethod(Clickable.REPEAT_FIRING);
@@ -161,7 +162,7 @@ public class SpinnerFigure extends Figure implements Introspectable {
 		});
 		add(buttonUp);
 		
-		buttonDown = new ArrowButton();
+		buttonDown = new RapArrowButton();
 		buttonDown.setBorder(buttonBorder);
 		buttonDown.setDirection(Orientable.SOUTH);
 		buttonDown.setFiringMethod(Clickable.REPEAT_FIRING);

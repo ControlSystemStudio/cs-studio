@@ -36,23 +36,6 @@ public final class Limits<V extends Comparable<? super V>> {
     private final V _low;
     private final V _high;
 
-
-    /**
-     * Factory method.
-     *
-     * @param low the low limit
-     * @param high the high limit
-     * @return the new instance
-     * @param <W>
-     * @throws IllegalArgumentException on low being larger comparedTo high
-     */
-    @Nonnull
-    public static
-    <W extends Comparable<? super W>> Limits<W> create(@Nonnull final W low,
-                                                       @Nonnull final W high) {
-        return new Limits<W>(low, high);
-    }
-
     /**
      * Constructor.
      */
@@ -68,6 +51,22 @@ public final class Limits<V extends Comparable<? super V>> {
         if (_low.compareTo(_high) > 1) {
             throw new IllegalArgumentException("Low limit is larger than high limit.");
         }
+    }
+
+    /**
+     * Factory method.
+     *
+     * @param low the low limit
+     * @param high the high limit
+     * @return the new instance
+     * @param <W>
+     * @throws IllegalArgumentException on low being larger comparedTo high
+     */
+    @Nonnull
+    public static
+    <W extends Comparable<? super W>> Limits<W> create(@Nonnull final W low,
+                                                       @Nonnull final W high) {
+        return new Limits<W>(low, high);
     }
 
     @Nonnull

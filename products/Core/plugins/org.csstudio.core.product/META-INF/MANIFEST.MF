@@ -2,7 +2,7 @@ Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: CSS Core Product
 Bundle-SymbolicName: org.csstudio.core.product;singleton:=true
-Bundle-Version: 3.0.0.qualifier
+Bundle-Version: 3.1.0.qualifier
 Bundle-Activator: org.csstudio.core.product.Activator
 Bundle-Description: CSS Core Product used by the continuous build for testing
 Require-Bundle: org.eclipse.ui,

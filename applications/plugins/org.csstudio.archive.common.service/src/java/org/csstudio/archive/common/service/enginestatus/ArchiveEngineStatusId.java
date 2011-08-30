@@ -32,12 +32,12 @@ import org.csstudio.domain.desy.common.id.Id;
  */
 public class ArchiveEngineStatusId extends Id<ArchiveEngineStatusId> {
 
-    private static final long serialVersionUID = -4359196591799659829L;
-
     /**
      * Serves as "not set"-Id to avoid untyped <code>null</code> ids.
      */
     public static final ArchiveEngineStatusId NONE = new ArchiveEngineStatusId(-1L);
+
+    private static final long serialVersionUID = -4359196591799659829L;
 
     /**
      * Constructor.

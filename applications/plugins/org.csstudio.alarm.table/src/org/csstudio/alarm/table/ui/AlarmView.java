@@ -21,28 +21,21 @@ import java.util.List;
 
 import javax.annotation.Nonnull;
 
-import org.apache.log4j.Logger;
 import org.csstudio.alarm.service.declaration.AlarmMessageKey;
-import org.csstudio.alarm.service.declaration.IAlarmListener;
-import org.csstudio.alarm.service.declaration.IAlarmMessage;
 import org.csstudio.alarm.table.JmsLogsPlugin;
 import org.csstudio.alarm.table.SendAcknowledge;
 import org.csstudio.alarm.table.dataModel.AbstractMessageList;
 import org.csstudio.alarm.table.dataModel.AlarmMessage;
 import org.csstudio.alarm.table.dataModel.AlarmMessageList;
 import org.csstudio.alarm.table.internal.localization.Messages;
-import org.csstudio.alarm.table.jms.IAlarmTableListener;
 import org.csstudio.alarm.table.preferences.JmsLogPreferenceConstants;
 import org.csstudio.alarm.table.preferences.alarm.AlarmViewPreference;
-import org.csstudio.alarm.table.service.IAlarmSoundService;
 import org.csstudio.alarm.table.ui.messagetable.AlarmMessageTable;
 import org.csstudio.auth.security.SecurityFacade;
-import org.csstudio.platform.logging.CentralLogger;
 import org.eclipse.core.runtime.jobs.Job;
 import org.eclipse.jface.preference.IPreferenceStore;
 import org.eclipse.jface.viewers.TableViewer;
 import org.eclipse.swt.SWT;
-import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.events.SelectionListener;
 import org.eclipse.swt.graphics.Font;
@@ -56,6 +49,8 @@ import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Group;
 import org.eclipse.swt.widgets.TableItem;
 import org.eclipse.ui.progress.IWorkbenchSiteProgressService;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * Add to the base class {@link LogView}: acknowledge button and combo box,
@@ -68,8 +63,9 @@ import org.eclipse.ui.progress.IWorkbenchSiteProgressService;
  * @since 06.06.2007
  */
 public class AlarmView extends LogView {
-    private static final Logger LOG = CentralLogger.getInstance().getLogger(AlarmView.class);
 
+    private static final Logger LOG = LoggerFactory.getLogger(AlarmView.class);
+    
     public static final String ALARM_VIEW_ID = AlarmView.class.getCanonicalName();
 
     private static final String SECURITY_ID = "operating"; //$NON-NLS-1$
@@ -308,8 +304,8 @@ public class AlarmView extends LogView {
                     }
 
                 }
-                LOG.debug("Number of msg in list to send: " + msgList.size());
-                LOG.debug("Number of msg in table: " + _tableViewer.getTable().getItemCount());
+                LOG.debug("Number of msg in list to send: {}", msgList.size());
+                LOG.debug("Number of msg in table: {}", _tableViewer.getTable().getItemCount());
 
                 final SendAcknowledge sendAck = SendAcknowledge.newFromJMSMessage(msgList);
                 sendAck.schedule();

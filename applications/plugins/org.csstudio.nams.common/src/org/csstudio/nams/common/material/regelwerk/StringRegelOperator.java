@@ -1,6 +1,8 @@
+
 /**
  * 
  */
+
 package org.csstudio.nams.common.material.regelwerk;
 
 public enum StringRegelOperator {

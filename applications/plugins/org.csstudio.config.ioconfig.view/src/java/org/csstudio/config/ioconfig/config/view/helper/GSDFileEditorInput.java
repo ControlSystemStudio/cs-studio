@@ -34,6 +34,10 @@
 		*/
 package org.csstudio.config.ioconfig.config.view.helper;
 
+import javax.annotation.CheckForNull;
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
+
 import org.csstudio.config.ioconfig.model.pbmodel.GSDFileDBO;
 import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.ui.IEditorInput;
@@ -54,7 +58,7 @@ public class GSDFileEditorInput implements IEditorInput {
      * Constructor.
      * @param gsdFile
      */
-    public GSDFileEditorInput(final GSDFileDBO gsdFile) {
+    public GSDFileEditorInput(@Nonnull final GSDFileDBO gsdFile) {
         super();
         _gsdFile = gsdFile;
     }
@@ -71,6 +75,7 @@ public class GSDFileEditorInput implements IEditorInput {
      * {@inheritDoc}
      */
     @Override
+    @CheckForNull
     public ImageDescriptor getImageDescriptor() {
         return null;
     }
@@ -79,6 +84,7 @@ public class GSDFileEditorInput implements IEditorInput {
      * {@inheritDoc}
      */
     @Override
+    @Nonnull
     public String getName() {
         return _gsdFile.getName();
     }
@@ -87,6 +93,7 @@ public class GSDFileEditorInput implements IEditorInput {
      * {@inheritDoc}
      */
     @Override
+    @CheckForNull
     public IPersistableElement getPersistable() {
         return null;
     }
@@ -95,6 +102,7 @@ public class GSDFileEditorInput implements IEditorInput {
      * {@inheritDoc}
      */
     @Override
+    @Nonnull
     public String getToolTipText() {
         return String.valueOf(_gsdFile.getId());
     }
@@ -103,7 +111,8 @@ public class GSDFileEditorInput implements IEditorInput {
      * {@inheritDoc}
      */
     @Override
-    public Object getAdapter(final Class adapter) {
+    @Nonnull
+    public Object getAdapter(@Nullable final Class adapter) {
         return _gsdFile.getGSDFile();
     }
 

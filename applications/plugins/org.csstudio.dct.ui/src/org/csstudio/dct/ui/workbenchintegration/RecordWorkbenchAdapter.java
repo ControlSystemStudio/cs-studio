@@ -4,9 +4,9 @@ import org.csstudio.dct.model.IRecord;
 import org.csstudio.dct.util.AliasResolutionException;
 import org.csstudio.dct.util.AliasResolutionUtil;
 import org.csstudio.dct.util.ResolutionUtil;
-import org.csstudio.platform.logging.CentralLogger;
-import org.eclipse.swt.graphics.FontData;
 import org.eclipse.swt.graphics.RGB;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * UI adapter for {@link IRecord}.
@@ -15,6 +15,8 @@ import org.eclipse.swt.graphics.RGB;
  */
 public final class RecordWorkbenchAdapter extends BaseWorkbenchAdapter<IRecord> {
 
+    private static final Logger LOG = LoggerFactory.getLogger(RecordWorkbenchAdapter.class);
+    
 	/**
 	 * {@inheritDoc}
 	 */
@@ -26,7 +28,7 @@ public final class RecordWorkbenchAdapter extends BaseWorkbenchAdapter<IRecord> 
 			try {
 				name = ResolutionUtil.resolve(name, record);
 			} catch (AliasResolutionException e) {
-				CentralLogger.getInstance().warn(this, e);
+				LOG.warn("Warn", e);
 			}
 		}
 

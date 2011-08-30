@@ -12,7 +12,7 @@ Require-Bundle: org.eclipse.ui,
  org.junit4,
  org.eclipse.help,
  org.csstudio.swt.xygraph;bundle-version="1.0.0",
- org.csstudio.platform.libs.log4j;bundle-version="1.2.16"
+ org.apache.log4j;bundle-version="1.2.16"
 Bundle-ActivationPolicy: lazy
 Export-Package: org.csstudio.sds.components.ui.internal.figureparts,
  org.csstudio.sds.components.ui.internal.figures

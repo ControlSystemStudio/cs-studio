@@ -43,7 +43,7 @@ PV value.</p>
 <p>The widget plugin will need to have BOY plugin (org.csstudio.opibuilder) as dependecy, 
 so you need to have BOY plugin and its dependent CSS plugins installed in your 
 Eclipse environment. You can simply copy BOY plugin and its dependencies from
-your CSS plugin folder to your Eclipse plugin folder. If you are a CSS developer, you just need to
+your CSS plugin folder to your Eclipse <code>dropin</code> folder. If you are a CSS developer, you just need to
 import these plugins into your workspace from your Mercurial repository.</p>
 
 <h4>3.2 Creating a new plugin</h4>
@@ -72,6 +72,11 @@ a new property to the model’s property set. The signature of the addProperty(..)
 The supported property types are described at <a href = "script/PropertyType.html">here</a>. 
 You can also create your own property type by extending 
 <code>org.csstudio.opibuilder.properties.AbstractWidgetProperty</code>.
+
+<p><b>Note:</b> There is a convention between property id and property name, which means the 
+property id should be lower case of property name and the space in property name should be replaced with 
+underscore. For example, the property id of <code>PV Name</code> is <code>pv_name</code>. With this 
+convention, user can easily guess the property id in script.</p>
 
 <p>
 The <code>class org.csstudio.opibuilder.model.AbstractPVWidgetModel</code> is the base class of all widgets that have the 
@@ -385,7 +390,17 @@ Here is the result of this example:
 <img alt = "Popup Menu Example" src = "img/PopupMenuExample.PNG">
 </p>
 
-<h4>4.2 Customized Graphical Feedback</h4>
+<h4>4.2 How to migrate an SWT widget to BOY </h4>
+<p>To use SWT widgets in BOY, you need to subclass <code>org.csstudio.opibuilder.widgets.AbstractSWTWidgetFigure</code> for
+the figure. The model and editpart are same as regular BOY widgets. For an SWT widget, we have some known
+issues that are hard to fix:</p> <ul>
+<li>You cannot change its order. Its order is always on top.</li>
+<li>You cannot hide part of the widget in grouping container.
+</li></ul>
+<p>Please see BOY Combo widget or Web Browser widget as examples.</p>
+
+
+<h4>4.3 Customized Graphical Feedback</h4>
 <p>
 If you need some special behavior on the widget in editing mode, for example, keep the size of 
 the widget in fixed ratio when user is resizing it, you can create you own customized graphical feedback by

@@ -16,11 +16,7 @@
          point="org.eclipse.core.runtime.products">
       <product
             application="org.csstudio.ams.systemmonitor.AmsSystemMonitorApplication"
-            name="AmsSystemMonitor">
-         <property
-               name="appName"
-               value="AmsSystemMonitor">
-         </property>
+            name="AmsSystemMonitorProduct">
       </product>
    </extension>
 

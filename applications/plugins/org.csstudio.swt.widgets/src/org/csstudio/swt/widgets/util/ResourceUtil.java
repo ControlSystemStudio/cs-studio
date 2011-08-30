@@ -15,9 +15,6 @@ import java.net.URL;
 import java.net.URLConnection;
 
 import org.csstudio.swt.widgets.Preferences;
-import org.eclipse.core.resources.IFile;
-import org.eclipse.core.resources.IResource;
-import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
@@ -42,6 +39,7 @@ public class ResourceUtil {
 	public static void pathToInputStreamInJob(final IPath path, 
 			final AbstractInputStreamRunnable uiTask, final String jobName,
 			final IJobErrorHandler errorHandler){
+		final Display display = Display.getCurrent();
 		Job job = new Job(jobName) {
 			
 			@Override
@@ -50,7 +48,7 @@ public class ResourceUtil {
 				try {
 					final InputStream inputStream = pathToInputStream(path);
 					uiTask.setInputStream(inputStream);
-					Display.getDefault().asyncExec(uiTask);
+					display.asyncExec(uiTask);
 				} catch (Exception e) {
 					errorHandler.handleError(e);
 				}finally{
@@ -76,11 +74,10 @@ public class ResourceUtil {
 	@SuppressWarnings("nls")
     public static InputStream pathToInputStream(final IPath path) throws Exception
     {
-	    // Try workspace location
-	    final IFile workspace_file = getIFileFromIPath(path);
-	    // Valid file should either open, or give meaningful exception
-	    if (workspace_file != null  &&  workspace_file.exists())
-	        return workspace_file.getContents();
+	   InputStream inputStream = SingleSourceHelper.workspaceFileToInputStream(path);
+	   
+	   if(inputStream != null)
+		   return inputStream;
 
 	    // Not a workspace file. Try local file system
         File local_file = path.toFile();
@@ -130,29 +127,6 @@ public class ResourceUtil {
 		return connection.getInputStream();
 	}
 	
-	/**Get the IFile from IPath.
-	 * @param path Path to file in workspace
-	 * @return the IFile. <code>null</code> if no IFile on the path, file does not exist, internal error.
-	 */
-	public static IFile getIFileFromIPath(final IPath path)
-	{
-	    try
-	    {
-    		final IResource r = ResourcesPlugin.getWorkspace().getRoot().findMember(
-    				path, false);
-    		if (r!= null && r instanceof IFile)
-		    {
-    		    final IFile file = (IFile) r;
-    		    if (file.exists())
-    		        return file;
-		    }
-	    }
-	    catch (Exception ex)
-	    {
-	        // Ignored
-	    }
-	    return null;
-	}
 	
 	/** Check if a URL is actually a URL
 	 *  @param url Possible URL

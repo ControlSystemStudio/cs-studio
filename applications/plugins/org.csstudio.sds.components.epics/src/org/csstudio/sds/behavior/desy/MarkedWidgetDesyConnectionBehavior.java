@@ -38,6 +38,7 @@ package org.csstudio.sds.behavior.desy;
 
 
 import org.csstudio.sds.components.model.AbstractMarkedWidgetModel;
+import org.csstudio.sds.components.model.AbstractScaledWidgetModel;
 import org.csstudio.sds.cursorservice.CursorService;
 import org.csstudio.sds.model.AbstractWidgetModel;
 import org.epics.css.dal.simple.AnyData;
@@ -83,7 +84,7 @@ public class MarkedWidgetDesyConnectionBehavior<W extends AbstractMarkedWidgetMo
     protected void doProcessValueChange( final W model, final AnyData anyData) {
         super.doProcessValueChange(model, anyData);
         // .. fill level (influenced by current value)
-        model.setPropertyValue(AbstractMarkedWidgetModel.PROP_VALUE, anyData.numberValue());
+        model.setPropertyValue(AbstractScaledWidgetModel.PROP_VALUE, anyData.numberValue());
     }
 
 

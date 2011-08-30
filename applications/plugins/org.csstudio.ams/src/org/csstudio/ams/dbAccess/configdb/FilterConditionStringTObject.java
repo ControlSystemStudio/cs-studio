@@ -23,8 +23,6 @@
 
 package org.csstudio.ams.dbAccess.configdb;
 
-import java.io.Serializable;
-
 import org.csstudio.ams.dbAccess.TObject;
 
 /**
@@ -33,7 +31,7 @@ import org.csstudio.ams.dbAccess.TObject;
 	sOperator				NUMBER(6),
 	cCompValue				VARCHAR2(128)
  */
-public class FilterConditionStringTObject extends TObject implements Serializable
+public class FilterConditionStringTObject extends TObject
 {
 	private static final long serialVersionUID = 2788228789054171121L;
 	

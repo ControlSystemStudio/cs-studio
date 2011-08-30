@@ -10,8 +10,9 @@ package org.csstudio.opibuilder.widgets.editparts;
 import org.csstudio.opibuilder.editparts.AbstractBaseEditPart;
 import org.csstudio.opibuilder.editparts.ExecutionMode;
 import org.csstudio.opibuilder.properties.IWidgetPropertyChangeHandler;
-import org.csstudio.opibuilder.widgets.figures.WebBrowserFigure;
+import org.csstudio.opibuilder.widgets.figures.AbstractWebBrowserFigure;
 import org.csstudio.opibuilder.widgets.model.WebBrowserModel;
+import org.csstudio.opibuilder.widgets.util.SingleSourceHelper;
 import org.eclipse.draw2d.IFigure;
 import org.eclipse.swt.browser.Browser;
 import org.eclipse.swt.widgets.Composite;
@@ -28,7 +29,7 @@ public final class WebBrowserEditPart extends AbstractBaseEditPart {
 	@Override
 	protected IFigure doCreateFigure() {
 		final WebBrowserModel model = getWidgetModel();
-		WebBrowserFigure figure = new WebBrowserFigure(
+		AbstractWebBrowserFigure figure = SingleSourceHelper.createWebBrowserFigure(
 				(Composite) getViewer().getControl(), model.getParent(),
 				getExecutionMode() == ExecutionMode.RUN_MODE, model.isShowToolBar());
 		figure.setUrl(model.getURL());
@@ -51,7 +52,7 @@ public final class WebBrowserEditPart extends AbstractBaseEditPart {
 		IWidgetPropertyChangeHandler urlHandler = new IWidgetPropertyChangeHandler() {
 			public boolean handleChange(final Object oldValue,
 					final Object newValue, final IFigure refreshableFigure) {
-				((WebBrowserFigure)refreshableFigure).setUrl((String)newValue);
+				((AbstractWebBrowserFigure)refreshableFigure).setUrl((String)newValue);
 				return false;
 			}
 		};
@@ -60,12 +61,12 @@ public final class WebBrowserEditPart extends AbstractBaseEditPart {
 	
 	@Override
 	public void deactivate() {
-		((WebBrowserFigure)getFigure()).dispose();		
+		((AbstractWebBrowserFigure)getFigure()).dispose();		
 		super.deactivate();
 	}
 	
 	public Browser getBrowser(){
-		return ((WebBrowserFigure)getFigure()).getBrowser();
+		return ((AbstractWebBrowserFigure)getFigure()).getBrowser();
 	}
 	
 }

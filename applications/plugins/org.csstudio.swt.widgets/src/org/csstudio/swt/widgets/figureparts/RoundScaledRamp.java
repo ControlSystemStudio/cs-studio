@@ -114,8 +114,14 @@ public class RoundScaledRamp extends Figure {
     					bounds.width/2, (normal.absolutePosition + OVERLAP_DEGREE)*Math.PI/180).toAbsolutePoint(bounds);    	
     		
     		//update min, max
-    		min.value = scale.getRange().getLower();
-    		max.value = scale.getRange().getUpper();
+    		if(scale.getRange().isMinBigger()){
+    			min.value = scale.getRange().getUpper();
+    			max.value = scale.getRange().getLower();
+    		}
+    		else{
+    			min.value = scale.getRange().getLower();
+    			max.value = scale.getRange().getUpper();
+    		}
     		min.absolutePosition = (int) scale.getCoercedValuePosition(min.value, false);
     		min.relativePosition = (int) scale.getCoercedValuePosition(min.value, true);
     		max.absolutePosition = (int) scale.getCoercedValuePosition(max.value, false);
@@ -167,13 +173,11 @@ public class RoundScaledRamp extends Figure {
     	graphics.pushState();
     	int overlap = 0;
     	Pattern pattern = null;
-    	boolean support3D = GraphicsUtil.testPatternSupported(graphics);
-    		
-    	
+    	boolean support3D = GraphicsUtil.testPatternSupported(graphics);    	
     	//draw lolo part
     	if(lolo.visible){    		
-  			graphics.setBackgroundColor(lolo.color);
-    		graphics.fillArc(bounds, lolo.absolutePosition, min.relativePosition - lolo.relativePosition);
+  			graphics.setBackgroundColor(lolo.color);  			
+  			graphics.fillArc(bounds, lolo.absolutePosition, min.relativePosition - lolo.relativePosition);
     		
     	}
     	//draw lo part

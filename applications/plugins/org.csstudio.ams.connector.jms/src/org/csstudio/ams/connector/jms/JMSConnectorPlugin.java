@@ -32,9 +32,9 @@ import org.remotercp.service.connection.session.ISessionService;
 /**
  * The activator class controls the plug-in life cycle
  */
-public class JMSConnectorPlugin extends AbstractCssPlugin
-{
-	// The plug-in ID
+public class JMSConnectorPlugin extends AbstractCssPlugin {
+	
+    // The plug-in ID
 	public static final String PLUGIN_ID = "org.csstudio.ams.connector.jms";
 
 	// The shared instance
@@ -45,22 +45,19 @@ public class JMSConnectorPlugin extends AbstractCssPlugin
 	/**
 	 * The constructor
 	 */
-	public JMSConnectorPlugin()
-	{
+	public JMSConnectorPlugin() {
 	    plugin = this;
 	}
 
     @Override
-    protected void doStart(BundleContext context) throws Exception
-    {
+    protected void doStart(BundleContext context) throws Exception {
 		_genericServiceTracker = new GenericServiceTracker<ISessionService>(
 				context, ISessionService.class);
 		_genericServiceTracker.open();
     }
 
     @Override
-    protected void doStop(BundleContext context) throws Exception
-    {
+    protected void doStop(BundleContext context) throws Exception {
         plugin = null;
     }
 
@@ -69,14 +66,12 @@ public class JMSConnectorPlugin extends AbstractCssPlugin
 	 *
 	 * @return the shared instance
 	 */
-	public static JMSConnectorPlugin getDefault()
-	{
+	public static JMSConnectorPlugin getDefault() {
 		return plugin;
 	}
 
     @Override
-    public String getPluginId()
-    {
+    public String getPluginId() {
         return PLUGIN_ID;
     }
     

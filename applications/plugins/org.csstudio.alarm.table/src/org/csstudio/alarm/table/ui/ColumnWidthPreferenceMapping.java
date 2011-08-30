@@ -1,7 +1,6 @@
 package org.csstudio.alarm.table.ui;
 
 import org.csstudio.alarm.table.JmsLogsPlugin;
-import org.csstudio.platform.logging.CentralLogger;
 import org.eclipse.core.runtime.Platform;
 import org.eclipse.core.runtime.preferences.IEclipsePreferences;
 import org.eclipse.core.runtime.preferences.IPreferencesService;
@@ -13,9 +12,13 @@ import org.eclipse.swt.events.DisposeListener;
 import org.eclipse.swt.widgets.TableColumn;
 import org.osgi.service.prefs.BackingStoreException;
 import org.osgi.service.prefs.Preferences;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class ColumnWidthPreferenceMapping {
 
+    private static final Logger LOG = LoggerFactory.getLogger(ColumnWidthPreferenceMapping.class);
+    
 	int[] _columnWidth;
 	TableViewer _tableViewer;
 
@@ -34,17 +37,15 @@ public class ColumnWidthPreferenceMapping {
 		if (columns.length > 0) {
 			for (final TableColumn tableColumn : columns) {
 				tableColumn.addDisposeListener(new DisposeListener() {
-					public void widgetDisposed(DisposeEvent e) {
+					@Override
+                    public void widgetDisposed(DisposeEvent e) {
 						_columnWidth[tableColumn.getParent().indexOf(
 								tableColumn)] = tableColumn.getWidth();
 					}
 				});
 			}
 		} else {
-			CentralLogger.getInstance().warn(
-					this,
-					"There are no column"
-							+ " in the table to add a DisposeListener");
+            LOG.warn("There are no column in the table to add a DisposeListener");
 		}
 	}
 

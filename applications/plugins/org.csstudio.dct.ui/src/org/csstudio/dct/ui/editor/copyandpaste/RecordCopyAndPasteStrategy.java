@@ -33,7 +33,7 @@ public class RecordCopyAndPasteStrategy implements ICopyAndPasteStrategy {
 			for (IElement e : copiedElements) {
 				if (e instanceof IRecord) {
 					IRecord r = (IRecord) e;
-
+					// TODO (hrickens) [26.08.2011]: Code duplication! Same code on BaseCopyAndPasteStrategy.chainPrototype(IPrototype prototype2Copy, CompoundCommand commandChain, Map<UUID, IPrototype> alreadyCreatedPrototypes, IProject project, IFolder targetFolder) 
 					IRecord nr = RecordFactory.createRecord(project, r.getType(), r.getName(), UUID.randomUUID());
 
 					cmd.add(new ChangeBeanPropertyCommand(nr, "epicsName", r.getEpicsName()));

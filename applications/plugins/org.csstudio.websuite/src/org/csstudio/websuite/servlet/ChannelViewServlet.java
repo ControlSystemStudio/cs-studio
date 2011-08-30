@@ -42,8 +42,8 @@ import org.csstudio.platform.simpledal.ProcessVariableConnectionServiceFactory;
  * @author Markus Moeller
  *
  */
-public class ChannelViewServlet extends HttpServlet
-{
+public class ChannelViewServlet extends HttpServlet {
+    
     /** Generated serial version id */
     private static final long serialVersionUID = -3099724878599407478L;
     
@@ -53,9 +53,11 @@ public class ChannelViewServlet extends HttpServlet
     /** */
     private ProcessVariableAdressFactory pvFactory;
 
+    private boolean iPhoneRequest;
+    
     @Override
-	public void init(ServletConfig config) throws ServletException
-    {
+	public void init(ServletConfig config) throws ServletException {
+        
         super.init(config);
         
         // get a service instance (all applications using the same shared instance will share channels, too)
@@ -63,25 +65,33 @@ public class ChannelViewServlet extends HttpServlet
         
         // get a factory for process variable addresses 
         pvFactory = ProcessVariableAdressFactory.getInstance();
+        
+        iPhoneRequest = false;
     }
     
     @Override
-	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException
-    {
+	protected void doGet(HttpServletRequest request, HttpServletResponse response)
+    throws ServletException, IOException {
         this.createPage(request, response);
     }
     
     @Override
-	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException
-    {
+	protected void doPost(HttpServletRequest request, HttpServletResponse response)
+    throws ServletException, IOException {
         this.createPage(request, response);
     }
 
-    private void createPage(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException
-    {
+    private void createPage(HttpServletRequest request, HttpServletResponse response)
+    throws IOException {
+        
         StringBuilder page = null;
         String channelName = null;
         
+        String userAgent = request.getHeader("User-Agent");
+        if (userAgent != null) {
+            this.iPhoneRequest = userAgent.contains("iPhone");
+        }
+
         page = new StringBuilder();
         page.append("<html>\n");
         page.append("<head>\n");
@@ -154,7 +164,16 @@ public class ChannelViewServlet extends HttpServlet
     private void appendChannelNameRow(StringBuilder page, String channelName)
     {
         page.append("<tr>\n");
-        page.append("<th colspan=\"2\" align=\"center\">" + channelName + "</th>\n");
+        
+        if(iPhoneRequest) {
+            // page.append("&nbsp;&nbsp;<a href=\"desyarchiver://" + pe.getPvName().replaceAll("\\:", "\\\\:") + "\" target=\"_blank\">iPhone-Plot</a>\n");
+            page.append("<th colspan=\"2\" align=\"center\">" + channelName + "<br>\n");
+            page.append("<a href=\"desyarchiver://" + channelName + "\" target=\"_blank\">iPhone-Plot</a>\n");
+            page.append("</th>\n");
+        } else {
+            page.append("<th colspan=\"2\" align=\"center\">" + channelName + "</th>\n");
+        }
+        
         page.append("</tr>\n");
     }
 

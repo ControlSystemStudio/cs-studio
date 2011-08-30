@@ -1,3 +1,4 @@
+
 package org.csstudio.nams.service.configurationaccess.localstore.declaration.filterActions;
 
 import javax.persistence.DiscriminatorValue;
@@ -17,24 +18,26 @@ public class TopicFilterActionDTO extends FilterActionDTO {
 
 	public void setReceiver(TopicDTO receiver) {
 		this.setIReceiverRef(receiver.getId());
-		this.receiver = receiver;
+		this._receiver = receiver;
 	}
 
 	public TopicDTO getReceiver() {
-		return (TopicDTO) receiver;
+		return (TopicDTO) _receiver;
 	}
 
-	public void deleteJoinLinkData(Mapper mapper) throws Throwable {
-
+	@Override
+    public void deleteJoinLinkData(Mapper mapper) throws Throwable {
+	    // Not used
 	}
 
-	public void loadJoinData(Mapper mapper) throws Throwable {
+	@Override
+    public void loadJoinData(Mapper mapper) throws Throwable {
 		this.setReceiver(mapper.findForId(TopicDTO.class, this
 				.getIReceiverRef(), false));
 	}
 
-	public void storeJoinLinkData(Mapper mapper) throws Throwable {
-
+	@Override
+    public void storeJoinLinkData(Mapper mapper) throws Throwable {
+	    // Not used
 	}
-
 }

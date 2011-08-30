@@ -58,13 +58,14 @@ import org.eclipse.swt.widgets.TableItem;
  * @since 16.03.2011
  */
 public abstract class AbstractTableFieldEditor extends FieldEditor {
+    protected static final int EDITABLECOLUMN = 1;
+
     // the string to separate the columns.
     private static final String COLUMN_SEPARATOR = "?";
 
     // the string to separate the rows.
     private static final String ROW_SEPARATOR = ";";
 
-    protected static final int EDITABLECOLUMN = 1;
 
     /**
      * The table for the items in the menu. (Currently the options of the JFace

@@ -23,12 +23,13 @@
 
 package org.csstudio.alarm.jms2ora.util;
 
-import org.apache.log4j.Logger;
 import org.csstudio.alarm.jms2ora.Jms2OraPlugin;
 import org.csstudio.alarm.jms2ora.preferences.PreferenceConstants;
-import org.csstudio.platform.logging.CentralLogger;
+import org.csstudio.alarm.jms2ora.service.ArchiveMessage;
 import org.eclipse.core.runtime.Platform;
 import org.eclipse.core.runtime.preferences.IPreferencesService;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * @author Markus Moeller
@@ -36,6 +37,9 @@ import org.eclipse.core.runtime.preferences.IPreferencesService;
  */
 public class MessageFilter {
     
+    /** The class logger */
+    private static final Logger LOG = LoggerFactory.getLogger(MessageFilter.class);
+
     /** The instance of this object. */
     private static MessageFilter instance = null;
     
@@ -64,6 +68,10 @@ public class MessageFilter {
         watchdog.start();
     }
 
+    public static Logger getLogger() {
+        return LOG;
+    }
+    
     public static synchronized MessageFilter getInstance() {
         
         if(instance == null) {
@@ -73,7 +81,7 @@ public class MessageFilter {
         return instance;
     }
     
-    public synchronized boolean shouldBeBlocked(MessageContent mc) {
+    public synchronized boolean shouldBeBlocked(ArchiveMessage mc) {
         boolean blockIt = false;
         
         blockIt = messageContainer.addMessageContent(mc);
@@ -107,11 +115,8 @@ public class MessageFilter {
      */
     public class WatchDog extends Thread {
         
-        private Logger logger = null;
-
         public WatchDog() {
-            logger = CentralLogger.getInstance().getLogger(this);
-            logger.info("WatchDog initialized");
+            MessageFilter.getLogger().info("WatchDog initialized");
         }
         
         @Override
@@ -126,20 +131,20 @@ public class MessageFilter {
                     try {
                         wait(getWatchdogWaitTime());
                     } catch(InterruptedException ie) {
-                        logger.info("WatchDog interrupted");
+                        MessageFilter.getLogger().info("WatchDog interrupted");
                         interrupt();
                     }
                     
-                    logger.debug("WatchDog is looking. Number of stored messages: " + getMessageFilterContainer().size());
+                    MessageFilter.getLogger().debug("WatchDog is looking. Number of stored messages: " + getMessageFilterContainer().size());
                 }
                 
                 synchronized(getMessageFilterContainer()) {
                     count = getMessageFilterContainer().removeInvalidContent(getTimePeriod());
-                    logger.debug("WatchDog has removed " + count + " message(s).");
+                    MessageFilter.getLogger().debug("WatchDog has removed " + count + " message(s).");
                 }
             }
             
-            logger.info("WatchDog is leaving.");
+            MessageFilter.getLogger().info("WatchDog is leaving.");
         }
     }
 }

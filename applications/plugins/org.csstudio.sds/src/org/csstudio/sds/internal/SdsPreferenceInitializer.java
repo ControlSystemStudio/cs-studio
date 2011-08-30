@@ -50,10 +50,6 @@ public final class SdsPreferenceInitializer extends
 				.getNode(SdsPlugin.PLUGIN_ID);
 		initializeInitializationSchemaPreferences(node);
 		
-		node.put(PreferenceConstants.PROP_DEFAULT_DISPLAY_FILE, "/CSS/SDS/defaultDisplay.css-sds");
-		node.put(PreferenceConstants.PROP_DEFAULT_DISPLAY_ALIAS, "channel");
-		node.putBoolean(PreferenceConstants.PROP_DEFAULT_DISPLAY_OPEN_AS_SHELL, true);
-		
 		// Cursors
 		node.put(PreferenceConstants.CURSOR_SELECTION_RULE, ICursorService.DEFAULT_RULE_ID);
 		

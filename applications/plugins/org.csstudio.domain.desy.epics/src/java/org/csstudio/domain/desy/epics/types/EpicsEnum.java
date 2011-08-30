@@ -87,43 +87,10 @@ public final class EpicsEnum implements Serializable {
     public static final Pattern EPICS_ENUM_RAW_REGEX =
         Pattern.compile(RAW + SEP + "([-+]?[0-9]*([eE][-+]?[0-9]+)?)");
 
-    public static final String UNKNOWN_STATE = "STATE(0):UNKNOWN";
-    public static final String UNSET_STATE = "STATE(0):UNSET";
+    public static final String UNKNOWN_STATE_STR = "UNKNOWN";
+    public static final String UNSET_STATE_STR = "UNSET";
 
     private static final long serialVersionUID = -3340079923729173798L;
-
-    @Nonnull
-    public static EpicsEnum createFromRaw(@Nonnull final Integer raw) {
-        return new EpicsEnum(raw);
-    }
-    @Nonnull
-    public static EpicsEnum createFromStateName(@Nonnull final String state) {
-        return new EpicsEnum(state, 0);
-    }
-    @Nonnull
-    public static EpicsEnum createFromState(@Nonnull final String state,
-                                            @Nonnull final Integer index) {
-        return new EpicsEnum(state, index);
-    }
-    @Nonnull
-    public static EpicsEnum createFromString(@Nonnull final String string) {
-        Matcher matcher = EPICS_ENUM_RAW_REGEX.matcher(string);
-        if (matcher.matches()) {
-            final String eGroup = matcher.group(2);
-            final String number = matcher.group(1);
-            if (Strings.isNullOrEmpty(eGroup)) {
-                return EpicsEnum.createFromRaw(Integer.valueOf(number));
-            } else {
-                return EpicsEnum.createFromRaw(Double.valueOf(number).intValue());
-            }
-        }
-        matcher = EPICS_ENUM_STATE_REGEX.matcher(string);
-        if (matcher.matches()) {
-            return EpicsEnum.createFromState(matcher.group(2), Integer.valueOf(matcher.group(1)));
-        }
-        throw new IllegalArgumentException("String " + string + " cannot be converted to " +
-                                           EpicsEnum.class.getSimpleName() + ".");
-    }
 
     private final Integer _raw;
     private final Integer _stateIndex;
@@ -149,7 +116,38 @@ public final class EpicsEnum implements Serializable {
             !isRaw() && !isState()) {
             throw new IllegalArgumentException("Exactly one out of both fields has to be set to null.");
         }
+    }
 
+    @Nonnull
+    public static EpicsEnum createFromRaw(@Nonnull final Integer raw) {
+        return new EpicsEnum(raw);
+    }
+    @Nonnull
+    public static EpicsEnum createFromStateName(@Nonnull final String state) {
+        return new EpicsEnum(state, 0);
+    }
+    @Nonnull
+    public static EpicsEnum createFromState(@Nonnull final String state,
+                                            @Nonnull final Integer index) {
+        return new EpicsEnum(state, index);
+    }
+    @Nonnull
+    public static EpicsEnum createFromString(@Nonnull final String string) {
+        Matcher matcher = EPICS_ENUM_RAW_REGEX.matcher(string);
+        if (matcher.matches()) {
+            final String eGroup = matcher.group(2);
+            final String number = matcher.group(1);
+            if (Strings.isNullOrEmpty(eGroup)) {
+                return EpicsEnum.createFromRaw(Integer.valueOf(number));
+            }
+            return EpicsEnum.createFromRaw(Double.valueOf(number).intValue());
+        }
+        matcher = EPICS_ENUM_STATE_REGEX.matcher(string);
+        if (matcher.matches()) {
+            return EpicsEnum.createFromState(matcher.group(2), Integer.valueOf(matcher.group(1)));
+        }
+        throw new IllegalArgumentException("String " + string + " cannot be converted to " +
+                                           EpicsEnum.class.getSimpleName() + ".");
     }
 
     /**
@@ -173,7 +171,7 @@ public final class EpicsEnum implements Serializable {
         if (isState()) {
             return _state;
         }
-        throw new IllegalStateException("This " + getClass().getSimpleName() + " object holds a state, not a raw value.");
+        throw new IllegalStateException("This " + getClass().getSimpleName() + " object holds a raw value, not a state.");
     }
 
     @Nonnull

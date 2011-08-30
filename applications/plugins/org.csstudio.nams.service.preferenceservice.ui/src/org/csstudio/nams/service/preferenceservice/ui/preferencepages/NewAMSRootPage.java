@@ -1,3 +1,4 @@
+
 package org.csstudio.nams.service.preferenceservice.ui.preferencepages;
 
 import org.csstudio.nams.service.preferenceservice.ui.Messages;
@@ -12,7 +13,8 @@ import org.eclipse.ui.IWorkbenchPreferencePage;
 public class NewAMSRootPage extends PreferencePage implements
 		IWorkbenchPreferencePage {
 
-	public void init(final IWorkbench workbench) {
+	@Override
+    public void init(final IWorkbench workbench) {
 		this.noDefaultAndApplyButton();
 	}
 
@@ -23,5 +25,4 @@ public class NewAMSRootPage extends PreferencePage implements
 				.setText(Messages.NewAMSRootPage_title);
 		return label;
 	}
-
 }

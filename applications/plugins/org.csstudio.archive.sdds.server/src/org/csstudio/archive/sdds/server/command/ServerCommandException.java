@@ -28,36 +28,33 @@ package org.csstudio.archive.sdds.server.command;
  * @author Markus Moeller
  *
  */
-public class ServerCommandException extends Exception
-{
+public class ServerCommandException extends Exception {
+    
     /** Generated serial version id */
-    private static final long serialVersionUID = -646732246661883371L;
+    private static final long serialVersionUID = 1L;
     
     private int errorNumber;
     
     /**
      * 
      */
-    public ServerCommandException()
-    {
+    public ServerCommandException() {
         super();
     }
 
     /**
      * 
-     * @param errorNumber
+     * @param err
      */
-    public ServerCommandException(int errorNumber)
-    {
+    public ServerCommandException(int err) {
         super();
-        this.errorNumber = errorNumber;
+        this.errorNumber = err;
     }
     
     /**
      * @param message
      */
-    public ServerCommandException(String message)
-    {
+    public ServerCommandException(String message) {
         super(message);
         this.errorNumber = 0;
     }
@@ -65,19 +62,17 @@ public class ServerCommandException extends Exception
     /**
      * 
      * @param message
-     * @param errorNumber
+     * @param err
      */
-    public ServerCommandException(String message, int errorNumber)
-    {
+    public ServerCommandException(String message, int err) {
         super(message);
-        this.errorNumber = errorNumber;
+        this.errorNumber = err;
     }
 
     /**
      * @param cause
      */
-    public ServerCommandException(Throwable cause)
-    {
+    public ServerCommandException(Throwable cause) {
         super(cause);
         this.errorNumber = 0;
     }
@@ -85,20 +80,18 @@ public class ServerCommandException extends Exception
     /**
      * 
      * @param cause
-     * @param errorNumber
+     * @param err
      */
-    public ServerCommandException(Throwable cause, int errorNumber)
-    {
+    public ServerCommandException(Throwable cause, int err) {
         super(cause);
-        this.errorNumber = errorNumber;
+        this.errorNumber = err;
     }
     
     /**
      * @param message
      * @param cause
      */
-    public ServerCommandException(String message, Throwable cause)
-    {
+    public ServerCommandException(String message, Throwable cause) {
         super(message, cause);
         this.errorNumber = 0;
     }
@@ -107,12 +100,11 @@ public class ServerCommandException extends Exception
      * 
      * @param message
      * @param cause
-     * @param errorNumber
+     * @param err
      */
-    public ServerCommandException(String message, Throwable cause, int errorNumber)
-    {
+    public ServerCommandException(String message, Throwable cause, int err) {
         super(message, cause);
-        this.errorNumber = errorNumber;
+        this.errorNumber = err;
     }
     
     /**
@@ -120,8 +112,7 @@ public class ServerCommandException extends Exception
      * 
      * @return The error number
      */
-    public int getErrorNumber()
-    {
+    public int getErrorNumber() {
         return errorNumber;
     }
 }

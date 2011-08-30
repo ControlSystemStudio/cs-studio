@@ -1,8 +1,12 @@
 package org.csstudio.opibuilder.runmode;
 
 import org.csstudio.opibuilder.model.DisplayModel;
+import org.csstudio.ui.util.thread.UIBundlingThread;
 import org.eclipse.core.runtime.IAdaptable;
+import org.eclipse.draw2d.geometry.Rectangle;
 import org.eclipse.osgi.util.NLS;
+import org.eclipse.swt.events.ControlAdapter;
+import org.eclipse.swt.events.ControlEvent;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.ui.IActionBars;
 import org.eclipse.ui.IEditorInput;
@@ -26,6 +30,7 @@ public class OPIView extends ViewPart implements IOPIRuntime {
 	
 	private static final String TAG_INPUT = "input"; //$NON-NLS-1$
 	private static final String TAG_FACTORY_ID = "factory_id"; //$NON-NLS-1$
+	private boolean detached = false;
 	
 
 	/**
@@ -90,9 +95,37 @@ public class OPIView extends ViewPart implements IOPIRuntime {
 	}
 
 	@Override
-	public void createPartControl(Composite parent) {
+	public void createPartControl(final Composite parent) {
 		opiRuntimeDelegate.createGUI(parent);
 		createToolbarButtons();
+		parent.addControlListener(new ControlAdapter() {
+			@Override
+			public void controlResized(ControlEvent e) {
+				if(parent.getShell().getText().length() == 0){
+					if(!detached){
+						detached = true;						
+						UIBundlingThread.getInstance().addRunnable(new Runnable() {						
+							public void run() {
+								final Rectangle bounds;
+								if(opiRuntimeDelegate.getDisplayModel() != null)
+									bounds = opiRuntimeDelegate.getDisplayModel().getBounds();
+								else
+									bounds = new Rectangle(0, 0, 800, 600);
+								if(bounds.x >=0 && bounds.y > 1)
+									parent.getShell().setLocation(bounds.x, bounds.y);
+								else{
+								   org.eclipse.swt.graphics.Rectangle winSize = getSite().getWorkbenchWindow().getShell().getBounds();
+									parent.getShell().setLocation(
+											winSize.x + (int)(Math.random()*winSize.width/4), winSize.y + (int)(Math.random()*winSize.height/4));
+								}
+								parent.getShell().setSize(bounds.width+45, bounds.height+165);							
+							}
+						});
+					}			
+				}else
+					detached = false;
+			}
+		});
 	}
 	
 	private void createToolbarButtons(){

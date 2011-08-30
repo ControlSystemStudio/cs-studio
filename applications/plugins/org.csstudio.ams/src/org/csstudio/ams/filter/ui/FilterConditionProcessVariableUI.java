@@ -1,3 +1,4 @@
+
 /* 
  * Copyright (c) 2008 Stiftung Deutsches Elektronen-Synchrotron, 
  * Member of the Helmholtz Association, (DESY), HAMBURG, GERMANY.
@@ -19,15 +20,16 @@
  * PROJECT IN THE FILE LICENSE.HTML. IF THE LICENSE IS NOT INCLUDED YOU MAY FIND A COPY 
  * AT HTTP://WWW.DESY.DE/LEGAL/LICENSE.HTM
  */
- package org.csstudio.ams.filter.ui;
+
+package org.csstudio.ams.filter.ui;
 
 import java.sql.Connection;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
-
 import org.csstudio.ams.AMSException;
+import org.csstudio.ams.Log;
 import org.csstudio.ams.Messages;
 import org.csstudio.ams.dbAccess.HoldsAnDatabaseId;
 import org.csstudio.ams.dbAccess.configdb.FilterConditionProcessVariableDAO;
@@ -35,7 +37,6 @@ import org.csstudio.ams.dbAccess.configdb.FilterConditionProcessVariableTObject;
 import org.csstudio.ams.filter.FilterConditionProcessVariable;
 import org.csstudio.ams.filter.FilterConditionProcessVariable.Operator;
 import org.csstudio.ams.filter.FilterConditionProcessVariable.SuggestedProcessVariableType;
-import org.csstudio.platform.logging.CentralLogger;
 import org.csstudio.platform.model.pvs.IProcessVariableAddress;
 import org.csstudio.platform.model.pvs.ProcessVariableAdressFactory;
 import org.csstudio.platform.model.pvs.ValueType;
@@ -206,8 +207,7 @@ public class FilterConditionProcessVariableUI extends FilterConditionUI {
 				}
 			} catch (Exception ex) {
 				String message = Messages.FilterConditionProcessVaribaleBasedUI_Error_No_Connection_With_Reason;
-				CentralLogger.getInstance().error(this,
-						message, ex);
+				Log.log(this, Log.ERROR, message, ex);
 				if (ex.getMessage()!=null && ex.getMessage().trim().length()>0 && !ex.getMessage().equals("null")) {
 					message = message + ex.getMessage();
 				} else {
@@ -243,7 +243,8 @@ public class FilterConditionProcessVariableUI extends FilterConditionUI {
 	 */
 	private FilterConditionProcessVariableTObject snapshot = null;
 
-	public boolean check() {
+	@Override
+    public boolean check() {
 		List<String> errors = new LinkedList<String>();
 
 		if (getText(txtChannelValue.getDisplay(), txtChannelValue).length() < MINIMAL_CHANNEL_NAME_LENGTH) {
@@ -288,7 +289,8 @@ public class FilterConditionProcessVariableUI extends FilterConditionUI {
 	 * 
 	 * @require check()
 	 */
-	public void create(Connection conDb, int filterConditionID)
+	@Override
+    public void create(Connection conDb, int filterConditionID)
 			throws AMSException {
 		try {
 			assert check() : "Precondition violated: check()";
@@ -296,8 +298,7 @@ public class FilterConditionProcessVariableUI extends FilterConditionUI {
 			snapshot = collectDataToBeSaved(filterConditionID);
 			FilterConditionProcessVariableDAO.insert(conDb, snapshot);
 		} catch (Exception ex) {
-			CentralLogger.getInstance().fatal(this,
-					"Fail to create new dataset", ex);
+		    Log.log(this, Log.FATAL, "Fail to create new dataset", ex);
 			throw new AMSException("Fail to create new dataset", ex);
 		}
 	}
@@ -366,7 +367,7 @@ public class FilterConditionProcessVariableUI extends FilterConditionUI {
 		}
 
 		if (result == null) {
-			CentralLogger.getInstance().warn(this, "Enum constant not found!");
+		    Log.log(this, Log.WARN, "Enum constant not found!");
 		}
 
 		return result;
@@ -375,7 +376,8 @@ public class FilterConditionProcessVariableUI extends FilterConditionUI {
 	/**
 	 * {@inheritDoc}
 	 */
-	public void createUI(Composite parent) {
+	@Override
+    public void createUI(Composite parent) {
 		if (localParent == null) {
 			localParent = new Composite(parent, SWT.NONE);
 			createControls(localParent);
@@ -383,7 +385,8 @@ public class FilterConditionProcessVariableUI extends FilterConditionUI {
 		}
 	}
 
-	private void createControls(final Composite parent) {
+	@SuppressWarnings("unused")
+    private void createControls(final Composite parent) {
 		GridLayout gridLayout = new GridLayout(2, false);
 		gridLayout.horizontalSpacing = 10;
 		gridLayout.verticalSpacing = 5;
@@ -440,7 +443,8 @@ public class FilterConditionProcessVariableUI extends FilterConditionUI {
 				SWT.CENTER, false, false));
 
 		cboSuggReturnType.addSelectionListener(new SelectionAdapter() {
-			public void widgetSelected(SelectionEvent e) {
+			@Override
+            public void widgetSelected(SelectionEvent e) {
 				handleSuggestedTypeChanged();
 			}
 		});
@@ -499,14 +503,13 @@ public class FilterConditionProcessVariableUI extends FilterConditionUI {
 		return result;
 	}
 
-	public void delete(Connection conDb, int filterConditionID)
+	@Override
+    public void delete(Connection conDb, int filterConditionID)
 			throws AMSException {
 		try {
 			FilterConditionProcessVariableDAO.remove(conDb, filterConditionID);
 		} catch (Exception ex) {
-			CentralLogger.getInstance().fatal(
-					this,
-					"Could not remove FilterCondition with reference: "
+		    Log.log(this, Log.FATAL,"Could not remove FilterCondition with reference: "
 							+ filterConditionID, ex);
 			throw new AMSException(
 					"Could not remove FilterCondition with reference: "
@@ -514,7 +517,8 @@ public class FilterConditionProcessVariableUI extends FilterConditionUI {
 		}
 	}
 
-	public void dispose() {
+	@Override
+    public void dispose() {
 		if (localParent != null && !localParent.isDisposed()) {
 			localParent.dispose();
 			localParent = null;
@@ -524,25 +528,27 @@ public class FilterConditionProcessVariableUI extends FilterConditionUI {
 	/**
 	 * {@inheritDoc}
 	 */
-	public String getDisplayName() {
+	@Override
+    public String getDisplayName() {
 		return Messages.FilterConditionProcessVaribaleBasedUI_DisplayName;
 	}
 
-	public boolean isChanged() {
+	@Override
+    public boolean isChanged() {
 		FilterConditionProcessVariableTObject newFC = collectDataToBeSaved(snapshot
 				.getFilterConditionRef());
 		return !newFC.equals(snapshot);
 	}
 
-	public void load(Connection conDb, int filterConditionID)
+	@Override
+    public void load(Connection conDb, int filterConditionID)
 			throws AMSException {
 		snapshot = null;
 		try {
 			snapshot = FilterConditionProcessVariableDAO.select(conDb,
 					filterConditionID);
 		} catch (SQLException e) {
-			CentralLogger.getInstance().fatal(this,
-					"Can not load filter details!", e);
+		    Log.log(this, Log.FATAL, "Can not load filter details!", e);
 			throw new AMSException("Can not load filter details!", e);
 		}
 
@@ -564,7 +570,8 @@ public class FilterConditionProcessVariableUI extends FilterConditionUI {
 	/**
 	 * {@inheritDoc}
 	 */
-	public void reset() {
+	@Override
+    public void reset() {
 		setText(txtChannelValue.getDisplay(), txtChannelValue, "");
 		setComboBoxValueUI(cboSuggReturnType.getDisplay(), cboSuggReturnType,
 				-1);
@@ -572,7 +579,8 @@ public class FilterConditionProcessVariableUI extends FilterConditionUI {
 		setText(txtCompareValue.getDisplay(), txtCompareValue, "");
 	}
 
-	public void save(Connection conDb) throws AMSException {
+	@Override
+    public void save(Connection conDb) throws AMSException {
 		try {
 			assert check() : "Precondition violated: check()";
 
@@ -581,7 +589,7 @@ public class FilterConditionProcessVariableUI extends FilterConditionUI {
 			FilterConditionProcessVariableDAO
 					.update(conDb, filterConfiguration);
 		} catch (Exception ex) {
-			CentralLogger.getInstance().fatal(this, "Fail to save dataset", ex);
+		    Log.log(this, Log.FATAL, "Fail to save dataset", ex);
 			throw new AMSException("Fail to save dataset", ex);
 		}
 

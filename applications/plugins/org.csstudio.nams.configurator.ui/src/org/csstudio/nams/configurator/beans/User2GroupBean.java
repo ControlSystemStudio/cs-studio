@@ -1,3 +1,4 @@
+
 package org.csstudio.nams.configurator.beans;
 
 import java.util.Date;
@@ -31,7 +32,7 @@ public class User2GroupBean extends AbstractConfigurationBean<User2GroupBean> {
 	 * Just for getClone()
 	 */
 	public User2GroupBean() {
-
+	    // Nothing to do
 	}
 
 	public User2GroupBean(final AlarmbearbeiterBean userBean) {
@@ -78,11 +79,13 @@ public class User2GroupBean extends AbstractConfigurationBean<User2GroupBean> {
 		return this.activeReason;
 	}
 
-	public String getDisplayName() {
+	@Override
+    public String getDisplayName() {
 		return null;
 	}
 
-	public int getID() {
+	@Override
+    public int getID() {
 		return 0;
 	}
 
@@ -131,7 +134,9 @@ public class User2GroupBean extends AbstractConfigurationBean<User2GroupBean> {
 				oldValue, activeReason);
 	}
 
-	public void setID(final int id) {
+	@Override
+    public void setID(final int id) {
+	    // Nothing to do
 	}
 
 	public void setLastChange(final Date lastChange) {
@@ -149,7 +154,8 @@ public class User2GroupBean extends AbstractConfigurationBean<User2GroupBean> {
 		this.setLastChange(bean.getLastChange());
 	}
 
-	public void setDisplayName(String name) {
-		// nothing to do here
+	@Override
+    public void setDisplayName(String name) {
+		// Nothing to do here
 	}
 }

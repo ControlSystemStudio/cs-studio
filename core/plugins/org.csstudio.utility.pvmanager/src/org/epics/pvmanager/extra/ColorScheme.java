@@ -1,5 +1,5 @@
 /*
- * Copyright 2008-2010 Brookhaven National Laboratory
+ * Copyright 2010-11 Brookhaven National Laboratory
  * All rights reserved. Use is subject to license terms.
  */
 
@@ -8,7 +8,7 @@ package org.epics.pvmanager.extra;
 import java.awt.Color;
 import java.util.Random;
 import org.epics.pvmanager.data.Display;
-import org.epics.pvmanager.data.Util;
+import org.epics.pvmanager.data.ValueUtil;
 
 /**
  *
@@ -35,13 +35,22 @@ public abstract class ColorScheme {
      * @return
      */
     public static ColorScheme singleRangeGradient(final Color minValueColor, final Color maxValueColor) {
+        return singleRangeGradient(minValueColor, maxValueColor, Color.BLACK);
+    }
+
+    public static ColorScheme singleRangeGradient(final Color minValueColor, final Color maxValueColor, final Color nanColor) {
         return new ColorScheme() {
             Random rand = new Random();
 
             @Override
             public int color(double value, Display ranges) {
-                double normalValue = Util.normalize(value, ranges);
-                int alpha = 0;
+                if (Double.isNaN(value))
+                    return nanColor.getRGB();
+                
+                double normalValue = ValueUtil.normalize(value, ranges);
+                normalValue = Math.min(normalValue, 1.0);
+                normalValue = Math.max(normalValue, 0.0);
+                int alpha = 255;
                 int red = (int) (minValueColor.getRed() + (maxValueColor.getRed() - minValueColor.getRed()) * normalValue);
                 int green = (int) (minValueColor.getGreen() + (maxValueColor.getGreen() - minValueColor.getGreen()) * normalValue);
                 int blue = (int) (minValueColor.getBlue() + (maxValueColor.getBlue() - minValueColor.getBlue()) * normalValue);
@@ -59,6 +68,9 @@ public abstract class ColorScheme {
 
             @Override
             public int color(double value, Display ranges) {
+                if (Double.isNaN(value))
+                    return 0;
+                
                 double normalValue = 0.0;
                 Color minValueColor = null;
                 Color maxValueColor = null;
@@ -68,26 +80,26 @@ public abstract class ColorScheme {
                 if (value < ranges.getLowerDisplayLimit()) {
                     return lowerDisplayColor.getRGB();
                 } else if (value < ranges.getLowerAlarmLimit()) {
-                    normalValue = Util.normalize(value, ranges.getLowerDisplayLimit(), ranges.getLowerAlarmLimit());
+                    normalValue = ValueUtil.normalize(value, ranges.getLowerDisplayLimit(), ranges.getLowerAlarmLimit());
                     minValueColor = lowerDisplayColor;
                     maxValueColor = lowerAlarmColor;
                 } else if (value < ranges.getLowerWarningLimit()) {
-                    normalValue = Util.normalize(value, ranges.getLowerAlarmLimit(), ranges.getLowerWarningLimit());
+                    normalValue = ValueUtil.normalize(value, ranges.getLowerAlarmLimit(), ranges.getLowerWarningLimit());
                     minValueColor = lowerAlarmColor;
                     maxValueColor = lowerWarningColor;
                 } else if (value <= ranges.getUpperWarningLimit()) {
-                    normalValue = Util.normalize(value, ranges.getLowerWarningLimit(), ranges.getUpperWarningLimit());
+                    normalValue = ValueUtil.normalize(value, ranges.getLowerWarningLimit(), ranges.getUpperWarningLimit());
                     minValueColor = lowerWarningColor;
                     maxValueColor = upperWarningColor;
                 } else if (value <= ranges.getUpperAlarmLimit()) {
-                    normalValue = Util.normalize(value, ranges.getUpperWarningLimit(), ranges.getUpperAlarmLimit());
+                    normalValue = ValueUtil.normalize(value, ranges.getUpperWarningLimit(), ranges.getUpperAlarmLimit());
                     minValueColor = upperWarningColor;
                     maxValueColor = upperAlarmColor;
                 } else {
                     return upperDisplayColor.getRGB();
                 }
 
-                int alpha = 0;
+                int alpha = 255;
                 int red = (int) (minValueColor.getRed() + (maxValueColor.getRed() - minValueColor.getRed()) * normalValue);
                 int green = (int) (minValueColor.getGreen() + (maxValueColor.getGreen() - minValueColor.getGreen()) * normalValue);
                 int blue = (int) (minValueColor.getBlue() + (maxValueColor.getBlue() - minValueColor.getBlue()) * normalValue);

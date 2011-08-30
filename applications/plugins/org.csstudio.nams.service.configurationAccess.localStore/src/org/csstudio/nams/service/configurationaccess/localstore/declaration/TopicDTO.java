@@ -1,3 +1,4 @@
+
 package org.csstudio.nams.service.configurationaccess.localstore.declaration;
 
 import javax.persistence.Column;

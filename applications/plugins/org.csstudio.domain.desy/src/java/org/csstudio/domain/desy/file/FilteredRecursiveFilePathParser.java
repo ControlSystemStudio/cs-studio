@@ -33,12 +33,12 @@ import javax.annotation.Nonnull;
  */
 public class FilteredRecursiveFilePathParser extends AbstractRecursiveFilePathParser {
 
-    private final AbstractFilePathParserFilter _filter;
+    private final IFilePathDepthFilter _filter;
 
     /**
      * Constructor.
      */
-    public FilteredRecursiveFilePathParser(@Nonnull final AbstractFilePathParserFilter filter) {
+    public FilteredRecursiveFilePathParser(@Nonnull final IFilePathDepthFilter filter) {
         _filter = filter;
     }
 

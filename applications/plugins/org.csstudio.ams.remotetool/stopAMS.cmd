@@ -13,7 +13,7 @@ echo Stopping AMS
 echo.
 
 set JAVA_CMD=java.exe
-set LAUNCHER=org.eclipse.equinox.launcher_1.0.101.R34x_v20080819.jar
+set LAUNCHER=org.eclipse.equinox.launcher_1.1.1.R36x_v20101122_1400.jar
 set MAINCLASS=org.eclipse.equinox.launcher.Main
 set ECLIPSEAPPLIC=org.csstudio.ams.remotetool.AmsRemoteToolApplication
 

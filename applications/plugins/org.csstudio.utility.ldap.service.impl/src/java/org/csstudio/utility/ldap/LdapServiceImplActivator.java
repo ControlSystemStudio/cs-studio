@@ -61,7 +61,7 @@ public final class LdapServiceImplActivator implements BundleActivator {
      */
     public LdapServiceImplActivator() {
         if (INSTANCE != null) {
-            throw new IllegalStateException("Activator " + PLUGIN_ID + " does already exist.");
+            throw new IllegalStateException("TreeModelActivator " + PLUGIN_ID + " does already exist.");
         }
         INSTANCE = this; // Antipattern is required by the framework!
     }

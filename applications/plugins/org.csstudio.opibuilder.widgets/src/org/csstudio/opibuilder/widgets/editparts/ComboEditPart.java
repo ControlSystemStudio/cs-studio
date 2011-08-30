@@ -26,6 +26,8 @@ import org.csstudio.opibuilder.widgets.model.ComboModel;
 import org.csstudio.utility.pv.PV;
 import org.csstudio.utility.pv.PVListener;
 import org.eclipse.draw2d.IFigure;
+import org.eclipse.draw2d.MouseEvent;
+import org.eclipse.draw2d.MouseMotionListener;
 import org.eclipse.draw2d.geometry.Dimension;
 import org.eclipse.swt.events.MouseMoveListener;
 import org.eclipse.swt.events.SelectionAdapter;
@@ -67,8 +69,9 @@ public final class ComboEditPart extends AbstractPVWidgetEditPart {
 			}
 		});
 		//update tooltip
-		combo.addMouseMoveListener(new MouseMoveListener(){
-			public void mouseMove(org.eclipse.swt.events.MouseEvent e) {
+		comboFigure.addMouseMotionListener(new MouseMotionListener.Stub(){
+			@Override
+			public void mouseMoved(MouseEvent me) {
 				combo.setToolTipText(getWidgetModel().getTooltip());
 			}
 		});

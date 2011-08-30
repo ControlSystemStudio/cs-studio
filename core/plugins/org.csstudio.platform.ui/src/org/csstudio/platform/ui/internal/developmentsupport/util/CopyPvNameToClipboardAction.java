@@ -38,27 +38,28 @@ import org.eclipse.ui.PlatformUI;
  * @author Joerg Rathlev
  * @author Kay Kasemir
  */
-public class CopyPvNameToClipboardAction extends ProcessVariablePopupAction
-{
-	/**
-	 * {@inheritDoc}
-	 */
-	@Override
-	public void handlePVs(final IProcessVariable[] pv_names)
-	{
-	    // Create string with "PV" or "PV1, PV2, PV3"
-	    final StringBuilder pvs = new StringBuilder();
-	    for (IProcessVariable pv : pv_names)
-        {
-	        if (pvs.length() > 0)
-	            pvs.append(", "); //$NON-NLS-1$
+public class CopyPvNameToClipboardAction extends ProcessVariablePopupAction {
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public void handlePVs(final IProcessVariable[] pv_names) {
+        // Create string with "PV" or "PV1, PV2, PV3"
+        final StringBuilder pvs = new StringBuilder();
+        for (IProcessVariable pv : pv_names) {
+            if (pvs.length() > 0)
+                pvs.append(", "); //$NON-NLS-1$
             pvs.append(pv.getName());
         }
-	    // Copy as text to clipboard
-	    final Clipboard clipboard = new Clipboard(
-	                PlatformUI.getWorkbench().getDisplay());
-		clipboard.setContents(new String[] { pvs.toString() },
-				new Transfer[] { TextTransfer.getInstance() });
-	}
-
+        
+        // TextTransfer doesn't except empty String
+        if (pvs.length() == 0) {
+            pvs.append(" ");
+        }
+        
+        // Copy as text to clipboard
+        final Clipboard clipboard = new Clipboard(PlatformUI.getWorkbench().getDisplay());
+        clipboard.setContents(new String[] { pvs.toString() },
+                              new Transfer[] { TextTransfer.getInstance() });
+    }
 }

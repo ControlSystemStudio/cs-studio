@@ -35,7 +35,6 @@ td.main {
 	color:black;
 	font-family:monospace;
 	font-size:40px;
-	white-space:pre-wrap;
 	vertical-align: middle;
 }
 
@@ -103,6 +102,19 @@ input.editpage {
 input.deletebox {
 	height: 32px;
 	width: 32px;
+}
+
+p.linkbar {
+	background-color:#f0f0f0;
+	align:center;
+	font-weight:normal;
+	font-size:x-large;
+	font:italic Verdana;
+}
+
+a.linkbar {
+	font-size:x-large;
+	font:bold Verdana;
 }
 
 .reloadtime {

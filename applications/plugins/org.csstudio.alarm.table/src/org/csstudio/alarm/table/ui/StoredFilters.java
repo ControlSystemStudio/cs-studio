@@ -29,9 +29,7 @@ import javax.annotation.Nonnull;
 import org.csstudio.alarm.dbaccess.archivedb.Filter;
 import org.csstudio.alarm.dbaccess.archivedb.FilterItem;
 import org.csstudio.alarm.table.JmsLogsPlugin;
-import org.csstudio.alarm.table.dataModel.IMessageViewer;
 import org.csstudio.alarm.table.preferences.archive.ArchiveViewPreferenceConstants;
-import org.csstudio.platform.logging.CentralLogger;
 import org.eclipse.core.runtime.Platform;
 import org.eclipse.core.runtime.preferences.IEclipsePreferences;
 import org.eclipse.core.runtime.preferences.IPreferencesService;
@@ -39,6 +37,8 @@ import org.eclipse.core.runtime.preferences.InstanceScope;
 import org.eclipse.jface.preference.IPreferenceStore;
 import org.osgi.service.prefs.BackingStoreException;
 import org.osgi.service.prefs.Preferences;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * Filters stored by user. Filters are stored in the preferences as a string
@@ -57,9 +57,11 @@ import org.osgi.service.prefs.Preferences;
  */
 public class StoredFilters {
     
+    private static final Logger LOG = LoggerFactory.getLogger(StoredFilters.class);
+    
     private final Set<IFilterListChangeListener> _listener = new HashSet<IFilterListChangeListener>();
     
-    private List<Filter> _storedFilters = new ArrayList<Filter>();
+    private final List<Filter> _storedFilters = new ArrayList<Filter>();
     
     public List<Filter> getFilterList() {
         return _storedFilters;
@@ -145,9 +147,7 @@ public class StoredFilters {
             try {
                 node.flush();
             } catch (BackingStoreException e) {
-                CentralLogger.getInstance().warn(this,
-                                                 "could not write preference string for filters!"
-                                                         + e.getMessage());
+                LOG.warn("could not write preference string for filters!", e);
             }
         }
     }

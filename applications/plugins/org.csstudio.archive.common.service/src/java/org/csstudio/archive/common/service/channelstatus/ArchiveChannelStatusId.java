@@ -31,11 +31,12 @@ import org.csstudio.domain.desy.common.id.Id;
  */
 public class ArchiveChannelStatusId extends Id<ArchiveChannelStatusId> {
 
-    private static final long serialVersionUID = -6926874312044488328L;
     /**
      * Serves as "not set"-Id to avoid untyped <code>null</code> ids.
      */
     public static final ArchiveChannelStatusId NONE = new ArchiveChannelStatusId(-1L);
+
+    private static final long serialVersionUID = -6926874312044488328L;
 
     /**
      * Constructor.

@@ -28,8 +28,6 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
-import org.apache.log4j.Logger;
-import org.csstudio.platform.logging.CentralLogger;
 import org.csstudio.platform.model.pvs.ControlSystemEnum;
 import org.csstudio.utility.namespace.utility.ControlSystemItem;
 import org.csstudio.utility.namespace.utility.ProcessVariable;
@@ -37,6 +35,8 @@ import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
 import org.eclipse.core.runtime.jobs.Job;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import de.desy.tine.queryUtils.TQuery;
 
@@ -50,8 +50,7 @@ public class TineReader extends Job {
 
     private static final String TINE_PATH_SEP = ",";
 
-    private static final Logger LOG = CentralLogger.getInstance().getLogger(TineReader.class);
-
+    private static final Logger LOG = LoggerFactory.getLogger(TineReader.class);
     /** The name of {@link ControlSystemItem}.*/
     private String _simpleName;
     /** List with the read elements. */
@@ -158,7 +157,7 @@ public class TineReader extends Job {
                 }
             }
         }else if(path.length<4){
-            LOG.debug(content.length);
+            LOG.debug("content.length = {}", content.length);
             for (final String part : content) {
                 if(_type.endsWith(TINE_PATH_SEP) || part.startsWith(TINE_PATH_SEP)){
                     csi.add(new ControlSystemItem(part, _type + part));

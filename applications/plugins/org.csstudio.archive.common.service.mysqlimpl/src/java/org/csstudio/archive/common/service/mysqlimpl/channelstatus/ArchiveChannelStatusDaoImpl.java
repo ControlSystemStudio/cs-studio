@@ -21,25 +21,29 @@
  */
 package org.csstudio.archive.common.service.mysqlimpl.channelstatus;
 
+import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.sql.Timestamp;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.List;
 
-import javax.annotation.CheckForNull;
 import javax.annotation.Nonnull;
 
 import org.csstudio.archive.common.service.channel.ArchiveChannelId;
 import org.csstudio.archive.common.service.channelstatus.ArchiveChannelStatus;
 import org.csstudio.archive.common.service.channelstatus.ArchiveChannelStatusId;
 import org.csstudio.archive.common.service.channelstatus.IArchiveChannelStatus;
+import org.csstudio.archive.common.service.mysqlimpl.batch.BatchQueueHandlerSupport;
 import org.csstudio.archive.common.service.mysqlimpl.dao.AbstractArchiveDao;
 import org.csstudio.archive.common.service.mysqlimpl.dao.ArchiveConnectionHandler;
 import org.csstudio.archive.common.service.mysqlimpl.dao.ArchiveDaoException;
 import org.csstudio.archive.common.service.mysqlimpl.persistengine.PersistEngineDataManager;
 import org.csstudio.domain.desy.time.TimeInstant.TimeInstantBuilder;
+import org.csstudio.domain.desy.typesupport.TypeSupportException;
 
-import com.google.common.base.Joiner;
+import com.google.common.collect.Lists;
 import com.google.inject.Inject;
 
 /**
@@ -49,75 +53,105 @@ import com.google.inject.Inject;
  */
 public class ArchiveChannelStatusDaoImpl extends AbstractArchiveDao implements IArchiveChannelStatusDao {
 
-    private static final String EXC_MSG = "Retrieval of channel status from archive failed.";
-
     public static final String TAB = "channel_status";
 
-    private final String _insertChannelStatusStmtPrefix =
-        "INSERT INTO " + getDatabaseName() + "." + TAB +
-                     " (channel_id, connected, info, timestamp) " +
-                     "VALUES ";
+    private static final String EXC_MSG = "Retrieval of channel status from archive failed.";
 
     private final String _selectLatestChannelStatusStmt =
-        "SELECT id, channel_id, connected, info, timestamp FROM " +
+        "SELECT id, channel_id, connected, info, time FROM " +
         getDatabaseName() + "." + TAB +
-        " WHERE channel_id=? ORDER BY timestamp DESC LIMIT 1";
+        " WHERE channel_id=? ORDER BY time DESC LIMIT 1";
 
     @Inject
     public ArchiveChannelStatusDaoImpl(@Nonnull final ArchiveConnectionHandler handler,
                                        @Nonnull final PersistEngineDataManager persister) {
         super(handler, persister);
+
+        BatchQueueHandlerSupport.installHandlerIfNotExists(new ArchiveChannelStatusBatchQueueHandler(getDatabaseName()));
     }
 
 
     @Override
     public void createChannelStatus(@Nonnull final IArchiveChannelStatus entry) throws ArchiveDaoException {
-        final String stmtStr = Joiner.on(",").join(entry.getChannelId().intValue(),
-                                                   (entry.isConnected() ? "'TRUE'" : "'FALSE'"),
-                                                   "'" + entry.getInfo() + "'",
-                                                   "'" + entry.getTime().formatted() + "'");
-
-
-        getEngineMgr().submitStatementToBatch(_insertChannelStatusStmtPrefix + "("  + stmtStr + ")");
+        try {
+            getEngineMgr().submitToBatch(Collections.singleton(entry));
+        } catch (final TypeSupportException e) {
+            throw new ArchiveDaoException("Batch type support missing for " + entry.getClass().getName(), e);
+        }
     }
 
+//    /**
+//     * {@inheritDoc}
+//     */
+//    @Override
+//    @CheckForNull
+//    public IArchiveChannelStatus retrieveLatestStatusByChannelId(@Nonnull final ArchiveChannelId id)
+//    throws ArchiveDaoException {
+//        Connection conn = null;
+//        PreparedStatement stmt = null;
+//        final ResultSet resultSet = null;
+//        try {
+//            conn= getConnection();
+//            stmt = conn.prepareStatement(_selectLatestChannelStatusStmt);
+//
+//        } catch (final Exception e) {
+//            handleExceptions(EXC_MSG, e);
+//        } finally {
+//            closeSqlResources(resultSet, stmt, conn, _selectLatestChannelStatusStmt);
+//        }
+//        return null;
+//
+//    }
 
     /**
      * {@inheritDoc}
      */
     @Override
-    @CheckForNull
-    public IArchiveChannelStatus retrieveLatestStatusByChannelId(@Nonnull final ArchiveChannelId id)
-                                                                 throws ArchiveDaoException {
+    @Nonnull
+    public Collection<IArchiveChannelStatus>
+    retrieveLatestStatusByChannelIds(@Nonnull final Collection<ArchiveChannelId> ids)
+    throws ArchiveDaoException {
+        Connection conn = null;
+        PreparedStatement stmt = null;
+        ResultSet rs = null;
         try {
-            final PreparedStatement stmt = getConnection().prepareStatement(_selectLatestChannelStatusStmt);
-            // channel_id=?
-            stmt.setInt(1, id.intValue());
-            final ResultSet resultSet = stmt.executeQuery();
-            if (resultSet.next()) {
-                return createChannelStatusFromResult(resultSet);
+            conn= getThreadLocalConnection();
+            stmt = conn.prepareStatement(_selectLatestChannelStatusStmt);
+
+            final List<IArchiveChannelStatus> resultList = Lists.newArrayListWithExpectedSize(ids.size());
+            for (final ArchiveChannelId id : ids) {
+                stmt.setInt(1, id.intValue()); // channel_id=?
+
+                rs = stmt.executeQuery();
+                if (rs.next()) {
+                    resultList.add(createChannelStatusFromResult(rs));
+                }
+                closeSqlResources(rs, null, _selectLatestChannelStatusStmt);
             }
+            return resultList;
         } catch (final Exception e) {
             handleExceptions(EXC_MSG, e);
+        } finally {
+            closeSqlResources(null, stmt, _selectLatestChannelStatusStmt);
         }
-        return null;
+        return Collections.emptyList();
     }
+
 
     @Nonnull
     private IArchiveChannelStatus createChannelStatusFromResult(@Nonnull final ResultSet resultSet)
                                                                 throws SQLException {
-        // id, channel_id, connected, info, timestamp
-        final int id = resultSet.getInt(1);
-        final int channelId = resultSet.getInt(2);
-        final boolean connected = resultSet.getBoolean(3);
-        final String info = resultSet.getString(4);
-        final Timestamp timestamp = resultSet.getTimestamp(5);
+        // id, channel_id, connected, info, time
+        final int id = resultSet.getInt("id");
+        final int channelId = resultSet.getInt("channel_id");
+        final boolean connected = resultSet.getBoolean("connected");
+        final String info = resultSet.getString("info");
+        final long time = resultSet.getLong("time");
 
         return new ArchiveChannelStatus(new ArchiveChannelStatusId(id),
                                         new ArchiveChannelId(channelId),
                                         connected,
                                         info,
-                                        TimeInstantBuilder.fromMillis(timestamp.getTime()));
+                                        TimeInstantBuilder.fromNanos(time));
     }
-
 }

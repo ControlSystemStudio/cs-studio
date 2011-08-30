@@ -29,7 +29,6 @@ import org.csstudio.data.values.IValue;
 import org.csstudio.data.values.ValueFactory;
 import org.csstudio.domain.desy.epics.alarm.EpicsAlarm;
 import org.csstudio.domain.desy.epics.types.EpicsSystemVariable;
-import org.csstudio.domain.desy.system.ControlSystem;
 import org.csstudio.domain.desy.system.IAlarmSystemVariable;
 import org.csstudio.domain.desy.time.TimeInstant;
 import org.csstudio.domain.desy.typesupport.BaseTypeConversionSupport;
@@ -85,39 +84,27 @@ final class LongSystemVariableSupport extends EpicsSystemVariableSupport<Long> {
                                                  max);
     }
 
-    /**
-     * {@inheritDoc}
-     */
-    @Override
-    @Nonnull
-    protected EpicsSystemVariable<Long> createEpicsVariable(@Nonnull final String name,
-                                                            @Nonnull final Long value,
-                                                            @Nonnull final ControlSystem system,
-                                                            @Nonnull final TimeInstant timestamp) {
-        return new EpicsSystemVariable<Long>(name, value, system, timestamp, EpicsAlarm.UNKNOWN);
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    @Override
-    @Nonnull
-    protected EpicsSystemVariable<Collection<Long>> createCollectionEpicsVariable(@Nonnull final String name,
-                                                                                  @Nonnull final Class<?> typeClass,
-                                                                                  @Nonnull final Collection<Long> values,
-                                                                                  @Nonnull final ControlSystem system,
-                                                                                  @Nonnull final TimeInstant timestamp) throws TypeSupportException {
-        try {
-            @SuppressWarnings("unchecked")
-            final Collection<Long> newCollection = (Collection<Long>) typeClass.newInstance();
-            for (final Long v : values) {
-                newCollection.add(v);
-            }
-            return new EpicsSystemVariable<Collection<Long>>(name, newCollection, system, timestamp, EpicsAlarm.UNKNOWN);
-        } catch (final InstantiationException e) {
-            throw new TypeSupportException("Collection type could not be instantiated from Class<?> object.", e);
-        } catch (final IllegalAccessException e) {
-            throw new TypeSupportException("Collection type could not be instantiated from Class<?> object.", e);
-        }
-    }
+//    /**
+//     * {@inheritDoc}
+//     */
+//    @Override
+//    @Nonnull
+//    protected EpicsSystemVariable<Collection<Long>> createCollectionEpicsVariable(@Nonnull final String name,
+//                                                                                  @Nonnull final Class<?> typeClass,
+//                                                                                  @Nonnull final Collection<Long> values,
+//                                                                                  @Nonnull final ControlSystem system,
+//                                                                                  @Nonnull final TimeInstant timestamp) throws TypeSupportException {
+//        try {
+//            @SuppressWarnings("unchecked")
+//            final Collection<Long> newCollection = (Collection<Long>) typeClass.newInstance();
+//            for (final Long v : values) {
+//                newCollection.add(v);
+//            }
+//            return new EpicsSystemVariable<Collection<Long>>(name, newCollection, system, timestamp, EpicsAlarm.UNKNOWN);
+//        } catch (final InstantiationException e) {
+//            throw new TypeSupportException("Collection type could not be instantiated from Class<?> object.", e);
+//        } catch (final IllegalAccessException e) {
+//            throw new TypeSupportException("Collection type could not be instantiated from Class<?> object.", e);
+//        }
+//    }
 }

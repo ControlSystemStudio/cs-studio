@@ -66,6 +66,7 @@ public class Messages extends NLS
 			.getBundle(BUNDLE_NAME);
 
 	private Messages() {
+	    // Avoid instantiation
 	}
 	
 	public static String getString(String key) {

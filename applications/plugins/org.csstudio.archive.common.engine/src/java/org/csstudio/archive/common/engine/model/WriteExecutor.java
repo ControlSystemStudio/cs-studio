@@ -7,6 +7,7 @@
  ******************************************************************************/
 package org.csstudio.archive.common.engine.model;
 
+import java.io.Serializable;
 import java.util.concurrent.ConcurrentMap;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
@@ -40,10 +41,10 @@ public class WriteExecutor {
 
     private static final Logger LOG = LoggerFactory.getLogger(WriteExecutor.class);
 
-    /** Minimum write period [seconds] */
-    private static final long MIN_WRITE_PERIOD_MS = 5000;
+    /** Minimum write period [millis] */
+    private static final long MIN_WRITE_PERIOD_MS = 2000;
 
-    private final ConcurrentMap<String, ArchiveChannel<Object, ISystemVariable<Object>>> _channelMap =
+    private final ConcurrentMap<String, ArchiveChannel<Serializable, ISystemVariable<Serializable>>> _channelMap =
         Maps.newConcurrentMap();
 
     private final ScheduledExecutorService _heartBeatExecutor =
@@ -69,7 +70,7 @@ public class WriteExecutor {
     }
 
 
-    public void addChannel(@Nonnull final ArchiveChannel<Object, ISystemVariable<Object>> channel) {
+    public void addChannel(@Nonnull final ArchiveChannel<Serializable, ISystemVariable<Serializable>> channel) {
         _channelMap.putIfAbsent(channel.getName(), channel);
     }
 
@@ -113,7 +114,7 @@ public class WriteExecutor {
                                                         _channelMap.values(),
                                                         writePeriodInMS);
         _writeSamplesExecutor.scheduleAtFixedRate(writeWorker,
-                                                  500L,
+                                                  0L,
                                                   writePeriodInMS,
                                                   TimeUnit.MILLISECONDS);
         return writeWorker;

@@ -37,6 +37,7 @@ CREATE TABLE message
     msg_type_id INT NOT NULL,
     datum TIMESTAMP,
     name VARCHAR(300),
+    type VARCHAR(300),
     severity VARCHAR(300)
 );
 

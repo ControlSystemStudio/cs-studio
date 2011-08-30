@@ -18,6 +18,7 @@ import org.eclipse.draw2d.TextUtilities;
 import org.eclipse.draw2d.geometry.Dimension;
 import org.eclipse.draw2d.geometry.Point;
 import org.eclipse.draw2d.geometry.Rectangle;
+import org.eclipse.swt.SWT;
 
 /**
  * A text figure without wrapping capability.
@@ -39,6 +40,8 @@ public class TextFigure extends Figure implements Introspectable{
 	private Dimension textSize;
 	
 	private final Point POINT_ZERO = new Point(0,0);
+	
+	private double rotate = 0;
 
 	public TextFigure() {
 		this(false);
@@ -196,7 +199,28 @@ public class TextFigure extends Figure implements Introspectable{
 			return;
 		Rectangle textArea = getTextArea();
 		graphics.translate(textArea.x, textArea.y);
-		graphics.drawText(text, getTextLocation());
+		if(getRotate() ==0)
+			graphics.drawText(text, getTextLocation());
+		else{
+			//rap doesn't support rotate
+			if(SWT.getPlatform().startsWith("rap")) //$NON-NLS-1$
+				graphics.drawText(text, getTextLocation());
+			else{
+				try {
+					graphics.pushState();
+					Rectangle c = getClientArea();
+					graphics.translate(c.width/2, c.height/2);
+					graphics.rotate((float) getRotate());
+					graphics.drawText(
+							text,
+							0,	0);				
+				} finally{
+					graphics.popState();
+				}
+			}
+		}
+			
+		
 		graphics.translate(-textArea.x, -textArea.y);		
 	}
 	
@@ -244,6 +268,16 @@ public class TextFigure extends Figure implements Introspectable{
 		if(this.verticalAlignment == vAlignment)
 			return;
 		verticalAlignment = vAlignment;
+		revalidate();
+		repaint();
+	}
+
+	public double getRotate() {
+		return rotate;
+	}
+
+	public void setRotate(double rotate) {
+		this.rotate = rotate;
 		revalidate();
 		repaint();
 	}
