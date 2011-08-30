@@ -25,12 +25,17 @@
 package org.csstudio.alarm.jms2ora.service.persistence.internal;
 
 /**
- * TODO (mmoeller) : 
- * 
+ * TODO (mmoeller) :
+ *
  * @author mmoeller
  * @version 1.0
  * @since 24.08.2011
  */
-public class PreferenceConstants {
+public final class PreferenceConstants {
+
     public static final String MESSAGE_DIRECTORY = "messageDirectory";
+
+    private PreferenceConstants() {
+        // Avoid instantiation
+    }
 }
