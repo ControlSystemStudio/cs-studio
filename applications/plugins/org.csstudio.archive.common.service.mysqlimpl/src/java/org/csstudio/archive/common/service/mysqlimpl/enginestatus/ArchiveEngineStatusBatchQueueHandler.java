@@ -55,7 +55,7 @@ public final class ArchiveEngineStatusBatchQueueHandler extends BatchQueueHandle
 
     @Nonnull
     protected static String createSqlStatementString(@Nonnull final String database) {
-        return "REPLACE INTO " + database + "." + ArchiveEngineStatusDaoImpl.TAB +
+        return "INSERT IGNORE INTO " + database + "." + ArchiveEngineStatusDaoImpl.TAB +
                " (engine_id, status, time, info) VALUES " + VAL_WILDCARDS;
     }
     /**
