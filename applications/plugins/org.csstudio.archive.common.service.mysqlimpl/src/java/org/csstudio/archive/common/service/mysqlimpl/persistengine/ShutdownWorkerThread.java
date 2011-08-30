@@ -67,6 +67,8 @@ final class ShutdownWorkerThread extends Thread {
      */
     @Override
     public void run() {
+        _shutdownLog.info("Execute and await termination for maximum {}ms", _prefTermTimeMS);
+
         final ExecutorService executor = Executors.newSingleThreadExecutor();
         executor.execute(new PersistDataWorker(_persistEngineDataManager,
                                                "SHUTDOWN Worker",
@@ -74,7 +76,6 @@ final class ShutdownWorkerThread extends Thread {
                                                _handlerProvider));
         executor.shutdown();
         try {
-            _shutdownLog.info("Await termination for {}ms", _prefTermTimeMS);
             if (!executor.awaitTermination(_prefTermTimeMS, TimeUnit.MILLISECONDS)) {
                 _shutdownLog.warn("Executor for PersistDataWorkers did not terminate in the specified period. Try to rescue data.");
                 for (final BatchQueueHandlerSupport<?> handler : _handlerProvider.getHandlers()) {
