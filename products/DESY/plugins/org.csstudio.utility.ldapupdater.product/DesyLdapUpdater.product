@@ -7,9 +7,7 @@
    </configIni>
 
    <launcherArgs>
-      <programArgs>-consoleLog</programArgs>
-      <programArgsSol>-pluginCustomization plugin_customization_solaris.ini</programArgsSol>
-      <programArgsWin>-pluginCustomization plugin_customization.ini</programArgsWin>
+      <programArgs>-consoleLog -pluginCustomization plugin_customization.ini</programArgs>
       <vmArgs>-Djava.awt.headless=true</vmArgs>
       <vmArgsMac>-XstartOnFirstThread -Dorg.eclipse.swt.internal.carbon.smallFonts</vmArgsMac>
    </launcherArgs>
