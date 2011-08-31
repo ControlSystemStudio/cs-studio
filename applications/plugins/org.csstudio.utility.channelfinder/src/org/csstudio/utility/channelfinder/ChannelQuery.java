@@ -9,6 +9,8 @@ import java.util.Hashtable;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.CopyOnWriteArrayList;
+import java.util.concurrent.Executor;
+import java.util.concurrent.Executors;
 import java.util.concurrent.atomic.AtomicReference;
 
 public class ChannelQuery {
@@ -18,6 +20,7 @@ public class ChannelQuery {
 	private final String query;
 	
 	private  AtomicReference<Exception> lastException = new AtomicReference<Exception>();
+	private Executor queryExecutor = Executors.newSingleThreadExecutor();
 
 	private volatile Collection<Channel> lastValidResult;
 	private volatile Collection<Channel> result;
@@ -91,16 +94,22 @@ public class ChannelQuery {
 	}
 	
 	public void execute(){
-		try {
-			result = client.find(buildSearchMap(query));
-			lastValidResult = result;
-		} catch (ChannelFinderException e) {
-			result = null;
-			lastException.set(e);
-			e.printStackTrace();
-		} finally{
-			fireGetQueryResult();			
-		}
+		queryExecutor.execute(new Runnable() {
+			
+			@Override
+			public void run() {
+				try {
+					result = client.find(buildSearchMap(query));
+					lastValidResult = result;
+				} catch (ChannelFinderException e) {
+					result = null;
+					lastException.set(e);
+					e.printStackTrace();
+				} finally{
+					fireGetQueryResult();			
+				}
+			}
+		});
 	}
 	
 	static Map<String, String> buildSearchMap(String searchPattern) {
