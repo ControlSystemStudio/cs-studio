@@ -25,8 +25,7 @@ import java.sql.PreparedStatement;
 import java.sql.SQLException;
 import java.util.Collection;
 import java.util.Collections;
-import java.util.List;
-import java.util.concurrent.BlockingQueue;
+import java.util.Queue;
 
 import javax.annotation.Nonnull;
 
@@ -49,28 +48,27 @@ final class FalseFillStmtHandler extends
      * Constructor.
      */
     FalseFillStmtHandler(@Nonnull final Class<IArchiveSample> typeClass,
-                                 @Nonnull final String database,
-                                 @Nonnull final BlockingQueue<IArchiveSample> queue) {
-        super(typeClass, database, queue);
+                         @Nonnull final String database,
+                         @Nonnull final Queue<IArchiveSample> queue) {
+        super(typeClass, createSqlStatementString(database), queue);
     }
 
     @Override
     protected void fillStatement(@Nonnull final PreparedStatement stmt,
-                                 @Nonnull final IArchiveSample element) throws ArchiveDaoException,
-                                                              SQLException {
+                                 @Nonnull final IArchiveSample element)
+    throws ArchiveDaoException, SQLException {
         stmt.setInt(-1, -1); // wrong statement
     }
 
-    @Override
     @Nonnull
-    protected String composeSqlString() {
+    private static String createSqlStatementString(@SuppressWarnings("unused") @Nonnull final String database) {
         return PersistDataWorkerHeadlessTest.TEST_STATEMENT;
     }
 
     @Override
     @Nonnull
-    public Collection<String> convertToStatementString(@Nonnull final List<IArchiveSample> elements) {
+    public Collection<String> convertToStatementString(@Nonnull final Collection<IArchiveSample> elements) {
         _i++;
-        return Collections.singleton(composeSqlString() + _i + ";");
+        return Collections.singleton(getSqlStatementString() + _i + ";");
     }
 }

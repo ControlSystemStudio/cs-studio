@@ -23,6 +23,7 @@ package org.csstudio.config.ioconfig.editorparts;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
@@ -63,6 +64,8 @@ import org.eclipse.swt.events.ControlAdapter;
 import org.eclipse.swt.events.ControlEvent;
 import org.eclipse.swt.events.ModifyEvent;
 import org.eclipse.swt.events.ModifyListener;
+import org.eclipse.swt.events.PaintEvent;
+import org.eclipse.swt.events.PaintListener;
 import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.events.SelectionListener;
 import org.eclipse.swt.graphics.Rectangle;
@@ -74,6 +77,7 @@ import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Group;
+import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Spinner;
 import org.eclipse.swt.widgets.Text;
 import org.slf4j.Logger;
@@ -330,6 +334,8 @@ public class ModuleEditor extends AbstractGsdNodeEditor<ModuleDBO> {
     private Text _ioNamesText;
 
     private Text _channelNameText;
+
+    private Text _channelsDescText;
     
     /**
      * {@inheritDoc}
@@ -354,12 +360,59 @@ public class ModuleEditor extends AbstractGsdNodeEditor<ModuleDBO> {
      */
     private void ioNames(@Nonnull final String head) {
         final Composite comp = getNewTabItem(head, 2);
-        comp.setLayout(new GridLayout(2, false));
-        _channelNameText = new Text(comp, SWT.MULTI | SWT.WRAP | SWT.V_SCROLL | SWT.BORDER | SWT.READ_ONLY);
-        _channelNameText.setLayoutData(new GridData(SWT.BEGINNING, SWT.FILL, false, true));
+        comp.setLayout(new GridLayout(3, false));
+        final Label nameLabel = new Label(comp, SWT.NONE);
+        nameLabel.setLayoutData(new GridData(SWT.BEGINNING, SWT.CENTER, false, false));
+        nameLabel.setText("Name");
         
-        _ioNamesText = new Text(comp, SWT.MULTI | SWT.WRAP | SWT.V_SCROLL | SWT.BORDER | SWT.READ_ONLY);
-        _ioNamesText.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true));
+        final Label ioNameLabel = new Label(comp, SWT.NONE);
+        ioNameLabel.setLayoutData(new GridData(SWT.BEGINNING, SWT.CENTER, false, false));
+        ioNameLabel.setText("IO Name");
+        
+        final Label descLabel = new Label(comp, SWT.NONE);
+        descLabel.setLayoutData(new GridData(SWT.BEGINNING, SWT.CENTER, false, false));
+        descLabel.setText("Short Description");
+        
+        GridData layoutData = new GridData(SWT.BEGINNING, SWT.FILL, false, true);
+        layoutData.widthHint=40;
+        _channelNameText = new Text(comp, SWT.MULTI | SWT.WRAP | SWT.BORDER | SWT.READ_ONLY);
+        _channelNameText.setLayoutData(layoutData);
+        
+        layoutData = new GridData(SWT.BEGINNING, SWT.FILL, false, true);
+        layoutData.widthHint=100;
+        _ioNamesText = new Text(comp, SWT.MULTI | SWT.WRAP | SWT.BORDER);
+        _ioNamesText.setLayoutData(layoutData);
+        
+        _channelsDescText = new Text(comp, SWT.MULTI | SWT.WRAP | SWT.V_SCROLL | SWT.BORDER);
+        _channelsDescText.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true));
+        
+        _channelNameText.addPaintListener(new PaintListener() {
+            
+            @Override
+            public void paintControl(@Nonnull final PaintEvent e) {
+                _ioNamesText.setTopIndex(_channelNameText.getTopIndex());
+                _channelsDescText.setTopIndex(_channelNameText.getTopIndex());
+            }
+        });
+        
+        _ioNamesText.addPaintListener(new PaintListener() {
+            
+            @Override
+            public void paintControl(@Nonnull final PaintEvent e) {
+                _channelNameText.setTopIndex(_ioNamesText.getTopIndex());
+                _channelsDescText.setTopIndex(_ioNamesText.getTopIndex());
+            }
+        });
+        
+        _channelsDescText.addPaintListener(new PaintListener() {
+            
+            @Override
+            public void paintControl(@Nonnull final PaintEvent e) {
+                _ioNamesText.setTopIndex(_channelsDescText.getTopIndex());
+                _channelNameText.setTopIndex(_channelsDescText.getTopIndex());
+            }
+        });
+        
         
         try {
             setIONamesText();
@@ -367,6 +420,22 @@ public class ModuleEditor extends AbstractGsdNodeEditor<ModuleDBO> {
             DeviceDatabaseErrorDialog.open(null, "Can't read from Database", e);
             LOG.error("Can't read from Database", e);
         }
+        _ioNamesText.addModifyListener(new ModifyListener() {
+            
+            @Override
+            public void modifyText(@Nonnull final ModifyEvent e) {
+                setSavebuttonEnabled("IONames", !_ioNamesText.getText().equals(_ioNamesText.getData()));
+            }
+        });
+        
+        _channelsDescText.addModifyListener(new ModifyListener() {
+            
+            @Override
+            public void modifyText(@Nonnull final ModifyEvent e) {
+                setSavebuttonEnabled("ChannelsDesc", !_channelsDescText.getText().equals(_channelsDescText.getData()));
+            }
+        });
+        
         
     }
 
@@ -377,6 +446,7 @@ public class ModuleEditor extends AbstractGsdNodeEditor<ModuleDBO> {
     private void setIONamesText() throws PersistenceException {
         final StringBuilder ioNamesSB = new StringBuilder();
         final StringBuilder channelNamesSB = new StringBuilder();
+        final StringBuilder channelDescSB = new StringBuilder();
         final Set<Entry<Short, ChannelStructureDBO>> channelStructureEntrySet = getNode().getChildrenAsMap().entrySet();
         for (Entry<Short, ChannelStructureDBO> channelStructureEntry : channelStructureEntrySet) {
             final Set<Entry<Short, ChannelDBO>> channelEntrySet = channelStructureEntry.getValue().getChildrenAsMap().entrySet();
@@ -387,16 +457,31 @@ public class ModuleEditor extends AbstractGsdNodeEditor<ModuleDBO> {
                 }
                 channelNamesSB.append(channelName);
                 channelNamesSB.append("\n");
+                
                 String ioName = channelEntry.getValue().getIoName();
                 if (ioName==null) {
                     ioName="";
                 }
                 ioNamesSB.append(ioName);
                 ioNamesSB.append("\n");
+
+                String desc = channelEntry.getValue().getDescription();
+                if (desc==null) {
+                    desc=" ";
+                }
+                if(desc.contains("\r\n")) {
+                    desc = desc.split("\r\n")[0];
+                }
+                channelDescSB.append(desc);
+                channelDescSB.append("\n");
             }
         }
         _channelNameText.setText(channelNamesSB.toString());
+        _channelNameText.setData(channelNamesSB.toString());
         _ioNamesText.setText(ioNamesSB.toString());
+        _ioNamesText.setData(ioNamesSB.toString());
+        _channelsDescText.setText(channelDescSB.toString());
+        _channelsDescText.setData(channelDescSB.toString());
     }
 
     /**
@@ -677,13 +762,33 @@ public class ModuleEditor extends AbstractGsdNodeEditor<ModuleDBO> {
     }
     
     private void updateChannels() throws PersistenceException {
-        final Set<ChannelStructureDBO> channelStructs = _module.getChildren();
+        int i = 0;
+        final String[] ionames = _ioNamesText.getText().split("\n");
+        final String[] descs = _channelsDescText.getText().split("\n");
+        final Collection<ChannelStructureDBO> channelStructs = _module.getChildrenAsMap().values();
         for (ChannelStructureDBO channelStructure : channelStructs) {
-            final Set<ChannelDBO> channels = channelStructure.getChildren();
+            final Collection<ChannelDBO> channels = channelStructure.getChildrenAsMap().values();
             for (ChannelDBO channel : channels) {
+                if(i<ionames.length) {
+                    channel.setIoName(ionames[i].trim());
+                }
+                if(i<descs.length) {
+                    String descPost ="";
+                    final String description = channel.getDescription();
+                    if(description!=null) {
+                        final int indexOf = description.indexOf("\r\n");
+                        if(indexOf>=0) {
+                            descPost = description.substring(indexOf);
+                        }
+                    }
+                    channel.setDescription(descs[i].trim()+descPost);
+                }
                 channel.assembleEpicsAddressString();
+                i++;
             }
         }
+        _ioNamesText.setData(_ioNamesText.getText());
+        _channelsDescText.setData(_channelsDescText.getText());
     }
     
     /**
@@ -695,6 +800,9 @@ public class ModuleEditor extends AbstractGsdNodeEditor<ModuleDBO> {
         cancelNameWidget();
         cancelIndexSpinner();
         cancelGsdModuleModel();
+        _channelNameText.setText((String) _channelNameText.getData());
+        _ioNamesText.setText((String) _ioNamesText.getData());
+        _channelsDescText.setText((String) _channelsDescText.getData());
         for (Object prmTextObject : _prmTextCV) {
             if(prmTextObject instanceof ComboViewer) {
                 cancelComboViewer(prmTextObject);
@@ -887,5 +995,4 @@ public class ModuleEditor extends AbstractGsdNodeEditor<ModuleDBO> {
         }
         return null;
     }
-    
 }

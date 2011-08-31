@@ -723,18 +723,7 @@ public abstract class AbstractNodeEditor<T extends AbstractNodeDBO<?,?>> extends
             
             @Override
             public void modifyText(@Nonnull final ModifyEvent e) {
-                final String text = descText.getText();
-                String string = "";
-                if (text != null) {
-                    final String[] split = text.split("[\r\n]");
-                    if (split.length > 0) {
-                        if (string.length() > 40) {
-                            string = string.substring(0, 40);
-                        } else {
-                            string = split[0];
-                        }
-                    }
-                }
+                String string = getShortDesc(descText);
                 shortDescText.setText(string);
             }
         });
@@ -1225,6 +1214,22 @@ public abstract class AbstractNodeEditor<T extends AbstractNodeDBO<?,?>> extends
         if (text != null) {
             textField.setText(text);
         }
+    }
+    
+    private String getShortDesc(final Text descText) {
+        final String text = descText.getText();
+        String string = "";
+        if (text != null) {
+            final String[] split = text.split("[\r\n]");
+            if (split.length > 0) {
+                if (string.length() > 40) {
+                    string = string.substring(0, 40);
+                } else {
+                    string = split[0];
+                }
+            }
+        }
+        return string;
     }
     
 }

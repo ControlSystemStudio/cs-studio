@@ -155,10 +155,13 @@ public class MySQLArchiveReaderServiceImpl implements IArchiveReaderFacade {
                                               @Nonnull final TimeInstant time) throws ArchiveServiceException {
         try {
             final IArchiveChannel channel = _channelDao.retrieveChannelBy(channelName);
-            return _sampleDao.retrieveLatestSampleBeforeTime(channel, time);
+            if (channel != null) {
+                return _sampleDao.retrieveLatestSampleBeforeTime(channel, time);
+            }
         } catch (final ArchiveDaoException ade) {
             throw new ArchiveServiceException("Latest sample retrieval failed for channel " + channelName, ade);
         }
+        return null;
     }
 
     /**

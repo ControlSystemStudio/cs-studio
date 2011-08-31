@@ -55,7 +55,7 @@ public interface IArchiveChannelDao {
      * @return the channels matching the reg exp
      * @throws ArchiveChannelDaoException when the retrieval fails
      */
-    @CheckForNull
+    @Nonnull
     Collection<IArchiveChannel> retrieveChannelsByNamePattern(@Nonnull final Pattern pattern) throws ArchiveDaoException;
 
     /**

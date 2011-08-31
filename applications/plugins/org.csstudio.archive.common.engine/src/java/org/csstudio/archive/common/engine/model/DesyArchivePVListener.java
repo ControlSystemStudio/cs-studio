@@ -23,6 +23,7 @@ package org.csstudio.archive.common.engine.model;
 
 import java.io.Serializable;
 import java.util.Collection;
+import java.util.Collections;
 
 import javax.annotation.CheckForNull;
 import javax.annotation.Nonnull;
@@ -118,27 +119,16 @@ abstract class DesyArchivePVListener<V extends Serializable,
     @Override
     public void pvValueUpdate(@Nonnull final PV pv) {
         try {
+            //LOG.info("ValueUpdate" + pv.getName());
             if (!_connected) {
+                //LOG.info("Connect " + pv.getName());
                 _metaData = handleOnConnectionInformation(pv,
                                                           _channelId,
                                                           _elemClass,
                                                           _startInfo == null ? pv.getStateInfo() : _startInfo);
                 _connected = true;
             }
-            final ArchiveSample<V, T> sample = createSampleFromValue(pv,
-                                                                     _channelName,
-                                                                     _channelId,
-                                                                     _metaData,
-                                                                     _collClass,
-                                                                     _elemClass);
-
-            if (sample != null) {
-                if (sample.getValue() == null) {
-                    LOG.warn("Value is null for channel id {} ({}). No sample created.", _channelName, _channelId);
-                } else {
-                    addSampleToBuffer(sample);
-                }
-            }
+            handleValueUpdateInformation(pv);
 
         } catch (final TypeSupportException e) {
             LOG.error("Handling of newly received IValue failed. Could not be converted to ISystemVariable", e);
@@ -222,7 +212,24 @@ abstract class DesyArchivePVListener<V extends Serializable,
        return data;
     }
 
-    protected abstract void addSampleToBuffer(@Nonnull final IArchiveSample<V, T> sample);
+    @SuppressWarnings({ "unchecked", "rawtypes" })
+    private void handleValueUpdateInformation(@Nonnull final PV pv) throws TypeSupportException {
+        final ArchiveSample<V, T> sample = createSampleFromValue(pv,
+                                                                 _channelName,
+                                                                 _channelId,
+                                                                 _metaData,
+                                                                 _collClass,
+                                                                 _elemClass);
+
+        if (sample == null || sample.getValue() == null) {
+            return;
+        }
+        if (!addSampleToBuffer(sample)) {
+            ArchiveEngineSampleRescuer.with((Collection) Collections.singleton(sample)).rescue();
+        }
+    }
+
+    protected abstract boolean addSampleToBuffer(@Nonnull final IArchiveSample<V, T> sample);
 
     @SuppressWarnings({ "unchecked", "rawtypes" })
     @CheckForNull

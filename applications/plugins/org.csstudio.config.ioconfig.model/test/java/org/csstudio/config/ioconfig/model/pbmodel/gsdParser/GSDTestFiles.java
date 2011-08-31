@@ -28,6 +28,7 @@ public enum GSDTestFiles {
     gm_04b5("gm_04b5.gsd"),
     PF009A8("PF009A8.gsd"),
     siem8045("siem8045.gsd"),
+    siem80d1("siem80d1.gsg"),
     SOFTB203("SOFTB203.GSD"),
     YP0004C2("YP0004C2.GSD"),
     YP003051("YP003051.gsd"),

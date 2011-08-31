@@ -29,12 +29,12 @@ import javax.jms.JMSException;
 import javax.jms.MapMessage;
 import javax.jms.Message;
 
-import org.apache.log4j.Logger;
 import org.csstudio.alarm.service.declaration.AlarmMessageKey;
 import org.csstudio.alarm.service.declaration.EventtimeUtil;
 import org.csstudio.alarm.service.declaration.IAlarmMessage;
 import org.csstudio.domain.desy.epics.alarm.EpicsAlarmSeverity;
-import org.csstudio.platform.logging.CentralLogger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * JMS based implementation of the message abstraction of the AlarmService
@@ -46,8 +46,7 @@ import org.csstudio.platform.logging.CentralLogger;
  * @since 21.04.2010
  */
 public final class AlarmMessageJMSImpl implements IAlarmMessage {
-    private static final Logger LOG = CentralLogger.getInstance()
-            .getLogger(AlarmMessageJMSImpl.class);
+    private static final Logger LOG = LoggerFactory.getLogger(AlarmMessageJMSImpl.class);
 
     private final MapMessage _mapMessage;
 

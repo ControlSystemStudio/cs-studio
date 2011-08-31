@@ -23,6 +23,7 @@ package org.csstudio.domain.desy.epics.typesupport;
 
 import java.util.Collection;
 
+import javax.annotation.CheckForNull;
 import javax.annotation.Nonnull;
 
 import org.csstudio.data.values.IDoubleValue;
@@ -47,7 +48,7 @@ final class IDoubleValueConversionTypeSupport extends
     @Nonnull
     protected Object toData(@Nonnull final IDoubleValue value,
                             @Nonnull final Class<?> elemClass,
-                            @Nonnull final Class<? extends Collection> collClass) throws TypeSupportException {
+                            @CheckForNull final Class<? extends Collection> collClass) throws TypeSupportException {
         final double[] values = value.getValues();
         if (values == null) {
             throw new TypeSupportException("IValue values array is null! Conversion failed.", null);
@@ -63,7 +64,7 @@ final class IDoubleValueConversionTypeSupport extends
 
         final Collection coll = instantiateCollection(collClass);
         for (final double val : values) {
-            coll.add(support.fromDoubleValue(Double.valueOf(val)));
+            coll.add(support.fromDoubleValue(val));
         }
         return coll;
     }

@@ -36,6 +36,7 @@ import java.text.SimpleDateFormat;
 import java.util.GregorianCalendar;
 import org.csstudio.alarm.jms2ora.Jms2OraPlugin;
 import org.csstudio.alarm.jms2ora.preferences.PreferenceConstants;
+import org.csstudio.alarm.jms2ora.service.ArchiveMessage;
 import org.eclipse.core.runtime.Platform;
 import org.eclipse.core.runtime.preferences.IPreferencesService;
 import org.slf4j.Logger;
@@ -45,6 +46,7 @@ import org.slf4j.LoggerFactory;
  * 
  * @author  Markus Moeller
  * @version 2.0
+ * @deprecated
  */
 
 public class MessageFileHandler implements FilenameFilter {
@@ -192,7 +194,7 @@ public class MessageFileHandler implements FilenameFilter {
      */
     public String[] getMessageFileContent() {
         
-        MessageContent content = null;
+        ArchiveMessage content = null;
         String[] result  = null;
         String[] name = null;
         
@@ -287,7 +289,7 @@ public class MessageFileHandler implements FilenameFilter {
      * @param content - The MessageContent object that have to be stored on disk.
      */
 
-    public void writeMessageContentToFile(MessageContent content) {
+    public void writeMessageContentToFile(ArchiveMessage content) {
         
         SimpleDateFormat dfm = new SimpleDateFormat("yyyyMMdd_HHmmssSSS");
         GregorianCalendar cal = null;
@@ -327,9 +329,9 @@ public class MessageFileHandler implements FilenameFilter {
         }
     }
     
-    private MessageContent readMessageContent(String fileName) {
+    private ArchiveMessage readMessageContent(String fileName) {
         
-        MessageContent content = null;
+        ArchiveMessage content = null;
         FileInputStream fis = null;
         ObjectInputStream ois = null;
 
@@ -338,7 +340,7 @@ public class MessageFileHandler implements FilenameFilter {
             ois = new ObjectInputStream(fis);
             
             // Write the MessageContent object to disk
-            content = (MessageContent)ois.readObject();            
+            content = (ArchiveMessage)ois.readObject();            
         } catch(FileNotFoundException fnfe) {
             LOG.error("FileNotFoundException : " + fnfe.getMessage());
         } catch(IOException ioe) {

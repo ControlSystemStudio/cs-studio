@@ -31,22 +31,20 @@ import org.junit.Test;
  * @author bknerr
  * @since 26.04.2011
  */
+@SuppressWarnings("unused")
 public class HostAddressTest {
 
     @Test(expected=IllegalArgumentException.class)
     public void testInvalidHostAddress1() {
-        @SuppressWarnings("unused")
-        final HostAddress a = new HostAddress("");
+        new HostAddress("");
     }
     @Test(expected=IllegalArgumentException.class)
     public void testInvalidHostAddress2() {
-        @SuppressWarnings("unused")
-        final HostAddress a = new HostAddress(".");
+        new HostAddress(".");
     }
     @Test(expected=IllegalArgumentException.class)
     public void testInvalidHostAddress3() {
-        @SuppressWarnings("unused")
-        final HostAddress a = new HostAddress("_._");
+        new HostAddress("_._");
     }
 
     @Test

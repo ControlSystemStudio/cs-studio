@@ -66,7 +66,7 @@ public class HeartBeatWorker implements Runnable {
         } catch (final ArchiveServiceException e) {
             LOG.error("Exception within service impl. Archive engine heart beat persistence failed.", e);
         } catch (final Throwable t) {
-            LOG.error("Unknown throwable. Thread HeartBeatWorker is terminated");
+            LOG.error("Unknown throwable thread HeartBeatWorker.");
             t.printStackTrace();
         }
     }

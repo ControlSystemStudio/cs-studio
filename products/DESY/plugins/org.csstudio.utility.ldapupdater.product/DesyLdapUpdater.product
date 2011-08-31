@@ -51,11 +51,11 @@
       <plugin id="org.csstudio.platform.libs.jms"/>
       <plugin id="org.csstudio.platform.utility.jms"/>
       <plugin id="org.csstudio.remote"/>
+      <plugin id="org.csstudio.testsuite"/>
       <plugin id="org.csstudio.utility.ldap.service"/>
       <plugin id="org.csstudio.utility.ldap.service.impl"/>
       <plugin id="org.csstudio.utility.ldap.treeconfiguration"/>
       <plugin id="org.csstudio.utility.ldapupdater"/>
-      <plugin id="org.csstudio.utility.namespace.utility"/>
       <plugin id="org.csstudio.utility.pvmanager"/>
       <plugin id="org.csstudio.utility.treemodel"/>
       <plugin id="org.csstudio.workspace"/>

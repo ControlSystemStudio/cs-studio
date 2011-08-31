@@ -88,10 +88,7 @@ public class AbstractPreferenceUnitTest {
 
     @Test(expected=IllegalArgumentException.class)
     public void testInvalidPrefWithValidator() {
-        @SuppressWarnings("unused")
-        final UnitTestPreference<Double> pref =
-            (UnitTestPreference<Double>) new UnitTestPreference<Double>("Unit_Double_Pref_With_Val", -1.0)
-                                             .addValidator(new MinMaxPreferenceValidator<Double>(0.0, 100.0));
+         new UnitTestPreference<Double>("Unit_Double_Pref_With_Val", -1.0).addValidator(new MinMaxPreferenceValidator<Double>(0.0, 100.0));
 
     }
 }

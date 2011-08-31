@@ -22,6 +22,9 @@ org.csstudio.archive
 org.csstudio.archive.channelarchiver
 org.csstudio.archive.reader
 org.csstudio.archive.reader.channelarchiver
+org.csstudio.channel.opiwidgets
+org.csstudio.channel.views
+org.csstudio.channel.widgets
 org.csstudio.csdata
 org.csstudio.data
 org.csstudio.diag.epics.pvtree
@@ -66,7 +69,6 @@ org.csstudio.ui.preferences
 org.csstudio.utility.adlParser
 org.csstudio.utility.channel
 org.csstudio.utility.channel.adapters
-org.csstudio.utility.channel.widgets
 org.csstudio.utility.channelfinder
 org.csstudio.utility.channelfinder.ui
 org.csstudio.utility.clock

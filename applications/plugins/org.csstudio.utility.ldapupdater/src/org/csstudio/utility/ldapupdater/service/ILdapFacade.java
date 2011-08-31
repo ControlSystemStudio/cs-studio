@@ -129,10 +129,10 @@ public interface ILdapFacade {
     ILdapContentModelBuilder<T> getLdapContentModelBuilder(@Nonnull final T objectClassRoot,
                                                            @Nonnull final ILdapSearchResult result) throws LdapFacadeException;
 
-    @Nonnull
+    @CheckForNull
     ContentModel<LdapEpicsControlsConfiguration> retrieveIOCs() throws LdapFacadeException;
 
-    @Nonnull
+    @CheckForNull
     INodeComponent<LdapEpicsControlsConfiguration> retrieveIOC(@Nonnull final LdapName iocLdapName)
         throws LdapFacadeException;
 

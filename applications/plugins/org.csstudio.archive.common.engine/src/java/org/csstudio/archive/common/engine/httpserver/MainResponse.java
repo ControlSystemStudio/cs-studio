@@ -41,20 +41,26 @@ class MainResponse extends AbstractResponse {
     /** Bytes in a MegaByte */
     private static final double MB = 1024.0*1024.0;
 
-    private static String HOST;
+    private final String _host;
+    private final String _version;
 
-    MainResponse(@Nonnull final EngineModel model) {
+    MainResponse(@Nonnull final EngineModel model,
+                 @Nonnull final String version) {
         super(model);
+        _version = version;
+        _host = findHostName();
+    }
 
-        if (HOST == null) {
-            try {
-                final InetAddress localhost = InetAddress.getLocalHost();
-                HOST = localhost.getHostName();
-            } catch (final UnknownHostException ex) {
-                LOG.warn("Host IP address unknown for localhost, fall back to 'localhost' as host identifier.");
-                HOST = "localhost";
-            }
+    @Nonnull
+    private String findHostName() {
+        String host = null;
+        try {
+            host = InetAddress.getLocalHost().getCanonicalHostName();
+        } catch (final UnknownHostException ex) {
+            LOG.warn("Host name could not be resolved, fall back to 'localhost'.");
+            host = "localhost";
         }
+        return host;
     }
 
     @Override
@@ -82,9 +88,9 @@ class MainResponse extends AbstractResponse {
 
     private void createProgramInfoRows(@Nonnull final HttpServletRequest req,
                                        @Nonnull final HTMLWriter html) {
-        html.tableLine(new String[] {Messages.HTTP_VERSION, EngineModel.getVersion()});
+        html.tableLine(new String[] {Messages.HTTP_VERSION, _version});
         html.tableLine(new String[] {Messages.HTTP_DESCRIPTION, getModel().getName()});
-        html.tableLine(new String[] {Messages.HTTP_HOST, HOST + ":" + req.getLocalPort()});
+        html.tableLine(new String[] {Messages.HTTP_HOST, _host + ":" + req.getLocalPort()});
         html.tableLine(new String[] {Messages.HTTP_STATE, getModel().getState().name()});
 
         final TimeInstant start = getModel().getStartTime();
@@ -112,15 +118,15 @@ class MainResponse extends AbstractResponse {
                 numOfConnectedChannels += channel.isConnected() ? 1 : 0;
             }
         }
-        html.tableLine(new String[] {Messages.HTTP_COLUMN_GROUPCOUNT,
+        html.tableLine(new String[] {numOf(Messages.HTTP_COLUMN_GROUPCOUNT),
                                      String.valueOf(getModel().getGroups().size()),
                                      });
-        html.tableLine(new String[] {Messages.HTTP_COLUMN_CHANNEL_COUNT,
+        html.tableLine(new String[] {numOf(Messages.HTTP_COLUMN_CHANNELS),
                                      String.valueOf(numOfChannels),
                                      });
         final int numOfDisconnectedChannels = numOfChannels - numOfConnectedChannels;
         if (numOfDisconnectedChannels > 0) {
-            html.tableLine(new String[] {Messages.HTTP_NO,
+            html.tableLine(new String[] {numOf(Messages.HTTP_NOT_CONNECTED),
                                          HTMLWriter.makeRedText(String.valueOf(numOfDisconnectedChannels)),
                                          });
         }
@@ -143,7 +149,7 @@ class MainResponse extends AbstractResponse {
                                                               });
 
         final Double avgWriteCount = getModel().getAvgWriteCount();
-        html.tableLine(new String[] {Messages.HTTP_WRITE_COUNT,
+        html.tableLine(new String[] {numOf(Messages.HTTP_AVG_WRITE),
                                      (avgWriteCount != null ? String.format("%.1f", avgWriteCount):
                                                               "NO") + " samples",
                                                               });

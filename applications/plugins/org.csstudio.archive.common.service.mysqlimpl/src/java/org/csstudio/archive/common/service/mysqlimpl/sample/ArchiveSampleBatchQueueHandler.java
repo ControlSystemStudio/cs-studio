@@ -30,9 +30,9 @@ import java.sql.PreparedStatement;
 import java.sql.SQLException;
 import java.util.Collection;
 import java.util.Collections;
-import java.util.List;
-import java.util.concurrent.LinkedBlockingQueue;
+import java.util.concurrent.ConcurrentLinkedQueue;
 
+import javax.annotation.CheckForNull;
 import javax.annotation.Nonnull;
 
 import org.csstudio.archive.common.service.mysqlimpl.batch.BatchQueueHandlerSupport;
@@ -60,23 +60,26 @@ public class ArchiveSampleBatchQueueHandler extends BatchQueueHandlerSupport<Arc
 
     static final Logger LOG = LoggerFactory.getLogger(ArchiveSampleBatchQueueHandler.class);
 
-    private static final String VAL_WILDCARDS = "(?, ?, ?)";
+    private static final String VALUES_WILDCARD = "(?, ?, ?)";
 
     /**
      * Constructor.
      */
     public ArchiveSampleBatchQueueHandler(@Nonnull final String databaseName) {
-        super(ArchiveSample.class, databaseName, new LinkedBlockingQueue<ArchiveSample>());    }
+        super(ArchiveSample.class,
+              createSqlStatement(databaseName),
+              new ConcurrentLinkedQueue<ArchiveSample>());
 
-    @Override
-    @Nonnull
-    protected String composeSqlString() {
-        final String sql =
-            "INSERT INTO " + getDatabase() + "." + TAB_SAMPLE + " " +
-            "(" + Joiner.on(",").join(COLUMN_CHANNEL_ID, COLUMN_TIME, COLUMN_VALUE)+ ") " +
-            "VALUES " + VAL_WILDCARDS + " ON DUPLICATE KEY UPDATE " + COLUMN_TIME + "=" + COLUMN_TIME + "+1";
-        return sql;
     }
+
+    @Nonnull
+    private static String createSqlStatement(@Nonnull final String databaseName) {
+        return "INSERT IGNORE INTO " + databaseName + "." + TAB_SAMPLE + " " +
+                "(" + Joiner.on(",").join(COLUMN_CHANNEL_ID, COLUMN_TIME, COLUMN_VALUE)+ ") " +
+                "VALUES " + VALUES_WILDCARD;
+    }
+
+
     /**
      * {@inheritDoc}
      */
@@ -87,7 +90,8 @@ public class ArchiveSampleBatchQueueHandler extends BatchQueueHandlerSupport<Arc
         stmt.setInt(1, type.getChannelId().intValue());
         stmt.setLong(2, type.getSystemVariable().getTimestamp().getNanos());
         try {
-            stmt.setString(3, ArchiveTypeConversionSupport.toArchiveString(type.getValue()));
+            final String archiveString = ArchiveTypeConversionSupport.toArchiveString(type.getValue());
+            stmt.setString(3, archiveString);
         } catch (final TypeSupportException e) {
             throw new ArchiveDaoException("No type support found for " + type.getValue().getClass().getName(), e);
         }
@@ -98,14 +102,14 @@ public class ArchiveSampleBatchQueueHandler extends BatchQueueHandlerSupport<Arc
      */
     @Override
     @Nonnull
-    public Collection<String> convertToStatementString(@Nonnull final List<ArchiveSample> elements) {
-        final String sqlWithoutValues = composeSqlString();
+    public Collection<String> convertToStatementString(@Nonnull final Collection<ArchiveSample> elements) {
+        final String sqlWithoutValues = getSqlStatementString();
 
         final Collection<String> values =
             Collections2.transform(elements,
                                    new Function<ArchiveSample, String>() {
                                        @Override
-                                       @Nonnull
+                                       @CheckForNull
                                        public String apply(@Nonnull final ArchiveSample input) {
                                            try {
                                                final String value =
@@ -121,6 +125,6 @@ public class ArchiveSampleBatchQueueHandler extends BatchQueueHandlerSupport<Arc
                                            return null;
                                        }
                                     });
-        return Collections.singleton(sqlWithoutValues.replace(VAL_WILDCARDS, Joiner.on(",").join(values)) + ";");
+        return Collections.singleton(sqlWithoutValues.replace(VALUES_WILDCARD, Joiner.on(",").skipNulls().join(values)) + ";");
     }
 }

@@ -26,7 +26,11 @@ public class ChannelExpressionList<R, W> extends SourceRateReadWriteExpressionLi
      */
     public ChannelExpressionList(Collection<String> channelNames, Class<R> readClass, Class<W> writeClass) {
         for (String channelName : channelNames) {
-            and(new ChannelExpression<R, W>(channelName, readClass, writeClass));
+            if (channelName == null) {
+                and(new ChannelExpression<R, W>(readClass, writeClass));
+            } else {
+                and(new ChannelExpression<R, W>(channelName, readClass, writeClass));
+            }
         }
     }
     

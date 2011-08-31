@@ -81,6 +81,9 @@
       <plugin id="org.csstudio.platform.libs.dal.epics"/>
       <plugin id="org.csstudio.platform.libs.dal.ui"/>
       <plugin id="org.csstudio.platform.libs.epics"/>
+      <plugin id="org.csstudio.platform.libs.epics.ui" fragment=""/>
+      <plugin id="org.csstudio.platform.libs.glazedlists" fragment=""/>
+      <plugin id="org.csstudio.platform.libs.jdbc" fragment=""/>
       <plugin id="org.csstudio.platform.libs.epics.ui"/>
       <plugin id="org.csstudio.platform.libs.glazedlists"/>
       <plugin id="org.csstudio.platform.libs.jdbc"/>

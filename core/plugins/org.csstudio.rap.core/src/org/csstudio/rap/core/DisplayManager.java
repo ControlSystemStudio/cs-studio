@@ -10,6 +10,7 @@ import java.util.logging.Level;
 
 import javax.servlet.http.HttpServletRequest;
 
+import org.eclipse.osgi.util.NLS;
 import org.eclipse.rwt.RWT;
 import org.eclipse.rwt.lifecycle.UICallBack;
 import org.eclipse.swt.widgets.Display;
@@ -26,6 +27,8 @@ public class DisplayManager {
 	
 	private static long uiCallbackID = 0;
 
+	private static long displayCounter=0;
+	
 	private DisplayManager() {
 		RAPCorePlugin.getDefault().getServerHeartBeatThread()
 				.addHeartBeatListener(new HeartBeatListener() {
@@ -48,7 +51,7 @@ public class DisplayManager {
 									unRegisterDisplay(display);
 									RAPCorePlugin.getLogger().log(Level.INFO, 
 											"DisplayManager: " + display + " on " + entry.getValue().remoteHost +
-											" is Disposed! Number of display: " + displayMap.size() +
+											" disposed! Number of display: " + displayMap.size() +
 											" Number of widgets: " + objectList.size());
 								}else
 									display.asyncExec(new Runnable() {
@@ -92,6 +95,8 @@ public class DisplayManager {
 		displayMap.put(display, new DisplayResource(beatCount, true, 
 				request.getRemoteHost() + " : " + request.getHeader("User-Agent"))); //$NON-NLS-1$ //$NON-NLS-2$
 		
+		displayCounter++;
+		
 		if(enableCallback){
 			display.asyncExec(new Runnable() {
 				
@@ -105,7 +110,7 @@ public class DisplayManager {
 		}
 		StringBuilder sb = new StringBuilder("DisplayManger: "); //$NON-NLS-1$
 		sb.append(display + " on " + request.getRemoteHost());
-		sb.append(" is registered. Number of display: ");
+		sb.append(" registered. Number of display: ");
 		sb.append(displayMap.size());		
 		RAPCorePlugin.getLogger().log(Level.INFO, sb.toString());		
 	}	
@@ -118,6 +123,8 @@ public class DisplayManager {
 		sb.append("\nMax Memory: " + Runtime.getRuntime().maxMemory()/1048576 + "MB");
 		sb.append("\nNumber of display: " + displayMap.size());
 		sb.append("\nNumber of widgets: " + objectList.size());		
+		sb.append(NLS.bind("\n{0} displays have been connected since {1}", 
+				displayCounter, RAPCorePlugin.getStartupTime()));
 		for(Entry<Display, DisplayResource> entry : displayMap.entrySet()){
 			sb.append("\n");
 			sb.append("Client: ");

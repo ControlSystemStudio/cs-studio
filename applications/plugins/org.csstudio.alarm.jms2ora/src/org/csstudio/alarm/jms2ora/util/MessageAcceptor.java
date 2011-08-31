@@ -23,13 +23,15 @@
 
 package org.csstudio.alarm.jms2ora.util;
 
-import java.util.Vector;
-import java.util.concurrent.ConcurrentLinkedQueue;
 import javax.jms.MapMessage;
 import javax.jms.Message;
 import javax.jms.MessageListener;
+import org.csstudio.alarm.jms2ora.IMessageConverter;
+import org.csstudio.alarm.jms2ora.Jms2OraPlugin;
 import org.csstudio.alarm.jms2ora.VersionInfo;
-import org.csstudio.platform.statistic.Collector;
+import org.csstudio.alarm.jms2ora.preferences.PreferenceConstants;
+import org.eclipse.core.runtime.Platform;
+import org.eclipse.core.runtime.preferences.IPreferencesService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -43,10 +45,10 @@ public class MessageAcceptor implements MessageListener {
     private static final Logger LOG = LoggerFactory.getLogger(MessageAcceptor.class);
 
     /** Class that collects statistic informations. Query it via XMPP. */
-    private Collector receivedMessages;
+    private StatisticCollector collector;
 
-    /** Queue for received messages */
-    private ConcurrentLinkedQueue<MapMessage> messages;
+    /** The class converts the RAWMessage objects to ArchiveMessage objects */
+    private IMessageConverter messageConverter;
 
     /** Array of message receivers */
     private JmsMessageReceiver[] receivers;
@@ -54,23 +56,33 @@ public class MessageAcceptor implements MessageListener {
     /** Indicates if the application was initialized or not */
     private boolean initialized;
 
-    public MessageAcceptor(String[] urlList, String[] topicList) {
+    public MessageAcceptor(IMessageConverter converter, StatisticCollector stat) {
         
-        messages = new ConcurrentLinkedQueue<MapMessage>();
-        receivers = new JmsMessageReceiver[urlList.length];
+        messageConverter = converter;
+        collector = stat;
 
-        receivedMessages = new Collector();
-        receivedMessages.setApplication(VersionInfo.NAME);
-        receivedMessages.setDescriptor("Received messages");
-        receivedMessages.setContinuousPrint(false);
-        receivedMessages.setContinuousPrintCount(1000.0);
+        IPreferencesService prefs = Platform.getPreferencesService();
+        String urls = prefs.getString(Jms2OraPlugin.PLUGIN_ID,
+                                      PreferenceConstants.JMS_PROVIDER_URLS,
+                                      "", null);
+        String topics = prefs.getString(Jms2OraPlugin.PLUGIN_ID,
+                                        PreferenceConstants.JMS_TOPIC_NAMES,
+                                        "", null);
+        String factoryClass = prefs.getString(Jms2OraPlugin.PLUGIN_ID,
+                                              PreferenceConstants.JMS_CONTEXT_FACTORY_CLASS,
+                                              "", null);
+
+        String[] urlList = this.getUrlList(urls);
+        String[] topicList = this.getTopicList(topics);
+
+        receivers = new JmsMessageReceiver[urlList.length];
 
         String hostName = Hostname.getInstance().getHostname();
         
         for(int i = 0;i < urlList.length;i++) {
             
             try {
-                receivers[i] = new JmsMessageReceiver("org.apache.activemq.jndi.ActiveMQInitialContextFactory", urlList[i], topicList);
+                receivers[i] = new JmsMessageReceiver(factoryClass, urlList[i], topicList);
                 receivers[i].startListener(this, VersionInfo.NAME + "@" + hostName + "_" + this.hashCode());
                 initialized = true;
             } catch(Exception e) {
@@ -93,29 +105,75 @@ public class MessageAcceptor implements MessageListener {
         }
     }
 
-    public synchronized Vector<MapMessage> getCurrentMessages() {
-        
-        Vector<MapMessage> result = null;
-        
-        if(messages.isEmpty() == false) {
-            result = new Vector<MapMessage>(messages);
-            messages.removeAll(result);
-        }
-        
-        return result;
-    }
-    
     public boolean isInitialized() {
         return initialized;
     }
     
+    /**
+     * {@inheritDoc}
+     */
+    @Override
     public void onMessage(Message message) {
         
         if(message instanceof MapMessage) {
-            messages.add((MapMessage)message);
-            receivedMessages.incrementValue();
+
+            RawMessage rm = new RawMessage((MapMessage) message);
+            
+            messageConverter.putRawMessage(rm);
+            
+            if (LOG.isDebugEnabled()) {
+                LOG.debug("onMessage(): {}", message.toString());
+            }
+            
+            collector.incrementReceivedMessages();
+            
         } else {
-            LOG.info("Received a non MapMessage object. Discarded...");
+            LOG.warn("Received a non MapMessage object: {}", message.toString());
+            LOG.warn("Discarding invalid message.");
         }        
+    }
+    
+    /**
+     * Returns a String array containing the URL's
+     * 
+     * @param urls - Comma seperated list of JMS URL's
+     * @return Array of String
+     */
+    private String[] getUrlList(String urls) {
+        
+        String[] result = null;
+        
+        if(urls.length() > 0) {
+            result = urls.split(",");
+            for(int i = 0;i < result.length;i++) {
+                LOG.info("[" + result[i] + "]");
+            }
+        } else {
+            result = new String[0];
+        }
+
+        return result;
+    }
+    
+    /**
+     * Returns a String array containing the topic names
+     * 
+     * @param topics - Comma seperated list of topic names
+     * @return Array of String
+     */
+    private String[] getTopicList(String topics) {
+        
+        String[] result = null;
+        
+        if(topics.length() > 0) {
+            result = topics.split(",");
+            for(int i = 0;i < result.length;i++) {
+                LOG.info("[" + result[i] + "]");
+            }
+        } else {
+            result = new String[0];
+        }
+
+        return result;
     }
 }

@@ -57,18 +57,16 @@ public class EpicsIValueTypeSupportUnitTest {
 
     @Test(expected=TypeSupportException.class)
     public void testIValue2SystemVariableConversionReturnsNull() throws TypeSupportException {
-        @SuppressWarnings({ "unchecked", "unused" })
-        final EpicsSystemVariable<List<Double>> cssV =
-            (EpicsSystemVariable<List<Double>>) EpicsIValueTypeSupport.toSystemVariable("foo",
-                                                                                        ValueFactory.createDoubleValue(TimestampFactory.now(),
-                                                                                                                       ValueFactory.createMinorSeverity(),
-                                                                                                                       "HIHI",
-                                                                                                                       null,
-                                                                                                                       null,
-                                                                                                                       null),
-                                                                                        ControlSystem.EPICS_DEFAULT,
-                                                                                        ArrayList.class,
-                                                                                        Double.class);
+        EpicsIValueTypeSupport.toSystemVariable("foo",
+                                                ValueFactory.createDoubleValue(TimestampFactory.now(),
+                                                                               ValueFactory.createMinorSeverity(),
+                                                                               "HIHI",
+                                                                               null,
+                                                                               null,
+                                                                               null),
+                                                ControlSystem.EPICS_DEFAULT,
+                                                ArrayList.class,
+                                                Double.class);
     }
 
     @Test

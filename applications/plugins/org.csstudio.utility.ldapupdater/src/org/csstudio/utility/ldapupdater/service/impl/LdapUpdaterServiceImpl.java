@@ -35,6 +35,7 @@ import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
 
+import javax.annotation.CheckForNull;
 import javax.annotation.Nonnull;
 import javax.mail.internet.AddressException;
 import javax.naming.InvalidNameException;
@@ -265,7 +266,8 @@ public final class LdapUpdaterServiceImpl implements ILdapUpdaterService {
             final String iocFromFSName = entry.getKey();
             final IOC iocFromFS = entry.getValue();
 
-            if (iocFromFS.getLastBootTime().isBefore(lastHeartBeat)) {
+            final TimeInstant lastBootTime = iocFromFS.getLastBootTime();
+            if (lastBootTime.isBefore(lastHeartBeat)) {
                 LOG.debug("IOC file for " + iocFromFSName
                           + " is not newer than history file time stamp.");
                 continue;
@@ -329,7 +331,11 @@ public final class LdapUpdaterServiceImpl implements ILdapUpdaterService {
 
             _facade.createLdapIoc(fullLdapName, iocFromFS);
 
-            return _facade.retrieveIOC(fullLdapName);
+            final INodeComponent<LdapEpicsControlsConfiguration> ioc = _facade.retrieveIOC(fullLdapName);
+            if (ioc == null) {
+                throw new LdapUpdaterServiceException("Exception in LDAP facade, retrieval of newly created IOC failed for: " + iocFromLdapName, null);
+            }
+            return ioc;
         } catch (final InvalidNameException e) {
             throw new LdapUpdaterServiceException("Invalid name on creating new LDAP IOC.", e);
         } catch (final LdapFacadeException e) {
@@ -388,7 +394,7 @@ public final class LdapUpdaterServiceImpl implements ILdapUpdaterService {
      * {@inheritDoc}
      */
     @Override
-    @Nonnull
+    @CheckForNull
     public ContentModel<LdapEpicsControlsConfiguration> retrieveIOCs() throws LdapUpdaterServiceException {
         try {
             return _facade.retrieveIOCs();

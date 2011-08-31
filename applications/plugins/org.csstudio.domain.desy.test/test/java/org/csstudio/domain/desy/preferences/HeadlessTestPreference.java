@@ -58,7 +58,7 @@ final class HeadlessTestPreference<T> extends AbstractPreference<T> {
     /**
      * For test purposes
      */
-    public static final Integer STATIC_NOT_TESTPREFERENCE = new Integer(0);
+    public static final Integer STATIC_NOT_TESTPREFERENCE = Integer.valueOf(0);
 
     /**
      * For test purposes

@@ -119,7 +119,7 @@ public class WaterfallView extends ViewPart {
 
 	private WaterfallWidget createWaterfallWidget(Composite parent) {
 		try {
-			Class<?> clazz = Class.forName("org.csstudio.utility.channel.widgets.MultiChannelWaterfallWidget");
+			Class<?> clazz = Class.forName("org.csstudio.channel.widgets.MultiChannelWaterfallWidget");
 			Constructor<?> constructor = clazz.getConstructor(Composite.class, Integer.TYPE);
 			return (WaterfallWidget) constructor.newInstance(parent, SWT.NONE);
 		} catch (Exception e) {

@@ -162,4 +162,13 @@ public final class NotificationMailer {
                  "IOCs without epicsAddress attribute in LDAP:\n" + Joiner.on("\n").join(iocsWithoutAttribute),
                  receivers);
     }
+
+    public static void sendUnknownErrorMessage(@Nonnull final HostAddress host,
+                                               @Nonnull final String errorInfo,
+                                               @Nonnull final InternetAddress...receivers) {
+        sendMail(NotificationType.UNKNOWN_ERROR,
+                 host,
+                 errorInfo,
+                 receivers);
+    }
 }
