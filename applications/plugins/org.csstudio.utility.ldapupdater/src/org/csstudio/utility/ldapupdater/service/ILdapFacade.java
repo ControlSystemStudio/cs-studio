@@ -45,8 +45,6 @@ import org.csstudio.utility.treemodel.ITreeNodeConfiguration;
  * Provides access to LdapService for specific LdapUpdater methods.
  *
  * @author bknerr
- * @author $Author$
- * @version $Revision$
  * @since 05.05.2010
  */
 public interface ILdapFacade {

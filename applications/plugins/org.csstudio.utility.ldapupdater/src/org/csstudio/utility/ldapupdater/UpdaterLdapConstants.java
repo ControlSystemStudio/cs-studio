@@ -27,8 +27,6 @@ package org.csstudio.utility.ldapupdater;
  * Constants for LDAP field names, popular values, and forbidden symbols in LDAP entry names.
  *
  * @author bknerr
- * @author $Author$
- * @version $Revision$
  * @since 05.05.2010
  */
 public final class UpdaterLdapConstants {

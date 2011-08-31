@@ -28,7 +28,7 @@ import org.csstudio.utility.treemodel.ContentModel;
 import org.csstudio.utility.treemodel.INodeComponent;
 
 /**
- * TODO (bknerr) :
+ * Ldap updater service.
  *
  * @author bknerr
  * @since 27.04.2011
