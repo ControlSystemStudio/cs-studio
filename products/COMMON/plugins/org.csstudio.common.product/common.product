@@ -111,7 +111,6 @@
       <plugin id="org.csstudio.ui.util"/>
       <plugin id="org.csstudio.utility.adlParser"/>
       <plugin id="org.csstudio.utility.channel"/>
-      <plugin id="org.csstudio.utility.channel.widgets" fragment=""/>
       <plugin id="org.csstudio.utility.channelfinder"/>
       <plugin id="org.csstudio.utility.channelfinder.ui"/>
       <plugin id="org.csstudio.utility.clock"/>
