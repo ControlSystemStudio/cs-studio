@@ -15,6 +15,7 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 
+import org.csstudio.utility.channelfinder.CFClientManager;
 import org.csstudio.utility.pvmanager.ui.SWTUtil;
 import org.csstudio.utility.pvmanager.widgets.ErrorBar;
 import org.csstudio.utility.pvmanager.widgets.VTableDisplay;
@@ -149,7 +150,7 @@ public class PVTableByPropertyWidget extends Composite {
 	private void queryChannels() {
 		try {
 			// Should be done in a background task
-			channels = ChannelFinderClient.getInstance().findChannelsByTag(channelQuery);
+			channels = CFClientManager.getClient().findByTag(channelQuery);
 		} catch (Exception e) {
 		}
 	}
