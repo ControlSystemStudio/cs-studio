@@ -25,10 +25,11 @@
 package org.csstudio.alarm.jms2ora.util;
 
 import java.text.SimpleDateFormat;
+import java.util.Calendar;
 import java.util.Enumeration;
-import java.util.GregorianCalendar;
 import java.util.Hashtable;
 
+import javax.annotation.Nonnull;
 import javax.jms.Connection;
 import javax.jms.ConnectionFactory;
 import javax.jms.DeliveryMode;
@@ -56,14 +57,13 @@ public class JmsSender {
     /** AMS date format */
     private static final String AMS_DATE_FORMAT = "yyyy-MM-dd HH:mm:ss.SSS";
 
-    private Hashtable<String, String> properties = null;
-    private Context context = null;
-    private ConnectionFactory factory = null;
-    private Connection connection  = null;
-    private Session session = null;
-    private Destination dest = null;
-    private MessageProducer sender = null;
-    private final Logger logger = null;
+    private Hashtable<String, String> properties;
+    private Context context;
+    private ConnectionFactory factory;
+    private Connection connection;
+    private Session session;
+    private Destination dest;
+    private MessageProducer sender;
     private final String jmsUrl;
     private final String jmsTopic;
 
@@ -103,10 +103,10 @@ public class JmsSender {
             // Create a message producer
             sender = session.createProducer(dest);
         } catch(final NamingException ne) {
-            logger.info(" *** NamingException *** : " + ne.getMessage());
+            LOG.info(" *** NamingException *** : " + ne.getMessage());
             closeAll();
         } catch(final JMSException jmse) {
-            logger.info(" *** JMSException *** : " + jmse.getMessage());
+            LOG.info(" *** JMSException *** : " + jmse.getMessage());
             closeAll();
         }
     }
@@ -155,14 +155,14 @@ public class JmsSender {
                 clearMessage(message);
                 message = null;
 
-                logger.info(" JmsSender.sendMessage(): *** JMS DONE ***.");
+                LOG.info(" JmsSender.sendMessage(): *** JMS DONE ***.");
 
                 result = true;
             } else {
-                logger.info(" JmsSender.sendMessage(): *** JMS NOT DONE *** : MapMessage not created.");
+                LOG.info(" JmsSender.sendMessage(): *** JMS NOT DONE *** : MapMessage not created.");
             }
         } catch(final JMSException jmse) {
-            logger.info(" JmsSender.sendMessage(): *** JMSException *** : " + jmse.getMessage());
+            LOG.info(" JmsSender.sendMessage(): *** JMSException *** : " + jmse.getMessage());
             return false;
         }
 
@@ -217,8 +217,7 @@ public class JmsSender {
         } catch(final JMSException e) {/* Can be ignored */}
     }
 
-    public final void closeAll()
-    {
+    public final void closeAll() {
         if(sender!=null){try{sender.close();}catch(final Exception e){/* Can be ignored */}sender=null;}
         dest = null;
         if(session!=null){try{session.close();}catch(final Exception e){/* Can be ignored */}session=null;}
@@ -226,14 +225,13 @@ public class JmsSender {
         if(connection!=null){try{connection.close();}catch(final Exception e){/* Can be ignored */}connection=null;}
         factory = null;
         if(context!=null){try{context.close();}catch(final Exception e){/* Can be ignored */}context=null;}
-        if(properties != null)
-        {
+        if(properties != null) {
             properties.clear();
             properties = null;
         }
     }
 
-    public boolean isConnected() {
+    public final boolean isConnected() {
         return connection != null;
     }
 
@@ -242,8 +240,9 @@ public class JmsSender {
      *
      * @return String with the date and time
      */
+    @Nonnull
     private String createTimeString() {
         final SimpleDateFormat format = new SimpleDateFormat(AMS_DATE_FORMAT);
-        return format.format(GregorianCalendar.getInstance().getTime());
+        return format.format(Calendar.getInstance().getTime());
     }
 }

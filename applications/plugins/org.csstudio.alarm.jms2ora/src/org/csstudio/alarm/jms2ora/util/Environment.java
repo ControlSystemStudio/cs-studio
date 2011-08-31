@@ -28,13 +28,15 @@ import java.net.InetAddress;
 import java.net.UnknownHostException;
 import java.util.Map;
 
+import javax.annotation.Nonnull;
+
 /**
  * @author Markus Moeller
  *
  */
 public final class Environment {
 
-    private static Environment _instance = null;
+    private static Environment INSTANCE;
 
     private String hostName;
     private String userName;
@@ -60,19 +62,22 @@ public final class Environment {
         }
     }
 
+    @Nonnull
     public static synchronized Environment getInstance() {
 
-        if(_instance == null) {
-            _instance = new Environment();
+        if(INSTANCE == null) {
+            INSTANCE = new Environment();
         }
 
-        return _instance;
+        return INSTANCE;
     }
 
+    @Nonnull
     public String getHostName() {
         return hostName;
     }
 
+    @Nonnull
     public String getUserName() {
         return userName;
     }

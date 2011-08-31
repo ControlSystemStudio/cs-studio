@@ -56,6 +56,10 @@ package org.csstudio.alarm.jms2ora.util;
 import java.util.Hashtable;
 import java.util.Vector;
 
+import javax.annotation.CheckForNull;
+import javax.annotation.CheckReturnValue;
+import javax.annotation.Nonnull;
+
 /**
  * This core class is responsible for processing the command line and
  * storing away the list of options and parameters specified. The
@@ -85,7 +89,7 @@ public class CommandLine {
      *
      * @param       args        command line argument
      */
-    public CommandLine(final String[] args) {
+    public CommandLine(@Nonnull final String[] args) {
         processCommandLine(args);
     }
 
@@ -102,7 +106,7 @@ public class CommandLine {
      * @param       name        name of option or command
      * @return      boolean     true if it has been specified
      */
-    public final boolean exists(final String name) {
+    public final boolean exists(@Nonnull final String name) {
         return _switches.contains(name) || _options.containsKey(name);
     }
 
@@ -112,7 +116,7 @@ public class CommandLine {
      * @param       name        name of the option
      * @return      boolean     true if it has been specified
      */
-    public final boolean isSwitch(final String name) {
+    public final boolean isSwitch(@Nonnull final String name) {
         return _switches.contains(name);
     }
 
@@ -122,7 +126,7 @@ public class CommandLine {
      * @param       name        name of the parameter
      * @return      boolean     true if it has been specified
      */
-    public boolean isParameter(final String name) {
+    public boolean isParameter(@Nonnull final String name) {
         return _options.containsKey(name);
     }
 
@@ -133,7 +137,8 @@ public class CommandLine {
      * @param       name        name of option or parameter
      * @return      String      value of parameter or null
      */
-    public String value(final String name) {
+    @CheckForNull
+    public String value(@Nonnull final String name) {
         String result = null;
 
         if (_options.containsKey(name)) {
@@ -151,7 +156,8 @@ public class CommandLine {
      * @param       defaultValue the default value
      * @return      String      value of parameter
      */
-    public String value(final String name, final String defaultValue) {
+    @CheckReturnValue
+    public final String value(@Nonnull final String name, @Nonnull final String defaultValue) {
         final String result = value(name);
         return result != null ? result : defaultValue;
     }
@@ -167,7 +173,7 @@ public class CommandLine {
      * @param       value       value of name
      * @return      boolean     true if it was successfully added
      */
-    public boolean add(final String name, final String value) {
+    public boolean add(@Nonnull final String name, @Nonnull final String value) {
         return add(name, value, true);
     }
 
@@ -185,7 +191,7 @@ public class CommandLine {
      * @param       overwrite   true to overwrite previous value
      * @return      boolean     true if it was successfully added
      */
-    public boolean add(final String name, final String value, final boolean overwrite) {
+    public final boolean add(@Nonnull final String name, @Nonnull final String value, @Nonnull final boolean overwrite) {
         boolean result = false;
 
         if (value == null) {
@@ -220,7 +226,7 @@ public class CommandLine {
      *
      * @param       args        command line as a collection of tokens
      */
-    private void processCommandLine(final String[] args) {
+    private void processCommandLine(@Nonnull final String[] args) {
         boolean prevWasHyphen = false;
         String prevKey = null;
 

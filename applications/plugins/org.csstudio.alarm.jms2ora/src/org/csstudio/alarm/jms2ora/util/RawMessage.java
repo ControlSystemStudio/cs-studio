@@ -27,6 +27,9 @@ package org.csstudio.alarm.jms2ora.util;
 import java.util.Enumeration;
 import java.util.Hashtable;
 
+import javax.annotation.CheckForNull;
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import javax.jms.JMSException;
 import javax.jms.MapMessage;
 
@@ -46,7 +49,7 @@ public class RawMessage {
         content = new Hashtable<String, String>();
     }
 
-    public RawMessage(final MapMessage message) {
+    public RawMessage(@Nonnull final MapMessage message) {
 
         content = new Hashtable<String, String>();
 
@@ -63,10 +66,11 @@ public class RawMessage {
         }
     }
 
-    public final boolean itemExists(final String key) {
+    public final boolean itemExists(@Nonnull final String key) {
         return content.containsKey(key);
     }
 
+    @Nonnull
     public final Enumeration<String> getMapNames() {
         return content.keys();
     }
@@ -77,7 +81,8 @@ public class RawMessage {
      * @param key
      * @return The value
      */
-    public final String getValue(final String key) {
+    @CheckForNull
+    public final String getValue(@Nullable final String key) {
 
         if (key == null) {
             return null;

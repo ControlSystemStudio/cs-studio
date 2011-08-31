@@ -27,13 +27,16 @@ import java.net.InetAddress;
 import java.net.UnknownHostException;
 import java.util.Map;
 
+import javax.annotation.CheckForNull;
+import javax.annotation.Nonnull;
+
 /**
  * @author Markus Moeller
  *
  */
 public final class Hostname {
 
-    private static Hostname instance = null;
+    private static Hostname INSTANCE;
     private String hostName;
 
     private Hostname() {
@@ -41,18 +44,21 @@ public final class Hostname {
         init();
     }
 
+    @Nonnull
     public static synchronized Hostname getInstance() {
 
-        if(instance == null) {
-            instance = new Hostname();
+        if(INSTANCE == null) {
+            INSTANCE = new Hostname();
         }
 
-        return instance;
+        return INSTANCE;
     }
 
+    /**
+     *
+     */
     private void init() {
 
-        Map<String, String> env = null;
         String name = null;
 
         try {
@@ -66,21 +72,7 @@ public final class Hostname {
 
         if(hostName == null) {
 
-            env = System.getenv();
-            if(env.containsKey("COMPUTERNAME")) {
-                name = env.get("COMPUTERNAME");
-            } else if(env.containsKey("computername")) {
-                name = env.get("computername");
-            } else if(env.containsKey("HOSTNAME")) {
-                name = env.get("HOSTNAME");
-            } else if(env.containsKey("hostname")) {
-                name = env.get("hostname");
-            } else if(env.containsKey("HOST")) {
-                name = env.get("HOST");
-            } else if(env.containsKey("host")) {
-                name = env.get("host");
-            }
-
+            name = checkEnvironment();
             if(name != null) {
                 hostName = name.trim().toLowerCase();
             }
@@ -91,6 +83,35 @@ public final class Hostname {
         }
     }
 
+    /**
+     *
+     * @return
+     */
+    @CheckForNull
+    private String checkEnvironment() {
+
+        String name = null;
+
+        final Map<String, String> env = System.getenv();
+
+        if(env.containsKey("COMPUTERNAME")) {
+            name = env.get("COMPUTERNAME");
+        } else if(env.containsKey("computername")) {
+            name = env.get("computername");
+        } else if(env.containsKey("HOSTNAME")) {
+            name = env.get("HOSTNAME");
+        } else if(env.containsKey("hostname")) {
+            name = env.get("hostname");
+        } else if(env.containsKey("HOST")) {
+            name = env.get("HOST");
+        } else if(env.containsKey("host")) {
+            name = env.get("host");
+        }
+
+        return name;
+    }
+
+    @CheckForNull
     public String getHostname() {
         return hostName;
     }
