@@ -9,14 +9,18 @@ if(widgetController.getExternalObject(flagName) == null){
 
 var b = widgetController.getExternalObject(flagName);
 
-if(PVUtil.getDouble(pvArray[0]) > 80){		
-		if( b == false){
+if(PVUtil.getDouble(pvs[0]) > 80)
+{		
+		if( b == false)
+		{
 			widgetController.setExternalObject(flagName, true);
 			MessageDialog.openWarning(
 				null, "Warning", "The temperature you set is too high!");
 		}
 		
-}else if (b == true){
+}
+else if (b == true)
+{
 	widgetController.setExternalObject(flagName, false);
 }
 	

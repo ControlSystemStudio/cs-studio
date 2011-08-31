@@ -1,16 +1,11 @@
-importPackage(Packages.org.eclipse.swt.graphics);
-importPackage(Packages.java.lang);
-importPackage(Packages.org.csstudio.platform.ui.util);
-importPackage(Packages.org.csstudio.platform.data);
+importPackage(Packages.org.csstudio.opibuilder.scriptUtil);
 
-var value = ValueUtil.getDouble(pvArray[0].getValue());
+var value = PVUtil.getDouble(pvs[0]);
 var x = Math.round(390 + value);
 var angle = value;
 if (angle < 0)
 	angle = 360 + angle;
 
-var widget = widgetController.getWidgetModel();
 widget.setPropertyValue("rotation_angle", angle);
-// widget.setPropertyValue("x", x);
 
 	
