@@ -1,15 +1,15 @@
 Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: Channelfinder
-Bundle-SymbolicName: org.csstudio.utility.channelfinder
+Bundle-SymbolicName: org.csstudio.utility.channelfinder;singleton:=true
 Bundle-Version: 1.1.0.qualifier
 Bundle-Activator: org.csstudio.utility.channelfinder.Activator
 Require-Bundle: org.eclipse.ui,
  org.eclipse.core.runtime,
  org.csstudio.platform.libs.jersey;bundle-version="1.1.5",
- org.csstudio.auth;bundle-version="1.0.0"
+ org.csstudio.auth;bundle-version="1.0.0",
+ gov.bnl.channelfinder.api;bundle-version="2.0.0"
 Bundle-ActivationPolicy: lazy
 Bundle-RequiredExecutionEnvironment: JavaSE-1.6
-Export-Package: gov.bnl.channelfinder.api,
- org.csstudio.utility.channelfinder
+Export-Package: org.csstudio.utility.channelfinder
 Bundle-Vendor: Kunal Shroff <kshroff@bnl.gov>, Gabriele Carcassi <carcassi@bnl.gov> - Brookhaven National Lab

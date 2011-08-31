@@ -10,6 +10,7 @@
 version: 3.0.1.qualifier
       </text>
    </aboutInfo>
+
    <configIni use="default">
    </configIni>
 
@@ -38,7 +39,6 @@ version: 3.0.1.qualifier
    <vm>
    </vm>
 
-
    <plugins>
    </plugins>
 
@@ -48,8 +48,8 @@ version: 3.0.1.qualifier
       <feature id="org.csstudio.nsls2.nslscore.feature" version="3.0.0.qualifier"/>
       <feature id="org.csstudio.nsls2.applications.feature" version="3.0.1.qualifier"/>
       <feature id="org.csstudio.nsls2.intro.feature" version="3.0.0.qualifier"/>
-      <feature id="org.eclipse.rcp" version="3.6.2.r362_v20101104-9SAxFMKFkSAqi8axkv1ZjegmiBLY"/>
-      <feature id="org.eclipse.equinox.p2.user.ui" version="2.0.1.r361_v20100903-897HFa-FX0z-z-ntoaavz0JPX628"/>
+      <feature id="org.eclipse.equinox.p2.user.ui" version="2.1.1.v20110526-6-Bg9JXOePwKUTU7X0teV1RtDu-e"/>
+      <feature id="org.eclipse.rcp" version="3.7.0.v20110216-9DB5Fm1FpBGy_AaVz-mFamgY"/>
    </features>
 
 

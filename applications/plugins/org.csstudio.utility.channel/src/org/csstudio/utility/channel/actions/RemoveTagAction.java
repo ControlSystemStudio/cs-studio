@@ -16,11 +16,14 @@ import org.eclipse.core.runtime.jobs.Job;
 import org.eclipse.jface.action.IAction;
 import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.jface.viewers.IStructuredSelection;
+import org.eclipse.jface.viewers.LabelProvider;
 import org.eclipse.jface.window.Window;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.ui.IObjectActionDelegate;
 import org.eclipse.ui.IWorkbenchPart;
+import org.eclipse.ui.dialogs.ElementListSelectionDialog;
 import org.eclipse.ui.dialogs.ListSelectionDialog;
+
 /**
  * @author shroffk
  * 
@@ -57,10 +60,17 @@ public class RemoveTagAction implements IObjectActionDelegate {
 	 */
 	@Override
 	public void run(IAction action) {
+		ElementListSelectionDialog selectTags = new ElementListSelectionDialog(
+				shell, new LabelProvider());
+		
+		selectTags.setTitle("Tag Selection");
 
-		ListSelectionDialog selectTags = new ListSelectionDialog(shell,
-				getCSSChannelTagNames(channels), new allTagsContentProvider(),
-				new allTagsLabelProvider(), "Select Tags to be removed.");
+		selectTags.setMessage("Select the Tags to be removed (* = any string, ? = any char):");
+		selectTags.setMultipleSelection(true);
+		Collection<String> existingTagNames = getCSSChannelTagNames(channels);
+		selectTags.setElements(existingTagNames
+				.toArray(new String[existingTagNames.size()]));
+		selectTags.setBlockOnOpen(true);
 		if (selectTags.open() == Window.OK) {
 			Object[] selected = selectTags.getResult();
 			Collection<String> selectedTags = new TreeSet<String>();
@@ -72,7 +82,24 @@ public class RemoveTagAction implements IObjectActionDelegate {
 						selectedTags);
 				job.schedule();
 			}
-		}
+		}				
+		
+		
+//		ListSelectionDialog selectTags = new ListSelectionDialog(shell,
+//				getCSSChannelTagNames(channels), new allTagsContentProvider(),
+//				new allTagsLabelProvider(), "Select Tags to be removed.");
+//		if (selectTags.open() == Window.OK) {
+//			Object[] selected = selectTags.getResult();
+//			Collection<String> selectedTags = new TreeSet<String>();
+//			for (int i = 0; i < selected.length; i++) {
+//				selectedTags.add((String) selected[i]);
+//			}
+//			if (selectedTags.size() > 0) {
+//				Job job = new RemoveTagsJob("removeTags", channels,
+//						selectedTags);
+//				job.schedule();
+//			}
+//		}
 	}
 
 	/*

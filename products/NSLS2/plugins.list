@@ -19,8 +19,8 @@ org.csstudio.diag.probe
 org.csstudio.diag.probe.intro
 org.csstudio.diag.pvmanager.probe
 org.csstudio.display.pvmanager.pvtable
-org.csstudio.display.channelfinderviewer
-org.csstudio.display.channelfinderviewer.intro
+org.csstudio.display.channelviewer
+org.csstudio.display.channelviewer.intro
 org.csstudio.display.waterfall
 org.csstudio.email
 org.csstudio.email.ui
