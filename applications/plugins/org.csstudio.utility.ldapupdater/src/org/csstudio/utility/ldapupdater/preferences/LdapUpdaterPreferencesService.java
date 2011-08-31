@@ -51,13 +51,13 @@ public class LdapUpdaterPreferencesService {
     private static final class LdapUpdaterPreference<T> extends AbstractPreference<T> {
 
         static final LdapUpdaterPreference<File> IOC_DBL_DUMP_PATH =
-            new LdapUpdaterPreference<File>("iocDblDumpPath", new File("Y:\\directoryServer\\"));
+            new LdapUpdaterPreference<File>("iocDblDumpPath", new File("/applic/directoryServer/"));
 
         static final LdapUpdaterPreference<File> HEARTBEAT_FILEPATH =
-            new LdapUpdaterPreference<File>("heartbeatfile", new File("Y:\\scripts\\ldap-tests\\ldapupdater.heartbeat"));
+            new LdapUpdaterPreference<File>("heartbeatfile", new File("/applic/scripts/ldap-tests/ldapupdater.heartbeat"));
 
         static final LdapUpdaterPreference<File> HISTORY_DAT_FILEPATH =
-            new LdapUpdaterPreference<File>("ldapHistPath", new File("Y:\\scripts\\ldap-tests\\history.dat"));
+            new LdapUpdaterPreference<File>("ldapHistPath", new File("/applic/scripts/ldap-tests/history.dat"));
 
         static final LdapUpdaterPreference<String> XMPP_USER =
             new LdapUpdaterPreference<String>("xmppUser", "anonymous");
