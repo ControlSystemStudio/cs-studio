@@ -10,12 +10,18 @@ import gov.bnl.channelfinder.api.Channel;
 import gov.bnl.channelfinder.api.ChannelFinderClient;
 import gov.bnl.channelfinder.api.Property;
 
+import java.beans.PropertyChangeEvent;
+import java.beans.PropertyChangeListener;
+import java.beans.PropertyChangeSupport;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 
 import org.csstudio.utility.channelfinder.CFClientManager;
+import org.csstudio.utility.channelfinder.ChannelQuery;
+import org.csstudio.utility.channelfinder.ChannelQueryListener;
 import org.csstudio.utility.pvmanager.ui.SWTUtil;
 import org.csstudio.utility.pvmanager.widgets.ErrorBar;
 import org.csstudio.utility.pvmanager.widgets.VTableDisplay;
@@ -25,6 +31,8 @@ import org.eclipse.swt.events.DisposeListener;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Composite;
+import org.eclipse.swt.widgets.Event;
+import org.eclipse.swt.widgets.Listener;
 import org.epics.pvmanager.PVManager;
 import org.epics.pvmanager.PVReader;
 import org.epics.pvmanager.PVReaderListener;
@@ -35,6 +43,7 @@ public class PVTableByPropertyWidget extends Composite {
 	
 	private VTableDisplay table;
 	private ErrorBar errorBar;
+	private PropertyChangeSupport changeSupport = new PropertyChangeSupport(this);
 
 	public PVTableByPropertyWidget(Composite parent, int style) {
 		super(parent, style);
@@ -61,6 +70,26 @@ public class PVTableByPropertyWidget extends Composite {
 		
 		errorBar = new ErrorBar(this, SWT.NONE);
 		errorBar.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, false, false, 1, 1));
+		
+		addPropertyChangeListener(new PropertyChangeListener() {
+			
+			List<String> properties = Arrays.asList("channels", "rowProperty", "columnProperty");
+			
+			@Override
+			public void propertyChange(PropertyChangeEvent evt) {
+				if (properties.contains(evt.getPropertyName())) {
+					computeTableChannels();
+				}
+			}
+		});
+		
+		changeSupport.addPropertyChangeListener("channelQuery", new PropertyChangeListener() {
+			
+			@Override
+			public void propertyChange(PropertyChangeEvent evt) {
+				queryChannels();
+			}
+		});
 	}
 	
 	private void setLastException(Exception ex) {
@@ -87,10 +116,19 @@ public class PVTableByPropertyWidget extends Composite {
 		}
 	};
 	
+    public void addPropertyChangeListener( PropertyChangeListener listener ) {
+        changeSupport.addPropertyChangeListener( listener );
+    }
+
+    public void removePropertyChangeListener( PropertyChangeListener listener ) {
+    	changeSupport.removePropertyChangeListener( listener );
+    }
+    
 	private void reconnect() {
 		if (pv != null) {
 			pv.close();
 			pv = null;
+			table.setVTable(null);
 		}
 		
 		if (columnNames == null || rowNames == null || cellPvs == null ||
@@ -118,9 +156,9 @@ public class PVTableByPropertyWidget extends Composite {
 	}
 	
 	public void setChannelQuery(String channelQuery) {
+		String oldValue = this.channelQuery;
 		this.channelQuery = channelQuery;
-		queryChannels();
-		computeTableChannels();
+		changeSupport.firePropertyChange("channelQuery", oldValue, channelQuery);
 	}
 	
 	public String getRowProperty() {
@@ -128,8 +166,9 @@ public class PVTableByPropertyWidget extends Composite {
 	}
 	
 	public void setRowProperty(String rowProperty) {
+		String oldValue = this.rowProperty;
 		this.rowProperty = rowProperty;
-		computeTableChannels();
+		changeSupport.firePropertyChange("rowProperty", oldValue, rowProperty);
 	}
 	
 	public String getColumnProperty() {
@@ -137,8 +176,9 @@ public class PVTableByPropertyWidget extends Composite {
 	}
 	
 	public void setColumnProperty(String columnProperty) {
+		String oldValue = this.columnProperty;
 		this.columnProperty = columnProperty;
-		computeTableChannels();
+		changeSupport.firePropertyChange("columnProperty", oldValue, columnProperty);
 	}
 	
 	public Collection<Channel> getChannels() {
@@ -147,18 +187,46 @@ public class PVTableByPropertyWidget extends Composite {
 	
 	private Collection<Channel> channels;
 	
+	private void setChannels(Collection<Channel> channels) {
+		Collection<Channel> oldChannels = this.channels;
+		this.channels = channels;
+		changeSupport.firePropertyChange("channels", oldChannels, channels);
+	}
+	
 	private void queryChannels() {
-		try {
-			// Should be done in a background task
-			channels = CFClientManager.getClient().findByTag(channelQuery);
-		} catch (Exception e) {
-		}
+		setChannels(null);
+		final ChannelQuery query = ChannelQuery.Builder.query(channelQuery).create();
+		query.addChannelQueryListener(new ChannelQueryListener() {
+			
+			@Override
+			public void getQueryResult() {
+				SWTUtil.swtThread().execute(new Runnable() {
+					
+					@Override
+					public void run() {
+						Exception e = query.getLastException();
+						if (e == null) {
+							setChannels(query.getResult());
+						} else {
+							errorBar.setException(e);
+						}
+					}
+				});
+				
+			}
+		});
+		query.execute();
 	}
 	
 	private void computeTableChannels() {
 		// Not have all the bits to prepare the channel list
-		if (channels == null || rowProperty == null || columnProperty == null)
+		if (channels == null || rowProperty == null || columnProperty == null) {
+			columnNames = null;
+			rowNames = null;
+			cellPvs = null;
+			reconnect();
 			return;
+		}
 		
 		// Find the rows and columns
 		List<String> possibleRows = new ArrayList<String>();

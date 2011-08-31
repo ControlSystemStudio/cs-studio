@@ -2,6 +2,8 @@ package org.csstudio.channel.views;
 
 import gov.bnl.channelfinder.api.ChannelUtil;
 
+import java.beans.PropertyChangeEvent;
+import java.beans.PropertyChangeListener;
 import java.lang.reflect.Constructor;
 import java.util.Collection;
 import java.util.List;
@@ -86,12 +88,6 @@ public class PVTableByPropertyView extends ViewPart {
 		tableWidget.setColumnProperty(null);
 		tableWidget.setRowProperty(null);
 		tableWidget.setChannelQuery(text);
-		if (tableWidget.getChannels() != null) {
-			Collection<String> propertyNames = ChannelUtil.getPropertyNames(tableWidget.getChannels());
-			rowProperty.setItems(propertyNames.toArray(new String[propertyNames.size()]));
-			columnProperty.setItems(propertyNames.toArray(new String[propertyNames.size()]));
-			parent.layout();
-		}
 	}
 
 	@Override
@@ -120,6 +116,23 @@ public class PVTableByPropertyView extends ViewPart {
 		fd_waterfallComposite.left = new FormAttachment(0, 10);
 		fd_waterfallComposite.right = new FormAttachment(100, -10);
 		tableWidget.setLayoutData(fd_waterfallComposite);
+		tableWidget.addPropertyChangeListener(new PropertyChangeListener() {
+			
+			@Override
+			public void propertyChange(PropertyChangeEvent evt) {
+				if ("channels".equals(evt.getPropertyName())) {
+					if (tableWidget.getChannels() != null) {
+						Collection<String> propertyNames = ChannelUtil.getPropertyNames(tableWidget.getChannels());
+						rowProperty.setItems(propertyNames.toArray(new String[propertyNames.size()]));
+						columnProperty.setItems(propertyNames.toArray(new String[propertyNames.size()]));
+					} else {
+						rowProperty.setItems(new String[0]);
+						columnProperty.setItems(new String[0]);
+					}
+					PVTableByPropertyView.this.parent.layout();
+				}
+			}
+		});
 		
 		ComboHistoryHelper name_helper =
 			new ComboHistoryHelper(Activator.getDefault()
