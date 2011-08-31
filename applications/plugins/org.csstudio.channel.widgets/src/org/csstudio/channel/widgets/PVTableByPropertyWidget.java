@@ -8,6 +8,7 @@ import static org.epics.pvmanager.data.ExpressionLanguage.vTable;
 import static org.epics.pvmanager.util.TimeDuration.ms;
 import gov.bnl.channelfinder.api.Channel;
 import gov.bnl.channelfinder.api.ChannelFinderClient;
+import gov.bnl.channelfinder.api.ChannelUtil;
 import gov.bnl.channelfinder.api.Property;
 
 import java.beans.PropertyChangeEvent;
@@ -227,27 +228,21 @@ public class PVTableByPropertyWidget extends Composite {
 			reconnect();
 			return;
 		}
+
+		// Filter only the channels that actually have the properties
+		// If none, then nothing should be shown
+		Collection<Channel> channelsInTable = ChannelUtil.filterbyProperties(channels, Arrays.asList(rowProperty, columnProperty));
+		if (channelsInTable.isEmpty()) {
+			columnNames = null;
+			rowNames = null;
+			cellPvs = null;
+			reconnect();
+			return;
+		}
 		
 		// Find the rows and columns
-		List<String> possibleRows = new ArrayList<String>();
-		List<String> possibleColumns = new ArrayList<String>();
-		// TODO replace this mess when the API gets better
-		for (Channel channel : channels) {
-			for (Property prop : channel.getProperties()) {
-				if (prop.getName().equals(rowProperty)) {
-					String value = prop.getValue();
-					if (value != null && !possibleRows.contains(value)) {
-						possibleRows.add(value);
-					}
-				}
-				if (prop.getName().equals(columnProperty)) {
-					String value = prop.getValue();
-					if (value != null && !possibleColumns.contains(value)) {
-						possibleColumns.add(value);
-					}
-				}
-			}
-		}
+		List<String> possibleRows = new ArrayList<String>(ChannelUtil.getPropValues(channelsInTable, rowProperty));
+		List<String> possibleColumns = new ArrayList<String>(ChannelUtil.getPropValues(channelsInTable, columnProperty));
 		Collections.sort(possibleRows);
 		Collections.sort(possibleColumns);
 		
@@ -260,18 +255,9 @@ public class PVTableByPropertyWidget extends Composite {
 			cells.add(column);
 		}
 		
-		for (Channel channel : channels) {
-			String row = null;
-			String column = null;
-			// TODO replace this mess when the API gets better
-			for (Property prop : channel.getProperties()) {
-				if (prop.getName().equals(rowProperty)) {
-					row = prop.getValue();
-				}
-				if (prop.getName().equals(columnProperty)) {
-					column = prop.getValue();
-				}
-			}
+		for (Channel channel : channelsInTable) {
+			String row = channel.getProperty(rowProperty).getValue();
+			String column = channel.getProperty(columnProperty).getValue();
 			
 			int nRow = possibleRows.indexOf(row);
 			int nColumn = possibleColumns.indexOf(column);
