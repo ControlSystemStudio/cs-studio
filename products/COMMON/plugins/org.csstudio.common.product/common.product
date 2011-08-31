@@ -23,6 +23,7 @@
    <plugins>
       <plugin id="com.google.common"/>
       <plugin id="com.ibm.icu"/>
+      <plugin id="gov.bnl.channelfinder.api"/>
       <plugin id="javax.annotation"/>
       <plugin id="javax.mail"/>
       <plugin id="javax.servlet"/>
@@ -56,7 +57,7 @@
       <plugin id="org.csstudio.diag.epics.pvtree"/>
       <plugin id="org.csstudio.diag.probe"/>
       <plugin id="org.csstudio.diag.pvmanager.probe"/>
-      <plugin id="org.csstudio.display.channelfinderviewer"/>
+      <plugin id="org.csstudio.display.channelviewer"/>
       <plugin id="org.csstudio.display.pvmanager.pvtable"/>
       <plugin id="org.csstudio.display.pvtable"/>
       <plugin id="org.csstudio.display.waterfall"/>

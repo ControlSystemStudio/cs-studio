@@ -1,4 +1,5 @@
 com.google.common
+gov.bnl.channelfinder.api
 javax.annotation
 javax.mail
 org.apache.log4j
@@ -28,7 +29,7 @@ org.csstudio.diag.epics.pvtree.intro
 org.csstudio.diag.probe
 org.csstudio.diag.probe.intro
 org.csstudio.diag.pvmanager.probe
-org.csstudio.display.channelfinderviewer
+org.csstudio.display.channelviewer
 org.csstudio.display.pvmanager.pvtable
 org.csstudio.display.pvtable
 org.csstudio.display.waterfall
