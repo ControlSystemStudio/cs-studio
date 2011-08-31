@@ -63,7 +63,9 @@ class CFProperties {
 			} catch (Exception e) {
 				// The jar has been modified and the default packaged properties
 				// file has been moved
-				defaultProperties = null;
+				
+				// XXX Commenting this out as it will cause NullPointerExceptions later
+				// defaultProperties = null;
 			}
 
 			// Not using to new Properties(default Properties) constructor to
