@@ -28,82 +28,82 @@ import org.csstudio.alarm.jms2ora.VersionInfo;
 import org.csstudio.platform.statistic.Collector;
 
 /**
- * TODO (mmoeller) : 
- * 
+ * TODO (mmoeller) :
+ *
  * @author mmoeller
  * @version 1.0
  * @since 19.08.2011
  */
 public class StatisticCollector {
-    
-    /** Class that collects statistic informations. Query it via XMPP. */
-    private Collector receivedMessages;
-    
-    /** Class that collects statistic informations. Query it via XMPP. */
-    private Collector filteredMessages;
 
     /** Class that collects statistic informations. Query it via XMPP. */
-    private Collector discardedMessages;
+    private final Collector receivedMessages;
 
     /** Class that collects statistic informations. Query it via XMPP. */
-    private Collector storedMessages;
+    private final Collector filteredMessages;
+
+    /** Class that collects statistic informations. Query it via XMPP. */
+    private final Collector discardedMessages;
+
+    /** Class that collects statistic informations. Query it via XMPP. */
+    private final Collector storedMessages;
 
     public StatisticCollector() {
-        
+
         receivedMessages = new Collector();
         receivedMessages.setApplication(VersionInfo.NAME);
         receivedMessages.setDescriptor("Received messages");
         receivedMessages.setContinuousPrint(false);
         receivedMessages.setContinuousPrintCount(1000.0);
-        
+
         filteredMessages = new Collector();
         filteredMessages.setApplication(VersionInfo.NAME);
         filteredMessages.setDescriptor("Filtered messages");
         filteredMessages.setContinuousPrint(false);
         filteredMessages.setContinuousPrintCount(1000.0);
-        
+
         discardedMessages = new Collector();
         discardedMessages.setApplication(VersionInfo.NAME);
         discardedMessages.setDescriptor("Discarded messages");
         discardedMessages.setContinuousPrint(false);
         discardedMessages.setContinuousPrintCount(1000.0);
-        
+
         storedMessages = new Collector();
         storedMessages.setApplication(VersionInfo.NAME);
         storedMessages.setDescriptor("Stored messages");
         storedMessages.setContinuousPrint(false);
         storedMessages.setContinuousPrintCount(1000.0);
     }
-    
-    public Double getReceivedMessageCount() {
+
+    public final Double getReceivedMessageCount() {
         return receivedMessages.getActualValue().getValue();
     }
-    
+
     public void incrementReceivedMessages() {
         receivedMessages.incrementValue();
     }
-    
-    public Double getFilteredMessagesCount() {
-        return receivedMessages.getActualValue().getValue();
+
+    public final Double getFilteredMessagesCount() {
+        return filteredMessages.getActualValue().getValue();
     }
-    
+
     public void incrementFilteredMessages() {
-        receivedMessages.incrementValue();
+        filteredMessages.incrementValue();
     }
 
-    public Double getDiscardedMessagesCount() {
-        return receivedMessages.getActualValue().getValue();
+    public final Double getDiscardedMessagesCount() {
+        return discardedMessages.getActualValue().getValue();
     }
-    
+
     public void incrementDiscardedMessages() {
-        receivedMessages.incrementValue();
+        discardedMessages.incrementValue();
     }
 
-    public Double getStoredMessagesCount() {
-        return receivedMessages.getActualValue().getValue();
+    public final Double getStoredMessagesCount() {
+        return storedMessages.getActualValue().getValue();
     }
-    
+
     public void incrementStoredMessages() {
-        receivedMessages.incrementValue();
+        storedMessages.incrementValue();
     }
 }

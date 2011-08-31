@@ -31,58 +31,58 @@ import javax.jms.JMSException;
 import javax.jms.MapMessage;
 
 /**
- * TODO (mmoeller) : 
- * 
+ * TODO (mmoeller) :
+ *
  * @author mmoeller
  * @version 1.0
  * @since 26.08.2011
  */
 public class RawMessage {
-    
+
     /** Hash table that contains the unprocessed value/key pairs from the JMS message */
-    private Hashtable<String, String> content;
-    
+    private final Hashtable<String, String> content;
+
     public RawMessage() {
         content = new Hashtable<String, String>();
     }
-    
-    public RawMessage(MapMessage message) {
-        
+
+    public RawMessage(final MapMessage message) {
+
         content = new Hashtable<String, String>();
-        
+
         String key;
-        
+
         try {
-            Enumeration<?> keys = message.getMapNames();
+            final Enumeration<?> keys = message.getMapNames();
             while (keys.hasMoreElements()) {
                 key = (String) keys.nextElement();
                 content.put(key, message.getString(key));
             }
-        } catch (JMSException jmse) {
+        } catch (final JMSException jmse) {
             content.clear();
         }
     }
-    
-    public boolean itemExists(String key) {
+
+    public final boolean itemExists(final String key) {
         return content.containsKey(key);
     }
-    
-    public Enumeration<String> getMapNames() {
+
+    public final Enumeration<String> getMapNames() {
         return content.keys();
     }
-    
+
     /**
      * Return the value of the key.
-     * 
+     *
      * @param key
      * @return The value
      */
-    public String getValue(String key) {
-        
+    public final String getValue(final String key) {
+
         if (key == null) {
             return null;
         }
-        
+
         return content.get(key);
     }
 }
