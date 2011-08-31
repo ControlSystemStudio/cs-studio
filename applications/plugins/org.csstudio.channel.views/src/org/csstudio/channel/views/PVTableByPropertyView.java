@@ -5,7 +5,9 @@ import gov.bnl.channelfinder.api.ChannelUtil;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.lang.reflect.Constructor;
+import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.List;
 
 import org.eclipse.swt.widgets.Composite;
@@ -85,8 +87,6 @@ public class PVTableByPropertyView extends ViewPart {
 	private Composite parent;
 	
 	private void changeQuery(String text) {
-		tableWidget.setColumnProperty(null);
-		tableWidget.setRowProperty(null);
 		tableWidget.setChannelQuery(text);
 	}
 
@@ -122,12 +122,24 @@ public class PVTableByPropertyView extends ViewPart {
 			public void propertyChange(PropertyChangeEvent evt) {
 				if ("channels".equals(evt.getPropertyName())) {
 					if (tableWidget.getChannels() != null) {
-						Collection<String> propertyNames = ChannelUtil.getPropertyNames(tableWidget.getChannels());
+						List<String> propertyNames = new ArrayList<String>(ChannelUtil.getPropertyNames(tableWidget.getChannels()));
+						Collections.sort(propertyNames);
+						
+						// Save old selection
+						String oldRow = null;
+						if (rowProperty.getSelectionIndex() != -1)
+							oldRow = rowProperty.getItem(rowProperty.getSelectionIndex());
+						String oldColumn = null;
+						if (columnProperty.getSelectionIndex() != -1)
+							oldColumn = columnProperty.getItem(columnProperty.getSelectionIndex());
+						
+						// Change properties to select
 						rowProperty.setItems(propertyNames.toArray(new String[propertyNames.size()]));
 						columnProperty.setItems(propertyNames.toArray(new String[propertyNames.size()]));
-					} else {
-						rowProperty.setItems(new String[0]);
-						columnProperty.setItems(new String[0]);
+						
+						// Try to keep old selection
+						rowProperty.select(propertyNames.indexOf(oldRow));
+						columnProperty.select(propertyNames.indexOf(oldColumn));
 					}
 					PVTableByPropertyView.this.parent.layout();
 				}
