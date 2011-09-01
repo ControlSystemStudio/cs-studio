@@ -47,6 +47,7 @@ import org.csstudio.ams.AmsActivator;
 import org.csstudio.ams.AmsConstants;
 import org.csstudio.ams.ExitException;
 import org.csstudio.ams.Log;
+import org.csstudio.ams.SynchObject;
 import org.csstudio.ams.Utils;
 import org.csstudio.ams.configReplicator.ConfigReplicator;
 import org.csstudio.ams.dbAccess.AmsConnectionFactory;
@@ -156,6 +157,9 @@ public class DistributorWork extends Thread implements AmsConstants {
 	
     private boolean bStop = false;
     private boolean bStoppedClean = false;
+    
+    private ConfigurationSynchronizer synchronizer;
+    private java.sql.Connection masterDb;
 
 	public DistributorWork(DistributorStart ds)
 	{
@@ -180,10 +184,12 @@ public class DistributorWork extends Thread implements AmsConstants {
 			try {
 				if (!bInitedConDb) {
 					bInitedConDb = initApplicationDb();
-					if (bInitedConDb)
+					if (bInitedConDb) {
 						bInitedConDb = initRplStateFlag(); // get last
-					// replication state
-					// flag value
+                                    					// replication state
+                                    					// flag value
+						synchronizer = new ConfigurationSynchronizer(conDb, masterDb);
+					}
 
 					if (!bInitedConDb) // if one of the two functions return
 						// false
@@ -367,7 +373,8 @@ public class DistributorWork extends Thread implements AmsConstants {
 	private boolean initApplicationDb() {
 		try {
 			conDb = AmsConnectionFactory.getApplicationDB();
-			if (conDb == null) {
+			masterDb = AmsConnectionFactory.getConfigurationDB();
+			if (conDb == null || masterDb == null) {
 				Log.log(this, Log.FATAL, "could not init application database");
 				return false;
 			}
@@ -1013,29 +1020,11 @@ public class DistributorWork extends Thread implements AmsConstants {
 	//
 
 	private int rplStart() throws Exception {
-		try {
-			boolean bRet = FlagDAO.bUpdateFlag(conDb, FLG_RPL,
-					FLAGVALUE_SYNCH_FMR_TO_DIST_SENDED,
-					FLAGVALUE_SYNCH_DIST_RPL);
-			if (bRet) {
-				iCmd = CMD_RPL_START;
-				logHistoryRplStart(conDb, true);
-				Log.log(this, Log.DEBUG, "accept reload cfg");
-			} else {
-				Log.log(this, Log.FATAL,
-						"ignore start msg, could not update db flag to "
-								+ FLAGVALUE_SYNCH_DIST_RPL);
-				return DistributorStart.STAT_ERR_FLG_RPL; // force new
-				// initialization,
-				// no recover()
-				// needed
-			}
-		} catch (SQLException e) {
-			Log.log(this, Log.FATAL, "could not bUpdateFlag", e);
-			return DistributorStart.STAT_ERR_APPLICATION_DB_SEND;
+		int result = synchronizer.startReplication();
+		if (result == DistributorStart.STAT_OK) {
+		    iCmd = CMD_RPL_START;
 		}
-
-		return DistributorStart.STAT_OK;
+		return result;
 	}
 
 	private int rplExecute() throws Exception // INCLUDING -
@@ -1046,19 +1035,9 @@ public class DistributorWork extends Thread implements AmsConstants {
 		// delete all msg from dist topic subscriber
 		Message msg = null;
 		Log.log(this, Log.DEBUG, "delete all msg");
-		while (null != (msg = amsReceiver.receive("amsSubscriberDist"))) // receiveNoWait
-		// FIXME has
-		// a
-		// bug
-		// with
-		// acknowledging
-		// in
-		// openjms
-		// 3
-		{
+		while (null != (msg = amsReceiver.receive("amsSubscriberDist"))) {
 			if (!acknowledge(msg)) {
 				result = DistributorStart.STAT_ERR_JMSCON_INT;
-
 				break;
 			} else {
 				result = DistributorStart.STAT_OK;
@@ -1069,67 +1048,11 @@ public class DistributorWork extends Thread implements AmsConstants {
 			return result;
 		}
 
-		// get Oracle Database Connection
-		java.sql.Connection masterDb = null;
-		try {
-			masterDb = AmsConnectionFactory.getConfigurationDB(); // throws
-			// ClassNotFoundException,
-			// SQLException
-		} catch (Exception e) {
-			Log.log(this, Log.FATAL, "could not init configuration database");
-			AmsConnectionFactory.closeConnection(masterDb);
-			masterDb = null;
-			sleep(5000);
-			return DistributorStart.STAT_ERR_CONFIG_DB;
+		result = synchronizer.executeReplication();
+		if (result == DistributorStart.STAT_OK) {
+		    iCmd = CMD_RPL_NOTIFY_FMR;
 		}
-
-		// check connection
-		if (masterDb == null) {
-			Log.log(this, Log.FATAL,
-					"configuration database offline: cannot start replication");
-			sleep(5000); // wait for online
-			return DistributorStart.STAT_ERR_CONFIG_DB;
-		}
-		Log.log(Log.INFO, "got masterDb Connection");
-
-		// replicate
-		try {
-			ConfigReplicator.replicateConfiguration(masterDb, conDb); // throws
-			// SQLException,
-			// ExitException
-		} catch (SQLException e) {
-			Log.log(this, Log.FATAL, "could not replicateConfiguration", e);
-			return DistributorStart.STAT_ERR_APPLICATION_DB;
-		} catch (ExitException ex) {
-			Log.log(this, Log.FATAL, "could not replicateConfiguration", ex);
-			return DistributorStart.STAT_ERR_FLG_BUP;
-		} finally {
-			AmsConnectionFactory.closeConnection(masterDb);
-			masterDb = null;
-		}
-
-		// set flag value and iCmd
-		try {
-			boolean bRet = FlagDAO.bUpdateFlag(conDb, FLG_RPL,
-					FLAGVALUE_SYNCH_DIST_RPL, FLAGVALUE_SYNCH_DIST_NOTIFY_FMR);
-			if (bRet) {
-				iCmd = CMD_RPL_NOTIFY_FMR;
-			} else {
-				Log.log(this, Log.FATAL,
-						"update not successful, could not update " + FLG_RPL
-								+ " from " + FLAGVALUE_SYNCH_DIST_RPL + " to "
-								+ FLAGVALUE_SYNCH_DIST_NOTIFY_FMR);
-				return DistributorStart.STAT_ERR_FLG_RPL; // force new
-				// initialization,
-				// no recover()
-				// needed
-			}
-		} catch (SQLException e) {
-			Log.log(this, Log.FATAL, "could not bUpdateFlag", e);
-			return DistributorStart.STAT_ERR_APPLICATION_DB;
-		}
-
-		return DistributorStart.STAT_OK; // All O.K.
+		return result;
 	}
 
 	private int rplNotifyFmr() throws Exception {
@@ -1166,7 +1089,7 @@ public class DistributorWork extends Thread implements AmsConstants {
 		return DistributorStart.STAT_OK;
 	}
 
-	private static void logHistoryRplStart(java.sql.Connection conDb,
+	static void logHistoryRplStart(java.sql.Connection conDb,
 			boolean bStart) {
 		try {
 			HistoryTObject history = new HistoryTObject();
