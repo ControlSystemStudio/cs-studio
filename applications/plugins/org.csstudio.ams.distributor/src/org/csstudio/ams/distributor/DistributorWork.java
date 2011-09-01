@@ -31,6 +31,7 @@ import java.util.Hashtable;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Vector;
+
 import javax.jms.Connection;
 import javax.jms.ConnectionFactory;
 import javax.jms.JMSException;
@@ -38,18 +39,15 @@ import javax.jms.MapMessage;
 import javax.jms.Message;
 import javax.jms.MessageProducer;
 import javax.jms.Session;
-// import javax.jms.TopicSubscriber;
 import javax.naming.Context;
 import javax.naming.InitialContext;
 import javax.naming.NamingException;
+
 import org.csstudio.ams.AMSException;
 import org.csstudio.ams.AmsActivator;
 import org.csstudio.ams.AmsConstants;
-import org.csstudio.ams.ExitException;
 import org.csstudio.ams.Log;
-import org.csstudio.ams.SynchObject;
 import org.csstudio.ams.Utils;
-import org.csstudio.ams.configReplicator.ConfigReplicator;
 import org.csstudio.ams.dbAccess.AmsConnectionFactory;
 import org.csstudio.ams.dbAccess.configdb.AggrFilterActionDAO;
 import org.csstudio.ams.dbAccess.configdb.AggrUserGroupDAO;
@@ -57,8 +55,6 @@ import org.csstudio.ams.dbAccess.configdb.AggrUserGroupTObject;
 import org.csstudio.ams.dbAccess.configdb.AggrUserGroupUserTObject;
 import org.csstudio.ams.dbAccess.configdb.FilterActionDAO;
 import org.csstudio.ams.dbAccess.configdb.FilterActionTObject;
-import org.csstudio.ams.dbAccess.configdb.FilterActionTypeDAO;
-import org.csstudio.ams.dbAccess.configdb.FilterActionTypeTObject;
 import org.csstudio.ams.dbAccess.configdb.FilterDAO;
 import org.csstudio.ams.dbAccess.configdb.FilterTObject;
 import org.csstudio.ams.dbAccess.configdb.FlagDAO;
@@ -130,17 +126,6 @@ public class DistributorWork extends Thread implements AmsConstants {
 
 	private JmsMultipleProducer amsSender;
 	
-//	private Context amsSenderContext = null;
-//	private ConnectionFactory amsSenderFactory = null;
-//	private Connection amsSenderConnection = null;
-//	private Session amsSenderSession = null;
-//
-//	private MessageProducer amsPublisherCommand = null;
-//	private MessageProducer amsPublisherSms = null;
-//	private MessageProducer amsPublisherMail = null;
-//	private MessageProducer amsPublisherVoiceMail = null;
-//	private MessageProducer amsPublisherJms = null;
-
 	// --- Receiver connection ---
 	private JmsRedundantReceiver amsReceiver = null;
 
@@ -1444,143 +1429,6 @@ public class DistributorWork extends Thread implements AmsConstants {
 		Log
 				.log(this, Log.WARN,
 						"method sendMessageToDefaultTopic(Message message) not implemented yet!");
-	}
-
-	/**
-	 * @deprecated Use the (TODO) default topic configuration (/TODO) topic name
-	 *             as destination of sendMessageToDefaultTopic(Message)!
-	 */
-	@SuppressWarnings("unused")
-    @Deprecated
-	private int sendMessageToTopic(MapMessage mapMsg, int faTypeRef)
-			throws Exception // INCLUDING - SQLException, JMSException
-	{
-		Context freeTopicContext = null;
-		javax.jms.Connection freeTopicConn = null;
-		Session freeTopicSession = null;
-
-		MessageProducer freePublisherTopic = null;
-
-		FilterActionTypeTObject faTypeObj = null;
-		TopicTObject topicObj = null;
-
-		faTypeObj = FilterActionTypeDAO.select(conDb, faTypeRef);
-		if (faTypeObj == null) {
-			Log.log(this, Log.FATAL,
-					"sendMessageToTopic: no such FilterActionType");
-			return DistributorStart.STAT_FALSE;
-		}
-
-		topicObj = TopicDAO.select(conDb, faTypeObj.getTopicRef());
-		if (topicObj == null) {
-			Log.log(this, Log.FATAL, "sendMessageToTopic: no such Topic");
-			return DistributorStart.STAT_FALSE;
-		}
-
-		try {
-			IPreferenceStore store = AmsActivator.getDefault()
-					.getPreferenceStore();
-
-			Hashtable<String, String> properties = new Hashtable<String, String>();
-			properties
-					.put(
-							Context.INITIAL_CONTEXT_FACTORY,
-							store
-									.getString(AmsPreferenceKey.P_JMS_FREE_TOPIC_CONNECTION_FACTORY_CLASS));
-
-//			String path = topicObj.getProtocol() + "://" + topicObj.getUrl()
-//					+ ":" + topicObj.getPort() + "/";
-			// properties.put(Context.PROVIDER_URL, "rmi://localhost:1099/");
-//			properties.put(Context.PROVIDER_URL, path);
-			properties.put(Context.PROVIDER_URL, 
-                    store.getString(AmsPreferenceKey.P_JMS_EXTERN_SENDER_PROVIDER_URL));
-			freeTopicContext = new InitialContext(properties);
-
-			ConnectionFactory freeTopicFactory = (ConnectionFactory) freeTopicContext
-					.lookup(store
-							.getString(AmsPreferenceKey.P_JMS_FREE_TOPIC_CONNECTION_FACTORY));
-			freeTopicConn = freeTopicFactory.createConnection();
-
-			// ADDED BY: Markus Moeller, 25.05.2007
-			freeTopicConn.setClientID("DistributorWorkFree");
-
-			freeTopicConn.start();
-
-			freeTopicSession = freeTopicConn.createSession(false,
-					Session.CLIENT_ACKNOWLEDGE);
-
-			// CHANGED BY: Markus Moeller, 25.05.2007
-			/*
-			 * freePublisherTopic =
-			 * freeTopicSession.createProducer((Topic)freeTopicContext.lookup(topicObj.getName()));
-			 */
-
-			freePublisherTopic = freeTopicSession
-					.createProducer(freeTopicSession.createTopic(topicObj
-							.getTopicName()));
-
-			Log
-					.log(this, Log.INFO,
-							"jms communication to free topic initiated");
-
-			freePublisherTopic.send(mapMsg); // to free topic
-		} catch (Exception e) {
-			Log.log(this, Log.FATAL, "failed to send message to free topic", e);
-			sleep(5000);
-			return DistributorStart.STAT_ERR_JMSCON_FREE_SEND;
-		} finally {
-			if (freePublisherTopic != null) {
-				try {
-					freePublisherTopic.close();
-				} catch (JMSException e) {
-					Log.log(this, Log.WARN, e);
-				} finally {
-					freePublisherTopic = null;
-				}
-			}
-			if (freeTopicSession != null) {
-				try {
-					freeTopicSession.close();
-				} catch (JMSException e) {
-					Log.log(this, Log.WARN, e);
-				} finally {
-					freeTopicSession = null;
-				}
-			}
-			if (freeTopicConn != null) {
-				try {
-					freeTopicConn.stop();
-				} catch (JMSException e) {
-					Log.log(this, Log.WARN, e);
-				}
-			}
-			if (freeTopicConn != null) {
-				try {
-					freeTopicConn.close();
-				} catch (JMSException e) {
-					Log.log(this, Log.WARN, e);
-				} finally {
-					freeTopicConn = null;
-				}
-			}
-			if (freeTopicContext != null) {
-				try {
-					freeTopicContext.close();
-				} catch (NamingException e) {
-					Log.log(this, Log.WARN, e);
-				} finally {
-					freeTopicContext = null;
-				}
-			}
-
-			Log.log(this, Log.INFO, "jms communication to free topic closed");
-		}
-
-		logHistorySend(conDb, mapMsg, null, faTypeRef, null, null, 0, 0, 0,
-				topicObj);
-
-		Log.log(this, Log.INFO, "message sent to free topic");
-		return DistributorStart.STAT_OK; // All O.K.
 	}
 
 	private int sendMessageToConnector(MapMessage mapMsg, String text,
