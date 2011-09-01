@@ -399,47 +399,60 @@ public class DistributorWork extends Thread implements AmsConstants {
 	        return false;
 	    }
 	    
+	    
+	    /* Command Topic */
+	    
 	    String topicName = storeAct.getString(AmsPreferenceKey.P_JMS_AMS_TOPIC_COMMAND);
 	    if (amsSender.addMessageProducer("amsPublisherCommand", topicName) == false) {
 	        Log.log(this, Log.ERROR, "Cannot create amsPublisherCommand");
 	        return false;
 	    }
+	    	    
+	    
+	    /* SMS Connector */
 	    
 	    topicName = storeAct.getString(AmsPreferenceKey.P_JMS_AMS_TOPIC_SMS_CONNECTOR);
         if (amsSender.addMessageProducer("amsPublisherSms", topicName) == false) {
             Log.log(this, Log.ERROR, "Cannot create amsPublisherSms");
             return false;
         }
-
         boolean full = storeAct.getBoolean(org.csstudio.ams.internal.AmsPreferenceKey.P_JMS_AMS_TOPIC_SMS_CONNECTOR_FORWARD);
         topicContainer.addConnectorTopic(new ConnectorTopic(topicName, "SmsConnector", full));
+        
+        
+        /* JMS Connector */
         
         topicName = storeAct.getString(AmsPreferenceKey.P_JMS_AMS_TOPIC_JMS_CONNECTOR);
         if (amsSender.addMessageProducer("amsPublisherJms", topicName) == false) {
             Log.log(this, Log.ERROR, "Cannot create amsPublisherJms");
             return false;
         }
-
         full = storeAct.getBoolean(AmsPreferenceKey.P_JMS_AMS_TOPIC_JMS_CONNECTOR_FORWARD);
         topicContainer.addConnectorTopic(new ConnectorTopic(topicName, "JmsConnector", full));
 
+        
+        /* Email Connector */
+        
         topicName = storeAct.getString(AmsPreferenceKey.P_JMS_AMS_TOPIC_EMAIL_CONNECTOR);
         if (amsSender.addMessageProducer("amsPublisherMail", topicName) == false) {
             Log.log(this, Log.ERROR, "Cannot create amsPublisherMail");
             return false;
         }
-
         full = storeAct.getBoolean(AmsPreferenceKey.P_JMS_AMS_TOPIC_EMAIL_CONNECTOR_FORWARD);
         topicContainer.addConnectorTopic(new ConnectorTopic(topicName, "EMailConnector", full));
+        
+        
+        /* Voicemail Connector */
         
         topicName = storeAct.getString(AmsPreferenceKey.P_JMS_AMS_TOPIC_VOICEMAIL_CONNECTOR);
         if (amsSender.addMessageProducer("amsPublisherVoiceMail", topicName) == false) {
             Log.log(this, Log.ERROR, "Cannot create amsPublisherVoiceMail");
             return false;
         }
-
         full = storeAct.getBoolean(AmsPreferenceKey.P_JMS_AMS_TOPIC_VOICEMAIL_CONNECTOR_FORWARD);
         topicContainer.addConnectorTopic(new ConnectorTopic(topicName, "VoicemailConnector", full));
+        
+        
 
         boolean success = true;
         
