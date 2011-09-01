@@ -104,8 +104,10 @@ public class ChannelQuery {
 				} catch (ChannelFinderException e) {
 					result = null;
 					lastException.set(e);
-					e.printStackTrace();
-				} finally{
+				} catch (Exception e){
+					result = null;
+					lastException.set(e);
+				}finally{
 					fireGetQueryResult();			
 				}
 			}
