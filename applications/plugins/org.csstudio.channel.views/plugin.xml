@@ -14,7 +14,7 @@
             class="org.csstudio.channel.views.WaterfallView"
             icon="platform:/plugin/org.csstudio.channel.widgets/icons/waterfall-16.png"
             id="org.csstudio.channel.views.WaterfallView"
-            name="PVTable by Property"
+            name="Waterfall"
             restorable="true">
       </view>
    </extension>
