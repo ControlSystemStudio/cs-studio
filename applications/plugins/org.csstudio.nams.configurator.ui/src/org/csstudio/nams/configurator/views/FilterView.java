@@ -1,3 +1,4 @@
+
 package org.csstudio.nams.configurator.views;
 
 import org.csstudio.nams.configurator.beans.FilterBean;

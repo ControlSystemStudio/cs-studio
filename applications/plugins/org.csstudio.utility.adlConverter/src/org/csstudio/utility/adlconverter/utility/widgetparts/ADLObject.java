@@ -24,12 +24,13 @@
  */
 package org.csstudio.utility.adlconverter.utility.widgetparts;
 
-import org.csstudio.platform.logging.CentralLogger;
 import org.csstudio.sds.model.AbstractWidgetModel;
 import org.csstudio.utility.adlconverter.internationalization.Messages;
 import org.csstudio.utility.adlconverter.utility.ADLWidget;
 import org.csstudio.utility.adlconverter.utility.FileLine;
 import org.csstudio.utility.adlconverter.utility.WrongADLFormatException;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * @author hrickens
@@ -38,6 +39,8 @@ import org.csstudio.utility.adlconverter.utility.WrongADLFormatException;
  * @since 04.09.2007
  */
 public class ADLObject extends WidgetPart {
+    
+    private static final Logger LOG = LoggerFactory.getLogger(ADLObject.class);
 
     /** The x-coordinate of the Object.*/
     private int _x;
@@ -104,7 +107,7 @@ public class ADLObject extends WidgetPart {
                 _height=Integer.parseInt(row[1]);
             }else if(row[0].trim().toLowerCase().equals("groupid")){ //$NON-NLS-1$
                 // TODO: ADLObject->groupid
-                CentralLogger.getInstance().info(this, "Unhandel Parameter: "+fileLine);
+                LOG.info("Unhandel Parameter: {}",fileLine);
             }else {
                 throw new WrongADLFormatException(Messages.ADLObject_WrongADLFormatException_Parameter_Begin+fileLine+Messages.ADLObject_WrongADLFormatException_Parameter_End);
             }

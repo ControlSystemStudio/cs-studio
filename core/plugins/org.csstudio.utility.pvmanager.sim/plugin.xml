@@ -5,6 +5,7 @@
          point="org.csstudio.utility.pvmanager.datasource">
       <datasource
             datasource="org.epics.pvmanager.sim.SimulationDataSource"
+            name="Simulation DataSource (sim)"
             prefix="sim">
       </datasource>
    </extension>

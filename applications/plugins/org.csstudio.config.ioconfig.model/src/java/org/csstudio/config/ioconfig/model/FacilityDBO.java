@@ -67,24 +67,13 @@ public class FacilityDBO extends AbstractNodeDBO<VirtualRoot, IocDBO> {
     @Override
     @Nonnull
     public FacilityDBO copyThisTo(@Nonnull final VirtualRoot parentNode) throws PersistenceException {
-        FacilityDBO copy = (FacilityDBO) super.copyThisTo(parentNode);
+        final FacilityDBO copy = (FacilityDBO) super.copyThisTo(parentNode);
 //        final FacilityDBO copy = super.copyThisTo(parentNode);
         for (final IocDBO node : getChildren()) {
-            IocDBO childrenCopy = node.copyThisTo(copy);
+            final IocDBO childrenCopy = node.copyThisTo(copy);
             childrenCopy.setSortIndexNonHibernate(node.getSortIndex());
         }
         return copy;
-    }
-
-    /**
-     * Do nothing!
-     *
-     * @param parent
-     *            facility can't have a parent!
-     */
-    @Override
-    public void setParent(@Nullable final VirtualRoot parent) {
-        // do nothing
     }
 
     /**
@@ -95,6 +84,23 @@ public class FacilityDBO extends AbstractNodeDBO<VirtualRoot, IocDBO> {
     @Nonnull 
     public NodeType getNodeType() {
         return NodeType.FACILITY;
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    @Nonnull
+    public IocDBO createChild() throws PersistenceException {
+        return new IocDBO(this);
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public void accept(@Nonnull final INodeVisitor visitor) {
+        visitor.visit(this);
     }
 
 }

@@ -21,14 +21,17 @@
  */
 package org.csstudio.platform.libs.epics;
 
+import gov.aps.jca.jni.JNITargetArch;
+
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-import gov.aps.jca.jni.JNITargetArch;
-
 import org.eclipse.core.runtime.Platform;
 import org.eclipse.core.runtime.Plugin;
+import org.eclipse.core.runtime.preferences.ConfigurationScope;
+import org.eclipse.core.runtime.preferences.DefaultScope;
 import org.eclipse.core.runtime.preferences.IPreferencesService;
+import org.eclipse.core.runtime.preferences.InstanceScope;
 import org.osgi.framework.BundleContext;
 
 /** The main plugin class to be used in the desktop.
@@ -116,6 +119,14 @@ public class EpicsPlugin extends Plugin
     public final void start(final BundleContext context) throws Exception {
         super.start(context);
 
+        //If it is in rap, set server preference in lookup order.
+        if(Platform.getBundle("org.eclipse.rap.ui") != null) //$NON-NLS-1$
+        	Platform.getPreferencesService().setDefaultLookupOrder(ID, null, new String[] { //
+				InstanceScope.SCOPE, //
+				ConfigurationScope.SCOPE, //
+				"server", //$NON-NLS-1$
+				DefaultScope.SCOPE});
+        
         installPreferences();
 
         if (!use_pure_java)

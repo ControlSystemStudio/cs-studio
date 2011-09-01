@@ -35,11 +35,11 @@ import java.util.Vector;
 import javax.annotation.CheckForNull;
 import javax.annotation.Nonnull;
 
-import org.apache.log4j.Logger;
 import org.csstudio.domain.desy.epics.alarm.EpicsAlarmSeverity;
-import org.csstudio.platform.logging.CentralLogger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
-/**
+/** 
  * List of alarm messages for alarm table. The class includes also the logic in
  * which case a message should be deleted, highlighted etc.
  *
@@ -48,8 +48,9 @@ import org.csstudio.platform.logging.CentralLogger;
  */
 public class AlarmMessageList extends AbstractMessageList {
 
-    private static final Logger LOG = CentralLogger.getInstance().getLogger(AlarmMessageList.class);
 
+    private static final Logger LOG = LoggerFactory.getLogger(AlarmMessageList.class);
+    
     private final Vector<AlarmMessage> _messages = new Vector<AlarmMessage>();
 
     /** number of alarm status changes in the message with the same pv name. */
@@ -222,8 +223,7 @@ public class AlarmMessageList extends AbstractMessageList {
 
         final String newNameProp = newMessage.getProperty(NAME.getDefiningName());
         final String newTimeProp = newMessage.getProperty(EVENTTIME.getDefiningName());
-        LOG.debug("AlarmView Ack message received, MsgName: " + newNameProp + " MsgTime: "
-                + newTimeProp);
+        LOG.debug("AlarmView Ack message received, MsgName: {} MsgTime: {}", newNameProp, newTimeProp);
 
         for (final AlarmMessage message : _messages) {
             final String sevProp = message.getProperty(SEVERITY.getDefiningName());
@@ -237,7 +237,7 @@ public class AlarmMessageList extends AbstractMessageList {
                                 .equalsIgnoreCase(EpicsAlarmSeverity.INVALID.name()))) {
 
                     messagesToRemove.add(message);
-                    LOG.debug("add message, removelist size: " + messagesToRemove.size());
+                    LOG.debug("add message, removelist size: {}", messagesToRemove.size());
                 } else {
                     message.getHashMap().put("ACK_HIDDEN", Boolean.TRUE.toString());
                     message.setProperty(ACK.getDefiningName(), Boolean.TRUE.toString());

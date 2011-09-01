@@ -1,5 +1,5 @@
 /*
- * Copyright 2010 Brookhaven National Laboratory
+ * Copyright 2010-11 Brookhaven National Laboratory
  * All rights reserved. Use is subject to license terms.
  */
 
@@ -29,7 +29,7 @@ public class Sine extends SimFunction<VDouble> {
     private VDouble lastValue;
 
     /**
-     * Creates a ramp shaped signal between min and max, updating
+     * Creates a sine shaped signal between min and max, updating
      * every interval seconds with samplesPerCycles samples every full sine cycle.
      *
      * @param min minimum value
@@ -48,6 +48,26 @@ public class Sine extends SimFunction<VDouble> {
                 TimeStamp.now(), null,
                 min, min + range * 0.1, min + range * 0.2, "x", Constants.DOUBLE_FORMAT,
                 min + range * 0.8, min + range * 0.9, max, min, max);
+    }
+    
+    /**
+     * Creates a sine shaped signal between min and max, updating
+     * every interval seconds with 10 samples every full sine cycle.
+     *
+     * @param min minimum value
+     * @param max maximum value
+     * @param secondsBeetwenSamples interval between samples in seconds
+     */
+    public Sine(Double min, Double max, Double secondsBeetwenSamples) {
+        this(min, max, 10.0, secondsBeetwenSamples);
+    }
+    
+    /**
+     * Creates a sine shaped signal between -5 and 5, updating
+     * every second with 10 samples every full sine cycle.
+     */
+    public Sine() {
+        this(-5.0, 5.0, 1.0);
     }
 
     @Override

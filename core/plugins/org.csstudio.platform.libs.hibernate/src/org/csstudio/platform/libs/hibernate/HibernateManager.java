@@ -22,25 +22,32 @@
 package org.csstudio.platform.libs.hibernate;
 
 
+import static org.csstudio.platform.libs.hibernate.preferences.PreferenceConstants.DDB_PASSWORD;
+import static org.csstudio.platform.libs.hibernate.preferences.PreferenceConstants.DDB_TIMEOUT;
+import static org.csstudio.platform.libs.hibernate.preferences.PreferenceConstants.DDB_USER_NAME;
+import static org.csstudio.platform.libs.hibernate.preferences.PreferenceConstants.DIALECT;
+import static org.csstudio.platform.libs.hibernate.preferences.PreferenceConstants.HIBERNATE_CONNECTION_DRIVER_CLASS;
+import static org.csstudio.platform.libs.hibernate.preferences.PreferenceConstants.HIBERNATE_CONNECTION_URL;
+import static org.csstudio.platform.libs.hibernate.preferences.PreferenceConstants.SHOW_SQL;
+
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
-import static org.csstudio.platform.libs.hibernate.preferences.PreferenceConstants.*;
-
-import org.csstudio.platform.logging.CentralLogger;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Platform;
 import org.eclipse.core.runtime.jobs.Job;
-import org.eclipse.core.runtime.preferences.IPreferencesService;
-import org.eclipse.core.runtime.preferences.InstanceScope;
 import org.eclipse.core.runtime.preferences.IEclipsePreferences.IPreferenceChangeListener;
 import org.eclipse.core.runtime.preferences.IEclipsePreferences.PreferenceChangeEvent;
+import org.eclipse.core.runtime.preferences.IPreferencesService;
+import org.eclipse.core.runtime.preferences.InstanceScope;
 import org.hibernate.HibernateException;
 import org.hibernate.SessionFactory;
 import org.hibernate.Transaction;
 import org.hibernate.cfg.AnnotationConfiguration;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * 
@@ -51,6 +58,8 @@ import org.hibernate.cfg.AnnotationConfiguration;
  */
 public final class HibernateManager {
 
+    private static final Logger LOG = LoggerFactory.getLogger(HibernateManager.class);
+    
     private static final class SessionWatchDog extends Job {
         private SessionFactory _sessionFactory;
         private int _sessionUseCounter;
@@ -274,11 +283,9 @@ public final class HibernateManager {
             // if(openTransactions<2) {
             _sess = _sessionFactoryDevDB.openSession();
             // }
-            CentralLogger.getInstance().debug(HibernateManager.class.getSimpleName(),
-                    "Open a Session: " + openTransactions);
+            LOG.debug("Open a Session: {}", openTransactions);
             // }
-            CentralLogger.getInstance().debug(HibernateManager.class.getSimpleName(),
-                    "session is " + _sess);
+            LOG.debug("session is {}", _sess);
             _trx = _sess.getTransaction();
             _trx.setTimeout(_timeout);
             _trx.begin();
@@ -290,11 +297,11 @@ public final class HibernateManager {
                 try {
                     _trx.rollback();
                 } catch (HibernateException exRb) {
-                    CentralLogger.getInstance().error(HibernateManager.class.getSimpleName(), exRb);
+                    LOG.error("", exRb);
                     exRb.printStackTrace();
                 }
             }
-            CentralLogger.getInstance().error(HibernateManager.class.getSimpleName(), ex);
+            LOG.error("", ex);
             ex.printStackTrace();
             throw ex;
         } finally {

@@ -29,7 +29,6 @@ import org.csstudio.data.values.IValue;
 import org.csstudio.data.values.ValueFactory;
 import org.csstudio.domain.desy.epics.alarm.EpicsAlarm;
 import org.csstudio.domain.desy.epics.types.EpicsSystemVariable;
-import org.csstudio.domain.desy.system.ControlSystem;
 import org.csstudio.domain.desy.time.TimeInstant;
 import org.csstudio.domain.desy.typesupport.BaseTypeConversionSupport;
 import org.csstudio.domain.desy.typesupport.TypeSupportException;
@@ -71,39 +70,27 @@ final class StringSystemVariableSupport extends EpicsSystemVariableSupport<Strin
                                               data.toArray(new String[]{}));
     }
 
-    /**
-     * {@inheritDoc}
-     */
-    @Override
-    @Nonnull
-    protected EpicsSystemVariable<String> createEpicsVariable(@Nonnull final String name,
-                                                              @Nonnull final String value,
-                                                              @Nonnull final ControlSystem system,
-                                                              @Nonnull final TimeInstant timestamp) {
-        return new EpicsSystemVariable<String>(name, value, system, timestamp, EpicsAlarm.UNKNOWN);
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    @Override
-    @Nonnull
-    protected EpicsSystemVariable<Collection<String>> createCollectionEpicsVariable(@Nonnull final String name,
-                                                                                    @Nonnull final Class<?> typeClass,
-                                                                                    @Nonnull final Collection<String> values,
-                                                                                    @Nonnull final ControlSystem system,
-                                                                                    @Nonnull final TimeInstant timestamp) throws TypeSupportException {
-        try {
-            @SuppressWarnings("unchecked")
-            final Collection<String> newCollection = (Collection<String>) typeClass.newInstance();
-            for (final String v : values) {
-                newCollection.add(v);
-            }
-            return new EpicsSystemVariable<Collection<String>>(name, newCollection, system, timestamp, EpicsAlarm.UNKNOWN);
-        } catch (final InstantiationException e) {
-            throw new TypeSupportException("Collection type could not be instantiated from Class<?> object.", e);
-        } catch (final IllegalAccessException e) {
-            throw new TypeSupportException("Collection type could not be instantiated from Class<?> object.", e);
-        }
-    }
+//    /**
+//     * {@inheritDoc}
+//     */
+//    @Override
+//    @Nonnull
+//    protected EpicsSystemVariable<Collection<String>> createCollectionEpicsVariable(@Nonnull final String name,
+//                                                                                    @Nonnull final Class<?> typeClass,
+//                                                                                    @Nonnull final Collection<String> values,
+//                                                                                    @Nonnull final ControlSystem system,
+//                                                                                    @Nonnull final TimeInstant timestamp) throws TypeSupportException {
+//        try {
+//            @SuppressWarnings("unchecked")
+//            final Collection<String> newCollection = (Collection<String>) typeClass.newInstance();
+//            for (final String v : values) {
+//                newCollection.add(v);
+//            }
+//            return new EpicsSystemVariable<Collection<String>>(name, newCollection, system, timestamp, EpicsAlarm.UNKNOWN);
+//        } catch (final InstantiationException e) {
+//            throw new TypeSupportException("Collection type could not be instantiated from Class<?> object.", e);
+//        } catch (final IllegalAccessException e) {
+//            throw new TypeSupportException("Collection type could not be instantiated from Class<?> object.", e);
+//        }
+//    }
 }

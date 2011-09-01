@@ -103,17 +103,20 @@ public class AMSMonitorView extends ViewPart implements SelectionListener {
     private Object lock = new Object();
 
     public AMSMonitorView() {
+        // Nothing to do
     }
 
     /**
      * Release resources
      */
+    @Override
     public void dispose() {
         autoLoader.running = false;
         // Tell the label provider to release its ressources
         tblMonitorViewer.getLabelProvider().dispose();
     }
 
+    @Override
     public void showBusy(boolean busy) {
         if (busy) {
             Cursor busyCursor = mainComposite.getParent().getDisplay()
@@ -235,6 +238,7 @@ public class AMSMonitorView extends ViewPart implements SelectionListener {
      *            an event containing information about the default selection
      */
     public void widgetDefaultSelected(SelectionEvent e) {
+        // Nothing to do
     }
 
     public boolean isEmpty(Text txt) {
@@ -259,6 +263,7 @@ public class AMSMonitorView extends ViewPart implements SelectionListener {
      * This is a callback that will allow us to create the viewer and initialize
      * it.
      */
+    @Override
     public void createPartControl(Composite parent) {
         ScrolledComposite sc = new ScrolledComposite(parent, SWT.H_SCROLL
                 | SWT.V_SCROLL);
@@ -332,6 +337,7 @@ public class AMSMonitorView extends ViewPart implements SelectionListener {
 
             // Opens a dialog to set a file for export and starts the job for
             // the excel export.
+            @Override
             public void widgetSelected(final SelectionEvent e) {
                 // File standard dialog
                 FileDialog fileDialog = new FileDialog(Display.getDefault()
@@ -582,6 +588,7 @@ public class AMSMonitorView extends ViewPart implements SelectionListener {
     /**
      * Passing the focus request to the viewer's control.
      */
+    @Override
     public void setFocus() {
         mainComposite.setFocus();
     }
@@ -612,6 +619,7 @@ public class AMSMonitorView extends ViewPart implements SelectionListener {
         private int lastHistoryID = 0;
         private boolean bAutoscroll = false;
 
+        @Override
         public void run() {
             while (running) {
                 try {
@@ -670,8 +678,8 @@ public class AMSMonitorView extends ViewPart implements SelectionListener {
             }
         }
 
-        // TODO: Die erste Abfrage liefert immer alle Einträge!!!!
-        //       Besser wäre eine Abfrage, die wirklich nur die definierte Anzahl liefert.
+        // TODO: Die erste Abfrage liefert immer alle Eintraege!!!!
+        //       Besser waere eine Abfrage, die wirklich nur die definierte Anzahl liefert.
         public List<HistoryTObject> getHistory(int maxCount) {
             List<HistoryTObject> array = new ArrayList<HistoryTObject>();
             try {
@@ -684,7 +692,6 @@ public class AMSMonitorView extends ViewPart implements SelectionListener {
                 if (!array.isEmpty())
                     lastHistoryID = array.get(0).getHistoryID();
 
-                System.out.println("lastHistoryID=" + lastHistoryID);
             } catch (Exception ex) {
                 Log.log(Log.FATAL, ex);
             }
@@ -790,6 +797,7 @@ public class AMSMonitorView extends ViewPart implements SelectionListener {
             this.fieldID = fieldID;
         }
 
+        @Override
         public void widgetSelected(SelectionEvent e) {
             TableSorter sorter = (TableSorter) tblMonitorViewer.getSorter();
             int sortDirection = 1;
@@ -835,6 +843,7 @@ public class AMSMonitorView extends ViewPart implements SelectionListener {
         /*
          * (non-Javadoc) Method declared on ViewerSorter.
          */
+        @Override
         public int compare(Viewer viewer, Object o1, Object o2) {
 
             HistoryTObject val1 = (HistoryTObject) o1;

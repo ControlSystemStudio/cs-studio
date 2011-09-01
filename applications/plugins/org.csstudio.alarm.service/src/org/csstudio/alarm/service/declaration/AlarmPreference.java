@@ -28,12 +28,12 @@ import java.util.List;
 
 import javax.annotation.Nonnull;
 
-import org.apache.log4j.Logger;
 import org.csstudio.alarm.service.AlarmServiceActivator;
 import org.csstudio.domain.desy.preferences.AbstractPreference;
-import org.csstudio.platform.logging.CentralLogger;
 import org.eclipse.core.runtime.FileLocator;
 import org.eclipse.core.runtime.Path;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * Constant definitions for alarm service preferences (mimicked enum with inheritance).
@@ -47,7 +47,6 @@ import org.eclipse.core.runtime.Path;
  */
 public final class AlarmPreference<T> extends AbstractPreference<T> {
 
-    private static final Logger LOG = CentralLogger.getInstance().getLogger(AlarmPreference.class);
 
     public static final String STRING_LIST_SEPARATOR = ";";
 
@@ -76,6 +75,7 @@ public final class AlarmPreference<T> extends AbstractPreference<T> {
     public static final AlarmPreference<Integer> ALARMSERVICE_PV_REGISTER_WAIT_MSEC =
         new AlarmPreference<Integer>("pvRegisterWaitMsec", 2000);
 
+    private static final Logger LOG = LoggerFactory.getLogger(AlarmPreference.class);
 
     /**
      * Constructor.
@@ -144,7 +144,7 @@ public final class AlarmPreference<T> extends AbstractPreference<T> {
     /**
      * The default file is located in the plugin.
      * Via preference page a file from the local file system may be set.
-     * The result is not null, but may not point to a valid file.  
+     * The result is not null, but may not point to a valid file.
      *
      * @return the full pathname
      */
@@ -156,11 +156,11 @@ public final class AlarmPreference<T> extends AbstractPreference<T> {
     @Nonnull
     private static String getStringFromPath(@Nonnull final String pathAsString) {
         String result = null;
-        Path path = new Path(pathAsString);
+        final Path path = new Path(pathAsString);
         if (path.isAbsolute()) {
             result = path.toOSString();
         } else {
-            URL url = FileLocator.find(AlarmServiceActivator.getDefault()
+            final URL url = FileLocator.find(AlarmServiceActivator.getDefault()
                     .getBundle(), path, null);
             try {
                 result = FileLocator.toFileURL(url).getPath();

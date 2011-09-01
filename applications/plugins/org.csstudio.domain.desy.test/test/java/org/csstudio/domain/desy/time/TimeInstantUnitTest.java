@@ -24,6 +24,7 @@ package org.csstudio.domain.desy.time;
 import java.util.regex.Pattern;
 
 import org.csstudio.domain.desy.time.TimeInstant.TimeInstantBuilder;
+import org.joda.time.Duration;
 import org.junit.Assert;
 import org.junit.Test;
 
@@ -144,6 +145,54 @@ public final class TimeInstantUnitTest {
 
 
     @Test(expected=IllegalArgumentException.class)
+    public void invalidMinusTest1() {
+        final TimeInstant t1 = TimeInstantBuilder.fromNanos(0L);
+        t1.minusMillis(1L);
+    }
+
+    @Test(expected=IllegalArgumentException.class)
+    public void invalidMinusTest2() {
+        final TimeInstant t1 = TimeInstantBuilder.fromNanos(0L);
+        t1.minusMillis(-1L);
+    }
+
+    @Test
+    public void minusSecondsTest() {
+        TimeInstant t = TimeInstantBuilder.fromSeconds(222L);
+        TimeInstant result = t.minusSeconds(200L);
+        Assert.assertTrue(result.getSeconds() == 22L);
+
+        t = TimeInstantBuilder.fromNanos(5123456789L);
+        result = t.minusSeconds(5L);
+        Assert.assertTrue(result.getSeconds() == 0L);
+        Assert.assertTrue(result.getFractalSecondsInNanos() == 123456789L);
+    }
+
+    @Test(expected=IllegalArgumentException.class)
+    public void invalidMinusSecondsTest() {
+        final TimeInstant t1 = TimeInstantBuilder.fromSeconds(10L);
+        t1.minusSeconds(12L);
+    }
+
+    @Test
+    public void minusMillisTest() {
+        TimeInstant t = TimeInstantBuilder.fromMillis(222L);
+        TimeInstant result = t.minusMillis(200L);
+        Assert.assertTrue(result.getMillis() == 22L);
+
+        t = TimeInstantBuilder.fromNanos(123456789L);
+        result = t.minusMillis(123L);
+        Assert.assertTrue(result.getMillis() == 0L);
+        Assert.assertTrue(result.getFractalSecondsInNanos() == 456789L);
+    }
+
+    @Test(expected=IllegalArgumentException.class)
+    public void invalidMinusMillisTest() {
+        final TimeInstant t1 = TimeInstantBuilder.fromNanos(1L);
+        t1.minusMillis(2L);
+    }
+
+    @Test(expected=IllegalArgumentException.class)
     public void invalidPlusTest1() {
         final TimeInstant t1 = TimeInstantBuilder.fromNanos(0L);
         t1.plusMillis(-1L);
@@ -168,12 +217,20 @@ public final class TimeInstantUnitTest {
         final TimeInstant t4 = t3.plusNanosPerSecond(999000000);
         Assert.assertTrue(t4.isAfter(t3));
         Assert.assertEquals(1000L, t4.getMillis());
+
+        final TimeInstant t5 = t1.plusNanosPerSecond(1L);
+        Assert.assertTrue(t4.isAfter(t1));
+        Assert.assertEquals(TimeInstantBuilder.fromNanos(1L), t5);
+
+        final TimeInstant t6 = t1.plusMillis(123L).plusNanosPerSecond(456789L);
+        Assert.assertEquals(TimeInstantBuilder.fromNanos(123456789L), t6);
+        Assert.assertEquals(TimeInstantBuilder.fromNanos(123000000L).plusNanosPerSecond(456789L), t6);
     }
 
     @Test
     public void testFormats() {
         final TimeInstant now = TimeInstantBuilder.fromNow();
-        
+
         final String date = now.formatted(TimeInstant.STD_DATE_FMT);
         Assert.assertTrue(Pattern.matches("\\d\\d\\d\\d-\\d\\d-\\d\\d", date));
 
@@ -191,7 +248,19 @@ public final class TimeInstantUnitTest {
 
         final String dateTimeFS = now.formatted(TimeInstant.STD_DATETIME_FMT_FOR_FS);
         Assert.assertTrue(Pattern.matches("\\d\\d\\d\\d-\\d\\d-\\d\\d_\\d\\dh\\d\\dm\\d\\ds", dateTimeFS));
+    }
 
+    @Test
+    public void testPlusDuration() {
+        final TimeInstant ti = TimeInstantBuilder.fromMillis(0L);
+        TimeInstant plusTi = ti.plusDuration(Duration.ZERO);
+        Assert.assertEquals(ti, plusTi);
 
+        plusTi = ti.plusDuration(Duration.standardSeconds(1L));
+        Assert.assertEquals(TimeInstantBuilder.fromSeconds(1L), plusTi);
+
+        plusTi = ti.plusDuration(Duration.standardHours(1L)).plusNanosPerSecond(123L);
+
+        Assert.assertEquals(TimeInstantBuilder.fromNanos(3600000000123L), plusTi);
     }
 }

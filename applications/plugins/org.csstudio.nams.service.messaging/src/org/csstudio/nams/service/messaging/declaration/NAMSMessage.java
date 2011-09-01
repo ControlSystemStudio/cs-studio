@@ -1,3 +1,4 @@
+
 package org.csstudio.nams.service.messaging.declaration;
 
 import org.csstudio.nams.common.material.AlarmNachricht;
@@ -39,5 +40,6 @@ public interface NAMSMessage {
 
 	public boolean enthaeltSystemnachricht();
 
-	public String toString();
+	@Override
+    public String toString();
 }

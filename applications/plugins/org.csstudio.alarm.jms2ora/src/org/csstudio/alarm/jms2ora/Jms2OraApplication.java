@@ -24,20 +24,17 @@
 
 package org.csstudio.alarm.jms2ora;
 
-import java.io.File;
-import org.apache.log4j.Logger;
 import org.csstudio.alarm.jms2ora.preferences.PreferenceConstants;
-import org.csstudio.alarm.jms2ora.util.ApplicState;
 import org.csstudio.alarm.jms2ora.util.CommandLine;
 import org.csstudio.alarm.jms2ora.util.Hostname;
-import org.csstudio.alarm.jms2ora.util.SynchObject;
-import org.csstudio.platform.logging.CentralLogger;
 import org.eclipse.core.runtime.Platform;
 import org.eclipse.core.runtime.preferences.IPreferencesService;
 import org.eclipse.equinox.app.IApplication;
 import org.eclipse.equinox.app.IApplicationContext;
 import org.remotercp.common.tracker.IGenericServiceListener;
 import org.remotercp.service.connection.session.ISessionService;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * The starting class.
@@ -46,25 +43,27 @@ import org.remotercp.service.connection.session.ISessionService;
  *
  */
 
-public class Jms2OraApplication implements IApplication, Stoppable, IGenericServiceListener<ISessionService> {
+public class Jms2OraApplication implements IApplication, Stoppable, RemotelyAccesible,
+                                           IGenericServiceListener<ISessionService> {
     
-    private static Jms2OraApplication instance = null;
-    
+    /** The class logger */
+    private static final Logger LOG = LoggerFactory.getLogger(Jms2OraApplication.class);
+
     /** The MessageProcessor does all the work on messages */
     private MessageProcessor messageProcessor;
     
-    /** Log4j logger */
-    private Logger logger;
-    
     /**  */
-    private SynchObject sync;
+    private Object lock;
+
+    /** Object that holds the credentials for XMPP login */
+    private XmppInfo xmppInfo;
+    
+    /** The ECF service */
+    private ISessionService xmppService;
     
     /** Name of the folder that holds the stored message content */
-    private String objectDir;
+    //private String objectDir;
 
-    /** Last state */
-    private int lastState = 0;
-    
     /** Flag that indicates whether or not the application is/should running */
     private boolean running;
     
@@ -78,43 +77,46 @@ public class Jms2OraApplication implements IApplication, Stoppable, IGenericServ
     private long WAITFORTHREAD = 20000 ;
 
     public Jms2OraApplication() {
-        
-        instance = this;
-        logger = CentralLogger.getInstance().getLogger(this);
-
-        IPreferencesService prefs = Platform.getPreferencesService();
-        objectDir = prefs.getString(Jms2OraPlugin.PLUGIN_ID, PreferenceConstants.STORAGE_DIRECTORY, "./var/", null);
-        if(objectDir.endsWith("/") == false) {
-            objectDir += "/";
-        }
-
-        createObjectFolder();
-    
-        sync = new SynchObject(ApplicState.INIT, System.currentTimeMillis());
+        lock = new Object();
+        xmppInfo = null;
+        xmppService = null;
         running = true;
         shutdown = false;
     }
     
-    public static Jms2OraApplication getInstance() {
-        return instance;
-    }
-    
+    /**
+     * {@inheritDoc}
+     */
+    @Override
     public Object start(IApplicationContext context) throws Exception {
         
         CommandLine cmd = null;
         String[] args = null;
-        String stateText = null;
         String host = null;
         String user = null;
-        int currentState = 0;
 
         args = (String[])context.getArguments().get(IApplicationContext.APPLICATION_ARGS);
-              
+        
+        IPreferencesService prefs = Platform.getPreferencesService();
+        String xmppUser = prefs.getString(Jms2OraPlugin.PLUGIN_ID,
+                PreferenceConstants.XMPP_USER_NAME, "anonymous", null);
+        String xmppPassword = prefs.getString(Jms2OraPlugin.PLUGIN_ID,
+                PreferenceConstants.XMPP_PASSWORD, "anonymous", null);
+        String xmppServer = prefs.getString(Jms2OraPlugin.PLUGIN_ID,
+                PreferenceConstants.XMPP_SERVER, "krynfs.desy.de", null);
+        
+        xmppInfo = new XmppInfo(xmppServer, xmppUser, xmppPassword);
+        
+        /*
+         *  Applikationsoptionen, um den Check zu starten
+         *  -check -host krynfs -username archiver
+         */
         cmd = new CommandLine(args);
         if(cmd.exists("help") || cmd.exists("h") || cmd.exists("?")) {
             
             System.out.println(VersionInfo.getAll());
-            System.out.println("Usage: jms2ora [-stop] [-host <hostname>] [-username <username>] [-help | -h | -?]");
+            System.out.println("Usage: jms2ora [-check] [-stop] [-host <hostname>] [-username <username>] [-help | -h | -?]");
+            System.out.println("       -check               - Checks if the application hangs using the XMPP command.");
             System.out.println("       -stop                - Stopps the application using the XMPP command.");
             System.out.println("       -host <hostname>     - Name of host where the application is running.");
             System.out.println("       -username <username> - Name of the user that is running the application.");
@@ -129,194 +131,168 @@ public class Jms2OraApplication implements IApplication, Stoppable, IGenericServ
             user = cmd.value("username", "");
             
             ApplicationStopper stopper = new ApplicationStopper();
-            boolean success = stopper.stopExternInstance(Jms2OraPlugin.getDefault().getBundleContext(), "jms2oracle", host, user);
+            boolean success = stopper.stopExternInstance("jms2oracle", host, user);
         
             if(success) {
-                logger.info("jms2ora stopped.");
+                LOG.info("jms2ora stopped.");
             } else {
-                logger.error("jms2ora cannot be stopped.");
+                LOG.error("jms2ora cannot be stopped.");
             }
             
             return IApplication.EXIT_OK;
         }
         
-        context.applicationRunning();
+        if(cmd.exists("check")) {
+            
+            host = cmd.value("host", Hostname.getInstance().getHostname());
+            user = cmd.value("username", "");
+
+            ApplicationChecker checker = new ApplicationChecker();
+            boolean success = checker.checkExternInstance("jms2oracle", host, user);
         
-        // Create an object from this class
-        messageProcessor = MessageProcessor.getInstance();
-        messageProcessor.setParent(this);
-        messageProcessor.start();
-
-        sync.setSynchStatus(ApplicState.OK);
-        stateText = "ok";
-        
-        while(running) {
-            
-            synchronized(this) {
-                try {
-                    this.wait(SLEEPING_TIME);
-                } catch(InterruptedException ie) {}
+            if(success) {
+                LOG.info("jms2ora is working.");
+            } else {
+                LOG.error("jms2ora is NOT working.");
             }
             
-            SynchObject actSynch = new SynchObject(ApplicState.INIT, 0);
-            if(!sync.hasStatusSet(actSynch, 300, ApplicState.TIMEOUT)) {
-                logger.fatal("TIMEOUT: State has not changed the last 5 minute(s).");
-            }
-
-            currentState = actSynch.getStatus();
-            if(currentState != lastState) {
-                
-                switch(currentState) {
-                    
-                    case ApplicState.INIT:
-                        stateText = "init";
-                        break;
-                        
-                    case ApplicState.OK:
-                        stateText = "ok";
-                        break;
-                        
-                    case ApplicState.WORKING:
-                        stateText = "working";
-                        break;
-
-                    case ApplicState.SLEEPING:
-                        stateText = "sleeping";
-                        break;
-
-                    case ApplicState.LEAVING:
-                        stateText = "leaving";
-                        break;
-
-                    case ApplicState.ERROR:
-                        stateText = "error";                        
-                        running = false;                        
-                        break;
-                        
-                    case ApplicState.FATAL:
-                        stateText = "fatal";
-                        running = false;                        
-                        break;
-                    
-                    case ApplicState.TIMEOUT:
-                        stateText = "timeout";
-                        running = false;                        
-                        break;
-                }
-                
-                logger.debug("set state to " + stateText + "(" + currentState + ")");
-                lastState = currentState;               
-            }
-            
-            logger.debug("Current state: " + stateText + "(" + currentState + ")");
+            return IApplication.EXIT_OK;
         }
 
+        // Create an object from this class
+        messageProcessor = new MessageProcessor();
+        messageProcessor.start();
+
+        Jms2OraPlugin.getDefault().addSessionServiceListener(this);
+        
+        context.applicationRunning();
+        
+
+        while (running) {
+            synchronized (lock) {
+                try {
+                    lock.wait(SLEEPING_TIME);
+                } catch(InterruptedException ie) { /* Can be ignored */}
+            }
+            
+            // TODO: Check the worker...
+            LOG.debug("TODO: Check the worker...");
+        }
+        
         if(messageProcessor != null) {
             
             // Clean stop of the working thread
             messageProcessor.stopWorking();
-            
-            do {
                 
-                try {
-                    messageProcessor.join(WAITFORTHREAD);
-                } catch(InterruptedException ie) { }
-            } while(sync.getSynchStatus() == ApplicState.LEAVING);
+            try {
+                messageProcessor.join(WAITFORTHREAD);
+            } catch(InterruptedException ie) { /* Can be ignored */ }
             
             if(messageProcessor.stoppedClean()) {
-                logger.info("Restart/Exit: Thread stopped clean.");
+                LOG.info("Restart/Exit: Thread stopped clean.");
                 messageProcessor = null;
             } else {
-                logger.warn("Restart/Exit: Thread did NOT stop clean.");
+                LOG.warn("Restart/Exit: Thread did NOT stop clean.");
                 messageProcessor = null;
             }
         }
         
-        if(shutdown) {
-            return IApplication.EXIT_OK;
-        } else {
-            logger.info("Restarting application...");
-            return IApplication.EXIT_RESTART;
+        if (xmppService != null) {
+            xmppService.disconnect();
         }
+        
+        Integer exitCode;
+        if (shutdown) {
+            exitCode = IApplication.EXIT_OK;
+            LOG.info("Stopping application.");
+        } else {
+            exitCode = IApplication.EXIT_RESTART;
+            LOG.info("Restarting application.");
+        }
+        
+        return exitCode;
     }
     
+    /**
+     * {@inheritDoc}
+     */
+    @Override
     public void bindService(ISessionService sessionService) {
-        IPreferencesService prefs = Platform.getPreferencesService();
-        String xmppUser = prefs.getString(Jms2OraPlugin.PLUGIN_ID,
-                PreferenceConstants.XMPP_USER_NAME, "anonymous", null);
-        String xmppPassword = prefs.getString(Jms2OraPlugin.PLUGIN_ID,
-                PreferenceConstants.XMPP_PASSWORD, "anonymous", null);
-        String xmppServer = prefs.getString(Jms2OraPlugin.PLUGIN_ID,
-                PreferenceConstants.XMPP_SERVER, "krynfs.desy.de", null);
+        
+    	if (xmppInfo == null) {
+    	    return;
+    	}
     	
     	try {
-			sessionService.connect(xmppUser, xmppPassword, xmppServer);
-		} catch (Exception e) {
-			CentralLogger.getInstance().warn(this,
-					"XMPP connection is not available, " + e.toString());
+			sessionService.connect(xmppInfo.getXmppUser(), xmppInfo.getXmppPassword(), xmppInfo.getXmppServer());
+			xmppService = sessionService;
+    	} catch (Exception e) {
+		    LOG.warn("XMPP connection is not available: {}", e.toString());
 		}
     }
     
+    
+    /**
+     * {@inheritDoc}
+     */
+    @Override
     public void unbindService(ISessionService service) {
-    	service.disconnect();
+    	// Nothing to do here
     }
         
-    public int getState() {
-        return sync.getSynchStatus();
-    }
-    
-    public void setStatus(int status) {
-        sync.setSynchStatus(status);
-    }
-
+    /**
+     * {@inheritDoc}
+     */
+    @Override
     public void stopWorking() {
         
         running = false;
         shutdown = true;
         
-        logger.info("The application will shutdown...");
+        LOG.info("The application will shutdown...");
         
-        synchronized(this) {
-            notify();
+        synchronized(lock) {
+            lock.notify();
         }
     }
 
+    /**
+     * {@inheritDoc}
+     */
+    @Override
     public void setRestart() {
         
         running = false;
         shutdown = false;
         
-        logger.info("The application will restart...");
+        LOG.info("The application will restart...");
         
-        synchronized(this) {
-            notify();
+        synchronized(lock) {
+            lock.notify();
         }
     }
 
+    /**
+     * {@inheritDoc}
+     */
+    @Override
     public void stop() {
         
         running = false;
         shutdown = true;
         
-        logger.info("The application will shutdown...");
+        LOG.info("The application will shutdown...");
         
-        synchronized(this) {
-            notify();
+        synchronized(lock) {
+            lock.notify();
         }
     }
     
-    private void createObjectFolder() {
-        
-        File folder = new File(objectDir);
-                
-        if(!folder.exists()) {
-            
-            boolean result = folder.mkdir();
-            if(result) {
-                logger.info("Folder " + objectDir + " was created.");                
-            } else {
-                logger.warn("Folder " + objectDir + " was NOT created.");
-            }
-        }
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public int getMessageQueueSize() {
+        return messageProcessor.getCompleteQueueSize();
     }
 }

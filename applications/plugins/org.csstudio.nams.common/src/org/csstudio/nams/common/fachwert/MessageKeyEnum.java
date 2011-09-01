@@ -1,7 +1,7 @@
+
 package org.csstudio.nams.common.fachwert;
 
 public enum MessageKeyEnum {
-
 	
     /**
      * XXX Comment
@@ -165,8 +165,8 @@ public enum MessageKeyEnum {
 
 	private final String stringValue;
 
-	MessageKeyEnum(final String stringValue) {
-		this.stringValue = stringValue;
+	MessageKeyEnum(final String value) {
+		this.stringValue = value;
 	}
 
 	public String getStringValue() {

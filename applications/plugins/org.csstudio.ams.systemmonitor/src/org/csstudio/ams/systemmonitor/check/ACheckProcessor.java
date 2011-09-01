@@ -27,17 +27,17 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import javax.jms.JMSException;
 import javax.jms.Message;
-import org.apache.log4j.Logger;
 import org.csstudio.ams.AmsActivator;
 import org.csstudio.ams.internal.AmsPreferenceKey;
 import org.csstudio.ams.systemmonitor.AmsSystemMonitorException;
 import org.csstudio.ams.systemmonitor.jms.JmsSender;
 import org.csstudio.ams.systemmonitor.jms.MessageHelper;
 import org.csstudio.ams.systemmonitor.status.MonitorStatusEntry;
-import org.csstudio.platform.logging.CentralLogger;
 import org.csstudio.platform.utility.jms.JmsRedundantReceiver;
 import org.eclipse.core.runtime.Platform;
 import org.eclipse.core.runtime.preferences.IPreferencesService;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * @author Markus
@@ -45,6 +45,9 @@ import org.eclipse.core.runtime.preferences.IPreferencesService;
  */
 public abstract class ACheckProcessor
 {
+    /** The class logger */
+    protected static final Logger LOG = LoggerFactory.getLogger(ACheckProcessor.class);
+    
     /** JMS receiver */
     protected JmsRedundantReceiver amsReceiver;
     
@@ -54,18 +57,13 @@ public abstract class ACheckProcessor
     /** Helper class that creates and compares JMS messages */
     protected MessageHelper messageHelper;
     
-    /** The logger of this class */
-    protected Logger logger;
-
     /**
      * 
      * @throws AmsSystemMonitorException
      */
     public ACheckProcessor(String senderClientId, String receiverClientId, String subscriberName) throws AmsSystemMonitorException
     {
-        logger = CentralLogger.getInstance().getLogger(this);
         messageHelper = new MessageHelper();
-        
         initJms(senderClientId, receiverClientId, subscriberName);
     }
 
@@ -85,7 +83,7 @@ public abstract class ACheckProcessor
             }
             catch(JMSException e)
             {
-                logger.warn("Cannot acknowledge message: " + message.toString());
+                LOG.warn("Cannot acknowledge message: " + message.toString());
             }
         }
     }
@@ -133,8 +131,8 @@ public abstract class ACheckProcessor
         url1 = prefs.getString(AmsActivator.PLUGIN_ID, AmsPreferenceKey.P_JMS_EXTERN_SENDER_PROVIDER_URL, "", null);
         topic = prefs.getString(AmsActivator.PLUGIN_ID, AmsPreferenceKey.P_JMS_EXT_TOPIC_ALARM, "", null);
 
-        logger.debug("JMS Sender URL: " + url1);
-        logger.debug("JMS Sender Monitor Topic: " + topic);
+        LOG.debug("JMS Sender URL: " + url1);
+        LOG.debug("JMS Sender Monitor Topic: " + topic);
 
         amsPublisher = new JmsSender(senderClientId, url1, topic);
         if(amsPublisher.isNotConnected())
@@ -147,16 +145,16 @@ public abstract class ACheckProcessor
         url1 = prefs.getString(AmsActivator.PLUGIN_ID, AmsPreferenceKey.P_JMS_AMS_PROVIDER_URL_1, "", null);
         url2 = prefs.getString(AmsActivator.PLUGIN_ID, AmsPreferenceKey.P_JMS_AMS_PROVIDER_URL_2, "", null);
         topic = prefs.getString(AmsActivator.PLUGIN_ID, AmsPreferenceKey.P_JMS_AMS_TOPIC_MONITOR, "", null);
-        logger.debug("JMS Receiver URL 1: " + url1);
-        logger.debug("JMS Receiver URL 2: " + url2);
-        logger.debug("JMS Receiver Monitor Topic: " + topic);
+        LOG.debug("JMS Receiver URL 1: " + url1);
+        LOG.debug("JMS Receiver URL 2: " + url2);
+        LOG.debug("JMS Receiver Monitor Topic: " + topic);
         
         // TODO: 
         amsReceiver = new JmsRedundantReceiver(receiverClientId, url1, url2);
         result = amsReceiver.createRedundantSubscriber("amsSystemMonitor", topic, subscriberName, true);
         if(result == false)
         {
-            logger.error("Could not create redundant receiver for URL " + url1 + ", " + url2 + " and topic " + topic);
+            LOG.error("Could not create redundant receiver for URL " + url1 + ", " + url2 + " and topic " + topic);
             closeJms();
             
             throw new AmsSystemMonitorException("Could not create redundant receiver for URL " + url1 + ", " + url2 + " and topic " + topic, AmsSystemMonitorException.ERROR_CODE_JMS_CONNECTION);

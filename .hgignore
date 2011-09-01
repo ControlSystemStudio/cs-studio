@@ -17,6 +17,10 @@ classes/*
 build/build
 build/ext
 
+# ignore all log files ?
+logs/*.log
+log/*.log
+
 
 # SNS, KEK Products: Ignore output of headless build
 syntax: glob
@@ -39,3 +43,5 @@ syntax: regexp
 ^applications/plugins/org\.csstudio\.multiChannelViewer/\.settings$
 ^applications/plugins/org\.csstudio\.utility\.pvmanager\.jfreechart\.widgets/\.settings$
 ^applications/plugins/org\.csstudio\.utility\.pvmanager\.jfreechart\.widgets/\.classpath$
+rescue/.+/.+\.sql$
+rescue/.+/.+\.gpb$

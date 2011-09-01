@@ -15,8 +15,8 @@ import javax.servlet.http.HttpServletResponse;
 
 import org.csstudio.archive.common.engine.model.ArchiveChannel;
 import org.csstudio.archive.common.engine.model.ArchiveGroup;
-import org.csstudio.archive.common.engine.model.BufferStats;
 import org.csstudio.archive.common.engine.model.EngineModel;
+import org.csstudio.archive.common.engine.model.SampleBufferStatistics;
 
 /** Provide web page with basic info for all the groups.
  *  @author Kay Kasemir
@@ -43,11 +43,12 @@ class GroupsResponse extends AbstractResponse {
 
     private void openTableWithHeader(@Nonnull final HTMLWriter html) {
         html.openTable(1, new String[] {Messages.HTTP_COLUMN_GROUP,
-                                        Messages.HTTP_COLUMN_CHANNEL_COUNT,
-                                        Messages.HTTP_COLUMN_CONNECTED,
-                                        Messages.HTTP_COLUMN_RECEIVEDVALUES,
+                                        numOf(Messages.HTTP_COLUMN_CHANNELS),
+                                        numOf(Messages.HTTP_COLUMN_CONNECTED),
+                                        numOf(Messages.HTTP_COLUMN_RECEIVEDVALUES),
                                         Messages.HTTP_COLUMN_QUEUEAVG,
-                                        Messages.HTTP_COLUMN_QUEUEMAX});
+                                        Messages.HTTP_COLUMN_QUEUEMAX,
+                                        });
     }
 
     private void createGroupsTable(@Nonnull final HTMLWriter html) {
@@ -65,13 +66,14 @@ class GroupsResponse extends AbstractResponse {
             int maxQueueLength = 0;
             long numOfReceivedSamples = 0;
 
-            final Collection<ArchiveChannel<?, ?>> channels = group.getChannels();
-            for (final ArchiveChannel<?, ?> channel : channels) {
+            @SuppressWarnings("rawtypes")
+            final Collection<ArchiveChannel> channels = group.getChannels();
+            for (@SuppressWarnings("rawtypes") final ArchiveChannel channel : channels) {
                 if (channel.isConnected()) {
                     ++numOfConnectedChannels;
                 }
                 numOfReceivedSamples += channel.getReceivedValues();
-                final BufferStats stats = channel.getSampleBuffer().getBufferStats();
+                final SampleBufferStatistics stats = channel.getSampleBuffer().getBufferStats();
                 avgQueueLength += stats.getAverageSize();
                 maxQueueLength = Math.max(maxQueueLength, stats.getMaxSize());
             }
@@ -88,7 +90,8 @@ class GroupsResponse extends AbstractResponse {
                                          createChannelConnectedTableEntry(numOfConnectedChannels, numOfChannels),
                                          Long.toString(numOfReceivedSamples),
                                          String.format("%.1f", avgQueueLength),
-                                         Integer.toString(maxQueueLength)});
+                                         Integer.toString(maxQueueLength),
+                                         });
         }
 
         closeTableWithSummaryRow(html,

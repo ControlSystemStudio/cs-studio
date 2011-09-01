@@ -33,7 +33,7 @@ public interface RemotelyStoppable
     /**
      * The method forces the application to stop or restart.
      * 
-     * @param restart
+     * @param setRestart
      */
     public void stopApplication(boolean setRestart);
 }

@@ -47,7 +47,7 @@
       </command>
    </extension>
    <extension
-         id="AmsSmsConnector"
+         id="AmsSmsConnectorProduct"
          point="org.eclipse.core.runtime.products">
       <product
             application="org.csstudio.ams.connector.sms.SmsConnector"

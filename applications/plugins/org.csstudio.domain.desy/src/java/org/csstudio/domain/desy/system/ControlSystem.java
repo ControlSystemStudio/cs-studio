@@ -37,8 +37,6 @@ import com.google.common.collect.MapMaker;
  */
 public final class ControlSystem implements Serializable {
 
-    private static final long serialVersionUID = 3883445164802010609L;
-
     public static final ControlSystem EPICS_DEFAULT =
         new ControlSystem("EpicsDefault",
                           ControlSystemType.EPICS_V3);
@@ -48,6 +46,8 @@ public final class ControlSystem implements Serializable {
     public static final ControlSystem TANGO_DEFAULT =
         new ControlSystem("TangoDefault",
                           ControlSystemType.TANGO);
+
+    private static final long serialVersionUID = 3883445164802010609L;
 
     /**
      * There will be few control systems, but many entities referring to them.

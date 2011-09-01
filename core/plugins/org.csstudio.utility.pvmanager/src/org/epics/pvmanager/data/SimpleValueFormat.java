@@ -1,5 +1,5 @@
 /*
- * Copyright 2010 Brookhaven National Laboratory
+ * Copyright 2010-11 Brookhaven National Laboratory
  * All rights reserved. Use is subject to license terms.
  */
 package org.epics.pvmanager.data;
@@ -34,7 +34,7 @@ public class SimpleValueFormat extends ValueFormat {
             return toAppendTo;
         }
 
-        if (scalar instanceof Display) {
+        if (scalar instanceof Display && nf(scalar) != null) {
             NumberFormat f = nf(scalar);
             return f.format(scalar.getValue(), toAppendTo, pos);
         }

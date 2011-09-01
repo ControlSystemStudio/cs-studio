@@ -63,29 +63,29 @@ public enum Baudrates {
     /**
      * @param key displayed Key Name for the Value
      * @param stringValue the Value to configer the Baudrate
-     * @param value 
+     * @param value
      */
-    private Baudrates(@Nonnull final String key,@Nonnull  final String stringValue,@Nonnull  int value) {
+    private Baudrates(@Nonnull final String key,@Nonnull  final String stringValue,@Nonnull final  int value) {
         this._key = key;
         this._stringValue = stringValue;
         this._value = value;
     }
     /**
-     * @return @see Object#toString()
-     */
-    @Override
-    public final String toString(){
-        return _key;
-    }
-
-    /**
-     * @return the KeyValue 
+     * @return the KeyValue
      */
     @Nonnull
     public final String getKey() {
         return _key;
     }
-
+    
+    /**
+     * 
+     * @return the Baudrate Value
+     */
+    public final int getVal() {
+        return _value;
+    }
+    
     /**
      * 
      * @return the Baudrate Value
@@ -96,10 +96,11 @@ public enum Baudrates {
     }
     
     /**
-     * 
-     * @return the Baudrate Value
+     * @return @see Object#toString()
      */
-    public final int getVal() {
-        return _value;
+    @Override
+    @Nonnull
+    public final String toString(){
+        return _key;
     }
 }

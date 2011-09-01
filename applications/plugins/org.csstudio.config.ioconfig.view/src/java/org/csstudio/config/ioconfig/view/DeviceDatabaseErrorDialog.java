@@ -23,9 +23,8 @@
  */
 package org.csstudio.config.ioconfig.view;
 
-import java.util.Formatter;
-
 import javax.annotation.CheckForNull;
+import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
 import org.eclipse.jface.dialogs.MessageDialog;
@@ -45,15 +44,30 @@ public final class DeviceDatabaseErrorDialog {
      * Constructor.
      */
     private DeviceDatabaseErrorDialog() {
-        // Constructor
+        // Constructor.
     }
     
-    public static void open(@Nullable Shell parent,@CheckForNull String message,@CheckForNull Exception e) {
-        String title = "Device Database Error!";
-        StringBuilder sb = new StringBuilder();
+    public static void open(@Nullable final Shell parent,@CheckForNull final String message,@CheckForNull final Exception e) {
+        final StringBuilder sb = buildMessage(message, e);
+        openDialog(parent,  sb, null);
+    }
+    public static void open(@Nullable final Shell parent,@CheckForNull final String message,@CheckForNull final Exception e, @CheckForNull final ProfiBusTreeView busTreeView) {
+        final StringBuilder sb = buildMessage(message, e);
+        openDialog(parent,  sb, busTreeView);
+        
+    }
+    
+    /**
+     * @param message
+     * @param e
+     * @return
+     */
+    @Nonnull
+    private static StringBuilder buildMessage(@CheckForNull final String message, @CheckForNull final Exception e) {
+        final StringBuilder sb = new StringBuilder();
         if(message!=null) {
             sb.append(message)
-              .append("\r");
+            .append("\r");
             
         }
         if(e!=null) {
@@ -64,10 +78,32 @@ public final class DeviceDatabaseErrorDialog {
                     eMessage = "Unknown Exception";
                 }
             }
-
+            
             sb.append(eMessage);
         }
-        MessageDialog.openError(parent, title, sb.toString());
+        return sb;
+    }
+    
+    /**
+     * @param parent
+     * @param title
+     * @param sb
+     * @param busTreeView
+     */
+    private static void openDialog(@Nullable final Shell parent, @Nonnull final StringBuilder sb, @CheckForNull final ProfiBusTreeView busTreeView) {
+        final String title = "Device Database Error!";
+        String[] dialogButtonLabels;
+        if(busTreeView!=null) {
+            dialogButtonLabels = new String[] {"Close", "Reload DB" };
+        } else {
+            dialogButtonLabels = new String[] {"Close"};
+        }
+        final MessageDialog messageDialog = new MessageDialog(parent, title, null,
+                                                              sb.toString(), MessageDialog.ERROR,
+                                                              dialogButtonLabels, 1);
+        if (messageDialog.open() == 1 && busTreeView!=null) {
+            busTreeView.reload();
+        }
     }
     
 }

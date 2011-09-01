@@ -43,7 +43,6 @@ import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Button;
-import org.eclipse.swt.widgets.Combo;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Table;
@@ -186,7 +185,7 @@ public class StatisticView extends ViewPart {
         /** The values for the Columns width. */
         private static final int WIDTH = 75;
         /** The values for the Columns width. */
-        private int[] _columnWidth = new int[] { WIDTH, WIDTH, WIDTH, WIDTH, WIDTH, WIDTH, WIDTH,
+        private final int[] _columnWidth = new int[] { WIDTH, WIDTH, WIDTH, WIDTH, WIDTH, WIDTH, WIDTH,
                 WIDTH, WIDTH, WIDTH, WIDTH, WIDTH, WIDTH, WIDTH, WIDTH, WIDTH, WIDTH };
         /** The names for the Columns. */
         private final String[] _columnNames = new DefaultScope().getNode(CSSPlatformUiPlugin.ID).get(
@@ -213,6 +212,7 @@ public class StatisticView extends ViewPart {
         }
 
         /** {@inheritDoc} */
+        @Override
         public final String getColumnText(final Object obj, final int columnIndex) {
             if (obj instanceof XMLCollectorApplication) {
                 XMLCollectorApplication element = (XMLCollectorApplication) obj;
@@ -236,6 +236,7 @@ public class StatisticView extends ViewPart {
         }
 
         /** {@inheritDoc} */
+        @Override
         public final Image getColumnImage(final Object element, final int columnIndex) {
             return null;
         }
@@ -257,16 +258,7 @@ public class StatisticView extends ViewPart {
     @Override
     public final void createPartControl(final Composite parent) {
         parent.setLayout(new GridLayout(6, false));
-        Label quelleLabel = new Label(parent, SWT.NONE);
-        quelleLabel.setText("Quelle");
-        Combo quelleCombo = new Combo(parent, SWT.SINGLE);
-        quelleCombo.setLayoutData(new GridData(SWT.FILL, SWT.FILL, false, false, 1, 1));
-        quelleCombo.add("Local");
-        quelleCombo.select(0);
-        Button quellenChooserButton = new Button(parent, SWT.PUSH);
         GridData layoutData = new GridData(SWT.LEFT, SWT.FILL, false, false, 1, 1);
-        quellenChooserButton.setLayoutData(layoutData);
-        quellenChooserButton.setText("Station");
         new Label(parent, SWT.NONE).setLayoutData(new GridData(SWT.RIGHT, SWT.FILL, false, false,
                 1, 1));
         Button clearButton = new Button(parent, SWT.PUSH);
@@ -278,11 +270,13 @@ public class StatisticView extends ViewPart {
         clearButton.setText("C&lear");
         clearButton.addSelectionListener(new SelectionListener() {
 
+            @Override
             public void widgetDefaultSelected(SelectionEvent e) {
                 // TODO Auto-generated method stub
 
             }
 
+            @Override
             public void widgetSelected(SelectionEvent e) {
                 _statistcTableViewer.getTable().removeAll();
             }
@@ -292,12 +286,14 @@ public class StatisticView extends ViewPart {
         layoutData.minimumWidth = 50;
         layoutData.widthHint = 50;
         applyButton.setLayoutData(layoutData);
-        applyButton.setText("&Apply");
+        applyButton.setText("&Local");
         applyButton.addSelectionListener(new SelectionListener() {
 
+            @Override
             public void widgetDefaultSelected(final SelectionEvent e) {
             }
 
+            @Override
             public void widgetSelected(final SelectionEvent e) {
                 setLocalStatistic();
             }

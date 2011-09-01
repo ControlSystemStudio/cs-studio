@@ -7,6 +7,7 @@ org.csstudio.auth.ui
 org.csstudio.archive.rdb
 org.csstudio.archive.reader
 org.csstudio.archive.reader.channelarchiver
+org.csstudio.archive.rdb
 org.csstudio.archive.reader.rdb
 org.csstudio.csdata
 org.csstudio.csdata.clipboard
@@ -17,9 +18,9 @@ org.csstudio.diag.postanalyser
 org.csstudio.diag.probe
 org.csstudio.diag.probe.intro
 org.csstudio.diag.pvmanager.probe
-org.csstudio.display.pvtable
-org.csstudio.display.channelfinderviewer
-org.csstudio.display.channelfinderviewer.intro
+org.csstudio.display.pvmanager.pvtable
+org.csstudio.display.channelviewer
+org.csstudio.display.channelviewer.intro
 org.csstudio.display.waterfall
 org.csstudio.email
 org.csstudio.email.ui
@@ -27,6 +28,7 @@ org.csstudio.java
 org.csstudio.logbook
 org.csstudio.logging
 org.csstudio.logging.ui
+org.csstudio.multiChannelViewer
 org.csstudio.nsls2.product
 org.csstudio.nsls2.startuphelper
 org.csstudio.nsls2.startup.intro
@@ -83,7 +85,9 @@ org.csstudio.utility.pv.simu
 org.csstudio.utility.pv.ui
 org.csstudio.utility.pvmanager
 org.csstudio.utility.pvmanager.epics
+org.csstudio.utility.pvmanager.jfreechart.widgets
 org.csstudio.utility.pvmanager.sim
 org.csstudio.utility.pvmanager.ui
 org.csstudio.utility.pvmanager.widgets
 org.csstudio.workspace
+

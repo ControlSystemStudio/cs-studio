@@ -32,7 +32,7 @@ import org.junit.runners.model.FrameworkMethod;
 import org.junit.runners.model.InitializationError;
 
 /**
- * TODO (bknerr) :
+ * Junit4 Class Runner that can evaluate a RunIf annotation.
  *
  * @author bknerr
  * @since 30.05.2011
@@ -67,10 +67,10 @@ public class ConditionalClassRunner extends BlockJUnit4ClassRunner {
         if (resource == null) {
             return true;
         }
-        final Class<? extends RunCondition> test = resource.conditionClass();
+        final Class<? extends IRunCondition> test = resource.conditionClass();
         try {
-            final RunCondition checker = createConditionReflectively(resource, test);
-            return checker.isTrue();
+            final IRunCondition checker = createConditionReflectively(resource, test);
+            return checker.shallBeRun();
         } catch (final Exception e) {
             throw new RuntimeException(e);
         }
@@ -81,28 +81,28 @@ public class ConditionalClassRunner extends BlockJUnit4ClassRunner {
         if (resource == null) {
             return true;
         }
-        final Class<? extends RunCondition> test = resource.conditionClass();
+        final Class<? extends IRunCondition> test = resource.conditionClass();
         try {
-            final RunCondition checker = createConditionReflectively(resource, test);
-            return checker.isTrue();
+            final IRunCondition checker = createConditionReflectively(resource, test);
+            return checker.shallBeRun();
         } catch (final Exception e) {
             throw new RuntimeException(e);
         }
     }
 
     @Nonnull
-    private RunCondition createConditionReflectively(@Nonnull final RunIf resource,
-                                                     @Nonnull final Class<? extends RunCondition> condition) throws Exception {
+    private IRunCondition createConditionReflectively(@Nonnull final RunIf resource,
+                                                     @Nonnull final Class<? extends IRunCondition> condition) throws Exception {
         final String[] arguments = resource.arguments();
-        RunCondition checker;
+        IRunCondition checker;
         if (arguments == null || arguments.length == 0) {
             checker = condition.newInstance();
         } else {
             if (arguments.length == 1) {
-                final Constructor<? extends RunCondition> constructor = condition.getConstructor(String.class);
+                final Constructor<? extends IRunCondition> constructor = condition.getConstructor(String.class);
                 checker = constructor.newInstance(arguments[0]);
             } else {
-                final Constructor<? extends RunCondition> constructor = condition.getConstructor(String[].class);
+                final Constructor<? extends IRunCondition> constructor = condition.getConstructor(String[].class);
                 checker = constructor.newInstance(new Object[]{arguments});
             }
         }

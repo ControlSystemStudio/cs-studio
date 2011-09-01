@@ -19,7 +19,10 @@
 package org.csstudio.sds.behavior.desy;
 
 import org.csstudio.sds.components.model.SixteenBinaryBarModel;
+import org.csstudio.sds.model.AbstractWidgetModel;
+import org.epics.css.dal.context.ConnectionState;
 import org.epics.css.dal.simple.AnyData;
+import org.epics.css.dal.simple.AnyDataChannel;
 import org.epics.css.dal.simple.MetaData;
 
 /**
@@ -31,18 +34,32 @@ import org.epics.css.dal.simple.MetaData;
  * @version $Revision: 1.2 $
  * @since 20.04.2010
  */
-public class SixteenBinaryBarConnectionBehavior extends AbstractDesyConnectionBehavior<SixteenBinaryBarModel> {
-
+public class SixteenBinaryBarConnectionBehavior extends
+        AbstractDesyConnectionBehavior<SixteenBinaryBarModel> {
+    
+    private String _defOnColor;
+    private String _defOffColor;
+    
     /**
      * Constructor.
      */
     public SixteenBinaryBarConnectionBehavior() {
         // add Invisible Property Id here
-        addInvisiblePropertyId(SixteenBinaryBarModel.PROP_ACTIONDATA);
+        addInvisiblePropertyId(AbstractWidgetModel.PROP_ACTIONDATA);
         addInvisiblePropertyId(SixteenBinaryBarModel.PROP_VALUE);
-        addInvisiblePropertyId(SixteenBinaryBarModel.PROP_COLOR_FOREGROUND);
+        addInvisiblePropertyId(AbstractWidgetModel.PROP_COLOR_FOREGROUND);
     }
-
+    
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    protected void doInitialize(SixteenBinaryBarModel widget) {
+        _defOnColor = widget.getColor(SixteenBinaryBarModel.PROP_ON_COLOR);
+        _defOffColor = widget.getColor(SixteenBinaryBarModel.PROP_OFF_COLOR);
+        
+    }
+    
     /**
      * {@inheritDoc}
      */
@@ -51,9 +68,25 @@ public class SixteenBinaryBarConnectionBehavior extends AbstractDesyConnectionBe
         super.doProcessValueChange(model, anyData);
         model.setPropertyValue(SixteenBinaryBarModel.PROP_VALUE, anyData.numberValue());
     }
-
+    
+    /**
+     * {@inheritDoc}
+     */
     @Override
-    protected void doProcessMetaDataChange(final SixteenBinaryBarModel widget, final MetaData metaData) {
-
+    protected void doProcessConnectionStateChange(SixteenBinaryBarModel widget,
+                                                  AnyDataChannel anyDataChannel) {
+        ConnectionState connectionState = anyDataChannel.getProperty().getConnectionState();
+        String onColor = isConnected(anyDataChannel) ? _defOnColor
+                : determineBackgroundColor(connectionState);
+        widget.setPropertyValue(SixteenBinaryBarModel.PROP_ON_COLOR, onColor);
+        String offColor = isConnected(anyDataChannel) ? _defOffColor
+                : determineBackgroundColor(connectionState);
+        widget.setPropertyValue(SixteenBinaryBarModel.PROP_OFF_COLOR, offColor);
+    }
+    
+    @Override
+    protected void doProcessMetaDataChange(final SixteenBinaryBarModel widget,
+                                           final MetaData metaData) {
+        
     }
 }

@@ -1,3 +1,4 @@
+
 /* 
  * Copyright (c) 2008 Stiftung Deutsches Elektronen-Synchrotron, 
  * Member of the Helmholtz Association, (DESY), HAMBURG, GERMANY.
@@ -19,16 +20,15 @@
  * PROJECT IN THE FILE LICENSE.HTML. IF THE LICENSE IS NOT INCLUDED YOU MAY FIND A COPY 
  * AT HTTP://WWW.DESY.DE/LEGAL/LICENSE.HTM
  */
- package org.csstudio.ams.filter;
+
+package org.csstudio.ams.filter;
 
 import java.sql.Connection;
 import java.sql.SQLException;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
-
 import javax.jms.MapMessage;
-
 import org.csstudio.ams.AMSException;
 import org.csstudio.ams.CycleDetectionUtil;
 import org.csstudio.ams.Log;
@@ -37,7 +37,6 @@ import org.csstudio.ams.dbAccess.configdb.CommonConjunctionFilterConditionDAO;
 import org.csstudio.ams.dbAccess.configdb.CommonConjunctionFilterConditionTObject;
 import org.csstudio.ams.dbAccess.configdb.FilterConditionDAO;
 import org.csstudio.ams.dbAccess.configdb.FilterConditionTObject;
-import org.csstudio.platform.logging.CentralLogger;
 
 /**
  * This class can be used as superclass for a conjuncted {@link IFilterCondition}.
@@ -84,12 +83,12 @@ public abstract class AbstractConjunctionFilterCondition implements IFilterCondi
 						
 						doInit(firstOperand, secondOperand);	
 					} else {
-						CentralLogger.getInstance().error(this,
+					    Log.log(this, Log.ERROR,
 								"FilterCondition (ID: "+configuration.getOwnFilterConditionReference()+") contains at least one cycle!\n" +
 										CycleDetectionUtil.createCycleDetectionMessage(conDb, cyclesFound)+"\nThe FilterCondition could not be loaded.");
 					}
 				} catch (Exception e) {
-					CentralLogger.getInstance().error(this,
+				    Log.log(this, Log.ERROR,
 							"Initialization of filter condition failed", e);
 					throw new AMSException("Initialization of filter condition failed",
 							e);

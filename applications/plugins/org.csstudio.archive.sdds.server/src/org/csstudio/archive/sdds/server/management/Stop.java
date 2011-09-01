@@ -24,7 +24,7 @@
 
 package org.csstudio.archive.sdds.server.management;
 
-import org.csstudio.archive.sdds.server.Activator;
+import org.csstudio.archive.sdds.server.SddsServerActivator;
 import org.csstudio.archive.sdds.server.RemotelyStoppable;
 import org.csstudio.platform.management.CommandParameters;
 import org.csstudio.platform.management.CommandResult;
@@ -50,7 +50,7 @@ public class Stop implements IManagementCommand
         
         if(stopMe != null) {
             stopMe.stopApplication(false);
-            result = CommandResult.createMessageResult(Activator.PLUGIN_ID + " is stopping now.");
+            result = CommandResult.createMessageResult(SddsServerActivator.PLUGIN_ID + " is stopping now.");
         } else {
             result = CommandResult.createFailureResult("Do not have a valid reference to the Application object!");
         }

@@ -26,7 +26,6 @@ import java.rmi.RemoteException;
 import java.rmi.registry.LocateRegistry;
 import java.rmi.registry.Registry;
 
-import org.csstudio.platform.logging.CentralLogger;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Platform;
@@ -35,6 +34,8 @@ import org.eclipse.core.runtime.jobs.Job;
 import org.eclipse.core.runtime.preferences.IPreferencesService;
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.swt.widgets.Display;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * Job which calls a remote method via RMI.
@@ -43,8 +44,8 @@ import org.eclipse.swt.widgets.Display;
  */
 public abstract class RemoteMethodCallJob extends Job {
 
-	private static final CentralLogger _log = CentralLogger.getInstance();
-
+    private static final Logger LOG = LoggerFactory.getLogger(RemoteMethodCallJob.class);
+    
 	/**
 	 * Creates a new job with the specified name.
 	 * 
@@ -66,7 +67,7 @@ public abstract class RemoteMethodCallJob extends Job {
 			Registry reg = locateRmiRegistry();
 			result = runWithRmiRegistry(reg);
 		} catch (final RemoteException e) {
-			_log.error(this, "Could not create reference to RMI registry", e); //$NON-NLS-1$
+			LOG.error("Could not create reference to RMI registry", e); //$NON-NLS-1$
 			final String message =
 				Messages.SaveValueDialog_ERRMSG_NO_RMI_REGISTRY +
 				e.getMessage();
@@ -93,7 +94,8 @@ public abstract class RemoteMethodCallJob extends Job {
 	 */
 	protected void showErrorDialog(final String message) {
 		Display.getDefault().asyncExec(new Runnable() {
-			public void run() {
+			@Override
+            public void run() {
 				MessageDialog.openError(null,
 						Messages.SaveValueDialog_DIALOG_TITLE, message);
 			}
@@ -113,7 +115,7 @@ public abstract class RemoteMethodCallJob extends Job {
 				Activator.PLUGIN_ID,
 				PreferenceConstants.RMI_REGISTRY_SERVER,
 				null, null);
-		_log.debug(this, "Connecting to RMI registry on host: " + registryHost); //$NON-NLS-1$
+		LOG.debug("Connecting to RMI registry on host: {}", registryHost); //$NON-NLS-1$
 		return LocateRegistry.getRegistry(registryHost);
 	}
 

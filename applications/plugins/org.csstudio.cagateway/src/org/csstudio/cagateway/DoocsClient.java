@@ -1,7 +1,6 @@
 package org.csstudio.cagateway;
 
 import java.io.File;
-
 import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
@@ -9,13 +8,12 @@ import java.util.GregorianCalendar;
 import java.util.HashMap;
 import java.util.Scanner;
 
-import org.csstudio.platform.logging.CentralLogger;
 import org.eclipse.core.runtime.FileLocator;
 import org.osgi.framework.Bundle;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import ttf.doocs.clnt.EqAdr;
-import ttf.doocs.clnt.EqCall;
-import ttf.doocs.clnt.EqData;
 
 /**
  * 
@@ -25,6 +23,8 @@ import ttf.doocs.clnt.EqData;
 
 
 public class DoocsClient implements ControlSystemClient{	
+    
+    private static final Logger LOG = LoggerFactory.getLogger(DoocsClient.class);
 	
 	private static final String urlPrefix = "DOOCS";
 	
@@ -100,7 +100,7 @@ public class DoocsClient implements ControlSystemClient{
 				blackList.remove(channel);
 				isOnBlackList = false;
 				
-				CentralLogger.getInstance().warn(this, "caGateway DOOCS: remove " + channel + " from blackList");
+				LOG.warn("caGateway DOOCS: remove {} from blackList", channel);
 			} else {
 				isOnBlackList = true;
 			}
@@ -140,7 +140,7 @@ public class DoocsClient implements ControlSystemClient{
         try {
             loc = FileLocator.getBundleFile(bundle);
         } catch (IOException e1) {
-            CentralLogger.getInstance().warn(this, "caGateway DOOCS: " + configFile +" not found");
+            LOG.warn("caGateway DOOCS: {} not found", configFile);
         }
         if (loc == null) {
             return false;
@@ -149,11 +149,11 @@ public class DoocsClient implements ControlSystemClient{
 
 		Scanner s = null;
 		System.out.println("Open file " + definitionFilePath);
-		CentralLogger.getInstance().info(this, "caGateway DOOCS: load " + configFile);
+		LOG.info("caGateway DOOCS: load {}", configFile);
 		try {
 			s = new Scanner(new FileReader(definitionFilePath));
 		} catch (FileNotFoundException e) {
-			CentralLogger.getInstance().warn(this, "caGateway DOOCS: " + configFile +" not found");
+			LOG.warn("caGateway DOOCS: {} not found", configFile);
 			return false;
 		}
 		
@@ -181,7 +181,7 @@ public class DoocsClient implements ControlSystemClient{
         try {
             loc = FileLocator.getBundleFile(bundle);
         } catch (IOException e1) {
-            CentralLogger.getInstance().warn(this, "caGateway DOOCS: " + configFile +" not found");
+            LOG.warn("caGateway DOOCS: {} not found", configFile);
         }
         if (loc == null) {
             return false;
@@ -190,11 +190,11 @@ public class DoocsClient implements ControlSystemClient{
 
 		Scanner s = null;
 		System.out.println("Open file " + definitionFilePath);
-		CentralLogger.getInstance().info(this, "caGateway DOOCS: load " + configFile);
+		LOG.info("caGateway DOOCS: load {}", configFile);
 		try {
 			s = new Scanner(new FileReader(definitionFilePath));
 		} catch (FileNotFoundException e) {
-			CentralLogger.getInstance().warn(this, "caGateway DOOCS: " + configFile +" not found");
+			LOG.warn("caGateway DOOCS: {} not found", configFile);
 			return false;
 		}
 		
@@ -265,7 +265,7 @@ public class DoocsClient implements ControlSystemClient{
 			// ToDo: MCL
 			// check here how long this channel is already on black list
 			// maybe retry
-//			CentralLogger.getInstance().debug( this, "caGateway DOOCS: findChannel: -sorry- channel is on black list : " + channelName);
+//			LOG.debug( this, "caGateway DOOCS: findChannel: -sorry- channel is on black list : " + channelName);
 			return null;
 		}
 		
@@ -337,7 +337,7 @@ public class DoocsClient implements ControlSystemClient{
 					 */
 					DoocsFloatingPV newChannel = new DoocsFloatingPV( channelName, doocsCompleteName, null, metaData);
 					thisGatewayServer.getServer().registerProcessVaribale(newChannel);
-					CentralLogger.getInstance().debug(this,"caGateway DOOCS: Created DOOCS-C channel: " + doocsCompleteName);
+					LOG.debug("caGateway DOOCS: Created DOOCS-C channel: {}", doocsCompleteName);
 					return doocsCompleteName;
 				} else {
 //					System.out.println("Cannot connect to DOOCS-C channel: " + doocsCompleteName);
@@ -360,20 +360,20 @@ public class DoocsClient implements ControlSystemClient{
 					epicsDoocsProperty = words[4];
 //					System.out.println("found: " + epicsDoocsFacility + ":" + epicsDoocsDevice + ":" + epicsDoocsLocation + ":" + epicsDoocsProperty);
 				} else {
-					CentralLogger.getInstance().debug(this,"caGateway DOOCS: incorrect number of separators - must be 4 or 5 ! in " + channelName);
+					LOG.debug("caGateway DOOCS: incorrect number of separators - must be 4 or 5 ! in {}", channelName);
 					return null;
 				}
 				doocsFacility = facilities.get(epicsDoocsFacility);
 				if ( doocsFacility == null) {
 					doocsFacility = epicsDoocsFacility;
-					CentralLogger.getInstance().debug(this,"caGateway DOOCS: error translating FACILITY: [" + epicsDoocsFacility + "]");
+					LOG.debug("caGateway DOOCS: error translating FACILITY: [{}]", epicsDoocsFacility);
 					
 					reverseCheck = facilitiesReverse.get(epicsDoocsFacility);
 					if ( reverseCheck != null) {
 						System.out.println("use : " + reverseCheck + " instead in EPICS channel name! " + channelName);
 					}
-					CentralLogger.getInstance().debug( this, "caGateway DOOCS: error translating FACILITY: [" + epicsDoocsFacility + "] in " + channelName + "  probably no property defined - wromg umber of separated (:) strings");
-					CentralLogger.getInstance().warn( this, "caGateway DOOCS: Error  put " + channelName + " on blackList");
+					LOG.debug( "caGateway DOOCS: error translating FACILITY: [{}] in {} probably no property defined - wromg umber of separated (:) strings", epicsDoocsFacility, channelName);
+					LOG.warn( "caGateway DOOCS: Error  put {} on blackList", channelName);
 		        	addToBlackList(channelName, new GregorianCalendar());
 					return null;
 				} else {
@@ -383,10 +383,10 @@ public class DoocsClient implements ControlSystemClient{
 				doocsDevice = devices.get(epicsDoocsDevice);
 				if ( doocsDevice == null) {
 					doocsDevice = epicsDoocsDevice;
-					CentralLogger.getInstance().debug(this,"caGateway DOOCS: error translating DEVICE: [" + epicsDoocsDevice + "]");
+					LOG.debug("caGateway DOOCS: error translating DEVICE: [{}]", epicsDoocsDevice);
 					reverseCheck = devicesReverse.get(epicsDoocsDevice);
 					if ( reverseCheck != null) {
-						CentralLogger.getInstance().debug(this,"caGateway DOOCS: use : " + reverseCheck + " instead in EPICS channel name! " + channelName);
+						LOG.debug("caGateway DOOCS: use : {} instead in EPICS channel name! {}", reverseCheck, channelName);
 					}
 				} else {
 //					System.out.println("translated DEVICE: " + epicsDoocsDevice + " into: " + doocsDevice);
@@ -396,10 +396,10 @@ public class DoocsClient implements ControlSystemClient{
 				if ( doocsLocation == null) {
 					// use location 'as is' and give it a try
 					doocsLocation = epicsDoocsLocation;
-					CentralLogger.getInstance().debug(this,"caGateway DOOCS: error translating LOCATION: [" + epicsDoocsLocation + "]");
+					LOG.debug("caGateway DOOCS: error translating LOCATION: [{}]", epicsDoocsLocation);
 					reverseCheck = locationsReverse.get(epicsDoocsLocation);
 					if ( reverseCheck != null) {
-						CentralLogger.getInstance().debug(this,"caGateway DOOCS: use : " + reverseCheck + " instead in EPICS channel name! " + channelName );
+						LOG.debug("caGateway DOOCS: use : {} instead in EPICS channel name! {}",reverseCheck , channelName);
 					}
 				} else {
 //					System.out.println("translated LOCATION: " + epicsDoocsLocation + " into: " + doocsLocation);
@@ -414,7 +414,7 @@ public class DoocsClient implements ControlSystemClient{
 				if ( (doocsProperty == null) && ( reverseCheck == null)) {
 					// ok the property was not entered in 'the EPICS way'
 					// and not the DOOCS way
-					CentralLogger.getInstance().debug(this,"caGateway DOOCS: error translating PROPERTY: [" + epicsDoocsProperty + "] in " + channelName + " do NOT create DOOCS channel");
+					LOG.debug("caGateway DOOCS: error translating PROPERTY: [{}] in {} do NOT create DOOCS channel", epicsDoocsProperty, channelName);
 					addToBlackList(channelName, new GregorianCalendar());
 					return null;
 				} else if ( doocsProperty == null){
@@ -445,10 +445,10 @@ public class DoocsClient implements ControlSystemClient{
 					 */
 					DoocsFloatingPV newChannel = new DoocsFloatingPV( channelName, doocsCompleteName, null, metaData) ;
 					thisGatewayServer.getServer().registerProcessVaribale(newChannel);
-					CentralLogger.getInstance().debug(this,"caGateway DOOCS: Created DOOCS channel: " + doocsCompleteName);
+					LOG.debug("caGateway DOOCS: Created DOOCS channel: {}", doocsCompleteName);
 					return doocsCompleteName;
 				} else {
-					CentralLogger.getInstance().debug(this,"Cannot connect to DOOCS channel: " + doocsCompleteName);
+					LOG.debug("Cannot connect to DOOCS channel: {}", doocsCompleteName);
 					return null;
 				}
 			}
@@ -459,12 +459,14 @@ public class DoocsClient implements ControlSystemClient{
 	}
 
 
-	public Object findChannelName(String channelName) {
+	@Override
+    public Object findChannelName(String channelName) {
 		// TODO Auto-generated method stub
 		return null;
 	}
 
-	public void registerObjectInRemoteControlSystem(
+	@Override
+    public void registerObjectInRemoteControlSystem(
 			RemoteControlSystemCallback callback, Object object) {
 		// TODO Auto-generated method stub	
 	}

@@ -1,3 +1,4 @@
+
 package org.csstudio.nams.service.regelwerkbuilder.extensionPoint;
 
 import org.csstudio.nams.service.regelwerkbuilder.declaration.RegelwerkBuilderService;
@@ -5,5 +6,4 @@ import org.csstudio.nams.service.regelwerkbuilder.declaration.RegelwerkBuilderSe
 public interface RegelwerkBuilderServiceFactory {
 
 	public RegelwerkBuilderService createService();
-
 }

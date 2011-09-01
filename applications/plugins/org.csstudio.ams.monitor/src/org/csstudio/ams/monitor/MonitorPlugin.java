@@ -1,3 +1,4 @@
+
 /* 
  * Copyright (c) 2008 Stiftung Deutsches Elektronen-Synchrotron, 
  * Member of the Helmholtz Association, (DESY), HAMBURG, GERMANY.
@@ -19,7 +20,8 @@
  * PROJECT IN THE FILE LICENSE.HTML. IF THE LICENSE IS NOT INCLUDED YOU MAY FIND A COPY 
  * AT HTTP://WWW.DESY.DE/LEGAL/LICENSE.HTM
  */
- package org.csstudio.ams.monitor;
+
+package org.csstudio.ams.monitor;
 
 import java.sql.Connection;
 
@@ -51,7 +53,8 @@ public class MonitorPlugin extends AbstractUIPlugin {
 	 * (non-Javadoc)
 	 * @see org.eclipse.ui.plugin.AbstractUIPlugin#start(org.osgi.framework.BundleContext)
 	 */
-	public void start(BundleContext context) throws Exception {
+	@Override
+    public void start(BundleContext context) throws Exception {
 		super.start(context);
 	}
 
@@ -59,13 +62,12 @@ public class MonitorPlugin extends AbstractUIPlugin {
 	 * (non-Javadoc)
 	 * @see org.eclipse.ui.plugin.AbstractUIPlugin#stop(org.osgi.framework.BundleContext)
 	 */
-	public void stop(BundleContext context) throws Exception 
-	{
-		plugin = null;
-
+	@Override
+    public void stop(BundleContext context) throws Exception {
+		
+	    plugin = null;
 		AmsConnectionFactory.closeConnection(con);
 		con = null;
-		
 		super.stop(context);
 	}
 
@@ -78,16 +80,12 @@ public class MonitorPlugin extends AbstractUIPlugin {
 		return plugin;
 	}
 
-	public static Connection getConnection()
-	{
-		if(con == null)
-		{
-			try
-			{
+	public static Connection getConnection() {
+		
+	    if(con == null) {
+			try {
 				con = AmsConnectionFactory.getApplicationDB();
-			}
-			catch(Exception ex)
-			{
+			} catch(Exception ex) {
 				Log.log(Log.FATAL, ex);
 			}		
 		}

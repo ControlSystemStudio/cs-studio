@@ -23,8 +23,6 @@
 
 package org.csstudio.tine2jms;
 
-import org.apache.log4j.Logger;
-import org.csstudio.platform.logging.CentralLogger;
 import org.eclipse.core.runtime.Plugin;
 import org.osgi.framework.BundleContext;
 import org.remotercp.common.tracker.GenericServiceTracker;
@@ -34,47 +32,44 @@ import org.remotercp.service.connection.session.ISessionService;
 /**
  * The activator class controls the plug-in life cycle
  */
-public class TineToJmsActivator extends Plugin
-{
-	/** The plug-in ID */
+public class TineToJmsActivator extends Plugin {
+	
+    /** The plug-in ID */
 	public static final String PLUGIN_ID = "org.csstudio.tine2jms";
 
 	/** The shared instance */
 	private static TineToJmsActivator plugin;
 
-    /** Logger */
-    private Logger logger = null;
-    
 	private GenericServiceTracker<ISessionService> _genericServiceTracker;
     
 	/**
 	 * The constructor
 	 */
-	public TineToJmsActivator() {}
+	public TineToJmsActivator() {
+	    // Nothing to do
+	}
 
 	/*
 	 * (non-Javadoc)
 	 * @see org.eclipse.core.runtime.Plugins#start(org.osgi.framework.BundleContext)
 	 */
-	public void start(BundleContext context) throws Exception
-	{
-		super.start(context);
+	@Override
+    public void start(BundleContext context) throws Exception {
+		
+	    super.start(context);
 		plugin = this;
 		
 		_genericServiceTracker = new GenericServiceTracker<ISessionService>(
 				context, ISessionService.class);
 		_genericServiceTracker.open();
-		
-        logger = CentralLogger.getInstance().getLogger(this);
-        logger.info("Tine2Jms started...");
 	}
 
 	/*
 	 * (non-Javadoc)
 	 * @see org.eclipse.core.runtime.Plugin#stop(org.osgi.framework.BundleContext)
 	 */
-	public void stop(BundleContext context) throws Exception
-	{
+	@Override
+    public void stop(BundleContext context) throws Exception {
 		plugin = null;
 		super.stop(context);
 	}
@@ -84,8 +79,7 @@ public class TineToJmsActivator extends Plugin
 	 *
 	 * @return the shared instance
 	 */
-	public static TineToJmsActivator getDefault()
-	{
+	public static TineToJmsActivator getDefault() {
 		return plugin;
 	}
 	

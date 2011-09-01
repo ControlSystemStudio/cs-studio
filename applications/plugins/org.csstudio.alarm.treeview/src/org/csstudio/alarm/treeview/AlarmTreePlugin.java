@@ -43,7 +43,7 @@ public final class AlarmTreePlugin extends AbstractCssUiPlugin {
     /**
      * The plug-in id.
      */
-    public static final String PLUGIN_ID = "import org.csstudio.alarm.treeview.";
+    public static final String PLUGIN_ID = "org.csstudio.alarm.treeview";
 
     /**
      * The service tracker reference for the LDAP service.
@@ -80,7 +80,7 @@ public final class AlarmTreePlugin extends AbstractCssUiPlugin {
      */
     public AlarmTreePlugin() {
         if (INSTANCE != null) {
-            throw new IllegalStateException("Activator " + PLUGIN_ID + " does already exist.");
+            throw new IllegalStateException("TreeModelActivator " + PLUGIN_ID + " does already exist.");
         }
         INSTANCE = this; // Antipattern is required by the framework!
     }
@@ -93,9 +93,6 @@ public final class AlarmTreePlugin extends AbstractCssUiPlugin {
 
         _alarmService = getService(context, IAlarmService.class);
         _alarmConfigurationService = getService(context, IAlarmConfigurationService.class);
-
-        final Bundle servBundle = Platform.getBundle("org.csstudio.utility.ldap.service.impl");
-        servBundle.start();
 
         _ldapServiceTracker = new LdapServiceTracker(context);
         _ldapServiceTracker.open();

@@ -9,10 +9,10 @@ package org.csstudio.swt.xygraph.toolbar;
 
 import org.csstudio.swt.xygraph.Messages;
 import org.csstudio.swt.xygraph.figures.Annotation;
+import org.csstudio.swt.xygraph.figures.Annotation.CursorLineStyle;
 import org.csstudio.swt.xygraph.figures.Axis;
 import org.csstudio.swt.xygraph.figures.Trace;
 import org.csstudio.swt.xygraph.figures.XYGraph;
-import org.csstudio.swt.xygraph.figures.Annotation.CursorLineStyle;
 import org.csstudio.swt.xygraph.util.XYGraphMediaFactory;
 import org.eclipse.jface.preference.ColorSelector;
 import org.eclipse.swt.SWT;

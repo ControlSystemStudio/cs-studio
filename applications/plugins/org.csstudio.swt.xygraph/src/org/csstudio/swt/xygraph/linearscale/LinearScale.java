@@ -8,7 +8,6 @@
 package org.csstudio.swt.xygraph.linearscale;
 
 
-import org.csstudio.swt.xygraph.util.XYGraphMediaFactory;
 import org.eclipse.draw2d.FigureUtilities;
 import org.eclipse.draw2d.geometry.Dimension;
 import org.eclipse.draw2d.geometry.Rectangle;
@@ -62,8 +61,7 @@ public class LinearScale extends AbstractScale {
     
     private int margin;
     
-    private final static Font DEFAULT_FONT = XYGraphMediaFactory.getInstance().getFont(
-    		XYGraphMediaFactory.FONT_ARIAL);
+ 
     
     /**
      * Constructor.
@@ -74,7 +72,8 @@ public class LinearScale extends AbstractScale {
         tickMarks = new LinearScaleTickMarks(this);                  
         add(tickMarks);        
         add(tickLabels);    
-        setFont(DEFAULT_FONT);
+//        setFont(XYGraphMediaFactory.getInstance().getFont(
+//        		XYGraphMediaFactory.FONT_ARIAL));
  
     }
 	
@@ -167,7 +166,7 @@ public class LinearScale extends AbstractScale {
 	 * If false, return the absolute position which has the scale bounds counted.
 	 * @return position in pixels
 	 */
-	public int getValuePosition(double value, boolean relative) {
+	public int getValuePosition(double value, boolean relative) {		
 		if(dirty)
 			updateTick();
 		//coerce to range		

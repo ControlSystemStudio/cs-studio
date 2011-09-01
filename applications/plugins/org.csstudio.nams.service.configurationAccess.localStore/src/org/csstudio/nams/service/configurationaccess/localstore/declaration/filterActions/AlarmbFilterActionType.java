@@ -1,26 +1,30 @@
+
 /**
  * 
  */
+
 package org.csstudio.nams.service.configurationaccess.localstore.declaration.filterActions;
 
 public enum AlarmbFilterActionType implements FilterActionType {
 	SMS(1, "SMS an Person"), VMAIL(4, "VMail an Person"), EMAIL(7,
 			"EMail an Person");
 
-	private final int id;
-	private final String description;
+	private final int _id;
+	private final String _description;
 
 	private AlarmbFilterActionType(final int id,
 			final String description) {
-		this.id = id;
-		this.description = description;
+		this._id = id;
+		this._description = description;
 	}
 
-	public short asDatabaseId() {
-		return (short) this.id;
+	@Override
+    public short asDatabaseId() {
+		return (short) this._id;
 	}
 
-	public String getDescription() {
-		return this.description;
+	@Override
+    public String getDescription() {
+		return this._description;
 	}
 }

@@ -74,7 +74,7 @@ public final class StopWatch {
             return _provider.getCurrentTimeInNanos() - _startInNS;
         }
         public long getElapsedTimeInMillis() {
-            return (long) (getElapsedTimeInNS() / 1.0e6);
+            return (long) (getElapsedTimeInNS() / 1e6);
         }
         public void restart() {
             _startInNS = _provider.getCurrentTimeInNanos();

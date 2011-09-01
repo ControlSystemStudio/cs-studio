@@ -8,5 +8,37 @@
             id="org.csstudio.utility.pvamanger.widgets.test.VImageDisplayDemo"
             name="VImageDisplay Demo">
       </view>
+      <view
+            class="org.csstudio.utility.pvamanger.widgets.test.VTableDisplayDemo"
+            id="org.csstudio.utility.pvamanger.widgets.test.VTableDisplayDemo"
+            name="VTableDisplay Demo">
+      </view>
+   </extension>
+   <extension
+         point="org.eclipse.ui.menus">
+      <menuContribution
+            allPopups="false"
+            locationURI="menu:test">
+         <command
+               commandId="org.eclipse.ui.views.showView"
+               icon="platform:/plugin/org.csstudio.ui.menu/icons/test.png"
+               label="VTableDisplay Demo"
+               style="push">
+            <parameter
+                  name="org.eclipse.ui.views.showView.viewId"
+                  value="org.csstudio.utility.pvamanger.widgets.test.VTableDisplayDemo">
+            </parameter>
+         </command>
+         <command
+               commandId="org.eclipse.ui.views.showView"
+               icon="platform:/plugin/org.csstudio.ui.menu/icons/test.png"
+               label="VImageDisplay Demo"
+               style="push">
+            <parameter
+                  name="org.eclipse.ui.views.showView.viewId"
+                  value="org.csstudio.utility.pvamanger.widgets.test.VImageDisplayDemo">
+            </parameter>
+         </command>
+      </menuContribution>
    </extension>
 </plugin>

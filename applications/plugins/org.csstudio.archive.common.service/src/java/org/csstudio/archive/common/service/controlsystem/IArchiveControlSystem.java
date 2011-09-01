@@ -23,7 +23,7 @@ package org.csstudio.archive.common.service.controlsystem;
 
 import javax.annotation.Nonnull;
 
-import org.csstudio.domain.desy.common.id.Identifiable;
+import org.csstudio.domain.desy.common.id.IIdentifiable;
 import org.csstudio.domain.desy.system.ControlSystemType;
 
 /**
@@ -32,7 +32,7 @@ import org.csstudio.domain.desy.system.ControlSystemType;
  * @author bknerr
  * @since 17.02.2011
  */
-public interface IArchiveControlSystem extends Identifiable<ArchiveControlSystemId> {
+public interface IArchiveControlSystem extends IIdentifiable<ArchiveControlSystemId> {
 
     @Nonnull
     String getName();

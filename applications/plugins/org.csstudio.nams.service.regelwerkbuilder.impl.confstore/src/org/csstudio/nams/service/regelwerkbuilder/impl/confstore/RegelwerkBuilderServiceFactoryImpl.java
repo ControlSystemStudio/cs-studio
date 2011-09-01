@@ -1,3 +1,4 @@
+
 package org.csstudio.nams.service.regelwerkbuilder.impl.confstore;
 
 import org.csstudio.nams.service.regelwerkbuilder.declaration.RegelwerkBuilderService;
@@ -10,9 +11,9 @@ public class RegelwerkBuilderServiceFactoryImpl implements
 		// TODO Auto-generated constructor stub
 	}
 
-	public RegelwerkBuilderService createService() {
+	@Override
+    public RegelwerkBuilderService createService() {
 		// TODO Auto-generated method stub
 		return new RegelwerkBuilderServiceImpl();
 	}
-
 }

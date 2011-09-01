@@ -1,6 +1,6 @@
 Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
-Bundle-Name: Service
+Bundle-Name: Archive Service Interfaces
 Bundle-SymbolicName: org.csstudio.archive.common.service
 Bundle-Version: 1.0.0.qualifier
 Bundle-Vendor: Desy <css-developer@desy.de>, Bastian Knerr
@@ -12,6 +12,7 @@ Require-Bundle: org.eclipse.core.runtime;bundle-version="3.6.0",
  org.csstudio.utility.pvmanager;bundle-version="0.2.0",
  org.joda.time;bundle-version="1.6.2",
  com.google.common,
+ com.google.protobuf;bundle-version="2.4.1",
  javax.annotation,
  org.slf4j;bundle-version="1.6.1"
 Export-Package: org.csstudio.archive.common.service,
@@ -23,3 +24,4 @@ Export-Package: org.csstudio.archive.common.service,
  org.csstudio.archive.common.service.enginestatus,
  org.csstudio.archive.common.service.sample,
  org.csstudio.archive.common.service.util
+Bundle-ClassPath: .

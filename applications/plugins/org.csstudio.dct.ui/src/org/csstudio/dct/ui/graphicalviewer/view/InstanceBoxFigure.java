@@ -1,20 +1,22 @@
 package org.csstudio.dct.ui.graphicalviewer.view;
 
-import org.csstudio.platform.logging.CentralLogger;
 import org.csstudio.platform.ui.util.CustomMediaFactory;
 import org.eclipse.draw2d.ActionEvent;
 import org.eclipse.draw2d.ActionListener;
 import org.eclipse.draw2d.Button;
-import org.eclipse.draw2d.Clickable;
-import org.eclipse.draw2d.Label;
 import org.eclipse.draw2d.LineBorder;
 import org.eclipse.draw2d.Panel;
 import org.eclipse.draw2d.ToolbarLayout;
 import org.eclipse.draw2d.geometry.Dimension;
 import org.eclipse.swt.SWT;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class InstanceBoxFigure extends Panel {
-	private Button button;
+    
+    private static final Logger LOG = LoggerFactory.getLogger(InstanceBoxFigure.class);
+    
+	private final Button button;
 	
 	public InstanceBoxFigure(final String caption) {
 		setLayoutManager(new ToolbarLayout());
@@ -24,7 +26,7 @@ public class InstanceBoxFigure extends Panel {
 		button  = new Button(caption);
 		button.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent event) {
-				CentralLogger.getInstance().info(null, "ddsads"+caption);
+				LOG.info("ddsads {}",caption);
 			}
 		});
 		

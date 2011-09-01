@@ -13,7 +13,7 @@ import javax.servlet.http.HttpServletResponse;
 
 import org.csstudio.archive.common.engine.model.ArchiveChannel;
 import org.csstudio.archive.common.engine.model.ArchiveGroup;
-import org.csstudio.archive.common.engine.model.BufferStats;
+import org.csstudio.archive.common.engine.model.SampleBufferStatistics;
 import org.csstudio.archive.common.engine.model.EngineModel;
 import org.csstudio.archive.common.engine.model.SampleBuffer;
 import org.csstudio.domain.desy.system.ISystemVariable;
@@ -65,11 +65,11 @@ class GroupResponse extends AbstractResponse {
                                       @Nonnull final HTMLWriter html) {
         // Basic group info
         html.openTable(2, new String[] {
-            Messages.HTTP_STATUS
+            Messages.HTTP_STATUS,
         });
         html.tableLine(new String[] {
             Messages.HTTP_STATE,
-            group.isEnabled() ? Messages.HTTP_ENABLED : Messages.HTTP_DISABLED
+            group.isEnabled() ? Messages.HTTP_ENABLED : Messages.HTTP_DISABLED,
         });
         html.closeTable();
     }
@@ -85,7 +85,7 @@ class GroupResponse extends AbstractResponse {
             Messages.HTTP_COLUMN_RECEIVEDVALUES,
             Messages.HTTP_QUEUELEN,
             Messages.HTTP_COLUMN_QUEUEAVG,
-            Messages.HTTP_COLUMN_QUEUEMAX
+            Messages.HTTP_COLUMN_QUEUEMAX,
         });
         for (final ArchiveChannel<?, ?> channel : group.getChannels()) {
             try {
@@ -93,7 +93,7 @@ class GroupResponse extends AbstractResponse {
             final String connected = channel.isConnected() ? Messages.HTTP_YES :
                                                              HTMLWriter.makeRedText(Messages.HTTP_NO);
             final SampleBuffer<?, ?, ?> buffer = channel.getSampleBuffer();
-            final BufferStats stats = buffer.getBufferStats();
+            final SampleBufferStatistics stats = buffer.getBufferStats();
             final ISystemVariable<?> mostRecentSample = channel.getMostRecentSample();
 
             final String curVal = limitLength(getValueAsString(mostRecentSample), MAX_VALUE_DISPLAY);

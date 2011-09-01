@@ -24,6 +24,7 @@ import org.csstudio.sds.model.AbstractWidgetModel;
 import org.csstudio.sds.model.BorderStyleEnum;
 import org.csstudio.sds.model.TextTypeEnum;
 import org.epics.css.dal.simple.AnyData;
+import org.epics.css.dal.simple.AnyDataChannel;
 import org.epics.css.dal.simple.MetaData;
 
 /**
@@ -37,16 +38,18 @@ import org.epics.css.dal.simple.MetaData;
  */
 public class TextinputConnectionBehavior extends AbstractDesyConnectionBehavior<TextInputModel> {
     
+    private boolean _defTransparent;
+
     /**
      * Constructor.
      */
     public TextinputConnectionBehavior() {
         addInvisiblePropertyId(TextInputModel.PROP_INPUT_TEXT);
-        addInvisiblePropertyId(TextInputModel.PROP_ACTIONDATA);
-        addInvisiblePropertyId(TextInputModel.PROP_PERMISSSION_ID);
-        addInvisiblePropertyId(TextInputModel.PROP_BORDER_WIDTH);
-        addInvisiblePropertyId(TextInputModel.PROP_BORDER_STYLE);
-        addInvisiblePropertyId(TextInputModel.PROP_BORDER_COLOR);
+        addInvisiblePropertyId(AbstractWidgetModel.PROP_ACTIONDATA);
+        addInvisiblePropertyId(AbstractWidgetModel.PROP_PERMISSSION_ID);
+        addInvisiblePropertyId(AbstractWidgetModel.PROP_BORDER_WIDTH);
+        addInvisiblePropertyId(AbstractWidgetModel.PROP_BORDER_STYLE);
+        addInvisiblePropertyId(AbstractWidgetModel.PROP_BORDER_COLOR);
     }
     
     /**
@@ -55,9 +58,10 @@ public class TextinputConnectionBehavior extends AbstractDesyConnectionBehavior<
     @Override
     protected void doInitialize(final TextInputModel widget) {
         super.doInitialize(widget);
-        widget.setPropertyValue(TextInputModel.PROP_BORDER_STYLE,
+        widget.setPropertyValue(AbstractWidgetModel.PROP_BORDER_STYLE,
                                 BorderStyleEnum.LOWERED.getIndex());
-        if (widget.getValueType().equals(TextTypeEnum.TEXT)) {
+        _defTransparent = widget.getBooleanProperty(TextInputModel.PROP_TRANSPARENT);
+        if(widget.getValueType().equals(TextTypeEnum.TEXT)) {
             widget.setJavaType(String.class);
         }
         
@@ -71,12 +75,22 @@ public class TextinputConnectionBehavior extends AbstractDesyConnectionBehavior<
         super.doProcessValueChange(model, anyData);
         // .. fill level (influenced by current value)
         model.setPropertyValue(TextInputModel.PROP_INPUT_TEXT, anyData.stringValue());
-        System.out.println("getPrecision2: " + anyData.getMetaData().getPrecision());
+    }
+    
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    protected void doProcessConnectionStateChange(TextInputModel widget,
+                                                  AnyDataChannel anyDataChannel) {
+        super.doProcessConnectionStateChange(widget, anyDataChannel);
+        boolean isTransparent = isConnected(anyDataChannel) && _defTransparent;
+        widget.setPropertyValue(TextInputModel.PROP_TRANSPARENT, isTransparent);
     }
     
     @Override
     protected void doProcessMetaDataChange(final TextInputModel widget, final MetaData metaData) {
-        if (metaData != null) {
+        if(metaData != null) {
             switch (metaData.getAccessType()) {
                 case NONE:
                     widget.setPropertyValue(AbstractWidgetModel.PROP_CURSOR, CursorService

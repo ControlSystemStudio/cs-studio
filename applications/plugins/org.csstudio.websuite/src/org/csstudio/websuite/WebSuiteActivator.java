@@ -23,19 +23,26 @@
 
 package org.csstudio.websuite;
 
-import org.csstudio.platform.logging.CentralLogger;
-import org.eclipse.core.runtime.Plugin;
+import org.osgi.framework.BundleActivator;
 import org.osgi.framework.BundleContext;
 import org.remotercp.common.tracker.GenericServiceTracker;
 import org.remotercp.common.tracker.IGenericServiceListener;
 import org.remotercp.service.connection.session.ISessionService;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * The activator class controls the plug-in life cycle
+ * 
+ * @author Markus Moeller
+ * @version 1.0
  */
-public class WebSuiteActivator extends Plugin
-{
-	/** The plug-in ID */
+public class WebSuiteActivator implements BundleActivator {
+    
+    /** the class logger */
+    private static final Logger LOG = LoggerFactory.getLogger(WebSuiteActivator.class);
+	
+    /** The plug-in ID */
 	public static final String PLUGIN_ID = "org.csstudio.websuite";
 
 	/** The shared instance */
@@ -44,31 +51,30 @@ public class WebSuiteActivator extends Plugin
 	/** The bundle context */
 	private static BundleContext bundleContext;
 	
+	/** Service tracker for XMPP login service */
 	private GenericServiceTracker<ISessionService> _genericServiceTracker;
 	
-	/** The constructor */
-	public WebSuiteActivator() {
-		// Nothing to do
-	}
-
+	/**
+	 * 
+	 * @return The BundleContext object of this class
+	 */
 	public static BundleContext getBundleContext() {
 	    return bundleContext;
 	}
 	
 	/** 
-     * @see org.eclipse.core.runtime.Plugins#start(org.osgi.framework.BundleContext)
+     * @see org.eclipse.core.runtime.Plugin#start(org.osgi.framework.BundleContext)
      */
     @Override
 	public void start(BundleContext context) throws Exception {
         
-        super.start(context);
-        bundleContext = context;
+        WebSuiteActivator.bundleContext = context;
         plugin = this;
 		_genericServiceTracker = new GenericServiceTracker<ISessionService>(
 				context, ISessionService.class);
 		_genericServiceTracker.open();
         
-        CentralLogger.getInstance().info(this, PLUGIN_ID + " started.");
+        LOG.info("{} started.",PLUGIN_ID);
     }
 
     /** 
@@ -77,9 +83,9 @@ public class WebSuiteActivator extends Plugin
     @Override
 	public void stop(BundleContext context) throws Exception {
         
+        WebSuiteActivator.bundleContext = null;
         plugin = null;
-        super.stop(context);
-        CentralLogger.getInstance().info(this, PLUGIN_ID + " stopped.");
+        LOG.info("{} stopped.", PLUGIN_ID);
     }
 
 	/**

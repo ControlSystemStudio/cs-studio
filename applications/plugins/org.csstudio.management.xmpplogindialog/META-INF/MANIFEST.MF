@@ -2,7 +2,7 @@ Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: XMPP Login Dialog (ECF-based)
 Bundle-SymbolicName: org.csstudio.management.xmpplogindialog;singleton:=true
-Bundle-Version: 1.0.0
+Bundle-Version: 1.0.0.qualifier
 Bundle-Activator: org.csstudio.management.internal.xmpplogindialog.Activator
 Bundle-Vendor: Desy, Jan Hatje <css-developer@desy.de>
 Require-Bundle: org.eclipse.ui,
@@ -13,5 +13,5 @@ Require-Bundle: org.eclipse.ui,
  org.eclipse.ecf.identity;bundle-version="3.1.100",
  org.csstudio.auth;bundle-version="1.0.0",
  org.csstudio.auth.ui;bundle-version="1.0.0"
-Bundle-RequiredExecutionEnvironment: J2SE-1.5
+Bundle-RequiredExecutionEnvironment: JavaSE-1.6
 Bundle-ActivationPolicy: lazy

@@ -7,7 +7,7 @@ import org.eclipse.swt.SWT;
 import org.eclipse.swt.graphics.Color;
 import org.eclipse.swt.graphics.Font;
 import org.eclipse.swt.widgets.Display;
-import org.epics.pvmanager.data.Util;
+import org.epics.pvmanager.data.ValueUtil;
 
 public class PVColumnLabelProvider extends ColumnLabelProvider {
 
@@ -25,7 +25,7 @@ public class PVColumnLabelProvider extends ColumnLabelProvider {
 		} else if (item.getException() != null) {
 			return red;
 		} else if (item.getValue() != null) {
-			String alarm = Util.alarmOf(item.getValue()).getAlarmSeverity()
+			String alarm = ValueUtil.alarmOf(item.getValue()).getAlarmSeverity()
 					.toString();
 			if (alarm.equals("MAJOR")) {
 				return red;

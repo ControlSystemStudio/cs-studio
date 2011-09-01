@@ -31,16 +31,17 @@ import org.eclipse.core.runtime.preferences.IEclipsePreferences;
 /**
  * Class used to initialize default preference values.
  */
-public class PreferenceInitializer extends AbstractPreferenceInitializer
-{
+public class PreferenceInitializer extends AbstractPreferenceInitializer {
+    
     /*
      * (non-Javadoc)
      *
      * @see org.eclipse.core.runtime.preferences.AbstractPreferenceInitializer#initializeDefaultPreferences()
      */
-    public void initializeDefaultPreferences()
-    {
-    	IEclipsePreferences prefs = new DefaultScope().getNode(MessageMinderActivator.PLUGIN_ID);
+    @Override
+    public void initializeDefaultPreferences() {
+    	
+        IEclipsePreferences prefs = new DefaultScope().getNode(MessageMinderActivator.PLUGIN_ID);
 
     	prefs.putInt(MessageMinderPreferenceKey.P_INT_MAX_YOUNG_MASSAGES, 4); //$NON-NLS-1$
         prefs.putLong(MessageMinderPreferenceKey.P_LONG_PERIOD, 20); //$NON-NLS-1$
@@ -52,5 +53,4 @@ public class PreferenceInitializer extends AbstractPreferenceInitializer
         prefs.put(MessageMinderPreferenceKey.P_STRING_XMPP_PASSWORD, "ams");
 
     }
-
 }

@@ -1,3 +1,4 @@
+
 /* 
  * Copyright (c) 2008 Stiftung Deutsches Elektronen-Synchrotron, 
  * Member of the Helmholtz Association, (DESY), HAMBURG, GERMANY.
@@ -19,7 +20,8 @@
  * PROJECT IN THE FILE LICENSE.HTML. IF THE LICENSE IS NOT INCLUDED YOU MAY FIND A COPY 
  * AT HTTP://WWW.DESY.DE/LEGAL/LICENSE.HTM
  */
- package org.csstudio.ams;
+
+package org.csstudio.ams;
 
 public class ExitException extends Exception implements AmsConstants
 {
@@ -32,31 +34,30 @@ public class ExitException extends Exception implements AmsConstants
 	 * 
 	 * @param arg	String
 	 */
-	public ExitException(String arg)
-	{super(arg);}
+	public ExitException(String arg) {
+	    super(arg);
+	}
 	
 	/**
 	 * Constructor of ExitException.
 	 * 
 	 * @param arg			String
-	 * @param iErrorCode	int
+	 * @param error	int
 	 */
-	public ExitException(String arg, int iErrorCode)
-	{
+	public ExitException(String arg, int error) {
 		super(arg);
-		this.iErrorCode = iErrorCode;
+		this.iErrorCode = error;
 	}
 	
 	/**
 	 * Constructor of ExitException.
 	 * 
 	 * @param arg			Throwable
-	 * @param iErrorCode	int
+	 * @param error	int
 	 */
-	public ExitException(Throwable arg, int iErrorCode)
-	{
+	public ExitException(Throwable arg, int error) {
 		super(arg);
-		this.iErrorCode = iErrorCode;
+		this.iErrorCode = error;
 	}
 
 	/**
@@ -64,8 +65,7 @@ public class ExitException extends Exception implements AmsConstants
 	 * 
 	 * @return int
 	 */
-	public int getErrorCode()
-	{
+	public int getErrorCode() {
 		return iErrorCode;
 	}
 }

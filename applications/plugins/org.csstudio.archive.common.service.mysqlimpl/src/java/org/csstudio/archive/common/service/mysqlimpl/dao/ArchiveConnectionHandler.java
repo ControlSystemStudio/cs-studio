@@ -21,27 +21,20 @@
  */
 package org.csstudio.archive.common.service.mysqlimpl.dao;
 
-import static org.csstudio.archive.common.service.mysqlimpl.MySQLArchiveServicePreference.DATABASE_NAME;
-import static org.csstudio.archive.common.service.mysqlimpl.MySQLArchiveServicePreference.FAILOVER_HOST;
-import static org.csstudio.archive.common.service.mysqlimpl.MySQLArchiveServicePreference.HOST;
-import static org.csstudio.archive.common.service.mysqlimpl.MySQLArchiveServicePreference.MAX_ALLOWED_PACKET_IN_KB;
-import static org.csstudio.archive.common.service.mysqlimpl.MySQLArchiveServicePreference.PASSWORD;
-import static org.csstudio.archive.common.service.mysqlimpl.MySQLArchiveServicePreference.PORT;
-import static org.csstudio.archive.common.service.mysqlimpl.MySQLArchiveServicePreference.USER;
-
 import java.sql.Connection;
 import java.sql.DatabaseMetaData;
 import java.sql.SQLException;
 
-import javax.annotation.CheckForNull;
 import javax.annotation.Nonnull;
 
 import org.csstudio.archive.common.service.ArchiveConnectionException;
+import org.csstudio.archive.common.service.mysqlimpl.MySQLArchivePreferenceService;
 import org.csstudio.archive.common.service.mysqlimpl.persistengine.PersistDataWorker;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.google.common.base.Strings;
+import com.google.inject.Inject;
 import com.mysql.jdbc.jdbc2.optional.MysqlDataSource;
 
 /**
@@ -52,13 +45,13 @@ import com.mysql.jdbc.jdbc2.optional.MysqlDataSource;
  * @author bknerr
  * @since 11.11.2010
  */
-public enum ArchiveConnectionHandler {
-    INSTANCE;
-
-    private static final String ARCHIVE_CONNECTION_EXCEPTION_MSG = "Archive connection could not be established";
+public class ArchiveConnectionHandler {
 
     static final Logger LOG = LoggerFactory.getLogger(ArchiveConnectionHandler.class);
     static final Logger WORKER_LOG = LoggerFactory.getLogger(PersistDataWorker.class);
+
+    private static final String ARCHIVE_CONNECTION_EXCEPTION_MSG =
+        "Archive connection could not be established";
 
 
     /**
@@ -67,64 +60,41 @@ public enum ArchiveConnectionHandler {
     private final MysqlDataSource _dataSource;
 
     /**
-     * Any thread owns a connection.
+     * Each thread owns a connection, some of which may not close it.
      */
     private final ThreadLocal<Connection> _archiveConnection =
         new ThreadLocal<Connection>();
 
     /**
-     * Prefs from plugin_customization.
-     */
-    private String _prefHost;
-    private String _prefFailoverHost;
-    private String _prefUser;
-    private String _prefPassword;
-    private Integer _prefPort;
-    private String _prefDatabaseName;
-    private Integer _prefMaxAllowedPacketSizeInKB;
-
-
-    /**
      * Constructor.
      */
-    private ArchiveConnectionHandler() {
-
-        loadAndCheckPreferences();
-        _dataSource = createDataSource();
-    }
-
-
-    private void loadAndCheckPreferences() {
-        _prefHost = HOST.getValue();
-        _prefFailoverHost = FAILOVER_HOST.getValue();
-        _prefPort = PORT.getValue();
-        _prefDatabaseName = DATABASE_NAME.getValue();
-        _prefUser = USER.getValue();
-        _prefPassword = PASSWORD.getValue();
-        _prefMaxAllowedPacketSizeInKB = MAX_ALLOWED_PACKET_IN_KB.getValue();
-
+    @Inject
+    public ArchiveConnectionHandler(@Nonnull final MySQLArchivePreferenceService prefs) {
+        _dataSource = createDataSource(prefs);
     }
 
     @Nonnull
-    private MysqlDataSource createDataSource() {
+    private MysqlDataSource createDataSource(@Nonnull final MySQLArchivePreferenceService prefs) {
 
         final MysqlDataSource ds = new MysqlDataSource();
-        String hosts = _prefHost;
-        if (!Strings.isNullOrEmpty(_prefFailoverHost)) {
-            hosts += "," + _prefFailoverHost;
+        String hosts = prefs.getHost();
+        final String failoverHost = prefs.getFailOverHost();
+        if (!Strings.isNullOrEmpty(failoverHost)) {
+            hosts += "," + failoverHost;
         }
         ds.setServerName(hosts);
-        ds.setPort(_prefPort);
-        ds.setDatabaseName(_prefDatabaseName);
-        ds.setUser(_prefUser);
-        ds.setPassword(_prefPassword);
+        ds.setPort(prefs.getPort());
+        ds.setDatabaseName(prefs.getDatabaseName());
+        ds.setUser(prefs.getUser());
+        ds.setPassword(prefs.getPassword());
         ds.setFailOverReadOnly(false);
-        ds.setMaxAllowedPacket(_prefMaxAllowedPacketSizeInKB*1024);
+        ds.setMaxAllowedPacket(prefs.getMaxAllowedPacketSizeInKB()*1024);
         ds.setUseTimezone(true);
+
+        ds.setRewriteBatchedStatements(true);
 
         return ds;
     }
-
 
     /**
      * Connects with the RDB instance for the given datasource.
@@ -136,14 +106,10 @@ public enum ArchiveConnectionHandler {
      * @throws ArchiveConnectionException
      */
     @Nonnull
-    public Connection connect(@Nonnull final MysqlDataSource ds) throws ArchiveConnectionException {
+    private Connection connect(@Nonnull final MysqlDataSource ds) throws ArchiveConnectionException {
 
-        Connection connection = _archiveConnection.get();
+        Connection connection = null;
         try {
-            if (connection != null) { // close existing connection
-                _archiveConnection.set(null);
-                connection.close();
-            }
             // Get class loader to find the driver
             Class.forName("com.mysql.jdbc.Driver").newInstance();
 
@@ -152,64 +118,80 @@ public enum ArchiveConnectionHandler {
             if (connection != null) {
                 final DatabaseMetaData meta = connection.getMetaData();
                 if (meta != null) {
-                    // Constructor call -> LOG.debug not possible, not yet initialised
-                    LoggerFactory.getLogger(ArchiveConnectionHandler.class).debug("MySQL connection:\n" +
-                              meta.getDatabaseProductName() + " " + meta.getDatabaseProductVersion());
+                    LOG.debug("MySQL connection:\n{} {}", meta.getDatabaseProductName(), meta.getDatabaseProductVersion());
                 } else {
-                    // Constructor call -> LOG.debug not possible, not yet initialised
-                    LoggerFactory.getLogger(ArchiveConnectionHandler.class).debug("No meta data for MySQL connection");
+                    LOG.debug("No meta data for MySQL connection");
                 }
                 // set to true to enable failover to other host
                 connection.setAutoCommit(true);
-                _archiveConnection.set(connection);
             }
         } catch (final Exception e) {
             throw new ArchiveConnectionException(ARCHIVE_CONNECTION_EXCEPTION_MSG, e);
         }
-        if (connection == null || Strings.isNullOrEmpty(_prefDatabaseName)) {
+        if (connection == null || Strings.isNullOrEmpty(_dataSource.getDatabaseName())) {
             throw new ArchiveConnectionException("Connection could not be established or database name is not set.", null);
         }
         return connection;
     }
 
     /**
-     * Disconnects the connection for the owning thread.
-     * @throws ArchiveConnectionException
+     * Closes the connection for the owning thread.
+     * @throws SQLException
      */
-    public void disconnect() throws ArchiveConnectionException {
+    public void close() throws SQLException {
         final Connection connection = _archiveConnection.get();
         if (connection != null) {
-            try {
-                connection.close();
-                _archiveConnection.set(null);
-            } catch (final SQLException e) {
-                throw new ArchiveConnectionException("Archive disconnection failed!", e);
-            }
+            connection.close();
+            _archiveConnection.set(null);
         }
     }
 
 
     /**
-     * Returns the current connection for the owning thread.
-     * This method is invoked by the dedicated daos to retrieve their connection.
+     * Creates a new connection.
+     * The invoker has to take care that this connection is closed after operation.
      * A connection's datasource is configured via the plugin_customization.ini
      *
      * @return the connection
      * @throws ArchiveConnectionException
      */
     @Nonnull
-    public Connection getConnection() throws ArchiveConnectionException {
-        final Connection connection = _archiveConnection.get();
-        if (connection == null) {
-            // the calling thread has not yet a connection registered.
-            return connect(_dataSource);
-        }
-        return connection;
+    public Connection createConnection() throws ArchiveConnectionException {
+        return connect(_dataSource);
     }
 
-    @CheckForNull
+    /**
+     * Returns the current connection for the owning thread (creates a new one if not yet existing).
+     * Intended for threads that make high usage of connections.
+     * This method is invoked by the dedicated daos to retrieve their 'existing' connection.
+     * A connection's datasource is configured via the plugin_customization.ini
+     *
+     * @return the connection
+     * @throws ArchiveConnectionException
+     */
+    @Nonnull
+    public Connection getThreadLocalConnection() throws ArchiveConnectionException {
+        final Connection connection = _archiveConnection.get();
+        try {
+            if (connection == null || connection.isClosed()) {
+                // the calling thread has not yet a connection registered.
+                _archiveConnection.set(createConnection());
+            }
+        } catch (final SQLException e) {
+            LOG.warn("Thread current 'permanent' connection has been closed. A new one for this {} is created", Thread.currentThread().getName());
+        }
+        return  _archiveConnection.get();
+
+    }
+
+    @Nonnull
     public String getDatabaseName() {
-        return _prefDatabaseName;
+        return _dataSource.getDatabaseName();
+    }
+
+    @Nonnull
+    public Integer getMaxAllowedPacketInBytes() {
+        return Integer.valueOf(_dataSource.getMaxAllowedPacket());
     }
 }
 

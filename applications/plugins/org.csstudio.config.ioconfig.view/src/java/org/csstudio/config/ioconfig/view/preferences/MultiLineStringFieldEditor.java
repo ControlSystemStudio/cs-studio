@@ -24,6 +24,8 @@
  */
 package org.csstudio.config.ioconfig.view.preferences;
 
+import javax.annotation.Nonnull;
+
 import org.eclipse.jface.preference.StringFieldEditor;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.DisposeEvent;
@@ -40,70 +42,40 @@ import org.eclipse.swt.widgets.Text;
  * @since 24.04.2009
  */
 public class MultiLineStringFieldEditor extends StringFieldEditor {
-    private Text textField;
-
-    public MultiLineStringFieldEditor(String name, String labelText, Composite parent) {
+    private Text _textField;
+    
+    public MultiLineStringFieldEditor(@Nonnull final String name, @Nonnull final String labelText, @Nonnull final Composite parent) {
         super(name, labelText, parent);
     }
-
+    
     @Override
-    public Text getTextControl(Composite parent) {
-        textField = getTextControl();
-        if (textField == null) {
+    @Nonnull
+    public Text getTextControl(@Nonnull final Composite parent) {
+        _textField = getTextControl();
+        if (_textField == null) {
             // setTextLimit(75);
-            textField = new Text(parent, SWT.MULTI | SWT.BORDER | SWT.WRAP);
-            textField.setFont(parent.getFont());
-            textField.addKeyListener(new KeyAdapter() {
-
-                /*
-                 * (non-Javadoc)
-                 * 
-                 * @see
-                 * org.eclipse.swt.events.KeyAdapter#keyReleased(org.eclipse.swt.events.KeyEvent)
-                 */
-                public void keyReleased(KeyEvent e) {
+            _textField = new Text(parent, SWT.MULTI | SWT.BORDER | SWT.WRAP);
+            _textField.setFont(parent.getFont());
+            _textField.addKeyListener(new KeyAdapter() {
+                
+                @SuppressWarnings("synthetic-access")
+                @Override
+                public void keyReleased(@Nonnull final KeyEvent e) {
                     valueChanged();
                 }
             });
-
-            textField.addDisposeListener(new DisposeListener() {
-                public void widgetDisposed(DisposeEvent event) {
-                    textField = null;
+            
+            _textField.addDisposeListener(new DisposeListener() {
+                @SuppressWarnings("synthetic-access")
+                @Override
+                public void widgetDisposed(@Nonnull final DisposeEvent event) {
+                    _textField = null;
                 }
             });
         } else {
-            checkParent(textField, parent);
+            checkParent(_textField, parent);
         }
-        return textField;
+        return _textField;
     }
-
-    /**
-     * Fills this field editor's basic controls into the given parent.
-     * <p>
-     * The string field implementation of this <code>FieldEditor</code> framework method contributes
-     * the text field. Subclasses may override but must call <code>super.doFillIntoGrid</code>.
-     * </p>
-     */
-    @Override
-    protected void doFillIntoGrid(Composite parent, int numColumns) {
-        super.doFillIntoGrid(parent, numColumns);
-//        getLabelControl(parent);
-//
-//        textField = getTextControl(parent);
-//        GridData gd = new GridData();
-//        gd.horizontalSpan = numColumns - 1;
-//        GC gc = new GC(textField);
-//        try {
-//            Point extent = gc.textExtent("X");//$NON-NLS-1$
-//            gd.widthHint = 75 * extent.x;
-//        } finally {
-//            gc.dispose();
-//        }
-//        // } else {
-//        // gd.horizontalAlignment = GridData.FILL;
-//        // gd.grabExcessHorizontalSpace = true;
-//        // }
-//        textField.setLayoutData(gd);
-    }
-
+    
 }

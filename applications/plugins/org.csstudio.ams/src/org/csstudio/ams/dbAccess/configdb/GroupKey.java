@@ -25,9 +25,10 @@ package org.csstudio.ams.dbAccess.configdb;
 
 import org.csstudio.ams.dbAccess.Key;
 
-public class GroupKey  extends Key
-{
-	private static final long serialVersionUID = -7878978224239403371L;
+@SuppressWarnings("hiding")
+public class GroupKey  extends Key {
+	
+    private static final long serialVersionUID = -7878978224239403371L;
 	
 	public static final short GROUP_USER = 1;
 	public static final short GROUP_USERGROUP = 2;
@@ -50,30 +51,30 @@ public class GroupKey  extends Key
 	}
 	
 	
-	public String toString()
-	{
+	@Override
+    public String toString() {
 		return groupName != null ? groupName : "";
 	}
 	
-	public int hashCode()
-	{
+	@Override
+    public int hashCode() {
 		return (groupID + " " + groupName).hashCode();
 	}
 	
-	public boolean equals(Object obj)
-	{
+	@Override
+    public boolean equals(Object obj) {
 		if(obj instanceof GroupKey)
 			return ((GroupKey)obj).groupID == groupID;
 		return false;
 	}
 	
-	public int getID()
-	{
+	@Override
+    public int getID() {
 		return groupID;
 	}
 	
-	public int getGroupRef()
-	{
+	@Override
+    public int getGroupRef() {
 		return groupID;
 	}
 }

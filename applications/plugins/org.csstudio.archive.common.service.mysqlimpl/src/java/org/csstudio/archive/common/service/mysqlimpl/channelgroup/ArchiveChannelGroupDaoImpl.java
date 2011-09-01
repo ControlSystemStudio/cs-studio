@@ -21,6 +21,7 @@
  */
 package org.csstudio.archive.common.service.mysqlimpl.channelgroup;
 
+import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.util.Collection;
@@ -72,12 +73,15 @@ public class ArchiveChannelGroupDaoImpl extends AbstractArchiveDao implements IA
     public Collection<IArchiveChannelGroup> retrieveGroupsByEngineId(@Nonnull final ArchiveEngineId engId) throws ArchiveDaoException {
 
         final List<IArchiveChannelGroup> groups = Lists.newArrayList();
+        Connection conn = null;
         PreparedStatement stmt = null;
+        ResultSet result = null;
         try {
-            stmt =  getConnection().prepareStatement(_selectChannelGroupByEngineIdStmt);
+            conn = getThreadLocalConnection();
+            stmt =  conn.prepareStatement(_selectChannelGroupByEngineIdStmt);
             stmt.setInt(1, engId.intValue());
 
-            final ResultSet result = stmt.executeQuery();
+            result = stmt.executeQuery();
 
             while (result.next()) {
                 // id, name, enabling_channel_id
@@ -91,7 +95,7 @@ public class ArchiveChannelGroupDaoImpl extends AbstractArchiveDao implements IA
         } catch (final Exception e) {
             handleExceptions(EXC_MSG, e);
         } finally {
-            closeStatement(stmt, "Closing of statement " + _selectChannelGroupByEngineIdStmt + " failed.");
+            closeSqlResources(result, stmt, _selectChannelGroupByEngineIdStmt);
         }
         return groups;
     }

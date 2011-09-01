@@ -42,8 +42,11 @@ public class Stop implements IManagementCommand
         String param = (String)parameters.get("Password");
         String password = EMailConnectorStart.getInstance().getPassword();
 
-        if((param == null) && (password.length() > 0))
-        {
+        if(param == null) {
+            return CommandResult.createFailureResult("ERROR: [1] - Parameter not available.");
+        }
+
+        if(password.length() > 0) {
             return CommandResult.createFailureResult("ERROR: [1] - Parameter not available.");
         }
 

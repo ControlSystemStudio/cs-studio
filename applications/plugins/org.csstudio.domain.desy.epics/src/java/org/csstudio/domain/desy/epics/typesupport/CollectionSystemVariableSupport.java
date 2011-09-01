@@ -28,7 +28,6 @@ import javax.annotation.Nonnull;
 import org.csstudio.data.values.IValue;
 import org.csstudio.domain.desy.epics.alarm.EpicsAlarm;
 import org.csstudio.domain.desy.epics.types.EpicsSystemVariable;
-import org.csstudio.domain.desy.system.ControlSystem;
 import org.csstudio.domain.desy.time.TimeInstant;
 import org.csstudio.domain.desy.typesupport.TypeSupportException;
 
@@ -66,38 +65,6 @@ final class CollectionSystemVariableSupport extends EpicsSystemVariableSupport<C
                                                @Nonnull final EpicsAlarm alarm,
                                                @Nonnull final TimeInstant timestamp) throws TypeSupportException {
         throw new TypeSupportException("This method should not be invoked on itself", null);
-    }
-
-
-    /**
-     * {@inheritDoc}
-     */
-    @SuppressWarnings("unchecked")
-    @Override
-    @Nonnull
-    protected EpicsSystemVariable<Collection> createEpicsVariable(@Nonnull final String name,
-                                                                  @Nonnull final Collection values,
-                                                                  @Nonnull final ControlSystem system,
-                                                                  @Nonnull final TimeInstant timestamp) throws TypeSupportException {
-        return (EpicsSystemVariable<Collection>) createEpicsVariableFromCollection(name,
-                                                                                   values.iterator().next().getClass(),
-                                                                                   values,
-                                                                                   system,
-                                                                                   timestamp);
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    @Override
-    @Nonnull
-    protected EpicsSystemVariable<Collection<Collection>>
-    createCollectionEpicsVariable(@Nonnull final String name,
-                                  @Nonnull final Class<?> typeClass,
-                                  @Nonnull final Collection<Collection> values,
-                                  @Nonnull final ControlSystem system,
-                                  @Nonnull final TimeInstant timestamp) throws TypeSupportException {
-        throw new TypeSupportException("This method should not be invoked ", null);
     }
 
 }

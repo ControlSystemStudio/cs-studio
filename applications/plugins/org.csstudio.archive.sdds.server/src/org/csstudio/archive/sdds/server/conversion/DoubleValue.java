@@ -28,43 +28,39 @@ package org.csstudio.archive.sdds.server.conversion;
  * @author Markus Moeller
  *
  */
-public class DoubleValue
-{
-    /** */
+public class DoubleValue {
+   
+    /** The value itself */
     private double value;
     
     /**
      * 
      */
-    public DoubleValue()
-    {
+    public DoubleValue() {
         value = 0.0;
     }
     
     /**
      * 
-     * @param value
+     * @param v
      */
-    public DoubleValue(double value)
-    {
-        this.value = value;
+    public DoubleValue(double v) {
+        this.value = v;
     }
     
     /**
      * 
-     * @param value
+     * @param v
      */
-    public void setValue(double value)
-    {
-        this.value = value;
+    public void setValue(double v) {
+        this.value = v;
     }
     
     /**
      * 
-     * @return
+     * @return The double value
      */
-    public double getValue()
-    {
+    public double getValue() {
         return value;
     }
 }

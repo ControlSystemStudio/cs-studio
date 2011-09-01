@@ -21,15 +21,16 @@
  */
 package org.csstudio.alarm.table.ui.messagetable;
 
-import org.csstudio.alarm.table.dataModel.BasicMessage;
 import org.csstudio.alarm.table.dataModel.AbstractMessageList;
-import org.csstudio.platform.logging.CentralLogger;
+import org.csstudio.alarm.table.dataModel.BasicMessage;
 import org.eclipse.jface.action.Action;
 import org.eclipse.jface.viewers.ISelectionChangedListener;
 import org.eclipse.jface.viewers.SelectionChangedEvent;
 import org.eclipse.swt.widgets.TableItem;
 import org.eclipse.ui.ISharedImages;
 import org.eclipse.ui.PlatformUI;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * Action to delete selected items from {@link MessageTable}.
@@ -39,9 +40,12 @@ import org.eclipse.ui.PlatformUI;
  *
  */
 public class DeleteMessageAction extends Action {
-    private MessageTable _messageTable;
+    
+    private static final Logger LOG = LoggerFactory.getLogger(DeleteMessageAction.class);
+    
+    private final MessageTable _messageTable;
 
-    private AbstractMessageList _messageList;
+    private final AbstractMessageList _messageList;
 
     public DeleteMessageAction(final MessageTable messageTable,
             final AbstractMessageList msgList) {
@@ -56,6 +60,7 @@ public class DeleteMessageAction extends Action {
         setEnabled(false);
         //Enable this action only if items are selected
         _messageTable.getTableViewer().addSelectionChangedListener(new ISelectionChangedListener() {
+            @Override
             public void selectionChanged(SelectionChangedEvent event) {
                 boolean anything = (!event.getSelection().isEmpty() && !_messageTable.getMessageUpdatePause());
                 setEnabled(anything);
@@ -74,8 +79,7 @@ public class DeleteMessageAction extends Action {
                 messageSelection[i] = (BasicMessage) selection[i].getData();
 //                _messageList.removeMessage((BasicMessage) tableItem.getData());
             } else {
-                CentralLogger.getInstance().warn(this,
-                        "Unknown object in selection!");
+                LOG.warn("Unknown object in selection!");
             }
         }
         _messageList.removeMessages(messageSelection);

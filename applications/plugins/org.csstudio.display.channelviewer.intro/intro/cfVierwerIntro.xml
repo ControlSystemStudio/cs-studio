@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<introContent>
+  	<extensionContent id="org.csstudio.display.channelviewer.intro" style="css/intro.css" name="Channel Viewer intro Extension" path="tutorials/@">
+		<group style-id="content-group" id="org.csstudio.display.channelviewer.intro-group">
+       		<link label="Channel Viewer" 
+       		url="http://org.eclipse.ui.intro/showHelpTopic?id=/org.csstudio.display.channelviewer/html/channelViewer.html" 
+       		id="channelviewer" style-id="content-link">
+          		<text>The ChannelFinder Viewer is a CSS application which can query the Channel Finder directory service for a list of channels</text>
+       		</link>
+       	</group>
+  	</extensionContent>
+</introContent>

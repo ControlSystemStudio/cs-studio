@@ -1,3 +1,4 @@
+
 /* 
  * Copyright (c) 2008 Stiftung Deutsches Elektronen-Synchrotron, 
  * Member of the Helmholtz Association, (DESY), HAMBURG, GERMANY.
@@ -19,16 +20,17 @@
  * PROJECT IN THE FILE LICENSE.HTML. IF THE LICENSE IS NOT INCLUDED YOU MAY FIND A COPY 
  * AT HTTP://WWW.DESY.DE/LEGAL/LICENSE.HTM
  */
- package org.csstudio.ams;
+
+package org.csstudio.ams;
 
 import java.util.MissingResourceException;
 import java.util.ResourceBundle;
 
 import org.eclipse.osgi.util.NLS;
 
-public class Messages extends NLS
-{
-	private static final String BUNDLE_NAME = "org.csstudio.ams.messages";
+public class Messages extends NLS {
+	
+    private static final String BUNDLE_NAME = "org.csstudio.ams.messages";
 
 	// database settings
 	public static String Pref_Database;
@@ -242,6 +244,7 @@ public class Messages extends NLS
 	 * This method does nothing. 
 	 */
 	private Messages() {
+	    // Avoid instantiation
 	}
 	
 	/**
@@ -251,14 +254,10 @@ public class Messages extends NLS
 	 * @param key	String
 	 * @return String
 	 */
-	public static String getString(String key)
-	{
-		try
-		{
+	public static String getString(String key) {
+		try {
 			return RESOURCE_BUNDLE.getString(key);
-		}
-		catch (MissingResourceException e)
-		{
+		} catch (MissingResourceException e) {
 			return '!' + key + '!';
 		}
 	}

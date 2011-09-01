@@ -2,7 +2,7 @@ Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: CSS Menu skeleton definitions
 Bundle-SymbolicName: org.csstudio.ui.menu;singleton:=true
-Bundle-Version: 3.0.1.qualifier
+Bundle-Version: 3.1.0.qualifier
 Bundle-Description: Defines the common menus and popup menus
 Bundle-RequiredExecutionEnvironment: JavaSE-1.6
 Bundle-Localization: plugin

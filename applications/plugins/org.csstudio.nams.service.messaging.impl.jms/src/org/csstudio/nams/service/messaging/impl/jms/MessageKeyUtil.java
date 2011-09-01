@@ -63,6 +63,7 @@ public final class MessageKeyUtil {
 	// }
 	//	
 	private MessageKeyUtil() {
+	    // Avoid instantiation
 	}
 
 	// public static String getStringFor(MessageKeyEnum msgprop_command) {

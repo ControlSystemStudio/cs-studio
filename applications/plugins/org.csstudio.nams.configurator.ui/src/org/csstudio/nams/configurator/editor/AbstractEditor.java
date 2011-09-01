@@ -1,3 +1,4 @@
+
 package org.csstudio.nams.configurator.editor;
 
 import java.beans.IntrospectionException;
@@ -167,7 +168,7 @@ public abstract class AbstractEditor<ConfigurationType extends AbstractConfigura
 
 	@Override
 	public void doSaveAs() {
-
+	    // Nothing to do
 	}
 
 	@Override
@@ -211,7 +212,8 @@ public abstract class AbstractEditor<ConfigurationType extends AbstractConfigura
 		return false;
 	}
 
-	public void onBeanDeleted(final IConfigurationBean bean) {
+	@Override
+    public void onBeanDeleted(final IConfigurationBean bean) {
 		if (bean.getClass().equals(this.originalEditorInput.getClass())
 				&& (bean.getID() == this.originalEditorInput.getID())) {
 			this.getSite().getShell().getDisplay().asyncExec(new Runnable() {
@@ -223,16 +225,23 @@ public abstract class AbstractEditor<ConfigurationType extends AbstractConfigura
 		}
 	}
 
-	public void onBeanInsert(final IConfigurationBean bean) {
+	@Override
+    public void onBeanInsert(final IConfigurationBean bean) {
+	    // Nothing to do
 	}
 
-	public void onBeanUpdate(final IConfigurationBean bean) {
+	@Override
+    public void onBeanUpdate(final IConfigurationBean bean) {
+        // Nothing to do
 	}
 
-	public void onConfigurationReload() {
+	@Override
+    public void onConfigurationReload() {
+        // Nothing to do
 	}
 
-	public void propertyChange(final PropertyChangeEvent evt) {
+	@Override
+    public void propertyChange(final PropertyChangeEvent evt) {
 		this.firePropertyChange(IEditorPart.PROP_DIRTY);
 	}
 
@@ -280,7 +289,7 @@ public abstract class AbstractEditor<ConfigurationType extends AbstractConfigura
 		gridData.widthHint = this.MIN_WIDTH;
 		buttonWidget.setLayoutData(gridData);
 		return buttonWidget;
-	};
+	}
 
 	protected ComboViewer createComboEntry(final Composite parent,
 			final String labeltext, boolean editable, final String[] contents) {

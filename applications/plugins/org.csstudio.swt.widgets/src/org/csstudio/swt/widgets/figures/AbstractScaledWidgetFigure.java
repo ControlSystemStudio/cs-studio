@@ -52,7 +52,17 @@ public abstract class AbstractScaledWidgetFigure extends Figure implements Intro
 		return new ScaleWidgetIntrospector().getBeanInfo(this.getClass());
 	}
 	public double getCoercedValue(){
-		return Math.max(scale.getRange().getLower(), Math.min(scale.getRange().getUpper(), value));
+		Range range = scale.getRange();
+		if(range.inRange(value))
+			return value;
+		else {
+			if(range.getUpper() >= range.getLower())
+				return value > range.getUpper()? range.getUpper() : range.getLower();
+			else
+				return value > range.getLower()?range.getLower(): range.getUpper();
+		}
+			
+//		return Math.max(scale.getRange().getLower(), Math.min(scale.getRange().getUpper(), value));
 	}
 	/**
 	 * @return the majorTickMarkStepHint
