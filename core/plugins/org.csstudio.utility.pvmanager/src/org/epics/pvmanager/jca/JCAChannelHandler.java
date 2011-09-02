@@ -111,12 +111,10 @@ public class JCAChannelHandler extends ChannelHandler<MonitorEvent> {
             @Override
             public void connectionChanged(ConnectionEvent ev) {
                 try {
-                    // Setup monitors on connection and tear them
-                    // down on disconnection
+                    // Setup monitors on connection
                     if (ev.isConnected()) {
                         setup(channel);
                     } else {
-                        close(handler);
                         processValue(event);
                     }
                 } catch (Exception ex) {
@@ -126,23 +124,24 @@ public class JCAChannelHandler extends ChannelHandler<MonitorEvent> {
         };
     }
 
-    public void close(ExceptionHandler handler) {
-        if (monitor != null) {
-            Monitor toClear = monitor;
-            monitor = null;
-            try {
-                channel.removeConnectionListener(connectionListener);
-                toClear.removeMonitorListener(monitorListener);
-                toClear.clear();
-            } catch (Exception ex) {
-                handler.handleException(ex);
-            }
-        }
-    }
-
     @Override
     public void disconnect(ExceptionHandler handler) {
-        close(handler);
+        // Close the monitor
+        try {
+            monitor.removeMonitorListener(monitorListener);
+            monitor.clear();
+        } catch (Exception ex) {
+            handler.handleException(ex);
+        }
+        
+        // Remove connection listener
+        try {
+            channel.removeConnectionListener(connectionListener);
+        } catch (CAException ex) {
+            handler.handleException(ex);
+        }
+        
+        // Close the channel
         try {
             channel.destroy();
             channel = null;
@@ -195,13 +194,13 @@ public class JCAChannelHandler extends ChannelHandler<MonitorEvent> {
     public boolean updateCache(MonitorEvent event, ValueCache<?> cache) {
         DBR rawvalue = event.getDBR();
         @SuppressWarnings("unchecked")
-        Object newValue = cacheType.cast(vTypeFactory.createValue(rawvalue, metadata, monitor == null));
+        Object newValue = cacheType.cast(vTypeFactory.createValue(rawvalue, metadata, !isConnected()));
         cache.setValue(newValue);
         return true;
     }
 
     @Override
     public boolean isConnected() {
-        return monitor != null;
+        return channel.getConnectionState() == Channel.ConnectionState.CONNECTED;
     }
 }
