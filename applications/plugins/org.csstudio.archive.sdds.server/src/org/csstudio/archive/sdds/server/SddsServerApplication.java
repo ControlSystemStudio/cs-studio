@@ -53,7 +53,7 @@ import org.slf4j.LoggerFactory;
  * @author Markus Moeller
  *
  */
-public class SddsServerApplication implements IApplication, RemotelyStoppable, SddsServerApplicationMBean, IGenericServiceListener<ISessionService> {
+public class SddsServerApplication implements IApplication, IRemotelyStoppable, SddsServerApplicationMBean, IGenericServiceListener<ISessionService> {
     
     /** The instance of the server */
     private Server server;

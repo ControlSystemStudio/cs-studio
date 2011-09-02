@@ -22,23 +22,18 @@
  *
  */
 
-package org.csstudio.archive.sdds.server.command;
-
-import org.csstudio.archive.sdds.server.util.IntegerValue;
-import org.csstudio.archive.sdds.server.util.RawData;
+package org.csstudio.archive.sdds.server;
 
 /**
  * @author Markus Moeller
  *
  */
-public class InvalidCommand extends ServerCommand {
+public interface IRemotelyStoppable {
 
-    /* (non-Javadoc)
-     * @see org.csstudio.archive.jaapi.server.command.ServerCommand#execute(byte[], long, byte[], org.csstudio.archive.jaapi.server.util.LongValue)
+    /**
+     * The method forces the application to stop or restart.
+     *
+     * @param setRestart
      */
-    @Override
-    public void execute(final RawData buffer, final RawData receivedValue, final IntegerValue resultLength) throws ServerCommandException, CommandNotImplementedException
-    {
-        throw new ServerCommandException("Invalid command");
-    }
+    void stopApplication(boolean setRestart);
 }

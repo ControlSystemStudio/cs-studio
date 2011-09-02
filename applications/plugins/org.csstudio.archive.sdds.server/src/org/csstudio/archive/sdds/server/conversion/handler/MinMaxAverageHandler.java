@@ -29,6 +29,7 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.GregorianCalendar;
 import java.util.List;
+
 import org.csstudio.archive.sdds.server.SddsServerActivator;
 import org.csstudio.archive.sdds.server.command.header.DataRequestHeader;
 import org.csstudio.archive.sdds.server.data.EpicsRecordData;
@@ -40,8 +41,8 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
- * TODO (mmoeller) : 
- * 
+ * TODO (mmoeller) :
+ *
  * @author mmoeller
  * @since 08.03.2011
  */
@@ -49,23 +50,23 @@ public class MinMaxAverageHandler extends AlgorithmHandler {
 
     /** The logger for this class */
     private static final Logger LOG = LoggerFactory.getLogger(MinMaxAverageHandler.class);
-    
-    /** Max. allowed difference of the last allowed record (in seconds)*/ 
+
+    /** Max. allowed difference of the last allowed record (in seconds)*/
     @SuppressWarnings("unused")
 	private final long validRecordBeforeTime;
-    
+
 	/**
 	 * Constructor.
 	 * @param maxSamples
 	 */
-	public MinMaxAverageHandler(int maxSamples) {
-		
+	public MinMaxAverageHandler(final int maxSamples) {
+
 		super(maxSamples);
 
-        IPreferencesService pref = Platform.getPreferencesService();
+        final IPreferencesService pref = Platform.getPreferencesService();
         validRecordBeforeTime = pref.getLong(SddsServerActivator.PLUGIN_ID,
                                              ServerPreferenceKey.P_VALID_RECORD_BEFORE, 3600, null);
-        
+
         LOG.info("MinMaxAverageHandler created. Max. samples per request: " + maxSamples);
 	}
 
@@ -73,7 +74,7 @@ public class MinMaxAverageHandler extends AlgorithmHandler {
 	 * {@inheritDoc}
 	 */
 	@Override
-	public Iterable<EpicsRecordData> handle(DataRequestHeader header, EpicsRecordData[] data)
+	public Iterable<EpicsRecordData> handle(final DataRequestHeader header, final EpicsRecordData[] data)
 	throws DataException, AlgorithmHandlerException, MethodNotImplementedException {
 
         if (data == null) {
@@ -84,27 +85,27 @@ public class MinMaxAverageHandler extends AlgorithmHandler {
 
         // Get the number of requested samples
         int resultLength = header.getMaxNumOfSamples();
-        
+
         // More then max. allowed number of samples?
         if(resultLength > this.getMaxSamplesPerRequest()) {
             resultLength = this.getMaxSamplesPerRequest();
         }
-        
-        long intervalStart = header.getFromSec();
+
+        final long intervalStart = header.getFromSec();
         long intervalEnd = header.getToSec();
 
         // Get the current time...
-        GregorianCalendar cal = new GregorianCalendar();
-        
+        final GregorianCalendar cal = new GregorianCalendar();
+
         // ...and substract 2 months
         cal.add(Calendar.MONTH, -3);
-        if ((intervalEnd * 1000L) > cal.getTimeInMillis()) {
-        	intervalEnd = (cal.getTimeInMillis() / 1000L);
+        if (intervalEnd * 1000L > cal.getTimeInMillis()) {
+        	intervalEnd = cal.getTimeInMillis() / 1000L;
         }
 
         long deltaTime = (intervalEnd - intervalStart) / resultLength;
         if(deltaTime == 0) {
-            
+
             // Requested region very short --> only 1 point per sec
             deltaTime = 1;
             header.setMaxNumOfSamples((int)(intervalEnd - intervalStart));
@@ -116,18 +117,18 @@ public class MinMaxAverageHandler extends AlgorithmHandler {
         float tempMin = 0.0f;
         float tempMax = 0.0f;
 
-        for(EpicsRecordData o : data) {
-            
+        for(final EpicsRecordData o : data) {
+
             if(o.getTime() >= intervalStart) {
                 break;
             }
-            
+
             if(o.isValueValid()) {
                 avg = ((Float)o.getValue()).floatValue();
                 tempMin = avg;
                 tempMax = avg;
             }
-            
+
             index++;
         }
 
@@ -138,16 +139,16 @@ public class MinMaxAverageHandler extends AlgorithmHandler {
         // The variable index now contains the index of the first data sample
         // in the requested time interval
 
-        List<EpicsRecordData> resultData = new ArrayList<EpicsRecordData>(header.getMaxNumOfSamples());
+        final List<EpicsRecordData> resultData = new ArrayList<EpicsRecordData>(header.getMaxNumOfSamples());
 
         long nextIntervalStep = 0;
         long sampleTimestamp = 0;
         float sum = 0.0f;
         float count = 0.0f;
-        
+
         long curTime = intervalStart;
         boolean foundSample;
-        
+
         // Iterate through the complete time interval
         do {
 
@@ -159,33 +160,33 @@ public class MinMaxAverageHandler extends AlgorithmHandler {
             sum = 0.0f;
             count = 0.0f;
             foundSample = false;
-            
+
             // Iterate over data samples in the time subinterval
             do {
-                
+
                 curData = data[index];
                 sampleTimestamp = curData.getTime();
-                if ((sampleTimestamp >= curTime) && (sampleTimestamp < nextIntervalStep)) {
+                if (sampleTimestamp >= curTime && sampleTimestamp < nextIntervalStep) {
 
                     if(curData.isValueValid()) {
-                        
+
                     	curValue = (Float) curData.getValue();
                     	sum += curValue;
-                        
+
                         if(count < 1.0) {
                             tempMin = (Float) curData.getValue();
                             tempMax = (Float) curData.getValue();
                         } else {
-                            tempMin = (curValue < tempMin) ? curValue : tempMin;
-                            tempMax = (curValue > tempMax) ? curValue : tempMax;
+                            tempMin = curValue < tempMin ? curValue : tempMin;
+                            tempMax = curValue > tempMax ? curValue : tempMax;
                         }
 
                         count += 1.0f;
                         foundSample = true;
                     }
-                    
+
                     // Increment the index only if we are not at the end of the array
-                    if(index < (data.length - 1)) {
+                    if(index < data.length - 1) {
                         index++;
                     } else {
                     	// Leave the loop if we reached the end of the sample array
@@ -194,39 +195,39 @@ public class MinMaxAverageHandler extends AlgorithmHandler {
                 } else {
                 	break;
                 }
-                
+
             } while (sampleTimestamp < nextIntervalStep);
-            
+
             // We have a sum of sample values from the subinterval
             // Otherwise keep the current average value
             if (foundSample) {
             	// Calculate the average value
             	avg = sum / count;
             }
-            
+
             if (Float.isNaN(avg) == false) {
-				
+
 				EpicsRecordData newData = new EpicsRecordData(curTime, 0L, 0L, new Double(String.valueOf(tempMin)));
                 resultData.add(newData);
                 LOG.debug(newData.toString());
                 newData = null;
-                  
+
                 newData = new EpicsRecordData(curTime, 0L, 0L, new Double(String.valueOf(tempMax)));
                 resultData.add(newData);
                 LOG.debug(newData.toString());
                 newData = null;
-                
+
                 newData = new EpicsRecordData(curTime, 0L, 0L, new Double(String.valueOf(avg)));
                 resultData.add(newData);
                 LOG.debug(newData.toString());
                 newData = null;
 
             }
-            
+
             curTime += deltaTime;
-            
+
         } while (curTime < intervalEnd);
-        
+
         return resultData;
 	}
 }
