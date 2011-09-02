@@ -9,6 +9,10 @@ org.csstudio.archive.reader
 org.csstudio.archive.reader.channelarchiver
 org.csstudio.archive.rdb
 org.csstudio.archive.reader.rdb
+org.csstudio.channel.intro
+org.csstudio.channel.opiwidgets
+org.csstudio.channel.views
+org.csstudio.channel.widgets
 org.csstudio.csdata
 org.csstudio.csdata.clipboard
 org.csstudio.data
