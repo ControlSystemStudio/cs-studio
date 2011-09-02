@@ -2,8 +2,12 @@ package org.csstudio.channel.views;
 
 import gov.bnl.channelfinder.api.ChannelUtil;
 
+import java.beans.PropertyChangeEvent;
+import java.beans.PropertyChangeListener;
 import java.lang.reflect.Constructor;
+import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.List;
 
 import org.eclipse.swt.widgets.Composite;
@@ -83,15 +87,7 @@ public class PVTableByPropertyView extends ViewPart {
 	private Composite parent;
 	
 	private void changeQuery(String text) {
-		tableWidget.setColumnProperty(null);
-		tableWidget.setRowProperty(null);
 		tableWidget.setChannelQuery(text);
-		if (tableWidget.getChannels() != null) {
-			Collection<String> propertyNames = ChannelUtil.getPropertyNames(tableWidget.getChannels());
-			rowProperty.setItems(propertyNames.toArray(new String[propertyNames.size()]));
-			columnProperty.setItems(propertyNames.toArray(new String[propertyNames.size()]));
-			parent.layout();
-		}
 	}
 
 	@Override
@@ -120,6 +116,35 @@ public class PVTableByPropertyView extends ViewPart {
 		fd_waterfallComposite.left = new FormAttachment(0, 10);
 		fd_waterfallComposite.right = new FormAttachment(100, -10);
 		tableWidget.setLayoutData(fd_waterfallComposite);
+		tableWidget.addPropertyChangeListener(new PropertyChangeListener() {
+			
+			@Override
+			public void propertyChange(PropertyChangeEvent evt) {
+				if ("channels".equals(evt.getPropertyName())) {
+					if (tableWidget.getChannels() != null) {
+						List<String> propertyNames = new ArrayList<String>(ChannelUtil.getPropertyNames(tableWidget.getChannels()));
+						Collections.sort(propertyNames);
+						
+						// Save old selection
+						String oldRow = null;
+						if (rowProperty.getSelectionIndex() != -1)
+							oldRow = rowProperty.getItem(rowProperty.getSelectionIndex());
+						String oldColumn = null;
+						if (columnProperty.getSelectionIndex() != -1)
+							oldColumn = columnProperty.getItem(columnProperty.getSelectionIndex());
+						
+						// Change properties to select
+						rowProperty.setItems(propertyNames.toArray(new String[propertyNames.size()]));
+						columnProperty.setItems(propertyNames.toArray(new String[propertyNames.size()]));
+						
+						// Try to keep old selection
+						rowProperty.select(propertyNames.indexOf(oldRow));
+						columnProperty.select(propertyNames.indexOf(oldColumn));
+					}
+					PVTableByPropertyView.this.parent.layout();
+				}
+			}
+		});
 		
 		ComboHistoryHelper name_helper =
 			new ComboHistoryHelper(Activator.getDefault()

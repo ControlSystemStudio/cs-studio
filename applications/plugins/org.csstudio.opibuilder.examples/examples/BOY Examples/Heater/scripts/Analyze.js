@@ -1,16 +1,10 @@
-importPackage(Packages.org.eclipse.swt.graphics);
-importPackage(Packages.java.lang);
-importPackage(Packages.org.csstudio.platform.ui.util);
-importPackage(Packages.org.csstudio.platform.data);
+importPackage(Packages.org.csstudio.opibuilder.scriptUtil);
 
-// Get input PVs
-var out_val = pvArray[0].getValue();
-var sine_val = pvArray[1].getValue();
 // All connected?
-if (out_val != null  &&  sine_val != null)
+if (pvs[0].getValue() != null  &&  pvs[1].getValue() != null)
 {
-	var pid_out = ValueUtil.getDouble(out_val);
-	var sine = ValueUtil.getDouble(sine_val);
+	var pid_out = PVUtil.getDouble(pvs[0]);
+	var sine = PVUtil.getDouble(pvs[1]);
 	
 	var text;
 	var color;
@@ -18,39 +12,39 @@ if (out_val != null  &&  sine_val != null)
 	if (pid_out > 600)
 	{
 	    text = "Giving it all ...";
-	    color = CustomMediaFactory.COLOR_PINK;
+	    color = ColorFontUtil.PINK;
 	}
     else if (pid_out > 400)
 	{
 	    text = "Heating a lot ...";
-	    color = CustomMediaFactory.COLOR_PURPLE;
+	    color = ColorFontUtil.PURPLE;
 	}
     else if (pid_out > 200)
 	{
 	    text = "Heating some ...";
-	    color = CustomMediaFactory.COLOR_RED;
+	    color = ColorFontUtil.RED;
 	}
 	else if (pid_out > 100)
 	{
 	    text = "Warming up ...";
-	    color = CustomMediaFactory.COLOR_ORANGE;
+	    color = ColorFontUtil.ORANGE;
 	}
 	else if (pid_out > 0)
 	{
 	    text = "Keeping warm ...";
-	    color = CustomMediaFactory.COLOR_YELLOW;
+	    color = ColorFontUtil.YELLOW;
 	}
 	else if (pid_out < 0)
 	{
 	    text = "Cooling down ...";
-	    color = CustomMediaFactory.COLOR_LIGHT_BLUE;
+	    color = ColorFontUtil.LIGHT_BLUE;
 	}
 	else
 	{
 	    text = "Temperature is just right";
-	    color = CustomMediaFactory.COLOR_GREEN;
+	    color = ColorFontUtil.GREEN;
 	}
-	widgetController.getWidgetModel().setPropertyValue("text", text);
-	widgetController.getWidgetModel().setPropertyValue("background_color", color);
-	widgetController.getWidgetModel().setPropertyValue("x", 440 + sine);
+	widget.setPropertyValue("text", text);
+	widget.setPropertyValue("background_color", color);
+	widget.setPropertyValue("x", 440 + sine);
 }

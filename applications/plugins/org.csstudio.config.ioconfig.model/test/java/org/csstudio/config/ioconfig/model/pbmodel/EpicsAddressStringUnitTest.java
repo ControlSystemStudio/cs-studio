@@ -390,7 +390,7 @@ public class EpicsAddressStringUnitTest {
     }
     
     @Test
-    public void testname() throws Exception {
+    public void testOnWagoGsd1() throws Exception {
         System.out.println("testname");
         TestStructureBuilder.addNewModule(_BUILD_SLAVE1, 4000, 3);
         TestStructureBuilder.addNewModule(_BUILD_SLAVE1, 4000, 15);
@@ -415,8 +415,7 @@ public class EpicsAddressStringUnitTest {
     }
     
     @Test
-    public void testname2() throws Exception {
-        System.out.println("testname2");
+    public void testOnWagoGsd2() throws Exception {
         TestStructureBuilder.addNewModule(_BUILD_SLAVE1, 4001, 3);
         TestStructureBuilder.addNewModule(_BUILD_SLAVE1, 4001, 15);
         final Collection<ModuleDBO> modules = _BUILD_SLAVE1.getChildrenAsMap().values();
@@ -429,7 +428,6 @@ public class EpicsAddressStringUnitTest {
                 final Collection<ChannelDBO> channels = channelStructure.getChildrenAsMap().values();
                 for (ChannelDBO channel: channels) {
                     final String epicsAddressString = channel.getEpicsAddressString();
-                    System.out.println("testname2 :"+epicsAddressString);
                     Assert.assertEquals("At channel "+channelCounter++, String.format("@FCNTest:2/%s 'T=UNSIGN8,B=%s'", offset, bit), epicsAddressString);
                     bit = (bit+1)%8;
                 }
@@ -440,8 +438,7 @@ public class EpicsAddressStringUnitTest {
     }
     
     @Test
-    public void testname3() throws Exception {
-        System.out.println("testname3");
+    public void testOnSiemensGsd1() throws Exception {
         TestStructureBuilder.addNewModule(_BUILD_SLAVE2, 0, 2);
         TestStructureBuilder.addNewModule(_BUILD_SLAVE2, 1, 3);
         TestStructureBuilder.addNewModule(_BUILD_SLAVE2, 2, 4);
@@ -452,27 +449,44 @@ public class EpicsAddressStringUnitTest {
         TestStructureBuilder.addNewModule(_BUILD_SLAVE2, 51, 9);
         final Collection<ModuleDBO> modules = _BUILD_SLAVE2.getChildrenAsMap().values();
         int channelCounter = 0;
+        int outputOffset = 0;
+        int inputOffset = 0;
         int offset = 0;
         int bit = 0;
         for (ModuleDBO moduleDBO : modules) {
             final Collection<ChannelStructureDBO> channelStrutures = moduleDBO.getChildrenAsMap().values();
             for (ChannelStructureDBO channelStructure : channelStrutures) {
                 final Collection<ChannelDBO> channels = channelStructure.getChildrenAsMap().values();
+                boolean input = false;
                 for (ChannelDBO channel: channels) {
                     final String epicsAddressString = channel.getEpicsAddressString();
-                    System.out.println("testname3 :"+epicsAddressString);
-                    if(channelCounter<6*8) {
+                    input = channel.isInput();
+                    if(input) {
+                        offset = inputOffset;
+                    } else {
+                        offset = outputOffset;
+                    }
+                    if(channelCounter<6*8||channelCounter>50) {
                         Assert.assertEquals("At channel "+channelCounter++, String.format("@FCNTest:56/%s 'T=UNSIGN8,B=%s'", offset, bit), epicsAddressString);
+                        bit = (bit+1)%8;
                     } else {
                         Assert.assertEquals("At channel "+channelCounter++, String.format("@FCNTest:56/%s 'T=FLOAT'", offset), epicsAddressString);
-                        offset+=3;
+                        if(input) {
+                            inputOffset+=3;
+                        } else {
+                            outputOffset+=3;
+                        }
+                            
                     }
-                    bit = (bit+1)%8;
                 }
-                offset+=1;
+                if(input) {
+                    inputOffset+=1;
+                } else {
+                    outputOffset+=1;
+                }
             }
         }
-        Assert.assertEquals(6*8+3, channelCounter);
+        Assert.assertEquals(67, channelCounter);
     }
     
 }

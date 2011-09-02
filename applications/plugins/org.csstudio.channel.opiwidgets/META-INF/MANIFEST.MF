@@ -1,6 +1,6 @@
 Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
-Bundle-Name: Waterfall widget for BOY
+Bundle-Name: Channel based BOY widgets
 Bundle-SymbolicName: org.csstudio.channel.opiwidgets;singleton:=true
 Bundle-Version: 1.0.0.qualifier
 Bundle-Activator: org.csstudio.channel.opiwidgets.Activator
@@ -12,3 +12,5 @@ Require-Bundle: org.eclipse.core.runtime,
  org.csstudio.utility.pvmanager;bundle-version="1.0.0"
 Bundle-ActivationPolicy: lazy
 Bundle-RequiredExecutionEnvironment: JavaSE-1.6
+Bundle-Description: Set of BOY widgets that expose the channel based SWT widgets in org.csstudio.channel.widgets
+Bundle-Vendor: Gabriele Carcassi <carcassi@bnl.gov>, Kunal Shroff <kshroff@bnl.gov> - BNL

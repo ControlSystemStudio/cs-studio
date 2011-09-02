@@ -1,6 +1,6 @@
 Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
-Bundle-Name: Views
+Bundle-Name: Channel based views
 Bundle-SymbolicName: org.csstudio.channel.views;singleton:=true
 Bundle-Version: 1.0.0.qualifier
 Bundle-Activator: org.csstudio.channel.views.Activator
@@ -8,6 +8,9 @@ Require-Bundle: org.eclipse.ui,
  org.eclipse.core.runtime,
  org.csstudio.channel.widgets;bundle-version="1.0.0",
  org.csstudio.ui.util;bundle-version="3.1.0",
- org.csstudio.utility.channelfinder;bundle-version="1.1.0"
+ org.csstudio.utility.channelfinder;bundle-version="1.1.0",
+ gov.bnl.channelfinder.api;bundle-version="2.0.0"
 Bundle-ActivationPolicy: lazy
 Bundle-RequiredExecutionEnvironment: JavaSE-1.6
+Bundle-Description: Set of RCP views that expose the channel based widgets in org.csstudio.channel.widgets
+Bundle-Vendor: Gabriele Carcassi <carcassi@bnl.gov>, Kunal Shroff <kshroff@bnl.gov> - BNL
