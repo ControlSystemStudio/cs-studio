@@ -10,6 +10,13 @@
             name="PVTable by Property"
             restorable="true">
       </view>
+      <view
+            class="org.csstudio.channel.views.WaterfallView"
+            icon="platform:/plugin/org.csstudio.channel.widgets/icons/waterfall-16.png"
+            id="org.csstudio.channel.views.WaterfallView"
+            name="Waterfall"
+            restorable="true">
+      </view>
    </extension>
    <extension
          point="org.eclipse.ui.menus">
@@ -24,6 +31,16 @@
             <parameter
                   name="org.eclipse.ui.views.showView.viewId"
                   value="org.csstudio.channel.views.PVTableByPropertyView">
+            </parameter>
+         </command>
+         <command
+               commandId="org.eclipse.ui.views.showView"
+               icon="platform:/plugin/org.csstudio.channel.widgets/icons/waterfall-16.png"
+               label="Waterfall"
+               style="push">
+            <parameter
+                  name="org.eclipse.ui.views.showView.viewId"
+                  value="org.csstudio.channel.views.WaterfallView">
             </parameter>
          </command>
       </menuContribution>
