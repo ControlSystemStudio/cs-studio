@@ -26,6 +26,8 @@ package org.csstudio.alarm.jms2ora.service;
 
 import java.io.File;
 
+import javax.annotation.Nonnull;
+
 /**
  *
  * @author mmoeller
@@ -42,41 +44,43 @@ public class DataDirectory {
      *
      * @param dataDir - The path of the data directory for the serialized messages
      */
-    public DataDirectory(final String dataDir) {
+    public DataDirectory(@Nonnull final String dataDir) {
 
         dataDirectory = null;
         final File file = new File(dataDir);
-        if (file.exists() == false) {
+        if (!file.exists()) {
             final boolean success = file.mkdirs();
             if (success) {
                 dataDirectory = file.getAbsolutePath();
-                if (dataDirectory.endsWith(File.separator) == false) {
+                if (!dataDirectory.endsWith(File.separator)) {
                     dataDirectory = dataDirectory + File.separator;
                 }
             }
         } else {
             dataDirectory = file.getAbsolutePath();
-            if (dataDirectory.endsWith(File.separator) == false) {
+            if (!dataDirectory.endsWith(File.separator)) {
                 dataDirectory = dataDirectory + File.separator;
             }
         }
     }
 
-    public File getDataDirectory() throws DataDirectoryException {
+    @Nonnull
+    public final File getDataDirectory() throws DataDirectoryException {
         if (dataDirectory == null) {
             throw new DataDirectoryException("The data directory does not exist.");
         }
         return new File(dataDirectory);
     }
 
-    public String getDataDirectoryAsString() throws DataDirectoryException {
+    @Nonnull
+    public final String getDataDirectoryAsString() throws DataDirectoryException {
         if (dataDirectory == null) {
             throw new DataDirectoryException("The data directory does not exist.");
         }
         return dataDirectory;
     }
 
-    public boolean existsDataDirectory() {
+    public final boolean existsDataDirectory() {
 
         boolean exists;
 

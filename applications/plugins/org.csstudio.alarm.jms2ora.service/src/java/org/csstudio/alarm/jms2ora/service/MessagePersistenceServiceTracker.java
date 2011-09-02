@@ -24,6 +24,8 @@
 
 package org.csstudio.alarm.jms2ora.service;
 
+import javax.annotation.Nonnull;
+
 import org.osgi.framework.BundleContext;
 import org.osgi.util.tracker.ServiceTracker;
 
@@ -40,7 +42,7 @@ public class MessagePersistenceServiceTracker extends ServiceTracker {
      * Constructor.
      * @param bundleContext
      */
-    public MessagePersistenceServiceTracker(final BundleContext bundleContext) {
+    public MessagePersistenceServiceTracker(@Nonnull final BundleContext bundleContext) {
         super(bundleContext, IPersistenceHandler.class.getName(), null);
     }
 }

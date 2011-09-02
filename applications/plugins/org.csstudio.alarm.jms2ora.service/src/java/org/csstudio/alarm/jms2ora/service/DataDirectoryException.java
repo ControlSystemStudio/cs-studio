@@ -24,6 +24,8 @@
 
 package org.csstudio.alarm.jms2ora.service;
 
+import javax.annotation.Nonnull;
+
 /**
  * TODO (mmoeller) :
  *
@@ -47,7 +49,7 @@ public class DataDirectoryException extends ServiceException {
      * Constructor.
      * @param message
      */
-    public DataDirectoryException(final String message) {
+    public DataDirectoryException(@Nonnull final String message) {
         super(message);
     }
 
@@ -55,7 +57,7 @@ public class DataDirectoryException extends ServiceException {
      * Constructor.
      * @param cause
      */
-    public DataDirectoryException(final Throwable cause) {
+    public DataDirectoryException(@Nonnull final Throwable cause) {
         super(cause);
     }
 
@@ -64,7 +66,7 @@ public class DataDirectoryException extends ServiceException {
      * @param message
      * @param cause
      */
-    public DataDirectoryException(final String message, final Throwable cause) {
+    public DataDirectoryException(@Nonnull final String message, @Nonnull final Throwable cause) {
         super(message, cause);
     }
 }
