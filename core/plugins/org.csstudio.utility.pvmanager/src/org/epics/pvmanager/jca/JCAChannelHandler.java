@@ -114,8 +114,11 @@ public class JCAChannelHandler extends ChannelHandler<MonitorEvent> {
                     // Setup monitors on connection
                     if (ev.isConnected()) {
                         setup(channel);
+                        if (event != null)
+                            processValue(event);
                     } else {
-                        processValue(event);
+                        if (event != null)
+                            processValue(event);
                     }
                 } catch (Exception ex) {
                     handler.handleException(ex);
@@ -201,6 +204,6 @@ public class JCAChannelHandler extends ChannelHandler<MonitorEvent> {
 
     @Override
     public boolean isConnected() {
-        return channel.getConnectionState() == Channel.ConnectionState.CONNECTED;
+        return channel != null && channel.getConnectionState() == Channel.ConnectionState.CONNECTED;
     }
 }
