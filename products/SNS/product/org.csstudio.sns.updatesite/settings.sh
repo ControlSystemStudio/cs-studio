@@ -2,11 +2,12 @@
 #
 # Kay Kasemir
 
-export VERSION=3.0.2
+export VERSION=3.0.3
 export TOP=/Kram/MerurialRepos/cs-studio-3.0.0
 
-export ECLIPSE_BASE=/Kram/Eclipse/3_6_2/rcp
+export ECLIPSE_BASE=/Kram/Eclipse/3_7/rcp
 export WORKSPACE=/Kram/Eclipse/Workspace3.0
+export DELTAPACK=/Kram/Eclipse/3_7/delta/eclipse
 
 # Mac OS X window system
 OSWIN=cocoa
@@ -18,7 +19,6 @@ OSWIN=cocoa
 QUALIFIER=`date "+%Y%m%d"`
 
 export ECLIPSE=$ECLIPSE_BASE/eclipse
-export DELTAPACK=$ECLIPSE_BASE/delta/eclipse
 
 export BUILDDIR=$TOP/products/SNS/product/org.csstudio.sns.updatesite/build
 
