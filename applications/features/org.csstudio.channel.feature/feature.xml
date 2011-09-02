@@ -1,12 +1,12 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <feature
-      id="org.csstudio.nsls2.basic.applications.feature"
-      label="CSS-NSLS-II Basic Applications"
-      version="3.0.0.qualifier"
-      provider-name="Kunal Shroff &lt;kshroff@bnl.gov&gt;, Gabriele Carcassi &lt;carcassi@bnl.gov&gt; - BNL">
+      id="org.csstudio.channel.feature"
+      label="Channel based applications"
+      version="1.0.0.qualifier"
+      provider-name="Gabriele Carcassi &lt;carcassi@bnl.gov&gt;, Kunal Shroff &lt;kshroff@bnl.gov&gt; - BNL">
 
    <description url="http://www.example.com/description">
-      Basic CSS applications
+      [Enter Feature Description here.]
    </description>
 
    <copyright url="http://www.example.com/copyright">
@@ -22,28 +22,21 @@
    </url>
 
    <plugin
-         id="org.csstudio.diag.epics.pvtree"
+         id="org.csstudio.channel.opiwidgets"
          download-size="0"
          install-size="0"
          version="0.0.0"
          unpack="false"/>
 
    <plugin
-         id="org.csstudio.utility.clock"
+         id="org.csstudio.channel.views"
          download-size="0"
          install-size="0"
          version="0.0.0"
          unpack="false"/>
 
    <plugin
-         id="org.csstudio.diag.probe"
-         download-size="0"
-         install-size="0"
-         version="0.0.0"
-         unpack="false"/>
-
-   <plugin
-         id="org.csstudio.display.pvtable"
+         id="org.csstudio.channel.widgets"
          download-size="0"
          install-size="0"
          version="0.0.0"

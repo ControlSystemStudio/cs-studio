@@ -42,4 +42,8 @@
          id="org.csstudio.display.channelviewer.feature"
          version="0.0.0"/>
 
+   <includes
+         id="org.csstudio.channel.feature"
+         version="0.0.0"/>
+
 </feature>

@@ -6,7 +6,7 @@
       <widget
             category="Multi-channel"
             editpart_class="org.csstudio.channel.opiwidgets.WaterfallEditPart"
-            icon="icons/water.png"
+            icon="platform:/plugin/org.csstudio.channel.widgets/icons/waterfall-16.png"
             model_class="org.csstudio.channel.opiwidgets.WaterfallModel"
             name="Waterfall"
             typeId="org.csstudio.channel.opiwidgets.Waterfall">

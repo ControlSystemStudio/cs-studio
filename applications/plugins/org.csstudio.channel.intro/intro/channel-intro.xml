@@ -12,6 +12,11 @@
        		id="pvtablebyproperty-link" style-id="content-link">
           		<text>A table created using properties and channels from Channel Finder.</text>
        		</link>
+       		<link label="Waterfall"
+       		url="http://org.eclipse.ui.intro/showHelpTopic?id=/org.csstudio.channel.widgets/html/waterfall.html" 
+       		id="waterfall-link" style-id="content-link">
+          		<text>Creates a waterfall plot using properties and channels from Channel Finder.</text>
+       		</link>
        	</group>
   	</extensionContent>
   	<extensionContent id="org.csstudio.display.channelfinderviewer.intro" style="channel-intro.css" name="CF Viewer intro Extension" path="whatsnew/@">
@@ -24,6 +29,11 @@
        		url="http://org.eclipse.ui.intro/showHelpTopic?id=/org.csstudio.channel.widgets/html/pvtable-by-property.html" 
        		id="pvtablebyproperty-link" style-id="content-link">
           		<text>A table created using properties and channels from Channel Finder.</text>
+       		</link>
+       		<link label="Waterfall"
+       		url="http://org.eclipse.ui.intro/showHelpTopic?id=/org.csstudio.channel.widgets/html/waterfall.html" 
+       		id="waterfall-link" style-id="content-link">
+          		<text>Creates a waterfall plot using properties and channels from Channel Finder.</text>
        		</link>
        	</group>
   	</extensionContent>
