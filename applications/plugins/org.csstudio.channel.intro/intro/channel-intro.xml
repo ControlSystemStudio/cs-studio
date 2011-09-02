@@ -2,28 +2,28 @@
 <introContent>
   	<extensionContent id="org.csstudio.channel.intro" style="channel-intro.css" name="PVTable by Property intro Extension" path="tutorials/@">
 		<group style-id="content-group" id="org.csstudio.channel.intro-group" label="Channel applications">
-       		<link label="ChannelFinder Viewer" 
-       		url="http://org.eclipse.ui.intro/showHelpTopic?id=/org.csstudio.display.channelfinderviewer/html/cfviewer.html" 
+       		<link label="Channel Viewer" 
+       		url="http://org.eclipse.ui.intro/showHelpTopic?id=/org.csstudio.display.channelviewer/html/channelViewer.html" 
        		id="cfviewer-link" style-id="content-link">
-          		<text>The ChannelFinder Viewer is a CSS application which can query the Channel Finder directory service for a list of channels</text>
+          		<text>The Channel Viewer allows to query the Channel Finder directory service for a list of channels with their property and tags.</text>
        		</link>
        		<link label="PVTable by Property"
        		url="http://org.eclipse.ui.intro/showHelpTopic?id=/org.csstudio.channel.widgets/html/pvtable-by-property.html" 
        		id="pvtablebyproperty-link" style-id="content-link">
-          		<text>A table created using properties and channels from ChannelFinder.</text>
+          		<text>A table created using properties and channels from Channel Finder.</text>
        		</link>
        	</group>
   	</extensionContent>
   	<extensionContent id="org.csstudio.display.channelfinderviewer.intro" style="channel-intro.css" name="CF Viewer intro Extension" path="whatsnew/@">
 		<group style-id="content-group" id="org.csstudio.channel.intro-group" label="Channel applications">
-       		<link label="ChannelFinder Viewer" url="http://org.eclipse.ui.intro/showHelpTopic?id=/org.csstudio.display.channelfinderviewer/html/cfviewer.html" 
+       		<link label="Channel Viewer" url="http://org.eclipse.ui.intro/showHelpTopic?id=/org.csstudio.display.channelviewer/html/channelViewer.html" 
        		id="cfviewer-link" style-id="content-link">
-          		<text>The ChannelFinder Viewer is a CSS application which can query the Channel Finder directory service for a list of channels</text>
+          		<text>The Channel Viewer allows to query the Channel Finder directory service for a list of channels with their property and tags.</text>
        		</link>
        		<link label="PVTable by Property"
        		url="http://org.eclipse.ui.intro/showHelpTopic?id=/org.csstudio.channel.widgets/html/pvtable-by-property.html" 
        		id="pvtablebyproperty-link" style-id="content-link">
-          		<text>A table created using properties and channels from ChannelFinder.</text>
+          		<text>A table created using properties and channels from Channel Finder.</text>
        		</link>
        	</group>
   	</extensionContent>
