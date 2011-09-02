@@ -29,6 +29,9 @@ import java.util.Enumeration;
 import java.util.Hashtable;
 import java.util.Vector;
 
+import javax.annotation.CheckForNull;
+import javax.annotation.Nonnull;
+
 /**
  *  @author Markus Moeller
  *
@@ -39,45 +42,49 @@ public class ArchiveMessage implements Serializable {
     private static final long serialVersionUID = -5582704742047919825L;
 
     /** Hash table that contains the values of the known message properties */
-    private Hashtable<Long, String> msgIdContent = null;
+    private Hashtable<Long, String> msgIdContent;
 
     /** Hash table that contains the values of the known message properties */
-    private Hashtable<String, String> msgNameContent = null;
+    private final Hashtable<String, String> msgNameContent;
 
     /** Hash table that contains the values of the unknown message properties */
-    private Vector<String> unknownContent = null;
+    private Vector<String> unknownContent;
 
     /** ID of the property 'UNKNOWN' in the database table */
     private long unknownId;
 
     /** Flag, that indicates whether or not the message should be discarded */
-    private boolean discard = false;
+    private boolean discard;
 
     public ArchiveMessage() {
         msgIdContent = new Hashtable<Long, String>();
         msgNameContent = new Hashtable<String, String>();
         unknownContent = new Vector<String>();
         unknownId = -1;
+        discard = false;
     }
 
-    public String getPropertyValue(final Long key) {
+    @CheckForNull
+    public String getPropertyValue(@Nonnull final Long key) {
         return msgIdContent.get(key);
     }
 
-    public void put(final Long key, final String name, final String value) {
+    public void put(@Nonnull final Long key, @Nonnull final String name, @Nonnull final String value) {
         msgIdContent.put(key, value);
         msgNameContent.put(name, value);
     }
 
-    public String getPropertyValue(final String name) {
+    @CheckForNull
+    public String getPropertyValue(@Nonnull final String name) {
         return msgNameContent.get(name);
     }
 
+    @Nonnull
     public Enumeration<Long> keys() {
         return msgIdContent.keys();
     }
 
-    public boolean containsPropertyName(final String name) {
+    public boolean containsPropertyName(@Nonnull final String name) {
         return msgNameContent.containsKey(name);
     }
 

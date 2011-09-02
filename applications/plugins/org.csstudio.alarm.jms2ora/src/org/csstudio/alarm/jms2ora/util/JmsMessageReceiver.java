@@ -24,71 +24,74 @@
 package org.csstudio.alarm.jms2ora.util;
 
 import java.util.Hashtable;
+
+import javax.annotation.Nonnull;
+import javax.jms.Connection;
+import javax.jms.ConnectionFactory;
+import javax.jms.JMSException;
+import javax.jms.MessageConsumer;
+import javax.jms.MessageListener;
+import javax.jms.Session;
+import javax.jms.Topic;
 import javax.naming.Context;
 import javax.naming.InitialContext;
 import javax.naming.NamingException;
-import javax.jms.ConnectionFactory;
-import javax.jms.Connection;
-import javax.jms.JMSException;
-import javax.jms.Session;
-import javax.jms.MessageConsumer;
-import javax.jms.MessageListener;
-import javax.jms.Topic;
 
 /**
  * Class used to establish connection with jms server
  */
 
 public class JmsMessageReceiver {
-    
-    private Hashtable<String, String> properties  = null;
-    private Context context = null;
-    private ConnectionFactory factory = null;
-    private Connection connection = null;
-    private Session session = null;
-    private MessageConsumer[] receiver = null;
-    private Topic destination = null;
-    private String[] topics = null;
 
-    public JmsMessageReceiver(String initialContextFactory, String providerURL, String[] topicArray)
-    throws NamingException {
-        
+    private final Hashtable<String, String> properties;
+    private Context context;
+    private ConnectionFactory factory;
+    private Connection connection;
+    private Session session;
+    private MessageConsumer[] receiver;
+    private Topic destination;
+    private final String[] topics;
+
+    public JmsMessageReceiver(@Nonnull final String initialContextFactory,
+                              @Nonnull final String providerURL,
+                              @Nonnull final String[] topicArray) throws NamingException {
+
         properties = new Hashtable<String, String>();
         properties.put(Context.INITIAL_CONTEXT_FACTORY,initialContextFactory);
         properties.put(Context.PROVIDER_URL, providerURL);
-        
+
         context = new InitialContext(properties);
-                
+
         topics = topicArray;
     }
 
     /**
      * Parameter is listener, the one to be notified
      */
-	public void startListener(MessageListener listener, String uniqueId) throws Exception {        
-        
-	    factory = (ConnectionFactory)context.lookup("ConnectionFactory");
-        
+    public final void startListener(@Nonnull final MessageListener listener,
+                                    @Nonnull final String uniqueId) throws Exception {
+
+        factory = (ConnectionFactory)context.lookup("ConnectionFactory");
+
         connection = factory.createConnection();
         connection.setClientID(uniqueId);
-        
+
         connection.start();
 
         session = connection.createSession(false, Session.AUTO_ACKNOWLEDGE);
-        
+
         //
         // here we can decide whether we will get any messages regardless whether we are connected or not
         // for now we use here the only_when_online method
         //
         receiver = new MessageConsumer[topics.length];
         for (int i = 0;i < topics.length;i++) {
-        	
+
             /*
-        	 * changed from OpenJMS to ActiveMQ
-        	 * MCL 2007-05-23
-        	 */
-        	// destination = (Topic)context.lookup(queues[i]);
-        	
+             * changed from OpenJMS to ActiveMQ
+             * MCL 2007-05-23
+             */
+
             destination = session.createTopic(topics[i]);
 
             // CHANGED BY Markus Moeller, 2007.06.28
@@ -96,50 +99,49 @@ public class JmsMessageReceiver {
             // receiver[i] = session.createDurableSubscriber(destination, uniqueId + "_" + topics[i]);
             receiver[i] = session.createConsumer(destination);
             receiver[i].setMessageListener(listener);
-        } /* else {
-        // create permanent connection:
-        	receiver = session.createDurableSubscriber(destination, uniqueNameOfCssInstance);
         }
-        */
-	}
+    }
 
-	/**
-	 * Cleans up resources
-	 */
-	public void stopListening() {
-        
-	    if(receiver != null) {
-    		for(MessageConsumer r: receiver) {
+    /**
+     * Cleans up resources
+     */
+    public final void stopListening() {
+
+        if (receiver != null) {
+            for (final MessageConsumer r: receiver) {
                 if(r != null) {
-        			try{r.close();}catch(JMSException e){/* Can be ignored */}
-        			r = null;
+                    try{r.close();}catch(final JMSException e){/* Can be ignored */}
                 }
-    		}
+            }
         }
-        
+
         if(session != null) {
-            try{session.close();}catch(JMSException jmse){/* Can be ignored */}
+            try{session.close();}catch(final JMSException jmse){/* Can be ignored */}
             session = null;
         }
-        
+
         if(connection != null) {
-            try{connection.stop();}catch(JMSException jmse){/* Can be ignored */}        
-            try{connection.close();}catch(JMSException jmse){/* Can be ignored */}
+            try{connection.stop();}catch(final JMSException jmse){/* Can be ignored */}
+            try{connection.close();}catch(final JMSException jmse){/* Can be ignored */}
             connection = null;
         }
 
         //properties  = null;
-        
+
         if(context != null) {
-            try{context.close();}catch(NamingException e){/* Can be ignored */}
+            try {
+                context.close();
+            } catch(final NamingException e) {
+                /* Can be ignored */
+            }
             context = null;
         }
-        
+
         //properties  = null;
         factory = null;
         connection = null;
         session = null;
         receiver = null;
         destination = null;
-	}
+    }
 }

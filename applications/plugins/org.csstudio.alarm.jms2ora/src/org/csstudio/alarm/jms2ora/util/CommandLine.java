@@ -56,6 +56,10 @@ package org.csstudio.alarm.jms2ora.util;
 import java.util.Hashtable;
 import java.util.Vector;
 
+import javax.annotation.CheckForNull;
+import javax.annotation.CheckReturnValue;
+import javax.annotation.Nonnull;
+
 /**
  * This core class is responsible for processing the command line and
  * storing away the list of options and parameters specified. The
@@ -72,12 +76,12 @@ public class CommandLine {
      * A list of option of switches on the command line. A switch
      * is either set or not
      */
-    private Vector<String> _switches = new Vector<String>();
+    private final Vector<String> _switches = new Vector<String>();
 
     /**
      * A dictionary of all the options and their associated values
      */
-    private Hashtable<String, String> _options = new Hashtable<String, String>();
+    private final Hashtable<String, String> _options = new Hashtable<String, String>();
 
     /**
      * Construct an instance of this class with the specified string
@@ -85,7 +89,7 @@ public class CommandLine {
      *
      * @param       args        command line argument
      */
-    public CommandLine(String[] args) {
+    public CommandLine(@Nonnull final String[] args) {
         processCommandLine(args);
     }
 
@@ -102,7 +106,7 @@ public class CommandLine {
      * @param       name        name of option or command
      * @return      boolean     true if it has been specified
      */
-    public boolean exists(String name) {
+    public final boolean exists(@Nonnull final String name) {
         return _switches.contains(name) || _options.containsKey(name);
     }
 
@@ -112,7 +116,7 @@ public class CommandLine {
      * @param       name        name of the option
      * @return      boolean     true if it has been specified
      */
-    public boolean isSwitch(String name) {
+    public final boolean isSwitch(@Nonnull final String name) {
         return _switches.contains(name);
     }
 
@@ -122,7 +126,7 @@ public class CommandLine {
      * @param       name        name of the parameter
      * @return      boolean     true if it has been specified
      */
-    public boolean isParameter(String name) {
+    public boolean isParameter(@Nonnull final String name) {
         return _options.containsKey(name);
     }
 
@@ -133,7 +137,8 @@ public class CommandLine {
      * @param       name        name of option or parameter
      * @return      String      value of parameter or null
      */
-    public String value(String name) {
+    @CheckForNull
+    public String value(@Nonnull final String name) {
         String result = null;
 
         if (_options.containsKey(name)) {
@@ -151,9 +156,10 @@ public class CommandLine {
      * @param       defaultValue the default value
      * @return      String      value of parameter
      */
-    public String value(String name, String defaultValue) {
-        String result = value(name);
-        return (result != null) ? result : defaultValue;
+    @CheckReturnValue
+    public final String value(@Nonnull final String name, @Nonnull final String defaultValue) {
+        final String result = value(name);
+        return result != null ? result : defaultValue;
     }
 
     /**
@@ -167,7 +173,7 @@ public class CommandLine {
      * @param       value       value of name
      * @return      boolean     true if it was successfully added
      */
-    public boolean add(String name, String value) {
+    public boolean add(@Nonnull final String name, @Nonnull final String value) {
         return add(name, value, true);
     }
 
@@ -185,13 +191,13 @@ public class CommandLine {
      * @param       overwrite   true to overwrite previous value
      * @return      boolean     true if it was successfully added
      */
-    public boolean add(String name, String value, boolean overwrite) {
+    public final boolean add(@Nonnull final String name, @Nonnull final String value, @Nonnull final boolean overwrite) {
         boolean result = false;
 
         if (value == null) {
             // it is an option
-            if ((_switches.contains(name)) &&
-                (overwrite)) {
+            if (_switches.contains(name) &&
+                overwrite) {
                 _switches.addElement(name);
                 result = true;
             } else if (!_switches.contains(name)) {
@@ -200,8 +206,8 @@ public class CommandLine {
             }
         } else {
             // parameter
-            if ((_options.containsKey(name)) &&
-                (overwrite)) {
+            if (_options.containsKey(name) &&
+                overwrite) {
                 _options.put(name, value);
                 result = true;
             } else if (!_options.containsKey(name)) {
@@ -220,9 +226,9 @@ public class CommandLine {
      *
      * @param       args        command line as a collection of tokens
      */
-    private void processCommandLine(String[] args) {
-        boolean prev_was_hyphen = false;
-        String prev_key = null;
+    private void processCommandLine(@Nonnull final String[] args) {
+        boolean prevWasHyphen = false;
+        String prevKey = null;
 
         for (int index = 0; index < args.length; index++) {
             if (args[index].startsWith("-")) {
@@ -231,28 +237,28 @@ public class CommandLine {
                 // in the _switches vector. Otherwise if the previous was
                 // not a hyphen then store key and value in the _options
                 // hashtable
-                if (prev_was_hyphen) {
-                    add(prev_key, null);
+                if (prevWasHyphen) {
+                    add(prevKey, null);
                 }
 
-                prev_key = args[index].substring(1);
-                prev_was_hyphen = true;
+                prevKey = args[index].substring(1);
+                prevWasHyphen = true;
 
                 // check to see whether it is the last element in the
                 // arg list. If it is then assume it is an option and
                 // break the processing
                 if (index == args.length - 1) {
-                    add(prev_key, null);
+                    add(prevKey, null);
                     break;
                 }
             } else {
                 // it does not start with a hyphen. If the prev_key is
                 // not null then set the value to the prev_value.
-                if (prev_key != null) {
-                    add(prev_key, args[index]);
-                    prev_key = null;
+                if (prevKey != null) {
+                    add(prevKey, args[index]);
+                    prevKey = null;
                 }
-                prev_was_hyphen = false;
+                prevWasHyphen = false;
             }
         }
     }

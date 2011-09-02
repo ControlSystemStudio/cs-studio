@@ -8,13 +8,12 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.logging.Logger;
 
-import org.csstudio.channelviewer.util.FindChannels;
+import org.csstudio.ui.util.helpers.ComboHistoryHelper;
 import org.csstudio.utility.channelfinder.Activator;
 import org.csstudio.utility.channelfinder.ChannelQuery;
-import org.csstudio.utility.channelfinder.ChannelQueryListener;
 import org.csstudio.utility.channelfinder.ChannelQuery.Builder;
+import org.csstudio.utility.channelfinder.ChannelQueryListener;
 import org.eclipse.core.runtime.Status;
-import org.eclipse.core.runtime.jobs.Job;
 import org.eclipse.jface.action.IMenuListener;
 import org.eclipse.jface.action.IMenuManager;
 import org.eclipse.jface.action.MenuManager;
@@ -22,6 +21,7 @@ import org.eclipse.jface.action.Separator;
 import org.eclipse.jface.dialogs.ErrorDialog;
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.viewers.CellLabelProvider;
+import org.eclipse.jface.viewers.ComboViewer;
 import org.eclipse.jface.viewers.TableViewer;
 import org.eclipse.jface.viewers.TableViewerColumn;
 import org.eclipse.jface.viewers.ViewerCell;
@@ -37,6 +37,7 @@ import org.eclipse.swt.graphics.Rectangle;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Button;
+import org.eclipse.swt.widgets.Combo;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Event;
 import org.eclipse.swt.widgets.Listener;
@@ -61,10 +62,12 @@ public class ChannelsView extends ViewPart {
 	 * The ID of the view as specified by the extension.
 	 */
 	public static final String ID = "org.csstudio.channelfinder.views.ChannelsView";
+	private static final String QUERY_LIST_TAG = "query_list";
 	private static Logger log = Logger.getLogger(ID);
 
 	private static int instance;
-	private Text text;
+	private ComboViewer comboViewer;
+	private ComboHistoryHelper comboHistoryHelper;
 	private Button search;
 	private GridLayout layout;
 
@@ -214,12 +217,28 @@ public class ChannelsView extends ViewPart {
 		layout = new GridLayout(2, false);
 		parent.setLayout(layout);
 
-		text = new Text(parent, SWT.SINGLE | SWT.BORDER | SWT.SEARCH);
-		text.setToolTipText("space seperated search criterias, patterns may include * and ? wildcards\r\nchannelNamePatter\r\npropertyName=propertyValuePattern1,propertyValuePattern2\r\nTags=tagNamePattern\r\nEach criteria is logically ANDed and , or || seperated values are logically ORed\r\n");
+		comboViewer = new ComboViewer(parent, SWT.SINGLE | SWT.BORDER);
+		comboViewer
+				.getCombo()
+				.setToolTipText(
+						"space seperated search criterias, patterns may include * and ? wildcards\r\nchannelNamePatter\r\npropertyName=propertyValuePattern1,propertyValuePattern2\r\nTags=tagNamePattern\r\nEach criteria is logically ANDed and , or || seperated values are logically ORed\r\n");
 		GridData gd = new GridData();
 		gd.grabExcessHorizontalSpace = true;
 		gd.horizontalAlignment = SWT.FILL;
-		text.setLayoutData(gd);
+		comboViewer.getCombo().setLayoutData(gd);
+
+		comboHistoryHelper = new ComboHistoryHelper(Activator.getDefault()
+				.getDialogSettings(), QUERY_LIST_TAG, comboViewer.getCombo(),
+				10, true) {
+
+			@Override
+			public void newSelection(String entry) {
+				// TODO Auto-generated method stub
+
+			}
+
+		};
+
 
 		search = new Button(parent, SWT.PUSH);
 		search.setText("Search");
@@ -235,22 +254,23 @@ public class ChannelsView extends ViewPart {
 		int col = 0;
 		col++;
 
-		text.addSelectionListener(new SelectionAdapter() {
+		comboViewer.getCombo().addSelectionListener(new SelectionAdapter() {
 			public void widgetDefaultSelected(SelectionEvent e) {
 				if (e.detail == SWT.CANCEL) {
 					log.info("Search cancelled");
 				} else {
-					log.info("Searching for: " + text.getText());
-					search(text.getText());
+					log.info("Searching for: "
+							+ comboViewer.getCombo().getText());
+					search(comboViewer.getCombo().getText());
 				}
 			}
 		});
 
-		text.addListener(SWT.KeyUp, new Listener() {
+		comboViewer.getCombo().addListener(SWT.KeyUp, new Listener() {
 
 			@Override
 			public void handleEvent(Event event) {
-				if (text.getText().toCharArray().length > 0) {
+				if (comboViewer.getCombo().getText().toCharArray().length > 0) {
 					search.setEnabled(true);
 				} else {
 					search.setEnabled(false);
@@ -261,7 +281,7 @@ public class ChannelsView extends ViewPart {
 		search.addSelectionListener(new SelectionAdapter() {
 			@Override
 			public void widgetSelected(SelectionEvent e) {
-				search(text.getText());
+				search(comboViewer.getCombo().getText());
 			}
 		});
 
@@ -369,7 +389,8 @@ public class ChannelsView extends ViewPart {
 			tblclmnNumericprop.setText(tagName);
 			tblclmnNumericprop.setWidth(100);
 		}
-		// calculate column size since adding removing colums does not trigger a control resize event.
+		// calculate column size since adding removing colums does not trigger a
+		// control resize event.
 		Rectangle area = table.getClientArea();
 		Point size = table.computeSize(SWT.DEFAULT, SWT.DEFAULT);
 		ScrollBar vBar = table.getVerticalBar();

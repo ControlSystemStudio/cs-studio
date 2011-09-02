@@ -24,6 +24,9 @@
 
 package org.csstudio.alarm.jms2ora.service;
 
+import javax.annotation.CheckForNull;
+import javax.annotation.Nonnull;
+
 /**
  * TODO (mmoeller) :
  *
@@ -39,33 +42,39 @@ public class ConnectionInfo {
 
     private String _dbUrl;
 
-    public ConnectionInfo(final String userName, final String password, final String dbUrl) {
+    public ConnectionInfo(@Nonnull final String userName,
+                          @Nonnull final String password,
+                          @Nonnull final String dbUrl) {
+
         this._userName = userName;
         this._password = password;
         this._dbUrl = dbUrl;
     }
 
-    public String getUserName() {
+    @CheckForNull
+    public final String getUserName() {
         return _userName;
     }
 
-    public void setUserName(final String userName) {
+    public final void setUserName(@Nonnull final String userName) {
         this._userName = userName;
     }
 
+    @CheckForNull
     public String getPassword() {
         return _password;
     }
 
-    public void setPassword(final String password) {
+    public final void setPassword(@Nonnull final String password) {
         this._password = password;
     }
 
+    @CheckForNull
     public String getDbUrl() {
         return _dbUrl;
     }
 
-    public void setDbUrl(final String dbUrl) {
+    public final void setDbUrl(@Nonnull final String dbUrl) {
         this._dbUrl = dbUrl;
     }
 }

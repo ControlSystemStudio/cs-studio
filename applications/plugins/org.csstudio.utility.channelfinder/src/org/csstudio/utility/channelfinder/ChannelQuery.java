@@ -18,24 +18,24 @@ public class ChannelQuery {
 	// private final Executor executor;
 	private final ChannelFinderClient client;
 	private final String query;
-	
-	private  AtomicReference<Exception> lastException = new AtomicReference<Exception>();
-	private Executor queryExecutor = Executors.newSingleThreadExecutor();
+	private final Executor queryExecutor;
+
+	private AtomicReference<Exception> lastException = new AtomicReference<Exception>();	
 
 	private volatile Collection<Channel> lastValidResult;
 	private volatile Collection<Channel> result;
-	
+
 	private List<ChannelQueryListener> listeners = new CopyOnWriteArrayList<ChannelQueryListener>();
 
 	public static class Builder {
 		private String query = null;
 		private ChannelFinderClient client = null;
+		private Executor queryExecutor = Executors.newSingleThreadExecutor();
 
-		// private Executor executor = null;
-		private Builder(String query){
+		private Builder(String query) {
 			this.query = query;
 		}
-		
+
 		public static Builder query(String query) {
 			return new Builder(query);
 		}
@@ -45,10 +45,10 @@ public class ChannelQuery {
 			return this;
 		}
 
-		// public Builder on(Executor executor) {
-		// this.executor = executor;
-		// return this;
-		// }
+		public Builder on(Executor executor) {
+			this.queryExecutor = executor;
+			return this;
+		}
 
 		public ChannelQuery create() {
 			if (this.query == null)
@@ -56,46 +56,46 @@ public class ChannelQuery {
 						"query string cannot be null");
 			if (this.client == null)
 				this.client = CFClientManager.getClient();
-			return new ChannelQuery(this.query, this.client);
+			return new ChannelQuery(this.query, this.client, this.queryExecutor);
 		}
 	}
 
-	private ChannelQuery(String query, ChannelFinderClient client) {
+	private ChannelQuery(String query, ChannelFinderClient client, Executor queryExecutor) {
 		super();
 		this.query = query;
-		// this.executor = executor;
 		this.client = client;
+		this.queryExecutor = queryExecutor;
 	}
-	
-	public void addChannelQueryListener(ChannelQueryListener listener){
+
+	public void addChannelQueryListener(ChannelQueryListener listener) {
 		this.listeners.add(listener);
 	}
-	
-	public void removeChannelQueryListener(ChannelQueryListener listener){
+
+	public void removeChannelQueryListener(ChannelQueryListener listener) {
 		this.listeners.remove(listener);
 	}
-	
-	private void fireGetQueryResult(){
+
+	private void fireGetQueryResult() {
 		for (ChannelQueryListener listener : this.listeners) {
 			listener.getQueryResult();
 		}
 	}
-	
-	public Collection<Channel> getResult(){
-		return this.result;		
+
+	public Collection<Channel> getResult() {
+		return this.result;
 	}
-	
-	public Collection<Channel> getLastValidResult(){
+
+	public Collection<Channel> getLastValidResult() {
 		return this.lastValidResult;
 	}
-	
-	public Exception getLastException(){
-		return this.lastException.getAndSet(null);		
+
+	public Exception getLastException() {
+		return this.lastException.getAndSet(null);
 	}
-	
-	public void execute(){
+
+	public void execute() {
 		queryExecutor.execute(new Runnable() {
-			
+
 			@Override
 			public void run() {
 				try {
@@ -104,14 +104,16 @@ public class ChannelQuery {
 				} catch (ChannelFinderException e) {
 					result = null;
 					lastException.set(e);
-					e.printStackTrace();
-				} finally{
-					fireGetQueryResult();			
+				} catch (Exception e) {
+					result = null;
+					lastException.set(e);
+				} finally {
+					fireGetQueryResult();
 				}
 			}
 		});
 	}
-	
+
 	static Map<String, String> buildSearchMap(String searchPattern) {
 		Hashtable<String, String> map = new Hashtable<String, String>();
 		String[] words = searchPattern.split("\\s");

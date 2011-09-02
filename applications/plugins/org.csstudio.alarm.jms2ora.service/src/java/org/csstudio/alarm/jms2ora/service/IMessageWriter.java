@@ -26,6 +26,8 @@ package org.csstudio.alarm.jms2ora.service;
 
 import java.util.Vector;
 
+import javax.annotation.Nonnull;
+
 /**
  * TODO (mmoeller) :
  *
@@ -41,7 +43,7 @@ public interface IMessageWriter {
     void close();
 
     /** Writes the message to the database */
-    boolean writeMessage(Vector<ArchiveMessage> messages);
+    boolean writeMessage(@Nonnull Vector<ArchiveMessage> messages);
 
     /**
      * Flag that indicates if the service is usable.

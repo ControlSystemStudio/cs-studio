@@ -26,6 +26,8 @@ package org.csstudio.alarm.jms2ora.service;
 
 import java.util.Hashtable;
 
+import javax.annotation.Nonnull;
+
 /**
  * TODO (mmoeller) :
  *
@@ -52,6 +54,7 @@ public interface IMetaDataReader {
      *
      * @return Hashtable containing the content of table 'MSG_PROPERTY_TYPE'
      */
+    @Nonnull
     Hashtable<String, Long> getMessageContentProperties();
 
     /**
@@ -59,5 +62,6 @@ public interface IMetaDataReader {
      *
      * @return Hashtable containing the column names and precision of type VARCHAR2 of table 'MESSAGE'
      */
+    @Nonnull
     Hashtable<String, Integer> getMessageProperties();
 }

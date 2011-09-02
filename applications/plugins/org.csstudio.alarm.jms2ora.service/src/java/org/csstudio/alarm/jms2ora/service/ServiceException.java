@@ -24,6 +24,8 @@
 
 package org.csstudio.alarm.jms2ora.service;
 
+import javax.annotation.Nonnull;
+
 /**
  * TODO (mmoeller) :
  *
@@ -47,7 +49,7 @@ public class ServiceException extends Exception {
      * Constructor.
      * @param message
      */
-    public ServiceException(final String message) {
+    public ServiceException(@Nonnull final String message) {
         super(message);
     }
 
@@ -55,7 +57,7 @@ public class ServiceException extends Exception {
      * Constructor.
      * @param cause
      */
-    public ServiceException(final Throwable cause) {
+    public ServiceException(@Nonnull final Throwable cause) {
         super(cause);
     }
 
@@ -64,7 +66,7 @@ public class ServiceException extends Exception {
      * @param message
      * @param cause
      */
-    public ServiceException(final String message, final Throwable cause) {
+    public ServiceException(@Nonnull final String message, @Nonnull final Throwable cause) {
         super(message, cause);
     }
 }
