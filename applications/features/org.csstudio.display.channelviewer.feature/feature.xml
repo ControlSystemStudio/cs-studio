@@ -33,13 +33,6 @@
    </requires>
 
    <plugin
-         id="org.csstudio.display.channelviewer.intro"
-         download-size="0"
-         install-size="0"
-         version="0.0.0"
-         unpack="false"/>
-
-   <plugin
          id="org.csstudio.display.channelviewer"
          download-size="0"
          install-size="0"
