@@ -41,7 +41,7 @@ import de.desy.aapi.AapiServerError;
  * @author Markus Moeller
  *
  */
-public class RegExpChannelList extends ServerCommand {
+public class RegExpChannelList extends AbstractServerCommand {
 
     private static final Logger LOG = LoggerFactory.getLogger(RegExpChannelList.class);
 

@@ -41,7 +41,7 @@ import de.desy.aapi.AapiServerError;
  * @author Markus Moeller
  *
  */
-public class ChannelList extends ServerCommand {
+public class ChannelList extends AbstractServerCommand {
 
     private static final Logger LOG = LoggerFactory.getLogger(ChannelList.class);
 

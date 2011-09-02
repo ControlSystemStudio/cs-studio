@@ -28,6 +28,9 @@ import java.io.ByteArrayOutputStream;
 import java.io.DataOutputStream;
 import java.io.IOException;
 
+import javax.annotation.CheckForNull;
+import javax.annotation.Nonnull;
+
 import org.csstudio.archive.sdds.server.util.IntegerValue;
 import org.csstudio.archive.sdds.server.util.RawData;
 import org.slf4j.Logger;
@@ -39,15 +42,15 @@ import de.desy.aapi.AapiServerError;
  * @author Markus Moeller
  *
  */
-public abstract class ServerCommand {
+public abstract class AbstractServerCommand {
 
     /** The logger of this class */
-    private static final Logger LOG = LoggerFactory.getLogger(ServerCommand.class);
+    private static final Logger LOG = LoggerFactory.getLogger(AbstractServerCommand.class);
 
     /**
      *
      */
-    public ServerCommand() {
+    public AbstractServerCommand() {
         // Constructor
     }
 
@@ -59,7 +62,9 @@ public abstract class ServerCommand {
      * @throws ServerCommandException
      * @throws CommandNotImplementedException
      */
-    public abstract void execute(RawData buffer, RawData receivedValue, IntegerValue resultLength)
+    public abstract void execute(@Nonnull RawData buffer,
+                                 @Nonnull RawData receivedValue,
+                                 @Nonnull IntegerValue resultLength)
     throws ServerCommandException, CommandNotImplementedException;
 
     /**
@@ -67,7 +72,8 @@ public abstract class ServerCommand {
      * @param errorNumber
      * @return Byte array containing the error message
      */
-    public byte[] createErrorAnswer(final int errorNumber) {
+    @CheckForNull
+    public byte[] createErrorAnswer(@Nonnull final int errorNumber) {
 
         final ByteArrayOutputStream baos = new ByteArrayOutputStream();
         DataOutputStream dos = new DataOutputStream(baos);
@@ -83,8 +89,7 @@ public abstract class ServerCommand {
         } catch(final IOException ioe) {
 
             LOG.error("[*** IOException ***]: ", ioe);
-        }
-        finally {
+        } finally {
             try{dos.close();}catch(final Exception e){ /* Can be ignored */}
             dos=null;
         }

@@ -24,6 +24,8 @@
 
 package org.csstudio.archive.sdds.server.command;
 
+import javax.annotation.Nonnull;
+
 import org.csstudio.archive.sdds.server.util.IntegerValue;
 import org.csstudio.archive.sdds.server.util.RawData;
 
@@ -31,10 +33,12 @@ import org.csstudio.archive.sdds.server.util.RawData;
  * @author Markus Moeller
  *
  */
-public class FilterList extends ServerCommand {
+public class FilterList extends AbstractServerCommand {
 
     @Override
-	public void execute(final RawData buffer, final RawData receivedValue, final IntegerValue resultLength)
+    public void execute(@Nonnull final RawData buffer,
+                        @Nonnull final RawData receivedValue,
+                        @Nonnull final IntegerValue resultLength)
     throws ServerCommandException, CommandNotImplementedException {
         throw new CommandNotImplementedException("Not implemented command: FilterList");
     }

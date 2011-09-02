@@ -28,6 +28,8 @@ import java.io.ByteArrayOutputStream;
 import java.io.DataOutputStream;
 import java.io.IOException;
 
+import javax.annotation.Nonnull;
+
 import org.csstudio.archive.sdds.server.util.IntegerValue;
 import org.csstudio.archive.sdds.server.util.RawData;
 import org.slf4j.Logger;
@@ -39,13 +41,16 @@ import de.desy.aapi.AapiServerError;
  * @author Markus Moeller
  *
  */
-public class HierarchyChannelList extends ServerCommand {
+public class HierarchyChannelList extends AbstractServerCommand {
 
     private static final Logger LOG = LoggerFactory.getLogger(HierarchyChannelList.class);
 
     @Override
-	public void execute(final RawData buffer, final RawData receivedValue, final IntegerValue resultLength) throws ServerCommandException, CommandNotImplementedException
-    {
+    public void execute(@Nonnull final RawData buffer,
+                        @Nonnull final RawData receivedValue,
+                        @Nonnull final IntegerValue resultLength)
+    throws ServerCommandException, CommandNotImplementedException {
+
         final ByteArrayOutputStream baos = new ByteArrayOutputStream();
         final DataOutputStream dos = new DataOutputStream(baos);
 

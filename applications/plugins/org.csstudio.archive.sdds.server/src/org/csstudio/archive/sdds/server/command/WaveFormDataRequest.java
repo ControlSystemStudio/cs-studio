@@ -28,6 +28,8 @@ import java.io.ByteArrayOutputStream;
 import java.io.DataOutputStream;
 import java.io.IOException;
 
+import javax.annotation.Nonnull;
+
 import org.csstudio.archive.sdds.server.util.IntegerValue;
 import org.csstudio.archive.sdds.server.util.RawData;
 import org.slf4j.Logger;
@@ -39,7 +41,7 @@ import de.desy.aapi.AapiServerError;
  * @author Markus Moeller
  *
  */
-public class WaveFormDataRequest extends ServerCommand {
+public class WaveFormDataRequest extends AbstractServerCommand {
 
     private static final Logger LOG = LoggerFactory.getLogger(WaveFormDataRequest.class);
 
@@ -47,7 +49,9 @@ public class WaveFormDataRequest extends ServerCommand {
      * @see org.csstudio.archive.jaapi.server.command.ServerCommand#execute(byte[], int, byte[], org.csstudio.archive.jaapi.server.util.IntegerValue)
      */
     @Override
-	public void execute(final RawData buffer, final RawData receivedValue, final IntegerValue resultLength)
+    public void execute(@Nonnull final RawData buffer,
+                        @Nonnull final RawData receivedValue,
+                        @Nonnull final IntegerValue resultLength)
     throws ServerCommandException, CommandNotImplementedException {
 
         final ByteArrayOutputStream baos = new ByteArrayOutputStream();

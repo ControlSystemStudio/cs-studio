@@ -37,7 +37,7 @@ import org.csstudio.archive.sdds.server.util.RawData;
 public class CommandExecutor {
 
     /** */
-    private final ServerCommand[] commands;
+    private final AbstractServerCommand[] commands;
 
     /**
      * Standard constructor
@@ -45,7 +45,7 @@ public class CommandExecutor {
      */
     public CommandExecutor() throws ServerCommandException {
 
-        commands = new ServerCommand[] {
+        commands = new AbstractServerCommand[] {
                 new Version(),
                 new DataRequest(),
                 new ChannelInfo(),
@@ -54,7 +54,8 @@ public class CommandExecutor {
                 new FilterList(),
                 new RegExpChannelList(),
                 new SkeletonList(),
-                new WaveFormDataRequest() };
+                new WaveFormDataRequest()
+         };
     }
 
     /**

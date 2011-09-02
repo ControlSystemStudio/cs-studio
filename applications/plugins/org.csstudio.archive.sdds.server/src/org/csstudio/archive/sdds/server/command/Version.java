@@ -28,6 +28,8 @@ import java.io.ByteArrayOutputStream;
 import java.io.DataOutputStream;
 import java.io.IOException;
 
+import javax.annotation.Nonnull;
+
 import org.csstudio.archive.sdds.server.util.IntegerValue;
 import org.csstudio.archive.sdds.server.util.RawData;
 
@@ -37,7 +39,7 @@ import de.desy.aapi.AAPI;
  * @author Markus Moeller
  *
  */
-public class Version extends ServerCommand {
+public class Version extends AbstractServerCommand {
 
     /**
      *
@@ -47,7 +49,9 @@ public class Version extends ServerCommand {
      * @param resultLength
      */
     @Override
-	public void execute(final RawData buffer, final RawData receivedValue, final IntegerValue resultLength)
+    public void execute(@Nonnull final RawData buffer,
+                        @Nonnull final RawData receivedValue,
+                        @Nonnull final IntegerValue resultLength)
     throws ServerCommandException, CommandNotImplementedException {
 
         DataOutputStream dos = null;
@@ -56,21 +60,16 @@ public class Version extends ServerCommand {
         final int version = AAPI.AAPI_VERSION;
         resultLength.setIntegerValue(Integer.SIZE / 8);
 
-        try
-        {
+        try {
             bos = new ByteArrayOutputStream();
             dos = new DataOutputStream(bos);
             dos.writeInt(version);
-        }
-        catch(final IOException ioe)
-        {
+        } catch(final IOException ioe) {
             throw new ServerCommandException(ioe.getMessage());
-        }
-        finally
-        {
+        } finally {
             if(dos!=null) {
-            	try{dos.close();}catch(final Exception e) { /* Can be ignored */ }
-            	dos = null;
+                try{dos.close();}catch(final Exception e) { /* Can be ignored */ }
+                dos = null;
             }
         }
 

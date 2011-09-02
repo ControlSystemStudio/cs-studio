@@ -80,6 +80,7 @@ public class DataRequestHeader implements IRequestHeader {
      *
      */
     @Override
+    @Nonnull
     public String toString() {
 
         final StringBuffer result = new StringBuffer();
