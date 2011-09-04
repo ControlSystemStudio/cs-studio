@@ -115,6 +115,7 @@ public class ChannelQuery {
 	}
 
 	static Map<String, String> buildSearchMap(String searchPattern) {
+		// FIXME handle space in comma separated values Tags=tag1, tag2
 		Hashtable<String, String> map = new Hashtable<String, String>();
 		String[] words = searchPattern.split("\\s");
 		if (words.length <= 0) {
