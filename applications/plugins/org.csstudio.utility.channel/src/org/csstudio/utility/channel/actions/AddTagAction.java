@@ -105,6 +105,8 @@ public class AddTagAction implements IObjectActionDelegate {
 							createTagDialog.getTagName(),
 							createTagDialog.getTagOwner()));
 					create.schedule();
+				}else{
+					return;
 				}
 			}
 			Job job = new AddTag2ChannelsJob("AddTags", channels, tag);
