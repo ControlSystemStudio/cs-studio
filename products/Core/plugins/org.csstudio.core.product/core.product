@@ -50,7 +50,7 @@
       <feature id="org.csstudio.core.feature" version="3.1.0.qualifier"/>
       <feature id="org.csstudio.core.util.feature" version="3.1.0.qualifier"/>
       <feature id="org.csstudio.core.product.feature" version="3.1.0.qualifier"/>
-      <feature id="org.eclipse.rcp" version="3.6.2.r362_v20101104-9SAxFMKFkSAqi8axkv1ZjegmiBLY"/>
+      <feature id="org.eclipse.rcp" version="3.7.0.v20110216-9DB5Fm1FpBGy_AaVz-mFamgY"/>
    </features>
 
 
