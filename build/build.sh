@@ -19,16 +19,17 @@ then
 else
   mkdir -p ext
   cd ext
-  if [[ ! -f eclipse-rcp-helios-SR2-linux-gtk.tar.gz ]]
+
+  if [[ ! -f eclipse-rcp-indigo-linux-gtk.tar.gz ]]
     then
-      wget http://ftp.osuosl.org/pub/eclipse//technology/epp/downloads/release/helios/SR2/eclipse-rcp-helios-SR2-linux-gtk.tar.gz
+      wget http://ftp.osuosl.org/pub/eclipse//technology/epp/downloads/release/indigo/R/eclipse-rcp-indigo-linux-gtk.tar.gz
     fi
-  if [[ ! -f eclipse-3.6.2-delta-pack.zip ]]
+  if [[ ! -f eclipse-3.7M6-delta-pack.zip ]]
   then
-    wget http://ftp.osuosl.org/pub/eclipse//eclipse/downloads/drops/R-3.6.2-201102101200/eclipse-3.6.2-delta-pack.zip
+    wget http://ftp.osuosl.org/pub/eclipse//eclipse/downloads/drops/S-3.7M6-201103101119/eclipse-3.7M6-delta-pack.zip
   fi
-  tar -xzvf eclipse-rcp-helios-SR2-linux-gtk.tar.gz
-  unzip -o eclipse-3.6.2-delta-pack.zip
+  tar -xzvf eclipse-rcp-indigo-linux-gtk.tar.gz
+  unzip -o eclipse-3.7M6-delta-pack.zip
   cd ..
 fi
 
@@ -48,7 +49,7 @@ cd ..
 # XXX Doing it in the plugin directory: it was breaking otherwise
 ABSOLUTE_DIR=$PWD
 echo $ABSOLUTE_DIR
-java -jar "$ABSOLUTE_DIR"/ext/eclipse/plugins/org.eclipse.equinox.launcher_1.1.*.jar -application org.eclipse.ant.core.antRunner -buildfile "$ABSOLUTE_DIR"/ext/eclipse/plugins/org.eclipse.pde.build_3.6.*/scripts/productBuild/productBuild.xml -Dbuilder="$ABSOLUTE_DIR"/build -Dbuild.dir="$ABSOLUTE_DIR"
+java -jar "$ABSOLUTE_DIR"/ext/eclipse/plugins/org.eclipse.equinox.launcher_1.2.*.jar -application org.eclipse.ant.core.antRunner -buildfile "$ABSOLUTE_DIR"/ext/eclipse/plugins/org.eclipse.pde.build_3.7.*/scripts/productBuild/productBuild.xml -Dbuilder="$ABSOLUTE_DIR"/build -Dbuild.dir="$ABSOLUTE_DIR"
 
 # read properties from the build.properties and set up variable for each of them
 #TEMPFILE=$(mktemp)
