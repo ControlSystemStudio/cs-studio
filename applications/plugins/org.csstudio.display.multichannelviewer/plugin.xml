@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?eclipse version="3.4"?>
+<plugin>
+
+   <extension
+         point="org.eclipse.ui.views">
+      <category
+            name="test"
+            id="org.csstudio.display.multichannelviewer">
+      </category>
+      <view
+            name="MultiChannel View"
+            icon="icons/multi_channel.png"
+            category="org.csstudio.display.multichannelviewer"
+            class="org.csstudio.display.multichannelviewer.views.MultiChannelView"
+            id="org.csstudio.display.multichannelviewer.views.MultiChannelView">
+      </view>
+   </extension>
+   <extension
+         point="org.eclipse.ui.perspectiveExtensions">
+      <perspectiveExtension
+            targetID="org.eclipse.jdt.ui.JavaPerspective">
+         <view
+               ratio="0.5"
+               relative="org.eclipse.ui.views.TaskList"
+               relationship="right"
+               id="org.csstudio.display.multichannelviewer.views.MultiChannelView">
+         </view>
+      </perspectiveExtension>
+   </extension>
+   <extension
+         point="org.eclipse.help.contexts">
+      <contexts
+            file="contexts.xml">
+      </contexts>
+   </extension>
+
+</plugin>

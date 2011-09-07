@@ -1,0 +1,16 @@
+Manifest-Version: 1.0
+Bundle-ManifestVersion: 2
+Bundle-Name: Multichannelviewer
+Bundle-SymbolicName: org.csstudio.display.multichannelviewer; singleton:=true
+Bundle-Version: 3.0.0.qualifier
+Bundle-Activator: org.csstudio.display.multichannelviewer.Activator
+Require-Bundle: org.eclipse.ui,
+ org.eclipse.core.runtime,
+ gov.bnl.channelfinder.api;bundle-version="2.0.0",
+ org.csstudio.utility.channelfinder;bundle-version="1.1.0",
+ org.csstudio.utility.pvmanager;bundle-version="1.0.0",
+ org.csstudio.utility.pvmanager.ui;bundle-version="3.1.0",
+ org.csstudio.platform.libs.jfreechart;bundle-version="1.0.13"
+Bundle-ActivationPolicy: lazy
+Bundle-RequiredExecutionEnvironment: JavaSE-1.6
+Bundle-Vendor: Kunal Shroff <kshroff@bnl.gov>, Gabriele Carcassi <carcassi@bnl.gov> - BNL
