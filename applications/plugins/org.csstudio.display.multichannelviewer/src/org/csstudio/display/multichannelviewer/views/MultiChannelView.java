@@ -1,29 +1,26 @@
 package org.csstudio.display.multichannelviewer.views;
 
-import gov.bnl.channelfinder.api.Channel;
 import gov.bnl.channelfinder.api.ChannelUtil;
 
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 
-import org.csstudio.utility.channelfinder.ChannelQuery;
+import org.csstudio.display.multichannelviewer.Activator;
+import org.csstudio.ui.util.helpers.ComboHistoryHelper;
+import org.eclipse.jface.viewers.ComboViewer;
 import org.eclipse.swt.SWT;
-import org.eclipse.swt.events.KeyAdapter;
-import org.eclipse.swt.events.KeyEvent;
+import org.eclipse.swt.events.SelectionAdapter;
+import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Combo;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Label;
-import org.eclipse.swt.widgets.Text;
 import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.part.ViewPart;
-import org.eclipse.swt.events.SelectionAdapter;
-import org.eclipse.swt.events.SelectionEvent;
 
 public class MultiChannelView extends ViewPart {
 
@@ -31,11 +28,13 @@ public class MultiChannelView extends ViewPart {
 	 * The ID of the view as specified by the extension.
 	 */
 	public static final String ID = "org.csstudio.display.multichannelviewer.views.MultiChannelView";
-	private Text textChannelQuery;
+	private static final String QUERY_LIST_TAG = "query_list";
 	private Combo combo;
 	private MultiChannelGraph graph;
-
-	private volatile Collection<Channel> channels;
+	
+	private ComboViewer comboViewer;
+	@SuppressWarnings("unused")
+	private ComboHistoryHelper comboHistoryHelper;
 
 	/**
 	 * The constructor.
@@ -55,17 +54,26 @@ public class MultiChannelView extends ViewPart {
 				false, 1, 1));
 		lblChannels.setText("Channels: ");
 
-		textChannelQuery = new Text(parent, SWT.BORDER);
-		textChannelQuery.addKeyListener(new KeyAdapter() {
+		comboViewer = new ComboViewer(parent, SWT.SINGLE | SWT.BORDER);
+		comboViewer
+				.getCombo()
+				.setToolTipText(
+						"space seperated search criterias, patterns may include * and ? wildcards\r\nchannelNamePatter\r\npropertyName=propertyValuePattern1,propertyValuePattern2\r\nTags=tagNamePattern\r\nEach criteria is logically ANDed and , or || seperated values are logically ORed\r\n");
+		GridData gd = new GridData();
+		gd.grabExcessHorizontalSpace = true;
+		gd.horizontalAlignment = SWT.FILL;
+		comboViewer.getCombo().setLayoutData(gd);
+
+		comboHistoryHelper = new ComboHistoryHelper(Activator.getDefault()
+				.getDialogSettings(), QUERY_LIST_TAG, comboViewer.getCombo(),
+				10, true) {
+
 			@Override
-			public void keyReleased(KeyEvent e) {
-				if (e.keyCode == SWT.CR) {
-					graph.setQueryString(textChannelQuery.getText());
-				}
+			public void newSelection(String entry) {
+				graph.setQueryString(comboViewer.getCombo().getText());
 			}
-		});
-		textChannelQuery.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true,
-				false, 1, 1));
+
+		};
 
 		Label lblSortBy = new Label(parent, SWT.NONE);
 		lblSortBy.setLayoutData(new GridData(SWT.RIGHT, SWT.CENTER, false,
@@ -74,10 +82,9 @@ public class MultiChannelView extends ViewPart {
 
 		combo = new Combo(parent, SWT.NONE);
 		combo.addSelectionListener(new SelectionAdapter() {
-			@SuppressWarnings("unchecked")
 			@Override
 			public void widgetSelected(SelectionEvent e) {
-				System.out.println("sort by : "+combo.getText());
+//				System.out.println("sort by : "+combo.getText());
 				graph.setSortProperty(combo.getText());
 			}
 		});
@@ -86,15 +93,11 @@ public class MultiChannelView extends ViewPart {
 
 		graph = new MultiChannelGraph(parent, SWT.NONE);
 		graph.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true, 4, 1));
-		new Label(parent, SWT.NONE);
-		new Label(parent, SWT.NONE);
-		new Label(parent, SWT.NONE);
-		new Label(parent, SWT.NONE);
 		graph.addPropertyChangeListener(new PropertyChangeListener() {
 
 			@Override
 			public void propertyChange(PropertyChangeEvent evt) {
-				System.out.println(evt.getPropertyName());
+//				System.out.println(evt.getPropertyName());
 				if (evt.getPropertyName().equals("channels")) {
 					PlatformUI.getWorkbench().getDisplay()
 							.asyncExec(new Runnable() {
@@ -121,5 +124,6 @@ public class MultiChannelView extends ViewPart {
 		propertyNames.add("channel-name");
 		Collections.sort(propertyNames);
 		combo.setItems(propertyNames.toArray(new String[propertyNames.size()]));
+		combo.setText(graph.getSortProperty());
 	}
 }

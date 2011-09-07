@@ -20,6 +20,7 @@ import java.util.concurrent.Executor;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
+import java.util.logging.Logger;
 
 import org.csstudio.display.multichannelviewer.Activator;
 import org.csstudio.utility.channelfinder.ChannelQuery;
@@ -48,7 +49,10 @@ import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.layout.GridData;
 
 public class MultiChannelGraph extends Composite {
-
+	
+	public static final String CHANNEL_NAME_SORT = "channel-name";
+	private static final Logger log = Logger.getLogger(MultiChannelGraph.class.getName());
+	
 	private volatile String queryString;
 	private volatile List<Channel> channels;
 
@@ -57,7 +61,7 @@ public class MultiChannelGraph extends Composite {
 	private ChannelQuery channelQuery;
 
 	PVReader<Map<String, Object>> pvReader;
-	private volatile String sortProperty;
+	private volatile String sortProperty = CHANNEL_NAME_SORT;
 	private Comparator<Channel> comparator = new ChannelNameComparator();
 
 	private ChartComposite chartDisplay;
@@ -113,8 +117,8 @@ public class MultiChannelGraph extends Composite {
 				if (evt.getPropertyName().equals("channels")) {
 					reconnect();
 				} else if (evt.getPropertyName().equals("ordering")) {
-					System.out.println("switching the ordering....");
-					if (sortProperty.equals("channel-name")) {
+					log.info("switching the ordering....");
+					if (sortProperty.equals(CHANNEL_NAME_SORT)) {
 						comparator = new ChannelNameComparator();
 					} else {
 						comparator = new ChannelPropertyComparator(sortProperty);
@@ -136,7 +140,7 @@ public class MultiChannelGraph extends Composite {
 
 	private JFreeChart createChart(XYDataset dataset) {
 		JFreeChart chart = ChartFactory.createScatterPlot(
-				"MultiChannel Viewer", "Channels sorted by " + sortProperty,
+				"MultiChannel Viewer", "",
 				"Value", null, PlotOrientation.VERTICAL, true, true, false);
 		chart.removeLegend();
 		XYPlot plot = (XYPlot) chart.getPlot();
@@ -188,12 +192,12 @@ public class MultiChannelGraph extends Composite {
 	}
 
 	private void updateGraph(List<Channel> channels, Map<String, Object> map) {
-		long time = System.nanoTime();
+//		long time = System.nanoTime();
 		DefaultXYDataset dataset = new DefaultXYDataset();
 		double[][] data = new double[2][map.keySet().size()];
 		int count = 0;
 		for (Channel channel : channels) {
-			if (sortProperty.equals("channel-name"))
+			if (sortProperty.equals(CHANNEL_NAME_SORT))
 				data[0][count] = count;
 			else
 				data[0][count] = Double.valueOf(channel.getProperty(
@@ -227,7 +231,7 @@ public class MultiChannelGraph extends Composite {
 				final Exception e = channelQuery.getLastException();
 				if (e == null) {
 					setChannels(new ArrayList<Channel>(channelQuery.getResult()));
-					System.out.println(channels.size());
+//					System.out.println(channels.size());
 				} else {
 					PlatformUI.getWorkbench().getDisplay()
 							.asyncExec(new Runnable() {
