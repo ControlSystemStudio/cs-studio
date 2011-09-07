@@ -4,14 +4,9 @@
 
    <extension
          point="org.eclipse.ui.views">
-      <category
-            name="test"
-            id="org.csstudio.display.multichannelviewer">
-      </category>
       <view
             name="MultiChannel View"
             icon="icons/multi_channel.png"
-            category="org.csstudio.display.multichannelviewer"
             class="org.csstudio.display.multichannelviewer.views.MultiChannelView"
             id="org.csstudio.display.multichannelviewer.views.MultiChannelView">
       </view>
@@ -29,10 +24,21 @@
       </perspectiveExtension>
    </extension>
    <extension
-         point="org.eclipse.help.contexts">
-      <contexts
-            file="contexts.xml">
-      </contexts>
+         point="org.eclipse.ui.menus">
+      <menuContribution
+            allPopups="false"
+            locationURI="menu:display">
+         <command
+               commandId="org.eclipse.ui.views.showView"
+               icon="icons/multi_channel.png"
+               label="MultiChannel Viewer"
+               style="push">
+            <parameter
+                  name="org.eclipse.ui.views.showView.viewId"
+                  value="org.csstudio.display.multichannelviewer.views.MultiChannelView">
+            </parameter>
+         </command>
+      </menuContribution>
    </extension>
 
 </plugin>
