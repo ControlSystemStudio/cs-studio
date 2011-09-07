@@ -26,6 +26,7 @@ org.csstudio.diag.pvmanager.probe
 org.csstudio.display.pvmanager.pvtable
 org.csstudio.display.channelviewer
 org.csstudio.display.channelviewer.intro
+org.csstudio.display.multichannelviewer
 org.csstudio.email
 org.csstudio.email.ui
 org.csstudio.java
