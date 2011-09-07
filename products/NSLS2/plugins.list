@@ -1,4 +1,5 @@
 com.google.common
+gov.bnl.channelfinder.api
 javax.annotation
 org.csstudio.apputil
 org.csstudio.apputil.ui
