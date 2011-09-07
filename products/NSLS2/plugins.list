@@ -23,15 +23,15 @@ org.csstudio.diag.postanalyser
 org.csstudio.diag.probe
 org.csstudio.diag.probe.intro
 org.csstudio.diag.pvmanager.probe
-org.csstudio.display.pvtable
+org.csstudio.display.pvmanager.pvtable
 org.csstudio.display.channelviewer
+org.csstudio.display.channelviewer.intro
 org.csstudio.email
 org.csstudio.email.ui
 org.csstudio.java
 org.csstudio.logbook
 org.csstudio.logging
 org.csstudio.logging.ui
-org.csstudio.multiChannelViewer
 org.csstudio.nsls2.product
 org.csstudio.nsls2.startuphelper
 org.csstudio.nsls2.startup.intro
