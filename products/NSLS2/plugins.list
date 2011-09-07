@@ -23,9 +23,8 @@ org.csstudio.diag.postanalyser
 org.csstudio.diag.probe
 org.csstudio.diag.probe.intro
 org.csstudio.diag.pvmanager.probe
-org.csstudio.display.pvmanager.pvtable
+org.csstudio.display.pvtable
 org.csstudio.display.channelviewer
-org.csstudio.display.channelviewer.intro
 org.csstudio.email
 org.csstudio.email.ui
 org.csstudio.java
@@ -45,7 +44,6 @@ org.csstudio.opibuilder.performanceTest
 org.csstudio.opibuilder.widgets
 org.csstudio.opi.intro
 org.csstudio.platform.libs.channelfinderAPI
-org.csstudio.platform.libs.dal
 org.csstudio.platform.libs.epics
 org.csstudio.platform.libs.epics.ui
 org.csstudio.platform.libs.glazedlists
