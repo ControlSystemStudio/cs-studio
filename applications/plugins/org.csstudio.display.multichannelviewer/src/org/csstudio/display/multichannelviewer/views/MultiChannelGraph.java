@@ -49,10 +49,11 @@ import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.layout.GridData;
 
 public class MultiChannelGraph extends Composite {
-	
+
 	public static final String CHANNEL_NAME_SORT = "channel-name";
-	private static final Logger log = Logger.getLogger(MultiChannelGraph.class.getName());
-	
+	private static final Logger log = Logger.getLogger(MultiChannelGraph.class
+			.getName());
+
 	private volatile String queryString;
 	private volatile List<Channel> channels;
 
@@ -81,6 +82,7 @@ public class MultiChannelGraph extends Composite {
 
 	public MultiChannelGraph(Composite parent, int style) {
 		super(parent, style);
+
 		// Close PV on dispose
 		addDisposeListener(new DisposeListener() {
 
@@ -94,7 +96,8 @@ public class MultiChannelGraph extends Composite {
 				try {
 					// Wait a while for existing tasks to terminate
 					if (!executor.awaitTermination(60, TimeUnit.SECONDS)) {
-						executor.shutdownNow(); // Cancel currently executing tasks
+						executor.shutdownNow(); // Cancel currently executing
+												// tasks
 						// Wait a while for tasks to respond to being cancelled
 						if (!executor.awaitTermination(60, TimeUnit.SECONDS))
 							System.err.println("Pool did not terminate"); //$NON-NLS-1$
@@ -108,7 +111,14 @@ public class MultiChannelGraph extends Composite {
 			}
 		});
 
-		reconnect();
+		setLayout(new GridLayout(1, false));
+		chartDisplay = new ChartComposite(this, SWT.NONE, null, false, false,
+				false, false, true);
+		chartDisplay.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true,
+				1, 1));
+		chartDisplay.setChart(createChart(null));
+
+		// reconnect();
 		addPropertyChangeListener(new PropertyChangeListener() {
 
 			@SuppressWarnings("unchecked")
@@ -130,18 +140,12 @@ public class MultiChannelGraph extends Composite {
 				}
 			}
 		});
-		setLayout(new GridLayout(1, false));
-		chartDisplay = new ChartComposite(this, SWT.NONE, null, false, false,
-				false, false, true);
-		chartDisplay.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true,
-				1, 1));
-		chartDisplay.setChart(createChart(null));
 	}
 
 	private JFreeChart createChart(XYDataset dataset) {
 		JFreeChart chart = ChartFactory.createScatterPlot(
-				"MultiChannel Viewer", "",
-				"Value", null, PlotOrientation.VERTICAL, true, true, false);
+				"MultiChannel Viewer", "", "Value", null,
+				PlotOrientation.VERTICAL, true, true, false);
 		chart.removeLegend();
 		XYPlot plot = (XYPlot) chart.getPlot();
 		plot.setDomainCrosshairVisible(true);
@@ -166,6 +170,11 @@ public class MultiChannelGraph extends Composite {
 					XYPlot plot = (XYPlot) chartDisplay.getChart().getPlot();
 					plot.getRangeAxis().setRange(minYValue, maxYValue);
 					plot.setDataset(xyDataset);
+					if (xyDataset != null)
+						plot.getDomainAxis().setLabel(
+								"Channels sorted by : " + sortProperty);
+					else
+						plot.getDomainAxis().setLabel("");
 					chartDisplay.redraw();
 				}
 			});
@@ -175,8 +184,9 @@ public class MultiChannelGraph extends Composite {
 	public void reconnect() {
 		if (pvReader != null) {
 			pvReader.close();
+			pvReader = null;
 		}
-		if (channels != null) {
+		if (channels != null && channels.size() != 0) {
 			Collections.sort(channels, comparator);
 			pvReader = PVManager.read(
 					mapOf(latestValueOf(ExpressionLanguage.channels(ChannelUtil
@@ -188,31 +198,38 @@ public class MultiChannelGraph extends Composite {
 				}
 
 			});
+		} else {
+			updateGraph(null, null);
 		}
 	}
 
 	private void updateGraph(List<Channel> channels, Map<String, Object> map) {
-//		long time = System.nanoTime();
-		DefaultXYDataset dataset = new DefaultXYDataset();
-		double[][] data = new double[2][map.keySet().size()];
-		int count = 0;
-		for (Channel channel : channels) {
-			if (sortProperty.equals(CHANNEL_NAME_SORT))
-				data[0][count] = count;
-			else
-				data[0][count] = Double.valueOf(channel.getProperty(
-						sortProperty).getValue());
-			double yValue = ValueUtil
-					.numericValueOf(map.get(channel.getName()));
-			maxYValue = yValue > maxYValue ? yValue : maxYValue;
-			minYValue = yValue < minYValue ? yValue : minYValue;
-			data[1][count] = yValue;
-			count++;
+		// long time = System.nanoTime();
+		if (channels != null && map != null) {
+			DefaultXYDataset dataset = new DefaultXYDataset();
+			double[][] data = new double[2][map.keySet().size()];
+			int count = 0;
+			for (Channel channel : channels) {
+				if (sortProperty.equals(CHANNEL_NAME_SORT))
+					data[0][count] = count;
+				else
+					data[0][count] = Double.valueOf(channel.getProperty(
+							sortProperty).getValue());
+				double yValue = ValueUtil.numericValueOf(map.get(channel
+						.getName()));
+				maxYValue = yValue > maxYValue ? yValue : maxYValue;
+				minYValue = yValue < minYValue ? yValue : minYValue;
+				data[1][count] = yValue;
+				count++;
+			}
+			dataset.addSeries("pvs", data);
+			// System.out.println("time to compute dataset = "
+			// + (System.nanoTime() - time) / 1000 + " micro seconds");
+			setXYDataset(dataset);
+		} else {
+			setXYDataset(null);
 		}
-		dataset.addSeries("pvs", data);
-		// System.out.println("time to compute dataset = "
-		// + (System.nanoTime() - time) / 1000 + " micro seconds");
-		setXYDataset(dataset);
+
 	}
 
 	public void setQueryString(String queryString) {
@@ -231,7 +248,6 @@ public class MultiChannelGraph extends Composite {
 				final Exception e = channelQuery.getLastException();
 				if (e == null) {
 					setChannels(new ArrayList<Channel>(channelQuery.getResult()));
-//					System.out.println(channels.size());
 				} else {
 					PlatformUI.getWorkbench().getDisplay()
 							.asyncExec(new Runnable() {

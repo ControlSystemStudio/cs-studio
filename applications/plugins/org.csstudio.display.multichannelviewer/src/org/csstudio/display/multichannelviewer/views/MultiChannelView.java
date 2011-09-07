@@ -31,7 +31,7 @@ public class MultiChannelView extends ViewPart {
 	private static final String QUERY_LIST_TAG = "query_list";
 	private Combo combo;
 	private MultiChannelGraph graph;
-	
+
 	private ComboViewer comboViewer;
 	@SuppressWarnings("unused")
 	private ComboHistoryHelper comboHistoryHelper;
@@ -84,7 +84,7 @@ public class MultiChannelView extends ViewPart {
 		combo.addSelectionListener(new SelectionAdapter() {
 			@Override
 			public void widgetSelected(SelectionEvent e) {
-//				System.out.println("sort by : "+combo.getText());
+				// System.out.println("sort by : "+combo.getText());
 				graph.setSortProperty(combo.getText());
 			}
 		});
@@ -97,7 +97,7 @@ public class MultiChannelView extends ViewPart {
 
 			@Override
 			public void propertyChange(PropertyChangeEvent evt) {
-//				System.out.println(evt.getPropertyName());
+				// System.out.println(evt.getPropertyName());
 				if (evt.getPropertyName().equals("channels")) {
 					PlatformUI.getWorkbench().getDisplay()
 							.asyncExec(new Runnable() {
@@ -119,11 +119,17 @@ public class MultiChannelView extends ViewPart {
 	}
 
 	public void update() {
-		List<String> propertyNames = new ArrayList<String>(
-				ChannelUtil.getPropertyNames(graph.getChannels()));
-		propertyNames.add("channel-name");
-		Collections.sort(propertyNames);
-		combo.setItems(propertyNames.toArray(new String[propertyNames.size()]));
-		combo.setText(graph.getSortProperty());
+		if (graph.getChannels() != null && graph.getChannels().size() != 0) {
+			List<String> propertyNames = new ArrayList<String>(
+					ChannelUtil.getPropertyNames(graph.getChannels()));
+			propertyNames.add("channel-name");
+			Collections.sort(propertyNames);
+			combo.setItems(propertyNames.toArray(new String[propertyNames
+					.size()]));
+			combo.setText(graph.getSortProperty());
+		} else {
+			combo.setItems(new String[]{});
+			combo.setText("");
+		}
 	}
 }
