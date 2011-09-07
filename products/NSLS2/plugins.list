@@ -23,7 +23,7 @@ org.csstudio.diag.postanalyser
 org.csstudio.diag.probe
 org.csstudio.diag.probe.intro
 org.csstudio.diag.pvmanager.probe
-org.csstudio.display.pvmanager.pvtable
+org.csstudio.display.pvtable
 org.csstudio.display.channelviewer
 org.csstudio.display.channelviewer.intro
 org.csstudio.display.multichannelviewer
