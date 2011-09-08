@@ -34,6 +34,8 @@ import org.epics.pvmanager.ExpressionLanguage;
 import org.epics.pvmanager.PVManager;
 import org.epics.pvmanager.PVReader;
 import org.epics.pvmanager.PVReaderListener;
+import org.epics.pvmanager.data.Array;
+import org.epics.pvmanager.data.VDoubleArray;
 import org.epics.pvmanager.data.ValueUtil;
 import org.jfree.chart.ChartFactory;
 import org.jfree.chart.JFreeChart;
@@ -41,6 +43,7 @@ import org.jfree.chart.axis.NumberAxis;
 import org.jfree.chart.plot.PlotOrientation;
 import org.jfree.chart.plot.XYPlot;
 import org.jfree.data.xy.DefaultXYDataset;
+import org.jfree.data.xy.XYDataItem;
 import org.jfree.data.xy.XYDataset;
 import org.jfree.experimental.chart.swt.ChartComposite;
 import org.eclipse.swt.events.DisposeEvent;
@@ -207,19 +210,38 @@ public class MultiChannelGraph extends Composite {
 		// long time = System.nanoTime();
 		if (channels != null && map != null) {
 			DefaultXYDataset dataset = new DefaultXYDataset();
-			double[][] data = new double[2][map.keySet().size()];
+			ArrayList<XYDataItem> dataItems = new ArrayList<XYDataItem>();
 			int count = 0;
 			for (Channel channel : channels) {
+				double xValue;
 				if (sortProperty.equals(CHANNEL_NAME_SORT))
-					data[0][count] = count;
+					xValue = count;
 				else
-					data[0][count] = Double.valueOf(channel.getProperty(
+					xValue = Double.valueOf(channel.getProperty(
 							sortProperty).getValue());
-				double yValue = ValueUtil.numericValueOf(map.get(channel
-						.getName()));
-				maxYValue = yValue > maxYValue ? yValue : maxYValue;
-				minYValue = yValue < minYValue ? yValue : minYValue;
-				data[1][count] = yValue;
+				Object value = map.get(channel.getName());
+				if(ValueUtil.typeOf(value).equals(VDoubleArray.class)){
+					double[] values = ((VDoubleArray) value).getArray();
+					for (double d : values) {
+						double yValue = d;
+						maxYValue = yValue > maxYValue ? yValue : maxYValue;
+						minYValue = yValue < minYValue ? yValue : minYValue;
+						dataItems.add(new XYDataItem(xValue, yValue));
+					}
+				}else{
+					double yValue = ValueUtil.numericValueOf(map.get(channel
+							.getName()));
+					maxYValue = yValue > maxYValue ? yValue : maxYValue;
+					minYValue = yValue < minYValue ? yValue : minYValue;
+					dataItems.add(new XYDataItem(xValue, yValue));
+				}
+				count++;
+			}
+			count = 0;
+			double[][] data = new double[2][dataItems.size()];
+			for (XYDataItem xyDataItem : dataItems) {
+				data[0][count] = xyDataItem.getXValue();
+				data[1][count] = xyDataItem.getYValue();
 				count++;
 			}
 			dataset.addSeries("pvs", data);
