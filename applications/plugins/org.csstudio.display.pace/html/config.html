@@ -73,6 +73,12 @@ column headers and the rows.
     Where <b>instance</b> is a row definition and <b>name</b> is put in the first cell of the row.
     The <b>macro</b> definitions are used to turn the macro-ized PV names of the
     column definitions into specific PV instances.
+    <p>
+    A macro can be set to empty like this:
+<pre>&lt;macros>PV=""&lt;/macros>
+</pre>
+ 
+    If the PV name for a cell evaluates to an empty string, that cell will not have a PV.   
 </ul>
 
 <h2>Configuration File Example</h2>
