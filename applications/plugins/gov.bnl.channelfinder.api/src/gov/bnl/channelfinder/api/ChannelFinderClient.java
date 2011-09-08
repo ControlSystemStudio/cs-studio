@@ -20,7 +20,7 @@ import javax.ws.rs.core.MultivaluedMap;
  * 
  */
 public interface ChannelFinderClient {
-	
+
 	/**
 	 * Get a list of names of all the properties currently present on the
 	 * channelfinder service.
@@ -36,7 +36,7 @@ public interface ChannelFinderClient {
 	 * @return a list of names of all the existing {@link Tag}s.
 	 */
 	public Collection<String> getAllTags();
-	
+
 	/**
 	 * Returns a channel that exactly matches the channelName
 	 * <tt>channelName</tt>.
@@ -268,6 +268,22 @@ public interface ChannelFinderClient {
 			String... pattern) throws ChannelFinderException;
 
 	/**
+	 * Query for channels based on the Query string <tt>query</tt> example:
+	 * find("SR* Cell=1,2 Tags=GolderOrbit,myTag)<br>
+	 * 
+	 * this will return all channels with names starting with SR AND have
+	 * property Cell=1 OR 2 AND have tags goldenOrbit AND myTag.<br>
+	 * 
+	 * IMP: each criteria is logically AND'ed while multiple values for
+	 * Properties are OR'ed.<br>
+	 * 
+	 * @param query
+	 * @return Collection of channels which satisfy the search criteria.
+	 * @throws ChannelFinderException
+	 */
+	public Collection<Channel> find(String query) throws ChannelFinderException;
+
+	/**
 	 * Query for channels based on the multiple criteria specified in the map.
 	 * Map.put("~name", "*")<br>
 	 * Map.put("~tag", "tag1")<br>
@@ -346,8 +362,10 @@ public interface ChannelFinderClient {
 	 * Delete tag <tt>tag</tt> from the channel with the name
 	 * <tt>channelName</tt>
 	 * 
-	 * @param tag - the tag to be deleted.
-	 * @param channelName - the channel from which to delete the tag <tt>tag</tt> 
+	 * @param tag
+	 *            - the tag to be deleted.
+	 * @param channelName
+	 *            - the channel from which to delete the tag <tt>tag</tt>
 	 * @throws ChannelFinderException
 	 */
 	public void delete(Tag.Builder tag, String channelName)
@@ -356,8 +374,10 @@ public interface ChannelFinderClient {
 	/**
 	 * Remove the tag <tt>tag </tt> from all the channels <tt>channelNames</tt>
 	 * 
-	 * @param tag - the tag to be deleted.
-	 * @param channelNames - the channels from which to delete the tag <tt>tag</tt> 
+	 * @param tag
+	 *            - the tag to be deleted.
+	 * @param channelNames
+	 *            - the channels from which to delete the tag <tt>tag</tt>
 	 * @throws ChannelFinderException
 	 */
 	public void delete(Tag.Builder tag, Collection<String> channelNames)
@@ -367,8 +387,11 @@ public interface ChannelFinderClient {
 	 * Remove property <tt>property</tt> from the channel with name
 	 * <tt>channelName</tt>
 	 * 
-	 * @param property - the property to be deleted.
-	 * @param channelName - the channel from which to delete the property <tt>property</tt>
+	 * @param property
+	 *            - the property to be deleted.
+	 * @param channelName
+	 *            - the channel from which to delete the property
+	 *            <tt>property</tt>
 	 * @throws ChannelFinderException
 	 */
 	public void delete(Property.Builder property, String channelName)
@@ -378,13 +401,15 @@ public interface ChannelFinderClient {
 	 * Remove the property <tt>property</tt> from the set of channels
 	 * <tt>channelNames</tt>
 	 * 
-	 * @param property - the property to be deleted.
-	 * @param channelNames - the channels from which to delete the property <tt>property</tt>
+	 * @param property
+	 *            - the property to be deleted.
+	 * @param channelNames
+	 *            - the channels from which to delete the property
+	 *            <tt>property</tt>
 	 * @throws ChannelFinderException
 	 */
 	public void delete(Property.Builder property,
 			Collection<String> channelNames) throws ChannelFinderException;
-
 
 	/**
 	 * close

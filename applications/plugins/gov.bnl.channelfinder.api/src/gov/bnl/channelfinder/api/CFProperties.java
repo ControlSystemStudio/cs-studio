@@ -62,10 +62,8 @@ class CFProperties {
 						"/config/channelfinder.properties"));
 			} catch (Exception e) {
 				// The jar has been modified and the default packaged properties
-				// file has been moved
-				
-				// XXX Commenting this out as it will cause NullPointerExceptions later
-				// defaultProperties = null;
+				// file has been moved.
+				// Simply use the empty defaultProperties.
 			}
 
 			// Not using to new Properties(default Properties) constructor to

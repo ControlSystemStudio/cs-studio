@@ -16,6 +16,7 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.Hashtable;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.concurrent.Callable;
@@ -208,8 +209,8 @@ public class ChannelFinderClientImpl implements ChannelFinderClient {
 		}
 
 		/**
-		 * Will actually create a {@link ChannelFinderClientImpl} object using the
-		 * configuration informoation in this builder.
+		 * Will actually create a {@link ChannelFinderClientImpl} object using
+		 * the configuration informoation in this builder.
 		 * 
 		 * @return {@link ChannelFinderClientImpl}
 		 */
@@ -325,7 +326,8 @@ public class ChannelFinderClientImpl implements ChannelFinderClient {
 	@Deprecated
 	public static void resetPreferences() {
 		try {
-			Preferences.userNodeForPackage(ChannelFinderClientImpl.class).clear();
+			Preferences.userNodeForPackage(ChannelFinderClientImpl.class)
+					.clear();
 		} catch (BackingStoreException e) {
 			e.printStackTrace();
 		}
@@ -815,7 +817,7 @@ public class ChannelFinderClientImpl implements ChannelFinderClient {
 	 */
 	public Collection<Channel> findByName(String pattern)
 			throws ChannelFinderException {
-		//return wrappedSubmit(new FindByParam("~name", pattern));
+		// return wrappedSubmit(new FindByParam("~name", pattern));
 		Map<String, String> searchMap = new HashMap<String, String>();
 		searchMap.put("~name", pattern);
 		return wrappedSubmit(new FindByMap(searchMap));
@@ -834,7 +836,7 @@ public class ChannelFinderClientImpl implements ChannelFinderClient {
 	 */
 	public Collection<Channel> findByTag(String pattern)
 			throws ChannelFinderException {
-		//return wrappedSubmit(new FindByParam("~tag", pattern));
+		// return wrappedSubmit(new FindByParam("~tag", pattern));
 		Map<String, String> searchMap = new HashMap<String, String>();
 		searchMap.put("~tag", pattern);
 		return wrappedSubmit(new FindByMap(searchMap));
@@ -864,6 +866,24 @@ public class ChannelFinderClientImpl implements ChannelFinderClient {
 		}
 		return wrappedSubmit(new FindByMap(propertyPatterns));
 
+	}
+
+	/**
+	 * Query for channels based on the Query string <tt>query</tt> example:
+	 * find("SR* Cell=1,2 Tags=GolderOrbit,myTag)<br>
+	 * 
+	 * this will return all channels with names starting with SR AND have
+	 * property Cell=1 OR 2 AND have tags goldenOrbit AND myTag.<br>
+	 * 
+	 * IMP: each criteria is logically AND'ed while multiple values for
+	 * Properties are OR'ed.<br>
+	 * 
+	 * @param query
+	 * @return Collection of channels which satisfy the search criteria.
+	 * @throws ChannelFinderException
+	 */
+	public Collection<Channel> find(String query) throws ChannelFinderException {
+		return wrappedSubmit(new FindByMap(buildSearchMap(query)));
 	}
 
 	/**
@@ -940,6 +960,34 @@ public class ChannelFinderClientImpl implements ChannelFinderClient {
 
 	}
 
+	private static Map<String, String> buildSearchMap(String searchPattern) {
+		Hashtable<String, String> map = new Hashtable<String, String>();
+		searchPattern = searchPattern.replaceAll(", ", ",");
+		String[] words = searchPattern.split("\\s");
+		if (words.length <= 0) {
+			// ERROR
+		} else {
+			for (int index = 0; index < words.length; index++) {
+				if (!words[index].contains("=")) {
+					// this is a name value
+					map.put("~name", words[index]);
+				} else {
+					// this is a property or tag
+					String key = words[index].split("=")[0];
+					String values = words[index].split("=")[1];
+					if (key.equalsIgnoreCase("Tags")) {
+						map.put("~tag", values.replace("||", ","));
+						// for (int i = 0; i < values.length; i++)
+						// map.put("~tag", values[i]);
+					} else {
+						map.put(key, values.replace("||", ","));
+					}
+				}
+			}
+		}
+		return map;
+	}
+
 	/**
 	 * Completely Delete {tag} with name = tagName from all channels and the
 	 * channelfinder service.
@@ -1012,8 +1060,10 @@ public class ChannelFinderClientImpl implements ChannelFinderClient {
 	 * Delete tag <tt>tag</tt> from the channel with the name
 	 * <tt>channelName</tt>
 	 * 
-	 * @param tag - the tag to be deleted.
-	 * @param channelName - the channel from which to delete the tag <tt>tag</tt> 
+	 * @param tag
+	 *            - the tag to be deleted.
+	 * @param channelName
+	 *            - the channel from which to delete the tag <tt>tag</tt>
 	 * @throws ChannelFinderException
 	 */
 	public void delete(Tag.Builder tag, String channelName)
@@ -1025,8 +1075,10 @@ public class ChannelFinderClientImpl implements ChannelFinderClient {
 	/**
 	 * Remove the tag <tt>tag </tt> from all the channels <tt>channelNames</tt>
 	 * 
-	 * @param tag - the tag to be deleted.
-	 * @param channelNames - the channels from which to delete the tag <tt>tag</tt> 
+	 * @param tag
+	 *            - the tag to be deleted.
+	 * @param channelNames
+	 *            - the channels from which to delete the tag <tt>tag</tt>
 	 * @throws ChannelFinderException
 	 */
 	public void delete(Tag.Builder tag, Collection<String> channelNames)
@@ -1041,8 +1093,11 @@ public class ChannelFinderClientImpl implements ChannelFinderClient {
 	 * Remove property <tt>property</tt> from the channel with name
 	 * <tt>channelName</tt>
 	 * 
-	 * @param property - the property to be deleted.
-	 * @param channelName - the channel from which to delete the property <tt>property</tt>
+	 * @param property
+	 *            - the property to be deleted.
+	 * @param channelName
+	 *            - the channel from which to delete the property
+	 *            <tt>property</tt>
 	 * @throws ChannelFinderException
 	 */
 	public void delete(Property.Builder property, String channelName)
@@ -1055,8 +1110,11 @@ public class ChannelFinderClientImpl implements ChannelFinderClient {
 	 * Remove the property <tt>property</tt> from the set of channels
 	 * <tt>channelNames</tt>
 	 * 
-	 * @param property - the property to be deleted.
-	 * @param channelNames - the channels from which to delete the property <tt>property</tt>
+	 * @param property
+	 *            - the property to be deleted.
+	 * @param channelNames
+	 *            - the channels from which to delete the property
+	 *            <tt>property</tt>
 	 * @throws ChannelFinderException
 	 */
 	public void delete(Property.Builder property,

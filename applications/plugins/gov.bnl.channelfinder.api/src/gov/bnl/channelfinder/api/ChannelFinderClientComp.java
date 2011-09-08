@@ -71,6 +71,11 @@ public class ChannelFinderClientComp implements ChannelFinderClient {
 	}
 
 	@Override
+	public Collection<Channel> find(String query) throws ChannelFinderException{
+		return this.reader.find(query);
+	}
+	
+	@Override
 	public Collection<Channel> find(Map<String, String> map)
 			throws ChannelFinderException {
 		return this.reader.find(map);
