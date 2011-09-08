@@ -80,9 +80,14 @@ public class Cell implements PVListener
         pv_name = MacroUtil.replaceMacros(column.getPvWithMacros(), instance.getMacros());
 
         //  Create the main PV and add listener
-        this.pv = PVFactory.createPV(pv_name);
-        pv.addListener(this);
-
+        if (pv_name.length() <= 0)
+        	this.pv = null;
+        else
+        {
+	        this.pv = PVFactory.createPV(pv_name);
+	        pv.addListener(this);
+        }
+        
         // Create the optional comment pvs.
         // No listener. Their value is fetched on demand.
         String name=MacroUtil.replaceMacros(column.getNamePvWithMacros(), instance.getMacros());
@@ -119,7 +124,7 @@ public class Cell implements PVListener
     /** @return <code>true</code> for read-only cell */
     public boolean isReadOnly()
     {
-        return column.isReadonly();
+        return pv != null  &&  column.isReadonly();
     }
 
     /** Even though a cell may be configured as writable,
@@ -128,7 +133,7 @@ public class Cell implements PVListener
      */
     public boolean isPVWriteAllowed()
     {
-        return pv.isWriteAllowed();
+        return pv != null  &&  pv.isWriteAllowed();
     }
 
     /** If the user entered a value, that's it.
@@ -192,7 +197,8 @@ public class Cell implements PVListener
     {
         if (!isEdited())
             return;
-        pv.setValue(user_value);
+        if (pv != null)
+        	pv.setValue(user_value);
         if (last_name_pv != null)
             last_name_pv.setValue(user_name);
         if (last_date_pv != null)
@@ -253,7 +259,8 @@ public class Cell implements PVListener
     /** Start the PV connection */
     public void start() throws Exception
     {
-        pv.start();
+    	if (pv != null)
+    		pv.start();
         if (last_name_pv != null)
             last_name_pv.start();
         if (last_date_pv != null)
@@ -271,7 +278,8 @@ public class Cell implements PVListener
             last_date_pv.stop();
         if (last_name_pv != null)
             last_name_pv.stop();
-        pv.stop();
+        if (pv != null)
+        	pv.stop();
     }
 
     // PVListener
@@ -309,7 +317,6 @@ public class Cell implements PVListener
     @Override
     public String toString()
     {
-        return "Cell " + pv.getName() + " = " + getValue();
+        return "Cell " + pv_name + " = " + getValue();
     }
-
 }
