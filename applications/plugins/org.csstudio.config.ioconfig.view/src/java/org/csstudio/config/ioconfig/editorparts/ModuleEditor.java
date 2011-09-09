@@ -374,11 +374,12 @@ public class ModuleEditor extends AbstractGsdNodeEditor<ModuleDBO> {
         descLabel.setText("Short Description");
         
         GridData layoutData = new GridData(SWT.BEGINNING, SWT.FILL, false, true);
-        layoutData.widthHint=40;
+        layoutData.minimumWidth=40;
         _channelNameText = new Text(comp, SWT.MULTI | SWT.WRAP | SWT.BORDER | SWT.READ_ONLY);
         _channelNameText.setLayoutData(layoutData);
         
         layoutData = new GridData(SWT.BEGINNING, SWT.FILL, false, true);
+        layoutData.minimumWidth=100;
         layoutData.widthHint=100;
         _ioNamesText = new Text(comp, SWT.MULTI | SWT.WRAP | SWT.BORDER);
         _ioNamesText.setLayoutData(layoutData);

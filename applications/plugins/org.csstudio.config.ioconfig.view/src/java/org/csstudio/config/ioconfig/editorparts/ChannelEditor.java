@@ -73,7 +73,7 @@ import org.slf4j.LoggerFactory;
  * @since 21.05.2010
  */
 public class ChannelEditor extends AbstractNodeEditor<ChannelDBO> {
-    
+
     /**
      * @author hrickens
      * @author $Author: $
@@ -81,11 +81,11 @@ public class ChannelEditor extends AbstractNodeEditor<ChannelDBO> {
      */
     private final class AssembleEpicsAddSelectionListener implements
     SelectionListener {
-        
+
         public AssembleEpicsAddSelectionListener() {
             // Default Constructor.
         }
-        
+
         public void setChannelName(@Nonnull final ChannelDBO channel,
                                    @Nonnull final ModuleChannelPrototypeDBO moduleChannelPrototype) {
             if (moduleChannelPrototype.getType() != channel.getChannelStructure()
@@ -98,7 +98,7 @@ public class ChannelEditor extends AbstractNodeEditor<ChannelDBO> {
             }
             channel.setName(moduleChannelPrototype.getName());
         }
-        
+
         public void setWidgetName(@Nonnull final ChannelDBO channel,
                                   @Nonnull final ModuleChannelPrototypeDBO moduleChannelPrototype) {
             String name = moduleChannelPrototype.getName();
@@ -108,17 +108,17 @@ public class ChannelEditor extends AbstractNodeEditor<ChannelDBO> {
                 nameWidget.setText(name);
             }
         }
-        
+
         @Override
         public void widgetDefaultSelected(@Nonnull final SelectionEvent e) {
             doAssemble();
         }
-        
+
         @Override
         public void widgetSelected(@Nonnull final SelectionEvent e) {
             doAssemble();
         }
-        
+
         private void doAssemble() {
             final ChannelDBO channel = getNode();
             final GSDModuleDBO module = channel.getModule().getGSDModule();
@@ -133,6 +133,7 @@ public class ChannelEditor extends AbstractNodeEditor<ChannelDBO> {
                           .getChannelStructure()
                           .getSortIndex()];
                 channel.setStatusAddressOffset(moduleChannelPrototype.getShift());
+                channel.setChannelNumber(moduleChannelPrototype.getOffset());
                 setWidgetName(channel, moduleChannelPrototype);
                 setChannelName(channel, moduleChannelPrototype);
             }
@@ -152,10 +153,10 @@ public class ChannelEditor extends AbstractNodeEditor<ChannelDBO> {
             }
         }
     }
-    
+
     public static final String ID = "org.csstudio.config.ioconfig.view.editor.channel";
     protected static final Logger LOG = LoggerFactory.getLogger(ChannelEditor.class);
-    
+
     /**
      * The EPICS address string of the Channel.
      */
@@ -165,7 +166,7 @@ public class ChannelEditor extends AbstractNodeEditor<ChannelDBO> {
      */
     private Text _ioNameText;
     private ComboViewer _sensorsViewer;
-    
+
     /**
      * Cancel all change value.
      */
@@ -181,7 +182,7 @@ public class ChannelEditor extends AbstractNodeEditor<ChannelDBO> {
             setName((String) nameWidget.getData());
         }
     }
-    
+
     @Override
     public final void createPartControl(@Nonnull final Composite parent) {
         super.createPartControl(parent);
@@ -195,7 +196,7 @@ public class ChannelEditor extends AbstractNodeEditor<ChannelDBO> {
         _ioNameText.setFocus();
         selecttTabFolder(0);
     }
-    
+
     /**
      * {@inheritDoc}
      */
@@ -221,7 +222,7 @@ public class ChannelEditor extends AbstractNodeEditor<ChannelDBO> {
         channel.setDocuments(docs);
         save();
     }
-    
+
     /**
      *
      * @param ioNameText
@@ -230,7 +231,7 @@ public class ChannelEditor extends AbstractNodeEditor<ChannelDBO> {
     public final void setIoNameText(@Nonnull final String ioNameText) {
         _ioNameText.setText(ioNameText);
     }
-    
+
     /**
      * @param comp
      */
@@ -240,7 +241,7 @@ public class ChannelEditor extends AbstractNodeEditor<ChannelDBO> {
         epicsAddressGroup.setLayout(glf.create());
         epicsAddressGroup.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, false, 1, 1));
         epicsAddressGroup.setText("EPICS address string: ");
-        
+
         setAddressText(new Text(epicsAddressGroup, SWT.FLAT | SWT.SINGLE));
         final Text addressText = getAddressText();
         if (addressText != null) {
@@ -252,7 +253,7 @@ public class ChannelEditor extends AbstractNodeEditor<ChannelDBO> {
                                                    true, 1, 1));
             addressText.setEditable(false);
             addressText.addModifyListener(new ModifyListener() {
-                
+
                 @Override
                 public void modifyText(@Nonnull final ModifyEvent e) {
                     setSavebuttonEnabled("epicsAddressString", true);
@@ -268,7 +269,7 @@ public class ChannelEditor extends AbstractNodeEditor<ChannelDBO> {
         assembleButton.setToolTipText("Refresh the EPICS Address String\n and save it into the DB");
         assembleButton.addSelectionListener(new AssembleEpicsAddSelectionListener());
     }
-    
+
     /**
      * @param comp
      */
@@ -294,7 +295,7 @@ public class ChannelEditor extends AbstractNodeEditor<ChannelDBO> {
         setIndexSpinner(indexSpinner);
         indexSpinner.setEnabled(false);
     }
-    
+
     /**
      * @param comp
      * @return
@@ -310,7 +311,7 @@ public class ChannelEditor extends AbstractNodeEditor<ChannelDBO> {
         setText(_ioNameText, getNode().getIoName(), 255);
         return ioNameGroup;
     }
-    
+
     /**
      * @param comp
      */
@@ -329,7 +330,7 @@ public class ChannelEditor extends AbstractNodeEditor<ChannelDBO> {
             }
         }
     }
-    
+
     /**
      * @param comp
      */
@@ -344,8 +345,8 @@ public class ChannelEditor extends AbstractNodeEditor<ChannelDBO> {
         setText(sizeText, channel.getChSize(), 255);
         sizeText.setEditable(false);
     }
-    
-    
+
+
     /**
      * @param head
      *            is TabHead Text
@@ -353,15 +354,15 @@ public class ChannelEditor extends AbstractNodeEditor<ChannelDBO> {
     private void general(@Nonnull final String head) {
         final Composite comp = ConfigHelper.getNewTabItem(head, getTabFolder(), 5, 300, 290);
         comp.setLayout(new GridLayout(4, false));
-        
+
         createIndex(comp);
-        
+
         final Group ioNameGroup = createIOName(comp);
-        
+
         createSensorField(comp);
         createEpicsAddress(comp);
         createSize(comp);
-        
+
         // Description Group
         makeDescGroup(comp, 3);
         final Text descText = getDescText();
@@ -370,7 +371,7 @@ public class ChannelEditor extends AbstractNodeEditor<ChannelDBO> {
             comp.setTabList(tabList);
         }
     }
-    
+
     /**
      * @param comp
      * @param loadSensors
@@ -404,14 +405,14 @@ public class ChannelEditor extends AbstractNodeEditor<ChannelDBO> {
         _sensorsViewer.getCombo().setData(_sensorsViewer.getCombo().getSelectionIndex());
         _sensorsViewer.getCombo().addModifyListener(getMLSB());
     }
-    
+
     @CheckForNull
     protected final Text getAddressText() {
         return _addressText;
     }
-    
+
     protected final void setAddressText(@CheckForNull final Text addressText) {
         _addressText = addressText;
     }
-    
+
 }
