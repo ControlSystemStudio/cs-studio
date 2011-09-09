@@ -4,13 +4,9 @@
 
    <extension
          point="org.eclipse.ui.views">
-      <category
-            name="ChannelFinder"
-            id="org.csstudio.channelfinder">
-      </category>
       <view
             allowMultiple="true"
-            category="org.csstudio.channelfinder"
+            category="org.csstudio.channel.application.category"
             class="org.csstudio.channelviewer.views.ChannelsView"
             icon="icons/channelFinder.png"
             id="org.csstudio.channelfinder.views.ChannelsView"

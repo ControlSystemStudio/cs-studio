@@ -4,6 +4,7 @@
    <extension
          point="org.eclipse.ui.views">
       <view
+            category="org.csstudio.channel.application.category"
             class="org.csstudio.channel.views.PVTableByPropertyView"
             icon="platform:/plugin/org.csstudio.channel.widgets/icons/table-property-16.png"
             id="org.csstudio.channel.views.PVTableByPropertyView"
@@ -11,12 +12,17 @@
             restorable="true">
       </view>
       <view
+            category="org.csstudio.channel.application.category"
             class="org.csstudio.channel.views.WaterfallView"
             icon="platform:/plugin/org.csstudio.channel.widgets/icons/waterfall-16.png"
             id="org.csstudio.channel.views.WaterfallView"
             name="Waterfall"
             restorable="true">
       </view>
+      <category
+            id="org.csstudio.channel.application.category"
+            name="Channel Applications">
+      </category>
    </extension>
    <extension
          point="org.eclipse.ui.menus">

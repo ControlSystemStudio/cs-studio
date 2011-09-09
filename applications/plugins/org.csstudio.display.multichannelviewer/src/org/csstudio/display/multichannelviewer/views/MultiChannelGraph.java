@@ -151,8 +151,8 @@ public class MultiChannelGraph extends Composite {
 				PlotOrientation.VERTICAL, true, true, false);
 		chart.removeLegend();
 		XYPlot plot = (XYPlot) chart.getPlot();
-		plot.setDomainCrosshairVisible(true);
-		plot.setRangeCrosshairVisible(true);
+		plot.setDomainCrosshairVisible(false);
+		plot.setRangeCrosshairVisible(false);
 		plot.setDomainZeroBaselineVisible(true);
 		plot.setRangeZeroBaselineVisible(true);
 		plot.setDomainPannable(true);
@@ -178,6 +178,7 @@ public class MultiChannelGraph extends Composite {
 								"Channels sorted by : " + sortProperty);
 					else
 						plot.getDomainAxis().setLabel("");
+					//TODO performance issues
 					chartDisplay.redraw();
 				}
 			});
@@ -193,7 +194,7 @@ public class MultiChannelGraph extends Composite {
 			Collections.sort(channels, comparator);
 			pvReader = PVManager.read(
 					mapOf(latestValueOf(ExpressionLanguage.channels(ChannelUtil
-							.getChannelNames(channels))))).every(ms(25));
+							.getChannelNames(channels))))).every(ms(50));
 			pvReader.addPVReaderListener(new PVReaderListener() {
 				public void pvChanged() {
 					Map<String, Object> map = pvReader.getValue();
@@ -207,7 +208,7 @@ public class MultiChannelGraph extends Composite {
 	}
 
 	private void updateGraph(List<Channel> channels, Map<String, Object> map) {
-		// long time = System.nanoTime();
+//		long time = System.nanoTime();
 		if (channels != null && map != null) {
 			DefaultXYDataset dataset = new DefaultXYDataset();
 			ArrayList<XYDataItem> dataItems = new ArrayList<XYDataItem>();
@@ -245,8 +246,8 @@ public class MultiChannelGraph extends Composite {
 				count++;
 			}
 			dataset.addSeries("pvs", data);
-			// System.out.println("time to compute dataset = "
-			// + (System.nanoTime() - time) / 1000 + " micro seconds");
+//			 System.out.println("time to compute dataset = "
+//			 + (System.nanoTime() - time) / 1000 + " micro seconds");
 			setXYDataset(dataset);
 		} else {
 			setXYDataset(null);

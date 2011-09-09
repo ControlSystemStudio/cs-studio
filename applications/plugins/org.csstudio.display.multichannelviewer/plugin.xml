@@ -5,10 +5,11 @@
    <extension
          point="org.eclipse.ui.views">
       <view
-            name="MultiChannel View"
-            icon="icons/multi_channel.png"
+            category="org.csstudio.channel.application.category"
             class="org.csstudio.display.multichannelviewer.views.MultiChannelView"
-            id="org.csstudio.display.multichannelviewer.views.MultiChannelView">
+            icon="icons/multi_channel.png"
+            id="org.csstudio.display.multichannelviewer.views.MultiChannelView"
+            name="MultiChannel View">
       </view>
    </extension>
    <extension
