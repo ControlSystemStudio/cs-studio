@@ -83,11 +83,13 @@ public class AlarmRDB
 	 */
     public TreeItem readConfiguration() throws Exception
     {
-        final PreparedStatement statement =
-            rdb.getConnection().prepareStatement(sql.sel_configuration_by_name);
+        final Connection conn = rdb.getConnection();
         // Disabling the auto-reconnect is about 15% faster, and we don't
         // expect a timeout while we read the configuration.
         rdb.setAutoReconnect(false);
+
+        final PreparedStatement statement =
+            conn.prepareStatement(sql.sel_configuration_by_name);
 
         // Get root element
         final TreeItem root;
@@ -108,7 +110,7 @@ public class AlarmRDB
 
         // Fetch children
         final PreparedStatement sel_items_by_parent =
-            rdb.getConnection().prepareStatement(sql.sel_items_by_parent);
+            conn.prepareStatement(sql.sel_items_by_parent);
         try
         {
             readChildren(root, sel_items_by_parent);
@@ -117,6 +119,17 @@ public class AlarmRDB
         {
             sel_items_by_parent.close();
         }
+
+        // In transactional mode (Connection.setAutoCommit(true)),
+        // even SELECTs need a commit() to end the transaction.
+        // Otherwise the next 'SELECT' would get the same information.
+        // Usually, there will be some alarm state updates, each committed,
+        // to assert that a later readConfiguration() call will get the latest
+        // config, but in the rare case that there were no alarm state changes
+        // after reading the original configuration,
+        // a newly added PV will not be found in the next readConfiguration() call
+        // because we would still be in the previous transaction.
+        conn.commit();
 
         // Re-enable auto-reconnect
         rdb.setAutoReconnect(true);
