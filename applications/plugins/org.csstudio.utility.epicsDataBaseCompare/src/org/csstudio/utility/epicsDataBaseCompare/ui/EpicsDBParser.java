@@ -25,9 +25,11 @@
 package org.csstudio.utility.epicsDataBaseCompare.ui;
 
 import java.io.BufferedReader;
-import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
+
+import javax.annotation.CheckForNull;
+import javax.annotation.Nonnull;
 
 /**
  * @author hrickens
@@ -37,42 +39,46 @@ import java.io.IOException;
  */
 public class EpicsDBParser {
 
-    public EpicsDBFile parseFile(String file) {
-        EpicsDBFile epicsDBFile = new EpicsDBFile(file);
-        try {
-            BufferedReader br = new BufferedReader(new FileReader(file));
+    @Nonnull
+    public EpicsDBFile parseFile(@Nonnull final String file) throws IOException {
+        final EpicsDBFile epicsDBFile = new EpicsDBFile(file);
+            final BufferedReader br = new BufferedReader(new FileReader(file));
             String zeile;
             EpicsRecord epicsRecord = null;
             while ((zeile = br.readLine()) != null) {
                 zeile = zeile.trim();
-                if (zeile.startsWith("record")) {
-                    String[] split = zeile.split("\"");
-                    if (split.length > 1) {
-                        epicsRecord = new EpicsRecord(split[1]);
-                    }
-                } else if (zeile.startsWith("}")) {
-                    if (epicsRecord != null && !epicsRecord.isEmpty()) {
-                        epicsDBFile.add(epicsRecord);
-                    }
-                } else if (zeile.startsWith("field(INP,")) {
-                    String[] split = zeile.split("\"");
-                    if (split.length > 1) {
-                        epicsRecord.setInp(split[1]);
-                    }
-                } else if (zeile.startsWith("field(OUT")) {
-                    String[] split = zeile.split("\"");
-                    if (split.length > 1) {
-                        epicsRecord.setOut(split[1]);
-                    }
-                }
+                epicsRecord = parseLine(epicsDBFile, zeile, epicsRecord);
             }
             br.close();
-        } catch (FileNotFoundException e) {
-            return null;
-        } catch (IOException e) {
-            return null;
-        }
         return epicsDBFile;
+    }
+
+    @Nonnull
+    private EpicsRecord parseLine(@Nonnull final EpicsDBFile epicsDBFile,
+                                  @Nonnull final String zeile,
+                                  @Nonnull final EpicsRecord epicsRecord) {
+        EpicsRecord myEpicsRecord = epicsRecord;
+        // CHECKSTYLE OFF: EmptyBlock
+        if(zeile.startsWith("#")) {
+        // CHECKSTYLE ON: EmptyBlock
+            // Ignore! Is a command
+        } else if (zeile.startsWith("record")) {
+            final String[] split = zeile.split("[\"\\(]");
+            if (split.length > 3) {
+                myEpicsRecord = new EpicsRecord(epicsDBFile, split[2],split[1].replaceAll(",", ""));
+            }
+        } else if (isValidEndOfRecord(zeile, epicsRecord)) {
+                epicsDBFile.add(epicsRecord);
+        } else if(!zeile.isEmpty()){
+            final String[] split0 = zeile.split("[\"]");
+            final String[] split1 = split0[0].split("[\\(,]");
+            epicsRecord.setField(split1[1],split0[1]);
+        }
+        return myEpicsRecord;
+    }
+
+    private boolean isValidEndOfRecord(@Nonnull final String zeile, @CheckForNull final EpicsRecord epicsRecord) {
+        return zeile.startsWith("}") && epicsRecord != null && !epicsRecord.isEmpty();
     }
 
 }

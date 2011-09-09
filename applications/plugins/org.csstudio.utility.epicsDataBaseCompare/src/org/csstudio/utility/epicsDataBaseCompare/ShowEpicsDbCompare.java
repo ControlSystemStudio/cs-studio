@@ -24,6 +24,9 @@
  */
 package org.csstudio.utility.epicsDataBaseCompare;
 
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
+
 import org.csstudio.utility.epicsDataBaseCompare.ui.EpicsDataBaseCompareView;
 import org.eclipse.jface.action.IAction;
 import org.eclipse.jface.viewers.ISelection;
@@ -42,34 +45,37 @@ import org.eclipse.ui.PlatformUI;
  */
 public class ShowEpicsDbCompare implements IWorkbenchWindowActionDelegate {
 
-    /** A workbench window handle. */
-    private IWorkbenchWindow _window;
-
     /**
      * {@inheritDoc}
      */
+    @Override
     public void dispose() {
+        // nothing to dispose
 
     }
 
     /** {@inheritDoc} */
-    public final void init(final IWorkbenchWindow window) {
-        _window = window;
+    @Override
+    public final void init(@Nullable final IWorkbenchWindow window) {
+        // nothing to init
     }
 
     /** {@inheritDoc} */
-    public final void run(final IAction action) {
-        IWorkbench workbench = PlatformUI.getWorkbench();
-        IWorkbenchWindow window = workbench.getActiveWorkbenchWindow();
-        IWorkbenchPage page = window.getActivePage();
+    @Override
+    public final void run(@Nonnull final IAction action) {
+        final IWorkbench workbench = PlatformUI.getWorkbench();
+        final IWorkbenchWindow window = workbench.getActiveWorkbenchWindow();
+        final IWorkbenchPage page = window.getActivePage();
         try {
             page.showView(EpicsDataBaseCompareView.class.getName());
-        } catch (PartInitException e) {
+        } catch (final PartInitException e) {
             e.printStackTrace();
         }
     }
 
     /** {@inheritDoc} */
-    public void selectionChanged(final IAction action, final ISelection selection) {
+    @Override
+    public void selectionChanged(@Nullable final IAction action, @Nullable final ISelection selection) {
+        // nothing to do
     }
 }

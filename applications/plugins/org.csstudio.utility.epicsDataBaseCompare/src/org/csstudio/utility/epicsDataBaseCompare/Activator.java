@@ -1,33 +1,40 @@
 package org.csstudio.utility.epicsDataBaseCompare;
 
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
+
 import org.csstudio.platform.ui.AbstractCssUiPlugin;
 import org.csstudio.platform.ui.util.CustomMediaFactory;
 import org.eclipse.jface.resource.ImageDescriptor;
-import org.osgi.framework.BundleActivator;
 import org.osgi.framework.BundleContext;
 
+
+/**
+ * @author hrickens
+ * @since 09.09.2011
+ */
 public class Activator extends AbstractCssUiPlugin{
 
     /**
      * The plug-in ID.
-     */ 
+     */
     public static final String PLUGIN_ID = "org.csstudio.utility.epicsDataBaseCompare";
 
-    /** 
+    /**
      *  The shared instance.
      */
-    private static Activator _plugin;
+    private static Activator _PLUGIN;
 
     @Override
-    protected void doStart(BundleContext context) throws Exception {
+    protected void doStart( @Nullable final BundleContext context) throws Exception {
         // TODO Auto-generated method stub
-        
+
     }
 
     @Override
-    protected void doStop(BundleContext context) throws Exception {
+    protected void doStop(@Nullable final BundleContext context) throws Exception {
         // TODO Auto-generated method stub
-        
+
     }
 
     /**
@@ -35,8 +42,9 @@ public class Activator extends AbstractCssUiPlugin{
      *
      * @return the shared instance
      */
+    @Nonnull
     public static Activator getDefault() {
-        return _plugin;
+        return _PLUGIN;
     }
 
     /**
@@ -46,7 +54,8 @@ public class Activator extends AbstractCssUiPlugin{
      * @param path the path
      * @return the image descriptor
      */
-    public static ImageDescriptor getImageDescriptor(final String path) {
+    @Nonnull
+    public static ImageDescriptor getImageDescriptor(@Nonnull final String path) {
         return CustomMediaFactory.getInstance().getImageDescriptorFromPlugin(PLUGIN_ID, path);
     }
 
@@ -57,6 +66,7 @@ public class Activator extends AbstractCssUiPlugin{
      * @return The PlugIn Id
      */
     @Override
+    @Nonnull
     public String getPluginId() {
         return PLUGIN_ID;
     }
