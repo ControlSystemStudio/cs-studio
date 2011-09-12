@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?eclipse version="3.4"?>
+<plugin>
+   <extension
+         point="org.csstudio.opibuilder.widget">
+      <widget
+            category="Multi-channel"
+            editpart_class="org.csstudio.channel.opiwidgets.WaterfallEditPart"
+            icon="platform:/plugin/org.csstudio.channel.widgets/icons/waterfall-16.png"
+            model_class="org.csstudio.channel.opiwidgets.WaterfallModel"
+            name="Waterfall"
+            typeId="org.csstudio.channel.opiwidgets.Waterfall">
+      </widget>
+      <widget
+            category="Multi-channel"
+            editpart_class="org.csstudio.channel.opiwidgets.PVTableByPropertyEditPart"
+            icon="platform:/plugin/org.csstudio.channel.widgets/icons/table-property-16.png"
+            model_class="org.csstudio.channel.opiwidgets.PVTableByPropertyModel"
+            name="PVTable by Property"
+            typeId="org.csstudio.channel.opiwidgets.PVTableByProperty">
+      </widget>
+   </extension>
+
+</plugin>

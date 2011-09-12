@@ -1,5 +1,5 @@
 /*
- * Copyright 2008-2010 Brookhaven National Laboratory
+ * Copyright 2010-11 Brookhaven National Laboratory
  * All rights reserved. Use is subject to license terms.
  */
 package org.epics.pvmanager.extra;
@@ -8,9 +8,11 @@ import java.util.ArrayList;
 import java.util.List;
 import org.epics.pvmanager.DataRecipe;
 import org.epics.pvmanager.DataSource;
-import org.epics.pvmanager.DesiredRateExpression;
+import org.epics.pvmanager.expression.DesiredRateExpression;
+import org.epics.pvmanager.expression.DesiredRateExpressionImpl;
 import org.epics.pvmanager.ExceptionHandler;
 import org.epics.pvmanager.PVManager;
+import org.epics.pvmanager.expression.DesiredRateExpressionListImpl;
 
 /**
  * A expression that returns the result of a dynamically managed group.
@@ -20,7 +22,7 @@ import org.epics.pvmanager.PVManager;
  *
  * @author carcassi
  */
-public class DynamicGroup extends DesiredRateExpression<List<Object>> {
+public class DynamicGroup extends DesiredRateExpressionImpl<List<Object>> {
 
     private final DataSource dataSource = PVManager.getDefaultDataSource();
     private final List<DataRecipe> recipes = new ArrayList<DataRecipe>();
@@ -29,7 +31,7 @@ public class DynamicGroup extends DesiredRateExpression<List<Object>> {
      * Creates a new group.
      */
     public DynamicGroup() {
-        super((DesiredRateExpression<?>) null, new DynamicGroupFunction(), "dynamic group");
+        super(new DesiredRateExpressionListImpl<Object>(), new DynamicGroupFunction(), "dynamic group");
     }
 
     DynamicGroupFunction getGroup() {

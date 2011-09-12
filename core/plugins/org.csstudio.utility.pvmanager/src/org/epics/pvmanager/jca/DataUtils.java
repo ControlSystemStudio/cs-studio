@@ -1,5 +1,5 @@
 /*
- * Copyright 2010 Brookhaven National Laboratory
+ * Copyright 2010-11 Brookhaven National Laboratory
  * All rights reserved. Use is subject to license terms.
  */
 
@@ -71,7 +71,7 @@ class DataUtils {
      * @return a new pvmanager timestamp
      */
     static org.epics.pvmanager.util.TimeStamp fromEpics(gov.aps.jca.dbr.TimeStamp epicsTimeStamp) {
-        return org.epics.pvmanager.util.TimeStamp.time(epicsTimeStamp.secPastEpoch() + TS_EPOCH_SEC_PAST_1970, epicsTimeStamp.nsec());
+        return org.epics.pvmanager.util.TimeStamp.time(epicsTimeStamp.secPastEpoch() + TS_EPOCH_SEC_PAST_1970, (int) epicsTimeStamp.nsec());
     }
 
     /**

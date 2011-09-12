@@ -1,5 +1,5 @@
 /*
- * Copyright 2010 Brookhaven National Laboratory
+ * Copyright 2010-11 Brookhaven National Laboratory
  * All rights reserved. Use is subject to license terms.
  */
 
@@ -20,7 +20,7 @@ import java.util.Date;
  *
  * @author carcassi
  */
-public class TimeStamp implements Comparable {
+public class TimeStamp implements Comparable<TimeStamp> {
 
     /*
      * When the class is initialized, get the current timestamp and nanotime,
@@ -37,9 +37,9 @@ public class TimeStamp implements Comparable {
     /**
      * Nanoseconds past the timestamp. Must be 0 < nanoSec < 999,999,999
      */
-    private final long nanoSec;
+    private final int nanoSec;
 
-    private TimeStamp(long unixSec, long nanoSec) {
+    private TimeStamp(long unixSec, int nanoSec) {
         if (nanoSec < 0 || nanoSec > 999999999)
             throw new IllegalArgumentException("Nanoseconds cannot be between 0 and 999,999,999");
         this.unixSec = unixSec;
@@ -69,7 +69,7 @@ public class TimeStamp implements Comparable {
      * @param nanoSec nanoseconds past the given seconds (must be 0 < nanoSec < 999,999,999)
      * @return a new timestamp
      */
-    public static TimeStamp time(long unixSec, long nanoSec) {
+    public static TimeStamp time(long unixSec, int nanoSec) {
         return new TimeStamp(unixSec, nanoSec);
     }
 
@@ -82,7 +82,7 @@ public class TimeStamp implements Comparable {
      */
     public static TimeStamp timestampOf(Date date) {
         long time = date.getTime();
-        long nanoSec = (time % 1000) * 1000000;
+        int nanoSec = (int) (time % 1000) * 1000000;
         long epicsSec = (time / 1000);
         return time(epicsSec, nanoSec);
     }
@@ -130,8 +130,7 @@ public class TimeStamp implements Comparable {
      * @return comparison result
      */
     @Override
-    public int compareTo(Object o) {
-        TimeStamp other = (TimeStamp) o;
+    public int compareTo(TimeStamp other) {
 	if (unixSec < other.unixSec) {
             return -1;
         } else if (unixSec == other.unixSec) {
@@ -176,7 +175,7 @@ public class TimeStamp implements Comparable {
             nanos -= pastSec * 1000000000;
         }
 
-        return new TimeStamp(seconds, nanos);
+        return new TimeStamp(seconds, (int) nanos);
     }
 
     /**

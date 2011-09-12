@@ -1,5 +1,5 @@
 /*
- * Copyright 2010 Brookhaven National Laboratory
+ * Copyright 2010-11 Brookhaven National Laboratory
  * All rights reserved. Use is subject to license terms.
  */
 
@@ -13,7 +13,7 @@ import org.epics.pvmanager.util.TimeStamp;
  *
  * @author carcassi
  */
-public class IVIntArray extends IVNumeric implements VIntArray {
+class IVIntArray extends IVNumeric implements VIntArray {
 
     private final int[] array;
     private final List<Integer> sizes;
