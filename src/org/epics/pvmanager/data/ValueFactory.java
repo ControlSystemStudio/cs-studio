@@ -1,5 +1,5 @@
 /*
- * Copyright 2010 Brookhaven National Laboratory
+ * Copyright 2010-11 Brookhaven National Laboratory
  * All rights reserved. Use is subject to license terms.
  */
 
@@ -21,7 +21,7 @@ import java.util.Set;
  * @author carcassi
  */
 public class ValueFactory {
-
+    
     public static VString newVString(String value, AlarmSeverity alarmSeverity,
             AlarmStatus alarmStatus,
             TimeStamp timeStamp, Integer timeUserTag) {
@@ -37,6 +37,19 @@ public class ValueFactory {
         return new IVMultiDouble(values, alarmSeverity, alarmStatus,
                 timeStamp, timeUserTag, true, lowerDisplayLimit, lowerCtrlLimit, lowerAlarmLimit, lowerWarningLimit,
                 units, format, upperWarningLimit, upperAlarmLimit, upperCtrlLimit, upperDisplayLimit);
+    }
+
+    /**
+     * Creates new immutable VInt.
+     */
+    public static VInt newVInt(final Integer value, final AlarmSeverity alarmSeverity,
+            final AlarmStatus alarmStatus, final TimeStamp timeStamp,
+            final Integer timeUserTag,
+            final Double lowerDisplayLimit, final Double lowerAlarmLimit, final Double lowerWarningLimit,
+            final String units, final NumberFormat numberFormat, final Double upperWarningLimit,
+            final Double upperAlarmLimit, final Double upperDisplayLimit,
+            final Double lowerCtrlLimit, final Double upperCtrlLimit) {
+        return new IVInt(value, alarmSeverity, alarmStatus, timeStamp, timeUserTag, true, lowerDisplayLimit, lowerCtrlLimit, lowerAlarmLimit, lowerWarningLimit, units, numberFormat, upperWarningLimit, upperAlarmLimit, upperCtrlLimit, upperDisplayLimit);
     }
 
     /**
@@ -138,15 +151,52 @@ public class ValueFactory {
      */
     public static VDouble newVDouble(final Double value, final AlarmSeverity alarmSeverity,
             final AlarmStatus alarmStatus, final Integer timeUserTag, final TimeStamp timeStamp,
-            VDouble oldValue) {
+            Display display) {
         return newVDouble(value, alarmSeverity, alarmStatus,
                 timeStamp,
                 timeUserTag,
-                oldValue.getLowerDisplayLimit(), oldValue.getLowerAlarmLimit(),
-                oldValue.getLowerWarningLimit(), oldValue.getUnits(),
-                oldValue.getFormat(), oldValue.getUpperWarningLimit(),
-                oldValue.getUpperAlarmLimit(), oldValue.getUpperDisplayLimit(),
-                oldValue.getLowerCtrlLimit(), oldValue.getUpperCtrlLimit());
+                display.getLowerDisplayLimit(), display.getLowerAlarmLimit(),
+                display.getLowerWarningLimit(), display.getUnits(),
+                display.getFormat(), display.getUpperWarningLimit(),
+                display.getUpperAlarmLimit(), display.getUpperDisplayLimit(),
+                display.getLowerCtrlLimit(), display.getUpperCtrlLimit());
+    }
+    
+    /**
+     * Creates new immutable VDouble by using the metadata from the old value,
+     * and computing the alarm from the metadata range.
+     * 
+     * @param value new numeric value
+     * @param timeStamp time stamp
+     * @param display metadata
+     * @return new value
+     */
+    public static VDouble newVDouble(double value, TimeStamp timeStamp, Display display) {
+        // Calculate new AlarmSeverity, using oldValue ranges
+        AlarmSeverity severity = AlarmSeverity.NONE;
+        AlarmStatus status = AlarmStatus.NONE;
+        if (value <= display.getLowerAlarmLimit() || value >= display.getUpperAlarmLimit()) {
+            status = AlarmStatus.RECORD;
+            severity = AlarmSeverity.MAJOR;
+        } else if (value <= display.getLowerWarningLimit() || value >= display.getUpperWarningLimit()) {
+            status = AlarmStatus.RECORD;
+            severity = AlarmSeverity.MINOR;
+        }
+
+        return ValueFactory.newVDouble(value, severity, status,
+                null, timeStamp, display);
+    }
+    
+    /**
+     * Creates new immutable VDouble by using metadata from the old value,
+     * now as timestamp and computing alarm from the metadata range.
+     * 
+     * @param value new numeric value
+     * @param display metadata
+     * @return new value
+     */
+    public static VDouble newVDouble(double value, Display display) {
+        return newVDouble(value, TimeStamp.now(), display);
     }
 
     /**

@@ -1,5 +1,5 @@
 /*
- * Copyright 2010 Brookhaven National Laboratory
+ * Copyright 2010-11 Brookhaven National Laboratory
  * All rights reserved. Use is subject to license terms.
  */
 package org.epics.pvmanager.sim;
@@ -125,7 +125,7 @@ class NameParser {
         } catch (IllegalArgumentException ex) {
             throw new RuntimeException("Wrong parameter type for function " + parameters.get(0));
         } catch (InvocationTargetException ex) {
-            throw new RuntimeException("Constructor for " + parameters.get(0) + " failed", ex);
+            throw new RuntimeException(ex.getCause().getMessage(), ex);
         }
     }
 }

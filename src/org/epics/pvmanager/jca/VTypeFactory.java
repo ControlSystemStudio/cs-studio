@@ -1,5 +1,5 @@
 /*
- * Copyright 2010 Brookhaven National Laboratory
+ * Copyright 2010-11 Brookhaven National Laboratory
  * All rights reserved. Use is subject to license terms.
  */
 
@@ -29,10 +29,19 @@ import org.epics.pvmanager.data.VString;
 import org.epics.pvmanager.data.VStringArray;
 
 /**
+ * NOTE: this class is extensible as per Bastian request so that DESY can hook
+ * a different type factory. This is a temporary measure until the problem
+ * is solved in better, more general way, so that data sources
+ * can work only with data source specific types, while allowing
+ * conversions to normalized type through operators. The contract of this
+ * class is, therefore, expected to change.
+ * <p>
+ * Related changes are marked so that they are not accidentally removed in the
+ * meantime, and can be intentionally removed when a better solution is implemented.
  *
  * @author carcassi
  */
-abstract class VTypeFactory<TValue, TEpicsValue, TEpicsMeta> {
+abstract class VTypeFactory<TValue, TEpicsValue, TEpicsMeta> implements TypeFactory<TValue, TEpicsValue, TEpicsMeta> {
 
     private final Class valueType;
     private final DBRType epicsValueType;
@@ -46,23 +55,29 @@ abstract class VTypeFactory<TValue, TEpicsValue, TEpicsMeta> {
         this.array = array;
     }
 
+    @Override
     public Class getValueType() {
         return valueType;
     }
 
+    @Override
     public DBRType getEpicsMetaType() {
         return epicsMetaType;
     }
 
+    @Override
     public DBRType getEpicsValueType() {
         return epicsValueType;
     }
 
+    @Override
     public boolean isArray() {
         return array;
     }
 
-    abstract TValue createValue(TEpicsValue value, TEpicsMeta metadata, boolean disconnected);
+    // public (not protected) to allow different type factory
+    @Override
+    public abstract TValue createValue(TEpicsValue value, TEpicsMeta metadata, boolean disconnected);
     
     private static Set<VTypeFactory<?, ?, ?>> factories = new HashSet<VTypeFactory<?, ?, ?>>();
 
@@ -99,7 +114,7 @@ abstract class VTypeFactory<TValue, TEpicsValue, TEpicsMeta> {
         newFactories.add(new VTypeFactory<VDouble, DBR_TIME_Float, DBR_CTRL_Double>(VDouble.class, DBR_TIME_Float.TYPE, DBR_CTRL_Double.TYPE, false) {
 
             @Override
-            protected VDouble createValue(DBR_TIME_Float value, DBR_CTRL_Double metadata, boolean disconnected) {
+            public VDouble createValue(DBR_TIME_Float value, DBR_CTRL_Double metadata, boolean disconnected) {
                 return new VDoubleFromDbr(value, metadata, disconnected);
             }
         });
@@ -107,7 +122,7 @@ abstract class VTypeFactory<TValue, TEpicsValue, TEpicsMeta> {
         newFactories.add(new VTypeFactory<VDouble, DBR_TIME_Double, DBR_CTRL_Double>(VDouble.class, DBR_TIME_Double.TYPE, DBR_CTRL_Double.TYPE, false) {
 
             @Override
-            protected VDouble createValue(DBR_TIME_Double value, DBR_CTRL_Double metadata, boolean disconnected) {
+            public VDouble createValue(DBR_TIME_Double value, DBR_CTRL_Double metadata, boolean disconnected) {
                 return new VDoubleFromDbr(value, metadata, disconnected);
             }
         });
@@ -115,7 +130,7 @@ abstract class VTypeFactory<TValue, TEpicsValue, TEpicsMeta> {
         newFactories.add(new VTypeFactory<VInt, DBR_TIME_Byte, DBR_CTRL_Double>(VInt.class, DBR_TIME_Byte.TYPE, DBR_CTRL_Double.TYPE, false) {
 
             @Override
-            protected VInt createValue(DBR_TIME_Byte value, DBR_CTRL_Double metadata, boolean disconnected) {
+            public VInt createValue(DBR_TIME_Byte value, DBR_CTRL_Double metadata, boolean disconnected) {
                 return new VIntFromDbr(value, metadata, disconnected);
             }
         });
@@ -123,7 +138,7 @@ abstract class VTypeFactory<TValue, TEpicsValue, TEpicsMeta> {
         newFactories.add(new VTypeFactory<VInt, DBR_TIME_Short, DBR_CTRL_Double>(VInt.class, DBR_TIME_Short.TYPE, DBR_CTRL_Double.TYPE, false) {
 
             @Override
-            protected VInt createValue(DBR_TIME_Short value, DBR_CTRL_Double metadata, boolean disconnected) {
+            public VInt createValue(DBR_TIME_Short value, DBR_CTRL_Double metadata, boolean disconnected) {
                 return new VIntFromDbr(value, metadata, disconnected);
             }
         });
@@ -131,63 +146,63 @@ abstract class VTypeFactory<TValue, TEpicsValue, TEpicsMeta> {
         newFactories.add(new VTypeFactory<VInt, DBR_TIME_Int, DBR_CTRL_Double>(VInt.class, DBR_TIME_Int.TYPE, DBR_CTRL_Double.TYPE, false) {
 
             @Override
-            protected VInt createValue(DBR_TIME_Int value, DBR_CTRL_Double metadata, boolean disconnected) {
+            public VInt createValue(DBR_TIME_Int value, DBR_CTRL_Double metadata, boolean disconnected) {
                 return new VIntFromDbr(value, metadata, disconnected);
             }
         });
         newFactories.add(new VTypeFactory<VString, DBR_TIME_String, DBR_TIME_String>(VString.class, DBR_TIME_String.TYPE, null, false) {
 
             @Override
-            protected VString createValue(DBR_TIME_String value, DBR_TIME_String metadata, boolean disconnected) {
+            public VString createValue(DBR_TIME_String value, DBR_TIME_String metadata, boolean disconnected) {
                 return new VStringFromDbr(value, disconnected);
             }
         });
         newFactories.add(new VTypeFactory<VEnum, DBR_TIME_Enum, DBR_LABELS_Enum>(VEnum.class, DBR_TIME_Enum.TYPE, DBR_LABELS_Enum.TYPE, false) {
 
             @Override
-            protected VEnum createValue(DBR_TIME_Enum value, DBR_LABELS_Enum metadata, boolean disconnected) {
+            public VEnum createValue(DBR_TIME_Enum value, DBR_LABELS_Enum metadata, boolean disconnected) {
                 return new VEnumFromDbr(value, metadata, disconnected);
             }
         });
         newFactories.add(new VTypeFactory<VDoubleArray, DBR_TIME_Double, DBR_CTRL_Double>(VDoubleArray.class, DBR_TIME_Double.TYPE, DBR_CTRL_Double.TYPE, true) {
 
             @Override
-            protected VDoubleArray createValue(DBR_TIME_Double value, DBR_CTRL_Double metadata, boolean disconnected) {
+            public VDoubleArray createValue(DBR_TIME_Double value, DBR_CTRL_Double metadata, boolean disconnected) {
                 return new VDoubleArrayFromDbr(value, metadata, disconnected);
             }
         });
         newFactories.add(new VTypeFactory<VFloatArray, DBR_TIME_Float, DBR_CTRL_Double>(VFloatArray.class, DBR_TIME_Float.TYPE, DBR_CTRL_Double.TYPE, true) {
 
             @Override
-            protected VFloatArray createValue(DBR_TIME_Float value, DBR_CTRL_Double metadata, boolean disconnected) {
+            public VFloatArray createValue(DBR_TIME_Float value, DBR_CTRL_Double metadata, boolean disconnected) {
                 return new VFloatArrayFromDbr(value, metadata, disconnected);
             }
         });
         newFactories.add(new VTypeFactory<VByteArray, DBR_TIME_Byte, DBR_CTRL_Double>(VByteArray.class, DBR_TIME_Byte.TYPE, DBR_CTRL_Double.TYPE, true) {
 
             @Override
-            protected VByteArray createValue(DBR_TIME_Byte value, DBR_CTRL_Double metadata, boolean disconnected) {
+            public VByteArray createValue(DBR_TIME_Byte value, DBR_CTRL_Double metadata, boolean disconnected) {
                 return new VByteArrayFromDbr(value, metadata, disconnected);
             }
         });
         newFactories.add(new VTypeFactory<VShortArray, DBR_TIME_Short, DBR_CTRL_Double>(VShortArray.class, DBR_TIME_Short.TYPE, DBR_CTRL_Double.TYPE, true) {
 
             @Override
-            protected VShortArray createValue(DBR_TIME_Short value, DBR_CTRL_Double metadata, boolean disconnected) {
+            public VShortArray createValue(DBR_TIME_Short value, DBR_CTRL_Double metadata, boolean disconnected) {
                 return new VShortArrayFromDbr(value, metadata, disconnected);
             }
         });
         newFactories.add(new VTypeFactory<VIntArray, DBR_TIME_Int, DBR_CTRL_Double>(VIntArray.class, DBR_TIME_Int.TYPE, DBR_CTRL_Double.TYPE, true) {
 
             @Override
-            protected VIntArray createValue(DBR_TIME_Int value, DBR_CTRL_Double metadata, boolean disconnected) {
+            public VIntArray createValue(DBR_TIME_Int value, DBR_CTRL_Double metadata, boolean disconnected) {
                 return new VIntArrayFromDbr(value, metadata, disconnected);
             }
         });
         newFactories.add(new VTypeFactory<VStringArray, DBR_TIME_String, DBR_TIME_String>(VStringArray.class, DBR_TIME_String.TYPE, null, true) {
 
             @Override
-            protected VStringArray createValue(DBR_TIME_String value, DBR_TIME_String metadata, boolean disconnected) {
+            public VStringArray createValue(DBR_TIME_String value, DBR_TIME_String metadata, boolean disconnected) {
                 return new VStringArrayFromDbr(value, disconnected);
             }
         });

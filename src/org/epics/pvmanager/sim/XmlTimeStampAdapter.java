@@ -1,5 +1,5 @@
 /*
- * Copyright 2010 Brookhaven National Laboratory
+ * Copyright 2010-11 Brookhaven National Laboratory
  * All rights reserved. Use is subject to license terms.
  */
 
@@ -17,7 +17,7 @@ class XmlTimeStampAdapter extends XmlAdapter<BigDecimal, TimeStamp> {
 
     @Override
     public TimeStamp unmarshal(BigDecimal v) throws Exception {
-        return TimeStamp.time(v.longValue(), v.remainder(new BigDecimal(1)).scaleByPowerOfTen(9).longValue());
+        return TimeStamp.time(v.longValue(), v.remainder(new BigDecimal(1)).scaleByPowerOfTen(9).intValue());
     }
 
     @Override
