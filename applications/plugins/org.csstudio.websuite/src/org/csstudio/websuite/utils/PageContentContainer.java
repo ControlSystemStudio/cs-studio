@@ -30,10 +30,10 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Set;
 
-import org.apache.log4j.Logger;
-import org.csstudio.platform.logging.CentralLogger;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.Platform;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * TODO (mmoeller) : 
@@ -47,22 +47,21 @@ public class PageContentContainer {
     private static PageContentContainer instance = null;
     
     /** Private logger for this class */
-    private Logger logger;
+    private static final Logger LOG = LoggerFactory.getLogger(PageContentContainer.class);
 
     /** */
-    private HashMap<String, PageContent> content;
+    private final HashMap<String, PageContent> content;
 
     /** Path to the workspace folder */
     private String workspacePath;
 
-    private String FILE_SEPARATOR;
+    private final String FILE_SEPARATOR;
 
     /**
      * 
      */
     private PageContentContainer() {
         
-        logger = CentralLogger.getInstance().getLogger(this);
         content = new HashMap<String, PageContent>();
         
         FILE_SEPARATOR = System.getProperty("file.separator");
@@ -74,7 +73,7 @@ public class PageContentContainer {
             workspacePath += FILE_SEPARATOR;
         }
         
-        logger.info(workspacePath);
+        LOG.info(workspacePath);
 
         loadContentFiles();
     }

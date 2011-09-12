@@ -30,6 +30,7 @@ import org.eclipse.ui.IWorkbenchWindow;
 import org.eclipse.ui.PartInitException;
 import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.WorkbenchException;
+import org.eclipse.ui.internal.WorkbenchPage;
 
 /**The service for running of OPI.
  * @author Xihui Chen
@@ -195,7 +196,8 @@ public class RunModeService {
 						}
 					}
 					
-					if(!(page.getPerspective().getId().equals(OPIRunnerPerspective.ID))){
+					//Open a new view					
+					if(position != Position.DETACHED && !(page.getPerspective().getId().equals(OPIRunnerPerspective.ID))){
 						if(MessageDialog.openQuestion(window.getShell(), "Switch to OPI Runtime Perspective", 
 								"To open the OPI View in expected position, you need to switch to OPI Runtime perspective."+
 								"\nDo you want to switch to it now?"))
@@ -204,15 +206,18 @@ public class RunModeService {
 							} catch (WorkbenchException e) {
 								ErrorHandlerUtil.handleError(
 										"Faile to switch to OPI Runtime perspective", e, false, true);
-							}
-							
+							}							
 					}
 					
-					//Open a new view
+					
+					String secondID =  OPIView.createNewInstance() + position.name();
 					IViewPart opiView = page.showView(
-							OPIView.ID, OPIView.createNewInstance() + position.name(), IWorkbenchPage.VIEW_ACTIVATE);
+							OPIView.ID,secondID, IWorkbenchPage.VIEW_ACTIVATE);					
 					if(opiView instanceof OPIView){
 						((OPIView)opiView).setOPIInput(runnerInput);
+						if(position == Position.DETACHED)
+							((WorkbenchPage)page).detachView(
+									page.findViewReference(OPIView.ID, secondID));
 					}
 				} catch (PartInitException e) {
 					ErrorHandlerUtil.handleError(NLS.bind("Failed to run OPI {1} in view.", path), e);

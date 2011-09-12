@@ -31,6 +31,7 @@ import java.util.Map;
 
 import javax.annotation.CheckForNull;
 import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import javax.persistence.Basic;
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
@@ -68,44 +69,8 @@ public class GSDFileDBO implements Serializable {
     private String _gsdFile;
     /** Configured Modules of this GSD File. */
     private Map<Integer, GSDModuleDBO> _gSDModules;
-    /**
-     * If only true when this file config a Profibus Master.
-     */
-    private Boolean _master;
-    /**
-     * If only true when this file config a Profibus Slave.
-     */
-    private Boolean _slave;
     
     private ParsedGsdFileModel _parsedGsdFileModel;
-    
-    @Column(nullable = true)
-    public Boolean getMaster() {
-        return _master;
-    }
-    
-    @Transient
-    public boolean isMasterNonHN() {
-        return getParsedGsdFileModel().isMaster();
-    }
-    
-    public void setMaster(final Boolean master) {
-        _master = master;
-    }
-    
-    @Column(nullable = true)
-    public Boolean isSlave() {
-        return _parsedGsdFileModel != null && _parsedGsdFileModel.isSalve();
-    }
-    
-    @Transient
-    public boolean isSlaveNonHN() {
-        return getParsedGsdFileModel().isSalve();
-    }
-    
-    public void setSlave(final Boolean slave) {
-        _slave = slave;
-    }
     
     /** */
     public GSDFileDBO() {
@@ -119,7 +84,7 @@ public class GSDFileDBO implements Serializable {
      *            The text of gsdFile.
      * @throws IOException 
      */
-    public GSDFileDBO(final String name, final String gsdFile) throws IOException {
+    public GSDFileDBO(@Nonnull final String name, @Nonnull final String gsdFile) throws IOException {
         setName(name);
         setGSDFile(gsdFile);
     }
@@ -135,7 +100,7 @@ public class GSDFileDBO implements Serializable {
      * @param id
      *            set the ID.
      */
-    public void setId(final int id) {
+    public void setId( final int id) {
         this._id = id;
     }
     
@@ -146,6 +111,7 @@ public class GSDFileDBO implements Serializable {
     @Lob
     @Basic(fetch = FetchType.EAGER)
     @Column(nullable = false)
+    @Nonnull
     public String getGSDFile() {
         return _gsdFile;
     }
@@ -155,10 +121,10 @@ public class GSDFileDBO implements Serializable {
      *            set the Text of gsdFile.
      * @throws IOException 
      */
-    public void setGSDFile(final String gsdFile) throws IOException {
+    public void setGSDFile(@Nonnull final String gsdFile) throws IOException {
         _gsdFile = gsdFile;
         if(_gsdFile!=null) {
-            GsdFileParser gsdFileParser = new GsdFileParser();
+            final GsdFileParser gsdFileParser = new GsdFileParser();
             _parsedGsdFileModel = gsdFileParser.parse(this);
         }
     }
@@ -174,11 +140,10 @@ public class GSDFileDBO implements Serializable {
      * @param name
      *            set the Name of gsdFile.
      */
-    public void setName(final String name) {
+    public void setName(@Nonnull final String name) {
         this._name = name;
         Diagnose.addNewLine(_name + "\t" + this.getClass().getSimpleName());
     }
-    
     /**
      *
      * @return a map of the Modules from this GSD File.
@@ -186,6 +151,7 @@ public class GSDFileDBO implements Serializable {
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "GSDFile", fetch = FetchType.EAGER)
     @OrderBy("moduleId")
     @MapKey(name = "moduleId")
+    @CheckForNull
     public Map<Integer, GSDModuleDBO> getGSDModules() {
         return _gSDModules;
     }
@@ -195,23 +161,10 @@ public class GSDFileDBO implements Serializable {
      * @param gsdModules
      *            set the Modules for this GSD File.
      */
-    public void setGSDModules(final Map<Integer, GSDModuleDBO> gsdModules) {
+    public void setGSDModules(@Nullable final Map<Integer, GSDModuleDBO> gsdModules) {
         _gSDModules = gsdModules;
     }
-    
-    /**
-     *
-     * @param gSDModule
-     *            add a Module to this file.
-     */
-    public void addGSDModule(final GSDModuleDBO gSDModule) {
-        gSDModule.setGSDFile(this);
-        if(_gSDModules == null) {
-            _gSDModules = new HashMap<Integer, GSDModuleDBO>();
-        }
-        _gSDModules.put(gSDModule.getModuleId(), gSDModule);
-    }
-    
+
     /**
      * Get a Module of this File.
      *
@@ -221,15 +174,36 @@ public class GSDFileDBO implements Serializable {
      */
     @CheckForNull
     public GSDModuleDBO getGSDModule(@Nonnull final Integer indexModule) {
+        return _gSDModules == null?null:_gSDModules.get(indexModule);
+    }
+    
+    /**
+     *
+     * @param gSDModule
+     *            add a Module to this file.
+     */
+    public void addGSDModule(@Nonnull final GSDModuleDBO gSDModule) {
+        gSDModule.setGSDFile(this);
         if(_gSDModules == null) {
             _gSDModules = new HashMap<Integer, GSDModuleDBO>();
         }
-        return _gSDModules.get(indexModule);
+        _gSDModules.put(gSDModule.getModuleId(), gSDModule);
+    }
+    
+    @Transient
+    public boolean isMasterNonHN() {
+        return getParsedGsdFileModel().isMaster();
+    }
+    
+    @Transient
+    public boolean isSlaveNonHN() {
+        return getParsedGsdFileModel().isSalve();
     }
     
     /** @return the Name of this gsdFile */
     @Transient
     @Override
+    @Nonnull
     public String toString() {
         return getName();
     }

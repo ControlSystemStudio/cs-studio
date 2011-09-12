@@ -1,3 +1,4 @@
+
 /* 
  * Copyright (c) 2006 Stiftung Deutsches Elektronen-Synchroton, 
  * Member of the Helmholtz Association, (DESY), HAMBURG, GERMANY.
@@ -19,6 +20,7 @@
  * PROJECT IN THE FILE LICENSE.HTML. IF THE LICENSE IS NOT INCLUDED YOU MAY FIND A COPY 
  * AT HTTP://WWW.DESY.DE/LEGAL/LICENSE.HTM
  */
+
 package org.csstudio.ams.connector.sms.internal.pages;
 
 import org.eclipse.jface.preference.FieldEditorPreferencePage;
@@ -60,7 +62,8 @@ public class SmsPreferencePage extends FieldEditorPreferencePage implements
 	/**
 	 * {@inheritDoc}
 	 */
-	@Override
+	@SuppressWarnings("unused")
+    @Override
 	protected final void createFieldEditors() {
 
         addField(new StringFieldEditor(SmsConnectorPreferenceKey.P_MODEM_READ_WAITING_PERIOD,
@@ -122,7 +125,8 @@ public class SmsPreferencePage extends FieldEditorPreferencePage implements
 	/**
 	 * {@inheritDoc}
 	 */
-	public final void init(final IWorkbench workbench) {
+	@Override
+    public final void init(final IWorkbench workbench) {
 		/*
 		 * This methdos does not necessarily need to do anything. But it must be
 		 * implemented anyway.

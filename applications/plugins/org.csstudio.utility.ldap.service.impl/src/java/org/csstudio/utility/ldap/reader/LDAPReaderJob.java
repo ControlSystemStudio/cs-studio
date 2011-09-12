@@ -23,6 +23,7 @@ package org.csstudio.utility.ldap.reader;
 
 import javax.annotation.CheckForNull;
 import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import javax.naming.ldap.LdapName;
 
 import org.csstudio.utility.ldap.LdapServiceImplActivator;
@@ -68,9 +69,9 @@ public final class LDAPReaderJob extends Job implements ILdapReaderJob {
      */
     public static class Builder {
 
-        final LdapSearchParams _searchParams;
-        ILdapSearchResult _searchResult;
-        ILdapReadCompletedCallback _callBack;
+        private final LdapSearchParams _searchParams;
+        private ILdapSearchResult _searchResult;
+        private ILdapReadCompletedCallback _callBack;
 
         /**
          * Constructor with required parameters.
@@ -101,7 +102,7 @@ public final class LDAPReaderJob extends Job implements ILdapReaderJob {
          * @return the builder for chaining
          */
         @Nonnull
-        public Builder setJobCompletedCallBack(@Nonnull final ILdapReadCompletedCallback callBack) {
+        public Builder setJobCompletedCallBack(@Nullable final ILdapReadCompletedCallback callBack) {
             _callBack = callBack;
             return this;
         }
@@ -117,6 +118,7 @@ public final class LDAPReaderJob extends Job implements ILdapReaderJob {
     }
 
 
+    @SuppressWarnings("synthetic-access")
     LDAPReaderJob(@Nonnull final Builder builder){
         super("LDAPReader");
         _searchParams = builder._searchParams;

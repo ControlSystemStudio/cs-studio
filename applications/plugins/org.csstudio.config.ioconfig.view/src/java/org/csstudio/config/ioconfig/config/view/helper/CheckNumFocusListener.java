@@ -45,15 +45,15 @@ import org.eclipse.swt.widgets.ToolTip;
  * @since 15.08.2007
  */
 class CheckNumFocusListener implements FocusListener{
-
+    
     /**
      *  The min range.
      */
-    private long _min;
+    private final long _min;
     /**
      *  The max range.
      */
-    private long _max;
+    private final long _max;
     
     /**
      * @param ranges The min/max ranges
@@ -66,23 +66,23 @@ class CheckNumFocusListener implements FocusListener{
     /** {@inheritDoc} */
     @Override
     public void focusGained(@Nullable final FocusEvent e) {/* Nothing to do*/}
-
+    
     /** {@inheritDoc} */
     @Override
-    public void focusLost(@Nullable final FocusEvent e) {
+    public void focusLost(@Nonnull final FocusEvent e) {
         if (e.widget instanceof Text) {
             final Display display = Display.getDefault();
-            Text text = (Text) e.widget;
+            final Text text = (Text) e.widget;
             int zahl =0;
             try{
                 zahl = Integer.parseInt(text.getText());
-            }catch (NumberFormatException nfe) {
+            }catch (final NumberFormatException nfe) {
                 /*Ignore*/
-                zahl = 0; 
+                zahl = 0;
             }
             if(!(_min<=zahl&&zahl<=_max)){
                 text.setBackground(display.getSystemColor(SWT.COLOR_RED));
-                ToolTip tt = new ToolTip(display.getActiveShell(),SWT.ICON_WARNING);
+                final ToolTip tt = new ToolTip(display.getActiveShell(),SWT.ICON_WARNING);
                 Composite comp = text.getParent();
                 Point point = new Point(text.getLocation().x+text.getBounds().width,text.getLocation().x);
                 while(comp.getParent()!=null){
@@ -99,6 +99,6 @@ class CheckNumFocusListener implements FocusListener{
             }else{
                 text.setBackground(display.getSystemColor(SWT.COLOR_LIST_BACKGROUND));
             }
-        }                
+        }
     }
 }

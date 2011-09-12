@@ -31,6 +31,8 @@ import javax.persistence.MappedSuperclass;
 import javax.persistence.SequenceGenerator;
 import javax.persistence.Transient;
 
+import org.csstudio.config.ioconfig.model.hibernate.Repository;
+
 /**
  * @author hrickens
  * @author $Author: hrickens $
@@ -64,13 +66,9 @@ public class DBClass {
      * The date who this Node last update is.
      */
     private Date _updatedOn;
-    
     private boolean _dirty;
     
-    /**
-     *
-     * @return the Node key ID.
-     */
+    
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "SEQ_G_DDB")
     @SequenceGenerator(name = "SEQ_G_DDB", sequenceName = "SEQ_DDB")
@@ -78,19 +76,10 @@ public class DBClass {
         return _id;
     }
     
-    /**
-     *
-     * @param id
-     *            set the Node key ID.
-     */
     public void setId(final int id) {
         this._id = id;
     }
     
-    /**
-     *
-     * @return the Name of the creator of this Node.
-     */
     @Nonnull
     public String getCreatedBy() {
         return _createdBy;
@@ -158,6 +147,15 @@ public class DBClass {
      */
     public void setUpdatedOn(@Nonnull final Date updatedOn) {
         this._updatedOn = updatedOn;
+    }
+    
+    
+    @Transient
+    public void setCreationData(@Nonnull final String creater, @Nonnull final Date creationDate){
+        setCreatedBy(creater);
+        setUpdatedBy(creater);
+        setCreatedOn(creationDate);
+        setUpdatedOn(creationDate);
     }
     
     /**

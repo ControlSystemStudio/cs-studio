@@ -24,7 +24,6 @@
  */
 package org.csstudio.utility.adlconverter.utility.widgetparts;
 
-import org.csstudio.platform.logging.CentralLogger;
 import org.csstudio.sds.internal.rules.ParameterDescriptor;
 import org.csstudio.sds.model.AbstractWidgetModel;
 import org.csstudio.sds.model.DynamicsDescriptor;
@@ -132,11 +131,11 @@ public class ADLDynamicAttribute extends WidgetPart{
                     uninit();
                 }
             }else if(head.equals("chanb")){ //$NON-NLS-1$
-//                CentralLogger.getInstance().debug(this, "chanB"+adlDynamicAttribute.toString());
+//                LOG.debug(this, "chanB"+adlDynamicAttribute.toString());
             }else if(head.equals("colorrule")){ //$NON-NLS-1$
                 _colorRule=row[0];
             }else if(head.equals("calc")){ //$NON-NLS-1$
-//                CentralLogger.getInstance().debug(this, "calc"+adlDynamicAttribute.toString());
+//                LOG.debug(this, "calc"+adlDynamicAttribute.toString());
             }else {
                 throw new WrongADLFormatException(Messages.ADLDynamicAttribute_WrongADLFormatException_Parameter_Begin+parameter+Messages.ADLDynamicAttribute_WrongADLFormatException_Parameter_End);
             }
@@ -146,6 +145,7 @@ public class ADLDynamicAttribute extends WidgetPart{
     /**
      * Generate all Elements from ADL dynamic Attributes.
      */
+    @Override
     final void generateElements() {
 //        _adlDynamicAttribute= new Element[1];
         if(_chan!=null){

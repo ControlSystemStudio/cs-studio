@@ -1,17 +1,13 @@
 package org.csstudio.utility.quickstart.commandhandler;
 
-import org.csstudio.platform.logging.CentralLogger;
 import org.csstudio.sds.ui.runmode.RunModeService;
 import org.csstudio.utility.quickstart.Activator;
 import org.csstudio.utility.quickstart.preferences.PreferenceConstants;
 import org.eclipse.core.commands.AbstractHandler;
-import org.eclipse.core.resources.IFile;
-import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.Path;
+import org.eclipse.core.runtime.Platform;
 import org.eclipse.core.runtime.Preferences;
-import org.eclipse.swt.widgets.Display;
-import org.eclipse.ui.PlatformUI;
 
 /**
  * Abstract implementation of the class to open the sds file
@@ -45,17 +41,19 @@ public abstract class AbstractRunDisplayHandler extends AbstractHandler {
 	 */
 	void openDisplay(String[] sdsFileList, int fileNo) {
 		//Array starts with 0.
-		fileNo = fileNo - 1;
-		if (sdsFileList.length > fileNo) {
-			if ((sdsFileList[fileNo].length() > 0) && (sdsFileList[fileNo] != null)) {
+		int tmpfileNo = fileNo - 1;
+		if (sdsFileList.length > tmpfileNo) {
+			if ((sdsFileList[tmpfileNo] != null) && (sdsFileList[tmpfileNo].length() > 0) ) {
 				//separate the filePath from menu name.
-				String[] filePath = sdsFileList[fileNo].split("\\?");
-				final IPath newPath = new Path(filePath[0]);
+			    String[] filePathString = sdsFileList[tmpfileNo].split("\\?");
+			    final IPath filePath = new Path(filePathString[0]);
+			    IPath location = Platform.getLocation();
+                IPath absolotPath = location.append(filePath);
 				
-				if (filePath[0].endsWith(SDS_FILE_EXTENSION.toLowerCase())) {
-					RunModeService.getInstance().openDisplayShellInRunMode(newPath);
+				if (filePathString[0].endsWith(SDS_FILE_EXTENSION.toLowerCase())) {
+					RunModeService.getInstance().openDisplayShellInRunMode(absolotPath);
             	}
-            	if (filePath[0].endsWith(PLT_FILE_EXTENSION.toLowerCase())) {
+            	if (filePathString[0].endsWith(PLT_FILE_EXTENSION.toLowerCase())) {
 // TODO (jhatje): Enable when Databrwoser2 is integrated in CSS.
 //            		PlatformUI.getWorkbench().getDisplay().syncExec(new Runnable() {
 //						

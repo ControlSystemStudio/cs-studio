@@ -1,23 +1,23 @@
 
-/* 
- * Copyright (c) 2008 Stiftung Deutsches Elektronen-Synchrotron, 
+/*
+ * Copyright (c) 2008 Stiftung Deutsches Elektronen-Synchrotron,
  * Member of the Helmholtz Association, (DESY), HAMBURG, GERMANY.
  *
- * THIS SOFTWARE IS PROVIDED UNDER THIS LICENSE ON AN "../AS IS" BASIS. 
- * WITHOUT WARRANTY OF ANY KIND, EXPRESSED OR IMPLIED, INCLUDING BUT NOT LIMITED 
- * TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR PARTICULAR PURPOSE AND 
- * NON-INFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE 
- * FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, 
- * TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR 
- * THE USE OR OTHER DEALINGS IN THE SOFTWARE. SHOULD THE SOFTWARE PROVE DEFECTIVE 
- * IN ANY RESPECT, THE USER ASSUMES THE COST OF ANY NECESSARY SERVICING, REPAIR OR 
- * CORRECTION. THIS DISCLAIMER OF WARRANTY CONSTITUTES AN ESSENTIAL PART OF THIS LICENSE. 
+ * THIS SOFTWARE IS PROVIDED UNDER THIS LICENSE ON AN "../AS IS" BASIS.
+ * WITHOUT WARRANTY OF ANY KIND, EXPRESSED OR IMPLIED, INCLUDING BUT NOT LIMITED
+ * TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR PARTICULAR PURPOSE AND
+ * NON-INFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE
+ * FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT,
+ * TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR
+ * THE USE OR OTHER DEALINGS IN THE SOFTWARE. SHOULD THE SOFTWARE PROVE DEFECTIVE
+ * IN ANY RESPECT, THE USER ASSUMES THE COST OF ANY NECESSARY SERVICING, REPAIR OR
+ * CORRECTION. THIS DISCLAIMER OF WARRANTY CONSTITUTES AN ESSENTIAL PART OF THIS LICENSE.
  * NO USE OF ANY SOFTWARE IS AUTHORIZED HEREUNDER EXCEPT UNDER THIS DISCLAIMER.
- * DESY HAS NO OBLIGATION TO PROVIDE MAINTENANCE, SUPPORT, UPDATES, ENHANCEMENTS, 
+ * DESY HAS NO OBLIGATION TO PROVIDE MAINTENANCE, SUPPORT, UPDATES, ENHANCEMENTS,
  * OR MODIFICATIONS.
- * THE FULL LICENSE SPECIFYING FOR THE SOFTWARE THE REDISTRIBUTION, MODIFICATION, 
- * USAGE AND OTHER RIGHTS AND OBLIGATIONS IS INCLUDED WITH THE DISTRIBUTION OF THIS 
- * PROJECT IN THE FILE LICENSE.HTML. IF THE LICENSE IS NOT INCLUDED YOU MAY FIND A COPY 
+ * THE FULL LICENSE SPECIFYING FOR THE SOFTWARE THE REDISTRIBUTION, MODIFICATION,
+ * USAGE AND OTHER RIGHTS AND OBLIGATIONS IS INCLUDED WITH THE DISTRIBUTION OF THIS
+ * PROJECT IN THE FILE LICENSE.HTML. IF THE LICENSE IS NOT INCLUDED YOU MAY FIND A COPY
  * AT HTTP://WWW.DESY.DE/LEGAL/LICENSE.HTM
  *
  */
@@ -38,34 +38,38 @@ import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.Enumeration;
 import java.util.Hashtable;
-import org.apache.log4j.Logger;
+
 import org.csstudio.alarm.jms2ora.Jms2OraPlugin;
 import org.csstudio.alarm.jms2ora.preferences.PreferenceConstants;
-import org.csstudio.alarm.jms2ora.util.MessageContent;
-import org.csstudio.platform.logging.CentralLogger;
+import org.csstudio.alarm.jms2ora.service.ArchiveMessage;
 import org.csstudio.platform.utility.rdb.RDBUtil;
 import org.csstudio.platform.utility.rdb.RDBUtil.Dialect;
 import org.eclipse.core.runtime.Platform;
 import org.eclipse.core.runtime.preferences.IPreferencesService;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  *  @author Markus Moeller
  *
  */
-public class DatabaseLayer
-{
+public class DatabaseLayer {
+
+    /** The class logger */
+    private static final Logger LOG = LoggerFactory.getLogger(DatabaseLayer.class);
+
     /** Database service */
     private RDBUtil dbService = null;
-    
+
     /** Database URL */
     private String url = null;
 
     /** Database user */
     private String user = null;
-    
+
     /** Database password */
     private String password = null;
-    
+
     /** True if the folder 'var/columns' exists. This folder holds the stored message object content. */
     private boolean existsObjectFolder = false;
 
@@ -77,33 +81,28 @@ public class DatabaseLayer
      *  is the precision.
      */
     private Hashtable<String, Integer> messageCol = null;
-    
-    /** Logger */
-    private Logger logger = null;
 
-    public DatabaseLayer(String url, String user, String password) {
-        
-        IPreferencesService prefs = Platform.getPreferencesService();
+    public DatabaseLayer(final String url, final String user, final String password) {
+
+        final IPreferencesService prefs = Platform.getPreferencesService();
         String temp = prefs.getString(Jms2OraPlugin.PLUGIN_ID, PreferenceConstants.STORAGE_DIRECTORY, "./var/", null);
         if(temp.endsWith("/") == false) {
             temp += "/";
         }
-        
+
         objectDir = prefs.getString(Jms2OraPlugin.PLUGIN_ID, PreferenceConstants.META_DATA_DIRECTORY, "columns/", null);
         objectDir = temp + objectDir;
-        
-        logger = CentralLogger.getInstance().getLogger(this);
-        
+
         this.url = url;
         this.password = password;
         this.user = user;
-        
+
         createObjectFolder();
         readTableColumns();
     }
-    
+
     /**
-     * 
+     *
      */
     private void readTableColumns()
     {
@@ -113,42 +112,42 @@ public class DatabaseLayer
         String name = null;
         int prec = 0;
         int count = 0;
-        
+
         messageCol = new Hashtable<String, Integer>();
-        
+
         if(!connect())
         {
-            logger.error("Cannot read the table column names.");
-            
+            LOG.error("Cannot read the table column names.");
+
             return;
         }
-        
+
         try
         {
             st = dbService.getConnection().createStatement(ResultSet.TYPE_SCROLL_INSENSITIVE, ResultSet.CONCUR_READ_ONLY);
             rs = st.executeQuery("SELECT * FROM message WHERE id = 1");
-            
+
             meta = rs.getMetaData();
             count = meta.getColumnCount();
-            
+
             for(int i = 1;i <= count;i++)
             {
                 name = meta.getColumnName(i);
                 prec = meta.getPrecision(i);
-                
-                if((name.compareToIgnoreCase("id") != 0) && (name.compareToIgnoreCase("datum") != 0) && (name.compareToIgnoreCase("msg_type_id") != 0))
+
+                if(name.compareToIgnoreCase("id") != 0 && name.compareToIgnoreCase("datum") != 0 && name.compareToIgnoreCase("msg_type_id") != 0)
                 {
                     messageCol.put(name, new Integer(prec));
                 }
             }
-            
+
             saveColumnNames();
         }
-        catch(Exception e)
+        catch(final Exception e)
         {
-            logger.error("*** Exception *** : Cannot read the table column names: " + e.getMessage());
-            logger.error("Using stored column names.");
-            
+            LOG.error("*** Exception *** : Cannot read the table column names: " + e.getMessage());
+            LOG.error("Using stored column names.");
+
             readColumnNames();
         }
         finally
@@ -156,7 +155,7 @@ public class DatabaseLayer
             close();
         }
     }
-    
+
     private void saveColumnNames()
     {
         FileOutputStream fos = null;
@@ -164,45 +163,45 @@ public class DatabaseLayer
 
         if(messageCol.isEmpty())
         {
-            logger.info("Column list is empty.");
-            
+            LOG.info("Column list is empty.");
+
             return;
         }
 
         if(existsObjectFolder == false)
         {
-            logger.warn("Object folder '" + objectDir + "' does not exist. Columns cannot be stored.");
-            
+            LOG.warn("Object folder '" + objectDir + "' does not exist. Columns cannot be stored.");
+
             return;
         }
-        
+
         try
         {
             fos = new FileOutputStream(objectDir + "ColumnNames.ser");
             oos = new ObjectOutputStream(fos);
-            
+
             // Write the MessageContent object to disk
             oos.writeObject(messageCol);
             oos.flush();
         }
-        catch(FileNotFoundException fnfe)
+        catch(final FileNotFoundException fnfe)
         {
-            logger.error("FileNotFoundException : " + fnfe.getMessage());
+            LOG.error("FileNotFoundException : " + fnfe.getMessage());
         }
-        catch(IOException ioe)
+        catch(final IOException ioe)
         {
-            logger.error("IOException : " + ioe.getMessage());
+            LOG.error("IOException : " + ioe.getMessage());
         }
         finally
         {
-            if(oos != null){try{oos.close();}catch(IOException ioe){}}
-            if(fos != null){try{fos.close();}catch(IOException ioe){}}
-            
+            if(oos != null){try{oos.close();}catch(final IOException ioe){}}
+            if(fos != null){try{fos.close();}catch(final IOException ioe){}}
+
             oos = null;
-            fos = null;            
+            fos = null;
         }
     }
-    
+
     @SuppressWarnings("unchecked")
     private Hashtable<String, Integer> readColumnNames()
     {
@@ -214,113 +213,113 @@ public class DatabaseLayer
         {
             fis = new FileInputStream(objectDir + "ColumnNames.ser");
             ois = new ObjectInputStream(fis);
-            
+
             // Write the MessageContent object to disk
-            content = (Hashtable<String, Integer>)ois.readObject();            
+            content = (Hashtable<String, Integer>)ois.readObject();
         }
-        catch(FileNotFoundException fnfe)
+        catch(final FileNotFoundException fnfe)
         {
-            logger.error("FileNotFoundException : " + fnfe.getMessage());
+            LOG.error("FileNotFoundException : " + fnfe.getMessage());
             content = null;
         }
-        catch(IOException ioe)
+        catch(final IOException ioe)
         {
-            logger.error("IOException : " + ioe.getMessage());
+            LOG.error("IOException : " + ioe.getMessage());
             content = null;
         }
-        catch (ClassNotFoundException e)
+        catch (final ClassNotFoundException e)
         {
-            logger.error("ClassNotFoundException : " + e.getMessage());
+            LOG.error("ClassNotFoundException : " + e.getMessage());
             content = null;
         }
         finally
         {
-            if(ois != null){try{ois.close();}catch(IOException ioe){}}
-            if(fis != null){try{fis.close();}catch(IOException ioe){}}
-            
+            if(ois != null){try{ois.close();}catch(final IOException ioe){}}
+            if(fis != null){try{fis.close();}catch(final IOException ioe){}}
+
             ois = null;
-            fis = null;            
+            fis = null;
         }
-        
+
         return content;
     }
-    
+
     /**
      * Connect to the database.
      *
      * @return true/false
-     * 
+     *
      */
-    
+
     public boolean connect()
-    {        
+    {
         try
         {
             dbService = RDBUtil.connect(url, user, password, false);
         }
-        catch(Exception e)
+        catch(final Exception e)
         {
-            logger.error("*** Exception *** : connect(): " + e.getMessage());
-            
+            LOG.error("*** Exception *** : connect(): " + e.getMessage());
+
             return false;
         }
-        
+
         return true;
     }
-    
+
     /**
-     * 
+     *
      */
     public Dialect getDialect()
     {
         return dbService.getDialect();
     }
-    
+
     /**
-     * <code>close</code> closes the connection to the database. 
+     * <code>close</code> closes the connection to the database.
      *
      */
-    
+
     public void close()
     {
         dbService.close();
     }
-    
+
     /**
      * <code>isConnected()</code>
-     * 
+     *
      * @return true=connection is available ; false=no connection available
      */
-    
+
     public boolean isConnected()
     {
         boolean result = false;
-        
+
         try
         {
-            result = !(dbService.getConnection().isClosed());
+            result = !dbService.getConnection().isClosed();
         }
-        catch(Exception e)
+        catch(final Exception e)
         {
-            logger.error("*** Exception *** : isConnected(): " + e.getMessage());
-            
+            LOG.error("*** Exception *** : isConnected(): " + e.getMessage());
+
             result = false;
         }
-        
+
         return result;
     }
-    
+
     /**
      * <code>createMessageEntry</code> creates an entry in the table <i>MESSAGE</i>.
-     * 
+     *
      * @param typeId - The ID of the message type which is defined in the table <i>MSG_TYPE</i>.
      * @param datum  - The date of the event(contained in the map message) or the current date
      * @param name - The value of property NAME(contained in the map message)
      * @param status - The value of property STATUS(contained in the map message)
      * @return The ID of the new entry or -1 if it fails.
      */
-    
-    public synchronized long createMessageEntry(long typeId, MessageContent content)
+
+    public synchronized long createMessageEntry(final long typeId, final ArchiveMessage content)
     {
         PreparedStatement pst = null;
         String sql = null;
@@ -328,7 +327,7 @@ public class DatabaseLayer
         String name = null;
         String[] preparedValues = null;
         long msgId = -1;
-        
+
         // Connect the database
         if(connect() == false)
         {
@@ -341,17 +340,17 @@ public class DatabaseLayer
         // Do we have a valid ID?
         if(msgId > 0)
         {
-            // Insert a new entry           
+            // Insert a new entry
             sql = "INSERT INTO message (id,msg_type_id,datum";
-            
+
             // ORACLE
             values = ") VALUES (?,?,TO_TIMESTAMP(?,'YYYY-MM-DD HH24:MI:SS.FF3')";
-            
+
             // MySQL
             // values = ") VALUES (?,?,TIMESTAMP(?)";
-            
+
             // Get names of columns of table MESSAGE
-            Enumeration<String> keys = messageCol.keys();
+            final Enumeration<String> keys = messageCol.keys();
             preparedValues = new String[messageCol.size()];
             int n = 0;
             while(keys.hasMoreElements())
@@ -370,13 +369,13 @@ public class DatabaseLayer
                     preparedValues[n++] = "n/a";
                 }
             }
-            
+
             sql = sql + values + ")";
-                        
+
             try
             {
                 pst = dbService.getConnection().prepareStatement(sql);
-                
+
                 pst.setLong(1, msgId);
                 pst.setLong(2, typeId);
                 pst.setString(3, content.getPropertyValue("EVENTTIME"));
@@ -385,39 +384,39 @@ public class DatabaseLayer
                 {
                     pst.setString((i + 4), preparedValues[i]);
                 }
-                
+
                 if(pst.executeUpdate() < 0)
                 {
                     msgId = -1;
                 }
 
             }
-            catch(Exception e)
+            catch(final Exception e)
             {
-                logger.error("*** Exception ***: createMessageEntry(): " + e.getMessage());
-                
+                LOG.error("*** Exception ***: createMessageEntry(): " + e.getMessage());
+
                 msgId = -1;
-                if(pst!=null){try{pst.close();}catch(SQLException sqle){}pst=null;}
-            }  
-            
-            if(pst!=null){try{pst.close();}catch(SQLException e){}pst=null;}
+                if(pst!=null){try{pst.close();}catch(final SQLException sqle){}pst=null;}
+            }
+
+            if(pst!=null){try{pst.close();}catch(final SQLException e){}pst=null;}
         }
 
         close();
-        
+
         return msgId;
     }
 
     /**
      * <code>createMessageContentEntry</code> creates an entry in the table <i>MESSAGE_CONTENT</i>.
-     * 
+     *
      * @param msgId - The ID of the entry in the table MESSAGE which is related to this content entry.
-     * @param msgContent - A hash table with the list of properties which have to be stored into the DB.      
+     * @param msgContent - A hash table with the list of properties which have to be stored into the DB.
      * @return true - false
-     * 
+     *
      */
-    
-    public synchronized boolean createMessageContentEntries(long msgId, MessageContent msgContent)
+
+    public synchronized boolean createMessageContentEntries(final long msgId, final ArchiveMessage msgContent)
     {
         Enumeration<?> lst = null;
         PreparedStatement pst = null;
@@ -426,65 +425,65 @@ public class DatabaseLayer
         boolean result = false;
         long contentId = -1;
         long key;
-        
+
         // Connect the database
         if(connect() == false)
         {
             return false;
         }
-        
+
         // Get the highest ID in the table
         contentId = getNextId("message_content");
-        
+
         // Did we get an valid ID?
         if(contentId > 0)
         {
             sql = "INSERT INTO message_content (id,message_id,msg_property_type_id,value) VALUES(?,?,?,?)";
-            
+
             try
             {
                 pst = dbService.getConnection().prepareStatement(sql);
-                
+
                 // First write the known message content
                 lst = msgContent.keys();
-                
+
                 while(lst.hasMoreElements())
                 {
                     key = (Long)lst.nextElement();
                     value = msgContent.getPropertyValue(key);
-    
+
                     // Replace a single ' with '' (then the entry could be stored into the database)
                     value = value.replace("'", "''");
-                    
+
                     pst.setLong(1, contentId);
                     pst.setLong(2, msgId);
                     pst.setLong(3, key);
                     pst.setString(4, value);
-                    
+
                     if(pst.executeUpdate() < 0)
                     {
                         result = false;
-                        
+
                         break;
                     }
                     else
                     {
                         result = true;
                     }
-                    
+
                     contentId++;
                 }
             }
-            catch(Exception e)
+            catch(final Exception e)
             {
-                logger.error("*** Exception ***: createMessageContentEntries(): Write known messages: " + e.getMessage());
+                LOG.error("*** Exception ***: createMessageContentEntries(): Write known messages: " + e.getMessage());
 
                 result = false;
-                if(pst!=null){try{pst.close();}catch(SQLException sqle){}pst=null;}
-            }            
-            
+                if(pst!=null){try{pst.close();}catch(final SQLException sqle){}pst=null;}
+            }
+
             // Write the unknown properties, if we have some
-            if((result == true) && (msgContent.unknownPropertiesAvailable()))
+            if(result == true && msgContent.unknownPropertiesAvailable())
             {
                 for(int i = 0;i < msgContent.countUnknownProperties();i++)
                 {
@@ -492,67 +491,67 @@ public class DatabaseLayer
 
                     // Replace a single ' with '' (then the entry could be stored into the database)
                     value = value.replace("'", "''");
-                    
+
                     try
                     {
                         pst.setLong(1, contentId);
                         pst.setLong(2, msgId);
                         pst.setLong(3, msgContent.getUnknownTableId());
                         pst.setString(4, value);
-                        
+
                         if(pst.executeUpdate() < 0)
                         {
                             result = false;
-                            
+
                             break;
                         }
                         else
                         {
                             result = true;
                         }
-                        
+
                         contentId++;
                     }
-                    catch(SQLException sqle)
+                    catch(final SQLException sqle)
                     {
-                        logger.error("*** SQLException ***: createMessageContentEntries(): Write unknown properties: " + sqle.getMessage());
+                        LOG.error("*** SQLException ***: createMessageContentEntries(): Write unknown properties: " + sqle.getMessage());
 
                         result = false;
-                        if(pst!=null){try{pst.close();}catch(SQLException e){}pst=null;}
-                    }            
+                        if(pst!=null){try{pst.close();}catch(final SQLException e){}pst=null;}
+                    }
                 }
             }
-        
-            if(pst!=null){try{pst.close();}catch(SQLException e){}pst=null;}
+
+            if(pst!=null){try{pst.close();}catch(final SQLException e){}pst=null;}
         }
-                
+
         close();
-        
+
         return result;
     }
-    
+
     /**
-     * 
+     *
      */
     private void createObjectFolder()
     {
-        File folder = new File(objectDir);
-                
+        final File folder = new File(objectDir);
+
         existsObjectFolder = true;
 
         if(!folder.exists())
         {
-            boolean result = folder.mkdir();
+            final boolean result = folder.mkdir();
             if(result)
             {
-                logger.info("Folder " + objectDir + " was created.");
-                
+                LOG.info("Folder " + objectDir + " was created.");
+
                 existsObjectFolder = true;
             }
             else
             {
-                logger.warn("Folder " + objectDir + " was NOT created.");
-                
+                LOG.warn("Folder " + objectDir + " was NOT created.");
+
                 existsObjectFolder = false;
             }
         }
@@ -562,8 +561,8 @@ public class DatabaseLayer
     {
         PreparedStatement pst = null;
         ResultSet rsProperty = null;
-        Hashtable<String, Long> msgProperty = new Hashtable<String, Long>();
-        
+        final Hashtable<String, Long> msgProperty = new Hashtable<String, Long>();
+
         // Connect the database
         if(connect() == false)
         {
@@ -573,44 +572,44 @@ public class DatabaseLayer
         try
         {
             pst = dbService.getConnection().prepareStatement("SELECT * from MSG_PROPERTY_TYPE");
-            
+
             // Execute the query to get all properties
             rsProperty = pst.executeQuery();
-        
-            // Check the result sets 
+
+            // Check the result sets
             if(rsProperty != null)
             {
                 // Fill the hash table with the received data of the property table
                 while(rsProperty.next())
                 {
-                    msgProperty.put(rsProperty.getString(2), rsProperty.getLong(1));                 
+                    msgProperty.put(rsProperty.getString(2), rsProperty.getLong(1));
                 }
             }
         }
-        catch(Exception e)
+        catch(final Exception e)
         {
-            logger.error("*** Exception *** : getMessageProperties(): " + e.getMessage());
-            
+            LOG.error("*** Exception *** : getMessageProperties(): " + e.getMessage());
+
             msgProperty.clear();
         }
         finally
         {
-            if(rsProperty!=null){try{rsProperty.close();}catch(Exception e){}rsProperty=null;}
-            
+            if(rsProperty!=null){try{rsProperty.close();}catch(final Exception e){}rsProperty=null;}
+
             // Close the database
-            close();             
+            close();
         }
 
         return msgProperty;
     }
-    
+
     public synchronized int getMaxNumberofValueBytes()
     {
         PreparedStatement pst = null;
         ResultSetMetaData rsMetaData = null;
         ResultSet rs = null;
         int result = 0;
-        
+
         // Connect the database
         if(connect() == false)
         {
@@ -623,11 +622,11 @@ public class DatabaseLayer
             pst.setLong(1, 1);
             rs = pst.executeQuery();
             rsMetaData = rs.getMetaData();
-            
-            // Check the result sets 
+
+            // Check the result sets
             if(rsMetaData != null)
             {
-                int count = rsMetaData.getColumnCount();
+                final int count = rsMetaData.getColumnCount();
 
                 for(int i = 1;i <= count;i++)
                 {
@@ -638,29 +637,29 @@ public class DatabaseLayer
                 }
             }
         }
-        catch(Exception e)
+        catch(final Exception e)
         {
-            logger.error("*** Exception *** : getMaxNumberofValueBytes(): " + e.getMessage());
-            
+            LOG.error("*** Exception *** : getMaxNumberofValueBytes(): " + e.getMessage());
+
             result = 0;
         }
         finally
         {
             rsMetaData = null;
-            if(rs!=null){try{rs.close();}catch(Exception e){}rs=null;}
-            
+            if(rs!=null){try{rs.close();}catch(final Exception e){}rs=null;}
+
             close();
         }
-                
+
         return result;
     }
 
-    public synchronized long getNextId(String tableName)
+    public synchronized long getNextId(final String tableName)
     {
         PreparedStatement pst = null;
         ResultSet rsMsg = null;
         long result = -1;
-        
+
         try
         {
             pst = dbService.getConnection().prepareStatement("SELECT MAX(ID) from " + tableName);
@@ -669,33 +668,33 @@ public class DatabaseLayer
             if(rsMsg != null)
             {
                 rsMsg.next();
-                result = rsMsg.getLong(1);                
+                result = rsMsg.getLong(1);
                 result += 1;
             }
         }
-        catch(Exception e)
+        catch(final Exception e)
         {
-            logger.error("*** Exception *** : getNextId(): " + e.getMessage());
+            LOG.error("*** Exception *** : getNextId(): " + e.getMessage());
             result = -1;
         }
         finally
         {
-            if(rsMsg!=null){try{rsMsg.close();}catch(SQLException sqle){}rsMsg=null;}
-            if(pst!=null){try{pst.close();}catch(SQLException sqle){}pst=null;}
+            if(rsMsg!=null){try{rsMsg.close();}catch(final SQLException sqle){}rsMsg=null;}
+            if(pst!=null){try{pst.close();}catch(final SQLException sqle){}pst=null;}
         }
-        
+
         return result;
     }
-    
+
     /**
      * The method deletes the message with the given id from the table.
-     * 
+     *
      *  @param msgId The id of the message that has to be deleted.
      */
-    public synchronized void deleteMessage(long msgId)
+    public synchronized void deleteMessage(final long msgId)
     {
         PreparedStatement pst = null;
-        
+
         // Connect the database
         if(connect() == false)
         {
@@ -707,16 +706,16 @@ public class DatabaseLayer
             pst = dbService.getConnection().prepareStatement("DELETE FROM message_content WHERE message_id=?");
             pst.setLong(1, msgId);
             pst.executeUpdate();
-            if(pst!=null){try{pst.close();}catch(SQLException sqle){}pst=null;}
+            if(pst!=null){try{pst.close();}catch(final SQLException sqle){}pst=null;}
 
             pst = dbService.getConnection().prepareStatement("DELETE FROM message WHERE id=?");
             pst.setLong(1, msgId);
             pst.executeUpdate();
-            if(pst!=null){try{pst.close();}catch(SQLException sqle){}pst=null;}
+            if(pst!=null){try{pst.close();}catch(final SQLException sqle){}pst=null;}
         }
-        catch(Exception e)
+        catch(final Exception e)
         {
-            logger.error("*** Exception *** : deleteMessage(): " + e.getMessage());
+            LOG.error("*** Exception *** : deleteMessage(): " + e.getMessage());
         }
 
         close();

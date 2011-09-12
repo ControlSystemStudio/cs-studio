@@ -1,10 +1,11 @@
+
 package org.csstudio.nams.service.preferenceservice.ui;
 
 import org.csstudio.nams.common.activatorUtils.AbstractBundleActivator;
 import org.csstudio.nams.common.activatorUtils.OSGiBundleActivationMethod;
 import org.csstudio.nams.common.activatorUtils.OSGiService;
 import org.csstudio.nams.common.activatorUtils.Required;
-import org.csstudio.nams.service.logging.declaration.Logger;
+import org.csstudio.nams.service.logging.declaration.ILogger;
 import org.csstudio.nams.service.preferenceservice.declaration.bridge4ui.PreferenceStoreAccessor;
 import org.csstudio.nams.service.preferenceservice.ui.preferencepages.AbstractNewAMSFieldEditorPreferencePage;
 import org.csstudio.nams.service.preferenceservice.ui.preferencepages.PreferenceInitializer;
@@ -27,7 +28,7 @@ public class PreferenceServiceUIActivator extends AbstractBundleActivator {
 	@OSGiBundleActivationMethod
 	public void startBundle(@OSGiService
 	@Required
-	final Logger logger, @OSGiService
+	final ILogger logger, @OSGiService
 	@Required
 	final PreferenceStoreAccessor preferenceStoreAccessor) {
 		final IPreferenceStore preferenceStore = preferenceStoreAccessor

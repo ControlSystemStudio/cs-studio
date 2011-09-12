@@ -1,3 +1,4 @@
+
 package org.csstudio.nams.common.material.regelwerk;
 
 import java.util.Set;
@@ -30,5 +31,4 @@ public class NichtVersandRegel extends AbstractNodeVersandRegel {
 		stringBuilder.append("]");
 		return stringBuilder.toString();
 	}
-
 }

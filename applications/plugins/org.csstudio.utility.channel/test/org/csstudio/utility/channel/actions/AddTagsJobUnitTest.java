@@ -14,13 +14,11 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.logging.Logger;
 
-import org.eclipse.core.runtime.IStatus;
+import org.csstudio.utility.channelfinder.CFClientManager;
 import org.eclipse.core.runtime.Status;
 import org.eclipse.core.runtime.jobs.Job;
 import org.junit.After;
-import org.junit.AfterClass;
 import org.junit.Before;
-import org.junit.BeforeClass;
 import org.junit.Test;
 
 /**
@@ -39,15 +37,15 @@ public class AddTagsJobUnitTest {
 	/**
 	 * @throws java.lang.Exception
 	 */
-	@BeforeClass
+	@Before
 	public void setUp() throws Exception {
 		try {
-			client = ChannelFinderClient.getInstance();
+			client = CFClientManager.getClient();
 			ch1 = channel("cssUnitTestChannel1").owner("css");
 			ch2 = channel("cssUnitTestChannel1").owner("css");
-			client.add(ch1);
-			client.add(ch2);
-			client.add(tag("cssUnitTestTag", "tagOwner"));
+			client.set(ch1);
+			client.set(ch2);
+			client.set(tag("cssUnitTestTag", "tagOwner"));
 		} catch (Exception e) {
 			logger.info("Failed to create the channelfinder client"
 					+ e.getMessage());
@@ -60,7 +58,7 @@ public class AddTagsJobUnitTest {
 		Collection<Channel> channels = new ArrayList<Channel>();
 		channels.add(ch1.build());
 		channels.add(ch2.build());
-		Job job = new AddTagsJob("addTags", channels, tag("cssUnitTestTag",
+		Job job = new AddTag2ChannelsJob("addTags", channels, tag("cssUnitTestTag",
 				"tagOwner"));
 		job.schedule();
 		try {
@@ -76,17 +74,17 @@ public class AddTagsJobUnitTest {
 			chs.add(ch1.build());
 			chs.add(ch2.build());
 			assertTrue("Failed to Add tags: ",
-					client.findChannelsByTag("cssUnitTestTag").containsAll(chs));
+					client.findByTag("cssUnitTestTag").containsAll(chs));
 		}
 	}
 
 	/**
 	 * @throws java.lang.Exception
 	 */
-	@AfterClass
+	@After
 	public void tearDown() throws Exception {
-		client.remove(channel("cssUnitTestChannel1").owner("css"));
-		client.remove(channel("cssUnitTestChannel1").owner("css"));
+		client.deleteChannel("cssUnitTestChannel1");
+		client.deleteChannel("cssUnitTestChannel1");
 		client.deleteTag("cssUnitTestTag");
 	}
 

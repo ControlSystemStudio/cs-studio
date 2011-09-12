@@ -1,11 +1,12 @@
 package org.csstudio.utility.pvmanager.ui;
 
+import java.util.concurrent.Executor;
+
 import org.eclipse.swt.graphics.GC;
 import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.graphics.ImageData;
 import org.eclipse.swt.graphics.PaletteData;
 import org.eclipse.ui.PlatformUI;
-import org.epics.pvmanager.ThreadSwitch;
 import org.epics.pvmanager.data.VImage;
 
 public class SWTUtil {
@@ -13,10 +14,10 @@ public class SWTUtil {
 		// Prevent creation
 	}
 	
-	private static ThreadSwitch SWTThread = new ThreadSwitch() {
+	private static Executor SWTThread = new Executor() {
 
         @Override
-        public void post(Runnable task) {
+        public void execute(Runnable task) {
             try {
             	if (!PlatformUI.getWorkbench().getDisplay().isDisposed()) {
             	    PlatformUI.getWorkbench().getDisplay().asyncExec(task);
@@ -27,7 +28,7 @@ public class SWTUtil {
         }
     };
     
-	public static ThreadSwitch onSWTThread() {
+	public static Executor swtThread() {
 		return SWTThread;
 	}
 	

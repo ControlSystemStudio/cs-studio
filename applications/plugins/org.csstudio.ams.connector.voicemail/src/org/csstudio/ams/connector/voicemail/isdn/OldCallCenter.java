@@ -210,7 +210,7 @@ public class OldCallCenter implements MetadataListener
                     {
                         Log.log(Log.INFO, "Try sending data to " + receiver);
     
-                        baos = speech.getAudioStream("Benutzen Sie die Taste 1, wenn Sie den Text nochmal hÃ¶ren wollen.");
+                        baos = speech.getAudioStream("Benutzen Sie die Taste 1, wenn Sie den Text nochmal hören wollen.");
                         
                         if(baos == null)
                         {

@@ -2,7 +2,7 @@
 /*
  * Copyright (c) 2010 Stiftung Deutsches Elektronen-Synchrotron, Member of the Helmholtz
  * Association, (DESY), HAMBURG, GERMANY.
- * 
+ *
  * THIS SOFTWARE IS PROVIDED UNDER THIS LICENSE ON AN "../AS IS" BASIS. WITHOUT WARRANTY OF ANY
  * KIND, EXPRESSED OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
  * FITNESS FOR PARTICULAR PURPOSE AND NON-INFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT
@@ -27,19 +27,19 @@ import org.csstudio.archive.sdds.server.conversion.SampleParameter;
 
 /**
  * TODO (mmoeller) :
- * 
+ *
  * @author mmoeller
  * @version
  * @since 26.05.2010
  */
 public class RecordDataCollection {
-    
+
     /** Data of PV's */
     private List<EpicsRecordData> data;
-    
+
     /** The parameters of the data samples */
     private SampleParameter sampleParameter;
-    
+
     /** Standard constructor */
     public RecordDataCollection() {
         data = new ArrayList<EpicsRecordData>(0);
@@ -47,7 +47,7 @@ public class RecordDataCollection {
     }
 
     /**
-     * 
+     *
      * @return
      */
     public List<EpicsRecordData> getData() {
@@ -55,15 +55,15 @@ public class RecordDataCollection {
     }
 
     /**
-     * 
+     *
      * @param data
      */
-    public void setData(List<EpicsRecordData> data) {
+    public void setData(final List<EpicsRecordData> data) {
         this.data = data;
     }
 
     /**
-     * 
+     *
      * @return
      */
     public SampleParameter getSampleParameter() {
@@ -71,35 +71,35 @@ public class RecordDataCollection {
     }
 
     /**
-     * 
+     *
      * @param sampleParameter
      */
-    public void setSampleParameter(SampleParameter sampleParameter) {
+    public void setSampleParameter(final SampleParameter sampleParameter) {
         this.sampleParameter = sampleParameter;
     }
-    
+
     /**
      * Returns the number of data samples.
-     * 
+     *
      * @return
      */
     public int getNumberOfData() {
-        
+
         int result = 0;
-        
+
         if (data != null) {
             result = data.size();
         }
-        
+
         return result;
     }
-    
+
     /**
      * Return true if data is present.
-     * 
+     *
      * @return
      */
     public boolean containsData() {
-        return (getNumberOfData() > 0);
+        return getNumberOfData() > 0;
     }
 }

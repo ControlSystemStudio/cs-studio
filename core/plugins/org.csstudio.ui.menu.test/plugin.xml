@@ -10,7 +10,7 @@
       </category>
       <view
             name="Process Variable Popup Test"
-            icon="icons/test.png"
+            icon="platform:/plugin/org.csstudio.ui.menu/icons/test.png"
             category="org.csstudio.test"
             class="org.csstudio.ui.menu.test.ProcessVariablePopupTestView"
             id="org.csstudio.ui.menu.test.ProcessVariablePopupTestView">
@@ -45,7 +45,7 @@
             locationURI="menu:test">
          <command
                commandId="org.eclipse.ui.views.showView"
-               icon="icons/test.png"
+               icon="platform:/plugin/org.csstudio.ui.menu/icons/test.png"
                label="Process Variable Popup Test"
                style="push">
             <parameter
@@ -59,7 +59,7 @@
             locationURI="popup:org.csstudio.ui.menu.popup.processvariable">
          <command
                commandId="org.csstudio.ui.menu.test.testpvcommand"
-               icon="icons/test.png"
+               icon="platform:/plugin/org.csstudio.ui.menu/icons/test.png"
                style="push">
          </command>
       </menuContribution>
@@ -80,7 +80,7 @@
             objectClass="org.csstudio.csdata.ProcessVariable">
          <action
                class="org.csstudio.ui.menu.test.TestPVAction"
-               icon="icons/test.png"
+               icon="platform:/plugin/org.csstudio.ui.menu/icons/test.png"
                id="org.csstudio.ui.menu.test.testpvaction"
                label="Test Action"
                menubarPath="org.csstudio.ui.menu.popup.processvariable/main">

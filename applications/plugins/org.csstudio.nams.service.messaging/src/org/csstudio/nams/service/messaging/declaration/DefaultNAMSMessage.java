@@ -1,3 +1,4 @@
+
 package org.csstudio.nams.service.messaging.declaration;
 
 import org.csstudio.nams.common.contract.Contract;
@@ -44,7 +45,8 @@ public class DefaultNAMSMessage implements NAMSMessage {
 		this.alarmNachricht = null;
 	}
 
-	public final void acknowledge() throws MessagingException {
+	@Override
+    public final void acknowledge() throws MessagingException {
 		try {
 			this.ackHandler.acknowledge();
 		} catch (final Throwable e) {
@@ -52,23 +54,27 @@ public class DefaultNAMSMessage implements NAMSMessage {
 		}
 	}
 
-	public final AlarmNachricht alsAlarmnachricht() {
+	@Override
+    public final AlarmNachricht alsAlarmnachricht() {
 		Contract.require(this.enthaeltAlarmnachricht(),
 				"enthaeltAlarmnachricht()");
 		return this.alarmNachricht;
 	}
 
-	public final SystemNachricht alsSystemachricht() {
+	@Override
+    public final SystemNachricht alsSystemachricht() {
 		Contract.require(this.enthaeltSystemnachricht(),
 				"enthaeltSystemnachricht()");
 		return this.sysNachricht;
 	}
 
-	public final boolean enthaeltAlarmnachricht() {
+	@Override
+    public final boolean enthaeltAlarmnachricht() {
 		return this.alarmNachricht != null;
 	}
 
-	public final boolean enthaeltSystemnachricht() {
+	@Override
+    public final boolean enthaeltSystemnachricht() {
 		return this.sysNachricht != null;
 	}
 }

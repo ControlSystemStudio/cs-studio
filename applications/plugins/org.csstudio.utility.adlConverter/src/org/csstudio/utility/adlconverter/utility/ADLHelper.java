@@ -24,7 +24,6 @@ import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
 
-import org.csstudio.platform.logging.CentralLogger;
 import org.csstudio.platform.simpledal.ConnectionState;
 import org.csstudio.platform.ui.util.CustomMediaFactory;
 import org.csstudio.sds.model.AbstractWidgetModel;
@@ -39,6 +38,8 @@ import org.eclipse.core.runtime.Path;
 import org.eclipse.draw2d.ColorConstants;
 import org.eclipse.swt.graphics.Font;
 import org.eclipse.swt.graphics.TextLayout;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * @author hrickens
@@ -47,6 +48,9 @@ import org.eclipse.swt.graphics.TextLayout;
  * @since 05.09.2007
  */
 public final class ADLHelper {
+    
+    private static final Logger LOG = LoggerFactory.getLogger(ADLHelper.class);
+    
     /**
      * The minimum font size that can calculated.
      */
@@ -110,7 +114,6 @@ public final class ADLHelper {
                     int r = 0;
                     int g = 0;
                     int b = 0;
-                    int inten = 0;
                     for (FileLine fileLine : dlColorObj.getBody()) {
                         String line = fileLine.getLine();
                         String[] row = line.split("=");
@@ -122,12 +125,9 @@ public final class ADLHelper {
                         } else if (type.equals("b")) {
                             b = Integer.parseInt(row[1]);
                         } else if (type.equals("inten")) {
-                            inten = Integer.parseInt(row[1]);
+//                            inten = Integer.parseInt(row[1]);
                         } else {
-                            CentralLogger
-                                    .getInstance()
-                                    .info(ADLWidget.class,
-                                          new WrongADLFormatException("Wrong Color Map dl_color Property."
+                            LOG.info("Wrong Format: ",new WrongADLFormatException("Wrong Color Map dl_color Property."
                                                   + fileLine));
                         }
                     }
@@ -309,10 +309,10 @@ public final class ADLHelper {
             return ""; //$NON-NLS-1$
         }
         if ( (chan.length > 2) && chan[1].startsWith("$")) { //$NON-NLS-1$
-            CentralLogger.getInstance().debug(ADLHelper.class, Arrays.toString(chan));
+            LOG.debug(Arrays.toString(chan));
             widgetModel.setAliasValue("channel".concat(which), chan[0]); //$NON-NLS-1$
         } else {
-            CentralLogger.getInstance().debug(ADLHelper.class, Arrays.toString(chan));
+            LOG.debug(Arrays.toString(chan));
             widgetModel.setAliasValue("channel".concat(which), chan[1]); //$NON-NLS-1$
         }
         widgetModel.setLayer(Messages.ADLDisplayImporter_ADLDynamicLayerName);

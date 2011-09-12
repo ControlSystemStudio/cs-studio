@@ -13,6 +13,7 @@ import org.csstudio.opibuilder.actions.SendToElogAction;
 import org.csstudio.opibuilder.editparts.AbstractBaseEditPart;
 import org.csstudio.opibuilder.runmode.RunModeService;
 import org.csstudio.opibuilder.runmode.RunModeService.TargetWindow;
+import org.csstudio.opibuilder.util.ErrorHandlerUtil;
 import org.csstudio.opibuilder.util.MacrosInput;
 import org.csstudio.opibuilder.util.ResourceUtil;
 import org.eclipse.core.resources.IFile;
@@ -20,6 +21,8 @@ import org.eclipse.core.resources.IResource;
 import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.jface.dialogs.MessageDialog;
+import org.eclipse.ui.PlatformUI;
+import org.eclipse.ui.handlers.IHandlerService;
 
 /**The utility class to facilitate Javascript programming.
  * @author Xihui Chen
@@ -100,6 +103,35 @@ public class ScriptUtil {
         {
             MessageDialog.openError(null, "Error", ex.getMessage());
         }
+	}
+	
+	/**Execute an Eclipse command.
+	 * @param commandId the command id.
+	 */
+	public static void executeEclipseCommand(String commandId){
+		IHandlerService handlerService = (IHandlerService) PlatformUI.getWorkbench().getActiveWorkbenchWindow()
+			    .getService(IHandlerService.class);
+		
+		try {
+			handlerService.executeCommand(commandId, null);
+		} catch (Exception e) {
+			ErrorHandlerUtil.handleError("Failed to execute eclipse command: " + commandId, e);
+		}
+		
+	}
+	
+	/**
+	 * Enter or exit compact mode.
+	 */
+	public static void compactMode(){
+		executeEclipseCommand("org.csstudio.opibuilder.actions.compactMode"); //$NON-NLS-1$
+	}
+	
+	/**
+	 * Enter or exit full screen.
+	 */
+	public static void fullScreen(){
+		executeEclipseCommand("org.csstudio.opibuilder.actions.fullscreen"); //$NON-NLS-1$
 	}
 
 }

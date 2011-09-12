@@ -25,18 +25,17 @@ import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
 /**
- * TODO (bknerr) :
+ * Notification types.
  *
  * @author bknerr
  * @since 11.04.2011
  */
 public enum NotificationType {
     PERSIST_DATA_FAILED("MySQL Archive Failure on Data Rescue",
-                        "Statements could not be written. Dump info to filesystem in file:\n");
+                        "Statements could not be persisted. Dump info to filesystem.\n");
 
-    private String _subject;
-    private String _textHeader;
-    private String _textBody;
+    private String _header;
+    private String _text;
 
     /**
      * Constructor.
@@ -47,28 +46,13 @@ public enum NotificationType {
     /**
      * Constructor.
      */
-    private NotificationType(@Nonnull final String subject,
-                             @Nullable final String textHeader) {
-        setSubject(subject);
-        setTextHeader(textHeader);
-    }
-
-    public void setSubject(@Nonnull final String subject) {
-        _subject = subject;
+    private NotificationType(@Nonnull final String header,
+                             @Nullable final String text) {
+        _header = header;
+        _text = text;
     }
     @Nonnull
-    public String getSubject() {
-        return _subject;
+    public String getFullInfo() {
+        return _header + ": " + _text;
     }
-    public void setTextHeader(@Nonnull final String textHeader) {
-        _textHeader = textHeader;
-    }
-    public void setTextBody(@Nonnull final String textBody) {
-        _textBody = textBody;
-    }
-    @Nonnull
-    public String getText() {
-        return _textHeader + _textBody;
-    }
-
 }

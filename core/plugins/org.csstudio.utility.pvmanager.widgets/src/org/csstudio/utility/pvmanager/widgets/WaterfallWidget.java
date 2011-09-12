@@ -1,10 +1,12 @@
 package org.csstudio.utility.pvmanager.widgets;
 
-import static org.epics.pvmanager.data.ExpressionLanguage.vDoubleArray;
+import static org.epics.pvmanager.ExpressionLanguage.*;
+import static org.epics.pvmanager.data.ExpressionLanguage.*;
 import static org.epics.pvmanager.extra.ExpressionLanguage.waterfallPlotOf;
-import static org.epics.pvmanager.extra.WaterfallPlotParameters.pixelDuration;
+import static org.epics.pvmanager.extra.WaterfallPlotParameters.*;
+import static org.epics.pvmanager.util.TimeDuration.*;
 
-import java.awt.Color;
+import java.util.List;
 
 import org.csstudio.ui.util.widgets.RangeListener;
 import org.csstudio.ui.util.widgets.RangeWidget;
@@ -13,6 +15,8 @@ import org.eclipse.swt.SWT;
 import org.eclipse.swt.custom.CLabel;
 import org.eclipse.swt.events.ControlEvent;
 import org.eclipse.swt.events.ControlListener;
+import org.eclipse.swt.events.DisposeEvent;
+import org.eclipse.swt.events.DisposeListener;
 import org.eclipse.swt.events.MouseAdapter;
 import org.eclipse.swt.events.MouseEvent;
 import org.eclipse.swt.graphics.Point;
@@ -20,10 +24,11 @@ import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Label;
-import org.epics.pvmanager.PV;
 import org.epics.pvmanager.PVManager;
-import org.epics.pvmanager.PVValueChangeListener;
+import org.epics.pvmanager.PVReader;
+import org.epics.pvmanager.PVReaderListener;
 import org.epics.pvmanager.data.VImage;
+import org.epics.pvmanager.extra.ColorScheme;
 import org.epics.pvmanager.extra.WaterfallPlot;
 import org.epics.pvmanager.extra.WaterfallPlotParameters;
 import org.epics.pvmanager.util.TimeDuration;
@@ -45,6 +50,21 @@ public class WaterfallWidget extends Composite {
 	private Label errorImage;
 	private GridData gd_rangeWidget;
 	private boolean editable = true;
+	
+	private String sortProperty;
+	
+	public String getSortProperty() {
+		return sortProperty;
+	}
+	
+	public void setSortProperty(String sortProperty) {
+		this.sortProperty = sortProperty;
+	}
+	
+	public void openConfigurationDialog(int x, int y) {
+		WaterfallParametersDialog dialog = new WaterfallParametersDialog(getShell(), SWT.NORMAL);
+		dialog.open(this, x, y);
+	}
 
 	/**
 	 * Creates a new widget.
@@ -54,6 +74,19 @@ public class WaterfallWidget extends Composite {
 	 */
 	public WaterfallWidget(Composite parent, int style) {
 		super(parent, style);
+		
+		// Close PV on dispose
+		addDisposeListener(new DisposeListener() {
+			
+			@Override
+			public void widgetDisposed(DisposeEvent e) {
+				if (pv != null) {
+					pv.close();
+					pv = null;
+				}
+			}
+		});
+		
 		GridLayout gridLayout = new GridLayout(2, false);
 		gridLayout.horizontalSpacing = 0;
 		gridLayout.verticalSpacing = 0;
@@ -82,10 +115,9 @@ public class WaterfallWidget extends Composite {
 			@Override
 			public void mouseUp(MouseEvent e) {
 				if (editable && e.button == 3) {
-					WaterfallParametersDialog dialog = new WaterfallParametersDialog(getShell(), SWT.NORMAL);
 					Point position = new Point(e.x, e.y);
 					position = getDisplay().map(WaterfallWidget.this, null, position);
-					dialog.open(WaterfallWidget.this, position.x, position.y);
+					openConfigurationDialog(position.x, position.y);
 				}
 			}
 		});
@@ -125,18 +157,28 @@ public class WaterfallWidget extends Composite {
 		parametersChanged();
 	}
 	
-	// The pv name for connection
-	private String pvName;
+	public void setInputText(String name) {
+		setWaveformPVName(name);
+	}
+	
+	public String getInputText() {
+		return getWaveformPVName();
+	}
+	
+	// The pv name for waveform
+	private String waveformPVName;
+	// The pv names for multiple channels
+	private List<String> scalarPVNames;
 	// The pv created by pvmanager
-	private PV<VImage> pv;
+	private PVReader<VImage> pv;
 	
 	/**
 	 * The pv name to connect to.
 	 * 
 	 * @return the current property value
 	 */
-	public String getPvName() {
-		return pvName;
+	public String getWaveformPVName() {
+		return waveformPVName;
 	}
 	
 	/**
@@ -144,13 +186,29 @@ public class WaterfallWidget extends Composite {
 	 * 
 	 * @param pvName the new property value
 	 */
-	public void setPvName(String pvName) {
+	public void setWaveformPVName(String pvName) {
 		// Guard from double calls
-		if (this.pvName != null && this.pvName.equals(pvName)) {
+		if (this.waveformPVName != null && this.waveformPVName.equals(pvName)) {
 			return;
 		}
 		
-		this.pvName = pvName;
+		this.scalarPVNames = null;
+		this.waveformPVName = pvName;
+		reconnect();
+	}
+	
+	public List<String> getScalarPVNames() {
+		return scalarPVNames;
+	}
+	
+	public void setScalarPVNames(List<String> scalarPVNames) {
+		// Guard from double calls
+		if (this.scalarPVNames != null && this.scalarPVNames.equals(scalarPVNames)) {
+			return;
+		}
+		
+		this.waveformPVName = null;
+		this.scalarPVNames = scalarPVNames;
 		reconnect();
 	}
 	
@@ -214,20 +272,38 @@ public class WaterfallWidget extends Composite {
 		imageDisplay.setVImage(null);
 		setLastError(null);
 		
-		if (pvName != null && !pvName.trim().isEmpty()) {
+		if (waveformPVName != null && !waveformPVName.trim().isEmpty()) {
 			int color = (getBackground().getRed() << 16) + (getBackground().getGreen() << 8) + getBackground().getBlue();
-			plot = waterfallPlotOf(vDoubleArray(pvName)).with(parameters, WaterfallPlotParameters.backgroundColor(color));
+			plot = waterfallPlotOf(vDoubleArrayOf(channel(waveformPVName))).with(parameters, WaterfallPlotParameters.backgroundColor(color));
 			parameters = plot.getParameters();
 			pv = PVManager.read(plot)
-				.andNotify(SWTUtil.onSWTThread()).atHz(50);
-			pv.addPVValueChangeListener(new PVValueChangeListener() {
+				.notifyOn(SWTUtil.swtThread()).every(hz(50));
+			pv.addPVReaderListener(new PVReaderListener() {
 				
 				@Override
-				public void pvValueChanged() {
+				public void pvChanged() {
 					setLastError(pv.lastException());
 					imageDisplay.setVImage(pv.getValue());
 				}
 			});
+			return;
+		}
+		
+		if (scalarPVNames != null && !scalarPVNames.isEmpty()) {
+			int color = (getBackground().getRed() << 16) + (getBackground().getGreen() << 8) + getBackground().getBlue();
+			plot = waterfallPlotOf(vDoubles(scalarPVNames)).with(parameters, WaterfallPlotParameters.backgroundColor(color));
+			parameters = plot.getParameters();
+			pv = PVManager.read(plot)
+				.notifyOn(SWTUtil.swtThread()).every(hz(50));
+			pv.addPVReaderListener(new PVReaderListener() {
+				
+				@Override
+				public void pvChanged() {
+					setLastError(pv.lastException());
+					imageDisplay.setVImage(pv.getValue());
+				}
+			});
+			return;
 		}
 	}
 	
@@ -261,8 +337,40 @@ public class WaterfallWidget extends Composite {
 	 * 
 	 * @return waterfall plot parameters
 	 */
-	public WaterfallPlotParameters getWaterfallPlotParameters() {
+	WaterfallPlotParameters getWaterfallPlotParameters() {
 		return parameters;
+	}
+	
+	public boolean isScrollDown() {
+		return parameters.isScrollDown();
+	}
+	
+	public void setScrollDown(boolean scrollDown) {
+		setWaterfallPlotParameters(parameters.with(scrollDown(scrollDown)));
+	}
+	
+	public boolean isAdaptiveRange() {
+		return parameters.isAdaptiveRange();
+	}
+	
+	public void setAdaptiveRange(boolean adaptiveRange) {
+		setWaterfallPlotParameters(parameters.with(adaptiveRange(adaptiveRange)));
+	}
+	
+	public TimeDuration getPixelDuration() {
+		return parameters.getPixelDuration();
+	}
+	
+	public void setPixelDuration(TimeDuration pixelDuration) {
+		setWaterfallPlotParameters(parameters.with(pixelDuration(pixelDuration)));
+	}
+	
+	public ColorScheme getColorScheme() {
+		return parameters.getColorScheme();
+	}
+	
+	public void setColorScheme(ColorScheme colorScheme) {
+		setWaterfallPlotParameters(parameters.with(colorScheme(colorScheme)));
 	}
 	
 	/**
@@ -294,4 +402,5 @@ public class WaterfallWidget extends Composite {
 	public boolean isShowRange() {
 		return rangeWidget.isVisible();
 	}
+
 }

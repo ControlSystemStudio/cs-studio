@@ -12,7 +12,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import org.csstudio.archive.common.engine.model.ArchiveChannel;
-import org.csstudio.archive.common.engine.model.BufferStats;
+import org.csstudio.archive.common.engine.model.SampleBufferStatistics;
 import org.csstudio.archive.common.engine.model.EngineModel;
 import org.csstudio.archive.common.engine.model.SampleBuffer;
 
@@ -70,7 +70,7 @@ class ChannelResponse extends AbstractResponse {
         final SampleBuffer<?, ?, ?> buffer = channel.getSampleBuffer();
         html.tableLine(new String[] {Messages.HTTP_QUEUELEN, Integer.toString(buffer.size())});
 
-        final BufferStats stats = buffer.getBufferStats();
+        final SampleBufferStatistics stats = buffer.getBufferStats();
         html.tableLine(new String[] {Messages.HTTP_COLUMN_QUEUEAVG, String.format("%.1f", stats.getAverageSize())});
 
         html.tableLine(new String[] {Messages.HTTP_COLUMN_QUEUEMAX, Integer.toString(stats.getMaxSize())});

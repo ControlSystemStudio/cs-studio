@@ -1,5 +1,5 @@
 /*
- * Copyright 2010 Brookhaven National Laboratory
+ * Copyright 2010-11 Brookhaven National Laboratory
  * All rights reserved. Use is subject to license terms.
  */
 
@@ -86,19 +86,7 @@ abstract class SimFunction<T> extends Simulation<T> {
         if (lastTime == null)
             lastTime = TimeStamp.now();
         
-        // Calculate new AlarmSeverity, using oldValue ranges
-        AlarmSeverity severity = AlarmSeverity.NONE;
-        AlarmStatus status = AlarmStatus.NONE;
-        if (value <= oldValue.getLowerAlarmLimit() || value >= oldValue.getUpperAlarmLimit()) {
-            status = AlarmStatus.RECORD;
-            severity = AlarmSeverity.MAJOR;
-        } else if (value <= oldValue.getLowerWarningLimit() || value >= oldValue.getUpperWarningLimit()) {
-            status = AlarmStatus.RECORD;
-            severity = AlarmSeverity.MINOR;
-        }
-
-        return ValueFactory.newVDouble(value, severity, status,
-                null, lastTime, oldValue);
+        return ValueFactory.newVDouble(value, lastTime, oldValue);
     }
 
 }

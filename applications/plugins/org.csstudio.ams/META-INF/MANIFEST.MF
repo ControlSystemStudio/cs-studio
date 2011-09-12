@@ -5,7 +5,7 @@ Bundle-SymbolicName: org.csstudio.ams; singleton:=true
 Bundle-Version: 1.3.0.qualifier
 Bundle-Activator: org.csstudio.ams.AmsActivator
 Bundle-ActivationPolicy: lazy
-Bundle-RequiredExecutionEnvironment: J2SE-1.5
+Bundle-RequiredExecutionEnvironment: JavaSE-1.6
 Require-Bundle: org.eclipse.ui,
  org.eclipse.core.runtime,
  org.csstudio.platform,
@@ -16,12 +16,14 @@ Require-Bundle: org.eclipse.ui,
  org.csstudio.platform.libs.epics.ui,
  org.csstudio.platform.simpledal;bundle-version="1.0.0",
  org.csstudio.platform.utility.jms,
- org.junit4;bundle-version="4.3.1"
-Bundle-ClassPath: libs/derbyclient.jar,
+ org.junit4;bundle-version="4.3.1",
+ org.slf4j;bundle-version="1.6.1",
+ com.mysql.jdbc;bundle-version="5.1.14"
+Bundle-ClassPath: .,
+ libs/derbyclient.jar,
  libs/derbytools.jar,
  libs/hsqldb.jar,
- libs/servlet.jar,
- .
+ libs/servlet.jar
 Export-Package: org.csstudio.ams,
  org.csstudio.ams.configReplicator,
  org.csstudio.ams.dbAccess,

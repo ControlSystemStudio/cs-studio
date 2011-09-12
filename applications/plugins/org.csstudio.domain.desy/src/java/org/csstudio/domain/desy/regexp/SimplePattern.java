@@ -37,12 +37,6 @@ import com.google.common.collect.Lists;
  * @since Mar 17, 2011
  */
 public final class SimplePattern {
-    /**
-     * Constructor.
-     */
-    private SimplePattern() {
-        // Don't instantiate
-    }
 
     private static final List<String> ESCAPE_SYMBOLS =
         Lists.newArrayList("^",
@@ -54,6 +48,13 @@ public final class SimplePattern {
                            ".",
                            "+");
     private static final String BACKSLASH_PATTERN = ".*(\\\\).*";
+
+    /**
+     * Constructor.
+     */
+    private SimplePattern() {
+        // Don't instantiate
+    }
 
     /**
      * Transforms the given 'global' pattern recognizing only '*' and '?' as special wildcard

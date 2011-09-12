@@ -37,7 +37,9 @@ public class PreferenceConstants {
     public static final String XMPP_REMOTE_PASSWORD = "xmppRemotePassword";
     public static final String XMPP_SHUTDOWN_PASSWORD = "xmppShutdownPassword";
     public static final String JMS_PROVIDER_URLS = "jmsProviderUrls";
+    public static final String JMS_PRODUCER_URL = "jmsProducerUrl";
     public static final String JMS_TOPIC_NAMES = "jmsTopicNames";
+    public static final String JMS_CONTEXT_FACTORY_CLASS = "contextFactoryClass";
     public static final String DATABASE_URL = "databaseUrl";
     public static final String DATABASE_USER = "databaseUser";
     public static final String DATABASE_PASSWORD = "databasePassword";
@@ -51,6 +53,22 @@ public class PreferenceConstants {
     public static final String WATCHDOG_PERIOD = "watchdogPeriod";
     public static final String FILTER_SEND_BOUND = "filterSendBound";
     public static final String FILTER_MAX_SENT_MESSAGES = "filterMaxSentMessages";
+    
+    /** Flag that indicates if empty message properties have to be stored */
     public static final String STORE_EMPTY_VALUES = "storeEmptyValues";
+    
+    /** The description of the running instance */
     public static final String DESCRIPTION = "description";
+    
+    /**
+     * Max. time difference between now and the last received message (ms).
+     * The preference value is given as minutes and has to be converted. 
+     */
+    public static final String MAX_RECEIVE_DIFF_TIME = "maxReceiveDiffTime";
+
+    /**
+     *  Max. time difference between now and the last stored message (ms).
+     * The preference value is given as minutes and has to be converted. 
+     */
+    public static final String MAX_STORE_DIFF_TIME = "maxStoreDiffTime";
 }

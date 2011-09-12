@@ -1,3 +1,4 @@
+
 package org.csstudio.nams.service.configurationaccess.localstore.declaration.filterActions;
 
 import org.csstudio.nams.service.configurationaccess.localstore.Mapper;
@@ -8,25 +9,27 @@ public abstract class AbstAlarmbGruppenFilterActionDTO extends
 		FilterActionDTO {
 
 	public AlarmbearbeiterGruppenDTO getReceiver() {
-		return (AlarmbearbeiterGruppenDTO) receiver;
+		return (AlarmbearbeiterGruppenDTO) _receiver;
 	}
 
 	public void setReceiver(AlarmbearbeiterGruppenDTO receiver) {
-		this.receiver = receiver;
+		this._receiver = receiver;
 		this.setIReceiverRef(receiver.getUserGroupId());
 	}
 
-	public void deleteJoinLinkData(Mapper mapper) throws Throwable {
-
+	@Override
+    public void deleteJoinLinkData(Mapper mapper) throws Throwable {
+	    // Not used
 	}
 
-	public void loadJoinData(Mapper mapper) throws Throwable {
+	@Override
+    public void loadJoinData(Mapper mapper) throws Throwable {
 		this.setReceiver(mapper.findForId(AlarmbearbeiterGruppenDTO.class, this
 				.getIReceiverRef(), false));
 	}
 
-	public void storeJoinLinkData(Mapper mapper) throws Throwable {
-
+	@Override
+    public void storeJoinLinkData(Mapper mapper) throws Throwable {
+	    // Not used
 	}
-
 }

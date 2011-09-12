@@ -1,3 +1,4 @@
+
 /*
  * Copyright (c) 2006 Stiftung Deutsches Elektronen-Synchrotron,
  * Member of the Helmholtz Association, (DESY), HAMBURG, GERMANY.
@@ -20,6 +21,7 @@
  * AT HTTP://WWW.DESY.DE/LEGAL/LICENSE.HTM
  *
  */
+
 package org.csstudio.ams.alarmchainmanager;
 
 import java.sql.Connection;
@@ -34,9 +36,7 @@ import org.eclipse.ui.IWorkbenchWindow;
 import org.eclipse.ui.PlatformUI;
 import org.osgi.framework.BundleContext;
 
-
-public class AlarmChainManagerPlugin extends AbstractCssUiPlugin
-{
+public class AlarmChainManagerPlugin extends AbstractCssUiPlugin {
 
 	/** The plug-in ID */
 	public static final String PLUGIN_ID = "org.csstudio.ams.alarmchainmanager";
@@ -56,8 +56,7 @@ public class AlarmChainManagerPlugin extends AbstractCssUiPlugin
     /**
 	 * The constructor
 	 */
-	public AlarmChainManagerPlugin()
-	{
+	public AlarmChainManagerPlugin() {
 	    plugin = this;
 	}
 
@@ -66,30 +65,25 @@ public class AlarmChainManagerPlugin extends AbstractCssUiPlugin
 	 *
 	 * @return the shared instance
 	 */
-	public static AlarmChainManagerPlugin getDefault()
-	{
+	public static AlarmChainManagerPlugin getDefault() {
 		return plugin;
 	}
 
-	public Shell getShell()
-	{
-	    if(display != null)
-	    {
+	public Shell getShell() {
+	    
+	    if(display != null) {
 	        return display.getActiveShell();
 	    }
+	    
         return null;
 	}
 
-    public static Connection getConnection()
-    {
-        if(con == null)
-        {
-            try
-            {
+    public static Connection getConnection() {
+        
+        if(con == null) {
+            try {
                 con = AmsConnectionFactory.getApplicationDB();
-            }
-            catch(final Exception ex)
-            {
+            } catch(final Exception ex) {
                 Log.log(Log.FATAL, ex);
             }
         }
@@ -98,24 +92,19 @@ public class AlarmChainManagerPlugin extends AbstractCssUiPlugin
     }
 
     @Override
-    protected void doStart(final BundleContext context) throws Exception
-    {
+    protected void doStart(final BundleContext context) throws Exception {
         final IWorkbench workbench = PlatformUI.getWorkbench();
-
         window = workbench.getWorkbenchWindows()[0];
-
         display = window.getShell().getDisplay();
     }
 
     @Override
-    protected void doStop(final BundleContext context) throws Exception
-    {
+    protected void doStop(final BundleContext context) throws Exception {
         plugin = null;
     }
 
     @Override
-    public String getPluginId()
-    {
+    public String getPluginId() {
         return PLUGIN_ID;
     }
 }

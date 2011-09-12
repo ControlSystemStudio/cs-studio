@@ -1,9 +1,9 @@
+
 package org.csstudio.nams.configurator.beans.filters;
 
 import org.csstudio.nams.common.fachwert.MessageKeyEnum;
 import org.csstudio.nams.common.fachwert.Millisekunden;
 import org.csstudio.nams.common.material.regelwerk.StringRegelOperator;
-import org.csstudio.nams.configurator.Messages;
 import org.csstudio.nams.configurator.beans.AbstractConfigurationBean;
 import org.csstudio.nams.service.configurationaccess.localstore.internalDTOs.filterConditionSpecifics.TimeBasedType;
 
@@ -111,14 +111,16 @@ public class TimeBasedFilterConditionBean extends
 		return this.confirmOperator;
 	}
 
-	public String getDisplayName() {
+	@Override
+    public String getDisplayName() {
 		return this.startCompValue + " " + this.sStartOperator + " " //$NON-NLS-1$ //$NON-NLS-2$
 				+ this.startCompValue + " " + this.confirmKeyValue + " " //$NON-NLS-1$ //$NON-NLS-2$
 				+ this.confirmOperator + " " + this.confirmCompValue + " " //$NON-NLS-1$ //$NON-NLS-2$
 				+ this.timePeriodDomainValue + " " + this.timeBehavior; //$NON-NLS-1$
 	}
 
-	public int getID() {
+	@Override
+    public int getID() {
 		return 0;
 	}
 
@@ -203,7 +205,9 @@ public class TimeBasedFilterConditionBean extends
 				oldValue, stringRegelOperator);
 	}
 
-	public void setID(final int id) {
+	@Override
+    public void setID(final int id) {
+	    // Nothing to do
 	}
 
 	public void setStartCompValue(final String startCompValue) {
@@ -259,8 +263,8 @@ public class TimeBasedFilterConditionBean extends
 		this.setTimeBehavior(bean.getTimeBehavior());
 	}
 
-	public void setDisplayName(String name) {
-		// nothing to do here		
+	@Override
+    public void setDisplayName(String name) {
+		// Nothing to do here		
 	}
-
 }

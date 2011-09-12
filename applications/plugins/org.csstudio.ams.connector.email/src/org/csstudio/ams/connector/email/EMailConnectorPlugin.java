@@ -32,29 +32,29 @@ import org.remotercp.service.connection.session.ISessionService;
 /**
  * The activator class controls the plug-in life cycle
  */
-public class EMailConnectorPlugin extends AbstractCssUiPlugin 
-{
-	// The plug-in ID
+public class EMailConnectorPlugin extends AbstractCssUiPlugin {
+	
+    /** The plug-in ID */
 	public static final String PLUGIN_ID = "org.csstudio.ams.connector.email";
 
-	// The shared instance
+	/** The shared instance */
 	private static EMailConnectorPlugin _plugin;
 
+	/** Service tracker for the XMPP login */
 	private GenericServiceTracker<ISessionService> _genericServiceTracker;
 
 	/**
 	 * The constructor
 	 */
-	public EMailConnectorPlugin()
-	{
+	public EMailConnectorPlugin() {
 		_plugin = this;
 	}
 
 	/**
 	 * {@inheritDoc}
 	 */
-	public final void doStart(final BundleContext context) throws Exception
-	{
+	@Override
+    public final void doStart(final BundleContext context) throws Exception {
 		_genericServiceTracker = new GenericServiceTracker<ISessionService>(
 				context, ISessionService.class);
 		_genericServiceTracker.open();
@@ -63,8 +63,9 @@ public class EMailConnectorPlugin extends AbstractCssUiPlugin
 	/**
 	 * {@inheritDoc}
 	 */
-	public final void doStop(final BundleContext context) throws Exception
-	{
+	@Override
+    public final void doStop(final BundleContext context) throws Exception {
+	    // Nothing to do
 	}
 
 	/**
@@ -72,8 +73,7 @@ public class EMailConnectorPlugin extends AbstractCssUiPlugin
 	 * 
 	 * @return the shared instance
 	 */
-	public static EMailConnectorPlugin getDefault()
-	{
+	public static EMailConnectorPlugin getDefault() {
 		return _plugin;
 	}
 
@@ -81,8 +81,7 @@ public class EMailConnectorPlugin extends AbstractCssUiPlugin
 	 * {@inheritDoc}
 	 */
 	@Override
-	public String getPluginId()
-	{
+	public String getPluginId() {
 		return PLUGIN_ID;
 	}
 	

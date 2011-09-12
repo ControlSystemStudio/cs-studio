@@ -36,6 +36,7 @@ import org.csstudio.ams.dbAccess.TObject;
 	tTimeChange			TIMESTAMP,
 	PRIMARY KEY(iUserGroupRef,iUserRef)
 */
+@SuppressWarnings("hiding")
 public class UserGroupUserTObject extends TObject
 {
 	private static final long serialVersionUID = -3076166471173673897L;
@@ -119,9 +120,10 @@ public class UserGroupUserTObject extends TObject
 		this.timeChange = timeChange;
 	}
 
-	public boolean equals(Object obj)
-	{
-		if(!(obj instanceof UserGroupUserTObject))
+	@Override
+    public boolean equals(Object obj) {
+		
+	    if(!(obj instanceof UserGroupUserTObject))
 			return false;
 		
 		UserGroupUserTObject compare = (UserGroupUserTObject)obj;

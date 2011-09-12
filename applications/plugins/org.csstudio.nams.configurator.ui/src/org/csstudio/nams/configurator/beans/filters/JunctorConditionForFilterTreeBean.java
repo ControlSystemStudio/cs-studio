@@ -1,12 +1,11 @@
+
 package org.csstudio.nams.configurator.beans.filters;
 
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.Set;
 import java.util.TreeSet;
-
 import org.csstudio.nams.common.contract.Contract;
-import org.csstudio.nams.configurator.Messages;
 import org.csstudio.nams.configurator.beans.AbstractConfigurationBean;
 import org.csstudio.nams.configurator.beans.FilterbedingungBean;
 import org.csstudio.nams.service.configurationaccess.localstore.declaration.JunctorConditionType;
@@ -153,7 +152,8 @@ public class JunctorConditionForFilterTreeBean extends FilterbedingungBean {
 	private static class JunctorConditionForFilterTreeBeanComparator implements
 			Comparator<FilterbedingungBean> {
 
-		public int compare(FilterbedingungBean o1, FilterbedingungBean o2) {
+		@Override
+        public int compare(FilterbedingungBean o1, FilterbedingungBean o2) {
 			if (o1 instanceof NotConditionForFilterTreeBean) {
 				if (o2 instanceof NotConditionForFilterTreeBean) {
 					return o1.compareTo(o2);
@@ -179,6 +179,5 @@ public class JunctorConditionForFilterTreeBean extends FilterbedingungBean {
 				
 			return o1.compareTo(o2);
 		}
-
 	}
 }

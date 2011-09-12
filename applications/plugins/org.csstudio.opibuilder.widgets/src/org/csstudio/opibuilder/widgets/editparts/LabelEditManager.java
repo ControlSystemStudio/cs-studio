@@ -25,6 +25,7 @@ import org.eclipse.swt.graphics.FontData;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Text;
 import org.eclipse.ui.IActionBars;
+import org.eclipse.ui.IEditorPart;
 import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.actions.ActionFactory;
 import org.eclipse.ui.part.CellEditorActionHandler;
@@ -117,12 +118,15 @@ protected void initCellEditor() {
 
 	// Hook the cell editor's copy/paste actions to the actionBars so that they can
 	// be invoked via keyboard shortcuts.
-	actionBars = PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage()
-			.getActiveEditor().getEditorSite().getActionBars();
-	saveCurrentActions(actionBars);
-	actionHandler = new CellEditorActionHandler(actionBars);
-	actionHandler.addCellEditor(getCellEditor());
-	actionBars.updateActionBars();
+	IEditorPart activeEditor = PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage()
+			.getActiveEditor();
+	if(activeEditor != null){
+		actionBars = activeEditor.getEditorSite().getActionBars();
+		saveCurrentActions(actionBars);
+		actionHandler = new CellEditorActionHandler(actionBars);
+		actionHandler.addCellEditor(getCellEditor());
+		actionBars.updateActionBars();
+	}
 }
 
 private void restoreSavedActions(IActionBars actionBars){

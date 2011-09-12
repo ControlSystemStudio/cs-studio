@@ -7,6 +7,7 @@
  ******************************************************************************/
 package org.csstudio.archive.common.engine.httpserver;
 
+import java.util.Map.Entry;
 import java.util.Properties;
 
 import javax.annotation.Nonnull;
@@ -47,9 +48,8 @@ class EnvironmentResponse extends AbstractResponse {
 
     private void createTableRows(@Nonnull final HTMLWriter html) {
         final Properties properties = System.getProperties();
-        for (final Object key : properties.keySet()) {
-            final Object value = properties.get(key);
-            html.tableLine(new String[] {(String) key, splitIntoSanePieces((String) value)});
+        for (final Entry<Object, Object> entry : properties.entrySet()) {
+            html.tableLine(new String[] {(String) entry.getKey(), splitIntoSanePieces((String) entry.getValue())});
         }
     }
 

@@ -27,22 +27,22 @@ import java.util.List;
 
 import javax.annotation.Nonnull;
 
-import org.apache.log4j.Logger;
 import org.csstudio.alarm.service.declaration.AlarmConnectionException;
+import org.csstudio.alarm.table.dataModel.AbstractMessageList;
 import org.csstudio.alarm.table.dataModel.AlarmMessageList;
 import org.csstudio.alarm.table.dataModel.LogMessageList;
-import org.csstudio.alarm.table.dataModel.AbstractMessageList;
 import org.csstudio.alarm.table.jms.AlarmListener;
 import org.csstudio.alarm.table.preferences.ITopicSetColumnService;
 import org.csstudio.alarm.table.preferences.TopicSet;
 import org.csstudio.alarm.table.preferences.log.LogViewPreferenceConstants;
 import org.csstudio.alarm.table.service.ITopicsetService;
 import org.csstudio.alarm.table.ui.InitialStateRetriever;
-import org.csstudio.platform.logging.CentralLogger;
 import org.csstudio.platform.startupservice.IStartupServiceListener;
 import org.eclipse.core.runtime.jobs.Job;
 import org.eclipse.core.runtime.preferences.InstanceScope;
 import org.eclipse.ui.preferences.ScopedPreferenceStore;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * Run at startup time of the plugin.
@@ -55,8 +55,7 @@ import org.eclipse.ui.preferences.ScopedPreferenceStore;
  */
 public class MessageListAutoStart implements IStartupServiceListener {
 
-    private static final Logger LOG = CentralLogger.getInstance()
-            .getLogger(MessageListAutoStart.class);
+    private static final Logger LOG = LoggerFactory.getLogger(MessageListAutoStart.class);
 
     private ITopicsetService _topicsetForAlarmService = null;
 
@@ -86,7 +85,7 @@ public class MessageListAutoStart implements IStartupServiceListener {
         try {
             result = Integer.parseInt(maximumNumberOfMessagesPref);
         } catch (final NumberFormatException e) {
-            LOG.warn("Invalid value format for maximum number" + " of messages in preferences");
+            LOG.warn("Invalid value format for maximum number of messages in preferences");
         }
         return result;
     }
@@ -97,14 +96,14 @@ public class MessageListAutoStart implements IStartupServiceListener {
         for (TopicSet topicSet : topicSets) {
             if (topicSet.isStartUp()) {
                 try {
-                    LOG.debug("Start log list for topic set " + topicSet.getName());
+                    LOG.debug("Start log list for topic set {}", topicSet.getName());
                     LogMessageList messageList = new LogMessageList(getMaximumNumberOfMessages());
                     _topicsetForLogService
                             .createAndConnectForTopicSet(topicSet,
                                                          messageList,
                                                          new AlarmListener());
                 } catch (AlarmConnectionException e) {
-                    LOG.error("Could not start log list for topic set " + topicSet.getName(), e);
+                    LOG.error("Could not start log list for topic set {}", topicSet.getName(), e);
                 }
             }
         }
@@ -117,7 +116,7 @@ public class MessageListAutoStart implements IStartupServiceListener {
         for (TopicSet topicSet : topicSets) {
             if (topicSet.isStartUp()) {
                 try {
-                    LOG.error("Start alarm list for topic set " + topicSet.getName());
+                    LOG.error("Start alarm list for topic set {}", topicSet.getName());
                     AlarmMessageList messageList = new AlarmMessageList();
                     _topicsetForAlarmService.createAndConnectForTopicSet(topicSet,
                                                                          messageList,
@@ -126,7 +125,7 @@ public class MessageListAutoStart implements IStartupServiceListener {
                         retrieveInitialState(messageList);
                     }
                 } catch (AlarmConnectionException e) {
-                    LOG.error("Could not start alarm list for topic set " + topicSet.getName(), e);
+                    LOG.error("Could not start alarm list for topic set {}", topicSet.getName(), e);
                 }
             }
         }

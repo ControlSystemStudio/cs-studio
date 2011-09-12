@@ -7,21 +7,22 @@
  ******************************************************************************/
 package org.csstudio.archive.common.engine.model;
 
+import java.io.Serializable;
+
 import javax.annotation.CheckForNull;
 import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import javax.annotation.concurrent.GuardedBy;
 
-import org.slf4j.Logger;
 import org.csstudio.archive.common.engine.service.IServiceProvider;
-import org.csstudio.archive.common.service.IArchiveEngineFacade;
 import org.csstudio.archive.common.service.channel.ArchiveChannelId;
 import org.csstudio.archive.common.service.sample.IArchiveSample;
 import org.csstudio.domain.desy.system.ISystemVariable;
-import org.slf4j.LoggerFactory;
-import org.csstudio.domain.desy.service.osgi.OsgiServiceUnavailableException;
 import org.csstudio.utility.pv.PV;
 import org.csstudio.utility.pv.PVFactory;
 import org.csstudio.utility.pv.PVListener;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /** Base for archived channels.
  *
@@ -31,7 +32,7 @@ import org.csstudio.utility.pv.PVListener;
  *  @param <T> the system variable for the basic value type
  */
 @SuppressWarnings("nls")
-public class ArchiveChannel<V, T extends ISystemVariable<V>> {
+public class ArchiveChannel<V extends Serializable, T extends ISystemVariable<V>> {
 
     private static final Logger LOG = LoggerFactory.getLogger(PVListener.class);
 
@@ -46,7 +47,6 @@ public class ArchiveChannel<V, T extends ISystemVariable<V>> {
     /** Control system PV */
     private final PV _pv;
 
-
     /** Buffer of received samples, periodically written */
     private final SampleBuffer<V, T, IArchiveSample<V, T>> _buffer;
 
@@ -59,7 +59,7 @@ public class ArchiveChannel<V, T extends ISystemVariable<V>> {
      *  the 'running' state.
      */
     @GuardedBy("this")
-    private volatile boolean _isStarted = false;
+    private volatile boolean _isStarted;
 
     /** Most recent value of the PV.
      *  <p>
@@ -79,17 +79,15 @@ public class ArchiveChannel<V, T extends ISystemVariable<V>> {
     /**
      * Counter for received values (monitor updates)
      */
-    private long _receivedSampleCount = 0;
+    private long _receivedSampleCount;
 
-    private IServiceProvider _provider = new IServiceProvider() {
-        @Override
-        @Nonnull
-        public IArchiveEngineFacade getEngineFacade() throws OsgiServiceUnavailableException {
-            throw new OsgiServiceUnavailableException("This is a stub. The service provider for this channel has not been set to a real implementation.");
-        }
-    };
+    private final IServiceProvider _provider;
 
-    private final DesyArchivePVListener<V, T> _listener;
+    private final Class<V> _typeClazz;
+    private final Class<V> _collClazz;
+
+    @SuppressWarnings("rawtypes")
+    private final DesyArchivePVListener _listener;
 
     /**
      * Constructor
@@ -97,10 +95,27 @@ public class ArchiveChannel<V, T extends ISystemVariable<V>> {
      */
     public ArchiveChannel(@Nonnull final String name,
                           @Nonnull final ArchiveChannelId id,
-                          @Nonnull final Class<V> clazz) throws EngineModelException {
+                          @Nonnull final Class<V> typeClazz,
+                          @Nonnull final IServiceProvider provider) throws EngineModelException {
+        this(name, id, null, typeClazz, provider);
+    }
+
+
+    /**
+     * Constructor.
+     */
+    @SuppressWarnings({ "unchecked", "rawtypes" })
+    public ArchiveChannel(@Nonnull final String name,
+                          @Nonnull final ArchiveChannelId id,
+                          @Nullable final Class<V> collClazz,
+                          @Nonnull final Class<V> typeClazz,
+                          @Nonnull final IServiceProvider provider) throws EngineModelException {
         _name = name;
         _id = id;
         _buffer = new SampleBuffer<V, T, IArchiveSample<V, T>>(name);
+        _typeClazz = typeClazz;
+        _collClazz = collClazz;
+        _provider = provider;
 
         try {
             _pv = PVFactory.createPV(name);
@@ -108,17 +123,17 @@ public class ArchiveChannel<V, T extends ISystemVariable<V>> {
             throw new EngineModelException("Creation of pv failed for channel " + name, e);
         }
 
-        _listener = new DesyArchivePVListener<V, T>(_provider, name, _id, clazz) {
-                        @SuppressWarnings("synthetic-access")
-                        @Override
-                        protected void addSampleToBuffer(@Nonnull final IArchiveSample<V, T> sample) {
-                            synchronized (this) {
-                                _receivedSampleCount++;
-                                _mostRecentSysVar = sample.getSystemVariable();
-                            }
-                            _buffer.add(sample);
-                        }
-                    };
+        _listener = new DesyArchivePVListener(_provider, _name, _id, _collClazz, _typeClazz) {
+            @SuppressWarnings("synthetic-access")
+            @Override
+            protected boolean addSampleToBuffer(@Nonnull final IArchiveSample sample) {
+                synchronized (this) {
+                    _receivedSampleCount++;
+                    _mostRecentSysVar = (T) sample.getSystemVariable();
+                }
+                return _buffer.add(sample);
+            }
+        };
         _pv.addListener(_listener);
     }
 
@@ -172,13 +187,13 @@ public class ArchiveChannel<V, T extends ISystemVariable<V>> {
      * Stop archiving this channel
      */
     public void stop(@Nonnull final String info) {
-    	if (!_isStarted) {
+        if (!_isStarted) {
             return;
         }
-    	_listener.setStopInfo(info);
-    	synchronized (this) {
-    	    _isStarted = false;
-    	}
+        _listener.setStopInfo(info);
+        synchronized (this) {
+            _isStarted = false;
+        }
         _pv.stop();
     }
 
@@ -219,13 +234,12 @@ public class ArchiveChannel<V, T extends ISystemVariable<V>> {
         return "Channel " + getName() + ", " + getMechanism();
     }
 
-    @Deprecated
-    public boolean isEnabled() {
-        return true;
+    public boolean isMultiScalar() {
+        return _collClazz != null;
     }
 
-    public void setServiceProvider(@Nonnull final IServiceProvider provider) {
-        _provider = provider;
-        _listener.setProvider(provider);
+    @Nonnull
+    public ArchiveChannelId getId() {
+        return _id;
     }
 }

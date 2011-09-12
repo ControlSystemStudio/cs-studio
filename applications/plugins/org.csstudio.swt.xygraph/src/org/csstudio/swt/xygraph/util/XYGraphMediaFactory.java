@@ -89,6 +89,8 @@ public final class XYGraphMediaFactory {
 	private volatile static Cursor CURSOR_GRABBING;	
 		
 	public void disposeResources(){
+		if(SWT.getPlatform().startsWith("rap")) //$NON-NLS-1$
+			return;
 		if(CURSOR_GRABBING!=null && !CURSOR_GRABBING.isDisposed())
 			CURSOR_GRABBING.dispose();
 		if(cursorRegistry != null)
@@ -102,10 +104,11 @@ public final class XYGraphMediaFactory {
 	public static Cursor getCursor(CURSOR_TYPE cursorType){
 		switch (cursorType) {
 		case GRABBING:
-			if(CURSOR_GRABBING == null){
-				
-				CURSOR_GRABBING = new Cursor(Display.getDefault(), 
-						getInstance().getImage("images/Grabbing.png").getImageData(), 8,8);		
+			if(CURSOR_GRABBING == null){				
+				CURSOR_GRABBING = SingleSourceHelper.createCursor(
+						Display.getDefault(),
+						getInstance().getImage("images/Grabbing.png").getImageData(), //$NON-NLS-1$
+						8,8, SWT.CURSOR_HAND);		
 			}
 			return CURSOR_GRABBING;
 
@@ -263,8 +266,7 @@ public final class XYGraphMediaFactory {
 	 * @return The system's default font.
 	 */
 	public Font getDefaultFont(final int style) {
-		// FIXME Die default Schriftart bzw. Schriftgröße hängt vom Betriebssystem ab 
-		return getFont("Arial", 10, style); //$NON-NLS-1$
+		return Display.getCurrent().getSystemFont(); //$NON-NLS-1$
 	}
 	
 
@@ -304,13 +306,20 @@ public final class XYGraphMediaFactory {
 							Activator.PLUGIN_ID, relativePath);
 					_imageRegistry.put(relativePath, descr);				
 			}
+			
 			else
 			{
 			    // Must be running as JUnit test or demo w/o plugin environment.
 			    // The following only works for test code inside this plugin,
 			    // not when called from other plugins' test code.
 				final Display display = Display.getCurrent();
-	            final Image img = new Image(display, relativePath);        
+	            final Image img = new Image(display, relativePath);
+//				InputStream stream = XYGraphMediaFactory.class.getResourceAsStream(relativePath);
+//				Image image = new Image(null, stream);
+//				try {
+//					stream.close();
+//				} catch (IOException ioe) {
+//				}
 	            _imageRegistry.put(relativePath, img);	            
 			}
 		}

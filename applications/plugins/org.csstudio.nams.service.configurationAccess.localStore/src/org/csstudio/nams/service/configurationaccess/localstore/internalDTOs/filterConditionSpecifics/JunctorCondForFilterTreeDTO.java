@@ -1,3 +1,4 @@
+
 package org.csstudio.nams.service.configurationaccess.localstore.internalDTOs.filterConditionSpecifics;
 
 import java.util.Arrays;

@@ -7,9 +7,9 @@
  ******************************************************************************/
 package org.csstudio.swt.xygraph.undo;
 
+import org.csstudio.swt.xygraph.figures.Annotation.CursorLineStyle;
 import org.csstudio.swt.xygraph.figures.Axis;
 import org.csstudio.swt.xygraph.figures.Trace;
-import org.csstudio.swt.xygraph.figures.Annotation.CursorLineStyle;
 import org.eclipse.swt.graphics.Color;
 import org.eclipse.swt.graphics.Font;
 

@@ -1,5 +1,5 @@
 /*
- * Copyright 2010 Brookhaven National Laboratory
+ * Copyright 2010-11 Brookhaven National Laboratory
  * All rights reserved. Use is subject to license terms.
  */
 package org.epics.pvmanager.data;
@@ -43,6 +43,7 @@ public final class DataTypeSupport {
         TypeSupport.addTypeSupport(NotificationSupport.immutableTypeSupport(Array.class));
         TypeSupport.addTypeSupport(NotificationSupport.immutableTypeSupport(Statistics.class));
         TypeSupport.addTypeSupport(NotificationSupport.immutableTypeSupport(VImage.class));
+        TypeSupport.addTypeSupport(NotificationSupport.immutableTypeSupport(VTable.class));
 
         installed = true;
     }

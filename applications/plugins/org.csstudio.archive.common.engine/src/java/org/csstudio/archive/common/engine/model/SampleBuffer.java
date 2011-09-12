@@ -7,6 +7,7 @@
  ******************************************************************************/
 package org.csstudio.archive.common.engine.model;
 
+import java.io.Serializable;
 import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.LinkedBlockingQueue;
 
@@ -34,10 +35,15 @@ import com.google.common.util.concurrent.ForwardingBlockingQueue;
  *  @param <T> the css value type atop the base value
  *  @param <S> the archive sample type atop the channel and the css value type
  */
-public class SampleBuffer<V,
+public class SampleBuffer<V extends Serializable,
                           T extends ISystemVariable<V>,
                           S extends IArchiveSample<V, T>> extends ForwardingBlockingQueue<S>
 {
+    /** Is the buffer in an error state because of RDB write errors?
+     *  Note that this is global for all buffers, not per instance!
+     */
+    private static volatile boolean ERROR;
+
     /** Name of channel that writes to this buffer.
      *  (we keep only the name, not the full channel,
      *  to decouple stuff).
@@ -48,12 +54,8 @@ public class SampleBuffer<V,
     private final BlockingQueue<S> _samples;
 
     /** Statistics */
-    private final BufferStats _stats = new BufferStats();
+    private final SampleBufferStatistics _stats = new SampleBufferStatistics();
 
-    /** Is the buffer in an error state because of RDB write errors?
-     *  Note that this is global for all buffers, not per instance!
-     */
-    private static volatile boolean ERROR = false;
 
     /**
      * Create sample buffer with flexible capacity
@@ -81,18 +83,6 @@ public class SampleBuffer<V,
         SampleBuffer.ERROR = error;
     }
 
-    /**
-     * Add a sample to the queue, maybe dropping older samples
-     */
-    @Override
-    @SuppressWarnings("nls")
-    public boolean add(@Nonnull final S value) {
-	    if (!super.offer(value)) {
-            // FIXME (bknerr) : data rescue if adding to sample buffer failed.
-	        return false;
-        }
-    	return true;
-    }
 
     /** Update stats with current values */
     void updateStats() {
@@ -101,7 +91,7 @@ public class SampleBuffer<V,
 
     /** @return Buffer statistics. */
     @Nonnull
-    public BufferStats getBufferStats() {
+    public SampleBufferStatistics getBufferStats() {
         return _stats;
     }
 
@@ -110,12 +100,11 @@ public class SampleBuffer<V,
         _stats.reset();
     }
 
-    @SuppressWarnings("nls")
     @Override
     @Nonnull
     public String toString() {
         return String.format(
-        "Sample buffer '%s': %d samples, %d samples max, %.1f samples average, %d overruns",
+        "Sample buffer '%s': %d samples, %d samples max, %.1f samples average",
             _channelName,
             super.size(),
             _stats.getMaxSize(),
@@ -129,5 +118,14 @@ public class SampleBuffer<V,
     @Nonnull
     protected BlockingQueue<S> delegate() {
         return _samples;
+    }
+
+    /**
+     * {@inheritDoc}
+     * Offers a sample to the wrapped queue.
+     */
+    @Override
+    public boolean add(@Nonnull final S value) {
+        return delegate().offer(value);
     }
 }

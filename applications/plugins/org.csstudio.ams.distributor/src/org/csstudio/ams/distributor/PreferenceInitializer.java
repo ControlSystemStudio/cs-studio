@@ -28,11 +28,10 @@ import org.eclipse.core.runtime.preferences.AbstractPreferenceInitializer;
 import org.eclipse.core.runtime.preferences.DefaultScope;
 import org.eclipse.core.runtime.preferences.IEclipsePreferences;
 
-public class PreferenceInitializer extends AbstractPreferenceInitializer
-{
-	@Override
-	public void initializeDefaultPreferences()
-	{
+public class PreferenceInitializer extends AbstractPreferenceInitializer {
+	
+    @Override
+	public void initializeDefaultPreferences() {
 		IEclipsePreferences node = new DefaultScope().getNode(DistributorPlugin.PLUGIN_ID);
 
 		node.put(DistributorPreferenceKey.P_XMPP_SERVER, "server.where.ever");

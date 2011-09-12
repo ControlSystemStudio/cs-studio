@@ -21,9 +21,7 @@
  */
 package org.csstudio.sds.model.initializers;
 
-import java.util.HashMap;
 import java.util.HashSet;
-import java.util.Map;
 import java.util.Set;
 
 import org.csstudio.platform.simpledal.ConnectionState;
@@ -43,6 +41,7 @@ public abstract class AbstractControlSystemSchema extends AbstractInitializer {
 	 * Constructor.
 	 */
 	public AbstractControlSystemSchema() {
+	    // Constructor.
 	}
 
 	/**
@@ -86,13 +85,6 @@ public abstract class AbstractControlSystemSchema extends AbstractInitializer {
 
 			// alias
 			initializeAlias(getDefaultRecordAlias(), "");
-
-			// connected state
-			Map<ConnectionState, Object> values = new HashMap<ConnectionState, Object>();
-			values.put(ConnectionState.CONNECTED, new Boolean(true));
-			values.put(ConnectionState.DISCONNECTED, new Boolean(false));
-			values.put(ConnectionState.CONNECTION_FAILED, new Boolean(false));
-			values.put(ConnectionState.CONNECTION_LOST, new Boolean(false));
 		}
 	}
 

@@ -24,21 +24,17 @@
    <requires>
       <import plugin="org.eclipse.ui"/>
       <import plugin="org.eclipse.core.runtime"/>
-      <import plugin="org.junit4"/>
-      <import plugin="org.csstudio.utility.pvmanager"/>
-      <import plugin="org.csstudio.platform.libs.glazedlists"/>
-      <import plugin="org.csstudio.utility.channel" version="1.0.0" match="greaterOrEqual"/>
-      <import plugin="org.csstudio.platform.libs.jmock" version="1.1.0" match="greaterOrEqual"/>
-      <import plugin="org.csstudio.platform.libs.jfreechart" version="1.0.0" match="greaterOrEqual"/>
-      <import plugin="org.csstudio.utility.channelfinder" version="1.0.0" match="greaterOrEqual"/>
-      <import plugin="org.csstudio.utility.pvmanager.ui" version="1.0.0" match="greaterOrEqual"/>
-      <import plugin="org.csstudio.utility.pvmanager.jfreechart.widgets" version="1.0.0" match="greaterOrEqual"/>
-      <import plugin="org.csstudio.ui.menu" version="3.0.0" match="greaterOrEqual"/>
-      <import plugin="com.google.common"/>
+      <import plugin="gov.bnl.channelfinder.api" version="2.0.0" match="greaterOrEqual"/>
+      <import plugin="org.csstudio.utility.channelfinder" version="1.1.0" match="greaterOrEqual"/>
+      <import plugin="org.csstudio.utility.pvmanager" version="1.0.0" match="greaterOrEqual"/>
+      <import plugin="org.csstudio.utility.pvmanager.ui" version="3.1.0" match="greaterOrEqual"/>
+      <import plugin="org.csstudio.platform.libs.jfreechart" version="1.0.13" match="greaterOrEqual"/>
+      <import plugin="org.csstudio.ui.menu" version="3.1.0" match="greaterOrEqual"/>
+      <import plugin="org.csstudio.ui.util" version="3.1.0" match="greaterOrEqual"/>
    </requires>
 
    <plugin
-         id="org.csstudio.multiChannelViewer"
+         id="org.csstudio.display.multichannelviewer"
          download-size="0"
          install-size="0"
          version="0.0.0"

@@ -42,8 +42,11 @@ public class Restart implements IManagementCommand
         String param = (String)parameters.get("Password");
         String password = JMSConnectorStart.getInstance().getPassword();
         
-        if((param == null) && (password.length() > 0))
-        {
+        if (param == null) {
+            return CommandResult.createFailureResult("\nParameter not available.");
+        }
+        
+        if(password.length() > 0) {
             return CommandResult.createFailureResult("\nParameter not available.");
         }
 

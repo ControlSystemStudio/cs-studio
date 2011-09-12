@@ -1,10 +1,9 @@
+
 package org.csstudio.nams.configurator.editor;
 
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Set;
-
-import org.csstudio.nams.configurator.Messages;
 import org.csstudio.nams.configurator.beans.FilterbedingungBean;
 import org.csstudio.nams.configurator.beans.filters.JunctorConditionForFilterTreeBean;
 import org.csstudio.nams.configurator.beans.filters.NotConditionForFilterTreeBean;
@@ -16,11 +15,13 @@ public class FilterTreeContentProvider implements ITreeContentProvider {
 
 	private JunctorConditionForFilterTreeBean[] results;
 
-	public void dispose() {
-
+	@Override
+    public void dispose() {
+	    // Not used yet
 	}
 
-	public Object[] getChildren(final Object parentElement) {
+	@Override
+    public Object[] getChildren(final Object parentElement) {
 		FilterbedingungBean[] result = new FilterbedingungBean[0];
 		if (parentElement instanceof JunctorConditionForFilterTreeBean) {
 			final JunctorConditionForFilterTreeBean junctorEditionElement = (JunctorConditionForFilterTreeBean) parentElement;
@@ -53,7 +54,8 @@ public class FilterTreeContentProvider implements ITreeContentProvider {
 		return result;
 	}
 
-	@SuppressWarnings("unchecked") //$NON-NLS-1$
+	@Override
+    @SuppressWarnings("unchecked") //$NON-NLS-1$
 	public Object[] getElements(final Object inputElement) {
 		if (this.results == null) {
 			final List<FilterbedingungBean> inputList = (List<FilterbedingungBean>) inputElement;
@@ -68,7 +70,8 @@ public class FilterTreeContentProvider implements ITreeContentProvider {
 		return this.results;
 	}
 
-	public Object getParent(final Object element) {
+	@Override
+    public Object getParent(final Object element) {
 		if (this.results != null) {
 			final JunctorConditionForFilterTreeBean root = this.results[0];
 			return this.rekursiv(root, element);
@@ -76,7 +79,8 @@ public class FilterTreeContentProvider implements ITreeContentProvider {
 		return null;
 	}
 
-	public boolean hasChildren(final Object element) {
+	@Override
+    public boolean hasChildren(final Object element) {
 		if (element instanceof JunctorConditionForFilterTreeBean) {
 			return ((JunctorConditionForFilterTreeBean) element).hasOperands();
 		} else {
@@ -92,9 +96,10 @@ public class FilterTreeContentProvider implements ITreeContentProvider {
 		return false;
 	}
 
-	public void inputChanged(final Viewer viewer, final Object oldInput,
+	@Override
+    public void inputChanged(final Viewer viewer, final Object oldInput,
 			final Object newInput) {
-
+	    // Not used yet
 	}
 
 	private Object rekursiv(final Object potentialParent, final Object element) {

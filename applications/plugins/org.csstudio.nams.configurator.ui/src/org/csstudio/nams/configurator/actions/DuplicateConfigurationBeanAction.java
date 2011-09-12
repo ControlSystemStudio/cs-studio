@@ -1,3 +1,4 @@
+
 package org.csstudio.nams.configurator.actions;
 
 import org.csstudio.nams.configurator.Messages;
@@ -20,18 +21,19 @@ public class DuplicateConfigurationBeanAction extends Action implements
 
 	private static ConfigurationBeanService beanService;
 
-	public static void staticInject(final ConfigurationBeanService beanService) {
-		DuplicateConfigurationBeanAction.beanService = beanService;
+	public static void staticInject(final ConfigurationBeanService bean) {
+		DuplicateConfigurationBeanAction.beanService = bean;
 	}
 
 	private IConfigurationBean bean;
 
-	public void init(final IViewPart view) {
+	@Override
+    public void init(final IViewPart view) {
 		// TODO Auto-generated method stub
-
 	}
 
-	public void run(final IAction action) {
+	@Override
+    public void run(final IAction action) {
 		ConfigurationEditorInput editorInput;
 		try {
 			IConfigurationBean duplicateBean = this.bean.getClone();
@@ -60,11 +62,11 @@ public class DuplicateConfigurationBeanAction extends Action implements
 		}
 	}
 
-	public void selectionChanged(final IAction action,
+	@Override
+    public void selectionChanged(final IAction action,
 			final ISelection selection) {
 		final IStructuredSelection sSelection = (IStructuredSelection) selection;
 		final Object source = sSelection.getFirstElement();
 		this.bean = (IConfigurationBean) source;
 	}
-
 }

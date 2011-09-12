@@ -5,7 +5,6 @@ import java.util.HashMap;
 import java.util.Map;
 
 import org.csstudio.dct.model.IElement;
-import org.csstudio.dct.model.IFolder;
 import org.csstudio.dct.model.IInstance;
 import org.csstudio.dct.model.IProject;
 import org.csstudio.dct.model.IPrototype;
@@ -37,9 +36,9 @@ import org.eclipse.ui.views.contentoutline.ContentOutlinePage;
 /**
  * An outline page implementation that displays a {@link IProject} in the
  * outline view using a tree.
- * 
+ *
  * @author Sven Wende
- * 
+ *
  */
 public final class OutlinePage extends ContentOutlinePage implements CommandStackListener {
 	private IProject input;
@@ -49,13 +48,13 @@ public final class OutlinePage extends ContentOutlinePage implements CommandStac
 
 	/**
 	 * Constructor.
-	 * 
+	 *
 	 * @param input
 	 *            the project to display
 	 * @param commandStack
 	 *            a command stack
 	 */
-	public OutlinePage(IProject input, CommandStack commandStack) {
+	public OutlinePage(final IProject input, final CommandStack commandStack) {
 		this.input = input;
 		this.commandStack = commandStack;
 		dndHandlers = new HashMap<Class, AbstractDnDHandler>();
@@ -66,11 +65,11 @@ public final class OutlinePage extends ContentOutlinePage implements CommandStac
 
 	/**
 	 * Sets the input for the outline.
-	 * 
+	 *
 	 * @param input
 	 *            the project to display
 	 */
-	public void setInput(IProject input) {
+	public void setInput(final IProject input) {
 		this.input = input;
 
 		if (getTreeViewer() != null) {
@@ -82,22 +81,23 @@ public final class OutlinePage extends ContentOutlinePage implements CommandStac
 	 * {@inheritDoc}
 	 */
 	@Override
-	public void createControl(Composite parent) {
+	public void createControl(final Composite parent) {
 		super.createControl(parent);
 		viewer = getTreeViewer();
 		viewer.setLabelProvider(WorkbenchLabelProvider.getDecoratingWorkbenchLabelProvider());
 		viewer.setUseHashlookup(true);
 
 		viewer.setContentProvider(new WorkbenchContentProvider());
-		viewer.setAutoExpandLevel(TreeViewer.ALL_LEVELS);
+		viewer.setAutoExpandLevel(2);
 
 		viewer.setInput(new WorkbenchAdapter() {
-			public Object[] getChildren(Object o) {
+			@Override
+            public Object[] getChildren(final Object o) {
 				return new Object[] { input };
 			}
 		});
 
-		MenuManager menuManager = new MenuManager();
+		final MenuManager menuManager = new MenuManager();
 		menuManager.add(new Separator("add.ext"));
 		menuManager.add(new Separator("remove.ext"));
 		menuManager.add(new Action("Refresh") {
@@ -120,20 +120,20 @@ public final class OutlinePage extends ContentOutlinePage implements CommandStac
 	private void initDragAndDrop(final TreeViewer viewer) {
 
 		viewer.addDragSupport(DND.DROP_MOVE | DND.DROP_COPY, new Transfer[] { TextTransfer.getInstance() }, new DragSourceListener() {
-			public void dragFinished(DragSourceEvent event) {
+			public void dragFinished(final DragSourceEvent event) {
 
 			}
 
-			public void dragSetData(DragSourceEvent event) {
+			public void dragSetData(final DragSourceEvent event) {
 				event.doit = true;
 				event.data = "do_not_delete_because_its_empty_but_important";
 
 			}
 
-			public void dragStart(DragSourceEvent event) {
+			public void dragStart(final DragSourceEvent event) {
 				// .. save current selection in local var
-				IStructuredSelection sel = (IStructuredSelection) viewer.getSelection();
-				
+				final IStructuredSelection sel = (IStructuredSelection) viewer.getSelection();
+
 				if (sel != null && sel.toList().size()==1 && sel.getFirstElement() instanceof IElement) {
 					dndSource = (IElement) sel.getFirstElement();
 					event.doit = getDndHandler(dndSource) != null;
@@ -147,14 +147,14 @@ public final class OutlinePage extends ContentOutlinePage implements CommandStac
 		});
 
 		viewer.addDropSupport(DND.DROP_MOVE | DND.DROP_COPY, new Transfer[] { TextTransfer.getInstance() }, new DropTargetListener() {
-			private void updateFeedback(DropTargetEvent event) {
-				AbstractDnDHandler handler = getDndHandler(dndSource);
+			private void updateFeedback(final DropTargetEvent event) {
+				final AbstractDnDHandler handler = getDndHandler(dndSource);
 
 				// .. determine drop target element
-				TreeItem item = (TreeItem) event.item;
+				final TreeItem item = (TreeItem) event.item;
 
 				if (item != null && item.getData() instanceof IElement && handler != null) {
-					IElement dndTarget = (IElement) item.getData();
+					final IElement dndTarget = (IElement) item.getData();
 					handler.updateDragFeedback(dndSource, dndTarget, event);
 				} else {
 					event.detail = DND.DROP_NONE;
@@ -162,29 +162,29 @@ public final class OutlinePage extends ContentOutlinePage implements CommandStac
 				}
 			}
 
-			public void dragEnter(DropTargetEvent event) {
+			public void dragEnter(final DropTargetEvent event) {
 				updateFeedback(event);
 			}
 
-			public void dragLeave(DropTargetEvent event) {
+			public void dragLeave(final DropTargetEvent event) {
 				updateFeedback(event);
 			}
 
-			public void dragOperationChanged(DropTargetEvent event) {
+			public void dragOperationChanged(final DropTargetEvent event) {
 				updateFeedback(event);
 			}
 
-			public void dragOver(DropTargetEvent event) {
+			public void dragOver(final DropTargetEvent event) {
 				updateFeedback(event);
 			}
 
-			public void drop(DropTargetEvent event) {
-				TreeItem item = (TreeItem) event.item;
+			public void drop(final DropTargetEvent event) {
+				final TreeItem item = (TreeItem) event.item;
 
 				if (item != null && item.getData() instanceof IElement) {
-					IElement dndTarget = (IElement) item.getData();
+					final IElement dndTarget = (IElement) item.getData();
 
-					AbstractDnDHandler handler = getDndHandler(dndSource);
+					final AbstractDnDHandler handler = getDndHandler(dndSource);
 
 					if (handler != null) {
 						Command cmd = null;
@@ -202,7 +202,7 @@ public final class OutlinePage extends ContentOutlinePage implements CommandStac
 				}
 			}
 
-			public void dropAccept(DropTargetEvent event) {
+			public void dropAccept(final DropTargetEvent event) {
 			}
 
 		});
@@ -211,11 +211,11 @@ public final class OutlinePage extends ContentOutlinePage implements CommandStac
 
 	/**
 	 * Sets the command stack.
-	 * 
+	 *
 	 * @param commandStack
 	 *            the command stack
 	 */
-	public void setCommandStack(CommandStack commandStack) {
+	public void setCommandStack(final CommandStack commandStack) {
 		this.commandStack = commandStack;
 		this.commandStack.addCommandStackListener(this);
 
@@ -223,7 +223,7 @@ public final class OutlinePage extends ContentOutlinePage implements CommandStac
 
 	/**
 	 * Returns the command stack.
-	 * 
+	 *
 	 * @return the command stack
 	 */
 	public CommandStack getCommandStack() {
@@ -232,7 +232,7 @@ public final class OutlinePage extends ContentOutlinePage implements CommandStac
 
 	/**
 	 * Returns the current input.
-	 * 
+	 *
 	 * @return the current project
 	 */
 	public IProject getInput() {
@@ -242,7 +242,7 @@ public final class OutlinePage extends ContentOutlinePage implements CommandStac
 	/**
 	 * {@inheritDoc}
 	 */
-	public void commandStackChanged(EventObject event) {
+	public void commandStackChanged(final EventObject event) {
 		if (getTreeViewer() != null) {
 			getTreeViewer().refresh();
 		}
@@ -252,7 +252,7 @@ public final class OutlinePage extends ContentOutlinePage implements CommandStac
 	 * {@inheritDoc}
 	 */
 	@Override
-	public void setSelection(ISelection selection) {
+	public void setSelection(final ISelection selection) {
 		if (getTreeViewer() != null) {
 			getTreeViewer().refresh();
 			getTreeViewer().setSelection(selection, true);
@@ -263,10 +263,10 @@ public final class OutlinePage extends ContentOutlinePage implements CommandStac
 	 * {@inheritDoc}
 	 */
 	@Override
-	public void selectionChanged(SelectionChangedEvent event) {
+	public void selectionChanged(final SelectionChangedEvent event) {
 		super.selectionChanged(event);
 
-		IStructuredSelection sel = (IStructuredSelection) event.getSelection();
+		final IStructuredSelection sel = (IStructuredSelection) event.getSelection();
 
 		if (sel != null && sel.getFirstElement() != null) {
 			//FIXME: Mach Probleme beim DnD  - vielleicht lässt sich auf das Ausklappen verzichten!?
@@ -277,17 +277,17 @@ public final class OutlinePage extends ContentOutlinePage implements CommandStac
 
 	/**
 	 * Returns the tree viewer which is used to display the outline contents.
-	 * 
+	 *
 	 * @return the tree viewer
 	 */
 	public TreeViewer getViewer() {
 		return viewer;
 	}
 
-	private AbstractDnDHandler getDndHandler(IElement source) {
-		for (Class type : dndHandlers.keySet()) {
+	private AbstractDnDHandler getDndHandler(final IElement source) {
+		for (final Class type : dndHandlers.keySet()) {
 			if (type.isAssignableFrom(source.getClass())) {
-				AbstractDnDHandler handler = dndHandlers.get(type);
+				final AbstractDnDHandler handler = dndHandlers.get(type);
 				if (handler.supports(source)) {
 					return handler;
 				}

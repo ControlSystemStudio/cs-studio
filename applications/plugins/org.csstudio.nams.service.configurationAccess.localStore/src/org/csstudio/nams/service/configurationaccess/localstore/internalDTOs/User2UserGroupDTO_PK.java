@@ -1,3 +1,4 @@
+
 package org.csstudio.nams.service.configurationaccess.localstore.internalDTOs;
 
 import java.io.Serializable;
@@ -16,6 +17,7 @@ public class User2UserGroupDTO_PK implements Serializable {
 	private int iUserRef;
 
 	public User2UserGroupDTO_PK() {
+	    // Nothing to do
 	}
 
 	public User2UserGroupDTO_PK(final int userGroupRef, final int userRef) {
@@ -69,5 +71,4 @@ public class User2UserGroupDTO_PK implements Serializable {
 	public void setIUserRef(final int userRef) {
 		this.iUserRef = userRef;
 	}
-
 }

@@ -28,7 +28,7 @@ import javax.annotation.Nonnull;
 
 /**
  * A String-String key value pair.
- * The value can build from multiline. 
+ * The value can build from multiline.
  * 
  * @author hrickens
  * @author $Author: bknerr $
@@ -36,46 +36,46 @@ import javax.annotation.Nonnull;
  * @since 28.03.2011
  */
 public class KeyValuePair {
-
+    
     private final String _key;
     private final String _value;
     private final Integer _index;
-
+    
     /**
      * Constructor.
      * @param key
      * @param value
      */
-    public KeyValuePair(@Nonnull String key, @Nonnull String value) {
+    public KeyValuePair(@Nonnull final String key, @Nonnull final String value) {
         _key = key;
         _value = value;
-        int indexStart = _key.indexOf("(")+1;
+        final int indexStart = _key.indexOf("(")+1;
         if(indexStart>0) {
-            String index = _key.substring(indexStart, _key.indexOf(")"));
+            final String index = _key.substring(indexStart, _key.indexOf(")"));
             _index = GsdFileParser.gsdValue2Int(index);
         } else {
             _index = null;
         }
-    }
-
-    @Nonnull 
-    public String getKey() {
-        return _key;
-    }
-
-    @Nonnull 
-    public String getValue() {
-        return _value;
     }
     
     @CheckForNull
     public Integer getIndex() {
         return _index;
     }
-
+    
     @Nonnull
     public Integer getIntValue() {
-        return GsdFileParser.gsdValue2Int(getValue()); 
+        return GsdFileParser.gsdValue2Int(getValue());
+    }
+    
+    @Nonnull
+    public String getKey() {
+        return _key;
+    }
+    
+    @Nonnull
+    public String getValue() {
+        return _value;
     }
     
     /**
@@ -84,9 +84,9 @@ public class KeyValuePair {
     @Override
     @Nonnull
     public String toString() {
-        StringBuilder sb = new StringBuilder();
+        final StringBuilder sb = new StringBuilder();
         sb.append(_key).append(" = ").append(_value);
         return sb.toString();
     }
-
+    
 }

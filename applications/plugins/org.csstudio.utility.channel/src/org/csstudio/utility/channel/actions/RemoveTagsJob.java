@@ -12,6 +12,8 @@ import gov.bnl.channelfinder.api.ChannelFinderException;
 import java.util.Collection;
 import java.util.Iterator;
 
+import org.csstudio.utility.channelfinder.Activator;
+import org.csstudio.utility.channelfinder.CFClientManager;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
@@ -30,9 +32,12 @@ public class RemoveTagsJob extends Job {
 	 * create a job to remove a set of tags from a set of channels in
 	 * channelfinder
 	 * 
-	 * @param name - job name
-	 * @param channels - list of channels from which tags need to be removed
-	 * @param selectedTags - list of tag names to be removed
+	 * @param name
+	 *            - job name
+	 * @param channels
+	 *            - list of channels from which tags need to be removed
+	 * @param selectedTags
+	 *            - list of tag names to be removed
 	 */
 	public RemoveTagsJob(String name, Collection<Channel> channels,
 			Collection<String> selectedTags) {
@@ -56,12 +61,14 @@ public class RemoveTagsJob extends Job {
 					.hasNext();) {
 				String tagName = iterator.next();
 				monitor.subTask("Removing tag " + tagName);
-				ChannelFinderClient.getInstance().remove(tag(tagName),
+				CFClientManager.getClient().delete(tag(tagName),
 						getCSSChannelNames(channels));
 				monitor.worked(1);
 			}
 		} catch (ChannelFinderException e) {
-			e.printStackTrace();
+			return new Status(Status.ERROR, Activator.PLUGIN_ID,
+					((ChannelFinderException) e).getCause().getMessage(),
+					e.getCause());
 		}
 		monitor.done();
 		return Status.OK_STATUS;
