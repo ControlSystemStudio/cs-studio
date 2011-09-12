@@ -38,6 +38,7 @@ org.csstudio.diag.epics.pvtree
 org.csstudio.diag.epics.pvtree.intro
 org.csstudio.diag.probe
 org.csstudio.diag.probe.intro
+org.csstudio.diag.pvmanager.probe
 org.csstudio.display.channelviewer
 org.csstudio.display.multichannelviewer
 org.csstudio.display.pvtable
