@@ -1,4 +1,5 @@
 com.google.common
+gov.bnl.channelfinder.api
 javax.annotation
 org.csstudio.apputil
 org.csstudio.apputil.ui
@@ -8,6 +9,10 @@ org.csstudio.archive.rdb
 org.csstudio.archive.reader
 org.csstudio.archive.reader.channelarchiver
 org.csstudio.archive.reader.rdb
+org.csstudio.channel.intro
+org.csstudio.channel.opiwidgets
+org.csstudio.channel.views
+org.csstudio.channel.widgets
 org.csstudio.csdata
 org.csstudio.csdata.clipboard
 org.csstudio.data
@@ -18,8 +23,8 @@ org.csstudio.diag.probe
 org.csstudio.diag.probe.intro
 org.csstudio.diag.pvmanager.probe
 org.csstudio.display.pvtable
-org.csstudio.display.channelfinderviewer
-org.csstudio.display.channelfinderviewer.intro
+org.csstudio.display.channelrviewer
+org.csstudio.display.multichannelrviewer
 org.csstudio.display.waterfall
 org.csstudio.email
 org.csstudio.email.ui
@@ -83,7 +88,9 @@ org.csstudio.utility.pv.simu
 org.csstudio.utility.pv.ui
 org.csstudio.utility.pvmanager
 org.csstudio.utility.pvmanager.epics
+org.csstudio.utility.pvmanager.loc
 org.csstudio.utility.pvmanager.sim
 org.csstudio.utility.pvmanager.ui
+org.csstudio.utility.pvmanager.ui.toolbox
 org.csstudio.utility.pvmanager.widgets
 org.csstudio.workspace

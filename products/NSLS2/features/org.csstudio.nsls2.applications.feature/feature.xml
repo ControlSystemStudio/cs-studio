@@ -27,7 +27,7 @@
          optional="true"/>
 
    <includes
-         id="org.csstudio.display.channelfinderviewer.feature"
+         id="org.csstudio.display.channelviewer.feature"
          version="0.0.0"/>
 
    <includes
