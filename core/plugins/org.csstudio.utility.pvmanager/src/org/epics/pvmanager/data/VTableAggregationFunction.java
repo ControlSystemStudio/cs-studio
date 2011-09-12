@@ -14,7 +14,7 @@ import org.epics.pvmanager.Function;
  *
  * @author carcassi
  */
-public class VTableAggregationFunction extends Function<VTable> {
+class VTableAggregationFunction extends Function<VTable> {
     
     private final List<List<Function<?>>> functions;
     private final List<String> names;

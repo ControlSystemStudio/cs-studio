@@ -35,11 +35,11 @@ public class DataRecipe {
      * @param channelsPerCollector the list of all channels needed by each collector
      */
     DataRecipe(Map<Collector<?>, Map<String, ValueCache>> channelsPerCollector) {
-        this.channelsPerCollector = channelsPerCollector;
+        this.channelsPerCollector = Collections.unmodifiableMap(new HashMap<Collector<?>, Map<String, ValueCache>>(channelsPerCollector));
         exceptionHandler = new ExceptionHandler();
     }
 
-    DataRecipe(Map<Collector<?>, Map<String, ValueCache>> channelsPerCollector, ExceptionHandler exceptionHandler) {
+    private DataRecipe(Map<Collector<?>, Map<String, ValueCache>> channelsPerCollector, ExceptionHandler exceptionHandler) {
         this.channelsPerCollector = channelsPerCollector;
         this.exceptionHandler = exceptionHandler;
     }
@@ -64,7 +64,7 @@ public class DataRecipe {
         Map<String, ValueCache> newCaches =
                 Collections.unmodifiableMap(new HashMap<String, ValueCache>(caches));
         newChannelsPerCollector.put(collector, newCaches);
-        return new DataRecipe(Collections.unmodifiableMap(newChannelsPerCollector), exceptionHandler);
+        return new DataRecipe(newChannelsPerCollector, exceptionHandler);
     }
 
     /**

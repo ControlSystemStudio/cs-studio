@@ -13,7 +13,7 @@ import org.epics.pvmanager.util.TimeStamp;
  *
  * @author carcassi
  */
-public class IVIntArray extends IVNumeric implements VIntArray {
+class IVIntArray extends IVNumeric implements VIntArray {
 
     private final int[] array;
     private final List<Integer> sizes;

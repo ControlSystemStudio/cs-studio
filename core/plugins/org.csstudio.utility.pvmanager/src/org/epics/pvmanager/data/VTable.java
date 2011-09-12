@@ -20,6 +20,18 @@ public interface VTable {
      * @return the number of columns
      */
     int getColumnCount();
+    
+    /**
+     * The number of rows in the table.
+     * <p>
+     * Currently, is not clear whether all columns actually have the same
+     * number of rows, that is if all arrays have the same length. In the
+     * case of variable row, this will return the maximum row count, that is
+     * the length of the longest array/column.
+     * 
+     * @return the number of rows
+     */
+    int getRowCount();
 
     /**
      * The type of the elements in the column. The column array will be

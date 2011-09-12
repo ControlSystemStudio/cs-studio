@@ -11,7 +11,7 @@ import org.epics.pvmanager.util.TimeStamp;
  *
  * @author carcassi
  */
-public class IVString extends IVMetadata implements VString {
+class IVString extends IVMetadata implements VString {
 
     private final String value;
 

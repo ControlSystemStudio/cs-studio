@@ -23,6 +23,17 @@ import org.epics.pvmanager.ExceptionHandler;
 import org.epics.pvmanager.ValueCache;
 
 /**
+ * A ChannelHandler for the JCADataSource.
+ * <p>
+ * NOTE: this class is extensible as per Bastian request so that DESY can hook
+ * a different type factory. This is a temporary measure until the problem
+ * is solved in better, more general way, so that data sources
+ * can work only with data source specific types, while allowing
+ * conversions to normalized type through operators. The contract of this
+ * class is, therefore, expected to change.
+ * <p>
+ * Related changes are marked so that they are not accidentally removed in the
+ * meantime, and can be intentionally removed when a better solution is implemented.
  *
  * @author carcassi
  */
@@ -67,7 +78,8 @@ public class JCAChannelHandler extends ChannelHandler<MonitorEvent> {
         }
     }
 
-    synchronized void setup(Channel channel) throws CAException {
+    // protected (not private) to allow different type factory
+    protected synchronized void setup(Channel channel) throws CAException {
         // This method may be called twice, if the connection happens
         // after the ConnectionListener is setup but before
         // the connection state is polled.
@@ -89,13 +101,18 @@ public class JCAChannelHandler extends ChannelHandler<MonitorEvent> {
         }
     }
     
-    private Class<?> cacheType;
-    private volatile VTypeFactory vTypeFactory;
+    // protected (not private) to allow different type factory
+    protected Class<?> cacheType;
+    // protected (not private) to allow different type factory
+    protected volatile TypeFactory vTypeFactory;
     private ConnectionListener connectionListener;
-    private volatile Monitor monitor;
-    private volatile DBR metadata;
+    // protected (not private) to allow different type factory
+    protected volatile Monitor monitor;
+    // protected (not private) to allow different type factory
+    protected volatile DBR metadata;
     private volatile MonitorEvent event;
-    private final MonitorListener monitorListener = new MonitorListener() {
+    // protected (not private) to allow different type factory
+    protected final MonitorListener monitorListener = new MonitorListener() {
 
         @Override
         public void monitorChanged(MonitorEvent event) {

@@ -37,9 +37,9 @@ public class TimeStamp implements Comparable<TimeStamp> {
     /**
      * Nanoseconds past the timestamp. Must be 0 < nanoSec < 999,999,999
      */
-    private final long nanoSec;
+    private final int nanoSec;
 
-    private TimeStamp(long unixSec, long nanoSec) {
+    private TimeStamp(long unixSec, int nanoSec) {
         if (nanoSec < 0 || nanoSec > 999999999)
             throw new IllegalArgumentException("Nanoseconds cannot be between 0 and 999,999,999");
         this.unixSec = unixSec;
@@ -69,7 +69,7 @@ public class TimeStamp implements Comparable<TimeStamp> {
      * @param nanoSec nanoseconds past the given seconds (must be 0 < nanoSec < 999,999,999)
      * @return a new timestamp
      */
-    public static TimeStamp time(long unixSec, long nanoSec) {
+    public static TimeStamp time(long unixSec, int nanoSec) {
         return new TimeStamp(unixSec, nanoSec);
     }
 
@@ -82,7 +82,7 @@ public class TimeStamp implements Comparable<TimeStamp> {
      */
     public static TimeStamp timestampOf(Date date) {
         long time = date.getTime();
-        long nanoSec = (time % 1000) * 1000000;
+        int nanoSec = (int) (time % 1000) * 1000000;
         long epicsSec = (time / 1000);
         return time(epicsSec, nanoSec);
     }
@@ -175,7 +175,7 @@ public class TimeStamp implements Comparable<TimeStamp> {
             nanos -= pastSec * 1000000000;
         }
 
-        return new TimeStamp(seconds, nanos);
+        return new TimeStamp(seconds, (int) nanos);
     }
 
     /**

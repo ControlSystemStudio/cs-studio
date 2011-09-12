@@ -17,7 +17,7 @@ class XmlTimeStampAdapter extends XmlAdapter<BigDecimal, TimeStamp> {
 
     @Override
     public TimeStamp unmarshal(BigDecimal v) throws Exception {
-        return TimeStamp.time(v.longValue(), v.remainder(new BigDecimal(1)).scaleByPowerOfTen(9).longValue());
+        return TimeStamp.time(v.longValue(), v.remainder(new BigDecimal(1)).scaleByPowerOfTen(9).intValue());
     }
 
     @Override

@@ -43,6 +43,10 @@
  *     <li><a href="#v3">Working with an unknown type: switch on the type</a></li>
  *     <li><a href="#v4">Working with an unknown type: register listener on type</a></li>
  * </ol>
+ * <h3>Working with VTable</h3>
+ * <ol>
+ *     <li><a href="#t1">Assembling a table</a></li>
+ * </ol>
  * 
  *  * <h3 id="v1">Read/Write a specific type</h3>
 
@@ -476,6 +480,32 @@
  * });
  * </pre>
  * 
+ * 
+ * <h3 id="t1">Assembling a table</h3>
+ * 
+ * You can assemble a table by giving a desired rate expression for each cell,
+ * organizing them by column. You can use constant expressions for labels or
+ * values that do not change. 
+ * 
+ * <pre>
+ * List&lt;String&gt; names = Arrays.asList("one", "two", "trhee");
+ * final PVReader&lt;VTable&gt; pvReader = PVManager.read(vTable(
+ *         column("Names", vStringConstants(names)),
+ *         column("Values", latestValueOf(channels(names)))))
+ *         .every(ms(100));
+ * pvReader.addPVReaderListener(new PVReaderListener() {
+ * 
+ *     @Override
+ *     public void pvChanged() {
+ *         VTable vTable = pvReader.getValue();
+ *         // First column is the names
+ *         String[] names = (String[]) vTable.getColumnArray(0);
+ *         // Second column is the values
+ *         double[] values = (double[]) vTable.getColumnArray(1);
+ *         // ...
+ *     }
+ * });
+ * </pre>
  * 
  * 
  * 
