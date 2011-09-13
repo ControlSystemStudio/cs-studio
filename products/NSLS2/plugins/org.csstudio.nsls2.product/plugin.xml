@@ -80,7 +80,7 @@
          </property>
          <property
                name="aboutText"
-               value="Control System Studio is an Eclipse-based collections of tools to monitor and operate large scale control systems, such as the ones in the accelerator community.&#x0A;&#x0A;http://cs-studio.sourceforge.net&#x0A;&#x0A;version: 3.0.1">
+               value="CSS for NSLS-II&#x0A;&#x0A;Version 3.0.2&#x0A;&#x0A;Control System Studio is an Eclipse-based collections of tools&#x0A;to monitor and operate large scale control systems, &#x0A;such as the ones in the accelerator community.&#x0A;&#x0A;CSS home: http://cs-studio.sourceforge.net&#x0A;">
          </property>
       </product>
    </extension>
