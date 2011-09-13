@@ -2,7 +2,7 @@ Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: CSS-NSLS-II Product
 Bundle-SymbolicName: org.csstudio.nsls2.product; singleton:=true
-Bundle-Version: 3.0.1.qualifier
+Bundle-Version: 3.0.2.qualifier
 Bundle-Activator: org.csstudio.nsls2.product.Activator
 Require-Bundle: org.eclipse.ui,
  org.eclipse.core.runtime,
