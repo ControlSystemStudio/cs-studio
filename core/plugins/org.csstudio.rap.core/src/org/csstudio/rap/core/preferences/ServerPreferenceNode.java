@@ -377,8 +377,8 @@ public class ServerPreferenceNode implements IEclipsePreferences {
 				 RAPCorePlugin.getLogger().log(Level.WARNING,
 							"System property catalina.home is not set, " +
 							"so server side preferences cannot be loaded.");
-//				 return;
-				 userDir = "C:/Users/5hz/Desktop";
+				 return;
+//				 userDir = "C:/Users/5hz/Desktop";
 			 }
 			 
 			 Properties properties = loadProperties(userDir + "/webapps/css_rap.ini"); //$NON-NLS-1$
