@@ -18,10 +18,23 @@ WebOPI also based on the RAP GEF which is an incubator project under RAP, so you
 RAP CVS: <a href="http://www.eclipse.org/rap/source/">http://www.eclipse.org/rap/source/</a>.
 </p>
 
+<p>Before getting your foot wet on WebOPI, please take few minutes to familiar with RAP development:<br>
+<a href="http://www.eclipse.org/rap/">http://www.eclipse.org/rap/</a><br>
+<a href="http://www.vogella.de/articles/EclipseRAP/article.html">
+http://www.vogella.de/articles/EclipseRAP/article.html</a>
+</p>
+
 <h3>Launch WebOPI from Eclipse</h3>
-<p>Open <code>plugin.xml</code> in <code>org.csstudio.webopi</code> plugin and click 
-<code>Launch a RAP application</code>. Since there is no $CATALINA_HOME is set, the preferences
-will not be loaded.</p>
+<ol>
+<li>Import WebOPI source code into your workspace.</li>
+<li>Since there is no $CATALINA_HOME is set for debugging mode,
+it will use the settings in <code>preferences.ini</code> under <code>org.csstudio.webopi</code> and 
+<code>org.csstudio.platform.libs.epics</code> plugin.
+Make corresponding changes for your environment.</li>
+<li>open <code>plugin.xml</code> in <code>org.csstudio.webopi</code> plugin and click 
+<code>Launch a RAP application</code>.</li>
+</ol>
+
 
 <h3>Build WAR file</h3>
 <p>Open <code>webopi.warproduct</code> and click on <code>Eclipse WAR product export wizard</code>
@@ -34,9 +47,10 @@ Now, you can deploy the WAR file on a tomcat server. See
 
 <h3>Debug URL</h3>
 <p>To show debug information, you can append <code>rap?startup=debug</code> to <code>webopi/</code>.
-For example:   <code>http://your_site.com/webopi/rap?startup=debug</code>. If you want to show more lines,
+For example: <br>   <code>http://your_site.com/webopi/rap?startup=debug</code>. 
+<br> If you want to show more lines,
 you can append <code>&lines=number</code>. 
-For example, <code>http://your_site.com/webopi/rap?startup=debug&lines=500</code>.</p>
+For example, <br><code>http://your_site.com/webopi/rap?startup=debug&lines=500</code>.</p>
  
  <br>
  <br>
