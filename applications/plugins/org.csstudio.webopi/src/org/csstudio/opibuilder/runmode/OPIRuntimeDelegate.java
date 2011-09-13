@@ -3,7 +3,9 @@ package org.csstudio.opibuilder.runmode;
 import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.logging.Level;
 
+import org.csstudio.opibuilder.OPIBuilderPlugin;
 import org.csstudio.opibuilder.actions.PrintDisplayAction;
 import org.csstudio.opibuilder.editparts.ExecutionMode;
 import org.csstudio.opibuilder.editparts.WidgetEditPartFactory;
@@ -152,8 +154,9 @@ public class OPIRuntimeDelegate implements IAdaptable{
 			}
 
 		} catch (Exception e) {
-			ErrorHandlerUtil.handleError("Failed to run opi " + input, e, true, true);
-			throw new PartInitException("Failed to run OPI file: " + input, e);
+			OPIBuilderPlugin.getLogger().log(Level.WARNING,	
+					"Failed to open OPI file: " + input+ "\n" + e.getMessage());
+			throw new PartInitException("Failed to open OPI file: " + input);
 		}
 		
 		displayModel.setOpiFilePath(getOPIFilePath());
@@ -428,9 +431,8 @@ public class OPIRuntimeDelegate implements IAdaptable{
 //								viewer.getControl().addPaintListener(errorMessagePaintListener);
 								viewer.getControl().redraw();
 							}
-							ErrorHandlerUtil.handleError(
-									"Failed to connect to " + input, e,
-									true, true);
+							OPIBuilderPlugin.getLogger().log(Level.WARNING,	
+									"Failed to open opi file: " + input+ "\n" + e.getMessage());
 						}
 					});
 

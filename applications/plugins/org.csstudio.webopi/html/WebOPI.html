@@ -11,20 +11,25 @@
 <h2>WebOPI</h2>
 <h3>Introduction</h3>
 <p>
-The dream to run BOY OPI in web browser becomes true! 
-Most BOY OPI functions are supported, including Java script and Python script support!
-Without any particular change, you can easily publish OPIs created in BOY on a 
-Tomcat Web server. WebOPI can also run on your mobile device such as iPhone.
+The dreams to bring your control system to web browser come true!
 </p>
 <p>
-WebOPI uses RAP technology behind, which helps to single source the code of BOY 
-and WebOPI. PV communication and script execution are executed on server side. 
-The web browser only does the graphics rendering.
+WebOPI aims to provide web access to Operator Interfaces (OPI) that 
+were created in CSS BOY, the Best OPI, Yet. With WebOPI, people can 
+seamlessly visit their OPIs from anywhere in the world at any time 
+via a web-browser-equipped device such as a PC, laptop, tablet or 
+smart phone. The WebOPI is built upon the Eclipse Rich Ajax Platform (RAP),
+ which allows single sourcing between RCP and RAP. Most of the BOY widget code 
+ was reused for the WebOPI. OPIs displayed in a web browser look very similar 
+to the original BOY OPIs. Most of BOY OPI functions are supported in WebOPI,
+ including the support of Macros, Rules, JavaScript? and Python script. Without
+any additional work, you can easily deploy OPIs created in BOY on a Tomcat Web
+ server by copying them to a pre-configured directory.
 </p>
 
 <p>
 <img height=300  src="img/WebOPI_Widgets.gif">
-<img height=300  src="img/WebOPI_IntensityGraph.gif">
+<img height=300  src="img/WebOPI_iPod.JPG">
 </p>
 
 <h3>Install</h3>
@@ -43,7 +48,7 @@ then the first step would be installing Tomcat server.</p>
  make changes to the configuration.)</p>
  
  <p>
- css_rap.ini follows the same format of plugin_customization.ini in CSS product.  
+ css_rap.ini follows the same format of plugin_customization.ini as in CSS product.  
  Below is an css_rap.ini example, you can make  corresponding modifications for your site. </p>
  
 <pre class="example_code">
@@ -56,18 +61,26 @@ org.csstudio.platform.libs.epics/max_array_bytes=160000
 #WebOPI configuration
 org.csstudio.webopi/opi_repository=C:/path/BOY Examples/
 org.csstudio.webopi/startup_opi=main.opi
-org.csstudio.webopi/color_file=C:/path/color.def
-org.csstudio.webopi/font_file=C:/path/font.def
+org.csstudio.webopi/mobile_startup_opi=mobile.opi
+org.csstudio.webopi/color_file=color.def
+org.csstudio.webopi/font_file=font.def
 org.csstudio.webopi/top_opis=http://www.xxx.com/xxx/Site/main.opi
+org.csstudio.webopi/opi_gui_refresh_cycle=200
 org.csstudio.webopi/macros="N","North"|"W","West"|"SYS","LLRF"|"SubSys","HPM"</pre>
 
 <p>In above example, EPICS configuration items are same as in CSS. Most items in WebOPI configuration
-are same as in BOY, but there are two additional items must be configured:</p> 
+are same as in BOY, but there are there additional items:</p> 
 <ul>
 <li>opi_repository: It is a path to the directory where the OPI files are placed. It can also 
 be an URL path,for example: http://mysite.com/opi_files/ </li>
 <li>startup_opi: The default start up OPI when no OPI is specified in URL.</li>
+<li>mobile_startup_opi (optional): The default start up OPI for mobile URL.</li>
 </ul> 
+
+<p>Except <code>opi_repository</code> which must be an absolute path to a directory, 
+you can use either relative or absolute path for path items, 
+such as startup_opi, color_file and top_opis. If it is relative path, 
+it is relative to <code>opi_repository.</code></p>
 
 
 <h3>Web Access URL</h3>
@@ -75,20 +88,24 @@ be an URL path,for example: http://mysite.com/opi_files/ </li>
 access WebOPI would be <code>http://your_site.com/webopi/</code>. or <code>http://127.0.0.1:8080/webopi/</code>.
 You can also rename webopi.war to whatever name you like, such as your_name.war, then the URL would
 be <code>http://your_site.com/your_name</code>.
-Once after you connected to above URL, it will automatically append /WebOPI to the URL. 
+Once after you connected to above URL, it will automatically append <code>/w</code> to the URL. 
 </p>
-<p>Using above URL will open the start up opi specified in css_rap.ini. To open other OPIs, 
-you can directly append <code>?opi=path_to_opi.opi</code> to the URL. For example: 
-<code>http://your_site.com/webopi/WebOPI?opi=1_1_Start_Up.opi</code></p>
+<p>Using above URL will open the <code>startup_opi</code> specified in css_rap.ini. To open other OPIs, 
+you can directly append <code>?opi=path/to/opi.opi</code> to the URL. It can be either relative 
+or absolute path. For example: 
+<code>http://your_site.com/webopi/w?opi=widgets/1_2_Image.opi</code></p>
+
+<p>For mobile, you can <code>/w</code> with <code>/m</code> in the URL to open <code>mobile_startup_opi</code>
+by default. For example: <code>http://your_site.com/webopi/m</code></p>
+
 <p>WebOPI also support standalone mode, in which there will be no toolbar and editor tab. See
-figure below. To access OPI in this mode, you simply need to replace <code>WebOPI</code>
-to <code>WebOPI_S</code> in the URL. For example: <code>
-http://your_site.com/webopi/WebOPI_S</code></p>
+figure below. To access OPI in this mode, you simply need to replace <code>/w</code> or <code>/m</code>
+with <code>/ws</code> or <code>/ms</code> in the URL. For example: <code>
+http://your_site.com/webopi/ws</code></p>
 
 <p>
 <img height=300  src="img/WebOPI_StandAloneMode.gif">
 </p>
-
 
 <h3> Known Issues</h3>
 <p> 
