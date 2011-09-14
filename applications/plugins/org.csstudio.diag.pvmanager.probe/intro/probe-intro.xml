@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<introContent>
+  	<extensionContent id="org.csstudio.diag.pvmanager.probe.intro" style="probe-intro.css" name="Probe intro Extension" path="tutorials/@">
+		<group style-id="content-group" id="org.csstudio.diag.probe.intro-group">
+       		<link label="Probe" url="http://sourceforge.net/apps/trac/cs-studio/wiki/Probe" 
+       		id="probe-Link" style-id="content-link">
+          		<text>A simple utility to test channels.</text>
+       		</link>
+       	</group>
+  	</extensionContent>
+</introContent>
