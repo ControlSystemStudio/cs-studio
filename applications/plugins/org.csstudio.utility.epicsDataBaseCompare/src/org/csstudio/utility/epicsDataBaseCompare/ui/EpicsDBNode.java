@@ -25,10 +25,13 @@ import javax.annotation.CheckForNull;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
+import org.csstudio.utility.epicsDataBaseCompare.Activator;
 import org.eclipse.compare.ITypedElement;
 import org.eclipse.compare.structuremergeviewer.DocumentRangeNode;
+import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.jface.text.IDocument;
 import org.eclipse.swt.graphics.Image;
+import org.eclipse.ui.plugin.AbstractUIPlugin;
 
 /**
  * TODO (hrickens) :
@@ -76,7 +79,8 @@ public class EpicsDBNode extends DocumentRangeNode implements ITypedElement {
     @Override
     @CheckForNull
     public Image getImage() {
-        return null;
+        final ImageDescriptor imageDescriptorFromPlugin = AbstractUIPlugin.imageDescriptorFromPlugin(Activator.PLUGIN_ID, "./icons/sample.gif");
+        return imageDescriptorFromPlugin.createImage();
     }
 
     /**

@@ -94,7 +94,8 @@ public class EpicsRecord implements Comparable<EpicsRecord> {
     }
 
     public void setField(@Nonnull final String field, @Nonnull final String value) {
-        _fields.put(field, new Field(this, field, value));
+        final String f = field.trim();
+        _fields.put(f, new Field(this, f, value));
     }
 
     @Nonnull

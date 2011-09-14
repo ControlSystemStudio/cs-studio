@@ -29,17 +29,22 @@ import javax.annotation.Nonnull;
 import org.eclipse.compare.CompareConfiguration;
 import org.eclipse.compare.CompareEditorInput;
 import org.eclipse.compare.structuremergeviewer.DiffNode;
+import org.eclipse.compare.structuremergeviewer.DiffTreeViewer;
+import org.eclipse.compare.structuremergeviewer.IStructureComparator;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.jface.text.Document;
+import org.eclipse.jface.viewers.Viewer;
+import org.eclipse.swt.widgets.Composite;
 
 /**
  * @author hrickens
  * @since 07.09.2011
  */
-public class EpicsDBCompareEditorInput extends CompareEditorInput {
+public class EpicsDBCompareEditorInput extends CompareEditorInput implements IStructureComparator {
 
     private final EpicsDBNode _leftNode;
     private final EpicsDBNode _rightNode;
+    private EpicsDBNode _epicsFileDBNode;
 
     /**
      * Constructor.
@@ -60,7 +65,7 @@ public class EpicsDBCompareEditorInput extends CompareEditorInput {
         int startPos = 0;
         final String text = epicsDBFile.getSortetText();
         final Document document = new Document(text);
-        final EpicsDBNode epicsDBNode = new EpicsDBNode(null,
+        _epicsFileDBNode = new EpicsDBNode(null,
                         1,
                         epicsDBFile.getFileName(),
                         document,
@@ -71,14 +76,14 @@ public class EpicsDBCompareEditorInput extends CompareEditorInput {
         for (final EpicsRecord record : records.values()) {
             final Document recordDocument = new Document(record.getSortetText());
             final int length = recordDocument.getLength();
-            final EpicsDBNode epicsRecordNode = new EpicsDBNode(epicsDBNode,
+            final EpicsDBNode epicsRecordNode = new EpicsDBNode(_epicsFileDBNode,
                             2,
                             record.getRecordName(),
                             recordDocument,
                             0,
                             length,
                             record.getRecordName());
-            epicsDBNode.addChild(epicsRecordNode);
+            _epicsFileDBNode.addChild(epicsRecordNode);
             startPos+=length;
             for (final Field field : record.getFilds()) {
                 final Document fieldDocument = new Document(record.getSortetText());
@@ -92,7 +97,7 @@ public class EpicsDBCompareEditorInput extends CompareEditorInput {
                 epicsRecordNode.addChild(epicsFieldNode);
             }
         }
-        return epicsDBNode;
+        return _epicsFileDBNode;
     }
 
     /**
@@ -103,5 +108,23 @@ public class EpicsDBCompareEditorInput extends CompareEditorInput {
     protected Object prepareInput(@Nonnull final IProgressMonitor monitor) throws InvocationTargetException,
                                                                  InterruptedException {
         return new DiffNode(_leftNode, _rightNode);
+    }
+
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public Viewer createDiffViewer(final Composite parent) {
+        return new DiffTreeViewer(parent, new CompareConfiguration());
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    @Nonnull
+    public Object[] getChildren() {
+        return new EpicsDBNode[] {_epicsFileDBNode};
     }
 }

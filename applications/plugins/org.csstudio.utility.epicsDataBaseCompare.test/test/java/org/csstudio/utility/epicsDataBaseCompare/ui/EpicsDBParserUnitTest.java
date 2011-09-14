@@ -46,20 +46,104 @@ public class EpicsDBParserUnitTest {
                                                              "res-test/testDBFile.db");
         final EpicsDBFile parseFile = epicsDBParser.parseFile(resFilePath);
         assertEquals(3, parseFile.getRecords().size());
+
         EpicsRecord record = parseFile.getRecord("22MFG_Wert1_HB_mbboD");
         assertNotNull(record);
         assertEquals("22MFG_Wert1_HB_mbboD", record.getRecordName());
         assertEquals("mbboDirect", record.getRecordType());
+
+        Field field = record.getField("DESC");
+        assertEquals("DESC", field.getField());
+        assertEquals("Wert1_Index", field.getValue());
+
+        field = record.getField("PINI");
+        assertEquals("PINI", field.getField());
+        assertEquals("YES", field.getValue());
+
+        field = record.getField("PHAS");
+        assertEquals("PHAS", field.getField());
+        assertEquals("1.0", field.getValue());
+
+        field = record.getField("DTYP");
+        assertEquals("DTYP", field.getField());
+        assertEquals("PBDP", field.getValue());
+
+        field = record.getField("NOBT");
+        assertEquals("NOBT", field.getField());
+        assertEquals("8.0", field.getValue());
+
+        field = record.getField("OUT");
+        assertEquals("OUT", field.getField());
+        assertEquals("@PBDP1: 29/7 'T=INT8'", field.getValue());
+
+        field = record.getField("B0");
+        assertEquals("B0", field.getField());
+        assertEquals("1.0", field.getValue());
 
         record = parseFile.getRecord("22MFG_U12_li");
         assertNotNull(record);
         assertEquals("22MFG_U12_li", record.getRecordName());
         assertEquals("longin", record.getRecordType());
 
+        field = record.getField("DESC");
+        assertEquals("DESC", field.getField());
+        assertEquals("22MFG U12 Dreieckspannung", field.getValue());
+
+        field = record.getField("SCAN");
+        assertEquals("SCAN", field.getField());
+        assertEquals("1 second", field.getValue());
+
+        field = record.getField("DTYP");
+        assertEquals("DTYP", field.getField());
+        assertEquals("PBDP", field.getValue());
+
+        field = record.getField("FLNK");
+        assertEquals("FLNK", field.getField());
+        assertEquals("22MFG_U12_calc", field.getValue());
+
+        field = record.getField("INP");
+        assertEquals("INP", field.getField());
+        assertEquals("@PBDP1: 29/6 'T=INT16'", field.getValue());
+
         record = parseFile.getRecord("22MFG_U12_calc");
         assertNotNull(record);
         assertEquals("22MFG_U12_calc", record.getRecordName());
         assertEquals("calc", record.getRecordType());
 
+        field = record.getField("DESC");
+        assertEquals("DESC", field.getField());
+        assertEquals("22MFG Dreieckspannung U12", field.getValue());
+
+        field = record.getField("CALC");
+        assertEquals("CALC", field.getField());
+        assertEquals("(((A&255)<<8)|((A&65280)>>8))/1.", field.getValue());
+
+        field = record.getField("INPA");
+        assertEquals("INPA", field.getField());
+        assertEquals("22MFG_U12_li", field.getValue());
+
+        field = record.getField("EGU");
+        assertEquals("EGU", field.getField());
+        assertEquals("V", field.getValue());
+
+        field = record.getField("PREC");
+        assertEquals("PREC", field.getField());
+        assertEquals("0.0", field.getValue());
+
+        field = record.getField("LOPR");
+        assertEquals("LOPR", field.getField());
+        assertEquals("0.0", field.getValue());
+
+        field = record.getField("HOPR");
+        assertEquals("HOPR", field.getField());
+        assertEquals("9999.0", field.getValue());
+
+        field = record.getField("ADEL");
+        assertEquals("ADEL", field.getField());
+        assertEquals("5.0", field.getValue());
+
+        field = record.getField("MDEL");
+        assertEquals("MDEL", field.getField());
+        assertEquals("1.0", field.getValue());
     }
 }
