@@ -121,7 +121,7 @@
                   style="push">
             </command>
             <separator
-                  name="copy"
+                  name="clipboard"
                   visible="true">
             </separator>
             <command
@@ -144,6 +144,10 @@
                   label="%EditDelete"
                   style="push">
             </command>
+            <separator
+                  name="select"
+                  visible="true">
+            </separator>
             <command
                   commandId="org.eclipse.ui.edit.selectAll"
                   label="%EditSelectAll"
@@ -159,7 +163,12 @@
                   style="push">
             </command>
             <separator
-                  name="additions">
+                  name="additions"
+                  visible="true">
+            </separator>
+            <separator
+                  name="preferences"
+                  visible="true">
             </separator>
          </menu>
       </menuContribution>
@@ -232,14 +241,8 @@
                label="%Help">
             <command
                   commandId="org.eclipse.ui.help.quickStartAction"
-                  icon="icons/css16.png"
+                  icon="platform:/plugin/org.eclipse.ui.intro.universal/icons/welcome16.gif"
                   label="%HelpWelcome"
-                  style="push">
-            </command>
-            <command
-                  commandId="org.eclipse.ui.help.aboutAction"
-                  icon="icons/css16.png"
-                  label="%HelpAbout"
                   style="push">
             </command>
             <separator
@@ -270,9 +273,15 @@
                   visible="true">
             </separator>
             <separator
-                  name="end"
+                  name="about"
                   visible="true">
             </separator>
+            <command
+                  commandId="org.eclipse.ui.help.aboutAction"
+                  icon="icons/css16.png"
+                  label="%HelpAbout"
+                  style="push">
+            </command>
          </menu>
       </menuContribution>
    </extension>
