@@ -48,6 +48,11 @@ public class PreferenceInitializer extends AbstractPreferenceInitializer {
         prefs.put(PreferenceConstants.JMS_PRODUCER_URL, "");
         prefs.put(PreferenceConstants.JMS_PRODUCER_FACTORY, "");
         prefs.put(PreferenceConstants.JMS_PRODUCER_TOPIC_NAME, "");
+        prefs.put(PreferenceConstants.JMS_PRODUCER_TOPIC_NAME_BEACON, "BEACON");
+        prefs.put(PreferenceConstants.BEACON_REP_RATE, "10000");
         prefs.put(PreferenceConstants.DESCRIPTION , "Headless application");
+        prefs.put(PreferenceConstants.DATA_PORT_NUMBER , "514");
+        prefs.put(PreferenceConstants.BUFFER_SIZE , "1024");
+        prefs.put(PreferenceConstants.NUMBER_OF_THREADS , "100");
     }
 }
