@@ -24,8 +24,8 @@ import org.csstudio.opibuilder.model.AbstractPVWidgetModel;
 import org.csstudio.opibuilder.properties.IWidgetPropertyChangeHandler;
 import org.csstudio.opibuilder.util.ConsoleService;
 import org.csstudio.opibuilder.widgets.model.LabelModel;
-import org.csstudio.opibuilder.widgets.model.TextUpdateModel.FormatEnum;
 import org.csstudio.opibuilder.widgets.model.TextInputModel;
+import org.csstudio.opibuilder.widgets.model.TextUpdateModel.FormatEnum;
 import org.csstudio.swt.widgets.datadefinition.IManualStringValueChangeListener;
 import org.csstudio.swt.widgets.figures.TextFigure;
 import org.csstudio.swt.widgets.figures.TextInputFigure;
@@ -420,8 +420,8 @@ public class TextInputEditpart extends TextUpdateEditPart {
 	private double parseDouble(final String text, final boolean coerce)
 			throws ParseException {
 		DecimalFormat format = new DecimalFormat();
-
-		double value = format.parse(text).doubleValue();
+		
+		double value = format.parse(text.replace('e', 'E')).doubleValue(); //$NON-NLS-1$ //$NON-NLS-2$
 		if (coerce) {
 			double min = getWidgetModel().getMinimum();
 			double max = getWidgetModel().getMaximum();

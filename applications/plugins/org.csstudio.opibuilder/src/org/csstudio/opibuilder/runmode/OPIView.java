@@ -115,8 +115,8 @@ public class OPIView extends ViewPart implements IOPIRuntime {
 									parent.getShell().setLocation(bounds.x, bounds.y);
 								else{
 								   org.eclipse.swt.graphics.Rectangle winSize = getSite().getWorkbenchWindow().getShell().getBounds();
-									parent.getShell().setLocation(
-											winSize.x + (int)(Math.random()*winSize.width/4), winSize.y + (int)(Math.random()*winSize.height/4));
+									parent.getShell().setLocation( 
+											winSize.x + winSize.width/5, winSize.y + winSize.height/8);
 								}
 								parent.getShell().setSize(bounds.width+45, bounds.height+165);							
 							}

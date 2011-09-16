@@ -47,6 +47,7 @@ public class MultilineTextEditDialog extends Dialog {
 		gridData.heightHint = 100;
 		text = new Text(container, SWT.MULTI | SWT.BORDER | SWT.H_SCROLL | SWT.V_SCROLL);
 		text.setText(contents);
+		text.setSelection(0, contents.length());
 		text.setLayoutData(gridData);
 		text.addKeyListener(new KeyListener() {
 			
