@@ -33,8 +33,6 @@ import org.csstudio.utility.ldapupdater.LdapUpdaterServer;
  * Shuts down the LdapUpdater service.
  *
  * @author bknerr
- * @author $Author$
- * @version $Revision$
  * @since 12.04.2010
  */
 public class ShutdownLdapUpdaterAction implements IManagementCommand {

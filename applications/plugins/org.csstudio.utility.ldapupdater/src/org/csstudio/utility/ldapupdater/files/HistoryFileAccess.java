@@ -44,8 +44,6 @@ import com.google.common.io.LineProcessor;
  * for any IOC file.
  *
  * @author bknerr
- * @author $Author$
- * @version $Revision$
  * @since 13.04.2010
  */
 

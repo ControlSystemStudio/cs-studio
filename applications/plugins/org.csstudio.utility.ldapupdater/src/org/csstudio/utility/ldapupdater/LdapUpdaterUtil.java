@@ -41,9 +41,7 @@ import org.slf4j.LoggerFactory;
 /**
  * Updates the IOC information in the LDAP directory.
  *
- * @author valett
- * @author $Author$
- * @version $Revision$
+ * @author bknerr
  * @since 17.04.2008
  */
 public enum LdapUpdaterUtil {

@@ -45,8 +45,6 @@ import org.slf4j.LoggerFactory;
  * LDAP Updater server.
  *
  * @author bknerr
- * @author $Author$
- * @version $Revision$
  * @since 13.04.2010
  */
 public class LdapUpdaterServer implements IApplication,

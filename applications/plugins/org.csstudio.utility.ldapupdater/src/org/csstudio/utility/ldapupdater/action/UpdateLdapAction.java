@@ -67,8 +67,6 @@ import com.google.inject.internal.Maps;
  * Starts the LDAP update from the context menu.
  *
  * @author bknerr
- * @author $Author$
- * @version $Revision$
  * @since 09.04.2010
  */
 public class UpdateLdapAction implements IManagementCommand {

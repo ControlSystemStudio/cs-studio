@@ -33,7 +33,6 @@ import org.slf4j.LoggerFactory;
  * LDAP updater task.
  *
  * @author bknerr
- * @author $Author: bknerr $
  * @since 28.09.2010
  */
 public class LdapUpdaterTask implements Runnable {

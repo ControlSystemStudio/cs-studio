@@ -44,7 +44,7 @@ import org.csstudio.utility.ldapupdater.model.Record;
 import com.google.common.collect.Maps;
 
 /**
- * TODO (bknerr) :
+ * Parses the contents of a {@link UpdaterLdapConstants#BOOT_FILE_SUFFIX} file.
  *
  * @author bknerr
  * @since 28.04.2011

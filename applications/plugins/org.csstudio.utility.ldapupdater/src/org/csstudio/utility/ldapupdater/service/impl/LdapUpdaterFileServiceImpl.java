@@ -52,7 +52,7 @@ import com.google.common.io.Files;
 import com.google.inject.Inject;
 
 /**
- * TODO (bknerr) :
+ * Implementation of the ldap updater file service.
  *
  * @author bknerr
  * @since 29.04.2011

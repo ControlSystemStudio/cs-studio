@@ -38,8 +38,7 @@ import org.csstudio.domain.desy.time.TimeInstant;
 /**
  * Stores information about an IOC that has been retrieved from the file system.
  *
- * @author $Author$
- * @version $Revision$
+ * @author bknerr
  * @since 30.04.2008
  */
 public class IOC implements Serializable {

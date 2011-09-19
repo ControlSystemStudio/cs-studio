@@ -74,8 +74,6 @@ import com.google.inject.Inject;
  * LDAP Updater access class to encapsulate specific updater access.
  *
  * @author bknerr
- * @author $Author$
- * @version $Revision$
  * @since 13.04.2010
  */
 public final class LdapUpdaterServiceImpl implements ILdapUpdaterService {

@@ -7,9 +7,7 @@
    </configIni>
 
    <launcherArgs>
-      <programArgs>-consoleLog -engine KryoEngineAll</programArgs>
-      <programArgsSol>-pluginCustomization plugin_customization_solaris.ini</programArgsSol>
-      <programArgsWin>-pluginCustomization plugin_customization.ini</programArgsWin>
+      <programArgs>-consoleLog -engine KryoEngineAll -pluginCustomization plugin_customization.ini</programArgs>
       <vmArgs>-Djava.awt.headless=true -Xms64m -Xmx256m</vmArgs>
       <vmArgsMac>-XstartOnFirstThread -Dorg.eclipse.swt.internal.carbon.smallFonts</vmArgsMac>
    </launcherArgs>
@@ -60,7 +58,7 @@
       <plugin id="org.csstudio.email"/>
       <plugin id="org.csstudio.java"/>
       <plugin id="org.csstudio.platform"/>
-      <plugin id="org.csstudio.platform.libs.dal"/>
+      <plugin id="org.csstudio.platform.libs.dal" fragment=""/>
       <plugin id="org.csstudio.platform.libs.epics"/>
       <plugin id="org.csstudio.platform.libs.jmock"/>
       <plugin id="org.csstudio.platform.libs.jms"/>
