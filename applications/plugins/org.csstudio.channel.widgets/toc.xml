@@ -1,8 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <?NLS TYPE="org.eclipse.help.toc"?>
 
-<toc label="PVTable by Property" link_to="../org.csstudio.ui.help/tocApps.xml#display">
+<toc label="Channel Applications" link_to="../org.csstudio.ui.help/tocApps.xml#display">
 <topic label="PVTable by Property"  href="html/pvtable-by-property.html">
-    
+</topic>
+<topic label="Wayterfall"  href="html/waterfall.html">
 </topic>
 </toc>
