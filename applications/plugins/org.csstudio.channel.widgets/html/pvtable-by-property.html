@@ -6,7 +6,36 @@
 
 <body>
 <h1>PVTable by Property</h1>
-<p>TBD</p>
+
+<h2>Overview</h2>
+PVTable by Property allows to organize the output of many pvs in table, based on
+the value of two properties.
+
+<h2>Usage</h2>
+Type in a Channel Finder query, select one property for the row and then one property for
+the column.
+
+<h2>Example</h2>
+<p>
+Here we have selected all the pvs in the storage ring (tagged with aphla.sys.SR) in the
+first cell (cell=c01). For each device name (devName for the row), we look at all the
+fields available for it (elemField for the column): the x position and the y position.
+</p>
+
+<!--center-->
+<img alt="" src="pvtable-by-property.1.png" />
+<p>
+<!--/center-->
+
+<p>
+Here we have selected the same pvs, but we organize them by element name and handle (setpoint/readback).
+</p>
+
+<!--center-->
+<img alt="" src="pvtable-by-property.2.png" />
+<p>
+<!--/center-->
+
 </body>
 </html>
 
