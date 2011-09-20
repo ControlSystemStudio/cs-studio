@@ -1,4 +1,3 @@
-
 /*
  * Copyright (c) 2010 Stiftung Deutsches Elektronen-Synchrotron,
  * Member of the Helmholtz Association, (DESY), HAMBURG, GERMANY.
@@ -21,39 +20,37 @@
  * AT HTTP://WWW.DESY.DE/LEGAL/LICENSE.HTM
  *
  */
-
 package org.csstudio.archive.sdds.server.conversion.handler;
+
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 
 /**
  * @author Markus Moeller
  *
  */
-public class MethodNotImplementedException extends Exception
-{
+public class MethodNotImplementedException extends Exception {
     /** Generated serial version id */
     private static final long serialVersionUID = 5610229760670590671L;
 
     /**
      *
      */
-    public MethodNotImplementedException()
-    {
+    public MethodNotImplementedException() {
         super();
     }
 
     /**
      * @param message
      */
-    public MethodNotImplementedException(final String message)
-    {
+    public MethodNotImplementedException(@Nonnull final String message) {
         super(message);
     }
 
     /**
      * @param cause
      */
-    public MethodNotImplementedException(final Throwable cause)
-    {
+    public MethodNotImplementedException(@Nullable final Throwable cause) {
         super(cause);
     }
 
@@ -61,8 +58,7 @@ public class MethodNotImplementedException extends Exception
      * @param message
      * @param cause
      */
-    public MethodNotImplementedException(final String message, final Throwable cause)
-    {
+    public MethodNotImplementedException(@Nonnull final String message, @Nullable final Throwable cause) {
         super(message, cause);
     }
 }
