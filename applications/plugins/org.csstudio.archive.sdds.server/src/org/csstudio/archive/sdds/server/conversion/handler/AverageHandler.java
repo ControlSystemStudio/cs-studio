@@ -29,6 +29,8 @@ import java.util.Calendar;
 import java.util.GregorianCalendar;
 import java.util.List;
 
+import javax.annotation.Nonnull;
+
 import org.csstudio.archive.sdds.server.SddsServerActivator;
 import org.csstudio.archive.sdds.server.command.header.DataRequestHeader;
 import org.csstudio.archive.sdds.server.data.EpicsRecordData;
@@ -53,7 +55,7 @@ public class AverageHandler extends AbstractAlgorithmHandler {
 
     /** Max. allowed difference of the last allowed record (in seconds)*/
     @SuppressWarnings("unused")
-	private final long validRecordBeforeTime;
+    private final long validRecordBeforeTime;
 
     /**
      * @param maxSamples
@@ -73,7 +75,9 @@ public class AverageHandler extends AbstractAlgorithmHandler {
      * @see org.csstudio.archive.sdds.server.conversion.handler.AbstractAlgorithmHandler#handle(org.csstudio.archive.sdds.server.command.header.DataRequestHeader, org.csstudio.archive.sdds.server.data.EpicsRecordData[])
      */
     @Override
-    public Iterable<EpicsRecordData> handle(final DataRequestHeader header, final EpicsRecordData[] data)
+    @Nonnull
+    public Iterable<EpicsRecordData> handle(@Nonnull final DataRequestHeader header,
+                                            @Nonnull final EpicsRecordData[] data)
     throws DataException, AlgorithmHandlerException, MethodNotImplementedException {
 
         if (data == null) {
@@ -99,7 +103,7 @@ public class AverageHandler extends AbstractAlgorithmHandler {
         // ...and substract 2 months
         cal.add(Calendar.MONTH, -3);
         if (intervalEnd * 1000L > cal.getTimeInMillis()) {
-        	intervalEnd = cal.getTimeInMillis() / 1000L;
+            intervalEnd = cal.getTimeInMillis() / 1000L;
         }
 
         long deltaTime = (intervalEnd - intervalStart) / resultLength;
@@ -107,7 +111,7 @@ public class AverageHandler extends AbstractAlgorithmHandler {
 
             // Requested region very short --> only 1 point per sec
             deltaTime = 1;
-            header.setMaxNumOfSamples((int)(intervalEnd - intervalStart));
+            header.setMaxNumOfSamples((int) (intervalEnd - intervalStart));
         }
 
         // Get the first data sample with the valid time stamp within the request time interval
@@ -121,7 +125,7 @@ public class AverageHandler extends AbstractAlgorithmHandler {
             }
 
             if(o.isValueValid()) {
-             avg = ((Float)o.getValue()).floatValue();
+             avg = ((Float) o.getValue()).floatValue();
             }
 
             index++;
@@ -135,7 +139,8 @@ public class AverageHandler extends AbstractAlgorithmHandler {
         // in the requested time interval
 
 
-        final List<EpicsRecordData> resultData = new ArrayList<EpicsRecordData>(header.getMaxNumOfSamples());
+        final List<EpicsRecordData> resultData =
+            new ArrayList<EpicsRecordData>(header.getMaxNumOfSamples());
 
         long nextIntervalStep = 0;
         long sampleTimestamp = 0;
@@ -173,11 +178,11 @@ public class AverageHandler extends AbstractAlgorithmHandler {
                     if(index < data.length - 1) {
                         index++;
                     } else {
-                    	// Leave the loop if we reached the end of the sample array
-                    	break;
+                        // Leave the loop if we reached the end of the sample array
+                        break;
                     }
                 } else {
-                	break;
+                    break;
                 }
 
             } while (sampleTimestamp < nextIntervalStep);
@@ -185,15 +190,15 @@ public class AverageHandler extends AbstractAlgorithmHandler {
             // We have a sum of sample values from the subinterval
             // Otherwise keep the current average value
             if (foundSample) {
-            	// Calculate the average value
-            	avg = sum / count;
+                // Calculate the average value
+                avg = sum / count;
             }
 
-            if (Float.isNaN(avg) == false) {
-				EpicsRecordData newData = new EpicsRecordData(curTime, 0L, 0L, new Double(String.valueOf(avg)));
-				resultData.add(newData);
-				LOG.debug(newData.toString());
-				newData = null;
+            if (!Float.isNaN(avg)) {
+                EpicsRecordData newData = new EpicsRecordData(curTime, 0L, 0L, new Double(String.valueOf(avg)));
+                resultData.add(newData);
+                LOG.debug(newData.toString());
+                newData = null;
             }
 
             curTime += deltaTime;
