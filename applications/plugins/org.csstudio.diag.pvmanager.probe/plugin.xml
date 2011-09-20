@@ -11,7 +11,7 @@
       <view
             allowMultiple="true"
             class="org.csstudio.diag.pvmanager.probe.PVManagerProbe"
-            icon="icons/probe.png"
+            icon="icons/probe-16.png"
             id="org.csstudio.diag.pvmanager.probe.MultipleView"
             name="Probe - New instance">
       </view>
@@ -19,16 +19,10 @@
             allowMultiple="false"
             category="org.csstudio"
             class="org.csstudio.diag.pvmanager.probe.PVManagerProbe"
-            icon="icons/probe.png"
+            icon="icons/probe-16.png"
             id="org.csstudio.diag.pvmanager.probe.SingleView"
             name="Probe">
       </view>
-   </extension>
-   <extension
-         point="org.eclipse.help.contexts">
-      <contexts
-            file="contexts.xml">
-      </contexts>
    </extension>
    <extension
          point="org.eclipse.ui.commands">
@@ -50,7 +44,7 @@
             locationURI="menu:diag">
          <command
                commandId="org.eclipse.ui.views.showView"
-               icon="icons/probe.png"
+               icon="icons/probe-16.png"
                label="Probe"
                style="push">
             <parameter
@@ -64,7 +58,7 @@
             locationURI="popup:org.csstudio.ui.menu.popup.processvariable">
          <command
                commandId="org.csstudio.diag.pvmanager.probe.OpenProbe"
-               icon="icons/probe.png"
+               icon="icons/probe-16.png"
                style="push">
          </command>
       </menuContribution>
@@ -73,11 +67,25 @@
             locationURI="toolbar:org.csstudio.diag.pvmanager.probe.SingleView">
          <command
                commandId="org.csstudio.diag.pvmanager.probe.createNewProbe"
-               icon="icons/probe-add.png"
+               icon="icons/probe-add-16.png"
                label="New Probe..."
                style="push">
          </command>
       </menuContribution>
+   </extension>
+   <extension
+         point="org.eclipse.ui.intro.configExtension">
+      <configExtension
+            content="intro/probe-intro.xml"
+            configId="org.eclipse.ui.intro.universalConfig">
+      </configExtension>
+   </extension>
+   <extension
+         point="org.eclipse.help.toc">
+      <toc
+            file="toc.xml"
+            primary="true">
+      </toc>
    </extension>
 
 </plugin>

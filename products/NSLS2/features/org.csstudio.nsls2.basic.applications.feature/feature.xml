@@ -50,10 +50,9 @@
          unpack="false"/>
 
    <plugin
-         id="org.csstudio.utility.pvmanager.ui.toolbox"
+         id="org.csstudio.diag.epics.pvtree.intro"
          download-size="0"
          install-size="0"
-         version="0.0.0"
-         unpack="false"/>
+         version="0.0.0"/>
 
 </feature>

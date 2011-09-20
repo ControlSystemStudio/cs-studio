@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <?pde version="3.5"?>
 
-<product name="Css-nsls2" id="org.csstudio.nsls2.product.product" application="org.csstudio.nsls2.product.application" version="3.0.1.qualifier" useFeatures="true" includeLaunchers="true">
+<product name="Css-nsls2" id="org.csstudio.nsls2.product.product" application="org.csstudio.nsls2.product.application" version="3.0.2.qualifier" useFeatures="true" includeLaunchers="true">
 
    <aboutInfo>
       <image path="/org.csstudio.nsls2.product/icons/about.png"/>
@@ -47,9 +47,8 @@ version: 3.0.1.qualifier
       <feature id="org.csstudio.nsls2.core.feature" version="3.0.0.qualifier"/>
       <feature id="org.csstudio.nsls2.nslscore.feature" version="3.0.0.qualifier"/>
       <feature id="org.csstudio.nsls2.applications.feature" version="3.0.1.qualifier"/>
-      <feature id="org.csstudio.nsls2.intro.feature" version="3.0.0.qualifier"/>
-      <feature id="org.eclipse.equinox.p2.user.ui" version="2.1.1.v20110526-6-Bg9JXOePwKUTU7X0teV1RtDu-e"/>
-      <feature id="org.eclipse.rcp" version="3.7.0.v20110216-9DB5Fm1FpBGy_AaVz-mFamgY"/>
+      <feature id="org.eclipse.rcp"/>
+      <feature id="org.eclipse.equinox.p2.user.ui"/>
    </features>
 
 

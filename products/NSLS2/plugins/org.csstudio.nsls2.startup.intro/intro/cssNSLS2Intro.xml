@@ -2,7 +2,8 @@
 <introContent>
   	<extensionContent id="org.csstudio.nsls2.intro" style="css/sample.css" name="CSS strartup intro" path="firststeps/@">
 		<group style-id="content-group" id="org.csstudio.nsls2.intro-group">
-       		<link label=" Introduction to CSS" url="http://org.eclipse.ui.intro/showPage?id=css-nsls2-intro" 
+       		<link label=" Introduction to CSS"
+       		url="http://org.eclipse.ui.intro/showHelpTopic?id=/org.csstudio.nsls2.startup.intro/html/intro.html&amp;embed=true" 
        		id="nsls2-Link" style-id="content-link">
           		<text>
 				  CSS is a collection of control system tools, and this version of CSS
@@ -12,7 +13,5 @@
        		</link>
        	</group>
   	</extensionContent>
-  	
-  	<page url="html/root.html"  id="css-nsls2-intro" />
   	
 </introContent>
