@@ -36,6 +36,7 @@ import org.csstudio.utility.ldapupdater.preferences.LdapUpdaterPreferencesServic
 import org.eclipse.equinox.app.IApplication;
 import org.eclipse.equinox.app.IApplicationContext;
 import org.joda.time.DateTimeFieldType;
+import org.joda.time.DateTimeZone;
 import org.remotercp.common.tracker.IGenericServiceListener;
 import org.remotercp.service.connection.session.ISessionService;
 import org.slf4j.Logger;
@@ -140,7 +141,7 @@ public class LdapUpdaterServer implements IApplication,
             }
         }
         if (delayInS == -1) {
-            delayInS = calculateDelayInSeconds(startTimeSec, now);
+            delayInS = calculateDelayForLocalTZInS(startTimeSec, now);
         }
         return delayInS;
     }
@@ -159,16 +160,18 @@ public class LdapUpdaterServer implements IApplication,
     }
 
 
-    private long calculateDelayInSeconds(final long startTimeSec,
-                                   @Nonnull final TimeInstant now) {
+    private long calculateDelayForLocalTZInS(final long startTimeInSecondsOfDay,
+                                             @Nonnull final TimeInstant now) {
 
-        final int secondsSinceMidnight = now.getInstant().get(DateTimeFieldType.secondOfDay());
+        final int nowInSecSinceMidnight = now.getInstant().get(DateTimeFieldType.secondOfDay());
 
-        long delaySec = startTimeSec - secondsSinceMidnight;
-        if (delaySec < 0) {
-            delaySec = 3600*24 + delaySec; // start at startTimeSec on the next day
+        long delayInS = startTimeInSecondsOfDay - nowInSecSinceMidnight;
+        if (delayInS < 0) {
+            delayInS = 3600*24 + delayInS; // start at startTimeSec on the next day
         }
-        return delaySec;
+        final DateTimeZone localZone = DateTimeZone.getDefault();
+        final int offsetOfLocalTZInS = localZone.getOffset(now.getInstant())/1000;
+        return delayInS - offsetOfLocalTZInS;
     }
 
     /**
