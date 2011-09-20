@@ -28,6 +28,7 @@ import java.io.ByteArrayInputStream;
 import java.io.DataInputStream;
 import java.io.IOException;
 
+import javax.annotation.CheckForNull;
 import javax.annotation.Nonnull;
 
 import org.slf4j.Logger;
@@ -91,7 +92,7 @@ public class DataRequestHeader implements IRequestHeader {
         result.append(",conversionParameter=" + conversionParameter + ",pvNameSize=" + pvNameSize);
         result.append(",pvName{");
 
-        for(int i = 0;i < pvNameSize;i++) {
+        for(int i = 0; i < pvNameSize; i++) {
             result.append(pvName[i]);
             if(i < pvNameSize - 1) {
                 result.append(",");
@@ -109,21 +110,22 @@ public class DataRequestHeader implements IRequestHeader {
      * @return
      * @throws IOException
      */
-    private String readNextString(final DataInputStream d) throws IOException {
+    @Nonnull
+    private String readNextString(@Nonnull final DataInputStream d) throws IOException {
         StringBuffer tmp = null;
         byte c = -1;
 
         while((c = d.readByte()) == 0) {
-            ;
+            // Ignore
         }
 
         tmp = new StringBuffer();
         if(c != 0) {
-            tmp.append((char)c);
+            tmp.append((char) c);
         }
 
         while((c = d.readByte()) != 0) {
-            tmp.append((char)c);
+            tmp.append((char) c);
         }
 
         return tmp.toString();
@@ -133,6 +135,7 @@ public class DataRequestHeader implements IRequestHeader {
      * @see org.csstudio.archive.jaapi.server.command.header.IRequestHeader#getHeaderAsByteArray()
      */
     @Override
+    @CheckForNull
     public byte[] getHeaderAsByteArray() {
         return null;
     }
@@ -141,7 +144,7 @@ public class DataRequestHeader implements IRequestHeader {
      * @see org.csstudio.archive.jaapi.server.command.header.IRequestHeader#setHeaderFromByteArray()
      */
     @Override
-    public void setHeaderFromByteArray(final byte[] data) {
+    public void setHeaderFromByteArray(@Nonnull final byte[] data) {
 
         final DataInputStream dis = new DataInputStream(new ByteArrayInputStream(data));
 
@@ -157,7 +160,7 @@ public class DataRequestHeader implements IRequestHeader {
             pvNameSize = dis.readInt();
             pvName = new String[pvNameSize];
 
-            for(int i = 0;i < pvNameSize;i++) {
+            for(int i = 0; i < pvNameSize; i++) {
                 pvName[i] = readNextString(dis);
             }
 
@@ -314,6 +317,7 @@ public class DataRequestHeader implements IRequestHeader {
      *
      * @return
      */
+    @Nonnull
     public String[] getPvName() {
         return pvName;
     }
@@ -322,7 +326,7 @@ public class DataRequestHeader implements IRequestHeader {
      *
      * @param pvName
      */
-    public void setPvName(final String[] pvName) {
+    public void setPvName(@Nonnull final String[] pvName) {
         this.pvName = pvName;
     }
 }
