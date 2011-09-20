@@ -39,10 +39,10 @@ import org.slf4j.LoggerFactory;
  * @author Markus Moeller
  *
  */
-public class Server extends Thread {
+public class SddsServer extends Thread {
 
     /** The logger of this class */
-    private static final Logger LOG = LoggerFactory.getLogger(Server.class);
+    private static final Logger LOG = LoggerFactory.getLogger(SddsServer.class);
 
     /** The server socket */
     private ServerSocket serverSocket;
@@ -66,7 +66,7 @@ public class Server extends Thread {
      * @throws ServerException
      *
      */
-    public Server(final int port, final int timeOut) throws ServerException {
+    public SddsServer(final int port, final int timeOut) throws ServerException {
 
         serverSocket = null;
         this.serverPort = port;
@@ -97,7 +97,7 @@ public class Server extends Thread {
      * @param port
      * @throws ServerException
      */
-    public Server(final int port) throws ServerException {
+    public SddsServer(final int port) throws ServerException {
         this(port, 0);
     }
 
@@ -118,11 +118,11 @@ public class Server extends Thread {
         Socket socket = null;
         ClientRequest request = null;
 
-        LOG.info("Server is running.");
+        LOG.info("SddsServer is running.");
 
         while(running) {
 
-            LOG.info("Server is waiting for a request.");
+            LOG.info("SddsServer is waiting for a request.");
 
             try {
 
@@ -145,13 +145,13 @@ public class Server extends Thread {
             if(!serverSocket.isClosed()) {
                 serverSocket.close();
             } else {
-                LOG.info("Server socket was closed already.");
+                LOG.info("SddsServer socket was closed already.");
             }
         } catch(final IOException ioe) {
             LOG.error("[*** IOException ***]: ", ioe);
         }
 
-        LOG.info("Leaving Server.");
+        LOG.info("Leaving SddsServer.");
     }
 
     /**
@@ -183,7 +183,7 @@ public class Server extends Thread {
             this.notify();
 
             try {
-                LOG.info("Server is forced to be stopped. Closing server socket.");
+                LOG.info("SddsServer is forced to be stopped. Closing server socket.");
                 serverSocket.close();
             } catch (final IOException ioe) {
                 LOG.warn("stopServer(): [*** IOException ***]: ", ioe);

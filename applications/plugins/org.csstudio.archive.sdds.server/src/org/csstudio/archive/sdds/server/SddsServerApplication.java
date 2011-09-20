@@ -40,7 +40,7 @@ import javax.management.NotCompliantMBeanException;
 import javax.management.ObjectName;
 
 import org.csstudio.archive.sdds.server.internal.ServerPreferenceKey;
-import org.csstudio.archive.sdds.server.io.Server;
+import org.csstudio.archive.sdds.server.io.SddsServer;
 import org.csstudio.archive.sdds.server.io.ServerException;
 import org.csstudio.archive.sdds.server.management.Restart;
 import org.csstudio.archive.sdds.server.management.Stop;
@@ -65,7 +65,7 @@ public class SddsServerApplication implements IApplication, IRemotelyStoppable, 
     private static final Logger LOG = LoggerFactory.getLogger(SddsServerApplication.class);
 
     /** The instance of the server */
-    private Server server;
+    private SddsServer server;
 
     /** Session service for the XMPP login */
     private ISessionService xmppService;
@@ -116,11 +116,11 @@ public class SddsServerApplication implements IApplication, IRemotelyStoppable, 
             } else {
                 connectMBeanServer();
             }
-            server = new Server(serverPort);
+            server = new SddsServer(serverPort);
             server.start();
 
         } catch(final ServerException se) {
-            LOG.error("Cannot create an instance of the Server class. ", se);
+            LOG.error("Cannot create an instance of the SddsServer class. ", se);
             LOG.error("Stopping application!");
             running = false;
             restart = false;
