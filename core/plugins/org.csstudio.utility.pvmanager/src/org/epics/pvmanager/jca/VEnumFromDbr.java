@@ -5,6 +5,7 @@
 
 package org.epics.pvmanager.jca;
 
+import edu.emory.mathcs.backport.java.util.Collections;
 import gov.aps.jca.dbr.DBR_LABELS_Enum;
 import gov.aps.jca.dbr.DBR_TIME_Enum;
 import java.util.Arrays;
@@ -36,6 +37,8 @@ class VEnumFromDbr extends VMetadata<DBR_TIME_Enum> implements VEnum {
 
     @Override
     public List<String> getLabels() {
+        if (metadata.getLabels() == null)
+            throw new RuntimeException("Metadata returned no labels");
         return Arrays.asList(metadata.getLabels());
     }
 

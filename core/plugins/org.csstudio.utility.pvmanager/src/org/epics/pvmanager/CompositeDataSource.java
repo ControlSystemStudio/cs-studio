@@ -251,4 +251,14 @@ public class CompositeDataSource extends DataSource {
         throw new UnsupportedOperationException("Composite data source can't create channels directly.");
     }
 
+    /**
+     * Closes all DataSources that are registered in the composite.
+     */
+    @Override
+    public void close() {
+        for (DataSource dataSource : dataSources.values()) {
+            dataSource.close();
+        }
+    }
+
 }

@@ -280,5 +280,12 @@ public abstract class DataSource {
     public Map<String, ChannelHandler<?>> getChannels() {
         return Collections.unmodifiableMap(usedChannels);
     }
+
+    /**
+     * Closes the DataSource and the resources associated with it.
+     */
+    public void close() {
+        
+    }
     
 }

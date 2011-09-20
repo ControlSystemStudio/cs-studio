@@ -44,7 +44,7 @@ public class NoiseWaveform extends SimFunction<VDoubleArray> {
      * @param interval time between samples in seconds
      */
     public NoiseWaveform(Double min, Double max, Double interval) {
-        this(min, max, 1.0, interval);
+        this(min, max, 100.0, interval);
     }
 
     /**
