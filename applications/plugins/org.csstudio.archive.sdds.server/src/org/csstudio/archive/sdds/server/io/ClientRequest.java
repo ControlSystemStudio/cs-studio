@@ -33,6 +33,9 @@ import java.io.InputStream;
 import java.io.OutputStream;
 import java.net.Socket;
 
+import javax.annotation.CheckForNull;
+import javax.annotation.Nonnull;
+
 import org.csstudio.archive.sdds.server.command.CommandExecutor;
 import org.csstudio.archive.sdds.server.command.CommandNotImplementedException;
 import org.csstudio.archive.sdds.server.command.ServerCommandException;
@@ -56,7 +59,7 @@ public class ClientRequest implements Runnable {
     private static final Logger LOG = LoggerFactory.getLogger(ClientRequest.class);
 
     /** The socket of this request. */
-    private Socket socket;
+    private final Socket socket;
 
     /** The class that holds and executes the server commands. */
     private final CommandExecutor commandExecutor;
@@ -65,8 +68,8 @@ public class ClientRequest implements Runnable {
      *
      * @param socket
      */
-    public ClientRequest(final Socket socket, final CommandExecutor commandExecutor)
-    {
+    public ClientRequest(@Nonnull final Socket socket,
+                         @Nonnull final CommandExecutor commandExecutor) {
         this.socket = socket;
         this.commandExecutor = commandExecutor;
     }
@@ -75,8 +78,7 @@ public class ClientRequest implements Runnable {
      * @see java.lang.Runnable#run()
      */
     @Override
-	public void run()
-    {
+    public void run() {
         InputStream in = null;
         final IntegerValue resultLength = new IntegerValue();
         final RawData resultData = new RawData();
@@ -84,19 +86,15 @@ public class ClientRequest implements Runnable {
 
         LOG.info("Handle request from socket " + socket.toString());
 
-        try
-        {
+        try {
             in = socket.getInputStream();
 
-            while(!socket.isClosed())
-            {
+            while (!socket.isClosed()) {
                 final CommandHeader header = readHeader(in);
                 requestData = readData(in);
 
-                if(header != null) {
-
-                	LOG.info(header.toString());
-
+                if (header != null) {
+                    LOG.info(header.toString());
                     try {
                         commandExecutor.executeCommand(header.getCommandTag(),
                                                        requestData,
@@ -108,9 +106,7 @@ public class ClientRequest implements Runnable {
                         header.setError(sce.getErrorNumber());
                         resultData.setData(sce.getMessage().getBytes());
                         resultLength.setIntegerValue(resultData.getData().length + 2);
-                    }
-                    catch(final CommandNotImplementedException cnie)
-                    {
+                    } catch(final CommandNotImplementedException cnie) {
                         LOG.error("[*** CommandNotImplementedException ***]: " + cnie.getMessage());
                         header.setError(AapiServerError.BAD_CMD.getErrorNumber());
                         resultData.setData(cnie.getMessage().getBytes());
@@ -122,99 +118,70 @@ public class ClientRequest implements Runnable {
                 }
             }
         } catch (final IOException ioe) {
-            if(ioe instanceof EOFException) {
+            if (ioe instanceof EOFException) {
                 LOG.info("End of data stream reached.");
             } else {
                 LOG.error(ioe.getMessage());
             }
         } finally {
             in = null;
-            if(socket!=null) {
-            	try{socket.close();}catch(final Exception e){/* Can be ignored */}
-            	socket = null;
+            if (socket != null) {
+                try {
+                    socket.close();
+                } catch (final Exception e) {/* Can be ignored */}
             }
         }
-
         LOG.info("Request finished.");
     }
 
-    /**
-     *
-     * @param stream
-     * @return
-     * @throws IOException
-     */
-    private CommandHeader readHeader(final InputStream stream) throws IOException
-    {
-        DataInputStream dis = null;
-        CommandHeader result = null;
+    @Nonnull
+    private CommandHeader readHeader(@Nonnull final InputStream stream) throws IOException {
 
-        dis = new DataInputStream(stream);
-        result = new CommandHeader();
+        final DataInputStream dis = new DataInputStream(stream);
+
+        final CommandHeader result = new CommandHeader();
         result.setPacketSize(dis.readInt());
         result.setCommandTag(dis.readInt());
         result.setError(dis.readInt());
         result.setAapiVersion(dis.readInt());
-
         return result;
     }
 
-    /**
-     *
-     * @param stream
-     * @return
-     * @throws IOException
-     */
-    private RawData readData(final InputStream stream)
-    {
-        DataInputStream dis = null;
-        RawData result = null;
-        byte[] data = null;
-        int dataLength;
+    @CheckForNull
+    private RawData readData(@Nonnull final InputStream stream) {
+        final int dataLength = getDataLengthFromStream(stream);
 
-        try
-        {
-            dataLength = stream.available();
+        if(dataLength > 0) {
+            final DataInputStream dis = new DataInputStream(stream);
+            final byte[] data = new byte[dataLength];
+            try {
+                dis.read(data);
+                return new RawData(data);
+            } catch(final IOException ioe) {
+                // Ignore
+            }
         }
-        catch(final IOException ioe)
-        {
+        return null;
+    }
+
+    private int getDataLengthFromStream(@Nonnull final InputStream stream) {
+        int dataLength;
+        try {
+            dataLength = stream.available();
+        } catch(final IOException ioe) {
             dataLength = 0;
         }
-
-        if(dataLength > 0)
-        {
-            dis = new DataInputStream(stream);
-            data = new byte[dataLength];
-
-            try
-            {
-                dis.read(data);
-                result = new RawData();
-                result.setData(data);
-            }
-            catch(final IOException ioe)
-            {
-                result = null;
-            }
-        }
-
-        return result;
+        return dataLength;
     }
 
-    /**
-     *
-     * @param out
-     * @param header
-     * @param data
-     * @param dataLength
-     * @throws IOException
-     */
-    private void writeAnswer(final OutputStream out,
-                             final CommandHeader header,
-                             final RawData data,
-                             final IntegerValue dataLength) throws IOException {
-        final ByteArrayOutputStream outData = new ByteArrayOutputStream(AAPI.HEADER_LENGTH + dataLength.getIntegerValue());
-        DataOutputStream dos = new DataOutputStream(outData);
+    private void writeAnswer(@Nonnull final OutputStream out,
+                             @Nonnull final CommandHeader header,
+                             @Nonnull final RawData data,
+                             @Nonnull final IntegerValue dataLength) throws IOException {
+
+        final ByteArrayOutputStream outData =
+            new ByteArrayOutputStream(AAPI.HEADER_LENGTH + dataLength.getIntegerValue());
+        final DataOutputStream dos = new DataOutputStream(outData);
 
         // Write header
         dos.writeInt(AAPI.HEADER_LENGTH + dataLength.getIntegerValue());
@@ -227,15 +194,9 @@ public class ClientRequest implements Runnable {
 
         // Write to socket output stream
         out.write(outData.toByteArray());
-//        if(header.getError() != 0)
-//        {
-//            out.write(0);
-//            out.write(0);
-//        }
 
-        if(dos!=null) {
-        	try{dos.close();}catch(final Exception e){/* Can be ignored */}
-        	dos=null;
-        }
+        try {
+            dos.close();
+        } catch (final Exception e) {/* Can be ignored */}
     }
 }
