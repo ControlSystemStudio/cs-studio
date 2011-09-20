@@ -54,7 +54,7 @@ public class CommandExecutor {
                 new FilterList(),
                 new RegExpChannelList(),
                 new SkeletonList(),
-                new WaveFormDataRequest()
+                new WaveFormDataRequest(),
          };
     }
 
