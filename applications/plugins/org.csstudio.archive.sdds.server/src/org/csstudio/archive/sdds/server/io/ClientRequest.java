@@ -88,7 +88,7 @@ public class ClientRequest implements Runnable {
         {
             in = socket.getInputStream();
 
-            while(socket.isClosed() == false)
+            while(!socket.isClosed())
             {
                 final CommandHeader header = readHeader(in);
                 requestData = readData(in);
@@ -98,8 +98,11 @@ public class ClientRequest implements Runnable {
                 	LOG.info(header.toString());
 
                     try {
-                        commandExecutor.executeCommand(header.getCommandTag(), requestData,
-                                                       resultData, resultLength);
+                        commandExecutor.executeCommand(header.getCommandTag(),
+                                                       requestData,
+                                                       resultData,
+                                                       resultLength);
+
                     } catch (final ServerCommandException sce) {
                         LOG.error("[*** ServerCommandException ***]: " + sce.getMessage());
                         header.setError(sce.getErrorNumber());
@@ -206,8 +209,10 @@ public class ClientRequest implements Runnable {
      * @param dataLength
      * @throws IOException
      */
-    private void writeAnswer(final OutputStream out, final CommandHeader header, final RawData data, final IntegerValue dataLength) throws IOException
-    {
+    private void writeAnswer(final OutputStream out,
+                             final CommandHeader header,
+                             final RawData data,
+                             final IntegerValue dataLength) throws IOException {
         final ByteArrayOutputStream outData = new ByteArrayOutputStream(AAPI.HEADER_LENGTH + dataLength.getIntegerValue());
         DataOutputStream dos = new DataOutputStream(outData);
 

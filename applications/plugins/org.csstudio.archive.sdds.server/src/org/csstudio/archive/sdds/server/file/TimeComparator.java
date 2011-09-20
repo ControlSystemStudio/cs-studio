@@ -26,6 +26,8 @@ package org.csstudio.archive.sdds.server.file;
 
 import java.util.Comparator;
 
+import javax.annotation.Nonnull;
+
 import org.csstudio.archive.sdds.server.data.EpicsRecordData;
 
 /**
@@ -35,10 +37,11 @@ import org.csstudio.archive.sdds.server.data.EpicsRecordData;
  * @version
  * @since 07.10.2010
  */
-public class TimeComperator implements Comparator<EpicsRecordData> {
+public class TimeComparator implements Comparator<EpicsRecordData> {
 
     @Override
-    public int compare(final EpicsRecordData o1, final EpicsRecordData o2) {
+    public int compare(@Nonnull final EpicsRecordData o1,
+                       @Nonnull final EpicsRecordData o2) {
         return Long.signum(o1.getTime() - o2.getTime());
     }
 }

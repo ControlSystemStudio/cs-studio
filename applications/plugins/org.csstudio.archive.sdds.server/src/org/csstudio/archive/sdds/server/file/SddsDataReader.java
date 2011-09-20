@@ -90,7 +90,7 @@ public class SddsDataReader implements Runnable {
         sddsFile.setFileName(filePath);
         sddsFile.setEndian(littleEndian);
         // result = new Vector<EpicsRecordData>();
-        data = new TreeSet<EpicsRecordData>(new TimeComperator());
+        data = new TreeSet<EpicsRecordData>(new TimeComparator());
     }
 
     /**
