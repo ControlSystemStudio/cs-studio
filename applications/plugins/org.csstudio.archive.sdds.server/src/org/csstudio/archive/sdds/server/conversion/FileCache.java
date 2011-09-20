@@ -1,4 +1,3 @@
-
 /*
  * Copyright (c) 2010 Stiftung Deutsches Elektronen-Synchrotron,
  * Member of the Helmholtz Association, (DESY), HAMBURG, GERMANY.
@@ -21,8 +20,9 @@
  * AT HTTP://WWW.DESY.DE/LEGAL/LICENSE.HTM
  *
  */
-
 package org.csstudio.archive.sdds.server.conversion;
+
+import javax.annotation.Nonnull;
 
 /**
  * @author Markus Moeller
@@ -44,56 +44,47 @@ public class FileCache {
     private long numberOfRecords;
     private long readCounter;
 
-    public FileCache()
-    {
+    public FileCache() {
         reset();
     }
 
-    public void reset()
-    {
+    public void reset() {
         status = 0;
         historyBuffer = null;
         numberOfRecords = 0;
         readCounter = 0;
     }
 
-    public long getStatus()
-    {
+    public long getStatus() {
         return status;
     }
 
-    public void setStatus(final long status)
-    {
+    public void setStatus(final long status) {
         this.status = status;
     }
 
-    public SimpleData getHistoryBuffer()
-    {
+    @Nonnull
+    public SimpleData getHistoryBuffer() {
         return historyBuffer;
     }
 
-    public void setHistoryBuffer(final SimpleData historyBuffer)
-    {
+    public void setHistoryBuffer(@Nonnull final SimpleData historyBuffer) {
         this.historyBuffer = historyBuffer;
     }
 
-    public long getNumberOfRecords()
-    {
+    public long getNumberOfRecords() {
         return numberOfRecords;
     }
 
-    public void setNumberOfRecords(final long numberOfRecords)
-    {
+    public void setNumberOfRecords(final long numberOfRecords) {
         this.numberOfRecords = numberOfRecords;
     }
 
-    public long getReadCounter()
-    {
+    public long getReadCounter() {
         return readCounter;
     }
 
-    public void setReadCounter(final long readCounter)
-    {
+    public void setReadCounter(final long readCounter) {
         this.readCounter = readCounter;
     }
 }
