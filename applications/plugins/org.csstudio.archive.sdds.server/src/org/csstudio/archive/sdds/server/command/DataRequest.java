@@ -81,7 +81,7 @@ public class DataRequest extends AbstractServerCommand {
         RecordDataCollection data = null;
         final DataRequestHeader header = new DataRequestHeader(buffer.getData());
         final ByteArrayOutputStream baos = new ByteArrayOutputStream();
-        DataOutputStream dos = new DataOutputStream(baos);
+        final DataOutputStream dos = new DataOutputStream(baos);
         double f;
 
         LOG.info(header.toString());
@@ -128,16 +128,16 @@ public class DataRequest extends AbstractServerCommand {
 
                 for(final EpicsRecordData o : data.getData()) {
 
-                    dos.writeInt((int)o.getTime());
-                    dos.writeInt((int)o.getNanoSeconds());
-                    dos.writeInt((int)o.getStatus());
+                    dos.writeInt((int) o.getTime());
+                    dos.writeInt((int) o.getNanoSeconds());
+                    dos.writeInt((int) o.getStatus());
 
                     // TODO: Handle ALL data types
                     switch(o.getSddsType()) {
 
                         case SDDS_DOUBLE:
 
-                            f = (Double)o.getValue();
+                            f = (Double) o.getValue();
                             dos.writeDouble(f);
 
                             break;
@@ -169,8 +169,11 @@ public class DataRequest extends AbstractServerCommand {
         } catch(final IOException ioe) {
             LOG.error("[*** IOException ***]: " + ioe.getMessage());
         } finally {
-            try{dos.close();}catch(final Exception e) { /* Can be ignored */ }
-            dos = null;
+            try {
+                dos.close();
+            } catch (final Exception e) {
+                LOG.warn("Closing of data output stream failed.", e);
+            }
         }
 
         // throw new ServerCommandException(AAPI.AAPI.aapiServerSideErrorString[AAPI.AAPI.BAD_TIME], AAPI.AAPI.BAD_TIME);
