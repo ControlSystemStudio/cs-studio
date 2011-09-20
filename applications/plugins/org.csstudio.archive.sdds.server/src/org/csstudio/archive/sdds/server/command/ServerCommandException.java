@@ -24,6 +24,10 @@
 
 package org.csstudio.archive.sdds.server.command;
 
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
+
+
 /**
  * @author Markus Moeller
  *
@@ -54,7 +58,7 @@ public class ServerCommandException extends Exception {
     /**
      * @param message
      */
-    public ServerCommandException(final String message) {
+    public ServerCommandException(@Nonnull final String message) {
         super(message);
         this.errorNumber = 0;
     }
@@ -64,7 +68,7 @@ public class ServerCommandException extends Exception {
      * @param message
      * @param err
      */
-    public ServerCommandException(final String message, final int err) {
+    public ServerCommandException(@Nonnull final String message, final int err) {
         super(message);
         this.errorNumber = err;
     }
@@ -72,7 +76,7 @@ public class ServerCommandException extends Exception {
     /**
      * @param cause
      */
-    public ServerCommandException(final Throwable cause) {
+    public ServerCommandException(@Nullable final Throwable cause) {
         super(cause);
         this.errorNumber = 0;
     }
@@ -82,7 +86,7 @@ public class ServerCommandException extends Exception {
      * @param cause
      * @param err
      */
-    public ServerCommandException(final Throwable cause, final int err) {
+    public ServerCommandException(@Nullable final Throwable cause, final int err) {
         super(cause);
         this.errorNumber = err;
     }
@@ -91,7 +95,8 @@ public class ServerCommandException extends Exception {
      * @param message
      * @param cause
      */
-    public ServerCommandException(final String message, final Throwable cause) {
+    public ServerCommandException(@Nonnull final String message,
+                                  @Nullable final Throwable cause) {
         super(message, cause);
         this.errorNumber = 0;
     }
@@ -102,7 +107,9 @@ public class ServerCommandException extends Exception {
      * @param cause
      * @param err
      */
-    public ServerCommandException(final String message, final Throwable cause, final int err) {
+    public ServerCommandException(@Nonnull final String message,
+                                  @Nullable final Throwable cause,
+                                  final int err) {
         super(message, cause);
         this.errorNumber = err;
     }
