@@ -76,22 +76,23 @@ public abstract class AbstractServerCommand {
     public byte[] createErrorAnswer(@Nonnull final int errorNumber) {
 
         final ByteArrayOutputStream baos = new ByteArrayOutputStream();
-        DataOutputStream dos = new DataOutputStream(baos);
+        final DataOutputStream dos = new DataOutputStream(baos);
         byte[] result = null;
 
         try {
-
             dos.writeBytes(AapiServerError.getByNumber(errorNumber).toString());
             dos.writeByte('\0');
 
             result = baos.toByteArray();
 
         } catch(final IOException ioe) {
-
             LOG.error("[*** IOException ***]: ", ioe);
         } finally {
-            try{dos.close();}catch(final Exception e){ /* Can be ignored */}
-            dos=null;
+            try {
+                dos.close();
+            } catch (final Exception e) {
+                LOG.error("Closing of data output stream failed.", e);
+            }
         }
 
         return result;
