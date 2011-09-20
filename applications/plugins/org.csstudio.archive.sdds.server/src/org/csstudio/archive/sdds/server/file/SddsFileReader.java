@@ -25,17 +25,19 @@
 package org.csstudio.archive.sdds.server.file;
 
 import java.io.File;
-import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.GregorianCalendar;
 import java.util.List;
-import java.util.Vector;
+
+import javax.annotation.Nonnull;
 
 import org.csstudio.archive.sdds.server.conversion.SampleParameters;
 import org.csstudio.archive.sdds.server.data.EpicsRecordData;
 import org.csstudio.archive.sdds.server.data.RecordDataCollection;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import com.google.common.collect.Lists;
 
 /**
  * The class reads a specified SDDS file and offers a method to get the data from the file.
@@ -57,7 +59,7 @@ public class SddsFileReader {
      *
      * @throws DataPathNotFoundException
      */
-    public SddsFileReader(final String dataSourceFile) throws DataPathNotFoundException {
+    public SddsFileReader(@Nonnull final String dataSourceFile) throws DataPathNotFoundException {
         dataPath = new ArchiveLocation();
         dataPath.loadLocationList(dataSourceFile);
     }
@@ -68,6 +70,7 @@ public class SddsFileReader {
      * @param endTime
      * @return Returns array of String that contains all paths for the given time interval
      */
+    @Nonnull
     public String[] getAllPaths(final long startTime, final long endTime) {
         return dataPath.getAllPaths(startTime, endTime);
     }
@@ -80,27 +83,21 @@ public class SddsFileReader {
      * @param endTime
      * @return Array of data objects
      */
-    public RecordDataCollection readData(final String recordName, final long startTime, final long endTime) {
+    @Nonnull
+    public RecordDataCollection readData(@Nonnull final String recordName,
+                                         final long startTime,
+                                         final long endTime) {
 
-        RecordDataCollection dataCollection = null;
-        ThreadGroup threadGroup = null;
-        Thread[] readerThread = null;
-        SddsDataReader[] reader = null;
-        String[] filePaths = null;
-
-        // filePaths = dataPath.getAllPaths(getEndTimeOfPreviousMonth(startTime), getStartTimeOfNextMonth(endTime));
-        filePaths = dataPath.getAllPaths(getEndTimeOfPreviousMonth(startTime), endTime);
-
+        final String[] filePaths = dataPath.getAllPaths(getEndTimeOfPreviousMonth(startTime), endTime);
         final long st = System.currentTimeMillis();
 
-        threadGroup = new ThreadGroup("DataReader");
-        readerThread = new Thread[filePaths.length];
-        reader = new SddsDataReader[filePaths.length];
-        for(int i = 0;i < filePaths.length;i++)
-        {
+        final ThreadGroup threadGroup = new ThreadGroup("DataReader");
+        final Thread[] readerThread = new Thread[filePaths.length];
+        final SddsDataReader[] reader = new SddsDataReader[filePaths.length];
+
+        for(int i = 0; i < filePaths.length; i++) {
             filePaths[i] = getCorrectFilename(filePaths[i], recordName);
-            if(filePaths[i] != null)
-            {
+            if(filePaths[i] != null) {
                 reader[i] = new SddsDataReader(filePaths[i], startTime, endTime);
                 readerThread[i] = new Thread(threadGroup, reader[i]);
                 readerThread[i].start();
@@ -113,6 +110,7 @@ public class SddsFileReader {
                     threadGroup.wait(10);
                 } catch(final InterruptedException ie) {
                     LOG.warn("*** Interrupted ***");
+                    Thread.currentThread().interrupt();
                 }
             }
         }
@@ -121,18 +119,16 @@ public class SddsFileReader {
 
         LOG.debug("Finished in " + et + " Millisekunden (" + et / 1000 + " sec)");
 
-        dataCollection = new RecordDataCollection();
-        final Vector<EpicsRecordData> allResults = new Vector<EpicsRecordData>();
-        for(int i = 0;i < filePaths.length;i++) {
+        final RecordDataCollection dataCollection = new RecordDataCollection();
+
+        final List<EpicsRecordData> allResults = Lists.newLinkedList();
+        for(int i = 0; i < filePaths.length; i++) {
             if(reader[i] != null) {
                 allResults.addAll(reader[i].getResult());
             }
         }
 
-        final List<EpicsRecordData> result = new ArrayList<EpicsRecordData>(allResults.size());
-        result.addAll(allResults);
-
-        dataCollection.setData(result);
+        dataCollection.setData(allResults);
         if(reader[0] != null) {
             dataCollection.setSampleParameter(reader[0].getSampleCtrl());
         } else {
@@ -142,19 +138,15 @@ public class SddsFileReader {
         return dataCollection;
     }
 
-    /**
-     *
-     * @param path
-     * @param filename
-     * @return
-     */
-    private String getCorrectFilename(final String path, final String filename) {
+    @Nonnull
+    private String getCorrectFilename(@Nonnull final String path,
+                                      @Nonnull final String filename) {
 
         String result = null;
         File file = null;
 
         file = new File(path + filename);
-        if(file.exists() == false) {
+        if(!file.exists()) {
             file = null;
             file = new File(path + filename + ".gz");
             if(file.exists()) {

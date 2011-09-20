@@ -24,6 +24,8 @@
 
 package org.csstudio.archive.sdds.server.file;
 
+import javax.annotation.Nonnull;
+
 /**
  * @author Markus Moeller
  *
@@ -55,7 +57,7 @@ public enum SddsDataType {
      * @param type
      * @return
      */
-    public boolean isSddsIntegerType(final SddsDataType type) {
+    public boolean isSddsIntegerType(@Nonnull final SddsDataType type) {
         return type == SDDS_LONG || type == SDDS_ULONG || type == SDDS_SHORT || type == SDDS_USHORT;
     }
 
@@ -64,7 +66,7 @@ public enum SddsDataType {
      * @param type
      * @return
      */
-    public boolean isSddsFloatingType(final SddsDataType type) {
+    public boolean isSddsFloatingType(@Nonnull final SddsDataType type) {
         return type == SDDS_DOUBLE || type == SDDS_FLOAT;
     }
 
@@ -73,7 +75,7 @@ public enum SddsDataType {
      * @param type
      * @return
      */
-    public boolean isSddsNumericType(final SddsDataType type) {
+    public boolean isSddsNumericType(@Nonnull final SddsDataType type) {
         return isSddsIntegerType(type) || isSddsFloatingType(type);
     }
 
@@ -82,7 +84,7 @@ public enum SddsDataType {
      * @param type
      * @return
      */
-    public boolean isSddsValidType(final SddsDataType type) {
+    public boolean isSddsValidType(@Nonnull final SddsDataType type) {
         return type.ordinal() >= 1 && type.ordinal() <= SddsDataType.getSddsTypeCount();
     }
 }
