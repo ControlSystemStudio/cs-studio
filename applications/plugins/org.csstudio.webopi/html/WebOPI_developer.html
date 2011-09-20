@@ -9,13 +9,10 @@
 <body>
 
 <h2>WebOPI Developer Manual</h2>
-<h3>Required Plugins</h3>
+<h3>Install RAP platform</h3>
 <p>WebOPI is developed on RAP, so you must have RAP installed in your Eclipse. You can simple download 
 <code>Eclipse for RCP and RAP developers</code> from 
 <a href="http://www.eclipse.org/downloads/">http://www.eclipse.org/downloads/</a>.
-WebOPI also based on the RAP GEF which is an incubator project under RAP, so you need to get 
-<code>org.eclipse.draw2d</code>, <code>org.eclipse.draw2d.rap</code> and <code>org.eclipse.gef</code> from 
-RAP CVS: <a href="http://www.eclipse.org/rap/source/">http://www.eclipse.org/rap/source/</a>.
 </p>
 
 <p>Before getting your foot wet on WebOPI, please take few minutes to familiar with RAP development:<br>
@@ -24,14 +21,54 @@ RAP CVS: <a href="http://www.eclipse.org/rap/source/">http://www.eclipse.org/rap
 http://www.vogella.de/articles/EclipseRAP/article.html</a>
 </p>
 
+<h3>Get WebOPI source code</h3>
+<p>
+In CSS sourceforge repository, you need to import these plugins to your workspace:
+<ul>
+<li>org.csstudio.apputil</li>
+<li>org.csstudio.csdata</li>
+<li>org.csstudio.data</li>
+<li>org.csstudio.java</li>
+<li>org.csstudio.openfile</li>
+<li>org.csstudio.opibuilder.widgets</li>
+<li>org.csstudio.opibuilder.widgets.rap</li>
+<li>org.csstudio.platform.libs.epics</li>
+<li>org.csstudio.rap.core</li>
+<li>org.csstudio.rap.ui.util</li>
+<li>org.csstudio.swt.widgets</li>
+<li>org.csstudio.swt.xygraph</li>
+<li>org.csstudio.swt.xygraph.rap</li>
+<li>org.csstudio.utility.pv</li>
+<li>org.csstudio.utility.pv.epics</li>
+<li>org.csstudio.utility.pv.simu</li>
+<li>org.csstudio.webopi</li>
+<li>org.jdom</li>
+</ul>
+</p>
+
+<h3>Add GEF/Draw2D to RAP target platform</h3>
+<p>
+WebOPI also based on the RAP GEF which is an incubating project under RAP.
+The code has been built to JAR files which are under <code>org.csstudio.rap.core/third_party_plugins</code>.
+So you need to add these plugins to your RAP target platform:
+<ol>
+<li>Go to <code>Eclipse Preferences Window->Plug-in Development->Target Platform</code> page</li>
+<li>Click on RAP Target platform and select <code>Edit...</code></li>
+<li>Select <code>Add...</code> button to add the directory that points to
+<code>org.csstudio.rap.core/third_party_plugins</code>
+</li>
+<li>Finish.</li>
+</ol>
+</p>
+
+
 <h3>Launch WebOPI from Eclipse</h3>
 <ol>
-<li>Import WebOPI source code into your workspace.</li>
 <li>Since there is no $CATALINA_HOME is set for debugging mode,
 it will use the settings in <code>preferences.ini</code> under <code>org.csstudio.webopi</code> and 
 <code>org.csstudio.platform.libs.epics</code> plugin.
 Make corresponding changes for your environment.</li>
-<li>open <code>plugin.xml</code> in <code>org.csstudio.webopi</code> plugin and click 
+<li>Open <code>plugin.xml</code> in <code>org.csstudio.webopi</code> plugin and click 
 <code>Launch a RAP application</code>.</li>
 </ol>
 

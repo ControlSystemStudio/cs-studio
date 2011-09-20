@@ -95,7 +95,7 @@ you can directly append <code>?opi=path/to/opi.opi</code> to the URL. It can be 
 or absolute path. For example: 
 <code>http://your_site.com/webopi/w?opi=widgets/1_2_Image.opi</code></p>
 
-<p>For mobile, you can <code>/w</code> with <code>/m</code> in the URL to open <code>mobile_startup_opi</code>
+<p>For mobile, you can replace <code>/w</code> with <code>/m</code> in the URL to open <code>mobile_startup_opi</code>
 by default. For example: <code>http://your_site.com/webopi/m</code></p>
 
 <p>WebOPI also support standalone mode, in which there will be no toolbar and editor tab. See
@@ -103,8 +103,17 @@ figure below. To access OPI in this mode, you simply need to replace <code>/w</c
 with <code>/ws</code> or <code>/ms</code> in the URL. For example: <code>
 http://your_site.com/webopi/ws</code></p>
 
+
+
 <p>
 <img height=300  src="img/WebOPI_StandAloneMode.gif">
+</p>
+
+<p>
+It also allow to use macros in URL, for example:
+<code>http://your_site.com/webopi/ws?opi=$(m)/myopi.opi</code>
+
+The macros are defined in the preference file with the item <code>macros</code>.
 </p>
 
 <h3> Known Issues</h3>

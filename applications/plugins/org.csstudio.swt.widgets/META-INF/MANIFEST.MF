@@ -9,12 +9,12 @@ Bundle-Vendor: Xihui Chen<chenx1@ornl.gov> - SNS
 Require-Bundle: org.eclipse.ui;resolution:=optional,
  org.eclipse.core.runtime,
  org.csstudio.swt.xygraph;bundle-version="1.0.5";visibility:=reexport,
- org.eclipse.gef;bundle-version="3.4.0";visibility:=reexport,
  org.csstudio.ui.util;bundle-version="3.0.0";resolution:=optional,
  org.csstudio.java;bundle-version="3.0.0",
  org.eclipse.rap.ui;bundle-version="1.4.0";resolution:=optional,
  org.csstudio.rap.ui.util;bundle-version="1.0.0";resolution:=optional,
- org.eclipse.draw2d.rap;bundle-version="1.0.0";resolution:=optional
+ org.eclipse.draw2d.rap;bundle-version="1.0.0";resolution:=optional,
+ org.eclipse.gef;bundle-version="3.4.0"
 Bundle-RequiredExecutionEnvironment: J2SE-1.5
 Bundle-ActivationPolicy: lazy
 Export-Package: org.csstudio.swt.widgets.datadefinition,

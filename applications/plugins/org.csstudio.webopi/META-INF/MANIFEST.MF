@@ -6,9 +6,9 @@ Bundle-Version: 1.0.0.qualifier
 Bundle-Activator: org.csstudio.opibuilder.OPIBuilderPlugin
 Require-Bundle: org.eclipse.core.runtime,
  org.eclipse.rap.ui;bundle-version="1.4.0";visibility:=reexport,
- org.eclipse.draw2d;bundle-version="3.7.0";visibility:=reexport,
- org.eclipse.draw2d.rap;bundle-version="1.0.0";visibility:=reexport,
- org.eclipse.gef;bundle-version="3.7.0";visibility:=reexport,
+ org.eclipse.draw2d;bundle-version="3.7.0";resolution:=optional;visibility:=reexport,
+ org.eclipse.draw2d.rap;bundle-version="1.0.0";resolution:=optional;visibility:=reexport,
+ org.eclipse.gef;bundle-version="3.7.0";resolution:=optional;visibility:=reexport,
  org.csstudio.csdata;bundle-version="3.1.0";visibility:=reexport,
  org.csstudio.java;bundle-version="3.1.0";visibility:=reexport,
  org.csstudio.utility.pv;bundle-version="3.1.0";visibility:=reexport,
