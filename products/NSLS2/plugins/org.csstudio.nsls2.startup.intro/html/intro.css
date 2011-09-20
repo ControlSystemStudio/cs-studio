@@ -144,3 +144,17 @@ address
     margin-top: 1em;
     padding-top: 21px;
 }
+#changelog {
+	margin-top: 0px;
+	margin-bottom: 0px;
+}
+#changelog p {
+	font-weight: bold;
+	margin: 0px;
+}
+#changelog ul {
+	margin: 0px;
+}
+#changelog li {
+	list-style-position: inside;
+}
