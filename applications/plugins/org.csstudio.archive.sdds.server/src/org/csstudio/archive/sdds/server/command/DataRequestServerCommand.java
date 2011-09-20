@@ -133,7 +133,7 @@ public class DataRequestServerCommand extends AbstractServerCommand {
                     dos.writeInt((int) o.getStatus());
 
                     // TODO: Handle ALL data types
-                    switch(o.getSddsType()) {
+                    switch(o.getSxxxType()) {
 
                         case SDDS_DOUBLE:
 
