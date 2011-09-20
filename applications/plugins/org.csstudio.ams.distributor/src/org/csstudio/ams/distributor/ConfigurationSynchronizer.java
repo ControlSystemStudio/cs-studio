@@ -43,7 +43,7 @@ class ConfigurationSynchronizer {
                                                AmsConstants.FLAGVALUE_SYNCH_DIST_RPL);
             if (success) {
                 _state = SynchronizerState.SYNCHRONIZATION_STARTED;
-                DistributorWork.logHistoryRplStart(_localDatabaseConnection, true);
+                HistoryWriter.logHistoryRplStart(_localDatabaseConnection, true);
                 Log.log(this, Log.DEBUG, "accept reload cfg");
             } else {
                 Log.log(this, Log.FATAL, "ignore start msg, could not update db flag to "

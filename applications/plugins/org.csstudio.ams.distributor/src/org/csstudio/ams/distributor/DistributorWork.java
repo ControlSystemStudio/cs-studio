@@ -80,12 +80,7 @@ import org.eclipse.jface.preference.IPreferenceStore;
  *  auch dieser Connector nicht angesteuert wird??? */
 public class DistributorWork extends Thread implements AmsConstants {
 	
-    private static final String HISTORY_DEST_TYPE_SMS = "SMS";
-	private static final String HISTORY_DEST_TYPE_VMAIL = "VMail";
-	private static final String HISTORY_DEST_TYPE_EMAIL = "EMail";
-	private static final String HISTORY_DEST_TYPE_JMS = "JMS";
-	
-	// TODO: Replace it with an enum!
+    // TODO: Replace it with an enum!
 	 // alarm without confirmation
 	public static final int TEXTTYPE_ALARM_WOCONFIRM = 1;
 	
@@ -110,8 +105,6 @@ public class DistributorWork extends Thread implements AmsConstants {
 	private final static int CMD_IDLE = 1; // normal work
 	private final static int CMD_RPL_START = 2; // after rpl start command from
 
-	private static final String HISTORY_ACTION_TYPE_GROUP_REPLY = "group reply";
-	private static final String HISTORY_ACTION_TYPE_JMS_REPLY = "jms reply";
 	// Fmr
 	private final static int CMD_RPL_NOTIFY_FMR = 3; // after replication
 
@@ -836,7 +829,7 @@ public class DistributorWork extends Thread implements AmsConstants {
 	                }
 	                else
 	                {
-                        logHistoryGroupBlocked(conDb, msg, "Send to group with reply", fa.getFilterActionTypeRef(),
+                        HistoryWriter.logHistoryGroupBlocked(conDb, msg, "Send to group with reply", fa.getFilterActionTypeRef(),
                                 userGroup.getUsergroup(), 0, 0, TopicDAO.select(conDb, fa.getReceiverRef()));	                    
 	                }
 				}
@@ -1053,7 +1046,7 @@ public class DistributorWork extends Thread implements AmsConstants {
 					FLAGVALUE_SYNCH_DIST_NOTIFY_FMR, FLAGVALUE_SYNCH_IDLE);
 			if (bRet) {
 				iCmd = CMD_IDLE; // end replication
-				logHistoryRplStart(conDb, false);
+				HistoryWriter.logHistoryRplStart(conDb, false);
 			} else {
 				Log.log(this, Log.FATAL,
 						"update not successful, could not update " + FLG_RPL
@@ -1072,349 +1065,6 @@ public class DistributorWork extends Thread implements AmsConstants {
 			return DistributorStart.STAT_ERR_APPLICATION_DB;
 		}
 		return DistributorStart.STAT_OK;
-	}
-
-	static void logHistoryRplStart(java.sql.Connection conDb,
-			boolean bStart) {
-		try {
-			HistoryTObject history = new HistoryTObject();
-
-			history.setTimeNew(new Date(System.currentTimeMillis()));
-			history.setType("Config Synch");
-
-			if (bStart)
-				history
-						.setDescription("Distributor stops normal work, starts with config replication.");
-			else
-				history
-						.setDescription("Distributor ends config replication, goes to normal work.");
-
-			HistoryDAO.insert(conDb, history);
-			Log.log(Log.INFO,
-			// history.getHistoryID() + ". " + //auskommentiert
-					history.getDescription());
-		} catch (Exception ex) {
-			Log.log(Log.FATAL, "exception at history logging start=" + bStart,
-					ex);
-		}
-	}
-
-	//
-	// End: Replication
-	// //////////////////////////////////////////////////////////////////////////////
-
-	// //////////////////////////////////////////////////////////////////////////////
-	// Start: Log History
-	//
-
-	private static void logHistorySend(java.sql.Connection conDb,
-			MapMessage mapMsg, String msgText, int faTypeRef, UserTObject user,
-			UserGroupTObject group, int iReceiverPos, int iMessageChainID,
-			int iPrefAlarmingTypeRR,// interesting if > 0 only
-			TopicTObject topicObj) throws Exception // INCLUDING - JMSException,
-	// SQLException
-	{
-		String msgHost = mapMsg.getString(MSGPROP_HOST);
-		String msgProc = mapMsg.getString(MSGPROP_PROCESSID);
-		String msgName = mapMsg.getString(MSGPROP_NAME);
-		String msgEventTime = mapMsg.getString(MSGPROP_EVENTTIME);
-
-		HistoryTObject history = new HistoryTObject();
-
-		String description = "Action"
-				+ (iMessageChainID > 0 ? "(ChainId " + iMessageChainID + ")"
-						: "") + " as \"" + msgText + "\" to ";
-
-		if (faTypeRef == FILTERACTIONTYPE_SMS
-				|| faTypeRef == FILTERACTIONTYPE_VM
-				|| faTypeRef == FILTERACTIONTYPE_MAIL)
-			history.setActionType("user"); // an user/an group
-		else if (faTypeRef == FILTERACTIONTYPE_SMS_G
-				|| faTypeRef == FILTERACTIONTYPE_VM_G
-				|| faTypeRef == FILTERACTIONTYPE_MAIL_G)
-			history.setActionType("group");
-		else if (faTypeRef == FILTERACTIONTYPE_TO_JMS) {
-			history.setActionType("jms");
-		} else if (faTypeRef == FILTERACTIONTYPE_SMS_GR
-				|| faTypeRef == FILTERACTIONTYPE_VM_GR
-				|| faTypeRef == FILTERACTIONTYPE_MAIL_GR)
-			history.setActionType(HISTORY_ACTION_TYPE_GROUP_REPLY);
-		else {
-			description = "Action to ";
-			history.setActionType("topic fat=" + faTypeRef);
-		}
-
-		history.setTimeNew(new Date(System.currentTimeMillis()));
-		history.setType("Action");
-		history.setMsgHost(msgHost);
-		history.setMsgProc(msgProc);
-		history.setMsgName(msgName);
-		history.setMsgEventtime(msgEventTime);
-		history.setDescription(description);
-
-		if (group != null) {
-			history.setGroupRef(group.getUserGroupID());
-			history.setGroupName(group.getName());
-			history.setReceiverPos(iReceiverPos);
-		}
-
-		if (user != null && topicObj == null) {
-			history.setUserRef(user.getUserID());
-			history.setUserName(user.getName());
-
-			if (iPrefAlarmingTypeRR > 0) {
-				if (iPrefAlarmingTypeRR == USERFILTERALARMTYPE_SMS) {
-					history.setDestType("SMS-pref");
-					history.setDestAdress(user.getMobilePhone());
-				} else if (iPrefAlarmingTypeRR == USERFILTERALARMTYPE_VM) {
-					history.setDestType("VMail-pref");
-					history.setDestAdress(user.getPhone());
-				} else if (iPrefAlarmingTypeRR == USERFILTERALARMTYPE_MAIL) {
-					history.setDestType("EMail-pref");
-					history.setDestAdress(user.getEmail());
-				}
-			} else {
-				if (faTypeRef == FILTERACTIONTYPE_SMS
-						|| faTypeRef == FILTERACTIONTYPE_SMS_G
-						|| faTypeRef == FILTERACTIONTYPE_SMS_GR) {
-					history.setDestType(HISTORY_DEST_TYPE_SMS);
-					history.setDestAdress(user.getMobilePhone());
-				} else if (faTypeRef == FILTERACTIONTYPE_VM
-						|| faTypeRef == FILTERACTIONTYPE_VM_G
-						|| faTypeRef == FILTERACTIONTYPE_VM_GR) {
-					history.setDestType(HISTORY_DEST_TYPE_VMAIL);
-					history.setDestAdress(user.getPhone());
-				} else if (faTypeRef == FILTERACTIONTYPE_MAIL
-						|| faTypeRef == FILTERACTIONTYPE_MAIL_G
-						|| faTypeRef == FILTERACTIONTYPE_MAIL_GR) {
-					history.setDestType(HISTORY_DEST_TYPE_EMAIL);
-					history.setDestAdress(user.getEmail());
-				}
-			}
-		}
-
-		if (topicObj != null) {
-			Log
-					.log(Log.INFO,
-							"DistributorWork.logHistorySend() topicObj!=null");
-			history.setUserRef(topicObj.getID());
-			history.setUserName(topicObj.getHumanReadableName()); /*- TODO Kein Feld f�r Topic vorhanden, kl�ren ob DB erweitert werden soll!? */
-			history.setDestType("jms topic");
-			history.setDestAdress(topicObj.getTopicName());
-		}
-
-		HistoryDAO.insert(conDb, history);
-		Log.log(Log.INFO, /* history.getHistoryID() + ". " + */description
-				+ history.getActionType() + " user=" + history.getUserName()
-				+ " via " + history.getDestType() + " dest= "
-				+ history.getDestAdress());
-	}
-
-    private static void logHistoryGroupBlocked(java.sql.Connection conDb,
-            MapMessage mapMsg, String msgText, int faTypeRef, UserGroupTObject group,
-            int iMessageChainID, int iPrefAlarmingTypeRR,// interesting if > 0 only
-            TopicTObject topicObj) throws Exception // INCLUDING - JMSException,
-    // SQLException
-    {
-        String msgHost = mapMsg.getString(MSGPROP_HOST);
-        String msgProc = mapMsg.getString(MSGPROP_PROCESSID);
-        String msgName = mapMsg.getString(MSGPROP_NAME);
-        String msgEventTime = mapMsg.getString(MSGPROP_EVENTTIME);
-
-        HistoryTObject history = new HistoryTObject();
-
-        String description = "Blocked"
-                + (iMessageChainID > 0 ? "(ChainId " + iMessageChainID + ")"
-                        : "") + " as \"" + msgText + "\" to ";
-
-        if (faTypeRef == FILTERACTIONTYPE_SMS_G
-                || faTypeRef == FILTERACTIONTYPE_VM_G
-                || faTypeRef == FILTERACTIONTYPE_MAIL_G) {
-            history.setActionType("group");
-        }
-        else if(faTypeRef == FILTERACTIONTYPE_SMS_GR
-                || faTypeRef == FILTERACTIONTYPE_VM_GR
-                || faTypeRef == FILTERACTIONTYPE_MAIL_GR) {
-            history.setActionType("group reply");
-            description = description + group.getName();
-        }
-        else
-        {
-            description = "Blocked ";
-            history.setActionType("<unknown type: " + faTypeRef + ">");
-        }
-
-        history.setTimeNew(new Date(System.currentTimeMillis()));
-        history.setType("Blocked");
-        history.setMsgHost(msgHost);
-        history.setMsgProc(msgProc);
-        history.setMsgName(msgName);
-        history.setMsgEventtime(msgEventTime);
-        history.setDescription(description);
-
-        if (group != null) {
-            history.setGroupRef(group.getUserGroupID());
-            history.setGroupName(group.getName());
-        }
-
-        if (topicObj != null)
-        {
-            Log
-                    .log(Log.INFO,
-                            "DistributorWork.logHistorySend() topicObj!=null");
-            history.setUserRef(topicObj.getID());
-            history.setUserName(topicObj.getHumanReadableName()); /*- TODO Kein Feld für Topic vorhanden, klären ob DB erweitert werden soll!? */
-            history.setDestType("jms topic");
-            history.setDestAdress(topicObj.getTopicName());
-        }
-
-        HistoryDAO.insert(conDb, history);
-        Log.log(Log.INFO, /* history.getHistoryID() + ". " + */description
-                + history.getActionType() + " user=" + history.getUserName()
-                + " via " + history.getDestType() + " dest= "
-                + history.getDestAdress());
-    }
-	
-    private static void logHistoryReply(java.sql.Connection conDb,
-			String strType, UserTObject user, UserGroupTObject userGroup,
-			TopicTObject topic, String txt, int faTypeRef, int msgChainId,
-			int msgChainPos, String replyType, String replyAdress)
-			throws Exception // INCLUDING
-	// -
-	// SQLException
-	{
-		HistoryTObject history = new HistoryTObject();
-
-		history.setDestType(replyType);
-		history.setDestAdress(replyAdress);
-		history.setReceiverPos(msgChainPos);
-
-		history.setTimeNew(new Date(System.currentTimeMillis()));
-		history.setType(strType);
-
-		/*
-		 * if (faTypeRef == FILTERACTIONTYPE_SMS || faTypeRef ==
-		 * FILTERACTIONTYPE_VM || faTypeRef == FILTERACTIONTYPE_MAIL)
-		 * history.setActionType("user"); // an user/an group else if (faTypeRef ==
-		 * FILTERACTIONTYPE_SMS_G || faTypeRef == FILTERACTIONTYPE_VM_G ||
-		 * faTypeRef == FILTERACTIONTYPE_MAIL_G) history.setActionType("group");
-		 * else if (faTypeRef == FILTERACTIONTYPE_SMS_GR || faTypeRef ==
-		 * FILTERACTIONTYPE_VM_GR || faTypeRef == FILTERACTIONTYPE_MAIL_GR)
-		 * history.setActionType("group reply");
-		 */
-
-		history.setDescription(txt);
-
-		if (user != null) {
-			history.setActionType(HISTORY_ACTION_TYPE_GROUP_REPLY);
-			history.setUserRef(user.getUserID());
-			history.setUserName(user.getName());
-
-			if (faTypeRef == FILTERACTIONTYPE_SMS
-					|| faTypeRef == FILTERACTIONTYPE_SMS_G
-					|| faTypeRef == FILTERACTIONTYPE_SMS_GR) {
-				history.setDestType(HISTORY_DEST_TYPE_SMS);
-				history.setDestAdress(user.getMobilePhone());
-			} else if (faTypeRef == FILTERACTIONTYPE_VM
-					|| faTypeRef == FILTERACTIONTYPE_VM_G
-					|| faTypeRef == FILTERACTIONTYPE_VM_GR) {
-				history.setDestType(HISTORY_DEST_TYPE_VMAIL);
-				history.setDestAdress(user.getPhone());
-			} else if (faTypeRef == FILTERACTIONTYPE_MAIL
-					|| faTypeRef == FILTERACTIONTYPE_MAIL_G
-					|| faTypeRef == FILTERACTIONTYPE_MAIL_GR) {
-				history.setDestType(HISTORY_DEST_TYPE_EMAIL);
-				history.setDestAdress(user.getEmail());
-			}
-
-			if (replyAdress != null) {
-				history.setDestAdress(history.getDestAdress() + " (from "
-						+ replyAdress + ")");
-			}
-
-		} else if (topic != null) {
-			history.setActionType(HISTORY_ACTION_TYPE_JMS_REPLY);
-			history.setDestType(HISTORY_DEST_TYPE_JMS);
-			history.setDestAdress(topic.getTopicName());
-			if (replyAdress != null) {
-				history.setDestAdress(history.getDestAdress() + " (from "
-						+ replyAdress + ")");
-			}
-		} else {
-			history.setDestType(replyType);
-			if (replyAdress != null)
-				history.setDestAdress("from " + replyAdress);
-		}
-
-		if (userGroup != null) {
-			history.setGroupRef(userGroup.getUserGroupID());
-			history.setGroupName(userGroup.getName());
-		}
-
-		HistoryDAO.insert(conDb, history);
-	}
-
-	private static void logHistoryChangeStatus(java.sql.Connection conDb,
-			UserTObject user, String because, UserGroupTObject userGroup,
-			String txt, int status, String reason, String replyType,
-			String replyAdress) throws Exception // INCLUDING - SQLException
-	{
-		HistoryTObject history = new HistoryTObject();
-
-		history.setTimeNew(new Date(System.currentTimeMillis()));
-		history.setType("Sign on/off");
-
-		String strDesc1 = "Status " + status;
-
-		if (status == 0)
-			strDesc1 = "Sign off";
-		else if (status == 1)
-			strDesc1 = "Sign on";
-
-		if (user != null) {
-			history.setUserRef(user.getUserID());
-			history.setUserName(user.getName());
-
-			if (replyType.equals(MSG_REPLY_TYPE_SMS)) {
-				history.setDestType(HISTORY_DEST_TYPE_SMS);
-				history.setDestAdress(user.getMobilePhone());
-			} else if (replyType.equals(MSG_REPLY_TYPE_EMAIL)) {
-				history.setDestType(HISTORY_DEST_TYPE_EMAIL);
-				history.setDestAdress(user.getEmail());
-			} else if (replyType.equals(MSG_REPLY_TYPE_VOICEMAIL)) {
-				history.setDestType(HISTORY_DEST_TYPE_VMAIL);
-				history.setDestAdress(user.getPhone());
-			}
-
-			if (replyAdress != null)
-				history.setDestAdress(history.getDestAdress() + " (from "
-						+ replyAdress + ")");
-		} else {
-			history.setDestType(replyType);
-			if (replyAdress != null)
-				history.setDestAdress("from " + replyAdress);
-		}
-
-		String strDesc2 = null;
-		if (because == null) {
-			strDesc2 = " successful.";
-			// history.setActionType("");
-		} else
-			strDesc2 = " failed because: " + because;
-
-		if (strDesc1 != null) {
-			history
-					.setDescription(strDesc1 + " by " + replyType + strDesc2
-							+ " \"" + txt + " "
-							+ (reason == null ? "" : reason) + "\"");
-		}
-
-		if (userGroup != null) {
-			history.setGroupRef(userGroup.getUserGroupID());
-			history.setGroupName(userGroup.getName());
-		}
-
-		HistoryDAO.insert(conDb, history);
 	}
 
 	/**
@@ -1480,7 +1130,7 @@ public class DistributorWork extends Thread implements AmsConstants {
 							+ fa.getFilterActionTypeRef());
 		}
 
-		logHistorySend(conDb, mapMsg, text, fa.getFilterActionTypeRef(), user,
+		HistoryWriter.logHistorySend(conDb, mapMsg, text, fa.getFilterActionTypeRef(), user,
 				null, 0, 0, 0, TopicDAO.select(conDb, fa.getReceiverRef()));
 		return DistributorStart.STAT_OK;
 	}
@@ -1520,7 +1170,7 @@ public class DistributorWork extends Thread implements AmsConstants {
 		// If user group is NOT active...
 		if(userGroup.getUsergroup().getIsActive() == 0)
 		{
-		    logHistoryGroupBlocked(conDb, mapMsg, text, fa.getFilterActionTypeRef(),
+		    HistoryWriter.logHistoryGroupBlocked(conDb, mapMsg, text, fa.getFilterActionTypeRef(),
 	                    userGroup.getUsergroup(), 0, 0, TopicDAO.select(conDb, fa.getReceiverRef()));
 	          
 	            iOneSended = DistributorStart.STAT_GROUP_BLOCKED; // == STAT_OK
@@ -1564,7 +1214,7 @@ public class DistributorWork extends Thread implements AmsConstants {
 								+ fa.getFilterActionTypeRef());
 			}
 
-			logHistorySend(conDb, mapMsg, text, fa.getFilterActionTypeRef(),
+			HistoryWriter.logHistorySend(conDb, mapMsg, text, fa.getFilterActionTypeRef(),
 					aUser.getUser(), userGroup.getUsergroup(), 0, 0, 0,
 					TopicDAO.select(conDb, fa.getReceiverRef()));
 			iOneSended = DistributorStart.STAT_OK;
@@ -1725,13 +1375,13 @@ public class DistributorWork extends Thread implements AmsConstants {
                 // not
                 // available
                 {
-                    logHistoryChangeStatus(conDb, userTmp, "Unknown state.",
+                    HistoryWriter.logHistoryChangeStatus(conDb, userTmp, "Unknown state.",
                             null, txt, status, reason, replyType, replyAdress);
                     sendChangeStatusConfirmation(userTmp, txt
                             + MSGCODE_UNKNOWN_STATUS, replyType, replyAdress,
                             TEXTTYPE_STATUSCHANGE_NOK);
                 } else {
-                    logHistoryChangeStatus(conDb, null, "Unknown state.", null,
+                    HistoryWriter.logHistoryChangeStatus(conDb, null, "Unknown state.", null,
                             txt, status, reason, replyType, replyAdress);
                 }
                 return DistributorStart.STAT_FALSE; // wrong request
@@ -1795,7 +1445,7 @@ public class DistributorWork extends Thread implements AmsConstants {
                                 {
                                     UserGroupTObject ug = UserGroupDAO.select(
                                             conDb, groupNum);
-                                    logHistoryChangeStatus(conDb, null, null, ug,
+                                    HistoryWriter.logHistoryChangeStatus(conDb, null, null, ug,
                                             txt, status, reason, replyType,
                                             replyAdress);
                                     sendChangeGroupStatusConfirmation(user1, ug, "Group state changed: " + txt
@@ -1807,7 +1457,7 @@ public class DistributorWork extends Thread implements AmsConstants {
                             } catch (SQLException e) {
                                 Log.log(this, Log.FATAL, e);
                             }
-                            logHistoryChangeStatus(
+                            HistoryWriter.logHistoryChangeStatus(
                                     conDb,
                                     null,
                                     "Critical error => can update local db => replicate configuration.",
@@ -1883,7 +1533,7 @@ public class DistributorWork extends Thread implements AmsConstants {
     							{
     								UserGroupTObject ug = UserGroupDAO.select(
     										conDb, groupNum);
-    								logHistoryChangeStatus(conDb, user2, null, ug,
+    								HistoryWriter.logHistoryChangeStatus(conDb, user2, null, ug,
     										txt, status, reason, replyType,
     										replyAdress);
     								sendChangeStatusConfirmation(user2, txt
@@ -1895,7 +1545,7 @@ public class DistributorWork extends Thread implements AmsConstants {
     						} catch (SQLException e) {
     							Log.log(this, Log.FATAL, e);
     						}
-    						logHistoryChangeStatus(
+    						HistoryWriter.logHistoryChangeStatus(
     								conDb,
     								null,
     								"Critical error => can update local db => replicate configuration.",
@@ -1926,7 +1576,7 @@ public class DistributorWork extends Thread implements AmsConstants {
     								"Could not changeStatus: temporary no connection to configuration database for msg "
     										+ txt);
     				UserTObject userTmp = UserDAO.select(conDb, userNum);
-    				logHistoryChangeStatus(conDb, userTmp,
+    				HistoryWriter.logHistoryChangeStatus(conDb, userTmp,
     						"No connection to config db.", null, txt, status,
     						reason, replyType, replyAdress);
     				if (userTmp != null) // NOT_OK - main system temporarly not
@@ -1953,7 +1603,7 @@ public class DistributorWork extends Thread implements AmsConstants {
 	{
 		UserTObject user = UserDAO.select(con, userNum);
 		if (user == null) {
-			logHistoryChangeStatus(conDb, null, "UserID=" + userNum
+			HistoryWriter.logHistoryChangeStatus(conDb, null, "UserID=" + userNum
 					+ " not found.", null, txt, status, reason, replyType,
 					replyAdress);
 			Log
@@ -1968,7 +1618,7 @@ public class DistributorWork extends Thread implements AmsConstants {
 		// not publish
 		// statuscode
 		{
-			logHistoryChangeStatus(conDb, user, "Status code does not match.",
+			HistoryWriter.logHistoryChangeStatus(conDb, user, "Status code does not match.",
 					null, txt, status, reason, replyType, replyAdress);
 			Log.log(Log.FATAL, "status code does not match for msg " + txt);
 			return null;
@@ -1976,7 +1626,7 @@ public class DistributorWork extends Thread implements AmsConstants {
 
 		UserGroupTObject ug = UserGroupDAO.select(con, groupNum);
 		if (ug == null) {
-			logHistoryChangeStatus(conDb, user, "GroupID=" + groupNum
+			HistoryWriter.logHistoryChangeStatus(conDb, user, "GroupID=" + groupNum
 					+ " not found.", null, txt, status, reason, replyType,
 					replyAdress);
 			Log.log(Log.WARN, "no group: " + groupNum + " for msg " + txt);
@@ -1992,7 +1642,7 @@ public class DistributorWork extends Thread implements AmsConstants {
 			UserGroupUserTObject ugu = UserGroupUserDAO.select(con, groupNum,
 					userNum);
 			if (ugu == null) {
-				logHistoryChangeStatus(conDb, user, "User not in group.", ug,
+				HistoryWriter.logHistoryChangeStatus(conDb, user, "User not in group.", ug,
 						txt, status, reason, replyType, replyAdress);
 				Log.log(Log.WARN, "user not in group for msg " + txt);
 				// never coming twice here, nok not in group
@@ -2022,7 +1672,7 @@ public class DistributorWork extends Thread implements AmsConstants {
 						iActiveCount++; // count active user in group
 				}
 				if (ug.getMinGroupMember() >= iActiveCount) {
-					logHistoryChangeStatus(conDb, user,
+					HistoryWriter.logHistoryChangeStatus(conDb, user,
 							"Min user count reached min="
 									+ ug.getMinGroupMember() + ".", ug, txt,
 							status, reason, replyType, replyAdress);
@@ -2046,7 +1696,7 @@ public class DistributorWork extends Thread implements AmsConstants {
 				return user; // status updated
 		}// for
 
-		logHistoryChangeStatus(
+		HistoryWriter.logHistoryChangeStatus(
 				conDb,
 				user,
 				"failed to update status (tried 3 times, Data changed or deleted!).",
@@ -2069,7 +1719,7 @@ public class DistributorWork extends Thread implements AmsConstants {
 	    // Check whether or not the user is a member of the group
 	    groupUser = UserGroupUserDAO.select(con, groupNum, userNum);
         if (groupUser == null) {
-            logHistoryChangeStatus(conDb, null, "GroupID=" + groupNum
+            HistoryWriter.logHistoryChangeStatus(conDb, null, "GroupID=" + groupNum
                     + " or UserID=" + userNum + " not found.", null, txt, status, reason, replyType,
                     replyAdress);
             Log.log(Log.FATAL, "User=" + userNum + " or group=" + groupNum + " not found");// do not send back to user if not
@@ -2081,7 +1731,7 @@ public class DistributorWork extends Thread implements AmsConstants {
         user = UserDAO.select(con, userNum);
         if(user == null)
         {
-            logHistoryChangeStatus(conDb, user, "UserID=" + userNum + " not found.", null, txt, status, reason, replyType,
+            HistoryWriter.logHistoryChangeStatus(conDb, user, "UserID=" + userNum + " not found.", null, txt, status, reason, replyType,
                     replyAdress);
             Log.log(Log.FATAL, "User=" + userNum + " not found");// do not send back to user if not
         
@@ -2094,7 +1744,7 @@ public class DistributorWork extends Thread implements AmsConstants {
         // not publish
         // statuscode
         {
-            logHistoryChangeStatus(conDb, user, "Status code does not match.",
+            HistoryWriter.logHistoryChangeStatus(conDb, user, "Status code does not match.",
                     null, txt, status, reason, replyType, replyAdress);
             Log.log(Log.FATAL, "status code does not match for user=" + userNum);
             
@@ -2103,7 +1753,7 @@ public class DistributorWork extends Thread implements AmsConstants {
 
         UserGroupTObject userGroup = UserGroupDAO.select(con, groupNum);
         if (userGroup == null) {
-            logHistoryChangeStatus(conDb, user, "GroupID=" + groupNum
+            HistoryWriter.logHistoryChangeStatus(conDb, user, "GroupID=" + groupNum
                     + " not found.", userGroup, txt, status, reason, replyType,
                     replyAdress);
             Log.log(Log.WARN, "no group: " + groupNum);
@@ -2118,7 +1768,7 @@ public class DistributorWork extends Thread implements AmsConstants {
         {
             UserGroupTObject ug = UserGroupDAO.select(con, groupNum);
             if (ug == null) {
-                logHistoryChangeStatus(conDb, user, "User not in group.", ug,
+                HistoryWriter.logHistoryChangeStatus(conDb, user, "User not in group.", ug,
                         txt, status, reason, replyType, replyAdress);
                 Log.log(Log.WARN, "group not found ");
                 // never coming twice here, nok not in group
@@ -2153,7 +1803,7 @@ public class DistributorWork extends Thread implements AmsConstants {
                 return ug; // status updated
         }// for
 
-        logHistoryChangeStatus(
+        HistoryWriter.logHistoryChangeStatus(
                 conDb,
                 user,
                 "failed to update group status (tried 3 times, Data changed or deleted!).",
@@ -2390,7 +2040,7 @@ public class DistributorWork extends Thread implements AmsConstants {
 								.getReceiverRef());
 						chainDb.setChainState(MESSAGECHAIN_REPLIED);
 						MessageChainDAO.update(conDb, chainDb);
-						logHistoryReply(conDb, "Reply", null, null, topic,
+						HistoryWriter.logHistoryReply(conDb, "Reply", null, null, topic,
 								"Chain replied for ChainId=" + msgChainId
 										+ ", Pos=" + msgChainPos + ".", fa
 										.getFilterActionTypeRef(), msgChainId,
@@ -2411,7 +2061,7 @@ public class DistributorWork extends Thread implements AmsConstants {
 							chainDb.setChainState(MESSAGECHAIN_REPLIED);
 							MessageChainDAO.update(conDb, chainDb);
 
-							logHistoryReply(conDb, "Reply", aUser.getUser(),
+							HistoryWriter.logHistoryReply(conDb, "Reply", aUser.getUser(),
 									userGroup.getUsergroup(), null,
 									"Chain replied for ChainId=" + msgChainId
 											+ ", Pos=" + msgChainPos + ".", fa
@@ -2464,7 +2114,7 @@ public class DistributorWork extends Thread implements AmsConstants {
 			Log.log(Log.FATAL, "Message Reply: ChainID '" + msgChainId
 					+ "' not found.");
 
-		logHistoryReply(conDb, "Reply Err", (aUser == null ? null : aUser
+		HistoryWriter.logHistoryReply(conDb, "Reply Err", (aUser == null ? null : aUser
 				.getUser()), (userGroup == null ? null : userGroup
 				.getUsergroup()), null, "Reply not accepted for ChainId="
 				+ msgChainId + ", Pos=" + msgChainPos + " Error: " + err,
@@ -2629,7 +2279,7 @@ public class DistributorWork extends Thread implements AmsConstants {
 				MessageChainDAO.update(conDb, msgChain);
 
 				try {
-					logHistorySend(conDb, extMsg, text, fa
+					HistoryWriter.logHistorySend(conDb, extMsg, text, fa
 							.getFilterActionTypeRef(), user,
 							(userGroup != null ? userGroup.getUsergroup()
 									: null), msgChain.getReceiverPos(),
@@ -2661,7 +2311,7 @@ public class DistributorWork extends Thread implements AmsConstants {
 							+ " Error: system error - configuration changed - no active user anymore.";
 				}
 
-				logHistoryReply(conDb, "Failed", null, null, null, err,
+				HistoryWriter.logHistoryReply(conDb, "Failed", null, null, null, err,
 						(fa == null ? 0 : fa.getFilterActionTypeRef()),
 						msgChain.getMessageChainID(),
 						msgChain.getReceiverPos(), null, null);
