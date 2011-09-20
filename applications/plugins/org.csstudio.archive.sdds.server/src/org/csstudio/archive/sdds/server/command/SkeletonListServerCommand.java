@@ -41,10 +41,13 @@ import de.desy.aapi.AapiServerError;
  * @author Markus Moeller
  *
  */
-public class ChannelInfo extends AbstractServerCommand {
+public class SkeletonListServerCommand extends AbstractServerCommand {
 
-    private static final Logger LOG = LoggerFactory.getLogger(ChannelInfo.class);
+    private static final Logger LOG = LoggerFactory.getLogger(SkeletonListServerCommand.class);
 
+    /**
+     *
+     */
     @Override
     public void execute(@Nonnull final RawData buffer,
                         @Nonnull final RawData receivedValue,
@@ -55,11 +58,11 @@ public class ChannelInfo extends AbstractServerCommand {
         final DataOutputStream dos = new DataOutputStream(baos);
 
         try {
-            dos.writeBytes(AapiServerError.BAD_GET_CHANNEL_INFO.toString());
+            dos.writeBytes(AapiServerError.BAD_GET_SKELETON_INFO.toString());
             dos.writeByte('\0');
 
             receivedValue.setData(baos.toByteArray());
-            receivedValue.setErrorValue(AapiServerError.BAD_GET_CHANNEL_INFO.getErrorNumber());
+            receivedValue.setErrorValue(AapiServerError.BAD_GET_SKELETON_INFO.getErrorNumber());
 
         } catch(final IOException ioe) {
 

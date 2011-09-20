@@ -24,31 +24,19 @@
 
 package org.csstudio.archive.sdds.server.command;
 
-import java.io.ByteArrayOutputStream;
-import java.io.DataOutputStream;
-import java.io.IOException;
-
 import javax.annotation.Nonnull;
 
 import org.csstudio.archive.sdds.server.util.IntegerValue;
 import org.csstudio.archive.sdds.server.util.RawData;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
-import de.desy.aapi.AAPI;
 
 /**
  * @author Markus Moeller
  *
  */
-public class Version extends AbstractServerCommand {
+public class InvalidServerCommand extends AbstractServerCommand {
 
-    private static final Logger LOG = LoggerFactory.getLogger(Version.class);
-
-    /**
-     * @param buffer
-     * @param receivedValue
-     * @param resultLength
+    /* (non-Javadoc)
+     * @see org.csstudio.archive.jaapi.server.command.ServerCommand#execute(byte[], long, byte[], org.csstudio.archive.jaapi.server.util.LongValue)
      */
     @Override
     public void execute(@Nonnull final RawData buffer,
@@ -56,28 +44,6 @@ public class Version extends AbstractServerCommand {
                         @Nonnull final IntegerValue resultLength)
     throws ServerCommandException, CommandNotImplementedException {
 
-        DataOutputStream dos = null;
-        ByteArrayOutputStream bos = null;
-
-        final int version = AAPI.AAPI_VERSION;
-        resultLength.setIntegerValue(Integer.SIZE / 8);
-
-        try {
-            bos = new ByteArrayOutputStream();
-            dos = new DataOutputStream(bos);
-            dos.writeInt(version);
-        } catch(final IOException ioe) {
-            throw new ServerCommandException(ioe.getMessage());
-        } finally {
-            if (dos != null) {
-                try {
-                    dos.close();
-                } catch (final Exception e) {
-                    LOG.warn("Closing of data output stream failed.", e);
-                }
-            }
-        }
-
-        receivedValue.setData(bos.toByteArray());
+        throw new ServerCommandException("Invalid command");
     }
 }

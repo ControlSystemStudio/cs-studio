@@ -46,15 +46,15 @@ public class CommandExecutor {
     public CommandExecutor() throws ServerCommandException {
 
         commands = new AbstractServerCommand[] {
-                new Version(),
-                new DataRequest(),
-                new ChannelInfo(),
-                new ChannelList(),
-                new HierarchyChannelList(),
-                new FilterList(),
-                new RegExpChannelList(),
-                new SkeletonList(),
-                new WaveFormDataRequest(),
+                new VersionServerCommand(),
+                new DataRequestServerCommand(),
+                new ChannelInfoServerCommand(),
+                new ChannelListServerCommand(),
+                new HierarchyChannelListServerCommand(),
+                new FilterListServerCommand(),
+                new RegExpChannelListServerCommand(),
+                new SkeletonListServerCommand(),
+                new WaveFormDataRequestServerCommand(),
          };
     }
 

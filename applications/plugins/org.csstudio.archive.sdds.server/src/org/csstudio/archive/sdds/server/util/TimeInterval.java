@@ -27,6 +27,8 @@ package org.csstudio.archive.sdds.server.util;
 import java.util.Calendar;
 import java.util.GregorianCalendar;
 
+import javax.annotation.Nonnull;
+
 /**
  * @author Markus Moeller
  *
@@ -73,8 +75,9 @@ public class TimeInterval {
         this(begin, end, DateType.UNIX);
     }
 
-    public TimeInterval(final long begin, final long end, final DateType dateType)
-    {
+    public TimeInterval(final long begin,
+                        final long end,
+                        @Nonnull final DateType dateType) {
         this.startTime = begin;
         this.endTime = end;
         this.dateType = dateType;

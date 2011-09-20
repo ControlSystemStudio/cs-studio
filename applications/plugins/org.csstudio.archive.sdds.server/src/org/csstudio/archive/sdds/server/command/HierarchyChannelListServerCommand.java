@@ -41,28 +41,25 @@ import de.desy.aapi.AapiServerError;
  * @author Markus Moeller
  *
  */
-public class RegExpChannelList extends AbstractServerCommand {
+public class HierarchyChannelListServerCommand extends AbstractServerCommand {
 
-    private static final Logger LOG = LoggerFactory.getLogger(RegExpChannelList.class);
+    private static final Logger LOG = LoggerFactory.getLogger(HierarchyChannelListServerCommand.class);
 
-    /**
-     *
-     */
     @Override
     public void execute(@Nonnull final RawData buffer,
                         @Nonnull final RawData receivedValue,
                         @Nonnull final IntegerValue resultLength)
-         throws ServerCommandException, CommandNotImplementedException {
+    throws ServerCommandException, CommandNotImplementedException {
 
         final ByteArrayOutputStream baos = new ByteArrayOutputStream();
         final DataOutputStream dos = new DataOutputStream(baos);
 
         try {
-            dos.writeBytes(AapiServerError.BAD_GET_REG_EXP.toString());
+            dos.writeBytes(AapiServerError.BAD_GET_HIERARCHY.toString());
             dos.writeByte('\0');
 
             receivedValue.setData(baos.toByteArray());
-            receivedValue.setErrorValue(AapiServerError.BAD_GET_REG_EXP.getErrorNumber());
+            receivedValue.setErrorValue(AapiServerError.BAD_GET_HIERARCHY.getErrorNumber());
 
         } catch(final IOException ioe) {
 

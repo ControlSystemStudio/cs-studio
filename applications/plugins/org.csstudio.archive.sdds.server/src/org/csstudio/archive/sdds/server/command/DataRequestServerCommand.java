@@ -47,9 +47,9 @@ import de.desy.aapi.AapiServerError;
  * @author Markus Moeller
  *
  */
-public class DataRequest extends AbstractServerCommand {
+public class DataRequestServerCommand extends AbstractServerCommand {
 
-    private static final Logger LOG = LoggerFactory.getLogger(DataRequest.class);
+    private static final Logger LOG = LoggerFactory.getLogger(DataRequestServerCommand.class);
 
     /** The data reader */
     private DataCollector dataCollector;
@@ -58,7 +58,7 @@ public class DataRequest extends AbstractServerCommand {
      *
      * @throws ServerCommandException
      */
-    public DataRequest() throws ServerCommandException {
+    public DataRequestServerCommand() throws ServerCommandException {
 
         super();
 

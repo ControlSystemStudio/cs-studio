@@ -24,22 +24,60 @@
 
 package org.csstudio.archive.sdds.server.command;
 
+import java.io.ByteArrayOutputStream;
+import java.io.DataOutputStream;
+import java.io.IOException;
+
 import javax.annotation.Nonnull;
 
 import org.csstudio.archive.sdds.server.util.IntegerValue;
 import org.csstudio.archive.sdds.server.util.RawData;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import de.desy.aapi.AAPI;
 
 /**
  * @author Markus Moeller
  *
  */
-public class FilterList extends AbstractServerCommand {
+public class VersionServerCommand extends AbstractServerCommand {
 
+    private static final Logger LOG = LoggerFactory.getLogger(VersionServerCommand.class);
+
+    /**
+     * @param buffer
+     * @param receivedValue
+     * @param resultLength
+     */
     @Override
     public void execute(@Nonnull final RawData buffer,
                         @Nonnull final RawData receivedValue,
                         @Nonnull final IntegerValue resultLength)
     throws ServerCommandException, CommandNotImplementedException {
-        throw new CommandNotImplementedException("Not implemented command: FilterList");
+
+        DataOutputStream dos = null;
+        ByteArrayOutputStream bos = null;
+
+        final int version = AAPI.AAPI_VERSION;
+        resultLength.setIntegerValue(Integer.SIZE / 8);
+
+        try {
+            bos = new ByteArrayOutputStream();
+            dos = new DataOutputStream(bos);
+            dos.writeInt(version);
+        } catch(final IOException ioe) {
+            throw new ServerCommandException(ioe.getMessage());
+        } finally {
+            if (dos != null) {
+                try {
+                    dos.close();
+                } catch (final Exception e) {
+                    LOG.warn("Closing of data output stream failed.", e);
+                }
+            }
+        }
+
+        receivedValue.setData(bos.toByteArray());
     }
 }

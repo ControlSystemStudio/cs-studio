@@ -41,10 +41,13 @@ import de.desy.aapi.AapiServerError;
  * @author Markus Moeller
  *
  */
-public class HierarchyChannelList extends AbstractServerCommand {
+public class WaveFormDataRequestServerCommand extends AbstractServerCommand {
 
-    private static final Logger LOG = LoggerFactory.getLogger(HierarchyChannelList.class);
+    private static final Logger LOG = LoggerFactory.getLogger(WaveFormDataRequestServerCommand.class);
 
+    /* (non-Javadoc)
+     * @see org.csstudio.archive.jaapi.server.command.ServerCommand#execute(byte[], int, byte[], org.csstudio.archive.jaapi.server.util.IntegerValue)
+     */
     @Override
     public void execute(@Nonnull final RawData buffer,
                         @Nonnull final RawData receivedValue,
@@ -55,15 +58,15 @@ public class HierarchyChannelList extends AbstractServerCommand {
         final DataOutputStream dos = new DataOutputStream(baos);
 
         try {
-            dos.writeBytes(AapiServerError.BAD_GET_HIERARCHY.toString());
+            dos.writeBytes(AapiServerError.BAD_CMD.toString());
             dos.writeByte('\0');
 
             receivedValue.setData(baos.toByteArray());
-            receivedValue.setErrorValue(AapiServerError.BAD_GET_HIERARCHY.getErrorNumber());
+            receivedValue.setErrorValue(AapiServerError.BAD_CMD.getErrorNumber());
 
         } catch(final IOException ioe) {
 
-            LOG.error("[*** IOException ***]: " + ioe.getMessage());
+            LOG.error("[*** IOException ***]: ", ioe);
         }
     }
 }

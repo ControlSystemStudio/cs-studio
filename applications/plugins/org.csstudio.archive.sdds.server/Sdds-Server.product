@@ -23,6 +23,7 @@
    </vm>
 
    <plugins>
+      <plugin id="com.google.common"/>
       <plugin id="com.ibm.icu"/>
       <plugin id="javax.servlet"/>
       <plugin id="org.apache.log4j"/>
