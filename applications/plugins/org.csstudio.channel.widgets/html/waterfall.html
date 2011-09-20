@@ -6,7 +6,42 @@
 
 <body>
 <h1>Waterfall</h1>
-<p>TBD</p>
+
+<h2>Overview</h2>
+Waterfall allows to creates a time plot for all the values of a channel query or of a waveform.
+
+<h2>Usage</h2>
+Type in a channel query or a waveform pv. You can customize the plot by right
+clicking on it. To change the time displayed, you can also drag the range up or down.
+<p>
+The parameters are:
+<ul>
+<li>Color range: whether the range should be taken from the metadata or from the currently displayed values</li>
+<li>Scroll: whether the plot should scroll up or down</li>
+<li>Order by prop: for a channel query, select a property for which to order the channels</li>
+<li>Resolution: the time period each pixel displays</li>
+<li>Hide range: whether the range should be displayed or not</li>
+</ul>
+
+<h2>Examples</h2>
+<p>
+Here we select all the x reading accross the ring, and ordered them by s position.
+</p>
+
+<!--center-->
+<img alt="" src="waterfall.1.png" />
+<p>
+<!--/center-->
+
+<p>
+Here we select a waveform and plot the last 10 seconds.
+</p>
+
+<!--center-->
+<img alt="" src="waterfall.2.png" />
+<p>
+<!--/center-->
+
 </body>
 </html>
 
