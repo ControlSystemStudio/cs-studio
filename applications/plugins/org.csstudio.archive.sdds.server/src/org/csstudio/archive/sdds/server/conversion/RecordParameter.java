@@ -28,8 +28,7 @@ package org.csstudio.archive.sdds.server.conversion;
  * @author Markus Moeller
  *
  */
-public class RecordParameter
-{
+public class RecordParameter {
     /*
      *  typedef struct recParam
      *  {
@@ -44,32 +43,31 @@ public class RecordParameter
      */
 
     /** */
-    long fromSeconds;
+    private long fromSeconds;
 
     /** */
-    long fromUSeconds;
+    private long fromUSeconds;
 
     /** */
-    long toSeconds;
+    private long toSeconds;
 
     /** */
-    long toUSeconds;
+    private long toUSeconds;
 
     /** */
-    long maxNumber;
+    private long maxNumber;
 
     /** */
-    long conversion;
+    private long conversion;
 
     /** */
-    double conversPar;
+    private double conversPar;
 
     /**
      *
      * @return
      */
-    public long getFromSeconds()
-    {
+    public long getFromSeconds() {
         return fromSeconds;
     }
 
@@ -77,8 +75,7 @@ public class RecordParameter
      *
      * @param fromSeconds
      */
-    public void setFromSeconds(final long fromSeconds)
-    {
+    public void setFromSeconds(final long fromSeconds) {
         this.fromSeconds = fromSeconds;
     }
 
@@ -86,8 +83,7 @@ public class RecordParameter
      *
      * @return
      */
-    public long getFromUSeconds()
-    {
+    public long getFromUSeconds() {
         return fromUSeconds;
     }
 
@@ -95,8 +91,7 @@ public class RecordParameter
      *
      * @param fromUSeconds
      */
-    public void setFromUSeconds(final long fromUSeconds)
-    {
+    public void setFromUSeconds(final long fromUSeconds) {
         this.fromUSeconds = fromUSeconds;
     }
 
@@ -104,8 +99,7 @@ public class RecordParameter
      *
      * @return
      */
-    public long getToSeconds()
-    {
+    public long getToSeconds() {
         return toSeconds;
     }
 
@@ -113,8 +107,7 @@ public class RecordParameter
      *
      * @param toSeconds
      */
-    public void setToSeconds(final long toSeconds)
-    {
+    public void setToSeconds(final long toSeconds) {
         this.toSeconds = toSeconds;
     }
 
@@ -122,8 +115,7 @@ public class RecordParameter
      *
      * @return
      */
-    public long getToUSeconds()
-    {
+    public long getToUSeconds() {
         return toUSeconds;
     }
 
@@ -131,8 +123,7 @@ public class RecordParameter
      *
      * @param toUSeconds
      */
-    public void setToUSeconds(final long toUSeconds)
-    {
+    public void setToUSeconds(final long toUSeconds) {
         this.toUSeconds = toUSeconds;
     }
 
@@ -140,8 +131,7 @@ public class RecordParameter
      *
      * @return
      */
-    public long getMaxNumber()
-    {
+    public long getMaxNumber() {
         return maxNumber;
     }
 
@@ -149,8 +139,7 @@ public class RecordParameter
      *
      * @param maxNumber
      */
-    public void setMaxNumber(final long maxNumber)
-    {
+    public void setMaxNumber(final long maxNumber) {
         this.maxNumber = maxNumber;
     }
 
@@ -158,8 +147,7 @@ public class RecordParameter
      *
      * @return
      */
-    public long getConversion()
-    {
+    public long getConversion() {
         return conversion;
     }
 
@@ -167,8 +155,7 @@ public class RecordParameter
      *
      * @param conversion
      */
-    public void setConversion(final long conversion)
-    {
+    public void setConversion(final long conversion) {
         this.conversion = conversion;
     }
 
@@ -176,8 +163,7 @@ public class RecordParameter
      *
      * @return
      */
-    public double getConversPar()
-    {
+    public double getConversPar() {
         return conversPar;
     }
 
@@ -185,8 +171,7 @@ public class RecordParameter
      *
      * @param conversPar
      */
-    public void setConversPar(final double conversPar)
-    {
+    public void setConversPar(final double conversPar) {
         this.conversPar = conversPar;
     }
 }
