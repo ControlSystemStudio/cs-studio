@@ -36,7 +36,9 @@ import javax.annotation.Nonnull;
 import org.csstudio.archive.common.service.ArchiveConnectionException;
 import org.csstudio.archive.common.service.mysqlimpl.batch.BatchQueueHandlerSupport;
 import org.csstudio.archive.common.service.mysqlimpl.batch.IBatchQueueHandlerProvider;
+import org.csstudio.archive.common.service.mysqlimpl.dao.ArchiveConnectionHandler;
 import org.csstudio.archive.common.service.mysqlimpl.dao.ArchiveDaoException;
+import org.csstudio.archive.common.service.mysqlimpl.notification.ArchiveNotifications;
 import org.csstudio.domain.desy.task.AbstractTimeMeasuredRunnable;
 import org.csstudio.domain.desy.time.StopWatch;
 import org.csstudio.domain.desy.time.StopWatch.RunningStopWatch;
@@ -58,6 +60,8 @@ import com.google.common.collect.Lists;
  */
 public class PersistDataWorker extends AbstractTimeMeasuredRunnable {
 
+    private static final Logger RESCUE_LOG =
+        LoggerFactory.getLogger("StatementRescueLogger");
     private static final Logger LOG =
             LoggerFactory.getLogger(PersistDataWorker.class);
     /**
@@ -66,7 +70,7 @@ public class PersistDataWorker extends AbstractTimeMeasuredRunnable {
     private static final Logger EMAIL_LOG =
         LoggerFactory.getLogger("ErrorPerEmailLogger");
 
-    private final PersistEngineDataManager _mgr;
+    private final ArchiveConnectionHandler _connectionHandler;
 
 
     private final String _name;
@@ -79,11 +83,11 @@ public class PersistDataWorker extends AbstractTimeMeasuredRunnable {
     /**
      * Constructor.
      */
-    public PersistDataWorker(@Nonnull final PersistEngineDataManager mgr,
+    public PersistDataWorker(@Nonnull final ArchiveConnectionHandler connectionHandler,
                              @Nonnull final String name,
                              @Nonnull final long periodInMS,
                              @Nonnull final IBatchQueueHandlerProvider provider) {
-        _mgr = mgr;
+        _connectionHandler = connectionHandler;
         _name = name;
         _periodInMS = periodInMS;
 
@@ -96,7 +100,7 @@ public class PersistDataWorker extends AbstractTimeMeasuredRunnable {
     @Override
     public void measuredRun() {
         try {
-            final Connection connection = _mgr.getConnectionHandler().getThreadLocalConnection();
+            final Connection connection = _connectionHandler.getThreadLocalConnection();
 
             processBatchHandlerMap(connection, _handlerProvider, _rescueDataList);
 
@@ -193,16 +197,16 @@ public class PersistDataWorker extends AbstractTimeMeasuredRunnable {
             throw t;
         } catch (final ArchiveConnectionException se) {
             LOG.error("Archive Connection failed. No batch update. Drain unpersisted statements to file system.", se);
-            _mgr.rescueDataToFileSystem(statements);
+            rescueDataToFileSystem(statements);
         } catch (final BatchUpdateException be) {
             LOG.error("Batched update failed. Drain unpersisted statements to file system.", be);
             processFailedBatch(statements, be);
         } catch (final SQLException se) {
             LOG.error("Batched update failed. Batched statement could not be composed.", se);
-            _mgr.rescueDataToFileSystem(statements);
+            rescueDataToFileSystem(statements);
         } catch (final Throwable tt) {
             LOG.error("Unknown throwable. Thread " + _name + " is terminated", tt);
-            _mgr.rescueDataToFileSystem(statements);
+            rescueDataToFileSystem(statements);
         } finally {
             rescueDataList.clear();
         }
@@ -215,10 +219,10 @@ public class PersistDataWorker extends AbstractTimeMeasuredRunnable {
         if (updateCounts.length == batchedStatements.size()) {
             // All statements have been tried to be executed, look for the failed ones
             final List<String> failedStmts = findFailedStatements(updateCounts, batchedStatements);
-            _mgr.rescueDataToFileSystem(failedStmts);
+            rescueDataToFileSystem(failedStmts);
         } else {
             // Not all statements have been tried to be executed - safe only the failed ones
-            _mgr.rescueDataToFileSystem(Iterables.skip(batchedStatements, updateCounts.length));
+            rescueDataToFileSystem(Iterables.skip(batchedStatements, updateCounts.length));
         }
     }
 
@@ -253,5 +257,16 @@ public class PersistDataWorker extends AbstractTimeMeasuredRunnable {
 
     public long getPeriodInMS() {
         return _periodInMS;
+    }
+
+    void rescueDataToFileSystem(@Nonnull final Iterable<String> statements) {
+        final int noOfRescuedStmts = Iterables.size(statements);
+        LOG.warn("Rescue statements: " + noOfRescuedStmts);
+        int no = 0;
+        for (final String stmt : statements) {
+            RESCUE_LOG.info(stmt);
+            no++;
+        }
+        ArchiveNotifications.notify(NotificationType.PERSIST_DATA_FAILED, "#Rescued: " + no);
     }
 }

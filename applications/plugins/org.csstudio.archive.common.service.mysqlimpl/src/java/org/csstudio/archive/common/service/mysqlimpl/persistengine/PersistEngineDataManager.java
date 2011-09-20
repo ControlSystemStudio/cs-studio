@@ -35,13 +35,9 @@ import org.csstudio.archive.common.service.mysqlimpl.MySQLArchivePreferenceServi
 import org.csstudio.archive.common.service.mysqlimpl.batch.BatchQueueHandlerSupport;
 import org.csstudio.archive.common.service.mysqlimpl.batch.IBatchQueueHandlerProvider;
 import org.csstudio.archive.common.service.mysqlimpl.dao.ArchiveConnectionHandler;
-import org.csstudio.archive.common.service.mysqlimpl.notification.ArchiveNotifications;
 import org.csstudio.domain.desy.DesyRunContext;
 import org.csstudio.domain.desy.typesupport.TypeSupportException;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
-import com.google.common.collect.Iterables;
 import com.google.common.collect.Sets;
 import com.google.inject.Inject;
 
@@ -51,13 +47,6 @@ import com.google.inject.Inject;
  * @since Feb 26, 2011
  */
 public class PersistEngineDataManager {
-
-    private static final Logger LOG =
-        LoggerFactory.getLogger(PersistEngineDataManager.class);
-
-    private static final Logger RESCUE_LOG =
-        LoggerFactory.getLogger("StatementRescueLogger");
-
 
     // TODO (bknerr) : number of threads?
     // get no of cpus and expected no of archive engines, and available archive connections
@@ -110,15 +99,17 @@ public class PersistEngineDataManager {
         _prefPeriodInMS = prefs.getPeriodInMS();
         _prefTermTimeInMS = prefs.getTerminationTimeInMS();
 
-        addGracefulShutdownHook(_handlerProvider, _prefTermTimeInMS);
+        addGracefulShutdownHook(_connectionHandler, _handlerProvider, _prefTermTimeInMS);
     }
 
     private void submitNewPersistDataWorker(@Nonnull final ScheduledThreadPoolExecutor executor,
+                                            @Nonnull final ArchiveConnectionHandler connectionHandler,
                                             @Nonnull final Integer prefPeriodInMS,
                                             @Nonnull final IBatchQueueHandlerProvider handlerProvider,
                                             @Nonnull final AtomicInteger workerId,
                                             @Nonnull final SortedSet<PersistDataWorker> submittedWorkers) {
-        final PersistDataWorker newWorker = new PersistDataWorker(this,
+
+        final PersistDataWorker newWorker = new PersistDataWorker(connectionHandler,
                                                                   "PERIODIC Worker: " + workerId.getAndIncrement(),
                                                                   prefPeriodInMS,
                                                                   handlerProvider);
@@ -135,13 +126,16 @@ public class PersistEngineDataManager {
      * of its run context, but we couldn't think of another option.
      * @param prefTermTimeInMS
      */
-    private void addGracefulShutdownHook(@Nonnull final IBatchQueueHandlerProvider provider,
+    private void addGracefulShutdownHook(@Nonnull final ArchiveConnectionHandler connectionHandler,
+                                         @Nonnull final IBatchQueueHandlerProvider provider,
                                          @Nonnull final Integer prefTermTimeInMS) {
         if (DesyRunContext.isProductionContext()) {
             /**
              * Add shutdown hook.
              */
-            Runtime.getRuntime().addShutdownHook(new ShutdownWorkerThread(this, provider, prefTermTimeInMS));
+            Runtime.getRuntime().addShutdownHook(new ShutdownWorkerThread(connectionHandler,
+                                                                          provider,
+                                                                          prefTermTimeInMS));
         }
     }
 
@@ -212,17 +206,6 @@ public class PersistEngineDataManager {
 //    }
 
 
-    public void rescueDataToFileSystem(@Nonnull final Iterable<String> statements) {
-        final int noOfRescuedStmts = Iterables.size(statements);
-        LOG.warn("Rescue statements: " + noOfRescuedStmts);
-        int no = 0;
-        for (final String stmt : statements) {
-            RESCUE_LOG.info(stmt);
-            no++;
-        }
-        ArchiveNotifications.notify(NotificationType.PERSIST_DATA_FAILED, "#Rescued: " + no);
-    }
-
     @Nonnull
     public ArchiveConnectionHandler getConnectionHandler() {
         return _connectionHandler;
@@ -238,6 +221,7 @@ public class PersistEngineDataManager {
 
         if (isAnotherWorkerRequired()) {
             submitNewPersistDataWorker(_executor,
+                                       _connectionHandler,
                                        _prefPeriodInMS,
                                        _handlerProvider,
                                        _workerId,

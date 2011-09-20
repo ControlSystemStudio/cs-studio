@@ -61,6 +61,7 @@ public class PersistDataWorkerHeadlessTest {
     static final String TEST_STATEMENT = "Test Statement: ";
 
     private static ArchiveConnectionHandler HANDLER;
+    @SuppressWarnings("unused")
     private static PersistEngineDataManager PERSIST_MGR;
 
     private static IBatchQueueHandlerProvider NO_HANDLER_PROVIDER =
@@ -130,7 +131,7 @@ public class PersistDataWorkerHeadlessTest {
     @Test
     public void testOnProviderWithoutHandlers() {
         final PersistDataWorker worker =
-            new PersistDataWorker(PERSIST_MGR, "Test Data Worker", 1000, NO_HANDLER_PROVIDER);
+            new PersistDataWorker(HANDLER, "Test Data Worker", 1000, NO_HANDLER_PROVIDER);
         worker.run();
         Assert.assertTrue(RESCUE_STMTS.length() == 0L);
 
@@ -138,7 +139,7 @@ public class PersistDataWorkerHeadlessTest {
     @Test
     public void testOnProviderForHandlersWithEmptyQueues() {
         final PersistDataWorker worker =
-            new PersistDataWorker(PERSIST_MGR, "Test Data Worker", 1000, HANDLER_WITH_EMPTY_QUEUES_PROVIDER);
+            new PersistDataWorker(HANDLER, "Test Data Worker", 1000, HANDLER_WITH_EMPTY_QUEUES_PROVIDER);
         worker.run();
         Assert.assertTrue(RESCUE_STMTS.length() == 0L);
     }
@@ -146,7 +147,7 @@ public class PersistDataWorkerHeadlessTest {
     @Test
     public void testOnHandlerWithWronglyFilledStatement() throws IOException {
         final PersistDataWorker worker =
-            new PersistDataWorker(PERSIST_MGR, "Test Data Worker", 1000, FALSE_STMT_PROVIDER);
+            new PersistDataWorker(HANDLER, "Test Data Worker", 1000, FALSE_STMT_PROVIDER);
         worker.run();
         Assert.assertTrue(RESCUE_STMTS.length() > 0L);
 
