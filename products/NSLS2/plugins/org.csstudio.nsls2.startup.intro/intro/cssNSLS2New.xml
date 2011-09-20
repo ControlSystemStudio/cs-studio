@@ -2,7 +2,8 @@
 <introContent>
   	<extensionContent id="org.csstudio.nsls2.whatsnew" style="css/sample.css" name="CSS WhatsNew" path="whatsnew/@">
 		<group style-id="content-group" id="org.csstudio.nsls2.whatsnew-group">
-       		<link label=" Whats New in CSS" url="http://org.eclipse.ui.intro/showPage?id=css-nsls2-whatsnew" 
+       		<link label=" Whats New in CSS"
+       		url="http://org.eclipse.ui.intro/showHelpTopic?id=/org.csstudio.nsls2.startup.intro/html/intro.html&amp;embed=true" 
        		id="nsls2whatsnew-Link" style-id="content-link">
           		<text>
 				 Information on the newest additional to CSS including new application, additional features, etc
@@ -10,7 +11,5 @@
        		</link>
        	</group>
   	</extensionContent>
-  	
-  	<page url="html/whatsnew.html"  id="css-nsls2-whatsnew" />
   	
 </introContent>
