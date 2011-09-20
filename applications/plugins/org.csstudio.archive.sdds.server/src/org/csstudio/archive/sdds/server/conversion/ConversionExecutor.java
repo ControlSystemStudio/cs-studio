@@ -49,9 +49,6 @@ import org.eclipse.core.runtime.preferences.IPreferencesService;
  */
 public class ConversionExecutor {
 
-    /** Array of conversion algorithms */
-    // private ConversionAlgorithm[] conversionMethod;
-
     /** Array of conversion handlers */
     private final AlgorithmHandler[] conversionHandler;
 
