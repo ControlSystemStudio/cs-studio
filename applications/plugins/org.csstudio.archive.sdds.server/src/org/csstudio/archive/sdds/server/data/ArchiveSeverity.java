@@ -24,6 +24,8 @@
 
 package org.csstudio.archive.sdds.server.data;
 
+import javax.annotation.Nonnull;
+
 /**
  * TODO (mmoeller) :
  *
@@ -63,6 +65,7 @@ public enum ArchiveSeverity {
         return this.severityValue;
     }
 
+    @Nonnull
     public static ArchiveSeverity getByArchiveValue(final long v) {
 
         ArchiveSeverity result = ArchiveSeverity.UNDEFINED;
