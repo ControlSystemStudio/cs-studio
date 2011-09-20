@@ -5,7 +5,6 @@
 
 package org.epics.pvmanager.jca;
 
-import edu.emory.mathcs.backport.java.util.Collections;
 import gov.aps.jca.dbr.DBR_LABELS_Enum;
 import gov.aps.jca.dbr.DBR_TIME_Enum;
 import java.util.Arrays;
