@@ -26,6 +26,8 @@ package org.csstudio.archive.sdds.server.data;
 
 import java.util.ArrayList;
 
+import javax.annotation.Nonnull;
+
 import org.csstudio.archive.sdds.server.command.header.DataRequestHeader;
 import org.csstudio.archive.sdds.server.conversion.ConversionExecutor;
 import org.csstudio.archive.sdds.server.file.DataPathNotFoundException;
@@ -64,12 +66,13 @@ public class DataCollector {
     }
 
     /**
-     *
      * @param recordName
      * @param header
      * @return The read data
      */
-    public RecordDataCollection readData(final String recordName, final DataRequestHeader header) {
+    @Nonnull
+    public RecordDataCollection readData(@Nonnull final String recordName,
+                                         @Nonnull final DataRequestHeader header) {
 
         RecordDataCollection dataCollection = null;
         ArrayList<EpicsRecordData> data = null;
@@ -79,7 +82,7 @@ public class DataCollector {
         EpicsRecordData[] readData = new EpicsRecordData[dataCollection.getNumberOfData()];
         readData = dataCollection.getData().toArray(readData);
 
-        data = (ArrayList<EpicsRecordData>) conversionExecutor.convertData(recordName, readData, header);
+        data = (ArrayList<EpicsRecordData>) conversionExecutor.convertData(readData, header);
         dataCollection.setData(data);
 
         return dataCollection;
