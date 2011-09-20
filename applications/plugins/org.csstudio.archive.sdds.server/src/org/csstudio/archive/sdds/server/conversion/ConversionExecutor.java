@@ -25,6 +25,7 @@
 package org.csstudio.archive.sdds.server.conversion;
 
 import java.util.Collections;
+import java.util.List;
 
 import javax.annotation.Nonnull;
 
@@ -99,7 +100,7 @@ public class ConversionExecutor {
     public Iterable<EpicsRecordData> convertData(@Nonnull final EpicsRecordData[] data,
                                                  @Nonnull final DataRequestHeader header) {
 
-        Iterable<EpicsRecordData> result = Collections.emptyList();
+        List<EpicsRecordData> result = Collections.emptyList();
 
         try {
             result = conversionHandler[header.getConversionTag() - 1].handle(header, data);
