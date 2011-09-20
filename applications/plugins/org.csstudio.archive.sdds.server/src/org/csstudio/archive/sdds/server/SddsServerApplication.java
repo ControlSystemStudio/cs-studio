@@ -59,7 +59,7 @@ import com.google.common.io.Files;
  * @author Markus Moeller
  *
  */
-public class SddsServerApplication implements IApplication, IRemotelyStoppable, SddsServerApplicationMBean, IGenericServiceListener<ISessionService> {
+public class SddsServerApplication implements IApplication, IRemotelyStoppable, ISddsServerApplicationMBean, IGenericServiceListener<ISessionService> {
 
     /** The logger of this class */
     private static final Logger LOG = LoggerFactory.getLogger(SddsServerApplication.class);
