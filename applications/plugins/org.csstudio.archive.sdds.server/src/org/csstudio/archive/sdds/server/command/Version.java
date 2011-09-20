@@ -32,6 +32,8 @@ import javax.annotation.Nonnull;
 
 import org.csstudio.archive.sdds.server.util.IntegerValue;
 import org.csstudio.archive.sdds.server.util.RawData;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import de.desy.aapi.AAPI;
 
@@ -41,9 +43,9 @@ import de.desy.aapi.AAPI;
  */
 public class Version extends AbstractServerCommand {
 
+    private static final Logger LOG = LoggerFactory.getLogger(Version.class);
+
     /**
-     *
-     *
      * @param buffer
      * @param receivedValue
      * @param resultLength
@@ -67,9 +69,12 @@ public class Version extends AbstractServerCommand {
         } catch(final IOException ioe) {
             throw new ServerCommandException(ioe.getMessage());
         } finally {
-            if(dos!=null) {
-                try{dos.close();}catch(final Exception e) { /* Can be ignored */ }
-                dos = null;
+            if (dos != null) {
+                try {
+                    dos.close();
+                } catch (final Exception e) {
+                    LOG.warn("Closing of data output stream failed.", e);
+                }
             }
         }
 
