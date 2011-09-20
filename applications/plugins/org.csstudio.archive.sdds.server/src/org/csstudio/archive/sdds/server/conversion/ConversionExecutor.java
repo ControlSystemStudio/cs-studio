@@ -24,7 +24,9 @@
 
 package org.csstudio.archive.sdds.server.conversion;
 
-import java.util.ArrayList;
+import java.util.Collections;
+
+import javax.annotation.Nonnull;
 
 import org.csstudio.archive.sdds.server.SddsServerActivator;
 import org.csstudio.archive.sdds.server.command.header.DataRequestHeader;
@@ -65,7 +67,7 @@ public class ConversionExecutor {
 
         conversionHandler = new AlgorithmHandler[] {
 
-        		new AverageHandler(maxSamples),
+                new AverageHandler(maxSamples),
                 new TailRawHandler(maxSamples),
                 new AverageHandler(maxSamples),
                 new AverageHandler(maxSamples),
@@ -74,7 +76,7 @@ public class ConversionExecutor {
                 new MinMaxAverageHandler(maxSamples),
                 new AverageHandler(maxSamples),
                 new AverageHandler(maxSamples),
-                new AverageHandler(maxSamples)
+                new AverageHandler(maxSamples),
 
                 /*
                 new AverageHandler(),
@@ -92,18 +94,18 @@ public class ConversionExecutor {
     }
 
     /**
-     *
-     * @param name
      * @param data
      * @param header
      * @return Iterable containing the read data
      */
-    public Iterable<EpicsRecordData> convertData(final String name, final EpicsRecordData[] data, final DataRequestHeader header) {
+    @Nonnull
+    public Iterable<EpicsRecordData> convertData(@Nonnull final EpicsRecordData[] data,
+                                                 @Nonnull final DataRequestHeader header) {
 
-        ArrayList<EpicsRecordData> result = null;
+        Iterable<EpicsRecordData> result = Collections.emptyList();
 
         try {
-            result = (ArrayList<EpicsRecordData>) conversionHandler[header.getConversionTag() - 1].handle(header, data);
+            result = conversionHandler[header.getConversionTag() - 1].handle(header, data);
         } catch(final DataException de) {
             de.printStackTrace();
         } catch(final MethodNotImplementedException mnie) {
