@@ -42,8 +42,8 @@ import javax.management.ObjectName;
 import org.csstudio.archive.sdds.server.internal.ServerPreferenceKey;
 import org.csstudio.archive.sdds.server.io.SddsServer;
 import org.csstudio.archive.sdds.server.io.ServerException;
-import org.csstudio.archive.sdds.server.management.Restart;
-import org.csstudio.archive.sdds.server.management.Stop;
+import org.csstudio.archive.sdds.server.management.RestartMgmtCommand;
+import org.csstudio.archive.sdds.server.management.StopMgmtCommand;
 import org.eclipse.core.runtime.Platform;
 import org.eclipse.core.runtime.preferences.IPreferencesService;
 import org.eclipse.equinox.app.IApplication;
@@ -110,8 +110,8 @@ public class SddsServerApplication implements IApplication, IRemotelyStoppable, 
 
         try {
             if (!useJmx) {
-                Stop.injectStaticObject(this);
-                Restart.injectStaticObject(this);
+                StopMgmtCommand.injectStaticObject(this);
+                RestartMgmtCommand.injectStaticObject(this);
                 SddsServerActivator.getDefault().addSessionServiceListener(this);
             } else {
                 connectMBeanServer();

@@ -24,12 +24,13 @@
 
 package org.csstudio.archive.sdds.server.util;
 
+import javax.annotation.Nonnull;
+
 /**
  * @author Markus Moeller
  *
  */
-public class RawData
-{
+public class RawData {
     /** The array of bytes that holds the data */
     private byte[] data;
 
@@ -58,7 +59,7 @@ public class RawData
      *
      * @param data
      */
-    public RawData(final byte[] data) {
+    public RawData(@Nonnull final byte[] data) {
         this.data = data;
     }
 
@@ -66,7 +67,7 @@ public class RawData
      *
      * @param data
      */
-    public void setData(final byte[] data) {
+    public void setData(@Nonnull final byte[] data) {
         this.data = data;
     }
 
@@ -74,6 +75,7 @@ public class RawData
      *
      * @return
      */
+    @Nonnull
     public byte[] getData() {
         return data;
     }

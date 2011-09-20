@@ -36,10 +36,10 @@ import org.csstudio.platform.management.IManagementCommand;
  * @author Markus Moeller
  *
  */
-public class Stop implements IManagementCommand {
+public class RestartMgmtCommand implements IManagementCommand {
 
     /** Static instance of the Application object. */
-    private static IRemotelyStoppable STOP_ME;
+    private static IRemotelyStoppable RESTART_ME;
 
     /* (non-Javadoc)
      * @see org.csstudio.platform.management.IManagementCommand#execute(org.csstudio.platform.management.CommandParameters)
@@ -47,20 +47,18 @@ public class Stop implements IManagementCommand {
     @Override
     @Nonnull
     public CommandResult execute(@Nonnull final CommandParameters parameters) {
-
         // The result of this method call.
         CommandResult result = null;
 
-        if(STOP_ME != null) {
-            STOP_ME.stopApplication(false);
-            result = CommandResult.createMessageResult(SddsServerActivator.PLUGIN_ID + " is stopping now.");
+        if(RESTART_ME != null) {
+            RESTART_ME.stopApplication(true);
+            result = CommandResult.createMessageResult(SddsServerActivator.PLUGIN_ID + " is restarting now.");
         } else {
             result = CommandResult.createFailureResult("Do not have a valid reference to the Application object!");
         }
 
         return result;
     }
-
 
     /**
      * Sets the static Application object.
@@ -69,6 +67,6 @@ public class Stop implements IManagementCommand {
      *
      */
     public static void injectStaticObject(@Nonnull final IRemotelyStoppable o) {
-        STOP_ME = o;
+        RESTART_ME = o;
     }
 }
