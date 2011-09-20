@@ -1,4 +1,3 @@
-
 /*
  * Copyright (c) 2010 Stiftung Deutsches Elektronen-Synchrotron,
  * Member of the Helmholtz Association, (DESY), HAMBURG, GERMANY.
@@ -21,78 +20,68 @@
  * AT HTTP://WWW.DESY.DE/LEGAL/LICENSE.HTM
  *
  */
-
 package org.csstudio.archive.sdds.server.conversion;
+
+import javax.annotation.Nonnull;
 
 /**
  * @author Markus Moeller
  *
  */
-public class SimpleData
-{
+public class SimpleData {
     private long time;
-    private long u_time;
+    private long _uTime;
     private long stat;
     private double data;
     private long dim;
     // private double *dataAd;
 
-    public SimpleData()
-    {
+    public SimpleData() {
         time = 0;
-        u_time = 0;
+        _uTime = 0;
         stat = 0;
         data = 0.0;
         dim = 0;
     }
 
-    public long getTime()
-    {
+    public long getTime() {
         return time;
     }
 
-    public void setTime(final long time)
-    {
+    public void setTime(final long time) {
         this.time = time;
     }
 
-    public long getU_time()
-    {
-        return u_time;
+    @Nonnull
+    public long getUTime() {
+        return _uTime;
     }
 
-    public void setU_time(final long uTime)
-    {
-        u_time = uTime;
+    public void setUTime(@Nonnull final long uTime) {
+        _uTime = uTime;
     }
 
-    public long getStat()
-    {
+    public long getStat() {
         return stat;
     }
 
-    public void setStat(final long stat)
-    {
+    public void setStat(final long stat) {
         this.stat = stat;
     }
 
-    public double getData()
-    {
+    public double getData() {
         return data;
     }
 
-    public void setData(final double data)
-    {
+    public void setData(final double data) {
         this.data = data;
     }
 
-    public long getDim()
-    {
+    public long getDim() {
         return dim;
     }
 
-    public void setDim(final long dim)
-    {
+    public void setDim(final long dim) {
         this.dim = dim;
     }
 }
