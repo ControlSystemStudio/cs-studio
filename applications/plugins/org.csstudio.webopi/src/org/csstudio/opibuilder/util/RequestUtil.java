@@ -2,6 +2,9 @@ package org.csstudio.opibuilder.util;
 
 import javax.servlet.http.HttpServletRequest;
 
+import org.csstudio.apputil.macros.IMacroTableProvider;
+import org.csstudio.apputil.macros.InfiniteLoopException;
+import org.csstudio.apputil.macros.MacroUtil;
 import org.csstudio.opibuilder.OPIBuilderPlugin;
 import org.csstudio.opibuilder.persistence.URLPath;
 import org.csstudio.opibuilder.preferences.PreferencesHelper;
@@ -29,8 +32,22 @@ public class RequestUtil {
 	public static IPath getOPIPathFromRequest(){
 		HttpServletRequest request = RWT.getRequest();
 		 String opiPath = request.getParameter(OPIBuilderPlugin.OPI_PARAMETER ); //$NON-NLS-1$
+		
 		IPath path = null;
 		if(opiPath != null && !opiPath.isEmpty()){
+			try {
+				String newPath = MacroUtil.replaceMacros(opiPath,
+						new IMacroTableProvider() {
+							public String getMacroValue(String macroName) {
+								return PreferencesHelper.getMacros().get(
+										macroName);
+
+							}
+						});
+				opiPath = newPath;
+			} catch (InfiniteLoopException e) {
+				ErrorHandlerUtil.handleError("Failed to replace macros", e);
+			}
 			if(ResourceUtil.isURL(opiPath))
 				path = new URLPath(opiPath);
 			else{
