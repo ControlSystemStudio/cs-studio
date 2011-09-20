@@ -31,7 +31,7 @@ import java.io.IOException;
 import javax.annotation.Nonnull;
 
 import org.csstudio.archive.sdds.server.command.header.DataRequestHeader;
-import org.csstudio.archive.sdds.server.conversion.SampleParameter;
+import org.csstudio.archive.sdds.server.conversion.SampleParameters;
 import org.csstudio.archive.sdds.server.data.DataCollector;
 import org.csstudio.archive.sdds.server.data.DataCollectorException;
 import org.csstudio.archive.sdds.server.data.EpicsRecordData;
@@ -150,7 +150,7 @@ public class DataRequestServerCommand extends AbstractServerCommand {
 
             if (data != null) {
 
-                final SampleParameter sampleParameter = data.getSampleParameter();
+                final SampleParameters sampleParameter = data.getSampleParameter();
 
                 dos.writeInt(sampleParameter.getPrecision());
                 dos.writeDouble(sampleParameter.getDisplayHigh());

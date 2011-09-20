@@ -24,7 +24,7 @@ import java.util.List;
 
 import javax.annotation.Nonnull;
 
-import org.csstudio.archive.sdds.server.conversion.SampleParameter;
+import org.csstudio.archive.sdds.server.conversion.SampleParameters;
 
 import com.google.common.collect.Lists;
 
@@ -41,12 +41,12 @@ public class RecordDataCollection {
     private List<EpicsRecordData> data;
 
     /** The parameters of the data samples */
-    private SampleParameter sampleParameter;
+    private SampleParameters sampleParameter;
 
     /** Standard constructor */
     public RecordDataCollection() {
         data = Lists.newArrayList();
-        sampleParameter = new SampleParameter();
+        sampleParameter = new SampleParameters();
     }
 
     /**
@@ -71,7 +71,7 @@ public class RecordDataCollection {
      * @return
      */
     @Nonnull
-    public SampleParameter getSampleParameter() {
+    public SampleParameters getSampleParameter() {
         return sampleParameter;
     }
 
@@ -79,7 +79,7 @@ public class RecordDataCollection {
      *
      * @param sampleParameter
      */
-    public void setSampleParameter(@Nonnull final SampleParameter sampleParameter) {
+    public void setSampleParameter(@Nonnull final SampleParameters sampleParameter) {
         this.sampleParameter = sampleParameter;
     }
 
