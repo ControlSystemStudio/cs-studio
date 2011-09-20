@@ -29,7 +29,7 @@ import java.util.Date;
 
 import javax.annotation.Nonnull;
 
-import org.csstudio.archive.sdds.server.file.SxxxType;
+import org.csstudio.archive.sdds.server.file.SddsType;
 
 /**
  * @author Markus Moeller
@@ -53,7 +53,7 @@ public class EpicsRecordData {
     private Object value;
 
     /** */
-    private SxxxType sddsType;
+    private SddsType sddsType;
 
     /**
      *
@@ -80,10 +80,10 @@ public class EpicsRecordData {
 
         this.value = val;
         if (val != null) {
-            this.sddsType = SxxxType.getByTypeName(val.getClass().getSimpleName());
+            this.sddsType = SddsType.getByTypeName(val.getClass().getSimpleName());
         } else {
             this.value = Double.NaN;
-            this.sddsType = SxxxType.SDDS_DOUBLE;
+            this.sddsType = SddsType.SDDS_DOUBLE;
         }
     }
 
@@ -200,7 +200,7 @@ public class EpicsRecordData {
      * @return The SDDS type
      */
     @Nonnull
-    public SxxxType getSxxxType() {
+    public SddsType getSxxxType() {
         return sddsType;
     }
 
@@ -208,7 +208,7 @@ public class EpicsRecordData {
      *
      * @param type
      */
-    public void setSxxxType(@Nonnull final SxxxType type) {
+    public void setSxxxType(@Nonnull final SddsType type) {
         this.sddsType = type;
     }
 
@@ -229,7 +229,7 @@ public class EpicsRecordData {
         t.append("status=" + status + ",");
         t.append("severity=" + severity + ",");
         t.append("value=" + value + ",");
-        t.append("SxxxType=" + sddsType + "}");
+        t.append("SddsType=" + sddsType + "}");
 
         return t.toString();
     }

@@ -30,7 +30,7 @@ import javax.annotation.Nonnull;
  * @author Markus Moeller
  *
  */
-public enum SxxxType {
+public enum SddsType {
 
     NOT_SET("Not set"),
     SDDS_DOUBLE("Double"),
@@ -47,7 +47,7 @@ public enum SxxxType {
      *
      * @param name
      */
-    private SxxxType(final String name) {
+    private SddsType(@Nonnull final String name) {
         typeName = name;
     }
 
@@ -57,11 +57,11 @@ public enum SxxxType {
      * @return The SDDS type matching the given name
      */
     @Nonnull
-    public static SxxxType getByTypeName(@Nonnull final String typeName) {
+    public static SddsType getByTypeName(@Nonnull final String typeName) {
 
-        SxxxType result = SxxxType.NOT_SET;
+        SddsType result = SddsType.NOT_SET;
 
-        for(final SxxxType o : SxxxType.values()) {
+        for(final SddsType o : SddsType.values()) {
             if(o.toString().compareTo(typeName) == 0) {
                 result = o;
                 break;
@@ -76,11 +76,11 @@ public enum SxxxType {
      * @param ordinal
      * @return The SDDS type with the given ordinal number.
      */
-    public static SxxxType getByOrdinal(final int ordinal) {
+    public static SddsType getByOrdinal(final int ordinal) {
 
-        SxxxType result = SxxxType.NOT_SET;
+        SddsType result = SddsType.NOT_SET;
 
-        for(final SxxxType o : SxxxType.values()) {
+        for(final SddsType o : SddsType.values()) {
             if(o.ordinal() == ordinal) {
                 result = o;
                 break;
