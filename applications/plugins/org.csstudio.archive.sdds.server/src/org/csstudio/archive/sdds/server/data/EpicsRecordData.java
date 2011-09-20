@@ -27,6 +27,8 @@ package org.csstudio.archive.sdds.server.data;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
+import javax.annotation.Nonnull;
+
 import org.csstudio.archive.sdds.server.file.SDDSType;
 
 /**
@@ -55,29 +57,20 @@ public class EpicsRecordData {
 
     /**
      *
-     */
-    public EpicsRecordData() {
-        time = 0L;
-        nanoSeconds = 0L;
-        status = ArchiveStatus.UNDEFINED.getStatusValue();
-        severity = ArchiveSeverity.UNDEFINED.getSeverityValue();
-        value = null;
-        sddsType = SDDSType.NOT_SET;
-    }
-
-    /**
-     *
      * @param t
      * @param nano
      * @param statusAndSeverity
      * @param val
      */
-    public EpicsRecordData(final long t, final long nano, final long statusAndSeverity, final Object val) {
+    public EpicsRecordData(final long t,
+                           final long nano,
+                           final long statusAndSeverity,
+                           @Nonnull final Object val) {
 
         this.time = t;
         this.nanoSeconds = nano;
 
-        if(statusAndSeverity != 0L) {
+        if (statusAndSeverity != 0L) {
             this.status = (statusAndSeverity & 0x00000000ffff0000L) >> 16;
             this.severity = statusAndSeverity & 0x000000000000ffffL;
         } else {
@@ -86,7 +79,7 @@ public class EpicsRecordData {
         }
 
         this.value = val;
-        if(val != null) {
+        if (val != null) {
             this.sddsType = SDDSType.getByTypeName(val.getClass().getSimpleName());
         } else {
             this.value = Double.NaN;
@@ -190,15 +183,15 @@ public class EpicsRecordData {
      *
      * @return The value of this record
      */
+    @Nonnull
     public Object getValue() {
         return value;
     }
 
     /**
-     *
      * @param v
      */
-    public void setValue(final Object v) {
+    public void setValue(@Nonnull final Object v) {
         this.value = v;
     }
 
@@ -206,6 +199,7 @@ public class EpicsRecordData {
      *
      * @return The SDDS type
      */
+    @Nonnull
     public SDDSType getSddsType() {
         return sddsType;
     }
@@ -214,7 +208,7 @@ public class EpicsRecordData {
      *
      * @param type
      */
-    public void setSddsType(final SDDSType type) {
+    public void setSddsType(@Nonnull final SDDSType type) {
         this.sddsType = type;
     }
 
@@ -222,7 +216,8 @@ public class EpicsRecordData {
      *
      */
     @Override
-	public String toString() {
+    @Nonnull
+    public String toString() {
 
         final StringBuffer t = new StringBuffer();
         final SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss.SSS ");

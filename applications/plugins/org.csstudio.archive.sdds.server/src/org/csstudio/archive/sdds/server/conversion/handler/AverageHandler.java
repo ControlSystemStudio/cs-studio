@@ -26,6 +26,7 @@ package org.csstudio.archive.sdds.server.conversion.handler;
 
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.Collections;
 import java.util.GregorianCalendar;
 import java.util.List;
 
@@ -76,14 +77,14 @@ public class AverageHandler extends AbstractAlgorithmHandler {
      */
     @Override
     @Nonnull
-    public Iterable<EpicsRecordData> handle(@Nonnull final DataRequestHeader header,
-                                            @Nonnull final EpicsRecordData[] data)
+    public List<EpicsRecordData> handle(@Nonnull final DataRequestHeader header,
+                                        @Nonnull final EpicsRecordData[] data)
     throws DataException, AlgorithmHandlerException, MethodNotImplementedException {
 
         if (data == null) {
-            return new ArrayList<EpicsRecordData>(0);
+            return Collections.emptyList();
         } else if (data.length == 0){
-            return new ArrayList<EpicsRecordData>(0);
+            return Collections.emptyList();
         }
 
         // Get the number of requested samples

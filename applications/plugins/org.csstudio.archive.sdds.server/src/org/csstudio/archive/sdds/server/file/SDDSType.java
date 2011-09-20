@@ -24,6 +24,8 @@
 
 package org.csstudio.archive.sdds.server.file;
 
+import javax.annotation.Nonnull;
+
 /**
  * @author Markus Moeller
  *
@@ -54,7 +56,8 @@ public enum SDDSType {
      * @param typeName
      * @return The SDDS type matching the given name
      */
-    public static SDDSType getByTypeName(final String typeName) {
+    @Nonnull
+    public static SDDSType getByTypeName(@Nonnull final String typeName) {
 
         SDDSType result = SDDSType.NOT_SET;
 

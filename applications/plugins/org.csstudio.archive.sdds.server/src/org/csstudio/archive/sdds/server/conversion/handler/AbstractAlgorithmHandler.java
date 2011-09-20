@@ -24,6 +24,8 @@
 
 package org.csstudio.archive.sdds.server.conversion.handler;
 
+import java.util.List;
+
 import javax.annotation.Nonnull;
 
 import org.csstudio.archive.sdds.server.command.header.DataRequestHeader;
@@ -57,8 +59,8 @@ public abstract class AbstractAlgorithmHandler {
      * @throws MethodNotImplementedException
      */
     @Nonnull
-    public abstract Iterable<EpicsRecordData> handle(@Nonnull final DataRequestHeader header,
-                                                     @Nonnull final EpicsRecordData[] data)
+    public abstract List<EpicsRecordData> handle(@Nonnull final DataRequestHeader header,
+                                                 @Nonnull final EpicsRecordData[] data)
     throws DataException, AlgorithmHandlerException, MethodNotImplementedException;
 
     /**
