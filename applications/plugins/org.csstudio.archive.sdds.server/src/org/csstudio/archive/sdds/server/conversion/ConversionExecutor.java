@@ -97,7 +97,7 @@ public class ConversionExecutor {
      * @return Iterable containing the read data
      */
     @Nonnull
-    public Iterable<EpicsRecordData> convertData(@Nonnull final EpicsRecordData[] data,
+    public List<EpicsRecordData> convertData(@Nonnull final EpicsRecordData[] data,
                                                  @Nonnull final DataRequestHeader header) {
 
         List<EpicsRecordData> result = Collections.emptyList();
