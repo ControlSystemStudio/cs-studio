@@ -26,12 +26,13 @@ package org.csstudio.archive.sdds.server.conversion;
 
 import java.util.Vector;
 
+import javax.annotation.Nonnull;
+
 /**
  * @author Markus Moeller
  *
  */
-public class RecordData
-{
+public class RecordData {
     /** */
     private long error;
 
@@ -47,53 +48,45 @@ public class RecordData
     /** */
     private SampleParameter sampleParameter;
 
-    public long getError()
-    {
+    public long getError() {
         return error;
     }
 
-    public void setError(final long error)
-    {
+    public void setError(final long error) {
         this.error = error;
     }
 
-    public long getType()
-    {
+    public long getType() {
         return type;
     }
 
-    public void setType(final long type)
-    {
+    public void setType(final long type) {
         this.type = type;
     }
 
-    public long getCount()
-    {
+    public long getCount() {
         return count;
     }
 
-    public void setCount(final long count)
-    {
+    public void setCount(final long count) {
         this.count = count;
     }
 
-    public Vector<SampleDouble> getSamples()
-    {
+    @Nonnull
+    public Vector<SampleDouble> getSamples() {
         return samples;
     }
 
-    public void setSamples(final Vector<SampleDouble> samples)
-    {
+    public void setSamples(@Nonnull final Vector<SampleDouble> samples) {
         this.samples = samples;
     }
 
-    public SampleParameter getSampleParameter()
-    {
+    @Nonnull
+    public SampleParameter getSampleParameter() {
         return sampleParameter;
     }
 
-    public void setSampleParameter(final SampleParameter param)
-    {
+    public void setSampleParameter(@Nonnull final SampleParameter param) {
         this.sampleParameter = param;
     }
 }
