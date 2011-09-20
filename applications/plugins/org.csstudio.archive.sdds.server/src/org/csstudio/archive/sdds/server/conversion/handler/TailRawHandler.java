@@ -43,7 +43,7 @@ import org.slf4j.LoggerFactory;
  * @version
  * @since 15.02.2011
  */
-public class TailRawHandler extends AlgorithmHandler {
+public class TailRawHandler extends AbstractAlgorithmHandler {
 
     /** The logger for this class */
     private static final Logger LOG = LoggerFactory.getLogger(TailRawHandler.class);
@@ -54,7 +54,7 @@ public class TailRawHandler extends AlgorithmHandler {
     }
 
     /**
-     * @see org.csstudio.archive.sdds.server.conversion.handler.AlgorithmHandler#handle(org.csstudio.archive.sdds.server.command.header.DataRequestHeader, org.csstudio.archive.sdds.server.data.EpicsRecordData[])
+     * @see org.csstudio.archive.sdds.server.conversion.handler.AbstractAlgorithmHandler#handle(org.csstudio.archive.sdds.server.command.header.DataRequestHeader, org.csstudio.archive.sdds.server.data.EpicsRecordData[])
      */
     @Override
     public Iterable<EpicsRecordData> handle(final DataRequestHeader header, final EpicsRecordData[] data)
@@ -72,8 +72,9 @@ public class TailRawHandler extends AlgorithmHandler {
         // Get the number of requested samples
         int resultLength = header.getMaxNumOfSamples();
 
-        if(resultLength > this.maxSamplesPerRequest) {
-            resultLength = this.maxSamplesPerRequest;
+        final int maxSamplesPerRequest = getMaxSamplesPerRequest();
+        if(resultLength > maxSamplesPerRequest) {
+            resultLength = maxSamplesPerRequest;
         }
 
         if(resultLength > data.length) {

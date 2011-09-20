@@ -41,7 +41,7 @@ import org.slf4j.LoggerFactory;
  * @version
  * @since 06.10.2010
  */
-public class NoFilterHandler extends AlgorithmHandler {
+public class NoFilterHandler extends AbstractAlgorithmHandler {
 
     /** The logger for this class */
     private static final Logger LOG = LoggerFactory.getLogger(NoFilterHandler.class);
@@ -55,7 +55,7 @@ public class NoFilterHandler extends AlgorithmHandler {
     }
 
     /**
-     * @see org.csstudio.archive.sdds.server.conversion.handler.AlgorithmHandler#handle(org.csstudio.archive.sdds.server.command.header.DataRequestHeader, org.csstudio.archive.sdds.server.data.EpicsRecordData[])
+     * @see org.csstudio.archive.sdds.server.conversion.handler.AbstractAlgorithmHandler#handle(org.csstudio.archive.sdds.server.command.header.DataRequestHeader, org.csstudio.archive.sdds.server.data.EpicsRecordData[])
      */
     @Override
     public Iterable<EpicsRecordData> handle(final DataRequestHeader header, final EpicsRecordData[] data)

@@ -46,7 +46,7 @@ import org.slf4j.LoggerFactory;
  * @author mmoeller
  * @since 08.03.2011
  */
-public class MinMaxAverageHandler extends AlgorithmHandler {
+public class MinMaxAverageHandler extends AbstractAlgorithmHandler {
 
     /** The logger for this class */
     private static final Logger LOG = LoggerFactory.getLogger(MinMaxAverageHandler.class);
