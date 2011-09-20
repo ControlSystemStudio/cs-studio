@@ -30,7 +30,7 @@ import javax.annotation.Nonnull;
 
 import org.csstudio.archive.sdds.server.SddsServerActivator;
 import org.csstudio.archive.sdds.server.command.header.DataRequestHeader;
-import org.csstudio.archive.sdds.server.conversion.handler.AlgorithmHandler;
+import org.csstudio.archive.sdds.server.conversion.handler.AbstractAlgorithmHandler;
 import org.csstudio.archive.sdds.server.conversion.handler.AlgorithmHandlerException;
 import org.csstudio.archive.sdds.server.conversion.handler.AverageHandler;
 import org.csstudio.archive.sdds.server.conversion.handler.MethodNotImplementedException;
@@ -50,7 +50,7 @@ import org.eclipse.core.runtime.preferences.IPreferencesService;
 public class ConversionExecutor {
 
     /** Array of conversion handlers */
-    private final AlgorithmHandler[] conversionHandler;
+    private final AbstractAlgorithmHandler[] conversionHandler;
 
     /**
      *
@@ -62,7 +62,7 @@ public class ConversionExecutor {
                                      ServerPreferenceKey.P_MAX_SAMPLES_PER_REQUEST,
                                      10000, null);
 
-        conversionHandler = new AlgorithmHandler[] {
+        conversionHandler = new AbstractAlgorithmHandler[] {
 
                 new AverageHandler(maxSamples),
                 new TailRawHandler(maxSamples),

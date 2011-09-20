@@ -36,9 +36,6 @@ import org.csstudio.archive.sdds.server.util.DataException;
  */
 public abstract class AbstractAlgorithmHandler {
 
-    /** The value that is returned in case of error */
-    public final float ERROR_VALUE = 1E-20f;
-
     /** Max. samples per request */
     private final int maxSamplesPerRequest;
 
