@@ -524,7 +524,7 @@ public final class ImageFigure extends Figure implements Introspectable {
 	 *            The path to the image
 	 */
 	public synchronized void setFilePath(final IPath newval) {
-		if (this.filePath != null && this.filePath.equals(newval))
+		if (newval == null)
 			return;
 		if (animated) {
 			stopAnimation();
