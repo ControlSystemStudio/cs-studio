@@ -26,6 +26,8 @@ package org.csstudio.archive.sdds.server.data;
 
 import java.util.Comparator;
 
+import javax.annotation.Nonnull;
+
 /**
  * TODO (mmoeller) :
  *
@@ -36,7 +38,7 @@ import java.util.Comparator;
 public class RecordDataComparator implements Comparator<EpicsRecordData> {
 
     @Override
-    public int compare(final EpicsRecordData erd0, final EpicsRecordData erd1) {
+    public int compare(@Nonnull final EpicsRecordData erd0, @Nonnull final EpicsRecordData erd1) {
 
         int resultTime = 0;
         int resultNano = 0;
@@ -45,12 +47,9 @@ public class RecordDataComparator implements Comparator<EpicsRecordData> {
         resultTime = Long.signum(erd0.getTime() - erd1.getTime());
         resultNano = Long.signum(erd0.getNanoSeconds() - erd1.getNanoSeconds());
 
-        if(resultTime == 0)
-        {
+        if(resultTime == 0) {
             result = resultNano;
-        }
-        else
-        {
+        } else {
             result = resultTime;
         }
 
