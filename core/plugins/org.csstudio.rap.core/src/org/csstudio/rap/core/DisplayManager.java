@@ -108,9 +108,15 @@ public class DisplayManager {
 				}
 			});		
 		}
+//		Enumeration<?> e = request.getHeaderNames();
+//		while(e.hasMoreElements()){
+//			String s = e.nextElement().toString();
+//			System.out.println(s);
+//			System.out.println(request.getHeader(s));
+//		}
 		StringBuilder sb = new StringBuilder("DisplayManger: "); //$NON-NLS-1$
 		sb.append(display + " on " + request.getRemoteHost());
-		sb.append(" registered. Number of display: ");
+		sb.append(" registered. URL: " +request.getHeader("Referer") + " Number of display: ");
 		sb.append(displayMap.size());		
 		RAPCorePlugin.getLogger().log(Level.INFO, sb.toString());		
 	}	
