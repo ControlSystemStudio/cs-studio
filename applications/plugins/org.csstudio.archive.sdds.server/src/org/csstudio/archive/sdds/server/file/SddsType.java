@@ -76,6 +76,7 @@ public enum SddsType {
      * @param ordinal
      * @return The SDDS type with the given ordinal number.
      */
+    @Nonnull
     public static SddsType getByOrdinal(final int ordinal) {
 
         SddsType result = SddsType.NOT_SET;
@@ -95,7 +96,8 @@ public enum SddsType {
      *
      */
     @Override
-	public String toString() {
+    @Nonnull
+    public String toString() {
         return typeName;
     }
 }
