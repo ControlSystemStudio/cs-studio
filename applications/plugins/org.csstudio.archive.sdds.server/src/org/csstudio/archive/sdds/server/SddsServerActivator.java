@@ -23,6 +23,8 @@
 
 package org.csstudio.archive.sdds.server;
 
+import javax.annotation.Nonnull;
+
 import org.eclipse.core.runtime.Plugin;
 import org.osgi.framework.BundleContext;
 import org.remotercp.common.tracker.GenericServiceTracker;
@@ -36,6 +38,9 @@ import org.slf4j.LoggerFactory;
  */
 public class SddsServerActivator extends Plugin {
 
+    /** The plug-in ID */
+    public static final String PLUGIN_ID = "org.csstudio.archive.sdds.server";
+
     /** The class logger */
     private static final Logger LOG = LoggerFactory.getLogger(SddsServerActivator.class);
 
@@ -44,9 +49,6 @@ public class SddsServerActivator extends Plugin {
 
     private GenericServiceTracker<ISessionService> _genericServiceTracker;
 
-    /** The plug-in ID */
-    public static final String PLUGIN_ID = "org.csstudio.archive.sdds.server";
-
     /**
      * The constructor
      */
@@ -54,26 +56,27 @@ public class SddsServerActivator extends Plugin {
         PLUGIN = this;
     }
 
-	/**
-	 * Returns the shared instance
-	 *
-	 * @return the shared instance
-	 */
+    /**
+     * Returns the shared instance
+     *
+     * @return the shared instance
+     */
+    @Nonnull
     public static SddsServerActivator getDefault() {
-		return PLUGIN;
-	}
+        return PLUGIN;
+    }
 
+    @Nonnull
     public String getPluginId() {
         return PLUGIN_ID;
     }
 
-	public void addSessionServiceListener(
-			final IGenericServiceListener<ISessionService> sessionServiceListener) {
-		_genericServiceTracker.addServiceListener(sessionServiceListener);
-	}
+    public void addSessionServiceListener(@Nonnull final IGenericServiceListener<ISessionService> sessionServiceListener) {
+        _genericServiceTracker.addServiceListener(sessionServiceListener);
+    }
 
     @Override
-    public void start(final BundleContext context) throws Exception {
+    public void start(@Nonnull final BundleContext context) throws Exception {
         super.start(context);
         LOG.info(PLUGIN_ID + " is starting.");
         _genericServiceTracker = new GenericServiceTracker<ISessionService>(
@@ -82,7 +85,7 @@ public class SddsServerActivator extends Plugin {
     }
 
     @Override
-    public void stop(final BundleContext context) throws Exception {
+    public void stop(@Nonnull final BundleContext context) throws Exception {
         super.stop(context);
         PLUGIN = null;
         LOG.info(PLUGIN_ID + " is stopping.");
