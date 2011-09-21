@@ -11,6 +11,8 @@ import gov.aps.jca.Monitor;
 import gov.aps.jca.dbr.DBR;
 import gov.aps.jca.event.ConnectionEvent;
 import gov.aps.jca.event.ConnectionListener;
+import gov.aps.jca.event.GetEvent;
+import gov.aps.jca.event.GetListener;
 import gov.aps.jca.event.MonitorEvent;
 import gov.aps.jca.event.MonitorListener;
 import gov.aps.jca.event.PutEvent;
@@ -41,6 +43,7 @@ public class JCAChannelHandler extends ChannelHandler<MonitorEvent> {
     private final Context context;
     private final int monitorMask;
     private volatile Channel channel;
+    private volatile ExceptionHandler connectionExceptionHandler;
 
     public JCAChannelHandler(String channelName, Context context, int monitorMask) {
         super(channelName);
@@ -58,9 +61,10 @@ public class JCAChannelHandler extends ChannelHandler<MonitorEvent> {
 
     @Override
     public void connect(ExceptionHandler handler) {
+        connectionExceptionHandler = handler;
         try {
             // Give the listener right away so that no event gets lost
-            connectionListener = createConnectionListener(handler);
+            connectionListener = createConnectionListener();
             channel = context.createChannel(getChannelName(), connectionListener);
         } catch (CAException ex) {
             handler.handleException(ex);
@@ -72,8 +76,23 @@ public class JCAChannelHandler extends ChannelHandler<MonitorEvent> {
         if (monitor == null) {
             vTypeFactory = VTypeFactory.matchFor(cacheType, channel.getFieldType(), channel.getElementCount());
             if (vTypeFactory.getEpicsMetaType() != null) {
-                metadata = channel.get(vTypeFactory.getEpicsMetaType(), 1);
+                channel.get(vTypeFactory.getEpicsMetaType(), 1, new GetListener() {
+
+                    @Override
+                    public void getCompleted(GetEvent ev) {
+                        metadata = ev.getDBR();
+                        setupMonitor();
+                    }
+                });
+                channel.getContext().flushIO();
+            } else {
+                setupMonitor();
             }
+        }
+    }
+    
+    private void setupMonitor() {
+        try {
             if (vTypeFactory.isArray()) {
                 monitor = channel.addMonitor(vTypeFactory.getEpicsValueType(), channel.getElementCount(), monitorMask, monitorListener);
             } else {
@@ -81,6 +100,8 @@ public class JCAChannelHandler extends ChannelHandler<MonitorEvent> {
             }
             // Flush the entire context (it's the best we can do)
             channel.getContext().flushIO();
+        } catch(CAException ex) {
+            connectionExceptionHandler.handleException(ex);
         }
     }
     
@@ -104,7 +125,7 @@ public class JCAChannelHandler extends ChannelHandler<MonitorEvent> {
         }
     };
 
-    private ConnectionListener createConnectionListener(final ExceptionHandler handler) {
+    private ConnectionListener createConnectionListener() {
         return new ConnectionListener() {
 
             @Override
@@ -124,7 +145,7 @@ public class JCAChannelHandler extends ChannelHandler<MonitorEvent> {
                             processValue(event);
                     }
                 } catch (Exception ex) {
-                    handler.handleException(ex);
+                    connectionExceptionHandler.handleException(ex);
                 }
             }
         };
