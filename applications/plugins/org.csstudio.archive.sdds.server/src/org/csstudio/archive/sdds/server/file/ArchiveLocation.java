@@ -92,7 +92,7 @@ public class ArchiveLocation {
 
         for(DateTime curDate = interval.getStart(); curDate.isBefore(interval.getEnd()); curDate = curDate.plusMonths(1)) {
 
-            final String path = assemblePathAndAddToResult(curDate.getYear(), curDate.getMonthOfYear());
+            final String path = assemblePath(curDate.getYear(), curDate.getMonthOfYear());
             result.add(path);
         }
 
@@ -100,7 +100,7 @@ public class ArchiveLocation {
     }
 
     @Nonnull
-    private String assemblePathAndAddToResult(final int year,
+    private String assemblePath(final int year,
                                               final int month) {
         return dataPath.get(year) + getMonthAsString(month) + FILE_SEPARATOR;
     }
