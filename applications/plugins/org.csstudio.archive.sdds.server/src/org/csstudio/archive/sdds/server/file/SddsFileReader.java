@@ -52,7 +52,7 @@ public class SddsFileReader {
     private static final Logger LOG = LoggerFactory.getLogger(SddsFileReader.class);
 
     /** The path to the data files */
-    private final ArchiveLocation dataPath;
+    private final ArchiveLocation archiveLocation;
 
     /**
      * Constructor that gets a string containing the path to the data files.
@@ -60,8 +60,8 @@ public class SddsFileReader {
      * @throws DataPathNotFoundException
      */
     public SddsFileReader(@Nonnull final String dataSourceFile) throws DataPathNotFoundException {
-        dataPath = new ArchiveLocation();
-        dataPath.loadLocationList(dataSourceFile);
+        archiveLocation = new ArchiveLocation();
+        archiveLocation.loadLocationList(dataSourceFile);
     }
 
     /**
@@ -77,7 +77,7 @@ public class SddsFileReader {
                                          final long startTimeInS,
                                          final long endTimeInS) {
 
-        final String[] filePaths = dataPath.getAllPaths(getEndTimeOfPreviousMonth(startTimeInS), endTimeInS);
+        final String[] filePaths = archiveLocation.getAllPaths(getEndTimeOfPreviousMonth(startTimeInS), endTimeInS);
         final long st = System.currentTimeMillis();
 
         final ThreadGroup threadGroup = new ThreadGroup("DataReader");

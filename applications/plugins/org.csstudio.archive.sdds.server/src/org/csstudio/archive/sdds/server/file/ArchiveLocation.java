@@ -195,12 +195,6 @@ public class ArchiveLocation {
         }
     }
 
-    /**
-     *
-     * @param newPath
-     * @param oldPath
-     * @return
-     */
     private boolean containsMoreSubDirs(@Nonnull final String newPath, @Nonnull final String oldPath) {
 
         final File newFile = new File(newPath);
