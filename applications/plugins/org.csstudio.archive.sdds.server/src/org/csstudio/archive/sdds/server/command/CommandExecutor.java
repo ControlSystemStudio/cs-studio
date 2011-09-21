@@ -59,7 +59,7 @@ public class CommandExecutor {
     }
 
     /**
-     * Executes the command with the given number - 1.
+     * Executes the command with the given cmd number  - 1.
      *
      * @param cmd
      * @param buffer
