@@ -10,11 +10,13 @@ package org.csstudio.trends.databrowser.opiwidget;
 import org.csstudio.apputil.ui.dialog.ErrorDetailDialog;
 import org.csstudio.opibuilder.util.ResourceUtil;
 import org.csstudio.trends.databrowser2.editor.DataBrowserEditor;
+import org.csstudio.trends.databrowser2.editor.DataBrowserModelEditorInput;
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.osgi.util.NLS;
 import org.eclipse.ui.IWorkbenchPage;
 import org.eclipse.ui.ide.IDE;
+import org.eclipse.ui.part.FileEditorInput;
 
 /** Action for context menu object contribution that opens
  *  the full Data Browser for the model in the Data Browser widget
@@ -29,13 +31,16 @@ public class OpenDataBrowserAction extends DataBrowserWidgetAction
         // In run mode, we always seem to receive the absolute path.
         // In edit mode, a relative path it not resolved
         // unless it's first converted to the absolute path.
-        IPath filename = edit_part.getWidgetModel().getExpandedFilename();
+        final DataBrowserWidgedModel model = edit_part.getWidgetModel();
+        IPath filename = model.getExpandedFilename();
         if(!filename.isAbsolute())
-            filename = ResourceUtil.buildAbsolutePath(edit_part.getWidgetModel(), filename);
+            filename = ResourceUtil.buildAbsolutePath(model, filename);
         try
         {
-            IFile input = ResourceUtil.getIFileFromIPath(filename);
-            IDE.openEditor(page, input, DataBrowserEditor.ID, true);
+            final IFile file_input = ResourceUtil.getIFileFromIPath(filename);
+            final DataBrowserModelEditorInput model_input =
+                    new DataBrowserModelEditorInput(new FileEditorInput(file_input), model.createDataBrowserModel());
+            IDE.openEditor(page, model_input, DataBrowserEditor.ID, true);
         }
         catch (Exception ex)
         {
