@@ -28,9 +28,9 @@ import java.io.ByteArrayOutputStream;
 import java.io.DataOutputStream;
 import java.io.IOException;
 
+import javax.annotation.CheckForNull;
 import javax.annotation.Nonnull;
 
-import org.csstudio.archive.sdds.server.util.IntegerValue;
 import org.csstudio.archive.sdds.server.util.RawData;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -51,16 +51,14 @@ public class VersionServerCommand extends AbstractServerCommand {
      * @param resultLength
      */
     @Override
-    public void execute(@Nonnull final RawData buffer,
-                        @Nonnull final RawData receivedValue,
-                        @Nonnull final IntegerValue resultLength)
+    @CheckForNull
+    public RawData execute(@Nonnull final RawData buffer)
     throws ServerCommandException, CommandNotImplementedException {
 
         DataOutputStream dos = null;
         ByteArrayOutputStream bos = null;
 
         final int version = AAPI.AAPI_VERSION;
-        resultLength.setIntegerValue(Integer.SIZE / 8);
 
         try {
             bos = new ByteArrayOutputStream();
@@ -78,6 +76,6 @@ public class VersionServerCommand extends AbstractServerCommand {
             }
         }
 
-        receivedValue.setData(bos.toByteArray());
+        return new RawData(bos.toByteArray());
     }
 }

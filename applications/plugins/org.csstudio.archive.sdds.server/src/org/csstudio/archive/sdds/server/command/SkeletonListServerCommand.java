@@ -28,9 +28,9 @@ import java.io.ByteArrayOutputStream;
 import java.io.DataOutputStream;
 import java.io.IOException;
 
+import javax.annotation.CheckForNull;
 import javax.annotation.Nonnull;
 
-import org.csstudio.archive.sdds.server.util.IntegerValue;
 import org.csstudio.archive.sdds.server.util.RawData;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -49,9 +49,8 @@ public class SkeletonListServerCommand extends AbstractServerCommand {
      *
      */
     @Override
-    public void execute(@Nonnull final RawData buffer,
-                        @Nonnull final RawData receivedValue,
-                        @Nonnull final IntegerValue resultLength)
+    @CheckForNull
+    public RawData execute(@Nonnull final RawData buffer)
     throws ServerCommandException, CommandNotImplementedException {
 
         final ByteArrayOutputStream baos = new ByteArrayOutputStream();
@@ -61,12 +60,12 @@ public class SkeletonListServerCommand extends AbstractServerCommand {
             dos.writeBytes(AapiServerError.BAD_GET_SKELETON_INFO.toString());
             dos.writeByte('\0');
 
-            receivedValue.setData(baos.toByteArray());
-            receivedValue.setErrorValue(AapiServerError.BAD_GET_SKELETON_INFO.getErrorNumber());
+            return new RawData(baos.toByteArray(), AapiServerError.BAD_GET_SKELETON_INFO.getErrorNumber());
 
         } catch(final IOException ioe) {
 
             LOG.error("[*** IOException ***]: " + ioe.getMessage());
         }
+        return null;
     }
 }

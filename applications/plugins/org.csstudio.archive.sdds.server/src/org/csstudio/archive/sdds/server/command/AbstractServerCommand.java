@@ -31,7 +31,6 @@ import java.io.IOException;
 import javax.annotation.CheckForNull;
 import javax.annotation.Nonnull;
 
-import org.csstudio.archive.sdds.server.util.IntegerValue;
 import org.csstudio.archive.sdds.server.util.RawData;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -62,10 +61,9 @@ public abstract class AbstractServerCommand {
      * @throws ServerCommandException
      * @throws CommandNotImplementedException
      */
-    public abstract void execute(@Nonnull RawData buffer,
-                                 @Nonnull RawData receivedValue,
-                                 @Nonnull IntegerValue resultLength)
-    throws ServerCommandException, CommandNotImplementedException;
+    @CheckForNull
+    public abstract RawData execute(@Nonnull final RawData buffer)
+                                    throws ServerCommandException, CommandNotImplementedException;
 
     /**
      *

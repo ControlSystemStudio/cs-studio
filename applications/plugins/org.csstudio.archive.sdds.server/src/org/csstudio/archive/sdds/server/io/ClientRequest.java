@@ -39,7 +39,6 @@ import javax.annotation.Nonnull;
 import org.csstudio.archive.sdds.server.command.CommandExecutor;
 import org.csstudio.archive.sdds.server.command.CommandNotImplementedException;
 import org.csstudio.archive.sdds.server.command.ServerCommandException;
-import org.csstudio.archive.sdds.server.util.IntegerValue;
 import org.csstudio.archive.sdds.server.util.RawData;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -79,42 +78,38 @@ public class ClientRequest implements Runnable {
      */
     @Override
     public void run() {
-        InputStream in = null;
-        final IntegerValue resultLength = new IntegerValue();
-        final RawData resultData = new RawData();
-        RawData requestData = null;
 
         LOG.info("Handle request from socket " + socket.toString());
 
+        InputStream in = null;
         try {
             in = socket.getInputStream();
 
             while (!socket.isClosed()) {
                 final CommandHeader header = readHeader(in);
-                requestData = readData(in);
+                final RawData requestData = readData(in);
 
                 if (header != null) {
                     LOG.info(header.toString());
+                    RawData cmdResult;
                     try {
-                        commandExecutor.executeCommand(header.getCommandTag(),
-                                                       requestData,
-                                                       resultData,
-                                                       resultLength);
+                        cmdResult =
+                            commandExecutor.executeCommand(header.getCommandTag(),
+                                                           requestData);
 
                     } catch (final ServerCommandException sce) {
                         LOG.error("[*** ServerCommandException ***]: " + sce.getMessage());
                         header.setError(sce.getErrorNumber());
-                        resultData.setData(sce.getMessage().getBytes());
-                        resultLength.setIntegerValue(resultData.getData().length + 2);
+                        cmdResult = new RawData(sce.getMessage().getBytes(),
+                                                sce.getErrorNumber());
                     } catch(final CommandNotImplementedException cnie) {
                         LOG.error("[*** CommandNotImplementedException ***]: " + cnie.getMessage());
                         header.setError(AapiServerError.BAD_CMD.getErrorNumber());
-                        resultData.setData(cnie.getMessage().getBytes());
-                        resultLength.setIntegerValue(resultData.getData().length + 2);
+                        cmdResult = new RawData(cnie.getMessage().getBytes(),
+                                                AapiServerError.BAD_CMD.getErrorNumber());
                     }
 
-                    resultLength.setIntegerValue(resultData.getData().length);
-                    writeAnswer(socket.getOutputStream(), header, resultData, resultLength);
+                    writeAnswer(socket.getOutputStream(), header, cmdResult);
                 }
             }
         } catch (final IOException ioe) {
@@ -176,21 +171,21 @@ public class ClientRequest implements Runnable {
 
     private void writeAnswer(@Nonnull final OutputStream out,
                              @Nonnull final CommandHeader header,
-                             @Nonnull final RawData data,
-                             @Nonnull final IntegerValue dataLength) throws IOException {
+                             @Nonnull final RawData resultData) throws IOException {
 
+        final int length = resultData.getData().length;
         final ByteArrayOutputStream outData =
-            new ByteArrayOutputStream(AAPI.HEADER_LENGTH + dataLength.getIntegerValue());
+            new ByteArrayOutputStream(AAPI.HEADER_LENGTH + length);
         final DataOutputStream dos = new DataOutputStream(outData);
 
         // Write header
-        dos.writeInt(AAPI.HEADER_LENGTH + dataLength.getIntegerValue());
+        dos.writeInt(AAPI.HEADER_LENGTH + length);
         dos.writeInt(header.getCommandTag());
-        dos.writeInt(data.getErrorValue());
+        dos.writeInt(resultData.getErrorValue());
         dos.writeInt(AAPI.AAPI_VERSION);
 
         // Write data
-        dos.write(data.getData());
+        dos.write(resultData.getData());
 
         // Write to socket output stream
         out.write(outData.toByteArray());

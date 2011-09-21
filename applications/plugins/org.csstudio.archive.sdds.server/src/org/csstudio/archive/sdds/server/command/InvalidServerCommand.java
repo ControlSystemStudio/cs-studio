@@ -24,9 +24,9 @@
 
 package org.csstudio.archive.sdds.server.command;
 
+import javax.annotation.CheckForNull;
 import javax.annotation.Nonnull;
 
-import org.csstudio.archive.sdds.server.util.IntegerValue;
 import org.csstudio.archive.sdds.server.util.RawData;
 
 /**
@@ -39,9 +39,8 @@ public class InvalidServerCommand extends AbstractServerCommand {
      * @see org.csstudio.archive.jaapi.server.command.ServerCommand#execute(byte[], long, byte[], org.csstudio.archive.jaapi.server.util.LongValue)
      */
     @Override
-    public void execute(@Nonnull final RawData buffer,
-                        @Nonnull final RawData receivedValue,
-                        @Nonnull final IntegerValue resultLength)
+    @CheckForNull
+    public RawData execute(@Nonnull final RawData buffer)
     throws ServerCommandException, CommandNotImplementedException {
 
         throw new ServerCommandException("Invalid command");

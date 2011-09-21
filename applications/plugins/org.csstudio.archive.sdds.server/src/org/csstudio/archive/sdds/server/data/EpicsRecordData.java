@@ -200,7 +200,7 @@ public class EpicsRecordData {
      * @return The SDDS type
      */
     @Nonnull
-    public SddsType getSxxxType() {
+    public SddsType getSddsType() {
         return sddsType;
     }
 
