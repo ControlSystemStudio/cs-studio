@@ -292,7 +292,6 @@ public class SearchView extends ViewPart implements Observer {
             _resultStyledText.setText(sb.toString());
         }
         if (arg1 instanceof Boolean) {
-            System.out.println("Done");
             final Boolean done = (Boolean) arg1;
             final Date endSearchDate = new Date();
             final String text = _resultStyledText.getText();

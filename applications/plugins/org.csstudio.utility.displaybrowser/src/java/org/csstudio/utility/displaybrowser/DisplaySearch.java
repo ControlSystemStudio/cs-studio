@@ -209,6 +209,11 @@ public class DisplaySearch extends Observable {
         _workingJobs = Collections.synchronizedList(new ArrayList<Job>());
          final Job job = new Job("SDS Display Search") {
 
+             /*TODO: wenn die Job zahl über eins gesetzt wird kommt es im StripChartPlotPostProcessor
+                     zu einem AssertionError
+              */
+            private final static int _MAX_RUNNIG_JOBS = 1;
+
             @Override
             protected IStatus run(final IProgressMonitor monitor) {
                 monitor.beginTask("Search SDS Display", _files.size());
@@ -216,7 +221,7 @@ public class DisplaySearch extends Observable {
                 for (final File file : _files) {
                     fileCount++;
                     _jobCounter.incrementAndGet();
-                    while (_jobCounter.get()>10) {
+                    while (_jobCounter.get()>_MAX_RUNNIG_JOBS) {
                         if(_chanceled.get()) {
                             return Status.CANCEL_STATUS;
                         }
