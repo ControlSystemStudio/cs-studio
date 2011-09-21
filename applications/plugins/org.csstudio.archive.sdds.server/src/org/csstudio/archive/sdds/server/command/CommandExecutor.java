@@ -24,9 +24,9 @@
 
 package org.csstudio.archive.sdds.server.command;
 
+import javax.annotation.CheckForNull;
 import javax.annotation.Nonnull;
 
-import org.csstudio.archive.sdds.server.util.IntegerValue;
 import org.csstudio.archive.sdds.server.util.RawData;
 
 /**
@@ -46,33 +46,31 @@ public class CommandExecutor {
     public CommandExecutor() throws ServerCommandException {
 
         commands = new AbstractServerCommand[] {
-                new Version(),
-                new DataRequest(),
-                new ChannelInfo(),
-                new ChannelList(),
-                new HierarchyChannelList(),
-                new FilterList(),
-                new RegExpChannelList(),
-                new SkeletonList(),
-                new WaveFormDataRequest()
+                new VersionServerCommand(),
+                new DataRequestServerCommand(),
+                new ChannelInfoServerCommand(),
+                new ChannelListServerCommand(),
+                new HierarchyChannelListServerCommand(),
+                new FilterListServerCommand(),
+                new RegExpChannelListServerCommand(),
+                new SkeletonListServerCommand(),
+                new WaveFormDataRequestServerCommand(),
          };
     }
 
     /**
-     * Executes the command with the given number - 1.
+     * Executes the command with the given cmd number  - 1.
      *
-     * @param cmd
+     * @param cmd the command number
      * @param buffer
-     * @param receivedValue
-     * @param resultLength
+     * @return the resulting raw data (incl byte array and error code)
      * @throws ServerCommandException
      * @throws CommandNotImplementedException
      */
-    public void executeCommand(@Nonnull final int cmd,
-                               @Nonnull final RawData buffer,
-                               @Nonnull final RawData receivedValue,
-                               @Nonnull final IntegerValue resultLength)
+    @CheckForNull
+    public RawData executeCommand(@Nonnull final int cmd,
+                                  @Nonnull final RawData buffer)
     throws ServerCommandException, CommandNotImplementedException {
-        commands[cmd - 1].execute(buffer, receivedValue, resultLength);
+        return commands[cmd - 1].execute(buffer);
     }
 }

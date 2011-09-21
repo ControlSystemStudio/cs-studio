@@ -1,6 +1,5 @@
-
 /*
- * Copyright (c) 2010 Stiftung Deutsches Elektronen-Synchrotron,
+ * Copyright (c) 2011 Stiftung Deutsches Elektronen-Synchrotron,
  * Member of the Helmholtz Association, (DESY), HAMBURG, GERMANY.
  *
  * THIS SOFTWARE IS PROVIDED UNDER THIS LICENSE ON AN "../AS IS" BASIS.
@@ -21,24 +20,21 @@
  * AT HTTP://WWW.DESY.DE/LEGAL/LICENSE.HTM
  *
  */
+package org.csstudio.archive.sdds.server;
 
-package org.csstudio.archive.sdds.server.file;
-
-import java.util.Comparator;
-
-import org.csstudio.archive.sdds.server.data.EpicsRecordData;
+import javax.annotation.Nonnull;
 
 /**
- * TODO (mmoeller) :
+ * Bean interface for the application
  *
- * @author mmoeller
- * @version
- * @since 07.10.2010
+ * @author Markus Moeller
+ * @author bknerr
+ * @since 20.09.2011
  */
-public class TimeComperator implements Comparator<EpicsRecordData> {
+public interface ISddsServerApplicationMBean {
 
-    @Override
-    public int compare(final EpicsRecordData o1, final EpicsRecordData o2) {
-        return Long.signum(o1.getTime() - o2.getTime());
-    }
+    void stopApplication();
+
+    @Nonnull
+    String readVersion();
 }

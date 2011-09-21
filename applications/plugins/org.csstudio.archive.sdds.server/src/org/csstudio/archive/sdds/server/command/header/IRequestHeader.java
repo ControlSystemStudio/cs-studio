@@ -24,6 +24,8 @@
 
 package org.csstudio.archive.sdds.server.command.header;
 
+import javax.annotation.Nonnull;
+
 /**
  * @author Markus Moeller
  *
@@ -31,8 +33,9 @@ package org.csstudio.archive.sdds.server.command.header;
 public interface IRequestHeader {
 
     /** Returns an array of byte containing the data of the header */
+    @Nonnull
     byte[] getHeaderAsByteArray();
 
     /** Returns an array of byte containing the data of the header */
-    void setHeaderFromByteArray(byte[] data);
+    void setHeaderFromByteArray(@Nonnull byte[] data);
 }

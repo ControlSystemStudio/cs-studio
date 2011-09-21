@@ -22,43 +22,50 @@
  *
  */
 
-package org.csstudio.archive.sdds.server.file;
+package org.csstudio.archive.sdds.server.command;
 
-import SDDS.java.SDDS.SDDSFile;
+import java.io.ByteArrayOutputStream;
+import java.io.DataOutputStream;
+import java.io.IOException;
+
+import javax.annotation.CheckForNull;
+import javax.annotation.Nonnull;
+
+import org.csstudio.archive.sdds.server.util.RawData;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import de.desy.aapi.AapiServerError;
 
 /**
  * @author Markus Moeller
  *
  */
-public class SddsUtil {
+public class WaveFormDataRequestServerCommand extends AbstractServerCommand {
 
-    /** No error */
-    public static final int SDDS_CHECK_OKAY = 0;
+    private static final Logger LOG = LoggerFactory.getLogger(WaveFormDataRequestServerCommand.class);
 
-    /** No error */
-    public static final int SDDS_CHECK_OK = SDDS_CHECK_OKAY;
-
-    /** Column, parameter, etc. does not exist */
-    public static final int SDDS_CHECK_NONEXISTENT = 1;
-
-    /** Column, parameter, etc. has got wrong type */
-    public static final int SDDS_CHECK_WRONGTYPE = 2;
-
-    /** The unit is not correct */
-    public static final int SDDS_CHECK_WRONGUNITS = 3;
-
-    /**
-     *
-     * @param sddsFile
-     * @param columnNames
-     * @param columnUnits
-     * @param type
-     * @return
+    /* (non-Javadoc)
+     * @see org.csstudio.archive.jaapi.server.command.ServerCommand#execute(byte[], int, byte[], org.csstudio.archive.jaapi.server.util.IntegerValue)
      */
-    public static int checkColumn(final SDDSFile sddsFile, final String[] columnNames, final String[] columnUnits, final SddsDataType type)
-    {
-        final int result = SDDS_CHECK_OK;
+    @Override
+    @CheckForNull
+    public RawData execute(@Nonnull final RawData buffer)
+    throws ServerCommandException, CommandNotImplementedException {
 
-        return result;
+        final ByteArrayOutputStream baos = new ByteArrayOutputStream();
+        final DataOutputStream dos = new DataOutputStream(baos);
+
+        try {
+            dos.writeBytes(AapiServerError.BAD_CMD.toString());
+            dos.writeByte('\0');
+
+            return new RawData(baos.toByteArray(), AapiServerError.BAD_CMD.getErrorNumber());
+
+        } catch(final IOException ioe) {
+
+            LOG.error("[*** IOException ***]: ", ioe);
+        }
+        return null;
     }
 }

@@ -20,10 +20,13 @@
 
 package org.csstudio.archive.sdds.server.data;
 
-import java.util.ArrayList;
 import java.util.List;
 
-import org.csstudio.archive.sdds.server.conversion.SampleParameter;
+import javax.annotation.Nonnull;
+
+import org.csstudio.archive.sdds.server.conversion.SampleParameters;
+
+import com.google.common.collect.Lists;
 
 /**
  * TODO (mmoeller) :
@@ -38,18 +41,19 @@ public class RecordDataCollection {
     private List<EpicsRecordData> data;
 
     /** The parameters of the data samples */
-    private SampleParameter sampleParameter;
+    private SampleParameters sampleParameter;
 
     /** Standard constructor */
     public RecordDataCollection() {
-        data = new ArrayList<EpicsRecordData>(0);
-        sampleParameter = new SampleParameter();
+        data = Lists.newArrayList();
+        sampleParameter = new SampleParameters();
     }
 
     /**
      *
      * @return
      */
+    @Nonnull
     public List<EpicsRecordData> getData() {
         return data;
     }
@@ -58,15 +62,16 @@ public class RecordDataCollection {
      *
      * @param data
      */
-    public void setData(final List<EpicsRecordData> data) {
-        this.data = data;
+    public void setData(@Nonnull final List<EpicsRecordData> data) {
+        this.data = Lists.newArrayList(data);
     }
 
     /**
      *
      * @return
      */
-    public SampleParameter getSampleParameter() {
+    @Nonnull
+    public SampleParameters getSampleParameter() {
         return sampleParameter;
     }
 
@@ -74,7 +79,7 @@ public class RecordDataCollection {
      *
      * @param sampleParameter
      */
-    public void setSampleParameter(final SampleParameter sampleParameter) {
+    public void setSampleParameter(@Nonnull final SampleParameters sampleParameter) {
         this.sampleParameter = sampleParameter;
     }
 

@@ -24,23 +24,33 @@
 
 package org.csstudio.archive.sdds.server.file;
 
-import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileNotFoundException;
-import java.io.FileReader;
 import java.io.IOException;
+import java.nio.charset.Charset;
+import java.util.Collections;
+import java.util.List;
 import java.util.TreeMap;
-import java.util.Vector;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import javax.annotation.Nonnull;
+
 import org.csstudio.archive.sdds.server.util.TimeInterval;
+
+import com.google.common.base.Strings;
+import com.google.common.collect.Lists;
+import com.google.common.io.Files;
+import com.google.common.io.LineProcessor;
 
 /**
  * @author Markus Moeller
  *
  */
 public class ArchiveLocation {
+
+    /** File separator */
+    static final String FILE_SEPARATOR = System.getProperty("file.separator");
 
     /**
      * TODO: A job has to read in the data paths every xx hours!!!!!
@@ -50,15 +60,12 @@ public class ArchiveLocation {
      */
     private final TreeMap<Integer, String> dataPath;
 
-    /** File separator */
-    private final String FILE_SEPARATOR;
 
     /**
      *
      */
     public ArchiveLocation() {
         dataPath = new TreeMap<Integer, String>(new YearComparator());
-        FILE_SEPARATOR = System.getProperty("file.separator");
     }
 
     /**
@@ -66,10 +73,9 @@ public class ArchiveLocation {
      * @param year
      * @return The matching path
      */
+    @Nonnull
     public String getPathByYear(final int year) {
-        String result = null;
-        result = dataPath.get(year);
-        return result;
+        return dataPath.get(year);
     }
 
     /**
@@ -77,6 +83,7 @@ public class ArchiveLocation {
      * @param startTime
      * @return The matching path
      */
+    @Nonnull
     public String getPath(final long startTime) {
         final TimeInterval timeInterval = new TimeInterval(startTime, startTime);
         return dataPath.get(timeInterval.getStartYear()) + timeInterval.getStartMonthAsString() + FILE_SEPARATOR;
@@ -86,9 +93,10 @@ public class ArchiveLocation {
      *
      * @return All matching paths
      */
+    @Nonnull
     public String[] getAllPaths(final long startTime, final long endTime) {
 
-        final Vector<String> result = new Vector<String>();
+        final List<String> result = Lists.newArrayList();
         final TimeInterval timeInterval = new TimeInterval(startTime, endTime);
         String path = null;
         int lastMonth;
@@ -102,7 +110,7 @@ public class ArchiveLocation {
             lastYear = years[years.length - 1];
             lastMonth = timeInterval.getEndMonth();
 
-            for(int y = years[0];y <= lastYear;y++) {
+            for(int y = years[0]; y <= lastYear; y++) {
 
                 if(y == years[0]) {
                     month = timeInterval.getStartMonth();
@@ -111,12 +119,12 @@ public class ArchiveLocation {
                 }
 
                 if(y < lastYear) {
-                    for(int m = month;m <= 12;m++) {
+                    for(int m = month; m <= 12; m++) {
                         path = dataPath.get(y) + getMonthAsString(m) + FILE_SEPARATOR;
                         result.add(path);
                     }
                 } else {
-                    for(int m = month;m <= lastMonth;m++) {
+                    for(int m = month; m <= lastMonth; m++) {
                         path = dataPath.get(y) + getMonthAsString(m) + FILE_SEPARATOR;
                         result.add(path);
                     }
@@ -132,6 +140,7 @@ public class ArchiveLocation {
      * @param month
      * @return The month as string
      */
+    @Nonnull
     public String getMonthAsString(final int month) {
         return month > 9 ? Integer.toString(month) : new String("0" + month);
     }
@@ -140,81 +149,76 @@ public class ArchiveLocation {
      *
      * @param filePath - The name and path of the file that contains the SDDS file location list
      */
-    public void loadLocationList(final String filePath) throws DataPathNotFoundException {
+    public void loadLocationList(@Nonnull final String filePath) throws DataPathNotFoundException {
 
-        Matcher matcher = null;
-        BufferedReader br = null;
-        String line = null;
-        String name = null;
-        String fullPath;
-        File[] fileList = null;
-
-        final Vector<String> path = new Vector<String>();
-
+        List<String> paths = Collections.emptyList();
         try {
+            paths =
+                Files.readLines(new File(filePath),
+                                Charset.defaultCharset(),
+                                new LineProcessor<List<String>>() {
+                                    private final List<String> _result = Lists.newArrayList();
+                                    @Override
+                                    public boolean processLine(@Nonnull final String line) throws IOException {
+                                        if (!Strings.isNullOrEmpty(line) && !line.startsWith("#")) {
+                                            if(!line.endsWith(FILE_SEPARATOR) && !line.endsWith("/")) {
+                                                _result.add(line + FILE_SEPARATOR);
+                                            } else {
+                                                _result.add(line);
+                                            }
+                                        }
+                                        return true;
+                                    }
 
-        	br = new BufferedReader(new FileReader(filePath));
-            while(br.ready()) {
-                line = br.readLine();
-                line = line.trim();
-                if(line.length() > 0) {
-
-                	if(line.startsWith("#") == false) {
-
-                		if(line.endsWith(FILE_SEPARATOR) == false && line.endsWith("/") == false) {
-                            line = line + FILE_SEPARATOR;
-                        }
-
-                        path.add(line);
-                    }
-                }
-            }
+                                    @Override
+                                    @Nonnull
+                                    public List<String> getResult() {
+                                        return _result;
+                                    }
+                                });
         } catch(final FileNotFoundException fnfe) {
             throw new DataPathNotFoundException("File with the location paths cannot be found: " + fnfe.getMessage());
         } catch(final IOException ioe) {
             throw new DataPathNotFoundException("Reading error: " + ioe.getMessage());
-        } finally {
-            if(br != null) {
-            	try{br.close();}catch(final Exception e){/* Can be ignored */}
-            	br = null;
-            }
         }
 
+        processPaths(paths);
+    }
+
+    private void processPaths(@Nonnull final List<String> paths) throws DataPathNotFoundException {
         final Pattern pattern = Pattern.compile("\\d{4}");
-
-        for(final String f : path) {
-
-        	final File file = new File(f);
-            fileList = file.listFiles();
+        for (final String path : paths) {
+            final File file = new File(path);
+            final File[] fileList = file.listFiles();
             if(fileList == null) {
-                throw new DataPathNotFoundException("Path '" + f + "' cannot be found or is empty.");
+                throw new DataPathNotFoundException("Path '" + path + "' cannot be found or is empty.");
             }
+            processPathEntries(pattern, fileList);
+        }
+    }
 
-            for(final File fi : fileList) {
+    private void processPathEntries(@Nonnull final Pattern pattern, @Nonnull final File[] fileList) {
+        for(final File fi : fileList) {
+            final String name = fi.getName().trim();
+            final Matcher matcher = pattern.matcher(name);
+            if (matcher.matches()) {
+                try {
+                    final int y = Integer.parseInt(name);
+                    String fullPath = fi.getPath().trim();
 
-            	name = fi.getName().trim();
-                matcher = pattern.matcher(name);
-                if(matcher.matches()) {
+                    if(!fullPath.endsWith(FILE_SEPARATOR)) {
+                        fullPath += FILE_SEPARATOR;
+                    }
 
-                	try {
-
-                		// subDir.add(name);
-                        final int y = Integer.parseInt(name);
-                        fullPath = fi.getPath().trim();
-                        if(fullPath.endsWith(FILE_SEPARATOR) == false) {
-                            fullPath += FILE_SEPARATOR;
+                    if (!dataPath.containsKey(y)) {
+                        dataPath.put(y, fullPath);
+                    } else {
+                        if(containsMoreSubDirs(fullPath, dataPath.get(y))) {
+                            dataPath.put(y, fullPath);
                         }
+                    }
 
-                        if (dataPath.containsKey(y) == false) {
-                        	dataPath.put(y, fullPath);
-                        } else {
-                        	if(containsMoreSubDirs(fullPath, dataPath.get(y))) {
-                        		dataPath.put(y, fullPath);
-                        	}
-                        }
-
-                    } catch(final NumberFormatException nfe) {/* Can be ignored */}
-                }
+                } catch(final NumberFormatException nfe) {/* Can be ignored */}
             }
         }
     }
@@ -225,17 +229,15 @@ public class ArchiveLocation {
      * @param oldPath
      * @return
      */
-    private boolean containsMoreSubDirs(final String newPath, final String oldPath) {
+    private boolean containsMoreSubDirs(@Nonnull final String newPath, @Nonnull final String oldPath) {
 
-    	boolean result = false;
+        final File newFile = new File(newPath);
+        final File oldFile = new File(oldPath);
 
-    	final File newFile = new File(newPath);
-    	final File oldFile = new File(oldPath);
+        if(newFile.list().length > oldFile.list().length) {
+            return true;
+        }
 
-    	if(newFile.list().length > oldFile.list().length) {
-    		result = true;
-    	}
-
-    	return result;
+        return false;
     }
 }

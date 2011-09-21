@@ -22,51 +22,53 @@
  *
  */
 
-package org.csstudio.archive.sdds.server.command;
-
-import java.io.ByteArrayOutputStream;
-import java.io.DataOutputStream;
-import java.io.IOException;
+package org.csstudio.archive.sdds.server.management;
 
 import javax.annotation.Nonnull;
 
-import org.csstudio.archive.sdds.server.util.IntegerValue;
-import org.csstudio.archive.sdds.server.util.RawData;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
-import de.desy.aapi.AapiServerError;
+import org.csstudio.archive.sdds.server.IRemotelyStoppable;
+import org.csstudio.archive.sdds.server.SddsServerActivator;
+import org.csstudio.platform.management.CommandParameters;
+import org.csstudio.platform.management.CommandResult;
+import org.csstudio.platform.management.IManagementCommand;
 
 /**
  * @author Markus Moeller
  *
  */
-public class RegExpChannelList extends AbstractServerCommand {
+public class StopMgmtCommand implements IManagementCommand {
 
-    private static final Logger LOG = LoggerFactory.getLogger(RegExpChannelList.class);
+    /** Static instance of the Application object. */
+    private static IRemotelyStoppable STOP_ME;
 
-    /**
-     *
+    /* (non-Javadoc)
+     * @see org.csstudio.platform.management.IManagementCommand#execute(org.csstudio.platform.management.CommandParameters)
      */
     @Override
-    public void execute(@Nonnull final RawData buffer,
-                        @Nonnull final RawData receivedValue,
-                        @Nonnull final IntegerValue resultLength)
-         throws ServerCommandException, CommandNotImplementedException {
+    @Nonnull
+    public CommandResult execute(@Nonnull final CommandParameters parameters) {
 
-        final ByteArrayOutputStream baos = new ByteArrayOutputStream();
-        final DataOutputStream dos = new DataOutputStream(baos);
+        // The result of this method call.
+        CommandResult result = null;
 
-        try {
-            dos.writeBytes(AapiServerError.BAD_GET_REG_EXP.toString());
-            dos.writeByte('\0');
-
-            receivedValue.setData(baos.toByteArray());
-            receivedValue.setErrorValue(AapiServerError.BAD_GET_REG_EXP.getErrorNumber());
-
-        } catch(final IOException ioe) {
-
-            LOG.error("[*** IOException ***]: " + ioe.getMessage());
+        if(STOP_ME != null) {
+            STOP_ME.stopApplication(false);
+            result = CommandResult.createMessageResult(SddsServerActivator.PLUGIN_ID + " is stopping now.");
+        } else {
+            result = CommandResult.createFailureResult("Do not have a valid reference to the Application object!");
         }
+
+        return result;
+    }
+
+
+    /**
+     * Sets the static Application object.
+     *
+     * @param o
+     *
+     */
+    public static void injectStaticObject(@Nonnull final IRemotelyStoppable o) {
+        STOP_ME = o;
     }
 }

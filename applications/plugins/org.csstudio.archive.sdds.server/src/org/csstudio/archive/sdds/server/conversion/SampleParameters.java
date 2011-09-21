@@ -24,11 +24,13 @@
 
 package org.csstudio.archive.sdds.server.conversion;
 
+import javax.annotation.Nonnull;
+
 /**
  * @author Markus Moeller
  *
  */
-public class SampleParameter {
+public class SampleParameters {
 
     /** Precision */
     private int precision;
@@ -51,9 +53,6 @@ public class SampleParameter {
     /** LOLO */
     private double lowAlarm;
 
-    /** Length of string 'units' */
-    private int unitsLength;
-
     /** Units */
     private String units;
 
@@ -61,7 +60,7 @@ public class SampleParameter {
      * Standard constructor that sets all fields to zero.
      *
      */
-    public SampleParameter() {
+    public SampleParameters() {
         this.precision = 0;
         this.displayHigh = 0.0;
         this.displayLow = 0.0;
@@ -69,33 +68,7 @@ public class SampleParameter {
         this.highWarning = 0.0;
         this.lowWarning = 0.0;
         this.lowAlarm = 0.0;
-        this.unitsLength = 0;
         this.units = "";
-    }
-
-    /**
-     * @param precision
-     * @param displayHigh
-     * @param displayLow
-     * @param highAlarm
-     * @param highWarning
-     * @param lowWarning
-     * @param lowAlarm
-     * @param unitsLength
-     * @param units
-     */
-    public SampleParameter(final int precision, final double displayHigh, final double displayLow,
-            final double highAlarm, final double highWarning, final double lowWarning,
-            final double lowAlarm, final int unitsLength, final String units) {
-        this.precision = precision;
-        this.displayHigh = displayHigh;
-        this.displayLow = displayLow;
-        this.highAlarm = highAlarm;
-        this.highWarning = highWarning;
-        this.lowWarning = lowWarning;
-        this.lowAlarm = lowAlarm;
-        this.unitsLength = unitsLength;
-        this.units = units;
     }
 
     public int getPrecision() {
@@ -155,22 +128,15 @@ public class SampleParameter {
     }
 
     public int getUnitsLength() {
-        return unitsLength;
+        return units.length();
     }
 
-    public void setUnitsLength(final int unitsLength) {
-        this.unitsLength = unitsLength;
-    }
-
+    @Nonnull
     public String getUnits() {
         return units;
     }
 
-    public void setUnits(final String units) {
+    public void setUnits(@Nonnull final String units) {
         this.units = units;
-        if(units != null) {
-
-            this.unitsLength = units.length();
-        }
     }
 }

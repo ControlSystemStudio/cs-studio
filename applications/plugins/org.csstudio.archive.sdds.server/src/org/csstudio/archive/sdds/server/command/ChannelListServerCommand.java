@@ -22,49 +22,49 @@
  *
  */
 
-package org.csstudio.archive.sdds.server.util;
+package org.csstudio.archive.sdds.server.command;
+
+import java.io.ByteArrayOutputStream;
+import java.io.DataOutputStream;
+import java.io.IOException;
+
+import javax.annotation.CheckForNull;
+import javax.annotation.Nonnull;
+
+import org.csstudio.archive.sdds.server.util.RawData;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import de.desy.aapi.AapiServerError;
 
 /**
  * @author Markus Moeller
  *
  */
-public class IntegerValue
-{
-    /** The value of this class */
-    private int value;
+public class ChannelListServerCommand extends AbstractServerCommand {
+
+    private static final Logger LOG = LoggerFactory.getLogger(ChannelListServerCommand.class);
 
     /**
-     * Constructor that sets the value to 0 as a default setting.
+     * {@inheritDoc}
      */
-    public IntegerValue()
-    {
-        value = 0;
-    }
+    @Override
+    @CheckForNull
+    public RawData execute(@Nonnull final RawData buffer)
+                           throws ServerCommandException, CommandNotImplementedException {
+        final ByteArrayOutputStream baos = new ByteArrayOutputStream();
+        final DataOutputStream dos = new DataOutputStream(baos);
 
-    /**
-     *
-     * @param longValue
-     */
-    public IntegerValue(final int intValue)
-    {
-        value = intValue;
-    }
+        try {
+            dos.writeBytes(AapiServerError.BAD_GET_CHANNEL_LIST.toString());
+            dos.writeByte('\0');
 
-    /**
-     *
-     * @return
-     */
-    public int getIntegerValue()
-    {
-        return value;
-    }
+            return new RawData(baos.toByteArray(),
+                               AapiServerError.BAD_GET_CHANNEL_LIST.getErrorNumber());
+        } catch(final IOException ioe) {
 
-    /**
-     *
-     * @param longValue
-     */
-    public void setIntegerValue(final int intValue)
-    {
-        value = intValue;
+            LOG.error("[*** IOException ***]: " + ioe.getMessage());
+        }
+        return null;
     }
 }

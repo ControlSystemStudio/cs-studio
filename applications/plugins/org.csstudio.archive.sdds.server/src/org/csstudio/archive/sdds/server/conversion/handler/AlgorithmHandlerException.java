@@ -24,6 +24,8 @@
 
 package org.csstudio.archive.sdds.server.conversion.handler;
 
+import javax.annotation.Nonnull;
+
 /**
  * TODO (mmoeller) :
  *
@@ -45,7 +47,8 @@ public class AlgorithmHandlerException extends Exception {
     /**
      * @param message
      */
-    public AlgorithmHandlerException(final int errorValue, final String errorString) {
+    public AlgorithmHandlerException(final int errorValue,
+                                     @Nonnull final String errorString) {
         super(errorString);
         this.errorValue = errorValue;
         this.errorString = errorString;
@@ -71,14 +74,11 @@ public class AlgorithmHandlerException extends Exception {
      *
      * @param errorString
      */
-    public void setErrorString(final String errorString) {
+    public void setErrorString(@Nonnull final String errorString) {
         this.errorString = errorString;
     }
 
-    /**
-     *
-     * @return
-     */
+    @Nonnull
     public String getErrorString() {
         return errorString;
     }

@@ -22,51 +22,50 @@
  *
  */
 
-package org.csstudio.archive.sdds.server.management;
+package org.csstudio.archive.sdds.server.command;
 
+import java.io.ByteArrayOutputStream;
+import java.io.DataOutputStream;
+import java.io.IOException;
+
+import javax.annotation.CheckForNull;
 import javax.annotation.Nonnull;
 
-import org.csstudio.archive.sdds.server.IRemotelyStoppable;
-import org.csstudio.archive.sdds.server.SddsServerActivator;
-import org.csstudio.platform.management.CommandParameters;
-import org.csstudio.platform.management.CommandResult;
-import org.csstudio.platform.management.IManagementCommand;
+import org.csstudio.archive.sdds.server.util.RawData;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import de.desy.aapi.AapiServerError;
 
 /**
  * @author Markus Moeller
  *
  */
-public class Restart implements IManagementCommand {
+public class SkeletonListServerCommand extends AbstractServerCommand {
 
-    /** Static instance of the Application object. */
-    private static IRemotelyStoppable RESTART_ME;
-
-    /* (non-Javadoc)
-     * @see org.csstudio.platform.management.IManagementCommand#execute(org.csstudio.platform.management.CommandParameters)
-     */
-    @Override
-    @Nonnull
-    public CommandResult execute(@Nonnull final CommandParameters parameters) {
-        // The result of this method call.
-        CommandResult result = null;
-
-        if(RESTART_ME != null) {
-            RESTART_ME.stopApplication(true);
-            result = CommandResult.createMessageResult(SddsServerActivator.PLUGIN_ID + " is restarting now.");
-        } else {
-            result = CommandResult.createFailureResult("Do not have a valid reference to the Application object!");
-        }
-
-        return result;
-    }
+    private static final Logger LOG = LoggerFactory.getLogger(SkeletonListServerCommand.class);
 
     /**
-     * Sets the static Application object.
-     *
-     * @param o
      *
      */
-    public static void injectStaticObject(@Nonnull final IRemotelyStoppable o) {
-        RESTART_ME = o;
+    @Override
+    @CheckForNull
+    public RawData execute(@Nonnull final RawData buffer)
+    throws ServerCommandException, CommandNotImplementedException {
+
+        final ByteArrayOutputStream baos = new ByteArrayOutputStream();
+        final DataOutputStream dos = new DataOutputStream(baos);
+
+        try {
+            dos.writeBytes(AapiServerError.BAD_GET_SKELETON_INFO.toString());
+            dos.writeByte('\0');
+
+            return new RawData(baos.toByteArray(), AapiServerError.BAD_GET_SKELETON_INFO.getErrorNumber());
+
+        } catch(final IOException ioe) {
+
+            LOG.error("[*** IOException ***]: " + ioe.getMessage());
+        }
+        return null;
     }
 }

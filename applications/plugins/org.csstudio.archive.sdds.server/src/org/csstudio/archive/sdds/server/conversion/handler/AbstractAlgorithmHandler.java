@@ -22,51 +22,51 @@
  *
  */
 
-package org.csstudio.archive.sdds.server.command;
+package org.csstudio.archive.sdds.server.conversion.handler;
 
-import java.io.ByteArrayOutputStream;
-import java.io.DataOutputStream;
-import java.io.IOException;
+import java.util.List;
 
 import javax.annotation.Nonnull;
 
-import org.csstudio.archive.sdds.server.util.IntegerValue;
-import org.csstudio.archive.sdds.server.util.RawData;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
-import de.desy.aapi.AapiServerError;
+import org.csstudio.archive.sdds.server.command.header.DataRequestHeader;
+import org.csstudio.archive.sdds.server.data.EpicsRecordData;
+import org.csstudio.archive.sdds.server.util.DataException;
 
 /**
  * @author Markus Moeller
  *
  */
-public class SkeletonList extends AbstractServerCommand {
+public abstract class AbstractAlgorithmHandler {
 
-    private static final Logger LOG = LoggerFactory.getLogger(SkeletonList.class);
+    /** Max. samples per request */
+    private final int maxSamplesPerRequest;
 
     /**
-     *
+     * The constructor
+     * @param maxSamples
      */
-    @Override
-    public void execute(@Nonnull final RawData buffer,
-                        @Nonnull final RawData receivedValue,
-                        @Nonnull final IntegerValue resultLength)
-    throws ServerCommandException, CommandNotImplementedException {
+    public AbstractAlgorithmHandler(final int maxSamples) {
+        maxSamplesPerRequest = maxSamples;
+    }
 
-        final ByteArrayOutputStream baos = new ByteArrayOutputStream();
-        final DataOutputStream dos = new DataOutputStream(baos);
+    /**
+     * Converts the data using an appropriate algorithm.
+     *
+     * @param header
+     * @param data
+     * @return
+     * @throws DataException
+     * @throws MethodNotImplementedException
+     */
+    @Nonnull
+    public abstract List<EpicsRecordData> handle(@Nonnull final DataRequestHeader header,
+                                                 @Nonnull final EpicsRecordData[] data)
+    throws DataException, AlgorithmHandlerException, MethodNotImplementedException;
 
-        try {
-            dos.writeBytes(AapiServerError.BAD_GET_SKELETON_INFO.toString());
-            dos.writeByte('\0');
-
-            receivedValue.setData(baos.toByteArray());
-            receivedValue.setErrorValue(AapiServerError.BAD_GET_SKELETON_INFO.getErrorNumber());
-
-        } catch(final IOException ioe) {
-
-            LOG.error("[*** IOException ***]: " + ioe.getMessage());
-        }
+    /**
+     * @return the maxSamplesPerRequest
+     */
+    protected int getMaxSamplesPerRequest() {
+        return maxSamplesPerRequest;
     }
 }

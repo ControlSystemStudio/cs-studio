@@ -24,46 +24,25 @@
 
 package org.csstudio.archive.sdds.server.command;
 
-import java.io.ByteArrayOutputStream;
-import java.io.DataOutputStream;
-import java.io.IOException;
-
+import javax.annotation.CheckForNull;
 import javax.annotation.Nonnull;
 
-import org.csstudio.archive.sdds.server.util.IntegerValue;
 import org.csstudio.archive.sdds.server.util.RawData;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
-import de.desy.aapi.AapiServerError;
 
 /**
  * @author Markus Moeller
  *
  */
-public class ChannelInfo extends AbstractServerCommand {
+public class InvalidServerCommand extends AbstractServerCommand {
 
-    private static final Logger LOG = LoggerFactory.getLogger(ChannelInfo.class);
-
+    /* (non-Javadoc)
+     * @see org.csstudio.archive.jaapi.server.command.ServerCommand#execute(byte[], long, byte[], org.csstudio.archive.jaapi.server.util.LongValue)
+     */
     @Override
-    public void execute(@Nonnull final RawData buffer,
-                        @Nonnull final RawData receivedValue,
-                        @Nonnull final IntegerValue resultLength)
+    @CheckForNull
+    public RawData execute(@Nonnull final RawData buffer)
     throws ServerCommandException, CommandNotImplementedException {
 
-        final ByteArrayOutputStream baos = new ByteArrayOutputStream();
-        final DataOutputStream dos = new DataOutputStream(baos);
-
-        try {
-            dos.writeBytes(AapiServerError.BAD_GET_CHANNEL_INFO.toString());
-            dos.writeByte('\0');
-
-            receivedValue.setData(baos.toByteArray());
-            receivedValue.setErrorValue(AapiServerError.BAD_GET_CHANNEL_INFO.getErrorNumber());
-
-        } catch(final IOException ioe) {
-
-            LOG.error("[*** IOException ***]: " + ioe.getMessage());
-        }
+        throw new ServerCommandException("Invalid command");
     }
 }

@@ -24,6 +24,8 @@
 
 package org.csstudio.archive.sdds.server.data;
 
+import javax.annotation.Nonnull;
+
 /**
  * TODO (mmoeller) :
  *
@@ -63,6 +65,7 @@ public enum ArchiveStatus {
         return this.statusValue;
     }
 
+    @Nonnull
     public static ArchiveStatus getByArchiveValue(final long v) {
 
         ArchiveStatus result = ArchiveStatus.UNDEFINED;

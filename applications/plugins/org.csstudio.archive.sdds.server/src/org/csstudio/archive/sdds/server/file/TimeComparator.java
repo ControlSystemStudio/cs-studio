@@ -22,24 +22,26 @@
  *
  */
 
-package org.csstudio.archive.sdds.server.command;
+package org.csstudio.archive.sdds.server.file;
+
+import java.util.Comparator;
 
 import javax.annotation.Nonnull;
 
-import org.csstudio.archive.sdds.server.util.IntegerValue;
-import org.csstudio.archive.sdds.server.util.RawData;
+import org.csstudio.archive.sdds.server.data.EpicsRecordData;
 
 /**
- * @author Markus Moeller
+ * TODO (mmoeller) :
  *
+ * @author mmoeller
+ * @version
+ * @since 07.10.2010
  */
-public class FilterList extends AbstractServerCommand {
+public class TimeComparator implements Comparator<EpicsRecordData> {
 
     @Override
-    public void execute(@Nonnull final RawData buffer,
-                        @Nonnull final RawData receivedValue,
-                        @Nonnull final IntegerValue resultLength)
-    throws ServerCommandException, CommandNotImplementedException {
-        throw new CommandNotImplementedException("Not implemented command: FilterList");
+    public int compare(@Nonnull final EpicsRecordData o1,
+                       @Nonnull final EpicsRecordData o2) {
+        return Long.signum(o1.getTime() - o2.getTime());
     }
 }

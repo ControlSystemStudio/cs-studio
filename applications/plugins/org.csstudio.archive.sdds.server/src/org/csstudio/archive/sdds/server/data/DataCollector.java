@@ -24,7 +24,9 @@
 
 package org.csstudio.archive.sdds.server.data;
 
-import java.util.ArrayList;
+import java.util.List;
+
+import javax.annotation.Nonnull;
 
 import org.csstudio.archive.sdds.server.command.header.DataRequestHeader;
 import org.csstudio.archive.sdds.server.conversion.ConversionExecutor;
@@ -64,22 +66,23 @@ public class DataCollector {
     }
 
     /**
-     *
      * @param recordName
      * @param header
      * @return The read data
      */
-    public RecordDataCollection readData(final String recordName, final DataRequestHeader header) {
+    @Nonnull
+    public RecordDataCollection readData(@Nonnull final String recordName,
+                                         @Nonnull final DataRequestHeader header) {
 
         RecordDataCollection dataCollection = null;
-        ArrayList<EpicsRecordData> data = null;
+        List<EpicsRecordData> data = null;
 
         dataCollection = sddsReader.readData(recordName, header.getFromSec(), header.getToSec());
 
         EpicsRecordData[] readData = new EpicsRecordData[dataCollection.getNumberOfData()];
         readData = dataCollection.getData().toArray(readData);
 
-        data = (ArrayList<EpicsRecordData>) conversionExecutor.convertData(recordName, readData, header);
+        data = conversionExecutor.convertData(readData, header);
         dataCollection.setData(data);
 
         return dataCollection;

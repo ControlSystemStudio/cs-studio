@@ -24,36 +24,35 @@
 
 package org.csstudio.archive.sdds.server.file;
 
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
+
 /**
  * @author Markus Moeller
  *
  */
-public class DataPathNotFoundException extends Exception
-{
+public class DataPathNotFoundException extends Exception {
     /** Generated serial version id */
     private static final long serialVersionUID = 7818521951454992186L;
 
     /**
      *
      */
-    public DataPathNotFoundException()
-    {
+    public DataPathNotFoundException() {
         super();
     }
 
     /**
      * @param message
      */
-    public DataPathNotFoundException(final String message)
-    {
+    public DataPathNotFoundException(@Nonnull final String message) {
         super(message);
     }
 
     /**
      * @param cause
      */
-    public DataPathNotFoundException(final Throwable cause)
-    {
+    public DataPathNotFoundException(@Nullable final Throwable cause) {
         super(cause);
     }
 
@@ -61,8 +60,7 @@ public class DataPathNotFoundException extends Exception
      * @param message
      * @param cause
      */
-    public DataPathNotFoundException(final String message, final Throwable cause)
-    {
+    public DataPathNotFoundException(@Nonnull final String message, @Nullable final Throwable cause) {
         super(message, cause);
     }
 }

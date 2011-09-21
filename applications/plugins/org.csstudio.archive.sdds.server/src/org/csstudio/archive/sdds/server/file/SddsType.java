@@ -1,6 +1,6 @@
 
 /*
- * Copyright (c) 2010 Stiftung Deutsches Elektronen-Synchrotron,
+ * Copyright (c) 2009 Stiftung Deutsches Elektronen-Synchrotron,
  * Member of the Helmholtz Association, (DESY), HAMBURG, GERMANY.
  *
  * THIS SOFTWARE IS PROVIDED UNDER THIS LICENSE ON AN "../AS IS" BASIS.
@@ -22,45 +22,82 @@
  *
  */
 
-package org.csstudio.archive.sdds.server.conversion;
+package org.csstudio.archive.sdds.server.file;
+
+import javax.annotation.Nonnull;
 
 /**
  * @author Markus Moeller
  *
  */
-public class DoubleValue {
+public enum SddsType {
 
-    /** The value itself */
-    private double value;
+    NOT_SET("Not set"),
+    SDDS_DOUBLE("Double"),
+    SDDS_FLOAT("Float"),
+    SDDS_LONG("Long"),
+    SDDS_SHORT("Short"),
+    SDDS_STRING("String"),
+    SDDS_CHARACTER("Character");
+
+    /**  */
+    private String typeName;
 
     /**
      *
+     * @param name
      */
-    public DoubleValue() {
-        value = 0.0;
+    private SddsType(@Nonnull final String name) {
+        typeName = name;
     }
 
     /**
      *
-     * @param v
+     * @param typeName
+     * @return The SDDS type matching the given name
      */
-    public DoubleValue(final double v) {
-        this.value = v;
+    @Nonnull
+    public static SddsType getByTypeName(@Nonnull final String typeName) {
+
+        SddsType result = SddsType.NOT_SET;
+
+        for(final SddsType o : SddsType.values()) {
+            if(o.toString().compareTo(typeName) == 0) {
+                result = o;
+                break;
+            }
+        }
+
+        return result;
     }
 
     /**
      *
-     * @param v
+     * @param ordinal
+     * @return The SDDS type with the given ordinal number.
      */
-    public void setValue(final double v) {
-        this.value = v;
+    @Nonnull
+    public static SddsType getByOrdinal(final int ordinal) {
+
+        SddsType result = SddsType.NOT_SET;
+
+        for(final SddsType o : SddsType.values()) {
+            if(o.ordinal() == ordinal) {
+                result = o;
+                break;
+            }
+        }
+
+        return result;
     }
+
 
     /**
      *
-     * @return The double value
      */
-    public double getValue() {
-        return value;
+    @Override
+    @Nonnull
+    public String toString() {
+        return typeName;
     }
 }

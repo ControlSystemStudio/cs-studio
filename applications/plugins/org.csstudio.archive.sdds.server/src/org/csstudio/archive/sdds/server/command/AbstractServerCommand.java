@@ -31,7 +31,6 @@ import java.io.IOException;
 import javax.annotation.CheckForNull;
 import javax.annotation.Nonnull;
 
-import org.csstudio.archive.sdds.server.util.IntegerValue;
 import org.csstudio.archive.sdds.server.util.RawData;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -62,10 +61,9 @@ public abstract class AbstractServerCommand {
      * @throws ServerCommandException
      * @throws CommandNotImplementedException
      */
-    public abstract void execute(@Nonnull RawData buffer,
-                                 @Nonnull RawData receivedValue,
-                                 @Nonnull IntegerValue resultLength)
-    throws ServerCommandException, CommandNotImplementedException;
+    @CheckForNull
+    public abstract RawData execute(@Nonnull final RawData buffer)
+                                    throws ServerCommandException, CommandNotImplementedException;
 
     /**
      *
@@ -76,22 +74,23 @@ public abstract class AbstractServerCommand {
     public byte[] createErrorAnswer(@Nonnull final int errorNumber) {
 
         final ByteArrayOutputStream baos = new ByteArrayOutputStream();
-        DataOutputStream dos = new DataOutputStream(baos);
+        final DataOutputStream dos = new DataOutputStream(baos);
         byte[] result = null;
 
         try {
-
             dos.writeBytes(AapiServerError.getByNumber(errorNumber).toString());
             dos.writeByte('\0');
 
             result = baos.toByteArray();
 
         } catch(final IOException ioe) {
-
             LOG.error("[*** IOException ***]: ", ioe);
         } finally {
-            try{dos.close();}catch(final Exception e){ /* Can be ignored */}
-            dos=null;
+            try {
+                dos.close();
+            } catch (final Exception e) {
+                LOG.error("Closing of data output stream failed.", e);
+            }
         }
 
         return result;

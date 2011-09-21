@@ -22,53 +22,60 @@
  *
  */
 
-package org.csstudio.archive.sdds.server.management;
+package org.csstudio.archive.sdds.server.command;
 
+import java.io.ByteArrayOutputStream;
+import java.io.DataOutputStream;
+import java.io.IOException;
+
+import javax.annotation.CheckForNull;
 import javax.annotation.Nonnull;
 
-import org.csstudio.archive.sdds.server.IRemotelyStoppable;
-import org.csstudio.archive.sdds.server.SddsServerActivator;
-import org.csstudio.platform.management.CommandParameters;
-import org.csstudio.platform.management.CommandResult;
-import org.csstudio.platform.management.IManagementCommand;
+import org.csstudio.archive.sdds.server.util.RawData;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import de.desy.aapi.AAPI;
 
 /**
  * @author Markus Moeller
  *
  */
-public class Stop implements IManagementCommand {
+public class VersionServerCommand extends AbstractServerCommand {
 
-    /** Static instance of the Application object. */
-    private static IRemotelyStoppable STOP_ME;
-
-    /* (non-Javadoc)
-     * @see org.csstudio.platform.management.IManagementCommand#execute(org.csstudio.platform.management.CommandParameters)
-     */
-    @Override
-    @Nonnull
-    public CommandResult execute(@Nonnull final CommandParameters parameters) {
-
-        // The result of this method call.
-        CommandResult result = null;
-
-        if(STOP_ME != null) {
-            STOP_ME.stopApplication(false);
-            result = CommandResult.createMessageResult(SddsServerActivator.PLUGIN_ID + " is stopping now.");
-        } else {
-            result = CommandResult.createFailureResult("Do not have a valid reference to the Application object!");
-        }
-
-        return result;
-    }
-
+    private static final Logger LOG = LoggerFactory.getLogger(VersionServerCommand.class);
 
     /**
-     * Sets the static Application object.
-     *
-     * @param o
-     *
+     * @param buffer
+     * @param receivedValue
+     * @param resultLength
      */
-    public static void injectStaticObject(@Nonnull final IRemotelyStoppable o) {
-        STOP_ME = o;
+    @Override
+    @CheckForNull
+    public RawData execute(@Nonnull final RawData buffer)
+    throws ServerCommandException, CommandNotImplementedException {
+
+        DataOutputStream dos = null;
+        ByteArrayOutputStream bos = null;
+
+        final int version = AAPI.AAPI_VERSION;
+
+        try {
+            bos = new ByteArrayOutputStream();
+            dos = new DataOutputStream(bos);
+            dos.writeInt(version);
+        } catch(final IOException ioe) {
+            throw new ServerCommandException(ioe.getMessage());
+        } finally {
+            if (dos != null) {
+                try {
+                    dos.close();
+                } catch (final Exception e) {
+                    LOG.warn("Closing of data output stream failed.", e);
+                }
+            }
+        }
+
+        return new RawData(bos.toByteArray());
     }
 }

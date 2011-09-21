@@ -24,58 +24,51 @@
 
 package org.csstudio.archive.sdds.server.util;
 
+import javax.annotation.Nonnull;
+
 /**
  * @author Markus Moeller
  *
  */
-public class RawData
-{
-    /** The array of bytes that holds the data */
-    private byte[] data;
+public class RawData {
+    /** The array of bytes that holds the _data */
+    private final byte[] _data;
 
-    /** The error value if the data is an error string */
-    private int errorValue;
+    /** The error value if the _data is an error string */
+    private final int _errorValue;
 
     /**
      *
      */
     public RawData() {
-
-        // Create just a non null dummy entry
-        data = new byte[0];
-        errorValue = 0;
+        this(new byte[0], 0);
     }
 
     /**
      *
      * @param length
      */
-    public RawData(final int length) {
-        data = new byte[length];
+    public RawData(@Nonnull final byte[] data) {
+        this(data, 0);
     }
 
     /**
      *
-     * @param data
+     * @param _data
      */
-    public RawData(final byte[] data) {
-        this.data = data;
-    }
-
-    /**
-     *
-     * @param data
-     */
-    public void setData(final byte[] data) {
-        this.data = data;
+    public RawData(@Nonnull final byte[] data,
+                   final int errorValue) {
+        _data = data;
+        _errorValue = errorValue;
     }
 
     /**
      *
      * @return
      */
+    @Nonnull
     public byte[] getData() {
-        return data;
+        return _data;
     }
 
     /**
@@ -83,14 +76,6 @@ public class RawData
      * @return
      */
     public int getErrorValue() {
-        return errorValue;
-    }
-
-    /**
-     *
-     * @param errorValue
-     */
-    public void setErrorValue(final int errorValue) {
-        this.errorValue = errorValue;
+        return _errorValue;
     }
 }

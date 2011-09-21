@@ -22,51 +22,51 @@
  *
  */
 
-package org.csstudio.archive.sdds.server.command;
-
-import java.io.ByteArrayOutputStream;
-import java.io.DataOutputStream;
-import java.io.IOException;
+package org.csstudio.archive.sdds.server.management;
 
 import javax.annotation.Nonnull;
 
-import org.csstudio.archive.sdds.server.util.IntegerValue;
-import org.csstudio.archive.sdds.server.util.RawData;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
-import de.desy.aapi.AapiServerError;
+import org.csstudio.archive.sdds.server.IRemotelyStoppable;
+import org.csstudio.archive.sdds.server.SddsServerActivator;
+import org.csstudio.platform.management.CommandParameters;
+import org.csstudio.platform.management.CommandResult;
+import org.csstudio.platform.management.IManagementCommand;
 
 /**
  * @author Markus Moeller
  *
  */
-public class WaveFormDataRequest extends AbstractServerCommand {
+public class RestartMgmtCommand implements IManagementCommand {
 
-    private static final Logger LOG = LoggerFactory.getLogger(WaveFormDataRequest.class);
+    /** Static instance of the Application object. */
+    private static IRemotelyStoppable RESTART_ME;
 
     /* (non-Javadoc)
-     * @see org.csstudio.archive.jaapi.server.command.ServerCommand#execute(byte[], int, byte[], org.csstudio.archive.jaapi.server.util.IntegerValue)
+     * @see org.csstudio.platform.management.IManagementCommand#execute(org.csstudio.platform.management.CommandParameters)
      */
     @Override
-    public void execute(@Nonnull final RawData buffer,
-                        @Nonnull final RawData receivedValue,
-                        @Nonnull final IntegerValue resultLength)
-    throws ServerCommandException, CommandNotImplementedException {
+    @Nonnull
+    public CommandResult execute(@Nonnull final CommandParameters parameters) {
+        // The result of this method call.
+        CommandResult result = null;
 
-        final ByteArrayOutputStream baos = new ByteArrayOutputStream();
-        final DataOutputStream dos = new DataOutputStream(baos);
-
-        try {
-            dos.writeBytes(AapiServerError.BAD_CMD.toString());
-            dos.writeByte('\0');
-
-            receivedValue.setData(baos.toByteArray());
-            receivedValue.setErrorValue(AapiServerError.BAD_CMD.getErrorNumber());
-
-        } catch(final IOException ioe) {
-
-            LOG.error("[*** IOException ***]: ", ioe);
+        if(RESTART_ME != null) {
+            RESTART_ME.stopApplication(true);
+            result = CommandResult.createMessageResult(SddsServerActivator.PLUGIN_ID + " is restarting now.");
+        } else {
+            result = CommandResult.createFailureResult("Do not have a valid reference to the Application object!");
         }
+
+        return result;
+    }
+
+    /**
+     * Sets the static Application object.
+     *
+     * @param o
+     *
+     */
+    public static void injectStaticObject(@Nonnull final IRemotelyStoppable o) {
+        RESTART_ME = o;
     }
 }

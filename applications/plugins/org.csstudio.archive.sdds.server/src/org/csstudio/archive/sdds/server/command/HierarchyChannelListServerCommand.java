@@ -22,41 +22,47 @@
  *
  */
 
-package org.csstudio.archive.sdds.server.util;
+package org.csstudio.archive.sdds.server.command;
+
+import java.io.ByteArrayOutputStream;
+import java.io.DataOutputStream;
+import java.io.IOException;
+
+import javax.annotation.CheckForNull;
+import javax.annotation.Nonnull;
+
+import org.csstudio.archive.sdds.server.util.RawData;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import de.desy.aapi.AapiServerError;
 
 /**
  * @author Markus Moeller
  *
  */
-public class LongValue
-{
-    /** The value of this class */
-    private long value;
+public class HierarchyChannelListServerCommand extends AbstractServerCommand {
 
-    /**
-     *
-     * @param longValue
-     */
-    public LongValue(final long longValue)
-    {
-        value = longValue;
-    }
+    private static final Logger LOG = LoggerFactory.getLogger(HierarchyChannelListServerCommand.class);
 
-    /**
-     *
-     * @return
-     */
-    public long getLongValue()
-    {
-        return value;
-    }
+    @Override
+    @CheckForNull
+    public RawData execute(@Nonnull final RawData buffer)
+    throws ServerCommandException, CommandNotImplementedException {
 
-    /**
-     *
-     * @param longValue
-     */
-    public void setLongValue(final long longValue)
-    {
-        value = longValue;
+        final ByteArrayOutputStream baos = new ByteArrayOutputStream();
+        final DataOutputStream dos = new DataOutputStream(baos);
+
+        try {
+            dos.writeBytes(AapiServerError.BAD_GET_HIERARCHY.toString());
+            dos.writeByte('\0');
+
+            return new RawData(baos.toByteArray(), AapiServerError.BAD_GET_HIERARCHY.getErrorNumber());
+
+        } catch(final IOException ioe) {
+
+            LOG.error("[*** IOException ***]: " + ioe.getMessage());
+        }
+        return null;
     }
 }

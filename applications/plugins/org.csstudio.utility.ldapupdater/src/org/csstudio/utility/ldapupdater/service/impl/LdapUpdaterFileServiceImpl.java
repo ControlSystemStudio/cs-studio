@@ -216,7 +216,7 @@ public class LdapUpdaterFileServiceImpl implements ILdapUpdaterFileService {
             return lastModified;
 
         } catch (final IOException e) {
-            throw new LdapUpdaterServiceException("Creation of heartbeatfile failed: " + heartBeatFile.getAbsolutePath(), e);
+            throw new LdapUpdaterServiceException("Creation or touch of heartbeatfile failed: " + heartBeatFile.getAbsolutePath(), e);
         }
     }
 }

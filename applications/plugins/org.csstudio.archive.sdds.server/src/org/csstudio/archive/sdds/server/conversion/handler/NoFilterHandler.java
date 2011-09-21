@@ -25,7 +25,10 @@
 package org.csstudio.archive.sdds.server.conversion.handler;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
+
+import javax.annotation.Nonnull;
 
 import org.csstudio.archive.sdds.server.command.header.DataRequestHeader;
 import org.csstudio.archive.sdds.server.data.EpicsRecordData;
@@ -41,7 +44,7 @@ import org.slf4j.LoggerFactory;
  * @version
  * @since 06.10.2010
  */
-public class NoFilterHandler extends AlgorithmHandler {
+public class NoFilterHandler extends AbstractAlgorithmHandler {
 
     /** The logger for this class */
     private static final Logger LOG = LoggerFactory.getLogger(NoFilterHandler.class);
@@ -55,16 +58,18 @@ public class NoFilterHandler extends AlgorithmHandler {
     }
 
     /**
-     * @see org.csstudio.archive.sdds.server.conversion.handler.AlgorithmHandler#handle(org.csstudio.archive.sdds.server.command.header.DataRequestHeader, org.csstudio.archive.sdds.server.data.EpicsRecordData[])
+     * @see org.csstudio.archive.sdds.server.conversion.handler.AbstractAlgorithmHandler#handle(org.csstudio.archive.sdds.server.command.header.DataRequestHeader, org.csstudio.archive.sdds.server.data.EpicsRecordData[])
      */
     @Override
-    public Iterable<EpicsRecordData> handle(final DataRequestHeader header, final EpicsRecordData[] data)
+    @Nonnull
+    public List<EpicsRecordData> handle(@Nonnull final DataRequestHeader header,
+                                        @Nonnull final EpicsRecordData[] data)
     throws DataException, AlgorithmHandlerException, MethodNotImplementedException {
 
         if (data == null) {
-            return new ArrayList<EpicsRecordData>(0);
+            return Collections.emptyList();
         } else if (data.length == 0){
-            return new ArrayList<EpicsRecordData>(0);
+            return Collections.emptyList();
         }
 
         final long intervalStart = header.getFromSec();
@@ -76,7 +81,7 @@ public class NoFilterHandler extends AlgorithmHandler {
             if(element.getTime() >= intervalStart && element.getTime() <= intervalEnd) {
                 newData.add(new EpicsRecordData(element.getTime(), element.getNanoSeconds(),
                                                  element.getStatus(),
-                                                 new Double((Float)element.getValue())));
+                                                 Double.valueOf((Float) element.getValue())));
             }
         }
 

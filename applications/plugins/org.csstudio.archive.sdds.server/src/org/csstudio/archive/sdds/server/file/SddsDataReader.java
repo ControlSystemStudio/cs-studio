@@ -26,14 +26,19 @@ package org.csstudio.archive.sdds.server.file;
 
 import java.util.TreeSet;
 
+import javax.annotation.CheckForNull;
+import javax.annotation.Nonnull;
+
 import org.csstudio.archive.sdds.server.SddsServerActivator;
-import org.csstudio.archive.sdds.server.conversion.SampleParameter;
+import org.csstudio.archive.sdds.server.conversion.SampleParameters;
 import org.csstudio.archive.sdds.server.data.EpicsRecordData;
 import org.csstudio.archive.sdds.server.internal.ServerPreferenceKey;
 import org.eclipse.core.runtime.Platform;
 import org.eclipse.core.runtime.preferences.IPreferencesService;
 
 import SDDS.java.SDDS.SDDSFile;
+
+import com.google.common.base.Strings;
 
 /**
  * @author Markus Moeller
@@ -49,18 +54,18 @@ public class SddsDataReader implements Runnable {
     private final SDDSFile sddsFile;
 
     /** Holds the parameter of a PV */
-    private SampleParameter sampleParameter;
+    private SampleParameters sampleParameters;
 
     /** Path of SDDS file to read */
     private final String filePath;
 
     /** */
     @SuppressWarnings("unused")
-	private final long startTime;
+    private final long startTime;
 
     /** */
     @SuppressWarnings("unused")
-	private final long endTime;
+    private final long endTime;
 
     /**
      *
@@ -68,7 +73,9 @@ public class SddsDataReader implements Runnable {
      * @param timeStart
      * @param timeEnd
      */
-    public SddsDataReader(final String path, final long timeStart, final long timeEnd) {
+    public SddsDataReader(@Nonnull final String path,
+                          final long timeStart,
+                          final long timeEnd) {
 
         final IPreferencesService pref = Platform.getPreferencesService();
 
@@ -79,22 +86,23 @@ public class SddsDataReader implements Runnable {
         this.startTime = timeStart;
         this.endTime = timeEnd;
         sddsFile = new SDDSFile();
-        sampleParameter = new SampleParameter();
+        sampleParameters = new SampleParameters();
         sddsFile.setFileName(filePath);
         sddsFile.setEndian(littleEndian);
         // result = new Vector<EpicsRecordData>();
-        data = new TreeSet<EpicsRecordData>(new TimeComperator());
+        data = new TreeSet<EpicsRecordData>(new TimeComparator());
     }
 
     /**
      *
      * @return EpicsRecordData
      */
+    @Nonnull
     public EpicsRecordData[] getResultAsArray() {
 
         EpicsRecordData[] r = null;
 
-        if(data.isEmpty() == false) {
+        if (!data.isEmpty()) {
             r = new EpicsRecordData[data.size()];
             r = data.toArray(r);
         } else {
@@ -108,7 +116,7 @@ public class SddsDataReader implements Runnable {
      *
      * @return TreeSet<EpicsRecordData>
      */
-    //public Vector<EpicsRecordData> getResult() {
+    @Nonnull
     public TreeSet<EpicsRecordData> getResult() {
         return data;
     }
@@ -125,44 +133,30 @@ public class SddsDataReader implements Runnable {
     /**
      * Returns the object that holds the parameter values of the PV.
      *
-     * @return SampleParameter
+     * @return SampleParameters
      */
-    public SampleParameter getSampleCtrl() {
-        return sampleParameter;
+    @Nonnull
+    public SampleParameters getSampleCtrl() {
+        return sampleParameters;
     }
 
     /**
      *
      */
     @Override
-	public void run() {
-
-        @SuppressWarnings("unused")
-        final
-		EpicsRecordData prevData = null;
-        @SuppressWarnings("unused")
-        final
-		EpicsRecordData lastData = null;
-        String[] list = null;
-        Object[] time = null;
-        Object[] nanoSec = null;
-        Object[] status = null;
-        Object[] value = null;
-        // int[] types = null;
-        int count;
+    public void run() {
 
         sddsFile.readFile();
 
-        list = sddsFile.getParameterNames();
+        final String[] list = sddsFile.getParameterNames();
         // types = sddsFile.getParameterTypes();
-        sampleParameter = this.getParameters(list);
+        sampleParameters = this.getParameters(list);
 
-        time = sddsFile.getColumnValues(0, 1, false);
-        nanoSec = sddsFile.getColumnValues(1, 1, false);
-        status = sddsFile.getColumnValues(2, 1, false);
-        value = sddsFile.getColumnValues(3, 1, false);
+        final Object[] time = sddsFile.getColumnValues(0, 1, false);
+        final Object[] nanoSec = sddsFile.getColumnValues(1, 1, false);
+        final Object[] status = sddsFile.getColumnValues(2, 1, false);
+        final Object[] value = sddsFile.getColumnValues(3, 1, false);
 
-        count = time.length;
 //        for(int i = 0;i < count;i++) {
 //            if(((Long)time[i] >= startTime) && ((Long)time[i] <= endTime)) {
 //                result.add(new EpicsRecordData((Long)time[i], (Long)nanoSec[i],
@@ -177,9 +171,9 @@ public class SddsDataReader implements Runnable {
 //            }
 //        }
 
-        for(int i = 0;i < count;i++) {
-            data.add(new EpicsRecordData((Long)time[i], (Long)nanoSec[i],
-                                         (Long)status[i], value[i]));
+        for(int i = 0; i < time.length; i++) {
+            data.add(new EpicsRecordData((Long) time[i], (Long) nanoSec[i],
+                                         (Long) status[i], value[i]));
         }
 
 //        if(result.isEmpty()) {
@@ -199,67 +193,24 @@ public class SddsDataReader implements Runnable {
      * @param list
      * @return
      */
-    private SampleParameter getParameters(final String[] list) {
+    @Nonnull
+    private SampleParameters getParameters(@CheckForNull final String[] list) {
 
-        final SampleParameter result = new SampleParameter();
+        final SampleParameters result = new SampleParameters();
         String[] name = null;
         String value = null;
-        int index;
 
-        if(list != null) {
-
+        if (list != null) {
             for(final String s : list) {
+                if(!Strings.isNullOrEmpty(s)) {
+                    final String trim = s.trim();
 
-                if(s != null) {
-
-                    if(s.trim().startsWith("record.")) {
-
-                        name = s.split("\\.");
-                        if(name.length == 2) {
-
+                    if (trim.startsWith("record.")) {
+                        name = trim.split("\\.");
+                        if (name.length == 2) {
                             value = name[1].trim();
-                            if(value.compareToIgnoreCase("PREC") == 0) {
 
-                                index = sddsFile.getParameterIndex(s);
-                                result.setPrecision(((Long)sddsFile.getParameterValue(index, 1, true)).intValue());
-                            } else if(value.compareToIgnoreCase("HOPR") == 0) {
-
-                                index = sddsFile.getParameterIndex(s);
-                                result.setDisplayHigh(((Float)sddsFile.getParameterValue(index, 1, true)).doubleValue());
-                            } else if(value.compareToIgnoreCase("LOPR") == 0) {
-
-                                index = sddsFile.getParameterIndex(s);
-                                result.setDisplayLow(((Float)sddsFile.getParameterValue(index, 1, true)).doubleValue());
-                            } else if(value.compareToIgnoreCase("HIHI") == 0) {
-
-                                index = sddsFile.getParameterIndex(s);
-                                result.setHighAlarm(((Float)sddsFile.getParameterValue(index, 1, true)).doubleValue());
-                            } else if(value.compareToIgnoreCase("HIGH") == 0) {
-
-                                index = sddsFile.getParameterIndex(s);
-                                result.setHighWarning(((Float)sddsFile.getParameterValue(index, 1, true)).doubleValue());
-                            } else if(value.compareToIgnoreCase("LOLO") == 0) {
-
-                                index = sddsFile.getParameterIndex(s);
-                                result.setLowAlarm(((Float)sddsFile.getParameterValue(index, 1, true)).doubleValue());
-                            } else if(value.compareToIgnoreCase("LOW") == 0) {
-
-                                index = sddsFile.getParameterIndex(s);
-                                result.setLowWarning(((Float)sddsFile.getParameterValue(index, 1, true)).doubleValue());
-                            } else if(value.compareToIgnoreCase("EGU") == 0) {
-
-                                index = sddsFile.getParameterIndex(s);
-                                String tmp = (String) sddsFile.getParameterValue(index, 1, true);
-                                if (tmp != null) {
-                                	if (tmp.compareTo("\"\"") == 0) {
-                                		tmp = "N/A";
-                                	}
-                                } else {
-                                	tmp = "N/A";
-                                }
-
-                                result.setUnits(tmp);
-                            }
+                            dispatchValueIntoResult(result, value, s);
                         }
                     }
                 }
@@ -267,5 +218,37 @@ public class SddsDataReader implements Runnable {
         }
 
         return result;
+    }
+
+    private void dispatchValueIntoResult(@Nonnull final SampleParameters result,
+                                         @Nonnull final String value,
+                                         @Nonnull final String s) {
+        final int index = sddsFile.getParameterIndex(s);
+
+        if ("PREC".equalsIgnoreCase(value)) {
+            result.setPrecision(((Long) sddsFile.getParameterValue(index, 1, true)).intValue());
+        } else if ("HOPR".equalsIgnoreCase(value)) {
+            result.setDisplayHigh(((Float) sddsFile.getParameterValue(index, 1, true)).doubleValue());
+        } else if ("LOPR".equalsIgnoreCase(value)) {
+            result.setDisplayLow(((Float) sddsFile.getParameterValue(index, 1, true)).doubleValue());
+        } else if ("HIHI".equalsIgnoreCase(value)) {
+            result.setHighAlarm(((Float) sddsFile.getParameterValue(index, 1, true)).doubleValue());
+        } else if ("HIGH".equalsIgnoreCase(value)) {
+            result.setHighWarning(((Float) sddsFile.getParameterValue(index, 1, true)).doubleValue());
+        } else if ("LOLO".equalsIgnoreCase(value)) {
+            result.setLowAlarm(((Float) sddsFile.getParameterValue(index, 1, true)).doubleValue());
+        } else if ("LOW".equalsIgnoreCase(value)) {
+            result.setLowWarning(((Float) sddsFile.getParameterValue(index, 1, true)).doubleValue());
+        } else if ("EGU".equalsIgnoreCase(value)) {
+            String tmp = (String) sddsFile.getParameterValue(index, 1, true);
+            if (tmp != null) {
+                if ("\"\"".equals(tmp)) {
+                    tmp = "N/A";
+                }
+            } else {
+                tmp = "N/A";
+            }
+            result.setUnits(tmp);
+        }
     }
 }
