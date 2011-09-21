@@ -5,13 +5,14 @@
 package org.epics.pvmanager.jca;
 
 import gov.aps.jca.CAException;
-import gov.aps.jca.CAStatus;
 import gov.aps.jca.Channel;
 import gov.aps.jca.Context;
 import gov.aps.jca.Monitor;
 import gov.aps.jca.dbr.DBR;
 import gov.aps.jca.event.ConnectionEvent;
 import gov.aps.jca.event.ConnectionListener;
+import gov.aps.jca.event.GetEvent;
+import gov.aps.jca.event.GetListener;
 import gov.aps.jca.event.MonitorEvent;
 import gov.aps.jca.event.MonitorListener;
 import gov.aps.jca.event.PutEvent;
@@ -41,7 +42,8 @@ public class JCAChannelHandler extends ChannelHandler<MonitorEvent> {
 
     private final Context context;
     private final int monitorMask;
-    private Channel channel;
+    private volatile Channel channel;
+    private volatile ExceptionHandler connectionExceptionHandler;
 
     public JCAChannelHandler(String channelName, Context context, int monitorMask) {
         super(channelName);
@@ -59,20 +61,11 @@ public class JCAChannelHandler extends ChannelHandler<MonitorEvent> {
 
     @Override
     public void connect(ExceptionHandler handler) {
+        connectionExceptionHandler = handler;
         try {
-            channel = context.createChannel(getChannelName());
-
-            connectionListener = createConnectionListener(channel, handler);
-
-            // Need to wait for the connection to be established
-            // before reading the metadata
-            channel.addConnectionListener(connectionListener);
-
-            // If the channel was already connected, then the monitor may
-            // be never called. Set it up.
-            if (channel.getConnectionState() == Channel.CONNECTED) {
-                setup(channel);
-            }
+            // Give the listener right away so that no event gets lost
+            connectionListener = createConnectionListener();
+            channel = context.createChannel(getChannelName(), connectionListener);
         } catch (CAException ex) {
             handler.handleException(ex);
         }
@@ -80,24 +73,35 @@ public class JCAChannelHandler extends ChannelHandler<MonitorEvent> {
 
     // protected (not private) to allow different type factory
     protected synchronized void setup(Channel channel) throws CAException {
-        // This method may be called twice, if the connection happens
-        // after the ConnectionListener is setup but before
-        // the connection state is polled.
-
-        // The synchronization makes sure that, if that happens, the
-        // two calls are serial. Checking the monitor for null to
-        // make sure the second call does not create another monitor.
         if (monitor == null) {
             vTypeFactory = VTypeFactory.matchFor(cacheType, channel.getFieldType(), channel.getElementCount());
             if (vTypeFactory.getEpicsMetaType() != null) {
-                metadata = channel.get(vTypeFactory.getEpicsMetaType(), 1);
+                channel.get(vTypeFactory.getEpicsMetaType(), 1, new GetListener() {
+
+                    @Override
+                    public void getCompleted(GetEvent ev) {
+                        metadata = ev.getDBR();
+                        setupMonitor();
+                    }
+                });
+                channel.getContext().flushIO();
+            } else {
+                setupMonitor();
             }
+        }
+    }
+    
+    private void setupMonitor() {
+        try {
             if (vTypeFactory.isArray()) {
                 monitor = channel.addMonitor(vTypeFactory.getEpicsValueType(), channel.getElementCount(), monitorMask, monitorListener);
             } else {
                 monitor = channel.addMonitor(vTypeFactory.getEpicsValueType(), 1, monitorMask, monitorListener);
             }
+            // Flush the entire context (it's the best we can do)
             channel.getContext().flushIO();
+        } catch(CAException ex) {
+            connectionExceptionHandler.handleException(ex);
         }
     }
     
@@ -121,13 +125,16 @@ public class JCAChannelHandler extends ChannelHandler<MonitorEvent> {
         }
     };
 
-    private ConnectionListener createConnectionListener(final Channel channel,
-            final ExceptionHandler handler) {
+    private ConnectionListener createConnectionListener() {
         return new ConnectionListener() {
 
             @Override
             public void connectionChanged(ConnectionEvent ev) {
                 try {
+                    // Take the channel from the event so that there is no
+                    // synchronization problem
+                    Channel channel = (Channel) ev.getSource();
+                    
                     // Setup monitors on connection
                     if (ev.isConnected()) {
                         setup(channel);
@@ -138,7 +145,7 @@ public class JCAChannelHandler extends ChannelHandler<MonitorEvent> {
                             processValue(event);
                     }
                 } catch (Exception ex) {
-                    handler.handleException(ex);
+                    connectionExceptionHandler.handleException(ex);
                 }
             }
         };
@@ -146,27 +153,14 @@ public class JCAChannelHandler extends ChannelHandler<MonitorEvent> {
 
     @Override
     public void disconnect(ExceptionHandler handler) {
-        // Close the monitor
         try {
-            monitor.removeMonitorListener(monitorListener);
-            monitor.clear();
-        } catch (Exception ex) {
-            handler.handleException(ex);
-        }
-        
-        // Remove connection listener
-        try {
-            channel.removeConnectionListener(connectionListener);
-        } catch (CAException ex) {
-            handler.handleException(ex);
-        }
-        
-        // Close the channel
-        try {
+            // Close the channel
             channel.destroy();
-            channel = null;
         } catch (CAException ex) {
             handler.handleException(ex);
+        } finally {
+            channel = null;
+            monitor = null;
         }
     }
 

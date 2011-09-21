@@ -36,6 +36,8 @@ class VEnumFromDbr extends VMetadata<DBR_TIME_Enum> implements VEnum {
 
     @Override
     public List<String> getLabels() {
+        if (metadata.getLabels() == null)
+            throw new RuntimeException("Metadata returned no labels");
         return Arrays.asList(metadata.getLabels());
     }
 
