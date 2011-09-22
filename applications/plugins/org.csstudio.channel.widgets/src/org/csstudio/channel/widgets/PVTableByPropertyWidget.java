@@ -243,6 +243,14 @@ public class PVTableByPropertyWidget extends Composite {
 		// Find the rows and columns
 		List<String> possibleRows = new ArrayList<String>(ChannelUtil.getPropValues(channelsInTable, rowProperty));
 		List<String> possibleColumns = new ArrayList<String>(ChannelUtil.getPropValues(channelsInTable, columnProperty));
+		if (possibleRows.size() * possibleColumns.size() > 10000) {
+			errorBar.setException(new RuntimeException("Aborting: would create a table with more than 10,000 cells."));
+			columnNames = null;
+			rowNames = null;
+			cellPvs = null;
+			reconnect();
+			return;
+		}
 		Collections.sort(possibleRows);
 		Collections.sort(possibleColumns);
 		
