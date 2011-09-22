@@ -64,7 +64,6 @@ public class JCAChannelHandler extends ChannelHandler<MonitorEvent> {
         connectionExceptionHandler = handler;
         try {
             // Give the listener right away so that no event gets lost
-            connectionListener = createConnectionListener();
             channel = context.createChannel(getChannelName(), connectionListener);
         } catch (CAException ex) {
             handler.handleException(ex);
@@ -72,61 +71,44 @@ public class JCAChannelHandler extends ChannelHandler<MonitorEvent> {
     }
 
     // protected (not private) to allow different type factory
-    protected synchronized void setup(Channel channel) throws CAException {
-        if (monitor == null) {
-            vTypeFactory = VTypeFactory.matchFor(cacheType, channel.getFieldType(), channel.getElementCount());
-            if (vTypeFactory.getEpicsMetaType() != null) {
-                channel.get(vTypeFactory.getEpicsMetaType(), 1, new GetListener() {
+    protected void setup(Channel channel) throws CAException {
+        vTypeFactory = VTypeFactory.matchFor(cacheType, channel.getFieldType(), channel.getElementCount());
 
-                    @Override
-                    public void getCompleted(GetEvent ev) {
+        // If metadata is needed, get it
+        if (vTypeFactory.getEpicsMetaType() != null) {
+            // Need to use callback for the listener instead of doing a synchronous get
+            // (which seemed to perform better) because JCA (JNI implementation)
+            // would return an empty list of labels for the Enum metadata
+            channel.get(vTypeFactory.getEpicsMetaType(), 1, new GetListener() {
+
+                @Override
+                public void getCompleted(GetEvent ev) {
+                    synchronized(JCAChannelHandler.this) {
                         metadata = ev.getDBR();
-                        setupMonitor();
+                        // In case the metadata arrives after the monitor
+                        dispatchValue();
                     }
-                });
-                channel.getContext().flushIO();
-            } else {
-                setupMonitor();
-            }
+                }
+            });
         }
-    }
-    
-    private void setupMonitor() {
-        try {
-            if (vTypeFactory.isArray()) {
-                monitor = channel.addMonitor(vTypeFactory.getEpicsValueType(), channel.getElementCount(), monitorMask, monitorListener);
-            } else {
-                monitor = channel.addMonitor(vTypeFactory.getEpicsValueType(), 1, monitorMask, monitorListener);
-            }
-            // Flush the entire context (it's the best we can do)
-            channel.getContext().flushIO();
-        } catch(CAException ex) {
-            connectionExceptionHandler.handleException(ex);
+
+        // Start the monitor
+        if (vTypeFactory.isArray()) {
+            channel.addMonitor(vTypeFactory.getEpicsValueType(), channel.getElementCount(), monitorMask, monitorListener);
+        } else {
+            channel.addMonitor(vTypeFactory.getEpicsValueType(), 1, monitorMask, monitorListener);
         }
+
+        // Flush the entire context (it's the best we can do)
+        channel.getContext().flushIO();
     }
     
     // protected (not private) to allow different type factory
-    protected Class<?> cacheType;
+    protected volatile Class<?> cacheType;
     // protected (not private) to allow different type factory
     protected volatile TypeFactory vTypeFactory;
-    private ConnectionListener connectionListener;
-    // protected (not private) to allow different type factory
-    protected volatile Monitor monitor;
-    // protected (not private) to allow different type factory
-    protected volatile DBR metadata;
-    private volatile MonitorEvent event;
-    // protected (not private) to allow different type factory
-    protected final MonitorListener monitorListener = new MonitorListener() {
-
-        @Override
-        public void monitorChanged(MonitorEvent event) {
-            JCAChannelHandler.this.event = event;
-            processValue(event);
-        }
-    };
-
-    private ConnectionListener createConnectionListener() {
-        return new ConnectionListener() {
+    
+    private final ConnectionListener connectionListener = new ConnectionListener() {
 
             @Override
             public void connectionChanged(ConnectionEvent ev) {
@@ -138,17 +120,39 @@ public class JCAChannelHandler extends ChannelHandler<MonitorEvent> {
                     // Setup monitors on connection
                     if (ev.isConnected()) {
                         setup(channel);
-                        if (event != null)
-                            processValue(event);
+                        dispatchValue();
                     } else {
-                        if (event != null)
-                            processValue(event);
+                        dispatchValue();
                     }
                 } catch (Exception ex) {
                     connectionExceptionHandler.handleException(ex);
                 }
             }
-        };
+        };;
+    
+    // The change in metadata and even has to be atomic
+    // so they are both guarded by this
+    // protected (not private) to allow different type factory
+    protected DBR metadata;
+    private MonitorEvent event;
+    
+    // protected (not private) to allow different type factory
+    protected final MonitorListener monitorListener = new MonitorListener() {
+
+        @Override
+        public void monitorChanged(MonitorEvent event) {
+            synchronized(JCAChannelHandler.this) {
+                JCAChannelHandler.this.event = event;
+                dispatchValue();
+            }
+        }
+    };
+    
+    private synchronized void dispatchValue() {
+        // Only process the value if we have both event and metadata
+        if (event != null && (vTypeFactory.getEpicsMetaType() == null || metadata != null)) {
+            processValue(event);
+        }
     }
 
     @Override
@@ -160,7 +164,10 @@ public class JCAChannelHandler extends ChannelHandler<MonitorEvent> {
             handler.handleException(ex);
         } finally {
             channel = null;
-            monitor = null;
+            synchronized(this) {
+                metadata = null;
+                event = null;
+            }
         }
     }
 
