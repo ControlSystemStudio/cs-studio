@@ -86,9 +86,13 @@ public class JCADataSource extends DataSource {
     public void close() {
         ctxt.dispose();
     }
-    
-    // protected (not private) to allow different type factory
-    protected Context getContext() {
+
+    /**
+     * The context used by the data source.
+     * 
+     * @return the data source context
+     */
+    public Context getContext() {
         return ctxt;
     }
 
