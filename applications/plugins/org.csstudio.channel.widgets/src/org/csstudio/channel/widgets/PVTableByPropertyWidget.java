@@ -7,9 +7,7 @@ import static org.epics.pvmanager.data.ExpressionLanguage.vStringConstants;
 import static org.epics.pvmanager.data.ExpressionLanguage.vTable;
 import static org.epics.pvmanager.util.TimeDuration.ms;
 import gov.bnl.channelfinder.api.Channel;
-import gov.bnl.channelfinder.api.ChannelFinderClient;
 import gov.bnl.channelfinder.api.ChannelUtil;
-import gov.bnl.channelfinder.api.Property;
 
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
@@ -20,7 +18,6 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 
-import org.csstudio.utility.channelfinder.CFClientManager;
 import org.csstudio.utility.channelfinder.ChannelQuery;
 import org.csstudio.utility.channelfinder.ChannelQueryListener;
 import org.csstudio.utility.pvmanager.ui.SWTUtil;
@@ -32,8 +29,6 @@ import org.eclipse.swt.events.DisposeListener;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Composite;
-import org.eclipse.swt.widgets.Event;
-import org.eclipse.swt.widgets.Listener;
 import org.epics.pvmanager.PVManager;
 import org.epics.pvmanager.PVReader;
 import org.epics.pvmanager.PVReaderListener;
@@ -41,6 +36,9 @@ import org.epics.pvmanager.data.VTable;
 import org.epics.pvmanager.data.VTableColumn;
 
 public class PVTableByPropertyWidget extends Composite {
+	
+	private static final int MAX_COLUMNS = 200;
+	private static final int MAX_CELLS = 50000;
 	
 	private VTableDisplay table;
 	private ErrorBar errorBar;
@@ -111,8 +109,8 @@ public class PVTableByPropertyWidget extends Composite {
 		@Override
 		public void pvChanged() {
 			if (!table.isDisposed()) {
-				table.setVTable(pv.getValue());
 				setLastException(pv.lastException());
+				table.setVTable(pv.getValue());
 			}
 		}
 	};
@@ -243,14 +241,25 @@ public class PVTableByPropertyWidget extends Composite {
 		// Find the rows and columns
 		List<String> possibleRows = new ArrayList<String>(ChannelUtil.getPropValues(channelsInTable, rowProperty));
 		List<String> possibleColumns = new ArrayList<String>(ChannelUtil.getPropValues(channelsInTable, columnProperty));
-		if (possibleRows.size() * possibleColumns.size() > 10000) {
-			errorBar.setException(new RuntimeException("Aborting: would create a table with more than 10,000 cells."));
+		
+		// Limit column and cell count
+		if (possibleColumns.size() > MAX_COLUMNS) {
+			errorBar.setException(new RuntimeException("Max column count is " + MAX_COLUMNS + " (would generate " + possibleColumns.size() + ")"));
 			columnNames = null;
 			rowNames = null;
 			cellPvs = null;
 			reconnect();
 			return;
 		}
+		if (possibleRows.size() * possibleColumns.size() > MAX_CELLS) {
+			errorBar.setException(new RuntimeException("Max cell count is " + MAX_CELLS + " (would generate " + possibleRows.size() * possibleColumns.size() + ")"));
+			columnNames = null;
+			rowNames = null;
+			cellPvs = null;
+			reconnect();
+			return;
+		}
+		
 		Collections.sort(possibleRows);
 		Collections.sort(possibleColumns);
 		
