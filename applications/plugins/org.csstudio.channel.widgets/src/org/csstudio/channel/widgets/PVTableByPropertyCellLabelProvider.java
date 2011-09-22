@@ -6,7 +6,6 @@ import org.csstudio.utility.pvmanager.widgets.VTableCellLabelProvider;
 import org.csstudio.utility.pvmanager.widgets.VTableContentProvider;
 import org.eclipse.jface.viewers.ViewerCell;
 import org.eclipse.swt.SWT;
-import org.eclipse.swt.graphics.Color;
 import org.eclipse.wb.swt.SWTResourceManager;
 
 public class PVTableByPropertyCellLabelProvider extends VTableCellLabelProvider {
