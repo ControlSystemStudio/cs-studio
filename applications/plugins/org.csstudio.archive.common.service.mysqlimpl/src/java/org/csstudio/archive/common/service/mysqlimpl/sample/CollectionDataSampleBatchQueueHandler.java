@@ -117,7 +117,7 @@ public class CollectionDataSampleBatchQueueHandler extends BatchQueueHandlerSupp
 
                                                final String value = sqlWithoutValues +
                                                    "(" +
-                                                   Joiner.on(",").join(input.getChannelId().asString(),+
+                                                   Joiner.on(",").join(input.getChannelId().asString(),
                                                                        input.getSystemVariable().getTimestamp().getNanos(),
                                                                        "x'" + hexStr + "'") +
                                                    ");";
