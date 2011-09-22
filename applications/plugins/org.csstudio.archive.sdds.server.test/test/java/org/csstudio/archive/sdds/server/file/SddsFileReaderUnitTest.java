@@ -30,46 +30,48 @@ import org.junit.Assert;
 import org.junit.Test;
 
 /**
- * TODO (mmoeller) : 
- * 
+ * Test for {@link SddsFileReader}.
+ *
  * @author mmoeller
  * @version 1.0
  * @since 08.08.2011
  */
-public class SddsFileReaderTest {
-    
+public class SddsFileReaderUnitTest {
+
     @Test
     public void testFileNotFound() {
-        
+
         // This file does not exist
-        String sddsLocation = CssResourceLocator.
+        final String sddsLocation = CssResourceLocator.
                                composeResourceLocationString(
                                RepoDomain.APPLICATIONS,
                                "org.csstudio.archive.sdds.server.test",
                                "res/blah.txt");
-        
+
         try {
             @SuppressWarnings("unused")
+            final
             SddsFileReader fileReader = new SddsFileReader(sddsLocation);
-        } catch (DataPathNotFoundException e) {
+        } catch (final DataPathNotFoundException e) {
             Assert.assertTrue(e.getMessage().startsWith("File with the location paths cannot be found"));
         }
     }
-    
+
     @Test
     public void testLocationPathNotFound() {
-        
-        // This file contains invalid paths 
-        String sddsLocation = CssResourceLocator.
+
+        // This file contains invalid paths
+        final String sddsLocation = CssResourceLocator.
                                composeResourceLocationString(
                                RepoDomain.APPLICATIONS,
                                "org.csstudio.archive.sdds.server.test",
                                "res/sdds_data_invalid.txt");
-        
+
         try {
             @SuppressWarnings("unused")
+            final
             SddsFileReader fileReader = new SddsFileReader(sddsLocation);
-        } catch (DataPathNotFoundException e) {
+        } catch (final DataPathNotFoundException e) {
             Assert.assertTrue(e.getMessage().endsWith("cannot be found or is empty."));
         }
     }

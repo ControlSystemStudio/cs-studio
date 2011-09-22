@@ -24,44 +24,35 @@
 
 package org.csstudio.archive.sdds.server.data;
 
-import org.csstudio.archive.sdds.server.file.SDDSType;
+import org.csstudio.archive.sdds.server.file.SddsType;
 import org.junit.Assert;
 import org.junit.Test;
 
 /**
- * TODO (mmoeller) : 
- * 
+ * Test for {@link EpicsRecordData}.
+ *
  * @author mmoeller
  * @version 1.0
  * @since 05.08.2011
  */
-public class EpicsRecordDataTest {
-    
+public class EpicsRecordDataUnitTest {
+
     @Test
     public final void testConstructor() {
-        
-        // The standard constructor just sets default values
-        EpicsRecordData out = new EpicsRecordData();
-        Assert.assertEquals(0L, out.getTime());
-        Assert.assertEquals(0L, out.getNanoSeconds());
-        Assert.assertEquals(ArchiveStatus.UNDEFINED.getStatusValue(), out.getStatus());
-        Assert.assertEquals(ArchiveSeverity.UNDEFINED.getSeverityValue(), out.getSeverity());
-        Assert.assertNull(out.getValue());
-        Assert.assertEquals(SDDSType.NOT_SET, out.getSddsType());
-        Assert.assertFalse(out.isValueValid());
+
         long statusAndSeverity = ArchiveStatus.READ_ALARM.getStatusValue() << 16;
         statusAndSeverity = statusAndSeverity | ArchiveSeverity.ARCHIVE_DISABLED.getSeverityValue();
-        
+
         // This record is invalid because of the status and severity
-        out = new EpicsRecordData(1293836400L, 1203L, statusAndSeverity, new Double(1234.890));
+        EpicsRecordData out = new EpicsRecordData(1293836400L, 1203L, statusAndSeverity, new Double(1234.890));
         Assert.assertEquals(1293836400L, out.getTime());
         Assert.assertEquals(1203L, out.getNanoSeconds());
         Assert.assertEquals(1234.890, out.getValue());
-        Assert.assertEquals(SDDSType.SDDS_DOUBLE, out.getSddsType());
+        Assert.assertEquals(SddsType.SDDS_DOUBLE, out.getSddsType());
         Assert.assertEquals(ArchiveSeverity.ARCHIVE_DISABLED.getSeverityValue(), out.getSeverity());
         Assert.assertEquals(ArchiveStatus.READ_ALARM.getStatusValue(), out.getStatus());
         Assert.assertFalse(out.isValueValid());
-        
+
         statusAndSeverity = ArchiveStatus.UDF_ALARM.getStatusValue() << 16;
         statusAndSeverity = statusAndSeverity | ArchiveSeverity.DISCONNECTED.getSeverityValue();
 
@@ -70,11 +61,11 @@ public class EpicsRecordDataTest {
         Assert.assertEquals(1234567890L, out.getTime());
         Assert.assertEquals(1203L, out.getNanoSeconds());
         Assert.assertEquals(Double.NaN, out.getValue());
-        Assert.assertEquals(SDDSType.SDDS_DOUBLE, out.getSddsType());
+        Assert.assertEquals(SddsType.SDDS_DOUBLE, out.getSddsType());
         Assert.assertEquals(ArchiveSeverity.DISCONNECTED.getSeverityValue(), out.getSeverity());
         Assert.assertEquals(ArchiveStatus.UDF_ALARM.getStatusValue(), out.getStatus());
         Assert.assertFalse(out.isValueValid());
-        
+
         statusAndSeverity = ArchiveStatus.NO_ALARM.getStatusValue() << 16;
         statusAndSeverity = statusAndSeverity | ArchiveSeverity.NO_ALARM.getSeverityValue();
 
@@ -83,7 +74,7 @@ public class EpicsRecordDataTest {
         Assert.assertEquals(1234567890L, out.getTime());
         Assert.assertEquals(1203L, out.getNanoSeconds());
         Assert.assertEquals(90.23, out.getValue());
-        Assert.assertEquals(SDDSType.SDDS_DOUBLE, out.getSddsType());
+        Assert.assertEquals(SddsType.SDDS_DOUBLE, out.getSddsType());
         Assert.assertEquals(ArchiveSeverity.NO_ALARM.getSeverityValue(), out.getSeverity());
         Assert.assertEquals(ArchiveStatus.NO_ALARM.getStatusValue(), out.getStatus());
         Assert.assertTrue(out.isValueValid());
