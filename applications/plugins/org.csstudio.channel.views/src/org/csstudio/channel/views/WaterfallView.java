@@ -1,22 +1,19 @@
 package org.csstudio.channel.views;
 
-import java.lang.reflect.Constructor;
-import java.util.List;
-
+import org.csstudio.channel.widgets.MultiChannelWaterfallWidget;
+import org.csstudio.ui.util.helpers.ComboHistoryHelper;
+import org.eclipse.jface.viewers.ComboViewer;
+import org.eclipse.swt.SWT;
+import org.eclipse.swt.layout.FormAttachment;
+import org.eclipse.swt.layout.FormData;
+import org.eclipse.swt.layout.FormLayout;
+import org.eclipse.swt.widgets.Combo;
 import org.eclipse.swt.widgets.Composite;
+import org.eclipse.swt.widgets.Label;
 import org.eclipse.ui.IMemento;
 import org.eclipse.ui.IViewSite;
 import org.eclipse.ui.PartInitException;
-import org.eclipse.ui.part.*;
-import org.eclipse.jface.viewers.*;
-import org.eclipse.swt.SWT;
-import org.eclipse.swt.widgets.Label;
-import org.eclipse.swt.layout.FormLayout;
-import org.eclipse.swt.layout.FormData;
-import org.eclipse.swt.layout.FormAttachment;
-import org.eclipse.swt.widgets.Combo;
-import org.csstudio.channel.widgets.MultiChannelWaterfallWidget;
-import org.csstudio.ui.util.helpers.ComboHistoryHelper;
+import org.eclipse.ui.part.ViewPart;
 
 /**
  * View that allows to create a waterfall plot out of a given PV.
