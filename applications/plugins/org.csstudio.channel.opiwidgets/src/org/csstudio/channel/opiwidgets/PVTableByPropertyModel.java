@@ -1,12 +1,8 @@
 package org.csstudio.channel.opiwidgets;
 
 import org.csstudio.opibuilder.model.AbstractWidgetModel;
-import org.csstudio.opibuilder.properties.BooleanProperty;
-import org.csstudio.opibuilder.properties.ComboProperty;
-import org.csstudio.opibuilder.properties.DoubleProperty;
 import org.csstudio.opibuilder.properties.StringProperty;
 import org.csstudio.opibuilder.properties.WidgetPropertyCategory;
-import org.epics.pvmanager.util.TimeDuration;
 
 public class PVTableByPropertyModel extends AbstractWidgetModel {
 	
