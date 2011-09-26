@@ -71,7 +71,7 @@ public abstract class AbstractSWTWidgetFigure extends Figure {
 	@Override
 	public void setEnabled(boolean value) {
 		super.setEnabled(value);
-		if(getSWTWidget() != null)
+		if(getSWTWidget() != null && !getSWTWidget().isDisposed())
 			getSWTWidget().setEnabled(runmode && value);
 	}
 

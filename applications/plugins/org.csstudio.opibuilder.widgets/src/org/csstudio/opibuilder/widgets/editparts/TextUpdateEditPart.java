@@ -347,8 +347,11 @@ public class TextUpdateEditPart extends AbstractPVWidgetEditPart {
 			break;
 		}
 
-		if(isShowUnits && value.getMetaData() instanceof INumericMetaData)
-			text = text + " " + ((INumericMetaData)value.getMetaData()).getUnits(); //$NON-NLS-1$
+		if(isShowUnits && value.getMetaData() instanceof INumericMetaData){
+			String units = ((INumericMetaData)value.getMetaData()).getUnits();
+			if(units != null && units.trim().length()>0)
+				text = text + " " + units; //$NON-NLS-1$
+		}
 
 		//synchronize the property value without fire listeners.
 		widgetModel.getProperty(
