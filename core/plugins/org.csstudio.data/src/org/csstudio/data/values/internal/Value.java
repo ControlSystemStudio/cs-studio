@@ -116,10 +116,7 @@ abstract public class Value implements IValue
 		if (c == 0) {
             return 0;
         }
-		if (Character.isLetterOrDigit(c) ||
-		    Character.isWhitespace(c)||
-			Character.getType(c) == Character.OTHER_PUNCTUATION ||
-			Character.getType(c) == Character.MATH_SYMBOL) {
+		if (Character.getType(c) != Character.CONTROL) {
             return c;
         }
 		return '?';
