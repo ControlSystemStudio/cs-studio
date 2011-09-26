@@ -9,6 +9,7 @@ package org.csstudio.opibuilder.widgets.editparts;
 
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
+import java.util.List;
 
 import org.csstudio.opibuilder.editparts.AbstractPVWidgetEditPart;
 import org.csstudio.opibuilder.editparts.ExecutionMode;
@@ -17,6 +18,7 @@ import org.csstudio.opibuilder.properties.IWidgetPropertyChangeHandler;
 import org.csstudio.opibuilder.util.ResourceUtil;
 import org.csstudio.opibuilder.widgetActions.AbstractOpenOPIAction;
 import org.csstudio.opibuilder.widgetActions.AbstractWidgetAction;
+import org.csstudio.opibuilder.widgetActions.ActionsInput;
 import org.csstudio.opibuilder.widgets.model.ActionButtonModel;
 import org.csstudio.swt.widgets.figures.ActionButtonFigure;
 import org.csstudio.swt.widgets.figures.ActionButtonFigure.ButtonActionListener;
@@ -54,26 +56,27 @@ public final class ActionButtonEditPart extends AbstractPVWidgetEditPart {
 
 		((ActionButtonFigure)getFigure()).addActionListener(new ButtonActionListener(){
 			public void actionPerformed(int mouseEventState) {					
-				AbstractWidgetAction action = getHookedAction();
-				if(action!= null){
-					if(action instanceof AbstractOpenOPIAction){
-						((AbstractOpenOPIAction) action).setCtrlPressed(false);
-						((AbstractOpenOPIAction) action).setShiftPressed(false);
-						if(mouseEventState == InputEvent.CONTROL){
-							((AbstractOpenOPIAction) action).setCtrlPressed(true);
-						}else if (mouseEventState == InputEvent.SHIFT){
-							((AbstractOpenOPIAction) action).setShiftPressed(true);
-						}	
-					}
-					action.run();
-				}
-							
+				List<AbstractWidgetAction> actions = getHookedActions();
+				if(actions!= null){
+					for(AbstractWidgetAction action: actions){
+						if(action instanceof AbstractOpenOPIAction){
+							((AbstractOpenOPIAction) action).setCtrlPressed(false);
+							((AbstractOpenOPIAction) action).setShiftPressed(false);
+							if(mouseEventState == InputEvent.CONTROL){
+								((AbstractOpenOPIAction) action).setCtrlPressed(true);
+							}else if (mouseEventState == InputEvent.SHIFT){
+								((AbstractOpenOPIAction) action).setShiftPressed(true);
+							}	
+						}
+						action.run();
+					}					
+				}							
 			}
 		});
 	}
 	
 	@Override
-	public AbstractWidgetAction getHookedAction() {
+	public List<AbstractWidgetAction> getHookedActions() {
 		int actionIndex;
 		
 		if(getWidgetModel().isToggleButton()){
@@ -83,12 +86,20 @@ public final class ActionButtonEditPart extends AbstractPVWidgetEditPart {
 				actionIndex = getWidgetModel().getReleasedActionIndex();
 		}else
 			actionIndex = getWidgetModel().getActionIndex();
+				
+		ActionsInput actionsInput = getWidgetModel().getActionsInput();
+		if(actionsInput.getActionsList().size() <=0)
+			return null;
+		if(actionsInput.isHookUpAllActionsToWidget())
+			return actionsInput.getActionsList();
 		
-		if(actionIndex >= 0 && getWidgetModel().getActionsInput().
-				getActionsList().size() > actionIndex){
+		if(actionIndex >= 0 && actionsInput.getActionsList().size() > actionIndex){
 			return getWidgetModel().getActionsInput().
-						getActionsList().get(actionIndex);			
+						getActionsList().subList(actionIndex, actionIndex +1);			
 		}
+		
+		if(actionIndex == -1)
+			return actionsInput.getActionsList();
 		
 		return null;
 			

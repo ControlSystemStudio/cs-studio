@@ -75,7 +75,9 @@ public class ActionsInputDialog extends HelpTrayDialog {
 	private TableViewer propertiesViewer;
 		
 	private List<AbstractWidgetAction> actionsList;
-	private boolean hookedUpToWidget;
+	private boolean hookedUpFirstActionToWidget;
+	private boolean hookedUpAllActionsToWidget;
+
 	private boolean showHookOption = true;
 	private ActionsInput actionsInput;
 	private String title;	
@@ -86,14 +88,16 @@ public class ActionsInputDialog extends HelpTrayDialog {
 		setShellStyle(getShellStyle() | SWT.RESIZE);
 		this.actionsInput = actionsInput.getCopy();
 		this.actionsList = this.actionsInput.getActionsList();
-		hookedUpToWidget = actionsInput.isHookedUpToWidget();
+		hookedUpFirstActionToWidget = actionsInput.isFirstActionHookedUpToWidget();
+		hookedUpAllActionsToWidget = actionsInput.isHookUpAllActionsToWidget();
 		title = dialogTitle;
 		this.showHookOption = showHookOption;
 	}
 	
 	public ActionsInput getOutput() {
 		ActionsInput actionsInput = new ActionsInput(actionsList);
-		actionsInput.setHookUpToWidget(hookedUpToWidget);
+		actionsInput.setHookUpFirstActionToWidget(hookedUpFirstActionToWidget);
+		actionsInput.setHookUpAllActionsToWidget(hookedUpAllActionsToWidget);
 		return actionsInput;
 	}
 	
@@ -188,21 +192,31 @@ public class ActionsInputDialog extends HelpTrayDialog {
 		this.createLabel(rightComposite, "Properties:");
 		
 		propertiesViewer = createPropertiesViewer(rightComposite);
-		if(showHookOption){
-			Composite bottomComposite = new Composite(mainComposite, SWT.NONE);
-			bottomComposite.setLayout(new GridLayout(1, false));
-			bottomComposite.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true, 2, 1));
-			
+		Composite bottomComposite = new Composite(mainComposite, SWT.NONE);
+		bottomComposite.setLayout(new GridLayout(1, false));
+		bottomComposite.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true, 2, 1));
+		if(showHookOption){			
 			final Button checkBox = new Button(bottomComposite, SWT.CHECK);
-			checkBox.setSelection(hookedUpToWidget);
+			checkBox.setSelection(hookedUpFirstActionToWidget);
 			checkBox.setText("Hook the first action to the mouse click event on widget.");
 			checkBox.addSelectionListener(new SelectionAdapter(){
 				@Override
 				public void widgetSelected(SelectionEvent e) {
-					hookedUpToWidget = checkBox.getSelection();
+					hookedUpFirstActionToWidget = checkBox.getSelection();
 				}
 			});
 		}
+		
+		final Button checkBox = new Button(bottomComposite, SWT.CHECK);
+		checkBox.setSelection(hookedUpAllActionsToWidget);
+		checkBox.setText("Hook all actions to the mouse click event on widget.");
+		checkBox.addSelectionListener(new SelectionAdapter(){
+			@Override
+			public void widgetSelected(SelectionEvent e) {
+				hookedUpAllActionsToWidget = checkBox.getSelection();
+			}
+		});
+		
 		if(actionsList.size() > 0){
 			refreshActionsViewer(actionsList.get(0));
 		}

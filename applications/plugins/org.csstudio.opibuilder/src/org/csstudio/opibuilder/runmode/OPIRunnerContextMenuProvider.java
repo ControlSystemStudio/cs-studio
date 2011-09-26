@@ -9,7 +9,6 @@ package org.csstudio.opibuilder.runmode;
 
 import java.util.List;
 
-import org.csstudio.email.EMailSender;
 import org.csstudio.opibuilder.actions.ConfigureRuntimePropertiesAction;
 import org.csstudio.opibuilder.actions.OpenRelatedDisplayAction;
 import org.csstudio.opibuilder.actions.OpenRelatedDisplayAction.OPEN_DISPLAY_TARGET;
@@ -102,15 +101,20 @@ public final class OPIRunnerContextMenuProvider extends ContextMenuProvider {
 				AbstractWidgetModel widget = editPart.getWidgetModel();
 				
 				//add menu Open, Open in New Tab and Open in New Window
-				AbstractWidgetAction hookedAction = editPart.getHookedAction();
-				if(hookedAction != null && hookedAction instanceof AbstractOpenOPIAction){
-					menu.add(new OpenRelatedDisplayAction(
-							(AbstractOpenOPIAction) hookedAction, OPEN_DISPLAY_TARGET.DEFAULT));
-					menu.add(new OpenRelatedDisplayAction(
-							(AbstractOpenOPIAction) hookedAction, OPEN_DISPLAY_TARGET.TAB));
-					menu.add(new OpenRelatedDisplayAction(
-							(AbstractOpenOPIAction) hookedAction, OPEN_DISPLAY_TARGET.NEW_WINDOW));					
+				List<AbstractWidgetAction> hookedActions = editPart.getHookedActions();
+
+				if(hookedActions != null && hookedActions.size() == 1){
+					AbstractWidgetAction hookedAction = hookedActions.get(0);
+					if(hookedAction != null && hookedAction instanceof AbstractOpenOPIAction){
+						menu.add(new OpenRelatedDisplayAction(
+								(AbstractOpenOPIAction) hookedAction, OPEN_DISPLAY_TARGET.DEFAULT));
+						menu.add(new OpenRelatedDisplayAction(
+								(AbstractOpenOPIAction) hookedAction, OPEN_DISPLAY_TARGET.TAB));
+						menu.add(new OpenRelatedDisplayAction(
+								(AbstractOpenOPIAction) hookedAction, OPEN_DISPLAY_TARGET.NEW_WINDOW));					
+					}
 				}
+					
 				
 				ActionsInput ai = widget.getActionsInput();
 				if(ai != null){
