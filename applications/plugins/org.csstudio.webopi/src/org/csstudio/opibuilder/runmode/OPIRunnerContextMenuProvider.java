@@ -51,6 +51,47 @@ public final class OPIRunnerContextMenuProvider extends ContextMenuProvider {
 	}
 
 	/**
+	 * Adds the defined {@link AbstractWidgetAction}s to the given {@link IMenuManager}.
+	 * @param menu The {@link IMenuManager}
+	 */
+	private void addWidgetActionToMenu(final IMenuManager menu) {
+		List<?> selectedEditParts = ((IStructuredSelection)getViewer().getSelection()).toList();
+		if (selectedEditParts.size()==1) {
+			if (selectedEditParts.get(0) instanceof AbstractBaseEditPart) {
+				AbstractBaseEditPart editPart = (AbstractBaseEditPart) selectedEditParts.get(0);
+				AbstractWidgetModel widget = editPart.getWidgetModel();
+				
+				//add menu Open, Open in New Tab and Open in New Window
+				List<AbstractWidgetAction> hookedActions = editPart.getHookedActions();
+
+				if(hookedActions != null && hookedActions.size() == 1){
+					AbstractWidgetAction hookedAction = hookedActions.get(0);
+					if(hookedAction != null && hookedAction instanceof AbstractOpenOPIAction){
+						menu.add(new OpenRelatedDisplayAction(
+								(AbstractOpenOPIAction) hookedAction, OPEN_DISPLAY_TARGET.DEFAULT));
+						menu.add(new OpenRelatedDisplayAction(
+								(AbstractOpenOPIAction) hookedAction, OPEN_DISPLAY_TARGET.TAB));
+						menu.add(new OpenRelatedDisplayAction(
+								(AbstractOpenOPIAction) hookedAction, OPEN_DISPLAY_TARGET.NEW_WINDOW));					
+					}
+				}
+					
+				
+				ActionsInput ai = widget.getActionsInput();
+				if(ai != null){
+					List<AbstractWidgetAction> widgetActions = ai.getActionsList();
+					if (!widgetActions.isEmpty()) {
+						MenuManager actionMenu = new MenuManager("Actions", "actions");
+						for (AbstractWidgetAction action : widgetActions) {
+							actionMenu.add(new WidgetActionMenuAction(action));
+						}
+						menu.add(actionMenu);
+					}
+				}
+			}
+		}
+	}
+	/**
 	 * {@inheritDoc}
 	 */
 	@Override
@@ -76,43 +117,6 @@ public final class OPIRunnerContextMenuProvider extends ContextMenuProvider {
 //		MenuManager cssMenu = new MenuManager("CSS", "css");
 //		cssMenu.add(new Separator("additions")); //$NON-NLS-1$
 //		menu.add(cssMenu);		
-	}
-	
-	/**
-	 * Adds the defined {@link AbstractWidgetAction}s to the given {@link IMenuManager}.
-	 * @param menu The {@link IMenuManager}
-	 */
-	private void addWidgetActionToMenu(final IMenuManager menu) {
-		List<?> selectedEditParts = ((IStructuredSelection)getViewer().getSelection()).toList();
-		if (selectedEditParts.size()==1) {
-			if (selectedEditParts.get(0) instanceof AbstractBaseEditPart) {
-				AbstractBaseEditPart editPart = (AbstractBaseEditPart) selectedEditParts.get(0);
-				AbstractWidgetModel widget = editPart.getWidgetModel();
-				
-				//add menu Open, Open in New Tab and Open in New Window
-				AbstractWidgetAction hookedAction = editPart.getHookedAction();
-				if(hookedAction != null && hookedAction instanceof AbstractOpenOPIAction){
-					menu.add(new OpenRelatedDisplayAction(
-							(AbstractOpenOPIAction) hookedAction, OPEN_DISPLAY_TARGET.DEFAULT));
-					menu.add(new OpenRelatedDisplayAction(
-							(AbstractOpenOPIAction) hookedAction, OPEN_DISPLAY_TARGET.TAB));
-					menu.add(new OpenRelatedDisplayAction(
-							(AbstractOpenOPIAction) hookedAction, OPEN_DISPLAY_TARGET.NEW_WINDOW));					
-				}
-				
-				ActionsInput ai = widget.getActionsInput();
-				if(ai != null){
-					List<AbstractWidgetAction> widgetActions = ai.getActionsList();
-					if (!widgetActions.isEmpty()) {
-						MenuManager actionMenu = new MenuManager("Actions", "actions");
-						for (AbstractWidgetAction action : widgetActions) {
-							actionMenu.add(new WidgetActionMenuAction(action));
-						}
-						menu.add(actionMenu);
-					}
-				}
-			}
-		}
 	}
 	
 	

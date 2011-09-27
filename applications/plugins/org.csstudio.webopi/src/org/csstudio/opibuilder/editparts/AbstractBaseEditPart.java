@@ -48,6 +48,7 @@ import org.csstudio.opibuilder.visualparts.BorderStyle;
 import org.csstudio.opibuilder.visualparts.TooltipLabel;
 import org.csstudio.opibuilder.widgetActions.AbstractOpenOPIAction;
 import org.csstudio.opibuilder.widgetActions.AbstractWidgetAction;
+import org.csstudio.opibuilder.widgetActions.ActionsInput;
 import org.csstudio.rap.core.DisplayManager;
 import org.csstudio.ui.util.CustomMediaFactory;
 import org.csstudio.ui.util.thread.UIBundlingThread;
@@ -282,32 +283,31 @@ public abstract class AbstractBaseEditPart extends AbstractGraphicalEditPart {
 	 * Hook the default {@link AbstractOpenOPIAction} with mouse click.
 	 */
 	protected void hookMouseClickAction() {
-		final AbstractWidgetAction action = getHookedAction();
-		if (getWidgetModel().isEnabled() && action != null) {
+		final List<AbstractWidgetAction> actions = getHookedActions();
+		if(getWidgetModel().isEnabled() && actions != null){
 			figure.setCursor(Cursors.HAND);
-			figure.addMouseListener(new MouseListener.Stub() {
+			figure.addMouseListener(new MouseListener.Stub(){
 
 				@Override
 				public void mousePressed(MouseEvent me) {
-					if (me.button != 1)
+					if(me.button != 1)
 						return;
-					if (action instanceof AbstractOpenOPIAction) {
-						((AbstractOpenOPIAction) action).setCtrlPressed(false);
-						((AbstractOpenOPIAction) action).setShiftPressed(false);
-						if (me.getState() == InputEvent.CONTROL) {
-							((AbstractOpenOPIAction) action)
-									.setCtrlPressed(true);
-						} else if (me.getState() == InputEvent.SHIFT) {
-							((AbstractOpenOPIAction) action)
-									.setShiftPressed(true);
+					for(AbstractWidgetAction action : actions){
+						if(action instanceof AbstractOpenOPIAction){
+							((AbstractOpenOPIAction)action).setCtrlPressed(false);
+							((AbstractOpenOPIAction)action).setShiftPressed(false);
+							if(me.getState() == InputEvent.CONTROL){
+								((AbstractOpenOPIAction)action).setCtrlPressed(true);
+							}else if (me.getState() == InputEvent.SHIFT){
+								((AbstractOpenOPIAction)action).setShiftPressed(true);
+							}
 						}
-					}
-					action.run();
+						action.run();
+					}					
 				}
 			});
 		}
 	}
-
 	@Override
 	public void deactivate() {
 		if (isActive()) {
@@ -676,19 +676,24 @@ public abstract class AbstractBaseEditPart extends AbstractGraphicalEditPart {
 	}
 
 	/**
-	 * @return the default {@link AbstractWidgetAction} when mouse click this
-	 *         widget.
+	 * @return the default {@link AbstractWidgetAction} when mouse click this widget.
 	 */
-	public AbstractWidgetAction getHookedAction() {
-		if (getWidgetModel().getActionsInput() != null
-				&& getWidgetModel().getActionsInput().getActionsList().size() > 0
-				&& getWidgetModel().getActionsInput().isHookedUpToWidget()) {
-			return getWidgetModel().getActionsInput().getActionsList().get(0);
+	public List<AbstractWidgetAction> getHookedActions(){
+		ActionsInput actionsInput = getWidgetModel().getActionsInput();
+		if( actionsInput!= null &&
+				actionsInput.getActionsList().size() > 0 &&
+				(actionsInput.isFirstActionHookedUpToWidget() ||
+				 actionsInput.isHookUpAllActionsToWidget())){
+			if(actionsInput.isHookUpAllActionsToWidget())
+				return getWidgetModel().getActionsInput().getActionsList();
+			else
+				return getWidgetModel().getActionsInput().getActionsList().subList(0, 1);
 
 		}
 		return null;
 
 	}
+
 
 	/**
 	 * Run a widget action which is attached to the widget.
