@@ -90,7 +90,7 @@ import org.slf4j.LoggerFactory;
  * @since 21.05.2010
  */
 public class SlaveEditor extends AbstractGsdNodeEditor<SlaveDBO> {
-    
+
     /**
      * @author hrickens
      * @author $Author: $
@@ -98,27 +98,27 @@ public class SlaveEditor extends AbstractGsdNodeEditor<SlaveDBO> {
      */
     private final class ButtonDirtyChangeSelectionListener implements SelectionListener {
         private final Button _button;
-        
+
         /**
          * Constructor.
-         * 
+         *
          * @param syncButton
          */
         public ButtonDirtyChangeSelectionListener(@Nonnull final Button button) {
             _button = button;
         }
-        
+
         @Override
         public void widgetDefaultSelected(@Nonnull final SelectionEvent e) {
             change(_button);
         }
-        
+
         @Override
         public void widgetSelected(@Nonnull final SelectionEvent e) {
             change(_button);
         }
     }
-    
+
     /**
      * @author Rickens Helge
      * @author $Author: $
@@ -128,7 +128,7 @@ public class SlaveEditor extends AbstractGsdNodeEditor<SlaveDBO> {
         private final Text _text1;
         private final Text _text2;
         private final Text _outputText;
-        
+
         /**
          * Constructor.
          */
@@ -139,10 +139,10 @@ public class SlaveEditor extends AbstractGsdNodeEditor<SlaveDBO> {
             _text2 = text2;
             _outputText = outputText;
         }
-        
+
         @Override
         public void modifyText(@Nonnull final ModifyEvent e) {
-            
+
             int watch1;
             int watch2;
             try {
@@ -157,19 +157,19 @@ public class SlaveEditor extends AbstractGsdNodeEditor<SlaveDBO> {
             }
             final String modifyedTotal = Integer.toString(watch1 * watch2 * 10);
             _outputText.setText(modifyedTotal);
-            
+
         }
     }
-    
+
     /**
-     * 
+     *
      * @author hrickens
      * @author $Author: hrickens $
      * @version $Revision: 1.3 $
      * @since 14.08.2007
      */
     class RowNumLabelProvider implements ITableLabelProvider {
-        
+
         /**
          * {@inheritDoc}
          */
@@ -177,7 +177,7 @@ public class SlaveEditor extends AbstractGsdNodeEditor<SlaveDBO> {
         public void addListener(@Nullable final ILabelProviderListener listener) {
             // handle no listener
         }
-        
+
         /**
          * {@inheritDoc}
          */
@@ -188,12 +188,12 @@ public class SlaveEditor extends AbstractGsdNodeEditor<SlaveDBO> {
                 defaultBackgroundColor.dispose();
             }
         }
-        
+
         @Override
         public Image getColumnImage(@Nullable final Object element, @Nullable final int columnIndex) {
             return null;
         }
-        
+
         @Override
         public String getColumnText(@Nullable final Object element, final int columnIndex) {
             if (element instanceof SlaveDBO) {
@@ -203,7 +203,7 @@ public class SlaveEditor extends AbstractGsdNodeEditor<SlaveDBO> {
             }
             return null;
         }
-        
+
         /**
          * {@inheritDoc}
          */
@@ -212,7 +212,7 @@ public class SlaveEditor extends AbstractGsdNodeEditor<SlaveDBO> {
                                        @Nullable final String property) {
             return false;
         }
-        
+
         /**
          * {@inheritDoc}
          */
@@ -220,7 +220,7 @@ public class SlaveEditor extends AbstractGsdNodeEditor<SlaveDBO> {
         public void removeListener(@Nullable final ILabelProviderListener listener) {
             // handle no listener
         }
-        
+
         /**
          * @param module
          * @param columnIndex
@@ -239,7 +239,7 @@ public class SlaveEditor extends AbstractGsdNodeEditor<SlaveDBO> {
             }
             return null;
         }
-        
+
         /**
          * @param slave
          */
@@ -313,33 +313,34 @@ public class SlaveEditor extends AbstractGsdNodeEditor<SlaveDBO> {
      * Check Button to de.-/activate Station Address.
      */
     private Button _stationAddressActiveCButton;
-    
+
     private Button _syncButton;
-    
+
     /**
      * List with User Prm Data's.
      */
     private TableViewer _userPrmDataList;
-    
+
     /**
      * The Text field for the Vendor.
      */
     private Text _vendorText;
-    
+
     private Button _watchDogButton;
-    
+
     /**
      * The Watchdog Time 1.
      */
     private Text _watchDogText1;
-    
+
     /**
      * The Watchdog Time 2.
      */
     private Text _watchDogText2;
-    
+
     private Text _watchDogTotal;
-    
+    private Text _slaveFlagText;
+
     @Override
     public void cancel() {
         super.cancel();
@@ -389,7 +390,7 @@ public class SlaveEditor extends AbstractGsdNodeEditor<SlaveDBO> {
             }
         }
     }
-    
+
     /**
      * {@inheritDoc}
      */
@@ -405,7 +406,7 @@ public class SlaveEditor extends AbstractGsdNodeEditor<SlaveDBO> {
             DeviceDatabaseErrorDialog.open(null, "Can't open Slave Edior! Database error", e);
         }
     }
-    
+
     /**
      * {@inheritDoc}
      * @throws PersistenceException
@@ -416,20 +417,20 @@ public class SlaveEditor extends AbstractGsdNodeEditor<SlaveDBO> {
         // Name
         _slave.setName(getNameWidget().getText());
         getNameWidget().setData(getNameWidget().getText());
-        
+
         final Short stationAddress = (Short) ((StructuredSelection) _indexCombo.getSelection())
         .getFirstElement();
-        
+
         try {
             _slave.setSortIndexNonHibernate(stationAddress);
             _slave.setFdlAddress(stationAddress);
             _indexCombo.getCombo().setData(_indexCombo.getCombo().getSelectionIndex());
-            int minTsdr = 0;
+            int minTsdr = _slave.getMinTsdr();
             try {
                 minTsdr = Integer.parseInt(_minStationDelayText.getText());
                 final short wdFact1 = Short.parseShort(_watchDogText1.getText());
-                final short wdFact2 = Short.parseShort(_watchDogText2.getText());
                 _watchDogText1.setData(_watchDogText1.getText());
+                final short wdFact2 = Short.parseShort(_watchDogText2.getText());
                 _watchDogText2.setData(_watchDogText2.getText());
                 _slave.setWdFact1(wdFact1);
                 _slave.setWdFact2(wdFact2);
@@ -439,14 +440,15 @@ public class SlaveEditor extends AbstractGsdNodeEditor<SlaveDBO> {
             _slave.setMinTsdr(minTsdr);
             _slave.setGroupIdent(_groupIdent);
             _groupIdentStored = _groupIdent;
-            _slave.setSlaveFlag(192);
+            _slave.setSlaveFlag(128);
+            _slaveFlagText.setText(_slave.getSlaveFlag()+"");
             _slave.setStationStatus(136); // Static Station status 136
             saveUserPrmData();
-            
+
             // GSD File
             _slave.setGSDFile(_gsdFile);
             fill(_gsdFile);
-            
+
             // Document
             final Set<DocumentDBO> docs = getDocumentationManageView().getDocuments();
             _slave.setDocuments(docs);
@@ -460,7 +462,7 @@ public class SlaveEditor extends AbstractGsdNodeEditor<SlaveDBO> {
             LOG.error("Can't save Slave.GSD File read error", e2);
         }
     }
-    
+
     /** {@inheritDoc}
      * @throws PersistenceException */
     @Override
@@ -471,15 +473,15 @@ public class SlaveEditor extends AbstractGsdNodeEditor<SlaveDBO> {
         _gsdFile = gsdFile;
         ParsedGsdFileModel parsedGsdFileModel;
         parsedGsdFileModel = _gsdFile.getParsedGsdFileModel();
-        
+
         // Head
         getHeaderField(HeaderFields.VERSION).setText(parsedGsdFileModel.getGsdRevision() + "");
-        
+
         // Basic - Slave Discription (read only)
         _vendorText.setText(parsedGsdFileModel.getVendorName());
         _iDNo.setText(String.format("0x%04X", parsedGsdFileModel.getIdentNumber()));
         _revisionsText.setText(parsedGsdFileModel.getRevision());
-        
+
         // Set all GSD-File Data to Slave.
         _slave.setMinTsdr(_slave.getMinTsdr());
         _slave.setModelName(parsedGsdFileModel.getModelName());
@@ -488,7 +490,7 @@ public class SlaveEditor extends AbstractGsdNodeEditor<SlaveDBO> {
         }
         _slave.setProfibusPNoID(parsedGsdFileModel.getIdentNumber());
         _slave.setRevision(parsedGsdFileModel.getRevision());
-        
+
         // Modules
         _maxSize = parsedGsdFileModel.getMaxModule();
         setSlots();
@@ -504,38 +506,38 @@ public class SlaveEditor extends AbstractGsdNodeEditor<SlaveDBO> {
             }
         }
     }
-    
+
     /** {@inheritDoc} */
     @Override
     public final GSDFileDBO getGsdFile() {
         return _slave.getGSDFile();
     }
-    
+
     @Override
     public final void setGsdFile(@CheckForNull final GSDFileDBO gsdFile) {
         _slave.setGSDFile(gsdFile);
     }
-    
+
     /**
      * @param head
      *            The Tab text.
      * @throws PersistenceException
      */
     private void makeBasics(@Nonnull final String head) throws PersistenceException {
-        
+
         final Composite comp = getNewTabItem(head, 2);
-        
+
         makeBasicsName(comp);
-        
+
         makeBasicsSlaveInfo(comp);
-        
+
         makeBasicsDPFDLAccess(comp);
-        
+
         makeBasicsIO(comp);
-        
+
         makeDescGroup(comp, 3);
     }
-    
+
     /**
      * @param comp
      */
@@ -547,39 +549,39 @@ public class SlaveEditor extends AbstractGsdNodeEditor<SlaveDBO> {
         dpFdlAccessGroup.setText("DP / FDL Access");
         dpFdlAccessGroup.setLayoutData(new GridData(SWT.FILL, SWT.FILL, false, false, 1, 1));
         dpFdlAccessGroup.setLayout(new GridLayout(2, false));
-        
+
         final Label stationAdrLabel = new Label(dpFdlAccessGroup, SWT.None);
         stationAdrLabel.setText("Station Address");
-        
+
         final GridData gd = new GridData(SWT.FILL, SWT.FILL, true, false, 1, 1);
         gd.minimumWidth = 50;
-        
+
         setStationAddressActiveCButton(new Button(dpFdlAccessGroup, SWT.CHECK));
         getStationAddressActiveCButton().setText("Active");
         getStationAddressActiveCButton().setSelection(false);
         getStationAddressActiveCButton().setData(false);
         getStationAddressActiveCButton().addSelectionListener(new SelectionListener() {
-            
+
             @Override
             public void widgetDefaultSelected(@Nonnull final SelectionEvent e) {
                 change();
             }
-            
+
             @Override
             public void widgetSelected(@Nonnull final SelectionEvent e) {
                 change();
-                
+
             }
-            
+
             private void change() {
                 setSavebuttonEnabled("Button:" + getStationAddressActiveCButton().hashCode(),
                                      (Boolean) getStationAddressActiveCButton().getData() != getStationAddressActiveCButton()
                                      .getSelection());
             }
-            
+
         });
     }
-    
+
     /**
      * @param comp
      * @throws PersistenceException
@@ -590,10 +592,10 @@ public class SlaveEditor extends AbstractGsdNodeEditor<SlaveDBO> {
         ioGroup.setLayoutData(new GridData(SWT.FILL, SWT.FILL, false, false, 1, 1));
         ioGroup.setLayout(new GridLayout(3, false));
         ioGroup.setTabList(new Control[0]);
-        
+
         int input = 0;
         int output = 0;
-        
+
         if (_slave.hasChildren()) {
             final Iterator<ModuleDBO> iterator = _slave.getChildren().iterator();
             while (iterator.hasNext()) {
@@ -608,7 +610,7 @@ public class SlaveEditor extends AbstractGsdNodeEditor<SlaveDBO> {
         _inputsText = new Text(ioGroup, SWT.SINGLE);
         _inputsText.setEditable(false);
         _inputsText.setText(Integer.toString(input));
-        
+
         final Label outputsLabel = new Label(ioGroup, SWT.RIGHT);
         outputsLabel.setLayoutData(new GridData(SWT.BEGINNING, SWT.CENTER, false, false, 2, 1));
         outputsLabel.setText("Outputs: ");
@@ -616,7 +618,7 @@ public class SlaveEditor extends AbstractGsdNodeEditor<SlaveDBO> {
         _outputsText.setEditable(false);
         _outputsText.setText(Integer.toString(output));
     }
-    
+
     /**
      * @param comp
      * @throws PersistenceException
@@ -626,17 +628,17 @@ public class SlaveEditor extends AbstractGsdNodeEditor<SlaveDBO> {
         gName.setText("Name");
         gName.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, false, 5, 1));
         gName.setLayout(new GridLayout(3, false));
-        
+
         final Text nameText = new Text(gName, SWT.BORDER | SWT.SINGLE);
         setText(nameText, _slave.getName(), 255);
         nameText.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, false, 1, 1));
         setNameWidget(nameText);
-        
+
         // Label
         final Label slotIndexLabel = new Label(gName, SWT.NONE);
         slotIndexLabel.setLayoutData(new GridData(SWT.RIGHT, SWT.CENTER, false, false, 1, 1));
         slotIndexLabel.setText("Station Adress:");
-        
+
         _indexCombo = new ComboViewer(gName, SWT.DROP_DOWN | SWT.READ_ONLY);
         _indexCombo.getCombo().setLayoutData(new GridData(SWT.RIGHT, SWT.RIGHT, false, false));
         _indexCombo.setContentProvider(new ArrayContentProvider());
@@ -651,7 +653,7 @@ public class SlaveEditor extends AbstractGsdNodeEditor<SlaveDBO> {
         _indexCombo.getCombo().setData(_indexCombo.getCombo().getSelectionIndex());
         _indexCombo.getCombo().addModifyListener(getMLSB());
         _indexCombo.addSelectionChangedListener(new ISelectionChangedListener() {
-            
+
             @Override
             public void selectionChanged(@Nonnull final SelectionChangedEvent event) {
                 final short index = (Short) ((StructuredSelection) _indexCombo.getSelection())
@@ -670,7 +672,7 @@ public class SlaveEditor extends AbstractGsdNodeEditor<SlaveDBO> {
             }
         });
     }
-    
+
     /**
      * @param comp
      */
@@ -683,29 +685,29 @@ public class SlaveEditor extends AbstractGsdNodeEditor<SlaveDBO> {
         slaveInfoGroup.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, false, 1, 2));
         slaveInfoGroup.setLayout(new GridLayout(4, false));
         slaveInfoGroup.setTabList(new Control[0]);
-        
+
         _vendorText = new Text(slaveInfoGroup, SWT.SINGLE | SWT.BORDER);
         _vendorText.setEditable(false);
         _vendorText.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, false, 4, 1));
-        
+
         _iDNo = new Text(slaveInfoGroup, SWT.SINGLE);
         _iDNo.setEditable(false);
         _iDNo.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, false, 2, 1));
-        
+
         final Label revisionsLable = new Label(slaveInfoGroup, SWT.NONE);
         revisionsLable.setText("Revision:");
-        
+
         _revisionsText = new Text(slaveInfoGroup, SWT.SINGLE);
         _revisionsText.setEditable(false);
         _revisionsText.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, false, 1, 1));
-        
+
         new Label(slaveInfoGroup, SWT.None).setText("Max. available slots:");
         _maxSlots = new Text(slaveInfoGroup, SWT.BORDER);
         _maxSlots.setEditable(false);
     }
-    
+
     /**
-     * 
+     *
      * @param topGroup
      *            The parent Group for the CurrentUserParamData content.
      * @throws IOException
@@ -745,11 +747,11 @@ public class SlaveEditor extends AbstractGsdNodeEditor<SlaveDBO> {
                                                                                      SWT.DEFAULT));
             }
         });
-        
+
         buildCurrentUserPrmData(currentUserParamDataComposite);
         topGroup.layout();
     }
-    
+
     /**
      * @param comp
      */
@@ -769,10 +771,10 @@ public class SlaveEditor extends AbstractGsdNodeEditor<SlaveDBO> {
                                                            Ranges.WATCHDOG,
                                                            ProfibusHelper.VL_TYP_U16);
         _minStationDelayText.addModifyListener(getMLSB());
-        
+
         final Label bitLabel = new Label(operationModeGroup, SWT.NONE);
         bitLabel.setText("Bit");
-        
+
         _syncButton = new Button(operationModeGroup, SWT.CHECK);
         _syncButton.setLayoutData(new GridData(SWT.FILL, SWT.FILL, false, false, 3, 1));
         _syncButton.addTraverseListener(ProfibusHelper.getNETL());
@@ -827,29 +829,37 @@ public class SlaveEditor extends AbstractGsdNodeEditor<SlaveDBO> {
         watchdogTotal.setText("Watchdog Total");
         final String total = Integer.toString(wdFact1 * wdFact2 * 10);
         _watchDogTotal = ProfibusHelper.getTextField(operationModeGroup, total);
-        
+
         final Label watchdogTotalEgu = new Label(operationModeGroup, SWT.NONE);
         watchdogTotalEgu.setLayoutData(new GridData(SWT.BEGINNING, SWT.CENTER, false, false));
         watchdogTotalEgu.setText("ms");
-        
+
+        final Label slaveFlagLabel = new Label(operationModeGroup, SWT.NONE);
+        slaveFlagLabel.setText("Slave Flag:");
+        _slaveFlagText = ProfibusHelper.getTextField(operationModeGroup,
+                                                           false,
+                                                           _slave.getSlaveFlag() + "",
+                                                           Ranges.SLAVE_FLAG,
+                                                           ProfibusHelper.VL_TYP_U16);
+
         final WatchdogTimeCalculaterOnModify listener = new WatchdogTimeCalculaterOnModify(_watchDogText1,
                                                                                            _watchDogText2,
                                                                                            _watchDogTotal);
         _watchDogText1.addModifyListener(listener);
         _watchDogText2.addModifyListener(listener);
-        
+
         _watchDogButton.addSelectionListener(new SelectionListener() {
-            
+
             @Override
             public void widgetDefaultSelected(@Nonnull final SelectionEvent e) {
                 change();
             }
-            
+
             @Override
             public void widgetSelected(@Nonnull final SelectionEvent e) {
                 change();
             }
-            
+
             private void change() {
                 SlaveEditor.this.change(_watchDogButton);
                 _watchDogText1.setEnabled(_watchDogButton.getSelection());
@@ -857,7 +867,7 @@ public class SlaveEditor extends AbstractGsdNodeEditor<SlaveDBO> {
             }
         });
     }
-    
+
     private void makeOverview(@Nonnull final String headline) throws PersistenceException {
         final Composite comp = getNewTabItem(headline, 1);
         comp.setLayout(new GridLayout(1, false));
@@ -866,7 +876,7 @@ public class SlaveEditor extends AbstractGsdNodeEditor<SlaveDBO> {
                                                "Desc", "Type", "DB Id",};
         final int[] styles = new int[] {SWT.RIGHT, SWT.RIGHT, SWT.LEFT, SWT.LEFT, SWT.LEFT, SWT.LEFT,
                                         SWT.LEFT, SWT.LEFT,};
-        
+
         final TableViewer overViewer = new TableViewer(comp, SWT.H_SCROLL | SWT.V_SCROLL | SWT.BORDER
                                                        | SWT.FULL_SELECTION);
         overViewer.setContentProvider(new ArrayContentProvider());
@@ -874,20 +884,20 @@ public class SlaveEditor extends AbstractGsdNodeEditor<SlaveDBO> {
         overViewer.getTable().setHeaderVisible(true);
         overViewer.getTable().setLinesVisible(true);
         overViewer.getTable().setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true, 1, 1));
-        
+
         for (int i = 0; i < headers.length && i < styles.length; i++) {
             final TableColumn c = new TableColumn(overViewer.getTable(), styles[i]);
             c.setText(headers[i]);
             columns.add(c);
         }
-        
+
         overViewer.addSelectionChangedListener(new ISelectionChangedListener() {
             @Override
             public void selectionChanged(@Nonnull final SelectionChangedEvent event) {
                 getProfiBusTreeView().getTreeViewer().setSelection(event.getSelection(), true);
             }
         });
-        
+
         final ArrayList<AbstractNodeDBO> children = new ArrayList<AbstractNodeDBO>();
         final Collection<ModuleDBO> modules = _slave.getChildrenAsMap().values();
         for (final ModuleDBO module : modules) {
@@ -905,7 +915,7 @@ public class SlaveEditor extends AbstractGsdNodeEditor<SlaveDBO> {
             tableColumn.pack();
         }
     }
-    
+
     /**
      * @param head
      *            the tabItemName
@@ -914,22 +924,22 @@ public class SlaveEditor extends AbstractGsdNodeEditor<SlaveDBO> {
     private void makeSettings(@Nonnull final String head) throws IOException {
         final Composite comp = getNewTabItem(head, 2);
         comp.setLayout(new GridLayout(3, false));
-        
+
         final Text text = new Text(comp, SWT.SINGLE | SWT.LEAD | SWT.READ_ONLY | SWT.BORDER);
         text.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, false, false, 3, 1));
         // TODO (hrickens) [02.05.2011]: Hier sollte bei jeder änderung der Werte Aktualisiert werden. (Momentan garnicht aber auch nciht nur beim Speichern)
         text.setText(_slave.getPrmUserData());
-        
+
         makeOperationMode(comp);
-        
+
         makeCurrentUserParamData(comp);
-        
+
         makeUserPRMMode(comp);
-        
+
         makeSettingsGroups(comp);
-        
+
     }
-    
+
     /**
      * @param comp
      */
@@ -951,28 +961,28 @@ public class SlaveEditor extends AbstractGsdNodeEditor<SlaveDBO> {
                 b.setSelection(true);
             }
             b.addSelectionListener(new SelectionListener() {
-                
+
                 @Override
                 public void widgetDefaultSelected(@Nonnull final SelectionEvent e) {
                     check();
                 }
-                
+
                 @Override
                 public void widgetSelected(@Nonnull final SelectionEvent e) {
                     check();
                 }
-                
+
                 private void check() {
                     _groupIdent = Short.parseShort(b.getText());
                     _groupIdent--;
                     setSavebuttonEnabled("groupButton" + _groupsRadioButtons.hashCode(),
                                          _groupIdent != _groupIdentStored);
                 }
-                
+
             });
         }
     }
-    
+
     /**
      * @param parent
      *            Parent Composite.
@@ -995,13 +1005,13 @@ public class SlaveEditor extends AbstractGsdNodeEditor<SlaveDBO> {
         if (_slave.getGSDFile() != null) {
             fill(_slave.getGSDFile());
         }
-        
+
         getTabFolder().pack();
         if (nevv) {
             selecttTabFolder(4);
         }
     }
-    
+
     /**
      * @param comp
      */
@@ -1012,15 +1022,15 @@ public class SlaveEditor extends AbstractGsdNodeEditor<SlaveDBO> {
         userPrmData.setTabList(new Control[0]);
         userPrmData.setText("User PRM Mode");
         _userPrmDataList = new TableViewer(userPrmData, SWT.BORDER | SWT.V_SCROLL);
-        
+
         final Table table = _userPrmDataList.getTable();
         table.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true, 1, 15));
         table.setHeaderVisible(true);
         table.setLinesVisible(true);
-        
+
         _userPrmDataList.setContentProvider(new ArrayContentProvider());
         _userPrmDataList.setLabelProvider(new RowNumLabelProvider());
-        
+
         TableColumn tc = new TableColumn(table, SWT.RIGHT);
         tc.setText("");
         tc.setWidth(20);
@@ -1031,7 +1041,7 @@ public class SlaveEditor extends AbstractGsdNodeEditor<SlaveDBO> {
         tc.setText("Ext User Prm Data Const");
         tc.setWidth(450);
     }
-    
+
     /**
      *
      */
@@ -1050,40 +1060,40 @@ public class SlaveEditor extends AbstractGsdNodeEditor<SlaveDBO> {
         }
         slotFormarter = null;
     }
-    
+
     @CheckForNull
     protected Color getDefaultBackgroundColor() {
         return _defaultBackgroundColor;
     }
-    
+
     @Nonnull
     protected Button getStationAddressActiveCButton() {
         assert _stationAddressActiveCButton != null : "Access to early. Button is null.";
         return _stationAddressActiveCButton;
     }
-    
+
     protected void setDefaultBackgroundColor(@Nonnull final Color defaultBackgroundColor) {
         _defaultBackgroundColor = defaultBackgroundColor;
     }
-    
+
     protected void setFailButton(@Nonnull final Button failButton) {
         _failButton = failButton;
     }
-    
+
     protected void setStationAddressActiveCButton(@Nonnull final Button stationAddressActiveCButton) {
         _stationAddressActiveCButton = stationAddressActiveCButton;
     }
-    
+
     void change(@Nonnull final Button button) {
         setSavebuttonEnabled("Button:" + button.hashCode(),
                              (Boolean) button.getData() != button.getSelection());
     }
-    
+
     @CheckForNull
     Button getFailButton() {
         return _failButton;
     }
-    
+
     /**
      * {@inheritDoc}
      * @throws IOException
@@ -1098,7 +1108,7 @@ public class SlaveEditor extends AbstractGsdNodeEditor<SlaveDBO> {
         }
         return parsedGsdFileModel;
     }
-    
+
     /**
      * {@inheritDoc}
      */
@@ -1110,7 +1120,7 @@ public class SlaveEditor extends AbstractGsdNodeEditor<SlaveDBO> {
         }
         return null;
     }
-    
+
     /**
      * {@inheritDoc}
      */
@@ -1119,7 +1129,7 @@ public class SlaveEditor extends AbstractGsdNodeEditor<SlaveDBO> {
     List<Integer> getPrmUserDataList() {
         return _slave.getPrmUserDataList();
     }
-    
+
     /**
      * {@inheritDoc}
      */

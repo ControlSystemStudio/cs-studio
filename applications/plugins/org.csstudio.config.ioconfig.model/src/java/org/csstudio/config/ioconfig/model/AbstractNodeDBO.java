@@ -56,19 +56,19 @@ import org.hibernate.annotations.Cascade;
 * @version $Revision: 1.4 $
 * @since 21.03.2007
 * @param <C> The Parent node types
-* @param <P> The Children node types 
+* @param <P> The Children node types
 */
 @SuppressWarnings("rawtypes")
 @Entity
 @Table(name = "ddb_node")
 @Inheritance(strategy = InheritanceType.JOINED)
-public abstract class AbstractNodeDBO<P extends AbstractNodeDBO, C extends AbstractNodeDBO> 
-                                     extends NamedDBClass 
-                                     implements Comparable<AbstractNodeDBO<P,C>>, 
-                                                IDocumentable, 
+public abstract class AbstractNodeDBO<P extends AbstractNodeDBO, C extends AbstractNodeDBO>
+                                     extends NamedDBClass
+                                     implements Comparable<AbstractNodeDBO<P,C>>,
+                                                IDocumentable,
                                                 INode,
                                                 Serializable {
-    
+
     protected static final int DEFAULT_MAX_STATION_ADDRESS = 255;
     private static final long serialVersionUID = 1L;
     /**
@@ -88,7 +88,7 @@ public abstract class AbstractNodeDBO<P extends AbstractNodeDBO, C extends Abstr
      * A collection of documents that relate to this node.
      */
     private Set<DocumentDBO> _documents = new HashSet<DocumentDBO>();
-    
+
     /**
      * Default Constructor needed by Hibernate.
      */
@@ -101,27 +101,27 @@ public abstract class AbstractNodeDBO<P extends AbstractNodeDBO, C extends Abstr
         _parent = parent;
         _parent.addChild(this);
     }
-    
+
     /**
      * @param parent set the Parent of this Node
      */
     public void setParent(@Nonnull final P parent) {
         _parent = parent;
     }
-    
+
     @Override
     @ManyToOne
     @Nonnull
     public P getParent() {
         return _parent;
     }
-    
+
     @Override
     public void setId(final int id) {
         super.setId(id);
         NodeMap.put(id, this);
     }
-    
+
     @SuppressWarnings("deprecation")
     @OneToMany(mappedBy = "parent", targetEntity = AbstractNodeDBO.class, fetch = FetchType.LAZY, cascade = {
             CascadeType.PERSIST, CascadeType.MERGE})
@@ -130,11 +130,11 @@ public abstract class AbstractNodeDBO<P extends AbstractNodeDBO, C extends Abstr
     public Set<C> getChildren() {
         return _children;
     }
-    
+
     public void setChildren(@Nonnull final Set<C> children) {
         _children = children;
     }
-    
+
     @SuppressWarnings("unchecked")
     @CheckForNull
     public C addChild(@Nonnull final C child) throws PersistenceException {
@@ -147,7 +147,7 @@ public abstract class AbstractNodeDBO<P extends AbstractNodeDBO, C extends Abstr
         child.setParent(this);
         child.setSortIndexNonHibernate(sortIndex);
         _children.add(child);
-        
+
         while (oldNode != null) {
             final C node = oldNode;
             sortIndex++;
@@ -156,19 +156,19 @@ public abstract class AbstractNodeDBO<P extends AbstractNodeDBO, C extends Abstr
         }
         return oldNode;
     }
-    
+
     public void removeChild(@Nonnull final C child) {
         _children.remove(child);
     }
-    
+
     public void removeAllChild() {
         _children.clear();
     }
-    
+
     /**
      * Get the Children of the Node as Map. The Key is the Sort Index.
      * @return the children as map.
-     * @throws PersistenceException 
+     * @throws PersistenceException
      */
     @Transient
     @Nonnull
@@ -181,9 +181,9 @@ public abstract class AbstractNodeDBO<P extends AbstractNodeDBO, C extends Abstr
         }
         return nodeMap;
     }
-    
+
     @Transient
-    public int getfirstFreeStationAddress(final int maxStationAddress) throws PersistenceException {
+    public int getfirstFreeStationAddress() throws PersistenceException {
         final Map<Short, C> children = getChildrenAsMap();
         Short nextKey = 0;
         if(!children.containsKey(nextKey)) {
@@ -200,20 +200,20 @@ public abstract class AbstractNodeDBO<P extends AbstractNodeDBO, C extends Abstr
         }
         return nextKey + 1;
     }
-    
+
     /**
      *
      * @return have this Node one or more children then return true else false.
-     * @throws PersistenceException 
+     * @throws PersistenceException
      */
     public final boolean hasChildren() throws PersistenceException {
         try {
-            return (_children != null) && (_children.size() > 0);
+            return _children != null && _children.size() > 0;
         } catch (final Exception e) {
             throw new PersistenceException(e);
         }
     }
-    
+
     /**
      *  Die Tabellen MIME_FILES und MIME_FILES_DDB_NODE liegen auf einer anderen DB.
      *  Daher wird hier mit einem Link gearbeitet der folgenden Rechte benötigt.
@@ -221,7 +221,7 @@ public abstract class AbstractNodeDBO<P extends AbstractNodeDBO, C extends Abstr
      *  -  Für MIME_FILES_DDB_NODE ist das Grant: select, insert, update, delete.
      *
      *  Beim erstellen sind leider die Columname vertauscht worden. In der Column docs_id stehen
-     *  die node_id und in der id stehen die doc_ids. 
+     *  die node_id und in der id stehen die doc_ids.
      * @return Documents for the Node.
      */
     // TODO (hrickens) [17.05.2011]: Spalten namen sind Vertausch.
@@ -232,7 +232,7 @@ public abstract class AbstractNodeDBO<P extends AbstractNodeDBO, C extends Abstr
     public Set<DocumentDBO> getDocuments() {
         return _documents;
     }
-    
+
     /**
      * @param documents set the Documents for this node.
      */
@@ -240,7 +240,7 @@ public abstract class AbstractNodeDBO<P extends AbstractNodeDBO, C extends Abstr
     public void setDocuments(@Nonnull final Set<DocumentDBO> documents) {
         _documents = documents;
     }
-    
+
     /**
      * @param document add the Document to this node.
      * @return this Node.
@@ -249,21 +249,21 @@ public abstract class AbstractNodeDBO<P extends AbstractNodeDBO, C extends Abstr
     public void addDocument(@Nonnull final DocumentDBO document) {
         this._documents.add(document);
     }
-    
+
     /**
      * @return the Version of this node.
      */
     public int getVersion() {
         return _version;
     }
-    
+
     /**
      * @param version the Version of this node.
      */
     public void setVersion(final int version) {
         this._version = version;
     }
-    
+
     public void setSortIndexNonHibernate(final int i) throws PersistenceException {
         if(getSortIndex() != i) {
             setSortIndex(i);
@@ -272,22 +272,22 @@ public abstract class AbstractNodeDBO<P extends AbstractNodeDBO, C extends Abstr
             }
         }
     }
-    
+
     @Nonnull
     public String getDescription() {
         return _description;
     }
-    
+
     public void setDescription(@Nonnull final String description) {
         this._description = description;
     }
-    
+
     /**
      * Swap the SortIndex of two nodes. Is the given SortIndex in use the other node became the old
      * SortIndex of this node.
      *
      * @param toIdx the new sortIndex for this node.
-     * @throws PersistenceException 
+     * @throws PersistenceException
      */
     public void moveSortIndex(final int toIndex) throws PersistenceException {
         final short index = this.getSortIndex();
@@ -305,7 +305,7 @@ public abstract class AbstractNodeDBO<P extends AbstractNodeDBO, C extends Abstr
             moveNode(index, toIdx);
         }
     }
-    
+
     private void moveNode(final short index, final short toIndex) throws PersistenceException {
         int idx = index;
         final int direction = index > toIndex? -1:1;
@@ -325,7 +325,7 @@ public abstract class AbstractNodeDBO<P extends AbstractNodeDBO, C extends Abstr
             moveNode.setSortIndexNonHibernate(toIndex);
         }
     }
-    
+
     private void putNewNode(final short index, final short toIndex) throws PersistenceException {
         short idx = index;
         final int direction = idx > toIndex? -1:1;
@@ -344,49 +344,54 @@ public abstract class AbstractNodeDBO<P extends AbstractNodeDBO, C extends Abstr
             } while (node != null);
         }
     }
-    
+
     /**
      * Copy this node to the given Parent Node.
      *
      * @param parentNode the target parent node.
      * @return the copy of this node.
-     * @throws PersistenceException 
+     * @throws PersistenceException
      */
     @Nonnull
-    public AbstractNodeDBO<P,C> copyThisTo(@Nonnull final P parentNode) throws PersistenceException {
+    public AbstractNodeDBO<P,C> copyThisTo(@Nonnull final P parentNode, @CheckForNull final String namePrefix) throws PersistenceException {
         final String createdBy = UserName.getUserName();
         final AbstractNodeDBO<P,C> copy = copyParameter(parentNode);
         copy.setCreationData(createdBy, new Date());
         //TODO: so umbauen das "Copy of" als prefix parameter übergeben wird.
-        copy.setName("Copy of " + getName());
+        if(namePrefix==null) {
+            copy.setName(getName());
+        } else {
+            copy.setName(namePrefix + getName());
+        }
+
         copy.setVersion(getVersion());
         if(parentNode != null) {
             parentNode.localUpdate();
         }
         return copy;
     }
-    
+
     @Transient
     @CheckForNull
     public NodeImageDBO getIcon() {
         return _icon;
     }
-    
+
     public void setIcon(@Nullable final NodeImageDBO icon) {
         _icon = icon;
     }
-    
+
     /**
      * Copy this node and set Special Parameter.
      *
      * @param parent the parent Node for the Copy.
      *
      * @return a Copy of this node.
-     * @throws PersistenceException 
+     * @throws PersistenceException
      */
     @Nonnull
     protected abstract AbstractNodeDBO<P,C> copyParameter(@Nonnull P parent) throws PersistenceException;
-    
+
     /**
      * Save his self.
      * @throws PersistenceException
@@ -394,18 +399,19 @@ public abstract class AbstractNodeDBO<P extends AbstractNodeDBO, C extends Abstr
     public void localSave() throws PersistenceException {
         save();
     }
-    
+
     /**
      * make the data update for his self.
-     * @throws PersistenceException 
+     * @throws PersistenceException
      */
+    @SuppressWarnings("unused")
     protected void localUpdate() throws PersistenceException {
         // nothing to update
     }
-    
+
     /**
      * Update date it self and his siblings.
-     * @throws PersistenceException 
+     * @throws PersistenceException
      */
     public void update() throws PersistenceException {
         if(isRootNode()) {
@@ -418,11 +424,11 @@ public abstract class AbstractNodeDBO<P extends AbstractNodeDBO, C extends Abstr
             }
         }
     }
-    
+
     /**
      * Update the node an his children.
      * @param node the node to update.
-     * @throws PersistenceException 
+     * @throws PersistenceException
      */
     protected void updateChildrenOf(@Nonnull final AbstractNodeDBO node) throws PersistenceException {
         @SuppressWarnings("unchecked")
@@ -433,16 +439,16 @@ public abstract class AbstractNodeDBO<P extends AbstractNodeDBO, C extends Abstr
             updateChildrenOf(n);
         }
     }
-    
+
     /**
      *
      * @return is only true if this Node a Root Node.
      */
     @Transient
     public boolean isRootNode() {
-        return getParent() == null;
+        return getParent() == null || getParent().getClass() == VirtualRoot.class;
     }
-    
+
     /**
      * Assemble the Epics Address String of the children Channels.
      */
@@ -457,7 +463,7 @@ public abstract class AbstractNodeDBO<P extends AbstractNodeDBO, C extends Abstr
             }
         }
     }
-    
+
     /**
      * {@inheritDoc}
      */
@@ -475,8 +481,8 @@ public abstract class AbstractNodeDBO<P extends AbstractNodeDBO, C extends Abstr
         }
         return compare;
     }
-    
-    
+
+
     /**
      * @return Return only true when the node need to work a GSD-File!
      */
@@ -484,7 +490,7 @@ public abstract class AbstractNodeDBO<P extends AbstractNodeDBO, C extends Abstr
     public GSDFileTypes needGSDFile() {
         return GSDFileTypes.NONE;
     }
-    
+
     @SuppressWarnings("unchecked")
     @Nonnull
     public P delete() throws PersistenceException {
@@ -493,14 +499,9 @@ public abstract class AbstractNodeDBO<P extends AbstractNodeDBO, C extends Abstr
         parent.save();
         return parent;
     }
-    
+
     @Nonnull
     public abstract C createChild() throws PersistenceException;
 
     public abstract void accept(@Nonnull final INodeVisitor visitor);
-    
-    public static int getMaxStationAddress() {
-        return MAX_STATION_ADDRESS;
-    }
-
 }

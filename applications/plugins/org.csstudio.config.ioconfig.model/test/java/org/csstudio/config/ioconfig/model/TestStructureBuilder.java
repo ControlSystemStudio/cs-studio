@@ -36,22 +36,22 @@ import org.csstudio.config.ioconfig.model.pbmodel.gsdParser.GsdModuleModel2;
 import org.junit.Assert;
 
 /**
- * TODO (hrickens) : 
- * 
+ * TODO (hrickens) :
+ *
  * @author hrickens
  * @author $Author: hrickens $
  * @version $Revision: 1.7 $
  * @since 29.08.2011
  */
 public final class TestStructureBuilder {
-    
+
     /**
      * Constructor.
      */
     private TestStructureBuilder() {
         // Hidden Constructor.
     }
-    
+
     @Nonnull
     public static FacilityDBO buildFacility(@Nonnull final String name, final int index) {
         final FacilityDBO facility = new FacilityDBO();
@@ -60,7 +60,7 @@ public final class TestStructureBuilder {
         Assert.assertNotNull(facility);
         return facility;
     }
-    
+
     @Nonnull
     public static IocDBO buildIoc(@Nonnull final FacilityDBO facility, @Nonnull final String name) throws PersistenceException {
         final IocDBO ioc = new IocDBO(facility);
@@ -69,7 +69,7 @@ public final class TestStructureBuilder {
         Assert.assertNotNull(ioc);
         return ioc;
     }
-    
+
     @Nonnull
     public static ProfibusSubnetDBO buildSubnet(@Nonnull final IocDBO ioc, @Nonnull final String name) throws PersistenceException {
         final ProfibusSubnetDBO subnet = new ProfibusSubnetDBO(ioc);
@@ -89,8 +89,8 @@ public final class TestStructureBuilder {
         Assert.assertNotNull(subnet);
         return subnet;
     }
-    
-    
+
+
     /**
      * @param xavcSubnet
      * @return
@@ -118,7 +118,7 @@ public final class TestStructureBuilder {
         Assert.assertNotNull(master);
         return master;
     }
-    
+
     @Nonnull
     public static SlaveDBO buildSlave(@Nonnull final MasterDBO master, final int address, @Nonnull final GSDFileDBO gsdFile) throws PersistenceException {
         final SlaveDBO slave = new SlaveDBO(master);
@@ -128,7 +128,7 @@ public final class TestStructureBuilder {
         slave.setWdFact1(100);
         slave.setWdFact2(10);
         slave.setStationStatus(136);
-        slave.setSlaveFlag(192);
+        slave.setSlaveFlag(128);
         slave.setGSDFile(gsdFile);
         Assert.assertNotNull(slave);
         return slave;
@@ -145,5 +145,5 @@ public final class TestStructureBuilder {
         mo.setNewModel(moduleNumber, "TestUser");
         return mo;
     }
-    
+
 }

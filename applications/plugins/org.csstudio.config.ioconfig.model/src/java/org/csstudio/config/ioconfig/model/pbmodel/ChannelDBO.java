@@ -25,6 +25,7 @@
 package org.csstudio.config.ioconfig.model.pbmodel;
 
 import java.util.SortedMap;
+import java.util.TreeSet;
 
 import javax.annotation.CheckForNull;
 import javax.annotation.Nonnull;
@@ -56,22 +57,22 @@ import org.slf4j.LoggerFactory;
 @BatchSize(size = 32)
 @Table(name = "ddb_Profibus_Channel")
 public class ChannelDBO extends AbstractNodeDBO<ChannelStructureDBO, VirtualLeaf> {
-    
+
     private static final Logger LOG = LoggerFactory.getLogger(ChannelDBO.class);
     private static final long serialVersionUID = 1L;
-    
+
     private int _channelNumber;
     private int _statusAddressOffset;
     private int _channelType;
-    
+
     private boolean _input;
     private boolean _digital;
-    
+
     private String _ioName;
     private String _currenUserParamDataIndex;
     private String _currentValue;
     private String _epicsAdress;
-    
+
     /**
      * This Constructor is only used by Hibernate. To create an new {@link ChannelDBO}
      * {@link #Channel(ChannelStructureDBO, boolean, boolean)} or
@@ -80,7 +81,7 @@ public class ChannelDBO extends AbstractNodeDBO<ChannelStructureDBO, VirtualLeaf
     public ChannelDBO() {
         // Constructor for Hibernate
     }
-    
+
     /**
      * Generate a new Pure Channel on the parent Channel Structure. The Channel get the first free
      * Station Address. The max Station Address is {@link ChannelDBO}
@@ -105,12 +106,12 @@ public class ChannelDBO extends AbstractNodeDBO<ChannelStructureDBO, VirtualLeaf
         setSortIndex(sortIndex);
         localUpdate();
     }
-    
+
     @Override
     public void accept(@Nonnull final INodeVisitor visitor) {
         visitor.visit(this);
     }
-    
+
     /**
      * {@inheritDoc}
      */
@@ -119,7 +120,7 @@ public class ChannelDBO extends AbstractNodeDBO<ChannelStructureDBO, VirtualLeaf
     public VirtualLeaf addChild(@Nullable final VirtualLeaf child) throws PersistenceException {
         return VirtualLeaf.INSTANCE;
     }
-    
+
     @Transient
     @Override
     public void assembleEpicsAddressString() throws PersistenceException {
@@ -135,7 +136,7 @@ public class ChannelDBO extends AbstractNodeDBO<ChannelStructureDBO, VirtualLeaf
         }
         setDirty((isDirty() || oldAdr == null || !oldAdr.equals(getEpicsAddressString())));
     }
-    
+
         /**
      * {@inheritDoc}
      * @throws PersistenceException
@@ -167,21 +168,33 @@ public class ChannelDBO extends AbstractNodeDBO<ChannelStructureDBO, VirtualLeaf
         }
         copy.setIoName(ioName);
         copy.setDescription(getDescription());
+        final GSDModuleDBO module = getModule().getGSDModule();
+        if (module != null) {
+            final TreeSet<ModuleChannelPrototypeDBO> moduleChannelPrototypes = module
+                    .getModuleChannelPrototypeNH();
+            final ModuleChannelPrototypeDBO[] array = moduleChannelPrototypes
+                    .toArray(new ModuleChannelPrototypeDBO[0]);
+            final Short sortIndex = getChannelStructure().getSortIndex();
+            System.out.println("sortIndex: "+sortIndex);
+            final ModuleChannelPrototypeDBO moduleChannelPrototype = array[sortIndex];
+            setStatusAddressOffset(moduleChannelPrototype.getShift());
+            setChannelNumber(moduleChannelPrototype.getOffset());
+        }
         return copy;
     }
-    
+
     /**
      * {@inheritDoc}
      * @throws PersistenceException
      */
     @Override
     @Nonnull
-    public ChannelDBO copyThisTo(@Nonnull final ChannelStructureDBO parentNode) throws PersistenceException {
-        final ChannelDBO copy = (ChannelDBO) super.copyThisTo(parentNode);
-        copy.setName(getName());
+    public ChannelDBO copyThisTo(@Nonnull final ChannelStructureDBO parentNode, @CheckForNull final String namePrefix) throws PersistenceException {
+        final ChannelDBO copy = (ChannelDBO) super.copyThisTo(parentNode, namePrefix);
+        copy.assembleEpicsAddressString();
         return copy;
     }
-    
+
     /**
      * {@inheritDoc}
      */
@@ -190,12 +203,12 @@ public class ChannelDBO extends AbstractNodeDBO<ChannelStructureDBO, VirtualLeaf
     public VirtualLeaf createChild() throws PersistenceException {
         return VirtualLeaf.INSTANCE;
     }
-    
+
     @Override
     public boolean equals(@CheckForNull final Object obj) {
         return super.equals(obj);
     }
-    
+
     @Transient
     @Nonnull
     public String getBitPostion() {
@@ -206,14 +219,14 @@ public class ChannelDBO extends AbstractNodeDBO<ChannelStructureDBO, VirtualLeaf
         }
         return sb.toString();
     }
-    
+
     /**
      * @return the Channel Number exclusive offset.
      */
     public int getChannelNumber() {
         return _channelNumber;
     }
-    
+
     /**
      * @return the parent {@link ChannelStructureDBO}.
      */
@@ -222,7 +235,7 @@ public class ChannelDBO extends AbstractNodeDBO<ChannelStructureDBO, VirtualLeaf
     public ChannelStructureDBO getChannelStructure() {
         return getParent();
     }
-    
+
     /**
      * @return the Type of this {@link ChannelDBO}
      */
@@ -230,7 +243,7 @@ public class ChannelDBO extends AbstractNodeDBO<ChannelStructureDBO, VirtualLeaf
     public DataType getChannelType() {
         return DataType.forId(_channelType);
     }
-    
+
     /**
      * @return the bit size of the Channel.
      */
@@ -238,17 +251,17 @@ public class ChannelDBO extends AbstractNodeDBO<ChannelStructureDBO, VirtualLeaf
     public int getChSize() {
         return getChannelType().getBitSize();
     }
-    
+
     @CheckForNull
     public String getCurrentValue() {
         return _currentValue;
     }
-    
+
     @CheckForNull
     public String getCurrenUserParamDataIndex() {
         return _currenUserParamDataIndex;
     }
-    
+
     /**
      * contribution to ioName (PV-link to EPICSORA)
      *
@@ -258,7 +271,7 @@ public class ChannelDBO extends AbstractNodeDBO<ChannelStructureDBO, VirtualLeaf
     public String getEpicsAddressString() {
         return _epicsAdress == null ? "" : _epicsAdress;
     }
-    
+
     /**
      * @return The Channel number inclusive offset.
      * @throws PersistenceException
@@ -273,13 +286,13 @@ public class ChannelDBO extends AbstractNodeDBO<ChannelStructureDBO, VirtualLeaf
         }
         return value + _channelNumber;
     }
-    
+
     @Transient
     @CheckForNull
     public GSDFileDBO getGSDFile() {
         return getChannelStructure().getModule().getGSDFile();
     }
-    
+
     /**
      * @return the IO Name of this Channel.
      */
@@ -287,7 +300,7 @@ public class ChannelDBO extends AbstractNodeDBO<ChannelStructureDBO, VirtualLeaf
     public String getIoName() {
         return _ioName;
     }
-    
+
     /**
      *
      * @return the parent {@link ModuleDBO}.
@@ -297,7 +310,7 @@ public class ChannelDBO extends AbstractNodeDBO<ChannelStructureDBO, VirtualLeaf
     public ModuleDBO getModule() {
         return getChannelStructure().getModule();
     }
-    
+
     public int getNextFreeChannelNumberFromParent(final int channelNumber) throws PersistenceException {
         int cNumber = channelNumber;
         if (channelNumber > 0) {
@@ -312,7 +325,7 @@ public class ChannelDBO extends AbstractNodeDBO<ChannelStructureDBO, VirtualLeaf
         }
         return cNumber;
     }
-    
+
     /**
      * {@inheritDoc}
      */
@@ -322,41 +335,41 @@ public class ChannelDBO extends AbstractNodeDBO<ChannelStructureDBO, VirtualLeaf
     public NodeType getNodeType() {
         return NodeType.CHANNEL;
     }
-    
+
     @Transient
     public int getStatusAddress() throws PersistenceException {
         return getModule().getInputOffsetNH() + _statusAddressOffset;
     }
-    
+
     @Column(name = "CHSIZE")
     public int getStatusAddressOffset() {
         return _statusAddressOffset;
     }
-    
+
     @Transient
     public int getStruct() {
         return isDigital()?getSortIndex():0;
     }
-    
+
     @Override
     public int hashCode() {
         return super.hashCode();
     }
-    
+
     /**
      * @return is only true if the {@link ChannelDBO} digital.
      */
     public boolean isDigital() {
         return _digital;
     }
-    
+
     /**
      * @return is only true when this Channel is an Input.
      */
     public boolean isInput() {
         return _input;
     }
-    
+
     /**
      * @return is only true when this Channel is an Output.
      */
@@ -364,7 +377,7 @@ public class ChannelDBO extends AbstractNodeDBO<ChannelStructureDBO, VirtualLeaf
     public boolean isOutput() {
         return !isInput();
     }
-    
+
     /**
      * {@inheritDoc}
      */
@@ -373,7 +386,7 @@ public class ChannelDBO extends AbstractNodeDBO<ChannelStructureDBO, VirtualLeaf
         NodeMap.countlocalUpdate();
         assembleEpicsAddressString();
     }
-    
+
     /**
      * {@inheritDoc}
      */
@@ -381,7 +394,7 @@ public class ChannelDBO extends AbstractNodeDBO<ChannelStructureDBO, VirtualLeaf
     public void save() throws PersistenceException {
         super.save();
     }
-    
+
     /**
      * Only used from Hibernate or Internal! The Channel number are automatic set when the sortIndex
      * are set.
@@ -391,21 +404,21 @@ public class ChannelDBO extends AbstractNodeDBO<ChannelStructureDBO, VirtualLeaf
     public void setChannelNumber(final int channelNumber) {
         this._channelNumber = channelNumber;
     }
-    
+
     /**
      * @param channelStructure the parent {@link ChannelStructureDBO} of this Channel.
      */
     public void setChannelStructure(@Nonnull final ChannelStructureDBO channelStructure) {
         this.setParent(channelStructure);
     }
-    
+
     /**
      * @param type set the Type of this {@link ChannelDBO}
      */
     public void setChannelType(@Nonnull final DataType type) {
         _channelType = type.getId();
     }
-    
+
     @Transient
     public void setChannelTypeNonHibernate(@Nonnull final DataType type) throws PersistenceException {
         DataType channelType;
@@ -422,54 +435,54 @@ public class ChannelDBO extends AbstractNodeDBO<ChannelStructureDBO, VirtualLeaf
             getModule().update();
         }
     }
-    
+
     public void setCurrentValue(@Nonnull final String currentValue) {
         _currentValue = currentValue;
     }
-    
+
     public void setCurrenUserParamDataIndex(@Nonnull final String currenUserParamDataIndex) {
         _currenUserParamDataIndex = currenUserParamDataIndex;
     }
-    
+
     /**
      * @param digital set only true if this {@link ChannelDBO} digital.
      */
     public void setDigital(final boolean digital) {
         _digital = digital;
     }
-    
+
     /**
      * @param epicsAdress the Epics Address String.
      */
     public void setEpicsAddressString(@Nonnull final String epicsAdress) {
         _epicsAdress = epicsAdress;
     }
-    
+
     /**
      * @param input this channel as Input.
      */
     public void setInput(final boolean input) {
         this._input = input;
     }
-    
+
     /**
      * @param ioName the IO Name of this Channel.
      */
     public void setIoName(@Nonnull final String ioName) {
         this._ioName = ioName;
     }
-    
+
     /**
      * @param output set this channel as Output.
      */
     public void setOutput(final boolean output) {
         setInput(!output);
     }
-    
+
     public void setStatusAddressOffset(@CheckForNull final Integer statusAddress) {
         _statusAddressOffset = statusAddress == null ? -1 : statusAddress;
     }
-    
+
     /**
      * @return The Name of this Node.
      */
@@ -480,8 +493,8 @@ public class ChannelDBO extends AbstractNodeDBO<ChannelStructureDBO, VirtualLeaf
         try {
             sb.append(getFullChannelNumber()).append(": ").append(getName());
             final String ioName = getIoName();
-            if (ioName != null && !ioName.isEmpty()) {
-                sb.append(" [" + ioName + "]");
+            if (ioName != null && !ioName.trim().isEmpty()) {
+                sb.append(" [" + ioName.trim() + "]");
             }
         } catch (final PersistenceException e) {
             sb.append("Device Database ERROR: ").append(e.getMessage());
@@ -489,7 +502,7 @@ public class ChannelDBO extends AbstractNodeDBO<ChannelStructureDBO, VirtualLeaf
         }
         return sb.toString();
     }
-    
+
     /**
      * {@inheritDoc}
      */
@@ -497,5 +510,5 @@ public class ChannelDBO extends AbstractNodeDBO<ChannelStructureDBO, VirtualLeaf
     public void update() throws PersistenceException {
         localUpdate();
     }
-    
+
 }

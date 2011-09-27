@@ -23,14 +23,14 @@ import org.junit.Test;
  * @since 12.05.2011
  */
 public class CopyNodeUnitTest {
-    
+
     private static final boolean OUTPUT = false;
     private static final boolean INPUT = true;
     private ProfibusSubnetDBO _profibusSubnet;
     private MasterDBO _master;
     private SlaveDBO _slave;
-    
-    
+
+
     @Before
     public void setUp() throws PersistenceException {
         Repository.injectIRepository(new DummyRepository());
@@ -45,18 +45,18 @@ public class CopyNodeUnitTest {
         _slave.moveSortIndex((short)1234);
         _slave.localSave();
     }
-    
+
     @After
     public void tearDown() {
         _slave = null;
         _master = null;
         _profibusSubnet = null;
     }
-    
+
     @Test
     public void testCopyModule() throws Exception {
         assertEquals("--- Precondition wrong!","@Subnet:1234", _slave.getEpicsAdressString());
-        
+
         // Copy a Module to the same Slave
         final ModuleDBO module = new ModuleDBO(_slave);
         module.setName("Module");
@@ -65,20 +65,20 @@ public class CopyNodeUnitTest {
         pci.setChannelType(DataType.INT16);
         pci.setName("PCI");
         module.localSave();
-        
+
         assertEquals(1, _slave.getChildren().size());
-        
-        final NamedDBClass node = module.copyThisTo(_slave);
+
+        final NamedDBClass node = module.copyThisTo(_slave, "Copy of ");
         // - Test Slave
         assertEquals(2, _slave.getChildren().size());
-        
+
         final ModuleDBO copyModule = testModule(node);
-        
+
         // -- Test Children
         assertEquals(module.getChildren().size(), copyModule.getChildren().size());
         assertEquals(module.getPureChannels().size(), copyModule.getPureChannels().size());
         assertEquals(module.getChildren().size(), copyModule.getChildren().size());
-        
+
         // -- Test PCO Children
         final Set<ChannelDBO> pureChannels = module.getPureChannels();
         final Set<ChannelDBO> copyPureChannels = copyModule.getPureChannels();
@@ -89,7 +89,7 @@ public class CopyNodeUnitTest {
         final Iterator<ChannelDBO> copyIterator = copyPureChannels.iterator();
         testPureChannels(iterator, copyIterator);
         testStructureChannels(module, copyModule, iterator, copyIterator);
-        
+
         // Paste the Module to are other Slave
     }
 
@@ -101,7 +101,7 @@ public class CopyNodeUnitTest {
         final Set<ChannelStructureDBO> copyChannelStructs = copyModule.getChildren();
         assertEquals(channelStructs.isEmpty(), copyChannelStructs.isEmpty());
         assertEquals(channelStructs.size(), copyChannelStructs.size());
-        
+
         while(iterator.hasNext()&&copyIterator.hasNext()) {
             final ChannelDBO channel = iterator.next();
             final ChannelDBO copy = copyIterator.next();
@@ -141,7 +141,7 @@ public class CopyNodeUnitTest {
         }
     }
 
-    @Nonnull 
+    @Nonnull
     private ModuleDBO testModule(@Nonnull final NamedDBClass node) {
         // - Test Module
         final ModuleDBO copyModule = (ModuleDBO) node;
@@ -150,5 +150,5 @@ public class CopyNodeUnitTest {
         assertEquals(0, copyModule.getId());
         return copyModule;
     }
-    
+
 }

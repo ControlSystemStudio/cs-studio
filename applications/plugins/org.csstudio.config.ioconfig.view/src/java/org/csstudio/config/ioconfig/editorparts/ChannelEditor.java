@@ -261,7 +261,6 @@ public class ChannelEditor extends AbstractNodeEditor<ChannelDBO> {
             });
         }
         final Button assembleButton = new Button(epicsAddressGroup, SWT.FLAT);
-        //        assembleButton.setLayoutData(new GridData(SWT.BEGINNING, SWT.CENTER, false, false));
         final GridDataFactory gdf = GridDataFactory.fillDefaults().align(SWT.BEGINNING, SWT.CENTER);
         assembleButton.setLayoutData(gdf.create());
         assembleButton.setImage(AbstractUIPlugin.imageDescriptorFromPlugin(IOConfigActivatorUI.PLUGIN_ID,

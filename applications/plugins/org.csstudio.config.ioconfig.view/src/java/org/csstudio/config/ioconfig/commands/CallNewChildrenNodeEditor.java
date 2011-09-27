@@ -40,9 +40,9 @@ import org.eclipse.ui.PartInitException;
  * @since 10.06.2010
  */
 public class CallNewChildrenNodeEditor extends AbstractCallNodeEditor {
-    
+
     private static final String ID = "org.csstudio.config.ioconfig.commands.callNewChildrenEditor";//$NON-NLS-1$
-    
+
     /**
      * {@inheritDoc}
      * @throws PartInitException
@@ -54,12 +54,12 @@ public class CallNewChildrenNodeEditor extends AbstractCallNodeEditor {
                                   PersistenceException {
         final AbstractNodeDBO<?, ?> createChild = parentNode.createChild();
         final String id = NodeEditorHandler.getEditorIdFor(createChild);
-        
+
         if ((AbstractNodeDBO<?, ?>) createChild != null && id != null) {
             final String nodeType = ((AbstractNodeDBO<?, ?>) createChild).getNodeType().getName();
             if (id.equals(ModuleEditor.ID)) {
                 ((AbstractNodeDBO<?, ?>) createChild).setName(" "); //$NON-NLS-1$
-                ((AbstractNodeDBO<?, ?>) createChild).setSortIndexNonHibernate(parentNode.getfirstFreeStationAddress(128));
+                ((AbstractNodeDBO<?, ?>) createChild).setSortIndexNonHibernate(parentNode.getfirstFreeStationAddress());
                 final NodeEditorInput input = new NodeEditorInput(createChild,true);
                 page.openEditor(input, id);
             } else {
@@ -69,7 +69,7 @@ public class CallNewChildrenNodeEditor extends AbstractCallNodeEditor {
                 idialog.setBlockOnOpen(true);
                 if (idialog.open() == Window.OK) {
                     // TODO: (hrickens) set the right max station Address
-                    ((AbstractNodeDBO<?, ?>) createChild).setSortIndexNonHibernate(parentNode.getfirstFreeStationAddress(128));
+                    ((AbstractNodeDBO<?, ?>) createChild).setSortIndexNonHibernate(parentNode.getfirstFreeStationAddress());
                     if(idialog.getValue()!=null&&!idialog.getValue().isEmpty()) {
                         ((AbstractNodeDBO<?, ?>) createChild).setName(idialog.getValue());
                     } else {
@@ -83,7 +83,7 @@ public class CallNewChildrenNodeEditor extends AbstractCallNodeEditor {
             }
         }
     }
-    
+
     /**
      * @return
      */

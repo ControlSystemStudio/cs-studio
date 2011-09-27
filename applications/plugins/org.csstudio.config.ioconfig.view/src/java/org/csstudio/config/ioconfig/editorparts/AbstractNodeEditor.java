@@ -90,36 +90,36 @@ import org.slf4j.LoggerFactory;
 
 /**
  * The skeletal structure for an Editor to editing a Node.
- * 
+ *
  * @author hrickens
  * @author $Author: hrickens $
  * @param <T>
  * @since 31.03.2010
  */
 public abstract class AbstractNodeEditor<T extends AbstractNodeDBO<?,?>> extends EditorPart implements INodeConfig {
-    
+
     /**
-     * 
+     *
      * @author hrickens
      * @author $Author: hrickens $
      * @since 03.06.2009
      */
     private final class CancelSelectionListener implements SelectionListener {
-        
+
         public CancelSelectionListener() {
             // Default Constructor
         }
-        
+
         @Override
         public void widgetDefaultSelected(@Nonnull final SelectionEvent e) {
             doCancle();
         }
-        
+
         @Override
         public void widgetSelected(@Nonnull final SelectionEvent e) {
             doCancle();
         }
-        
+
         /**
          *
          */
@@ -150,21 +150,21 @@ public abstract class AbstractNodeEditor<T extends AbstractNodeDBO<?,?>> extends
             }
         }
     }
-    
+
     /**
      * A ModifyListener that set the save button enable to store the changes.
      * Works with {@link Text}, {@link Combo} and {@link Spinner}.
-     * 
+     *
      * @author hrickens
      * @author $Author: hrickens $
      * @since 03.06.2009
      */
     private final class NodeConfigModifyListener implements ModifyListener {
-        
+
         public NodeConfigModifyListener() {
             // Default Constructor.
         }
-        
+
         @Override
         public void modifyText(@Nonnull final ModifyEvent e) {
             if (e.widget instanceof Text) {
@@ -193,19 +193,19 @@ public abstract class AbstractNodeEditor<T extends AbstractNodeDBO<?,?>> extends
             }
         }
     }
-    
+
     /**
-     * 
+     *
      * @author hrickens
      * @author $Author: hrickens $
      * @since 03.06.2009
      */
     private final class SaveSelectionListener implements SelectionListener {
-        
+
         public SaveSelectionListener() {
             // Default Constructor
         }
-        
+
         @Override
         public void widgetDefaultSelected(@Nonnull final SelectionEvent e) {
             getEditorSite().getActionBars().getGlobalActionHandler("org.eclipse.ui.file.save")
@@ -213,100 +213,100 @@ public abstract class AbstractNodeEditor<T extends AbstractNodeDBO<?,?>> extends
             // TODO:need a IProgressMonitor? Yes!
             doSave(null);
         }
-        
+
         @Override
         public void widgetSelected(@Nonnull final SelectionEvent e) {
             perfromSave();
         }
     }
-    
+
     /**
      * The warn background color (SWT.COLOR_RED) of the index Spinner.
      */
     protected static final Color WARN_BACKGROUND_COLOR = CustomMediaFactory.getInstance()
     .getColor(CustomMediaFactory.COLOR_RED);
-    
+
     private static Font _FONT;
     private static GridDataFactory _LABEL_GRID_DATA = GridDataFactory.fillDefaults();
     private static GridDataFactory _TEXT_GRID_DATA = GridDataFactory.fillDefaults().grab(true, false);
     private static final Logger LOG = LoggerFactory.getLogger(AbstractNodeEditor.class);
-    
+
     /**
      * The Button to cancel Changes.
      */
     private Button _cancelButton;
-    
+
     private Text _descText;
-    
+
     //    private GSDFileDBO _gsdFile;
-    
+
     /**
      * The Tabview to Manage the documentation of Node.
      */
     private DocumentationManageView _documentationManageView;
-    
+
     // ---------------------------------------
     // Node Editor View
-    
+
     private List<GSDFileDBO> _gsdFiles;
-    
+
     /**
      * The Spinner for the channel index.
      */
     private Spinner _indexSpinner;
-    
+
     /**
      * A ModifyListener that set the save button enable to store the changes.
      * Works with {@link Text}, {@link Combo} and {@link Spinner}.
      */
     private final ModifyListener _mLSB = new NodeConfigModifyListener();
-    
+
     /**
      * The text field for the name of the node.
      */
     private Text _nameText;
-    
+
     // ---------------------------------------
     // Node Editor View
-    
+
     /**
      * if true an new SubNet a created also modified _slave.
      */
     private boolean _new;
-    
+
     private T _node;
-    
+
     // ---------------------------------------
     // Node Editor View
-    
+
     private Composite _parent;
-    
+
     /**
      * The Button to save Changes.
      */
     private Button _saveButton;
-    
+
     /**
      * Contain all different events that have change a Value and the status of
      * the change. The status means is the new Value a differnt from the origin
      * Value.
      */
     private final HashMap<String, Boolean> _saveButtonEvents = new HashMap<String, Boolean>();
-    
+
     /**
      * The Tabfolder for a config view.
      */
     private TabFolder _tabFolder;
-    
+
     private final Map<HeaderFields, Text> headerFields = new HashMap<HeaderFields, Text>();
-    
+
     // ---------------------------------------
     // Node Editor View
-    
+
     public AbstractNodeEditor() {
         // constructor
     }
-    
+
     public AbstractNodeEditor(final boolean nevv) {
         // super(parent, SWT.NONE);
         setNew(nevv);
@@ -314,9 +314,9 @@ public abstract class AbstractNodeEditor<T extends AbstractNodeDBO<?,?>> extends
         // setGlobalActionHandler(IWorkbenchActionConstants.,
         // goIntoAction);
         // setBackgroundComposite(headline, node);
-        
+
     }
-    
+
     public void cancel() {
         final Text descText = getDescText();
         if (descText != null && descText.getData() != null && descText.getData() instanceof String) {
@@ -326,7 +326,7 @@ public abstract class AbstractNodeEditor<T extends AbstractNodeDBO<?,?>> extends
             getNode().setDirty(false);
         }
     }
-    
+
     /**
      * (@inheritDoc)
      */
@@ -336,9 +336,9 @@ public abstract class AbstractNodeEditor<T extends AbstractNodeDBO<?,?>> extends
         setBackgroundComposite();
         documents();
     }
-    
+
     /**
-     * 
+     *
      * {@inheritDoc}
      */
     @Override
@@ -350,10 +350,10 @@ public abstract class AbstractNodeEditor<T extends AbstractNodeDBO<?,?>> extends
         }
         getProfiBusTreeView().removeOpenEditor(this);
     }
-    
+
     // ---------------------------------------
     // Node Editor View
-    
+
     @Override
     public void doSave(@Nullable final IProgressMonitor monitor) {
         // Header
@@ -367,25 +367,25 @@ public abstract class AbstractNodeEditor<T extends AbstractNodeDBO<?,?>> extends
             i = 0;
         }
         getNode().setVersion(i);
-        
+
         getNode().setUpdatedBy(ConfigHelper.getUserName());
         getNode().setUpdatedOn(now);
-        
+
         getNode().setDescription(getDesc());
         final Text descText = getDescText();
         if (descText != null) {
             descText.setData(getDesc());
         }
-        
+
         // update Header
         getHeaderField(HeaderFields.MODIFIED_ON).setText(df.format(now));
         getHeaderField(HeaderFields.MODIFIED_BY).setText(ConfigHelper.getUserName());
         getHeaderField(HeaderFields.DB_ID).setText("" + getNode().getId());
-        
+
         // df = null;
         // now = null;
     }
-    
+
     /**
      * (@inheritDoc)
      */
@@ -393,7 +393,7 @@ public abstract class AbstractNodeEditor<T extends AbstractNodeDBO<?,?>> extends
     public void doSaveAs() {
         // save as not supported
     }
-    
+
     @Nonnull
     public String getDesc() {
         final Text descText = getDescText();
@@ -402,9 +402,9 @@ public abstract class AbstractNodeEditor<T extends AbstractNodeDBO<?,?>> extends
         }
         return descText.getText();
     }
-    
+
     /**
-     * 
+     *
      * @return the node which was configured with this View.
      */
     @Override
@@ -412,26 +412,26 @@ public abstract class AbstractNodeEditor<T extends AbstractNodeDBO<?,?>> extends
     public IDocumentable getDocumentableObject() {
         return _node;
     }
-    
+
     // ---------------------------------------
     // Node Editor View
-    
+
     @Nonnull
     public Text getHeaderField(@Nonnull final HeaderFields field) {
         return headerFields.get(field);
     }
-    
+
     /**
      * A ModifyListener that set the save button enable to store the changes.
      * Works wiht {@link Text}, {@link Combo} and {@link Spinner}.
-     * 
+     *
      * @return the ModifyListener.
      */
     @Nonnull
     public final ModifyListener getMLSB() {
         return _mLSB;
     }
-    
+
     /**
      * {@inheritDoc}
      */
@@ -440,7 +440,7 @@ public abstract class AbstractNodeEditor<T extends AbstractNodeDBO<?,?>> extends
     public T getNode() {
         return _node;
     }
-    
+
     /**
      * (@inheritDoc)
      */
@@ -454,9 +454,9 @@ public abstract class AbstractNodeEditor<T extends AbstractNodeDBO<?,?>> extends
         setPartName(_node.getName());
         getProfiBusTreeView().setOpenEditor(this);
     }
-    
+
     /**
-     * 
+     *
      * @return only true when the node has on or more changes.
      */
     @Override
@@ -466,17 +466,17 @@ public abstract class AbstractNodeEditor<T extends AbstractNodeDBO<?,?>> extends
         }
         return true;
     }
-    
+
     @Override
     public boolean isSaveAsAllowed() {
         return false; // save as not supported
     }
-    
+
     public void perfromClose() {
         final IViewSite site = getProfiBusTreeView().getSite();
         site.getPage().closeEditor(this, false);
     }
-    
+
     public void setDesc(@CheckForNull final String desc) {
         final String temp = desc != null ? desc : "";
         final Text descText = getDescText();
@@ -484,28 +484,28 @@ public abstract class AbstractNodeEditor<T extends AbstractNodeDBO<?,?>> extends
             descText.setText(temp);
         }
     }
-    
+
     @Override
     public void setFocus() {
         // nothing to do;
     }
-    
+
     @Nonnull
     public Text setHeaderField(@Nonnull final HeaderFields field, @Nullable final Text text) {
         return headerFields.put(field, text);
     }
-    
+
     public final void setName(@Nonnull final String name) {
         final TreeItem treeItem = getProfiBusTreeView().getTreeViewer().getTree().getSelection()[0];
         treeItem.setText(name);
         _nameText.setText(name);
     }
-    
+
     /**
      * Give a change event and his save status.<br>
      * Have one or more events the status unsaved then the Save Button was set
      * to enable otherwise to disable.
-     * 
+     *
      * @param event
      *            the Save Event Id.
      * @param enabled
@@ -525,7 +525,7 @@ public abstract class AbstractNodeEditor<T extends AbstractNodeDBO<?,?>> extends
             firePropertyChange(IEditorPart.PROP_DIRTY);
         }
     }
-    
+
     /**
      * Clear the dirty bit, delete all saveButton events and set the Button
      * disable.
@@ -539,15 +539,15 @@ public abstract class AbstractNodeEditor<T extends AbstractNodeDBO<?,?>> extends
         }
         firePropertyChange(PROP_DIRTY);
     }
-    
+
     /**
-     * 
+     *
      * @param selectionListener
      */
     public final void setSaveButtonSelectionListener(@Nonnull final SelectionListener selectionListener) {
         getSaveButton().addSelectionListener(selectionListener);
     }
-    
+
     @Nonnull
     private Group makeBackgroundGroup(final int columnNum) {
         final Group header = new Group(getParent(), SWT.H_SCROLL);
@@ -557,7 +557,7 @@ public abstract class AbstractNodeEditor<T extends AbstractNodeDBO<?,?>> extends
         header.setTabList(new Control[0]);
         return header;
     }
-    
+
     /**
      * set the documents and Icon tab item.
      */
@@ -569,17 +569,17 @@ public abstract class AbstractNodeEditor<T extends AbstractNodeDBO<?,?>> extends
         _documentationManageView = new DocumentationManageView(getTabFolder(), SWT.NONE, this);
         item.setControl(_documentationManageView);
         getTabFolder().addSelectionListener(new SelectionListener() {
-            
+
             @Override
             public void widgetDefaultSelected(@Nonnull final SelectionEvent e) {
                 docTabSelectionAction(e);
             }
-            
+
             @Override
             public void widgetSelected(@Nonnull final SelectionEvent e) {
                 docTabSelectionAction(e);
             }
-            
+
             private void docTabSelectionAction(@Nonnull final SelectionEvent e) {
                 if (e.item.equals(item)) {
                     final DocumentationManageView documentationManageView = getDocumentationManageView();
@@ -588,11 +588,11 @@ public abstract class AbstractNodeEditor<T extends AbstractNodeDBO<?,?>> extends
                     }
                 }
             }
-            
+
         });
-        
+
     }
-    
+
     /**
      * @return the cancelButton
      */
@@ -600,14 +600,14 @@ public abstract class AbstractNodeEditor<T extends AbstractNodeDBO<?,?>> extends
     protected final Button getCancelButton() {
         return _cancelButton;
     }
-    
+
     @CheckForNull
     protected Text getDescText() {
         return _descText;
     }
-    
+
     /**
-     * 
+     *
      * @return The Documentation Manage View.
      */
     @Nonnull
@@ -617,12 +617,12 @@ public abstract class AbstractNodeEditor<T extends AbstractNodeDBO<?,?>> extends
         }
         return _documentationManageView;
     }
-    
+
     @CheckForNull
     protected List<GSDFileDBO> getGsdFiles() {
         return _gsdFiles;
     }
-    
+
     /**
      * @return the indexSpinner
      */
@@ -630,16 +630,16 @@ public abstract class AbstractNodeEditor<T extends AbstractNodeDBO<?,?>> extends
     protected final Spinner getIndexSpinner() {
         return _indexSpinner;
     }
-    
+
     /**
-     * 
+     *
      * @return the Node Name description field.
      */
     @CheckForNull
     protected final Text getNameWidget() {
         return _nameText;
     }
-    
+
     /**
      * @param head
      *            The Tab text.
@@ -654,11 +654,11 @@ public abstract class AbstractNodeEditor<T extends AbstractNodeDBO<?,?>> extends
         final Composite comp = new Composite(getTabFolder(), SWT.NONE);
         comp.setLayout(new GridLayout(rows, false));
         item.setControl(comp);
-        
+
         comp.setBackground(Display.getDefault().getSystemColor(SWT.COLOR_WIDGET_BACKGROUND));
         return comp;
     }
-    
+
     /**
      * @return the parent
      */
@@ -666,7 +666,7 @@ public abstract class AbstractNodeEditor<T extends AbstractNodeDBO<?,?>> extends
     protected Composite getParent() {
         return _parent;
     }
-    
+
     /**
      * @return the profiBusTreeView
      */
@@ -674,12 +674,12 @@ public abstract class AbstractNodeEditor<T extends AbstractNodeDBO<?,?>> extends
     protected final ProfiBusTreeView getProfiBusTreeView() {
         return ((MainView) getEditorSite().getPage().findView(MainView.ID)).getProfiBusTreeView();
     }
-    
+
     @CheckForNull
     protected Button getSaveButton() {
         return _saveButton;
     }
-    
+
     @CheckForNull
     protected Shell getShell() {
         if (this.getEditorSite() != null) {
@@ -687,7 +687,7 @@ public abstract class AbstractNodeEditor<T extends AbstractNodeDBO<?,?>> extends
         }
         return null;
     }
-    
+
     /**
      * @return the tabFolder
      */
@@ -696,11 +696,11 @@ public abstract class AbstractNodeEditor<T extends AbstractNodeDBO<?,?>> extends
         assert _tabFolder != null : "Tab folder not avaible!";
         return _tabFolder;
     }
-    
+
     protected boolean isNew() {
         return _new;
     }
-    
+
     protected void makeDescGroup(@Nonnull final Composite comp, final int hSize) {
         final Group gDesc = new Group(comp, SWT.NONE);
         gDesc.setText("Description: ");
@@ -708,11 +708,11 @@ public abstract class AbstractNodeEditor<T extends AbstractNodeDBO<?,?>> extends
         .minSize(200, 200);
         gDesc.setLayoutData(gdf.create());
         gDesc.setLayout(new GridLayout(2, false));
-        
+
         final Label shortDescLabel = new Label(gDesc, SWT.NONE);
         shortDescLabel.setLayoutData(new GridData(SWT.BEGINNING, SWT.CENTER, false, false));
         shortDescLabel.setText("Short Desc:");
-        
+
         final Text shortDescText = new Text(gDesc, SWT.BORDER | SWT.SINGLE | SWT.READ_ONLY);
         shortDescText.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, false, 1, 1));
         shortDescText.setEditable(false);
@@ -720,10 +720,10 @@ public abstract class AbstractNodeEditor<T extends AbstractNodeDBO<?,?>> extends
         descText.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true, 2, 1));
         descText.setEditable(true);
         descText.addModifyListener(new ModifyListener() {
-            
+
             @Override
             public void modifyText(@Nonnull final ModifyEvent e) {
-                String string = getShortDesc(descText);
+                final String string = getShortDesc(descText);
                 shortDescText.setText(string);
             }
         });
@@ -731,18 +731,18 @@ public abstract class AbstractNodeEditor<T extends AbstractNodeDBO<?,?>> extends
         setDescWidget(descText);
         gDesc.setTabList(new Control[] {descText});
     }
-    
+
     /**
      * Generate a new Node on his parent with a Name, creator and creation date.
      */
     protected boolean newNode() {
         return newNode("");
     }
-    
+
     protected boolean newNode(@Nullable final String nameOffer) {
-        
+
         final String nodeType = getNode().getClass().getSimpleName();
-        
+
         final InputDialog id = new InputDialog(getShell(),
                                                "Create new " + nodeType,
                                                "Enter the name of the " + nodeType,
@@ -756,18 +756,18 @@ public abstract class AbstractNodeEditor<T extends AbstractNodeDBO<?,?>> extends
                 getNode().setCreationData(name, new Date());
                 getNode().setVersion(-2);
                 id.close();
-                
+
                 final Object obj = ((StructuredSelection) getProfiBusTreeView().getTreeViewer()
                         .getSelection()).getFirstElement();
-                
+
                 if (getNode() instanceof FacilityDBO || obj == null) {
                     getProfiBusTreeView().getTreeViewer().setInput(getNode());
                 } else if (obj instanceof AbstractNodeDBO) {
                     if (getNode().getParent() == null) {
                         final AbstractNodeDBO nodeParent = (AbstractNodeDBO) obj;
-                        
+
                         getNode()
-                        .moveSortIndex(nodeParent.getfirstFreeStationAddress(AbstractNodeDBO.getMaxStationAddress()));
+                        .moveSortIndex(nodeParent.getfirstFreeStationAddress());
                         nodeParent.addChild(getNode());
                     }
                 }
@@ -779,7 +779,7 @@ public abstract class AbstractNodeEditor<T extends AbstractNodeDBO<?,?>> extends
         }
         return false;
     }
-    
+
     /**
      * @param exception
      *            A exception to show in a Dialog,
@@ -790,7 +790,7 @@ public abstract class AbstractNodeEditor<T extends AbstractNodeDBO<?,?>> extends
                                        "The Settings not saved!\n\nDataBase Failure:",
                                        exception);
     }
-    
+
     /**
      * @param exception
      *            A exception to show in a Dialog,
@@ -801,10 +801,10 @@ public abstract class AbstractNodeEditor<T extends AbstractNodeDBO<?,?>> extends
                                        "The Settings not saved!\n\nDataBase Failure:",
                                        exception, getProfiBusTreeView());
     }
-    
+
     protected void perfromSave() {
         final IViewSite site = getProfiBusTreeView().getSite();
-        
+
         final IHandlerService handlerService = (IHandlerService) site
         .getService(IHandlerService.class);
         try {
@@ -813,20 +813,20 @@ public abstract class AbstractNodeEditor<T extends AbstractNodeDBO<?,?>> extends
             LOG.error("Can't Save!", ex);
         }
     }
-    
+
     protected final void selecttTabFolder(final int index) {
         if (_tabFolder != null) {
             _tabFolder.setSelection(index);
         }
     }
-    
+
     /**
-     * 
+     *
      * This method generate the Background of an NodeConfig this a 3 Parts. 1.
      * The Header with description line the 3 information field for: 1.1.
      * Modified by 1.2. Modified on 1.3. GSD-Version 2. The Body as an empty
      * TabFolder. 3. The Footer with the Save and Cancel Buttons.
-     * 
+     *
      * @param headline
      *            The description line of the Header
      * @param node
@@ -843,7 +843,7 @@ public abstract class AbstractNodeEditor<T extends AbstractNodeDBO<?,?>> extends
         }
         headlineLabel.setText("Profibus " + node.getClass().getSimpleName() + " Configuration");
         headlineLabel.setLayoutData(new GridData(SWT.LEFT, SWT.FILL, false, false, columnNum, 1));
-        
+
         final GridDataFactory labelGridData = GridDataFactory.fillDefaults();
         // - Header
         final Group header = makeBackgroundGroup(columnNum);
@@ -862,7 +862,7 @@ public abstract class AbstractNodeEditor<T extends AbstractNodeDBO<?,?>> extends
         // -- Created on
         getNewLabel(header, "Created on:");
         /** The description field with the name of the Date of the last change. */
-        
+
         Date now = new Date();
         if (isNew()) {
             temp = ConfigHelper.getSimpleDateFormat().format(now);
@@ -871,7 +871,7 @@ public abstract class AbstractNodeEditor<T extends AbstractNodeDBO<?,?>> extends
             now = node.getCreatedOn();
             temp = now.toString();
         }
-        
+
         final Text creatOnText = getNewText(header, temp);
         getParent().setData("date", now);
         getParent().setData("creatOn", creatOnText);
@@ -884,27 +884,27 @@ public abstract class AbstractNodeEditor<T extends AbstractNodeDBO<?,?>> extends
         }
         final Text versionText = getNewText(header, temp);
         setHeaderField(HeaderFields.VERSION, versionText);
-        
+
         final Label iconButton = new Label(header, SWT.BORDER);
         iconButton.setLayoutData(GridDataFactory.swtDefaults().span(1, 3).minSize(40, 40).create());
         iconButton.setImage(ConfigHelper.getImageFromNode(node, 30, 60));
         iconButton.addMouseListener(new MouseAdapter() {
-            
+
             @Override
             public void mouseUp(@Nullable final MouseEvent e) {
                 final IconChooserDialog chooseIconDialog = new IconChooserDialog(AbstractNodeEditor.this
                                                                                  .getShell(),
                                                                                  node);
-                
+
                 chooseIconDialog.setBlockOnOpen(true);
                 if (chooseIconDialog.open() == 0 && node != null) {
                     node.setIcon(chooseIconDialog.getImage());
                 }
-                
+
             }
-            
+
         });
-        
+
         getNewLabel(header, "Modified by:");
         /** The description field with the name of the User that make changes. */
         temp = "";
@@ -923,24 +923,24 @@ public abstract class AbstractNodeEditor<T extends AbstractNodeDBO<?,?>> extends
         final Text modifiedOn = getNewText(header, temp);
         setHeaderField(HeaderFields.MODIFIED_ON, modifiedOn);
         temp = "";
-        
+
         getNewLabel(header, "DataBase ID:");
         /** The description field with the Version from GSD File. */
         if (node != null) {
             temp = node.getId() + "";
         }
-        
+
         final Text dbIdText = getNewText(header, temp);
         setHeaderField(HeaderFields.DB_ID, dbIdText);
-        
+
         /**
          * GSD Version. The description field with the Version from GSD File.
          * Only Master and Slave have a GSD File
          */
-        
+
         if (node instanceof MasterDBO || node instanceof SlaveDBO) {
             getNewLabel(header, "Version from GSD:");
-            
+
             if (node.getUpdatedOn() != null) {
                 // TODO: GSD Versionsnummer setzen.
                 temp = node.getVersion() + "";
@@ -948,11 +948,11 @@ public abstract class AbstractNodeEditor<T extends AbstractNodeDBO<?,?>> extends
             final Text version = getNewText(header, temp);
             getParent().setData("gsdVersion", version);
         }
-        
+
         setTabFolder(new TabFolder(getParent(), SWT.H_SCROLL | SWT.V_SCROLL));
         getTabFolder().setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true, 5, 1));
         getTabFolder().setBackgroundMode(SWT.INHERIT_DEFAULT);
-        
+
         // -Footer
         new Label(getParent(), SWT.NONE);
         setSaveButton(new Button(getParent(), SWT.PUSH));
@@ -978,11 +978,11 @@ public abstract class AbstractNodeEditor<T extends AbstractNodeDBO<?,?>> extends
         new Label(getParent(), SWT.NONE);
         header.setTabList(new Control[0]);
     }
-    
+
     //    protected void setGsdFile(@Nullable GSDFileDBO gsdFile) {
     //        _gsdFile = gsdFile;
     //    }
-    
+
     /**
      * @param cancelButton
      *            the cancelButton to set
@@ -990,13 +990,13 @@ public abstract class AbstractNodeEditor<T extends AbstractNodeDBO<?,?>> extends
     protected final void setCancelButton(@Nullable final Button cancelButton) {
         _cancelButton = cancelButton;
     }
-    
+
     protected void setDescText(@Nullable final Text descText) {
         _descText = descText;
     }
-    
+
     /**
-     * 
+     *
      * @param descText
      *            set the Node Name description field.
      */
@@ -1014,12 +1014,12 @@ public abstract class AbstractNodeEditor<T extends AbstractNodeDBO<?,?>> extends
             }
         });
     }
-    
+
     @CheckForNull
     protected void setGsdFiles(@Nullable final List<GSDFileDBO> gsdFiles) {
         _gsdFiles = gsdFiles;
     }
-    
+
     /**
      * @param indexSpinner
      *            the indexSpinner to set
@@ -1027,9 +1027,9 @@ public abstract class AbstractNodeEditor<T extends AbstractNodeDBO<?,?>> extends
     protected final void setIndexSpinner(@Nullable final Spinner indexSpinner) {
         _indexSpinner = indexSpinner;
     }
-    
+
     /**
-     * 
+     *
      * @param nameText
      *            set the Node Name description field.
      */
@@ -1045,19 +1045,19 @@ public abstract class AbstractNodeEditor<T extends AbstractNodeDBO<?,?>> extends
             }
         });
     }
-    
+
     protected void setNew(final boolean nevv) {
         _new = nevv;
     }
-    
+
     protected void setParent(@Nonnull final Composite parent) {
         _parent = parent;
     }
-    
+
     protected void setSaveButton(@Nullable final Button saveButton) {
         _saveButton = saveButton;
     }
-    
+
     /**
      * @param tabFolder
      *            the tabFolder to set
@@ -1065,7 +1065,7 @@ public abstract class AbstractNodeEditor<T extends AbstractNodeDBO<?,?>> extends
     protected final void setTabFolder(@Nullable final TabFolder tabFolder) {
         _tabFolder = tabFolder;
     }
-    
+
     /**
      * Save or Update the Node to the Data Base.
      */
@@ -1093,10 +1093,10 @@ public abstract class AbstractNodeEditor<T extends AbstractNodeDBO<?,?>> extends
             if (saveButton != null) {
                 saveButton.setText("&Save");
             }
-            
+
             getHeaderField(HeaderFields.DB_ID).setText(node.getId() + "");
             progressMonitor.worked(3);
-            
+
             if (isNew() && !node.isRootNode()) {
                 getProfiBusTreeView().refresh(parent);
                 getProfiBusTreeView().getTreeViewer().expandToLevel(node,
@@ -1105,7 +1105,7 @@ public abstract class AbstractNodeEditor<T extends AbstractNodeDBO<?,?>> extends
                 getProfiBusTreeView().addFacility((FacilityDBO) node);
                 getProfiBusTreeView().refresh(node);
                 getProfiBusTreeView().refresh();
-                
+
             } else {
                 // refresh the View
                 getProfiBusTreeView().refresh(node);
@@ -1116,11 +1116,11 @@ public abstract class AbstractNodeEditor<T extends AbstractNodeDBO<?,?>> extends
             dia.close();
         }
     }
-    
+
     /**
      * Select a text to a {@link Combo} and store the index into Data as origin
      * value.
-     * 
+     *
      * @param comboField
      *            The Combo field to set the index
      * @param value
@@ -1136,11 +1136,11 @@ public abstract class AbstractNodeEditor<T extends AbstractNodeDBO<?,?>> extends
         comboField.setData(index);
         comboField.addModifyListener(getMLSB());
     }
-    
+
     /**
      * Set a int as text to a {@link Text} and store the text into Data as
      * origin value.
-     * 
+     *
      * @param textField
      *            The Text field to set the text
      * @param textValue
@@ -1149,11 +1149,11 @@ public abstract class AbstractNodeEditor<T extends AbstractNodeDBO<?,?>> extends
     final void setText(@Nonnull final Text textField, final int textValue, final int limit) {
         setText(textField, Integer.toString(textValue), limit);
     }
-    
+
     /**
      * Set a text to a {@link Text} and store the text into Data as origin
      * value.
-     * 
+     *
      * @param textField
      *            The Text-field to set the text
      * @param text
@@ -1175,7 +1175,7 @@ public abstract class AbstractNodeEditor<T extends AbstractNodeDBO<?,?>> extends
         textField.setToolTipText("");
         textField.addModifyListener(getMLSB());
     }
-    
+
     /**
      * @return
      */
@@ -1183,7 +1183,7 @@ public abstract class AbstractNodeEditor<T extends AbstractNodeDBO<?,?>> extends
     public static String getUserName() {
         return UserName.getUserName();
     }
-    
+
     @Nonnull
     private static Label getNewLabel(@Nonnull final Composite header, @Nonnull final String string) {
         final Label newLabel = new Label(header, SWT.NONE);
@@ -1191,7 +1191,7 @@ public abstract class AbstractNodeEditor<T extends AbstractNodeDBO<?,?>> extends
         newLabel.setText(string);
         return newLabel;
     }
-    
+
     @Nonnull
     private static Text getNewText(@Nonnull final Composite header, @Nonnull final String text) {
         final Text newText = new Text(header, SWT.NONE);
@@ -1200,22 +1200,22 @@ public abstract class AbstractNodeEditor<T extends AbstractNodeDBO<?,?>> extends
         newText.setText(text);
         return newText;
     }
-    
+
     protected static void resetSelection(@Nonnull final Combo combo) {
         final Integer index = (Integer) combo.getData();
         if (index != null) {
             combo.select(index);
         }
-        
+
     }
-    
+
     protected static void resetString(@Nonnull final Text textField) {
         final String text = (String) textField.getData();
         if (text != null) {
             textField.setText(text);
         }
     }
-    
+
     private String getShortDesc(final Text descText) {
         final String text = descText.getText();
         String string = "";
@@ -1231,5 +1231,5 @@ public abstract class AbstractNodeEditor<T extends AbstractNodeDBO<?,?>> extends
         }
         return string;
     }
-    
+
 }

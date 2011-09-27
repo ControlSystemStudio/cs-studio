@@ -51,14 +51,14 @@ import org.slf4j.LoggerFactory;
 
 /**
  * This Class help handel the Unsign Datatyp from Profibus.
- * 
+ *
  * @author hrickens
  * @author $Author: hrickens $
  * @version $Revision: 1.4 $
  * @since 26.06.2007
  */
 public final class ProfibusHelper {
-    
+
     /**
      * @author hrickens
      * @author $Author: $
@@ -67,11 +67,11 @@ public final class ProfibusHelper {
     private static final class NumberVerifyListenerImplementation implements
     VerifyListener {
         private final long _min;
-        
+
         NumberVerifyListenerImplementation(final long min) {
             _min = min;
         }
-        
+
         @Override
         public void verifyText(@Nonnull final VerifyEvent e) {
             // check != Digit
@@ -91,8 +91,8 @@ public final class ProfibusHelper {
             }
         }
     }
-    
-    
+
+
     /** Verify Listener Type ID VL_TYP_U08. */
     public static final int VL_TYP_U08 = 8;
     /** Verify Listener Type ID VL_TYP_U16. */
@@ -116,12 +116,12 @@ public final class ProfibusHelper {
             }
         }
     };
-    
+
     /** The default Constructor. */
     private ProfibusHelper() {
         // The default Constructor.
     }
-    
+
     @Nonnull
     public static VerifyListener getDigitVerifyListener() {
         return new VerifyListener() {
@@ -131,20 +131,20 @@ public final class ProfibusHelper {
             }
         };
     }
-    
+
     /**
-     * 
+     *
      * @return A TraverseListener to jump per enter to the next field.
      */
     @Nonnull
     public static TraverseListener getNETL() {
         return _NE_TL;
     }
-    
+
     /**
      * Verify input at Text field is confirm with a Number that is in range Min
      * - Max.
-     * 
+     *
      * @param min
      *            the min Value was accept at Text field.
      * @param max
@@ -159,9 +159,9 @@ public final class ProfibusHelper {
                                                          final long max, @Nonnull final Point toolTipPos) {
         return new NumberVerifyListenerImplementation(min);
     }
-    
+
     /**
-     * 
+     *
      * @param parent
      *            The parent composite.
      * @param edit
@@ -177,7 +177,7 @@ public final class ProfibusHelper {
     public static Text getTextField(@Nonnull final Composite parent,
                                     final boolean edit, @Nullable final String value,
                                     @CheckForNull final Value ranges, final int verifyListenerTyp) {
-        
+
         final Text textField = new Text(parent, SWT.SINGLE | SWT.TRAIL | SWT.BORDER);
         int size = 20;
         if (ranges != null) {
@@ -185,7 +185,7 @@ public final class ProfibusHelper {
             textField.addFocusListener(new CheckNumFocusListener(ranges));
             textField.setToolTipText("The Range is between " + ranges.getMin()
                                      + " and " + ranges.getMax());
-            
+
         }
         final GridData gdl = GridDataFactory.fillDefaults().grab(true, false)
         .minSize(size, SWT.DEFAULT).create();
@@ -220,16 +220,16 @@ public final class ProfibusHelper {
         }
         return textField;
     }
-    
+
     @Nonnull
     public static Text getTextField(@Nonnull final Composite parent,
                                     @Nullable final String text) {
         return getTextField(parent, false, text, null, 0);
     }
-    
+
     /**
      * Verify input at Text field is confirm with a Profibus U16 (0-65535).
-     * 
+     *
      * @param toolTipPos
      *            Position for the Tool tip.
      * @return a VerifyListener to check a Text field is confirm with a Profibus
@@ -243,10 +243,10 @@ public final class ProfibusHelper {
         }
         return _CHECK_OF_U16;
     }
-    
+
     /**
      * Verify input at Text field is confirm with a Profibus U16 (0-2^32).
-     * 
+     *
      * @param toolTipPos
      *            Position for the Tool tip.
      * @return a VerifyListener to check a Text field is confirm with a Profibus
@@ -261,10 +261,10 @@ public final class ProfibusHelper {
         }
         return _CHECK_OF_U32;
     }
-    
+
     /**
      * Verify input at Text field is confirm with a Profibus U8 (0-255).
-     * 
+     *
      * @param toolTipPos
      *            Position for the Tool tip.
      * @return a VerifyListener to check a Text field is confirm with a Profibus
@@ -278,14 +278,14 @@ public final class ProfibusHelper {
         }
         return _CHECK_OF_U8;
     }
-    
+
     /**
      * Open a Error Dialog for a access error to a {@link DBClass}.<br>
      * The Error Msg String for {@link DBClass} get two Parameters (Class Name
      * and DB Id).<br>
      * If the {@link DBClass} a {@link NamedDBClass} then give three Parameters
      * (Class Name, Object name and DB Id).<br>
-     * 
+     *
      * @param parent
      *            the parent shell of the dialog, or <code>null</code> if none
      * @param title
@@ -302,15 +302,17 @@ public final class ProfibusHelper {
      */
     public static void openErrorDialog(@Nullable final Shell shell,
                                        @Nullable final String title, @Nonnull final String errMsg,
-                                       @Nonnull final DBClass node, @Nonnull final Exception e) {
+                                       @CheckForNull final DBClass node, @Nonnull final Exception e) {
         String format;
-        LOG.error("",
-                  e);
-        if (node instanceof NamedDBClass) {
+        LOG.error("", e);
+        if(node == null) {
+            format = String.format(errMsg, "N/A", "N/A", "N/A");
+        } else if (node instanceof NamedDBClass) {
             final NamedDBClass nameNode = (NamedDBClass) node;
-            format = String.format(errMsg, nameNode.getClass().getSimpleName(),
-                                   nameNode.getName(), nameNode.getId());
-            
+            format = String.format(errMsg,
+                                   nameNode.getClass().getSimpleName(),
+                                   nameNode.getName(),
+                                   nameNode.getId());
         } else {
             format = String.format(errMsg, node.getClass().getSimpleName(),
                                    "N/A", node.getId());
@@ -319,5 +321,5 @@ public final class ProfibusHelper {
                                                            IOConfigActivatorUI.PLUGIN_ID, 3, format, e);
         ErrorDialog.openError(shell, title, null, status);
     }
-    
+
 }

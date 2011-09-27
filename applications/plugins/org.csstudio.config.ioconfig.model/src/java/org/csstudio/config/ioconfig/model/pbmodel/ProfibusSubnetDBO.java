@@ -18,13 +18,13 @@ import org.csstudio.config.ioconfig.model.PersistenceException;
 
 /**
   * Data model for Profibus-DP Subnet
-  * 
-  * Created by: Torsten Boeckmann 
+  *
+  * Created by: Torsten Boeckmann
   * Date: 07. Dezember 2005
-  *  
-  * last changed: @author $Author: hrickens $ 
+  *
+  * last changed: @author $Author: hrickens $
   * Revision: @version $Revision: 1.2 $
-  **/ 
+  **/
 @Entity
 @Table(name = "ddb_Profibus_Subnet")
 public class ProfibusSubnetDBO extends AbstractNodeDBO<IocDBO, MasterDBO> {
@@ -81,7 +81,7 @@ public class ProfibusSubnetDBO extends AbstractNodeDBO<IocDBO, MasterDBO> {
 
     /**
      * The default Constructor.
-     * @throws PersistenceException 
+     * @throws PersistenceException
      */
     public ProfibusSubnetDBO(@Nonnull final IocDBO ioc) throws PersistenceException {
         super(ioc);
@@ -368,7 +368,7 @@ public class ProfibusSubnetDBO extends AbstractNodeDBO<IocDBO, MasterDBO> {
     @ManyToOne // TODO (hrickens) [11.05.2011]: Wieso ist hier eine ManyToOne Beziehung? Die ist doch inder der getParent Methode.
     @Nonnull
     public IocDBO getIoc() {
-        return (IocDBO) getParent();
+        return getParent();
     }
 
     /**
@@ -399,7 +399,7 @@ public class ProfibusSubnetDBO extends AbstractNodeDBO<IocDBO, MasterDBO> {
 
     /**
      * {@inheritDoc}
-     * @throws PersistenceException 
+     * @throws PersistenceException
      */
     @Override
     @Nonnull
@@ -431,10 +431,10 @@ public class ProfibusSubnetDBO extends AbstractNodeDBO<IocDBO, MasterDBO> {
 
     @Override
     @Nonnull
-    public final ProfibusSubnetDBO copyThisTo(@Nonnull final IocDBO parentNode) throws PersistenceException {
-        final ProfibusSubnetDBO copy = (ProfibusSubnetDBO) super.copyThisTo(parentNode);
-        for (MasterDBO node : getChildren()) {
-            final MasterDBO childrenCopy = node.copyThisTo(copy);
+    public final ProfibusSubnetDBO copyThisTo(@Nonnull final IocDBO parentNode, @CheckForNull final String namePrefix) throws PersistenceException {
+        final ProfibusSubnetDBO copy = (ProfibusSubnetDBO) super.copyThisTo(parentNode, namePrefix);
+        for (final MasterDBO node : getChildren()) {
+            final MasterDBO childrenCopy = node.copyThisTo(copy, "Copy of ");
             childrenCopy.setSortIndexNonHibernate(node.getSortIndex());
         }
         return copy;
@@ -457,17 +457,17 @@ public class ProfibusSubnetDBO extends AbstractNodeDBO<IocDBO, MasterDBO> {
     public final MasterDBO createChild() throws PersistenceException {
         return new MasterDBO(this);
     }
-    
+
     @Override
     public final void accept(@Nonnull final INodeVisitor visitor) {
         visitor.visit(this);
     }
-    
+
     @Override
     public boolean equals(@CheckForNull final Object obj) {
         return super.equals(obj);
     }
-    
+
     @Override
     public int hashCode() {
         return super.hashCode();

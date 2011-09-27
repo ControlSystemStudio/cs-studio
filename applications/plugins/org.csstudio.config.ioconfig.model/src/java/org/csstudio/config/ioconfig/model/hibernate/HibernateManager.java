@@ -50,33 +50,35 @@ import org.slf4j.LoggerFactory;
  * @since 03.06.2009
  */
 public final class HibernateManager extends AbstractHibernateManager {
-    
+
     protected static final Logger LOG = LoggerFactory.getLogger(HibernateManager.class);
 
     private static HibernateManager _INSTANCE;
 
     private AnnotationConfiguration _cfg;
-    
+
+    /**
+     * Constructor.
+     */
     private HibernateManager() {
-        // Default constructor
+        final String pluginId = IOConfigActivator.PLUGIN_ID;
+        new InstanceScope().getNode(pluginId)
+        .addPreferenceChangeListener(new IPreferenceChangeListener() {
+
+            @Override
+            public void preferenceChange(@Nonnull final PreferenceChangeEvent event) {
+                setProperty(event.getKey(), event.getNewValue());
+                setSessionFactory(null);
+            }
+        });
     }
-    
+
     @Override
     protected void buildConfig() {
         final String pluginId = IOConfigActivator.PLUGIN_ID;
-        new InstanceScope().getNode(pluginId)
-                .addPreferenceChangeListener(new IPreferenceChangeListener() {
-                    
-                    @Override
-                    public void preferenceChange(@Nonnull final PreferenceChangeEvent event) {
-                        setProperty(event.getKey(), event.getNewValue());
-                        setSessionFactory(getCfg().buildSessionFactory());
-                    }
-                });
-        
         final IPreferencesService prefs = Platform.getPreferencesService();
         _cfg = new AnnotationConfiguration();
-        for (Class<?> clazz : getClasses()) {
+        for (final Class<?> clazz : getClasses()) {
             _cfg.addAnnotatedClass(clazz);
         }
         final String classDriver = prefs.getString(pluginId, HIBERNATE_CONNECTION_DRIVER_CLASS, "", null);
@@ -85,7 +87,7 @@ public final class HibernateManager extends AbstractHibernateManager {
         final String password = prefs.getString(pluginId, DDB_PASSWORD, "", null);
         LOG.debug("Use User: "+userName);
         LOG.debug("Use Password: "+password);
-        
+
         _cfg.setProperty("org.hibernate.cfg.Environment.MAX_FETCH_DEPTH", "0")
                 .setProperty("hibernate.connection.driver_class",
                              classDriver)
@@ -116,8 +118,8 @@ public final class HibernateManager extends AbstractHibernateManager {
 //                  .setProperty("hibernate.cache.use_second_level_cache", "true");
         setTimeout(prefs.getInt(pluginId, DDB_TIMEOUT, 90, null));
     }
-    
-    
+
+
     /**
      * Set a Hibernate Property.
      *
@@ -137,14 +139,14 @@ public final class HibernateManager extends AbstractHibernateManager {
             setStringProperty(property, value);
         }
     }
-    
+
     /**
      * @param property
      * @param value
      */
     private void setStringProperty(@Nonnull final String property, @Nonnull final Object value) {
         final String stringValue = ((String) value).trim();
-        
+
         if(property.equals(DDB_PASSWORD)) {
             _cfg.setProperty("hibernate.connection.password", stringValue);
         } else if(property.equals(DDB_USER_NAME)) {
@@ -155,15 +157,15 @@ public final class HibernateManager extends AbstractHibernateManager {
             _cfg.setProperty("hibernate.connection.driver_class", stringValue);
         } else if(property.equals(HIBERNATE_CONNECTION_URL)) {
             _cfg.setProperty("hibernate.connection.url", stringValue);
-            
+
         } else if(property.equals(SHOW_SQL)) {
             _cfg.setProperty("hibernate.show_sql", stringValue);
             _cfg.setProperty("hibernate.format_sql", stringValue);
             _cfg.setProperty("hibernate.use_sql_comments", stringValue);
-            
+
         }
     }
-    
+
     @Nonnull
     protected static synchronized HibernateManager getInstance() {
         if(_INSTANCE == null) {
@@ -171,7 +173,7 @@ public final class HibernateManager extends AbstractHibernateManager {
         }
         return _INSTANCE;
     }
-    
+
     @Override
     @Nonnull
     protected AnnotationConfiguration getCfg() {

@@ -37,7 +37,6 @@ import javax.annotation.Nullable;
 import org.csstudio.config.ioconfig.config.view.ChannelConfigDialog;
 import org.csstudio.config.ioconfig.config.view.ModuleListLabelProvider;
 import org.csstudio.config.ioconfig.config.view.helper.ConfigHelper;
-import org.csstudio.config.ioconfig.model.AbstractNodeDBO;
 import org.csstudio.config.ioconfig.model.PersistenceException;
 import org.csstudio.config.ioconfig.model.pbmodel.ChannelDBO;
 import org.csstudio.config.ioconfig.model.pbmodel.ChannelStructureDBO;
@@ -90,11 +89,11 @@ import org.slf4j.LoggerFactory;
  * @since 21.05.2010
  */
 public class ModuleEditor extends AbstractGsdNodeEditor<ModuleDBO> {
-    
+
     public static final String ID = "org.csstudio.config.ioconfig.view.editor.module";
-    
+
     protected static final Logger LOG = LoggerFactory.getLogger(ModuleEditor.class);
-    
+
     /**
      * @author hrickens
      * @author $Author: hrickens $
@@ -115,7 +114,7 @@ public class ModuleEditor extends AbstractGsdNodeEditor<ModuleDBO> {
         public void widgetDefaultSelected(@Nonnull final SelectionEvent e) {
             _mTypList.refresh();
         }
-        
+
         @Override
         public void widgetSelected(@Nonnull final SelectionEvent e) {
             _mTypList.refresh();
@@ -143,12 +142,12 @@ public class ModuleEditor extends AbstractGsdNodeEditor<ModuleDBO> {
         public void widgetDefaultSelected(@Nonnull final SelectionEvent e) {
             editSelected();
         }
-        
+
         @Override
         public void widgetSelected(@Nonnull final SelectionEvent e) {
             editSelected();
         }
-        
+
         private void editSelected() {
             final GsdModuleModel2 firstElement = (GsdModuleModel2) ((StructuredSelection) _mTypList
                     .getSelection()).getFirstElement();
@@ -201,22 +200,22 @@ public class ModuleEditor extends AbstractGsdNodeEditor<ModuleDBO> {
             ISelectionChangedListener {
         private final Group _topGroup;
         private final TableViewer _mTypList;
-        
+
         ISelectionChangedListenerForModuleTypeList(@Nonnull final Group topGroup,
                                                    @Nonnull final TableViewer moduleTypList) {
             _topGroup = topGroup;
             _mTypList = moduleTypList;
         }
-        
+
         @Override
         public void selectionChanged(@Nonnull final SelectionChangedEvent event) {
             final GsdModuleModel2 selectedModule = (GsdModuleModel2) ((StructuredSelection) _mTypList
                     .getSelection()).getFirstElement();
-            
+
             if(ifSameModule(selectedModule)) {
                 return;
             }
-            
+
             final int selectedModuleNo = selectedModule.getModuleNumber();
             final int savedModuleNo = (Integer) _mTypList.getTable().getData();
             final boolean hasChanged = savedModuleNo != selectedModuleNo;
@@ -269,20 +268,20 @@ public class ModuleEditor extends AbstractGsdNodeEditor<ModuleDBO> {
             gsdModule.save();
             return gsdModule;
         }
-        
+
         private boolean ifSameModule(@Nullable final GsdModuleModel2 selectedModule) {
             final ModuleDBO module = getNode();
-            return ( (selectedModule == null) || (module == null) || ( (module
-                    .getGSDModule() != null) && (module.getGSDModule().getModuleId() == selectedModule
-                    .getModuleNumber())));
+            return selectedModule == null || module == null || module
+                    .getGSDModule() != null && module.getGSDModule().getModuleId() == selectedModule
+                    .getModuleNumber();
         }
     }
-    
+
     /**
      * This class provides the content for the table.
      */
     public static class ComboContentProvider implements IStructuredContentProvider {
-        
+
         /**
          * {@inheritDoc}
          */
@@ -296,7 +295,7 @@ public class ModuleEditor extends AbstractGsdNodeEditor<ModuleDBO> {
             }
             return null;
         }
-        
+
         /**
          * {@inheritDoc}
          */
@@ -304,7 +303,7 @@ public class ModuleEditor extends AbstractGsdNodeEditor<ModuleDBO> {
         public final void dispose() {
             // We don't create any resources, so we don't dispose any
         }
-        
+
         /**
          * {@inheritDoc}
          */
@@ -314,21 +313,21 @@ public class ModuleEditor extends AbstractGsdNodeEditor<ModuleDBO> {
                                        @Nullable final Object arg2) {
             // do nothing
         }
-        
+
     }
-    
+
     /**
      * The Module Object.
      */
     private ModuleDBO _module;
-    
+
     /**
      * The List to choose the type of module.
      */
     private TableViewer _moduleTypList;
-    
+
     private final ArrayList<Object> _prmTextCV = new ArrayList<Object>();
-    
+
     private Group _currentUserParamDataGroup;
 
     private Text _ioNamesText;
@@ -336,7 +335,7 @@ public class ModuleEditor extends AbstractGsdNodeEditor<ModuleDBO> {
     private Text _channelNameText;
 
     private Text _channelsDescText;
-    
+
     /**
      * {@inheritDoc}
      */
@@ -344,7 +343,7 @@ public class ModuleEditor extends AbstractGsdNodeEditor<ModuleDBO> {
     public void createPartControl(@Nonnull final Composite parent) {
         _module = getNode();
         super.createPartControl(parent);
-        
+
         if(_module == null) {
             newNode();
             _module.setModuleNumber(-1);
@@ -354,7 +353,7 @@ public class ModuleEditor extends AbstractGsdNodeEditor<ModuleDBO> {
         moduels("Module");
         selecttTabFolder(0);
     }
-    
+
     /**
      * @param string
      */
@@ -364,57 +363,57 @@ public class ModuleEditor extends AbstractGsdNodeEditor<ModuleDBO> {
         final Label nameLabel = new Label(comp, SWT.NONE);
         nameLabel.setLayoutData(new GridData(SWT.BEGINNING, SWT.CENTER, false, false));
         nameLabel.setText("Name");
-        
+
         final Label ioNameLabel = new Label(comp, SWT.NONE);
         ioNameLabel.setLayoutData(new GridData(SWT.BEGINNING, SWT.CENTER, false, false));
         ioNameLabel.setText("IO Name");
-        
+
         final Label descLabel = new Label(comp, SWT.NONE);
         descLabel.setLayoutData(new GridData(SWT.BEGINNING, SWT.CENTER, false, false));
         descLabel.setText("Short Description");
-        
+
         GridData layoutData = new GridData(SWT.BEGINNING, SWT.FILL, false, true);
         layoutData.minimumWidth=40;
         _channelNameText = new Text(comp, SWT.MULTI | SWT.WRAP | SWT.BORDER | SWT.READ_ONLY);
         _channelNameText.setLayoutData(layoutData);
-        
+
         layoutData = new GridData(SWT.BEGINNING, SWT.FILL, false, true);
         layoutData.minimumWidth=100;
         layoutData.widthHint=100;
         _ioNamesText = new Text(comp, SWT.MULTI | SWT.WRAP | SWT.BORDER);
         _ioNamesText.setLayoutData(layoutData);
-        
+
         _channelsDescText = new Text(comp, SWT.MULTI | SWT.WRAP | SWT.V_SCROLL | SWT.BORDER);
         _channelsDescText.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true));
-        
+
         _channelNameText.addPaintListener(new PaintListener() {
-            
+
             @Override
             public void paintControl(@Nonnull final PaintEvent e) {
                 _ioNamesText.setTopIndex(_channelNameText.getTopIndex());
                 _channelsDescText.setTopIndex(_channelNameText.getTopIndex());
             }
         });
-        
+
         _ioNamesText.addPaintListener(new PaintListener() {
-            
+
             @Override
             public void paintControl(@Nonnull final PaintEvent e) {
                 _channelNameText.setTopIndex(_ioNamesText.getTopIndex());
                 _channelsDescText.setTopIndex(_ioNamesText.getTopIndex());
             }
         });
-        
+
         _channelsDescText.addPaintListener(new PaintListener() {
-            
+
             @Override
             public void paintControl(@Nonnull final PaintEvent e) {
                 _ioNamesText.setTopIndex(_channelsDescText.getTopIndex());
                 _channelNameText.setTopIndex(_channelsDescText.getTopIndex());
             }
         });
-        
-        
+
+
         try {
             setIONamesText();
         } catch (final PersistenceException e) {
@@ -422,43 +421,43 @@ public class ModuleEditor extends AbstractGsdNodeEditor<ModuleDBO> {
             LOG.error("Can't read from Database", e);
         }
         _ioNamesText.addModifyListener(new ModifyListener() {
-            
+
             @Override
             public void modifyText(@Nonnull final ModifyEvent e) {
                 setSavebuttonEnabled("IONames", !_ioNamesText.getText().equals(_ioNamesText.getData()));
             }
         });
-        
+
         _channelsDescText.addModifyListener(new ModifyListener() {
-            
+
             @Override
             public void modifyText(@Nonnull final ModifyEvent e) {
                 setSavebuttonEnabled("ChannelsDesc", !_channelsDescText.getText().equals(_channelsDescText.getData()));
             }
         });
-        
-        
+
+
     }
 
     /**
-     * @throws PersistenceException 
-     * 
+     * @throws PersistenceException
+     *
      */
     private void setIONamesText() throws PersistenceException {
         final StringBuilder ioNamesSB = new StringBuilder();
         final StringBuilder channelNamesSB = new StringBuilder();
         final StringBuilder channelDescSB = new StringBuilder();
         final Set<Entry<Short, ChannelStructureDBO>> channelStructureEntrySet = getNode().getChildrenAsMap().entrySet();
-        for (Entry<Short, ChannelStructureDBO> channelStructureEntry : channelStructureEntrySet) {
+        for (final Entry<Short, ChannelStructureDBO> channelStructureEntry : channelStructureEntrySet) {
             final Set<Entry<Short, ChannelDBO>> channelEntrySet = channelStructureEntry.getValue().getChildrenAsMap().entrySet();
-            for (Entry<Short, ChannelDBO> channelEntry : channelEntrySet) {
+            for (final Entry<Short, ChannelDBO> channelEntry : channelEntrySet) {
                 String channelName = channelEntry.getValue().getName();
                 if (channelName==null) {
                     channelName="";
                 }
                 channelNamesSB.append(channelName);
                 channelNamesSB.append("\n");
-                
+
                 String ioName = channelEntry.getValue().getIoName();
                 if (ioName==null) {
                     ioName="";
@@ -493,23 +492,23 @@ public class ModuleEditor extends AbstractGsdNodeEditor<ModuleDBO> {
     private void moduels(@Nonnull final String head) {
         final Composite comp = getNewTabItem(head, 2);
         comp.setLayout(new GridLayout(2, false));
-        
+
         buildNameGroup(comp);
-        
+
         final Group topGroup = new Group(comp, SWT.NONE);
         topGroup.setLayoutData(new GridData(SWT.FILL, SWT.FILL, false, true, 1, 1));
         topGroup.setLayout(new GridLayout(3, false));
         topGroup.setText("Module selection");
-        
+
         makeDescGroup(comp, 1);
-        
+
         final Text text = new Text(topGroup, SWT.SINGLE | SWT.LEAD | SWT.READ_ONLY | SWT.BORDER);
         text.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, false, false, 3, 1));
         // TODO (hrickens) [02.05.2011]: Hier sollte bei jeder änderung der Werte Aktualisiert werden. (Momentan garnicht aber auch nicht nur beim Speichern)
         text.setText(_module.getConfigurationData());
-        
+
         final Composite filterComposite = buildFilterComposite(topGroup);
-        
+
         final Text filter = buildFilterText(filterComposite);
         final Button filterButton = buildFilterButton(filterComposite);
         final Button epicsEditButton = buildEditButton(topGroup);
@@ -528,15 +527,15 @@ public class ModuleEditor extends AbstractGsdNodeEditor<ModuleDBO> {
         _moduleTypList.setContentProvider(new ComboContentProvider());
         _moduleTypList.setLabelProvider(new ModuleListLabelProvider(_moduleTypList.getTable()));
         setTypListFilter(filter, filterButton);
-        
+
         setTypeListSorter();
-        
+
         try {
             makeCurrentUserParamData(topGroup);
             _moduleTypList
                     .addSelectionChangedListener(new ISelectionChangedListenerForModuleTypeList(topGroup,
                                                                                                 _moduleTypList));
-            
+
             final GSDFileDBO gsdFile = getGsdFile();
             if (gsdFile != null) {
                 final Map<Integer, GsdModuleModel2> gsdModuleList =
@@ -603,14 +602,14 @@ public class ModuleEditor extends AbstractGsdNodeEditor<ModuleDBO> {
 
     private void setTypListFilter(@Nonnull final Text filter, @Nonnull final Button filterButton) {
         _moduleTypList.addFilter(new ViewerFilter() {
-            
+
             @Override
             public boolean select(@Nullable final Viewer viewer,
                                   @Nullable final Object parentElement,
                                   @Nullable final Object element) {
                 if(element instanceof GsdModuleModel2) {
                     final GsdModuleModel2 gsdModuleModel = (GsdModuleModel2) element;
-                    if( (filter.getText() == null) || (filter.getText().length() < 1)) {
+                    if( filter.getText() == null || filter.getText().length() < 1) {
                         return true;
                     }
                     final String filterString = ".*" + filter.getText().replaceAll("\\*", ".*") + ".*";
@@ -618,11 +617,11 @@ public class ModuleEditor extends AbstractGsdNodeEditor<ModuleDBO> {
                 }
                 return false;
             }
-            
+
         });
-        
+
         _moduleTypList.addFilter(new ViewerFilter() {
-            
+
             @Override
             public boolean select(@Nullable final Viewer viewer,
                                   @Nullable final Object parentElement,
@@ -641,25 +640,25 @@ public class ModuleEditor extends AbstractGsdNodeEditor<ModuleDBO> {
                 }
                 return true;
             }
-            
+
         });
     }
 
     private void setTypeListSorter() {
         _moduleTypList.setSorter(new ViewerSorter() {
-            
+
             @Override
             public int compare(@Nullable final Viewer viewer,
                                @Nullable final Object e1,
                                @Nullable final Object e2) {
-                if( (e1 instanceof GsdModuleModel2) && (e2 instanceof GsdModuleModel2)) {
+                if( e1 instanceof GsdModuleModel2 && e2 instanceof GsdModuleModel2) {
                     final GsdModuleModel2 eUPD1 = (GsdModuleModel2) e1;
                     final GsdModuleModel2 eUPD2 = (GsdModuleModel2) e2;
                     return eUPD1.getModuleNumber() - eUPD2.getModuleNumber();
                 }
                 return super.compare(viewer, e1, e2);
             }
-            
+
         });
     }
 
@@ -668,7 +667,7 @@ public class ModuleEditor extends AbstractGsdNodeEditor<ModuleDBO> {
         gName.setText("Name");
         gName.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, false, 2, 1));
         gName.setLayout(new GridLayout(3, false));
-        
+
         setNameWidget(new Text(gName, SWT.BORDER | SWT.SINGLE));
         final Text nameWidget = getNameWidget();
         if(nameWidget != null) {
@@ -681,10 +680,10 @@ public class ModuleEditor extends AbstractGsdNodeEditor<ModuleDBO> {
                                                      "Sort Index",
                                                      getProfiBusTreeView()));
     }
-    
+
     /**
      * @param topGroup The parent Group for the CurrentUserParamData content.
-     * @throws IOException 
+     * @throws IOException
      */
     protected void makeCurrentUserParamData(@Nonnull final Group topGroup) throws IOException {
         if(_currentUserParamDataGroup != null) {
@@ -721,12 +720,12 @@ public class ModuleEditor extends AbstractGsdNodeEditor<ModuleDBO> {
                                                                                      SWT.DEFAULT));
             }
         });
-        
+
         buildCurrentUserPrmData(currentUserParamDataComposite);
-        
+
         topGroup.layout();
     }
-    
+
     /**
      * {@inheritDoc}
      */
@@ -739,12 +738,12 @@ public class ModuleEditor extends AbstractGsdNodeEditor<ModuleDBO> {
             _module.setName(nameWidget.getText());
             nameWidget.setData(nameWidget.getText());
         }
-        
+
         final Spinner indexSpinner = getIndexSpinner();
         if(indexSpinner != null) {
             indexSpinner.setData(indexSpinner.getSelection());
         }
-        
+
         try {
             updateChannels();
             saveUserPrmData();
@@ -761,15 +760,15 @@ public class ModuleEditor extends AbstractGsdNodeEditor<ModuleDBO> {
             LOG.error("Can't save Slave.GSD File read error", e2);
         }
     }
-    
+
     private void updateChannels() throws PersistenceException {
         int i = 0;
         final String[] ionames = _ioNamesText.getText().split("\n");
         final String[] descs = _channelsDescText.getText().split("\n");
         final Collection<ChannelStructureDBO> channelStructs = _module.getChildrenAsMap().values();
-        for (ChannelStructureDBO channelStructure : channelStructs) {
+        for (final ChannelStructureDBO channelStructure : channelStructs) {
             final Collection<ChannelDBO> channels = channelStructure.getChildrenAsMap().values();
-            for (ChannelDBO channel : channels) {
+            for (final ChannelDBO channel : channels) {
                 if(i<ionames.length) {
                     channel.setIoName(ionames[i].trim());
                 }
@@ -791,7 +790,7 @@ public class ModuleEditor extends AbstractGsdNodeEditor<ModuleDBO> {
         _ioNamesText.setData(_ioNamesText.getText());
         _channelsDescText.setData(_channelsDescText.getText());
     }
-    
+
     /**
      * Cancel all change value.
      */
@@ -804,7 +803,7 @@ public class ModuleEditor extends AbstractGsdNodeEditor<ModuleDBO> {
         _channelNameText.setText((String) _channelNameText.getData());
         _ioNamesText.setText((String) _ioNamesText.getData());
         _channelsDescText.setText((String) _channelsDescText.getData());
-        for (Object prmTextObject : _prmTextCV) {
+        for (final Object prmTextObject : _prmTextCV) {
             if(prmTextObject instanceof ComboViewer) {
                 cancelComboViewer(prmTextObject);
             } else if(prmTextObject instanceof Text) {
@@ -831,7 +830,7 @@ public class ModuleEditor extends AbstractGsdNodeEditor<ModuleDBO> {
     }
 
     /**
-     * 
+     *
      */
     public void cancelIndexSpinner() {
         final Spinner indexSpinner = getIndexSpinner();
@@ -841,7 +840,7 @@ public class ModuleEditor extends AbstractGsdNodeEditor<ModuleDBO> {
     }
 
     /**
-     * 
+     *
      */
     public void cancelNameWidget() {
         final Text nameWidget = getNameWidget();
@@ -875,29 +874,29 @@ public class ModuleEditor extends AbstractGsdNodeEditor<ModuleDBO> {
             }
         }
     }
-    
+
     /** {@inheritDoc} */
     @Override
     public final void fill(@Nullable final GSDFileDBO gsdFile) {
         return;
     }
-    
+
     /** {@inheritDoc} */
     @Override
     @CheckForNull
     public final GSDFileDBO getGsdFile() {
         return _module.getSlave().getGSDFile();
     }
-    
+
     /**
      * {@inheritDoc}
-     * @throws IOException 
+     * @throws IOException
      */
     @Override
     public void setGsdFile(@CheckForNull final GSDFileDBO gsdFile) {
         _module.getSlave().setGSDFile(gsdFile);
     }
-    
+
     /**
      * Open a Config-Dialog for {@link GSDModuleDBO} and create and store.
      *
@@ -931,7 +930,7 @@ public class ModuleEditor extends AbstractGsdNodeEditor<ModuleDBO> {
         }
         return null;
     }
-    
+
     /**
      * Have no Name Dialog.
      * {@inheritDoc}
@@ -940,16 +939,16 @@ public class ModuleEditor extends AbstractGsdNodeEditor<ModuleDBO> {
     protected boolean newNode() {
         getNode().setCreationData(getUserName(), new Date());
         getNode().setVersion(-2);
-        
+
         final Object obj = ((StructuredSelection) getProfiBusTreeView().getTreeViewer().getSelection())
                 .getFirstElement();
-        
+
         try {
             if( obj == null) {
                 getProfiBusTreeView().getTreeViewer().setInput(getNode());
             } else if(obj instanceof SlaveDBO) {
                 final SlaveDBO nodeParent = (SlaveDBO) obj;
-                getNode().moveSortIndex(nodeParent.getfirstFreeStationAddress(AbstractNodeDBO.getMaxStationAddress()));
+                getNode().moveSortIndex(nodeParent.getfirstFreeStationAddress());
                 nodeParent.addChild(getNode());
             }
         } catch (final PersistenceException e) {
@@ -958,7 +957,7 @@ public class ModuleEditor extends AbstractGsdNodeEditor<ModuleDBO> {
         }
         return true;
     }
-    
+
     /**
      * {@inheritDoc}
      */
@@ -967,7 +966,7 @@ public class ModuleEditor extends AbstractGsdNodeEditor<ModuleDBO> {
     GsdModuleModel2 getGsdPropertyModel() throws IOException {
         return _module.getGsdModuleModel2();
     }
-    
+
     /**
      * {@inheritDoc}
      */
@@ -976,7 +975,7 @@ public class ModuleEditor extends AbstractGsdNodeEditor<ModuleDBO> {
     List<Integer> getPrmUserDataList() {
         return _module.getConfigurationDataList();
     }
-    
+
     /**
      * {@inheritDoc}
      */
@@ -984,7 +983,7 @@ public class ModuleEditor extends AbstractGsdNodeEditor<ModuleDBO> {
     void setPrmUserData(@Nonnull final Integer index, @Nonnull final Integer value) {
         _module.setConfigurationDataByte(index, value);
     }
-    
+
     /**
      * {@inheritDoc}
      */

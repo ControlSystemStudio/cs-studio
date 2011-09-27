@@ -55,15 +55,15 @@ import org.csstudio.config.ioconfig.model.PersistenceException;
 @Entity
 @Table(name = "ddb_Profibus_Master")
 public class MasterDBO extends AbstractNodeDBO<ProfibusSubnetDBO, SlaveDBO> {
-    
+
     private static final long serialVersionUID = 1L;
-    
+
     /**
      * The highest accept station address.
      */
     @Transient
     private static final int MAX_STATION_ADDRESS = 126;
-    
+
     // ********************
     // * Database Fields. *
     // ********************
@@ -111,29 +111,29 @@ public class MasterDBO extends AbstractNodeDBO<ProfibusSubnetDBO, SlaveDBO> {
      * Master user data.
      */
     private String _masterUserData;
-    
+
     /**
      * The GSD File.
      */
     private GSDFileDBO _gsdFile;
-    
+
     // *******************
     // * Transient data. *
     // *******************
     private int _maxNrSlave;
-    
+
     private int _maxSlaveOutputLen;
-    
+
     private int _maxSlaveInputLen;
-    
+
     private int _maxSlaveDiagEntries;
-    
+
     private int _maxBusParaLen;
-    
+
     private int _maxSlaveParaLen;
-    
+
     private int _maxSlaveDiagLen;
-    
+
     /**
      * This Constructor is only used by Hibernate. To create an new {@link MasterDBO}
      * {@link #Master(ProfibusSubnetDBO)}
@@ -141,9 +141,9 @@ public class MasterDBO extends AbstractNodeDBO<ProfibusSubnetDBO, SlaveDBO> {
     public MasterDBO() {
         // Constructor only for Hibernate
     }
-    
+
     //  Data Base (Hybernate) Getter&Setter.
-    
+
     /**
      * The default Constructor.
      * @throws PersistenceException
@@ -151,13 +151,13 @@ public class MasterDBO extends AbstractNodeDBO<ProfibusSubnetDBO, SlaveDBO> {
     public MasterDBO(@Nonnull final ProfibusSubnetDBO profibusSubnet) throws PersistenceException {
         super(profibusSubnet);
     }
-    
+
     // CHECKSTYLE OFF: StrictDuplicateCode
     @Override
     public void accept(@Nonnull final INodeVisitor visitor) {
         visitor.visit(this);
     }
-    
+
     /**
      * {@inheritDoc}
      * @throws PersistenceException
@@ -166,7 +166,7 @@ public class MasterDBO extends AbstractNodeDBO<ProfibusSubnetDBO, SlaveDBO> {
     @Nonnull
     public MasterDBO copyParameter(@Nonnull final ProfibusSubnetDBO parentNode) throws PersistenceException {
         final ProfibusSubnetDBO subnet = parentNode;
-        
+
         final MasterDBO copy = new MasterDBO(subnet);
         copy.setAutoclear(isAutoclear());
         copy.setDataControlTime(getDataControlTime());
@@ -182,18 +182,18 @@ public class MasterDBO extends AbstractNodeDBO<ProfibusSubnetDBO, SlaveDBO> {
         copy.setVendorName(getVendorName());
         return copy;
     }
-    
+
     @Override
     @Nonnull
-    public MasterDBO copyThisTo(@Nonnull final ProfibusSubnetDBO parentNode) throws PersistenceException {
-        final MasterDBO copy = (MasterDBO) super.copyThisTo(parentNode);
+    public MasterDBO copyThisTo(@Nonnull final ProfibusSubnetDBO parentNode, @CheckForNull final String namePrefix) throws PersistenceException {
+        final MasterDBO copy = (MasterDBO) super.copyThisTo(parentNode, namePrefix);
         for (final SlaveDBO node : getChildren()) {
-            final AbstractNodeDBO<MasterDBO, ModuleDBO> childrenCopy = node.copyThisTo(copy);
+            final AbstractNodeDBO<MasterDBO, ModuleDBO> childrenCopy = node.copyThisTo(copy, "Copy of");
             childrenCopy.setSortIndexNonHibernate(node.getSortIndex());
         }
         return copy;
     }
-    
+
     /**
      * {@inheritDoc}
      */
@@ -202,16 +202,16 @@ public class MasterDBO extends AbstractNodeDBO<ProfibusSubnetDBO, SlaveDBO> {
     public SlaveDBO createChild() throws PersistenceException {
         return new SlaveDBO(this);
     }
-    
+
     @Override
     public boolean equals(@CheckForNull final Object obj) {
         return super.equals(obj);
     }
-    
+
     public int getDataControlTime() {
         return _dataControlTime;
     }
-    
+
     // ******************
     // * Helper Methods *
     // ******************
@@ -224,13 +224,13 @@ public class MasterDBO extends AbstractNodeDBO<ProfibusSubnetDBO, SlaveDBO> {
     public String getEpicsAdressString() {
         return getProfibusSubnet().getEpicsAddressString();
     }
-    
+
     @Override
     @Transient
-    public int getfirstFreeStationAddress(final int maxStationAddress) throws PersistenceException {
+    public int getfirstFreeStationAddress() throws PersistenceException {
         return getFreeStationAddress().first();
     }
-    
+
     @Transient
     @CheckForNull
     public SortedSet<Short> getFreeMStationAddress(final boolean redunant) throws PersistenceException{
@@ -249,7 +249,7 @@ public class MasterDBO extends AbstractNodeDBO<ProfibusSubnetDBO, SlaveDBO> {
         }
         return freeAddressList;
     }
-    
+
     @Transient
     @Nonnull
     public SortedSet<Short> getFreeStationAddress() throws PersistenceException{
@@ -259,13 +259,13 @@ public class MasterDBO extends AbstractNodeDBO<ProfibusSubnetDBO, SlaveDBO> {
         }
         freeAddressList.remove(getSortIndex());
         freeAddressList.remove(getRedundant());
-        
+
         final Set<Short> keySet = getChildrenAsMap().keySet();
         freeAddressList.removeAll(keySet);
-        
+
         return freeAddressList;
     }
-    
+
     /**
      * @return the GSDFile.
      */
@@ -274,49 +274,49 @@ public class MasterDBO extends AbstractNodeDBO<ProfibusSubnetDBO, SlaveDBO> {
     public GSDFileDBO getGSDFile() {
         return _gsdFile;
     }
-    
+
     @CheckForNull
     public String getMasterUserData() {
         return _masterUserData;
     }
-    
+
     public int getMaxBusParaLen() {
         return _maxBusParaLen;
     }
-    
+
     public int getMaxNrSlave() {
         return _maxNrSlave;
     }
-    
+
     public int getMaxSlaveDiagEntries() {
         return _maxSlaveDiagEntries;
     }
-    
+
     public int getMaxSlaveDiagLen() {
         return _maxSlaveDiagLen;
     }
-    
+
     public int getMaxSlaveInputLen() {
         return _maxSlaveInputLen;
     }
-    
+
     public int getMaxSlaveOutputLen() {
         return _maxSlaveOutputLen;
     }
-    
+
     public int getMaxSlaveParaLen() {
         return _maxSlaveParaLen;
     }
-    
+
     public int getMinSlaveInt() {
         return _minSlaveInt;
     }
-    
+
     @CheckForNull
     public String getModelName() {
         return _modelName;
     }
-    
+
     /**
      * {@inheritDoc}
      */
@@ -326,30 +326,30 @@ public class MasterDBO extends AbstractNodeDBO<ProfibusSubnetDBO, SlaveDBO> {
     public NodeType getNodeType() {
         return NodeType.MASTER;
     }
-    
+
     public int getPollTime() {
         return _pollTime;
     }
-    
+
     @CheckForNull
     public String getProfibusdpmasterBez() {
         return _profibusdpmasterBez;
     }
-    
+
     public long getProfibusDPMasterId() {
         return _profibusdpmasterId;
     }
-    
+
     public int getProfibusPnoId() {
         return _profibusPnoId;
     }
-    
+
     @ManyToOne
     @Nonnull
     public ProfibusSubnetDBO getProfibusSubnet() {
         return getParent();
     }
-    
+
     /**
      * Get the Redundant Station Address.
      * If the Station Address < 0 the ICO have no redundant.
@@ -359,23 +359,23 @@ public class MasterDBO extends AbstractNodeDBO<ProfibusSubnetDBO, SlaveDBO> {
     public short getRedundant() {
         return _fdlAddress;
     }
-    
-    
+
+
     @CheckForNull
     public String getVendorName() {
         return _vendorName;
     }
-    
+
     @Override
     public int hashCode() {
         return super.hashCode();
     }
     // CHECKSTYLE ON: StrictDuplicateCode
-    
+
     public boolean isAutoclear() {
         return _autoclear;
     }
-    
+
     /**
      * {@inheritDoc}
      */
@@ -384,15 +384,15 @@ public class MasterDBO extends AbstractNodeDBO<ProfibusSubnetDBO, SlaveDBO> {
     public GSDFileTypes needGSDFile() {
         return GSDFileTypes.Master;
     }
-    
+
     public void setAutoclear(final boolean autoclear) {
         this._autoclear = autoclear;
     }
-    
+
     public void setDataControlTime(final int dataControlTime) {
         this._dataControlTime = dataControlTime;
     }
-    
+
     /**
      * @param gsdFile
      *            set the GSDFile.
@@ -400,69 +400,69 @@ public class MasterDBO extends AbstractNodeDBO<ProfibusSubnetDBO, SlaveDBO> {
     public void setGSDFile(@Nullable final GSDFileDBO gsdFile) {
         _gsdFile = gsdFile;
     }
-    
+
     public void setMasterUserData(@Nullable final String masterUserData) {
         this._masterUserData = masterUserData;
     }
-    
+
     public void setMaxBusParaLen(final int maxBusParaLen) {
         _maxBusParaLen = maxBusParaLen;
     }
-    
+
     public void setMaxNrSlave(final int maxNrSlave) {
         _maxNrSlave = maxNrSlave;
     }
-    
+
     public void setMaxSlaveDiagEntries(final int maxSlaveDiagEntries) {
         _maxSlaveDiagEntries = maxSlaveDiagEntries;
     }
-    
+
     public void setMaxSlaveDiagLen(final int maxSlaveDiagLen) {
         _maxSlaveDiagLen = maxSlaveDiagLen;
-        
+
     }
-    
+
     public void setMaxSlaveInputLen(final int maxSlaveInputLen) {
         _maxSlaveInputLen = maxSlaveInputLen;
     }
-    
+
     public void setMaxSlaveOutputLen(final int maxSlaveOutputLen) {
         _maxSlaveOutputLen = maxSlaveOutputLen;
     }
-    
+
     public void setMaxSlaveParaLen(final int maxSlaveParaLen) {
         _maxSlaveParaLen = maxSlaveParaLen;
     }
-    
+
     public void setMinSlaveInt(final int minSlaveInt) {
         this._minSlaveInt = minSlaveInt;
     }
-    
+
     public void setModelName(@Nullable final String modelName) {
         this._modelName = modelName;
     }
-    
+
     public void setPollTime(final int pollTime) {
         this._pollTime = pollTime;
     }
-    
+
     public void setProfibusdpmasterBez(@Nullable final String profibusdpmasterBez) {
         this._profibusdpmasterBez = profibusdpmasterBez;
     }
-    
+
     public void setProfibusDPMasterId(final long profibusDPMasterId) {
         this._profibusdpmasterId = profibusDPMasterId;
     }
-    
-    
+
+
     public void setProfibusPnoId(final int profibusPnoId) {
         this._profibusPnoId = profibusPnoId;
     }
-    
+
     public void setProfibusSubnet(@Nonnull final ProfibusSubnetDBO profibusSubnet) {
         this.setParent(profibusSubnet);
     }
-    
+
     /**
      * Set the redundant Address.
      * < 0 is not redundant.
@@ -472,11 +472,11 @@ public class MasterDBO extends AbstractNodeDBO<ProfibusSubnetDBO, SlaveDBO> {
     public void setRedundant(final int fdlAddress) {
         this._fdlAddress = (short)fdlAddress;
     }
-    
+
     public void setVendorName(@Nullable final String vendorName) {
         this._vendorName = vendorName;
     }
-    
+
     public static int getMaxStationAddress() {
         return MAX_STATION_ADDRESS;
     }

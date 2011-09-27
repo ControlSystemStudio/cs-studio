@@ -22,6 +22,8 @@
 package org.csstudio.config.ioconfig.editorparts;
 
 import java.util.ArrayList;
+import java.util.Set;
+import java.util.TreeSet;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -29,16 +31,24 @@ import javax.annotation.Nullable;
 import org.csstudio.config.ioconfig.model.PersistenceException;
 import org.csstudio.config.ioconfig.model.pbmodel.ChannelDBO;
 import org.csstudio.config.ioconfig.model.pbmodel.ChannelStructureDBO;
+import org.csstudio.config.ioconfig.model.pbmodel.GSDModuleDBO;
+import org.csstudio.config.ioconfig.model.pbmodel.ModuleChannelPrototypeDBO;
 import org.csstudio.config.ioconfig.view.DeviceDatabaseErrorDialog;
+import org.csstudio.config.ioconfig.view.IOConfigActivatorUI;
 import org.eclipse.core.runtime.IProgressMonitor;
+import org.eclipse.jface.layout.GridDataFactory;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.custom.StyleRange;
 import org.eclipse.swt.custom.StyledText;
+import org.eclipse.swt.events.SelectionEvent;
+import org.eclipse.swt.events.SelectionListener;
 import org.eclipse.swt.graphics.TextStyle;
 import org.eclipse.swt.layout.GridData;
+import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Text;
+import org.eclipse.ui.plugin.AbstractUIPlugin;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -51,17 +61,92 @@ import org.slf4j.LoggerFactory;
  * @since 21.05.2010
  */
 public class ChannelStructureEditor extends AbstractNodeEditor<ChannelStructureDBO> {
-    
+
     public static final String ID = "org.csstudio.config.ioconfig.view.editor.channelstructure";
     private static final Logger LOG = LoggerFactory.getLogger(ChannelStructureEditor.class);
-    
+
     /**
      * System Line separator
      */
     private static final String LS = System.getProperty("line.separator");
     private ChannelStructureDBO _channelStructure;
     private Text _ioNameList;
-    
+
+    /**
+     * @author hrickens
+     * @author $Author: $
+     * @since 30.09.2010
+     */
+    private final class AssembleEpicsAddSelectionListener implements
+    SelectionListener {
+
+        public AssembleEpicsAddSelectionListener() {
+            // Default Constructor.
+        }
+
+        public void setChannelName(@Nonnull final ChannelDBO channel,
+                                   @Nonnull final ModuleChannelPrototypeDBO moduleChannelPrototype) {
+            if (moduleChannelPrototype.getType() != channel.getChannelStructure()
+                    .getStructureType()) {
+                channel.getChannelStructure()
+                .setStructureType(moduleChannelPrototype.getType());
+                if (channel.getChannelStructure().isSimple()) {
+                    channel.setChannelType(moduleChannelPrototype.getType());
+                }
+            }
+            channel.setName(moduleChannelPrototype.getName());
+        }
+
+        public void setWidgetName(@Nonnull final ChannelDBO channel,
+                                  @Nonnull final ModuleChannelPrototypeDBO moduleChannelPrototype) {
+            String name = moduleChannelPrototype.getName();
+            name += !moduleChannelPrototype.isStructure()?"": channel.getSortIndex();
+            final Text nameWidget = getNameWidget();
+            if (nameWidget != null && !name.equals(channel.getName())) {
+                nameWidget.setText(name);
+            }
+        }
+
+        @Override
+        public void widgetDefaultSelected(@Nonnull final SelectionEvent e) {
+            doAssemble();
+        }
+
+        @Override
+        public void widgetSelected(@Nonnull final SelectionEvent e) {
+            doAssemble();
+        }
+
+        private void doAssemble() {
+            final Set<ChannelDBO> children = getNode().getChildren();
+            for (final ChannelDBO channel : children) {
+
+                final GSDModuleDBO module = channel.getModule().getGSDModule();
+                if (module != null) {
+                    final TreeSet<ModuleChannelPrototypeDBO> moduleChannelPrototypes = module
+                            .getModuleChannelPrototypeNH();
+                    final ModuleChannelPrototypeDBO[] array = moduleChannelPrototypes
+                            .toArray(new ModuleChannelPrototypeDBO[0]);
+                    final ModuleChannelPrototypeDBO moduleChannelPrototype = array[channel
+                            .getChannelStructure().getSortIndex()];
+                    channel.setStatusAddressOffset(moduleChannelPrototype.getShift());
+                    channel.setChannelNumber(moduleChannelPrototype.getOffset());
+                    setWidgetName(channel, moduleChannelPrototype);
+                    setChannelName(channel, moduleChannelPrototype);
+                }
+                try {
+                    channel.assembleEpicsAddressString();
+                } catch (final PersistenceException e) {
+                    DeviceDatabaseErrorDialog.open(null,
+                                                   "Can't calulate Epics Address. Database error!",
+                                                   e);
+                    LOG.error("Can't calulate Epics Address. Database error!", e);
+                }
+            }
+            setSavebuttonEnabled("Refresh Children", true);
+        }
+    }
+
     /**
      * {@inheritDoc}
      */
@@ -70,34 +155,44 @@ public class ChannelStructureEditor extends AbstractNodeEditor<ChannelStructureD
         _channelStructure = getNode();
         super.createPartControl(parent);
         setSaveButtonSaved();
-        final Composite newTabItem = getNewTabItem("Main", 2);
+        final Composite newTabItem = getNewTabItem("Main", 3);
         Label label = new Label(newTabItem, SWT.NONE);
         label.setLayoutData(new GridData(SWT.BEGINNING, SWT.CENTER, false, false));
         label.setText("Description:");
-        
+
+
         label = new Label(newTabItem, SWT.NONE);
         label.setLayoutData(new GridData(SWT.BEGINNING, SWT.CENTER, false, false));
         label.setText("IOName List:");
-        
+
+        final Button assembleButton = new Button(newTabItem, SWT.FLAT);
+        final GridDataFactory gdf = GridDataFactory.fillDefaults().align(SWT.END, SWT.CENTER);
+        assembleButton.setLayoutData(gdf.create());
+        assembleButton.setImage(AbstractUIPlugin.imageDescriptorFromPlugin(IOConfigActivatorUI.PLUGIN_ID,
+        "icons/refresh.gif").createImage());
+        assembleButton.setToolTipText("Refresh the EPICS Address String\n and save it into the DB");
+        assembleButton.addSelectionListener(new AssembleEpicsAddSelectionListener());
+
+
         final StyledText text = new StyledText(newTabItem, SWT.MULTI | SWT.LEAD | SWT.BORDER
                                                | SWT.READ_ONLY);
         text.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true));
         _ioNameList = new Text(newTabItem, SWT.MULTI | SWT.LEAD | SWT.BORDER);
-        _ioNameList.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true));
+        _ioNameList.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true,2,1));
         final ArrayList<StyleRange> styleRanges = new ArrayList<StyleRange>();
-        
+
         try {
             createChildren(text, styleRanges);
         } catch (final PersistenceException e) {
             DeviceDatabaseErrorDialog.open(null, "Can't create node! Database error.", e);
             LOG.error("Can't create node! Database error.", e);
         }
-        
+
         _ioNameList.addModifyListener(getMLSB());
         _ioNameList.setFocus();
         selecttTabFolder(0);
     }
-    
+
     /**
      * {@inheritDoc}
      */
@@ -106,7 +201,7 @@ public class ChannelStructureEditor extends AbstractNodeEditor<ChannelStructureD
         super.doSave(monitor);
         final String text = _ioNameList.getText();
         final String[] ioNames = text.split(LS);
-        
+
         ChannelDBO[] channels;
         try {
             channels = _channelStructure.getChildrenAsMap().values().toArray(new ChannelDBO[0]);
@@ -120,7 +215,7 @@ public class ChannelStructureEditor extends AbstractNodeEditor<ChannelStructureD
             LOG.error("Can't node save. Database error.", e);
         }
     }
-    
+
     /**
      * @param text
      * @param styleRanges

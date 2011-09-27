@@ -323,7 +323,7 @@ public class KS2ConfigUnitTest {
         slave.setWdFact1(100);
         slave.setWdFact2(10);
         slave.setStationStatus(136);
-        slave.setSlaveFlag(192);
+        slave.setSlaveFlag(128);
 
         return slave;
     }

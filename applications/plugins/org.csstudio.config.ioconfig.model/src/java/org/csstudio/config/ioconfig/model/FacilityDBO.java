@@ -24,6 +24,7 @@
  */
 package org.csstudio.config.ioconfig.model;
 
+import javax.annotation.CheckForNull;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import javax.persistence.Entity;
@@ -53,7 +54,7 @@ public class FacilityDBO extends AbstractNodeDBO<VirtualRoot, IocDBO> {
      * {@inheritDoc}
      */
     @Override
-    @Nonnull 
+    @Nonnull
     public FacilityDBO copyParameter(@Nullable final VirtualRoot parent) {
         final FacilityDBO copy = new FacilityDBO();
         copy.setDescription(getDescription());
@@ -62,15 +63,15 @@ public class FacilityDBO extends AbstractNodeDBO<VirtualRoot, IocDBO> {
 
     /**
      * {@inheritDoc}
-     * @throws PersistenceException 
+     * @throws PersistenceException
      */
     @Override
     @Nonnull
-    public FacilityDBO copyThisTo(@Nonnull final VirtualRoot parentNode) throws PersistenceException {
-        final FacilityDBO copy = (FacilityDBO) super.copyThisTo(parentNode);
+    public FacilityDBO copyThisTo(@Nonnull final VirtualRoot parentNode, @CheckForNull final String namePrefix) throws PersistenceException {
+        final FacilityDBO copy = (FacilityDBO) super.copyThisTo(parentNode, namePrefix);
 //        final FacilityDBO copy = super.copyThisTo(parentNode);
         for (final IocDBO node : getChildren()) {
-            final IocDBO childrenCopy = node.copyThisTo(copy);
+            final IocDBO childrenCopy = node.copyThisTo(copy, "Copy of ");
             childrenCopy.setSortIndexNonHibernate(node.getSortIndex());
         }
         return copy;
@@ -81,7 +82,7 @@ public class FacilityDBO extends AbstractNodeDBO<VirtualRoot, IocDBO> {
      */
     @Override
     @Transient
-    @Nonnull 
+    @Nonnull
     public NodeType getNodeType() {
         return NodeType.FACILITY;
     }
