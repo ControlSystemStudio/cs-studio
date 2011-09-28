@@ -24,25 +24,36 @@ package org.csstudio.archive.common.service.mysqlimpl.channel;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.regex.Pattern;
 
+import javax.annotation.CheckForNull;
 import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 
 import junit.framework.Assert;
 
 import org.csstudio.archive.common.service.ArchiveConnectionException;
+import org.csstudio.archive.common.service.channel.ArchiveChannel;
 import org.csstudio.archive.common.service.channel.ArchiveChannelId;
+import org.csstudio.archive.common.service.channel.ArchiveLimitsChannel;
 import org.csstudio.archive.common.service.channel.IArchiveChannel;
 import org.csstudio.archive.common.service.channelgroup.ArchiveChannelGroupId;
+import org.csstudio.archive.common.service.controlsystem.ArchiveControlSystem;
+import org.csstudio.archive.common.service.controlsystem.ArchiveControlSystemId;
+import org.csstudio.archive.common.service.controlsystem.IArchiveControlSystem;
 import org.csstudio.archive.common.service.mysqlimpl.dao.AbstractDaoTestSetup;
 import org.csstudio.archive.common.service.mysqlimpl.dao.ArchiveDaoException;
 import org.csstudio.archive.common.service.mysqlimpl.sample.TestSampleProvider;
 import org.csstudio.domain.desy.system.ControlSystem;
+import org.csstudio.domain.desy.time.TimeInstant;
 import org.csstudio.domain.desy.time.TimeInstant.TimeInstantBuilder;
 import org.csstudio.domain.desy.types.Limits;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.Test;
+
+import com.google.inject.internal.Lists;
 
 /**
  * Integration test for {@link ArchiveChannelDaoImpl}.
@@ -103,7 +114,7 @@ public class ArchiveChannelDaoUnitTest extends AbstractDaoTestSetup {
         Assert.assertFalse(channels.isEmpty());
         Assert.assertTrue(channels.size() == 2);
 
-        //f rom cache
+        //from cache
         channels = DAO.retrieveChannelsByNamePattern(Pattern.compile("doubleChannel1"));
         Assert.assertNotNull(channels);
         Assert.assertFalse(channels.isEmpty());
@@ -179,6 +190,110 @@ public class ArchiveChannelDaoUnitTest extends AbstractDaoTestSetup {
         Assert.assertEquals(Double.valueOf(-1.0), limits.getLow());
 
         undoUpdateDisplayRanges();
+    }
+
+    @Test
+    public void testCreateChannels() throws ArchiveDaoException {
+        final IArchiveControlSystem cs = new ArchiveControlSystem(new ArchiveControlSystemId(1L), ControlSystem.EPICS_DEFAULT);
+        final ArchiveChannelGroupId grpId = new ArchiveChannelGroupId(1L);
+        final ArchiveChannel chan1 =
+            new ArchiveChannel(ArchiveChannelId.NONE,
+                               "nolimits",
+                               "String",
+                               grpId,
+                               null,
+                               cs);
+        final Collection<IArchiveChannel> directResult =
+            DAO.createChannels(Collections.singleton((IArchiveChannel) chan1));
+        Assert.assertTrue(directResult.isEmpty());
+
+        final IArchiveChannel resultChannel = DAO.retrieveChannelBy("nolimits");
+        assertChannelContent(resultChannel, "nolimits", "String", grpId, cs, null, null);
+
+    }
+
+    private void assertChannelContent(@CheckForNull final IArchiveChannel channel,
+                                      @Nonnull final String name,
+                                      @Nonnull final String type,
+                                      @Nonnull final ArchiveChannelGroupId grpId,
+                                      @Nonnull final IArchiveControlSystem cs,
+                                      @Nullable final TimeInstant time,
+                                      @CheckForNull final Limits<?> limits) {
+        Assert.assertNotNull(channel);
+        Assert.assertEquals(name, channel.getName());
+        Assert.assertEquals(type, channel.getDataType());
+        Assert.assertEquals(grpId, channel.getGroupId());
+        if (time != null) {
+            Assert.assertTrue(time.equals(channel.getLatestTimestamp()));
+        } else {
+            Assert.assertNull(channel.getLatestTimestamp());
+        }
+        Assert.assertEquals(cs, channel.getControlSystem());
+
+        final Limits<?> resultLimits = channel.getDisplayLimits();
+        if (limits != null) {
+            Assert.assertNotNull(resultLimits);
+            Assert.assertEquals(limits.getHigh(), resultLimits.getHigh());
+            Assert.assertEquals(limits.getLow(), resultLimits.getLow());
+        } else {
+            Assert.assertNull(resultLimits);
+        }
+
+    }
+
+    @Test
+    public void testCreateMoreChannels() throws ArchiveDaoException {
+        final IArchiveControlSystem cs = new ArchiveControlSystem(new ArchiveControlSystemId(1L), ControlSystem.EPICS_DEFAULT);
+        final ArchiveChannelGroupId grpId = new ArchiveChannelGroupId(1L);
+        IArchiveChannel chan1 =
+            new ArchiveChannel(ArchiveChannelId.NONE,
+                               "nolimits",
+                               "String",
+                               grpId,
+                               null,
+                               cs);
+        IArchiveChannel chan2 =
+            new ArchiveLimitsChannel<Double>(ArchiveChannelId.NONE,
+                               "withLimits",
+                               "Double",
+                               grpId,
+                               null,
+                               cs,
+                               Double.valueOf(0.0), Double.valueOf(10.0));
+
+        final Collection<IArchiveChannel> directResult =
+            DAO.createChannels(Lists.newArrayList(chan1, chan2));
+        Assert.assertTrue(directResult.isEmpty());
+
+        chan1 = DAO.retrieveChannelBy("nolimits");
+        assertChannelContent(chan1, "nolimits", "String", grpId, cs, null, null);
+        chan2 = DAO.retrieveChannelBy("withlimits");
+        assertChannelContent(chan2, "withLimits", "Double", grpId, cs, null, Limits.create(Double.valueOf(0.0), Double.valueOf(10.0)));
+    }
+
+    @Test
+    public void testCreateChannelsWithFailure() throws ArchiveDaoException {
+        final IArchiveControlSystem cs = new ArchiveControlSystem(new ArchiveControlSystemId(1L), ControlSystem.EPICS_DEFAULT);
+        final ArchiveChannelGroupId grpId = new ArchiveChannelGroupId(1L);
+        final IArchiveChannel chan1 =
+            new ArchiveChannel(ArchiveChannelId.NONE,
+                               "fooNoLimits",
+                               "String",
+                               grpId,
+                               null,
+                               cs);
+        final IArchiveChannel chan2 =
+            new ArchiveChannel(ArchiveChannelId.NONE,
+                               "fooNoLimits",
+                               "String",
+                               grpId,
+                               null,
+                               cs);
+
+
+        final Collection<IArchiveChannel> directResult =
+            DAO.createChannels(Lists.newArrayList(chan1, chan2));
+        Assert.assertTrue(directResult.size() == 2);
     }
 
     @AfterClass

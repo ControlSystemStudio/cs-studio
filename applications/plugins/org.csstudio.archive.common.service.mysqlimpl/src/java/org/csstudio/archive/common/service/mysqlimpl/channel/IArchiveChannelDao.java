@@ -83,4 +83,14 @@ public interface IArchiveChannelDao {
     <V extends Comparable<? super V>>
     Limits<V> retrieveDisplayRanges(@Nonnull final String channelName) throws ArchiveDaoException;
 
+    /**
+     * Tries to create all the channels specified in the parameter collection, returns a collection
+     * of those channels that could <em>not</em> be created.
+     * @param channels the channels to be created
+     * @return empty list on success, otherwise those channels that could not be created
+     * @throws ArchiveDaoException
+     */
+    @Nonnull
+    Collection<IArchiveChannel> createChannels(@Nonnull Collection<IArchiveChannel> channels) throws ArchiveDaoException;
+
 }

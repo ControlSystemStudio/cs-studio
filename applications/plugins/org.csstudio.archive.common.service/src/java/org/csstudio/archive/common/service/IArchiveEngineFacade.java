@@ -32,6 +32,7 @@ import org.csstudio.archive.common.service.channel.IArchiveChannel;
 import org.csstudio.archive.common.service.channelgroup.ArchiveChannelGroupId;
 import org.csstudio.archive.common.service.channelgroup.IArchiveChannelGroup;
 import org.csstudio.archive.common.service.channelstatus.IArchiveChannelStatus;
+import org.csstudio.archive.common.service.controlsystem.IArchiveControlSystem;
 import org.csstudio.archive.common.service.engine.ArchiveEngineId;
 import org.csstudio.archive.common.service.engine.IArchiveEngine;
 import org.csstudio.archive.common.service.enginestatus.EngineMonitorStatus;
@@ -79,6 +80,25 @@ public interface IArchiveEngineFacade {
     @Nonnull
     Collection<IArchiveChannel> getChannelsByGroupId(@Nonnull final ArchiveChannelGroupId groupId)
                                                      throws ArchiveServiceException;
+
+
+    /**
+     * Adds a new channel in the archive service.
+     * @param channel the channel to be added.
+     * @return the newly added channel
+     */
+    @CheckForNull
+    IArchiveChannel createChannel(@Nonnull final IArchiveChannel channel)
+                                  throws ArchiveServiceException;
+
+    /**
+     * Adds new channels in the archive service.
+     * @param channels the channels to be added.
+     * @return the collection with all channels that have been successfully added
+     */
+    @Nonnull
+    Collection<IArchiveChannel> createChannels(@Nonnull final Collection<IArchiveChannel> channels)
+                                               throws ArchiveServiceException;
 
     /**
      * Writes the samples to the archive.
@@ -161,5 +181,8 @@ public interface IArchiveEngineFacade {
      */
     @Nonnull
     Collection<IArchiveChannelStatus> getLatestChannelsStatusBy(@Nonnull final Collection<ArchiveChannelId> channels) throws ArchiveServiceException;
+
+    @CheckForNull
+    IArchiveControlSystem retrieveControlSystemByName(@Nonnull final String name) throws ArchiveServiceException;
 
 }

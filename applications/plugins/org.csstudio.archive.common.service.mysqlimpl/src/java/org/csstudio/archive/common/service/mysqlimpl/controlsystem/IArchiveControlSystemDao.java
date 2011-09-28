@@ -42,4 +42,11 @@ public interface IArchiveControlSystemDao {
      */
     @CheckForNull
     IArchiveControlSystem retrieveControlSystemById(@Nonnull final ArchiveControlSystemId id) throws ArchiveDaoException;
+
+    /**
+     * @param name
+     * @return
+     */
+    @CheckForNull
+    IArchiveControlSystem retrieveControlSystemByName(@Nonnull final String name) throws ArchiveDaoException;
 }

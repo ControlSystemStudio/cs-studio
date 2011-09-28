@@ -22,10 +22,12 @@
 package org.csstudio.archive.common.service.mysqlimpl.channel;
 
 import java.io.Serializable;
+import java.sql.BatchUpdateException;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
@@ -107,6 +109,9 @@ public class ArchiveChannelDaoImpl extends AbstractArchiveDao implements IArchiv
     private final String _selectMatchingChannelsStmt = _selectChannelPrefix + " WHERE " + TAB + ".name REGEXP ? " + _selectChannelSuffix;
     private final String _selectCountAllChannelsStmt = "SELECT count(*) from " + getDatabaseName() + "." + TAB;
 
+    private final String _createChannelsStmt = "INSERT IGNORE INTO " + getDatabaseName() + "." + TAB +
+                                               " (name, datatype, group_id, control_system_id, display_high, display_low)" +
+                                               " VALUES (?, ?, ?, ?, ?, ?)";
     /**
      * Constructor.
      * @throws ArchiveDaoException
@@ -218,10 +223,9 @@ public class ArchiveChannelDaoImpl extends AbstractArchiveDao implements IArchiv
         if (channel != null) {
             return channel;
         }
-        Connection conn = null;
         PreparedStatement stmt = null;
         try {
-            conn = getThreadLocalConnection();
+            final Connection conn = getThreadLocalConnection();
             stmt = conn.prepareStatement(_selectChannelByIdStmt);
             stmt.setInt(1, id.intValue());
 
@@ -281,11 +285,10 @@ public class ArchiveChannelDaoImpl extends AbstractArchiveDao implements IArchiv
             return new ArrayList<IArchiveChannel>(filteredList);
         }
         // Nothing yet in the cache? Ask the database:
-        Connection conn = null;
         PreparedStatement stmt = null;
         ResultSet result = null;
         try {
-            conn = getThreadLocalConnection();
+            final Connection conn = getThreadLocalConnection();
             stmt = conn.prepareStatement(_selectChannelsByGroupId);
             stmt.setInt(1, groupId.intValue());
 
@@ -397,11 +400,10 @@ public class ArchiveChannelDaoImpl extends AbstractArchiveDao implements IArchiv
         final int numOfChannels = retrieveNumberOfChannels();
         if (_channelCacheByName.size() < numOfChannels) {
 
-            Connection conn = null;
             PreparedStatement stmt = null;
             ResultSet result = null;
             try {
-                conn = getThreadLocalConnection();
+                final Connection conn = getThreadLocalConnection();
                 stmt = conn.prepareStatement(_selectMatchingChannelsStmt);
                 stmt.setString(1, pattern.toString());
 
@@ -452,5 +454,55 @@ public class ArchiveChannelDaoImpl extends AbstractArchiveDao implements IArchiv
             closeSqlResources(result, stmt,  _selectCountAllChannelsStmt);
         }
         return 0;
+    }
+
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    @Nonnull
+    public Collection<IArchiveChannel> createChannels(@Nonnull final Collection<IArchiveChannel> channels)
+                                                      throws ArchiveDaoException {
+        PreparedStatement stmt = null;
+        Collection<IArchiveChannel> notAddedChannels = Collections.emptyList();
+        try {
+            final Connection conn = getThreadLocalConnection();
+            stmt = conn.prepareStatement(_createChannelsStmt);
+            for (final IArchiveChannel chan : channels) {
+                stmt.setString(1, chan.getName());
+                stmt.setString(2, chan.getDataType());
+                stmt.setInt(3, chan.getGroupId().intValue());
+                stmt.setInt(4, chan.getControlSystem().getId().intValue());
+                final Limits<?> limits = chan.getDisplayLimits();
+                stmt.setString(5, limits != null ? String.valueOf(limits.getHigh()) : null);
+                stmt.setString(6, limits != null ? String.valueOf(limits.getLow()) : null);
+
+                stmt.addBatch();
+            }
+            stmt.executeBatch();
+        } catch (final BatchUpdateException e) {
+            notAddedChannels = createNotAddedChannels(channels, e);
+        } catch (final Exception e) {
+            handleExceptions(EXC_MSG + ": Channel creation failed.", e);
+        } finally {
+            closeSqlResources(null, stmt, _createChannelsStmt);
+        }
+        return notAddedChannels;
+    }
+
+    @Nonnull
+    private Collection<IArchiveChannel> createNotAddedChannels(@Nonnull final Collection<IArchiveChannel> channels,
+                                                               @Nonnull final BatchUpdateException e) {
+        final List<IArchiveChannel> notAddedChannels = Lists.newArrayList();
+        final int[] updateCounts = e.getUpdateCounts();
+        int i = 0;
+        for (final IArchiveChannel chan : channels) {
+            if (updateCounts[i] == Statement.EXECUTE_FAILED) {
+                notAddedChannels.add(chan);
+            }
+            i++;
+        }
+        return notAddedChannels;
     }
 }

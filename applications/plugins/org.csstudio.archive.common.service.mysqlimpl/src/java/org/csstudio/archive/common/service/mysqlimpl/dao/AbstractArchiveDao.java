@@ -92,7 +92,8 @@ public abstract class AbstractArchiveDao {
     }
 
     /**
-     * Tries to close the sql resources {@link Connection}, {@link ResultSet}, and {@Statement}
+     * Tries to close the sql resources {@Statement} and implicitly {@link ResultSet}.
+     * TODO (bknerr) : just found out - resultset is automatically closed when its statement is closed.
      */
     protected void closeSqlResources(@CheckForNull final ResultSet rs,
                                      @CheckForNull final Statement stmt,
@@ -100,7 +101,8 @@ public abstract class AbstractArchiveDao {
         closeSqlResources(rs, stmt, null, logMsgForCloseError);
     }
     /**
-     * Tries to close the sql resources {@link Connection}, {@link ResultSet}, and {@Statement}
+     * Tries to close the sql resources {@link Connection} and implicitly {@Statement} and {@link ResultSet}.
+     * TODO (bknerr) : just found out - resultset is automatically closed when its statement is closed.
      */
     protected void closeSqlResources(@CheckForNull final ResultSet rs,
                                      @CheckForNull final Statement stmt,

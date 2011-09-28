@@ -87,11 +87,21 @@ public class ArchiveConnectionHandler {
         ds.setDatabaseName(prefs.getDatabaseName());
         ds.setUser(prefs.getUser());
         ds.setPassword(prefs.getPassword());
-        ds.setFailOverReadOnly(false);
         ds.setMaxAllowedPacket(prefs.getMaxAllowedPacketSizeInKB()*1024);
         ds.setUseTimezone(true);
 
         ds.setRewriteBatchedStatements(true);
+
+        ds.setFailOverReadOnly(false);
+
+        ds.setAutoReconnect(true);
+        ds.setAutoReconnectForPools(true);
+        ds.setAutoReconnectForConnectionPools(true);
+
+        ds.setRoundRobinLoadBalance(true);
+
+        ds.setDefaultFetchSize(10000);
+
 
         return ds;
     }

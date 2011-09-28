@@ -36,6 +36,7 @@ import org.csstudio.archive.common.service.channelgroup.ArchiveChannelGroupId;
 import org.csstudio.archive.common.service.channelgroup.IArchiveChannelGroup;
 import org.csstudio.archive.common.service.channelstatus.ArchiveChannelStatus;
 import org.csstudio.archive.common.service.channelstatus.IArchiveChannelStatus;
+import org.csstudio.archive.common.service.controlsystem.IArchiveControlSystem;
 import org.csstudio.archive.common.service.engine.ArchiveEngineId;
 import org.csstudio.archive.common.service.engine.IArchiveEngine;
 import org.csstudio.archive.common.service.enginestatus.ArchiveEngineStatus;
@@ -44,6 +45,7 @@ import org.csstudio.archive.common.service.enginestatus.IArchiveEngineStatus;
 import org.csstudio.archive.common.service.mysqlimpl.channel.IArchiveChannelDao;
 import org.csstudio.archive.common.service.mysqlimpl.channelgroup.IArchiveChannelGroupDao;
 import org.csstudio.archive.common.service.mysqlimpl.channelstatus.IArchiveChannelStatusDao;
+import org.csstudio.archive.common.service.mysqlimpl.controlsystem.IArchiveControlSystemDao;
 import org.csstudio.archive.common.service.mysqlimpl.dao.ArchiveDaoException;
 import org.csstudio.archive.common.service.mysqlimpl.engine.IArchiveEngineDao;
 import org.csstudio.archive.common.service.mysqlimpl.enginestatus.IArchiveEngineStatusDao;
@@ -80,6 +82,7 @@ public class MySQLArchiveEngineServiceImpl implements IArchiveEngineFacade {
     private final IArchiveChannelDao _channelDao;
     private final IArchiveChannelGroupDao _channelGroupDao;
     private final IArchiveChannelStatusDao _channelStatusDao;
+    private final IArchiveControlSystemDao _controlSystemDao;
 
 
     /**
@@ -91,13 +94,15 @@ public class MySQLArchiveEngineServiceImpl implements IArchiveEngineFacade {
                                          @Nonnull final IArchiveSampleDao sampleDao,
                                          @Nonnull final IArchiveChannelDao channelDao,
                                          @Nonnull final IArchiveChannelGroupDao channelGroupDao,
-                                         @Nonnull final IArchiveChannelStatusDao channelStatusDao) {
+                                         @Nonnull final IArchiveChannelStatusDao channelStatusDao,
+                                         @Nonnull final IArchiveControlSystemDao controlSystemDao) {
         _mgmtDao = mgmtDao;
         _engineDao = engineDao;
         _sampleDao = sampleDao;
         _channelDao = channelDao;
         _channelGroupDao = channelGroupDao;
         _channelStatusDao = channelStatusDao;
+        _controlSystemDao = controlSystemDao;
     }
 
 
@@ -270,6 +275,45 @@ public class MySQLArchiveEngineServiceImpl implements IArchiveEngineFacade {
             return _channelStatusDao.retrieveLatestStatusByChannelIds(channels);
         } catch (final ArchiveDaoException e) {
             throw new ArchiveServiceException("Multiple channel status could not be retrieved.", e);
+        }
+    }
+
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    @CheckForNull
+    public IArchiveChannel createChannel(@Nonnull final IArchiveChannel channel) throws ArchiveServiceException {
+        final Collection<IArchiveChannel> coll = createChannels(Collections.singleton(channel));
+        return coll.isEmpty() ? null : coll.iterator().next();
+    }
+
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    @Nonnull
+    public Collection<IArchiveChannel> createChannels(@Nonnull final Collection<IArchiveChannel> channels) throws ArchiveServiceException {
+        try {
+            return _channelDao.createChannels(channels);
+        } catch (final ArchiveDaoException e) {
+            throw new ArchiveServiceException("Creation of channels failed.", e);
+        }
+    }
+
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    @CheckForNull
+    public IArchiveControlSystem retrieveControlSystemByName(@Nonnull final String name) throws ArchiveServiceException {
+        try {
+            return _controlSystemDao.retrieveControlSystemByName(name);
+        } catch (final ArchiveDaoException e) {
+            throw new ArchiveServiceException("Creation of channels failed.", e);
         }
     }
 }
