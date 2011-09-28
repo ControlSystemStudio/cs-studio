@@ -147,7 +147,7 @@ public class MultiChannelGraph extends Composite {
 
 	private JFreeChart createChart(XYDataset dataset) {
 		JFreeChart chart = ChartFactory.createScatterPlot(
-				"MultiChannel Viewer", "", "Value", null,
+				null, "", "Value", null,
 				PlotOrientation.VERTICAL, true, true, false);
 		chart.removeLegend();
 		XYPlot plot = (XYPlot) chart.getPlot();
@@ -171,7 +171,7 @@ public class MultiChannelGraph extends Composite {
 				@Override
 				public void run() {
 					XYPlot plot = (XYPlot) chartDisplay.getChart().getPlot();
-					plot.getRangeAxis().setRange(minYValue, maxYValue);
+					plot.getRangeAxis().setRange(minYValue-(0.05*minYValue), maxYValue+(0.05*maxYValue));
 					plot.setDataset(xyDataset);
 					if (xyDataset != null)
 						plot.getDomainAxis().setLabel(
