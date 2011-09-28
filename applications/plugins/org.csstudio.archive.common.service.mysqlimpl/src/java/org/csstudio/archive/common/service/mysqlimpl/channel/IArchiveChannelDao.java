@@ -23,6 +23,7 @@ package org.csstudio.archive.common.service.mysqlimpl.channel;
 
 import java.io.Serializable;
 import java.util.Collection;
+import java.util.Set;
 import java.util.regex.Pattern;
 
 import javax.annotation.CheckForNull;
@@ -42,13 +43,11 @@ import org.csstudio.domain.desy.types.Limits;
  */
 public interface IArchiveChannelDao {
 
-    /**
-     * @param name the name of the channel
-     * @return the cached or freshly retrieved channel
-     * @throws ArchiveChannelDaoException when the retrieval fails
-     */
+    @Nonnull
+    Collection<IArchiveChannel> retrieveChannelsByNames(@Nonnull final Set<String> names) throws ArchiveDaoException;
+
     @CheckForNull
-    IArchiveChannel retrieveChannelBy(@Nonnull final String name) throws ArchiveDaoException;
+    Collection<IArchiveChannel> retrieveChannelsByIds(@Nonnull final Set<ArchiveChannelId> id) throws ArchiveDaoException;
 
     /**
      * @param pattern the regular expression the channel names have to match
@@ -66,12 +65,6 @@ public interface IArchiveChannelDao {
     @Nonnull
     Collection<IArchiveChannel> retrieveChannelsByGroupId(@Nonnull final ArchiveChannelGroupId groupId) throws ArchiveDaoException;
 
-    /**
-     * @param id the channel id
-     * @return the cached or freshly retrieved channel
-     */
-    @CheckForNull
-    IArchiveChannel retrieveChannelById(@Nonnull final ArchiveChannelId id) throws ArchiveDaoException;
 
 
     <V extends Comparable<? super V> & Serializable>

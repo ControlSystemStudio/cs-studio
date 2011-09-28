@@ -53,6 +53,7 @@ import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
+import com.google.common.collect.Sets;
 import com.google.inject.internal.Lists;
 
 /**
@@ -72,13 +73,14 @@ public class ArchiveChannelDaoUnitTest extends AbstractDaoTestSetup {
 
     @Test
     public void testNoChannel() throws ArchiveDaoException {
-        IArchiveChannel channel = DAO.retrieveChannelBy("kommeniezuspadt");
-        Assert.assertNull(channel);
+        Collection<IArchiveChannel> channels = DAO.retrieveChannelsByNames(Sets.newHashSet("kommeniezuspadt"));
+        Assert.assertTrue(channels.isEmpty());
 
-        channel = DAO.retrieveChannelById(ArchiveChannelId.NONE);
-        Assert.assertNull(channel);
+        channels = DAO.retrieveChannelsByIds(Sets.newHashSet(ArchiveChannelId.NONE));
+        Assert.assertTrue(channels.isEmpty());
 
-        Collection<IArchiveChannel> channels = DAO.retrieveChannelsByGroupId(ArchiveChannelGroupId.NONE);
+
+        channels = DAO.retrieveChannelsByGroupId(ArchiveChannelGroupId.NONE);
         Assert.assertNotNull(channels);
         Assert.assertTrue(channels.isEmpty());
 
@@ -131,12 +133,15 @@ public class ArchiveChannelDaoUnitTest extends AbstractDaoTestSetup {
 
     @Test
     public void testChannelRetrieval() throws ArchiveDaoException {
-        IArchiveChannel channel = DAO.retrieveChannelBy("enumChannel1");
+        Collection<IArchiveChannel> channels = DAO.retrieveChannelsByNames(Sets.newHashSet("enumChannel1"));
+        Assert.assertFalse(channels.isEmpty());
 
-        assertChannelContent(channel, "EpicsEnum", "enumChannel1", null, null, new ArchiveChannelGroupId(2L), 1262307723000000000L);
+        assertChannelContent(channels.iterator().next(), "EpicsEnum", "enumChannel1", null, null, new ArchiveChannelGroupId(2L), 1262307723000000000L);
 
-        channel = DAO.retrieveChannelById(new ArchiveChannelId(3L));
-        assertChannelContent(channel, "Byte", "byteChannel1", Byte.valueOf((byte) -128), Byte.valueOf((byte) 127), new ArchiveChannelGroupId(2L), 2000000000L);
+        channels = DAO.retrieveChannelsByIds(Sets.newHashSet(new ArchiveChannelId(3L)));
+        Assert.assertFalse(channels.isEmpty());
+
+        assertChannelContent(channels.iterator().next(), "Byte", "byteChannel1", Byte.valueOf((byte) -128), Byte.valueOf((byte) 127), new ArchiveChannelGroupId(2L), 2000000000L);
     }
 
     private void assertChannelContent(@Nonnull final IArchiveChannel channel,
@@ -182,9 +187,10 @@ public class ArchiveChannelDaoUnitTest extends AbstractDaoTestSetup {
 
         Thread.sleep(3000);
 
-        final IArchiveChannel channel = DAO.retrieveChannelById(id);
+        final Collection<IArchiveChannel> channels = DAO.retrieveChannelsByIds(Sets.newHashSet(id));
+        Assert.assertFalse(channels.isEmpty());
 
-        final Limits<V> limits = DAO.retrieveDisplayRanges(channel.getName());
+        final Limits<V> limits = DAO.retrieveDisplayRanges(channels.iterator().next().getName());
         Assert.assertNotNull(limits);
         Assert.assertEquals(Double.valueOf(32.0), limits.getHigh());
         Assert.assertEquals(Double.valueOf(-1.0), limits.getLow());
@@ -207,8 +213,9 @@ public class ArchiveChannelDaoUnitTest extends AbstractDaoTestSetup {
             DAO.createChannels(Collections.singleton((IArchiveChannel) chan1));
         Assert.assertTrue(directResult.isEmpty());
 
-        final IArchiveChannel resultChannel = DAO.retrieveChannelBy("nolimits");
-        assertChannelContent(resultChannel, "nolimits", "String", grpId, cs, null, null);
+        final Collection<IArchiveChannel> channels = DAO.retrieveChannelsByNames(Sets.newHashSet("nolimits"));
+        Assert.assertFalse(channels.isEmpty());
+        assertChannelContent(channels.iterator().next(), "nolimits", "String", grpId, cs, null, null);
 
     }
 
@@ -265,9 +272,9 @@ public class ArchiveChannelDaoUnitTest extends AbstractDaoTestSetup {
             DAO.createChannels(Lists.newArrayList(chan1, chan2));
         Assert.assertTrue(directResult.isEmpty());
 
-        chan1 = DAO.retrieveChannelBy("nolimits");
+        chan1 = DAO.retrieveChannelsByNames(Sets.newHashSet("nolimits")).iterator().next();
         assertChannelContent(chan1, "nolimits", "String", grpId, cs, null, null);
-        chan2 = DAO.retrieveChannelBy("withlimits");
+        chan2 = DAO.retrieveChannelsByNames(Sets.newHashSet("withlimits")).iterator().next();
         assertChannelContent(chan2, "withLimits", "Double", grpId, cs, null, Limits.create(Double.valueOf(0.0), Double.valueOf(10.0)));
     }
 

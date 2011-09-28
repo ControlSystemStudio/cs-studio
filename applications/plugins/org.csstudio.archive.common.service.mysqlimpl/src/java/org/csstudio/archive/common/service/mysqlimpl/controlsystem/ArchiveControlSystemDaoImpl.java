@@ -163,5 +163,4 @@ public class ArchiveControlSystemDaoImpl extends AbstractArchiveDao implements I
                                      Enum.valueOf(ControlSystemType.class, type));
         return cs;
     }
-
 }

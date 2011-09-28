@@ -65,6 +65,7 @@ import org.joda.time.Minutes;
 import com.google.common.base.Joiner;
 import com.google.common.collect.Lists;
 import com.google.common.collect.MapMaker;
+import com.google.common.collect.Sets;
 import com.google.inject.Inject;
 
 /**
@@ -278,13 +279,13 @@ public class ArchiveSampleDaoImpl extends AbstractArchiveDao implements IArchive
     private void initAggregatorToLastKnownSample(@Nonnull final ArchiveChannelId channelId,
                                                  @Nonnull final TimeInstant time,
                                                  @Nonnull final SampleMinMaxAggregator aggregator) throws ArchiveDaoException {
-        final IArchiveChannel channel = _channelDao.retrieveChannelById(channelId);
-        if (channel == null) {
+        final Collection<IArchiveChannel> channels = _channelDao.retrieveChannelsByIds(Sets.newHashSet(channelId));
+        if (channels.isEmpty()) {
             throw new ArchiveDaoException("Init sample aggregator failed. Channel with id " + channelId.intValue() +
                                           " does not exist.", null);
         }
         final IArchiveSample<Serializable, ISystemVariable<Serializable>> sample =
-            retrieveLatestSampleBeforeTime(channel, time);
+            retrieveLatestSampleBeforeTime(channels.iterator().next(), time);
         if (sample != null) {
             final Double lastWrittenValue =
                 BaseTypeConversionSupport.createDoubleFromValueOrNull(sample.getSystemVariable());
@@ -325,9 +326,9 @@ public class ArchiveSampleDaoImpl extends AbstractArchiveDao implements IArchive
                                                      @Nonnull final ArchiveChannelId channelId,
                                                      @Nonnull final TimeInstant start,
                                                      @Nonnull final TimeInstant end) throws ArchiveDaoException {
-        final IArchiveChannel channel = _channelDao.retrieveChannelById(channelId);
-        if (channel != null) {
-            return retrieveSamples(type, channel, start, end);
+        final Collection<IArchiveChannel> channels = _channelDao.retrieveChannelsByIds(Sets.newHashSet(channelId));
+        if (!channels.isEmpty()) {
+            return retrieveSamples(type, channels.iterator().next(), start, end);
         }
         return Collections.emptyList();
     }
