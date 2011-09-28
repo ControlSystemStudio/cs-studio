@@ -175,7 +175,7 @@ public class MultiChannelGraph extends Composite {
 					plot.setDataset(xyDataset);
 					if (xyDataset != null)
 						plot.getDomainAxis().setLabel(
-								"Channels sorted by : " + sortProperty);
+								"Channels ordered by : " + sortProperty);
 					else
 						plot.getDomainAxis().setLabel("");
 					//TODO performance issues

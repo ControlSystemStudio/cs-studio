@@ -75,10 +75,10 @@ public class MultiChannelView extends ViewPart {
 
 		};
 
-		Label lblSortBy = new Label(parent, SWT.NONE);
-		lblSortBy.setLayoutData(new GridData(SWT.RIGHT, SWT.CENTER, false,
+		Label lblOrderBy = new Label(parent, SWT.NONE);
+		lblOrderBy.setLayoutData(new GridData(SWT.RIGHT, SWT.CENTER, false,
 				false, 1, 1));
-		lblSortBy.setText("Sorted By: ");
+		lblOrderBy.setText("Ordered By: ");
 
 		combo = new Combo(parent, SWT.NONE);
 		combo.addSelectionListener(new SelectionAdapter() {
