@@ -32,7 +32,7 @@ import org.slf4j.LoggerFactory;
  *  @param <T> the system variable for the basic value type
  */
 @SuppressWarnings("nls")
-public class ArchiveChannel<V extends Serializable, T extends ISystemVariable<V>> {
+public class ArchiveChannelBuffer<V extends Serializable, T extends ISystemVariable<V>> {
 
     private static final Logger LOG = LoggerFactory.getLogger(PVListener.class);
 
@@ -93,7 +93,7 @@ public class ArchiveChannel<V extends Serializable, T extends ISystemVariable<V>
      * Constructor
      * @throws EngineModelException on failure while creating PV
      */
-    public ArchiveChannel(@Nonnull final String name,
+    public ArchiveChannelBuffer(@Nonnull final String name,
                           @Nonnull final ArchiveChannelId id,
                           @Nonnull final Class<V> typeClazz,
                           @Nonnull final IServiceProvider provider) throws EngineModelException {
@@ -105,7 +105,7 @@ public class ArchiveChannel<V extends Serializable, T extends ISystemVariable<V>
      * Constructor.
      */
     @SuppressWarnings({ "unchecked", "rawtypes" })
-    public ArchiveChannel(@Nonnull final String name,
+    public ArchiveChannelBuffer(@Nonnull final String name,
                           @Nonnull final ArchiveChannelId id,
                           @Nullable final Class<V> collClazz,
                           @Nonnull final Class<V> typeClazz,

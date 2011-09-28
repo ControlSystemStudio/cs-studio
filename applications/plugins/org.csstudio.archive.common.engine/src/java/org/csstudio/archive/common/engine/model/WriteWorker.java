@@ -61,9 +61,9 @@ final class WriteWorker extends AbstractTimeMeasuredRunnable {
         LoggerFactory.getLogger("ErrorPerEmailLogger");
 
     private final String _name;
-    private final Collection<ArchiveChannel<Serializable, ISystemVariable<Serializable>>> _scalarChannels =
+    private final Collection<ArchiveChannelBuffer<Serializable, ISystemVariable<Serializable>>> _scalarChannels =
         Lists.newLinkedList();
-    private final Collection<ArchiveChannel<Serializable, ISystemVariable<Serializable>>> _multiScalarChannels =
+    private final Collection<ArchiveChannelBuffer<Serializable, ISystemVariable<Serializable>>> _multiScalarChannels =
         Lists.newLinkedList();
 
 
@@ -80,11 +80,11 @@ final class WriteWorker extends AbstractTimeMeasuredRunnable {
      */
     public WriteWorker(@Nonnull final IServiceProvider provider,
                        @Nonnull final String name,
-                       @Nonnull final Collection<ArchiveChannel<Serializable, ISystemVariable<Serializable>>> channels,
+                       @Nonnull final Collection<ArchiveChannelBuffer<Serializable, ISystemVariable<Serializable>>> channels,
                        final long periodInMS) {
         _provider = provider;
         _name = name;
-        for (final ArchiveChannel<Serializable, ISystemVariable<Serializable>> channel : channels) {
+        for (final ArchiveChannelBuffer<Serializable, ISystemVariable<Serializable>> channel : channels) {
             if (channel.isMultiScalar()) {
                 _multiScalarChannels.add(channel);
             } else {
@@ -148,12 +148,12 @@ final class WriteWorker extends AbstractTimeMeasuredRunnable {
 
     @Nonnull
     private LinkedList<IArchiveSample<Serializable, ISystemVariable<Serializable>>>
-    collectSamplesFromBuffers(@Nonnull final Collection<ArchiveChannel<Serializable, ISystemVariable<Serializable>>> channels) {
+    collectSamplesFromBuffers(@Nonnull final Collection<ArchiveChannelBuffer<Serializable, ISystemVariable<Serializable>>> channels) {
 
         final LinkedList<IArchiveSample<Serializable, ISystemVariable<Serializable>>> allSamples =
             Lists.newLinkedList();
 
-        for (final ArchiveChannel<Serializable, ISystemVariable<Serializable>> channel : channels) {
+        for (final ArchiveChannelBuffer<Serializable, ISystemVariable<Serializable>> channel : channels) {
 
             final SampleBuffer<Serializable, ISystemVariable<Serializable>, IArchiveSample<Serializable, ISystemVariable<Serializable>>> buffer =
                 channel.getSampleBuffer();

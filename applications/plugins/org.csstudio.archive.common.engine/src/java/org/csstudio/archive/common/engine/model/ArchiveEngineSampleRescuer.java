@@ -98,7 +98,7 @@ final class ArchiveEngineSampleRescuer {
             final ISystemVariable<Serializable> sysVar = sample.getSystemVariable();
             final ArchiveSampleProtos.ArchiveSample gpbSample =
                 builder.setChannelId(sysVar.getName())
-                       .setControlSystemId(sysVar.getOrigin().getId())
+                       .setControlSystemId(sysVar.getOrigin().getName())
                        .setNanosSinceEpoch(sysVar.getTimestamp().getNanos())
                        .setData(ArchiveTypeConversionSupport.toArchiveString(sysVar.getData()))
                        .build();

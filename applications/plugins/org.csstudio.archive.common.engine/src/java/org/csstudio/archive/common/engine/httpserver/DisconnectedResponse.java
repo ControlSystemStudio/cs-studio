@@ -11,7 +11,7 @@ import javax.annotation.Nonnull;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import org.csstudio.archive.common.engine.model.ArchiveChannel;
+import org.csstudio.archive.common.engine.model.ArchiveChannelBuffer;
 import org.csstudio.archive.common.engine.model.ArchiveGroup;
 import org.csstudio.archive.common.engine.model.EngineModel;
 
@@ -46,7 +46,7 @@ class DisconnectedResponse extends AbstractResponse {
     private int createTableRows(@Nonnull final HTMLWriter html) {
         int disconnected = 0;
         for (final ArchiveGroup group : getModel().getGroups()) {
-            for (final ArchiveChannel<?,?> channel : group.getChannels()) {
+            for (final ArchiveChannelBuffer<?,?> channel : group.getChannels()) {
                 if (channel.isConnected()) {
                     continue;
                 }

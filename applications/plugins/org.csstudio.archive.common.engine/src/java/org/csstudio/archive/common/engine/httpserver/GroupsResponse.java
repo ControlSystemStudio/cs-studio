@@ -13,7 +13,7 @@ import javax.annotation.Nonnull;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import org.csstudio.archive.common.engine.model.ArchiveChannel;
+import org.csstudio.archive.common.engine.model.ArchiveChannelBuffer;
 import org.csstudio.archive.common.engine.model.ArchiveGroup;
 import org.csstudio.archive.common.engine.model.EngineModel;
 import org.csstudio.archive.common.engine.model.SampleBufferStatistics;
@@ -67,8 +67,8 @@ class GroupsResponse extends AbstractResponse {
             long numOfReceivedSamples = 0;
 
             @SuppressWarnings("rawtypes")
-            final Collection<ArchiveChannel> channels = group.getChannels();
-            for (@SuppressWarnings("rawtypes") final ArchiveChannel channel : channels) {
+            final Collection<ArchiveChannelBuffer> channels = group.getChannels();
+            for (@SuppressWarnings("rawtypes") final ArchiveChannelBuffer channel : channels) {
                 if (channel.isConnected()) {
                     ++numOfConnectedChannels;
                 }

@@ -11,10 +11,10 @@ import javax.annotation.Nonnull;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import org.csstudio.archive.common.engine.model.ArchiveChannel;
-import org.csstudio.archive.common.engine.model.SampleBufferStatistics;
+import org.csstudio.archive.common.engine.model.ArchiveChannelBuffer;
 import org.csstudio.archive.common.engine.model.EngineModel;
 import org.csstudio.archive.common.engine.model.SampleBuffer;
+import org.csstudio.archive.common.engine.model.SampleBufferStatistics;
 
 /** Provide web page with detail for one channel.
  *  @author Kay Kasemir
@@ -24,6 +24,9 @@ class ChannelResponse extends AbstractResponse {
     /** Avoid serialization errors */
     private static final long serialVersionUID = 1L;
 
+    static final String URL_CHANNEL_PAGE = "channel";
+    static final String PARAM_NAME = "name";
+
     ChannelResponse(@Nonnull final EngineModel model) {
         super(model);
     }
@@ -31,12 +34,12 @@ class ChannelResponse extends AbstractResponse {
     @Override
     protected void fillResponse(@Nonnull final HttpServletRequest req,
                                 @Nonnull final HttpServletResponse resp) throws Exception {
-        final String channelName = req.getParameter("name");
+        final String channelName = req.getParameter(PARAM_NAME);
         if (channelName == null) {
-            resp.sendError(400, "Missing channel name");
+            resp.sendError(400, "Missing parameter '" + PARAM_NAME + "'.");
             return;
         }
-        final ArchiveChannel<?, ?> channel = getModel().getChannel(channelName);
+        final ArchiveChannelBuffer<?, ?> channel = getModel().getChannel(channelName);
         if (channel == null) {
             resp.sendError(400, "Unknown channel " + channelName);
             return;
@@ -52,7 +55,7 @@ class ChannelResponse extends AbstractResponse {
 
 
     private void createChannelTable(@Nonnull final String channelName,
-                                    @Nonnull final ArchiveChannel<?, ?> channel,
+                                    @Nonnull final ArchiveChannelBuffer<?, ?> channel,
                                     @Nonnull final HTMLWriter html) {
         html.openTable(2, new String[] {Messages.HTTP_CHANNEL_INFO});
 

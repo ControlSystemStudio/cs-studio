@@ -11,7 +11,7 @@ import javax.annotation.Nonnull;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import org.csstudio.archive.common.engine.model.ArchiveChannel;
+import org.csstudio.archive.common.engine.model.ArchiveChannelBuffer;
 import org.csstudio.archive.common.engine.model.ArchiveGroup;
 import org.csstudio.archive.common.engine.model.SampleBufferStatistics;
 import org.csstudio.archive.common.engine.model.EngineModel;
@@ -87,7 +87,7 @@ class GroupResponse extends AbstractResponse {
             Messages.HTTP_COLUMN_QUEUEAVG,
             Messages.HTTP_COLUMN_QUEUEMAX,
         });
-        for (final ArchiveChannel<?, ?> channel : group.getChannels()) {
+        for (final ArchiveChannelBuffer<?, ?> channel : group.getChannels()) {
             try {
 
             final String connected = channel.isConnected() ? Messages.HTTP_YES :

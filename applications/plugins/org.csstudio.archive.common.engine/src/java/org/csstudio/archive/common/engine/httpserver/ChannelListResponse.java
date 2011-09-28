@@ -13,7 +13,7 @@ import javax.annotation.Nonnull;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import org.csstudio.archive.common.engine.model.ArchiveChannel;
+import org.csstudio.archive.common.engine.model.ArchiveChannelBuffer;
 import org.csstudio.archive.common.engine.model.EngineModel;
 
 /** Provide web page with list of channels (by pattern).
@@ -57,7 +57,7 @@ class ChannelListResponse extends AbstractResponse {
             Messages.HTTP_LAST_ARCHIVED_VALUE,
         });
 
-        for (final ArchiveChannel<?,?> channel : getModel().getChannels()) {
+        for (final ArchiveChannelBuffer<?,?> channel : getModel().getChannels()) {
             // Filter by channel name pattern
             if (!pattern.matcher(channel.getName()).matches()) {
                 continue;
