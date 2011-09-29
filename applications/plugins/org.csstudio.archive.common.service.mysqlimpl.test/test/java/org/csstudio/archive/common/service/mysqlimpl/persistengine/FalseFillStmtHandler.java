@@ -68,6 +68,9 @@ final class FalseFillStmtHandler extends
     @Override
     @Nonnull
     public Collection<String> convertToStatementString(@Nonnull final Collection<IArchiveSample> elements) {
+        if (elements.isEmpty()) {
+            return Collections.emptyList();
+        }
         _i++;
         return Collections.singleton(getSqlStatementString() + _i + ";");
     }
