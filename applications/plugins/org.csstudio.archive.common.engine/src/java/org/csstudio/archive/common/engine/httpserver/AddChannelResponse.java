@@ -66,6 +66,7 @@ public class AddChannelResponse extends AbstractChannelResponse {
     /**
      * {@inheritDoc}
      */
+    @SuppressWarnings("static-access")
     @Override
     protected void fillResponse(@Nonnull final HttpServletRequest req,
                                 @Nonnull final HttpServletResponse resp) throws Exception {

@@ -43,10 +43,11 @@ class DisconnectedResponse extends AbstractResponse {
         html.close();
     }
 
+    @SuppressWarnings("static-access")
     private int createTableRows(@Nonnull final HTMLWriter html) {
         int disconnected = 0;
         for (final ArchiveGroup group : getModel().getGroups()) {
-            for (final ArchiveChannelBuffer<?,?> channel : group.getChannels()) {
+            for (final ArchiveChannelBuffer<?, ?> channel : group.getChannels()) {
                 if (channel.isConnected()) {
                     continue;
                 }

@@ -74,6 +74,7 @@ class GroupResponse extends AbstractResponse {
         html.closeTable();
     }
 
+    @SuppressWarnings("static-access")
     private void createChannelsTable(@Nonnull final ArchiveGroup group,
                                      @Nonnull final HTMLWriter html) {
         // HTML Table of all channels in the group
