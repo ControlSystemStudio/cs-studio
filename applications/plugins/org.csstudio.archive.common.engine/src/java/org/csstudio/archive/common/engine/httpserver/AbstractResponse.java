@@ -98,4 +98,12 @@ abstract class AbstractResponse extends HttpServlet {
         return valueAsString.substring(0, Math.min(valueAsString.length(), maxValueDisplay));
     }
 
+
+    protected void redirectToErrorPage(@Nonnull final HttpServletResponse resp,
+                                   @Nonnull final String msg) throws Exception {
+        final HTMLWriter html = new HTMLWriter(resp, "Request error");
+        html.text("Error on processing request:\n" + msg);
+        HTMLWriter.makeLink("main", "Back to main");
+        html.close();
+    }
 }

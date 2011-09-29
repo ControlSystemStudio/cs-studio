@@ -16,18 +16,25 @@ import org.csstudio.archive.common.engine.model.EngineModel;
 import org.csstudio.archive.common.engine.model.SampleBuffer;
 import org.csstudio.archive.common.engine.model.SampleBufferStatistics;
 
+import com.google.common.base.Strings;
+
 /** Provide web page with detail for one channel.
  *  @author Kay Kasemir
  */
 @SuppressWarnings("nls")
-class ChannelResponse extends AbstractResponse {
+class ShowChannelResponse extends AbstractChannelResponse {
+
+    private static String URL_SHOW_CHANNEL_ACTION;
+    private static String URL_SHOW_CHANNEL_PAGE;
+    static {
+        URL_SHOW_CHANNEL_ACTION = "show";
+        URL_SHOW_CHANNEL_PAGE = URL_CHANNEL_PAGE + "/" + URL_SHOW_CHANNEL_ACTION;
+    }
+
     /** Avoid serialization errors */
     private static final long serialVersionUID = 1L;
 
-    static final String URL_CHANNEL_PAGE = "channel";
-    static final String PARAM_NAME = "name";
-
-    ChannelResponse(@Nonnull final EngineModel model) {
+    ShowChannelResponse(@Nonnull final EngineModel model) {
         super(model);
     }
 
@@ -35,8 +42,8 @@ class ChannelResponse extends AbstractResponse {
     protected void fillResponse(@Nonnull final HttpServletRequest req,
                                 @Nonnull final HttpServletResponse resp) throws Exception {
         final String channelName = req.getParameter(PARAM_NAME);
-        if (channelName == null) {
-            resp.sendError(400, "Missing parameter '" + PARAM_NAME + "'.");
+        if (Strings.isNullOrEmpty(channelName)) {
+            resp.sendError(400, "Parameter '" + PARAM_NAME + "' is null or empty.");
             return;
         }
         final ArchiveChannelBuffer<?, ?> channel = getModel().getChannel(channelName);
@@ -61,6 +68,11 @@ class ChannelResponse extends AbstractResponse {
 
         html.tableLine(new String[] {Messages.HTTP_CHANNEL, channelName});
 
+        html.tableLine(new String[] {
+                           Messages.HTTP_STARTED,
+                           channel.isStarted() ? Messages.HTTP_YES : HTMLWriter.makeRedText(Messages.HTTP_NO),
+                       });
+
         final String connected = channel.isConnected()
                         ? Messages.HTTP_YES
                         : HTMLWriter.makeRedText(Messages.HTTP_NO);
@@ -79,5 +91,10 @@ class ChannelResponse extends AbstractResponse {
         html.tableLine(new String[] {Messages.HTTP_COLUMN_QUEUEMAX, Integer.toString(stats.getMaxSize())});
 
         html.closeTable();
+    }
+
+    @Nonnull
+    public static String getUrl() {
+        return URL_SHOW_CHANNEL_PAGE;
     }
 }

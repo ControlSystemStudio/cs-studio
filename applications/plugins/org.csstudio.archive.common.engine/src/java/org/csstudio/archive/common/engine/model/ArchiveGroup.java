@@ -12,6 +12,7 @@ import java.util.concurrent.ConcurrentMap;
 
 import javax.annotation.CheckForNull;
 import javax.annotation.Nonnull;
+import javax.annotation.concurrent.GuardedBy;
 
 import org.csstudio.archive.common.service.channelgroup.ArchiveChannelGroupId;
 
@@ -36,6 +37,7 @@ public class ArchiveGroup {
     private final ConcurrentMap<String, ArchiveChannelBuffer<?, ?>> _channelMap;
 
     /** Set to <code>true</code> while running. */
+    @GuardedBy("this")
     private boolean _isRunning;
 
 
@@ -71,42 +73,14 @@ public class ArchiveGroup {
      *  @param channel Channel to add
      */
     @SuppressWarnings("nls")
-    final void add(@Nonnull final ArchiveChannelBuffer<?, ?> channel) {
-        if (_isRunning) {
-            throw new Error("Running"); //$NON-NLS-1$
-        }
-        // Is this an 'active' channel?
-//        if (channel.getEnablement() != Enablement.Passive)
-//        {
-//            if (enabling_channel != null)
-//                throw new Exception(
-//                    String.format("Group '%s': "
-//                                  + "Cannot add enabling channel '%s', "
-//                                  + "already enabled by '%s'",
-//                                  name, channel.getName(), enabling_channel.getName()));
-//            enabling_channel = channel;
-//        }
+    final synchronized void add(@Nonnull final ArchiveChannelBuffer<?, ?> channel) {
         _channelMap.put(channel.getName(), channel);
     }
 
     /** Remove channel from group */
-    final void remove(@Nonnull final ArchiveChannelBuffer<?, ?> channel) {
-        if (_isRunning) {
-            throw new Error("Running"); //$NON-NLS-1$
-        }
+    final synchronized void remove(@Nonnull final ArchiveChannelBuffer<?, ?> channel) {
         _channelMap.remove(channel.getName());
-        // Was this the enabling channel?
-//        if (enabling_channel == channel)
-//            enabling_channel = null;
     }
-
-    /** @return Channel
-     *  @param i Channel index
-     *  @see #getChannelCount()
-     */
-//    final public ArchiveChannelBuffer<?> getChannel(final int i) {
-//        return channels.get(i);
-//    }
 
     /** Locate a channel by name.
      *
@@ -120,8 +94,8 @@ public class ArchiveGroup {
 
 
     /** @return <code>true</code> if group is currently enabled */
-    public final boolean isEnabled() {
-        return true;
+    public final synchronized boolean isStarted() {
+        return _isRunning;
     }
 
     /** Start all the channels in group
@@ -131,11 +105,12 @@ public class ArchiveGroup {
      */
     @Nonnull
     final void start(@Nonnull final String info) throws EngineModelException {
-        if (_isRunning) {
-            return;
+        synchronized (this) {
+            if (_isRunning) {
+                return;
+            }
+            _isRunning = true;
         }
-        _isRunning = true;
-
         for (final ArchiveChannelBuffer<?, ?> channel : _channelMap.values()) {
             channel.start(info);
         }
@@ -145,10 +120,12 @@ public class ArchiveGroup {
      * Stop all the channels in group
      */
     public void stop(@Nonnull final String info) {
-        if (!_isRunning) {
-            return;
+        synchronized (this) {
+            if (!_isRunning) {
+                return;
+            }
+            _isRunning = false;
         }
-        _isRunning = false;
         for (final ArchiveChannelBuffer<?, ?> channel : _channelMap.values()) {
             channel.stop(info);
         }

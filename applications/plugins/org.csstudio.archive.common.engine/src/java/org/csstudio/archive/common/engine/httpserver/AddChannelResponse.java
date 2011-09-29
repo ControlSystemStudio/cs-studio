@@ -21,15 +21,13 @@
  */
 package org.csstudio.archive.common.engine.httpserver;
 
-import javax.annotation.CheckForNull;
 import javax.annotation.Nonnull;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import org.csstudio.archive.common.engine.model.ArchiveChannelBuffer;
-import org.csstudio.archive.common.engine.model.ArchiveGroup;
 import org.csstudio.archive.common.engine.model.EngineModel;
 import org.csstudio.archive.common.engine.model.EngineModelException;
+import org.csstudio.domain.desy.epics.name.EpicsChannelName;
 
 import com.google.common.base.Strings;
 
@@ -39,26 +37,29 @@ import com.google.common.base.Strings;
  * @author bknerr
  * @since 22.09.2011
  */
-public class AddChannelResponse extends AbstractResponse {
+public class AddChannelResponse extends AbstractChannelResponse {
 
-    static final String URL_ADD_CHANNEL_PAGE = "addChannel";
+    private static String URL_ADD_CHANNEL_ACTION;
+    private static String URL_ADD_CHANNEL_PAGE;
+    static {
+        URL_ADD_CHANNEL_ACTION = "add";
+        URL_ADD_CHANNEL_PAGE = URL_CHANNEL_PAGE + "/" + URL_ADD_CHANNEL_ACTION;
+    }
 
-    private static final long serialVersionUID = -5977457225438178049L;
+    private static final long serialVersionUID = 1L;
 
-    private static final String PARAM_CHANNEL_NAME = "name";
     private static final String PARAM_CHANNEL_GROUP = "group";
     private static final String PARAM_DATATYPE = "datatype";
-    private static final String PARAM_CONTROLSYSTEM = "controlsystem";
-    private static final String PARAM_DESCRIPTION = "desc";
+//    private static final String PARAM_CONTROLSYSTEM = "controlsystem";
+//    private static final String PARAM_DESCRIPTION = "desc";
     private static final String PARAM_LOPR = "lopr";
     private static final String PARAM_HOPR = "hopr";
 
-    private static final String VALID = "OK";
 
     /**
      * Constructor.
      */
-    protected AddChannelResponse(@Nonnull final EngineModel model) {
+    AddChannelResponse(@Nonnull final EngineModel model) {
         super(model);
     }
 
@@ -69,55 +70,42 @@ public class AddChannelResponse extends AbstractResponse {
     protected void fillResponse(@Nonnull final HttpServletRequest req,
                                 @Nonnull final HttpServletResponse resp) throws Exception {
 
-        final String name = req.getParameter(PARAM_CHANNEL_NAME);
+        final String name = req.getParameter(PARAM_NAME);
         final String group = req.getParameter(PARAM_CHANNEL_GROUP);
-
         final String type = req.getParameter(PARAM_DATATYPE);
-        final String controlsystem = req.getParameter(PARAM_CONTROLSYSTEM);
-        final String desc = req.getParameter(PARAM_DESCRIPTION);
-        final String lopr = req.getParameter(PARAM_LOPR);
-        final String hopr = req.getParameter(PARAM_HOPR);
-
-        final String msg = nameAndGroupInvalid(name, group, getModel());
-        if (!VALID.equals(msg)) {
-            createErrorPage(resp, msg);
+        if (Strings.isNullOrEmpty(name) || Strings.isNullOrEmpty(group) || Strings.isNullOrEmpty(type)) {
+            redirectToErrorPage(resp, "At least one out of the required parameters '" +
+                                      PARAM_NAME + "' & " +
+                                      PARAM_CHANNEL_GROUP + "' & '" +
+                                      PARAM_DATATYPE + "' is either null or empty!");
             return;
         }
 
+//        final String controlsystem = req.getParameter(PARAM_CONTROLSYSTEM);
+//        final String desc = req.getParameter(PARAM_DESCRIPTION);
+        final String lopr = req.getParameter(PARAM_LOPR);
+        final String hopr = req.getParameter(PARAM_HOPR);
+
         try {
-            getModel().configureNewChannel("MANUAL SETUP", name, group, type, controlsystem, desc, lopr, hopr);
-            resp.sendRedirect(ChannelResponse.URL_CHANNEL_PAGE + "?" + ChannelResponse.PARAM_NAME + "="+name);
+            // Note, that once far in the bright future when we support several control system
+            // types, we'd need channel name support/service for any of them and validated 'name' classes with a
+            // a common supertype (the abstract channel identifier/name) which are created either
+            // directly here or via engine model.
+            final EpicsChannelName epicsName = new EpicsChannelName(name);
+
+            getModel().configureNewChannel("MANUAL SETUP", epicsName, group, type, lopr, hopr);
+            resp.sendRedirect(ShowChannelResponse.getUrl() + "?" + ShowChannelResponse.PARAM_NAME + "="+name);
+
+        } catch (final IllegalArgumentException e) {
+            redirectToErrorPage(resp, "Channel could not be configured:\n" + e.getMessage());
         } catch (final EngineModelException e) {
-            createErrorPage(resp, "Channel could not be configured:\n" + e.getMessage());
+            redirectToErrorPage(resp, "Channel could not be configured:\n" + e.getMessage());
         }
         return;
     }
 
-    private void createErrorPage(@Nonnull final HttpServletResponse resp,
-                                     @Nonnull final String msg) throws Exception {
-        final HTMLWriter html = new HTMLWriter(resp, "Request error");
-        html.text("Error on processing request:\n" + msg);
-        HTMLWriter.makeLink("main", "Back to main");
-        html.close();
-    }
-
     @Nonnull
-    private String nameAndGroupInvalid(@CheckForNull final String channelName,
-                                       @CheckForNull final String groupName,
-                                       @Nonnull final EngineModel engineModel) {
-        if (Strings.isNullOrEmpty(channelName) || Strings.isNullOrEmpty(groupName)) {
-            return "parameters '" + PARAM_CHANNEL_NAME + "' and/or '" +  PARAM_CHANNEL_GROUP + "' are null or empty!";
-        }
-        final ArchiveChannelBuffer<?, ?> channel = engineModel.getChannel(channelName);
-        if (channel != null) {
-            return "Channel with name: '" + channelName + "' does already exist.";
-        }
-        final ArchiveGroup group = engineModel.getGroup(groupName);
-        if (group == null) {
-            return "Group with name: '" + groupName + "' does not exist.";
-        }
-        // Channel does not yet exist, group does exist - great
-        return VALID;
+    public static String getUrl() {
+        return URL_ADD_CHANNEL_PAGE;
     }
-
 }

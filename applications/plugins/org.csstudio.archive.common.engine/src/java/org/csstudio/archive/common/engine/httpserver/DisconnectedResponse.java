@@ -54,7 +54,7 @@ class DisconnectedResponse extends AbstractResponse {
                 html.tableLine(new String[]
                                           {
                                            Integer.toString(disconnected),
-                                           HTMLWriter.makeLink("channel?name=" + channel.getName(), channel.getName()),
+                                           HTMLWriter.makeLink(ShowChannelResponse.getUrl() + "?" + ShowChannelResponse.PARAM_NAME + "=" + channel.getName(), channel.getName()),
                                            HTMLWriter.makeLink("group?name=" + group.getName(), group.getName()),
                                           } );
             }

@@ -27,9 +27,9 @@ public final class Messages {
     public static final String HTTP_COLUMN_GROUPCOUNT = "Groups";
     public static final String HTTP_COLUMN_QUEUEAVG = "Queue Avg.";
     public static final String HTTP_DESCRIPTION = "Description";
-    public static final String HTTP_DISABLED = "Disabled";
+    public static final String HTTP_STOPPED = "Stopped";
     public static final String HTTP_DISCONNECTED_TITLE = "Disconnected Channels";
-    public static final String HTTP_ENABLED = "Enabled";
+    public static final String HTTP_STARTED = "Started";
     public static final String HTTP_HOST = "HTTP Server";
     public static final String HTTP_INTERNAL_STATE = "Internal EngineState";
     public static final String HTTP_CURRENT_VALUE = "Current Value";

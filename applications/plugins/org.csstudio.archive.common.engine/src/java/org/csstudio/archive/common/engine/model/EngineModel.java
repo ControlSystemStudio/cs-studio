@@ -31,6 +31,7 @@ import org.csstudio.archive.common.service.enginestatus.ArchiveEngineStatus;
 import org.csstudio.archive.common.service.enginestatus.EngineMonitorStatus;
 import org.csstudio.archive.common.service.enginestatus.IArchiveEngineStatus;
 import org.csstudio.archive.common.service.util.ArchiveTypeConversionSupport;
+import org.csstudio.domain.desy.epics.name.EpicsChannelName;
 import org.csstudio.domain.desy.service.osgi.OsgiServiceUnavailableException;
 import org.csstudio.domain.desy.system.ControlSystem;
 import org.csstudio.domain.desy.system.ISystemVariable;
@@ -43,7 +44,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.google.common.base.Function;
-import com.google.common.base.Strings;
 import com.google.common.collect.Collections2;
 import com.google.common.collect.MapMaker;
 
@@ -439,11 +439,11 @@ public final class EngineModel {
         if (presentChannel != null) {
             writeExecutor.addChannel(presentChannel);
             group.add(presentChannel);
-        } else {
-            writeExecutor.addChannel(channel);
-            group.add(channel);
+            return presentChannel;
         }
-        return presentChannel;
+        writeExecutor.addChannel(channel);
+        group.add(channel);
+        return channel;
     }
 
     @SuppressWarnings( { "rawtypes", "unchecked" } )
@@ -514,39 +514,46 @@ public final class EngineModel {
 
     @Nonnull
     public IArchiveChannel configureNewChannel(@Nonnull final String info,
-                                               @Nonnull final String name,
-                                               @Nonnull final String group,
+                                               @Nonnull final EpicsChannelName epicsName,
+                                               @Nonnull final String groupName,
                                                @Nonnull final String type,
-                                               @CheckForNull final String controlsystem,
-                                               @CheckForNull final String desc,
                                                @Nullable final String low,
                                                @Nullable final String high) throws EngineModelException {
 
         try {
-            IArchiveControlSystem cs;
-            if (Strings.isNullOrEmpty(controlsystem)) {
-                cs = _provider.getEngineFacade().retrieveControlSystemByName(ControlSystem.EPICS_DEFAULT.getName());
-            } else {
-                cs = _provider.getEngineFacade().retrieveControlSystemByName(controlsystem);
+            // For now we use only one control system - for later this can be configured via HTTP server
+            final IArchiveControlSystem cs =
+                _provider.getEngineFacade().getControlSystemByName(ControlSystem.EPICS_DEFAULT.getName());
+
+            final ArchiveChannelBuffer<?, ?> channelBuffer = getChannel(epicsName.toString());
+            if (channelBuffer != null) {
+                throw new EngineModelException("Channel with name: '" + epicsName.toString() + "' does already exist for this engine.", null);
+            }
+            final ArchiveGroup group = getGroup(groupName);
+            if (group == null) {
+                throw new EngineModelException("Group with name: '" + groupName + "' does not yet exist for this engine.", null);
             }
 
             final IArchiveChannel channel =
                 ArchiveTypeConversionSupport.createArchiveChannel(ArchiveChannelId.NONE,
-                                                                  name,
+                                                                  epicsName.toString(),
                                                                   type,
-                                                                  _groupMap.get(group).getId(),
+                                                                  group.getId(),
                                                                   null,
                                                                   cs,
                                                                   low,
                                                                   high);
 
+            _provider.getEngineFacade().createChannel(channel);
+
             final IArchiveChannel cfg =
-                _provider.getEngineFacade().createChannel(channel);
+                _provider.getEngineFacade().getChannelByName(epicsName.toString());
+            if (cfg == null) {
+                throw new EngineModelException("Channel creation failed.", null);
+            }
 
             final ArchiveChannelBuffer<Serializable, ISystemVariable<Serializable>> buffer =
-                createAndAddArchiveChannelBuffer(_provider, cfg, _writeExecutor, _channelMap, _groupMap.get(group));
-
-            buffer.start(info);
+                createAndAddArchiveChannelBuffer(_provider, cfg, _writeExecutor, _channelMap, group);
 
             return cfg;
 

@@ -155,6 +155,11 @@ public class ArchiveChannelBuffer<V extends Serializable, T extends ISystemVaria
         return _pv.isConnected();
     }
 
+    /** @return <code>true</code> if connected */
+    public boolean isStarted() {
+        return _isStarted;
+    }
+
     /** @return Human-readable info on internal state of PV */
     @CheckForNull
     public String getInternalState() {
@@ -167,14 +172,14 @@ public class ArchiveChannelBuffer<V extends Serializable, T extends ISystemVaria
      */
     public void start(@Nonnull final String info) throws EngineModelException {
         try {
-            if (_isStarted) {
-                return;
-            }
-            _listener.setStartInfo(info);
             synchronized (this) {
-                _pv.start();
+                if (_isStarted) {
+                    return;
+                }
                 _isStarted = true;
             }
+            _listener.setStartInfo(info);
+            _pv.start();
         } catch (final Exception e) {
             LOG.error("PV " + _pv.getName() + " could not be started with state info " + _pv.getStateInfo(), e);
             throw new EngineModelException("Something went wrong within Kasemir's PV stuff on channel/PV startup", e);
@@ -187,13 +192,13 @@ public class ArchiveChannelBuffer<V extends Serializable, T extends ISystemVaria
      * Stop archiving this channel
      */
     public void stop(@Nonnull final String info) {
-        if (!_isStarted) {
-            return;
-        }
-        _listener.setStopInfo(info);
         synchronized (this) {
+            if (!_isStarted) {
+                return;
+            }
             _isStarted = false;
         }
+        _listener.setStopInfo(info);
         _pv.stop();
     }
 

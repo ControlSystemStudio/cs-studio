@@ -13,9 +13,9 @@ import javax.servlet.http.HttpServletResponse;
 
 import org.csstudio.archive.common.engine.model.ArchiveChannelBuffer;
 import org.csstudio.archive.common.engine.model.ArchiveGroup;
-import org.csstudio.archive.common.engine.model.SampleBufferStatistics;
 import org.csstudio.archive.common.engine.model.EngineModel;
 import org.csstudio.archive.common.engine.model.SampleBuffer;
+import org.csstudio.archive.common.engine.model.SampleBufferStatistics;
 import org.csstudio.domain.desy.system.ISystemVariable;
 
 /**
@@ -68,8 +68,8 @@ class GroupResponse extends AbstractResponse {
             Messages.HTTP_STATUS,
         });
         html.tableLine(new String[] {
-            Messages.HTTP_STATE,
-            group.isEnabled() ? Messages.HTTP_ENABLED : Messages.HTTP_DISABLED,
+            Messages.HTTP_STARTED,
+            group.isStarted() ? Messages.HTTP_YES : HTMLWriter.makeRedText(Messages.HTTP_NO),
         });
         html.closeTable();
     }
@@ -103,7 +103,7 @@ class GroupResponse extends AbstractResponse {
                                           "null";
 
             html.tableLine(new String[] {
-                HTMLWriter.makeLink("channel?name=" + channel.getName(), channel.getName()),
+                HTMLWriter.makeLink(ShowChannelResponse.getUrl() + "?" + ShowChannelResponse.PARAM_NAME + "=" + channel.getName(), channel.getName()),
                 connected,
                 curVal,
                 curValTimestamp,
