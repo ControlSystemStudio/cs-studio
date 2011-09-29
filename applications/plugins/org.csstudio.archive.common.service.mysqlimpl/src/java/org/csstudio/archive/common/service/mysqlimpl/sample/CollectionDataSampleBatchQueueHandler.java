@@ -28,6 +28,7 @@ import static org.csstudio.archive.common.service.mysqlimpl.sample.ArchiveSample
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.concurrent.ConcurrentLinkedQueue;
 
 import javax.annotation.Nonnull;
@@ -103,6 +104,9 @@ public class CollectionDataSampleBatchQueueHandler extends BatchQueueHandlerSupp
     @Override
     @Nonnull
     public Collection<String> convertToStatementString(@Nonnull final Collection<ArchiveMultiScalarSample> elements) {
+        if (elements.isEmpty()) {
+            return Collections.emptyList();
+        }
         final String sqlWithoutValues = getSqlStatementString().replace(VALUES_WILDCARD, "");
 
         final Collection<String> sqlStatementStrings =

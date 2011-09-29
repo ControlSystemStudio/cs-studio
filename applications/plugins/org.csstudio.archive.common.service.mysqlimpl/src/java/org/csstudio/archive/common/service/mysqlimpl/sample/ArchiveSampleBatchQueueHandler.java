@@ -103,6 +103,9 @@ public class ArchiveSampleBatchQueueHandler extends BatchQueueHandlerSupport<Arc
     @Override
     @Nonnull
     public Collection<String> convertToStatementString(@Nonnull final Collection<ArchiveSample> elements) {
+        if (elements.isEmpty()) {
+            return Collections.emptyList();
+        }
         final String sqlWithoutValues = getSqlStatementString();
 
         final Collection<String> values =
