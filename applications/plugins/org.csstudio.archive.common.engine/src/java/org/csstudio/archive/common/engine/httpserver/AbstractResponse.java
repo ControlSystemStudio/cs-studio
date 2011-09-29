@@ -106,4 +106,11 @@ abstract class AbstractResponse extends HttpServlet {
         HTMLWriter.makeLink("main", "Back to main");
         html.close();
     }
+    protected void redirectToWarnPage(@Nonnull final HttpServletResponse resp,
+                                      @Nonnull final String msg) throws Exception {
+        final HTMLWriter html = new HTMLWriter(resp, "Request warning");
+        html.text("Warning on processing request:\n" + msg);
+        HTMLWriter.makeLink("main", "Back to main");
+        html.close();
+    }
 }

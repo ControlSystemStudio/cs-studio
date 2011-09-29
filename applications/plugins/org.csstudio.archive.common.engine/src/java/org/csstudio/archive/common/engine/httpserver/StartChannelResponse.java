@@ -25,6 +25,7 @@ import javax.annotation.Nonnull;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import org.csstudio.archive.common.engine.model.ArchiveChannelBuffer;
 import org.csstudio.archive.common.engine.model.EngineModel;
 import org.csstudio.archive.common.engine.model.EngineModelException;
 import org.csstudio.domain.desy.epics.name.EpicsChannelName;
@@ -32,34 +33,26 @@ import org.csstudio.domain.desy.epics.name.EpicsChannelName;
 import com.google.common.base.Strings;
 
 /**
- * Simple http request/response for removing a channel from the archiver configuration.
+ * TODO (bknerr) :
  *
  * @author bknerr
- * @since 22.09.2011
+ * @since 29.09.2011
  */
-public class AddChannelResponse extends AbstractChannelResponse {
+public class StartChannelResponse extends AbstractChannelResponse {
 
-    private static String URL_ADD_CHANNEL_ACTION;
-    private static String URL_ADD_CHANNEL_PAGE;
+    private static String URL_START_CHANNEL_ACTION;
+    private static String URL_START_CHANNEL_PAGE;
     static {
-        URL_ADD_CHANNEL_ACTION = "add";
-        URL_ADD_CHANNEL_PAGE = URL_CHANNEL_PAGE + "/" + URL_ADD_CHANNEL_ACTION;
+        URL_START_CHANNEL_ACTION = "start";
+        URL_START_CHANNEL_PAGE = URL_CHANNEL_PAGE + "/" + URL_START_CHANNEL_ACTION;
     }
 
     private static final long serialVersionUID = 1L;
 
-    private static final String PARAM_CHANNEL_GROUP = "group";
-    private static final String PARAM_DATATYPE = "datatype";
-//    private static final String PARAM_CONTROLSYSTEM = "controlsystem";
-//    private static final String PARAM_DESCRIPTION = "desc";
-    private static final String PARAM_LOPR = "lopr";
-    private static final String PARAM_HOPR = "hopr";
-
-
     /**
      * Constructor.
      */
-    AddChannelResponse(@Nonnull final EngineModel model) {
+    public StartChannelResponse(@Nonnull final EngineModel model) {
         super(model);
     }
 
@@ -69,22 +62,11 @@ public class AddChannelResponse extends AbstractChannelResponse {
     @Override
     protected void fillResponse(@Nonnull final HttpServletRequest req,
                                 @Nonnull final HttpServletResponse resp) throws Exception {
-
         final String name = req.getParameter(PARAM_NAME);
-        final String group = req.getParameter(PARAM_CHANNEL_GROUP);
-        final String type = req.getParameter(PARAM_DATATYPE);
-        if (Strings.isNullOrEmpty(name) || Strings.isNullOrEmpty(group) || Strings.isNullOrEmpty(type)) {
-            redirectToErrorPage(resp, "At least one out of the required parameters '" +
-                                      PARAM_NAME + "' & " +
-                                      PARAM_CHANNEL_GROUP + "' & '" +
-                                      PARAM_DATATYPE + "' is either null or empty!");
+        if (Strings.isNullOrEmpty(name)) {
+            redirectToErrorPage(resp, "Required parameter '" + PARAM_NAME + "' is either null or empty!");
             return;
         }
-
-//        final String controlsystem = req.getParameter(PARAM_CONTROLSYSTEM);
-//        final String desc = req.getParameter(PARAM_DESCRIPTION);
-        final String lopr = req.getParameter(PARAM_LOPR);
-        final String hopr = req.getParameter(PARAM_HOPR);
 
         try {
             // Note, that once far in the bright future when we support several control system
@@ -93,18 +75,29 @@ public class AddChannelResponse extends AbstractChannelResponse {
             // directly here or via engine model.
             final EpicsChannelName epicsName = new EpicsChannelName(name);
 
-            getModel().configureNewChannel(epicsName, group, type, lopr, hopr);
+            final ArchiveChannelBuffer<?, ?> buffer = getModel().getChannel(epicsName.toString());
+            if (buffer == null) {
+                redirectToErrorPage(resp, "Channel '" + epicsName.toString() + "' is unknown!");
+                return;
+            }
+            if (buffer.isStarted()) {
+                redirectToWarnPage(resp, "Channel '" + epicsName.toString() + "' has already been started!");
+                return;
+            }
+
+            buffer.start("MANUAL START");
+
             resp.sendRedirect(ShowChannelResponse.getUrl() + "?" + ShowChannelResponse.PARAM_NAME + "="+name);
 
         } catch (final IllegalArgumentException e) {
-            redirectToErrorPage(resp, "Channel could not be configured:\n" + e.getMessage());
+            redirectToErrorPage(resp, "Channel could not be started:\n" + e.getMessage());
         } catch (final EngineModelException e) {
-            redirectToErrorPage(resp, "Channel could not be configured:\n" + e.getMessage());
+            redirectToErrorPage(resp, "Channel could not be started:\n" + e.getMessage());
         }
     }
 
     @Nonnull
     public static String getUrl() {
-        return URL_ADD_CHANNEL_PAGE;
+        return URL_START_CHANNEL_PAGE;
     }
 }

@@ -513,8 +513,7 @@ public final class EngineModel {
     }
 
     @Nonnull
-    public IArchiveChannel configureNewChannel(@Nonnull final String info,
-                                               @Nonnull final EpicsChannelName epicsName,
+    public IArchiveChannel configureNewChannel(@Nonnull final EpicsChannelName epicsName,
                                                @Nonnull final String groupName,
                                                @Nonnull final String type,
                                                @Nullable final String low,
@@ -529,6 +528,8 @@ public final class EngineModel {
             if (channelBuffer != null) {
                 throw new EngineModelException("Channel with name: '" + epicsName.toString() + "' does already exist for this engine.", null);
             }
+            // TODO (bknerr) : check whether channel is already covered by other engine!
+
             final ArchiveGroup group = getGroup(groupName);
             if (group == null) {
                 throw new EngineModelException("Group with name: '" + groupName + "' does not yet exist for this engine.", null);

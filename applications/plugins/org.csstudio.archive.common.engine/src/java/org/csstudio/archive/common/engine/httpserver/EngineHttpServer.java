@@ -85,9 +85,6 @@ public class EngineHttpServer {
         httpService.registerServlet("/disconnected", new DisconnectedResponse(model), null, httpContext);
         httpService.registerServlet("/group", new GroupResponse(model), null, httpContext);
 
-        httpService.registerServlet(ShowChannelResponse.getUrl(),
-                                    new ShowChannelResponse(model),
-                                    null, httpContext);
 
         httpService.registerServlet("/channels", new ChannelListResponse(model), null, httpContext);
         httpService.registerServlet("/environment", new EnvironmentResponse(model), null, httpContext);
@@ -95,8 +92,17 @@ public class EngineHttpServer {
         httpService.registerServlet("/reset", new ResetResponse(model), null, httpContext);
         httpService.registerServlet("/stop", new StopResponse(model), null, httpContext);
 
+        httpService.registerServlet(ShowChannelResponse.getUrl(),
+                                    new ShowChannelResponse(model),
+                                    null, httpContext);
         httpService.registerServlet(AddChannelResponse.getUrl(),
                                     new AddChannelResponse(model),
+                                    null, httpContext);
+        httpService.registerServlet(StartChannelResponse.getUrl(),
+                                    new StartChannelResponse(model),
+                                    null, httpContext);
+        httpService.registerServlet(StopChannelResponse.getUrl(),
+                                    new StopChannelResponse(model),
                                     null, httpContext);
 
         httpService.registerServlet("/debug", new DebugResponse(model), null, httpContext);
