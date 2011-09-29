@@ -78,6 +78,9 @@ public class ArchiveChannelStatusBatchQueueHandler extends BatchQueueHandlerSupp
     @Override
     @Nonnull
     public Collection<String> convertToStatementString(@Nonnull final Collection<IArchiveChannelStatus> elements) {
+        if (elements.isEmpty()) {
+            return Collections.emptyList();
+        }
         final String sqlWithoutValues = getSqlStatementString().replace(VAL_WILDCARDS, "");
 
         final Collection<String> valueList =
