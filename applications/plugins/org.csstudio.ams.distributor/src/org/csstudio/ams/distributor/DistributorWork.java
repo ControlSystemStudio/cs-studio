@@ -57,7 +57,6 @@ import org.csstudio.ams.dbAccess.configdb.FilterActionDAO;
 import org.csstudio.ams.dbAccess.configdb.FilterActionTObject;
 import org.csstudio.ams.dbAccess.configdb.FilterDAO;
 import org.csstudio.ams.dbAccess.configdb.FilterTObject;
-import org.csstudio.ams.dbAccess.configdb.FlagDAO;
 import org.csstudio.ams.dbAccess.configdb.HistoryDAO;
 import org.csstudio.ams.dbAccess.configdb.HistoryTObject;
 import org.csstudio.ams.dbAccess.configdb.MessageChainDAO;
@@ -156,36 +155,28 @@ public class DistributorWork extends Thread implements AmsConstants {
 		int iErr = DistributorStart.STAT_OK;
 		Log.log(this, Log.INFO, "start distributor work");
         bStop = false;
+        
+        boolean success;
+        
+        // Initialization
+        success = initJmsInternal();
+        if (!success) {
+            throw new RuntimeException("Failed to initialize internal JMS connections");
+        }
+        success = initJmsExternal();
+        if (!success) {
+            throw new RuntimeException("Failed to initialize external JMS connections");
+        }
+        success = initApplicationDb();
+        if (!success) {
+            throw new RuntimeException("Failed to connect to database servers");
+        }
+        synchronizer = new ConfigurationSynchronizer(conDb, masterDb, amsSender);
+        
 
 		while(bStop == false)
 		{
 			try {
-				if (!bInitedConDb) {
-					bInitedConDb = initApplicationDb();
-					if (bInitedConDb) {
-						bInitedConDb = initRplStateFlag(); // get last
-                                    					// replication state
-                                    					// flag value
-						synchronizer = new ConfigurationSynchronizer(conDb, masterDb);
-					}
-
-					if (!bInitedConDb) // if one of the two functions return
-						// false
-						iErr = DistributorStart.STAT_ERR_APPLICATION_DB;
-				}
-
-				if (bInitedConDb && !bInitedJmsInt) {
-					bInitedJmsInt = initJmsInternal();
-					if (!bInitedJmsInt)
-						iErr = DistributorStart.STAT_ERR_JMSCON_INT;
-				}
-
-				if (bInitedConDb && bInitedJmsInt && !bInitedJmsExt) {
-					bInitedJmsExt = initJmsExternal();
-					if (!bInitedJmsExt)
-						iErr = DistributorStart.STAT_ERR_JMSCON_EXT;
-				}
-
 				sleep(1);
 
 				if (bInitedConDb && bInitedJmsInt && bInitedJmsExt) {
@@ -212,15 +203,6 @@ public class DistributorWork extends Thread implements AmsConstants {
 							// in the next run
 						}
 					}
-
-					// replication
-					if (iErr == DistributorStart.STAT_OK
-							&& iCmd == CMD_RPL_START)
-						iErr = rplExecute();
-
-					if (iErr == DistributorStart.STAT_OK
-							&& iCmd == CMD_RPL_NOTIFY_FMR)
-						iErr = rplNotifyFmr();
 
 					// WorkOnReplyMessage 2 / 3 (reply or change status)
 					if (iErr == DistributorStart.STAT_OK) {
@@ -323,30 +305,6 @@ public class DistributorWork extends Thread implements AmsConstants {
 	// //////////////////////////////////////////////////////////////////////////////
 	// Start: init & close (Derby DB, internal JMS, external JMS)
 	//
-
-	private boolean initRplStateFlag() throws Exception {
-		try {
-			short sFlag = FlagDAO.selectFlag(conDb, FLG_RPL);
-			switch (sFlag) {
-			// FLAGVALUE_SYNCH_FMR_RPL, FLAGVALUE_SYNCH_FMR_TO_DIST_SENDED,
-			// other:
-			default:
-				iCmd = CMD_IDLE; // go to idle if all o.k.
-				break;
-			case FLAGVALUE_SYNCH_DIST_RPL:
-				iCmd = CMD_RPL_START;
-				break;
-			case FLAGVALUE_SYNCH_DIST_NOTIFY_FMR:
-				iCmd = CMD_RPL_NOTIFY_FMR;
-				break;
-			}
-			return true;
-		} catch (SQLException e) {
-			Log.log(this, Log.FATAL,
-					"could not get flag value from application db", e);
-		}
-		return false;
-	}
 
 	private boolean initApplicationDb() {
 		try {
@@ -740,7 +698,7 @@ public class DistributorWork extends Thread implements AmsConstants {
 
 				String val = msg.getString(MSGPROP_COMMAND);
 				if (val != null && val.equals(MSGVALUE_TCMD_RELOAD_CFG_START)) {
-					iErr = rplStart();
+					synchronizer.requestSynchronization();
 				} else {
 					iErr = distributeMessage(msg);
 					if (iErr == DistributorStart.STAT_FALSE) {
@@ -993,79 +951,6 @@ public class DistributorWork extends Thread implements AmsConstants {
 	// End: Distribute Message
 	// //////////////////////////////////////////////////////////////////////////////
 
-	// //////////////////////////////////////////////////////////////////////////////
-	// Start: Replication
-	//
-
-	private int rplStart() throws Exception {
-		int result = synchronizer.startReplication();
-		if (result == DistributorStart.STAT_OK) {
-		    iCmd = CMD_RPL_START;
-		}
-		return result;
-	}
-
-	private int rplExecute() throws Exception // INCLUDING -
-	// InterruptedException
-	{
-		int result = DistributorStart.STAT_OK;
-
-		// delete all msg from dist topic subscriber
-		Message msg = null;
-		Log.log(this, Log.DEBUG, "delete all msg");
-		while (null != (msg = amsReceiver.receive("amsSubscriberDist"))) {
-			if (!acknowledge(msg)) {
-				result = DistributorStart.STAT_ERR_JMSCON_INT;
-				break;
-			} else {
-				result = DistributorStart.STAT_OK;
-			}
-		}
-
-		if (result != DistributorStart.STAT_OK) {
-			return result;
-		}
-
-		result = synchronizer.executeReplication();
-		if (result == DistributorStart.STAT_OK) {
-		    iCmd = CMD_RPL_NOTIFY_FMR;
-		}
-		return result;
-	}
-
-	private int rplNotifyFmr() throws Exception {
-		try {
-			Log
-					.log(this, Log.INFO,
-							"send MSGVALUE_TCMD_RELOAD_CFG_END to FMR via Ams Cmd Topic");
-			MapMessage msg = amsSender.createMapMessage();
-			msg.setString(MSGPROP_TCMD_COMMAND, MSGVALUE_TCMD_RELOAD_CFG_END);
-			amsSender.sendMessage("amsPublisherCommand", msg);
-
-			boolean bRet = FlagDAO.bUpdateFlag(conDb, FLG_RPL,
-					FLAGVALUE_SYNCH_DIST_NOTIFY_FMR, FLAGVALUE_SYNCH_IDLE);
-			if (bRet) {
-				iCmd = CMD_IDLE; // end replication
-				HistoryWriter.logHistoryRplStart(conDb, false);
-			} else {
-				Log.log(this, Log.FATAL,
-						"update not successful, could not update " + FLG_RPL
-								+ " from " + FLAGVALUE_SYNCH_DIST_NOTIFY_FMR
-								+ " to " + FLAGVALUE_SYNCH_IDLE);
-				return DistributorStart.STAT_ERR_FLG_RPL; // force new
-				// initialization,
-				// no recover()
-				// needed
-			}
-		} catch (JMSException e) {
-			Log.log(this, Log.FATAL, "could not publishReplicateEndToFMgr", e);
-			return DistributorStart.STAT_ERR_JMSCON_INT;
-		} catch (SQLException e) {
-			Log.log(this, Log.FATAL, "could not bUpdateFlag", e);
-			return DistributorStart.STAT_ERR_APPLICATION_DB;
-		}
-		return DistributorStart.STAT_OK;
-	}
 
 	/**
 	 * Send the message to a default topic which was configured as default

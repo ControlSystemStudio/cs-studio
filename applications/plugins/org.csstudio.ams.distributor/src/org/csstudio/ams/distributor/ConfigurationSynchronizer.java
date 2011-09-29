@@ -3,44 +3,126 @@ package org.csstudio.ams.distributor;
 import java.sql.Connection;
 import java.sql.SQLException;
 
+import javax.jms.JMSException;
+import javax.jms.MapMessage;
+
 import org.csstudio.ams.AmsConstants;
-import org.csstudio.ams.ExitException;
 import org.csstudio.ams.Log;
 import org.csstudio.ams.configReplicator.ConfigReplicator;
 import org.csstudio.ams.dbAccess.configdb.FlagDAO;
+import org.csstudio.platform.utility.jms.JmsMultipleProducer;
 
 /**
  * Service that copies the configuration from the master configuration database
  * into the local application database.
  */
-class ConfigurationSynchronizer {
+class ConfigurationSynchronizer implements Runnable {
     private static enum SynchronizerState {
-        NONE,
+        WAITING_FOR_REQUEST,
+        SYNCHRONIZATION_REQUESTED,
         SYNCHRONIZATION_STARTED,
-        ;
+        SYNCHRONIZATION_COMPLETED;
     }
     
     private final Connection _localDatabaseConnection;
     private final Connection _masterDatabaseConnection;
+    private final JmsMultipleProducer _jmsProducer;
     private SynchronizerState _state;
+    private boolean _stopped = false;
     
+    /**
+     * Creates a new synchronizer object.
+     */
     ConfigurationSynchronizer(Connection localDatabaseConnection,
-                              Connection masterDatabaseConnection) {
+                              Connection masterDatabaseConnection,
+                              JmsMultipleProducer jmsProducer) {
         _localDatabaseConnection = localDatabaseConnection;
         _masterDatabaseConnection = masterDatabaseConnection;
-        _state = SynchronizerState.NONE;
+        _jmsProducer = jmsProducer;
+        _state = readSynchronizationState();
     }
     
-    int startReplication() {
-        if (_state != SynchronizerState.NONE) {
+    /**
+     * Reads the current synchronization state from the application database.
+     */
+    private SynchronizerState readSynchronizationState() {
+        try {
+            short flag = FlagDAO.selectFlag(_localDatabaseConnection, AmsConstants.FLG_RPL);
+            switch (flag) {
+                case AmsConstants.FLAGVALUE_SYNCH_FMR_TO_DIST_SENDED:
+                    return SynchronizerState.SYNCHRONIZATION_REQUESTED;
+                case AmsConstants.FLAGVALUE_SYNCH_DIST_RPL:
+                    return SynchronizerState.SYNCHRONIZATION_STARTED;
+                case AmsConstants.FLAGVALUE_SYNCH_DIST_NOTIFY_FMR:
+                    return SynchronizerState.SYNCHRONIZATION_COMPLETED;
+                default:
+                    return SynchronizerState.WAITING_FOR_REQUEST;
+            }
+        } catch (SQLException e) {
+            Log.log(this, Log.FATAL, "could not get flag value from application db", e);
+            throw new RuntimeException("Synchronizer initialization failed", e);
+        }
+    }
+    
+    /**
+     * Stops this synchronizer.
+     */
+    synchronized void stop() {
+        _stopped = true;
+        notifyAll();
+    }
+    
+    /**
+     * Runs this synchronizer.
+     */
+    synchronized public void run() {
+        _stopped = false;
+        while (!_stopped) {
+            switch (_state) {
+                case WAITING_FOR_REQUEST:
+                    try {
+                        wait();
+                    } catch (InterruptedException e) {
+                        // ignore
+                    }
+                    break;
+                case SYNCHRONIZATION_REQUESTED:
+                    startSynchronization();
+                    break;
+                case SYNCHRONIZATION_STARTED:
+                    copyConfiguration();
+                    break;
+                case SYNCHRONIZATION_COMPLETED:
+                    sendSynchronizationCompletedMessage();
+                    break;
+            }
+        }
+    }
+    
+    /**
+     * Requests this synchronizer to perform a synchronization.
+     */
+    synchronized void requestSynchronization() {
+        if (_state != SynchronizerState.WAITING_FOR_REQUEST) {
             throw new IllegalStateException("Synchronization already in progress");
+        }
+        _state = SynchronizerState.SYNCHRONIZATION_REQUESTED;
+        notifyAll();
+    }
+    
+    /**
+     * Starts the synchronization.
+     */
+    private void startSynchronization() {
+        if (_state != SynchronizerState.SYNCHRONIZATION_REQUESTED) {
+            throw new IllegalStateException("Not in state SYNCHRONIZATION_REQUESTED");
         }
         
         try {
             boolean success = FlagDAO.bUpdateFlag(_localDatabaseConnection,
-                                               AmsConstants.FLG_RPL,
-                                               AmsConstants.FLAGVALUE_SYNCH_FMR_TO_DIST_SENDED,
-                                               AmsConstants.FLAGVALUE_SYNCH_DIST_RPL);
+                                                  AmsConstants.FLG_RPL,
+                                                  AmsConstants.FLAGVALUE_SYNCH_FMR_TO_DIST_SENDED,
+                                                  AmsConstants.FLAGVALUE_SYNCH_DIST_RPL);
             if (success) {
                 _state = SynchronizerState.SYNCHRONIZATION_STARTED;
                 HistoryWriter.logHistoryRplStart(_localDatabaseConnection, true);
@@ -48,51 +130,77 @@ class ConfigurationSynchronizer {
             } else {
                 Log.log(this, Log.FATAL, "ignore start msg, could not update db flag to "
                         + AmsConstants.FLAGVALUE_SYNCH_DIST_RPL);
-                return DistributorStart.STAT_ERR_FLG_RPL; // force new initialization, no recover() needed
             }
         } catch (SQLException e) {
             Log.log(this, Log.FATAL, "could not bUpdateFlag", e);
-            return DistributorStart.STAT_ERR_APPLICATION_DB_SEND;
         }
-        
-        return DistributorStart.STAT_OK;
     }
     
-    int executeReplication() throws Exception {
-        // FIXME erstmal auskommentiert, weil es verhindert, dass die Sync nach Neustart fortgesetzt wird basierend auf DB-Flag
-//        if (_state != SynchronizerState.SYNCHRONIZATION_STARTED) {
-//            throw new IllegalStateException("Cannot execute synchronization: must be started first.");
-//        }
+    /**
+     * Copies the configuration from the master database to the local application database.
+     */
+    private void copyConfiguration() {
+        if (_state != SynchronizerState.SYNCHRONIZATION_STARTED) {
+            throw new IllegalStateException("Not in state SYNCHRONIZATION_STARTED");
+        }
         
         try {
-            ConfigReplicator.replicateConfiguration(_masterDatabaseConnection, _localDatabaseConnection);
-        } catch (SQLException e) {
+            ConfigReplicator.replicateConfiguration(_masterDatabaseConnection,
+                                                    _localDatabaseConnection);
+        } catch (Exception e) {
             Log.log(this, Log.FATAL, "could not replicateConfiguration", e);
-            return DistributorStart.STAT_ERR_APPLICATION_DB;
-        } catch (ExitException ex) {
-            Log.log(this, Log.FATAL, "could not replicateConfiguration", ex);
-            return DistributorStart.STAT_ERR_FLG_BUP;
         }
-
-        // set flag value and iCmd
+        
         try {
-            boolean success = FlagDAO.bUpdateFlag(_localDatabaseConnection, 
+            boolean success = FlagDAO.bUpdateFlag(_localDatabaseConnection,
                                                   AmsConstants.FLG_RPL,
                                                   AmsConstants.FLAGVALUE_SYNCH_DIST_RPL,
                                                   AmsConstants.FLAGVALUE_SYNCH_DIST_NOTIFY_FMR);
-            if (!success) {
-                Log.log(this, Log.FATAL,
-                        "update not successful, could not update " + AmsConstants.FLG_RPL
-                                + " from " + AmsConstants.FLAGVALUE_SYNCH_DIST_RPL + " to "
-                                + AmsConstants.FLAGVALUE_SYNCH_DIST_NOTIFY_FMR);
-                return DistributorStart.STAT_ERR_FLG_RPL; // force new initialization, no recover() needed
+            if (success) {
+                _state = SynchronizerState.SYNCHRONIZATION_COMPLETED;
+            } else {
+                Log.log(this, Log.FATAL, "update not successful, could not update "
+                        + AmsConstants.FLG_RPL + " from " + AmsConstants.FLAGVALUE_SYNCH_DIST_RPL
+                        + " to " + AmsConstants.FLAGVALUE_SYNCH_DIST_NOTIFY_FMR);
             }
         } catch (SQLException e) {
             Log.log(this, Log.FATAL, "could not bUpdateFlag", e);
-            return DistributorStart.STAT_ERR_APPLICATION_DB;
         }
+    }
+    
+    /**
+     * Sends a JMS message to the filter manager.
+     */
+    private void sendSynchronizationCompletedMessage() {
+        if (_state != SynchronizerState.SYNCHRONIZATION_COMPLETED) {
+            throw new IllegalStateException("Not in state SYNCHRONIZATION_COMPLETED");
+        }
+        
+        try {
+            Log.log(this, Log.INFO,
+                            "send MSGVALUE_TCMD_RELOAD_CFG_END to FMR via Ams Cmd Topic");
+            MapMessage msg = _jmsProducer.createMapMessage();
+            msg.setString(AmsConstants.MSGPROP_TCMD_COMMAND, AmsConstants.MSGVALUE_TCMD_RELOAD_CFG_END);
+            _jmsProducer.sendMessage("amsPublisherCommand", msg);
 
-        return DistributorStart.STAT_OK;
+            boolean success = FlagDAO.bUpdateFlag(_localDatabaseConnection,
+                                                  AmsConstants.FLG_RPL,
+                                                  AmsConstants.FLAGVALUE_SYNCH_DIST_NOTIFY_FMR,
+                                                  AmsConstants.FLAGVALUE_SYNCH_IDLE);
+            if (success) {
+                _state = SynchronizerState.WAITING_FOR_REQUEST;
+                HistoryWriter.logHistoryRplStart(_localDatabaseConnection, false);
+            } else {
+                Log.log(this, Log.FATAL,
+                        "update not successful, could not update " + AmsConstants.FLG_RPL
+                                + " from " + AmsConstants.FLAGVALUE_SYNCH_DIST_NOTIFY_FMR
+                                + " to " + AmsConstants.FLAGVALUE_SYNCH_IDLE);
+            }
+        } catch (JMSException e) {
+            Log.log(this, Log.FATAL, "could not publishReplicateEndToFMgr", e);
+        } catch (SQLException e) {
+            Log.log(this, Log.FATAL, "could not bUpdateFlag", e);
+        }
     }
     
 }
