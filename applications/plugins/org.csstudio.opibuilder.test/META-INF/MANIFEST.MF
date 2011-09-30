@@ -1,0 +1,11 @@
+Manifest-Version: 1.0
+Bundle-ManifestVersion: 2
+Bundle-Name: Test Fragment of opibuilder
+Bundle-SymbolicName: org.csstudio.opibuilder.test;singleton:=true
+Bundle-Version: 1.0.0.qualifier
+Fragment-Host: org.csstudio.opibuilder;bundle-version="1.2.0"
+Bundle-RequiredExecutionEnvironment: JavaSE-1.6
+Bundle-Vendor: Xihui Chen<chenx1@ornl.gov> - SNS
+Bundle-ClassPath: lib/jython/jython.jar,
+ lib/rhino/js.jar,
+ .
