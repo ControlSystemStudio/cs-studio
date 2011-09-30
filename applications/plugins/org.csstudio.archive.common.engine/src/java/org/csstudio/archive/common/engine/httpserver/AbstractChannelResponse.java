@@ -21,9 +21,15 @@
  */
 package org.csstudio.archive.common.engine.httpserver;
 
+import javax.annotation.CheckForNull;
 import javax.annotation.Nonnull;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 
 import org.csstudio.archive.common.engine.model.EngineModel;
+import org.csstudio.domain.desy.epics.name.EpicsChannelName;
+
+import com.google.common.base.Strings;
 
 
 
@@ -45,5 +51,34 @@ abstract class AbstractChannelResponse extends AbstractResponse {
      */
     protected AbstractChannelResponse(@Nonnull final EngineModel model) {
         super(model);
+    }
+
+    /**
+     * Checks for the validity of the name parameter and creates an epics compatible name object.
+     * Or if invalid, configures the response to contain the error message.
+     * @param req the request
+     * @param resp the response
+     * @return the valid epics name or <code>null</code> if an error response has been configured.
+     * @throws Exception
+     */
+    @CheckForNull
+    protected EpicsChannelName parseEpicsNameOrConfigureRedirectResponse(@Nonnull final HttpServletRequest req,
+                                                            @Nonnull final HttpServletResponse resp) throws Exception {
+        final String name = req.getParameter(PARAM_NAME);
+        if (Strings.isNullOrEmpty(name)) {
+            redirectToErrorPage(resp, "Required parameter '" + PARAM_NAME + "' is either null or empty!");
+            return null;
+        }
+        try {
+            // Note, that once far in the bright future when we support several control system
+            // types, we'd need channel name support/service for any of them and validated 'name' classes with a
+            // a common supertype (the abstract channel identifier/name) which are created either
+            // directly here or via engine model.
+            return new EpicsChannelName(name);
+
+        } catch (final IllegalArgumentException e) {
+            redirectToErrorPage(resp, "Channel name is not EPICS compatible:\n" + e.getMessage());
+        }
+        return null;
     }
 }

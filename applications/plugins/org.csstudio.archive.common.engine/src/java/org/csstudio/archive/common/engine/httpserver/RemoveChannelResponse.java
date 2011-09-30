@@ -25,7 +25,6 @@ import javax.annotation.Nonnull;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import org.csstudio.archive.common.engine.model.ArchiveChannelBuffer;
 import org.csstudio.archive.common.engine.model.EngineModel;
 import org.csstudio.archive.common.engine.model.EngineModelException;
 import org.csstudio.domain.desy.epics.name.EpicsChannelName;
@@ -34,15 +33,15 @@ import org.csstudio.domain.desy.epics.name.EpicsChannelName;
  * TODO (bknerr) :
  *
  * @author bknerr
- * @since 29.09.2011
+ * @since 30.09.2011
  */
-public class StopChannelResponse extends AbstractChannelResponse {
+public class RemoveChannelResponse extends AbstractChannelResponse {
 
-    private static String URL_STOP_CHANNEL_ACTION;
-    private static String URL_STOP_CHANNEL_PAGE;
+    private static String URL_REMOVE_CHANNEL_ACTION;
+    private static String URL_REMOVE_CHANNEL_PAGE;
     static {
-        URL_STOP_CHANNEL_ACTION = "stop";
-        URL_STOP_CHANNEL_PAGE = URL_CHANNEL_PAGE + "/" + URL_STOP_CHANNEL_ACTION;
+        URL_REMOVE_CHANNEL_ACTION = "start";
+        URL_REMOVE_CHANNEL_PAGE = URL_CHANNEL_PAGE + "/" + URL_REMOVE_CHANNEL_ACTION;
     }
 
     private static final long serialVersionUID = 1L;
@@ -50,44 +49,33 @@ public class StopChannelResponse extends AbstractChannelResponse {
     /**
      * Constructor.
      */
-    public StopChannelResponse(@Nonnull final EngineModel model) {
+    public RemoveChannelResponse(@Nonnull final EngineModel model) {
         super(model);
     }
 
     /**
      * {@inheritDoc}
      */
-    @SuppressWarnings("static-access")
     @Override
     protected void fillResponse(@Nonnull final HttpServletRequest req,
                                 @Nonnull final HttpServletResponse resp) throws Exception {
-        final EpicsChannelName epicsName = parseEpicsNameOrConfigureRedirectResponse(req, resp);
-        if (epicsName == null) {
+        final EpicsChannelName name = parseEpicsNameOrConfigureRedirectResponse(req, resp);
+        if (name == null) {
             return;
         }
 
         try {
-            final ArchiveChannelBuffer<?, ?> buffer = getModel().getChannel(epicsName.toString());
-            if (buffer == null) {
-                redirectToErrorPage(resp, "Channel '" + epicsName.toString() + "' is unknown!");
-                return;
-            }
-            if (!buffer.isStarted()) {
-                redirectToWarnPage(resp, "Channel '" + epicsName.toString() + "' has already been stopped!");
-                return;
-            }
-
-            buffer.stop("MANUAL STOP");
-
-            resp.sendRedirect(ShowChannelResponse.getUrl() + "?" + ShowChannelResponse.PARAM_NAME + "=" + epicsName.toString());
-
+            getModel().removeChannelFromConfiguration(name.toString());
         } catch (final EngineModelException e) {
-            redirectToErrorPage(resp, "Channel could not be started:\n" + e.getMessage());
+            redirectToErrorPage(resp, "Removal of channel '" + name.toString() + "' failed:\n" +
+                                e.getMessage());
+            return;
         }
+        redirectToSuccessPage(resp, "Removal of channel '" + name.toString() + "' succeeded.");
     }
 
     @Nonnull
     public static String getUrl() {
-        return URL_STOP_CHANNEL_PAGE;
+        return URL_REMOVE_CHANNEL_PAGE;
     }
 }

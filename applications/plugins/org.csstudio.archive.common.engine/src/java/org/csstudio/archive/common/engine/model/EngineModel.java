@@ -458,13 +458,22 @@ public final class EngineModel {
                                                                         ADDITIONAL_TYPE_PACKAGES);
 
             if (!Collection.class.isAssignableFrom(typeClass)) {
-                return new ArchiveChannelBuffer(cfg.getName(), cfg.getId(), typeClass, provider);
+                return new ArchiveChannelBuffer(cfg.getName(),
+                                                cfg.getId(),
+                                                cfg.getLatestTimestamp(),
+                                                typeClass,
+                                                provider);
             }
             final String elemType =
                 BaseTypeConversionSupport.parseForFirstNestedGenericType(dataType);
             final Class<?> elemClass = BaseTypeConversionSupport.createBaseTypeClassFromString(elemType,
                                                                                                ADDITIONAL_TYPE_PACKAGES);
-            return new ArchiveChannelBuffer(cfg.getName(), cfg.getId(), typeClass, elemClass,  provider);
+            return new ArchiveChannelBuffer(cfg.getName(),
+                                            cfg.getId(),
+                                            cfg.getLatestTimestamp(),
+                                            typeClass,
+                                            elemClass,
+                                            provider);
 
         } catch (final TypeSupportException e) {
             throw new EngineModelException("Datatype " + dataType + " of channel " + cfg.getName() +
@@ -513,11 +522,12 @@ public final class EngineModel {
     }
 
     @Nonnull
-    public IArchiveChannel configureNewChannel(@Nonnull final EpicsChannelName epicsName,
-                                               @Nonnull final String groupName,
-                                               @Nonnull final String type,
-                                               @Nullable final String low,
-                                               @Nullable final String high) throws EngineModelException {
+    public ArchiveChannelBuffer<Serializable, ISystemVariable<Serializable>>
+    configureNewChannel(@Nonnull final EpicsChannelName epicsName,
+                        @Nonnull final String groupName,
+                        @Nonnull final String type,
+                        @Nullable final String low,
+                        @Nullable final String high) throws EngineModelException {
 
         try {
             // For now we use only one control system - for later this can be configured via HTTP server
@@ -529,6 +539,7 @@ public final class EngineModel {
                 throw new EngineModelException("Channel with name: '" + epicsName.toString() + "' does already exist for this engine.", null);
             }
             // TODO (bknerr) : check whether channel is already covered by other engine!
+            // only possible after db schema refactoring
 
             final ArchiveGroup group = getGroup(groupName);
             if (group == null) {
@@ -552,11 +563,7 @@ public final class EngineModel {
             if (cfg == null) {
                 throw new EngineModelException("Channel creation failed.", null);
             }
-
-            final ArchiveChannelBuffer<Serializable, ISystemVariable<Serializable>> buffer =
-                createAndAddArchiveChannelBuffer(_provider, cfg, _writeExecutor, _channelMap, group);
-
-            return cfg;
+            return createAndAddArchiveChannelBuffer(_provider, cfg, _writeExecutor, _channelMap, group);
 
         } catch (final ArchiveServiceException e) {
             throw new EngineModelException("Channel creation failed.", e);
@@ -564,6 +571,26 @@ public final class EngineModel {
             throw new EngineModelException("Channel creation failed.", e);
         } catch (final OsgiServiceUnavailableException e) {
             throw new EngineModelException("Channel creation failed.", e);
+        }
+    }
+
+    public void removeChannelFromConfiguration(@Nonnull final String name) throws EngineModelException{
+        final ArchiveChannelBuffer<?, ?> buffer = getChannel(name);
+        if (buffer == null) {
+            throw new EngineModelException("Channel '" + name.toString() + "' is unknown!", null);
+        }
+        if (buffer.getTimeOfMostRecentSample() != null) {
+            throw new EngineModelException("Removal of channel '" + name.toString() + "' not possible!" +
+                                           "\nThere are archived samples for this channel. Do you just like to stop archiving the channel?", null);
+        }
+        buffer.stop("STOP FOR REMOVAL");
+
+        try {
+            _provider.getEngineFacade().removeChannel(name);
+        } catch (final OsgiServiceUnavailableException e) {
+            throw new EngineModelException("Channel deletion failed.", e);
+        } catch (final ArchiveServiceException e) {
+            throw new EngineModelException("Channel deletion failed.", e);
         }
     }
 }

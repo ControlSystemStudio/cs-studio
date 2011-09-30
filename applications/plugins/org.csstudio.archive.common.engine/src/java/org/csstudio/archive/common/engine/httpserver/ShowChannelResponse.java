@@ -15,8 +15,7 @@ import org.csstudio.archive.common.engine.model.ArchiveChannelBuffer;
 import org.csstudio.archive.common.engine.model.EngineModel;
 import org.csstudio.archive.common.engine.model.SampleBuffer;
 import org.csstudio.archive.common.engine.model.SampleBufferStatistics;
-
-import com.google.common.base.Strings;
+import org.csstudio.domain.desy.epics.name.EpicsChannelName;
 
 /** Provide web page with detail for one channel.
  *  @author Kay Kasemir
@@ -41,32 +40,31 @@ class ShowChannelResponse extends AbstractChannelResponse {
     @Override
     protected void fillResponse(@Nonnull final HttpServletRequest req,
                                 @Nonnull final HttpServletResponse resp) throws Exception {
-        final String channelName = req.getParameter(PARAM_NAME);
-        if (Strings.isNullOrEmpty(channelName)) {
-            resp.sendError(400, "Parameter '" + PARAM_NAME + "' is null or empty.");
+        final EpicsChannelName name = parseEpicsNameOrConfigureRedirectResponse(req, resp);
+        if (name == null) {
             return;
         }
-        final ArchiveChannelBuffer<?, ?> channel = getModel().getChannel(channelName);
+        final ArchiveChannelBuffer<?, ?> channel = getModel().getChannel(name.toString());
         if (channel == null) {
-            resp.sendError(400, "Unknown channel " + channelName);
+            resp.sendError(400, "Unknown channel " + name.toString());
             return;
         }
 
         // HTML table similar to group's list of channels
         final HTMLWriter html = new HTMLWriter(resp, "Archive Engine Channel");
 
-        createChannelTable(channelName, channel, html);
+        createChannelTable(name, channel, html);
 
         html.close();
     }
 
 
-    private void createChannelTable(@Nonnull final String channelName,
+    private void createChannelTable(@Nonnull final EpicsChannelName channelName,
                                     @Nonnull final ArchiveChannelBuffer<?, ?> channel,
                                     @Nonnull final HTMLWriter html) {
         html.openTable(2, new String[] {Messages.HTTP_CHANNEL_INFO});
 
-        html.tableLine(new String[] {Messages.HTTP_CHANNEL, channelName});
+        html.tableLine(new String[] {Messages.HTTP_CHANNEL, channelName.toString()});
 
         html.tableLine(new String[] {
                            Messages.HTTP_STARTED,

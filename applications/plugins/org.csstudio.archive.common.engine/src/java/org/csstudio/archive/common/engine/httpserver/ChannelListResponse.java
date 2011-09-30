@@ -54,7 +54,6 @@ class ChannelListResponse extends AbstractResponse {
             //Messages.HTTP_Mechanism,
             //Messages.HTTP_Enabled,
             Messages.HTTP_CURRENT_VALUE,
-            Messages.HTTP_LAST_ARCHIVED_VALUE,
         });
 
         for (final ArchiveChannelBuffer<?, ?> channel : getModel().getChannels()) {
@@ -76,7 +75,6 @@ class ChannelListResponse extends AbstractResponse {
                                             //                                       channel.isEnabled() ? Messages.HTTP_Enabled :
                                             //                                                             HTMLWriter.makeRedText(Messages.HTTP_Disabled),
                                         getValueAsString(channel.getMostRecentSample()),
-                                        getValueAsString(channel.getLastArchivedSample()),
                                        });
         }
         html.closeTable();

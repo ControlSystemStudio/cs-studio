@@ -71,12 +71,15 @@ public class AddChannelResponse extends AbstractChannelResponse {
     protected void fillResponse(@Nonnull final HttpServletRequest req,
                                 @Nonnull final HttpServletResponse resp) throws Exception {
 
-        final String name = req.getParameter(PARAM_NAME);
+        final EpicsChannelName name = parseEpicsNameOrConfigureRedirectResponse(req, resp);
+        if (name == null) {
+            return;
+        }
+
         final String group = req.getParameter(PARAM_CHANNEL_GROUP);
         final String type = req.getParameter(PARAM_DATATYPE);
-        if (Strings.isNullOrEmpty(name) || Strings.isNullOrEmpty(group) || Strings.isNullOrEmpty(type)) {
+        if (Strings.isNullOrEmpty(group) || Strings.isNullOrEmpty(type)) {
             redirectToErrorPage(resp, "At least one out of the required parameters '" +
-                                      PARAM_NAME + "' & " +
                                       PARAM_CHANNEL_GROUP + "' & '" +
                                       PARAM_DATATYPE + "' is either null or empty!");
             return;
@@ -88,17 +91,8 @@ public class AddChannelResponse extends AbstractChannelResponse {
         final String hopr = req.getParameter(PARAM_HOPR);
 
         try {
-            // Note, that once far in the bright future when we support several control system
-            // types, we'd need channel name support/service for any of them and validated 'name' classes with a
-            // a common supertype (the abstract channel identifier/name) which are created either
-            // directly here or via engine model.
-            final EpicsChannelName epicsName = new EpicsChannelName(name);
-
-            getModel().configureNewChannel(epicsName, group, type, lopr, hopr);
+            getModel().configureNewChannel(name, group, type, lopr, hopr);
             resp.sendRedirect(ShowChannelResponse.getUrl() + "?" + ShowChannelResponse.PARAM_NAME + "="+name);
-
-        } catch (final IllegalArgumentException e) {
-            redirectToErrorPage(resp, "Channel could not be configured:\n" + e.getMessage());
         } catch (final EngineModelException e) {
             redirectToErrorPage(resp, "Channel could not be configured:\n" + e.getMessage());
         }

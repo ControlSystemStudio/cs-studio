@@ -30,8 +30,6 @@ import org.csstudio.archive.common.engine.model.EngineModel;
 import org.csstudio.archive.common.engine.model.EngineModelException;
 import org.csstudio.domain.desy.epics.name.EpicsChannelName;
 
-import com.google.common.base.Strings;
-
 /**
  * TODO (bknerr) :
  *
@@ -63,26 +61,19 @@ public class StartChannelResponse extends AbstractChannelResponse {
     @Override
     protected void fillResponse(@Nonnull final HttpServletRequest req,
                                 @Nonnull final HttpServletResponse resp) throws Exception {
-        final String name = req.getParameter(PARAM_NAME);
-        if (Strings.isNullOrEmpty(name)) {
-            redirectToErrorPage(resp, "Required parameter '" + PARAM_NAME + "' is either null or empty!");
+        final EpicsChannelName name = parseEpicsNameOrConfigureRedirectResponse(req, resp);
+        if (name == null) {
             return;
         }
 
         try {
-            // Note, that once far in the bright future when we support several control system
-            // types, we'd need channel name support/service for any of them and validated 'name' classes with a
-            // a common supertype (the abstract channel identifier/name) which are created either
-            // directly here or via engine model.
-            final EpicsChannelName epicsName = new EpicsChannelName(name);
-
-            final ArchiveChannelBuffer<?, ?> buffer = getModel().getChannel(epicsName.toString());
+            final ArchiveChannelBuffer<?, ?> buffer = getModel().getChannel(name.toString());
             if (buffer == null) {
-                redirectToErrorPage(resp, "Channel '" + epicsName.toString() + "' is unknown!");
+                redirectToErrorPage(resp, "Channel '" + name.toString() + "' is unknown!");
                 return;
             }
             if (buffer.isStarted()) {
-                redirectToWarnPage(resp, "Channel '" + epicsName.toString() + "' has already been started!");
+                redirectToWarnPage(resp, "Channel '" + name.toString() + "' has already been started!");
                 return;
             }
 
