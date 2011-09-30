@@ -31,6 +31,7 @@ import org.eclipse.draw2d.geometry.Dimension;
 import org.eclipse.draw2d.geometry.Point;
 import org.eclipse.draw2d.geometry.PrecisionRectangle;
 import org.eclipse.gef.GraphicalEditPart;
+import org.eclipse.gef.Handle;
 import org.eclipse.gef.editpolicies.ResizableEditPolicy;
 import org.eclipse.gef.requests.ChangeBoundsRequest;
 
@@ -122,15 +123,15 @@ public final class GraphicalFeedbackChildEditPolicy extends ResizableEditPolicy 
 		 */
 		@SuppressWarnings("unchecked")
 		@Override
-		protected List createSelectionHandles() {
+		protected List<?> createSelectionHandles() {
 			// get default handles
-			List handleList = super.createSelectionHandles();
+			List<Handle> handleList = super.createSelectionHandles();
 
 			// add contributed handles
 
 			GraphicalEditPart hostEP = (GraphicalEditPart) getHost();
 
-			List contributedHandles = feedbackFactory
+			List<Handle> contributedHandles = feedbackFactory
 					.createCustomHandles(hostEP);
 
 			if (contributedHandles != null) {

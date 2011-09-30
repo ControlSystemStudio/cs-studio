@@ -23,6 +23,7 @@ import org.csstudio.opibuilder.properties.FilePathProperty;
 import org.csstudio.opibuilder.properties.WidgetPropertyCategory;
 import org.csstudio.opibuilder.util.ConsoleService;
 import org.csstudio.opibuilder.util.ResourceUtil;
+import org.csstudio.opibuilder.util.SingleSourceHelper;
 import org.csstudio.opibuilder.widgetActions.WidgetActionFactory.ActionType;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.IProgressMonitor;
@@ -30,6 +31,7 @@ import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Path;
 import org.eclipse.core.runtime.Status;
 import org.eclipse.core.runtime.jobs.Job;
+import org.eclipse.swt.SWT;
 import org.eclipse.ui.progress.UIJob;
 
 /**
@@ -57,6 +59,10 @@ public class PlayWavFileAction extends AbstractWidgetAction {
 
 	@Override
 	public void run() {
+		if(SWT.getPlatform().startsWith("rap")){ //$NON-NLS-1$
+			SingleSourceHelper.rapPlayWavFile(getAbsolutePath());
+			return;
+		}
 
 		Job job = new Job("Play wave file") {
 

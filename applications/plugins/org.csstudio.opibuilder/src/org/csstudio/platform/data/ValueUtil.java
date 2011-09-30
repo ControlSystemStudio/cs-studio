@@ -19,6 +19,8 @@ import org.csstudio.data.values.IStringValue;
 import org.csstudio.data.values.IValue;
 import org.csstudio.data.values.Messages;
 
+import sun.awt.SunHints.Value;
+
 /** Helper for decoding the data in a {@link IValue},
  *  mostly for display purposes.
  *  @author Kay Kasemir

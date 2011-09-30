@@ -30,6 +30,7 @@ import org.eclipse.core.runtime.Path;
 import org.eclipse.core.runtime.Status;
 import org.eclipse.core.runtime.jobs.Job;
 import org.eclipse.gef.GraphicalViewer;
+import org.eclipse.swt.widgets.Display;
 import org.python.core.PyCode;
 import org.python.core.PyString;
 import org.python.core.PySystemState;
@@ -114,6 +115,8 @@ public class ExecutePythonScriptAction extends AbstractWidgetAction {
 	}
 	
 	public void runTask() {
+		Display display = getWidgetModel().getRootDisplayModel().getViewer().getControl().getDisplay();
+
 		try {
 			if(code == null){
 				//read file
@@ -130,7 +133,7 @@ public class ExecutePythonScriptAction extends AbstractWidgetAction {
 			}
 
 
-			UIBundlingThread.getInstance().addRunnable(new Runnable() {
+			UIBundlingThread.getInstance().addRunnable(display, new Runnable() {
 
 				public void run() {
 

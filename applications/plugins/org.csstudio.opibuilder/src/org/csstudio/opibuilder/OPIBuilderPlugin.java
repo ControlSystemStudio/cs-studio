@@ -15,8 +15,10 @@ import org.csstudio.opibuilder.util.ConsoleService;
 import org.csstudio.opibuilder.util.GUIRefreshThread;
 import org.csstudio.opibuilder.util.MediaService;
 import org.csstudio.opibuilder.util.SchemaService;
+import org.csstudio.opibuilder.util.SingleSourceHelper;
 import org.eclipse.core.runtime.Preferences.IPropertyChangeListener;
 import org.eclipse.core.runtime.Preferences.PropertyChangeEvent;
+import org.eclipse.swt.SWT;
 import org.eclipse.ui.plugin.AbstractUIPlugin;
 import org.osgi.framework.BundleContext;
 
@@ -26,6 +28,7 @@ import org.osgi.framework.BundleContext;
  * @author Xihui Chen
  *
  */
+@SuppressWarnings("deprecation")
 public class OPIBuilderPlugin extends AbstractUIPlugin {
 
 	// The plug-in ID
@@ -50,6 +53,9 @@ public class OPIBuilderPlugin extends AbstractUIPlugin {
 	// The shared instance
 	private static OPIBuilderPlugin plugin;
 
+	private static boolean isRAP;
+	
+	
 	private IPropertyChangeListener preferenceLisener;
 
 
@@ -58,6 +64,7 @@ public class OPIBuilderPlugin extends AbstractUIPlugin {
 	 */
 	public OPIBuilderPlugin() {
 		plugin = this;
+		isRAP = SWT.getPlatform().startsWith("rap");
 	}
 
 
@@ -71,10 +78,11 @@ public class OPIBuilderPlugin extends AbstractUIPlugin {
 		return plugin;
 	}
 
-	@SuppressWarnings("deprecation")
 	@Override
 	public void start(BundleContext context) throws Exception {
 		super.start(context);
+		if(isRAP)
+			SingleSourceHelper.rapPluginStartUp();
 		ScriptService.getInstance();
 		
 		if(PreferencesHelper.isDisplaySystemOutput()){
@@ -123,5 +131,12 @@ public class OPIBuilderPlugin extends AbstractUIPlugin {
 	public static Logger getLogger()
 	{
 	    return logger;
+	}
+	
+	/**
+	 * @return true if this is running in RAP.
+	 */
+	public static boolean isRAP() {
+		return isRAP;
 	}
 }

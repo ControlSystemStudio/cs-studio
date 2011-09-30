@@ -40,7 +40,7 @@ public class UnchangableStringProperty extends AbstractWidgetProperty {
 	}
 
 	@Override
-	protected PropertyDescriptor createPropertyDescriptor() {
+	protected PropertyDescriptor createPropertyDescriptor() {		
 		return new TextPropertyDescriptor(prop_id, description){
 			@Override
 			public CellEditor createPropertyEditor(Composite parent) {

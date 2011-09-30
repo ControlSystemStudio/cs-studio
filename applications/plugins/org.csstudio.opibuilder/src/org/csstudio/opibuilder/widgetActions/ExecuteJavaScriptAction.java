@@ -20,6 +20,7 @@ import org.csstudio.opibuilder.properties.WidgetPropertyCategory;
 import org.csstudio.opibuilder.script.ScriptService;
 import org.csstudio.opibuilder.script.ScriptStoreFactory;
 import org.csstudio.opibuilder.util.ConsoleService;
+import org.csstudio.opibuilder.util.ErrorHandlerUtil;
 import org.csstudio.opibuilder.util.ResourceUtil;
 import org.csstudio.opibuilder.widgetActions.WidgetActionFactory.ActionType;
 import org.csstudio.ui.util.thread.UIBundlingThread;
@@ -30,6 +31,7 @@ import org.eclipse.core.runtime.Path;
 import org.eclipse.core.runtime.Status;
 import org.eclipse.core.runtime.jobs.Job;
 import org.eclipse.gef.GraphicalViewer;
+import org.eclipse.swt.widgets.Display;
 import org.mozilla.javascript.Context;
 import org.mozilla.javascript.ImporterTopLevel;
 import org.mozilla.javascript.Script;
@@ -62,7 +64,12 @@ public class ExecuteJavaScriptAction extends AbstractWidgetAction {
 	@Override
 	public void run() {
 		if(scriptContext == null){
-			scriptContext = ScriptStoreFactory.getJavaScriptContext();
+			try {
+				scriptContext = ScriptStoreFactory.getJavaScriptContext();
+			} catch (Exception exception) {
+				ErrorHandlerUtil.handleError("Failed to get Script Context", exception);
+				return;
+			}
 			scriptScope = new ImporterTopLevel(scriptContext);
 			GraphicalViewer viewer = getWidgetModel().getRootDisplayModel().getViewer();
 			if(viewer != null){
@@ -93,6 +100,8 @@ public class ExecuteJavaScriptAction extends AbstractWidgetAction {
 	}
 	
 	private void runTask() {
+		Display display = getWidgetModel().getRootDisplayModel().getViewer().getControl().getDisplay();
+
 		try {
 			if(script == null){				
 				//read file				
@@ -101,7 +110,7 @@ public class ExecuteJavaScriptAction extends AbstractWidgetAction {
 						new InputStreamReader(inputStream));				
 				
 				//compile
-				UIBundlingThread.getInstance().addRunnable(new Runnable() {
+				UIBundlingThread.getInstance().addRunnable(display, new Runnable() {
 					
 					public void run() {
 						try {
@@ -123,7 +132,7 @@ public class ExecuteJavaScriptAction extends AbstractWidgetAction {
 			}
 
 
-			UIBundlingThread.getInstance().addRunnable(new Runnable() {
+			UIBundlingThread.getInstance().addRunnable(display, new Runnable() {
 
 				public void run() {
 

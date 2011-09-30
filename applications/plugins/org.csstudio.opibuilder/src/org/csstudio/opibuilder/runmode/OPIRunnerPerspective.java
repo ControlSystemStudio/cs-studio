@@ -7,6 +7,7 @@
  ******************************************************************************/
 package org.csstudio.opibuilder.runmode;
 
+import org.eclipse.swt.SWT;
 import org.eclipse.ui.IPageLayout;
 import org.eclipse.ui.IPerspectiveFactory;
 import org.eclipse.ui.IPlaceholderFolderLayout;
@@ -68,10 +69,13 @@ public class OPIRunnerPerspective implements IPerspectiveFactory {
         final IPlaceholderFolderLayout bottom = layout.createPlaceholderFolder(Position.BOTTOM.name(),
                 IPageLayout.BOTTOM, 0.75f, editor);
 		
-        bottom.addPlaceholder(ID_CONSOLE_VIEW);
+        
         bottom.addPlaceholder(OPIView.ID + SECOND_ID + Position.BOTTOM.name());
         
-		layout.addShowViewShortcut(ID_CONSOLE_VIEW);
+        if(!SWT.getPlatform().startsWith("rap")){ //$NON-NLS-1$
+	        bottom.addPlaceholder(ID_CONSOLE_VIEW);
+			layout.addShowViewShortcut(ID_CONSOLE_VIEW);
+        }
 	}
 	
 	

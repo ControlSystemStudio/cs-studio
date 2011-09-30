@@ -172,6 +172,7 @@ public class WidgetXYLayoutEditPolicy extends XYLayoutEditPolicy {
 		return null;
 	}
 
+	@SuppressWarnings("deprecation")
 	@Override
 	protected Command createAddCommand(EditPart child, Object constraint) {
 		if(!(child instanceof AbstractBaseEditPart) || !(constraint instanceof Rectangle))
@@ -366,6 +367,7 @@ public class WidgetXYLayoutEditPolicy extends XYLayoutEditPolicy {
 
 
 
+	@SuppressWarnings("deprecation")
 	@Override
 	protected Command getCloneCommand(ChangeBoundsRequest request) {
 		CloneCommand clone = new CloneCommand((AbstractContainerModel)getHost().getModel());
@@ -400,8 +402,7 @@ public class WidgetXYLayoutEditPolicy extends XYLayoutEditPolicy {
 	 *
 	 * @return a list with all widget editpart that are currently selected
 	 */
-	@SuppressWarnings("unchecked")
-	private final List<AbstractBaseEditPart> sortSelectedWidgets(List selection) {
+	private final List<AbstractBaseEditPart> sortSelectedWidgets(List<?> selection) {
 		List<AbstractBaseEditPart> sameParentWidgets = new ArrayList<AbstractBaseEditPart>();
 		List<AbstractBaseEditPart> differentParentWidgets = new ArrayList<AbstractBaseEditPart>();
 		List<AbstractBaseEditPart> result = new ArrayList<AbstractBaseEditPart>();
@@ -449,6 +450,7 @@ public class WidgetXYLayoutEditPolicy extends XYLayoutEditPolicy {
 	/* (non-Javadoc)
 	 * @see org.eclipse.gef.editpolicies.XYLayoutEditPolicy#getMinimumSizeFor(org.eclipse.gef.GraphicalEditPart)
 	 */
+	@SuppressWarnings("deprecation")
 	@Override
 	protected Dimension getMinimumSizeFor(GraphicalEditPart child) {
 		if(child instanceof AbstractBaseEditPart){
@@ -467,7 +469,7 @@ public class WidgetXYLayoutEditPolicy extends XYLayoutEditPolicy {
 		CompoundCommand resize = new CompoundCommand();
 		Command c;
 		GraphicalEditPart child;
-		List children = request.getEditParts();
+		List<?> children = request.getEditParts();
 
 		for (int i = 0; i < children.size(); i++) {
 			child = (GraphicalEditPart) children.get(i);

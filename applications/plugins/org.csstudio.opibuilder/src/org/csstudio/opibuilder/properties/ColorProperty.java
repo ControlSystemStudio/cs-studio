@@ -7,7 +7,7 @@
  ******************************************************************************/
 package org.csstudio.opibuilder.properties;
 
-import org.csstudio.opibuilder.properties.support.OPIColorPropertyDescriptor;
+import org.csstudio.opibuilder.properties.support.PropertySSHelper;
 import org.csstudio.opibuilder.util.MediaService;
 import org.csstudio.opibuilder.util.OPIColor;
 import org.eclipse.swt.graphics.RGB;
@@ -105,7 +105,9 @@ public class ColorProperty extends AbstractWidgetProperty {
 	 */
 	@Override
 	protected PropertyDescriptor createPropertyDescriptor() {
-		return new OPIColorPropertyDescriptor(prop_id, description);		
+		if(PropertySSHelper.getIMPL() == null)
+			return null;
+		return PropertySSHelper.getIMPL().getOPIColorPropertyDescriptor(prop_id, description);		
 	}
 
 	@Override

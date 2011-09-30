@@ -14,8 +14,10 @@ import org.csstudio.opibuilder.OPIBuilderPlugin;
 import org.csstudio.opibuilder.properties.StringProperty;
 import org.csstudio.opibuilder.properties.WidgetPropertyCategory;
 import org.csstudio.opibuilder.util.ConsoleService;
+import org.csstudio.opibuilder.util.SingleSourceHelper;
 import org.csstudio.opibuilder.widgetActions.WidgetActionFactory.ActionType;
 import org.eclipse.osgi.util.NLS;
+import org.eclipse.swt.SWT;
 import org.eclipse.ui.PlatformUI;
 
 /**The action that opens webpage in default system web browser.
@@ -44,7 +46,10 @@ public class OpenWebpageAction extends AbstractWidgetAction {
 	        getHyperLink().startsWith("file:")) //$NON-NLS-1$
 		{
 			try {
-				PlatformUI.getWorkbench().getBrowserSupport().createBrowser("opi_web_browser").openURL( //$NON-NLS-1$
+				if(SWT.getPlatform().startsWith("rap")) //$NON-NLS-1$
+					SingleSourceHelper.rapOpenWebPage(getHyperLink());
+				else
+					PlatformUI.getWorkbench().getBrowserSupport().createBrowser("opi_web_browser").openURL( //$NON-NLS-1$
 						new URL(getHyperLink()));
 			} catch (Exception e) {
 				String message = NLS.bind("Failed to open the hyperlink: {0}\n{1}", getHyperLink(), e);

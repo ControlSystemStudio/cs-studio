@@ -6,14 +6,6 @@
    <extension
          point="org.eclipse.ui.editors">
       <editor
-            class="org.csstudio.opibuilder.editor.OPIEditor"
-            contributorClass="org.csstudio.opibuilder.editor.OPIEditorActionBarContributor"
-            extensions="opi"
-            icon="icons/OPIBuilder.png"
-            id="org.csstudio.opibuilder.OPIEditor"
-            name="OPI Editor">
-      </editor>
-      <editor
             class="org.csstudio.opibuilder.runmode.OPIRunner"
             contributorClass="org.csstudio.opibuilder.runmode.OPIRunnerToolBarContributor"
             default="true"
@@ -22,23 +14,9 @@
             id="org.csstudio.opibuilder.OPIRunner"
             name="OPI Runtime">
       </editor>
-      <editor
-            class="org.eclipse.ui.editors.text.TextEditor"
-            default="true"
-            extensions="js"
-            icon="icons/js.gif"
-            id="org.csstudio.opibuilder.jseditor"
-            name="JavaScript Editor">
-      </editor>
    </extension>
    <extension
          point="org.eclipse.ui.perspectives">
-      <perspective
-            class="org.csstudio.opibuilder.editor.OPIEditorPerspective"
-            icon="icons/OPIBuilder.png"
-            id="org.csstudio.opibuilder.opieditor"
-            name="%OPIEditor">
-      </perspective>
       <perspective
             class="org.csstudio.opibuilder.runmode.OPIRunnerPerspective"
             icon="icons/OPIBuilder.png"
@@ -48,37 +26,6 @@
    </extension>
    <extension
          point="org.eclipse.ui.commands">
-      <command
-            description="Run the OPI file currently in the editor"
-            id="org.csstudio.opibuilder.runopi"
-            name="Run OPI">
-      </command>
-      <command
-            description="Change the widget order to front"
-            id="org.csstudio.opibuilder.actions.TO_FRONT"
-            name="To Front">
-      </command>
-      <command
-            description="Change the widget order a step front"
-            id="org.csstudio.opibuilder.actions.STEP_FRONT"
-            name="Step Front">
-      </command>
-      <command
-            description="Change the widget order to back"
-            id="org.csstudio.opibuilder.actions.TO_BACK"
-            name="To Back">
-      </command>
-      <command
-            description="Change the widget order a step back"
-            id="org.csstudio.opibuilder.actions.STEP_BACK"
-            name="Step Back">
-      </command>
-      <command
-            defaultHandler="org.csstudio.opibuilder.actions.LayoutWidgetsHandler"
-            description="Layout Widgets"
-            id="org.csstudio.opibuilder.actions.layoutWidgets"
-            name="Layout Widgets">
-      </command>
       <command
             description="Enter/Exit compact mode"
             id="org.csstudio.opibuilder.actions.compactMode"
@@ -102,42 +49,6 @@
    </extension>
    <extension
          point="org.eclipse.ui.bindings">
-      <key
-            commandId="org.csstudio.opibuilder.runopi"
-            contextId="org.eclipse.ui.contexts.window"
-            schemeId="org.eclipse.ui.defaultAcceleratorConfiguration"
-            sequence="M1+G">
-      </key>
-      <key
-            commandId="org.csstudio.opibuilder.actions.TO_FRONT"
-            contextId="org.csstudio.opibuilder.opiEditor"
-            schemeId="org.eclipse.ui.defaultAcceleratorConfiguration"
-            sequence="M1+ARROW_DOWN">
-      </key>
-      <key
-            commandId="org.csstudio.opibuilder.actions.TO_BACK"
-            contextId="org.csstudio.opibuilder.opiEditor"
-            schemeId="org.eclipse.ui.defaultAcceleratorConfiguration"
-            sequence="M1+ARROW_UP">
-      </key>
-      <key
-            commandId="org.csstudio.opibuilder.actions.STEP_BACK"
-            contextId="org.csstudio.opibuilder.opiEditor"
-            schemeId="org.eclipse.ui.defaultAcceleratorConfiguration"
-            sequence="M1+ARROW_LEFT">
-      </key>
-      <key
-            commandId="org.csstudio.opibuilder.actions.STEP_FRONT"
-            contextId="org.csstudio.opibuilder.opiEditor"
-            schemeId="org.eclipse.ui.defaultAcceleratorConfiguration"
-            sequence="M1+ARROW_RIGHT">
-      </key>
-      <key
-            commandId="org.csstudio.opibuilder.actions.layoutWidgets"
-            contextId="org.eclipse.ui.contexts.window"
-            schemeId="org.eclipse.ui.defaultAcceleratorConfiguration"
-            sequence="M1+L">
-      </key>
       <scheme
             description="OPIBuilder Key Binding Scheme"
             id="org.csstudio.opibuilder.keybinding.scheme"
@@ -170,46 +81,6 @@
             id="org.csstudio.opibuilder.preferences.opiruntime"
             name="OPI Runtime">
       </page>
-      <page
-            category="org.csstudio.opibuilder.preferences"
-            class="org.csstudio.opibuilder.preferences.OPIEditorPreferencePage"
-            id="org.csstudio.opibuilder.preferences.opieditor"
-            name="OPI Editor">
-      </page>
-   </extension>
-   <extension
-         point="org.eclipse.ui.newWizards">
-      <category
-            id="org.csstudio.opibuilder.wizards"
-            name="BOY">
-      </category>
-      <wizard
-            canFinishEarly="false"
-            category="org.csstudio.opibuilder.wizards"
-            class="org.csstudio.opibuilder.wizards.NewOPIFileWizard"
-            hasPages="true"
-            icon="icons/OPIBuilder.png"
-            id="org.csstudio.opibuilder.wizards.newOPIWizard"
-            name="OPI File">
-      </wizard>
-      <wizard
-            canFinishEarly="false"
-            category="org.csstudio.opibuilder.wizards"
-            class="org.csstudio.opibuilder.wizards.NewJavaScriptWizard"
-            hasPages="true"
-            icon="icons/js.gif"
-            id="org.csstudio.opibuilder.wizards.newJSWizard"
-            name="JavaScript">
-      </wizard>
-      <wizard
-            canFinishEarly="false"
-            category="org.csstudio.opibuilder.wizards"
-            class="org.csstudio.opibuilder.wizards.NewPythonScriptWizard"
-            hasPages="true"
-            icon="icons/python_file.gif"
-            id="org.csstudio.opibuilder.wizards.newPyWizard"
-            name="Python Script">
-      </wizard>
    </extension>
    <extension
          point="org.eclipse.ui.actionSets">
@@ -217,14 +88,6 @@
             id="org.csstudio.opibuilder.actionSet"
             label="BOY Actions"
             visible="true">
-         <action
-               class="org.csstudio.opibuilder.actions.OpenOPIPerspectiveAction"
-               icon="icons/OPIBuilder.png"
-               id="org.csstudio.opibuilder.OpenOPIEditorPerspectiveAction"
-               label="OPI Editor Perspective"
-               menubarPath="css/display/"
-               style="push">
-         </action>
          <action
                class="org.csstudio.opibuilder.actions.OpenTopOPIsAction"
                icon="icons/OPIRunner.png"
@@ -234,13 +97,6 @@
                style="pulldown"
                toolbarPath="Normal/addtions"
                tooltip="Open Top OPIs in run mode">
-         </action>
-         <action
-               class="org.csstudio.opibuilder.actions.RunOPIAction"
-               definitionId="org.csstudio.opibuilder.runopi"
-               id="org.csstudio.opibuilder.runOPIAction"
-               label="Run OPI"
-               style="push">
          </action>
          <action
                class="org.csstudio.opibuilder.actions.CompactModeAction"
@@ -271,14 +127,6 @@
             class="org.csstudio.opibuilder.runmode.RunnerInputFactory"
             id="org.csstudio.opibuilder.runmode.RunnerInputFactory">
       </factory>
-   </extension>
-   <extension
-         point="org.eclipse.ui.contexts">
-      <context
-            id="org.csstudio.opibuilder.opiEditor"
-            name="OPI Editor Context"
-            parentId="org.eclipse.ui.contexts.window">
-      </context>
    </extension>
    <extension
          point="org.eclipse.ui.popupMenus">
@@ -344,34 +192,6 @@
                tooltip="Show detail infomation of PV">
          </action>
       </objectContribution>
-      <objectContribution
-            adaptable="false"
-            id="org.csstudio.opibuilder.layoutWidgets"
-            objectClass="org.csstudio.opibuilder.editparts.AbstractLayoutEditpart">
-         <action
-               class="org.csstudio.opibuilder.actions.LayoutWidgetsAction"
-               definitionId="org.csstudio.opibuilder.actions.layoutWidgets"
-               enablesFor="1"
-               icon="icons/layout_widgets.png"
-               id="org.csstudio.opibuilder.layoutWidgetsAction"
-               label="Layout Widgets"
-               menubarPath="group"
-               tooltip="Layout widgets in the container">
-         </action>
-         <visibility>
-            <objectState
-                  name="executionMode"
-                  value="EDIT_MODE">
-            </objectState>
-         </visibility>
-      </objectContribution>
-   </extension>
-   <extension
-         point="org.eclipse.ui.intro.configExtension">
-      <configExtension
-            content="intro/firststeps.xml"
-            configId="org.eclipse.ui.intro.universalConfig">
-      </configExtension>
    </extension>
    <extension
          point="org.eclipse.help.index">
@@ -416,6 +236,7 @@
          </command>
       </menuContribution>
    </extension>
+   
    <extension
          point="org.eclipse.core.runtime.adapters">
       <factory

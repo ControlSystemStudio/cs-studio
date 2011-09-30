@@ -18,6 +18,7 @@ import org.csstudio.utility.pv.PV;
 import org.csstudio.utility.pv.PVListener;
 import org.eclipse.draw2d.Border;
 import org.eclipse.draw2d.IFigure;
+import org.eclipse.swt.widgets.Display;
 
 /**
  * The handler help a widget to handle the pv connection event such as
@@ -59,6 +60,7 @@ public class ConnectionHandler {
 	private IFigure figure;
 	
 	private AbstractWidgetModel widgetModel;
+	private Display display;
 	
 	private PVConnectionListener pvConnectionListener;
 	
@@ -68,6 +70,7 @@ public class ConnectionHandler {
 	public ConnectionHandler(AbstractBaseEditPart editpart) {
 		figure = editpart.getFigure();
 		widgetModel = editpart.getWidgetModel();
+		this.display = editpart.getViewer().getControl().getDisplay();
 		pvMap = new HashMap<String, PV>();
 		preTooltip = widgetModel.getRawTooltip();
 		preBorder = figure.getBorder();
@@ -123,7 +126,7 @@ public class ConnectionHandler {
 		//Making this task execute in UI Thread
 		//It will also delay the disconnect marking requested during widget activating
 		//to execute after widget is fully activated.
-		UIBundlingThread.getInstance().addRunnable(new Runnable(){
+		UIBundlingThread.getInstance().addRunnable(display, new Runnable(){
 			public void run() {
 				figure.setBorder(AlarmRepresentationScheme.getDisonnectedBorder());
 				figure.repaint();
@@ -139,7 +142,7 @@ public class ConnectionHandler {
 		if(connected)
 			return;
 		
-		UIBundlingThread.getInstance().addRunnable(new Runnable(){
+		UIBundlingThread.getInstance().addRunnable(display, new Runnable(){
 			public void run() {
 				boolean allConnected = true;
 				refreshModelTooltip();

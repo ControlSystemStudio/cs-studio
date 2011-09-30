@@ -5,20 +5,26 @@
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-v10.html
  ******************************************************************************/
-package org.csstudio.opibuilder.XMLTest;
+package org.csstudio.opibuilder.util;
 
-import junit.framework.Test;
-import junit.framework.TestSuite;
 
-public class AllTests {
 
-	public static Test suite() {
-		TestSuite suite = new TestSuite(
-				"Test for org.csstudio.opibuilder.XMLTest");
-		//$JUnit-BEGIN$
-		suite.addTestSuite(XMLUtilTest.class);
-		//$JUnit-END$
-		return suite;
-	}
 
+/**An empty console service.
+ * @author Xihui Chen
+ *
+ */
+public abstract class ConsoleServiceSSHelper{
+
+	public abstract void writeError(String message);
+
+	public abstract void writeWarning(String message) ;
+
+	public abstract void writeInfo(String message);
+
+	public abstract void writeString(String s);
+
+	public abstract void turnOnSystemOutput();
+	
+	public abstract void turnOffSystemOutput();
 }

@@ -14,7 +14,7 @@ import java.util.logging.Level;
 
 import org.csstudio.opibuilder.OPIBuilderPlugin;
 import org.csstudio.opibuilder.model.AbstractWidgetModel;
-import org.csstudio.opibuilder.properties.support.ActionsPropertyDescriptor;
+import org.csstudio.opibuilder.properties.support.PropertySSHelper;
 import org.csstudio.opibuilder.util.ConsoleService;
 import org.csstudio.opibuilder.widgetActions.AbstractWidgetAction;
 import org.csstudio.opibuilder.widgetActions.ActionsInput;
@@ -88,10 +88,12 @@ public class ActionsProperty extends AbstractWidgetProperty {
 
 	@Override
 	protected PropertyDescriptor createPropertyDescriptor() {
-		return new ActionsPropertyDescriptor(prop_id, description, showHookOption);
+		if(PropertySSHelper.getIMPL() == null)
+			return null;
+		return PropertySSHelper.getIMPL().getActionsPropertyDescriptor(
+				prop_id, description, showHookOption);
 	}
 
-	@SuppressWarnings("unchecked")
 	@Override
 	public ActionsInput readValueFromXML(Element propElement) {
 		ActionsInput result = new ActionsInput();
@@ -103,8 +105,8 @@ public class ActionsProperty extends AbstractWidgetProperty {
 			AbstractWidgetAction action = WidgetActionFactory.createWidgetAction(
 					ActionType.parseAction(se.getAttributeValue(XML_ATTRIBUTE_ACTION_TYPE)));
 			if(action != null){
-				List children = se.getChildren();
-				Iterator iterator = children.iterator();
+				List<?> children = se.getChildren();
+				Iterator<?> iterator = children.iterator();
 				Set<String> propIdSet = action.getAllPropertyIDs();
 				while (iterator.hasNext()) {
 					Element subElement = (Element) iterator.next();
