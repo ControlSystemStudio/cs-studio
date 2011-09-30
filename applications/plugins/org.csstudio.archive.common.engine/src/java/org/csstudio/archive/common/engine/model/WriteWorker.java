@@ -34,7 +34,7 @@ import org.csstudio.archive.common.engine.service.IServiceProvider;
 import org.csstudio.archive.common.service.ArchiveServiceException;
 import org.csstudio.archive.common.service.IArchiveEngineFacade;
 import org.csstudio.archive.common.service.sample.IArchiveSample;
-import org.csstudio.domain.desy.calc.CumulativeAverageCache;
+import org.csstudio.domain.desy.calc.AverageWithExponentialDecayCache;
 import org.csstudio.domain.desy.service.osgi.OsgiServiceUnavailableException;
 import org.csstudio.domain.desy.system.ISystemVariable;
 import org.csstudio.domain.desy.task.AbstractTimeMeasuredRunnable;
@@ -69,7 +69,8 @@ final class WriteWorker extends AbstractTimeMeasuredRunnable {
 
     private final long _periodInMS;
     /** Average number of values per write run */
-    private final CumulativeAverageCache _avgWriteCount = new CumulativeAverageCache();
+    private final AverageWithExponentialDecayCache _avgWriteCount = new AverageWithExponentialDecayCache(0.1);
+
 
     private final IServiceProvider _provider;
 
@@ -169,8 +170,8 @@ final class WriteWorker extends AbstractTimeMeasuredRunnable {
     }
 
     @Nonnull
-    protected CumulativeAverageCache getAvgWriteCount() {
-        return _avgWriteCount;
+    protected Double getAvgWriteCount() {
+        return _avgWriteCount.getValue();
     }
 
     @CheckForNull

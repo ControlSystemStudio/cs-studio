@@ -145,7 +145,7 @@ public class WriteExecutor {
     /** @return Average number of values per write run */
     @CheckForNull
     public Double getAvgWriteCount() {
-        return _writeWorker != null ? _writeWorker.getAvgWriteCount().getValue() : null;
+        return _writeWorker != null ? _writeWorker.getAvgWriteCount() : null;
     }
 
     /** @return  Average duration of write run */
