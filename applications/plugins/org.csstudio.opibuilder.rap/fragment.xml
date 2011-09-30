@@ -1,0 +1,78 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?eclipse version="3.4"?>
+<fragment>
+<extension
+         point="org.eclipse.rap.ui.entrypoint">
+      <entrypoint
+            class="org.csstudio.webopi.WorkbenchOPIRuntimeEntryPoint"
+            id="org.csstudio.webopi.workbenchOPIRuntime"
+            parameter="webopi">
+      </entrypoint>
+      <entrypoint
+            class="org.csstudio.webopi.StandaloneOPIRuntimeEntryPoint"
+            id="org.csstudio.webopi.standaloneOPIRuntime"
+            parameter="webopi_s">
+      </entrypoint>
+   </extension>
+   <extension
+         point="org.eclipse.ui.perspectives">
+      <perspective
+            class="org.csstudio.webopi.perspectives.StandaloneRuntimePerspective"
+            fixed="true"
+            icon="icons/OPIRunner.png"
+            id="org.csstudio.webopi.standaloneRuntime"
+            name="Standalone OPI Runtime Perspective">
+      </perspective>
+   </extension>
+
+   
+   <extension
+         point="org.eclipse.rap.ui.branding">
+      <branding
+            body="html/body.html"
+            defaultEntrypointId="org.csstudio.webopi.workbenchOPIRuntime"
+            favicon="icons/OPIRunner.png"
+            id="org.csstudio.webopi.branding.workbench"
+            servletName="w"
+            title="WebOPI">
+      </branding>
+      <branding
+            body="html/body.html"
+            defaultEntrypointId="org.csstudio.webopi.standaloneOPIRuntime"
+            favicon="icons/OPIRunner.png"
+            id="org.csstudio.webopi.branding.standalone"
+            servletName="ws"
+            title="WebOPI Simple">
+      </branding>
+      <branding
+            body="html/body.html"
+            defaultEntrypointId="org.csstudio.webopi.workbenchOPIRuntime"
+            favicon="icons/OPIRunner.png"
+            id="org.csstudio.webopi.branding.workbench"
+            servletName="m"
+            title="WebOPI Mobile">
+      </branding>
+      <branding
+            body="html/body.html"
+            defaultEntrypointId="org.csstudio.webopi.standaloneOPIRuntime"
+            favicon="icons/OPIRunner.png"
+            id="org.csstudio.webopi.branding.standalone"
+            servletName="ms"
+            title="WebOPI Mobile Simple">
+      </branding>
+   </extension>
+   <extension
+         point="org.eclipse.equinox.http.registry.resources">
+      <resource
+            alias="/loading.gif"
+            base-name="html/loading.gif">
+      </resource>
+   </extension>
+   <extension
+         point="org.eclipse.equinox.http.registry.servlets">
+      <servlet
+            alias="/"
+            class="org.csstudio.webopi.RedirectServlet">
+      </servlet>
+   </extension>
+</fragment>
