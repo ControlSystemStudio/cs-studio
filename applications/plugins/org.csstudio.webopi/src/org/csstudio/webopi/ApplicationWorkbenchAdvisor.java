@@ -3,7 +3,7 @@ package org.csstudio.webopi;
 import javax.servlet.http.HttpServletRequest;
 
 import org.csstudio.opibuilder.runmode.OPIRunnerPerspective;
-import org.csstudio.opibuilder.runmode.StandaloneRuntimePerspective;
+import org.csstudio.webopi.perspectives.StandaloneRuntimePerspective;
 import org.eclipse.rwt.RWT;
 import org.eclipse.ui.application.IWorkbenchWindowConfigurer;
 import org.eclipse.ui.application.WorkbenchAdvisor;

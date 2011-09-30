@@ -3,7 +3,7 @@ Bundle-ManifestVersion: 2
 Bundle-Name: WebOPI plugin
 Bundle-SymbolicName: org.csstudio.webopi;singleton:=true
 Bundle-Version: 1.0.0.qualifier
-Bundle-Activator: org.csstudio.opibuilder.OPIBuilderPlugin
+Bundle-Activator: org.csstudio.webopi.WebOPIPlugin
 Require-Bundle: org.eclipse.core.runtime,
  org.eclipse.rap.ui;bundle-version="1.4.0";visibility:=reexport,
  org.eclipse.draw2d;bundle-version="3.7.0";resolution:=optional;visibility:=reexport,
@@ -17,32 +17,12 @@ Require-Bundle: org.eclipse.core.runtime,
  org.csstudio.openfile;bundle-version="3.1.0",
  org.csstudio.apputil;bundle-version="3.0.0",
  org.csstudio.rap.core;bundle-version="1.0.0",
- org.eclipse.equinox.http.registry
+ org.eclipse.equinox.http.registry,
+ org.csstudio.opibuilder;bundle-version="2.0.0"
 Bundle-ActivationPolicy: lazy
 Bundle-RequiredExecutionEnvironment: JavaSE-1.6
 Bundle-Vendor: Xihui Chen<chenx1@ornl.gov> - SNS
-Export-Package: org.csstudio.opibuilder,
- org.csstudio.opibuilder.actions,
- org.csstudio.opibuilder.commands,
- org.csstudio.opibuilder.data,
- org.csstudio.opibuilder.datadefinition,
- org.csstudio.opibuilder.dnd,
- org.csstudio.opibuilder.editparts,
- org.csstudio.opibuilder.editpolicies,
- org.csstudio.opibuilder.feedback,
- org.csstudio.opibuilder.model,
- org.csstudio.opibuilder.palette,
- org.csstudio.opibuilder.persistence,
- org.csstudio.opibuilder.preferences,
- org.csstudio.opibuilder.properties,
- org.csstudio.opibuilder.runmode,
- org.csstudio.opibuilder.script,
- org.csstudio.opibuilder.scriptUtil,
- org.csstudio.opibuilder.util,
- org.csstudio.opibuilder.visualparts,
- org.csstudio.opibuilder.widgetActions
-Bundle-ClassPath: lib/rhino/js.jar,
- lib/jython/jython.jar,
- .
 Import-Package: javax.servlet,
  javax.servlet.http
+Export-Package: org.csstudio.webopi,
+ org.csstudio.webopi.util

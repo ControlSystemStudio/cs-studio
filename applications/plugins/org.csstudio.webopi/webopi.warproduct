@@ -9,6 +9,8 @@
       <plugin id="org.csstudio.data"/>
       <plugin id="org.csstudio.java"/>
       <plugin id="org.csstudio.openfile"/>
+      <plugin id="org.csstudio.opibuilder"/>
+      <plugin id="org.csstudio.opibuilder.rap" fragment="true"/>
       <plugin id="org.csstudio.opibuilder.widgets"/>
       <plugin id="org.csstudio.opibuilder.widgets.rap" fragment="true"/>
       <plugin id="org.csstudio.platform.libs.epics"/>
@@ -63,6 +65,7 @@
       <plugin id="org.csstudio.data" autoStart="true" startLevel="0" />
       <plugin id="org.csstudio.java" autoStart="true" startLevel="0" />
       <plugin id="org.csstudio.openfile" autoStart="true" startLevel="0" />
+      <plugin id="org.csstudio.opibuilder" autoStart="true" startLevel="0" />
       <plugin id="org.csstudio.opibuilder.widgets" autoStart="true" startLevel="0" />
       <plugin id="org.csstudio.platform.libs.epics" autoStart="true" startLevel="0" />
       <plugin id="org.csstudio.rap.core" autoStart="true" startLevel="0" />

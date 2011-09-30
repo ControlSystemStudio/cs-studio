@@ -1,10 +1,9 @@
 package org.csstudio.webopi;
 
-import org.csstudio.opibuilder.OPIBuilderPlugin;
 import org.csstudio.opibuilder.preferences.PreferencesHelper;
 import org.csstudio.opibuilder.runmode.RunModeService;
 import org.csstudio.opibuilder.runmode.RunModeService.TargetWindow;
-import org.csstudio.opibuilder.util.RequestUtil;
+import org.csstudio.webopi.util.RequestUtil;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.rwt.RWT;
 import org.eclipse.swt.SWT;
@@ -33,7 +32,7 @@ public class ApplicationWorkbenchWindowAdvisor extends WorkbenchWindowAdvisor {
 		IPath path = RequestUtil.getOPIPathFromRequest();
 		String s = RWT.getRequest().getServletPath();
 		if(path == null){
-			if(s.equals(OPIBuilderPlugin.MOBILE_SERVELET_NAME)) //$NON-NLS-1$
+			if(s.equals(WebOPIPlugin.MOBILE_SERVELET_NAME)) //$NON-NLS-1$
 				path = PreferencesHelper.getMobileStartupOPI();
 			else
 				path = PreferencesHelper.getStartupOPI();
