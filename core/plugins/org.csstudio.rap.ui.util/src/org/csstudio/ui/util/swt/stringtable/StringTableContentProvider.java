@@ -26,7 +26,6 @@ class StringTableContentProvider<T> implements IStructuredContentProvider
 	private List<T> items;
 
 	/** {@inheritDoc} */
-	@Override
     @SuppressWarnings("unchecked")
     public void inputChanged(final Viewer viewer, final Object old, final Object new_input)
 	{
@@ -34,7 +33,6 @@ class StringTableContentProvider<T> implements IStructuredContentProvider
 	}
 
 	/** {@inheritDoc} */
-	@Override
     public Object[] getElements(Object arg0)
 	{
 		int N = items.size();
@@ -46,7 +44,6 @@ class StringTableContentProvider<T> implements IStructuredContentProvider
 	}
 
 	/** {@inheritDoc} */
-	@Override
     public void dispose()
 	{
 		// NOP

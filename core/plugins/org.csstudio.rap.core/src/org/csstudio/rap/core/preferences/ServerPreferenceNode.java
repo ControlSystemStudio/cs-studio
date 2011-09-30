@@ -371,17 +371,18 @@ public class ServerPreferenceNode implements IEclipsePreferences {
 	protected void load() {
 
 		try {			
-			
-			 String userDir = System.getProperty("catalina.home"); //$NON-NLS-1$
+			//The directory where the war file is placed. 
+			//On Tomcat, it is $(CATALINA.HOME)/webapps
+			//In Eclipse, it is Eclipse installation directory 
+			 String userDir = System.getProperty("user.dir"); //$NON-NLS-1$
 			 if(userDir == null || userDir.trim().isEmpty()){
 				 RAPCorePlugin.getLogger().log(Level.WARNING,
-							"System property catalina.home is not set, " +
-							"so server side preferences cannot be loaded.");
-				 return;
-//				 userDir = "C:/Users/5hz/Desktop";
+							"System property user.dir is not set, " +
+							"user.home will be used for loading css_rap.ini");
+				 userDir = System.getProperty("user.home") ;//$NON-NLS-1$
 			 }
 			 
-			 Properties properties = loadProperties(userDir + "/webapps/css_rap.ini"); //$NON-NLS-1$
+			 Properties properties = loadProperties(userDir + "/css_rap.ini"); //$NON-NLS-1$
 
 			 //Cannot use context since it doesn't exist if no UI created.
 //			ServletContext sc = RWT.getRequest().getSession()
