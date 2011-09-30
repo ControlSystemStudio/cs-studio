@@ -90,7 +90,7 @@ public class EngineHttpServer {
         httpService.registerServlet("/environment", new EnvironmentResponse(model), null, httpContext);
         httpService.registerServlet("/restart", new RestartResponse(model), null, httpContext);
         httpService.registerServlet("/reset", new ResetResponse(model), null, httpContext);
-        httpService.registerServlet("/stop", new StopResponse(model), null, httpContext);
+        httpService.registerServlet("/stop", new StopEngineResponse(model), null, httpContext);
 
         httpService.registerServlet(ShowChannelResponse.getUrl(),
                                     new ShowChannelResponse(model),
