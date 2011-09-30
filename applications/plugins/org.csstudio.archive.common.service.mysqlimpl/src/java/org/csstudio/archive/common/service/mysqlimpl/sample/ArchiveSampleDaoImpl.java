@@ -105,6 +105,9 @@ public class ArchiveSampleDaoImpl extends AbstractArchiveDao implements IArchive
         SELECT_RAW_PREFIX +
         "FROM " + getDatabaseName() + "." + TAB_SAMPLE + " WHERE " + COLUMN_CHANNEL_ID + "=? " +
         "AND " + COLUMN_TIME + "<? ORDER BY " + COLUMN_TIME + " DESC LIMIT 1";
+    private final String _selectSampleExistsForChannel =
+        "SELECT * FROM " + getDatabaseName() + "." + ARCH_TABLE_PLACEHOLDER +
+        " WHERE " + COLUMN_CHANNEL_ID + "=? LIMIT 1";
 
     private final ConcurrentMap<ArchiveChannelId, SampleMinMaxAggregator> _reducedDataMapForMinutes =
         new MapMaker().concurrencyLevel(2).weakKeys().makeMap();
@@ -478,11 +481,10 @@ public class ArchiveSampleDaoImpl extends AbstractArchiveDao implements IArchive
     public <V extends Serializable, T extends ISystemVariable<V>>
     IArchiveSample<V, T> retrieveLatestSampleBeforeTime(@Nonnull final IArchiveChannel channel,
                                                         @Nonnull final TimeInstant time) throws ArchiveDaoException {
-        Connection conn = null;
         PreparedStatement stmt = null;
         ResultSet result  = null;
         try {
-            conn = getThreadLocalConnection();
+            final Connection conn = getThreadLocalConnection();
             stmt = conn.prepareStatement(_selectLatestSampleBeforeTimeStmt);
             stmt.setInt(1, channel.getId().intValue());
             stmt.setLong(2, time.getNanos());
@@ -496,5 +498,37 @@ public class ArchiveSampleDaoImpl extends AbstractArchiveDao implements IArchive
             closeSqlResources(result, stmt, _selectLatestSampleBeforeTimeStmt);
         }
         return null;
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public boolean doesSampleExistForChannelId(@Nonnull final ArchiveChannelId id) throws ArchiveDaoException {
+        if (checkForSamplesInTable(id, TAB_SAMPLE)) {
+            return true;
+        }
+        return checkForSamplesInTable(id, TAB_SAMPLE_BLOB);
+    }
+
+    private boolean checkForSamplesInTable(@Nonnull final ArchiveChannelId id,
+                                           @Nonnull final String table) throws ArchiveDaoException {
+        PreparedStatement stmt = null;
+        ResultSet rs = null;
+        final String stmtStr = _selectSampleExistsForChannel.replace(ARCH_TABLE_PLACEHOLDER, table);
+        try {
+            final Connection conn = getThreadLocalConnection();
+            stmt = conn.prepareStatement(stmtStr);
+            stmt.setInt(1, id.intValue());
+            rs = stmt.executeQuery();
+            if (rs.next()) {
+                return true;
+            }
+        } catch(final Exception e) {
+            handleExceptions(RETRIEVAL_FAILED, e);
+        } finally {
+            closeSqlResources(rs, stmt, stmtStr);
+        }
+        return false;
     }
 }

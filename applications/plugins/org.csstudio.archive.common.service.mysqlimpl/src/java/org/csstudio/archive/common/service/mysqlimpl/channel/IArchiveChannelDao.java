@@ -33,6 +33,7 @@ import org.csstudio.archive.common.service.channel.ArchiveChannelId;
 import org.csstudio.archive.common.service.channel.IArchiveChannel;
 import org.csstudio.archive.common.service.channelgroup.ArchiveChannelGroupId;
 import org.csstudio.archive.common.service.mysqlimpl.dao.ArchiveDaoException;
+import org.csstudio.domain.common.service.DeleteResult;
 import org.csstudio.domain.desy.types.Limits;
 
 /**
@@ -86,4 +87,17 @@ public interface IArchiveChannelDao {
     @Nonnull
     Collection<IArchiveChannel> createChannels(@Nonnull Collection<IArchiveChannel> channels) throws ArchiveDaoException;
 
+    /**
+     * Delete the channel with the given name.
+     *
+     * Note, that it's possible to delete a channel which is still referenced by samples or channel
+     * status leading to an inconsistent archive state. Unfortunately, these tables are not allowed
+     * to have foreign keys due to partitioning - mysql cannot have foreign keys and partitioning in
+     * one table. Hence, we have to check this programmatically a priori in the upper archive
+     * service layer.
+     *
+     * @return the delete result
+     */
+    @Nonnull
+    DeleteResult deleteChannel(@Nonnull final String name);
 }

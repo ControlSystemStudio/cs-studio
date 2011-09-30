@@ -21,6 +21,7 @@
  */
 package org.csstudio.archive.common.service.mysqlimpl.sample;
 
+import static org.csstudio.archive.common.service.mysqlimpl.sample.TestSampleProvider.CHANNEL_ID_1ST;
 import static org.csstudio.archive.common.service.mysqlimpl.sample.TestSampleProvider.CHANNEL_ID_3RD;
 import static org.csstudio.archive.common.service.mysqlimpl.sample.TestSampleProvider.CHANNEL_ID_5TH;
 import static org.csstudio.archive.common.service.mysqlimpl.sample.TestSampleProvider.START;
@@ -94,5 +95,17 @@ public class ArchiveSampleDaoRetrieveUnitTest extends AbstractDaoTestSetup {
         Assert.assertTrue(((ArrayList) value).size() == 2);
         Assert.assertEquals(Double.valueOf(5.0), ((ArrayList) value).get(0));
         Assert.assertEquals(Double.valueOf(4.0), ((ArrayList) value).get(1));
+    }
+
+    @Test
+    public void testDoesSampleExist() throws ArchiveDaoException {
+        boolean sampleExists = SAMPLE_DAO.doesSampleExistForChannelId(CHANNEL_ID_3RD);
+        Assert.assertTrue(sampleExists);
+
+        sampleExists = SAMPLE_DAO.doesSampleExistForChannelId(CHANNEL_ID_5TH);
+        Assert.assertTrue(sampleExists);
+
+        sampleExists = SAMPLE_DAO.doesSampleExistForChannelId(CHANNEL_ID_1ST);
+        Assert.assertFalse(sampleExists);
     }
 }

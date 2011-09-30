@@ -46,6 +46,7 @@ import org.csstudio.archive.common.service.enginestatus.EngineMonitorStatus;
 import org.csstudio.archive.common.service.enginestatus.IArchiveEngineStatus;
 import org.csstudio.archive.common.service.mysqlimpl.requesttypes.DesyArchiveRequestType;
 import org.csstudio.archive.common.service.sample.IArchiveSample;
+import org.csstudio.domain.common.service.DeleteResult;
 import org.csstudio.domain.desy.system.ISystemVariable;
 import org.csstudio.domain.desy.time.TimeInstant;
 import org.csstudio.domain.desy.types.Limits;
@@ -76,6 +77,7 @@ public class MySQLArchiveServiceImpl implements IArchiveEngineFacade, IArchiveRe
     private final MysqlArchiveCreationServiceSupport _creationSupport;
     private final MysqlArchiveRetrievalServiceSupport _retrievalSupport;
     private final MysqlArchiveUpdateServiceSupport _updateSupport;
+    private final MysqlArchiveDeleteServiceSupport _deleteSupport;
 
 
     /**
@@ -83,11 +85,13 @@ public class MySQLArchiveServiceImpl implements IArchiveEngineFacade, IArchiveRe
      */
     @Inject
     public MySQLArchiveServiceImpl(@Nonnull final MysqlArchiveCreationServiceSupport creationSupport,
-                                         @Nonnull final MysqlArchiveRetrievalServiceSupport retrievalSupport,
-                                         @Nonnull final MysqlArchiveUpdateServiceSupport updateSupport) {
+                                   @Nonnull final MysqlArchiveRetrievalServiceSupport retrievalSupport,
+                                   @Nonnull final MysqlArchiveUpdateServiceSupport updateSupport,
+                                   @Nonnull final MysqlArchiveDeleteServiceSupport deleteSupport) {
         _creationSupport = creationSupport;
         _retrievalSupport = retrievalSupport;
         _updateSupport = updateSupport;
+        _deleteSupport = deleteSupport;
     }
 
     /**
@@ -302,5 +306,14 @@ public class MySQLArchiveServiceImpl implements IArchiveEngineFacade, IArchiveRe
     @CheckForNull
     public Limits<?> readDisplayLimits(@Nonnull final String channelName) throws ArchiveServiceException {
         return _retrievalSupport.retrieveDisplayLimits(channelName);
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    @Nonnull
+    public DeleteResult removeChannel(@Nonnull final String name) throws ArchiveServiceException {
+        return _deleteSupport.deleteChannel(name);
     }
 }

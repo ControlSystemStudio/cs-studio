@@ -38,6 +38,7 @@ import org.csstudio.archive.common.service.engine.IArchiveEngine;
 import org.csstudio.archive.common.service.enginestatus.EngineMonitorStatus;
 import org.csstudio.archive.common.service.enginestatus.IArchiveEngineStatus;
 import org.csstudio.archive.common.service.sample.IArchiveSample;
+import org.csstudio.domain.common.service.DeleteResult;
 import org.csstudio.domain.desy.system.ISystemVariable;
 import org.csstudio.domain.desy.time.TimeInstant;
 
@@ -189,4 +190,15 @@ public interface IArchiveEngineFacade {
     @CheckForNull
     IArchiveChannel getChannelByName(@Nonnull final String string) throws ArchiveServiceException;
 
+    /**
+     * Removes the channel from the configuration, if and only if there have not yet been any samples
+     * archived for this channel. Otherwise an exception is thrown.
+     * When no samples have yet been added and channel removal may proceed,
+     * all other information related to this channel is also removed (e.g. {@link org.csstudio.archive.common.service.channelstatus.ArchiveChannelStatus}.
+     * @param name the channel name
+     * @returns success or failure result
+     * @throws ArchiveServiceException
+     */
+    @Nonnull
+    DeleteResult removeChannel(@Nonnull final String name) throws ArchiveServiceException;
 }

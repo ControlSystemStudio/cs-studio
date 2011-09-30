@@ -45,6 +45,7 @@ import org.csstudio.archive.common.service.controlsystem.IArchiveControlSystem;
 import org.csstudio.archive.common.service.mysqlimpl.dao.AbstractDaoTestSetup;
 import org.csstudio.archive.common.service.mysqlimpl.dao.ArchiveDaoException;
 import org.csstudio.archive.common.service.mysqlimpl.sample.TestSampleProvider;
+import org.csstudio.domain.common.service.DeleteResult;
 import org.csstudio.domain.desy.system.ControlSystem;
 import org.csstudio.domain.desy.time.TimeInstant;
 import org.csstudio.domain.desy.time.TimeInstant.TimeInstantBuilder;
@@ -301,6 +302,22 @@ public class ArchiveChannelDaoUnitTest extends AbstractDaoTestSetup {
         final Collection<IArchiveChannel> directResult =
             DAO.createChannels(Lists.newArrayList(chan1, chan2));
         Assert.assertTrue(directResult.size() == 2);
+    }
+
+    @Test
+    public void testDeleteNonExistentChannel() {
+        final String name = "emeraldcity";
+        final DeleteResult result = DAO.deleteChannel(name);
+        Assert.assertTrue(result.failed());
+
+        final String msg = "Channel '" + name + "' does not exist.";
+        Assert.assertTrue(msg.equals(result.getMessage()));
+    }
+
+    @Test
+    public void testDeleteExistingChannel() {
+        final DeleteResult result = DAO.deleteChannel("doubleChannel1");
+        Assert.assertTrue(result.succeeded());
     }
 
     @AfterClass

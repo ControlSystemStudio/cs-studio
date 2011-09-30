@@ -55,6 +55,7 @@ import org.csstudio.archive.common.service.mysqlimpl.dao.ArchiveConnectionHandle
 import org.csstudio.archive.common.service.mysqlimpl.dao.ArchiveDaoException;
 import org.csstudio.archive.common.service.mysqlimpl.persistengine.PersistEngineDataManager;
 import org.csstudio.archive.common.service.util.ArchiveTypeConversionSupport;
+import org.csstudio.domain.common.service.DeleteResult;
 import org.csstudio.domain.desy.epics.typesupport.EpicsSystemVariableSupport;
 import org.csstudio.domain.desy.system.ControlSystemType;
 import org.csstudio.domain.desy.time.TimeInstant;
@@ -96,7 +97,6 @@ public class ArchiveChannelDaoImpl extends AbstractArchiveDao implements IArchiv
     private final Map<ArchiveChannelId, IArchiveChannel> _channelCacheById =
         new MapMaker().concurrencyLevel(2).weakKeys().makeMap();
 
-
     private final String _selectChannelPrefix =
         "SELECT " + TAB + ".id, " + TAB + ".name, " + TAB + ".datatype, " + TAB + ".group_id, " + TAB + ".last_sample_time, " +
                     TAB + ".display_high, " + TAB + ".display_low, " +
@@ -116,6 +116,9 @@ public class ArchiveChannelDaoImpl extends AbstractArchiveDao implements IArchiv
     private final String _createChannelsStmt = "INSERT INTO " + getDatabaseName() + "." + TAB +
                                                " (name, datatype, group_id, control_system_id, display_high, display_low)" +
                                                " VALUES (?, ?, ?, ?, ?, ?)";
+
+    private final String _deleteChannelStmt= "DELETE FROM " + getDatabaseName() + "." + TAB +
+                                             " WHERE name=?";
     /**
      * Constructor.
      * @throws ArchiveDaoException
@@ -517,6 +520,29 @@ public class ArchiveChannelDaoImpl extends AbstractArchiveDao implements IArchiv
             i++;
         }
         return notAddedChannels;
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    @Nonnull
+    public DeleteResult deleteChannel(@Nonnull final String name) {
+        PreparedStatement stmt = null;
+        try {
+            final Connection conn = getThreadLocalConnection();
+            stmt = conn.prepareStatement(_deleteChannelStmt);
+            stmt.setString(1, name);
+            final int deleted = stmt.executeUpdate();
+            if (deleted == 1) {
+                return DeleteResult.succeeded("Deletion of channel '" + name + "' succeeded.");
+            }
+        } catch (final Exception e) {
+            return DeleteResult.failed("Deletion of channel failed:\n" + e.getMessage());
+        } finally {
+            closeSqlResources(null, stmt, _deleteChannelStmt);
+        }
+        return DeleteResult.failed("Channel '" + name + "' does not exist.");
     }
 
 }
