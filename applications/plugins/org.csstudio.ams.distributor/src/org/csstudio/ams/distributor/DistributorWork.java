@@ -37,6 +37,7 @@ import javax.jms.ConnectionFactory;
 import javax.jms.JMSException;
 import javax.jms.MapMessage;
 import javax.jms.Message;
+import javax.jms.MessageListener;
 import javax.jms.MessageProducer;
 import javax.jms.Session;
 import javax.naming.Context;
@@ -77,7 +78,7 @@ import org.eclipse.jface.preference.IPreferenceStore;
 
 /*- FIXME Frage klaeren, warum das T_AMS_JMS immer in user feld steht,
  *  auch dieser Connector nicht angesteuert wird??? */
-public class DistributorWork extends Thread implements AmsConstants {
+public class DistributorWork extends Thread implements AmsConstants, MessageListener {
 	
     // TODO: Replace it with an enum!
 	 // alarm without confirmation
@@ -98,19 +99,7 @@ public class DistributorWork extends Thread implements AmsConstants {
 	// status change rejected
 	public static final int TEXTTYPE_STATUSCHANGE_NOK = 6;
 
-	// private final int CONSUMER_CONNECTIONS = 2;
-
-	private final static int CMD_INIT = 0;
-	private final static int CMD_IDLE = 1; // normal work
-	private final static int CMD_RPL_START = 2; // after rpl start command from
-
-	// Fmr
-	private final static int CMD_RPL_NOTIFY_FMR = 3; // after replication
-
-	private int iCmd = CMD_INIT;
-
-	private DistributorStart application = null;
-	private java.sql.Connection conDb = null; // Derby database connection
+	private java.sql.Connection localAppDb = null; // Derby database connection
 	// (application db)
 
 	// jms internal communication
@@ -135,31 +124,17 @@ public class DistributorWork extends Thread implements AmsConstants {
     private boolean bStop = false;
     private boolean bStoppedClean = false;
     
-    private ConfigurationSynchronizer synchronizer;
-    private java.sql.Connection masterDb;
+    private final ConfigurationSynchronizer synchronizer;
 
-	public DistributorWork(DistributorStart ds)
-	{
-		this.application = ds;
+	public DistributorWork(java.sql.Connection localDatabaseConnection, ConfigurationSynchronizer synchronizer) {
+		localAppDb = localDatabaseConnection;
+        this.synchronizer = synchronizer;
 		
 		// Create the container that holds the information about the connector topics.
 		topicContainer = new ConnectorTopicContainer();
-	}
 
-	@Override
-    public void run()
-	{
-		boolean bInitedConDb = false;
-		boolean bInitedJmsInt = false;
-		boolean bInitedJmsExt = false;
-		int iErr = DistributorStart.STAT_OK;
-		Log.log(this, Log.INFO, "start distributor work");
-        bStop = false;
-        
-        boolean success;
-        
-        // Initialization
-        success = initJmsInternal();
+        // Initialize JMS connections for sending messages to distributors
+        boolean success = initJmsInternal();
         if (!success) {
             throw new RuntimeException("Failed to initialize internal JMS connections");
         }
@@ -167,134 +142,73 @@ public class DistributorWork extends Thread implements AmsConstants {
         if (!success) {
             throw new RuntimeException("Failed to initialize external JMS connections");
         }
-        success = initApplicationDb();
-        if (!success) {
-            throw new RuntimeException("Failed to connect to database servers");
-        }
-        synchronizer = new ConfigurationSynchronizer(conDb, masterDb, amsSender);
-        
+	}
+	
+	public void onMessage(Message message) {
+	    synchronized (synchronizer) {
+    	    try {
+                workOnMessage(message);
+            } catch (Exception e) {
+                Log.log(this, Log.ERROR, e);
+            }
+	    }
+	}
+
+	@Override
+    public void run()
+	{
+		int iErr = DistributorStart.STAT_OK;
+		Log.log(this, Log.INFO, "start distributor work");
+        bStop = false;
 
 		while(bStop == false)
 		{
 			try {
 				sleep(1);
 
-				if (bInitedConDb && bInitedJmsInt && bInitedJmsExt) {
-					iErr = DistributorStart.STAT_OK;
-
-					Log.log(this, Log.DEBUG, "runs");
-
-					// WorkOnAlarmMessage 1 / 3 (replication start command)
-					if (iErr == DistributorStart.STAT_OK && iCmd == CMD_IDLE) {
-						Message message = null;
-
-						try {
-							// TODO Breakpoint und msg conent analyse.
-							message = amsReceiver.receive("amsSubscriberDist");
-						} catch (Exception e) {
-							Log.log(this, Log.FATAL,
-									"could not receive from internal jms", e);
-							iErr = DistributorStart.STAT_ERR_JMSCON_INT;
-						}
-
-						if (message != null) {
-							iErr = workOnMessage(message); // work on 1
-							// messages, other
-							// in the next run
-						}
-					}
-
-					// WorkOnReplyMessage 2 / 3 (reply or change status)
-					if (iErr == DistributorStart.STAT_OK) {
-						Message message = null;
-
-						try {
-							message = amsReceiver.receive("amsSubscriberReply");
-						} catch (Exception e) {
-							Log.log(this, Log.FATAL,
-									"could not receive from internal jms", e);
-							iErr = DistributorStart.STAT_ERR_JMSCON_INT;
-						}
-
-						if (message != null) {
-							iErr = responseMsg(message); // response 1
-							// messages, other
-							// in the next run
-						}
-					}
-
-					// WorkOnMessageChain 3 / 3
-					if (iErr == DistributorStart.STAT_OK) {
-						List<Integer> keyList = MessageChainDAO.selectKeyList(
-								conDb, MESSAGECHAIN_WORK);
-
-						Iterator<Integer> iter = keyList.iterator();
-						while (iter.hasNext()) {
-							Integer val = iter.next();
-							if (val != null) {
-								iErr = workOnMessageChain(val.intValue());
-								if (iErr != DistributorStart.STAT_OK)
-									break; // error: exit while
-							}
-						}
-					}
-				}
-
-				if (iErr == DistributorStart.STAT_ERR_APPLICATION_DB_SEND) {
-					closeApplicationDb();
-					bInitedConDb = false;
-					closeJmsInternal(); // recover msg
-					bInitedJmsInt = false;
-				}
-
-				// if (iErr == DistributorStart.STAT_ERR_FLG_RPL) do close all
-				// if (iErr == DistributorStart.STAT_ERR_FLG_BUP) do close all
-				if (iErr == DistributorStart.STAT_ERR_APPLICATION_DB
-						|| iErr == DistributorStart.STAT_ERR_FLG_RPL
-						|| iErr == DistributorStart.STAT_ERR_FLG_BUP) {
-					closeApplicationDb();
-					bInitedConDb = false;
-				}
-				if (iErr == DistributorStart.STAT_ERR_JMSCON_INT
-						|| iErr == DistributorStart.STAT_ERR_FLG_RPL
-						|| iErr == DistributorStart.STAT_ERR_FLG_BUP
-						|| iErr == DistributorStart.STAT_ERR_JMSCON_FREE_SEND) // recover
-				// msg
-				{
-					closeJmsInternal();
-					bInitedJmsInt = false;
-				}
-				if (iErr == DistributorStart.STAT_ERR_JMSCON_EXT
-						|| iErr == DistributorStart.STAT_ERR_FLG_RPL
-						|| iErr == DistributorStart.STAT_ERR_FLG_BUP) {
-					closeJmsExternal();
-					bInitedJmsExt = false;
-				}
-
-				// set status in every loop
-				application.setStatus(iErr); // set error status, can be OK if no error
+				synchronized (synchronizer) {
+                    iErr = DistributorStart.STAT_OK;
+                    Log.log(this, Log.DEBUG, "runs");
+                    // WorkOnReplyMessage 2 / 3 (reply or change status)
+                    if (iErr == DistributorStart.STAT_OK) {
+                        Message message = null;
+                        
+                        try {
+                            message = amsReceiver.receive("amsSubscriberReply");
+                        } catch (Exception e) {
+                            Log.log(this, Log.FATAL, "could not receive from internal jms", e);
+                            iErr = DistributorStart.STAT_ERR_JMSCON_INT;
+                        }
+                        
+                        if (message != null) {
+                            iErr = responseMsg(message); // response 1
+                            // messages, other
+                            // in the next run
+                        }
+                    }
+                    // WorkOnMessageChain 3 / 3
+                    if (iErr == DistributorStart.STAT_OK) {
+                        List<Integer> keyList = MessageChainDAO.selectKeyList(localAppDb,
+                                                                              MESSAGECHAIN_WORK);
+                        
+                        Iterator<Integer> iter = keyList.iterator();
+                        while (iter.hasNext()) {
+                            Integer val = iter.next();
+                            if (val != null) {
+                                iErr = workOnMessageChain(val.intValue());
+                                if (iErr != DistributorStart.STAT_OK)
+                                    break; // error: exit while
+                            }
+                        }
+                    }
+                }
 			}
 			catch(Exception e)
 			{
-				application.setStatus(DistributorStart.STAT_ERR_UNKNOWN);
 				Log.log(this, Log.FATAL, e);
-
-				closeApplicationDb();
-				bInitedConDb = false;
-
-				closeJmsInternal();
-				bInitedJmsInt = false;
-
-				closeJmsExternal();
-				bInitedJmsExt = false;
 			}
 		}
-
-        closeJmsExternal();
-        closeJmsInternal();
-        closeApplicationDb();
-        bStoppedClean = true;
-
+		
         Log.log(this, Log.INFO, "Distributor exited");
 	}
 
@@ -303,29 +217,8 @@ public class DistributorWork extends Thread implements AmsConstants {
 	// //////////////////////////////////////////////////////////////////////////////
 
 	// //////////////////////////////////////////////////////////////////////////////
-	// Start: init & close (Derby DB, internal JMS, external JMS)
+	// Start: init & close (internal JMS, external JMS)
 	//
-
-	private boolean initApplicationDb() {
-		try {
-			conDb = AmsConnectionFactory.getApplicationDB();
-			masterDb = AmsConnectionFactory.getConfigurationDB();
-			if (conDb == null || masterDb == null) {
-				Log.log(this, Log.FATAL, "could not init application database");
-				return false;
-			}
-			return true;
-		} catch (Exception e) {
-			Log.log(this, Log.FATAL, "could not init application database");
-		}
-		return false;
-	}
-
-	public void closeApplicationDb() {
-		AmsConnectionFactory.closeConnection(conDb);
-		conDb = null;
-		Log.log(this, Log.INFO, "application database connection closed");
-	}
 	
 	private boolean initJmsInternal() {
 	    
@@ -342,15 +235,8 @@ public class DistributorWork extends Thread implements AmsConstants {
 	        return false;
 	    }
 	    
-	    
-	    /* Command Topic */
-	    
-	    String topicName = storeAct.getString(AmsPreferenceKey.P_JMS_AMS_TOPIC_COMMAND);
-	    if (amsSender.addMessageProducer("amsPublisherCommand", topicName) == false) {
-	        Log.log(this, Log.ERROR, "Cannot create amsPublisherCommand");
-	        return false;
-	    }
-	    	    
+
+	    String topicName;
 	    
 	    /* SMS Connector */
 	    
@@ -727,7 +613,7 @@ public class DistributorWork extends Thread implements AmsConstants {
 	private int distributeMessage(MapMessage msg) throws Exception {
 		try {
 			int iFilterId = Integer.parseInt(msg.getString(MSGPROP_FILTERID));
-			FilterTObject filter = FilterDAO.select(conDb, iFilterId);
+			FilterTObject filter = FilterDAO.select(localAppDb, iFilterId);
 
 			String msgHost = msg.getString(MSGPROP_HOST);
 			String msgProc = msg.getString(MSGPROP_PROCESSID);
@@ -746,7 +632,7 @@ public class DistributorWork extends Thread implements AmsConstants {
 					+ "." + " Msg: " + Utils.getMessageString(msg);
 			history.setDescription(description);
 
-			HistoryDAO.insert(conDb, history);
+			HistoryDAO.insert(localAppDb, history);
 			Log.log(Log.INFO, /* history.getHistoryID() + ". " + */
 			description);
 			// + " actiontype=" + history.getActionType()
@@ -754,7 +640,7 @@ public class DistributorWork extends Thread implements AmsConstants {
 			// + " via " + history.getDestType()
 			// + " dest= " + history.getDestAdress());
 
-			List<?> fActions = AggrFilterActionDAO.select(conDb, iFilterId);
+			List<?> fActions = AggrFilterActionDAO.select(localAppDb, iFilterId);
 
 			int iMessageID = 0;
 			int iWorked = DistributorStart.STAT_FALSE;
@@ -769,26 +655,26 @@ public class DistributorWork extends Thread implements AmsConstants {
 	                
 				    // ADDED BY Markus Moeller, 2007-11-12
 				    // Blocking non-active groups
-				    AggrUserGroupTObject userGroup = AggrUserGroupDAO.selectList(conDb, fa
+				    AggrUserGroupTObject userGroup = AggrUserGroupDAO.selectList(localAppDb, fa
 	                        .getReceiverRef());
 	                if(userGroup.getUsergroup().getIsActive() != 0)
 	                {
 	                    if (iMessageID == 0)
-	                        iMessageID = MessageDAO.insert(conDb, msg, true);
+	                        iMessageID = MessageDAO.insert(localAppDb, msg, true);
 
 	                    MessageChainTObject msgChain = new MessageChainTObject(0,
 	                            iMessageID, filter.getFilterID(), fa
 	                                    .getFilterActionID(), 0, null, null,
 	                            MESSAGECHAIN_WORK, null);
-	                    MessageChainDAO.insert(conDb, msgChain);
+	                    MessageChainDAO.insert(localAppDb, msgChain);
 
 	                    if (iWorked == DistributorStart.STAT_FALSE)
 	                        iWorked = DistributorStart.STAT_OK;
 	                }
 	                else
 	                {
-                        HistoryWriter.logHistoryGroupBlocked(conDb, msg, "Send to group with reply", fa.getFilterActionTypeRef(),
-                                userGroup.getUsergroup(), 0, 0, TopicDAO.select(conDb, fa.getReceiverRef()));	                    
+                        HistoryWriter.logHistoryGroupBlocked(localAppDb, msg, "Send to group with reply", fa.getFilterActionTypeRef(),
+                                userGroup.getUsergroup(), 0, 0, TopicDAO.select(localAppDb, fa.getReceiverRef()));	                    
 	                }
 				}
 				else
@@ -975,7 +861,7 @@ public class DistributorWork extends Thread implements AmsConstants {
 	    ConnectorTopic ct = null;
 	    HashMap<String, String> map = null;
 	    
-		UserTObject user = UserDAO.select(conDb, fa.getReceiverRef());
+		UserTObject user = UserDAO.select(localAppDb, fa.getReceiverRef());
 		if (fa.getFilterActionTypeRef() != FILTERACTIONTYPE_TO_JMS
 				&& user.getActive() == 0) {
 			Log.log(Log.WARN, "User not active: " + user.getUserID()
@@ -986,7 +872,7 @@ public class DistributorWork extends Thread implements AmsConstants {
 		switch (fa.getFilterActionTypeRef())
 		{
 		    case FILTERACTIONTYPE_TO_JMS:
-		        TopicTObject topic = TopicDAO.select(conDb, fa.getReceiverRef());
+		        TopicTObject topic = TopicDAO.select(localAppDb, fa.getReceiverRef());
 		        ct = topicContainer.getConnectorTopicByConnectorName("JmsConnector");
 		        if(ct.isFullMessageReceiver())
 		        {
@@ -1015,8 +901,8 @@ public class DistributorWork extends Thread implements AmsConstants {
 							+ fa.getFilterActionTypeRef());
 		}
 
-		HistoryWriter.logHistorySend(conDb, mapMsg, text, fa.getFilterActionTypeRef(), user,
-				null, 0, 0, 0, TopicDAO.select(conDb, fa.getReceiverRef()));
+		HistoryWriter.logHistorySend(localAppDb, mapMsg, text, fa.getFilterActionTypeRef(), user,
+				null, 0, 0, 0, TopicDAO.select(localAppDb, fa.getReceiverRef()));
 		return DistributorStart.STAT_OK;
 	}
 	
@@ -1049,14 +935,14 @@ public class DistributorWork extends Thread implements AmsConstants {
 	// AMSException
 	{
 		int iOneSended = DistributorStart.STAT_FALSE;
-		AggrUserGroupTObject userGroup = AggrUserGroupDAO.selectList(conDb, fa
+		AggrUserGroupTObject userGroup = AggrUserGroupDAO.selectList(localAppDb, fa
 				.getReceiverRef());
 		
 		// If user group is NOT active...
 		if(userGroup.getUsergroup().getIsActive() == 0)
 		{
-		    HistoryWriter.logHistoryGroupBlocked(conDb, mapMsg, text, fa.getFilterActionTypeRef(),
-	                    userGroup.getUsergroup(), 0, 0, TopicDAO.select(conDb, fa.getReceiverRef()));
+		    HistoryWriter.logHistoryGroupBlocked(localAppDb, mapMsg, text, fa.getFilterActionTypeRef(),
+	                    userGroup.getUsergroup(), 0, 0, TopicDAO.select(localAppDb, fa.getReceiverRef()));
 	          
 	            iOneSended = DistributorStart.STAT_GROUP_BLOCKED; // == STAT_OK
 
@@ -1099,9 +985,9 @@ public class DistributorWork extends Thread implements AmsConstants {
 								+ fa.getFilterActionTypeRef());
 			}
 
-			HistoryWriter.logHistorySend(conDb, mapMsg, text, fa.getFilterActionTypeRef(),
+			HistoryWriter.logHistorySend(localAppDb, mapMsg, text, fa.getFilterActionTypeRef(),
 					aUser.getUser(), userGroup.getUsergroup(), 0, 0, 0,
-					TopicDAO.select(conDb, fa.getReceiverRef()));
+					TopicDAO.select(localAppDb, fa.getReceiverRef()));
 			iOneSended = DistributorStart.STAT_OK;
 		}
 		
@@ -1250,7 +1136,7 @@ public class DistributorWork extends Thread implements AmsConstants {
             if (!(status == 0 || status == 1)) {
                 Log.log(Log.WARN, "unknown state: " + status + " for msg "
                         + txt);
-                UserTObject userTmp = UserDAO.select(conDb, userNum);
+                UserTObject userTmp = UserDAO.select(localAppDb, userNum);
                 if (userTmp != null
                         && userTmp.getStatusCode().equalsIgnoreCase(statusCode))// NOT_OK
                 // -
@@ -1260,13 +1146,13 @@ public class DistributorWork extends Thread implements AmsConstants {
                 // not
                 // available
                 {
-                    HistoryWriter.logHistoryChangeStatus(conDb, userTmp, "Unknown state.",
+                    HistoryWriter.logHistoryChangeStatus(localAppDb, userTmp, "Unknown state.",
                             null, txt, status, reason, replyType, replyAdress);
                     sendChangeStatusConfirmation(userTmp, txt
                             + MSGCODE_UNKNOWN_STATUS, replyType, replyAdress,
                             TEXTTYPE_STATUSCHANGE_NOK);
                 } else {
-                    HistoryWriter.logHistoryChangeStatus(conDb, null, "Unknown state.", null,
+                    HistoryWriter.logHistoryChangeStatus(localAppDb, null, "Unknown state.", null,
                             txt, status, reason, replyType, replyAdress);
                 }
                 return DistributorStart.STAT_FALSE; // wrong request
@@ -1323,14 +1209,14 @@ public class DistributorWork extends Thread implements AmsConstants {
                         // follows
                         {
                             try {
-                                UserTObject user1 = UserDAO.select(conDb, userNum);
-                                UserGroupTObject group2 = changeGroupState(conDb, groupNum,
+                                UserTObject user1 = UserDAO.select(localAppDb, userNum);
+                                UserGroupTObject group2 = changeGroupState(localAppDb, groupNum,
                                         userNum, status, statusCode, reason, txt, replyType, replyAdress);
                                 if (group2 != null) // OK - all well done
                                 {
                                     UserGroupTObject ug = UserGroupDAO.select(
-                                            conDb, groupNum);
-                                    HistoryWriter.logHistoryChangeStatus(conDb, null, null, ug,
+                                            localAppDb, groupNum);
+                                    HistoryWriter.logHistoryChangeStatus(localAppDb, null, null, ug,
                                             txt, status, reason, replyType,
                                             replyAdress);
                                     sendChangeGroupStatusConfirmation(user1, ug, "Group state changed: " + txt
@@ -1343,7 +1229,7 @@ public class DistributorWork extends Thread implements AmsConstants {
                                 Log.log(this, Log.FATAL, e);
                             }
                             HistoryWriter.logHistoryChangeStatus(
-                                    conDb,
+                                    localAppDb,
                                     null,
                                     "Critical error => can update local db => replicate configuration.",
                                     null, txt, status, reason, replyType,
@@ -1411,14 +1297,14 @@ public class DistributorWork extends Thread implements AmsConstants {
     					// follows
     					{
     						try {
-    							UserTObject user2 = changeStatus(conDb, groupNum,
+    							UserTObject user2 = changeStatus(localAppDb, groupNum,
     									userNum, status, statusCode, reason, txt,
     									replyType, replyAdress);
     							if (user2 != null) // OK - all well done
     							{
     								UserGroupTObject ug = UserGroupDAO.select(
-    										conDb, groupNum);
-    								HistoryWriter.logHistoryChangeStatus(conDb, user2, null, ug,
+    										localAppDb, groupNum);
+    								HistoryWriter.logHistoryChangeStatus(localAppDb, user2, null, ug,
     										txt, status, reason, replyType,
     										replyAdress);
     								sendChangeStatusConfirmation(user2, txt
@@ -1431,7 +1317,7 @@ public class DistributorWork extends Thread implements AmsConstants {
     							Log.log(this, Log.FATAL, e);
     						}
     						HistoryWriter.logHistoryChangeStatus(
-    								conDb,
+    								localAppDb,
     								null,
     								"Critical error => can update local db => replicate configuration.",
     								null, txt, status, reason, replyType,
@@ -1460,8 +1346,8 @@ public class DistributorWork extends Thread implements AmsConstants {
     								Log.FATAL,
     								"Could not changeStatus: temporary no connection to configuration database for msg "
     										+ txt);
-    				UserTObject userTmp = UserDAO.select(conDb, userNum);
-    				HistoryWriter.logHistoryChangeStatus(conDb, userTmp,
+    				UserTObject userTmp = UserDAO.select(localAppDb, userNum);
+    				HistoryWriter.logHistoryChangeStatus(localAppDb, userTmp,
     						"No connection to config db.", null, txt, status,
     						reason, replyType, replyAdress);
     				if (userTmp != null) // NOT_OK - main system temporarly not
@@ -1488,7 +1374,7 @@ public class DistributorWork extends Thread implements AmsConstants {
 	{
 		UserTObject user = UserDAO.select(con, userNum);
 		if (user == null) {
-			HistoryWriter.logHistoryChangeStatus(conDb, null, "UserID=" + userNum
+			HistoryWriter.logHistoryChangeStatus(localAppDb, null, "UserID=" + userNum
 					+ " not found.", null, txt, status, reason, replyType,
 					replyAdress);
 			Log
@@ -1503,7 +1389,7 @@ public class DistributorWork extends Thread implements AmsConstants {
 		// not publish
 		// statuscode
 		{
-			HistoryWriter.logHistoryChangeStatus(conDb, user, "Status code does not match.",
+			HistoryWriter.logHistoryChangeStatus(localAppDb, user, "Status code does not match.",
 					null, txt, status, reason, replyType, replyAdress);
 			Log.log(Log.FATAL, "status code does not match for msg " + txt);
 			return null;
@@ -1511,7 +1397,7 @@ public class DistributorWork extends Thread implements AmsConstants {
 
 		UserGroupTObject ug = UserGroupDAO.select(con, groupNum);
 		if (ug == null) {
-			HistoryWriter.logHistoryChangeStatus(conDb, user, "GroupID=" + groupNum
+			HistoryWriter.logHistoryChangeStatus(localAppDb, user, "GroupID=" + groupNum
 					+ " not found.", null, txt, status, reason, replyType,
 					replyAdress);
 			Log.log(Log.WARN, "no group: " + groupNum + " for msg " + txt);
@@ -1527,7 +1413,7 @@ public class DistributorWork extends Thread implements AmsConstants {
 			UserGroupUserTObject ugu = UserGroupUserDAO.select(con, groupNum,
 					userNum);
 			if (ugu == null) {
-				HistoryWriter.logHistoryChangeStatus(conDb, user, "User not in group.", ug,
+				HistoryWriter.logHistoryChangeStatus(localAppDb, user, "User not in group.", ug,
 						txt, status, reason, replyType, replyAdress);
 				Log.log(Log.WARN, "user not in group for msg " + txt);
 				// never coming twice here, nok not in group
@@ -1557,7 +1443,7 @@ public class DistributorWork extends Thread implements AmsConstants {
 						iActiveCount++; // count active user in group
 				}
 				if (ug.getMinGroupMember() >= iActiveCount) {
-					HistoryWriter.logHistoryChangeStatus(conDb, user,
+					HistoryWriter.logHistoryChangeStatus(localAppDb, user,
 							"Min user count reached min="
 									+ ug.getMinGroupMember() + ".", ug, txt,
 							status, reason, replyType, replyAdress);
@@ -1582,7 +1468,7 @@ public class DistributorWork extends Thread implements AmsConstants {
 		}// for
 
 		HistoryWriter.logHistoryChangeStatus(
-				conDb,
+				localAppDb,
 				user,
 				"failed to update status (tried 3 times, Data changed or deleted!).",
 				ug, txt, status, reason, replyType, replyAdress);
@@ -1604,7 +1490,7 @@ public class DistributorWork extends Thread implements AmsConstants {
 	    // Check whether or not the user is a member of the group
 	    groupUser = UserGroupUserDAO.select(con, groupNum, userNum);
         if (groupUser == null) {
-            HistoryWriter.logHistoryChangeStatus(conDb, null, "GroupID=" + groupNum
+            HistoryWriter.logHistoryChangeStatus(localAppDb, null, "GroupID=" + groupNum
                     + " or UserID=" + userNum + " not found.", null, txt, status, reason, replyType,
                     replyAdress);
             Log.log(Log.FATAL, "User=" + userNum + " or group=" + groupNum + " not found");// do not send back to user if not
@@ -1616,7 +1502,7 @@ public class DistributorWork extends Thread implements AmsConstants {
         user = UserDAO.select(con, userNum);
         if(user == null)
         {
-            HistoryWriter.logHistoryChangeStatus(conDb, user, "UserID=" + userNum + " not found.", null, txt, status, reason, replyType,
+            HistoryWriter.logHistoryChangeStatus(localAppDb, user, "UserID=" + userNum + " not found.", null, txt, status, reason, replyType,
                     replyAdress);
             Log.log(Log.FATAL, "User=" + userNum + " not found");// do not send back to user if not
         
@@ -1629,7 +1515,7 @@ public class DistributorWork extends Thread implements AmsConstants {
         // not publish
         // statuscode
         {
-            HistoryWriter.logHistoryChangeStatus(conDb, user, "Status code does not match.",
+            HistoryWriter.logHistoryChangeStatus(localAppDb, user, "Status code does not match.",
                     null, txt, status, reason, replyType, replyAdress);
             Log.log(Log.FATAL, "status code does not match for user=" + userNum);
             
@@ -1638,7 +1524,7 @@ public class DistributorWork extends Thread implements AmsConstants {
 
         UserGroupTObject userGroup = UserGroupDAO.select(con, groupNum);
         if (userGroup == null) {
-            HistoryWriter.logHistoryChangeStatus(conDb, user, "GroupID=" + groupNum
+            HistoryWriter.logHistoryChangeStatus(localAppDb, user, "GroupID=" + groupNum
                     + " not found.", userGroup, txt, status, reason, replyType,
                     replyAdress);
             Log.log(Log.WARN, "no group: " + groupNum);
@@ -1653,7 +1539,7 @@ public class DistributorWork extends Thread implements AmsConstants {
         {
             UserGroupTObject ug = UserGroupDAO.select(con, groupNum);
             if (ug == null) {
-                HistoryWriter.logHistoryChangeStatus(conDb, user, "User not in group.", ug,
+                HistoryWriter.logHistoryChangeStatus(localAppDb, user, "User not in group.", ug,
                         txt, status, reason, replyType, replyAdress);
                 Log.log(Log.WARN, "group not found ");
                 // never coming twice here, nok not in group
@@ -1689,7 +1575,7 @@ public class DistributorWork extends Thread implements AmsConstants {
         }// for
 
         HistoryWriter.logHistoryChangeStatus(
-                conDb,
+                localAppDb,
                 user,
                 "failed to update group status (tried 3 times, Data changed or deleted!).",
                 userGroup, txt, status, reason, replyType, replyAdress);
@@ -1827,7 +1713,7 @@ public class DistributorWork extends Thread implements AmsConstants {
                 // publishToConnectorSms(txt, user.getMobilePhone()); // SMS
                 
                 // Get the numbers of all active group members
-                Vector<UserTObject> activeUsers = UserGroupUserDAO.selectByGroupAndState(conDb, group.getID(), 1);
+                Vector<UserTObject> activeUsers = UserGroupUserDAO.selectByGroupAndState(localAppDb, group.getID(), 1);
                 
                 if(!activeUsers.isEmpty())
                 {
@@ -1880,7 +1766,7 @@ public class DistributorWork extends Thread implements AmsConstants {
 			String replyAdress) throws Exception {
 		int iRet = DistributorStart.STAT_OK;
 
-		List<?> lMc = MessageChainDAO.selectKeyListByReceiverAdress(conDb,
+		List<?> lMc = MessageChainDAO.selectKeyListByReceiverAdress(localAppDb,
 				MESSAGECHAIN_WORK, replyAdress);
 
 		Iterator<?> iter = lMc.iterator();
@@ -1909,7 +1795,7 @@ public class DistributorWork extends Thread implements AmsConstants {
 		if (chainDbParam != null)
 			chainDb = chainDbParam;
 		else
-			chainDb = MessageChainDAO.select(conDb, msgChainId);
+			chainDb = MessageChainDAO.select(localAppDb, msgChainId);
 
 		FilterActionTObject fa = null;
 		AggrUserGroupUserTObject aUser = null;
@@ -1918,14 +1804,14 @@ public class DistributorWork extends Thread implements AmsConstants {
 		if (chainDb != null && chainDb.getChainState() == MESSAGECHAIN_WORK) {
 			if (chainDb.getReceiverPos() == msgChainPos) {
 				fa = FilterActionDAO
-						.select(conDb, chainDb.getFilterActionRef());
+						.select(localAppDb, chainDb.getFilterActionRef());
 				if (fa != null) {
 					if (replyType.equals(MSG_REPLY_TYPE_JMS)) {
-						TopicTObject topic = TopicDAO.select(conDb, fa
+						TopicTObject topic = TopicDAO.select(localAppDb, fa
 								.getReceiverRef());
 						chainDb.setChainState(MESSAGECHAIN_REPLIED);
-						MessageChainDAO.update(conDb, chainDb);
-						HistoryWriter.logHistoryReply(conDb, "Reply", null, null, topic,
+						MessageChainDAO.update(localAppDb, chainDb);
+						HistoryWriter.logHistoryReply(localAppDb, "Reply", null, null, topic,
 								"Chain replied for ChainId=" + msgChainId
 										+ ", Pos=" + msgChainPos + ".", fa
 										.getFilterActionTypeRef(), msgChainId,
@@ -1935,7 +1821,7 @@ public class DistributorWork extends Thread implements AmsConstants {
 								msgChainPos, replyAdress);
 						return DistributorStart.STAT_OK; // All O.K.
 					} else {
-						userGroup = AggrUserGroupDAO.select(conDb, fa
+						userGroup = AggrUserGroupDAO.select(localAppDb, fa
 								.getReceiverRef(), msgChainPos);
 						if (userGroup != null)
 							aUser = userGroup.getUsers().get(0);
@@ -1944,9 +1830,9 @@ public class DistributorWork extends Thread implements AmsConstants {
 								&& aUser.getUser().getConfirmCode().equals(
 										confirmCode)) {
 							chainDb.setChainState(MESSAGECHAIN_REPLIED);
-							MessageChainDAO.update(conDb, chainDb);
+							MessageChainDAO.update(localAppDb, chainDb);
 
-							HistoryWriter.logHistoryReply(conDb, "Reply", aUser.getUser(),
+							HistoryWriter.logHistoryReply(localAppDb, "Reply", aUser.getUser(),
 									userGroup.getUsergroup(), null,
 									"Chain replied for ChainId=" + msgChainId
 											+ ", Pos=" + msgChainPos + ".", fa
@@ -1972,11 +1858,11 @@ public class DistributorWork extends Thread implements AmsConstants {
 			// fa not there
 			if (fa == null)
 				fa = FilterActionDAO
-						.select(conDb, chainDb.getFilterActionRef());
+						.select(localAppDb, chainDb.getFilterActionRef());
 
 			if (fa != null
 					&& (userGroup == null || userGroup.getUsers().isEmpty())) {
-				userGroup = AggrUserGroupDAO.select(conDb, fa.getReceiverRef(),
+				userGroup = AggrUserGroupDAO.select(localAppDb, fa.getReceiverRef(),
 						msgChainPos);
 				if (userGroup != null)
 					aUser = userGroup.getUsers().get(0);
@@ -1999,7 +1885,7 @@ public class DistributorWork extends Thread implements AmsConstants {
 			Log.log(Log.FATAL, "Message Reply: ChainID '" + msgChainId
 					+ "' not found.");
 
-		HistoryWriter.logHistoryReply(conDb, "Reply Err", (aUser == null ? null : aUser
+		HistoryWriter.logHistoryReply(localAppDb, "Reply Err", (aUser == null ? null : aUser
 				.getUser()), (userGroup == null ? null : userGroup
 				.getUsergroup()), null, "Reply not accepted for ChainId="
 				+ msgChainId + ", Pos=" + msgChainPos + " Error: " + err,
@@ -2012,7 +1898,7 @@ public class DistributorWork extends Thread implements AmsConstants {
 	private int workOnMessageChain(int msgChainId) throws Exception {
 		MessageChainTObject msgChain = null;
 		try {
-			msgChain = MessageChainDAO.select(conDb, msgChainId);
+			msgChain = MessageChainDAO.select(localAppDb, msgChainId);
 			if (msgChain == null)
 				return DistributorStart.STAT_OK; // handle as O.K. (no error)
 			if (msgChain.getChainState() != MESSAGECHAIN_WORK)
@@ -2028,7 +1914,7 @@ public class DistributorWork extends Thread implements AmsConstants {
 			MapMessage extMsg = null;
 			try {
 				extMsg = extSession.createMapMessage();
-				MessageDAO.select(conDb, msgChain.getMessageRef(), extMsg);
+				MessageDAO.select(localAppDb, msgChain.getMessageRef(), extMsg);
 			} catch (JMSException e) // JMSException (STAT_ERR_JMSCON_EXT)
 			{
 				Log
@@ -2040,9 +1926,9 @@ public class DistributorWork extends Thread implements AmsConstants {
 				return DistributorStart.STAT_ERR_JMSCON_EXT;
 			}
 
-			FilterTObject filter = FilterDAO.select(conDb, msgChain
+			FilterTObject filter = FilterDAO.select(localAppDb, msgChain
 					.getFilterRef());
-			FilterActionTObject fa = FilterActionDAO.select(conDb, msgChain
+			FilterActionTObject fa = FilterActionDAO.select(localAppDb, msgChain
 					.getFilterActionRef());
 
 			AggrUserGroupUserTObject aNextUser = null;
@@ -2051,7 +1937,7 @@ public class DistributorWork extends Thread implements AmsConstants {
 			// chain
 
 			if (fa != null && filter != null) {
-				userGroup = AggrUserGroupDAO.selectList(conDb, fa
+				userGroup = AggrUserGroupDAO.selectList(localAppDb, fa
 						.getReceiverRef()); // ggf. eine Topic-ID!
 				
 				Iterator<?> iter = userGroup.getUsers().iterator();
@@ -2123,7 +2009,7 @@ public class DistributorWork extends Thread implements AmsConstants {
 					iPref = USERFILTERALARMTYPE_SMS;
 					break;
 				case USERFILTERALARMTYPE_JMS:
-					TopicTObject topic = TopicDAO.select(conDb, fa
+					TopicTObject topic = TopicDAO.select(localAppDb, fa
 							.getReceiverRef());
 					publishToConnectorJms(text, topic.getTopicName(), null); // JMS
 					msgChain.setReceiverAdress(topic.getTopicName());
@@ -2161,15 +2047,15 @@ public class DistributorWork extends Thread implements AmsConstants {
 					break;
 				}
 
-				MessageChainDAO.update(conDb, msgChain);
+				MessageChainDAO.update(localAppDb, msgChain);
 
 				try {
-					HistoryWriter.logHistorySend(conDb, extMsg, text, fa
+					HistoryWriter.logHistorySend(localAppDb, extMsg, text, fa
 							.getFilterActionTypeRef(), user,
 							(userGroup != null ? userGroup.getUsergroup()
 									: null), msgChain.getReceiverPos(),
 							msgChain.getMessageChainID(), iPref, TopicDAO
-									.select(conDb, fa.getReceiverRef()));
+									.select(localAppDb, fa.getReceiverRef()));
 				} catch (JMSException e) // JMSException
 				// (STAT_ERR_JMSCON_EXT)
 				{
@@ -2196,7 +2082,7 @@ public class DistributorWork extends Thread implements AmsConstants {
 							+ " Error: system error - configuration changed - no active user anymore.";
 				}
 
-				HistoryWriter.logHistoryReply(conDb, "Failed", null, null, null, err,
+				HistoryWriter.logHistoryReply(localAppDb, "Failed", null, null, null, err,
 						(fa == null ? 0 : fa.getFilterActionTypeRef()),
 						msgChain.getMessageChainID(),
 						msgChain.getReceiverPos(), null, null);
@@ -2224,7 +2110,7 @@ public class DistributorWork extends Thread implements AmsConstants {
 				}
 
 				msgChain.setChainState(MESSAGECHAIN_FAILED); // delete old
-				MessageChainDAO.update(conDb, msgChain);
+				MessageChainDAO.update(localAppDb, msgChain);
 			}
 			return DistributorStart.STAT_OK; // All O.K.
 		} catch (SQLException e) {
@@ -2242,7 +2128,7 @@ public class DistributorWork extends Thread implements AmsConstants {
 							e);
 			msgChain.setChainState(MESSAGECHAIN_FAILED);
 			try {
-				MessageChainDAO.update(conDb, msgChain);
+				MessageChainDAO.update(localAppDb, msgChain);
 			} catch (SQLException ex) {
 				Log.log(this, Log.FATAL, "could not update message chain", ex);
 				return DistributorStart.STAT_ERR_APPLICATION_DB;

@@ -5,12 +5,13 @@ import java.sql.SQLException;
 
 import javax.jms.JMSException;
 import javax.jms.MapMessage;
+import javax.jms.MessageProducer;
+import javax.jms.Session;
 
 import org.csstudio.ams.AmsConstants;
 import org.csstudio.ams.Log;
 import org.csstudio.ams.configReplicator.ConfigReplicator;
 import org.csstudio.ams.dbAccess.configdb.FlagDAO;
-import org.csstudio.platform.utility.jms.JmsMultipleProducer;
 
 /**
  * Service that copies the configuration from the master configuration database
@@ -26,18 +27,21 @@ class ConfigurationSynchronizer implements Runnable {
     
     private final Connection _localDatabaseConnection;
     private final Connection _masterDatabaseConnection;
-    private final JmsMultipleProducer _jmsProducer;
     private SynchronizerState _state;
     private boolean _stopped = false;
+    private MessageProducer _jmsProducer;
+    private Session _jmsSession;
     
     /**
      * Creates a new synchronizer object.
      */
     ConfigurationSynchronizer(Connection localDatabaseConnection,
                               Connection masterDatabaseConnection,
-                              JmsMultipleProducer jmsProducer) {
+                              Session jmsSession,
+                              MessageProducer jmsProducer) {
         _localDatabaseConnection = localDatabaseConnection;
         _masterDatabaseConnection = masterDatabaseConnection;
+        _jmsSession = jmsSession;
         _jmsProducer = jmsProducer;
         _state = readSynchronizationState();
     }
@@ -179,9 +183,9 @@ class ConfigurationSynchronizer implements Runnable {
         try {
             Log.log(this, Log.INFO,
                             "send MSGVALUE_TCMD_RELOAD_CFG_END to FMR via Ams Cmd Topic");
-            MapMessage msg = _jmsProducer.createMapMessage();
+            MapMessage msg = _jmsSession.createMapMessage();
             msg.setString(AmsConstants.MSGPROP_TCMD_COMMAND, AmsConstants.MSGVALUE_TCMD_RELOAD_CFG_END);
-            _jmsProducer.sendMessage("amsPublisherCommand", msg);
+            _jmsProducer.send(msg);
 
             boolean success = FlagDAO.bUpdateFlag(_localDatabaseConnection,
                                                   AmsConstants.FLG_RPL,

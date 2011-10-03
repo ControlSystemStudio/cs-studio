@@ -23,22 +23,19 @@
  
 package org.csstudio.ams.distributor;
 
-import java.net.InetAddress;
-import java.util.Hashtable;
+import java.sql.SQLException;
+
 import javax.jms.Connection;
 import javax.jms.ConnectionFactory;
-import javax.jms.JMSException;
-import javax.jms.MapMessage;
+import javax.jms.MessageConsumer;
 import javax.jms.MessageProducer;
 import javax.jms.Session;
-import javax.naming.Context;
-import javax.naming.InitialContext;
-import javax.naming.NamingException;
+import javax.jms.Topic;
+
+import org.apache.activemq.ActiveMQConnectionFactory;
 import org.csstudio.ams.AmsActivator;
-import org.csstudio.ams.AmsConstants;
 import org.csstudio.ams.Log;
-import org.csstudio.ams.SynchObject;
-import org.csstudio.ams.Utils;
+import org.csstudio.ams.dbAccess.AmsConnectionFactory;
 import org.csstudio.ams.distributor.preferences.DistributorPreferenceKey;
 import org.csstudio.ams.internal.AmsPreferenceKey;
 import org.eclipse.core.runtime.Platform;
@@ -64,27 +61,19 @@ public class DistributorStart implements IApplication,
     public final static int STAT_ERR_FLG_RPL = 8;                               // could not update (application-db) db flag (ReplicationState)
     public final static int STAT_ERR_FLG_BUP = 9;                               // could not update (config-db) db flag (BupState)
     public final static int STAT_ERR_UNKNOWN = 10;
-
-    // only internal
     public final static int STAT_FALSE = 999;                                   // replaces boolean false in methods
-
-    public final static long WAITFORTHREAD = 10000;
-    
-    public final static boolean CREATE_DURABLE = true;
     
     private static DistributorStart _instance = null;
     
     private ISessionService xmppService;
     
-    private SynchObject sObj = null;
     private String managementPassword;
-    private int lastStatus = 0;
-    private boolean bStop;
+
+    private boolean stopped;
     private boolean restart;
     
     public DistributorStart() {
         _instance = this;
-        sObj = new SynchObject(STAT_INIT, System.currentTimeMillis());
         xmppService = null;
         
         IPreferencesService pref = Platform.getPreferencesService();
@@ -104,12 +93,14 @@ public class DistributorStart implements IApplication,
 
     public synchronized void setRestart() {
         restart = true;
-        bStop = true;
+        stopped = true;
+        notify();
     }
 
     public synchronized void setShutdown() {
         restart = false;
-        bStop = true;
+        stopped = true;
+        notify();
     }
 
     /**
@@ -125,132 +116,94 @@ public class DistributorStart implements IApplication,
      * 
      */
     public Object start(IApplicationContext context) throws Exception {
+        Log.log(this, Log.INFO, "Starting Distributor ...");
         
-        DistributorWork dw = null;
-        
-        // use synchronized method
-        lastStatus = getStatus();
-
         DistributorPlugin.getDefault().addSessionServiceListener(this);
         
-        Log.log(this, Log.INFO, "Starting");
         DistributorPreferenceKey.showPreferences();
+        IPreferenceStore prefs = AmsActivator.getDefault().getPreferenceStore();
         
-        bStop = false;
-        restart = false;
-        
-        while(bStop == false)
-        {
-            try
-            {
-                if (dw == null)
-                {
-                    dw = new DistributorWork(this);
-                    dw.start();
-                }
-                
-                Log.log(this, Log.DEBUG, "run");
-                Thread.sleep(1000);
-                
-                SynchObject actSynch = new SynchObject(0, 0);
-                if (!sObj.hasStatusSet(actSynch, 300, STAT_ERR_UNKNOWN))        // if status has not changed in the last 5 minutes
-                {                                                               // every 5 minutes if blocked
-                    Log.log(this, Log.FATAL, "TIMEOUT: status has not changed the last 5 minutes.");
-                }
-
-                String statustext = "unknown";
-                if (actSynch.getStatus() != lastStatus)                         // if status value changed
-                {
-                    switch (actSynch.getStatus())
-                    {
-                        case STAT_INIT:
-                            statustext = "init";
-                            break;
-                        case STAT_OK:
-                            statustext = "ok";
-                            break;
-                        case STAT_ERR_APPLICATION_DB:
-                        case STAT_ERR_APPLICATION_DB_SEND:
-                            statustext = "err_application_db";
-                            break;
-                        case STAT_ERR_CONFIG_DB:
-                            statustext = "err_configuration_db";
-                            break;
-                        case STAT_ERR_JMSCON_INT:
-                            statustext = "err_jms_internal";
-                            break;
-                        case STAT_ERR_JMSCON_EXT:
-                            statustext = "err_jms_external";
-                            break;
-                        case STAT_ERR_JMSCON_FREE_SEND:
-                            statustext = "err_jms_free_topics";
-                            break;
-                        case STAT_ERR_FLG_RPL:
-                            statustext = "err_flag_rpl_state";
-                            break;
-                        case STAT_ERR_FLG_BUP:
-                            statustext = "err_flag_bup_state";
-                            break;
-                    }
-                    Log.log(this, Log.INFO, "set status to " + statustext + "(" + actSynch.getStatus() + ")");
-                    lastStatus = actSynch.getStatus();
-                }
-            }
-            catch(Exception e)
-            {
-                Log.log(this, Log.FATAL, e);
-            }
-        }
-
-        Log.log(this, Log.INFO, "FilterManagerStart is exiting now");
-        
-        if(dw != null)
-        {
-            // Clean stop of the working thread
-            dw.stopWorking();
+        java.sql.Connection localDatabaseConnection = null;
+        java.sql.Connection masterDatabaseConnection = null;
+        try {
+            localDatabaseConnection = AmsConnectionFactory.getApplicationDB();
+            masterDatabaseConnection = AmsConnectionFactory.getConfigurationDB();
             
-            try
-            {
-                dw.join(WAITFORTHREAD);
-            }
-            catch(InterruptedException ie) { /* Can be ignored */ }
-    
-            if(dw.stoppedClean())
-            {
-                Log.log(this, Log.FATAL, "Restart/Exit: Thread stopped clean.");
+            // Create a JMS sender connection
+            ConnectionFactory senderConnectionFactory = new ActiveMQConnectionFactory(prefs.getString(AmsPreferenceKey.P_JMS_AMS_SENDER_PROVIDER_URL));
+            Connection senderConnection = senderConnectionFactory.createConnection();
+            senderConnection.start();
+            
+            // Create a sender session and destination for the command topic
+            Session commandSenderSession = senderConnection.createSession(false, Session.AUTO_ACKNOWLEDGE);
+            String commandTopicName = prefs.getString(AmsPreferenceKey.P_JMS_AMS_TOPIC_COMMAND);
+            Topic commandTopic = commandSenderSession.createTopic(commandTopicName);
+            MessageProducer commandMessageProducer = commandSenderSession.createProducer(commandTopic);
+            
+            // Create the synchronizer object for the database synchronization
+            ConfigurationSynchronizer synchronizer =
+                new ConfigurationSynchronizer(localDatabaseConnection, masterDatabaseConnection, commandSenderSession, commandMessageProducer);
+            Thread synchronizerThread = new Thread(synchronizer);
+            synchronizerThread.start();
+            
+            // Create the receiver connections
+            DistributorWork worker = new DistributorWork(localDatabaseConnection, synchronizer);
+            String[] receiverURLs = new String[] {
+                    prefs.getString(AmsPreferenceKey.P_JMS_AMS_PROVIDER_URL_1),
+                    prefs.getString(AmsPreferenceKey.P_JMS_AMS_PROVIDER_URL_2)
+                };
+            Connection[] receiverConnections = new Connection[receiverURLs.length];
+            for (int i = 0; i < receiverURLs.length; i++) {
+                ConnectionFactory connectionFactory = new ActiveMQConnectionFactory(receiverURLs[i]);
+                Connection connection = connectionFactory.createConnection();
+                receiverConnections[i] = connection;
+                Session receiverSession = connection.createSession(false, Session.AUTO_ACKNOWLEDGE);
+                Topic receiveTopic = receiverSession.createTopic(prefs.getString(AmsPreferenceKey.P_JMS_AMS_TOPIC_DISTRIBUTOR));
+                MessageConsumer consumer = receiverSession.createConsumer(receiveTopic);
                 
-                dw = null;
+                consumer.setMessageListener(worker);
+                connection.start();
             }
-            else
-            {
-                Log.log(this, Log.FATAL, "Restart/Exit: Thread did NOT stop clean.");
-                dw.closeJmsExternal();
-                dw.closeJmsInternal();
-                dw.closeApplicationDb();
-                dw = null;
+            
+            // TODO: There really should be two worker classes!
+            new Thread(worker).start();
+            
+            Log.log(this, Log.INFO, "Distributor started");
+            
+            synchronized (this) {
+                while (!stopped) {
+                    this.wait();
+                }
             }
+            
+            synchronizer.stop();
+            synchronizerThread.join();
+            
+            
+            for (int i = 0; i < receiverConnections.length; i++) {
+                receiverConnections[i].close();
+            }
+            senderConnection.close();
+        } catch (SQLException e) {
+            Log.log(this, Log.FATAL, "Could not connect to the database servers", e);
+            return IApplication.EXIT_OK;
+        } finally {
+            AmsConnectionFactory.closeConnection(localDatabaseConnection);
+            AmsConnectionFactory.closeConnection(masterDatabaseConnection);
         }
 
+        Log.log(this, Log.INFO, "DistributorStart is exiting now");
+        
         if (xmppService != null) {
             xmppService.disconnect();
         }
         
         Integer exitCode = IApplication.EXIT_OK;
         if(restart) {
-            return EXIT_RESTART;
+            exitCode = IApplication.EXIT_RESTART;
         }
         
         return exitCode;
-    }
-
-    public int getStatus()
-    {
-        return sObj.getSynchStatus();
-    }
-    
-    public void setStatus(int status)
-    {
-        sObj.setSynchStatus(status);                                            // set always, to update time
     }
     
     public void bindService(ISessionService sessionService) {
