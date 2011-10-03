@@ -2,6 +2,7 @@ package org.csstudio.webopi;
 
 import org.csstudio.opibuilder.preferences.PreferencesHelper;
 import org.csstudio.opibuilder.runmode.RunModeService;
+import org.csstudio.opibuilder.runmode.RunnerInput;
 import org.csstudio.opibuilder.runmode.RunModeService.TargetWindow;
 import org.csstudio.webopi.util.RequestUtil;
 import org.eclipse.core.runtime.IPath;
@@ -29,19 +30,22 @@ public class ApplicationWorkbenchWindowAdvisor extends WorkbenchWindowAdvisor {
     	Shell shell = configurer.getWindow().getShell();
     	shell.setText("WebOPI");
     	shell.setMaximized(true);
-		IPath path = RequestUtil.getOPIPathFromRequest();
-		String s = RWT.getRequest().getServletPath();
-		if(path == null){
+    	RunnerInput runnerInput = RequestUtil.getOPIPathFromRequest();
+		
+		if(runnerInput == null){
+			IPath path = null;
+			String s = RWT.getRequest().getServletPath();
 			if(s.equals(WebOPIConstants.MOBILE_SERVELET_NAME)) //$NON-NLS-1$
 				path = PreferencesHelper.getMobileStartupOPI();
 			else
 				path = PreferencesHelper.getStartupOPI();
-		}
-		if(path == null)
-			return;
-//		 if(!RequestUtil.isStandaloneMode())			 		
+			if(path == null)
+				return;
 			RunModeService.getInstance().runOPI(path, 
     			TargetWindow.SAME_WINDOW, null);
+		}else	
+			RunModeService.getInstance().runOPI(
+					runnerInput.getPath(), TargetWindow.SAME_WINDOW, null, runnerInput.getMacrosInput());
     	
     }
     

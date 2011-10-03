@@ -430,9 +430,12 @@ public class OPIRuntimeDelegate implements IAdaptable{
 								viewer.getControl().redraw();
 							}
 							if(OPIBuilderPlugin.isRAP()){
-								OPIBuilderPlugin.getLogger().log(Level.WARNING,	
-										"Failed to open OPI file: " + input+ "\n" + e.getMessage()); //$NON-NLS-2$
-								MessageDialog.openError(null, "Error",	e.toString());		
+								String message = 
+										"Failed to open OPI file: " + input+ "\n" + //$NON-NLS-2$
+										"Please check if the file exists."
+										+ "\n" + e.getMessage(); //$NON-NLS-1$
+								OPIBuilderPlugin.getLogger().log(Level.WARNING,	message);
+								MessageDialog.openError(null, "Open File Error",message);		
 							}
 							else
 								ErrorHandlerUtil.handleError("Failed to open opi file: " + input, e, true, true);

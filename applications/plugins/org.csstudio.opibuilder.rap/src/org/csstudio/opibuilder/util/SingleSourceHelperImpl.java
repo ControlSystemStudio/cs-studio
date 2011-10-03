@@ -127,19 +127,21 @@ public class SingleSourceHelperImpl extends SingleSourceHelper {
 	protected void iRapOPIViewCreatePartControl(OPIView opiView, Composite parent) {
 		if(opiView.getOPIInput() == null && OPIView.isOpenFromPerspective()){
 			OPIView.setOpenFromPerspective(false);
-			IPath opiPath = RequestUtil.getOPIPathFromRequest();			
-			if(opiPath == null){
+			RunnerInput runnerInput = RequestUtil.getOPIPathFromRequest();
+			IPath opiPath = null;
+			if(runnerInput == null){				
 				String s = RWT.getRequest().getServletPath();
 				if(s.equals(WebOPIConstants.MOBILE_S_SERVELET_NAME)) //$NON-NLS-1$
 					opiPath = PreferencesHelper.getMobileStartupOPI();
 				else
 					opiPath = PreferencesHelper.getStartupOPI();
+				if(opiPath == null)
+					throw new RuntimeException(
+							"OPI file path or OPI Repository is not specified in URL or preferences.");
 			}
-			if(opiPath == null)
-				throw new RuntimeException(
-						"OPI file path or OPI Repository is not specified in URL or preferences.");
 			try {
-				opiView.setOPIInput(new RunnerInput(opiPath, null, null));
+				opiView.setOPIInput(runnerInput == null ? new RunnerInput(
+						opiPath, null, null) : runnerInput);
 			} catch (PartInitException e) {
 				throw new RuntimeException(e);
 			}
