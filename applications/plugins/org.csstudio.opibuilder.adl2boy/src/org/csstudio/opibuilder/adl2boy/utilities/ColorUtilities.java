@@ -19,6 +19,8 @@ import org.csstudio.utility.adlparser.fileParser.ADLWidget;
 import org.csstudio.utility.adlparser.fileParser.ColorMap;
 import org.csstudio.utility.adlparser.fileParser.ParserADL;
 import org.eclipse.core.resources.IFile;
+import org.eclipse.core.resources.IResource;
+import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.Platform;
@@ -51,7 +53,7 @@ public class ColorUtilities {
 		// Configure the display
 		IPath colorFilePath = PreferencesHelper.getColorFilePath()
 				.makeRelativeTo(Platform.getLocation());
-		IFile colorIFile = ResourceUtil.getIFileFromIPath(colorFilePath);
+		IFile colorIFile = getIFileFromIPath(colorFilePath);
 		StringBuffer sb = new StringBuffer();
 		
 		for (int ii = 0; ii < colorMap.length; ii++) {
@@ -142,4 +144,27 @@ public class ColorUtilities {
 		return colorMap;
 	}
 
+	/**Get the IFile from IPath.
+	 * @param path Path to file in workspace
+	 * @return the IFile. <code>null</code> if no IFile on the path, file does not exist, internal error.
+	 */
+	private static IFile getIFileFromIPath(final IPath path)
+	{
+	    try
+	    {
+    		final IResource r = ResourcesPlugin.getWorkspace().getRoot().findMember(
+    				path, false);
+    		if (r!= null && r instanceof IFile)
+		    {
+    		    final IFile file = (IFile) r;
+    		    if (file.exists())
+    		        return file;
+		    }
+	    }
+	    catch (Exception ex)
+	    {
+	        // Ignored
+	    }
+	    return null;
+	}
 }
