@@ -74,7 +74,7 @@ public class MySQLArchiveServiceImpl implements IArchiveEngineFacade, IArchiveRe
     /**
      * Injected by GUICE construction.
      */
-    private final MysqlArchiveCreationServiceSupport _creationSupport;
+    private final MysqlArchiveCreationServiceSupport _createSupport;
     private final MysqlArchiveRetrievalServiceSupport _retrievalSupport;
     private final MysqlArchiveUpdateServiceSupport _updateSupport;
     private final MysqlArchiveDeleteServiceSupport _deleteSupport;
@@ -84,12 +84,12 @@ public class MySQLArchiveServiceImpl implements IArchiveEngineFacade, IArchiveRe
      * Constructor.
      */
     @Inject
-    public MySQLArchiveServiceImpl(@Nonnull final MysqlArchiveCreationServiceSupport creationSupport,
-                                   @Nonnull final MysqlArchiveRetrievalServiceSupport retrievalSupport,
+    public MySQLArchiveServiceImpl(@Nonnull final MysqlArchiveCreationServiceSupport createSupport,
+                                   @Nonnull final MysqlArchiveRetrievalServiceSupport retrieveSupport,
                                    @Nonnull final MysqlArchiveUpdateServiceSupport updateSupport,
                                    @Nonnull final MysqlArchiveDeleteServiceSupport deleteSupport) {
-        _creationSupport = creationSupport;
-        _retrievalSupport = retrievalSupport;
+        _createSupport = createSupport;
+        _retrievalSupport = retrieveSupport;
         _updateSupport = updateSupport;
         _deleteSupport = deleteSupport;
     }
@@ -110,7 +110,7 @@ public class MySQLArchiveServiceImpl implements IArchiveEngineFacade, IArchiveRe
     @Override
     public <V extends Serializable, T extends ISystemVariable<V>>
     boolean writeSamples(@Nonnull final Collection<IArchiveSample<V, T>> samples) throws ArchiveServiceException {
-        return _creationSupport.createSamples(samples);
+        return _createSupport.createSamples(samples);
     }
 
     /**
@@ -121,7 +121,7 @@ public class MySQLArchiveServiceImpl implements IArchiveEngineFacade, IArchiveRe
                                        @Nonnull final boolean connected,
                                        @Nonnull final String info,
                                        @Nonnull final TimeInstant timestamp) throws ArchiveServiceException {
-        _creationSupport.createChannelStatusInfo(id, connected, info, timestamp);
+        _createSupport.createChannelStatusInfo(id, connected, info, timestamp);
     }
 
     /**
@@ -132,7 +132,7 @@ public class MySQLArchiveServiceImpl implements IArchiveEngineFacade, IArchiveRe
                                              @Nonnull final EngineMonitorStatus status,
                                              @Nonnull final TimeInstant time,
                                              @Nonnull final String info) throws ArchiveServiceException {
-        _creationSupport.createEngineStatusInformation(engineId, status, time, info);
+        _createSupport.createEngineStatusInformation(engineId, status, time, info);
     }
 
     /**
@@ -222,7 +222,7 @@ public class MySQLArchiveServiceImpl implements IArchiveEngineFacade, IArchiveRe
     @Override
     @CheckForNull
     public IArchiveChannel createChannel(@Nonnull final IArchiveChannel channel) throws ArchiveServiceException {
-        return _creationSupport.createChannel(channel);
+        return _createSupport.createChannel(channel);
     }
 
     /**
@@ -231,7 +231,7 @@ public class MySQLArchiveServiceImpl implements IArchiveEngineFacade, IArchiveRe
     @Override
     @Nonnull
     public Collection<IArchiveChannel> createChannels(@Nonnull final Collection<IArchiveChannel> channels) throws ArchiveServiceException {
-        return _creationSupport.createChannels(channels);
+        return _createSupport.createChannels(channels);
     }
 
     /**
@@ -315,5 +315,23 @@ public class MySQLArchiveServiceImpl implements IArchiveEngineFacade, IArchiveRe
     @Nonnull
     public DeleteResult removeChannel(@Nonnull final String name) throws ArchiveServiceException {
         return _deleteSupport.deleteChannel(name);
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    @CheckForNull
+    public IArchiveChannelGroup createGroup(@Nonnull final IArchiveChannelGroup group) throws ArchiveServiceException {
+        return _createSupport.createGroup(group);
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    @Nonnull
+    public Collection<IArchiveChannelGroup> createGroups(@Nonnull final Collection<IArchiveChannelGroup> groups) throws ArchiveServiceException {
+        return _createSupport.createGroups(groups);
     }
 }

@@ -201,4 +201,10 @@ public interface IArchiveEngineFacade {
      */
     @Nonnull
     DeleteResult removeChannel(@Nonnull final String name) throws ArchiveServiceException;
+
+    @CheckForNull
+    IArchiveChannelGroup createGroup(@Nonnull final IArchiveChannelGroup group) throws ArchiveServiceException;
+
+    @Nonnull
+    Collection<IArchiveChannelGroup> createGroups(@Nonnull final Collection<IArchiveChannelGroup> groups) throws ArchiveServiceException;
 }

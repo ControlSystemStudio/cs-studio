@@ -31,11 +31,13 @@ import javax.annotation.Nonnull;
 import org.csstudio.archive.common.service.ArchiveServiceException;
 import org.csstudio.archive.common.service.channel.ArchiveChannelId;
 import org.csstudio.archive.common.service.channel.IArchiveChannel;
+import org.csstudio.archive.common.service.channelgroup.IArchiveChannelGroup;
 import org.csstudio.archive.common.service.channelstatus.ArchiveChannelStatus;
 import org.csstudio.archive.common.service.engine.ArchiveEngineId;
 import org.csstudio.archive.common.service.enginestatus.ArchiveEngineStatus;
 import org.csstudio.archive.common.service.enginestatus.EngineMonitorStatus;
 import org.csstudio.archive.common.service.mysqlimpl.channel.IArchiveChannelDao;
+import org.csstudio.archive.common.service.mysqlimpl.channelgroup.IArchiveChannelGroupDao;
 import org.csstudio.archive.common.service.mysqlimpl.channelstatus.IArchiveChannelStatusDao;
 import org.csstudio.archive.common.service.mysqlimpl.dao.ArchiveDaoException;
 import org.csstudio.archive.common.service.mysqlimpl.enginestatus.IArchiveEngineStatusDao;
@@ -60,6 +62,7 @@ public class MysqlArchiveCreationServiceSupport {
     private final IArchiveEngineStatusDao _mgmtDao;
     private final IArchiveSampleDao _sampleDao;
     private final IArchiveChannelDao _channelDao;
+    private final IArchiveChannelGroupDao _channelGroupDao;
     private final IArchiveChannelStatusDao _channelStatusDao;
 
     /**
@@ -69,10 +72,12 @@ public class MysqlArchiveCreationServiceSupport {
     public MysqlArchiveCreationServiceSupport(@Nonnull final IArchiveEngineStatusDao mgmtDao,
                                               @Nonnull final IArchiveSampleDao sampleDao,
                                               @Nonnull final IArchiveChannelDao channelDao,
+                                              @Nonnull final IArchiveChannelGroupDao channelGroupDao,
                                               @Nonnull final IArchiveChannelStatusDao channelStatusDao) {
         _mgmtDao = mgmtDao;
         _sampleDao = sampleDao;
         _channelDao = channelDao;
+        _channelGroupDao = channelGroupDao;
         _channelStatusDao = channelStatusDao;
     }
 
@@ -108,19 +113,55 @@ public class MysqlArchiveCreationServiceSupport {
       }
     }
 
+    /**
+     * Tries to create the channel specified in the parameter, returns the channel if it could
+     * <em>not</em> be created.
+     * @param channel the channel to be created
+     * @return null on success, otherwise the channel that could not be created
+     * @throws ArchiveDaoException
+     */
     @CheckForNull
     public IArchiveChannel createChannel(@Nonnull final IArchiveChannel channel) throws ArchiveServiceException {
         final Collection<IArchiveChannel> coll = createChannels(Collections.singleton(channel));
         return coll.isEmpty() ? channel : null;
     }
 
-
+    /**
+     * Tries to create all the channels specified in the parameter collection, returns a collection
+     * of those channels that could <em>not</em> be created.
+     * @param channels the channels to be created
+     * @return empty list on success, otherwise those channels that could not be created
+     * @throws ArchiveDaoException
+     */
     @Nonnull
     public Collection<IArchiveChannel> createChannels(@Nonnull final Collection<IArchiveChannel> channels) throws ArchiveServiceException {
         try {
             return _channelDao.createChannels(channels);
         } catch (final ArchiveDaoException e) {
-            throw new ArchiveServiceException("Creation of channels failed.", e);
+            throw new ArchiveServiceException("Creation of channel(s) failed.", e);
+        }
+    }
+
+    @CheckForNull
+    public IArchiveChannelGroup createGroup(@Nonnull final IArchiveChannelGroup group) throws ArchiveServiceException {
+        final Collection<IArchiveChannelGroup> coll = createGroups(Collections.singleton(group));
+        return coll.isEmpty() ? group : null;
+    }
+
+    /**
+     * Tries to create all the groups specified in the parameter collection, returns a collection
+     * of those groups that could <em>not</em> be created.
+     * @param groups the groups to be created
+     * @return empty list on success, otherwise those groups that could not be created
+     * @throws ArchiveServiceException
+     * @throws ArchiveDaoException
+     */
+    @Nonnull
+    public Collection<IArchiveChannelGroup> createGroups(@Nonnull final Collection<IArchiveChannelGroup> groups) throws ArchiveServiceException {
+        try {
+            return _channelGroupDao.createGroups(groups);
+        } catch (final ArchiveDaoException e) {
+            throw new ArchiveServiceException("Creation of group(s) failed.", e);
         }
     }
 
