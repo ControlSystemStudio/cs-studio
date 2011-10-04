@@ -1,0 +1,41 @@
+VALID_ACCS="JPARC PFAR PF LINAC SUPERKEKB JPARC_OFFICE PFAR_OFFICE PF_OFFICE LINAC_OFFICE SUPERKEKB_OFFICE"
+
+JPARC_ADDR_LIST="jparc.kek.jp"
+JPARC_ARCHIVE_URLS="jdbc:postgresql://jparc.kek.jp:5432/archive"
+JPARC_ARCHIVE_NAMES="J-PARC"
+
+PFAR_ADDR_LIST="pf-ar.kek.jp"
+PFAR_ARCHIVE_URLS="xnds://pf-ar.kekjp/archive/cgi/ArchiveDataServer.cgi"
+PFAR_ARCHIVE_NAMES="PF-AR"
+
+PF_ADDR_LIST="pf.kek.jp"
+PF_ARCHIVE_URLS="xnds://pf.kekjp/archive/cgi/ArchiveDataServer.cgi"
+PF_ARCHIVE_NAMES="PF"
+
+LINAC_ADDR_LIST="172.19.95.255"
+LINAC_ARCHIVE_URLS="xnds://lcba03.linac.kek.jp:4080/RPC2 jdbc:postgresql://lcba09.linac.kek.jp:5432/archive"
+LINAC_ARCHIVE_NAMES="LINAC_old LINAC_new"
+
+SUPERKEKB_ADDR_LIST="172.19.63.255"
+SUPERKEKB_ARCHIVE_URLS=""
+SUPERKEKB_ARCHIVE_NAMES=""
+
+JPARC_OFFICE_ADDR_LIST="jparc-office.kek.jp"
+JPARC_OFFICE_ARCHIVE_URLS="jdbc:postgresql://jparc-office.kek.jp:5432/archive"
+JPARC_OFFICE_ARCHIVE_NAMES="J-PARC_OFFICE"
+
+PFAR_OFFICE_ADDR_LIST="pf-ar-office.kek.jp"
+PFAR_OFFICE_ARCHIVE_URLS="xnds://pf-ar-office.kekjp/archive/cgi/ArchiveDataServer.cgi"
+PFAR_OFFICE_ARCHIVE_NAMES="PF-AR_OFFICE"
+
+PF_OFFICE_ADDR_LIST="pf-office.kek.jp"
+PF_OFFICE_ARCHIVE_URLS="xnds://pf-office.kekjp/archive/cgi/ArchiveDataServer.cgi"
+PF_OFFICE_ARCHIVE_NAMES="PF_OFFICE"
+
+LINAC_OFFICE_ADDR_LIST="172.19.95.255"
+LINAC_OFFICE_ARCHIVE_URLS="xnds://www-linac2.kek.jp:4080/RPC2 jdbc:postgresql://lcba09.kek.jp:5432/archive"
+LINAC_OFFICE_ARCHIVE_NAMES="LINAC_OFFICE_old LINAC_OFFICE_new"
+
+SUPERKEKB_OFFICE_ADDR_LIST="172.19.63.255"
+SUPERKEKB_OFFICE_ARCHIVE_URLS=""
+SUPERKEKB_OFFICE_ARCHIVE_NAMES=""
