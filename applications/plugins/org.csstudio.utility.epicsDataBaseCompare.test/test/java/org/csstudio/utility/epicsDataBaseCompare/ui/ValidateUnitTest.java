@@ -21,30 +21,13 @@
  */
 package org.csstudio.utility.epicsDataBaseCompare.ui;
 
-import javax.annotation.Nonnull;
-
-import org.eclipse.compare.CompareConfiguration;
-import org.eclipse.compare.IViewerCreator;
-import org.eclipse.compare.internal.TextMergeViewerCreator;
-import org.eclipse.jface.viewers.Viewer;
-import org.eclipse.swt.widgets.Composite;
 
 /**
- * TODO (hrickens) :
- *
+ * TODO (hrickens) : 
+ * 
  * @author hrickens
- * @since 12.09.2011
+ * @since 04.10.2011
  */
-@SuppressWarnings("restriction")
-public class EpicsDBCompareViewerCreator implements IViewerCreator {
-
-    /**
-     * {@inheritDoc}
-     */
-    @Override
-    @Nonnull
-    public Viewer createViewer(@Nonnull final Composite parent, @Nonnull final CompareConfiguration config) {
-        return new TextMergeViewerCreator().createViewer(parent, config);
-    }
-
+public class ValidateUnitTest {
+    
 }

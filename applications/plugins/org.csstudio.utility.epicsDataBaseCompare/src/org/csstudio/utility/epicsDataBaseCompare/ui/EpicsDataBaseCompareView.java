@@ -30,6 +30,7 @@ import javax.annotation.CheckForNull;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
+import org.csstudio.utility.epicsDataBaseCompare.EpicsDBValidator;
 import org.eclipse.compare.CompareConfiguration;
 import org.eclipse.compare.CompareUI;
 import org.eclipse.compare.structuremergeviewer.DiffContainer;
@@ -65,8 +66,6 @@ import org.eclipse.ui.part.ViewPart;
 public class EpicsDataBaseCompareView extends ViewPart {
 
     /**
-     * TODO (hrickens) :
-     *
      * @author hrickens
      * @since 06.09.2011
      */
@@ -171,7 +170,7 @@ public class EpicsDataBaseCompareView extends ViewPart {
      * @author hrickens
      * @since 06.09.2011
      */
-    private final class ILabelProviderImplementation extends LabelProvider implements
+    private static final class ILabelProviderImplementation extends LabelProvider implements
     IColorProvider {
         private final Color red = new Color(null, 255, 0, 0);
         private final Color orange = new Color(null, 200, 200, 0);
@@ -260,8 +259,6 @@ public class EpicsDataBaseCompareView extends ViewPart {
     }
 
     /**
-     * TODO (hrickens) :
-     *
      * @author hrickens
      * @since 09.09.2011
      */
@@ -286,21 +283,22 @@ public class EpicsDataBaseCompareView extends ViewPart {
             _epicsDataBaseCompareView.compare();
         }
     }
+
     private TabFolder _tabFolder;
     private Text _fileLeft;
     private Text _fileRight;
+    private Text _leftText;
+    private Text _rightText;
     private TreeViewer _compareRight;
     private TreeViewer _compareLeft;
     private EpicsDBFile _epicsDBFileLeft;
     private EpicsDBFile _epicsDBFileRight;
 
-    private Text _leftText;
-
-    private Text _rightText;
 
     private DiffTreeViewer _diffTreeViewerLeft;
 
     private DiffTreeViewer _diffTreeViewerRight;
+
 
     /**
      * Constructor.
@@ -314,13 +312,8 @@ public class EpicsDataBaseCompareView extends ViewPart {
         _tabFolder = new TabFolder(parent, SWT.TOP);
         _tabFolder.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true));
 
-        final TabItem userInterfaceTabItem = new TabItem(_tabFolder, SWT.NONE);
-        userInterfaceTabItem.setText("Control");
-        final Composite userInterfaceComposite = new Composite(_tabFolder, SWT.NONE);
-        userInterfaceComposite.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true));
-        userInterfaceComposite.setLayout(new GridLayout(2, true));
-        userInterfaceTabItem.setControl(userInterfaceComposite);
-        makeUserInterface(userInterfaceComposite);
+        makeValidateInterface();
+        makeUserInterface();
 
         final TabItem tree2TabItem = new TabItem(_tabFolder, SWT.NONE);
         tree2TabItem.setText("DiffTreeView");
@@ -343,15 +336,62 @@ public class EpicsDataBaseCompareView extends ViewPart {
 
     }
 
-    @Override
-    public void setFocus() {
-        // TODO Auto-generated method stub
+    private void makeValidateInterface() {
+
+        final TabItem validateTabItem = new TabItem(_tabFolder, SWT.NONE);
+        validateTabItem.setText("Validate");
+        final Composite validateComposite = new Composite(_tabFolder, SWT.NONE);
+        validateComposite.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true));
+        validateComposite.setLayout(new GridLayout(2, true));
+        validateTabItem.setControl(validateComposite);
+
+        final GridLayoutFactory numColumns = GridLayoutFactory.swtDefaults().numColumns(3);
+        numColumns.applyTo(validateComposite);
+
+        final Label validateFileLabel = new Label(validateComposite, SWT.NONE);
+        validateFileLabel.setLayoutData(new GridData(SWT.BEGINNING, SWT.CENTER, false, false));
+        validateFileLabel.setText("Validate File:");
+        final Text validateFileText = new Text(validateComposite, SWT.SINGLE | SWT.LEAD | SWT.BORDER);
+        validateFileText.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false));
+        final Button valiFileOpen = new Button(validateComposite, SWT.PUSH);
+        valiFileOpen.setLayoutData(new GridData(SWT.BEGINNING, SWT.CENTER, false, false));
+        valiFileOpen.setText("Open");
+        valiFileOpen.addSelectionListener(new FileDialogSelectionListener(validateFileText, validateComposite));
+
+        final Button validateButton = new Button(validateComposite, SWT.PUSH);
+        validateButton.setLayoutData(new GridData(SWT.BEGINNING, SWT.CENTER, false, false));
+        validateButton.setText("Validate");
+        validateButton.addSelectionListener(new SelectionListener() {
+
+            @Override
+            public void widgetSelected(@Nonnull final SelectionEvent e) {
+                validate();
+            }
+
+            private void validate() {
+                final EpicsDBParser p = new EpicsDBParser();
+                try {
+                    final EpicsDBFile parseFile = p.parseFile(validateFileText.getText());
+                    new EpicsDBValidator().validate(parseFile);
+                } catch (final IOException e) {
+                    e.printStackTrace();
+                    return;
+                }
+            }
+
+            @Override
+            public void widgetDefaultSelected(@Nonnull final SelectionEvent e) {
+                validate();
+            }
+        });
 
     }
 
-    /**
-     * @param treeTabItem
-     */
+    @Override
+    public void setFocus() {
+        // nothong to set.
+    }
+
     private void makeTreeCompareView(@Nonnull final Composite parent) {
         _leftText = new Text(parent, SWT.SINGLE | SWT.LEAD | SWT.READ_ONLY | SWT.BORDER);
         _leftText.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false));
@@ -371,7 +411,14 @@ public class EpicsDataBaseCompareView extends ViewPart {
         _compareRight.setLabelProvider(new ILabelProviderImplementation(_compareLeft));
     }
 
-    private void makeUserInterface(@Nonnull final Composite parent) {
+    private void makeUserInterface() {
+        final TabItem userInterfaceTabItem = new TabItem(_tabFolder, SWT.NONE);
+        userInterfaceTabItem.setText("Compare");
+        final Composite parent = new Composite(_tabFolder, SWT.NONE);
+        parent.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true));
+        parent.setLayout(new GridLayout(2, true));
+        userInterfaceTabItem.setControl(parent);
+
         final GridLayoutFactory numColumns = GridLayoutFactory.swtDefaults().numColumns(3);
         numColumns.applyTo(parent);
 
@@ -382,7 +429,7 @@ public class EpicsDataBaseCompareView extends ViewPart {
         _fileLeft = new Text(parent, SWT.SINGLE | SWT.LEAD | SWT.BORDER);
         _fileLeft.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false));
         final Button file1Open = new Button(parent, SWT.PUSH);
-        file1Open.setLayoutData(new GridData(SWT.BEGINNING, SWT.CENTER, false, false));
+        GridDataFactory.swtDefaults().applyTo(file1Open);
         file1Open.setText("Open");
         file1Open.addSelectionListener(new FileDialogSelectionListener(_fileLeft, parent));
 
@@ -393,17 +440,15 @@ public class EpicsDataBaseCompareView extends ViewPart {
         _fileRight = new Text(parent, SWT.SINGLE | SWT.LEAD | SWT.BORDER);
         _fileRight.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false));
         final Button file2Open = new Button(parent, SWT.PUSH);
-        file2Open.setLayoutData(new GridData(SWT.BEGINNING, SWT.CENTER, false, false));
+        GridDataFactory.swtDefaults().applyTo(file2Open);
         file2Open.setText("Open");
         file2Open.addSelectionListener(new FileDialogSelectionListener(_fileRight, parent));
 
         // Compare
         final Button compareButton = new Button(parent, SWT.PUSH);
-        compareButton.setLayoutData(new GridData(SWT.BEGINNING, SWT.CENTER, false, false));
         compareButton.setText("Compare");
         GridDataFactory.swtDefaults().applyTo(compareButton);
         compareButton.addSelectionListener(new StartCompareSelectionListener(this));
-
     }
 
     protected void compare() {
@@ -442,9 +487,6 @@ public class EpicsDataBaseCompareView extends ViewPart {
         _diffTreeViewerRight.setInput(diffContainerRight);
     }
 
-    /**
-     * @return
-     */
     private boolean have2Files() {
         return !(_fileLeft == null || _fileLeft.getText() == null || _fileRight == null
                 || _fileRight.getText() == null);

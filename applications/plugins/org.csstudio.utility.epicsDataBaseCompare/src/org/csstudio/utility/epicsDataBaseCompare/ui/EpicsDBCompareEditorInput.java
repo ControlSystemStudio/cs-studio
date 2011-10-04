@@ -115,7 +115,8 @@ public class EpicsDBCompareEditorInput extends CompareEditorInput implements ISt
      * {@inheritDoc}
      */
     @Override
-    public Viewer createDiffViewer(final Composite parent) {
+    @Nonnull
+    public Viewer createDiffViewer(@Nonnull final Composite parent) {
         return new DiffTreeViewer(parent, new CompareConfiguration());
     }
 

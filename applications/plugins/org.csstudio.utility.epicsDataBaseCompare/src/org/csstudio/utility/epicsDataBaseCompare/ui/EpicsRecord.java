@@ -59,6 +59,44 @@ public class EpicsRecord implements Comparable<EpicsRecord> {
         return _fields.isEmpty();
     }
 
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public int hashCode() {
+        final int prime = 31;
+        int result = 1;
+        result = prime * result + (_fields == null ? 0 : _fields.hashCode());
+        result = prime * result + (_recordName == null ? 0 : _recordName.hashCode());
+        result = prime * result + (_recordType == null ? 0 : _recordType.hashCode());
+        return result;
+    }
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public boolean equals(@CheckForNull final Object obj) {
+        if (this == obj) {
+            return true;
+        }
+        if (obj == null) {
+            return false;
+        }
+        if (getClass() != obj.getClass()) {
+            return false;
+        }
+        final EpicsRecord other = (EpicsRecord) obj;
+        if (!_fields.equals(other._fields)) {
+            return false;
+        }
+        if (!_recordName.equals(other._recordName)) {
+            return false;
+        }
+        if (!_recordType.equals(other._recordType)) {
+            return false;
+        }
+        return true;
+    }
 
     @Override
     @Nonnull
@@ -87,6 +125,8 @@ public class EpicsRecord implements Comparable<EpicsRecord> {
         }
         return 0;
     }
+
+
 
     @CheckForNull
     public Field getField(@Nonnull final String field) {

@@ -34,8 +34,6 @@ import org.eclipse.swt.graphics.Image;
 import org.eclipse.ui.plugin.AbstractUIPlugin;
 
 /**
- * TODO (hrickens) :
- *
  * @author hrickens
  * @since 07.09.2011
  */
@@ -58,7 +56,8 @@ public class EpicsDBNode extends DocumentRangeNode implements ITypedElement {
                        @Nonnull final String id,
                        @Nonnull final IDocument document,
                        final int start,
-                       final int length, @Nonnull final String name) {
+                       final int length,
+                       @Nonnull final String name) {
         super(parent, typeCode, id, document, start, length);
         _typeCode = typeCode;
         _name = name;
@@ -79,7 +78,8 @@ public class EpicsDBNode extends DocumentRangeNode implements ITypedElement {
     @Override
     @CheckForNull
     public Image getImage() {
-        final ImageDescriptor imageDescriptorFromPlugin = AbstractUIPlugin.imageDescriptorFromPlugin(Activator.PLUGIN_ID, "./icons/sample.gif");
+        final ImageDescriptor imageDescriptorFromPlugin = AbstractUIPlugin
+                .imageDescriptorFromPlugin(Activator.PLUGIN_ID, "./icons/sample.gif");
         return imageDescriptorFromPlugin.createImage();
     }
 
@@ -89,7 +89,31 @@ public class EpicsDBNode extends DocumentRangeNode implements ITypedElement {
     @Override
     @Nonnull
     public String getType() {
-        return ""+_typeCode;
+        return "" + _typeCode;
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public int hashCode() {
+        final int prime = 31;
+        int result = super.hashCode();
+        result = prime * result + (_name == null ? 0 : _name.hashCode());
+        result = prime * result + _typeCode;
+        return result;
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public boolean equals(@Nonnull final Object other) {
+        if (other != null && other.getClass() == getClass()) {
+            final EpicsDBNode tn = (EpicsDBNode) other;
+            return _name == tn._name;
+        }
+        return super.equals(other);
     }
 
 }

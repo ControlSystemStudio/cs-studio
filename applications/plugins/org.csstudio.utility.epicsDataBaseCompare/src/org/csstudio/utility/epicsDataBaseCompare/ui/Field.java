@@ -24,6 +24,7 @@ package org.csstudio.utility.epicsDataBaseCompare.ui;
 import java.text.NumberFormat;
 import java.util.Locale;
 
+import javax.annotation.CheckForNull;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
@@ -74,6 +75,44 @@ public class Field implements Comparable<Field>{
             return compareTo;
         }
         return -1;
+    }
+
+
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public int hashCode() {
+        final int prime = 31;
+        int result = 1;
+        result = prime * result + (_field == null ? 0 : _field.hashCode());
+        result = prime * result + (_value == null ? 0 : _value.hashCode());
+        return result;
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public boolean equals(@CheckForNull final Object obj) {
+        if (this == obj) {
+            return true;
+        }
+        if (obj == null) {
+            return false;
+        }
+        if (getClass() != obj.getClass()) {
+            return false;
+        }
+        final Field other = (Field) obj;
+        if (!_field.equals(other._field)) {
+            return false;
+        }
+        if (!_value.equals(other._value)) {
+            return false;
+        }
+        return true;
     }
 
     @Nonnull
