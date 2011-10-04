@@ -50,8 +50,8 @@ public class DisplayManager {
 									}
 									unRegisterDisplay(display);
 									RAPCorePlugin.getLogger().log(Level.INFO, 
-											"DisplayManager: " + display + " on " + entry.getValue().remoteHost +
-											" disposed! Number of display: " + displayMap.size() +
+											"DisplayManager: " + display + " disposed!" +
+											" Number of display: " + displayMap.size() +
 											" Number of widgets: " + objectList.size());
 								}else
 									display.asyncExec(new Runnable() {
@@ -92,8 +92,10 @@ public class DisplayManager {
 		if(displayMap.containsKey(display))
 			return;
 		HttpServletRequest request = RWT.getRequest();
+		String clientInfo = "URL: " + request.getHeader("Referer") +
+				" Browser: " + getBrowserInfo(request.getHeader("User-Agent"));
 		displayMap.put(display, new DisplayResource(beatCount, true, 
-				request.getRemoteHost() + " : " + request.getHeader("User-Agent"))); //$NON-NLS-1$ //$NON-NLS-2$
+				request.getRemoteHost() + " : " + clientInfo)); //$NON-NLS-1$ //$NON-NLS-2$
 		
 		displayCounter++;
 		
@@ -108,15 +110,11 @@ public class DisplayManager {
 				}
 			});		
 		}
-//		Enumeration<?> e = request.getHeaderNames();
-//		while(e.hasMoreElements()){
-//			String s = e.nextElement().toString();
-//			System.out.println(s);
-//			System.out.println(request.getHeader(s));
-//		}
 		StringBuilder sb = new StringBuilder("DisplayManger: "); //$NON-NLS-1$
 		sb.append(display + " on " + request.getRemoteHost());
-		sb.append(" registered. URL: " +request.getHeader("Referer") + " Number of display: ");
+		sb.append(" registered.");
+		sb.append(clientInfo);
+		sb.append(" Number of display: ");
 		sb.append(displayMap.size());		
 		RAPCorePlugin.getLogger().log(Level.INFO, sb.toString());		
 	}	
@@ -133,7 +131,7 @@ public class DisplayManager {
 				displayCounter, RAPCorePlugin.getStartupTime()));
 		for(Entry<Display, DisplayResource> entry : displayMap.entrySet()){
 			sb.append("\n");
-			sb.append("Client: ");
+			sb.append(entry.getKey() + " on ");
 			sb.append(entry.getValue().remoteHost);
 		}
 		return sb.toString();
@@ -197,6 +195,43 @@ public class DisplayManager {
 		objectList.remove(obj);
 	}
 	
+	public static String getBrowserInfo(String Information) {
+		String browsername = Information;
+		String browserversion = "";
+		String browser = Information;
+		if (browser.contains("MSIE")) {
+			String subsString = browser.substring(browser.indexOf("MSIE"));
+			String Info[] = (subsString.split(";")[0]).split(" ");
+			browsername = Info[0];
+			browserversion = Info[1];
+		} else if (browser.contains("Firefox")) {
+
+			String subsString = browser.substring(browser.indexOf("Firefox"));
+			String Info[] = (subsString.split(" ")[0]).split("/");
+			browsername = Info[0];
+			browserversion = Info[1];
+		} else if (browser.contains("Chrome")) {
+
+			String subsString = browser.substring(browser.indexOf("Chrome"));
+			String Info[] = (subsString.split(" ")[0]).split("/");
+			browsername = Info[0];
+			browserversion = Info[1];
+		} else if (browser.contains("Opera")) {
+
+			String subsString = browser.substring(browser.indexOf("Opera"));
+			String Info[] = (subsString.split(" ")[0]).split("/");
+			browsername = Info[0];
+			browserversion = Info[1];
+		} else if (browser.contains("Safari")) {
+
+			String subsString = browser.substring(browser.indexOf("Safari"));
+			String Info[] = (subsString.split(" ")[0]).split("/");
+			browsername = Info[0];
+			browserversion = Info[1];
+		}
+		return browsername + "-" + browserversion;
+	}
+
 	class DisplayResource {
 		private long heartCount;
 		private Boolean isLive;

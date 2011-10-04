@@ -325,6 +325,7 @@ public abstract class AbstractBaseEditPart extends AbstractGraphicalEditPart {
 			}
 			propertyListenerMap.clear();
 			// propertyListenerMap = null;
+			SingleSourceHelper.rapDeactivateBaseEditPart(this);
 		}
 
 	}

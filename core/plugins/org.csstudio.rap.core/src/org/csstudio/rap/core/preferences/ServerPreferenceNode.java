@@ -393,7 +393,8 @@ public class ServerPreferenceNode implements IEclipsePreferences {
 		
 			applyDefaults(properties);
 		} catch (Exception e) {
-			System.out.println("No context avalable: " + e);
+			RAPCorePlugin.getLogger().log(Level.SEVERE,
+					"Server Side Preference loading failed.", e);
 		}
 
 	}
