@@ -36,6 +36,7 @@ import org.csstudio.swt.widgets.introspection.Introspectable;
 import org.csstudio.swt.widgets.util.AbstractInputStreamRunnable;
 import org.csstudio.swt.widgets.util.IJobErrorHandler;
 import org.csstudio.swt.widgets.util.ResourceUtil;
+import org.csstudio.swt.widgets.util.SingleSourceHelper;
 import org.csstudio.swt.widgets.util.TextPainter;
 import org.csstudio.ui.util.thread.UIBundlingThread;
 import org.eclipse.core.runtime.IPath;
@@ -49,6 +50,7 @@ import org.eclipse.swt.graphics.GC;
 import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.graphics.ImageData;
 import org.eclipse.swt.graphics.ImageLoader;
+import org.eclipse.swt.widgets.Canvas;
 import org.eclipse.swt.widgets.Display;
 
 /**
@@ -276,7 +278,10 @@ public final class ImageFigure extends Figure implements Introspectable {
 						stream.close();
 					} catch (IOException e) {
 					}
-					animated = (originalImageDataArray.length > 1);
+					if(SWT.getPlatform().startsWith("rap")) //$NON-NLS-1$
+						animated = false;
+					else
+						animated = (originalImageDataArray.length > 1);
 					loadingImage = false;
 					repaint();
 				}
@@ -391,7 +396,7 @@ public final class ImageFigure extends Figure implements Introspectable {
 
 				if (offScreenImageGC != null && !offScreenImageGC.isDisposed())
 					offScreenImageGC.dispose();
-				offScreenImageGC = new GC(offScreenImage);
+				offScreenImageGC = SingleSourceHelper.getImageGC(offScreenImage);// new GC(offScreenImage);
 			}
 		}
 
@@ -505,7 +510,7 @@ public final class ImageFigure extends Figure implements Introspectable {
 	 *            The amount of pixels
 	 */
 	public synchronized void setBottomCrop(final int newval) {
-		if (bottomCrop == newval || (newval + topCrop) >= imgHeight
+		if (bottomCrop == newval //|| (newval + topCrop) >= imgHeight
 				|| newval < 0 || (newval + topCrop) < 0)
 			return;
 		bottomCrop = newval;
@@ -519,7 +524,7 @@ public final class ImageFigure extends Figure implements Introspectable {
 	 *            The path to the image
 	 */
 	public synchronized void setFilePath(final IPath newval) {
-		if (this.filePath != null && this.filePath.equals(newval))
+		if (newval == null)
 			return;
 		if (animated) {
 			stopAnimation();
@@ -545,7 +550,7 @@ public final class ImageFigure extends Figure implements Introspectable {
 	 *            The amount of pixels
 	 */
 	public synchronized void setLeftCrop(final int newval) {
-		if (leftCrop == newval || newval < 0 || (newval + rightCrop) > imgWidth
+		if (leftCrop == newval || newval < 0 //|| (newval + rightCrop) > imgWidth //image may not be loaded when this is set
 				|| (newval + rightCrop) < 0)
 			return;
 		leftCrop = newval;
@@ -559,7 +564,7 @@ public final class ImageFigure extends Figure implements Introspectable {
 	 *            The amount of pixels
 	 */
 	public synchronized void setRightCrop(final int newval) {
-		if (rightCrop == newval || newval < 0 || (newval + leftCrop) > imgWidth
+		if (rightCrop == newval || newval < 0 //|| (newval + leftCrop) > imgWidth
 				|| (newval + leftCrop) < 0)
 			return;
 		rightCrop = newval;
@@ -607,7 +612,7 @@ public final class ImageFigure extends Figure implements Introspectable {
 	 */
 	public synchronized void setTopCrop(final int newval) {
 		if (topCrop == newval || newval < 0
-				|| (newval + bottomCrop) > imgHeight
+//				|| (newval + bottomCrop) > imgHeight
 				|| (newval + bottomCrop) < 0)
 			return;
 		topCrop = newval;

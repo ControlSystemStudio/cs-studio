@@ -26,25 +26,24 @@ import junit.framework.Assert;
 import org.junit.Test;
 
 /**
- * Test for {@link MinMaxPreferenceValidator}. 
- * 
+ * Test for {@link MinMaxPreferenceValidator}.
+ *
  * @author bknerr
  * @since 11.05.2011
  */
 public class MinMaxPreferenceValidatorUnitTest {
-    
-    
 
+
+
+    @SuppressWarnings("unused")
     @Test(expected=IllegalArgumentException.class)
     public void testInvalidValidator() {
-        @SuppressWarnings("unused")
-        final MinMaxPreferenceValidator<Byte> val = 
-            new MinMaxPreferenceValidator<Byte>(Byte.valueOf((byte)0), Byte.valueOf((byte)-1));
+        new MinMaxPreferenceValidator<Byte>(Byte.valueOf((byte)0), Byte.valueOf((byte)-1));
     }
 
     @Test
     public void test() {
-        final MinMaxPreferenceValidator<Byte> val = 
+        final MinMaxPreferenceValidator<Byte> val =
             new MinMaxPreferenceValidator<Byte>(Byte.valueOf((byte) -0), Byte.valueOf((byte) 10));
         Assert.assertTrue(val.validate((byte) 0));
         Assert.assertTrue(val.validate((byte) 5));

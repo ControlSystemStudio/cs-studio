@@ -622,7 +622,11 @@ public class EPICS_V3_PV extends PlatformObject
             log.finer(name + " monitor while not subscribed (" + state.name() + ")");
             return;
         }
-
+        
+        if(ev == null){
+        	log.warning(name + " MonitorEvent is null.");
+            return;
+        }
         if (! ev.getStatus().isSuccessful())
         {
             log.warning(name + " monitor error :" + ev.getStatus().getMessage());

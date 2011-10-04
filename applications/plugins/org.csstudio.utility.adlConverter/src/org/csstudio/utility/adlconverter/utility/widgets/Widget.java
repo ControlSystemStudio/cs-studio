@@ -26,13 +26,11 @@ package org.csstudio.utility.adlconverter.utility.widgets;
 
 import java.util.Map;
 
-import org.csstudio.platform.logging.CentralLogger;
 import org.csstudio.platform.simpledal.ConnectionState;
 import org.csstudio.sds.importer.AbstractDisplayImporter;
 import org.csstudio.sds.model.AbstractWidgetModel;
 import org.csstudio.sds.model.DisplayModel;
 import org.csstudio.sds.model.DynamicsDescriptor;
-import org.csstudio.sds.model.LabelModel;
 import org.csstudio.utility.adlconverter.utility.ADLHelper;
 import org.csstudio.utility.adlconverter.utility.ADLWidget;
 import org.csstudio.utility.adlconverter.utility.WrongADLFormatException;
@@ -45,6 +43,8 @@ import org.csstudio.utility.adlconverter.utility.widgetparts.ADLPoints;
 import org.csstudio.utility.adlconverter.utility.widgetparts.ADLSensitive;
 import org.csstudio.utility.adlconverter.utility.widgetparts.WidgetPart;
 import org.eclipse.core.runtime.IPath;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * @author hrickens
@@ -53,6 +53,9 @@ import org.eclipse.core.runtime.IPath;
  * @since 12.09.2007
  */
 public abstract class Widget extends AbstractDisplayImporter {
+    
+    private static final Logger LOG = LoggerFactory.getLogger(Widget.class);
+    
     /** The ADL Widget element as CSS-SDS element. */
     protected AbstractWidgetModel _widget;
     /** The Widget object parameter. */
@@ -87,7 +90,7 @@ public abstract class Widget extends AbstractDisplayImporter {
                 _dynamicAttribute = new ADLDynamicAttribute(storedDynamicAttribute, _widget);
             }
         } catch (WrongADLFormatException e1) {
-            CentralLogger.getInstance().info(this, e1);
+            LOG.info("Wrong Format: ", e1);
         }
 
         if (_basicAttribute != null && _dynamicAttribute != null) {
@@ -111,7 +114,7 @@ public abstract class Widget extends AbstractDisplayImporter {
         } catch (WrongADLFormatException e) {
             // FIXME: Workaround. Der CentralLogger wurde deaktivbiert da viele
             // Nachrichten in Kurzerzeit zum absturz von CSS führen
-            // CentralLogger.getInstance().error(this, e);
+            // LOG.error(this, e);
         }
     }
 
@@ -130,7 +133,7 @@ public abstract class Widget extends AbstractDisplayImporter {
         try {
             makeObject(widget);
         } catch (WrongADLFormatException e) {
-            CentralLogger.getInstance().info(this, e);
+            LOG.info("Wrong format", e);
         }
     }
 
@@ -170,8 +173,7 @@ public abstract class Widget extends AbstractDisplayImporter {
             if (_dynamicAttribute.isColor()) {
                 _widget.setDynamicsDescriptor(AbstractWidgetModel.PROP_COLOR_FOREGROUND,
                         _dynamicAttribute.getColorAdlDynamicAttributes());
-            } else {
-            }
+            } 
         }
         makeConnectionState();
     }
@@ -334,11 +336,11 @@ public abstract class Widget extends AbstractDisplayImporter {
     }
 
     void uninit() {
-        _widget.setDynamicsDescriptor(LabelModel.PROP_BORDER_COLOR, null);
-        _widget.setDynamicsDescriptor(LabelModel.PROP_BORDER_STYLE, null);
-        _widget.setDynamicsDescriptor(LabelModel.PROP_BORDER_WIDTH, null);
-        _widget.setDynamicsDescriptor(LabelModel.PROP_COLOR_BACKGROUND, null);
-        _widget.setDynamicsDescriptor(LabelModel.PROP_COLOR_FOREGROUND, null);
+        _widget.setDynamicsDescriptor(AbstractWidgetModel.PROP_BORDER_COLOR, null);
+        _widget.setDynamicsDescriptor(AbstractWidgetModel.PROP_BORDER_STYLE, null);
+        _widget.setDynamicsDescriptor(AbstractWidgetModel.PROP_BORDER_WIDTH, null);
+        _widget.setDynamicsDescriptor(AbstractWidgetModel.PROP_COLOR_BACKGROUND, null);
+        _widget.setDynamicsDescriptor(AbstractWidgetModel.PROP_COLOR_FOREGROUND, null);
 
     }
 

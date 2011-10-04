@@ -7,10 +7,10 @@ Bundle-Activator: org.csstudio.channel.views.Activator
 Require-Bundle: org.eclipse.ui,
  org.eclipse.core.runtime,
  org.csstudio.channel.widgets;bundle-version="1.0.0",
- org.csstudio.ui.util;bundle-version="3.0.0",
+ org.csstudio.ui.util;bundle-version="3.1.0",
  org.csstudio.utility.channelfinder;bundle-version="1.1.0",
  gov.bnl.channelfinder.api;bundle-version="2.0.0",
- org.csstudio.csdata;bundle-version="3.0.0",
+ org.csstudio.csdata;bundle-version="3.1.0",
  org.csstudio.utility.pvmanager.widgets;bundle-version="3.1.0"
 Bundle-ActivationPolicy: lazy
 Bundle-RequiredExecutionEnvironment: JavaSE-1.6

@@ -1,4 +1,3 @@
-
 /* 
  * Copyright (c) 2007 Stiftung Deutsches Elektronen-Synchrotron, 
  * Member of the Helmholtz Association, (DESY), HAMBURG, GERMANY.
@@ -32,6 +31,7 @@ import java.io.File;
 import java.io.IOException;
 import java.util.Date;
 import java.util.Properties;
+
 import javax.activation.DataHandler;
 import javax.activation.DataSource;
 import javax.activation.FileDataSource;
@@ -44,7 +44,7 @@ import javax.mail.internet.InternetAddress;
 import javax.mail.internet.MimeBodyPart;
 import javax.mail.internet.MimeMessage;
 import javax.mail.internet.MimeMultipart;
-import org.csstudio.platform.logging.CentralLogger;
+
 import org.csstudio.utility.screenshot.IImageWorker;
 import org.csstudio.utility.screenshot.desy.DestinationPlugin;
 import org.csstudio.utility.screenshot.desy.dialog.LogbookSenderDialog;
@@ -59,18 +59,19 @@ import org.eclipse.swt.graphics.ImageData;
 import org.eclipse.swt.graphics.PaletteData;
 import org.eclipse.swt.graphics.RGB;
 import org.eclipse.swt.widgets.Shell;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
-public class ImageProcessor implements IImageWorker
-{
+public class ImageProcessor implements IImageWorker {
+    private static final Logger LOG = LoggerFactory.getLogger(ImageProcessor.class);
+    
     private final String MENU_ITEM_ENTRY = "eLogbook";
     
-    public String getMenuItemEntry()
-    {
+    public String getMenuItemEntry() {
         return MENU_ITEM_ENTRY;
     }
-
-    public void processImage(Shell parentShell, Image image)
-    {
+    
+    public void processImage(Shell parentShell, Image image) {
         InternetAddress addressFrom = null;
         InternetAddress[] addressTo = null;
         BufferedImage bufferedImage = null;
@@ -78,28 +79,25 @@ public class ImageProcessor implements IImageWorker
         String workspaceLocation = null;
         
         // Retrieve the location of the workspace directory
-        try
-        {
+        try {
             workspaceLocation = Platform.getLocation().toPortableString();
-            if(workspaceLocation.endsWith("/") == false)
-            {
+            if(workspaceLocation.endsWith("/") == false) {
                 workspaceLocation = workspaceLocation + "/";
             }
-        }
-        catch(IllegalStateException ise)
-        {
-            CentralLogger.getInstance().warn(this, "Workspace location could not be found. Using working directory '.'");
+        } catch (IllegalStateException ise) {
+            LOG.warn("Workspace location could not be found. Using working directory '.'");
             workspaceLocation = "./";
         }
-
+        
         // IPath p = ResourcesPlugin.getWorkspace().getRoot().getProjectRelativePath();
         // IPath p = Platform.getLocation();
         // String path = p.toOSString() + "/";
         
-        if(image == null)
-        {
-            MessageDialog.openInformation(parentShell, DestinationPlugin.getDefault().getNameAndVersion(), LogbookSenderMessages.getString("ImageProcessor.NO_IMAGE"));
-        
+        if(image == null) {
+            MessageDialog.openInformation(parentShell, DestinationPlugin.getDefault()
+                    .getNameAndVersion(), LogbookSenderMessages
+                    .getString("ImageProcessor.NO_IMAGE"));
+            
             return;
         }
         
@@ -108,16 +106,18 @@ public class ImageProcessor implements IImageWorker
         LogbookSenderDialog dialog = new LogbookSenderDialog(parentShell);
         
         int value = dialog.open();
-        if((value == Window.OK) && (dialog.getLogbookEntry() != null))
-        {
-            try
-            {
+        if( (value == Window.OK) && (dialog.getLogbookEntry() != null)) {
+            try {
                 ImageIO.write(bufferedImage, "jpg", new File(workspaceLocation + imageFilename));
                 
                 Properties props = new Properties();
                 IPreferencesService pref = Platform.getPreferencesService();
                 
-                props.put("mail.smtp.host", pref.getString(DestinationPlugin.PLUGIN_ID, DestinationPreferenceConstants.MAIL_SERVER, "", null));
+                props.put("mail.smtp.host", pref
+                        .getString(DestinationPlugin.PLUGIN_ID,
+                                   DestinationPreferenceConstants.MAIL_SERVER,
+                                   "",
+                                   null));
                 props.put("mail.smtp.port", "25");
                 
                 Session session = Session.getDefaultInstance(props);
@@ -125,127 +125,139 @@ public class ImageProcessor implements IImageWorker
                 Message msg = new MimeMessage(session);
                 
                 MimeMultipart content = new MimeMultipart("mixed");
-    
-                MimeBodyPart text = new MimeBodyPart(); 
-                MimeBodyPart bild = new MimeBodyPart(); 
-
-                text.setText(dialog.getLogbookEntry().createXmlFromContent());
-                    
-                DestinationPlugin.getDefault().setLogbookEntry(dialog.getLogbookEntry().createNewInstanceFromContent());
                 
-                text.setHeader("MIME-Version" , "1.0");
-                text.setHeader("Content-Type" , text.getContentType());
-    
+                MimeBodyPart text = new MimeBodyPart();
+                MimeBodyPart bild = new MimeBodyPart();
+                
+                text.setText(dialog.getLogbookEntry().createXmlFromContent());
+                
+                DestinationPlugin.getDefault().setLogbookEntry(dialog.getLogbookEntry()
+                        .createNewInstanceFromContent());
+                
+                text.setHeader("MIME-Version", "1.0");
+                text.setHeader("Content-Type", text.getContentType());
+                
                 DataSource source = new FileDataSource(workspaceLocation + imageFilename);
                 bild.setDataHandler(new DataHandler(source));
                 bild.setFileName("Screenshot.jpg");
                 
-                content.addBodyPart(text); 
-                content.addBodyPart(bild); 
-    
-                msg.setContent( content ); 
-                msg.setHeader( "MIME-Version" , "1.0" );
-                msg.setHeader( "Content-Type" , content.getContentType() );
-                msg.setHeader( "X-Mailer", "Java-Mailer V 1.60217733" );
-                msg.setSentDate( new Date() );
-    
-                try
-                {
-                    addressFrom = new InternetAddress(pref.getString(DestinationPlugin.PLUGIN_ID, DestinationPreferenceConstants.MAIL_ADDRESS_SENDER, "css-user@desy.de", null));
-               
+                content.addBodyPart(text);
+                content.addBodyPart(bild);
+                
+                msg.setContent(content);
+                msg.setHeader("MIME-Version", "1.0");
+                msg.setHeader("Content-Type", content.getContentType());
+                msg.setHeader("X-Mailer", "Java-Mailer V 1.60217733");
+                msg.setSentDate(new Date());
+                
+                try {
+                    addressFrom = new InternetAddress(pref.getString(DestinationPlugin.PLUGIN_ID,
+                                                                     DestinationPreferenceConstants.MAIL_ADDRESS_SENDER,
+                                                                     "css-user@desy.de",
+                                                                     null));
+                    
                     msg.setFrom(addressFrom);
                     
                     addressTo = new InternetAddress[1];
-                    addressTo[0] = new InternetAddress("elogbook." + dialog.getLogbookEntry().getLogbookName() + "@krykmail.desy.de");
+                    addressTo[0] = new InternetAddress("elogbook."
+                            + dialog.getLogbookEntry().getLogbookName() + "@krykmail.desy.de");
                     
                     msg.setRecipients(Message.RecipientType.TO, addressTo);
-                                        
+                    
                     Transport.send(msg);
                     
-                    MessageDialog.openInformation(parentShell, DestinationPlugin.getDefault().getNameAndVersion(), LogbookSenderMessages.getString("ImageProcessor.MAIL_SENT"));
+                    MessageDialog.openInformation(parentShell, DestinationPlugin.getDefault()
+                            .getNameAndVersion(), LogbookSenderMessages
+                            .getString("ImageProcessor.MAIL_SENT"));
+                } catch (MessagingException me) {
+                    MessageDialog
+                            .openError(parentShell,
+                                       DestinationPlugin.getDefault().getNameAndVersion(),
+                                       "Not possible to send the mail.\n\nReason:\n"
+                                               + me.getMessage()
+                                               + "\n\nIf port 25 is blocked by the virus scanner, you have to allow java(w).exe to use it.");
                 }
-                catch(MessagingException me)
-                {
-                    MessageDialog.openError(parentShell, DestinationPlugin.getDefault().getNameAndVersion(), "Not possible to send the mail.\n\nReason:\n" + me.getMessage() + "\n\nIf port 25 is blocked by the virus scanner, you have to allow java(w).exe to use it.");
-                }
-            }
-            catch(MessagingException mee)
-            {
-                MessageDialog.openError(parentShell, DestinationPlugin.getDefault().getNameAndVersion(), mee.getMessage());
-            }
-            catch(IOException ioe)
-            {
+            } catch (MessagingException mee) {
+                MessageDialog.openError(parentShell, DestinationPlugin.getDefault()
+                        .getNameAndVersion(), mee.getMessage());
+            } catch (IOException ioe) {
                 MessageDialog.openInformation(parentShell, "Error", ioe.getMessage());
             }
         }
-                
+        
         dialog = null;
     }
     
-    public BufferedImage convertToBufferedImage(ImageData data)
-    {
-        ColorModel  colorModel  = null;
-        PaletteData palette     = data.palette;
+    public BufferedImage convertToBufferedImage(ImageData data) {
+        ColorModel colorModel = null;
+        PaletteData palette = data.palette;
         
-        if(palette.isDirect)
-        {
-            colorModel = new DirectColorModel(data.depth, palette.redMask, palette.greenMask, palette.blueMask);
-            BufferedImage bufferedImage = new BufferedImage(colorModel, colorModel.createCompatibleWritableRaster(data.width, data.height), false, null);
+        if(palette.isDirect) {
+            colorModel = new DirectColorModel(data.depth,
+                                              palette.redMask,
+                                              palette.greenMask,
+                                              palette.blueMask);
+            BufferedImage bufferedImage = new BufferedImage(colorModel,
+                                                            colorModel
+                                                                    .createCompatibleWritableRaster(data.width,
+                                                                                                    data.height),
+                                                            false,
+                                                            null);
             
-            for (int y = 0; y < data.height; y++)
-            {
-                for (int x = 0; x < data.width; x++)
-                {
+            for (int y = 0; y < data.height; y++) {
+                for (int x = 0; x < data.width; x++) {
                     int pixel = data.getPixel(x, y);
                     RGB rgb = palette.getRGB(pixel);
-                    bufferedImage.setRGB(x, y,  rgb.red << 16 | rgb.green << 8 | rgb.blue);
+                    bufferedImage.setRGB(x, y, rgb.red << 16 | rgb.green << 8 | rgb.blue);
                 }
             }
             
             return bufferedImage;
-        }
-        else
-        {
+        } else {
             RGB[] rgbs = palette.getRGBs();
             
-            byte[] red   = new byte[rgbs.length];
+            byte[] red = new byte[rgbs.length];
             byte[] green = new byte[rgbs.length];
-            byte[] blue  = new byte[rgbs.length];
+            byte[] blue = new byte[rgbs.length];
             
-            for (int i = 0; i < rgbs.length; i++)
-            {
+            for (int i = 0; i < rgbs.length; i++) {
                 RGB rgb = rgbs[i];
                 
-                red[i]   = (byte) rgb.red;
+                red[i] = (byte) rgb.red;
                 green[i] = (byte) rgb.green;
-                blue[i]  = (byte) rgb.blue;
+                blue[i] = (byte) rgb.blue;
             }
             
-            if (data.transparentPixel != -1)
-            {
-                colorModel = new IndexColorModel(data.depth, rgbs.length, red, green, blue, data.transparentPixel);
-            }
-            else
-            {
+            if(data.transparentPixel != -1) {
+                colorModel = new IndexColorModel(data.depth,
+                                                 rgbs.length,
+                                                 red,
+                                                 green,
+                                                 blue,
+                                                 data.transparentPixel);
+            } else {
                 colorModel = new IndexColorModel(data.depth, rgbs.length, red, green, blue);
             }
-
-            BufferedImage bufferedImage = new BufferedImage(colorModel, colorModel.createCompatibleWritableRaster(data.width, data.height), false, null);
+            
+            BufferedImage bufferedImage = new BufferedImage(colorModel,
+                                                            colorModel
+                                                                    .createCompatibleWritableRaster(data.width,
+                                                                                                    data.height),
+                                                            false,
+                                                            null);
             
             WritableRaster raster = bufferedImage.getRaster();
             
             int[] pixelArray = new int[1];
-
-            for(int y = 0; y < data.height; y++)
-            {
-                for(int x = 0; x < data.width; x++)
-                {
+            
+            for (int y = 0; y < data.height; y++) {
+                for (int x = 0; x < data.width; x++) {
                     int pixel = data.getPixel(x, y);
                     pixelArray[0] = pixel;
                     raster.setPixel(x, y, pixelArray);
                 }
             }
-
+            
             return bufferedImage;
         }
     }

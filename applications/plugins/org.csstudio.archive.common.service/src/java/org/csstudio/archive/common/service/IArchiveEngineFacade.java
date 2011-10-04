@@ -21,6 +21,7 @@
  */
 package org.csstudio.archive.common.service;
 
+import java.io.Serializable;
 import java.util.Collection;
 
 import javax.annotation.CheckForNull;
@@ -31,11 +32,13 @@ import org.csstudio.archive.common.service.channel.IArchiveChannel;
 import org.csstudio.archive.common.service.channelgroup.ArchiveChannelGroupId;
 import org.csstudio.archive.common.service.channelgroup.IArchiveChannelGroup;
 import org.csstudio.archive.common.service.channelstatus.IArchiveChannelStatus;
+import org.csstudio.archive.common.service.controlsystem.IArchiveControlSystem;
 import org.csstudio.archive.common.service.engine.ArchiveEngineId;
 import org.csstudio.archive.common.service.engine.IArchiveEngine;
 import org.csstudio.archive.common.service.enginestatus.EngineMonitorStatus;
 import org.csstudio.archive.common.service.enginestatus.IArchiveEngineStatus;
 import org.csstudio.archive.common.service.sample.IArchiveSample;
+import org.csstudio.domain.common.service.DeleteResult;
 import org.csstudio.domain.desy.system.ISystemVariable;
 import org.csstudio.domain.desy.time.TimeInstant;
 
@@ -79,6 +82,26 @@ public interface IArchiveEngineFacade {
     Collection<IArchiveChannel> getChannelsByGroupId(@Nonnull final ArchiveChannelGroupId groupId)
                                                      throws ArchiveServiceException;
 
+
+    /**
+     * Adds a new channel in the archive service.
+     * Returns the channel on failure, otherwise <code>null</code>
+     * @param channel the channel to be added.
+     * @return null on success or the <em>not</em> added channel on failure
+     */
+    @CheckForNull
+    IArchiveChannel createChannel(@Nonnull final IArchiveChannel channel)
+                                  throws ArchiveServiceException;
+    /**
+    * Tries to create all the channels specified in the parameter collection, returns a collection
+    * of those channels that could <em>not</em> be created.
+    * @param channels the channels to be created
+    * @return empty list on success, otherwise those channels that could not be created
+    */
+    @Nonnull
+    Collection<IArchiveChannel> createChannels(@Nonnull final Collection<IArchiveChannel> channels)
+                                               throws ArchiveServiceException;
+
     /**
      * Writes the samples to the archive.
      *
@@ -86,7 +109,7 @@ public interface IArchiveEngineFacade {
      * @return true, if the samples have been persisted
      * @throws ArchiveServiceException
      */
-    <V, T extends ISystemVariable<V>>
+    <V extends Serializable, T extends ISystemVariable<V>>
     boolean writeSamples(@Nonnull final Collection<IArchiveSample<V, T>> samples)
                          throws ArchiveServiceException;
 
@@ -122,7 +145,7 @@ public interface IArchiveEngineFacade {
      * @param displayLow
      * @param displayHigh
      */
-    <V extends Comparable<? super V>>
+    <V extends Comparable<? super V> & Serializable>
     void writeChannelDisplayRangeInfo(@Nonnull final ArchiveChannelId id,
                                       @Nonnull final V displayLow,
                                       @Nonnull final V displayHigh) throws ArchiveServiceException;
@@ -150,7 +173,38 @@ public interface IArchiveEngineFacade {
      * @return
      */
     @CheckForNull
-    IArchiveChannelStatus getChannelStatusByChannelName(@Nonnull final String name)
+    IArchiveChannelStatus getLatestChannelStatusByChannelName(@Nonnull final String name)
                                                         throws ArchiveServiceException;
 
+    /**
+     * @param channels
+     * @return
+     * @throws ArchiveServiceException
+     */
+    @Nonnull
+    Collection<IArchiveChannelStatus> getLatestChannelsStatusBy(@Nonnull final Collection<ArchiveChannelId> channels) throws ArchiveServiceException;
+
+    @CheckForNull
+    IArchiveControlSystem getControlSystemByName(@Nonnull final String name) throws ArchiveServiceException;
+
+    @CheckForNull
+    IArchiveChannel getChannelByName(@Nonnull final String string) throws ArchiveServiceException;
+
+    /**
+     * Removes the channel from the configuration, if and only if there have not yet been any samples
+     * archived for this channel. Otherwise an exception is thrown.
+     * When no samples have yet been added and channel removal may proceed,
+     * all other information related to this channel is also removed (e.g. {@link org.csstudio.archive.common.service.channelstatus.ArchiveChannelStatus}.
+     * @param name the channel name
+     * @returns success or failure result
+     * @throws ArchiveServiceException
+     */
+    @Nonnull
+    DeleteResult removeChannel(@Nonnull final String name) throws ArchiveServiceException;
+
+    @CheckForNull
+    IArchiveChannelGroup createGroup(@Nonnull final IArchiveChannelGroup group) throws ArchiveServiceException;
+
+    @Nonnull
+    Collection<IArchiveChannelGroup> createGroups(@Nonnull final Collection<IArchiveChannelGroup> groups) throws ArchiveServiceException;
 }

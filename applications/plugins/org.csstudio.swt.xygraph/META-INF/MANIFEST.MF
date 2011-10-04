@@ -1,19 +1,19 @@
 Manifest-Version: 1.0
-Bundle-ManifestVersion: 2
+Export-Package: org.csstudio.swt.xygraph.dataprovider,org.csstudio.swt
+ .xygraph.figures,org.csstudio.swt.xygraph.linearscale,org.csstudio.sw
+ t.xygraph.undo,org.csstudio.swt.xygraph.util
+Require-Bundle: org.eclipse.ui;resolution:=optional,
+ org.eclipse.core.runtime,
+ org.eclipse.draw2d;bundle-version="3.4.0";visibility:=reexport,
+ org.eclipse.rap.ui;bundle-version="1.4.0";resolution:=optional,
+ org.eclipse.draw2d.rap;bundle-version="1.0.0";resolution:=optional
+Bundle-Vendor: Xihui Chen<chenx1@ornl.gov> - SNS
+Bundle-ActivationPolicy: lazy
+Bundle-Version: 1.1.3.201107011132
 Bundle-Name: XYGraph Plug-in
+Bundle-Activator: org.csstudio.swt.xygraph.Activator
+Bundle-ManifestVersion: 2
 Bundle-Description: Plotting library for draw2d and SWT applications
 Bundle-SymbolicName: org.csstudio.swt.xygraph
-Bundle-Version: 1.1.3.qualifier
-Bundle-Activator: org.csstudio.swt.xygraph.Activator
-Bundle-Vendor: Xihui Chen<chenx1@ornl.gov> - SNS
-Require-Bundle: org.eclipse.ui,
- org.eclipse.core.runtime,
- org.eclipse.draw2d;bundle-version="3.4.0",
- org.junit4
-Bundle-RequiredExecutionEnvironment: JavaSE-1.6
-Bundle-ActivationPolicy: lazy
-Export-Package: org.csstudio.swt.xygraph.dataprovider,
- org.csstudio.swt.xygraph.figures,
- org.csstudio.swt.xygraph.linearscale,
- org.csstudio.swt.xygraph.undo,
- org.csstudio.swt.xygraph.util
+Bundle-RequiredExecutionEnvironment: J2SE-1.5
+

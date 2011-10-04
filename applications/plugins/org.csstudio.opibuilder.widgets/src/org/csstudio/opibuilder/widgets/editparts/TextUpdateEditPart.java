@@ -67,6 +67,7 @@ public class TextUpdateEditPart extends AbstractPVWidgetEditPart {
 		labelFigure.setOpaque(!widgetModel.isTransparent());
 		labelFigure.setHorizontalAlignment(widgetModel.getHorizontalAlignment());
 		labelFigure.setVerticalAlignment(widgetModel.getVerticalAlignment());
+		labelFigure.setRotate(widgetModel.getRotationAngle());
 		return labelFigure;
 	}
 
@@ -236,6 +237,15 @@ public class TextUpdateEditPart extends AbstractPVWidgetEditPart {
 			}
 		};
 		setPropertyChangeHandler(TextUpdateModel.PROP_SHOW_UNITS, handler);
+		
+		handler = new IWidgetPropertyChangeHandler(){
+			public boolean handleChange(Object oldValue, Object newValue,
+					final IFigure figure) {
+				((TextFigure)figure).setRotate((Double)newValue);
+				return true;
+			}
+		};
+		setPropertyChangeHandler(TextUpdateModel.PROP_ROTATION, handler);
 	}
 
 	@Override
@@ -337,8 +347,11 @@ public class TextUpdateEditPart extends AbstractPVWidgetEditPart {
 			break;
 		}
 
-		if(isShowUnits && value.getMetaData() instanceof INumericMetaData)
-			text = text + " " + ((INumericMetaData)value.getMetaData()).getUnits(); //$NON-NLS-1$
+		if(isShowUnits && value.getMetaData() instanceof INumericMetaData){
+			String units = ((INumericMetaData)value.getMetaData()).getUnits();
+			if(units != null && units.trim().length()>0)
+				text = text + " " + units; //$NON-NLS-1$
+		}
 
 		//synchronize the property value without fire listeners.
 		widgetModel.getProperty(

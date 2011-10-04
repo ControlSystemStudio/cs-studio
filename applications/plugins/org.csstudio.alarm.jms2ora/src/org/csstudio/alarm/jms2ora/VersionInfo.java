@@ -31,7 +31,7 @@ public class VersionInfo
 {
     public static final String NAME = "Jms2Ora";
     public static final String VERSION = " 2.3.3";
-    public static final String BUILD = " - BUILD 2010-09-02 12:15";
+    public static final String BUILD = " - BUILD 2011-06-22 14:00";
     
     public static String getAll()
     {

@@ -9,7 +9,6 @@ package org.csstudio.swt.widgets.figureparts;
 
 
 import org.csstudio.swt.xygraph.linearscale.AbstractScale;
-import org.csstudio.ui.util.CustomMediaFactory;
 import org.eclipse.draw2d.FigureUtilities;
 import org.eclipse.draw2d.geometry.Dimension;
 import org.eclipse.draw2d.geometry.Rectangle;
@@ -60,8 +59,8 @@ public class RoundScale extends AbstractScale {
     private int radius;  
     
     
-    private final static Font DEFAULT_FONT = CustomMediaFactory.getInstance().getFont(
-    		CustomMediaFactory.FONT_ARIAL);
+//    private final Font DEFAULT_FONT = CustomMediaFactory.getInstance().getFont(
+//    		CustomMediaFactory.FONT_ARIAL);
     
     /**
      * Constructor.
@@ -72,7 +71,7 @@ public class RoundScale extends AbstractScale {
         tickMarks = new RoundScaleTickMarks(this);                  
         add(tickMarks);        
         add(tickLabels);    
-        setFont(DEFAULT_FONT);
+//        setFont(DEFAULT_FONT);
  
     }
 	
@@ -148,7 +147,10 @@ public class RoundScale extends AbstractScale {
 		//coerce to range
 		double min = getRange().getLower();
         double max = getRange().getUpper();
-		value = value < min ? min : (value > max ? max : value);
+        if(max>=min)
+        	value = value < min ? min : (value > max ? max : value);
+        else
+        	value = value > min? min: (value<max? max: value);
 		return getValuePosition(value, relative);
     }
     

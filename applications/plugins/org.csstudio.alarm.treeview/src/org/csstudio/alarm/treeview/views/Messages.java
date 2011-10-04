@@ -27,16 +27,13 @@ package org.csstudio.alarm.treeview.views;
 import org.eclipse.osgi.util.NLS;
 
 /**
- * Generated source for internationalisation references. 
- *
+ * Generated source for internationalization references. 
  *
  * @author valett
- * @author $Author$
- * @version $Revision$
  * @since 21.06.2010
  */
 public class Messages extends NLS {
-    private static final String BUNDLE_NAME = "import org.csstudio.alarm.treeview..views.messages"; //$NON-NLS-1$
+    private static final String BUNDLE_NAME = "org.csstudio.alarm.treeview.views.messages"; //$NON-NLS-1$
 
     public static String AlarmTreeView_Menu_Separator_Edit;
     public static String AlarmTreeView_MessageDialog_ContextMenu_Error_Message;

@@ -11,7 +11,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.csstudio.opibuilder.editparts.ExecutionMode;
-import org.csstudio.opibuilder.properties.support.StringListPropertyDescriptor;
+import org.csstudio.opibuilder.properties.support.PropertySSHelper;
 import org.csstudio.opibuilder.util.OPIBuilderMacroUtil;
 import org.eclipse.ui.views.properties.PropertyDescriptor;
 import org.jdom.Element;
@@ -46,8 +46,8 @@ public class StringListProperty extends AbstractWidgetProperty {
 			return null;
 		List<String> acceptableValue = null;
 		if(value instanceof List){	
-			if(((List) value).size() == 0 || 
-					(((List) value).size() > 0 && ((List) value).get(0) instanceof String))
+			if(((List<?>) value).size() == 0 || 
+					(((List<?>) value).size() > 0 && ((List<?>) value).get(0) instanceof String))
 			acceptableValue = (List<String>)value;			
 		}		
 		return acceptableValue;
@@ -71,7 +71,9 @@ public class StringListProperty extends AbstractWidgetProperty {
 	
 	@Override
 	protected PropertyDescriptor createPropertyDescriptor() {
-		return new StringListPropertyDescriptor(prop_id, description);
+		if(PropertySSHelper.getIMPL() == null)
+			return null;
+		return PropertySSHelper.getIMPL().getStringListPropertyDescriptor(prop_id, description);
 	}
 
 	@Override

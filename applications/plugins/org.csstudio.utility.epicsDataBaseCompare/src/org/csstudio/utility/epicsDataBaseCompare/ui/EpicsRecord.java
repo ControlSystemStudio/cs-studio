@@ -24,6 +24,13 @@
  */
 package org.csstudio.utility.epicsDataBaseCompare.ui;
 
+import java.util.Collection;
+import java.util.SortedMap;
+import java.util.TreeMap;
+
+import javax.annotation.CheckForNull;
+import javax.annotation.Nonnull;
+
 /**
  * @author hrickens
  * @author $Author$
@@ -33,49 +40,88 @@ package org.csstudio.utility.epicsDataBaseCompare.ui;
 public class EpicsRecord implements Comparable<EpicsRecord> {
 
     private final String _recordName;
-    private String _output;
-    private String _input;
+    private final SortedMap<String, Field> _fields = new TreeMap<String, Field>();
+    private final EpicsDBFile _parent;
+    private final String _recordType;
 
-    public EpicsRecord(String recordName) {
-        _recordName = recordName;
-        
+    public EpicsRecord(@Nonnull final EpicsDBFile parent, @Nonnull final String recordName, @Nonnull final String recordType) {
+        _parent = parent;
+        _recordName = recordName.trim();
+        _recordType = recordType.trim();
+
     }
-
+    @Nonnull
     public String getRecordName() {
         return _recordName;
     }
 
     public boolean isEmpty() {
-        return (_input==null)&&(_output==null);
+        return _fields.isEmpty();
     }
 
-    public void setInp(String input) {
-        _input = input;
-        
-    }
 
-    public void setOut(String output) {
-        _output = output;
-    }
-    
     @Override
+    @Nonnull
     public String toString() {
-        StringBuilder sb = new StringBuilder(_recordName);
+        final StringBuilder sb = new StringBuilder(_recordName);
         sb.append("\t-");
-        if(_input!=null) {
-            sb.append("\tINP: ");
-            sb.append(_input);
-        }
-        if(_output!=null) {
-            sb.append("\tOUT: ");
-            sb.append(_output);
-        }
         return sb.toString();
     }
 
     @Override
-    public int compareTo(EpicsRecord o) {
-        return getRecordName().compareTo(o.getRecordName());
+    public int compareTo(@Nonnull final EpicsRecord o) {
+        final int compareTo = getRecordName().compareTo(o.getRecordName());
+        if(compareTo!=0) {
+            return compareTo;
+        }
+        final Collection<Field> filds1 = getFilds();
+        final Collection<Field> filds2 = o.getFilds();
+        if(filds1.size()!=filds2.size()) {
+            return filds1.size()-filds2.size();
+        }
+        for (final Field field : filds2) {
+            final Field field2 = o.getField(field.getField());
+            if(field2==null||field.compareTo(field2)!=0) {
+                return -1;
+            }
+        }
+        return 0;
+    }
+
+    @CheckForNull
+    public Field getField(@Nonnull final String field) {
+        return _fields.get(field);
+    }
+
+    public void setField(@Nonnull final String field, @Nonnull final String value) {
+        final String f = field.trim();
+        _fields.put(f, new Field(this, f, value));
+    }
+
+    @Nonnull
+    public Collection<Field> getFilds() {
+        return _fields.values();
+    }
+
+    @Nonnull
+    public EpicsDBFile getParent() {
+        return _parent;
+    }
+
+    @Nonnull
+    public String getSortetText() {
+        final StringBuilder sb = new StringBuilder(_recordName);
+        sb.append(" [").append(_recordType).append("]").append("\r\n");
+        final Collection<Field> filds = getFilds();
+        for (final Field field : filds) {
+            sb.append("   ").append(field).append("\r\n");
+        }
+        return sb.toString();
+    }
+
+    @Nonnull
+    public String getRecordType() {
+        return _recordType;
     }
 
 }

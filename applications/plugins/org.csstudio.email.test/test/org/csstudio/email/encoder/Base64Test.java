@@ -8,9 +8,12 @@
 package org.csstudio.email.encoder;
 
 import java.io.BufferedInputStream;
+import java.io.File;
 import java.io.FileInputStream;
 
-import org.csstudio.email.encoder.Base64Encoder;
+import org.csstudio.domain.common.resource.CssResourceLocator;
+import org.csstudio.domain.common.resource.CssResourceLocator.RepoDomain;
+import org.csstudio.email.EmailTestActivator;
 import org.junit.Test;
 
 /** JUnit demo of the Base64Encoder.
@@ -25,7 +28,10 @@ public class Base64Test
     @Test
     public void testEncode() throws Exception
     {
-        final BufferedInputStream input = new BufferedInputStream(new FileInputStream("testfile.txt"));
+        final File textFile = CssResourceLocator.locateResourceFile(RepoDomain.APPLICATIONS,
+                                                                    EmailTestActivator.ID,
+                                                                    "./testfile.txt");
+        final BufferedInputStream input = new BufferedInputStream(new FileInputStream(textFile));
         final Base64Encoder encoder = new Base64Encoder(System.out);
         encoder.encode(input);
     }

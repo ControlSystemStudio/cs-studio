@@ -21,13 +21,8 @@
  */
 package org.csstudio.archive.common.service.mysqlimpl.persistengine;
 
-import static org.csstudio.archive.common.service.mysqlimpl.MySQLArchiveServicePreference.MAX_ALLOWED_PACKET_IN_KB;
-import static org.csstudio.archive.common.service.mysqlimpl.MySQLArchiveServicePreference.PERIOD_IN_MS;
-
-import java.io.File;
+import java.util.Collection;
 import java.util.Comparator;
-import java.util.Iterator;
-import java.util.List;
 import java.util.SortedSet;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledThreadPoolExecutor;
@@ -36,78 +31,28 @@ import java.util.concurrent.atomic.AtomicInteger;
 
 import javax.annotation.Nonnull;
 
-import org.csstudio.archive.common.service.mysqlimpl.MySQLArchiveServicePreference;
-import org.csstudio.archive.common.service.mysqlimpl.notification.ArchiveNotifications;
-import org.csstudio.archive.common.service.util.DataRescueException;
-import org.csstudio.archive.common.service.util.DataRescueResult;
-import org.csstudio.domain.desy.time.TimeInstant.TimeInstantBuilder;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import org.csstudio.archive.common.service.mysqlimpl.MySQLArchivePreferenceService;
+import org.csstudio.archive.common.service.mysqlimpl.batch.BatchQueueHandlerSupport;
+import org.csstudio.archive.common.service.mysqlimpl.batch.IBatchQueueHandlerProvider;
+import org.csstudio.archive.common.service.mysqlimpl.dao.ArchiveConnectionHandler;
+import org.csstudio.domain.desy.DesyRunContext;
+import org.csstudio.domain.desy.typesupport.TypeSupportException;
 
-import com.google.common.collect.Lists;
 import com.google.common.collect.Sets;
+import com.google.inject.Inject;
 
 /**
  * Manager that handles the persistence worker thread.
  * @author Bastian Knerr
  * @since Feb 26, 2011
  */
-public enum PersistEngineDataManager {
-    INSTANCE;
-
-    /**
-     * Thread to hold the shutdown worker on stopping the engine.
-     *
-     * @author bknerr
-     * @since 11.05.2011
-     */
-    private final class ShutdownWorkerThread extends Thread {
-        /**
-         * Constructor.
-         */
-        public ShutdownWorkerThread() {
-            // Empty
-        }
-
-        /**
-         * {@inheritDoc}
-         */
-        @SuppressWarnings("synthetic-access")
-        @Override
-        public void run() {
-            if (!_executor.isTerminating()) {
-                _executor.execute(new PersistDataWorker("SHUTDOWN MySQL Archive Worker",
-                                                        _sqlStatementBatch,
-                                                        Integer.valueOf(0),
-                                                        _prefMaxAllowedPacketInBytes));
-                _executor.shutdown();
-                try {
-                    if (!_executor.awaitTermination(_prefPeriodInMS + 1, TimeUnit.MILLISECONDS)) {
-                        LOG.warn("Executor for PersistDataWorkers did not terminate in the specified period. Try to rescue data.");
-                        final List<String> statements = Lists.newLinkedList();
-                        _sqlStatementBatch.drainTo(statements);
-                        rescueDataToFileSystem(statements);
-                    }
-                } catch (final InterruptedException e) {
-                    Thread.currentThread().interrupt();
-                }
-            }
-        }
-    }
-
-
-    private static final Logger LOG =
-        LoggerFactory.getLogger(PersistEngineDataManager.class);
-
-
-    private static final File DATA_RESCUE_DIR = MySQLArchiveServicePreference.DATA_RESCUE_DIR.getValue();
-
+public class PersistEngineDataManager {
 
     // TODO (bknerr) : number of threads?
     // get no of cpus and expected no of archive engines, and available archive connections
     private final int _cpus = Runtime.getRuntime().availableProcessors();
     /**
-     * The thread pool executor for the periodicallz scheduled workers.
+     * The thread pool executor for the periodically scheduled workers.
      */
     private final ScheduledThreadPoolExecutor _executor =
         (ScheduledThreadPoolExecutor) Executors.newScheduledThreadPool(Math.max(2, _cpus + 1));
@@ -128,63 +73,70 @@ public enum PersistEngineDataManager {
                         });
     private final AtomicInteger _workerId = new AtomicInteger(0);
 
-    /**
-     * Entity managing the access to the blocking queue for consumer-producer pattern of submitted SQL
-     * statements.
-     */
-    private final SqlStatementBatch _sqlStatementBatch;
+    private final Integer _prefPeriodInMS;
+    private final Integer _prefTermTimeInMS;
 
-    private Integer _prefPeriodInMS;
-    private Integer _prefMaxAllowedPacketInBytes;
+    private final ArchiveConnectionHandler _connectionHandler;
+
+    private final IBatchQueueHandlerProvider _handlerProvider =
+        new IBatchQueueHandlerProvider() {
+            @SuppressWarnings("rawtypes")
+            @Override
+            @Nonnull
+            public Collection<BatchQueueHandlerSupport> getHandlers() {
+                return BatchQueueHandlerSupport.getInstalledHandlers();
+            }
+        };
 
     /**
      * Constructor.
      */
-    private PersistEngineDataManager() {
-        loadAndCheckPreferences();
+    @Inject
+    public PersistEngineDataManager(@Nonnull final ArchiveConnectionHandler connectionHandler,
+                                    @Nonnull final MySQLArchivePreferenceService prefs) {
+        _connectionHandler = connectionHandler;
 
-        _sqlStatementBatch = SqlStatementBatch.INSTANCE;
+        _prefPeriodInMS = prefs.getPeriodInMS();
+        _prefTermTimeInMS = prefs.getTerminationTimeInMS();
 
-        addGracefullyShutdownHook();
+        addGracefulShutdownHook(_connectionHandler, _handlerProvider, _prefTermTimeInMS);
     }
 
-    private void loadAndCheckPreferences() {
-        _prefMaxAllowedPacketInBytes = MAX_ALLOWED_PACKET_IN_KB.getValue() * 1024;
-        _prefPeriodInMS = PERIOD_IN_MS.getValue();
+    private void submitNewPersistDataWorker(@Nonnull final ScheduledThreadPoolExecutor executor,
+                                            @Nonnull final ArchiveConnectionHandler connectionHandler,
+                                            @Nonnull final Integer prefPeriodInMS,
+                                            @Nonnull final IBatchQueueHandlerProvider handlerProvider,
+                                            @Nonnull final AtomicInteger workerId,
+                                            @Nonnull final SortedSet<PersistDataWorker> submittedWorkers) {
+
+        final PersistDataWorker newWorker = new PersistDataWorker(connectionHandler,
+                                                                  "PERIODIC Worker: " + workerId.getAndIncrement(),
+                                                                  prefPeriodInMS,
+                                                                  handlerProvider);
+        executor.scheduleAtFixedRate(newWorker,
+                                     0L,
+                                     newWorker.getPeriodInMS(),
+                                     TimeUnit.MILLISECONDS);
+        submittedWorkers.add(newWorker);
     }
 
-    private void submitNewPersistDataWorker() {
-        final PersistDataWorker newWorker = new PersistDataWorker("PERIODIC MySQL Archive Worker: " + _workerId.getAndIncrement(),
-                                                                  _sqlStatementBatch,
-                                                                  _prefPeriodInMS,
-                                                                  _prefMaxAllowedPacketInBytes);
-        _executor.scheduleAtFixedRate(newWorker,
-                                      0L,
-                                      newWorker.getPeriodInMS(),
-                                      TimeUnit.MILLISECONDS);
-        _submittedWorkers.add(newWorker);
-    }
-
-    public void submitStatementsToBatch(@Nonnull final List<String> stmts) {
-        for (final String stmt : stmts) {
-            submitStatementToBatch(stmt);
+    /**
+     * This shutdown hook is only added when the sys property context is not set to "CI",
+     * meaning continuous integration. This is a flaw as the production code should be unaware
+     * of its run context, but we couldn't think of another option.
+     * @param prefTermTimeInMS
+     */
+    private void addGracefulShutdownHook(@Nonnull final ArchiveConnectionHandler connectionHandler,
+                                         @Nonnull final IBatchQueueHandlerProvider provider,
+                                         @Nonnull final Integer prefTermTimeInMS) {
+        if (DesyRunContext.isProductionContext()) {
+            /**
+             * Add shutdown hook.
+             */
+            Runtime.getRuntime().addShutdownHook(new ShutdownWorkerThread(connectionHandler,
+                                                                          provider,
+                                                                          prefTermTimeInMS));
         }
-    }
-
-    public void submitStatementToBatch(@Nonnull final String stmt) {
-        synchronized (this) {
-            if (isAnotherWorkerRequired()) {
-                submitNewPersistDataWorker();
-            }
-            _sqlStatementBatch.submitStatement(stmt);
-        }
-    }
-
-    private void addGracefullyShutdownHook() {
-        /**
-         * Add shutdown hook.
-         */
-        Runtime.getRuntime().addShutdownHook(new ShutdownWorkerThread());
     }
 
     /**
@@ -200,20 +152,23 @@ public enum PersistEngineDataManager {
         if (noWorkerPresentYet()) {
             return true;
         }
+//
+//
+//
+//        if (isMaxPoolSizeNotReached()) {
+//            submitNewPersistDataWorker(_executor,
+//                                       _prefPeriodInMS,
+//                                       _handlerProvider,
+//                                       _workerId,
+//                                       _submittedWorkers);
+//        } else {
+//            lowerPeriodOfExistingWorker(_executor,
+//                                        _prefPeriodInMS,
+//                                        _handlerProvider,
+//                                        _workerId,
+//                                        _submittedWorkers);
+//        }
 
-        if (doesSqlQueueLengthExceedMaxAllowedPacketSize()) {
-            if (poolSizeExhausted()) {
-                final Iterator<PersistDataWorker> it = _submittedWorkers.iterator();
-                final PersistDataWorker oldestWorker = it.next();
-                final long period = oldestWorker.getPeriodInMS();
-                if (isPeriodAlreadySetToMinimum(period)) {
-                    handlePoolExhaustionWithMinimumPeriodCornerCase();
-                    return false;
-                }
-                lowerPeriodAndRemoveOldestWorker(it, oldestWorker);
-            }
-            return true;
-        }
         return false;
     }
 
@@ -221,46 +176,56 @@ public enum PersistEngineDataManager {
         return _executor.getPoolSize() <= 0;
     }
 
-    private boolean doesSqlQueueLengthExceedMaxAllowedPacketSize() {
-        return _sqlStatementBatch.sizeInBytes() > _prefMaxAllowedPacketInBytes;
+//    private boolean isMaxPoolSizeNotReached() {
+//        return _executor.getPoolSize() < _executor.getCorePoolSize();
+//    }
+//    private void lowerPeriodOfExistingWorker(ScheduledThreadPoolExecutor executor,
+//                                             Integer prefPeriodInMS,
+//                                             IBatchQueueHandlerProvider handlerProvider,
+//                                             AtomicInteger workerId,
+//                                             SortedSet<PersistDataWorker> submittedWorkers) {
+//
+//    }
+
+//
+//    private boolean isPeriodAlreadySetToMinimum(final long period) {
+//        return Long.valueOf(period).intValue() <= 2000;
+//    }
+//
+//    private void handlePoolExhaustionWithMinimumPeriodCornerCase() {
+//        // FIXME (bknerr) : handle pool and thread frequency exhaustion
+//        // notify staff, rescue data to disc with dedicated worker
+//    }
+//
+//    private void lowerPeriodAndRemoveOldestWorker(@Nonnull final Iterator<PersistDataWorker> it,
+//                                                  @Nonnull final PersistDataWorker oldestWorker) {
+//        _prefPeriodInMS = Math.max(_prefPeriodInMS>>1, 2000);
+//        LOG.info("Remove Worker: " + oldestWorker.getName());
+//        _executor.remove(oldestWorker);
+//        it.remove();
+//    }
+
+
+    @Nonnull
+    public ArchiveConnectionHandler getConnectionHandler() {
+        return _connectionHandler;
     }
 
-    private boolean poolSizeExhausted() {
-        return _executor.getPoolSize() >= _executor.getCorePoolSize();
+    public void shutdown() {
+        _executor.shutdown();
     }
 
-    private boolean isPeriodAlreadySetToMinimum(final long period) {
-        return Long.valueOf(period).intValue() <= 2000;
-    }
+    public void submitToBatch(@Nonnull final Collection<?> entries) throws TypeSupportException {
 
-    private void handlePoolExhaustionWithMinimumPeriodCornerCase() {
-        // FIXME (bknerr) : handle pool and thread frequency exhaustion
-        // notify staff, rescue data to disc with dedicated worker
-    }
+        BatchQueueHandlerSupport.addToQueue(entries);
 
-    private void lowerPeriodAndRemoveOldestWorker(@Nonnull final Iterator<PersistDataWorker> it,
-                                                  @Nonnull final PersistDataWorker oldestWorker) {
-        _prefPeriodInMS = Math.max(_prefPeriodInMS>>1, 2000);
-        LOG.info("Remove Worker: " + oldestWorker.getName());
-        _executor.remove(oldestWorker);
-        it.remove();
-    }
-
-
-    public void rescueDataToFileSystem(@Nonnull final List<String> statements) {
-        LOG.warn("Rescue statements: " + statements.size());
-
-        try {
-            final DataRescueResult result =
-                PersistDataToFileRescuer.with(statements)
-                                        .at(TimeInstantBuilder.fromNow())
-                                        .to(DATA_RESCUE_DIR)
-                                        .rescue();
-            if (!result.hasSucceeded()) {
-                ArchiveNotifications.notify(NotificationType.PERSIST_DATA_FAILED, result.getFilePath());
-            }
-        } catch (final DataRescueException e) {
-            ArchiveNotifications.notify(NotificationType.PERSIST_DATA_FAILED, e.getMessage());
+        if (isAnotherWorkerRequired()) {
+            submitNewPersistDataWorker(_executor,
+                                       _connectionHandler,
+                                       _prefPeriodInMS,
+                                       _handlerProvider,
+                                       _workerId,
+                                       _submittedWorkers);
         }
     }
 }

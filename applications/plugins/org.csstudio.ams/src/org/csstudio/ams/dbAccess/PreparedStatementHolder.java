@@ -1,3 +1,4 @@
+
 /* 
  * Copyright (c) 2008 Stiftung Deutsches Elektronen-Synchrotron, 
  * Member of the Helmholtz Association, (DESY), HAMBURG, GERMANY.
@@ -19,12 +20,12 @@
  * PROJECT IN THE FILE LICENSE.HTML. IF THE LICENSE IS NOT INCLUDED YOU MAY FIND A COPY 
  * AT HTTP://WWW.DESY.DE/LEGAL/LICENSE.HTM
  */
- package org.csstudio.ams.dbAccess;
+
+package org.csstudio.ams.dbAccess;
 
 import java.sql.PreparedStatement;
 
-public class PreparedStatementHolder
-{
+public class PreparedStatementHolder {
 	public static final byte MODE_INIT = 0;  
 	public static final byte MODE_EXEC = 1; 
 	public static final byte MODE_CLOSE = 2;

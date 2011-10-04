@@ -23,16 +23,17 @@ package org.csstudio.archive.common.service.mysqlimpl.dao;
 
 import java.net.MalformedURLException;
 import java.sql.Connection;
+import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 
 import javax.annotation.CheckForNull;
 import javax.annotation.Nonnull;
 
-import org.slf4j.Logger;
 import org.csstudio.archive.common.service.ArchiveConnectionException;
 import org.csstudio.archive.common.service.mysqlimpl.persistengine.PersistEngineDataManager;
 import org.csstudio.domain.desy.typesupport.TypeSupportException;
+import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 
@@ -60,13 +61,23 @@ public abstract class AbstractArchiveDao {
     }
 
     /**
-     * Returns the current connection for the dao implementation and its subclasses.
+     * Returns a new connection for the dao implementation and its subclasses.
      * @return the connection
      * @throws ArchiveConnectionException
      */
     @Nonnull
-    protected Connection getConnection() throws ArchiveConnectionException {
-        return _connectionHandler.getConnection();
+    protected Connection createConnection() throws ArchiveConnectionException {
+        return _connectionHandler.createConnection();
+    }
+    /**
+     * Returns the thread current connection for the dao implementation and its subclasses.
+     * Don't close!
+     * @return the connection
+     * @throws ArchiveConnectionException
+     */
+    @Nonnull
+    protected Connection getThreadLocalConnection() throws ArchiveConnectionException {
+        return _connectionHandler.getThreadLocalConnection();
     }
 
     @Nonnull
@@ -81,17 +92,34 @@ public abstract class AbstractArchiveDao {
     }
 
     /**
-     * Tries to close the passed statement and logs the given message on closing error.
-     * @param stmt
-     * @param logMsg
+     * Tries to close the sql resources {@Statement} and implicitly {@link ResultSet}.
+     * TODO (bknerr) : just found out - resultset is automatically closed when its statement is closed.
      */
-    protected void closeStatement(@CheckForNull final Statement stmt, @Nonnull final String logMsg) {
-        if (stmt != null) {
-            try {
-                stmt.close();
-            } catch (final SQLException e) {
-                LOG.warn(logMsg);
+    protected void closeSqlResources(@CheckForNull final ResultSet rs,
+                                     @CheckForNull final Statement stmt,
+                                     @Nonnull final String logMsgForCloseError) {
+        closeSqlResources(rs, stmt, null, logMsgForCloseError);
+    }
+    /**
+     * Tries to close the sql resources {@link Connection} and implicitly {@Statement} and {@link ResultSet}.
+     * TODO (bknerr) : just found out - resultset is automatically closed when its statement is closed.
+     */
+    protected void closeSqlResources(@CheckForNull final ResultSet rs,
+                                     @CheckForNull final Statement stmt,
+                                     @CheckForNull final Connection conn,
+                                     @Nonnull final String logMsgForCloseError) {
+        try {
+            if (rs != null) {
+                rs.close();
             }
+            if (stmt != null) {
+                stmt.close();
+            }
+            if (conn != null) {
+                conn.close();
+            }
+        } catch (final SQLException e) {
+            LOG.warn("Closing of SQL resources failed (ResultSet|Statement|Connection) for: {}", logMsgForCloseError);
         }
     }
 

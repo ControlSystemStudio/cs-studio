@@ -100,8 +100,8 @@ public class CSSView extends Composite implements Observer {
          * @param font 
          */
         public CSSLabelProvider(Font font) {
-            _font = font;
             FontData fontData = font.getFontData()[0];
+            _font = new Font(null, fontData);
             _boldFont = new Font(null, new FontData(fontData.getName(), fontData.getHeight(), SWT.BOLD));
         }
         

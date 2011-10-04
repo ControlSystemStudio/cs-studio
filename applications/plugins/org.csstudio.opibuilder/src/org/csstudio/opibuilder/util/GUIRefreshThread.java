@@ -13,6 +13,7 @@ import java.util.logging.Level;
 import org.csstudio.opibuilder.OPIBuilderPlugin;
 import org.csstudio.opibuilder.datadefinition.WidgetIgnorableUITask;
 import org.csstudio.opibuilder.preferences.PreferencesHelper;
+import org.eclipse.swt.SWT;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.ui.PlatformUI;
 
@@ -98,7 +99,11 @@ public final class GUIRefreshThread implements Runnable {
 			}
 			if(!isEmpty){
 					start = System.currentTimeMillis();
-					processQueue();
+					if(SWT.getPlatform().startsWith("rap")) //$NON-NLS-1$
+						rapProcessQueue();
+					else
+						rcpProcessQueue();
+					
 				try {
 					long current = System.currentTimeMillis();
 					if(current - start < guiRefreshCycle)
@@ -117,9 +122,10 @@ public final class GUIRefreshThread implements Runnable {
 	}
 
 	/**
-	 * Process the complete queue.
+	 * Process the complete queue in RCP.
 	 */
-	private void processQueue() {
+	private void rcpProcessQueue() {
+		//avoid add too many stuff to Display async queue.		
 		if(!asyncEmpty)
 			return;
 		asyncEmpty = false;
@@ -140,6 +146,27 @@ public final class GUIRefreshThread implements Runnable {
 		}
 		if(display!=null && !display.isDisposed())
 			display.asyncExec(resetAsyncEmpty);
+	}
+	
+	/**
+	 * Process the complete queue in RAP.
+	 */
+	private void rapProcessQueue() {
+		Object[] tasksArray;
+		//copy the tasks queue.
+		synchronized (this) {
+			tasksArray = tasksQueue.toArray();
+			tasksQueue.clear();
+		}
+		for(Object o : tasksArray){
+			Display display = ((WidgetIgnorableUITask)o).getDisplay();
+				if(display!=null && !display.isDisposed())
+					try {
+						display.asyncExec(((WidgetIgnorableUITask) o).getRunnableTask());
+					} catch (Exception e) {
+					    OPIBuilderPlugin.getLogger().log(Level.WARNING, "GUI refresh error", e); //$NON-NLS-1$
+					}
+		}
 	}
 
 	/**

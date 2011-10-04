@@ -1,30 +1,32 @@
 
-/* 
- * Copyright (c) 2010 Stiftung Deutsches Elektronen-Synchrotron, 
+/*
+ * Copyright (c) 2010 Stiftung Deutsches Elektronen-Synchrotron,
  * Member of the Helmholtz Association, (DESY), HAMBURG, GERMANY.
  *
- * THIS SOFTWARE IS PROVIDED UNDER THIS LICENSE ON AN "../AS IS" BASIS. 
- * WITHOUT WARRANTY OF ANY KIND, EXPRESSED OR IMPLIED, INCLUDING BUT NOT LIMITED 
- * TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR PARTICULAR PURPOSE AND 
- * NON-INFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE 
- * FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, 
- * TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR 
- * THE USE OR OTHER DEALINGS IN THE SOFTWARE. SHOULD THE SOFTWARE PROVE DEFECTIVE 
- * IN ANY RESPECT, THE USER ASSUMES THE COST OF ANY NECESSARY SERVICING, REPAIR OR 
- * CORRECTION. THIS DISCLAIMER OF WARRANTY CONSTITUTES AN ESSENTIAL PART OF THIS LICENSE. 
+ * THIS SOFTWARE IS PROVIDED UNDER THIS LICENSE ON AN "../AS IS" BASIS.
+ * WITHOUT WARRANTY OF ANY KIND, EXPRESSED OR IMPLIED, INCLUDING BUT NOT LIMITED
+ * TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR PARTICULAR PURPOSE AND
+ * NON-INFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE
+ * FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT,
+ * TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR
+ * THE USE OR OTHER DEALINGS IN THE SOFTWARE. SHOULD THE SOFTWARE PROVE DEFECTIVE
+ * IN ANY RESPECT, THE USER ASSUMES THE COST OF ANY NECESSARY SERVICING, REPAIR OR
+ * CORRECTION. THIS DISCLAIMER OF WARRANTY CONSTITUTES AN ESSENTIAL PART OF THIS LICENSE.
  * NO USE OF ANY SOFTWARE IS AUTHORIZED HEREUNDER EXCEPT UNDER THIS DISCLAIMER.
- * DESY HAS NO OBLIGATION TO PROVIDE MAINTENANCE, SUPPORT, UPDATES, ENHANCEMENTS, 
+ * DESY HAS NO OBLIGATION TO PROVIDE MAINTENANCE, SUPPORT, UPDATES, ENHANCEMENTS,
  * OR MODIFICATIONS.
- * THE FULL LICENSE SPECIFYING FOR THE SOFTWARE THE REDISTRIBUTION, MODIFICATION, 
- * USAGE AND OTHER RIGHTS AND OBLIGATIONS IS INCLUDED WITH THE DISTRIBUTION OF THIS 
- * PROJECT IN THE FILE LICENSE.HTML. IF THE LICENSE IS NOT INCLUDED YOU MAY FIND A COPY 
+ * THE FULL LICENSE SPECIFYING FOR THE SOFTWARE THE REDISTRIBUTION, MODIFICATION,
+ * USAGE AND OTHER RIGHTS AND OBLIGATIONS IS INCLUDED WITH THE DISTRIBUTION OF THIS
+ * PROJECT IN THE FILE LICENSE.HTML. IF THE LICENSE IS NOT INCLUDED YOU MAY FIND A COPY
  * AT HTTP://WWW.DESY.DE/LEGAL/LICENSE.HTM
  *
  */
 
 package org.csstudio.archive.sdds.server.command;
 
-import org.csstudio.archive.sdds.server.util.IntegerValue;
+import javax.annotation.CheckForNull;
+import javax.annotation.Nonnull;
+
 import org.csstudio.archive.sdds.server.util.RawData;
 
 /**
@@ -32,46 +34,43 @@ import org.csstudio.archive.sdds.server.util.RawData;
  * @author Markus Moeller
  *
  */
-public class CommandExecutor
-{
+public class CommandExecutor {
+
     /** */
-    private ServerCommand[] commands;
-    
-    /** */
-    public static final int COMMAND_COUNT = 9;
-    
+    private final AbstractServerCommand[] commands;
+
     /**
-     * Standard constructor 
-     * @throws ServerCommandException 
+     * Standard constructor
+     * @throws ServerCommandException
      */
     public CommandExecutor() throws ServerCommandException {
-        
-        commands = new ServerCommand[] { 
-                new Version(),
-                new DataRequest(),
-                new ChannelInfo(),
-                new ChannelList(),
-                new HierarchyChannelList(),
-                new FilterList(),
-                new RegExpChannelList(),
-                new SkeletonList(),
-                new WaveFormDataRequest()
-        };
+
+        commands = new AbstractServerCommand[] {
+                new VersionServerCommand(),
+                new DataRequestServerCommand(),
+                new ChannelInfoServerCommand(),
+                new ChannelListServerCommand(),
+                new HierarchyChannelListServerCommand(),
+                new FilterListServerCommand(),
+                new RegExpChannelListServerCommand(),
+                new SkeletonListServerCommand(),
+                new WaveFormDataRequestServerCommand(),
+         };
     }
-    
+
     /**
-     * Executes the command with the given number - 1. 
-     * 
-     * @param cmd
+     * Executes the command with the given cmd number  - 1.
+     *
+     * @param cmd the command number
      * @param buffer
-     * @param len
-     * @param receivedValue
-     * @param resultLength
+     * @return the resulting raw data (incl byte array and error code)
      * @throws ServerCommandException
      * @throws CommandNotImplementedException
      */
-    public void executeCommand(int cmd, RawData buffer, RawData receivedValue, IntegerValue resultLength)
+    @CheckForNull
+    public RawData executeCommand(@Nonnull final int cmd,
+                                  @Nonnull final RawData buffer)
     throws ServerCommandException, CommandNotImplementedException {
-        commands[cmd - 1].execute(buffer, receivedValue, resultLength);
+        return commands[cmd - 1].execute(buffer);
     }
 }

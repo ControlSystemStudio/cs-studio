@@ -179,22 +179,21 @@ public class OPIColor implements IAdaptable {
 
 		// create new graphics context, to draw on
 		Image image = new Image(Display.getCurrent(), 16, 16);
-		GC gc = new GC(image);
-
-		// draw transparent background
-		Color bg = CustomMediaFactory.getInstance().getColor(TRANSPARENT_COLOR);
-		gc.setBackground(bg);
-		gc.fillRectangle(0, 0, 16, 16);
-		// draw icon
-		gc.setBackground(color);
-		Rectangle r = new Rectangle(1, 4, 14, 9);
-		gc.fillRectangle(r);
-		gc.setBackground(CustomMediaFactory.getInstance().getColor(0,
-						0, 0));
-		gc.drawRectangle(r);
-		gc.dispose();
-		
-		
+		GC gc = SingleSourceHelper.getImageGC(image);
+		if(gc != null){			
+			// draw transparent background
+			Color bg = CustomMediaFactory.getInstance().getColor(TRANSPARENT_COLOR);
+			gc.setBackground(bg);
+			gc.fillRectangle(0, 0, 16, 16);
+			// draw icon
+			gc.setBackground(color);
+			Rectangle r = new Rectangle(1, 4, 14, 9);
+			gc.fillRectangle(r);
+			gc.setBackground(CustomMediaFactory.getInstance().getColor(0,
+							0, 0));
+			gc.drawRectangle(r);
+			gc.dispose();			
+		}
 		ImageData imageData = image.getImageData();
 		imageData.transparentPixel = imageData.palette.getPixel(TRANSPARENT_COLOR);
 		image.dispose();

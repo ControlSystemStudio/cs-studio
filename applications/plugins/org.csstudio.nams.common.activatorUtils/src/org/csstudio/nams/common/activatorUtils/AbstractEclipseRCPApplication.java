@@ -1,3 +1,4 @@
+
 package org.csstudio.nams.common.activatorUtils;
 
 import java.lang.reflect.InvocationTargetException;

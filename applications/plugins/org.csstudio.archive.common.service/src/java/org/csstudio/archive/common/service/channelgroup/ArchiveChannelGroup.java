@@ -21,7 +21,9 @@
  */
 package org.csstudio.archive.common.service.channelgroup;
 
+import javax.annotation.CheckForNull;
 import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 
 import org.csstudio.archive.common.service.engine.ArchiveEngineId;
 
@@ -44,7 +46,7 @@ public class ArchiveChannelGroup implements IArchiveChannelGroup {
     public ArchiveChannelGroup(@Nonnull final ArchiveChannelGroupId id,
                                @Nonnull final String name,
                                @Nonnull final ArchiveEngineId engineId,
-                               @Nonnull final String desc) {
+                               @Nullable final String desc) {
         super();
         _id = id;
         _name = name;
@@ -65,7 +67,7 @@ public class ArchiveChannelGroup implements IArchiveChannelGroup {
      * {@inheritDoc}
      */
     @Override
-    @Nonnull
+    @CheckForNull
     public String getDescription() {
         return _description;
     }

@@ -1,6 +1,6 @@
+
 package org.csstudio.nams.configurator.views;
 
-import org.csstudio.nams.configurator.Messages;
 import org.csstudio.nams.configurator.beans.AlarmbearbeiterBean;
 import org.csstudio.nams.configurator.beans.IConfigurationBean;
 import org.csstudio.nams.configurator.composite.FilterableBeanList;

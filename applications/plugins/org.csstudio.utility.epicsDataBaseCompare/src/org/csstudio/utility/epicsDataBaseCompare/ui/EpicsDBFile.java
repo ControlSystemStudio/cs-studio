@@ -24,9 +24,11 @@
  */
 package org.csstudio.utility.epicsDataBaseCompare.ui;
 
-import java.util.Comparator;
-import java.util.SortedSet;
-import java.util.TreeSet;
+import java.util.SortedMap;
+import java.util.TreeMap;
+
+import javax.annotation.CheckForNull;
+import javax.annotation.Nonnull;
 
 /**
  * @author hrickens
@@ -36,48 +38,58 @@ import java.util.TreeSet;
  */
 public class EpicsDBFile {
 
-    private String _file;
-    private SortedSet<EpicsRecord> _epicsRecords;
+    private final SortedMap<String, EpicsRecord> _epicsRecords;
+    private final String _fileName;
 
-    public EpicsDBFile(String file) {
-        setFile(file);
-        _epicsRecords = new TreeSet<EpicsRecord>(new Comparator<EpicsRecord>() {
-            @Override
-            public int compare(EpicsRecord o1, EpicsRecord o2) {
-                return o1.getRecordName().compareTo(o2.getRecordName());
-            }
-        }); 
+    public EpicsDBFile(@Nonnull final String fileName) {
+        _fileName = fileName;
+        _epicsRecords = new TreeMap<String, EpicsRecord>();
     }
 
-    public void add(EpicsRecord epicsRecord) {
-        _epicsRecords.add(epicsRecord);
+    public final void add(@Nonnull final EpicsRecord epicsRecord) {
+        _epicsRecords.put(epicsRecord.getRecordName(),epicsRecord);
     }
 
-    private void setFile(String file) {
-        _file = file;
+    @Nonnull
+    public final SortedMap<String,EpicsRecord> getRecords(){
+        return _epicsRecords;
     }
 
-    public String getFile() {
-        return _file;
+    @Nonnull
+    public final String getFileName() {
+        return _fileName;
     }
-    
+
     @Override
-    public String toString() {
-        StringBuilder sb  = new StringBuilder(getFile());
+    @Nonnull
+    public final String toString() {
+        final StringBuilder sb  = new StringBuilder(getFileName());
         sb.append("\r\n");
-        for (EpicsRecord epicsRecord : _epicsRecords) {
+        for (final EpicsRecord epicsRecord : _epicsRecords.values()) {
             sb.append(epicsRecord);
             sb.append("\r\n");
         }
         return sb.toString();
     }
 
-    public int size() {
+    public final int size() {
         return _epicsRecords.size();
     }
 
-    public EpicsRecord get(int pos) {
-        return _epicsRecords.toArray(new EpicsRecord[0])[pos];
+    @CheckForNull
+    public final EpicsRecord getRecord(@Nonnull final String recordName) {
+        return _epicsRecords.get(recordName);
+
+    }
+
+    @Nonnull
+    public final String getSortetText() {
+        final StringBuilder sb  = new StringBuilder();
+        for (final EpicsRecord epicsRecord : _epicsRecords.values()) {
+            sb.append(epicsRecord.getSortetText());
+            sb.append("\r\n");
+        }
+        return sb.toString();
     }
 
 }

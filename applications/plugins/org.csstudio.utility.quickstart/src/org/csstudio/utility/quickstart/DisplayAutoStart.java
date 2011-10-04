@@ -34,8 +34,6 @@
  */
 package org.csstudio.utility.quickstart;
 
-import org.csstudio.platform.logging.CentralLogger;
-
 import org.csstudio.sds.ui.runmode.RunModeService;
 import org.csstudio.utility.quickstart.preferences.PreferenceConstants;
 import org.csstudio.utility.quickstart.preferences.PreferenceValidator;
@@ -46,6 +44,8 @@ import org.eclipse.core.runtime.Path;
 import org.eclipse.jface.preference.IPreferenceStore;
 import org.eclipse.ui.IWorkbench;
 import org.eclipse.ui.PlatformUI;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * TODO (jhatje) :
@@ -57,6 +57,8 @@ import org.eclipse.ui.PlatformUI;
  */
 public class DisplayAutoStart implements Runnable {
 
+    private static final Logger LOG = LoggerFactory.getLogger(DisplayAutoStart.class);
+    
 	private static final String PLT_FILE_EXTENSION = "plt";
 	private static final String SDS_FILE_EXTENSION = "sds";
 
@@ -74,8 +76,7 @@ public class DisplayAutoStart implements Runnable {
 		try {
 			waitForWorkbench();
 		} catch (final InterruptedException e) {
-			CentralLogger.getInstance().error(this,
-					"Quickstart startup error, " + e.getMessage());
+			LOG.error("Quickstart startup error, ", e);
 		}
 		for (final String element : array) {
 			final String[] ItemFromPreferences = element.split("\\?");
@@ -112,9 +113,10 @@ public class DisplayAutoStart implements Runnable {
 
 	private void startSdsDidplay(final String[] checkedPrefItem) {
 		final IPath sdsFilePath = Path.fromOSString(checkedPrefItem[0]);
-		CentralLogger.getInstance().debug(this, "open: " + sdsFilePath);
+		LOG.debug("open: {}", sdsFilePath);
 		PlatformUI.getWorkbench().getDisplay().asyncExec(new Runnable() {
-			public void run() {
+			@Override
+            public void run() {
 				RunModeService.getInstance().openDisplayShellInRunMode(
 						sdsFilePath);
 			}

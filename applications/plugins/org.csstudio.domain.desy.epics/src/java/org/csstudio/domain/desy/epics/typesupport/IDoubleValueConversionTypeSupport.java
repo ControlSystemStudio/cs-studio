@@ -21,22 +21,13 @@
  */
 package org.csstudio.domain.desy.epics.typesupport;
 
-import java.util.List;
+import java.util.Collection;
 
+import javax.annotation.CheckForNull;
 import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
 
 import org.csstudio.data.values.IDoubleValue;
-import org.csstudio.domain.desy.epics.alarm.EpicsAlarm;
-import org.csstudio.domain.desy.epics.types.EpicsMetaData;
-import org.csstudio.domain.desy.epics.types.EpicsSystemVariable;
-import org.csstudio.domain.desy.system.ControlSystem;
-import org.csstudio.domain.desy.time.TimeInstant;
-import org.csstudio.domain.desy.typesupport.BaseTypeConversionSupport;
 import org.csstudio.domain.desy.typesupport.TypeSupportException;
-
-import com.google.common.collect.Lists;
-import com.google.common.primitives.Doubles;
 
 /**
  * IDoubleValue conversion support.
@@ -51,33 +42,30 @@ final class IDoubleValueConversionTypeSupport extends
         super(IDoubleValue.class);
     }
 
-    /**
-     * {@inheritDoc}
-     */
+
+    @SuppressWarnings({ "unchecked", "rawtypes" })
     @Override
     @Nonnull
-    protected EpicsSystemVariable<?> convertToSystemVariable(@Nonnull final String name,
-                                                             @Nonnull final IDoubleValue value,
-                                                             @Nullable final EpicsMetaData metaData) throws TypeSupportException {
+    protected Object toData(@Nonnull final IDoubleValue value,
+                            @Nonnull final Class<?> elemClass,
+                            @CheckForNull final Class<? extends Collection> collClass) throws TypeSupportException {
         final double[] values = value.getValues();
-        if (values == null || values.length == 0) {
-            throw new TypeSupportException("IValue doesn't have any values. Conversion failed.", null);
+        if (values == null) {
+            throw new TypeSupportException("IValue values array is null! Conversion failed.", null);
+        }
+        final AbstractIValueDataToTargetTypeSupport<?> support =
+            checkForPlausibilityAndGetSupport(elemClass,
+                                              collClass,
+                                              values.length);
+
+        if (values.length == 1) {
+            return support.fromDoubleValue(values[0]);
         }
 
-        final EpicsAlarm alarm = EpicsIValueTypeSupport.toEpicsAlarm(value.getSeverity(),
-                                                                     value.getStatus().toUpperCase());
-        final TimeInstant timestamp = BaseTypeConversionSupport.toTimeInstant(value.getTime());
-        if (values.length == 1) {
-            return new EpicsSystemVariable<Double>(name,
-                                                   Double.valueOf(values[0]),
-                                                   ControlSystem.EPICS_DEFAULT,
-                                                   timestamp,
-                                                   alarm);
+        final Collection coll = instantiateCollection(collClass);
+        for (final double val : values) {
+            coll.add(support.fromDoubleValue(val));
         }
-        return new EpicsSystemVariable<List<Double>>(name,
-                                                     Lists.newArrayList(Doubles.asList(values)),
-                                                     ControlSystem.EPICS_DEFAULT,
-                                                     timestamp,
-                                                     alarm);
+        return coll;
     }
 }

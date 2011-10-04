@@ -1,3 +1,4 @@
+
 package org.csstudio.nams.configurator.beans;
 
 import org.csstudio.nams.service.configurationaccess.localstore.declaration.filterActions.AlarmbFilterActionType;
@@ -7,7 +8,6 @@ import org.csstudio.nams.service.configurationaccess.localstore.declaration.filt
  * (1,'SMS an Person',NULL) (4,'VMail an Person',NULL) (7,'EMail an
  * Person',NULL)
  * 
- * @param <AlarmbFilterActionType>
  * 
  */
 public class AlarmbearbeiterFilterAction extends
@@ -26,7 +26,8 @@ public class AlarmbearbeiterFilterAction extends
 		return action;
 	}
 
-	public FilterActionType[] getFilterActionTypeValues() {
+	@Override
+    public FilterActionType[] getFilterActionTypeValues() {
 		return AlarmbFilterActionType.values();
 	}
 }

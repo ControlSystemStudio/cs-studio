@@ -18,6 +18,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.csstudio.swt.widgets.datadefinition.IManualValueChangeListener;
+import org.csstudio.swt.widgets.figureparts.RapArrowButton;
 import org.csstudio.swt.widgets.introspection.DefaultWidgetIntrospector;
 import org.csstudio.swt.widgets.introspection.Introspectable;
 import org.csstudio.swt.widgets.util.OPITimer;
@@ -192,7 +193,7 @@ public class ScrollbarFigure extends Figure implements Orientable, Introspectabl
 	 * @since 2.0
 	 */
 	protected Clickable createDefaultDownButton() {
-		Button buttonDown = new ArrowButton();
+		Button buttonDown = new RapArrowButton();
 		buttonDown.setBorder(new ButtonBorder(ButtonBorder.SCHEMES.BUTTON_SCROLLBAR));
 		return buttonDown;
 	}
@@ -221,7 +222,7 @@ public class ScrollbarFigure extends Figure implements Orientable, Introspectabl
 	 * @since 2.0
 	 */
 	protected Clickable createDefaultUpButton() {
-		Button buttonUp = new ArrowButton();
+		Button buttonUp = new RapArrowButton();
 		buttonUp.setBorder(new ButtonBorder(ButtonBorder.SCHEMES.BUTTON_SCROLLBAR));
 		return buttonUp;
 	}

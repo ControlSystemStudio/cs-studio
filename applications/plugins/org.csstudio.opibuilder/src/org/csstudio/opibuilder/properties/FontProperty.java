@@ -7,7 +7,7 @@
  ******************************************************************************/
 package org.csstudio.opibuilder.properties;
 
-import org.csstudio.opibuilder.properties.support.OPIFontPropertyDescriptor;
+import org.csstudio.opibuilder.properties.support.PropertySSHelper;
 import org.csstudio.opibuilder.util.MediaService;
 import org.csstudio.opibuilder.util.OPIFont;
 import org.eclipse.swt.graphics.FontData;
@@ -106,7 +106,9 @@ public class FontProperty extends AbstractWidgetProperty {
 	 */
 	@Override
 	protected PropertyDescriptor createPropertyDescriptor() {
-		return new OPIFontPropertyDescriptor(prop_id, description);		
+		if(PropertySSHelper.getIMPL() == null)
+			return null;
+		return PropertySSHelper.getIMPL().getOPIFontPropertyDescriptor(prop_id, description);		
 	}
 
 	@Override

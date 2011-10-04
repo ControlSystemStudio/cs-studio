@@ -74,9 +74,8 @@ public class ChangeOrientationAction extends SelectionAction {
 				execute(compoundCommand);
 	}
 	
-	@SuppressWarnings("unchecked")
 	protected final List<AbstractWidgetModel> getSelectedWidgetModels() {
-		List selection = getSelectedObjects();
+		List<?> selection = getSelectedObjects();
 	
 		List<AbstractWidgetModel> selectedWidgetModels = new ArrayList<AbstractWidgetModel>();
 	

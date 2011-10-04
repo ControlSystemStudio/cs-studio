@@ -1,3 +1,4 @@
+
 package org.csstudio.nams.service.configurationaccess.localstore.declaration;
 
 import javax.persistence.Column;
@@ -28,7 +29,7 @@ public abstract class FilterActionDTO implements NewAMSConfigurationElementDTO,
 	 * Entweder TOPIC, Alarmbearbeiter, AlarmbearbeiterGruppe
 	 */
 	@Transient
-	protected NewAMSConfigurationElementDTO receiver;
+	protected NewAMSConfigurationElementDTO _receiver;
 
 	@Transient
 	protected FilterActionType filterActionType;
@@ -88,7 +89,8 @@ public abstract class FilterActionDTO implements NewAMSConfigurationElementDTO,
 		return this.message;
 	}
 
-	public String getUniqueHumanReadableName() {
+	@Override
+    public String getUniqueHumanReadableName() {
 		return this.toString();
 	}
 
@@ -103,7 +105,8 @@ public abstract class FilterActionDTO implements NewAMSConfigurationElementDTO,
 		return result;
 	}
 
-	public boolean isInCategory(final int categoryDBId) {
+	@Override
+    public boolean isInCategory(final int categoryDBId) {
 		return false;
 	}
 
@@ -112,7 +115,7 @@ public abstract class FilterActionDTO implements NewAMSConfigurationElementDTO,
 	}
 
 	public void setReceiver(NewAMSConfigurationElementDTO receiver) {
-		this.receiver = receiver;
+		this._receiver = receiver;
 	}
 
 	@Override

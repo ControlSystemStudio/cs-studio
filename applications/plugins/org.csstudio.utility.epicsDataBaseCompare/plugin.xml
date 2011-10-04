@@ -75,5 +75,14 @@
          </toolbar>
       </menuContribution>
    </extension>
+   <extension
+         point="org.eclipse.compare.contentMergeViewers">
+      <viewer
+            class="org.eclipse.compare.internal.TextMergeViewerCreator"
+            extensions="db"
+            id="org.csstudio.utility.EpicsDataBase"
+            label="Epics DB Compare">
+      </viewer>
+   </extension>
 
 </plugin>

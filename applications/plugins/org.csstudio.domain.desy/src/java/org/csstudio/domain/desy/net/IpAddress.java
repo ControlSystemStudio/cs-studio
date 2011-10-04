@@ -21,6 +21,7 @@
  */
 package org.csstudio.domain.desy.net;
 
+import java.io.Serializable;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -32,10 +33,12 @@ import javax.annotation.Nonnull;
  * @author bknerr
  * @since 26.04.2011
  */
-public class IpAddress {
+public class IpAddress implements Serializable {
 
     public static final String IP_ADDRESS_REGEX =
         "(([0-9]|[1-9][0-9]|1[0-9]{2}|2[0-4][0-9]|25[0-5])\\.){3}([0-9]|[1-9][0-9]|1[0-9]{2}|2[0-4][0-9]|25[0-5])";
+
+    private static final long serialVersionUID = -7477229996401659180L;
 
     private final String _address;
 
@@ -81,6 +84,4 @@ public class IpAddress {
         }
         return true;
     }
-
-
 }

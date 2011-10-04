@@ -53,6 +53,8 @@ public class MySqlServiceImplActivator implements BundleActivator {
 
     private static MySqlServiceImplActivator INSTANCE;
 
+    private ArchiveConnectionHandler _connectionHandler;
+
     /**
      * Don't instantiate.
      * Called by framework.
@@ -62,7 +64,6 @@ public class MySqlServiceImplActivator implements BundleActivator {
             throw new IllegalStateException("Activator " + PLUGIN_ID + " does already exist.");
         }
         INSTANCE = this; // Antipattern is required by the framework!
-        LOG.info("WHAT THE FUCK");
     }
 
     /**
@@ -75,19 +76,14 @@ public class MySqlServiceImplActivator implements BundleActivator {
         return INSTANCE;
     }
 
-    /*
-	 * (non-Javadoc)
-	 * @see org.osgi.framework.BundleActivator#start(org.osgi.framework.BundleContext)
-	 */
-	@Override
+    @Override
     public void start(@Nonnull final BundleContext context) throws Exception {
 
-	    final Injector injector = Guice.createInjector(new MySQLArchiveServiceImplModule());
-	    final MySQLArchiveEngineServiceImpl engineServiceImpl =
-	        injector.getInstance(MySQLArchiveEngineServiceImpl.class);
-	    final MySQLArchiveReaderServiceImpl readerServiceImpl =
-	        injector.getInstance(MySQLArchiveReaderServiceImpl.class);
+        final Injector injector = Guice.createInjector(new MySQLArchiveServiceImplModule());
+        _connectionHandler = injector.getInstance(ArchiveConnectionHandler.class);
 
+        final MySQLArchiveServiceImpl serviceImpl =
+            injector.getInstance(MySQLArchiveServiceImpl.class);
 
         final Dictionary<String, Object> propsCfg = new Hashtable<String, Object>();
         propsCfg.put("service.vendor", "DESY");
@@ -95,9 +91,8 @@ public class MySqlServiceImplActivator implements BundleActivator {
         LOG.info("Register MySQL archive engine service");
 
         context.registerService(IArchiveEngineFacade.class.getName(),
-                                engineServiceImpl,
+                                serviceImpl,
                                 propsCfg);
-
 
         final Dictionary<String, Object> propsRd = new Hashtable<String, Object>();
         propsRd.put("service.vendor", "DESY");
@@ -105,16 +100,18 @@ public class MySqlServiceImplActivator implements BundleActivator {
         LOG.info("Register MySQL archive reader service");
 
         context.registerService(IArchiveReaderFacade.class.getName(),
-                                readerServiceImpl,
+                                serviceImpl,
                                 propsRd);
-	}
+    }
 
 
-	@Override
+    @Override
     public void stop(@Nonnull final BundleContext bundleContext) throws Exception {
 
-	    // Services are automatically unregistered
+        // Services are automatically unregistered
 
-	    ArchiveConnectionHandler.INSTANCE.disconnect();
-	}
+        if (_connectionHandler != null) {
+            _connectionHandler.close();
+        }
+    }
 }

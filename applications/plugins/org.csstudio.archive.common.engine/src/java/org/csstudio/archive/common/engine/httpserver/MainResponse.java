@@ -14,7 +14,7 @@ import javax.annotation.Nonnull;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import org.csstudio.archive.common.engine.model.ArchiveChannel;
+import org.csstudio.archive.common.engine.model.ArchiveChannelBuffer;
 import org.csstudio.archive.common.engine.model.ArchiveGroup;
 import org.csstudio.archive.common.engine.model.EngineModel;
 import org.csstudio.archive.common.engine.model.SampleBuffer;
@@ -41,20 +41,26 @@ class MainResponse extends AbstractResponse {
     /** Bytes in a MegaByte */
     private static final double MB = 1024.0*1024.0;
 
-    private static String HOST = null;
+    private final String _host;
+    private final String _version;
 
-    MainResponse(@Nonnull final EngineModel model) {
+    MainResponse(@Nonnull final EngineModel model,
+                 @Nonnull final String version) {
         super(model);
+        _version = version;
+        _host = findHostName();
+    }
 
-        if (HOST == null) {
-            try {
-                final InetAddress localhost = InetAddress.getLocalHost();
-                HOST = localhost.getHostName();
-            } catch (final UnknownHostException ex) {
-                LOG.warn("Host IP address unknown for localhost, fall back to 'localhost' as host identifier.");
-                HOST = "localhost";
-            }
+    @Nonnull
+    private String findHostName() {
+        String host = null;
+        try {
+            host = InetAddress.getLocalHost().getCanonicalHostName();
+        } catch (final UnknownHostException ex) {
+            LOG.warn("Host name could not be resolved, fall back to 'localhost'.");
+            host = "localhost";
         }
+        return host;
     }
 
     @Override
@@ -82,9 +88,9 @@ class MainResponse extends AbstractResponse {
 
     private void createProgramInfoRows(@Nonnull final HttpServletRequest req,
                                        @Nonnull final HTMLWriter html) {
-        html.tableLine(new String[] {Messages.HTTP_VERSION, EngineModel.getVersion()});
+        html.tableLine(new String[] {Messages.HTTP_VERSION, _version});
         html.tableLine(new String[] {Messages.HTTP_DESCRIPTION, getModel().getName()});
-        html.tableLine(new String[] {Messages.HTTP_HOST, HOST + ":" + req.getLocalPort()});
+        html.tableLine(new String[] {Messages.HTTP_HOST, _host + ":" + req.getLocalPort()});
         html.tableLine(new String[] {Messages.HTTP_STATE, getModel().getState().name()});
 
         final TimeInstant start = getModel().getStartTime();
@@ -93,11 +99,13 @@ class MainResponse extends AbstractResponse {
             final Duration dur = new Duration(start.getInstant(),
                                               TimeInstantBuilder.fromNow().getInstant());
             html.tableLine(new String[] {Messages.HTTP_UPTIME,
-                                         TimeInstant.STD_DURATION_FMT.print(dur.toPeriod())});
+                                         TimeInstant.STD_DURATION_FMT.print(dur.toPeriod()),
+                                         });
         }
 
         html.tableLine(new String[] {Messages.HTTP_WORKSPACE,
-                                     Platform.getInstanceLocation().getURL().getFile().toString()});
+                                     Platform.getInstanceLocation().getURL().getFile().toString(),
+                                     });
     }
 
     private void createChannelStatsRows(@Nonnull final HTMLWriter html) {
@@ -106,43 +114,50 @@ class MainResponse extends AbstractResponse {
         for (final ArchiveGroup group : getModel().getGroups()) {
             numOfChannels += group.getChannels().size();
 
-            for (final ArchiveChannel<?, ?> channel : group.getChannels()) {
+            for (final ArchiveChannelBuffer<?, ?> channel : group.getChannels()) {
                 numOfConnectedChannels += channel.isConnected() ? 1 : 0;
             }
         }
-        html.tableLine(new String[] {Messages.HTTP_COLUMN_GROUPCOUNT,
-                                     String.valueOf(getModel().getGroups().size())});
-        html.tableLine(new String[] {Messages.HTTP_COLUMN_CHANNEL_COUNT,
-                                     String.valueOf(numOfChannels)});
+        html.tableLine(new String[] {numOf(Messages.HTTP_COLUMN_GROUPCOUNT),
+                                     String.valueOf(getModel().getGroups().size()),
+                                     });
+        html.tableLine(new String[] {numOf(Messages.HTTP_COLUMN_CHANNELS),
+                                     String.valueOf(numOfChannels),
+                                     });
         final int numOfDisconnectedChannels = numOfChannels - numOfConnectedChannels;
         if (numOfDisconnectedChannels > 0) {
-            html.tableLine(new String[] {Messages.HTTP_NO,
-                                         HTMLWriter.makeRedText(String.valueOf(numOfDisconnectedChannels))});
+            html.tableLine(new String[] {numOf(Messages.HTTP_NOT_CONNECTED),
+                                         HTMLWriter.makeRedText(String.valueOf(numOfDisconnectedChannels)),
+                                         });
         }
     }
 
     private void createWriteStatsRows(@Nonnull final HTMLWriter html) {
         html.tableLine(new String[] {Messages.HTTP_WRITE_PERIOD,
-                                     getModel().getWritePeriodInMS() + " ms"});
+                                     getModel().getWritePeriodInMS() + " ms",
+                                     });
 
         html.tableLine(new String[] {Messages.HTTP_WRITE_STATE,
                                      (SampleBuffer.isInErrorState() ? HTMLWriter.makeRedText(Messages.HTTP_WRITE_ERROR) :
-                                                                      Messages.HTTP_NO_ERROR)});
+                                                                      Messages.HTTP_NO_ERROR),
+                                                                      });
 
         final TimeInstant lastWriteTime = getModel().getLastWriteTime();
         html.tableLine(new String[] {Messages.HTTP_LAST_WRITETIME,
                                      (lastWriteTime == null ? Messages.HTTP_NEVER :
-                                                              lastWriteTime.formatted())});
+                                                              lastWriteTime.formatted()),
+                                                              });
 
         final Double avgWriteCount = getModel().getAvgWriteCount();
-        html.tableLine(new String[] {Messages.HTTP_WRITE_COUNT,
+        html.tableLine(new String[] {numOf(Messages.HTTP_AVG_WRITE),
                                      (avgWriteCount != null ? String.format("%.1f", avgWriteCount):
-                                                              "NO") + " samples"});
+                                                              "NO") + " samples",
+                                                              });
         final Duration avgWriteDuration = getModel().getAvgWriteDuration();
         String printDur = "NONE";
         if (avgWriteDuration != null) {
             printDur =
-                TimeInstant.STD_DURATION_WITH_MILLIES_FMT.print(avgWriteDuration.toPeriod());
+                TimeInstant.STD_DURATION_WITH_MILLIS_FMT.print(avgWriteDuration.toPeriod());
             if (Strings.isNullOrEmpty(printDur)) {
                 printDur = "<1";
             }
@@ -158,6 +173,7 @@ class MainResponse extends AbstractResponse {
         final double percMem = maxMem > 0 ? usedMem / maxMem * 100.0 : 0.0;
         html.tableLine(new String[] {"Memory",
                                      String.format("%.1f MB of %.1f MB used (%.1f %%)",
-                                                   usedMem, maxMem, percMem)});
+                                                   usedMem, maxMem, percMem),
+                                                   });
     }
 }

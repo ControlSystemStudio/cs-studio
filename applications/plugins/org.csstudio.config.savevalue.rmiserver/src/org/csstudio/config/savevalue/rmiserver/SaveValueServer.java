@@ -29,7 +29,6 @@ import java.rmi.server.UnicastRemoteObject;
 import org.csstudio.config.savevalue.service.ChangelogService;
 import org.csstudio.config.savevalue.service.SaveValueService;
 import org.csstudio.config.savevalue.service.SocketFactory;
-import org.csstudio.platform.logging.CentralLogger;
 import org.csstudio.platform.startupservice.IStartupServiceListener;
 import org.csstudio.platform.startupservice.StartupServiceEnumerator;
 import org.eclipse.core.runtime.Platform;
@@ -38,6 +37,8 @@ import org.eclipse.equinox.app.IApplication;
 import org.eclipse.equinox.app.IApplicationContext;
 import org.remotercp.common.tracker.IGenericServiceListener;
 import org.remotercp.service.connection.session.ISessionService;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 
 /**
@@ -55,7 +56,7 @@ public class SaveValueServer implements IApplication, IGenericServiceListener<IS
 	/**
 	 * The logger that is used by this class.
 	 */
-	private final CentralLogger _log = CentralLogger.getInstance();
+	private static final Logger LOG = LoggerFactory.getLogger(SaveValueServer.class);
 
 	/**
 	 * The running instance of this server.
@@ -75,13 +76,14 @@ public class SaveValueServer implements IApplication, IGenericServiceListener<IS
 	/**
 	 * {@inheritDoc}
 	 */
-	public final Object start(final IApplicationContext context) throws Exception {
+	@Override
+    public final Object start(final IApplicationContext context) throws Exception {
 
 		INSTANCE = this;
 
 
         for (final IStartupServiceListener s : StartupServiceEnumerator.getServices()) {
-            _log.debug(this, "Running startup service: " + s.toString());
+            LOG.debug("Running startup service: {}", s.toString());
             s.run();
         }
 
@@ -111,7 +113,7 @@ public class SaveValueServer implements IApplication, IGenericServiceListener<IS
 			final ChangelogService changelogStub = (ChangelogService) UnicastRemoteObject.exportObject(changelog, 0, sf, sf);
 			reg.bind("SaveValue.changelog", changelogStub);
 
-			_log.info(this, "Server ready.");
+			LOG.info("Server ready.");
 			context.applicationRunning();
 			synchronized (this) {
 				while (!_stopped) {
@@ -119,12 +121,13 @@ public class SaveValueServer implements IApplication, IGenericServiceListener<IS
 				}
 			}
 		} catch (final Exception e) {
-			_log.error(this, "Server error.", e);
+			LOG.error("Server error.", e);
 			e.printStackTrace();
 		}
 		return IApplication.EXIT_OK;
 	}
 
+    @Override
     public void bindService(ISessionService sessionService) {
         final IPreferencesService prefs = Platform.getPreferencesService();
         final String username = prefs.getString(Activator.PLUGIN_ID,
@@ -137,11 +140,11 @@ public class SaveValueServer implements IApplication, IGenericServiceListener<IS
     	try {
 			sessionService.connect(username, password, server);
 		} catch (Exception e) {
-			CentralLogger.getInstance().warn(this,
-					"XMPP connection is not available, " + e.toString());
+			LOG.warn("XMPP connection is not available, {}", e.toString());
 		}
     }
     
+    @Override
     public void unbindService(ISessionService service) {
     	service.disconnect();
     }
@@ -149,8 +152,9 @@ public class SaveValueServer implements IApplication, IGenericServiceListener<IS
 	/**
 	 * {@inheritDoc}
 	 */
-	public final synchronized void stop() {
-		_log.debug(this, "stop() was called, stopping server");
+	@Override
+    public final synchronized void stop() {
+		LOG.debug("stop() was called, stopping server");
 		_stopped = true;
 		notifyAll();
 	}

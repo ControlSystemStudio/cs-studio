@@ -24,11 +24,11 @@ import java.util.List;
 
 import javax.annotation.Nonnull;
 
-import org.apache.log4j.Logger;
 import org.csstudio.alarm.table.JmsLogsPlugin;
-import org.csstudio.platform.logging.CentralLogger;
 import org.eclipse.jface.preference.IPreferenceStore;
 import org.eclipse.swt.graphics.Font;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * Service to handle the relation between topic sets and column sets.
@@ -41,9 +41,9 @@ import org.eclipse.swt.graphics.Font;
  *
  */
 public class TopicSetColumnService implements ITopicSetColumnService {
-    private static final Logger LOG = CentralLogger.getInstance()
-            .getLogger(TopicSetColumnService.class);
 
+    private static final Logger LOG = LoggerFactory.getLogger(TopicSetColumnService.class);
+    
     public static final String ITEM_SEPARATOR = ";";
     public static final String INNER_ITEM_SEPARATOR_AS_REGEX = "\\?";
     public static final String INNER_ITEM_SEPARATOR = "?";
@@ -160,7 +160,7 @@ public class TopicSetColumnService implements ITopicSetColumnService {
 
     @Nonnull
     private List<String[]> createColumnSetsFromPreference(@Nonnull final String columnSetString) {
-        LOG.debug("Column Pref String: " + columnSetString);
+        LOG.debug("Column Pref String: {}", columnSetString);
 
         List<String[]> result = new ArrayList<String[]>();
         String[] columnSets = columnSetString.split(INNER_ITEM_SEPARATOR_AS_REGEX);

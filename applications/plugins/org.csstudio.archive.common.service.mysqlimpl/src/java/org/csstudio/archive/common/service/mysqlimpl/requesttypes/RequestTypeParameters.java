@@ -34,6 +34,12 @@ import org.csstudio.archive.common.requesttype.RequestTypeParameterException;
  * @since 26.01.2011
  */
 public final class RequestTypeParameters {
+
+    public static final NumOfBinsRequestParameter NUM_OF_BINS =
+        new NumOfBinsRequestParameter();
+    public static final PrecisionRequestParameter PRECISION =
+        new PrecisionRequestParameter();
+
     /**
      * Internal typed request parameter.
      *
@@ -230,10 +236,4 @@ public final class RequestTypeParameters {
     private RequestTypeParameters() {
         // Don't instantiate
     }
-
-    public static final NumOfBinsRequestParameter NUM_OF_BINS =
-        new NumOfBinsRequestParameter();
-    public static final PrecisionRequestParameter PRECISION =
-        new PrecisionRequestParameter();
-
 }

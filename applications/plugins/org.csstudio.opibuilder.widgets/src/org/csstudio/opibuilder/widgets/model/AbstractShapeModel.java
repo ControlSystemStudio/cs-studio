@@ -17,6 +17,7 @@ import org.csstudio.opibuilder.properties.IntegerProperty;
 import org.csstudio.opibuilder.properties.WidgetPropertyCategory;
 import org.csstudio.opibuilder.util.OPIColor;
 import org.csstudio.ui.util.CustomMediaFactory;
+import org.csstudio.ui.util.SWTConstants;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.graphics.Color;
 import org.eclipse.swt.graphics.RGB;
@@ -37,11 +38,11 @@ public abstract class AbstractShapeModel extends AbstractPVWidgetModel {
 	 *
 	 */
 	public enum LineStyle {
-		SOLID("Solid", SWT.LINE_SOLID),
-		DASH("Dash", SWT.LINE_DASH),
-		DOT("Dot", SWT.LINE_DOT),
-		DASH_DOT("DashDot", SWT.LINE_DASHDOT),
-		Dash_DOTDOT("DashDotDot", SWT.LINE_DASHDOTDOT);
+		SOLID("Solid", SWTConstants.LINE_SOLID),
+		DASH("Dash", SWTConstants.LINE_DASH),
+		DOT("Dot", SWTConstants.LINE_DOT),
+		DASH_DOT("DashDot", SWTConstants.LINE_DASHDOT),
+		Dash_DOTDOT("DashDotDot", SWTConstants.LINE_DASHDOTDOT);
 				
 		String description;
 		int style;

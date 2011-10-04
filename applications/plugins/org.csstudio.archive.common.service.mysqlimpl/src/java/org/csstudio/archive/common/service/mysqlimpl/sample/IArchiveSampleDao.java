@@ -21,12 +21,14 @@
  */
 package org.csstudio.archive.common.service.mysqlimpl.sample;
 
+import java.io.Serializable;
 import java.util.Collection;
 
 import javax.annotation.CheckForNull;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
+import org.csstudio.archive.common.service.channel.ArchiveChannelId;
 import org.csstudio.archive.common.service.channel.IArchiveChannel;
 import org.csstudio.archive.common.service.mysqlimpl.dao.ArchiveDaoException;
 import org.csstudio.archive.common.service.mysqlimpl.requesttypes.DesyArchiveRequestType;
@@ -42,33 +44,48 @@ import org.csstudio.domain.desy.time.TimeInstant;
  */
 public interface IArchiveSampleDao {
 
-
     /**
      * Inserts the collection of sample objects into the db.
      * @param samples the sample objects
      * @throws ArchiveSampleDaoException
      */
-    <V, T extends ISystemVariable<V>>
+    <V extends Serializable, T extends ISystemVariable<V>>
     void createSamples(@Nonnull final Collection<IArchiveSample<V, T>> samples) throws ArchiveDaoException;
 
 
     /**
      * Retrieves the samples in the given time period according to the request type
-     * @param id
-     * @param s
-     * @param e
-     * @return
+     * @throws ArchiveSampleDaoException
      */
     @Nonnull
-    <V, T extends ISystemVariable<V>>
+    <V extends Serializable, T extends ISystemVariable<V>>
     Collection<IArchiveSample<V, T>> retrieveSamples(@Nullable DesyArchiveRequestType type,
                                                      @Nonnull IArchiveChannel channel,
-                                                     @Nonnull TimeInstant s,
-                                                     @Nonnull TimeInstant e) throws ArchiveDaoException;
+                                                     @Nonnull TimeInstant start,
+                                                     @Nonnull TimeInstant end) throws ArchiveDaoException;
+    /**
+     * Retrieves the samples in the given time period according to the request type
+     * @throws ArchiveDaoException
+     */
+    @Nonnull
+    <V extends Serializable, T extends ISystemVariable<V>>
+    Collection<IArchiveSample<V, T>> retrieveSamples(@Nullable final DesyArchiveRequestType type,
+                                                     @Nonnull final ArchiveChannelId channelId,
+                                                     @Nonnull final TimeInstant start,
+                                                     @Nonnull final TimeInstant end) throws ArchiveDaoException;
 
 
     @CheckForNull
-    <V, T extends ISystemVariable<V>>
+    <V extends Serializable, T extends ISystemVariable<V>>
     IArchiveSample<V, T> retrieveLatestSampleBeforeTime(@Nonnull IArchiveChannel channel,
                                                         @Nonnull TimeInstant time) throws ArchiveDaoException;
+
+    /**
+     * Checks whether at least one sample exists for the given channel.
+     * Either in table sample or sample_blob.
+     * @param id the channel id
+     * @return true if at least one sample could be found in sample or sample_blob
+     * @throws ArchiveDaoException
+     */
+    boolean doesSampleExistForChannelId(@Nonnull final ArchiveChannelId id) throws ArchiveDaoException;
 }

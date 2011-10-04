@@ -24,34 +24,33 @@
       <plugin id="com.google.common"/>
       <plugin id="com.ibm.icu"/>
       <plugin id="gov.bnl.channelfinder.api"/>
-      <plugin id="javax.annotation"/>
+      <plugin id="javax.annotation" fragment=""/>
+      <plugin id="javax.mail"/>
       <plugin id="javax.servlet"/>
       <plugin id="javax.servlet.jsp"/>
       <plugin id="org.apache.commons.el"/>
       <plugin id="org.apache.commons.logging"/>
       <plugin id="org.apache.jasper"/>
+      <plugin id="org.apache.log4j" fragment=""/>
       <plugin id="org.apache.lucene"/>
       <plugin id="org.apache.lucene.analysis"/>
-      <plugin id="org.csstudio.alarm.beast"/>
-      <plugin id="org.csstudio.alarm.beast.annunciator"/>
-      <plugin id="org.csstudio.alarm.beast.configtool"/>
-      <plugin id="org.csstudio.alarm.beast.msghist"/>
-      <plugin id="org.csstudio.alarm.beast.server"/>
-      <plugin id="org.csstudio.alarm.beast.ui"/>
-      <plugin id="org.csstudio.alarm.beast.ui.alarmtable"/>
-      <plugin id="org.csstudio.alarm.beast.ui.alarmtree"/>
+      <plugin id="org.apache.tools.ant" fragment=""/>
+      <plugin id="org.apache.tools.ant.junit" fragment=""/>
+      <plugin id="org.csstudio.alarm.beast" fragment=""/>
+      <plugin id="org.csstudio.alarm.beast.annunciator" fragment=""/>
+      <plugin id="org.csstudio.alarm.beast.configtool" fragment=""/>
+      <plugin id="org.csstudio.alarm.beast.msghist" fragment=""/>
+      <plugin id="org.csstudio.alarm.beast.server" fragment=""/>
+      <plugin id="org.csstudio.alarm.beast.ui" fragment=""/>
+      <plugin id="org.csstudio.alarm.beast.ui.alarmtable" fragment=""/>
+      <plugin id="org.csstudio.alarm.beast.ui.alarmtree" fragment=""/>
       <plugin id="org.csstudio.apputil"/>
       <plugin id="org.csstudio.apputil.ui"/>
-      <plugin id="org.csstudio.archive"/>
-      <plugin id="org.csstudio.archive.channelarchiver"/>
+      <plugin id="org.csstudio.archive" fragment=""/>
       <plugin id="org.csstudio.archive.reader"/>
-      <plugin id="org.csstudio.archive.reader.channelarchiver"/>
+      <plugin id="org.csstudio.archive.reader.channelarchiver" fragment=""/>
       <plugin id="org.csstudio.auth"/>
       <plugin id="org.csstudio.auth.ui"/>
-      <plugin id="org.csstudio.channel.intro"/>
-      <plugin id="org.csstudio.channel.opiwidgets"/>
-      <plugin id="org.csstudio.channel.views"/>
-      <plugin id="org.csstudio.channel.widgets"/>
       <plugin id="org.csstudio.common.product"/>
       <plugin id="org.csstudio.csdata"/>
       <plugin id="org.csstudio.data"/>
@@ -59,46 +58,51 @@
       <plugin id="org.csstudio.diag.probe"/>
       <plugin id="org.csstudio.diag.pvmanager.probe"/>
       <plugin id="org.csstudio.display.channelviewer"/>
-      <plugin id="org.csstudio.display.multichannelviewer"/>
+      <plugin id="org.csstudio.display.pvmanager.pvtable"/>
       <plugin id="org.csstudio.display.pvtable"/>
-      <plugin id="org.csstudio.domain.desy"/>
+      <plugin id="org.csstudio.display.waterfall"/>
+      <plugin id="org.csstudio.domain.common"/>
+      <plugin id="org.csstudio.domain.desy" fragment=""/>
       <plugin id="org.csstudio.email"/>
       <plugin id="org.csstudio.email.ui"/>
       <plugin id="org.csstudio.java"/>
       <plugin id="org.csstudio.logbook"/>
       <plugin id="org.csstudio.logging"/>
+      <plugin id="org.csstudio.logging.ui"/>
       <plugin id="org.csstudio.openfile"/>
       <plugin id="org.csstudio.opibuilder"/>
       <plugin id="org.csstudio.opibuilder.adl2boy"/>
       <plugin id="org.csstudio.opibuilder.examples"/>
       <plugin id="org.csstudio.opibuilder.widgets"/>
-      <plugin id="org.csstudio.platform"/>
-      <plugin id="org.csstudio.platform.libs.dal"/>
-      <plugin id="org.csstudio.platform.libs.dal.epics"/>
-      <plugin id="org.csstudio.platform.libs.dal.ui"/>
+      <plugin id="org.csstudio.opibuilder.widgets.rcp" fragment="true"/>
+      <plugin id="org.csstudio.platform" fragment=""/>
+      <plugin id="org.csstudio.platform.libs.dal" fragment=""/>
+      <plugin id="org.csstudio.platform.libs.dal.epics" fragment=""/>
+      <plugin id="org.csstudio.platform.libs.dal.ui" fragment=""/>
       <plugin id="org.csstudio.platform.libs.epics"/>
       <plugin id="org.csstudio.platform.libs.epics.ui"/>
       <plugin id="org.csstudio.platform.libs.glazedlists"/>
       <plugin id="org.csstudio.platform.libs.jdbc"/>
-      <plugin id="org.csstudio.platform.libs.jdom"/>
       <plugin id="org.csstudio.platform.libs.jersey"/>
       <plugin id="org.csstudio.platform.libs.jfreechart"/>
       <plugin id="org.csstudio.platform.libs.jmock"/>
       <plugin id="org.csstudio.platform.libs.jms"/>
-      <plugin id="org.csstudio.platform.libs.log4j"/>
-      <plugin id="org.csstudio.platform.simpledal"/>
-      <plugin id="org.csstudio.platform.ui"/>
-      <plugin id="org.csstudio.platform.utility.jms"/>
-      <plugin id="org.csstudio.platform.utility.rdb"/>
-      <plugin id="org.csstudio.remote"/>
+      <plugin id="org.csstudio.platform.simpledal" fragment=""/>
+      <plugin id="org.csstudio.platform.ui" fragment=""/>
+      <plugin id="org.csstudio.platform.utility.jms" fragment=""/>
+      <plugin id="org.csstudio.platform.utility.rdb" fragment=""/>
+      <plugin id="org.csstudio.remote" fragment=""/>
       <plugin id="org.csstudio.startup"/>
-      <plugin id="org.csstudio.startuphelper"/>
-      <plugin id="org.csstudio.swt.chart"/>
+      <plugin id="org.csstudio.startuphelper" fragment=""/>
+      <plugin id="org.csstudio.swt.chart" fragment=""/>
       <plugin id="org.csstudio.swt.widgets"/>
+      <plugin id="org.csstudio.swt.widgets.rcp" fragment="true"/>
       <plugin id="org.csstudio.swt.xygraph"/>
-      <plugin id="org.csstudio.testsuite"/>
+      <plugin id="org.csstudio.swt.xygraph.rcp" fragment="true"/>
+      <plugin id="org.csstudio.testsuite" fragment=""/>
       <plugin id="org.csstudio.trends.databrowser2"/>
       <plugin id="org.csstudio.ui.menu"/>
+      <plugin id="org.csstudio.ui.menu.test" fragment=""/>
       <plugin id="org.csstudio.ui.preferences"/>
       <plugin id="org.csstudio.ui.util"/>
       <plugin id="org.csstudio.utility.adlParser"/>
@@ -106,7 +110,7 @@
       <plugin id="org.csstudio.utility.channelfinder"/>
       <plugin id="org.csstudio.utility.channelfinder.ui"/>
       <plugin id="org.csstudio.utility.clock"/>
-      <plugin id="org.csstudio.utility.namespace.utility"/>
+      <plugin id="org.csstudio.utility.namespace.utility" fragment=""/>
       <plugin id="org.csstudio.utility.pv"/>
       <plugin id="org.csstudio.utility.pv.epics"/>
       <plugin id="org.csstudio.utility.pv.simu"/>
@@ -114,10 +118,13 @@
       <plugin id="org.csstudio.utility.pvmanager"/>
       <plugin id="org.csstudio.utility.pvmanager.epics"/>
       <plugin id="org.csstudio.utility.pvmanager.jfreechart.widgets"/>
+      <plugin id="org.csstudio.utility.pvmanager.loc" fragment=""/>
       <plugin id="org.csstudio.utility.pvmanager.sim"/>
       <plugin id="org.csstudio.utility.pvmanager.ui"/>
+      <plugin id="org.csstudio.utility.pvmanager.ui.toolbox" fragment=""/>
       <plugin id="org.csstudio.utility.pvmanager.widgets"/>
-      <plugin id="org.csstudio.utility.speech"/>
+      <plugin id="org.csstudio.utility.pvmanager.widgets.test"/>
+      <plugin id="org.csstudio.utility.speech" fragment=""/>
       <plugin id="org.csstudio.workspace"/>
       <plugin id="org.eclipse.compare"/>
       <plugin id="org.eclipse.compare.core"/>
@@ -135,6 +142,7 @@
       <plugin id="org.eclipse.core.runtime"/>
       <plugin id="org.eclipse.core.runtime.compatibility.registry" fragment="true"/>
       <plugin id="org.eclipse.core.variables"/>
+      <plugin id="org.eclipse.debug.core"/>
       <plugin id="org.eclipse.draw2d"/>
       <plugin id="org.eclipse.ecf"/>
       <plugin id="org.eclipse.ecf.filetransfer"/>
@@ -175,6 +183,11 @@
       <plugin id="org.eclipse.help.base"/>
       <plugin id="org.eclipse.help.ui"/>
       <plugin id="org.eclipse.help.webapp"/>
+      <plugin id="org.eclipse.jdt.core"/>
+      <plugin id="org.eclipse.jdt.debug"/>
+      <plugin id="org.eclipse.jdt.junit.core"/>
+      <plugin id="org.eclipse.jdt.junit.runtime"/>
+      <plugin id="org.eclipse.jdt.launching"/>
       <plugin id="org.eclipse.jface"/>
       <plugin id="org.eclipse.jface.databinding"/>
       <plugin id="org.eclipse.jface.text"/>
@@ -206,12 +219,13 @@
       <plugin id="org.eclipse.update.core"/>
       <plugin id="org.eclipse.update.ui"/>
       <plugin id="org.hamcrest.core"/>
-      <plugin id="org.joda.time"/>
+      <plugin id="org.jdom"/>
+      <plugin id="org.joda.time" fragment=""/>
       <plugin id="org.junit"/>
       <plugin id="org.junit4"/>
       <plugin id="org.sat4j.core"/>
       <plugin id="org.sat4j.pb"/>
-      <plugin id="org.slf4j"/>
+      <plugin id="org.slf4j" fragment=""/>
    </plugins>
 
 

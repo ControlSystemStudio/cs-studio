@@ -1,3 +1,4 @@
+
 package org.csstudio.nams.configurator.views;
 
 import java.util.HashMap;
@@ -18,7 +19,7 @@ import org.csstudio.nams.configurator.service.ConfigurationBeanServiceImpl;
 import org.csstudio.nams.service.configurationaccess.localstore.declaration.ConfigurationServiceFactory;
 import org.csstudio.nams.service.configurationaccess.localstore.declaration.DatabaseType;
 import org.csstudio.nams.service.configurationaccess.localstore.declaration.LocalStoreConfigurationService;
-import org.csstudio.nams.service.logging.declaration.Logger;
+import org.csstudio.nams.service.logging.declaration.ILogger;
 import org.csstudio.nams.service.preferenceservice.declaration.HoldsAPreferenceId;
 import org.csstudio.nams.service.preferenceservice.declaration.PreferenceService;
 import org.csstudio.nams.service.preferenceservice.declaration.PreferenceServiceDatabaseKeys;
@@ -54,10 +55,10 @@ public abstract class AbstractNamsView extends ViewPart {
 
 	static boolean isInitialized = false;
 
-	protected static ConfigurationBeanService configurationBeanService;
-	private static PreferenceService preferenceService;
-	private static ConfigurationServiceFactory configurationServiceFactory;
-	private static Logger logger;
+	protected static ConfigurationBeanService _configurationBeanService;
+	private static PreferenceService _preferenceService;
+	private static ConfigurationServiceFactory _configurationServiceFactory;
+	private static ILogger _logger;
 	private static Semaphore semaphore = new Semaphore(1);
 
 	public static boolean isInitialized() {
@@ -66,19 +67,19 @@ public abstract class AbstractNamsView extends ViewPart {
 
 	public static void staticInject(
 			final ConfigurationServiceFactory configurationServiceFactory) {
-		AbstractNamsView.configurationServiceFactory = configurationServiceFactory;
+		AbstractNamsView._configurationServiceFactory = configurationServiceFactory;
 	}
 
-	public static void staticInject(final Logger logger) {
-		AbstractNamsView.logger = logger;
+	public static void staticInject(final ILogger logger) {
+		AbstractNamsView._logger = logger;
 	}
 
 	public static void staticInject(final PreferenceService preferenceService) {
-		AbstractNamsView.preferenceService = preferenceService;
+		AbstractNamsView._preferenceService = preferenceService;
 	}
 
 	protected static ConfigurationBeanService getConfigurationBeanService() {
-		return AbstractNamsView.configurationBeanService;
+		return AbstractNamsView._configurationBeanService;
 	}
 
 	private FilterableBeanList filterableBeanList;
@@ -89,7 +90,7 @@ public abstract class AbstractNamsView extends ViewPart {
 	private Composite viewsRoot;
 
 	public AbstractNamsView() {
-
+	    // Nothing to do
 	}
 
 	@Override
@@ -164,7 +165,7 @@ public abstract class AbstractNamsView extends ViewPart {
 
 		this.initDragAndDrop(this.filterableBeanList);
 
-		AbstractNamsView.preferenceService
+		AbstractNamsView._preferenceService
 				.addPreferenceChangeListenerFor(
 						new PreferenceServiceDatabaseKeys[] {
 								PreferenceServiceDatabaseKeys.P_CONFIG_DATABASE_CONNECTION,
@@ -205,11 +206,11 @@ public abstract class AbstractNamsView extends ViewPart {
 						Messages.AbstractNamsView_reload_question_title,
 						Messages.AbstractNamsView_reload_question_text1
 								+ Messages.AbstractNamsView_reload_question_text2)) {
-					AbstractNamsView.logger
+					AbstractNamsView._logger
 							.logDebugMessage(this,
 									"Reload of entire configuration requested by user..."); //$NON-NLS-1$
-					AbstractNamsView.configurationBeanService.refreshData();
-					AbstractNamsView.logger.logInfoMessage(this,
+					AbstractNamsView._configurationBeanService.refreshData();
+					AbstractNamsView._logger.logInfoMessage(this,
 							"Reload of entire configuration done."); //$NON-NLS-1$
 				}
 			}
@@ -234,13 +235,13 @@ public abstract class AbstractNamsView extends ViewPart {
 		try {
 			AbstractNamsView.semaphore.acquire(1);
 			if (!AbstractNamsView.isInitialized()) {
-				final String P_CONFIG_DATABASE_CONNECTION = AbstractNamsView.preferenceService
+				final String P_CONFIG_DATABASE_CONNECTION = AbstractNamsView._preferenceService
 						.getString(PreferenceServiceDatabaseKeys.P_CONFIG_DATABASE_CONNECTION);
-				final String P_CONFIG_DATABASE_TYPE_asString = AbstractNamsView.preferenceService
+				final String P_CONFIG_DATABASE_TYPE_asString = AbstractNamsView._preferenceService
 						.getString(PreferenceServiceDatabaseKeys.P_CONFIG_DATABASE_TYPE);
-				final String P_CONFIG_DATABASE_USER = AbstractNamsView.preferenceService
+				final String P_CONFIG_DATABASE_USER = AbstractNamsView._preferenceService
 						.getString(PreferenceServiceDatabaseKeys.P_CONFIG_DATABASE_USER);
-				final String P_CONFIG_DATABASE_PASSWORD = AbstractNamsView.preferenceService
+				final String P_CONFIG_DATABASE_PASSWORD = AbstractNamsView._preferenceService
 						.getString(PreferenceServiceDatabaseKeys.P_CONFIG_DATABASE_PASSWORD);
 
 				if (((P_CONFIG_DATABASE_CONNECTION == null) || (P_CONFIG_DATABASE_CONNECTION
@@ -256,21 +257,21 @@ public abstract class AbstractNamsView extends ViewPart {
 				final DatabaseType P_CONFIG_DATABASE_TYPE = DatabaseType
 						.valueOf(P_CONFIG_DATABASE_TYPE_asString);
 
-				final LocalStoreConfigurationService localStoreConfigurationService = AbstractNamsView.configurationServiceFactory
+				final LocalStoreConfigurationService localStoreConfigurationService = AbstractNamsView._configurationServiceFactory
 						.getConfigurationService(P_CONFIG_DATABASE_CONNECTION,
 								P_CONFIG_DATABASE_TYPE, P_CONFIG_DATABASE_USER,
 								P_CONFIG_DATABASE_PASSWORD);
 
-				AbstractNamsView.logger.logDebugMessage(this,
+				AbstractNamsView._logger.logDebugMessage(this,
 						"DB connected with P_CONFIG_DATABASE_CONNECTION: " //$NON-NLS-1$
 								+ P_CONFIG_DATABASE_CONNECTION);
-				AbstractNamsView.logger.logDebugMessage(this,
+				AbstractNamsView._logger.logDebugMessage(this,
 						"DB connected with P_CONFIG_DATABASE_TYPE: " //$NON-NLS-1$
 								+ P_CONFIG_DATABASE_TYPE);
-				AbstractNamsView.logger.logDebugMessage(this,
+				AbstractNamsView._logger.logDebugMessage(this,
 						"DB connected with P_CONFIG_DATABASE_USER: " //$NON-NLS-1$
 								+ P_CONFIG_DATABASE_USER);
-				AbstractNamsView.logger
+				AbstractNamsView._logger
 						.logDebugMessage(
 								this,
 								"DB P_CONFIG_DATABASE_PASSWORD is: " //$NON-NLS-1$
@@ -279,30 +280,30 @@ public abstract class AbstractNamsView extends ViewPart {
 														.length() > 0) ? "available" //$NON-NLS-1$
 												: "missing")); //$NON-NLS-1$
 
-				if (AbstractNamsView.configurationBeanService == null) {
-					AbstractNamsView.configurationBeanService = new ConfigurationBeanServiceImpl();
+				if (AbstractNamsView._configurationBeanService == null) {
+					AbstractNamsView._configurationBeanService = new ConfigurationBeanServiceImpl();
 				}
-				((ConfigurationBeanServiceImpl) AbstractNamsView.configurationBeanService)
+				((ConfigurationBeanServiceImpl) AbstractNamsView._configurationBeanService)
 						.setNewConfigurationStore(localStoreConfigurationService);
 
 				// prepare views
-				SyncronizeView.staticInject(AbstractNamsView.configurationBeanService);
+				SyncronizeView.staticInject(AbstractNamsView._configurationBeanService);
 				
 				// prepare editors
 				AbstractEditor
-						.staticInject(AbstractNamsView.configurationBeanService);
+						.staticInject(AbstractNamsView._configurationBeanService);
 
 				// prepare actions
 				DeleteConfugurationBeanAction
-						.staticInject(AbstractNamsView.configurationBeanService);
+						.staticInject(AbstractNamsView._configurationBeanService);
 				DuplicateConfigurationBeanAction
-						.staticInject(AbstractNamsView.configurationBeanService);
+						.staticInject(AbstractNamsView._configurationBeanService);
 
-				AbstractNamsView.configurationBeanService.refreshData();
+				AbstractNamsView._configurationBeanService.refreshData();
 			}
 			AbstractNamsView.semaphore.release(1);
 
-			AbstractNamsView.configurationBeanService
+			AbstractNamsView._configurationBeanService
 					.addConfigurationBeanServiceListener(new AbstractConfigurationBeanServiceListener() {
 						@Override
 						public void onBeanDeleted(final IConfigurationBean bean) {
@@ -331,7 +332,7 @@ public abstract class AbstractNamsView extends ViewPart {
 
 						public void onConfigurationReload() {
 							if (AbstractNamsView.this.filterableBeanList != null) {
-								AbstractNamsView.logger.logDebugMessage(this,
+								AbstractNamsView._logger.logDebugMessage(this,
 										"Refreshing list for " //$NON-NLS-1$
 												+ AbstractNamsView.this
 														.getClass()
@@ -354,19 +355,19 @@ public abstract class AbstractNamsView extends ViewPart {
 	}
 
 	private void performInitializeAndSetCorrespondingViewMode() {
-		AbstractNamsView.logger.logInfoMessage(this,
+		AbstractNamsView._logger.logInfoMessage(this,
 				"perfoming initialization..."); //$NON-NLS-1$
 		try {
 			this.initialize();
-			AbstractNamsView.logger.logDebugMessage(this,
+			AbstractNamsView._logger.logDebugMessage(this,
 					"init done, update ui..."); //$NON-NLS-1$
 		} catch (final Throwable e) {
-			AbstractNamsView.logger.logFatalMessage(this,
+			AbstractNamsView._logger.logFatalMessage(this,
 					"Failed to initialize bean service!", e); //$NON-NLS-1$
 			assert AbstractNamsView.isInitialized == false;
 		}
 		if (AbstractNamsView.isInitialized()) {
-			AbstractNamsView.logger.logDebugMessage(this,
+			AbstractNamsView._logger.logDebugMessage(this,
 					"ui goes to normal view..."); //$NON-NLS-1$
 			final Composite composite = this.viewStackContents
 					.get(ViewModes.NORMAL);
@@ -376,7 +377,7 @@ public abstract class AbstractNamsView extends ViewPart {
 				this.filterableBeanList.updateView();
 			}
 		} else {
-			AbstractNamsView.logger.logDebugMessage(this,
+			AbstractNamsView._logger.logDebugMessage(this,
 					"ui goes to error view..."); //$NON-NLS-1$
 			final Composite composite = this.viewStackContents
 					.get(ViewModes.NOT_INITIALIZED);

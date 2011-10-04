@@ -107,9 +107,8 @@ class GroupRoleLabelProvider extends LabelProvider implements ITableLabelProvide
             result = createStringOfUsers(users);
         } catch (NamingException e) {
             result = "<error retrieving users for this group / role: probably undefined in ldap>";
-            CentralLogger.getInstance().error(this,
-                                              "Error retrieving users for group " + entry.getEaig()
-                                                      + " and role " + entry.getEair(),
+            CentralLogger.getInstance().error("Error retrieving users for group " + entry.getEaig()
+                      + " and role " + entry.getEair(),
                                               e);
         }
         return result;

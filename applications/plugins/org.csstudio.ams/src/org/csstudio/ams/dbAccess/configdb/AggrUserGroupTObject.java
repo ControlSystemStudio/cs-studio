@@ -27,6 +27,7 @@ import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
+@SuppressWarnings("hiding")
 public class AggrUserGroupTObject implements Serializable
 {
 	private static final long serialVersionUID = 3090490658348259313L;
@@ -34,9 +35,9 @@ public class AggrUserGroupTObject implements Serializable
 	private UserGroupTObject usergroup = new UserGroupTObject();
 	private List<AggrUserGroupUserTObject> users = new ArrayList<AggrUserGroupUserTObject>();
 	
-	public UserGroupKey getKey()
-	{
-		return new UserGroupKey(usergroup.getUserGroupID(), usergroup.getName(),usergroup.getGroupRef());
+	public UserGroupKey getKey() {
+		return new UserGroupKey(usergroup.getUserGroupID(),
+		                        usergroup.getName(),usergroup.getGroupRef());
 	}
 	
 	public UserGroupTObject getUsergroup() {
@@ -52,9 +53,9 @@ public class AggrUserGroupTObject implements Serializable
 		this.users = users;
 	}
 	
-	public boolean isEquals(Object obj)
-	{
-		if(!(obj instanceof AggrUserGroupTObject))
+	public boolean isEquals(Object obj) {
+		
+	    if(!(obj instanceof AggrUserGroupTObject))
 			return false;
 		
 		AggrUserGroupTObject compare = (AggrUserGroupTObject)obj;
@@ -65,13 +66,11 @@ public class AggrUserGroupTObject implements Serializable
 		if(compare.getUsers() == null && getUsers() == null)
 			return true;
 		
-		if(compare.getUsers() != null && getUsers() != null)
-		{
+		if(compare.getUsers() != null && getUsers() != null) {
 			if(compare.getUsers().size() != getUsers().size())
 				return false;
 			
-			for(int i = 0; i < compare.getUsers().size(); i++)
-			{
+			for(int i = 0; i < compare.getUsers().size(); i++) {
 				if(!compare.getUsers().get(i).getUserGroupUser().equals(getUsers().get(i).getUserGroupUser()))
 						return false;
 			}

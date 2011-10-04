@@ -197,13 +197,6 @@
          unpack="false"/>
 
    <plugin
-         id="org.csstudio.platform.libs.jdom"
-         download-size="0"
-         install-size="0"
-         version="0.0.0"
-         unpack="false"/>
-
-   <plugin
          id="org.csstudio.auth.ui"
          download-size="0"
          install-size="0"
@@ -329,6 +322,13 @@
 
    <plugin
          id="org.csstudio.ui.menu.app"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"
+         unpack="false"/>
+
+   <plugin
+         id="gov.bnl.channelfinder.api"
          download-size="0"
          install-size="0"
          version="0.0.0"

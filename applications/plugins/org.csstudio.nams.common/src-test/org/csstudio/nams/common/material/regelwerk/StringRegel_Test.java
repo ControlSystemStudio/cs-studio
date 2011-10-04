@@ -9,7 +9,7 @@ import org.csstudio.nams.common.fachwert.MessageKeyEnum;
 import org.csstudio.nams.common.material.AlarmNachricht;
 import org.csstudio.nams.common.material.Regelwerkskennung;
 import org.csstudio.nams.common.testutils.AbstractTestObject;
-import org.csstudio.nams.service.logging.declaration.Logger;
+import org.csstudio.nams.service.logging.declaration.ILogger;
 import org.junit.Test;
 
 public class StringRegel_Test extends AbstractTestObject<StringRegel> {
@@ -489,7 +489,7 @@ public class StringRegel_Test extends AbstractTestObject<StringRegel> {
 	protected void setUp() throws Exception {
 		super.setUp();
 
-		StringRegel.staticInject(new Logger() {
+		StringRegel.staticInject(new ILogger() {
 			public void logDebugMessage(final Object caller,
 					final String message) {
 			}

@@ -120,9 +120,9 @@ public class DoubleValue extends Value implements IDoubleValue
         }
         else
         {            
-            // Hack: If default format precision is 0, assume nobody configured
-            // it properly, and fall back to Double.toString
-            if (how == Format.Default  &&  precision == 0)
+            // If precision is still less than 0, which means
+        	// no meta data on this value, and fall back to Double.toString
+            if (how == Format.Default  &&  precision < 0)
             {
                 fmt = null;
             }

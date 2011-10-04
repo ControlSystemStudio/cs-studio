@@ -1,8 +1,14 @@
 package org.csstudio.opibuilder.runmode;
 
 import org.csstudio.opibuilder.model.DisplayModel;
+import org.csstudio.opibuilder.util.SingleSourceHelper;
+import org.csstudio.ui.util.thread.UIBundlingThread;
 import org.eclipse.core.runtime.IAdaptable;
+import org.eclipse.draw2d.geometry.Rectangle;
 import org.eclipse.osgi.util.NLS;
+import org.eclipse.swt.SWT;
+import org.eclipse.swt.events.ControlAdapter;
+import org.eclipse.swt.events.ControlEvent;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.ui.IActionBars;
 import org.eclipse.ui.IEditorInput;
@@ -16,7 +22,7 @@ import org.eclipse.ui.part.ViewPart;
 
 public class OPIView extends ViewPart implements IOPIRuntime {
 
-	private OPIRuntimeDelegate opiRuntimeDelegate;
+	protected OPIRuntimeDelegate opiRuntimeDelegate;
 
 	private IEditorInput input;
 
@@ -26,6 +32,7 @@ public class OPIView extends ViewPart implements IOPIRuntime {
 	
 	private static final String TAG_INPUT = "input"; //$NON-NLS-1$
 	private static final String TAG_FACTORY_ID = "factory_id"; //$NON-NLS-1$
+	private boolean detached = false;
 	
 
 	/**
@@ -37,7 +44,8 @@ public class OPIView extends ViewPart implements IOPIRuntime {
 
 	private OPIRuntimeToolBarDelegate opiRuntimeToolBarDelegate;
 	
-
+	private static boolean openFromPerspective = false;
+	
 	public OPIView() {
 		opiRuntimeDelegate = new OPIRuntimeDelegate(this);
 	}
@@ -90,12 +98,45 @@ public class OPIView extends ViewPart implements IOPIRuntime {
 	}
 
 	@Override
-	public void createPartControl(Composite parent) {
+	public void createPartControl(final Composite parent) {
+		if(SWT.getPlatform().startsWith("rap")){ //$NON-NLS-1$
+			SingleSourceHelper.rapOPIViewCreatePartControl(this, parent);
+			return;
+		}
+			
 		opiRuntimeDelegate.createGUI(parent);
 		createToolbarButtons();
+		parent.addControlListener(new ControlAdapter() {
+			@Override
+			public void controlResized(ControlEvent e) {
+				if(parent.getShell().getText().length() == 0){ //the only way to know it is detached.
+					if(!detached){
+						detached = true;						
+						UIBundlingThread.getInstance().addRunnable(new Runnable() {						
+							public void run() {
+								final Rectangle bounds;
+								if(opiRuntimeDelegate.getDisplayModel() != null)
+									bounds = opiRuntimeDelegate.getDisplayModel().getBounds();
+								else
+									bounds = new Rectangle(0, 0, 800, 600);
+								if(bounds.x >=0 && bounds.y > 1)
+									parent.getShell().setLocation(bounds.x, bounds.y);
+								else{
+								   org.eclipse.swt.graphics.Rectangle winSize = getSite().getWorkbenchWindow().getShell().getBounds();
+									parent.getShell().setLocation( 
+											winSize.x + winSize.width/5, winSize.y + winSize.height/8);
+								}
+								parent.getShell().setSize(bounds.width+45, bounds.height+165);							
+							}
+						});
+					}			
+				}else
+					detached = false;
+			}
+		});
 	}
 	
-	private void createToolbarButtons(){
+	public void createToolbarButtons(){
 		opiRuntimeToolBarDelegate = new OPIRuntimeToolBarDelegate();
 		IActionBars bars = getViewSite().getActionBars();
 		opiRuntimeToolBarDelegate.init(bars, getSite().getPage());
@@ -107,6 +148,8 @@ public class OPIView extends ViewPart implements IOPIRuntime {
 	@Override
 	public void saveState(IMemento memento) {
 		super.saveState(memento);
+		if(input == null)
+			return;
 		IPersistableElement persistable = input.getPersistable();
 		if (persistable != null) {
 			/*
@@ -158,6 +201,14 @@ public class OPIView extends ViewPart implements IOPIRuntime {
 		else
 			return super.getAdapter(adapter);
 
+	}
+
+	public static boolean isOpenFromPerspective() {
+		return openFromPerspective;
+	}
+
+	public static void setOpenFromPerspective(boolean openFromPerspective) {
+		OPIView.openFromPerspective = openFromPerspective;
 	}
 
 	

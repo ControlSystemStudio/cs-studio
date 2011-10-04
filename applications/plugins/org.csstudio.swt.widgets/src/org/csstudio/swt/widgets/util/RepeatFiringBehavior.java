@@ -10,6 +10,8 @@ package org.csstudio.swt.widgets.util;
 import java.util.Timer;
 import java.util.TimerTask;
 
+import org.eclipse.swt.widgets.Display;
+
 public class RepeatFiringBehavior
 {
 	protected static final int
@@ -23,6 +25,10 @@ public class RepeatFiringBehavior
 	protected Timer timer;
 	
 	private Runnable runTask;
+	private Display display;
+	public RepeatFiringBehavior() {
+		 display = Display.getCurrent();
+	}
 	
 	public void pressed() {
 		runTask.run();
@@ -63,7 +69,7 @@ class Task
 	extends TimerTask {
 	
 	public void run() {
-		org.eclipse.swt.widgets.Display.getDefault().syncExec(runTask);
+		display.syncExec(runTask);
 	}
 }
 

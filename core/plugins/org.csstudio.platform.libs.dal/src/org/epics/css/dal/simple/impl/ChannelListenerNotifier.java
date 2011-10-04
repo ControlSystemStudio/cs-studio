@@ -1,6 +1,6 @@
 package org.epics.css.dal.simple.impl;
 
-import java.util.Iterator;
+import java.util.concurrent.ConcurrentHashMap;
 
 import org.epics.css.dal.DynamicValueAdapter;
 import org.epics.css.dal.DynamicValueCondition;
@@ -12,53 +12,60 @@ import org.epics.css.dal.context.LinkListener;
 import org.epics.css.dal.simple.AnyDataChannel;
 import org.epics.css.dal.simple.ChannelListener;
 
-import com.cosylab.util.ListenerList;
-
 public class ChannelListenerNotifier {
 	
-	private ListenerList listeners = new ListenerList(ChannelListener.class);
+	private final ConcurrentHashMap<Integer, ChannelListener> listeners = new ConcurrentHashMap<Integer, ChannelListener>();
 	private AnyDataChannel channel;
 	
 	private DynamicValueCondition lastCondition = null;
 	private boolean initialStateUpdate = false;
 	private boolean initialDataUpdate = false;
 	
-	private LinkListener<DynamicValueProperty<?>> linkListener = new LinkListener<DynamicValueProperty<?>>() {
-		public void connected(ConnectionEvent<DynamicValueProperty<?>> e) {
+	private final LinkListener<DynamicValueProperty<?>> linkListener = new LinkListener<DynamicValueProperty<?>>() {
+		@Override
+        public void connected(ConnectionEvent<DynamicValueProperty<?>> e) {
 			fireChannelStateUpdate();
 		}
 
-		public void operational(ConnectionEvent<DynamicValueProperty<?>> e) {
+		@Override
+        public void operational(ConnectionEvent<DynamicValueProperty<?>> e) {
 			fireChannelStateUpdate();
 		}
 
-		public void connectionFailed(ConnectionEvent<DynamicValueProperty<?>> e) {
+		@Override
+        public void connectionFailed(ConnectionEvent<DynamicValueProperty<?>> e) {
 			fireChannelStateUpdate();
 		}
 
-		public void connectionLost(ConnectionEvent<DynamicValueProperty<?>> e) {
+		@Override
+        public void connectionLost(ConnectionEvent<DynamicValueProperty<?>> e) {
 			fireChannelStateUpdate();
 		}
 
-		public void destroyed(ConnectionEvent<DynamicValueProperty<?>> e) {
+		@Override
+        public void destroyed(ConnectionEvent<DynamicValueProperty<?>> e) {
 			fireChannelStateUpdate();
 		}
 
-		public void disconnected(ConnectionEvent<DynamicValueProperty<?>> e) {
+		@Override
+        public void disconnected(ConnectionEvent<DynamicValueProperty<?>> e) {
 			fireChannelStateUpdate();
 		}
 
-		public void resumed(ConnectionEvent<DynamicValueProperty<?>> e) {
+		@Override
+        public void resumed(ConnectionEvent<DynamicValueProperty<?>> e) {
 			fireChannelStateUpdate();
 		}
 
-		public void suspended(ConnectionEvent<DynamicValueProperty<?>> e) {
+		@Override
+        public void suspended(ConnectionEvent<DynamicValueProperty<?>> e) {
 			fireChannelStateUpdate();
 		}
 	};
-	private DynamicValueListener dvListener = new DynamicValueAdapter() {
+	private final DynamicValueListener dvListener = new DynamicValueAdapter() {
 		
-		public void conditionChange(DynamicValueEvent event) {
+		@Override
+        public void conditionChange(DynamicValueEvent event) {
 			DynamicValueCondition cond = event.getCondition();
 			if (initialStateUpdate && cond != null && lastCondition != null && lastCondition.areStatesEqual(cond) && lastCondition.hasValue() == cond.hasValue()) {
 				return;
@@ -68,7 +75,8 @@ public class ChannelListenerNotifier {
 			fireChannelStateUpdate();
 		}
 
-		public void valueChanged(DynamicValueEvent event) {
+		@Override
+        public void valueChanged(DynamicValueEvent event) {
 			initialDataUpdate = true;
 			fireChannelDataUpdate();
 		}
@@ -85,7 +93,7 @@ public class ChannelListenerNotifier {
 	}
 	
 	public synchronized void addChannelListener(ChannelListener listener) {
-		listeners.add(listener);
+		listeners.put(listener.hashCode(), listener);
 		
 		if (initialStateUpdate) listener.channelStateUpdate(channel);
 		if (initialDataUpdate) listener.channelDataUpdate(channel);
@@ -94,12 +102,12 @@ public class ChannelListenerNotifier {
 	}
 	
 	public synchronized void removeChannelListener(ChannelListener listener) {
-		listeners.remove(listener);
+		listeners.remove(listener.hashCode());
 		if (listeners.size() == 0) unsubscribe();
 	}
 	
 	public synchronized ChannelListener[] getChannelListeners() {
-		return (ChannelListener[]) listeners.toArray(new ChannelListener[listeners.size()]);
+		return (ChannelListener[]) listeners.values().toArray(new ChannelListener[listeners.size()]);
 	}
 	
 	public void subscribe(AnyDataChannel channel) {
@@ -133,16 +141,7 @@ public class ChannelListenerNotifier {
 	}
 	
 	private ChannelListener[] getChannelListenerArray() {
-		ChannelListener[] array;
-		synchronized (this) {
-			array = new ChannelListener[listeners.size()];
-			int i = 0;
-			for (Iterator<Object> iterator = listeners.iterator(); iterator.hasNext();) {
-				Object type = (Object) iterator.next();
-				array[i++] = (ChannelListener) type;
-			}
-		}
-		return array;
+		return (ChannelListener[]) listeners.values().toArray(new ChannelListener[listeners.size()]);
 	}
 
 }

@@ -41,11 +41,6 @@ public class RunnerInputFactory implements IElementFactory {
 	private static final String TAG_PATH = "path"; //$NON-NLS-1$
 	private static final String TAG_MACRO = "macro"; //$NON-NLS-1$
 
-	/**
-	 * Tag for the URI string.
-	 */
-	private static final String TAG_URI = "uri"; //$NON-NLS-1$
-
 	public IAdaptable createElement(IMemento memento) {
 		return createInput(memento);
 	}

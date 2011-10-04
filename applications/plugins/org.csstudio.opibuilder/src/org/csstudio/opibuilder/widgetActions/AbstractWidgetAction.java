@@ -91,8 +91,7 @@ public abstract class AbstractWidgetAction implements IAdaptable {
 	
 	
 	
-	@SuppressWarnings("unchecked")
-	public Object getAdapter(Class adapter) {
+	public Object getAdapter(@SuppressWarnings("rawtypes") Class adapter) {
 		if(adapter == IWorkbenchAdapter.class)
 			return new IWorkbenchAdapter() {
 				

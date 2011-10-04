@@ -27,28 +27,24 @@ package org.csstudio.ams.connector.voicemail.isdn;
  * @author Markus Moeller
  *
  */
-public class CallCenterException extends Exception
-{
+public class CallCenterException extends Exception {
+    
     /** Generated serial version id */
     private static final long serialVersionUID = -8552462959721451366L;
 
-    public CallCenterException()
-    {
+    public CallCenterException() {
         super();
     }
     
-    public CallCenterException(final String message)
-    {
+    public CallCenterException(final String message) {
         super(message);
     }
 
-    public CallCenterException(final String message, final Throwable cause)
-    {
+    public CallCenterException(final String message, final Throwable cause) {
         super(message, cause);
     }
 
-    public CallCenterException(final Throwable cause)
-    {
+    public CallCenterException(final Throwable cause) {
         super(cause);
     }
 }

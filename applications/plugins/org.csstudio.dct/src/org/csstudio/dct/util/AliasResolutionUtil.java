@@ -10,7 +10,8 @@ import org.csstudio.dct.model.IElement;
 import org.csstudio.dct.model.IFolder;
 import org.csstudio.dct.model.IInstance;
 import org.csstudio.dct.model.IRecord;
-import org.csstudio.platform.logging.CentralLogger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * Utility class that provides methods to access information that arise from the
@@ -20,7 +21,11 @@ import org.csstudio.platform.logging.CentralLogger;
  * 
  */
 public final class AliasResolutionUtil {
+    
+    private static final Logger LOG = LoggerFactory.getLogger(AliasResolutionUtil.class);
+    
 	private AliasResolutionUtil() {
+	    // Constructor
 	}
 
 	/**
@@ -68,7 +73,7 @@ public final class AliasResolutionUtil {
 					result = p;
 				}
 			} catch (Exception e) {
-				CentralLogger.getInstance().warn(null, e);
+				LOG.warn("", e);
 			}
 
 		}

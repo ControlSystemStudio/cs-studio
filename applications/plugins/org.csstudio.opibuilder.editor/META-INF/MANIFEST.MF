@@ -1,0 +1,13 @@
+Manifest-Version: 1.0
+Bundle-ManifestVersion: 2
+Bundle-Name: BOY Editor Fragment
+Bundle-SymbolicName: org.csstudio.opibuilder.editor;singleton:=true
+Bundle-Version: 2.0.0.qualifier
+Fragment-Host: org.csstudio.opibuilder;bundle-version="2.0.0"
+Bundle-RequiredExecutionEnvironment: JavaSE-1.6
+Require-Bundle: org.eclipse.core.filesystem;bundle-version="1.2.0";visibility:=reexport,
+ org.eclipse.ui.editors,
+ org.eclipse.jface.text;bundle-version="3.4.0",
+ org.eclipse.ui.ide,
+ org.eclipse.core.resources
+Bundle-Vendor: Xihui Chen<chenx1@ornl.gov> - SNS

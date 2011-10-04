@@ -1,3 +1,4 @@
+
 /* 
  * Copyright (c) 2008 Stiftung Deutsches Elektronen-Synchrotron, 
  * Member of the Helmholtz Association, (DESY), HAMBURG, GERMANY.
@@ -53,7 +54,7 @@ public class EMailConnectorWork extends Thread implements AmsConstants
     // private Connection                  amsConnection       = null;
     // private javax.jms.Session           amsSession          = null;
     
-    // CHANGED BY: Markus Möller, 28.06.2007
+    // CHANGED BY: Markus Moeller, 28.06.2007
     // private TopicSubscriber             amsSubscriberEmail  = null;
     // private MessageConsumer             amsSubscriberEmail  = null;
     
@@ -273,14 +274,14 @@ public class EMailConnectorWork extends Thread implements AmsConstants
             amsConnection.start();
             */
             
-            // CHANGED BY: Markus Möller, 25.05.2007
+            // CHANGED BY: Markus Moeller, 25.05.2007
             /*
             amsSubscriberEmail = amsSession.createDurableSubscriber((Topic)amsContext.lookup(
                     storeAct.getString(org.csstudio.ams.internal.SampleService.P_JMS_AMS_TOPIC_EMAIL_CONNECTOR)),
                     storeAct.getString(org.csstudio.ams.internal.SampleService.P_JMS_AMS_TSUB_EMAIL_CONNECTOR));
             */
             
-            // CHANGED BY: Markus Möller, 28.06.2007
+            // CHANGED BY: Markus Moeller, 28.06.2007
             /*
             amsSubscriberEmail = amsSession.createDurableSubscriber(amsSession.createTopic(
                     storeAct.getString(org.csstudio.ams.internal.SampleService.P_JMS_AMS_TOPIC_EMAIL_CONNECTOR)),
@@ -466,8 +467,9 @@ public class EMailConnectorWork extends Thread implements AmsConstants
             try {
                 if (input != null)
                     input.close();
-            }   
-            catch ( Exception ex ){}
+            } catch (Exception ex) {
+                // Can be ignored
+            }
         }
     }
 /*

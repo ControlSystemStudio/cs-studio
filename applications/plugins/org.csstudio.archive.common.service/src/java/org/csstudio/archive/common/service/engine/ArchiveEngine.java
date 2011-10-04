@@ -21,7 +21,6 @@
  */
 package org.csstudio.archive.common.service.engine;
 
-import java.net.MalformedURLException;
 import java.net.URL;
 
 import javax.annotation.Nonnull;
@@ -69,7 +68,7 @@ public class ArchiveEngine implements IArchiveEngine {
      */
     @Override
     @Nonnull
-    public URL getUrl() throws MalformedURLException {
+    public URL getUrl() {
         return _url;
     }
 

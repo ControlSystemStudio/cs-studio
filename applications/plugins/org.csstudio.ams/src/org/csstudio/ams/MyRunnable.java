@@ -1,3 +1,4 @@
+
 /* 
  * Copyright (c) 2008 Stiftung Deutsches Elektronen-Synchrotron, 
  * Member of the Helmholtz Association, (DESY), HAMBURG, GERMANY.
@@ -19,9 +20,11 @@
  * PROJECT IN THE FILE LICENSE.HTML. IF THE LICENSE IS NOT INCLUDED YOU MAY FIND A COPY 
  * AT HTTP://WWW.DESY.DE/LEGAL/LICENSE.HTM
  */
- package org.csstudio.ams;
+
+package org.csstudio.ams;
 
 //synch methods
+@SuppressWarnings("hiding")
 public class MyRunnable implements Runnable
 {
 	public Object objGui;
@@ -33,35 +36,40 @@ public class MyRunnable implements Runnable
 	public Object objRet;
 	public Object objRetAr[];
 	
-	public MyRunnable()
-	{
+	public MyRunnable() {
+	    // Nothing to do
 	}
-	public MyRunnable(Object objGui)
-	{
+	
+    public MyRunnable(Object objGui) {
 		this.objGui = objGui;
 	}
-	public MyRunnable(Object objGui, Object objData)
-	{
+	
+	public MyRunnable(Object objGui, Object objData) {
 		this.objGui = objGui;
 		this.objData = objData;
 	}
-	public MyRunnable(Object objGui, Object objData, Object obj3, Object obj4)
-	{
+	
+	public MyRunnable(Object objGui, Object objData, Object obj3, Object obj4) {
 		this.objGui = objGui;
 		this.objData = objData;
 		this.obj3 = obj3;
 		this.obj4 = obj4;
 	}
-	public MyRunnable(Object objGui, Object objData, Object obj3, Object obj4, Object obj5, Object obj6)
-	{
-		this.objGui = objGui;
+	
+	public MyRunnable(Object objGui, Object objData,
+	                  Object obj3, Object obj4,
+	                  Object obj5, Object obj6) {
+		
+	    this.objGui = objGui;
 		this.objData = objData;
 		this.obj3 = obj3;
 		this.obj4 = obj4;
 		this.obj5 = obj5;
 		this.obj6 = obj6;
 	}
-	public void run()
-	{
+	
+	@Override
+    public void run() {
+	    // Nothing to do
 	}
 }

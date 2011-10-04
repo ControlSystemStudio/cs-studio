@@ -9,19 +9,19 @@
             thread="main"
             visible="true">
          <run
-               class="org.csstudio.archive.sdds.server.Application">
+               class="org.csstudio.archive.sdds.server.SddsServerApplication">
          </run>
       </application>
    </extension>
    <extension
          point="org.csstudio.platform.managementCommands">
       <command
-            class="org.csstudio.archive.sdds.server.management.Stop"
+            class="org.csstudio.archive.sdds.server.management.StopMgmtCommand"
             id="org.csstudio.archive.sdds.server.Stop"
             label="Stop">
       </command>
       <command
-            class="org.csstudio.archive.sdds.server.management.Restart"
+            class="org.csstudio.archive.sdds.server.management.RestartMgmtCommand"
             id="org.csstudio.archive.sdds.server.Restart"
             label="Restart">
       </command>
@@ -33,15 +33,11 @@
       </initializer>
    </extension>
    <extension
-         id="SDDSServerProduct"
+         id="SddsServerProduct"
          point="org.eclipse.core.runtime.products">
       <product
             application="org.csstudio.archive.sdds.server.SddsServerApplication"
-            name="SDDS-Server">
-         <property
-               name="appName"
-               value="SDDS-Server">
-         </property>
+            name="SddsServerProduct">
       </product>
    </extension>
 

@@ -2,7 +2,7 @@
 /*
  * Copyright (c) 2010 Stiftung Deutsches Elektronen-Synchrotron, Member of the Helmholtz
  * Association, (DESY), HAMBURG, GERMANY.
- * 
+ *
  * THIS SOFTWARE IS PROVIDED UNDER THIS LICENSE ON AN "../AS IS" BASIS. WITHOUT WARRANTY OF ANY
  * KIND, EXPRESSED OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
  * FITNESS FOR PARTICULAR PURPOSE AND NON-INFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT
@@ -20,86 +20,91 @@
 
 package org.csstudio.archive.sdds.server.data;
 
-import java.util.ArrayList;
 import java.util.List;
 
-import org.csstudio.archive.sdds.server.conversion.SampleParameter;
+import javax.annotation.Nonnull;
+
+import org.csstudio.archive.sdds.server.conversion.SampleParameters;
+
+import com.google.common.collect.Lists;
 
 /**
  * TODO (mmoeller) :
- * 
+ *
  * @author mmoeller
  * @version
  * @since 26.05.2010
  */
 public class RecordDataCollection {
-    
+
     /** Data of PV's */
     private List<EpicsRecordData> data;
-    
+
     /** The parameters of the data samples */
-    private SampleParameter sampleParameter;
-    
+    private SampleParameters sampleParameter;
+
     /** Standard constructor */
     public RecordDataCollection() {
-        data = new ArrayList<EpicsRecordData>(0);
-        sampleParameter = new SampleParameter();
+        data = Lists.newArrayList();
+        sampleParameter = new SampleParameters();
     }
 
     /**
-     * 
+     *
      * @return
      */
+    @Nonnull
     public List<EpicsRecordData> getData() {
         return data;
     }
 
     /**
-     * 
+     *
      * @param data
      */
-    public void setData(List<EpicsRecordData> data) {
-        this.data = data;
+    public void setData(@Nonnull final List<EpicsRecordData> data) {
+        this.data = Lists.newArrayList(data);
     }
 
     /**
-     * 
+     *
      * @return
      */
-    public SampleParameter getSampleParameter() {
+    @Nonnull
+    public SampleParameters getSampleParameter() {
         return sampleParameter;
     }
 
     /**
-     * 
+     *
      * @param sampleParameter
      */
-    public void setSampleParameter(SampleParameter sampleParameter) {
+    public void setSampleParameter(@Nonnull final SampleParameters sampleParameter) {
         this.sampleParameter = sampleParameter;
     }
-    
+
     /**
      * Returns the number of data samples.
-     * 
+     *
      * @return
      */
     public int getNumberOfData() {
-        
+
         int result = 0;
-        
+
         if (data != null) {
             result = data.size();
         }
-        
+
         return result;
     }
-    
+
     /**
      * Return true if data is present.
-     * 
+     *
      * @return
      */
     public boolean containsData() {
-        return (getNumberOfData() > 0);
+        return getNumberOfData() > 0;
     }
 }

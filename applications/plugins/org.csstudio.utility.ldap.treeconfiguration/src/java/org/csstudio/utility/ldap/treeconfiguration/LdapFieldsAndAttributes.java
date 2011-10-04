@@ -46,7 +46,6 @@ import org.slf4j.LoggerFactory;
  */
 public final class LdapFieldsAndAttributes {
 
-    private static final Logger LOG = LoggerFactory.getLogger(LdapFieldsAndAttributes.class);
 
     public static final String COUNTRY_FIELD_NAME = "c";
     public static final String ORGANIZATION_FIELD_NAME = "o";
@@ -66,12 +65,18 @@ public final class LdapFieldsAndAttributes {
 
     public static final Set<String> FORBIDDEN_SUBSTRINGS = new HashSet<String>();
 
+    private static final Logger LOG = LoggerFactory.getLogger(LdapFieldsAndAttributes.class);
+
+    // CHECKSTYLE OFF : |
     public static LdapName LDAP_ROOT;
+    // CHECKSTYLE ON : |
     static {
         List<Rdn> rdns;
         try {
-            rdns = Arrays.asList(new Rdn[] {new Rdn(COUNTRY_FIELD_NAME + FIELD_ASSIGNMENT + "DE"),
-                                            new Rdn(ORGANIZATION_FIELD_NAME + FIELD_ASSIGNMENT + "DESY")});
+            rdns = Arrays.asList(new Rdn[] {
+                                            new Rdn(COUNTRY_FIELD_NAME + FIELD_ASSIGNMENT + "DE"),
+                                            new Rdn(ORGANIZATION_FIELD_NAME + FIELD_ASSIGNMENT + "DESY"),
+                                            });
             LDAP_ROOT = new LdapName(rdns);
         } catch (final InvalidNameException e) {
             LOG.error("LDAP ROOT variable could not be initialised.", e);
@@ -98,5 +103,4 @@ public final class LdapFieldsAndAttributes {
     private LdapFieldsAndAttributes() {
         // Empty
     }
-
 }

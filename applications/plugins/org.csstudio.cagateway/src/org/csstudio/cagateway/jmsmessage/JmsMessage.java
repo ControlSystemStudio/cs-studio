@@ -32,11 +32,10 @@ import javax.jms.Session;
 
 import org.csstudio.cagateway.PreferenceProperties;
 import org.csstudio.cagateway.preferences.CAGatewayPreference;
-import org.csstudio.platform.logging.CentralLogger;
 import org.csstudio.platform.utility.jms.sharedconnection.ISharedConnectionHandle;
 import org.csstudio.platform.utility.jms.sharedconnection.SharedJmsConnections;
-import org.eclipse.core.runtime.Platform;
-import org.eclipse.core.runtime.preferences.IPreferencesService;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * Helper class to generate a JMS message.
@@ -53,6 +52,7 @@ import org.eclipse.core.runtime.preferences.IPreferencesService;
  *
  */
 public enum JmsMessage {
+    
 
     INSTANCE;
 
@@ -83,6 +83,8 @@ public enum JmsMessage {
 	
 	private ISharedConnectionHandle _sharedSenderConnection;
 
+	private static final Logger LOG = LoggerFactory.getLogger(JmsMessage.class);
+	
 	private JmsMessage () {
 		/*
 		 * nothing to do
@@ -145,13 +147,13 @@ public enum JmsMessage {
 		catch(final JMSException jmse)
         {
 //			InterconnectionServer.getInstance().countJmsSendMessageErrorAndReconnectIfTooManyErrors();
-			CentralLogger.getInstance().debug(this,"IocChangeState : send ALARM message : *** EXCEPTION *** : " + jmse.getMessage());
+			LOG.debug("IocChangeState : send ALARM message : *** EXCEPTION *** : {}", jmse.getMessage());
         } finally {
         	if (session != null) {
         		try {
 					session.close();
 				} catch (final JMSException e) {
-					CentralLogger.getInstance().warn(this, "Failed to close JMS session", e);
+					LOG.warn("Failed to close JMS session", e);
 				}
         	}
         }
@@ -213,7 +215,7 @@ public enum JmsMessage {
 		}
 	    catch(final JMSException jmse)
 	    {
-	    	CentralLogger.getInstance().debug(this,"IocChangeState : prepareJmsMessage : *** EXCEPTION *** : " + jmse.getMessage());
+	    	LOG.debug("IocChangeState : prepareJmsMessage : *** EXCEPTION *** : {}", jmse.getMessage());
 	    }
 		return message;
 	}

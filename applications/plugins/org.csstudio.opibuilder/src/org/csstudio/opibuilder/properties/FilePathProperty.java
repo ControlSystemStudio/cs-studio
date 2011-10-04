@@ -24,7 +24,7 @@ package org.csstudio.opibuilder.properties;
 
 import org.csstudio.opibuilder.editparts.ExecutionMode;
 import org.csstudio.opibuilder.persistence.URLPath;
-import org.csstudio.opibuilder.properties.support.FilePathPropertyDescriptor;
+import org.csstudio.opibuilder.properties.support.PropertySSHelper;
 import org.csstudio.opibuilder.script.RuleData;
 import org.csstudio.opibuilder.util.OPIBuilderMacroUtil;
 import org.csstudio.opibuilder.util.ResourceUtil;
@@ -97,7 +97,9 @@ public class FilePathProperty extends AbstractWidgetProperty {
 
 	@Override
 	protected PropertyDescriptor createPropertyDescriptor() {
-		return new FilePathPropertyDescriptor(prop_id, 
+		if(PropertySSHelper.getIMPL() == null)
+			return null;
+		return PropertySSHelper.getIMPL().getFilePathPropertyDescriptor(prop_id, 
 				description,
 				widgetModel, 
 				fileExtensions);

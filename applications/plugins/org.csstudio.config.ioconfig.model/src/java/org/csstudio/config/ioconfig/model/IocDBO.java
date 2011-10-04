@@ -54,17 +54,15 @@ public class IocDBO extends AbstractNodeDBO<FacilityDBO, ProfibusSubnetDBO> {
     /**
      * Create a new Ioc with parent Facility.
      * @param facility the parent Facility.
-     * @throws PersistenceException 
+     * @throws PersistenceException
      */
     public IocDBO(@Nonnull final FacilityDBO facility) throws PersistenceException {
-        setParent(facility);
-        facility.addChild(this);
-
+        super(facility);
     }
 
     /**
      * {@inheritDoc}
-     * @throws PersistenceException 
+     * @throws PersistenceException
      */
     @Override
     @CheckForNull
@@ -77,14 +75,14 @@ public class IocDBO extends AbstractNodeDBO<FacilityDBO, ProfibusSubnetDBO> {
 
     /**
      * {@inheritDoc}
-     * @throws PersistenceException 
+     * @throws PersistenceException
      */
     @Override
     @Nonnull
-    public IocDBO copyThisTo(@Nonnull final FacilityDBO parentNode) throws PersistenceException {
-        final IocDBO copy = (IocDBO) super.copyThisTo(parentNode);
+    public IocDBO copyThisTo(@Nonnull final FacilityDBO parentNode, @CheckForNull final String namePrefix) throws PersistenceException {
+        final IocDBO copy = (IocDBO) super.copyThisTo(parentNode, namePrefix);
         for (final ProfibusSubnetDBO node : getChildren()) {
-            ProfibusSubnetDBO childrenCopy = node.copyThisTo(copy);
+            final ProfibusSubnetDBO childrenCopy = node.copyThisTo(copy, "Copy of ");
             childrenCopy.setSortIndexNonHibernate(node.getSortIndex());
         }
         return copy;
@@ -100,4 +98,20 @@ public class IocDBO extends AbstractNodeDBO<FacilityDBO, ProfibusSubnetDBO> {
         return NodeType.IOC;
     }
 
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    @Nonnull
+    public ProfibusSubnetDBO createChild() throws PersistenceException {
+        return new ProfibusSubnetDBO(this);
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public void accept(@Nonnull final INodeVisitor visitor) {
+        visitor.visit(this);
+    }
 }

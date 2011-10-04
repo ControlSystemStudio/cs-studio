@@ -44,45 +44,45 @@ public final class NodeMap {
     private static int _COUNT_ASSEMBLE_EPICS_ADDRESS_STRING;
     private static int _LOCAL_UPDATE;
     private static int _CHANNEL_CONFIG_COMPOSITE;
-    
+
     private NodeMap() {
         // Constructor
-    }
-    
-    public static void put(@Nonnull Integer key, @Nonnull AbstractNodeDBO<?,?> value) {
-        _NODE_MAP.put(key, value);
-    }
-    
-    @CheckForNull
-    public static AbstractNodeDBO<?,?> get(@Nonnull Integer key) {
-        return _NODE_MAP.get(key);
-    }
-
-    public static int getNumberOfNodes() {
-        return _NODE_MAP.size();
     }
 
     public static void countAssembleEpicsAddressString() {
         _COUNT_ASSEMBLE_EPICS_ADDRESS_STRING++;
     }
-
-    public static int getCountAssembleEpicsAddressString() {
-        return _COUNT_ASSEMBLE_EPICS_ADDRESS_STRING;
-    }
-
-    public static void countlocalUpdate() {
-        _LOCAL_UPDATE++;
-    }
-
-    public static int getLocalUpdate() {
-        return _LOCAL_UPDATE;
-    }
-
+    
     public static void countChannelConfigComposite() {
         _CHANNEL_CONFIG_COMPOSITE++;
     }
-
+    
+    public static void countlocalUpdate() {
+        _LOCAL_UPDATE++;
+    }
+    
+    @CheckForNull
+    public static AbstractNodeDBO<?,?> get(@Nonnull final Integer key) {
+        return _NODE_MAP.get(key);
+    }
+    
     public static int getChannelConfigComposite() {
         return _CHANNEL_CONFIG_COMPOSITE;
+    }
+    
+    public static int getCountAssembleEpicsAddressString() {
+        return _COUNT_ASSEMBLE_EPICS_ADDRESS_STRING;
+    }
+    
+    public static int getLocalUpdate() {
+        return _LOCAL_UPDATE;
+    }
+    
+    public static int getNumberOfNodes() {
+        return _NODE_MAP.size();
+    }
+    
+    public static void put(@Nonnull final Integer key, @Nonnull final AbstractNodeDBO<?,?> value) {
+        _NODE_MAP.put(key, value);
     }
 }
