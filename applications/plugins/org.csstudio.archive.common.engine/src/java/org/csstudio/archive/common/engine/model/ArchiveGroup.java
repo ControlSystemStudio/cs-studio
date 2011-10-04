@@ -104,7 +104,7 @@ public class ArchiveGroup {
      * @throws EngineModelException
      */
     @Nonnull
-    final void start(@Nonnull final String info) throws EngineModelException {
+    public final void start(@Nonnull final String info) throws EngineModelException {
         synchronized (this) {
             if (_isRunning) {
                 return;

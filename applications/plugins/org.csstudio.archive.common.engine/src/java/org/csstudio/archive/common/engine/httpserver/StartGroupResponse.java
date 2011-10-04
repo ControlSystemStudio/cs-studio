@@ -25,35 +25,35 @@ import javax.annotation.Nonnull;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import org.csstudio.archive.common.engine.model.ArchiveChannelBuffer;
+import org.csstudio.archive.common.engine.model.ArchiveGroup;
 import org.csstudio.archive.common.engine.model.EngineModel;
 import org.csstudio.archive.common.engine.model.EngineModelException;
-import org.csstudio.domain.desy.epics.name.EpicsChannelName;
+
+import com.google.common.base.Strings;
 
 /**
  * TODO (bknerr) :
  *
  * @author bknerr
- * @since 29.09.2011
+ * @since 04.10.2011
  */
-public class StopChannelResponse extends AbstractChannelResponse {
+public class StartGroupResponse extends AbstractGroupResponse {
 
-    private static String URL_STOP_CHANNEL_ACTION;
-    private static String URL_STOP_CHANNEL_PAGE;
+    private static String URL_START_GROUP_ACTION;
+    private static String URL_START_GROUP_PAGE;
     static {
-        URL_STOP_CHANNEL_ACTION = "stop";
-        URL_STOP_CHANNEL_PAGE = URL_CHANNEL_PAGE + "/" + URL_STOP_CHANNEL_ACTION;
+        URL_START_GROUP_ACTION = "start";
+        URL_START_GROUP_PAGE = URL_GROUP_PAGE + "/" + URL_START_GROUP_ACTION;
     }
 
-    private static final long serialVersionUID = -4160346378797501956L;
+    private static final long serialVersionUID = -340450994970831280L;
 
     /**
      * Constructor.
      */
-    public StopChannelResponse(@Nonnull final EngineModel model) {
+    public StartGroupResponse(@Nonnull final EngineModel model) {
         super(model);
     }
-
     /**
      * {@inheritDoc}
      */
@@ -61,33 +61,34 @@ public class StopChannelResponse extends AbstractChannelResponse {
     @Override
     protected void fillResponse(@Nonnull final HttpServletRequest req,
                                 @Nonnull final HttpServletResponse resp) throws Exception {
-        final EpicsChannelName epicsName = parseEpicsNameOrConfigureRedirectResponse(req, resp);
-        if (epicsName == null) {
+        final String name = req.getParameter(PARAM_NAME);
+        if (Strings.isNullOrEmpty(name)) {
+            redirectToErrorPage(resp, "Required parameter '" + PARAM_NAME + "' is either null or empty!");
             return;
         }
 
         try {
-            final ArchiveChannelBuffer<?, ?> buffer = getModel().getChannel(epicsName.toString());
-            if (buffer == null) {
-                redirectToErrorPage(resp, "Channel '" + epicsName.toString() + "' is unknown!");
+            final ArchiveGroup group = getModel().getGroup(name);
+            if (group == null) {
+                redirectToErrorPage(resp, "Group '" + name + "' is unknown!");
                 return;
             }
-            if (!buffer.isStarted()) {
-                redirectToWarnPage(resp, "Channel '" + epicsName.toString() + "' has already been stopped!");
+            if (group.isStarted()) {
+                redirectToWarnPage(resp, "Group '" + name + "' has already been started!");
                 return;
             }
 
-            buffer.stop("MANUAL STOP");
+            group.start("MANUAL GROUP START");
 
-            resp.sendRedirect(ShowChannelResponse.getUrl() + "?" + ShowChannelResponse.PARAM_NAME + "=" + epicsName.toString());
+            resp.sendRedirect(ShowGroupResponse.getUrl() + "?" + ShowGroupResponse.PARAM_NAME + "=" + name);
 
         } catch (final EngineModelException e) {
-            redirectToErrorPage(resp, "Channel could not be started:\n" + e.getMessage());
+            redirectToErrorPage(resp, "Group " + name + " could not be started:\n" + e.getMessage());
         }
     }
 
     @Nonnull
     public static String getUrl() {
-        return URL_STOP_CHANNEL_PAGE;
+        return URL_START_GROUP_PAGE;
     }
 }

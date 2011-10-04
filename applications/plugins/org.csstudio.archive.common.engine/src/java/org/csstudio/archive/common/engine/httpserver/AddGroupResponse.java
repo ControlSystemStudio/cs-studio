@@ -25,32 +25,34 @@ import javax.annotation.Nonnull;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import org.csstudio.archive.common.engine.model.ArchiveChannelBuffer;
 import org.csstudio.archive.common.engine.model.EngineModel;
 import org.csstudio.archive.common.engine.model.EngineModelException;
-import org.csstudio.domain.desy.epics.name.EpicsChannelName;
+
+import com.google.common.base.Strings;
 
 /**
- * TODO (bknerr) :
+ * Adds a new group to the engine.
  *
  * @author bknerr
- * @since 29.09.2011
+ * @since 04.10.2011
  */
-public class StopChannelResponse extends AbstractChannelResponse {
+public class AddGroupResponse extends AbstractGroupResponse {
 
-    private static String URL_STOP_CHANNEL_ACTION;
-    private static String URL_STOP_CHANNEL_PAGE;
+    private static String URL_ADD_GROUP_ACTION;
+    private static String URL_ADD_GROUP_PAGE;
     static {
-        URL_STOP_CHANNEL_ACTION = "stop";
-        URL_STOP_CHANNEL_PAGE = URL_CHANNEL_PAGE + "/" + URL_STOP_CHANNEL_ACTION;
+        URL_ADD_GROUP_ACTION = "add";
+        URL_ADD_GROUP_PAGE = URL_GROUP_PAGE + "/" + URL_ADD_GROUP_ACTION;
     }
 
-    private static final long serialVersionUID = -4160346378797501956L;
+    private static final long serialVersionUID = 5010342398243858729L;
+
+    private static final String PARAM_DESC = "desc";
 
     /**
      * Constructor.
      */
-    public StopChannelResponse(@Nonnull final EngineModel model) {
+    protected AddGroupResponse(@Nonnull final EngineModel model) {
         super(model);
     }
 
@@ -61,33 +63,29 @@ public class StopChannelResponse extends AbstractChannelResponse {
     @Override
     protected void fillResponse(@Nonnull final HttpServletRequest req,
                                 @Nonnull final HttpServletResponse resp) throws Exception {
-        final EpicsChannelName epicsName = parseEpicsNameOrConfigureRedirectResponse(req, resp);
-        if (epicsName == null) {
+        final String name = req.getParameter(PARAM_NAME);
+        if (Strings.isNullOrEmpty(name)) {
+            redirectToErrorPage(resp, "Required parameter '" + PARAM_NAME + "' is either null or empty!");
+            return;
+        }
+        final String desc = req.getParameter(PARAM_DESC);
+        if (desc != null && "".equals(desc)) {
+            redirectToErrorPage(resp, " parameter '" + PARAM_NAME + "' mustn't be empty!");
             return;
         }
 
         try {
-            final ArchiveChannelBuffer<?, ?> buffer = getModel().getChannel(epicsName.toString());
-            if (buffer == null) {
-                redirectToErrorPage(resp, "Channel '" + epicsName.toString() + "' is unknown!");
-                return;
-            }
-            if (!buffer.isStarted()) {
-                redirectToWarnPage(resp, "Channel '" + epicsName.toString() + "' has already been stopped!");
-                return;
-            }
-
-            buffer.stop("MANUAL STOP");
-
-            resp.sendRedirect(ShowChannelResponse.getUrl() + "?" + ShowChannelResponse.PARAM_NAME + "=" + epicsName.toString());
+            getModel().configureNewGroup(name, desc);
+            resp.sendRedirect(ShowGroupResponse.getUrl() + "?" + ShowGroupResponse.PARAM_NAME + "=" + name);
 
         } catch (final EngineModelException e) {
-            redirectToErrorPage(resp, "Channel could not be started:\n" + e.getMessage());
+            redirectToErrorPage(resp, "Group " + name + " could not be created:\n" + e.getMessage());
         }
+
     }
 
     @Nonnull
     public static String getUrl() {
-        return URL_STOP_CHANNEL_PAGE;
+        return URL_ADD_GROUP_PAGE;
     }
 }

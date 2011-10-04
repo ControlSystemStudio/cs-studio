@@ -23,6 +23,8 @@ import org.csstudio.archive.common.service.ArchiveServiceException;
 import org.csstudio.archive.common.service.IArchiveEngineFacade;
 import org.csstudio.archive.common.service.channel.ArchiveChannelId;
 import org.csstudio.archive.common.service.channel.IArchiveChannel;
+import org.csstudio.archive.common.service.channelgroup.ArchiveChannelGroup;
+import org.csstudio.archive.common.service.channelgroup.ArchiveChannelGroupId;
 import org.csstudio.archive.common.service.channelgroup.IArchiveChannelGroup;
 import org.csstudio.archive.common.service.channelstatus.IArchiveChannelStatus;
 import org.csstudio.archive.common.service.controlsystem.IArchiveControlSystem;
@@ -145,7 +147,7 @@ public final class EngineModel {
      *  @return ArchiveGroup the already existing or, if not, newly added group
      */
     @Nonnull
-    private ArchiveGroup addGroup(@Nonnull final IArchiveChannelGroup groupCfg) {
+    public ArchiveGroup addGroup(@Nonnull final IArchiveChannelGroup groupCfg) {
         final String groupName = groupCfg.getName();
         _groupMap.putIfAbsent(groupName, new ArchiveGroup(groupCfg.getId(), groupName));
         return _groupMap.get(groupName);
@@ -591,6 +593,24 @@ public final class EngineModel {
             throw new EngineModelException("Channel deletion failed.", e);
         } catch (final ArchiveServiceException e) {
             throw new EngineModelException("Channel deletion failed.", e);
+        }
+    }
+
+    public void configureNewGroup(@Nonnull final String name,
+                                  @CheckForNull final String desc) throws EngineModelException {
+        final ArchiveGroup group = getGroup(name);
+        if (group != null) {
+            throw new EngineModelException("Group '" + name + "' does already exist!", null);
+        }
+
+        final IArchiveChannelGroup archGroup =
+            new ArchiveChannelGroup(ArchiveChannelGroupId.NONE, name, _engine.getId(), desc);
+        try {
+            _provider.getEngineFacade().createGroup(archGroup);
+        } catch (final ArchiveServiceException e) {
+            throw new EngineModelException("Creation of group failed in archive service.", e);
+        } catch (final OsgiServiceUnavailableException e) {
+            throw new EngineModelException("Creation of group failed, archive service unavailable.", e);
         }
     }
 }

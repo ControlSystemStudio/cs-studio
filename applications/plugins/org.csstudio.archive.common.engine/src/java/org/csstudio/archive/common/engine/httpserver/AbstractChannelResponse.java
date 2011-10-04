@@ -44,7 +44,7 @@ abstract class AbstractChannelResponse extends AbstractResponse {
     protected static final String URL_CHANNEL_PAGE = "/channel";
     static final String PARAM_NAME = "name";
 
-    private static final long serialVersionUID = 6645059373913370080L;
+    private static final long serialVersionUID = -8281575454479593469L;
 
     /**
      * Constructor.
@@ -63,7 +63,7 @@ abstract class AbstractChannelResponse extends AbstractResponse {
      */
     @CheckForNull
     protected EpicsChannelName parseEpicsNameOrConfigureRedirectResponse(@Nonnull final HttpServletRequest req,
-                                                            @Nonnull final HttpServletResponse resp) throws Exception {
+                                                                         @Nonnull final HttpServletResponse resp) throws Exception {
         final String name = req.getParameter(PARAM_NAME);
         if (Strings.isNullOrEmpty(name)) {
             redirectToErrorPage(resp, "Required parameter '" + PARAM_NAME + "' is either null or empty!");
