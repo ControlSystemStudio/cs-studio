@@ -20,8 +20,8 @@ export CYGDRIVE=
 # Directory where the built CSS and temporary files will be stored.
 export BUILDDIR=${HOME}/work/CSSBuild
 
-# Root directory of Eclipse.
-export ECLIPSE_BASE=${HOME}/work/eclipse
+# Directory which contains the root of Eclipse RCP.
+export ECLIPSE_BASE=${HOME}/work
 
 # Root directory of Delta pack
 export DELTAPACK=${HOME}/work/delta/eclipse
@@ -51,8 +51,8 @@ export ECLIPSE_ANT="java -jar $ECLIPSE/plugins/org.eclipse.equinox.launcher_*.ja
 # we compile
 QUALIFIER=`date "+%Y%m%d"`
 
-# This can be empty unless you happen to have more than one version of
+# This can be '*' unless you happen to have more than one version of
 # org.eclipse.pde.build_*, as can happen after installing updates
-PDE_VER=
+PDE_VER=*
 #PDE_VER=3.6.2.R36x_20110203
 
