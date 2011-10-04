@@ -18,6 +18,7 @@ import org.csstudio.archive.common.engine.service.IServiceProvider;
 import org.csstudio.archive.common.service.channel.ArchiveChannelId;
 import org.csstudio.archive.common.service.sample.IArchiveSample;
 import org.csstudio.domain.desy.system.ISystemVariable;
+import org.csstudio.domain.desy.time.TimeInstant;
 import org.csstudio.utility.pv.PV;
 import org.csstudio.utility.pv.PVFactory;
 import org.csstudio.utility.pv.PVListener;
@@ -32,7 +33,7 @@ import org.slf4j.LoggerFactory;
  *  @param <T> the system variable for the basic value type
  */
 @SuppressWarnings("nls")
-public class ArchiveChannel<V extends Serializable, T extends ISystemVariable<V>> {
+public class ArchiveChannelBuffer<V extends Serializable, T extends ISystemVariable<V>> {
 
     private static final Logger LOG = LoggerFactory.getLogger(PVListener.class);
 
@@ -71,12 +72,6 @@ public class ArchiveChannel<V extends Serializable, T extends ISystemVariable<V>
     private T _mostRecentSysVar;
 
     /**
-     * The most recent value send to the archive.
-     */
-    @GuardedBy("this")
-    private T _lastArchivedSample;
-
-    /**
      * Counter for received values (monitor updates)
      */
     private long _receivedSampleCount;
@@ -89,15 +84,19 @@ public class ArchiveChannel<V extends Serializable, T extends ISystemVariable<V>
     @SuppressWarnings("rawtypes")
     private final DesyArchivePVListener _listener;
 
+    private TimeInstant _timeOfLastSampleBeforeChannelStart;
+
     /**
      * Constructor
+     * @param timeInstant
      * @throws EngineModelException on failure while creating PV
      */
-    public ArchiveChannel(@Nonnull final String name,
-                          @Nonnull final ArchiveChannelId id,
-                          @Nonnull final Class<V> typeClazz,
-                          @Nonnull final IServiceProvider provider) throws EngineModelException {
-        this(name, id, null, typeClazz, provider);
+    public ArchiveChannelBuffer(@Nonnull final String name,
+                                @Nonnull final ArchiveChannelId id,
+                                @Nullable final TimeInstant timeOfLastSample,
+                                @Nonnull final Class<V> typeClazz,
+                                @Nonnull final IServiceProvider provider) throws EngineModelException {
+        this(name, id, timeOfLastSample, null, typeClazz, provider);
     }
 
 
@@ -105,13 +104,15 @@ public class ArchiveChannel<V extends Serializable, T extends ISystemVariable<V>
      * Constructor.
      */
     @SuppressWarnings({ "unchecked", "rawtypes" })
-    public ArchiveChannel(@Nonnull final String name,
-                          @Nonnull final ArchiveChannelId id,
-                          @Nullable final Class<V> collClazz,
-                          @Nonnull final Class<V> typeClazz,
-                          @Nonnull final IServiceProvider provider) throws EngineModelException {
+    public ArchiveChannelBuffer(@Nonnull final String name,
+                                @Nonnull final ArchiveChannelId id,
+                                @Nullable final TimeInstant timeOfLastSample,
+                                @Nullable final Class<V> collClazz,
+                                @Nonnull final Class<V> typeClazz,
+                                @Nonnull final IServiceProvider provider) throws EngineModelException {
         _name = name;
         _id = id;
+        _timeOfLastSampleBeforeChannelStart = timeOfLastSample;
         _buffer = new SampleBuffer<V, T, IArchiveSample<V, T>>(name);
         _typeClazz = typeClazz;
         _collClazz = collClazz;
@@ -155,10 +156,20 @@ public class ArchiveChannel<V extends Serializable, T extends ISystemVariable<V>
         return _pv.isConnected();
     }
 
+    /** @return <code>true</code> if connected */
+    public boolean isStarted() {
+        return _isStarted;
+    }
+
     /** @return Human-readable info on internal state of PV */
     @CheckForNull
     public String getInternalState() {
         return _pv.getStateInfo();
+    }
+
+    @CheckForNull
+    public TimeInstant getTimeOfMostRecentSample() {
+        return _mostRecentSysVar != null ? _mostRecentSysVar.getTimestamp() : _timeOfLastSampleBeforeChannelStart;
     }
 
     /**
@@ -167,14 +178,14 @@ public class ArchiveChannel<V extends Serializable, T extends ISystemVariable<V>
      */
     public void start(@Nonnull final String info) throws EngineModelException {
         try {
-            if (_isStarted) {
-                return;
-            }
-            _listener.setStartInfo(info);
             synchronized (this) {
-                _pv.start();
+                if (_isStarted) {
+                    return;
+                }
                 _isStarted = true;
             }
+            _listener.setStartInfo(info);
+            _pv.start();
         } catch (final Exception e) {
             LOG.error("PV " + _pv.getName() + " could not be started with state info " + _pv.getStateInfo(), e);
             throw new EngineModelException("Something went wrong within Kasemir's PV stuff on channel/PV startup", e);
@@ -187,13 +198,13 @@ public class ArchiveChannel<V extends Serializable, T extends ISystemVariable<V>
      * Stop archiving this channel
      */
     public void stop(@Nonnull final String info) {
-        if (!_isStarted) {
-            return;
-        }
-        _listener.setStopInfo(info);
         synchronized (this) {
+            if (!_isStarted) {
+                return;
+            }
             _isStarted = false;
         }
+        _listener.setStopInfo(info);
         _pv.stop();
     }
 
@@ -205,12 +216,6 @@ public class ArchiveChannel<V extends Serializable, T extends ISystemVariable<V>
     /** @return Count of received values */
     public synchronized long getReceivedValues() {
         return _receivedSampleCount;
-    }
-
-    /** @return Last value written to archive */
-    @Nonnull
-    public synchronized T getLastArchivedSample() {
-        return _lastArchivedSample;
     }
 
     /** @return Sample buffer */

@@ -29,12 +29,16 @@ import javax.annotation.Nullable;
 
 import junit.framework.Assert;
 
+import org.csstudio.archive.common.service.channelgroup.ArchiveChannelGroup;
+import org.csstudio.archive.common.service.channelgroup.ArchiveChannelGroupId;
 import org.csstudio.archive.common.service.channelgroup.IArchiveChannelGroup;
 import org.csstudio.archive.common.service.engine.ArchiveEngineId;
 import org.csstudio.archive.common.service.mysqlimpl.dao.AbstractDaoTestSetup;
 import org.csstudio.archive.common.service.mysqlimpl.dao.ArchiveDaoException;
 import org.junit.BeforeClass;
 import org.junit.Test;
+
+import com.google.inject.internal.Lists;
 
 /**
  * Integration test for {@link ArchiveChannelGroupDaoImpl}.
@@ -52,7 +56,7 @@ public class ArchiveChannelGroupDaoUnitTest extends AbstractDaoTestSetup {
     }
 
     @Test
-    public void testChannelGroupDao() throws ArchiveDaoException {
+    public void testRetrieveChannelGroups() throws ArchiveDaoException {
         Collection<IArchiveChannelGroup> groups =
             DAO.retrieveGroupsByEngineId(new ArchiveEngineId(26L));
         Assert.assertTrue(groups.isEmpty());
@@ -68,7 +72,6 @@ public class ArchiveChannelGroupDaoUnitTest extends AbstractDaoTestSetup {
         group = it.next();
 
         dispatchGroupCheckById(group);
-
     }
 
     private void dispatchGroupCheckById(@Nonnull final IArchiveChannelGroup group) {
@@ -79,6 +82,51 @@ public class ArchiveChannelGroupDaoUnitTest extends AbstractDaoTestSetup {
         } else {
             Assert.fail("Channel group id unknown.");
         }
+    }
+
+    @Test
+    public void testCreateChannelGroups() throws ArchiveDaoException {
+        final ArchiveEngineId engineId = new ArchiveEngineId(1L);
+        final Collection<IArchiveChannelGroup> failedGroups =
+            DAO.createGroups(Lists.<IArchiveChannelGroup>newArrayList(new ArchiveChannelGroup(ArchiveChannelGroupId.NONE,
+                                                                                              "Peaches",
+                                                                                              engineId,
+                                                                                              null),
+                                                                      new ArchiveChannelGroup(ArchiveChannelGroupId.NONE,
+                                                                                              "Teaches",
+                                                                                              engineId,
+                                                                                              "Fuck the pain away")));
+        Assert.assertTrue(failedGroups.isEmpty());
+
+        final Collection<IArchiveChannelGroup> retrievedGroups = DAO.retrieveGroupsByEngineId(engineId);
+        int i = 0;
+        for (final IArchiveChannelGroup group : retrievedGroups) {
+            if ("Peaches".equals(group.getName())) {
+                Assert.assertEquals(engineId, group.getEngineId());
+                Assert.assertNull(group.getDescription());
+                i++;
+            }
+            if ("Teaches".equals(group.getName())) {
+                Assert.assertEquals(engineId, group.getEngineId());
+                Assert.assertEquals("Fuck the pain away", group.getDescription());
+                i++;
+            }
+        }
+        Assert.assertTrue(i == 2);
+    }
+
+    @Test
+    public void testCreateChannelFailedDueToExistingChannel() throws ArchiveDaoException {
+        final ArchiveEngineId engineId = new ArchiveEngineId(1L);
+        final Collection<IArchiveChannelGroup> failedGroups =
+            DAO.createGroups(Lists.<IArchiveChannelGroup>newArrayList(new ArchiveChannelGroup(ArchiveChannelGroupId.NONE,
+                                                                                              "TestGroup1",
+                                                                                              engineId,
+                                                                                              null)));
+        Assert.assertTrue(failedGroups.size() == 1);
+        final IArchiveChannelGroup group = failedGroups.iterator().next();
+        Assert.assertEquals("TestGroup1", group.getName());
+
     }
 
     private void assertGroup(@Nonnull final IArchiveChannelGroup group,

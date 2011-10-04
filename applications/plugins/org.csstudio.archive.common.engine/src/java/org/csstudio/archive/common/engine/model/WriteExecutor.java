@@ -44,7 +44,7 @@ public class WriteExecutor {
     /** Minimum write period [millis] */
     private static final long MIN_WRITE_PERIOD_MS = 2000;
 
-    private final ConcurrentMap<String, ArchiveChannel<Serializable, ISystemVariable<Serializable>>> _channelMap =
+    private final ConcurrentMap<String, ArchiveChannelBuffer<Serializable, ISystemVariable<Serializable>>> _channelMap =
         Maps.newConcurrentMap();
 
     private final ScheduledExecutorService _heartBeatExecutor =
@@ -70,7 +70,7 @@ public class WriteExecutor {
     }
 
 
-    public void addChannel(@Nonnull final ArchiveChannel<Serializable, ISystemVariable<Serializable>> channel) {
+    public void addChannel(@Nonnull final ArchiveChannelBuffer<Serializable, ISystemVariable<Serializable>> channel) {
         _channelMap.putIfAbsent(channel.getName(), channel);
     }
 
@@ -145,7 +145,7 @@ public class WriteExecutor {
     /** @return Average number of values per write run */
     @CheckForNull
     public Double getAvgWriteCount() {
-        return _writeWorker != null ? _writeWorker.getAvgWriteCount().getValue() : null;
+        return _writeWorker != null ? _writeWorker.getAvgWriteCount() : null;
     }
 
     /** @return  Average duration of write run */

@@ -21,6 +21,7 @@
  */
 package org.csstudio.archive.common.service.mysqlimpl.sample;
 
+import static org.csstudio.archive.common.service.mysqlimpl.sample.TestSampleProvider.CHANNEL_ID_1ST;
 import static org.csstudio.archive.common.service.mysqlimpl.sample.TestSampleProvider.CHANNEL_ID_3RD;
 import static org.csstudio.archive.common.service.mysqlimpl.sample.TestSampleProvider.CHANNEL_ID_5TH;
 import static org.csstudio.archive.common.service.mysqlimpl.sample.TestSampleProvider.START;
@@ -43,6 +44,8 @@ import org.csstudio.domain.desy.time.TimeInstant.TimeInstantBuilder;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
+import com.google.common.collect.Sets;
+
 
 /**
  * Integration test for {@link ArchiveSampleDaoImpl} with rollbacks.
@@ -63,21 +66,27 @@ public class ArchiveSampleDaoRetrieveUnitTest extends AbstractDaoTestSetup {
     @SuppressWarnings("rawtypes")
     @Test
     public void retrieveSamples() throws ArchiveDaoException {
-        IArchiveChannel channel = CHANNEL_DAO.retrieveChannelById(CHANNEL_ID_3RD);
+        Collection<IArchiveChannel> channels = CHANNEL_DAO.retrieveChannelsByIds(Sets.newHashSet(CHANNEL_ID_3RD));
+        Assert.assertTrue(channels.size() == 1);
+        IArchiveChannel channel = channels.iterator().next();
+
         final IArchiveSample<Serializable, ISystemVariable<Serializable>> sample =
             SAMPLE_DAO.retrieveLatestSampleBeforeTime(channel, START);
         Assert.assertNotNull(sample);
         Assert.assertEquals(Byte.valueOf((byte) 26), sample.getValue());
 
 
-        Collection<IArchiveSample<Serializable,ISystemVariable<Serializable>>>
+        Collection<IArchiveSample<Serializable, ISystemVariable<Serializable>>>
             samples = SAMPLE_DAO.retrieveSamples(DesyArchiveRequestType.RAW, channel, TimeInstantBuilder.fromNanos(1L), START);
         Assert.assertNotNull(samples);
         Assert.assertEquals(1, samples.size());
         Assert.assertEquals(Byte.valueOf((byte) 26), samples.iterator().next().getValue());
 
 
-        channel = CHANNEL_DAO.retrieveChannelById(CHANNEL_ID_5TH);
+        channels = CHANNEL_DAO.retrieveChannelsByIds(Sets.newHashSet(CHANNEL_ID_5TH));
+        Assert.assertTrue(channels.size() == 1);
+        channel = channels.iterator().next();
+
         samples = SAMPLE_DAO.retrieveSamples(DesyArchiveRequestType.RAW_MULTI_SCALAR, channel, TimeInstantBuilder.fromNanos(1999999999L),  TimeInstantBuilder.fromNanos(2000000000L));
         Assert.assertNotNull(samples);
         Assert.assertEquals(1, samples.size());
@@ -86,5 +95,17 @@ public class ArchiveSampleDaoRetrieveUnitTest extends AbstractDaoTestSetup {
         Assert.assertTrue(((ArrayList) value).size() == 2);
         Assert.assertEquals(Double.valueOf(5.0), ((ArrayList) value).get(0));
         Assert.assertEquals(Double.valueOf(4.0), ((ArrayList) value).get(1));
+    }
+
+    @Test
+    public void testDoesSampleExist() throws ArchiveDaoException {
+        boolean sampleExists = SAMPLE_DAO.doesSampleExistForChannelId(CHANNEL_ID_3RD);
+        Assert.assertTrue(sampleExists);
+
+        sampleExists = SAMPLE_DAO.doesSampleExistForChannelId(CHANNEL_ID_5TH);
+        Assert.assertTrue(sampleExists);
+
+        sampleExists = SAMPLE_DAO.doesSampleExistForChannelId(CHANNEL_ID_1ST);
+        Assert.assertFalse(sampleExists);
     }
 }

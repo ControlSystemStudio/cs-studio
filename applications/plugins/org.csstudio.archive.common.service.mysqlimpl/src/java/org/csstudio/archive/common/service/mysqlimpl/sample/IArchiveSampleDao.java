@@ -80,5 +80,12 @@ public interface IArchiveSampleDao {
     IArchiveSample<V, T> retrieveLatestSampleBeforeTime(@Nonnull IArchiveChannel channel,
                                                         @Nonnull TimeInstant time) throws ArchiveDaoException;
 
-
+    /**
+     * Checks whether at least one sample exists for the given channel.
+     * Either in table sample or sample_blob.
+     * @param id the channel id
+     * @return true if at least one sample could be found in sample or sample_blob
+     * @throws ArchiveDaoException
+     */
+    boolean doesSampleExistForChannelId(@Nonnull final ArchiveChannelId id) throws ArchiveDaoException;
 }

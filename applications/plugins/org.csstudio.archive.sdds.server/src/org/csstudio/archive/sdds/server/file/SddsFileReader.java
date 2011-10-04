@@ -52,7 +52,7 @@ public class SddsFileReader {
     private static final Logger LOG = LoggerFactory.getLogger(SddsFileReader.class);
 
     /** The path to the data files */
-    private final ArchiveLocation dataPath;
+    private final ArchiveLocation archiveLocation;
 
     /**
      * Constructor that gets a string containing the path to the data files.
@@ -60,35 +60,24 @@ public class SddsFileReader {
      * @throws DataPathNotFoundException
      */
     public SddsFileReader(@Nonnull final String dataSourceFile) throws DataPathNotFoundException {
-        dataPath = new ArchiveLocation();
-        dataPath.loadLocationList(dataSourceFile);
-    }
-
-    /**
-     *
-     * @param startTime
-     * @param endTime
-     * @return Returns array of String that contains all paths for the given time interval
-     */
-    @Nonnull
-    public String[] getAllPaths(final long startTime, final long endTime) {
-        return dataPath.getAllPaths(startTime, endTime);
+        archiveLocation = new ArchiveLocation();
+        archiveLocation.loadLocationList(dataSourceFile);
     }
 
     /**
      * Reads the data of a specified SDDS data file.
      *
      * @param recordName
-     * @param startTime
-     * @param endTime
+     * @param startTimeInS
+     * @param endTimeInS
      * @return Array of data objects
      */
     @Nonnull
     public RecordDataCollection readData(@Nonnull final String recordName,
-                                         final long startTime,
-                                         final long endTime) {
+                                         final long startTimeInS,
+                                         final long endTimeInS) {
 
-        final String[] filePaths = dataPath.getAllPaths(getEndTimeOfPreviousMonth(startTime), endTime);
+        final String[] filePaths = archiveLocation.getAllPaths(getEndTimeOfPreviousMonth(startTimeInS), endTimeInS);
         final long st = System.currentTimeMillis();
 
         final ThreadGroup threadGroup = new ThreadGroup("DataReader");
@@ -98,7 +87,7 @@ public class SddsFileReader {
         for(int i = 0; i < filePaths.length; i++) {
             filePaths[i] = getCorrectFilename(filePaths[i], recordName);
             if(filePaths[i] != null) {
-                reader[i] = new SddsDataReader(filePaths[i], startTime, endTime);
+                reader[i] = new SddsDataReader(filePaths[i], startTimeInS, endTimeInS);
                 readerThread[i] = new Thread(threadGroup, reader[i]);
                 readerThread[i].start();
             }

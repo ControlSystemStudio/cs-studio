@@ -36,7 +36,8 @@ import java.util.regex.Pattern;
 
 import javax.annotation.Nonnull;
 
-import org.csstudio.archive.sdds.server.util.TimeInterval;
+import org.joda.time.DateTime;
+import org.joda.time.Interval;
 
 import com.google.common.base.Strings;
 import com.google.common.collect.Lists;
@@ -80,59 +81,28 @@ public class ArchiveLocation {
 
     /**
      *
-     * @param startTime
-     * @return The matching path
-     */
-    @Nonnull
-    public String getPath(final long startTime) {
-        final TimeInterval timeInterval = new TimeInterval(startTime, startTime);
-        return dataPath.get(timeInterval.getStartYear()) + timeInterval.getStartMonthAsString() + FILE_SEPARATOR;
-    }
-
-    /**
-     *
      * @return All matching paths
      */
     @Nonnull
-    public String[] getAllPaths(final long startTime, final long endTime) {
+    public String[] getAllPaths(final long startTimeInS, final long endTimeInS) {
 
         final List<String> result = Lists.newArrayList();
-        final TimeInterval timeInterval = new TimeInterval(startTime, endTime);
-        String path = null;
-        int lastMonth;
-        int lastYear;
-        int month;
 
-        final int[] years = timeInterval.getYears();
+        final Interval interval = new Interval(startTimeInS*1000, endTimeInS*1000);
 
-        if(years.length > 0) {
+        for(DateTime curDate = interval.getStart(); curDate.isBefore(interval.getEnd()); curDate = curDate.plusMonths(1)) {
 
-            lastYear = years[years.length - 1];
-            lastMonth = timeInterval.getEndMonth();
-
-            for(int y = years[0]; y <= lastYear; y++) {
-
-                if(y == years[0]) {
-                    month = timeInterval.getStartMonth();
-                } else {
-                    month = 1;
-                }
-
-                if(y < lastYear) {
-                    for(int m = month; m <= 12; m++) {
-                        path = dataPath.get(y) + getMonthAsString(m) + FILE_SEPARATOR;
-                        result.add(path);
-                    }
-                } else {
-                    for(int m = month; m <= lastMonth; m++) {
-                        path = dataPath.get(y) + getMonthAsString(m) + FILE_SEPARATOR;
-                        result.add(path);
-                    }
-                }
-            }
+            final String path = assemblePath(curDate.getYear(), curDate.getMonthOfYear());
+            result.add(path);
         }
 
         return result.toArray(new String[result.size()]);
+    }
+
+    @Nonnull
+    private String assemblePath(final int year,
+                                              final int month) {
+        return dataPath.get(year) + getMonthAsString(month) + FILE_SEPARATOR;
     }
 
     /**
@@ -157,7 +127,9 @@ public class ArchiveLocation {
                 Files.readLines(new File(filePath),
                                 Charset.defaultCharset(),
                                 new LineProcessor<List<String>>() {
+
                                     private final List<String> _result = Lists.newArrayList();
+
                                     @Override
                                     public boolean processLine(@Nonnull final String line) throws IOException {
                                         if (!Strings.isNullOrEmpty(line) && !line.startsWith("#")) {
@@ -223,12 +195,6 @@ public class ArchiveLocation {
         }
     }
 
-    /**
-     *
-     * @param newPath
-     * @param oldPath
-     * @return
-     */
     private boolean containsMoreSubDirs(@Nonnull final String newPath, @Nonnull final String oldPath) {
 
         final File newFile = new File(newPath);

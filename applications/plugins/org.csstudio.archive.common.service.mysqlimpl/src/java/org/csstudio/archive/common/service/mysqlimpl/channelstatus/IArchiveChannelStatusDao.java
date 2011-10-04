@@ -28,6 +28,7 @@ import javax.annotation.Nonnull;
 import org.csstudio.archive.common.service.channel.ArchiveChannelId;
 import org.csstudio.archive.common.service.channelstatus.IArchiveChannelStatus;
 import org.csstudio.archive.common.service.mysqlimpl.dao.ArchiveDaoException;
+import org.csstudio.domain.common.service.DeleteResult;
 
 /**
  * Dao for archive channel status.
@@ -40,17 +41,11 @@ public interface IArchiveChannelStatusDao {
     void createChannelStatus(@Nonnull final IArchiveChannelStatus entry)
                              throws ArchiveDaoException;
 
-//    @CheckForNull
-//    IArchiveChannelStatus retrieveLatestStatusByChannelId(@Nonnull final ArchiveChannelId id)
-//                                                          throws ArchiveDaoException;
-
-    /**
-     * @param channels
-     * @return
-     * @throws ArchiveDaoException
-     */
     @Nonnull
     Collection<IArchiveChannelStatus>
     retrieveLatestStatusByChannelIds(@Nonnull final Collection<ArchiveChannelId> channels) throws ArchiveDaoException;
+
+    @Nonnull
+    DeleteResult deleteStatusForChannelId(@Nonnull final ArchiveChannelId id) throws ArchiveDaoException;
 
 }

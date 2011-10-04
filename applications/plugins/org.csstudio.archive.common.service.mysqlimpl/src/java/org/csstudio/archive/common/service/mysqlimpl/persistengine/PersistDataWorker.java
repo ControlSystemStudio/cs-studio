@@ -141,35 +141,35 @@ public class PersistDataWorker extends AbstractTimeMeasuredRunnable {
                                               @Nonnull final List<T> rescueDataList) {
         final Queue<T> queue = handler.getQueue();
         T element;
-        while (true) {
-            element = queue.poll();
-            if (element != null) {
-                addElementToBatchAndRescueList(handler, stmt, element, rescueDataList);
-                executeBatchAndClearListOnCondition(handler, stmt, rescueDataList, 1000);
-            } else {
-                executeBatchAndClearListOnCondition(handler, stmt, rescueDataList, 1);
-                break;
+        try {
+            while (true) {
+                element = queue.poll();
+                if (element != null) {
+                    addElementToBatchAndRescueList(handler, stmt, element, rescueDataList);
+                    executeBatchAndClearListOnCondition(handler, stmt, rescueDataList, 1000);
+                } else {
+                    executeBatchAndClearListOnCondition(handler, stmt, rescueDataList, 1);
+                    break;
+                }
             }
+        } catch (final Throwable t) {
+            handleThrowable(t, handler, rescueDataList);
         }
     }
 
     private <T> void addElementToBatchAndRescueList(@Nonnull final BatchQueueHandlerSupport<T> handler,
                                                     @Nonnull final PreparedStatement stmt,
                                                     @Nonnull final T element,
-                                                    @Nonnull final List<T> rescueDataList) {
-        try {
+                                                    @Nonnull final List<T> rescueDataList) throws ArchiveDaoException {
             rescueDataList.add(element);
             handler.applyBatch(stmt, element);
-        } catch (final ArchiveDaoException t) {
-            handleThrowable(t, handler, rescueDataList);
-        }
     }
 
     @Nonnull
     private <T> boolean executeBatchAndClearListOnCondition(@Nonnull final BatchQueueHandlerSupport<T> handler,
                                                             @Nonnull final PreparedStatement stmt,
                                                             @Nonnull final List<T> rescueDataList,
-                                                            final int minBatchSize) {
+                                                            final int minBatchSize) throws SQLException {
         final int size = rescueDataList.size();
         if (size >= minBatchSize) {
             LOG.info("{} for {}", new Object[]{size, handler.getHandlerType().getSimpleName()});
@@ -178,8 +178,6 @@ public class PersistDataWorker extends AbstractTimeMeasuredRunnable {
                 stmt.executeBatch();
                 LOG.info("took for {}: {}ms", size, start.getElapsedTimeInMillis());
 
-            } catch (final Throwable t) {
-                handleThrowable(t, handler, rescueDataList);
             } finally {
                 rescueDataList.clear();
             }

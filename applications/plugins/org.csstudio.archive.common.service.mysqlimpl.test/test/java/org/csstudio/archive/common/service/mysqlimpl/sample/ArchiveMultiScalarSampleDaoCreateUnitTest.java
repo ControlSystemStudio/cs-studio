@@ -46,6 +46,8 @@ import org.junit.AfterClass;
 import org.junit.Assert;
 import org.junit.Test;
 
+import com.google.common.collect.Sets;
+
 /**
  * Integration test for multi scalar samples in {@link ArchiveSampleDaoImpl}.
  *
@@ -79,13 +81,15 @@ public class ArchiveMultiScalarSampleDaoCreateUnitTest extends AbstractDaoTestSe
 
         Thread.sleep(2500);
 
-        final IArchiveChannel channel = CHANNEL_DAO.retrieveChannelById(CHANNEL_ID_5TH);
+        final Collection<IArchiveChannel> channels = CHANNEL_DAO.retrieveChannelsByIds(Sets.newHashSet(CHANNEL_ID_5TH));
+        Assert.assertTrue(channels.size() == 1);
+
         final Collection<IArchiveSample<Serializable, ISystemVariable<Serializable>>> samples =
-            SAMPLE_DAO.retrieveSamples(null, channel, START.minusMillis(1L), START.plusMillis(1L));
+            SAMPLE_DAO.retrieveSamples(null, channels.iterator().next(), START.minusMillis(1L), START.plusMillis(1L));
 
         Assert.assertTrue(samples.size() == 1);
 
-        final IArchiveSample<Serializable,ISystemVariable<Serializable>> sample =
+        final IArchiveSample<Serializable, ISystemVariable<Serializable>> sample =
             samples.iterator().next();
         Assert.assertEquals(CHANNEL_ID_5TH, sample.getChannelId());
         Assert.assertTrue(sample.getValue() instanceof ArrayList);

@@ -48,7 +48,7 @@ public class ArchiveControlSystemDaoUnitTest extends AbstractDaoTestSetup {
     }
 
     @Test
-    public void testRetrieveControlSystem() throws ArchiveDaoException {
+    public void testRetrieveControlSystemById() throws ArchiveDaoException {
         final ArchiveControlSystemId noId = ArchiveControlSystemId.NONE;
         final IArchiveControlSystem noCs =
             DAO.retrieveControlSystemById(noId);
@@ -61,5 +61,20 @@ public class ArchiveControlSystemDaoUnitTest extends AbstractDaoTestSetup {
         Assert.assertEquals(id, cs.getId());
         Assert.assertEquals("EpicsDefault", cs.getName());
         Assert.assertEquals(ControlSystem.EPICS_DEFAULT.getType(), cs.getType());
+    }
+
+    @Test
+    public void testRetrieveControlSystemByName() throws ArchiveDaoException {
+        final IArchiveControlSystem noCs =
+            DAO.retrieveControlSystemByName("foo");
+        Assert.assertNull(noCs);
+
+        final IArchiveControlSystem cs =
+            DAO.retrieveControlSystemByName("DoocsDefault");
+        Assert.assertNotNull(cs);
+        Assert.assertTrue(cs.getId().intValue() == 2);
+        Assert.assertEquals("DoocsDefault", cs.getName());
+        Assert.assertEquals(ControlSystem.DOOCS_DEFAULT.getType(), cs.getType());
+
     }
 }

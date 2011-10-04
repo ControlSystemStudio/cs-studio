@@ -14,7 +14,7 @@ import javax.annotation.Nonnull;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import org.csstudio.archive.common.engine.model.ArchiveChannel;
+import org.csstudio.archive.common.engine.model.ArchiveChannelBuffer;
 import org.csstudio.archive.common.engine.model.ArchiveGroup;
 import org.csstudio.archive.common.engine.model.EngineModel;
 import org.csstudio.archive.common.engine.model.SampleBuffer;
@@ -114,7 +114,7 @@ class MainResponse extends AbstractResponse {
         for (final ArchiveGroup group : getModel().getGroups()) {
             numOfChannels += group.getChannels().size();
 
-            for (final ArchiveChannel<?, ?> channel : group.getChannels()) {
+            for (final ArchiveChannelBuffer<?, ?> channel : group.getChannels()) {
                 numOfConnectedChannels += channel.isConnected() ? 1 : 0;
             }
         }

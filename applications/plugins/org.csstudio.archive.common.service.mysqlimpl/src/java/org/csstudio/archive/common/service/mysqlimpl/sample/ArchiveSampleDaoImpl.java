@@ -65,6 +65,7 @@ import org.joda.time.Minutes;
 import com.google.common.base.Joiner;
 import com.google.common.collect.Lists;
 import com.google.common.collect.MapMaker;
+import com.google.common.collect.Sets;
 import com.google.inject.Inject;
 
 /**
@@ -104,6 +105,9 @@ public class ArchiveSampleDaoImpl extends AbstractArchiveDao implements IArchive
         SELECT_RAW_PREFIX +
         "FROM " + getDatabaseName() + "." + TAB_SAMPLE + " WHERE " + COLUMN_CHANNEL_ID + "=? " +
         "AND " + COLUMN_TIME + "<? ORDER BY " + COLUMN_TIME + " DESC LIMIT 1";
+    private final String _selectSampleExistsForChannel =
+        "SELECT * FROM " + getDatabaseName() + "." + ARCH_TABLE_PLACEHOLDER +
+        " WHERE " + COLUMN_CHANNEL_ID + "=? LIMIT 1";
 
     private final ConcurrentMap<ArchiveChannelId, SampleMinMaxAggregator> _reducedDataMapForMinutes =
         new MapMaker().concurrencyLevel(2).weakKeys().makeMap();
@@ -278,13 +282,13 @@ public class ArchiveSampleDaoImpl extends AbstractArchiveDao implements IArchive
     private void initAggregatorToLastKnownSample(@Nonnull final ArchiveChannelId channelId,
                                                  @Nonnull final TimeInstant time,
                                                  @Nonnull final SampleMinMaxAggregator aggregator) throws ArchiveDaoException {
-        final IArchiveChannel channel = _channelDao.retrieveChannelById(channelId);
-        if (channel == null) {
+        final Collection<IArchiveChannel> channels = _channelDao.retrieveChannelsByIds(Sets.newHashSet(channelId));
+        if (channels.isEmpty()) {
             throw new ArchiveDaoException("Init sample aggregator failed. Channel with id " + channelId.intValue() +
                                           " does not exist.", null);
         }
         final IArchiveSample<Serializable, ISystemVariable<Serializable>> sample =
-            retrieveLatestSampleBeforeTime(channel, time);
+            retrieveLatestSampleBeforeTime(channels.iterator().next(), time);
         if (sample != null) {
             final Double lastWrittenValue =
                 BaseTypeConversionSupport.createDoubleFromValueOrNull(sample.getSystemVariable());
@@ -325,9 +329,9 @@ public class ArchiveSampleDaoImpl extends AbstractArchiveDao implements IArchive
                                                      @Nonnull final ArchiveChannelId channelId,
                                                      @Nonnull final TimeInstant start,
                                                      @Nonnull final TimeInstant end) throws ArchiveDaoException {
-        final IArchiveChannel channel = _channelDao.retrieveChannelById(channelId);
-        if (channel != null) {
-            return retrieveSamples(type, channel, start, end);
+        final Collection<IArchiveChannel> channels = _channelDao.retrieveChannelsByIds(Sets.newHashSet(channelId));
+        if (!channels.isEmpty()) {
+            return retrieveSamples(type, channels.iterator().next(), start, end);
         }
         return Collections.emptyList();
     }
@@ -477,11 +481,10 @@ public class ArchiveSampleDaoImpl extends AbstractArchiveDao implements IArchive
     public <V extends Serializable, T extends ISystemVariable<V>>
     IArchiveSample<V, T> retrieveLatestSampleBeforeTime(@Nonnull final IArchiveChannel channel,
                                                         @Nonnull final TimeInstant time) throws ArchiveDaoException {
-        Connection conn = null;
         PreparedStatement stmt = null;
         ResultSet result  = null;
         try {
-            conn = getThreadLocalConnection();
+            final Connection conn = getThreadLocalConnection();
             stmt = conn.prepareStatement(_selectLatestSampleBeforeTimeStmt);
             stmt.setInt(1, channel.getId().intValue());
             stmt.setLong(2, time.getNanos());
@@ -495,5 +498,37 @@ public class ArchiveSampleDaoImpl extends AbstractArchiveDao implements IArchive
             closeSqlResources(result, stmt, _selectLatestSampleBeforeTimeStmt);
         }
         return null;
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public boolean doesSampleExistForChannelId(@Nonnull final ArchiveChannelId id) throws ArchiveDaoException {
+        if (checkForSamplesInTable(id, TAB_SAMPLE)) {
+            return true;
+        }
+        return checkForSamplesInTable(id, TAB_SAMPLE_BLOB);
+    }
+
+    private boolean checkForSamplesInTable(@Nonnull final ArchiveChannelId id,
+                                           @Nonnull final String table) throws ArchiveDaoException {
+        PreparedStatement stmt = null;
+        ResultSet rs = null;
+        final String stmtStr = _selectSampleExistsForChannel.replace(ARCH_TABLE_PLACEHOLDER, table);
+        try {
+            final Connection conn = getThreadLocalConnection();
+            stmt = conn.prepareStatement(stmtStr);
+            stmt.setInt(1, id.intValue());
+            rs = stmt.executeQuery();
+            if (rs.next()) {
+                return true;
+            }
+        } catch(final Exception e) {
+            handleExceptions(RETRIEVAL_FAILED, e);
+        } finally {
+            closeSqlResources(rs, stmt, stmtStr);
+        }
+        return false;
     }
 }

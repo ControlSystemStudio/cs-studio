@@ -11,7 +11,7 @@ import javax.annotation.Nonnull;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import org.csstudio.archive.common.engine.model.ArchiveChannel;
+import org.csstudio.archive.common.engine.model.ArchiveChannelBuffer;
 import org.csstudio.archive.common.engine.model.ArchiveGroup;
 import org.csstudio.archive.common.engine.model.EngineModel;
 
@@ -43,10 +43,11 @@ class DisconnectedResponse extends AbstractResponse {
         html.close();
     }
 
+    @SuppressWarnings("static-access")
     private int createTableRows(@Nonnull final HTMLWriter html) {
         int disconnected = 0;
         for (final ArchiveGroup group : getModel().getGroups()) {
-            for (final ArchiveChannel<?,?> channel : group.getChannels()) {
+            for (final ArchiveChannelBuffer<?, ?> channel : group.getChannels()) {
                 if (channel.isConnected()) {
                     continue;
                 }
@@ -54,7 +55,7 @@ class DisconnectedResponse extends AbstractResponse {
                 html.tableLine(new String[]
                                           {
                                            Integer.toString(disconnected),
-                                           HTMLWriter.makeLink("channel?name=" + channel.getName(), channel.getName()),
+                                           HTMLWriter.makeLink(ShowChannelResponse.getUrl() + "?" + ShowChannelResponse.PARAM_NAME + "=" + channel.getName(), channel.getName()),
                                            HTMLWriter.makeLink("group?name=" + group.getName(), group.getName()),
                                           } );
             }

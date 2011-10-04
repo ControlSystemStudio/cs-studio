@@ -17,11 +17,11 @@ import org.csstudio.archive.common.engine.model.EngineModel;
  *  @author Kay Kasemir
  */
 @SuppressWarnings("nls")
-class StopResponse extends AbstractResponse {
+class StopEngineResponse extends AbstractResponse {
     /** Avoid serialization errors */
     private static final long serialVersionUID = 1L;
 
-    StopResponse(@Nonnull final EngineModel model) {
+    StopEngineResponse(@Nonnull final EngineModel model) {
         super(model);
     }
 

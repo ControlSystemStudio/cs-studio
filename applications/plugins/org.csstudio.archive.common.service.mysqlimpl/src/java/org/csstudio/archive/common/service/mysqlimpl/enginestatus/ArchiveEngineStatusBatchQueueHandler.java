@@ -75,6 +75,9 @@ public final class ArchiveEngineStatusBatchQueueHandler extends BatchQueueHandle
     @Override
     @Nonnull
     public Collection<String> convertToStatementString(@Nonnull final Collection<IArchiveEngineStatus> elements) {
+        if (elements.isEmpty()) {
+            return Collections.emptyList();
+        }
         final String sqlStr = getSqlStatementString().replace(VAL_WILDCARDS, "");
         final Collection<String> values =
             Collections2.transform(elements,

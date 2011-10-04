@@ -24,6 +24,7 @@ package org.csstudio.archive.common.service.mysqlimpl.channel;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.concurrent.ConcurrentLinkedQueue;
 
 import javax.annotation.Nonnull;
@@ -110,6 +111,9 @@ public class UpdateDisplayInfoBatchQueueHandler extends BatchQueueHandlerSupport
     @Override
     @Nonnull
     public Collection<String> convertToStatementString(@Nonnull final Collection<ArchiveChannelDisplayInfo> elements) {
+        if (elements.isEmpty()) {
+            return Collections.emptyList();
+        }
         final String sqlStr = getSqlStatementString();
         final Collection<String> statements =
             Collections2.transform(elements,

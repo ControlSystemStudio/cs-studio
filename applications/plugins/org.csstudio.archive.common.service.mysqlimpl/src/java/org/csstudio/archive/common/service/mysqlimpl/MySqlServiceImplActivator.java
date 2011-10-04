@@ -81,12 +81,9 @@ public class MySqlServiceImplActivator implements BundleActivator {
 
         final Injector injector = Guice.createInjector(new MySQLArchiveServiceImplModule());
         _connectionHandler = injector.getInstance(ArchiveConnectionHandler.class);
-        final MySQLArchiveEngineServiceImpl engineServiceImpl =
-            injector.getInstance(MySQLArchiveEngineServiceImpl.class);
-        final MySQLArchiveReaderServiceImpl readerServiceImpl =
-            injector.getInstance(MySQLArchiveReaderServiceImpl.class);
 
-
+        final MySQLArchiveServiceImpl serviceImpl =
+            injector.getInstance(MySQLArchiveServiceImpl.class);
 
         final Dictionary<String, Object> propsCfg = new Hashtable<String, Object>();
         propsCfg.put("service.vendor", "DESY");
@@ -94,9 +91,8 @@ public class MySqlServiceImplActivator implements BundleActivator {
         LOG.info("Register MySQL archive engine service");
 
         context.registerService(IArchiveEngineFacade.class.getName(),
-                                engineServiceImpl,
+                                serviceImpl,
                                 propsCfg);
-
 
         final Dictionary<String, Object> propsRd = new Hashtable<String, Object>();
         propsRd.put("service.vendor", "DESY");
@@ -104,7 +100,7 @@ public class MySqlServiceImplActivator implements BundleActivator {
         LOG.info("Register MySQL archive reader service");
 
         context.registerService(IArchiveReaderFacade.class.getName(),
-                                readerServiceImpl,
+                                serviceImpl,
                                 propsRd);
     }
 
