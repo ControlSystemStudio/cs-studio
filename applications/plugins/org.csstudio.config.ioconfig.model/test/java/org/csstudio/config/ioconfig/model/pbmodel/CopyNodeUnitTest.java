@@ -68,7 +68,7 @@ public class CopyNodeUnitTest {
 
         assertEquals(1, _slave.getChildren().size());
 
-        final NamedDBClass node = module.copyThisTo(_slave, "Copy of ");
+        final NamedDBClass node = module.copyThisTo(_slave, "");
         // - Test Slave
         assertEquals(2, _slave.getChildren().size());
 

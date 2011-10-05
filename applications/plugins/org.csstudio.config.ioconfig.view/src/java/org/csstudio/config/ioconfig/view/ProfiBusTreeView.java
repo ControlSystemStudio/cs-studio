@@ -29,9 +29,7 @@ import static org.csstudio.config.ioconfig.model.preference.PreferenceConstants.
 
 import java.util.ArrayList;
 import java.util.Date;
-import java.util.Iterator;
 import java.util.List;
-import java.util.SortedMap;
 
 import javax.annotation.CheckForNull;
 import javax.annotation.Nonnull;
@@ -41,7 +39,6 @@ import org.csstudio.config.ioconfig.commands.CallEditor;
 import org.csstudio.config.ioconfig.commands.CallNewChildrenNodeEditor;
 import org.csstudio.config.ioconfig.commands.CallNewFacilityEditor;
 import org.csstudio.config.ioconfig.commands.CallNewSiblingNodeEditor;
-import org.csstudio.config.ioconfig.config.view.helper.ConfigHelper;
 import org.csstudio.config.ioconfig.config.view.helper.ProfibusHelper;
 import org.csstudio.config.ioconfig.editorparts.AbstractNodeEditor;
 import org.csstudio.config.ioconfig.model.AbstractNodeDBO;
@@ -51,7 +48,6 @@ import org.csstudio.config.ioconfig.model.IocDBO;
 import org.csstudio.config.ioconfig.model.NamedDBClass;
 import org.csstudio.config.ioconfig.model.PersistenceException;
 import org.csstudio.config.ioconfig.model.hibernate.Repository;
-import org.csstudio.config.ioconfig.model.pbmodel.ChannelDBO;
 import org.csstudio.config.ioconfig.model.pbmodel.MasterDBO;
 import org.csstudio.config.ioconfig.model.pbmodel.ModuleDBO;
 import org.csstudio.config.ioconfig.model.pbmodel.ProfibusSubnetDBO;
@@ -60,6 +56,9 @@ import org.csstudio.config.ioconfig.model.tools.NodeMap;
 import org.csstudio.config.ioconfig.view.actions.CreateStatisticAction;
 import org.csstudio.config.ioconfig.view.actions.CreateWinModAction;
 import org.csstudio.config.ioconfig.view.actions.CreateXMLConfigAction;
+import org.csstudio.config.ioconfig.view.actions.DeleteNodeAction;
+import org.csstudio.config.ioconfig.view.actions.PasteNodeAction;
+import org.csstudio.config.ioconfig.view.actions.RenameNodeAction;
 import org.csstudio.config.ioconfig.view.serachview.SearchDialog;
 import org.csstudio.platform.ui.util.CustomMediaFactory;
 import org.eclipse.core.runtime.IProgressMonitor;
@@ -78,10 +77,8 @@ import org.eclipse.jface.action.MenuManager;
 import org.eclipse.jface.action.Separator;
 import org.eclipse.jface.action.ToolBarManager;
 import org.eclipse.jface.dialogs.Dialog;
-import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.layout.GridLayoutFactory;
 import org.eclipse.jface.resource.ImageDescriptor;
-import org.eclipse.jface.viewers.ColumnLabelProvider;
 import org.eclipse.jface.viewers.ColumnViewerEditor;
 import org.eclipse.jface.viewers.ColumnViewerEditorActivationStrategy;
 import org.eclipse.jface.viewers.ColumnViewerToolTipSupport;
@@ -98,11 +95,6 @@ import org.eclipse.swt.SWT;
 import org.eclipse.swt.custom.TreeEditor;
 import org.eclipse.swt.events.DisposeEvent;
 import org.eclipse.swt.events.DisposeListener;
-import org.eclipse.swt.events.FocusAdapter;
-import org.eclipse.swt.events.FocusEvent;
-import org.eclipse.swt.graphics.Color;
-import org.eclipse.swt.graphics.Font;
-import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Composite;
@@ -112,8 +104,6 @@ import org.eclipse.swt.widgets.Menu;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.swt.widgets.Text;
 import org.eclipse.swt.widgets.ToolBar;
-import org.eclipse.swt.widgets.Tree;
-import org.eclipse.swt.widgets.TreeItem;
 import org.eclipse.ui.IActionBars;
 import org.eclipse.ui.ISharedImages;
 import org.eclipse.ui.IViewSite;
@@ -153,90 +143,27 @@ public class ProfiBusTreeView extends Composite {
             Repository.close();
             try {
                 setLoad(Repository.load(FacilityDBO.class));
-                PlatformUI.getWorkbench().getDisplay().syncExec(new Runnable() {
-                    @Override
-                    public void run() {
-                        getViewer().setInput(getLoad());
-                        getViewer().getTree().setEnabled(true);
-                    }
-                });
             } catch (final PersistenceException e) {
                 LOG.error("Can't read from Database!", e);
-                DeviceDatabaseErrorDialog.open(null, "Can't read from Database!", e);
+                PlatformUI.getWorkbench().getDisplay().asyncExec(new Runnable() {
+
+                    @Override
+                    public void run() {
+                        DeviceDatabaseErrorDialog.open(getShell(), "Can't read from Database!", e);
+                    }
+                });
+                monitor.done();
+                return Status.CANCEL_STATUS;
             }
+            PlatformUI.getWorkbench().getDisplay().syncExec(new Runnable() {
+                @Override
+                public void run() {
+                    getViewer().setInput(getLoad());
+                    getViewer().getTree().setEnabled(true);
+                }
+            });
             monitor.done();
             return Status.OK_STATUS;
-        }
-    }
-    /**
-     *
-     * Delete the selected Nodes.
-     *
-     * @author hrickens
-     * @author $Author: $
-     * @since 08.10.2010
-     */
-    private final class DeleteNodeActionExtension extends Action {
-
-        public DeleteNodeActionExtension() {
-            // constructor
-        }
-
-        @Override
-        @SuppressWarnings("unchecked")
-        public void run() {
-            final String errMsg = "Device Data Base (DDB) Error\nCan't delete the %1s '%2s' (ID: %3s)";
-            final String errMsgHead = "Device Database Error";
-            final String message = String.format("Delete %1s: %2s", getSelectedNodes().toArray()[0]
-                                                                                                 .getClass().getSimpleName(), getSelectedNodes());
-            final boolean openConfirm = MessageDialog.openConfirm(getShell(), "Delete Node", message);
-            if (openConfirm) {
-                AbstractNodeDBO<?,?> parent = null;
-                NamedDBClass dbClass = null;
-                final Iterator<NamedDBClass> iterator = getSelectedNodes().iterator();
-                while (iterator.hasNext()) {
-                    dbClass = iterator.next();
-                    if (dbClass instanceof FacilityDBO) {
-                        deleteFacility(errMsg, errMsgHead, dbClass);
-                    } else if (dbClass instanceof AbstractNodeDBO) {
-                        try {
-                            parent = ((AbstractNodeDBO<?,?>) dbClass).delete();
-                        } catch (final PersistenceException e) {
-                            ProfibusHelper.openErrorDialog(getSite().getShell(),
-                                                           errMsgHead,
-                                                           errMsg,
-                                                           dbClass,
-                                                           e);
-                        }
-                    }
-                }
-                if (parent != null) {
-                    setSelectedNode(new StructuredSelection(parent));
-                    refresh(parent);
-                    getTreeViewer().setSelection(getSelectedNodes(), true);
-                } else {
-                    refresh();
-                }
-                _editNodeAction.run();
-            }
-        }
-
-        /**
-         * @param errMsg
-         * @param errMsgHead
-         * @param dbClass
-         */
-        private void deleteFacility(@Nonnull final String errMsg,@Nullable final String errMsgHead,@Nonnull final NamedDBClass dbClass) {
-            final FacilityDBO fac = (FacilityDBO) dbClass;
-            try {
-                Repository.removeNode(fac);
-                getLoad().remove(fac);
-                getViewer().remove(getLoad());
-            } catch (final Exception e) {
-                ProfibusHelper.openErrorDialog(getSite().getShell(), errMsgHead, errMsg,
-                                               fac, e);
-                return;
-            }
         }
     }
     /**
@@ -348,154 +275,6 @@ public class ProfiBusTreeView extends Composite {
     }
     /**
      *
-     * Paste a Node to the selected node in the Tree.
-     *
-     * @author hrickens
-     * @author $Author: $
-     * @since 08.10.2010
-     */
-    private final class PasteNodeAction extends Action {
-        public PasteNodeAction() {
-            // Constructor
-        }
-
-        @Override
-        public void run() {
-            final Object firstElement = getSelectedNodes().getFirstElement();
-            AbstractNodeDBO<?,?> selectedNode;
-            if (firstElement instanceof AbstractNodeDBO) {
-                selectedNode = (AbstractNodeDBO<?,?>) firstElement;
-            } else {
-                return;
-            }
-
-            for (final AbstractNodeDBO<?,?> node2Copy : getCopiedNodesReferenceList()) {
-                try {
-                    if (node2Copy instanceof FacilityDBO) {
-                        copyFacility((FacilityDBO) selectedNode);
-                    } else if (selectedNode.getClass().isInstance(node2Copy.getParent())) {
-                        copy2Parent(selectedNode, node2Copy);
-                    } else if (selectedNode.getClass().isInstance(node2Copy)) {
-                        copy2Sibling(selectedNode, node2Copy);
-                    }
-                } catch (final PersistenceException e) {
-                    DeviceDatabaseErrorDialog.open(null, "Can't copy Node! Database Error.", e);
-                    LOG.error("Can't copy Node. Device Database Error", e);
-                }
-            }
-        }
-
-        private void copy2Parent(@Nonnull final AbstractNodeDBO selectedNode,
-                                 @Nonnull final AbstractNodeDBO node2Copy) throws PersistenceException {
-            AbstractNodeDBO<?,?> copy = null;
-            if (isMove()) {
-                final AbstractNodeDBO oldParent = node2Copy.getParent();
-                oldParent.removeChild(node2Copy);
-                final SortedMap<Short, AbstractNodeDBO<AbstractNodeDBO<?,?>, AbstractNodeDBO<?,?>>> childrenAsMap = selectedNode.getChildrenAsMap();
-                final AbstractNodeDBO<?,?> node = childrenAsMap.get(node2Copy.getSortIndex());
-                if (node != null) {
-                    final int freeStationAddress = selectedNode.getfirstFreeStationAddress();
-                    node2Copy.setSortIndex(freeStationAddress);
-                }
-                selectedNode.addChild(node2Copy);
-                copy = node2Copy;
-                selectedNode.save();
-            } else {
-                // paste to a Parent
-                copy = node2Copy.copyThisTo(selectedNode, "Copy of ");
-                copy.setDirty(true);
-                copy.setSortIndexNonHibernate(selectedNode.getfirstFreeStationAddress());
-            }
-            getViewer().refresh();
-            getViewer().setSelection(new StructuredSelection(copy));
-        }
-
-        /**
-         * @param selectedNode
-         * @param node2Copy
-         * @throws PersistenceException
-         */
-        private void copy2Sibling(@Nonnull final AbstractNodeDBO<?,?> selectedNode,
-                                  @Nonnull final AbstractNodeDBO node2Copy) throws PersistenceException {
-            AbstractNodeDBO<?,?> nodeCopy = null;
-            if (isMove()) {
-                final AbstractNodeDBO oldParent = node2Copy.getParent();
-                oldParent.removeChild(node2Copy);
-                final AbstractNodeDBO parent = selectedNode.getParent();
-                node2Copy.setSortIndex((int) selectedNode.getSortIndex());
-                parent.addChild(node2Copy);
-                parent.save();
-                nodeCopy = node2Copy;
-            } else {
-                // paste to a sibling
-                short targetIndex = selectedNode.getSortIndex();
-                targetIndex++;
-                nodeCopy = node2Copy.copyThisTo(selectedNode.getParent(), "Copy of ");
-                nodeCopy.moveSortIndex(targetIndex);
-            }
-            refresh();
-            getViewer().setSelection(new StructuredSelection(nodeCopy));
-        }
-
-        private void copyFacility(@Nonnull final FacilityDBO selectedNode) throws PersistenceException {
-            final FacilityDBO copy = selectedNode.copyThisTo(selectedNode.getParent(), "Copy of ");
-            copy.setSortIndexNonHibernate(selectedNode.getSortIndex() + 1);
-            final List<FacilityDBO> load = getLoad();
-            load.add(copy);
-            getViewer().setInput(load);
-            getViewer().setSelection(new StructuredSelection(copy));
-        }
-    }
-    /**
-     *
-     * Rename the selected Node on the tree.
-     *
-     * @author hrickens
-     * @author $Author: $
-     * @since 08.10.2010
-     */
-    private final class RenameNodeAction extends Action {
-        private final TreeEditor _editor;
-
-        RenameNodeAction(@Nonnull final TreeEditor editor) {
-            _editor = editor;
-        }
-
-        @Override
-        public void run() {
-            final Tree tree = getViewer().getTree();
-            final NamedDBClass node = (NamedDBClass) ((StructuredSelection) getViewer()
-                    .getSelection()).getFirstElement();
-            final TreeItem item = tree.getSelection()[0];
-            // Create a text field to do the editing
-            String editText = "";
-            if (node instanceof ChannelDBO) {
-                editText = ((ChannelDBO) node).getIoName();
-            } else {
-                editText = node.getName();
-            }
-            if (editText == null) {
-                editText = "";
-            }
-            final Text text = new Text(tree, SWT.BORDER);
-            text.setText(editText);
-            text.selectAll();
-            text.setFocus();
-
-            // If the text field loses focus, set its text into the tree and end the editing session
-            text.addFocusListener(new FocusAdapter() {
-                @Override
-                public void focusLost(@Nonnull final FocusEvent event) {
-                    text.dispose();
-                }
-            });
-
-            // Set the text field into the editor
-            _editor.setEditor(text, item);
-        }
-    }
-    /**
-     *
      * @author hrickens
      * @author $Author: hrickens $
      * @since 20.06.2007
@@ -524,82 +303,6 @@ public class ProfiBusTreeView extends Composite {
             }
             return 0;
         }
-    }
-    /**
-     *
-     * @author hrickens
-     * @author $Author: hrickens $
-     * @since 20.06.2007
-     */
-    static class ViewLabelProvider extends ColumnLabelProvider {
-
-        private static final Color PROGRAMMABLE_MARKER_COLOR = CustomMediaFactory.getInstance()
-        .getColor(255, 140, 0);
-        private static final Font PROGRAMMABLE_MARKER_FONT = CustomMediaFactory.getInstance()
-        .getFont("Tahoma", 8, SWT.ITALIC);
-
-        @Override
-        @CheckForNull
-        public Color getBackground(@Nullable final Object element) {
-            if (haveProgrammableModule(element)) {
-                return PROGRAMMABLE_MARKER_COLOR;
-            }
-            return null;
-        }
-
-        @Override
-        @CheckForNull
-        public Font getFont(@Nullable final Object element) {
-            if (haveProgrammableModule(element)) {
-                return PROGRAMMABLE_MARKER_FONT;
-            }
-            return null;
-        }
-
-        @Override
-        @CheckForNull
-        public Image getImage(@Nullable final Object obj) {
-            if (obj instanceof AbstractNodeDBO) {
-                final AbstractNodeDBO<?,?> node = (AbstractNodeDBO<?,?>) obj;
-                return ConfigHelper.getImageFromNode(node);
-            }
-            return null;
-        }
-
-        @Override
-        @CheckForNull
-        public String getText(@Nonnull final Object element) {
-            String text = super.getText(element);
-            final String[] split = text.split("(\r(\n)?)");
-            if (split.length > 1) {
-                text = split[0];
-            }
-            if (haveProgrammableModule(element)) {
-                return text + " [prog]";
-            }
-            return text;
-        }
-
-        @Override
-        @CheckForNull
-        public String getToolTipText(@Nullable final Object element) {
-            if (haveProgrammableModule(element)) {
-                return "Is a programmable Module!";
-            }
-            return null;
-        }
-
-        private boolean haveProgrammableModule(@Nullable final Object element) {
-            /*
-             * TODO: (hrickens) Das finden von Projekt Document Datein führt teilweise dazu das sich
-             * CSS Aufhängt! if (element instanceof Slave) { Slave node = (Slave) element;
-             * Set<Document> documents = node.getDocuments(); while (documents.iterator().hasNext())
-             * { Document doc = (Document) documents.iterator().next(); if (doc.getSubject() != null
-             * && doc.getSubject().startsWith("Projekt:")) { return true; } } }
-             */
-            return false;
-        }
-
     }
     /**
      * The ID of the View.
@@ -727,7 +430,7 @@ public class ProfiBusTreeView extends Composite {
         _drillDownAdapter = new DrillDownAdapter(_viewer);
         _viewer.setContentProvider(new ProfibusTreeContentProvider());
 
-        _viewer.setLabelProvider(new ViewLabelProvider());
+        _viewer.setLabelProvider(new ProfiBusViewLabelProvider());
         _viewer.setSorter(new NameSorter());
         _viewer.getTree().setHeaderVisible(false);
         _viewer.getTree().setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true, 1, 1));
@@ -1029,7 +732,7 @@ public class ProfiBusTreeView extends Composite {
     }
 
     private void makeDeletNodeAction() {
-        _deletNodeAction = new DeleteNodeActionExtension();
+        _deletNodeAction = new DeleteNodeAction(this);
         _deletNodeAction.setText("Delete");
         _deletNodeAction.setAccelerator(SWT.DEL);
         _deletNodeAction.setToolTipText("Delete this Node");
@@ -1120,7 +823,7 @@ public class ProfiBusTreeView extends Composite {
     }
 
     private void makePasteNodeAction() {
-        _pasteNodeAction = new PasteNodeAction();
+        _pasteNodeAction = new PasteNodeAction(this);
         _pasteNodeAction.setText("Paste");
         _pasteNodeAction.setAccelerator('v');
         _pasteNodeAction.setToolTipText("Paste this Node");
@@ -1169,7 +872,7 @@ public class ProfiBusTreeView extends Composite {
         final TreeEditor editor = new TreeEditor(getViewer().getTree());
         editor.horizontalAlignment = SWT.LEFT;
         editor.grabHorizontal = true;
-        _doubleClickAction = new RenameNodeAction(editor);
+        _doubleClickAction = new RenameNodeAction(this,editor);
 
     }
 
@@ -1278,7 +981,7 @@ public class ProfiBusTreeView extends Composite {
     // CHECKSTYLE ON: CyclomaticComplexity
 
     @Nonnull
-    protected List<AbstractNodeDBO<?,?>> getCopiedNodesReferenceList() {
+    public List<AbstractNodeDBO<?,?>> getCopiedNodesReferenceList() {
         return _copiedNodesReferenceList;
     }
 
@@ -1288,17 +991,17 @@ public class ProfiBusTreeView extends Composite {
     }
 
     @Nonnull
-    protected final IAction getEditNodeAction() {
+    public final IAction getEditNodeAction() {
         assert _editNodeAction != null;
         return _editNodeAction;
     }
 
     @Nonnull
-    protected List<FacilityDBO> getLoad() {
+    public List<FacilityDBO> getLoad() {
         return _load;
     }
 
-    protected boolean isMove() {
+    public boolean isMove() {
         return _move;
     }
 
@@ -1346,7 +1049,7 @@ public class ProfiBusTreeView extends Composite {
         _move = move;
     }
 
-    protected void setSelectedNode(@Nullable final StructuredSelection selectedNode) {
+    public void setSelectedNode(@Nullable final StructuredSelection selectedNode) {
         _selectedNode = selectedNode;
     }
 
