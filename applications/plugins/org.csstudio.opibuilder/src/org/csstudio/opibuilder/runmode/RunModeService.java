@@ -13,11 +13,13 @@ import org.csstudio.opibuilder.OPIBuilderPlugin;
 import org.csstudio.opibuilder.runmode.OPIRunnerPerspective.Position;
 import org.csstudio.opibuilder.util.ErrorHandlerUtil;
 import org.csstudio.opibuilder.util.MacrosInput;
+import org.csstudio.opibuilder.util.SingleSourceHelper;
 import org.csstudio.ui.util.thread.UIBundlingThread;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.draw2d.geometry.Rectangle;
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.osgi.util.NLS;
+import org.eclipse.swt.SWT;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.ui.IEditorInput;
 import org.eclipse.ui.IEditorReference;
@@ -36,6 +38,7 @@ import org.eclipse.ui.internal.WorkbenchPage;
  * @author Xihui Chen
  *
  */
+@SuppressWarnings("restriction")
 public class RunModeService {
 
 	public enum TargetWindow{
@@ -109,7 +112,10 @@ public class RunModeService {
 				IWorkbenchWindow targetWindow = null;
 				switch (target) {
 				case NEW_WINDOW:
-					targetWindow = createNewWindow(windowBounds);
+					if(SWT.getPlatform().startsWith("rap")) //$NON-NLS-1$
+						SingleSourceHelper.rapOpenOPIInNewWindow(path);
+					else
+						targetWindow = createNewWindow(windowBounds);
 					break;
 				case RUN_WINDOW:
 					if(runWorkbenchWindow == null){
@@ -158,7 +164,8 @@ public class RunModeService {
 						targetWindow.getShell().forceFocus();						
 						targetWindow.getActivePage().openEditor(
 								runnerInput, OPIRunner.ID); //$NON-NLS-1$
-						targetWindow.getShell().moveAbove(null);
+						if(!SWT.getPlatform().startsWith("rap")) //$NON-NLS-1$
+							targetWindow.getShell().moveAbove(null);
 					} catch (PartInitException e) {
 						OPIBuilderPlugin.getLogger().log(Level.WARNING,
 						        "Failed to run OPI " + path.lastSegment(), e);

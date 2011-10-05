@@ -51,5 +51,18 @@ public class SWTConstants {
 	   * an argument (value is 2).
 	   */
 	  public static final int IMAGE_GRAY = 2;
+
+	  /**
+		 * The paint event type (value is 9).
+		 * 
+		 * @see org.eclipse.swt.widgets.Widget#addListener
+		 * @see org.eclipse.swt.widgets.Display#addFilter
+		 * @see org.eclipse.swt.widgets.Event
+		 * 
+		 * @see org.eclipse.swt.widgets.Control#addPaintListener
+		 * @see org.eclipse.swt.events.PaintListener#paintControl
+		 * @see org.eclipse.swt.events.PaintEvent
+		 */
+	  public static final int Paint = 9;
 	
 }

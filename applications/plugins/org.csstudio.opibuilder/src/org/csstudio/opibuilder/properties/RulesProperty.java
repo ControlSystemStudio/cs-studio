@@ -8,7 +8,7 @@
 package org.csstudio.opibuilder.properties;
 
 import org.csstudio.opibuilder.editparts.ExecutionMode;
-import org.csstudio.opibuilder.properties.support.RulesPropertyDescriptor;
+import org.csstudio.opibuilder.properties.support.PropertySSHelper;
 import org.csstudio.opibuilder.script.Expression;
 import org.csstudio.opibuilder.script.PVTuple;
 import org.csstudio.opibuilder.script.RuleData;
@@ -112,7 +112,9 @@ public class RulesProperty extends AbstractWidgetProperty {
 	
 	@Override
 	protected PropertyDescriptor createPropertyDescriptor() {
-		return new RulesPropertyDescriptor(prop_id, widgetModel, description);
+		if(PropertySSHelper.getIMPL() == null)
+			return null;
+		return PropertySSHelper.getIMPL().getRulesPropertyDescriptor(prop_id, widgetModel, description);
 	}
 
 	@Override

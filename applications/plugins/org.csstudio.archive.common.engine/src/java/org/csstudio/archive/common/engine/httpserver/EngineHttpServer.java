@@ -83,13 +83,43 @@ public class EngineHttpServer {
         httpService.registerServlet("/main", new MainResponse(model, provider.getPreferencesService().getVersion()), null, httpContext);
         httpService.registerServlet("/groups", new GroupsResponse(model), null, httpContext);
         httpService.registerServlet("/disconnected", new DisconnectedResponse(model), null, httpContext);
-        httpService.registerServlet("/group", new GroupResponse(model), null, httpContext);
-        httpService.registerServlet("/channel", new ChannelResponse(model), null, httpContext);
+
+        httpService.registerServlet(ShowGroupResponse.getUrl(),
+                                    new ShowGroupResponse(model),
+                                    null, httpContext);
+        httpService.registerServlet(StartGroupResponse.getUrl(),
+                                    new StartGroupResponse(model),
+                                    null, httpContext);
+        httpService.registerServlet(StopGroupResponse.getUrl(),
+                                    new StopGroupResponse(model),
+                                    null, httpContext);
+        httpService.registerServlet(AddGroupResponse.getUrl(),
+                                    new AddGroupResponse(model),
+                                    null, httpContext);
+
+
         httpService.registerServlet("/channels", new ChannelListResponse(model), null, httpContext);
         httpService.registerServlet("/environment", new EnvironmentResponse(model), null, httpContext);
         httpService.registerServlet("/restart", new RestartResponse(model), null, httpContext);
         httpService.registerServlet("/reset", new ResetResponse(model), null, httpContext);
-        httpService.registerServlet("/stop", new StopResponse(model), null, httpContext);
+        httpService.registerServlet("/stop", new StopEngineResponse(model), null, httpContext);
+
+        httpService.registerServlet(ShowChannelResponse.getUrl(),
+                                    new ShowChannelResponse(model),
+                                    null, httpContext);
+        httpService.registerServlet(StartChannelResponse.getUrl(),
+                                    new StartChannelResponse(model),
+                                    null, httpContext);
+        httpService.registerServlet(StopChannelResponse.getUrl(),
+                                    new StopChannelResponse(model),
+                                    null, httpContext);
+        httpService.registerServlet(AddChannelResponse.getUrl(),
+                                    new AddChannelResponse(model),
+                                    null, httpContext);
+        httpService.registerServlet(RemoveChannelResponse.getUrl(),
+                                    new RemoveChannelResponse(model),
+                                    null, httpContext);
+
         httpService.registerServlet("/debug", new DebugResponse(model), null, httpContext);
     }
 

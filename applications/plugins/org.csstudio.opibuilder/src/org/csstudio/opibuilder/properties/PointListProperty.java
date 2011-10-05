@@ -7,7 +7,7 @@
  ******************************************************************************/
 package org.csstudio.opibuilder.properties;
 
-import org.csstudio.opibuilder.properties.support.PointlistPropertyDescriptor;
+import org.csstudio.opibuilder.properties.support.PropertySSHelper;
 import org.eclipse.draw2d.geometry.Point;
 import org.eclipse.draw2d.geometry.PointList;
 import org.eclipse.ui.views.properties.PropertyDescriptor;
@@ -64,7 +64,9 @@ public class PointListProperty extends AbstractWidgetProperty {
 
 	@Override
 	protected PropertyDescriptor createPropertyDescriptor() {
-		return new PointlistPropertyDescriptor(prop_id, description);
+		if(PropertySSHelper.getIMPL() == null)
+			return null;
+		return PropertySSHelper.getIMPL().getPointlistPropertyDescriptor(prop_id, description);
 	}
 
 	@Override

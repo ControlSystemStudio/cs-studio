@@ -12,7 +12,7 @@ import java.util.Arrays;
 import java.util.List;
 
 import org.csstudio.opibuilder.editparts.ExecutionMode;
-import org.csstudio.opibuilder.properties.support.StringTablePropertyDescriptor;
+import org.csstudio.opibuilder.properties.support.PropertySSHelper;
 import org.csstudio.opibuilder.util.OPIBuilderMacroUtil;
 import org.eclipse.ui.views.properties.PropertyDescriptor;
 import org.jdom.Element;
@@ -96,7 +96,9 @@ public class StringTableProperty extends AbstractWidgetProperty {
 	
 	@Override
 	protected PropertyDescriptor createPropertyDescriptor() {
-		return new StringTablePropertyDescriptor(prop_id, description, titles);
+		if(PropertySSHelper.getIMPL() == null)
+			return null;
+		return PropertySSHelper.getIMPL().getStringTablePropertyDescriptor(prop_id, description, titles);
 	}
 
 	@Override

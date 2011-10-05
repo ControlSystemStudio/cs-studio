@@ -32,7 +32,7 @@ import org.csstudio.data.values.ValueFactory;
 public class EngineModel
 {
     /** Version code. See also webroot/version.html */
-    final public static String VERSION = "3.0.1"; //$NON-NLS-1$
+    final public static String VERSION = "3.0.2"; //$NON-NLS-1$
 
     /** Name of this model */
     private String name = "Archive Engine";  //$NON-NLS-1$
@@ -96,7 +96,7 @@ public class EngineModel
 
     /** Buffer reserve (N times what's ideally needed) */
     final private static double buffer_reserve = Preferences.getBufferReserve();
-    
+
     /** Samples with time stamps this far ahead of the local time are ignored */
     final private static long ignored_future = Preferences.getIgnoredFutureSecs();
 
@@ -232,12 +232,12 @@ public class EngineModel
         	throw new Exception(String.format(
                     "Group '%s': Channel '%s' already in group '%s'",
                      group.getName(), name, channel.getGroup(0).getName()));
-        
+
         // Channel is new to this engine.
         // See if there's already a sample in the archive,
         // because we won't be able to go back-in-time before that sample.
     	final IValue last_sample;
-    	
+
     	if (last_sample_time == null)
     		last_sample = null;
     	else // Create fake string sample with that time
@@ -413,7 +413,7 @@ public class EngineModel
                 if (channel_config.getName().equals(group_config.getEnablingChannel()))
                 	enablement = Enablement.Enabling;
                 final SampleMode mode = channel_config.getSampleMode();
-                
+
                 addChannel(channel_config.getName(), group, enablement, mode,
                 		channel_config.getLastSampleTime());
             }

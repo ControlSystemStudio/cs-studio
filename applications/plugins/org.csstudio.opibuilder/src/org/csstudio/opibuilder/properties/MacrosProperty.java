@@ -10,7 +10,7 @@ package org.csstudio.opibuilder.properties;
 import java.util.LinkedHashMap;
 
 import org.csstudio.opibuilder.editparts.ExecutionMode;
-import org.csstudio.opibuilder.properties.support.MacrosPropertyDescriptor;
+import org.csstudio.opibuilder.properties.support.PropertySSHelper;
 import org.csstudio.opibuilder.util.MacrosInput;
 import org.csstudio.opibuilder.util.OPIBuilderMacroUtil;
 import org.eclipse.ui.views.properties.PropertyDescriptor;
@@ -71,7 +71,9 @@ public class MacrosProperty extends AbstractWidgetProperty {
 	
 	@Override
 	protected PropertyDescriptor createPropertyDescriptor() {
-		return new MacrosPropertyDescriptor(prop_id, description);
+		if(PropertySSHelper.getIMPL() == null)
+			return null;
+		return PropertySSHelper.getIMPL().getMacrosPropertyDescriptor(prop_id, description);
 	}
 
 	@Override

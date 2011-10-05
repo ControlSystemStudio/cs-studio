@@ -182,7 +182,7 @@ public class ArchiveEngineSampleRescuerUnitTest {
             //builder.clear();
             final ArchiveSampleProtos.ArchiveSample gpbSample =
                 builder.setChannelId(sysVar.getName())
-                       .setControlSystemId(sysVar.getOrigin().getId())
+                       .setControlSystemId(sysVar.getOrigin().getName())
                        .setNanosSinceEpoch(sysVar.getTimestamp().getNanos())
                        .setData(ArchiveTypeConversionSupport.toArchiveString(sysVar.getData()))
                        .build();

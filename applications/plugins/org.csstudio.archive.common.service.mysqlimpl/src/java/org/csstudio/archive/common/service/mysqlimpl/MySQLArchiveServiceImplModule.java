@@ -74,5 +74,10 @@ public class MySQLArchiveServiceImplModule extends AbstractModule {
         bind(IArchiveControlSystemDao.class).to(ArchiveControlSystemDaoImpl.class).in(Scopes.SINGLETON);
         bind(IArchiveEngineDao.class).to(ArchiveEngineDaoImpl.class).in(Scopes.SINGLETON);
         bind(IArchiveSampleDao.class).to(ArchiveSampleDaoImpl.class).in(Scopes.SINGLETON);
+
+        bind(MysqlArchiveCreationServiceSupport.class).in(Scopes.SINGLETON);
+        bind(MysqlArchiveRetrievalServiceSupport.class).in(Scopes.SINGLETON);
+        bind(MysqlArchiveUpdateServiceSupport.class).in(Scopes.SINGLETON);
+        bind(MysqlArchiveDeleteServiceSupport.class).in(Scopes.SINGLETON);
     }
 }

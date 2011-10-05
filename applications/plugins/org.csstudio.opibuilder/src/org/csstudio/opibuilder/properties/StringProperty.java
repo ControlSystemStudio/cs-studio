@@ -8,11 +8,10 @@
 package org.csstudio.opibuilder.properties;
 
 import org.csstudio.opibuilder.editparts.ExecutionMode;
-import org.csstudio.opibuilder.properties.support.MultiLineTextPropertyDescriptor;
+import org.csstudio.opibuilder.properties.support.PropertySSHelper;
 import org.csstudio.opibuilder.script.RuleData;
 import org.csstudio.opibuilder.util.OPIBuilderMacroUtil;
 import org.eclipse.ui.views.properties.PropertyDescriptor;
-import org.eclipse.ui.views.properties.TextPropertyDescriptor;
 import org.jdom.Element;
 
 /**The widget property for string. It also accept macro string $(macro).
@@ -60,10 +59,12 @@ public class StringProperty extends AbstractWidgetProperty {
 
 	@Override
 	protected PropertyDescriptor createPropertyDescriptor() {
+		if(PropertySSHelper.getIMPL() == null)
+			return null;
 		if(multiLine)
-			return new MultiLineTextPropertyDescriptor(prop_id, description);
+			return PropertySSHelper.getIMPL().getMultiLineTextPropertyDescriptor(prop_id, description);
 		else
-			return new TextPropertyDescriptor(prop_id, description);
+			return PropertySSHelper.getIMPL().getTextPropertyDescriptor(prop_id, description);
 	}
 
 	@Override

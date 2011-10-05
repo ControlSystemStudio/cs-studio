@@ -8,6 +8,7 @@
 package org.csstudio.opibuilder.visualparts;
 
 import org.csstudio.ui.util.CustomMediaFactory;
+import org.csstudio.ui.util.SWTConstants;
 import org.eclipse.draw2d.AbstractBorder;
 import org.eclipse.draw2d.AbstractLabeledBorder;
 import org.eclipse.draw2d.GroupBoxBorder;
@@ -16,7 +17,6 @@ import org.eclipse.draw2d.LineBorder;
 import org.eclipse.draw2d.SchemeBorder;
 import org.eclipse.draw2d.SchemeBorder.Scheme;
 import org.eclipse.draw2d.TitleBarBorder;
-import org.eclipse.swt.SWT;
 import org.eclipse.swt.graphics.Color;
 import org.eclipse.swt.graphics.RGB;
 
@@ -32,7 +32,7 @@ public class BorderFactory {
 		
 		switch (style) {
 		case LINE:
-			return createLineBorder(SWT.LINE_SOLID, width, color);
+			return createLineBorder(SWTConstants.LINE_SOLID, width, color);
 		case RAISED:
 			return createSchemeBorder(SchemeBorder.SCHEMES.RAISED);
 		case LOWERED: 
@@ -46,13 +46,13 @@ public class BorderFactory {
 		case BUTTON_PRESSED: 
 			return createSchemeBorder(SchemeBorder.SCHEMES.BUTTON_PRESSED);	
 		case DASH_DOT:
-			return createLineBorder(SWT.LINE_DASHDOT, width, color);
+			return createLineBorder(SWTConstants.LINE_DASHDOT, width, color);
 		case DASHED:
-			return createLineBorder(SWT.LINE_DASH, width, color);
+			return createLineBorder(SWTConstants.LINE_DASH, width, color);
 		case DOTTED:
-			return createLineBorder(SWT.LINE_DOT, width, color);			
+			return createLineBorder(SWTConstants.LINE_DOT, width, color);			
 		case DASH_DOT_DOT:
-			return createLineBorder(SWT.LINE_DASHDOTDOT, width, color);
+			return createLineBorder(SWTConstants.LINE_DASHDOTDOT, width, color);
 		case GROUP_BOX:
 			return createGroupBoxBorder(text);
 		case TITLE_BAR:

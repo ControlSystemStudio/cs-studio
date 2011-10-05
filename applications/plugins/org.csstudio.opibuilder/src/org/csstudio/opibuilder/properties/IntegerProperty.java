@@ -22,7 +22,7 @@
 
 package org.csstudio.opibuilder.properties;
 
-import org.csstudio.opibuilder.properties.support.IntegerPropertyDescriptor;
+import org.csstudio.opibuilder.properties.support.PropertySSHelper;
 import org.eclipse.ui.views.properties.PropertyDescriptor;
 import org.jdom.Element;
 
@@ -110,7 +110,9 @@ public class IntegerProperty extends AbstractWidgetProperty {
 
 	@Override
 	protected PropertyDescriptor createPropertyDescriptor() {
-		return new IntegerPropertyDescriptor(prop_id, description);
+		if(PropertySSHelper.getIMPL() == null)
+			return null;
+		return PropertySSHelper.getIMPL().getIntegerPropertyDescriptor(prop_id, description);
 	}
 
 	@Override

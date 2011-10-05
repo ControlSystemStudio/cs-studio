@@ -35,6 +35,13 @@ INSERT INTO channel (id, name, description, datatype, group_id, last_sample_time
               (3, 'byteChannel1', 'test byte channel 1', 'Byte', 2, unix_timestamp('2011-05-01 00:00:01')*1000000000, 1, '127', '-128'),
               (4, 'enumChannel1', 'test enum channel 1', 'EpicsEnum', 2, unix_timestamp('2010-01-01 01:02:03')*1000000000, 1, NULL, NULL),
               (5, 'compressChannel', 'test compress channel 1', 'ArrayList<Double>', 2, unix_timestamp('2010-01-01 01:02:03')*1000000000, 1, '-10', '500');
+         
+--
+-- Channel status
+--        
+INSERT INTO channel_status (id, channel_id, connected, info, time)
+       VALUES (1, 1, 'TRUE', 'ENGINE START', unix_timestamp('2011-01-01 00:00:00')*1000000000),
+              (2, 1, 'FALSE', 'ENGINE STOP', unix_timestamp('2011-01-01 00:00:02')*1000000000);
               
 --
 -- Samples

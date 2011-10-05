@@ -1,24 +1,43 @@
 # Headless build settings
 #
-# Kay Kasemir
+# Author
+#  - Kay Kasemir
+#  - Takashi Nakamoto
+#
 
+# Version number of CSS
 export VERSION=3.0.0
 
-# Settings for Windows with cygwin tools
-export TOP=/CSS/Repo/cs-studio-3.0
+# Root of CSS source tree.
+export TOP=${HOME}/work/cs-studio-3.0
 
-# On Windows w/ cygwin, this needs to be set.
-# On Linux and OS X, it must be empty
-export CYGDRIVE=/cygdrive/c
+# Root directory of the drive on cygwin.
+#
+# On Windows with cygwin, this needs to be set to something like /cygdrive/c.
+# On Linux, this needs to be empty.
+export CYGDRIVE=
 
-export BUILDDIR=/CSS/build
+# Directory where the built CSS and temporary files will be stored.
+export BUILDDIR=${HOME}/work/CSSBuild
 
-export ECLIPSE_BASE=/CSS/Eclipse/RCP
-#export WORKSPACE=/CSS/RCPWorkspace
+# Directory which contains the root of Eclipse RCP.
+export ECLIPSE_BASE=${HOME}/work
 
-export JAVA_HOME="c:\Program Files\Java\jdk1.6.0_26"
+# Root directory of Delta pack
+export DELTAPACK=${HOME}/work/delta/eclipse
 
-export ECLIPSE=$ECLIPSE_BASE/eclipse
+# Root directory of JDK SE 6.
+#
+# On Windows with cygwin, this needs to be set in the form like
+# "c:\Program Files\Java\jdk1.6.0_26".
+export JAVA_HOME=${HOME}/work/jdk1.6.0_27
+
+###################################################################
+# Following parts should NOT be edited without a particuar reason.
+###################################################################
+
+# Path to the Eclipse executable.
+export ECLIPSE=${ECLIPSE_BASE}/eclipse
 
 # Could use standalone ant, or the one built into Eclipse
 export ANT="java -jar $ECLIPSE/plugins/org.eclipse.equinox.launcher_*.jar -application org.eclipse.ant.core.antRunner"
@@ -32,22 +51,8 @@ export ECLIPSE_ANT="java -jar $ECLIPSE/plugins/org.eclipse.equinox.launcher_*.ja
 # we compile
 QUALIFIER=`date "+%Y%m%d"`
 
-export DELTAPACK=$ECLIPSE_BASE/eclipse-3.6.2-delta-pack/eclipse
-
-# This can be empty unless you happen to have more than one version of
+# This can be '*' unless you happen to have more than one version of
 # org.eclipse.pde.build_*, as can happen after installing updates
-#PDE_VER=*
-PDE_VER=3.6.2.R36x_20110203
-
-
-# Linux:
-#export TOP=$HOME/CSS/cs-studio-3.0
-#export CYGDRIVE=
-#export BUILDDIR=$HOME/CSS/build
-#export ECLIPSE_BASE=$HOME/CSS/Tools
-#export JAVA_HOME=$HOME/jdk1.6.0_26
-#export ECLIPSE=$ECLIPSE_BASE/eclipse
-#export ECLIPSE_ANT="java -jar $ECLIPSE/plugins/org.eclipse.equinox.launcher_*.jar -application org.eclipse.ant.core.antRunner"
-#export ANT=$ECLIPSE_ANT
-#export DELTAPACK=$ECLIPSE
+PDE_VER=*
+#PDE_VER=3.6.2.R36x_20110203
 

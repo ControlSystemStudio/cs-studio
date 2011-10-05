@@ -60,6 +60,8 @@ import org.csstudio.domain.desy.time.TimeInstant;
 import org.junit.AfterClass;
 import org.junit.Test;
 
+import com.google.common.collect.Sets;
+
 /**
  * Integration test for {@link ArchiveSampleDaoImpl}.
  *
@@ -93,9 +95,10 @@ public class ArchiveSampleDaoCreateUnitTest extends AbstractDaoTestSetup {
 
         Thread.sleep(2500);
 
-        final IArchiveChannel channel = CHANNEL_DAO.retrieveChannelById(CHANNEL_ID_1ST);
+        final Collection<IArchiveChannel> channels = CHANNEL_DAO.retrieveChannelsByIds(Sets.newHashSet(CHANNEL_ID_1ST));
+        Assert.assertTrue(channels.size() == 1);
         final Collection<IArchiveSample<Serializable, ISystemVariable<Serializable>>> minSamples =
-            SAMPLE_DAO.retrieveSamples(DesyArchiveRequestType.AVG_PER_MINUTE, channel, START, START.plusMillis(1000*60));
+            SAMPLE_DAO.retrieveSamples(DesyArchiveRequestType.AVG_PER_MINUTE, channels.iterator().next(), START, START.plusMillis(1000*60));
 
         assertSamples(minSamples);
 
@@ -108,9 +111,11 @@ public class ArchiveSampleDaoCreateUnitTest extends AbstractDaoTestSetup {
 
         Thread.sleep(2500);
 
-        final IArchiveChannel channel = CHANNEL_DAO.retrieveChannelById(CHANNEL_ID_1ST);
+        final Collection<IArchiveChannel> channels = CHANNEL_DAO.retrieveChannelsByIds(Sets.newHashSet(CHANNEL_ID_1ST));
+        Assert.assertTrue(channels.size() == 1);
+
         final Collection<IArchiveSample<Serializable, ISystemVariable<Serializable>>> hourSamples =
-            SAMPLE_DAO.retrieveSamples(DesyArchiveRequestType.AVG_PER_HOUR, channel, START, START.plusMillis(1000*60*60));
+            SAMPLE_DAO.retrieveSamples(DesyArchiveRequestType.AVG_PER_HOUR, channels.iterator().next(), START, START.plusMillis(1000*60*60));
 
         assertSamples(hourSamples);
 
@@ -144,8 +149,11 @@ public class ArchiveSampleDaoCreateUnitTest extends AbstractDaoTestSetup {
 
         Thread.sleep(2500);
 
-        final IArchiveChannel channel = CHANNEL_DAO.retrieveChannelById(CHANNEL_ID_2ND);
-        final IArchiveSample<Serializable,ISystemVariable<Serializable>> sample =
+        final Collection<IArchiveChannel> channels = CHANNEL_DAO.retrieveChannelsByIds(Sets.newHashSet(CHANNEL_ID_2ND));
+        Assert.assertTrue(channels.size() == 1);
+        final IArchiveChannel channel = channels.iterator().next();
+
+        final IArchiveSample<Serializable, ISystemVariable<Serializable>> sample =
             SAMPLE_DAO.retrieveLatestSampleBeforeTime(channel, END.plusMillis(1L));
 
         Assert.assertNotNull(sample);

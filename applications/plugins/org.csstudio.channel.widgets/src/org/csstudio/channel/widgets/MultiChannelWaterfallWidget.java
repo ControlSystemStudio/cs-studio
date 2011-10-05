@@ -1,8 +1,6 @@
 package org.csstudio.channel.widgets;
 
 import gov.bnl.channelfinder.api.Channel;
-import gov.bnl.channelfinder.api.ChannelFinderClient;
-import gov.bnl.channelfinder.api.ChannelUtil;
 import gov.bnl.channelfinder.api.Property;
 
 import java.util.ArrayList;
@@ -11,7 +9,6 @@ import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
 
-import org.csstudio.utility.channelfinder.CFClientManager;
 import org.csstudio.utility.channelfinder.ChannelQuery;
 import org.csstudio.utility.channelfinder.ChannelQueryListener;
 import org.csstudio.utility.pvmanager.ui.SWTUtil;

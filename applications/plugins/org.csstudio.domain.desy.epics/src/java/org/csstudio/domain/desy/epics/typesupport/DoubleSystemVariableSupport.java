@@ -78,7 +78,7 @@ final class DoubleSystemVariableSupport extends EpicsSystemVariableSupport<Doubl
                                                  @Nonnull final Double min,
                                                  @Nonnull final Double max) throws TypeSupportException {
         return createMinMaxDoubleValueFromNumber(sysVar.getTimestamp(),
-                                                 (EpicsAlarm)sysVar.getAlarm(),
+                                                 (EpicsAlarm) sysVar.getAlarm(),
                                                  sysVar.getData(),
                                                  min,
                                                  max);

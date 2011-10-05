@@ -23,22 +23,19 @@
  
 package org.csstudio.ams.distributor;
 
-import java.net.InetAddress;
-import java.util.Hashtable;
+import java.sql.SQLException;
+
 import javax.jms.Connection;
 import javax.jms.ConnectionFactory;
-import javax.jms.JMSException;
-import javax.jms.MapMessage;
+import javax.jms.MessageConsumer;
 import javax.jms.MessageProducer;
 import javax.jms.Session;
-import javax.naming.Context;
-import javax.naming.InitialContext;
-import javax.naming.NamingException;
+import javax.jms.Topic;
+
+import org.apache.activemq.ActiveMQConnectionFactory;
 import org.csstudio.ams.AmsActivator;
-import org.csstudio.ams.AmsConstants;
 import org.csstudio.ams.Log;
-import org.csstudio.ams.SynchObject;
-import org.csstudio.ams.Utils;
+import org.csstudio.ams.dbAccess.AmsConnectionFactory;
 import org.csstudio.ams.distributor.preferences.DistributorPreferenceKey;
 import org.csstudio.ams.internal.AmsPreferenceKey;
 import org.eclipse.core.runtime.Platform;
@@ -64,34 +61,19 @@ public class DistributorStart implements IApplication,
     public final static int STAT_ERR_FLG_RPL = 8;                               // could not update (application-db) db flag (ReplicationState)
     public final static int STAT_ERR_FLG_BUP = 9;                               // could not update (config-db) db flag (BupState)
     public final static int STAT_ERR_UNKNOWN = 10;
-
-    // only internal
     public final static int STAT_FALSE = 999;                                   // replaces boolean false in methods
-
-    public final static long WAITFORTHREAD = 10000;
-    
-    public final static boolean CREATE_DURABLE = true;
     
     private static DistributorStart _instance = null;
-
-    private Context extContext = null;
-    private ConnectionFactory extFactory = null;
-    private Connection extConnection = null;
-    private Session extSession = null;
-    
-    private MessageProducer extPublisherStatusChange = null;
     
     private ISessionService xmppService;
     
-    private SynchObject sObj = null;
     private String managementPassword;
-    private int lastStatus = 0;
-    private boolean bStop;
+
+    private boolean stopped;
     private boolean restart;
     
     public DistributorStart() {
         _instance = this;
-        sObj = new SynchObject(STAT_INIT, System.currentTimeMillis());
         xmppService = null;
         
         IPreferencesService pref = Platform.getPreferencesService();
@@ -111,12 +93,14 @@ public class DistributorStart implements IApplication,
 
     public synchronized void setRestart() {
         restart = true;
-        bStop = true;
+        stopped = true;
+        notify();
     }
 
     public synchronized void setShutdown() {
         restart = false;
-        bStop = true;
+        stopped = true;
+        notify();
     }
 
     /**
@@ -132,249 +116,94 @@ public class DistributorStart implements IApplication,
      * 
      */
     public Object start(IApplicationContext context) throws Exception {
+        Log.log(this, Log.INFO, "Starting Distributor ...");
         
-        DistributorWork dw = null;
-        boolean bInitedJms = false;
-        
-        // use synchronized method
-        lastStatus = getStatus();
-
         DistributorPlugin.getDefault().addSessionServiceListener(this);
         
-        Log.log(this, Log.INFO, "Starting");
         DistributorPreferenceKey.showPreferences();
+        IPreferenceStore prefs = AmsActivator.getDefault().getPreferenceStore();
         
-        bStop = false;
-        restart = false;
-        
-        while(bStop == false)
-        {
-            try
-            {
-                if (dw == null)
-                {
-                    dw = new DistributorWork(this);
-                    dw.start();
-                }
-                
-                if (!bInitedJms)
-                {
-                    bInitedJms = initJms();
-                }
-        
-                Log.log(this, Log.DEBUG, "run");
-                Thread.sleep(1000);
-                
-                SynchObject actSynch = new SynchObject(0, 0);
-                if (!sObj.hasStatusSet(actSynch, 300, STAT_ERR_UNKNOWN))        // if status has not changed in the last 5 minutes
-                {                                                               // every 5 minutes if blocked
-                    Log.log(this, Log.FATAL, "TIMEOUT: status has not changed the last 5 minutes.");
-                }
-
-                String statustext = "unknown";
-                if (actSynch.getStatus() != lastStatus)                         // if status value changed
-                {
-                    switch (actSynch.getStatus())
-                    {
-                        case STAT_INIT:
-                            statustext = "init";
-                            break;
-                        case STAT_OK:
-                            statustext = "ok";
-                            break;
-                        case STAT_ERR_APPLICATION_DB:
-                        case STAT_ERR_APPLICATION_DB_SEND:
-                            statustext = "err_application_db";
-                            break;
-                        case STAT_ERR_CONFIG_DB:
-                            statustext = "err_configuration_db";
-                            break;
-                        case STAT_ERR_JMSCON_INT:
-                            statustext = "err_jms_internal";
-                            break;
-                        case STAT_ERR_JMSCON_EXT:
-                            statustext = "err_jms_external";
-                            break;
-                        case STAT_ERR_JMSCON_FREE_SEND:
-                            statustext = "err_jms_free_topics";
-                            break;
-                        case STAT_ERR_FLG_RPL:
-                            statustext = "err_flag_rpl_state";
-                            break;
-                        case STAT_ERR_FLG_BUP:
-                            statustext = "err_flag_bup_state";
-                            break;
-                    }
-                    Log.log(this, Log.INFO, "set status to " + statustext + "(" + actSynch.getStatus() + ")");
-                    lastStatus = actSynch.getStatus();
-                    if (bInitedJms)
-                    {
-                        if (!sendStatusChange(actSynch.getStatus(), statustext, actSynch.getTime()))
-                        {
-                            closeJms();
-                            bInitedJms = false;
-                        }
-                    }
-                }
-            }
-            catch(Exception e)
-            {
-                Log.log(this, Log.FATAL, e);
-                
-                closeJms();
-                bInitedJms = false;
-            }
-        }
-
-        Log.log(this, Log.INFO, "FilterManagerStart is exiting now");
-        
-        if(dw != null)
-        {
-            // Clean stop of the working thread
-            dw.stopWorking();
+        java.sql.Connection localDatabaseConnection = null;
+        java.sql.Connection masterDatabaseConnection = null;
+        try {
+            localDatabaseConnection = AmsConnectionFactory.getApplicationDB();
+            masterDatabaseConnection = AmsConnectionFactory.getConfigurationDB();
             
-            try
-            {
-                dw.join(WAITFORTHREAD);
-            }
-            catch(InterruptedException ie) { /* Can be ignored */ }
-    
-            if(dw.stoppedClean())
-            {
-                Log.log(this, Log.FATAL, "Restart/Exit: Thread stopped clean.");
+            // Create a JMS sender connection
+            ConnectionFactory senderConnectionFactory = new ActiveMQConnectionFactory(prefs.getString(AmsPreferenceKey.P_JMS_AMS_SENDER_PROVIDER_URL));
+            Connection senderConnection = senderConnectionFactory.createConnection();
+            senderConnection.start();
+            
+            // Create a sender session and destination for the command topic
+            Session commandSenderSession = senderConnection.createSession(false, Session.AUTO_ACKNOWLEDGE);
+            String commandTopicName = prefs.getString(AmsPreferenceKey.P_JMS_AMS_TOPIC_COMMAND);
+            Topic commandTopic = commandSenderSession.createTopic(commandTopicName);
+            MessageProducer commandMessageProducer = commandSenderSession.createProducer(commandTopic);
+            
+            // Create the synchronizer object for the database synchronization
+            ConfigurationSynchronizer synchronizer =
+                new ConfigurationSynchronizer(localDatabaseConnection, masterDatabaseConnection, commandSenderSession, commandMessageProducer);
+            Thread synchronizerThread = new Thread(synchronizer);
+            synchronizerThread.start();
+            
+            // Create the receiver connections
+            DistributorWork worker = new DistributorWork(localDatabaseConnection, synchronizer);
+            String[] receiverURLs = new String[] {
+                    prefs.getString(AmsPreferenceKey.P_JMS_AMS_PROVIDER_URL_1),
+                    prefs.getString(AmsPreferenceKey.P_JMS_AMS_PROVIDER_URL_2)
+                };
+            Connection[] receiverConnections = new Connection[receiverURLs.length];
+            for (int i = 0; i < receiverURLs.length; i++) {
+                ConnectionFactory connectionFactory = new ActiveMQConnectionFactory(receiverURLs[i]);
+                Connection connection = connectionFactory.createConnection();
+                receiverConnections[i] = connection;
+                Session receiverSession = connection.createSession(false, Session.AUTO_ACKNOWLEDGE);
+                Topic receiveTopic = receiverSession.createTopic(prefs.getString(AmsPreferenceKey.P_JMS_AMS_TOPIC_DISTRIBUTOR));
+                MessageConsumer consumer = receiverSession.createConsumer(receiveTopic);
                 
-                dw = null;
+                consumer.setMessageListener(worker);
+                connection.start();
             }
-            else
-            {
-                Log.log(this, Log.FATAL, "Restart/Exit: Thread did NOT stop clean.");
-                dw.closeJmsExternal();
-                dw.closeJmsInternal();
-                dw.closeApplicationDb();
-                dw = null;
+            
+            // TODO: There really should be two worker classes!
+            new Thread(worker).start();
+            
+            Log.log(this, Log.INFO, "Distributor started");
+            
+            synchronized (this) {
+                while (!stopped) {
+                    this.wait();
+                }
             }
+            
+            synchronizer.stop();
+            synchronizerThread.join();
+            
+            
+            for (int i = 0; i < receiverConnections.length; i++) {
+                receiverConnections[i].close();
+            }
+            senderConnection.close();
+        } catch (SQLException e) {
+            Log.log(this, Log.FATAL, "Could not connect to the database servers", e);
+            return IApplication.EXIT_OK;
+        } finally {
+            AmsConnectionFactory.closeConnection(localDatabaseConnection);
+            AmsConnectionFactory.closeConnection(masterDatabaseConnection);
         }
 
+        Log.log(this, Log.INFO, "DistributorStart is exiting now");
+        
         if (xmppService != null) {
             xmppService.disconnect();
         }
         
         Integer exitCode = IApplication.EXIT_OK;
         if(restart) {
-            return EXIT_RESTART;
+            exitCode = IApplication.EXIT_RESTART;
         }
         
         return exitCode;
-    }
-
-    public int getStatus()
-    {
-        return sObj.getSynchStatus();
-    }
-    public void setStatus(int status)
-    {
-        sObj.setSynchStatus(status);                                            // set always, to update time
-    }
-    
-    private boolean initJms()
-    {
-        try
-        {
-            IPreferenceStore storeAct = AmsActivator.getDefault().getPreferenceStore();
-            Hashtable<String, String> properties = new Hashtable<String, String>();
-            properties.put(Context.INITIAL_CONTEXT_FACTORY, 
-                    storeAct.getString(org.csstudio.ams.internal.AmsPreferenceKey.P_JMS_EXTERN_CONNECTION_FACTORY_CLASS));
-            properties.put(Context.PROVIDER_URL, 
-                    storeAct.getString(org.csstudio.ams.internal.AmsPreferenceKey.P_JMS_EXTERN_SENDER_PROVIDER_URL));
-            extContext = new InitialContext(properties);
-            
-            extFactory = (ConnectionFactory) extContext.lookup(
-                    storeAct.getString(org.csstudio.ams.internal.AmsPreferenceKey.P_JMS_EXTERN_CONNECTION_FACTORY));
-            extConnection = extFactory.createConnection();
-            
-            // ADDED BY: Markus Möller, 25.05.2007
-            extConnection.setClientID("DistributorStartSenderExternal");
-            
-            extSession = extConnection.createSession(false, Session.CLIENT_ACKNOWLEDGE);
-            
-            // CHANGED BY: Markus Möller, 25.05.2007
-            /*extPublisherStatusChange = extSession.createProducer((Topic)extContext.lookup(
-                    storeAct.getString(org.csstudio.ams.internal.SampleService.P_JMS_EXT_TOPIC_STATUSCHANGE)));
-            */
-            
-            extPublisherStatusChange = extSession.createProducer(extSession.createTopic(
-                    storeAct.getString(org.csstudio.ams.internal.AmsPreferenceKey.P_JMS_EXT_TOPIC_STATUSCHANGE)));
-            if (extPublisherStatusChange == null)
-            {
-                Log.log(this, Log.FATAL, "could not create extPublisherStatusChange");
-                return false;
-            }
-
-            extConnection.start();
-
-            return true;
-        }
-        catch(Exception e)
-        {
-            Log.log(this, Log.FATAL, "could not init external Jms", e);
-        }
-        return false;
-    }
-
-    private void closeJms()
-    {
-        Log.log(this, Log.INFO, "exiting external jms communication");
-        
-        if (extPublisherStatusChange != null){try{extPublisherStatusChange.close();}
-        catch (JMSException e){Log.log(this, Log.WARN, e);}finally{extPublisherStatusChange=null;}}    
-        if (extSession != null){try{extSession.close();}
-        catch (JMSException e){Log.log(this, Log.WARN, e);}finally{extSession=null;}}
-        if (extConnection != null){try{extConnection.stop();}
-        catch (JMSException e){Log.log(this, Log.WARN, e);}}
-        if (extConnection != null){try{extConnection.close();}
-        catch (JMSException e){Log.log(this, Log.WARN, e);}finally{extConnection=null;}}
-        if (extContext != null){try{extContext.close();}
-        catch (NamingException e){Log.log(this, Log.WARN, e);}finally{extContext=null;}}
-
-        Log.log(this, Log.INFO, "jms external communication closed");
-    }
-    
-    private boolean sendStatusChange(int status, String strStat, long lSetTime) throws Exception
-    {
-        MapMessage mapMsg = null;
-        try
-        {
-            mapMsg = extSession.createMapMessage();
-        }
-        catch(Exception e)
-        {
-            Log.log(this, Log.FATAL, "could not createMapMessage", e);
-        }
-        if (mapMsg == null)
-            return false;
-
-        mapMsg.setString(AmsConstants.MSGPROP_CHECK_TYPE, "PStatus");
-        mapMsg.setString(AmsConstants.MSGPROP_CHECK_PURL, InetAddress.getLocalHost().getHostAddress());
-        mapMsg.setString(AmsConstants.MSGPROP_CHECK_PLUGINID, DistributorPlugin.PLUGIN_ID);
-        mapMsg.setString(AmsConstants.MSGPROP_CHECK_STATUSTIME, Utils.longTimeToUTCString(lSetTime));
-        mapMsg.setString(AmsConstants.MSGPROP_CHECK_STATUS, String.valueOf(status));
-        mapMsg.setString(AmsConstants.MSGPROP_CHECK_TEXT, strStat);
-
-        Log.log(this, Log.INFO, "StatusChange - start external jms send. MessageProperties= " + Utils.getMessageString(mapMsg));
-
-        try
-        {
-            extPublisherStatusChange.send(mapMsg);
-        }
-        catch(Exception e)
-        {
-            Log.log(this, Log.FATAL, "could not send to external jms", e);
-            return false;
-        }
-
-        Log.log(this, Log.INFO, "send external jms message done");
-
-        return true;
     }
     
     public void bindService(ISessionService sessionService) {

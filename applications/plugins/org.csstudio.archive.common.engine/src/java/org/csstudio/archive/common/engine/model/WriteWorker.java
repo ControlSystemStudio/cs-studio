@@ -34,7 +34,7 @@ import org.csstudio.archive.common.engine.service.IServiceProvider;
 import org.csstudio.archive.common.service.ArchiveServiceException;
 import org.csstudio.archive.common.service.IArchiveEngineFacade;
 import org.csstudio.archive.common.service.sample.IArchiveSample;
-import org.csstudio.domain.desy.calc.CumulativeAverageCache;
+import org.csstudio.domain.desy.calc.AverageWithExponentialDecayCache;
 import org.csstudio.domain.desy.service.osgi.OsgiServiceUnavailableException;
 import org.csstudio.domain.desy.system.ISystemVariable;
 import org.csstudio.domain.desy.task.AbstractTimeMeasuredRunnable;
@@ -61,15 +61,16 @@ final class WriteWorker extends AbstractTimeMeasuredRunnable {
         LoggerFactory.getLogger("ErrorPerEmailLogger");
 
     private final String _name;
-    private final Collection<ArchiveChannel<Serializable, ISystemVariable<Serializable>>> _scalarChannels =
+    private final Collection<ArchiveChannelBuffer<Serializable, ISystemVariable<Serializable>>> _scalarChannels =
         Lists.newLinkedList();
-    private final Collection<ArchiveChannel<Serializable, ISystemVariable<Serializable>>> _multiScalarChannels =
+    private final Collection<ArchiveChannelBuffer<Serializable, ISystemVariable<Serializable>>> _multiScalarChannels =
         Lists.newLinkedList();
 
 
     private final long _periodInMS;
     /** Average number of values per write run */
-    private final CumulativeAverageCache _avgWriteCount = new CumulativeAverageCache();
+    private final AverageWithExponentialDecayCache _avgWriteCount = new AverageWithExponentialDecayCache(0.1);
+
 
     private final IServiceProvider _provider;
 
@@ -80,11 +81,11 @@ final class WriteWorker extends AbstractTimeMeasuredRunnable {
      */
     public WriteWorker(@Nonnull final IServiceProvider provider,
                        @Nonnull final String name,
-                       @Nonnull final Collection<ArchiveChannel<Serializable, ISystemVariable<Serializable>>> channels,
+                       @Nonnull final Collection<ArchiveChannelBuffer<Serializable, ISystemVariable<Serializable>>> channels,
                        final long periodInMS) {
         _provider = provider;
         _name = name;
-        for (final ArchiveChannel<Serializable, ISystemVariable<Serializable>> channel : channels) {
+        for (final ArchiveChannelBuffer<Serializable, ISystemVariable<Serializable>> channel : channels) {
             if (channel.isMultiScalar()) {
                 _multiScalarChannels.add(channel);
             } else {
@@ -148,12 +149,12 @@ final class WriteWorker extends AbstractTimeMeasuredRunnable {
 
     @Nonnull
     private LinkedList<IArchiveSample<Serializable, ISystemVariable<Serializable>>>
-    collectSamplesFromBuffers(@Nonnull final Collection<ArchiveChannel<Serializable, ISystemVariable<Serializable>>> channels) {
+    collectSamplesFromBuffers(@Nonnull final Collection<ArchiveChannelBuffer<Serializable, ISystemVariable<Serializable>>> channels) {
 
         final LinkedList<IArchiveSample<Serializable, ISystemVariable<Serializable>>> allSamples =
             Lists.newLinkedList();
 
-        for (final ArchiveChannel<Serializable, ISystemVariable<Serializable>> channel : channels) {
+        for (final ArchiveChannelBuffer<Serializable, ISystemVariable<Serializable>> channel : channels) {
 
             final SampleBuffer<Serializable, ISystemVariable<Serializable>, IArchiveSample<Serializable, ISystemVariable<Serializable>>> buffer =
                 channel.getSampleBuffer();
@@ -169,8 +170,8 @@ final class WriteWorker extends AbstractTimeMeasuredRunnable {
     }
 
     @Nonnull
-    protected CumulativeAverageCache getAvgWriteCount() {
-        return _avgWriteCount;
+    protected Double getAvgWriteCount() {
+        return _avgWriteCount.getValue();
     }
 
     @CheckForNull

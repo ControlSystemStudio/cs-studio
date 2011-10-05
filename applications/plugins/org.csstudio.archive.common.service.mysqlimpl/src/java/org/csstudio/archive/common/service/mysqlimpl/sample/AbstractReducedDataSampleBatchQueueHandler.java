@@ -93,6 +93,9 @@ public abstract class AbstractReducedDataSampleBatchQueueHandler<T extends Abstr
     @Override
     @Nonnull
     public Collection<String> convertToStatementString(@Nonnull final Collection<T> elements) {
+        if (elements.isEmpty()) {
+            return Collections.emptyList();
+        }
         final String sqlWithoutValues = getSqlStatementString().replace(VALUES_WILDCARD, "");
 
         final Collection<String> values =

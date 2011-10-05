@@ -35,6 +35,7 @@ import org.csstudio.archive.common.service.channelstatus.ArchiveChannelStatus;
 import org.csstudio.archive.common.service.channelstatus.IArchiveChannelStatus;
 import org.csstudio.archive.common.service.mysqlimpl.dao.AbstractDaoTestSetup;
 import org.csstudio.archive.common.service.mysqlimpl.dao.ArchiveDaoException;
+import org.csstudio.domain.common.service.DeleteResult;
 import org.csstudio.domain.desy.time.TimeInstant;
 import org.csstudio.domain.desy.time.TimeInstant.TimeInstantBuilder;
 import org.junit.AfterClass;
@@ -52,7 +53,7 @@ public class ArchiveChannelStatusDaoUnitTest extends AbstractDaoTestSetup {
 
     private static IArchiveChannelStatusDao DAO;
 
-    private static final ArchiveChannelId CHANNEL_ID = new ArchiveChannelId(1L);
+    private static final ArchiveChannelId CHANNEL_ID_1ST = new ArchiveChannelId(1L);
     private static final TimeInstant NOW = TimeInstantBuilder.fromNow();
 
 
@@ -66,7 +67,7 @@ public class ArchiveChannelStatusDaoUnitTest extends AbstractDaoTestSetup {
     public void testCreateAndRetrieveStatus() throws ArchiveDaoException, InterruptedException, ArchiveConnectionException, SQLException {
         final TimeInstant fstTime = NOW.plusMillis(1000L);
         final IArchiveChannelStatus statusEntryFirst =
-            new ArchiveChannelStatus(CHANNEL_ID,
+            new ArchiveChannelStatus(CHANNEL_ID_1ST,
                                      true,
                                      "test connect",
                                      fstTime);
@@ -78,7 +79,7 @@ public class ArchiveChannelStatusDaoUnitTest extends AbstractDaoTestSetup {
         final boolean sndConStatus = false;
 
         final IArchiveChannelStatus statusEntrySecond =
-            new ArchiveChannelStatus(CHANNEL_ID,
+            new ArchiveChannelStatus(CHANNEL_ID_1ST,
                                      sndConStatus,
                                      sndInfo,
                                      sndTime);
@@ -88,16 +89,31 @@ public class ArchiveChannelStatusDaoUnitTest extends AbstractDaoTestSetup {
         Thread.sleep(2500);
 
         final Collection<IArchiveChannelStatus> coll =
-            DAO.retrieveLatestStatusByChannelIds(Collections.singleton(CHANNEL_ID));
+            DAO.retrieveLatestStatusByChannelIds(Collections.singleton(CHANNEL_ID_1ST));
 
         Assert.assertTrue(coll.size() == 1);
         final IArchiveChannelStatus result = coll.iterator().next();
-        Assert.assertEquals(result.getChannelId(), CHANNEL_ID);
+        Assert.assertEquals(result.getChannelId(), CHANNEL_ID_1ST);
         Assert.assertEquals(sndInfo, result.getInfo());
         Assert.assertEquals(sndTime, result.getTime());
         Assert.assertTrue(sndConStatus == result.isConnected());
 
         undoCreateAndRetrieveStatus();
+    }
+
+    @Test
+    public void testDeleteChannelStatus() throws ArchiveDaoException {
+        Iterable<IArchiveChannelStatus> status =
+            DAO.retrieveLatestStatusByChannelIds(Collections.singleton(CHANNEL_ID_1ST));
+        Assert.assertTrue(status.iterator().hasNext());
+
+        final DeleteResult deleteResult =
+            DAO.deleteStatusForChannelId(CHANNEL_ID_1ST);
+        Assert.assertTrue(deleteResult.succeeded());
+
+        status =
+            DAO.retrieveLatestStatusByChannelIds(Collections.singleton(CHANNEL_ID_1ST));
+        Assert.assertFalse(status.iterator().hasNext());
     }
 
     @AfterClass
@@ -110,7 +126,7 @@ public class ArchiveChannelStatusDaoUnitTest extends AbstractDaoTestSetup {
         final Connection connection = HANDLER.createConnection();
         final Statement stmt = connection.createStatement();
         stmt.execute("DELETE FROM " + HANDLER.getDatabaseName() + "." + ArchiveChannelStatusDaoImpl.TAB +
-                     " WHERE channel_id=" + CHANNEL_ID.asString() + " AND time>" + NOW.getNanos());
+                     " WHERE channel_id=" + CHANNEL_ID_1ST.asString() + " AND time>" + NOW.getNanos());
         stmt.close();
     }
 }

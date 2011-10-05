@@ -21,6 +21,7 @@
  */
 package org.csstudio.archive.common.service.channelgroup;
 
+import javax.annotation.CheckForNull;
 import javax.annotation.Nonnull;
 
 import org.csstudio.archive.common.service.engine.ArchiveEngineId;
@@ -43,7 +44,7 @@ public interface IArchiveChannelGroup extends IIdentifiable<ArchiveChannelGroupI
     /**
      * @return the channel group description
      */
-    @Nonnull
+    @CheckForNull
     String getDescription();
 
     /**

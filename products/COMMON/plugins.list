@@ -20,6 +20,7 @@ org.csstudio.auth
 org.csstudio.auth.ui
 org.csstudio.archive
 org.csstudio.archive.channelarchiver
+org.csstudio.archive.rdb
 org.csstudio.archive.reader
 org.csstudio.archive.reader.channelarchiver
 org.csstudio.channel.opiwidgets

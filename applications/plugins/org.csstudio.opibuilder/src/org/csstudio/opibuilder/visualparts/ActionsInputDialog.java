@@ -80,7 +80,8 @@ public class ActionsInputDialog extends HelpTrayDialog {
 
 	private boolean showHookOption = true;
 	private ActionsInput actionsInput;
-	private String title;	
+	private String title;
+	private Button hookFirstCheckBox;	
 
 	public ActionsInputDialog(Shell parentShell, 
 			ActionsInput actionsInput, String dialogTitle, boolean showHookOption) {
@@ -196,24 +197,27 @@ public class ActionsInputDialog extends HelpTrayDialog {
 		bottomComposite.setLayout(new GridLayout(1, false));
 		bottomComposite.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true, 2, 1));
 		if(showHookOption){			
-			final Button checkBox = new Button(bottomComposite, SWT.CHECK);
-			checkBox.setSelection(hookedUpFirstActionToWidget);
-			checkBox.setText("Hook the first action to the mouse click event on widget.");
-			checkBox.addSelectionListener(new SelectionAdapter(){
+			hookFirstCheckBox = new Button(bottomComposite, SWT.CHECK);			
+			hookFirstCheckBox.setSelection(hookedUpFirstActionToWidget);
+			hookFirstCheckBox.setText("Hook the first action to the mouse click event on widget.");
+			hookFirstCheckBox.setEnabled(!hookedUpAllActionsToWidget);
+			hookFirstCheckBox.addSelectionListener(new SelectionAdapter(){
 				@Override
 				public void widgetSelected(SelectionEvent e) {
-					hookedUpFirstActionToWidget = checkBox.getSelection();
+					hookedUpFirstActionToWidget = hookFirstCheckBox.getSelection();
 				}
 			});
 		}
 		
-		final Button checkBox = new Button(bottomComposite, SWT.CHECK);
-		checkBox.setSelection(hookedUpAllActionsToWidget);
-		checkBox.setText("Hook all actions to the mouse click event on widget.");
-		checkBox.addSelectionListener(new SelectionAdapter(){
+		final Button hookAllCheckBox = new Button(bottomComposite, SWT.CHECK);
+		hookAllCheckBox.setSelection(hookedUpAllActionsToWidget);
+		hookAllCheckBox.setText("Hook all actions to the mouse click event on widget.");
+		hookAllCheckBox.addSelectionListener(new SelectionAdapter(){
 			@Override
 			public void widgetSelected(SelectionEvent e) {
-				hookedUpAllActionsToWidget = checkBox.getSelection();
+				hookedUpAllActionsToWidget = hookAllCheckBox.getSelection();
+				if(hookFirstCheckBox != null)
+					hookFirstCheckBox.setEnabled(!hookedUpAllActionsToWidget);
 			}
 		});
 		

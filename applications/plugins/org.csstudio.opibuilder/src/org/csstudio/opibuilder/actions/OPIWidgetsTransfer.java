@@ -65,7 +65,7 @@ public class OPIWidgetsTransfer extends ByteArrayTransfer {
 	}
 
 	@Override
-	protected void javaToNative(Object object, TransferData transferData) {
+	public void javaToNative(Object object, TransferData transferData) {
 		if (!isSupportedType(transferData) || !(checkInput(object))) {
 			DND.error(DND.ERROR_INVALID_DATA);
 		}		
@@ -80,7 +80,7 @@ public class OPIWidgetsTransfer extends ByteArrayTransfer {
 	}
 
 	@Override
-	protected Object nativeToJava(TransferData transferData) {
+	public Object nativeToJava(TransferData transferData) {
 		if(!isSupportedType(transferData))
 			return null;
 		byte[] bytes = (byte[])super.nativeToJava(transferData);

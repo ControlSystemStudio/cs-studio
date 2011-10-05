@@ -11,4 +11,5 @@ Export-Package: org.csstudio.domain.common,
  org.csstudio.domain.common.codec,
  org.csstudio.domain.common.collection,
  org.csstudio.domain.common.resource,
+ org.csstudio.domain.common.service,
  org.csstudio.domain.common.strings

@@ -3,12 +3,10 @@ package org.csstudio.opibuilder.runmode;
 import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.logging.Level;
 
-import org.csstudio.email.EMailSender;
+import org.csstudio.opibuilder.OPIBuilderPlugin;
 import org.csstudio.opibuilder.actions.PrintDisplayAction;
-import org.csstudio.opibuilder.actions.SendEMailAction;
-import org.csstudio.opibuilder.actions.SendToElogAction;
-import org.csstudio.opibuilder.editor.PatchedScrollingGraphicalViewer;
 import org.csstudio.opibuilder.editparts.ExecutionMode;
 import org.csstudio.opibuilder.editparts.WidgetEditPartFactory;
 import org.csstudio.opibuilder.model.AbstractContainerModel;
@@ -17,8 +15,8 @@ import org.csstudio.opibuilder.persistence.XMLUtil;
 import org.csstudio.opibuilder.util.ErrorHandlerUtil;
 import org.csstudio.opibuilder.util.MacrosInput;
 import org.csstudio.opibuilder.util.ResourceUtil;
+import org.csstudio.opibuilder.util.SingleSourceHelper;
 import org.csstudio.ui.util.CustomMediaFactory;
-import org.eclipse.core.filesystem.URIUtil;
 import org.eclipse.core.runtime.IAdaptable;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.IProgressMonitor;
@@ -38,6 +36,7 @@ import org.eclipse.gef.editparts.ScalableFreeformRootEditPart;
 import org.eclipse.gef.editparts.ZoomManager;
 import org.eclipse.gef.tools.DragEditPartsTracker;
 import org.eclipse.gef.ui.actions.ActionRegistry;
+import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.custom.CTabFolder;
 import org.eclipse.swt.events.ControlAdapter;
@@ -52,11 +51,9 @@ import org.eclipse.swt.widgets.Display;
 import org.eclipse.ui.IEditorInput;
 import org.eclipse.ui.IWorkbenchPartSite;
 import org.eclipse.ui.PartInitException;
-import org.eclipse.ui.ide.FileStoreEditorInput;
 import org.eclipse.ui.internal.PartPane;
 import org.eclipse.ui.internal.PartSite;
 import org.eclipse.ui.internal.PartStack;
-import org.eclipse.ui.part.FileEditorInput;
 
 /**
  * The delegate to run an OPI in an editor or view.
@@ -126,7 +123,7 @@ public class OPIRuntimeDelegate implements IAdaptable{
 		displayID++;
 		setEditorInput(input);
 		if (viewer != null) {
-			viewer.getControl().removePaintListener(errorMessagePaintListener);
+			SingleSourceHelper.removePaintListener(viewer.getControl(),errorMessagePaintListener);
 			viewer.getControl().removeControlListener(zoomListener);
 		}
 		displayModel = new DisplayModel();
@@ -156,7 +153,11 @@ public class OPIRuntimeDelegate implements IAdaptable{
 			}
 
 		} catch (Exception e) {
-			ErrorHandlerUtil.handleError("Failed to run opi " + input, e, true, true);
+			if(SWT.getPlatform().startsWith("rap")) //$NON-NLS-1$
+				OPIBuilderPlugin.getLogger().log(Level.WARNING,	
+						"Failed to open OPI file: " + input+ "\n" + e.getMessage()); //$NON-NLS-2$
+			else
+				ErrorHandlerUtil.handleError("Failed to open opi file: " + input, e, true, true);
 			throw new PartInitException("Failed to run OPI file: " + input, e);
 		}
 		
@@ -170,13 +171,10 @@ public class OPIRuntimeDelegate implements IAdaptable{
 			displayModel.setViewer(viewer);
 			hookZoomListener();
 		}
-
+		
 		getActionRegistry().registerAction(new PrintDisplayAction(opiRuntime));
+		SingleSourceHelper.registerRCPRuntimeActions(getActionRegistry(), opiRuntime);
 
-		if (SendToElogAction.isElogAvailable())
-			getActionRegistry().registerAction(new SendToElogAction(opiRuntime));
-		if (EMailSender.isEmailSupported())
-			getActionRegistry().registerAction(new SendEMailAction(opiRuntime));
 
 		// hide close button
 		hideCloseButton(site);
@@ -279,17 +277,8 @@ public class OPIRuntimeDelegate implements IAdaptable{
 	}
 	
 	public IPath getOPIFilePath() {
-		IEditorInput editorInput = getEditorInput();
-		if (editorInput instanceof FileEditorInput) {
-
-			return ((FileEditorInput) editorInput).getFile().getFullPath();
-
-		} else if (editorInput instanceof FileStoreEditorInput) {
-			return URIUtil
-					.toPath(((FileStoreEditorInput) editorInput).getURI());
-		} else if (editorInput instanceof IRunnerInput)
-			return ((IRunnerInput) editorInput).getPath();
-		return null;
+		IEditorInput editorInput = getEditorInput();		
+		return ResourceUtil.getPathInEditor(editorInput);
 	}
 	
 	
@@ -394,7 +383,8 @@ public class OPIRuntimeDelegate implements IAdaptable{
 					display.asyncExec(new Runnable() {
 						public void run() {
 							if(viewer != null){
-								viewer.getControl().addPaintListener(loadingMessagePaintListener);	
+								SingleSourceHelper.addPaintListener(
+										viewer.getControl(),loadingMessagePaintListener);	
 								viewer.getControl().redraw();
 							}
 						}
@@ -407,7 +397,8 @@ public class OPIRuntimeDelegate implements IAdaptable{
 								public void run() {
 									try {
 										if(viewer != null){
-											viewer.getControl().removePaintListener(loadingMessagePaintListener);									
+											SingleSourceHelper.removePaintListener(
+													viewer.getControl(), loadingMessagePaintListener);									
 										}													
 										XMLUtil.fillDisplayModelFromInputStream(
 												stream, displayModel);	
@@ -429,16 +420,26 @@ public class OPIRuntimeDelegate implements IAdaptable{
 							});
 
 				} catch (final Exception e) {								
-					Display.getDefault().asyncExec(new Runnable() {
+					display.asyncExec(new Runnable() {
 						public void run() {
 							if (viewer != null && viewer.getControl() !=null) {											
-								viewer.getControl().removePaintListener(loadingMessagePaintListener);
-								viewer.getControl().addPaintListener(errorMessagePaintListener);
+								SingleSourceHelper.removePaintListener(
+										viewer.getControl(), loadingMessagePaintListener);				
+								SingleSourceHelper.addPaintListener(viewer.getControl(),
+										errorMessagePaintListener);
 								viewer.getControl().redraw();
 							}
-							ErrorHandlerUtil.handleError(
-									"Failed to connect to " + input, e,
-									true, true);
+							if(OPIBuilderPlugin.isRAP()){
+								String message = 
+										"Failed to open OPI file: " + input+ "\n" + //$NON-NLS-2$
+										"Please check if the file exists."
+										+ "\n" + e.getMessage(); //$NON-NLS-1$
+								OPIBuilderPlugin.getLogger().log(Level.WARNING,	message);
+								MessageDialog.openError(null, "Open File Error",message);		
+							}
+							else
+								ErrorHandlerUtil.handleError("Failed to open opi file: " + input, e, true, true);
+							
 						}
 					});
 

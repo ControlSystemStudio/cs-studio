@@ -129,7 +129,6 @@ public class StringTableEditor extends Composite
 		// Enable buttons when items are selected
 		tableViewer.addSelectionChangedListener(new ISelectionChangedListener()
 		{
-			@Override
             public void selectionChanged(SelectionChangedEvent event)
 			{
 				setButtonsEnable();
@@ -177,7 +176,6 @@ public class StringTableEditor extends Composite
 		// Enable buttons when items are selected
 		tableViewer.addSelectionChangedListener(new ISelectionChangedListener()
 		{
-			@Override
             public void selectionChanged(SelectionChangedEvent event)
 			{
 				setButtonsEnable();

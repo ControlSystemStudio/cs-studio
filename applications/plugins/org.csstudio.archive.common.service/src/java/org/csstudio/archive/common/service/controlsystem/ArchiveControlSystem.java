@@ -22,7 +22,9 @@
 package org.csstudio.archive.common.service.controlsystem;
 
 import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 
+import org.csstudio.domain.desy.system.ControlSystem;
 import org.csstudio.domain.desy.system.ControlSystemType;
 
 /**
@@ -57,6 +59,16 @@ public class ArchiveControlSystem implements IArchiveControlSystem {
     }
 
     /**
+     * Constructor.
+     */
+    public ArchiveControlSystem(@Nonnull final ArchiveControlSystemId id,
+                                @Nonnull final ControlSystem system) {
+        _id = id;
+        _name = system.getName();
+        _type = system.getType();
+    }
+
+    /**
      * {@inheritDoc}
      */
     @Override
@@ -82,5 +94,38 @@ public class ArchiveControlSystem implements IArchiveControlSystem {
     public ControlSystemType getType() {
         return _type;
     }
-
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public int hashCode() {
+        final int prime = 31;
+        int result = prime + (_id == null ? 0 : _id.hashCode());
+        result = prime * result + (_name == null ? 0 : _name.hashCode());
+        result = prime * result + (_type == null ? 0 : _type.hashCode());
+        return result;
+    }
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public boolean equals(@Nullable final Object obj) {
+        if (!(obj instanceof ArchiveControlSystem)) {
+            return false;
+        }
+        if (this == obj) {
+            return true;
+        }
+        final ArchiveControlSystem other = (ArchiveControlSystem) obj;
+        if (!_id.equals(other._id)) {
+            return false;
+        }
+        if (!_name.equals(other._name)) {
+            return false;
+        }
+        if (!_type.equals(other._type)) {
+            return false;
+        }
+        return true;
+    }
 }

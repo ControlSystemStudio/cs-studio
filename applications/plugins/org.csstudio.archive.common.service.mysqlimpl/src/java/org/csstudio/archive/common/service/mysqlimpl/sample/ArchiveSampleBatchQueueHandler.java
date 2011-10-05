@@ -103,6 +103,9 @@ public class ArchiveSampleBatchQueueHandler extends BatchQueueHandlerSupport<Arc
     @Override
     @Nonnull
     public Collection<String> convertToStatementString(@Nonnull final Collection<ArchiveSample> elements) {
+        if (elements.isEmpty()) {
+            return Collections.emptyList();
+        }
         final String sqlWithoutValues = getSqlStatementString();
 
         final Collection<String> values =
@@ -114,7 +117,7 @@ public class ArchiveSampleBatchQueueHandler extends BatchQueueHandlerSupport<Arc
                                            try {
                                                final String value =
                                                    "(" +
-                                                   Joiner.on(",").join(input.getChannelId().asString(),+
+                                                   Joiner.on(",").join(input.getChannelId().asString(),
                                                                        input.getSystemVariable().getTimestamp().getNanos(),
                                                                        "'" + ArchiveTypeConversionSupport.toArchiveString(input.getValue()) + "'") +
                                                    ")";

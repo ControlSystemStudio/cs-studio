@@ -80,7 +80,7 @@ public class ComboProperty extends AbstractWidgetProperty {
 	}
 
 	@Override
-	protected PropertyDescriptor createPropertyDescriptor() {
+	protected PropertyDescriptor createPropertyDescriptor() {		
 		return new ComboBoxPropertyDescriptor(
 				prop_id, description, labelsArray);
 	}

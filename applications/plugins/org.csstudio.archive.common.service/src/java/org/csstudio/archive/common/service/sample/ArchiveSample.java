@@ -58,8 +58,8 @@ public class ArchiveSample<V extends Serializable,
     public ArchiveSample(@Nonnull final ArchiveChannelId channelId,
                          @Nonnull final T sysVar,
                          @Nullable final IAlarm alarm) {
-        if (sysVar.getTimestamp().getNanos() == 0L) {
-            LOG.warn("Timestamp for sample of channel {} is 0! Invalid for archive samples.", sysVar.getName());
+        if (sysVar.getTimestamp().getNanos() <= 0L) {
+            LOG.error("Timestamp for sample of channel {} is <= 0! Invalid for archive samples.", sysVar.getName());
             throw new IllegalStateException("Invalid sample timestamp");
         }
 

@@ -9,6 +9,7 @@ package org.csstudio.opibuilder.datadefinition;
 
 import org.csstudio.opibuilder.properties.AbstractWidgetProperty;
 import org.csstudio.opibuilder.util.GUIRefreshThread;
+import org.eclipse.swt.widgets.Display;
 
 /** The element in the {@link GUIRefreshThread}'s task queue. 
  *  It corresponds to a widget property change event. 
@@ -31,10 +32,18 @@ public class WidgetIgnorableUITask {
 	 */
 	final private Runnable runnableTask;
 	
+	final private Display display;
 
-	public WidgetIgnorableUITask(final AbstractWidgetProperty property, final Runnable runnableTask){
+	public WidgetIgnorableUITask(final AbstractWidgetProperty property, final Runnable runnableTask,
+			final Display display){
 		this.widgetProperty = property;
 		this.runnableTask = runnableTask;
+		this.display = display;
+	}
+	
+	
+	public Display getDisplay() {
+		return display;
 	}
 
 		/**

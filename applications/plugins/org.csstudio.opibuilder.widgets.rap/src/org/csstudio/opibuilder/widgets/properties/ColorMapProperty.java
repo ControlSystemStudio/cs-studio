@@ -14,6 +14,7 @@ import org.csstudio.opibuilder.properties.WidgetPropertyCategory;
 import org.csstudio.swt.widgets.datadefinition.ColorMap;
 import org.csstudio.swt.widgets.datadefinition.ColorMap.PredefinedColorMap;
 import org.eclipse.swt.graphics.RGB;
+import org.eclipse.ui.views.properties.PropertyDescriptor;
 import org.jdom.Element;
 
 /**The property for script.
@@ -147,6 +148,11 @@ public class ColorMapProperty extends AbstractWidgetProperty {
 	@Override
 	public boolean onlyAcceptExpressionInRule() {
 		return true;
+	}
+
+	@Override
+	protected PropertyDescriptor createPropertyDescriptor() {
+		return null;
 	}
 	
 }

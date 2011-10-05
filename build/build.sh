@@ -26,8 +26,9 @@ else
     fi
   if [[ ! -f eclipse-3.7RC4-delta-pack.zip ]]
   then
-    wget http://download.eclipse.org/eclipse/downloads/drops/S-3.7RC4-201106030909/eclipse-3.7RC4-delta-pack.zip
+#    wget http://download.eclipse.org/eclipse/downloads/drops/S-3.7RC4-201106030909/eclipse-3.7RC4-delta-pack.zip
 #    wget http://archive.eclipse.org/eclipse/downloads/drops/S-3.7RC3-201105261708/eclipse-3.7RC3-delta-pack.zip
+     wget http://archive.eclipse.org/eclipse/downloads/drops/S-3.7RC4-201106030909/eclipse-3.7RC4-delta-pack.zip
   fi
   tar -xzvf eclipse-rcp-indigo-linux-gtk.tar.gz
   unzip -o eclipse-3.7RC4-delta-pack.zip
