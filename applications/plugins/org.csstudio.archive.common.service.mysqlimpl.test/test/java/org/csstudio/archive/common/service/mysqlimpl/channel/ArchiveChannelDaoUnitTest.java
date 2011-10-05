@@ -150,6 +150,7 @@ public class ArchiveChannelDaoUnitTest extends AbstractDaoTestSetup {
                              cs, TimeInstantBuilder.fromNanos(2000000000L), false, Limits.create(Byte.valueOf((byte) -128), Byte.valueOf((byte) 127)));
     }
 
+    // CHECKSTYLE OFF : ParameterNumber
     private void assertChannelContent(@CheckForNull final IArchiveChannel channel,
                                       @Nonnull final String name,
                                       @Nonnull final String type,
@@ -158,6 +159,7 @@ public class ArchiveChannelDaoUnitTest extends AbstractDaoTestSetup {
                                       @Nullable final TimeInstant time,
                                       final boolean enabled,
                                       @CheckForNull final Limits<?> limits) {
+        // CHECKSTYLE ON : ParameterNumber
         Assert.assertNotNull(channel);
         Assert.assertEquals(name, channel.getName());
         Assert.assertEquals(type, channel.getDataType());

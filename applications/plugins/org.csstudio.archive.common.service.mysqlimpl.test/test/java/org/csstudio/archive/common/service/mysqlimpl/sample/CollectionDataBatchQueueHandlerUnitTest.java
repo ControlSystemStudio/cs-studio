@@ -90,7 +90,7 @@ public class CollectionDataBatchQueueHandlerUnitTest extends AbstractDaoTestSetu
 
 
         Assert.assertTrue(samples.size() == 1);
-        final IArchiveSample<Serializable,ISystemVariable<Serializable>> sample =
+        final IArchiveSample<Serializable, ISystemVariable<Serializable>> sample =
             samples.iterator().next();
         Assert.assertTrue(sample.getValue() instanceof ArrayList);
 
