@@ -39,6 +39,7 @@ import org.csstudio.archive.common.service.enginestatus.EngineMonitorStatus;
 import org.csstudio.archive.common.service.enginestatus.IArchiveEngineStatus;
 import org.csstudio.archive.common.service.sample.IArchiveSample;
 import org.csstudio.domain.common.service.DeleteResult;
+import org.csstudio.domain.common.service.UpdateResult;
 import org.csstudio.domain.desy.system.ISystemVariable;
 import org.csstudio.domain.desy.time.TimeInstant;
 
@@ -207,4 +208,7 @@ public interface IArchiveEngineFacade {
 
     @Nonnull
     Collection<IArchiveChannelGroup> createGroups(@Nonnull final Collection<IArchiveChannelGroup> groups) throws ArchiveServiceException;
+
+    @Nonnull
+    UpdateResult setEnableChannelFlag(@Nonnull final String name, final boolean isEnabled);
 }
