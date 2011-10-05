@@ -18,6 +18,9 @@ import org.csstudio.archive.common.engine.model.EngineModel;
  */
 @SuppressWarnings("nls")
 class RestartResponse extends AbstractResponse {
+
+    private static final String URL_BASE_PAGE = "/restart";
+
     /** Avoid serialization errors */
     private static final long serialVersionUID = 1L;
 
@@ -35,5 +38,11 @@ class RestartResponse extends AbstractResponse {
         getModel().requestRestart();
 
         html.close();
+    }
+
+
+    @Nonnull
+    public static String baseUrl() {
+        return URL_BASE_PAGE;
     }
 }

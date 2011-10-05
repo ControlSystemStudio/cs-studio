@@ -18,6 +18,9 @@ import org.csstudio.archive.common.engine.model.EngineModel;
  *  @author Kay Kasemir
  */
 class DebugResponse extends AbstractResponse {
+
+    private static final String URL_BASE_PAGE = "/debug";
+
     /** Avoid serialization errors */
     private static final long serialVersionUID = 1L;
 
@@ -35,5 +38,10 @@ class DebugResponse extends AbstractResponse {
         //getModel().dumpDebugInfo();
 
         html.close();
+    }
+
+    @Nonnull
+    public static String baseUrl() {
+        return URL_BASE_PAGE;
     }
 }

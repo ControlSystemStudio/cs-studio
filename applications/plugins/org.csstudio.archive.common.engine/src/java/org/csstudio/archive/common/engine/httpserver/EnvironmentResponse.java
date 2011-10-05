@@ -24,6 +24,9 @@ import com.google.common.base.Splitter;
  */
 @SuppressWarnings("nls")
 class EnvironmentResponse extends AbstractResponse {
+
+    private static final String URL_BASE_PAGE = "/environment";
+
     /** Avoid serialization errors */
     private static final long serialVersionUID = 1L;
 
@@ -65,5 +68,10 @@ class EnvironmentResponse extends AbstractResponse {
 
         final Iterable<String> splitted = Splitter.fixedLength(HTMLWriter.MAX_TABLE_ENTRY_WIDTH).split(value);
         return Joiner.on("...<br/>\n").join(splitted);
+    }
+
+    @Nonnull
+    public static String baseUrl() {
+        return URL_BASE_PAGE;
     }
 }

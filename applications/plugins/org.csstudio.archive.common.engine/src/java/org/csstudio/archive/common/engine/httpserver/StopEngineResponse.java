@@ -18,6 +18,9 @@ import org.csstudio.archive.common.engine.model.EngineModel;
  */
 @SuppressWarnings("nls")
 class StopEngineResponse extends AbstractResponse {
+
+    private static final String URL_BASE_PAGE = "/stop";
+
     /** Avoid serialization errors */
     private static final long serialVersionUID = 1L;
 
@@ -35,5 +38,10 @@ class StopEngineResponse extends AbstractResponse {
         getModel().requestStop();
 
         html.close();
+    }
+
+    @Nonnull
+    public static String baseUrl() {
+        return URL_BASE_PAGE;
     }
 }

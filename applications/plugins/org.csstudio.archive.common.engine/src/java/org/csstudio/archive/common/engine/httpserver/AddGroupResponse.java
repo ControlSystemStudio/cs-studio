@@ -59,7 +59,6 @@ public class AddGroupResponse extends AbstractGroupResponse {
     /**
      * {@inheritDoc}
      */
-    @SuppressWarnings("static-access")
     @Override
     protected void fillResponse(@Nonnull final HttpServletRequest req,
                                 @Nonnull final HttpServletResponse resp) throws Exception {
@@ -76,7 +75,7 @@ public class AddGroupResponse extends AbstractGroupResponse {
 
         try {
             getModel().configureNewGroup(name, desc);
-            resp.sendRedirect(ShowGroupResponse.getUrl() + "?" + ShowGroupResponse.PARAM_NAME + "=" + name);
+            resp.sendRedirect(ShowGroupResponse.urlTo(name));
 
         } catch (final EngineModelException e) {
             redirectToErrorPage(resp, "Group " + name + " could not be created:\n" + e.getMessage());
@@ -85,7 +84,7 @@ public class AddGroupResponse extends AbstractGroupResponse {
     }
 
     @Nonnull
-    public static String getUrl() {
+    public static String baseUrl() {
         return URL_ADD_GROUP_PAGE;
     }
 }

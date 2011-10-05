@@ -57,7 +57,6 @@ public class StopChannelResponse extends AbstractChannelResponse {
     /**
      * {@inheritDoc}
      */
-    @SuppressWarnings("static-access")
     @Override
     protected void fillResponse(@Nonnull final HttpServletRequest req,
                                 @Nonnull final HttpServletResponse resp) throws Exception {
@@ -79,7 +78,7 @@ public class StopChannelResponse extends AbstractChannelResponse {
 
             buffer.stop("MANUAL STOP");
 
-            resp.sendRedirect(ShowChannelResponse.getUrl() + "?" + ShowChannelResponse.PARAM_NAME + "=" + epicsName.toString());
+            resp.sendRedirect(ShowChannelResponse.urlTo(epicsName.toString()));
 
         } catch (final EngineModelException e) {
             redirectToErrorPage(resp, "Channel could not be started:\n" + e.getMessage());
@@ -87,7 +86,15 @@ public class StopChannelResponse extends AbstractChannelResponse {
     }
 
     @Nonnull
-    public static String getUrl() {
+    public static String baseUrl() {
         return URL_STOP_CHANNEL_PAGE;
+    }
+    @Nonnull
+    public static String linkTo(@Nonnull final String name) {
+        return new Url(baseUrl()).with(PARAM_NAME, name).link(Messages.HTTP_STOP);
+    }
+    @Nonnull
+    public static String urlTo(@Nonnull final String name) {
+        return new Url(baseUrl()).with(PARAM_NAME, name).url();
     }
 }

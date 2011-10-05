@@ -83,14 +83,13 @@ class ShowGroupResponse extends AbstractGroupResponse {
         html.closeTable();
     }
 
-    @SuppressWarnings("static-access")
     private void createChannelsTable(@Nonnull final ArchiveGroup group,
                                      @Nonnull final HTMLWriter html) {
         // HTML Table of all channels in the group
         html.openTable(1, new String[] {
             Messages.HTTP_CHANNEL,
             Messages.HTTP_STARTED,
-            Messages.HTTP_COLUMN_CONNECTED,
+            Messages.HTTP_CONNECTED,
             Messages.HTTP_CURRENT_VALUE,
             Messages.HTTP_TIMESTAMP,
             Messages.HTTP_COLUMN_RECEIVEDVALUES,
@@ -116,7 +115,7 @@ class ShowGroupResponse extends AbstractGroupResponse {
                         "null";
 
                     html.tableLine(new String[] {
-                            HTMLWriter.makeLink(ShowChannelResponse.getUrl() + "?" + ShowChannelResponse.PARAM_NAME + "=" + channel.getName(), channel.getName()),
+                            ShowChannelResponse.linkTo(channel.getName()),
                             started,
                             connected,
                             curVal,
@@ -134,7 +133,15 @@ class ShowGroupResponse extends AbstractGroupResponse {
     }
 
     @Nonnull
-    public static String getUrl() {
+    public static String baseUrl() {
         return URL_SHOW_GROUP_PAGE;
+    }
+    @Nonnull
+    public static String linkTo(@Nonnull final String name) {
+        return new Url(baseUrl()).with(PARAM_NAME, name).link(name);
+    }
+    @Nonnull
+    public static String urlTo(@Nonnull final String name) {
+        return new Url(baseUrl()).with(PARAM_NAME, name).url();
     }
 }
