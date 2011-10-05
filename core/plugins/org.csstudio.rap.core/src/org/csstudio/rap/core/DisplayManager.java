@@ -195,10 +195,12 @@ public class DisplayManager {
 		objectList.remove(obj);
 	}
 	
-	public static String getBrowserInfo(String Information) {
-		String browsername = Information;
+	public static String getBrowserInfo(String userAgentHeader) {
+		String browsername = userAgentHeader;
 		String browserversion = "";
-		String browser = Information;
+		String browser = userAgentHeader;
+		String os = userAgentHeader.substring(
+				userAgentHeader.indexOf('(')+1, userAgentHeader.indexOf(')'));
 		if (browser.contains("MSIE")) {
 			String subsString = browser.substring(browser.indexOf("MSIE"));
 			String Info[] = (subsString.split(";")[0]).split(" ");
@@ -229,7 +231,7 @@ public class DisplayManager {
 			browsername = Info[0];
 			browserversion = Info[1];
 		}
-		return browsername + "-" + browserversion;
+		return browsername + "-" + browserversion + " on " + os;
 	}
 
 	class DisplayResource {

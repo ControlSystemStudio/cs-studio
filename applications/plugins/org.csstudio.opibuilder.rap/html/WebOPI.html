@@ -33,6 +33,10 @@ any additional work, you can easily deploy OPIs created in BOY on a Tomcat Web
 </p>
 
 <h3>Install</h3>
+<p>Only Tomcat Server has been tested. In principle, it can be 
+deployed on all Servlet Containers that implement the Servlet API 2.3 through 3.0. 
+This includes Tomcat, Jetty, Glassfish, JBoss and WebSphere. </p>
+<h5>Install on Tomcat</h5>
 <p>Requirement: Java 1.6 and up. Apache Tomcat 7.0.x.</p>
 <p>WebOPI is a Web Archive (WAR) file deployed on <a href="http://tomcat.apache.org/">
 Tomcat</a> server. If you do not have Tomcat server available, 
@@ -42,8 +46,10 @@ then the first step would be installing Tomcat server.</p>
  <code>$CATALINA_HOME/webapps/</code> ($CATALINA_HOME represents the root of your Tomcat installation). </p>
  
  <h3>Configure</h3>
- <p>The preferences of WebOPI are configured in <code>$CATALINA_HOME/webapps/css_rap.ini</code>. After 
- WebOPI is properly configured, you can start Tomcat using 
+ <p>The preferences of WebOPI are configured in <code>$(user.dir)/webapps/css_rap.ini</code>. 
+ On Tomcat, <code>$(user.dir)</code> is same as <code>$CATALINA_HOME</code>.
+ If it is running inside Eclipse, <code>$(user.dir)</code> is the installation directory of Eclipse.
+ After WebOPI is properly configured, you can start Tomcat using 
  <code>$CATALINA_HOME/bin/startup.sh</code>. (You need to restart Tomcat server each time after you
  make changes to the configuration.)</p>
  
@@ -131,7 +137,7 @@ The macros are defined in the preference file with the item <code>macros</code>.
 Here is the list of things that are not supported in WebOPI, please avoid to use these functions in your OPI if you want to deploy it on web.
 </p>
 <ul>
- <li>Doesn't support workspace, so you cannot use workspace path in WebOPI. Use relative path everywhere if possible.</li>
+ <li>Doesn't support workspace, so you cannot use absolute workspace path in WebOPI. Use relative path everywhere if possible.</li>
  <li>Doesn't support ESC key. Press ESC key will stop client side update. So you cannot cancel editing in text input widget.
   This is a bug of RAP, see <a href="http://www.eclipse.org/forums/index.php/mv/msg/33802/109693/#msg_109693">http://www.eclipse.org/forums/index.php/mv/msg/33802/109693/#msg_109693</a>
   </li>  
@@ -148,6 +154,8 @@ Here is the list of things that are not supported in WebOPI, please avoid to use
  <li>No File Dialog.</li>
  <li>On Firefox 3.6.x, the right click target will stick on the first clicked target.</li>
  <li>Can only play wave file from an URL.</li>
+ <li>Mouse drag event will not be automatically released if a dialog popped up during dragging.
+ This will cause mouse dragging behavior on Knob, Scaled Slider widgets doesn't work as expected.</li>
 </ul>
 <h3>Trouble Shooting</h3>
 <h5>Tomcat cannot be accessed after restart</h5>
