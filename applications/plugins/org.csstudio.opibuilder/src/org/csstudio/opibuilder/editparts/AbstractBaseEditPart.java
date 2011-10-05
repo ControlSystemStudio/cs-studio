@@ -58,7 +58,6 @@ import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
 import org.eclipse.draw2d.Cursors;
 import org.eclipse.draw2d.IFigure;
-import org.eclipse.draw2d.InputEvent;
 import org.eclipse.draw2d.LabeledBorder;
 import org.eclipse.draw2d.MouseEvent;
 import org.eclipse.draw2d.MouseListener;
@@ -67,6 +66,7 @@ import org.eclipse.gef.EditPolicy;
 import org.eclipse.gef.GraphicalEditPart;
 import org.eclipse.gef.editparts.AbstractGraphicalEditPart;
 import org.eclipse.osgi.util.NLS;
+import org.eclipse.swt.SWT;
 import org.eclipse.ui.IActionFilter;
 import org.eclipse.ui.progress.UIJob;
 
@@ -291,10 +291,10 @@ public abstract class AbstractBaseEditPart extends AbstractGraphicalEditPart {
 									.setCtrlPressed(false);
 							((AbstractOpenOPIAction) action)
 									.setShiftPressed(false);
-							if (me.getState() == InputEvent.CONTROL) {
+							if (me.getState() == SWT.CONTROL) {
 								((AbstractOpenOPIAction) action)
 										.setCtrlPressed(true);
-							} else if (me.getState() == InputEvent.SHIFT) {
+							} else if (me.getState() == SWT.SHIFT) {
 								((AbstractOpenOPIAction) action)
 										.setShiftPressed(true);
 							}
@@ -607,7 +607,7 @@ public abstract class AbstractBaseEditPart extends AbstractGraphicalEditPart {
 	 * @param var
 	 *            the object.
 	 */
-	public void setExternalObject(String name, Object var) {
+	public synchronized void setExternalObject(String name, Object var) {
 		if (externalObjectsMap == null)
 			externalObjectsMap = new HashMap<String, Object>();
 		externalObjectsMap.put(name, var);
@@ -618,7 +618,7 @@ public abstract class AbstractBaseEditPart extends AbstractGraphicalEditPart {
 	 * 
 	 * @return the external object. null if no such an object was set before.
 	 */
-	public Object getExternalObject(String name) {
+	public synchronized Object getExternalObject(String name) {
 		if (externalObjectsMap != null)
 			return externalObjectsMap.get(name);
 		return null;

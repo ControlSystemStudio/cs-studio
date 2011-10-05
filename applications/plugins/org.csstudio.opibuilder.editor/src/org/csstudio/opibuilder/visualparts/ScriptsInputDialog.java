@@ -11,10 +11,14 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.csstudio.opibuilder.OPIBuilderPlugin;
+import org.csstudio.opibuilder.model.AbstractWidgetModel;
 import org.csstudio.opibuilder.script.PVTuple;
 import org.csstudio.opibuilder.script.ScriptData;
 import org.csstudio.opibuilder.script.ScriptService;
+import org.csstudio.opibuilder.script.ScriptService.ScriptType;
 import org.csstudio.opibuilder.script.ScriptsInput;
+import org.csstudio.opibuilder.scriptUtil.FileUtil;
+import org.csstudio.opibuilder.util.ResourceUtil;
 import org.csstudio.ui.util.CustomMediaFactory;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.jface.action.Action;
@@ -55,6 +59,8 @@ public class ScriptsInputDialog extends HelpTrayDialog {
 	private Action removeAction;
 	private Action moveUpAction;
 	private Action moveDownAction;
+	private Action convertToEmbedAction;
+	
 	
 	private TableViewer scriptsViewer;
 	private PVTupleTableEditor pvsEditor;
@@ -67,12 +73,17 @@ public class ScriptsInputDialog extends HelpTrayDialog {
 
 	private IPath startPath;
 	
-	public ScriptsInputDialog(Shell parentShell, ScriptsInput scriptsInput, IPath startPath, String dialogTitle) {
+	private AbstractWidgetModel widgetModel;
+	
+	public ScriptsInputDialog(Shell parentShell, ScriptsInput scriptsInput, 
+			String dialogTitle, AbstractWidgetModel widgetModel) {
 		super(parentShell);
 		setShellStyle(getShellStyle() | SWT.RESIZE);
 		this.scriptDataList = scriptsInput.getCopy().getScriptList();
 		title = dialogTitle;
-		this.startPath = startPath;
+		this.widgetModel = widgetModel;
+		this.startPath = 
+				widgetModel.getRootDisplayModel().getOpiFilePath().removeLastSegments(1);
 	}
 	
 	
@@ -175,6 +186,7 @@ public class ScriptsInputDialog extends HelpTrayDialog {
 		toolbarManager.add(removeAction);
 		toolbarManager.add(moveUpAction);
 		toolbarManager.add(moveDownAction);
+		toolbarManager.add(convertToEmbedAction);
 		
 		toolbarManager.update(true);
 		
@@ -304,6 +316,9 @@ public class ScriptsInputDialog extends HelpTrayDialog {
 			removeAction.setEnabled(true);
 			moveUpAction.setEnabled(true);
 			moveDownAction.setEnabled(true);
+			convertToEmbedAction.setEnabled(
+					!((ScriptData)selection.getFirstElement()).isEmbedded());
+			
 			editAction.setEnabled(true);
 			pvsEditor.updateInput(((ScriptData) selection
 					.getFirstElement()).getPVList());
@@ -322,6 +337,7 @@ public class ScriptsInputDialog extends HelpTrayDialog {
 			removeAction.setEnabled(false);
 			moveUpAction.setEnabled(false);
 			moveDownAction.setEnabled(false);
+			convertToEmbedAction.setEnabled(false);
 			pvsEditor.setEnabled(false);
 			editAction.setEnabled(false);
 			checkConnectivityButton.setEnabled(false);
@@ -379,17 +395,32 @@ public class ScriptsInputDialog extends HelpTrayDialog {
 		addAction = new Action("Add") {
 			@Override
 			public void run() {
-				IPath path;				
-				RelativePathSelectionDialog rsd = new RelativePathSelectionDialog(
-						Display.getCurrent().getActiveShell(), startPath, "Select a script file",
-						new String[]{ScriptService.JS, ScriptService.PY});
-				if (rsd.open() == Window.OK) {
-					if (rsd.getSelectedResource() != null) {
-						path = rsd.getSelectedResource();
-						ScriptData scriptData = new ScriptData(path);
-						scriptDataList.add(scriptData);
-						setScriptsViewerSelection(scriptData);
+				ScriptChoiceDialog scriptChoiceDialog = new ScriptChoiceDialog(
+						getShell());
+				if(scriptChoiceDialog.open() == Window.CANCEL)
+					return;
+				ScriptData scriptData = null;
+				if (scriptChoiceDialog.isEmbedded()) {
+					EmbeddedScriptEditDialog scriptEditDialog = 
+							new EmbeddedScriptEditDialog(getShell(), null);
+					if(scriptEditDialog.open() == Window.OK)
+						scriptData = scriptEditDialog.getResult();
+				}else {
+					IPath path;
+					RelativePathSelectionDialog rsd = new RelativePathSelectionDialog(
+							Display.getCurrent().getActiveShell(), startPath,
+							"Select a script file", new String[] {
+									ScriptService.JS, ScriptService.PY });
+					if (rsd.open() == Window.OK) {
+						if (rsd.getSelectedResource() != null) {
+							path = rsd.getSelectedResource();
+							scriptData = new ScriptData(path);							
+						}
 					}
+				}
+				if(scriptData != null){
+					scriptDataList.add(scriptData);
+					setScriptsViewerSelection(scriptData);
 				}
 			}
 		};
@@ -405,26 +436,40 @@ public class ScriptsInputDialog extends HelpTrayDialog {
 				IStructuredSelection selection = (IStructuredSelection) scriptsViewer.getSelection();
 				if (!selection.isEmpty()
 						&& selection.getFirstElement() instanceof ScriptData) {
-					RelativePathSelectionDialog rsd = new RelativePathSelectionDialog(
-					Display.getCurrent().getActiveShell(), startPath, "Select a script file",
-					new String[]{ScriptService.JS, ScriptService.PY});
-					rsd.setSelectedResource(((ScriptData)selection.getFirstElement()).getPath());
-					if (rsd.open() == Window.OK) {
-						if (rsd.getSelectedResource() != null) {
-							path = rsd.getSelectedResource();
-							scriptDataList.get(scriptDataList.indexOf(
-									(ScriptData)selection.getFirstElement())).setPath(path);
-							setScriptsViewerSelection((ScriptData)selection.getFirstElement());
+					ScriptData sd = (ScriptData) selection.getFirstElement();
+					if(sd.isEmbedded()){
+						EmbeddedScriptEditDialog scriptEditDialog = 
+								new EmbeddedScriptEditDialog(getShell(), sd);
+						if(scriptEditDialog.open() == Window.OK){
+							ScriptData newSd = scriptEditDialog.getResult();
+							sd.setScriptName(newSd.getScriptName());
+							sd.setScriptType(newSd.getScriptType());
+							sd.setScriptText(newSd.getScriptText());
+							setScriptsViewerSelection(sd);
 						}
-					}					
+					}else{
+						RelativePathSelectionDialog rsd = new RelativePathSelectionDialog(
+								getShell(), startPath, "Select a script file",
+						new String[]{ScriptService.JS, ScriptService.PY});
+						rsd.setSelectedResource(((ScriptData)selection.getFirstElement()).getPath());
+						if (rsd.open() == Window.OK) {
+							if (rsd.getSelectedResource() != null) {
+								path = rsd.getSelectedResource();
+								sd.setPath(path);
+								setScriptsViewerSelection(sd);
+							}
+						}
+					}
+						
+										
 				}
 				
 			}
 		};
-		editAction.setToolTipText("Change the script path");
+		editAction.setToolTipText("Edit/Change script path");
 		editAction.setImageDescriptor(CustomMediaFactory.getInstance()
 				.getImageDescriptorFromPlugin(OPIBuilderPlugin.PLUGIN_ID,
-						"icons/folder.gif")); //$NON-NLS-1$
+						"icons/edit.gif")); //$NON-NLS-1$
 		editAction.setEnabled(false);
 		removeAction = new Action() {
 			@Override
@@ -496,6 +541,55 @@ public class ScriptsInputDialog extends HelpTrayDialog {
 				.getImageDescriptorFromPlugin(OPIBuilderPlugin.PLUGIN_ID,
 						"icons/search_next.gif")); //$NON-NLS-1$
 		moveDownAction.setEnabled(false);
+		
+		convertToEmbedAction = new Action() {
+			@Override
+			public void run() {
+				IStructuredSelection selection = (IStructuredSelection) scriptsViewer.getSelection();
+				if (!selection.isEmpty()
+						&& selection.getFirstElement() instanceof ScriptData) {
+					ScriptData sd = (ScriptData) selection.getFirstElement();
+					if(!sd.isEmbedded()){
+						IPath absoluteScriptPath = sd.getPath();
+						if(!absoluteScriptPath.isAbsolute()){
+							absoluteScriptPath = ResourceUtil.buildAbsolutePath(
+									widgetModel, absoluteScriptPath);
+						}
+						
+						try {
+							String text = FileUtil.readTextFile(absoluteScriptPath.toString());	
+							String ext = absoluteScriptPath.getFileExtension().trim().toLowerCase();
+							if(ext.equals(ScriptService.JS))
+								sd.setScriptType(ScriptType.JAVASCRIPT);
+							else if(ext.equals(ScriptService.PY))
+								sd.setScriptType(ScriptType.PYTHON);
+							else{
+								MessageDialog.openError(getShell(),
+									"Failed", "The script type is not recognized.");
+								return;
+							}
+							sd.setEmbedded(true);
+							sd.setScriptText(text);
+							sd.setScriptName(
+									absoluteScriptPath.removeFileExtension().lastSegment());							
+							setScriptsViewerSelection(sd);
+						} catch (Exception e) {
+							MessageDialog.openError(getShell(),
+									"Failed", "Failed to read script file");
+						}
+						
+					}
+						
+										
+				}
+			}
+		};
+		convertToEmbedAction.setText("Convert to Embedded Script");
+		convertToEmbedAction.setToolTipText("Convert to Embedded Script");
+		convertToEmbedAction.setImageDescriptor(CustomMediaFactory.getInstance()
+				.getImageDescriptorFromPlugin(OPIBuilderPlugin.PLUGIN_ID,
+						"icons/convertToEmbedded.png")); //$NON-NLS-1$
+		convertToEmbedAction.setEnabled(false);
 	}
 	
 }

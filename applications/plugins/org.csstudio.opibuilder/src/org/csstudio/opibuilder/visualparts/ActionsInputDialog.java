@@ -22,9 +22,12 @@
 
 package org.csstudio.opibuilder.visualparts;
 
+import java.util.ArrayList;
+import java.util.LinkedList;
 import java.util.List;
 
 import org.csstudio.opibuilder.OPIBuilderPlugin;
+import org.csstudio.opibuilder.properties.AbstractWidgetProperty;
 import org.csstudio.opibuilder.widgetActions.AbstractWidgetAction;
 import org.csstudio.opibuilder.widgetActions.ActionsInput;
 import org.csstudio.opibuilder.widgetActions.WidgetActionFactory;
@@ -74,7 +77,7 @@ public class ActionsInputDialog extends HelpTrayDialog {
 	
 	private TableViewer propertiesViewer;
 		
-	private List<AbstractWidgetAction> actionsList;
+	private LinkedList<AbstractWidgetAction> actionsList;
 	private boolean hookedUpFirstActionToWidget;
 	private boolean hookedUpAllActionsToWidget;
 
@@ -146,7 +149,7 @@ public class ActionsInputDialog extends HelpTrayDialog {
 		final Composite mainComposite = new Composite(parent_Composite, SWT.None);			
 		mainComposite.setLayout(new GridLayout(2, false));
 		GridData gridData = new GridData(SWT.FILL, SWT.FILL, true, true);
-		gridData.heightHint = 200;
+		gridData.heightHint = 250;
 		mainComposite.setLayoutData(gridData);
 		final Composite leftComposite = new Composite(mainComposite, SWT.None);
 		leftComposite.setLayout(new GridLayout(1, false));
@@ -195,7 +198,7 @@ public class ActionsInputDialog extends HelpTrayDialog {
 		propertiesViewer = createPropertiesViewer(rightComposite);
 		Composite bottomComposite = new Composite(mainComposite, SWT.NONE);
 		bottomComposite.setLayout(new GridLayout(1, false));
-		bottomComposite.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true, 2, 1));
+		bottomComposite.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, false, 2, 1));
 		if(showHookOption){			
 			hookFirstCheckBox = new Button(bottomComposite, SWT.CHECK);			
 			hookFirstCheckBox.setSelection(hookedUpFirstActionToWidget);
@@ -248,7 +251,7 @@ public class ActionsInputDialog extends HelpTrayDialog {
 		tvColumn.setEditingSupport(editingSupport);
 		
 		
-		viewer.setContentProvider(new ArrayContentProvider());
+		viewer.setContentProvider(new WidgetPropertiesContentProvider());
 		viewer.setLabelProvider(new PropertiesLabelProvider());		
 		viewer.getTable().setLayoutData(
 				new GridData(SWT.FILL, SWT.FILL, true, true));
@@ -526,8 +529,23 @@ public class ActionsInputDialog extends HelpTrayDialog {
 	}
 
 	
+	final static class WidgetPropertiesContentProvider extends
+			ArrayContentProvider {
+		@Override
+		public Object[] getElements(Object inputElement) {
+			if (inputElement instanceof AbstractWidgetProperty[]) {
+				AbstractWidgetProperty[] oldProperties = (AbstractWidgetProperty[]) inputElement;
+				List<AbstractWidgetProperty> newPropertiesList = new ArrayList<AbstractWidgetProperty>();
+				for (AbstractWidgetProperty property : oldProperties) {
+					if (property.isVisibleInPropSheet())
+						newPropertiesList.add(property);
+				}
 
-	
+				return newPropertiesList.toArray();
+			}
+			return super.getElements(inputElement);
+		}
+	}
 
 	
 

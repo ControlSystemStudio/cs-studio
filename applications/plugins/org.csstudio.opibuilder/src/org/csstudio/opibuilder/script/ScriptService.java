@@ -22,7 +22,33 @@ import org.eclipse.osgi.util.NLS;
  *
  */
 public class ScriptService {
+	public enum ScriptType{
+		JAVASCRIPT("JavaScript"),
+		PYTHON("Python/Jython Script");
 
+		private ScriptType(String description) {
+			 this.description = description;
+		}
+		private String description;
+
+		@Override
+		public String toString() {
+			return description;
+		}
+		public static String[] stringValues(){
+			String[] sv = new String[values().length];
+			int i=0;
+			for(ScriptType p : values())
+				sv[i++] = p.toString();
+			return sv;
+		}
+	}
+
+	public static final String DEFAULT_JS_HEADER = 
+			"importPackage(Packages.org.csstudio.opibuilder.scriptUtil);\n"; //$NON-NLS-1$
+	public static final String DEFAULT_PYTHONSCRIPT_HEADER = 
+			"from org.csstudio.opibuilder.scriptUtil import PVUtil\n"; //$NON-NLS-1$
+	
 	public static final String PVS = "pvs"; //$NON-NLS-1$
 
 	public static final String WIDGET = "widget"; //$NON-NLS-1$

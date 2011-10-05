@@ -37,8 +37,8 @@ public class ScriptsInputCellEditor extends AbstractDialogCellEditor {
 			PlatformUI.getWorkbench().getHelpSystem().displayHelp(
 					OPIBuilderPlugin.PLUGIN_ID + ".script"); //$NON-NLS-1$
 		ScriptsInputDialog dialog = 
-			new ScriptsInputDialog(parentShell, scriptsInput,
-					widgetModel.getRootDisplayModel().getOpiFilePath().removeLastSegments(1), dialogTitle);
+			new ScriptsInputDialog(parentShell, scriptsInput,					 
+					dialogTitle, widgetModel);
 		if(dialog.open() == Window.OK){
 			scriptsInput = new ScriptsInput(dialog.getScriptDataList());
 		}

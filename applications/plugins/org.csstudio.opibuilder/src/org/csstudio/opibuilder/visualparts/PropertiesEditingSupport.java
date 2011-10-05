@@ -95,9 +95,10 @@ public class PropertiesEditingSupport extends EditingSupport {
 			if (element instanceof AbstractWidgetProperty) {
 				AbstractWidgetProperty prop = (AbstractWidgetProperty) element;
 				if (prop != null) {
-					prop.setPropertyValue(value);	
+					prop.setPropertyValue(value);
 					getViewer().refresh();
 				}
 			}
-		}
-	}
+		}	
+	
+}

@@ -6,6 +6,7 @@ import java.util.Properties;
 
 import org.csstudio.opibuilder.editparts.AbstractBaseEditPart;
 import org.csstudio.opibuilder.preferences.PreferencesHelper;
+import org.csstudio.opibuilder.script.ScriptService.ScriptType;
 import org.csstudio.opibuilder.util.SingleSourceHelper;
 import org.csstudio.ui.util.thread.UIBundlingThread;
 import org.csstudio.utility.pv.PV;
@@ -64,7 +65,8 @@ public class ScriptStoreFactory {
 	public static AbstractScriptStore getScriptStore(
 			ScriptData scriptData, AbstractBaseEditPart editpart, PV[] pvArray) throws Exception{
 		boolean jsEngineInitialized = displayContextMap.containsKey(Display.getCurrent());
-		if(scriptData.getPath() == null || scriptData.getPath().getFileExtension() == null){
+		if(!scriptData.isEmbedded() && 
+				(scriptData.getPath() == null || scriptData.getPath().getFileExtension() == null)){
 			if(scriptData instanceof RuleScriptData){
 				if(!jsEngineInitialized)
 					initJSEngine();
@@ -73,7 +75,14 @@ public class ScriptStoreFactory {
 			else
 				throw new RuntimeException("No Script Engine for this type of script");
 		}
-		String fileExt = scriptData.getPath().getFileExtension().trim().toLowerCase();
+		String fileExt = ""; //$NON-NLS-1$
+		if(scriptData.isEmbedded()){
+			if(scriptData.getScriptType() == ScriptType.JAVASCRIPT)
+				fileExt = ScriptService.JS;
+			else if (scriptData.getScriptType() == ScriptType.PYTHON)
+				fileExt = ScriptService.PY;				
+		}else
+			fileExt= scriptData.getPath().getFileExtension().trim().toLowerCase();
 		if(fileExt.equals(ScriptService.JS)){ //$NON-NLS-1$
 			if(!jsEngineInitialized)
 				initJSEngine();

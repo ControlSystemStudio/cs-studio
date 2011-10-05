@@ -22,7 +22,7 @@
   <rules />
   <show_edit_range>true</show_edit_range>
   <grid_space>4</grid_space>
-  <actions hook="false" />
+  <actions hook="false" hook_all="false" />
   <y>0</y>
   <x>0</x>
   <widget typeId="org.csstudio.opibuilder.widgets.Label" version="1.0">
@@ -54,7 +54,7 @@
       <color red="0" green="128" blue="255" />
     </border_color>
     <horizontal_alignment>1</horizontal_alignment>
-    <actions hook="false" />
+    <actions hook="false" hook_all="false" />
     <y>6</y>
     <wrap_words>true</wrap_words>
     <tooltip />
@@ -92,13 +92,13 @@
       <color red="0" green="128" blue="255" />
     </border_color>
     <y>558</y>
-    <actions hook="true">
+    <actions hook="true" hook_all="false">
       <action type="OPEN_DISPLAY">
         <path>5_4_Python_Script.opi</path>
         <macros>
           <include_parent_macros>true</include_parent_macros>
         </macros>
-        <replace>true</replace>
+        <replace>1</replace>
         <description />
       </action>
     </actions>
@@ -134,7 +134,7 @@
       <color red="0" green="128" blue="255" />
     </border_color>
     <horizontal_alignment>1</horizontal_alignment>
-    <actions hook="false" />
+    <actions hook="false" hook_all="false" />
     <y>49</y>
     <wrap_words>true</wrap_words>
     <tooltip />
@@ -169,7 +169,7 @@
       <color red="0" green="128" blue="255" />
     </border_color>
     <horizontal_alignment>1</horizontal_alignment>
-    <actions hook="false" />
+    <actions hook="false" hook_all="false" />
     <y>6</y>
     <wrap_words>true</wrap_words>
     <tooltip />
@@ -204,7 +204,7 @@
       <color red="0" green="128" blue="255" />
     </border_color>
     <horizontal_alignment>1</horizontal_alignment>
-    <actions hook="false" />
+    <actions hook="false" hook_all="false" />
     <y>62</y>
     <wrap_words>true</wrap_words>
     <tooltip />
@@ -242,13 +242,13 @@
       <color red="0" green="128" blue="255" />
     </border_color>
     <y>558</y>
-    <actions hook="true">
+    <actions hook="true" hook_all="false">
       <action type="OPEN_DISPLAY">
         <path>main.opi</path>
         <macros>
           <include_parent_macros>true</include_parent_macros>
         </macros>
-        <replace>true</replace>
+        <replace>1</replace>
         <description />
       </action>
     </actions>
@@ -287,13 +287,13 @@
       <color red="0" green="128" blue="255" />
     </border_color>
     <y>558</y>
-    <actions hook="true">
+    <actions hook="true" hook_all="false">
       <action type="OPEN_DISPLAY">
         <path>5_6_UseThreadInScript.opi</path>
         <macros>
           <include_parent_macros>true</include_parent_macros>
         </macros>
-        <replace>true</replace>
+        <replace>1</replace>
         <description />
       </action>
     </actions>
@@ -332,9 +332,11 @@
       <color red="0" green="128" blue="255" />
     </border_color>
     <y>203</y>
-    <actions hook="false">
+    <actions hook="false" hook_all="false">
       <action type="EXECUTE_JAVASCRIPT">
         <path>scripts/ReadFileExample.js</path>
+        <scriptText>importPackage(Packages.org.csstudio.opibuilder.scriptUtil);</scriptText>
+        <embedded>false</embedded>
         <description>Read</description>
       </action>
     </actions>
@@ -351,6 +353,7 @@ $(pv_value)</tooltip>
     <multiline_input>false</multiline_input>
     <auto_size>false</auto_size>
     <file_source>0</file_source>
+    <rotation_angle>0.0</rotation_angle>
     <scripts />
     <height>24</height>
     <forecolor_alarm_sensitive>false</forecolor_alarm_sensitive>
@@ -395,7 +398,7 @@ $(pv_value)</tooltip>
       <color red="0" green="128" blue="255" />
     </border_color>
     <horizontal_alignment>0</horizontal_alignment>
-    <actions hook="false" />
+    <actions hook="false" hook_all="false" />
     <y>171</y>
     <tooltip>$(pv_name)
 $(pv_value)</tooltip>
@@ -433,9 +436,11 @@ $(pv_value)</tooltip>
       <color red="0" green="128" blue="255" />
     </border_color>
     <y>348</y>
-    <actions hook="false">
+    <actions hook="false" hook_all="false">
       <action type="EXECUTE_JAVASCRIPT">
         <path>scripts/WriteFileExample.js</path>
+        <scriptText>importPackage(Packages.org.csstudio.opibuilder.scriptUtil);</scriptText>
+        <embedded>false</embedded>
         <description>Write</description>
       </action>
     </actions>
@@ -473,7 +478,7 @@ $(pv_value)</tooltip>
     <border_color>
       <color red="0" green="128" blue="255" />
     </border_color>
-    <actions hook="false" />
+    <actions hook="false" hook_all="false" />
     <y>143</y>
     <tooltip>$(pv_name)
 $(pv_value)</tooltip>
@@ -509,7 +514,7 @@ $(pv_value)</tooltip>
     <border_color>
       <color red="0" green="128" blue="255" />
     </border_color>
-    <actions hook="false" />
+    <actions hook="false" hook_all="false" />
     <y>143</y>
     <tooltip>$(pv_name)
 $(pv_value)</tooltip>
@@ -544,7 +549,7 @@ $(pv_value)</tooltip>
       <color red="0" green="128" blue="255" />
     </border_color>
     <horizontal_alignment>1</horizontal_alignment>
-    <actions hook="false" />
+    <actions hook="false" hook_all="false" />
     <y>113</y>
     <wrap_words>true</wrap_words>
     <tooltip>$(pv_name)
@@ -568,7 +573,7 @@ $(pv_value)</tooltip>
     </foreground_color>
     <widget_type>Label</widget_type>
     <enabled>true</enabled>
-    <text>Example 5: File Dialog from script</text>
+    <text>Example 5: File Dialog from Embedded script</text>
     <font>
       <fontdata fontName="Arial" height="9" style="1" />
     </font>
@@ -580,7 +585,7 @@ $(pv_value)</tooltip>
       <color red="0" green="128" blue="255" />
     </border_color>
     <horizontal_alignment>1</horizontal_alignment>
-    <actions hook="false" />
+    <actions hook="false" hook_all="false" />
     <y>459</y>
     <wrap_words>true</wrap_words>
     <tooltip>$(pv_name)
@@ -616,7 +621,7 @@ $(pv_value)</tooltip>
       <color red="0" green="128" blue="255" />
     </border_color>
     <horizontal_alignment>0</horizontal_alignment>
-    <actions hook="false" />
+    <actions hook="false" hook_all="false" />
     <y>519</y>
     <wrap_words>true</wrap_words>
     <tooltip />
@@ -654,9 +659,17 @@ $(pv_value)</tooltip>
       <color red="0" green="128" blue="255" />
     </border_color>
     <y>483</y>
-    <actions hook="false">
+    <actions hook="false" hook_all="false">
       <action type="EXECUTE_JAVASCRIPT">
-        <path>scripts/openFileDialogExample.js</path>
+        <path />
+        <scriptText>importPackage(Packages.org.csstudio.opibuilder.scriptUtil);&#xD;
+&#xD;
+var isInWorkspace = display.getWidget("workspaceDialog").getValue();&#xD;
+&#xD;
+var filePath = FileUtil.openFileDialog(isInWorkspace.booleanValue());&#xD;
+if(filePath != null)&#xD;
+	display.getWidget("dialogFilePath").setPropertyValue("text", filePath);</scriptText>
+        <embedded>true</embedded>
         <description>Open File Dialog</description>
       </action>
     </actions>
@@ -694,7 +707,7 @@ $(pv_value)</tooltip>
     <border_color>
       <color red="0" green="128" blue="255" />
     </border_color>
-    <actions hook="false" />
+    <actions hook="false" hook_all="false" />
     <y>488</y>
     <tooltip>$(pv_name)
 $(pv_value)</tooltip>
@@ -708,6 +721,7 @@ $(pv_value)</tooltip>
     <show_units>true</show_units>
     <multiline_input>true</multiline_input>
     <auto_size>false</auto_size>
+    <rotation_angle>0.0</rotation_angle>
     <scripts />
     <height>95</height>
     <forecolor_alarm_sensitive>false</forecolor_alarm_sensitive>
@@ -741,7 +755,7 @@ $(pv_value)</tooltip>
       <color red="0" green="128" blue="255" />
     </border_color>
     <horizontal_alignment>0</horizontal_alignment>
-    <actions hook="false" />
+    <actions hook="false" hook_all="false" />
     <y>348</y>
     <tooltip>$(pv_name)
 $(pv_value)</tooltip>
@@ -776,7 +790,7 @@ $(pv_value)</tooltip>
       <color red="0" green="128" blue="255" />
     </border_color>
     <horizontal_alignment>0</horizontal_alignment>
-    <actions hook="false" />
+    <actions hook="false" hook_all="false" />
     <y>203</y>
     <wrap_words>true</wrap_words>
     <tooltip />

@@ -24,7 +24,7 @@ import org.csstudio.swt.widgets.figures.ActionButtonFigure;
 import org.csstudio.swt.widgets.figures.ActionButtonFigure.ButtonActionListener;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.draw2d.IFigure;
-import org.eclipse.draw2d.InputEvent;
+import org.eclipse.swt.SWT;
 
 /**
  * EditPart controller for the ActioButton widget. The controller mediates
@@ -62,9 +62,9 @@ public final class ActionButtonEditPart extends AbstractPVWidgetEditPart {
 						if(action instanceof AbstractOpenOPIAction){
 							((AbstractOpenOPIAction) action).setCtrlPressed(false);
 							((AbstractOpenOPIAction) action).setShiftPressed(false);
-							if(mouseEventState == InputEvent.CONTROL){
+							if(mouseEventState == SWT.CONTROL){
 								((AbstractOpenOPIAction) action).setCtrlPressed(true);
-							}else if (mouseEventState == InputEvent.SHIFT){
+							}else if (mouseEventState == SWT.SHIFT){
 								((AbstractOpenOPIAction) action).setShiftPressed(true);
 							}	
 						}

@@ -7,27 +7,18 @@
  ******************************************************************************/
 package org.csstudio.opibuilder.widgetActions;
 
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
 import java.util.logging.Level;
 
 import org.csstudio.opibuilder.OPIBuilderPlugin;
 import org.csstudio.opibuilder.editparts.AbstractBaseEditPart;
-import org.csstudio.opibuilder.properties.FilePathProperty;
-import org.csstudio.opibuilder.properties.WidgetPropertyCategory;
 import org.csstudio.opibuilder.script.ScriptService;
 import org.csstudio.opibuilder.script.ScriptStoreFactory;
 import org.csstudio.opibuilder.util.ConsoleService;
 import org.csstudio.opibuilder.util.ErrorHandlerUtil;
-import org.csstudio.opibuilder.util.ResourceUtil;
 import org.csstudio.opibuilder.widgetActions.WidgetActionFactory.ActionType;
 import org.csstudio.ui.util.thread.UIBundlingThread;
-import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
-import org.eclipse.core.runtime.Path;
 import org.eclipse.core.runtime.Status;
 import org.eclipse.core.runtime.jobs.Job;
 import org.eclipse.gef.GraphicalViewer;
@@ -41,21 +32,12 @@ import org.mozilla.javascript.ScriptableObject;
  * @author Xihui Chen
  *
  */
-public class ExecuteJavaScriptAction extends AbstractWidgetAction {
+public class ExecuteJavaScriptAction extends AbstractExecuteScriptAction {
 
-	public static final String PROP_PATH = "path";//$NON-NLS-1$
 	private Script script;
 	private ImporterTopLevel scriptScope;
 	private Context scriptContext;
-
-	@Override
-	protected void configureProperties() {
-		addProperty(new FilePathProperty(
-				PROP_PATH, "File Path", WidgetPropertyCategory.Basic, new Path(""),
-				new String[]{"js"}));
-
-	}
-
+	
 	@Override
 	public ActionType getActionType() {
 		return ActionType.EXECUTE_JAVASCRIPT;
@@ -84,12 +66,14 @@ public class ExecuteJavaScriptAction extends AbstractWidgetAction {
 				}
 			}			
 		}
-		Job job = new Job("Load JavaScript") {
+		Job job = new Job("Execute JavaScript") {
 
 			@Override
 			protected IStatus run(IProgressMonitor monitor) {
-				monitor.beginTask("Connecting to " + getAbsolutePath(),
-						IProgressMonitor.UNKNOWN);
+				String taskName = isEmbedded()?"Execute JavaScript" : 
+				"Connecting to " + getAbsolutePath();
+				monitor.beginTask(taskName,
+						IProgressMonitor.UNKNOWN);				
 				runTask();
 				monitor.done();
 				return Status.OK_STATUS;
@@ -103,29 +87,27 @@ public class ExecuteJavaScriptAction extends AbstractWidgetAction {
 		Display display = getWidgetModel().getRootDisplayModel().getViewer().getControl().getDisplay();
 
 		try {
-			if(script == null){				
+			if(script == null){
 				//read file				
-				final InputStream inputStream = ResourceUtil.pathToInputStream(getAbsolutePath(), false);
-				final BufferedReader reader = new BufferedReader(
-						new InputStreamReader(inputStream));				
+				if(!isEmbedded()) 
+					getReader();				
 				
 				//compile
 				UIBundlingThread.getInstance().addRunnable(display, new Runnable() {
 					
 					public void run() {
 						try {
-							script = scriptContext.compileReader(reader, "script", 1, null);
-						} catch (IOException e) {
+							if(isEmbedded())
+								script = scriptContext.compileString(getScriptText(), "script", 1, null);
+							else{								
+								script = scriptContext.compileReader(getReader(), "script", 1, null);
+							}
+						} catch (Exception e) {
 							final String message = "Failed to compile JavaScript: " + getAbsolutePath();
 				            OPIBuilderPlugin.getLogger().log(Level.WARNING, message, e);
 							ConsoleService.getInstance().writeError(message + "\n" + e.getMessage()); //$NON-NLS-1$
 						} 
-						try {
-							inputStream.close();
-							reader.close();
-						} catch (IOException e) {							
-						}
-						
+						closeReader();	
 					}
 				});
 				
@@ -152,24 +134,15 @@ public class ExecuteJavaScriptAction extends AbstractWidgetAction {
 		}
 	}
 
-	private IPath getPath(){
-		return (IPath)getPropertyValue(PROP_PATH);
-	}
-
-	private IPath getAbsolutePath(){
-		//read file
-		IPath absolutePath = getPath();
-		if(!getPath().isAbsolute()){
-    		absolutePath =
-    			ResourceUtil.buildAbsolutePath(getWidgetModel(), getPath());
-    	}
-		return absolutePath;
-	}
-
 
 	@Override
-	public String getDefaultDescription() {
-		return super.getDefaultDescription() + " " + getPath(); //$NON-NLS-1$
+	protected String getFileExtension() {
+		return ScriptService.JS;
+	}
+
+	@Override
+	protected String getScriptHeader() {
+		return ScriptService.DEFAULT_JS_HEADER;
 	}
 
 }

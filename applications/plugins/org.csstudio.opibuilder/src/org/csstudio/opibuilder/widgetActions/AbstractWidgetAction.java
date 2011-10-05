@@ -76,8 +76,8 @@ public abstract class AbstractWidgetAction implements IAdaptable {
 		for(AbstractWidgetProperty p : propertyMap.values())
 			propArray[i++] = p;
 		return propArray;
-	}
-	
+	}	
+
 	
 	public Object getPropertyValue(Object id) {
 		Assert.isTrue(propertyMap.containsKey(id));

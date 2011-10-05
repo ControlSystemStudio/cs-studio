@@ -28,7 +28,7 @@ public class NewPythonScriptWizardPage extends WizardNewFileCreationPage {
 	
 	@Override
 	protected InputStream getInitialContents() {
-		String s = "from org.csstudio.opibuilder.scriptUtil import PVUtil\n"; //$NON-NLS-1$
+		String s = ScriptService.DEFAULT_PYTHONSCRIPT_HEADER; 
 		InputStream result = new ByteArrayInputStream(s.getBytes());
 		return result;
 	}

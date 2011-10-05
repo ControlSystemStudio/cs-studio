@@ -7,8 +7,7 @@
  ******************************************************************************/
 package org.csstudio.opibuilder.widgetActions;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.LinkedList;
 
 import org.csstudio.opibuilder.model.AbstractWidgetModel;
 import org.csstudio.opibuilder.properties.ActionsProperty;
@@ -20,7 +19,7 @@ import org.csstudio.opibuilder.properties.ActionsProperty;
  */
 public class ActionsInput {
 
-	private List<AbstractWidgetAction> actionsList;
+	private LinkedList<AbstractWidgetAction> actionsList;
 	
 	private boolean hookUpFirstActionToWidget = false;
 	
@@ -28,18 +27,18 @@ public class ActionsInput {
 	
 	private AbstractWidgetModel widgetModel;
 	
-	public ActionsInput(List<AbstractWidgetAction> actionsList) {
+	public ActionsInput(LinkedList<AbstractWidgetAction> actionsList) {
 		this.actionsList = actionsList;
 	}
 	
 	public ActionsInput() {
-		actionsList = new ArrayList<AbstractWidgetAction>();
+		actionsList = new LinkedList<AbstractWidgetAction>();
 	}
 
 	/**
 	 * @return the scriptList
 	 */
-	public List<AbstractWidgetAction> getActionsList() {
+	public LinkedList<AbstractWidgetAction> getActionsList() {
 		return actionsList;
 	}
 	

@@ -67,7 +67,7 @@ public abstract class AbstractScriptStore implements IScriptStore{
 		this.editPart = editpart;
 		this.pvArray = pvArray;
 		
-		if(!(scriptData instanceof RuleScriptData)){
+		if(!(scriptData instanceof RuleScriptData) && !scriptData.isEmbedded()){			
 			absoluteScriptPath = scriptData.getPath();
 			if(!absoluteScriptPath.isAbsolute()){
 				absoluteScriptPath = ResourceUtil.buildAbsolutePath(
@@ -83,7 +83,9 @@ public abstract class AbstractScriptStore implements IScriptStore{
 
 		if(scriptData instanceof RuleScriptData){
 			compileString(((RuleScriptData)scriptData).getScriptString());
-		}else{			
+		}else if(scriptData.isEmbedded())
+			compileString(scriptData.getScriptText());
+		else{			
 			//read file
 			InputStream inputStream = ResourceUtil.pathToInputStream(absoluteScriptPath, false);
 			BufferedReader reader = new BufferedReader(

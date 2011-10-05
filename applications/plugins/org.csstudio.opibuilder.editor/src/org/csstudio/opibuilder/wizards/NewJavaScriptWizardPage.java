@@ -10,6 +10,7 @@ package org.csstudio.opibuilder.wizards;
 import java.io.ByteArrayInputStream;
 import java.io.InputStream;
 
+import org.csstudio.opibuilder.script.ScriptService;
 import org.csstudio.ui.util.wizards.WizardNewFileCreationPage;
 import org.eclipse.jface.viewers.IStructuredSelection;
 
@@ -19,6 +20,7 @@ import org.eclipse.jface.viewers.IStructuredSelection;
  */
 public class NewJavaScriptWizardPage extends WizardNewFileCreationPage {
 
+
 	public NewJavaScriptWizardPage(String pageName, IStructuredSelection selection) {
 		super(pageName, selection);
 		setTitle("Create a new javascript");
@@ -27,7 +29,7 @@ public class NewJavaScriptWizardPage extends WizardNewFileCreationPage {
 	
 	@Override
 	protected InputStream getInitialContents() {
-		String s = "importPackage(Packages.org.csstudio.opibuilder.scriptUtil);\n"; //$NON-NLS-1$
+		String s = ScriptService.DEFAULT_JS_HEADER; 
 		InputStream result = new ByteArrayInputStream(s.getBytes());
 		return result;
 	}
