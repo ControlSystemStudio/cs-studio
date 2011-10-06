@@ -23,8 +23,12 @@ package org.csstudio.domain.desy.epics.alarm;
 
 import gov.aps.jca.dbr.Status;
 
+import java.util.List;
+
 import javax.annotation.CheckForNull;
 import javax.annotation.Nonnull;
+
+import com.google.common.collect.Lists;
 
 /**
  * Status in EPICS as from  version 3.14.12.rc1 in
@@ -62,6 +66,36 @@ public enum EpicsAlarmStatus {
     UNKNOWN; // Added deliberately to allow for handling changes during epics evolution
 
     /**
+     * List of status by integer code, the index in the list corresponds to the JCA code.
+     * @see Status
+     */
+    private static List<EpicsAlarmStatus> STATUS_BY_CODE =
+        Lists.newArrayList(NO_ALARM,
+                           READ,
+                           WRITE,
+                           HIHI,
+                           HIGH,
+                           LOLO,
+                           LOW,
+                           STATE,
+                           COS,
+                           COMM,
+                           TIMEOUT,
+                           HWLIMIT,
+                           CALC,
+                           SCAN,
+                           LINK,
+                           SOFT,
+                           BADSUB,
+                           UDF,
+                           DISABLE,
+                           SIMM,
+                           READACCESS,
+                           WRITEACCESS,
+                           UNKNOWN);
+
+
+    /**
      * Converts a string representation of a status to an EpicsAlarmStatus.
      * Note, that unlike the {@link EpicsAlarmStatus#valueOf(String)} method, this method will never
      * throw an {@link IllegalArgumentException}. If there is no severity value for
@@ -83,12 +117,24 @@ public enum EpicsAlarmStatus {
     }
 
     /**
-     * Converts an {@link Status} into a CSS epics alarm status.
-     * @param status the incoming status
-     * @return the outgoing status
+     * Returns the DESY severity according to code taken from {@link Status}.
+     *
+     * If the code is not known (not in {0,...,21}) {@link EpicsAlarmStatus#UNKNOWN} is
+     * returned.
+     *
+     * @param code the JCA integer code
+     * @return the DESY alarm status
      */
     @Nonnull
-    public EpicsAlarmStatus valueOf(@Nonnull final Status status) {
-        return parseStatus(status.getName());
+    public static EpicsAlarmStatus valueOf(@Nonnull final Status status) {
+        return byJCACode(status.getValue());
+    }
+
+    @Nonnull
+    private static EpicsAlarmStatus byJCACode(final int code) {
+        if (code < 0 || code >= STATUS_BY_CODE.size()) {
+            return UNKNOWN;
+        }
+        return STATUS_BY_CODE.get(code);
     }
 }
