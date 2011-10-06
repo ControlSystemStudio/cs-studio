@@ -36,5 +36,10 @@ public class PreferenceConstants {
     public static final String JMS_PRODUCER_URL = "jmsProducerUrl";
     public static final String JMS_PRODUCER_FACTORY = "jmsProducerFactory";
     public static final String JMS_PRODUCER_TOPIC_NAME = "jmsProducerTopicName";
+    public static final String JMS_PRODUCER_TOPIC_NAME_BEACON = "jmsProducerTopicNameBeacon";
+    public static final String BEACON_REP_RATE = "BeaconRepRate";
     public static final String DESCRIPTION = "description";
+    public static final String DATA_PORT_NUMBER = "dataPortNumber";
+    public static final String BUFFER_SIZE = "bufferSize";
+    public static final String NUMBER_OF_THREADS = "numberOfThreads";
 }

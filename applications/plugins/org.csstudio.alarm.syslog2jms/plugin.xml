@@ -39,8 +39,12 @@
          id="Syslog2JmsProduct"
          point="org.eclipse.core.runtime.products">
       <product
-            application="org.csstudio.syslog2jms.Syslog2JmsApplication"
+            application="org.csstudio.alarm.syslog2jms.Syslog2JmsApplication"
             name="Syslog2JmsProduct">
+         <property
+               name="appName"
+               value="Syslog2JmsProduct">
+         </property>
       </product>
    </extension>
 
