@@ -97,31 +97,43 @@ public class ParseSyslogMessage implements Runnable {
 				 }
 
 				 // get hostname
-				 hostName = stringMsg.substring(sp1 + 1, sp1 + 1 + sp2 - sp1 - 1);
-				 if ( debug) {
-					 System.out.println("Date: " + dateTime);
+				 if (checkSubstringBoundaries (stringMsg.length(), sp1 + 1, sp1 + 1 + sp2 - sp1 - 1)) {
+					 hostName = stringMsg.substring(sp1 + 1, sp1 + 1 + sp2 - sp1 - 1);
+					 if ( debug) {
+						 System.out.println("Date: " + dateTime);
+					 }
 				 }
+				 
 
 				 // get app-name
-				 appName = stringMsg.substring(sp2 + 1, sp2 + 1 + sp3 - sp2 - 1);
-				 if ( debug) {
-					 System.out.println("hostName: " + hostName);
+				 if (checkSubstringBoundaries (stringMsg.length(), sp2 + 1, sp2 + 1 + sp3 - sp2 - 1)) {
+					 appName = stringMsg.substring(sp2 + 1, sp2 + 1 + sp3 - sp2 - 1);
+					 if ( debug) {
+						 System.out.println("hostName: " + hostName);
+					 }
 				 }
+				 
 
 				 // proc-id
-				 prodid = stringMsg.substring(sp3 + 1, sp3 + 1 + sp4 - sp3 - 1);
-				 if ( debug) {
-					 System.out.println("prodid: " + prodid);
+				 if (checkSubstringBoundaries (stringMsg.length(), sp3 + 1, sp3 + 1 + sp4 - sp3 - 1)) {
+					 prodid = stringMsg.substring(sp3 + 1, sp3 + 1 + sp4 - sp3 - 1);
+					 if ( debug) {
+						 System.out.println("prodid: " + prodid);
+					 }
 				 }
+				
 
 				 // msg-id
-				 msgid = stringMsg.substring(sp4 + 1, sp4 + 1 + sp5 - sp4 - 1);
-				 if ( debug) {
-					 System.out.println("msgid: " + msgid);
+				 if (checkSubstringBoundaries (stringMsg.length(), sp4 + 1, sp4 + 1 + sp5 - sp4 - 1)) {
+					 msgid = stringMsg.substring(sp4 + 1, sp4 + 1 + sp5 - sp4 - 1);
+					 if ( debug) {
+						 System.out.println("msgid: " + msgid);
+					 }
 				 }
+				 
 
 
-				 if (stringMsg.charAt(sp5 + 1) == '-')
+				 if ( (sp5 + 1 <= stringMsg.length()) && stringMsg.charAt(sp5 + 1) == '-')
 				 {
 					 // sd is nil-value
 					 msg = stringMsg.substring(sp5 + 3);
@@ -230,6 +242,7 @@ public class ParseSyslogMessage implements Runnable {
 			 hostName = inetAddress.getHostName();
 			 // just a good guess from NetApp messages
 			 appName = prodid + msgid;
+			 msg = stringMsg;
 		 }
 		 SimpleDateFormat dateFormater = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss.SSS");
 		 String jmsTime = dateFormater.format(dateTime);
@@ -302,7 +315,14 @@ public class ParseSyslogMessage implements Runnable {
 	 }
 	 */
 
-	 private static int CountChar(char c, String s)
+	 private boolean checkSubstringBoundaries(int length, int start, int end) {
+		if ( ((start >=0) && (start < length)) && ((end > 0)&& (end <= length)) ) {
+			return true;
+		}
+		return false;
+	}
+
+	private static int CountChar(char c, String s)
 	 {
 		 int pos = 0;
 		 int count = 0;
