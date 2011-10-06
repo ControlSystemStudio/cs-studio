@@ -156,7 +156,8 @@ public class LinkingContainerEditpart extends AbstractContainerEditpart{
 			DisplayModel tempDisplayModel = new DisplayModel();
 			tempDisplayModel.setOpiFilePath(path);
 			XMLUtil.fillDisplayModelFromInputStream(
-					ResourceUtil.pathToInputStream(path), tempDisplayModel);
+					ResourceUtil.pathToInputStream(path), tempDisplayModel,
+					getViewer().getControl().getDisplay());
 			AbstractContainerModel loadTarget = tempDisplayModel;
 
 			if(!getWidgetModel().getGroupName().trim().equals("")){ //$NON-NLS-1$

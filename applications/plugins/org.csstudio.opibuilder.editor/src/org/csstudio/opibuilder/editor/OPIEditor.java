@@ -803,6 +803,7 @@ public class OPIEditor extends GraphicalEditorWithFlyoutPalette {
 	private void initDisplayModel() {
 
 		displayModel = new DisplayModel();
+		displayModel.setOpiFilePath(getOPIFilePath());
 		try {
 			XMLUtil.fillDisplayModelFromInputStream(getInputStream(), displayModel);
 		} catch (Exception e) {
@@ -814,7 +815,7 @@ public class OPIEditor extends GraphicalEditorWithFlyoutPalette {
 			ConsoleService.getInstance().writeError(message);
 			getEditorSite().getPage().closeEditor(this, false);
 		}
-		displayModel.setOpiFilePath(getOPIFilePath());
+		
 	}
 
 	private IPath getOPIFilePath() {
