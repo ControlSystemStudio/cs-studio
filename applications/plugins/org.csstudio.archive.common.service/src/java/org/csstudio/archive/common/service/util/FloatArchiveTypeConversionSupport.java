@@ -82,9 +82,10 @@ public class FloatArchiveTypeConversionSupport extends AbstractNumberArchiveType
                                             @Nonnull final ArchiveChannelGroupId grpId,
                                             @Nonnull final TimeInstant time,
                                             @Nonnull final IArchiveControlSystem cs,
+                                            final boolean enabled,
                                             @Nonnull final Float low,
                                             @Nonnull final Float high) {
         // CHECKSTYLE ON : ParameterNumber
-        return new ArchiveLimitsChannel<Float>(id, name, datatype, grpId, time, cs, low, high);
+        return new ArchiveLimitsChannel<Float>(id, name, datatype, grpId, time, cs, enabled, low, high);
     }
 }

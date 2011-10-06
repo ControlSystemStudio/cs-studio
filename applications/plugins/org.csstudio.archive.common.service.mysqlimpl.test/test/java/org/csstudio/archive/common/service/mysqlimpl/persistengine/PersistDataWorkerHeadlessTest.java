@@ -153,7 +153,7 @@ public class PersistDataWorkerHeadlessTest {
 
         final SimpleLineProcessor lineProcessor = new SimpleLineProcessor();
         Files.readLines(RESCUE_STMTS, Charset.defaultCharset(), lineProcessor);
-        Assert.assertTrue(lineProcessor.getI() == 3);
+        Assert.assertTrue(lineProcessor.getI() == 1);
 
         worker.run();
     }

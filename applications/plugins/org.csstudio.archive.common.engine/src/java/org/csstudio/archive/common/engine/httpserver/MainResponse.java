@@ -10,6 +10,7 @@ package org.csstudio.archive.common.engine.httpserver;
 import java.net.InetAddress;
 import java.net.UnknownHostException;
 
+import javax.annotation.CheckForNull;
 import javax.annotation.Nonnull;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -35,11 +36,14 @@ class MainResponse extends AbstractResponse {
 
     private static final Logger LOG = LoggerFactory.getLogger(MainResponse.class);
 
+    private static final String URL_BASE_PAGE = "/main";
+
     /** Avoid serialization errors */
     private static final long serialVersionUID = 1L;
 
     /** Bytes in a MegaByte */
     private static final double MB = 1024.0*1024.0;
+
 
     private final String _host;
     private final String _version;
@@ -139,7 +143,7 @@ class MainResponse extends AbstractResponse {
 
         html.tableLine(new String[] {Messages.HTTP_WRITE_STATE,
                                      (SampleBuffer.isInErrorState() ? HTMLWriter.makeRedText(Messages.HTTP_WRITE_ERROR) :
-                                                                      Messages.HTTP_NO_ERROR),
+                                                                      Messages.HTTP_OK),
                                                                       });
 
         final TimeInstant lastWriteTime = getModel().getLastWriteTime();
@@ -151,7 +155,7 @@ class MainResponse extends AbstractResponse {
         final Double avgWriteCount = getModel().getAvgWriteCount();
         html.tableLine(new String[] {numOf(Messages.HTTP_AVG_WRITE),
                                      (avgWriteCount != null ? String.format("%.1f", avgWriteCount):
-                                                              "NO") + " samples",
+                                                              Messages.HTTP_NO) + " samples",
                                                               });
         final Duration avgWriteDuration = getModel().getAvgWriteDuration();
         String printDur = "NONE";
@@ -175,5 +179,14 @@ class MainResponse extends AbstractResponse {
                                      String.format("%.1f MB of %.1f MB used (%.1f %%)",
                                                    usedMem, maxMem, percMem),
                                                    });
+    }
+
+    @Nonnull
+    public static final String baseUrl() {
+        return URL_BASE_PAGE;
+    }
+    @Nonnull
+    public static String linkTo(@CheckForNull final String linkText) {
+        return new Url(baseUrl()).link(linkText);
     }
 }

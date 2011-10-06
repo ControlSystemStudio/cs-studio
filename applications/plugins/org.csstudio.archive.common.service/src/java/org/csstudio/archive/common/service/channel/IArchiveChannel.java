@@ -55,4 +55,6 @@ public interface IArchiveChannel extends IIdentifiable<ArchiveChannelId> {
 
     @CheckForNull
     Limits<?> getDisplayLimits();
+
+    boolean isEnabled();
 }

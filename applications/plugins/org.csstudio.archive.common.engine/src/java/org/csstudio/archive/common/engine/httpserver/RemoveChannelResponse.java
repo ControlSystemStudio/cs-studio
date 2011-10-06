@@ -37,11 +37,11 @@ import org.csstudio.domain.desy.epics.name.EpicsChannelName;
  */
 public class RemoveChannelResponse extends AbstractChannelResponse {
 
+    private static String URL_BASE_PAGE;
     private static String URL_REMOVE_CHANNEL_ACTION;
-    private static String URL_REMOVE_CHANNEL_PAGE;
     static {
-        URL_REMOVE_CHANNEL_ACTION = "start";
-        URL_REMOVE_CHANNEL_PAGE = URL_CHANNEL_PAGE + "/" + URL_REMOVE_CHANNEL_ACTION;
+        URL_REMOVE_CHANNEL_ACTION = "remove";
+        URL_BASE_PAGE = URL_CHANNEL_PAGE + "/" + URL_REMOVE_CHANNEL_ACTION;
     }
 
     private static final long serialVersionUID = 1L;
@@ -75,7 +75,15 @@ public class RemoveChannelResponse extends AbstractChannelResponse {
     }
 
     @Nonnull
-    public static String getUrl() {
-        return URL_REMOVE_CHANNEL_PAGE;
+    public static String baseUrl() {
+        return URL_BASE_PAGE;
+    }
+    @Nonnull
+    public static String linkTo(@Nonnull final String name) {
+        return new Url(baseUrl()).with(PARAM_NAME, name).link(name);
+    }
+    @Nonnull
+    public static String urlTo(@Nonnull final String name) {
+        return new Url(baseUrl()).with(PARAM_NAME, name).url();
     }
 }

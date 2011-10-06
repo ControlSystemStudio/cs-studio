@@ -20,6 +20,9 @@ import org.csstudio.archive.common.engine.model.EngineModel;
  *  @author Kay Kasemir
  */
 class DisconnectedResponse extends AbstractResponse {
+
+    private static final String URL_BASE_PAGE = "/disconnected";
+
     /** Avoid serialization errors */
     private static final long serialVersionUID = 1L;
 
@@ -43,7 +46,6 @@ class DisconnectedResponse extends AbstractResponse {
         html.close();
     }
 
-    @SuppressWarnings("static-access")
     private int createTableRows(@Nonnull final HTMLWriter html) {
         int disconnected = 0;
         for (final ArchiveGroup group : getModel().getGroups()) {
@@ -55,11 +57,16 @@ class DisconnectedResponse extends AbstractResponse {
                 html.tableLine(new String[]
                                           {
                                            Integer.toString(disconnected),
-                                           HTMLWriter.makeLink(ShowChannelResponse.getUrl() + "?" + ShowChannelResponse.PARAM_NAME + "=" + channel.getName(), channel.getName()),
-                                           HTMLWriter.makeLink("group?name=" + group.getName(), group.getName()),
+                                           ShowChannelResponse.linkTo(channel.getName()),
+                                           ShowGroupResponse.linkTo(group.getName()),
                                           } );
             }
         }
         return disconnected;
+    }
+
+    @Nonnull
+    public static String baseUrl() {
+        return URL_BASE_PAGE;
     }
 }

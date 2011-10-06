@@ -57,29 +57,29 @@ public class StartChannelResponse extends AbstractChannelResponse {
     /**
      * {@inheritDoc}
      */
-    @SuppressWarnings("static-access")
     @Override
     protected void fillResponse(@Nonnull final HttpServletRequest req,
                                 @Nonnull final HttpServletResponse resp) throws Exception {
-        final EpicsChannelName name = parseEpicsNameOrConfigureRedirectResponse(req, resp);
-        if (name == null) {
+        final EpicsChannelName epicsName = parseEpicsNameOrConfigureRedirectResponse(req, resp);
+        if (epicsName == null) {
             return;
         }
 
         try {
-            final ArchiveChannelBuffer<?, ?> buffer = getModel().getChannel(name.toString());
+            final String name = epicsName.toString();
+            final ArchiveChannelBuffer<?, ?> buffer = getModel().getChannel(name);
             if (buffer == null) {
-                redirectToErrorPage(resp, "Channel '" + name.toString() + "' is unknown!");
+                redirectToErrorPage(resp, "Channel '" + name + "' is unknown!");
                 return;
             }
             if (buffer.isStarted()) {
-                redirectToWarnPage(resp, "Channel '" + name.toString() + "' has already been started!");
+                redirectToWarnPage(resp, "Channel '" + name + "' has already been started!");
                 return;
             }
 
             buffer.start("MANUAL START");
 
-            resp.sendRedirect(ShowChannelResponse.getUrl() + "?" + ShowChannelResponse.PARAM_NAME + "="+name);
+            resp.sendRedirect(ShowChannelResponse.urlTo(name));
 
         } catch (final IllegalArgumentException e) {
             redirectToErrorPage(resp, "Channel could not be started:\n" + e.getMessage());
@@ -89,7 +89,15 @@ public class StartChannelResponse extends AbstractChannelResponse {
     }
 
     @Nonnull
-    public static String getUrl() {
+    public static String baseUrl() {
         return URL_START_CHANNEL_PAGE;
+    }
+    @Nonnull
+    public static String linkTo(@Nonnull final String name) {
+        return new Url(baseUrl()).with(PARAM_NAME, name).link(Messages.HTTP_START);
+    }
+    @Nonnull
+    public static String urlTo(@Nonnull final String name) {
+        return new Url(baseUrl()).with(PARAM_NAME, name).url();
     }
 }

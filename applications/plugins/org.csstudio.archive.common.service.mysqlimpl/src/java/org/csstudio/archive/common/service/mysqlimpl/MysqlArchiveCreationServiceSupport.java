@@ -123,7 +123,7 @@ public class MysqlArchiveCreationServiceSupport {
     @CheckForNull
     public IArchiveChannel createChannel(@Nonnull final IArchiveChannel channel) throws ArchiveServiceException {
         final Collection<IArchiveChannel> coll = createChannels(Collections.singleton(channel));
-        return coll.isEmpty() ? channel : null;
+        return coll.isEmpty() ? null : channel;
     }
 
     /**

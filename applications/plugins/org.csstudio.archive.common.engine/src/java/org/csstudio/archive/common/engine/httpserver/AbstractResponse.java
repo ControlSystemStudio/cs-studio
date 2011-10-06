@@ -23,6 +23,8 @@ import org.csstudio.domain.desy.system.ISystemVariable;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.google.common.base.Strings;
+
 /** Helper for creating web pages with consistent look (header, footer, ...)
  *  @author Kay Kasemir
  */
@@ -103,21 +105,59 @@ abstract class AbstractResponse extends HttpServlet {
                                        @Nonnull final String msg) throws Exception {
         final HTMLWriter html = new HTMLWriter(resp, "Request error");
         html.text("Error on processing request:\n" + msg);
-        HTMLWriter.makeLink("main", "Back to main");
+        MainResponse.linkTo("Back to main");
         html.close();
     }
     protected void redirectToWarnPage(@Nonnull final HttpServletResponse resp,
                                       @Nonnull final String msg) throws Exception {
         final HTMLWriter html = new HTMLWriter(resp, "Request warning");
         html.text("Warning on processing request:\n" + msg);
-        HTMLWriter.makeLink("main", "Back to main");
+        MainResponse.linkTo("Back to main");
         html.close();
     }
     protected void redirectToSuccessPage(@Nonnull final HttpServletResponse resp,
                                          @Nonnull final String msg) throws Exception {
         final HTMLWriter html = new HTMLWriter(resp, "Request success");
         html.text("Request successful:\n" + msg);
-        HTMLWriter.makeLink("main", "Back to main");
+        MainResponse.linkTo("Back to main");
         html.close();
+    }
+
+    /**
+     * Url builder.
+     *
+     * @author bknerr
+     * @since 05.10.2011
+     */
+    public static final class Url {
+        private String _url;
+        private boolean _hasParams;
+        /**
+         * Constructor.
+         */
+        public Url(@Nonnull final String url) {
+            _url = url;
+        }
+        @Nonnull
+        public Url with(@Nonnull final String key, @Nonnull final String value) {
+            if (!_hasParams) {
+                _url += "?" + key + "=" + value;
+            } else {
+                _url += "&" + key + "=" + value;
+            }
+            _hasParams = true;
+            return this;
+        }
+        @Nonnull
+        public String link(@CheckForNull final String text) {
+            if (Strings.isNullOrEmpty(text)) {
+                return HTMLWriter.makeLink(_url, _url);
+            }
+            return HTMLWriter.makeLink(_url, text);
+        }
+        @Nonnull
+        public String url() {
+            return _url;
+        }
     }
 }

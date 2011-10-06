@@ -38,7 +38,7 @@ public class ArchiveGroup {
 
     /** Set to <code>true</code> while running. */
     @GuardedBy("this")
-    private boolean _isRunning;
+    private boolean _isStarted;
 
 
     /**
@@ -69,6 +69,12 @@ public class ArchiveGroup {
         return _name;
     }
 
+    @SuppressWarnings({ "rawtypes", "unchecked" })
+    @Nonnull
+    public Collection<ArchiveChannelBuffer> getChannels() {
+        return (Collection) _channelMap.values();
+    }
+
     /** Add channel to group
      *  @param channel Channel to add
      */
@@ -81,8 +87,13 @@ public class ArchiveGroup {
     final synchronized void remove(@Nonnull final ArchiveChannelBuffer<?, ?> channel) {
         _channelMap.remove(channel.getName());
     }
+    /** Remove channel from group */
+    final synchronized void remove(@Nonnull final String name) {
+        _channelMap.remove(name);
+    }
 
-    /** Locate a channel by name.
+    /**
+     * Locate a channel by name.
      *
      *  @param channel_name
      *  @return Channel or <code>null</code>s
@@ -93,41 +104,48 @@ public class ArchiveGroup {
     }
 
 
-    /** @return <code>true</code> if group is currently enabled */
+    /**
+     * @return <code>true</code> if group is currently started
+     */
     public final synchronized boolean isStarted() {
-        return _isRunning;
+        return _isStarted;
     }
 
-    /** Start all the channels in group
-     * @param engineId
-     * @return
+    /**
+     * Start all the channels in group that are flagged to be enabled.
      * @throws EngineModelException
      */
     @Nonnull
     public final void start(@Nonnull final String info) throws EngineModelException {
         synchronized (this) {
-            if (_isRunning) {
+            if (_isStarted) {
                 return;
             }
-            _isRunning = true;
+            _isStarted = true;
         }
         for (final ArchiveChannelBuffer<?, ?> channel : _channelMap.values()) {
-            channel.start(info);
+            if (channel.isEnabled()) {
+                channel.start(info);
+            }
         }
     }
 
     /**
-     * Stop all the channels in group
+     * Stops all the channels in group that have been started before.
+     *
+     * @throws EngineModelException
      */
-    public void stop(@Nonnull final String info) {
+    public void stop(@Nonnull final String info) throws EngineModelException {
         synchronized (this) {
-            if (!_isRunning) {
+            if (!_isStarted) {
                 return;
             }
-            _isRunning = false;
+            _isStarted = false;
         }
         for (final ArchiveChannelBuffer<?, ?> channel : _channelMap.values()) {
-            channel.stop(info);
+            if (channel.isStarted()) {
+                channel.stop(info);
+            }
         }
     }
 
@@ -136,16 +154,9 @@ public class ArchiveGroup {
         start(info);
     }
 
-
     @Override
     @Nonnull
     public String toString() {
         return getName();
-    }
-
-    @SuppressWarnings({ "rawtypes", "unchecked" })
-    @Nonnull
-    public Collection<ArchiveChannelBuffer> getChannels() {
-        return (Collection) _channelMap.values();
     }
 }

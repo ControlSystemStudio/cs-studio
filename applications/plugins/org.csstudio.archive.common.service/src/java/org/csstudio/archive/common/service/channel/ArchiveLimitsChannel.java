@@ -47,7 +47,8 @@ public class ArchiveLimitsChannel<V extends Comparable<? super V>> extends Archi
                                 @Nonnull final V lo,
                                 @Nonnull final V hi) {
         super(channel.getId(), channel.getName(), channel.getDataType(),
-              channel.getGroupId(), channel.getLatestTimestamp(), channel.getControlSystem());
+              channel.getGroupId(), channel.getLatestTimestamp(), channel.getControlSystem(),
+              channel.isEnabled());
         _limits = Limits.create(lo, hi);
     }
     /**
@@ -60,10 +61,11 @@ public class ArchiveLimitsChannel<V extends Comparable<? super V>> extends Archi
                                 @Nonnull final ArchiveChannelGroupId grpId,
                                 @Nullable final TimeInstant ltstTimestamp,
                                 @Nonnull final IArchiveControlSystem system,
+                                final boolean isEnabled,
                                 @Nonnull final V lo,
                                 @Nonnull final V hi) {
         // CHECKSTYLE  ON : ParameterNumber
-        super(id, name, type, grpId, ltstTimestamp, system);
+        super(id, name, type, grpId, ltstTimestamp, system, isEnabled);
         _limits = Limits.create(lo, hi);
     }
 

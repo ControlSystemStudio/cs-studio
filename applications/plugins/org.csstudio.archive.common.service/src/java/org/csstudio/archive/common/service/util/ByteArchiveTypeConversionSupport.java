@@ -81,9 +81,10 @@ public class ByteArchiveTypeConversionSupport extends AbstractNumberArchiveTypeC
                                             @Nonnull final ArchiveChannelGroupId grpId,
                                             @Nonnull final TimeInstant time,
                                             @Nonnull final IArchiveControlSystem cs,
+                                            final boolean enabled,
                                             @Nonnull final Byte low,
                                             @Nonnull final Byte high) {
         // CHECKSTYLE ON : ParameterNumber
-        return new ArchiveLimitsChannel<Byte>(id, name, datatype, grpId, time, cs, low, high);
+        return new ArchiveLimitsChannel<Byte>(id, name, datatype, grpId, time, cs, enabled, low, high);
     }
 }
