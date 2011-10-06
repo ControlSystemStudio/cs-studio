@@ -44,7 +44,7 @@ import org.slf4j.LoggerFactory;
  * @author bknerr
  * @since Mar 28, 2011
  */
-final class ArchiveEngineSampleRescuer {
+public final class ArchiveEngineSampleRescuer {
 
     private static final Logger EMAIL_LOG =
         LoggerFactory.getLogger("ErrorPerEmailLogger");

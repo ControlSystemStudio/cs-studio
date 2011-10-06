@@ -7,6 +7,11 @@
  ******************************************************************************/
 package org.csstudio.archive.common.engine.model;
 
+import static org.epics.pvmanager.ExpressionLanguage.channel;
+import static org.epics.pvmanager.util.TimeDuration.sec;
+import gov.aps.jca.JCALibrary;
+import gov.aps.jca.Monitor;
+
 import java.io.Serializable;
 
 import javax.annotation.CheckForNull;
@@ -14,15 +19,17 @@ import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import javax.annotation.concurrent.GuardedBy;
 
+import org.csstudio.archive.common.engine.pvmanager.DesyArchivePVManagerListener;
+import org.csstudio.archive.common.engine.pvmanager.DesyJCADataSource;
 import org.csstudio.archive.common.engine.service.IServiceProvider;
 import org.csstudio.archive.common.service.channel.ArchiveChannelId;
 import org.csstudio.archive.common.service.sample.IArchiveSample;
 import org.csstudio.domain.desy.service.osgi.OsgiServiceUnavailableException;
 import org.csstudio.domain.desy.system.ISystemVariable;
 import org.csstudio.domain.desy.time.TimeInstant;
-import org.csstudio.utility.pv.PV;
-import org.csstudio.utility.pv.PVFactory;
 import org.csstudio.utility.pv.PVListener;
+import org.epics.pvmanager.PVManager;
+import org.epics.pvmanager.PVReader;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -47,7 +54,9 @@ public class ArchiveChannelBuffer<V extends Serializable, T extends ISystemVaria
     private final ArchiveChannelId _id;
 
     /** Control system PV */
-    private final PV _pv;
+    private final PVReader<Object> _pv;
+
+    private final DesyJCADataSource _dataSource;
 
     /** Buffer of received samples, periodically written */
     private final SampleBuffer<V, T, IArchiveSample<V, T>> _buffer;
@@ -86,7 +95,7 @@ public class ArchiveChannelBuffer<V extends Serializable, T extends ISystemVaria
     private final Class<V> _collClazz;
 
     @SuppressWarnings("rawtypes")
-    private final DesyArchivePVListener _listener;
+    private final DesyArchivePVManagerListener _listener;
 
     private TimeInstant _timeOfLastSampleBeforeChannelStart;
 
@@ -125,13 +134,13 @@ public class ArchiveChannelBuffer<V extends Serializable, T extends ISystemVaria
         _collClazz = collClazz;
         _provider = provider;
 
-        try {
-            _pv = PVFactory.createPV(name);
-        } catch (final Exception e) {
-            throw new EngineModelException("Creation of pv failed for channel " + name, e);
-        }
+        // Sets CAJ (pure java implementation) as the default data source,
+        // monitoring only archive changes
+        _dataSource = new DesyJCADataSource(JCALibrary.CHANNEL_ACCESS_JAVA, Monitor.LOG);
+        PVManager.setDefaultDataSource(_dataSource);
+        _pv = PVManager.read(channel(_name)).every(sec(3));
 
-        _listener = new DesyArchivePVListener(_provider, _name, _id, _collClazz, _typeClazz) {
+        _listener = new DesyArchivePVManagerListener(_pv, _provider, _name, _id, _collClazz, _typeClazz) {
             @SuppressWarnings("synthetic-access")
             @Override
             protected boolean addSampleToBuffer(@Nonnull final IArchiveSample sample) {
@@ -140,9 +149,9 @@ public class ArchiveChannelBuffer<V extends Serializable, T extends ISystemVaria
                     _mostRecentSysVar = (T) sample.getSystemVariable();
                 }
                 return _buffer.add(sample);
+
             }
         };
-        _pv.addListener(_listener);
     }
 
 
@@ -160,7 +169,8 @@ public class ArchiveChannelBuffer<V extends Serializable, T extends ISystemVaria
 
     /** @return <code>true</code> if connected */
     public boolean isConnected() {
-        return _pv.isConnected();
+        // FIXME (bknerr) : is this information available?
+        return _dataSource.isConnected();
     }
 
     /** @return <code>true</code> if connected */
@@ -171,7 +181,8 @@ public class ArchiveChannelBuffer<V extends Serializable, T extends ISystemVaria
     /** @return Human-readable info on internal state of PV */
     @CheckForNull
     public String getInternalState() {
-        return _pv.getStateInfo();
+        // FIXME (bknerr) : is this information available?
+        return "UNKNOWN via PVManager";
     }
 
     @CheckForNull
@@ -193,15 +204,15 @@ public class ArchiveChannelBuffer<V extends Serializable, T extends ISystemVaria
                 _isStarted = true;
             }
             _listener.setStartInfo(info);
-            _pv.start();
+            _pv.addPVReaderListener(_listener);
 
             enable();
 
         } catch (final OsgiServiceUnavailableException e) {
             throw new EngineModelException("Service unavailable. Enabling of channel could not be persisted.", e);
         } catch (final Exception e) {
-            LOG.error("PV " + _pv.getName() + " could not be started with state info " + _pv.getStateInfo(), e);
-            throw new EngineModelException("Something went wrong within Kasemir's PV stuff on channel/PV startup", e);
+            LOG.error("PV " + _pv.getName() + " could not be started with state info " + getInternalState(), e);
+            throw new EngineModelException("Something went wrong within Gabriele's PV stuff on channel/PV startup", e);
         }
         return true;
     }
@@ -227,7 +238,7 @@ public class ArchiveChannelBuffer<V extends Serializable, T extends ISystemVaria
             _isStarted = false;
         }
         _listener.setStopInfo(info);
-        _pv.stop();
+        _pv.removePVReaderListener(_listener);
 
         try {
             disable();
