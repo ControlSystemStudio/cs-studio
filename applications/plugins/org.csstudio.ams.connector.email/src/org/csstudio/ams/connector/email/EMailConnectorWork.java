@@ -31,6 +31,7 @@ import javax.jms.MapMessage;
 import javax.jms.Message;
 import javax.mail.Address;
 import javax.mail.PasswordAuthentication;
+import javax.mail.Session;
 import javax.mail.Transport;
 import javax.mail.internet.InternetAddress;
 import javax.mail.internet.MimeMessage;
@@ -41,68 +42,59 @@ import org.csstudio.ams.Log;
 import org.csstudio.platform.utility.jms.JmsRedundantReceiver;
 import org.eclipse.jface.preference.IPreferenceStore;
 
-public class EMailConnectorWork extends Thread implements AmsConstants
-{
-    private EMailConnectorStart         ecs                 = null;
+public class EMailConnectorWork extends Thread implements AmsConstants {
 
-    private javax.mail.Session          mailSession         = null;
-    private EMailConnectorProperties    props               = null;
+    private final EMailConnectorStart ecs;
+    private Session mailSession;
+    private EMailConnectorProperties props;
+    private JmsRedundantReceiver amsReceiver;
+    private boolean bStop;
+    private boolean bStoppedClean;
 
-    private JmsRedundantReceiver        amsReceiver  = null;
-    // private Context                     amsContext          = null;
-    // private ConnectionFactory           amsFactory          = null;
-    // private Connection                  amsConnection       = null;
-    // private javax.jms.Session           amsSession          = null;
+    public EMailConnectorWork(final EMailConnectorStart starterClass) {
+        ecs = starterClass;
+        mailSession = null;
+        props = null;
+        amsReceiver = null;
+        bStop = false;
+        bStoppedClean = false;
+    }
 
-    // CHANGED BY: Markus Moeller, 28.06.2007
-    // private TopicSubscriber             amsSubscriberEmail  = null;
-    // private MessageConsumer             amsSubscriberEmail  = null;
-
-    private boolean bStop = false;
-    private boolean bStoppedClean = false;
-
-    public EMailConnectorWork(final EMailConnectorStart starterClass)
-    {
-        this.ecs = starterClass;
+    public EMailConnectorProperties getMailProperties() {
+        return props;
     }
 
     @Override
-    public void run()
-    {
+    public void run() {
+
         boolean bInitedEmail = false;
         boolean bInitedJms = false;
         int iErr = EMailConnectorStart.STAT_OK;
-        Log.log(this, Log.INFO, "start email connector work");
+        Log.log(this, Log.INFO, "Start EMailConnectorWork");
         bStop = false;
 
-        while(bStop == false)
-        {
-            try
-            {
-                if (!bInitedEmail)
-                {
+        while(bStop == false) {
+
+            try {
+                if (!bInitedEmail) {
                     bInitedEmail = initEmail();
-                    if (!bInitedEmail)
-                    {
+                    if (!bInitedEmail) {
                         iErr = EMailConnectorStart.STAT_ERR_EMAIL;
                         ecs.setStatus(iErr);                                    // set it for not overwriting with next error
                     }
                 }
 
-                if (!bInitedJms)
-                {
+                if (!bInitedJms) {
                     bInitedJms = initJms();
-                    if (!bInitedJms)
-                    {
+                    if (!bInitedJms) {
                         iErr = EMailConnectorStart.STAT_ERR_JMSCON;
                         ecs.setStatus(iErr);                                    // set it for not overwriting with next error
                     }
                 }
 
-                sleep(100);
+                sleep(1);
 
-                if (bInitedEmail && bInitedJms)
-                {
+                if (bInitedEmail && bInitedJms) {
                     iErr = EMailConnectorStart.STAT_OK;
                     if (ecs.getStatus() == EMailConnectorStart.STAT_INIT) {
                         ecs.setStatus(EMailConnectorStart.STAT_OK);
@@ -203,8 +195,8 @@ public class EMailConnectorWork extends Thread implements AmsConstants
                     @Override
                     public PasswordAuthentication getPasswordAuthentication()
                     {
-                        return new PasswordAuthentication(props.getMailAuthUser()
-                                , props.getMailAuthPassword());
+                        return new PasswordAuthentication(getMailProperties().getMailAuthUser()
+                                , getMailProperties().getMailAuthPassword());
                     }};
             }
 
