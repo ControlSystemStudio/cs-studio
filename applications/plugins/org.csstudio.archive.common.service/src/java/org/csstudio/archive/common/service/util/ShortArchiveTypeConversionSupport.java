@@ -80,9 +80,10 @@ public class ShortArchiveTypeConversionSupport extends AbstractNumberArchiveType
                                             @Nonnull final ArchiveChannelGroupId grpId,
                                             @Nonnull final TimeInstant time,
                                             @Nonnull final IArchiveControlSystem cs,
+                                            final boolean enabled,
                                             @Nonnull final Short low,
                                             @Nonnull final Short high) {
         // CHECKSTYLE ON : ParameterNumber
-        return new ArchiveLimitsChannel<Short>(id, name, datatype, grpId, time, cs, low, high);
+        return new ArchiveLimitsChannel<Short>(id, name, datatype, grpId, time, cs, enabled, low, high);
     }
 }

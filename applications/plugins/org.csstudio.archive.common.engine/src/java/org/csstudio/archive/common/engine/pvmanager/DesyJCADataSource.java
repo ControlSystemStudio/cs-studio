@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2010 Stiftung Deutsches Elektronen-Synchrotron,
+ * Copyright (c) 2011 Stiftung Deutsches Elektronen-Synchrotron,
  * Member of the Helmholtz Association, (DESY), HAMBURG, GERMANY.
  *
  * THIS SOFTWARE IS PROVIDED UNDER THIS LICENSE ON AN "../AS IS" BASIS.
@@ -19,42 +19,29 @@
  * PROJECT IN THE FILE LICENSE.HTML. IF THE LICENSE IS NOT INCLUDED YOU MAY FIND A COPY
  * AT HTTP://WWW.DESY.DE/LEGAL/LICENSE.HTM
  */
-package org.csstudio.archive.common.service.channel;
+package org.csstudio.archive.common.engine.pvmanager;
 
-import javax.annotation.CheckForNull;
 import javax.annotation.Nonnull;
 
-import org.csstudio.archive.common.service.channelgroup.ArchiveChannelGroupId;
-import org.csstudio.archive.common.service.controlsystem.IArchiveControlSystem;
-import org.csstudio.domain.desy.common.id.IIdentifiable;
-import org.csstudio.domain.desy.time.TimeInstant;
-import org.csstudio.domain.desy.types.Limits;
+import org.epics.pvmanager.ChannelHandler;
+import org.epics.pvmanager.jca.JCADataSource;
+
 
 /**
- * Read only interface of an channel configuration in the archive.
+ * TODO (bknerr) :
  *
  * @author bknerr
- * @since 09.11.2010
+ * @since 30.08.2011
  */
-public interface IArchiveChannel extends IIdentifiable<ArchiveChannelId> {
+public class DesyJCADataSource extends JCADataSource {
 
+    public DesyJCADataSource(@Nonnull final String className,
+                             final int monitorMask) {
+        super(className, monitorMask);
+    }
+    @Override
     @Nonnull
-    String getName();
-
-    @Nonnull
-    ArchiveChannelGroupId getGroupId();
-
-    @Nonnull
-    TimeInstant getLatestTimestamp();
-
-    @Nonnull
-    String getDataType();
-
-    @Nonnull
-    IArchiveControlSystem getControlSystem();
-
-    @CheckForNull
-    Limits<?> getDisplayLimits();
-
-    boolean isEnabled();
+    protected ChannelHandler<?> createChannel(@Nonnull final String channelName) {
+        return new DesyJCAChannelHandler(channelName, getContext(), getMonitorMask());
+    }
 }

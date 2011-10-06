@@ -28,11 +28,11 @@ import com.google.common.base.Strings;
 @SuppressWarnings("nls")
 class ShowGroupResponse extends AbstractGroupResponse {
 
+    private static String URL_BASE_PAGE;
     private static String URL_SHOW_GROUP_ACTION;
-    private static String URL_SHOW_GROUP_PAGE;
     static {
         URL_SHOW_GROUP_ACTION = "show";
-        URL_SHOW_GROUP_PAGE = URL_GROUP_PAGE + "/" + URL_SHOW_GROUP_ACTION;
+        URL_BASE_PAGE = URL_GROUP_PAGE + "/" + URL_SHOW_GROUP_ACTION;
     }
 
     /** Maximum text length of last value that's displayed */
@@ -83,14 +83,13 @@ class ShowGroupResponse extends AbstractGroupResponse {
         html.closeTable();
     }
 
-    @SuppressWarnings("static-access")
     private void createChannelsTable(@Nonnull final ArchiveGroup group,
                                      @Nonnull final HTMLWriter html) {
         // HTML Table of all channels in the group
         html.openTable(1, new String[] {
             Messages.HTTP_CHANNEL,
             Messages.HTTP_STARTED,
-            Messages.HTTP_COLUMN_CONNECTED,
+            Messages.HTTP_CONNECTED,
             Messages.HTTP_CURRENT_VALUE,
             Messages.HTTP_TIMESTAMP,
             Messages.HTTP_COLUMN_RECEIVEDVALUES,
@@ -116,7 +115,7 @@ class ShowGroupResponse extends AbstractGroupResponse {
                         "null";
 
                     html.tableLine(new String[] {
-                            HTMLWriter.makeLink(ShowChannelResponse.getUrl() + "?" + ShowChannelResponse.PARAM_NAME + "=" + channel.getName(), channel.getName()),
+                            ShowChannelResponse.linkTo(channel.getName()),
                             started,
                             connected,
                             curVal,
@@ -134,7 +133,15 @@ class ShowGroupResponse extends AbstractGroupResponse {
     }
 
     @Nonnull
-    public static String getUrl() {
-        return URL_SHOW_GROUP_PAGE;
+    public static String baseUrl() {
+        return URL_BASE_PAGE;
+    }
+    @Nonnull
+    public static String linkTo(@Nonnull final String name) {
+        return new Url(baseUrl()).with(PARAM_NAME, name).link(name);
+    }
+    @Nonnull
+    public static String urlTo(@Nonnull final String name) {
+        return new Url(baseUrl()).with(PARAM_NAME, name).url();
     }
 }

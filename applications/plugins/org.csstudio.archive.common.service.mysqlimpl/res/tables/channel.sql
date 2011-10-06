@@ -11,6 +11,7 @@ CREATE TABLE `channel` (
   `group_id` int(10) unsigned DEFAULT NULL,
   `last_sample_time` bigint(20) DEFAULT NULL COMMENT 'Time of last written sample in nanoseconds since epoch 1970-01-01 00:00:00',
   `control_system_id` int(10) NOT NULL,
+  `enabled` boolean NOT NULL,
   `display_high` varchar(100) DEFAULT NULL,
   `display_low` varchar(100) DEFAULT NULL,
   PRIMARY KEY (`id`),

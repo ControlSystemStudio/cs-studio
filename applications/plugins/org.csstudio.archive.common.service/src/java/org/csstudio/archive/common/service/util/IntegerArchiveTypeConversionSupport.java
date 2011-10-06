@@ -82,9 +82,10 @@ public class IntegerArchiveTypeConversionSupport extends AbstractNumberArchiveTy
                                             @Nonnull final ArchiveChannelGroupId grpId,
                                             @Nonnull final TimeInstant time,
                                             @Nonnull final IArchiveControlSystem cs,
+                                            final boolean enabled,
                                             @Nonnull final Integer low,
                                             @Nonnull final Integer high) {
         // CHECKSTYLE ON : ParameterNumber
-        return new ArchiveLimitsChannel<Integer>(id, name, datatype, grpId, time, cs, low, high);
+        return new ArchiveLimitsChannel<Integer>(id, name, datatype, grpId, time, cs, enabled, low, high);
     }
 }

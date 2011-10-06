@@ -47,6 +47,7 @@ import org.csstudio.archive.common.service.enginestatus.IArchiveEngineStatus;
 import org.csstudio.archive.common.service.mysqlimpl.requesttypes.DesyArchiveRequestType;
 import org.csstudio.archive.common.service.sample.IArchiveSample;
 import org.csstudio.domain.common.service.DeleteResult;
+import org.csstudio.domain.common.service.UpdateResult;
 import org.csstudio.domain.desy.system.ISystemVariable;
 import org.csstudio.domain.desy.time.TimeInstant;
 import org.csstudio.domain.desy.types.Limits;
@@ -333,5 +334,14 @@ public class MySQLArchiveServiceImpl implements IArchiveEngineFacade, IArchiveRe
     @Nonnull
     public Collection<IArchiveChannelGroup> createGroups(@Nonnull final Collection<IArchiveChannelGroup> groups) throws ArchiveServiceException {
         return _createSupport.createGroups(groups);
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    @Nonnull
+    public UpdateResult setEnableChannelFlag(@Nonnull final String name, final boolean isEnabled) {
+        return _updateSupport.updateChannelIsEnabledFlag(name, isEnabled);
     }
 }

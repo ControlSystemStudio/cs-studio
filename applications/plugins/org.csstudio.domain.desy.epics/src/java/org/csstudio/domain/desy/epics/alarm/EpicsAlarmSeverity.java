@@ -23,8 +23,12 @@ package org.csstudio.domain.desy.epics.alarm;
 
 import gov.aps.jca.dbr.Severity;
 
+import java.util.List;
+
 import javax.annotation.CheckForNull;
 import javax.annotation.Nonnull;
+
+import com.google.common.collect.Lists;
 
 /**
  * Severities in EPICS as from epics version 3.14.12.rc1 in
@@ -51,17 +55,17 @@ public enum EpicsAlarmSeverity {
     /**
      * Severity value for a minor alarm.
      */
-    MINOR(3),
+    MINOR(2),
 
     /**
      * Severity value for a major alarm.
      */
-    MAJOR(4),
+    MAJOR(3),
 
     /**
      * Severity representing an invalid alarm state.
      */
-    INVALID(5);
+    INVALID(4);
 
 
     private static final EpicsAlarmSeverity LOWEST_SEVERITY;
@@ -78,14 +82,26 @@ public enum EpicsAlarmSeverity {
         LOWEST_SEVERITY = lowestSev;
     }
 
-    private final int _severity;
+    /**
+     * List of severities by integer code, the index in the list corresponds to the JCA code.
+     * @see Severity
+     */
+    private static List<EpicsAlarmSeverity> SEVS_BY_CODE =
+        Lists.newArrayList(NO_ALARM, MINOR, MAJOR, INVALID);
+
+    /**
+     * The level of the severity for comparison.
+     * The higher the value, the more terrible the alarm.
+     * (their values are equal the 'jca code' just by conincidence).
+     */
+    private final int _sevLevel;
 
 
     /**
      * Constructor.
      */
-    private EpicsAlarmSeverity(final int sev) {
-        _severity = sev;
+    private EpicsAlarmSeverity(final int sevLevel) {
+        _sevLevel = sevLevel;
     }
 
     /**
@@ -126,18 +142,30 @@ public enum EpicsAlarmSeverity {
      */
     public int compareSeverityTo(@Nonnull final EpicsAlarmSeverity other) {
 
-        return _severity < other._severity ? -1
-                                           : _severity > other._severity ? 1
+        return _sevLevel < other._sevLevel ? -1
+                                           : _sevLevel > other._sevLevel ? 1
                                                                          : 0;
     }
 
     /**
-     * Converts an jca severity into a CSS epics alarm severity.
-     * @param severity the incoming severity
-     * @return the outgoing severity
+     * Returns the DESY severity according to code taken from {@link Severity}.
+     *
+     * If the code is not known (not in {0,1,2,3}) {@link EpicsAlarmSeverity#UNKNOWN} is
+     * returned.
+     *
+     * @param code the JCA integer code
+     * @return the DESY alarm severity
      */
     @Nonnull
-    public EpicsAlarmSeverity valueOf(@Nonnull final Severity severity) {
-        return parseSeverity(severity.getName());
+    public static EpicsAlarmSeverity valueOf(@Nonnull final Severity severity) {
+        return byJCACode(severity.getValue());
+    }
+
+    @Nonnull
+    private static EpicsAlarmSeverity byJCACode(final int code) {
+        if (code < 0 || code >= SEVS_BY_CODE.size()) {
+            return UNKNOWN;
+        }
+        return SEVS_BY_CODE.get(code);
     }
 }

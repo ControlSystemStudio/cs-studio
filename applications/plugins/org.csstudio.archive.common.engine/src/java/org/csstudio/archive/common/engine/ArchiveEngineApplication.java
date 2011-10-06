@@ -7,6 +7,9 @@
  ******************************************************************************/
 package org.csstudio.archive.common.engine;
 
+import gov.aps.jca.JCALibrary;
+import gov.aps.jca.Monitor;
+
 import javax.annotation.CheckForNull;
 import javax.annotation.Nonnull;
 
@@ -18,15 +21,19 @@ import org.csstudio.archive.common.engine.httpserver.EngineHttpServerException;
 import org.csstudio.archive.common.engine.model.EngineModel;
 import org.csstudio.archive.common.engine.model.EngineModelException;
 import org.csstudio.archive.common.engine.model.EngineState;
+import org.csstudio.archive.common.engine.pvmanager.DesyJCADataSource;
 import org.csstudio.archive.common.engine.service.IServiceProvider;
 import org.csstudio.archive.common.engine.service.ServiceProvider;
-import org.csstudio.domain.desy.epics.typesupport.EpicsIMetaDataTypeSupport;
-import org.csstudio.domain.desy.epics.typesupport.EpicsIValueTypeSupport;
+import org.csstudio.domain.desy.epics.types.EpicsSystemVariable;
 import org.csstudio.domain.desy.time.StopWatch;
 import org.csstudio.domain.desy.time.StopWatch.RunningStopWatch;
 import org.csstudio.domain.desy.time.TimeInstant;
 import org.eclipse.equinox.app.IApplication;
 import org.eclipse.equinox.app.IApplicationContext;
+import org.epics.pvmanager.Notification;
+import org.epics.pvmanager.NotificationSupport;
+import org.epics.pvmanager.PVManager;
+import org.epics.pvmanager.TypeSupport;
 import org.joda.time.Period;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -101,8 +108,25 @@ public class ArchiveEngineApplication implements IApplication {
         if (!getSettings(args)) {
             return EXIT_OK;
         }
-        EpicsIMetaDataTypeSupport.install();
-        EpicsIValueTypeSupport.install();
+
+        PVManager.setDefaultDataSource(new DesyJCADataSource(JCALibrary.CHANNEL_ACCESS_JAVA, Monitor.LOG));
+
+        TypeSupport.addTypeSupport(new NotificationSupport<EpicsSystemVariable>(EpicsSystemVariable.class) {
+            @Override
+            @Nonnull
+            public Notification prepareNotification(@CheckForNull final EpicsSystemVariable oldValue,
+                                                    @CheckForNull final EpicsSystemVariable newValue) {
+                if (oldValue != null && newValue != null) {
+                    if (!oldValue.getData().equals(newValue.getData())) {
+                        return new Notification<EpicsSystemVariable>(true, newValue);
+                    }
+                    return new Notification<EpicsSystemVariable>(false, newValue);
+                } else if (oldValue == null && newValue == null) {
+                    return new Notification(false, newValue);
+                }
+                return new Notification(true, newValue);
+            }
+        });
 
         LOG.info("DESY Archive Engine Version {}.", provider.getPreferencesService().getVersion());
         EngineHttpServer httpServer = null;

@@ -39,11 +39,11 @@ import com.google.common.base.Strings;
  */
 public class StopGroupResponse extends AbstractGroupResponse {
 
+    private static String URL_BASE_PAGE;
     private static String URL_STOP_GROUP_ACTION;
-    private static String URL_STOP_GROUP_PAGE;
     static {
         URL_STOP_GROUP_ACTION = "stop";
-        URL_STOP_GROUP_PAGE = URL_GROUP_PAGE + "/" + URL_STOP_GROUP_ACTION;
+        URL_BASE_PAGE = URL_GROUP_PAGE + "/" + URL_STOP_GROUP_ACTION;
     }
     private static final long serialVersionUID = 8061989658084863540L;
 
@@ -58,7 +58,6 @@ public class StopGroupResponse extends AbstractGroupResponse {
     /**
      * {@inheritDoc}
      */
-    @SuppressWarnings("static-access")
     @Override
     protected void fillResponse(@Nonnull final HttpServletRequest req,
                                 @Nonnull final HttpServletResponse resp) throws Exception {
@@ -81,7 +80,7 @@ public class StopGroupResponse extends AbstractGroupResponse {
 
             group.stop("MANUAL GROUP STOP");
 
-            resp.sendRedirect(ShowGroupResponse.getUrl() + "?" + ShowGroupResponse.PARAM_NAME + "=" + name);
+            resp.sendRedirect(ShowGroupResponse.urlTo(name));
 
         } catch (final EngineModelException e) {
             redirectToErrorPage(resp, "Group " + name + "could not be stopped:\n" + e.getMessage());
@@ -89,7 +88,15 @@ public class StopGroupResponse extends AbstractGroupResponse {
     }
 
     @Nonnull
-    public static String getUrl() {
-        return URL_STOP_GROUP_PAGE;
+    public static String baseUrl() {
+        return URL_BASE_PAGE;
+    }
+    @Nonnull
+    public static String linkTo(@Nonnull final String name) {
+        return new Url(baseUrl()).with(PARAM_NAME, name).link(name);
+    }
+    @Nonnull
+    public static String urlTo(@Nonnull final String name) {
+        return new Url(baseUrl()).with(PARAM_NAME, name).url();
     }
 }

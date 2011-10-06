@@ -50,6 +50,8 @@ public class ArchiveChannel implements IArchiveChannel {
 
     private final IArchiveControlSystem _system;
 
+    private final boolean _isEnabled;
+
     /**
      * Constructor.
      */
@@ -58,13 +60,15 @@ public class ArchiveChannel implements IArchiveChannel {
                           @Nonnull final String type,
                           @Nonnull final ArchiveChannelGroupId grpId,
                           @Nullable final TimeInstant ltstTimestamp,
-                          @Nonnull final IArchiveControlSystem system) {
+                          @Nonnull final IArchiveControlSystem system,
+                          final boolean isEnabled) {
         _id = id;
         _name = name;
         _groupId = grpId;
         _dataType = type;
         _latestTimestamp = ltstTimestamp;
         _system = system;
+        _isEnabled = isEnabled;
     }
 
     /**
@@ -126,5 +130,13 @@ public class ArchiveChannel implements IArchiveChannel {
     @CheckForNull
     public Limits<?> getDisplayLimits() {
         return null;
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public boolean isEnabled() {
+        return _isEnabled;
     }
 }
