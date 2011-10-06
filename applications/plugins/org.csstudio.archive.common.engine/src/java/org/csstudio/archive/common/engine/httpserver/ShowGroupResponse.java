@@ -28,11 +28,11 @@ import com.google.common.base.Strings;
 @SuppressWarnings("nls")
 class ShowGroupResponse extends AbstractGroupResponse {
 
+    private static String URL_BASE_PAGE;
     private static String URL_SHOW_GROUP_ACTION;
-    private static String URL_SHOW_GROUP_PAGE;
     static {
         URL_SHOW_GROUP_ACTION = "show";
-        URL_SHOW_GROUP_PAGE = URL_GROUP_PAGE + "/" + URL_SHOW_GROUP_ACTION;
+        URL_BASE_PAGE = URL_GROUP_PAGE + "/" + URL_SHOW_GROUP_ACTION;
     }
 
     /** Maximum text length of last value that's displayed */
@@ -134,7 +134,7 @@ class ShowGroupResponse extends AbstractGroupResponse {
 
     @Nonnull
     public static String baseUrl() {
-        return URL_SHOW_GROUP_PAGE;
+        return URL_BASE_PAGE;
     }
     @Nonnull
     public static String linkTo(@Nonnull final String name) {
